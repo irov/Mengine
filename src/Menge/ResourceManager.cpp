@@ -212,10 +212,12 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceManager::validationResources() const
+    bool ResourceManager::validationResources() const
     {
         LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource validation resource begin (PLEASE WAIT):");
         LOGGER_WARNING(m_serviceProvider)("----------------------------------------------------------------------");
+
+		bool total_successful = true;
 
         for( TMapResource::const_iterator
             it = m_resources.begin(),
@@ -227,7 +229,9 @@ namespace Menge
 
 			const ResourceReference * resource = entry.resource;
 
-			if( resource->isValid() == false )
+			bool successful = resource->isValid();
+
+			if( successful == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid validation"
 					, resource->getName().c_str()
@@ -236,6 +240,8 @@ namespace Menge
 
 				LOGGER_WARNING(m_serviceProvider)("======================================================================");
 				LOGGER_WARNING(m_serviceProvider)("");
+
+				total_successful = false;
 			}
         }
 
@@ -243,6 +249,8 @@ namespace Menge
 
         LOGGER_WARNING(m_serviceProvider)("----------------------------------------------------------------------");
         LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource validation resource complete!");
+
+		return total_successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )

@@ -8,11 +8,32 @@
 namespace Metabuf
 {
 	//////////////////////////////////////////////////////////////////////////
+	void archive_read( ArchiveReader & ar, bool & _value, void * _userData )
+	{
+		(void)_userData;
+
+		ar.readPOD( _value );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( ArchiveReader & ar, uint32_t & _value, void * _userData )
+	{
+		(void)_userData;
+
+		ar.readPOD( _value );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( ArchiveReader & ar, float & _value, void * _userData )
+	{
+		(void)_userData;
+
+		ar.readPOD( _value );
+	}
+	//////////////////////////////////////////////////////////////////////////
     void archive_read( ArchiveReader & ar, Menge::String & _value, void * _userData )
 	{
         (void)_userData;
 
-		unsigned int size;
+		uint32_t size;
 		ar.readSize( size );
 
         if( size == 0 )
@@ -31,7 +52,7 @@ namespace Metabuf
 	{
         Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
 
-		unsigned int index;
+		uint32_t index;
 		ar.readSize( index );
 
         _value = loader->getCacheConstString( index );
@@ -39,7 +60,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( ArchiveReader & ar, Menge::WChar & _value, void * _userData )
     {   
-        unsigned int size;
+        uint32_t size;
         ar.readSize( size );
 
         char utf8[32];
@@ -107,7 +128,7 @@ namespace Metabuf
     {
         (void)_userData;
 
-        unsigned int code;
+        uint32_t code;
         ar.readPOD( code );
 
         _value.setCode( code );
@@ -117,7 +138,7 @@ namespace Metabuf
     {
         (void)_userData;
 
-        unsigned int count;
+        uint32_t count;
         ar.readSize(count);
 
         if( count % 2 != 0 )
@@ -127,7 +148,7 @@ namespace Metabuf
             return;
         }
 
-        for( size_t i = 0; i != count; i += 2 )
+        for( uint32_t i = 0; i != count; i += 2 )
         {
             mt::vec2f v;
             ar.read( v );
@@ -140,7 +161,7 @@ namespace Metabuf
     {
         (void)_userData;
 
-        unsigned int count;
+        uint32_t count;
         ar.readSize(count);
 
         _value.resize( count );

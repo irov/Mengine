@@ -2,11 +2,11 @@
 
 namespace Metacode
 {
-    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, size_t & _readVersion, size_t & _needVersion, void * _userData )
+    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, void * _userData )
     {
         Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
 
-        unsigned int head;
+        uint32_t head;
         ar.read( head );
 
         if( head != 3133062829u )
@@ -14,13 +14,13 @@ namespace Metacode
             return false;
         }
 
-        unsigned int version;
+        uint32_t version;
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 44;
+        _needVersion = 45;
 
-        if( version != 44 )
+        if( version != 45 )
         {
             return false;
         }
@@ -28,11 +28,11 @@ namespace Metacode
         return true;
     }
 
-    bool readStrings( const unsigned char * _buff, size_t _size, size_t & _read, size_t & _stringCount, void * _userData )
+    bool readStrings( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount, void * _userData )
     {
         Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
 
-        unsigned int count;
+        uint32_t count;
         ar.read( count );
 
         _stringCount = count;
@@ -40,11 +40,11 @@ namespace Metacode
         return true;
     }
 
-    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, size_t & _stringSize, void * _userData )
+    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, void * _userData )
     {
         Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
 
-        unsigned int size;
+        uint32_t size;
         ar.readSize( size );
 
         const char * value = ar.current_buff<char>();
@@ -72,12 +72,12 @@ namespace Metacode
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::getId() const
+    uint32_t Meta_DataBlock::getId() const
     {
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -95,7 +95,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
@@ -116,7 +116,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         switch( _includes )
         {
@@ -137,7 +137,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         switch( _generators )
         {
@@ -451,12 +451,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_Include::getId() const
+    uint32_t Meta_DataBlock::Meta_Include::getId() const
     {
         return 2;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_Include::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_Include::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -474,7 +474,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_Include::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_Include::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -483,7 +483,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_Include::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_Include::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -494,7 +494,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_Include::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_Include::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -510,12 +510,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_Resource::getId() const
+    uint32_t Meta_DataBlock::Meta_Resource::getId() const
     {
         return 3;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_Resource::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_Resource::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -542,7 +542,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_Resource::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_Resource::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -551,7 +551,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_Resource::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_Resource::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -562,7 +562,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_Resource::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_Resource::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -578,12 +578,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceAnimation::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceAnimation::getId() const
     {
         return 14;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceAnimation::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceAnimation::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -594,7 +594,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceAnimation::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceAnimation::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -614,7 +614,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceAnimation::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceAnimation::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -640,7 +640,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceAnimation::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceAnimation::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -656,12 +656,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::getId() const
     {
         return 3;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -688,7 +688,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -697,7 +697,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -708,7 +708,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -724,12 +724,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceCursorICO::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceCursorICO::getId() const
     {
         return 8;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceCursorICO::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceCursorICO::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -752,7 +752,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceCursorICO::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceCursorICO::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -762,7 +762,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceCursorICO::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceCursorICO::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -772,7 +772,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceCursorICO::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceCursorICO::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -787,12 +787,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceCursorSystem::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceCursorSystem::getId() const
     {
         return 7;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceCursorSystem::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceCursorSystem::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -815,7 +815,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceCursorSystem::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceCursorSystem::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -825,7 +825,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceCursorSystem::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceCursorSystem::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -835,7 +835,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceCursorSystem::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceCursorSystem::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -851,12 +851,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceEmitter::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceEmitter::getId() const
     {
         return 6;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceEmitter::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceEmitter::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -908,7 +908,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceEmitter::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceEmitter::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -918,7 +918,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceEmitter::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceEmitter::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -928,7 +928,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceEmitter::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceEmitter::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -943,12 +943,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceEmitterContainer::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceEmitterContainer::getId() const
     {
         return 5;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceEmitterContainer::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceEmitterContainer::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -980,7 +980,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceEmitterContainer::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceEmitterContainer::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -990,7 +990,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceEmitterContainer::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceEmitterContainer::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -1000,7 +1000,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceEmitterContainer::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceEmitterContainer::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -1015,12 +1015,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceExternal::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceExternal::getId() const
     {
         return 23;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceExternal::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceExternal::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -1031,7 +1031,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceExternal::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceExternal::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -1041,7 +1041,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceExternal::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceExternal::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -1051,7 +1051,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceExternal::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceExternal::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -1068,12 +1068,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceHIT::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceHIT::getId() const
     {
         return 15;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceHIT::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceHIT::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -1118,7 +1118,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceHIT::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceHIT::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -1128,7 +1128,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceHIT::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceHIT::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -1138,7 +1138,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceHIT::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceHIT::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -1161,12 +1161,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::getId() const
     {
         return 19;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -1268,7 +1268,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -1278,7 +1278,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -1288,7 +1288,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -1311,12 +1311,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceImageDefault::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceImageDefault::getId() const
     {
         return 4;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageDefault::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceImageDefault::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -1427,7 +1427,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageDefault::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceImageDefault::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -1437,7 +1437,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageDefault::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceImageDefault::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -1447,7 +1447,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageDefault::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceImageDefault::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -1470,12 +1470,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::getId() const
     {
         return 20;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -1577,7 +1577,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -1587,7 +1587,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -1597,7 +1597,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -1612,12 +1612,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceImageSolid::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceImageSolid::getId() const
     {
         return 17;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageSolid::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceImageSolid::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -1649,7 +1649,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageSolid::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceImageSolid::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -1659,7 +1659,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageSolid::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceImageSolid::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -1669,7 +1669,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageSolid::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceImageSolid::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -1686,12 +1686,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceImageSubstract::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceImageSubstract::getId() const
     {
         return 21;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageSubstract::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceImageSubstract::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -1745,7 +1745,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageSubstract::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceImageSubstract::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -1755,7 +1755,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageSubstract::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceImageSubstract::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -1765,7 +1765,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageSubstract::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceImageSubstract::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -1780,12 +1780,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceInternalObject::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceInternalObject::getId() const
     {
         return 18;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceInternalObject::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceInternalObject::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -1817,7 +1817,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceInternalObject::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceInternalObject::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -1827,7 +1827,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceInternalObject::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceInternalObject::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -1837,7 +1837,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceInternalObject::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceInternalObject::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -1854,12 +1854,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceModel3D::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceModel3D::getId() const
     {
         return 16;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceModel3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceModel3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -1913,7 +1913,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceModel3D::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceModel3D::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -1923,7 +1923,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceModel3D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceModel3D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -1933,7 +1933,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceModel3D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceModel3D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -1957,12 +1957,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceMovie::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceMovie::getId() const
     {
         return 12;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceMovie::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -2075,7 +2075,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceMovie::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -2107,7 +2107,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceMovie::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -2157,7 +2157,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceMovie::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -2173,12 +2173,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::getId() const
     {
         return 14;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -2241,7 +2241,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -2250,7 +2250,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -2261,7 +2261,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -2282,12 +2282,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::getId() const
     {
         return 12;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -2432,7 +2432,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -2441,7 +2441,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -2452,7 +2452,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -2473,12 +2473,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::getId() const
     {
         return 13;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -2623,7 +2623,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -2632,7 +2632,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -2643,7 +2643,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -2661,12 +2661,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourcePlaylist::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourcePlaylist::getId() const
     {
         return 10;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourcePlaylist::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourcePlaylist::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -2702,7 +2702,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourcePlaylist::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourcePlaylist::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -2722,7 +2722,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourcePlaylist::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourcePlaylist::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -2748,7 +2748,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourcePlaylist::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourcePlaylist::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -2764,12 +2764,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::getId() const
     {
         return 5;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         (void)_buff;
         (void)_size;
@@ -2780,7 +2780,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
@@ -2795,7 +2795,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         switch( _includes )
         {
@@ -2816,7 +2816,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -2833,12 +2833,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::getId() const
     {
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -2867,7 +2867,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -2876,7 +2876,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -2887,7 +2887,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -2903,12 +2903,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceShape::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceShape::getId() const
     {
         return 22;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceShape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceShape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -2931,7 +2931,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceShape::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceShape::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -2941,7 +2941,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceShape::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceShape::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -2951,7 +2951,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceShape::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceShape::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -2970,12 +2970,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceSound::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceSound::getId() const
     {
         return 9;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceSound::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceSound::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -3042,7 +3042,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceSound::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceSound::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -3052,7 +3052,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceSound::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceSound::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -3062,7 +3062,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceSound::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceSound::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -3082,12 +3082,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceVideo::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceVideo::getId() const
     {
         return 13;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceVideo::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceVideo::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -3165,7 +3165,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceVideo::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceVideo::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -3175,7 +3175,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceVideo::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceVideo::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -3185,7 +3185,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceVideo::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceVideo::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -3201,12 +3201,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_DataBlock::Meta_ResourceWindow::getId() const
+    uint32_t Meta_DataBlock::Meta_ResourceWindow::getId() const
     {
         return 11;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceWindow::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_DataBlock::Meta_ResourceWindow::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
         {
@@ -3375,7 +3375,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceWindow::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_DataBlock::Meta_ResourceWindow::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
         {
@@ -3385,7 +3385,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceWindow::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_DataBlock::Meta_ResourceWindow::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
@@ -3395,7 +3395,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceWindow::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_DataBlock::Meta_ResourceWindow::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
         {
@@ -3410,12 +3410,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Font::getId() const
+    uint32_t Meta_Font::getId() const
     {
         return 3;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_Font::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -3433,7 +3433,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_Font::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
@@ -3448,7 +3448,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_Font::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         switch( _includes )
         {
@@ -3469,7 +3469,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_Font::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -3485,12 +3485,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Font::Meta_Char::getId() const
+    uint32_t Meta_Font::Meta_Char::getId() const
     {
         return 2;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_Font::Meta_Char::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -3535,7 +3535,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_Font::Meta_Char::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
@@ -3550,7 +3550,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_Font::Meta_Char::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         switch( _includes )
         {
@@ -3571,7 +3571,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_Font::Meta_Char::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -3587,12 +3587,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Font::Meta_Char::Meta_Kerning::getId() const
+    uint32_t Meta_Font::Meta_Char::Meta_Kerning::getId() const
     {
         return 5;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::Meta_Kerning::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_Font::Meta_Char::Meta_Kerning::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -3619,7 +3619,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::Meta_Kerning::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_Font::Meta_Char::Meta_Kerning::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -3628,7 +3628,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::Meta_Kerning::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_Font::Meta_Char::Meta_Kerning::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -3639,7 +3639,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::Meta_Kerning::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_Font::Meta_Char::Meta_Kerning::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -3655,12 +3655,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::getId() const
+    uint32_t Meta_KeyFramesPack::getId() const
     {
         return 5;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_KeyFramesPack::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -3678,7 +3678,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_KeyFramesPack::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
@@ -3711,7 +3711,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_KeyFramesPack::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         switch( _includes )
         {
@@ -3768,7 +3768,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_KeyFramesPack::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -3786,12 +3786,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_ImageShape::getId() const
+    uint32_t Meta_KeyFramesPack::Meta_ImageShape::getId() const
     {
         return 3;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_ImageShape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_KeyFramesPack::Meta_ImageShape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -3849,7 +3849,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_ImageShape::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_KeyFramesPack::Meta_ImageShape::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
@@ -3864,7 +3864,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_ImageShape::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_KeyFramesPack::Meta_ImageShape::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         switch( _includes )
         {
@@ -3885,7 +3885,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_ImageShape::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_KeyFramesPack::Meta_ImageShape::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -3901,12 +3901,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::getId() const
+    uint32_t Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::getId() const
     {
         return 6;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -3924,7 +3924,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -3933,7 +3933,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -3944,7 +3944,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -3962,12 +3962,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_KeyFrames2D::getId() const
+    uint32_t Meta_KeyFramesPack::Meta_KeyFrames2D::getId() const
     {
         return 4;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_KeyFramesPack::Meta_KeyFrames2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -4007,7 +4007,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames2D::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_KeyFramesPack::Meta_KeyFrames2D::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
@@ -4022,7 +4022,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames2D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_KeyFramesPack::Meta_KeyFrames2D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         switch( _includes )
         {
@@ -4043,7 +4043,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames2D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_KeyFramesPack::Meta_KeyFrames2D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -4066,12 +4066,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::getId() const
+    uint32_t Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::getId() const
     {
         return 4;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -4157,7 +4157,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -4166,7 +4166,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -4177,7 +4177,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -4195,12 +4195,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_KeyFrames3D::getId() const
+    uint32_t Meta_KeyFramesPack::Meta_KeyFrames3D::getId() const
     {
         return 5;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_KeyFramesPack::Meta_KeyFrames3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -4240,7 +4240,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames3D::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_KeyFramesPack::Meta_KeyFrames3D::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
@@ -4255,7 +4255,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames3D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_KeyFramesPack::Meta_KeyFrames3D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         switch( _includes )
         {
@@ -4276,7 +4276,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames3D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_KeyFramesPack::Meta_KeyFrames3D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -4299,12 +4299,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::getId() const
+    uint32_t Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::getId() const
     {
         return 4;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -4390,7 +4390,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -4399,7 +4399,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -4410,7 +4410,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -4426,12 +4426,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_KeyFramesPack::Meta_TimeRemap::getId() const
+    uint32_t Meta_KeyFramesPack::Meta_TimeRemap::getId() const
     {
         return 2;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_TimeRemap::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_KeyFramesPack::Meta_TimeRemap::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -4458,7 +4458,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_TimeRemap::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_KeyFramesPack::Meta_TimeRemap::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -4467,7 +4467,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_TimeRemap::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_KeyFramesPack::Meta_TimeRemap::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -4478,7 +4478,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_KeyFramesPack::Meta_TimeRemap::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_KeyFramesPack::Meta_TimeRemap::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -4494,12 +4494,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::getId() const
+    uint32_t Meta_Pak::getId() const
     {
         return 2;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_Pak::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         (void)_buff;
         (void)_size;
@@ -4510,7 +4510,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_Pak::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
@@ -4543,7 +4543,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_Pak::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         switch( _includes )
         {
@@ -4600,7 +4600,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_Pak::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -4616,12 +4616,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::Meta_Fonts::getId() const
+    uint32_t Meta_Pak::Meta_Fonts::getId() const
     {
         return 2;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Fonts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_Pak::Meta_Fonts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -4639,7 +4639,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Fonts::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_Pak::Meta_Fonts::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -4648,7 +4648,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Fonts::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_Pak::Meta_Fonts::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -4659,7 +4659,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Fonts::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_Pak::Meta_Fonts::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -4675,12 +4675,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::Meta_Resources::getId() const
+    uint32_t Meta_Pak::Meta_Resources::getId() const
     {
         return 3;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Resources::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_Pak::Meta_Resources::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         (void)_buff;
         (void)_size;
@@ -4691,7 +4691,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Resources::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_Pak::Meta_Resources::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
@@ -4706,7 +4706,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Resources::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_Pak::Meta_Resources::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         switch( _includes )
         {
@@ -4727,7 +4727,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Resources::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_Pak::Meta_Resources::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -4743,12 +4743,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::Meta_Resources::Meta_Resource::getId() const
+    uint32_t Meta_Pak::Meta_Resources::Meta_Resource::getId() const
     {
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Resources::Meta_Resource::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_Pak::Meta_Resources::Meta_Resource::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -4766,7 +4766,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Resources::Meta_Resource::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_Pak::Meta_Resources::Meta_Resource::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -4775,7 +4775,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Resources::Meta_Resource::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_Pak::Meta_Resources::Meta_Resource::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -4786,7 +4786,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Resources::Meta_Resource::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_Pak::Meta_Resources::Meta_Resource::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -4802,12 +4802,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::Meta_Scripts::getId() const
+    uint32_t Meta_Pak::Meta_Scripts::getId() const
     {
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Scripts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_Pak::Meta_Scripts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -4825,7 +4825,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Scripts::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_Pak::Meta_Scripts::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -4834,7 +4834,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Scripts::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_Pak::Meta_Scripts::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -4845,7 +4845,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Scripts::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_Pak::Meta_Scripts::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -4861,12 +4861,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::Meta_Texts::getId() const
+    uint32_t Meta_Pak::Meta_Texts::getId() const
     {
         return 4;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Texts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_Pak::Meta_Texts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         (void)_buff;
         (void)_size;
@@ -4877,7 +4877,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Texts::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_Pak::Meta_Texts::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
@@ -4892,7 +4892,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Texts::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_Pak::Meta_Texts::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         switch( _includes )
         {
@@ -4913,7 +4913,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Texts::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_Pak::Meta_Texts::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -4929,12 +4929,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Pak::Meta_Texts::Meta_Text::getId() const
+    uint32_t Meta_Pak::Meta_Texts::Meta_Text::getId() const
     {
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Texts::Meta_Text::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_Pak::Meta_Texts::Meta_Text::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -4952,7 +4952,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Texts::Meta_Text::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_Pak::Meta_Texts::Meta_Text::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -4961,7 +4961,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Texts::Meta_Text::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_Pak::Meta_Texts::Meta_Text::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -4972,7 +4972,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Pak::Meta_Texts::Meta_Text::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_Pak::Meta_Texts::Meta_Text::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -4988,12 +4988,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Texts::getId() const
+    uint32_t Meta_Texts::getId() const
     {
         return 4;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Texts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_Texts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         (void)_buff;
         (void)_size;
@@ -5004,7 +5004,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Texts::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_Texts::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         switch( _includes )
         {
@@ -5019,7 +5019,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Texts::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_Texts::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         switch( _includes )
         {
@@ -5040,7 +5040,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Texts::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_Texts::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;
@@ -5060,12 +5060,12 @@ namespace Metacode
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned int Meta_Texts::Meta_Text::getId() const
+    uint32_t Meta_Texts::Meta_Text::getId() const
     {
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Texts::Meta_Text::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _id )
+    bool Meta_Texts::Meta_Text::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
     {
         switch( _id )
         {
@@ -5127,7 +5127,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Texts::Meta_Text::_preparationIncludes( unsigned int _includes, unsigned int _count )
+    bool Meta_Texts::Meta_Text::_preparationIncludes( uint32_t _includes, uint32_t _count )
     {
         (void)_includes;
         (void)_count;
@@ -5136,7 +5136,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Texts::Meta_Text::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _includes )
+    bool Meta_Texts::Meta_Text::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
     {
         (void)_buff;
         (void)_size;
@@ -5147,7 +5147,7 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Meta_Texts::Meta_Text::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, unsigned int _generators )
+    bool Meta_Texts::Meta_Text::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;

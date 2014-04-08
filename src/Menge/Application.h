@@ -289,5 +289,6 @@ namespace Menge
 
         bool m_windowModeCheck;
         bool m_resourceCheck;
+		bool m_resourceCheckCritical;
 	};
 }

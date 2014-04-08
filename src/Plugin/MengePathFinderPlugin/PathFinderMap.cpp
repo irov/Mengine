@@ -13,8 +13,6 @@ namespace Menge
 		, m_gridSize(16.f)
 		, m_unitSize(20.f)
 		, m_obstacleEnumerator(0)
-		
-		, m_invalidateMap(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -32,7 +30,7 @@ namespace Menge
 
 		uint32_t map_width = _width / _gridSize + 0.5f;
 		uint32_t map_height = _height / _gridSize + 0.5f;
-		m_map.initialize( map_width, map_height );
+		//m_map.initialize( map_width, map_height );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_enlargePolygonRingFromLow( Polygon::ring_type & _ring, float _radius )
@@ -192,8 +190,6 @@ namespace Menge
 				
 		m_obstacles.push_back( obstacle );
 
-		m_invalidateMap = true;
-
 		return id;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -218,8 +214,6 @@ namespace Menge
 
 			break;
 		}
-
-		m_invalidateMap = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testHolesPolygon_( const Polygon & _polygon ) const
@@ -302,77 +296,37 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::obstacleCellMask_( Obstacle * _obstacle, uint32_t _mask )
 	{
-		const Polygon & polygon = _obstacle->bigHole;
+		//const Polygon & polygon = _obstacle->bigHole;
 
-		mt::vec2f minp;
-		mt::vec2f maxp;
-		s_polygonToBox( polygon, minp, maxp );
+		//mt::vec2f minp;
+		//mt::vec2f maxp;
+		//s_polygonToBox( polygon, minp, maxp );
 
-		uint32_t map_width = m_map.getWidth();
-		uint32_t map_height = m_map.getHeight();
+		//uint32_t map_width = m_map.getWidth();
+		//uint32_t map_height = m_map.getHeight();
 
-		uint32_t map_begin_i = minp.x / m_gridSize;
-		uint32_t map_begin_j = minp.y / m_gridSize;
+		//uint32_t map_begin_i = minp.x / m_gridSize;
+		//uint32_t map_begin_j = minp.y / m_gridSize;
 
-		uint32_t map_end_i = maxp.x / m_gridSize;
-		uint32_t map_end_j = maxp.y / m_gridSize;
+		//uint32_t map_end_i = maxp.x / m_gridSize;
+		//uint32_t map_end_j = maxp.y / m_gridSize;
 
-		for( uint32_t j = map_begin_j; j != map_end_j; ++j )
-		{
-			for( uint32_t i = map_begin_i; i != map_end_i; ++i )
-			{
-				float x = (i * m_gridSize) + m_gridSize * 0.5f;
-				float y = (j * m_gridSize) + m_gridSize * 0.5f;
-
-				GeometryPoint point(x, y);
-				if( boost::geometry::intersects( polygon, point ) == false )
-				{
-					continue;
-				}
-
-				m_map.setCellMask( i, j, _mask );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderMap::generateMap()
-	{
-		//m_map.clear();
-
-		//for( TVectorObstacles::iterator
-		//	it = m_obstacles.begin(),
-		//	it_end = m_obstacles.end();
-		//it != it_end;
-		//++it )
+		//for( uint32_t j = map_begin_j; j != map_end_j; ++j )
 		//{
-		//	Obstacle * obstacle = *it;
-
-		//	uint32_t map_width = m_map.getWidth();
-		//	uint32_t map_height = m_map.getHeight();
-
-		//	for( uint32_t j = 0; j != map_height; ++j )
+		//	for( uint32_t i = map_begin_i; i != map_end_i; ++i )
 		//	{
-		//		for( uint32_t i = 0; i != map_width; ++i )
+		//		float x = (i * m_gridSize) + m_gridSize * 0.5f;
+		//		float y = (j * m_gridSize) + m_gridSize * 0.5f;
+
+		//		GeometryPoint point(x, y);
+		//		if( boost::geometry::intersects( polygon, point ) == false )
 		//		{
-		//			float x = (i * m_gridSize) + m_gridSize * 0.5f;
-		//			float y = (j * m_gridSize) + m_gridSize * 0.5f;
-
-		//			const Polygon & polygon = obstacle->bigHole;
-
-		//			GeometryPoint point(x, y);
-		//			if( boost::geometry::intersects( polygon, point ) == false )
-		//			{
-		//				continue;
-		//			}
-
-		//			m_map.setCellMask( i, j, 1 );
+		//			continue;
 		//		}
+
+		//		m_map.setCellMask( i, j, _mask );
 		//	}
 		//}
-
-		//m_invalidateMap = false;
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_intersectsPolygonRingSegment( const Polygon::ring_type & _ring, const Segment & _segment )
@@ -464,8 +418,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testHolesPoint_( const mt::vec2f & _p ) const
 	{
-		
-
 		for( TVectorObstacles::const_iterator
 			it = m_obstacles.begin(),
 			it_end = m_obstacles.end();
@@ -487,51 +439,48 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderWay * PathFinderMap::findPath( const mt::vec2f & _from, const mt::vec2f & _to )
 	{
-		if( m_invalidateMap == true )
-		{
-			if( this->generateMap() == false )
-			{
-				return nullptr;
-			}
-		}
-
 		uint32_t fx = _from.x / m_gridSize;
 		uint32_t fy = _from.y / m_gridSize;
 
 		uint32_t tx = _to.x / m_gridSize;
 		uint32_t ty = _to.y / m_gridSize;
+				
+		BEGIN_WATCHDOG(m_serviceProvider, "findPath");
+		//bool successful = m_map.findPath( fx, fy, tx, ty );
+		END_WATCHDOG(m_serviceProvider, "findPath", 0)("path find");
 
-		bool successful = m_map.findPath( fx, fy, tx, ty );
+		//if( successful == false )
+		//{
+		//	return nullptr;
+		//}
 
-		if( successful == false )
-		{
-			return nullptr;
-		}
+		//m_map.findFilter();
 
-		size_t points_size;
-		fastpathfinder::point * points = m_map.getPathFilter( points_size );
+		//const fastpathfinder::point_array & pa = m_map.getPathFilter();
+		//const fastpathfinder::point_array & pa = m_map.getPath();
+		//size_t points_size = pa.size();
+		//fastpathfinder::point * points = pa.buffer();
 
-		TVectorWayPoint wayPoints;
-		
-		for( size_t i = 0; i != points_size; ++i )
-		{
-			fastpathfinder::point p = points[i];
+		//TVectorWayPoint wayPoints;
+		//
+		//for( size_t i = 0; i != points_size; ++i )
+		//{
+		//	fastpathfinder::point p = points[i];
 
-			float x = p.x * m_gridSize + m_gridSize * 0.5f;
-			float y = p.y * m_gridSize + m_gridSize * 0.5f;
+		//	float x = p.x * m_gridSize + m_gridSize * 0.5f;
+		//	float y = p.y * m_gridSize + m_gridSize * 0.5f;
 
-			wayPoints.push_back( mt::vec2f(x, y) );
-		}
-
-		//BEGIN_WATCHDOG(m_serviceProvider, "findPath");
+		//	wayPoints.push_back( mt::vec2f(x, y) );
+		//}
+		//	
 								
 		PathFinderWay * way = new PathFinderWay(m_serviceProvider);
 
-		way->initialize( _from, _to, wayPoints );
+		//way->initialize( _from, _to, wayPoints );
 
 		m_pathFinderWays.push_back( way );
-
-		//END_WATCHDOG(m_serviceProvider, "findPath", 0)("path find");
+		
+		
 
 		return way;
 	}

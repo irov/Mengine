@@ -38,9 +38,6 @@ namespace Menge
 		void removeObstacle( size_t _id );
 		
 	public:
-		bool generateMap();
-
-	public:
 		PathFinderWay * findPath( const mt::vec2f & _from, const mt::vec2f & _to );
 		void removePath( PathFinderWay * _way );
 
@@ -70,12 +67,11 @@ namespace Menge
 		float m_gridSize;
 		float m_unitSize;
 
-		fastpathfinder::map m_map;
+		//fastpathfinder::map<fastpathfinder::map_test_wall_none> m_map;
 		
 		size_t m_obstacleEnumerator;
 	
 		TVectorObstacles m_obstacles;
-		bool m_invalidateMap;
 					
 		typedef std::vector<PathFinderWay *> TVectorPathFinderWay;
 		TVectorPathFinderWay m_pathFinderWays;

@@ -126,9 +126,9 @@ namespace Menge
 
         _stream->read( header_buff, Metabuf::header_size );
 
-        size_t header_read = 0;
-        size_t readVersion;
-        size_t needVersion;
+        uint32_t header_read = 0;
+        uint32_t readVersion;
+        uint32_t needVersion;
 
         if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion, (void *)m_serviceProvider ) == false )
         {
@@ -147,7 +147,7 @@ namespace Menge
             return false;
         }
 
-		size_t format_version;
+		uint32_t format_version;
 		_stream->read( &format_version, sizeof(format_version) );
 
 		if( format_version != FORMAT_VERSION_BIN )
@@ -167,10 +167,10 @@ namespace Menge
 			return false;
 		}
 
-        size_t bin_size;
+        uint32_t bin_size;
         _stream->read( &bin_size, sizeof(bin_size) );
 
-        size_t compress_size;
+        uint32_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 
 		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size, "importBin_compress");
@@ -217,7 +217,7 @@ namespace Menge
         
         size_t read_size = 0;
 
-        size_t stringCount;
+        uint32_t stringCount;
         if( Metacode::readStrings( binary_memory, bin_size, read_size, stringCount, (void *)m_serviceProvider ) == false )
         {
             return false;
@@ -231,7 +231,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            size_t stringSize;
+            uint32_t stringSize;
             const char * str = Metacode::readString( binary_memory, bin_size, read_size, stringSize, (void *)m_serviceProvider );
 
             if( str == nullptr )

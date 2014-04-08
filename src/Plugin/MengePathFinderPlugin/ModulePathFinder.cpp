@@ -38,7 +38,6 @@ namespace Menge
 			.def( "testObstacle", &PathFinderMap::testObstacle )
 			.def( "addObstacle", &PathFinderMap::addObstacle )
 			.def( "removeObstacle", &PathFinderMap::removeObstacle )
-			.def( "generateMap", &PathFinderMap::generateMap )
 			.def( "findPath", &PathFinderMap::findPath )
 			.def( "removePath", &PathFinderMap::removePath )
 			.def( "setCamera2D", &PathFinderMap::setCamera2D )

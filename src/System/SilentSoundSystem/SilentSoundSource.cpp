@@ -35,7 +35,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SilentSoundSource::play()
 	{
-		if( m_playing == true || m_soundBuffer == NULL )
+		if( m_playing == true || m_soundBuffer == nullptr )
 		{
 			return false;
 		}
@@ -56,7 +56,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSource::pause()
 	{
-		if( m_playing == false || m_soundBuffer == NULL )
+		if( m_playing == false || m_soundBuffer == nullptr )
 		{
 			return;
 		}

@@ -9,7 +9,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool PickEncoder::setOptions( CodecOptions * _options )
     {
-        if( _options != NULL )
+        if( _options != nullptr )
         {
             m_options = *static_cast<PickCodecOptions *>(_options);
         }

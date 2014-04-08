@@ -87,7 +87,7 @@ namespace Menge
         {   
             if( layer->isMain() == true )
             {
-                this->setMainLayer( NULL );
+                this->setMainLayer( nullptr );
             }
         }
     }

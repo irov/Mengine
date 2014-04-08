@@ -131,7 +131,7 @@ namespace Menge
         int bit_depth = 0;
         int interlace_method = 0;
 
-        png_get_IHDR( m_png_ptr, m_info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, NULL, NULL );
+        png_get_IHDR( m_png_ptr, m_info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, nullptr, nullptr );
 
         //png_set_interlace_handling( m_png_ptr );
         if( interlace_method != PNG_INTERLACE_NONE )
@@ -232,7 +232,7 @@ namespace Menge
                 png_bytep bufferCursor = (png_bytep)_buffer;
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
-					png_read_row( m_png_ptr, bufferCursor, NULL );
+					png_read_row( m_png_ptr, bufferCursor, nullptr );
 
                     bufferCursor += m_options.pitch;
 				}

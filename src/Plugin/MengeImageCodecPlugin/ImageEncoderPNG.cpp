@@ -48,16 +48,16 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageEncoderPNG::ImageEncoderPNG()
-		: m_png_ptr(NULL)
+		: m_png_ptr(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageEncoderPNG::~ImageEncoderPNG()
 	{
-		if( m_png_ptr != NULL )
+		if( m_png_ptr != nullptr )
 		{
-			png_destroy_write_struct( &m_png_ptr, NULL );
-			m_png_ptr = NULL;
+			png_destroy_write_struct( &m_png_ptr, nullptr );
+			m_png_ptr = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -76,7 +76,7 @@ namespace Menge
 		// allocate/initialize the image information data.
 		info_ptr = png_create_info_struct( m_png_ptr );
 
-		if( info_ptr == NULL )  
+		if( info_ptr == nullptr )  
 		{
 			LOGGER_ERROR(m_serviceProvider)("PNG encoder error: Can't create info structure" );
 			return 0;
@@ -160,7 +160,7 @@ namespace Menge
 	{
 		m_png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, (png_voidp)this, s_handlerError, s_handlerWarning );
 
-		if( m_png_ptr == NULL )  
+		if( m_png_ptr == nullptr )  
 		{
 			LOGGER_ERROR(m_serviceProvider)("PNG encoder error: Can't create write structure" 
                 );

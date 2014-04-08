@@ -917,7 +917,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
 	{
-		if( m_console != NULL )
+		if( m_console != nullptr )
 		{
 			m_console->proccessInput( _key, _char, _isDown );
 		}
@@ -1200,7 +1200,7 @@ namespace Menge
 
 		m_focus = _focus;
 
-		if( m_game != NULL )
+		if( m_game != nullptr )
 		{
 			m_game->onFocus( m_focus );
 
@@ -1320,7 +1320,7 @@ namespace Menge
 	{
 		bool needQuit = true;
 
-		if( m_game != NULL )
+		if( m_game != nullptr )
 		{
 			needQuit = m_game->onClose();
 		}

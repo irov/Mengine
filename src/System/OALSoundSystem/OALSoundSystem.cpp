@@ -64,7 +64,7 @@ namespace Menge
 
             OAL_CHECK_ERROR(m_serviceProvider);
 
-			if( m_device == NULL )
+			if( m_device == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
 

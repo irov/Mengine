@@ -353,7 +353,7 @@ namespace Menge
 
             ResourceImage * image = m_resourceWindow->getResource( i );
 
-            if( image != NULL )
+            if( image != nullptr )
             {
                 const mt::vec4f & texture_uv = image->getUVImage();
 

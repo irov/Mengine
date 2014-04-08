@@ -289,7 +289,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::hasCurrentAccount() const
 	{
-		return m_currentAccount != NULL;
+		return m_currentAccount != nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	AccountInterface * AccountManager::getCurrentAccount()

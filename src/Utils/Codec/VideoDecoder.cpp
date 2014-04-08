@@ -9,7 +9,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool VideoDecoder::setOptions( CodecOptions * _options )
     {
-        if( _options != NULL )
+        if( _options != nullptr )
         {
             m_options = *static_cast<VideoCodecOptions *>(_options);
         }

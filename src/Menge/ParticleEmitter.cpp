@@ -889,7 +889,7 @@ namespace	Menge
             return;
         }
 
-        m_emitter->changeEmitterModel( NULL, 0 );
+        m_emitter->changeEmitterModel( nullptr, 0 );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox )

@@ -182,7 +182,7 @@ namespace Menge
 
 		// allocate memory for the buffer. is released automatically in the end
 
-		if (cinfo->src == NULL) 
+		if( cinfo->src == nullptr )
 		{
 			cinfo->src = (struct jpeg_source_mgr *) (*cinfo->mem->alloc_small)
 				((j_common_ptr) cinfo, JPOOL_PERMANENT, SIZEOF(SourceManager));
@@ -202,7 +202,7 @@ namespace Menge
 		src->pub.term_source = term_source;
 		src->m_stream = _stream;
 		src->pub.bytes_in_buffer = 0;		// forces fill_input_buffer on first read 
-		src->pub.next_input_byte = NULL;	// until buffer loaded 
+		src->pub.next_input_byte = nullptr;	// until buffer loaded 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static int s_getQuality( jpeg_decompress_struct * _jpegObject )

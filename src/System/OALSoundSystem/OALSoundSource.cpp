@@ -196,7 +196,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float OALSoundSource::getPosMs() const
 	{
-		if( m_soundBuffer == NULL )
+		if( m_soundBuffer == nullptr )
 		{
 			return 0.f;
 		}

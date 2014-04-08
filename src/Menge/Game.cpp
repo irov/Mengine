@@ -548,7 +548,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onFocus( bool _focus )
 	{
-		if( m_player != NULL )
+		if( m_player != nullptr )
 		{
 			m_player->onFocus( _focus );
 		}				

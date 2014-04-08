@@ -234,11 +234,7 @@ namespace Menge
 		{
 			Node * node = (*it);
 
-            //NODE_SERVICE(m_serviceProvider)
-            //    ->addHomeless( node );            
-
 			node->setParent_( nullptr );
-            //node->setLayer( NULL );
 
 			TListNodeChild::iterator it_node(node);
 

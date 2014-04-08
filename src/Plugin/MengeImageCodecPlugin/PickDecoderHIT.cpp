@@ -24,7 +24,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool PickDecoderHIT::_initialize()
     {
-        size_t magic;
+        uint32_t magic;
         m_stream->read( &magic, sizeof(magic) );
 
         if( magic != hit_magic )
@@ -35,7 +35,7 @@ namespace Menge
             return false;
         }
 		       
-		size_t version;
+		uint32_t version;
         m_stream->read( &version, sizeof(version) );
 
         if( version != hit_version )

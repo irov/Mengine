@@ -44,12 +44,12 @@ namespace Menge
         //longjmp(png_jmpbuf(png_ptr), 1);
     }
 	//////////////////////////////////////////////////////////////////////////
-	static void PNGAPI s_readProc( png_structp _png_ptr, unsigned char* _data, png_size_t _size )
+	static void PNGAPI s_readProc( png_structp _png_ptr, unsigned char * _data, png_size_t _size )
 	{
 		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
 		InputStreamInterface* stream = static_cast<InputStreamInterface*>( io_ptr );
 
-		stream->read( _data, (std::streamsize)_size );
+		stream->read( _data, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::ImageDecoderPNG()

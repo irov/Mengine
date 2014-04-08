@@ -18,7 +18,7 @@ namespace Menge
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 
 	private:
-		size_t m_uncompress_size;
-		size_t m_compress_size;
+		uint32_t m_uncompress_size;
+		uint32_t m_compress_size;
 	};
 }

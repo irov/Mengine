@@ -385,10 +385,10 @@ namespace Menge
             return nullptr;
         }
 
-        size_t code_size;
+        uint32_t code_size;
         _stream->read( &code_size, sizeof(code_size) );
 
-        size_t compress_size;
+        uint32_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 
 		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size, "unmarshal_code_compress");

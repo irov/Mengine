@@ -4,6 +4,7 @@
 #   include "Interface/ScriptSystemInterface.h"
 
 #   include "Core/ConstString.h"
+#	include "Factory/FactorablePtr.h"
 
 #   include "Config/Blobject.h"
 
@@ -12,13 +13,14 @@
 namespace Menge
 {
     class AccountInterface
+		: public FactorablePtr
     {
     public:
         virtual const WString & getName() const = 0;
         virtual const FilePath & getFolder() const = 0;
 
     public:
-        virtual bool addSetting( const ConstString & _setting, const WString& _defaultValue, PyObject* _applyFunc ) = 0;
+        virtual bool addSetting( const ConstString & _setting, const WString& _defaultValue, PyObject * _applyFunc ) = 0;
         virtual bool changeSetting( const ConstString & _setting, const WString& _value ) = 0;
         virtual const WString& getSetting( const ConstString & _setting ) const = 0;
         virtual bool hasSetting( const ConstString & _setting ) const = 0;
@@ -34,6 +36,8 @@ namespace Menge
         virtual bool writeBinaryFile( const FilePath & _filename, const TBlobject & _data ) = 0;
     };
 
+	typedef stdex::intrusive_ptr<AccountInterface> AccountInterfacePtr;
+
     class AccountServiceListener
     {
     public:
@@ -43,7 +47,11 @@ namespace Menge
         virtual void onUnselectAccount( const WString & _accountID ) = 0;
     };
 
-    typedef std::map<WString, AccountInterface *> TMapAccounts;
+	class AccountVisitorInterface
+	{
+	public:
+		virtual void onAccount( const AccountInterfacePtr & _account ) = 0;
+	};
 
     class AccountServiceInterface
         : public ServiceInterface
@@ -55,7 +63,7 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
-        virtual AccountInterface * createAccount() = 0;
+        virtual AccountInterfacePtr createAccount() = 0;
 
     public:
         virtual void deleteAccount( const WString& _accountID ) = 0;
@@ -75,10 +83,10 @@ namespace Menge
 
     public:
         virtual bool hasCurrentAccount() const = 0;
-        virtual AccountInterface * getCurrentAccount() = 0;
-        virtual AccountInterface * getAccount( const WString& _accountID ) = 0;
+        virtual const AccountInterfacePtr & getCurrentAccount() = 0;
+        virtual AccountInterfacePtr getAccount( const WString& _accountID ) = 0;
 
-        virtual const TMapAccounts & getAccounts() const = 0;
+        virtual void visitAccounts( AccountVisitorInterface * _visitor ) const = 0;
     };
 
 #   define ACCOUNT_SERVICE( serviceProvider )\

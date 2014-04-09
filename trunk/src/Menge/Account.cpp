@@ -20,10 +20,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Account::Account( ServiceProviderInterface * _serviceProvider, const WString & _name, size_t _projectVersion )
-		: m_serviceProvider(_serviceProvider)
-		, m_projectVersion(_projectVersion)
-        , m_name(_name)
+	Account::Account()
+		: m_serviceProvider(nullptr)
+		, m_projectVersion(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,18 +39,24 @@ namespace Menge
 			pybind::decref( st.cb );
 		}
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Account::setFolder( const FilePath & _folder )
-    {
-        m_folder = _folder;
+	//////////////////////////////////////////////////////////////////////////
+	bool Account::initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const FilePath & _folder, size_t _projectVersion )
+	{
+		m_serviceProvider = _serviceProvider;
+		m_name = _name;
+		m_projectVersion = _projectVersion;
+
+		m_folder = _folder;
 
 		PathString settingsPath;
 		settingsPath.append( m_folder );
 		settingsPath.append( MENGE_FOLDER_DELIM );
 		settingsPath.append( "settings.ini" );
-        
-        m_settingsPath = Helper::stringizeString( m_serviceProvider, settingsPath );
-    }
+
+		m_settingsPath = Helper::stringizeString( m_serviceProvider, settingsPath );
+
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Account::getName() const
 	{

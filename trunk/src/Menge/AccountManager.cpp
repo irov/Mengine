@@ -60,7 +60,7 @@ namespace Menge
         LOGGER_WARNING(m_serviceProvider)("AccountManager::finalize save accounts"
             );
 
-        AccountInterface * lastAccount = m_currentAccount;
+        AccountInterfacePtr lastAccount = m_currentAccount;
         this->unselectCurrentAccount_();
 
         m_currentAccount = lastAccount;
@@ -68,28 +68,16 @@ namespace Menge
         this->saveAccounts();
 
         m_currentAccount = nullptr;
-
-        for( TMapAccounts::iterator 
-            it = m_accounts.begin(), 
-            it_end = m_accounts.end();
-        it != it_end;
-        ++it )
-        {
-            AccountInterface * account = it->second;
-
-            delete static_cast<Account *>(account);
-        }
-
         m_accounts.clear();
     }
 	//////////////////////////////////////////////////////////////////////////
-	AccountInterface * AccountManager::createAccount()
+	AccountInterfacePtr AccountManager::createAccount()
 	{
         size_t new_playerID = ++m_playerEnumerator;
 
 		WString accountID = (UnicodeFormat(L"Player_%d") % new_playerID).str();
         
-		Account * account = this->createAccount_( accountID );
+		AccountInterfacePtr account = this->createAccount_( accountID );
 
         if( account == nullptr )
         {
@@ -99,7 +87,7 @@ namespace Menge
 		return account;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Account * AccountManager::createAccount_( const WString& _accountID )
+	AccountInterfacePtr AccountManager::createAccount_( const WString& _accountID )
 	{
 		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
 
@@ -114,7 +102,7 @@ namespace Menge
 
         this->unselectCurrentAccount_();
 				
-		Account * newAccount = this->newAccount_( _accountID );
+		AccountInterfacePtr newAccount = this->newAccount_( _accountID );
 
         if( newAccount == nullptr )
         {
@@ -132,7 +120,7 @@ namespace Menge
 		    m_accountListener->onCreateAccount( _accountID );
         }
         
-        m_accounts.insert( std::make_pair( _accountID, newAccount ) );
+        m_accounts.insert( _accountID, newAccount );
 
         return newAccount;
 	}
@@ -153,7 +141,7 @@ namespace Menge
         m_currentAccount = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    Account * AccountManager::newAccount_( const WString& _accountID )
+    AccountInterfacePtr AccountManager::newAccount_( const WString& _accountID )
     {
         String utf8_path;
         if( Helper::unicodeToUtf8( m_serviceProvider, _accountID, utf8_path ) == false )
@@ -182,9 +170,9 @@ namespace Menge
             }
         }
 
-        Account * newAccount = new Account(m_serviceProvider, _accountID, m_projectVersion);
-
-        newAccount->setFolder( folder );
+        Account * newAccount = m_factoryAccounts.createObjectT();
+		
+		newAccount->initialize( m_serviceProvider, _accountID, folder, m_projectVersion );
 
         return newAccount;
     }
@@ -202,9 +190,9 @@ namespace Menge
 			return;
 		}
 
-        AccountInterface * account = it_find->second;
+        AccountInterfacePtr account = m_accounts.get_value( it_find );
 
-		if( m_currentAccount )
+		if( m_currentAccount != nullptr )
 		{
 			const WString & name = m_currentAccount->getName();
 
@@ -222,8 +210,6 @@ namespace Menge
 		    FILE_SERVICE(m_serviceProvider)
                 ->removeDirectory( CONST_STRING(m_serviceProvider, user), folder );
         }
-
-		delete static_cast<Account *>(account);
 
 		m_accounts.erase( it_find );
 
@@ -253,28 +239,11 @@ namespace Menge
             if( currAccountId != _accountID )
             {
                 this->unselectCurrentAccount_();
-            }
-            //else
-            //{
-                //LOGGER_WARNING(m_serviceProvider)( "AccountManager::selectAccount account '%ls' is alredy selected!"
-                //    , _accountID.c_str() 
-                //    );
-
-                //return true;
-            //}            
+            }     
         }
 
-        AccountInterface * account = it_find->second;
-		
-        //if( account->load() == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("AccountManager::selectAccount Can't select account '%ls'. account not load"
-        //        , _accountID.c_str() 
-        //        );
-
-        //    return false;
-        //}
-        
+        AccountInterfacePtr account = m_accounts.get_value( it_find );
+		       
         m_currentAccount = account;
 
 		m_currentAccount->apply();
@@ -292,16 +261,16 @@ namespace Menge
 		return m_currentAccount != nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AccountInterface * AccountManager::getCurrentAccount()
+	const AccountInterfacePtr & AccountManager::getCurrentAccount()
 	{
 		return m_currentAccount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AccountInterface * AccountManager::getAccount( const WString& _accountID )
+	AccountInterfacePtr AccountManager::getAccount( const WString& _accountID )
 	{
-		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
+		TMapAccounts::iterator it_found = m_accounts.find( _accountID );
 		
-		if( it_find == m_accounts.end() )
+		if( it_found == m_accounts.end() )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AccountManager::getAccount account with ID '%ls' not found"
 				, _accountID.c_str() 
@@ -310,12 +279,23 @@ namespace Menge
 			return nullptr;
 		}
 
-		return it_find->second;
+		AccountInterfacePtr account = m_accounts.get_value( it_found );
+
+		return account;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TMapAccounts & AccountManager::getAccounts() const
+	void AccountManager::visitAccounts( AccountVisitorInterface * _visitor ) const
 	{
-		return m_accounts;
+		for( TMapAccounts::const_iterator
+			it = m_accounts.begin(),
+			it_end = m_accounts.end();
+		it != it_end;
+		++it )
+		{
+			const AccountInterfacePtr & account = m_accounts.get_value( it );
+
+			_visitor->onAccount( account );
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::setDefaultAccount( const WString & _accountID )
@@ -357,9 +337,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Account * AccountManager::loadAccount_( const WString& _accountID )
+	AccountInterfacePtr AccountManager::loadAccount_( const WString& _accountID )
 	{
-		Account * account = this->newAccount_( _accountID );
+		AccountInterfacePtr account = this->newAccount_( _accountID );
 
         if( account == nullptr )
         {
@@ -379,8 +359,6 @@ namespace Menge
 
         if( account->load() == false )
         {
-		    delete account;
-
             LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccount_ invalid load account %ls"
                 , _accountID.c_str()
                 );
@@ -464,7 +442,7 @@ namespace Menge
                 );
         }  
 
-        Account * validAccount = nullptr;
+        AccountInterfacePtr validAccount = nullptr;
 
 		for( TVectorWString::const_iterator
 			it = values.begin(), 
@@ -474,7 +452,7 @@ namespace Menge
 		{
 			const WString & name = *it;
 
-			Account * account = this->loadAccount_( name );
+			AccountInterfacePtr account = this->loadAccount_( name );
 
             if( account == nullptr )
             {
@@ -487,7 +465,7 @@ namespace Menge
 
             validAccount = account;
 
-			m_accounts.insert( std::make_pair( name, account ) );
+			m_accounts.insert( name, account );
 		}
 
 		if( selectAccountID.empty() == false )
@@ -589,7 +567,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            IniUtil::writeIniSetting( m_serviceProvider, file, "Account", it->first );
+			const WString & accountID = m_accounts.get_key( it );
+            IniUtil::writeIniSetting( m_serviceProvider, file, "Account", accountID );
 		}
 
         for( TMapAccounts::iterator 
@@ -598,7 +577,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            AccountInterface * account = it->second;
+            const AccountInterfacePtr & account = m_accounts.get_value( it );
 
             if( account->save() == false )
             {

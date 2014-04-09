@@ -102,7 +102,7 @@ namespace Menge
 	{
         (void)_point;
 
-		bool handle = false;
+		bool handle = m_defaultHandle;
 
         if( m_onMouseEnterEvent == true )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         {
@@ -139,8 +139,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerAdapter::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-        (void)_point; //TODO
-
 		bool handle = false;
 
 		if( handle == false )
@@ -196,9 +194,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerAdapter::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y )
 	{
-        (void)_point; //TODO
-
-		bool handle = false;
+		bool handle = m_defaultHandle;
 
 		if( m_onMouseMoveEvent == true )
 		{

@@ -209,11 +209,14 @@ namespace Menge
 		void renderObjects_( RenderPass & _renderPass );
 		void renderObject_( RenderObject* _renderObject );
 
+	protected:
         bool makeBatches_();
 
-        void insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t & _vbSize, size_t & _ibSize );
-        void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
-		void insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbPos, size_t _ibPos ) const;
+	protected:
+        void insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize );
+        void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos );
+		void insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t _vbPos, size_t _ibPos ) const;
+
 		void flushRender_();
 		void prepare2D_();
 
@@ -314,7 +317,7 @@ namespace Menge
         bool m_debugMode;
 
 	protected:
-		void batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
-		void batchRenderObjectSmart_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
+		void batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos );
+		void batchRenderObjectSmart_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos );
 	};
 }

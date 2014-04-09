@@ -27,6 +27,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32MappedFileInputStream::mapFile( HANDLE _hFile, DWORD _dwAllocationGranularity, size_t _offset, size_t _size )
 	{	
+		(void)_hFile;
+		(void)_dwAllocationGranularity;
+		(void)_offset;
+		(void)_size;
+
 		return false;
 	}
 }	// namespace Menge

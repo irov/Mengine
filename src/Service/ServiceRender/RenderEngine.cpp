@@ -1578,7 +1578,8 @@ namespace Menge
 	void RenderEngine::insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t _vbPos, size_t _ibPos ) const
 	{   
 		RenderVertex2D * offsetVertexBuffer = _vertexBuffer + _vbPos;
-		memcpy( offsetVertexBuffer, _renderObject->vertexData, _renderObject->verticesNum * sizeof(RenderVertex2D) );
+		//memcpy( offsetVertexBuffer, _renderObject->vertexData, _renderObject->verticesNum * sizeof(RenderVertex2D) );
+		std::copy( _renderObject->vertexData, _renderObject->vertexData + _renderObject->verticesNum, offsetVertexBuffer );
 
 		uint16_t * offsetIndicesBuffer = _indicesBuffer + _ibPos;
 

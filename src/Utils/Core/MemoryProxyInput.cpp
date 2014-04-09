@@ -2,6 +2,8 @@
 
 #	include <memory.h>
 
+#	include <algorithm>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -47,7 +49,8 @@ namespace Menge
 			return 0;
 		}
 
-		memcpy( _buf, m_pos, cnt );
+		//memcpy( _buf, m_pos, cnt );
+		std::copy( m_pos, m_pos + cnt, (unsigned char *)_buf );
 		
 		m_pos += cnt;
 

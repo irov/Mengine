@@ -14,7 +14,7 @@ namespace Menge
     {
 		m_buff = new char[_size + 1];
 
-		memcpy( m_buff, _value, _size );
+		std::copy( _value, _value + _size, m_buff );
 		m_buff[_size] = '\0';
 
         this->setup( m_buff, _size, true );

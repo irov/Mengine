@@ -21,12 +21,12 @@ namespace Menge
         : public AccountInterface
 	{		
 	public:
-		Account( ServiceProviderInterface * _serviceProvider, const WString & _name, size_t _projectVersion );
+		Account();
 		~Account();
-        
-    public:
-        void setFolder( const FilePath & _folder );
 
+	public:
+		bool initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const FilePath & _folder, size_t _projectVersion );
+        
 	public:
 		const WString & getName() const override;
         const FilePath & getFolder() const override;

@@ -461,28 +461,47 @@ namespace Menge
 			return str.str();
 		}
 
+		class MyAccountVisitorInterface
+			: public AccountVisitorInterface
+		{
+		public:
+			MyAccountVisitorInterface( TVectorWString & _accounts )
+				: m_accounts(_accounts)
+			{
+			}
+
+		protected:
+			void onAccount( const AccountInterfacePtr & _account ) override
+			{
+				const WString & name = _account->getName();
+
+				m_accounts.push_back( name );
+			}
+
+		protected:
+			TVectorWString & m_accounts;
+
+		private:
+			void operator = ( const MyAccountVisitorInterface & )
+			{
+				//Empty
+			}
+		};
+
         TVectorWString s_getAccounts()
 		{
-			const TMapAccounts & accounts = ACCOUNT_SERVICE(m_serviceProvider)
-				->getAccounts();
-
 			TVectorWString v_accounts;
+			MyAccountVisitorInterface mav(v_accounts);
 
-			for( TMapAccounts::const_iterator
-				it = accounts.begin(),
-				it_end = accounts.end();
-			it != it_end;
-			++it )
-			{
-				v_accounts.push_back( it->first );
-			}
+			ACCOUNT_SERVICE(m_serviceProvider)
+				->visitAccounts( &mav );
 
 			return v_accounts;
 		}
 
 		bool s_addSetting( const ConstString & _setting, const WString & _defaultValue, PyObject * _applyFunc )
 		{
-			AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
 			if( currentAccount == nullptr )
@@ -501,7 +520,7 @@ namespace Menge
 
 		bool s_changeSetting( const ConstString & _setting, const WString & _value )
 		{
-            AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+            AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
                 ->getCurrentAccount();
 
             if( currentAccount == nullptr )
@@ -520,7 +539,7 @@ namespace Menge
 
         bool s_hasSetting( const ConstString & _setting )
         {
-            AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+            AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
                 ->getCurrentAccount();
 
             if( currentAccount == nullptr )
@@ -539,10 +558,10 @@ namespace Menge
 
 		PyObject * s_getSetting( const ConstString & _setting )
 		{
-			AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
-			if( currentAccount == NULL )
+			if( currentAccount == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("getSetting: currentAccount is none [%s]"
 					, _setting.c_str()
@@ -560,10 +579,10 @@ namespace Menge
 
 		PyObject * s_getSettingUInt( const ConstString & _setting )
 		{
-			AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
-			if( currentAccount == NULL )
+			if( currentAccount == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("getSettingUInt: currentAccount is none [%s]"
 					, _setting.c_str()
@@ -591,10 +610,10 @@ namespace Menge
 
 		PyObject * s_getSettingFloat( const ConstString & _setting )
 		{
-			AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
-			if( currentAccount == NULL )
+			if( currentAccount == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("getSettingFloat: currentAccount is none [%s]"
 					, _setting.c_str()
@@ -622,7 +641,7 @@ namespace Menge
 
 		PyObject * s_getAccountSetting( const WString & _accountID, const ConstString & _setting )
 		{
-			AccountInterface * account = ACCOUNT_SERVICE(m_serviceProvider)
+			AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
 				->getAccount( _accountID );
 						
 			if( account == nullptr )
@@ -643,7 +662,7 @@ namespace Menge
 
 		PyObject * s_getAccountSettingUInt( const WString& _accountID, const ConstString & _setting )
 		{
-			AccountInterface * account = ACCOUNT_SERVICE(m_serviceProvider)
+			AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
 				->getAccount( _accountID );
 
 			if( account == nullptr )
@@ -675,7 +694,7 @@ namespace Menge
 
 		PyObject * s_createAccount()
 		{
-            AccountInterface * account = ACCOUNT_SERVICE(m_serviceProvider)
+            AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
                 ->createAccount();
 
             if( account == nullptr )
@@ -762,10 +781,10 @@ namespace Menge
 				
 		const WString & s_getCurrentAccountName()
 		{
-			AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
-			if( currentAccount == NULL )
+			if( currentAccount == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Error getCurrentAccountName: currentAccount is none"
 					);
@@ -790,7 +809,7 @@ namespace Menge
                 return false;                     
             }
 
-            AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+            AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
 			if( currentAccount == nullptr )
@@ -831,7 +850,7 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            AccountInterface * currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+            AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
 
 			if( currentAccount == nullptr )

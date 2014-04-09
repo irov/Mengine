@@ -2,18 +2,16 @@
 
 #   include "Interface/AccountInterface.h"
 
-#	include "Config/Typedef.h"
+#	include "Factory/FactoryStore.h"
 
 #	include "pybind/types.hpp"
 
-#	include <map>
+#	include "stdex/binary_vector.h"
 
 namespace Menge
 {
 	class Account;
-    	
-	typedef std::map<WString, AccountInterface *> TMapAccounts;
-
+    
 	class AccountManager
         : public AccountServiceInterface
 	{
@@ -30,7 +28,7 @@ namespace Menge
         void finalize() override;
 
 	public:
-		AccountInterface * createAccount() override;
+		AccountInterfacePtr createAccount() override;
 
 	public:
 		void deleteAccount( const WString& _accountID ) override;
@@ -50,17 +48,17 @@ namespace Menge
 
 	public:
 		bool hasCurrentAccount() const override;
-		AccountInterface * getCurrentAccount() override;
-		AccountInterface * getAccount( const WString& _accountID ) override;
+		const AccountInterfacePtr & getCurrentAccount() override;
+		AccountInterfacePtr getAccount( const WString& _accountID ) override;
 
-		const TMapAccounts & getAccounts() const override;
+		void visitAccounts( AccountVisitorInterface * _visitor ) const override;
 
 	protected:
-		Account * loadAccount_( const WString& _accountID );
-		Account * createAccount_( const WString& _accountID );
+		AccountInterfacePtr loadAccount_( const WString& _accountID );
+		AccountInterfacePtr createAccount_( const WString& _accountID );
 
     protected:
-        Account * newAccount_( const WString& _accountID );
+        AccountInterfacePtr newAccount_( const WString& _accountID );
 
     protected:
         void unselectCurrentAccount_();
@@ -72,11 +70,15 @@ namespace Menge
 
         ServiceProviderInterface * m_serviceProvider;
 		
+		typedef stdex::binary_vector<WString, AccountInterfacePtr> TMapAccounts;
 		TMapAccounts m_accounts;
+		
+		typedef FactoryPoolStore<Account, 8> TFactoryAccounts;
+		TFactoryAccounts m_factoryAccounts;
 
 		WString m_defaultAccountID;
 
-		AccountInterface * m_currentAccount;
+		AccountInterfacePtr m_currentAccount;
 
 		size_t m_playerEnumerator;
 	};

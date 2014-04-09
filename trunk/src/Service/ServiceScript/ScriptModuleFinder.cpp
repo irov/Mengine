@@ -113,7 +113,7 @@ namespace Menge
     {
 		const char * module_str = _module.c_str();
 		size_t module_size = _module.size();
-		memcpy( _cache, module_str, module_size );
+		stdex::memorycopy( _cache, module_str, module_size );
 
         for( char
             *it = _cache,
@@ -135,7 +135,7 @@ namespace Menge
 		char modulePathCache[MAX_PATH];
         size_t modulePathCacheLen = this->convertDotToSlash_( modulePathCache, _module );
 
-		memcpy( modulePathCache + modulePathCacheLen, ".py", 4 );
+		stdex::memorycopy( modulePathCache + modulePathCacheLen, ".py", 4 );
         
 		//ConstString modulePath = Helper::stringizeString( m_serviceProvider, m_modulePathCache );
 
@@ -151,7 +151,7 @@ namespace Menge
 		else
 		{
 			modulePathCache[modulePathCacheLen] = MENGE_FOLDER_RESOURCE_DELIM;
-			memcpy( modulePathCache + modulePathCacheLen + 1, "__init__.py", 12 );
+			stdex::memorycopy( modulePathCache + modulePathCacheLen + 1, "__init__.py", 12 );
 
 			ModulePathCache * pathCache_package = this->findModule_( _module, modulePathCache, modulePathCacheLen + 12 );
 
@@ -177,7 +177,7 @@ namespace Menge
 		char modulePathCache[MAX_PATH];
         size_t modulePathCacheLen = this->convertDotToSlash_( modulePathCache, _module );
 
-		memcpy( modulePathCache + modulePathCacheLen, ".pyz", 5 );
+		stdex::memorycopy( modulePathCache + modulePathCacheLen, ".pyz", 5 );
 
         ModulePathCache * pathCache_module = this->findModule_( _module, modulePathCache, modulePathCacheLen + 4 );
 
@@ -191,7 +191,7 @@ namespace Menge
 		else
 		{
 			modulePathCache[modulePathCacheLen] = MENGE_FOLDER_RESOURCE_DELIM;
-			memcpy( modulePathCache + modulePathCacheLen + 1, "__init__.pyz", 13 );
+			stdex::memorycopy( modulePathCache + modulePathCacheLen + 1, "__init__.pyz", 13 );
 
 			ModulePathCache * pathCache_package = this->findModule_( _module, modulePathCache, modulePathCacheLen + 13 );
 

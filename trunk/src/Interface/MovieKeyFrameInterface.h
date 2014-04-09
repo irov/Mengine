@@ -1,6 +1,7 @@
 #   pragma once
 
 #   include "Interface/DataInterface.h"
+#   include "Interface/RenderSystemInterface.h"
 
 #   include "Config/Floats.h"
 
@@ -67,7 +68,7 @@ namespace Menge
 	{
 		mt::vec3f pos[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
 		mt::vec2f uv[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
-		uint16_t indices[MENGINE_MOVIE_SHAPE_MAX_INDICES];
+		RenderIndices2D indices[MENGINE_MOVIE_SHAPE_MAX_INDICES];
 
 		size_t vertexCount;
 		size_t indexCount;

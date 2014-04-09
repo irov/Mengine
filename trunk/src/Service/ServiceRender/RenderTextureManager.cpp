@@ -5,6 +5,8 @@
 #   include "Interface/StringizeInterface.h"
 #	include "Interface/PrefetcherInterface.h"
 
+#	include "stdex/memorycopy.h"
+
 #   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -594,10 +596,11 @@ namespace Menge
 
             for( size_t j = 0; j != height; ++j )
             {
-                std::copy( image_data + (width - 1) * pixel_size
-					, image_data + width * pixel_size
-					, image_data + width * pixel_size );
+     //           std::copy( image_data + (width - 1) * pixel_size
+					//, image_data + width * pixel_size
+					//, image_data + width * pixel_size );
 
+				stdex::memorycopy( image_data + width * pixel_size, image_data + (width - 1) * pixel_size, pixel_size );
 
                 image_data += _texturePitch;
             }
@@ -612,9 +615,11 @@ namespace Menge
 
             unsigned char * image_data = _textureBuffer;
 
-            std::copy( image_data + (height - 1) * _texturePitch
-				, image_data + height * _texturePitch
-				, image_data + height * _texturePitch );
+    //        std::copy( image_data + (height - 1) * _texturePitch
+				//, image_data + height * _texturePitch
+				//, image_data + height * _texturePitch );
+
+			stdex::memorycopy( image_data + height * _texturePitch, image_data + (height - 1) * _texturePitch, _texturePitch );
         }
     }
     //////////////////////////////////////////////////////////////////////////

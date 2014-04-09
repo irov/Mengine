@@ -1,6 +1,7 @@
 #   pragma once
 
 #   include "Interface/DataInterface.h"
+#   include "Interface/RenderSystemInterface.h"
 
 #   include "Config/Floats.h"
 
@@ -29,7 +30,7 @@ namespace Menge
 
 		mt::vec3f pos[MENGINE_MODEL_MAX_VERTEX];
 		mt::vec2f uv[MENGINE_MODEL_MAX_VERTEX];
-		uint16_t indecies[MENGINE_MODEL_MAX_INDICES];
+		RenderIndices2D indecies[MENGINE_MODEL_MAX_INDICES];
 	};
 
 	typedef std::vector<Model3DFrame> TVectorModel3DFrames;

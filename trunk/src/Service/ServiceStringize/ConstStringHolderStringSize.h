@@ -2,6 +2,8 @@
 
 #   include "stdex/const_string_holder.h"
 
+#	include "stdex/memorycopy.h"
+
 #   include <memory.h>
 
 namespace Menge
@@ -22,7 +24,7 @@ namespace Menge
 	public:
 		const char * initialize( const char * _value, size_t _size )
 		{
-			std::copy( _value, _value + _size, m_buff );
+			stdex::memorycopy( m_buff, _value, _size );
 			m_buff[_size] = '\0';
 
 			return m_buff;

@@ -2,6 +2,9 @@
 
 #	include "Archive.hpp"
 
+#	include <algorithm>
+#	include <iterator>
+
 namespace Menge
 {
 	class ArchiveRead
@@ -37,7 +40,9 @@ namespace Menge
 		{
 			Archive::const_iterator it_begin = m_seek;
 			std::advance( m_seek, _size );
-			std::copy( it_begin, m_seek, _begin );
+
+			stdext::checked_array_iterator<Archive::value_type *> chkd_begin((Archive::value_type *)_begin, _size);
+			std::copy( it_begin, m_seek, chkd_begin );
 		}
 
 		const Archive::value_type * selectBuffer( size_t _size );

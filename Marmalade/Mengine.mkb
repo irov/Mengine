@@ -36,13 +36,14 @@ includepaths
     "../dependencies/libjpeg"
     "../dependencies/libwebp/src"
     
-    "./Modified/ogg/include"
-    "../dependencies/ogg/include"   
     
-    "../dependencies/vorbis/include"
-
     "../dependencies/stdex/include"
 	"../dependencies/utf8/source"
+    
+    "dependencies/marmalade-openal-master/openal-soft-1.13/include/al"
+    "dependencies/marmalade-openal-master/openal-soft-1.13/OpenAL32/include"
+    "dependencies/marm_libogg/libogg-1.3.0/include"
+    "dependencies/marm_libvorbis/libvorbis-1.3.2/include"
 }
 
 files
@@ -60,6 +61,11 @@ files
     ("../src/Kernel")
     "*.h"
 	"*.cpp"
+    
+    [Metacode]
+    ("../src/Metacode")
+    "*.h"
+	"*.cpp"    
 
     [Menge]
 	("../src/Menge")	

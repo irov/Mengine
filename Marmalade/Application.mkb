@@ -7,7 +7,8 @@ options
 	enable-exceptions    
 	preinclude=preinclude_application.h
     
-    s3e-data-dir="d:/Projects/AntoinetteBuild_Marmalade/data"
+    #s3e-data-dir="d:/Projects/HolidayFunBuild_Marmalade/data"
+    s3e-data-dir="d:/Temp/HOG/data"
 }
 
 librarypath
@@ -15,9 +16,15 @@ librarypath
     ./lib
 }
 
+library "dependencies/marmalade-openal-master/,openal-soft-1.13"
+library "dependencies/marm_libogg/,libogg"
+library "dependencies/marm_libvorbis/,libvorbis"
+library "dependencies/marm_libvorbis/,libvorbisfile"
+
+library ".,Python"
 library ".,Dependencies"
 library ".,Mengine"
-library ".,Python"
+
 
 defines
 {
@@ -48,9 +55,11 @@ includepaths
     "../dependencies/stdex/include"
     "../dependencies/astralax"
     
-    "./Modified/openalsoft"    
-    "../dependencies/openalsoft_Marmalade/include"
-    "../dependencies/openalsoft_Marmalade/OpenAL32/Include"    
+    "dependencies/marmalade-openal-master/openal-soft-1.13/include/al"
+    "dependencies/marmalade-openal-master/openal-soft-1.13/OpenAL32/include"
+    "dependencies/marm_libogg/libogg-1.3.0/include"
+    "dependencies/marm_libvorbis/libvorbis-1.3.2/include"
+    
 }
 
 library

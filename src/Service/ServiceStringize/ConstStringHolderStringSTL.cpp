@@ -1,5 +1,7 @@
 #   include "ConstStringHolderStringSTL.h"
 
+#	include "stdex/memorycopy.h"
+
 #   include <memory.h>
 
 namespace Menge
@@ -14,7 +16,7 @@ namespace Menge
     {
 		m_buff = new char[_size + 1];
 
-		std::copy( _value, _value + _size, m_buff );
+		stdex::memorycopy( m_buff, _value, _size );
 		m_buff[_size] = '\0';
 
         this->setup( m_buff, _size, true );

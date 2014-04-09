@@ -312,6 +312,8 @@ namespace Menge
         mt::vec2f uv;
         mt::vec2f uv2;
     };
+	//////////////////////////////////////////////////////////////////////////
+	typedef uint16_t RenderIndices2D;
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX2;
     //////////////////////////////////////////////////////////////////////////
@@ -555,7 +557,7 @@ namespace Menge
     public:
         virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, size_t _verticesNum
-            , const uint16_t * _indices, size_t _indicesNum
+            , const RenderIndices2D * _indices, size_t _indicesNum
 			, const mt::box2f * _bb ) = 0;
 
         virtual void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material

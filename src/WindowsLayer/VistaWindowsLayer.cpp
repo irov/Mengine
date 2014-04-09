@@ -534,8 +534,8 @@ namespace Menge
         }
 
         Char filePath[MAX_PATH];
-        memcpy(filePath, _folder.c_str(), folderSize);
-		memcpy(filePath + folderSize, _fileName.c_str(), dirSize);
+        stdex::memorycopy(filePath, _folder.c_str(), folderSize);
+		stdex::memorycopy(filePath + folderSize, _fileName.c_str(), dirSize);
 
         filePath[filePathSize] = L'\0';
         filePathSize += 1; //Null

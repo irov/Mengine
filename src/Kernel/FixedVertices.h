@@ -2,6 +2,8 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
+#	include "stdex/memorycopy.h"
+
 namespace Menge
 {
 	template<size_t VerticesCount>
@@ -16,7 +18,7 @@ namespace Menge
 	public:
 		void setVertices( const RenderVertex2D * _vertices )
 		{
-			std::copy( _vertices, _vertices + VerticesCount, m_vertices );
+			stdex::memorycopy( m_vertices, _vertices, VerticesCount );
 		}
 
 		inline const RenderVertex2D * getVertices()

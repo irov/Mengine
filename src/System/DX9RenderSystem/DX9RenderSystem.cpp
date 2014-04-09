@@ -1974,13 +1974,13 @@ namespace Menge
         }
 
 		IDirect3DIndexBuffer9 * ib = nullptr;
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, ( sizeof(uint16_t) * _indiciesNum, Usage, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib, NULL ) )
+		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, ( sizeof(RenderIndices2D) * _indiciesNum, Usage, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib, NULL ) )
 		{
 			return 0;
 		}
 
 		IBInfo ibInfo;
-		ibInfo.length = sizeof(uint16_t) * _indiciesNum;
+		ibInfo.length = sizeof(RenderIndices2D) * _indiciesNum;
 		ibInfo.usage = D3DUSAGE_WRITEONLY;
 		ibInfo.format = D3DFMT_INDEX16;
 		ibInfo.pool = D3DPOOL_DEFAULT;

@@ -63,7 +63,7 @@ namespace Menge
 		const RenderVertex2D * vertexData;
 		size_t verticesNum;
 
-        const uint16_t * indicesData;
+        const RenderIndices2D * indicesData;
         size_t indicesNum;
 
 		size_t minIndex;
@@ -117,7 +117,7 @@ namespace Menge
 	public:
 		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material            
             , const RenderVertex2D * _vertices, size_t _verticesNum 
-			, const uint16_t * _indices, size_t _indicesNum 
+			, const RenderIndices2D * _indices, size_t _indicesNum 
 			, const mt::box2f * _bb ) override;
 
         void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
@@ -148,7 +148,7 @@ namespace Menge
 		void releaseIndicesBuffer( IBHandle _handle );
 
 		bool updateVertexBuffer( VBHandle _handle, const RenderVertex2D * _vertexies, size_t _verticesNum );
-		bool updateIndicesBuffer( IBHandle _handle, const uint16_t * _buffer, size_t _count );
+		bool updateIndicesBuffer( IBHandle _handle, const RenderIndices2D * _buffer, size_t _count );
 
 	public:
 		void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) override;
@@ -211,9 +211,9 @@ namespace Menge
 
         bool makeBatches_();
 
-        void insertRenderPasses_( RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbSize, size_t & _ibSize );
-        void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
-		void insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t _vbPos, size_t _ibPos ) const;
+        void insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t & _vbSize, size_t & _ibSize );
+        void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
+		void insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbPos, size_t _ibPos ) const;
 		void flushRender_();
 		void prepare2D_();
 
@@ -221,7 +221,7 @@ namespace Menge
         		
     private:
         void calcQuadSquare_( const RenderVertex2D * _vertex, size_t _vertexNum );
-        void calcMeshSquare_( const RenderVertex2D * _vertex, size_t _verteNum, const uint16_t * _indices, size_t _indicesNum );
+        void calcMeshSquare_( const RenderVertex2D * _vertex, size_t _verteNum, const RenderIndices2D * _indices, size_t _indicesNum );
 
     protected:
         bool createNullTexture_();
@@ -289,8 +289,8 @@ namespace Menge
 
 		RenderDebugInfo m_debugInfo;	    // debug info
 
-		uint16_t m_indicesQuad[MENGINE_RENDER_INDICES_QUAD];
-        uint16_t m_indicesLine[MENGINE_RENDER_INDICES_LINE];
+		RenderIndices2D m_indicesQuad[MENGINE_RENDER_INDICES_QUAD];
+        RenderIndices2D m_indicesLine[MENGINE_RENDER_INDICES_LINE];
 
 		Viewport m_renderViewport;
 
@@ -314,7 +314,7 @@ namespace Menge
         bool m_debugMode;
 
 	protected:
-		void batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
-		void batchRenderObjectSmart_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, uint16_t * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
+		void batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
+		void batchRenderObjectSmart_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t & _vbPos, size_t & _ibPos );
 	};
 }

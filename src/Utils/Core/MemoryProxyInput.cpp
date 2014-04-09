@@ -1,8 +1,8 @@
 #	include "MemoryProxyInput.h"
 
-#	include <memory.h>
+#	include "stdex/memorycopy.h"
 
-#	include <algorithm>
+#	include <memory.h>
 
 namespace Menge
 {
@@ -49,8 +49,8 @@ namespace Menge
 			return 0;
 		}
 
-		//memcpy( _buf, m_pos, cnt );
-		std::copy( m_pos, m_pos + cnt, (unsigned char *)_buf );
+		stdex::memorycopy( _buf, m_pos, cnt );
+		//std::copy( m_pos, m_pos + cnt, (unsigned char *)_buf );
 		
 		m_pos += cnt;
 

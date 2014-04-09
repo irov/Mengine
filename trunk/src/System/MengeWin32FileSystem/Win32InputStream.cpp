@@ -159,7 +159,8 @@ namespace Menge
             
             if( tail != 0 )
             {
-                memcpy( _buf, m_buff + m_carriage, tail );
+                //memcpy( _buf, m_buff + m_carriage, tail );
+				std::copy( m_buff + m_carriage, m_buff + m_carriage + tail, (unsigned char *)_buf );
             }
 
             DWORD bytesRead = 0;
@@ -186,7 +187,8 @@ namespace Menge
         
         if( m_carriage + _count <= m_capacity )
         {
-            memcpy( _buf, m_buff + m_carriage, _count );
+            //memcpy( _buf, m_buff + m_carriage, _count );
+			std::copy( m_buff + m_carriage, m_buff + m_carriage + _count, (unsigned char *)_buf );
 
             m_carriage += _count;
 
@@ -197,7 +199,8 @@ namespace Menge
 
         if( tail != 0 )
         {
-            memcpy( _buf, m_buff + m_carriage, tail );
+            //memcpy( _buf, m_buff + m_carriage, tail );
+			std::copy( m_buff + m_carriage, m_buff + m_carriage + tail, (unsigned char *)_buf );
         }
 
         DWORD bytesRead = 0;
@@ -217,7 +220,8 @@ namespace Menge
         DWORD readSize = (std::min)( (DWORD)(_count - tail), bytesRead );
 
 		unsigned char * read_buf = (unsigned char *)_buf + tail;
-        memcpy( read_buf, m_buff, readSize );
+        //memcpy( read_buf, m_buff, readSize );
+		std::copy( m_buff, m_buff + readSize, read_buf );
 
         m_carriage = readSize;
         m_capacity = bytesRead;

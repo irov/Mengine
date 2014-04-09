@@ -236,6 +236,9 @@ namespace Menge
 
             if( str == nullptr )
             {
+				LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid read string (error)"
+					);
+
                 return false;
             }
 

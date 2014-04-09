@@ -622,7 +622,7 @@ namespace Menge
 
 		m_fullscreen = _fullscreen;
         m_waitForVSync = _waitForVSync;
-
+				
 		m_d3dppW.MultiSampleType = D3DMULTISAMPLE_NONE;
 		m_d3dppW.Windowed = TRUE;
 		//m_d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;

@@ -127,7 +127,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Win32InputStream::read( void* _buf, size_t _count )
+	size_t Win32InputStream::read( void * _buf, size_t _count )
 	{     
         if( _count == m_size )
         {
@@ -216,7 +216,8 @@ namespace Menge
         
         DWORD readSize = (std::min)( (DWORD)(_count - tail), bytesRead );
 
-        memcpy( (char *)_buf + tail, m_buff, readSize );
+		unsigned char * read_buf = (unsigned char *)_buf + tail;
+        memcpy( read_buf, m_buff, readSize );
 
         m_carriage = readSize;
         m_capacity = bytesRead;

@@ -39,9 +39,9 @@ namespace Menge
 		eventable->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );		
 		eventable->registerEvent( EVENT_MOUSE_WHEEL, ("onHandleMouseWheel"), _listener );
 		
-		m_onMouseMoveEvent = eventable->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
-		m_onMouseLeaveEvent = eventable->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener );
-		m_onMouseEnterEvent = eventable->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener );
+		eventable->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener, &m_onMouseMoveEvent );
+		eventable->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener, &m_onMouseLeaveEvent );
+		eventable->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener, &m_onMouseEnterEvent );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerAdapter::setDefaultHandle( bool _handle )
@@ -102,7 +102,7 @@ namespace Menge
 	{
         (void)_point;
 
-		bool handle = m_defaultHandle;
+		bool handle = false;
 
         if( m_onMouseEnterEvent == true )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
         {
@@ -198,7 +198,7 @@ namespace Menge
 	{
         (void)_point; //TODO
 
-		bool handle = m_defaultHandle;
+		bool handle = false;
 
 		if( m_onMouseMoveEvent == true )
 		{

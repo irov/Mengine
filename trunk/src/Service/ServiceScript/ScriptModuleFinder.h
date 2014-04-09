@@ -48,7 +48,7 @@ namespace Menge
         PyObject * unmarshal_code_( const ConstString & _module, const InputStreamInterfacePtr & _stream );
 
     protected:
-        size_t convertDotToSlash_( char * _cache, const ConstString & _module );
+        bool convertDotToSlash_( char * _cache, size_t _cacheSize, const ConstString & _module, size_t & _modulePathCacheLen );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

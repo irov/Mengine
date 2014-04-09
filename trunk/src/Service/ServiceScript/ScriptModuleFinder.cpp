@@ -109,11 +109,15 @@ namespace Menge
         return module;        
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ScriptModuleFinder::convertDotToSlash_( char * _cache, const ConstString & _module )
+    bool ScriptModuleFinder::convertDotToSlash_( char * _cache, size_t _cacheSize, const ConstString & _module, size_t & _modulePathCacheLen )
     {
 		const char * module_str = _module.c_str();
 		size_t module_size = _module.size();
-		stdex::memorycopy( _cache, module_str, module_size );
+		
+		if( stdex::memorycopy_safe( _cache, 0, _cacheSize, module_str, module_size ) == false )
+		{
+			return false;
+		}
 
         for( char
             *it = _cache,
@@ -127,31 +131,40 @@ namespace Menge
             }
         }
 
-		return module_size;
+		_modulePathCacheLen = module_size;
+		
+		return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScriptModuleFinder::find_module_source_( const ConstString & _module )
     {
 		char modulePathCache[MAX_PATH];
-        size_t modulePathCacheLen = this->convertDotToSlash_( modulePathCache, _module );
-
-		stdex::memorycopy( modulePathCache + modulePathCacheLen, ".py", 4 );
         
-		//ConstString modulePath = Helper::stringizeString( m_serviceProvider, m_modulePathCache );
+		size_t modulePathCacheLen;
+		if( this->convertDotToSlash_( modulePathCache, MAX_PATH, _module, modulePathCacheLen ) == false )
+		{
+			return false;
+		}
 
+		if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen, MAX_PATH, ".py", 4 ) == false )
+		{
+			return false;
+		}
+		
         ModulePathCache * pathCache_module = this->findModule_( _module, modulePathCache, modulePathCacheLen + 3 );
 
         if( pathCache_module != nullptr )
         {
             pathCache_module->packagePath = nullptr;
             pathCache_module->source = true;
-
-            return true;
         }
 		else
 		{
 			modulePathCache[modulePathCacheLen] = MENGE_FOLDER_RESOURCE_DELIM;
-			stdex::memorycopy( modulePathCache + modulePathCacheLen + 1, "__init__.py", 12 );
+			if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MAX_PATH, "__init__.py", 12 ) == false )
+			{
+				return false;
+			}
 
 			ModulePathCache * pathCache_package = this->findModule_( _module, modulePathCache, modulePathCacheLen + 12 );
 
@@ -175,9 +188,17 @@ namespace Menge
     bool ScriptModuleFinder::find_module_code_( const ConstString & _module )
     {
 		char modulePathCache[MAX_PATH];
-        size_t modulePathCacheLen = this->convertDotToSlash_( modulePathCache, _module );
 
-		stdex::memorycopy( modulePathCache + modulePathCacheLen, ".pyz", 5 );
+        size_t modulePathCacheLen;
+		if( this->convertDotToSlash_( modulePathCache, MAX_PATH, _module, modulePathCacheLen ) == false )
+		{
+			return false;
+		}
+
+		if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen, MAX_PATH, ".pyz", 5 ) == false )
+		{
+			return false;
+		}
 
         ModulePathCache * pathCache_module = this->findModule_( _module, modulePathCache, modulePathCacheLen + 4 );
 
@@ -185,13 +206,14 @@ namespace Menge
         {
             pathCache_module->packagePath = nullptr;
             pathCache_module->source = false;
-
-            return true;
         }
 		else
 		{
 			modulePathCache[modulePathCacheLen] = MENGE_FOLDER_RESOURCE_DELIM;
-			stdex::memorycopy( modulePathCache + modulePathCacheLen + 1, "__init__.pyz", 13 );
+			if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MAX_PATH, "__init__.pyz", 13 ) == false )
+			{
+				return false;
+			}
 
 			ModulePathCache * pathCache_package = this->findModule_( _module, modulePathCache, modulePathCacheLen + 13 );
 

@@ -1343,29 +1343,7 @@ namespace Menge
 
 		RenderIndices2D * indicesBuffer = static_cast<RenderIndices2D *>(ibData);
 
-		size_t vbInsertSize;
-		size_t ibInsertSize;
-		this->insertRenderPasses_( vertexBuffer, indicesBuffer, vbInsertSize, ibInsertSize );
-
-		if( vbInsertSize > m_renderVertexCount )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::makeBatches_: failed to insert vertex buffer %d:%d"
-				, vbInsertSize
-				, m_renderVertexCount
-				);
-
-			return false;
-		}
-
-		if( ibInsertSize > m_renderIndicesCount )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::makeBatches_: failed to insert indices buffer %d:%d"
-				, ibInsertSize
-				, m_renderIndicesCount
-				);
-
-			return false;
-		}
+		this->insertRenderPasses_( vertexBuffer, indicesBuffer, m_renderVertexCount, m_renderIndicesCount );
 
 		if( RENDER_SYSTEM(m_serviceProvider)->unlockIndexBuffer( m_ibHandle2D ) == false )
 		{
@@ -1386,7 +1364,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t & _vbSize, size_t & _ibSize )
+	void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize )
 	{
 		size_t vbPos = 0;
 		size_t ibPos = 0;
@@ -1399,14 +1377,11 @@ namespace Menge
 		{
 			RenderPass * pass = &(*it);
 
-			this->insertRenderObjects_( pass, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+			this->insertRenderObjects_( pass, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
 		}
-
-		_vbSize = vbPos;
-		_ibSize = ibPos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t & _vbPos, size_t & _ibPos )
+	void RenderEngine::batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos )
 	{
 		size_t vbPos = _vbPos;
 		size_t ibPos = _ibPos;
@@ -1428,7 +1403,7 @@ namespace Menge
 				break;
 			}
 
-			this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+			this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
 
 			_ro->dipVerticesNum += ro_bath_begin->verticesNum;
 			_ro->dipIndiciesNum += ro_bath_begin->indicesNum;
@@ -1471,7 +1446,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::batchRenderObjectSmart_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t & _vbPos, size_t & _ibPos )
+	void RenderEngine::batchRenderObjectSmart_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos )
 	{
 		size_t vbPos = _vbPos;
 		size_t ibPos = _ibPos;
@@ -1503,7 +1478,7 @@ namespace Menge
 
 			//it_batch_start_end = it_batch_end;			
 
-			this->insertRenderObject_( ro_bath_start, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+			this->insertRenderObject_( ro_bath_start, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
 
 			_ro->dipVerticesNum += ro_bath_start->verticesNum;
 			_ro->dipIndiciesNum += ro_bath_start->indicesNum;
@@ -1526,7 +1501,7 @@ namespace Menge
 		_ibPos = ibPos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t & _vbPos, size_t & _ibPos )
+	void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos )
 	{
 		size_t vbPos = _vbPos;
 		size_t ibPos = _ibPos;
@@ -1546,7 +1521,7 @@ namespace Menge
 			ro->startIndex = ibPos;
 			ro->minIndex = vbPos;
 
-			this->insertRenderObject_( ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+			this->insertRenderObject_( ro, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
 			
 			ro->dipVerticesNum = ro->verticesNum;
 			ro->dipIndiciesNum = ro->indicesNum;
@@ -1561,15 +1536,15 @@ namespace Menge
 			{
 			case ERBM_NORMAL:
 				{
-					this->batchRenderObjectNormal_( it, it_end, ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+					this->batchRenderObjectNormal_( it, it_end, ro, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
 				}break;
 			case ERBM_SMART:
 				{
-					this->batchRenderObjectNormal_( it, it_end, ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+					this->batchRenderObjectNormal_( it, it_end, ro, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
 
 					if( _renderPass->orthogonalProjection == true )
 					{
-						this->batchRenderObjectSmart_( it, it_end, ro, _vertexBuffer, _indicesBuffer, vbPos, ibPos );
+						this->batchRenderObjectSmart_( it, it_end, ro, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
 					}
 				}break;
 			}	
@@ -1579,11 +1554,24 @@ namespace Menge
 		_ibPos = ibPos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbPos, size_t _ibPos ) const
+	void RenderEngine::insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t _vbPos, size_t _ibPos ) const
 	{   
-		RenderVertex2D * offsetVertexBuffer = _vertexBuffer + _vbPos;
-		stdex::memorycopy( offsetVertexBuffer, _renderObject->vertexData, _renderObject->verticesNum * sizeof(RenderVertex2D) );
+		if( stdex::memorycopy_safe( _vertexBuffer, _vbPos * sizeof(RenderVertex2D), _vbSize * sizeof(RenderVertex2D), _renderObject->vertexData, _renderObject->verticesNum * sizeof(RenderVertex2D) ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::insertRenderObject_ vertex buffer overrlow!"
+				);
+
+			return;
+		}
 		//std::copy( _renderObject->vertexData, _renderObject->vertexData + _renderObject->verticesNum, offsetVertexBuffer );
+
+		if( _ibPos > _ibSize )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::insertRenderObject_ indices buffer overrlow!"
+				);
+			
+			return;
+		}
 
 		RenderIndices2D * offsetIndicesBuffer = _indicesBuffer + _ibPos;
 

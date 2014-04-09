@@ -44,6 +44,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadWorkerSoundBufferUpdate::onDone( size_t _id )
 	{
+		(void)_id;
+
 		m_done = true;        
 	}
 }	// namespace Menge

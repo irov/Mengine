@@ -319,9 +319,9 @@ namespace	Menge
 	{
 		Sprite::_setEventListener( _listener );
 
-		m_onFrameEndEvent = this->registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener );
-		m_onFrameEndTick = this->registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener );
-		m_onAnimationEndEvent = this->registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener );
+		this->registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener, &m_onFrameEndEvent );
+		this->registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener, &m_onFrameEndTick );
+		this->registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener, &m_onAnimationEndEvent );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Animation::getCurrentFrame() const

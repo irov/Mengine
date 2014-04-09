@@ -47,7 +47,7 @@ namespace Menge
 			return 0;
 		}
 
-		memcpy( static_cast<unsigned char*>(_buf), m_pos, cnt );
+		memcpy( _buf, m_pos, cnt );
 		
 		m_pos += cnt;
 

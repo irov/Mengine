@@ -81,7 +81,7 @@ namespace Menge
 
             bool successful = s_askPyEventVaListT( _serviceProvider, _result, _event, _pyevent, _format, _va );
 
-            pybind::incref( _pyevent );
+            pybind::decref( _pyevent );
 
             return successful;
         }
@@ -138,13 +138,18 @@ namespace Menge
 		this->unregisterEvents_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _dict )
+	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _dict, bool * _exist )
 	{
 		if( _dict == nullptr )
 		{
 			this->removeEvent_( _event );
 
-			return false;
+			if( _exist != nullptr )
+			{
+				*_exist = false;
+			}
+
+			return true;
 		}
 
 		PyObject * ev = this->getEvent_( _method, _dict );
@@ -160,6 +165,55 @@ namespace Menge
 
 			this->removeEvent_( _event );
 
+			if( _exist != nullptr )
+			{
+				*_exist = false;
+			}
+
+			return true;
+		}
+
+		TMapEvent::iterator it_find = m_mapEvent.find(_event);
+
+		if( it_find == m_mapEvent.end() )
+		{
+			m_mapEvent.insert( _event, ev );
+		}
+		else
+		{
+			PyObject * obj = m_mapEvent.get_value( it_find );
+
+			pybind::decref( obj );
+
+			m_mapEvent.set_value( it_find, ev );
+		}
+
+		if( _exist != nullptr )
+		{
+			*_exist = true;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Eventable::registerEventMethod( EEventName _event, const char * _method, PyObject * _module, bool * _exist )
+	{
+		if( _module == nullptr )
+		{
+			this->removeEvent_( _event );
+
+			if( _exist != nullptr )
+			{
+				*_exist = false;
+			}
+
+			return true;
+		}
+
+		PyObject * ev = this->getEventMethod_( _method, _module );
+
+		if( ev == nullptr )
+		{
 			return false;
 		}
 
@@ -178,33 +232,10 @@ namespace Menge
 			m_mapEvent.set_value( it_find, ev );
 		}
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEventMethod( EEventName _event, const char * _method, PyObject * _module )
-	{
-		if( _module == nullptr )
+		if( _exist != nullptr )
 		{
-			this->removeEvent_( _event );
-
-			return false;
+			*_exist = true;
 		}
-
-		PyObject * ev = this->getEventMethod_( _method, _module );
-
-		if( ev == nullptr )
-		{
-			return false;
-		}
-
-		TMapEvent::iterator it_find = m_mapEvent.find( _event );
-
-		if( it_find != m_mapEvent.end() )
-		{
-			return false;
-		}
-		
-		m_mapEvent.insert( _event, ev );
 		
 		return true;
 	}

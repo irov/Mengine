@@ -49,7 +49,7 @@ namespace Menge
 			TBlobject::value_type * it_begin = m_seek;
 			m_seek += _size;
 
-			stdext::checked_array_iterator<TBlobject::value_type *> chkd_begin((TBlobject::value_type *)_begin, _size);
+			stdext::unchecked_array_iterator<TBlobject::value_type *> chkd_begin((TBlobject::value_type *)_begin);
 			std::copy( it_begin, m_seek, chkd_begin );
 		}
 

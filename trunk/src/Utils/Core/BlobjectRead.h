@@ -2,8 +2,8 @@
 
 #	include "Config/Blobject.h"
 
-#	include <algorithm>
-#	include <iterator>
+#	include "stdex/memorycopy.h"
+
 
 namespace Menge
 {
@@ -49,8 +49,10 @@ namespace Menge
 			TBlobject::value_type * it_begin = m_seek;
 			m_seek += _size;
 
-			stdext::unchecked_array_iterator<TBlobject::value_type *> chkd_begin((TBlobject::value_type *)_begin);
-			std::copy( it_begin, m_seek, chkd_begin );
+			//stdex::unchecked_array_iterator<TBlobject::value_type *> chkd_begin((TBlobject::value_type *)_begin);
+			//std::copy( it_begin, m_seek, chkd_begin );
+
+			stdex::memorycopy( _begin, it_begin, _size );
 		}
 
 		const TBlobject::value_type * selectBuffer( size_t _size )

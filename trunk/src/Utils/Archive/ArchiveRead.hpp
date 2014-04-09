@@ -2,8 +2,9 @@
 
 #	include "Archive.hpp"
 
+#	include "stdex/unchecked_array_iterator.h"
+
 #	include <algorithm>
-#	include <iterator>
 
 namespace Menge
 {
@@ -41,7 +42,7 @@ namespace Menge
 			Archive::const_iterator it_begin = m_seek;
 			std::advance( m_seek, _size );
 
-			stdext::unchecked_array_iterator<Archive::value_type *> chkd_begin((Archive::value_type *)_begin);
+			stdex::unchecked_array_iterator<Archive::value_type *> chkd_begin((Archive::value_type *)_begin);
 			std::copy( it_begin, m_seek, chkd_begin );
 		}
 

@@ -31,18 +31,11 @@ includepaths
 #	"../dependencies/pugixml/src"
     
     "./Modified/Python"
-    "./Modified/ogg/include"
 	"../dependencies/Python-2.7.6"
     
 #    "../dependencies/simpleini"
     "../dependencies/zlib"
-    "../dependencies/ogg/include"
-    "../dependencies/vorbis/include"
     "../dependencies/stdex/include"
-    
-    "./Modified/openalsoft"    
-    "../dependencies/openalsoft_Marmalade/include"
-    "../dependencies/openalsoft_Marmalade/OpenAL32/Include"    
 }
 
 
@@ -135,38 +128,6 @@ files
     #utils/thread.c
     #utils/utils.c
        
-    [vorbis]
-    ("../dependencies/vorbis")
-    lib/analysis.c
-    lib/bitrate.c
-    lib/block.c
-    lib/codebook.c
-    lib/envelope.c
-    lib/floor0.c
-    lib/floor1.c
-    lib/info.c
-    lib/lookup.c
-    lib/lpc.c
-    lib/lsp.c
-    lib/mapping0.c
-    lib/mdct.c
-    lib/psy.c
-    lib/registry.c
-    lib/res0.c
-    lib/sharedbook.c
-    lib/smallft.c
-    lib/synthesis.c
-    lib/window.c    
-    
-    [vorbisfile]
-    ("../dependencies/vorbis")
-    lib/vorbisfile.c
-    
-    [ogg]
-    ("../dependencies/ogg")
-    src/bitwise.c
-    src/framing.c    
-
     [pugixml]
 	("Modified/pugixml")
 	src/pugixml.hpp
@@ -180,26 +141,4 @@ files
     [stdex]
     ("../dependencies/stdex")
     "src/*.cpp"
-	
-	["../dependencies/openalsoft_Marmalade"]
-    (../dependencies/openalsoft_Marmalade/Alc)
-	ALc.c
-	alcConfig.c
-	alcEcho.c
-	alcModulator.c
-	alcReverb.c
-	alcRing.c
-	alcThread.c
-	ALu.c
-	bs2b.c
-	mixer.c
-	null.c
-	panning.c
-	s3esoundaudio.c
-	s3eaudioaudio.c
-	wave.c             
-	(../dependencies/openalsoft_Marmalade/OpenAL32)
-	"*.c"
-	(../dependencies/openalsoft_Marmalade/utils)
-	"*.c"
 }

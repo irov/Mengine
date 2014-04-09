@@ -24,7 +24,6 @@ files
     config.c
     errors.c
     pyconfig.h
-    pymem.h
     
     ("../dependencies/Python-2.7.6/Python")    
     codecs.c

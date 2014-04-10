@@ -128,7 +128,7 @@ namespace Menge
 
         if( dataInfo->length > 500.f && m_isStreamable == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s setup to stream (time %.4f > 500.0 ms)\nfile - %s:%s"
+            LOGGER_WARNING(m_serviceProvider)("SoundEngine::_isValid: %s setup to stream (time %.4f > 500.0 ms)\nfile - %s:%s"
                 , m_name.c_str()
                 , dataInfo->length
                 , category.c_str()

@@ -327,7 +327,7 @@ namespace Menge
         PROTOTYPE_SERVICE(serviceProvider)\
             ->addPrototype( CONST_STRING(serviceProvider, Node), Helper::stringizeStringSize( serviceProvider, #Type), new NodePrototypeGenerator<Type, 128>(serviceProvider) );
 
-		LOGGER_ERROR(m_serviceProvider)("Creating Object Factory..." );
+		LOGGER_WARNING(m_serviceProvider)("Creating Object Factory..." );
 
 		NODE_FACTORY( m_serviceProvider, Node );
 
@@ -390,7 +390,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeLoaderEngine_()
 	{
-		LOGGER_ERROR(m_serviceProvider)("Initializing Loader Engine..." );
+		LOGGER_WARNING(m_serviceProvider)("Initializing Loader Engine..." );
 
 		LoaderServiceInterface * loaderService;
         if( SERVICE_CREATE( LoaderService, &loaderService ) == false )
@@ -412,7 +412,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializePrototypeManager_()
     {
-        LOGGER_ERROR(m_serviceProvider)("Inititalizing PrototypeManager..." );
+        LOGGER_WARNING(m_serviceProvider)("Inititalizing PrototypeManager..." );
 
         PrototypeServiceInterface * prototypeService;
 
@@ -430,7 +430,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializeWatchdog_()
     {
-        LOGGER_ERROR(m_serviceProvider)("Inititalizing Watchdog..." );
+        LOGGER_WARNING(m_serviceProvider)("Inititalizing Watchdog..." );
 
         WatchdogInterface * watchdog;
         if( SERVICE_CREATE( Watchdog, &watchdog ) == false )

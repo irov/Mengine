@@ -59,7 +59,7 @@ namespace Menge
         SERVICE_DECLARE("AccountService")
 
     public:
-        virtual bool initialize( const FilePath & _accountsPath, size_t _projectVersion, AccountServiceListener * _listener ) = 0;
+        virtual bool initialize( const FilePath & _accountsPath, size_t _projectVersion, bool _projectVersionCheck, AccountServiceListener * _listener ) = 0;
         virtual void finalize() = 0;
 
     public:

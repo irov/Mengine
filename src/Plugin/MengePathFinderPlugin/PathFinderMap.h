@@ -6,7 +6,7 @@
 
 #	include "Core/Polygon.h"
 
-#	include "fastpathfinder/fastpathfinder.h"
+#	include "fastpathfinder/pathfinder.h"
 
 #	include <list>
 

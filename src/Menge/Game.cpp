@@ -355,7 +355,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::initialize( const FilePath & _accountPath, size_t _projectVersion, const TMapParams & _params )
+	bool Game::initialize( const FilePath & _accountPath, size_t _projectVersion, bool _projectVersionCheck, const TMapParams & _params )
 	{
 		m_params = _params;
 
@@ -378,7 +378,7 @@ namespace Menge
 
         m_accountLister = new ApplicationAccountManagerListener(m_serviceProvider, this);
 		
-        m_accountService->initialize( _accountPath, _projectVersion, m_accountLister );
+        m_accountService->initialize( _accountPath, _projectVersion, _projectVersionCheck, m_accountLister );
 
 		if( m_accountService->loadAccounts() == false )
         {
@@ -388,19 +388,6 @@ namespace Menge
             //return false;
         }
 		
-		m_defaultArrow = PROTOTYPE_SERVICE(m_serviceProvider)
-            ->generatePrototypeT<Arrow>( CONST_STRING(m_serviceProvider, Arrow), CONST_STRING(m_serviceProvider, Default) );
-
-        if( m_defaultArrow == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Game::initialize failed create defaultArrow 'Default'"
-                );
-
-            return false;
-        }
-
-        m_defaultArrow->setName( CONST_STRING(m_serviceProvider, Default) );
-
 		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
             ->getContentResolution();
 
@@ -415,13 +402,18 @@ namespace Menge
 			return false;
 		}
 
+		m_defaultArrow = PROTOTYPE_SERVICE(m_serviceProvider)
+			->generatePrototypeT<Arrow>( CONST_STRING(m_serviceProvider, Arrow), CONST_STRING(m_serviceProvider, Default) );
+
 		if( m_defaultArrow == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Game::initialize default arrow not found"
+			LOGGER_ERROR(m_serviceProvider)("Game::initialize failed create defaultArrow 'Default'"
 				);
 
 			return false;
 		}
+
+		m_defaultArrow->setName( CONST_STRING(m_serviceProvider, Default) );
 
 		m_player->setArrow( m_defaultArrow );
 

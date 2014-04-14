@@ -29,6 +29,7 @@ namespace Menge
 		, m_currentAccount(nullptr)
 		, m_playerEnumerator(0)
 		, m_projectVersion(0)
+		, m_projectVersionCheck(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -46,10 +47,11 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AccountManager::initialize( const FilePath & _accountsPath, size_t _projectVersion, AccountServiceListener * _listener )
+    bool AccountManager::initialize( const FilePath & _accountsPath, size_t _projectVersion, bool _projectVersionCheck, AccountServiceListener * _listener )
     {
         m_accountsPath = _accountsPath;
 		m_projectVersion = _projectVersion;
+		m_projectVersionCheck = _projectVersionCheck;
         m_accountListener = _listener;
 
         return true;
@@ -172,7 +174,7 @@ namespace Menge
 
         Account * newAccount = m_factoryAccounts.createObjectT();
 		
-		newAccount->initialize( m_serviceProvider, _accountID, folder, m_projectVersion );
+		newAccount->initialize( m_serviceProvider, _accountID, folder, m_projectVersion, m_projectVersionCheck );
 
         return newAccount;
     }
@@ -517,10 +519,8 @@ namespace Menge
         }
         else
         {
-            LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts invalid set any accounts"
+            LOGGER_WARNING(m_serviceProvider)("AccountManager::loadAccounts invalid set any accounts"
                 );
-
-            return false;
         }
 		
 		return true;

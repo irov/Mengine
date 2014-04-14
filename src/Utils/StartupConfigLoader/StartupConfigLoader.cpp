@@ -136,6 +136,7 @@ namespace Menge
 		IniUtil::getIniValue( ini, "Project", "Company", _settings.companyName, m_serviceProvider );
 		IniUtil::getIniValue( ini, "Project", "Codename", _settings.applicationSettings.projectCodename, m_serviceProvider );
 		IniUtil::getIniValue( ini, "Project", "Version", _settings.applicationSettings.projectVersion, m_serviceProvider );
+		IniUtil::getIniValue( ini, "Project", "VersionCheck", _settings.applicationSettings.projectVersionCheck, m_serviceProvider );		
 		IniUtil::getIniValue( ini, "Locale", "Default", _settings.defaultLocale, m_serviceProvider );
 		IniUtil::getIniValue( ini, "Game", "ContentResolution", _settings.applicationSettings.contentResolution, m_serviceProvider );     
 		IniUtil::getIniValue( ini, "Game", "FixedContentResolution", _settings.applicationSettings.fixedContentResolution, m_serviceProvider );

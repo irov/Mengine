@@ -162,6 +162,7 @@ namespace Menge
         , m_watchdog(nullptr)
         , m_profiler(nullptr)
 		, m_projectVersion(0)
+		, m_projectVersionCheck(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -273,6 +274,7 @@ namespace Menge
         m_platformName = _setting.platformName;
         m_projectCodename = _setting.projectCodename;
 		m_projectVersion = _setting.projectVersion;
+		m_projectVersionCheck = _setting.projectVersionCheck;
 
         m_contentResolution = _setting.contentResolution;
         m_fixedContentResolution = _setting.fixedContentResolution;
@@ -860,7 +862,7 @@ namespace Menge
 	{
 		FilePath accountPath = Helper::stringizeStringSize( m_serviceProvider, "accounts.ini" );
 
-		if( m_game->initialize( accountPath, m_projectVersion, _params ) == false )
+		if( m_game->initialize( accountPath, m_projectVersion, m_projectVersionCheck, _params ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application::initGame invalid initialize"
 				);

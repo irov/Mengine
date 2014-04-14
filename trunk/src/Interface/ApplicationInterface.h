@@ -19,6 +19,7 @@ namespace Menge
 	{
 		ApplicationSettings()
 			: projectVersion(0)
+			, projectVersionCheck(true)
 			, bits(32)
 			, fullscreen(true)
 			, vsync(true)
@@ -32,6 +33,7 @@ namespace Menge
 		ConstString platformName;
 		ConstString projectCodename;
 		size_t projectVersion;
+		bool projectVersionCheck;
 
 		Resolution contentResolution;
         Resolution windowResolution;

@@ -270,6 +270,7 @@ namespace Menge
 		ConstString m_platformName;
 		ConstString m_projectCodename;
 		size_t m_projectVersion;
+		bool m_projectVersionCheck;
 		
 		typedef std::vector<PluginInterface *> TVectorPlugins;
 		TVectorPlugins m_plugins;

@@ -23,6 +23,7 @@ namespace Menge
 	Account::Account()
 		: m_serviceProvider(nullptr)
 		, m_projectVersion(0)
+		, m_projectVersionCheck(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,11 +41,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Account::initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const FilePath & _folder, size_t _projectVersion )
+	bool Account::initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const FilePath & _folder, size_t _projectVersion, bool _projectVersionCheck )
 	{
 		m_serviceProvider = _serviceProvider;
 		m_name = _name;
 		m_projectVersion = _projectVersion;
+		m_projectVersionCheck = _projectVersionCheck;
 
 		m_folder = _folder;
 
@@ -180,27 +182,39 @@ namespace Menge
 
         file = nullptr;
 
-		String projectVersion_s;
-		if( IniUtil::getIniValue( ini, "PROJECT", "VERSION", projectVersion_s, m_serviceProvider ) == false )
+		if( m_projectVersionCheck == true )
 		{
-			return false;
-		}
+			String projectVersion_s;
+			if( IniUtil::getIniValue( ini, "PROJECT", "VERSION", projectVersion_s, m_serviceProvider ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed not found project version"
+					, m_name.c_str()
+					);
 
-		size_t projectVersion = 0;
-		if( Utils::stringToUnsigned( projectVersion_s, projectVersion ) == false )
-		{
-			return false;
-		}
+				return false;
+			}
 
-		if( m_projectVersion != projectVersion )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed invalid project version '%d' need '%d'"
-				, m_name.c_str()
-				, projectVersion
-				, m_projectVersion
-				);
+			size_t projectVersion = 0;
+			if( Utils::stringToUnsigned( projectVersion_s, projectVersion ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed invalid project version '%s'"
+					, m_name.c_str()
+					, projectVersion_s.c_str()
+					);
 
-			return false;
+				return false;
+			}
+
+			if( m_projectVersion != projectVersion )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed invalid project version '%d' need '%d'"
+					, m_name.c_str()
+					, projectVersion
+					, m_projectVersion
+					);
+
+				return false;
+			}
 		}
 
 		for( TMapSettings::iterator 
@@ -214,12 +228,10 @@ namespace Menge
 
             if( IniUtil::getIniValue( ini, "SETTINGS", key.c_str(), st.value, m_serviceProvider ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed get setting '%s'"
+                LOGGER_WARNING(m_serviceProvider)("Account::load account '%ls' failed get setting '%s'"
                     , m_name.c_str()
                     , key.c_str() 
                     );
-
-                return false;
             }
 		}
 

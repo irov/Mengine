@@ -6,6 +6,7 @@
 
 #	include "Core/Polygon.h"
 
+#	include "fastpathfinder/map.h"
 #	include "fastpathfinder/pathfinder.h"
 
 #	include <list>
@@ -67,7 +68,8 @@ namespace Menge
 		float m_gridSize;
 		float m_unitSize;
 
-		//fastpathfinder::map<fastpathfinder::map_test_wall_none> m_map;
+		fastpathfinder::map m_map;
+		fastpathfinder::pathfinder<fastpathfinder::map_test_wall_none> m_pathfinder;
 		
 		size_t m_obstacleEnumerator;
 	

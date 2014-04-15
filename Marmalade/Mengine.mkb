@@ -35,10 +35,10 @@ includepaths
     "../dependencies/zlib"
     "../dependencies/libjpeg"
     "../dependencies/libwebp/src"
-    
-    
+        
     "../dependencies/stdex/include"
 	"../dependencies/utf8/source"
+	"../dependencies/lz4"
     
     "dependencies/marmalade-openal-master/openal-soft-1.13/include/al"
     "dependencies/marmalade-openal-master/openal-soft-1.13/OpenAL32/include"

@@ -19,9 +19,9 @@ namespace Metacode
         ar.read( version );
 
         _readVersion = version;
-        _needVersion = 45;
+        _needVersion = 46;
 
-        if( version != 45 )
+        if( version != 46 )
         {
             return false;
         }
@@ -4846,6 +4846,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_Pak::Meta_Scripts::Meta_Scripts()
         : Metabuf::Metadata()
+        , Module_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -4858,6 +4859,17 @@ namespace Metacode
     {
         switch( _id )
         {
+        case 2:
+            {
+                if( this->read( _buff, _size, _read, this->Module ) == false )
+                {
+                    return false;
+                }
+    
+                this->Module_successful = true;
+    
+                return true;
+            }break;
         case 1:
             {
                 if( this->read( _buff, _size, _read, this->Path ) == false )

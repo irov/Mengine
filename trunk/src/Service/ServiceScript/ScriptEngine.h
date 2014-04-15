@@ -52,12 +52,10 @@ namespace Menge
         void addGlobalModule( const String & _name, PyObject * _module ) override;
         void removeGlobalModule( const String & _name ) override;
 
-        void addModulePath( const ConstString & _pak, const TVectorFilePath & _pathes ) override;
+        void addModulePath( const ConstString & _pak, const TVectorFilePath & _pathes, const TVectorConstString & _modules ) override;
 
 	public:
-		static void incref( PyObject * _object );
-		static void decref( PyObject * _object );
-		static unsigned int refCount( PyObject * _obj );
+		bool bootstrapModules() override;
 
 	public:
 		Entity * createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator ) override;
@@ -89,6 +87,8 @@ namespace Menge
 
 		PyObject * m_moduleMenge;
 
+		TVectorConstString m_bootstrapperModules;
+
 		ScriptLogger * m_loger;
 		ScriptLoggerError * m_errorLogger;
 
@@ -96,12 +96,10 @@ namespace Menge
 		typedef stdex::binary_vector<ConstString, TMapModules> TMapCategoryPrototypies;
 		TMapCategoryPrototypies m_prototypies;
 
-		TMapModules m_modules;
-
 		typedef stdex::binary_vector<ConstString, ScriptClassInterface *> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;
 
         typedef FactoryPoolStore<ConstStringHolderPythonString, 256> FactoryPoolPythonString;
-        FactoryPoolPythonString m_poolPythonString;
+        FactoryPoolPythonString m_poolPythonString;				
 	};
 }

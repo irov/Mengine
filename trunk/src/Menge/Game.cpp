@@ -327,10 +327,19 @@ namespace Menge
             ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool(false) );
 #   endif
 
+		if( SCRIPT_SERVICE(m_serviceProvider)
+			->bootstrapModules() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Game::loadPersonality invalid bootstrap modules"
+				);
+
+			return false;
+		}
+
 		PyObject * personality = SCRIPT_SERVICE(m_serviceProvider)
 			->importModule( _module );
 
-		if( personality == 0 )
+		if( personality == nullptr )
 		{
 			return false;
 		}

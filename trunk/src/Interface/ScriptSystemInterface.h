@@ -46,7 +46,11 @@ namespace Menge
         virtual void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper ) = 0;
         virtual PyObject * wrap( const ConstString & _type, Scriptable * _node ) = 0;
 
-		virtual void addModulePath( const ConstString & _pak, const TVectorFilePath & _pathes ) = 0;
+	public:
+		virtual bool bootstrapModules() = 0;
+
+	public:
+		virtual void addModulePath( const ConstString & _pak, const TVectorFilePath & _pathes, const TVectorConstString & _modules ) = 0;
 
 		virtual PyObject * importModule( const ConstString& _name ) = 0;
 

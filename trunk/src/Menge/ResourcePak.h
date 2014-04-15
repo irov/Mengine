@@ -47,6 +47,7 @@ namespace Menge
 		void addResource_( const FilePath & _path );
         void addTextPath_( const FilePath & _path );
 		void addScriptPath_( const FilePath & _path );
+		void addScriptModule_( const ConstString & _path );
 		void addFontPath_( const FilePath & _font );
 
     protected:
@@ -69,6 +70,8 @@ namespace Menge
 		FilePath m_path;
 
 		TVectorFilePath m_pathScripts;
+		TVectorConstString m_pathModules;
+
 		TVectorFilePath m_pathFonts;
 		TVectorFilePath m_pathTexts;
 

@@ -139,6 +139,7 @@ namespace Menge
 			const Metacode::Meta_Pak::Meta_Scripts & scripts = *it;
 
 			scripts.method_Path( this, &ResourcePak::addScriptPath_ );
+			scripts.method_Module( this, &ResourcePak::addScriptModule_ );
 		}
 
 		const Metacode::Meta_Pak::TVectorMeta_Fonts & includes_fonts = pak.get_IncludesFonts();
@@ -203,7 +204,7 @@ namespace Menge
 		}
 
 		SCRIPT_SERVICE(m_serviceProvider)
-            ->addModulePath( m_name, m_pathScripts );
+            ->addModulePath( m_name, m_pathScripts, m_pathModules );
 
 		return true;
 	}
@@ -296,6 +297,11 @@ namespace Menge
 	void ResourcePak::addScriptPath_( const FilePath & _path )
 	{
 		m_pathScripts.push_back( _path );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourcePak::addScriptModule_( const ConstString & _path )
+	{
+		m_pathModules.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourcePak::addFontPath_( const FilePath & _font )

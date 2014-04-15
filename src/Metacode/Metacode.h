@@ -6008,6 +6008,46 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
+            bool has_Module() const
+            {
+                return Module_successful;
+            }
+            
+            bool get_Module( Menge::ConstString & _value ) const
+            {
+                if( Module_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Module;
+            
+                return true;
+            }
+            
+            bool swap_Module( Menge::ConstString & _value ) const
+            {
+                if( Module_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Module);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_Module( C * _self, M _method ) const
+            {
+                if( Module_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->Module );
+            }
+            
             const Menge::ConstString & get_Path() const
             {
                 return this->Path;
@@ -6032,6 +6072,8 @@ namespace Metacode
         public:
         protected:
         protected:
+            bool Module_successful;
+            mutable Menge::ConstString Module;
             mutable Menge::ConstString Path;
         };
         

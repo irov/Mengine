@@ -151,9 +151,7 @@ namespace Menge
   //          
   //          //pybind::module_fini( module );			
 		//}
-
-		m_modules.clear();
-                
+               
         //pybind::module_fini( m_moduleMenge );
 
 
@@ -185,19 +183,34 @@ namespace Menge
 		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::incref( PyObject * _object )
-	{
-		pybind::incref( _object );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::decref( PyObject * _object )
-	{
-		pybind::decref( _object );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::addModulePath( const ConstString & _pak, const TVectorFilePath& _pathes )
+	void ScriptEngine::addModulePath( const ConstString & _pak, const TVectorFilePath& _pathes, const TVectorConstString & _modules )
 	{
         m_moduleFinder->addModulePath( _pak, _pathes );
+
+		m_bootstrapperModules.insert( m_bootstrapperModules.end(), _modules.begin(), _modules.end() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScriptEngine::bootstrapModules()
+	{
+		for( TVectorConstString::const_iterator
+			it = m_bootstrapperModules.begin(),
+			it_end = m_bootstrapperModules.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & module = *it;
+
+			if( this->importModule( module ) == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::bootstrapModules invalid import module %s"
+					, module.c_str()
+					);
+
+				return false;
+			}
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::initModule( const char * _name )
@@ -209,6 +222,7 @@ namespace Menge
 		try
 		{
 			PyObject * module = pybind::module_init( _name );
+
 			return module;
 		}
 		catch (...)
@@ -221,13 +235,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptEngine::importModule( const ConstString & _name )
 	{
-		PyObject * obj;
-
-		if( m_modules.has( _name, &obj ) == true )
-		{
-			return obj;
-		}
-
 		PyObject * module = nullptr;
 		bool exist = false;
 
@@ -263,8 +270,6 @@ namespace Menge
 
 			return nullptr;
 		}
-
-		m_modules.insert( _name, module );
 
 		return module;
 	}

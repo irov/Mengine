@@ -39,8 +39,8 @@ namespace Menge
             m_hFile = INVALID_HANDLE_VALUE;
         }
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::openRange( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size )
+    //////////////////////////////////////////////////////////////////////////
+	bool Win32InputStream::open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size )
 	{
 		WChar filePath[MAX_PATH];
 		if( this->openFile_( _folder, _fileName, filePath ) == false )
@@ -49,50 +49,28 @@ namespace Menge
 		}
 
 		m_offset = _offset;
-		m_size = _size;
 
-		DWORD dwPtr = ::SetFilePointer( m_hFile, static_cast<LONG>( m_offset ), NULL, FILE_BEGIN );
-
-		if( dwPtr == INVALID_SET_FILE_POINTER )
+		if( _size == 0 )
 		{
-			DWORD dwError = GetLastError();
+			DWORD size = ::GetFileSize( m_hFile, NULL );
 
-			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::openRange %ls offset %d:%d get error '%d'"
-				, filePath
-				, m_offset
-				, m_size
-				, dwError
-				);
+			if( size == INVALID_FILE_SIZE )
+			{
+				this->close_();
 
-			return false;
+				LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file size"
+					, filePath
+					);
+
+				return false;
+			}
+
+			m_size = (size_t)size;
 		}
-
-		return true;
-	}
-    //////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::open( const FilePath & _folder, const FilePath & _fileName )
-	{
-		WChar filePath[MAX_PATH];
-		if( this->openFile_( _folder, _fileName, filePath ) == false )
+		else
 		{
-			return false;
+			m_size = _size;
 		}
-
-		DWORD size = ::GetFileSize( m_hFile, NULL );
-
-		if( size == INVALID_FILE_SIZE )
-		{
-            this->close_();
-
-            LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file size"
-                , filePath
-                );
-            
-			return false;
-		}
-
-		m_offset = 0;
-		m_size = (size_t)size;
 
 		return true;
 	}

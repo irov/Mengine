@@ -103,7 +103,7 @@ namespace Menge
 
         FileInputStreamInterfacePtr file = stdex::intrusive_static_cast<FileInputStreamInterfacePtr>(_stream);
 
-		if( file->open( m_path, _fileName ) == false )
+		if( file->open( m_path, _fileName, 0, 0 ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("FileSystemDirectory::openInputFile failed open file '%s':'%s'"
                 , m_path.c_str()

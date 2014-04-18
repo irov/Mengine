@@ -280,6 +280,15 @@ namespace Menge
 
         unsigned char * buffer = _texture->lock( &pitch, rect, true );
 
+		if( buffer == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't lock texture '%s'"
+				, _filename.c_str() 
+				);
+
+			return false;
+		}
+
         ImageCodecOptions options;		
 
         options.pitch = pitch;

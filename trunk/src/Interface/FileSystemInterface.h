@@ -16,7 +16,7 @@ namespace Menge
 		: public InputStreamInterface
 	{
 	public:
-		virtual bool open( const FilePath & _folder, const FilePath & _fileName ) = 0;
+		virtual bool open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size ) = 0;
 	};
 
     typedef stdex::intrusive_ptr<FileInputStreamInterface> FileInputStreamInterfacePtr;
@@ -60,7 +60,6 @@ namespace Menge
 
     public:
         virtual MappedFileInterfacePtr createMappedFile() = 0;
-		virtual MappedFileInterfacePtr createSharedFile() = 0;
 
     public:		
         virtual bool existFolder( const FilePath & _folder, const FilePath & _path ) const = 0;
@@ -130,7 +129,6 @@ namespace Menge
 
     public:
         virtual MappedFileInterfacePtr createMappedFile( const FilePath & _foldername, const FilePath& _fileName ) = 0;
-		virtual MappedFileInterfacePtr createSharedFile( const FilePath & _foldername, const FilePath& _fileName ) = 0;
 
     public:
         virtual bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const = 0;

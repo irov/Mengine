@@ -189,13 +189,25 @@ namespace Menge
 			}
 
 			FilePath fileName = Helper::stringizeStringSize(m_serviceProvider, fileNameBuffer, header.fileNameLen);
+			
+			if( header.compressionMethod != Z_NO_COMPRESSION && header.compressionMethod != Z_DEFLATED )
+			{
+				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s:%s file %s invalid compress method %d"
+					, m_folder.c_str()
+					, m_path.c_str()
+					, fileName.c_str()
+					, header.compressionMethod
+					);
+
+				return false;
+			}
 
 			FileInfo fi;
 			fi.seek_pos = fileOffset;
 			fi.file_size = header.compressedSize;
 			fi.unz_size = header.uncompressedSize;
-			fi.compr_method = header.compressionMethod;            			
-
+			fi.compr_method = header.compressionMethod;
+			
 			m_files.insert( fileName, fi );
 
 			Utils::skip( zipFile, header.compressedSize );
@@ -277,7 +289,7 @@ namespace Menge
 
 		InputStreamInterfacePtr stream = m_zipMappedFile->createFileStream();
 
-		if( fi.compr_method == 0 )
+		if( fi.compr_method == Z_NO_COMPRESSION )
 		{
 			return stream;
 		}
@@ -355,7 +367,7 @@ namespace Menge
 
 		const FileInfo & fi = m_files.get_value( it_found );
 
-		if( fi.compr_method == 0 )
+		if( fi.compr_method == Z_NO_COMPRESSION )
 		{			
 			bool successful = m_zipMappedFile->openFileStream( _stream, fi.seek_pos, fi.file_size, nullptr );
 

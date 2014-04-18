@@ -59,15 +59,6 @@ namespace Menge
         return mappedStream;
     }
 	//////////////////////////////////////////////////////////////////////////
-	MappedFileInterfacePtr Win32FileSystem::createSharedFile()
-	{
-		Win32SharedFile * mappedStream = m_factoryWin32SharedFile.createObjectT();
-
-		mappedStream->setServiceProvider( m_serviceProvider );
-
-		return mappedStream;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileSystem::existFile( const FilePath & _folder, const FilePath & _fileName ) const
 	{
         WChar filePath[MAX_PATH];

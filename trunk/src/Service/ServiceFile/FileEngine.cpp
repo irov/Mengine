@@ -315,32 +315,6 @@ namespace Menge
 
         return mappedFile;
     }
-	//////////////////////////////////////////////////////////////////////////
-	MappedFileInterfacePtr FileEngine::createSharedFile( const FilePath & _fileGroupName, const FilePath & _fileName )
-	{
-		MappedFileInterfacePtr mappedFile = FILE_SYSTEM(m_serviceProvider)
-			->createSharedFile();
-
-		if( mappedFile == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedFile can't create output file '%s'"
-				, _fileName.c_str()
-				);
-
-			return nullptr;
-		}
-
-		if( mappedFile->initialize( _fileGroupName, _fileName ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedFile can't open output file '%s'"
-				, _fileName.c_str()
-				);
-
-			return nullptr;
-		}
-
-		return mappedFile;
-	}
     //////////////////////////////////////////////////////////////////////////
     bool FileEngine::existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const
     {

@@ -32,8 +32,6 @@ namespace Menge
     void FileEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
-
-        m_factoryFileGroup.setServiceProvider( m_serviceProvider );
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProviderInterface * FileEngine::getServiceProvider() const
@@ -42,11 +40,61 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::initialize()
-	{
-		m_factoryFileGroup.registerFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactorableUnique<FactoryDefault<FileGroupDirectory> >() );
-		m_factoryFileGroup.registerFactory( Helper::stringizeString(m_serviceProvider, "zip"), new FactorableUnique<FactoryDefault<FileGroupZip> >() );
+	{		
+		this->registerFileGroupFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactorableUnique<FactoryDefault<FileGroupDirectory> >() );
+		this->registerFileGroupFactory( Helper::stringizeString(m_serviceProvider, "zip"), new FactorableUnique<FactoryDefault<FileGroupZip> >() );
 
         return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory )
+	{
+		m_factoryFileGroups.insert( _type, _factory );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::unregisterFileGroupFactory( const ConstString & _type )
+	{
+		TFactoryFileGroups::iterator it_found = m_factoryFileGroups.find( _type );
+
+		if( it_found == m_factoryFileGroups.end() )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::unregisterFileGroupFactory: not registry factory '%s'"
+				, _type.c_str() 
+				);
+
+			return;
+		}
+
+		m_factoryFileGroups.erase( it_found );	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileGroupInterfacePtr FileEngine::createFileGroup( const ConstString & _type )
+	{
+		TFactoryFileGroups::iterator it_found = m_factoryFileGroups.find( _type );
+
+		if( it_found == m_factoryFileGroups.end() )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::createFileGroup: not registry factory '%s'"
+				, _type.c_str() 
+				);
+
+			return nullptr;
+		}
+
+		const FactoryPtr & factory = m_factoryFileGroups.get_value(it_found);
+
+		Factorable * fileGroup = factory->createObject();
+
+		if( fileGroup == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::createFileGroup: invalid create file group '%s'"
+				, _type.c_str() 
+				);
+
+			return nullptr;
+		}
+
+		return fileGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::mountFileGroup( const ConstString& _fileGroupName, const FilePath& _folder, const FilePath& _path, const ConstString & _type, bool _create )
@@ -69,7 +117,7 @@ namespace Menge
 			return false;
 		}
 
-		FileGroupInterfacePtr fs = m_factoryFileGroup.createObjectT<FileGroupInterface>( _type );
+		FileGroupInterfacePtr fs = this->createFileGroup( _type );
 
 		if( fs == nullptr )
 		{

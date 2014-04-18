@@ -8,8 +8,6 @@ src
 	Factory.h
 	Factory.cpp
     FactoryStore.h
-    FactoryManager.h
-    FactoryManager.cpp
     FactoryDefault.h    
     FactoryPool.h
     FactorablePtr.h

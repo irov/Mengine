@@ -2,6 +2,9 @@
 
 #	include "Interface/FileSystemInterface.h"
 
+#	include "Factory/FactoryStore.h"
+#	include "Core/MemoryInput.h"
+
 #   include "stdex/binary_vector.h"
 
 namespace Menge
@@ -24,7 +27,7 @@ namespace Menge
 		bool existFile( const FilePath & _fileName ) const override;
 
     public:
-		InputStreamInterfacePtr createInputFile() override;
+		InputStreamInterfacePtr createInputFile( const FilePath & _fileName ) override;
 		bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file ) override;
 
     public:
@@ -59,7 +62,7 @@ namespace Menge
 		typedef stdex::binary_vector<FilePath, FileInfo> TMapFileInfo;
 		TMapFileInfo m_files;
 
-	private:
-		friend class FileGroupZip_FinderPredFiles;
+		typedef FactoryPoolStore<MemoryInput, 32> TFactoryMemoryInput;
+		TFactoryMemoryInput m_factoryMemoryInput;
 	};
 }	// namespace Menge

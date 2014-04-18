@@ -45,7 +45,7 @@ namespace Menge
 			return false;
 		}
 
-		m_stream = m_group->createInputFile();
+		m_stream = m_group->createInputFile( m_fileName );
 
 		if( m_stream == nullptr )
 		{

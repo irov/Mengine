@@ -49,6 +49,6 @@ namespace Menge
         size_t m_capacity;
         size_t m_reading;
 
-        char m_buff[FILE_BUFFER_SIZE];
+        char m_readCache[FILE_BUFFER_SIZE];
 	};
 }	// namespace Menge

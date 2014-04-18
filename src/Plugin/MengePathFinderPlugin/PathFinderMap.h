@@ -2,14 +2,12 @@
 
 #	include "Interface/ModuleInterface.h"
 
+#	include "PathFinder.h"
 #	include "PathFinderWay.h"
+#	include "ThreadWorkerPathFinder.h"
 
 #	include "Core/Polygon.h"
-
-#	include "fastpathfinder/map.h"
-#	include "fastpathfinder/pathfinder.h"
-
-#	include <list>
+#	include "Factory/FactoryStore.h"
 
 namespace Menge
 {
@@ -22,7 +20,7 @@ namespace Menge
 	};
 	
 	typedef std::vector<Obstacle *> TVectorObstacles;
-
+	
 	class PathFinderMap
 	{
 	public:
@@ -39,7 +37,10 @@ namespace Menge
 		void removeObstacle( size_t _id );
 		
 	public:
-		PathFinderWay * findPath( const mt::vec2f & _from, const mt::vec2f & _to );
+		PathFinderPtr createPathFinder();
+
+	public:
+		//PathFinderWay * findPath( const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb );
 		void removePath( PathFinderWay * _way );
 
 	public:
@@ -68,16 +69,24 @@ namespace Menge
 		float m_gridSize;
 		float m_unitSize;
 
-		fastpathfinder::map m_map;
-		fastpathfinder::pathfinder<fastpathfinder::map_test_wall_none> m_pathfinder;
+		TPathMap m_map;		
 		
 		size_t m_obstacleEnumerator;
 	
 		TVectorObstacles m_obstacles;
-					
+		
+		typedef std::vector<PathFinderPtr> TVectorPathFinder;
+		TVectorPathFinder m_pathFinders;
+
 		typedef std::vector<PathFinderWay *> TVectorPathFinderWay;
 		TVectorPathFinderWay m_pathFinderWays;
 
 		const RenderCameraInterface * m_camera;
+		
+		typedef FactoryPoolStore<PathFinder, 32> TFactoryPathFinder;
+		TFactoryPathFinder m_factoryPathFinder;
+
+		typedef FactoryPoolStore<ThreadWorkerPathFinder, 32> TPoolWorkerTaskSoundBufferUpdate;
+		TPoolWorkerTaskSoundBufferUpdate m_poolWorkerTaskSoundBufferUpdate;
 	};
 }

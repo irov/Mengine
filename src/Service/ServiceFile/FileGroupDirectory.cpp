@@ -81,8 +81,10 @@ namespace Menge
         return exist;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr FileGroupDirectory::createInputFile()
+	InputStreamInterfacePtr FileGroupDirectory::createInputFile( const FilePath & _fileName )
 	{
+		(void)_fileName;
+
 		FileInputStreamInterfacePtr inputStream = FILE_SYSTEM(m_serviceProvider)
             ->createInputStream();
 

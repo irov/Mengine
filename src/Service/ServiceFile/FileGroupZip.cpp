@@ -1,10 +1,12 @@
 #	include "FileGroupZip.h"
 
 #	include "Interface/ServiceInterface.h"
+#	include "Interface/ArchiveInterface.h"
 #	include "Interface/StringizeInterface.h"
 
 #	include "Logger/Logger.h"
 
+#	include "Core/CacheMemoryBuffer.h"
 #	include "Core/FilePath.h"
 #	include "Core/String.h"
 #   include "Core/File.h"
@@ -42,15 +44,6 @@ namespace Menge
 
         return x;
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //static short get_short( unsigned char * _buff )
-    //{
-    //    short x;
-    //    x =  (short)_buff[0];
-    //    x |= (short)_buff[1] << 8;
-
-    //    return x;
-    //}
     //////////////////////////////////////////////////////////////////////////
     static int s_read_int( const InputStreamInterfacePtr & _stream )
     {
@@ -62,17 +55,6 @@ namespace Menge
 
         return value;
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //static int read_short( FileInputStreamInterface * _fileStream )
-    //{
-    //    unsigned char buff[2];
-
-    //    _fileStream->read( buff, 2 );
-
-    //    int value = get_int( buff );
-
-    //    return value;
-    //}
 	//////////////////////////////////////////////////////////////////////////
 	FileGroupZip::FileGroupZip()
         : m_serviceProvider(nullptr)
@@ -130,8 +112,6 @@ namespace Menge
 
 			return false;
 		}
-
-		//uint32 signature = 0;
 
 		size_t zip_size = zipFile->size();
 		zipFile->seek( zip_size - 22 );
@@ -203,26 +183,24 @@ namespace Menge
 
 			uint32_t header_size = 46 + header.fileNameLen + header.extraFieldLen + header.commentLen;
 			header_offset += header_size;
-
-			if( header.compressedSize == 0 ) // if folder
+						
+			if( header.compressedSize == 0 ) // folder
 			{
-				//m_folders.insert( fileName );
-
 				continue;
 			}
 
 			FilePath fileName = Helper::stringizeStringSize(m_serviceProvider, fileNameBuffer, header.fileNameLen);
 
-			if( header.compressionMethod != 0 )
-			{
-				LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ %s compressed %d file '%s'"
-					, m_path.c_str()
-					, header.compressionMethod
-					, fileName.c_str() 
-					);
+			//if( header.compressionMethod != 0 )
+			//{
+			//	LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ %s compressed %d file '%s'"
+			//		, m_path.c_str()
+			//		, header.compressionMethod
+			//		, fileName.c_str() 
+			//		);
 
-				continue;
-			}
+			//	continue;
+			//}
 
 			FileInfo fi;
 
@@ -249,25 +227,6 @@ namespace Menge
 		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	class FileGroupZip_FinderValueFiles
-	{
-	public:
-		FileGroupZip_FinderValueFiles( const char * _filename, size_t _hash )
-			: m_filename(_filename)
-			, m_hash(_hash)
-		{
-		}
-
-	protected:
-		void operator = ( const FileGroupZip_FinderValueFiles & )
-		{
-		}
-
-	public:
-		const char * m_filename;
-		size_t m_hash;
-	};
-	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupZip::existFile( const FilePath & _fileName ) const
 	{
 		TMapFileInfo::const_iterator it_found = m_files.find( _fileName );
@@ -280,11 +239,76 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr FileGroupZip::createInputFile()
+	InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _fileName )
 	{
+		TMapFileInfo::const_iterator it_found = m_files.find( _fileName );
+
+		if( it_found == m_files.end() )
+		{
+			return nullptr;
+		}
+
+		const FileInfo & fi = m_files.get_value( it_found );
+
 		InputStreamInterfacePtr stream = m_zipMappedFile->createFileStream();
 
-		return stream;
+		if( fi.compr_method == 0 )
+		{
+			return stream;
+		}
+		
+		if( m_zipMappedFile->openFileStream( stream, fi.seek_pos, fi.file_size ) == false )
+		{
+			return nullptr;
+		}
+
+		CacheMemoryBuffer compress_buffer(m_serviceProvider, fi.file_size, "FileGroupZip_createInputFile");
+		void * compress_memory = compress_buffer.getMemory();
+
+		if( compress_memory == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s:%s file %s failed cache memory %d"
+				, m_folder.c_str()
+				, m_path.c_str()
+				, _fileName.c_str()
+				, fi.file_size
+				);
+
+			return nullptr;
+		}
+		
+		stream->read( compress_memory, fi.file_size );
+		stream = nullptr;
+		
+		MemoryInputPtr memory = m_factoryMemoryInput.createObjectT();
+		void * buffer = memory->newMemory( fi.unz_size );
+
+		if( buffer == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s:%s file %s failed new memory %d"
+				, m_folder.c_str()
+				, m_path.c_str()
+				, _fileName.c_str()
+				, fi.unz_size
+				);
+
+			return nullptr;
+		}
+
+		size_t uncompressSize = 0;
+		if( ARCHIVE_SERVICE(m_serviceProvider)
+			->decompress( buffer, fi.unz_size, compress_memory, fi.file_size, uncompressSize ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s:%s file %s invalid uncompress"
+				, m_folder.c_str()
+				, m_path.c_str()
+				, _fileName.c_str()
+				);
+
+			return nullptr;
+		}
+
+		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupZip::openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream )
@@ -303,9 +327,14 @@ namespace Menge
 
 		const FileInfo & fi = m_files.get_value( it_found );
 
-		bool successful = m_zipMappedFile->openFileStream( _stream, fi.seek_pos, fi.file_size );
+		if( fi.compr_method == 0 )
+		{			
+			bool successful = m_zipMappedFile->openFileStream( _stream, fi.seek_pos, fi.file_size );
 
-		return successful;
+			return successful;
+		}
+		
+		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr FileGroupZip::createOutputFile()

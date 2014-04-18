@@ -8,8 +8,14 @@ ModulePathFinder
 	ModulePathFinder.h
 	PathFinderMap.cpp
 	PathFinderMap.h
+	PathFinder.h
+    PathFinder.cpp
+	PathFinderPool.cpp
+	PathFinderPool.h
     PathFinderWay.cpp
     PathFinderWay.h
+    ThreadWorkerPathFinder.cpp
+    ThreadWorkerPathFinder.h
 )
 
 ADD_FILTER(

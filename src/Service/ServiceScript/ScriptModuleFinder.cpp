@@ -270,7 +270,7 @@ namespace Menge
 
 				ConstString c_fullPath = Helper::stringizeString( m_serviceProvider, fullPath );
 
-				InputStreamInterfacePtr stream = fileGroup->createInputFile();
+				InputStreamInterfacePtr stream = fileGroup->createInputFile( c_fullPath );
 
 				if( fileGroup->openInputFile( c_fullPath, stream ) == false )
 				{

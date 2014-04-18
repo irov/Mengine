@@ -84,7 +84,7 @@ namespace Menge
         virtual bool existFile( const FilePath & _fileName ) const = 0;
 
     public:
-        virtual InputStreamInterfacePtr createInputFile() = 0;
+        virtual InputStreamInterfacePtr createInputFile( const FilePath & _fileName ) = 0;
         virtual bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream ) = 0;
 			
     public:

@@ -29,7 +29,7 @@ namespace Menge
 
 	public:
         virtual InputStreamInterfacePtr createFileStream() = 0;
-        virtual bool openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) = 0;
+        virtual bool openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory ) = 0;
 	};
 
     typedef stdex::intrusive_ptr<MappedFileInterface> MappedFileInterfacePtr;

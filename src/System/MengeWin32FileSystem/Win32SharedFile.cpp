@@ -39,7 +39,7 @@ namespace Menge
 		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32SharedFile::openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size )
+	bool Win32SharedFile::openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory )
 	{
 		Win32InputStream * stream = stdex::intrusive_get<Win32InputStream>(_stream);
 

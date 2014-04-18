@@ -12,7 +12,7 @@ namespace Menge
 		~MemoryProxyInput();
 
     public:
-        void setMemory( void * _memory, size_t _offset, size_t _size );
+        void * setMemory( void * _memory, size_t _offset, size_t _size );
         void * getMemory( size_t & _size ) const;
 
 	public:

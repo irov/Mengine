@@ -181,7 +181,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		InputStreamInterfacePtr file = group->createInputFile();
+		InputStreamInterfacePtr file = group->createInputFile( _fileName );
 
 		if( file == nullptr )
 		{

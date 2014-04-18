@@ -161,7 +161,7 @@ namespace Menge
             
             if( tail != 0 )
             {
-                stdex::memorycopy( _buf, m_buff + m_carriage, tail );
+                stdex::memorycopy( _buf, m_readCache + m_carriage, tail );
 				//std::copy( m_buff + m_carriage, m_buff + m_carriage + tail, (unsigned char *)_buf );
             }
 
@@ -189,7 +189,7 @@ namespace Menge
         
         if( m_carriage + _count <= m_capacity )
         {
-			stdex::memorycopy( _buf, m_buff + m_carriage, _count );
+			stdex::memorycopy( _buf, m_readCache + m_carriage, _count );
 			//std::copy( m_buff + m_carriage, m_buff + m_carriage + _count, (unsigned char *)_buf );
 
             m_carriage += _count;
@@ -201,12 +201,12 @@ namespace Menge
 
         if( tail != 0 )
         {
-            stdex::memorycopy( _buf, m_buff + m_carriage, tail );
+            stdex::memorycopy( _buf, m_readCache + m_carriage, tail );
 			//std::copy( m_buff + m_carriage, m_buff + m_carriage + tail, (unsigned char *)_buf );
         }
 
         DWORD bytesRead = 0;
-        if( ::ReadFile( m_hFile, m_buff, static_cast<DWORD>( FILE_BUFFER_SIZE ), &bytesRead, NULL ) == FALSE )
+        if( ::ReadFile( m_hFile, m_readCache, static_cast<DWORD>( FILE_BUFFER_SIZE ), &bytesRead, NULL ) == FALSE )
         {
             DWORD dwError = GetLastError();
 
@@ -222,7 +222,7 @@ namespace Menge
         DWORD readSize = (std::min)( (DWORD)(_count - tail), bytesRead );
 
 		unsigned char * read_buf = (unsigned char *)_buf + tail;
-        stdex::memorycopy( read_buf, m_buff, readSize );
+        stdex::memorycopy( read_buf, m_readCache, readSize );
 		//std::copy( m_buff, m_buff + readSize, read_buf );
 
         m_carriage = readSize;

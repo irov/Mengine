@@ -24,7 +24,7 @@ namespace Menge
 		bool existFile( const FilePath & _fileName ) const override;
 
     public:
-		InputStreamInterfacePtr createInputFile() override;
+		InputStreamInterfacePtr createInputFile( const FilePath & _fileName ) override;
 		bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file ) override;
 		
     public:

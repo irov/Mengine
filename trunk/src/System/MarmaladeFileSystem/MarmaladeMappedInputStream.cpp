@@ -31,7 +31,7 @@ namespace Menge
         return memory;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeMappedInputStream::openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size )
+    bool MarmaladeMappedInputStream::openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory )
     {
         MemoryInput * memory = stdex::intrusive_get<MemoryInput>(_stream);
 
@@ -40,8 +40,13 @@ namespace Menge
         m_inputStream.seek( _offset );
         m_inputStream.read( buffer, _size );
 
+		if( _memory != nullptr )
+		{
+			*_memory = buffer;
+		}
+
 		return true;
-    }
+	}
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeMappedInputStream::initialize( const FilePath & _folder, const FilePath & _fileName )
     {

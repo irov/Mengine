@@ -14,6 +14,8 @@
 #	include <string.h>
 #   include <stdio.h>
 
+#	include "../dependencies/zlib/zlib.h"
+
 #	define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
 #	define MAX_FILENAME 1024
 
@@ -21,6 +23,7 @@ namespace Menge
 {
 	struct ZipCentralDirectoryFileHeader
 	{
+		uint16_t versionMade;
 		uint16_t versionNeeded;
 		uint16_t generalPurposeFlag;
 		uint16_t compressionMethod;
@@ -32,28 +35,21 @@ namespace Menge
 		uint16_t fileNameLen;
 		uint16_t extraFieldLen;
         uint16_t commentLen;
+		uint16_t diskNumber;
+		uint16_t internalAttributes;
+		uint32_t externalAttributes;
+		uint32_t relativeOffset;
 	};
     //////////////////////////////////////////////////////////////////////////
-    static int s_get_int( unsigned char * _buff )
+    static uint32_t s_get_uint32( unsigned char * _buff )
     {
-        int x;
-        x =  (int)_buff[0];
-        x |= (int)_buff[1] << 8;
-        x |= (int)_buff[2] << 16;
-        x |= (int)_buff[3] << 24;
+        uint32_t x;
+        x =  (uint32_t)_buff[0];
+        x |= (uint32_t)_buff[1] << 8;
+        x |= (uint32_t)_buff[2] << 16;
+        x |= (uint32_t)_buff[3] << 24;
 
         return x;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static int s_read_int( const InputStreamInterfacePtr & _stream )
-    {
-        unsigned char buff[4];
-
-        _stream->read( buff, 4 );
-
-        int value = s_get_int( buff );
-
-        return value;
     }
 	//////////////////////////////////////////////////////////////////////////
 	FileGroupZip::FileGroupZip()
@@ -116,7 +112,7 @@ namespace Menge
 		size_t zip_size = zipFile->size();
 		zipFile->seek( zip_size - 22 );
 
-		int header_position = zipFile->tell();
+		size_t header_position = zipFile->tell();
 
 		unsigned char endof_central_dir[22];
 
@@ -129,7 +125,9 @@ namespace Menge
 			return false;
 		}
 
-		if( s_get_int( endof_central_dir ) != 0x06054B50 )
+		uint32_t eocd = s_get_uint32( endof_central_dir );
+
+		if( eocd != 0x06054B50 )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ bad 'End of Central Dir' signature zip %s"
 				, m_path.c_str()
@@ -138,9 +136,9 @@ namespace Menge
 			return false;
 		}
 
-		int header_size = s_get_int(endof_central_dir + 12);
-		int header_offset = s_get_int(endof_central_dir + 16);
-		int arc_offset = header_position - header_offset - header_size;
+		uint32_t header_size = s_get_uint32(endof_central_dir + 12);
+		uint32_t header_offset = s_get_uint32(endof_central_dir + 16);
+		uint32_t arc_offset = header_position - header_offset - header_size;
 
 		header_offset += arc_offset;
 
@@ -150,7 +148,9 @@ namespace Menge
 		{
 			zipFile->seek( header_offset );
 
-			int signature = s_read_int( zipFile );
+			uint32_t signature;
+			zipFile->read( &signature, sizeof(signature) );
+			//int signature = s_read_int( zipFile );
 
 			if( signature != 0x02014B50 )
 			{
@@ -158,27 +158,26 @@ namespace Menge
 			}
 
 			ZipCentralDirectoryFileHeader header;
+						
+			zipFile->read( &header.versionMade, sizeof(header.versionMade) );
+			zipFile->read( &header.versionNeeded, sizeof(header.versionNeeded) );
+			zipFile->read( &header.generalPurposeFlag, sizeof(header.generalPurposeFlag) );
+			zipFile->read( &header.compressionMethod, sizeof(header.compressionMethod) );
+			zipFile->read( &header.lastModTime, sizeof(header.lastModTime) );
+			zipFile->read( &header.lastModDate, sizeof(header.lastModDate) );
+			zipFile->read( &header.crc32, sizeof(header.crc32) );
+			zipFile->read( &header.compressedSize, sizeof(header.compressedSize) );
+			zipFile->read( &header.uncompressedSize, sizeof(header.uncompressedSize) );
+			zipFile->read( &header.fileNameLen, sizeof(header.fileNameLen) );
+			zipFile->read( &header.extraFieldLen, sizeof(header.extraFieldLen) );
+			zipFile->read( &header.commentLen, sizeof(header.commentLen) );
+			zipFile->read( &header.diskNumber, sizeof(header.diskNumber) );
+			zipFile->read( &header.internalAttributes, sizeof(header.internalAttributes) );
+			zipFile->read( &header.externalAttributes, sizeof(header.externalAttributes) );
+			zipFile->read( &header.relativeOffset, sizeof(header.relativeOffset) );
+			
+			uint32_t fileOffset = header.relativeOffset + 30 + header.fileNameLen + header.extraFieldLen;
 
-			zipFile->seek( header_offset + 10 );
-
-			zipFile->read( &header.compressionMethod, sizeof( header.compressionMethod ) );
-			zipFile->read( &header.lastModTime, sizeof( header.lastModTime ) );
-			zipFile->read( &header.lastModDate, sizeof( header.lastModDate ) );
-			zipFile->read( &header.crc32, sizeof( header.crc32 ) );
-			zipFile->read( &header.compressedSize, sizeof( header.compressedSize ) );
-			zipFile->read( &header.uncompressedSize, sizeof( header.uncompressedSize ) );
-			zipFile->read( &header.fileNameLen, sizeof( header.fileNameLen ) );
-			zipFile->read( &header.extraFieldLen, sizeof( header.extraFieldLen ) );
-			zipFile->read( &header.commentLen, sizeof( header.commentLen ) );
-
-			zipFile->seek( header_offset + 42 );
-
-			uint32_t localFileHeaderOffset; 
-			zipFile->read( &localFileHeaderOffset, sizeof(localFileHeaderOffset) );
-
-			uint32_t fileOffset = localFileHeaderOffset + 30 + header.fileNameLen + header.extraFieldLen;
-
-			zipFile->seek( header_offset + 46 );
 			zipFile->read( &fileNameBuffer, header.fileNameLen );
 
 			uint32_t header_size = 46 + header.fileNameLen + header.extraFieldLen + header.commentLen;
@@ -191,19 +190,7 @@ namespace Menge
 
 			FilePath fileName = Helper::stringizeStringSize(m_serviceProvider, fileNameBuffer, header.fileNameLen);
 
-			//if( header.compressionMethod != 0 )
-			//{
-			//	LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ %s compressed %d file '%s'"
-			//		, m_path.c_str()
-			//		, header.compressionMethod
-			//		, fileName.c_str() 
-			//		);
-
-			//	continue;
-			//}
-
 			FileInfo fi;
-
 			fi.seek_pos = fileOffset;
 			fi.file_size = header.compressedSize;
 			fi.unz_size = header.uncompressedSize;
@@ -295,16 +282,36 @@ namespace Menge
 			return nullptr;
 		}
 
-		size_t uncompressSize = 0;
-		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( buffer, fi.unz_size, compress_memory, fi.file_size, uncompressSize ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s:%s file %s invalid uncompress"
-				, m_folder.c_str()
-				, m_path.c_str()
-				, _fileName.c_str()
-				);
+		z_stream zs;
+		zs.next_in = (z_const Bytef *)compress_memory;
+		zs.avail_in = (uInt)fi.file_size;
+		/* Check for source > 64K on 16-bit machine: */
+		//if ((uLong)stream.avail_in != sourceLen) return Z_BUF_ERROR;
 
+		zs.next_out = (Bytef *)buffer;
+		zs.avail_out = (uInt)fi.unz_size;
+		//if ((uLong)stream.avail_out != *destLen) return Z_BUF_ERROR;
+
+		zs.zalloc = (alloc_func)0;
+		zs.zfree = (free_func)0;
+
+		int err_init = inflateInit2( &zs, -MAX_WBITS );
+		
+		if( err_init != Z_OK )
+		{
+			return nullptr;
+		}
+
+		int err_inflate = inflate(&zs, Z_FINISH);		
+		int err_end = inflateEnd( &zs );
+
+		if( err_inflate != Z_STREAM_END )
+		{
+			return nullptr;
+		}
+
+		if( err_end != Z_OK )
+		{
 			return nullptr;
 		}
 

@@ -8,6 +8,7 @@
 #	include "Core/String.h"
 
 #	include "Factory/Factorable.h"
+#	include "Factory/Factory.h"
 
 namespace Menge
 {
@@ -107,6 +108,10 @@ namespace Menge
 
     public:
         virtual bool initialize() = 0;
+
+	public:
+		virtual void registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory ) = 0;
+		virtual void unregisterFileGroupFactory( const ConstString & _type ) = 0;
 
     public:
         virtual bool mountFileGroup( const ConstString & _fileGroupName, const FilePath & _folder, const FilePath & _path, const ConstString & _type, bool _create ) = 0;

@@ -2,8 +2,6 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#	include "Factory/FactoryManager.h"
-
 #   include "stdex/binary_vector.h"
 
 namespace Menge
@@ -21,6 +19,13 @@ namespace Menge
 
 	public:
 		bool initialize() override;
+
+	public:
+		void registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory ) override;
+		void unregisterFileGroupFactory( const ConstString & _type ) override;
+
+	protected:
+		FileGroupInterfacePtr createFileGroup( const ConstString & _type );
 
 	public:	// FileEngine Interface
 		bool mountFileGroup( const ConstString& _fileGroupName, const FilePath& _folder, const FilePath& _path, const ConstString & _type, bool _create ) override;
@@ -50,7 +55,8 @@ namespace Menge
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
-        FactoryManager m_factoryFileGroup;
+		typedef stdex::binary_vector<ConstString, FactoryPtr> TFactoryFileGroups;
+		TFactoryFileGroups m_factoryFileGroups;
 
 		typedef stdex::binary_vector<ConstString, FileGroupInterfacePtr> TMapFileSystem;
 		TMapFileSystem m_fileSystemMap;

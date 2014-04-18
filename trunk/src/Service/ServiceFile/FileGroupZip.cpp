@@ -226,6 +226,44 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_inflate_memory( void * _buffer, size_t _capacity, const void * _src, size_t _size )
+	{
+		z_stream zs;
+		zs.next_in = (z_const Bytef *)_src;
+		zs.avail_in = (uInt)_size;
+		/* Check for source > 64K on 16-bit machine: */
+		//if ((uLong)stream.avail_in != sourceLen) return Z_BUF_ERROR;
+
+		zs.next_out = (Bytef *)_buffer;
+		zs.avail_out = (uInt)_capacity;
+		//if ((uLong)stream.avail_out != *destLen) return Z_BUF_ERROR;
+
+		zs.zalloc = (alloc_func)0;
+		zs.zfree = (free_func)0;
+
+		int err_init = inflateInit2( &zs, -MAX_WBITS );
+
+		if( err_init != Z_OK )
+		{
+			return false;
+		}
+
+		int err_inflate = inflate(&zs, Z_FINISH);		
+		int err_end = inflateEnd( &zs );
+
+		if( err_inflate != Z_STREAM_END )
+		{
+			return false;
+		}
+
+		if( err_end != Z_OK )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _fileName )
 	{
 		TMapFileInfo::const_iterator it_found = m_files.find( _fileName );
@@ -244,29 +282,12 @@ namespace Menge
 			return stream;
 		}
 		
-		if( m_zipMappedFile->openFileStream( stream, fi.seek_pos, fi.file_size ) == false )
+		void * compress_memory_mapped = nullptr;
+		if( m_zipMappedFile->openFileStream( stream, fi.seek_pos, fi.file_size, &compress_memory_mapped ) == false )
 		{
 			return nullptr;
 		}
 
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, fi.file_size, "FileGroupZip_createInputFile");
-		void * compress_memory = compress_buffer.getMemory();
-
-		if( compress_memory == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s:%s file %s failed cache memory %d"
-				, m_folder.c_str()
-				, m_path.c_str()
-				, _fileName.c_str()
-				, fi.file_size
-				);
-
-			return nullptr;
-		}
-		
-		stream->read( compress_memory, fi.file_size );
-		stream = nullptr;
-		
 		MemoryInputPtr memory = m_factoryMemoryInput.createObjectT();
 		void * buffer = memory->newMemory( fi.unz_size );
 
@@ -282,37 +303,37 @@ namespace Menge
 			return nullptr;
 		}
 
-		z_stream zs;
-		zs.next_in = (z_const Bytef *)compress_memory;
-		zs.avail_in = (uInt)fi.file_size;
-		/* Check for source > 64K on 16-bit machine: */
-		//if ((uLong)stream.avail_in != sourceLen) return Z_BUF_ERROR;
+		if( compress_memory_mapped == nullptr )
+		{
+			CacheMemoryBuffer compress_buffer(m_serviceProvider, fi.file_size, "FileGroupZip_createInputFile");
+			void * compress_memory = compress_buffer.getMemory();
 
-		zs.next_out = (Bytef *)buffer;
-		zs.avail_out = (uInt)fi.unz_size;
-		//if ((uLong)stream.avail_out != *destLen) return Z_BUF_ERROR;
+			if( compress_memory == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s:%s file %s failed cache memory %d"
+					, m_folder.c_str()
+					, m_path.c_str()
+					, _fileName.c_str()
+					, fi.file_size
+					);
 
-		zs.zalloc = (alloc_func)0;
-		zs.zfree = (free_func)0;
+				return nullptr;
+			}
 
-		int err_init = inflateInit2( &zs, -MAX_WBITS );
+			stream->read( compress_memory, fi.file_size );
+			stream = nullptr;
 		
-		if( err_init != Z_OK )
-		{
-			return nullptr;
+			if( s_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
+			{
+				return nullptr;
+			}
 		}
-
-		int err_inflate = inflate(&zs, Z_FINISH);		
-		int err_end = inflateEnd( &zs );
-
-		if( err_inflate != Z_STREAM_END )
+		else
 		{
-			return nullptr;
-		}
-
-		if( err_end != Z_OK )
-		{
-			return nullptr;
+			if( s_inflate_memory( buffer, fi.unz_size, compress_memory_mapped, fi.file_size ) == false )
+			{
+				return nullptr;
+			}
 		}
 
 		return memory;
@@ -336,7 +357,7 @@ namespace Menge
 
 		if( fi.compr_method == 0 )
 		{			
-			bool successful = m_zipMappedFile->openFileStream( _stream, fi.seek_pos, fi.file_size );
+			bool successful = m_zipMappedFile->openFileStream( _stream, fi.seek_pos, fi.file_size, nullptr );
 
 			return successful;
 		}

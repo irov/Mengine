@@ -19,13 +19,15 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryProxyInput::setMemory( void * _memory, size_t _offset, size_t _size )
+	void * MemoryProxyInput::setMemory( void * _memory, size_t _offset, size_t _size )
 	{
 		m_data = static_cast<unsigned char*>( _memory ) + _offset;
 		m_size = _size;
 
 		m_pos = m_data;
 		m_end = m_data + m_size;
+
+		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void * MemoryProxyInput::getMemory( size_t & _size ) const

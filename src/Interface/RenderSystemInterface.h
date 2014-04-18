@@ -208,7 +208,7 @@ namespace Menge
 		virtual size_t getHeight() const = 0;
 		virtual size_t getChannels() const = 0;
 
-		virtual unsigned char* lock( int * _pitch, const Rect & _rect, bool _readOnly = true ) const = 0;
+		virtual unsigned char * lock( int * _pitch, const Rect & _rect, bool _readOnly = true ) const = 0;
 		virtual void unlock() const = 0;
 
 		virtual size_t getMemoryUse() const = 0;

@@ -562,7 +562,19 @@ namespace Menge
         const RenderTextureInterfacePtr & texture = m_textures[0];
 
         int pitch = 0;
-		unsigned char* lockRect = texture->lock( &pitch, rect, false );
+		unsigned char * lockRect = texture->lock( &pitch, rect, false );
+
+		if( lockRect == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Video::fillVideoBuffer_ %s:%s invalid lock texture %f:%f"
+				, this->getName().c_str()
+				, m_resourceVideo->getName().c_str()
+				, m_frameSize.x
+				, m_frameSize.y
+				);
+
+			return false;
+		}
 
 		m_videoDecoder->setPitch( pitch );
         size_t count = m_videoDecoder->decode( lockRect, pitch * rect.bottom );

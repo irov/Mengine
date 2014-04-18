@@ -240,6 +240,16 @@ namespace Menge
 		int pitch = 0;
 		unsigned char* textureData = m_nullTexture->lock( &pitch, rect, false );
 
+		if( textureData == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createWhitePixelTexture_ invalid lock null texture %d:%d"
+				, null_width
+				, null_height
+				);
+
+			return false;
+		}
+
 		for( size_t it = 0; it != null_height; ++it )
 		{
 			unsigned char null_color = 0xFF;

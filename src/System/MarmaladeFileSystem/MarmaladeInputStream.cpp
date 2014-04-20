@@ -12,6 +12,7 @@ namespace Menge
         : m_serviceProvider(nullptr)
         , m_hFile(nullptr)
 		, m_size(0)
+		, m_offset(0)
         , m_carriage(0)
         , m_capacity(0)
         , m_reading(0)
@@ -27,7 +28,7 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeInputStream::open( const FilePath & _folder, const FilePath & _fileName )
+	bool MarmaladeInputStream::open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size )
 	{
 		m_folder = _folder;
 		m_filename = _fileName;
@@ -59,22 +60,31 @@ namespace Menge
             return false;
         }
 
-        int32 s3e_size = s3eFileGetSize( m_hFile );
+		m_offset = _offset;
 
-        if( s3e_size == -1 )
-        {
-            s3eFileError error = s3eFileGetError();
+		if( _size == 0 )
+		{
+			int32 s3e_size = s3eFileGetSize( m_hFile );
 
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open s3eFileGetSize %s:%s get error %d"
-                , m_folder.c_str()
-                , m_filename.c_str()
-                , error
-                );
+			if( s3e_size == -1 )
+			{
+				s3eFileError error = s3eFileGetError();
 
-            return false;
-        }
+				LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open s3eFileGetSize %s:%s get error %d"
+					, m_folder.c_str()
+					, m_filename.c_str()
+					, error
+					);
 
-        m_size = (size_t)s3e_size;
+				return false;
+			}
+
+			m_size = (size_t)s3e_size;
+		}
+		else
+		{
+			m_size = _size;
+		}
 
 		return true;
 	}

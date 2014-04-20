@@ -63,12 +63,6 @@ namespace Menge
         return inputStream;
     }
 	//////////////////////////////////////////////////////////////////////////
-	MappedFileInterfacePtr MarmaladeFileSystem::createSharedFile()
-	{
-		//Do not support
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileSystem::existFile( const FilePath & _folder, const FilePath & _fileName ) const
 	{
         char filePath[MAX_PATH];

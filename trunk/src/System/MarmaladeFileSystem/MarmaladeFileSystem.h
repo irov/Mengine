@@ -32,7 +32,6 @@ namespace Menge
 		
     public:
         MappedFileInterfacePtr createMappedFile() override;
-		MappedFileInterfacePtr createSharedFile() override;
 
     public:
 		bool existFile( const FilePath & _folder, const FilePath & _fileName ) const override;

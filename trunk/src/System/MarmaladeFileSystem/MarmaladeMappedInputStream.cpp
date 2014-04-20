@@ -50,7 +50,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeMappedInputStream::initialize( const FilePath & _folder, const FilePath & _fileName )
     {
-        if( m_inputStream.open( _folder, _fileName ) == false )
+        if( m_inputStream.open( _folder, _fileName, 0, 0 ) == false )
         {
             return false;
         }

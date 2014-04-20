@@ -217,7 +217,7 @@ namespace Menge
         }
         else
         {
-            s3eResult result = s3eFileSeek( m_hFile, static_cast<int32>(_pos), S3E_FILESEEK_SET );
+            s3eResult result = s3eFileSeek( m_hFile, static_cast<int32>(_pos + m_offset), S3E_FILESEEK_SET );
 
     		if( result != S3E_RESULT_SUCCESS )
             {
@@ -235,7 +235,7 @@ namespace Menge
             m_carriage = 0;
             m_capacity = 0;
 
-            m_reading = static_cast<uint32>(_pos);
+            m_reading = static_cast<uint32>(_pos) - m_offset;
         }
 
         return true;

@@ -6,9 +6,7 @@
 namespace Menge
 {
     class ServiceProviderInterface;
-
-    const size_t FILE_BUFFER_SIZE = 8192; //8kb
-
+	
 	class Win32InputStream
 		: public FileInputStreamInterface
 	{
@@ -41,11 +39,5 @@ namespace Menge
 		HANDLE m_hFile;
 		size_t m_offset;
 		size_t m_size;		
-
-        size_t m_carriage;
-        size_t m_capacity;
-        size_t m_reading;
-
-        char m_readCache[FILE_BUFFER_SIZE];
 	};
 }	// namespace Menge

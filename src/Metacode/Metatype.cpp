@@ -8,28 +8,28 @@
 namespace Metabuf
 {
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( ArchiveReader & ar, bool & _value, void * _userData )
+	void archive_read( stdex::memory_reader & ar, bool & _value, void * _userData )
 	{
 		(void)_userData;
 
 		ar.readPOD( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( ArchiveReader & ar, uint32_t & _value, void * _userData )
+	void archive_read( stdex::memory_reader & ar, uint32_t & _value, void * _userData )
 	{
 		(void)_userData;
 
 		ar.readPOD( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void archive_read( ArchiveReader & ar, float & _value, void * _userData )
+	void archive_read( stdex::memory_reader & ar, float & _value, void * _userData )
 	{
 		(void)_userData;
 
 		ar.readPOD( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void archive_read( ArchiveReader & ar, Menge::String & _value, void * _userData )
+    void archive_read( stdex::memory_reader & ar, Menge::String & _value, void * _userData )
 	{
         (void)_userData;
 
@@ -48,7 +48,7 @@ namespace Metabuf
         ar.readCount( &_value[0], size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void archive_read( ArchiveReader & ar, Menge::ConstString & _value, void * _userData )
+    void archive_read( stdex::memory_reader & ar, Menge::ConstString & _value, void * _userData )
 	{
         Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
 
@@ -58,7 +58,7 @@ namespace Metabuf
         _value = loader->getCacheConstString( index );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( ArchiveReader & ar, Menge::WChar & _value, void * _userData )
+    void archive_read( stdex::memory_reader & ar, Menge::WChar & _value, void * _userData )
     {   
         uint32_t size;
         ar.readSize( size );
@@ -75,14 +75,14 @@ namespace Metabuf
         if( UNICODE_SERVICE(serviceProvider)
             ->utf8ToUnicode( utf8, size, unicode, 2, &unicodeSize ) == false )
         {
-            throw Metabuf::ArchiveException();
+            stdex::throw_memory_reader_exception();
 
             return;
         }
 
         if( unicodeSize == 0 )
         {
-            throw Metabuf::ArchiveException();
+            stdex::throw_memory_reader_exception();
 
             return;
         }
@@ -90,10 +90,10 @@ namespace Metabuf
         _value = unicode[0];
     }
 	//////////////////////////////////////////////////////////////////////////
-    void archive_read( ArchiveReader & ar, Menge::WString & _value, void * _userData )
+    void archive_read( stdex::memory_reader & ar, Menge::WString & _value, void * _userData )
 	{
         static Menge::String utf8;
-        ar.read( utf8 );
+        archive_read( ar, utf8, _userData );
 
         Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
         Menge::ServiceProviderInterface * serviceProvider = loader->getServiceProvider();
@@ -101,7 +101,7 @@ namespace Metabuf
         Menge::Helper::utf8ToUnicode( serviceProvider, utf8, _value );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( ArchiveReader & ar, Menge::ColourValue & _value, void * _userData )
+    void archive_read( stdex::memory_reader & ar, Menge::ColourValue & _value, void * _userData )
     {
         (void)_userData;
 
@@ -124,7 +124,7 @@ namespace Metabuf
         _value.setARGB( a, r, g, b );
     }
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( ArchiveReader & ar, Menge::GlyphCode & _value, void * _userData )
+    void archive_read( stdex::memory_reader & ar, Menge::GlyphCode & _value, void * _userData )
     {
         (void)_userData;
 
@@ -134,7 +134,7 @@ namespace Metabuf
         _value.setCode( code );
     }
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( ArchiveReader & ar, Menge::Polygon & _value, void * _userData )
+    void archive_read( stdex::memory_reader & ar, Menge::Polygon & _value, void * _userData )
     {
         (void)_userData;
 
@@ -143,7 +143,7 @@ namespace Metabuf
 
         if( count % 2 != 0 )
         {
-            throw Metabuf::ArchiveException();
+			stdex::throw_memory_reader_exception();
 
             return;
         }
@@ -151,13 +151,13 @@ namespace Metabuf
         for( uint32_t i = 0; i != count; i += 2 )
         {
             mt::vec2f v;
-            ar.read( v );
+            archive_read( ar, v, _userData );
 
             boost::geometry::append( _value, v );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( ArchiveReader & ar, Menge::Floats & _value, void * _userData )
+    void archive_read( stdex::memory_reader & ar, Menge::Floats & _value, void * _userData )
     {
         (void)_userData;
 
@@ -169,7 +169,7 @@ namespace Metabuf
         ar.readCount( &_value[0], count );
     }
 	//////////////////////////////////////////////////////////////////////////
-    void archive_read( ArchiveReader & ar, mt::vec2f & _value, void * _userData )
+    void archive_read( stdex::memory_reader & ar, mt::vec2f & _value, void * _userData )
 	{
         (void)_userData;
 
@@ -177,7 +177,7 @@ namespace Metabuf
 		ar.readPOD( _value.y );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( ArchiveReader & ar, mt::vec3f & _value, void * _userData )
+    void archive_read( stdex::memory_reader & ar, mt::vec3f & _value, void * _userData )
     {
         (void)_userData;
 
@@ -186,7 +186,7 @@ namespace Metabuf
         ar.readPOD( _value.z );
     }
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( ArchiveReader & ar, mt::vec4f & _value, void * _userData )
+    void archive_read( stdex::memory_reader & ar, mt::vec4f & _value, void * _userData )
     {
         (void)_userData;
 

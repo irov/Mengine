@@ -3,12 +3,12 @@
 namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
-    static bool readHeader2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, void * _userData )
+    static bool readHeader2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion )
     {
-        Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
+        stdex::memory_reader ar(_buff, _size, _read);
 
         uint32_t head;
-        ar.read( head );
+        ar.readPOD( head );
 
         if( head != 3133062829u )
         {
@@ -16,7 +16,7 @@ namespace Metacode
         }
 
         uint32_t version;
-        ar.read( version );
+        ar.readPOD( version );
 
         _readVersion = version;
         _needVersion = 46;
@@ -29,51 +29,51 @@ namespace Metacode
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, void * _userData )
+    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion )
     {
         try
         {
-            bool successful = readHeader2( _buff, _size, _read, _readVersion, _needVersion, _userData );
+            bool successful = readHeader2( _buff, _size, _read, _readVersion, _needVersion );
 
             return successful;
         }
-        catch( const Metabuf::ArchiveException & )
+        catch( const stdex::memory_reader_exception & )
         {
         }
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool readStrings2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount, void * _userData )
+    static bool readStrings2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount )
     {
-        Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
+        stdex::memory_reader ar(_buff, _size, _read);
 
         uint32_t count;
-        ar.read( count );
+        ar.readPOD( count );
 
         _stringCount = count;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool readStrings( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount, void * _userData )
+    bool readStrings( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount )
     {
         try
         {
-            bool successful = readStrings2( _buff, _size, _read, _stringCount, _userData );
+            bool successful = readStrings2( _buff, _size, _read, _stringCount );
 
             return successful;
         }
-        catch( const Metabuf::ArchiveException & )
+        catch( const stdex::memory_reader_exception & )
         {
         }
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    static const char * readString2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, void * _userData )
+    static const char * readString2( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize )
     {
-        Metabuf::ArchiveReader ar(_buff, _size, _read, _userData);
+        stdex::memory_reader ar(_buff, _size, _read);
 
         uint32_t size;
         ar.readSize( size );
@@ -86,15 +86,15 @@ namespace Metacode
         return value;
     }
     //////////////////////////////////////////////////////////////////////////
-    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, void * _userData )
+    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize )
     {
         try
         {
-            const char * value = readString2( _buff, _size, _read, _stringSize, _userData );
+            const char * value = readString2( _buff, _size, _read, _stringSize );
 
             return value;
         }
-        catch( const Metabuf::ArchiveException & )
+        catch( const stdex::memory_reader_exception & )
         {
         }
 

@@ -4,6 +4,8 @@
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Core/InputStreamBuffer.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Core/CacheMemoryBuffer.h"
@@ -106,14 +108,16 @@ namespace Menge
 			return false;
 		}
 
-		size_t zip_size = zipFile->size();
-		zipFile->seek( zip_size - 22 );
+		InputStreamBuffer zipFileBuffer(zipFile);
 
-		size_t header_position = zipFile->tell();
+		size_t zip_size = zipFileBuffer.size();
+		zipFileBuffer.seek( zip_size - 22 );
+
+		size_t header_position = zipFileBuffer.tell();
 
 		unsigned char endof_central_dir[22];
 
-		if( zipFile->read( endof_central_dir, 22 ) != 22 )
+		if( zipFileBuffer.read( endof_central_dir, 22 ) != 22 )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileSystemZip::loadHeader_ invalid zip format %s"
 				, m_path.c_str()
@@ -143,10 +147,10 @@ namespace Menge
 
 		while( true, true )
 		{
-			zipFile->seek( header_offset );
+			zipFileBuffer.seek( header_offset );
 
 			uint32_t signature;
-			zipFile->read( &signature, sizeof(signature) );
+			zipFileBuffer.read( &signature, sizeof(signature) );
 			//int signature = s_read_int( zipFile );
 
 			if( signature != 0x02014B50 )
@@ -156,26 +160,26 @@ namespace Menge
 
 			ZipCentralDirectoryFileHeader header;
 						
-			zipFile->read( &header.versionMade, sizeof(header.versionMade) );
-			zipFile->read( &header.versionNeeded, sizeof(header.versionNeeded) );
-			zipFile->read( &header.generalPurposeFlag, sizeof(header.generalPurposeFlag) );
-			zipFile->read( &header.compressionMethod, sizeof(header.compressionMethod) );
-			zipFile->read( &header.lastModTime, sizeof(header.lastModTime) );
-			zipFile->read( &header.lastModDate, sizeof(header.lastModDate) );
-			zipFile->read( &header.crc32, sizeof(header.crc32) );
-			zipFile->read( &header.compressedSize, sizeof(header.compressedSize) );
-			zipFile->read( &header.uncompressedSize, sizeof(header.uncompressedSize) );
-			zipFile->read( &header.fileNameLen, sizeof(header.fileNameLen) );
-			zipFile->read( &header.extraFieldLen, sizeof(header.extraFieldLen) );
-			zipFile->read( &header.commentLen, sizeof(header.commentLen) );
-			zipFile->read( &header.diskNumber, sizeof(header.diskNumber) );
-			zipFile->read( &header.internalAttributes, sizeof(header.internalAttributes) );
-			zipFile->read( &header.externalAttributes, sizeof(header.externalAttributes) );
-			zipFile->read( &header.relativeOffset, sizeof(header.relativeOffset) );
+			zipFileBuffer.read( &header.versionMade, sizeof(header.versionMade) );
+			zipFileBuffer.read( &header.versionNeeded, sizeof(header.versionNeeded) );
+			zipFileBuffer.read( &header.generalPurposeFlag, sizeof(header.generalPurposeFlag) );
+			zipFileBuffer.read( &header.compressionMethod, sizeof(header.compressionMethod) );
+			zipFileBuffer.read( &header.lastModTime, sizeof(header.lastModTime) );
+			zipFileBuffer.read( &header.lastModDate, sizeof(header.lastModDate) );
+			zipFileBuffer.read( &header.crc32, sizeof(header.crc32) );
+			zipFileBuffer.read( &header.compressedSize, sizeof(header.compressedSize) );
+			zipFileBuffer.read( &header.uncompressedSize, sizeof(header.uncompressedSize) );
+			zipFileBuffer.read( &header.fileNameLen, sizeof(header.fileNameLen) );
+			zipFileBuffer.read( &header.extraFieldLen, sizeof(header.extraFieldLen) );
+			zipFileBuffer.read( &header.commentLen, sizeof(header.commentLen) );
+			zipFileBuffer.read( &header.diskNumber, sizeof(header.diskNumber) );
+			zipFileBuffer.read( &header.internalAttributes, sizeof(header.internalAttributes) );
+			zipFileBuffer.read( &header.externalAttributes, sizeof(header.externalAttributes) );
+			zipFileBuffer.read( &header.relativeOffset, sizeof(header.relativeOffset) );
 			
 			uint32_t fileOffset = header.relativeOffset + 30 + header.fileNameLen + header.extraFieldLen;
 
-			zipFile->read( &fileNameBuffer, header.fileNameLen );
+			zipFileBuffer.read( &fileNameBuffer, header.fileNameLen );
 
 			uint32_t header_size = 46 + header.fileNameLen + header.extraFieldLen + header.commentLen;
 			header_offset += header_size;
@@ -206,7 +210,7 @@ namespace Menge
 			
 			m_files.insert( fileName, fi );
 
-			Utils::skip( zipFile, header.compressedSize );
+			zipFileBuffer.skip( header.compressedSize );
 		}
 
 		return true;

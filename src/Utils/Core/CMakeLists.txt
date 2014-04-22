@@ -62,6 +62,8 @@ src
     BlobjectRead.h
     
     RenderUtil.h
+    
+    InputStreamBuffer.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

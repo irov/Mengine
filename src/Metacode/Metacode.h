@@ -6,9 +6,9 @@
 
 namespace Metacode
 {
-    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, void * _userData );
-    bool readStrings( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount, void * _userData );
-    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, void * _userData );
+    bool readHeader( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion );
+    bool readStrings( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringCount );
+    const char * readString( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t & _stringSize );
 
     class Meta_DataBlock
         : public Metabuf::Metadata

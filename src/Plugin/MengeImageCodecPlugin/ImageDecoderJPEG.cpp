@@ -1,6 +1,9 @@
 #	include "ImageDecoderJPEG.h"
 
 #	include "Interface/FileSystemInterface.h"
+
+#	include "Core/InputStreamBuffer.h"
+
 #	include "Logger/Logger.h"
 
 #	define INPUT_BUF_SIZE  4096				// choose an efficiently fread'able size 
@@ -11,7 +14,7 @@ namespace Menge
 		/// public fields
 		struct jpeg_source_mgr pub;
 
-		InputStreamInterface * m_stream;
+		InputStreamBuffer m_stream;
 		/// start of buffer
 		JOCTET * buffer;
 		/// have we gotten any data yet ?
@@ -93,7 +96,7 @@ namespace Menge
 	{
 		menge_src_ptr src = (menge_src_ptr) cinfo->src;
 
-		size_t nbytes = src->m_stream->read( src->buffer, INPUT_BUF_SIZE );
+		size_t nbytes = src->m_stream.read( src->buffer, INPUT_BUF_SIZE );
 
 		if( nbytes <= 0 )
 		{
@@ -200,7 +203,7 @@ namespace Menge
 		src->pub.skip_input_data = skip_input_data;
 		src->pub.resync_to_restart = jpeg_resync_to_restart; // use default method 
 		src->pub.term_source = term_source;
-		src->m_stream = _stream;
+		src->m_stream.setStream( _stream );
 		src->pub.bytes_in_buffer = 0;		// forces fill_input_buffer on first read 
 		src->pub.next_input_byte = nullptr;	// until buffer loaded 
 	}

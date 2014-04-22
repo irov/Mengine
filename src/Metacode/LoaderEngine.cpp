@@ -130,7 +130,7 @@ namespace Menge
         uint32_t readVersion;
         uint32_t needVersion;
 
-        if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion, (void *)m_serviceProvider ) == false )
+        if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion ) == false )
         {
             if( _reimport == nullptr )
             {
@@ -196,7 +196,7 @@ namespace Menge
         size_t read_size = 0;
 
         uint32_t stringCount;
-        if( Metacode::readStrings( binary_memory, bin_size, read_size, stringCount, (void *)m_serviceProvider ) == false )
+        if( Metacode::readStrings( binary_memory, bin_size, read_size, stringCount ) == false )
         {
             return false;
         }
@@ -210,7 +210,7 @@ namespace Menge
         ++it )
         {
             uint32_t stringSize;
-            const char * str = Metacode::readString( binary_memory, bin_size, read_size, stringSize, (void *)m_serviceProvider );
+            const char * str = Metacode::readString( binary_memory, bin_size, read_size, stringSize );
 
             if( str == nullptr )
             {

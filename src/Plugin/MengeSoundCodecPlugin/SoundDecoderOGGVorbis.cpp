@@ -9,7 +9,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static size_t s_readOgg( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
 	{
-		InputStreamInterface* stream = static_cast<InputStreamInterface*>(_datasource);
+		InputStreamBuffer * stream = static_cast<InputStreamBuffer *>(_datasource);
 		size_t count = stream->read( _ptr, _size * _nmemb );
 
 		return count;
@@ -17,7 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static int s_seekOgg( void *_datasource, ogg_int64_t _offset, int _whence )
 	{
-		InputStreamInterface* stream = static_cast<InputStreamInterface*>(_datasource);
+		InputStreamBuffer * stream = static_cast<InputStreamBuffer *>(_datasource);
 		ogg_int64_t offset = _offset;
 
 		switch( _whence )
@@ -43,7 +43,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static long s_tellOgg( void * _datasource )
 	{
-		InputStreamInterface* stream = static_cast<InputStreamInterface*>(_datasource);
+		InputStreamBuffer * stream = static_cast<InputStreamBuffer*>(_datasource);
         size_t pos = stream->tell();
 
         long long_pos = (long)pos;
@@ -69,19 +69,15 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SoundDecoderOGGVorbis::_initialize()
     {
-        // callbacks used to read the file
-        ov_callbacks vorbisCallbacks;
+		m_streamBuffer.setStream( m_stream );
 
-        // Fill vorbisCallbacks struct
+        ov_callbacks vorbisCallbacks;
         vorbisCallbacks.read_func = s_readOgg;
         vorbisCallbacks.seek_func = s_seekOgg;
         vorbisCallbacks.tell_func = s_tellOgg;
         vorbisCallbacks.close_func = s_closeOgg;
 
-        //MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 1" );
-        InputStreamInterface * streamInterface = m_stream.get();
-
-        int opcall_err = ov_open_callbacks( streamInterface, &m_oggVorbisFile, nullptr, 0, vorbisCallbacks );
+        int opcall_err = ov_open_callbacks( &m_streamBuffer, &m_oggVorbisFile, nullptr, 0, vorbisCallbacks );
         
         if( opcall_err < 0 )
         {

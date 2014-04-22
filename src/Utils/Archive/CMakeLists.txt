@@ -4,8 +4,6 @@ set( MY_LIB_NAME Archive )
 ADD_FILTER(
 src
 	Archive.hpp
-	ArchiveRead.hpp
-	ArchiveRead.cpp
 	ArchiveWrite.hpp
 	ArchiveWrite.cpp
 )

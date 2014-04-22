@@ -46,3 +46,4 @@
 #	define MENGE_DEFAULT_BASE_DIR "..\\"
 #	define MENGE_FOLDER_DELIM '\\'
 #	define MENGE_FOLDER_RESOURCE_DELIM '/'
+ 

@@ -1474,7 +1474,7 @@ namespace Menge
 		}
 
 		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Sound Codec..." );
+			LOGGER_INFO(m_serviceProvider)( "initialize Zip..." );
 			initPluginMengeZip( &m_pluginMengeZip );
 			m_pluginMengeZip->initialize( m_serviceProvider );
 		}

@@ -1,8 +1,8 @@
 #   pragma once
 
-#   include <metabuf/Metabuf.hpp>
-
 #   include "Metatype.h"
+
+#   include <metabuf/Metabuf.hpp>
 
 namespace Metacode
 {

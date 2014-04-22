@@ -190,7 +190,7 @@ namespace Menge
         ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
 
         INPUT_SERVICE(serviceProvider)
-            ->onMouseMove( touchId, point, diff.x, diff.y, 0 );
+            ->onMouseMove( touchId, point, diff.x, diff.y );
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeInput::s_pointerButtonEvent( s3ePointerEvent * _event, MarmaladeInput * _input )
@@ -223,7 +223,7 @@ namespace Menge
         ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
 
         INPUT_SERVICE(serviceProvider)
-            ->onMouseMove( 0, point, diff.x, diff.y, 0 );
+            ->onMouseMove( 0, point, diff.x, diff.y );
     }
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeInput::setTouch_( uint32 _touchId, const mt::vec2f & _point, bool _active )

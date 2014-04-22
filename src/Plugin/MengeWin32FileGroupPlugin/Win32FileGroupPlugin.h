@@ -4,11 +4,11 @@
 
 namespace Menge
 {
-	class ZipPlugin
+	class Win32FileGroupPlugin
 		: public PluginInterface
 	{
 	public:
-		ZipPlugin();
+		Win32FileGroupPlugin();
 
 	protected:
 		bool initialize( ServiceProviderInterface * _provider ) override;

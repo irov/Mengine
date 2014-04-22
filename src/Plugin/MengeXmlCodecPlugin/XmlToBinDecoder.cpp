@@ -220,7 +220,7 @@ namespace Menge
 		}
 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( CONST_STRING_LOCAL(zip), &bin_buf[0], bin_size );
+			->compress( Helper::stringizeString(m_serviceProvider, "zip"), &bin_buf[0], bin_size );
 
         OutputStreamInterfacePtr bin_stream = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( dev, m_options.pathBin );

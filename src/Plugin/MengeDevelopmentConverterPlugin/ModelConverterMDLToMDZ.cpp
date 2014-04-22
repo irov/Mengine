@@ -64,7 +64,7 @@ namespace Menge
         input->read( data_memory, data_size );
 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( CONST_STRING_LOCAL(zip), data_memory, data_size );
+			->compress( Helper::stringizeString(m_serviceProvider, "zip"), data_memory, data_size );
 
         if( compress_memory == 0 )
         {

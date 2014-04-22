@@ -77,7 +77,7 @@ namespace Menge
 
 		size_t uncompressSize = 0;
 		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( CONST_STRING_LOCAL(zip), _stream, compress_size, binary_memory, binary_size, uncompressSize ) == false )
+			->decompress( Helper::stringizeString(m_serviceProvider, "zip"), _stream, compress_size, binary_memory, binary_size, uncompressSize ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid uncompress"
 				);

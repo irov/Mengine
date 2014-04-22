@@ -146,7 +146,7 @@ namespace Menge
 	bool Account::load()
 	{
         if( FILE_SERVICE(m_serviceProvider)
-			->existFile( CONST_STRING_LOCAL(user), m_settingsPath, nullptr ) == false )
+			->existFile( Helper::stringizeString(m_serviceProvider, "user"), m_settingsPath, nullptr ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' settings not found '%s'"
                 , m_name.c_str()
@@ -157,7 +157,7 @@ namespace Menge
         }
 
 		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( CONST_STRING_LOCAL(user), m_settingsPath );
+			->openInputFile( Helper::stringizeString(m_serviceProvider, "user"), m_settingsPath );
 
         if( file == nullptr )
         {
@@ -371,14 +371,14 @@ namespace Menge
         _data.resize( load_data_size );
 
 		ArchivatorInterfacePtr archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(zip) );
+			->getArchivator( Helper::stringizeString(m_serviceProvider, "zip") );
 
 		if( archivator == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls: invalid load file %s (invalid archivator %s)"
 				, m_name.c_str()
 				, fullpath.c_str()
-				, CONST_STRING_LOCAL(zip).c_str()
+				, "zip"
 				);
 
 			return false;
@@ -434,7 +434,7 @@ namespace Menge
         uint32_t data_size = _data.size();
 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( CONST_STRING_LOCAL(zip), &_data[0], data_size );
+			->compress( Helper::stringizeString(m_serviceProvider, "zip"), &_data[0], data_size );
         
         if( compress_memory == nullptr )
         {

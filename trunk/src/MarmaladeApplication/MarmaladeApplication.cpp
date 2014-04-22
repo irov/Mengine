@@ -1,6 +1,8 @@
 #	include "Config/Config.h"
 
 #	include "MarmaladeApplication.h"
+#	include "MarmaladeFileGroupDirectory.h"
+
 #	include "Menge/Application.h"
 
 #	include "Interface/LogSystemInterface.h"
@@ -63,7 +65,6 @@ SERVICE_EXTERN(PhysicSystem, Menge::PhysicSystemInterface);
 SERVICE_EXTERN(UnicodeSystem, Menge::UnicodeSystemInterface);
 SERVICE_EXTERN(UnicodeService, Menge::UnicodeServiceInterface);
 
-SERVICE_EXTERN(FileSystem, Menge::FileSystemInterface);
 SERVICE_EXTERN(FileService, Menge::FileServiceInterface);
 
 SERVICE_EXTERN(NotificationService, Menge::NotificationServiceInterface);
@@ -274,21 +275,7 @@ namespace Menge
     bool MarmaladeApplication::initializeFileEngine_()
     {
         LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
-
-        FileSystemInterface * fileSystem;
-        if( SERVICE_CREATE( FileSystem, &fileSystem ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initialize failed to create FileSystem"
-                );
-
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, fileSystem ) == false )
-        {
-            return false;
-        }
-
+		       
         FileServiceInterface * fileService;
         if( SERVICE_CREATE( FileService, &fileService ) == false )
         {
@@ -312,10 +299,12 @@ namespace Menge
 
             return false;
         }
+
+		m_fileService->registerFileGroupFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactorableUnique< FactoryDefault<MarmaladeFileGroupDirectory> >() );
         
         // mount root		
         ConstString c_dir = Helper::stringizeString(m_serviceProvider, "dir");
-        if( m_fileService->mountFileGroup( ConstString::none(), ConstString::none(), m_currentPath, c_dir, false ) == false )
+        if( m_fileService->mountFileGroup( ConstString::none(), m_currentPath, c_dir ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount application directory %ls"
                 , m_currentPath.c_str()
@@ -352,7 +341,7 @@ namespace Menge
         FilePath userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
 
         // mount user directory
-        if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), ConstString::none(), userPath, Helper::stringizeString(m_serviceProvider, "dir"), true ) == false )
+        if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), userPath, Helper::stringizeString(m_serviceProvider, "dir") ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication: failed to mount user directory %ls"
                 , m_userPath.c_str()
@@ -360,6 +349,11 @@ namespace Menge
 
             return false;
         }
+
+		if( m_fileService->existDirectory( Helper::stringizeString(m_serviceProvider, "user"), ConstString::none() ) == false )
+		{
+			m_fileService->createDirectory( Helper::stringizeString(m_serviceProvider, "user"), ConstString::none() );
+		}
 
         FilePath logFilename = Helper::stringizeString( m_serviceProvider, "log.log" );
 

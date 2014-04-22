@@ -43,7 +43,6 @@ SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
 SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
 SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
 
-SERVICE_EXTERN(FileSystem, Menge::FileSystemInterface);
 SERVICE_EXTERN(FileService, Menge::FileServiceInterface);
 
 SERVICE_EXTERN(LoaderService, Menge::LoaderServiceInterface);
@@ -54,7 +53,9 @@ SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
 //////////////////////////////////////////////////////////////////////////
 extern "C" // only required if using g++
 {
-	extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeWin32FileGroup( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );	
+	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
 }
 
 PyObject * PyToolException;
@@ -278,17 +279,6 @@ namespace Menge
 			return false;
 		}
 
-		FileSystemInterface * fileSystem;
-		if( SERVICE_CREATE( FileSystem, &fileSystem ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(serviceProvider, fileSystem) == false )
-		{
-			return false;
-		}
-
 		FileServiceInterface * fileService;
 		if( SERVICE_CREATE( FileService, &fileService ) == false )
 		{
@@ -300,12 +290,25 @@ namespace Menge
 			return false;
 		}
 
-		fileService->initialize();
+		if( fileService->initialize() == false )
+		{
+			return false;
+		}
+
+		PluginInterface * plugin_win32_file_group;
+		initPluginMengeWin32FileGroup( &plugin_win32_file_group );
+		
+		if( plugin_win32_file_group == nullptr )
+		{
+			return false;
+		}
+
+		plugin_win32_file_group->initialize( serviceProvider );	
 
 		PluginInterface * plugin_image_codec;
 		initPluginMengeImageCodec( &plugin_image_codec );
 
-		if( plugin_image_codec == NULL )
+		if( plugin_image_codec == nullptr )
 		{
 			return false;
 		}
@@ -327,7 +330,7 @@ namespace Menge
 			->loadPlugin( L"MengeXmlCodecPlugin.dll" );
 
 		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( ConstString::none(), ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir"), false) == false )
+			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir") ) == false )
 		{
 			return false;
 		}
@@ -335,10 +338,14 @@ namespace Menge
 		ConstString dev = Helper::stringizeString(serviceProvider, "dev");
 
 		if( FILE_SERVICE(serviceProvider)
-			->mountFileGroup( dev, ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir"), false) == false )
+			->mountFileGroup( dev, ConstString::none(), Helper::stringizeString(serviceProvider, "dir") ) == false )
 		{
 			return false;
 		}
+
+		PluginInterface * plugin_zip;
+		initPluginMengeZip( &plugin_zip );
+		plugin_zip->initialize( serviceProvider );
 
 		return true;
 	}

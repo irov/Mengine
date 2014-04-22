@@ -43,12 +43,6 @@ namespace Menge
 		Menge::FilePath m_filename;
 		
 		size_t m_offset;
-        size_t m_size;
-
-        uint32 m_carriage;
-        uint32 m_capacity;
-        uint32 m_reading;
-
-        char m_buff[FILE_BUFFER_SIZE];
+        size_t m_size;		
 	};
 }	// namespace Menge

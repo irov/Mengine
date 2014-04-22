@@ -6,6 +6,7 @@ ADD_SUBDIRECTORY( MengePathFinderPlugin )
 
 if(WIN32)    
 	ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
+    ADD_SUBDIRECTORY( MengeWin32FileGroupPlugin )
     
     if(MSVC)        
         ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )

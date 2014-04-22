@@ -1,9 +1,8 @@
 #	include "Win32InputStream.h"
 
-#	include "Interface/LogSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
 
-#   include "Utils/Logger/Logger.h"
+#   include "Logger/Logger.h"
 
 #	include "stdex/memorycopy.h"
 
@@ -52,27 +51,32 @@ namespace Menge
 			this->seek( 0 );
 		}
 
-		if( _size == 0 )
+		DWORD size = ::GetFileSize( m_hFile, NULL );
+
+		if( size == INVALID_FILE_SIZE )
 		{
-			DWORD size = ::GetFileSize( m_hFile, NULL );
+			this->close_();
 
-			if( size == INVALID_FILE_SIZE )
-			{
-				this->close_();
+			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file size"
+				, filePath
+				);
 
-				LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file size"
-					, filePath
-					);
-
-				return false;
-			}
-
-			m_size = (size_t)size;
+			return false;
 		}
-		else
+
+		if( _offset + _size > size )
 		{
-			m_size = _size;
+			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file range %d:%d size %d"
+				, filePath
+				, _offset
+				, _size
+				, size
+				);
+
+			return false;
 		}
+
+		m_size = _size == 0 ? (size_t)size : _size;
 
 		return true;
 	}
@@ -136,7 +140,8 @@ namespace Menge
 		{
 			DWORD dwError = GetLastError();
 
-			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::seek %d:%d get error '%d'"
+			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::seek %d:%d size %d get error '%d'"
+				, m_offset
 				, _pos
 				, m_size
 				, dwError

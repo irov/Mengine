@@ -349,7 +349,7 @@ namespace Menge
 			return true;
 		}
 		
-		InputStreamInterfacePtr stream = m_zipFileGroup->createInputFile( _fileName );
+		InputStreamInterfacePtr stream = m_zipFileGroup->createInputFile( m_path );
 
 		if( stream == nullptr )
 		{
@@ -361,7 +361,7 @@ namespace Menge
 			return nullptr;				 
 		}
 
-		if( m_zipFileGroup->openInputFile( _fileName, stream, file_offset, file_size ) == false )
+		if( m_zipFileGroup->openInputFile( m_path, stream, file_offset, file_size ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s invalid open range %d:%d"
 				, m_path.c_str()

@@ -80,12 +80,7 @@ files
 	[MarmaladeApplication]
     ("../src/MarmaladeApplication")	
 	"*.h"
-	"*.cpp"   
-    
-    [System/MarmaladeFileSystem]
-    ("../src/System/MarmaladeFileSystem")	
-	"*.h"
-	"*.cpp"      
+	"*.cpp"       
     
     [System/MarmaladeThreadSystem]
     ("../src/System/MarmaladeThreadSystem")

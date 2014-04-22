@@ -7,6 +7,8 @@
 
 #	include "Codec/VideoDecoder.h"
 
+#	include "Core/InputStreamBuffer.h"
+
 #pragma warning(push, 0) 
 extern "C"
 {
@@ -72,6 +74,8 @@ namespace Menge
 		float m_pts;
 
         size_t m_pitch;
+
+		InputStreamBuffer m_streamBuffer;
 		
 	private:
 		void clear_();

@@ -2,6 +2,8 @@
 
 #	include "Codec/ImageDecoder.h"
 
+#	include "Core/InputStreamBuffer.h"
+
 #	include "png.h"
 
 //#	include "stdex/memory_cache.h"
@@ -26,6 +28,7 @@ namespace Menge
 		png_infop m_info_ptr;
 		png_uint_32 m_row_bytes;
 		
+		InputStreamBuffer m_streamBuffer;
 		//stdex::memory_cache m_memories;
 	};
 }	// namespace Menge

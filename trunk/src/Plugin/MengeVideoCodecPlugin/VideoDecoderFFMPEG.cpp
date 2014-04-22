@@ -11,7 +11,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	static int s_readIOWrapper( void * _opaque, uint8_t *_bufer, int bufferSize )
 	{
-		InputStreamInterface * stream = static_cast<InputStreamInterface *>(_opaque);
+		InputStreamBuffer * stream = static_cast<InputStreamBuffer *>(_opaque);
 
         size_t res = stream->read( _bufer , bufferSize );
 		
@@ -20,7 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static int64_t s_seekIOWrapper( void *_opaque, int64_t _offset, int _whence )
 	{
-		InputStreamInterface * stream = static_cast<InputStreamInterface *>(_opaque);
+		InputStreamBuffer * stream = static_cast<InputStreamBuffer *>(_opaque);
 		
 		switch( _whence )
 		{
@@ -77,6 +77,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::_initialize()
 	{
+		m_streamBuffer.setStream( m_stream );
+
         const int probe_buffer_io_size = 512;
 
         uint8_t filebuffer[probe_buffer_io_size + FF_INPUT_BUFFER_PADDING_SIZE];
@@ -86,8 +88,8 @@ namespace Menge
 
         memset( filebuffer, 0, probe_buffer_io_size + FF_INPUT_BUFFER_PADDING_SIZE );
 
-        m_stream->read( filebuffer, probe_size );
-        m_stream->seek( 0 );
+        m_streamBuffer.read( filebuffer, probe_size );
+        m_streamBuffer.seek( 0 );
 
         AVProbeData pd;
         pd.filename = "";
@@ -112,7 +114,7 @@ namespace Menge
 			 m_bufferIO //IO buffer
 			, VIDEO_FFMPEG_BUFFER_IO_SIZE //size of IO buffer
 			, 0 //write flag set to 0
-			, m_stream.get() //IO source - it will be send as opaque argument to IO callbacks
+			, &m_streamBuffer //IO source - it will be send as opaque argument to IO callbacks
 			, s_readIOWrapper //read callback 
 			, nullptr //write callback
 			, s_seekIOWrapper //seek callback

@@ -1,9 +1,9 @@
 #   include "MarmaladeLayer.h"
 
+SERVICE_FACTORY( MarmaladeLayer, Menge::MarmaladeLayerInterface, Menge::MarmaladeLayer );
+
 namespace Menge
 {
-    //////////////////////////////////////////////////////////////////////////
-    SERVICE_FACTORY( MarmaladeLayer, Menge::MarmaladeLayerInterface, Menge::MarmaladeLayer );
     //////////////////////////////////////////////////////////////////////////
     MarmaladeLayer::MarmaladeLayer()
         : m_serviceProvider(nullptr)

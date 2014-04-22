@@ -114,6 +114,11 @@ namespace Menge
 		{
 			s3eFileError error = s3eFileGetError();
 
+			if( error == S3E_FILE_ERR_EOF )
+			{
+				return bytesRead;
+			}
+
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::read (%d:%d) size %d get error %d"
 				, bytesRead
 				, _count

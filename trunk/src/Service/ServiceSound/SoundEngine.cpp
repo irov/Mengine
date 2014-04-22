@@ -263,18 +263,18 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterfacePtr SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filename, const ConstString & _codecType, bool _isStream )
+	SoundBufferInterfacePtr SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _isStream )
 	{
 		SoundDesc desc;
 
 		desc.stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( _pakName, _filename );
+            ->openInputFile( _pakName, _fileName );
         
         if( desc.stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't open sound file %s:%s"
                 , _pakName.c_str()
-                , _filename.c_str() 
+                , _fileName.c_str() 
                 );
 
             return nullptr;
@@ -287,7 +287,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't create sound decoder for file %s:%s"
                 , _pakName.c_str()
-				, _filename.c_str() 
+				, _fileName.c_str() 
 				);
 
 			return nullptr;
@@ -297,7 +297,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't initialize sound decoder for file %s:%s"
 				, _pakName.c_str()
-				, _filename.c_str() 
+				, _fileName.c_str() 
 				);
 
 			return nullptr;
@@ -319,7 +319,7 @@ namespace Menge
         {
             LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't create sound buffer for file %s:%s"
                 , _pakName.c_str()
-                , _filename.c_str() 
+                , _fileName.c_str() 
                 );
 
             return nullptr;

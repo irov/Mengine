@@ -208,7 +208,7 @@ namespace Menge
 
         TBlobject bin_buf(xml_size * 2);
 
-        size_t bin_size;
+        uint32_t bin_size;
 		if( xml_metabuf.convert( &bin_buf[0], xml_size * 2, &xml_buf[0], xml_size, bin_size ) == false )
 		{
             LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error convert %s error:\n%s"
@@ -219,21 +219,8 @@ namespace Menge
 			return 0;
 		}
 
-        size_t bound_size = ARCHIVE_SERVICE(m_serviceProvider)
-            ->compressBound( bin_size );
-
-        TBlobject compress_buf(bound_size);
-        
-        size_t compress_size;
-        if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->compress( &compress_buf[0], bound_size, &bin_buf[0], bin_size, compress_size ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error compress bin %s"
-                , m_options.pathBin.c_str()
-                );
-
-            return 0;
-        }
+		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
+			->compress( CONST_STRING_LOCAL(zip), &bin_buf[0], bin_size );
 
         OutputStreamInterfacePtr bin_stream = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( dev, m_options.pathBin );
@@ -248,12 +235,14 @@ namespace Menge
         }
 
         bin_stream->write( &header_buf[0], Metabuf::header_size );
-
-		bin_stream->write( &FORMAT_VERSION_BIN, sizeof(FORMAT_VERSION_BIN) );
-        
+		bin_stream->write( &FORMAT_VERSION_BIN, sizeof(FORMAT_VERSION_BIN) );        
         bin_stream->write( &bin_size, sizeof(bin_size) );
+
+		uint32_t compress_size;
+		const void * compress_buffer = compress_memory->getMemory( compress_size );
+
         bin_stream->write( &compress_size, sizeof(compress_size) );
-        bin_stream->write( &compress_buf[0], compress_size );
+        bin_stream->write( compress_buffer, compress_size );
 		
 		return bin_size;
 	}

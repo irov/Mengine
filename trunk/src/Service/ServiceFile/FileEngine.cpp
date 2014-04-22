@@ -7,10 +7,6 @@
 
 #	include "Factory/FactoryDefault.h"
 
-#	include "FileGroupDirectory.h"
-#	include "FileGroupZip.h"
-//#	include "FileInput.h"
-
 #	include "Core/String.h"
 #	include "Core/FilePath.h"
 
@@ -41,9 +37,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileEngine::initialize()
 	{		
-		this->registerFileGroupFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactorableUnique<FactoryDefault<FileGroupDirectory> >() );
-		this->registerFileGroupFactory( Helper::stringizeString(m_serviceProvider, "zip"), new FactorableUnique<FactoryDefault<FileGroupZip> >() );
-
+		//this->registerFileGroupFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactorableUnique<FactoryDefault<Win32FileGroupDirectory> >() );
+		
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -97,11 +92,10 @@ namespace Menge
 		return fileGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::mountFileGroup( const ConstString& _fileGroupName, const FilePath& _folder, const FilePath& _path, const ConstString & _type, bool _create )
+	bool FileEngine::mountFileGroup( const ConstString& _fileGroupName, const FilePath& _path, const ConstString & _type )
 	{
-		LOGGER_INFO(m_serviceProvider)( "FileEngine:mountFileSystem _fileGroupName '%s' _path '%s':'%s' _type '%s'"
+		LOGGER_INFO(m_serviceProvider)( "FileEngine:mountFileSystem _fileGroupName '%s' _path '%s' _type '%s'"
 			, _fileGroupName.c_str() 
-			, _folder.c_str()
 			, _path.c_str()
 			, _type.c_str()
 			);
@@ -121,24 +115,52 @@ namespace Menge
 
 		if( fs == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem can't create fileGroup '%s' type '%s' for object '%s':'%s'"
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem can't create fileGroup '%s' type '%s' for object '%s'"
                 , _fileGroupName.c_str()
                 , _type.c_str()
-                , _folder.c_str()
 				, _path.c_str() 
 				);
 
 			return false;
 		}
 
-		if( fs->initialize( m_serviceProvider, _folder, _path, _create ) == false )
+		if( fs->initialize( m_serviceProvider, _path ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem can't initialize FileSystem for object '%s'"
-				, _path.c_str() 
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem can't initialize FileSystem '%s' for object '%s'"
+				, _fileGroupName.c_str()
+				, _path.c_str()
 				);
 
 			return false;
 		}
+
+		//if( fs->existDirectory( _folder ) == false )
+		//{
+		//	if( _create == false )
+		//	{
+		//		LOGGER_WARNING(m_serviceProvider)("FileEngine::mountFileSystem failed to open directory %s:%s"
+		//			, _path.c_str()
+		//			, _folder.c_str() 
+		//			);
+
+		//		return false;
+		//	}
+		//	
+		//	LOGGER_WARNING(m_serviceProvider)("FileEngine::mountFileSystem create directory %s:%s"
+		//		, _path.c_str()
+		//		, _folder.c_str() 
+		//		);
+
+		//	if( fs->createDirectory( _folder ) == false )
+		//	{
+		//		LOGGER_ERROR(m_serviceProvider)("Win32FileGroupDirectory::initialize failed to create directory %s:%s"
+		//			, _path.c_str()
+		//			, _folder.c_str()
+		//			);
+
+		//		return false;
+		//	}
+		//}
 
 		m_fileSystemMap.insert( _fileGroupName, fs );
 
@@ -240,7 +262,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( group->openInputFile( _fileName, file ) == false )
+		if( group->openInputFile( _fileName, file, 0, 0 ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't open input file '%s' '%s'"
 				, _fileGroupName.c_str()
@@ -290,10 +312,20 @@ namespace Menge
 		return file;
 	}
     //////////////////////////////////////////////////////////////////////////
-    MappedFileInterfacePtr FileEngine::createMappedFile( const FilePath & _fileGroupName, const FilePath & _fileName )
+    MappedFileInterfacePtr FileEngine::openMappedFile( const ConstString & _fileGroupName, const FilePath & _fileName )
     {
-        MappedFileInterfacePtr mappedFile = FILE_SYSTEM(m_serviceProvider)
-            ->createMappedFile();
+		FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
+
+		if( group == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedFile can't get group '%s'"
+				, _fileGroupName.c_str()
+				);
+
+			return nullptr;
+		}
+
+        MappedFileInterfacePtr mappedFile = group->createMappedFile();
 
         if( mappedFile == nullptr )
         {
@@ -304,7 +336,7 @@ namespace Menge
             return nullptr;
         }
 
-        if( mappedFile->initialize( _fileGroupName, _fileName ) == false )
+        if( group->openMappedFile( _fileName, mappedFile ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("FileEngine::openMappedFile can't open output file '%s'"
                 , _fileName.c_str()

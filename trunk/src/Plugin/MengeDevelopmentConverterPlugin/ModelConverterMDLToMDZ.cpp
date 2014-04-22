@@ -56,49 +56,38 @@ namespace Menge
         InputStreamInterfacePtr input = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( c_dev, full_input );
 
-        size_t data_size = input->size();
+        uint32_t data_size = input->size();
 
 		CacheMemoryBuffer data_buffer(m_serviceProvider, data_size, "ModelConverterMDLToMDZ_data");
 		TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
 
         input->read( data_memory, data_size );
 
-        size_t archive_size = ARCHIVE_SERVICE(m_serviceProvider)
-            ->compressBound( data_size );
+		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
+			->compress( CONST_STRING_LOCAL(zip), data_memory, data_size );
 
-        if( archive_size == 0 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: %s invalid compressBound %d"
-                , m_options.inputFileName.c_str()
-                , data_size
-                );
-
-            return false;
-        }
-
-		CacheMemoryBuffer archive_buffer(m_serviceProvider, archive_size, "ModelConverterMDLToMDZ_archive");
-		TBlobject::value_type * archive_memory = archive_buffer.getMemoryT<TBlobject::value_type>();
-		
-        size_t comress_size;
-        if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->compress( archive_memory, archive_size, data_memory, data_size, comress_size ) == false )
+        if( compress_memory == 0 )
         {
             LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: %s invalid compress"
                 , m_options.inputFileName.c_str()
                 );
-			
+
             return false;
         }
 
-        OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
+		OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( c_dev, full_output );
 
 		output->write( &DATAFLOW_MAGIC_MDL, sizeof(DATAFLOW_MAGIC_MDL) );
 		output->write( &DATAFLOW_VERSION_MDL, sizeof(DATAFLOW_VERSION_MDL) );
 
         output->write( &data_size, sizeof(data_size) );
-        output->write( &comress_size, sizeof(comress_size) );
-        output->write( archive_memory, comress_size );
+		
+		uint32_t compress_size;
+		const void * compress_buffer = compress_memory->getMemory( compress_size );
+
+		output->write( &compress_size, sizeof(compress_size) );
+		output->write( compress_buffer, compress_size );
 
         return true;
 	}

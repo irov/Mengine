@@ -33,7 +33,7 @@ namespace Menge
         void finalize() override;
 
     public:
-        RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) override;
+        RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) override;
 
 	protected:
 		ImageDecoderInterfacePtr createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec );
@@ -44,18 +44,18 @@ namespace Menge
         RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
         RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
 
-        RenderTextureInterfacePtr getTexture( const FilePath & _filename ) const override;
+        RenderTextureInterfacePtr getTexture( const FilePath & _fileName ) const override;
 
     public:
-        bool hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const override;
+        bool hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const override;
 
     public:
         void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) override;
 
-        void cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture ) override;
+        void cacheFileTexture( const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) override;
 
     public:
-        bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileGroupName, const ConstString & _codecName, const FilePath & _filename ) override;
+        bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileGroupName, const ConstString & _codecName, const FilePath & _fileName ) override;
 
     public:
         void visitTexture( VisitorRenderTextureInterface * _visitor ) const override;

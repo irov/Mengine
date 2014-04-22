@@ -173,34 +173,12 @@ namespace Menge
         uint32_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size, "importBin_compress");
-		TBlobject::value_type * compress_memory = compress_buffer.getMemoryT<TBlobject::value_type>();
-		
-		size_t compress_reading = _stream->read( compress_memory, compress_size );
-
-		if( compress_reading != compress_size )
-		{
-			if( _reimport == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invlid compress size %d need %d"
-					, compress_reading
-					, compress_size
-					);
-			}
-			else
-			{
-				*_reimport = true;
-			}
-			
-			return false;
-		}
-
 		CacheMemoryBuffer binary_buffer(m_serviceProvider, bin_size, "importBin_binary");
 		TBlobject::value_type * binary_memory = binary_buffer.getMemoryT<TBlobject::value_type>();
 		
         size_t uncompress_size = 0;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->decompress( binary_memory, bin_size, compress_memory, compress_size, uncompress_size ) == false )
+            ->decompress( CONST_STRING_LOCAL(zip), _stream, compress_size, binary_memory, bin_size, uncompress_size ) == false )
         {
 			if( _reimport == nullptr )
 			{

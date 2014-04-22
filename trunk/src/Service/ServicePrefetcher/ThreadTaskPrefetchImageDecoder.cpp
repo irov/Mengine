@@ -91,7 +91,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskPrefetchImageDecoder::_onMain()
 	{		
-		if( m_group->openInputFile( m_fileName, m_stream ) == false )
+		if( m_group->openInputFile( m_fileName, m_stream, 0, 0 ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide open file '%s':'%s'"
 				, m_pakName.c_str()

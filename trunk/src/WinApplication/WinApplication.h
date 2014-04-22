@@ -199,7 +199,6 @@ namespace Menge
 
 		LogServiceInterface * m_logService;
 
-		FileSystemInterface * m_fileSystem;
 		FileServiceInterface * m_fileService;
 
 		CodecServiceInterface * m_codecService;
@@ -262,6 +261,7 @@ namespace Menge
 
 		PluginInterface * m_pluginMengeImageCodec;
 		PluginInterface * m_pluginMengeSoundCodec;
+		PluginInterface * m_pluginMengeZip;
 		PluginInterface * m_pluginPluginPathFinder;
 	};
 }	// namespace Menge

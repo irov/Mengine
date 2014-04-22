@@ -64,7 +64,28 @@ namespace Menge
 
 			return cstr;
 		}
-    }
+		//////////////////////////////////////////////////////////////////////////
+		template<int code>
+		const ConstString & stringizeStringLocal( const char * _str, size_t _size )
+		{ 
+			(void)code;
+
+			static bool initialize = false;
+			static ConstStringHolderLocal c_holder_local;
+			static ConstString c_str;	
+			if( initialize == false )
+			{ 
+				initialize = true;
+				c_holder_local.setup( _str, _size );
+				c_str = ConstString(&c_holder_local);
+			}
+
+			return c_str;
+		}
+	}
+
+#	define CONST_STRING_LOCAL(str)\
+	Helper::stringizeStringLocal< #@str >( #str, sizeof( #str ) )
 }
 
 

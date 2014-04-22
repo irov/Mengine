@@ -70,14 +70,14 @@ namespace Menge
 		return m_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderTexture::setFileName( const FilePath & _filename )
+	void RenderTexture::setFileName( const FilePath & _fileName )
 	{
-		m_filename = _filename;
+		m_fileName = _fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath & RenderTexture::getFileName() const
 	{
-		return m_filename;
+		return m_fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getWidth() const

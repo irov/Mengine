@@ -1,5 +1,6 @@
 ADD_SUBDIRECTORY( MengeImageCodecPlugin )
 ADD_SUBDIRECTORY( MengeSoundCodecPlugin )
+ADD_SUBDIRECTORY( MengeZipPlugin )
 
 ADD_SUBDIRECTORY( MengePathFinderPlugin )
 

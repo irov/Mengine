@@ -2,6 +2,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 #   include "Interface/ArchiveInterface.h"
+#   include "Interface/StringizeInterface.h"
 
 #	include "Config/Blobject.h"
 
@@ -75,16 +76,9 @@ namespace Menge
 	{
 		(void)_bufferSize;
 
-		static TBlobject s_compress_cache;
-
-		s_compress_cache.resize( m_compress_size );
-		TBlobject::value_type * compress_buffer = &s_compress_cache[0];
-
-		m_stream->read( compress_buffer, m_compress_size );
-
 		size_t uncompress_size;
 		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( _buffer, m_uncompress_size, compress_buffer, m_compress_size, uncompress_size ) == false )
+			->decompress( CONST_STRING_LOCAL(zip), m_stream, m_compress_size, _buffer, _bufferSize, uncompress_size ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDZ::decode uncompress failed"
 				);

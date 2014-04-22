@@ -30,6 +30,15 @@ src
 	WinTimer.h
     WinMouseEvent.cpp
     WinMouseEvent.h
+    
+    Win32FileGroupDirectory.cpp
+    Win32FileGroupDirectory.h        
+	Win32InputStream.h
+	Win32InputStream.cpp
+	Win32OutputStream.cpp
+	Win32OutputStream.h
+    Win32MappedFile.h
+    Win32MappedFile.cpp    
 )
 
 add_definitions(-DUNICODE)

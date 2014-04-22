@@ -1074,7 +1074,7 @@ namespace Menge
                 ->swapBuffers();
         }
         //////////////////////////////////////////////////////////////////////////
-        void writeImageToFile( const ConstString& _resource, const FilePath& _filename )
+        void writeImageToFile( const ConstString& _resource, const FilePath& _fileName )
         {
             ResourceImage * resource = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceT<ResourceImage>( _resource );
@@ -1091,7 +1091,7 @@ namespace Menge
             const RenderTextureInterfacePtr & texture = resource->getTexture();
 
             RENDERTEXTURE_SERVICE(m_serviceProvider)
-                ->saveImage( texture, CONST_STRING(m_serviceProvider, user), Helper::stringizeStringSize(m_serviceProvider, "pngImage"), _filename );
+                ->saveImage( texture, CONST_STRING(m_serviceProvider, user), Helper::stringizeStringSize(m_serviceProvider, "pngImage"), _fileName );
         }
         //////////////////////////////////////////////////////////////////////////
         void setParticlesEnabled( bool _enabled )
@@ -1100,7 +1100,7 @@ namespace Menge
                 ->setParticlesEnabled( _enabled );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_createImageResource( const ConstString& _resourceName, const ConstString& _pakName, const FilePath& _filename )
+        bool s_createImageResource( const ConstString& _resourceName, const ConstString& _pakName, const FilePath& _fileName )
         {
             if( RESOURCE_SERVICE(m_serviceProvider)
                 ->hasResource( _resourceName, nullptr ) == true )
@@ -1111,7 +1111,7 @@ namespace Menge
 			ResourceImageDefault * resImage = RESOURCE_SERVICE(m_serviceProvider)
 				->createResourceT<ResourceImageDefault>( _pakName, ConstString::none(), _resourceName, CONST_STRING(m_serviceProvider, ResourceImageDefault) );
 
-            resImage->setImagePath( _filename );
+            resImage->setImagePath( _fileName );
 
 			return true;
         }

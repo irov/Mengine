@@ -40,7 +40,7 @@ namespace Menge
 
 		const mt::vec4f & getUV() const override;
 
-		void setFileName( const FilePath & _filename ) override;
+		void setFileName( const FilePath & _fileName ) override;
 		const FilePath & getFileName() const override;
 
 		size_t getWidth() const override;

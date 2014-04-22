@@ -201,7 +201,7 @@ namespace Menge
 
 		virtual const mt::vec4f & getUV() const = 0;
 
-		virtual void setFileName( const FilePath & _filename ) = 0;
+		virtual void setFileName( const FilePath & _fileName ) = 0;
 		virtual const FilePath & getFileName() const = 0;
 
 		virtual size_t getWidth() const = 0;
@@ -283,7 +283,7 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
-        virtual bool loadMaterials( const ConstString& _pakName, const FilePath& _filename ) = 0;
+        virtual bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) = 0;
 
 	public:
 		virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _stageName
@@ -341,7 +341,7 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
-        virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _filename, const ConstString& _codec ) = 0;
+        virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) = 0;
 
     public:
         virtual RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
@@ -349,18 +349,18 @@ namespace Menge
         virtual RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
 
 	public:
-        virtual RenderTextureInterfacePtr getTexture( const FilePath & _filename ) const = 0;
+        virtual RenderTextureInterfacePtr getTexture( const FilePath & _fileName ) const = 0;
         
-        virtual bool hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const = 0;
+        virtual bool hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const = 0;
 
     public:
         //virtual void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
         virtual void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
 
-        virtual void cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture ) = 0;
+        virtual void cacheFileTexture( const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) = 0;
 
     public:
-        virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileGroupName, const ConstString & _codecName, const FilePath & _filename ) = 0;
+        virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileGroupName, const ConstString & _codecName, const FilePath & _fileName ) = 0;
 
     public:
         virtual void visitTexture( VisitorRenderTextureInterface * _visitor ) const = 0;

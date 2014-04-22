@@ -284,10 +284,10 @@ namespace Menge
 		m_materials.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderMaterialManager::loadMaterials( const ConstString& _pakName, const FilePath& _filename )
+    bool RenderMaterialManager::loadMaterials( const ConstString& _pakName, const FilePath& _fileName )
     {
         (void)_pakName;
-        (void)_filename;
+        (void)_fileName;
 
         return false;
     }

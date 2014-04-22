@@ -17,7 +17,7 @@ namespace Menge
 		~FileGroupZip();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _folder, const FilePath & _path, bool _create ) override;
+		bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path ) override;
 		void finalize() override;
 		
     public:
@@ -28,17 +28,21 @@ namespace Menge
 
     public:
 		InputStreamInterfacePtr createInputFile( const FilePath & _fileName ) override;
-		bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file ) override;
+		bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file, size_t _offset, size_t _size ) override;
 
     public:
         OutputStreamInterfacePtr createOutputFile() override;
         bool openOutputFile( const FilePath & _fileName, const OutputStreamInterfacePtr & _file ) override;
 
+	public:
+		MappedFileInterfacePtr createMappedFile() override;
+		bool openMappedFile( const FilePath & _fileName, const MappedFileInterfacePtr & _stream ) override;
+
     public:
         bool existDirectory( const FilePath & _path ) const override;
         bool createDirectory( const FilePath & _path ) override;
         bool removeDirectory( const FilePath & _path ) override;
-        bool removeFile( const FilePath & _filename ) override;
+        bool removeFile( const FilePath & _fileName ) override;
 
 	protected:
 		bool loadHeader_();
@@ -49,7 +53,7 @@ namespace Menge
         FilePath m_folder;
 		FilePath m_path;
 
-		MappedFileInterfacePtr m_zipMappedFile;
+		FileGroupInterfacePtr m_zipFileGroup;
 		
 		struct FileInfo
 		{

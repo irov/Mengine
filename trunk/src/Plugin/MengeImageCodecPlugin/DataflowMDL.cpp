@@ -2,6 +2,7 @@
 
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/CacheInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 #	include "Core/BlobjectRead.h"
 #	include "Core/CacheMemoryBuffer.h"
@@ -81,7 +82,7 @@ namespace Menge
 		
 		size_t uncompressSize = 0;
 		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( binary_memory, binary_size, compress_memory, compress_size, uncompressSize ) == false )
+			->decompress( CONST_STRING_LOCAL(zip), _stream, compress_size, binary_memory, binary_size, uncompressSize ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid uncompress"
 				);

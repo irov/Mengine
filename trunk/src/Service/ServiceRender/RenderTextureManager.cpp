@@ -68,10 +68,10 @@ namespace Menge
         m_textures.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureManager::hasTexture( const FilePath & _filename, RenderTextureInterfacePtr * _texture ) const
+    bool RenderTextureManager::hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const
     {
 		RenderTextureInterface * texture;
-		bool result = m_textures.has( _filename, &texture );
+		bool result = m_textures.has( _fileName, &texture );
 
 		if( _texture != nullptr )
 		{
@@ -81,9 +81,9 @@ namespace Menge
 		return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::getTexture( const FilePath& _filename ) const
+    RenderTextureInterfacePtr RenderTextureManager::getTexture( const FilePath& _fileName ) const
     {
-        TMapTextures::const_iterator it_find = m_textures.find( _filename );
+        TMapTextures::const_iterator it_find = m_textures.find( _fileName );
 
         if( it_find == m_textures.end() )
         {
@@ -226,16 +226,16 @@ namespace Menge
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureManager::saveImage( const RenderTextureInterfacePtr & _texture, const ConstString & _fileGroupName, const ConstString & _codecName, const FilePath & _filename )
+    bool RenderTextureManager::saveImage( const RenderTextureInterfacePtr & _texture, const ConstString & _fileGroupName, const ConstString & _codecName, const FilePath & _fileName )
     {
         OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( _fileGroupName, _filename );
+            ->openOutputFile( _fileGroupName, _fileName );
 
         if( stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't create file '%s' '%s'"
                 , _fileGroupName.c_str()
-                , _filename.c_str() 
+                , _fileName.c_str() 
                 );
 
             return false;
@@ -247,7 +247,7 @@ namespace Menge
         if( imageEncoder == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't create encoder for filename '%s'"
-                , _filename.c_str() 
+                , _fileName.c_str() 
                 );
 
             return false;
@@ -256,7 +256,7 @@ namespace Menge
 		if( imageEncoder->initialize( stream ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't initialize encoder for filename '%s'"
-				, _filename.c_str() 
+				, _fileName.c_str() 
 				);
 
 			return false;
@@ -283,7 +283,7 @@ namespace Menge
 		if( buffer == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't lock texture '%s'"
-				, _filename.c_str() 
+				, _fileName.c_str() 
 				);
 
 			return false;
@@ -326,16 +326,16 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureManager::cacheFileTexture( const FilePath& _filename, const RenderTextureInterfacePtr & _texture )
+    void RenderTextureManager::cacheFileTexture( const FilePath& _fileName, const RenderTextureInterfacePtr & _texture )
     {
-        _texture->setFileName( _filename );
+        _texture->setFileName( _fileName );
 
         RenderTextureInterface * texture_ptr = _texture.get();
 
-        m_textures.insert( _filename, texture_ptr );
+        m_textures.insert( _fileName, texture_ptr );
 
         LOGGER_INFO(m_serviceProvider)( "RenderEngine::cacheFileTexture cache texture %s"
-            , _filename.c_str()
+            , _fileName.c_str()
             );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -68,9 +68,9 @@ namespace Menge
 		return m_uv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderSubTexture::setFileName( const FilePath & _filename )
+	void RenderSubTexture::setFileName( const FilePath & _fileName )
 	{
-		m_fileName = _filename;
+		m_fileName = _fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath & RenderSubTexture::getFileName() const

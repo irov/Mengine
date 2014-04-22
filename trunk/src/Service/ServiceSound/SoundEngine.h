@@ -73,7 +73,7 @@ namespace Menge
 		size_t createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceType _type, bool _streamable ) override;
 
     public:
-		SoundBufferInterfacePtr createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filename, const ConstString & _codecType, bool _isStream ) override;  
+		SoundBufferInterfacePtr createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _isStream ) override;  
 
     public:
 		void setSoundVolume( const ConstString & _type, float _volume ) override;

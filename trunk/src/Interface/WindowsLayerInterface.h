@@ -50,7 +50,7 @@ namespace Menge
         virtual bool createDirectory( const WChar * _path ) = 0;
         virtual bool fileExists( const WChar * _path ) = 0;
 
-        virtual HANDLE createFile( const WChar * _filename, DWORD _desiredAccess,
+        virtual HANDLE createFile( const WChar * _fileName, DWORD _desiredAccess,
             DWORD _sharedMode, DWORD _creationDisposition ) = 0;
 
         virtual ATOM registerClass( WNDPROC _wndProc, int _clsExtra, int _wndExtra

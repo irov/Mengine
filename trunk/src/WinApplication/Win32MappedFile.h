@@ -3,8 +3,6 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/WindowsLayerInterface.h"
 
-#	include "Win32MappedFileInputStream.h"
-
 #   include "Core/MemoryProxyInput.h"
 
 #   include "Factory/FactoryStore.h"
@@ -22,7 +20,7 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( const FilePath & _folder, const FilePath & _fileName ) override;
+		bool open( const FilePath & _folder, const FilePath & _fileName ) override;
 
 	public:
         InputStreamInterfacePtr createFileStream() override;

@@ -28,7 +28,7 @@ namespace Menge
         
 		size_t getId() const override;
 
-		void setFileName( const FilePath & _filename ) override;
+		void setFileName( const FilePath & _fileName ) override;
 		const FilePath & getFileName() const override;
 		
 		const Rect & getRect() const override;
@@ -53,7 +53,7 @@ namespace Menge
 		RenderImageInterfacePtr m_image;
         RenderTextureInterfaceListener * m_listener;
 		
-		FilePath m_filename;
+		FilePath m_fileName;
 		
 		size_t m_width;
 		size_t m_height;

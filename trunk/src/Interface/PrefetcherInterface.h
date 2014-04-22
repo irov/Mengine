@@ -34,7 +34,7 @@ namespace Menge
 		
 	public:
 		virtual bool prefetchData( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _dataflowType ) = 0;
-		virtual void unfetchData( const FilePath& _filename ) = 0;
+		virtual void unfetchData( const FilePath& _fileName ) = 0;
 
 	public:
 		virtual bool getData( const FilePath & _fileName, DataInterfacePtr & _data ) const = 0;

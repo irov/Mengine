@@ -90,12 +90,14 @@ namespace Menge
 		{
 			return true;
 		}
+
+		//FilePath fullPath = concatenationFilePath(m_serviceProvider, m_baseDir, m_path);
 		
-		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( m_name, m_baseDir, m_path, m_type, false ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( m_name, m_path, m_type ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourcePak::load failed to mount pak '%s' path '%s':'%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourcePak::load failed to mount pak '%s' path '%s'"
 				, m_name.c_str()
-				, m_baseDir.c_str()
+				//, m_baseDir.c_str()
 				, m_path.c_str()
 				);
 

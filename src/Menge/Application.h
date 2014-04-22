@@ -286,6 +286,7 @@ namespace Menge
 
 		bool m_inputMouseButtonEventBlock;
 		bool m_developmentMode;
+		bool m_masterMode;
         bool m_nofullscreenMode;
 
         bool m_windowModeCheck;

@@ -4,10 +4,6 @@ ADD_FILTER(
 src
 	FileEngine.cpp
 	FileEngine.h
-    FileGroupDirectory.cpp
-    FileGroupDirectory.h
-    FileGroupZip.cpp
-    FileGroupZip.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

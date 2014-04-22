@@ -32,7 +32,7 @@ namespace Menge
         bool createDirectory( const WChar * _path ) override;
         bool fileExists( const WChar * _path ) override;
 
-        HANDLE createFile( const WChar * _filename, DWORD _desiredAccess,
+        HANDLE createFile( const WChar * _fileName, DWORD _desiredAccess,
             DWORD _sharedMode, DWORD _creationDisposition ) override;
 
         ATOM registerClass( WNDPROC _wndProc, int _clsExtra, int _wndExtra

@@ -3,6 +3,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/ArchiveInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 #   include "Config/Blobject.h"
 
@@ -30,26 +31,23 @@ namespace Menge
         m_stream->write( &dataInfo->height, sizeof(dataInfo->height) );
         m_stream->write( &dataInfo->mipmaplevel, sizeof(dataInfo->mipmaplevel) );
 		m_stream->write( &dataInfo->mipmapsize, sizeof(dataInfo->mipmapsize) );
-        
-        size_t compressSize2 = ARCHIVE_SERVICE(m_serviceProvider)
-            ->compressBound( dataInfo->mipmapsize );
+                
+		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
+            ->compress( CONST_STRING_LOCAL(zip), _buffer, dataInfo->mipmapsize );
 
-        TBlobject::value_type * compressBuffer = new TBlobject::value_type[compressSize2];
-
-        size_t compressSize;
-        if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->compress( compressBuffer, compressSize2, _buffer, dataInfo->mipmapsize, compressSize ) == false )
+		if( compress_memory == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("PickEncoderHIT::encode invalid compress"
                 );
 
             return 0;
         }
+
+		uint32_t compressSize;
+		const void * compressBuffer = compress_memory->getMemory( compressSize );
 		
         m_stream->write( &compressSize, sizeof(compressSize) );
         m_stream->write( compressBuffer, compressSize );
-
-        delete [] compressBuffer;
 
 		return compressSize;
 	}

@@ -3,8 +3,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/ArchiveInterface.h"
-
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Interface/StringizeInterface.h"
 
 #   include "Config/Blobject.h"
 
@@ -67,23 +66,10 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
 	size_t PickDecoderHIT::decode( void * _buffer, size_t _bufferSize )
-	{	        
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, m_mipmapcompresssize, "PickDecoderHIT");
-		void * compress_memory = compress_buffer.getMemory();
-
-        size_t read = m_stream->read( compress_memory, m_mipmapcompresssize );
-
-        if( read == 0 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode read 0 bite"
-                );
-
-            return 0;
-        }
-
+	{	        	
         size_t decompressSize;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->decompress( _buffer, _bufferSize, compress_memory, m_mipmapcompresssize, decompressSize ) == false )
+            ->decompress( CONST_STRING_LOCAL(zip), m_stream, m_mipmapcompresssize, _buffer, _bufferSize, decompressSize ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid uncompress"
                 );

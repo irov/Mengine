@@ -2,7 +2,9 @@
 #	include "Config/Stringstream.h"
 
 #	include "WinApplication.h"
-#	include "Menge/Application.h"
+#	include "Win32FileGroupDirectory.h"
+
+//#	include "Menge/Application.h"
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/FileSystemInterface.h"
@@ -10,6 +12,11 @@
 #	include "Interface/InputSystemInterface.h"
 
 #	include "WindowsLayer/VistaWindowsLayer.h"
+
+#	include "Factory/FactorableUnique.h"
+#	include "Factory/FactoryDefault.h"
+
+#	include "Logger/Logger.h"
 
 #	include <cstdio>
 #	include <clocale>
@@ -23,11 +30,10 @@
 #	include "AlreadyRunningMonitor.h"
 #	include "CriticalErrorsMonitor.h"
 
-#	include "Utils/Core/FileLogger.h"
+#	include "Core/FileLogger.h"
+#	include "Core/File.h"
 
 #	include "resource.h"
-
-#	include "Core/File.h"
 
 #	include <ctime>
 #	include <algorithm>
@@ -68,7 +74,6 @@ SERVICE_DUMMY(PhysicSystem, Menge::PhysicSystemInterface);
 SERVICE_EXTERN(UnicodeSystem, Menge::UnicodeSystemInterface);
 SERVICE_EXTERN(UnicodeService, Menge::UnicodeServiceInterface);
 
-SERVICE_EXTERN(FileSystem, Menge::FileSystemInterface);
 SERVICE_EXTERN(FileService, Menge::FileServiceInterface);
 
 SERVICE_EXTERN(NotificationService, Menge::NotificationServiceInterface);
@@ -94,6 +99,7 @@ extern "C" // only required if using g++
 	//////////////////////////////////////////////////////////////////////////
 	extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
 
 	extern bool initPluginPathFinder( Menge::PluginInterface ** _plugin );
 }
@@ -181,13 +187,13 @@ namespace Menge
 		, m_muteMode(false)
 		, m_pluginMengeImageCodec(nullptr)
 		, m_pluginMengeSoundCodec(nullptr)
+		, m_pluginMengeZip(nullptr)
 		, m_fileLog(nullptr)
 		, m_profilerMode(false)
-
+		, m_prefetcherService(nullptr)
 		, m_inputService(nullptr)
 		, m_unicodeService(nullptr)
 		, m_logService(nullptr)
-		, m_fileSystem(nullptr)
 		, m_fileService(nullptr)
 		, m_codecService(nullptr)
 		, m_archiveService(nullptr)
@@ -367,22 +373,6 @@ namespace Menge
 	{
 		LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
 
-		FileSystemInterface * fileSystem;
-		if( SERVICE_CREATE( FileSystem, &fileSystem ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initialize failed to create FileSystem"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, fileSystem ) == false )
-		{
-			return false;
-		}
-
-		m_fileSystem = fileSystem;
-
 		FileServiceInterface * fileService;
 		if( SERVICE_CREATE( FileService, &fileService ) == false )
 		{
@@ -406,6 +396,8 @@ namespace Menge
 
 			return false;
 		}
+
+		m_fileService->registerFileGroupFactory( CONST_STRING_LOCAL(dir), new FactorableUnique< FactoryDefault<Win32FileGroupDirectory> >() );
 
 		if( m_enableDebug == false )
 		{
@@ -432,7 +424,7 @@ namespace Menge
 
 		FilePath currentPath = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
 		// mount root		
-		if( m_fileService->mountFileGroup( ConstString::none(), ConstString::none(), currentPath, Helper::stringizeString(m_serviceProvider, "dir"), false ) == false )
+		if( m_fileService->mountFileGroup( ConstString::none(), currentPath, CONST_STRING_LOCAL(dir) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount application directory %ls"
 				, m_currentPath.c_str()
@@ -442,10 +434,8 @@ namespace Menge
 		}
 
 #	ifndef MENGE_MASTER_RELEASE
-		ConstString c_dev = Helper::stringizeString( m_serviceProvider, "dev" );
-		ConstString c_dir = Helper::stringizeString(m_serviceProvider, "dir");
 		// mount root		
-		if( m_fileService->mountFileGroup( c_dev, ConstString::none(), ConstString::none(), c_dir, false ) == false )
+		if( m_fileService->mountFileGroup( CONST_STRING_LOCAL(dev), ConstString::none(), CONST_STRING_LOCAL(dir) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount dev directory %ls"
 				, m_currentPath.c_str()
@@ -531,13 +521,18 @@ namespace Menge
 		FilePath userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
 
 		// mount user directory
-		if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), ConstString::none(), userPath, Helper::stringizeString(m_serviceProvider, "dir"), true ) == false )
+		if( m_fileService->mountFileGroup( CONST_STRING_LOCAL(user), userPath, CONST_STRING_LOCAL(dir) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed to mount user directory %ls"
 				, m_userPath.c_str()
 				);
 
 			return false;
+		}
+
+		if( m_fileService->existDirectory( CONST_STRING_LOCAL(user), ConstString::none() ) == false )
+		{
+			m_fileService->createDirectory( CONST_STRING_LOCAL(user), ConstString::none() );
 		}
 
 		return true;
@@ -1477,6 +1472,12 @@ namespace Menge
 		}
 
 		{
+			LOGGER_INFO(m_serviceProvider)( "initialize Sound Codec..." );
+			initPluginMengeZip( &m_pluginMengeZip );
+			m_pluginMengeZip->initialize( m_serviceProvider );
+		}
+
+		{
 			LOGGER_INFO(m_serviceProvider)( "initialize Path Finder..." );
 
 			initPluginPathFinder( &m_pluginPluginPathFinder );
@@ -1947,6 +1948,12 @@ namespace Menge
 			m_pluginMengeSoundCodec = nullptr;
 		}
 
+		if( m_pluginMengeZip != nullptr )
+		{
+			m_pluginMengeZip->destroy();
+			m_pluginMengeZip = nullptr;
+		}
+
 		if( m_dataService != nullptr )
 		{
 			m_dataService->finalize();
@@ -2128,12 +2135,6 @@ namespace Menge
 
 			delete m_fileLog;
 			m_fileLog = nullptr;
-		}
-
-		if( m_fileSystem != nullptr )
-		{            
-			SERVICE_DESTROY( FileSystem, m_fileSystem );
-			m_fileSystem = nullptr;
 		}
 
 		if( m_archiveService != nullptr )

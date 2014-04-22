@@ -51,7 +51,7 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32MappedFile::initialize( const FilePath & _folder, const FilePath & _fileName )
+	bool Win32MappedFile::open( const FilePath & _folder, const FilePath & _fileName )
 	{
         WChar filePath[MAX_PATH];
         if( WINDOWSLAYER_SERVICE(m_serviceProvider)

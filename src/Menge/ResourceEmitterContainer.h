@@ -49,7 +49,7 @@ namespace Menge
         ConstString makeTexturePath_( const FilePath & _filepath ) const;
 
 	private:
-		FilePath m_filename;
+		FilePath m_fileName;
 		FilePath m_folder;
 		
 		ParticleEmitterContainerInterfacePtr m_container;

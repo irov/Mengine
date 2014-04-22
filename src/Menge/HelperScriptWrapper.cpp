@@ -797,13 +797,13 @@ namespace Menge
 			return name;
 		}
 
-		bool s_writeAccountBinaryFile( const WString & _filename, const TBlobject & _data )
+		bool s_writeAccountBinaryFile( const WString & _fileName, const TBlobject & _data )
 		{
-            String utf8_filename;
-            if( Helper::unicodeToUtf8( m_serviceProvider, _filename, utf8_filename ) == false )
+            String utf8_fileName;
+            if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid file %ls convert to utf8"                    
-                    , _filename.c_str()
+                    , _fileName.c_str()
                     );
 
                 return false;                     
@@ -815,13 +815,13 @@ namespace Menge
 			if( currentAccount == nullptr )
 			{                
 				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid write file %ls (currentAccount is none)"
-                    , _filename.c_str()
+                    , _fileName.c_str()
 					);
 
 				return false;
 			}
 
-            FilePath filepath = Helper::stringizeString( m_serviceProvider, utf8_filename );
+            FilePath filepath = Helper::stringizeString( m_serviceProvider, utf8_fileName );
             
             if( currentAccount->writeBinaryFile( filepath, _data ) == false )
             {
@@ -829,7 +829,7 @@ namespace Menge
 
                 LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: account %ls invalid write file %ls"
                     , accountName.c_str()
-                    , _filename.c_str()
+                    , _fileName.c_str()
                     );
                 
                 return false;
@@ -838,13 +838,13 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * s_loadAccountBinaryFile( const WString & _filename )
+		PyObject * s_loadAccountBinaryFile( const WString & _fileName )
 		{
-            String utf8_filename;
-            if( Helper::unicodeToUtf8( m_serviceProvider, _filename, utf8_filename ) == false )
+            String utf8_fileName;
+            if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("s_loadAccountBinaryFile: invalid convert filename %ls to utf8"
-                    , _filename.c_str()
+                    , _fileName.c_str()
                     );
 
                 return pybind::ret_none();
@@ -856,13 +856,13 @@ namespace Menge
 			if( currentAccount == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("s_loadAccountBinaryFile: invalid load file %ls (currentAccount is none)"
-                    , _filename.c_str()
+                    , _fileName.c_str()
 					);
 
 				return pybind::ret_none();
 			}
 
-            FilePath filename = Helper::stringizeString( m_serviceProvider, utf8_filename );
+            FilePath filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
 
             TBlobject blob;
             if( currentAccount->loadBinaryFile( filename, blob ) == false )
@@ -871,7 +871,7 @@ namespace Menge
 
                 LOGGER_ERROR(m_serviceProvider)("s_loadAccountBinaryFile: account %ls invalid load file %ls"
                     , accountName.c_str()
-                    , _filename.c_str()
+                    , _fileName.c_str()
                     );
 
                 return pybind::ret_none();

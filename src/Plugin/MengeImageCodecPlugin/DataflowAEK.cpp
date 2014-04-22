@@ -2,6 +2,7 @@
 
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/CacheInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 #	include "Core/BlobjectRead.h"
 #	include "Core/CacheMemoryBuffer.h"
@@ -39,7 +40,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
-		size_t binary_aek_header;
+		uint32_t binary_aek_header;
 		_stream->read( &binary_aek_header, sizeof(binary_aek_header) );
 
 		if( binary_aek_header != 0xAEAEBABE )
@@ -50,9 +51,9 @@ namespace Menge
 			return false;
 		}
 
-		size_t binary_aek_version_valid = DATAFLOW_VERSION_AEK;
+		uint32_t binary_aek_version_valid = DATAFLOW_VERSION_AEK;
 
-		size_t binary_aek_version;
+		uint32_t binary_aek_version;
 		_stream->read( &binary_aek_version, sizeof(binary_aek_version) );
 
 		if( binary_aek_version != binary_aek_version_valid )
@@ -65,23 +66,18 @@ namespace Menge
 			return false;
 		}
 
-		size_t binary_size;
+		uint32_t binary_size;
 		_stream->read( &binary_size, sizeof(binary_size) );
 
-		size_t compress_size;
+		uint32_t compress_size;
 		_stream->read( &compress_size, sizeof(compress_size) );
-
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size, "DataflowAEK_compress");
-		TBlobject::value_type * compress_memory = compress_buffer.getMemoryT<TBlobject::value_type>();
-
-		_stream->read( compress_memory, compress_size );
 
 		CacheMemoryBuffer binary_buffer(m_serviceProvider, binary_size, "DataflowAEK_binary");
 		TBlobject::value_type * binary_memory = binary_buffer.getMemoryT<TBlobject::value_type>();
 
 		size_t uncompressSize = 0;
 		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( binary_memory, binary_size, compress_memory, compress_size, uncompressSize ) == false )
+			->decompress( CONST_STRING_LOCAL(zip), _stream, compress_size, binary_memory, binary_size, uncompressSize ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid uncompress"
 				);

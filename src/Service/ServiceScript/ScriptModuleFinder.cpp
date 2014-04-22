@@ -272,7 +272,7 @@ namespace Menge
 
 				InputStreamInterfacePtr stream = fileGroup->createInputFile( c_fullPath );
 
-				if( fileGroup->openInputFile( c_fullPath, stream ) == false )
+				if( fileGroup->openInputFile( c_fullPath, stream, 0, 0 ) == false )
 				{
 					return nullptr;
 				}
@@ -412,18 +412,13 @@ namespace Menge
 
         uint32_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
-
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size, "unmarshal_code_compress");
-		TBlobject::value_type * compress_memory = compress_buffer.getMemoryT<TBlobject::value_type>();
-
-		_stream->read( compress_memory, compress_size );
 		
 		CacheMemoryBuffer code_buffer(m_serviceProvider, code_size, "unmarshal_code_buffer");
 		TBlobject::value_type * code_memory = code_buffer.getMemoryT<TBlobject::value_type>();
 
         size_t uncompress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->decompress( code_memory, code_size, compress_memory, compress_size, uncompress_size ) == false )
+			->decompress( CONST_STRING_LOCAL(zip), _stream, compress_size, code_memory, code_size, uncompress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ScriptModuleFinder::unmarshal_code_ uncompress failed"
                 );

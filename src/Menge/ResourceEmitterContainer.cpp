@@ -22,12 +22,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceEmitterContainer::setFilePath( const FilePath& _path )
 	{
-		m_filename = _path;
+		m_fileName = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath& ResourceEmitterContainer::getFilePath() const
 	{
-		return m_filename;
+		return m_fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceEmitterContainer::setFolderPath( const FilePath& _folder )
@@ -45,7 +45,7 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceEmitterContainer * metadata
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceEmitterContainer *>(_meta);
 
-        metadata->swap_File_Path( m_filename );
+        metadata->swap_File_Path( m_fileName );
         metadata->swap_Folder_Path( m_folder );
 
         return true;
@@ -56,13 +56,13 @@ namespace Menge
         const ConstString & category = this->getCategory();
 
         ParticleEmitterContainerInterfacePtr container = PARTICLE_SERVICE(m_serviceProvider)
-            ->createEmitterContainerFromFile( category, m_filename );
+            ->createEmitterContainerFromFile( category, m_fileName );
 
         if( container == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_isValid %s can't create container file '%s'"
                 , m_name.c_str()
-                , m_filename.c_str() 
+                , m_fileName.c_str() 
                 );
 
             return false;
@@ -126,7 +126,7 @@ namespace Menge
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_isValid %s can't valid container '%s'"
                 , m_name.c_str()
-                , m_filename.c_str() 
+                , m_fileName.c_str() 
                 );
 
             return false;
@@ -140,13 +140,13 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		m_container = PARTICLE_SERVICE(m_serviceProvider)
-			->createEmitterContainerFromFile( category, m_filename );
+			->createEmitterContainerFromFile( category, m_fileName );
 
 		if( m_container == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_compile %s can't create container file '%s'"
                 , m_name.c_str()
-				, m_filename.c_str() 
+				, m_fileName.c_str() 
 				);
 
 			return false;

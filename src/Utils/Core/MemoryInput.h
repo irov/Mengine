@@ -13,6 +13,8 @@ namespace Menge
 
     public:
         void * newMemory( size_t _size );
+		void * reallocMemory( size_t _size );
+		const void * getMemory( size_t & _size ) const;
 
 	public:
 		size_t read( void * _buf, size_t _count ) override;

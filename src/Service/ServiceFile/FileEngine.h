@@ -28,7 +28,7 @@ namespace Menge
 		FileGroupInterfacePtr createFileGroup( const ConstString & _type );
 
 	public:	// FileEngine Interface
-		bool mountFileGroup( const ConstString& _fileGroupName, const FilePath& _folder, const FilePath& _path, const ConstString & _type, bool _create ) override;
+		bool mountFileGroup( const ConstString& _fileGroupName, const FilePath& _path, const ConstString & _type ) override;
 		void unmountFileGroup( const ConstString& _fileGroupName ) override;
 
     public:
@@ -43,13 +43,13 @@ namespace Menge
 		OutputStreamInterfacePtr openOutputFile( const ConstString& _fileGroupName, const FilePath& _fileName ) override;
         
     public:
-        MappedFileInterfacePtr createMappedFile( const FilePath & _fileGroupName, const FilePath& _fileName ) override;
+        MappedFileInterfacePtr openMappedFile( const ConstString & _fileGroupName, const FilePath& _fileName ) override;
 
 	public:
         bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const override;
 		bool createDirectory( const ConstString& _fileGroupName, const FilePath& _path ) override;
 		bool removeDirectory( const ConstString& _fileGroupName, const FilePath& _path ) override;
-		bool removeFile( const ConstString& _fileGroupName, const FilePath& _filename ) override;
+		bool removeFile( const ConstString& _fileGroupName, const FilePath& _fileName ) override;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;

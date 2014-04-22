@@ -16,7 +16,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     VistaWindowsLayer::VistaWindowsLayer()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
         , m_windowsType(EWT_UNKNOWN)
         , m_checkedUnicode(false)
         , m_supportUnicode(false)        
@@ -49,7 +49,7 @@ namespace Menge
 
             dl->destroy();
 
-            return NULL;                 
+            return nullptr;                 
         }
 
         return dl;
@@ -235,6 +235,13 @@ namespace Menge
 #ifdef _DEBUG
         if( handle == INVALID_HANDLE_VALUE )
         {
+			DWORD err_code = GetLastError();
+
+			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createFile invalid create file %ls err %d"
+				, _path
+				, err_code
+				);
+
             return INVALID_HANDLE_VALUE;
         }
 

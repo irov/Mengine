@@ -34,7 +34,7 @@ namespace Menge
         void finalize() override;
 
     public:
-        bool loadMaterials( const ConstString& _pakName, const FilePath& _filename ) override;
+        bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) override;
 
 	public:
 		RenderMaterialInterfacePtr getMaterial( const ConstString & _stageName

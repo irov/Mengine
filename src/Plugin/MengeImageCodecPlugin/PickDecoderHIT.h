@@ -21,6 +21,6 @@ namespace Menge
         void cleanup_();
 
     protected:
-        size_t m_mipmapcompresssize;
+        uint32_t m_mipmapcompresssize;
     };
 }	// namespace Menge

@@ -11,7 +11,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32InputStream::Win32InputStream()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
         , m_hFile(INVALID_HANDLE_VALUE)
 		, m_size(0)
 		, m_offset(0)
@@ -49,6 +49,11 @@ namespace Menge
 		}
 
 		m_offset = _offset;
+
+		if( m_offset != 0 )
+		{
+			this->seek( 0 );
+		}
 
 		if( _size == 0 )
 		{

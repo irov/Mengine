@@ -598,17 +598,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieKeyConverterXMLToAEK::writeFramePak_( const TBlobject & _buffer )
 	{
-		size_t binary_aek_size = _buffer.size();
+		uint32_t binary_aek_size = _buffer.size();
 		
-		size_t compress_bound = ARCHIVE_SERVICE(m_serviceProvider)
-			->compressBound( binary_aek_size );
+		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
+			->compress( CONST_STRING_LOCAL(zip), &_buffer[0], binary_aek_size );
 
-		TBlobject compress;
-		compress.resize( compress_bound );
-
-		size_t compress_size = 0;
-		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( &compress[0], compress_bound, &_buffer[0], binary_aek_size, compress_size ) == false )
+		if( compress_memory == nullptr)
 		{
 			return false;
 		}
@@ -621,16 +616,19 @@ namespace Menge
 			return false;
 		}
 
-		size_t binary_aek_header = 0xAEAEBABE;
+		uint32_t binary_aek_header = 0xAEAEBABE;
 		output_stream->write( &binary_aek_header, sizeof(binary_aek_header) );
 
-		size_t binary_aek_version = DATAFLOW_VERSION_AEK;
+		uint32_t binary_aek_version = DATAFLOW_VERSION_AEK;
 		output_stream->write( &binary_aek_version, sizeof(binary_aek_version) );
 
 		output_stream->write( &binary_aek_size, sizeof(binary_aek_size) );
-		output_stream->write( &compress_size, sizeof(compress_size) );
 
-		output_stream->write( &compress[0], compress_size );
+		uint32_t compressSize;
+		const void * compressBuffer = compress_memory->getMemory( compressSize );
+
+		output_stream->write( &compressSize, sizeof(compressSize) );
+		output_stream->write( compressBuffer, compressSize );
 
 		return true;
 	}

@@ -9,7 +9,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32OutputStream::Win32OutputStream()		
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
         , m_hFile(INVALID_HANDLE_VALUE)
 	{
 	}

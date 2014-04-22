@@ -146,7 +146,7 @@ namespace Menge
 	bool Account::load()
 	{
         if( FILE_SERVICE(m_serviceProvider)
-			->existFile( CONST_STRING(m_serviceProvider, user), m_settingsPath, nullptr ) == false )
+			->existFile( CONST_STRING_LOCAL(user), m_settingsPath, nullptr ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' settings not found '%s'"
                 , m_name.c_str()
@@ -157,7 +157,7 @@ namespace Menge
         }
 
 		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( CONST_STRING(m_serviceProvider, user), m_settingsPath );
+			->openInputFile( CONST_STRING_LOCAL(user), m_settingsPath );
 
         if( file == nullptr )
         {
@@ -301,20 +301,20 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-    bool Account::loadBinaryFile( const FilePath & _filename, TBlobject & _data )
+    bool Account::loadBinaryFile( const FilePath & _fileName, TBlobject & _data )
     {        
 		PathString path;
 
 		path += m_folder;
 		path += MENGE_FOLDER_DELIM;
-		path += _filename;
+		path += _fileName;
 
 		ConstString fullpath = Helper::stringizeString( m_serviceProvider, path );
 
-        InputStreamInterfacePtr file = 
+        InputStreamInterfacePtr stream = 
             FILE_SERVICE(m_serviceProvider)->openInputFile( CONST_STRING(m_serviceProvider, user), fullpath );
 
-        if( file == nullptr )
+        if( stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load file %s (file not found)"
                 , m_name.c_str()
@@ -324,10 +324,10 @@ namespace Menge
             return false;
         }
 
-        size_t file_size = file->size();
+        size_t file_size = stream->size();
 
         uint32_t load_crc32 = 0;
-        if( file->read( &load_crc32, sizeof(load_crc32) ) != sizeof(load_crc32) )
+        if( stream->read( &load_crc32, sizeof(load_crc32) ) != sizeof(load_crc32) )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load file %s (load crc32)"
                 , m_name.c_str()
@@ -338,7 +338,7 @@ namespace Menge
         }
 
         uint32_t load_data_size = 0;
-        if( file->read( &load_data_size, sizeof(load_data_size) ) != sizeof(load_data_size) )
+        if( stream->read( &load_data_size, sizeof(load_data_size) ) != sizeof(load_data_size) )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load file %s (load data size)"
                 , m_name.c_str()
@@ -352,9 +352,9 @@ namespace Menge
 
         TBlobject archive_blob(load_compress_size);
 		TBlobject::value_type * archive_blob_buffer = &archive_blob[0];
-        file->read( archive_blob_buffer, load_compress_size );
+        stream->read( archive_blob_buffer, load_compress_size );
 
-        file = nullptr;
+        stream = nullptr;
 
         size_t check_crc32 = make_crc32( &archive_blob[0], load_compress_size );
 
@@ -370,9 +370,22 @@ namespace Menge
 
         _data.resize( load_data_size );
 
+		ArchivatorInterfacePtr archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(zip) );
+
+		if( archivator == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls: invalid load file %s (invalid archivator %s)"
+				, m_name.c_str()
+				, fullpath.c_str()
+				, CONST_STRING_LOCAL(zip).c_str()
+				);
+
+			return false;
+		}
+
         size_t uncompress_size;
-        if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->decompress( &_data[0], load_data_size, &archive_blob[0], load_compress_size, uncompress_size ) == false )
+        if( archivator->decompress( &_data[0], load_data_size, &archive_blob[0], load_compress_size, uncompress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls: invalid load file %s (uncompress failed)"
                 , m_name.c_str()
@@ -385,24 +398,24 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::writeBinaryFile( const FilePath & _filename, const TBlobject & _data )
+    bool Account::writeBinaryFile( const FilePath & _fileName, const TBlobject & _data )
     {
 		PathString path;
 		
 		path += m_folder;
 		path += MENGE_FOLDER_DELIM;
-		path += _filename;
+		path += _fileName;
 
 		ConstString fullpath = Helper::stringizeString( m_serviceProvider, path );
 
-        OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
+        OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( CONST_STRING(m_serviceProvider, user), fullpath );
 
-        if( file == nullptr )
+        if( stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write file %s (not create)"
                 , m_name.c_str()
-                , _filename.c_str()
+                , _fileName.c_str()
                 );
 
             return false;
@@ -412,68 +425,57 @@ namespace Menge
         {
             LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls write empty file %s"
                 , m_name.c_str()
-                , _filename.c_str()
+                , _fileName.c_str()
                 );
 
             return false;
         }
 
-        size_t data_size = _data.size();
+        uint32_t data_size = _data.size();
+
+		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
+			->compress( CONST_STRING_LOCAL(zip), &_data[0], data_size );
         
-        size_t archive_size = ARCHIVE_SERVICE(m_serviceProvider)
-            ->compressBound( data_size );
-
-        if( archive_size == 0 )
+        if( compress_memory == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write file %s (archive_size is zero)"
+            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid compress file %s"
                 , m_name.c_str()
-                , _filename.c_str()
+                , _fileName.c_str()
                 );
 
             return false;
         }
 
-        TBlobject archive_blob(archive_size);
+		uint32_t compressSize;
+		const void * compressBuffer = compress_memory->getMemory( compressSize );
 
-        size_t comress_size;
-        if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->compress( &archive_blob[0], archive_size, &_data[0], _data.size(), comress_size ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write 'crc32' %s (compress failed)"
-                , m_name.c_str()
-                , _filename.c_str()
-                );
+        uint32_t value_crc32 = make_crc32( (const unsigned char *)compressBuffer, compressSize );
 
-            return false;
-        }
-
-        size_t value_crc32 = make_crc32( &archive_blob[0], comress_size );
-
-        if( file->write( &value_crc32, sizeof(value_crc32) ) == false )
+        if( stream->write( &value_crc32, sizeof(value_crc32) ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write 'crc32' %s (not create)"
                 , m_name.c_str()
-                , _filename.c_str()
+                , _fileName.c_str()
                 );
 
             return false;
         }
 
-        if( file->write( &data_size, sizeof(data_size) ) == false )
+        if( stream->write( &data_size, sizeof(data_size) ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write 'data size' %s (not create)"
                 , m_name.c_str()
-                , _filename.c_str()
+                , _fileName.c_str()
                 );
 
             return false;
         }
                 
-        if( file->write( &archive_blob[0], comress_size ) == false )
+        if( stream->write( compressBuffer, compressSize ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write 'data' %s (not create)"
                 , m_name.c_str()
-                , _filename.c_str()
+                , _fileName.c_str()
                 );
 
             return false;

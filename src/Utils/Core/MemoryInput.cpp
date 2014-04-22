@@ -37,6 +37,13 @@ namespace Menge
         return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const void * MemoryInput::getMemory( size_t & _size ) const		
+	{
+		_size = m_size;
+
+		return m_data;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryInput::read( void* _buf, size_t _count )
 	{
 		size_t cnt = _count;

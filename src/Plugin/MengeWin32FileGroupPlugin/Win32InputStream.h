@@ -5,10 +5,6 @@
 
 namespace Menge
 {
-	static const size_t FILE_BUFFER_SIZE = 8196;
-
-    class ServiceProviderInterface;
-	
 	class Win32InputStream
 		: public FileInputStreamInterface
 	{
@@ -39,6 +35,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		HANDLE m_hFile;
+
 		size_t m_size;
 		size_t m_offset;		
 		size_t m_pos;

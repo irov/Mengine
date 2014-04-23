@@ -192,21 +192,15 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local )
+	void InputEngine::applyCursorPosition_( const mt::vec2f & _point )
 	{		       
-		//mt::vec2f cursorPosition = m_inputOffset + (_point - m_inputViewport.begin) * m_inputScale;
-		//mt::vec2f cursorPosition = _point * m_inputScale;
-		mt::vec2f cursorPosition = _point;
-
-		_local = cursorPosition;
-
 		bool change = false;
-		if( mt::cmp_v2_v2( m_cursorPosition, cursorPosition ) == false )
+		if( mt::cmp_v2_v2( m_cursorPosition, _point ) == false )
 		{
 			change = true;
 		}
 
-		m_cursorPosition = cursorPosition;
+		m_cursorPosition = _point;
 		
 		if( change == true )
 		{
@@ -223,8 +217,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void InputEngine::setCursorPosition( const mt::vec2f & _point )
     {
-        mt::vec2f point;
-        this->applyCursorPosition_( _point, point );
+        this->applyCursorPosition_( _point );
     }
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & InputEngine::getCursorPosition() const
@@ -315,64 +308,57 @@ namespace Menge
 		
 		m_keyBuffer[_params.key] = _params.isDown;
 
-		mt::vec2f point;
-		this->applyCursorPosition_( _params.point, point );
+		this->applyCursorPosition_( _params.point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onKeyEvent( point, _params.key, _params.character, _params.isDown, repeating );
+			->onKeyEvent( _params.point, _params.key, _params.character, _params.isDown, repeating );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseButtonEvent_( const MouseButtonParams & _params )
 	{
 		m_mouseBuffer[ _params.button ] = _params.isDown;
 
-		mt::vec2f point;
-		this->applyCursorPosition_( _params.point, point );
+		this->applyCursorPosition_( _params.point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onMouseButtonEvent( _params.touchId, point, _params.button, _params.isDown );
+			->onMouseButtonEvent( _params.touchId, _params.point, _params.button, _params.isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseMoveEvent_( const MouseMoveParams& _params )
 	{
-		mt::vec2f point;
-		this->applyCursorPosition_( _params.point, point );
+		this->applyCursorPosition_( _params.point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onMouseMove( _params.touchId, point, _params.x, _params.y );
+			->onMouseMove( _params.touchId, _params.point, _params.x, _params.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseWheelEvent_( const MouseMoveParams& _params )
 	{
-		mt::vec2f point;
-		this->applyCursorPosition_( _params.point, point );
+		this->applyCursorPosition_( _params.point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onMouseWheel( _params.touchId, point, _params.wheel );
+			->onMouseWheel( _params.touchId, _params.point, _params.wheel );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mousePositionEvent_( const MousePositionParams& _params )
 	{
-		mt::vec2f point;
-		this->applyCursorPosition_( _params.point, point );
+		this->applyCursorPosition_( _params.point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onMousePosition( _params.touchId, point );
+			->onMousePosition( _params.touchId, _params.point );
 	}
     //////////////////////////////////////////////////////////////////////////
     void InputEngine::mouseEnterEvent_( const MousePositionParams& _params )
     {
-        mt::vec2f point;
-        this->applyCursorPosition_( _params.point, point );
+        this->applyCursorPosition_( _params.point );
 
         APPLICATION_SERVICE(m_serviceProvider)
-            ->onAppMouseEnter( point );
+            ->onAppMouseEnter( _params.point );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputEngine::mouseLeaveEvent_( const MousePositionParams& _params )
     {
-        mt::vec2f point;
-        this->applyCursorPosition_( _params.point, point );
+        this->applyCursorPosition_( _params.point );
 
         APPLICATION_SERVICE(m_serviceProvider)
             ->onAppMouseLeave();

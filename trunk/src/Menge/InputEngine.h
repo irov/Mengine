@@ -127,7 +127,7 @@ namespace Menge
         void mouseLeaveEvent_( const MousePositionParams& _params );
 
 	protected:		
-		void applyCursorPosition_( const mt::vec2f & _point, mt::vec2f & _local );
+		void applyCursorPosition_( const mt::vec2f & _point );
 
 	private:
 		mt::vec2f m_cursorPosition;

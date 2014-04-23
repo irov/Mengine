@@ -14,7 +14,7 @@ namespace Menge
 		/// public fields
 		struct jpeg_source_mgr pub;
 
-		InputStreamBuffer m_stream;
+		InputStreamBuffer8196 m_stream;
 		/// start of buffer
 		JOCTET * buffer;
 		/// have we gotten any data yet ?

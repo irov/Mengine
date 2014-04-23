@@ -75,7 +75,7 @@ namespace Menge
 
         size_t m_pitch;
 
-		InputStreamBuffer m_streamBuffer;
+		InputStreamBuffer8196 m_streamBuffer;
 		
 	private:
 		void clear_();

@@ -47,7 +47,7 @@ namespace Menge
 	static void PNGAPI s_readProc( png_structp _png_ptr, unsigned char * _data, png_size_t _size )
 	{
 		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-		InputStreamBuffer * stream = static_cast<InputStreamBuffer *>( io_ptr );
+		InputStreamBuffer8196 * stream = static_cast<InputStreamBuffer8196 *>( io_ptr );
 
 		stream->read( _data, _size );
 	}

@@ -28,7 +28,7 @@ namespace Menge
 		png_infop m_info_ptr;
 		png_uint_32 m_row_bytes;
 		
-		InputStreamBuffer m_streamBuffer;
+		InputStreamBuffer8196 m_streamBuffer;
 		//stdex::memory_cache m_memories;
 	};
 }	// namespace Menge

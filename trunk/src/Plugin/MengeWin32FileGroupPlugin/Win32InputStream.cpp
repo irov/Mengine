@@ -14,6 +14,7 @@ namespace Menge
         , m_hFile(INVALID_HANDLE_VALUE)
 		, m_size(0)
 		, m_offset(0)
+		, m_pos(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -44,13 +45,6 @@ namespace Menge
 			return false;
 		}
 
-		m_offset = _offset;
-
-		if( m_offset != 0 )
-		{
-			this->seek( 0 );
-		}
-
 		DWORD size = ::GetFileSize( m_hFile, NULL );
 
 		if( size == INVALID_FILE_SIZE )
@@ -77,6 +71,13 @@ namespace Menge
 		}
 
 		m_size = _size == 0 ? (size_t)size : _size;
+		m_offset = _offset;
+		m_pos = 0;
+
+		if( m_offset != 0 )
+		{
+			this->seek( 0 );
+		}
 
 		return true;
 	}
@@ -114,7 +115,12 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32InputStream::read( void * _buf, size_t _count )
-	{     
+	{   
+		if( m_pos + _count > m_size )
+		{
+			_count = m_size - m_pos;
+		}
+
 		DWORD bytesRead = 0;
 		if( ::ReadFile( m_hFile, _buf, static_cast<DWORD>( _count ), &bytesRead, NULL ) == FALSE )
 		{
@@ -128,6 +134,8 @@ namespace Menge
 
 			return 0;
 		}
+
+		m_pos += (size_t)bytesRead;
 
 		return bytesRead;
 	}
@@ -150,14 +158,18 @@ namespace Menge
 			return false;
 		}
 
+		m_pos = (size_t)dwPtr - m_offset;
+
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32InputStream::tell() const
 	{
-		DWORD dwPtr = SetFilePointer( m_hFile, 0, NULL, FILE_CURRENT );
+		//DWORD dwPtr = SetFilePointer( m_hFile, 0, NULL, FILE_CURRENT );
 
-        return (size_t)dwPtr;
+  //      return (size_t)dwPtr - m_offset;
+
+		return m_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32InputStream::size() const 

@@ -9,7 +9,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static size_t s_readOgg( void *_ptr, size_t _size, size_t _nmemb, void *_datasource )
 	{
-		InputStreamBuffer * stream = static_cast<InputStreamBuffer *>(_datasource);
+		InputStreamBuffer8196 * stream = static_cast<InputStreamBuffer8196 *>(_datasource);
 		size_t count = stream->read( _ptr, _size * _nmemb );
 
 		return count;
@@ -17,7 +17,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static int s_seekOgg( void *_datasource, ogg_int64_t _offset, int _whence )
 	{
-		InputStreamBuffer * stream = static_cast<InputStreamBuffer *>(_datasource);
+		InputStreamBuffer8196 * stream = static_cast<InputStreamBuffer8196 *>(_datasource);
 		ogg_int64_t offset = _offset;
 
 		switch( _whence )
@@ -43,7 +43,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static long s_tellOgg( void * _datasource )
 	{
-		InputStreamBuffer * stream = static_cast<InputStreamBuffer*>(_datasource);
+		InputStreamBuffer8196 * stream = static_cast<InputStreamBuffer8196*>(_datasource);
         size_t pos = stream->tell();
 
         long long_pos = (long)pos;

@@ -29,6 +29,6 @@ namespace Menge
 	protected:
 		OggVorbis_File m_oggVorbisFile;
 
-		InputStreamBuffer m_streamBuffer;
+		InputStreamBuffer8196 m_streamBuffer;
 	};
 }	// namespace Menge

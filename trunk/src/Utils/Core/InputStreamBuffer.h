@@ -6,8 +6,9 @@
 
 namespace Menge
 {
-	const size_t STREAM_BUFFER_SIZE = 8192; //8kb
+	//const size_t STREAM_BUFFER_SIZE = 1024; //1kb
 
+	template<size_t STREAM_BUFFER_SIZE>
 	class InputStreamBuffer
 	{
 	public:
@@ -41,16 +42,11 @@ namespace Menge
 
 				if( tail != 0 )
 				{
-					stdex::memorycopy( _buf, m_readCache + m_carriage, tail );
+					stdex::memorycopy( _buf, m_buffer + m_carriage, tail );
 				}
 
 				size_t toRead = _count - tail;
 				size_t bytesRead = m_stream->read( (unsigned char *)_buf + tail, toRead );
-
-				if( bytesRead != toRead )
-				{
-					return 0;
-				}
 
 				m_carriage = 0;
 				m_capacity = 0;
@@ -62,7 +58,7 @@ namespace Menge
 
 			if( m_carriage + _count <= m_capacity )
 			{
-				stdex::memorycopy( _buf, m_readCache + m_carriage, _count );
+				stdex::memorycopy( _buf, m_buffer + m_carriage, _count );
 
 				m_carriage += _count;
 
@@ -73,15 +69,15 @@ namespace Menge
 
 			if( tail != 0 )
 			{
-				stdex::memorycopy( _buf, m_readCache + m_carriage, tail );
+				stdex::memorycopy( _buf, m_buffer + m_carriage, tail );
 			}
 
-			size_t bytesRead = m_stream->read( m_readCache, STREAM_BUFFER_SIZE );
+			size_t bytesRead = m_stream->read( m_buffer, STREAM_BUFFER_SIZE );
 
 			size_t readSize = (std::min)( (_count - tail), bytesRead );
 
 			unsigned char * read_buf = (unsigned char *)_buf + tail;
-			stdex::memorycopy( read_buf, m_readCache, readSize );
+			stdex::memorycopy( read_buf, m_buffer, readSize );
 
 			m_carriage = readSize;
 			m_capacity = bytesRead;
@@ -138,6 +134,10 @@ namespace Menge
 		size_t m_capacity;
 		size_t m_reading;
 
-		char m_readCache[STREAM_BUFFER_SIZE];
+		char m_buffer[STREAM_BUFFER_SIZE];
 	};
+
+	typedef InputStreamBuffer<1024> InputStreamBuffer1024;
+	typedef InputStreamBuffer<4096> InputStreamBuffer4096;
+	typedef InputStreamBuffer<8196> InputStreamBuffer8196;
 }

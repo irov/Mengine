@@ -11,7 +11,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	static int s_readIOWrapper( void * _opaque, uint8_t *_bufer, int bufferSize )
 	{
-		InputStreamBuffer * stream = static_cast<InputStreamBuffer *>(_opaque);
+		InputStreamBuffer8196 * stream = static_cast<InputStreamBuffer8196 *>(_opaque);
 
         size_t res = stream->read( _bufer , bufferSize );
 		
@@ -20,7 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static int64_t s_seekIOWrapper( void *_opaque, int64_t _offset, int _whence )
 	{
-		InputStreamBuffer * stream = static_cast<InputStreamBuffer *>(_opaque);
+		InputStreamBuffer8196 * stream = static_cast<InputStreamBuffer8196 *>(_opaque);
 		
 		switch( _whence )
 		{

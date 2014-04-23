@@ -108,7 +108,7 @@ namespace Menge
 			return false;
 		}
 
-		InputStreamBuffer zipFileBuffer(zipFile);
+		InputStreamBuffer8196 zipFileBuffer(zipFile);
 
 		size_t zip_size = zipFileBuffer.size();
 		zipFileBuffer.seek( zip_size - 22 );

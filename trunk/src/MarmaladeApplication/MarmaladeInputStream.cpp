@@ -11,8 +11,9 @@ namespace Menge
 	MarmaladeInputStream::MarmaladeInputStream()
         : m_serviceProvider(nullptr)
         , m_hFile(nullptr)
-		, m_offset(0)
 		, m_size(0)
+		, m_offset(0)
+		, m_pos(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -57,13 +58,6 @@ namespace Menge
             return false;
         }
 
-		m_offset = _offset;
-
-		if( m_offset != 0 )
-		{
-			this->seek( 0 );
-		}
-
 		int32 s3e_size = s3eFileGetSize( m_hFile );
 
 		if( s3e_size == -1 )
@@ -92,6 +86,13 @@ namespace Menge
 		}
 
 		m_size = _size == 0 ? (size_t)s3e_size : _size;
+		m_offset = _offset;
+		m_pos = 0;
+
+		if( m_offset != 0 )
+		{
+			this->seek( 0 );
+		}		
 
 		return true;
 	}
@@ -105,19 +106,19 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MarmaladeInputStream::read( void* _buf, size_t _count )
+	size_t MarmaladeInputStream::read( void * _buf, size_t _count )
 	{     
+		if( m_pos + _count > m_size )
+		{
+			_count = m_size - m_pos;
+		}
+
 		uint32 s3e_count = static_cast<uint32>(_count);
 		uint32 bytesRead = s3eFileRead( _buf, 1, s3e_count, m_hFile );
 
 		if( bytesRead != s3e_count )
 		{
 			s3eFileError error = s3eFileGetError();
-
-			if( error == S3E_FILE_ERR_EOF )
-			{
-				return bytesRead;
-			}
 
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::read (%d:%d) size %d get error %d"
 				, bytesRead
@@ -128,6 +129,8 @@ namespace Menge
 
 			return 0;
 		}
+
+		m_pos += (size_t)bytesRead;
 
 		return bytesRead;
 	}
@@ -150,14 +153,16 @@ namespace Menge
 			return false;
 		}
 
+		m_pos = (size_t)_pos;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MarmaladeInputStream::tell() const
 	{
-        int32 current = s3eFileTell( m_hFile );
+        //int32 current = s3eFileTell( m_hFile );
 
-        return (size_t)current;
+        return m_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MarmaladeInputStream::size() const 

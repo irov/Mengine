@@ -577,6 +577,70 @@ namespace Menge
 			return py_value;
 		}
 
+		PyObject * s_getSettingBool( const ConstString & _setting )
+		{
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+				->getCurrentAccount();
+
+			if( currentAccount == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("getSettingBool: currentAccount is none [%s]"
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & setting = currentAccount->getSetting( _setting );
+		
+			if( setting != L"True" && setting != L"False" )
+			{
+				LOGGER_ERROR(m_serviceProvider)("getSettingBool: can't scanf from [%s]"
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			if( setting == L"True" )
+			{
+				return pybind::ret_true();
+			}
+
+			return pybind::ret_false();
+		}
+
+		PyObject * s_getSettingInt( const ConstString & _setting )
+		{
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+				->getCurrentAccount();
+
+			if( currentAccount == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("getSettingInt: currentAccount is none [%s]"
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & setting = currentAccount->getSetting( _setting );
+
+			int value;
+			if( Utils::wstringToInt( setting, value ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("getSettingInt: can't scanf from [%s]"
+					, _setting.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_value = pybind::ptr( value );
+
+			return py_value;
+		}
+
 		PyObject * s_getSettingUInt( const ConstString & _setting )
 		{
 			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
@@ -1201,6 +1265,8 @@ namespace Menge
 		pybind::def_functor( "getSetting", helperScriptMethod, &HelperScriptMethod::s_getSetting );
         pybind::def_functor( "hasSetting", helperScriptMethod, &HelperScriptMethod::s_hasSetting );
 
+		pybind::def_functor( "getSettingBool", helperScriptMethod, &HelperScriptMethod::s_getSettingBool );
+		pybind::def_functor( "getSettingInt", helperScriptMethod, &HelperScriptMethod::s_getSettingInt );
 		pybind::def_functor( "getSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt );
 		pybind::def_functor( "getSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getSettingFloat );
 		

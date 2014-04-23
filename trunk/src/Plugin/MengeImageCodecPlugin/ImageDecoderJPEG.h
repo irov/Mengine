@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Codec/ImageDecoder.h"
+#	include "Core/InputStreamBuffer.h"
 
 extern "C" 
 {
@@ -37,6 +38,8 @@ namespace Menge
 	private:
 		jpeg_decompress_struct m_jpegObject;
 		DecoderJPEGErrorManager m_errorMgr;
+
+		InputStreamBuffer8196 m_streamBuffer;
 
 		bool m_initialize;
 	};

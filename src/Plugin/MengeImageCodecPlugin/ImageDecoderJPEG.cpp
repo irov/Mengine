@@ -2,8 +2,6 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#	include "Core/InputStreamBuffer.h"
-
 #	include "Logger/Logger.h"
 
 #	define INPUT_BUF_SIZE  4096				// choose an efficiently fread'able size 
@@ -14,7 +12,7 @@ namespace Menge
 		/// public fields
 		struct jpeg_source_mgr pub;
 
-		InputStreamBuffer8196 m_stream;
+		InputStreamBuffer8196 * m_stream;
 		/// start of buffer
 		JOCTET * buffer;
 		/// have we gotten any data yet ?
@@ -96,7 +94,7 @@ namespace Menge
 	{
 		menge_src_ptr src = (menge_src_ptr) cinfo->src;
 
-		size_t nbytes = src->m_stream.read( src->buffer, INPUT_BUF_SIZE );
+		size_t nbytes = src->m_stream->read( src->buffer, INPUT_BUF_SIZE );
 
 		if( nbytes <= 0 )
 		{
@@ -179,7 +177,7 @@ namespace Menge
 	for closing it after finishing decompression.
 	*/
 	GLOBAL(void)
-		jpeg_menge_src ( j_decompress_ptr cinfo, InputStreamInterface * _stream ) 
+		jpeg_menge_src ( j_decompress_ptr cinfo, InputStreamBuffer8196 * _stream ) 
 	{
 		menge_src_ptr src;
 
@@ -203,7 +201,7 @@ namespace Menge
 		src->pub.skip_input_data = skip_input_data;
 		src->pub.resync_to_restart = jpeg_resync_to_restart; // use default method 
 		src->pub.term_source = term_source;
-		src->m_stream.setStream( _stream );
+		src->m_stream = _stream;
 		src->pub.bytes_in_buffer = 0;		// forces fill_input_buffer on first read 
 		src->pub.next_input_byte = nullptr;	// until buffer loaded 
 	}
@@ -257,6 +255,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderJPEG::_initialize()
 	{
+		m_streamBuffer = m_stream;
+
 		// step 1: allocate and initialize JPEG decompression object
 		m_jpegObject.err = jpeg_std_error(&m_errorMgr.pub);
 		m_jpegObject.client_data = this;
@@ -276,7 +276,7 @@ namespace Menge
 		jpeg_create_decompress( &m_jpegObject );
 
 		// step 2a: specify data source (eg, a handle)
-		jpeg_menge_src( &m_jpegObject, m_stream.get() );
+		jpeg_menge_src( &m_jpegObject, &m_streamBuffer );
 
 		// step 3: read handle parameters with jpeg_read_header()
 		jpeg_read_header( &m_jpegObject, TRUE );

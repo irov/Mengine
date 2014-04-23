@@ -5,11 +5,7 @@
 #   include <s3eFile.h>
 
 namespace Menge
-{
-    class ServiceProviderInterface;
-
-    const uint32 FILE_BUFFER_SIZE = 8192; //8kb
-
+{    	
 	class MarmaladeInputStream
 		: public FileInputStreamInterface
 	{
@@ -41,8 +37,9 @@ namespace Menge
 		s3eFile * m_hFile;
 		Menge::FilePath m_folder;
 		Menge::FilePath m_filename;
-		
+				
+        size_t m_size;
 		size_t m_offset;
-        size_t m_size;		
+		size_t m_pos;
 	};
 }	// namespace Menge

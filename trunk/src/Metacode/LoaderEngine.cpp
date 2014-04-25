@@ -337,7 +337,7 @@ namespace Menge
 	bool LoaderEngine::makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin )
 	{
 		XmlDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString(m_serviceProvider, "xml2bin") );
+            ->createDecoderT<XmlDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "xml2bin") );
 
 		if( decoder == nullptr )
 		{

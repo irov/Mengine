@@ -253,8 +253,7 @@ namespace Menge
 			{
 				const char * value = _ini.getSettingValues( _section, _key, index );
 
-				size_t value_len = strlen( value );
-				ConstString cs = Helper::stringizeStringSize( _serviceProvider, value, value_len );
+				ConstString cs = Helper::stringizeString( _serviceProvider, value );
 
 				_values.push_back( cs );
 			}

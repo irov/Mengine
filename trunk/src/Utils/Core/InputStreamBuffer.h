@@ -138,6 +138,7 @@ namespace Menge
 	};
 
 	typedef InputStreamBuffer<1024> InputStreamBuffer1024;
+	typedef InputStreamBuffer<2048> InputStreamBuffer2048;
 	typedef InputStreamBuffer<4096> InputStreamBuffer4096;
 	typedef InputStreamBuffer<8196> InputStreamBuffer8196;
 }

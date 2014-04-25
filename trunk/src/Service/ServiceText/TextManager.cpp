@@ -124,9 +124,9 @@ namespace Menge
 								, value_valid
 								);
 
-							std::string str(value, value_size);
-							std::string temp;
-							utf8::replace_invalid(str.begin(), str.end(), back_inserter(temp));
+							String str(value, value_size);
+							String temp;
+							utf8::replace_invalid(str.begin(), str.end(), std::back_inserter(temp));
 
 							LOGGER_ERROR(m_serviceProvider)("replace to |%s|"
 								, temp.c_str()

@@ -4,12 +4,12 @@
 
 namespace Menge
 {
-	class VideoConverterFFMPEGToWEBM
+	class VideoConverterFFMPEGToGVF
 		: public DevelopmentConverter
 	{
 	public:
-		VideoConverterFFMPEGToWEBM();
-		~VideoConverterFFMPEGToWEBM();
+		VideoConverterFFMPEGToGVF();
+		~VideoConverterFFMPEGToGVF();
 
 	public:
 		bool initialize() override;

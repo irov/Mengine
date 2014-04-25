@@ -1,7 +1,7 @@
 #	include "VideoCodecPlugin.h"
 
 #   include "VideoDecoderFFMPEG.h"
-//#   include "VideoDecoderGVF.h"
+#   include "VideoDecoderGVF.h"
 //#   include "VideoDecoderVPX.h"
 
 #	include "Core/File.h"
@@ -74,8 +74,8 @@ namespace Menge
 
         av_log_set_callback( &s_ffmpeg_log );
 
-		m_decoders.push_back( new DecoderFactory<VideoDecoderFFMPEG>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ffmpegVideo")) );
-        //m_decoders.push_back( new DecoderFactory<VideoDecoderGVF>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "gvfVideo")) );
+		m_decoders.push_back( new DecoderFactory<VideoDecoderFFMPEG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegVideo")) );
+        m_decoders.push_back( new DecoderFactory<VideoDecoderGVF>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "gvfVideo")) );
         //m_decoders.push_back( new DecoderFactory<VideoDecoderVPX>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "vpxVideo")) );
 		
 		for( TVectorVideoDecoders::iterator

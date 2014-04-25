@@ -69,39 +69,39 @@ namespace Menge
 	{
         m_serviceProvider = _provider;
 
-        m_decoders.push_back( new DecoderFactory<ImageDecoderPNG>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "pngImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderJPEG>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "jpegImage")) );
-        //m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ddsImage")) );
-        m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ddzImage")) );
-        m_decoders.push_back( new DecoderFactory<ImageDecoderWEBP>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "webpImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTZ>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "pvrtzImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderETZ1>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "etz1Image")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTC>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "pvrImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderETC1>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "etcImage")) );
+        m_decoders.push_back( new DecoderFactory<ImageDecoderPNG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pngImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderJPEG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "jpegImage")) );
+        //m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ddsImage")) );
+        m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ddzImage")) );
+        m_decoders.push_back( new DecoderFactory<ImageDecoderWEBP>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "webpImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pvrtzImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderETZ1>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "etz1Image")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTC>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pvrImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderETC1>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "etcImage")) );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "png", Helper::stringizeString(m_serviceProvider, "pngImage") );
+			->registerCodecExt( "png", CONST_STRING_LOCAL(m_serviceProvider, "pngImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "PNG", Helper::stringizeString(m_serviceProvider, "pngImage") );
+			->registerCodecExt( "PNG", CONST_STRING_LOCAL(m_serviceProvider, "pngImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "jpg", Helper::stringizeString(m_serviceProvider, "jpegImage") );
+			->registerCodecExt( "jpg", CONST_STRING_LOCAL(m_serviceProvider, "jpegImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "jpeg", Helper::stringizeString(m_serviceProvider, "jpegImage") );
+			->registerCodecExt( "jpeg", CONST_STRING_LOCAL(m_serviceProvider, "jpegImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "pvz", Helper::stringizeString(m_serviceProvider, "pvrtzImage") );
+			->registerCodecExt( "pvz", CONST_STRING_LOCAL(m_serviceProvider, "pvrtzImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "etz", Helper::stringizeString(m_serviceProvider, "etz1Image") );
+			->registerCodecExt( "etz", CONST_STRING_LOCAL(m_serviceProvider, "etz1Image") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "pvr", Helper::stringizeString(m_serviceProvider, "pvrImage") );
+			->registerCodecExt( "pvr", CONST_STRING_LOCAL(m_serviceProvider, "pvrImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "etc", Helper::stringizeString(m_serviceProvider, "etcImage") );
+			->registerCodecExt( "etc", CONST_STRING_LOCAL(m_serviceProvider, "etcImage") );
 		
 
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>(ConstString("jpgImage"), logService) );
@@ -116,13 +116,13 @@ namespace Menge
 		//m_decoders.push_back( new Detail::DecoderSystem<SoundDecoderOGGVorbis>(m_serviceProvider, Helper::StringizeString(m_serviceProvider, "oggSound")) );
 		//m_decoders.push_back( new Detail::DecoderSystem<SoundDecoderOGGVorbis>(m_serviceProvider, Helper::StringizeString(m_serviceProvider, "ogvSound")) );
 
-        m_decoders.push_back( new DecoderFactory<PickDecoderHIT>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "hitPick")) );
+        m_decoders.push_back( new DecoderFactory<PickDecoderHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "hitPick")) );
 
-        m_encoders.push_back( new EncoderFactory<PickEncoderHIT>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "hitPick")) );     
-		m_encoders.push_back( new EncoderFactory<ImageEncoderPNG>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "pngImage")) );
+        m_encoders.push_back( new EncoderFactory<PickEncoderHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "hitPick")) );     
+		m_encoders.push_back( new EncoderFactory<ImageEncoderPNG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pngImage")) );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "hit", Helper::stringizeString(m_serviceProvider, "hitPick") );
+			->registerCodecExt( "hit", CONST_STRING_LOCAL(m_serviceProvider, "hitPick") );
 
 		//VideoDecoderOGGTheora::createCoefTables_();
 
@@ -155,19 +155,19 @@ namespace Menge
 		DataflowInterfacePtr aek = m_factoryAEK->createDataflow();
 
 		DATA_SERVICE(m_serviceProvider)
-			->registerDataflow( Helper::stringizeString(m_serviceProvider, "aekMovie"), aek );
+			->registerDataflow( CONST_STRING_LOCAL(m_serviceProvider, "aekMovie"), aek );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "aek", Helper::stringizeString(m_serviceProvider, "aekMovie") );
+			->registerCodecExt( "aek", CONST_STRING_LOCAL(m_serviceProvider, "aekMovie") );
 
 		m_factoryMDL = new DataflowFactory<DataflowMDL>(m_serviceProvider);
 		DataflowInterfacePtr mdl = m_factoryMDL->createDataflow();
 
 		DATA_SERVICE(m_serviceProvider)
-			->registerDataflow( Helper::stringizeString(m_serviceProvider, "mdzModel"), mdl );
+			->registerDataflow( CONST_STRING_LOCAL(m_serviceProvider, "mdzModel"), mdl );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "mdz", Helper::stringizeString(m_serviceProvider, "mdzModel") );
+			->registerCodecExt( "mdz", CONST_STRING_LOCAL(m_serviceProvider, "mdzModel") );
 
         return true;
 	}
@@ -200,10 +200,10 @@ namespace Menge
 		}
 
 		DATA_SERVICE(m_serviceProvider)
-			->unregisterDataflow( Helper::stringizeString(m_serviceProvider, "aekMovie") );
+			->unregisterDataflow( CONST_STRING_LOCAL(m_serviceProvider, "aekMovie") );
 
 		DATA_SERVICE(m_serviceProvider)
-			->unregisterDataflow( Helper::stringizeString(m_serviceProvider, "mdzModel") );
+			->unregisterDataflow( CONST_STRING_LOCAL(m_serviceProvider, "mdzModel") );
 
 		delete this;
 	}

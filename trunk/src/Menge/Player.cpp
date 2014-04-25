@@ -695,8 +695,8 @@ namespace Menge
 		m_debugText = NODE_SERVICE(m_serviceProvider)->
 			createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
 
-		m_debugText->setFontName( Helper::stringizeString(m_serviceProvider, "__CONSOLE_FONT__") );
-		m_debugText->setTextID( Helper::stringizeString(m_serviceProvider, "__ID_TEXT_CONSOLE") );
+		m_debugText->setFontName( CONST_STRING_LOCAL(m_serviceProvider, "__CONSOLE_FONT__") );
+		m_debugText->setTextID( CONST_STRING_LOCAL(m_serviceProvider, "__ID_TEXT_CONSOLE") );
 		m_debugText->enable();
 	}
 	//////////////////////////////////////////////////////////////////////////

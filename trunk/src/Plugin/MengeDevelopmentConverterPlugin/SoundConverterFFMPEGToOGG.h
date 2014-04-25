@@ -4,11 +4,6 @@
 
 namespace Menge
 {
-    class FileServiceInterface;
-    class UnicodeServiceInterface;
-    class StringizeServiceInterface;
-	class LogServiceInterface;
-
 	class SoundConverterFFMPEGToOGG
 		: public DevelopmentConverter
 	{

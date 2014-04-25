@@ -102,7 +102,7 @@ namespace Menge
 
 		//m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
-		m_defaultRenderTarget = Helper::stringizeString(m_serviceProvider, "Window");
+		m_defaultRenderTarget = CONST_STRING_LOCAL(m_serviceProvider, "Window");
 
 		return true;
 	}
@@ -259,7 +259,7 @@ namespace Menge
 		m_nullTexture->unlock();
 
 		RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->cacheFileTexture( Helper::stringizeString(m_serviceProvider, "__null__"), m_nullTexture );
+			->cacheFileTexture( CONST_STRING_LOCAL(m_serviceProvider, "__null__"), m_nullTexture );
 
 		return true;
 	}

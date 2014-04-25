@@ -35,8 +35,8 @@ namespace Menge
     {
         m_homeless = new Node();
 
-        m_homeless->setName( Helper::stringizeString(m_serviceProvider, "Homeless") );
-        m_homeless->setType( Helper::stringizeString(m_serviceProvider, "Node") );
+        m_homeless->setName( CONST_STRING_LOCAL(m_serviceProvider, "Homeless") );
+        m_homeless->setType( CONST_STRING_LOCAL(m_serviceProvider, "Node") );
         m_homeless->setServiceProvider( m_serviceProvider );        
     }
     //////////////////////////////////////////////////////////////////////////

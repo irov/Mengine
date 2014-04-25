@@ -90,11 +90,6 @@ namespace Menge
 		++m_frame;
 		m_pts += m_dataInfo.frameTiming;
 
-		printf("%d %f\n"
-			, m_frame
-			, m_pts
-			);
-               
         _pts = m_pts;
 
         return VDRS_SUCCESS;

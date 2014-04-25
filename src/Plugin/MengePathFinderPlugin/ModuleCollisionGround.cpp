@@ -102,16 +102,16 @@ namespace Menge
 		pybind::def_functor( "createCollisionMotorFollow", this, &ModuleCollisionGround::createCollisionMotorFollow );
 		
 		PROTOTYPE_SERVICE(m_serviceProvider)
-			->addPrototype( Helper::stringizeString(m_serviceProvider, "Node"), Helper::stringizeString( m_serviceProvider, "PythonCollisionObject"), new NodePrototypeGenerator<PythonCollisionObject, 128>(m_serviceProvider) );
+			->addPrototype( CONST_STRING_LOCAL(m_serviceProvider, "Node"), CONST_STRING_LOCAL( m_serviceProvider, "PythonCollisionObject"), new NodePrototypeGenerator<PythonCollisionObject, 128>(m_serviceProvider) );
 
 		PROTOTYPE_SERVICE(m_serviceProvider)
-			->addPrototype( Helper::stringizeString(m_serviceProvider, "Node"), Helper::stringizeString( m_serviceProvider, "PythonCollisionRadar"), new NodePrototypeGenerator<PythonCollisionRadar, 128>(m_serviceProvider) );
+			->addPrototype( CONST_STRING_LOCAL(m_serviceProvider, "Node"), CONST_STRING_LOCAL( m_serviceProvider, "PythonCollisionRadar"), new NodePrototypeGenerator<PythonCollisionRadar, 128>(m_serviceProvider) );
 
 		SCRIPT_SERVICE(m_serviceProvider)
-			->addWrapping( Helper::stringizeString(m_serviceProvider, "PythonCollisionObject"), new ScriptClassWrapper<PythonCollisionObject>() );
+			->addWrapping( CONST_STRING_LOCAL(m_serviceProvider, "PythonCollisionObject"), new ScriptClassWrapper<PythonCollisionObject>() );
 
 		SCRIPT_SERVICE(m_serviceProvider)
-			->addWrapping( Helper::stringizeString(m_serviceProvider, "PythonCollisionRadar"), new ScriptClassWrapper<PythonCollisionRadar>() );
+			->addWrapping( CONST_STRING_LOCAL(m_serviceProvider, "PythonCollisionRadar"), new ScriptClassWrapper<PythonCollisionRadar>() );
 
 		return true;
 	}

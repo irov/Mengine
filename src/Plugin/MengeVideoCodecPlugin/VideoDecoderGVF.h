@@ -2,17 +2,12 @@
 
 #	include "Codec/VideoDecoder.h"
 
+#	include "Core/InputStreamBuffer.h"
+
+#	include "gvf.h"
+
 namespace Menge
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct gvf_header
-    {
-        size_t count;
-        size_t fps;
-        size_t width;
-        size_t height;         
-        size_t flag;
-    };
     //////////////////////////////////////////////////////////////////////////
 	class VideoDecoderGVF
 		: public VideoDecoder
@@ -28,8 +23,6 @@ namespace Menge
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 	
 	public:	
-		bool eof() const override;
-		//int sync( float _timing ) override;
 		float getTiming()  const override;
 		bool seek( float _timing ) override;
 
@@ -40,14 +33,13 @@ namespace Menge
 		EVideoDecoderReadState readNextFrame( float & _pts ) override;
 
 	protected:
-        gvf_header m_header;
+		InputStreamBuffer2048 m_streamBuffer;
 
-        typedef std::vector<size_t> TVectorOffsets;
-        TVectorOffsets m_offsets;
+		gvf_decoder * m_gvf;
+		size_t m_frame;
+		size_t m_frames;
+		float m_pts;		
 
-        size_t m_frame;
-		float m_pts;
-
-        size_t m_pitch;
+		size_t m_pitch;
 	};
 }	// namespace Menge

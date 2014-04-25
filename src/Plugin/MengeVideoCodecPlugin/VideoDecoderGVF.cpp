@@ -3,87 +3,97 @@
 #	include "Core/File.h"
 #	include "Logger/Logger.h"
 
-#	include "webp/decode.h"
-#	include "webp/mux.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	static int s_gvf_read( void * _user, void * _buffer, uint32_t _size )
+	{
+		InputStreamBuffer2048 * stream = (InputStreamBuffer2048 *)_user;
+
+		if( stream->read( _buffer, _size ) != _size )
+		{
+			return GVF_READ_FAILED;
+		}
+
+		return GVF_READ_SUCCESSFUL;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static int s_gvf_seek( void * _user, uint32_t _size )
+	{
+		InputStreamBuffer2048 * stream = (InputStreamBuffer2048 *)_user;
+
+		if( stream->seek( _size ) == false )
+		{
+			return GVF_SEEK_FAILED;
+		}
+
+		return GVF_SEEK_SUCCESSFUL;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderGVF::VideoDecoderGVF()
-		: m_pts(0.f)
-        , m_frame(0)
-        , m_pitch(0)
+		: m_gvf(nullptr)
+		, m_frame(0)
+		, m_frames(0)
+		, m_pts(0.f)
+		, m_pitch(0)
     {
 	}
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderGVF::~VideoDecoderGVF()
 	{
+		gvf_decoder_destroy( m_gvf );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderGVF::_initialize()
 	{
-		size_t magic;
-		m_stream->read( &magic, sizeof(magic) );
-		
-		size_t version;
-		m_stream->read( &version, sizeof(version) );
+		m_streamBuffer = m_stream;
 
-        m_stream->read( &m_header, sizeof(m_header) );
-		        
-        m_offsets.resize( (m_header.count + 1) );
-        m_stream->read( &m_offsets[0], (m_header.count + 1) * sizeof(TVectorOffsets::value_type) );
+		if( gvf_decoder_create( &m_gvf, &m_streamBuffer, &s_gvf_read, &s_gvf_seek ) != GVF_ERROR_SUCCESSFUL )
+		{
+			return false;
+		}
 
-		m_dataInfo.frameWidth = m_header.width;
-        m_dataInfo.frameHeight = m_header.height;
+		m_dataInfo.frameWidth = gvf_get_width( m_gvf );
+        m_dataInfo.frameHeight = gvf_get_height( m_gvf );
 
-		m_dataInfo.fps = m_header.fps;
+		m_dataInfo.fps = gvf_get_fps( m_gvf );
 		m_dataInfo.frameTiming = 1000.f / float(m_dataInfo.fps);
 
-		m_dataInfo.duration = m_header.count / 30.f;
+		m_frames = gvf_get_frames( m_gvf );
+		m_dataInfo.duration = float(m_frames) / float(m_dataInfo.fps);
+
+		m_dataInfo.format = PF_DXT5;
+		m_dataInfo.clamp = false;
 
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////////// 
 	size_t VideoDecoderGVF::decode( void * _buffer, size_t _bufferSize )
 	{
-        size_t dataOffset = m_offsets[m_frame];
-        size_t dataSize = m_offsets[m_frame + 1] - dataOffset;
+		if( gvf_decode_frame( m_gvf, m_frame, _buffer, _bufferSize ) != GVF_ERROR_SUCCESSFUL )
+		{
+			return 0;
+		}
 
-        static uint8_t * s_WEBPBuffer = nullptr;
-        static size_t s_WEBPBufferSize = 0;
-
-        if( s_WEBPBufferSize < dataSize )
-        {
-            delete [] s_WEBPBuffer;
-            s_WEBPBuffer = new uint8_t[dataSize];
-            s_WEBPBufferSize = dataSize;
-        }
-        
-        m_stream->seek( dataOffset );
-        m_stream->read( s_WEBPBuffer, dataSize );
-
-        uint8_t * webp_buffer = static_cast<uint8_t *>(_buffer);
-
-        if( WebPDecodeBGRAInto( s_WEBPBuffer, dataSize, webp_buffer, _bufferSize, m_pitch ) == nullptr )
-        {
-            return 0;
-        }
-
-        return dataSize;
+        return 1;
     }
 	//////////////////////////////////////////////////////////////////////////
 	EVideoDecoderReadState VideoDecoderGVF::readNextFrame( float & _pts )
 	{	
-        ++m_frame;
-        m_pts += m_dataInfo.frameTiming;
-
-        if( m_frame == m_header.count )
+        if( m_frame + 1 == m_frames )
         {
-            m_frame = m_header.count - 1;
-            //m_pts = 0;
+			_pts = m_pts;
 
             return VDRS_END_STREAM;
-        }
+		}
+
+		++m_frame;
+		m_pts += m_dataInfo.frameTiming;
+
+		printf("%d %f\n"
+			, m_frame
+			, m_pts
+			);
                
         _pts = m_pts;
 
@@ -102,16 +112,6 @@ namespace Menge
     {
        m_pitch = _pitch;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderGVF::eof() const
-	{
-		if( Utils::eof( m_stream.get() ) == true )
-		{
-			return true;
-		}
-		
-		return false;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	float VideoDecoderGVF::getTiming() const
 	{

@@ -61,7 +61,7 @@ namespace Menge
 	bool MovieKeyConverterXMLToAEK::validateVersion( const InputStreamInterfacePtr & _stream ) const
 	{
 		MovieFramePackInterfacePtr framePack = DATA_SERVICE(m_serviceProvider)
-			->dataflowT<MovieFramePackInterfacePtr>( Helper::stringizeString(m_serviceProvider, "aekMovie"), _stream );
+			->dataflowT<MovieFramePackInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "aekMovie"), _stream );
 
 		if( framePack == nullptr )
 		{
@@ -601,7 +601,7 @@ namespace Menge
 		uint32_t binary_aek_size = _buffer.size();
 		
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( Helper::stringizeString(m_serviceProvider, "zip"), &_buffer[0], binary_aek_size );
+			->compress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), &_buffer[0], binary_aek_size );
 
 		if( compress_memory == nullptr)
 		{

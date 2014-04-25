@@ -36,7 +36,7 @@ namespace Menge
         m_serviceProvider = _provider;
 	
 		FILE_SERVICE(m_serviceProvider)
-			->registerFileGroupFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactorableUnique<FactoryDefault<Win32FileGroupDirectory> >() );
+			->registerFileGroupFactory( CONST_STRING_LOCAL(m_serviceProvider, "dir"), new FactorableUnique<FactoryDefault<Win32FileGroupDirectory> >() );
 
         return true;
 	}
@@ -44,7 +44,7 @@ namespace Menge
 	void Win32FileGroupPlugin::destroy()
 	{
 		FILE_SERVICE(m_serviceProvider)
-			->unregisterFileGroupFactory( Helper::stringizeString(m_serviceProvider, "dir") );
+			->unregisterFileGroupFactory( CONST_STRING_LOCAL(m_serviceProvider, "dir") );
 		
 		delete this;
 	}

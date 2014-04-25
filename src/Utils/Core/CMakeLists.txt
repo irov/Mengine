@@ -64,6 +64,8 @@ src
     RenderUtil.h
     
     InputStreamBuffer.h
+    
+    OutputStreamWriter.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

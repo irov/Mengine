@@ -258,6 +258,9 @@ namespace Menge
         double d_duration = (len * 1000.0) / double(AV_TIME_BASE);
 		m_dataInfo.duration = (float)d_duration;
 
+		m_dataInfo.format = PF_UNKNOWN;
+		m_dataInfo.clamp = true;
+
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -483,16 +486,6 @@ namespace Menge
     {
         m_pitch = _pitch;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderFFMPEG::eof() const
-	{
-		if( Utils::eof( m_stream.get() ) == true )
-		{
-			return true;
-		}
-		
-		return false;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::_invalidateOptions()
 	{            

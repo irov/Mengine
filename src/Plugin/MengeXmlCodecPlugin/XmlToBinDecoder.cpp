@@ -119,10 +119,8 @@ namespace Menge
             , m_options.pathBin.c_str()
             );
 
-        ConstString dev = Helper::stringizeStringSize( m_serviceProvider, "dev", 3 );
-
         InputStreamInterfacePtr protocol_stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( dev, m_options.pathProtocol );
+            ->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), m_options.pathProtocol );
 
 		//FILE * file_protocol = _wfopen( unicode_pathProtocol.c_str(), L"rb" );
 
@@ -154,7 +152,7 @@ namespace Menge
         }
         	
         InputStreamInterfacePtr xml_stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( dev, m_options.pathXml );
+            ->openInputFile( CONST_STRING_LOCAL(m_serviceProvider, "dev"), m_options.pathXml );
 
         if( xml_stream == nullptr )
         {
@@ -220,10 +218,10 @@ namespace Menge
 		}
 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( Helper::stringizeString(m_serviceProvider, "zip"), &bin_buf[0], bin_size );
+			->compress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), &bin_buf[0], bin_size );
 
         OutputStreamInterfacePtr bin_stream = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( dev, m_options.pathBin );
+            ->openOutputFile( CONST_STRING_LOCAL(m_serviceProvider, "dev"), m_options.pathBin );
 
         if( bin_stream == nullptr )
         {

@@ -33,7 +33,7 @@ namespace Menge
 		m_stream->write( &dataInfo->mipmapsize, sizeof(dataInfo->mipmapsize) );
                 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-            ->compress( Helper::stringizeString(m_serviceProvider, "zip"), _buffer, dataInfo->mipmapsize );
+            ->compress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), _buffer, dataInfo->mipmapsize );
 
 		if( compress_memory == nullptr )
         {

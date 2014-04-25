@@ -426,7 +426,7 @@ namespace Menge
 
 		FilePath currentPath = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
 		// mount root		
-		if( m_fileService->mountFileGroup( ConstString::none(), currentPath, Helper::stringizeString(m_serviceProvider, "dir") ) == false )
+		if( m_fileService->mountFileGroup( ConstString::none(), currentPath, CONST_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount application directory %ls"
 				, m_currentPath.c_str()
@@ -437,7 +437,7 @@ namespace Menge
 
 #	ifndef MENGE_MASTER_RELEASE
 		// mount root		
-		if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "dev"), ConstString::none(), Helper::stringizeString(m_serviceProvider, "dir") ) == false )
+		if( m_fileService->mountFileGroup( CONST_STRING_LOCAL(m_serviceProvider, "dev"), ConstString::none(), CONST_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount dev directory %ls"
 				, m_currentPath.c_str()
@@ -523,7 +523,7 @@ namespace Menge
 		FilePath userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
 
 		// mount user directory
-		if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), userPath, Helper::stringizeString(m_serviceProvider, "dir") ) == false )
+		if( m_fileService->mountFileGroup( CONST_STRING_LOCAL(m_serviceProvider, "user"), userPath, CONST_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed to mount user directory %ls"
 				, m_userPath.c_str()
@@ -532,9 +532,9 @@ namespace Menge
 			return false;
 		}
 
-		if( m_fileService->existDirectory( Helper::stringizeString(m_serviceProvider, "user"), ConstString::none() ) == false )
+		if( m_fileService->existDirectory( CONST_STRING_LOCAL(m_serviceProvider, "user"), ConstString::none() ) == false )
 		{
-			m_fileService->createDirectory( Helper::stringizeString(m_serviceProvider, "user"), ConstString::none() );
+			m_fileService->createDirectory( CONST_STRING_LOCAL(m_serviceProvider, "user"), ConstString::none() );
 		}
 
 		return true;
@@ -580,7 +580,7 @@ namespace Menge
 		FilePath logFilename = Helper::stringizeString( m_serviceProvider, utf8_logFilename );
 
 		OutputStreamInterfacePtr fileLogInterface = 
-			m_fileService->openOutputFile( Helper::stringizeString(m_serviceProvider, "user"), logFilename );
+			m_fileService->openOutputFile( CONST_STRING_LOCAL(m_serviceProvider, "user"), logFilename );
 
 		if( fileLogInterface != nullptr )
 		{
@@ -898,7 +898,7 @@ namespace Menge
 		}
 
 		RenderMaterialInterfacePtr debugMaterial = m_renderMaterialManager
-			->getMaterial( Helper::stringizeString(m_serviceProvider, "Debug"), false, false, PT_LINELIST, 0, nullptr );
+			->getMaterial( CONST_STRING_LOCAL(m_serviceProvider, "Debug"), false, false, PT_LINELIST, 0, nullptr );
 
 		m_renderService->setDebugMaterial( debugMaterial );
 
@@ -1748,7 +1748,7 @@ namespace Menge
 	{
 		StartupConfigLoader loader(m_serviceProvider);
 
-		FilePath applicationPath = Helper::stringizeString( m_serviceProvider, "application.ini" );
+		FilePath applicationPath = CONST_STRING_LOCAL( m_serviceProvider, "application.ini" );
 
 		if( loader.load( ConstString::none(), applicationPath, _settings ) == false )
 		{

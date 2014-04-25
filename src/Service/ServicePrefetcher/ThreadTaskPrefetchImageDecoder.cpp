@@ -73,7 +73,7 @@ namespace Menge
 		}
 
 		m_imageDecoderMemory = CODEC_SERVICE(m_serviceProvider)
-			->createDecoderT<ImageDecoderMemoryPtr>( Helper::stringizeStringSize( m_serviceProvider, "memoryImage" ) );
+			->createDecoderT<ImageDecoderMemoryPtr>( CONST_STRING_LOCAL( m_serviceProvider, "memoryImage" ) );
 		
 		if( m_imageDecoderMemory == nullptr )
 		{

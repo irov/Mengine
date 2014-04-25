@@ -191,7 +191,7 @@ namespace Menge
 
         _settings.resourcePacks.reserve( resourcePacksSettings.size() );
         
-        ConstString c_dir = Helper::stringizeStringSize(m_serviceProvider, "dir", 3);
+        ConstString c_dir = CONST_STRING_LOCAL(m_serviceProvider, "dir");
 
 		for( TVectorString::iterator
 			it = resourcePacksSettings.begin(),

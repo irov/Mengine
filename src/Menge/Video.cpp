@@ -153,8 +153,10 @@ namespace Menge
         size_t width = (size_t)(m_frameSize.x + 0.5f);
         size_t height = (size_t)(m_frameSize.y + 0.5f);
 
+		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
+
 		RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-            ->createDynamicTexture( width, height, channels, PF_UNKNOWN );
+            ->createDynamicTexture( width, height, channels, dataInfo->format );
 
 		if( dynamicTexture == nullptr )
 		{
@@ -553,13 +555,28 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////
 	bool Video::fillVideoBuffer_()
 	{
+		const RenderTextureInterfacePtr & texture = m_textures[0];
+				
 		Rect rect;
-		rect.left = 0;
-		rect.top = 0;
-		rect.right = (size_t)m_frameSize.x;
-		rect.bottom = (size_t)m_frameSize.y;
 
-        const RenderTextureInterfacePtr & texture = m_textures[0];
+		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
+
+		if( dataInfo->clamp == true )
+		{
+			rect.left = 0;
+			rect.top = 0;
+			rect.right = (size_t)m_frameSize.x;
+			rect.bottom = (size_t)m_frameSize.y;
+		}
+		else
+		{
+			const RenderImageInterfacePtr & image = texture->getImage();
+
+			rect.left = 0;
+			rect.top = 0;
+			rect.right = image->getHWWidth();
+			rect.bottom = image->getHWHeight();
+		}
 
         int pitch = 0;
 		unsigned char * lockRect = texture->lock( &pitch, rect, false );
@@ -593,24 +610,36 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::updateUV_()
 	{
-		const RenderTextureInterfacePtr & texture = m_textures[0];
+		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
-		const Rect & rect = texture->getRect();
+		if( dataInfo->clamp == true )
+		{
+			const RenderTextureInterfacePtr & texture = m_textures[0];
 
-		const RenderImageInterfacePtr & image = texture->getImage();
+			const Rect & rect = texture->getRect();
 
-		size_t hwWidth = image->getHWWidth();
-		size_t hwHeight = image->getHWHeight();
+			const RenderImageInterfacePtr & image = texture->getImage();
 
-		float scaleLeft = float(rect.left) / float(hwWidth);
-		float scaleTop = float(rect.top) / float(hwHeight);
-		float scaleRight = float(rect.right) / float(hwWidth);
-		float scaleBottom = float(rect.bottom) / float(hwHeight);
+			size_t hwWidth = image->getHWWidth();
+			size_t hwHeight = image->getHWHeight();
 
-		m_uv.x = scaleLeft;
-		m_uv.y = scaleTop;
-		m_uv.z = scaleLeft + (scaleRight - scaleLeft);
-		m_uv.w = scaleTop + (scaleBottom - scaleTop);
+			float scaleLeft = float(rect.left) / float(hwWidth);
+			float scaleTop = float(rect.top) / float(hwHeight);
+			float scaleRight = float(rect.right) / float(hwWidth);
+			float scaleBottom = float(rect.bottom) / float(hwHeight);
+
+			m_uv.x = scaleLeft;
+			m_uv.y = scaleTop;
+			m_uv.z = scaleLeft + (scaleRight - scaleLeft);
+			m_uv.w = scaleTop + (scaleBottom - scaleTop);
+		}
+		else
+		{
+			m_uv.x = 0.f;
+			m_uv.y = 0.f;
+			m_uv.z = 1.f;
+			m_uv.w = 1.f;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::invalidateMaterial_()

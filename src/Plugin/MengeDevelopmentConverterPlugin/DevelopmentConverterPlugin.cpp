@@ -7,6 +7,7 @@
 #	include "ParticleConverterPTCToPTZ.h"
 #	include "SoundConverterFFMPEGToOGG.h"
 #	include "VideoConverterFFMPEGToWEBM.h"
+#	include "VideoConverterFFMPEGToGVF.h"
 #	include "MovieKeyConverterXMLToAEK.h"
 #	include "ModelConverterMDLToMDZ.h"
 
@@ -46,11 +47,12 @@ namespace Menge
 	{
         m_serviceProvider = _serviceProvider;        
        
-		m_converters.push_back( new ConverterFactory<HotspotImageConverterPNGToHIT>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "png2hit")) );
-		m_converters.push_back( new ConverterFactory<SoundConverterFFMPEGToOGG>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ffmpegToOggSound")) );
-		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToWEBM>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ffmpegToWebM")) );
-		m_converters.push_back( new ConverterFactory<MovieKeyConverterXMLToAEK>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "xmlToAekMovie")) );
-		m_converters.push_back( new ConverterFactory<ModelConverterMDLToMDZ>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "mdlToMdzModel")) );
+		m_converters.push_back( new ConverterFactory<HotspotImageConverterPNGToHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "png2hit")) );
+		m_converters.push_back( new ConverterFactory<SoundConverterFFMPEGToOGG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegToOggSound")) );
+		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToWEBM>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegToWebM")) );
+		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToGVF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegToGVF")) );		
+		m_converters.push_back( new ConverterFactory<MovieKeyConverterXMLToAEK>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "xmlToAekMovie")) );
+		m_converters.push_back( new ConverterFactory<ModelConverterMDLToMDZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "mdlToMdzModel")) );
 		
 		
 		for( TVectorHotspotImageConverters::iterator

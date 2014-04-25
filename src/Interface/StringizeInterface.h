@@ -35,7 +35,7 @@ namespace Menge
 			return cstr;
 		}
         //////////////////////////////////////////////////////////////////////////
-        inline ConstString stringizeStringSize( ServiceProviderInterface * _serviceProvider, const char * _value, size_t _size = (size_t)-1 )
+        inline ConstString stringizeStringSize( ServiceProviderInterface * _serviceProvider, const char * _value, size_t _size )
         {
             ConstString cstr;
             STRINGIZE_SERVICE(_serviceProvider)
@@ -43,14 +43,6 @@ namespace Menge
 
             return cstr;
         }
-		//////////////////////////////////////////////////////////////////////////
-		template<size_t N, const char [N]>
-		inline ConstString stringizeString( ServiceProviderInterface * _serviceProvider, const char * _value )
-		{
-			ConstString cstr = stringizeStringSize( _serviceProvider, _value, N );
-
-			return cstr;
-		}
         //////////////////////////////////////////////////////////////////////////
         inline ConstString stringizeString( ServiceProviderInterface * _serviceProvider, const String & _value )
         {
@@ -66,6 +58,9 @@ namespace Menge
 			return cstr;
 		}
 	}
+
+#	define CONST_STRING_LOCAL( serviceProvider, str )\
+	Helper::stringizeStringSize( serviceProvider, str, (sizeof(str) - 1) )
 }
 
 

@@ -21,6 +21,9 @@ namespace Menge
 		float frameTiming;        
 		size_t fps;
 		float duration;
+
+		PixelFormat format;
+		bool clamp;
 	};
 	
 
@@ -45,7 +48,6 @@ namespace Menge
 	public:
 		//virtual int sync( float _timing ) = 0;
 		virtual bool seek( float _timing ) = 0;
-		virtual bool eof() const = 0;
 		virtual float getTiming() const = 0;
 
     public:

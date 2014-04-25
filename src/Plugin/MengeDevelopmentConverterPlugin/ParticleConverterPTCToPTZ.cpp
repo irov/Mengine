@@ -48,11 +48,9 @@ namespace Menge
 
         ConstString full_input = concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
         ConstString full_output = concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
-
-        ConstString c_dev = Helper::stringizeString( m_serviceProvider, "dev" );
-
+		        
         InputStreamInterfacePtr input = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( c_dev, full_input );
+            ->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_input );
 
         uint32_t data_size = input->size();
 
@@ -62,7 +60,7 @@ namespace Menge
         input->read( data_memory, data_size );
 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( Helper::stringizeString(m_serviceProvider, "zip"), data_memory, data_size );
+			->compress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), data_memory, data_size );
 
 		if( compress_memory == nullptr )
 		{
@@ -74,7 +72,7 @@ namespace Menge
 		}
 		
         OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( c_dev, full_output );
+            ->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
 
 			
         output->write( &data_size, sizeof(data_size) );

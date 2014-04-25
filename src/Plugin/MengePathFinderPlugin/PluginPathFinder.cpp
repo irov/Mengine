@@ -75,14 +75,14 @@ namespace Menge
 	{
 		m_serviceProvider = _serviceProvider;
 
-		m_factoryModulePathFinder = new ModuleFactory<ModulePathFinder>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ModulePathFinder"));
-		m_factoryModuleCollisionGround = new ModuleFactory<ModuleCollisionGround>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ModuleCollisionGround"));
+		m_factoryModulePathFinder = new ModuleFactory<ModulePathFinder>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ModulePathFinder"));
+		m_factoryModuleCollisionGround = new ModuleFactory<ModuleCollisionGround>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround"));
 		
 		MODULE_SERVICE(m_serviceProvider)
-			->registerModule( Helper::stringizeString(m_serviceProvider, "ModulePathFinder"), m_factoryModulePathFinder );
+			->registerModule( CONST_STRING_LOCAL(m_serviceProvider, "ModulePathFinder"), m_factoryModulePathFinder );
 
 		MODULE_SERVICE(m_serviceProvider)
-			->registerModule( Helper::stringizeString(m_serviceProvider, "ModuleCollisionGround"), m_factoryModuleCollisionGround );
+			->registerModule( CONST_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround"), m_factoryModuleCollisionGround );
 
 		return true;
 	}
@@ -90,10 +90,10 @@ namespace Menge
 	void PluginPathFinder::destroy()
 	{
 		MODULE_SERVICE(m_serviceProvider)
-			->unregisterModule( Helper::stringizeString(m_serviceProvider, "ModulePathFinder") );
+			->unregisterModule( CONST_STRING_LOCAL(m_serviceProvider, "ModulePathFinder") );
 
 		MODULE_SERVICE(m_serviceProvider)
-			->unregisterModule( Helper::stringizeString(m_serviceProvider, "ModuleCollisionGround") );
+			->unregisterModule( CONST_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround") );
 
 		m_factoryModulePathFinder = nullptr;
 		m_factoryModuleCollisionGround = nullptr;

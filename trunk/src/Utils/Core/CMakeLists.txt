@@ -34,6 +34,8 @@ src
 	
 	MemoryInput.h
 	MemoryInput.cpp
+    
+    PixelFormat.h
         
 	MemoryProxyInput.h
 	MemoryProxyInput.cpp

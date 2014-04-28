@@ -5,6 +5,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	VideoMkvReader::VideoMkvReader( const InputStreamInterfacePtr & _stream )
 		: m_stream(_stream)
+		, m_size(0)
 		, m_pos(0)
 	{
 		m_size = m_stream->size();

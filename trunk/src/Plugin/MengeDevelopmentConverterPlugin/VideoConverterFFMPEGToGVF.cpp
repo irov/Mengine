@@ -3,12 +3,14 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/StringizeInterface.h"
-#	include "Interface/ApplicationInterface.h"
-#	include "Interface/LogSystemInterface.h"
+#	include "Interface/ImageCodecInterface.h"
+#	include "Interface/RenderSystemInterface.h"
+#	include "Interface/WindowsLayerInterface.h"
 
 #	include "Logger/Logger.h"
 
 #	include "Core/OutputStreamWriter.h"
+#	include "Core/PixelFormat.h"
 
 #   include "WindowsLayer/WindowsIncluder.h"
 
@@ -106,7 +108,7 @@ namespace Menge
 		++n;
 		return n;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	static int s_gvf_write( void * _user, const void * _buffer, uint32_t _size )
 	{
 		OutputStreamWriter * stream = (OutputStreamWriter *)_user;
@@ -118,7 +120,6 @@ namespace Menge
 
 		return GVF_WRITE_SUCCESSFUL;		
 	}
-
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	VideoConverterFFMPEGToGVF::VideoConverterFFMPEGToGVF()
 	{
@@ -175,14 +176,6 @@ namespace Menge
 			return false;        
 		}
 
-		OutputStreamInterfacePtr gvf_stream = FILE_SERVICE(m_serviceProvider)
-			->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, full_output) );
-
-		OutputStreamWriter gvf_wr(gvf_stream);
-
-		gvf_encoder * gvf;
-		gvf_encoder_create( &gvf, &gvf_wr, &s_gvf_write );
-
 		WCHAR TempPath[MAX_PATH];
 		GetTempPathW(MAX_PATH, TempPath);
 
@@ -190,7 +183,7 @@ namespace Menge
 		{
 			WString buffer = L"rmdir /S /Q \"%TEMP%/gvf_pngs\"";
 
-			PLATFORM_SERVICE(m_serviceProvider)
+			WINDOWSLAYER_SERVICE(m_serviceProvider)
 				->cmd( buffer );
 		}
 
@@ -198,7 +191,7 @@ namespace Menge
 		{
 			WString buffer = L"mkdir \"%TEMP%/gvf_pngs\"";
 
-			if( PLATFORM_SERVICE(m_serviceProvider)
+			if( WINDOWSLAYER_SERVICE(m_serviceProvider)
 				->cmd( buffer ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: invalid cmd:\n%ls"
@@ -209,12 +202,14 @@ namespace Menge
 			}
 		}
 
+		LOGGER_WARNING(m_serviceProvider)("gvf try get fps");
+
 		//get fps 
 		{
 			WString buffer = L"ffprobe -v quiet -print_format ini -show_streams -i \"" + unicode_input + L"\" > \"%TEMP%/gvf_pngs/info.ini\"";
 			//WString buffer = L"ffmpeg -loglevel error -i \"" + unicode_input + L"\" -r 24 -f image2 \"%TEMP%/gvf_pngs/frame_%3d.png\"";
 			
-			if( PLATFORM_SERVICE(m_serviceProvider)
+			if( WINDOWSLAYER_SERVICE(m_serviceProvider)
 				->cmd( buffer ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToWEBM::convert_: invalid cmd:\n%ls"
@@ -226,6 +221,7 @@ namespace Menge
 		}
 
 		uint32_t fps = 0;
+		uint32_t alpha = 0;
 
 		{
 			WCHAR INI_Path[MAX_PATH];
@@ -262,23 +258,28 @@ namespace Menge
 			}
 
 			fps /= frame_count;
+
+			const char * codec_name = ini.getSettingValue( "streams.stream.0", "codec_name" );
+
+			if( strcmp( codec_name, "vp6a" ) == 0 )
+			{
+				alpha = 1;
+			}
 		}
-		        
+
+		LOGGER_WARNING(m_serviceProvider)("fps %d"
+			, fps
+			);		        
+
+		LOGGER_WARNING(m_serviceProvider)("gvf create pngs");
+
 		//create pngs
 		{
 			WString ws_fps;
 			Utils::unsignedToWString( fps, ws_fps );
 			WString buffer = L"ffmpeg -loglevel error -i \"" + unicode_input + L"\" -r " + ws_fps + L" -f image2 \"%TEMP%/gvf_pngs/frame_%3d.png\"";
 
-			//WString buffer = L"ffmpeg -loglevel error -y -i \"" + unicode_input + L"\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 4 \"" + unicode_output + L"\"";
-
-			LOGGER_WARNING(m_serviceProvider)( "VideoConverterFFMPEGToGVF:: make png '%ls'\n%ls"
-				, unicode_input.c_str()
-				, unicode_output.c_str()
-				, buffer.c_str()
-				);
-
-			if( PLATFORM_SERVICE(m_serviceProvider)
+			if( WINDOWSLAYER_SERVICE(m_serviceProvider)
 				->cmd( buffer ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToWEBM::convert_: invalid cmd:\n%ls"
@@ -308,49 +309,69 @@ namespace Menge
 			}
 		}
 
-		printf("\ngvf frame %d\n"
-			, pngs_index - 1
+		uint32_t frame_count = pngs_index - 1;
+
+		LOGGER_WARNING(m_serviceProvider)("gvf frames %d"
+			, frame_count
 			);
 
-		printf("\ngvf dds [");
+		LOGGER_WARNING(m_serviceProvider)("gvf create dds");
 
 		//create dds
 		{
+			WCHAR PNGS_Path[MAX_PATH];
+			swprintf_s( PNGS_Path, MAX_PATH, L"%sgvf_pngs\\frames.txt", TempPath );
+
+			String utf8_pngs_path;
+			Helper::unicodeToUtf8(m_serviceProvider, PNGS_Path, utf8_pngs_path);
+
+			OutputStreamInterfacePtr pngs_stream = FILE_SERVICE(m_serviceProvider)
+				->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_pngs_path) );
+
 			for( size_t index = 1; index != pngs_index; ++index )
-			{
-				WString buffer = L"crunch.exe -quiet -mipMode None -fileformat dds -DXT5 -dxtQuality superfast -rescalemode hi";
-				
+			{	
 				WCHAR PNG_Path[MAX_PATH];
-				swprintf_s( PNG_Path, MAX_PATH, L"%sgvf_pngs\\frame_%03d.png", TempPath, index );
+				swprintf_s( PNG_Path, MAX_PATH, L"%sgvf_pngs\\frame_%03d.png\n", TempPath, index );
 
-				WCHAR DDS_Path[MAX_PATH];
-				swprintf_s( DDS_Path, MAX_PATH, L"%sgvf_pngs\\frame_%03d.dds", TempPath, index );
+				String utf8_png_path;
+				Helper::unicodeToUtf8(m_serviceProvider, PNG_Path, utf8_png_path);				
 
-				buffer += L" -out ";
-				buffer += DDS_Path;
+				pngs_stream->write( utf8_png_path.c_str(), utf8_png_path.size() );
+				//WCHAR DDS_Path[MAX_PATH];
+				//swprintf_s( DDS_Path, MAX_PATH, L"%sgvf_pngs\\frame_%03d.dds", TempPath, index );
+			}
 
-				buffer += L" -file ";
-				buffer += PNG_Path;
+			pngs_stream->flush();
+			pngs_stream = nullptr;
 
-				if( PLATFORM_SERVICE(m_serviceProvider)
+			WString buffer = L"crunch.exe -quiet -mipMode None -fileformat dds ";
+
+			if( alpha == 1 )
+			{
+				buffer += L" -DXT5 ";				
+			}
+			else
+			{
+				buffer += L" -DXT1 ";
+			}
+			
+			buffer += L" -dxtQuality superfast -rescalemode hi -outsamedir ";
+
+			buffer += L" -file @";
+			buffer += PNGS_Path;
+
+			if( WINDOWSLAYER_SERVICE(m_serviceProvider)
 					->cmd( buffer ) == false )
-				{
-					LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: invalid cmd:\n%ls"
-						, buffer.c_str()
-						);
+			{
+				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: invalid cmd:\n%ls"
+					, buffer.c_str()
+					);
 
-					return false;
-				}
-
-				printf(".");
+				return false;
 			}
 			//crunch.exe -mipMode None -fileformat dds -DXT5 -dxtQuality superfast
 		}
-
-		printf("]");
-
-		uint32_t frame_count = pngs_index - 1;
-		
+				
 		size_t width = 0;
 		size_t height = 0;
 
@@ -391,25 +412,51 @@ namespace Menge
 			height = dataInfo->height;
 		}
 
-		if( gvf_encoder_header( gvf, GVF_FORMAT_DXT5, width, height, fps, frame_count ) != GVF_ERROR_SUCCESSFUL )
+		LOGGER_WARNING(m_serviceProvider)("gvf save file");
+		
+		OutputStreamInterfacePtr gvf_stream = FILE_SERVICE(m_serviceProvider)
+			->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, full_output) );
+
+		OutputStreamWriter gvf_wr(gvf_stream);
+
+		gvf_encoder * gvf;
+		gvf_error_t err_code;
+
+		err_code = gvf_encoder_create( &gvf, &gvf_wr, &s_gvf_write );
+
+		if( err_code != GVF_ERROR_SUCCESSFUL )
 		{
+			LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: '%ls' gvf_encoder_create err code %d"
+				, m_options.inputFileName.c_str() 
+				, err_code
+				);
+
+			return false;
+		}
+
+		uint16_t gvf_format = alpha == 1 ? GVF_FORMAT_DXT5 : GVF_FORMAT_DXT1;
+
+		err_code = gvf_encoder_header( gvf, gvf_format, width, height, fps, frame_count );
+
+		if( err_code != GVF_ERROR_SUCCESSFUL )
+		{
+			LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: '%ls' gvf_encoder_header err code %d"
+				, m_options.inputFileName.c_str() 
+				, err_code
+				);
+
 			return false;
 		}
 
 		size_t pow2_width = s_firstPOW2From( width );
 		size_t pow2_height = s_firstPOW2From( height );
 
-		size_t frame_size = RENDER_SERVICE(m_serviceProvider)
-			->getMemorySize( pow2_width, pow2_height, 1, PF_DXT5 );
+		PixelFormat pf = alpha == 1 ? PF_DXT5 : PF_DXT1;
 
-		struct Frame
-		{
-			const void * buffer;
-			uint32_t size;
-		};
+		size_t frame_size = Helper::getTextureMemorySize( pow2_width, pow2_height, 1, pf );
 
-		typedef std::vector<Frame> TVectorFrames;
-		TVectorFrames frames;
+		
+		LOGGER_WARNING(m_serviceProvider)("gvf save frames");
 
 		{
 			for( size_t index = 0; index != frame_count; ++index )
@@ -457,34 +504,48 @@ namespace Menge
 					return false;				 
 				}
 
-				if( s_convertFourCCFormat( header.ddspf.dwFourCC ) != PF_DXT5 )
-				{
-					LOGGER_WARNING(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: dds file not DXT5 %ls" 
-						, DDS_Path
-						);                        
-
-					return false;	
-				}
-
 				unsigned char * buffer = new unsigned char [frame_size];
 				stream->read( buffer, frame_size );
 				stream = nullptr;
 
-				gvf_encoder_frame( gvf, index, buffer, frame_size );
+				err_code = gvf_encoder_frame( gvf, index, buffer, frame_size );
+
+				if( err_code != GVF_ERROR_SUCCESSFUL )
+				{
+					LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: '%ls' gvf_encoder_frame %d err code %d"
+						, m_options.inputFileName.c_str() 
+						, index
+						, err_code
+						);
+
+					return false;
+				}
 
 				delete [] buffer;
 			}
 		}
 
-		gvf_encoder_flush( gvf );
+		err_code = gvf_encoder_flush( gvf );
+
+		if( err_code != GVF_ERROR_SUCCESSFUL )
+		{
+			LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: '%ls' gvf_encoder_flush err code %d"
+				, m_options.inputFileName.c_str() 
+				, err_code
+				);
+
+			return false;
+		}
 
 		gvf_encoder_destroy( gvf );
+
+		LOGGER_WARNING(m_serviceProvider)("gvf finish");
 		
 		//remove temp dir
 		{
 			WString buffer = L"rmdir /S /Q \"%TEMP%/gvf_pngs\"";
 
-			if( PLATFORM_SERVICE(m_serviceProvider)
+			if( WINDOWSLAYER_SERVICE(m_serviceProvider)
 				->cmd( buffer ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: invalid cmd:\n%ls"

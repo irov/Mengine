@@ -4,6 +4,7 @@
 #	include "HotspotImageConverter.h"
 #	include "AlphaSpreadingPlugin.h"
 #	include "XmlToAekConverter.h"
+#	include "FFMPEGToGVFConverter.h"
 
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/ArchiveInterface.h"
@@ -323,10 +324,10 @@ namespace Menge
 
 		SERVICE_REGISTRY( serviceProvider, loaderService );
 
-		PluginInterface * plugin_hit = PLUGIN_SERVICE(serviceProvider)
+		PLUGIN_SERVICE(serviceProvider)
 			->loadPlugin( L"MengeDevelopmentConverterPlugin.dll" );
 
-		PluginInterface * plugin_xml = PLUGIN_SERVICE(serviceProvider)
+		PLUGIN_SERVICE(serviceProvider)
 			->loadPlugin( L"MengeXmlCodecPlugin.dll" );
 
 		if( FILE_SERVICE(serviceProvider)
@@ -357,6 +358,7 @@ static PyMethodDef ModuleMethods[] =
 	{"writeBin", Menge::writeBin, METH_VARARGS, "write binary"},
 	{"writeAek", Menge::writeAek, METH_VARARGS, "write aek"},	
 	{"convertPngToHit", Menge::convertPngToHit, METH_VARARGS, "convert png to hit"},
+	{"convertFFMPEGToGVF", Menge::convertFFMPEGToGVF, METH_VARARGS, "convert ffmpeg to gvf"},
 	{NULL, NULL, 0, NULL}
 };
 /////////////////////////////////////////////////////////////////////////////////////

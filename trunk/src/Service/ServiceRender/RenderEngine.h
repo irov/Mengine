@@ -195,8 +195,6 @@ namespace Menge
 		void setVSync( bool _vSync ) override;
 		bool getVSync() const override;
 
-        size_t getMemorySize( size_t _width, size_t _height, size_t _depth, PixelFormat _format ) const override;
-
 	private:			
 		void disableTextureStage_( size_t _stage );
 

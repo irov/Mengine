@@ -85,8 +85,7 @@ namespace Menge
         //virtual void setAsScreensaver( bool _set ) = 0;
 
     public:
-        virtual bool openUrlInDefaultBrowser( const WString & _url ) = 0;
-        virtual bool cmd( const WString & _command ) = 0;
+        virtual bool openUrlInDefaultBrowser( const WString & _url ) = 0;       
 
     public:
         virtual size_t getMemoryUsage() const = 0;

@@ -616,8 +616,6 @@ namespace Menge
     public:
         virtual const RenderDebugInfo & getDebugInfo() const = 0;
         virtual void resetFrameCount() = 0;
-
-        virtual size_t getMemorySize( size_t _width, size_t _height, size_t _depth, PixelFormat _format ) const = 0;
 	};
 
 #   define RENDER_SERVICE( serviceProvider )\

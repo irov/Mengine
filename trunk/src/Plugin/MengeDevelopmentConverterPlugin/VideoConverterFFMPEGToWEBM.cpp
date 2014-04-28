@@ -3,8 +3,7 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/StringizeInterface.h"
-#	include "Interface/ApplicationInterface.h"
-#	include "Interface/LogSystemInterface.h"
+#	include "Interface/WindowsLayerInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -76,7 +75,7 @@ namespace Menge
             , buffer.c_str()
 			);
 
-        if( PLATFORM_SERVICE(m_serviceProvider)
+        if( WINDOWSLAYER_SERVICE(m_serviceProvider)
             ->cmd( buffer ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToWEBM::convert_: invalid convert:\n%ls"

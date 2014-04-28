@@ -102,8 +102,7 @@ namespace Menge
 
 		PixelFormat HWFormat = m_image->getHWPixelFormat();
 
-		size_t memroy_size = RENDER_SERVICE(m_serviceProvider)
-            ->getMemorySize( HWWidth, HWHeight, 1, HWFormat );
+		size_t memroy_size = Helper::getTextureMemorySize( HWWidth, HWHeight, 1, HWFormat );
 
 		return memroy_size;
 	}

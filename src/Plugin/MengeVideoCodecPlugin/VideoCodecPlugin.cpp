@@ -1,8 +1,8 @@
 #	include "VideoCodecPlugin.h"
 
-#   include "VideoDecoderFFMPEG.h"
+//#   include "VideoDecoderFFMPEG.h"
 #   include "VideoDecoderGVF.h"
-//#   include "VideoDecoderVPX.h"
+#   include "VideoDecoderVPX.h"
 
 #	include "Core/File.h"
 
@@ -10,28 +10,13 @@
 
 #   include "Interface/StringizeInterface.h"
 
-
-#ifndef INT64_C 
-#define INT64_C(c) (c ## LL) 
-#define UINT64_C(c) (c ## ULL) 
-#endif
-
-#pragma warning(push, 0) 
-extern "C"
-{
-#	include "libavformat/avformat.h"
-#	include "libswscale/swscale.h"
-#	include "libavcodec/avcodec.h"
-#	include "libavutil/mathematics.h"
-}
-#pragma warning(pop) 
-
 extern "C" // only required if using g++
 {
 	//////////////////////////////////////////////////////////////////////////
 	bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin )
 	{
 		*_plugin = new Menge::VideoCodecPlugin();
+
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////////////
@@ -43,22 +28,22 @@ extern "C" // only required if using g++
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-    //////////////////////////////////////////////////////////////////////////
-    static void s_ffmpeg_log( void* _impl, int _level, const char* _format, va_list _args )
-    {
-        (void)_impl;
+    ////////////////////////////////////////////////////////////////////////////
+    //static void s_ffmpeg_log( void* _impl, int _level, const char* _format, va_list _args )
+    //{
+    //    (void)_impl;
 
-        if( _level > AV_LOG_ERROR )
-        {
-            return;
-        }
+    //    if( _level > AV_LOG_ERROR )
+    //    {
+    //        return;
+    //    }
 
-        printf("VideoCodecPlugin::s_ffmpeg_log %d\n"
-            , _level
-            );
+    //    printf("VideoCodecPlugin::s_ffmpeg_log %d\n"
+    //        , _level
+    //        );
 
-        vprintf( _format, _args );
-    }
+    //    vprintf( _format, _args );
+    //}
 	//////////////////////////////////////////////////////////////////////////
 	VideoCodecPlugin::VideoCodecPlugin()
 		: m_serviceProvider(nullptr)
@@ -69,14 +54,14 @@ namespace Menge
 	{
 		m_serviceProvider = _serviceProvider;
 
-        avcodec_register_all();
-        av_register_all();
+        //avcodec_register_all();
+        //av_register_all();
 
-        av_log_set_callback( &s_ffmpeg_log );
+        //av_log_set_callback( &s_ffmpeg_log );
 
-		m_decoders.push_back( new DecoderFactory<VideoDecoderFFMPEG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegVideo")) );
+		//m_decoders.push_back( new DecoderFactory<VideoDecoderFFMPEG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegVideo")) );
         m_decoders.push_back( new DecoderFactory<VideoDecoderGVF>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "gvfVideo")) );
-        //m_decoders.push_back( new DecoderFactory<VideoDecoderVPX>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "vpxVideo")) );
+        m_decoders.push_back( new DecoderFactory<VideoDecoderVPX>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "vpxVideo")) );
 		
 		for( TVectorVideoDecoders::iterator
 			it = m_decoders.begin(),
@@ -86,7 +71,8 @@ namespace Menge
 		{			
 			const ConstString & name = (*it)->getName();
 
-			CODEC_SERVICE(m_serviceProvider)->registerDecoder( name, (*it) );
+			CODEC_SERVICE(m_serviceProvider)
+				->registerDecoder( name, (*it) );
 		}
         
         return true;
@@ -102,7 +88,8 @@ namespace Menge
 		{
 			const ConstString & name = (*it)->getName();
 
-			CODEC_SERVICE(m_serviceProvider)->unregisterDecoder( name );
+			CODEC_SERVICE(m_serviceProvider)
+				->unregisterDecoder( name );
 		}
 
 		delete this;

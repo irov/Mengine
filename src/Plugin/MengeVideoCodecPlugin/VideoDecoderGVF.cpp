@@ -48,8 +48,14 @@ namespace Menge
 	{
 		m_streamBuffer = m_stream;
 
-		if( gvf_decoder_create( &m_gvf, &m_streamBuffer, &s_gvf_read, &s_gvf_seek ) != GVF_ERROR_SUCCESSFUL )
+		gvf_error_t err = gvf_decoder_create( &m_gvf, &m_streamBuffer, &s_gvf_read, &s_gvf_seek );
+
+		if( err != GVF_ERROR_SUCCESSFUL )
 		{
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderGVF::_initialize invalid err code %d"
+				, err
+				);
+
 			return false;
 		}
 
@@ -62,7 +68,17 @@ namespace Menge
 		m_frames = gvf_get_frames( m_gvf );
 		m_dataInfo.duration = float(m_frames) / float(m_dataInfo.fps);
 
-		m_dataInfo.format = PF_DXT5;
+		uint16_t gvf_format = gvf_get_format( m_gvf );
+
+		if( gvf_format == GVF_FORMAT_DXT5 )
+		{
+			m_dataInfo.format = PF_DXT5;
+		}
+		else if( gvf_format == GVF_FORMAT_DXT1 )
+		{
+			m_dataInfo.format = PF_DXT1;
+		}
+		
 		m_dataInfo.clamp = false;
 
 		return true;
@@ -70,8 +86,14 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////// 
 	size_t VideoDecoderGVF::decode( void * _buffer, size_t _bufferSize )
 	{
-		if( gvf_decode_frame( m_gvf, m_frame, _buffer, _bufferSize ) != GVF_ERROR_SUCCESSFUL )
+		gvf_error_t err = gvf_decode_frame( m_gvf, m_frame, _buffer, _bufferSize );
+
+		if( err != GVF_ERROR_SUCCESSFUL )
 		{
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderGVF::decode invalid err code %d"
+				, err
+				);
+
 			return 0;
 		}
 

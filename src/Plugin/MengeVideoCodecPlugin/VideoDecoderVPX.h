@@ -27,7 +27,6 @@ namespace Menge
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 	
 	public:	
-		bool eof() const override;
 		float getTiming()  const override;
 		bool seek( float _timing ) override;
 
@@ -41,6 +40,8 @@ namespace Menge
         vpx_codec_ctx_t m_codec;
 
 		VideoMkvReader * m_reader;
+
+		mkvparser::Segment * m_segment;
 
 		const mkvparser::VideoTrack * m_track;
 		const mkvparser::BlockEntry * m_blockEntry;

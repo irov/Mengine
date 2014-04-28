@@ -2,22 +2,19 @@ set( MY_LIB_NAME MengeVideoCodecPlugin )
 
 ADD_FILTER(
 src
-	VideoCodecPlugin.def
 	VideoCodecPlugin.h
 	VideoCodecPlugin.cpp
-#    VideoCodecDecoderSystem.h
-#    VideoCodecDecoderSystem.cpp
-#    VideoI420ToRGB24.h
-#    VideoI420ToRGB24.cpp
-#    VideoMkvReader.h
-#    VideoMkvReader.cpp
     
-    VideoDecoderFFMPEG.cpp
-	VideoDecoderFFMPEG.h
     VideoDecoderGVF.cpp
     VideoDecoderGVF.h
-#    VideoDecoderVPX.cpp
-#    VideoDecoderVPX.h
+    
+    VideoDecoderVPX.cpp
+    VideoDecoderVPX.h
+    VideoI420ToRGB24.h
+    VideoI420ToRGB24.cpp
+    VideoMkvReader.h
+    VideoMkvReader.cpp
+    
 #    VideoDecoderGVFPrefetcher.h
 #    VideoDecoderGVFPrefetcher.cpp
 #    VideoDecoderOGGTheora.cpp
@@ -25,21 +22,11 @@ src
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils )
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/ffmpeg/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libgvf )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libwebm )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libvpx )
 
-#INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libwebp/src )
-#INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libwebm )
-#INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libvpx )
-
-IF(MSVC)
-    INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/cmake_scripts/ffmpeg )
-ENDIF(MSVC)
-
-#ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
-ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
-
-SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS}/EXPORT:dllCreatePlugin")
+ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core)
@@ -49,30 +36,9 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Codec)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX} )
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}libgvf_static${MENGINE_LIB_SUFFIX} )
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}lz4_static${MENGINE_LIB_SUFFIX} )
-#TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}libvpx_static${MENGINE_LIB_SUFFIX} )
-#TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}libwebm_static${MENGINE_LIB_SUFFIX} )
-#TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}webp_static${MENGINE_LIB_SUFFIX} )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}libvpx_static${MENGINE_LIB_SUFFIX} )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}libwebm_static${MENGINE_LIB_SUFFIX} )
 
-IF(MSVC)
-    SET(
-     VIDEO_CODEC_STATIC_LIBS
-     ${THIRDPARTY_DIR}/ffmpeg/lib/avcodec.lib
-     ${THIRDPARTY_DIR}/ffmpeg/lib/avformat.lib
-     ${THIRDPARTY_DIR}/ffmpeg/lib/avutil.lib
-     ${THIRDPARTY_DIR}/ffmpeg/lib/swscale.lib
-     )
-ENDIF(MSVC)
-
-IF(MINGW)
-    SET(
-     VIDEO_CODEC_STATIC_LIBS
-     ${THIRDPARTY_DIR}/ffmpeg/lib/libavcodec.dll.a
-     ${THIRDPARTY_DIR}/ffmpeg/lib/libavformat.dll.a
-     ${THIRDPARTY_DIR}/ffmpeg/lib/libavutil.dll.a
-     ${THIRDPARTY_DIR}/ffmpeg/lib/libswscale.dll.a
-     )
-ENDIF(MINGW)
- 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${VIDEO_CODEC_STATIC_LIBS} )
 
 SET( APPLICATION_DEPENDENCIES

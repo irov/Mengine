@@ -4,13 +4,16 @@
 #	include "Core/File.h"
 #	include "Logger/Logger.h"
 
-#   define vpx_interface (vpx_codec_vp9_dx())
+#   define vpx_interface (vpx_codec_vp8_dx())
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderVPX::VideoDecoderVPX()
-        : m_frame(nullptr)
+		: m_reader(nullptr)
+		, m_track(nullptr)
+		, m_blockEntry(nullptr)
+		, m_frame(nullptr)
         , m_iterator(nullptr)
         , m_pitch(0)
         , m_pts(0.f)
@@ -20,6 +23,9 @@ namespace Menge
 	VideoDecoderVPX::~VideoDecoderVPX()
 	{
 		free( m_frame );
+
+		delete m_reader;
+		delete m_segment;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderVPX::_initialize()
@@ -41,16 +47,15 @@ namespace Menge
 		mkvparser::EBMLHeader ebmlHeader;
 		long long pos = 0;
 		ebmlHeader.Parse( m_reader, pos );
+				
+		mkvparser::Segment::CreateInstance( m_reader, pos, m_segment );
 
-		mkvparser::Segment * segment;
-		mkvparser::Segment::CreateInstance( m_reader, pos, segment );
-
-		if( segment->Load() != 0 )
+		if( m_segment->Load() != 0 )
 		{
 			return false;
 		}
 
-		const mkvparser::Tracks* tracks = segment->GetTracks();
+		const mkvparser::Tracks* tracks = m_segment->GetTracks();
 
 		const unsigned long tracksCount = tracks->GetTracksCount();
 
@@ -154,11 +159,6 @@ namespace Menge
     {
         m_pitch = _pitch;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderVPX::eof() const
-	{
-		return false;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	float VideoDecoderVPX::getTiming() const
 	{

@@ -87,6 +87,8 @@ namespace Menge
 
         virtual bool makeFormatMessage( HRESULT _hresult, WString & _out ) = 0;
         virtual bool concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity ) = 0;
+
+		virtual bool cmd( const WString & _command ) = 0;
     };
 
 #   define WINDOWSLAYER_SERVICE( serviceProvider )\

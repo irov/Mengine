@@ -98,6 +98,7 @@ extern "C" // only required if using g++
 	//////////////////////////////////////////////////////////////////////////
 	extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeWin32FileGroup( Menge::PluginInterface ** _plugin );
 
@@ -187,6 +188,7 @@ namespace Menge
 		, m_muteMode(false)
 		, m_pluginMengeImageCodec(nullptr)
 		, m_pluginMengeSoundCodec(nullptr)
+		, m_pluginMengeVideoCodec(nullptr)
 		, m_pluginMengeZip(nullptr)
 		, m_pluginMengeWin32FileGroup(nullptr)
 		, m_fileLog(nullptr)
@@ -1474,6 +1476,13 @@ namespace Menge
 		}
 
 		{
+			LOGGER_INFO(m_serviceProvider)( "initialize Video Codec..." );
+
+			initPluginMengeVideoCodec( &m_pluginMengeVideoCodec );
+			m_pluginMengeVideoCodec->initialize( m_serviceProvider );
+		}				
+
+		{
 			LOGGER_INFO(m_serviceProvider)( "initialize Zip..." );
 			initPluginMengeZip( &m_pluginMengeZip );
 			m_pluginMengeZip->initialize( m_serviceProvider );
@@ -1949,6 +1958,12 @@ namespace Menge
 			m_pluginMengeSoundCodec->destroy();
 			m_pluginMengeSoundCodec = nullptr;
 		}
+
+		if( m_pluginMengeVideoCodec != nullptr )
+		{
+			m_pluginMengeVideoCodec->destroy();
+			m_pluginMengeVideoCodec = nullptr;
+		}				
 
 		if( m_pluginMengeZip != nullptr )
 		{
@@ -3277,25 +3292,6 @@ namespace Menge
 
 		if( result == FALSE )
 		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::cmd( const WString & _command )
-	{
-		const wchar_t * wc = _command.c_str();
-
-		int err = _wsystem( wc );
-
-		if( err != 0 )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::cmd: command:\n%ls\nerror: %d"
-				, _command.c_str()
-				, errno
-				);
-
 			return false;
 		}
 

@@ -12,6 +12,8 @@ src
     XmlToBinDecoder.h
     XmlToAekConverter.cpp
     XmlToAekConverter.h
+    FFMPEGToGVFConverter.h
+    FFMPEGToGVFConverter.cpp
     
     ToolsBuilderPlugin.def
 )
@@ -72,6 +74,7 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeXmlCodecPlugin)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeImageCodecPlugin)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeZipPlugin)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeWin32FileGroupPlugin)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeDevelopmentConverterPlugin)
 
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_DIR}/Python32/libs/python32.lib

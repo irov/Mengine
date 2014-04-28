@@ -150,8 +150,7 @@ namespace Menge
 
         m_dataInfo.format = s_convertFourCCFormat( header.ddspf.dwFourCC );
 
-        m_dataInfo.size = RENDER_SERVICE(m_serviceProvider)
-            ->getMemorySize( m_dataInfo.width, m_dataInfo.height, 1, m_dataInfo.format );
+		m_dataInfo.size = Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, 1, m_dataInfo.format );
         
 		return true;
 	}

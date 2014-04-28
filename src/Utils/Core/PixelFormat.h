@@ -67,4 +67,36 @@ namespace Menge
 
 		PF_COUNT = 41
 	};
+
+	namespace Helper
+	{
+		inline size_t getTextureMemorySize( size_t _width, size_t _height, size_t _depth, PixelFormat _format )
+		{
+			switch( _format )
+			{
+			case PF_DXT1:
+				return ((_width + 3) / 4) * ( (_height + 3) / 4 ) * 8;
+			case PF_DXT2:
+			case PF_DXT3:
+			case PF_DXT4:
+			case PF_DXT5:
+				return ((_width + 3) / 4) * ( (_height + 3) / 4) * 16;
+			case PF_L8:
+			case PF_A8:
+				return _width * _height * _depth * 1;
+			case PF_R8G8B8:
+			case PF_B8G8R8:
+				return _width * _height * _depth * 3;
+			case PF_A8R8G8B8:
+			case PF_A8B8G8R8:
+			case PF_B8G8R8A8:
+			case PF_R8G8B8A8:
+			case PF_X8R8G8B8:
+			case PF_X8B8G8R8:
+				return _width * _height * _depth * 4;
+			}                
+
+			return 0;
+		}
+	}
 }

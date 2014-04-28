@@ -16,10 +16,22 @@ namespace Menge
 	struct VideoCodecDataInfo
 		: public CodecDataInfo
 	{
-		int frameWidth;
-		int frameHeight;
-		float frameTiming;        
-		size_t fps;
+		VideoCodecDataInfo()
+			: frameWidth(0)
+			, frameHeight(0)
+			, fps(0)
+			, frameTiming(0.f)
+			, duration(0.f)
+			, format(PF_UNKNOWN)
+			, clamp(true)
+		{
+		}
+
+		uint32_t frameWidth;
+		uint32_t frameHeight;
+		uint32_t fps;
+
+		float frameTiming;		
 		float duration;
 
 		PixelFormat format;
@@ -46,7 +58,6 @@ namespace Menge
 		virtual const VideoCodecDataInfo* getCodecDataInfo() const override = 0;
 
 	public:
-		//virtual int sync( float _timing ) = 0;
 		virtual bool seek( float _timing ) = 0;
 		virtual float getTiming() const = 0;
 

@@ -555,4 +555,23 @@ namespace Menge
         
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool VistaWindowsLayer::cmd( const WString & _command )
+	{
+		const wchar_t * wc = _command.c_str();
+
+		int err = _wsystem( wc );
+
+		if( err != 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::cmd: command:\n%ls\nerror: %d"
+				, _command.c_str()
+				, errno
+				);
+
+			return false;
+		}
+
+		return true;
+	}
 }

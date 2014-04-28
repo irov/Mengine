@@ -92,9 +92,9 @@ namespace Menge
 		void onEvent( const ConstString & _event, const TMapParams & _params ) override;
 
 	public:
-		bool openUrlInDefaultBrowser( const WString & _url ) override;
-		bool cmd( const WString & _command ) override;
+		bool openUrlInDefaultBrowser( const WString & _url ) override;		
 
+	public:
 		size_t getMemoryUsage() const override;
 
 		void * checkpointMemory() const override;
@@ -261,6 +261,7 @@ namespace Menge
 
 		PluginInterface * m_pluginMengeImageCodec;
 		PluginInterface * m_pluginMengeSoundCodec;
+		PluginInterface * m_pluginMengeVideoCodec;
 		PluginInterface * m_pluginMengeZip;
 		PluginInterface * m_pluginMengeWin32FileGroup;
 		PluginInterface * m_pluginPluginPathFinder;

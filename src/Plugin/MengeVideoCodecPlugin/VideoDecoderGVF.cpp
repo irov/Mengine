@@ -1,7 +1,13 @@
 #	include "VideoDecoderGVF.h"
 
 #	include "Core/File.h"
+#	include "Core/CacheMemoryBuffer.h"
+
 #	include "Logger/Logger.h"
+
+#	include "inc/crn_decomp_ext.h"
+
+#	include <stdint.h>
 
 namespace Menge
 {
@@ -36,6 +42,7 @@ namespace Menge
 		, m_frames(0)
 		, m_pts(0.f)
 		, m_pitch(0)
+		, m_temp_size(0)
     {
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -59,8 +66,10 @@ namespace Menge
 			return false;
 		}
 
-		m_dataInfo.frameWidth = gvf_get_width( m_gvf );
-        m_dataInfo.frameHeight = gvf_get_height( m_gvf );
+		m_dataInfo.frameWidth = gvf_get_width_source( m_gvf );
+        m_dataInfo.frameHeight = gvf_get_height_source( m_gvf );
+		m_dataInfo.frameWidthHW = gvf_get_width_frame( m_gvf );
+		m_dataInfo.frameHeightHW = gvf_get_height_frame( m_gvf );
 
 		m_dataInfo.fps = gvf_get_fps( m_gvf );
 		m_dataInfo.frameTiming = 1000.f / float(m_dataInfo.fps);
@@ -81,17 +90,30 @@ namespace Menge
 		
 		m_dataInfo.clamp = false;
 
+		m_temp_size = gvf_get_temp_size( m_gvf );
+
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////////// 
 	size_t VideoDecoderGVF::decode( void * _buffer, size_t _bufferSize )
 	{
-		gvf_error_t err = gvf_decode_frame( m_gvf, m_frame, _buffer, _bufferSize );
+		CacheMemoryBuffer row_buffer(m_serviceProvider, m_temp_size, "VideoDecoderGVF");
+		void * temp_buffer = row_buffer.getMemory();
+
+		gvf_error_t err = gvf_decode_frame( m_gvf, m_frame, temp_buffer, m_temp_size );
 
 		if( err != GVF_ERROR_SUCCESSFUL )
 		{
 			LOGGER_ERROR(m_serviceProvider)("VideoDecoderGVF::decode invalid err code %d"
 				, err
+				);
+
+			return 0;
+		}
+
+		if( crnex::decode_crn( _buffer, _bufferSize, temp_buffer, m_temp_size, m_pitch ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderGVF::decode invalid decode crn"
 				);
 
 			return 0;

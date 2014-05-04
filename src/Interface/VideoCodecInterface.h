@@ -29,6 +29,8 @@ namespace Menge
 
 		uint32_t frameWidth;
 		uint32_t frameHeight;
+		uint32_t frameWidthHW;
+		uint32_t frameHeightHW;
 		uint32_t fps;
 
 		float frameTiming;		

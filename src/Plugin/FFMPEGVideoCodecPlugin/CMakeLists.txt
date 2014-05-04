@@ -1,0 +1,77 @@
+set( MY_LIB_NAME FFMPEGVideoCodecPlugin )
+
+ADD_FILTER(
+src
+	VideoCodecPlugin.def
+	VideoCodecPlugin.h
+	VideoCodecPlugin.cpp
+    
+    VideoDecoderFFMPEG.cpp
+	VideoDecoderFFMPEG.h
+)
+
+INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils )
+
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/ffmpeg/include )
+
+IF(MSVC)
+    INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/cmake_scripts/ffmpeg )
+ENDIF(MSVC)
+
+ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+
+SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS}/EXPORT:dllCreatePlugin")
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Factory)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Codec)
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX} )
+
+IF(MSVC)
+    SET(
+     VIDEO_CODEC_STATIC_LIBS
+     ${THIRDPARTY_DIR}/ffmpeg-mingw/bin/avcodec.lib
+     ${THIRDPARTY_DIR}/ffmpeg-mingw/bin/avformat.lib
+     ${THIRDPARTY_DIR}/ffmpeg-mingw/bin/avutil.lib
+     ${THIRDPARTY_DIR}/ffmpeg-mingw/bin/swscale.lib
+     )
+ENDIF(MSVC)
+
+IF(MINGW)
+    SET(
+     VIDEO_CODEC_STATIC_LIBS
+     ${THIRDPARTY_DIR}/ffmpeg/lib/libavcodec.dll.a
+     ${THIRDPARTY_DIR}/ffmpeg/lib/libavformat.dll.a
+     ${THIRDPARTY_DIR}/ffmpeg/lib/libavutil.dll.a
+     ${THIRDPARTY_DIR}/ffmpeg/lib/libswscale.dll.a
+     )
+ENDIF(MINGW)
+ 
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${VIDEO_CODEC_STATIC_LIBS} )
+
+SET( APPLICATION_DEPENDENCIES
+ ${APPLICATION_DEPENDENCIES}
+ ${MY_LIB_NAME}
+)
+
+SET( APPLICATION_DEPENDENCIES
+ ${APPLICATION_DEPENDENCIES}
+ PARENT_SCOPE
+)
+
+SET( APPLICATION_LIB_PATHS
+ ${APPLICATION_LIB_PATHS}
+)
+
+SET( APPLICATION_LIB_PATHS
+ ${APPLICATION_LIB_PATHS}
+ PARENT_SCOPE
+)
+
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS} 
+ PARENT_SCOPE
+)
+

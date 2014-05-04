@@ -41,5 +41,7 @@ namespace Menge
 		float m_pts;		
 
 		size_t m_pitch;
+
+		uint32_t m_temp_size;
 	};
 }	// namespace Menge

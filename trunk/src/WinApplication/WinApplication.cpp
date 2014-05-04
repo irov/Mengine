@@ -108,7 +108,7 @@ extern "C" // only required if using g++
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static const float s_activeFrameTime = 1000.f/60.f;
+	static const float s_activeFrameTime = 1000.f / 60.f;
 	static const float s_inactiveFrameTime = 100;
 	//////////////////////////////////////////////////////////////////////////
 	namespace Helper

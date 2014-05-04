@@ -149,14 +149,11 @@ namespace Menge
 		{
 			channels = 3;
 		}
-
-        size_t width = (size_t)(m_frameSize.x + 0.5f);
-        size_t height = (size_t)(m_frameSize.y + 0.5f);
-
+		        
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
 		RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-            ->createDynamicTexture( width, height, channels, dataInfo->format );
+            ->createDynamicTexture( dataInfo->frameWidthHW, dataInfo->frameHeightHW, channels, dataInfo->format );
 
 		if( dynamicTexture == nullptr )
 		{
@@ -396,11 +393,11 @@ namespace Menge
 
         float frameTiming = dataInfo->frameTiming;
 
-        float frameRate = m_resourceVideo->getFrameRate();
-        if( frameRate > 0.f )
-        {
-            frameTiming = 1000.f / frameRate;
-        }
+        //float frameRate = m_resourceVideo->getFrameRate();
+        //if( frameRate > 0.f )
+        //{
+		//frameTiming = 1000.f / frameRate;
+        //}
 		
 		while( m_timing >= frameTiming )
 		{            

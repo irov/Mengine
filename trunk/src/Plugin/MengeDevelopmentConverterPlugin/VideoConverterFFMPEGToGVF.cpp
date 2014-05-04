@@ -46,28 +46,6 @@ namespace Menge
 	static const uint32_t DDPF_BUMPLUMINANCE = 0x00040000l;        // L,U,V
 	static const uint32_t DDPF_BUMPDUDV = 0x00080000l;        // U,V
 
-#   define FOURCC(c0, c1, c2, c3) (c0 | (c1 << 8) | (c2 << 16) | (c3 << 24))
-	//////////////////////////////////////////////////////////////////////////
-	static PixelFormat s_convertFourCCFormat(uint32_t fourcc)
-	{
-		// convert dxt pixel format
-		switch(fourcc)
-		{
-		case FOURCC('D','X','T','1'):
-			return PF_DXT1;
-		case FOURCC('D','X','T','2'):
-			return PF_DXT2;
-		case FOURCC('D','X','T','3'):
-			return PF_DXT3;
-		case FOURCC('D','X','T','4'):
-			return PF_DXT4;
-		case FOURCC('D','X','T','5'):
-			return PF_DXT5;
-		}
-
-		return PF_UNKNOWN;
-	};
-
 #pragma pack( push, 1 )
 	struct DDS_PIXELFORMAT {
 		uint32_t dwSize;
@@ -96,18 +74,6 @@ namespace Menge
 	} DDS_HEADER;
 #pragma pack(pop)
 
-	//////////////////////////////////////////////////////////////////////////
-	static uint32_t s_firstPOW2From( uint32_t n )
-	{
-		--n;            
-		n |= n >> 16;
-		n |= n >> 8;
-		n |= n >> 4;
-		n |= n >> 2;
-		n |= n >> 1;
-		++n;
-		return n;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	static int s_gvf_write( void * _user, const void * _buffer, uint32_t _size )
 	{
@@ -212,7 +178,7 @@ namespace Menge
 			if( WINDOWSLAYER_SERVICE(m_serviceProvider)
 				->cmd( buffer ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToWEBM::convert_: invalid cmd:\n%ls"
+				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: invalid cmd:\n%ls"
 					, buffer.c_str()
 					);
 
@@ -254,6 +220,10 @@ namespace Menge
 				, &fps
 				, &frame_count ) != 2 )
 			{
+				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: frame rate %s"
+					, r_frame_rate
+					);
+				
 				return false;
 			}
 
@@ -266,6 +236,13 @@ namespace Menge
 				alpha = 1;
 			}
 		}
+
+		if( fps > 24 )
+		{
+			fps = 24;
+		}
+
+		//fps = 12;
 
 		LOGGER_WARNING(m_serviceProvider)("fps %d"
 			, fps
@@ -315,63 +292,6 @@ namespace Menge
 			, frame_count
 			);
 
-		LOGGER_WARNING(m_serviceProvider)("gvf create dds");
-
-		//create dds
-		{
-			WCHAR PNGS_Path[MAX_PATH];
-			swprintf_s( PNGS_Path, MAX_PATH, L"%sgvf_pngs\\frames.txt", TempPath );
-
-			String utf8_pngs_path;
-			Helper::unicodeToUtf8(m_serviceProvider, PNGS_Path, utf8_pngs_path);
-
-			OutputStreamInterfacePtr pngs_stream = FILE_SERVICE(m_serviceProvider)
-				->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_pngs_path) );
-
-			for( size_t index = 1; index != pngs_index; ++index )
-			{	
-				WCHAR PNG_Path[MAX_PATH];
-				swprintf_s( PNG_Path, MAX_PATH, L"%sgvf_pngs\\frame_%03d.png\n", TempPath, index );
-
-				String utf8_png_path;
-				Helper::unicodeToUtf8(m_serviceProvider, PNG_Path, utf8_png_path);				
-
-				pngs_stream->write( utf8_png_path.c_str(), utf8_png_path.size() );
-				//WCHAR DDS_Path[MAX_PATH];
-				//swprintf_s( DDS_Path, MAX_PATH, L"%sgvf_pngs\\frame_%03d.dds", TempPath, index );
-			}
-
-			pngs_stream->flush();
-			pngs_stream = nullptr;
-
-			WString buffer = L"crunch.exe -quiet -mipMode None -fileformat dds ";
-
-			if( alpha == 1 )
-			{
-				buffer += L" -DXT5 ";				
-			}
-			else
-			{
-				buffer += L" -DXT1 ";
-			}
-			
-			buffer += L" -dxtQuality superfast -rescalemode hi -outsamedir ";
-
-			buffer += L" -file @";
-			buffer += PNGS_Path;
-
-			if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-					->cmd( buffer ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: invalid cmd:\n%ls"
-					, buffer.c_str()
-					);
-
-				return false;
-			}
-			//crunch.exe -mipMode None -fileformat dds -DXT5 -dxtQuality superfast
-		}
-				
 		size_t width = 0;
 		size_t height = 0;
 
@@ -394,7 +314,7 @@ namespace Menge
 					, m_options.inputFileName.c_str() 
 					);
 
-				return nullptr;
+				return false;
 			}
 
 			if( imageDecoder->initialize( stream ) == false )
@@ -403,7 +323,7 @@ namespace Menge
 					, m_options.inputFileName.c_str() 
 					);
 
-				return nullptr;
+				return false;
 			}
 
 			const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
@@ -412,17 +332,197 @@ namespace Menge
 			height = dataInfo->height;
 		}
 
-		LOGGER_WARNING(m_serviceProvider)("gvf save file");
-		
-		OutputStreamInterfacePtr gvf_stream = FILE_SERVICE(m_serviceProvider)
-			->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, full_output) );
 
-		OutputStreamWriter gvf_wr(gvf_stream);
+		LOGGER_WARNING(m_serviceProvider)("gvf create dds");
+
+		bool crn = true;
+
+		size_t process_count = 4;
+
+		{
+			OutputStreamInterfacePtr pngs_stream[4];
+			
+			//create dds
+			for( size_t process = 0; process != process_count; ++process )
+			{
+				WCHAR PNGS_Path[MAX_PATH];
+				swprintf_s( PNGS_Path, MAX_PATH, L"%sgvf_pngs\\frames_%d.txt", TempPath, process );
+
+				String utf8_pngs_path;
+				Helper::unicodeToUtf8(m_serviceProvider, PNGS_Path, utf8_pngs_path);
+
+				pngs_stream[process] = FILE_SERVICE(m_serviceProvider)
+					->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_pngs_path) );
+			}
+
+			size_t process_index = 0;
+			for( size_t index = 1; index != pngs_index; ++index )
+			{	
+				WCHAR PNG_Path[MAX_PATH];
+				swprintf_s( PNG_Path, MAX_PATH, L"%sgvf_pngs\\frame_%03d.png\n", TempPath, index );
+
+				String utf8_png_path;
+				Helper::unicodeToUtf8(m_serviceProvider, PNG_Path, utf8_png_path);				
+
+				size_t process_current = (process_index++) % process_count;
+
+				pngs_stream[process_current]->write( utf8_png_path.c_str(), utf8_png_path.size() );
+			}
+
+			for( size_t process = 0; process != process_count; ++process )
+			{
+				pngs_stream[process]->flush();
+				pngs_stream[process] = nullptr;
+			}
+		}
+
+		{
+			WString buffer = L" -quiet -mipMode None ";
+
+			if( crn == false )
+			{
+				buffer += L" -fileformat dds ";
+			}
+			else
+			{
+				buffer += L" -fileformat crn ";
+			}
+
+			if( alpha == 1 )
+			{
+				buffer += L" -DXT5 ";				
+			}
+			else
+			{
+				buffer += L" -DXT1 ";
+			}
+
+			//buffer += L" -dxtQuality superfast ";
+			
+			if( width < 1024 && height < 1024 )
+			{
+				buffer += L" -rescalemode hi ";
+			}
+			else
+			{
+				buffer += L" -rescalemode lo ";
+			}
+
+			buffer += L" -outsamedir -quality 50 ";
+
+			PROCESS_INFORMATION lpProcessInformation[4];
+
+			for( size_t process = 0; process != process_count; ++process )
+			{
+				WString process_buffer = buffer;
+
+				WCHAR PNGS_Path[MAX_PATH];
+				swprintf_s( PNGS_Path, MAX_PATH, L"%sgvf_pngs\\frames_%d.txt", TempPath, process );
+
+				process_buffer += L" -file @";
+				process_buffer += PNGS_Path;
+
+				WCHAR lpCommandLine[MAX_PATH];
+				swprintf_s( lpCommandLine, MAX_PATH, L"%s", process_buffer.c_str() );
+
+				WCHAR curDir[MAX_PATH];
+				GetCurrentDirectoryW( MAX_PATH, curDir );
+
+				WCHAR lpApplicationName[MAX_PATH];
+				swprintf_s( lpApplicationName, L"%s\\crunch_x64.exe", curDir );
+
+				STARTUPINFOW lpStartupInfo;
+				ZeroMemory( &lpStartupInfo, sizeof(lpStartupInfo) );
+				lpStartupInfo.cb = sizeof(lpStartupInfo);
+
+				ZeroMemory( &lpProcessInformation[process], sizeof(lpProcessInformation[process]) );
+
+				BOOL successful = CreateProcessW( lpApplicationName
+					, lpCommandLine
+					, NULL
+					, NULL
+					, FALSE
+					, BELOW_NORMAL_PRIORITY_CLASS
+					, NULL
+					, NULL
+					, &lpStartupInfo
+					, &lpProcessInformation[process] );
+
+				if( successful == FALSE )
+				{
+					LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: invalid run process %ls %ls"
+						, lpApplicationName
+						, lpCommandLine
+						);
+
+					return false;
+				}
+
+				CloseHandle( lpProcessInformation[process].hThread );
+			}
+
+			for( size_t process = 0; process != process_count; ++process )
+			{
+				WaitForSingleObject( lpProcessInformation[process].hProcess, INFINITE );
+
+				DWORD exit_code;//Код завершения процесса
+				GetExitCodeProcess( lpProcessInformation[process].hProcess, &exit_code );
+
+				CloseHandle( lpProcessInformation[process].hProcess );
+			}
+		}
+
+		size_t width_pow2 = 0;
+		size_t height_pow2 = 0;
+
+		{
+			WCHAR PNG_Path[MAX_PATH];
+			swprintf_s( PNG_Path, MAX_PATH, L"%sgvf_pngs\\frame_%03d.crn", TempPath, 1 );
+
+			String utf8_PNG_Path;
+			Helper::unicodeToUtf8( m_serviceProvider, PNG_Path, utf8_PNG_Path );
+
+			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+				->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_Path) );
+
+			ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
+				->createDecoderT<ImageDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "crnImage") );
+
+			if( imageDecoder == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: Image decoder for file '%s' was not found"
+					, m_options.inputFileName.c_str() 
+					);
+
+				return false;
+			}
+
+			if( imageDecoder->initialize( stream ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: Image initialize for file '%s' was not found"
+					, m_options.inputFileName.c_str() 
+					);
+
+				return false;
+			}
+
+			const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
+
+			width_pow2 = dataInfo->width;
+			height_pow2 = dataInfo->height;
+		}
+
+		LOGGER_WARNING(m_serviceProvider)("gvf save file size %d %d frame %d %d"
+			, width
+			, height
+			, width_pow2
+			, height_pow2
+			);
 
 		gvf_encoder * gvf;
 		gvf_error_t err_code;
 
-		err_code = gvf_encoder_create( &gvf, &gvf_wr, &s_gvf_write );
+		err_code = gvf_encoder_create( &gvf );
 
 		if( err_code != GVF_ERROR_SUCCESSFUL )
 		{
@@ -435,8 +535,9 @@ namespace Menge
 		}
 
 		uint16_t gvf_format = alpha == 1 ? GVF_FORMAT_DXT5 : GVF_FORMAT_DXT1;
+		uint16_t gvf_compression = crn == true ? GVF_COMPRESSION_NONE : GVF_COMPRESSION_LZ4;
 
-		err_code = gvf_encoder_header( gvf, gvf_format, width, height, fps, frame_count );
+		err_code = gvf_encoder_header( gvf, gvf_format, gvf_compression, width, height, width_pow2, height_pow2, fps, frame_count );
 
 		if( err_code != GVF_ERROR_SUCCESSFUL )
 		{
@@ -447,68 +548,28 @@ namespace Menge
 
 			return false;
 		}
-
-		size_t pow2_width = s_firstPOW2From( width );
-		size_t pow2_height = s_firstPOW2From( height );
-
-		PixelFormat pf = alpha == 1 ? PF_DXT5 : PF_DXT1;
-
-		size_t frame_size = Helper::getTextureMemorySize( pow2_width, pow2_height, 1, pf );
-
-		
+				
 		LOGGER_WARNING(m_serviceProvider)("gvf save frames");
 
 		{
 			for( size_t index = 0; index != frame_count; ++index )
 			{
 				WCHAR DDS_Path[MAX_PATH];
-				swprintf_s( DDS_Path, MAX_PATH, L"%sgvf_pngs\\frame_%03d.dds", TempPath, index + 1 );
+				swprintf_s( DDS_Path, MAX_PATH, L"%sgvf_pngs\\frame_%03d.crn", TempPath, index + 1 );
 
 				String utf8_DDS_Path;
 				Helper::unicodeToUtf8( m_serviceProvider, DDS_Path, utf8_DDS_Path );
-				
+
 				InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
 					->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_DDS_Path) );
 
-				uint32_t magic;
-				stream->read( &magic, sizeof(magic) );
+				size_t size = stream->size();
 
-				if( magic != DDS_MAGIC )
-				{
-					LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: invalid dds file magic number %ls" 
-						, DDS_Path
-						);
-
-					return false;
-				}
-
-				DDS_HEADER header;
-				stream->read( &header, sizeof(header) );
-
-				//Check valid structure sizes
-				if( header.dwSize != 124 && header.ddspf.dwSize != 32)
-				{
-					LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: invalid dds file header %ls" 
-						, DDS_Path
-						);
-
-					return false;
-				}
-
-				if( (header.dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT && header.dwMipMapCount > 0 )
-				{
-					LOGGER_WARNING(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: dds file has mipmaps %ls" 
-						, DDS_Path
-						);                        
-
-					return false;				 
-				}
-
-				unsigned char * buffer = new unsigned char [frame_size];
-				stream->read( buffer, frame_size );
+				unsigned char * buffer = new unsigned char [size];
+				stream->read( buffer, size );
 				stream = nullptr;
 
-				err_code = gvf_encoder_frame( gvf, index, buffer, frame_size );
+				err_code = gvf_encoder_frame( gvf, index, buffer, size );
 
 				if( err_code != GVF_ERROR_SUCCESSFUL )
 				{
@@ -525,7 +586,12 @@ namespace Menge
 			}
 		}
 
-		err_code = gvf_encoder_flush( gvf );
+		OutputStreamInterfacePtr gvf_stream = FILE_SERVICE(m_serviceProvider)
+			->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, full_output) );
+
+		OutputStreamWriter gvf_wr(gvf_stream);
+		
+		err_code = gvf_encoder_flush( gvf, &gvf_wr, &s_gvf_write );
 
 		if( err_code != GVF_ERROR_SUCCESSFUL )
 		{

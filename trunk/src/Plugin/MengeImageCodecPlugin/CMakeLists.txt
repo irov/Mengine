@@ -14,8 +14,10 @@ src
 	#ImageDecoderMNE.h
 	ImageDecoderPNG.cpp
 	ImageDecoderPNG.h
-    ImageDecoderDDZ.cpp
-    ImageDecoderDDZ.h
+    #ImageDecoderDDZ.cpp
+    #ImageDecoderDDZ.h
+    ImageDecoderCRN.cpp
+    ImageDecoderCRN.h
     
     ImageDecoderPVRTC.cpp
     ImageDecoderPVRTC.h
@@ -74,6 +76,8 @@ INCLUDE_DIRECTORIES(
         #${THIRDPARTY_DIR}/libWEBPLL
 )
 
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/crunch )
+
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 SET( APPLICATION_DEPENDENCIES
@@ -96,6 +100,7 @@ SET( APPLICATION_LIBS
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}jpeg_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}webp_static${MENGINE_LIB_SUFFIX}
+    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}crunch_static${MENGINE_LIB_SUFFIX}
     Logger
     Core
     Codec

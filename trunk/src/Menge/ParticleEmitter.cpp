@@ -450,12 +450,12 @@ namespace	Menge
         //m_interface->getPosition( pos );
 		
 		for( size_t
-			it = 0,
-			it_end = flush.meshCount;
-		it != it_end;
-		++it )
+			it_mesh = 0,
+			it_mesh_end = flush.meshCount;
+		it_mesh != it_mesh_end;
+		++it_mesh )
 		{
-			const ParticleMesh & mesh = s_meshes[it];
+			const ParticleMesh & mesh = s_meshes[it_mesh];
 
 			const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( mesh.texture );
 

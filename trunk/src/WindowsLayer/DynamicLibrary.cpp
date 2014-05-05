@@ -1,10 +1,13 @@
 #	include "DynamicLibrary.h"
 
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DynamicLibrary::DynamicLibrary( const WString & _name )
-		: m_name(_name)
+	DynamicLibrary::DynamicLibrary( ServiceProviderInterface * _serviceProvider, const WString & _name )
+		: m_serviceProvider(_serviceProvider)
+		, m_name(_name)
 		, m_hInstance(NULL)
 	{
 	}
@@ -19,6 +22,13 @@ namespace Menge
 
 		if( m_hInstance == NULL )
 		{
+			DWORD le = GetLastError();
+
+			LOGGER_ERROR(m_serviceProvider)("DynamicLibrary::load %ls error code %d"
+				, m_name.c_str()
+				, le
+				);
+
 			return false;
 		}
 

@@ -79,11 +79,11 @@ namespace Menge
 	{
 		m_streamBuffer.setStream( m_stream );
 
-        const int probe_buffer_io_size = 512;
+        const int probe_buffer_io_size = 4096;
 
         uint8_t filebuffer[probe_buffer_io_size + FF_INPUT_BUFFER_PADDING_SIZE];
        
-        size_t stream_size = m_stream->size();
+        size_t stream_size = m_streamBuffer.size();
         size_t probe_size = probe_buffer_io_size > stream_size ? stream_size : probe_buffer_io_size;
 
         memset( filebuffer, 0, probe_buffer_io_size + FF_INPUT_BUFFER_PADDING_SIZE );
@@ -244,6 +244,7 @@ namespace Menge
 		m_dataInfo.frameHeightHW = m_codecContext->height;
 
         double fps = av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
+
 		m_dataInfo.fps = (size_t)fps;
 
 		if( m_dataInfo.fps == 0 )

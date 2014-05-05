@@ -259,7 +259,7 @@ namespace Menge
 
         int64_t len = m_formatContext->duration - m_formatContext->start_time;
 
-        double d_duration = (len * 1000.0) / double(AV_TIME_BASE);
+        double d_duration = double(len * 1000.0) / double(AV_TIME_BASE);
 		m_dataInfo.duration = (float)d_duration;
 
 		m_dataInfo.format = PF_UNKNOWN;

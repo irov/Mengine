@@ -5,7 +5,7 @@ PROJECT( MengeDependencies )
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-#ADD_SUBDIRECTORY( crunch )
+ADD_SUBDIRECTORY( crunch )
 ADD_SUBDIRECTORY( lz4 )
 ADD_SUBDIRECTORY( libgvf )
 
@@ -73,8 +73,7 @@ endif(MSVC)
 if(WIN32)
     #ADD_SUBDIRECTORY( tinyxml )
     #ADD_SUBDIRECTORY( Python_2_7_5 )
-    ADD_SUBDIRECTORY( Python_2_7_6 )
-    ADD_SUBDIRECTORY( Python_3_3_1 )
+    ADD_SUBDIRECTORY( Python_2_7_6 )    
 endif(WIN32)
 
 if(APPLE)

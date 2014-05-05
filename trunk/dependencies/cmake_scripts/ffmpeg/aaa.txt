@@ -27,7 +27,7 @@ LDFLAGS='-mwindows' ./configure \
 --disable-bsfs \
 --disable-bzlib \
 --disable-zlib \
---enable-libvorbis \
+--disable-libvorbis \
 --enable-libvpx \
 --enable-swscale \
 --disable-encoders \
@@ -51,6 +51,7 @@ LDFLAGS='-mwindows' ./configure \
 --enable-sse \
 --arch=x86 \
 --cpu=i686 \
+--disable-yasm \
 --target-os=mingw32 \
 --disable-debug
 

@@ -32,20 +32,20 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAK
 IF(MSVC)
     SET(
      VIDEO_CODEC_STATIC_LIBS
-     ${THIRDPARTY_DIR}/ffmpeg/lib/avcodec.lib
-     ${THIRDPARTY_DIR}/ffmpeg/lib/avformat.lib
-     ${THIRDPARTY_DIR}/ffmpeg/lib/avutil.lib
-     ${THIRDPARTY_DIR}/ffmpeg/lib/swscale.lib
+     ${THIRDPARTY_DIR}/ffmpeg/bin/avcodec.lib
+     ${THIRDPARTY_DIR}/ffmpeg/bin/avformat.lib
+     ${THIRDPARTY_DIR}/ffmpeg/bin/avutil.lib
+     ${THIRDPARTY_DIR}/ffmpeg/bin/swscale.lib
      )
 ENDIF(MSVC)
 
 IF(MINGW)
     SET(
      VIDEO_CODEC_STATIC_LIBS
-     ${THIRDPARTY_DIR}/ffmpeg-mingw/lib/libavcodec.dll.a
-     ${THIRDPARTY_DIR}/ffmpeg-mingw/lib/libavformat.dll.a
-     ${THIRDPARTY_DIR}/ffmpeg-mingw/lib/libavutil.dll.a
-     ${THIRDPARTY_DIR}/ffmpeg-mingw/lib/libswscale.dll.a
+     ${THIRDPARTY_DIR}/ffmpeg/lib/libavcodec.dll.a
+     ${THIRDPARTY_DIR}/ffmpeg/lib/libavformat.dll.a
+     ${THIRDPARTY_DIR}/ffmpeg/lib/libavutil.dll.a
+     ${THIRDPARTY_DIR}/ffmpeg/lib/libswscale.dll.a
      )
 ENDIF(MINGW)
  

@@ -39,7 +39,7 @@ namespace Menge
             , _path.c_str()
             );
 
-        DynamicLibrary * dl = new DynamicLibrary(_path);
+        DynamicLibrary * dl = new DynamicLibrary(m_serviceProvider, _path);
 
         if( dl->load() == false )
         {

@@ -10,7 +10,7 @@ namespace Menge
 		: public DynamicLibraryInterface
 	{
 	public:
-		DynamicLibrary( const WString & _name );
+		DynamicLibrary( ServiceProviderInterface * _serviceProvider, const WString & _name );
 		~DynamicLibrary();
 
 	public:
@@ -23,6 +23,8 @@ namespace Menge
         void destroy() override;
 
 	private:
+		ServiceProviderInterface * m_serviceProvider;
+
 		WString m_name;
 		HINSTANCE m_hInstance;
 	};

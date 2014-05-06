@@ -232,9 +232,8 @@ namespace Menge
         HANDLE handle = ::CreateFile( _path, _desiredAccess, _sharedMode, NULL,
             _creationDisposition, FILE_ATTRIBUTE_NORMAL, NULL );
 
-#ifdef _DEBUG
-        if( handle == INVALID_HANDLE_VALUE )
-        {
+		if( handle == INVALID_HANDLE_VALUE )
+		{
 			DWORD err_code = GetLastError();
 
 			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createFile invalid create file %ls err %d"
@@ -242,62 +241,74 @@ namespace Menge
 				, err_code
 				);
 
-            return INVALID_HANDLE_VALUE;
-        }
+			return INVALID_HANDLE_VALUE;
+		}
 
-        WIN32_FIND_DATA wfd;
-        HANDLE hFind = ::FindFirstFile( _path, &wfd );
+#ifdef _DEBUG
+		if( this->validateFile_( _path ) == false )
+		{
+			::CloseHandle( handle );
 
-        if( hFind == INVALID_HANDLE_VALUE )
-        {
-            LOGGER_ERROR(m_serviceProvider)("File invalid find ??? (%ls)\n"
-                , _path
-                );
-        }
-
-        const WChar * filename = PathFindFileName( _path );
-
-        //WCHAR finalPath[MAX_PATH];
-        //GetFinalPathNameByHandle( handle, finalPath, MAX_PATH, VOLUME_NAME_DOS );
-
-        //WCHAR canonicalizePath[MAX_PATH];
-        //PathCanonicalize( canonicalizePath, finalPath );
-
-        //WCHAR currentDirectory[MAX_PATH];
-        //GetCurrentDirectory( MAX_PATH, currentDirectory );
-
-        //WCHAR relativePath[MAX_PATH];
-        //if( PathRelativePathTo( relativePath, currentDirectory, FILE_ATTRIBUTE_DIRECTORY, canonicalizePath, FILE_ATTRIBUTE_NORMAL ) == FALSE )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("File invalid relative path\nfrom: %ls\nto: %ls"
-        //        , currentDirectory
-        //        , canonicalizePath
-        //        );
-        //    
-        //    ::CloseHandle( handle );
-
-        //    return INVALID_HANDLE_VALUE;
-        //}
-
-        if( wcscmp( filename, wfd.cFileName ) != 0 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
-                , _path
-                , filename
-                , wfd.cFileName
-                );
-
-            ::FindClose( hFind );
-            ::CloseHandle( handle );
-
-            return INVALID_HANDLE_VALUE;
-        }
-
-        ::FindClose( hFind );
+			return INVALID_HANDLE_VALUE;
+		}
 #endif
 
         return handle;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool VistaWindowsLayer::validateFile_( const WChar * _path )
+	{
+		WIN32_FIND_DATA wfd;
+		HANDLE hFind = ::FindFirstFile( _path, &wfd );
+
+		if( hFind == INVALID_HANDLE_VALUE )
+		{
+			LOGGER_ERROR(m_serviceProvider)("File invalid find ??? (%ls)\n"
+				, _path
+				);
+		}
+
+		const WChar * filename = PathFindFileName( _path );
+
+		//WCHAR finalPath[MAX_PATH];
+		//GetFinalPathNameByHandle( handle, finalPath, MAX_PATH, VOLUME_NAME_DOS );
+
+		//WCHAR canonicalizePath[MAX_PATH];
+		//PathCanonicalize( canonicalizePath, finalPath );
+
+		//WCHAR currentDirectory[MAX_PATH];
+		//GetCurrentDirectory( MAX_PATH, currentDirectory );
+
+		//WCHAR relativePath[MAX_PATH];
+		//if( PathRelativePathTo( relativePath, currentDirectory, FILE_ATTRIBUTE_DIRECTORY, canonicalizePath, FILE_ATTRIBUTE_NORMAL ) == FALSE )
+		//{
+		//    LOGGER_ERROR(m_serviceProvider)("File invalid relative path\nfrom: %ls\nto: %ls"
+		//        , currentDirectory
+		//        , canonicalizePath
+		//        );
+		//    
+		//    ::CloseHandle( handle );
+
+		//    return INVALID_HANDLE_VALUE;
+		//}
+
+		if( wcscmp( filename, wfd.cFileName ) != 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
+				, _path
+				, filename
+				, wfd.cFileName
+				);
+
+			::FindClose( hFind );
+
+			return false;
+		}	
+
+		::FindClose( hFind );
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     ATOM VistaWindowsLayer::registerClass( WNDPROC _wndProc, int _clsExtra, int _wndExtra
         , HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground

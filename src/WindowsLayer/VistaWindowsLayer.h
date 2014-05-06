@@ -34,7 +34,7 @@ namespace Menge
 
         HANDLE createFile( const WChar * _fileName, DWORD _desiredAccess,
             DWORD _sharedMode, DWORD _creationDisposition ) override;
-
+						
         ATOM registerClass( WNDPROC _wndProc, int _clsExtra, int _wndExtra
             , HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground
             , const WChar * _className ) override;
@@ -71,6 +71,10 @@ namespace Menge
         bool concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity ) override;
 
 		bool cmd( const WString & _command ) override;
+
+	protected:
+		bool validateFile_( const WChar * _path );
+
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

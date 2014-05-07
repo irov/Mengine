@@ -307,7 +307,7 @@ namespace Menge
         {
             ResourceMovie * resourceMovie = _movie->getResourceMovie();
 
-            if( resourceMovie == NULL )
+            if( resourceMovie == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)("Movie.getFrameDuration: '%s' not activate"
                     , _movie->getName().c_str()
@@ -325,7 +325,7 @@ namespace Menge
         {
             ResourceMovie * resourceMovie = _movie->getResourceMovie();
 
-            if( resourceMovie == NULL )
+            if( resourceMovie == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)("Movie.getDuration: '%s' not activate"
                     , _movie->getName().c_str()
@@ -343,7 +343,7 @@ namespace Menge
         {
             ResourceMovie * resourceMovie = _movie->getResourceMovie();
 
-            if( resourceMovie == NULL )
+            if( resourceMovie == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)("Movie.getFrameCount: '%s' not activate"
                     , _movie->getName().c_str()
@@ -361,13 +361,13 @@ namespace Menge
         {
             ResourceMovie * resourceMovie = _movie->getResourceMovie();
 
-            if( resourceMovie == NULL )
+            if( resourceMovie == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)("Movie.getSize: '%s' not activate"
                     , _movie->getName().c_str()
                     );
 
-                return mt::zero_v2;
+                return mt::vec2f(0.f, 0.f);
             }
 
             const mt::vec2f & size = resourceMovie->getSize();
@@ -1980,7 +1980,7 @@ namespace Menge
         void moveStop( Node * _node )
         {
             _node->stopAffectors( ETA_POSITION );
-            _node->setLinearSpeed( mt::zero_v3 );
+			_node->setLinearSpeed( mt::vec3f(0.f, 0.f, 0.f) );
         }
 		//////////////////////////////////////////////////////////////////////////
 		class NodeAffectorCallback

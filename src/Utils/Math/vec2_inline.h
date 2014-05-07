@@ -5,21 +5,19 @@
 namespace mt
 {
 	MATH_METHOD_INLINE vec2f::vec2f() 
-	{
-	}
+	{}
 
-	MATH_METHOD_INLINE vec2f::vec2f(float _x, float _y)
+	MATH_METHOD_INLINE vec2f::vec2f( float _x, float _y )
 		:x(_x)
 		,y(_y)
-	{
-	}
+	{}
 
-	MATH_METHOD_INLINE vec2f::vec2f(const vec2f& _v)
+	MATH_METHOD_INLINE vec2f::vec2f( const vec2f & _v )
 		:x(_v.x)
 		,y(_v.y)
 	{}
-	
-	MATH_METHOD_INLINE vec2f& vec2f::operator=(const vec2f& _rhs)
+
+	MATH_METHOD_INLINE vec2f & vec2f::operator = ( const vec2f & _rhs )
     {
         x = _rhs.x;	
         y = _rhs.y;	
@@ -27,14 +25,14 @@ namespace mt
         return *this;
     }
 
-	MATH_METHOD_INLINE const float vec2f::operator[](int i) const
+	MATH_METHOD_INLINE float vec2f::operator [] ( int i ) const
 	{
 		assert(i < 2);
 
 		return (&x)[i];
 	}
 
-	MATH_METHOD_INLINE float& vec2f::operator[](int i)
+	MATH_METHOD_INLINE float& vec2f::operator [] ( int i )
 	{
 		assert(i < 2);
 

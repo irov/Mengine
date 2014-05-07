@@ -12,11 +12,15 @@ namespace Menge
 	class PathFinderWay
 	{
 	public:
-		PathFinderWay( ServiceProviderInterface * _serviceProvider );
+		PathFinderWay();
 		~PathFinderWay();
+		
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		void initialize( const mt::vec2f & _from, const mt::vec2f & _to, const TVectorWayPoint & _way );
+		void initialize( const mt::vec2f & _from, const mt::vec2f & _to, size_t _capacity );
+		void addPoint( const mt::vec2f & _point );
 
 	public:
 		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );

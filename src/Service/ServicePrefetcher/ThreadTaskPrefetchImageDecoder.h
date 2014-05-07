@@ -29,11 +29,7 @@ namespace Menge
 
 	protected:
 		bool _onRun() override;
-
-	protected:
 		bool _onMain() override;
-
-	protected:
 		void _onComplete( bool _successful ) override;
 
 	protected:

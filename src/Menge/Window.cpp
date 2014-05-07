@@ -490,7 +490,7 @@ namespace Menge
                 , this->getName().c_str()
                 );
 			
-			return mt::zero_v2;
+			return mt::vec2f(0.f, 0.f);
 		}
 
 		mt::vec2f windowSize = m_clientSize;
@@ -509,7 +509,7 @@ namespace Menge
 				, _tile 
 				);
 
-			return mt::zero_v2;
+			return mt::vec2f(0.f, 0.f);
 		}
 
         const mt::vec2f& size = m_edge[_tile].initialSize;

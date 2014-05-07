@@ -6,18 +6,73 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	PathFinderMap::PathFinderMap( ServiceProviderInterface * _serviceProvider )
-		: m_serviceProvider(_serviceProvider)
+	static void s_polygonToBox( const Polygon & _polygon, mt::vec2f & _min, mt::vec2f & _max )
+	{
+		const Polygon::ring_type & ring = _polygon.outer();
+
+		const mt::vec2f & v0 = ring[0];
+		_min = v0;
+		_max = v0;
+
+		Polygon::ring_type::size_type size = ring.size() - 1;
+
+		for( Polygon::ring_type::size_type i = 1; i != size; ++i )
+		{
+			const mt::vec2f & v = ring[i];
+
+			if( _min.x > v.x )
+			{
+				_min.x = v.x;
+			}
+
+			if( _min.y > v.y )
+			{
+				_min.y = v.y;
+			}
+
+			if( _max.x < v.x )
+			{
+				_max.x = v.x;
+			}
+
+			if( _max.y < v.y )
+			{
+				_max.y = v.y;
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PathFinderMap::PathFinderMap()
+		: m_serviceProvider(nullptr)
 		, m_width(0)
 		, m_height(0)
 		, m_gridSize(16.f)
 		, m_unitSize(20.f)
-		, m_obstacleEnumerator(0)
+		, m_enumeratorObstacles(0)
+		, m_enumeratorPathFinders(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderMap::~PathFinderMap()
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderMap::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PathFinderMap::initialize()
+	{
+		m_threadPathFinders = THREAD_SERVICE(m_serviceProvider)
+			->runTaskQueue( 1, 1, -1 );
+
+		if( m_threadPathFinders == nullptr )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::setMap( float _width, float _height, float _gridSize, float _unitSize )
@@ -28,8 +83,8 @@ namespace Menge
 
 		m_unitSize = _unitSize;
 
-		uint32_t map_width = _width / _gridSize + 0.5f;
-		uint32_t map_height = _height / _gridSize + 0.5f;
+		uint32_t map_width = (uint32_t)(_width / _gridSize + 0.5f);
+		uint32_t map_height = (uint32_t)(_height / _gridSize + 0.5f);
 		
 		m_map.initialize( map_width, map_height );
 
@@ -179,7 +234,7 @@ namespace Menge
 			return 0;
 		}
 
-		size_t id = ++m_obstacleEnumerator;
+		size_t id = ++m_enumeratorObstacles;
 
 		Obstacle * obstacle = new Obstacle;
 		obstacle->id = id;
@@ -188,6 +243,7 @@ namespace Menge
 		boost::geometry::correct( obstacle->hole );
 
 		obstacle->bigHole = big_polygon;
+		s_polygonToBox( obstacle->bigHole, obstacle->bigMinHole, obstacle->bigMaxHole );
 
 		this->obstacleCellMask_( obstacle, 1 );
 				
@@ -261,58 +317,24 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_polygonToBox( const Polygon & _polygon, mt::vec2f & _min, mt::vec2f & _max )
-	{
-		const Polygon::ring_type & ring = _polygon.outer();
-
-		const mt::vec2f & v0 = ring[0];
-		_min = v0;
-		_max = v0;
-
-		Polygon::ring_type::size_type size = ring.size() - 1;
-
-		for( Polygon::ring_type::size_type i = 1; i != size; ++i )
-		{
-			const mt::vec2f & v = ring[i];
-
-			if( _min.x > v.x )
-			{
-				_min.x = v.x;
-			}
-
-			if( _min.y > v.y )
-			{
-				_min.y = v.y;
-			}
-
-			if( _max.x < v.x )
-			{
-				_max.x = v.x;
-			}
-
-			if( _max.y < v.y )
-			{
-				_max.y = v.y;
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::obstacleCellMask_( Obstacle * _obstacle, uint32_t _mask )
 	{
 		const Polygon & polygon = _obstacle->bigHole;
 
-		mt::vec2f minp;
-		mt::vec2f maxp;
-		s_polygonToBox( polygon, minp, maxp );
+		const mt::vec2f & minp = _obstacle->bigMinHole;
+		const mt::vec2f & maxp = _obstacle->bigMaxHole;
 
 		uint32_t map_width = m_map.getWidth();
 		uint32_t map_height = m_map.getHeight();
 
-		uint32_t map_begin_i = minp.x / m_gridSize;
-		uint32_t map_begin_j = minp.y / m_gridSize;
+		uint32_t map_begin_i = (uint32_t)(minp.x / m_gridSize);
+		uint32_t map_begin_j = (uint32_t)(minp.y / m_gridSize);
 
-		uint32_t map_end_i = maxp.x / m_gridSize;
-		uint32_t map_end_j = maxp.y / m_gridSize;
+		uint32_t map_end_i = (uint32_t)(maxp.x / m_gridSize);
+		uint32_t map_end_j = (uint32_t)(maxp.y / m_gridSize);
+
+		map_end_i = map_end_i > map_width ? map_width : map_end_i;
+		map_begin_j = map_begin_j > map_height ? map_height : map_begin_j;
 
 		for( uint32_t j = map_begin_j; j != map_end_j; ++j )
 		{
@@ -390,6 +412,14 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_intersectsPolygonPoint( const Polygon & _polygon, const mt::vec2f & _point )
+	{
+		GeometryPoint point(_point.x, _point.y);
+		bool intersect = boost::geometry::intersects( _polygon, point );
+
+		return intersect;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const
 	{
 		Segment sg(_p0, _p1);
@@ -409,14 +439,6 @@ namespace Menge
 		}
 
 		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_intersectsPolygonPoint( const Polygon & _polygon, const mt::vec2f & _point )
-	{
-		GeometryPoint point(_point.x, _point.y);
-		bool intersect = boost::geometry::intersects( _polygon, point );
-
-		return intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testHolesPoint_( const mt::vec2f & _p ) const
@@ -440,90 +462,116 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PathFinderPtr PathFinderMap::createPathFinder()
+	size_t PathFinderMap::createPathFinder( const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
 	{
-		PathFinder * pf = m_factoryPathFinder.createObjectT();
+		PathFinderPtr pf = m_factoryPathFinder.createObjectT();
 
-		pf->initialize( this );
+		pf->initialize( &m_map, _from, _to, m_gridSize );
 
-		m_pathFinders.push_back( pf );
+		m_threadPathFinders->addTask( pf );
 
-		return pf;
+		PathFinderDesc desc;
+
+		size_t id = ++m_enumeratorPathFinders;
+		desc.id = id;
+
+		desc.finder = pf;
+		
+		desc.cb = _cb;
+		pybind::incref( desc.cb );
+
+		desc.complete = false;
+
+		m_pathfinders.push_back( desc );
+
+		return id;
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//PathFinderWay * PathFinderMap::findPath( const mt::vec2f & _from, const mt::vec2f & _to )
-	//{
-	//	uint32_t fx = _from.x / m_gridSize;
-	//	uint32_t fy = _from.y / m_gridSize;
-
-	//	uint32_t tx = _to.x / m_gridSize;
-	//	uint32_t ty = _to.y / m_gridSize;
-	//			
-	//	bool successful = m_pathfinder.findPathFirst( fx, fy, tx, ty );
-	//	
-	//	if( successful == false )
-	//	{
-	//		return nullptr;
-	//	}
-
-	//	BEGIN_WATCHDOG(m_serviceProvider, "findPath");
-
-	//	bool found_path;
-	//	while( m_pathfinder.findPathNext( found_path ) == false )
-	//	{
-	//	}
-
-	//	END_WATCHDOG(m_serviceProvider, "findPath", 0)("path find");
-
-	//	if( found_path == false )
-	//	{
-	//		return nullptr;
-	//	}
-
-	//	m_pathfinder.findProcces();
-	//	m_pathfinder.findFilter();
-
-	//	const fastpathfinder::point_array & pa = m_pathfinder.getPathFilter();
-	//	//const fastpathfinder::point_array & pa = m_map.getPath();
-	//	size_t points_size = pa.size();
-	//	fastpathfinder::point * points = pa.buffer();
-
-	//	TVectorWayPoint wayPoints;
-	//	
-	//	for( size_t i = 0; i != points_size; ++i )
-	//	{
-	//		fastpathfinder::point p = points[i];
-
-	//		float x = p.x * m_gridSize + m_gridSize * 0.5f;
-	//		float y = p.y * m_gridSize + m_gridSize * 0.5f;
-
-	//		wayPoints.push_back( mt::vec2f(x, y) );
-	//	}
-	//	//	
-	//							
-	//	PathFinderWay * way = new PathFinderWay(m_serviceProvider);
-
-	//	way->initialize( _from, _to, wayPoints );
-
-	//	m_pathFinderWays.push_back( way );
-	//	
-	//	
-
-	//	return way;
-	//}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::removePath( PathFinderWay * _way )
+	void PathFinderMap::removePathFinder( size_t _finderId )
 	{
-		TVectorPathFinderWay::iterator it_found = std::find( m_pathFinderWays.begin(), m_pathFinderWays.end(), _way );
-
-		if( it_found == m_pathFinderWays.end() )
+		for( TVectorPathFinderDesc::iterator
+			it = m_pathfinders.begin(),
+			it_end = m_pathfinders.end();
+		it != it_end;
+		++it )
 		{
-			return;
+			PathFinderDesc & desc = *it;
+
+			if( desc.id != _finderId )
+			{
+				continue;
+			}
+
+			desc.finder->cancel();
+			desc.finder = nullptr;
+			
+			pybind::decref( desc.cb );
+
+			desc.complete = true;
 		}
 
-		delete *it_found;
+		this->clearPathFinderComplete_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderMap::update()
+	{
+		for( TVectorPathFinderDesc::iterator
+			it = m_pathfinders.begin(),
+			it_end = m_pathfinders.end();
+		it != it_end;
+		++it )
+		{
+			PathFinderDesc & desc = *it;
 
-		m_pathFinderWays.erase( it_found );		
+			if( desc.finder->isComplete() == false )
+			{
+				continue;
+			}
+
+			if( desc.finder->isSuccessful() == false )
+			{
+				pybind::call( desc.cb, "(IOO)"
+					, desc.id
+					, pybind::get_bool(false)					
+					, pybind::get_none() 
+					);
+			}
+			else
+			{
+				PathFinderWay * way = desc.finder->getWay();
+
+				pybind::call( desc.cb, "(IOO)"
+					, desc.id
+					, pybind::get_bool(true)
+					, pybind::ptr(way)
+					);
+			}
+
+			pybind::decref( desc.cb );
+			desc.finder = nullptr;
+
+			desc.complete = true;
+		}
+
+		this->clearPathFinderComplete_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		//////////////////////////////////////////////////////////////////////////
+		struct FPathFinderDead
+		{
+			bool operator ()( const PathFinderMap::PathFinderDesc & _event ) const
+			{
+				return _event.complete;
+			}
+		};	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderMap::clearPathFinderComplete_()
+	{
+		TVectorPathFinderDesc::iterator it_erase = std::remove_if( m_pathfinders.begin(), m_pathfinders.end(), FPathFinderDead());
+		m_pathfinders.erase( it_erase, m_pathfinders.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::setCamera2D( const RenderCameraInterface * _camera )
@@ -685,15 +733,15 @@ namespace Menge
 		//	}
 		//}
 
-		for( TVectorPathFinderWay::iterator
-			it = m_pathFinderWays.begin(),
-			it_end = m_pathFinderWays.end();
-		it != it_end;
-		++it )
-		{
-			PathFinderWay * way = *it;
+		//for( TVectorPathFinderWay::iterator
+		//	it = m_pathFinderWays.begin(),
+		//	it_end = m_pathFinderWays.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	PathFinderWay * way = *it;
 
-			way->render( _viewport, _camera );
-		}
+		//	way->render( _viewport, _camera );
+		//}
 	}
 }

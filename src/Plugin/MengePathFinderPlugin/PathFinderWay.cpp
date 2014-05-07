@@ -3,8 +3,10 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	PathFinderWay::PathFinderWay( ServiceProviderInterface * _serviceProvider )
-		: m_serviceProvider(_serviceProvider)
+	PathFinderWay::PathFinderWay()
+		: m_serviceProvider(nullptr)
+		, m_from(0.f, 0.f)
+		, m_to(0.f, 0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -12,12 +14,22 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderWay::initialize( const mt::vec2f & _from, const mt::vec2f & _to, const TVectorWayPoint & _way )
+	void PathFinderWay::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderWay::initialize( const mt::vec2f & _from, const mt::vec2f & _to, size_t _capacity )
 	{
 		m_from = _from;
 		m_to = _to;
 
-		m_way = _way;
+		m_way.reserve( _capacity );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderWay::addPoint( const mt::vec2f & _point )
+	{
+		m_way.push_back( _point );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWay::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )

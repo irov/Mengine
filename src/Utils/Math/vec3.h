@@ -20,20 +20,20 @@ namespace mt
 		float z;
 
 		MATH_METHOD_INLINE vec3f();
-		MATH_METHOD_INLINE vec3f(float _x, float _y, float _z);
-		MATH_METHOD_INLINE vec3f(const vec3f& _v);
+		MATH_METHOD_INLINE vec3f( float _x, float _y, float _z );
+		MATH_METHOD_INLINE vec3f( const vec3f & _v );
 
-		MATH_METHOD_INLINE explicit vec3f(const vec2f&	_v, float _z);
+		MATH_METHOD_INLINE explicit vec3f( const vec2f &	_v, float _z );
 
-		MATH_METHOD_INLINE vec3f& operator= (const vec3f& _rhs);
+		MATH_METHOD_INLINE vec3f& operator= ( const vec3f & _rhs );
 	
-		MATH_METHOD_INLINE const float operator[](int i) const;
-		MATH_METHOD_INLINE float& operator[](int i);
+		MATH_METHOD_INLINE float operator [] ( int i ) const;
+		MATH_METHOD_INLINE float & operator [] ( int i );
 
-		MATH_METHOD_INLINE vec3f& operator+=(const vec3f&	_rhs);
-		MATH_METHOD_INLINE vec3f& operator-=(const vec3f&	_rhs);
-		MATH_METHOD_INLINE vec3f& operator/=(const float _rhs);
-		MATH_METHOD_INLINE vec3f& operator*=(const float _rhs);
+		MATH_METHOD_INLINE vec3f & operator += (const vec3f & _rhs);
+		MATH_METHOD_INLINE vec3f & operator -= (const vec3f & _rhs);
+		MATH_METHOD_INLINE vec3f & operator /= (const float _rhs);
+		MATH_METHOD_INLINE vec3f & operator *= (const float _rhs);
 		MATH_METHOD_INLINE float sqrlength() const;
 		MATH_METHOD_INLINE float length() const;
 
@@ -43,8 +43,6 @@ namespace mt
 		MATH_METHOD_INLINE float * buff();
 		MATH_METHOD_INLINE const float * buff() const;
 	};
-
-	static const mt::vec3f zero_v3(0.f, 0.f, 0.f);
 
 	MATH_FUNCTION_INLINE bool operator==(const vec3f& _a, const vec3f& _b);
 	MATH_FUNCTION_INLINE bool operator!=(const vec3f& _a, const vec3f& _b);

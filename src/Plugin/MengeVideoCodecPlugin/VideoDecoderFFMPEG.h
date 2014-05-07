@@ -12,10 +12,10 @@
 #pragma warning(push, 0) 
 extern "C"
 {
-	#	include "libavformat/avformat.h"
-	#	include "libswscale/swscale.h"
-	#	include "libavcodec/avcodec.h"
-	#	include "libavutil/mathematics.h"
+#	include "libavformat/avformat.h"
+#	include "libswscale/swscale.h"
+#	include "libavcodec/avcodec.h"
+#	include "libavutil/mathematics.h"
 }
 #pragma warning(pop)
 

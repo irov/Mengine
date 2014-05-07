@@ -9,6 +9,8 @@
 #	include "Core/Polygon.h"
 #	include "Factory/FactoryStore.h"
 
+#	include "pybind/pybind.hpp"
+
 namespace Menge
 {
 	struct Obstacle
@@ -17,6 +19,8 @@ namespace Menge
 
 		Polygon hole;
 		Polygon bigHole;
+		mt::vec2f bigMinHole;
+		mt::vec2f bigMaxHole;
 	};
 	
 	typedef std::vector<Obstacle *> TVectorObstacles;
@@ -24,8 +28,15 @@ namespace Menge
 	class PathFinderMap
 	{
 	public:
-		PathFinderMap( ServiceProviderInterface * _serviceProvider );
+		PathFinderMap();
 		~PathFinderMap();
+
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+
+	public:
+		bool initialize();
+		void update();
 
 	public:
 		void setMap( float _width, float _height, float _gridSize, float _unitSize );
@@ -37,11 +48,11 @@ namespace Menge
 		void removeObstacle( size_t _id );
 		
 	public:
-		PathFinderPtr createPathFinder();
+		size_t createPathFinder( const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb );
+		void removePathFinder( size_t _finderId );
 
-	public:
-		//PathFinderWay * findPath( const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb );
-		void removePath( PathFinderWay * _way );
+	protected:
+		void clearPathFinderComplete_();
 
 	public:
 		void setCamera2D( const RenderCameraInterface * _camera );
@@ -61,6 +72,15 @@ namespace Menge
 	protected:
 		void obstacleCellMask_( Obstacle * _obstacle, uint32_t _mask );
 
+	public:
+		struct PathFinderDesc
+		{
+			size_t id;
+			PathFinderPtr finder;
+			PyObject * cb;
+			bool complete;
+		};
+
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
@@ -71,20 +91,28 @@ namespace Menge
 
 		TPathMap m_map;		
 		
-		size_t m_obstacleEnumerator;
+		size_t m_enumeratorObstacles;
 	
 		TVectorObstacles m_obstacles;
 		
 		typedef std::vector<PathFinderPtr> TVectorPathFinder;
 		TVectorPathFinder m_pathFinders;
 
-		typedef std::vector<PathFinderWay *> TVectorPathFinderWay;
-		TVectorPathFinderWay m_pathFinderWays;
+		//typedef std::vector<PathFinderWay *> TVectorPathFinderWay;
+		//TVectorPathFinderWay m_pathFinderWays;
+
+		typedef std::vector<PathFinderDesc> TVectorPathFinderDesc;
+		TVectorPathFinderDesc m_pathfinders;
+
+		size_t m_enumeratorPathFinders;
+
+		ThreadQueueInterfacePtr m_threadPathFinders;
+
+		typedef FactoryPoolStore<PathFinder, 32> TFactoryPathFinder;
+		TFactoryPathFinder m_factoryPathFinder;
 
 		const RenderCameraInterface * m_camera;
 		
-		typedef FactoryPoolStore<PathFinder, 32> TFactoryPathFinder;
-		TFactoryPathFinder m_factoryPathFinder;
 
 		typedef FactoryPoolStore<ThreadWorkerPathFinder, 32> TPoolWorkerTaskSoundBufferUpdate;
 		TPoolWorkerTaskSoundBufferUpdate m_poolWorkerTaskSoundBufferUpdate;

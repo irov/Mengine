@@ -17,24 +17,24 @@ namespace mt
 
 		MATH_METHOD_INLINE vec2f();
 		MATH_METHOD_INLINE vec2f(float _x, float _y);
-		MATH_METHOD_INLINE vec2f(const vec2f&	_v);
-		MATH_METHOD_INLINE vec2f& operator=(const vec2f& _rhs);
+		MATH_METHOD_INLINE vec2f(const vec2f & _v);
 
-		MATH_METHOD_INLINE const float operator[](int i) const;
-		MATH_METHOD_INLINE float & operator[](int i);
+		MATH_METHOD_INLINE vec2f & operator = (const vec2f & _rhs);
+		
+
+		MATH_METHOD_INLINE float operator [] ( int i ) const;
+		MATH_METHOD_INLINE float & operator [] ( int i );
 
 		template <int K>
-		inline float get() const
+		MATH_INLINE float get() const
 		{
-			const float * v = this->buff();
-			return v[K];
+			return this->operator [] (K);
 		}
 
 		template <int K>
-		inline void set( float _value )
+		MATH_INLINE void set( float _value )
 		{
-			float * v = this->buff();
-			v[K] = _value;
+			this->operator [] (K) = _value;
 		}
 
 		MATH_METHOD_INLINE vec2f& operator+=(const vec2f & _rhs);
@@ -50,8 +50,6 @@ namespace mt
 		MATH_METHOD_INLINE float * buff();
 		MATH_METHOD_INLINE const float * buff() const;
 	};
-
-	static const mt::vec2f zero_v2(0.f, 0.f);
 
 	MATH_FUNCTION_INLINE bool operator==(const vec2f& _a, const vec2f& _b);
 	MATH_FUNCTION_INLINE bool operator!=(const vec2f& _a, const vec2f& _b);

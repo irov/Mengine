@@ -13,9 +13,11 @@ namespace mt
 
 #	define MATH_FORCE_INLINE 1
 
+#	define MATH_INLINE inline
+
 #	if MATH_FORCE_INLINE == 1
-#	define MATH_FUNCTION_INLINE inline static
-#	define MATH_METHOD_INLINE inline
+#	define MATH_FUNCTION_INLINE MATH_INLINE static
+#	define MATH_METHOD_INLINE MATH_INLINE
 #	else
 #	define MATH_FUNCTION_INLINE
 #	endif

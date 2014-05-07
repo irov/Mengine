@@ -39,8 +39,10 @@ namespace Menge
 			.def( "addObstacle", &PathFinderMap::addObstacle )
 			.def( "removeObstacle", &PathFinderMap::removeObstacle )
 			//.def( "findPath", &PathFinderMap::findPath )
-			.def( "removePath", &PathFinderMap::removePath )
+			//.def( "removePath", &PathFinderMap::removePath )
 			.def( "setCamera2D", &PathFinderMap::setCamera2D )
+			.def( "createPathFinder", &PathFinderMap::createPathFinder )
+			.def( "removePathFinder", &PathFinderMap::removePathFinder )
 			;
 
 		pybind::interface_<PathFinderWay>("PathFinderWay")
@@ -69,7 +71,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderMap * ModulePathFinder::createMap()
 	{
-		PathFinderMap * map = new PathFinderMap(m_serviceProvider);
+		PathFinderMap * map = new PathFinderMap();
+
+		map->setServiceProvider( m_serviceProvider );
+		
+		if( map->initialize() == false )
+		{
+			delete map;
+
+			return nullptr;
+		}
 
 		m_maps.push_back( map );
 
@@ -80,6 +91,17 @@ namespace Menge
 	{
 		(void)_time;
 		(void)_timing;
+
+		for( TPathFinderMaps::iterator 
+			it = m_maps.begin(),
+			it_end = m_maps.end();
+		it != it_end;
+		++it )
+		{
+			PathFinderMap * map = *it;
+
+			map->update();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModulePathFinder::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )

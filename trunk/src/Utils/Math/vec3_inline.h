@@ -35,7 +35,7 @@ namespace mt
         return *this;
     }
 
-	MATH_METHOD_INLINE const float vec3f::operator[](int i) const
+	MATH_METHOD_INLINE float vec3f::operator[](int i) const
 	{
 		assert(i < 3);
 		return (&x)[i];

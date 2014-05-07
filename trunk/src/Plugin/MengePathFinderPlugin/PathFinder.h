@@ -2,33 +2,50 @@
 
 #	include "PathFinderWay.h"
 
+#	include "Kernel/ThreadTask.h"
+
+#	include "Factory/Factorable.h"
+
 #	include "fastpathfinder/pathfinder.h"
 #	include "fastpathfinder/map.h"
-
-#	include "Factory/FactorablePtr.h"
-
-#	include "pybind/pybind.hpp"
 
 namespace Menge
 {	
 	typedef fastpathfinder::pathfinder<fastpathfinder::map_test_wall_none> TPathFinder;
 	typedef fastpathfinder::map TPathMap;
-
-	class PathFinderMap;
-
+	
 	class PathFinder
-		: public FactorablePtr
+		: public ThreadTask
 	{
 	public:
-		void initialize( PathFinderMap * _map );
+		PathFinder();
+		~PathFinder();
 
 	public:
-		PathFinderWay * findPath( const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb );
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+
+	public:
+		bool initialize( TPathMap * _map, const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize );
+
+	public:
+		PathFinderWay * getWay() const;
 
 	protected:
-		PathFinderMap * m_map;
+		bool _onRun() override;
+		bool _onMain() override;
+		void _onComplete( bool _successful ) override;
+
+	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
+		mt::vec2f m_from;
+		mt::vec2f m_to;
+
+		float m_gridSize;
 
 		TPathFinder m_pathfinder;
+
+		PathFinderWay * m_way;
 	};
 
 	typedef stdex::intrusive_ptr<PathFinder> PathFinderPtr;

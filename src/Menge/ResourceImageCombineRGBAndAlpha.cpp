@@ -317,4 +317,21 @@ namespace Menge
         return bufferSize == b;
     }
 	/////////////////////////////////////////////////////////////////////////
+	ImageDecoderInterfacePtr ResourceImageCombineRGBAndAlpha::createDecoder_(  const InputStreamInterfacePtr & _stream, const ConstString& _codec ) const
+	{
+		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
+			->createDecoderT<ImageDecoderInterfacePtr>( _codec );
+
+		if( imageDecoder == nullptr )
+		{
+			return nullptr;
+		}
+
+		if( imageDecoder->prepareData( _stream ) == false )
+		{
+			return nullptr;
+		}
+
+		return imageDecoder;
+	}
 }

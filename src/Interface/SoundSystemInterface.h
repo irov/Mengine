@@ -90,7 +90,7 @@ namespace Menge
 	};
 
 #   define SOUND_SYSTEM( serviceProvider )\
-    (Menge::Helper::getService<Menge::SoundSystemInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::SoundSystemInterface)
 
 	class SoundServiceInterface
 		: public ServiceInterface
@@ -160,5 +160,5 @@ namespace Menge
 	};
 
 #   define SOUND_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::SoundServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::SoundServiceInterface)
 }

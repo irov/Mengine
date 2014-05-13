@@ -76,7 +76,7 @@ namespace Menge
             return false;
         }
 
-        FileInputStreamInterfacePtr file = stdex::intrusive_static_cast<FileInputStreamInterfacePtr>(_stream);
+        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface>(_stream);
 
 		if( file->open( m_path, _fileName, _offset, _size ) == false )
         {

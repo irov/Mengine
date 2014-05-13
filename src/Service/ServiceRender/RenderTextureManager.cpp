@@ -410,7 +410,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( imageDecoder->initialize( stream ) == false )
+		if( imageDecoder->prepareData( stream ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image decoder for file '%s' was not initialize"
 				, _fileName.c_str() 

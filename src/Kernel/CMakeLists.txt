@@ -167,6 +167,18 @@ Visitor
 	Visitor.h
 	Visitable.h
 )
+
+ADD_FILTER(
+Manager\\\\Schedule
+	ScheduleManager.cpp
+	ScheduleManager.h
+)
+
+ADD_FILTER(
+Manager\\\\Timing
+	TimingManager.cpp
+	TimingManager.h
+)
    
 INCLUDE_DIRECTORIES( 
     ${Mengine_SOURCE_DIR} 

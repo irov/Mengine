@@ -101,5 +101,5 @@ namespace Menge
     };
 
 #   define RESOURCE_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::ResourceServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::ResourceServiceInterface)
 }

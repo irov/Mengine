@@ -156,7 +156,7 @@ namespace Menge
 	};
 
 #   define PARTICLE_SYSTEM( serviceProvider )\
-    (Menge::Helper::getService<Menge::ParticleSystemInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::ParticleSystemInterface)
 
     class ParticleServiceInterface
         : public ServiceInterface
@@ -177,5 +177,5 @@ namespace Menge
     };
 
 #   define PARTICLE_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::ParticleServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::ParticleServiceInterface)
 }

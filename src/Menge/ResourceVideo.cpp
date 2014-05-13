@@ -185,7 +185,7 @@ namespace Menge
             return nullptr;
         }
 
-		if( videoDecoder->initialize( videoStream ) == false )
+		if( videoDecoder->prepareData( videoStream ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder '%s' can't initialize video decoder for file '%s'"
 				, this->getName().c_str()

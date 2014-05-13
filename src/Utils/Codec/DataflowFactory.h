@@ -4,6 +4,8 @@
 
 #   include "Factory/FactoryDefault.h"
 
+#	include "Logger/Logger.h"
+
 namespace Menge
 {     
 	template<class T>
@@ -23,9 +25,17 @@ namespace Menge
 	protected:
 		DataflowInterfacePtr createDataflow()
 		{	
-			T * decoder = m_factory.createObjectT();
+			DataflowInterfacePtr decoder = m_factory.createObjectT();
 
 			decoder->setServiceProvider( m_serviceProvider );
+
+			if( decoder->initialize() == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("DataflowFactory::createDataflow invalid initalize"
+					);
+
+				return nullptr;
+			}
 
 			return decoder;
 		}

@@ -2,11 +2,19 @@
 
 #   include "Factory/FactorablePtr.h"
 
+#	include "Core/ThreadGuard.h"
+
 #   include <stddef.h>
 
 namespace Menge
 {
 	class Factorable;
+
+	class FactoryListenerInterface
+	{
+	public:
+		virtual void onFactoryDestroyObject( Factorable * _object ) = 0;
+	};
 
 	class Factory
 		: public FactorablePtr
@@ -14,6 +22,9 @@ namespace Menge
 	public:
 		Factory();
 		virtual ~Factory();
+
+	public:
+		void setListener( FactoryListenerInterface * _listener );
 
 	public:
 		Factorable * createObject();
@@ -27,7 +38,11 @@ namespace Menge
 		virtual void _destroyObject( Factorable * _object ) = 0;
 
 	protected:
+		FactoryListenerInterface * m_listener;
+
 		size_t m_count;
+
+		THREAD_GUARD_INIT
 	};
 
 	typedef stdex::intrusive_ptr<Factory> FactoryPtr;

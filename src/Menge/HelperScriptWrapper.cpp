@@ -28,7 +28,7 @@
 //#	include "ResourceSequence.h"
 
 #	include "Player.h"
-#	include "TimingManager.h"
+#	include "Kernel/TimingManager.h"
 
 #	include "Watchdog.h"
 
@@ -52,22 +52,9 @@
 
 #	include "Interface/ScriptSystemInterface.h"
 
-#	include "TimingManager.h"
+#	include "Kernel/TimingManager.h"
 
 #   include "pybind/pybind.hpp"
-
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(push, 0) 
-#   pragma warning(disable:4800)
-#   pragma warning(disable:4702)
-#   endif
-
-#	include "boost/geometry/geometries/box.hpp"
-
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(pop) 
-#   endif
-
 
 namespace Menge
 {
@@ -703,6 +690,31 @@ namespace Menge
 			return py_value;
 		}
 
+		float s_getSettingFloatDefault( const ConstString & _setting, float _default )
+		{
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+				->getCurrentAccount();
+
+			if( currentAccount == nullptr )
+			{
+				return _default;
+			}
+
+			const WString & setting = currentAccount->getSetting( _setting );
+
+			float value;
+			if( Utils::wstringToFloat( setting, value ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("getSettingFloat: can't scanf from [%S]"
+					, _setting.c_str()
+					);
+
+				return _default;
+			}
+
+			return value;
+		}
+
 		PyObject * s_getAccountSetting( const WString & _accountID, const ConstString & _setting )
 		{
 			AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
@@ -1203,14 +1215,6 @@ namespace Menge
 		    return id;
 	    }
 
-	    void removeTiming( size_t id )
-	    {
-		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
-			    ->getTimingManager();
-
-		    timingManager->remove( id );
-	    }
-
     protected:
         ServiceProviderInterface * m_serviceProvider;
     };
@@ -1227,8 +1231,6 @@ namespace Menge
 
 		pybind::def_functor( "addGlobalInterpolatorLinearVector", helperScriptMethod, &HelperScriptMethod::addGlobalInterpolatorLinearVector );
 		pybind::def_functor( "addGlobalInterpolatorLinearFloat", helperScriptMethod, &HelperScriptMethod::addGlobalInterpolatorLinearFloat);		
-
-		pybind::def_functor( "removeTiming", helperScriptMethod, &HelperScriptMethod::removeTiming );
 
         pybind::def_functor( "rand", helperScriptMethod, &HelperScriptMethod::mt_rand );
 		pybind::def_functor( "randf", helperScriptMethod, &HelperScriptMethod::mt_randf );
@@ -1269,6 +1271,7 @@ namespace Menge
 		pybind::def_functor( "getSettingInt", helperScriptMethod, &HelperScriptMethod::s_getSettingInt );
 		pybind::def_functor( "getSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getSettingUInt );
 		pybind::def_functor( "getSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getSettingFloat );
+		pybind::def_functor( "getSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getSettingFloatDefault );		
 		
 
 		pybind::def_functor( "changeSetting", helperScriptMethod, &HelperScriptMethod::s_changeSetting );

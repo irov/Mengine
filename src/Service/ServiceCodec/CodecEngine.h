@@ -29,6 +29,7 @@ namespace Menge
 		void registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory ) override;
 		void unregisterDecoder( const ConstString& _type ) override;
 
+	public:
 		void registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory ) override;
 		void unregisterEncoder( const ConstString& _type ) override;
 	

@@ -23,7 +23,7 @@ namespace Menge
 
 
 #   define UNICODE_SYSTEM( serviceProvider )\
-    (Menge::Helper::getService<Menge::UnicodeSystemInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::UnicodeSystemInterface)
 
 	class UnicodeServiceInterface
 		: public ServiceInterface
@@ -36,7 +36,7 @@ namespace Menge
 	};
 
 #   define UNICODE_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::UnicodeServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::UnicodeServiceInterface)
 
     namespace Helper
     {

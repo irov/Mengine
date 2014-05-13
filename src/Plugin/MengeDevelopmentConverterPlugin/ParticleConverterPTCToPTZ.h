@@ -2,6 +2,8 @@
 
 #	include "DevelopmentConverter.h"
 
+#   include "Interface/ArchiveInterface.h"
+
 namespace Menge
 {
 	class ParticleConverterPTCToPTZ
@@ -17,7 +19,10 @@ namespace Menge
     public:
 		bool convert() override;
         	
-	private:
+	protected:
 		bool convert_( const FilePath & _input, const FilePath & _output );
+
+	protected:
+		ArchivatorInterfacePtr m_archivator;
     };
 }	// namespace Menge

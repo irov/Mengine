@@ -174,5 +174,5 @@ namespace Menge
 	};
 
 #   define APPLICATION_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::ApplicationInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::ApplicationInterface)
 }

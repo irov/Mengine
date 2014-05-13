@@ -20,8 +20,21 @@ namespace Menge
 	PickDecoderHIT::~PickDecoderHIT()
 	{
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PickDecoderHIT::_initialize()
+	{
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
-    bool PickDecoderHIT::_initialize()
+    bool PickDecoderHIT::_prepareData()
     {
         uint32_t magic;
         m_stream->read( &magic, sizeof(magic) );
@@ -69,7 +82,7 @@ namespace Menge
 	{	        	
         size_t decompressSize;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->decompress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), m_stream, m_mipmapcompresssize, _buffer, _bufferSize, decompressSize ) == false )
+            ->decompress( m_archivator, m_stream, m_mipmapcompresssize, _buffer, _bufferSize, decompressSize ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid uncompress"
                 );

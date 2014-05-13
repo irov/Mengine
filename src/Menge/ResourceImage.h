@@ -42,8 +42,6 @@ namespace Menge
 		//bool createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const;
 		bool prepareImageFrame_( const RenderTextureInterfacePtr & _texture );
 
-	protected:
-		ImageDecoderInterfacePtr createDecoder_( const InputStreamInterfacePtr & _stream,  const ConstString& _codec ) const;
 
     protected:
         void _release() override;

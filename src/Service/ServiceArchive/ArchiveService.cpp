@@ -55,7 +55,7 @@ namespace Menge
 
 		if( it_found == m_archivators.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ArchiveService::unregisterArchivator: not registry archivator '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::getArchivator: not registry archivator '%s'"
 				, _type.c_str() 
 				);
 
@@ -67,19 +67,8 @@ namespace Menge
 		return archivator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ArchiveService::decompress( const ConstString & _type, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
+	bool ArchiveService::decompress( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
 	{
-		ArchivatorInterfacePtr archivator = this->getArchivator( _type );
-
-		if( archivator == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ArchiveService::decomress: invalid get archivator %s"
-				, _type.c_str()
-				);
-
-			return false;
-		}
-
 		CacheMemoryBuffer compress_buffer(m_serviceProvider, _size, "ArchiveService::decomress");
 		void * compress_memory = compress_buffer.getMemory();
 
@@ -87,8 +76,7 @@ namespace Menge
 
 		if( read_memory != _size )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ArchiveService::decomress: invalid compress buffer %s read %d need %d"
-				, _type.c_str()
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::decomress: invalid compress buffer read %d need %d"
 				, read_memory
 				, _size
 				);
@@ -97,7 +85,7 @@ namespace Menge
 		}
 
 		size_t uncompressSize = 0;
-		if( archivator->decompress( _memory, _capacity, compress_memory, _size, uncompressSize ) == false )
+		if( _archivator->decompress( _memory, _capacity, compress_memory, _size, uncompressSize ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ArchiveService::decomress: invalid decompress"
 				);
@@ -110,31 +98,37 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInputPtr ArchiveService::compress( const ConstString & _type, const void * _buffer, size_t _size )
+	MemoryInputPtr ArchiveService::compress( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size )
 	{
-		ArchivatorInterfacePtr archivator = this->getArchivator( _type );
+		size_t compressSize2 = _archivator->compressBound( _size );
 
-		if( archivator == nullptr )
+		MemoryInputPtr memory = m_factoryMemoryInput.createObjectT();
+		void * buffer = memory->newMemory( compressSize2 );
+
+		if( buffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ArchiveService::compress: invalid get archivator %s"
-				, _type.c_str()
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::compress: invalid new memory"
 				);
 
 			return nullptr;
 		}
 
-		size_t compressSize2 = archivator->compressBound( _size );
-
-		MemoryInputPtr memory = m_factoryMemoryInput.createObjectT();
-		void * buffer = memory->newMemory( compressSize2 );
-
 		size_t compressSize;
-		if( archivator->compress( buffer, compressSize2, _buffer, _size, compressSize ) == false )
+		if( _archivator->compress( buffer, compressSize2, _buffer, _size, compressSize ) == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::compress: invalid compress"
+				);
+
 			return nullptr;
 		}
 
-		memory->newMemory( compressSize );
+		if( memory->newMemory( compressSize ) == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::compress: invalid new memory"
+				);
+
+			return nullptr;
+		}
 
 		return memory;
 	}

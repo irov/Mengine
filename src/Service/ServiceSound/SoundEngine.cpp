@@ -293,7 +293,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( desc.codec->initialize( desc.stream ) == false )
+		if( desc.codec->prepareData( desc.stream ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't initialize sound decoder for file %s:%s"
 				, _pakName.c_str()
@@ -673,7 +673,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc * source = it->second;
+            SoundSourceDesc * source = m_soundSourceMap.get_value( it );
 
             this->updateSourceVolume_( source, source->volume );
 		}

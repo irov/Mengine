@@ -35,7 +35,7 @@ namespace Menge
 
 	protected:
 		void _embedding( PyObject * _embed ) override;
-        
+
 	protected:
 		ConstString m_prototype;
 	};

@@ -39,7 +39,10 @@ namespace Menge
 			return false;
 		}
 
-		bool status = decoder->initialize( _stream );
+		if( decoder->prepareData( _stream ) == false )
+		{
+			return false;
+		}
 
 		const PickCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
@@ -55,7 +58,7 @@ namespace Menge
 			return false;                
 		}
 		
-		return status;
+		return true;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool HotspotImageConverterPNGToHIT::convert()
@@ -84,7 +87,7 @@ namespace Menge
             return nullptr;
         }
 
-		if( imageDecoder->initialize( input_stream ) == false )
+		if( imageDecoder->prepareData( input_stream ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("HotspotImageConverterPNGToHIT::convert_: Image initialize for file '%s' was not found"
 				, m_options.inputFileName.c_str() 

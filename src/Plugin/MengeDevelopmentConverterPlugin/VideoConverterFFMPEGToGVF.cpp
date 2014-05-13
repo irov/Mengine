@@ -317,7 +317,7 @@ namespace Menge
 				return false;
 			}
 
-			if( imageDecoder->initialize( stream ) == false )
+			if( imageDecoder->prepareData( stream ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: Image initialize for file '%s' was not found"
 					, m_options.inputFileName.c_str() 
@@ -497,7 +497,7 @@ namespace Menge
 				return false;
 			}
 
-			if( imageDecoder->initialize( stream ) == false )
+			if( imageDecoder->prepareData( stream ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("VideoConverterFFMPEGToGVF::convert_: Image initialize for file '%s' was not found"
 					, m_options.inputFileName.c_str() 

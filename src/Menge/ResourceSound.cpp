@@ -113,7 +113,7 @@ namespace Menge
             return false;
         }
 
-		if( decoder->initialize( stream ) == false )
+		if( decoder->prepareData( stream ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s can't initialize sound decoder for file %s:%s"
 				, m_name.c_str()

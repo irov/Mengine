@@ -111,7 +111,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_imageDecoder->initialize( m_stream ) == false )
+		if( m_imageDecoder->prepareData( m_stream ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onMain: Image decoder for file '%s' was not initialize"
 				, m_fileName.c_str() 
@@ -153,7 +153,7 @@ namespace Menge
 
 		m_imageDecoder->finalize();
 		
-		if( m_imageDecoderMemory->initialize( m_memoryInput ) == false )
+		if( m_imageDecoderMemory->prepareData( m_memoryInput ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Memory decoder for file '%s' was not initialize"
 				, m_fileName.c_str() 

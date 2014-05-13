@@ -41,7 +41,7 @@ namespace Menge
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
     public:
-        virtual bool initialize( const InputStreamInterfacePtr & _stream ) = 0;
+        virtual bool initialize() = 0;
 		virtual void finalize() = 0;
 
     public:
@@ -53,6 +53,9 @@ namespace Menge
 	public:
 		virtual void setCodecDataInfo( const CodecDataInfo * _dataInfo ) = 0;
 		virtual const CodecDataInfo * getCodecDataInfo() const = 0;
+
+	public:
+		virtual bool prepareData( const InputStreamInterfacePtr & _stream ) = 0;
 
 	public:
 		virtual size_t decode( void * _buffer, size_t _bufferSize ) = 0;
@@ -166,6 +169,6 @@ namespace Menge
 	};
 
 #   define CODEC_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::CodecServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::CodecServiceInterface)
 }
 

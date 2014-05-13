@@ -651,6 +651,17 @@ namespace Menge
 
             return id;
         }
+		//////////////////////////////////////////////////////////////////////////
+		size_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, PyObject * _script )
+		{
+			PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObjectT();
+
+			sl->initialize( m_serviceProvider, _script );
+
+			size_t id = _scheduleManager->schedule( _timing, sl );
+
+			return id;
+		}
         //////////////////////////////////////////////////////////////////////////
         void scheduleRemove( size_t _id )
         {
@@ -683,7 +694,7 @@ namespace Menge
 
             sm->freezeAll( true );
         }
-
+		//////////////////////////////////////////////////////////////////////////
         void scheduleResumeAll()
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
@@ -4313,6 +4324,16 @@ namespace Menge
             pybind::def_functor( "timing", nodeScriptMethod, &NodeScriptMethod::timing );
             pybind::def_functor( "timingRemove", nodeScriptMethod, &NodeScriptMethod::timingRemove );
 
+			
+			pybind::interface_<ScheduleManagerInterface>("ScheduleManagerInterface", false)
+				.def_proxy_static( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
+				.def( "remove", &ScheduleManagerInterface::remove )
+				.def( "removeAll", &ScheduleManagerInterface::removeAll )
+				.def( "freeze", &ScheduleManagerInterface::freeze )
+				.def( "freezeAll", &ScheduleManagerInterface::freezeAll )
+				.def( "isFreeze", &ScheduleManagerInterface::isFreeze )
+				.def( "time", &ScheduleManagerInterface::time )
+				;
 
             pybind::def_functor( "schedule", nodeScriptMethod, &NodeScriptMethod::schedule );
             pybind::def_functor( "scheduleRemove", nodeScriptMethod, &NodeScriptMethod::scheduleRemove );

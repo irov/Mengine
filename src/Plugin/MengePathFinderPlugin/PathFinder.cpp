@@ -100,7 +100,5 @@ namespace Menge
 
 			m_way->addPoint( mt::vec2f(x, y) );
 		}
-
-
 	}
 }

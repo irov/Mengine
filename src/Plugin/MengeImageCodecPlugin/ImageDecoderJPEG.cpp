@@ -255,8 +255,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderJPEG::_initialize()
 	{
-		m_streamBuffer = m_stream;
-
 		// step 1: allocate and initialize JPEG decompression object
 		m_jpegObject.err = jpeg_std_error(&m_errorMgr.pub);
 		m_jpegObject.client_data = this;
@@ -264,16 +262,23 @@ namespace Menge
 		m_errorMgr.pub.error_exit = s_jpegErrorExit;
 		m_errorMgr.pub.output_message = s_jpegOutputMessage;
 
+		jpeg_create_decompress( &m_jpegObject );
+
+		return true;			 
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageDecoderJPEG::_prepareData()
+	{
+		m_streamBuffer = m_stream;
+
 		if( setjmp( m_errorMgr.setjmp_buffer ) ) 
 		{
 			// If we get here, the JPEG code has signaled an error.
 			// We need to clean up the JPEG object and return.
 			jpeg_destroy_decompress( &m_jpegObject );
 
-            return false;
+			return false;
 		}
-
-		jpeg_create_decompress( &m_jpegObject );
 
 		// step 2a: specify data source (eg, a handle)
 		jpeg_menge_src( &m_jpegObject, &m_streamBuffer );

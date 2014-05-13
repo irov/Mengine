@@ -38,6 +38,9 @@ namespace Menge
 		bool _compile() override;
 
 	protected:
+		ImageDecoderInterfacePtr createDecoder_( const InputStreamInterfacePtr & _stream,  const ConstString& _codec ) const;
+
+	protected:
         FilePath m_fileNameAlpha;
         ConstString m_codecTypeAlpha;
 

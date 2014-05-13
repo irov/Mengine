@@ -71,5 +71,5 @@ namespace Menge
 	};
 
 #   define CONVERTER_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::ConverterServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::ConverterServiceInterface)
 }	// namespace Menge

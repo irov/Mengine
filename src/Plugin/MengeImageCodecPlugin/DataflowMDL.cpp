@@ -31,6 +31,19 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool DataflowMDL::initialize()
+	{
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	DataInterfacePtr DataflowMDL::create()
 	{
 		Model3DPack * pack = m_poolModel3DPack.createObjectT();
@@ -82,7 +95,7 @@ namespace Menge
 		
 		size_t uncompressSize = 0;
 		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), _stream, compress_size, binary_memory, binary_size, uncompressSize ) == false )
+			->decompress( m_archivator, _stream, compress_size, binary_memory, binary_size, uncompressSize ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid uncompress"
 				);

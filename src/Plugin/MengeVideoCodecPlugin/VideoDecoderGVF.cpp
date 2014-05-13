@@ -51,7 +51,7 @@ namespace Menge
 		gvf_decoder_destroy( m_gvf );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderGVF::_initialize()
+	bool VideoDecoderGVF::_prepareData()
 	{
 		m_streamBuffer = m_stream;
 

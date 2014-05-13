@@ -75,7 +75,7 @@ namespace Menge
 		this->clear_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderFFMPEG::_initialize()
+	bool VideoDecoderFFMPEG::_prepareData()
 	{
 		m_streamBuffer.setStream( m_stream );
 

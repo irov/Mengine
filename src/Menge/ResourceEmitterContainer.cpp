@@ -110,8 +110,8 @@ namespace Menge
 
                 return false;
             }
-
-			if( imageDecoder->initialize( stream ) == false )
+			
+			if( imageDecoder->prepareData( stream ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_isValid %s can't initialize decoder '%s'"
 					, m_name.c_str()

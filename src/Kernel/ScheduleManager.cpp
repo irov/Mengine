@@ -31,21 +31,14 @@ namespace Menge
         {
             bool operator ()( const ScheduleManager::ScheduleEvent & _event ) const
             {
-                if( _event.dead == false )
-                {
-                    return false;
-                }
-                 
-                _event.listener->destroy();
-
-                return true;
+				return _event.dead;
             }
         };	
     }	
     //////////////////////////////////////////////////////////////////////////
     ScheduleManager::ScheduleManager()
         : m_serviceProvider(nullptr)
-        , m_enumerator(0)
+        , m_enumeratorSchedule(0)
         , m_freeze(false)
     {
 
@@ -53,16 +46,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ScheduleManager::~ScheduleManager()
     {
-        for( TListSchedules::const_iterator
-            it = m_schedules.begin(),
-            it_end = m_schedules.end();
-        it != it_end;
-        ++it )
-        {
-            ScheduleListener * listener = it->listener;
-
-            listener->destroy();
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void ScheduleManager::initialize( ServiceProviderInterface * _serviceProvider ) 
@@ -70,14 +53,14 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ScheduleManager::schedule( float _timing, ScheduleListener * _listener )
+    size_t ScheduleManager::schedule( float _timing, const ScheduleListenerPtr & _listener )
     {
         ScheduleEvent event;
 
         event.dead = false;
         event.timing = _timing * 1000.f;
         event.listener = _listener;
-        event.id = ++m_enumerator;
+        event.id = ++m_enumeratorSchedule;
         event.freeze = m_freeze;
 
         m_schedules.push_back( event );

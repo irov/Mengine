@@ -294,4 +294,12 @@ namespace Menge
         THREAD_SYSTEM(m_serviceProvider)
             ->sleep( _ms );
     }
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t ThreadEngine::getCurrentThreadId()
+	{
+		uint32_t id = THREAD_SYSTEM(m_serviceProvider)
+			->getCurrentThreadId();
+
+		return id;
+	}
 }	// namespace Menge

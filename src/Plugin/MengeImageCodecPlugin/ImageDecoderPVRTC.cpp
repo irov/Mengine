@@ -81,7 +81,7 @@ size_t ImageDecoderPVRTC::decode( void * _buffer, size_t _bufferSize )
 	return read == _bufferSize ? read : 0;
 }
 //////////////////////////////////////////////////////////////////////////
-bool ImageDecoderPVRTC::_initialize()
+bool ImageDecoderPVRTC::_prepareData()
 {
 	m_stream->seek(0);
 	

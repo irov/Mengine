@@ -373,7 +373,7 @@ namespace Menge
 			return false;
 		}
 
-		MemoryInputPtr memory = stdex::intrusive_static_cast<MemoryInputPtr>(_stream);
+		MemoryInput * memory = stdex::intrusive_get<MemoryInput>(_stream);
 		void * buffer = memory->newMemory( fi.unz_size );
 
 		if( buffer == nullptr )

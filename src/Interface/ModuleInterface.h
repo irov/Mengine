@@ -60,5 +60,5 @@ namespace Menge
 	};
 
 #   define MODULE_SERVICE( serviceProvider )\
-	(Menge::Helper::getService<Menge::ModuleServiceInterface>(serviceProvider))
+	SERVICE_GET(serviceProvider, Menge::ModuleServiceInterface)
 }

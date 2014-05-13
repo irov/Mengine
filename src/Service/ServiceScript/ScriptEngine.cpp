@@ -126,7 +126,15 @@ namespace Menge
             //.def("load_module", &ScriptZipLoader::load_module)
             //;
 
-        m_moduleFinder = new ScriptModuleFinder(m_serviceProvider);
+        m_moduleFinder = new ScriptModuleFinder();
+
+		if( m_moduleFinder->initialize( m_serviceProvider ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initialize invalid initialize ScriptModuleFinder"
+				);
+
+			return false;
+		}
        
         PyObject * py_moduleFinder = pybind::ptr( m_moduleFinder );
 

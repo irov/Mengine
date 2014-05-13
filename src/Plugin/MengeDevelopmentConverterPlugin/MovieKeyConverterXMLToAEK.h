@@ -2,9 +2,9 @@
 
 #   include "DevelopmentConverter.h"
 
-#	include "Config/Typedef.h"
+#   include "Interface/ArchiveInterface.h"
+
 #	include "Config/Blobject.h"
-#	include "Core/ConstString.h"
 
 namespace Menge
 {
@@ -27,5 +27,8 @@ namespace Menge
 	protected:
 		bool loadFramePak_( TBlobject & _buffer );
 		bool writeFramePak_( const TBlobject & _buffer );
+
+	protected:
+		ArchivatorInterfacePtr m_archivator;
 	};
 }

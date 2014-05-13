@@ -404,6 +404,9 @@ namespace Menge
 
 		if( loaderService->initialize( CONST_STRING_LOCAL(m_serviceProvider, "protocol.xml") ) == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Application::initializeLoaderEngine_ invalid initialize Loader Engine"
+				);
+
 			return false;
 		}
 

@@ -137,7 +137,7 @@ namespace Menge
 	};
 
 #   define CONSTS_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::Consts>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::Consts)
 }
 
 #	define CONST_STRING( ServiceProvider, String )\

@@ -2,6 +2,7 @@
 
 #	include "Interface/XmlCodecInterface.h"
 #   include "Interface/InputSystemInterface.h"
+#   include "Interface/ArchiveInterface.h"
 
 namespace Menge
 {
@@ -16,7 +17,7 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( const InputStreamInterfacePtr & _stream ) override;
+        bool initialize() override;
 		void finalize() override;
 
     protected:
@@ -29,11 +30,17 @@ namespace Menge
 		void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
 		const XmlCodecDataInfo * getCodecDataInfo() const override;
 
+	public:
+		bool prepareData( const InputStreamInterfacePtr & _stream ) override;
+
 	public:		
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
+
+		ArchivatorInterfacePtr m_archivator;
+
         InputStreamInterfacePtr m_stream;
 
 		XmlCodecOptions m_options;

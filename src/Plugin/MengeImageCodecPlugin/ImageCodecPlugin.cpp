@@ -11,8 +11,8 @@
 //#	include "ImageDecoderDDZ.h"
 #	include "ImageDecoderPVRTC.h"
 #	include "ImageDecoderETC1.h"
-#	include "ImageDecoderPVRTZ.h"
-#	include "ImageDecoderETZ1.h"
+//#	include "ImageDecoderPVRTZ.h"
+//#	include "ImageDecoderETZ1.h"
 #	include "ImageDecoderCRN.h"
 
 #	include "ImageEncoderPNG.h"
@@ -75,8 +75,8 @@ namespace Menge
         //m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ddsImage")) );
         //m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ddzImage")) );
         m_decoders.push_back( new DecoderFactory<ImageDecoderWEBP>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "webpImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pvrtzImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderETZ1>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "etz1Image")) );
+		//m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pvrtzImage")) );
+		//m_decoders.push_back( new DecoderFactory<ImageDecoderETZ1>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "etz1Image")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTC>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pvrImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderETC1>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "etcImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderCRN>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "crnImage")) );

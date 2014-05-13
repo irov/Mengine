@@ -310,7 +310,7 @@ namespace Menge
 			return false;
 		}
 
-		if( SERVICE_REGISTRY(m_serviceProvider, threadSystem) == false )
+		if( SERVICE_REGISTRY(m_serviceProvider, threadSystem ) == false )
 		{
 			return false;
 		}
@@ -368,6 +368,12 @@ namespace Menge
 		}
 
 		m_archiveService = archiveService;
+
+		{
+			LOGGER_INFO(m_serviceProvider)( "initialize Zip..." );
+			initPluginMengeZip( &m_pluginMengeZip );
+			m_pluginMengeZip->initialize( m_serviceProvider );
+		}
 
 		return true;
 	}
@@ -1325,11 +1331,6 @@ namespace Menge
 			return false;
 		}
 
-		if( this->initializeArchiveService_() == false )
-		{
-			return false;
-		}
-
 		if( this->initializeNotificationService_() == false )
 		{
 			return false;
@@ -1341,6 +1342,11 @@ namespace Menge
 		}
 
 		if( this->initializeFileEngine_() == false )
+		{
+			return false;
+		}
+
+		if( this->initializeArchiveService_() == false )
 		{
 			return false;
 		}
@@ -1481,12 +1487,6 @@ namespace Menge
 			initPluginMengeVideoCodec( &m_pluginMengeVideoCodec );
 			m_pluginMengeVideoCodec->initialize( m_serviceProvider );
 		}				
-
-		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Zip..." );
-			initPluginMengeZip( &m_pluginMengeZip );
-			m_pluginMengeZip->initialize( m_serviceProvider );
-		}
 
 		{
 			LOGGER_INFO(m_serviceProvider)( "initialize Path Finder..." );

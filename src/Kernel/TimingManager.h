@@ -30,7 +30,6 @@ namespace Menge
 
 			size_t id;
 
-			bool remove;
 			bool dead;
 			bool freeze;
 
@@ -56,6 +55,9 @@ namespace Menge
 	private:
 		bool findTimigEvent_( size_t _id, const TimingEvent *& _event ) const;
 		bool findTimigEvent_( size_t _id, TimingEvent *& _event );
+
+	protected:
+		void destroyTiming_( TimingEvent & _event );
 
 	private:
         ServiceProviderInterface * m_serviceProvider;

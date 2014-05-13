@@ -1,6 +1,7 @@
 #	pragma once
 
 #   include "Interface/AccountInterface.h"
+#   include "Interface/ArchiveInterface.h"
 
 #	include "Config/Typedef.h"
 
@@ -50,6 +51,8 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
+		ArchivatorInterfacePtr m_archivator;
+
 		WString m_name;
 		size_t m_projectVersion;
 		bool m_projectVersionCheck;
@@ -66,4 +69,6 @@ namespace Menge
 		typedef stdex::binary_vector<ConstString, Setting> TMapSettings;
 		TMapSettings m_settings;
 	};
+
+	typedef stdex::intrusive_ptr<Account> AccountPtr;
 }	// namespace Menge

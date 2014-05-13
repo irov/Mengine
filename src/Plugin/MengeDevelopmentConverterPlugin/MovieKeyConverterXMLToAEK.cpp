@@ -39,6 +39,14 @@ namespace Menge
 	{
 		m_convertExt = ".aek";
 
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
+
 		return true;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
@@ -601,7 +609,7 @@ namespace Menge
 		uint32_t binary_aek_size = _buffer.size();
 		
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), &_buffer[0], binary_aek_size );
+			->compress( m_archivator, &_buffer[0], binary_aek_size );
 
 		if( compress_memory == nullptr)
 		{

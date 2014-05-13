@@ -28,7 +28,7 @@ namespace Menge
         void initialize( const RenderTextureInterfacePtr & _texture
             , const Rect & _rect
             , size_t _id
-            , RenderTextureInterfaceListener * _listener );		
+            );		
 		
 	public:
 		const RenderImageInterfacePtr & getImage() const override;
@@ -56,8 +56,6 @@ namespace Menge
 		RenderTextureInterfacePtr m_texture;
 		Rect m_rect;
 		Rect m_hwRect;
-
-		RenderTextureInterfaceListener * m_listener;
 
         mt::vec4f m_uv;
 

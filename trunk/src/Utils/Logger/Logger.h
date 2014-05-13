@@ -13,7 +13,7 @@ namespace Menge
 		LoggerOperator & operator()( const char * _message, ... );
 
 	public:
-		void logMessage(  const char * _message, size_t _size  );
+		void logMessage( const char * _message, size_t _size );
 
 	protected:
 		LogServiceInterface * m_log;

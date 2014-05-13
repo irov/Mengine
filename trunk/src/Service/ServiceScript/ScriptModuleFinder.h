@@ -2,6 +2,7 @@
 
 #   include "Interface/StreamInterface.h"
 #   include "Interface/FileSystemInterface.h"
+#   include "Interface/ArchiveInterface.h"
 
 #	include "Config/Typedef.h"
 #	include "Config/String.h"
@@ -20,7 +21,10 @@ namespace Menge
     class ScriptModuleFinder
     {
     public:
-        ScriptModuleFinder( ServiceProviderInterface * _serviceProvider );
+        ScriptModuleFinder();
+
+	public:
+		bool initialize( ServiceProviderInterface * _serviceProvider );
 
     public:
         void addModulePath( const ConstString & _pak, const TVectorFilePath & _pathes );
@@ -52,6 +56,8 @@ namespace Menge
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
+
+		ArchivatorInterfacePtr m_archivator;
 
         PyObject * m_embbed;
         

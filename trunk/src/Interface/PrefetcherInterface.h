@@ -44,6 +44,6 @@ namespace Menge
 	};
 
 #   define PREFETCHER_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::PrefetcherServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::PrefetcherServiceInterface)
 }
 

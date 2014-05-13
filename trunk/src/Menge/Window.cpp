@@ -477,7 +477,7 @@ namespace Menge
 		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f Window::getClientSize() const
+	const mt::vec2f & Window::getClientSize() const
 	{
 		return m_clientSize;
 	}
@@ -500,7 +500,7 @@ namespace Menge
 		return windowSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f& Window::getTileSize( int _tile ) const
+	const mt::vec2f Window::getTileSize( int _tile ) const
 	{
 		if( _tile < 0 || _tile > ResourceWindow_Count )
 		{
@@ -512,7 +512,7 @@ namespace Menge
 			return mt::vec2f(0.f, 0.f);
 		}
 
-        const mt::vec2f& size = m_edge[_tile].initialSize;
+        const mt::vec2f & size = m_edge[_tile].initialSize;
 
 		return size;
 	}

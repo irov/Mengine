@@ -40,10 +40,10 @@ namespace Menge
         virtual ArchivatorInterfacePtr getArchivator( const ConstString & _type ) const = 0;
 
 	public:
-		virtual bool decompress( const ConstString & _type, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress ) = 0;
-		virtual MemoryInputPtr compress( const ConstString & _type, const void * _buffer, size_t _size ) = 0;
+		virtual bool decompress( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress ) = 0;
+		virtual MemoryInputPtr compress( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size ) = 0;
     };
 
 #   define ARCHIVE_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::ArchiveServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::ArchiveServiceInterface)
 }

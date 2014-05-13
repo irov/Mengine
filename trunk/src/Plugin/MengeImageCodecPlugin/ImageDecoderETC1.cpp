@@ -39,7 +39,7 @@ size_t ImageDecoderETC1::decode( void * _buffer, size_t _bufferSize )
 	return _bufferSize;
 }
 //////////////////////////////////////////////////////////////////////////
-bool ImageDecoderETC1::_initialize()
+bool ImageDecoderETC1::_prepareData()
 {
 	if(m_needSeek)
 	{

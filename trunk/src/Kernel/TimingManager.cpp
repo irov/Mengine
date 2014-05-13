@@ -27,19 +27,7 @@ namespace Menge
 		{
 			bool operator ()( const TimingManager::TimingEvent & _event ) const
 			{
-				if( _event.dead == false )
-				{
-					return false;
-				}
-
-				if( _event.remove == true )
-				{
-					_event.listener->removeTiming( _event.id );
-				}
-				
-				_event.listener->deleteTimingListener();
-				
-				return true;
+				return _event.dead;				
 			}
 		};	
 	}
@@ -60,6 +48,11 @@ namespace Menge
         ++it )
         {
             TimingListener * listener = it->listener;
+
+			if( listener == nullptr )
+			{
+				continue;
+			}
 
             listener->deleteTimingListener();
         }
@@ -82,7 +75,6 @@ namespace Menge
 		size_t new_id = ++m_enumerator;
 
 		event.id = new_id;
-		event.remove = false;
 		event.dead = false;
 		event.freeze = m_freeze;
 		event.portions = _portions;
@@ -131,8 +123,7 @@ namespace Menge
 			return;
 		}
 
-		event->remove = true;
-		event->dead = true;
+		this->destroyTiming_( *event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TimingManager::removeAll( bool _global )
@@ -148,8 +139,7 @@ namespace Menge
 				continue;
 			}
 
-			it->remove = true;
-			it->dead = true;
+			this->destroyTiming_( *it );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -204,10 +194,10 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			TimingEvent & event = m_timings[it];
+			TimingEvent event = m_timings[it];
 
 			if( event.dead == true )
-			{
+			{				
 				continue;
 			}
 
@@ -224,21 +214,38 @@ namespace Menge
 				{
 					event.timing -= event.delay;
 
-					event.dead = event.listener->updateTiming( event.id, event.delay );
-
-					if( event.dead == true )
+					if( event.listener->updateTiming( event.id, event.delay ) == true )
 					{
+						this->destroyTiming_( event );
+
 						break;
 					}
 				}
 			}
 			else
 			{
-				event.dead = event.listener->updateTiming( event.id, _timing );
+				if( event.listener->updateTiming( event.id, _timing ) == true )
+				{
+					this->destroyTiming_( event );
+				}
 			}
 		}
 
 		TListTimings::iterator it_erase = std::remove_if( m_timings.begin(), m_timings.end(), FTimingDead());
 		m_timings.erase( it_erase, m_timings.end() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TimingManager::destroyTiming_( TimingEvent & _event )
+	{
+		if( _event.dead == false )
+		{
+			_event.dead = true;
+
+			TimingListener * listener = _event.listener;
+			_event.listener = nullptr;
+
+			listener->removeTiming( _event.id );
+			listener->deleteTimingListener();			
+		}		
 	}
 }

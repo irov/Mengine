@@ -246,7 +246,7 @@ namespace Menge
 
 		if( it_find != m_mapEvent.end() )
 		{
-			PyObject * py_event  = it_find->second;
+			PyObject * py_event  = m_mapEvent.get_value( it_find );
 			pybind::decref( py_event );
 
 			m_mapEvent.erase( it_find );
@@ -300,14 +300,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Eventable::getEvent( EEventName _event ) const
 	{
-		TMapEvent::const_iterator it_find = m_mapEvent.find(_event);
-
-		if( it_find == m_mapEvent.end() )
+		PyObject * cb;
+		if( m_mapEvent.has( _event, &cb ) == false )
 		{
 			return nullptr;
 		}
 
-		return it_find->second;
+		return cb;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Eventable::unregisterEvents_()
@@ -318,7 +317,8 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			pybind::decref( it->second );
+			PyObject * cb = m_mapEvent.get_value( it );
+			pybind::decref( cb );
 		}
 
 		m_mapEvent.clear();

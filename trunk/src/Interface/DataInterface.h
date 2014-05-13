@@ -27,6 +27,9 @@ namespace Menge
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
 	public:
+		virtual bool initialize() = 0;
+
+	public:
 		virtual DataInterfacePtr create() = 0;
 		virtual bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream ) = 0;
 	};
@@ -81,6 +84,6 @@ namespace Menge
 	};
 
 #   define DATA_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::DataServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::DataServiceInterface)
 }
 

@@ -1,5 +1,7 @@
 #	pragma once
 
+#   include "Interface/ArchiveInterface.h"
+
 #	include "Codec/PickDecoder.h"
 
 namespace Menge
@@ -11,8 +13,11 @@ namespace Menge
         PickDecoderHIT();
         ~PickDecoderHIT();
 
+	public:
+		bool _initialize() override;
+
     public:
-        bool _initialize() override;
+        bool _prepareData() override;
 
 	public:
         size_t decode( void * _buffer, size_t _bufferSize ) override;
@@ -22,5 +27,7 @@ namespace Menge
 
     protected:
         uint32_t m_mipmapcompresssize;
+
+		ArchivatorInterfacePtr m_archivator;
     };
 }	// namespace Menge

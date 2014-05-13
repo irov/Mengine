@@ -2,6 +2,8 @@
 
 #	include "DevelopmentConverter.h"
 
+#   include "Interface/ArchiveInterface.h"
+
 namespace Menge
 {
 	class ModelConverterMDLToMDZ
@@ -19,5 +21,8 @@ namespace Menge
         	
 	private:
 		bool convert_( const FilePath & _input, const FilePath & _output );
+
+	protected:
+		ArchivatorInterfacePtr m_archivator;
     };
 }	// namespace Menge

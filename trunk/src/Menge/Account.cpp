@@ -9,8 +9,8 @@
 
 #   include "Logger/Logger.h"
 
+#	include "Core/CacheMemoryBuffer.h"
 #	include "Core/IniUtil.h"
-
 #	include "Core/String.h"
 #	include "Core/File.h"
 #	include "Core/CRC32.h"
@@ -56,6 +56,14 @@ namespace Menge
 		settingsPath.append( "settings.ini" );
 
 		m_settingsPath = Helper::stringizeString( m_serviceProvider, settingsPath );
+
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -350,13 +358,14 @@ namespace Menge
 
         size_t load_compress_size = file_size - sizeof(load_crc32) - sizeof(load_data_size);
 
-        TBlobject archive_blob(load_compress_size);
-		TBlobject::value_type * archive_blob_buffer = &archive_blob[0];
-        stream->read( archive_blob_buffer, load_compress_size );
+		CacheMemoryBuffer data_buffer(m_serviceProvider, load_compress_size, "Account_loadBinaryFile");
+		TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
+        
+		stream->read( data_memory, load_compress_size );
 
         stream = nullptr;
 
-        size_t check_crc32 = make_crc32( &archive_blob[0], load_compress_size );
+        size_t check_crc32 = make_crc32( data_memory, load_compress_size );
 
         if( load_crc32 != check_crc32 )
         {
@@ -370,22 +379,8 @@ namespace Menge
 
         _data.resize( load_data_size );
 
-		ArchivatorInterfacePtr archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
-
-		if( archivator == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls: invalid load file %s (invalid archivator %s)"
-				, m_name.c_str()
-				, fullpath.c_str()
-				, "zip"
-				);
-
-			return false;
-		}
-
         size_t uncompress_size;
-        if( archivator->decompress( &_data[0], load_data_size, &archive_blob[0], load_compress_size, uncompress_size ) == false )
+        if( m_archivator->decompress( &_data[0], load_data_size, data_memory, load_compress_size, uncompress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls: invalid load file %s (uncompress failed)"
                 , m_name.c_str()
@@ -434,7 +429,7 @@ namespace Menge
         uint32_t data_size = _data.size();
 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), &_data[0], data_size );
+			->compress( m_archivator, &_data[0], data_size );
         
         if( compress_memory == nullptr )
         {

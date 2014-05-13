@@ -117,7 +117,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadSystem::joinThread( const ThreadIdentityPtr & _thread )
 	{
-		Win32ThreadIdentityPtr identity = stdex::intrusive_static_cast<Win32ThreadIdentityPtr>(_thread);
+		Win32ThreadIdentity * identity = stdex::intrusive_get<Win32ThreadIdentity>(_thread);
 
 		const ThreadTaskInterfacePtr & listener = identity->getTask();
 		listener->cancel();
@@ -127,12 +127,7 @@ namespace Menge
 		WaitForSingleObject( treadHandle, INFINITE );
 
         CloseHandle( treadHandle );
-
-        //m_threadIdentities.erase(		
-        //    std::remove( m_threadIdentities.begin(), m_threadIdentities.end(), identity )
-        //    , m_threadIdentities.end() 
-        //    );
-    
+		    
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -149,4 +144,10 @@ namespace Menge
 		::Sleep( _ms );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	uint32_t Win32ThreadSystem::getCurrentThreadId()
+	{
+		DWORD id = GetCurrentThreadId();
+
+		return (uint32_t)id;
+	}
 }

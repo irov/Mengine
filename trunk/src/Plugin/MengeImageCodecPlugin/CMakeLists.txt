@@ -43,11 +43,11 @@ src
     ImageDecoderWEBP.h
     ImageDecoderWEBP.cpp
     
-    ImageDecoderPVRTZ.h
-    ImageDecoderPVRTZ.cpp
+    #ImageDecoderPVRTZ.h
+    #ImageDecoderPVRTZ.cpp
     
-    ImageDecoderETZ1.h
-    ImageDecoderETZ1.cpp
+    #ImageDecoderETZ1.h
+    #ImageDecoderETZ1.cpp
     
     DataflowAEK.h
     DataflowAEK.cpp
@@ -58,9 +58,6 @@ src
     DataflowMDL.cpp
     Model3DPack.h
     Model3DPack.cpp
-    
-    
-    
 )
 
 INCLUDE_DIRECTORIES( 

@@ -15,7 +15,7 @@ namespace Menge
 		~ImageDecoderWEBP();
 
 	public:
-		bool _initialize() override;
+		bool _prepareData() override;
 		void _finalize() override;
 
 	public:

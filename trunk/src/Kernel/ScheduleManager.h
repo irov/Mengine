@@ -23,7 +23,7 @@ namespace Menge
     public:
 		struct ScheduleEvent
 		{
-			ScheduleListener * listener;
+			ScheduleListenerPtr listener;
 
 			float timing;
 			size_t id;
@@ -33,7 +33,7 @@ namespace Menge
 		};
 
 	public:
-		size_t schedule( float _timing, ScheduleListener * _func ) override;
+		size_t schedule( float _timing, const ScheduleListenerPtr & _listener ) override;
 
     public:
 		void remove( size_t _id ) override;
@@ -44,7 +44,7 @@ namespace Menge
 		bool isFreeze( size_t _id ) const override;
 
 		float time( size_t _id ) const override;
-
+		
 	public:
 		void update( float _current, float _timing ) override;
 
@@ -57,7 +57,7 @@ namespace Menge
 		typedef std::vector<ScheduleEvent> TListSchedules;
 		TListSchedules m_schedules;
 
-		size_t m_enumerator;	
+		size_t m_enumeratorSchedule;
 		bool m_freeze;
 
     protected:

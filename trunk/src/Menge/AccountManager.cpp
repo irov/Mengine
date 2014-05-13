@@ -172,9 +172,12 @@ namespace Menge
             }
         }
 
-        Account * newAccount = m_factoryAccounts.createObjectT();
+        AccountPtr newAccount = m_factoryAccounts.createObjectT();
 		
-		newAccount->initialize( m_serviceProvider, _accountID, folder, m_projectVersion, m_projectVersionCheck );
+		if( newAccount->initialize( m_serviceProvider, _accountID, folder, m_projectVersion, m_projectVersionCheck ) == false )
+		{
+			return nullptr;				 
+		}
 
         return newAccount;
     }

@@ -82,5 +82,5 @@ namespace Menge
     };
 
 #   define GAME_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::GameServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::GameServiceInterface)
 }

@@ -103,5 +103,5 @@ namespace Menge
 	};
 
 #   define PHYSIC_SYSTEM( serviceProvider )\
-    (Menge::getService<Menge::PhysicSystemInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::PhysicSystemInterface)
 }

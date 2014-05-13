@@ -32,6 +32,9 @@ namespace Menge
     protected:
 		bool _initialize() override;
 
+	protected:
+		bool _prepareData() override;
+
     protected:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
         

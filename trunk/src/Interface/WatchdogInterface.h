@@ -17,12 +17,15 @@ namespace Menge
         virtual float watch( const String & _tag ) = 0;
     };
 
+#	define WATCHDOG_SERVICE( serviceProvider )\
+	SERVICE_GET(serviceProvider, Menge::WatchdogInterface)
+
 #   ifdef MENGE_MASTER_RELEASE
 #   define WATCHDOG( serviceProvider, tag )\
     (0.f)
 #   else //MENGE_MASTER_RELEASE
 #   define WATCHDOG( serviceProvider, tag )\
-    (Menge::Helper::getService<Menge::WatchdogInterface>(serviceProvider)->watch(tag))
+    WATCHDOG_SERVICE(serviceProvider)->watch(tag)
 #   endif //MENGE_MASTER_RELEASE
 
 #   define LOGGER_WATCHDOG( serviceProvider, level )\

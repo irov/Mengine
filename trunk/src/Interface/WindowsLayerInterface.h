@@ -92,5 +92,5 @@ namespace Menge
     };
 
 #   define WINDOWSLAYER_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::WindowsLayerInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::WindowsLayerInterface)
 }

@@ -37,6 +37,8 @@ namespace Menge
         ThreadMutexInterfacePtr createMutex() override;
 
 		void sleep( unsigned int _ms ) override;
+
+		uint32_t getCurrentThreadId() override;
 	
 	protected:
         typedef FactoryPoolStore<Win32ThreadIdentity, 16> TPoolWin32ThreadIdentity;

@@ -61,5 +61,6 @@ namespace Menge
 }
 
 #   define PROTOTYPE_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::PrototypeServiceInterface>(serviceProvider))
+	SERVICE_GET(serviceProvider, Menge::PrototypeServiceInterface)
+    
 

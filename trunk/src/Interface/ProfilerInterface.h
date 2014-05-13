@@ -19,5 +19,5 @@ namespace Menge
     };
 
 #   define PROFILER_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::ProfilerServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::ProfilerServiceInterface)
 }

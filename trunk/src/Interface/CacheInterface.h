@@ -35,5 +35,5 @@ namespace Menge
 	};
 
 #   define CACHE_SERVICE( serviceProvider )\
-	(Menge::Helper::getService<Menge::CacheServiceInterface>(serviceProvider))
+	SERVICE_GET(serviceProvider, Menge::CacheServiceInterface)
 }

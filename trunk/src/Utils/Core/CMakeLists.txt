@@ -51,6 +51,9 @@ src
     MutexGuard.h
     MutexGuard.cpp
     
+    ThreadGuard.h
+    ThreadGuard.cpp
+    
     String.h
 	String.cpp
     UnicodeFormat.h
@@ -67,7 +70,7 @@ src
     
     InputStreamBuffer.h
     
-    OutputStreamWriter.h
+    OutputStreamWriter.h   
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

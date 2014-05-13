@@ -295,7 +295,7 @@ namespace Menge
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERMATERIAL_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::RenderMaterialServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::RenderMaterialServiceInterface)
     //////////////////////////////////////////////////////////////////////////
     const int VDECL_XYZ = 0x002;
     const int VDECL_XYZRHW = 0x004;
@@ -370,7 +370,7 @@ namespace Menge
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERTEXTURE_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::RenderTextureServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::RenderTextureServiceInterface)
 	//////////////////////////////////////////////////////////////////////////
 	class RenderViewportInterface
 	{
@@ -524,7 +524,7 @@ namespace Menge
 	};
 
 #   define RENDER_SYSTEM( serviceProvider )\
-    (Menge::Helper::getService<Menge::RenderSystemInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::RenderSystemInterface)
 
     struct RenderDebugInfo
     {
@@ -619,5 +619,5 @@ namespace Menge
 	};
 
 #   define RENDER_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::RenderServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::RenderServiceInterface)
 }

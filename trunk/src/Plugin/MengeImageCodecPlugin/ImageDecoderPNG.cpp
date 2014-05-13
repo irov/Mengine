@@ -63,8 +63,40 @@ namespace Menge
 	{	
 		png_destroy_read_struct( &m_png_ptr, &m_info_ptr, nullptr );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageDecoderPNG::_initialize()
+	{
+		// create the chunk manage structure
+		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
+		//m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, &m_memories, &s_png_malloc_ptr, &s_png_free_ptr );
+		//m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, nullptr, &s_png_malloc_ptr, &s_png_free_ptr );
+		m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
+
+		if( m_png_ptr == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create read structure" 
+				);
+
+			return false;
+		}
+
+		// create the info structure
+		m_info_ptr = png_create_info_struct( m_png_ptr );
+
+		if( m_info_ptr == nullptr ) 
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create info structure" 
+				);
+
+			png_destroy_write_struct( &m_png_ptr, nullptr );
+
+			return false;
+		}
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoderPNG::_initialize()
+    bool ImageDecoderPNG::_prepareData()
     {
 		m_streamBuffer.setStream( m_stream );
 
@@ -79,34 +111,7 @@ namespace Menge
 
             return false;
         }
-
-        // create the chunk manage structure
-		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
-        //m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, &m_memories, &s_png_malloc_ptr, &s_png_free_ptr );
-		//m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, nullptr, &s_png_malloc_ptr, &s_png_free_ptr );
-		m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
-
-        if( m_png_ptr == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create read structure" 
-                );
-
-            return false;
-        }
-
-        // create the info structure
-        m_info_ptr = png_create_info_struct( m_png_ptr );
-
-        if( m_info_ptr == nullptr ) 
-        {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create info structure" 
-                );
-
-            png_destroy_write_struct( &m_png_ptr, nullptr );
-
-            return false;
-        }
-
+		
         if( setjmp( png_jmpbuf( m_png_ptr ) ) )
         {
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize" 

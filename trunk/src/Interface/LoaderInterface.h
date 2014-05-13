@@ -27,5 +27,5 @@ namespace Menge
     };
 
 #   define LOADER_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::LoaderServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::LoaderServiceInterface)
 }

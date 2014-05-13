@@ -135,8 +135,7 @@ namespace Menge
 				desc.mutex->unlock();
 			}
 
-			THREAD_SERVICE(m_serviceProvider)
-				->sleep( m_sleep );
+			SERVICE_CALL( THREAD_SERVICE(m_serviceProvider), sleep, ( m_sleep ) );
 		}
 
 		return true;

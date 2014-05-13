@@ -28,5 +28,5 @@ namespace Menge
     };
 
 #   define PLUGIN_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::PluginServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::PluginServiceInterface)
 }

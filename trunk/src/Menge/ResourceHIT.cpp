@@ -93,7 +93,7 @@ namespace Menge
             return false;
         }
 
-		if( decoder->initialize( stream ) == false )
+		if( decoder->prepareData( stream ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file '%s' invalid initialize decoder '%s'"
 				, this->getName().c_str()

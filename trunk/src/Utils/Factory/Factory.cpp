@@ -5,7 +5,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Factory::Factory()
-		: m_count(0)
+		: m_listener(nullptr)
+		, m_count(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -15,22 +16,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Factorable * Factory::createObject()
 	{
-		Factorable * object = this->_createObject();
-		object->setFactory( this );
+		THREAD_GUARD_CHECK(this);
 
 		++m_count;
-
 		intrusive_ptr_add_ref( this );
+
+		Factorable * object = this->_createObject();
+		object->setFactory( this );
 
 		return object;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Factory::destroyObject( Factorable * _object )
-	{
+	{	
+		THREAD_GUARD_CHECK(this);
+
+		if( m_listener != nullptr )
+		{
+			m_listener->onFactoryDestroyObject( _object );
+		}
+
+		this->_destroyObject( _object );	
+
 		--m_count;
-
-		this->_destroyObject( _object );
-
 		intrusive_ptr_dec_ref( this );
 	}
 	//////////////////////////////////////////////////////////////////////////

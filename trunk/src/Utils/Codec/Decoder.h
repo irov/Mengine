@@ -24,21 +24,11 @@ namespace Menge
 		}
 
 	public:
-		bool initialize( const InputStreamInterfacePtr & _stream ) override
+		bool initialize() override
 		{
-			m_stream = _stream;
-
 			bool successful = this->_initialize();
 
 			return successful;
-		}
-
-	public:
-		void finalize() override
-		{
-			this->_finalize();
-
-			m_stream = nullptr;			
 		}
 
 	protected:
@@ -47,6 +37,15 @@ namespace Menge
 			return true;
 		}
 
+	public:
+		void finalize() override
+		{
+			this->_finalize();
+
+			m_stream = nullptr;
+		}
+		
+	protected:
 		virtual void _finalize()
 		{
 			//Empty
@@ -56,6 +55,22 @@ namespace Menge
 		const InputStreamInterfacePtr & getStream() const override
 		{
 			return m_stream;				 
+		}
+
+	public:
+		bool prepareData( const InputStreamInterfacePtr & _stream ) override
+		{
+			m_stream = _stream;
+
+			bool successful = this->_prepareData();
+
+			return successful;
+		}
+
+	protected:
+		virtual bool _prepareData()
+		{
+			return true;
 		}
 
 	protected:

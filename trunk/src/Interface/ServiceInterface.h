@@ -6,14 +6,22 @@ namespace Menge
 {
     class ServiceProviderInterface;
 
-	class ServiceNotFoundException
+	class ServiceException
 	{
-	};
+	public:
+		ServiceException( const char * _serviceName, const char * _what, const char * _file, uint32_t _line )
+			: serviceName(_serviceName)
+			, what(_what)
+			, file(_file)
+			, line(_line)
+		{
+		}
 
-	template<class T>
-	class ServiceNotFoundExceptionT
-		: public ServiceNotFoundException
-	{
+	public:	
+		const char * serviceName;
+		const char * what;
+		const char * file;
+		uint32_t line;
 	};
 
 	class ServiceInterface
@@ -38,12 +46,15 @@ namespace Menge
     public:
 		virtual bool registryService( const char * _name, ServiceInterface * _service ) = 0;
 		virtual bool unregistryService( const char * _name ) = 0;
+
+	public:
+		virtual void throwException( const char * _serviceName, const char * _what, const char * _file, uint32_t _line ) = 0;
 	};
 
     namespace Helper
     {
         template<class T>
-        inline T * getService( ServiceProviderInterface * _serviceProvider )
+        inline T * getService( ServiceProviderInterface * _serviceProvider, const char * _file, uint32_t _line )
         {
             static T * s_service = nullptr;
 
@@ -54,9 +65,9 @@ namespace Menge
                 ServiceInterface * service = _serviceProvider->getService( serviceName );
 
 #   ifdef _DEBUG
-                if( dynamic_cast<T*>(service) == nullptr )
+                if( dynamic_cast<T *>(service) == nullptr )
                 {
-					throw ServiceNotFoundExceptionT<T>();
+					_serviceProvider->throwException( serviceName, "Not Found", _file, _line );					
                 }
 #   endif
 
@@ -66,6 +77,12 @@ namespace Menge
             return s_service;
         }
     }
+
+#	define SERVICE_GET( serviceProvider, Type )\
+	(Menge::Helper::getService<Type>(serviceProvider, __FILE__, __LINE__))
+
+#	define SERVICE_CALL( Service, Method, Args )\
+	(Service -> Method Args)
 
 #	define SERVICE_NAME_CREATE( Name )\
 	serviceCreate##Name
@@ -113,4 +130,6 @@ namespace Menge
 
 #   define SERVICE_DESTROY( Name, Service )\
 	SERVICE_NAME_DESTROY(Name)( Service )
+
+#	define SERVICE_THREAD_SAFE_METHOD( Type ) Type
 }

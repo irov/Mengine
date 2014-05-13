@@ -18,7 +18,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderCRN::_initialize()
+	bool ImageDecoderCRN::_prepareData()
 	{		
 		unsigned char header[64];
         m_stream->read( header, 64 );

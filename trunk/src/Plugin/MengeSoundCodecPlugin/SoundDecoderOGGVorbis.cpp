@@ -67,7 +67,7 @@ namespace Menge
 		ov_clear( &m_oggVorbisFile );
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool SoundDecoderOGGVorbis::_initialize()
+    bool SoundDecoderOGGVorbis::_prepareData()
     {
 		m_streamBuffer.setStream( m_stream );
 

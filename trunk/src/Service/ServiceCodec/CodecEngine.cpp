@@ -68,6 +68,15 @@ namespace Menge
 
 		DecoderInterfacePtr decoder = decoderFactory->createDecoder();
 
+		if( decoder->initialize() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("CodecEngine::createDecoder invalid initialize codec %s"
+				, _type.c_str()
+				);
+
+			return nullptr;
+		}
+
 		return decoder;
 	}
     //////////////////////////////////////////////////////////////////////////

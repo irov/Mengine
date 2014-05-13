@@ -2,6 +2,7 @@
 
 #   include "Interface/LoaderInterface.h"
 #   include "Interface/StreamInterface.h"
+#   include "Interface/ArchiveInterface.h"
 
 #	include "Core/ConstString.h"
 #   include "Core/String.h"
@@ -46,6 +47,8 @@ namespace Menge
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
+
+		ArchivatorInterfacePtr m_archivator;
 
 		ConstString m_protocolPath;
 			        

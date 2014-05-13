@@ -52,6 +52,6 @@ namespace Menge
 	};
     
 #   define LOG_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::LogServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::LogServiceInterface)
 }
 

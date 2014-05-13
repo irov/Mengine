@@ -51,6 +51,7 @@ namespace Menge
 
     public:
         void sleep( unsigned int _ms ) override;
+		uint32_t getCurrentThreadId() override;
 
     protected:
         void testComplete_();

@@ -20,6 +20,19 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool PickEncoderHIT::_initialize()
+	{
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	size_t PickEncoderHIT::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
 	{
 		const PickCodecDataInfo * dataInfo = static_cast<const PickCodecDataInfo*>( _bufferDataInfo );
@@ -33,7 +46,7 @@ namespace Menge
 		m_stream->write( &dataInfo->mipmapsize, sizeof(dataInfo->mipmapsize) );
                 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-            ->compress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), _buffer, dataInfo->mipmapsize );
+            ->compress( m_archivator, _buffer, dataInfo->mipmapsize );
 
 		if( compress_memory == nullptr )
         {
@@ -50,11 +63,6 @@ namespace Menge
         m_stream->write( compressBuffer, compressSize );
 
 		return compressSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool PickEncoderHIT::_initialize()
-	{
-        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

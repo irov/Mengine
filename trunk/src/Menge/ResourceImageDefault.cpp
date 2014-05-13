@@ -79,7 +79,7 @@ namespace Menge
             return false;
         }
 
-		if( imageDecoder->initialize( stream ) == false )
+		if( imageDecoder->prepareData( stream ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s decoder initialize failed %s"
 				, m_name.c_str()

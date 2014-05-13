@@ -97,9 +97,15 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlToBinDecoder::initialize( const InputStreamInterfacePtr & _stream )
+	bool XmlToBinDecoder::initialize()
 	{
-        m_stream = _stream;
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -107,6 +113,13 @@ namespace Menge
 	void XmlToBinDecoder::finalize()
 	{
 		m_stream = nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool XmlToBinDecoder::prepareData( const InputStreamInterfacePtr & _stream )
+	{
+		m_stream = _stream;
+
+		return true;
 	}
 	////////////////////////////////////////////////////////////////////////////
 	size_t XmlToBinDecoder::decode( void * _buffer, size_t _bufferSize )
@@ -218,7 +231,7 @@ namespace Menge
 		}
 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), &bin_buf[0], bin_size );
+			->compress( m_archivator, &bin_buf[0], bin_size );
 
         OutputStreamInterfacePtr bin_stream = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( CONST_STRING_LOCAL(m_serviceProvider, "dev"), m_options.pathBin );

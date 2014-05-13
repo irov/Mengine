@@ -126,7 +126,7 @@ namespace Menge
 		bool initializeInputEngine_();
 		bool initializePluginService_();
 		bool initializeArchiveService_();
-		bool initializeModuleEngine_();		
+		bool initializeModuleEngine_();
 		bool initializeDataManager_();
 		bool initializeCacheManager_();
 		bool initializeHttpService_();

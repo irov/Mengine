@@ -96,6 +96,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderPVRTZ::_initialize()
 	{
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageDecoderPVRTZ::_prepareData()
+	{
 		m_stream->read( &m_uncompress_size, sizeof(m_uncompress_size) );
 		m_stream->read( &m_compress_size, sizeof(m_compress_size) );
 
@@ -151,7 +159,7 @@ namespace Menge
 	{
 		size_t uncompress_size;
 		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), m_stream, m_compress_size, _buffer, _bufferSize, uncompress_size ) == false )
+			->decompress( m_archivator, m_stream, m_compress_size, _buffer, _bufferSize, uncompress_size ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDZ::decode uncompress failed"
 				);

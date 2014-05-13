@@ -20,9 +20,11 @@ namespace Menge
 		void setClientSizeClip( const mt::vec2f& _clientSize );
 		void setClientSizeInTiles( const mt::vec2f& _tiles );
 		
-        const mt::vec2f getClientSize() const;		
+        const mt::vec2f & getClientSize() const;	
+
+	public:
         mt::vec2f getWindowSize() const;
-		const mt::vec2f& getTileSize( int _tile ) const;
+		const mt::vec2f getTileSize( int _tile ) const;
 
 		void setResourceWindow( ResourceWindow * _resourceWindow );
         ResourceWindow * getResourceWindow() const;

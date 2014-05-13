@@ -29,5 +29,5 @@ namespace Menge
 	};
 
 #   define HTTP_SYSTEM( serviceProvider )\
-	(Menge::Helper::getService<Menge::HttpSystemInterface>(serviceProvider))
+	SERVICE_GET(serviceProvider, Menge::HttpSystemInterface)
 }

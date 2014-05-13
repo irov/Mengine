@@ -4,6 +4,8 @@
 
 #	include "WinApplication.h"
 
+#	include "Interface/ServiceInterface.h"
+
 //////////////////////////////////////////////////////////////////////////
 //							Entry point									//
 //////////////////////////////////////////////////////////////////////////
@@ -25,14 +27,20 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
 	Menge::WinApplication winApplication;
 	
-	bool initialize = winApplication.initialize( hInstance, lpCmdLine );
-    
-    if( initialize == true )
+	try
 	{
-        winApplication.loop();
-    }
+		bool initialize = winApplication.initialize( hInstance, lpCmdLine );
     
-	winApplication.finalize();
+		if( initialize == true )
+		{
+			winApplication.loop();
+		}
+    
+		winApplication.finalize();
+	}
+	catch( const Menge::ServiceException & )
+	{
+	}
     
 	return 0;
 }

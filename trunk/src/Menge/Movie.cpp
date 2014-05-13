@@ -420,7 +420,7 @@ namespace Menge
 
 		if( it_found != m_slots.end() )
 		{	
-			Node * slot = it_found->second;
+			Node * slot = m_slots.get_value( it_found );
 
 			return slot;
 		}
@@ -535,7 +535,7 @@ namespace Menge
 
         if( it_found != m_subMovies.end() )
         {	
-            Movie * submovie = it_found->second;
+            Movie * submovie = m_subMovies.get_value( it_found );
 
             return submovie;
         }
@@ -652,8 +652,8 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            const ConstString & name = it->first;
-            HotSpot * hotspot = it->second;
+            const ConstString & name = m_sockets.get_key( it );
+            HotSpot * hotspot = m_sockets.get_value( it );
 
             _visitor->visitSocket( name, hotspot );
         }
@@ -707,7 +707,7 @@ namespace Menge
 
         if( it_found != m_sockets.end() )
         {	
-            HotSpot * slot = it_found->second;
+            HotSpot * slot = m_sockets.get_value( it_found );
 
             return slot;
         }
@@ -822,7 +822,7 @@ namespace Menge
 
         if( it_found != m_events.end() )
         {	
-            MovieEvent * event = it_found->second;
+            MovieEvent * event = m_events.get_value( it_found );
 
             event->setEvent( _cb );
 
@@ -1606,7 +1606,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            MovieSceneEffect * sceneEffect = it->second;
+            MovieSceneEffect * sceneEffect = m_sceneEffects.get_value( it );
 
             sceneEffect->setPropagateNode( layer );
         }

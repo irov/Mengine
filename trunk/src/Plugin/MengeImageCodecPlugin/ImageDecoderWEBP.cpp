@@ -23,7 +23,7 @@ namespace Menge
 		this->unlockBuffer_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderWEBP::_initialize()
+	bool ImageDecoderWEBP::_prepareData()
 	{
 		size_t bufferSize = m_stream->size();
 				
@@ -41,7 +41,7 @@ namespace Menge
 
         if( status != VP8_STATUS_OK )
         {
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderWEBP::_initialize invalid WebPGetFeatures %d"
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderWEBP::_prepareData invalid WebPGetFeatures %d"
 				, status
 				);
 

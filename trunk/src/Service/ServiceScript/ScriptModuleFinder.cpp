@@ -27,11 +27,26 @@ namespace Menge
         return x;
     }
     //////////////////////////////////////////////////////////////////////////
-    ScriptModuleFinder::ScriptModuleFinder( ServiceProviderInterface * _serviceProvider )
-        : m_serviceProvider(_serviceProvider)
+    ScriptModuleFinder::ScriptModuleFinder()
+        : m_serviceProvider(nullptr)
         , m_embbed(nullptr)
     {
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool ScriptModuleFinder::initialize( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     void ScriptModuleFinder::addModulePath( const ConstString & _pak, const TVectorFilePath& _pathes )
     {
@@ -78,19 +93,6 @@ namespace Menge
         {
             return nullptr;
         }        
-
-        //InputStreamInterfacePtr stream = pathCache->fileGroup->createInputFile();
-
-		//m_fullModulePathCache.assign( pathCache->path.c_str(), pathCache->path.size() );
-		//m_fullModulePathCache += MENGE_FOLDER_RESOURCE_DELIM;
-		//m_fullModulePathCache += pathCache->module;
-
-		//ConstString cs_modulePath = Helper::stringizeString(m_serviceProvider, m_fullModulePathCache);
-
-        //if( pathCache->fileGroup->openInputFile( pathCache->path, stream ) == false )
-        //{
-        //    return nullptr;
-        //}
 
 		InputStreamInterfacePtr stream = pathCache->stream;
 		pathCache->stream = nullptr;
@@ -173,7 +175,6 @@ namespace Menge
 				return false;
 			}
 
-			//PyObject * py_fullpath = pybind::string_from_char_size( m_modulePathCache.c_str(), m_modulePathCache.size() );
 			PyObject * py_fullpath = pybind::ptr( _module );
 
 			pathCache_package->packagePath = pybind::build_value( "[O]", py_fullpath );
@@ -222,7 +223,6 @@ namespace Menge
 				return false;
 			}
 
-			//PyObject * py_fullpath = pybind::string_from_char_size( m_modulePathCache.c_str(), m_modulePathCache.size() );
 			PyObject * py_fullpath = pybind::ptr( _module );
 
 			pathCache_package->packagePath = pybind::build_value( "[O]", py_fullpath );
@@ -280,21 +280,6 @@ namespace Menge
                 ModulePathCache mpc;
                 mpc.stream = stream;
 
-				//m_fullModulePathCache.assign( path.c_str(), path.size() );
-				//m_fullModulePathCache += _modulePath;
-
-				//ConstString cs_modulePath = Helper::stringizeString(m_serviceProvider, m_fullModulePathCache);
-
-                //mpc.path = cs_modulePath;
-
-				//InputStreamInterfacePtr stream = pathCache->fileGroup->createInputFile();
-
-				//m_fullModulePathCache.assign( pathCache->path.c_str(), pathCache->path.size() );
-				//m_fullModulePathCache += MENGE_FOLDER_RESOURCE_DELIM;
-				//m_fullModulePathCache += pathCache->module;
-
-				//ConstString cs_modulePath = Helper::stringizeString(m_serviceProvider, m_fullModulePathCache);
-				
                 TMapModulePath::iterator it_insert = m_paths.insert( _module, mpc ).first;
 
 				ModulePathCache & pathCache = m_paths.get_value( it_insert );
@@ -418,7 +403,7 @@ namespace Menge
 
         size_t uncompress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), _stream, compress_size, code_memory, code_size, uncompress_size ) == false )
+			->decompress( m_archivator, _stream, compress_size, code_memory, code_size, uncompress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ScriptModuleFinder::unmarshal_code_ uncompress failed"
                 );

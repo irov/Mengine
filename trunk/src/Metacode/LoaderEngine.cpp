@@ -38,6 +38,14 @@ namespace Menge
 	{
 		m_protocolPath = _protocolPath;
 
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -178,7 +186,7 @@ namespace Menge
 		
         size_t uncompress_size = 0;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( Helper::stringizeString(m_serviceProvider, "zip"), _stream, compress_size, binary_memory, bin_size, uncompress_size ) == false )
+			->decompress( m_archivator, _stream, compress_size, binary_memory, bin_size, uncompress_size ) == false )
         {
 			if( _reimport == nullptr )
 			{
@@ -349,7 +357,7 @@ namespace Menge
 			return false;
 		}
 
-		if( decoder->initialize( nullptr ) == false )
+		if( decoder->prepareData( nullptr ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("LoaderEngine::makeBin_ invalid initialize decoder xml2bin for %s:%s"
 				, _pak.c_str()

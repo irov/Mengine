@@ -69,13 +69,19 @@ namespace Menge
 	public:
 		virtual ThreadIdentityPtr createThread( const ThreadTaskInterfacePtr & _listener, int _priority ) = 0;
 		virtual bool joinThread( const ThreadIdentityPtr & _thread ) = 0;
+
+	public:
 		virtual void sleep( unsigned int _ms ) = 0;
 
+	public:
+		virtual uint32_t getCurrentThreadId() = 0;
+
+	public:
         virtual ThreadMutexInterfacePtr createMutex() = 0;
 	};
 
 #   define THREAD_SYSTEM( serviceProvider )\
-    (Menge::Helper::getService<Menge::ThreadSystemInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::ThreadSystemInterface)
 
     class ThreadServiceInterface
         : public ServiceInterface
@@ -100,10 +106,13 @@ namespace Menge
     public:
         virtual ThreadMutexInterfacePtr createMutex() = 0;
 
-    public:
-        virtual void sleep( unsigned int _ms ) = 0;
+	public:
+		virtual void sleep( unsigned int _ms ) = 0;
+
+	public:
+		virtual uint32_t getCurrentThreadId() = 0;
     };
 
 #   define THREAD_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::ThreadServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::ThreadServiceInterface)
 }

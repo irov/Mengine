@@ -324,18 +324,6 @@ Manager\\\\Resource
 )
 
 ADD_FILTER(
-Manager\\\\Schedule
-	ScheduleManager.cpp
-	ScheduleManager.h
-)
-
-ADD_FILTER(
-Manager\\\\Timing
-	TimingManager.cpp
-	TimingManager.h
-)
-
-ADD_FILTER(
 Manager\\\\ThreadTask
 	ThreadTaskLoadResourceImage.h
 	ThreadTaskLoadResourceImage.cpp

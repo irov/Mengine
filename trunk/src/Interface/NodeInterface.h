@@ -44,5 +44,5 @@ namespace Menge
     };
 
 #   define NODE_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::NodeServiceInterface>(serviceProvider))
+    SERVICE_GET(serviceProvider, Menge::NodeServiceInterface)
 }

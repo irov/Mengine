@@ -18,7 +18,7 @@ namespace Menge
 		~SoundDecoderOGGVorbis();
 
 	public:
-		bool _initialize() override;
+		bool _prepareData() override;
 
 	public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;

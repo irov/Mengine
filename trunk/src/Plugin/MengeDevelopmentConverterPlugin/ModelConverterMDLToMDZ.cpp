@@ -31,7 +31,15 @@ namespace Menge
 	{
         m_convertExt = ".mdz";
 
-        return true;
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool ModelConverterMDLToMDZ::convert()
@@ -64,7 +72,7 @@ namespace Menge
         input->read( data_memory, data_size );
 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( CONST_STRING_LOCAL(m_serviceProvider, "zip"), data_memory, data_size );
+			->compress( m_archivator, data_memory, data_size );
 
         if( compress_memory == 0 )
         {

@@ -13,8 +13,8 @@
 
 #   include "MousePickerSystem.h"
 #   include "GlobalHandleSystem.h"
-#   include "ScheduleManager.h"
-#   include "TimingManager.h"
+#   include "Kernel/ScheduleManager.h"
+#   include "Kernel/TimingManager.h"
 
 
 namespace Menge

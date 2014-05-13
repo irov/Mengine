@@ -71,6 +71,12 @@ namespace Menge
 		}
 
 	public:
+		void setListener( const FactoryListenerInterfacePtr & _listener )
+		{
+			m_ptr->setListener( _listener );
+		}
+
+	public:
 		Factorable * createObject()
 		{
 			Factorable * factorable = m_ptr->createObject();

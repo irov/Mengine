@@ -21,7 +21,7 @@ namespace Menge
             , size_t _height
             , size_t _channels
             , size_t _id
-            , RenderTextureInterfaceListener * _listener );
+			);
 
 	public:
 		const RenderImageInterfacePtr & getImage() const override;
@@ -51,8 +51,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		RenderImageInterfacePtr m_image;
-        RenderTextureInterfaceListener * m_listener;
-		
+
 		FilePath m_fileName;
 		
 		size_t m_width;

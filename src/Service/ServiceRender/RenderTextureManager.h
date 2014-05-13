@@ -18,7 +18,6 @@ namespace Menge
 {
     class RenderTextureManager
         : public RenderTextureServiceInterface
-        , public RenderTextureInterfaceListener
     {
     public:
         RenderTextureManager();
@@ -63,8 +62,8 @@ namespace Menge
     public:
         const RenderTextureDebugInfo & getDebugInfo() override;
 
-    protected:
-        void onRenderTextureRelease( const RenderTextureInterface * _texture ) override;
+	public:
+        void onRenderTextureRelease_( const RenderTextureInterface * _texture );
 
     protected:
         bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder );

@@ -8,8 +8,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderSubTexture::RenderSubTexture()
-		: m_listener(nullptr)
-		, m_id(0)
+		: m_id(0)
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -20,11 +19,10 @@ namespace Menge
     void RenderSubTexture::initialize( const RenderTextureInterfacePtr & _texture
         , const Rect & _rect
         , size_t _id
-        , RenderTextureInterfaceListener * _listener )
+        )
     {
         m_texture = _texture;
-        m_hwRect = _rect;
-        m_listener = _listener;
+        m_hwRect = _rect;       
         m_id = _id;
 
         m_rect.left = 0;

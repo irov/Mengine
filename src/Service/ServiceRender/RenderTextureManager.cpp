@@ -14,6 +14,34 @@ SERVICE_FACTORY( RenderTextureManager, Menge::RenderTextureServiceInterface, Men
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+	namespace
+	{
+		class RenderTextureFactoryListener
+			: public FactoryListenerInterface
+		{
+		public:
+			RenderTextureFactoryListener( RenderTextureManager * _textureManager )
+				: m_textureManager(_textureManager)
+			{
+			}
+
+		protected:
+			void onFactoryDestroyObject( Factorable * _object ) override
+			{
+				RenderTexture * texture = static_cast<RenderTexture *>(_object);
+				m_textureManager->onRenderTextureRelease_( texture );
+			}
+
+		protected:
+			void destroy() override
+			{
+				delete this;
+			}
+
+		protected:
+			RenderTextureManager * m_textureManager;
+		};
+	}
     //////////////////////////////////////////////////////////////////////////
     static uint32_t s_firstPOW2From( uint32_t n )
     {
@@ -59,6 +87,8 @@ namespace Menge
 
 		m_supportR8G8B8 = RENDER_SYSTEM(m_serviceProvider)
 			->supportTextureFormat( PF_R8G8B8 );
+
+		m_factoryRenderTexture.setListener( new RenderTextureFactoryListener(this) );
 	
 		return true;
     }
@@ -120,7 +150,7 @@ namespace Menge
         size_t id = ++m_textureEnumerator;
 
         RenderTexture * texture = m_factoryRenderTexture.createObjectT();
-        texture->initialize( m_serviceProvider, image, _width, _height, _channels, id, this );
+        texture->initialize( m_serviceProvider, image, _width, _height, _channels, id );
 
         size_t memroy_size = texture->getMemoryUse();
 
@@ -164,7 +194,7 @@ namespace Menge
         size_t id = ++m_textureEnumerator;
 
         RenderTexture * texture = m_factoryRenderTexture.createObjectT();
-        texture->initialize( m_serviceProvider, image, _width, _height, _channels, id, this );
+        texture->initialize( m_serviceProvider, image, _width, _height, _channels, id );
 
         size_t memroy_size = texture->getMemoryUse();
 
@@ -208,7 +238,7 @@ namespace Menge
         size_t id = ++m_textureEnumerator;
 
         RenderTexture * texture = m_factoryRenderTexture.createObjectT();
-        texture->initialize( m_serviceProvider, image, _width, _height, _channels, id, this );
+        texture->initialize( m_serviceProvider, image, _width, _height, _channels, id );
 
         size_t memroy_size = texture->getMemoryUse();
 
@@ -501,7 +531,7 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureManager::onRenderTextureRelease( const RenderTextureInterface * _texture )
+    void RenderTextureManager::onRenderTextureRelease_( const RenderTextureInterface * _texture )
     {
         const FilePath & filename = _texture->getFileName();
 

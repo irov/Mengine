@@ -11,10 +11,13 @@ namespace Menge
 	class Factorable;
 
 	class FactoryListenerInterface
+		: public FactorablePtr
 	{
 	public:
 		virtual void onFactoryDestroyObject( Factorable * _object ) = 0;
 	};
+
+	typedef stdex::intrusive_ptr<FactoryListenerInterface> FactoryListenerInterfacePtr;
 
 	class Factory
 		: public FactorablePtr
@@ -24,7 +27,7 @@ namespace Menge
 		virtual ~Factory();
 
 	public:
-		void setListener( FactoryListenerInterface * _listener );
+		void setListener( const FactoryListenerInterfacePtr & _listener );
 
 	public:
 		Factorable * createObject();
@@ -38,7 +41,7 @@ namespace Menge
 		virtual void _destroyObject( Factorable * _object ) = 0;
 
 	protected:
-		FactoryListenerInterface * m_listener;
+		FactoryListenerInterfacePtr m_listener;
 
 		size_t m_count;
 

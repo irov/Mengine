@@ -7,7 +7,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::RenderTexture()
         : m_serviceProvider(nullptr)
-        , m_listener(nullptr)
 		, m_width(0)
 		, m_height(0)
         , m_channels(0)
@@ -18,9 +17,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::~RenderTexture()
 	{
-        m_listener->onRenderTextureRelease( this );
-
-        m_image = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     void RenderTexture::initialize( ServiceProviderInterface * _serviceProvider
@@ -29,7 +25,7 @@ namespace Menge
         , size_t _height
         , size_t _channels
         , size_t _id
-        , RenderTextureInterfaceListener * _listener )
+        )
     {
         m_serviceProvider = _serviceProvider;
 
@@ -38,7 +34,6 @@ namespace Menge
         m_height = _height;
         m_channels = _channels;
         m_id = _id;
-        m_listener = _listener;
 
         m_rect.left = 0;
         m_rect.top = 0;
@@ -107,7 +102,7 @@ namespace Menge
 		return memroy_size;
 	}
     /////////////////////////////////////////////////////////////////////////////
-	unsigned char* RenderTexture::lock( int* _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
+	unsigned char * RenderTexture::lock( int* _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
 	{
         unsigned char * buffer = m_image->lock( _pitch, _rect, _readOnly );
 

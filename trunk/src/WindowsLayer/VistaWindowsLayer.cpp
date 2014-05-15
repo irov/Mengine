@@ -585,4 +585,84 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool VistaWindowsLayer::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
+	{
+		WCHAR szPath[MAX_PATH];
+
+		if(SUCCEEDED(SHGetFolderPath(NULL
+			, CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
+			, NULL
+			, 0
+			, szPath))) 
+		{
+			printf("%ls", szPath );
+		}	
+
+		PathAppend( szPath, _path.c_str() );
+		PathAppend( szPath, _file.c_str() );
+
+		HANDLE hFile = this->createFile( szPath 
+			, GENERIC_WRITE
+			, FILE_SHARE_READ | FILE_SHARE_WRITE
+			, CREATE_ALWAYS
+			);
+
+		if( hFile == INVALID_HANDLE_VALUE )
+		{
+			return false;
+		}
+
+		DWORD bytesWritten = 0;
+		BOOL result = ::WriteFile( hFile, _data, _size, &bytesWritten, NULL );
+		
+		::CloseHandle( hFile );
+
+		if( result == FALSE )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool VistaWindowsLayer::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
+	{
+		WCHAR szPath[MAX_PATH];
+
+		if(SUCCEEDED(SHGetFolderPath(NULL
+			, CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE
+			, NULL
+			, 0
+			, szPath))) 
+		{
+			printf("%ls", szPath );
+		}	
+
+		PathAppend( szPath, _path.c_str() );
+		PathAppend( szPath, _file.c_str() );
+
+		HANDLE hFile = this->createFile( szPath 
+			, GENERIC_WRITE
+			, FILE_SHARE_READ | FILE_SHARE_WRITE
+			, CREATE_ALWAYS
+			);
+
+		if( hFile == INVALID_HANDLE_VALUE )
+		{
+			return false;
+		}
+
+		DWORD bytesWritten = 0;
+		BOOL result = ::WriteFile( hFile, _data, _size, &bytesWritten, NULL );
+
+		::CloseHandle( hFile );
+
+		if( result == FALSE )
+		{
+			return false;
+		}
+
+		return true;
+	}
 }

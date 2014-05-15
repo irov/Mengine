@@ -64,8 +64,8 @@ Arrow
 
 ADD_FILTER(
 Game
-	ResourcePak.cpp	
-	ResourcePak.h
+	Pak.cpp	
+	Pak.h
 	Game.cpp
 	Game.h
 )
@@ -216,6 +216,12 @@ Player
 	Player.h
 	GlobalHandleSystem.cpp
 	GlobalHandleSystem.h
+)
+
+ADD_FILTER(
+Resource\\\\File
+	ResourceFile.cpp
+	ResourceFile.h
 )
 
 ADD_FILTER(

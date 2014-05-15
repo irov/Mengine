@@ -28,8 +28,8 @@ namespace Menge
 
 		TVectorString modules;
 		
-		WString projectName;
 		WString companyName;
+		WString projectName;		
 		String defaultLocale;
 		
 		TVectorResourcePackDesc resourcePacks;

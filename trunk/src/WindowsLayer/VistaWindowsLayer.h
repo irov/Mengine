@@ -72,6 +72,10 @@ namespace Menge
 
 		bool cmd( const WString & _command ) override;
 
+		bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
+		bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
+
+
 	protected:
 		bool validateFile_( const WChar * _path );
 

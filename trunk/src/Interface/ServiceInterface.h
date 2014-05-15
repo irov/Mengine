@@ -78,8 +78,13 @@ namespace Menge
         }
     }
 
+#	ifdef _DEBUG
 #	define SERVICE_GET( serviceProvider, Type )\
 	(Menge::Helper::getService<Type>(serviceProvider, __FILE__, __LINE__))
+#	else
+#	define SERVICE_GET( serviceProvider, Type )\
+	(Menge::Helper::getService<Type>(serviceProvider, "", 0))
+#	endif
 
 #	define SERVICE_CALL( Service, Method, Args )\
 	(Service -> Method Args)

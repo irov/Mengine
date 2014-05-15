@@ -9,8 +9,11 @@
 #	include "Interface/AccountInterface.h"
 
 #	include "Account.h"
+#	include "Pak.h"
 
 #	include "Core/Resolution.h"
+
+#	include "Factory/FactoryStore.h"
 
 #	include <map>
 
@@ -38,7 +41,6 @@ namespace Menge
 	class AccountServiceInterface;
 
 	class Player;
-	class ResourcePak;
 
 	class Node;
 	class Scene;
@@ -158,10 +160,13 @@ namespace Menge
 		FilePath m_baseDir;
 		FilePath m_iconPath;
 
-		typedef std::vector<ResourcePak *> TVectorResourcePak;
+		typedef std::vector<PakPtr> TVectorResourcePak;
 		TVectorResourcePak m_paks;
 		TVectorResourcePak m_resourcePaks;
 		TVectorResourcePak m_languagePaks;
+
+		typedef FactoryPoolStore<Pak, 8> TFactoryPak;
+		TFactoryPak m_factoryPak;
 
 		ConstString m_languagePak;
 		ConstString m_platformName;

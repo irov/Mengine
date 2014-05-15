@@ -17,12 +17,12 @@ namespace Menge
 		Layer2D();
 
 	public:
-		void setRenderViewport( const Viewport & _viewport );
-		void removeRenderViewport();
+		void setViewport( const Viewport & _viewport );
+		void removeViewport();
 
     protected:
-        void createRenderViewport_();
-        void clearRenderViewport_();
+        void createViewport_();
+        void clearViewport_();
 
 	public:
 		mt::vec2f cameraToLocal( Camera2D * _camera2D, const mt::vec2f& _point );				

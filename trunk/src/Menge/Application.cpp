@@ -67,6 +67,7 @@
 #	include "ResourceImageMultiplyRGBAndAlpha.h"
 
 //#	include "ResourceBinary.h"
+#	include "ResourceFile.h"
 #	include "ResourceMovie.h"
 #	include "ResourceVideo.h"
 #	include "ResourceMesh.h"
@@ -269,8 +270,11 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool Application::setup( const String& _args, const ApplicationSettings & _setting )
+    bool Application::setup( const String& _args, const WString & _companyName, const WString & _projectName, const ApplicationSettings & _setting )
     {
+		m_companyName = _companyName;
+		m_projectName = _projectName; 
+
         m_platformName = _setting.platformName;
         m_projectCodename = _setting.projectCodename;
 		m_projectVersion = _setting.projectVersion;
@@ -649,6 +653,7 @@ namespace Menge
 		RESOURCE_FACTORY( m_serviceProvider, ResourceVideo );
 		RESOURCE_FACTORY( m_serviceProvider, ResourcePlaylist );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceSound );		
+		RESOURCE_FACTORY( m_serviceProvider, ResourceFile );
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceWindow );
         RESOURCE_FACTORY( m_serviceProvider, ResourceHIT );
@@ -1806,6 +1811,16 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	const WString & Application::getCompanyName() const
+	{
+		return m_companyName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const WString & Application::getProjectName() const
+	{
+		return m_projectName;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Application::getProjectTitle() const
 	{

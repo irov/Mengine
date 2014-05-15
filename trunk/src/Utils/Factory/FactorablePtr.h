@@ -6,6 +6,8 @@
 
 #   include <stddef.h>
 
+//typedef stdex::intrusive_ptr<Type> TypePtr;
+
 namespace Menge
 {
 	class FactorablePtr

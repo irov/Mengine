@@ -180,8 +180,8 @@ namespace Menge
 		WString m_userPath;
 		WString m_tempPath;
 
-		WString m_projectName;
 		WString m_companyName;
+		WString m_projectName;		
 
 		Resolution m_windowResolution;
 

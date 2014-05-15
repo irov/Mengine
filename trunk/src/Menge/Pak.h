@@ -5,14 +5,20 @@
 #	include "Core/String.h"
 #   include "Core/FilePath.h"
 
+#	include "Factory/FactorablePtr.h"
+
 #	include <map>
 
 namespace Menge
 {
-	class ResourcePak
+	class Pak
+		: public FactorablePtr
 	{
 	public:
-		ResourcePak( ServiceProviderInterface * _serviceProvider
+		Pak();
+
+	public:
+		void setup( ServiceProviderInterface * _serviceProvider
 			, const FilePath & _baseDir
 			, const ConstString & _name
 			, const ConstString & _type
@@ -77,4 +83,6 @@ namespace Menge
 
         bool m_preload;
 	};
+
+	typedef stdex::intrusive_ptr<Pak> PakPtr;
 }

@@ -4,7 +4,6 @@
 
 #	include "Player.h"
 #	include "Arrow.h"
-#	include "ResourcePak.h"
 
 #	include "Interface/AmplifierServiceInterface.h"
 
@@ -488,30 +487,7 @@ namespace Menge
 
 		this->destroyArrow();
 		      
-		for( TVectorResourcePak::iterator
-			it = m_resourcePaks.begin(),
-			it_end = m_resourcePaks.end();
-		it != it_end;
-		++it )
-		{
-			ResourcePak * pak = *it;
-
-			delete pak;
-		}
-
 		m_resourcePaks.clear();
-
-		for( TVectorResourcePak::iterator
-			it = m_languagePaks.begin(),
-			it_end = m_languagePaks.end();
-		it != it_end;
-		++it )
-		{
-			ResourcePak * pak = *it;
-
-			delete pak;
-		}
-
 		m_languagePaks.clear();
 
 		m_paks.clear();
@@ -625,7 +601,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourcePak * pak = *it;
+			const PakPtr & pak = *it;
 
 			const ConstString & pakLocale = pak->getLocale();
 			const ConstString & pakPlatform = pak->getPlatfrom();
@@ -657,8 +633,9 @@ namespace Menge
 		}
 #   endif
 
-		ResourcePak * pack = new ResourcePak( 
-			m_serviceProvider
+		PakPtr pack = m_factoryPak.createObjectT();
+		
+		pack->setup( m_serviceProvider
 			, m_baseDir
 			, _desc.name
 			, _desc.type
@@ -681,7 +658,9 @@ namespace Menge
 		}
 #   endif
 
-		ResourcePak * pack = new ResourcePak(
+		PakPtr pack = m_factoryPak.createObjectT();
+
+		pack->setup(
 			m_serviceProvider
 			, m_baseDir
 			, _desc.name
@@ -698,7 +677,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadResourcePak( const FilePath & _baseDir, const ResourcePackDesc & _desc )
 	{
-		ResourcePak * pack = new ResourcePak(
+		PakPtr pack = m_factoryPak.createObjectT();
+
+		pack->setup(
 			m_serviceProvider
 			, _baseDir
 			, _desc.name
@@ -731,7 +712,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourcePak * pak = *it;
+			const PakPtr & pak = *it;
 
 			const ConstString & pakPlatform = pak->getPlatfrom();
 
@@ -749,7 +730,7 @@ namespace Menge
 			{
 				if( m_languagePaks.empty() == false )
 				{
-					ResourcePak * firstPak = m_languagePaks.front();
+					const PakPtr & firstPak = m_languagePaks.front();
 
 					const ConstString & pakName = firstPak->getName();
 
@@ -769,7 +750,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourcePak * pak = *it;
+			const PakPtr & pak = *it;
 
 			if( pak->isPreload() == false )
 			{
@@ -788,7 +769,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourcePak * pak = *it;
+			const PakPtr & pak = *it;
 
 			if( pak->isPreload() == false )
 			{

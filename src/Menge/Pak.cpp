@@ -1,4 +1,4 @@
-#	include "ResourcePak.h"
+#	include "Pak.h"
 
 #	include "Interface/LoaderInterface.h"
 #	include "Interface/FileSystemInterface.h"
@@ -22,7 +22,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourcePak::ResourcePak( ServiceProviderInterface * _serviceProvider
+	Pak::Pak()
+		: m_serviceProvider(nullptr)
+		, m_preload(false)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Pak::setup( ServiceProviderInterface * _serviceProvider
 		, const FilePath & _baseDir
 		, const ConstString & _name
 		, const ConstString & _type
@@ -30,46 +36,45 @@ namespace Menge
 		, const ConstString & _platform
 		, const FilePath & _descriptionPath
 		, const FilePath & _path
-		, bool _preload		
-		)
-		: m_serviceProvider(_serviceProvider)
-        , m_name(_name)
-		, m_type(_type)
-		, m_locale(_locale)
-		, m_platform(_platform)
-		, m_descriptionPath(_descriptionPath)
-		, m_path(_path)
-		, m_preload(_preload)
-		, m_baseDir(_baseDir)
+		, bool _preload	)
 	{
+		m_serviceProvider = _serviceProvider;
+        m_name = _name;
+		m_type = _type;
+		m_locale = _locale;
+		m_platform = _platform;
+		m_descriptionPath = _descriptionPath;
+		m_path = _path;
+		m_preload = _preload;
+		m_baseDir = _baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourcePak::isPreload() const
+	bool Pak::isPreload() const
 	{
 		return m_preload;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourcePak::getName() const
+	const ConstString & Pak::getName() const
 	{
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourcePak::getLocale() const
+	const ConstString & Pak::getLocale() const
 	{
 		return m_locale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourcePak::getPlatfrom() const
+	const ConstString & Pak::getPlatfrom() const
 	{
 		return m_platform;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const FilePath & ResourcePak::getPath() const
+	const FilePath & Pak::getPath() const
 	{
 		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourcePak::load()
+	bool Pak::load()
 	{		
 		if( this->mountFileGroup_() == false )
 		{
@@ -84,7 +89,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourcePak::mountFileGroup_()
+	bool Pak::mountFileGroup_()
 	{
 		if( m_path.empty() == true )
 		{
@@ -107,7 +112,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourcePak::loadPak_()
+	bool Pak::loadPak_()
 	{
 		if( m_descriptionPath.empty() == true )
 		{
@@ -140,8 +145,8 @@ namespace Menge
 		{
 			const Metacode::Meta_Pak::Meta_Scripts & scripts = *it;
 
-			scripts.method_Path( this, &ResourcePak::addScriptPath_ );
-			scripts.method_Module( this, &ResourcePak::addScriptModule_ );
+			scripts.method_Path( this, &Pak::addScriptPath_ );
+			scripts.method_Module( this, &Pak::addScriptModule_ );
 		}
 
 		const Metacode::Meta_Pak::TVectorMeta_Fonts & includes_fonts = pak.get_IncludesFonts();
@@ -154,7 +159,7 @@ namespace Menge
 		{
 			const Metacode::Meta_Pak::Meta_Fonts & fonts = *it;
 
-			fonts.method_Path( this, &ResourcePak::addFontPath_ );
+			fonts.method_Path( this, &Pak::addFontPath_ );
 		}
 
 		const Metacode::Meta_Pak::TVectorMeta_Resources & includes_resources = pak.get_IncludesResources();
@@ -177,7 +182,7 @@ namespace Menge
 			{
 				const Metacode::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it;
 
-				meta_resource.method_Path( this, &ResourcePak::addResource_ );
+				meta_resource.method_Path( this, &Pak::addResource_ );
 			}
 		}
 
@@ -201,7 +206,7 @@ namespace Menge
 			{
 				const Metacode::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it;
 
-                meta_text.method_Path( this, &ResourcePak::addTextPath_ );
+                meta_text.method_Path( this, &Pak::addTextPath_ );
 			}
 		}
 
@@ -211,7 +216,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourcePak::apply()
+	bool Pak::apply()
 	{
 		for( TVectorFilePath::const_iterator
 			it = m_resourcesDesc.begin(),
@@ -270,7 +275,7 @@ namespace Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool ResourcePak::loadText_( const ConstString & _pakName, const FilePath & _path )
+    bool Pak::loadText_( const ConstString & _pakName, const FilePath & _path )
     {
         bool result = TEXT_SERVICE(m_serviceProvider)
 			->loadTextEntry( m_locale, _pakName, _path );
@@ -278,7 +283,7 @@ namespace Menge
         return result;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourcePak::loadFont_( const ConstString & _pakName, const FilePath & _path )
+	bool Pak::loadFont_( const ConstString & _pakName, const FilePath & _path )
 	{
 		bool result = TEXT_SERVICE(m_serviceProvider)
 			->loadFonts( m_locale, _pakName, _path );
@@ -286,27 +291,27 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addResource_( const FilePath & _path )
+	void Pak::addResource_( const FilePath & _path )
 	{
 		m_resourcesDesc.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addTextPath_( const FilePath & _path )
+	void Pak::addTextPath_( const FilePath & _path )
 	{
 		m_pathTexts.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addScriptPath_( const FilePath & _path )
+	void Pak::addScriptPath_( const FilePath & _path )
 	{
 		m_pathScripts.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addScriptModule_( const ConstString & _path )
+	void Pak::addScriptModule_( const ConstString & _path )
 	{
 		m_pathModules.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourcePak::addFontPath_( const FilePath & _font )
+	void Pak::addFontPath_( const FilePath & _font )
 	{
 		m_pathFonts.push_back( _font );
 	}

@@ -115,7 +115,7 @@ namespace Menge
 	};
 
 #   define FILE_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::FileServiceInterface)
+    ((Menge::FileServiceInterface *)SERVICE_GET(serviceProvider, Menge::FileServiceInterface))
 }
 
 

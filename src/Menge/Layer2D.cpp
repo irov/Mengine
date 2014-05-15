@@ -32,7 +32,7 @@ namespace	Menge
 
         if( m_hasViewport == true )
         {
-            this->createRenderViewport_();
+            this->createViewport_();
         }
 
 		return true;
@@ -42,7 +42,7 @@ namespace	Menge
     {
         if( m_hasViewport == true )
         {
-            this->clearRenderViewport_();
+            this->clearViewport_();
         }
 
         Node::_deactivate();
@@ -76,16 +76,16 @@ namespace	Menge
 		_screen.y = sp.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::setRenderViewport( const Viewport & _viewport )
+	void Layer2D::setViewport( const Viewport & _viewport )
 	{
 		m_viewport = _viewport;
 		
 		m_hasViewport = true;
 
-        this->createRenderViewport_();
+        this->createViewport_();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Layer2D::createRenderViewport_()
+    void Layer2D::createViewport_()
     {
         if( m_renderViewport == nullptr )
         {
@@ -125,7 +125,7 @@ namespace	Menge
 		Node::setRenderViewport( m_renderViewport );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::removeRenderViewport()
+	void Layer2D::removeViewport()
 	{
 		if( m_hasViewport == false )
 		{
@@ -134,10 +134,10 @@ namespace	Menge
 
         m_hasViewport = false;
 
-        this->clearRenderViewport_();
+        this->clearViewport_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layer2D::clearRenderViewport_()
+    void Layer2D::clearViewport_()
     {	
         if( m_renderViewport != nullptr )
         {

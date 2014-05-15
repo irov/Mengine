@@ -1459,7 +1459,7 @@ namespace Menge
 			, m_commandLine.c_str()
 			);
 
-		if( m_application->setup( m_commandLine, settings.applicationSettings ) == false )
+		if( m_application->setup( m_commandLine, m_companyName, m_projectName, settings.applicationSettings ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application setup failed" 
 				);

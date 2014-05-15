@@ -75,7 +75,7 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
-        virtual bool setup( const String& _args, const ApplicationSettings & _setting ) = 0;
+        virtual bool setup( const String & _args, const WString & _companyName, const WString & _projectName, const ApplicationSettings & _setting ) = 0;
 
 		virtual const FilePath & getBaseDir() const = 0;
 		
@@ -108,6 +108,10 @@ namespace Menge
 		virtual bool createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) = 0;
 		virtual bool initializeGame( const TMapParams & _params, const String & _scriptInitParams ) = 0;
         
+	public:
+		virtual const WString & getCompanyName() const = 0;
+		virtual const WString & getProjectName() const = 0;
+
 	public:
 		virtual const ConstString & getProjectTitle() const = 0;
 		virtual const ConstString & getProjectCodename() const = 0;
@@ -174,5 +178,5 @@ namespace Menge
 	};
 
 #   define APPLICATION_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::ApplicationInterface)
+    ((Menge::ApplicationInterface*)SERVICE_GET(serviceProvider, Menge::ApplicationInterface))
 }

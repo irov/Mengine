@@ -8,6 +8,7 @@
 #   include "Interface/CacheInterface.h"
 #	include "Interface/HttpSystemInterface.h"
 #	include "Interface/PrefetcherInterface.h"
+#	include "Interface/WindowsLayerInterface.h"
 
 #	include "Kernel/ScriptClassWrapper.h"
 #	include "Kernel/ThreadTask.h"
@@ -28,6 +29,7 @@
 
 #   include "Interface/ResourceInterface.h"
 
+#	include "ResourceFile.h"
 #	include "ResourceMovie.h"
 #	include "ResourceAnimation.h"
 #	include "ResourceModel3D.h"
@@ -1840,6 +1842,110 @@ namespace Menge
 			}
 
 			return correct_polygon;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_copyFile_( const ConstString & _resourceFileName, TBlobject & _blob )
+		{
+			ResourceFile * resourceFile =  RESOURCE_SERVICE(m_serviceProvider)
+				->getResourceT<ResourceFile>( _resourceFileName );
+
+			if( resourceFile == false )
+			{
+				return false;
+			}
+
+			const ConstString & category = resourceFile->getCategory();
+
+			const FilePath & filePath = resourceFile->getFilePath();
+
+			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+				->openInputFile( category, filePath );
+
+			if( stream == nullptr )
+			{
+				return false;
+			}
+
+			size_t size = stream->size();
+
+			_blob.resize( size );
+
+			if( stream->read( &_blob[0], size ) != size )
+			{
+				return false;
+			}
+
+			resourceFile->decrementReference();
+
+			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_copyUserPicture( const ConstString & _resourceFileName, const String & _fileName )
+		{
+			TBlobject blob;
+			if( this->s_copyFile_( _resourceFileName, blob ) == false )
+			{
+				return false;
+			}
+
+			const WString & projectName = APPLICATION_SERVICE(m_serviceProvider)
+				->getProjectName();
+
+			WString wc_fileName;
+			if( Helper::utf8ToUnicode( m_serviceProvider, _fileName, wc_fileName ) == false )
+			{
+				return false;
+			}
+
+			if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+				->createDirectoryUserPicture( projectName, wc_fileName, &blob[0], blob.size() ) == false )
+			{
+				return false;
+			}
+
+			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_copyUserMusic( const ConstString & _resourceFileName, const String & _fileName )
+		{
+			TBlobject blob;
+			if( this->s_copyFile_( _resourceFileName, blob ) == false )
+			{
+				return false;
+			}
+
+			const WString & projectName = APPLICATION_SERVICE(m_serviceProvider)
+				->getProjectName();
+
+			WString wc_fileName;
+			if( Helper::utf8ToUnicode( m_serviceProvider, _fileName, wc_fileName ) == false )
+			{
+				return false;
+			}
+
+			if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+				->createDirectoryUserMusic( projectName, wc_fileName, &blob[0], blob.size() ) == false )
+			{
+				return false;
+			}
+
+			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		mt::vec2f s_screenToWorldPoint( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint )
+		{
+			mt::vec2f wp;
+			_arrow->calcMouseWorldPosition( _camera, _viewport, _screenPoint, wp );
+
+			return wp;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		mt::vec2f s_screenToWorldClick( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint )
+		{
+			mt::vec2f wp;
+			_arrow->calcPointClick( _camera, _viewport, _screenPoint, wp );
+
+			return wp;
 		}
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getCursorPosition()
@@ -3835,7 +3941,11 @@ namespace Menge
 
             .def( "getWorldColor", &Node::getWorldColor )
 
+			.def( "setRenderViewport", &Node::setRenderViewport ) 
+			.def( "getRenderViewport", &Node::getRenderViewport )
+
 			.def( "setRenderCamera", &Node::setRenderCamera )
+			.def( "getRenderCamera", &Node::getRenderCamera )
 
             .def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::createChildren )
 
@@ -4092,8 +4202,8 @@ namespace Menge
 					;
 
 				pybind::interface_<Layer2D, pybind::bases<Layer> >("Layer2D", false)
-					.def( "setRenderViewport", &Layer2D::setRenderViewport )
-					.def( "removeRenderViewport", &Layer2D::removeRenderViewport )
+					.def( "setViewport", &Layer2D::setViewport )
+					.def( "removeViewport", &Layer2D::removeViewport )
 					.def( "cameraToLocal", &Layer2D::cameraToLocal )
 					;
 
@@ -4534,6 +4644,12 @@ namespace Menge
 			pybind::def_functor( "rotateToIsometric", nodeScriptMethod, &NodeScriptMethod::s_rotateToIsometric );
 
 			pybind::def_functor( "hotspotCorrect", nodeScriptMethod, &NodeScriptMethod::s_hotspotCorrect );
+
+			pybind::def_functor( "copyUserImage", nodeScriptMethod, &NodeScriptMethod::s_copyUserPicture );
+			pybind::def_functor( "copyUserMusic", nodeScriptMethod, &NodeScriptMethod::s_copyUserMusic );
+
+			pybind::def_functor( "screenToWorldPoint", nodeScriptMethod, &NodeScriptMethod::s_screenToWorldPoint );
+			pybind::def_functor( "screenToWorldClick", nodeScriptMethod, &NodeScriptMethod::s_screenToWorldClick );
         }
     }
 }

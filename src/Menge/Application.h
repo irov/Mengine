@@ -55,7 +55,6 @@ namespace Menge
 
 	class Application 
 		: public ApplicationInterface
-		//, public Loadable
 	{
 	public:
 		Application();
@@ -70,7 +69,7 @@ namespace Menge
         void finalize() override;
 
     public:
-        bool setup( const String& _args, const ApplicationSettings & _setting ) override;
+        bool setup( const String& _args, const WString & _companyName, const WString & _projectName, const ApplicationSettings & _setting ) override;
 		
 	public:
 		const FilePath & getBaseDir() const override;
@@ -168,6 +167,11 @@ namespace Menge
 
 		unsigned int getDebugMask() const override;
 
+	public:
+		const WString & getCompanyName() const override;
+		const WString & getProjectName() const override;
+
+	public:
 		const ConstString & getProjectTitle() const override;
 		const ConstString & getProjectCodename() const override;
 		size_t getProjectVersion() const override;
@@ -266,6 +270,9 @@ namespace Menge
 		FilePath m_baseDir;
 		
 		ResourceCursor * m_cursorResource;
+
+		WString m_companyName;
+		WString m_projectName;
 
 		ConstString m_platformName;
 		ConstString m_projectCodename;

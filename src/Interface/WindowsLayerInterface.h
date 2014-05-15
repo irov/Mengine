@@ -89,8 +89,11 @@ namespace Menge
         virtual bool concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity ) = 0;
 
 		virtual bool cmd( const WString & _command ) = 0;
+
+		virtual bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
+		virtual bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
     };
 
 #   define WINDOWSLAYER_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::WindowsLayerInterface)
+    ((Menge::WindowsLayerInterface*)SERVICE_GET(serviceProvider, Menge::WindowsLayerInterface))
 }

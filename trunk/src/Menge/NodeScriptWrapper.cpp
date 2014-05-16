@@ -1934,6 +1934,24 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		mt::vec2f s_screenToWorldPoint( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint )
 		{
+			if( _arrow == nullptr )
+			{
+				_arrow = PLAYER_SERVICE(m_serviceProvider)
+					->getArrow();
+			}
+
+			if( _camera == nullptr )
+			{
+				_camera = PLAYER_SERVICE(m_serviceProvider)
+					->getRenderCamera();
+			}
+
+			if( _viewport == nullptr )
+			{
+				_viewport = PLAYER_SERVICE(m_serviceProvider)
+					->getRenderViewport();
+			}
+
 			mt::vec2f wp;
 			_arrow->calcMouseWorldPosition( _camera, _viewport, _screenPoint, wp );
 
@@ -1942,6 +1960,24 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		mt::vec2f s_screenToWorldClick( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint )
 		{
+			if( _arrow == nullptr )
+			{
+				_arrow = PLAYER_SERVICE(m_serviceProvider)
+					->getArrow();
+			}
+
+			if( _camera == nullptr )
+			{
+				_camera = PLAYER_SERVICE(m_serviceProvider)
+					->getRenderCamera();
+			}
+
+			if( _viewport == nullptr )
+			{
+				_viewport = PLAYER_SERVICE(m_serviceProvider)
+					->getRenderViewport();
+			}
+
 			mt::vec2f wp;
 			_arrow->calcPointClick( _camera, _viewport, _screenPoint, wp );
 
@@ -3943,9 +3979,11 @@ namespace Menge
 
 			.def( "setRenderViewport", &Node::setRenderViewport ) 
 			.def( "getRenderViewport", &Node::getRenderViewport )
-
+			.def( "getRenderViewportInheritance", &Node::getRenderViewportInheritance )
+			
 			.def( "setRenderCamera", &Node::setRenderCamera )
 			.def( "getRenderCamera", &Node::getRenderCamera )
+			.def( "getRenderCameraInheritance", &Node::getRenderCameraInheritance )
 
             .def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::createChildren )
 
@@ -3975,8 +4013,15 @@ namespace Menge
             ;
 
         pybind::interface_<RenderCameraInterface>("RenderCameraInterface")
-            //.def( "getViewport", &RenderCameraInterface::getViewport )
+            .def( "getCameraRenderport", &RenderCameraInterface::getCameraRenderport )
+			.def( "getRenderTarget", &RenderCameraInterface::getRenderTarget )
+			.def( "isOrthogonalProjection", &RenderCameraInterface::isOrthogonalProjection )			
             ;
+
+		pybind::interface_<RenderViewportInterface>("RenderViewportInterface")
+			.def( "getViewport", &RenderViewportInterface::getViewport )
+			;
+
 
 		pybind::interface_<Camera, pybind::bases<RenderCameraInterface> >("Camera")
 			.def( "setRenderTarget", &Camera2D::setRenderTarget )

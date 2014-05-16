@@ -847,6 +847,27 @@ namespace Menge
 		return m_renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const RenderViewportInterface * Node::getRenderViewportInheritance() const
+	{
+		const RenderViewportInterface * rv = this->getRenderViewport();
+
+		if( rv != nullptr )
+		{
+			return rv;
+		}
+
+		Node * parent = this->getParent();
+
+		if( parent == nullptr )
+		{
+			return nullptr;
+		}
+
+		const RenderViewportInterface * rv_parent = parent->getRenderViewportInheritance();
+
+		return rv_parent;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::setRenderCamera( const RenderCameraInterface * _camera )
 	{
 		m_renderCamera = _camera;
@@ -855,6 +876,27 @@ namespace Menge
 	const RenderCameraInterface * Node::getRenderCamera() const
 	{
 		return m_renderCamera;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderCameraInterface * Node::getRenderCameraInheritance() const
+	{
+		const RenderCameraInterface * rc = this->getRenderCamera();
+
+		if( rc != nullptr )
+		{
+			return rc;
+		}
+
+		Node * parent = this->getParent();
+
+		if( parent == nullptr )
+		{
+			return nullptr;
+		}
+
+		const RenderCameraInterface * rc_parent = parent->getRenderCameraInheritance();
+
+		return rc_parent;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_hide( bool _value )

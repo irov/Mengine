@@ -75,5 +75,5 @@ namespace Menge
     };
 
 #   define PLAYER_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::PlayerServiceInterface)
+    ((Menge::PlayerServiceInterface*)SERVICE_GET(serviceProvider, Menge::PlayerServiceInterface))
 }

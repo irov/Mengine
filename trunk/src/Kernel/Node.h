@@ -93,8 +93,14 @@ namespace Menge
 		const RenderViewportInterface * getRenderViewport() const;
 
 	public:
+		const RenderViewportInterface * getRenderViewportInheritance() const;
+		
+	public:
 		void setRenderCamera( const RenderCameraInterface * _camera );
 		const RenderCameraInterface * getRenderCamera() const;
+
+	public:
+		const RenderCameraInterface * getRenderCameraInheritance() const;
 
 	protected:
 		void _hide( bool _value ) override;

@@ -57,14 +57,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2D::calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node * _node ) const
 	{
-		//Viewport vp = _viewport;
-		//Viewport vp = _viewport;
-		//vp.parallax( m_factorParallax );
-
-		//const mt::vec3f & wpos = _node->getWorldPosition();
-
-		//_screen = wpos.to_vec2f() - vp.begin;
-
 		const mt::vec3f & wp = _node->getWorldPosition();
 
 		const mt::mat4f & vm = _camera->getCameraViewMatrix();

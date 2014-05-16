@@ -6,8 +6,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static void s_polygonToBox( const Polygon & _polygon, mt::vec2f & _min, mt::vec2f & _max )
+	static bool s_polygonToBox( const Polygon & _polygon, mt::vec2f & _min, mt::vec2f & _max )
 	{
+		if( boost::geometry::num_points(_polygon) == 0 )
+		{
+			return false;
+		}
+
 		const Polygon::ring_type & ring = _polygon.outer();
 
 		const mt::vec2f & v0 = ring[0];
@@ -40,6 +45,8 @@ namespace Menge
 				_max.y = v.y;
 			}
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderMap::PathFinderMap()
@@ -223,7 +230,15 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t PathFinderMap::addObstacle( const Polygon & _polygon )
-	{		
+	{	
+		if( boost::geometry::num_points(_polygon) == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("PathFinderMap::addObstacle polygon is empty!"
+				);
+
+			return 0;
+		}
+
 		Polygon big_polygon = _polygon;
 		boost::geometry::correct( big_polygon );
 
@@ -243,7 +258,13 @@ namespace Menge
 		boost::geometry::correct( obstacle->hole );
 
 		obstacle->bigHole = big_polygon;
-		s_polygonToBox( obstacle->bigHole, obstacle->bigMinHole, obstacle->bigMaxHole );
+		if( s_polygonToBox( obstacle->bigHole, obstacle->bigMinHole, obstacle->bigMaxHole ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("PathFinderMap::addObstacle invalid polygon to box!"
+				);
+
+			return 0;
+		}
 
 		this->obstacleCellMask_( obstacle, 1 );
 				

@@ -99,6 +99,12 @@ Object2D\\\\ParticleEmitter
 )
 
 ADD_FILTER(
+Object2D\\\\ParticleEmitter2
+	ParticleEmitter2.cpp
+	ParticleEmitter2.h
+)
+
+ADD_FILTER(
 Object2D\\\\HotSpot
 	HotSpot.cpp
 	HotSpot.h
@@ -263,6 +269,14 @@ Resource\\\\EmitterContainer
 	ResourceEmitterContainer.h
 	ResourceEmitter.cpp
 	ResourceEmitter.h
+)
+
+ADD_FILTER(
+Resource\\\\EmitterContainer2
+	ResourceEmitterContainer2.cpp
+	ResourceEmitterContainer2.h
+	ResourceEmitter2.cpp
+	ResourceEmitter2.h
 )
 
 ADD_FILTER(

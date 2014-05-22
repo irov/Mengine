@@ -53,27 +53,27 @@ INCLUDE_DIRECTORIES(
     
 #MESSAGE( CMAKE_ARCHIVE_OUTPUT_DIRECTORY = "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}" )
 LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
-ADD_EXECUTABLE( WinApplication WIN32 ${SRC_FILES} )
+ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
 
 foreach(dependency ${APPLICATION_DEPENDENCIES})
 	#MESSAGE( ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )
-	TARGET_LINK_LIBRARIES( WinApplication debug ${dependency} )
-	TARGET_LINK_LIBRARIES( WinApplication optimized ${dependency} )
+	TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} debug ${dependency} )
+	TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} optimized ${dependency} )
 endforeach(dependency ${APPLICATION_DEPENDENCIES})
 
-TARGET_LINK_LIBRARIES( WinApplication ${APPLICATION_LIBS} ) 
+TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${APPLICATION_LIBS} ) 
 
 if(NOT MSVC)
-    TARGET_LINK_LIBRARIES( WinApplication libole32.a )
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} libole32.a )
 endif(NOT MSVC)
 
 MESSAGE("TEST")
 MESSAGE(${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX})
 
 if(MSVC)
-	set_target_properties( WinApplication PROPERTIES LINK_FLAGS /NODEFAULTLIB:"libci.lib" )
+	set_target_properties( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS /NODEFAULTLIB:"libci.lib" )
 endif(MSVC)
 
 if(MINGW)
-	set_target_properties( WinApplication PROPERTIES LINK_FLAGS -Wl,-Map,${MENGINE_REPOSITORY}/bin/WinApplication.map )
+	set_target_properties( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS -Wl,-Map,${MENGINE_REPOSITORY}/bin/WinApplication.map )
 endif(MINGW)

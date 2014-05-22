@@ -19,6 +19,7 @@
 #	include "Animation.h"
 #	include "Arrow.h"
 #	include "ParticleEmitter.h"
+#	include "ParticleEmitter2.h"
 #	include "HotSpot.h"
 //#	include "Light2D.h"
 #	include "ShadowCaster2D.h"
@@ -346,6 +347,7 @@ namespace Menge
 		
 #   ifdef MENGE_PARTICLES
 		NODE_FACTORY( m_serviceProvider, ParticleEmitter );
+		NODE_FACTORY( m_serviceProvider, ParticleEmitter2 );
 #   endif
 
 		NODE_FACTORY( m_serviceProvider, HotSpot );

@@ -924,9 +924,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
 	{
-		IDirect3DTexture9* dxTextureInterface = nullptr;
+		IDirect3DTexture9 * dxTextureInterface = nullptr;
 
-		if( d3dCreateTexture_( _width, _height, 1, 0, _format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
+		if( this->d3dCreateTexture_( _width, _height, 1, 0, _format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem.createDynamicImage: can't create texture %dx%d %d"
 				, _width

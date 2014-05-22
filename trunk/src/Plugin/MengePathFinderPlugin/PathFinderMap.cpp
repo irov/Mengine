@@ -527,6 +527,7 @@ namespace Menge
 			desc.finder = nullptr;
 			
 			pybind::decref( desc.cb );
+			desc.cb = nullptr;
 
 			desc.complete = true;
 		}
@@ -545,6 +546,11 @@ namespace Menge
 			PathFinderDesc & desc = *it;
 
 			if( desc.finder->isComplete() == false )
+			{
+				continue;
+			}
+
+			if( desc.complete == true )
 			{
 				continue;
 			}
@@ -569,6 +575,8 @@ namespace Menge
 			}
 
 			pybind::decref( desc.cb );
+			desc.cb = nullptr;
+
 			desc.finder = nullptr;
 
 			desc.complete = true;

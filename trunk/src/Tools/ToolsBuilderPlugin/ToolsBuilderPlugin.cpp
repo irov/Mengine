@@ -111,11 +111,6 @@ namespace Menge
 			return false;
 		}
 
-		if( SERVICE_REGISTRY(serviceProvider, archiveService) == false )
-		{
-			return false;
-		}
-
 		LogServiceInterface * logService;
 		if( SERVICE_CREATE( LogService, &logService ) == false )
 		{
@@ -306,6 +301,15 @@ namespace Menge
 
 		plugin_win32_file_group->initialize( serviceProvider );	
 
+		if( SERVICE_REGISTRY(serviceProvider, archiveService) == false )
+		{
+			return false;
+		}
+
+		PluginInterface * plugin_zip;
+		initPluginMengeZip( &plugin_zip );
+		plugin_zip->initialize( serviceProvider );
+
 		PluginInterface * plugin_image_codec;
 		initPluginMengeImageCodec( &plugin_image_codec );
 
@@ -343,10 +347,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		PluginInterface * plugin_zip;
-		initPluginMengeZip( &plugin_zip );
-		plugin_zip->initialize( serviceProvider );
 
 		return true;
 	}

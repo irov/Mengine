@@ -13,6 +13,8 @@
 #   include "ResourceShape.h"
 #   include "ResourceEmitterContainer.h"
 #	include "ResourceEmitter.h"
+#   include "ResourceEmitterContainer2.h"
+#	include "ResourceEmitter2.h"
 
 #   include "Interface/ApplicationInterface.h"
 
@@ -26,6 +28,7 @@
 #	include "Video.h"
 #   include "TextField.h"
 #	include "ParticleEmitter.h"
+#	include "ParticleEmitter2.h"
 #   include "MovieSlot.h"
 #   include "MovieNodeExtra.h"
 #   include "MovieEvent.h"
@@ -1059,6 +1062,13 @@ namespace Menge
                     return false;
                 }
             }
+			else if( layer.layerType == CONST_STRING(m_serviceProvider, ParticleEmitter2) )
+			{
+				if( this->createMovieParticleEmitter2_( layer ) == false )
+				{
+					return false;
+				}
+			}
             else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieEvent) )
             {
                 if( this->createMovieEvent_( layer ) == false )
@@ -1548,6 +1558,52 @@ namespace Menge
         layer_particles->setPlayCount( _layer.playCount );
         layer_particles->setScretch( _layer.scretch );
         //layer_particles->setLoop( _layer.loop );
+
+		layer_particles->setLoop( true );
+
+		if( resourceEmitter->getEmitterRelative() == true )
+		{
+			//layer_particles->setEmitterRelative( true );
+			layer_particles->setEmitterTranslateWithParticle( true );
+		}
+
+		const ConstString & emitterName = resourceEmitter->getEmitterName();
+		layer_particles->setEmitter( emitterName );
+
+		const mt::vec2f & offset = resourceEmitter->getOffset();
+
+		mt::vec3f position;
+		position.x = offset.x;
+		position.y = offset.y;
+		position.z = 0.f;
+
+		layer_particles->setEmitterPosition( position );
+
+		this->addMovieNode_( _layer, layer_particles );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieParticleEmitter2_( const MovieLayer & _layer )
+	{
+		ParticleEmitter2 * layer_particles = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<ParticleEmitter2>( CONST_STRING(m_serviceProvider, ParticleEmitter2) );
+
+		ResourceEmitter2 * resourceEmitter = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceEmitter2>( _layer.source );
+
+		const ConstString & container = resourceEmitter->getContainer();
+
+		ResourceEmitterContainer2 * resourceEmitterContainer = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceEmitterContainer2>( container );
+
+		layer_particles->setResourceEmitterContainer( resourceEmitterContainer );
+		layer_particles->setName( _layer.name );
+
+		//layer_particles->setIntervalStart( _layer.startInterval );        
+		layer_particles->setPlayCount( _layer.playCount );
+		layer_particles->setScretch( _layer.scretch );
+		//layer_particles->setLoop( _layer.loop );
 
 		layer_particles->setLoop( true );
 

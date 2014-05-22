@@ -112,9 +112,5 @@ namespace Menge
 		TFactoryPathFinder m_factoryPathFinder;
 
 		const RenderCameraInterface * m_camera;
-		
-
-		typedef FactoryPoolStore<ThreadWorkerPathFinder, 32> TPoolWorkerTaskSoundBufferUpdate;
-		TPoolWorkerTaskSoundBufferUpdate m_poolWorkerTaskSoundBufferUpdate;
 	};
 }

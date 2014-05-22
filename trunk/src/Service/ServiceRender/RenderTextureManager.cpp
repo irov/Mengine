@@ -14,34 +14,6 @@ SERVICE_FACTORY( RenderTextureManager, Menge::RenderTextureServiceInterface, Men
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-	namespace
-	{
-		class RenderTextureFactoryListener
-			: public FactoryListenerInterface
-		{
-		public:
-			RenderTextureFactoryListener( RenderTextureManager * _textureManager )
-				: m_textureManager(_textureManager)
-			{
-			}
-
-		protected:
-			void onFactoryDestroyObject( Factorable * _object ) override
-			{
-				RenderTexture * texture = static_cast<RenderTexture *>(_object);
-				m_textureManager->onRenderTextureRelease_( texture );
-			}
-
-		protected:
-			void destroy() override
-			{
-				delete this;
-			}
-
-		protected:
-			RenderTextureManager * m_textureManager;
-		};
-	}
     //////////////////////////////////////////////////////////////////////////
     static uint32_t s_firstPOW2From( uint32_t n )
     {
@@ -88,7 +60,7 @@ namespace Menge
 		m_supportR8G8B8 = RENDER_SYSTEM(m_serviceProvider)
 			->supportTextureFormat( PF_R8G8B8 );
 
-		m_factoryRenderTexture.setListener( new RenderTextureFactoryListener(this) );
+		m_factoryRenderTexture.setMethodListener( this, &RenderTextureManager::onRenderTextureRelease_ );
 	
 		return true;
     }

@@ -1,6 +1,6 @@
 #	include "ThreadGuard.h"
 
-#	if defined(WIN32) || defined(_DEBUG)
+#	if defined(WIN32) && defined(_DEBUG)
 #	include "Windows.h"
 
 namespace Menge

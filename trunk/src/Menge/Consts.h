@@ -100,7 +100,9 @@ namespace Menge
 		DECL_CONST( ParticleIntensive );
 		DECL_CONST( ParticleBlend );
 		DECL_CONST( Accumulator );
+
 		DECL_CONST( ParticleEmitter );
+		DECL_CONST( ParticleEmitter2 );
 
 		DECL_CONST( LayerCamera2D );
 

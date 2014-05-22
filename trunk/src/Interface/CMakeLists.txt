@@ -16,6 +16,7 @@ src
 	SoundCodecInterface.h
 	VideoCodecInterface.h
 	ParticleSystemInterface.h
+    ParticleSystemInterface2.h
 	FileSystemInterface.h
 	RenderSystemInterface.h
 	PhysicSystemInterface.h

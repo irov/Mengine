@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Interface/ParticleSystemInterface.h"
+#	include "Interface/ParticleSystemInterface2.h"
 
 #   include "Config/Blobject.h"
 
@@ -11,12 +11,12 @@
 
 namespace Menge
 {
-	class ParticleEngine
-        : public ParticleServiceInterface
+	class ParticleEngine2
+        : public ParticleServiceInterface2
 	{
 	public:
-		ParticleEngine();
-		~ParticleEngine();
+		ParticleEngine2();
+		~ParticleEngine2();
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
@@ -26,9 +26,9 @@ namespace Menge
         void update() override;
 
 	public:
-		ParticleEmitterContainerInterfacePtr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) override;
+		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) override;
 
-		bool flushEmitter( const mt::mat4f & _viewMatrix, const ParticleEmitterInterfacePtr & _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override; 
+		bool flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override; 
 
 		void getEmitterPosition( ParticleEmitterInterface * _emitter, mt::vec2f & _pos );
 				

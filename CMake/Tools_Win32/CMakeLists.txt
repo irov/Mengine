@@ -29,7 +29,7 @@ SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${MENGINE_REPOSITORY}/bin )
 # input and thirdparty paths
 SET( THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies )
 SET( SOURCE_DIR ${MENGINE_REPOSITORY}/src )
-SET( CMAKE_TEMP_DIR ${MENGINE_REPOSITORY}/CMakeTemp/WIN32_TOOLS${CMAKE_BUILD_TYPE} )
+SET( CMAKE_TEMP_DIR ${MENGINE_REPOSITORY}/CMakeTemp/Tools_WIN32/${CMAKE_BUILD_TYPE} )
 
 # implementation
 
@@ -73,4 +73,5 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeXmlCodecPlugin ${CMAKE_TEMP_DIR}/Plu
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeZipPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeZipPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeWin32FileGroupPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeWin32FileGroupPlugin )
 
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ToolsBuilderPlugin ${CMAKE_TEMP_DIR}/Plugin/ToolsBuilderPlugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Tools/AstralaxCompiler ${CMAKE_TEMP_DIR}/Tools/AstralaxCompiler )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Tools/ToolsBuilderPlugin ${CMAKE_TEMP_DIR}/Tools/ToolsBuilderPlugin )

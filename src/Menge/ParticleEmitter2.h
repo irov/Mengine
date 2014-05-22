@@ -3,7 +3,7 @@
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
 
-#   include "ResourceEmitterContainer.h"
+#   include "ResourceEmitterContainer2.h"
 
 #	include "../Interface/RenderSystemInterface.h"
 #	include "../Interface/ParticleSystemInterface.h"
@@ -23,13 +23,13 @@ namespace Menge
 	class ResourceImageDefault;
 	struct RenderMaterial;
 	
-	class ParticleEmitter
+	class ParticleEmitter2
 		: public Node
 		, public Animatable
 	{
 	public:
-		ParticleEmitter();
-		~ParticleEmitter();
+		ParticleEmitter2();
+		~ParticleEmitter2();
 
 	public:
 		bool _play( float _time ) override;
@@ -59,9 +59,9 @@ namespace Menge
 
 		bool changeEmitterPolygon( const Polygon & _polygon );
         void removeEmitterPolygon();
-
-        void setResourceEmitterContainer( ResourceEmitterContainer * _resourceEmitterContainer );
-        ResourceEmitterContainer * getResourceEmitterContainer() const;
+	
+        void setResourceEmitterContainer( ResourceEmitterContainer2 * _resourceEmitterContainer );
+        ResourceEmitterContainer2 * getResourceEmitterContainer() const;
 
 		void setEmitter( const ConstString& _emitterName ); 
 
@@ -114,7 +114,7 @@ namespace Menge
 		inline const RenderMaterialInterfacePtr & getMaterial( size_t _index );
 
 	protected:
-		ResourceHolder<ResourceEmitterContainer> m_resourceEmitterContainer;
+		ResourceHolder<ResourceEmitterContainer2> m_resourceEmitterContainer;
 
 		ConstString m_emitterName;
 
@@ -132,7 +132,7 @@ namespace Menge
 
 		float m_startPosition;
 
-		RenderMaterialInterfacePtr m_materials[ MENGINE_PARTICLE_MAX_ATLAS_TEXTURE * 2 ]; //intensive and non intensive
+		RenderMaterialInterfacePtr m_materials[MENGINE_PARTICLE_MAX_ATLAS_TEXTURE * 2]; //intensive and non intensive
 		bool m_invalidateMaterial;
 
 		//TVectorVertex2D m_vertices;
@@ -154,7 +154,7 @@ namespace Menge
 		bool m_emitterTranslateWithParticle;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const RenderMaterialInterfacePtr & ParticleEmitter::getMaterial( size_t _index )
+	inline const RenderMaterialInterfacePtr & ParticleEmitter2::getMaterial( size_t _index )
 	{
 		if( m_invalidateMaterial == true )
 		{

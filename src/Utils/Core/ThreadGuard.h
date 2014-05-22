@@ -2,7 +2,7 @@
 
 #	include "Config/Typedef.h"
 
-#	if defined(WIN32) || defined(_DEBUG)
+#	if defined(WIN32) && defined(_DEBUG)
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {

@@ -62,7 +62,7 @@ namespace Menge
     public:
         const RenderTextureDebugInfo & getDebugInfo() override;
 
-	public:
+	protected:
         void onRenderTextureRelease_( const RenderTextureInterface * _texture );
 
     protected:

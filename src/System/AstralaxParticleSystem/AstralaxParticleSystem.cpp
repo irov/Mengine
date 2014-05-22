@@ -2,7 +2,9 @@
 
 #   include "Interface/StringizeInterface.h"
 
+#	include "Core/CacheMemoryBuffer.h"
 #   include "Core/String.h"
+
 #   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -152,13 +154,38 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const ConstString & _name, const void * _buffer )
+	ParticleEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream )
 	{
-		HM_FILE file = Magic_OpenFileInMemory( static_cast<const char*>(_buffer) );
+		size_t fileSize = _stream->size();
 
-		if( file == 0 )
+		CacheMemoryBuffer container_buffer(m_serviceProvider, fileSize, "AstralaxEmitterContainer2");
+		void * container_memory = container_buffer.getMemory();
+
+		if( container_memory == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory"
+			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize %s invalid get memory %d"				
+				, _name.c_str()
+				, fileSize
+				);
+
+			return nullptr;
+		}
+
+		_stream->read( container_memory, fileSize );
+
+		HM_FILE file = Magic_OpenFileInMemory( static_cast<const char*>(container_memory) );
+
+		if( file == MAGIC_ERROR )
+		{
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory (alredy open)"
+				);
+
+			return nullptr;
+		}
+
+		if( file == MAGIC_UNKNOWN )
+		{
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory (invalid format or version)"
 				);
 
 			return nullptr;
@@ -166,7 +193,9 @@ namespace Menge
 
 		AstralaxEmitterContainerPtr container = m_factoryPoolAstralaxEmitterContainer.createObjectT();
 
-		if( container->initialize( _name, m_serviceProvider ) == false )
+		container->setServiceProvider( m_serviceProvider );
+
+		if( container->initialize( _name ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container %s"
 				, _name.c_str()
@@ -210,7 +239,7 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxParticleSystem::flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
+	bool AstralaxParticleSystem::flushParticles( const mt::mat4f & _viewMatrix, const ParticleEmitterInterfacePtr & _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
 	{
         (void)_viewMatrix;
 
@@ -222,7 +251,7 @@ namespace Menge
 			return false;
 		}
 
-		AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>( _emitter );
+		AstralaxEmitter * emitter = stdex::intrusive_get<AstralaxEmitter>( _emitter );
 
 		if( emitter->inInterval() == false )
 		{

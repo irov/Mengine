@@ -1,4 +1,4 @@
-#	include "ParticleEmitter.h" 
+#	include "ParticleEmitter2.h" 
 
 #	include "Logger/Logger.h"
 
@@ -45,7 +45,7 @@ namespace	Menge
 #	define MENGINE_PARTICLE_MAX_MESH 100
 #	endif
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitter::ParticleEmitter()
+	ParticleEmitter2::ParticleEmitter2()
 		: m_emitter(nullptr)
 		, m_startPosition(0.f)
         , m_randomMode(false)
@@ -63,11 +63,11 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitter::~ParticleEmitter()
+	ParticleEmitter2::~ParticleEmitter2()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_setEventListener( PyObject * _listener )
+	void ParticleEmitter2::_setEventListener( PyObject * _listener )
 	{
 		Node::_setEventListener( _listener );
 
@@ -75,7 +75,7 @@ namespace	Menge
 		this->registerEvent( EVENT_PARTICLE_EMITTER_RESTART, ("onParticleEmitterRestart"), _listener );
 	}
 	///////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::_activate()
+	bool ParticleEmitter2::_activate()
 	{
 		if( Node::_activate() == false )
 		{
@@ -87,14 +87,14 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_deactivate()
+	void ParticleEmitter2::_deactivate()
 	{
 		this->stop();
 
 		Node::_deactivate();		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::_compile()
+	bool ParticleEmitter2::_compile()
 	{
         ////// it`s not very pretty
         if( m_emitterName.empty() == true )
@@ -121,7 +121,7 @@ namespace	Menge
             return false;
         }
 
-		const ParticleEmitterContainerInterfacePtr & container = m_resourceEmitterContainer->getContainer();
+		const ParticleEmitterContainerInterface2Ptr & container = m_resourceEmitterContainer->getContainer();
 
 		if( container == nullptr )
 		{
@@ -181,9 +181,9 @@ namespace	Menge
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_release()
+	void ParticleEmitter2::_release()
 	{
-		m_emitter = nullptr;
+        m_emitter = nullptr;
 
         m_resourceEmitterContainer.release();
 
@@ -201,7 +201,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void ParticleEmitter2::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{		
 		Node::_render( _viewport, _camera );
 
@@ -243,7 +243,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::_play( float _time )
+	bool ParticleEmitter2::_play( float _time )
 	{
         (void)_time;
 
@@ -264,7 +264,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::_restart( float _time, size_t _enumerator )
+	bool ParticleEmitter2::_restart( float _time, size_t _enumerator )
 	{
         (void)_time;
         (void)_enumerator;
@@ -281,7 +281,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::pause()
+	void ParticleEmitter2::pause()
 	{
 		if( this->isActivate() == false )
 		{
@@ -291,7 +291,7 @@ namespace	Menge
 		m_emitter->pause();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_stop( size_t _enumerator )
+	void ParticleEmitter2::_stop( size_t _enumerator )
 	{
 		if( this->isActivate() == false )
 		{
@@ -303,12 +303,12 @@ namespace	Menge
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_end( size_t _enumerator )
+	void ParticleEmitter2::_end( size_t _enumerator )
 	{
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_setLoop( bool _value )
+	void ParticleEmitter2::_setLoop( bool _value )
 	{
 		if( this->isCompile() == false )
 		{
@@ -318,7 +318,7 @@ namespace	Menge
 		m_emitter->setLoop( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::_interrupt( size_t _enumerator )
+	bool ParticleEmitter2::_interrupt( size_t _enumerator )
 	{
         (void)_enumerator;
 
@@ -338,7 +338,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setLeftBorder( float _leftBorder )
+	void ParticleEmitter2::setLeftBorder( float _leftBorder )
 	{
 		if( this->isCompile() == false )
 		{
@@ -352,7 +352,7 @@ namespace	Menge
 		return m_emitter->setLeftBorder( _leftBorder );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_update( float _current, float _timing )
+	void ParticleEmitter2::_update( float _current, float _timing )
 	{
 		if( this->isPlay() == false )
 		{
@@ -384,7 +384,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::updateParticleVertex_()
+	bool ParticleEmitter2::updateParticleVertex_()
 	{
 		size_t partCount = 0;
 				
@@ -452,7 +452,9 @@ namespace	Menge
 		{
 			const ParticleMesh & mesh = s_meshes[it_mesh];
 
-			const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( mesh.texture );
+			ResourceImage * image = m_resourceEmitterContainer->getAtlasImageResource( mesh.texture );
+
+			const RenderTextureInterfacePtr & texture = image->getTexture();
 
 			const mt::vec4f & mesh_uv = texture->getUV();
 
@@ -569,7 +571,7 @@ namespace	Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter::updateVertexWM_()
+    void ParticleEmitter2::updateVertexWM_()
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -602,7 +604,7 @@ namespace	Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::updateBB_()
+	void ParticleEmitter2::updateBB_()
 	{
 		for( TVectorBatchs::iterator
 			it = m_batchs.begin(),
@@ -616,18 +618,18 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::invalidateMaterial_()
+	void ParticleEmitter2::invalidateMaterial_()
 	{
 		m_invalidateMaterial = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::updateMaterial_()
+	void ParticleEmitter2::updateMaterial_()
 	{
 		m_invalidateMaterial = false;
 
-		size_t textureCount = m_resourceEmitterContainer->getAtlasTextureCount();
+		size_t imageCount = m_resourceEmitterContainer->getAtlasImageCount();
 
-		if( textureCount > MENGINE_PARTICLE_MAX_ATLAS_TEXTURE )
+		if( imageCount > MENGINE_PARTICLE_MAX_ATLAS_TEXTURE )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::updateMaterial_ %s particle resource %s max atlas texture %d"
 				, this->getName().c_str()
@@ -638,9 +640,11 @@ namespace	Menge
 			return;
 		}
 
-		for( size_t i = 0; i != textureCount; ++i )
+		for( size_t i = 0; i != imageCount; ++i )
 		{
-			const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( i );
+			ResourceImage * image = m_resourceEmitterContainer->getAtlasImageResource( i );
+
+			const RenderTextureInterfacePtr & texture = image->getTexture();
 
 			const RenderMaterialInterfacePtr & mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
 				->getMaterial( CONST_STRING(m_serviceProvider, ParticleIntensive), false, false, PT_TRIANGLELIST, 1, &texture );
@@ -653,7 +657,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::restart()
+	void ParticleEmitter2::restart()
 	{
 		if( this->isActivate() == false )
 		{
@@ -663,7 +667,7 @@ namespace	Menge
 		m_emitter->restart();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setResourceEmitterContainer( ResourceEmitterContainer * _resourceEmitterContainer )
+	void ParticleEmitter2::setResourceEmitterContainer( ResourceEmitterContainer2 * _resourceEmitterContainer )
 	{
 		if( m_resourceEmitterContainer == _resourceEmitterContainer )
 		{
@@ -675,12 +679,12 @@ namespace	Menge
 		this->recompile();
 	}
     //////////////////////////////////////////////////////////////////////////
-    ResourceEmitterContainer * ParticleEmitter::getResourceEmitterContainer() const
+    ResourceEmitterContainer2 * ParticleEmitter2::getResourceEmitterContainer() const
     {
         return m_resourceEmitterContainer;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setEmitter( const ConstString& _emitterName )
+	void ParticleEmitter2::setEmitter( const ConstString& _emitterName )
 	{
 		if( m_emitterName == _emitterName )
 		{
@@ -692,7 +696,7 @@ namespace	Menge
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::playFromPosition( float _pos )
+	void ParticleEmitter2::playFromPosition( float _pos )
 	{
 		if( this->isActivate() == false )
 		{
@@ -706,7 +710,7 @@ namespace	Menge
 		//m_interface->update( _pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setEmitterTranslateWithParticle( bool _with )
+	void ParticleEmitter2::setEmitterTranslateWithParticle( bool _with )
 	{
 		m_emitterTranslateWithParticle = _with;
 		
@@ -718,7 +722,7 @@ namespace	Menge
 		m_emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setEmitterPosition( const mt::vec3f & _position )
+	void ParticleEmitter2::setEmitterPosition( const mt::vec3f & _position )
 	{
 		m_emitterPosition = _position;
 
@@ -733,19 +737,19 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setEmitterRelative( bool _relative )
+	void ParticleEmitter2::setEmitterRelative( bool _relative )
 	{
         m_emitterRelative = _relative;
 
 		this->invalidateWorldMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setStartPosition( float _pos )
+	void ParticleEmitter2::setStartPosition( float _pos )
 	{
 		m_startPosition = _pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setEmitterImage( const ConstString & _emitterImageName )
+	void ParticleEmitter2::setEmitterImage( const ConstString & _emitterImageName )
 	{
 		m_emitterImageName = _emitterImageName;
 
@@ -759,7 +763,7 @@ namespace	Menge
 		this->compileEmitterImage_();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter::removeEmitterImage()
+    void ParticleEmitter2::removeEmitterImage()
     {
         m_emitterImageName.clear();
 
@@ -771,7 +775,7 @@ namespace	Menge
         m_emitter->changeEmitterImage( 0, 0, 0, 1 );
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::compileEmitterImage_()
+	bool ParticleEmitter2::compileEmitterImage_()
 	{
 		ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceHIT>(m_emitterImageName);
@@ -808,7 +812,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::changeEmitterPolygon( const Polygon & _polygon )
+	bool ParticleEmitter2::changeEmitterPolygon( const Polygon & _polygon )
 	{
         m_polygon = _polygon;
 
@@ -827,7 +831,7 @@ namespace	Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleEmitter::compilePolygon_()
+    bool ParticleEmitter2::compilePolygon_()
     {
         size_t n = boost::geometry::num_points( m_polygon );
 
@@ -870,7 +874,7 @@ namespace	Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter::removeEmitterPolygon()
+    void ParticleEmitter2::removeEmitterPolygon()
     {
         m_polygon = Polygon();
         
@@ -882,13 +886,13 @@ namespace	Menge
         m_emitter->changeEmitterModel( nullptr, 0 );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox )
+	void ParticleEmitter2::_updateBoundingBox( mt::box2f& _boundingBox )
 	{
         (void)_boundingBox;
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_invalidateWorldMatrix()
+	void ParticleEmitter2::_invalidateWorldMatrix()
 	{
         if( this->isCompile() == false )
         {
@@ -903,7 +907,7 @@ namespace	Menge
         }
 	}
 	/////////////////////////////////////////////////////////////////////////
-	float ParticleEmitter::getDuration() const
+	float ParticleEmitter2::getDuration() const
 	{
         if( this->isCompile() == false )
         {
@@ -919,7 +923,7 @@ namespace	Menge
 		return duration;
 	}
 	/////////////////////////////////////////////////////////////////////////
-	float ParticleEmitter::getLeftBorder() const
+	float ParticleEmitter2::getLeftBorder() const
 	{
         if( this->isCompile() == false )
         {
@@ -935,7 +939,7 @@ namespace	Menge
 		return leftBoard;
 	}
 	/////////////////////////////////////////////////////////////////////////
-	float ParticleEmitter::getRightBorder() const
+	float ParticleEmitter2::getRightBorder() const
 	{
         if( this->isCompile() == false )
         {
@@ -951,12 +955,12 @@ namespace	Menge
 		return rightBoard;
 	}
 	/////////////////////////////////////////////////////////////////////////
-	const ConstString& ParticleEmitter::getEmitterName() const
+	const ConstString& ParticleEmitter2::getEmitterName() const
 	{
 		return m_emitterName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::box2f ParticleEmitter::getEmitterBoundingBox() const
+	mt::box2f ParticleEmitter2::getEmitterBoundingBox() const
 	{
 		mt::box2f box;
 
@@ -974,7 +978,7 @@ namespace	Menge
 		return box;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f ParticleEmitter::getEmitterPosition() const
+	mt::vec3f ParticleEmitter2::getEmitterPosition() const
 	{
 		mt::vec3f pos;
 
@@ -992,7 +996,7 @@ namespace	Menge
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::setRandomMode( bool _randomMode )
+	void ParticleEmitter2::setRandomMode( bool _randomMode )
 	{
         m_randomMode = _randomMode;
 
@@ -1004,7 +1008,7 @@ namespace	Menge
 		m_emitter->setRandomMode( _randomMode );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter::getRandomMode() const
+	bool ParticleEmitter2::getRandomMode() const
 	{
         return m_randomMode;
 	}

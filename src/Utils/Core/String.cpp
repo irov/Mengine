@@ -29,82 +29,58 @@ namespace Menge
 			return ConstString::none();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void split( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delims /*= "\t\n "*/, unsigned int _maxSplits /*= 0 */ )
+		void split( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delims )
 		{
-			// Pre-allocate some space for performance
-			_outStrings.reserve(_maxSplits ? _maxSplits+1 : 10);    // 10 is guessed capacity for most case
-
 			size_t numSplits = 0;
+			String::size_type start = 0;
+			String::size_type pos = 0;
 
-			// Use STL methods 
-			size_t start, pos;
-			start = 0;
 			do 
 			{
 				pos = _str.find_first_of(_delims, start);
-				/*if (pos == start)
+			
+				if (pos == String::npos )
 				{
-				// Do nothing
-				start = pos + 1;
-				}
-				else */if (pos == String::npos || (_maxSplits && numSplits == _maxSplits))
-				{
-					// Copy the rest of the string
 					_outStrings.push_back( _str.substr(start) );
 					break;
 				}
 				else
 				{
-					// Copy up to delimiter
 					_outStrings.push_back( _str.substr(start, pos - start) );
 					start = pos + 1;
 				}
-				// parse up to next real data
+
 				if( _trimDelims == true )
 				{
 					start = _str.find_first_not_of(_delims, start);
 				}
+
 				++numSplits;
 
-			} while (pos != String::npos);
+			}while( pos != String::npos );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void wsplit( TVectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims /*= "\t\n "*/, unsigned int _maxSplits /*= 0 */ )
+		void wsplit( TVectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims )
 		{
-			// Pre-allocate some space for performance
-			_outStrings.reserve(_maxSplits ? _maxSplits+1 : 10);    // 10 is guessed capacity for most case
-
 			size_t numSplits = 0;
-
-			// Use STL methods 
-			size_t start = 0;
-			size_t pos = 0;
+			WString::size_type start = 0;
+			WString::size_type pos = 0;
 
 			do 
 			{
 				pos = _str.find_first_of(_delims, start);
-
-				/*if (pos == start)
+			
+				if (pos == WString::npos )
 				{
-				// Do nothing
-				start = pos + 1;
-				}
-				else */
-				
-				if (pos == String::npos || (_maxSplits && numSplits == _maxSplits))
-				{
-					// Copy the rest of the string
 					_outStrings.push_back( _str.substr(start) );
 					break;
 				}
 				else
 				{
-					// Copy up to delimiter
 					_outStrings.push_back( _str.substr(start, pos - start) );
 					start = pos + 1;
 				}
 
-				// parse up to next real data
 				if( _trimDelims == true )
 				{
 					start = _str.find_first_not_of(_delims, start);
@@ -112,7 +88,7 @@ namespace Menge
 
 				++numSplits;
 
-			} while (pos != String::npos);
+			} while (pos != WString::npos);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void join( const String& _delim, const TVectorString& _stringArray, String & _outString )

@@ -1,4 +1,4 @@
-#	include "ParticleEngine.h"
+#	include "ParticleEngine2.h"
 
 #   include "Interface/FileSystemInterface.h"
 
@@ -12,32 +12,32 @@
 #	include "math/box2.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ParticleService, Menge::ParticleServiceInterface, Menge::ParticleEngine );
+SERVICE_FACTORY( ParticleService2, Menge::ParticleServiceInterface2, Menge::ParticleEngine2 );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-	ParticleEngine::ParticleEngine()
+	ParticleEngine2::ParticleEngine2()
 		: m_serviceProvider(nullptr)
 		, m_maxParticlesNum(2000)
-		, m_renderParticleNum(0)        
+		, m_renderParticleNum(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEngine::~ParticleEngine()
+	ParticleEngine2::~ParticleEngine2()
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    void ParticleEngine2::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * ParticleEngine::getServiceProvider() const
+    ServiceProviderInterface * ParticleEngine2::getServiceProvider() const
     {
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterfacePtr ParticleEngine::createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName )
+	ParticleEmitterContainerInterface2Ptr ParticleEngine2::createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName )
 	{
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( _fileGroupName, _fileName );
@@ -52,7 +52,7 @@ namespace Menge
 			return nullptr;
 		}
 		
-		ParticleEmitterContainerInterfacePtr container = PARTICLE_SYSTEM(m_serviceProvider)
+		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SYSTEM2(m_serviceProvider)
             ->createEmitterContainerFromMemory( _fileName, stream );
 
 		if( container == nullptr )
@@ -67,30 +67,30 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEngine::flushEmitter( const mt::mat4f & _viewMatrix, const ParticleEmitterInterfacePtr & _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
+	bool ParticleEngine2::flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
 	{
-		bool successful = PARTICLE_SYSTEM(m_serviceProvider)
+		bool successful = PARTICLE_SYSTEM2(m_serviceProvider)
 			->flushParticles( _viewMatrix, _emitter, _meshes, _meshLimit, _particles, _particlesLimit, _flush );
 
         return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ParticleEngine::getMaxParticlesCount() const
+	size_t ParticleEngine2::getMaxParticlesCount() const
 	{
 		return m_maxParticlesNum;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::setMaxParticlesCount( size_t _count )
+	void ParticleEngine2::setMaxParticlesCount( size_t _count )
 	{
 		m_maxParticlesNum = _count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::update()
+	void ParticleEngine2::update()
 	{
 		m_renderParticleNum = m_maxParticlesNum;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ParticleEngine::renderParticlesCount( size_t _count )
+	size_t ParticleEngine2::renderParticlesCount( size_t _count )
 	{
         size_t count = m_renderParticleNum - _count;
 

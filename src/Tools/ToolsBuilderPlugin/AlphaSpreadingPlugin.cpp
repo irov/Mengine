@@ -84,7 +84,7 @@ namespace Menge
             return nullptr;
         }
 
-		if( imageDecoder->initialize( input_stream ) == false )
+		if( imageDecoder->prepareData( input_stream ) == false )
 		{
 			char error[512];
 			sprintf( error, "spreadingPngAlpha not initialize decoder for file '%s'"

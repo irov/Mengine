@@ -1,5 +1,7 @@
 #	include "AstralaxEmitterContainer.h"
 
+#	include "AstralaxEmitter.h"
+
 #   include "Logger/Logger.h"
 
 #	include "Core/String.h"
@@ -34,11 +36,22 @@ namespace Menge
 			}
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxEmitterContainer::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * AstralaxEmitterContainer::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitterContainer::initialize( const ConstString & _name, ServiceProviderInterface * _serviceProvider )
+    bool AstralaxEmitterContainer::initialize( const ConstString & _name )
     {
-        m_serviceProvider = _serviceProvider;
         m_name = _name;
+
+		m_factoryPoolAstralaxEmitter.setMethodListener( this, &AstralaxEmitterContainer::onEmitterDestroy_ );
 
         return true;
     }
@@ -164,7 +177,7 @@ namespace Menge
 		return m_atlas;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterInterface * AstralaxEmitterContainer::createEmitter( const ConstString & _name )
+	ParticleEmitterInterfacePtr AstralaxEmitterContainer::createEmitter( const ConstString & _name )
 	{
 		HM_EMITTER id = this->getEmitterId( _name );
 
@@ -177,20 +190,17 @@ namespace Menge
 
         if( emitter->initialize( m_serviceProvider, this, id, _name ) == false )
         {
-            emitter->destroy();
-
             return nullptr;
         }
 
 		return emitter;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer::releaseEmitter( ParticleEmitterInterface * _emitter )
+	void AstralaxEmitterContainer::onEmitterDestroy_( AstralaxEmitter * _emitter )
 	{
 		AstralaxEmitter * emitter = static_cast<AstralaxEmitter*>(_emitter);
 
 		emitter->finalize();
-		emitter->destroy();
 	}
 	////////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitterContainer::visitContainer( ParticleEmitterContainerVisitor * visitor )

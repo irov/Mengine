@@ -4,8 +4,8 @@
 
 #	include "Config/String.h"
 
-#	include "AstralaxEmitterContainer.h"
-#	include "AstralaxEmitter.h"
+#	include "AstralaxEmitterContainer2.h"
+#	include "AstralaxEmitter2.h"
 
 #   include "Factory/FactoryStore.h"
 
@@ -21,23 +21,23 @@
 
 namespace Menge
 {
-	class AstralaxParticleSystem 
-		: public ParticleSystemInterface
+	class AstralaxParticleSystem2 
+		: public ParticleSystemInterface2
 	{
 	public:
-		AstralaxParticleSystem();
-		~AstralaxParticleSystem();
+		AstralaxParticleSystem2();
+		~AstralaxParticleSystem2();
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream ) override;
+		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream ) override;
 
 	public:	
 		bool flushParticles( const mt::mat4f & _viewMatrix
-			, const ParticleEmitterInterfacePtr & _emitter
+			, ParticleEmitterInterface * _emitter
 			, ParticleMesh * _meshes
 			, size_t _meshLimit
 			, ParticleVertices * _particles
@@ -46,19 +46,11 @@ namespace Menge
 
 	protected:
 		void fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count );
-		bool loadEmitter( const char * _magicName, HM_FILE _file, const AstralaxEmitterContainerPtr & _container );
-		bool loadEmittersFolder( const char * _path, HM_FILE _file, const AstralaxEmitterContainerPtr & _container );
-
-	protected:
-		bool loadEmitters_( HM_FILE _file, const AstralaxEmitterContainerPtr & _container );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        typedef FactoryPoolStore<AstralaxEmitterContainer, 16> TFactoryPoolAstralaxEmitterContainer;
+        typedef FactoryPoolStore<AstralaxEmitterContainer2, 16> TFactoryPoolAstralaxEmitterContainer;
         TFactoryPoolAstralaxEmitterContainer m_factoryPoolAstralaxEmitterContainer;
-
-		String m_loadEmitterCacheFullname;
-		String m_loadEmitterCacheName;
 	};
 }

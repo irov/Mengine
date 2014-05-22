@@ -405,6 +405,60 @@ namespace Metacode
             mutable mt::vec2f Offset_Value;
         };
         
+        class Meta_ResourceEmitter2
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceEmitter2();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const Menge::ConstString & get_Container_Name() const
+            {
+                return this->Container_Name;
+            }
+            
+            void swap_Container_Name( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->Container_Name);
+            }
+            
+            template<class C, class M>
+            void method_Container_Name( C * _self, M _method )
+            {
+                (_self->*_method)( this->Container_Name );
+            }
+            
+            const Menge::ConstString & get_Emitter_Name() const
+            {
+                return this->Emitter_Name;
+            }
+            
+            void swap_Emitter_Name( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->Emitter_Name);
+            }
+            
+            template<class C, class M>
+            void method_Emitter_Name( C * _self, M _method )
+            {
+                (_self->*_method)( this->Emitter_Name );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::ConstString Container_Name;
+            mutable Menge::ConstString Emitter_Name;
+        };
+        
         class Meta_ResourceEmitterContainer
             : public Meta_Resource
         { 
@@ -457,6 +511,124 @@ namespace Metacode
         protected:
             mutable Menge::ConstString File_Path;
             mutable Menge::ConstString Folder_Path;
+        };
+        
+        class Meta_ResourceEmitterContainer2
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceEmitterContainer2();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const uint32_t & get_AtlasCount_Value() const
+            {
+                return this->AtlasCount_Value;
+            }
+            
+            void swap_AtlasCount_Value( uint32_t & _value ) const
+            {
+                std::swap(_value, this->AtlasCount_Value);
+            }
+            
+            template<class C, class M>
+            void method_AtlasCount_Value( C * _self, M _method )
+            {
+                (_self->*_method)( this->AtlasCount_Value );
+            }
+            
+            const Menge::ConstString & get_File_Path() const
+            {
+                return this->File_Path;
+            }
+            
+            void swap_File_Path( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->File_Path);
+            }
+            
+            template<class C, class M>
+            void method_File_Path( C * _self, M _method )
+            {
+                (_self->*_method)( this->File_Path );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+            class Meta_Atlas
+                : public Metabuf::Metadata
+            { 
+            public:
+                Meta_Atlas();
+            
+            public:
+                uint32_t getId() const override;
+            
+            public:
+                const uint32_t & get_Index() const
+                {
+                    return this->Index;
+                }
+                
+                void swap_Index( uint32_t & _value ) const
+                {
+                    std::swap( _value, this->Index);
+                }
+                
+                template<class C, class M>
+                void method_Index( C * _self, M _method ) const
+                {
+                    (_self->*_method)( this->Index );
+                }
+                
+                const Menge::ConstString & get_ResourceName() const
+                {
+                    return this->ResourceName;
+                }
+                
+                void swap_ResourceName( Menge::ConstString & _value ) const
+                {
+                    std::swap( _value, this->ResourceName);
+                }
+                
+                template<class C, class M>
+                void method_ResourceName( C * _self, M _method ) const
+                {
+                    (_self->*_method)( this->ResourceName );
+                }
+                
+            protected:
+                bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+                bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+                bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+                bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+            public:
+            protected:
+            protected:
+                mutable uint32_t Index;
+                mutable Menge::ConstString ResourceName;
+            };
+            
+        protected:
+        protected:
+            mutable uint32_t AtlasCount_Value;
+            mutable Menge::ConstString File_Path;
+        public:
+            typedef stdex::auto_array<Meta_Atlas> TVectorMeta_Atlas;
+        
+            const TVectorMeta_Atlas & get_IncludesAtlas() const
+            {
+                return this->includes_Meta_Atlas;
+            }
+        
+        protected:
+            TVectorMeta_Atlas includes_Meta_Atlas;
         };
         
         class Meta_ResourceExternal

@@ -575,7 +575,7 @@ namespace Menge
 
 		if( err != 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::cmd: command:\n%ls\nerror: %d"
+			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::cmd: command:\n%ls\nerror: %d"
 				, _command.c_str()
 				, errno
 				);
@@ -590,16 +590,36 @@ namespace Menge
 	{
 		WCHAR szPath[MAX_PATH];
 
-		if(SUCCEEDED(SHGetFolderPath(NULL
+		if(FAILED(SHGetFolderPath(NULL
 			, CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
 			, NULL
 			, 0
 			, szPath))) 
 		{
-			printf("%ls", szPath );
+			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+				, _path.c_str()
+				, _file.c_str()
+				);
+
+			return false;
 		}	
 
 		PathAppend( szPath, _path.c_str() );
+
+		if( this->fileExists( szPath ) == false )
+		{
+			if( this->createDirectory( szPath ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createDirectory %s"
+					, _path.c_str()
+					, _file.c_str()
+					, szPath
+					);
+
+				return false;
+			}
+		}
+
 		PathAppend( szPath, _file.c_str() );
 
 		HANDLE hFile = this->createFile( szPath 
@@ -610,6 +630,12 @@ namespace Menge
 
 		if( hFile == INVALID_HANDLE_VALUE )
 		{
+			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createFile %s"
+				, _path.c_str()
+				, _file.c_str()
+				, szPath
+				);
+
 			return false;
 		}
 
@@ -620,6 +646,12 @@ namespace Menge
 
 		if( result == FALSE )
 		{
+			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid writeFile %s"
+				, _path.c_str()
+				, _file.c_str()
+				, szPath
+				);
+
 			return false;
 		}
 
@@ -630,16 +662,36 @@ namespace Menge
 	{
 		WCHAR szPath[MAX_PATH];
 
-		if(SUCCEEDED(SHGetFolderPath(NULL
+		if(FAILED(SHGetFolderPath(NULL
 			, CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE
 			, NULL
 			, 0
 			, szPath))) 
 		{
-			printf("%ls", szPath );
+			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
+				, _path.c_str()
+				, _file.c_str()
+				);
+
+			return false;
 		}	
 
 		PathAppend( szPath, _path.c_str() );
+
+		if( this->fileExists( szPath ) == false )
+		{
+			if( this->createDirectory( szPath ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid createDirectory %s"
+					, _path.c_str()
+					, _file.c_str()
+					, szPath
+					);
+
+				return false;
+			}
+		}
+
 		PathAppend( szPath, _file.c_str() );
 
 		HANDLE hFile = this->createFile( szPath 
@@ -650,6 +702,12 @@ namespace Menge
 
 		if( hFile == INVALID_HANDLE_VALUE )
 		{
+			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid createFile %s"
+				, _path.c_str()
+				, _file.c_str()
+				, szPath
+				);
+
 			return false;
 		}
 
@@ -660,6 +718,12 @@ namespace Menge
 
 		if( result == FALSE )
 		{
+			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid writeFile %s"
+				, _path.c_str()
+				, _file.c_str()
+				, szPath
+				);
+
 			return false;
 		}
 

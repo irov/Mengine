@@ -1,14 +1,12 @@
-#	include "AstralaxEmitter.h"
-#	include "AstralaxEmitterContainer.h"
+#	include "AstralaxEmitter2.h"
 
 #	include <Utils/Logger/Logger.h>
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	AstralaxEmitter::AstralaxEmitter()
+	AstralaxEmitter2::AstralaxEmitter2()
 		: m_serviceProvider(nullptr)
-        , m_container(nullptr)
         , m_id(0)
 		, m_start(false)
 		, m_leftBorder(0.f)
@@ -24,14 +22,13 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AstralaxEmitter::~AstralaxEmitter()
+	AstralaxEmitter2::~AstralaxEmitter2()
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter::initialize( ServiceProviderInterface * _serviceProvider, const AstralaxEmitterContainerPtr & _container, HM_EMITTER _id, const ConstString & _name )
+    bool AstralaxEmitter2::initialize( ServiceProviderInterface * _serviceProvider, HM_EMITTER _id, const ConstString & _name )
     {
         m_serviceProvider = _serviceProvider;
-        m_container = _container;
         m_id = _id;
         m_name = _name;
 
@@ -65,15 +62,14 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::finalize()
+	void AstralaxEmitter2::finalize()
 	{
-		m_container->releaseEmitterId( m_name, m_id );
-		m_container = nullptr;
+		Magic_UnloadEmitter( m_id );
 
 		m_id = 0;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter::setupBasePosition_()
+    bool AstralaxEmitter2::setupBasePosition_()
     {
         MAGIC_RECT rect;
         float backgroundScale = Magic_GetBackgroundRect( m_id, &rect );
@@ -130,14 +126,9 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & AstralaxEmitter::getName() const
+	const ConstString & AstralaxEmitter2::getName() const
 	{
 		return m_name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const AstralaxEmitterContainerPtr & AstralaxEmitter::getContainer() const
-	{
-		return m_container;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static mt::box2f s_getEmitterBBox( HM_EMITTER _emitter )
@@ -195,20 +186,20 @@ namespace Menge
 		return box;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::getBoundingBox( mt::box2f& _box ) const
+	void AstralaxEmitter2::getBoundingBox( mt::box2f& _box ) const
 	{
 		mt::box2f box = s_getEmitterBBox(m_id);
 		_box = box;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::setLeftBorder( float _leftBorder )
+	void AstralaxEmitter2::setLeftBorder( float _leftBorder )
 	{
 		m_leftBorder = (double)_leftBorder;
 
 		Magic_SetInterval1( m_id, m_leftBorder );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::play()
+	void AstralaxEmitter2::play()
 	{
 		//if ( m_start == false ) 
 		{ 
@@ -232,19 +223,19 @@ namespace Menge
 		m_start = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::setLoop( bool _loop )
+	void AstralaxEmitter2::setLoop( bool _loop )
 	{
 		Magic_SetLoopMode( m_id, _loop? 1: 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::getLoop() const
+	bool AstralaxEmitter2::getLoop() const
 	{
         int loopMode = Magic_GetLoopMode( m_id );
 
 		return loopMode == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::interrupt()
+	void AstralaxEmitter2::interrupt()
 	{
 		if( Magic_IsInterrupt( m_id ) == true )
 		{
@@ -256,7 +247,7 @@ namespace Menge
 		Magic_SetInterrupt( m_id, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::stop()
+	void AstralaxEmitter2::stop()
 	{
 		m_start = false;
 		Magic_Stop( m_id );
@@ -267,12 +258,12 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::pause()
+	void AstralaxEmitter2::pause()
 	{
 		m_start = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::update( float _timing, bool & _stop )
+	bool AstralaxEmitter2::update( float _timing, bool & _stop )
 	{
 		if( m_start == false )
 		{
@@ -322,12 +313,12 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HM_EMITTER AstralaxEmitter::getId() const
+	HM_EMITTER AstralaxEmitter2::getId() const
 	{
 		return m_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::inInterval() const
+	bool AstralaxEmitter2::inInterval() const
 	{
 		if( m_id == 0 )
 		{
@@ -339,7 +330,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::createFirstRenderedParticlesList( MAGIC_RENDERING * _rendering )
+	bool AstralaxEmitter2::createFirstRenderedParticlesList( MAGIC_RENDERING * _rendering )
 	{
 		if( m_id == 0 )
 		{
@@ -354,19 +345,19 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::setEmitterTranslateWithParticle( bool _value )
+	void AstralaxEmitter2::setEmitterTranslateWithParticle( bool _value )
 	{
 		Magic_SetEmitterPositionMode( m_id, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::isIntensive() const
+	bool AstralaxEmitter2::isIntensive() const
 	{
 		bool intensive = Magic_IsIntensive();
 
 		return intensive;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes )
+	bool AstralaxEmitter2::changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes )
 	{
 		if( Magic_ChangeImage( m_id, -1, _width, _height, _data, _bytes ) == MAGIC_ERROR )
 		{
@@ -376,7 +367,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::changeEmitterModel( float * _points, int _count )
+	bool AstralaxEmitter2::changeEmitterModel( float * _points, int _count )
 	{
 		MAGIC_TRIANGLE * triangle = reinterpret_cast<MAGIC_TRIANGLE *>(_points);
 
@@ -388,7 +379,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::setPosition( const mt::vec3f & _pos )
+	void AstralaxEmitter2::setPosition( const mt::vec3f & _pos )
 	{
 		MAGIC_POSITION pos;
 		pos.x = _pos.x;
@@ -401,7 +392,7 @@ namespace Menge
 		Magic_SetEmitterPosition( m_id, &pos );
 	}  
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::getPosition( mt::vec3f & _pos )
+	void AstralaxEmitter2::getPosition( mt::vec3f & _pos )
 	{
 		MAGIC_POSITION pos;
 		Magic_GetEmitterPosition( m_id, &pos );
@@ -416,17 +407,17 @@ namespace Menge
 #endif
 	}
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::getBasePosition( mt::vec3f & _pos )
+    void AstralaxEmitter2::getBasePosition( mt::vec3f & _pos )
     {
         _pos = m_basePosition;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::setScale( float _scale )
+	void AstralaxEmitter2::setScale( float _scale )
 	{
 		Magic_SetScale( m_id, _scale );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::restart()
+	void AstralaxEmitter2::restart()
 	{
 		Magic_Restart( m_id );
 		if( Magic_IsInterval1( m_id ) == true )
@@ -436,7 +427,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::setAngle( float _radians )
+	void AstralaxEmitter2::setAngle( float _radians )
 	{
 		m_angle = _radians * 180.f / 3.1415926f;
 
@@ -448,7 +439,7 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter::getBackgroundBox( mt::box2f & _box )
+    bool AstralaxEmitter2::getBackgroundBox( mt::box2f & _box )
     {
         MAGIC_RECT rect;
 
@@ -471,21 +462,21 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	float AstralaxEmitter::getLeftBorder() const
+	float AstralaxEmitter2::getLeftBorder() const
 	{
         float float_leftBorder = (float)m_leftBorder;
 
 		return float_leftBorder;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float AstralaxEmitter::getRightBorder() const
+	float AstralaxEmitter2::getRightBorder() const
 	{
         float float_rightBorder = (float)m_rightBorder;
 
 		return float_rightBorder;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float AstralaxEmitter::getDuration() const
+	float AstralaxEmitter2::getDuration() const
 	{
 		double duration = (m_rightBorder - m_leftBorder) / m_tempScale;
 
@@ -494,7 +485,7 @@ namespace Menge
 		return float_duration;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::seek( float _time )
+	void AstralaxEmitter2::seek( float _time )
 	{
 		double rate = Magic_GetUpdateTime( m_id );
 		bool randomMode = Magic_IsRandomMode(m_id);
@@ -526,26 +517,26 @@ namespace Menge
 		m_total_rate = _time;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float AstralaxEmitter::getUpdateTemp() const
+	float AstralaxEmitter2::getUpdateTemp() const
 	{
 		float tempScale = Magic_GetUpdateSpeed( m_id );
 
         return tempScale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter::setRandomMode( bool _randomMode )
+	void AstralaxEmitter2::setRandomMode( bool _randomMode )
 	{
 		Magic_SetRandomMode( m_id, _randomMode );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::getRandomMode() const
+	bool AstralaxEmitter2::getRandomMode() const
 	{
 		bool mode = Magic_IsRandomMode( m_id );
 
 		return mode;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::isBackground() const
+	bool AstralaxEmitter2::isBackground() const
 	{
 		return m_background;
 	}

@@ -53,7 +53,7 @@ namespace Menge
             return false;
         }
 
-		if( decoder->initialize( nullptr ) == false )
+		if( decoder->prepareData( nullptr ) == false )
 		{
 			LOGGER_ERROR(serviceProvider)("writeBin invalid initialize decoder xml2bin for %s"
 				, utf8_xmlPath.c_str()

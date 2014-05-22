@@ -54,7 +54,11 @@ namespace Menge
     namespace Helper
     {
         template<class T>
+#   ifdef _DEBUG
         inline T * getService( ServiceProviderInterface * _serviceProvider, const char * _file, uint32_t _line )
+#	else
+		inline T * getService( ServiceProviderInterface * _serviceProvider )
+#	endif
         {
             static T * s_service = nullptr;
 
@@ -83,7 +87,7 @@ namespace Menge
 	(Menge::Helper::getService<Type>(serviceProvider, __FILE__, __LINE__))
 #	else
 #	define SERVICE_GET( serviceProvider, Type )\
-	(Menge::Helper::getService<Type>(serviceProvider, "", 0))
+	(Menge::Helper::getService<Type>(serviceProvider))
 #	endif
 
 #	define SERVICE_CALL( Service, Method, Args )\

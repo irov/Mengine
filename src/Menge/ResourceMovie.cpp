@@ -467,6 +467,10 @@ namespace Menge
             {
                 it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
             }
+			else if( it->layerType == CONST_STRING(m_serviceProvider, ParticleEmitter2) )
+			{
+				it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
+			}
             else if( it->layerType == CONST_STRING(m_serviceProvider, Movie) )
             {
                 it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE;

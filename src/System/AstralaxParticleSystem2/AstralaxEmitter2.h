@@ -2,8 +2,6 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
-#	include "AstralaxEmitterContainer.h"
-
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
 #	endif 
@@ -19,23 +17,20 @@
 
 namespace Menge
 {
-	class AstralaxEmitter 
+	class AstralaxEmitter2 
 		: public ParticleEmitterInterface
 	{
 	public:
-		AstralaxEmitter();
-		~AstralaxEmitter();
+		AstralaxEmitter2();
+		~AstralaxEmitter2();
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, const AstralaxEmitterContainerPtr & _container, HM_EMITTER _id, const ConstString & _name );
+        bool initialize( ServiceProviderInterface * _serviceProvider, HM_EMITTER _id, const ConstString & _name );
 		void finalize();
 
 	public:
 		const ConstString & getName() const override;
-
-	public:
-		const AstralaxEmitterContainerPtr & getContainer() const;
-
+		
 	public:
 		void play() override;
 		void stop() override;
@@ -96,9 +91,9 @@ namespace Menge
 		
 	protected:
         ServiceProviderInterface * m_serviceProvider; 
-		AstralaxEmitterContainerPtr m_container;
-
+		
 		HM_EMITTER m_id;
+
         mt::vec3f m_basePosition;
 		bool m_background;
 
@@ -123,4 +118,6 @@ namespace Menge
 
         bool m_firstUpdate;
 	};
+
+	typedef stdex::intrusive_ptr<AstralaxEmitter2> AstralaxEmitter2Ptr;
 }

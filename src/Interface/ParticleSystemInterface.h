@@ -1,6 +1,7 @@
 #	pragma once
 
 #   include "Interface/ServiceInterface.h"
+#	include "Interface/StreamInterface.h"
 
 #	include "Config/Typedef.h"
 
@@ -38,14 +39,8 @@ namespace Menge
 		bool intense;
 	};
 
-	class ParticleEmitterListenerInterface
-	{
-	public:
-		virtual void onParticleEmitterStopped() = 0;
-	};
-
 	class ParticleEmitterInterface
-        : public Factorable
+        : public FactorablePtr
 	{
 	public:
 		virtual const ConstString & getName() const = 0;
@@ -57,7 +52,7 @@ namespace Menge
 		virtual void restart() = 0;
 		virtual void seek( float _timming ) = 0;
 	public:
-		virtual bool update( float _timing ) = 0;
+		virtual bool update( float _timing, bool & _stop ) = 0;
 
 	public:
 		virtual void setLoop( bool _loop ) = 0;
@@ -82,9 +77,6 @@ namespace Menge
 		virtual bool changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) = 0;
 		virtual bool changeEmitterModel( float * _points, int _count ) = 0;
 
-	public:
-		virtual void setListener( ParticleEmitterListenerInterface* _listener ) = 0;		
-
     public:
 		virtual void setPosition( const mt::vec3f & _pos ) = 0;
 		virtual void getPosition( mt::vec3f & _pos ) = 0;
@@ -101,6 +93,8 @@ namespace Menge
     public:
         virtual bool getBackgroundBox( mt::box2f & _box ) = 0;
 	};
+
+	typedef stdex::intrusive_ptr<ParticleEmitterInterface> ParticleEmitterInterfacePtr;
 
     struct ParticleEmitterAtlas
     {
@@ -120,8 +114,12 @@ namespace Menge
 	class ParticleEmitterContainerInterface
         : public FactorablePtr
 	{
+	public:
+		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() const = 0;
+
     public:
-        virtual bool initialize( const ConstString & _name, ServiceProviderInterface * _serviceProvider ) = 0;
+        virtual bool initialize( const ConstString & _name ) = 0;
 		
     public:
         virtual bool isValid() const = 0;
@@ -131,8 +129,7 @@ namespace Menge
 		virtual void visitContainer( ParticleEmitterContainerVisitor * visitor ) = 0;
 
     public:
-		virtual ParticleEmitterInterface * createEmitter( const ConstString & _name ) = 0;
-		virtual void releaseEmitter( ParticleEmitterInterface * _emitter ) = 0;
+		virtual ParticleEmitterInterfacePtr createEmitter( const ConstString & _name ) = 0;
 	};
 
     typedef stdex::intrusive_ptr<ParticleEmitterContainerInterface> ParticleEmitterContainerInterfacePtr;
@@ -149,10 +146,10 @@ namespace Menge
         SERVICE_DECLARE("ParticleSystem")
 
 	public:
-		virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const ConstString & _name, const void * _buffer ) = 0;
+		virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream ) = 0;
 		
 	public:
-        virtual bool flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
+        virtual bool flushParticles( const mt::mat4f & _viewMatrix, const ParticleEmitterInterfacePtr & _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
 	};
 
 #   define PARTICLE_SYSTEM( serviceProvider )\
@@ -164,9 +161,10 @@ namespace Menge
         SERVICE_DECLARE("ParticleService")
 
     public:
-        virtual bool flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
+        virtual bool flushEmitter( const mt::mat4f & _viewMatrix, const ParticleEmitterInterfacePtr & _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
         virtual size_t renderParticlesCount( size_t _count ) = 0;
 
+	public:
         virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) = 0;
 
     public:

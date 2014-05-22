@@ -2,8 +2,6 @@
 
 #	include "Interface/ParticleSystemInterface.h"
 
-#	include "AstralaxEmitter.h"
-
 #   include "Factory/FactoryStore.h"
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
@@ -20,6 +18,8 @@
 
 namespace Menge
 {
+	class AstralaxEmitter;
+
 	typedef std::vector<HM_EMITTER> TVectorEmitters;
 
 	class AstralaxEmitterContainer
@@ -29,8 +29,12 @@ namespace Menge
 		AstralaxEmitterContainer();
 		~AstralaxEmitterContainer();
 
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
+
     public:
-        bool initialize( const ConstString & _name, ServiceProviderInterface * _serviceProvider ) override;
+        bool initialize( const ConstString & _name ) override;
 
     public:
         bool isValid() const override;
@@ -48,8 +52,10 @@ namespace Menge
 		const TVectorParticleEmitterAtlas & getAtlas() const override;
 
     public:
-		ParticleEmitterInterface * createEmitter( const ConstString & _name ) override;
-		void releaseEmitter( ParticleEmitterInterface * _emitter );
+		ParticleEmitterInterfacePtr createEmitter( const ConstString & _name ) override;
+
+	public:
+		void onEmitterDestroy_( AstralaxEmitter * _emitter );
 		
 	private:
         ServiceProviderInterface * m_serviceProvider;

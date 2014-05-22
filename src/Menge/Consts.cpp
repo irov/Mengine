@@ -102,6 +102,7 @@ namespace Menge
         INIT_CONST( ParticleBlend );
         INIT_CONST( Accumulator );
         INIT_CONST( ParticleEmitter );
+		INIT_CONST( ParticleEmitter2 );
         INIT_CONST( LayerCamera2D );
         INIT_CONST( MovieSlot );
         INIT_CONST( MovieSocketImage );

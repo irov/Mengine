@@ -10,10 +10,10 @@ namespace Menge
 		LoggerOperator( LogServiceInterface * _logger, EMessageLevel _level, size_t _flag );
 
 	public:
-		LoggerOperator & operator()( const char * _message, ... );
+		LoggerOperator & operator()( const char * _format, ... );
 
 	public:
-		void logMessage( const char * _message, size_t _size );
+		void logMessage( const char * _format, size_t _size );
 
 	protected:
 		LogServiceInterface * m_log;

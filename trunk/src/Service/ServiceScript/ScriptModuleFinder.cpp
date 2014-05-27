@@ -1,8 +1,5 @@
 #   include "ScriptModuleFinder.h"
 
-//#   include "ScriptModuleLoaderSource.h"
-//#   include "ScriptModuleLoaderCode.h"
-
 #   include "Interface/StringizeInterface.h"
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/CacheInterface.h"
@@ -16,20 +13,9 @@
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    static int s_get_int( unsigned char * _buff )
-    {
-        int x;
-        x =  (int)_buff[0];
-        x |= (int)_buff[1] << 8;
-        x |= (int)_buff[2] << 16;
-        x |= (int)_buff[3] << 24;
-
-        return x;
-    }
-    //////////////////////////////////////////////////////////////////////////
     ScriptModuleFinder::ScriptModuleFinder()
         : m_serviceProvider(nullptr)
-        , m_embbed(nullptr)
+		, m_embed(nullptr)
     {
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -47,6 +33,15 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptModuleFinder::finalize()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptModuleFinder::setEmbed( PyObject * _embed )
+	{
+		m_embed = _embed;
+	}
     //////////////////////////////////////////////////////////////////////////
     void ScriptModuleFinder::addModulePath( const ConstString & _pak, const TVectorFilePath& _pathes )
     {
@@ -57,64 +52,67 @@ namespace Menge
         m_modulePaths.push_back( mp );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptModuleFinder::setEmbbed( PyObject * _embbed )
-    {
-        m_embbed = _embbed;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleFinder::find_module( const ConstString & _module, PyObject * _path )
+    PyObject * ScriptModuleFinder::find_module( PyObject * _module, PyObject * _path )
     {
         (void)_module;
         (void)_path;
 
 #   ifndef MENGE_MASTER_RELEASE
-        if( this->find_module_source_( _module ) == true )
-        {
-            pybind::incref( m_embbed );
-
-            return m_embbed;
-        }
-#   endif
-
-        if( this->find_module_code_( _module ) == false )
-        {
-            return pybind::ret_none();
-        }
-
-        pybind::incref( m_embbed );
-
-        return m_embbed;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleFinder::load_module( const ConstString & _module )
-    {   
-		ModulePathCache * pathCache = nullptr;
-        if( m_paths.has( _module, &pathCache ) == false )
-        {
-            return nullptr;
-        }        
-
-		InputStreamInterfacePtr stream = pathCache->stream;
-		pathCache->stream = nullptr;
-
-		PyObject * module = nullptr;
-
-        if( pathCache->source == true )
-        {
-            module = this->load_module_source_( _module, stream, pathCache->packagePath );
-        }
-		else
 		{
-			module = this->load_module_code_( _module, stream, pathCache->packagePath );
+			ScriptModuleLoaderPtr loaderSource = m_factoryScriptModuleLoaderSource.createObjectT();
+
+			loaderSource->setServiceProvider( m_serviceProvider );
+			loaderSource->setModule( _module );
+
+			if( this->find_module_source_( _module, loaderSource ) == true )
+			{
+				m_loaders.push_back( loaderSource );
+
+				pybind::incref( m_embed );
+				return m_embed;
+			}
+		}
+#   endif
+	
+		{
+			ScriptModuleLoaderPtr loaderCode = m_factoryScriptModuleLoaderCode.createObjectT();
+
+			loaderCode->setServiceProvider( m_serviceProvider );
+			loaderCode->setModule( _module );
+
+			if( this->find_module_code_( _module, loaderCode ) == true )
+			{
+				m_loaders.push_back( loaderCode );
+
+				pybind::incref( m_embed );
+				return m_embed;
+			}
 		}
 
-        return module;        
+		return pybind::ret_none();
     }
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptModuleFinder::load_module( PyObject * _module )
+	{
+		ScriptModuleLoaderPtr loader = m_loaders.back();
+		m_loaders.pop_back();
+
+		PyObject * loader_module = loader->getModule();
+
+		if( loader_module != _module )
+		{
+			return nullptr;
+		}
+
+		PyObject * py_code = loader->load_module( _module );
+
+		return py_code;
+	}
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptModuleFinder::convertDotToSlash_( char * _cache, size_t _cacheSize, const ConstString & _module, size_t & _modulePathCacheLen )
+    bool ScriptModuleFinder::convertDotToSlash_( char * _cache, size_t _cacheSize, PyObject * _module, size_t & _modulePathCacheLen )
     {
-		const char * module_str = _module.c_str();
-		size_t module_size = _module.size();
+		size_t module_size;
+		const char * module_str = pybind::string_to_char_and_size( _module, module_size );
 		
 		if( stdex::memorycopy_safe( _cache, 0, _cacheSize, module_str, module_size ) == false )
 		{
@@ -137,8 +135,22 @@ namespace Menge
 		
 		return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool ScriptModuleFinder::find_module_source_( PyObject * _module, const ScriptModuleLoaderPtr & _loader )
+	{
+		bool successful = this->find_module_( _module, _loader, ".py", sizeof(".py"), "__init__.py", sizeof("__init__.py") );
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScriptModuleFinder::find_module_code_( PyObject * _module, const ScriptModuleLoaderPtr &  _loader )
+	{
+		bool successful = this->find_module_( _module, _loader, ".pyz", sizeof(".pyz"), "__init__.pyz", sizeof("__init__.pyz") );
+
+		return successful;
+	}
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptModuleFinder::find_module_source_( const ConstString & _module )
+    bool ScriptModuleFinder::find_module_( PyObject * _module, const ScriptModuleLoaderPtr & _loader, const char * _ext, size_t _extN, const char * _init, size_t _extI )
     {
 		char modulePathCache[MAX_PATH];
         
@@ -148,96 +160,32 @@ namespace Menge
 			return false;
 		}
 
-		if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen, MAX_PATH, ".py", 4 ) == false )
+		if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen, MAX_PATH, _ext, _extN ) == false )
 		{
 			return false;
 		}
 		
-        ModulePathCache * pathCache_module = this->findModule_( _module, modulePathCache, modulePathCacheLen + 3 );
-
-        if( pathCache_module != nullptr )
-        {
-            pathCache_module->packagePath = nullptr;
-            pathCache_module->source = true;
-        }
-		else
+        if( this->findModule_( modulePathCache, modulePathCacheLen + 3, _loader ) == false )
 		{
 			modulePathCache[modulePathCacheLen] = MENGE_FOLDER_RESOURCE_DELIM;
-			if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MAX_PATH, "__init__.py", 12 ) == false )
+			if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MAX_PATH, _init, _extI ) == false )
 			{
 				return false;
 			}
 
-			ModulePathCache * pathCache_package = this->findModule_( _module, modulePathCache, modulePathCacheLen + 12 );
-
-			if( pathCache_package == nullptr )
+			if( this->findModule_( modulePathCache, modulePathCacheLen + 12, _loader ) == false )
 			{
 				return false;
 			}
 
-			PyObject * py_fullpath = pybind::ptr( _module );
-
-			pathCache_package->packagePath = pybind::build_value( "[O]", py_fullpath );
-			pybind::decref( py_fullpath );
-
-			pathCache_package->source = true;
+			_loader->setPackagePath( true );
 		}
-
+		
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptModuleFinder::find_module_code_( const ConstString & _module )
+    bool ScriptModuleFinder::findModule_( const char * _modulePath, size_t _modulePathLen, const ScriptModuleLoaderPtr & _loader ) const
     {
-		char modulePathCache[MAX_PATH];
-
-        size_t modulePathCacheLen;
-		if( this->convertDotToSlash_( modulePathCache, MAX_PATH, _module, modulePathCacheLen ) == false )
-		{
-			return false;
-		}
-
-		if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen, MAX_PATH, ".pyz", 5 ) == false )
-		{
-			return false;
-		}
-
-        ModulePathCache * pathCache_module = this->findModule_( _module, modulePathCache, modulePathCacheLen + 4 );
-
-        if( pathCache_module != nullptr )
-        {
-            pathCache_module->packagePath = nullptr;
-            pathCache_module->source = false;
-        }
-		else
-		{
-			modulePathCache[modulePathCacheLen] = MENGE_FOLDER_RESOURCE_DELIM;
-			if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MAX_PATH, "__init__.pyz", 13 ) == false )
-			{
-				return false;
-			}
-
-			ModulePathCache * pathCache_package = this->findModule_( _module, modulePathCache, modulePathCacheLen + 13 );
-
-			if( pathCache_package == nullptr )
-			{
-				return false;
-			}
-
-			PyObject * py_fullpath = pybind::ptr( _module );
-
-			pathCache_package->packagePath = pybind::build_value( "[O]", py_fullpath );
-			pybind::decref( py_fullpath );
-
-			pathCache_package->source = false;
-		}
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ScriptModuleFinder::ModulePathCache * ScriptModuleFinder::findModule_( const ConstString & _module, const char * _modulePath, size_t _modulePathLen ) const
-    {
-        FileServiceInterface * fileService = FILE_SERVICE(m_serviceProvider);
-                
         for( TVectorModulePathes::const_iterator
             it = m_modulePaths.begin(),
             it_end = m_modulePaths.end();
@@ -253,184 +201,27 @@ namespace Menge
             ++it_path )
             {
                 const FilePath & path = *it_path;
-
-				PathString fullPath;
-
+				
+				PathString & fullPath = _loader->modifyPath();
 				fullPath += path;
 				fullPath.append( _modulePath, _modulePathLen );
 
-				ConstStringHolderLocal holder_fullPath_local( fullPath.c_str(), fullPath.size() );
+				//ConstString c_fullPath = Helper::stringizeString( m_serviceProvider, fullPath );
+				ConstStringHolderLocal holder_fullPath_local(fullPath.c_str(), fullPath.size());
 				ConstString c_fullPath_local(&holder_fullPath_local);
 
 				FileGroupInterfacePtr fileGroup;
-                if( fileService->existFile( mp.pak, c_fullPath_local, &fileGroup ) == false )
+                if( FILE_SERVICE(m_serviceProvider)->existFile( mp.pak, c_fullPath_local, &fileGroup ) == false )
                 {
                     continue;
                 }
 
-				ConstString c_fullPath = Helper::stringizeString( m_serviceProvider, fullPath );
-
-				InputStreamInterfacePtr stream = fileGroup->createInputFile( c_fullPath );
-
-				if( fileGroup->openInputFile( c_fullPath, stream, 0, 0 ) == false )
-				{
-					return nullptr;
-				}
-
-                ModulePathCache mpc;
-                mpc.stream = stream;
-
-                TMapModulePath::iterator it_insert = m_paths.insert( _module, mpc ).first;
-
-				ModulePathCache & pathCache = m_paths.get_value( it_insert );
-
-                return &pathCache;
+				_loader->initialize( fileGroup, m_archivator );
+		
+				return true;
             }
         }
 
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleFinder::load_module_source_( const ConstString & _module, const InputStreamInterfacePtr & _stream, PyObject * _packagePath )
-    {
-        PyObject * code = this->unmarshal_source_( _module, _stream );
-
-        if( code == nullptr )
-        {
-            return nullptr;
-        }
-
-        PyObject * module = pybind::module_init( _module.c_str() );
-
-        PyObject * dict = pybind::module_dict( module );
-
-        pybind::dict_setstring( dict, "__loader__", m_embbed );
-
-        if( _packagePath != nullptr )
-        {
-            pybind::dict_setstring( dict, "__path__", _packagePath );
-            pybind::decref( _packagePath );
-        }
-
-        module = pybind::module_execcode( _module.c_str(), code );
-
-        pybind::decref( code );
-
-        return module;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleFinder::load_module_code_( const ConstString & _module, const InputStreamInterfacePtr & _stream, PyObject * _packagePath )
-    {
-        PyObject * code = this->unmarshal_code_( _module, _stream );
-
-        if( code == nullptr )
-        {
-            return nullptr;
-        }
-
-        PyObject * module = pybind::module_init( _module.c_str() );
-
-        PyObject * dict = pybind::module_dict( module );
-
-        pybind::dict_setstring( dict, "__loader__", m_embbed );
-
-        if( _packagePath != nullptr )
-        {
-            pybind::dict_setstring( dict, "__path__", _packagePath );
-            pybind::decref( _packagePath );
-        }
-
-        module = pybind::module_execcode( _module.c_str(), code );
-
-        pybind::decref( code );
-
-        return module;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleFinder::unmarshal_source_( const ConstString & _module, const InputStreamInterfacePtr & _stream )
-    {
-        size_t file_size = _stream->size();
-
-		CacheMemoryBuffer source_buffer(m_serviceProvider, file_size + 2, "unmarshal_source_");
-		char * source_memory = source_buffer.getMemoryT<char>();
-
-        if( file_size > 0 )
-        {
-            _stream->read( source_memory, file_size );
-        }
-
-        source_memory[file_size] = '\n';
-        source_memory[file_size + 1] = '\0';
-
-        PyObject * code = pybind::code_compile_file( source_memory, _module.c_str() );
-
-        if( code == nullptr )
-        {
-            pybind::check_error();
-
-            return nullptr;
-        }
-
-        if( pybind::code_check( code ) == false ) 
-        {
-            return nullptr;
-        }
-
-        return code;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleFinder::unmarshal_code_( const ConstString & _module, const InputStreamInterfacePtr & _stream )
-    {
-        size_t file_size = _stream->size();
-
-        if( file_size == 0 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ScriptModuleFinder::unmarshal_code_ %s zero size"
-                , _module.c_str()
-                );
-
-            return nullptr;
-        }
-
-        uint32_t code_size;
-        _stream->read( &code_size, sizeof(code_size) );
-
-        uint32_t compress_size;
-        _stream->read( &compress_size, sizeof(compress_size) );
-		
-		CacheMemoryBuffer code_buffer(m_serviceProvider, code_size, "unmarshal_code_buffer");
-		TBlobject::value_type * code_memory = code_buffer.getMemoryT<TBlobject::value_type>();
-
-        size_t uncompress_size;
-        if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( m_archivator, _stream, compress_size, code_memory, code_size, uncompress_size ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ScriptModuleFinder::unmarshal_code_ uncompress failed"
-                );
-
-            return nullptr;
-        }
-                
-        long file_magic = s_get_int( &code_memory[0] );
-        long py_magic = pybind::marshal_magic_number();
-
-        if( file_magic != py_magic )
-        {
-            return nullptr;
-        }
-
-        PyObject * code = pybind::marshal_get_object( (char *)code_memory + 8, uncompress_size - 8 );
-
-        if( code == nullptr )
-        {
-            return nullptr;
-        }
-
-        if( pybind::code_check( code ) == false ) 
-        {
-            return nullptr;
-        }
-
-        return code;
+        return false;
     }
 }

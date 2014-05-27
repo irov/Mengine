@@ -1,8 +1,7 @@
 #	include "ScriptEngine.h"
 
 #   include "ScriptModuleFinder.h"
-//#   include "ScriptModuleLoaderCode.h"
-//#   include "ScriptModuleLoaderSource.h"
+#   include "ScriptModuleLoader.h"
 
 #	include "ScriptLogger.h"
 
@@ -118,8 +117,8 @@ namespace Menge
         //    ;
 
         pybind::class_<ScriptModuleFinder>("ScriptModuleFinder", true)
-            .def("find_module", &ScriptModuleFinder::find_module )
-            .def("load_module", &ScriptModuleFinder::load_module)
+            .def("find_module", &ScriptModuleFinder::find_module)   
+			.def("load_module", &ScriptModuleFinder::load_module)
             ;
         
         //pybind::class_<ScriptZipLoader>("ScriptZipLoader", true)
@@ -138,7 +137,7 @@ namespace Menge
        
         PyObject * py_moduleFinder = pybind::ptr( m_moduleFinder );
 
-        m_moduleFinder->setEmbbed( py_moduleFinder );
+		m_moduleFinder->setEmbed( py_moduleFinder );
 
         pybind::_set_module_finder( py_moduleFinder );
         
@@ -182,8 +181,12 @@ namespace Menge
         delete m_errorLogger;
 		m_errorLogger = nullptr;
 
-        delete m_moduleFinder;
-		m_moduleFinder = nullptr;
+		if( m_moduleFinder != nullptr )
+		{
+			m_moduleFinder->finalize();
+			delete m_moduleFinder;
+			m_moduleFinder = nullptr;
+		}
 
         pybind::setStdOutHandle( nullptr );
         pybind::setStdErrorHandle( nullptr );

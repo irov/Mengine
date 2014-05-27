@@ -4,8 +4,10 @@
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
-#	include "Config/Typedef.h"
-#	include "Config/String.h"
+#   include "ScriptModuleLoaderSource.h"
+#   include "ScriptModuleLoaderCode.h"
+
+#   include "Factory/FactoryStore.h"
 
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
@@ -15,9 +17,7 @@
 #	include "pybind/pybind.hpp"
 
 namespace Menge
-{
-    class ServiceProviderInterface;    
-
+{    
     class ScriptModuleFinder
     {
     public:
@@ -25,42 +25,35 @@ namespace Menge
 
 	public:
 		bool initialize( ServiceProviderInterface * _serviceProvider );
+		void finalize();
+
+	public:
+		void setEmbed( PyObject * _embed );
 
     public:
         void addModulePath( const ConstString & _pak, const TVectorFilePath & _pathes );
 
     public:
-        void setEmbbed( PyObject * _embbed );
-
-    public:
-        PyObject * find_module( const ConstString & _module, PyObject * _path );
-        PyObject * load_module( const ConstString & _module );
-        //PyObject * _find_and_load( PyObject * _module, PyObject * _builtins_import );
+        PyObject * find_module( PyObject * _module, PyObject * _path );
+		PyObject * load_module( PyObject * _module );
 
     protected:
-        bool find_module_source_( const ConstString & _module );
-        bool find_module_code_( const ConstString & _module );        
+        bool find_module_source_( PyObject * _module, const ScriptModuleLoaderPtr & _loader );
+        bool find_module_code_( PyObject * _module, const ScriptModuleLoaderPtr & _loader );        
+		bool find_module_( PyObject * _module, const ScriptModuleLoaderPtr & _loader, const char * _ext, size_t _extN, const char * _init, size_t _extI );
 
     protected:
-        PyObject * load_module_source_( const ConstString & _module, const InputStreamInterfacePtr & _stream, PyObject * _packagePath );
-        PyObject * load_module_code_( const ConstString & _module, const InputStreamInterfacePtr & _stream, PyObject * _packagePath );
+        bool convertDotToSlash_( char * _cache, size_t _cacheSize, PyObject * _module, size_t & _modulePathCacheLen );
 
-    protected:
-        PyObject * get_data( const InputStreamInterfacePtr & _stream );
-
-        PyObject * unmarshal_source_( const ConstString & _module, const InputStreamInterfacePtr & _stream );
-        PyObject * unmarshal_code_( const ConstString & _module, const InputStreamInterfacePtr & _stream );
-
-    protected:
-        bool convertDotToSlash_( char * _cache, size_t _cacheSize, const ConstString & _module, size_t & _modulePathCacheLen );
+	protected:
+		bool findModule_( const char * _modulePath, size_t _modulePathLen, const ScriptModuleLoaderPtr & _loader ) const;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
+		PyObject * m_embed;
 
 		ArchivatorInterfacePtr m_archivator;
 
-        PyObject * m_embbed;
-        
         struct ModulePathes
         {
             ConstString pak;
@@ -68,20 +61,17 @@ namespace Menge
         };
 
         typedef std::vector<ModulePathes> TVectorModulePathes;
-        TVectorModulePathes m_modulePaths;
+        TVectorModulePathes m_modulePaths;    
 
-        struct ModulePathCache
-        {
-            InputStreamInterfacePtr stream;
+		typedef FactoryPoolStore<ScriptModuleLoaderCode, 8> TFactoryScriptModuleLoaderCode;
+		TFactoryScriptModuleLoaderCode m_factoryScriptModuleLoaderCode;
 
-            PyObject * packagePath;
-            bool source;
-        };
+		typedef std::vector<ScriptModuleLoaderPtr> TMapModuleLoaders;
+		TMapModuleLoaders m_loaders;
 
-        typedef stdex::binary_vector<ConstString, ModulePathCache> TMapModulePath;
-        mutable TMapModulePath m_paths;
-
-    protected:
-        ModulePathCache * findModule_( const ConstString & _module, const char * _modulePath, size_t _modulePathLen ) const;
+#   ifndef MENGE_MASTER_RELEASE
+		typedef FactoryPoolStore<ScriptModuleLoaderSource, 8> TFactoryScriptModuleLoaderSource;
+		TFactoryScriptModuleLoaderSource m_factoryScriptModuleLoaderSource;
+#	endif
     };
 }

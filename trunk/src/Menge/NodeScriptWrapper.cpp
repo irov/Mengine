@@ -277,18 +277,20 @@ namespace Menge
             }
 
         protected:
-            void visitSocket( const ConstString & _name, HotSpot * _hotspot ) override
+            void visitSocket( Movie * _movie, const ConstString & _name, HotSpot * _hotspot ) override
             {
+				PyObject * py_movie = pybind::ptr( _movie );
                 PyObject * py_name = pybind::ptr( _name );
                 PyObject * py_hotspot = pybind::ptr( _hotspot );
 
-                PyObject * py_arg = pybind::list_new(2);
+                PyObject * py_tuple = pybind::tuple_new(3);
 
-                pybind::list_setitem( py_arg, 0, py_name );
-                pybind::list_setitem( py_arg, 1, py_hotspot );
+                pybind::tuple_setitem( py_tuple, 0, py_movie );
+                pybind::tuple_setitem( py_tuple, 1, py_name );
+				pybind::tuple_setitem( py_tuple, 2, py_hotspot );
 
-                pybind::list_appenditem( m_list, py_arg );
-                pybind::decref( py_arg );
+                pybind::list_appenditem( m_list, py_tuple );
+                pybind::decref( py_tuple );
             }
 
         protected:
@@ -304,6 +306,46 @@ namespace Menge
 
             return py_list;
         }
+		//////////////////////////////////////////////////////////////////////////
+		class PythonVisitorMovieSubMovie
+			: public VisitorMovieSubMovie
+		{
+		public:
+			PythonVisitorMovieSubMovie( PyObject * _list )
+				: m_list(_list)
+			{
+			}
+
+		protected:
+			void visitSubMovie( Movie * _movie, const ConstString & _name, Movie * _subMovie ) override
+			{
+				PyObject * py_movie = pybind::ptr( _movie );
+				PyObject * py_name = pybind::ptr( _name );
+				PyObject * py_subMovie = pybind::ptr( _subMovie );
+
+				PyObject * py_tuple = pybind::tuple_new(3);
+
+				pybind::tuple_setitem( py_tuple, 0, py_movie );
+				pybind::tuple_setitem( py_tuple, 1, py_name );
+				pybind::tuple_setitem( py_tuple, 2, py_subMovie );
+
+				pybind::list_appenditem( m_list, py_tuple );
+				pybind::decref( py_tuple );
+			}
+
+		protected:
+			PyObject * m_list;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * movie_getSubMovies( Movie * _movie )
+		{
+			PyObject * py_list = pybind::list_new(0);
+
+			PythonVisitorMovieSubMovie pvmsm(py_list);
+			_movie->visitSubMovie( &pvmsm );
+
+			return py_list;
+		}
         //////////////////////////////////////////////////////////////////////////
         float movie_getFrameDuration( Movie * _movie )
         {
@@ -4434,6 +4476,7 @@ namespace Menge
                     .def( "setMovieEvent", &Movie::setMovieEvent )
                     .def( "hasMovieEvent", &Movie::hasMovieEvent )
                     .def_proxy_static( "getSockets", nodeScriptMethod, &NodeScriptMethod::movie_getSockets )
+					.def_proxy_static( "getSubMovies", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovies )
                     .def_proxy_static( "getFrameDuration", nodeScriptMethod, &NodeScriptMethod::movie_getFrameDuration )
                     .def_proxy_static( "getDuration", nodeScriptMethod, &NodeScriptMethod::movie_getDuration )
                     .def_proxy_static( "getFrameCount", nodeScriptMethod, &NodeScriptMethod::movie_getFrameCount )

@@ -522,6 +522,62 @@ namespace Menge
 				
 		return false;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::visitSubMovie( VisitorMovieSubMovie * _visitor )
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::visitSubMovie %s invalid not compile"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+		for( TMapSubMovies::const_iterator
+			it = m_subMovies.begin(),
+			it_end = m_subMovies.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & name = m_subMovies.get_key( it );
+			Movie * submovie = m_subMovies.get_value( it );
+
+			_visitor->visitSubMovie( this, name, submovie );
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = dynamic_cast<Movie *>(node);
+			
+			if( movie->visitSubMovie( _visitor ) == false )
+			{
+				continue;
+			}
+		}
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     Movie * Movie::getSubMovie( const ConstString & _name ) const
     {
@@ -553,7 +609,7 @@ namespace Menge
         {
             const MovieLayer & layer = *it;
 
-            if( layer.isMovie() == false || layer.isSubMovie() == true )
+            if( layer.isMovie() == false || layer.isSubMovie() == false )
             {
                 continue;
             }
@@ -613,7 +669,7 @@ namespace Menge
         {
             const MovieLayer & layer = *it;
 
-            if( layer.isMovie() == false || layer.isSubMovie() == true )
+            if( layer.isMovie() == false || layer.isSubMovie() == false )
             {
                 continue;
             }
@@ -638,7 +694,7 @@ namespace Menge
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::visitSockets( VisitorMovieSocket * _visitor ) const
+    bool Movie::visitSockets( VisitorMovieSocket * _visitor )
     {
         if( m_resourceMovie == nullptr )
         {
@@ -658,7 +714,7 @@ namespace Menge
             const ConstString & name = m_sockets.get_key( it );
             HotSpot * hotspot = m_sockets.get_value( it );
 
-            _visitor->visitSocket( name, hotspot );
+            _visitor->visitSocket( this, name, hotspot );
         }
 
         const TVectorMovieLayers & layers = m_resourceMovie->getLayers();

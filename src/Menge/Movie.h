@@ -17,15 +17,22 @@ namespace Menge
     class MovieSceneEffect;
     class MovieInternalObject;
 
+	class Movie;
     class HotSpot;
 
 	struct MovieLayer;
 	struct MovieFrameSource;    
 
+	class VisitorMovieSubMovie
+	{
+	public:
+		virtual void visitSubMovie( Movie * _movie, const ConstString & _name, Movie * _subMovie ) = 0;
+	};
+
     class VisitorMovieSocket
     {
     public:
-        virtual void visitSocket( const ConstString & _name, HotSpot * _hotspot ) = 0;
+        virtual void visitSocket( Movie * _movie, const ConstString & _name, HotSpot * _hotspot ) = 0;
     };
 
 	class Movie
@@ -48,11 +55,13 @@ namespace Menge
 		bool hasMovieSlot( const ConstString & _name ) const;
 
     public:
+		bool visitSubMovie( VisitorMovieSubMovie * _visitor );
+
         Movie * getSubMovie( const ConstString & _name ) const;
         bool hasSubMovie( const ConstString & _name ) const;
 
     public:
-        bool visitSockets( VisitorMovieSocket * _visitor ) const;
+        bool visitSockets( VisitorMovieSocket * _visitor );
 
         HotSpot * getSocket( const ConstString & _name ) const;
         bool hasSocket( const ConstString & _name ) const;

@@ -30,11 +30,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scriptable::setEmbed( PyObject * _embed )
 	{
-		if( m_embed != nullptr )
-		{
-			pybind::decref( m_embed );
-		}
-
+		pybind::decref( m_embed );
 		m_embed = _embed;
 
 		this->_embedding( m_embed );

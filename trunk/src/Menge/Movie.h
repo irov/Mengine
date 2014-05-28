@@ -23,6 +23,12 @@ namespace Menge
 	struct MovieLayer;
 	struct MovieFrameSource;    
 
+	class VisitorMovieLayer
+	{
+	public:
+		virtual void visitLayer( Movie * _movie, Node * _layer ) = 0;
+	};
+
 	class VisitorMovieSubMovie
 	{
 	public:
@@ -49,6 +55,9 @@ namespace Menge
 	public:
 		void setParentMovie( bool _value );
 		bool isParentMovie() const;
+
+	public:
+		bool filterLayers( const ConstString & _type, VisitorMovieLayer * _visitor );
 
 	public:
 		Node * getMovieSlot( const ConstString & _name ) const;
@@ -177,9 +186,10 @@ namespace Menge
 		RenderViewport * m_renderViewport;
 
         struct Nodies
-        {
-            bool child;
+        {	
             Node * node;
+			size_t layerId;
+			bool child;
         };
 
 		typedef std::vector<Nodies> TVectorNodies;

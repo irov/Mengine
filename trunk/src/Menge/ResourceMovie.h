@@ -33,7 +33,8 @@ namespace Menge
 	struct MovieLayer
 	{
 		MovieLayer()
-			: index(movie_layer_parent_none)
+			: id(0)
+			, index(movie_layer_parent_none)
 			, parent(0)
             , timeRemap(false)
 			, shape(false)
@@ -50,16 +51,14 @@ namespace Menge
 		}
 
 		ConstString name;
+		ConstString type;
 
+		size_t id;
 		size_t index;
 		size_t parent;
 
-        bool timeRemap;
-        bool shape;
         size_t playCount;        
         float scretch;
-        bool loop;
-		bool switcher;
 
 		float in;
 		float out;
@@ -71,11 +70,13 @@ namespace Menge
 		ConstString keyFramesName;
 		FilePath keyFramesPath;
 
-		ConstString source;
-
-		ConstString layerType;
+		ConstString source;		
 
 		bool immutable;
+		bool timeRemap;
+		bool shape;
+		bool loop;
+		bool switcher;
 
         bool isNode() const
         {

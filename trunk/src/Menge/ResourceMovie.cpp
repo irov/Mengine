@@ -241,9 +241,9 @@ namespace Menge
                 return false;
             }
 
-			if( layer.layerType == CONST_STRING(m_serviceProvider, MovieSceneEffect) 
-				|| layer.layerType == CONST_STRING(m_serviceProvider, MovieText)
-				|| layer.layerType == CONST_STRING(m_serviceProvider, MovieTextCenter) 
+			if( layer.type == CONST_STRING(m_serviceProvider, MovieSceneEffect) 
+				|| layer.type == CONST_STRING(m_serviceProvider, MovieText)
+				|| layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) 
 				)
 			{
 				bool hide = framePack->isLayerPermanentlyHide( layer.index );
@@ -291,6 +291,8 @@ namespace Menge
 
         const Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer2D & includes_layer2d = metadata->get_IncludesMovieLayer2D();
 
+		uint32_t layer_enumerator = 0;
+
         for( Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer2D::const_iterator
             it = includes_layer2d.begin(),
             it_end = includes_layer2d.end();
@@ -298,16 +300,18 @@ namespace Menge
         ++it )
         {
             const Metacode::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & meta_layer2d = *it;
-
+			
             m_layers.push_back( MovieLayer() );
             MovieLayer & ml = m_layers.back();
 
+			uint32_t layer_id = layer_enumerator++;
+			ml.id = layer_id;
             ml.state = 0;
 
             meta_layer2d.swap_Name( ml.name );
             meta_layer2d.swap_Source( ml.source );
             meta_layer2d.swap_BlendingMode( ml.blendingMode );
-			meta_layer2d.swap_Type( ml.layerType );
+			meta_layer2d.swap_Type( ml.type );
 
             ml.parent = meta_layer2d.get_Parent();
             ml.index = meta_layer2d.get_Index();
@@ -353,7 +357,7 @@ namespace Menge
             meta_layer3d.swap_Name( ml.name );
             meta_layer3d.swap_Source( ml.source );
             meta_layer3d.swap_BlendingMode( ml.blendingMode );
-			meta_layer3d.swap_Type( ml.layerType );
+			meta_layer3d.swap_Type( ml.type );
 
             ml.parent = meta_layer3d.get_Parent();
             ml.index = meta_layer3d.get_Index();
@@ -408,29 +412,29 @@ namespace Menge
         {
             m_maxLayerIndex = std::max( m_maxLayerIndex, it->index );
             
-			if( it->layerType == CONST_STRING(m_serviceProvider, MovieSlot) )
+			if( it->type == CONST_STRING(m_serviceProvider, MovieSlot) )
             {
                 it->state |= MOVIE_LAYER_NODE;
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
+            else if( it->type == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
             {
                 it->state |= MOVIE_LAYER_NODE;
 
                 it->parent = (size_t)-1;
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieText) )
+            else if( it->type == CONST_STRING(m_serviceProvider, MovieText) )
             {
                 it->state |= MOVIE_LAYER_NODE;
             }
-			else if( it->layerType == CONST_STRING(m_serviceProvider, MovieTextCenter) )
+			else if( it->type == CONST_STRING(m_serviceProvider, MovieTextCenter) )
 			{
 				it->state |= MOVIE_LAYER_NODE;
 			}
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieNullObject) )
+            else if( it->type == CONST_STRING(m_serviceProvider, MovieNullObject) )
             {
                 it->state |= MOVIE_LAYER_NODE;
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, Image) )
+            else if( it->type == CONST_STRING(m_serviceProvider, Image) )
             {				
                 it->state |= MOVIE_LAYER_NODE;
 				
@@ -439,51 +443,51 @@ namespace Menge
 					it->state |= MOVIE_LAYER_MESH_2D;
 				}
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, SolidSprite) )
+            else if( it->type == CONST_STRING(m_serviceProvider, SolidSprite) )
             {
                 it->state |= MOVIE_LAYER_NODE;
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSocketImage) )
+            else if( it->type == CONST_STRING(m_serviceProvider, MovieSocketImage) )
             {
                 it->state |= MOVIE_LAYER_NODE;
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieSocketShape) )
+            else if( it->type == CONST_STRING(m_serviceProvider, MovieSocketShape) )
             {
                 it->state |= MOVIE_LAYER_NODE;
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, Animation) )
+            else if( it->type == CONST_STRING(m_serviceProvider, Animation) )
             {
                 it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, Video) )
+            else if( it->type == CONST_STRING(m_serviceProvider, Video) )
             {
                 it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, Sound) )
+            else if( it->type == CONST_STRING(m_serviceProvider, Sound) )
             {
                 it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO;
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, ParticleEmitter) )
+            else if( it->type == CONST_STRING(m_serviceProvider, ParticleEmitter) )
             {
                 it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
             }
-			else if( it->layerType == CONST_STRING(m_serviceProvider, ParticleEmitter2) )
+			else if( it->type == CONST_STRING(m_serviceProvider, ParticleEmitter2) )
 			{
 				it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
 			}
-            else if( it->layerType == CONST_STRING(m_serviceProvider, Movie) )
+            else if( it->type == CONST_STRING(m_serviceProvider, Movie) )
             {
                 it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE;
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, SubMovie) )
+            else if( it->type == CONST_STRING(m_serviceProvider, SubMovie) )
             {
                 it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE | MOVIE_LAYER_SUB_MOVIE;
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieInternalObject) )
+            else if( it->type == CONST_STRING(m_serviceProvider, MovieInternalObject) )
             {
                 it->state |= MOVIE_LAYER_NODE;
             }
-            else if( it->layerType == CONST_STRING(m_serviceProvider, MovieEvent) )
+            else if( it->type == CONST_STRING(m_serviceProvider, MovieEvent) )
             {
                 it->state |= MOVIE_LAYER_EXTRA;
             }
@@ -492,7 +496,7 @@ namespace Menge
                 LOGGER_ERROR(m_serviceProvider)("ResourceMovie: '%s' can't setup layer2d '%s' type '%s'"
                     , this->getName().c_str()
                     , it->source.c_str()
-                    , it->layerType.c_str()
+                    , it->type.c_str()
                     );
 
                 return false;

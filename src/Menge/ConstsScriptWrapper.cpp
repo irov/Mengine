@@ -52,7 +52,7 @@ namespace Menge
     {
         (void)_obj;
 
-        String str_repr = _cs->c_str();
+        const char * str_repr = _cs->c_str();
 
         return pybind::ptr( str_repr );
     }

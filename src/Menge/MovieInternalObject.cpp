@@ -74,7 +74,13 @@ namespace Menge
 
         PyObject * py_object = nullptr;
 
-        EVENTABLE_ASK(m_serviceProvider, m_movie, EVENT_MOVIE_GET_INTERNAL)( py_object, (PyObject*)0, "(ss)", internalGroup.c_str(), internalName.c_str() );
+		PyObject * py_internalGroup = pybind::ptr( internalGroup );
+		PyObject * py_internalName = pybind::ptr( internalName );
+
+        EVENTABLE_ASK(m_serviceProvider, m_movie, EVENT_MOVIE_GET_INTERNAL)( py_object, (PyObject*)nullptr, "(OO)", py_internalGroup, py_internalName );
+
+		pybind::decref( py_internalGroup );
+		pybind::decref( py_internalName );
 
         if( py_object == nullptr )
         {

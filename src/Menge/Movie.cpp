@@ -109,22 +109,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setTiming( float _timing )
 	{
-		//if( this->isActivate() == false )
-		//{
-		//	LOGGER_ERROR(m_serviceProvider)("Movie.setTiming: '%s' not activate"
-		//		, m_name.c_str()
-		//		);
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie.setTiming: '%s' not activate"
+				, m_name.c_str()
+				);
 
-		//	return;
-		//}
+			return;
+		}
 
-        //const ConstString & group = m_resourceMovie->getGroup();
-
-        //if( group != "Hint" )
-        //{
-        //    return;
-        //}
-	
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
 		m_currentFrame = (size_t)floorf( (_timing / frameDuration) + 0.5f );
@@ -383,6 +376,7 @@ namespace Menge
 
         Nodies ns;
         ns.node = _node;
+		ns.layerId = _layer.id;
         ns.child = (_layer.parent != movie_layer_parent_none);
 
 		m_nodies[_layer.index] = ns;
@@ -521,6 +515,73 @@ namespace Menge
 		}
 				
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::filterLayers( const ConstString & _type, VisitorMovieLayer * _visitor )
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::filterLayer %s invalid not compile"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorNodies::const_iterator
+			it = m_nodies.begin(),
+			it_end = m_nodies.end();
+		it != it_end;
+		++it )
+		{
+			const Nodies & nd = *it;
+
+			if( nd.node == nullptr )
+			{
+				continue;
+			}
+			
+			size_t layerId = nd.layerId;
+
+			const MovieLayer & layer = layers[layerId];
+
+			if( _type.empty() == false && layer.type == _type )
+			{
+				_visitor->visitLayer( this, nd.node );
+			}
+		}
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = dynamic_cast<Movie *>(node);
+
+			if( movie->filterLayers( _type, _visitor ) == false )
+			{
+				continue;
+			}
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::visitSubMovie( VisitorMovieSubMovie * _visitor )
@@ -983,7 +1044,8 @@ namespace Menge
 
         Nodies ns;
         ns.child = false;
-        ns.node = 0;
+		ns.layerId = 0;
+        ns.node = nullptr;
         m_nodies.resize( maxLayerIndex + 1, ns );
 
         const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
@@ -996,42 +1058,42 @@ namespace Menge
         {
             const MovieLayer & layer = *it;
 
-            if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieSlot) )
+            if ( layer.type == CONST_STRING(m_serviceProvider, MovieSlot) )
             {
                 if( this->createMovieSlot_( layer ) == false )
                 {
                     return false;
                 }
             }
-            else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
+            else if ( layer.type == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
             {
                 if( this->createMovieSceneEffect_( layer ) == false )
                 {
                     return false;
                 }
             }
-            else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieText) )
+            else if ( layer.type == CONST_STRING(m_serviceProvider, MovieText) )
             {
                 if( this->createMovieText_( layer ) == false )
                 {
                     return false;
                 }
             }
-			else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieTextCenter) )
+			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) )
 			{
 				if( this->createMovieTextCenter_( layer ) == false )
 				{
 					return false;
 				}
 			}
-            else if ( layer.layerType == CONST_STRING(m_serviceProvider, MovieNullObject) )
+            else if ( layer.type == CONST_STRING(m_serviceProvider, MovieNullObject) )
             {
                 if( this->createMovieNullObject_( layer ) == false )
                 {
                     return false;
                 }
             }
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, Image) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, Image) )
             {
 				if( layer.shape == false )
 				{
@@ -1048,84 +1110,84 @@ namespace Menge
 					}
 				}
             }
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, SolidSprite) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, SolidSprite) )
             {
                 if( this->createMovieImageSolid_( layer ) == false )
                 {
                     return false;
                 }
             }
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieSocketImage) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketImage) )
             {
                 if( this->createMovieSocketImage_( layer ) == false )
                 {
                     return false;
                 }
             }
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieSocketShape) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketShape) )
             {
                 if( this->createMovieSocketShape_( layer ) == false )
                 {
                     return false;
                 }
             }
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, Animation) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, Animation) )
             {
                 if( this->createMovieAnimation_( layer ) == false )
                 {
                     return false;
                 }
             }
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, Movie) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, Movie) )
             {
                 if( this->createMovieMovie_( layer ) == false )
                 {
                     return false;
                 }
             }
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, SubMovie) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, SubMovie) )
             {
                 if( this->createMovieSubMovie_( layer ) == false )
                 {
                     return false;
                 }
             }
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieInternalObject) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, MovieInternalObject) )
             {				
                 if( this->createMovieInternalObject_( layer ) == false )
                 {
                     return false;
                 }
             }
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, Video) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, Video) )
             {
                 if( this->createMovieVideo_( layer ) == false )
                 {
                     return false;
                 }
             }
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, Sound) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, Sound) )
             {
                 if( this->createMovieSound_( layer ) == false )
                 {
                     return false;
                 }
             }
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, ParticleEmitter) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter) )
             {
                 if( this->createMovieParticleEmitter_( layer ) == false )
                 {
                     return false;
                 }
             }
-			else if( layer.layerType == CONST_STRING(m_serviceProvider, ParticleEmitter2) )
+			else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter2) )
 			{
 				if( this->createMovieParticleEmitter2_( layer ) == false )
 				{
 					return false;
 				}
 			}
-            else if( layer.layerType == CONST_STRING(m_serviceProvider, MovieEvent) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, MovieEvent) )
             {
                 if( this->createMovieEvent_( layer ) == false )
                 {
@@ -1137,7 +1199,7 @@ namespace Menge
                 LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't create layer_node '%s' type '%s'"
                     , m_name.c_str()
                     , layer.source.c_str()
-                    , layer.layerType.c_str()
+                    , layer.type.c_str()
                     );
 
                 return false;
@@ -1256,6 +1318,11 @@ namespace Menge
         ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceImage>( _layer.source );
 
+		if( resourceImage == nullptr )
+		{
+			return false;
+		}
+
 		layer_sprite->setResourceImage( resourceImage );
 
         layer_sprite->setName( _layer.name );
@@ -1284,6 +1351,11 @@ namespace Menge
 
 		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceImage>( _layer.source );
+
+		if( resourceImage == nullptr )
+		{
+			return false;
+		}
 
 		layer_mesh->setResourceImage( resourceImage );
 
@@ -1327,6 +1399,11 @@ namespace Menge
         ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceImage>( CONST_STRING(m_serviceProvider, WhitePixel) );
 
+		if( resourceImage == nullptr )
+		{
+			return false;
+		}
+
 		layer_sprite->setResourceImage( resourceImage );
 
         layer_sprite->setName( _layer.name );
@@ -1362,6 +1439,11 @@ namespace Menge
         ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceHIT>( _layer.source );
 
+		if( resourceHIT == nullptr )
+		{
+			return false;
+		}
+
         layer_hotspotimage->setResourceHIT( resourceHIT );
 
         layer_hotspotimage->setName( _layer.name );
@@ -1381,6 +1463,11 @@ namespace Menge
         ResourceShape * resourceShape = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceShape>( _layer.source );
 
+		if( resourceShape == nullptr )
+		{
+			return false;
+		}
+
         layer_hotspotshape->setResourceShape( resourceShape );
 
         layer_hotspotshape->setName( _layer.name );
@@ -1399,6 +1486,11 @@ namespace Menge
 
         ResourceAnimation * resourceAnimation = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceAnimation>( _layer.source );
+
+		if( resourceAnimation == nullptr )
+		{
+			return false;
+		}
 
 		layer_animation->setResourceAnimation( resourceAnimation );
         layer_animation->setName( _layer.name );
@@ -1435,6 +1527,11 @@ namespace Menge
         ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceMovie>( _layer.source );
 
+		if( resourceMovie == nullptr )
+		{
+			return false;
+		}
+
 		layer_movie->setResourceMovie( resourceMovie );
 		
 		layer_movie->setIntervalStart( _layer.startInterval );
@@ -1459,6 +1556,11 @@ namespace Menge
         
         ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceMovie>( _layer.source );
+
+		if( resourceMovie == nullptr )
+		{
+			return false;
+		}
 
         layer_movie->setResourceMovie( resourceMovie );
 
@@ -1505,6 +1607,11 @@ namespace Menge
         ResourceVideo * resourceVideo = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceVideo>( _layer.source );
 
+		if( resourceVideo == nullptr )
+		{
+			return false;
+		}
+
 		layer_video->setResourceVideo( resourceVideo );
         layer_video->setName( _layer.name );
 
@@ -1537,6 +1644,11 @@ namespace Menge
 
         ResourceSound * resourceSound = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceSound>( _layer.source );
+
+		if( resourceSound == nullptr )
+		{
+			return false;
+		}
 
 		layer_sound->setResourceSound( resourceSound );
         layer_sound->setName( _layer.name );
@@ -1602,10 +1714,20 @@ namespace Menge
         ResourceEmitter * resourceEmitter = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceEmitter>( _layer.source );
 
+		if( resourceEmitter == nullptr )
+		{
+			return false;
+		}
+
 		const ConstString & container = resourceEmitter->getContainer();
 
 		ResourceEmitterContainer * resourceEmitterContainer = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceEmitterContainer>( container );
+
+		if( resourceEmitterContainer == nullptr )
+		{
+			return false;
+		}
 
 		layer_particles->setResourceEmitterContainer( resourceEmitterContainer );
         layer_particles->setName( _layer.name );
@@ -1648,10 +1770,20 @@ namespace Menge
 		ResourceEmitter2 * resourceEmitter = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceEmitter2>( _layer.source );
 
+		if( resourceEmitter == nullptr )
+		{
+			return false;
+		}
+
 		const ConstString & container = resourceEmitter->getContainer();
 
 		ResourceEmitterContainer2 * resourceEmitterContainer = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceEmitterContainer2>( container );
+
+		if( resourceEmitterContainer == nullptr )
+		{
+			return false;
+		}
 
 		layer_particles->setResourceEmitterContainer( resourceEmitterContainer );
 		layer_particles->setName( _layer.name );

@@ -301,8 +301,8 @@ namespace Menge
         {
             PyObject * py_list = pybind::list_new(0);
 
-            PythonVisitorMovieSocket pvms(py_list);
-            _movie->visitSockets( &pvms );
+			PythonVisitorMovieSocket visitor(py_list);
+			_movie->visitSockets( &visitor );
 
             return py_list;
         }
@@ -341,8 +341,46 @@ namespace Menge
 		{
 			PyObject * py_list = pybind::list_new(0);
 
-			PythonVisitorMovieSubMovie pvmsm(py_list);
-			_movie->visitSubMovie( &pvmsm );
+			PythonVisitorMovieSubMovie visitor(py_list);
+			_movie->visitSubMovie( &visitor );
+
+			return py_list;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class PythonVisitorMovieLayer
+			: public VisitorMovieLayer
+		{
+		public:
+			PythonVisitorMovieLayer( PyObject * _list )
+				: m_list(_list)
+			{
+			}
+
+		protected:
+			void visitLayer( Movie * _movie, Node * _layer ) override
+			{
+				PyObject * py_movie = pybind::ptr( _movie );
+				PyObject * py_layer = pybind::ptr( _layer );
+
+				PyObject * py_tuple = pybind::tuple_new(2);
+
+				pybind::tuple_setitem( py_tuple, 0, py_movie );
+				pybind::tuple_setitem( py_tuple, 1, py_layer );
+
+				pybind::list_appenditem( m_list, py_tuple );
+				pybind::decref( py_tuple );
+			}
+
+		protected:
+			PyObject * m_list;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * movie_filterLayers( Movie * _movie, const ConstString & _type )
+		{
+			PyObject * py_list = pybind::list_new(0);
+
+			PythonVisitorMovieLayer visitor(py_list);
+			_movie->filterLayers( _type, &visitor );
 
 			return py_list;
 		}
@@ -3391,7 +3429,7 @@ namespace Menge
             {
                 const MovieLayer & layer = *it;
 
-                if( layer.layerType == CONST_STRING(m_serviceProvider, Movie) )
+                if( layer.type == CONST_STRING(m_serviceProvider, Movie) )
                 {
                     if( s_hasMovieElement( layer.source, _slotName, _typeName ) == true )
                     {
@@ -3399,7 +3437,7 @@ namespace Menge
                     }
                 }
 
-                if( layer.layerType != _typeName )
+                if( layer.type != _typeName )
                 {
                     continue;
                 }
@@ -3617,12 +3655,10 @@ namespace Menge
                     , m_groupName(_groupName)
                     , m_cb(_cb)
                 {
-                    pybind::incref( m_cb );
                 }
 
                 ~MyResourceVisitor()
                 {
-                    pybind::decref( m_cb );
                 }
 
             protected:
@@ -3666,6 +3702,100 @@ namespace Menge
             RESOURCE_SERVICE(m_serviceProvider)
                 ->visitResources( &rv_gac );						
         }
+		//////////////////////////////////////////////////////////////////////////		
+		void s_incrementResources( const ConstString & _category, const ConstString & _groupName )
+		{
+			class MyResourceVisitor
+				: public ResourceVisitor
+			{
+			public:
+				MyResourceVisitor( const ConstString & _category, const ConstString & _groupName )
+					: m_category(_category)
+					, m_groupName(_groupName)
+				{
+				}
+
+				~MyResourceVisitor()
+				{
+				}
+
+			protected:
+				void visit( ResourceReference* _resource )
+				{
+					const ConstString & category = _resource->getCategory();
+
+					if( category != m_category )
+					{
+						return;
+					}
+
+					const ConstString & group = _resource->getGroup();
+
+					if( group != m_groupName )
+					{
+						return;
+					}
+
+					_resource->incrementReference();
+				}
+
+			protected:
+				ConstString m_category;
+				ConstString m_groupName;
+			};
+
+			MyResourceVisitor rv_gac(_category, _groupName);
+
+			RESOURCE_SERVICE(m_serviceProvider)
+				->visitResources( &rv_gac );						
+		}
+		//////////////////////////////////////////////////////////////////////////		
+		void s_decrementResources( const ConstString & _category, const ConstString & _groupName )
+		{
+			class MyResourceVisitor
+				: public ResourceVisitor
+			{
+			public:
+				MyResourceVisitor( const ConstString & _category, const ConstString & _groupName )
+					: m_category(_category)
+					, m_groupName(_groupName)
+				{
+				}
+
+				~MyResourceVisitor()
+				{
+				}
+
+			protected:
+				void visit( ResourceReference* _resource )
+				{
+					const ConstString & category = _resource->getCategory();
+
+					if( category != m_category )
+					{
+						return;
+					}
+
+					const ConstString & group = _resource->getGroup();
+
+					if( group != m_groupName )
+					{
+						return;
+					}
+
+					_resource->decrementReference();
+				}
+
+			protected:
+				ConstString m_category;
+				ConstString m_groupName;
+			};
+
+			MyResourceVisitor rv_gac(_category, _groupName);
+
+			RESOURCE_SERVICE(m_serviceProvider)
+				->visitResources( &rv_gac );						
+		}
         //////////////////////////////////////////////////////////////////////////
         bool s_validResource( const ConstString & _resourceName )
         {
@@ -4477,6 +4607,7 @@ namespace Menge
                     .def( "hasMovieEvent", &Movie::hasMovieEvent )
                     .def_proxy_static( "getSockets", nodeScriptMethod, &NodeScriptMethod::movie_getSockets )
 					.def_proxy_static( "getSubMovies", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovies )
+					.def_proxy_static( "filterLayers", nodeScriptMethod, &NodeScriptMethod::movie_filterLayers )					
                     .def_proxy_static( "getFrameDuration", nodeScriptMethod, &NodeScriptMethod::movie_getFrameDuration )
                     .def_proxy_static( "getDuration", nodeScriptMethod, &NodeScriptMethod::movie_getDuration )
                     .def_proxy_static( "getFrameCount", nodeScriptMethod, &NodeScriptMethod::movie_getFrameCount )
@@ -4655,6 +4786,9 @@ namespace Menge
 
             pybind::def_functor( "visitCompiledResources", nodeScriptMethod, &NodeScriptMethod::s_visitCompiledResources );
             pybind::def_functor( "visitResources", nodeScriptMethod, &NodeScriptMethod::s_visitResources );
+
+			pybind::def_functor( "incrementResources", nodeScriptMethod, &NodeScriptMethod::s_incrementResources );
+			pybind::def_functor( "decrementResources", nodeScriptMethod, &NodeScriptMethod::s_decrementResources );
 
             pybind::def_functor( "validResource", nodeScriptMethod, &NodeScriptMethod::s_validResource );
 

@@ -439,10 +439,15 @@ namespace Menge
 		const ResourceEntry * entry = nullptr;
 		if( m_resources.has( _name, &entry ) == false )
 		{
+#	ifdef _DEBUG
+			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResourceReference: resource '%s' does not exist"
+				, _name.c_str()
+				);
+#	else
 			LOGGER_WARNING(m_serviceProvider)("ResourceManager::getResourceReference: resource '%s' does not exist"
 				, _name.c_str()
 				);
-
+#	endif
 			return nullptr;
 		}
 		

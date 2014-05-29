@@ -165,7 +165,7 @@ namespace Menge
 			return false;
 		}
 		
-        if( this->findModule_( modulePathCache, modulePathCacheLen + 3, _loader ) == false )
+        if( this->findModule_( modulePathCache, modulePathCacheLen + _extN, _loader ) == false )
 		{
 			modulePathCache[modulePathCacheLen] = MENGE_FOLDER_RESOURCE_DELIM;
 			if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MAX_PATH, _init, _extI ) == false )
@@ -173,7 +173,7 @@ namespace Menge
 				return false;
 			}
 
-			if( this->findModule_( modulePathCache, modulePathCacheLen + 12, _loader ) == false )
+			if( this->findModule_( modulePathCache, modulePathCacheLen + _extI, _loader ) == false )
 			{
 				return false;
 			}

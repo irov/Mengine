@@ -68,7 +68,7 @@ namespace Menge
 		return deltaTime;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned long WinTimer::getMilliseconds()
+	uint64_t WinTimer::getMilliseconds()
 	{
 		LARGE_INTEGER curTime;
 
@@ -82,17 +82,17 @@ namespace Menge
 
 		LONGLONG newTime = curTime.QuadPart - m_startTime.QuadPart;
 
-		unsigned long newTicks = (unsigned long) (1000 * newTime / m_frequency.QuadPart);
+		uint64_t newTicks = (uint64_t) (1000 * newTime / m_frequency.QuadPart);
 
-		unsigned long check = GetTickCount() - m_startTick;
-		signed long msecOff = (signed long)(newTicks - check);
+		uint64_t check = GetTickCount() - m_startTick;
+		int64_t msecOff = (int64_t)(newTicks - check);
 		if (msecOff < -100 || msecOff > 100)
 		{
 			LONGLONG adjust = (std::min)(msecOff * m_frequency.QuadPart / 1000, newTime - m_lastTime);
 			m_startTime.QuadPart += adjust;
 			newTime -= adjust;
 
-			newTicks = (unsigned long) (1000 * newTime / m_frequency.QuadPart);
+			newTicks = (uint64_t) (1000 * newTime / m_frequency.QuadPart);
 		}
 
 		m_lastTime = newTime;
@@ -100,21 +100,21 @@ namespace Menge
 		return newTicks;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned long WinTimer::getMicroseconds()
+	uint64_t WinTimer::getMicroseconds()
 	{
 		LONGLONG newTime = this->getMilliseconds();
 
-		unsigned long newMicro = (unsigned long) (1000000 * newTime / m_frequency.QuadPart);
+		uint64_t newMicro = (uint64_t) (1000000 * newTime / m_frequency.QuadPart);
 
 		return newMicro;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned long WinTimer::getMillisecondsCPU()
+	uint64_t WinTimer::getMillisecondsCPU()
 	{
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned long WinTimer::getMicrosecondsCPU()
+	uint64_t WinTimer::getMicrosecondsCPU()
 	{
 		return 0;
 	}

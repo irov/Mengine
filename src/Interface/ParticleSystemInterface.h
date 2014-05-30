@@ -25,7 +25,7 @@ namespace Menge
 		mt::vec3f v[4];
 		mt::vec2f uv[4];
 
-		unsigned long color;
+		uint32_t color;
 	};
 
 	typedef std::vector<ParticleVertices> TVectorParticleVerices;

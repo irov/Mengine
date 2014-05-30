@@ -167,9 +167,9 @@ namespace	Menge
 		
 		float x_offset = 0.f;
 		float y_offset = 0.f;
-		size_t index_offset = 0;
 
-		size_t vertexOffset = 0;
+		size_t index_offset = 0;
+		size_t vertex_offset = 0;
 
 		for( TVectorElements::iterator
 			it = m_elements.begin(),
@@ -182,7 +182,7 @@ namespace	Menge
 			const mt::vec4f & uv = el.resource->getUVImage();
 			const mt::vec2f & sz = el.resource->getMaxSize();
 
-				// left-upper
+			// left-upper
 			RenderVertex2D v1;
 			v1.color = 0xffffffff;
 			v1.uv.x = uv.x;
@@ -194,10 +194,9 @@ namespace	Menge
 			p1.x = x_offset;
 			p1.y = y_offset;
 			p1.z = 0.f;
-
 			mt::mul_v3_m4( v1.pos, p1, wm );
 
-			m_verticesWM[vertexOffset + 0] = v1;
+			m_verticesWM[vertex_offset + 0] = v1;
 
 			// right-upper
 			RenderVertex2D v2;
@@ -213,9 +212,9 @@ namespace	Menge
 			p2.z = 0.f;
 			mt::mul_v3_m4( v2.pos, p2, wm );
 
-			m_verticesWM[vertexOffset + 1] = v2;
+			m_verticesWM[vertex_offset + 1] = v2;
 
-				// right-down
+			// right-down
 			RenderVertex2D v3;
 			v3.color = 0xffffffff;
 			v3.uv.x = uv.z;
@@ -229,7 +228,7 @@ namespace	Menge
 			p3.z = 0.f;
 			mt::mul_v3_m4( v3.pos, p3, wm );
 
-			m_verticesWM[vertexOffset + 2] = v3;
+			m_verticesWM[vertex_offset + 2] = v3;
 
 			// left-down
 			RenderVertex2D v4;
@@ -245,9 +244,9 @@ namespace	Menge
 			p4.z = 0.f;
 			mt::mul_v3_m4( v4.pos, p4, wm );
 
-			m_verticesWM[vertexOffset + 3] = v4;
+			m_verticesWM[vertex_offset + 3] = v4;
 
-			vertexOffset += 4;
+			vertex_offset += 4;
 
 			x_offset += sz.x;
 

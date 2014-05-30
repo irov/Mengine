@@ -26,7 +26,7 @@
 
 
 #   ifndef MENGINE_RENDER_OBJECTS_MAX
-#   define MENGINE_RENDER_OBJECTS_MAX 4000
+#   define MENGINE_RENDER_OBJECTS_MAX 8000
 #   endif
 
 #   ifndef MENGINE_RENDER_PASS_MAX
@@ -213,7 +213,7 @@ namespace Menge
 	protected:
         void insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize );
         void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos );
-		void insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t _vbPos, size_t _ibPos ) const;
+		bool insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t _vbPos, size_t _ibPos ) const;
 
 		void flushRender_();
 		void prepare2D_();

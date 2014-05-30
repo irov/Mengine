@@ -22,10 +22,10 @@ namespace Menge
         virtual float getDeltaTime() const = 0;
 
     public:
-        virtual unsigned long getMilliseconds() = 0;
-        virtual unsigned long getMicroseconds() = 0;
-        virtual unsigned long getMillisecondsCPU() = 0;
-        virtual unsigned long getMicrosecondsCPU() = 0;
+        virtual uint64_t getMilliseconds() = 0;
+        virtual uint64_t getMicroseconds() = 0;
+        virtual uint64_t getMillisecondsCPU() = 0;
+        virtual uint64_t getMicrosecondsCPU() = 0;
     };
 
     class ConsoleInterface 

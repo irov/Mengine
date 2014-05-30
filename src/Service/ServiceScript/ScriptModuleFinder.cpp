@@ -99,8 +99,8 @@ namespace Menge
 
 		PyObject * loader_module = loader->getModule();
 
-		if( loader_module != _module )
-		{
+		if( loader_module != _module && pybind::test_equal( loader_module, _module ) == false )
+		{			
 			return nullptr;
 		}
 

@@ -575,7 +575,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderObject_( RenderObject* _renderObject )
 	{
-		if( _renderObject->dipVerticesNum == 0 )
+		if( _renderObject->dipIndiciesNum == 0 )
 		{
 			return;
 		}
@@ -612,18 +612,6 @@ namespace Menge
 			_renderObject->startIndex, 
 			_renderObject->dipIndiciesNum 
 			);
-
-		//if( _renderObject->material->getTextureCount() > 0 )
-		//{
-		//	printf("DIP %d %s\n"
-		//		, _renderObject->material->getId()
-		//		, _renderObject->material->getTexture(0)->getFileName().c_str()
-		//		);
-		//}
-		//else
-		//{
-		//	printf("DIP debug!\n");
-		//}
 
 		_renderObject->material = nullptr;
 
@@ -820,14 +808,8 @@ namespace Menge
 		float renderWidth = m_renderViewport.getWidth();
 		float renderHeight = m_renderViewport.getHeight();
 
-		//float viewportWidth = viewport.getWidth();
-		//float viewportHeight = viewport.getHeight();
-
 		size_t contentWidth = m_contentResolution.getWidth();
 		size_t contentHeight = m_contentResolution.getHeight();
-
-		//float scale_width = renderWidth / viewportWidth;
-		//float scale_height = renderHeight / viewportHeight;
 
 		float scale_width = renderWidth / float(contentWidth);
 		float scale_height = renderHeight / float(contentHeight);
@@ -842,9 +824,6 @@ namespace Menge
 
 		renderViewport.begin += m_renderViewport.begin;
 		renderViewport.end += m_renderViewport.begin;
-
-		//renderViewport.begin = m_renderOffset + viewport.begin * m_renderScale;
-		//renderViewport.end = m_renderOffset + viewport.end * m_renderScale;
 
 		float vp_x = ::floorf( renderViewport.begin.x + 0.5f );
 		float vp_y = ::floorf( renderViewport.begin.y + 0.5f );
@@ -922,19 +901,6 @@ namespace Menge
 			RenderObject * renderObject = it_begin;
 
 			this->renderObject_( renderObject );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline static void s_setupBoxRenderObject( mt::box2f & _bx, const RenderObject * _ro )
-	{
-		const RenderVertex2D & v0 = _ro->vertexData[0];
-		mt::reset( _bx, v0.pos.x, v0.pos.y );
-
-		for( size_t i = 1; i != _ro->verticesNum; ++i )
-		{
-			const RenderVertex2D & v = _ro->vertexData[i];
-
-			mt::add_internal_point( _bx, v.pos.x, v.pos.y );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1403,7 +1369,7 @@ namespace Menge
 		{
 			RenderObject * ro_bath_begin = it_batch_begin;
 
-			if( ro_bath_begin->verticesNum == 0 )
+			if( ro_bath_begin->indicesNum == 0 )
 			{
 				continue;
 			}
@@ -1413,19 +1379,20 @@ namespace Menge
 				break;
 			}
 
-			this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
+			if( this->insertRenderObject_( ro_bath_begin, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos ) == false )
+			{
+				break;
+			}
+
+			vbPos += ro_bath_begin->verticesNum;
+			ibPos += ro_bath_begin->indicesNum;
 
 			_ro->dipVerticesNum += ro_bath_begin->verticesNum;
 			_ro->dipIndiciesNum += ro_bath_begin->indicesNum;
 
 			ro_bath_begin->material = nullptr;
-
 			ro_bath_begin->dipVerticesNum = 0;
 			ro_bath_begin->dipIndiciesNum = 0;
-
-			vbPos += ro_bath_begin->verticesNum;
-			ibPos += ro_bath_begin->indicesNum;
-
 			ro_bath_begin->verticesNum = 0;
 			ro_bath_begin->indicesNum = 0;
 
@@ -1486,9 +1453,10 @@ namespace Menge
 				break;
 			}
 
-			//it_batch_start_end = it_batch_end;			
-
-			this->insertRenderObject_( ro_bath_start, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
+			if( this->insertRenderObject_( ro_bath_start, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos ) == false )
+			{
+				break;
+			}
 
 			_ro->dipVerticesNum += ro_bath_start->verticesNum;
 			_ro->dipIndiciesNum += ro_bath_start->indicesNum;
@@ -1531,7 +1499,10 @@ namespace Menge
 			ro->startIndex = ibPos;
 			ro->minIndex = vbPos;
 
-			this->insertRenderObject_( ro, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
+			if( this->insertRenderObject_( ro, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos ) == false )
+			{
+				break;
+			}
 			
 			ro->dipVerticesNum = ro->verticesNum;
 			ro->dipIndiciesNum = ro->indicesNum;
@@ -1564,23 +1535,22 @@ namespace Menge
 		_ibPos = ibPos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t _vbPos, size_t _ibPos ) const
+	bool RenderEngine::insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t _vbPos, size_t _ibPos ) const
 	{   
-		if( stdex::memorycopy_safe( _vertexBuffer, _vbPos * sizeof(RenderVertex2D), _vbSize * sizeof(RenderVertex2D), _renderObject->vertexData, _renderObject->verticesNum * sizeof(RenderVertex2D) ) == false )
+		if( stdex::memorycopy_safe_pod( _vertexBuffer, _vbPos, _vbSize, _renderObject->vertexData, _renderObject->verticesNum ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::insertRenderObject_ vertex buffer overrlow!"
 				);
 
-			return;
+			return false;
 		}
-		//std::copy( _renderObject->vertexData, _renderObject->vertexData + _renderObject->verticesNum, offsetVertexBuffer );
 
 		if( _ibPos > _ibSize )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::insertRenderObject_ indices buffer overrlow!"
 				);
 			
-			return;
+			return false;
 		}
 
 		RenderIndices2D * offsetIndicesBuffer = _indicesBuffer + _ibPos;
@@ -1598,6 +1568,7 @@ namespace Menge
 		}
 
 		//_renderObject->baseVertexIndex = 0;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::flushRender_()

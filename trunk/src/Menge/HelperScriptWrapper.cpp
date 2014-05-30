@@ -406,26 +406,26 @@ namespace Menge
 			return result;
 		}
 
-		unsigned long s_getTimeMs()
+		uint64_t s_getTimeMs()
 		{
             TimerInterface * timer = PLATFORM_SERVICE(m_serviceProvider)
                 ->getTimer();
 
-            unsigned long ms = timer->getMilliseconds();
+            uint64_t ms = timer->getMilliseconds();
 
 			return ms;
 		}
 
-        unsigned long s_getTime()
+        uint64_t s_getTime()
         {
-            unsigned long ms = s_getTimeMs();
+            uint64_t ms = s_getTimeMs();
 
-            unsigned long s = ms / 1000;
+            uint64_t s = ms / 1000;
 
             return s;
         }
 
-        unsigned int s_getDate()
+        uint32_t s_getDate()
         {
             std::time_t ctTime; 
             std::time(&ctTime);

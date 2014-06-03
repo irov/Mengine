@@ -85,6 +85,8 @@ namespace Menge
     {
         if( Layer * layer = dynamic_cast<Layer*>(_node) )
         {   
+			layer->setScene( nullptr );
+
             if( layer->isMain() == true )
             {
                 this->setMainLayer( nullptr );

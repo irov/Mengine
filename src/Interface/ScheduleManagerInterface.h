@@ -30,6 +30,7 @@ namespace Menge
 
         virtual void freeze( size_t _id, bool _freeze ) = 0;
         virtual void freezeAll( bool _freeze ) = 0;
+		virtual bool isFreezeAll() const = 0;
         virtual bool isFreeze( size_t _id ) const = 0;
 
         virtual float time( size_t _id ) const = 0;

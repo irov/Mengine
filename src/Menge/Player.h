@@ -76,6 +76,10 @@ namespace Menge
 		void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) override;
 		void calcGlobalMouseWorldDeltha( const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) override;
 
+	public:
+		ScheduleManagerInterface * createSchedulerManager() override;
+		void destroySchedulerManager( ScheduleManagerInterface * _scheduler ) override;
+
     public:
         MousePickerSystemInterface * getMousePickerSystem() const override;
         GlobalHandleSystemInterface * getGlobalHandleSystem() const override;
@@ -177,6 +181,9 @@ namespace Menge
 
 		ScheduleManagerInterface * m_scheduleManager;
 		ScheduleManagerInterface * m_scheduleManagerGlobal;
+
+		typedef std::vector<ScheduleManagerInterface *> TVectorUserScheduler;
+		TVectorUserScheduler m_schedulers;
 
         FactoryDefaultStore<ScheduleManager> m_factoryScheduleManager;
 

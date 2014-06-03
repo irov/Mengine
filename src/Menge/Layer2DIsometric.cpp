@@ -20,7 +20,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
-		class FLayer2DIsometricSortY
+		class FIsometricSortY
 		{
 		public:
 			bool operator() ( Node * _left, Node * _right ) const
@@ -31,7 +31,7 @@ namespace	Menge
 				float less_y =  l.y - r.y;
 				if( less_y < 0.1f && less_y > -0.1f )
 				{
-					return l.x < r.y;
+					return l.x < r.x;
 				}
 
 				return l.y < r.y;
@@ -41,7 +41,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DIsometric::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
-		stdex::intrusive_sort_stable( m_child, FLayer2DIsometricSortY() );
+		stdex::intrusive_sort_stable( m_child, FIsometricSortY() );
 
 		Layer::render( _viewport, _camera, _debugMask );
 	}

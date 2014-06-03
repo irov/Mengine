@@ -370,7 +370,7 @@ namespace Menge
 		}
 		else
 		{
-			if( parent )
+			if( parent != nullptr )
 			{
 				parent->removeChildren_( _node );
 			}
@@ -380,6 +380,8 @@ namespace Menge
             _node->setLayer( m_layer );
 			_node->setParent_( this );
 		}
+
+		this->_addChildren( _node );
 
 		if( this->isActivate() == false && _node->isActivate() == true )
 		{            
@@ -392,8 +394,6 @@ namespace Menge
 
 		_node->invalidateWorldMatrix();
 		_node->invalidateColor();
-
-		this->_addChildren( _node );
 
         _node->removeShallowGrave();
 
@@ -1040,7 +1040,9 @@ namespace Menge
 			return nullptr;
 		}
 
-		return m_layer->getScene();
+		Scene * scene = m_layer->getScene();
+
+		return scene;			 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::getScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _position )

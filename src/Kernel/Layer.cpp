@@ -4,6 +4,8 @@
 
 #	include "Kernel/Scene.h"
 
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -28,6 +30,10 @@ namespace Menge
 
 		if( m_scene == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Layer::_activate %s not setup scene!"
+				, this->getName().c_str()
+				);
+
 			return false;
 		}
 
@@ -38,10 +44,12 @@ namespace Menge
 	{
 		m_main = _main;
 
-		if( m_scene )
+		if( m_scene == nullptr )
 		{
-			m_scene->setMainLayer( this );
+			return;
 		}
+			
+		m_scene->setMainLayer( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Layer::isMain() const
@@ -52,6 +60,11 @@ namespace Menge
 	void Layer::setScene( Scene * _scene )
 	{
 		m_scene = _scene;
+
+		if( m_main == true && m_scene != nullptr )
+		{
+			m_scene->setMainLayer( this );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Scene * Layer::getScene()
@@ -73,7 +86,7 @@ namespace Menge
 	{
         (void)_layer;
 
-		Node::setLayer( this );
+		//Node::setLayer( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node* _node ) const
@@ -92,6 +105,25 @@ namespace Menge
 	void Layer::_addChildren( Node * _node )
 	{
 		_node->setLayer( this );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Layer::_changeParent( Node * _oldParent, Node * _newParent )
+	{
+		(void)_oldParent;        
+
+		if( _newParent == nullptr )
+		{
+			return;
+		}
+
+		Scene * scene = _newParent->getScene();
+
+		if( scene == nullptr )
+		{
+			return;
+		}
+
+		this->setScene( scene );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::_updateBoundingBox( mt::box2f& _boundingBox )

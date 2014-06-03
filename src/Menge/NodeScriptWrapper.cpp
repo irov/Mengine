@@ -67,6 +67,7 @@
 //#	include "Light2D.h"
 #	include "ShadowCaster2D.h"
 #	include "Gyroscope.h"
+#	include "Isometric.h"
 #	include "Arrow.h"
 #	include "TextField.h"
 #	include "SoundEmitter.h"
@@ -449,7 +450,9 @@ namespace Menge
                     , _movie->getName().c_str()
                     );
 
-                return mt::vec2f(0.f, 0.f);
+				static mt::vec2f zero(0.f, 0.f);
+
+                return zero;
             }
 
             const mt::vec2f & size = resourceMovie->getSize();
@@ -670,6 +673,22 @@ namespace Menge
 
             tm->remove( _id );
         }
+		//////////////////////////////////////////////////////////////////////////
+		ScheduleManagerInterface * createScheduler()
+		{
+			ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
+				->createSchedulerManager();
+
+			sm->initialize( m_serviceProvider );
+
+			return sm;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		void destroyScheduler( ScheduleManagerInterface * _sm )
+		{
+			PLAYER_SERVICE(m_serviceProvider)
+				->destroySchedulerManager( _sm );
+		}
         //////////////////////////////////////////////////////////////////////////
         class PyObjectScheduleListener
             : public ScheduleListener
@@ -677,29 +696,29 @@ namespace Menge
         public:
             PyObjectScheduleListener()
                 : m_serviceProvider(nullptr)
-                , m_pyObject(nullptr)
+                , m_cb(nullptr)
             {
             }
 
             ~PyObjectScheduleListener()
             {
-                pybind::decref( m_pyObject );
+                pybind::decref( m_cb );
             }
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, PyObject * _pyObject )
+			void initialize( ServiceProviderInterface * _serviceProvider, PyObject * _cb )
 			{
 				m_serviceProvider = _serviceProvider;
-				m_pyObject = _pyObject;
+				m_cb = _cb;
 
-				pybind::incref( m_pyObject );
+				pybind::incref( m_cb );
 			}
 
         protected:
             void onScheduleComplete( size_t _id ) override
             {
                 SCRIPT_SERVICE(m_serviceProvider)
-                    ->callFunction( m_pyObject, "(iO)", _id, pybind::get_bool(false) );
+                    ->callFunction( m_cb, "(iO)", _id, pybind::get_bool(false) );
                 //EVENT_SERVICE(m_serviceProvider)
                 //    ->addEventFormat( EVENT_SCHEDULE, m_pyObject, "(iO)", _id, pybind::get_bool(false) );
             }
@@ -707,14 +726,14 @@ namespace Menge
             void onScheduleStop( size_t _id ) override
             {
                 SCRIPT_SERVICE(m_serviceProvider)
-                    ->callFunction( m_pyObject, "(iO)", _id, pybind::get_bool(true) );
+                    ->callFunction( m_cb, "(iO)", _id, pybind::get_bool(true) );
                 //EVENT_SERVICE(m_serviceProvider)
                 //    ->addEventFormat( EVENT_SCHEDULE, m_pyObject, "(iO)", _id, pybind::get_bool(true) );
             }
 
         protected:
             ServiceProviderInterface * m_serviceProvider;
-            PyObject * m_pyObject;
+            PyObject * m_cb;
         };
 		//////////////////////////////////////////////////////////////////////////
 		typedef FactoryPoolStore<PyObjectScheduleListener, 8> TFactoryPyObjectScheduleListener;
@@ -3826,6 +3845,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Sprite );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Animation );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Gyroscope );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Isometric );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Arrow );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, TextField );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, SoundEmitter );
@@ -4519,6 +4539,9 @@ namespace Menge
 				pybind::interface_<Gyroscope, pybind::bases<Node> >("Gyroscope", false)
 					;
 
+				pybind::interface_<Isometric, pybind::bases<Node> >("Isometric", false)
+					;
+
                 {
                     pybind::interface_<Animation, pybind::bases<Sprite, Animatable> >("Animation", false)
                         .def( "setAnimationResource", &Animation::setResourceAnimation )
@@ -4654,7 +4677,7 @@ namespace Menge
             pybind::def_functor( "timingRemove", nodeScriptMethod, &NodeScriptMethod::timingRemove );
 
 			
-			pybind::interface_<ScheduleManagerInterface>("ScheduleManagerInterface", false)
+			pybind::interface_<ScheduleManagerInterface>("ScheduleManagerInterface", true)
 				.def_proxy_static( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
 				.def( "remove", &ScheduleManagerInterface::remove )
 				.def( "removeAll", &ScheduleManagerInterface::removeAll )
@@ -4663,6 +4686,9 @@ namespace Menge
 				.def( "isFreeze", &ScheduleManagerInterface::isFreeze )
 				.def( "time", &ScheduleManagerInterface::time )
 				;
+
+			pybind::def_functor( "createScheduler", nodeScriptMethod, &NodeScriptMethod::createScheduler );
+			pybind::def_functor( "destroyScheduler", nodeScriptMethod, &NodeScriptMethod::destroyScheduler );				
 
             pybind::def_functor( "schedule", nodeScriptMethod, &NodeScriptMethod::schedule );
             pybind::def_functor( "scheduleRemove", nodeScriptMethod, &NodeScriptMethod::scheduleRemove );

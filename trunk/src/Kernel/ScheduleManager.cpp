@@ -39,7 +39,7 @@ namespace Menge
     ScheduleManager::ScheduleManager()
         : m_serviceProvider(nullptr)
         , m_enumeratorSchedule(0)
-        , m_freeze(false)
+        , m_freezeAll(false)
     {
 
     }
@@ -61,7 +61,7 @@ namespace Menge
         event.timing = _timing * 1000.f;
         event.listener = _listener;
         event.id = ++m_enumeratorSchedule;
-        event.freeze = m_freeze;
+        event.freeze = false;
 
         m_schedules.push_back( event );
 
@@ -132,10 +132,15 @@ namespace Menge
                 continue;
             }
 
-            if( event.freeze )
+            if( event.freeze == true )
             {
                 continue;
             }
+
+			if( m_freezeAll == true )
+			{
+				continue;
+			}
 
             if( event.timing < _timing )
             {
@@ -187,17 +192,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void ScheduleManager::freezeAll( bool _freeze )
     {
-        m_freeze = _freeze;
-
-        for( TListSchedules::iterator 
-            it = m_schedules.begin(), 
-            it_end = m_schedules.end();
-        it != it_end;
-        ++it )
-        {
-            it->freeze = _freeze;
-        }
+        m_freezeAll = _freeze;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool ScheduleManager::isFreezeAll() const
+	{
+		return m_freezeAll;
+	}
     //////////////////////////////////////////////////////////////////////////
     float ScheduleManager::time( size_t _id ) const
     {

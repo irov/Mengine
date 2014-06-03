@@ -163,7 +163,7 @@ namespace Menge
 		//	, _time
 		//	);
 
-        //if( m_resourceMovie->getName() == "Movie101_Underworld_MG_Sound_Letter_Insert"
+        //if( this->getName() == "Movie_OpenNewspaper"
         //    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
         //    //&& m_resourceMovieName != "Movie401_StreetToChurch_WallZOOM_otv"
         //    )
@@ -670,7 +670,7 @@ namespace Menge
         {
             const MovieLayer & layer = *it;
 
-            if( layer.isMovie() == false || layer.isSubMovie() == false )
+            if( layer.isMovie() == false || layer.isSubMovie() == true )
             {
                 continue;
             }
@@ -730,7 +730,7 @@ namespace Menge
         {
             const MovieLayer & layer = *it;
 
-            if( layer.isMovie() == false || layer.isSubMovie() == false )
+            if( layer.isMovie() == false || layer.isSubMovie() == true )
             {
                 continue;
             }
@@ -1589,6 +1589,11 @@ namespace Menge
         ResourceInternalObject * resourceInternalObject = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceT<ResourceInternalObject>( _layer.source );
 
+		if( resourceInternalObject == nullptr )
+		{
+			return false;
+		}
+
 		movie_internal->setMovie( this );
         movie_internal->setResourceInternalObject( resourceInternalObject );
 
@@ -2099,7 +2104,7 @@ namespace Menge
 			return;
 		}
 
-        //if( m_resourceMovieName == "MovieCutScene_CutScene1"
+        //if( this->getName() == "Movie_OpenNewspaper"
         //    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
         //    //&& m_resourceMovieName != "Movie401_StreetToChurch_WallZOOM_otv"
         //    )

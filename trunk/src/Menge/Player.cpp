@@ -482,6 +482,34 @@ namespace Menge
 
 		_worldDeltha = deltha;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	ScheduleManagerInterface * Player::createSchedulerManager()
+	{
+		ScheduleManagerInterface * sm = m_factoryScheduleManager.createObjectT();
+
+		sm->initialize( m_serviceProvider );
+
+		m_schedulers.push_back( sm );
+
+		return sm;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::destroySchedulerManager( ScheduleManagerInterface * _scheduler )
+	{	
+		TVectorUserScheduler::iterator it_found = std::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
+
+		if( it_found == m_schedulers.end() )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Player::destroySchedulerManager scheduler not found!"
+				);
+
+			return;
+		}
+		
+		m_schedulers.erase( it_found );
+
+		_scheduler->destroy();
+	}
     //////////////////////////////////////////////////////////////////////////
     MousePickerSystemInterface * Player::getMousePickerSystem() const
     {
@@ -646,12 +674,25 @@ namespace Menge
 			m_scheduleManager->destroy();
 			m_scheduleManager = nullptr;
 		}
-
+		
 		if( m_scheduleManagerGlobal != nullptr )
 		{
 			m_scheduleManagerGlobal->destroy();
 			m_scheduleManagerGlobal = nullptr;
 		}
+
+		for( TVectorUserScheduler::iterator
+			it = m_schedulers.begin(),
+			it_end = m_schedulers.end();
+		it != it_end;
+		++it )
+		{
+			ScheduleManagerInterface * sm = *it;
+
+			sm->destroy();
+		}
+
+		m_schedulers.clear();
 
 		if( m_timingManager != nullptr )
 		{
@@ -886,6 +927,17 @@ namespace Menge
 			m_scheduleManagerGlobal->update( gameTime, _timing );
 		}
 
+		for( TVectorUserScheduler::iterator
+			it = m_schedulers.begin(),
+			it_end = m_schedulers.end();
+		it != it_end;
+		++it )
+		{
+			ScheduleManagerInterface * sm = *it;
+
+			sm->update( gameTime, _timing );
+		}
+
 		if( m_affectorable != nullptr )
 		{
 			m_affectorable->updateAffectors( gameTime, _timing );
@@ -909,12 +961,12 @@ namespace Menge
 	{
 		this->updateChangeScene_();
 
-		if( m_mousePickerSystem )
+		if( m_mousePickerSystem != nullptr )
 		{
 			m_mousePickerSystem->update();
 		}
 
-		if( m_globalHandleSystem )
+		if( m_globalHandleSystem != nullptr )
 		{
 			m_globalHandleSystem->update();
 		}

@@ -41,6 +41,7 @@ namespace Menge
 
 		void freeze( size_t _id, bool _freeze ) override;
 		void freezeAll( bool _freeze ) override;
+		bool isFreezeAll() const override;
 		bool isFreeze( size_t _id ) const override;
 
 		float time( size_t _id ) const override;
@@ -58,7 +59,7 @@ namespace Menge
 		TListSchedules m_schedules;
 
 		size_t m_enumeratorSchedule;
-		bool m_freeze;
+		bool m_freezeAll;
 
     protected:
         const ScheduleEvent * findEvent_( size_t _id ) const;

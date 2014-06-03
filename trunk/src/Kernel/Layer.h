@@ -41,6 +41,7 @@ namespace Menge
 		
 	protected:
 		void _addChildren( Node * _node ) override;
+		void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
     protected:
 		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;

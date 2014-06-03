@@ -28,6 +28,7 @@
 #	include "Point.h"
 #	include "SoundEmitter.h"
 #	include "Sprite.h"
+#	include "Isometric.h"
 #	include "Mesh2D.h"
 #	include "TextField.h"
 #	include "TileMap.h"
@@ -344,6 +345,7 @@ namespace Menge
 
 		NODE_FACTORY( m_serviceProvider, Animation );
 		NODE_FACTORY( m_serviceProvider, Gyroscope );
+		NODE_FACTORY( m_serviceProvider, Isometric );
 		
 #   ifdef MENGE_PARTICLES
 		NODE_FACTORY( m_serviceProvider, ParticleEmitter );

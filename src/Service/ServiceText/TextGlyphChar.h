@@ -5,17 +5,31 @@
 #	include "Factory/Factorable.h"
 
 #	include "stdex/binary_vector.h"
+#	include "stdex/intrusive_splay_tree.h"
 
 namespace Menge
 {
 	class TextGlyphChar
 		: public Factorable
+		, public stdex::intrusive_splay_node<TextGlyphChar>
 	{
+	public:
+		typedef GlyphCode key_type;	
+		typedef GlyphCharLess less_type;
+
+		struct key_getter_type
+		{
+			const GlyphCode & operator()( const TextGlyphChar * _node ) const
+			{
+				return _node->m_code;
+			}
+		};
+
 	public:
 		TextGlyphChar();
 		
 	public:
-		void initialize( const mt::vec4f & _uv, const mt::vec2f & _offset, float _ratio, const mt::vec2f & _size );
+		void initialize( GlyphCode _code, const mt::vec4f & _uv, const mt::vec2f & _offset, float _ratio, const mt::vec2f & _size );
 
 	public:
 		inline const mt::vec4f & getUV() const;
@@ -28,6 +42,8 @@ namespace Menge
 		float getKerning( GlyphCode _char ) const;
 
 	protected:
+		GlyphCode m_code;
+
 		mt::vec4f m_uv;
 		mt::vec2f m_offset;
 		float m_advance;

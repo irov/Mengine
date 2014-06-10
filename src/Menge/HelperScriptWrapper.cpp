@@ -975,7 +975,7 @@ namespace Menge
 
 		WString s_getTextByKey( const ConstString& _key )
 		{
-			TextEntryInterfacePtr entry;				
+			const TextEntryInterface * entry;				
 			if( TEXT_SERVICE(m_serviceProvider)
 				->existText( _key, &entry ) == false )
 			{
@@ -1000,8 +1000,7 @@ namespace Menge
 
 		size_t s_getTextCharCountByKey( const ConstString& _key )
 		{
-			TextEntryInterfacePtr entry;
-
+			const TextEntryInterface * entry;
 			if( TEXT_SERVICE(m_serviceProvider)
 				->existText( _key, &entry ) == false )
 			{				

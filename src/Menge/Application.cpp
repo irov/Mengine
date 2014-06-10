@@ -691,7 +691,7 @@ namespace Menge
             return false;
         }
 
-		m_textService->initialize( 3000 );
+		m_textService->initialize();
 		
 		return true;
 	}
@@ -1409,14 +1409,21 @@ namespace Menge
 		if( m_resourceService != nullptr )
 		{
 			m_resourceService->finalize();
+
+			SERVICE_DESTROY( ResourceService, m_resourceService );
 		}
-        
-		SERVICE_DESTROY( ResourceService, m_resourceService );
 
         SERVICE_DESTROY( Watchdog, m_watchdog );
         SERVICE_DESTROY( LoaderService, m_loaderService );
         SERVICE_DESTROY( AmplifierService, m_amplifierService );
-        SERVICE_DESTROY( TextService, m_textService );
+
+		if( m_textService != nullptr )
+		{
+			m_textService->finalize();
+
+	        SERVICE_DESTROY( TextService, m_textService );
+		}
+
         SERVICE_DESTROY( NodeService, m_nodeService );
         
 		SERVICE_DESTROY( PrototypeService, m_prototypeService );
@@ -1841,7 +1848,7 @@ namespace Menge
 			return Utils::emptyConstString();
 		}
 
-        TextEntryInterfacePtr entry;
+        const TextEntryInterface * entry;
 		if( TEXT_SERVICE(m_serviceProvider)->existText( CONST_STRING_LOCAL(m_serviceProvider, "APPLICATION_TITLE"), &entry ) == false )
 		{
             return Utils::emptyConstString();

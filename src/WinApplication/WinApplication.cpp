@@ -2532,10 +2532,10 @@ namespace Menge
 
 					::SetCursor( m_cursor );
 
-					if( m_clipingCursor != FALSE )
-					{
-						::ClipCursor( &m_clipingCursorRect );
-					}
+					//if( m_clipingCursor != FALSE )
+					//{
+					//	::ClipCursor( &m_clipingCursorRect );
+					//}
 				}
 
 				return FALSE;
@@ -2972,10 +2972,10 @@ namespace Menge
 
 		m_active = _active;
 
-		if( m_clipingCursor != FALSE )
-		{
-			::ClipCursor( (m_active)?(&m_clipingCursorRect):NULL );
-		}
+		//if( m_clipingCursor != FALSE )
+		//{
+		//	::ClipCursor( (m_active)?(&m_clipingCursorRect):NULL );
+		//}
 
 		if( m_active == true )
 		{
@@ -3133,19 +3133,19 @@ namespace Menge
 		::ClientToScreen( m_hWnd, &p1 );
 		::ClientToScreen( m_hWnd, &p2 );
 
-		m_clipingCursorRect.left = p1.x;
-		m_clipingCursorRect.top = p1.y;
-		m_clipingCursorRect.right = p2.x;
-		m_clipingCursorRect.bottom = p2.y;
+		//m_clipingCursorRect.left = p1.x;
+		//m_clipingCursorRect.top = p1.y;
+		//m_clipingCursorRect.right = p2.x;
+		//m_clipingCursorRect.bottom = p2.y;
 
-		m_clipingCursor = ::ClipCursor( &m_clipingCursorRect );	// Bound cursor
+		//m_clipingCursor = ::ClipCursor( &m_clipingCursorRect );	// Bound cursor
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyCursorUnClipping()
 	{
-		m_clipingCursor = FALSE;
+		//m_clipingCursor = FALSE;
 
-		::ClipCursor( NULL );
+		//::ClipCursor( NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyCursorIconSetup( const FilePath & _name, void * _buffer, size_t _size )

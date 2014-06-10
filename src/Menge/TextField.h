@@ -180,7 +180,7 @@ namespace Menge
 		const ColourValue & calcColorOutline() const;
 
 	protected:
-        TextEntryInterfacePtr m_textEntry;
+        const TextEntryInterface * m_textEntry;
 		TVectorString m_textFormatArgs;
 		
 		mutable String m_cacheText;

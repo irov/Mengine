@@ -3,9 +3,9 @@
 #	include "Interface/FileSystemInterface.h"
 
 #	include "Factory/FactoryStore.h"
-#	include "Core/MemoryInput.h"
 
-#   include "stdex/binary_vector.h"
+#	include "Core/MemoryInput.h"
+#   include "Core/IntrusiveSprayTree.h"
 
 namespace Menge
 {
@@ -50,20 +50,34 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        FilePath m_folder;
 		FilePath m_path;
 
 		FileGroupInterfacePtr m_zipFileGroup;
-		
+	
 		struct FileInfo
+			: public Factorable
+			, public stdex::intrusive_splay_node<FileInfo>
 		{
+			typedef FilePath key_type;
+			typedef FilePath::less_type less_type;
+
+			struct key_getter_type
+			{
+				const FilePath & operator()( const FileInfo * _node ) const
+				{
+					return _node->fileName;
+				}
+			};
+
+			FilePath fileName;
+
 			size_t seek_pos;
 			size_t file_size;
 			size_t unz_size;
 			uint16_t compr_method;
 		};
 
-		typedef stdex::binary_vector<FilePath, FileInfo> TMapFileInfo;
+		typedef IntrusiveSprayTree<FileInfo, 512> TMapFileInfo;
 		TMapFileInfo m_files;
 
 		typedef FactoryPoolStore<MemoryInput, 32> TFactoryMemoryInput;

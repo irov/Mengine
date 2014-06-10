@@ -4,6 +4,8 @@
 
 #	include "TextGlyphChar.h"
 
+#	include "Core/IntrusiveSprayTree.h"
+
 #	include "Factory/FactorablePtr.h"
 #	include "Factory/FactoryStore.h"
 
@@ -49,11 +51,8 @@ namespace Menge
 		float m_ascender;
 		float m_descender;
 
-		typedef stdex::binary_vector<GlyphCode, TextGlyphChar *, GlyphCharLess> TMapGlyphChar;
+		typedef IntrusiveSprayTree<TextGlyphChar, 256> TMapGlyphChar;
 		TMapGlyphChar m_chars;
-
-		typedef FactoryPoolStore<TextGlyphChar, 256> TFactoryTextGlyphChar;
-		TFactoryTextGlyphChar m_factoryTextGlyphChar;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<TextGlyph> TextGlyphPtr;

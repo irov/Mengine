@@ -80,8 +80,6 @@ namespace Menge
 #   endif
 
 				resource->destroy();
-
-				_entry->destroy();
 			}
 
 		protected:
@@ -328,7 +326,7 @@ namespace Menge
 		resource->setGroup( _group );
 		resource->setName( _name );		
 
-		ResourceEntry * entry = m_factoryResourceEntry.createObjectT();
+		ResourceEntry * entry = m_resources.create();
 				
 		entry->resource = resource;
 		entry->isLocked = false;

@@ -9,7 +9,6 @@ set( sources
 ${SOURCE_DIR}/src/class_core.cpp
 ${SOURCE_DIR}/src/class_info.cpp
 ${SOURCE_DIR}/src/class_type_scope.cpp
-${SOURCE_DIR}/src/constructor.cpp
 ${SOURCE_DIR}/src/exception.cpp
 ${SOURCE_DIR}/src/extract.cpp
 ${SOURCE_DIR}/src/function.cpp

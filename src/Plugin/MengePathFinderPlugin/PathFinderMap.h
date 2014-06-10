@@ -102,7 +102,7 @@ namespace Menge
 		//TVectorPathFinderWay m_pathFinderWays;
 
 		typedef std::vector<PathFinderDesc> TVectorPathFinderDesc;
-		TVectorPathFinderDesc m_pathfinders;
+		TVectorPathFinderDesc m_pathfinders;		
 
 		size_t m_enumeratorPathFinders;
 

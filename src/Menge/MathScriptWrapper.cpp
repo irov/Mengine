@@ -78,7 +78,7 @@ namespace Menge
 		{
 			if( _index > 2 )
 			{
-				pybind::throw_exception();
+				pybind::throw_exception("vec2 index == 2");
 			}
 
 			return _vec->operator [] (_index);
@@ -100,7 +100,7 @@ namespace Menge
 		{
 			if( _index > 3 )
 			{
-				pybind::throw_exception();
+				pybind::throw_exception("vec3 index == 3");
 			}
 
 			return _vec->operator [] (_index);
@@ -122,7 +122,7 @@ namespace Menge
 		{
 			if( _index > 4 )
 			{
-				pybind::throw_exception();
+				pybind::throw_exception("vec4 index == 4");
 			}
 
 			return _vec->operator [] (_index);

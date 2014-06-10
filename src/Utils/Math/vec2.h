@@ -1,12 +1,8 @@
 #	pragma once
 
-/*	
-	Vector2 class.
-	-	basic operation with vectors(+,-,*,=,==).
-	-	dot, reflect, norm, perp.
-*/
-
 #	include "config.h"
+
+#	include "utils.h"
 
 namespace mt
 {

@@ -5,7 +5,8 @@ namespace mt
 
 	MATH_METHOD_INLINE mat2f::mat2f( float angle )
 	{
-		float c = cosf(angle), s = sinf(angle);
+		float c = cosf_fast( angle );
+		float s = sinf_fast( angle );
 		v0.x = c; v1.x = -s;
 		v0.y = s; v1.y = c;
 	}

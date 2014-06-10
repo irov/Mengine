@@ -1,14 +1,8 @@
 #	pragma once
 
-/*	
-	Quaternion class.
-	-	basic operation with quats(+,-,*,=,==).
-	-	dot, reflect, norm, quat from angle axis,
-	-	inverse quat, exp, log, quat from rot matrix 3x3,
-	-	quat to rot matrix 3x3, quat from axes, quat to angle axis.
-*/
-
 #	include "config.h"
+
+#	include "utils.h"
 
 #	include "mat4.h"
 

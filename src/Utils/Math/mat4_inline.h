@@ -420,8 +420,8 @@ namespace mt
 
 	MATH_FUNCTION_INLINE void rotate_axis_m4( mat4f &out, const vec3f &u, float degrees )
 	{
-		float c = cosf( degrees );
-		float s = sinf( degrees );
+		float c = cosf_fast( degrees );
+		float s = sinf_fast( degrees );
 		float ic = 1.f - c;
 
 		float icux = ic*u.x;
@@ -620,95 +620,6 @@ namespace mt
 		_out[2][3] = -_out[2][3];
 	}
 
-	static inline float sinf_fast_pi_pi( float x )
-	{
-		float sin;
-
-		if( x < 0.f )
-		{
-			sin = 1.27323954f * x + 0.405284735f * x * x;
-
-			if( sin < 0.f )
-			{
-				sin = 0.225f * (sin * -sin - sin) + sin;
-			}
-			else
-			{
-				sin = 0.225f * (sin * sin - sin) + sin;
-			}
-		}
-		else
-		{
-			sin = 1.27323954f * x - 0.405284735f * x * x;
-
-			if( sin < 0.f )
-			{
-				sin = 0.225f * (sin * -sin - sin) + sin;
-			}
-			else
-			{
-				sin = 0.225f * (sin * sin - sin) + sin;
-			}
-		}
-
-		return sin;
-	}
-
-	static inline float cosf_fast( float x )
-	{
-		if( x < -6.28318531f || x > 6.28318531f )
-		{
-			return cosf( x );
-		}
-
-		if (x < -3.14159265f)
-		{
-			x += 6.28318531f;
-		}
-		else
-		{
-			if( x >  3.14159265f )
-			{
-				x -= 6.28318531f;
-			}
-		}
-
-		x += 1.57079632f;
-
-		if( x >  3.14159265f )
-		{
-			x -= 6.28318531f;
-		}
-
-		float cos = sinf_fast_pi_pi( x );
-
-		return cos;
-	}
-
-	static inline float sinf_fast( float x )
-	{
-		if( x < -6.28318531f || x > 6.28318531f )
-		{
-			return sinf( x );
-		}
-
-		if (x < -3.14159265f)
-		{
-			x += 6.28318531f;
-		}
-		else
-		{
-			if( x >  3.14159265f )
-			{
-				x -= 6.28318531f;
-			}
-		}
-
-		float sin = sinf_fast_pi_pi( x );
-
-		return sin;
-	}
-
 	MATH_FUNCTION_INLINE void make_rotate_m4_euler(mat4f & _out, float _x, float _y, float _z)
 	{
 		float ca = cosf_fast( _x );
@@ -718,14 +629,6 @@ namespace mt
 		float sa = sinf_fast( _x );
 		float sb = sinf_fast( _y );
 		float sy = sinf_fast( _z );
-
-		//float ca = cosf( _x );
-		//float cb = cosf( _y );
-		//float cy = cosf( _z );
-
-		//float sa = sinf( _x );
-		//float sb = sinf( _y );
-		//float sy = sinf( _z );
 
 		_out.v0.x = ca * cb;
 		_out.v0.y = ca * sb * sy - sa * cy;
@@ -797,8 +700,8 @@ namespace mt
 
 	MATH_FUNCTION_INLINE void make_rotate_x_axis_m4(mat4f & _out, float _angle)
 	{
-		float cosa = cosf(_angle);
-		float sina = sinf(_angle);
+		float cosa = cosf_fast(_angle);
+		float sina = sinf_fast(_angle);
 
 		_out.v0.x = 1.f;
 		_out.v0.y = 0.f;
@@ -823,8 +726,8 @@ namespace mt
 
 	MATH_FUNCTION_INLINE void make_rotate_y_axis_m4(mat4f & _out, float _angle)
 	{
-		float cosa = cosf(_angle);
-		float sina = sinf(_angle);
+		float cosa = cosf_fast(_angle);
+		float sina = sinf_fast(_angle);
 
 		_out.v0.x = cosa;
 		_out.v0.y = 0.f;
@@ -849,8 +752,8 @@ namespace mt
 
 	MATH_FUNCTION_INLINE void make_rotate_z_axis_m4(mat4f & _out, float _angle)
 	{
-		float cosa = cosf(_angle);
-		float sina = sinf(_angle);
+		float cosa = cosf_fast(_angle);
+		float sina = sinf_fast(_angle);
 
 		_out.v0.x = cosa;
 		_out.v0.y = -sina;

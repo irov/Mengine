@@ -469,13 +469,11 @@ namespace Menge
         {
             if( _scale.x == 0.f || _scale.y == 0.f || _scale.z == 0.f )
             {
-                LOGGER_ERROR(m_serviceProvider)("Transformation3D::setScale scale xyz not zero! (%f %f %f)"
-                    , _scale.x
-                    , _scale.y
-                    , _scale.z
-                    );
-
-                pybind::throw_exception();
+				pybind::throw_exception("Transformation3D::setScale scale xyz not zero! (%f %f %f)"
+					, _scale.x
+					, _scale.y
+					, _scale.z
+					);
 
                 return;
             }
@@ -1565,10 +1563,9 @@ namespace Menge
 				: public ResourceVisitor
 			{
 			public:
-				MyResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _groupName )
+				MyResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category )
 					: m_serviceProvider(_serviceProvider)
 					, m_category(_category)
-					, m_groupName(_groupName)
 				{
 				}
 
@@ -1577,33 +1574,8 @@ namespace Menge
 				}
 
 			protected:
-				bool filterResource( ResourceReference * _resource ) const
-				{
-					const ConstString & category = _resource->getCategory();
-
-					if( m_category != category )
-					{
-						return false;
-					}
-
-					const ConstString & group = _resource->getGroup();
-
-					if( m_groupName != group )
-					{
-						return false;
-					}
-
-					return true;
-				}
-
-			protected:
 				void visit( ResourceImageDefault * _resource ) override
 				{
-					if( this->filterResource( _resource ) == false )
-					{
-						return;
-					}
-
 					const FilePath & fileName = _resource->getFileName();
 					const ConstString & codecType = _resource->getCodecType();
 
@@ -1613,11 +1585,6 @@ namespace Menge
 
 				void visit( ResourceMovie * _resource ) override
 				{
-					if( this->filterResource( _resource ) == false )
-					{
-						return;
-					}
-
 					const FilePath & fileName = _resource->getFileName();
 					const ConstString & dataflowType = _resource->getDataflowType();
 
@@ -1628,13 +1595,12 @@ namespace Menge
 			protected:
 				ServiceProviderInterface * m_serviceProvider;
 				ConstString m_category;
-				ConstString m_groupName;
 			};
 
-			MyResourceVisitor rv_gac(m_serviceProvider, _category, _groupName);
+			MyResourceVisitor rv_gac(m_serviceProvider, _category);
 
 			RESOURCE_SERVICE(m_serviceProvider)
-				->visitResources( &rv_gac );
+				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_unfetchResources( const ConstString & _category, const ConstString & _groupName )
@@ -1643,10 +1609,8 @@ namespace Menge
 				: public ResourceVisitor
 			{
 			public:
-				MyResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _groupName )
+				MyResourceVisitor( ServiceProviderInterface * _serviceProvider )
 					: m_serviceProvider(_serviceProvider)
-					, m_category(_category)
-					, m_groupName(_groupName)
 				{
 				}
 
@@ -1655,33 +1619,8 @@ namespace Menge
 				}
 
 			protected:
-				bool filterResource( ResourceReference * _resource ) const
-				{
-					const ConstString & category = _resource->getCategory();
-
-					if( m_category != category )
-					{
-						return false;
-					}
-
-					const ConstString & group = _resource->getGroup();
-
-					if( m_groupName != group )
-					{
-						return false;
-					}
-
-					return true;
-				}
-
-			protected:
 				void visit( ResourceImageDefault * _resource ) override
 				{
-					if( this->filterResource( _resource ) == false )
-					{
-						return;
-					}
-
 					const FilePath & fileName = _resource->getFileName();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
@@ -1690,11 +1629,6 @@ namespace Menge
 
 				void visit( ResourceMovie * _resource ) override
 				{
-					if( this->filterResource( _resource ) == false )
-					{
-						return;
-					}
-
 					const FilePath & fileName = _resource->getFileName();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
@@ -1703,14 +1637,12 @@ namespace Menge
 
 			protected:
 				ServiceProviderInterface * m_serviceProvider;
-				ConstString m_category;
-				ConstString m_groupName;
 			};
 
-			MyResourceVisitor rv_gac(m_serviceProvider, _category, _groupName);
+			MyResourceVisitor rv_gac(m_serviceProvider);
 
 			RESOURCE_SERVICE(m_serviceProvider)
-				->visitResources( &rv_gac );
+				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_cacheResources( const ConstString & _category, const ConstString & _groupName )
@@ -1719,10 +1651,8 @@ namespace Menge
 				: public ResourceVisitor
 			{
 			public:
-				MyResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _groupName )
+				MyResourceVisitor( ServiceProviderInterface * _serviceProvider )
 					: m_serviceProvider(_serviceProvider)
-					, m_category(_category)
-					, m_groupName(_groupName)
 				{
 				}
 
@@ -1734,20 +1664,6 @@ namespace Menge
 				bool filterResource( ResourceReference * _resource ) const
 				{
 					if( _resource->isCompile() == false )
-					{
-						return false;
-					}
-
-					const ConstString & category = _resource->getCategory();
-
-					if( m_category != category )
-					{
-						return false;
-					}
-
-					const ConstString & group = _resource->getGroup();
-
-					if( m_groupName != group )
 					{
 						return false;
 					}
@@ -1768,14 +1684,12 @@ namespace Menge
 
 			protected:
 				ServiceProviderInterface * m_serviceProvider;
-				ConstString m_category;
-				ConstString m_groupName;
 			};
 
-			MyResourceVisitor rv_gac(m_serviceProvider, _category, _groupName);
+			MyResourceVisitor rv_gac(m_serviceProvider);
 
 			RESOURCE_SERVICE(m_serviceProvider)
-				->visitResources( &rv_gac );
+				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		void s_uncacheResources( const ConstString & _category, const ConstString & _groupName )
@@ -1784,10 +1698,8 @@ namespace Menge
 				: public ResourceVisitor
 			{
 			public:
-				MyResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _groupName )
+				MyResourceVisitor( ServiceProviderInterface * _serviceProvider )
 					: m_serviceProvider(_serviceProvider)
-					, m_category(_category)
-					, m_groupName(_groupName)
 				{
 				}
 
@@ -1804,20 +1716,6 @@ namespace Menge
 					}
 
 					if( _resource->isCache() == false )
-					{
-						return false;
-					}
-
-					const ConstString & category = _resource->getCategory();
-
-					if( m_category != category )
-					{
-						return false;
-					}
-
-					const ConstString & group = _resource->getGroup();
-
-					if( m_groupName != group )
 					{
 						return false;
 					}
@@ -1839,14 +1737,12 @@ namespace Menge
 
 			protected:
 				ServiceProviderInterface * m_serviceProvider;
-				ConstString m_category;
-				ConstString m_groupName;
 			};
 
-			MyResourceVisitor rv_gac(m_serviceProvider, _category, _groupName);
+			MyResourceVisitor rv_gac(m_serviceProvider);
 
 			RESOURCE_SERVICE(m_serviceProvider)
-				->visitResources( &rv_gac );
+				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		size_t s_rotateToIsometric( float _angle )
@@ -3669,10 +3565,8 @@ namespace Menge
                 : public ResourceVisitor
             {
             public:
-                MyResourceVisitor( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
-                    : m_category(_category)
-                    , m_groupName(_groupName)
-                    , m_cb(_cb)
+                MyResourceVisitor( PyObject * _cb )
+                    : m_cb(_cb)
                 {
                 }
 
@@ -3683,20 +3577,6 @@ namespace Menge
             protected:
                 void visit( ResourceReference* _resource )
                 {
-                    const ConstString & category = _resource->getCategory();
-
-                    if( category != m_category )
-                    {
-                        return;
-                    }
-
-                    const ConstString & group = _resource->getGroup();
-
-                    if( group != m_groupName )
-                    {
-                        return;
-                    }
-
                     PyObject * py_resource = pybind::ptr( _resource );
 
                     if( py_resource == nullptr )
@@ -3710,16 +3590,13 @@ namespace Menge
                 }
 
             protected:
-                ConstString m_category;
-                ConstString m_groupName;
-
                 PyObject * m_cb;
             };
 
-            MyResourceVisitor rv_gac(_category, _groupName, _cb);
+            MyResourceVisitor rv_gac(_cb);
 
             RESOURCE_SERVICE(m_serviceProvider)
-                ->visitResources( &rv_gac );						
+                ->visitGroupResources( _category, _groupName, &rv_gac );						
         }
 		//////////////////////////////////////////////////////////////////////////		
 		void s_incrementResources( const ConstString & _category, const ConstString & _groupName )
@@ -3727,46 +3604,17 @@ namespace Menge
 			class MyResourceVisitor
 				: public ResourceVisitor
 			{
-			public:
-				MyResourceVisitor( const ConstString & _category, const ConstString & _groupName )
-					: m_category(_category)
-					, m_groupName(_groupName)
-				{
-				}
-
-				~MyResourceVisitor()
-				{
-				}
-
 			protected:
 				void visit( ResourceReference* _resource )
 				{
-					const ConstString & category = _resource->getCategory();
-
-					if( category != m_category )
-					{
-						return;
-					}
-
-					const ConstString & group = _resource->getGroup();
-
-					if( group != m_groupName )
-					{
-						return;
-					}
-
 					_resource->incrementReference();
 				}
-
-			protected:
-				ConstString m_category;
-				ConstString m_groupName;
 			};
 
-			MyResourceVisitor rv_gac(_category, _groupName);
+			MyResourceVisitor rv_gac;
 
 			RESOURCE_SERVICE(m_serviceProvider)
-				->visitResources( &rv_gac );						
+				->visitGroupResources( _category, _groupName, &rv_gac );						
 		}
 		//////////////////////////////////////////////////////////////////////////		
 		void s_decrementResources( const ConstString & _category, const ConstString & _groupName )
@@ -3774,46 +3622,17 @@ namespace Menge
 			class MyResourceVisitor
 				: public ResourceVisitor
 			{
-			public:
-				MyResourceVisitor( const ConstString & _category, const ConstString & _groupName )
-					: m_category(_category)
-					, m_groupName(_groupName)
-				{
-				}
-
-				~MyResourceVisitor()
-				{
-				}
-
 			protected:
-				void visit( ResourceReference* _resource )
+				void visit( ResourceReference * _resource )
 				{
-					const ConstString & category = _resource->getCategory();
-
-					if( category != m_category )
-					{
-						return;
-					}
-
-					const ConstString & group = _resource->getGroup();
-
-					if( group != m_groupName )
-					{
-						return;
-					}
-
 					_resource->decrementReference();
 				}
-
-			protected:
-				ConstString m_category;
-				ConstString m_groupName;
 			};
 
-			MyResourceVisitor rv_gac(_category, _groupName);
+			MyResourceVisitor rv_gac;
 
 			RESOURCE_SERVICE(m_serviceProvider)
-				->visitResources( &rv_gac );						
+				->visitGroupResources( _category, _groupName, &rv_gac );						
 		}
         //////////////////////////////////////////////////////////////////////////
         bool s_validResource( const ConstString & _resourceName )

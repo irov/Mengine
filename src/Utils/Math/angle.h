@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "config.h"
+#	include "utils.h"
 
 #	include "vec2.h"
 #	include "mat4.h"
@@ -18,6 +19,8 @@ namespace mt
 	MATH_FUNCTION_INLINE float signed_angle(const mt::vec2f & _vec);
 	MATH_FUNCTION_INLINE float angle_in_interval_deg( float _angle, float _min, float _max );
 	MATH_FUNCTION_INLINE void make_euler_angles( mt::vec3f & _euler, const mat4f & _rotate );
+	MATH_FUNCTION_INLINE float cosf_fast( float x );
+	MATH_FUNCTION_INLINE float sinf_fast( float x );
 }
 
 #	if MATH_FORCE_INLINE == 1

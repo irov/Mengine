@@ -6,10 +6,7 @@
 #	include "Arrow.h"
 
 #	include "Interface/AmplifierServiceInterface.h"
-
-//#	include "LightSystem.h"
-//#	include "ResourceImageDynamic.h"
-#	include "ResourceImageDefault.h"
+#	include "Interface/WatchdogInterface.h"
 
 #	include "Interface/ScriptSystemInterface.h"
 #	include "Interface/ResourceInterface.h"
@@ -497,8 +494,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initializeRenderResources()
 	{
-		this->initPredefinedResources_();
-
 		m_player->initializeRenderResources();
 
         EVENTABLE_CALL(m_serviceProvider, this, EVENT_INITIALIZE_RENDER_RESOURCES)( "()" );
@@ -506,8 +501,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalizeRenderResources()
 	{
-		this->removePredefinedResources_();
-
 		if( m_player != nullptr )
 		{
 			m_player->finalizeRenderResources();
@@ -536,26 +529,6 @@ namespace Menge
 	bool Game::getHasWindowPanel() const
 	{
 		return m_hasWindowPanel;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::initPredefinedResources_()
-	{
-		//ResourceImageDefault * image = ResourceManager::get()
-		//	->createResourceT<ResourceImageDefault>( 
-		//	Consts::get()->c_builtin_empty, 
-		//	Consts::get()->c_builtin_empty, 
-		//	Consts::get()->c_WhitePixel, 
-		//	Consts::get()->c_ResourceImageDefault 
-		//	);
-
-		//image->addImagePath( Consts::get()->c_CreateImage, mt::vec2f(1.f,1.f) );
-		//image->incrementReference();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::removePredefinedResources_()
-	{
-		//ResourceManager::get()
-		//	->directResourceRelease( Consts::get()->c_WhitePixel );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::onFullscreen( const Resolution & _resolution, bool _fullscreen )
@@ -763,6 +736,8 @@ namespace Menge
 			}
 		}
 
+		BEGIN_WATCHDOG(m_serviceProvider, "pak apply");
+
 		for( TVectorResourcePak::iterator 
 			it = m_paks.begin(), 
 			it_end = m_paks.end();
@@ -781,6 +756,8 @@ namespace Menge
                 return false;
             }
 		}
+
+		END_WATCHDOG(m_serviceProvider, "pak apply", 0)("");
 
         return true;
 	}

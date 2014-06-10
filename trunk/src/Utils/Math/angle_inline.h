@@ -1,6 +1,3 @@
-#	include	"angle.h"
-#	include	"simplex.h"
-
 namespace mt
 {
 	MATH_FUNCTION_INLINE float angle_norm(float _angle)
@@ -111,8 +108,8 @@ namespace mt
 
 	MATH_FUNCTION_INLINE void direction( mt::vec2f & _vec, float _angle )
 	{
-		float cos_angle = cosf(_angle);
-		float sin_angle = sinf(_angle);
+		float cos_angle = cosf_fast( _angle );
+		float sin_angle = sinf_fast( _angle );
 
 		_vec.x = cos_angle;
 		_vec.y = sin_angle;
@@ -173,7 +170,7 @@ namespace mt
 		else
 		{
 			y = -asinf( sinY );
-			float cosY = cosf( y );
+			float cosY = cosf_fast( y );
 
 			x = atan2f( _rotate.v1.x / cosY, _rotate.v0.x / cosY );
 			z = atan2f( _rotate.v2.y / cosY, _rotate.v2.z / cosY );

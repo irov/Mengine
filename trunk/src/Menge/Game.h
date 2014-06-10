@@ -173,10 +173,6 @@ namespace Menge
 				
 		TMapParams m_params;
 
-	protected:
-		void initPredefinedResources_();
-		void removePredefinedResources_();
-
     protected:
         void setEmbed( PyObject * _embed );
         PyObject * getEmbed() const;

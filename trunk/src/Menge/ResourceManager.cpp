@@ -26,38 +26,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceManager::~ResourceManager()
 	{		
-        //_dumpResources();
-
-		m_resourcesCache.clear();
-
-        for( TMapResource::const_iterator
-            it = m_resources.begin(),
-            it_end = m_resources.end();
-        it != it_end;
-        ++it)
-        {
-            const ResourceEntry & entry = m_resources.get_value(it);
-
-            ResourceReference * resource = entry.resource;
-
-#   ifndef MENGE_MASTER_RELEASE
-            size_t refcount = resource->countReference();
-            if ( refcount != 0 )
-			{
-				LOGGER_WARNING(m_serviceProvider)("ResourceManager::~ResourceManager resource %s refcount %d"
-					, resource->getName().c_str()
-					, refcount
-					);
-
-				while( refcount != 0 )
-				{
-					refcount = resource->decrementReference();
-				}
-			}
-#   endif
-
-            resource->destroy();
-        }
 	}
     //////////////////////////////////////////////////////////////////////////
     void ResourceManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -70,11 +38,65 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::initialize( size_t _reserved )
+	bool ResourceManager::initialize()
 	{
-		m_resources.reserve( _reserved );
-
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class FResourcesForeachDestroy
+		{
+		public:
+			FResourcesForeachDestroy( ServiceProviderInterface * _serviceProvider )
+				: m_serviceProvider(_serviceProvider)
+			{
+			}
+
+		private:
+			void operator = ( const FResourcesForeachDestroy & )
+			{
+			}
+
+		public:
+			void operator() ( ResourceEntry * _entry )
+			{
+				ResourceReference * resource = _entry->resource;
+
+#   ifndef MENGE_MASTER_RELEASE
+				size_t refcount = resource->countReference();
+				if ( refcount != 0 )
+				{
+					LOGGER_WARNING(m_serviceProvider)("ResourceManager::~ResourceManager resource %s refcount %d"
+						, resource->getName().c_str()
+						, refcount
+						);
+
+					while( refcount != 0 )
+					{
+						refcount = resource->decrementReference();
+					}
+				}
+#   endif
+
+				resource->destroy();
+
+				_entry->destroy();
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceManager::finalize()
+	{
+		m_resourcesCache.clear();
+
+		FResourcesForeachDestroy rfd(m_serviceProvider);
+		m_resources.foreach( rfd );
+
+		m_resources.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::loadResource( const ConstString & _pakName, const ConstString & _path )
@@ -132,9 +154,9 @@ namespace Menge
 
         const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
 
-        size_t resources_size = m_resources.size();
-        size_t includes_size = includes_resource.size();
-        m_resources.reserve( resources_size + includes_size );
+        //size_t resources_size = m_resources.size();
+        //size_t includes_size = includes_resource.size();
+        //m_resources.reserve( resources_size + includes_size );
 
         for( Metacode::Meta_DataBlock::TVectorMeta_Resource::const_iterator
             it = includes_resource.begin(),
@@ -211,6 +233,56 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class FResourcesForeachValidation
+		{
+		public:
+			FResourcesForeachValidation( ServiceProviderInterface * _serviceProvider, bool & _successful )
+				: m_serviceProvider(_serviceProvider)
+				, m_successful(_successful)
+			{
+			}
+
+		private:
+			void operator = ( const FResourcesForeachValidation & )
+			{
+			}
+
+		public:
+			bool isSuccessful() const
+			{
+				return m_successful;
+			}
+
+		public:
+			void operator () ( ResourceEntry * _entry )
+			{
+				const ResourceReference * resource = _entry->resource;
+
+				bool successful = resource->isValid();
+
+				if( successful == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid validation"
+						, resource->getName().c_str()
+						, resource->getType().c_str()
+						);
+
+					LOGGER_WARNING(m_serviceProvider)("======================================================================");
+					LOGGER_WARNING(m_serviceProvider)("");
+
+					m_successful = false;
+				}
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+
+			bool & m_successful;
+		};
+	}
     //////////////////////////////////////////////////////////////////////////
     bool ResourceManager::validationResources() const
     {
@@ -219,31 +291,9 @@ namespace Menge
 
 		bool total_successful = true;
 
-        for( TMapResource::const_iterator
-            it = m_resources.begin(),
-            it_end = m_resources.end();
-        it != it_end;
-        ++it )
-        {
-            const ResourceEntry & entry = m_resources.get_value( it );
 
-			const ResourceReference * resource = entry.resource;
-
-			bool successful = resource->isValid();
-
-			if( successful == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid validation"
-					, resource->getName().c_str()
-					, resource->getType().c_str()
-					);
-
-				LOGGER_WARNING(m_serviceProvider)("======================================================================");
-				LOGGER_WARNING(m_serviceProvider)("");
-
-				total_successful = false;
-			}
-        }
+		FResourcesForeachValidation rfv(m_serviceProvider, total_successful);
+		m_resources.foreach( rfv );
 
         LOG_SERVICE(m_serviceProvider)->logMessage( Menge::LM_WARNING, 0, "\n", 2 );
 
@@ -278,28 +328,34 @@ namespace Menge
 		resource->setGroup( _group );
 		resource->setName( _name );		
 
-		ResourceEntry entry;
-		entry.resource = resource;
-		entry.isLocked = false;
+		ResourceEntry * entry = m_factoryResourceEntry.createObjectT();
+				
+		entry->resource = resource;
+		entry->isLocked = false;
 
-        m_resources.insert( entry );
+		m_resources.insert( entry );
 
-		CategoryGroupKey key;
-		key.category = _category;
-		key.group = _group;
-
-		TVectorResources * resources;
-		if( m_resourcesCache.has( key, &resources ) == false )
+		TMapGroupResourceCache * ptrGroupCache;
+		TVectorResources * ptrResources;
+		if( m_resourcesCache.has( _category, &ptrGroupCache ) == false )
 		{
+			TMapGroupResourceCache groupCache;
 			TVectorResources resources;
-			resources.reserve( 100 );
+			resources.push_back( resource );
+			groupCache.insert( _category, resources );
+
+			m_resourcesCache.insert( _category, groupCache );
+		}
+		else if( ptrGroupCache->has( _group, &ptrResources ) == false )
+		{			
+			TVectorResources resources;
 			resources.push_back( resource );
 
-			m_resourcesCache.insert( key, resources );
+			ptrGroupCache->insert( _group, resources );
 		}
 		else
 		{
-			resources->push_back( resource );
+			ptrResources->push_back( resource );
 		}
         
 		return resource;
@@ -307,8 +363,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::hasResource( const ConstString& _name, ResourceReference ** _resource ) const
 	{
-		ResourceEntry * entry;
-		if( m_resources.has( _name, &entry ) == false )
+		const ResourceEntry * entry = m_resources.find( _name );
+		
+		if( entry == nullptr )
 		{
 			return false;
 		}
@@ -323,8 +380,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::validResourceType( const ConstString& _name, const ConstString& _type ) const
 	{
-		const ResourceEntry * entry = nullptr;
-		if( m_resources.has( _name, &entry ) == false )
+		const ResourceEntry * entry = m_resources.find( _name );
+		
+		if( entry == nullptr )
 		{
 			return false;
 		}
@@ -341,8 +399,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::validResource( const ConstString & _name ) const
 	{
-		const ResourceEntry * entry = nullptr;
-		if( m_resources.has( _name, &entry ) == false )
+		const ResourceEntry * entry = m_resources.find( _name );
+
+		if( entry == nullptr )
 		{
 			return false;
 		}
@@ -356,8 +415,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::lockResource( const ConstString& _name )
 	{
-		ResourceEntry * entry = nullptr;
-		if( m_resources.has( _name, &entry ) == false )
+		ResourceEntry * entry = m_resources.find( _name );
+		
+		if( entry == nullptr )
 		{
 			return false;
 		}
@@ -378,8 +438,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceManager::unlockResource( const ConstString& _name )
 	{
-		ResourceEntry * entry = nullptr;
-		if( m_resources.has( _name, &entry ) == false )
+		ResourceEntry * entry = m_resources.find( _name );
+
+		if( entry == nullptr )
 		{
 			return false;
 		}
@@ -400,14 +461,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::getResource( const ConstString& _name ) const
 	{
-		const ResourceEntry * entry = nullptr;
-		if( m_resources.has( _name, &entry ) == false )
+		const ResourceEntry * entry = m_resources.find( _name );
+
+		if( entry == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' does not exist"
 				, _name.c_str()
 				);
 
-			return nullptr;
+			return false;
 		}
 
         if( entry->isLocked == true )
@@ -436,18 +498,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceReference * ResourceManager::getResourceReference( const ConstString & _name ) const
 	{
-		const ResourceEntry * entry = nullptr;
-		if( m_resources.has( _name, &entry ) == false )
+		const ResourceEntry * entry = m_resources.find( _name );
+
+		if( entry == nullptr )
 		{
-#	ifdef _DEBUG
-			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResourceReference: resource '%s' does not exist"
-				, _name.c_str()
-				);
-#	else
 			LOGGER_WARNING(m_serviceProvider)("ResourceManager::getResourceReference: resource '%s' does not exist"
 				, _name.c_str()
 				);
-#	endif
+
 			return nullptr;
 		}
 		
@@ -467,9 +525,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceManager::getResourceType( const ConstString & _name ) const
 	{
-		const ResourceEntry * entry = nullptr;
-		if( m_resources.has( _name, &entry ) == false )
+		const ResourceEntry * entry = m_resources.find( _name );
+
+		if( entry == nullptr )
 		{
+			LOGGER_WARNING(m_serviceProvider)("ResourceManager::getResourceType: resource '%s' does not exist"
+				, _name.c_str()
+				);
+
 			return ConstString::none();
 		}
 
@@ -480,38 +543,57 @@ namespace Menge
 		return type;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class FResourcesForeachVisit
+		{
+		public:
+			FResourcesForeachVisit( ResourceVisitor * _visitor )
+				: m_visitor(_visitor)
+			{
+			}
+
+		private:
+			void operator = ( const FResourcesForeachVisit & )
+			{
+			}
+
+		public:
+			void operator () ( ResourceEntry * _entry )
+			{
+				ResourceReference * resource = _entry->resource;
+
+				resource->accept( m_visitor );
+			}
+
+		protected:
+			ResourceVisitor * m_visitor;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::visitResources( ResourceVisitor * _visitor ) const
 	{
-        for( TMapResource::const_iterator
-            it = m_resources.begin(),
-            it_end = m_resources.end();
-        it != it_end;
-        ++it )
-        {
-            const ResourceEntry & entry = m_resources.get_value( it );
-
-            ResourceReference * resource = entry.resource;
-
-			resource->accept( _visitor );
-            //_visitor->visit( resource );
-        }
+		FResourcesForeachVisit rfv(_visitor);
+		m_resources.foreach( rfv );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::visitGroupResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const
 	{		
-		CategoryGroupKey key;
-		key.category = _category;
-		key.group = _group;
+		TMapGroupResourceCache * ptrGroupCache;
+		if( m_resourcesCache.has( _category, &ptrGroupCache ) == false )
+		{
+			return;
+		}
 
-		TVectorResources * resources;
-		if( m_resourcesCache.has( key, &resources ) == false )
+		TVectorResources * ptrResources;
+		if( ptrGroupCache->has( _group, &ptrResources ) == false )
 		{
 			return;
 		}
 
 		for( TVectorResources::const_iterator
-			it = resources->begin(),
-			it_end = resources->end();
+			it = ptrResources->begin(),
+			it_end = ptrResources->end();
 		it != it_end;
 		++it )
 		{
@@ -521,11 +603,16 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::directResourceCompile( const ConstString& _name )
+	bool ResourceManager::directResourceCompile( const ConstString & _name )
 	{
-		const ResourceEntry * entry = nullptr;
-		if( m_resources.has( _name, &entry ) == false )
+		const ResourceEntry * entry = m_resources.find( _name );
+
+		if( entry == nullptr )
 		{
+			LOGGER_WARNING(m_serviceProvider)("ResourceManager::directResourceCompile: resource '%s' does not exist"
+				, _name.c_str()
+				);
+
 			return false;
 		}
 		
@@ -538,9 +625,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::directResourceRelease( const ConstString& _name )
 	{
-		const ResourceEntry * entry = nullptr;
-		if( m_resources.has( _name, &entry ) == false )
+		const ResourceEntry * entry = m_resources.find( _name );
+
+		if( entry == nullptr )
 		{
+			LOGGER_WARNING(m_serviceProvider)("ResourceManager::directResourceRelease: resource '%s' does not exist"
+				, _name.c_str()
+				);
+
 			return;
 		}
 
@@ -549,46 +641,64 @@ namespace Menge
 		ref->decrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class FResourcesForeachDump
+		{
+		public:
+			FResourcesForeachDump( ServiceProviderInterface * _serviceProvider )
+				: m_serviceProvider(_serviceProvider)
+			{
+			}
+
+		private:
+			void operator = ( const FResourcesForeachDump & )
+			{
+			}
+
+		public:
+			void operator () ( ResourceEntry * _entry )
+			{
+				ResourceReference * resource = _entry->resource;
+
+				size_t count = resource->countReference();
+
+				if( count == 0 )
+				{
+					return;
+				}
+
+				if( resource->isCompile() == false )
+				{
+					return;
+				}
+
+				size_t memoryUse = resource->memoryUse();
+				float memoryUseMb = float(memoryUse)/(1024.f*1024.f);
+
+				const ConstString & name = ResourceEntry::key_getter_type()(_entry);
+
+				LOGGER_ERROR(m_serviceProvider)("--> %s : count - %u memory - %f"
+					, name.c_str()
+					, count
+					, memoryUseMb
+					);
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::dumpResources( const String & _tag )
 	{
 #	ifdef _DEBUG
-        LOGGER_ERROR(m_serviceProvider)("Dumping resources... %s"
-            , _tag.c_str()
-            );
+		LOGGER_ERROR(m_serviceProvider)("Dumping resources... %s"
+			, _tag.c_str()
+			);
 
-		for( TMapResource::iterator 
-			it = m_resources.begin()
-			, it_end = m_resources.end();
-		it != it_end;
-		++it )
-		{
-			const ResourceEntry & entry = m_resources.get_value(it);
-
-			ResourceReference * resource = entry.resource;
-
-			size_t count = resource->countReference();
-
-			if( count == 0 )
-			{
-				continue;
-			}
-
-			if( resource->isCompile() == false )
-			{
-				continue;
-			}
-
-			size_t memoryUse = resource->memoryUse();
-            float memoryUseMb = float(memoryUse)/(1024.f*1024.f);
-
-			const ConstString & name = m_resources.get_key(it);
-
-            LOGGER_ERROR(m_serviceProvider)("--> %s : count - %u memory - %f"
-                , name.c_str()
-                , count
-                , memoryUseMb
-                );
-		}
+		FResourcesForeachDump rfd(m_serviceProvider);
+		m_resources.foreach( rfd );
 #	endif
 	}
 }

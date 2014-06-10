@@ -669,7 +669,7 @@ namespace Menge
 
 #	undef RESOURCE_FACTORY
 
-		m_resourceService->initialize( 8000 );
+		m_resourceService->initialize();
 
 		return true;
 	}
@@ -1406,7 +1406,12 @@ namespace Menge
 
         SERVICE_DESTROY( GameService, m_game );
 
-        SERVICE_DESTROY( ResourceService, m_resourceService );
+		if( m_resourceService != nullptr )
+		{
+			m_resourceService->finalize();
+		}
+        
+		SERVICE_DESTROY( ResourceService, m_resourceService );
 
         SERVICE_DESTROY( Watchdog, m_watchdog );
         SERVICE_DESTROY( LoaderService, m_loaderService );

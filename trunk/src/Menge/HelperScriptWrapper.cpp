@@ -167,12 +167,12 @@ namespace Menge
 
 		float mt_cosf( float a )
 		{
-			return cosf(a);
+			return mt::cosf_fast(a);
 		}
 
 		float mt_sinf( float a )
 		{
-			return sinf(a);
+			return mt::sinf_fast(a);
 		}
 
 		float mt_tanf( float a )
@@ -979,11 +979,9 @@ namespace Menge
 			if( TEXT_SERVICE(m_serviceProvider)
 				->existText( _key, &entry ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Menge.getTextByKey invalid get key %s"
+				pybind::throw_exception("Menge.getTextByKey invalid get key %s"
 					, _key.c_str()
 					);
-
-				pybind::throw_exception();
 			}
 
 			const ConstString & text = entry->getText();
@@ -991,12 +989,10 @@ namespace Menge
             WString unicode;
             if( Helper::utf8ToUnicode(m_serviceProvider, text, unicode ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("Menge.getTextByKey invalid text key %s convert %s to unicode"
-                    , _key.c_str()
-                    , text.c_str()
-                    );
-
-                pybind::throw_exception();
+				pybind::throw_exception("Menge.getTextByKey invalid text key %s convert %s to unicode"
+					, _key.c_str()
+					, text.c_str()
+					);
             }
 
 			return unicode;
@@ -1008,12 +1004,10 @@ namespace Menge
 
 			if( TEXT_SERVICE(m_serviceProvider)
 				->existText( _key, &entry ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("Menge.getTextCharCountByKey invalid get key %s"
+			{				
+				pybind::throw_exception("Menge.getTextCharCountByKey invalid get key %s"
 					, _key.c_str()
 					);
-
-				pybind::throw_exception();
 			}
 
 			const ConstString & text = entry->getText();

@@ -2,6 +2,12 @@
 set( MY_LIB_NAME Math )
 
 ADD_FILTER(
+utils
+	utils.h
+)
+
+
+ADD_FILTER(
 angle
 	angle.cpp
 	angle.h

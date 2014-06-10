@@ -523,6 +523,11 @@ namespace Menge
 				continue;
 			}
 
+			if( desc.complete == true )
+			{
+				continue;
+			}
+
 			desc.finder->cancel();
 			desc.finder = nullptr;
 			
@@ -531,12 +536,23 @@ namespace Menge
 
 			desc.complete = true;
 		}
-
-		this->clearPathFinderComplete_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		struct FPathFinderDead
+		{
+			bool operator ()( const PathFinderMap::PathFinderDesc & _event ) const
+			{
+				return _event.complete;
+			}
+		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::update()
 	{
+		TVectorPathFinderDesc pathcomplete;
+
 		for( TVectorPathFinderDesc::iterator
 			it = m_pathfinders.begin(),
 			it_end = m_pathfinders.end();
@@ -554,6 +570,23 @@ namespace Menge
 			{
 				continue;
 			}
+			
+			pathcomplete.push_back( desc );
+			
+			desc.finder = nullptr;
+			desc.complete = true;
+		}
+
+		TVectorPathFinderDesc::iterator it_erase = std::remove_if( m_pathfinders.begin(), m_pathfinders.end(), FPathFinderDead());
+		m_pathfinders.erase( it_erase, m_pathfinders.end() );
+		
+		for( TVectorPathFinderDesc::iterator
+			it = pathcomplete.begin(),
+			it_end = pathcomplete.end();
+		it != it_end;
+		++it )
+		{
+			PathFinderDesc & desc = *it;
 
 			if( desc.finder->isSuccessful() == false )
 			{
@@ -576,31 +609,9 @@ namespace Menge
 
 			pybind::decref( desc.cb );
 			desc.cb = nullptr;
-
-			desc.finder = nullptr;
-
-			desc.complete = true;
 		}
 
-		this->clearPathFinderComplete_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		//////////////////////////////////////////////////////////////////////////
-		struct FPathFinderDead
-		{
-			bool operator ()( const PathFinderMap::PathFinderDesc & _event ) const
-			{
-				return _event.complete;
-			}
-		};	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::clearPathFinderComplete_()
-	{
-		TVectorPathFinderDesc::iterator it_erase = std::remove_if( m_pathfinders.begin(), m_pathfinders.end(), FPathFinderDead());
-		m_pathfinders.erase( it_erase, m_pathfinders.end() );
+		pathcomplete.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::setCamera2D( const RenderCameraInterface * _camera )

@@ -277,11 +277,11 @@ namespace mt
 	MATH_FUNCTION_INLINE void q_from_angle_axis(quatf& out, const vec3f& _rhs, float _val)
 	{
 		float hangle = 0.01745329251994329547f * _val * 0.5f;
-		float fsin = sinf(hangle);
+		float fsin = sinf_fast(hangle);
 
 		float i_length =  1.0f / sqrtf( _rhs.x*_rhs.x + _rhs.y*_rhs.y + _rhs.z*_rhs.z );
 	
-		out.w = cosf(hangle);
+		out.w = cosf_fast(hangle);
 		out.x = fsin * _rhs[0] * i_length;
 		out.y = fsin * _rhs[1] * i_length;
 		out.z = fsin * _rhs[2] * i_length;
@@ -328,9 +328,9 @@ namespace mt
 		*/
 
 		float angle = sqrtf(_rhs.x*_rhs.x+_rhs.y*_rhs.y+_rhs.z*_rhs.z);
-		float fsin = sinf(angle);
+		float fsin = sinf_fast(angle);
 
-		_out.w = cosf(angle);
+		_out.w = cosf_fast(angle);
 
 		if (fabsf(fsin) >= 0.00001f)
 		{
@@ -366,8 +366,8 @@ namespace mt
 
 		if (fabsf(_rhs[0]) < 1.0f)
 		{
-			float angle = cosf(_rhs.w);
-			float fsin = sinf(angle);
+			float angle = cosf_fast(_rhs.w);
+			float fsin = sinf_fast(angle);
 			if (fabsf(fsin) >= 0.00001f)
 			{
 				float coef = angle/fsin;

@@ -1,13 +1,11 @@
-/*	
-	Matrix 4x4 class.
-	-	basic operation(+,-,*,=,==).
-	-	identity, transpose, minor, determinant, adjoint, inverse
-*/
-#pragma once
+#	pragma once
 
-#include "vec4.h"
-#include "mat3.h"
-#include "math.h"
+#	include "config.h"
+
+#	include "utils.h"
+
+#	include "vec4.h"
+#	include "mat3.h"
 
 namespace mt
 {

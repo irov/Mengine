@@ -1,12 +1,8 @@
 #	pragma once
 
-/*	
-Matrix 3x3 class.
--	basic operation(+,-,*,=,==).
--	identity, transpose, minor, determinant, adjoint, inverse
-*/
-
 #	include "config.h"
+
+#	include "utils.h"
 
 #	include "vec2.h"
 

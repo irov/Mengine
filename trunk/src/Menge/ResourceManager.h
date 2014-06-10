@@ -3,21 +3,32 @@
 #   include "Interface/ResourceInterface.h"
 
 #	include "Kernel/ResourceReference.h"
+#	include "Factory/FactoryStore.h"
 
 #	include "Config/Typedef.h"
 
+#   include "stdex/intrusive_splay_tree.h"
 #   include "stdex/binary_vector.h"
-#   include "stdex/binary_set.h"
-
-#	include <map>
-#	include <list>
 
 namespace Menge
 {
 	class ResourceVisitor;
 
 	struct ResourceEntry
+		: public Factorable
+		, public stdex::intrusive_splay_node<ResourceEntry>
 	{
+		typedef ConstString key_type;
+		typedef ConstString::less_type less_type;
+
+		struct key_getter_type
+		{
+			const ConstString & operator()( const ResourceEntry * _node ) const
+			{
+				return _node->resource->getName();
+			}
+		};
+
 		ResourceReference * resource;
 		bool isLocked;
 	};
@@ -34,7 +45,8 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool initialize( size_t _reserved ) override;
+		bool initialize() override;
+		void finalize() override;
 
 	public:
 		bool loadResource( const ConstString & _pakName, const ConstString & _path ) override;
@@ -69,48 +81,19 @@ namespace Menge
 
 	public:
 		void dumpResources( const String & _tag );
-		
+
 	protected:
         ServiceProviderInterface * m_serviceProvider;
-
-		struct ResourceEntryGetKey
-		{
-			const ConstString & operator()( const ResourceEntry & _entry )
-			{
-				const ConstString & name = _entry.resource->getName();
-
-				return name;
-			}
-		};
-                
-		typedef stdex::binary_set<ConstString, ResourceEntry, ResourceEntryGetKey> TMapResource;
+               
+		typedef stdex::intrusive_splay_tree<ResourceEntry> TMapResource;
 		TMapResource m_resources;
 
-		struct CategoryGroupKey
-		{
-			ConstString category;
-			ConstString group;
-		};
-
-		struct CategoryGroupLess
-		{
-			bool operator () ( const CategoryGroupKey & _left, const CategoryGroupKey & _right ) const
-			{
-				if( _left.category < _right.category )
-				{
-					return true;
-				}
-				else if( _left.category == _right.category )
-				{
-					return _left.group < _right.group;
-				}
-
-				return false;
-			}
-		};
+		typedef FactoryPoolStore<ResourceEntry, 512> TFactoryResourceEntry;
+		TFactoryResourceEntry m_factoryResourceEntry;
 
 		typedef std::vector<ResourceReference *> TVectorResources;
-		typedef stdex::binary_vector<CategoryGroupKey, TVectorResources, CategoryGroupLess> TMapResourceCache;
-		TMapResourceCache m_resourcesCache;
+		typedef stdex::binary_vector<ConstString, TVectorResources> TMapGroupResourceCache;
+		typedef stdex::binary_vector<ConstString, TMapGroupResourceCache> TMapCategoryResourceCache;
+		TMapCategoryResourceCache m_resourcesCache;
 	};
 }

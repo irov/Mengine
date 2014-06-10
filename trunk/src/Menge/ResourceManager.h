@@ -6,8 +6,8 @@
 #	include "Factory/FactoryStore.h"
 
 #	include "Config/Typedef.h"
+#	include "Core/IntrusiveSprayTree.h"
 
-#   include "stdex/intrusive_splay_tree.h"
 #   include "stdex/binary_vector.h"
 
 namespace Menge
@@ -85,11 +85,8 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
                
-		typedef stdex::intrusive_splay_tree<ResourceEntry> TMapResource;
+		typedef IntrusiveSprayTree<ResourceEntry, 512> TMapResource;
 		TMapResource m_resources;
-
-		typedef FactoryPoolStore<ResourceEntry, 512> TFactoryResourceEntry;
-		TFactoryResourceEntry m_factoryResourceEntry;
 
 		typedef std::vector<ResourceReference *> TVectorResources;
 		typedef stdex::binary_vector<ConstString, TVectorResources> TMapGroupResourceCache;

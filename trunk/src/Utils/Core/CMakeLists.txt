@@ -71,6 +71,8 @@ src
     InputStreamBuffer.h
     
     OutputStreamWriter.h   
+    
+    IntrusiveSprayTree.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

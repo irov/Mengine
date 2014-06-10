@@ -202,13 +202,15 @@ namespace Menge
 				return false;
 			}
 
-			FileInfo fi;
-			fi.seek_pos = fileOffset;
-			fi.file_size = header.compressedSize;
-			fi.unz_size = header.uncompressedSize;
-			fi.compr_method = header.compressionMethod;
+			FileInfo * fi = m_files.create();
+
+			fi->fileName = fileName;
+			fi->seek_pos = fileOffset;
+			fi->file_size = header.compressedSize;
+			fi->unz_size = header.uncompressedSize;
+			fi->compr_method = header.compressionMethod;
 			
-			m_files.insert( fileName, fi );
+			m_files.insert( fi );
 
 			zipFileBuffer.skip( header.compressedSize );
 		}
@@ -228,14 +230,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupZip::existFile( const FilePath & _fileName ) const
 	{
-		TMapFileInfo::const_iterator it_found = m_files.find( _fileName );
+		bool successful = m_files.exist( _fileName );
 
-		if( it_found == m_files.end() )
-		{
-			return false;
-		}
-
-		return true;
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_inflate_memory( void * _buffer, size_t _capacity, const void * _src, size_t _size )
@@ -278,16 +275,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _fileName )
 	{
-		TMapFileInfo::const_iterator it_found = m_files.find( _fileName );
+		FileInfo * info = m_files.find( _fileName );
 
-		if( it_found == m_files.end() )
+		if( info == nullptr )
 		{
 			return nullptr;
 		}
-
-		const FileInfo & fi = m_files.get_value( it_found );
-		
-		if( fi.compr_method == Z_NO_COMPRESSION )
+			
+		if( info->compr_method == Z_NO_COMPRESSION )
 		{
 			InputStreamInterfacePtr stream = m_zipFileGroup->createInputFile( _fileName );
 
@@ -306,41 +301,39 @@ namespace Menge
 			return false;
 		}
 
-		TMapFileInfo::const_iterator it_found = m_files.find( _fileName );
+		FileInfo * info = m_files.find( _fileName );
 
-		if( it_found == m_files.end() )
+		if( info == nullptr )
 		{
 			return false;
 		}
 
-		const FileInfo & fi = m_files.get_value( it_found );
-
-		size_t file_offset = fi.seek_pos + _offset;
-		size_t file_size = _size == 0 ? fi.file_size : _size ;
+		size_t file_offset = info->seek_pos + _offset;
+		size_t file_size = _size == 0 ? info->file_size : _size ;
 	
-		if( _offset + file_size > fi.file_size )
+		if( _offset + file_size > info->file_size )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFile: pak %s file %s invalid open range %d:%d (file size is low %d:%d)"
 				, m_path.c_str()
 				, _fileName.c_str()
 				, _offset
 				, _size
-				, fi.seek_pos
-				, fi.file_size				
+				, info->seek_pos
+				, info->file_size
 				);
 
 			return false;
 		}
 				
-		if( fi.compr_method == Z_NO_COMPRESSION )
+		if( info->compr_method == Z_NO_COMPRESSION )
 		{
 			if( m_zipFileGroup->openInputFile( m_path, _stream, file_offset, file_size ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFile: pak %s file %s invalid open range %d:%d"
 					, m_path.c_str()
 					, _fileName.c_str()
-					, fi.seek_pos
-					, fi.file_size
+					, info->seek_pos
+					, info->file_size
 					);
 
 				return false;
@@ -374,20 +367,20 @@ namespace Menge
 		}
 
 		MemoryInput * memory = stdex::intrusive_get<MemoryInput>(_stream);
-		void * buffer = memory->newMemory( fi.unz_size );
+		void * buffer = memory->newMemory( info->unz_size );
 
 		if( buffer == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed new memory %d"
 				, m_path.c_str()
 				, _fileName.c_str()
-				, fi.unz_size
+				, info->unz_size
 				);
 
 			return false;
 		}
 
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, fi.file_size, "FileGroupZip_createInputFile");
+		CacheMemoryBuffer compress_buffer(m_serviceProvider, info->file_size, "FileGroupZip_createInputFile");
 		void * compress_memory = compress_buffer.getMemory();
 
 		if( compress_memory == nullptr )
@@ -395,16 +388,16 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed cache memory %d"
 				, m_path.c_str()
 				, _fileName.c_str()
-				, fi.file_size
+				, info->file_size
 				);
 
 			return false;
 		}
 
-		stream->read( compress_memory, fi.file_size );
+		stream->read( compress_memory, info->file_size );
 		stream = nullptr;
 
-		if( s_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
+		if( s_inflate_memory( buffer, info->unz_size, compress_memory, info->file_size ) == false )
 		{
 			return false;
 		}

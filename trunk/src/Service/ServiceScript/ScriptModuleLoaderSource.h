@@ -12,8 +12,6 @@
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 
-#   include "stdex/binary_vector.h"
-
 #	include "pybind/pybind.hpp"
 
 namespace Menge

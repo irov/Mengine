@@ -20,11 +20,6 @@
 
 #	include "Core/ConstString.h"
 
-#   include "stdex/binary_vector.h"
-
-//#	include "ColourValue.h"
-
-
 #   ifndef MENGINE_RENDER_OBJECTS_MAX
 #   define MENGINE_RENDER_OBJECTS_MAX 8000
 #   endif

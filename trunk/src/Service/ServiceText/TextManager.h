@@ -28,15 +28,16 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-		bool initialize( size_t _size ) override;
+		bool initialize() override;
+		void finalize() override;
 		
 	public:
 		bool loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
 		bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
 
 	public:
-		bool existText( const ConstString & _key, TextEntryInterfacePtr * _entry ) const override;
-		TextEntryInterfacePtr getTextEntry( const ConstString& _key ) const override;
+		bool existText( const ConstString & _key, const TextEntryInterface ** _entry ) const override;
+		const TextEntryInterface * getTextEntry( const ConstString& _key ) const override;
 		
 	public:
 		bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const override;
@@ -58,7 +59,7 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 		
-		typedef stdex::binary_vector<ConstString, TextEntryPtr> TMapTextEntry;
+		typedef IntrusiveSprayTree<TextEntry, 256> TMapTextEntry;
 		TMapTextEntry m_texts;
 
 		typedef stdex::binary_vector<ConstString, TextFontPtr> TMapTextFont;
@@ -71,9 +72,6 @@ namespace Menge
 		TVectorPaks m_paks;
 		
 		ConstString m_defaultFontName;
-
-		typedef FactoryPoolStore<TextEntry, 512> TFactoryTextEntry;
-		TFactoryTextEntry m_factoryTextEntry;
 
 		typedef FactoryPoolStore<TextFont, 16> TFactoryTextFont;
 		TFactoryTextFont m_factoryTextFont;

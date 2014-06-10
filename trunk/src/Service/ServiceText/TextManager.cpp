@@ -29,10 +29,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextManager::~TextManager()
 	{
-		m_texts.clear();
-		m_fonts.clear();
-		m_glyphs.clear();
-		m_paks.clear();
 	}
     //////////////////////////////////////////////////////////////////////////
     void TextManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -45,11 +41,17 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::initialize( size_t _size )
+	bool TextManager::initialize()
 	{
-		m_texts.reserve( _size );
-
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextManager::finalize()
+	{
+		m_texts.clear();
+		m_fonts.clear();
+		m_glyphs.clear();
+		m_paks.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -426,9 +428,10 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, size_t _params, bool _isOverride )
-	{
-		TextEntryPtr textEntry_has;
-		if( m_texts.has_copy( _key, textEntry_has ) == true )
+	{		
+		TextEntry * textEntry_has = m_texts.find( _key );
+
+		if( textEntry_has != nullptr )
 		{
 			if( _isOverride == false )
 			{
@@ -453,17 +456,18 @@ namespace Menge
             return;
 		}
 
-		TextEntryPtr textEntry = m_factoryTextEntry.createObjectT();
+		TextEntry * textEntry = m_texts.create();
 
 		textEntry->initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _params );
 
-        m_texts.insert( _key, textEntry );
+        m_texts.insert( textEntry );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextEntryInterfacePtr TextManager::getTextEntry( const ConstString& _key ) const
+	const TextEntryInterface * TextManager::getTextEntry( const ConstString& _key ) const
 	{
-		TextEntryPtr textEntry;
-		if( m_texts.has_copy( _key, textEntry ) == false )
+		const TextEntry * textEntry = m_texts.find( _key );
+		
+		if( textEntry == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
 				, _key.c_str() 
@@ -475,17 +479,21 @@ namespace Menge
         return textEntry;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::existText( const ConstString& _key, TextEntryInterfacePtr * _entry ) const
+	bool TextManager::existText( const ConstString& _key, const TextEntryInterface ** _entry ) const
 	{
-		TextEntryPtr textEntry;
-		bool result = m_texts.has_copy( _key, textEntry );
+		const TextEntry * result = m_texts.find( _key );
+
+		if( result == nullptr )
+		{
+			return false;
+		}
 
 		if( _entry != nullptr )
 		{
-			*_entry = stdex::intrusive_static_cast<TextEntryInterfacePtr>(textEntry);
+			*_entry = result;
 		}
 
-		return result;		
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const

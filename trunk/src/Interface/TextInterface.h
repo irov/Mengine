@@ -14,6 +14,7 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	enum EFontParams
 	{
 		EFP_NONE			= 0x00000000,
@@ -23,7 +24,7 @@ namespace Menge
 		EFP_LINE_OFFSET		= 0x00000008,
 		EFP_CHAR_OFFSET		= 0x00000010
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	struct Glyph
 	{
 		mt::vec4f uv;
@@ -33,7 +34,7 @@ namespace Menge
 
 		float kerning;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class TextFontInterface
 		: public FactorablePtr
 	{
@@ -60,11 +61,11 @@ namespace Menge
 		virtual const RenderTextureInterfacePtr & getTextureFont() const = 0;
 		virtual const RenderTextureInterfacePtr & getTextureOutline() const = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<TextFontInterface> TextFontInterfacePtr;
-
+	//////////////////////////////////////////////////////////////////////////
 	class TextEntryInterface
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		virtual const ConstString & getKey() const = 0;
@@ -80,30 +81,29 @@ namespace Menge
 	public:
 		virtual size_t getFontParams() const = 0;
 	};
-
-	typedef stdex::intrusive_ptr<TextEntryInterface> TextEntryInterfacePtr;
-
+	//////////////////////////////////////////////////////////////////////////
 	class VisitorTextFontInterface
 	{
 	public:
 		virtual void onTextFont( const TextFontInterfacePtr & _font ) = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class TextServiceInterface
 		: public ServiceInterface
 	{
 		SERVICE_DECLARE("TextService")
 
 	public:
-		virtual bool initialize( size_t _size ) = 0;
+		virtual bool initialize() = 0;
+		virtual void finalize() = 0;
 
 	public:
 		virtual bool loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 		virtual bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
-		virtual bool existText( const ConstString& _key, TextEntryInterfacePtr * _entry ) const = 0;
-		virtual TextEntryInterfacePtr getTextEntry( const ConstString& _key ) const = 0;        
+		virtual bool existText( const ConstString& _key, const TextEntryInterface ** _entry ) const = 0;
+		virtual const TextEntryInterface * getTextEntry( const ConstString& _key ) const = 0;        
 
 	public:
 		virtual bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const = 0;
@@ -111,12 +111,13 @@ namespace Menge
 		virtual TextFontInterfacePtr getFont( const ConstString & _name ) = 0;
 		virtual void releaseFont( const TextFontInterfacePtr & _font ) = 0;
 
+	public:
 		virtual void visitFonts( VisitorTextFontInterface * _vistitor ) = 0;
 
 	public:
 		virtual const ConstString & getDefaultFontName() const = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 #   define TEXT_SERVICE( serviceProvider )\
 	SERVICE_GET(serviceProvider, Menge::TextServiceInterface)
 }

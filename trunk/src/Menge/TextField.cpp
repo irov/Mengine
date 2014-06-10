@@ -42,6 +42,7 @@ namespace Menge
 		, m_invalidateVertices(true)
         , m_invalidateVerticesWM(true)
 		, m_invalidateTextLines(true)
+		, m_textEntry(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

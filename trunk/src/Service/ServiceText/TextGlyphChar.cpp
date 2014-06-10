@@ -11,8 +11,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextGlyphChar::initialize( const mt::vec4f & _uv, const mt::vec2f & _offset, float _advance, const mt::vec2f & _size )
+	void TextGlyphChar::initialize( GlyphCode _code, const mt::vec4f & _uv, const mt::vec2f & _offset, float _advance, const mt::vec2f & _size )
 	{
+		m_code = _code;
 		m_uv = _uv;
 		m_offset = _offset;
 		m_advance = _advance;

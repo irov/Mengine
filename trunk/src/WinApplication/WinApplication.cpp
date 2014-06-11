@@ -3124,14 +3124,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::notifyCursorClipping( const Viewport & _viewport )
 	{
-		POINT p1 = { static_cast<LONG>( _viewport.begin.x ),
-			static_cast<LONG>( _viewport.begin.y ) };
+		(void)_viewport;
 
-		POINT p2 = { static_cast<LONG>( _viewport.end.x ),
-			static_cast<LONG>( _viewport.end.y ) };
+		//POINT p1 = { static_cast<LONG>( _viewport.begin.x ),
+		//	static_cast<LONG>( _viewport.begin.y ) };
 
-		::ClientToScreen( m_hWnd, &p1 );
-		::ClientToScreen( m_hWnd, &p2 );
+		//POINT p2 = { static_cast<LONG>( _viewport.end.x ),
+		//	static_cast<LONG>( _viewport.end.y ) };
+
+		//::ClientToScreen( m_hWnd, &p1 );
+		//::ClientToScreen( m_hWnd, &p2 );
 
 		//m_clipingCursorRect.left = p1.x;
 		//m_clipingCursorRect.top = p1.y;

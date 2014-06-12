@@ -9,6 +9,7 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
     class PrototypeGeneratorInterface
 		: public FactorablePtr
     {
@@ -16,15 +17,15 @@ namespace Menge
         virtual Factorable * generate( const ConstString & _category, const ConstString & _prototype ) = 0;
         virtual size_t count() const = 0;
     };
-
+	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<PrototypeGeneratorInterface> PrototypeGeneratorInterfacePtr;
-
+	//////////////////////////////////////////////////////////////////////////
     class VisitorPrototypeGenerator
     {
     public:
         virtual void visit( const ConstString & _category, const ConstString & _type, const PrototypeGeneratorInterfacePtr & _factory ) = 0;
     };
-
+	//////////////////////////////////////////////////////////////////////////
     class PrototypeServiceInterface
 		: public ServiceInterface
     {

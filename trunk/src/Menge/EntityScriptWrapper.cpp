@@ -70,20 +70,29 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         class EntityPrototypeGenerator
             : public PythonPrototypeGenerator
+			, public Eventable
         {
         public:
             EntityPrototypeGenerator( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _prototype, PyObject * _module )
                 : PythonPrototypeGenerator(_serviceProvider, _category, _prototype, _module)
+				, m_type(nullptr)
             {
             }
 
-        protected:
-            Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
-            {
-                (void)_category;
-                (void)_prototype;
+			~EntityPrototypeGenerator()
+			{
+				pybind::decref( m_type );
+			}
 
-				PyObject * py_type = pybind::ask( m_module, "(O)", pybind::ptr(_prototype) );
+		protected:
+			PyObject * preparePythonType_()
+			{
+				if( m_type != nullptr )
+				{
+					return m_type;
+				}
+
+				PyObject * py_type = pybind::ask( m_module, "(O)", pybind::ptr(m_prototype) );
 
 				if( py_type == nullptr || pybind::is_none( py_type ) == true )
 				{
@@ -105,8 +114,37 @@ namespace Menge
 					return nullptr;
 				}
 
+				this->registerEventMethod( EVENT_CREATE, "onCreate", py_type );
+				this->registerEventMethod( EVENT_DESTROY, "onDestroy", py_type );
+
+				this->registerEventMethod( EVENT_PREPARATION, "onPreparation", py_type );
+				this->registerEventMethod( EVENT_ACTIVATE, "onActivate", py_type );
+				this->registerEventMethod( EVENT_PREPARATION_DEACTIVATE, "onPreparationDeactivate", py_type );
+				this->registerEventMethod( EVENT_DEACTIVATE, "onDeactivate", py_type );
+				this->registerEventMethod( EVENT_COMPILE, "onCompile", py_type );
+				this->registerEventMethod( EVENT_RELEASE, "onRelease", py_type );
+
+				m_type = py_type;
+				pybind::incref( m_type );
+
+				return py_type;
+			}
+
+        protected:
+            Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
+            {
+                (void)_category;
+                (void)_prototype;
+
+				PyObject * py_type = this->preparePythonType_();
+
+				if( py_type == nullptr )
+				{
+					return nullptr;
+				}
+
                 Entity * entity = SCRIPT_SERVICE(m_serviceProvider)
-                    ->createEntityT<Entity>( CONST_STRING(m_serviceProvider, Entity), m_prototype, py_type );
+                    ->createEntityT<Entity>( CONST_STRING(m_serviceProvider, Entity), m_prototype, py_type, this );
 
                 if( entity == nullptr )
                 {
@@ -126,11 +164,16 @@ namespace Menge
             {
                 return 0;
             }
+
+		protected:
+			PyObject * m_type;
         };
+		//////////////////////////////////////////////////////////////////////////
+		typedef stdex::intrusive_ptr<EntityPrototypeGenerator> EntityPrototypeGeneratorPtr;
         //////////////////////////////////////////////////////////////////////////
         bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, PyObject * _module )
         {
-            EntityPrototypeGenerator * generator = 
+            EntityPrototypeGeneratorPtr generator = 
                 new EntityPrototypeGenerator(m_serviceProvider, _category, _prototype, _module);
 
             PROTOTYPE_SERVICE(m_serviceProvider)

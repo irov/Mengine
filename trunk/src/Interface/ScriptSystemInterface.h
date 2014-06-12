@@ -21,6 +21,7 @@ extern "C"
 namespace Menge
 {	    
     class Scriptable;
+	class Eventable;
 
     class Entity;
 
@@ -66,12 +67,12 @@ namespace Menge
 		virtual void callFunction( PyObject * _object, const char * _params, ... ) = 0;
         virtual PyObject * askFunction( PyObject * _object, const char * _params, ... ) = 0;
 
-        virtual Entity * createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator ) = 0;
+        virtual Entity * createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator, Eventable * _eventable ) = 0;
 
         template<class T>
-        T * createEntityT( const ConstString& _type, const ConstString & _prototype, PyObject * _generator )
+        T * createEntityT( const ConstString& _type, const ConstString & _prototype, PyObject * _generator, Eventable * _eventable )
         {
-            Entity * entity = this->createEntity( _type, _prototype, _generator );
+            Entity * entity = this->createEntity( _type, _prototype, _generator, _eventable );
 
 #   ifdef _DEBUG
             if( dynamic_cast<T*>(entity) == nullptr )

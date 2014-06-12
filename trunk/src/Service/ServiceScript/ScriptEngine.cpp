@@ -328,7 +328,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator )
+	Entity * ScriptEngine::createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator, Eventable * _eventable )
 	{
 		if( _generator == nullptr )
 		{
@@ -365,6 +365,8 @@ namespace Menge
         entity->setEmbed( py_entity );
 		entity->setType( _type );
         entity->setPrototype( _prototype );
+
+		entity->setScriptEventable( _eventable );
 
 		entity->onCreate();
 

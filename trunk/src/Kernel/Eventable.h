@@ -18,7 +18,7 @@
 namespace Menge
 {
 	class Scriptable;
-
+	//////////////////////////////////////////////////////////////////////////
 	class Eventable
 	{
 	public:
@@ -44,14 +44,14 @@ namespace Menge
 		typedef stdex::binary_vector<EEventName, PyObject *> TMapEvent;
 		TMapEvent m_mapEvent;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class EventableCallOperator
 	{
 	public:
 		EventableCallOperator( ServiceProviderInterface * _serviceProvider, EEventName _event, PyObject * _pyevent );
 
 	public:
-		void operator () ( const char * _format, ... );
+		bool operator () ( const char * _format, ... );
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -59,7 +59,7 @@ namespace Menge
 		EEventName m_event;
 		PyObject * m_pyevent;		
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class EventableAskOperator
 	{
 	public:
@@ -80,8 +80,12 @@ namespace Menge
 }
 
 #	define EVENTABLE_CALL(serviceProvider, Self, Event)\
-	for( PyObject * EVENT_CALL_pyevent = Self->getEvent(Event); EVENT_CALL_pyevent != 0; EVENT_CALL_pyevent = 0 ) EventableCallOperator(serviceProvider, Event, EVENT_CALL_pyevent)
+	for( bool EVENTABLE_CALL_self = false; Self != nullptr && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
+	for( PyObject * EVENT_CALL_pyevent = Self->getEvent(Event); EVENT_CALL_pyevent != nullptr; EVENT_CALL_pyevent = nullptr )\
+	EventableCallOperator(serviceProvider, Event, EVENT_CALL_pyevent)
 
 #	define EVENTABLE_ASK(serviceProvider, Self, Event)\
-	for( PyObject * EVENT_ASK_pyevent = Self->getEvent(Event); EVENT_ASK_pyevent != 0; EVENT_ASK_pyevent = 0 ) EventableAskOperator(serviceProvider, Event, EVENT_ASK_pyevent)
+	for( bool EVENTABLE_ASK_self = false; Self != nullptr && EVENTABLE_ASK_self == false; EVENTABLE_ASK_self = true )\
+	for( PyObject * EVENT_ASK_pyevent = Self->getEvent(Event); EVENT_ASK_pyevent != nullptr; EVENT_ASK_pyevent = nullptr )\
+	EventableAskOperator(serviceProvider, Event, EVENT_ASK_pyevent)
 

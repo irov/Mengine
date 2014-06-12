@@ -58,7 +58,7 @@ namespace Menge
 		bool bootstrapModules() override;
 
 	public:
-		Entity * createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator ) override;
+		Entity * createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator, Eventable * _eventable ) override;
 
     public:
         bool stringize( PyObject * _object, ConstString & _str ) override;

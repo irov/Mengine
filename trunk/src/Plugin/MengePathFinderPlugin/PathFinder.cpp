@@ -23,6 +23,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinder::initialize( TPathMap * _map, const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize )
 	{
+		if( _from.x < 0.f || _from.y < 0.f )
+		{
+			return false;
+		}
+
+		if( _to.x < 0.f || _to.y < 0.f )
+		{
+			return false;
+		}
+
 		if( m_pathfinder.initialize( _map ) == false )
 		{
 			return false;

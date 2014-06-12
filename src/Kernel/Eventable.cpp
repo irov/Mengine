@@ -14,14 +14,13 @@ namespace Menge
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        static void s_callPyEventVaList2( ServiceProviderInterface * _serviceProvider, EEventName _event, PyObject * _pyevent, const char * _format, va_list _va )
+        static bool s_callPyEventVaList2( ServiceProviderInterface * _serviceProvider, EEventName _event, PyObject * _pyevent, const char * _format, va_list _va )
         {
-            PyObject * py_result = SCRIPT_SERVICE(_serviceProvider)
-                ->askFunctionVA( _pyevent, _format, _va );
+			PyObject * py_result = pybind::ask_va( _pyevent, _format, _va );
 
-            if( py_result == 0 )
+            if( py_result == nullptr )
             {
-                return;
+                return false;
             }
 
             if( pybind::is_none( py_result ) == false )
@@ -34,27 +33,32 @@ namespace Menge
                     , pybind::object_repr( _pyevent )
                     , objRepr
                     );
+
+				pybind::decref( py_result );
+
+				return false;
             }
 
             pybind::decref( py_result );
+
+			return true;
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T>
         static bool s_askPyEventVaListT( ServiceProviderInterface * _serviceProvider, T & _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _va )
         {
-            PyObject * pyresult = SCRIPT_SERVICE(_serviceProvider)
-                ->askFunctionVA( _pyevent, _format, _va );
+            PyObject * py_result = pybind::ask_va( _pyevent, _format, _va );
 
-            if( pyresult == 0 )
+            if( py_result == nullptr )
             {
                 return false;
             }
 
-            if( pybind::is_none( pyresult ) == true )
+            if( pybind::is_none( py_result ) == true )
             { 
                 const char * envString = eventToString( _event );
                 const char * typeName = typeid(T).name();
-                const char * objRepr = pybind::object_repr( pyresult );
+                const char * objRepr = pybind::object_repr( py_result );
 
                 LOGGER_ERROR(_serviceProvider)("Eventable: '%s' '%s' must return '%s', but return '%s'"
                     , envString
@@ -63,14 +67,14 @@ namespace Menge
                     , objRepr
                     );
 
-                pybind::decref( pyresult );
+                pybind::decref( py_result );
 
                 return false;
             }
 
-            _result = pybind::extract<T>( pyresult );
+            _result = pybind::extract<T>( py_result );
 
-            pybind::decref( pyresult );
+            pybind::decref( py_result );
 
             return true;		
         }
@@ -119,13 +123,15 @@ namespace Menge
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        static void s_callPyEventVaList( ServiceProviderInterface * _serviceProvider, EEventName _event, PyObject * _pyevent, const char * _format, va_list _va )
+        static bool s_callPyEventVaList( ServiceProviderInterface * _serviceProvider, EEventName _event, PyObject * _pyevent, const char * _format, va_list _va )
         {        
             pybind::incref( _pyevent );
 
-            s_callPyEventVaList2( _serviceProvider, _event, _pyevent, _format, _va );
+            bool successful = s_callPyEventVaList2( _serviceProvider, _event, _pyevent, _format, _va );
 
             pybind::decref( _pyevent );
+
+			return successful;
         }
     }    
 	//////////////////////////////////////////////////////////////////////////
@@ -331,14 +337,16 @@ namespace Menge
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	void EventableCallOperator::operator () ( const char * _format, ... )
+	bool EventableCallOperator::operator () ( const char * _format, ... )
 	{
 		va_list valist;
 		va_start(valist, _format);
 
-        Helper::s_callPyEventVaList( m_serviceProvider, m_event, m_pyevent, _format, valist );
+        bool successful = Helper::s_callPyEventVaList( m_serviceProvider, m_event, m_pyevent, _format, valist );
 
 		va_end( valist );
+
+		return successful;
 	}
     //////////////////////////////////////////////////////////////////////////
     EventableAskOperator::EventableAskOperator( ServiceProviderInterface * _serviceProvider, EEventName _event, PyObject * _pyevent )

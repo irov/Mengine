@@ -17,6 +17,10 @@ namespace Menge
 		void setPrototype( const ConstString & _prototype );
 		const ConstString & getPrototype() const;
 
+	public:
+		void setScriptEventable( Eventable * _eventable );
+		Eventable * getScriptEventable() const;
+
     public:
         void onCreate();
 
@@ -34,9 +38,8 @@ namespace Menge
 		void destroy() override;
 
 	protected:
-		void _embedding( PyObject * _embed ) override;
-
-	protected:
 		ConstString m_prototype;
+
+		Eventable * m_scriptEventable;
 	};
 }

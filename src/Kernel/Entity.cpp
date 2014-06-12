@@ -8,6 +8,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     Entity::Entity()
+		: m_scriptEventable(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -25,9 +26,19 @@ namespace Menge
 		return m_prototype;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Entity::setScriptEventable( Eventable * _eventable )
+	{
+		m_scriptEventable = _eventable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Eventable * Entity::getScriptEventable() const
+	{
+		return m_scriptEventable;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PREPARATION)("()");
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_PREPARATION)("(O)", this->getEmbed());
 
 		bool successful = Node::_activate();
 
@@ -38,53 +49,38 @@ namespace Menge
 	{
 		Node::_afterActivate();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)("()");
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_ACTIVATE)("(O)", this->getEmbed());
 	}
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
         Node::_deactivate();
 
-        EVENTABLE_CALL(m_serviceProvider, this, EVENT_PREPARATION_DEACTIVATE)("()");
+        EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_PREPARATION_DEACTIVATE)("(O)", this->getEmbed());
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_afterDeactivate()
 	{
 		Node::_afterDeactivate();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DEACTIVATE)("()");
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_DEACTIVATE)("(O)", this->getEmbed());
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_COMPILE)("()");
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_COMPILE)("(O)", this->getEmbed());
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_release()
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_RELEASE)("()");
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::_embedding( PyObject * _embed )
-	{
-		Node::_embedding( _embed );
-
-		this->registerEventMethod( EVENT_CREATE, "onCreate", _embed );
-		this->registerEventMethod( EVENT_DESTROY, "onDestroy", _embed );
-		
-		this->registerEventMethod( EVENT_PREPARATION, "onPreparation", _embed );
-		this->registerEventMethod( EVENT_ACTIVATE, "onActivate", _embed );
-        this->registerEventMethod( EVENT_PREPARATION_DEACTIVATE, "onPreparationDeactivate", _embed );
-		this->registerEventMethod( EVENT_DEACTIVATE, "onDeactivate", _embed );
-		this->registerEventMethod( EVENT_COMPILE, "onCompile", _embed );
-		this->registerEventMethod( EVENT_RELEASE, "onRelease", _embed );
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_RELEASE)("(O)", this->getEmbed());
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCreate()
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_CREATE)("()");
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_CREATE)("(O)", this->getEmbed());
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::destroy()
@@ -97,7 +93,7 @@ namespace Menge
             return;
         }
 
-        EVENTABLE_CALL(m_serviceProvider, this, EVENT_DESTROY)("()");
+        EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_DESTROY)("(O)", this->getEmbed());
 
         Factorable::destroy();
 	}

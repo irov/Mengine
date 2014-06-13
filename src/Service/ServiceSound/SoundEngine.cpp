@@ -97,7 +97,7 @@ namespace Menge
 			}
 
 			source->turn = true;
-
+						
 			if( source->source->play() == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("SoundEngine::playSounds_ invalid play"
@@ -105,6 +105,8 @@ namespace Menge
 
 				continue;
 			}
+
+			this->updateSourceVolume_( source, source->volume );
 
 			this->playSoundBufferUpdate_( source );
 		}
@@ -566,6 +568,8 @@ namespace Menge
             }break;
 		}
 
+		this->updateSourceVolume_( source, source->volume );
+
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -820,6 +824,8 @@ namespace Menge
 
                 return false;
             }
+
+			this->updateSourceVolume_( source, source->volume );
         }
 
         if( hasBufferUpdate == true )				

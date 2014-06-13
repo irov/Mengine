@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
+#	include "Interface/PrototypeManagerInterface.h"
 
 #	include "Config/Typedef.h"
 #	include "Config/String.h"
@@ -67,6 +68,11 @@ namespace Menge
 		virtual void callFunction( PyObject * _object, const char * _params, ... ) = 0;
         virtual PyObject * askFunction( PyObject * _object, const char * _params, ... ) = 0;
 
+	public:
+		virtual PrototypeGeneratorInterfacePtr createEntityGenerator( const ConstString & _category, const ConstString & _prototype, PyObject * _generator ) = 0;
+		virtual PyObject * importEntity( const ConstString & _category, const ConstString & _prototype ) = 0;
+
+	public:
         virtual Entity * createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator, Eventable * _eventable ) = 0;
 
         template<class T>
@@ -91,5 +97,5 @@ namespace Menge
 	};
 
 #   define SCRIPT_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::ScriptServiceInterface)
+    ((Menge::ScriptServiceInterface*)SERVICE_GET(serviceProvider, Menge::ScriptServiceInterface))
 }

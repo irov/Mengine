@@ -3,6 +3,8 @@
 #   include "ScriptModuleFinder.h"
 #   include "ScriptModuleLoader.h"
 
+#	include "EntityPrototypeGenerator.h"
+
 #	include "ScriptLogger.h"
 
 #	include "Interface/ApplicationInterface.h"
@@ -327,6 +329,41 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	PrototypeGeneratorInterfacePtr ScriptEngine::createEntityGenerator( const ConstString & _category, const ConstString & _prototype, PyObject * _generator )
+	{
+		PrototypeGeneratorInterfacePtr generator = 
+			new EntityPrototypeGenerator(m_serviceProvider, _category, _prototype, _generator);
+
+		return generator;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * ScriptEngine::importEntity( const ConstString & _category, const ConstString & _prototype )
+	{
+		PrototypeGeneratorInterfacePtr generator;
+		if( PROTOTYPE_SERVICE(m_serviceProvider)
+			->hasPrototype( _category, _prototype, generator ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ScriptEngine::importEntity: can't import '%s' '%s'"
+				, _category.c_str()
+				, _prototype.c_str()
+				);
+
+			return pybind::ret_none();
+		}
+
+		EntityPrototypeGeneratorPtr entityGenerator = 
+			stdex::intrusive_dynamic_cast<EntityPrototypeGeneratorPtr>(generator);
+
+		if( entityGenerator == nullptr )
+		{
+			return pybind::ret_none();
+		}
+
+		PyObject * py_type = entityGenerator->preparePythonType();
+
+		return py_type;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	Entity * ScriptEngine::createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator, Eventable * _eventable )
 	{

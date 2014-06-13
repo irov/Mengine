@@ -14,6 +14,8 @@ src
     ScriptModuleLoaderCode.cpp
     ScriptModuleLoaderSource.h
     ScriptModuleLoaderSource.cpp
+    EntityPrototypeGenerator.h
+    EntityPrototypeGenerator.cpp
 
     ConstStringHolderPythonString.h
     ConstStringHolderPythonString.cpp

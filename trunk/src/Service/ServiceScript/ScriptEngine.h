@@ -2,6 +2,7 @@
 
 #	include "Interface/ScriptSystemInterface.h"
 #	include "Interface/ResourceInterface.h"
+#	include "Interface/PrototypeManagerInterface.h"
 
 #   include "Factory/FactoryStore.h"
 #   include "Factory/FactoryDefault.h"
@@ -56,6 +57,10 @@ namespace Menge
 
 	public:
 		bool bootstrapModules() override;
+
+	public:
+		PrototypeGeneratorInterfacePtr createEntityGenerator( const ConstString & _category, const ConstString & _prototype, PyObject * _generator ) override;
+		PyObject * importEntity( const ConstString & _category, const ConstString & _prototype ) override;
 
 	public:
 		Entity * createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator, Eventable * _eventable ) override;

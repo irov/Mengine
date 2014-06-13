@@ -28,153 +28,10 @@ namespace Menge
 
     public:
         //////////////////////////////////////////////////////////////////////////
-        class PythonPrototypeGenerator
-            : public PrototypeGeneratorInterface
-        {
-        public:
-            PythonPrototypeGenerator( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _prototype, PyObject * _module )
-                : m_serviceProvider(_serviceProvider)
-                , m_category(_category)
-                , m_prototype(_prototype)
-                , m_module(_module)
-            {
-                pybind::incref( m_module );
-            }
-
-            virtual ~PythonPrototypeGenerator()
-            {
-                pybind::decref( m_module );
-				m_module = nullptr;
-            }
-
-        public:
-            PyObject * getModule() const
-            {
-                return m_module;
-            }
-
-        public:
-            void destroy() override
-            {
-                delete this;
-            }
-
-        protected:
-            ServiceProviderInterface * m_serviceProvider;
-            ConstString m_category;
-            ConstString m_prototype;
-            PyObject * m_module;
-        };
-		//////////////////////////////////////////////////////////////////////////
-		typedef stdex::intrusive_ptr<PythonPrototypeGenerator> PythonPrototypeGeneratorPtr;
-        //////////////////////////////////////////////////////////////////////////
-        class EntityPrototypeGenerator
-            : public PythonPrototypeGenerator
-			, public Eventable
-        {
-        public:
-            EntityPrototypeGenerator( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _prototype, PyObject * _module )
-                : PythonPrototypeGenerator(_serviceProvider, _category, _prototype, _module)
-				, m_type(nullptr)
-            {
-            }
-
-			~EntityPrototypeGenerator()
-			{
-				pybind::decref( m_type );
-			}
-
-		protected:
-			PyObject * preparePythonType_()
-			{
-				if( m_type != nullptr )
-				{
-					return m_type;
-				}
-
-				PyObject * py_type = pybind::ask( m_module, "(O)", pybind::ptr(m_prototype) );
-
-				if( py_type == nullptr || pybind::is_none( py_type ) == true )
-				{
-					LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator prototype %s invalid type create"
-						, m_category.c_str()
-						, m_prototype.c_str()
-						);
-
-					return nullptr;
-				}
-
-				if( pybind::type_initialize( py_type ) == false )
-				{
-					LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator prototype %s invalid type initialize"
-						, m_category.c_str()
-						, m_prototype.c_str()
-						);
-
-					return nullptr;
-				}
-
-				this->registerEventMethod( EVENT_CREATE, "onCreate", py_type );
-				this->registerEventMethod( EVENT_DESTROY, "onDestroy", py_type );
-
-				this->registerEventMethod( EVENT_PREPARATION, "onPreparation", py_type );
-				this->registerEventMethod( EVENT_ACTIVATE, "onActivate", py_type );
-				this->registerEventMethod( EVENT_PREPARATION_DEACTIVATE, "onPreparationDeactivate", py_type );
-				this->registerEventMethod( EVENT_DEACTIVATE, "onDeactivate", py_type );
-				this->registerEventMethod( EVENT_COMPILE, "onCompile", py_type );
-				this->registerEventMethod( EVENT_RELEASE, "onRelease", py_type );
-
-				m_type = py_type;
-				pybind::incref( m_type );
-
-				return py_type;
-			}
-
-        protected:
-            Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
-            {
-                (void)_category;
-                (void)_prototype;
-
-				PyObject * py_type = this->preparePythonType_();
-
-				if( py_type == nullptr )
-				{
-					return nullptr;
-				}
-
-                Entity * entity = SCRIPT_SERVICE(m_serviceProvider)
-                    ->createEntityT<Entity>( CONST_STRING(m_serviceProvider, Entity), m_prototype, py_type, this );
-
-                if( entity == nullptr )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("EntityPrototypeGenerator can't generate %s %s"
-                        , m_category.c_str()
-                        , m_prototype.c_str()
-                        );
-
-                    return nullptr;
-                }
-
-                return entity;
-            }
-
-        protected:
-            size_t count() const override
-            {
-                return 0;
-            }
-
-		protected:
-			PyObject * m_type;
-        };
-		//////////////////////////////////////////////////////////////////////////
-		typedef stdex::intrusive_ptr<EntityPrototypeGenerator> EntityPrototypeGeneratorPtr;
-        //////////////////////////////////////////////////////////////////////////
         bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, PyObject * _module )
         {
-            EntityPrototypeGeneratorPtr generator = 
-                new EntityPrototypeGenerator(m_serviceProvider, _category, _prototype, _module);
+            PrototypeGeneratorInterfacePtr generator = SCRIPT_SERVICE(m_serviceProvider)
+				->createEntityGenerator(_category, _prototype, _module);
 
             PROTOTYPE_SERVICE(m_serviceProvider)
                 ->addPrototype( _category, _prototype, generator );
@@ -229,30 +86,17 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_importEntity( const ConstString & _prototype )
         {
-            PrototypeGeneratorInterfacePtr generator;
-            if( PROTOTYPE_SERVICE(m_serviceProvider)
-                ->hasPrototype( CONST_STRING(m_serviceProvider, Entity), _prototype, generator ) == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("Error: can't import Entity '%s'"
-                    , _prototype.c_str()
-                    );
+            PyObject * py_type = SCRIPT_SERVICE(m_serviceProvider)
+				->importEntity( CONST_STRING(m_serviceProvider, Entity), _prototype );
+			
+			if( py_type == nullptr )
+			{
+				return pybind::ret_none();
+			}
 
-                return pybind::ret_none();
-            }
+            pybind::incref( py_type );
 
-            PythonPrototypeGeneratorPtr pythonGenerator = 
-				stdex::intrusive_dynamic_cast<PythonPrototypeGeneratorPtr>(generator);
-
-            if( pythonGenerator == nullptr )
-            {
-                return pybind::ret_none();
-            }
-
-            PyObject * py_module = pythonGenerator->getModule();
-
-            pybind::incref( py_module );
-
-            return py_module;
+            return py_type;
         }
 
     protected:

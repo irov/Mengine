@@ -16,12 +16,12 @@ namespace Menge
 		ResourceSound();
 
 	public:
-		void setPath( const FilePath& _path );
+		void setPath( const FilePath & _path );
 		const FilePath& getPath() const;
 				
-		void setCodec( const ConstString& _codec );
-		void setConverter( const ConstString& _converter );
-
+		void setCodecType( const ConstString & _codec );
+		const ConstString & getCodecType() const;
+		
 	public:
 		bool isStreamable() const;		
 		float getDefaultVolume() const;
@@ -49,7 +49,7 @@ namespace Menge
 	protected:
 		FilePath m_path;
 
-		ConstString m_codec;
+		ConstString m_codecType;
 		ConstString m_converter;
 		float m_defaultVolume;
 

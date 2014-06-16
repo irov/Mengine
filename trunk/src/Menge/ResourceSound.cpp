@@ -29,14 +29,14 @@ namespace Menge
 		m_path = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::setCodec( const ConstString& _codec )
+	void ResourceSound::setCodecType( const ConstString& _codec )
 	{
-		m_codec = _codec;
+		m_codecType = _codec;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::setConverter( const ConstString& _converter )
+	const ConstString & ResourceSound::getCodecType() const
 	{
-		m_converter = _converter;
+		return m_codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceSound::_loader( const Metabuf::Metadata * _meta )
@@ -45,7 +45,7 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceSound *>(_meta);
 
         metadata->swap_File_Path( m_path );
-        metadata->swap_File_Codec( m_codec );
+        metadata->swap_File_Codec( m_codecType );
         metadata->swap_File_Converter( m_converter );
 
         metadata->get_DefaultVolume_Value( m_defaultVolume );
@@ -66,7 +66,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::_convert()
     {
-		bool result = this->convertDefault_( m_converter, m_path, m_path, m_codec );
+		bool result = this->convertDefault_( m_converter, m_path, m_path, m_codecType );
 
         return result;
     }
@@ -100,7 +100,7 @@ namespace Menge
         }
 
         SoundDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<SoundDecoderInterfacePtr>( m_codec );
+            ->createDecoderT<SoundDecoderInterfacePtr>( m_codecType );
 
         if( decoder == nullptr )
         {
@@ -175,7 +175,7 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE(m_serviceProvider)
-			->createSoundBufferFromFile( category, m_path, m_codec, m_isStreamable );
+			->createSoundBufferFromFile( category, m_path, m_codecType, m_isStreamable );
 
 		if( soundBuffer == nullptr )
 		{

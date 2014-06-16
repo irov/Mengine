@@ -2,8 +2,6 @@
 
 #	include "Codec/VideoDecoder.h"
 
-#	include "Core/InputStreamBuffer.h"
-
 #	include "gvf.h"
 
 namespace Menge
@@ -33,8 +31,6 @@ namespace Menge
 		EVideoDecoderReadState readNextFrame( float & _pts ) override;
 
 	protected:
-		InputStreamBuffer2048 m_streamBuffer;
-
 		gvf_decoder * m_gvf;
 		size_t m_frame;
 		size_t m_frames;

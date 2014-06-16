@@ -53,46 +53,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
-		uint32_t binary_aek_header;
-		_stream->read( &binary_aek_header, sizeof(binary_aek_header) );
+		unsigned char * binary_memory;
+		size_t binary_size;
 
-		if( binary_aek_header != 0xAEAEBABE )
+		uint32_t bufferId = CACHE_SERVICE(m_serviceProvider)
+			->getArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_AEK), GET_MAGIC_VERSION(MAGIC_AEK), &binary_memory, binary_size );
+
+		if( bufferId == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid magic header"
-				);
-
-			return false;
-		}
-
-		uint32_t binary_aek_version_valid = DATAFLOW_VERSION_AEK;
-
-		uint32_t binary_aek_version;
-		_stream->read( &binary_aek_version, sizeof(binary_aek_version) );
-
-		if( binary_aek_version != binary_aek_version_valid )
-		{
-			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid version %d:%d"
-				, binary_aek_version
-				, binary_aek_version_valid
-				);
-
-			return false;
-		}
-
-		uint32_t binary_size;
-		_stream->read( &binary_size, sizeof(binary_size) );
-
-		uint32_t compress_size;
-		_stream->read( &compress_size, sizeof(compress_size) );
-
-		CacheMemoryBuffer binary_buffer(m_serviceProvider, binary_size, "DataflowAEK_binary");
-		TBlobject::value_type * binary_memory = binary_buffer.getMemoryT<TBlobject::value_type>();
-
-		size_t uncompressSize = 0;
-		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( m_archivator, _stream, compress_size, binary_memory, binary_size, uncompressSize ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid uncompress"
+			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: invalid get data"
 				);
 
 			return false;
@@ -205,6 +174,9 @@ namespace Menge
 				}
 			}
 		}
+
+		CACHE_SERVICE(m_serviceProvider)
+			->unlockBuffer( bufferId );
 
 		return true;
 	}

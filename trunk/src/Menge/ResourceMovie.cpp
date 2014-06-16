@@ -279,12 +279,12 @@ namespace Menge
                 
         metadata->swap_KeyFramesPackPath_Path( m_path );
 		metadata->swap_KeyFramesPackPath_Codec( m_dataflowType );
-		metadata->swap_KeyFramesPackPath_Converter( m_converter );
+		metadata->swap_KeyFramesPackPath_Converter( m_converterType );
 
 		//FIX THIS
 		if( m_dataflowType.empty() == true )
 		{
-			m_converter = CONST_STRING(m_serviceProvider, xmlToAekMovie);
+			m_converterType = CONST_STRING(m_serviceProvider, xmlToAekMovie);
 		}
 
         m_layers.clear();
@@ -565,7 +565,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_converter.empty() == false )
+		if( m_converterType.empty() == false )
 		{
 			//FIX THIS
 
@@ -577,12 +577,12 @@ namespace Menge
 			ConstString c_xml_path = Helper::stringizeString( m_serviceProvider, xml_path );
 
 			if( CONVERTER_SERVICE(m_serviceProvider)
-				->convert( m_converter, m_category, c_xml_path, m_path ) == false )
+				->convert( m_converterType, m_category, c_xml_path, m_path ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' can't convert '%s':'%s'"
 					, this->getName().c_str() 
 					, c_xml_path.c_str()
-					, m_converter.c_str()
+					, m_converterType.c_str()
 					);
 
 				return false;

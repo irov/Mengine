@@ -5,6 +5,7 @@
 
 #	include "Factory/FactorablePtr.h"
 
+#	include "Core/Magic.h"
 #	include "Core/ConstString.h"
 #	include "Core/MemoryInput.h"
 
@@ -45,5 +46,5 @@ namespace Menge
     };
 
 #   define ARCHIVE_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::ArchiveServiceInterface)
+    ((Menge::ArchiveServiceInterface *)SERVICE_GET(serviceProvider, Menge::ArchiveServiceInterface))
 }

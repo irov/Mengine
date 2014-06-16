@@ -32,7 +32,7 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( const ConstString & _name, const InputStreamInterfacePtr & _stream ) override;
+        bool initialize( const ConstString & _name, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) override;
 		void finalize() override;
 
     public:

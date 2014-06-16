@@ -539,6 +539,46 @@ namespace Metacode
                 (_self->*_method)( this->AtlasCount_Value );
             }
             
+            bool has_File_Converter() const
+            {
+                return File_Converter_successful;
+            }
+            
+            bool get_File_Converter( Menge::ConstString & _value ) const
+            {
+                if( File_Converter_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Converter;
+            
+                return true;
+            }
+            
+            bool swap_File_Converter( Menge::ConstString & _value ) const
+            {
+                if( File_Converter_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Converter);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_Converter( C * _self, M _method )
+            {
+                if( File_Converter_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_Converter );
+            }
+            
             const Menge::ConstString & get_File_Path() const
             {
                 return this->File_Path;
@@ -618,6 +658,8 @@ namespace Metacode
         protected:
         protected:
             mutable uint32_t AtlasCount_Value;
+            bool File_Converter_successful;
+            mutable Menge::ConstString File_Converter;
             mutable Menge::ConstString File_Path;
         public:
             typedef stdex::auto_array<Meta_Atlas> TVectorMeta_Atlas;

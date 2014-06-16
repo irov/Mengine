@@ -13,11 +13,8 @@ namespace Menge
 		ResourceHIT();
 
     public:
-        void setCodec( const ConstString & _codec );
-        const ConstString & getCodec() const;
-
-        void setConverterName( const ConstString & _codec );
-        const ConstString & getConverterName() const;
+        void setCodecType( const ConstString & _codec );
+        const ConstString & getCodecType() const;
 
 	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
@@ -49,8 +46,8 @@ namespace Menge
 
     protected:
 		FilePath m_path;
-        ConstString m_codec;
-        ConstString m_converter;
+        ConstString m_codecType;
+        ConstString m_converterType;
 
 		uint32_t m_width;
 		uint32_t m_height;

@@ -5,6 +5,11 @@
 
 namespace Menge
 {
+
+#	ifndef MENGINE_WIN32_FILE_BUFFER_SIZE
+#	define MENGINE_WIN32_FILE_BUFFER_SIZE 8192
+#	endif
+
 	class Win32InputStream
 		: public FileInputStreamInterface
 	{
@@ -39,5 +44,11 @@ namespace Menge
 		size_t m_size;
 		size_t m_offset;		
 		size_t m_pos;
+
+		size_t m_carriage;
+		size_t m_capacity;
+		size_t m_reading;
+
+		char m_readCache[MENGINE_WIN32_FILE_BUFFER_SIZE];
 	};
 }	// namespace Menge

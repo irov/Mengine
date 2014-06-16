@@ -61,6 +61,8 @@
 #	include "ResourceAnimation.h"
 #	include "ResourceEmitterContainer.h"
 #	include "ResourceEmitter.h"
+#	include "ResourceEmitterContainer2.h"
+#	include "ResourceEmitter2.h"
 
 #	include "ResourceImageSolid.h"
 #	include "ResourceImageDefault.h"
@@ -641,7 +643,9 @@ namespace Menge
 
 #   ifdef MENGE_PARTICLES
 		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitterContainer );
+		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitterContainer2 );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitter );
+		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitter2 );
 #   endif
 
 		//RESOURCE_FACTORY( m_serviceProvider, ResourceFont );

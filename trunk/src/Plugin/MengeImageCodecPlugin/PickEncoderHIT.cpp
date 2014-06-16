@@ -37,8 +37,12 @@ namespace Menge
 	{
 		const PickCodecDataInfo * dataInfo = static_cast<const PickCodecDataInfo*>( _bufferDataInfo );
 
-        m_stream->write( &hit_magic, sizeof(hit_magic) );
-        m_stream->write( &hit_version, sizeof(hit_version) );
+		
+		magic_number_type magic_number = GET_MAGIC_NUMBER(MAGIC_HIT);
+        m_stream->write( &magic_number, sizeof(magic_number) );
+			
+		magic_version_type magic_version = GET_MAGIC_VERSION(MAGIC_HIT);
+        m_stream->write( &magic_version, sizeof(magic_version) );
 
         m_stream->write( &dataInfo->width, sizeof(dataInfo->width) );
         m_stream->write( &dataInfo->height, sizeof(dataInfo->height) );

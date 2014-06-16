@@ -37,10 +37,11 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceEmitterContainer2 *>(_meta);
 
         metadata->swap_File_Path( m_fileName );
+		metadata->swap_File_Converter( m_converterType );
         
 		uint32_t atlasCount = metadata->get_AtlasCount_Value();
 		
-		m_resourceImageNames.reserve( atlasCount );
+		m_resourceImageNames.resize( atlasCount );
 		m_resourceImages.reserve( atlasCount );
 
 		const Metacode::Meta_DataBlock::Meta_ResourceEmitterContainer2::TVectorMeta_Atlas & includes_atlas = metadata->get_IncludesAtlas();
@@ -60,6 +61,13 @@ namespace Menge
 		}
 
         return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceEmitterContainer2::_convert()
+	{
+		bool result = this->convertDefault2_( m_converterType, m_fileName, m_fileName );
+
+		return result;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool ResourceEmitterContainer2::_isValid() const

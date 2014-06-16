@@ -38,7 +38,7 @@ namespace Menge
 
         metadata->swap_File_Path( m_path );
         metadata->swap_File_Codec( m_codecType );
-        metadata->swap_File_Converter( m_converter );        
+        metadata->swap_File_Converter( m_converterType );        
 
         metadata->get_File_Alpha( m_alpha );
         metadata->get_File_NoSeek( m_noSeek );
@@ -49,7 +49,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ResourceVideo::_convert()
     {
-		bool result = this->convertDefault_( m_converter, m_path, m_path, m_codecType );
+		bool result = this->convertDefault_( m_converterType, m_path, m_path, m_codecType );
 
         return result;
     }

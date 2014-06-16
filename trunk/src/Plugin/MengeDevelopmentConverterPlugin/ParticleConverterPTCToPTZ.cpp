@@ -1,5 +1,6 @@
 #	include "ParticleConverterPTCToPTZ.h"
 
+#	include "Interface/ParticleSystemInterface2.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 #   include "Interface/ArchiveInterface.h"
@@ -7,6 +8,7 @@
 
 #	include "Logger/Logger.h"
 
+#   include "Core/Magic.h"
 #   include "Core/FilePath.h"
 #	include "Core/CacheMemoryBuffer.h"
 
@@ -81,8 +83,13 @@ namespace Menge
 		
         OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
+		
+		magic_number_type magic_header = GET_MAGIC_NUMBER(MAGIC_PTZ);
+		output->write( &magic_header, sizeof(magic_header) );
 
-			
+		magic_version_type magic_version = GET_MAGIC_VERSION(MAGIC_PTZ);
+		output->write( &magic_version, sizeof(magic_version) );
+
         output->write( &data_size, sizeof(data_size) );
 
 		uint32_t compress_size;

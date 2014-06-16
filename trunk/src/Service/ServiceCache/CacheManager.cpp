@@ -1,6 +1,7 @@
 #	include "CacheManager.h"
 
-#	include "Core/MutexGuard.h"
+#	include "Core/CacheMemoryBuffer.h"
+//#	include "Core/MutexGuard.h"
 
 #	include "Logger/Logger.h"
 
@@ -227,5 +228,92 @@ namespace Menge
 		MemoryInput * memory = m_factoryPoolMemoryInput.createObjectT();
 
 		return memory;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t CacheManager::getArchiveData( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, unsigned char ** _data, size_t & _size )
+	{
+		magic_number_type magic_number;
+		_stream->read( &magic_number, sizeof(magic_number) );
+
+		if( magic_number != _magic )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::getData: invalid magic number %u need %u"
+				, magic_number
+				, _magic
+				);
+
+			return 0;
+		}
+
+		magic_version_type magic_version;
+		_stream->read( &magic_version, sizeof(magic_version) );
+
+		if( magic_version != _version )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::getData: invalid magic version %u need %u"
+				, magic_version
+				, _version
+				);
+
+			return 0;
+		}
+
+		uint32_t binary_size;
+		_stream->read( &binary_size, sizeof(binary_size) );
+
+		uint32_t compress_size;
+		_stream->read( &compress_size, sizeof(compress_size) );
+
+		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size, "ArchiveService::getData compress_memory");
+		void * compress_memory = compress_buffer.getMemory();
+
+		if( compress_memory == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::getData: invalid get memory %d (compress)"
+				, compress_size
+				);
+
+			return 0;
+		}
+
+		size_t read_data = _stream->read( compress_memory, compress_size );
+
+		if( read_data != compress_size )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::getData: invalid read data %d need %d"
+				, read_data
+				, compress_size
+				);
+
+			return 0;
+		}
+
+		void * binary_memory = nullptr;
+		size_t binary_buffer = this->lockBuffer( binary_size, &binary_memory, "ArchiveService::getData binary_memory" );
+
+		if( binary_buffer == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::getData: invalid get memory %d (binary)"
+				, binary_size
+				);
+
+			return 0;
+		}
+
+		size_t uncompressSize = 0;
+		if( _archivator->decompress( binary_memory, binary_size, compress_memory, compress_size, uncompressSize ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::getData: invalid decompress"
+				);
+
+			this->unlockBuffer( binary_buffer );
+
+			return 0;
+		}
+
+		*_data = static_cast<unsigned char *>(binary_memory);
+		_size = binary_size;
+
+		return binary_buffer;
 	}
 }

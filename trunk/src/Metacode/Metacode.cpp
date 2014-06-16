@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 48;
+        _needVersion = 49;
 
-        if( version != 48 )
+        if( version != 49 )
         {
             return false;
         }
@@ -1176,6 +1176,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceEmitterContainer2::Meta_ResourceEmitterContainer2()
         : Meta_Resource()
+        , File_Converter_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1193,12 +1194,23 @@ namespace Metacode
     
         switch( _id )
         {
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->AtlasCount_Value ) == false )
                 {
                     return false;
                 }
+    
+                return true;
+            }break;
+        case 4:
+            {
+                if( this->read( _buff, _size, _read, this->File_Converter ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_Converter_successful = true;
     
                 return true;
             }break;
@@ -1225,7 +1237,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 5:
+        case 6:
             {
                 includes_Meta_Atlas.reserve( _count );
                 return true;
@@ -1245,7 +1257,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 5:
+        case 6:
             {
                 Meta_DataBlock::Meta_ResourceEmitterContainer2::Meta_Atlas & metadata = includes_Meta_Atlas.emplace_back();
     
@@ -1280,7 +1292,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceEmitterContainer2::Meta_Atlas::getId() const
     {
-        return 5;
+        return 6;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceEmitterContainer2::Meta_Atlas::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )

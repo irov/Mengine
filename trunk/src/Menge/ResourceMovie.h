@@ -228,7 +228,7 @@ namespace Menge
 		
         FilePath m_path;
 		ConstString m_dataflowType;
-		ConstString m_converter;
+		ConstString m_converterType;
 
 		MovieFramePackInterfacePtr m_keyFramePack;
 

@@ -86,8 +86,11 @@ namespace Menge
 		OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( c_dev, full_output );
 
-		output->write( &DATAFLOW_MAGIC_MDL, sizeof(DATAFLOW_MAGIC_MDL) );
-		output->write( &DATAFLOW_VERSION_MDL, sizeof(DATAFLOW_VERSION_MDL) );
+		magic_number_type magic_number = GET_MAGIC_NUMBER(MAGIC_MDL);
+		output->write( &magic_number, sizeof(magic_number) );
+
+		magic_version_type magic_version = GET_MAGIC_NUMBER(MAGIC_MDL);
+		output->write( &magic_version, sizeof(magic_version) );
 
         output->write( &data_size, sizeof(data_size) );
 		

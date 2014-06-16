@@ -22,8 +22,23 @@
 
 static void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
 {
-	const WCHAR * pathBuffer = _path.c_str();
-	size_t pathSize = _path.size();
+	if( _path.empty() == true )
+	{
+		wcscpy_s( _quotePath, 2, L"" );
+
+		return;
+	}
+
+	std::wstring true_path = _path;
+
+	if( _path[0] == L'/' )
+	{
+		true_path[0] = true_path[1];
+		true_path[1] = L':';
+	}
+
+	const WCHAR * pathBuffer = true_path.c_str();
+	size_t pathSize = true_path.size();
 
 	PathCanonicalize( _quotePath, pathBuffer );
 	if( PathQuoteSpaces( _quotePath ) == FALSE )
@@ -100,10 +115,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	WCHAR szBuffer[512];
 	if( astralax.empty() == true )
 	{
-		const WCHAR * regPath = L"Software\\Astralax\\Magic Particles (Dev) 2.24\\Path";
+		const WCHAR * regPath = L"Software\\Astralax\\Magic Particles 3D (Dev) 2.25\\Path";
 
 		HKEY openedKey;
-		if( ::RegOpenKeyEx( HKEY_CURRENT_USER, L"Software\\Astralax\\Magic Particles (Dev) 2.24\\Path", 0, KEY_READ, &openedKey ) != ERROR_SUCCESS )
+		if( ::RegOpenKeyEx( HKEY_CURRENT_USER, regPath, 0, KEY_READ, &openedKey ) != ERROR_SUCCESS )
 		{
 			printf("invalid RegOpenKeyEx %ls\n"
 				, regPath
@@ -131,7 +146,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	system_cmd += L" /c ";
 
-	WCHAR inCanonicalizeQuote[MAX_PATH];
+	WCHAR inCanonicalizeQuote[MAX_PATH];	
 	ForcePathQuoteSpaces( inCanonicalizeQuote, in );
 
 	system_cmd += L" ";
@@ -260,16 +275,18 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		Magic_CloseFile( mf );
 
-		WCHAR infoCanonicalize[MAX_PATH];
-		PathCanonicalize( infoCanonicalize, info.c_str() );
-		PathUnquoteSpaces( infoCanonicalize );
+		WCHAR infoCanonicalizeQuote[MAX_PATH];
+		ForcePathQuoteSpaces( infoCanonicalizeQuote, info.c_str() );
+		PathUnquoteSpaces( infoCanonicalizeQuote );
 
-		FILE * f_info = _wfopen( infoCanonicalize, L"wt" );
+		FILE * f_info; 
+		errno_t err = _wfopen_s( &f_info, infoCanonicalizeQuote, L"wt" );
 
-		if( f_info == NULL )
+		if( err != 0 )
 		{
-			printf("invalid _wfopen %ls\n"
-				, infoCanonicalize
+			printf("invalid _wfopen %ls err %d\n"
+				, infoCanonicalizeQuote
+				, err
 				);
 
 			return 1;

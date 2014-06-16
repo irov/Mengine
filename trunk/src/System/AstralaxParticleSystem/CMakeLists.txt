@@ -11,11 +11,7 @@ src
 	AstralaxParticleSystem.def
 )
 
-SET( MAGIC_3D 0 )
-
-if( MAGIC_3D )
-    add_definitions(-DMAGIC_3D)
-endif( MAGIC_3D )
+add_definitions(-DMAGIC_3D)
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/astralax )
 
@@ -59,60 +55,31 @@ SET( APPLICATION_LIB_PATHS
  PARENT_SCOPE
 )
 
-if( MAGIC_3D )
-    if( MINGW )
+if( MINGW )
+    SET( APPLICATION_LIBS
+    ${APPLICATION_LIBS}
+    ${THIRDPARTY_DIR}/astralax/win/lib/mingw/libmagic.a
+    )
+elseif( WIN32 )
+    SET( APPLICATION_LIBS
+    ${APPLICATION_LIBS}
+    ${THIRDPARTY_DIR}/astralax/win/lib/microsoft/magic3d.lib
+    )
+elseif( APPLE )
+    IF(${MENGINE_TARGET} STREQUAL "IPAD")
         SET( APPLICATION_LIBS
         ${APPLICATION_LIBS}
-        ${THIRDPARTY_DIR}/astralax/win/lib/mingw/libmagic3d.a
+        ${magic_lib_path}/libimagic.a
         )
-    elseif( WIN32 )
+    ENDIF(${MENGINE_TARGET} STREQUAL "IPAD")
+    
+    IF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
         SET( APPLICATION_LIBS
         ${APPLICATION_LIBS}
-        ${THIRDPARTY_DIR}/astralax/win/lib/microsoft/magic3d.lib
-        )
-    elseif( APPLE )
-        IF(${MENGINE_TARGET} STREQUAL "IPAD")
-            SET( APPLICATION_LIBS
-            ${APPLICATION_LIBS}
-            ${magic_lib_path}/libimagic.a
-            )
-        ENDIF(${MENGINE_TARGET} STREQUAL "IPAD")
-        
-        IF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
-            SET( APPLICATION_LIBS
-            ${APPLICATION_LIBS}
-            ${magic_lib_path}/libimagic_simulator.a
-            )    
-        ENDIF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
-    endif( MINGW )
-else( MAGIC_3D )
-    if( MINGW )
-        SET( APPLICATION_LIBS
-        ${APPLICATION_LIBS}
-        ${THIRDPARTY_DIR}/astralax/win/lib/mingw/libmagic.a
-        )
-    elseif( WIN32 )
-        SET( APPLICATION_LIBS
-        ${APPLICATION_LIBS}
-        ${THIRDPARTY_DIR}/astralax/win/lib/microsoft/magic.lib
-        )
-    elseif( APPLE )
-        IF(${MENGINE_TARGET} STREQUAL "IPAD")
-            SET( APPLICATION_LIBS
-            ${APPLICATION_LIBS}
-            ${magic_lib_path}/libimagic.a
-            )
-        ENDIF(${MENGINE_TARGET} STREQUAL "IPAD")
-        
-        IF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
-            SET( APPLICATION_LIBS
-            ${APPLICATION_LIBS}
-            ${magic_lib_path}/libimagic_simulator.a
-            )    
-        ENDIF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
-    endif( MINGW )
-endif( MAGIC_3D )
-
+        ${magic_lib_path}/libimagic_simulator.a
+        )    
+    ENDIF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
+endif( MINGW )
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}

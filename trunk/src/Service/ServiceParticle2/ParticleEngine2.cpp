@@ -1,6 +1,7 @@
 #	include "ParticleEngine2.h"
 
 #   include "Interface/FileSystemInterface.h"
+#   include "Interface/StringizeInterface.h"
 
 #   include "Config/Blobject.h"
 
@@ -37,6 +38,24 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEngine2::initialize()
+	{
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEngine2::finalize()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterContainerInterface2Ptr ParticleEngine2::createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName )
 	{
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
@@ -53,7 +72,7 @@ namespace Menge
 		}
 		
 		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SYSTEM2(m_serviceProvider)
-            ->createEmitterContainerFromMemory( _fileName, stream );
+            ->createEmitterContainerFromMemory( _fileName, stream, m_archivator );
 
 		if( container == nullptr )
 		{

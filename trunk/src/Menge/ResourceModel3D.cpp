@@ -28,16 +28,6 @@ namespace Menge
 		return m_dataflow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceModel3D::setConverter( const ConstString & _converter )
-	{
-		m_converter = _converter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceModel3D::getConverter() const
-	{
-		return m_converter;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool ResourceModel3D::_loader( const Metabuf::Metadata * _meta )
 	{
 		const Metacode::Meta_DataBlock::Meta_ResourceModel3D * metadata 
@@ -45,7 +35,7 @@ namespace Menge
 
 		metadata->swap_File_Path( m_path );
 		metadata->swap_File_Dataflow( m_dataflow );
-		metadata->swap_File_Converter( m_converter );
+		metadata->swap_File_Converter( m_converterType );
 
 		metadata->swap_Image_Resource( m_imageResourceName );
 		
@@ -59,15 +49,15 @@ namespace Menge
 			return false;
 		}
 
-		if( m_converter.empty() == false )
+		if( m_converterType.empty() == false )
 		{
 			if( CONVERTER_SERVICE(m_serviceProvider)
-				->convert( m_converter, m_category, m_path, m_path ) == false )
+				->convert( m_converterType, m_category, m_path, m_path ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ResourceModel3D::_convert: '%s' can't convert '%s':'%s'"
 					, this->getName().c_str() 
 					, m_path.c_str()
-					, m_converter.c_str()
+					, m_converterType.c_str()
 					);
 
 				return false;

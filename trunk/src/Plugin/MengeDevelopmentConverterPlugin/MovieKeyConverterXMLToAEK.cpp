@@ -624,11 +624,11 @@ namespace Menge
 			return false;
 		}
 
-		uint32_t binary_aek_header = 0xAEAEBABE;
-		output_stream->write( &binary_aek_header, sizeof(binary_aek_header) );
+		magic_number_type magic_number = GET_MAGIC_NUMBER(MAGIC_AEK);
+		output_stream->write( &magic_number, sizeof(magic_number) );
 
-		uint32_t binary_aek_version = DATAFLOW_VERSION_AEK;
-		output_stream->write( &binary_aek_version, sizeof(binary_aek_version) );
+		magic_version_type magic_version = GET_MAGIC_VERSION(MAGIC_AEK);
+		output_stream->write( &magic_version, sizeof(magic_version) );
 
 		output_stream->write( &binary_aek_size, sizeof(binary_aek_size) );
 

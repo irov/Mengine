@@ -11,7 +11,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	static int s_readIOWrapper( void * _opaque, uint8_t *_bufer, int bufferSize )
 	{
-		InputStreamBuffer8196 * stream = static_cast<InputStreamBuffer8196 *>(_opaque);
+		InputStreamInterface * stream = static_cast<InputStreamInterface *>(_opaque);
 
         size_t res = stream->read( _bufer , bufferSize );
 		
@@ -20,7 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static int64_t s_seekIOWrapper( void *_opaque, int64_t _offset, int _whence )
 	{
-		InputStreamBuffer8196 * stream = static_cast<InputStreamBuffer8196 *>(_opaque);
+		InputStreamInterface * stream = static_cast<InputStreamInterface *>(_opaque);
 		
 		switch( _whence )
 		{
@@ -77,19 +77,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::_prepareData()
 	{
-		m_streamBuffer.setStream( m_stream );
-
         const int probe_buffer_io_size = 4096;
 
         uint8_t filebuffer[probe_buffer_io_size + FF_INPUT_BUFFER_PADDING_SIZE];
        
-        size_t stream_size = m_streamBuffer.size();
+        size_t stream_size = m_stream->size();
         size_t probe_size = probe_buffer_io_size > stream_size ? stream_size : probe_buffer_io_size;
 
         memset( filebuffer, 0, probe_buffer_io_size + FF_INPUT_BUFFER_PADDING_SIZE );
 
-        m_streamBuffer.read( filebuffer, probe_size );
-        m_streamBuffer.seek( 0 );
+        m_stream->read( filebuffer, probe_size );
+        m_stream->seek( 0 );
 
         AVProbeData pd;
         pd.filename = "";
@@ -114,7 +112,7 @@ namespace Menge
 			 m_bufferIO //IO buffer
 			, VIDEO_FFMPEG_BUFFER_IO_SIZE //size of IO buffer
 			, 0 //write flag set to 0
-			, &m_streamBuffer //IO source - it will be send as opaque argument to IO callbacks
+			, m_stream.get()//IO source - it will be send as opaque argument to IO callbacks
 			, s_readIOWrapper //read callback 
 			, nullptr //write callback
 			, s_seekIOWrapper //seek callback

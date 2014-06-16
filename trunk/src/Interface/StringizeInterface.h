@@ -43,6 +43,13 @@ namespace Menge
 
             return cstr;
         }
+		//////////////////////////////////////////////////////////////////////////
+		inline ConstString stringizeString( ServiceProviderInterface * _serviceProvider, const char * _value )
+		{
+			ConstString cstr = stringizeStringSize( _serviceProvider, _value, ((size_t)-1) );
+
+			return cstr;
+		}
         //////////////////////////////////////////////////////////////////////////
         inline ConstString stringizeString( ServiceProviderInterface * _serviceProvider, const String & _value )
         {

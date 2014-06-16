@@ -14,7 +14,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static int s_gvf_read( void * _user, void * _buffer, uint32_t _size )
 	{
-		InputStreamBuffer2048 * stream = (InputStreamBuffer2048 *)_user;
+		InputStreamInterface * stream = (InputStreamInterface *)_user;
 
 		if( stream->read( _buffer, _size ) != _size )
 		{
@@ -26,7 +26,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static int s_gvf_seek( void * _user, uint32_t _size )
 	{
-		InputStreamBuffer2048 * stream = (InputStreamBuffer2048 *)_user;
+		InputStreamInterface * stream = (InputStreamInterface *)_user;
 
 		if( stream->seek( _size ) == false )
 		{
@@ -53,9 +53,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderGVF::_prepareData()
 	{
-		m_streamBuffer = m_stream;
-
-		gvf_error_t err = gvf_decoder_create( &m_gvf, &m_streamBuffer, &s_gvf_read, &s_gvf_seek );
+		gvf_error_t err = gvf_decoder_create( &m_gvf, m_stream.get(), &s_gvf_read, &s_gvf_seek );
 
 		if( err != GVF_ERROR_SUCCESSFUL )
 		{

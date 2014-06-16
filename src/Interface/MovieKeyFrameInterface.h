@@ -5,6 +5,7 @@
 
 #   include "Config/Floats.h"
 
+#   include "Core/Magic.h"
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 
@@ -16,7 +17,7 @@
 
 namespace Menge
 {
-	const size_t DATAFLOW_VERSION_AEK = 11;
+	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 11);
 
     struct MovieFrameSource
     {

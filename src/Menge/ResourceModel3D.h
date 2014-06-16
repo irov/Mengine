@@ -20,9 +20,6 @@ namespace Menge
 		void setDataflow( const ConstString & _dataflow );
 		const ConstString & getDataflow() const;
 
-		void setConverter( const ConstString & _converter );
-		const ConstString & getConverter() const;
-
 	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
 		bool _convert() override;
@@ -41,7 +38,7 @@ namespace Menge
 	protected:
 		FilePath m_path;
 		ConstString m_dataflow;
-		ConstString m_converter;
+		ConstString m_converterType;
 
 		Model3DInterfacePtr m_model;
 

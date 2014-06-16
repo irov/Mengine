@@ -22,24 +22,14 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ResourceHIT::setCodec( const ConstString & _codec )
+    void ResourceHIT::setCodecType( const ConstString & _codec )
     {
-        m_codec = _codec;
+        m_codecType = _codec;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceHIT::getCodec() const
+    const ConstString & ResourceHIT::getCodecType() const
     {
-        return m_codec;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceHIT::setConverterName( const ConstString & _converterName )
-    {
-        m_converter = _converterName;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceHIT::getConverterName() const
-    {
-        return m_converter;
+        return m_codecType;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceHIT::_loader( const Metabuf::Metadata * _meta )
@@ -48,16 +38,16 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceHIT *>(_meta);
 
         metadata->swap_File_Path( m_path );
-        metadata->swap_File_Converter( m_converter );
+        metadata->swap_File_Converter( m_converterType );
         
-        metadata->swap_File_Codec( m_codec );
+        metadata->swap_File_Codec( m_codecType );
 
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_convert()
     {
-		bool result = this->convertDefault_( m_converter, m_path, m_path, m_codec );
+		bool result = this->convertDefault_( m_converterType, m_path, m_path, m_codecType );
 
         return result;
     }
@@ -80,14 +70,14 @@ namespace Menge
         }
 
         PickDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<PickDecoderInterfacePtr>( m_codec );
+            ->createDecoderT<PickDecoderInterfacePtr>( m_codecType );
 
         if( decoder == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file '%s' invalid create decoder '%s'"
                 , this->getName().c_str()
                 , m_path.c_str()
-                , m_codec.c_str()
+                , m_codecType.c_str()
                 );
 
             return false;
@@ -98,7 +88,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file '%s' invalid initialize decoder '%s'"
 				, this->getName().c_str()
 				, m_path.c_str()
-				, m_codec.c_str()
+				, m_codecType.c_str()
 				);
 
 			return false;

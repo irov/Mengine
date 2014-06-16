@@ -74,7 +74,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceReference::convertDefault_( const ConstString & _converter, const ConstString & _path, ConstString & _out, ConstString & _codecType )
+	bool ResourceReference::convertDefault2_( const ConstString & _converter, const ConstString & _path, ConstString & _out )
 	{
 		if( _path.empty() == true )
 		{
@@ -94,6 +94,16 @@ namespace Menge
 
 				return false;
 			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceReference::convertDefault_( const ConstString & _converter, const ConstString & _path, ConstString & _out, ConstString & _codecType )
+	{
+		if( this->convertDefault2_( _converter, _path, _out ) == false )
+		{
+			return false;
 		}
 
 		if( _codecType.empty() == true )

@@ -36,25 +36,27 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool PickDecoderHIT::_prepareData()
     {
-        uint32_t magic;
+        magic_number_type magic;
         m_stream->read( &magic, sizeof(magic) );
 
-        if( magic != hit_magic )
+        if( magic != GET_MAGIC_NUMBER(MAGIC_HIT) )
         {
-            LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid magic"
+            LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid magic %u need %u"
+				, magic
+				, GET_MAGIC_NUMBER(MAGIC_HIT)
                 );
 
             return false;
         }
 		       
-		uint32_t version;
+		magic_version_type version;
         m_stream->read( &version, sizeof(version) );
 
-        if( version != hit_version )
+        if( version != GET_MAGIC_VERSION(MAGIC_HIT) )
         {
-            LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid hit version %d need %d"
+            LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid hit version %u need %u"
                 , version
-                , hit_version
+                , GET_MAGIC_VERSION(MAGIC_HIT)
                 );
 			
             return false;

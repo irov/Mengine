@@ -169,6 +169,6 @@ namespace Menge
 	};
 
 #   define CODEC_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::CodecServiceInterface)
+    ((Menge::CodecServiceInterface *)SERVICE_GET(serviceProvider, Menge::CodecServiceInterface))
 }
 

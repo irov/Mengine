@@ -1,5 +1,7 @@
 #	include "ArchiveService.h"
 
+#	include "Interface/CacheInterface.h"
+
 #	include "Core/CacheMemoryBuffer.h"
 #	include "Logger/Logger.h"
 

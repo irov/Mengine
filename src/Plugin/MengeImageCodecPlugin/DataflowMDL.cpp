@@ -53,51 +53,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowMDL::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
-		uint32_t magic_header;
-		_stream->read( &magic_header, sizeof(magic_header) );
+		unsigned char * binary_memory;
+		size_t binary_size;
 
-		if( magic_header != DATAFLOW_MAGIC_MDL )
+		uint32_t bufferId = CACHE_SERVICE(m_serviceProvider)
+			->getArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_MDL), GET_MAGIC_VERSION(MAGIC_MDL), &binary_memory, binary_size );
+
+		if( bufferId == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("DataflowMDL::load: mdl invalid magic header"
-				);
-
-			return false;
-		}
-
-		size_t version_valid = DATAFLOW_VERSION_MDL;
-
-		uint32_t version;
-		_stream->read( &version, sizeof(version) );
-
-		if( version != version_valid )
-		{
-			LOGGER_ERROR(m_serviceProvider)("DataflowMDL::load: mdl invalid version %d:%d"
-				, version
-				, version_valid
-				);
-
-			return false;
-		}
-
-		uint32_t binary_size;
-		_stream->read( &binary_size, sizeof(binary_size) );
-
-		uint32_t compress_size;
-		_stream->read( &compress_size, sizeof(compress_size) );
-
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, compress_size, "DataflowMDL_compress");
-		TBlobject::value_type * compress_memory = compress_buffer.getMemoryT<TBlobject::value_type>();
-
-		_stream->read( compress_memory, compress_size );
-
-		CacheMemoryBuffer binary_buffer(m_serviceProvider, binary_size, "DataflowMDL_binary");
-		TBlobject::value_type * binary_memory = binary_buffer.getMemoryT<TBlobject::value_type>();
-		
-		size_t uncompressSize = 0;
-		if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( m_archivator, _stream, compress_size, binary_memory, binary_size, uncompressSize ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: aek invalid uncompress"
+			LOGGER_ERROR(m_serviceProvider)("DataflowMDL::load: invalid get data"
 				);
 
 			return false;
@@ -139,6 +103,9 @@ namespace Menge
 				, MENGINE_MODEL_MAX_INDICES
 				);
 
+			CACHE_SERVICE(m_serviceProvider)
+				->unlockBuffer( bufferId );
+
 			return false;
 		}
 
@@ -160,6 +127,9 @@ namespace Menge
 
 			ar.readPODs( frame.indecies, indicesCount );
 		}
+
+		CACHE_SERVICE(m_serviceProvider)
+			->unlockBuffer( bufferId );
 
 		return true;
 	}

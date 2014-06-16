@@ -13,6 +13,12 @@ namespace Menge
 		~CacheMemoryBuffer();
 
 	public:
+		inline size_t getSize() const
+		{
+			return m_size;
+		}
+
+	public:
 		inline void * getMemory() const
 		{
 			return m_memory;
@@ -26,6 +32,7 @@ namespace Menge
 
 	public:
 		ServiceProviderInterface * m_serviceProvider;
+		size_t m_size;
 
 		void * m_memory;
 		size_t m_bufferId;

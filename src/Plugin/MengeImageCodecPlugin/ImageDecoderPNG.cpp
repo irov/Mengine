@@ -47,7 +47,8 @@ namespace Menge
 	static void PNGAPI s_readProc( png_structp _png_ptr, unsigned char * _data, png_size_t _size )
 	{
 		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-		InputStreamBuffer8196 * stream = static_cast<InputStreamBuffer8196 *>( io_ptr );
+
+		InputStreamInterface * stream = static_cast<InputStreamInterface *>( io_ptr );
 
 		stream->read( _data, _size );
 	}
@@ -98,11 +99,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderPNG::_prepareData()
     {
-		m_streamBuffer.setStream( m_stream );
-
         // check for png signature
         unsigned char png_check[PNG_BYTES_TO_CHECK];
-        m_streamBuffer.read( &png_check, PNG_BYTES_TO_CHECK );
+        m_stream->read( &png_check, PNG_BYTES_TO_CHECK );
 
         if( png_sig_cmp(png_check, (png_size_t)0, PNG_BYTES_TO_CHECK) != 0 )
         {
@@ -123,7 +122,7 @@ namespace Menge
         }
 
         // init the IO
-        png_set_read_fn( m_png_ptr, &m_streamBuffer, s_readProc );
+        png_set_read_fn( m_png_ptr, m_stream.get(), s_readProc );
 
         // because we have already read the signature...
         png_set_sig_bytes( m_png_ptr, PNG_BYTES_TO_CHECK );

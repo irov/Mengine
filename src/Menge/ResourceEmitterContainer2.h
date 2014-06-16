@@ -34,7 +34,8 @@ namespace Menge
 
 	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
-	
+		bool _convert() override;
+
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -44,6 +45,8 @@ namespace Menge
 
 	private:
 		FilePath m_fileName;
+		
+		ConstString m_converterType;
 
 		typedef std::vector<ConstString> TVectorResourceImageName;
 		TVectorResourceImageName m_resourceImageNames;

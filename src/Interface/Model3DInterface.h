@@ -5,6 +5,7 @@
 
 #   include "Config/Floats.h"
 
+#	include "Core/Magic.h"
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 
@@ -16,8 +17,7 @@
 
 namespace Menge
 {
-	const uint32_t DATAFLOW_MAGIC_MDL = 0x3D3DBABE;
-	const uint32_t DATAFLOW_VERSION_MDL = 1;
+	DECLARE_MAGIC_NUMBER(MAGIC_MDL, 'M', 'D', 'L', '1', 1);
 
 #	define MENGINE_MODEL_MAX_VERTEX 1024
 #	define MENGINE_MODEL_MAX_INDICES ((MENGINE_MODEL_MAX_VERTEX - 2) * 3)

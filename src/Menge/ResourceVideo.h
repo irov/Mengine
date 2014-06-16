@@ -55,7 +55,7 @@ namespace Menge
 	protected:
 		FilePath m_path;
         
-        ConstString m_converter;
+        ConstString m_converterType;
 		ConstString m_codecType;
 
         float m_frameRate;

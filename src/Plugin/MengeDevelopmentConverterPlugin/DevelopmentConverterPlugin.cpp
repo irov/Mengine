@@ -53,7 +53,8 @@ namespace Menge
 		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToGVF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegToGVF")) );		
 		m_converters.push_back( new ConverterFactory<MovieKeyConverterXMLToAEK>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "xmlToAekMovie")) );
 		m_converters.push_back( new ConverterFactory<ModelConverterMDLToMDZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "mdlToMdzModel")) );
-		
+		m_converters.push_back( new ConverterFactory<ParticleConverterPTCToPTZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ptc2ptz")) );
+				
 		
 		for( TVectorHotspotImageConverters::iterator
 			it = m_converters.begin(),

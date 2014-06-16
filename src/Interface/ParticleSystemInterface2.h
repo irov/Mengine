@@ -1,9 +1,14 @@
 #	pragma once
 
 #   include "Interface/ParticleSystemInterface.h"
+#	include "Interface/ArchiveInterface.h"
+
+#	include "Core/Magic.h"
 
 namespace Menge
 {
+	DECLARE_MAGIC_NUMBER( MAGIC_PTZ, 'P', 'T', 'Z', '2', 1 );
+
 	class ParticleEmitterContainerInterface2
         : public FactorablePtr
 	{
@@ -12,7 +17,7 @@ namespace Menge
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
     public:
-        virtual bool initialize( const ConstString & _name, const InputStreamInterfacePtr & _stream ) = 0;
+        virtual bool initialize( const ConstString & _name, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
 		virtual void finalize() = 0;
 
     public:
@@ -30,7 +35,11 @@ namespace Menge
 		SERVICE_DECLARE("ParticleSystem2")
 
 	public:
-		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream ) = 0;
+		virtual bool initialize() = 0;
+		virtual void finalize() = 0;
+
+	public:
+		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
 
 	public:
 		virtual bool flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
@@ -43,6 +52,10 @@ namespace Menge
 		: public ServiceInterface
 	{
 		SERVICE_DECLARE("ParticleService2")
+
+	public:
+		virtual bool initialize() = 0;
+		virtual void finalize() = 0;
 
 	public:
 		virtual bool flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;

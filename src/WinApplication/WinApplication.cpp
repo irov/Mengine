@@ -819,6 +819,11 @@ namespace Menge
 			return false;
 		}
 
+		if( particleService->initialize() == false )
+		{
+			return false;
+		}
+
 		if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
 		{
 			return false;

@@ -2,10 +2,7 @@
 
 #	include "Codec/SoundDecoder.h"
 
-#	include "Core/InputStreamBuffer.h"
-
 #	include "vorbis/vorbisfile.h"
-
 
 namespace Menge
 {
@@ -28,7 +25,5 @@ namespace Menge
 
 	protected:
 		OggVorbis_File m_oggVorbisFile;
-
-		InputStreamBuffer8196 m_streamBuffer;
 	};
 }	// namespace Menge

@@ -22,6 +22,10 @@ namespace Menge
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
+	public:
+		bool initialize() override;
+		void finalize() override;
+
     public:
         void update() override;
 
@@ -40,6 +44,8 @@ namespace Menge
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
+
+		ArchivatorInterfacePtr m_archivator;
 
 		size_t m_maxParticlesNum;
 		size_t m_renderParticleNum;

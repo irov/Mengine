@@ -1,7 +1,8 @@
 #	pragma once
 
+#	include "Core/Magic.h"
+
 namespace Menge
 {
-    const size_t hit_magic = 0xBABEDADE;
-    const size_t hit_version = 4;
+	DECLARE_MAGIC_NUMBER(MAGIC_HIT, 'H', 'I', 'T', '1', 4);
 }

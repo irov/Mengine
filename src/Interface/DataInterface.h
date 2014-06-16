@@ -10,8 +10,10 @@
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 
+#	include <stdint.h>
+
 namespace Menge
-{
+{	
 	class DataInterface
 		: public FactorablePtr
 	{

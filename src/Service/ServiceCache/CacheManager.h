@@ -29,6 +29,9 @@ namespace Menge
 		void unlockBuffer( size_t _bufferId ) override;
 
 	public:
+		size_t getArchiveData( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, unsigned char ** _data, size_t & _size ) override;
+
+	public:
 		MemoryCacheInputPtr createMemoryCacheInput() override;
 		MemoryProxyInputPtr createMemoryProxyInput() override;
 		MemoryInputPtr createMemoryInput() override;

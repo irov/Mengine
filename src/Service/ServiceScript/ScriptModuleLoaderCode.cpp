@@ -118,8 +118,10 @@ namespace Menge
 
         if( file_magic != py_magic )
         {
-			LOGGER_ERROR(m_serviceProvider)("ScriptModuleLoaderCode::unmarshal_code_ %s invalid magic"
+			LOGGER_ERROR(m_serviceProvider)("ScriptModuleLoaderCode::unmarshal_code_ %s invalid magic %u need %u"
 				, pybind::string_to_char( _module )
+				, file_magic
+				, py_magic
 				);
 
             return nullptr;

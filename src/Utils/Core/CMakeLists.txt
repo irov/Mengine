@@ -68,11 +68,10 @@ src
     
     RenderUtil.h
     
-    InputStreamBuffer.h
-    
     OutputStreamWriter.h   
     
     IntrusiveSprayTree.h
+    Magic.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

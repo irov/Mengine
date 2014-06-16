@@ -1,9 +1,10 @@
 #	include "AstralaxEmitterContainer2.h"
 
+#	include "Interface/CacheInterface.h"
+
 #   include "Logger/Logger.h"
 
 #	include "Core/String.h"
-#	include "Core/CacheMemoryBuffer.h"
 
 namespace Menge
 {
@@ -28,26 +29,27 @@ namespace Menge
 		return m_serviceProvider;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitterContainer2::initialize( const ConstString & _name, const InputStreamInterfacePtr & _stream )
+    bool AstralaxEmitterContainer2::initialize( const ConstString & _name, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
     {
-		size_t fileSize = _stream->size();
+		unsigned char * binary_memory;
+		size_t binary_size;
 
-		CacheMemoryBuffer container_buffer(m_serviceProvider, fileSize, "AstralaxEmitterContainer2");
-		void * container_memory = container_buffer.getMemory();
+		uint32_t bufferId = CACHE_SERVICE(m_serviceProvider)
+			->getArchiveData( _stream, _archivator, GET_MAGIC_NUMBER(MAGIC_PTZ), GET_MAGIC_VERSION(MAGIC_PTZ), &binary_memory, binary_size );
 
-		if( container_memory == nullptr )
+		if( bufferId == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize %s invalid get memory %d"				
+			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize: %s invalid get data"
 				, _name.c_str()
-				, fileSize
 				);
 
 			return false;
 		}
 
-		_stream->read( container_memory, fileSize );
+		m_mf = Magic_OpenFileInMemory( reinterpret_cast<const char *>(binary_memory) );
 
-		m_mf = Magic_OpenFileInMemory( static_cast<const char*>(container_memory) );
+		CACHE_SERVICE(m_serviceProvider)
+			->unlockBuffer( bufferId );
 
 		if( m_mf == MAGIC_ERROR )
 		{

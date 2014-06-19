@@ -12,6 +12,7 @@ namespace Menge
 	MovieInternalObject::MovieInternalObject()
 		: m_movie(nullptr)
 		, m_internalObject(nullptr)
+		, m_internalNode(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -97,11 +98,6 @@ namespace Menge
         m_internalObject = py_object;
         pybind::incref( m_internalObject );
 
-		PyObject * py_obj = this->getEmbed();
-
-		bool localHide = this->isLocalHide();
-		EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_HIDE_INTERNAL)( "(OOO)", py_obj, m_internalObject, pybind::get_bool(localHide) );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -110,7 +106,7 @@ namespace Menge
         m_resourceInternalObject.release();
 
 		pybind::decref( m_internalObject );
-		m_internalObject = nullptr;
+		m_internalObject = nullptr;				
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieInternalObject::_activate()
@@ -120,12 +116,62 @@ namespace Menge
 			return false;
 		}
 
-		if( m_internalObject != nullptr )
+		PyObject * py_node = nullptr;
+		EVENTABLE_ASK(m_serviceProvider, m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL)( py_node, (PyObject*)nullptr, "(O)", m_internalObject );
+
+		if( py_node == nullptr )
 		{
-			PyObject * py_obj = this->getEmbed();
-		
-			EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL)( "(OO)", py_obj, m_internalObject );
+			const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
+			const ConstString & internalName = m_resourceInternalObject->getInternalName();		
+
+			LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_activate '%s' resource '%s' can't get internal node '%s:%s'"
+				, m_name.c_str()
+				, m_resourceInternalObject->getName().c_str()
+				, internalGroup.c_str()
+				, internalName.c_str()				
+				);
+
+			return false;
 		}
+
+		Node * node; 
+		if( pybind::extract_value( py_node, node ) == false )
+		{
+			const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
+			const ConstString & internalName = m_resourceInternalObject->getInternalName();		
+
+			LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_activate '%s' resource '%s' get internal node '%s:%s' invalid type %s"
+				, m_name.c_str()
+				, m_resourceInternalObject->getName().c_str()
+				, internalGroup.c_str()
+				, internalName.c_str()
+				, pybind::object_str( py_node )
+				);
+
+			return false;
+		}
+
+		if( this->addChildren( node ) == false )
+		{
+			const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
+			const ConstString & internalName = m_resourceInternalObject->getInternalName();		
+
+			LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_activate '%s' resource '%s' get internal node '%s:%s' invalid add children"
+				, m_name.c_str()
+				, m_resourceInternalObject->getName().c_str()
+				, internalGroup.c_str()
+				, internalName.c_str()
+				);
+
+			return false;
+		}
+
+		m_internalNode = node;
+
+		bool localHide = this->isLocalHide();
+		this->updateHide_( localHide );
+		//bool localHide = this->isLocalHide();
+		//EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_HIDE_INTERNAL)( "(OO)", m_internalObject, pybind::get_bool(localHide) );
 
 		return true;
 	}
@@ -133,33 +179,30 @@ namespace Menge
 	void MovieInternalObject::_deactivate()
 	{
 		Node::_deactivate();
-				
-		if( m_internalObject != nullptr )
-		{
-			PyObject * py_obj = this->getEmbed();
 
-			EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL)( "(OO)", py_obj, m_internalObject );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MovieInternalObject::_destroy()
-	{		
-		pybind::decref( m_internalObject );
-		m_internalObject = nullptr;
+		bool localHide = this->isLocalHide();
+		this->updateHide_( localHide );
+
+		m_internalNode->removeFromParent();
+		m_internalNode = nullptr;
+				
+		EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL)( "(O)", m_internalObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_localHide( bool _hide )
 	{
-		if( this->isCompile() == false )
+		if( this->isActivate() == false )
 		{
 			return;
 		}
 
-		if( m_internalObject != nullptr )
-		{
-			PyObject * py_obj = this->getEmbed();
-
-			EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_HIDE_INTERNAL)( "(OOO)", py_obj, m_internalObject, pybind::get_bool(_hide) );
-		}
+		this->updateHide_( _hide );
+		//EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_HIDE_INTERNAL)( "(OO)", m_internalObject, pybind::get_bool(_hide) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MovieInternalObject::updateHide_( bool _hide )
+	{
+		bool hide = this->isHide();
+		m_internalNode->hide( hide | _hide );
 	}
 }

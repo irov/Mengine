@@ -38,6 +38,7 @@ namespace Menge
 			, parent(0)
             , timeRemap(false)
 			, shape(false)
+			, polygon(false)
             , playCount(1)
             , scretch(1.f)
             , loop(false)
@@ -75,6 +76,7 @@ namespace Menge
 		bool immutable;
 		bool timeRemap;
 		bool shape;
+		bool polygon;
 		bool loop;
 		bool switcher;
 

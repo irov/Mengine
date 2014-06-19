@@ -27,11 +27,12 @@ namespace Menge
 		~AstralaxEmitter();
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, const AstralaxEmitterContainerPtr & _container, HM_EMITTER _id, const ConstString & _name );
+        bool initialize( ServiceProviderInterface * _serviceProvider, const AstralaxEmitterContainerPtr & _container, HM_EMITTER _id, const ConstString & _containerName, const ConstString & _emitterName );
 		void finalize();
 
 	public:
-		const ConstString & getName() const override;
+		const ConstString & getContainerName() const override;
+		const ConstString & getEmitterName() const;
 
 	public:
 		const AstralaxEmitterContainerPtr & getContainer() const;
@@ -58,6 +59,13 @@ namespace Menge
 
 	public:
 		void interrupt() override;
+
+	public:
+		bool is3d() const override;
+		bool getCamera( ParticleCamera & _camera ) const override;
+
+	public:
+		bool flushParticles( ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override;
 
 	public:
 		//void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
@@ -98,11 +106,12 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider; 
 		AstralaxEmitterContainerPtr m_container;
 
-		HM_EMITTER m_id;
-        mt::vec3f m_basePosition;
-		bool m_background;
+		HM_EMITTER m_emitterId;
+        mt::vec3f m_basePosition;	
 
-		ConstString m_name;
+		ConstString m_containerName;
+		ConstString m_emitterName;
+
 		double m_tempScale;
 		double m_leftBorder;
 		double m_rightBorder;
@@ -122,5 +131,6 @@ namespace Menge
 		bool m_looped;
 
         bool m_firstUpdate;
+		bool m_background;
 	};
 }

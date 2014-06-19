@@ -280,6 +280,12 @@ Resource\\\\EmitterContainer2
 )
 
 ADD_FILTER(
+Resource\\\\Particle
+	ResourceParticle.cpp
+	ResourceParticle.h
+)
+
+ADD_FILTER(
 Resource\\\\Image
 	ResourceImage.cpp
 	ResourceImage.h

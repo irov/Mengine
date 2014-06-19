@@ -343,4 +343,20 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	size_t polygon_size( const Polygon & _polygon )
+	{
+		size_t size = boost::geometry::num_points( _polygon );
+
+		return size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & polygon_point( const Polygon & _polygon, size_t _index )
+	{
+		const Polygon::ring_type & ring = _polygon.outer();
+
+		const mt::vec2f & point = ring[_index];
+
+		return point;
+	}
 }

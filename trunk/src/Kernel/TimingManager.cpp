@@ -2,6 +2,8 @@
 
 #   include "Interface/ServiceInterface.h"
 
+#	include "Logger/Logger.h"
+
 #	include <algorithm>
 
 namespace Menge
@@ -115,15 +117,21 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TimingManager::remove( size_t _id )
+	bool TimingManager::remove( size_t _id )
 	{
 		TimingEvent * event;
 		if( this->findTimigEvent_( _id, event ) == false )
 		{
-			return;
+			LOGGER_ERROR(m_serviceProvider)("TimingManager::remove not found timing %d"
+				, _id
+				);
+
+			return false;
 		}
 
 		this->destroyTiming_( *event );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TimingManager::removeAll( bool _global )

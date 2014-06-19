@@ -177,9 +177,9 @@ namespace Menge
 		return m_atlas;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterInterfacePtr AstralaxEmitterContainer::createEmitter( const ConstString & _name )
+	ParticleEmitterInterfacePtr AstralaxEmitterContainer::createEmitter( const ConstString & _emitterName )
 	{
-		HM_EMITTER id = this->getEmitterId( _name );
+		HM_EMITTER id = this->getEmitterId( _emitterName );
 
 		if( id == 0 )
 		{
@@ -188,7 +188,7 @@ namespace Menge
 
 		AstralaxEmitter * emitter = m_factoryPoolAstralaxEmitter.createObjectT();
 
-        if( emitter->initialize( m_serviceProvider, this, id, _name ) == false )
+        if( emitter->initialize( m_serviceProvider, this, id, m_name, _emitterName ) == false )
         {
             return nullptr;
         }

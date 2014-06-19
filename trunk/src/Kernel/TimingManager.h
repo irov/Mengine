@@ -41,7 +41,7 @@ namespace Menge
 		size_t timing( bool _portions, bool _global, float _delay, TimingListener * _listener ) override;
 
     public:
-		void remove( size_t _timingID ) override;
+		bool remove( size_t _timingID ) override;
 		void removeAll( bool _global ) override;
 
 		void freeze( size_t _id, bool _freeze ) override;

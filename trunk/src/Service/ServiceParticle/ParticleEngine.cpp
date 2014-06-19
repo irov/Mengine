@@ -67,14 +67,6 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEngine::flushEmitter( const mt::mat4f & _viewMatrix, const ParticleEmitterInterfacePtr & _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
-	{
-		bool successful = PARTICLE_SYSTEM(m_serviceProvider)
-			->flushParticles( _viewMatrix, _emitter, _meshes, _meshLimit, _particles, _particlesLimit, _flush );
-
-        return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	size_t ParticleEngine::getMaxParticlesCount() const
 	{
 		return m_maxParticlesNum;

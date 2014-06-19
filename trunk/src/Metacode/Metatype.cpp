@@ -12,6 +12,23 @@ namespace Metabuf
 	{
 		(void)_userData;
 
+		uint8_t bool_value;
+		ar.readPOD( bool_value );
+
+		_value = (bool)bool_value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, uint8_t & _value, void * _userData )
+	{
+		(void)_userData;
+
+		ar.readPOD( _value );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, uint16_t & _value, void * _userData )
+	{
+		(void)_userData;
+
 		ar.readPOD( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////

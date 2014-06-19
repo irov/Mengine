@@ -31,9 +31,8 @@ namespace Menge
             if( affector->getType() == _type )
             {
 				m_affectors.remove( affector );
-                //affector->unlink();
-                affector->stop();
 
+				affector->stop();
                 affector->destroy();
             }
         }
@@ -46,9 +45,8 @@ namespace Menge
             Affector * affector = *it;
 
 			m_affectors.remove( affector );
-            //affector->unlink();
-			affector->stop();
 
+			affector->stop();
             affector->destroy();
 		}
 	}
@@ -66,9 +64,8 @@ namespace Menge
 			if( end == true )
 			{
 				m_affectors.remove( affector );
-                //affector->unlink();
-                affector->complete();
 
+                affector->complete();
                 affector->destroy();
 			}
 		}

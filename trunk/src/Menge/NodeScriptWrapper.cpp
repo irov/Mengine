@@ -664,12 +664,14 @@ namespace Menge
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        void timingRemove( size_t _id )
+        bool timingRemove( size_t _id )
         {
             TimingManagerInterface * tm = PLAYER_SERVICE(m_serviceProvider)
                 ->getTimingManager();
 
-            tm->remove( _id );
+            bool successful = tm->remove( _id );
+
+			return successful;
         }
 		//////////////////////////////////////////////////////////////////////////
 		ScheduleManagerInterface * createScheduler()
@@ -762,12 +764,14 @@ namespace Menge
 			return id;
 		}
         //////////////////////////////////////////////////////////////////////////
-        void scheduleRemove( size_t _id )
+        bool scheduleRemove( size_t _id )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
 
-            sm->remove( _id );
+            bool successful = sm->remove( _id );
+
+			return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         void scheduleRemoveAll()
@@ -778,12 +782,14 @@ namespace Menge
             sm->removeAll();
         }	
         //////////////////////////////////////////////////////////////////////////
-        void s_scheduleFreeze( size_t _id, bool _freeze )
+        bool s_scheduleFreeze( size_t _id, bool _freeze )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
 
-            sm->freeze( _id, _freeze );
+            bool successful = sm->freeze( _id, _freeze );
+
+			return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         void s_scheduleFreezeAll()
@@ -850,12 +856,14 @@ namespace Menge
             sm->removeAll();
         }	
         //////////////////////////////////////////////////////////////////////////
-        void s_scheduleGlobalFreeze( size_t _id, bool _freeze )
+        bool s_scheduleGlobalFreeze( size_t _id, bool _freeze )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
 
-            sm->freeze( _id, _freeze );
+			bool successful = sm->freeze( _id, _freeze );
+
+			return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         void s_scheduleGlobalFreezeAll()

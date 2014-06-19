@@ -13,7 +13,7 @@
 #   include "ResourceShape.h"
 #   include "ResourceEmitterContainer.h"
 #	include "ResourceEmitter.h"
-#   include "ResourceEmitterContainer2.h"
+#   include "ResourceParticle.h"
 #	include "ResourceEmitter2.h"
 
 #   include "Interface/ApplicationInterface.h"
@@ -73,7 +73,7 @@ namespace Menge
 
         m_resourceMovie = _resourceMovie;
 
-        this->releaseLayers_();
+        this->destroyLayers_();
 
         if( m_resourceMovie != nullptr )
         {
@@ -239,10 +239,39 @@ namespace Menge
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOVIE_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, size_t _frameId, bool _interpolate )
+	bool Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, size_t _frameId, bool _interpolate, bool _first )
 	{	
 		const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
+		if( _layer.isMesh2D() == true )
+		{
+#   ifdef _DEBUG
+			if( dynamic_cast<Mesh2D *>( _node ) == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Mesh2D but node is not Mesh2D %s:%s"
+					, this->getName().c_str()
+					, _layer.name.c_str()
+					, _node->getName().c_str()
+					, _node->getType().c_str()
+					);
+
+				return false;
+			}
+#   endif
+
+			Mesh2D * mesh2D = static_cast<Mesh2D *>( _node );
+
+			const MovieFrameShape * shape;
+			framePack->getLayerShape( _layer.index, _frameId, &shape );
+
+			mesh2D->setFrameShape( shape );
+		}
+
+		if( _layer.immutable == true && _first == false )
+		{
+			return true;
+		}
+		
 		MovieFrameSource frame;
 		if( _interpolate == true && _layer.immutable == false )
 		{
@@ -301,30 +330,6 @@ namespace Menge
 			SoundEmitter * sounding = static_cast<SoundEmitter *>( _node );
 
 			sounding->setVolume( frame.volume );
-		}
-
-		if( _layer.isMesh2D() == true )
-		{
-#   ifdef _DEBUG
-			if( dynamic_cast<Mesh2D *>( _node ) == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Mesh2D but node is not Mesh2D %s:%s"
-					, this->getName().c_str()
-					, _layer.name.c_str()
-					, _node->getName().c_str()
-					, _node->getType().c_str()
-					);
-
-				return false;
-			}
-#   endif
-
-			Mesh2D * mesh2D = static_cast<Mesh2D *>( _node );
-
-			const MovieFrameShape * shape;
-			framePack->getLayerShape( _layer.index, _frameId, &shape );
-
-			mesh2D->setFrameShape( shape );
 		}
 
 		return true;
@@ -1237,8 +1242,47 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::compileLayers_()
+	{
+		size_t maxLayerIndex = m_resourceMovie->getMaxLayerIndex();
+
+		Nodies ns;
+		ns.child = false;
+		ns.layerId = 0;
+		ns.node = nullptr;
+		m_nodies.resize( maxLayerIndex + 1, ns );
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if ( layer.type == CONST_STRING(m_serviceProvider, MovieText) )
+			{
+				if( this->compileMovieText_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) )
+			{
+				if( this->compileMovieText_( layer ) == false )
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
-    void Movie::releaseLayers_()
+    void Movie::destroyLayers_()
     {
         for( TVectorNodies::const_iterator 
             it = m_nodies.begin(),
@@ -1689,8 +1733,46 @@ namespace Menge
 		layer_text->setName( _layer.name );
 		layer_text->setTextID( _layer.name ); //Name = TextID
 		layer_text->setCenterAlign();
-
+		
 		this->addMovieNode_( _layer, layer_text );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::compileMovieText_( const MovieLayer & _layer )
+	{
+		if( _layer.polygon == false )
+		{
+			return true;
+		}
+
+		Node * node = this->getMovieNode_( _layer );
+
+		if( node == nullptr )
+		{
+			return false;
+		}
+
+		TextField * layer_text = static_cast<TextField *>(node);
+
+		const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
+		const Polygon * polygon;
+		framePack->getLayerPolygon( _layer.index, &polygon );
+
+		size_t size = polygon_size( *polygon );
+
+		if( size != 2 )
+		{
+			return false;
+		}
+
+		const mt::vec2f & begin = polygon_point( *polygon, 0 );
+		const mt::vec2f & end = polygon_point( *polygon, 1 );
+
+		float length = mt::length_v2_v2( begin, end );
+
+		layer_text->setMaxLen( length );
 
 		return true;
 	}
@@ -1772,51 +1854,23 @@ namespace Menge
 		ParticleEmitter2 * layer_particles = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<ParticleEmitter2>( CONST_STRING(m_serviceProvider, ParticleEmitter2) );
 
-		ResourceEmitter2 * resourceEmitter = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceEmitter2>( _layer.source );
+		ResourceParticle * resourceParticle = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceParticle>( _layer.source );
 
-		if( resourceEmitter == nullptr )
+		if( resourceParticle == nullptr )
 		{
 			return false;
 		}
 
-		const ConstString & container = resourceEmitter->getContainer();
-
-		ResourceEmitterContainer2 * resourceEmitterContainer = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceEmitterContainer2>( container );
-
-		if( resourceEmitterContainer == nullptr )
-		{
-			return false;
-		}
-
-		layer_particles->setResourceEmitterContainer( resourceEmitterContainer );
+		layer_particles->setResourceParticle( resourceParticle );
 		layer_particles->setName( _layer.name );
 
 		//layer_particles->setIntervalStart( _layer.startInterval );        
 		layer_particles->setPlayCount( _layer.playCount );
 		layer_particles->setScretch( _layer.scretch );
-		//layer_particles->setLoop( _layer.loop );
-
 		layer_particles->setLoop( true );
 
-		if( resourceEmitter->getEmitterRelative() == true )
-		{
-			//layer_particles->setEmitterRelative( true );
-			layer_particles->setEmitterTranslateWithParticle( true );
-		}
-
-		const ConstString & emitterName = resourceEmitter->getEmitterName();
-		layer_particles->setEmitter( emitterName );
-
-		const mt::vec2f & offset = resourceEmitter->getOffset();
-
-		mt::vec3f position;
-		position.x = offset.x;
-		position.y = offset.y;
-		position.z = 0.f;
-
-		layer_particles->setEmitterPosition( position );
+		layer_particles->setEmitterTranslateWithParticle( true );
 
 		this->addMovieNode_( _layer, layer_particles );
 
@@ -1862,12 +1916,22 @@ namespace Menge
 
 		if( this->setupParent_() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't setup layer parents"
+            LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s' can't setup layer parents"
                 , m_name.c_str()
                 );
 
             return false;
         }
+
+		if( this->compileLayers_() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s''%s' can't compile layers"
+				, m_name.c_str()
+				, m_resourceMovie->getName().c_str()
+				);
+
+			return false;
+		}  
 
 		return true;
 	}
@@ -1930,7 +1994,7 @@ namespace Menge
                 continue;
             }
              
-            this->updateFrameNode_( layer, node, 0, false );
+            this->updateFrameNode_( layer, node, 0, false, true );
                  
             if( layer.parent != 0 && layer.parent != movie_layer_parent_none )
 			{
@@ -2339,7 +2403,7 @@ namespace Menge
         {
 			size_t frameId = _endFrame - indexIn;
 
-            this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut );
+            this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, true );
 
             _node->localHide( false );
 
@@ -2415,7 +2479,7 @@ namespace Menge
         {
 			size_t frameId = _endFrame - indexIn;
 		
-            this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut );
+            this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, false );
 
             if( _layer.isAnimatable() == true )
             {
@@ -2475,7 +2539,7 @@ namespace Menge
             if( _beginFrame >= indexOut && _endFrame <= indexOut && _endFrame > indexIn )
             {
 				size_t frameId = _endFrame - indexIn;
-                this->updateFrameNode_( layer, node, frameId, false );
+                this->updateFrameNode_( layer, node, frameId, false, true );
 
                 node->localHide(false);
 
@@ -2518,7 +2582,7 @@ namespace Menge
             {
 				size_t frameId = _endFrame - indexIn;
 
-                this->updateFrameNode_( layer, node, frameId, false );
+                this->updateFrameNode_( layer, node, frameId, false, false );
             }			
         }
     }
@@ -2570,7 +2634,7 @@ namespace Menge
 			{            
 				size_t frameId = m_currentFrame - indexIn;
 
-                this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut );
+                this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
 
 				if( layer.switcher == true && m_currentFrame + 1 == indexOut )
 				{
@@ -2652,7 +2716,7 @@ namespace Menge
             {                
                 size_t frameId = m_currentFrame - indexIn;
 
-                this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut );
+                this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
 
                 node->localHide( false );
 
@@ -2662,7 +2726,7 @@ namespace Menge
 
                     if( layer.timeRemap == false )
                     {
-                        if( animatable->isPlay() == true )
+                        if( animatable->isPlay() == true && animatable->getLoop() == false )
                         {
                             animatable->stop();
                         }
@@ -2672,7 +2736,11 @@ namespace Menge
                         animatable->setTiming( timing );
 
                         float movieTiming = this->getTiming();
-                        animatable->play( movieTiming );
+
+						if( animatable->isPlay() == false )
+                        {
+							animatable->play( movieTiming );
+						}
                     }
                     else
                     {

@@ -39,11 +39,32 @@ namespace Menge
 		bool intense;
 	};
 
+	struct ParticleEmitterRenderFlush
+	{
+		size_t meshCount;
+		size_t particleCount;
+	};
+
+	struct ParticleCamera
+	{
+		mt::vec3f pos;
+		mt::vec3f dir;
+		mt::vec3f up;
+
+		float fov;
+		float aspect;
+		float znear;
+		float zfar;
+
+		float width;
+		float height;
+	};
+
 	class ParticleEmitterInterface
         : public FactorablePtr
 	{
 	public:
-		virtual const ConstString & getName() const = 0;
+		virtual const ConstString & getContainerName() const = 0;
 
 	public:
 		virtual void play() = 0;
@@ -60,6 +81,14 @@ namespace Menge
 
 	public:
 		virtual void interrupt() = 0;
+
+	public:
+		virtual bool is3d() const = 0;
+
+		virtual bool getCamera( ParticleCamera & _camera ) const = 0;
+
+	public:
+		virtual bool flushParticles( ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
 
 	public:
 		virtual bool isBackground() const = 0;
@@ -134,22 +163,17 @@ namespace Menge
 
     typedef stdex::intrusive_ptr<ParticleEmitterContainerInterface> ParticleEmitterContainerInterfacePtr;
 
-	struct ParticleEmitterRenderFlush
-	{
-		size_t meshCount;
-		size_t particleCount;
-	};
-
 	class ParticleSystemInterface
         : public ServiceInterface
 	{
         SERVICE_DECLARE("ParticleSystem")
 
 	public:
-		virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream ) = 0;
-		
+		virtual bool initialize() = 0;
+		virtual void finalize() = 0;
+
 	public:
-        virtual bool flushParticles( const mt::mat4f & _viewMatrix, const ParticleEmitterInterfacePtr & _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
+		virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream ) = 0;
 	};
 
 #   define PARTICLE_SYSTEM( serviceProvider )\
@@ -161,7 +185,6 @@ namespace Menge
         SERVICE_DECLARE("ParticleService")
 
     public:
-        virtual bool flushEmitter( const mt::mat4f & _viewMatrix, const ParticleEmitterInterfacePtr & _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
         virtual size_t renderParticlesCount( size_t _count ) = 0;
 
 	public:

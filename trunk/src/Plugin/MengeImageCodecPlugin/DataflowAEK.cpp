@@ -69,7 +69,7 @@ namespace Menge
 
 		BlobjectRead ar(binary_memory, binary_size);
 
-		size_t maxIndex;
+		uint32_t maxIndex;
 		ar >> maxIndex;
 
 		MovieFramePack * pack = stdex::intrusive_get<MovieFramePack>(_data);
@@ -78,20 +78,20 @@ namespace Menge
 
 		for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )
 		{
-			bool immutable;
+			uint8_t immutable;
 			ar >> immutable;
 
-			size_t frames_size;
+			uint32_t frames_size;
 			ar >> frames_size;
 						
-			MovieLayerFrame & frame = pack->initializeLayer( it_layer + 1, frames_size, immutable );
+			MovieLayerFrame & frame = pack->initializeLayer( it_layer + 1, frames_size, (bool)immutable );
 
 			if( frames_size == 0 )
 			{
 				continue;
 			}
 
-			if( immutable == true )
+			if( immutable == 1 )
 			{
 				ar >> frame.source;
 			}
@@ -99,9 +99,9 @@ namespace Menge
 			{
 #	define READ_FRAME_SOURCE( Type, Member, Mask )\
 				{ \
-					bool value_immutable; \
+					uint8_t value_immutable; \
 					ar >> value_immutable; \
-					if( value_immutable == true ) \
+					if( value_immutable == 1 ) \
 					{ \
 						ar >> frame.source.Member; \
 						frame.immutable_mask |= Mask; \
@@ -124,53 +124,98 @@ namespace Menge
 			}
 		}
 
-		for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )
+		uint8_t times;
+		ar >> times;
+
+		if( times == 1 )
 		{
-			size_t times_size;
-			ar >> times_size;
+			pack->initializeTimeremap( maxIndex );
 
-			if( times_size == 0 )
+			for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )
 			{
-				continue;
-			}
-			
-			MovieLayerTimeRemap & timeremap = pack->mutableLayerTimeRemap( it_layer + 1 );
-			timeremap.times.resize( times_size );
+				uint32_t times_size;
+				ar >> times_size;
 
-			float * times_buff = &timeremap.times[0];
-			ar.readPODs( times_buff, times_size );
+				if( times_size == 0 )
+				{
+					continue;
+				}
+
+				MovieLayerTimeRemap & timeremap = pack->mutableLayerTimeRemap( it_layer + 1 );
+				timeremap.times.resize( times_size );
+
+				float * times_buff = &timeremap.times[0];
+				ar.readPODs( times_buff, times_size );
+			}
 		}
 
-		for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )
+		uint8_t shapes;
+		ar >> shapes;
+
+		if( shapes == 1 )
 		{
-			size_t shapes_size;
-			ar >> shapes_size;
+			pack->initializeShapes( maxIndex );
 
-			if( shapes_size == 0 )
+			for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )
 			{
-				continue;
-			}
-			
-			MovieLayerShapes & shapes = pack->mutableLayerShape( it_layer + 1 );
-			shapes.shapes.resize( shapes_size );
+				uint32_t shapes_size;
+				ar >> shapes_size;
 
-			for( size_t it_shapes = 0; it_shapes != shapes_size; ++it_shapes )
-			{
-				MovieFrameShape & shape = shapes.shapes[it_shapes];
-
-				ar >> shape.vertexCount;
-
-				if( shape.vertexCount > 0 )
+				if( shapes_size == 0 )
 				{
-					ar.readPODs( shape.pos, shape.vertexCount );
-					ar.readPODs( shape.uv, shape.vertexCount );
-
-					ar >> shape.indexCount;
-					ar.readPODs( shape.indices, shape.indexCount );
+					continue;
 				}
-				else
+
+				MovieLayerShapes & shapes = pack->mutableLayerShape( it_layer + 1 );
+				shapes.shapes.resize( shapes_size );
+
+				for( size_t i = 0; i != shapes_size; ++i )
 				{
-					shape.indexCount = 0;
+					MovieFrameShape & shape = shapes.shapes[i];
+
+					ar >> shape.vertexCount;
+
+					if( shape.vertexCount > 0 )
+					{
+						ar.readPODs( shape.pos, shape.vertexCount );
+						ar.readPODs( shape.uv, shape.vertexCount );
+
+						ar >> shape.indexCount;
+						ar.readPODs( shape.indices, shape.indexCount );
+					}
+					else
+					{
+						shape.indexCount = 0;
+					}
+				}
+			}
+		}
+
+		uint8_t polygons;
+		ar >> polygons;
+
+		if( polygons == 1 )
+		{
+			pack->initializePolygons( maxIndex );
+
+			for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )
+			{
+				uint32_t polygon_size;
+				ar >> polygon_size;
+
+				if( polygon_size == 0 )
+				{
+					continue;
+				}
+
+				MovieLayerPolygon & polygon = pack->mutableLayerPolygon( it_layer + 1 );
+				
+				for( size_t i = 0; i != polygon_size; ++i )
+				{
+					mt::vec2f v;
+					ar >> v;
+					
+					boost::geometry::append( polygon.polygon, v );
 				}
 			}
 		}

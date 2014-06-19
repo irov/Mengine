@@ -49,6 +49,8 @@ namespace	Menge
 		: m_emitter(nullptr)
 		, m_startPosition(0.f)
         , m_randomMode(false)
+		, m_renderCamera3D(nullptr)
+		, m_renderViewport(nullptr)
 		, m_vertices(nullptr)
 		, m_verticesCount(0)
         , m_emitterRelative(false)
@@ -95,14 +97,8 @@ namespace	Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter2::_compile()
-	{
-        ////// it`s not very pretty
-        if( m_emitterName.empty() == true )
-        {
-            return false;
-        }
-        		
-		if( m_resourceEmitterContainer == nullptr )
+	{      		
+		if( m_resourceParticle == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::_compile '%s' resource is null"
 				, m_name.c_str()
@@ -111,36 +107,35 @@ namespace	Menge
 			return false;
 		}
 
-        if( m_resourceEmitterContainer.compile() == false )
+        if( m_resourceParticle.compile() == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::_compile '%s' resource '%s' not compile"
                 , m_name.c_str()
-                , m_resourceEmitterContainer->getName().c_str()
+                , m_resourceParticle->getName().c_str()
                 );
 
             return false;
         }
 
-		const ParticleEmitterContainerInterface2Ptr & container = m_resourceEmitterContainer->getContainer();
+		const ParticleEmitterContainerInterface2Ptr & container = m_resourceParticle->getContainer();
 
 		if( container == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::_compile '%s' can't open container file '%s'"
 				, m_name.c_str()
-				, m_resourceEmitterContainer->getName().c_str() 
+				, m_resourceParticle->getName().c_str() 
 				);
 
 			return false;
 		}
 
-		m_emitter = container->createEmitter( m_emitterName );
+		m_emitter = container->createEmitter();
 
 		if( m_emitter == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter '%s' can't create emitter source '%s' - '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter '%s' can't create emitter source '%s'"
 				, m_name.c_str()
-				, m_resourceEmitterContainer->getName().c_str()
-				, m_emitterName.c_str() 
+				, m_resourceParticle->getName().c_str()
 				);
 
 			return false;
@@ -176,6 +171,14 @@ namespace	Menge
 			m_emitter->setPosition( m_emitterPosition );
 		}
 
+		if( m_emitter->is3d() == true )
+		{
+			if( this->createCamera3D_() == false )
+			{
+				return false;
+			}
+		}
+
 		this->invalidateMaterial_();
 
 		return true;		
@@ -185,7 +188,7 @@ namespace	Menge
 	{
         m_emitter = nullptr;
 
-        m_resourceEmitterContainer.release();
+        m_resourceParticle.release();
 
 		delete [] m_vertices;        
 		m_vertices = nullptr;
@@ -199,6 +202,8 @@ namespace	Menge
 			m_materials[i * 2 + 0] = nullptr;
 			m_materials[i * 2 + 1] = nullptr;
 		}
+
+		this->destroyCamera3D_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
@@ -390,41 +395,13 @@ namespace	Menge
 				
 		Node::_updateBoundingBox( m_localBoundingBox );
 
-		ColourValue color;
-		this->calcTotalColor(color);
-
-		ARGB color_argb = color.getAsARGB();
-
         ParticleVertices s_particles[MENGINE_PARTICLE_MAX_COUNT];
 		ParticleMesh s_meshes[MENGINE_PARTICLE_MAX_MESH];
-		//s_particles.clear();
-		//s_meshes.clear();
-
-		//m_vertices.clear();		
 
 		m_batchs.clear();
-
-        //const mt::mat4f & viewMatrix = _camera->getViewMatrix();
-
-        //mt::vec3f Eye(0,0,-840.f);
-        //mt::vec3f At(0,0,0);        
-        //mt::vec3f Up(0,1,0);
-
-        //mt::vec3f zaxis = mt::norm_v3( At - Eye );
-        //mt::vec3f xaxis = mt::norm_v3( mt::cross_v3_v3( Up, zaxis ) );
-        //mt::vec3f yaxis = mt::cross_v3_v3( zaxis, xaxis );
-
-        mt::mat4f viewMatrix;
-        mt::ident_m4(viewMatrix);
-        //viewMatrix.v0 = mt::vec4f(xaxis.x, yaxis.x, zaxis.x, 0);
-        //viewMatrix.v1 = mt::vec4f(xaxis.y, yaxis.y, zaxis.y, 0);
-        //viewMatrix.v2 = mt::vec4f(xaxis.z, yaxis.z, zaxis.z, 0);
-        //viewMatrix.v3 = mt::vec4f(-mt::dot_v3_v3( xaxis, Eye ), -mt::dot_v3_v3( yaxis, Eye ),  -mt::dot_v3_v3(zaxis, Eye), 1);
-
+		        
 		ParticleEmitterRenderFlush flush;
-
-		if( PARTICLE_SERVICE(m_serviceProvider)
-			->flushEmitter( viewMatrix, m_emitter, s_meshes, MENGINE_PARTICLE_MAX_MESH, s_particles, MENGINE_PARTICLE_MAX_COUNT, flush ) == false )
+		if( m_emitter->flushParticles( s_meshes, MENGINE_PARTICLE_MAX_MESH, s_particles, MENGINE_PARTICLE_MAX_COUNT, flush ) == false )
 		{
 			return false;
 		}
@@ -439,10 +416,10 @@ namespace	Menge
 			m_vertices = new RenderVertex2D [m_verticesCount];
 		}
 
-		//const mt::mat4f & wm = this->getWorldMatrix();
+		ColourValue color;
+		this->calcTotalColor(color);
 
-        //mt::vec2f pos;
-        //m_interface->getPosition( pos );
+		ARGB color_argb = color.getAsARGB();
 		
 		for( size_t
 			it_mesh = 0,
@@ -452,7 +429,7 @@ namespace	Menge
 		{
 			const ParticleMesh & mesh = s_meshes[it_mesh];
 
-			ResourceImage * image = m_resourceEmitterContainer->getAtlasImageResource( mesh.texture );
+			ResourceImage * image = m_resourceParticle->getAtlasImageResource( mesh.texture );
 
 			const RenderTextureInterfacePtr & texture = image->getTexture();
 
@@ -627,13 +604,13 @@ namespace	Menge
 	{
 		m_invalidateMaterial = false;
 
-		size_t imageCount = m_resourceEmitterContainer->getAtlasImageCount();
+		size_t imageCount = m_resourceParticle->getAtlasImageCount();
 
 		if( imageCount > MENGINE_PARTICLE_MAX_ATLAS_TEXTURE )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::updateMaterial_ %s particle resource %s max atlas texture %d"
 				, this->getName().c_str()
-				, m_resourceEmitterContainer->getName().c_str()
+				, m_resourceParticle->getName().c_str()
 				, MENGINE_PARTICLE_MAX_ATLAS_TEXTURE
 				);
 
@@ -642,7 +619,7 @@ namespace	Menge
 
 		for( size_t i = 0; i != imageCount; ++i )
 		{
-			ResourceImage * image = m_resourceEmitterContainer->getAtlasImageResource( i );
+			ResourceImage * image = m_resourceParticle->getAtlasImageResource( i );
 
 			const RenderTextureInterfacePtr & texture = image->getTexture();
 
@@ -667,34 +644,22 @@ namespace	Menge
 		m_emitter->restart();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::setResourceEmitterContainer( ResourceEmitterContainer2 * _resourceEmitterContainer )
+	void ParticleEmitter2::setResourceParticle( ResourceParticle * _resourceParticle )
 	{
-		if( m_resourceEmitterContainer == _resourceEmitterContainer )
+		if( m_resourceParticle == _resourceParticle )
 		{
 			return;
 		}
 
-		m_resourceEmitterContainer = _resourceEmitterContainer;
+		m_resourceParticle = _resourceParticle;
 
 		this->recompile();
 	}
     //////////////////////////////////////////////////////////////////////////
-    ResourceEmitterContainer2 * ParticleEmitter2::getResourceEmitterContainer() const
+    ResourceParticle * ParticleEmitter2::getResourceParticle() const
     {
-        return m_resourceEmitterContainer;
+        return m_resourceParticle;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::setEmitter( const ConstString& _emitterName )
-	{
-		if( m_emitterName == _emitterName )
-		{
-			return;
-		}
-
-		m_emitterName = _emitterName;
-
-		this->recompile();
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::playFromPosition( float _pos )
 	{
@@ -954,11 +919,6 @@ namespace	Menge
 
 		return rightBoard;
 	}
-	/////////////////////////////////////////////////////////////////////////
-	const ConstString& ParticleEmitter2::getEmitterName() const
-	{
-		return m_emitterName;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::box2f ParticleEmitter2::getEmitterBoundingBox() const
 	{
@@ -1013,4 +973,89 @@ namespace	Menge
         return m_randomMode;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEmitter2::createCamera3D_()
+	{
+		Camera3D * renderCamera3D = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<Camera3D>( CONST_STRING(m_serviceProvider, Camera3D) );
+
+		if( renderCamera3D == nullptr )
+		{
+			return false;
+		}
+
+		const ConstString & name = this->getName();
+		renderCamera3D->setName( name );
+
+		ParticleCamera camera;
+		if( m_emitter->getCamera( camera ) == false )
+		{
+			return false;
+		}
+
+		renderCamera3D->setCameraPosition( camera.pos );
+		renderCamera3D->setCameraDir( camera.dir );
+		renderCamera3D->setCameraUp( camera.up );
+
+		renderCamera3D->setCameraFOV( camera.fov );
+		renderCamera3D->setCameraAspect( camera.aspect );
+		
+		renderCamera3D->setCameraNear( camera.znear );
+		renderCamera3D->setCameraFar( camera.zfar );
+		
+		renderCamera3D->setCameraRightSign( -1.f );
+
+		Viewport rp;
+		rp.begin.x = 0.f;
+		rp.begin.y = 0.f;
+
+		rp.end.x = camera.width;
+		rp.end.y = camera.height;
+
+		renderCamera3D->setRenderport( rp );		
+
+		RenderViewport * renderViewport = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
+
+		if( renderViewport == nullptr )
+		{
+			return false;
+		}
+
+		renderViewport->setName( name );
+
+		Viewport vp;
+		vp.begin.x = 0.f;
+		vp.begin.y = 0.f;
+
+		vp.end.x = camera.width;
+		vp.end.y = camera.height;
+
+		renderViewport->setViewport( vp );
+
+		this->addChildren( renderCamera3D );
+		this->addChildren( renderViewport );
+
+		this->setRenderCamera( renderCamera3D );
+		this->setRenderViewport( renderViewport );
+
+		m_renderCamera3D = renderCamera3D;
+		m_renderViewport = renderViewport;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter2::destroyCamera3D_()
+	{
+		if( m_renderCamera3D != nullptr )
+		{
+			m_renderCamera3D->destroy();
+			m_renderCamera3D = nullptr;
+		}
+
+		if( m_renderViewport != nullptr )
+		{
+			m_renderViewport->destroy();
+			m_renderViewport = nullptr;
+		}
+	}
 }

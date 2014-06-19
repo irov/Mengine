@@ -20,7 +20,7 @@ namespace Menge
 
 	public:
 		template<class T>
-		inline void write( T & _t )
+		inline void write( const T & _t )
 		{
 			*this >> _t;
 		}
@@ -49,7 +49,7 @@ namespace Menge
 	};
 
 	template<class T>
-	void operator << ( ArchiveWrite & aw, T & _value )
+	void operator << ( ArchiveWrite & aw, const T & _value )
 	{
 		aw.writePOD( _value );
 	}

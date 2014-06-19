@@ -8,16 +8,18 @@
 #   include "Core/Magic.h"
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
+#   include "Core/Polygon.h"
 
 #   include "Factory/Factorable.h"
 
 #   include "Math/vec3.h"
 
 #   include <vector>
+#	include <stdint.h>
 
 namespace Menge
 {
-	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 11);
+	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 13);
 
     struct MovieFrameSource
     {
@@ -71,8 +73,8 @@ namespace Menge
 		mt::vec2f uv[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
 		RenderIndices2D indices[MENGINE_MOVIE_SHAPE_MAX_INDICES];
 
-		size_t vertexCount;
-		size_t indexCount;
+		uint8_t vertexCount;
+		uint8_t indexCount;
 	};
 
 	typedef std::vector<MovieFrameShape> TVectorMovieFrameShapes;
@@ -83,6 +85,13 @@ namespace Menge
 	};
 
 	typedef std::vector<MovieLayerShapes> TVectorMovieLayerShapes;
+
+	struct MovieLayerPolygon
+	{
+		Polygon polygon;
+	};
+
+	typedef std::vector<MovieLayerPolygon> TVectorMovieLayerPolygons;
 
 	class MovieFramePackInterface
 		: public DataInterface
@@ -97,9 +106,8 @@ namespace Menge
 
 	public:
 		virtual bool getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const = 0;
-
-	public:
 		virtual bool getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const = 0;
+		virtual bool getLayerPolygon( size_t _layerIndex, const Polygon ** _polygon ) const = 0;
 
 	public:
 		virtual bool isLayerPermanentlyHide( size_t _layerIndex ) const = 0;

@@ -7,7 +7,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitter2::AstralaxEmitter2()
 		: m_serviceProvider(nullptr)
-        , m_id(0)
+        , m_emitterId(0)
 		, m_start(false)
 		, m_leftBorder(0.f)
 		, m_rightBorder(0.f)
@@ -26,33 +26,22 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::initialize( ServiceProviderInterface * _serviceProvider, HM_EMITTER _id, const ConstString & _name )
+    bool AstralaxEmitter2::initialize( ServiceProviderInterface * _serviceProvider, HM_EMITTER _id, const ConstString & _containerName )
     {
         m_serviceProvider = _serviceProvider;
-        m_id = _id;
-        m_name = _name;
+        m_emitterId = _id;
 
-        m_typesCount = Magic_GetParticlesTypeCount( m_id );
+        m_containerName = _containerName;
 
-        if( m_typesCount >= 20 )
-        {
-            return false;
-        }
-
-        for( int i = 0; i != m_typesCount; ++i )
-        {
-            m_factor[i] = Magic_GetDiagramFactor( m_id, i, MAGIC_DIAGRAM_NUMBER );
-        }
-
-        Magic_SetRandomMode( m_id, false );
+        Magic_SetRandomMode( m_emitterId, false );
 
         // set interpolation
-        Magic_SetInterpolationMode( m_id, true );
+        Magic_SetInterpolationMode( m_emitterId, true );
 
-        m_leftBorder = Magic_GetInterval1( m_id );
-        m_rightBorder = Magic_GetInterval2( m_id );
+        m_leftBorder = Magic_GetInterval1( m_emitterId );
+        m_rightBorder = Magic_GetInterval2( m_emitterId );
 
-        m_rate = Magic_GetUpdateTime( m_id );
+        m_rate = Magic_GetUpdateTime( m_emitterId );
 
         if( this->setupBasePosition_() == false )
         {
@@ -64,71 +53,93 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::finalize()
 	{
-		Magic_UnloadEmitter( m_id );
+		Magic_UnloadEmitter( m_emitterId );
 
-		m_id = 0;
+		m_emitterId = 0;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter2::setupBasePosition_()
     {
-        MAGIC_RECT rect;
-        float backgroundScale = Magic_GetBackgroundRect( m_id, &rect );
+		if( Magic_Is3d( m_emitterId ) == false )
+		{
+			int typeCount = Magic_GetParticlesTypeCount( m_emitterId );
 
-        if( fabsf( backgroundScale - 1.f ) > 0.0001f )
-        {
-            LOGGER_ERROR(m_serviceProvider)("AstralaxEmitter::setupBasePosition_ %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
-                , m_name.c_str()
-                , backgroundScale
-                );
+			for( int i = 0; i != typeCount; ++i )
+			{
+				Magic_LockParticlesType( m_emitterId, i );
 
-            return false;
-        }
+				MAGIC_ORIENTATION orientation;
+				orientation.orientation = MAGIC_ORIENTATION_Z;
+				orientation.x = 0.f;
+				orientation.y = 0.f;
+				orientation.z = 0.f;
 
-        if( rect.left == rect.right || rect.bottom == rect.top )
-        {
-            MAGIC_POSITION pos;
-            pos.x = 0.f;
-            pos.y = 0.f;
+				Magic_SetOrientation( &orientation );
 
-            m_basePosition.x = 0.f;
-            m_basePosition.y = 0.f;
-#ifdef MAGIC_3D
-            m_basePosition.z = 0.f;
-#endif
+				Magic_UnlockParticlesType();
+			}	
 
-            Magic_SetEmitterPosition( m_id, &pos );
+			MAGIC_RECT rect;
+			float backgroundScale = Magic_GetBackgroundRect( m_emitterId, &rect );
 
-			m_background = false;
-        }
-        else
-        {
-            MAGIC_POSITION pos;
-            Magic_GetEmitterPosition( m_id, &pos );
+			if( fabsf( backgroundScale - 1.f ) > 0.0001f )
+			{
+				LOGGER_ERROR(m_serviceProvider)("AstralaxEmitter::setupBasePosition_ %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
+					, m_containerName.c_str()
+					, backgroundScale
+					);
 
-            MAGIC_POSITION adapt_pos;
-            adapt_pos.x = pos.x - (float)rect.left;
-            adapt_pos.y = pos.y - (float)rect.top;
+				return false;
+			}
 
-            Magic_SetEmitterPosition( m_id, &adapt_pos );
+			if( rect.left == rect.right || rect.bottom == rect.top )
+			{
+				MAGIC_POSITION pos;
+				pos.x = 0.f;
+				pos.y = 0.f;
 
-            m_basePosition.x = adapt_pos.x;
-            m_basePosition.y = adapt_pos.y;
+				m_basePosition.x = 0.f;
+				m_basePosition.y = 0.f;
+				m_basePosition.z = 0.f;
 
-#ifdef MAGIC_3D
-            m_basePosition.z = adapt_pos.z;
-#else
-            m_basePosition.z = 0.f;
-#endif            
+				Magic_SetEmitterPosition( m_emitterId, &pos );
 
-			m_background = true;
-        }
+				m_background = false;
+			}
+			else
+			{
+				MAGIC_POSITION pos;
+				Magic_GetEmitterPosition( m_emitterId, &pos );
+
+				MAGIC_POSITION adapt_pos;
+				adapt_pos.x = pos.x - (float)rect.left;
+				adapt_pos.y = pos.y - (float)rect.top;
+				adapt_pos.z = pos.z;
+
+				Magic_SetEmitterPosition( m_emitterId, &adapt_pos );
+
+				m_basePosition.x = adapt_pos.x;
+				m_basePosition.y = adapt_pos.y;
+				m_basePosition.z = adapt_pos.z;
+
+				m_background = true;
+			}
+		}
+		else
+		{
+			MAGIC_VIEW view;
+			if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
+			{
+				return false;
+			}
+		}
 
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & AstralaxEmitter2::getName() const
+	const ConstString & AstralaxEmitter2::getContainerName() const
 	{
-		return m_name;
+		return m_containerName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static mt::box2f s_getEmitterBBox( HM_EMITTER _emitter )
@@ -137,7 +148,7 @@ namespace Menge
 
 		bool isFolder = Magic_IsFolder( _emitter );
 
-		if( isFolder )
+		if( isFolder == true )
 		{
 			int count = Magic_GetEmitterCount( _emitter );
 
@@ -188,7 +199,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::getBoundingBox( mt::box2f& _box ) const
 	{
-		mt::box2f box = s_getEmitterBBox(m_id);
+		mt::box2f box = s_getEmitterBBox(m_emitterId);
 		_box = box;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -196,25 +207,20 @@ namespace Menge
 	{
 		m_leftBorder = (double)_leftBorder;
 
-		Magic_SetInterval1( m_id, m_leftBorder );
+		Magic_SetInterval1( m_emitterId, m_leftBorder );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::play()
 	{
 		//if ( m_start == false ) 
 		{ 
-			Magic_Restart( m_id );
+			Magic_Restart( m_emitterId );
 
-			if( Magic_IsInterval1( m_id ) == true )
+			if( Magic_IsInterval1( m_emitterId ) == true )
 			{
 				//Magic_SetInterval1( m_id, m_leftBorder );
-				Magic_EmitterToInterval1( m_id, 1.f, nullptr );
+				Magic_EmitterToInterval1( m_emitterId, 1.f, nullptr );
 			}
-		}
-
-		for( int i = 0; i < m_typesCount; ++i )
-		{
-			Magic_SetDiagramFactor( m_id, i, MAGIC_DIAGRAM_NUMBER, m_factor[i] );
 		}
 
 		m_total_rate = 0.0;
@@ -225,37 +231,73 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setLoop( bool _loop )
 	{
-		Magic_SetLoopMode( m_id, _loop? 1: 0 );
+		Magic_SetLoopMode( m_emitterId, _loop? 1: 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::getLoop() const
 	{
-        int loopMode = Magic_GetLoopMode( m_id );
+        int loopMode = Magic_GetLoopMode( m_emitterId );
 
 		return loopMode == 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::interrupt()
 	{
-		if( Magic_IsInterrupt( m_id ) == true )
+		if( Magic_IsInterrupt( m_emitterId ) == true )
 		{
 			return;
 		}
 
-		Magic_Update( m_id, 0.f );
-		Magic_SetLoopMode( m_id, 0 );
-		Magic_SetInterrupt( m_id, true );
+		Magic_Update( m_emitterId, 0.f );
+		Magic_SetLoopMode( m_emitterId, 0 );
+		Magic_SetInterrupt( m_emitterId, true );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxEmitter2::is3d() const
+	{
+		bool is3d = Magic_Is3d( m_emitterId );
+
+		return is3d;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxEmitter2::getCamera( ParticleCamera & _camera ) const
+	{
+		MAGIC_VIEW view;
+		if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
+		{
+			return false;
+		}
+
+		float aspect_ratio = float(view.viewport_width) / float(view.viewport_height) * view.aspect_factor;
+
+		_camera.pos.x = view.pos.x;
+		_camera.pos.y = view.pos.y;
+		_camera.pos.z = view.pos.z;
+
+		_camera.dir.x = view.dir.x;
+		_camera.dir.y = view.dir.y;
+		_camera.dir.z = view.dir.z;
+
+		_camera.up.x = view.up.x;
+		_camera.up.y = view.up.y;
+		_camera.up.z = view.up.z;
+
+		_camera.fov = view.fov;
+		_camera.aspect = aspect_ratio;
+		_camera.znear = view.znear;
+		_camera.zfar = view.zfar;
+
+		_camera.width = (float)view.viewport_width;
+		_camera.height = (float)view.viewport_height;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::stop()
 	{
 		m_start = false;
-		Magic_Stop( m_id );
-		//Magic_SetDiagramFactor( m_id, 0, 3, 0.0f );
-		for( int i = 0; i < m_typesCount; i++ )
-		{
-			Magic_SetDiagramFactor( m_id, i, MAGIC_DIAGRAM_NUMBER, 0.0f );
-		}
+
+		Magic_Stop( m_emitterId );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::pause()
@@ -273,31 +315,23 @@ namespace Menge
 		m_total_rate += _timing;
         m_time += _timing;
 
-        //if( m_total_rate < m_rate )
-        //{
-        //    bool oldFirstUpdate = m_firstUpdate;
-        //    m_firstUpdate = false;
+		if( Magic_Is3d( m_emitterId ) == true )
+		{
+			MAGIC_VIEW view;
+			if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
+			{
+				return false;
+			}
 
-        //    return oldFirstUpdate;
-        //}
+			MAGIC_CAMERA camera;
+			camera.pos = view.pos;
+			camera.dir = view.dir;
 
-		bool restart = Magic_Update( m_id, m_total_rate );
+			Magic_SetCamera( &camera );
+		}
+
+		bool restart = Magic_Update( m_emitterId, m_total_rate );
 		m_total_rate = 0.f;
-
-		//bool restart = true;
-		//while( m_total_rate >= m_rate )
-		//{
-		//	m_total_rate -= m_rate;
-
-		//	test();
-		//	restart = Magic_Update( m_id, m_rate );
-		//	test();
-
-  //          if( restart == false )
-  //          {
-  //              break;
-  //          }
-		//}
 
         if( restart == false )
         { 
@@ -315,29 +349,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	HM_EMITTER AstralaxEmitter2::getId() const
 	{
-		return m_id;
+		return m_emitterId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::inInterval() const
 	{
-		if( m_id == 0 )
+		if( m_emitterId == 0 )
 		{
 			return false;				 
 		}
 
-		bool result = Magic_InInterval( m_id );
+		bool result = Magic_InInterval( m_emitterId );
 		
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::createFirstRenderedParticlesList( MAGIC_RENDERING * _rendering )
 	{
-		if( m_id == 0 )
+		if( m_emitterId == 0 )
 		{
 			return false;				 
 		}
 		
-		if( Magic_CreateFirstRenderedParticlesList( m_id, _rendering ) != MAGIC_SUCCESS )
+		if( Magic_CreateFirstRenderedParticlesList( m_emitterId, _rendering ) != MAGIC_SUCCESS )
 		{
 			return false;
 		}
@@ -347,7 +381,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setEmitterTranslateWithParticle( bool _value )
 	{
-		Magic_SetEmitterPositionMode( m_id, _value );
+		Magic_SetEmitterPositionMode( m_emitterId, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::isIntensive() const
@@ -359,7 +393,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes )
 	{
-		if( Magic_ChangeImage( m_id, -1, _width, _height, _data, _bytes ) == MAGIC_ERROR )
+		if( Magic_ChangeImage( m_emitterId, -1, _width, _height, _data, _bytes ) == MAGIC_ERROR )
 		{
 			return false;
 		}
@@ -371,7 +405,7 @@ namespace Menge
 	{
 		MAGIC_TRIANGLE * triangle = reinterpret_cast<MAGIC_TRIANGLE *>(_points);
 
-		if( Magic_ChangeModel( m_id, -1, _count, triangle ) == MAGIC_ERROR )
+		if( Magic_ChangeModel( m_emitterId, -1, _count, triangle ) == MAGIC_ERROR )
 		{
 			return false;
 		}
@@ -384,27 +418,19 @@ namespace Menge
 		MAGIC_POSITION pos;
 		pos.x = _pos.x;
 		pos.y = _pos.y;
-
-#ifdef MAGIC_3D
         pos.z = _pos.z;
-#endif
 
-		Magic_SetEmitterPosition( m_id, &pos );
+		Magic_SetEmitterPosition( m_emitterId, &pos );
 	}  
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::getPosition( mt::vec3f & _pos )
 	{
 		MAGIC_POSITION pos;
-		Magic_GetEmitterPosition( m_id, &pos );
+		Magic_GetEmitterPosition( m_emitterId, &pos );
 
 		_pos.x = pos.x;
 		_pos.y = pos.y;
-
-#ifdef MAGIC_3D
         _pos.z = pos.z;
-#else   
-        _pos.z = 0.f;
-#endif
 	}
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter2::getBasePosition( mt::vec3f & _pos )
@@ -414,16 +440,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setScale( float _scale )
 	{
-		Magic_SetScale( m_id, _scale );
+		Magic_SetScale( m_emitterId, _scale );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::restart()
 	{
-		Magic_Restart( m_id );
-		if( Magic_IsInterval1( m_id ) == true )
+		Magic_Restart( m_emitterId );
+		if( Magic_IsInterval1( m_emitterId ) == true )
 		{
 			//Magic_SetInterval1( m_id, m_leftBorder );
-			Magic_EmitterToInterval1( m_id, 1.f, nullptr );
+			Magic_EmitterToInterval1( m_emitterId, 1.f, nullptr );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -431,33 +457,49 @@ namespace Menge
 	{
 		m_angle = _radians * 180.f / 3.1415926f;
 
-		Magic_SetDiagramAddition( m_id, MAGIC_DIAGRAM_DIRECTION, -1, m_angle );
-		int k_par = Magic_GetParticlesTypeCount( m_id );
+		Magic_SetDiagramAddition( m_emitterId, MAGIC_DIAGRAM_DIRECTION, -1, m_angle );
+		int k_par = Magic_GetParticlesTypeCount( m_emitterId );
 		for( int j = 0; j < k_par; j++ )
 		{
-			Magic_SetDiagramAddition( m_id, MAGIC_DIAGRAM_DIRECTION, j, m_angle );
+			Magic_SetDiagramAddition( m_emitterId, MAGIC_DIAGRAM_DIRECTION, j, m_angle );
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter2::getBackgroundBox( mt::box2f & _box )
     {
-        MAGIC_RECT rect;
+		if( Magic_Is3d( m_emitterId ) == false )
+		{        
+			MAGIC_RECT rect;
+			if( Magic_GetBackgroundRect( m_emitterId, &rect ) == MAGIC_ERROR )
+			{
+				return false;
+			}
 
-        if( Magic_GetBackgroundRect( m_id, &rect ) == MAGIC_ERROR )
-        {
-            return false;
-        }
+			if( rect.left == rect.right || rect.top == rect.bottom )
+			{
+				return false;
+			}
 
-        if( rect.left == rect.right || rect.top == rect.bottom )
-        {
-            return false;
-        }
+			_box.minimum.x = (float)rect.left;
+			_box.minimum.y = (float)rect.top;
 
-        _box.minimum.x = (float)rect.left;
-        _box.minimum.y = (float)rect.top;
+			_box.maximum.x = (float)rect.right;
+			_box.maximum.y = (float)rect.bottom;
+		}
+		else
+		{
+			MAGIC_VIEW view;
+			if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
+			{
+				return false;
+			}
 
-        _box.maximum.x = (float)rect.right;
-        _box.maximum.y = (float)rect.bottom;
+			_box.minimum.x = 0.f;
+			_box.minimum.y = 0.f;
+
+			_box.maximum.x = (float)view.viewport_width;
+			_box.maximum.y = (float)view.viewport_height;
+		}
 
         return true;
     }
@@ -487,51 +529,46 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::seek( float _time )
 	{
-		double rate = Magic_GetUpdateTime( m_id );
-		bool randomMode = Magic_IsRandomMode(m_id);
-		Magic_SetRandomMode( m_id, false );
+		double rate = Magic_GetUpdateTime( m_emitterId );
+		bool randomMode = Magic_IsRandomMode(m_emitterId);
+		Magic_SetRandomMode( m_emitterId, false );
 
-		double currentTime = Magic_GetPosition( m_id );
+		double currentTime = Magic_GetPosition( m_emitterId );
 		double delta = currentTime - m_total_rate;
 		delta = _time;
 
 		this->restart();
-		/*	
-		if( delta <= 0)
-		{
-			restart();
-			delta = _time;
-		}
-		*/
+
 		while( delta >= rate )
 		{
 			delta -= rate;
-			bool isCanUpdate = Magic_Update( m_id,rate );
+			bool isCanUpdate = Magic_Update( m_emitterId,rate );
 			if( !isCanUpdate )
 			{
 				restart();
 			}
 		}
 		
-		Magic_SetRandomMode( m_id, randomMode );
+		Magic_SetRandomMode( m_emitterId, randomMode );
+
 		m_total_rate = _time;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float AstralaxEmitter2::getUpdateTemp() const
 	{
-		float tempScale = Magic_GetUpdateSpeed( m_id );
+		float tempScale = Magic_GetUpdateSpeed( m_emitterId );
 
         return tempScale;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setRandomMode( bool _randomMode )
 	{
-		Magic_SetRandomMode( m_id, _randomMode );
+		Magic_SetRandomMode( m_emitterId, _randomMode );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::getRandomMode() const
 	{
-		bool mode = Magic_IsRandomMode( m_id );
+		bool mode = Magic_IsRandomMode( m_emitterId );
 
 		return mode;
 	}
@@ -539,5 +576,85 @@ namespace Menge
 	bool AstralaxEmitter2::isBackground() const
 	{
 		return m_background;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count )
+	{
+		for( size_t i = 0; i != _count; ++i )
+		{
+			MAGIC_PARTICLE_VERTEXES vertexes;
+			Magic_GetNextParticleVertexes( &vertexes );
+
+			ParticleVertices & rp = _particles[_offset + i];
+
+			rp.v[0].x = vertexes.vertex1.x;
+			rp.v[0].y = vertexes.vertex1.y;
+			rp.v[0].z = vertexes.vertex1.z; 
+
+			rp.v[1].x = vertexes.vertex2.x;
+			rp.v[1].y = vertexes.vertex2.y;
+			rp.v[1].z = vertexes.vertex2.z;
+
+			rp.v[2].x = vertexes.vertex3.x;
+			rp.v[2].y = vertexes.vertex3.y;
+			rp.v[2].z = vertexes.vertex3.z;
+
+			rp.v[3].x = vertexes.vertex4.x;
+			rp.v[3].y = vertexes.vertex4.y;
+			rp.v[3].z = vertexes.vertex4.z;
+
+			rp.uv[0].x = vertexes.u1;
+			rp.uv[0].y = vertexes.v1;
+			rp.uv[1].x = vertexes.u2;
+			rp.uv[1].y = vertexes.v2;
+			rp.uv[2].x = vertexes.u3;
+			rp.uv[2].y = vertexes.v3;
+			rp.uv[3].x = vertexes.u4;
+			rp.uv[3].y = vertexes.v4;
+
+			rp.color = vertexes.color;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxEmitter2::flushParticles( ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
+	{
+		_flush.particleCount = 0;
+		_flush.meshCount = 0;
+
+		if( this->inInterval() == false )
+		{
+			return false;
+		}
+
+		MAGIC_RENDERING rendering;
+		if( this->createFirstRenderedParticlesList( &rendering ) == false )
+		{
+			return false;
+		}
+
+		while( rendering.count != 0 )
+		{
+			if( _particlesLimit <= _flush.particleCount + rendering.count || 
+				_meshLimit <= _flush.meshCount )
+			{
+				return false;
+			}
+
+			ParticleMesh & mesh = _meshes[_flush.meshCount];
+
+			mesh.begin = _flush.particleCount;
+			mesh.size = rendering.count;
+			mesh.texture = rendering.texture_id;
+			mesh.intense = rendering.intense;
+
+			s_fillParticles_( _particles, _flush.particleCount, mesh.size );
+
+			_flush.particleCount += rendering.count;
+			++_flush.meshCount;
+
+			Magic_CreateNextRenderedParticlesList( &rendering );
+		}
+
+		return true;
 	}
 }

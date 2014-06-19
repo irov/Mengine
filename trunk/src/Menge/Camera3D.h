@@ -27,6 +27,8 @@ namespace Menge
 		void setCameraUp( const mt::vec3f & _up );
 		void setCameraFOV( float _fov );
 		void setCameraAspect( float _aspect );
+		void setCameraNear( float _near );
+		void setCameraFar( float _far );
 		void setCameraRightSign( float _rightSign );
 
 	public:
@@ -60,8 +62,10 @@ namespace Menge
 		mt::vec3f m_cameraDir;
 		mt::vec3f m_cameraUp;
 
-		float m_cameraFOV;
+		float m_cameraFov;
 		float m_cameraAspect;
+		float m_cameraNear;
+		float m_cameraFar;
 		float m_cameraRightSign;
 
 		Viewport m_renderport;
@@ -85,7 +89,6 @@ namespace Menge
 	{
 		return m_renderport;
 	}
-
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & Camera3D::getCameraWorldMatrix() const
 	{

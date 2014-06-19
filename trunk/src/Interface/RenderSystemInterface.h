@@ -613,5 +613,5 @@ namespace Menge
 	};
 
 #   define RENDER_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::RenderServiceInterface)
+    ((Menge::RenderServiceInterface*)SERVICE_GET(serviceProvider, Menge::RenderServiceInterface))
 }

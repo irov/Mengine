@@ -29,7 +29,8 @@ namespace Menge
 		, m_timing(0.f)
 		, m_blendAdd(false)
         , m_needUpdate(false)
-        , m_needUpdate2(false)
+		, m_textureUpdated(false)
+		, m_firstFrameUpdated(false)
 		, m_invalidateMaterial(false)
 	{
 	}
@@ -78,19 +79,22 @@ namespace Menge
 
 		float totalTiming = timing / scretch;
 
-		//Node::_update( _current, timing );
-		//localHide(false);
-		//printf("%f %s\n",_timing,m_name.c_str());
+		if( m_firstFrameUpdated == false )
+		{
+			if( this->syncFirstFrame_() == false )
+			{
+				return;
+			}
 
-		//printf("%f %s\n",_timing,m_name.c_str());
-		m_needUpdate = this->sync_( totalTiming );
-
-        //printf("Video._update %f %s %d %d\n"
-        //    , timing
-        //    , m_name.c_str()
-        //    , m_needUpdate
-        //    , m_needUpdate2
-        //    );
+			m_firstFrameUpdated = true;
+			m_needUpdate = true;
+			
+			this->sync_( totalTiming );			
+		}
+		else
+		{
+			m_needUpdate = this->sync_( totalTiming );
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::_activate()
@@ -99,6 +103,10 @@ namespace Menge
 		{
 			return false;
 		}
+
+		m_needUpdate = false;
+		m_textureUpdated = false;
+		m_firstFrameUpdated = false;
 
 		return true;
 	}
@@ -177,7 +185,8 @@ namespace Menge
 
         m_timing = 0.f;
         m_needUpdate = false;
-        m_needUpdate2 = false;
+		m_textureUpdated = false;
+		m_firstFrameUpdated = false;
 
 		return true;
 	}
@@ -221,7 +230,6 @@ namespace Menge
 	void Video::_stop( size_t _enumerator )
 	{
 		m_needUpdate = false;
-        m_needUpdate2 = false;
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
 	}
@@ -275,7 +283,7 @@ namespace Menge
 	{
 		Node::_render( _viewport, _camera );
 
-		if( m_needUpdate == true || m_needUpdate2 == true )
+		if( m_needUpdate == true )
 		{
             if( this->fillVideoBuffer_() == false )
             {
@@ -283,10 +291,16 @@ namespace Menge
                     , this->getName().c_str()
                     , m_resourceVideo->getName().c_str()
                     );
+
+				return;
             }
 
             m_needUpdate = false;
-            m_needUpdate2 = false;
+		}
+
+		if( m_textureUpdated == false )
+		{
+			return;
 		}
         
 		const RenderVertex2D * vertices = this->getVertices();
@@ -393,12 +407,6 @@ namespace Menge
 
         float frameTiming = dataInfo->frameTiming;
 
-        //float frameRate = m_resourceVideo->getFrameRate();
-        //if( frameRate > 0.f )
-        //{
-		//frameTiming = 1000.f / frameRate;
-        //}
-		
 		while( m_timing >= frameTiming )
 		{            
             float pts;
@@ -459,6 +467,32 @@ namespace Menge
         	
 		return needUpdate;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Video::syncFirstFrame_()
+	{
+		while( true, true )
+		{
+			float pts;
+			EVideoDecoderReadState state = m_videoDecoder->readNextFrame( pts );
+
+			if( state == VDRS_FAILURE )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Video::syncFirstFrame_: '%s' error reading first frame"
+					, this->getName().c_str()
+					);
+
+				return false;
+			} 
+			else if( state == VDRS_SKIP )
+			{
+				continue;	
+			}
+
+			break;
+		}
+
+		return true;
+	}
 	////////////////////////////////////////////////////////////////////
 	void Video::_setTiming( float _timing )
 	{
@@ -501,34 +535,10 @@ namespace Menge
         }
 
         m_timing = 0.f;
+        //m_needUpdate = this->sync_( frameTiming );
 
-        m_needUpdate = this->sync_( frameTiming );
-
-        //m_timing = fmod( seek_timing, dataInfo->frameTiming );
-
-        //while( true, true )
-        //{
-        //    EVideoDecoderReadState state = m_videoDecoder->readNextFrame( 0.f );
-
-        //    if( state == VDRS_SKIP )
-        //    {
-        //        continue;
-        //    }
-
-        //    break;
-        //}              
-
-        m_needUpdate2 = true;
-        //m_needUpdate3 = true;
-
-        //if( m_videoDecoder->seek( seek_timing ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("Video::_setTiming %s:%s invalid seek to %f (double)"
-        //        , this->getName().c_str()
-        //        , m_resourceVideoName.c_str()
-        //        , seek_timing
-        //        );
-        //}	
+		m_textureUpdated = false;
+		m_firstFrameUpdated = false;
     }
 	////////////////////////////////////////////////////////////////////
 	float Video::_getTiming() const
@@ -594,6 +604,8 @@ namespace Menge
         size_t count = m_videoDecoder->decode( lockRect, pitch * rect.bottom );
        
 		texture->unlock();
+
+		m_textureUpdated = true;
                 
 		return count != 0;
 	}

@@ -16,9 +16,11 @@ namespace Menge
         , m_cameraPosition(0.f, 0.f, 0.f)
         , m_cameraDir(1.f, 0.f, 0.f)
 		, m_cameraUp(0.f, 1.f, 0.f)
-		, m_cameraRightSign(1.f)
-        , m_cameraFOV(0.f)
+        , m_cameraFov(0.f)
         , m_cameraAspect(0.f)
+		, m_cameraNear(1.f)
+		, m_cameraFar(10000.f)
+		, m_cameraRightSign(1.f)
 	{
 		mt::ident_m4( m_worldMatrix );
 	}
@@ -75,7 +77,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::setCameraFOV( float _fov )
 	{
-		m_cameraFOV = _fov;
+		m_cameraFov = _fov;
 
 		this->invalidateMatrix_();
 	}
@@ -83,6 +85,20 @@ namespace Menge
 	void Camera3D::setCameraAspect( float _aspect )
 	{
 		m_cameraAspect = _aspect;
+
+		this->invalidateMatrix_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::setCameraNear( float _near )
+	{
+		m_cameraNear = _near;
+
+		this->invalidateMatrix_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::setCameraFar( float _far )
+	{
+		m_cameraFar = _far;
 
 		this->invalidateMatrix_();
 	}
@@ -119,7 +135,7 @@ namespace Menge
         RENDER_SERVICE(m_serviceProvider)
             ->makeViewMatrixLookAt( m_viewMatrixWM, wm_position, wm_direction, wm_up, m_cameraRightSign );
 
-		float tangent = tanf(m_cameraFOV * 0.5f);
+		float tangent = tanf(m_cameraFov * 0.5f);
 		float height = 2.f * 1.f * tangent;
 		float width = height * m_cameraAspect;
 
@@ -147,8 +163,12 @@ namespace Menge
         projectViewport.end.x *= projection_factor_x;
         projectViewport.end.y *= projection_factor_y;
 
+		//mt::mat4f pm;
         RENDER_SERVICE(m_serviceProvider)
-            ->makeProjectionFrustum( m_projectionMatrixWM, projectViewport, 1.f, 10000.f );
+            ->makeProjectionFrustum( m_projectionMatrixWM, projectViewport, m_cameraNear, m_cameraFar );
+
+		//RENDER_SERVICE(m_serviceProvider)
+			//->makeProjectionPerspective( m_projectionMatrixWM, m_cameraFov, m_cameraAspect, m_cameraNear, m_cameraFar );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )

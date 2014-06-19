@@ -39,13 +39,13 @@ namespace Menge
         bool isValid() const override;
 
 	public:
-		ParticleEmitterInterfacePtr createEmitter( const ConstString & _name ) override;
+		ParticleEmitterInterfacePtr createEmitter() override;
 
 	protected:
 		void onEmitterRelease_( AstralaxEmitter2 * _emitter );
 
 	protected:
-		HM_EMITTER createEmitterId_( const char * _name ) const;
+		HM_EMITTER createEmitterId_() const;
 			
 	private:
         ServiceProviderInterface * m_serviceProvider;

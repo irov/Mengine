@@ -3,7 +3,7 @@
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
 
-#   include "ResourceEmitterContainer2.h"
+#   include "ResourceParticle.h"
 
 #	include "../Interface/RenderSystemInterface.h"
 #	include "../Interface/ParticleSystemInterface.h"
@@ -60,15 +60,12 @@ namespace Menge
 		bool changeEmitterPolygon( const Polygon & _polygon );
         void removeEmitterPolygon();
 	
-        void setResourceEmitterContainer( ResourceEmitterContainer2 * _resourceEmitterContainer );
-        ResourceEmitterContainer2 * getResourceEmitterContainer() const;
-
-		void setEmitter( const ConstString& _emitterName ); 
+        void setResourceParticle( ResourceParticle * _resourceParticle );
+        ResourceParticle * getResourceParticle() const;
 
 		float getDuration() const;
 		float getLeftBorder() const;
 		float getRightBorder() const;
-		const ConstString& getEmitterName() const;
 		
 		void setRandomMode( bool _randomMode );
 		bool getRandomMode() const;
@@ -114,9 +111,11 @@ namespace Menge
 		inline const RenderMaterialInterfacePtr & getMaterial( size_t _index );
 
 	protected:
-		ResourceHolder<ResourceEmitterContainer2> m_resourceEmitterContainer;
+		bool createCamera3D_();
+		void destroyCamera3D_();
 
-		ConstString m_emitterName;
+	protected:
+		ResourceHolder<ResourceParticle> m_resourceParticle;
 
 		ConstString m_emitterImageName;
 
@@ -125,6 +124,9 @@ namespace Menge
         Polygon m_polygon;
 
         bool m_emitterRelative;
+		
+		Camera3D * m_renderCamera3D;
+		RenderViewport * m_renderViewport;
 
         mt::vec3f m_emitterPosition;
 

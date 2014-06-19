@@ -764,6 +764,11 @@ namespace Menge
 			return false;
 		}
 
+		if( particleSystem->initialize() == false )
+		{
+			return false;
+		}
+
 		if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
 		{
 			return false;
@@ -800,6 +805,11 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeParticleEngine2_ Failed to initialize ParticleSystem2"
 				);
 
+			return false;
+		}
+
+		if( particleSystem->initialize() == false )
+		{
 			return false;
 		}
 
@@ -1946,7 +1956,7 @@ namespace Menge
 				m_windowsLayer->dispatchMessage( &msg );
 			}
 
-			bool updating = m_application->onUpdate();            
+			bool updating = m_application->onUpdate();        
 
 			if( updating == true )
 			{

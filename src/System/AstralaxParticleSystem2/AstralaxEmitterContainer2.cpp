@@ -31,6 +31,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitterContainer2::initialize( const ConstString & _name, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
     {
+		m_name = _name;
+
 		unsigned char * binary_memory;
 		size_t binary_size;
 
@@ -113,37 +115,34 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	HM_EMITTER AstralaxEmitterContainer2::createEmitterId_( const char * _name ) const
+	HM_EMITTER AstralaxEmitterContainer2::createEmitterId_() const
 	{
 		MAGIC_FIND_DATA find;
-		const char* magicName = Magic_FindFirst( m_mf, &find, MAGIC_FOLDER | MAGIC_EMITTER );
+		const char * magicName = Magic_FindFirst( m_mf, &find, MAGIC_FOLDER | MAGIC_EMITTER );
 
 		while( magicName != nullptr )
 		{
 			if( find.animate == 1 )
 			{
-				if( strcmp( magicName, _name ) == 0 )
+				HM_EMITTER id = Magic_LoadEmitter( m_mf, magicName );
+
+				if( id == 0 )
 				{
-					HM_EMITTER id = Magic_LoadEmitter( m_mf, magicName );
+					LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::createEmitterId invalid load emitter %s"
+						, magicName
+						);
 
-					if( id == 0 )
-					{
-						LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::createEmitterId invalid load emitter %s"
-							, _name
-							);
-
-						return 0;
-					}
-
-					return id;
+					return 0;
 				}
+
+				return id;
 			}
 			else
 			{		
 				const char * currentFolder = Magic_GetCurrentFolder( m_mf );
 				Magic_SetCurrentFolder( m_mf, magicName );
 
-				HM_EMITTER id = this->createEmitterId_( _name );
+				HM_EMITTER id = this->createEmitterId_();
 				
 				Magic_SetCurrentFolder( m_mf, currentFolder );
 
@@ -156,16 +155,15 @@ namespace Menge
 			magicName = Magic_FindNext( m_mf, &find );
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::createEmitterId not found emitter %s"
-			, _name
+		LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::createEmitterId not found emitter"
 			);
 
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterInterfacePtr AstralaxEmitterContainer2::createEmitter( const ConstString & _name )
+	ParticleEmitterInterfacePtr AstralaxEmitterContainer2::createEmitter()
 	{
-		HM_EMITTER id = this->createEmitterId_( _name.c_str() );
+		HM_EMITTER id = this->createEmitterId_();
 
 		if( id == 0 )
 		{
@@ -174,7 +172,7 @@ namespace Menge
 
 		AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter.createObjectT();
 
-        if( emitter->initialize( m_serviceProvider, id, _name ) == false )
+        if( emitter->initialize( m_serviceProvider, id, m_name ) == false )
         {
             return nullptr;
         }

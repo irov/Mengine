@@ -24,7 +24,7 @@ namespace Menge
         virtual bool isValid() const = 0;
 
     public:
-		virtual ParticleEmitterInterfacePtr createEmitter( const ConstString & _name ) = 0;
+		virtual ParticleEmitterInterfacePtr createEmitter() = 0;
 	};
 
     typedef stdex::intrusive_ptr<ParticleEmitterContainerInterface2> ParticleEmitterContainerInterface2Ptr;
@@ -40,9 +40,6 @@ namespace Menge
 
 	public:
 		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
-
-	public:
-		virtual bool flushParticles( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
 	};
 
 #   define PARTICLE_SYSTEM2( serviceProvider )\
@@ -58,7 +55,6 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual bool flushEmitter( const mt::mat4f & _viewMatrix, ParticleEmitterInterface * _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
 		virtual size_t renderParticlesCount( size_t _count ) = 0;
 
 	public:

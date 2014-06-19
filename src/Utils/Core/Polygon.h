@@ -91,4 +91,6 @@ namespace Menge
 	void polygon_transpose( Polygon & _out, const Polygon & _polygon, const mt::vec2f & _pos );
 
     bool polygon_to_box2f( mt::box2f & _box2f, const Polygon & _polygon );
+	size_t polygon_size( const Polygon & _polygon );
+	const mt::vec2f & polygon_point( const Polygon & _polygon, size_t _index );
 }

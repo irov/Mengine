@@ -31,9 +31,22 @@ namespace Menge
     void MovieFramePack::initialize( size_t _size )
     {
         m_layers.resize( _size );
-        m_timeremap.resize( _size );
-		m_shapes.resize( _size );
     }
+	//////////////////////////////////////////////////////////////////////////
+	void MovieFramePack::initializeTimeremap( size_t _size )
+	{
+		m_timeremap.resize( _size );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MovieFramePack::initializeShapes( size_t _size )
+	{
+		m_shapes.resize( _size );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MovieFramePack::initializePolygons( size_t _size )
+	{
+		m_polygons.resize( _size );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	MovieLayerFrame & MovieFramePack::initializeLayer( size_t _layerIndex, size_t _count, bool _immutable )
 	{
@@ -93,6 +106,17 @@ namespace Menge
 		MovieLayerShapes & shapes = m_shapes[_layerIndex - 1];
 
 		return shapes;
+	}
+	void MovieFramePack::addLayerPolygon( size_t _layerIndex, const MovieLayerPolygon & _polygon )
+	{
+		m_polygons[_layerIndex - 1] = _polygon;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MovieLayerPolygon & MovieFramePack::mutableLayerPolygon( size_t _layerIndex )
+	{
+		MovieLayerPolygon & polygon = m_polygons[_layerIndex - 1];
+
+		return polygon;
 	}
 	///////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const
@@ -250,6 +274,15 @@ namespace Menge
 		const MovieFrameShape & shape = shapes.shapes[_frameIndex];
 
 		*_shape = &shape;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MovieFramePack::getLayerPolygon( size_t _layerIndex, const Polygon ** _polygon ) const
+	{
+		const MovieLayerPolygon & polygon = m_polygons[_layerIndex - 1];
+
+		*_polygon = &polygon.polygon;
 
 		return true;
 	}

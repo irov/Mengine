@@ -643,9 +643,9 @@ namespace Menge
 
 #   ifdef MENGE_PARTICLES
 		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitterContainer );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitterContainer2 );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitter );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitter2 );
+
+		RESOURCE_FACTORY( m_serviceProvider, ResourceParticle );
 #   endif
 
 		//RESOURCE_FACTORY( m_serviceProvider, ResourceFont );

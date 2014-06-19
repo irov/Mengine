@@ -25,10 +25,10 @@ namespace Menge
     public:
         virtual size_t schedule( float _timing, const ScheduleListenerPtr & _listener ) = 0;
 
-        virtual void remove( size_t _id ) = 0;
+        virtual bool remove( size_t _id ) = 0;
         virtual void removeAll() = 0;
 
-        virtual void freeze( size_t _id, bool _freeze ) = 0;
+        virtual bool freeze( size_t _id, bool _freeze ) = 0;
         virtual void freezeAll( bool _freeze ) = 0;
 		virtual bool isFreezeAll() const = 0;
         virtual bool isFreeze( size_t _id ) const = 0;

@@ -405,60 +405,6 @@ namespace Metacode
             mutable mt::vec2f Offset_Value;
         };
         
-        class Meta_ResourceEmitter2
-            : public Meta_Resource
-        { 
-        public:
-            Meta_ResourceEmitter2();
-        
-        public:
-            uint32_t getId() const override;
-        
-        public:
-            const Menge::ConstString & get_Container_Name() const
-            {
-                return this->Container_Name;
-            }
-            
-            void swap_Container_Name( Menge::ConstString & _value ) const
-            {
-                std::swap(_value, this->Container_Name);
-            }
-            
-            template<class C, class M>
-            void method_Container_Name( C * _self, M _method )
-            {
-                (_self->*_method)( this->Container_Name );
-            }
-            
-            const Menge::ConstString & get_Emitter_Name() const
-            {
-                return this->Emitter_Name;
-            }
-            
-            void swap_Emitter_Name( Menge::ConstString & _value ) const
-            {
-                std::swap(_value, this->Emitter_Name);
-            }
-            
-            template<class C, class M>
-            void method_Emitter_Name( C * _self, M _method )
-            {
-                (_self->*_method)( this->Emitter_Name );
-            }
-            
-        protected:
-            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
-            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
-            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
-            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
-        public:
-        protected:
-        protected:
-            mutable Menge::ConstString Container_Name;
-            mutable Menge::ConstString Emitter_Name;
-        };
-        
         class Meta_ResourceEmitterContainer
             : public Meta_Resource
         { 
@@ -511,166 +457,6 @@ namespace Metacode
         protected:
             mutable Menge::ConstString File_Path;
             mutable Menge::ConstString Folder_Path;
-        };
-        
-        class Meta_ResourceEmitterContainer2
-            : public Meta_Resource
-        { 
-        public:
-            Meta_ResourceEmitterContainer2();
-        
-        public:
-            uint32_t getId() const override;
-        
-        public:
-            const uint32_t & get_AtlasCount_Value() const
-            {
-                return this->AtlasCount_Value;
-            }
-            
-            void swap_AtlasCount_Value( uint32_t & _value ) const
-            {
-                std::swap(_value, this->AtlasCount_Value);
-            }
-            
-            template<class C, class M>
-            void method_AtlasCount_Value( C * _self, M _method )
-            {
-                (_self->*_method)( this->AtlasCount_Value );
-            }
-            
-            bool has_File_Converter() const
-            {
-                return File_Converter_successful;
-            }
-            
-            bool get_File_Converter( Menge::ConstString & _value ) const
-            {
-                if( File_Converter_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_Converter;
-            
-                return true;
-            }
-            
-            bool swap_File_Converter( Menge::ConstString & _value ) const
-            {
-                if( File_Converter_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_Converter);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_File_Converter( C * _self, M _method )
-            {
-                if( File_Converter_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->File_Converter );
-            }
-            
-            const Menge::ConstString & get_File_Path() const
-            {
-                return this->File_Path;
-            }
-            
-            void swap_File_Path( Menge::ConstString & _value ) const
-            {
-                std::swap(_value, this->File_Path);
-            }
-            
-            template<class C, class M>
-            void method_File_Path( C * _self, M _method )
-            {
-                (_self->*_method)( this->File_Path );
-            }
-            
-        protected:
-            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
-            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
-            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
-            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
-        public:
-            class Meta_Atlas
-                : public Metabuf::Metadata
-            { 
-            public:
-                Meta_Atlas();
-            
-            public:
-                uint32_t getId() const override;
-            
-            public:
-                const uint32_t & get_Index() const
-                {
-                    return this->Index;
-                }
-                
-                void swap_Index( uint32_t & _value ) const
-                {
-                    std::swap( _value, this->Index);
-                }
-                
-                template<class C, class M>
-                void method_Index( C * _self, M _method ) const
-                {
-                    (_self->*_method)( this->Index );
-                }
-                
-                const Menge::ConstString & get_ResourceName() const
-                {
-                    return this->ResourceName;
-                }
-                
-                void swap_ResourceName( Menge::ConstString & _value ) const
-                {
-                    std::swap( _value, this->ResourceName);
-                }
-                
-                template<class C, class M>
-                void method_ResourceName( C * _self, M _method ) const
-                {
-                    (_self->*_method)( this->ResourceName );
-                }
-                
-            protected:
-                bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
-                bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
-                bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
-                bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
-            public:
-            protected:
-            protected:
-                mutable uint32_t Index;
-                mutable Menge::ConstString ResourceName;
-            };
-            
-        protected:
-        protected:
-            mutable uint32_t AtlasCount_Value;
-            bool File_Converter_successful;
-            mutable Menge::ConstString File_Converter;
-            mutable Menge::ConstString File_Path;
-        public:
-            typedef stdex::auto_array<Meta_Atlas> TVectorMeta_Atlas;
-        
-            const TVectorMeta_Atlas & get_IncludesAtlas() const
-            {
-                return this->includes_Meta_Atlas;
-            }
-        
-        protected:
-            TVectorMeta_Atlas includes_Meta_Atlas;
         };
         
         class Meta_ResourceExternal
@@ -2964,6 +2750,46 @@ namespace Metacode
                     (_self->*_method)( this->PlayCount );
                 }
                 
+                bool has_Polygon() const
+                {
+                    return Polygon_successful;
+                }
+                
+                bool get_Polygon( bool & _value ) const
+                {
+                    if( Polygon_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Polygon;
+                
+                    return true;
+                }
+                
+                bool swap_Polygon( bool & _value ) const
+                {
+                    if( Polygon_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Polygon);
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void method_Polygon( C * _self, M _method ) const
+                {
+                    if( Polygon_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->Polygon );
+                }
+                
                 bool has_Shape() const
                 {
                     return Shape_successful;
@@ -3188,6 +3014,8 @@ namespace Metacode
                 mutable uint32_t Parent;
                 bool PlayCount_successful;
                 mutable uint32_t PlayCount;
+                bool Polygon_successful;
+                mutable bool Polygon;
                 bool Shape_successful;
                 mutable bool Shape;
                 mutable Menge::ConstString Source;
@@ -3634,6 +3462,166 @@ namespace Metacode
         
         protected:
             TVectorMeta_MovieLayer3D includes_Meta_MovieLayer3D;
+        };
+        
+        class Meta_ResourceParticle
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceParticle();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const uint32_t & get_AtlasCount_Value() const
+            {
+                return this->AtlasCount_Value;
+            }
+            
+            void swap_AtlasCount_Value( uint32_t & _value ) const
+            {
+                std::swap(_value, this->AtlasCount_Value);
+            }
+            
+            template<class C, class M>
+            void method_AtlasCount_Value( C * _self, M _method )
+            {
+                (_self->*_method)( this->AtlasCount_Value );
+            }
+            
+            bool has_File_Converter() const
+            {
+                return File_Converter_successful;
+            }
+            
+            bool get_File_Converter( Menge::ConstString & _value ) const
+            {
+                if( File_Converter_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Converter;
+            
+                return true;
+            }
+            
+            bool swap_File_Converter( Menge::ConstString & _value ) const
+            {
+                if( File_Converter_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Converter);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_Converter( C * _self, M _method )
+            {
+                if( File_Converter_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_Converter );
+            }
+            
+            const Menge::ConstString & get_File_Path() const
+            {
+                return this->File_Path;
+            }
+            
+            void swap_File_Path( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->File_Path);
+            }
+            
+            template<class C, class M>
+            void method_File_Path( C * _self, M _method )
+            {
+                (_self->*_method)( this->File_Path );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+            class Meta_Atlas
+                : public Metabuf::Metadata
+            { 
+            public:
+                Meta_Atlas();
+            
+            public:
+                uint32_t getId() const override;
+            
+            public:
+                const uint32_t & get_Index() const
+                {
+                    return this->Index;
+                }
+                
+                void swap_Index( uint32_t & _value ) const
+                {
+                    std::swap( _value, this->Index);
+                }
+                
+                template<class C, class M>
+                void method_Index( C * _self, M _method ) const
+                {
+                    (_self->*_method)( this->Index );
+                }
+                
+                const Menge::ConstString & get_ResourceName() const
+                {
+                    return this->ResourceName;
+                }
+                
+                void swap_ResourceName( Menge::ConstString & _value ) const
+                {
+                    std::swap( _value, this->ResourceName);
+                }
+                
+                template<class C, class M>
+                void method_ResourceName( C * _self, M _method ) const
+                {
+                    (_self->*_method)( this->ResourceName );
+                }
+                
+            protected:
+                bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+                bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+                bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+                bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+            public:
+            protected:
+            protected:
+                mutable uint32_t Index;
+                mutable Menge::ConstString ResourceName;
+            };
+            
+        protected:
+        protected:
+            mutable uint32_t AtlasCount_Value;
+            bool File_Converter_successful;
+            mutable Menge::ConstString File_Converter;
+            mutable Menge::ConstString File_Path;
+        public:
+            typedef stdex::auto_array<Meta_Atlas> TVectorMeta_Atlas;
+        
+            const TVectorMeta_Atlas & get_IncludesAtlas() const
+            {
+                return this->includes_Meta_Atlas;
+            }
+        
+        protected:
+            TVectorMeta_Atlas includes_Meta_Atlas;
         };
         
         class Meta_ResourcePlaylist
@@ -6030,6 +6018,60 @@ namespace Metacode
             TVectorMeta_KeyFrame3D includes_Meta_KeyFrame3D;
         };
         
+        class Meta_Polygon
+            : public Metabuf::Metadata
+        { 
+        public:
+            Meta_Polygon();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const uint32_t & get_LayerIndex() const
+            {
+                return this->LayerIndex;
+            }
+            
+            void swap_LayerIndex( uint32_t & _value ) const
+            {
+                std::swap( _value, this->LayerIndex);
+            }
+            
+            template<class C, class M>
+            void method_LayerIndex( C * _self, M _method ) const
+            {
+                (_self->*_method)( this->LayerIndex );
+            }
+            
+            const Menge::Polygon & get_Value() const
+            {
+                return this->Value;
+            }
+            
+            void swap_Value( Menge::Polygon & _value ) const
+            {
+                std::swap( _value, this->Value);
+            }
+            
+            template<class C, class M>
+            void method_Value( C * _self, M _method ) const
+            {
+                (_self->*_method)( this->Value );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable uint32_t LayerIndex;
+            mutable Menge::Polygon Value;
+        };
+        
         class Meta_TimeRemap
             : public Metabuf::Metadata
         { 
@@ -6117,6 +6159,16 @@ namespace Metacode
     
     protected:
         TVectorMeta_KeyFrames3D includes_Meta_KeyFrames3D;
+    public:
+        typedef stdex::auto_array<Meta_Polygon> TVectorMeta_Polygon;
+    
+        const TVectorMeta_Polygon & get_IncludesPolygon() const
+        {
+            return this->includes_Meta_Polygon;
+        }
+    
+    protected:
+        TVectorMeta_Polygon includes_Meta_Polygon;
     public:
         typedef stdex::auto_array<Meta_TimeRemap> TVectorMeta_TimeRemap;
     

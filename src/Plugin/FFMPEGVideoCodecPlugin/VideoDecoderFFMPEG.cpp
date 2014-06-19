@@ -334,7 +334,7 @@ namespace Menge
         int scale_height = sws_scale( m_imgConvertContext, m_frame->data, m_frame->linesize, 0, 
             m_codecContext->height, picture.data, picture.linesize );
 
-        if( scale_height < 0 )
+        if( scale_height <= 0 )
         {
             LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode sws_scale %d"
                 , scale_height
@@ -370,7 +370,7 @@ namespace Menge
         int isGotPicture = 0;        
         int decode_bite = avcodec_decode_video2( m_codecContext, m_frame, &isGotPicture, &packet );
 
-        if( isGotPicture == 0 )
+		if( isGotPicture == 0 )
         {
             av_free_packet(&packet);
 

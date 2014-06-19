@@ -68,7 +68,7 @@ namespace Menge
         return event.id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScheduleManager::remove( size_t _id )
+    bool ScheduleManager::remove( size_t _id )
     {
         const ScheduleEvent * event = this->findEvent_( _id );
 
@@ -78,10 +78,19 @@ namespace Menge
                 , _id
                 );
 
-            return;
+            return false;
         }
 
-        this->removeEvent_( *event );
+        if( this->removeEvent_( *event ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ScheduleManager::remove not alredy remove or complete '%d'"
+				, _id
+				);
+
+			return false;
+		}
+
+		return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ScheduleManager::removeAll()
@@ -98,16 +107,18 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScheduleManager::removeEvent_( const ScheduleEvent & _event )
+    bool ScheduleManager::removeEvent_( const ScheduleEvent & _event )
     {
         if( _event.dead == true )
         {
-            return;
+            return false;
         }
 
         _event.dead = true;
 
         _event.listener->onScheduleStop( _event.id );
+
+		return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ScheduleManager::update( float _current, float _timing )
@@ -158,7 +169,7 @@ namespace Menge
         m_schedules.erase( it_erase, m_schedules.end() );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScheduleManager::freeze( size_t _id, bool _freeze )
+    bool ScheduleManager::freeze( size_t _id, bool _freeze )
     {
         const ScheduleEvent * event = this->findEvent_( _id );
 
@@ -168,10 +179,12 @@ namespace Menge
                 , _id
                 );
 
-            return;	
+            return false;
         }
 
         event->freeze = _freeze;
+
+		return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::isFreeze( size_t _id ) const

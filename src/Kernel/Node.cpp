@@ -365,7 +365,13 @@ namespace Menge
 
 		if( parent == this )
 		{
+			if( *_insert == _node )
+			{
+				return true;
+			}
+			
 			this->eraseChildren_( _node );
+			
 			this->insertChildren_( _insert, _node );			
 		}
 		else

@@ -28,17 +28,18 @@ namespace Menge
 
 		bool _activate() override;
 		void _deactivate() override;
-        
-	protected:
-		void _destroy() override;
-		
+        	
 	protected:
 		void _localHide( bool _hide ) override;
+
+	protected:
+		void updateHide_( bool _hide );
 
 	protected:
         ResourceHolder<ResourceInternalObject> m_resourceInternalObject;
         Movie * m_movie;
 
 		PyObject * m_internalObject;
+		Node * m_internalNode;
 	};
 }

@@ -33,6 +33,18 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxParticleSystem::initialize()
+	{
+		Magic_SetAxis( MAGIC_pXnYpZ );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxParticleSystem::finalize()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static size_t s_getCountTag( const String & _fullname, String & _name )
 	{
 		String::size_type st_begin = _fullname.find_first_of('[');
@@ -237,116 +249,5 @@ namespace Menge
 		Magic_CloseFile( file );
 
 		return container;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxParticleSystem::flushParticles( const mt::mat4f & _viewMatrix, const ParticleEmitterInterfacePtr & _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
-	{
-        (void)_viewMatrix;
-
-        _flush.particleCount = 0;
-        _flush.meshCount = 0;
-
-		if( _emitter == nullptr )
-		{
-			return false;
-		}
-
-		AstralaxEmitter * emitter = stdex::intrusive_get<AstralaxEmitter>( _emitter );
-
-		if( emitter->inInterval() == false )
-		{
-			return false;
-		}
-
-		MAGIC_RENDERING rendering;
-		if( emitter->createFirstRenderedParticlesList( &rendering ) == false )
-		{
-			return false;
-		}
-
-		while( rendering.count != 0 )
-		{
-            if( _particlesLimit <= _flush.particleCount + rendering.count || 
-				_meshLimit <= _flush.meshCount )
-            {
-                return false;
-            }
-                       
-            ParticleMesh & mesh = _meshes[_flush.meshCount];
-
-			mesh.begin = _flush.particleCount;
-			mesh.size = rendering.count;
-			mesh.texture = rendering.texture_id;
-			mesh.intense = rendering.intense;
-
-			this->fillParticles_( _particles, _flush.particleCount, mesh.size );
-
-			_flush.particleCount += rendering.count;
-			++_flush.meshCount;
-			
-			Magic_CreateNextRenderedParticlesList( &rendering );
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleSystem::fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count )
-	{
-		//_particles.resize(_offset + _count);
-        for( size_t i = 0; i != _count; ++i )
-		{
-            MAGIC_PARTICLE_VERTEXES vertexes;
-			Magic_GetNextParticleVertexes( &vertexes );
-
-			ParticleVertices & rp = _particles[_offset + i];
-
-			rp.v[0].x = vertexes.vertex1.x;
-			rp.v[0].y = vertexes.vertex1.y;
-
-#ifdef MAGIC_3D
-            rp.v[0].z = vertexes.vertex1.z; 
-#else
-            rp.v[0].z = 0.f;
-#endif
-
-			rp.v[1].x = vertexes.vertex2.x;
-			rp.v[1].y = vertexes.vertex2.y;
-
-#ifdef MAGIC_3D
-            rp.v[1].z = vertexes.vertex2.z;
-#else
-            rp.v[1].z = 0.f;
-#endif
-
-			rp.v[2].x = vertexes.vertex3.x;
-			rp.v[2].y = vertexes.vertex3.y;
-
-#ifdef MAGIC_3D
-            rp.v[2].z = vertexes.vertex3.z;
-#else
-            rp.v[2].z = 0.f;
-#endif
-
-			rp.v[3].x = vertexes.vertex4.x;
-			rp.v[3].y = vertexes.vertex4.y;
-
-#ifdef MAGIC_3D
-            rp.v[3].z = vertexes.vertex4.z;
-#else
-            rp.v[3].z = 0.f;
-#endif
-
-
-			rp.uv[0].x = vertexes.u1;
-			rp.uv[0].y = vertexes.v1;
-			rp.uv[1].x = vertexes.u2;
-			rp.uv[1].y = vertexes.v2;
-			rp.uv[2].x = vertexes.u3;
-			rp.uv[2].y = vertexes.v3;
-			rp.uv[3].x = vertexes.u4;
-			rp.uv[3].y = vertexes.v4;
-
-			rp.color = vertexes.color;
-		}
 	}
 }

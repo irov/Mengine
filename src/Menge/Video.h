@@ -63,6 +63,7 @@ namespace Menge
 		void updateUV_();		
 
 		bool sync_( float _timing );
+		bool syncFirstFrame_();
 		bool compileDecoder_();
         bool fillVideoBuffer_();
 
@@ -99,7 +100,8 @@ namespace Menge
 		bool m_blendAdd;
 		bool m_autoStart;
 		bool m_needUpdate;
-        bool m_needUpdate2;
+		bool m_firstFrameUpdated;
+        bool m_textureUpdated;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const RenderMaterialInterfacePtr & Video::getMaterial()

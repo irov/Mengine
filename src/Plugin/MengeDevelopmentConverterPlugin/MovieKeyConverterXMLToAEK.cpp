@@ -423,21 +423,30 @@ namespace Menge
 			remap.times = floats;
 		}
 
-		for( TVectorMovieLayerTimeRemap::const_iterator
-			it = remaps.begin(),
-			it_end = remaps.end();
-		it != it_end;
-		++it )
+		if( includes_timeremaps.empty() == true )
 		{
-			const MovieLayerTimeRemap & remap = *it;
+			aw << (uint8_t)0;
+		}
+		else
+		{
+			aw << (uint8_t)1;
 
-			size_t times_size = remap.times.size();
-
-			aw << times_size;
-
-			if( times_size > 0 )
+			for( TVectorMovieLayerTimeRemap::const_iterator
+				it = remaps.begin(),
+				it_end = remaps.end();
+			it != it_end;
+			++it )
 			{
-				aw.writePODs( &remap.times[0], times_size );
+				const MovieLayerTimeRemap & remap = *it;
+
+				size_t times_size = remap.times.size();
+
+				aw << times_size;
+
+				if( times_size > 0 )
+				{
+					aw.writePODs( &remap.times[0], times_size );
+				}
 			}
 		}
 
@@ -562,41 +571,103 @@ namespace Menge
 					RenderIndices2D & indices = shape.indices[i];
 
 					indices = shape_indices[i];
-				}							
+				}
 
 				layerShapes[layerIndex - 1].shapes.push_back(shape);
 			}
 		}
 
-		for( TVectorMovieLayerShapes::const_iterator
-			it = layerShapes.begin(),
-			it_end = layerShapes.end();
+		if( includes_imageshapes.empty() == true )
+		{
+			aw << (uint8_t)0;
+		}
+		else
+		{
+			aw << (uint8_t)1;
+
+			for( TVectorMovieLayerShapes::const_iterator
+				it = layerShapes.begin(),
+				it_end = layerShapes.end();
+			it != it_end;
+			++it )
+			{
+				const MovieLayerShapes & layerShape = *it;
+
+				size_t shapes_size = layerShape.shapes.size();
+				aw << shapes_size;
+
+				for( TVectorMovieFrameShapes::const_iterator
+					it_shape = layerShape.shapes.begin(),
+					it_shape_end = layerShape.shapes.end();
+				it_shape != it_shape_end;
+				++it_shape )
+				{
+					const MovieFrameShape & shape = *it_shape;
+
+					aw << shape.vertexCount;
+
+					if( shape.vertexCount > 0 )
+					{
+						aw.writePODs( shape.pos, shape.vertexCount );
+						aw.writePODs( shape.uv, shape.vertexCount );
+
+						aw << shape.indexCount;
+
+						aw.writePODs( shape.indices, shape.indexCount );
+					}
+				}
+			}
+		}
+		
+		TVectorMovieLayerPolygons layerPolygons;
+		layerPolygons.resize( maxIndex );
+
+		const Metacode::Meta_KeyFramesPack::TVectorMeta_Polygon & includes_polygons = keyFramesPack.get_IncludesPolygon();
+
+		for( Metacode::Meta_KeyFramesPack::TVectorMeta_Polygon::const_iterator 
+			it = includes_polygons.begin(),
+			it_end = includes_polygons.end();
 		it != it_end;
 		++it )
 		{
-			const MovieLayerShapes & layerShape = *it;
+			const Metacode::Meta_KeyFramesPack::Meta_Polygon & meta_polygon = *it;
 
-			size_t shapes_size = layerShape.shapes.size();
-			aw << shapes_size;
+			size_t layerIndex = meta_polygon.get_LayerIndex();
+			const Menge::Polygon & polygon = meta_polygon.get_Value();
+			
+			layerPolygons[layerIndex - 1].polygon = polygon;
+		}
 
-			for( TVectorMovieFrameShapes::const_iterator
-				it_shape = layerShape.shapes.begin(),
-				it_shape_end = layerShape.shapes.end();
-			it_shape != it_shape_end;
-			++it_shape )
+		if( includes_polygons.empty() == true )
+		{
+			aw << (uint8_t)0;
+		}
+		else
+		{
+			aw << (uint8_t)1;
+
+			for( TVectorMovieLayerPolygons::const_iterator
+				it = layerPolygons.begin(),
+				it_end = layerPolygons.end();
+			it != it_end;
+			++it )
 			{
-				const MovieFrameShape & shape = *it_shape;
-								
-				aw << shape.vertexCount;
+				const MovieLayerPolygon & layerPolygon = *it;
 
-				if( shape.vertexCount > 0 )
+				size_t polygon_size = Menge::polygon_size( layerPolygon.polygon );
+				
+				aw << (uint32_t)polygon_size;
+
+				if( polygon_size > 0 )
 				{
-					aw.writePODs( shape.pos, shape.vertexCount );
-					aw.writePODs( shape.uv, shape.vertexCount );
+					const Polygon::ring_type & countour = layerPolygon.polygon.outer();
 
-					aw << shape.indexCount;
-
-					aw.writePODs( shape.indices, shape.indexCount );
+					for( size_t i = 0; i != polygon_size; ++i )
+					{
+						const mt::vec2f & p = countour[i];
+						aw << p.x;
+						aw << p.y;
+					}
 				}
 			}
 		}

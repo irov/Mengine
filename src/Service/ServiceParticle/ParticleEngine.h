@@ -27,11 +27,8 @@ namespace Menge
 
 	public:
 		ParticleEmitterContainerInterfacePtr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) override;
-
-		bool flushEmitter( const mt::mat4f & _viewMatrix, const ParticleEmitterInterfacePtr & _emitter, ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override; 
-
-		void getEmitterPosition( ParticleEmitterInterface * _emitter, mt::vec2f & _pos );
-				
+		
+	public:
 		size_t getMaxParticlesCount() const override;
 		void setMaxParticlesCount( size_t _count );
 

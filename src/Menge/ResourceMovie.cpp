@@ -321,6 +321,7 @@ namespace Menge
 
             meta_layer2d.get_TimeRemap( ml.timeRemap );
             meta_layer2d.get_Shape( ml.shape );
+			meta_layer2d.get_Polygon( ml.polygon );
             meta_layer2d.get_PlayCount( ml.playCount );
             meta_layer2d.get_Stretch( ml.scretch );
 			meta_layer2d.get_Switch( ml.switcher );

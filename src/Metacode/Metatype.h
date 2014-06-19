@@ -19,6 +19,8 @@ namespace Metabuf
 {
     //////////////////////////////////////////////////////////////////////////
 	void archive_read( stdex::memory_reader & ar, bool & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, uint8_t & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, uint16_t & _value, void * _userData );
 	void archive_read( stdex::memory_reader & ar, uint32_t & _value, void * _userData );
 	void archive_read( stdex::memory_reader & ar, float & _value, void * _userData );
 	//////////////////////////////////////////////////////////////////////////

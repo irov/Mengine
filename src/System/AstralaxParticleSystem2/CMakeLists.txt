@@ -57,7 +57,7 @@ SET( APPLICATION_LIB_PATHS
 if( MINGW )
     SET( APPLICATION_LIBS
     ${APPLICATION_LIBS}
-    ${THIRDPARTY_DIR}/astralax/win/lib/mingw/libmagic.a
+    ${THIRDPARTY_DIR}/astralax/win/lib/mingw/libmagic3d.a
     )
 elseif( WIN32 )
     SET( APPLICATION_LIBS

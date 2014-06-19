@@ -27,7 +27,7 @@ namespace Menge
         virtual size_t timing( bool _portions, bool _global, float _delay, TimingListener * _listener ) = 0;
 
     public:
-        virtual void remove( size_t _timingID ) = 0;
+        virtual bool remove( size_t _timingID ) = 0;
         virtual void removeAll( bool _global ) = 0;
 
         virtual void freeze( size_t _id, bool _freeze ) = 0;

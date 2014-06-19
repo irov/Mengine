@@ -36,10 +36,10 @@ namespace Menge
 		size_t schedule( float _timing, const ScheduleListenerPtr & _listener ) override;
 
     public:
-		void remove( size_t _id ) override;
+		bool remove( size_t _id ) override;
 		void removeAll() override;
 
-		void freeze( size_t _id, bool _freeze ) override;
+		bool freeze( size_t _id, bool _freeze ) override;
 		void freezeAll( bool _freeze ) override;
 		bool isFreezeAll() const override;
 		bool isFreeze( size_t _id ) const override;
@@ -50,7 +50,7 @@ namespace Menge
 		void update( float _current, float _timing ) override;
 
     protected:
-        void removeEvent_( const ScheduleEvent & _event );
+        bool removeEvent_( const ScheduleEvent & _event );
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

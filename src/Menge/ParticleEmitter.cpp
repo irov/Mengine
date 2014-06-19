@@ -390,41 +390,14 @@ namespace	Menge
 				
 		Node::_updateBoundingBox( m_localBoundingBox );
 
-		ColourValue color;
-		this->calcTotalColor(color);
-
-		ARGB color_argb = color.getAsARGB();
-
         ParticleVertices s_particles[MENGINE_PARTICLE_MAX_COUNT];
 		ParticleMesh s_meshes[MENGINE_PARTICLE_MAX_MESH];
-		//s_particles.clear();
-		//s_meshes.clear();
-
-		//m_vertices.clear();		
 
 		m_batchs.clear();
-
-        //const mt::mat4f & viewMatrix = _camera->getViewMatrix();
-
-        //mt::vec3f Eye(0,0,-840.f);
-        //mt::vec3f At(0,0,0);        
-        //mt::vec3f Up(0,1,0);
-
-        //mt::vec3f zaxis = mt::norm_v3( At - Eye );
-        //mt::vec3f xaxis = mt::norm_v3( mt::cross_v3_v3( Up, zaxis ) );
-        //mt::vec3f yaxis = mt::cross_v3_v3( zaxis, xaxis );
-
-        mt::mat4f viewMatrix;
-        mt::ident_m4(viewMatrix);
-        //viewMatrix.v0 = mt::vec4f(xaxis.x, yaxis.x, zaxis.x, 0);
-        //viewMatrix.v1 = mt::vec4f(xaxis.y, yaxis.y, zaxis.y, 0);
-        //viewMatrix.v2 = mt::vec4f(xaxis.z, yaxis.z, zaxis.z, 0);
-        //viewMatrix.v3 = mt::vec4f(-mt::dot_v3_v3( xaxis, Eye ), -mt::dot_v3_v3( yaxis, Eye ),  -mt::dot_v3_v3(zaxis, Eye), 1);
-
+   
 		ParticleEmitterRenderFlush flush;
 
-		if( PARTICLE_SERVICE(m_serviceProvider)
-			->flushEmitter( viewMatrix, m_emitter, s_meshes, MENGINE_PARTICLE_MAX_MESH, s_particles, MENGINE_PARTICLE_MAX_COUNT, flush ) == false )
+		if( m_emitter->flushParticles( s_meshes, MENGINE_PARTICLE_MAX_MESH, s_particles, MENGINE_PARTICLE_MAX_COUNT, flush ) == false )
 		{
 			return false;
 		}
@@ -439,10 +412,10 @@ namespace	Menge
 			m_vertices = new RenderVertex2D [m_verticesCount];
 		}
 
-		//const mt::mat4f & wm = this->getWorldMatrix();
+		ColourValue color;
+		this->calcTotalColor(color);
 
-        //mt::vec2f pos;
-        //m_interface->getPosition( pos );
+		ARGB color_argb = color.getAsARGB();
 		
 		for( size_t
 			it_mesh = 0,

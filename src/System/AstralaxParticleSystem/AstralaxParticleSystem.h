@@ -33,19 +33,13 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
+		bool initialize() override;
+		void finalize() override;
+
+	public:
 		ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream ) override;
 
-	public:	
-		bool flushParticles( const mt::mat4f & _viewMatrix
-			, const ParticleEmitterInterfacePtr & _emitter
-			, ParticleMesh * _meshes
-			, size_t _meshLimit
-			, ParticleVertices * _particles
-			, size_t _particlesLimit
-			, ParticleEmitterRenderFlush & _flush ) override;
-
 	protected:
-		void fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count );
 		bool loadEmitter( const char * _magicName, HM_FILE _file, const AstralaxEmitterContainerPtr & _container );
 		bool loadEmittersFolder( const char * _path, HM_FILE _file, const AstralaxEmitterContainerPtr & _container );
 

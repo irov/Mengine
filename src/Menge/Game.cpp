@@ -384,14 +384,17 @@ namespace Menge
         m_accountLister = new ApplicationAccountManagerListener(m_serviceProvider, this);
 		
         m_accountService->initialize( _accountPath, _projectVersion, _projectVersionCheck, m_accountLister );
+		
+		if( _projectVersion != (size_t)-1 )
+		{
+			if( m_accountService->loadAccounts() == false )
+		    {
+			    LOGGER_ERROR(m_serviceProvider)("Game::initialize failed load accounts"
+				    );
 
-		if( m_accountService->loadAccounts() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Game::initialize failed load accounts"
-                );
-
-            //return false;
-        }
+				//return false;
+			}
+		}
 		
 		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
             ->getContentResolution();

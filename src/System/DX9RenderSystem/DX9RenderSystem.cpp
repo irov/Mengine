@@ -315,11 +315,9 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_pD3D(nullptr)
 		, m_pD3DDevice(nullptr)
-		, m_curRenderTexture(nullptr)
 		//, m_syncTemp(nullptr)
 		//, m_syncTempTex(nullptr)
 		, m_screenSurf(nullptr)
-		, m_screenDepth(nullptr)
 		, m_vbHandleCounter(0)
 		, m_ibHandleCounter(0)
 		, m_currentIB(0)
@@ -334,7 +332,7 @@ namespace Menge
 	{
 		//m_syncTargets[0] = NULL;
 		//m_syncTargets[1] = NULL;
-        for( size_t i = 0; i != 8; ++i )
+        for( size_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
         {
             m_currentTexture[i] = nullptr;
         }
@@ -868,8 +866,6 @@ namespace Menge
             return;
         }
 
-        m_projection = _projection;
-
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, ( D3DTS_PROJECTION, (D3DMATRIX*)_projection.buff() ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -883,9 +879,7 @@ namespace Menge
             return;
         }
 
-        m_modelview = _modelview;
-
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, ( D3DTS_VIEW, (D3DMATRIX*)_modelview.buff() ) );
+ 		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, ( D3DTS_VIEW, (D3DMATRIX*)_modelview.buff() ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr DX9RenderSystem::createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
@@ -1363,8 +1357,6 @@ namespace Menge
 			return false;
 		}
 
-		m_screenDepth = NULL;
-
 		//hr = m_pD3DDevice->GetDepthStencilSurface(&m_screenDepth);
 		//if( FAILED( hr ) )
 		//{
@@ -1464,43 +1456,7 @@ namespace Menge
             return;
         }
 
-		if( m_curRenderTexture != NULL )
-		{
-			//if( m_curRenderTexture->getDepthInterface() )
-			//{
-			//	hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, _color, 1.0f, 0 );
-			//	if( FAILED( hr ) )
-			//	{
-			//		LOGGER_ERROR(m_logSystem)( "Error: DX9RenderSystem::clear failed to Clear (hr:%p)"
-			//			, hr 
-			//			);
-			//	}
-			//}
-			//else
-			{
-				DXCALL( m_serviceProvider, m_pD3DDevice, Clear, ( 0, NULL, D3DCLEAR_TARGET, _color, 0.0f, 0 ) );
-			}
-		}
-		else
-		{
-			//if( bZBuffer )
-			//{
-            //hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, _color, 1.0f, 0 );
-            //if( FAILED( hr ) )
-            //{
-            //    LOGGER_ERROR(m_logSystem)( "Error: DX9RenderSystem::clear failed to Clear (hr:%p)"
-            //        , hr 
-            //        );
-            //}
-			//}
-			//else
-			//{
-			//m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, color, 1.0f, 0 );
-			//}
-			
-			//hr = m_pD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_ARGB(0, 0, 0, 0), 0.0f, 0 );
-			DXCALL( m_serviceProvider, m_pD3DDevice, Clear, ( 0, NULL, D3DCLEAR_TARGET, _color, 0.0f, 0 ) );
-		}
+		DXCALL( m_serviceProvider, m_pD3DDevice, Clear, ( 0, NULL, D3DCLEAR_TARGET, _color, 0.0f, 0 ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureMatrix( size_t _stage, const float* _texture )

@@ -165,7 +165,7 @@ namespace Menge
 	private:
 		ServiceProviderInterface * m_serviceProvider;
 
-        RenderSystemListener* m_listener;
+        RenderSystemListener * m_listener;
 
 		HMODULE m_hd3d9;
 
@@ -176,7 +176,6 @@ namespace Menge
         IDirect3D9 * m_pD3D;
 		IDirect3DDevice9 * m_pD3DDevice;
 		IDirect3DSurface9 * m_screenSurf;
-		IDirect3DSurface9 *	m_screenDepth;
 
         D3DCAPS9 m_caps;
 
@@ -217,11 +216,6 @@ namespace Menge
 		DWORD m_textureStageStates[MENGE_MAX_TEXTURE_STAGES][64];
 		DWORD m_samplerStates[MENGE_MAX_TEXTURE_STAGES][16];
 
-		DX8RenderTexturePtr m_curRenderTexture;
-
-        mt::mat4f m_projection;
-        mt::mat4f m_modelview;
-
         UINT m_adapterToUse;
         D3DDEVTYPE m_deviceType;
 
@@ -240,7 +234,7 @@ namespace Menge
 
         IBHandle m_currentIB;
 
-        IDirect3DTexture9 * m_currentTexture[8];
+        IDirect3DTexture9 * m_currentTexture[MENGE_MAX_TEXTURE_STAGES];
 
         typedef FactoryPoolStore<DX9Texture, 128> TFactoryDX9Texture;
         TFactoryDX9Texture m_factoryDX9Texture;

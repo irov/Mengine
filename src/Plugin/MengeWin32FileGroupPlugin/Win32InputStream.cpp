@@ -134,7 +134,7 @@ namespace Menge
         if( correct_count == m_size )
         {
             DWORD bytesRead = 0;
-            if( ::ReadFile( m_hFile, _buf, static_cast<DWORD>( correct_count ), &bytesRead, NULL ) == FALSE )
+            if( ::ReadFile( m_hFile, _buf, static_cast<DWORD>(correct_count), &bytesRead, NULL ) == FALSE )
             {
                 DWORD dwError = GetLastError();
 
@@ -164,7 +164,7 @@ namespace Menge
                 stdex::memorycopy( _buf, m_readCache + m_carriage, tail );
             }
 
-			DWORD toRead = static_cast<DWORD>( correct_count - tail );
+			DWORD toRead = static_cast<DWORD>(correct_count - tail);
 			LPVOID toBuffer = (char *)_buf + tail;
 
             DWORD bytesRead = 0;
@@ -206,7 +206,7 @@ namespace Menge
         }
 
         DWORD bytesRead = 0;
-        if( ::ReadFile( m_hFile, m_readCache, static_cast<DWORD>( MENGINE_WIN32_FILE_BUFFER_SIZE ), &bytesRead, NULL ) == FALSE )
+        if( ::ReadFile( m_hFile, m_readCache, MENGINE_WIN32_FILE_BUFFER_SIZE, &bytesRead, NULL ) == FALSE )
         {
             DWORD dwError = GetLastError();
 
@@ -240,7 +240,7 @@ namespace Menge
         }
         else
         {
-    		DWORD dwPtr = ::SetFilePointer( m_hFile, static_cast<LONG>( m_offset + _pos ), NULL, FILE_BEGIN );
+    		DWORD dwPtr = ::SetFilePointer( m_hFile, static_cast<LONG>(m_offset + _pos), NULL, FILE_BEGIN );
 
             if( dwPtr == INVALID_SET_FILE_POINTER )
             {

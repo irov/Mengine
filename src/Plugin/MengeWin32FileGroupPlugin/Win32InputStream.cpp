@@ -48,33 +48,41 @@ namespace Menge
 			return false;
 		}
 
+		DWORD size = ::GetFileSize( m_hFile, NULL );
+
+		if( size == INVALID_FILE_SIZE )
+		{
+			this->close_();
+
+			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file size"
+				, filePath
+				);
+
+			return false;
+		}
+
+		if( _offset + _size > size )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file range %d:%d size %d"
+				, filePath
+				, _offset
+				, _size
+				, size
+				);
+
+			return false;
+		}
+
+		m_size = _size == 0 ? (size_t)size : _size;
 		m_offset = _offset;
+
+		m_carriage = 0;
+		m_capacity = 0;
+		m_reading = 0;
 
 		if( m_offset != 0 )
 		{
 			this->seek( 0 );
-		}
-
-		if( _size == 0 )
-		{
-			DWORD size = ::GetFileSize( m_hFile, NULL );
-
-			if( size == INVALID_FILE_SIZE )
-			{
-				this->close_();
-
-				LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file size"
-					, filePath
-					);
-
-				return false;
-			}
-
-			m_size = (size_t)size;
-		}
-		else
-		{
-			m_size = _size;
 		}
 
 		return true;
@@ -114,15 +122,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32InputStream::read( void * _buf, size_t _count )
 	{     
-        if( _count == m_size )
+		size_t pos = m_reading - m_capacity + m_carriage;
+		
+		size_t correct_count = _count;
+
+		if( pos + _count > m_size )
+		{
+			correct_count = m_size - pos;
+		}
+
+        if( correct_count == m_size )
         {
             DWORD bytesRead = 0;
-            if( ::ReadFile( m_hFile, _buf, static_cast<DWORD>( _count ), &bytesRead, NULL ) == FALSE )
+            if( ::ReadFile( m_hFile, _buf, static_cast<DWORD>( correct_count ), &bytesRead, NULL ) == FALSE )
             {
                 DWORD dwError = GetLastError();
 
                 LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read %d:%d get error '%d'"
-                    , _count
+                    , correct_count
                     , m_size
                     , dwError
                     );
@@ -138,7 +155,7 @@ namespace Menge
             return bytesRead;
         }
         
-        if( _count > MENGINE_WIN32_FILE_BUFFER_SIZE )
+        if( correct_count > MENGINE_WIN32_FILE_BUFFER_SIZE )
         {            
             size_t tail = m_capacity - m_carriage;
             
@@ -147,7 +164,7 @@ namespace Menge
                 stdex::memorycopy( _buf, m_readCache + m_carriage, tail );
             }
 
-			DWORD toRead = static_cast<DWORD>( _count - tail );
+			DWORD toRead = static_cast<DWORD>( correct_count - tail );
 			LPVOID toBuffer = (char *)_buf + tail;
 
             DWORD bytesRead = 0;
@@ -156,7 +173,7 @@ namespace Menge
                 DWORD dwError = GetLastError();
 
                 LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read %d:%d get error '%d'"
-                    , _count - tail
+                    , correct_count - tail
                     , m_size
                     , dwError
                     );
@@ -172,13 +189,13 @@ namespace Menge
             return bytesRead + tail;
         }
         
-        if( m_carriage + _count <= m_capacity )
+        if( m_carriage + correct_count <= m_capacity )
         {
-			stdex::memorycopy( _buf, m_readCache + m_carriage, _count );
+			stdex::memorycopy( _buf, m_readCache + m_carriage, correct_count );
 
-            m_carriage += _count;
+            m_carriage += correct_count;
 
-            return _count;
+            return correct_count;
         }
 
         size_t tail = m_capacity - m_carriage;
@@ -202,7 +219,7 @@ namespace Menge
             return 0;
         }
         
-        DWORD readSize = (std::min)( (DWORD)(_count - tail), bytesRead );
+        DWORD readSize = (std::min)( (DWORD)(correct_count - tail), bytesRead );
 
 		unsigned char * read_buf = (unsigned char *)_buf + tail;
         stdex::memorycopy( read_buf, m_readCache, readSize );

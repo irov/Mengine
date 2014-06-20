@@ -42,8 +42,7 @@ namespace Menge
 		HANDLE m_hFile;
 
 		size_t m_size;
-		size_t m_offset;		
-		size_t m_pos;
+		size_t m_offset;
 
 		size_t m_carriage;
 		size_t m_capacity;

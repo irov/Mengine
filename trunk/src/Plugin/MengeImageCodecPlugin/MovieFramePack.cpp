@@ -83,38 +83,24 @@ namespace Menge
 
 		return frameLayer;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void MovieFramePack::addLayerTimeRemap( size_t _layerIndex, const MovieLayerTimeRemap & _timeremap )
-    {
-        m_timeremap[_layerIndex - 1] = _timeremap;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	MovieLayerTimeRemap & MovieFramePack::mutableLayerTimeRemap( size_t _layerIndex )
 	{
-		MovieLayerTimeRemap & timeremap = m_timeremap[_layerIndex - 1];
+		MovieLayerTimeRemap & timeremap = m_timeremap[_layerIndex];
 
 		return timeremap;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MovieFramePack::addLayerShape( size_t _layerIndex, const MovieLayerShapes & _shapes )
-	{
-		m_shapes[_layerIndex - 1] = _shapes;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	MovieLayerShapes & MovieFramePack::mutableLayerShape( size_t _layerIndex )
 	{
-		MovieLayerShapes & shapes = m_shapes[_layerIndex - 1];
+		MovieLayerShapes & shapes = m_shapes[_layerIndex];
 
 		return shapes;
-	}
-	void MovieFramePack::addLayerPolygon( size_t _layerIndex, const MovieLayerPolygon & _polygon )
-	{
-		m_polygons[_layerIndex - 1] = _polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MovieLayerPolygon & MovieFramePack::mutableLayerPolygon( size_t _layerIndex )
 	{
-		MovieLayerPolygon & polygon = m_polygons[_layerIndex - 1];
+		MovieLayerPolygon & polygon = m_polygons[_layerIndex];
 
 		return polygon;
 	}
@@ -258,33 +244,75 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MovieFramePack::getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const
     {
-        const MovieLayerTimeRemap & timeremap = m_timeremap[_layerIndex - 1];
+		for( TVectorMovieLayerTimeRemap::const_iterator
+			it = m_timeremap.begin(),
+			it_end = m_timeremap.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayerTimeRemap & timeremap = *it;
 
-        float time = timeremap.times[_frameIndex];
+			if( timeremap.layerId != (_layerIndex - 1) )
+			{
+				continue;
+			}
 
-        _time = time;
+			float time = timeremap.times[_frameIndex];
 
-        return true;
+			_time = time;
+
+			return true;
+		}
+
+		return false;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const
 	{
-		const MovieLayerShapes & shapes = m_shapes[_layerIndex - 1];
+		for( TVectorMovieLayerShapes::const_iterator
+			it = m_shapes.begin(),
+			it_end = m_shapes.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayerShapes & shapes = *it;
 
-		const MovieFrameShape & shape = shapes.shapes[_frameIndex];
+			if( shapes.layerId != (_layerIndex - 1) )
+			{
+				continue;
+			}
+			
+			const MovieFrameShape & shape = shapes.shapes[_frameIndex];
 
-		*_shape = &shape;
+			*_shape = &shape;
 
-		return true;
+			return true;
+		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerPolygon( size_t _layerIndex, const Polygon ** _polygon ) const
 	{
-		const MovieLayerPolygon & polygon = m_polygons[_layerIndex - 1];
+		for( TVectorMovieLayerPolygons::const_iterator
+			it = m_polygons.begin(),
+			it_end = m_polygons.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayerPolygon & polygon = *it;
 
-		*_polygon = &polygon.polygon;
+			if( polygon.layerId != (_layerIndex - 1) )
+			{
+				continue;
+			}
 
-		return true;
+			*_polygon = &polygon.polygon;
+
+			return true;
+		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::isLayerPermanentlyHide( size_t _layerIndex ) const

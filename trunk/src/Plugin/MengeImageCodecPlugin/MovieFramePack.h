@@ -24,6 +24,7 @@ namespace Menge
 		void initializeTimeremap( size_t _size );
 		void initializeShapes( size_t _size );
 		void initializePolygons( size_t _size );
+		
 
 	public:
 		MovieLayerFrame & initializeLayer( size_t _layerIndex, size_t _count, bool _immutable );
@@ -45,19 +46,14 @@ namespace Menge
 		bool isLayerPermanentlyHide( size_t _layerIndex ) const override;
 
 	public:
-        void addLayerTimeRemap( size_t _layerIndex, const MovieLayerTimeRemap & _timeremap );
-		MovieLayerTimeRemap & mutableLayerTimeRemap( size_t _layerIndex );
-
-	public:
-		void addLayerShape( size_t _layerIndex, const MovieLayerShapes & _shapes );
-		MovieLayerShapes & mutableLayerShape( size_t _layerIndex );
-
-	public:
-		void addLayerPolygon( size_t _layerIndex, const MovieLayerPolygon & _shapes );
-		MovieLayerPolygon & mutableLayerPolygon( size_t _layerIndex );
-
-	public:
 		inline const TVectorMovieFrameLayer & getLayers() const;
+
+	public:
+        MovieLayerTimeRemap & mutableLayerTimeRemap( size_t _index );
+		MovieLayerShapes & mutableLayerShape( size_t _index );
+		MovieLayerPolygon & mutableLayerPolygon( size_t _index );
+
+	public:		
 		inline const TVectorMovieLayerTimeRemap & getTimeremap() const;
 		inline const TVectorMovieLayerShapes & getShapes() const;
 		inline const TVectorMovieLayerPolygons & getPolygons() const;

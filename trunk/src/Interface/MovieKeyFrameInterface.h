@@ -19,7 +19,7 @@
 
 namespace Menge
 {
-	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 13);
+	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 14);
 
     struct MovieFrameSource
     {
@@ -59,6 +59,8 @@ namespace Menge
 
     struct MovieLayerTimeRemap
     {
+		uint32_t layerId;
+
         Floats times;
     };
 
@@ -81,6 +83,8 @@ namespace Menge
 
 	struct MovieLayerShapes
 	{
+		uint32_t layerId;
+
 		TVectorMovieFrameShapes shapes;
 	};
 
@@ -88,6 +92,8 @@ namespace Menge
 
 	struct MovieLayerPolygon
 	{
+		uint32_t layerId;
+
 		Polygon polygon;
 	};
 

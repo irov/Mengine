@@ -124,99 +124,92 @@ namespace Menge
 			}
 		}
 
-		uint8_t times;
-		ar >> times;
+		uint32_t times_count;
+		ar >> times_count;
 
-		if( times == 1 )
-		{
-			pack->initializeTimeremap( maxIndex );
+		pack->initializeTimeremap( times_count );
 
-			for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )
-			{
-				uint32_t times_size;
-				ar >> times_size;
+		for( uint32_t i = 0; i != times_count; ++i )
+		{			
+			uint32_t layerId;
+			ar >> layerId;
 
-				if( times_size == 0 )
-				{
-					continue;
-				}
+			uint32_t times_size;
+			ar >> times_size;
 
-				MovieLayerTimeRemap & timeremap = pack->mutableLayerTimeRemap( it_layer + 1 );
-				timeremap.times.resize( times_size );
+			MovieLayerTimeRemap & timeremap = pack->mutableLayerTimeRemap( i );
 
-				float * times_buff = &timeremap.times[0];
-				ar.readPODs( times_buff, times_size );
-			}
+			timeremap.layerId = layerId;
+
+			timeremap.times.resize( times_size );
+
+			float * times_buff = &timeremap.times[0];
+			ar.readPODs( times_buff, times_size );
 		}
 
-		uint8_t shapes;
-		ar >> shapes;
+		uint32_t shapes_count;
+		ar >> shapes_count;
 
-		if( shapes == 1 )
+		pack->initializeShapes( shapes_count );
+
+		for( uint32_t i = 0; i != shapes_count; ++i )
 		{
-			pack->initializeShapes( maxIndex );
+			uint32_t layerId;
+			ar >> layerId;
 
-			for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )
+			uint32_t shapes_size;
+			ar >> shapes_size;
+
+			MovieLayerShapes & shapes = pack->mutableLayerShape( i );
+
+			shapes.layerId = layerId;
+
+			shapes.shapes.resize( shapes_size );
+
+			for( size_t j = 0; j != shapes_size; ++j )
 			{
-				uint32_t shapes_size;
-				ar >> shapes_size;
+				MovieFrameShape & shape = shapes.shapes[j];
 
-				if( shapes_size == 0 )
+				ar >> shape.vertexCount;
+
+				if( shape.vertexCount > 0 )
 				{
-					continue;
+					ar.readPODs( shape.pos, shape.vertexCount );
+					ar.readPODs( shape.uv, shape.vertexCount );
+
+					ar >> shape.indexCount;
+					ar.readPODs( shape.indices, shape.indexCount );
 				}
-
-				MovieLayerShapes & shapes = pack->mutableLayerShape( it_layer + 1 );
-				shapes.shapes.resize( shapes_size );
-
-				for( size_t i = 0; i != shapes_size; ++i )
+				else
 				{
-					MovieFrameShape & shape = shapes.shapes[i];
-
-					ar >> shape.vertexCount;
-
-					if( shape.vertexCount > 0 )
-					{
-						ar.readPODs( shape.pos, shape.vertexCount );
-						ar.readPODs( shape.uv, shape.vertexCount );
-
-						ar >> shape.indexCount;
-						ar.readPODs( shape.indices, shape.indexCount );
-					}
-					else
-					{
-						shape.indexCount = 0;
-					}
+					shape.indexCount = 0;
 				}
 			}
 		}
 
-		uint8_t polygons;
-		ar >> polygons;
+		uint32_t polygons_count;
+		ar >> polygons_count;
 
-		if( polygons == 1 )
+		pack->initializePolygons( polygons_count );
+
+		for( uint32_t i = 0; i != polygons_count; ++i )
 		{
-			pack->initializePolygons( maxIndex );
+			uint32_t layerId;
+			ar >> layerId;
 
-			for( size_t it_layer = 0; it_layer != maxIndex; ++it_layer )
-			{
-				uint32_t polygon_size;
-				ar >> polygon_size;
+			uint32_t polygon_size;
+			ar >> polygon_size;
 
-				if( polygon_size == 0 )
-				{
-					continue;
-				}
+			MovieLayerPolygon & polygon = pack->mutableLayerPolygon( i );
 
-				MovieLayerPolygon & polygon = pack->mutableLayerPolygon( it_layer + 1 );
+			polygon.layerId = layerId;
 				
-				for( size_t i = 0; i != polygon_size; ++i )
-				{
-					mt::vec2f v;
-					ar >> v;
+			for( size_t i = 0; i != polygon_size; ++i )
+			{
+				mt::vec2f v;
+				ar >> v;
 					
-					boost::geometry::append( polygon.polygon, v );
-				}
+				boost::geometry::append( polygon.polygon, v );
 			}
 		}
 

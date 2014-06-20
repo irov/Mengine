@@ -401,8 +401,8 @@ namespace Menge
 			}
 		}
 
-		TVectorMovieLayerTimeRemap remaps;
-		remaps.resize( maxIndex );
+		typedef std::map<uint32_t, MovieLayerTimeRemap> TMapMovieLayerTimeRemap;
+		TMapMovieLayerTimeRemap remaps;
 
 		const Metacode::Meta_KeyFramesPack::TVectorMeta_TimeRemap & includes_timeremaps = keyFramesPack.get_IncludesTimeRemap();
 
@@ -416,42 +416,38 @@ namespace Menge
 
 			size_t layerIndex = meta_timeremap.get_LayerIndex();
 
-			MovieLayerTimeRemap & remap = remaps[layerIndex - 1];
-
 			const Floats & floats = meta_timeremap.get_Time();
 
-			remap.times = floats;
+			remaps[layerIndex - 1].times = floats;
 		}
 
-		if( includes_timeremaps.empty() == true )
+		uint32_t remapsSize = (uint32_t)remaps.size();
+		aw << remapsSize;
+		
+		for( TMapMovieLayerTimeRemap::const_iterator
+			it = remaps.begin(),
+			it_end = remaps.end();
+		it != it_end;
+		++it )
 		{
-			aw << (uint8_t)0;
-		}
-		else
-		{
-			aw << (uint8_t)1;
+			uint32_t layerId = it->first;
 
-			for( TVectorMovieLayerTimeRemap::const_iterator
-				it = remaps.begin(),
-				it_end = remaps.end();
-			it != it_end;
-			++it )
+			aw << layerId;
+
+			const MovieLayerTimeRemap & remap = it->second;
+
+			size_t times_size = remap.times.size();
+
+			aw << times_size;
+
+			if( times_size > 0 )
 			{
-				const MovieLayerTimeRemap & remap = *it;
-
-				size_t times_size = remap.times.size();
-
-				aw << times_size;
-
-				if( times_size > 0 )
-				{
-					aw.writePODs( &remap.times[0], times_size );
-				}
+				aw.writePODs( &remap.times[0], times_size );
 			}
 		}
 
-		TVectorMovieLayerShapes layerShapes;
-		layerShapes.resize( maxIndex );
+		typedef std::map<uint32_t, MovieLayerShapes> TMapMovieLayerShapes;
+		TMapMovieLayerShapes layerShapes;
 
 		const Metacode::Meta_KeyFramesPack::TVectorMeta_ImageShape & includes_imageshapes = keyFramesPack.get_IncludesImageShape();
 
@@ -577,51 +573,48 @@ namespace Menge
 			}
 		}
 
-		if( includes_imageshapes.empty() == true )
-		{
-			aw << (uint8_t)0;
-		}
-		else
-		{
-			aw << (uint8_t)1;
+		uint32_t shapesSize = (uint32_t)layerShapes.size();
+		aw << shapesSize;
 
-			for( TVectorMovieLayerShapes::const_iterator
-				it = layerShapes.begin(),
-				it_end = layerShapes.end();
-			it != it_end;
-			++it )
+		for( TMapMovieLayerShapes::const_iterator
+			it = layerShapes.begin(),
+			it_end = layerShapes.end();
+		it != it_end;
+		++it )
+		{
+			uint32_t layerId = it->first;
+			aw << layerId;
+
+			const MovieLayerShapes & layerShape = it->second;
+
+			size_t shapes_size = layerShape.shapes.size();
+			aw << shapes_size;
+
+			for( TVectorMovieFrameShapes::const_iterator
+				it_shape = layerShape.shapes.begin(),
+				it_shape_end = layerShape.shapes.end();
+			it_shape != it_shape_end;
+			++it_shape )
 			{
-				const MovieLayerShapes & layerShape = *it;
+				const MovieFrameShape & shape = *it_shape;
 
-				size_t shapes_size = layerShape.shapes.size();
-				aw << shapes_size;
+				aw << shape.vertexCount;
 
-				for( TVectorMovieFrameShapes::const_iterator
-					it_shape = layerShape.shapes.begin(),
-					it_shape_end = layerShape.shapes.end();
-				it_shape != it_shape_end;
-				++it_shape )
+				if( shape.vertexCount > 0 )
 				{
-					const MovieFrameShape & shape = *it_shape;
+					aw.writePODs( shape.pos, shape.vertexCount );
+					aw.writePODs( shape.uv, shape.vertexCount );
 
-					aw << shape.vertexCount;
+					aw << shape.indexCount;
 
-					if( shape.vertexCount > 0 )
-					{
-						aw.writePODs( shape.pos, shape.vertexCount );
-						aw.writePODs( shape.uv, shape.vertexCount );
-
-						aw << shape.indexCount;
-
-						aw.writePODs( shape.indices, shape.indexCount );
-					}
+					aw.writePODs( shape.indices, shape.indexCount );
 				}
 			}
 		}
 		
-		TVectorMovieLayerPolygons layerPolygons;
-		layerPolygons.resize( maxIndex );
-
+		typedef std::map<uint32_t, MovieLayerPolygon> TMapMovieLayerPolygons;
+		TMapMovieLayerPolygons layerPolygons;
+		
 		const Metacode::Meta_KeyFramesPack::TVectorMeta_Polygon & includes_polygons = keyFramesPack.get_IncludesPolygon();
 
 		for( Metacode::Meta_KeyFramesPack::TVectorMeta_Polygon::const_iterator 
@@ -638,36 +631,33 @@ namespace Menge
 			layerPolygons[layerIndex - 1].polygon = polygon;
 		}
 
-		if( includes_polygons.empty() == true )
-		{
-			aw << (uint8_t)0;
-		}
-		else
-		{
-			aw << (uint8_t)1;
+		uint32_t polygonsSize = (uint32_t)layerPolygons.size();
+		aw << polygonsSize;
 
-			for( TVectorMovieLayerPolygons::const_iterator
-				it = layerPolygons.begin(),
-				it_end = layerPolygons.end();
-			it != it_end;
-			++it )
+		for( TMapMovieLayerPolygons::const_iterator
+			it = layerPolygons.begin(),
+			it_end = layerPolygons.end();
+		it != it_end;
+		++it )
+		{
+			uint32_t layerId = it->first;
+			aw << layerId;
+
+			const MovieLayerPolygon & layerPolygon = it->second;
+
+			size_t polygon_size = Menge::polygon_size( layerPolygon.polygon );
+
+			aw << (uint32_t)polygon_size;
+
+			if( polygon_size > 0 )
 			{
-				const MovieLayerPolygon & layerPolygon = *it;
+				const Polygon::ring_type & countour = layerPolygon.polygon.outer();
 
-				size_t polygon_size = Menge::polygon_size( layerPolygon.polygon );
-				
-				aw << (uint32_t)polygon_size;
-
-				if( polygon_size > 0 )
+				for( size_t i = 0; i != polygon_size; ++i )
 				{
-					const Polygon::ring_type & countour = layerPolygon.polygon.outer();
-
-					for( size_t i = 0; i != polygon_size; ++i )
-					{
-						const mt::vec2f & p = countour[i];
-						aw << p.x;
-						aw << p.y;
-					}
+					const mt::vec2f & p = countour[i];
+					aw << p.x;
+					aw << p.y;
 				}
 			}
 		}

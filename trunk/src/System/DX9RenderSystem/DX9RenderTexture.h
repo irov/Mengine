@@ -30,5 +30,5 @@ namespace Menge
 		IDirect3DSurface9 * m_depthInterface;
 	};
 
-    typedef stdex::intrusive_ptr<DX9RenderTexture> DX8RenderTexturePtr;
+    typedef stdex::intrusive_ptr<DX9RenderTexture> DX9RenderTexturePtr;
 }

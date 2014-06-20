@@ -1522,6 +1522,11 @@ namespace Menge
 			, m_commandLine.c_str()
 			);
 
+		if( Helper::s_hasOption( " -noaccounts ", m_commandLine ) == true )
+		{
+			settings.applicationSettings.projectVersion = (size_t)-1;
+		}
+
 		if( m_application->setup( m_commandLine, m_companyName, m_projectName, settings.applicationSettings ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application setup failed" 
@@ -1956,7 +1961,7 @@ namespace Menge
 				m_windowsLayer->dispatchMessage( &msg );
 			}
 
-			bool updating = m_application->onUpdate();        
+			bool updating = m_application->onUpdate();
 
 			if( updating == true )
 			{

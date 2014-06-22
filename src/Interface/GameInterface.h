@@ -27,8 +27,11 @@ namespace Menge
         virtual bool run( const String& _scriptInitParams ) = 0;
 
     public:
-        virtual bool update() = 0;
+        virtual bool beginUpdate() = 0;
         virtual void tick( float _timing ) = 0;
+		virtual void endUpdate() = 0;
+
+	public:
         virtual void render() = 0;
 
     public:
@@ -66,19 +69,19 @@ namespace Menge
         virtual void initializeRenderResources() = 0;
         virtual void finalizeRenderResources() = 0;
 
-        virtual void onAppMouseLeave() = 0;
-        virtual void onAppMouseEnter( const mt::vec2f & _point ) = 0;
-		virtual void onAppMousePosition( const mt::vec2f & _point ) = 0;
+        virtual void mouseLeave() = 0;
+        virtual void mouseEnter( const mt::vec2f & _point ) = 0;
+		virtual void mousePosition( const mt::vec2f & _point ) = 0;
 
-        virtual void onFocus( bool _focus ) = 0;
-        virtual void onFullscreen( const Resolution & _resolution, bool _fullscreen ) = 0;
-        virtual void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) = 0;
-        virtual void onRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) = 0;
-        virtual bool onClose() = 0;
+        virtual void setFocus( bool _focus ) = 0;
+        virtual void setFullscreen( const Resolution & _resolution, bool _fullscreen ) = 0;
+        virtual void setFixedContentResolution( const Resolution & _resolution, bool _fixed ) = 0;
+        virtual void setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) = 0;
+        virtual bool close() = 0;
 
-        virtual void onUserEvent( const ConstString & _event, const TMapParams & _params ) = 0;
+        virtual void userEvent( const ConstString & _event, const TMapParams & _params ) = 0;
 
-        virtual void onTurnSound( bool _turn ) = 0;
+        virtual void turnSound( bool _turn ) = 0;
     };
 
 #   define GAME_SERVICE( serviceProvider )\

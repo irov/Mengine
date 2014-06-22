@@ -390,9 +390,9 @@ namespace	Menge
 				
 		Node::_updateBoundingBox( m_localBoundingBox );
 
-        ParticleVertices s_particles[MENGINE_PARTICLE_MAX_COUNT];
-		ParticleMesh s_meshes[MENGINE_PARTICLE_MAX_MESH];
-
+        static ParticleVertices s_particles[MENGINE_PARTICLE_MAX_COUNT];
+		static ParticleMesh s_meshes[MENGINE_PARTICLE_MAX_MESH];
+				
 		m_batchs.clear();
    
 		ParticleEmitterRenderFlush flush;
@@ -427,7 +427,7 @@ namespace	Menge
 
 			const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( mesh.texture );
 
-			const mt::vec4f & mesh_uv = texture->getUV();
+			const mt::vec4f & texture_uv = texture->getUV();
 
 			for( size_t
 				it = mesh.begin,
@@ -490,14 +490,14 @@ namespace	Menge
 				
 				mt::vec2f uv[4];
 
-				uv[0].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[0].x;
-				uv[0].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[0].y;
-				uv[1].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[1].x;
-				uv[1].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[1].y;
-				uv[2].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[2].x;
-				uv[2].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[2].y;
-				uv[3].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[3].x;
-				uv[3].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[3].y;
+				uv[0].x = texture_uv.x + (texture_uv.z - texture_uv.x) * p.uv[0].x;
+				uv[0].y = texture_uv.y + (texture_uv.w - texture_uv.y) * p.uv[0].y;
+				uv[1].x = texture_uv.x + (texture_uv.z - texture_uv.x) * p.uv[1].x;
+				uv[1].y = texture_uv.y + (texture_uv.w - texture_uv.y) * p.uv[1].y;
+				uv[2].x = texture_uv.x + (texture_uv.z - texture_uv.x) * p.uv[2].x;
+				uv[2].y = texture_uv.y + (texture_uv.w - texture_uv.y) * p.uv[2].y;
+				uv[3].x = texture_uv.x + (texture_uv.z - texture_uv.x) * p.uv[3].x;
+				uv[3].y = texture_uv.y + (texture_uv.w - texture_uv.y) * p.uv[3].y;
 
 				vertice[0].uv.x = uv[0].x;
 				vertice[0].uv.y = uv[0].y;

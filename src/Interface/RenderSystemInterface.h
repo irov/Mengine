@@ -219,7 +219,10 @@ namespace Menge
     struct RenderTextureStage
     {
         RenderTextureStage()
-			: addressU(TAM_CLAMP)
+			: mipmap(TF_NONE)
+			, magnification(TF_LINEAR)
+			, minification(TF_LINEAR)
+			, addressU(TAM_CLAMP)
 			, addressV(TAM_CLAMP)
             , colorOp(TOP_DISABLE)
             , colorArg1(TARG_TEXTURE)
@@ -230,6 +233,10 @@ namespace Menge
             , texCoordIndex(0)
         {
         }
+
+		ETextureFilter mipmap;
+		ETextureFilter magnification;
+		ETextureFilter minification;
 
 		ETextureAddressMode addressU;
 		ETextureAddressMode addressV;

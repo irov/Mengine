@@ -311,7 +311,7 @@ namespace Menge
 		this->applyCursorPosition_( _params.point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onKeyEvent( _params.point, _params.key, _params.character, _params.isDown, repeating );
+			->keyEvent( _params.point, _params.key, _params.character, _params.isDown, repeating );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseButtonEvent_( const MouseButtonParams & _params )
@@ -321,7 +321,7 @@ namespace Menge
 		this->applyCursorPosition_( _params.point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onMouseButtonEvent( _params.touchId, _params.point, _params.button, _params.isDown );
+			->mouseButtonEvent( _params.touchId, _params.point, _params.button, _params.isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseMoveEvent_( const MouseMoveParams& _params )
@@ -329,7 +329,7 @@ namespace Menge
 		this->applyCursorPosition_( _params.point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onMouseMove( _params.touchId, _params.point, _params.x, _params.y );
+			->mouseMove( _params.touchId, _params.point, _params.x, _params.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseWheelEvent_( const MouseMoveParams& _params )
@@ -337,7 +337,7 @@ namespace Menge
 		this->applyCursorPosition_( _params.point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onMouseWheel( _params.touchId, _params.point, _params.wheel );
+			->mouseWheel( _params.touchId, _params.point, _params.wheel );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mousePositionEvent_( const MousePositionParams& _params )
@@ -345,7 +345,7 @@ namespace Menge
 		this->applyCursorPosition_( _params.point );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->onMousePosition( _params.touchId, _params.point );
+			->mousePosition( _params.touchId, _params.point );
 	}
     //////////////////////////////////////////////////////////////////////////
     void InputEngine::mouseEnterEvent_( const MousePositionParams& _params )
@@ -353,7 +353,7 @@ namespace Menge
         this->applyCursorPosition_( _params.point );
 
         APPLICATION_SERVICE(m_serviceProvider)
-            ->onAppMouseEnter( _params.point );
+            ->mouseEnter( _params.point );
     }
     //////////////////////////////////////////////////////////////////////////
     void InputEngine::mouseLeaveEvent_( const MousePositionParams& _params )
@@ -361,6 +361,6 @@ namespace Menge
         this->applyCursorPosition_( _params.point );
 
         APPLICATION_SERVICE(m_serviceProvider)
-            ->onAppMouseLeave();
+            ->mouseLeave();
     }
 }

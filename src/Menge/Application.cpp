@@ -933,7 +933,7 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
+	bool Application::keyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
 	{
 		if( m_console != nullptr )
 		{
@@ -1088,7 +1088,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown )
+	bool Application::mouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown )
 	{
 		if( m_inputMouseButtonEventBlock == true )
 		{
@@ -1102,7 +1102,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _dx, float _dy )
+	bool Application::mouseMove( unsigned int _touchId, const mt::vec2f & _point, float _dx, float _dy )
 	{
 		if( INPUT_SERVICE(m_serviceProvider)
 			->validCursorPosition( _point ) == false )
@@ -1114,7 +1114,7 @@ namespace Menge
 
 		if( m_mouseEnter == false )
 		{
-			this->onAppMouseEnter( _point );
+			this->mouseEnter( _point );
 		}
 
 		bool handle = m_game->handleMouseMove( _touchId, _point, _dx, _dy );
@@ -1122,14 +1122,14 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
+	bool Application::mouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
 	{
 		bool handle = m_game->handleMouseWheel( _touchId, _point, _wheel );
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onMousePosition( unsigned int _touchId, const mt::vec2f & _point )
+	void Application::mousePosition( unsigned int _touchId, const mt::vec2f & _point )
 	{
 		(void)_touchId;
 
@@ -1143,20 +1143,20 @@ namespace Menge
 
 		if( m_mouseEnter == false )
 		{
-			this->onAppMouseEnter( _point );
+			this->mouseEnter( _point );
 		}
 
-		m_game->onAppMouseEnter( _point );
+		m_game->mouseEnter( _point );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onAppMouseLeave()
+	void Application::mouseLeave()
 	{
 		m_mouseEnter = false;
 
-		m_game->onAppMouseLeave();
+		m_game->mouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onAppMouseEnter( const mt::vec2f & _point )
+	void Application::mouseEnter( const mt::vec2f & _point )
 	{
 		if( INPUT_SERVICE(m_serviceProvider)
 			->validCursorPosition( _point ) == false )
@@ -1166,7 +1166,7 @@ namespace Menge
 
 		m_mouseEnter = true;
 
-		m_game->onAppMouseEnter( _point );
+		m_game->mouseEnter( _point );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
@@ -1203,7 +1203,7 @@ namespace Menge
 		return m_focus;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onFocus( bool _focus, const mt::vec2f & _point )
+	void Application::setFocus( bool _focus, const mt::vec2f & _point )
 	{
 		//return;
         LOGGER_INFO(m_serviceProvider)("Application::onFocus from %d to %d"
@@ -1220,15 +1220,15 @@ namespace Menge
 
 		if( m_game != nullptr )
 		{
-			m_game->onFocus( m_focus );
+			m_game->setFocus( m_focus );
 
 			if( m_focus == false )
 			{
-				this->onAppMouseLeave();
+				this->mouseLeave();
 			}
 			else
 			{
-				this->onAppMouseEnter( _point );
+				this->mouseEnter( _point );
 			}
 		}
 		/*if( m_focus == true )
@@ -1243,7 +1243,7 @@ namespace Menge
 			->minimizeWindow();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onUpdate()
+	bool Application::beginUpdate()
 	{	
 		if( THREAD_SERVICE(m_serviceProvider) )
 		{
@@ -1255,9 +1255,15 @@ namespace Menge
 			return false;
 		}
 
-		INPUT_SERVICE(m_serviceProvider)->update();
+		INPUT_SERVICE(m_serviceProvider)
+			->update();
 
-		if( m_game->update() == false )
+#   ifdef MENGE_PARTICLES
+		PARTICLE_SERVICE(m_serviceProvider)
+			->update();
+#   endif
+
+		if( m_game->beginUpdate() == false )
 		{
 			this->quit();
 
@@ -1280,7 +1286,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onTick( float _timing )
+	void Application::tick( float _timing )
 	{
 		float timing = _timing;
 
@@ -1308,7 +1314,12 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::onRender()
+	void Application::endUpdate()
+	{
+		m_game->endUpdate();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::render()
 	{
 		if( RENDER_SERVICE(m_serviceProvider)->beginScene() == false )
 		{
@@ -1320,27 +1331,26 @@ namespace Menge
 		if( m_console != nullptr )
 		{
 			m_console->render();
-		}
-		//Holder<Console>::get()->render();
+		}		
 
 		RENDER_SERVICE(m_serviceProvider)->endScene();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onFlush()
+	void Application::flush()
 	{
 		RENDER_SERVICE(m_serviceProvider)
             ->swapBuffers();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onClose()
+	void Application::close()
 	{
 		bool needQuit = true;
 
 		if( m_game != nullptr )
 		{
-			needQuit = m_game->onClose();
+			needQuit = m_game->close();
 		}
 
 		if( needQuit == true )
@@ -1349,7 +1359,7 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Application::onTurnSound( bool _turn )
+    void Application::turnSound( bool _turn )
     {
 		if( _turn == false )
 		{
@@ -1360,7 +1370,7 @@ namespace Menge
 
 			if( m_game )
 			{
-				m_game->onTurnSound( _turn );
+				m_game->turnSound( _turn );
 			}
 
 			if( SOUND_SERVICE(m_serviceProvider) )
@@ -1377,7 +1387,7 @@ namespace Menge
 
 			if( m_game )
 			{
-				m_game->onTurnSound( _turn );
+				m_game->turnSound( _turn );
 			}
 
 			if( SOUND_SERVICE(m_serviceProvider) )
@@ -1688,7 +1698,7 @@ namespace Menge
         this->invalidateWindow_();
 
         bool fullscreen = this->getFullscreenMode();        
-        m_game->onFullscreen( m_currentResolution, fullscreen );
+        m_game->setFullscreen( m_currentResolution, fullscreen );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::invalidateWindow_()
@@ -1763,7 +1773,7 @@ namespace Menge
 
         if( m_game != nullptr )
         {
-            m_game->onRenderViewport( m_renderViewport, m_contentResolution );
+            m_game->setRenderViewport( m_renderViewport, m_contentResolution );
         }
 	}
 	////////////////////////////////////////////////////////////////////////////
@@ -1802,7 +1812,7 @@ namespace Menge
 		return m_debugMask;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::onPaint()
+	void Application::paint()
 	{
 		if( m_focus == false && RENDER_SERVICE(m_serviceProvider) && m_game && m_createRenderWindow == true )
 		{
@@ -1816,7 +1826,7 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool Application::onUserEvent( const ConstString & _event, const TMapParams & _params )
+    bool Application::userEvent( const ConstString & _event, const TMapParams & _params )
     {
         if( m_game == nullptr )
         {
@@ -1827,7 +1837,7 @@ namespace Menge
             return false;
         }
 
-        m_game->onUserEvent( _event, _params );
+        m_game->userEvent( _event, _params );
 
         return true;
     }
@@ -1889,7 +1899,7 @@ namespace Menge
 
         this->invalidateWindow_();
 
-        m_game->onFixedContentResolution( m_currentResolution, m_fixedContentResolution );
+        m_game->setFixedContentResolution( m_currentResolution, m_fixedContentResolution );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFixedContentResolution() const

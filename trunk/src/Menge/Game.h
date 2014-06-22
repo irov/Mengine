@@ -71,8 +71,9 @@ namespace Menge
         PlayerServiceInterface * getPlayer() const override;
 
 	public:
-		bool update() override;
+		bool beginUpdate() override;
 		void tick( float _timing ) override;
+		void endUpdate() override;
 
     public:
 		void render() override;
@@ -112,19 +113,19 @@ namespace Menge
 		bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
 		bool handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
 		
-		void onAppMouseLeave() override;
-		void onAppMouseEnter( const mt::vec2f & _point ) override;
-		void onAppMousePosition( const mt::vec2f & _point ) override;
+		void mouseLeave() override;
+		void mouseEnter( const mt::vec2f & _point ) override;
+		void mousePosition( const mt::vec2f & _point ) override;
 
-		void onFocus( bool _focus ) override;
-		void onFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
-        void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
-        void onRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) override;
-		bool onClose() override;
+		void setFocus( bool _focus ) override;
+		void setFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
+        void setFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
+        void setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) override;
+		bool close() override;
 
-        void onUserEvent( const ConstString & _event, const TMapParams & _params ) override;
+        void userEvent( const ConstString & _event, const TMapParams & _params ) override;
 
-		void onTurnSound( bool _turn ) override;
+		void turnSound( bool _turn ) override;
 
 	public:
 		const WString & getParam( const ConstString & _paramName ) const override;

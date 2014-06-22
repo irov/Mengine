@@ -706,7 +706,7 @@ namespace Menge
 				, stage.texCoordIndex
 				);
 
-			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MIPMAP, TF_LINEAR );
+			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MAGNIFICATION, TF_LINEAR );
 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MINIFICATION, TF_LINEAR );
 
@@ -1365,6 +1365,8 @@ namespace Menge
 		TArrayRenderObject::iterator it_batch_begin = _begin;
 		++it_batch_begin;
 
+		RenderMaterial * ro_material = _ro->material.get();
+
 		for( ; it_batch_begin != _end; ++it_batch_begin )
 		{
 			RenderObject * ro_bath_begin = it_batch_begin;
@@ -1374,7 +1376,9 @@ namespace Menge
 				continue;
 			}
 
-			if( _ro->material != ro_bath_begin->material )
+			RenderMaterial * batch_material = ro_bath_begin->material.get();
+
+			if( ro_material != batch_material )
 			{
 				break;
 			}

@@ -83,26 +83,27 @@ namespace Menge
 		virtual bool getAllowFullscreenSwitchShortcut() const = 0;
 
 	public:
-		virtual bool onRender() = 0;
-		virtual void onFlush() = 0;
-		virtual bool onUpdate() = 0;
-		virtual void onTick( float _timing ) = 0;
-		virtual void onFocus( bool _focus, const mt::vec2f & _point ) = 0;
-		virtual void onClose() = 0;
+		virtual bool render() = 0;
+		virtual void flush() = 0;
+		virtual bool beginUpdate() = 0;
+		virtual void tick( float _timing ) = 0;
+		virtual void endUpdate() = 0;
+		virtual void setFocus( bool _focus, const mt::vec2f & _point ) = 0;
+		virtual void close() = 0;
 
-		virtual void onTurnSound( bool _turn ) = 0;
+		virtual void turnSound( bool _turn ) = 0;
 
-		virtual void onAppMouseEnter( const mt::vec2f & _point ) = 0;
-		virtual void onAppMouseLeave() = 0;
+		virtual void mouseEnter( const mt::vec2f & _point ) = 0;
+		virtual void mouseLeave() = 0;
 
-        virtual bool onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) = 0;
-        virtual bool onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) = 0;
-        virtual bool onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) = 0;
-		virtual bool onMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
-		virtual void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) = 0;
+        virtual bool keyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) = 0;
+        virtual bool mouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) = 0;
+        virtual bool mouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) = 0;
+		virtual bool mouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
+		virtual void mousePosition( unsigned int _touchId, const mt::vec2f & _point ) = 0;
         
-		virtual void onPaint() = 0;
-        virtual bool onUserEvent( const ConstString & _event, const TMapParams & _params ) = 0;
+		virtual void paint() = 0;
+        virtual bool userEvent( const ConstString & _event, const TMapParams & _params ) = 0;
 
 	public:		
 		virtual bool createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) = 0;

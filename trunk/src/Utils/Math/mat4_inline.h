@@ -351,56 +351,140 @@ namespace mt
 		extract_v4_v3( _out.v2, _rhs.v2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float minor_m4(const mat4f& _rhs, const int r0, const int r1, const int r2, const int c0, const int c1, const int c2)
+	MATH_FUNCTION_INLINE void inv_m4( mat4f & _out, const mat4f & _in )
 	{
-		return	_rhs[r0][c0] * (_rhs[r1][c1] * _rhs[r2][c2] - _rhs[r2][c1] * _rhs[r1][c2]) -
-				_rhs[r0][c1] * (_rhs[r1][c0] * _rhs[r2][c2] - _rhs[r2][c0] * _rhs[r1][c2]) +
-				_rhs[r0][c2] * (_rhs[r1][c0] * _rhs[r2][c1] - _rhs[r2][c0] * _rhs[r1][c1]);			
-	}
-	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float det_m4(const mat4f& _rhs)
-	{
-		return	_rhs[0][0] * minor_m4(_rhs, 1, 2, 3, 1, 2, 3) -
-				_rhs[0][1] * minor_m4(_rhs, 1, 2, 3, 0, 2, 3) +
-				_rhs[0][2] * minor_m4(_rhs, 1, 2, 3, 0, 1, 3) -
-				_rhs[0][3] * minor_m4(_rhs, 1, 2, 3, 0, 1, 2);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void adj_m4(mat4f& _out, const mat4f& _rhs)
-	{
-		_out[0][0] =  minor_m4(_rhs, 1, 2, 3, 1, 2, 3);
-		_out[0][1] = -minor_m4(_rhs, 0, 2, 3, 1, 2, 3);
-		_out[0][2] =  minor_m4(_rhs, 0, 1, 3, 1, 2, 3);
-		_out[0][3] = -minor_m4(_rhs, 0, 1, 2, 1, 2, 3);
+		_out.v0.x = _in.v1.y  * _in.v2.z * _in.v3.w - 
+			_in.v1.y  * _in.v2.w * _in.v3.z - 
+			_in.v2.y  * _in.v1.z  * _in.v3.w + 
+			_in.v2.y  * _in.v1.w  * _in.v3.z +
+			_in.v3.y * _in.v1.z  * _in.v2.w - 
+			_in.v3.y * _in.v1.w  * _in.v2.z;
 
-		_out[1][0] = -minor_m4(_rhs, 1, 2, 3, 0, 2, 3);
-		_out[1][1] =  minor_m4(_rhs, 0, 2, 3, 0, 2, 3);
-		_out[1][2] = -minor_m4(_rhs, 0, 1, 3, 0, 2, 3);
-		_out[1][3] =  minor_m4(_rhs, 0, 1, 2, 0, 2, 3);
+		_out.v1.x = -_in.v1.x  * _in.v2.z * _in.v3.w + 
+			_in.v1.x  * _in.v2.w * _in.v3.z + 
+			_in.v2.x  * _in.v1.z  * _in.v3.w - 
+			_in.v2.x  * _in.v1.w  * _in.v3.z - 
+			_in.v3.x * _in.v1.z  * _in.v2.w + 
+			_in.v3.x * _in.v1.w  * _in.v2.z;
 
-		_out[2][0] =  minor_m4(_rhs, 1, 2, 3, 0, 1, 3);
-		_out[2][1] = -minor_m4(_rhs, 0, 2, 3, 0, 1, 3);
-		_out[2][2] =  minor_m4(_rhs, 0, 1, 3, 0, 1, 3);
-		_out[2][3] = -minor_m4(_rhs, 0, 1, 2, 0, 1, 3);
+		_out.v2.x = _in.v1.x  * _in.v2.y * _in.v3.w - 
+			_in.v1.x  * _in.v2.w * _in.v3.y - 
+			_in.v2.x  * _in.v1.y * _in.v3.w + 
+			_in.v2.x  * _in.v1.w * _in.v3.y + 
+			_in.v3.x * _in.v1.y * _in.v2.w - 
+			_in.v3.x * _in.v1.w * _in.v2.y;
 
-		_out[3][0] = -minor_m4(_rhs, 1, 2, 3, 0, 1, 2);
-		_out[3][1] =  minor_m4(_rhs, 0, 2, 3, 0, 1, 2);
-		_out[3][2] = -minor_m4(_rhs, 0, 1, 3, 0, 1, 2);
-		_out[3][3] =  minor_m4(_rhs, 0, 1, 2, 0, 1, 2);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE mat4f adj_m4(const mat4f& _rhs)
-	{
-		mat4f out;
-		adj_m4(out, _rhs);
-		return out;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void inv_m4(mat4f& _out, const mat4f& _rhs)
-	{ 
-		adj_m4(_out, _rhs);
-		float	invdet = 1.0f / det_m4(_rhs);
-		scale_m4(_out, mt::vec4f(invdet,invdet,invdet,invdet) );
+		_out.v3.x = -_in.v1.x  * _in.v2.y * _in.v3.z + 
+			_in.v1.x  * _in.v2.z * _in.v3.y +
+			_in.v2.x  * _in.v1.y * _in.v3.z - 
+			_in.v2.x  * _in.v1.z * _in.v3.y - 
+			_in.v3.x * _in.v1.y * _in.v2.z + 
+			_in.v3.x * _in.v1.z * _in.v2.y;
+
+		_out.v0.y = -_in.v0.y  * _in.v2.z * _in.v3.w + 
+			_in.v0.y  * _in.v2.w * _in.v3.z + 
+			_in.v2.y  * _in.v0.z * _in.v3.w - 
+			_in.v2.y  * _in.v0.w * _in.v3.z - 
+			_in.v3.y * _in.v0.z * _in.v2.w + 
+			_in.v3.y * _in.v0.w * _in.v2.z;
+
+		_out.v1.y = _in.v0.x  * _in.v2.z * _in.v3.w - 
+			_in.v0.x  * _in.v2.w * _in.v3.z - 
+			_in.v2.x  * _in.v0.z * _in.v3.w + 
+			_in.v2.x  * _in.v0.w * _in.v3.z + 
+			_in.v3.x * _in.v0.z * _in.v2.w - 
+			_in.v3.x * _in.v0.w * _in.v2.z;
+
+		_out.v2.y = -_in.v0.x  * _in.v2.y * _in.v3.w + 
+			_in.v0.x  * _in.v2.w * _in.v3.y + 
+			_in.v2.x  * _in.v0.y * _in.v3.w - 
+			_in.v2.x  * _in.v0.w * _in.v3.y - 
+			_in.v3.x * _in.v0.y * _in.v2.w + 
+			_in.v3.x * _in.v0.w * _in.v2.y;
+
+		_out.v3.y = _in.v0.x  * _in.v2.y * _in.v3.z - 
+			_in.v0.x  * _in.v2.z * _in.v3.y - 
+			_in.v2.x  * _in.v0.y * _in.v3.z + 
+			_in.v2.x  * _in.v0.z * _in.v3.y + 
+			_in.v3.x * _in.v0.y * _in.v2.z - 
+			_in.v3.x * _in.v0.z * _in.v2.y;
+
+		_out.v0.z = _in.v0.y  * _in.v1.z * _in.v3.w - 
+			_in.v0.y  * _in.v1.w * _in.v3.z - 
+			_in.v1.y  * _in.v0.z * _in.v3.w + 
+			_in.v1.y  * _in.v0.w * _in.v3.z + 
+			_in.v3.y * _in.v0.z * _in.v1.w - 
+			_in.v3.y * _in.v0.w * _in.v1.z;
+
+		_out.v1.z = -_in.v0.x  * _in.v1.z * _in.v3.w + 
+			_in.v0.x  * _in.v1.w * _in.v3.z + 
+			_in.v1.x  * _in.v0.z * _in.v3.w - 
+			_in.v1.x  * _in.v0.w * _in.v3.z - 
+			_in.v3.x * _in.v0.z * _in.v1.w + 
+			_in.v3.x * _in.v0.w * _in.v1.z;
+
+		_out.v2.z = _in.v0.x  * _in.v1.y * _in.v3.w - 
+			_in.v0.x  * _in.v1.w * _in.v3.y - 
+			_in.v1.x  * _in.v0.y * _in.v3.w + 
+			_in.v1.x  * _in.v0.w * _in.v3.y + 
+			_in.v3.x * _in.v0.y * _in.v1.w - 
+			_in.v3.x * _in.v0.w * _in.v1.y;
+
+		_out.v3.z = -_in.v0.x  * _in.v1.y * _in.v3.z + 
+			_in.v0.x  * _in.v1.z * _in.v3.y + 
+			_in.v1.x  * _in.v0.y * _in.v3.z - 
+			_in.v1.x  * _in.v0.z * _in.v3.y - 
+			_in.v3.x * _in.v0.y * _in.v1.z + 
+			_in.v3.x * _in.v0.z * _in.v1.y;
+
+		_out.v0.w = -_in.v0.y * _in.v1.z * _in.v2.w + 
+			_in.v0.y * _in.v1.w * _in.v2.z + 
+			_in.v1.y * _in.v0.z * _in.v2.w - 
+			_in.v1.y * _in.v0.w * _in.v2.z - 
+			_in.v2.y * _in.v0.z * _in.v1.w + 
+			_in.v2.y * _in.v0.w * _in.v1.z;
+
+		_out.v1.w = _in.v0.x * _in.v1.z * _in.v2.w - 
+			_in.v0.x * _in.v1.w * _in.v2.z - 
+			_in.v1.x * _in.v0.z * _in.v2.w + 
+			_in.v1.x * _in.v0.w * _in.v2.z + 
+			_in.v2.x * _in.v0.z * _in.v1.w - 
+			_in.v2.x * _in.v0.w * _in.v1.z;
+
+		_out.v2.w = -_in.v0.x * _in.v1.y * _in.v2.w + 
+			_in.v0.x * _in.v1.w * _in.v2.y + 
+			_in.v1.x * _in.v0.y * _in.v2.w - 
+			_in.v1.x * _in.v0.w * _in.v2.y - 
+			_in.v2.x * _in.v0.y * _in.v1.w + 
+			_in.v2.x * _in.v0.w * _in.v1.y;
+
+		_out.v3.w = _in.v0.x * _in.v1.y * _in.v2.z - 
+			_in.v0.x * _in.v1.z * _in.v2.y - 
+			_in.v1.x * _in.v0.y * _in.v2.z + 
+			_in.v1.x * _in.v0.z * _in.v2.y + 
+			_in.v2.x * _in.v0.y * _in.v1.z - 
+			_in.v2.x * _in.v0.z * _in.v1.y;
+
+		float det = _in.v0.x * _out.v0.x + _in.v0.y * _out.v1.x + _in.v0.z * _out.v2.x + _in.v0.w * _out.v3.x;
+
+		float det_inv = 1.f / det;
+
+		_out.v0.x = _out.v0.x * det_inv;
+		_out.v0.y = _out.v0.y * det_inv;
+		_out.v0.z = _out.v0.z * det_inv;
+		_out.v0.w = _out.v0.w * det_inv;
+		_out.v1.x = _out.v1.x * det_inv;
+		_out.v1.y = _out.v1.y * det_inv;
+		_out.v1.z = _out.v1.z * det_inv;
+		_out.v1.w = _out.v1.w * det_inv;
+		_out.v2.x = _out.v2.x * det_inv;
+		_out.v2.y = _out.v2.y * det_inv;
+		_out.v2.z = _out.v2.z * det_inv;
+		_out.v2.w = _out.v2.w * det_inv;
+		_out.v3.x = _out.v3.x * det_inv;
+		_out.v3.y = _out.v3.y * det_inv;
+		_out.v3.z = _out.v3.z * det_inv;
+		_out.v3.w = _out.v3.w * det_inv;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE mat4f inv_m4(const mat4f& _rhs)
@@ -409,6 +493,7 @@ namespace mt
 		inv_m4(out, _rhs);
 		return out;
 	}
+
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE void rotate_axis_m4( mat4f &out, const vec3f &u, float degrees )
 	{

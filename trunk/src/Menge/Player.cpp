@@ -144,7 +144,7 @@ namespace Menge
 		return m_scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::updateChangeScene_()
+	void Player::updateChangeScene()
 	{
 		if( m_switchScene == true )
 		{
@@ -959,8 +959,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::update()
 	{
-		this->updateChangeScene_();
-
 		if( m_mousePickerSystem != nullptr )
 		{
 			m_mousePickerSystem->update();

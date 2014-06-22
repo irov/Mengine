@@ -11,7 +11,6 @@
 #	include "Interface/ScriptSystemInterface.h"
 #	include "Interface/ResourceInterface.h"
 #   include "Interface/RenderSystemInterface.h"
-#   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/AccountInterface.h"
 #   include "Interface/NodeInterface.h"
 #   include "Interface/TextInterface.h"
@@ -213,32 +212,27 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::onAppMouseLeave()
+	void Game::mouseLeave()
 	{		
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_LEAVE)( "()" );
 
 		m_player->onAppMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::onAppMouseEnter( const mt::vec2f & _point )
+	void Game::mouseEnter( const mt::vec2f & _point )
 	{
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_ENTER)( "(ff)", _point.x, _point.y );
 
 		m_player->onAppMouseEnter();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::onAppMousePosition( const mt::vec2f & _point )
+	void Game::mousePosition( const mt::vec2f & _point )
 	{
 		m_player->onAppMousePosition( _point );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::update()
+	bool Game::beginUpdate()
 	{
-#   ifdef MENGE_PARTICLES
-        PARTICLE_SERVICE(m_serviceProvider)
-            ->update();
-#   endif
-
 		if( m_player->update() == false )
 		{
 			return false;
@@ -254,6 +248,11 @@ namespace Menge
 		//m_amplifierService->update( timing );
 
 		m_player->tick( timing );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Game::endUpdate()
+	{
+		m_player->updateChangeScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()
@@ -510,7 +509,7 @@ namespace Menge
 		}
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	void Game::onTurnSound( bool _turn )
+	void Game::turnSound( bool _turn )
 	{
         (void)_turn;
 		//if( AMPLIFIER_SERVICE(m_serviceProvider) )
@@ -519,7 +518,7 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::onFocus( bool _focus )
+	void Game::setFocus( bool _focus )
 	{
 		if( m_player != nullptr )
 		{
@@ -534,26 +533,26 @@ namespace Menge
 		return m_hasWindowPanel;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::onFullscreen( const Resolution & _resolution, bool _fullscreen )
+	void Game::setFullscreen( const Resolution & _resolution, bool _fullscreen )
 	{
 		m_player->onFullscreen( _resolution, _fullscreen );
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_FULLSCREEN)( "(O)", pybind::get_bool(_fullscreen) );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Game::onFixedContentResolution( const Resolution & _resolution, bool _fixed )
+    void Game::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
     {
         m_player->onFixedContentResolution( _resolution, _fixed );
 
         EVENTABLE_CALL(m_serviceProvider, this, EVENT_FIXED_CONTENT_RESOLUTION)( "(O)", pybind::get_bool(_fixed) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::onRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
+    void Game::setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
     {
         EVENTABLE_CALL(m_serviceProvider, this, EVENT_RENDER_VIEWPORT)( "(OO)", pybind::ptr(_viewport), pybind::ptr(_contentResolution) );
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::onClose()
+	bool Game::close()
 	{
 		bool needQuit = true;
 
@@ -562,7 +561,7 @@ namespace Menge
 		return needQuit;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Game::onUserEvent( const ConstString & _event, const TMapParams & _params )
+    void Game::userEvent( const ConstString & _event, const TMapParams & _params )
     {
         EVENTABLE_CALL(m_serviceProvider, this, EVENT_USER)( "(OO)", pybind::ptr(_event), pybind::ptr(_params) );
     }

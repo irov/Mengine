@@ -128,28 +128,29 @@ namespace Menge
 		void getGameViewport( float & _aspect, Viewport & _viewport ) const override;
 
 	public:
-		bool onRender() override;
-		void onFlush() override;
-		bool onUpdate() override;
-		void onTick( float _timing ) override;
-		void onFocus( bool _focus, const mt::vec2f & _point ) override;
-		void onClose() override;
+		bool render() override;
+		void flush() override;
+		bool beginUpdate() override;
+		void tick( float _timing ) override;
+		void endUpdate() override;
+		void setFocus( bool _focus, const mt::vec2f & _point ) override;
+		void close() override;
         
-        void onTurnSound( bool _turn ) override;
+        void turnSound( bool _turn ) override;
 
-		void onAppMouseEnter( const mt::vec2f & _point ) override;
-		void onAppMouseLeave() override;		
+		void mouseEnter( const mt::vec2f & _point ) override;
+		void mouseLeave() override;		
 
-		bool onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) override;
-		bool onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) override;		
-		bool onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
-		bool onMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
-		void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) override;
+		bool keyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) override;
+		bool mouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) override;		
+		bool mouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
+		bool mouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
+		void mousePosition( unsigned int _touchId, const mt::vec2f & _point ) override;
 		
 		
-		void onPaint() override;
+		void paint() override;
 
-        bool onUserEvent( const ConstString & _event, const TMapParams & _params ) override;
+        bool userEvent( const ConstString & _event, const TMapParams & _params ) override;
 
 	public:
 		void setParticlesEnabled( bool _enabled ) override;

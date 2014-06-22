@@ -63,8 +63,10 @@ namespace Menge
 
 		bool isChangedScene() const;
 
-    protected:
-        void updateChangeScene_();
+	public:
+		void updateChangeScene();
+
+    protected:        
 		void updateSwitchScene_();
 		void updateRemoveScene_();
 
@@ -110,6 +112,7 @@ namespace Menge
     public:
 		void tick( float _timing );
 		bool update();
+
 
 	public:
 		float getTime() const override;

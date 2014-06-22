@@ -1961,11 +1961,11 @@ namespace Menge
 				m_windowsLayer->dispatchMessage( &msg );
 			}
 
-			bool updating = m_application->onUpdate();
+			bool updating = m_application->beginUpdate();
 
 			if( updating == true )
 			{
-				m_application->onTick( frameTime );
+				m_application->tick( frameTime );
 			}
 			else
 			{
@@ -1979,25 +1979,26 @@ namespace Menge
 
 			if( m_application->isFocus() == true )
 			{
-				if( m_application->onRender() == true )
+				if( m_application->render() == true )
 				{
-					m_application->onFlush();
+					m_application->flush();
 				}
 			}     
-			//
+
+			m_application->endUpdate();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::finalize()
 	{
 		// Clean up
-		if( m_hWnd )
+		if( m_hWnd != NULL )
 		{
 			m_windowsLayer->destroyWindow( m_hWnd );
-			m_hWnd = 0;
+			m_hWnd = NULL;
 		}
 
-		if( m_hInstance )
+		if( m_hInstance != NULL )
 		{
 			m_windowsLayer->unregisterClass( m_windowClassName.c_str(), m_hInstance );
 		}	
@@ -2431,7 +2432,7 @@ namespace Menge
 			{
 				if( m_application->getFullscreenMode() == false )
 				{
-					m_application->onPaint();
+					m_application->paint();
 				}
 			}break;
 		case WM_DISPLAYCHANGE:
@@ -2477,7 +2478,7 @@ namespace Menge
 			}break;
 		case WM_CLOSE:
 			{
-				m_application->onClose();
+				m_application->close();
 
 				return FALSE;
 			}break;
@@ -3028,11 +3029,11 @@ namespace Menge
 
 		m_inputService->onMousePosition( 0, point );
 
-		m_application->onFocus( m_active, point );
+		m_application->setFocus( m_active, point );
 		m_inputService->onFocus( m_active );
 
 		bool turnSound = m_active;
-		m_application->onTurnSound( turnSound );
+		m_application->turnSound( turnSound );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::calcCursorPosition( mt::vec2f & _point ) const

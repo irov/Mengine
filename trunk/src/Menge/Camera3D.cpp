@@ -11,9 +11,7 @@ namespace Menge
 {
 	////////////////////////////////////////////////////////////////////////
 	Camera3D::Camera3D()
-		: m_invalidateMatrix(true)
-		, m_notifyChangeWindowResolution(nullptr)
-        , m_cameraPosition(0.f, 0.f, 0.f)
+		: m_cameraPosition(0.f, 0.f, 0.f)
         , m_cameraDir(1.f, 0.f, 0.f)
 		, m_cameraUp(0.f, 1.f, 0.f)
         , m_cameraFov(0.f)
@@ -21,8 +19,13 @@ namespace Menge
 		, m_cameraNear(1.f)
 		, m_cameraFar(10000.f)
 		, m_cameraRightSign(1.f)
+		, m_notifyChangeWindowResolution(nullptr)
+		, m_invalidateMatrix(true)
 	{
 		mt::ident_m4( m_worldMatrix );
+		mt::ident_m4( m_viewMatrix );
+		mt::ident_m4( m_viewMatrixInv );
+		mt::ident_m4( m_projectionMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera3D::_activate()
@@ -133,7 +136,9 @@ namespace Menge
 		mt::mul_v3_m4_r(wm_up, m_cameraUp, wm);
         
         RENDER_SERVICE(m_serviceProvider)
-            ->makeViewMatrixLookAt( m_viewMatrixWM, wm_position, wm_direction, wm_up, m_cameraRightSign );
+            ->makeViewMatrixLookAt( m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );
+
+		mt::inv_m4( m_viewMatrixInv, m_viewMatrix );
 
 		float tangent = tanf(m_cameraFov * 0.5f);
 		float height = 2.f * 1.f * tangent;
@@ -165,7 +170,7 @@ namespace Menge
 
 		//mt::mat4f pm;
         RENDER_SERVICE(m_serviceProvider)
-            ->makeProjectionFrustum( m_projectionMatrixWM, projectViewport, m_cameraNear, m_cameraFar );
+            ->makeProjectionFrustum( m_projectionMatrix, projectViewport, m_cameraNear, m_cameraFar );
 
 		//RENDER_SERVICE(m_serviceProvider)
 			//->makeProjectionPerspective( m_projectionMatrixWM, m_cameraFov, m_cameraAspect, m_cameraNear, m_cameraFar );

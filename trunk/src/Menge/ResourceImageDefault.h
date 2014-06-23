@@ -31,7 +31,7 @@ namespace Menge
 
 	protected:
 		bool _compile() override;
-        		
+
 	protected:
         FilePath m_fileName;
         ConstString m_codecType;                

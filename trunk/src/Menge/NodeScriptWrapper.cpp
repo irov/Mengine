@@ -958,6 +958,8 @@ namespace Menge
         {
             NODE_SERVICE(m_serviceProvider)
                 ->addHomeless( _node );
+
+			_node->release();
         }
         //////////////////////////////////////////////////////////////////////////
         float s_getTimingFactor( )

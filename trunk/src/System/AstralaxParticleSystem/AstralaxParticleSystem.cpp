@@ -35,7 +35,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxParticleSystem::initialize()
 	{
-		Magic_SetAxis( MAGIC_pXnYpZ );
+		//Magic_SetAxis( MAGIC_pXpYpZ );
 
 		return true;
 	}

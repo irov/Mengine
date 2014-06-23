@@ -83,6 +83,15 @@ namespace mt
 		_out.z += _m.v3.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MATH_FUNCTION_INLINE void mul_v3_v2_m4(vec3f& _out, const vec2f& _v,const mat4f& _m)
+	{
+		mul_v3_v2_m4_r( _out, _v, _m );
+
+		_out.x += _m.v3.x;
+		_out.y += _m.v3.y;
+		_out.z += _m.v3.z;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE void mul_v3_m4_r(vec3f& _out, const vec3f& _v, const mat4f& _m)
 	{
 		_out.x = _m.v0.x * _v.x + _m.v1.x * _v.y + _m.v2.x * _v.z;
@@ -112,6 +121,13 @@ namespace mt
 	{
 		_out.x = _m.v0.x * _v.x + _m.v1.x * _v.y;
 		_out.y = _m.v0.y * _v.x + _m.v1.y * _v.y;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MATH_FUNCTION_INLINE void mul_v3_v2_m4_r(vec3f & _out, const vec2f& _v,const mat4f& _m)
+	{
+		_out.x = _m.v0.x * _v.x + _m.v1.x * _v.y;
+		_out.y = _m.v0.y * _v.x + _m.v1.y * _v.y;
+		_out.z = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE vec3f operator*(const vec3f& v, const mat4f& m)

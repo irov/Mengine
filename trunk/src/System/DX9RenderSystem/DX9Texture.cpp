@@ -20,7 +20,9 @@ namespace Menge
 	{
         if( m_d3dTexture != nullptr )
         {			
-            m_d3dTexture->Release();
+            ULONG ref = m_d3dTexture->Release();
+			(void)ref;
+
             m_d3dTexture = nullptr;
         }
 	}

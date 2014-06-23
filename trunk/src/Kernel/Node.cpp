@@ -77,6 +77,8 @@ namespace Menge
 			NODE_SERVICE(m_serviceProvider)
 				->addHomeless( this );
 
+			this->release();
+
 			return;
 		}
 
@@ -89,7 +91,10 @@ namespace Menge
 
         this->destroyAllChild();
 
-        this->removeFromParent();
+		if( m_parent != nullptr )
+		{
+			m_parent->removeChildren_( this );
+		}
 
         this->unwrap();
 	}
@@ -433,6 +438,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::removeChildren( Node * _node )
 	{
+		Node * parent = _node->getParent();
+
+		if( parent != this )
+		{
+			return false;
+		}
+
+#	ifdef _DEBUG
 		if( stdex::intrusive_has( m_child.begin(), m_child.end(), _node ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Node::removeChildren %s not found children %s"
@@ -442,17 +455,14 @@ namespace Menge
 
             return false;
         }
+#	endif
 
         _node->deactivate();
 
-        Node * parent = _node->getParent();
-
-        if( parent != this )
-        {
-            return false;
-        }
-
         this->removeChildren_( _node );
+		
+		//NODE_SERVICE(m_serviceProvider)
+		//	->addHomeless( _node );
 
 		return true;
 	}

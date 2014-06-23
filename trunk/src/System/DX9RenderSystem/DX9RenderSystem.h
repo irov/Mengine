@@ -175,7 +175,6 @@ namespace Menge
 
         IDirect3D9 * m_pD3D;
 		IDirect3DDevice9 * m_pD3DDevice;
-		IDirect3DSurface9 * m_screenSurf;
 
         D3DCAPS9 m_caps;
 
@@ -205,9 +204,6 @@ namespace Menge
 
 		bool d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,
 			DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture );
-
-		bool loadSurfaceFromSurface_( LPDIRECT3DSURFACE9 pDestSurface, CONST RECT * pDestRect,
-			LPDIRECT3DSURFACE9 pSrcSurface, CONST RECT * pSrcRect );
 
 		void refreshRenderStates_();
 

@@ -6,8 +6,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterial::RenderMaterial()
-		: m_listener(nullptr)
-		, m_id(0)
+		: m_id(0)
 		, m_primitiveType(PT_TRIANGLELIST)
 		, m_textureCount(0)
 		, m_stage(nullptr)
@@ -22,9 +21,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMaterial::initialize( RenderMaterialDestroyListener * _listener, size_t _id, EPrimitiveType _primitiveType, const RenderStage * _stage )
+	void RenderMaterial::initialize( size_t _id, EPrimitiveType _primitiveType, const RenderStage * _stage )
 	{
-		m_listener = _listener;
 		m_id = _id;
 		m_primitiveType = _primitiveType;
 		m_stage = _stage;
@@ -38,10 +36,5 @@ namespace Menge
 		{
 			m_textures[i] = _textures[i];
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderMaterial::_destroy()
-	{
-		m_listener->onRenderMaterialDestroy( this );
 	}
 }

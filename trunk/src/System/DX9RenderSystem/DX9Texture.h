@@ -15,7 +15,7 @@ namespace Menge
 
     public:
         void initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat );
-
+		
 	public:
 		IDirect3DTexture9 * getDXTextureInterface() const;		
 
@@ -32,7 +32,7 @@ namespace Menge
 	public:
         unsigned char * lock( int* _pitch, const Rect& _rect, bool _readOnly ) override;
 		void unlock() override;
-                		
+		               		
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 

@@ -66,7 +66,18 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::finalize()
-    {        
+    {   
+		for( TMapTextures::iterator
+			it = m_textures.begin(),
+			it_end = m_textures.end();
+		it != it_end;
+		++it )
+		{
+			RenderTextureInterface * texture = m_textures.get_value( it );
+
+			texture->release();
+		}
+
         m_textures.clear();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -124,6 +135,7 @@ namespace Menge
         RenderTexture * texture = m_factoryRenderTexture.createObjectT();
         texture->initialize( m_serviceProvider, image, _width, _height, _channels, id );
 
+#	ifndef MENGE_MASTER_RELEASE
         size_t memroy_size = texture->getMemoryUse();
 
         m_debugInfo.textureMemory += memroy_size;
@@ -136,6 +148,7 @@ namespace Menge
             , memroy_size
             , m_debugInfo.textureMemory
             );
+#	endif
 
         return texture;
     }
@@ -168,6 +181,7 @@ namespace Menge
         RenderTexture * texture = m_factoryRenderTexture.createObjectT();
         texture->initialize( m_serviceProvider, image, _width, _height, _channels, id );
 
+#	ifndef MENGE_MASTER_RELEASE
         size_t memroy_size = texture->getMemoryUse();
 
         m_debugInfo.textureMemory += memroy_size;
@@ -180,6 +194,7 @@ namespace Menge
             , memroy_size
             , m_debugInfo.textureMemory
             );
+#	endif
 
         return texture;
     }
@@ -212,6 +227,7 @@ namespace Menge
         RenderTexture * texture = m_factoryRenderTexture.createObjectT();
         texture->initialize( m_serviceProvider, image, _width, _height, _channels, id );
 
+#	ifndef MENGE_MASTER_RELEASE
         size_t memroy_size = texture->getMemoryUse();
 
         m_debugInfo.textureMemory += memroy_size;
@@ -224,6 +240,7 @@ namespace Menge
             , memroy_size
             , m_debugInfo.textureMemory
             );
+#	endif
 
         return texture;
     }
@@ -503,12 +520,13 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureManager::onRenderTextureRelease_( const RenderTextureInterface * _texture )
+    void RenderTextureManager::onRenderTextureRelease_( RenderTextureInterface * _texture )
     {
         const FilePath & filename = _texture->getFileName();
 
 		m_textures.erase( filename );
 
+#	ifndef MENGE_MASTER_RELEASE
         size_t memroy_size = _texture->getMemoryUse();
 
 		const RenderImageInterfacePtr & image = _texture->getImage(); 
@@ -528,6 +546,9 @@ namespace Menge
             , memroy_size
             , m_debugInfo.textureMemory
             );
+#	endif
+
+		_texture->release();
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )

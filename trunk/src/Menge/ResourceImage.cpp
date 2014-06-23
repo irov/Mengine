@@ -146,4 +146,21 @@ namespace Menge
             m_textureAlpha = nullptr;
         }
     }
+	/////////////////////////////////////////////////////////////////////////
+	size_t ResourceImage::memoryUse() const
+	{
+		size_t memory = ResourceReference::memoryUse();
+
+		if( m_texture != nullptr )
+		{
+			memory += m_texture->getMemoryUse();
+		}
+
+		if( m_textureAlpha != nullptr )
+		{
+			memory += m_textureAlpha->getMemoryUse();
+		}
+
+		return memory;
+	}
 }

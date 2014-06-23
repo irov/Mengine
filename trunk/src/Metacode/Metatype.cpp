@@ -62,7 +62,7 @@ namespace Metabuf
 
 		_value.resize( size );
 
-        ar.readCount( &_value[0], size );
+        ar.readPODs( &_value[0], size );
 	}
 	//////////////////////////////////////////////////////////////////////////
     void archive_read( stdex::memory_reader & ar, Menge::ConstString & _value, void * _userData )
@@ -181,9 +181,16 @@ namespace Metabuf
         uint32_t count;
         ar.readSize(count);
 
-        _value.resize( count );
+		if( count == 0 )
+		{
+			_value.clear();
 
-        ar.readCount( &_value[0], count );
+			return;
+		}
+
+        _value.resize( count );
+		
+        ar.readPODs( &_value[0], count );
     }
 	//////////////////////////////////////////////////////////////////////////
     void archive_read( stdex::memory_reader & ar, mt::vec2f & _value, void * _userData )

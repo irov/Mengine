@@ -132,7 +132,7 @@ namespace Menge
 	bool ResourceImageDefault::_compile()
 	{	
 		const ConstString & category = this->getCategory();
-			
+					
 		if( this->loadImageFrame_( category, m_fileName, m_codecType ) == false )
 		{
 			return false;
@@ -155,5 +155,4 @@ namespace Menge
 		m_wrapU = false;
 		m_wrapV = false;
 	}
-	/////////////////////////////////////////////////////////////////////////
 }

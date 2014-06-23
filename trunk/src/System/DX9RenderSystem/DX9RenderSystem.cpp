@@ -315,9 +315,6 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_pD3D(nullptr)
 		, m_pD3DDevice(nullptr)
-		//, m_syncTemp(nullptr)
-		//, m_syncTempTex(nullptr)
-		, m_screenSurf(nullptr)
 		, m_vbHandleCounter(0)
 		, m_ibHandleCounter(0)
 		, m_currentIB(0)
@@ -756,104 +753,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::screenshot( const RenderImageInterfacePtr & _image, const float * _rect )
 	{	
-		RECT rect;
-
-		if( _rect )
-		{
-			rect.left = (std::max)( 0L, (LONG)_rect[0] );
-			rect.top = (std::max)( 0L, (LONG)_rect[1] );
-			rect.right = std::min<LONG>( m_windowResolution.getWidth(), (LONG)_rect[2] );
-			rect.bottom = std::min<LONG>( m_windowResolution.getHeight(), (LONG)_rect[3] );
-		}
-		else
-		{
-			rect.left = 0;
-			rect.top = 0;
-			rect.right = m_windowResolution.getWidth();
-			rect.bottom = m_windowResolution.getHeight();
-		}
-		
-        DX9TexturePtr dxTexture = stdex::intrusive_static_cast<DX9TexturePtr>( _image );
-		
-		LPDIRECT3DSURFACE9 renderTarget;
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, GetRenderTarget, ( 0, &renderTarget ) )
-		{			
-			return false;
-		}
-
-		if( renderTarget == nullptr )
-		{
-			return false;
-		}
-
-		D3DSURFACE_DESC rtDesc;
-		renderTarget->GetDesc( &rtDesc );
-
-		LPDIRECT3DSURFACE9 offscreenSurface;
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateOffscreenPlainSurface, (rtDesc.Width, rtDesc.Height, rtDesc.Format,  D3DPOOL_SYSTEMMEM, &offscreenSurface, NULL ) )
-		{
-			renderTarget->Release();
-			offscreenSurface->Release();
-
-			return false;
-		}
-
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, GetRenderTargetData, ( renderTarget, offscreenSurface ) )
-		{
-			renderTarget->Release();
-			offscreenSurface->Release();
-
-			return false;
-		}
-				
-		IDirect3DTexture9 * dtext = dxTexture->getDXTextureInterface();
-				
-		D3DSURFACE_DESC desc;
-		IF_DXCALL( m_serviceProvider, dtext, GetLevelDesc, (0, &desc) )
-		{
-			renderTarget->Release();
-			offscreenSurface->Release();
-
-			return false;
-		}
-
-        LPDIRECT3DSURFACE9 dsurf;
-		IF_DXCALL( m_serviceProvider, dtext, GetSurfaceLevel, (0, &dsurf ) )
-		{
-			renderTarget->Release();
-			offscreenSurface->Release();
-
-			return false;
-		}
-
-		RECT dest_rect;
-		dest_rect.top = 0;
-		dest_rect.left = 0;
-		dest_rect.right = rect.right - rect.left;
-		dest_rect.bottom = rect.bottom - rect.top;
-
-		if( (UINT)dest_rect.right > desc.Width )
-		{
-			dest_rect.right = desc.Width;
-		}
-
-		if( (UINT)dest_rect.bottom > desc.Height )
-		{
-			dest_rect.bottom = desc.Height;
-		}
-
-		if( loadSurfaceFromSurface_( dsurf, &dest_rect, offscreenSurface, &rect ) == false )
-		{
-			renderTarget->Release();
-			offscreenSurface->Release();
-
-			return false;
-		}
-
-		renderTarget->Release();
-		offscreenSurface->Release();
-
-		return true;
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
@@ -1240,70 +1140,6 @@ namespace Menge
 	{
 		(void)_renderTarget;
 		(void)_clear;
-  //      if( m_pD3DDevice == nullptr )
-  //      {
-  //          LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setRenderTarget device not created"
-  //              );
-
-  //          return false;
-  //      }
-
-		//HRESULT hr;
-  //      LPDIRECT3DSURFACE9 pDepth = NULL;
-
-		//DX8RenderTexturePtr renderTarget = stdex::intrusive_static_cast<DX8RenderTexturePtr>(_renderTarget);
-		////begin_scene_( m_currentRenderTarget );
-
-		//if( renderTarget != m_curRenderTexture )
-		//{
-		//	LPDIRECT3DSURFACE9 pSurf = NULL;
-
-		//	if( renderTarget != nullptr )
-		//	{
-		//		IDirect3DTexture9 * dxTexture = renderTarget->getDXTextureInterface();
-  //              DXCALL( m_serviceProvider, dxTexture, GetSurfaceLevel, ( 0, &pSurf ) )
-		//		{
-		//			return false;
-		//		}
-
-		//		pDepth = renderTarget->getDepthInterface();
-		//	}
-		//	else
-		//	{
-		//		pSurf = m_screenSurf;
-		//		pDepth = m_screenDepth;
-		//	}
-
-		//	DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderTarget, ( 0, pSurf ) )
-		//	{
-		//		if( renderTarget != NULL )
-		//		{
-		//			pSurf->Release();
-		//		}
-
-		//		return false;
-		//	}
-
-		//	if( renderTarget != NULL )
-		//	{
-		//		pSurf->Release();
-		//	}
-
-		//	m_curRenderTexture = renderTarget;
-		//}
-
-
-  //      if( renderTarget == NULL ) 
-  //      {
-  //          return true;
-  //      }
-
-  //      if( renderTarget->isDirty() && _clear )
-		//{
-		//	this->clear_( 0 );
-
-		//	renderTarget->setDirty( false );
-		//}
 
         return false;
 	}
@@ -1352,10 +1188,10 @@ namespace Menge
         }
 
 		// Store render target
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, GetRenderTarget, ( 0, &m_screenSurf ) )
-		{
-			return false;
-		}
+		//IF_DXCALL( m_serviceProvider, m_pD3DDevice, GetRenderTarget, ( 0, &m_screenSurf ) )
+		//{
+		//	return false;
+		//}
 
 		//hr = m_pD3DDevice->GetDepthStencilSurface(&m_screenDepth);
 		//if( FAILED( hr ) )
@@ -1517,165 +1353,6 @@ namespace Menge
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, ( D3DTS_WORLD, (D3DMATRIX*)_view.buff() ) );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::loadSurfaceFromSurface_( LPDIRECT3DSURFACE9 pDestSurface, CONST RECT * pDestRect,  LPDIRECT3DSURFACE9 pSrcSurface, CONST RECT * pSrcRect )
-	{
-		D3DLOCKED_RECT dstLockedRect;
-		D3DLOCKED_RECT srcLockedRect;
-		RECT dstRect;
-		RECT srcRect;
-		UINT srcWidth = 0, srcHeight = 0, dstWidth = 0, dstHeight = 0;
-
-		D3DSURFACE_DESC dest_desc;
-		IF_DXCALL( m_serviceProvider, pDestSurface, GetDesc, ( &dest_desc ) )
-		{
-			return false;
-		}
-
-		D3DSURFACE_DESC src_desc;
-		IF_DXCALL( m_serviceProvider, pSrcSurface, GetDesc, ( &src_desc ) )
-		{
-			return false;
-		}
-
-		if( pDestRect != nullptr )
-		{
-			dstWidth = pDestRect->right - pDestRect->left;
-			dstHeight = pDestRect->bottom - pDestRect->top;
-			dstRect = *pDestRect;
-		}
-		else
-		{
-			dstWidth = dest_desc.Width;
-			dstHeight = dest_desc.Height;
-			dstRect.left = 0;
-			dstRect.top = 0;
-			dstRect.right = dstWidth;
-			dstRect.bottom = dstHeight;
-		}
-
-		if( pSrcRect != nullptr )
-		{
-			srcWidth = pSrcRect->right - pSrcRect->left;
-			srcHeight = pSrcRect->bottom - pSrcRect->top;
-			srcRect = *pSrcRect;
-		}
-		else
-		{
-			srcWidth = src_desc.Width;
-			srcHeight = src_desc.Height;
-			srcRect.left = 0;
-			srcRect.top = 0;
-			srcRect.right = srcWidth;
-			srcRect.bottom = srcHeight;
-		}
-
-		IF_DXCALL( m_serviceProvider, pDestSurface, LockRect, ( &dstLockedRect, pDestRect, D3DLOCK_DISCARD ) )
-		{
-			return false;
-		}
-
-		IF_DXCALL( m_serviceProvider, pSrcSurface, LockRect, ( &srcLockedRect, pSrcRect, D3DLOCK_READONLY ) )
-		{
-			pDestSurface->UnlockRect();
-
-			return false;
-		}
-
-		if( srcWidth == dstWidth && srcHeight == dstHeight )
-		{
-			unsigned char* srcdata = (unsigned char*)srcLockedRect.pBits;
-			unsigned char* dstdata = (unsigned char*)dstLockedRect.pBits;
-
-			if( src_desc.Format == D3DFMT_R5G6B5 )
-			{
-				for( UINT i = 0; i != srcHeight; ++i )
-				{
-					for( UINT j = 0; j != srcWidth; ++j )
-					{
-						uint16_t color = *reinterpret_cast<uint16_t*>( srcdata + j*2 );
-						uint32_t* dstColor = reinterpret_cast<uint32_t*>( dstdata + j*4 );
-						*dstColor = 0xFF000000 | ((color & 0xF800) << 8) |
-							((color & 0x07E0) << 5) | ((color & 0x001F) << 3);
-					}
-
-					srcdata += srcLockedRect.Pitch;
-					dstdata += dstLockedRect.Pitch;
-				}
-			}
-			else
-			{
-				for( UINT i = 0; i != srcHeight; ++i )
-				{
-					std::copy( srcdata, srcdata + srcWidth * 4, dstdata );
-					srcdata += srcLockedRect.Pitch;
-					dstdata += dstLockedRect.Pitch;
-				}
-			}
-		}
-		else
-		{
-			// resampler
-			// only optimized for 2D
-			// srcdata stays at beginning of slice, pdst is a moving pointer
-			unsigned char* srcdata = (unsigned char*)srcLockedRect.pBits;
-			unsigned char* pdst = (unsigned char*)dstLockedRect.pBits;
-			unsigned int channels = 4;
-			UINT srcRowPitch = srcLockedRect.Pitch / channels;
-			UINT dstRowSkip = dstLockedRect.Pitch / channels - dstWidth;
-			// sx_48,sy_48 represent current position in source
-			// using 16/48-bit fixed precision, incremented by steps
-			uint64_t stepx = ((uint64_t)srcWidth << 48) / dstWidth;
-			uint64_t stepy = ((uint64_t)srcHeight << 48) / dstHeight;
-
-			// bottom 28 bits of temp are 16/12 bit fixed precision, used to
-			// adjust a source coordinate backwards by half a pixel so that the
-			// integer bits represent the first sample (eg, sx1) and the
-			// fractional bits are the blend weight of the second sample
-			uint64_t temp;
-
-			uint64_t sy_48 = (stepy >> 1) - 1;
-			for (unsigned int y = (unsigned int)dstRect.top; y < (unsigned int)dstRect.bottom; y++, sy_48+=stepy )
-			{
-				temp = sy_48 >> 36;
-				temp = (temp > 0x800)? temp - 0x800: 0;
-				uint64_t syf = temp & 0xFFF;
-				unsigned int sy1 = temp >> 12;
-				unsigned int sy2 = (std::min<unsigned int>)(sy1+1, srcRect.bottom-srcRect.top-1);
-				unsigned int syoff1 = sy1 * srcRowPitch;
-				unsigned int syoff2 = sy2 * srcRowPitch;
-
-				uint64_t sx_48 = (stepx >> 1) - 1;
-				for (unsigned int x = (unsigned int)dstRect.left; x < (unsigned int)dstRect.right; x++, sx_48+=stepx)
-				{
-					temp = sx_48 >> 36;
-					temp = (temp > 0x800)? temp - 0x800 : 0;
-					unsigned int sxf = temp & 0xFFF;
-					unsigned int sx1 = temp >> 12;
-					unsigned int sx2 = (std::min<unsigned int>)(sx1+1, srcRect.right-srcRect.left-1);
-
-					unsigned int sxfsyf = sxf*syf;
-					for (unsigned int k = 0; k < channels; k++) 
-					{
-						unsigned int accum =
-							srcdata[(sx1 + syoff1)*channels+k]*(0x1000000-(sxf<<12)-(syf<<12)+sxfsyf) +
-							srcdata[(sx2 + syoff1)*channels+k]*((sxf<<12)-sxfsyf) +
-							srcdata[(sx1 + syoff2)*channels+k]*((syf<<12)-sxfsyf) +
-							srcdata[(sx2 + syoff2)*channels+k]*sxfsyf;
-						// accum is computed using 8/24-bit fixed-point math
-						// (maximum is 0xFF000000; rounding will not cause overflow)
-						*pdst++ = (accum + 0x800000) >> 24;
-					}
-				}
-				pdst += channels*dstRowSkip;
-			}
-		}
-
-		pSrcSurface->UnlockRect();
-		pDestSurface->UnlockRect();
-
-		return S_OK;
-	}
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::releaseResources_()
     {
@@ -1686,13 +1363,6 @@ namespace Menge
 
             return false;
         }
-
-        if( m_screenSurf != nullptr )
-        {
-            m_screenSurf->Release();
-            m_screenSurf = nullptr;
-        }
-        //if(m_screenDepth) m_screenDepth->Release();
 
         if( m_currentIB != 0 )
         {
@@ -1724,7 +1394,8 @@ namespace Menge
 
             if( vb.pVB != nullptr )
             {
-                vb.pVB->Release();
+                ULONG ref = vb.pVB->Release();
+				(void)ref;
                 vb.pVB = nullptr;
             }
         }
@@ -1740,7 +1411,8 @@ namespace Menge
 
             if( ib.pIB != nullptr )
             {
-                ib.pIB->Release();
+                ULONG ref = ib.pIB->Release();
+				(void)ref;
                 ib.pIB = nullptr;
             }
         }
@@ -1843,13 +1515,15 @@ namespace Menge
 
 		if( m_pD3DDevice != nullptr ) 
 		{ 
-			m_pD3DDevice->Release(); 
+			ULONG ref = m_pD3DDevice->Release(); 
+			(void)ref;
 			m_pD3DDevice = nullptr; 
 		}
 
 		if( m_pD3D != nullptr ) 
 		{ 
-			m_pD3D->Release();
+			ULONG ref = m_pD3D->Release();
+			(void)ref;
 			m_pD3D = nullptr; 
 		}
 	}
@@ -1903,9 +1577,10 @@ namespace Menge
             return;
         }
  
-        if( vb->pVB )
+        if( vb->pVB != nullptr )
         {
-            vb->pVB->Release();
+            ULONG ref = vb->pVB->Release();
+			(void)ref;
 			vb->pVB = nullptr;
         }
 
@@ -1960,9 +1635,10 @@ namespace Menge
             return;
         }
         
-        if( info->pIB )
+        if( info->pIB != nullptr )
         {
-            info->pIB->Release();
+            ULONG ref = info->pIB->Release();
+			(void)ref;
 			info->pIB = nullptr;
         }
 
@@ -2776,12 +2452,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
 	{
-		mt::make_projection_ortho_lh_m4( _projectionMatrix, _viewport.begin.x - 0.5f, _viewport.end.x - 0.5f, _viewport.begin.y - 0.5f, _viewport.end.y - 0.5f, _near, _far );
+		mt::make_projection_ortho_lh_m4( _projectionMatrix, _viewport.begin.x - 0.5f, _viewport.end.x - 0.5f, _viewport.begin.y + 0.5f, _viewport.end.y + 0.5f, _near, _far );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
 	{
-		mt::make_projection_frustum_m4( _projectionMatrix, _viewport.begin.x - 0.5f, _viewport.end.x- 0.5f, _viewport.begin.y- 0.5f, _viewport.end.y- 0.5f, _near, _far );
+		mt::make_projection_frustum_m4( _projectionMatrix, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float _zn, float _zf )

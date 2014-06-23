@@ -209,6 +209,7 @@ namespace Menge
 			pybind::decref( cb );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
     namespace
     {
         class PlayerResourceUselessCompile

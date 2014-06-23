@@ -11,7 +11,7 @@ src
 	AstralaxParticleSystem.def
 )
 
-add_definitions(-DMAGIC_3D)
+#add_definitions(-DMAGIC_3D)
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/astralax )
 
@@ -58,12 +58,12 @@ SET( APPLICATION_LIB_PATHS
 if( MINGW )
     SET( APPLICATION_LIBS
     ${APPLICATION_LIBS}
-    ${THIRDPARTY_DIR}/astralax/win/lib/mingw/libmagic3d.a
+    ${THIRDPARTY_DIR}/astralax/win/lib/mingw/libmagic.a
     )
 elseif( WIN32 )
     SET( APPLICATION_LIBS
     ${APPLICATION_LIBS}
-    ${THIRDPARTY_DIR}/astralax/win/lib/microsoft/magic3d.lib
+    ${THIRDPARTY_DIR}/astralax/win/lib/microsoft/magic.lib
     )
 elseif( APPLE )
     IF(${MENGINE_TARGET} STREQUAL "IPAD")

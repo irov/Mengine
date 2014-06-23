@@ -5,14 +5,6 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class RenderMaterial;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderMaterialDestroyListener
-	{
-	public:
-		virtual void onRenderMaterialDestroy( RenderMaterial * _material ) = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
 	class RenderMaterial
 		: public RenderMaterialInterface
 	{
@@ -21,7 +13,7 @@ namespace Menge
 		~RenderMaterial();
 
 	public:
-		void initialize( RenderMaterialDestroyListener * _listener, size_t _id, EPrimitiveType _primitiveType, const RenderStage * _stage );
+		void initialize( size_t _id, EPrimitiveType _primitiveType, const RenderStage * _stage );
 
 	public:
 		void setTexture( size_t _textureCount, const RenderTextureInterfacePtr * _textures );
@@ -36,8 +28,6 @@ namespace Menge
 		inline const RenderStage * getStage() const;
 
 	protected:
-		RenderMaterialDestroyListener * m_listener;
-
 		size_t m_id;
 		EPrimitiveType m_primitiveType;
 
@@ -45,9 +35,6 @@ namespace Menge
 		RenderTextureInterfacePtr m_textures[MENGE_MAX_TEXTURE_STAGES];
 
 		const RenderStage * m_stage;
-
-	protected:
-		void _destroy() override;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline size_t RenderMaterial::getId() const

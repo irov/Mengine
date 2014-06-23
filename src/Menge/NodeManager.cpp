@@ -83,17 +83,17 @@ namespace Menge
             return;
         }
 
-        _homeless->release();
+        //_homeless->release();
 
-		//if( _homeless->hasParent() == true )
-		//{
-		//	Node * parent = _homeless->getParent();
+		if( _homeless->hasParent() == true )
+		{
+			Node * parent = _homeless->getParent();
 
-		//	LOGGER_WARNING(m_serviceProvider)("NodeManager::addHomeless: '%s' have parent '%s'"
-		//		, _homeless->getName().c_str()
-		//		, parent->getName().c_str()
-		//		);
-		//}
+			LOGGER_WARNING(m_serviceProvider)("NodeManager::addHomeless: '%s' have parent '%s'"
+				, _homeless->getName().c_str()
+				, parent->getName().c_str()
+				);
+		}
 
         m_homeless->addChildren( _homeless );
     }

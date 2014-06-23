@@ -35,6 +35,7 @@ namespace Menge
 		const mt::mat4f & getCameraWorldMatrix() const override;
 		const mt::mat4f & getCameraProjectionMatrix() const override;
 		const mt::mat4f & getCameraViewMatrix() const override;
+		const mt::mat4f & getCameraViewMatrixInv() const override;
 
 	public:
 		bool isOrthogonalProjection() const override;
@@ -68,6 +69,7 @@ namespace Menge
 		bool m_widescreenSupport;
 		
 		mutable mt::mat4f m_viewMatrix;
+		mutable mt::mat4f m_viewMatrixInv;
 		mutable mt::mat4f m_projectionMatrix;
 
 		mutable bool m_invalidateProjectionMatrix;
@@ -117,6 +119,16 @@ namespace Menge
 		}
 
 		return m_viewMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & Camera2D::getCameraViewMatrixInv() const
+	{
+		if( m_invalidateMatrix == true )
+		{
+			this->updateMatrix_();
+		}
+
+		return m_viewMatrixInv;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline void Camera2D::invalidateMatrix_()

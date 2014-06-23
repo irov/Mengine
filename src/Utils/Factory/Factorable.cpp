@@ -36,11 +36,13 @@ namespace Menge
         }
 #   endif
 
+#   ifdef _DEBUG
+		m_destroy = true;
+#   endif
+
         this->_destroy();
 
 #   ifdef _DEBUG
-		m_destroy = true;
-
 		this->_checkDestroy();
 #   endif
 

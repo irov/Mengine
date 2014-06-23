@@ -63,7 +63,7 @@ namespace Menge
         const RenderTextureDebugInfo & getDebugInfo() override;
 
 	protected:
-        void onRenderTextureRelease_( const RenderTextureInterface * _texture );
+        void onRenderTextureRelease_( RenderTextureInterface * _texture );
 
     protected:
         bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder );

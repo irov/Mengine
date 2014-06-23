@@ -32,6 +32,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::initialize()
     {
+		m_factoryMaterial.setMethodListener( this, &RenderMaterialManager::onRenderMaterialDestroy_ );
+
         {
             RenderStage rs;
 
@@ -359,7 +361,7 @@ namespace Menge
 		RenderMaterial * material = m_factoryMaterial.createObjectT();
 
 		size_t id = ++m_materialEnumerator;
-		material->initialize( this, id, _primitiveType, stage );
+		material->initialize( id, _primitiveType, stage );
 
 		material->setTexture( _textureCount, _textures );
 		
@@ -368,7 +370,7 @@ namespace Menge
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMaterialManager::onRenderMaterialDestroy( RenderMaterial * _material )
+	void RenderMaterialManager::onRenderMaterialDestroy_( RenderMaterial * _material )
 	{
 		if( _material == nullptr )
 		{

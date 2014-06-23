@@ -14,6 +14,8 @@ namespace Menge
 		m_projectionMatrix = _pm;
 		m_viewMatrix = _vm;
 
+		mt::inv_m4( m_viewMatrixInv, m_viewMatrix );
+
 		m_renderport = _renderport;
 		m_renderTarget = _target;
 

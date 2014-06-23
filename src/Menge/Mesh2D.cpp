@@ -369,10 +369,10 @@ namespace Menge
 
 		for( size_t i = 0; i != m_vertexCount; ++i )
 		{
-			const mt::vec3f & pos = m_shape->pos[i];
+			const mt::vec2f & pos = m_shape->pos[i];
 
 			mt::vec3f & wm_pos = m_verticesWM[i].pos;
-			mt::mul_v3_m4( wm_pos, pos, wm);
+			mt::mul_v3_v2_m4( wm_pos, pos, wm);
 		}
 	}
 }

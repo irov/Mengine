@@ -8,7 +8,6 @@
 #   include "Core/Magic.h"
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
-#   include "Core/Polygon.h"
 
 #   include "Factory/Factorable.h"
 
@@ -19,7 +18,7 @@
 
 namespace Menge
 {
-	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 14);
+	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 24);
 
     struct MovieFrameSource
     {
@@ -66,12 +65,15 @@ namespace Menge
 
 	typedef std::vector<MovieLayerTimeRemap> TVectorMovieLayerTimeRemap;
 
+#	ifndef MENGINE_MOVIE_SHAPE_MAX_VERTEX
 #	define MENGINE_MOVIE_SHAPE_MAX_VERTEX 32
+#	endif
+
 #	define MENGINE_MOVIE_SHAPE_MAX_INDICES ((MENGINE_MOVIE_SHAPE_MAX_VERTEX - 2) * 3)
 
 	struct MovieFrameShape
 	{
-		mt::vec3f pos[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
+		mt::vec2f pos[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
 		mt::vec2f uv[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
 		RenderIndices2D indices[MENGINE_MOVIE_SHAPE_MAX_INDICES];
 
@@ -90,11 +92,16 @@ namespace Menge
 
 	typedef std::vector<MovieLayerShapes> TVectorMovieLayerShapes;
 
+#	ifndef MENGINE_MOVIE_POLYGON_MAX_VERTEX
+#	define MENGINE_MOVIE_POLYGON_MAX_VERTEX 32
+#	endif
+	
 	struct MovieLayerPolygon
 	{
 		uint32_t layerId;
 
-		Polygon polygon;
+		mt::vec2f polygon[MENGINE_MOVIE_POLYGON_MAX_VERTEX];
+		uint8_t vertexCount;
 	};
 
 	typedef std::vector<MovieLayerPolygon> TVectorMovieLayerPolygons;
@@ -113,7 +120,7 @@ namespace Menge
 	public:
 		virtual bool getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const = 0;
 		virtual bool getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const = 0;
-		virtual bool getLayerPolygon( size_t _layerIndex, const Polygon ** _polygon ) const = 0;
+		virtual bool getLayerPolygon( size_t _layerIndex, const mt::vec2f ** _polygon, uint8_t & _vertexCount ) const = 0;
 
 	public:
 		virtual bool isLayerPermanentlyHide( size_t _layerIndex ) const = 0;

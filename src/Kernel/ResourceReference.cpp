@@ -147,8 +147,10 @@ namespace Menge
 	{
 		this->release();
 
+#   ifndef MENGE_MASTER_RELEASE
         NOTIFICATION_SERVICE(m_serviceProvider)
             ->notify( NOTIFICATOR_RESOURCE_RELEASE, this );
+#	endif
 	}
     //////////////////////////////////////////////////////////////////////////
     PyObject * ResourceReference::_embedded()

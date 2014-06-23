@@ -672,11 +672,11 @@ namespace Menge
 				}
 
 				size_t memoryUse = resource->memoryUse();
-				float memoryUseMb = float(memoryUse)/(1024.f*1024.f);
+				float memoryUseMb = float(memoryUse)/(1024.f);
 
-				const ConstString & name = ResourceEntry::key_getter_type()(_entry);
+				const ConstString & name = _entry->resource->getName();
 
-				LOGGER_ERROR(m_serviceProvider)("--> %s : count - %u memory - %f"
+				LOGGER_ERROR(m_serviceProvider)("Resource %s\n: count - %u memory - %f"
 					, name.c_str()
 					, count
 					, memoryUseMb

@@ -19,10 +19,10 @@ namespace Menge
 	struct ConverterMovieLayerFrame
 	{
 		TVectorMovieFrameSource frames;
-		size_t count;
+		uint32_t count;
 
 		MovieFrameSource source;
-		bool immutable;
+		uint8_t immutable;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef std::vector<ConverterMovieLayerFrame> TVectorConverterMovieFrameLayer;
@@ -114,7 +114,7 @@ namespace Menge
 
 		ArchiveWrite aw(_buffer);
 
-		size_t maxIndex = keyFramesPack.get_MaxIndex();
+		uint32_t maxIndex = (uint32_t)keyFramesPack.get_MaxIndex();
 
 		aw << maxIndex;
 
@@ -130,7 +130,7 @@ namespace Menge
 			ConverterMovieLayerFrame & layer = *it;
 
 			layer.count = 0;
-			layer.immutable = false;
+			layer.immutable = 0;
 		}
 
 		const Metacode::Meta_KeyFramesPack::TVectorMeta_KeyFrames2D & includes_frames2d = keyFramesPack.get_IncludesKeyFrames2D();
@@ -150,9 +150,9 @@ namespace Menge
 			bool immutable = false;
 			meta_frames2d.get_Immutable( immutable );
 
-			frameLayer.immutable = immutable;
+			frameLayer.immutable = immutable ? 1 : 0;
 
-			if( frameLayer.immutable == true )
+			if( frameLayer.immutable == 1 )
 			{
 				const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_IncludesKeyFrame2D();
 
@@ -290,7 +290,7 @@ namespace Menge
 			bool immutable = false;
 			meta_frames3d.get_Immutable( immutable );
 
-			frameLayer.immutable = immutable;
+			frameLayer.immutable = immutable ? 1 : 0;
 
 			MovieFrameSource frame;			
 
@@ -316,7 +316,7 @@ namespace Menge
 				frame.volume = 1.f;
 				meta_frame3d.get_Volume( frame.volume );
 
-				if( frameLayer.immutable == false )
+				if( frameLayer.immutable == 0 )
 				{
 					for( size_t i = 0; i != count; ++i )
 					{
@@ -338,18 +338,23 @@ namespace Menge
 		++it )
 		{
 			const ConverterMovieLayerFrame & frame = (*it);
-
-			aw << frame.immutable;
+						
 			aw << frame.count;
+			aw << frame.immutable;
 
 			if( frame.count == 0 )
 			{
 				continue;
 			}
-
-			if( frame.immutable == true )
+			
+			if( frame.immutable == 1 )
 			{
-				aw << frame.source;
+				aw << frame.source.anchorPoint;
+				aw << frame.source.position;
+				aw << frame.source.rotation;
+				aw << frame.source.scale;
+				aw << frame.source.opacity;
+				aw << frame.source.volume;
 			}
 			else
 			{
@@ -359,7 +364,7 @@ namespace Menge
 				{ \
 					Type value = frames[0].Member; \
 					\
-					bool value_immutable = true; \
+					uint8_t value_immutable = 1; \
 					for( size_t i = 1; i != frame.count; ++i ) \
 					{ \
 						const MovieFrameSource & source = frames[i]; \
@@ -369,13 +374,13 @@ namespace Menge
 							continue; \
 						} \
 						\
-						value_immutable = false; \
+						value_immutable = 0; \
 						break; \
 					} \
 					\
 					aw << value_immutable; \
 					\
-					if( value_immutable == true ) \
+					if( value_immutable == 1 ) \
 					{ \
 						aw << value; \
 					} \
@@ -401,10 +406,10 @@ namespace Menge
 			}
 		}
 
-		typedef std::map<uint32_t, MovieLayerTimeRemap> TMapMovieLayerTimeRemap;
-		TMapMovieLayerTimeRemap remaps;
-
 		const Metacode::Meta_KeyFramesPack::TVectorMeta_TimeRemap & includes_timeremaps = keyFramesPack.get_IncludesTimeRemap();
+
+		uint32_t remapsSize = (uint32_t)includes_timeremaps.size();
+		aw << remapsSize;
 
 		for( Metacode::Meta_KeyFramesPack::TVectorMeta_TimeRemap::const_iterator 
 			it = includes_timeremaps.begin(),
@@ -416,40 +421,23 @@ namespace Menge
 
 			size_t layerIndex = meta_timeremap.get_LayerIndex();
 
+			aw << (uint32_t)layerIndex;
+
 			const Floats & floats = meta_timeremap.get_Time();
 
-			remaps[layerIndex - 1].times = floats;
-		}
+			uint32_t floats_size = (uint32_t)floats.size();
+			aw << floats_size;
 
-		uint32_t remapsSize = (uint32_t)remaps.size();
-		aw << remapsSize;
-		
-		for( TMapMovieLayerTimeRemap::const_iterator
-			it = remaps.begin(),
-			it_end = remaps.end();
-		it != it_end;
-		++it )
-		{
-			uint32_t layerId = it->first;
-
-			aw << layerId;
-
-			const MovieLayerTimeRemap & remap = it->second;
-
-			size_t times_size = remap.times.size();
-
-			aw << times_size;
-
-			if( times_size > 0 )
+			if( floats_size > 0 )
 			{
-				aw.writePODs( &remap.times[0], times_size );
+				aw.writePODs( &floats[0], floats_size );
 			}
 		}
 
-		typedef std::map<uint32_t, MovieLayerShapes> TMapMovieLayerShapes;
-		TMapMovieLayerShapes layerShapes;
-
 		const Metacode::Meta_KeyFramesPack::TVectorMeta_ImageShape & includes_imageshapes = keyFramesPack.get_IncludesImageShape();
+
+		uint32_t shapesSize = (uint32_t)includes_imageshapes.size();
+		aw << shapesSize;
 
 		for( Metacode::Meta_KeyFramesPack::TVectorMeta_ImageShape::const_iterator 
 			it = includes_imageshapes.begin(),
@@ -460,10 +448,15 @@ namespace Menge
 			const Metacode::Meta_KeyFramesPack::Meta_ImageShape & meta_imageshape = *it;
 
 			size_t layerIndex = meta_imageshape.get_LayerIndex();
+
+			aw << (uint32_t)layerIndex;
+
 			float width = meta_imageshape.get_Width();
 			float height = meta_imageshape.get_Height();
-			
+
 			const Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape & includes_shapes = meta_imageshape.get_IncludesShape();
+
+			aw << (uint32_t)includes_shapes.size();
 
 			for( Metacode::Meta_KeyFramesPack::Meta_ImageShape::TVectorMeta_Shape::const_iterator
 				it_shape = includes_shapes.begin(),
@@ -475,7 +468,7 @@ namespace Menge
 
 				Menge::Polygon polygon = meta_shape.get_Polygon();
 				boost::geometry::correct( polygon );
-								
+
 				mt::vec2f v0(0.f, 0.f);
 				mt::vec2f v1(width, 0.f);
 				mt::vec2f v2(width, height);
@@ -487,116 +480,83 @@ namespace Menge
 				boost::geometry::append( imagePolygon, v2 );
 				boost::geometry::append( imagePolygon, v3 );
 				boost::geometry::correct( imagePolygon );
-				
+
 				std::deque<Menge::Polygon> output;
 				boost::geometry::intersection( polygon, imagePolygon, output );
-				
-				if( output.empty() == true )
-				{
-					MovieFrameShape shape;
-					shape.vertexCount = 0;
-					shape.indexCount = 0;
-
-					layerShapes[layerIndex - 1].shapes.push_back(shape);
-
-					continue;
-				}
-
-				Menge::Polygon shape_vertex = output[0];
-
-				boost::geometry::correct( shape_vertex );
-
-				size_t shapeVertexCount = boost::geometry::num_points( shape_vertex ) - 1;
-
-				if( shapeVertexCount >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
-				{
-					LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d vertex overflow %d (max %d)"
-						, layerIndex
-						, shapeVertexCount
-						, MENGINE_MOVIE_SHAPE_MAX_VERTEX
-						);
-
-					return false;
-				}
-
-				Menge::TVectorIndices shape_indices;
-
-				if( Menge::triangulate_polygon_indices( shape_vertex, shape_indices ) == false )
-				{
-					LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d invalid triangulate"
-						, layerIndex
-						);
-
-					return false;
-				}
-
-				size_t shapeIndicesCount = shape_indices.size();
-
-				if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
-				{
-					LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d index overflow %d (max $d)"
-						, layerIndex
-						, shapeIndicesCount
-						, MENGINE_MOVIE_SHAPE_MAX_INDICES
-						);
-
-					return false;
-				}
 
 				MovieFrameShape shape;
-				shape.vertexCount = shapeVertexCount;
-				shape.indexCount = shapeIndicesCount;
-
-				for( size_t i = 0; i != shapeVertexCount; ++i )
-				{
-					mt::vec3f & pos = shape.pos[i];
-
-					const mt::vec2f & shape_pos = shape_vertex.outer()[i];
-
-					pos.x = shape_pos.x;
-					pos.y = shape_pos.y;
-					pos.z = 0.f;
-
-					mt::vec2f & uv = shape.uv[i];
-					uv.x = pos.x / width;
-					uv.y = pos.y / height;
+				if( output.empty() == true )
+				{					
+					shape.vertexCount = 0;
+					shape.indexCount = 0;					
 				}
-
-				for( size_t i = 0; i != shapeIndicesCount; ++i )
+				else
 				{
-					RenderIndices2D & indices = shape.indices[i];
+					Menge::Polygon shape_vertex = output[0];
 
-					indices = shape_indices[i];
+					boost::geometry::correct( shape_vertex );
+
+					size_t shapeVertexCount = boost::geometry::num_points( shape_vertex ) - 1;
+
+					if( shapeVertexCount >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
+					{
+						LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d vertex overflow %d (max %d)"
+							, layerIndex
+							, shapeVertexCount
+							, MENGINE_MOVIE_SHAPE_MAX_VERTEX
+							);
+
+						return false;
+					}
+
+					Menge::TVectorIndices shape_indices;
+
+					if( Menge::triangulate_polygon_indices( shape_vertex, shape_indices ) == false )
+					{
+						LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d invalid triangulate"
+							, layerIndex
+							);
+
+						return false;
+					}
+
+					size_t shapeIndicesCount = shape_indices.size();
+
+					if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
+					{
+						LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d index overflow %d (max $d)"
+							, layerIndex
+							, shapeIndicesCount
+							, MENGINE_MOVIE_SHAPE_MAX_INDICES
+							);
+
+						return false;
+					}
+
+					shape.vertexCount = shapeVertexCount;
+					shape.indexCount = shapeIndicesCount;
+
+					for( size_t i = 0; i != shapeVertexCount; ++i )
+					{
+						mt::vec2f & pos = shape.pos[i];
+
+						const mt::vec2f & shape_pos = shape_vertex.outer()[i];
+
+						pos.x = shape_pos.x;
+						pos.y = shape_pos.y;
+
+						mt::vec2f & uv = shape.uv[i];
+						uv.x = pos.x / width;
+						uv.y = pos.y / height;
+					}
+
+					for( size_t i = 0; i != shapeIndicesCount; ++i )
+					{
+						RenderIndices2D & indices = shape.indices[i];
+
+						indices = shape_indices[i];
+					}
 				}
-
-				layerShapes[layerIndex - 1].shapes.push_back(shape);
-			}
-		}
-
-		uint32_t shapesSize = (uint32_t)layerShapes.size();
-		aw << shapesSize;
-
-		for( TMapMovieLayerShapes::const_iterator
-			it = layerShapes.begin(),
-			it_end = layerShapes.end();
-		it != it_end;
-		++it )
-		{
-			uint32_t layerId = it->first;
-			aw << layerId;
-
-			const MovieLayerShapes & layerShape = it->second;
-
-			size_t shapes_size = layerShape.shapes.size();
-			aw << shapes_size;
-
-			for( TVectorMovieFrameShapes::const_iterator
-				it_shape = layerShape.shapes.begin(),
-				it_shape_end = layerShape.shapes.end();
-			it_shape != it_shape_end;
-			++it_shape )
-			{
-				const MovieFrameShape & shape = *it_shape;
 
 				aw << shape.vertexCount;
 
@@ -611,11 +571,11 @@ namespace Menge
 				}
 			}
 		}
-		
-		typedef std::map<uint32_t, MovieLayerPolygon> TMapMovieLayerPolygons;
-		TMapMovieLayerPolygons layerPolygons;
-		
+
 		const Metacode::Meta_KeyFramesPack::TVectorMeta_Polygon & includes_polygons = keyFramesPack.get_IncludesPolygon();
+
+		uint32_t polygonsSize = (uint32_t)includes_polygons.size();
+		aw << polygonsSize;
 
 		for( Metacode::Meta_KeyFramesPack::TVectorMeta_Polygon::const_iterator 
 			it = includes_polygons.begin(),
@@ -626,32 +586,29 @@ namespace Menge
 			const Metacode::Meta_KeyFramesPack::Meta_Polygon & meta_polygon = *it;
 
 			size_t layerIndex = meta_polygon.get_LayerIndex();
+
+			aw << (uint32_t)layerIndex;
+
 			const Menge::Polygon & polygon = meta_polygon.get_Value();
-			
-			layerPolygons[layerIndex - 1].polygon = polygon;
-		}
 
-		uint32_t polygonsSize = (uint32_t)layerPolygons.size();
-		aw << polygonsSize;
+			size_t polygon_size = Menge::polygon_size( polygon );
 
-		for( TMapMovieLayerPolygons::const_iterator
-			it = layerPolygons.begin(),
-			it_end = layerPolygons.end();
-		it != it_end;
-		++it )
-		{
-			uint32_t layerId = it->first;
-			aw << layerId;
+			if( polygon_size >= MENGINE_MOVIE_POLYGON_MAX_VERTEX )
+			{
+				LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d polygon vertex overflow %d (max $d)"
+					, layerIndex
+					, polygon_size
+					, MENGINE_MOVIE_POLYGON_MAX_VERTEX
+					);
 
-			const MovieLayerPolygon & layerPolygon = it->second;
+				return false;
+			}
 
-			size_t polygon_size = Menge::polygon_size( layerPolygon.polygon );
-
-			aw << (uint32_t)polygon_size;
+			aw << (uint8_t)polygon_size;
 
 			if( polygon_size > 0 )
 			{
-				const Polygon::ring_type & countour = layerPolygon.polygon.outer();
+				const Polygon::ring_type & countour = polygon.outer();
 
 				for( size_t i = 0; i != polygon_size; ++i )
 				{

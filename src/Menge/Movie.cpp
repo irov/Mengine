@@ -1757,18 +1757,20 @@ namespace Menge
 
 		const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
-		const Polygon * polygon;
-		framePack->getLayerPolygon( _layer.index, &polygon );
-
-		size_t size = polygon_size( *polygon );
-
-		if( size != 2 )
+		uint8_t vertexCount; 
+		const mt::vec2f * polygon;
+		if( framePack->getLayerPolygon( _layer.index, &polygon, vertexCount ) == false )
 		{
 			return false;
 		}
 
-		const mt::vec2f & begin = polygon_point( *polygon, 0 );
-		const mt::vec2f & end = polygon_point( *polygon, 1 );
+		if( vertexCount != 2 )
+		{
+			return false;
+		}
+
+		const mt::vec2f & begin = polygon[0];
+		const mt::vec2f & end = polygon[1];
 
 		float length = mt::length_v2_v2( begin, end );
 

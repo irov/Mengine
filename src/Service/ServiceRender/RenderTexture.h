@@ -24,6 +24,9 @@ namespace Menge
 			);
 
 	public:
+		void release() override;
+
+	public:
 		const RenderImageInterfacePtr & getImage() const override;
         
 		size_t getId() const override;

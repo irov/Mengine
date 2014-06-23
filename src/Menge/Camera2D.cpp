@@ -11,12 +11,15 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::Camera2D()
 		: m_cameraRevision(1)    	
-		, m_observerChangeWindowResolution(nullptr)
-		, m_invalidateMatrix(true)
-		, m_invalidateProjectionMatrix(true)
+		, m_observerChangeWindowResolution(nullptr)	
 		, m_widescreenSupport(true)
-	{
+		, m_invalidateProjectionMatrix(true)
+		, m_invalidateMatrix(true)
+	{		
 		mt::ident_m4(m_worldMatrix);
+		mt::ident_m4(m_viewMatrix);
+		mt::ident_m4(m_viewMatrixInv);
+		mt::ident_m4(m_projectionMatrix);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera2D::_activate()
@@ -76,6 +79,7 @@ namespace	Menge
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 		
+		m_viewMatrixInv = wm;
 		m_viewMatrix = mt::inv_m4( wm );
 	}
 	//////////////////////////////////////////////////////////////////////////

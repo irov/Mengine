@@ -19,7 +19,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     class RenderMaterialManager
         : public RenderMaterialServiceInterface
-		, public RenderMaterialDestroyListener
     {
     public:
         RenderMaterialManager();
@@ -45,7 +44,7 @@ namespace Menge
 			, const RenderTextureInterfacePtr * _textures ) override;        
 		
 	protected:
-		void onRenderMaterialDestroy( RenderMaterial * _material ) override;
+		void onRenderMaterialDestroy_( RenderMaterial * _material );
 
     protected:
         bool createRenderStageGroup( const ConstString & _name, const RenderStage & _stage );

@@ -50,7 +50,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MovieLayerFrame & MovieFramePack::initializeLayer( size_t _layerIndex, size_t _count, bool _immutable )
 	{
-		MovieLayerFrame & layer = m_layers[_layerIndex - 1];
+		MovieLayerFrame & layer = m_layers[_layerIndex];
 
 		layer.count = _count;
 		layer.immutable = _immutable;
@@ -252,7 +252,7 @@ namespace Menge
 		{
 			const MovieLayerTimeRemap & timeremap = *it;
 
-			if( timeremap.layerId != (_layerIndex - 1) )
+			if( timeremap.layerId != _layerIndex )
 			{
 				continue;
 			}
@@ -277,7 +277,7 @@ namespace Menge
 		{
 			const MovieLayerShapes & shapes = *it;
 
-			if( shapes.layerId != (_layerIndex - 1) )
+			if( shapes.layerId != _layerIndex )
 			{
 				continue;
 			}
@@ -292,7 +292,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MovieFramePack::getLayerPolygon( size_t _layerIndex, const Polygon ** _polygon ) const
+	bool MovieFramePack::getLayerPolygon( size_t _layerIndex, const mt::vec2f ** _polygon, uint8_t & _vertexCount ) const
 	{
 		for( TVectorMovieLayerPolygons::const_iterator
 			it = m_polygons.begin(),
@@ -302,12 +302,13 @@ namespace Menge
 		{
 			const MovieLayerPolygon & polygon = *it;
 
-			if( polygon.layerId != (_layerIndex - 1) )
+			if( polygon.layerId != _layerIndex )
 			{
 				continue;
 			}
 
-			*_polygon = &polygon.polygon;
+			*_polygon = polygon.polygon;
+			_vertexCount = (size_t)polygon.vertexCount;
 
 			return true;
 		}

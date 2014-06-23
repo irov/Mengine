@@ -40,7 +40,7 @@ namespace Menge
     public:
         bool getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const override;
 		bool getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const override;
-		bool getLayerPolygon( size_t _layerIndex, const Polygon ** _polygon ) const override;
+		bool getLayerPolygon( size_t _layerIndex, const mt::vec2f ** _polygon, uint8_t & _vertexCount ) const override;
 
 	public:
 		bool isLayerPermanentlyHide( size_t _layerIndex ) const override;

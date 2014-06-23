@@ -90,6 +90,8 @@ namespace Menge
             NODE_SERVICE(m_serviceProvider)
                 ->addHomeless( this );
 
+			this->release();
+
             return;
         }
 

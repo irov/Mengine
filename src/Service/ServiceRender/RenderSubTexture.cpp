@@ -38,6 +38,11 @@ namespace Menge
         m_uv.z = float(m_hwRect.right) / float(texture_width);
         m_uv.w = float(m_hwRect.bottom) / float(texture_height);
     }
+	///
+	void RenderSubTexture::release()
+	{
+		m_texture = nullptr;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	const RenderImageInterfacePtr & RenderSubTexture::getImage() const
 	{

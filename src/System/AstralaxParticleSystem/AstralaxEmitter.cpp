@@ -47,18 +47,6 @@ namespace Menge
         for( int i = 0; i != m_typesCount; ++i )
         {
             m_factor[i] = Magic_GetDiagramFactor( m_emitterId, i, MAGIC_DIAGRAM_NUMBER );
-
-			Magic_LockParticlesType( m_emitterId, i );
-
-			MAGIC_ORIENTATION orientation;
-			orientation.orientation = MAGIC_ORIENTATION_Z;
-			orientation.x = 0.f;
-			orientation.y = 0.f;
-			orientation.z = 0.f;
-
-			Magic_SetOrientation( &orientation );
-
-			Magic_UnlockParticlesType();
         }
 
         Magic_SetRandomMode( m_emitterId, false );
@@ -72,7 +60,7 @@ namespace Menge
         m_rate = Magic_GetUpdateTime( m_emitterId );
 
         if( this->setupBasePosition_() == false )
-        {
+        { 
             return false;
         }
                
@@ -122,16 +110,16 @@ namespace Menge
             MAGIC_POSITION pos;
             Magic_GetEmitterPosition( m_emitterId, &pos );
 
-            MAGIC_POSITION adapt_pos;
-            adapt_pos.x = pos.x - (float)rect.left;
-            adapt_pos.y = pos.y - (float)rect.top;
-			adapt_pos.z = pos.z;
+			MAGIC_POSITION adapt_pos;
+			adapt_pos.x = pos.x - (float)rect.left;
+			adapt_pos.y = pos.y - (float)rect.top;
+			//adapt_pos.z = pos.z;
 
-            Magic_SetEmitterPosition( m_emitterId, &adapt_pos );
+			Magic_SetEmitterPosition( m_emitterId, &adapt_pos );
 
-            m_basePosition.x = adapt_pos.x;
-            m_basePosition.y = adapt_pos.y;
-            m_basePosition.z = adapt_pos.z;
+			m_basePosition.x = adapt_pos.x;
+			m_basePosition.y = adapt_pos.y;
+			m_basePosition.z = 0.f;
 
 			m_background = true;
         }
@@ -419,7 +407,6 @@ namespace Menge
 		MAGIC_POSITION pos;
 		pos.x = _pos.x;
 		pos.y = _pos.y;
-        pos.z = _pos.z;
 
 		Magic_SetEmitterPosition( m_emitterId, &pos );
 	}  
@@ -431,7 +418,7 @@ namespace Menge
 
 		_pos.x = pos.x;
 		_pos.y = pos.y;
-        _pos.z = pos.z;
+		_pos.z = 0.f;
 	}
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::getBasePosition( mt::vec3f & _pos )
@@ -580,19 +567,19 @@ namespace Menge
 
 			rp.v[0].x = vertexes.vertex1.x;
 			rp.v[0].y = vertexes.vertex1.y;
-			rp.v[0].z = vertexes.vertex1.z; 
+			rp.v[0].z = 0.f; 
 
 			rp.v[1].x = vertexes.vertex2.x;
 			rp.v[1].y = vertexes.vertex2.y;
-			rp.v[1].z = vertexes.vertex2.z;
+			rp.v[1].z = 0.f;
 
 			rp.v[2].x = vertexes.vertex3.x;
 			rp.v[2].y = vertexes.vertex3.y;
-			rp.v[2].z = vertexes.vertex3.z;
+			rp.v[2].z = 0.f;
 
 			rp.v[3].x = vertexes.vertex4.x;
 			rp.v[3].y = vertexes.vertex4.y;
-			rp.v[3].z = vertexes.vertex4.z;
+			rp.v[3].z = 0.f;
 
 			rp.uv[0].x = vertexes.u1;
 			rp.uv[0].y = vertexes.v1;

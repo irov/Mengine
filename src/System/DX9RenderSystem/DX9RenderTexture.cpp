@@ -13,7 +13,9 @@ namespace Menge
 	{
         if( m_depthInterface != nullptr )
         {
-            m_depthInterface->Release();
+            ULONG ref = m_depthInterface->Release();
+			(void)ref;
+
             m_depthInterface = nullptr;
         }
 	}

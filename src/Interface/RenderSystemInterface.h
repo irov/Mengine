@@ -192,6 +192,9 @@ namespace Menge
 		: public FactorablePtr
 	{
 	public:
+		virtual void release() = 0;
+
+	public:
 		virtual const RenderImageInterfacePtr & getImage() const = 0;
 
 		virtual size_t getId() const = 0;
@@ -385,6 +388,7 @@ namespace Menge
 		virtual const mt::mat4f & getCameraWorldMatrix() const = 0;
 		virtual const mt::mat4f & getCameraProjectionMatrix() const = 0;
 		virtual const mt::mat4f & getCameraViewMatrix() const = 0;
+		virtual const mt::mat4f & getCameraViewMatrixInv() const = 0;
 
 	public:
 		virtual const Viewport & getCameraRenderport() const = 0;

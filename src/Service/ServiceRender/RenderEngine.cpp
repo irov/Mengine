@@ -914,14 +914,11 @@ namespace Menge
 
 		const Viewport & rp = pass.camera->getCameraRenderport();
 
-		const mt::mat4f & vm = pass.camera->getCameraViewMatrix();
-
-		mt::mat4f inv_vm;
-		mt::inv_m4( inv_vm, vm );
+		const mt::mat4f & vm_inv = pass.camera->getCameraViewMatrixInv();
 
 		Viewport rp_vm;
-		mt::mul_v2_m4( rp_vm.begin, rp.begin, inv_vm );
-		mt::mul_v2_m4( rp_vm.end, rp.end, inv_vm );
+		mt::mul_v2_m4( rp_vm.begin, rp.begin, vm_inv );
+		mt::mul_v2_m4( rp_vm.end, rp.end, vm_inv );
 
 		mt::box2f bb_vp;
 		rp_vm.toBBox(bb_vp);

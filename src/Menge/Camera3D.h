@@ -41,6 +41,7 @@ namespace Menge
 		const mt::mat4f & getCameraWorldMatrix() const override;
 		const mt::mat4f & getCameraProjectionMatrix() const override;
 		const mt::mat4f & getCameraViewMatrix() const override;
+		const mt::mat4f & getCameraViewMatrixInv() const override;
 
 	public:
 		bool isOrthogonalProjection() const override;
@@ -74,8 +75,9 @@ namespace Menge
 
 		mt::mat4f m_worldMatrix;
 
-		mutable mt::mat4f m_viewMatrixWM;
-		mutable mt::mat4f m_projectionMatrixWM;
+		mutable mt::mat4f m_viewMatrix;
+		mutable mt::mat4f m_viewMatrixInv;
+		mutable mt::mat4f m_projectionMatrix;
 		
 		mutable bool m_invalidateMatrix;
 	};
@@ -102,7 +104,7 @@ namespace Menge
 			this->updateMatrix_();
 		}
 
-		return m_projectionMatrixWM;
+		return m_projectionMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & Camera3D::getCameraViewMatrix() const
@@ -112,7 +114,17 @@ namespace Menge
 			this->updateMatrix_();
 		}
 
-		return m_viewMatrixWM;
+		return m_viewMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & Camera3D::getCameraViewMatrixInv() const
+	{
+		if( m_invalidateMatrix == true )
+		{
+			this->updateMatrix_();
+		}
+
+		return m_viewMatrixInv;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Camera3D::isOrthogonalProjection() const

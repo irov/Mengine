@@ -62,8 +62,8 @@ SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
 
 SERVICE_EXTERN(ParticleSystem, Menge::ParticleSystemInterface);
 SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
-SERVICE_EXTERN(ParticleSystem2, Menge::ParticleSystemInterface2);
-SERVICE_EXTERN(ParticleService2, Menge::ParticleServiceInterface2);
+//SERVICE_EXTERN(ParticleSystem2, Menge::ParticleSystemInterface2);
+//SERVICE_EXTERN(ParticleService2, Menge::ParticleServiceInterface2);
 
 SERVICE_EXTERN(RenderSystem, Menge::RenderSystemInterface);
 SERVICE_EXTERN(RenderService, Menge::RenderServiceInterface);
@@ -797,49 +797,49 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeParticleEngine2_()
 	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service 2..." );
+		//LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service 2..." );
 
-		ParticleSystemInterface2 * particleSystem;
-		if( SERVICE_CREATE( ParticleSystem2, &particleSystem ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeParticleEngine2_ Failed to initialize ParticleSystem2"
-				);
+		//ParticleSystemInterface2 * particleSystem;
+		//if( SERVICE_CREATE( ParticleSystem2, &particleSystem ) == false )
+		//{
+		//	LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeParticleEngine2_ Failed to initialize ParticleSystem2"
+		//		);
 
-			return false;
-		}
+		//	return false;
+		//}
 
-		if( particleSystem->initialize() == false )
-		{
-			return false;
-		}
+		//if( particleSystem->initialize() == false )
+		//{
+		//	return false;
+		//}
 
-		if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
-		{
-			return false;
-		}
+		//if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
+		//{
+		//	return false;
+		//}
 
-		m_particleSystem2 = particleSystem;
+		//m_particleSystem2 = particleSystem;
 
-		ParticleServiceInterface2 * particleService;
-		if( SERVICE_CREATE( ParticleService2, &particleService ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeParticleEngine2_ Failed to initialize ParticleService2"
-				);
+		//ParticleServiceInterface2 * particleService;
+		//if( SERVICE_CREATE( ParticleService2, &particleService ) == false )
+		//{
+		//	LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeParticleEngine2_ Failed to initialize ParticleService2"
+		//		);
 
-			return false;
-		}
+		//	return false;
+		//}
 
-		if( particleService->initialize() == false )
-		{
-			return false;
-		}
+		//if( particleService->initialize() == false )
+		//{
+		//	return false;
+		//}
 
-		if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
-		{
-			return false;
-		}
+		//if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
+		//{
+		//	return false;
+		//}
 
-		m_particleService2 = particleService;
+		//m_particleService2 = particleService;
 
 		return true;
 	}
@@ -2099,17 +2099,17 @@ namespace Menge
 			m_particleSystem = nullptr;
 		}
 
-		if( m_particleService2 != nullptr )
-		{
-			SERVICE_DESTROY( ParticleService2, m_particleService2 );
-			m_particleService2 = nullptr;
-		}
+		//if( m_particleService2 != nullptr )
+		//{
+		//	SERVICE_DESTROY( ParticleService2, m_particleService2 );
+		//	m_particleService2 = nullptr;
+		//}
 
-		if( m_particleSystem2 != nullptr )
-		{            
-			SERVICE_DESTROY( ParticleSystem2, m_particleSystem2 );
-			m_particleSystem2 = nullptr;
-		}
+		//if( m_particleSystem2 != nullptr )
+		//{            
+		//	SERVICE_DESTROY( ParticleSystem2, m_particleSystem2 );
+		//	m_particleSystem2 = nullptr;
+		//}
 
 		SERVICE_DESTROY( PhysicSystem, m_physicSystem );
 		m_physicSystem = nullptr;

@@ -90,11 +90,7 @@ namespace Menge
         this->release();
 
         this->destroyAllChild();
-
-		if( m_parent != nullptr )
-		{
-			m_parent->removeChildren_( this );
-		}
+		this->removeFromParent();
 
         this->unwrap();
 	}

@@ -434,13 +434,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::removeChildren( Node * _node )
 	{
-		Node * parent = _node->getParent();
-
-		if( parent != this )
-		{
-			return false;
-		}
-
 #	ifdef _DEBUG
 		if( stdex::intrusive_has( m_child.begin(), m_child.end(), _node ) == false )
         {
@@ -454,6 +447,14 @@ namespace Menge
 #	endif
 
         _node->deactivate();
+
+		//check if deactivate remove from parent!
+		Node * parent = _node->getParent();
+
+		if( parent != this )
+		{
+			return false;
+		}
 
         this->removeChildren_( _node );
 		

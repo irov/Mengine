@@ -89,7 +89,7 @@ namespace Menge
 			m_firstFrameUpdated = true;
 			m_needUpdate = true;
 			
-			this->sync_( totalTiming );			
+			this->sync_( totalTiming );	
 		}
 		else
 		{
@@ -282,6 +282,17 @@ namespace Menge
 	void Video::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
 		Node::_render( _viewport, _camera );
+
+		if( m_firstFrameUpdated == false )
+		{
+			if( this->syncFirstFrame_() == false )
+			{
+				return;
+			}
+
+			m_firstFrameUpdated = true;
+			m_needUpdate = true;
+		}
 
 		if( m_needUpdate == true )
 		{

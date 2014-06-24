@@ -92,5 +92,6 @@ namespace Menge
 
     bool polygon_to_box2f( mt::box2f & _box2f, const Polygon & _polygon );
 	size_t polygon_size( const Polygon & _polygon );
+	const mt::vec2f * polygon_points( const Polygon & _polygon );
 	const mt::vec2f & polygon_point( const Polygon & _polygon, size_t _index );
 }

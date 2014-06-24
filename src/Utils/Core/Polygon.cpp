@@ -351,6 +351,16 @@ namespace Menge
 		return size;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f * polygon_points( const Polygon & _polygon )
+	{
+		const Polygon::ring_type & ring = _polygon.outer();
+
+		const mt::vec2f * point = &ring[0];
+
+		return point;
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & polygon_point( const Polygon & _polygon, size_t _index )
 	{
 		const Polygon::ring_type & ring = _polygon.outer();

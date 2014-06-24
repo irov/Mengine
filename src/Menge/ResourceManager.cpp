@@ -249,12 +249,6 @@ namespace Menge
 			}
 
 		public:
-			bool isSuccessful() const
-			{
-				return m_successful;
-			}
-
-		public:
 			void operator () ( ResourceEntry * _entry )
 			{
 				const ResourceReference * resource = _entry->resource;

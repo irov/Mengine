@@ -338,9 +338,47 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static uint32_t crop( uint32_t _value, uint32_t _min, uint32_t _max )
+	{
+		if( _value < _min )
+		{
+			return _min;
+		}
+		
+		if( _value > _max )
+		{
+			return _max;
+		}
+
+		return _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool pnpoly( size_t nvert, const mt::vec2f * vert, float testx, float testy )
+	{
+		bool c = false;
+
+		for( size_t i = 0, j = nvert - 1; i < nvert; j = i++ )
+		{
+			float vertix = vert[i].x;
+			float vertiy = vert[i].y;
+			float vertjx = vert[j].x;
+			float vertjy = vert[j].y;
+
+			if( ( (vertiy > testy) != (vertjy > testy) ) &&
+				( testx < (vertjx - vertix) * (testy-vertiy) / (vertjy - vertiy) + vertix) )
+			{
+				c = !c;
+			}
+		}
+
+		return c;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::obstacleCellMask_( Obstacle * _obstacle, uint32_t _mask )
 	{
 		const Polygon & polygon = _obstacle->bigHole;
+
+		size_t vertex_count = polygon_size( polygon );
 
 		const mt::vec2f & minp = _obstacle->bigMinHole;
 		const mt::vec2f & maxp = _obstacle->bigMaxHole;
@@ -354,18 +392,27 @@ namespace Menge
 		uint32_t map_end_i = (uint32_t)(maxp.x / m_gridSize);
 		uint32_t map_end_j = (uint32_t)(maxp.y / m_gridSize);
 
-		map_end_i = map_end_i > map_width ? map_width : map_end_i;
-		map_begin_j = map_begin_j > map_height ? map_height : map_begin_j;
+		uint32_t map_begin_i_crop = crop(map_begin_i, 0, map_width);
+		uint32_t map_begin_j_crop = crop(map_begin_j, 0, map_height);
+		uint32_t map_end_i_crop = crop(map_end_i, 0, map_width);
+		uint32_t map_end_j_crop = crop(map_end_j, 0, map_height);
 
-		for( uint32_t j = map_begin_j; j != map_end_j; ++j )
+		for( uint32_t j = map_begin_j_crop; j != map_end_j_crop; ++j )
 		{
-			for( uint32_t i = map_begin_i; i != map_end_i; ++i )
+			for( uint32_t i = map_begin_i_crop; i != map_end_i_crop; ++i )
 			{
 				float x = (i * m_gridSize) + m_gridSize * 0.5f;
 				float y = (j * m_gridSize) + m_gridSize * 0.5f;
 
-				GeometryPoint point(x, y);
-				if( boost::geometry::intersects( polygon, point ) == false )
+				//GeometryPoint point(x, y);
+				//if( boost::geometry::intersects( polygon, point ) == false )
+				//{
+				//	continue;
+				//}
+
+				const mt::vec2f * points = polygon_points( polygon );
+
+				if( pnpoly( vertex_count, points, x, y ) == false )
 				{
 					continue;
 				}

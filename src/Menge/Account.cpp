@@ -429,7 +429,7 @@ namespace Menge
         uint32_t data_size = _data.size();
 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( m_archivator, &_data[0], data_size );
+			->compressBuffer( m_archivator, &_data[0], data_size );
         
         if( compress_memory == nullptr )
         {

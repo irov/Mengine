@@ -27,8 +27,11 @@ namespace Menge
 		ArchivatorInterfacePtr getArchivator( const ConstString & _type ) const override;
 
 	public:
-		bool decompress( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress ) override;
-		MemoryInputPtr compress( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size ) override;
+		bool decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress ) override;
+		MemoryInputPtr compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream ) override;
+			
+	public:
+		MemoryInputPtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size ) override;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

@@ -84,7 +84,7 @@ namespace Menge
 	{	        	
         size_t decompressSize;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->decompress( m_archivator, m_stream, m_mipmapcompresssize, _buffer, _bufferSize, decompressSize ) == false )
+            ->decompressStream( m_archivator, m_stream, m_mipmapcompresssize, _buffer, _bufferSize, decompressSize ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid uncompress"
                 );

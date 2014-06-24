@@ -50,7 +50,7 @@ namespace Menge
 		m_stream->write( &dataInfo->mipmapsize, sizeof(dataInfo->mipmapsize) );
                 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-            ->compress( m_archivator, _buffer, dataInfo->mipmapsize );
+            ->compressBuffer( m_archivator, _buffer, dataInfo->mipmapsize );
 
 		if( compress_memory == nullptr )
         {

@@ -72,7 +72,7 @@ namespace Menge
         input->read( data_memory, data_size );
 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( m_archivator, data_memory, data_size );
+			->compressBuffer( m_archivator, data_memory, data_size );
 
         if( compress_memory == 0 )
         {

@@ -58,6 +58,7 @@ namespace Menge
 
     public:
         void visitTexture( VisitorRenderTextureInterface * _visitor ) const override;
+		size_t getImageMemoryUse( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) const override;
 
     public:
         const RenderTextureDebugInfo & getDebugInfo() override;

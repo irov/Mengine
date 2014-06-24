@@ -870,7 +870,7 @@ namespace Menge
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
             ->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
-			
+					
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -50,7 +50,10 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 
-	private:		
+	protected:
+		bool _isValid() const override;
+
+	protected:		
 		TVectorAnimationSequence m_sequence;
 
 		float m_duration;

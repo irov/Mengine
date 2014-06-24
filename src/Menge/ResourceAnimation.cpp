@@ -2,6 +2,7 @@
 #	include "Kernel/ResourceImplement.h"
 
 #	include "ResourceImage.h"
+#	include "ResourceImageDefault.h"
 
 #   include "Interface/ResourceInterface.h"
 
@@ -98,6 +99,134 @@ namespace Menge
 			sequence.resource->decrementReference();
 			sequence.resource = nullptr;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceAnimation::_isValid() const
+	{
+		size_t total_memory = 0;
+
+		for( TVectorAnimationSequence::const_iterator
+			it = m_sequence.begin(),
+			it_end = m_sequence.end();
+		it != it_end;
+		++it )
+		{
+			const AnimationSequence & sequence = *(it);
+
+			ResourceReference * resource;
+			if( RESOURCE_SERVICE(m_serviceProvider)
+				->hasResource( sequence.resourceName, &resource ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid: '%s' not found image resource '%s'"
+					, this->getName().c_str()
+					, sequence.resourceName.c_str() 
+					);
+
+				return false;
+			}
+
+			ResourceImage * resourceImage = dynamic_cast<ResourceImage *>(resource);
+
+			if( resourceImage == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid: '%s' resource '%s' not ResourceImage '%s'"
+					, this->getName().c_str()
+					, sequence.resourceName.c_str() 
+					, resource->getType().c_str()
+					);
+
+				return false;
+			}
+
+			ResourceImageDefault * resourceImageDefault = dynamic_cast<ResourceImageDefault *>(resourceImage);
+
+			if( resourceImageDefault != nullptr )
+			{
+				const ConstString & fileName = resourceImageDefault->getFileName();
+
+				const ConstString & category = resourceImageDefault->getCategory();
+
+				bool exist = FILE_SERVICE(m_serviceProvider)
+					->existFile( category, fileName, nullptr );
+
+				if( exist == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid %s not exist file %s:%s"
+						, m_name.c_str()
+						, category.c_str()
+						, fileName.c_str()
+						);
+
+					return false;
+				}
+
+				InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+					->openInputFile( category, fileName );
+
+				if( stream == nullptr )
+				{
+					LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid %s invalid open file %s:%s"
+						, m_name.c_str()
+						, category.c_str()
+						, fileName.c_str()
+						);
+
+					return false;
+				}
+
+				const ConstString & codecType = resourceImageDefault->getCodecType();
+
+				ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
+					->createDecoderT<ImageDecoderInterfacePtr>( codecType );
+
+				if( imageDecoder == nullptr )
+				{
+					LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid %s file %s:%s invalid decoder %s"
+						, m_name.c_str()
+						, category.c_str()
+						, fileName.c_str()
+						, codecType.c_str()
+						);
+
+					return false;
+				}
+
+				if( imageDecoder->prepareData( stream ) == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid %s file %s:%s decoder initialize failed %s"
+						, m_name.c_str()
+						, category.c_str()
+						, fileName.c_str()
+						, codecType.c_str()
+						);
+
+					return false;
+				}
+
+				const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
+				
+				size_t texture_memory = RENDERTEXTURE_SERVICE(m_serviceProvider)
+					->getImageMemoryUse( dataInfo->width, dataInfo->height, dataInfo->channels, dataInfo->format );
+
+				total_memory += texture_memory;						
+			}
+		}
+
+		size_t max_memory = 4 * 1024 * 1024;
+
+		if( total_memory > max_memory )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid: '%s' overflow %.2fmb max video memory %.2fmb (coeff %f)"
+				, this->getName().c_str()
+				, float(total_memory) / (1024.f * 1024.f)
+				, float(max_memory) / (1024.f * 1024.f)
+				, float(total_memory) / float(max_memory)
+				);
+
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ResourceAnimation::getSequenceCount() const

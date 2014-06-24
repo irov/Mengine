@@ -186,7 +186,7 @@ namespace Menge
 		
         size_t uncompress_size = 0;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( m_archivator, _stream, compress_size, binary_memory, bin_size, uncompress_size ) == false )
+			->decompressStream( m_archivator, _stream, compress_size, binary_memory, bin_size, uncompress_size ) == false )
         {
 			if( _reimport == nullptr )
 			{

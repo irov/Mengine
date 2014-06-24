@@ -15,18 +15,6 @@ SERVICE_FACTORY( RenderTextureManager, Menge::RenderTextureServiceInterface, Men
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    static uint32_t s_firstPOW2From( uint32_t n )
-    {
-        --n;            
-        n |= n >> 16;
-        n |= n >> 8;
-        n |= n >> 4;
-        n |= n >> 2;
-        n |= n >> 1;
-        ++n;
-        return n;
-    }
-    //////////////////////////////////////////////////////////////////////////
     RenderTextureManager::RenderTextureManager()
         : m_serviceProvider(nullptr)
         , m_textureEnumerator(0)
@@ -475,13 +463,27 @@ namespace Menge
 
 		return texture;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t RenderTextureManager::getImageMemoryUse( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) const
+	{
+		size_t HWWidth = _width;
+		size_t HWHeight = _height;
+		size_t HWChannels = _channels;
+		PixelFormat HWFormat = _format;
+
+		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWFormat );
+
+		size_t memoryUse = Helper::getTextureMemorySize( HWWidth, HWHeight, 1, HWFormat );
+
+		return memoryUse;
+	}
 	//////////////////////////////////////////////////////////////////////////	
 	void RenderTextureManager::updateImageParams_( size_t & _width, size_t & _height, size_t & _channels, PixelFormat & _format ) const
 	{
 		if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
 		{
-			_width = s_firstPOW2From( _width );
-			_height = s_firstPOW2From( _height );
+			_width = Helper::getTexturePOW2( _width );
+			_height = Helper::getTexturePOW2( _height );
 		}
 
 		switch( _format )

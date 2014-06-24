@@ -104,7 +104,7 @@ namespace Menge
 
         size_t uncompress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-			->decompress( m_archivator, _stream, compress_size, code_memory, code_size, uncompress_size ) == false )
+			->decompressStream( m_archivator, _stream, compress_size, code_memory, code_size, uncompress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ScriptModuleLoaderCode::unmarshal_code_ %s uncompress failed"
 				, pybind::string_to_char( _module )

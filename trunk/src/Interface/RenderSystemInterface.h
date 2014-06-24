@@ -299,7 +299,7 @@ namespace Menge
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERMATERIAL_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::RenderMaterialServiceInterface)
+    ((Menge::RenderMaterialServiceInterface*)SERVICE_GET(serviceProvider, Menge::RenderMaterialServiceInterface))
     //////////////////////////////////////////////////////////////////////////
     const int VDECL_XYZ = 0x002;
     const int VDECL_XYZRHW = 0x004;
@@ -357,6 +357,9 @@ namespace Menge
         
         virtual bool hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const = 0;
 
+	public:
+		virtual size_t getImageMemoryUse( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) const = 0;
+
     public:
         //virtual void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
         virtual void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
@@ -374,7 +377,7 @@ namespace Menge
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERTEXTURE_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::RenderTextureServiceInterface)
+    ((Menge::RenderTextureServiceInterface*)SERVICE_GET(serviceProvider, Menge::RenderTextureServiceInterface))
 	//////////////////////////////////////////////////////////////////////////
 	class RenderViewportInterface
 	{
@@ -529,7 +532,7 @@ namespace Menge
 	};
 
 #   define RENDER_SYSTEM( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::RenderSystemInterface)
+    ((Menge::RenderSystemInterface*)SERVICE_GET(serviceProvider, Menge::RenderSystemInterface))
 
     struct RenderDebugInfo
     {

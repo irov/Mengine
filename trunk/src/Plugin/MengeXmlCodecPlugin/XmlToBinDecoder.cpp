@@ -231,7 +231,7 @@ namespace Menge
 		}
 
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( m_archivator, &bin_buf[0], bin_size );
+			->compressBuffer( m_archivator, &bin_buf[0], bin_size );
 
         OutputStreamInterfacePtr bin_stream = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( CONST_STRING_LOCAL(m_serviceProvider, "dev"), m_options.pathBin );

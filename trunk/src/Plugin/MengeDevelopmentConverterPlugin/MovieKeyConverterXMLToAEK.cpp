@@ -627,7 +627,7 @@ namespace Menge
 		uint32_t binary_aek_size = _buffer.size();
 		
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compress( m_archivator, &_buffer[0], binary_aek_size );
+			->compressBuffer( m_archivator, &_buffer[0], binary_aek_size );
 
 		if( compress_memory == nullptr)
 		{

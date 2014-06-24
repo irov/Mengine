@@ -69,9 +69,9 @@ namespace Menge
 		return archivator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ArchiveService::decompress( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
+	bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
 	{
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, _size, "ArchiveService::decomress");
+		CacheMemoryBuffer compress_buffer(m_serviceProvider, _size, "ArchiveService::decompressStream");
 		void * compress_memory = compress_buffer.getMemory();
 
 		size_t read_memory = _stream->read( compress_memory, _size );
@@ -100,7 +100,21 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInputPtr ArchiveService::compress( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size )
+	MemoryInputPtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream )
+	{
+		size_t stream_size = _stream->size();
+
+		CacheMemoryBuffer binary_buffer(m_serviceProvider, stream_size, "ArchiveService::compressStream");
+		void * binary_memory = binary_buffer.getMemory();
+
+		_stream->read( binary_memory, stream_size );
+
+		MemoryInputPtr compress_memory = this->compressBuffer( _archivator, binary_memory, stream_size );
+
+		return compress_memory;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MemoryInputPtr ArchiveService::compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size )
 	{
 		size_t compressSize2 = _archivator->compressBound( _size );
 

@@ -42,11 +42,11 @@ namespace Menge
 		m_to = _to;
 		m_gridSize = _gridSize;
 
-		uint32_t fx = _from.x / m_gridSize;
-		uint32_t fy = _from.y / m_gridSize;
+		uint32_t fx = _from.x / m_gridSize + m_gridSize * 0.5f;
+		uint32_t fy = _from.y / m_gridSize + m_gridSize * 0.5f;
 
-		uint32_t tx = _to.x / m_gridSize;
-		uint32_t ty = _to.y / m_gridSize;
+		uint32_t tx = _to.x / m_gridSize + m_gridSize * 0.5f;
+		uint32_t ty = _to.y / m_gridSize + m_gridSize * 0.5f;
 
 		if( m_pathfinder.findPathFirst( fx, fy, tx, ty ) == false )
 		{

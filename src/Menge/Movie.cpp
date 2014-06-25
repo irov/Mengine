@@ -1452,10 +1452,10 @@ namespace Menge
 
         layer_sprite->setName( _layer.name );
 
-		const ColourValue& color = resource->getColor();
+		const ColourValue & color = resource->getColor();
 		layer_sprite->setLocalColor( color );
 
-		const mt::vec2f& size = resource->getSize();
+		const mt::vec2f & size = resource->getSize();
 		layer_sprite->setCustomSize( size );
 
         if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )

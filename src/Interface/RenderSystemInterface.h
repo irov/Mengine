@@ -255,7 +255,16 @@ namespace Menge
     };
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderStage
-	{		
+	{	
+		RenderStage()
+			: blendSrc(BF_SOURCE_ALPHA)
+			, blendDst(BF_ONE_MINUS_SOURCE_ALPHA)
+			, depthBufferWriteEnable(false)
+			, alphaTestEnable(false)
+			, alphaBlendEnable(false)
+		{
+		}
+
 		RenderTextureStage textureStage[MENGE_MAX_TEXTURE_STAGES];
 
 		EBlendFactor blendSrc;

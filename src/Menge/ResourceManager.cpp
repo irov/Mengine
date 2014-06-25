@@ -71,11 +71,6 @@ namespace Menge
 						, resource->getName().c_str()
 						, refcount
 						);
-
-					while( refcount != 0 )
-					{
-						refcount = resource->decrementReference();
-					}
 				}
 #   endif
 

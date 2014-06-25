@@ -50,6 +50,12 @@ namespace Menge
 
 	struct ResourcePackDesc
 	{
+		ResourcePackDesc()
+			: dev(false)
+			, preload(true)
+		{
+		}
+
         ConstString name;
 		ConstString type;
 

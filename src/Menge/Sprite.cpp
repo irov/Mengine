@@ -17,14 +17,14 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
-		: m_material(nullptr)
-		, m_disableTextureColor(false)
-		, m_texturesNum(0)
+		: m_isCustomSize(false)
+		, m_customSize(0.f, 0.f)
 		, m_blendAdd(false)
 		, m_solid(false)
-		, m_isCustomSize(false)
-		, m_customSize(0.f, 0.f)
-        , m_invalidateMaterial(true)
+		, m_material(nullptr)
+		, m_invalidateMaterial(true)
+		, m_disableTextureColor(false)
+		, m_texturesNum(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -287,11 +287,6 @@ namespace	Menge
 
 		m_disableTextureColor = _disable;
 
-		if( this->isCompile() == false )
-		{
-			return;
-		}
-
         this->invalidateMaterial();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -303,11 +298,6 @@ namespace	Menge
 		}
 
 		m_blendAdd = _value;
-
-		if( this->isCompile() == false )
-		{
-			return;
-		}
 
 		this->invalidateMaterial();
 	}

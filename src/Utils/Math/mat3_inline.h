@@ -250,8 +250,6 @@ namespace	mt
 
         float det = _rhs.v0[0]*_out.v0[0] + _rhs.v0[1]*_out.v1[0]+ _rhs.v0[2]*_out.v2[0];
 
-		assert(fabsf(det) >= 0.000001f);
-
         float idet = 1.0f / det;
 
         for( int i = 0; i < 3; i++ )

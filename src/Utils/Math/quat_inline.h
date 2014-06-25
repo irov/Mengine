@@ -1,5 +1,3 @@
-#	include <assert.h>
-
 #	include <math.h>
 
 #	include "mat4.h"
@@ -30,13 +28,11 @@ namespace mt
 
 	MATH_METHOD_INLINE float& quatf::operator[](int i)
 	{
-		assert(i < 4);
 		return (&x)[i];
 	}
 
 	MATH_METHOD_INLINE const float quatf::operator[](int i)const
 	{
-		assert(i < 4);
 		return (&x)[i];
 	}
 

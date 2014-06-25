@@ -40,9 +40,10 @@ namespace Menge
 
 	public:
 		void setMap( float _width, float _height, float _gridSize, float _unitSize );
+		bool testMap( const mt::vec2f & _point ) const;
 
 	public:
-		bool testPoint( const mt::vec2f & _polygon );
+		bool testPoint( const mt::vec2f & _point );
 		bool testObstacle( const Polygon & _polygon );
 		size_t addObstacle( const Polygon & _polygon );
 		void removeObstacle( size_t _id );

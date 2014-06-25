@@ -1127,6 +1127,7 @@ namespace Menge
 	{
 		m_batchMode = _mode;
 	}
+	//////////////////////////////////////////////////////////////////////////
 	ERenderBatchMode RenderEngine::getBatchMode() const
 	{
 		return m_batchMode;
@@ -1516,6 +1517,9 @@ namespace Menge
 
 			switch( m_batchMode )
 			{
+			case ERBM_NONE:
+				{
+				}break;
 			case ERBM_NORMAL:
 				{
 					this->batchRenderObjectNormal_( it, it_end, ro, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );

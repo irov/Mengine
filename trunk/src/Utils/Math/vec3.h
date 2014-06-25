@@ -85,7 +85,7 @@ namespace mt
 	MATH_FUNCTION_INLINE void norm_safe_v3( vec3f& out, const vec3f& _rhs, float err = 1e-06 );
 	MATH_FUNCTION_INLINE vec3f norm_safe_v3( const vec3f& _rhs );
 
-	MATH_FUNCTION_INLINE float get_axis_angle( const vec3f& dir, int axis );
+	MATH_FUNCTION_INLINE float get_axis_angle( const vec3f & dir, int axis );		
 };
 
 #	if MATH_FORCE_INLINE == 1

@@ -2,8 +2,6 @@
 
 #	include "config.h"
 
-#	include "utils.h"
-
 namespace mt
 {
 	struct vec2f
@@ -94,6 +92,9 @@ namespace mt
 	MATH_FUNCTION_INLINE vec2f slerp_v2_v2(const vec2f& a, const vec2f& b, float t);
 
 	MATH_FUNCTION_INLINE void rotate_v2(vec2f& _out, float _angle);
+
+	MATH_FUNCTION_INLINE void direction( mt::vec2f & _vec, float _angle );
+	MATH_FUNCTION_INLINE float signed_angle(const mt::vec2f & _vec);
 };
 
 #	if MATH_FORCE_INLINE == 1

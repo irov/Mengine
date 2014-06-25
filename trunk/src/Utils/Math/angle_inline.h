@@ -1,3 +1,5 @@
+#	include <math.h>
+
 namespace mt
 {
 	MATH_FUNCTION_INLINE float angle_norm(float _angle)
@@ -106,36 +108,6 @@ namespace mt
 		return ::acosf(_x);
 	}
 
-	MATH_FUNCTION_INLINE void direction( mt::vec2f & _vec, float _angle )
-	{
-		float cos_angle = cosf_fast( _angle );
-		float sin_angle = sinf_fast( _angle );
-
-		_vec.x = cos_angle;
-		_vec.y = sin_angle;
-	}
-
-	MATH_FUNCTION_INLINE float signed_angle(const mt::vec2f & _vec)
-	{
-		float len = _vec.length();
-
-		if( len < 0.00001f )
-		{			
-			return 0.f;
-		}
-
-		float cos = _vec.x / len;
-
-		float x = mt::acos32( cos );
-
-		if( _vec.y > 0.f )
-		{
-			return -x;
-		}
-
-		return x;
-	}
-
 	MATH_FUNCTION_INLINE float angle_in_interval_deg( float _angle, float _min, float _max )
 	{
 		float delta = mt::angle_delta_deg(_max,_min);
@@ -143,41 +115,93 @@ namespace mt
 
 		return ((delta >= delta1) && (delta1 >= 0.f));
 	}
-
-	MATH_FUNCTION_INLINE void make_euler_angles( mt::vec3f & _euler, const mat4f & _rotate )
+	//////////////////////////////////////////////////////////////////////////
+	MATH_FUNCTION_INLINE float sinf_fast_pi_pi( float x )
 	{
-		float sinY = _rotate.v2.x;
+		float sin;
 
-		float x;
-		float y;
-		float z;
-
-		if( fabsf( fabsf( sinY ) - 1.f ) < m_eps )
+		if( x < 0.f )
 		{
-			x = 0.f;
+			sin = 1.27323954f * x + 0.405284735f * x * x;
 
-			if( fabsf( sinY + 1.f ) < m_eps )
+			if( sin < 0.f )
 			{
-				y = m_half_pi;
-				z = x + atan2f( _rotate.v0.y, _rotate.v0.z );
+				sin = 0.225f * (sin * -sin - sin) + sin;
 			}
 			else
 			{
-				y = -m_half_pi;
-				z = -x + atan2f( -_rotate.v0.y, -_rotate.v0.z );
+				sin = 0.225f * (sin * sin - sin) + sin;
 			}
 		}
 		else
 		{
-			y = -asinf( sinY );
-			float cosY = cosf_fast( y );
+			sin = 1.27323954f * x - 0.405284735f * x * x;
 
-			x = atan2f( _rotate.v1.x / cosY, _rotate.v0.x / cosY );
-			z = atan2f( _rotate.v2.y / cosY, _rotate.v2.z / cosY );
+			if( sin < 0.f )
+			{
+				sin = 0.225f * (sin * -sin - sin) + sin;
+			}
+			else
+			{
+				sin = 0.225f * (sin * sin - sin) + sin;
+			}
 		}
 
-		_euler.x = x;
-		_euler.y = z;
-		_euler.z = y;
+		return sin;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MATH_FUNCTION_INLINE float cosf_fast( float x )
+	{
+		if( x < -6.28318531f || x > 6.28318531f )
+		{
+			return cosf( x );
+		}
+
+		if (x < -3.14159265f)
+		{
+			x += 6.28318531f;
+		}
+		else
+		{
+			if( x >  3.14159265f )
+			{
+				x -= 6.28318531f;
+			}
+		}
+
+		x += 1.57079632f;
+
+		if( x >  3.14159265f )
+		{
+			x -= 6.28318531f;
+		}
+
+		float cos = sinf_fast_pi_pi( x );
+
+		return cos;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MATH_FUNCTION_INLINE float sinf_fast( float x )
+	{
+		if( x < -6.28318531f || x > 6.28318531f )
+		{
+			return sinf( x );
+		}
+
+		if (x < -3.14159265f)
+		{
+			x += 6.28318531f;
+		}
+		else
+		{
+			if( x >  3.14159265f )
+			{
+				x -= 6.28318531f;
+			}
+		}
+
+		float sin = sinf_fast_pi_pi( x );
+
+		return sin;
 	}
 }

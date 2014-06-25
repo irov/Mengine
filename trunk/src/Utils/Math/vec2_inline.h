@@ -1,6 +1,6 @@
-#	include <assert.h>
+#	include "angle.h"
 
-#	include <math.h>
+//#	include <math.h>
 
 namespace mt
 {
@@ -27,15 +27,11 @@ namespace mt
 
 	MATH_METHOD_INLINE float vec2f::operator [] ( int i ) const
 	{
-		assert(i < 2);
-
 		return (&x)[i];
 	}
 
 	MATH_METHOD_INLINE float& vec2f::operator [] ( int i )
 	{
-		assert(i < 2);
-
 		return (&x)[i];
 	}
 
@@ -57,7 +53,6 @@ namespace mt
 
 	MATH_METHOD_INLINE vec2f& vec2f::operator/=(const float _rhs)
 	{
-		assert(_rhs != 0.0f);
 		operator *= (1.f/_rhs); 
 
 		return *this;
@@ -359,5 +354,35 @@ namespace mt
 		float cos_angle = cosf_fast(_angle);
 		_out.x = cos_angle * _v.x - sin_angle * _v.y;
 		_out.y = cos_angle * _v.y + sin_angle * _v.x;
+	}
+
+	MATH_FUNCTION_INLINE void direction( mt::vec2f & _vec, float _angle )
+	{
+		float cos_angle = cosf_fast( _angle );
+		float sin_angle = sinf_fast( _angle );
+
+		_vec.x = cos_angle;
+		_vec.y = sin_angle;
+	}
+
+	MATH_FUNCTION_INLINE float signed_angle(const mt::vec2f & _vec)
+	{
+		float len = _vec.length();
+
+		if( len < 0.00001f )
+		{			
+			return 0.f;
+		}
+
+		float cos = _vec.x / len;
+
+		float x = mt::acos32( cos );
+
+		if( _vec.y > 0.f )
+		{
+			return -x;
+		}
+
+		return x;
 	}
 }

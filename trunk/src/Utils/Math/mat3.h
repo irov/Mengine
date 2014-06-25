@@ -2,8 +2,6 @@
 
 #	include "config.h"
 
-#	include "utils.h"
-
 #	include "vec3.h"
 
 namespace mt

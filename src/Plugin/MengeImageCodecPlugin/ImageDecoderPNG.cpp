@@ -202,6 +202,10 @@ namespace Menge
 			{
 				m_dataInfo.channels = 4;
 			}break;			
+		case PNG_COLOR_TYPE_GRAY_ALPHA:
+			{
+				m_dataInfo.channels = 1;
+			}break;
 		default:
 			{
 				LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize invalid colot type - '%d'"

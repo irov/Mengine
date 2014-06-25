@@ -98,6 +98,25 @@ namespace Menge
 		//m_pathfinder.initialize( &m_map );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool PathFinderMap::testMap( const mt::vec2f & _point ) const
+	{
+		uint32_t px = _point.x / m_gridSize + m_gridSize * 0.5f;
+		uint32_t py = _point.y / m_gridSize + m_gridSize * 0.5f;
+
+		uint32_t mask;
+		if( m_map.getCellMask( px, py, mask ) == false )
+		{
+			return false;
+		}
+
+		if( mask == 0 )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static void s_enlargePolygonRingFromLow( Polygon::ring_type & _ring, float _radius )
 	{
 		if( _ring.empty() == true )
@@ -210,9 +229,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderMap::testPoint( const mt::vec2f & _polygon )
+	bool PathFinderMap::testPoint( const mt::vec2f & _point )
 	{
-		bool test = this->testHolesPoint_( _polygon );
+		bool test = this->testHolesPoint_( _point );
 
 		return test;
 	}

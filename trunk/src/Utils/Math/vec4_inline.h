@@ -68,28 +68,30 @@ namespace mt
 		return *this;
 	}
 
-	MATH_METHOD_INLINE vec4f&	vec4f::operator-=(const vec4f&	_rhs)
+	MATH_METHOD_INLINE vec4f&	vec4f::operator -= (const vec4f&	_rhs)
 	{
 		x -= _rhs.x;
 		y -= _rhs.y;
 		z -= _rhs.z;
 		w -= _rhs.w;
+
 		return *this;
 	}
 
-	MATH_METHOD_INLINE vec4f&	vec4f::operator/=(const float _rhs)
+	MATH_METHOD_INLINE vec4f&	vec4f::operator /= (const float _rhs)
 	{
-		assert(_rhs != 0.0f);
-		operator *= (1.f/_rhs); 
+		operator *= (1.f / _rhs); 
+
 		return *this;
 	}
 
-	MATH_METHOD_INLINE vec4f&	vec4f::operator*=(const float _rhs)
+	MATH_METHOD_INLINE vec4f&	vec4f::operator *= (const float _rhs)
 	{
 		x *= _rhs;
 		y *= _rhs;
 		z *= _rhs;
 		w *= _rhs;
+
 		return *this;
 	}
 
@@ -100,7 +102,10 @@ namespace mt
 
 	MATH_METHOD_INLINE float vec4f::length() const
 	{
-		return sqrtf(sqrlength());
+		float sqlen = sqrlength();
+		float len = sqrtf(sqlen);
+
+		return len;
 	}
 
 	MATH_METHOD_INLINE const vec3f & vec4f::to_vec3f() const

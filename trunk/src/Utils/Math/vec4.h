@@ -10,8 +10,6 @@
 
 #	include "vec3.h"
 
-#	include <assert.h>
-
 namespace mt
 {
 	struct vec4f

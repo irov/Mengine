@@ -1,5 +1,3 @@
-#	include <assert.h>
-
 #	include <math.h>
 
 namespace mt
@@ -25,25 +23,13 @@ namespace mt
 	{
 		bool found = false; 
 
-		if( size == 0 )
-		{
-			assert(0);
-		}
-		else if( size == 1 )
-		{
-			assert(0);
-		}
-		else if( size == 2 )
+		if( size == 2 )
 		{
 			found = solve( -W[1], W[0] - W[1], V );
 		}
 		else if( size == 3 )
 		{
 			found = solve( -W[2], W[1] - W[2], W[0] - W[2], V );
-		}
-		else if( size == 4 )
-		{
-			assert(0);
 		}
 
 		return found;

@@ -183,8 +183,6 @@ namespace Menge
 
         m_row_bytes = png_get_rowbytes( m_png_ptr, m_info_ptr );
 
-        png_byte channels = png_get_channels( m_png_ptr, m_info_ptr );
-
         size_t decodedDataSize = m_row_bytes * height;
 
         m_dataInfo.width = width;
@@ -193,7 +191,27 @@ namespace Menge
         m_dataInfo.size = decodedDataSize;
         m_dataInfo.mipmaps = 0;
         m_dataInfo.flags = 0;
-        m_dataInfo.channels = channels;
+
+		switch( color_type )
+		{
+		case PNG_COLOR_TYPE_RGB:
+			{
+				m_dataInfo.channels = 3;
+			}break;
+		case PNG_COLOR_TYPE_RGBA:
+			{
+				m_dataInfo.channels = 4;
+			}break;			
+		default:
+			{
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize invalid colot type - '%d'"
+					, color_type
+					);
+
+				return false;
+			}
+		}
+
 
         if( bit_depth != 8 )
         {

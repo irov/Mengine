@@ -1,5 +1,4 @@
 #	include <math.h>
-#	include <assert.h>
 
 namespace mt
 {
@@ -37,13 +36,11 @@ namespace mt
 
 	MATH_METHOD_INLINE float vec3f::operator[](int i) const
 	{
-		assert(i < 3);
 		return (&x)[i];
 	}
 
 	MATH_METHOD_INLINE float& vec3f::operator[](int i)
 	{
-		assert(i < 3);
 		return (&x)[i];
 	}
 
@@ -65,14 +62,14 @@ namespace mt
 		return *this;
 	}
 
-	MATH_METHOD_INLINE vec3f& vec3f::operator/=(const float _rhs)
+	MATH_METHOD_INLINE vec3f& vec3f::operator /= (const float _rhs)
 	{
-		assert(_rhs != 0.0f);
 		operator *= (1.f/_rhs); 
+
 		return *this;
 	}
 
-	MATH_METHOD_INLINE vec3f& vec3f::operator*=(const float _rhs)
+	MATH_METHOD_INLINE vec3f& vec3f::operator *= (const float _rhs)
 	{
 		x *= _rhs;
 		y *= _rhs;
@@ -321,8 +318,6 @@ namespace mt
 
 	MATH_FUNCTION_INLINE float get_axis_angle(const vec3f& dir, int axis)
 	{
-		assert(axis >= 0 && axis < 3);
-
 		int ind1 = 1; //axis == 0
 		int ind2 = 2; //axis == 0
 

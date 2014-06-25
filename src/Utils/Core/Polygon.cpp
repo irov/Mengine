@@ -346,19 +346,51 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t polygon_size( const Polygon & _polygon )
 	{
-		size_t size = boost::geometry::num_points( _polygon );
+		const Polygon::ring_type & ring = _polygon.outer();
 
-		return size;
+		size_t ring_size = ring.size();
+
+		return ring_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f * polygon_points( const Polygon & _polygon )
 	{
 		const Polygon::ring_type & ring = _polygon.outer();
 
-		const mt::vec2f * point = &ring[0];
+		const mt::vec2f * points = &ring[0];
 
-		return point;
+		return points;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t polygon_inners( const Polygon & _polygon )
+	{
+		const Polygon::inner_container_type & inners = _polygon.inners();
 
+		size_t inners_count = inners.size();
+
+		return inners_count;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t polygon_inner_size( const Polygon & _polygon, size_t _index )
+	{
+		const Polygon::inner_container_type & inners = _polygon.inners();
+
+		const Polygon::ring_type & ring = inners[_index];
+
+		size_t ring_size = ring.size();
+
+		return ring_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f * polygon_inner_points( const Polygon & _polygon, size_t _index )
+	{
+		const Polygon::inner_container_type & inners = _polygon.inners();
+
+		const Polygon::ring_type & ring = inners[_index];
+
+		const mt::vec2f * points = &ring[0];
+
+		return points;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & polygon_point( const Polygon & _polygon, size_t _index )
@@ -368,5 +400,52 @@ namespace Menge
 		const mt::vec2f & point = ring[_index];
 
 		return point;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_pnpoly( size_t nvert, const mt::vec2f * vert, float testx, float testy )
+	{
+		bool c = false;
+
+		for( size_t i = 0, j = nvert - 1; i < nvert; j = i++ )
+		{
+			float vertix = vert[i].x;
+			float vertiy = vert[i].y;
+			float vertjx = vert[j].x;
+			float vertjy = vert[j].y;
+
+			if( ( (vertiy > testy) != (vertjy > testy) ) &&
+				( testx < (vertjx - vertix) * (testy-vertiy) / (vertjy - vertiy) + vertix) )
+			{
+				c = !c;
+			}
+		}
+
+		return c;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool intersection_polygon_point( const Polygon & _polygon, float _x, float _y )
+	{
+		size_t vertex_count = polygon_size( _polygon );
+		const mt::vec2f * points = polygon_points( _polygon );
+
+		if( s_pnpoly( vertex_count, points, _x, _y ) == false )
+		{
+			return false;
+		}
+
+		size_t inners = polygon_inners( _polygon );
+
+		for( size_t k = 0; k != inners; ++k )
+		{
+			size_t vertex_count = polygon_inner_size( _polygon, k );
+			const mt::vec2f * points = polygon_inner_points( _polygon, k );
+
+			if( s_pnpoly( vertex_count, points, _x, _y ) == true )
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

@@ -1,10 +1,6 @@
 #	pragma once
 
 #	include "config.h"
-#	include "utils.h"
-
-#	include "vec2.h"
-#	include "mat4.h"
 
 namespace mt
 {
@@ -15,10 +11,7 @@ namespace mt
 	MATH_FUNCTION_INLINE float angle_norm180( float _angle );	
 	MATH_FUNCTION_INLINE float angle_delta_deg( float _angle1, float _angle2 );
 	MATH_FUNCTION_INLINE float acos32( float _x );
-	MATH_FUNCTION_INLINE void direction( mt::vec2f & _vec, float _angle );
-	MATH_FUNCTION_INLINE float signed_angle(const mt::vec2f & _vec);
-	MATH_FUNCTION_INLINE float angle_in_interval_deg( float _angle, float _min, float _max );
-	MATH_FUNCTION_INLINE void make_euler_angles( mt::vec3f & _euler, const mat4f & _rotate );
+	MATH_FUNCTION_INLINE float angle_in_interval_deg( float _angle, float _min, float _max );	
 	MATH_FUNCTION_INLINE float cosf_fast( float x );
 	MATH_FUNCTION_INLINE float sinf_fast( float x );
 }

@@ -908,4 +908,41 @@ namespace mt
 		_out.y = ( 1.0f + vec.y ) * _height * 0.5f;
 		_out.z = vec.z; 
 	}
+	//////////////////////////////////////////////////////////////////////////
+	MATH_FUNCTION_INLINE void make_euler_angles( mt::vec3f & _euler, const mat4f & _rotate )
+	{
+		float sinY = _rotate.v2.x;
+
+		float x;
+		float y;
+		float z;
+
+		if( fabsf( fabsf( sinY ) - 1.f ) < m_eps )
+		{
+			x = 0.f;
+
+			if( fabsf( sinY + 1.f ) < m_eps )
+			{
+				y = m_half_pi;
+				z = x + atan2f( _rotate.v0.y, _rotate.v0.z );
+			}
+			else
+			{
+				y = -m_half_pi;
+				z = -x + atan2f( -_rotate.v0.y, -_rotate.v0.z );
+			}
+		}
+		else
+		{
+			y = -asinf( sinY );
+			float cosY = cosf_fast( y );
+
+			x = atan2f( _rotate.v1.x / cosY, _rotate.v0.x / cosY );
+			z = atan2f( _rotate.v2.y / cosY, _rotate.v2.z / cosY );
+		}
+
+		_euler.x = x;
+		_euler.y = z;
+		_euler.z = y;
+	}
 }

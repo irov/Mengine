@@ -351,7 +351,7 @@ namespace Menge
 		
 #   ifdef MENGE_PARTICLES
 		NODE_FACTORY( m_serviceProvider, ParticleEmitter );
-		NODE_FACTORY( m_serviceProvider, ParticleEmitter2 );
+		//NODE_FACTORY( m_serviceProvider, ParticleEmitter2 );
 #   endif
 
 		NODE_FACTORY( m_serviceProvider, HotSpot );
@@ -645,7 +645,7 @@ namespace Menge
 		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitterContainer );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitter );
 
-		RESOURCE_FACTORY( m_serviceProvider, ResourceParticle );
+		//RESOURCE_FACTORY( m_serviceProvider, ResourceParticle );
 #   endif
 
 		//RESOURCE_FACTORY( m_serviceProvider, ResourceFont );

@@ -2452,7 +2452,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
 	{
-		mt::make_projection_ortho_lh_m4( _projectionMatrix, _viewport.begin.x - 0.5f, _viewport.end.x - 0.5f, _viewport.begin.y + 0.5f, _viewport.end.y + 0.5f, _near, _far );
+		mt::make_projection_ortho_lh_m4( _projectionMatrix, _viewport.begin.x + 0.5f, _viewport.end.x + 0.5f, _viewport.begin.y + 0.5f, _viewport.end.y + 0.5f, _near, _far );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )

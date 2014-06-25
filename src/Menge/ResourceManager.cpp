@@ -461,7 +461,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return false;
+			return nullptr;
 		}
 
         if( entry->isLocked == true )

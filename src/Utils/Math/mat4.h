@@ -120,6 +120,8 @@ namespace mt
 	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _dir, const vec3f & _up, float _sign );
 
 	MATH_FUNCTION_INLINE void project_m4( vec3f & _out, const vec3f & _vertex, float _width, float _height, const mat4f & _projection, const mat4f & _view, const mat4f & _world );
+
+	MATH_FUNCTION_INLINE void make_euler_angles( vec3f & _euler, const mat4f & _rotate );
 }
 
 #	if MATH_FORCE_INLINE == 1

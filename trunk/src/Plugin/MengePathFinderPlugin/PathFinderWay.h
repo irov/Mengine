@@ -4,6 +4,9 @@
 
 #	include "Math/vec2.h"
 
+#	include "fastpathfinder/pathfinder.h"
+#	include "fastpathfinder/map.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -19,9 +22,8 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		void initialize( const mt::vec2f & _from, const mt::vec2f & _to, size_t _capacity );
-		void addPoint( const mt::vec2f & _point );
-
+		void initialize( const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize, const fastpathfinder::point_array & _wp );
+		
 	public:
 		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );
 
@@ -34,6 +36,7 @@ namespace Menge
 
 		mt::vec2f m_from;
 		mt::vec2f m_to;
+		float m_gridSize;
 
 		TVectorWayPoint m_way;
 	};

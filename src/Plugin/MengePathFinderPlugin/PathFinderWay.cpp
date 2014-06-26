@@ -7,6 +7,7 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_from(0.f, 0.f)
 		, m_to(0.f, 0.f)
+		, m_gridSize(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -19,17 +20,30 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderWay::initialize( const mt::vec2f & _from, const mt::vec2f & _to, size_t _capacity )
+	void PathFinderWay::initialize( const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize, const fastpathfinder::point_array & _wp )
 	{
 		m_from = _from;
 		m_to = _to;
+		m_gridSize = _gridSize;
 
-		m_way.reserve( _capacity );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PathFinderWay::addPoint( const mt::vec2f & _point )
-	{
-		m_way.push_back( _point );
+		size_t points_size = _wp.size();
+		m_way.reserve( points_size );
+
+		m_way.push_back( m_from );
+
+		fastpathfinder::point * points = _wp.buffer();
+
+		for( size_t i = 1; i != points_size - 1; ++i )
+		{
+			fastpathfinder::point p = points[i];
+
+			float x = p.x * m_gridSize + m_gridSize * 0.5f;
+			float y = p.y * m_gridSize + m_gridSize * 0.5f;
+
+			m_way.push_back( mt::vec2f(x, y) );
+		}
+
+		m_way.push_back( m_to );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWay::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )

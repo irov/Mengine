@@ -100,8 +100,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testMap( const mt::vec2f & _point ) const
 	{
-		uint32_t px = _point.x / m_gridSize + m_gridSize * 0.5f;
-		uint32_t py = _point.y / m_gridSize + m_gridSize * 0.5f;
+		uint32_t px = (uint32_t)(_point.x / m_gridSize + 0.5f);
+		uint32_t py = (uint32_t)(_point.y / m_gridSize + 0.5f);
 
 		uint32_t mask;
 		if( m_map.getCellMask( px, py, mask ) == false )
@@ -367,11 +367,11 @@ namespace Menge
 		uint32_t map_width = m_map.getWidth();
 		uint32_t map_height = m_map.getHeight();
 
-		uint32_t map_begin_i = (uint32_t)(minp.x / m_gridSize);
-		uint32_t map_begin_j = (uint32_t)(minp.y / m_gridSize);
+		uint32_t map_begin_i = (uint32_t)(minp.x / m_gridSize + 0.5f);
+		uint32_t map_begin_j = (uint32_t)(minp.y / m_gridSize + 0.5f);
 
-		uint32_t map_end_i = (uint32_t)(maxp.x / m_gridSize);
-		uint32_t map_end_j = (uint32_t)(maxp.y / m_gridSize);
+		uint32_t map_end_i = (uint32_t)(maxp.x / m_gridSize + 0.5f);
+		uint32_t map_end_j = (uint32_t)(maxp.y / m_gridSize + 0.5f);
 
 		uint32_t map_begin_i_crop = mt::crop( map_begin_i, 0U, map_width );
 		uint32_t map_begin_j_crop = mt::crop( map_begin_j, 0U, map_height );
@@ -384,12 +384,6 @@ namespace Menge
 			{
 				float x = (i * m_gridSize) + m_gridSize * 0.5f;
 				float y = (j * m_gridSize) + m_gridSize * 0.5f;
-
-				//GeometryPoint point(x, y);
-				//if( boost::geometry::intersects( polygon, point ) == false )
-				//{
-				//	continue;
-				//}
 
 				if( intersection_polygon_point( polygon, x, y ) == false )
 				{

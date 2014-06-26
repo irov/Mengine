@@ -42,11 +42,11 @@ namespace Menge
 		m_to = _to;
 		m_gridSize = _gridSize;
 
-		uint32_t fx = _from.x / m_gridSize + m_gridSize * 0.5f;
-		uint32_t fy = _from.y / m_gridSize + m_gridSize * 0.5f;
+		uint32_t fx = (uint32_t)(_from.x / m_gridSize + 0.5f);
+		uint32_t fy = (uint32_t)(_from.y / m_gridSize + 0.5f);
 
-		uint32_t tx = _to.x / m_gridSize + m_gridSize * 0.5f;
-		uint32_t ty = _to.y / m_gridSize + m_gridSize * 0.5f;
+		uint32_t tx = (uint32_t)(_to.x / m_gridSize + 0.5f);
+		uint32_t ty = (uint32_t)(_to.y / m_gridSize + 0.5f);
 
 		if( m_pathfinder.findPathFirst( fx, fy, tx, ty ) == false )
 		{
@@ -90,25 +90,12 @@ namespace Menge
 		{
 			return;
 		}
-
-		const fastpathfinder::point_array & pa = m_pathfinder.getPathFilter();
-		//const fastpathfinder::point_array & pa = m_map.getPath();
-		size_t points_size = pa.size();
-		fastpathfinder::point * points = pa.buffer();
 		
 		m_way = new PathFinderWay();
 
 		m_way->setServiceProvider( m_serviceProvider );
-		m_way->initialize( m_from, m_to, points_size );
 
-		for( size_t i = 0; i != points_size; ++i )
-		{
-			fastpathfinder::point p = points[i];
-
-			float x = p.x * m_gridSize + m_gridSize * 0.5f;
-			float y = p.y * m_gridSize + m_gridSize * 0.5f;
-
-			m_way->addPoint( mt::vec2f(x, y) );
-		}
+		const fastpathfinder::point_array & pa = m_pathfinder.getPathFilter();
+		m_way->initialize( m_from, m_to, m_gridSize, pa );
 	}
 }

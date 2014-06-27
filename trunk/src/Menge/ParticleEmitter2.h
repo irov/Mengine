@@ -111,10 +111,6 @@ namespace Menge
 		inline const RenderMaterialInterfacePtr & getMaterial( size_t _index );
 
 	protected:
-		bool createCamera3D_();
-		void destroyCamera3D_();
-
-	protected:
 		ResourceHolder<ResourceParticle> m_resourceParticle;
 
 		ConstString m_emitterImageName;
@@ -125,9 +121,6 @@ namespace Menge
 
         bool m_emitterRelative;
 		
-		Camera3D * m_renderCamera3D;
-		RenderViewport * m_renderViewport;
-
         mt::vec3f m_emitterPosition;
 
         bool m_randomMode;

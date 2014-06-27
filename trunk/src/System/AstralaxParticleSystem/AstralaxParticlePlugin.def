@@ -1,0 +1,3 @@
+LIBRARY		"AstralaxParticlePlugin"
+EXPORTS 	
+	dllCreatePlugin 	@1

@@ -209,10 +209,7 @@ namespace Menge
 		ThreadSystemInterface * m_threadSystem;
 		ThreadServiceInterface * m_threadService;
 
-		ParticleSystemInterface * m_particleSystem;
 		ParticleServiceInterface * m_particleService;
-
-		ParticleSystemInterface2 * m_particleSystem2;
 		ParticleServiceInterface2 * m_particleService2;
 
 		PhysicSystemInterface * m_physicSystem;

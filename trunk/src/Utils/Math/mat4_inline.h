@@ -851,15 +851,14 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _dir, const vec3f & _up, float _sign )
 	{
-		vec3f yaxis;
-		norm_v3( yaxis, _up );
-
 		vec3f zaxis;
 		norm_v3( zaxis, _dir );
 
-		//xaxis = normal(cross(Up, zaxis))
 		vec3f xaxis;
 		cross_v3_v3_norm( xaxis, _up, zaxis );
+
+		vec3f yaxis;
+		cross_v3_v3_norm( yaxis, zaxis, xaxis );
 
 		xaxis *= _sign;
 

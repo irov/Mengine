@@ -49,8 +49,6 @@ namespace	Menge
 		: m_emitter(nullptr)
 		, m_startPosition(0.f)
         , m_randomMode(false)
-		, m_renderCamera3D(nullptr)
-		, m_renderViewport(nullptr)
 		, m_vertices(nullptr)
 		, m_verticesCount(0)
         , m_emitterRelative(false)
@@ -171,14 +169,6 @@ namespace	Menge
 			m_emitter->setPosition( m_emitterPosition );
 		}
 
-		if( m_emitter->is3d() == true )
-		{
-			if( this->createCamera3D_() == false )
-			{
-				return false;
-			}
-		}
-
 		this->invalidateMaterial_();
 
 		return true;		
@@ -202,8 +192,6 @@ namespace	Menge
 			m_materials[i * 2 + 0] = nullptr;
 			m_materials[i * 2 + 1] = nullptr;
 		}
-
-		this->destroyCamera3D_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
@@ -971,91 +959,5 @@ namespace	Menge
 	bool ParticleEmitter2::getRandomMode() const
 	{
         return m_randomMode;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter2::createCamera3D_()
-	{
-		Camera3D * renderCamera3D = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Camera3D>( CONST_STRING(m_serviceProvider, Camera3D) );
-
-		if( renderCamera3D == nullptr )
-		{
-			return false;
-		}
-
-		const ConstString & name = this->getName();
-		renderCamera3D->setName( name );
-
-		ParticleCamera camera;
-		if( m_emitter->getCamera( camera ) == false )
-		{
-			return false;
-		}
-
-		renderCamera3D->setCameraPosition( camera.pos );
-		renderCamera3D->setCameraDir( camera.dir );
-		renderCamera3D->setCameraUp( camera.up );
-
-		renderCamera3D->setCameraFOV( camera.fov );
-		renderCamera3D->setCameraAspect( camera.aspect );
-		
-		renderCamera3D->setCameraNear( camera.znear );
-		renderCamera3D->setCameraFar( camera.zfar );
-		
-		renderCamera3D->setCameraRightSign( -1.f );
-
-		Viewport rp;
-		rp.begin.x = 0.f;
-		rp.begin.y = 0.f;
-
-		rp.end.x = camera.width;
-		rp.end.y = camera.height;
-
-		renderCamera3D->setRenderport( rp );		
-
-		RenderViewport * renderViewport = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
-
-		if( renderViewport == nullptr )
-		{
-			return false;
-		}
-
-		renderViewport->setName( name );
-
-		Viewport vp;
-		vp.begin.x = 0.f;
-		vp.begin.y = 0.f;
-
-		vp.end.x = camera.width;
-		vp.end.y = camera.height;
-
-		renderViewport->setViewport( vp );
-
-		this->addChildren( renderCamera3D );
-		this->addChildren( renderViewport );
-
-		this->setRenderCamera( renderCamera3D );
-		this->setRenderViewport( renderViewport );
-
-		m_renderCamera3D = renderCamera3D;
-		m_renderViewport = renderViewport;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::destroyCamera3D_()
-	{
-		if( m_renderCamera3D != nullptr )
-		{
-			m_renderCamera3D->destroy();
-			m_renderCamera3D = nullptr;
-		}
-
-		if( m_renderViewport != nullptr )
-		{
-			m_renderViewport->destroy();
-			m_renderViewport = nullptr;
-		}
 	}
 }

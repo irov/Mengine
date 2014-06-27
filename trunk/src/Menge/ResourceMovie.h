@@ -202,6 +202,9 @@ namespace Menge
 	public:
 		inline const MovieFramePackInterfacePtr & getFramePack() const;
 
+	public:
+		float getLayerPathLength( const ConstString & _name ) const;
+
     public:
 		void visitResourceMovie( VisitorResourceMovie * _visitor );
 
@@ -249,5 +252,5 @@ namespace Menge
 	inline const MovieFramePackInterfacePtr & ResourceMovie::getFramePack() const
 	{
 		return m_keyFramePack;
-	}
+	}	
 }

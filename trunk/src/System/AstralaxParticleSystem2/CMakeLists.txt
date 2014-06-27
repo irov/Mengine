@@ -8,80 +8,35 @@ src
 	AstralaxEmitterContainer2.h
 	AstralaxParticleSystem2.cpp
 	AstralaxParticleSystem2.h
+    
+    AstralaxParticlePlugin2.cpp
+    AstralaxParticlePlugin2.h
+    AstralaxParticlePlugin2.def
 )
 
 add_definitions(-DMAGIC_3D)
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/astralax )
 
-ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
+ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
 
-SET( APPLICATION_DEPENDENCIES
- ${APPLICATION_DEPENDENCIES}
- ${MY_LIB_NAME}
-)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Factory)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Codec)
 
-SET( APPLICATION_DEPENDENCIES
- ${APPLICATION_DEPENDENCIES}
- PARENT_SCOPE
-)
-
-SET( magic_lib_path )
-
-if( WIN32 )
- SET( magic_lib_path ${magic_lib_path}/win/lib )
-elseif( APPLE )
- #if(DEFINED MENGINE_IPAD)
-  SET( magic_lib_path ${magic_lib_path}/iphone )
- #endif(DEFINED MENGINE_IPAD)
-
- IF(${MENGINE_TARGET} STREQUAL "MACOS")
-  SET( magic_lib_path ${magic_lib_path}/win/lib/mingw )
- ENDIF(${MENGINE_TARGET} STREQUAL "MACOS")
-endif( WIN32 )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX} )
 
 if( MINGW )
- SET( magic_lib_path ${magic_lib_path}/mingw )
-elseif( MSVC )
- SET( magic_lib_path ${magic_lib_path}/microsoft )
-endif( MINGW )
-
-SET( magic_lib_path ${THIRDPARTY_DIR}/astralax${magic_lib_path} )
-MESSAGE( ${magic_lib_path} )
-
-SET( APPLICATION_LIB_PATHS
- ${APPLICATION_LIB_PATHS}
- PARENT_SCOPE
-)
-
-if( MINGW )
-    SET( APPLICATION_LIBS
-    ${APPLICATION_LIBS}
-    ${THIRDPARTY_DIR}/astralax/win/lib/mingw/libmagic3d.a
-    )
+    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/win/lib/mingw/libmagic3d.a)
 elseif( WIN32 )
-    SET( APPLICATION_LIBS
-    ${APPLICATION_LIBS}
-    ${THIRDPARTY_DIR}/astralax/win/lib/microsoft/magic3d.lib
-    )
-elseif( APPLE )
+    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/win/lib/microsoft/magic3d.lib)
+elseif( APPLE )    
     IF(${MENGINE_TARGET} STREQUAL "IPAD")
-        SET( APPLICATION_LIBS
-        ${APPLICATION_LIBS}
-        ${magic_lib_path}/libimagic.a
-        )
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${magic_lib_path}/libimagic3d.a)
     ENDIF(${MENGINE_TARGET} STREQUAL "IPAD")
     
     IF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
-        SET( APPLICATION_LIBS
-        ${APPLICATION_LIBS}
-        ${magic_lib_path}/libimagic_simulator.a
-        )    
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${magic_lib_path}/libimagic3d_simulator.a)
     ENDIF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
 endif( MINGW )
-
-
-SET( APPLICATION_LIBS
- ${APPLICATION_LIBS}
- PARENT_SCOPE
-)

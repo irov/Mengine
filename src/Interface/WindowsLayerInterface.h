@@ -28,7 +28,7 @@ namespace Menge
         virtual void destroy() = 0;
 
     public:
-        virtual TDynamicLibraryFunction getSymbol( const char * _name ) const = 0;
+        virtual TDynamicLibraryFunction getSymbol( const String & _name ) const = 0;
     };
 
     class WindowsLayerInterface

@@ -122,7 +122,9 @@ namespace Menge
         double m_time;
 		
 		float m_angle;
-		//float m_posX, m_posY; 
+		
+		float m_width;
+		float m_height;
 
 		float m_factor[20];
 		int m_typesCount;

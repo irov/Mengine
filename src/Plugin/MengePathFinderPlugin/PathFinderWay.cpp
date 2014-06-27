@@ -31,7 +31,7 @@ namespace Menge
 
 		m_way.push_back( m_from );
 
-		fastpathfinder::point * points = _wp.buffer();
+		const fastpathfinder::point * points = &_wp[0];
 
 		for( size_t i = 1; i != points_size - 1; ++i )
 		{

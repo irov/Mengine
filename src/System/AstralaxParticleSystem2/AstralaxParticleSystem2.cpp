@@ -32,7 +32,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxParticleSystem2::initialize()
 	{
-		Magic_SetAxis( MAGIC_pXnYpZ );
+		Magic_SetAxis( MAGIC_pXpYpZ );
 
 		return true;
 	}

@@ -3880,6 +3880,7 @@ namespace Menge
 			.def("getSocketShape", &ResourceMovie::getSocketShape)
 			.def("hasAnchorPoint", &ResourceMovie::hasAnchorPoint)
 			.def("getAnchorPoint", &ResourceMovie::getAnchorPoint)
+			.def("getLayerPathLength", &ResourceMovie::getLayerPathLength)
             ;        
 
         pybind::interface_<ResourceAnimation, pybind::bases<ResourceReference> >("ResourceAnimation", false)

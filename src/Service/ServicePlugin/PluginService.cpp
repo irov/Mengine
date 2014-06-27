@@ -71,7 +71,7 @@ namespace Menge
             }
 
             TDynamicLibraryFunction function_dllCreatePlugin =
-                dlib->getSymbol( m_dllCreatePluginName.c_str() );
+                dlib->getSymbol( m_dllCreatePluginName );
 
             if( function_dllCreatePlugin == nullptr )
             {

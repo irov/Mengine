@@ -702,4 +702,59 @@ namespace Menge
 			_visitor->visitLayer( m_keyFramePack, layer );
 		}
 	}
+	//////////////////////////////////////////////////////////////////////////
+	float ResourceMovie::getLayerPathLength( const ConstString & _name ) const
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::getLayerPathLength %s layer %s not compile"
+				, m_name.c_str()
+				, _name.c_str()
+				);
+
+			return 0.f;
+		}
+
+		for( TVectorMovieLayers::const_iterator
+			it = m_layers.begin(),
+			it_end = m_layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.name != _name )
+			{
+				continue;
+			}
+					
+			uint32_t indexIn = (uint32_t)((layer.in / m_frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layer.out / m_frameDuration) + 0.5f);
+			uint32_t indexCount = indexOut - indexIn;
+
+			MovieFrameSource start_frame;
+			m_keyFramePack->getLayerFrame( layer.index, 0, start_frame );
+
+			mt::vec3f pos = start_frame.position;
+			float len = 0.f;
+
+			for( size_t i = 1; i != indexCount; ++i )
+			{
+				MovieFrameSource frame;
+				m_keyFramePack->getLayerFrame( layer.index, i, frame );
+
+				len += mt::length_v3_v3( pos, frame.position );
+				pos = frame.position;
+			}
+
+			return len;
+		}
+
+		LOGGER_ERROR(m_serviceProvider)("Movie::getLayerPathLength %s not found layer %s"
+			, m_name.c_str()
+			, _name.c_str()
+			);
+
+		return 0.f;
+	}
 }

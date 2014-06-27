@@ -19,6 +19,8 @@ namespace Menge
 		, m_tempScale(1)
         , m_basePosition(0.f, 0.f, 0.f)
 		, m_background(false)
+		, m_width(0.f)
+		, m_height(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -97,12 +99,16 @@ namespace Menge
 				MAGIC_POSITION pos;
 				pos.x = 0.f;
 				pos.y = 0.f;
+				pos.z = 0.f;
 
 				m_basePosition.x = 0.f;
 				m_basePosition.y = 0.f;
 				m_basePosition.z = 0.f;
 
 				Magic_SetEmitterPosition( m_emitterId, &pos );
+
+				m_width = 2048.f;
+				m_height = 2048.f;
 
 				m_background = false;
 			}
@@ -122,6 +128,9 @@ namespace Menge
 				m_basePosition.y = adapt_pos.y;
 				m_basePosition.z = adapt_pos.z;
 
+				m_width = rect.right - rect.left;
+				m_height = rect.bottom - rect.top;
+
 				m_background = true;
 			}
 		}
@@ -132,6 +141,9 @@ namespace Menge
 			{
 				return false;
 			}
+
+			m_width = view.viewport_width;
+			m_height = view.viewport_height;
 		}
 
         return true;
@@ -263,10 +275,7 @@ namespace Menge
 	bool AstralaxEmitter2::getCamera( ParticleCamera & _camera ) const
 	{
 		MAGIC_VIEW view;
-		if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
-		{
-			return false;
-		}
+		int user_camera = Magic_GetView( m_emitterId, &view );
 
 		float aspect_ratio = float(view.viewport_width) / float(view.viewport_height) * view.aspect_factor;
 
@@ -289,6 +298,11 @@ namespace Menge
 
 		_camera.width = (float)view.viewport_width;
 		_camera.height = (float)view.viewport_height;
+
+		if( user_camera != MAGIC_SUCCESS )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -315,13 +329,10 @@ namespace Menge
 		m_total_rate += _timing;
         m_time += _timing;
 
-		if( Magic_Is3d( m_emitterId ) == true )
+		if( this->is3d() == true )
 		{
 			MAGIC_VIEW view;
-			if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
-			{
-				return false;
-			}
+			Magic_GetView( m_emitterId, &view );
 
 			MAGIC_CAMERA camera;
 			camera.pos = view.pos;
@@ -329,7 +340,7 @@ namespace Menge
 
 			Magic_SetCamera( &camera );
 		}
-
+		
 		bool restart = Magic_Update( m_emitterId, m_total_rate );
 		m_total_rate = 0.f;
 
@@ -578,7 +589,7 @@ namespace Menge
 		return m_background;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count )
+	static void s_fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count, const mt::mat4f & _vpm, float _width, float _height )
 	{
 		for( size_t i = 0; i != _count; ++i )
 		{
@@ -587,21 +598,57 @@ namespace Menge
 
 			ParticleVertices & rp = _particles[_offset + i];
 
-			rp.v[0].x = vertexes.vertex1.x;
-			rp.v[0].y = vertexes.vertex1.y;
-			rp.v[0].z = vertexes.vertex1.z; 
+			mt::vec4f v0;
+			v0.x = vertexes.vertex1.x;
+			v0.y = vertexes.vertex1.y;
+			v0.z = vertexes.vertex1.z;
+			v0.w = 0.f;
 
-			rp.v[1].x = vertexes.vertex2.x;
-			rp.v[1].y = vertexes.vertex2.y;
-			rp.v[1].z = vertexes.vertex2.z;
+			mt::vec4f v0_vpm;
+			mt::mul_v4_m4( v0_vpm, v0, _vpm );
 
-			rp.v[2].x = vertexes.vertex3.x;
-			rp.v[2].y = vertexes.vertex3.y;
-			rp.v[2].z = vertexes.vertex3.z;
+			rp.v[0].x = (v0_vpm.x / v0_vpm.w + 1.f) * _width * 0.5f;
+			rp.v[0].y = (1.f - v0_vpm.y / v0_vpm.w) * _height * 0.5f;
+			rp.v[0].z = v0_vpm.z / v0_vpm.w;
+			
+			mt::vec4f v1;
+			v1.x = vertexes.vertex2.x;
+			v1.y = vertexes.vertex2.y;
+			v1.z = vertexes.vertex2.z;
+			v1.w = 0.f;
 
-			rp.v[3].x = vertexes.vertex4.x;
-			rp.v[3].y = vertexes.vertex4.y;
-			rp.v[3].z = vertexes.vertex4.z;
+			mt::vec4f v1_vpm;
+			mt::mul_v4_m4( v1_vpm, v1, _vpm );
+
+			rp.v[1].x = (v1_vpm.x / v1_vpm.w + 1.f) * _width * 0.5f;
+			rp.v[1].y = (1.f - v1_vpm.y / v1_vpm.w) * _height * 0.5f;
+			rp.v[1].z = v1_vpm.z / v1_vpm.w;
+
+			mt::vec4f v2;
+			v2.x = vertexes.vertex3.x;
+			v2.y = vertexes.vertex3.y;
+			v2.z = vertexes.vertex3.z;
+			v2.w = 0.f;
+
+			mt::vec4f v2_vpm;
+			mt::mul_v4_m4( v2_vpm, v2, _vpm );
+			
+			rp.v[2].x = (v2_vpm.x / v2_vpm.w + 1.f) * _width * 0.5f;
+			rp.v[2].y = (1.f - v2_vpm.y / v2_vpm.w) * _height * 0.5f;
+			rp.v[2].z = v2_vpm.z / v2_vpm.w;
+
+			mt::vec4f v3;
+			v3.x = vertexes.vertex4.x;
+			v3.y = vertexes.vertex4.y;
+			v3.z = vertexes.vertex4.z;
+			v3.w = 0.f;
+
+			mt::vec4f v3_vpm;
+			mt::mul_v4_m4( v3_vpm, v3, _vpm );
+
+			rp.v[3].x = (v3_vpm.x / v3_vpm.w + 1.0f) * _width * 0.5f;
+			rp.v[3].y = (1.f - v3_vpm.y / v3_vpm.w) * _height * 0.5f;
+			rp.v[3].z = v3_vpm.z / v3_vpm.w;
 
 			rp.uv[0].x = vertexes.u1;
 			rp.uv[0].y = vertexes.v1;
@@ -631,7 +678,33 @@ namespace Menge
 		{
 			return false;
 		}
+		
+		mt::mat4f vpm;
 
+		if( this->is3d() == true )
+		{
+			ParticleCamera pc;
+			this->getCamera( pc );
+
+			mt::mat4f vm;
+			mt::make_lookat_m4( vm, pc.pos, pc.dir, pc.up, 1.f );
+
+			mt::mat4f pm;
+			mt::make_projection_fov_m4( pm, pc.fov, pc.aspect, pc.znear, pc.zfar );
+
+			mt::mul_m4_m4( vpm, vm, pm );
+		}
+		else
+		{
+			mt::mat4f vm;
+			mt::ident_m4( vm );
+		
+			mt::mat4f pm;
+			mt::make_projection_ortho_lh_m4( pm, 0.f, m_width, m_height, 0.f, -1000.f, 1000.f );
+
+			mt::mul_m4_m4( vpm, vm, pm );
+		}
+		
 		while( rendering.count != 0 )
 		{
 			if( _particlesLimit <= _flush.particleCount + rendering.count || 
@@ -647,7 +720,7 @@ namespace Menge
 			mesh.texture = rendering.texture_id;
 			mesh.intense = rendering.intense;
 
-			s_fillParticles_( _particles, _flush.particleCount, mesh.size );
+			s_fillParticles_( _particles, _flush.particleCount, mesh.size, vpm, m_width, m_height );
 
 			_flush.particleCount += rendering.count;
 			++_flush.meshCount;

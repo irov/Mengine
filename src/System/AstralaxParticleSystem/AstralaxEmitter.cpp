@@ -21,6 +21,8 @@ namespace Menge
 		, m_tempScale(1)
         , m_basePosition(0.f, 0.f, 0.f)
 		, m_background(false)
+		, m_width(0.f)
+		, m_height(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -103,6 +105,9 @@ namespace Menge
 
 			Magic_SetEmitterPosition( m_emitterId, &pos );
 
+			m_width = 2048.f;
+			m_height = 2048.f;
+
 			m_background = false;
         }
         else
@@ -113,7 +118,6 @@ namespace Menge
 			MAGIC_POSITION adapt_pos;
 			adapt_pos.x = pos.x - (float)rect.left;
 			adapt_pos.y = pos.y - (float)rect.top;
-			//adapt_pos.z = pos.z;
 
 			Magic_SetEmitterPosition( m_emitterId, &adapt_pos );
 
@@ -557,7 +561,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count )
 	{
-		//_particles.resize(_offset + _count);
 		for( size_t i = 0; i != _count; ++i )
 		{
 			MAGIC_PARTICLE_VERTEXES vertexes;

@@ -64,23 +64,6 @@ namespace Menge
     {
 		if( Magic_Is3d( m_emitterId ) == false )
 		{
-			int typeCount = Magic_GetParticlesTypeCount( m_emitterId );
-
-			for( int i = 0; i != typeCount; ++i )
-			{
-				Magic_LockParticlesType( m_emitterId, i );
-
-				MAGIC_ORIENTATION orientation;
-				orientation.orientation = MAGIC_ORIENTATION_Z;
-				orientation.x = 0.f;
-				orientation.y = 0.f;
-				orientation.z = 0.f;
-
-				Magic_SetOrientation( &orientation );
-
-				Magic_UnlockParticlesType();
-			}	
-
 			MAGIC_RECT rect;
 			float backgroundScale = Magic_GetBackgroundRect( m_emitterId, &rect );
 
@@ -276,9 +259,7 @@ namespace Menge
 	{
 		MAGIC_VIEW view;
 		int user_camera = Magic_GetView( m_emitterId, &view );
-
-		float aspect_ratio = float(view.viewport_width) / float(view.viewport_height) * view.aspect_factor;
-
+				
 		_camera.pos.x = view.pos.x;
 		_camera.pos.y = view.pos.y;
 		_camera.pos.z = view.pos.z;
@@ -292,7 +273,7 @@ namespace Menge
 		_camera.up.z = view.up.z;
 
 		_camera.fov = view.fov;
-		_camera.aspect = aspect_ratio;
+		_camera.aspect = view.aspect_ratio;
 		_camera.znear = view.znear;
 		_camera.zfar = view.zfar;
 

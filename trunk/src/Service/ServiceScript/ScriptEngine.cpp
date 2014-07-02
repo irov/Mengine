@@ -398,8 +398,7 @@ namespace Menge
             return nullptr;
         }
 
-        entity->setServiceProvider( m_serviceProvider );
-        entity->setEmbed( py_entity );
+        entity->setServiceProvider( m_serviceProvider );        
 		entity->setType( _type );
         entity->setPrototype( _prototype );
 

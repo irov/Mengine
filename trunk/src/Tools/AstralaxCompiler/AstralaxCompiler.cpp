@@ -20,6 +20,21 @@
 #	include <string>
 #	include <sstream>
 
+static void message_error( const char * _format, ... )
+{
+	va_list argList;
+
+	va_start(argList, _format);
+
+	char str[2048];
+
+	int size = vsnprintf( str, 2048 - 1, _format, argList );
+
+	va_end(argList);
+
+	MessageBoxA( NULL, str, "AstralaxCompiler", MB_OK );
+}
+
 static void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
 {
 	if( _path.empty() == true )
@@ -90,7 +105,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( in.empty() == true )
 	{
-		printf("not found 'in' param\n"
+		message_error("not found 'in' param\n"
 			);
 
 		return 1;
@@ -98,7 +113,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( out.empty() == true )
 	{
-		printf("not found 'out' param\n"
+		message_error("not found 'out' param\n"
 			);
 
 		return 1;
@@ -106,7 +121,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( csa.empty() == true )
 	{
-		printf("not found 'csa' param\n"
+		message_error("not found 'csa' param\n"
 			);
 
 		return 1;
@@ -120,7 +135,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		HKEY openedKey;
 		if( ::RegOpenKeyEx( HKEY_CURRENT_USER, regPath, 0, KEY_READ, &openedKey ) != ERROR_SUCCESS )
 		{
-			printf("invalid RegOpenKeyEx %ls\n"
+			message_error("invalid RegOpenKeyEx %ls\n"
 				, regPath
 				);
 
@@ -130,7 +145,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		DWORD dwBufferSize = sizeof(szBuffer);
 		if( RegQueryValueEx( openedKey, NULL, 0, NULL, (LPBYTE)szBuffer, &dwBufferSize) != ERROR_SUCCESS )
 		{
-			printf("invalid RegQueryValueEx %ls\n"
+			message_error("invalid RegQueryValueEx %ls\n"
 				, regPath
 				);
 
@@ -185,7 +200,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		, &lpStartupInfo
 		, &lpProcessInformation ) == FALSE )
 	{
-		printf("invalid CreateProcess %ls %ls\n"
+		message_error("invalid CreateProcess %ls %ls\n"
 			, szBuffer
 			, lpCommandLine
 			);
@@ -204,7 +219,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( exit_code != 0 )
 	{
-		printf("invalid Process %ls exit_code %d\n"
+		message_error("invalid Process %ls exit_code %d\n"
 			, szBuffer
 			, exit_code
 			);
@@ -222,7 +237,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		if( f == NULL )
 		{
-			printf("invalid _wfopen %ls\n"
+			message_error("invalid _wfopen %ls\n"
 				, outCanonicalize
 				);
 
@@ -231,7 +246,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		fseek( f, 0, SEEK_END );
 		int f_size = ftell( f );
-		rewind( f );
+		rewind( f ); 
 
 		char * mf_buffer = new char [f_size];
 		fread( mf_buffer, 1, f_size, f );
@@ -241,7 +256,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		if( mf == MAGIC_ERROR )
 		{
-			printf("invalid mf %ls MAGIC_ERROR\n"
+			message_error("invalid mf %ls MAGIC_ERROR\n"
 				, outCanonicalize
 				);
 
@@ -250,7 +265,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		if( mf == MAGIC_UNKNOWN )
 		{
-			printf("invalid mf %ls MAGIC_UNKNOWN\n"
+			message_error("invalid mf %ls MAGIC_UNKNOWN\n"
 				, outCanonicalize
 				);
 
@@ -284,7 +299,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		if( err != 0 )
 		{
-			printf("invalid _wfopen %ls err %d\n"
+			message_error("invalid _wfopen %ls err %d\n"
 				, infoCanonicalizeQuote
 				, err
 				);
@@ -312,9 +327,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		fclose( f_info );
 	}
-
-	printf("complete\n"
-		);
 			
 	return 0;
 }

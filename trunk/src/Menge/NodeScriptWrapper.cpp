@@ -459,6 +459,19 @@ namespace Menge
 
             return size; 
         }
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * movie_getLayerPathLength( Movie * _movie, const ConstString & _name )
+		{
+			float length;
+			if( _movie->getLayerPathLength( _name, length ) == false )
+			{
+				return pybind::ret_none();
+			}
+
+			PyObject * py_length = pybind::ptr( length );
+
+			return py_length;
+		}
         //////////////////////////////////////////////////////////////////////////
         void Transformation3D_removeRelationTransformation( Transformation3D * _transformation )
         {
@@ -480,6 +493,14 @@ namespace Menge
             
             _transformation->setScale( _scale );
         }
+		//////////////////////////////////////////////////////////////////////////
+		bool ResourceMovie_hasLayer( ResourceMovie * _movie, const ConstString & _name )
+		{
+			const MovieLayer * layer;
+			bool successful = _movie->hasLayer( _name, &layer );
+
+			return successful;
+		}
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getLocalPolygonCenter( HotSpot * _hs )
         {
@@ -3880,7 +3901,7 @@ namespace Menge
 			.def("getSocketShape", &ResourceMovie::getSocketShape)
 			.def("hasAnchorPoint", &ResourceMovie::hasAnchorPoint)
 			.def("getAnchorPoint", &ResourceMovie::getAnchorPoint)
-			.def("getLayerPathLength", &ResourceMovie::getLayerPathLength)
+			.def_proxy_static("hasLayer", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_hasLayer)
             ;        
 
         pybind::interface_<ResourceAnimation, pybind::bases<ResourceReference> >("ResourceAnimation", false)
@@ -4465,6 +4486,7 @@ namespace Menge
                     .def_proxy_static( "getDuration", nodeScriptMethod, &NodeScriptMethod::movie_getDuration )
                     .def_proxy_static( "getFrameCount", nodeScriptMethod, &NodeScriptMethod::movie_getFrameCount )
                     .def_proxy_static( "getSize", nodeScriptMethod, &NodeScriptMethod::movie_getSize )
+					.def_proxy_static( "getLayerPathLength", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPathLength )
                     ;
 
                 pybind::interface_<MovieSlot, pybind::bases<Node> >("MovieSlot", false)

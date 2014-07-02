@@ -16,6 +16,8 @@ ModulePathFinder
     PathFinderWay.h
     ThreadWorkerPathFinder.cpp
     ThreadWorkerPathFinder.h
+    PathGraphNode.h
+    PathGraph.h
 )
 
 ADD_FILTER(

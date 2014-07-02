@@ -1,9 +1,13 @@
 #	include "ModulePathFinder.h"
 
 #	include "Interface/RenderSystemInterface.h"
+#	include "Interface/StringizeInterface.h"
 #	include "Interface/PlayerInterface.h"
 
 #	include "PathFinderWay.h"
+#	include "PathGraphNode.h"
+
+#	include "Kernel/ScriptClassWrapper.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -30,8 +34,75 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void * superclass_new_PathGraphNode( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds )
+	{
+		(void)_scope;
+		(void)_obj;
+		(void)_args;
+		(void)_kwds;		
+
+		//void * user = _scope->get_user();
+		//ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(user);
+
+		PathGraphNode * node = new PathGraphNode;
+
+		node->setEmbed( _obj );
+
+		return node;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void superclass_dealloc_only_python( const pybind::class_type_scope_ptr & _scope, void * _impl )
+	{
+		(void)_scope;
+		(void)_impl;
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static PyObject * s_fastpathfinder_graph_getPath( fastpathfinder::graph * _graph, fastpathfinder::graph_node * _from, fastpathfinder::graph_node * _to )
+	{
+		fastpathfinder::vector_graph_node path;
+		_graph->getPath( _from, _to, path );
+
+		PyObject * py_path = pybind::list_new(0);
+
+		for( fastpathfinder::vector_graph_node::iterator
+			it = path.begin(),
+			it_end = path.end();
+		it != it_end;
+		++it )
+		{
+			PathGraphNode * node = (PathGraphNode *)*it;
+			
+			PyObject * py_node = pybind::ptr(node);
+
+			pybind::list_appenditem( py_path, py_node );
+
+			pybind::decref( py_node );
+		}
+
+		return py_path;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ModulePathFinder::initialize()
 	{
+		pybind::interface_<fastpathfinder::graph_node>("fastpathfinder::graph_node", true)
+			;
+
+		pybind::superclass_<PathGraphNode, pybind::bases<fastpathfinder::graph_node> >("PathGraphNode", (void *)m_serviceProvider, &superclass_new_PathGraphNode, &superclass_dealloc_only_python, false)
+			.def_constructor( pybind::init<>() )
+			.def( "getWeight", &PathGraphNode::getWeight )
+			;
+
+		pybind::interface_<fastpathfinder::graph>("PathGraph")
+			.def("addNode", &fastpathfinder::graph::addNode )
+			.def("addEdge", &fastpathfinder::graph::addEdge )
+			.def("addEdge2", &fastpathfinder::graph::addEdge2 )
+			.def("blockNode", &fastpathfinder::graph::blockNode )
+			.def_static("getPath", &s_fastpathfinder_graph_getPath )
+			;
+
+		pybind::def_functor( "createPathFinderGraph", this, &ModulePathFinder::createGraph );
+
 		pybind::interface_<PathFinderMap>("PathFinderMap")
 			.def( "setMap", &PathFinderMap::setMap )
 			.def( "testMap", &PathFinderMap::testMap )
@@ -51,7 +122,10 @@ namespace Menge
 			.def( "getWayPoint", &PathFinderWay::getWayPoint )
 			;
 
-		pybind::def_functor( "createPathFinderMap", this, &ModulePathFinder::createMap );	
+		pybind::def_functor( "createPathFinderMap", this, &ModulePathFinder::createMap );
+
+		SCRIPT_SERVICE(m_serviceProvider)
+			->addWrapping( Helper::stringizeString(m_serviceProvider, "PathGraphNode"), new ScriptClassWrapper<PathGraphNode>() );
 		
 		return true;
 	}
@@ -86,6 +160,11 @@ namespace Menge
 		m_maps.push_back( map );
 
 		return map;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	fastpathfinder::graph * ModulePathFinder::createGraph()
+	{
+		return new fastpathfinder::graph;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModulePathFinder::update( float _time, float _timing )

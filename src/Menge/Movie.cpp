@@ -589,6 +589,90 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Movie::getLayerPathLength( const ConstString & _name, float & _length ) const
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::getLayerPathLength %s invalid get layer %s not compile"
+				, m_name.c_str()
+				, _name.c_str()
+				);
+
+			return false;
+		}
+
+		const MovieLayer * layer;
+		if( m_resourceMovie->hasLayer( _name, &layer ) == true )
+		{			
+			float frameDuration = m_resourceMovie->getFrameDuration();
+			uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
+			uint32_t indexCount = indexOut - indexIn;
+
+			const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
+			MovieFrameSource start_frame;
+			framePack->getLayerFrame( layer->index, 0, start_frame );
+
+			mt::vec3f pos = start_frame.position;
+			float len = 0.f;
+
+			for( size_t i = 1; i != indexCount; ++i )
+			{
+				MovieFrameSource frame;
+				framePack->getLayerFrame( layer->index, i, frame );
+
+				len += mt::length_v3_v3( pos, frame.position );
+				pos = frame.position;
+			}
+
+			_length = len;
+
+			return true;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = dynamic_cast<Movie *>(node);
+			
+			if( movie->getLayerPathLength( _name, _length ) == false )
+			{
+				continue;
+			}
+
+			return true;
+		}
+
+		LOGGER_ERROR(m_serviceProvider)("Movie::getLayerPathLength %s not found layer %s"
+			, m_name.c_str()
+			, _name.c_str()
+			);
+
+		_length = 0.f;
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Movie::visitSubMovie( VisitorMovieSubMovie * _visitor )
 	{
 		if( m_resourceMovie == nullptr )

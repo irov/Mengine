@@ -23,9 +23,9 @@ namespace Menge
 	public:
         size_t getReference() const;
 
-    protected:
-        friend void intrusive_ptr_add_ref( FactorablePtr * _ptr );
-        friend void intrusive_ptr_dec_ref( FactorablePtr * _ptr );
+	public:
+        inline static void intrusive_ptr_add_ref( FactorablePtr * _ptr );
+        inline static void intrusive_ptr_dec_ref( FactorablePtr * _ptr );
 
 #   ifdef _DEBUG
     protected:
@@ -36,12 +36,12 @@ namespace Menge
         size_t m_reference;
 	};
     //////////////////////////////////////////////////////////////////////////
-    inline void intrusive_ptr_add_ref( FactorablePtr * _ptr )
+	inline void FactorablePtr::intrusive_ptr_add_ref( FactorablePtr * _ptr )
     {
         ++_ptr->m_reference;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void intrusive_ptr_dec_ref( FactorablePtr * _ptr )
+    inline void FactorablePtr::intrusive_ptr_dec_ref( FactorablePtr * _ptr )
     {
         if( --_ptr->m_reference == 0 )
         {

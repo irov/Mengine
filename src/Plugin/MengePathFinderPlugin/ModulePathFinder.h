@@ -4,6 +4,8 @@
 
 #	include "PathFinderMap.h"
 
+#	include "fastpathfinder/graph.h"
+
 namespace Menge
 {
 	class ModulePathFinder
@@ -26,6 +28,7 @@ namespace Menge
 
 	public:
 		PathFinderMap * createMap();
+		fastpathfinder::graph * createGraph();
 
 	public:
 		void update( float _time, float _timing ) override;

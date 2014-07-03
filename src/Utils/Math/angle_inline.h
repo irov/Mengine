@@ -1,4 +1,5 @@
 #	include <math.h>
+#	include <stdio.h>
 
 namespace mt
 {
@@ -26,23 +27,11 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE float angle_norm2(float _angle)
 	{
-		if( _angle <= mt::m_negative_pi )
-		{
-			float pi_count = floorf(_angle * mt::m_inv_pi);
-			float pi_abs = pi_count * mt::m_pi;
+		float angle2 = mt::angle_norm( _angle + mt::m_pi );
+		
+		angle2 -= mt::m_pi;
 
-			_angle -= pi_abs;
-		}
-
-		if( _angle >= mt::m_pi )
-		{
-			float pi_count = floorf(_angle * mt::m_inv_pi);
-			float pi_abs = pi_count * mt::m_pi;
-
-			_angle -= pi_abs;
-		}
-
-		return _angle;
+		return angle2;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE void angle_correct_interpolate_from_to(float _from, float _to, float & _correct_from, float & _correct_to)
@@ -181,9 +170,9 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE float sinf_fast( float x )
 	{
-		x = mt::angle_norm2( x );
+		float x2 = mt::angle_norm2( x );
 
-		float sin = sinf_fast_pi_pi( x );
+		float sin = sinf_fast_pi_pi( x2 );
 
 		return sin;
 	}

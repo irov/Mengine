@@ -32,6 +32,7 @@ namespace mt
 	MATH_FUNCTION_INLINE void set_box_from_center_and_extent(box2f & box, const vec2f & center, const vec2f & extent);
 	MATH_FUNCTION_INLINE void set_box_from_oriented_extent( box2f & box, const mt::vec2f & _offset, const mt::vec2f & _size, const mt::mat3f & _wm );
     MATH_FUNCTION_INLINE bool is_exist( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum );
+	MATH_FUNCTION_INLINE bool is_intersect( const vec2f & _aminimum, const vec2f & _amaximum, const vec2f & _bminimum, const vec2f & _bmaximum );
 	MATH_FUNCTION_INLINE bool is_intersect(const box2f & _a, const box2f & _b);
     MATH_FUNCTION_INLINE bool is_intersect(const box2f & _a, const vec2f & _b);
 	MATH_FUNCTION_INLINE vec2f box_size( const box2f& _box );

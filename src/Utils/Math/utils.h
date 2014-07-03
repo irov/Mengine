@@ -23,8 +23,8 @@ namespace mt
 		return _value;
 	}
 
-	MATH_INLINE bool test_equal( float _a, float _b, float _epsilon )
+	MATH_INLINE bool cmp_f_f( float _a, float _b )
 	{
-		return fabsf(_a - _b) < _epsilon;
+		return fabsf(_a - _b) < mt::m_eps;
 	}
 }

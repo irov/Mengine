@@ -1,3 +1,5 @@
+#	include "angle.h"
+
 namespace mt
 { 
 	MATH_METHOD_INLINE mat2f::mat2f()

@@ -284,10 +284,21 @@ namespace mt
 	/*	SetHomogenized */
 	MATH_FUNCTION_INLINE void homogenize_v4(vec4f& _out, const vec4f& _rhs)
 	{
-		_out.x = _rhs.x / _rhs.w;
-		_out.y = _rhs.y / _rhs.w;
-		_out.z = _rhs.z / _rhs.w;
+		float w_inv = 1.f / _rhs.w;
+
+		_out.x = _rhs.x * w_inv;
+		_out.y = _rhs.y * w_inv;
+		_out.z = _rhs.z * w_inv;
 		_out.w = 1.0f;
+	}
+
+	MATH_FUNCTION_INLINE void homogenize_v3_v4(vec3f & _out, const vec4f& _rhs)
+	{
+		float w_inv = 1.f / _rhs.w;
+
+		_out.x = _rhs.x * w_inv;
+		_out.y = _rhs.y * w_inv;
+		_out.z = _rhs.z * w_inv;
 	}
 
 	MATH_FUNCTION_INLINE vec4f homogenize_v4(const vec4f& _rhs)

@@ -517,8 +517,10 @@ namespace	Menge
 			Batch batch;
 			batch.begin = mesh.begin * 4;
 			batch.size = mesh.size * 4;
+
+			size_t materialIndex = mesh.texture * 2 + (mesh.intense ? 0 : 1);
 			
-			batch.material = this->getMaterial( mesh.texture * 2 + (mesh.intense ? 0 : 1) );
+			batch.material = this->getMaterial( materialIndex );
 
 			m_batchs.push_back( batch );
 		}
@@ -537,13 +539,13 @@ namespace	Menge
 	}
     //////////////////////////////////////////////////////////////////////////
     void ParticleEmitter2::updateVertexWM_()
-    {
-        const mt::mat4f & wm = this->getWorldMatrix();
-
-        if( mt::is_ident_m34( wm ) == true )
+    {        
+        if( this->isIdentityWorldMatrix() == true )
         {
             return;
         }
+
+		const mt::mat4f & wm = this->getWorldMatrix();
 
         for( TVectorBatchs::const_iterator
             it = m_batchs.begin(),

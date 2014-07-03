@@ -579,57 +579,53 @@ namespace Menge
 
 			ParticleVertices & rp = _particles[_offset + i];
 
-			mt::vec4f v0;
+			mt::vec3f v0;
 			v0.x = vertexes.vertex1.x;
 			v0.y = vertexes.vertex1.y;
 			v0.z = vertexes.vertex1.z;
-			v0.w = 0.f;
 
-			mt::vec4f v0_vpm;
-			mt::mul_v4_m4( v0_vpm, v0, _vpm );
+			mt::vec3f v0_vpm;
+			mt::mul_v3_v3_m4_homogenize( v0_vpm, v0, _vpm );
 
-			rp.v[0].x = (v0_vpm.x / v0_vpm.w + 1.f) * _width * 0.5f;
-			rp.v[0].y = (1.f - v0_vpm.y / v0_vpm.w) * _height * 0.5f;
-			rp.v[0].z = v0_vpm.z / v0_vpm.w;
+			rp.v[0].x = (v0_vpm.x + 1.f) * _width * 0.5f;
+			rp.v[0].y = (1.f - v0_vpm.y) * _height * 0.5f;
+			rp.v[0].z = v0_vpm.z;
 			
-			mt::vec4f v1;
+			mt::vec3f v1;
 			v1.x = vertexes.vertex2.x;
 			v1.y = vertexes.vertex2.y;
 			v1.z = vertexes.vertex2.z;
-			v1.w = 0.f;
 
-			mt::vec4f v1_vpm;
-			mt::mul_v4_m4( v1_vpm, v1, _vpm );
+			mt::vec3f v1_vpm;
+			mt::mul_v3_v3_m4_homogenize( v1_vpm, v1, _vpm );
 
-			rp.v[1].x = (v1_vpm.x / v1_vpm.w + 1.f) * _width * 0.5f;
-			rp.v[1].y = (1.f - v1_vpm.y / v1_vpm.w) * _height * 0.5f;
-			rp.v[1].z = v1_vpm.z / v1_vpm.w;
+			rp.v[1].x = (v1_vpm.x + 1.f) * _width * 0.5f;
+			rp.v[1].y = (1.f - v1_vpm.y) * _height * 0.5f;
+			rp.v[1].z = v1_vpm.z;
 
-			mt::vec4f v2;
+			mt::vec3f v2;
 			v2.x = vertexes.vertex3.x;
 			v2.y = vertexes.vertex3.y;
 			v2.z = vertexes.vertex3.z;
-			v2.w = 0.f;
 
-			mt::vec4f v2_vpm;
-			mt::mul_v4_m4( v2_vpm, v2, _vpm );
+			mt::vec3f v2_vpm;
+			mt::mul_v3_v3_m4_homogenize( v2_vpm, v2, _vpm );
 			
-			rp.v[2].x = (v2_vpm.x / v2_vpm.w + 1.f) * _width * 0.5f;
-			rp.v[2].y = (1.f - v2_vpm.y / v2_vpm.w) * _height * 0.5f;
-			rp.v[2].z = v2_vpm.z / v2_vpm.w;
+			rp.v[2].x = (v2_vpm.x + 1.f) * _width * 0.5f;
+			rp.v[2].y = (1.f - v2_vpm.y) * _height * 0.5f;
+			rp.v[2].z = v2_vpm.z;
 
-			mt::vec4f v3;
+			mt::vec3f v3;
 			v3.x = vertexes.vertex4.x;
 			v3.y = vertexes.vertex4.y;
 			v3.z = vertexes.vertex4.z;
-			v3.w = 0.f;
 
-			mt::vec4f v3_vpm;
-			mt::mul_v4_m4( v3_vpm, v3, _vpm );
+			mt::vec3f v3_vpm;
+			mt::mul_v3_v3_m4_homogenize( v3_vpm, v3, _vpm );
 
-			rp.v[3].x = (v3_vpm.x / v3_vpm.w + 1.0f) * _width * 0.5f;
-			rp.v[3].y = (1.f - v3_vpm.y / v3_vpm.w) * _height * 0.5f;
-			rp.v[3].z = v3_vpm.z / v3_vpm.w;
+			rp.v[3].x = (v3_vpm.x + 1.0f) * _width * 0.5f;
+			rp.v[3].y = (1.f - v3_vpm.y) * _height * 0.5f;
+			rp.v[3].z = v3_vpm.z;
 
 			rp.uv[0].x = vertexes.u1;
 			rp.uv[0].y = vertexes.v1;

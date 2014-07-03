@@ -15,12 +15,12 @@ namespace mt
 }
 
 #	ifndef _DEBUG
-#	define MATH_FORCE_INLINE
+#	define MATH_FORCE_INLINE 1
 #	endif
 
 #	define MATH_INLINE inline
 
-#	ifdef MATH_FORCE_INLINE
+#	if MATH_FORCE_INLINE == 1
 #	define MATH_FUNCTION_INLINE MATH_INLINE static
 #	define MATH_METHOD_INLINE MATH_INLINE
 #	else

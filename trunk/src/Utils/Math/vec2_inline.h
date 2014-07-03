@@ -1,6 +1,6 @@
 #	include "angle.h"
 
-//#	include <math.h>
+#	include <math.h>
 
 namespace mt
 {

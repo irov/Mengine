@@ -87,48 +87,47 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setRotateX( float _angle )
 	{
-		float norm_angle = mt::angle_norm( _angle );
-
-		if( fabsf(m_euler.x - norm_angle) < 0.00001f )
+		if( mt::cmp_f_f( m_euler.x, _angle ) == true )
 		{
 			return;
 		}
 
-		m_euler.x = norm_angle;
+		m_euler.x = _angle;
 
 		this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setRotateY( float _angle )
 	{
-		float norm_angle = mt::angle_norm( _angle );
-
-		if( fabsf(m_euler.y - norm_angle) < 0.00001f )
+		if( mt::cmp_f_f( m_euler.y, _angle ) == true )
 		{
 			return;
 		}
 
-		m_euler.y = norm_angle;
+		m_euler.y = _angle;
 
 		this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setRotateZ( float _angle )
 	{
-		float norm_angle = mt::angle_norm( _angle );
-
-		if( fabsf(m_euler.z - norm_angle) < 0.00001f )
+		if( mt::cmp_f_f( m_euler.z, _angle ) == true )
 		{
 			return;
 		}
 
-		m_euler.z = norm_angle;
+		m_euler.z = _angle;
 
 		this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setRotation( const mt::vec3f & _euler )
 	{
+		if( mt::cmp_v3_v3( m_euler, _euler ) == true )
+		{
+			return;
+		}
+
 		m_euler = _euler;
 
         this->invalidateLocalMatrix();
@@ -208,11 +207,20 @@ namespace Menge
 		mat_scale.v0.x = m_scale.x;
 		mat_scale.v1.y = m_scale.y;
 		mat_scale.v2.z = m_scale.z;
-		
-		mt::mat4f mat_rot;
-		mt::make_rotate_m4_euler( mat_rot, m_euler.x, m_euler.y, m_euler.z );
+				
+		if( fabsf( m_euler.x ) < mt::m_eps &&
+			fabsf( m_euler.y ) < mt::m_eps &&
+			fabsf( m_euler.z ) < mt::m_eps )
+		{
+			m_localMatrix = mat_scale;
+		}
+		else
+		{
+			mt::mat4f mat_rot;
+			mt::make_rotate_m4_euler( mat_rot, m_euler.x, m_euler.y, m_euler.z );
         
-		mt::mul_m4_m4( m_localMatrix, mat_scale, mat_rot );
+			mt::mul_m4_m4( m_localMatrix, mat_scale, mat_rot );
+		}
 
 		m_localMatrix.v3.x += m_position.x + m_coordinate.x;
 		m_localMatrix.v3.y += m_position.y + m_coordinate.y;

@@ -1,6 +1,7 @@
-#	include <math.h>
-
 #	include "mat4.h"
+#	include "angle.h"
+
+#	include <math.h>
 
 namespace mt
 {

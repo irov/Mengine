@@ -5,6 +5,7 @@
 namespace mt
 {
 	MATH_FUNCTION_INLINE float angle_norm(float _angle);
+	MATH_FUNCTION_INLINE float angle_norm2(float _angle);
 	MATH_FUNCTION_INLINE void angle_correct_interpolate_from_to(float _from, float _to, float & _correct_from, float & _correct_to);
 	MATH_FUNCTION_INLINE float angle_length( float _angle1, float _angle2 );
 	MATH_FUNCTION_INLINE float angle_norm360( float _angle );

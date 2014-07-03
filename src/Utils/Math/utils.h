@@ -22,4 +22,9 @@ namespace mt
 
 		return _value;
 	}
+
+	MATH_INLINE bool test_equal( float _a, float _b, float _epsilon )
+	{
+		return fabsf(_a - _b) < _epsilon;
+	}
 }

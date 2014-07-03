@@ -82,6 +82,7 @@ namespace mt
 	MATH_FUNCTION_INLINE vec4f norm_safe_v4(const vec4f& _rhs);
 	
 	MATH_FUNCTION_INLINE void homogenize_v4(vec4f& _out, const vec4f& _rhs);
+	MATH_FUNCTION_INLINE void homogenize_v3_v4(vec3f & _out, const vec4f& _rhs);
 	MATH_FUNCTION_INLINE vec4f homogenize_v4(const vec4f& _rhs);
 };
 

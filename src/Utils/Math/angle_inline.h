@@ -2,29 +2,49 @@
 
 namespace mt
 {
+	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE float angle_norm(float _angle)
 	{
-		const float pi2 = mt::m_pi * 2.f;
-		
 		if( _angle < 0.f )
 		{
-			float pi_count = floorf(_angle / pi2);
-			float pi_abs = pi_count * pi2;
+			float pi_count = floorf(_angle * mt::m_inv_two_pi);
+			float pi_abs = pi_count * mt::m_two_pi;
 
 			_angle -= pi_abs;
 		}
 		
-		if( _angle > pi2 )
+		if( _angle > mt::m_two_pi )
 		{
-			float pi_count = ceilf(_angle / pi2);
-			float pi_abs = pi_count * pi2;
+			float pi_count = floorf(_angle * mt::m_inv_two_pi);
+			float pi_abs = pi_count * mt::m_two_pi;
 
 			_angle -= pi_abs;
 		}
 
 		return _angle;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	MATH_FUNCTION_INLINE float angle_norm2(float _angle)
+	{
+		if( _angle <= mt::m_negative_pi )
+		{
+			float pi_count = floorf(_angle * mt::m_inv_pi);
+			float pi_abs = pi_count * mt::m_pi;
 
+			_angle -= pi_abs;
+		}
+
+		if( _angle >= mt::m_pi )
+		{
+			float pi_count = floorf(_angle * mt::m_inv_pi);
+			float pi_abs = pi_count * mt::m_pi;
+
+			_angle -= pi_abs;
+		}
+
+		return _angle;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE void angle_correct_interpolate_from_to(float _from, float _to, float & _correct_from, float & _correct_to)
 	{
 		float norm_angle_from = mt::angle_norm(_from);
@@ -36,25 +56,25 @@ namespace mt
 		{
 			float dist = norm_angle_to - norm_angle_from;
 
-			if( (norm_angle_from + mt::m_pi * 2.f) - norm_angle_to < dist )
+			if( (norm_angle_from + mt::m_two_pi) - norm_angle_to < dist )
 			{
-				correct_angle = norm_angle_to - mt::m_pi * 2.f;
+				correct_angle = norm_angle_to - mt::m_two_pi;
 			}
 		}
 		else
 		{
 			float dist = norm_angle_from - norm_angle_to;
 
-			if( (norm_angle_to + mt::m_pi * 2.f) - norm_angle_from < dist )
+			if( (norm_angle_to + mt::m_two_pi) - norm_angle_from < dist )
 			{
-				correct_angle = norm_angle_to + mt::m_pi * 2.f;
+				correct_angle = norm_angle_to + mt::m_two_pi;
 			}
 		}
 
 		_correct_from = norm_angle_from;
 		_correct_to = correct_angle;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE float angle_length( float _angle1, float _angle2 )
 	{
 		float correct_angle_from;
@@ -65,7 +85,7 @@ namespace mt
 
 		return length;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE float angle_norm360(float _angle)
 	{
 		if ((_angle >= 360.f) || (_angle < 0.f))
@@ -75,7 +95,7 @@ namespace mt
 
 		return _angle;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE float angle_norm180(float _angle)
 	{
 		_angle = angle_norm360(_angle);
@@ -87,12 +107,12 @@ namespace mt
 
 		return _angle;
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE float angle_delta_deg(float _angle1, float _angle2)
 	{
 		return angle_norm180(_angle1 - _angle2);
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE float acos32(float _x)
 	{
 		if (_x <= -1.f) 
@@ -107,7 +127,7 @@ namespace mt
 
 		return ::acosf(_x);
 	}
-
+	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE float angle_in_interval_deg( float _angle, float _min, float _max )
 	{
 		float delta = mt::angle_delta_deg(_max,_min);
@@ -152,29 +172,7 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE float cosf_fast( float x )
 	{
-		if( x < -6.28318531f || x > 6.28318531f )
-		{
-			return cosf( x );
-		}
-
-		if (x < -3.14159265f)
-		{
-			x += 6.28318531f;
-		}
-		else
-		{
-			if( x >  3.14159265f )
-			{
-				x -= 6.28318531f;
-			}
-		}
-
-		x += 1.57079632f;
-
-		if( x >  3.14159265f )
-		{
-			x -= 6.28318531f;
-		}
+		x = mt::angle_norm2( x + mt::m_half_pi );
 
 		float cos = sinf_fast_pi_pi( x );
 
@@ -183,22 +181,7 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MATH_FUNCTION_INLINE float sinf_fast( float x )
 	{
-		if( x < -6.28318531f || x > 6.28318531f )
-		{
-			return sinf( x );
-		}
-
-		if (x < -3.14159265f)
-		{
-			x += 6.28318531f;
-		}
-		else
-		{
-			if( x >  3.14159265f )
-			{
-				x -= 6.28318531f;
-			}
-		}
+		x = mt::angle_norm2( x );
 
 		float sin = sinf_fast_pi_pi( x );
 

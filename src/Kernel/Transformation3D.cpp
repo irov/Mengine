@@ -14,6 +14,7 @@ namespace Menge
 		, m_scale(1.f, 1.f, 1.f)
 		, m_euler(0.f, 0.f, 0.f)
 		, m_relationTransformation(nullptr)
+		, m_identityLocalMatrix(true)
         , m_invalidateWorldMatrix(true)
         , m_invalidateLocalMatrix(true)
 	{
@@ -86,7 +87,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setRotateX( float _angle )
 	{
-		float norm_angle = mt::angle_norm(_angle);
+		float norm_angle = mt::angle_norm( _angle );
 
 		if( fabsf(m_euler.x - norm_angle) < 0.00001f )
 		{
@@ -100,7 +101,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setRotateY( float _angle )
 	{
-		float norm_angle = mt::angle_norm(_angle);
+		float norm_angle = mt::angle_norm( _angle );
 
 		if( fabsf(m_euler.y - norm_angle) < 0.00001f )
 		{
@@ -114,7 +115,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setRotateZ( float _angle )
 	{
-		float norm_angle = mt::angle_norm(_angle);
+		float norm_angle = mt::angle_norm( _angle );
 
 		if( fabsf(m_euler.z - norm_angle) < 0.00001f )
 		{
@@ -185,6 +186,16 @@ namespace Menge
 		this->setRotation( euler );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	inline static bool s_identityTransformationMatrix( const mt::mat4f & _m )
+	{
+		return fabsf( _m.v0.x - 1.f ) < 0.001f &&
+			fabsf( _m.v1.y - 1.f ) < 0.001f &&
+			fabsf( _m.v2.z - 1.f ) < 0.001f &&
+			fabsf( _m.v3.x ) < 0.001f &&
+			fabsf( _m.v3.y ) < 0.001f &&
+			fabsf( _m.v3.z ) < 0.001f;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::updateLocalMatrix() const
 	{
 		m_invalidateLocalMatrix = false;
@@ -206,6 +217,17 @@ namespace Menge
 		m_localMatrix.v3.x += m_position.x + m_coordinate.x;
 		m_localMatrix.v3.y += m_position.y + m_coordinate.y;
 		m_localMatrix.v3.z += m_position.z + m_coordinate.z;
+
+		m_identityLocalMatrix = s_identityTransformationMatrix( m_localMatrix );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Transformation3D::isIdentityWorldMatrix() const
+	{
+		const mt::mat4f & wm = this->getWorldMatrix();
+
+		bool identity = s_identityTransformationMatrix( wm );
+
+		return identity;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::updateWorldMatrix() const
@@ -222,7 +244,14 @@ namespace Menge
 		{
 			const mt::mat4f & relationMatrix = m_relationTransformation->getWorldMatrix();
 
-			mt::mul_m4_m4( m_worldMatrix, localMatrix, relationMatrix );
+			if( m_identityLocalMatrix == false )
+			{
+				mt::mul_m4_m4( m_worldMatrix, localMatrix, relationMatrix );
+			}
+			else
+			{
+				m_worldMatrix = relationMatrix;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

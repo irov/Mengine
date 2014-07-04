@@ -32,7 +32,7 @@ namespace Menge
 	{
 		m_serviceProvider = _provider;
 
-		LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service..." );
+		LOGGER_INFO(m_serviceProvider)( "Initializing Particle System 3D..." );
 
 		ParticleSystemInterface2 * particleSystem2;
 		if( SERVICE_CREATE( ParticleSystem2, &particleSystem2 ) == false )

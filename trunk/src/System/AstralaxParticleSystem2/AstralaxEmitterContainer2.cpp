@@ -12,6 +12,7 @@ namespace Menge
 	AstralaxEmitterContainer2::AstralaxEmitterContainer2()
         : m_serviceProvider(nullptr)
 		, m_mf(0)
+		, m_bufferId(0)
 	{
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -36,10 +37,10 @@ namespace Menge
 		unsigned char * binary_memory;
 		size_t binary_size;
 
-		uint32_t bufferId = CACHE_SERVICE(m_serviceProvider)
+		m_bufferId = CACHE_SERVICE(m_serviceProvider)
 			->getArchiveData( _stream, _archivator, GET_MAGIC_NUMBER(MAGIC_PTZ), GET_MAGIC_VERSION(MAGIC_PTZ), &binary_memory, binary_size );
 
-		if( bufferId == 0 )
+		if( m_bufferId == 0 )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize: %s invalid get data"
 				, _name.c_str()
@@ -48,28 +49,17 @@ namespace Menge
 			return false;
 		}
 
-		m_mf = Magic_OpenFileInMemory( reinterpret_cast<const char *>(binary_memory) );
-
-		CACHE_SERVICE(m_serviceProvider)
-			->unlockBuffer( bufferId );
-
-		if( m_mf == MAGIC_ERROR )
+		HM_FILE mf;
+		if( this->loadContainer_( binary_memory, binary_size, mf ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory %s invalid open file in memory (alredy open)"
-				, _name.c_str()
-				);
+			CACHE_SERVICE(m_serviceProvider)
+				->unlockBuffer( m_bufferId );
+			m_bufferId = 0;
 
 			return false;
 		}
 
-		if( m_mf == MAGIC_UNKNOWN )
-		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory %s invalid open file in memory (invalid format or version)"
-				, _name.c_str()
-				);
-
-			return false;
-		}
+		m_mf = mf;
 
 		m_factoryPoolAstralaxEmitter.setMethodListener( this, &AstralaxEmitterContainer2::onEmitterRelease_ );
 
@@ -78,6 +68,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitterContainer2::finalize()
 	{
+		CACHE_SERVICE(m_serviceProvider)
+			->unlockBuffer( m_bufferId );
+		m_bufferId = 0;
+
 		Magic_CloseFile( m_mf );
 		m_mf = 0;
 	}
@@ -115,6 +109,35 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxEmitterContainer2::loadContainer_( unsigned char * _buffer, size_t _size, HM_FILE & _mf ) const
+	{
+		(void)_size;
+
+		HM_FILE mf = Magic_OpenFileInMemory( reinterpret_cast<const char *>(_buffer) );
+
+		if( mf == MAGIC_ERROR )
+		{
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory %s invalid open file in memory (alredy open)"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+		if( mf == MAGIC_UNKNOWN )
+		{
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory %s invalid open file in memory (invalid format or version)"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+		_mf = mf;
+
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	HM_EMITTER AstralaxEmitterContainer2::createEmitterId_() const
 	{

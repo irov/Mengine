@@ -34,6 +34,8 @@ namespace Menge
 	{
 		Magic_SetAxis( MAGIC_pXpYpZ );
 
+		m_factoryPoolAstralaxEmitterContainer.setMethodListener( this, &AstralaxParticleSystem2::onContainerRelease_ );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -58,5 +60,10 @@ namespace Menge
 		}
 
 		return container;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxParticleSystem2::onContainerRelease_( AstralaxEmitterContainer2 * _contanier )
+	{
+		_contanier->finalize();
 	}
 }

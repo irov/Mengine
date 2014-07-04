@@ -4,7 +4,7 @@ namespace mt
 {
 	const float m_pi = 3.14159265358979323846f;
 	const float m_inv_pi = 1.f / m_pi;
-	const float m_negative_pi = -3.14159265358979323846f;
+	const float m_negative_pi = -m_pi;
 	const float m_half_pi = m_pi * 0.5f;
 	const float m_two_pi = 2.f * m_pi;
 	const float m_inv_two_pi = 1.f / m_two_pi;

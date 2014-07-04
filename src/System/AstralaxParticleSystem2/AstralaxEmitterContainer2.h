@@ -45,6 +45,7 @@ namespace Menge
 		void onEmitterRelease_( AstralaxEmitter2 * _emitter );
 
 	protected:
+		bool loadContainer_( unsigned char * _buffer, size_t _size, HM_FILE & _mf ) const;
 		HM_EMITTER createEmitterId_() const;
 			
 	private:
@@ -52,6 +53,7 @@ namespace Menge
         ConstString m_name;
 
 		HM_FILE m_mf;
+		uint32_t m_bufferId;
 
 		typedef FactoryPoolStore<AstralaxEmitter2, 16> TFactoryPoolAstralaxEmitter;
 		mutable TFactoryPoolAstralaxEmitter m_factoryPoolAstralaxEmitter;

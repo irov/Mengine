@@ -59,7 +59,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		if( m_mf == MAGIC_UNKNOWN )
@@ -68,7 +68,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		m_factoryPoolAstralaxEmitter.setMethodListener( this, &AstralaxEmitterContainer2::onEmitterRelease_ );
@@ -79,6 +79,7 @@ namespace Menge
 	void AstralaxEmitterContainer2::finalize()
 	{
 		Magic_CloseFile( m_mf );
+		m_mf = 0;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitterContainer2::isValid() const

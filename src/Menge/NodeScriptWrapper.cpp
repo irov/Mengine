@@ -705,10 +705,20 @@ namespace Menge
 			return sm;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void destroyScheduler( ScheduleManagerInterface * _sm )
+		bool destroyScheduler( ScheduleManagerInterface * _sm )
 		{
-			PLAYER_SERVICE(m_serviceProvider)
+			if( _sm != nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Menge.destroyScheduler destroy scheduler is NULL"
+					);
+
+				return false;
+			}
+
+			bool successful = PLAYER_SERVICE(m_serviceProvider)
 				->destroySchedulerManager( _sm );
+
+			return successful;
 		}
         //////////////////////////////////////////////////////////////////////////
         class PyObjectScheduleListener

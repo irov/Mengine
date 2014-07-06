@@ -80,7 +80,7 @@ namespace Menge
 
 	public:
 		ScheduleManagerInterface * createSchedulerManager() override;
-		void destroySchedulerManager( ScheduleManagerInterface * _scheduler ) override;
+		bool destroySchedulerManager( ScheduleManagerInterface * _scheduler ) override;
 
     public:
         MousePickerSystemInterface * getMousePickerSystem() const override;

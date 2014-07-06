@@ -495,7 +495,7 @@ namespace Menge
 		return sm;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::destroySchedulerManager( ScheduleManagerInterface * _scheduler )
+	bool Player::destroySchedulerManager( ScheduleManagerInterface * _scheduler )
 	{	
 		TVectorUserScheduler::iterator it_found = std::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
 
@@ -504,12 +504,14 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("Player::destroySchedulerManager scheduler not found!"
 				);
 
-			return;
+			return false;
 		}
 		
 		m_schedulers.erase( it_found );
 
 		_scheduler->destroy();
+
+		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
     MousePickerSystemInterface * Player::getMousePickerSystem() const

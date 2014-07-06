@@ -41,7 +41,7 @@ namespace Menge
 
 	public:
 		virtual ScheduleManagerInterface * createSchedulerManager() = 0;
-		virtual void destroySchedulerManager( ScheduleManagerInterface * _scheduler ) = 0;
+		virtual bool destroySchedulerManager( ScheduleManagerInterface * _scheduler ) = 0;
 
     public:
         virtual void setRenderCamera( RenderCameraInterface * _camera) = 0;

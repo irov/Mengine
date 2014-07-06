@@ -119,6 +119,9 @@ namespace Menge
 		}
 		else
 		{
+			MAGIC_POSITION pos;
+			Magic_GetEmitterPosition( m_emitterId, &pos );
+
 			MAGIC_VIEW view;
 			if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
 			{
@@ -127,6 +130,8 @@ namespace Menge
 
 			m_width = view.viewport_width;
 			m_height = view.viewport_height;
+
+			m_background = true;
 		}
 
         return true;
@@ -137,65 +142,9 @@ namespace Menge
 		return m_containerName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static mt::box2f s_getEmitterBBox( HM_EMITTER _emitter )
-	{
-		mt::box2f box( mt::vec2f (0.f, 0.f), mt::vec2f(0.f, 0.f) );
-
-		bool isFolder = Magic_IsFolder( _emitter );
-
-		if( isFolder == true )
-		{
-			int count = Magic_GetEmitterCount( _emitter );
-
-			for( int i = 0; i < count; ++i )
-			{
-				HM_EMITTER child = Magic_GetEmitter( _emitter, i );
-				mt::box2f boxChild =  s_getEmitterBBox( child );
-				box.minimum.x = std::min( box.minimum.x, boxChild.minimum.x );
-				box.minimum.y = std::min( box.minimum.y, boxChild.minimum.y );
-				box.maximum.x = std::max( box.maximum.x, boxChild.maximum.x );
-				box.maximum.y = std::max( box.maximum.y, boxChild.maximum.y );
-			}
-		}
-		else
-		{
-			MAGIC_BBOX magic_box;
-
-			double duration = Magic_GetInterval2( _emitter );
-			double timing = Magic_GetUpdateTime( _emitter );
-
-			double curTime = Magic_GetInterval1( _emitter );
-			//size_t height = 0;
-			//size_t width = 0;
-
-			Magic_Restart( _emitter );
-			Magic_EmitterToInterval1( _emitter, 1, nullptr );
-
-			while( curTime  <  duration )
-			{
-				Magic_SetPosition( _emitter, curTime );
-				Magic_Update( _emitter, timing );
-				Magic_RecalcBBox( _emitter );
-				Magic_GetBBox( _emitter , &magic_box );
-												
-				box.minimum.x = std::min( box.minimum.x, magic_box.corner1.x );
-				box.minimum.y = std::min( box.minimum.y, magic_box.corner1.y );
-				box.maximum.x = std::max( box.maximum.x, magic_box.corner2.x );
-				box.maximum.y = std::max( box.maximum.y, magic_box.corner2.y );
-				
-				curTime+=100;
-			}
-
-			Magic_Restart( _emitter );
-			Magic_EmitterToInterval1( _emitter, 1, nullptr );
-		}
-		return box;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::getBoundingBox( mt::box2f& _box ) const
 	{
-		mt::box2f box = s_getEmitterBBox(m_emitterId);
-		_box = box;
+		(void)_box;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setLeftBorder( float _leftBorder )
@@ -207,15 +156,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::play()
 	{
-		//if ( m_start == false ) 
-		{ 
-			Magic_Restart( m_emitterId );
+		Magic_Restart( m_emitterId );
 
-			if( Magic_IsInterval1( m_emitterId ) == true )
-			{
-				//Magic_SetInterval1( m_id, m_leftBorder );
-				Magic_EmitterToInterval1( m_emitterId, 1.f, nullptr );
-			}
+		if( Magic_IsInterval1( m_emitterId ) == true )
+		{
+			//Magic_SetInterval1( m_id, m_leftBorder );
+			Magic_EmitterToInterval1( m_emitterId, 1.f, nullptr );
 		}
 
 		m_total_rate = 0.0;
@@ -447,7 +393,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setAngle( float _radians )
 	{
-		m_angle = _radians * 180.f / 3.1415926f;
+		m_angle = _radians / mt::m_pi * 180.f;
 
 		Magic_SetDiagramAddition( m_emitterId, MAGIC_DIAGRAM_DIRECTION, -1, m_angle );
 		int k_par = Magic_GetParticlesTypeCount( m_emitterId );
@@ -587,8 +533,8 @@ namespace Menge
 			mt::vec3f v0_vpm;
 			mt::mul_v3_v3_m4_homogenize( v0_vpm, v0, _vpm );
 
-			rp.v[0].x = (v0_vpm.x + 1.f) * _width * 0.5f;
-			rp.v[0].y = (1.f - v0_vpm.y) * _height * 0.5f;
+			rp.v[0].x = (1.f + v0_vpm.x) * _width * 0.5f;
+			rp.v[0].y = (1.f + v0_vpm.y) * _height * 0.5f;
 			rp.v[0].z = v0_vpm.z;
 			
 			mt::vec3f v1;
@@ -599,8 +545,8 @@ namespace Menge
 			mt::vec3f v1_vpm;
 			mt::mul_v3_v3_m4_homogenize( v1_vpm, v1, _vpm );
 
-			rp.v[1].x = (v1_vpm.x + 1.f) * _width * 0.5f;
-			rp.v[1].y = (1.f - v1_vpm.y) * _height * 0.5f;
+			rp.v[1].x = (1.f + v1_vpm.x) * _width * 0.5f;
+			rp.v[1].y = (1.f + v1_vpm.y) * _height * 0.5f;
 			rp.v[1].z = v1_vpm.z;
 
 			mt::vec3f v2;
@@ -611,8 +557,8 @@ namespace Menge
 			mt::vec3f v2_vpm;
 			mt::mul_v3_v3_m4_homogenize( v2_vpm, v2, _vpm );
 			
-			rp.v[2].x = (v2_vpm.x + 1.f) * _width * 0.5f;
-			rp.v[2].y = (1.f - v2_vpm.y) * _height * 0.5f;
+			rp.v[2].x = (1.f + v2_vpm.x) * _width * 0.5f;
+			rp.v[2].y = (1.f + v2_vpm.y) * _height * 0.5f;
 			rp.v[2].z = v2_vpm.z;
 
 			mt::vec3f v3;
@@ -623,8 +569,8 @@ namespace Menge
 			mt::vec3f v3_vpm;
 			mt::mul_v3_v3_m4_homogenize( v3_vpm, v3, _vpm );
 
-			rp.v[3].x = (v3_vpm.x + 1.0f) * _width * 0.5f;
-			rp.v[3].y = (1.f - v3_vpm.y) * _height * 0.5f;
+			rp.v[3].x = (1.f + v3_vpm.x) * _width * 0.5f;
+			rp.v[3].y = (1.f + v3_vpm.y) * _height * 0.5f;
 			rp.v[3].z = v3_vpm.z;
 
 			rp.uv[0].x = vertexes.u1;
@@ -664,7 +610,7 @@ namespace Menge
 			this->getCamera( pc );
 
 			mt::mat4f vm;
-			mt::make_lookat_m4( vm, pc.pos, pc.dir, pc.up, 1.f );
+			mt::make_lookat_m4( vm, pc.pos, pc.dir, -pc.up, -1.f );
 
 			mt::mat4f pm;
 			mt::make_projection_fov_m4( pm, pc.fov, pc.aspect, pc.znear, pc.zfar );
@@ -677,7 +623,7 @@ namespace Menge
 			mt::ident_m4( vm );
 		
 			mt::mat4f pm;
-			mt::make_projection_ortho_lh_m4( pm, 0.f, m_width, m_height, 0.f, -1000.f, 1000.f );
+			mt::make_projection_ortho_lh_m4( pm, 0.f, m_width, 0.f, m_height, -1000.f, 1000.f );
 
 			mt::mul_m4_m4( vpm, vm, pm );
 		}

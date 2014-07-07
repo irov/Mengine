@@ -23,6 +23,7 @@
 #	include "Interface/WindowsLayerInterface.h"
 #	include "Interface/HttpSystemInterface.h"
 #	include "Interface/PrefetcherInterface.h"
+#	include "Interface/ConfigInterface.h"
 
 
 #	include "WinTimer.h"
@@ -113,6 +114,7 @@ namespace Menge
 		bool initializeUserDirectory_();
 		bool initializeLogFile_();
 		bool initializeLogEngine_();
+		bool initializeConfigEngine_();
 		bool initializeUnicodeEngine_();
 		bool initializeParticleEngine_();
 		bool initializeParticleEngine2_();
@@ -131,6 +133,9 @@ namespace Menge
 		bool initializeCacheManager_();
 		bool initializeHttpService_();
 		bool initializePrefetcherService_();
+
+	protected:
+		bool getApplicationPath_( const char * _section, const char * _key, ConstString & _value );
 
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
@@ -224,6 +229,7 @@ namespace Menge
 		DataServiceInterface * m_dataService;
 		CacheServiceInterface * m_cacheService;
 		HttpSystemInterface * m_httpSystem;
+		ConfigServiceInterface * m_configService;
 
 		PrefetcherServiceInterface * m_prefetcherService;
 

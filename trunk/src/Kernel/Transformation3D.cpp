@@ -13,6 +13,7 @@ namespace Menge
 		, m_euler(0.f, 0.f, 0.f)
 		, m_relationTransformation(nullptr)
 		, m_identityLocalMatrix(true)
+		, m_identityWorldMatrix(true)
         , m_invalidateWorldMatrix(true)
         , m_invalidateLocalMatrix(true)
 	{
@@ -227,15 +228,6 @@ namespace Menge
 		m_identityLocalMatrix = s_identityTransformationMatrix( m_localMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Transformation3D::isIdentityWorldMatrix() const
-	{
-		const mt::mat4f & wm = this->getWorldMatrix();
-
-		bool identity = s_identityTransformationMatrix( wm );
-
-		return identity;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::updateWorldMatrix() const
 	{
 		m_invalidateWorldMatrix = false;
@@ -245,18 +237,33 @@ namespace Menge
 		if( m_relationTransformation == nullptr )
 		{
 			m_worldMatrix = localMatrix;
+
+			m_identityWorldMatrix = m_identityLocalMatrix;
 		}
 		else
 		{
-			const mt::mat4f & relationMatrix = m_relationTransformation->getWorldMatrix();
+			bool identityWorldMatrix = m_relationTransformation->isIdentityWorldMatrix();
 
-			if( m_identityLocalMatrix == false )
+			if( identityWorldMatrix == false )
 			{
-				mt::mul_m4_m4( m_worldMatrix, localMatrix, relationMatrix );
+				const mt::mat4f & relationMatrix = m_relationTransformation->getWorldMatrix();
+
+				if( m_identityLocalMatrix == false )
+				{				
+					mt::mul_m4_m4( m_worldMatrix, localMatrix, relationMatrix );
+				}
+				else
+				{
+					m_worldMatrix = relationMatrix;
+				}
+
+				m_identityWorldMatrix = false;
 			}
 			else
 			{
-				m_worldMatrix = relationMatrix;
+				m_worldMatrix = localMatrix;
+
+				m_identityWorldMatrix = m_identityLocalMatrix;
 			}
 		}
 	}

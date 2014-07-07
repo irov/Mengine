@@ -32,6 +32,7 @@
 
 #	include "Core/FileLogger.h"
 #	include "Core/File.h"
+#	include "Core/IniUtil.h"
 
 #	include "resource.h"
 
@@ -52,6 +53,7 @@ SERVICE_EXTERN(ServiceProvider, Menge::ServiceProviderInterface);
 SERVICE_EXTERN(Application, Menge::ApplicationInterface);
 SERVICE_EXTERN(StringizeService, Menge::StringizeServiceInterface);
 SERVICE_EXTERN(LogService, Menge::LogServiceInterface);
+SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
 
 SERVICE_EXTERN(ArchiveService, Menge::ArchiveServiceInterface);
 SERVICE_EXTERN(ModuleService, Menge::ModuleServiceInterface);
@@ -220,6 +222,7 @@ namespace Menge
 		, m_dataService(nullptr)
 		, m_cacheService(nullptr)
 		, m_httpSystem(nullptr)
+		, m_configService(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -267,20 +270,9 @@ namespace Menge
 
 		m_application = application;
 
-		if( m_application->initialize() == false )
+		if( m_application->initialize( m_commandLine ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application initialize failed" 
-				);
-
-			return false;
-		}
-
-		FilePath applicationPath = CONST_STRING_LOCAL( m_serviceProvider, "application.ini" );
-
-		if( m_application->loadConfig( m_commandLine, ConstString::none(), applicationPath ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application setup %s failed" 
-				, applicationPath.c_str()
 				);
 
 			return false;
@@ -385,6 +377,82 @@ namespace Menge
 			LOGGER_INFO(m_serviceProvider)( "initialize Zip..." );
 			initPluginMengeZip( &m_pluginMengeZip );
 			m_pluginMengeZip->initialize( m_serviceProvider );
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
+	{
+		FilePath applicationPath = CONST_STRING_LOCAL( m_serviceProvider, "application.ini" );
+
+		InputStreamInterfacePtr applicationInputStream = 
+			FILE_SERVICE(m_serviceProvider)->openInputFile( ConstString::none(), applicationPath );
+
+		if( applicationInputStream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeConfigEngine_ Invalid open application settings %s"
+				, applicationPath.c_str()
+				);
+
+			return false;
+		}
+
+		IniUtil::IniStore ini;
+		if( IniUtil::loadIni( ini, applicationInputStream, m_serviceProvider ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeConfigEngine_ Invalid load application settings %s"
+				, applicationPath.c_str()
+				);
+
+			return false;
+		}
+
+		const char * gameIniPath = ini.getSettingValue( _section, _key );
+
+		if( gameIniPath == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeConfigEngine_ Not found Game Path %s"
+				, applicationPath.c_str()
+				);
+
+			return false;
+		}
+
+		_path = Helper::stringizeString( m_serviceProvider, gameIniPath );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::initializeConfigEngine_()
+	{
+		LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
+
+		ConfigServiceInterface * configService;
+
+		if( SERVICE_CREATE( ConfigService, &configService ) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY( m_serviceProvider, configService );
+
+		m_configService = configService;
+
+		FilePath gameIniPath;
+		if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
+		{
+			return false;
+		}
+
+		if( CONFIG_SERVICE(m_serviceProvider)
+			->loadConfig( ConstString::none(), gameIniPath ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeConfigEngine_ invalid load config %s"				
+				, gameIniPath.c_str()
+				);
+
+			return false;
 		}
 
 		return true;
@@ -528,9 +596,9 @@ namespace Menge
 
 			m_userPath = buffer;
 			m_userPath += MENGE_FOLDER_DELIM;
-			m_userPath += m_application->getCompanyName();
+			m_userPath += CONFIG_VALUE(m_serviceProvider, "Project", "Company", L"NONAME");
 			m_userPath += MENGE_FOLDER_DELIM;
-			m_userPath += m_application->getProjectName();
+			m_userPath += CONFIG_VALUE(m_serviceProvider, "Project", "Name", L"UNKNOWN");
 			m_userPath += MENGE_FOLDER_DELIM;
 		}
 
@@ -1379,6 +1447,11 @@ namespace Menge
 			return false;
 		}
 
+		if( this->initializeConfigEngine_() == false )
+		{
+			return false;
+		}
+
 		if( this->initializeArchiveService_() == false )
 		{
 			return false;
@@ -1613,7 +1686,13 @@ namespace Menge
 
 		String personalityModule = CONFIG_VALUE(m_serviceProvider, "Game", "PersonalityModule", "Personality" );
 
-		if( m_application->createGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack) ) == false )
+		FilePath resourceIniPath;
+		if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
+		{
+			return false;
+		}
+
+		if( m_application->createGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack), ConstString::none(), resourceIniPath ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application create game failed"
 				);
@@ -2087,6 +2166,12 @@ namespace Menge
 		{
 			SERVICE_DESTROY( ScriptService, m_scriptService );
 			m_scriptService = nullptr;
+		}
+				
+		if( m_configService != nullptr )
+		{
+			SERVICE_DESTROY( ConfigService, m_configService );
+			m_configService = nullptr;
 		}
 
 		if( m_stringizeService != nullptr )

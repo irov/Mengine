@@ -31,7 +31,8 @@ namespace Menge
 		inline const mt::vec3f & getWorldPosition() const;
 
 	public:
-		bool isIdentityWorldMatrix() const;
+		inline bool isIdentityLocalMatrix() const;
+		inline bool isIdentityWorldMatrix() const;
 
 	public:
 		void setWorldPosition( const mt::vec3f & _pos );
@@ -76,7 +77,7 @@ namespace Menge
 		void lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up );
 
 	public:
-		void invalidateWorldMatrix();        
+		void invalidateWorldMatrix();
 		inline bool isInvalidateWorldMatrix() const;
 
 	protected:
@@ -105,8 +106,10 @@ namespace Menge
 		mutable mt::mat4f m_localMatrix;
 		mutable mt::mat4f m_worldMatrix;
 		mutable bool m_identityLocalMatrix;
-		mutable bool m_invalidateWorldMatrix;
+		mutable bool m_identityWorldMatrix;
 		mutable bool m_invalidateLocalMatrix;
+		mutable bool m_invalidateWorldMatrix;
+		
 	};
     //////////////////////////////////////////////////////////////////////////
     inline Transformation3D * Transformation3D::getRelationTransformation() const
@@ -154,9 +157,29 @@ namespace Menge
         return m_euler;
     }
 	//////////////////////////////////////////////////////////////////////////
-	inline bool Transformation3D::isInvalidateWorldMatrix()const
+	inline bool Transformation3D::isInvalidateWorldMatrix() const
 	{
 		return m_invalidateWorldMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Transformation3D::isIdentityLocalMatrix() const
+	{
+		if( m_invalidateLocalMatrix == true )
+		{
+			this->updateLocalMatrix();
+		}
+
+		return m_identityLocalMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Transformation3D::isIdentityWorldMatrix() const
+	{
+		if( m_invalidateWorldMatrix == true )
+		{
+			this->updateWorldMatrix();
+		}
+
+		return m_identityWorldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & Transformation3D::getLocalMatrix() const

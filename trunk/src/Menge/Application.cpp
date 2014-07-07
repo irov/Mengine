@@ -103,7 +103,6 @@
 #	include "Config/Config.h"
 
 #   include "Core/String.h"
-
 #	include "Core/IniUtil.h"
 
 #   include "stdex/allocator.h"
@@ -113,7 +112,6 @@
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN(Consts, Menge::Consts);
-SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
 SERVICE_EXTERN(TextService, Menge::TextServiceInterface);
 SERVICE_EXTERN(NodeService, Menge::NodeServiceInterface);
 SERVICE_EXTERN(LoaderService, Menge::LoaderServiceInterface);
@@ -144,8 +142,7 @@ namespace Menge
 		, m_resourceService(nullptr)
 		, m_textService(nullptr)
         , m_nodeService(nullptr)
-		, m_prototypeService(nullptr)
-		, m_configService(nullptr)
+		, m_prototypeService(nullptr)		
         , m_amplifierService(nullptr)
 		, m_createRenderWindow(false)
 		, m_cursorMode(false)
@@ -238,7 +235,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool Application::initialize()
+	bool Application::initialize( const String & _args )
 	{   
         SERVICE_CREATE( Consts, &m_consts );
         SERVICE_REGISTRY( m_serviceProvider, m_consts );
@@ -246,8 +243,7 @@ namespace Menge
         m_consts->initialize();
 
         ExecuteInitialize exinit( this );
-
-		exinit.add( &Application::initializeConfigManager_ );
+				
         exinit.add( &Application::initializePrototypeManager_ );
         exinit.add( &Application::initializeNodeManager_ );        
         exinit.add( &Application::initializeAmplifierService_ );
@@ -276,73 +272,8 @@ namespace Menge
 		CODEC_SERVICE(m_serviceProvider)
 			->registerDecoder( CONST_STRING(m_serviceProvider, memoryImage), m_imageDecoderMemory );
 		
-		return true;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::loadConfig( const String & _args, const ConstString & _fileGroup, const FilePath & _applicationPath )
-    {
 		this->parseArguments_( _args );
-
-		InputStreamInterfacePtr applicationInputStream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _applicationPath );
-
-		if( applicationInputStream == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application::setup Invalid open application settings %s"
-				, _applicationPath.c_str()
-				);
-
-			return false;
-		}
-
-		IniUtil::IniStore ini;
-		if( IniUtil::loadIni( ini, applicationInputStream, m_serviceProvider ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application::setup Invalid load application settings %s"
-				, _applicationPath.c_str()
-				);
-
-			return false;
-		}
-
-		const char * gameIniPath = ini.getSettingValue( "Game", "Path" );
-
-		if( gameIniPath == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application::setup Not found Game Path %s"
-				, _applicationPath.c_str()
-				);
-
-			return false;
-		}
-
-		FilePath c_gameIniPath = Helper::stringizeString( m_serviceProvider, gameIniPath );
-
-		if( CONFIG_SERVICE(m_serviceProvider)
-			->loadConfig( _fileGroup, c_gameIniPath ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application::setup invalid load config %s:%s"
-				, _fileGroup.c_str()
-				, c_gameIniPath.c_str()
-				);
-
-			return false;
-		}
-
-		const char * resourcesIniPath = ini.getSettingValue( "Resource", "Path" );
-
-		if( resourcesIniPath == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application::setup Not found Resources Path %s"
-				, _applicationPath.c_str()
-				);
-
-			return false;
-		}
-
-		m_resourcesIniGroup = _fileGroup;
-		m_resourcesIniPath = Helper::stringizeString( m_serviceProvider, resourcesIniPath );
-		
+	
 		m_companyName = CONFIG_VALUE(m_serviceProvider, "Project", "Company", L"NONAME");
 		m_projectName = CONFIG_VALUE(m_serviceProvider, "Project", "Name", L"UNKNOWN");
 
@@ -351,7 +282,7 @@ namespace Menge
 		m_projectVersion = CONFIG_VALUE(m_serviceProvider, "Project", "Version", 0U);
 		m_projectVersionCheck = CONFIG_VALUE(m_serviceProvider, "Project", "VersionCheck", true);
 
-        m_contentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "ContentResolution", Resolution(1024.f, 768.f));
+        m_contentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "ContentResolution", Resolution(1024, 768));
         m_fixedContentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "FixedContentResolution", true);
 		m_windowModeCheck = CONFIG_VALUE(m_serviceProvider, "Game", "WindowModeCheck", false);
 		
@@ -370,7 +301,7 @@ namespace Menge
            m_aspectRatioViewports[aspect] = it->viewport;
         }
 
-        m_windowResolution = CONFIG_VALUE(m_serviceProvider, "Window", "Size", Resolution(1024.f, 768.f));
+        m_windowResolution = CONFIG_VALUE(m_serviceProvider, "Window", "Size", Resolution(1024, 768));
         m_bits = CONFIG_VALUE(m_serviceProvider, "Window", "Bits", 32);
         m_fullscreen = CONFIG_VALUE(m_serviceProvider, "Window", "Fullscreen", true);
         m_vsync = CONFIG_VALUE(m_serviceProvider, "Window", "VSync", true);               
@@ -385,9 +316,9 @@ namespace Menge
 
 		if( resourceInputStream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("StartupConfigLoader::load Invalid open resourcesPack setting '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Application::loadResourcePacks_ Invalid open resourcesPack setting '%s'"
 				, _resourceIni.c_str()
-				);
+				);  
 
 			return false;
 		}
@@ -395,7 +326,7 @@ namespace Menge
 		IniUtil::IniStore ini;
 		if( IniUtil::loadIni( ini, resourceInputStream, m_serviceProvider ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("StartupConfigLoader::loadResourcePacks_ Invalid load resource settings '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Application::loadResourcePacks_ Invalid load resource settings '%s'"
 				, _resourceIni.c_str()
 				);
 
@@ -460,9 +391,6 @@ namespace Menge
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.descriptionPath, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );	
-
-			//IniUtil::getIniValue( ini, resourcePack.c_str(), "Text", pack.texts, m_serviceProvider );
-			//IniUtil::getIniValue( ini, resourcePack.c_str(), "Font", pack.fonts, m_serviceProvider );
 
 			m_game->addLanguagePak( pack );
 		}
@@ -582,25 +510,6 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeConfigManager_()
-	{
-		LOGGER_WARNING(m_serviceProvider)("Inititalizing ConfigManager..." );
-
-		ConfigServiceInterface * configService;
-
-		if( SERVICE_CREATE( ConfigService, &configService ) == false )
-		{
-			return false;
-		}
-
-		SERVICE_REGISTRY( m_serviceProvider, configService );
-
-		m_configService = configService;
-
-		return true;
-	}
-
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializePrototypeManager_()
     {
@@ -877,7 +786,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createGame( const ConstString & _personalityModule, const ConstString & _language )
+	bool Application::createGame( const ConstString & _personalityModule, const ConstString & _language, const ConstString & _resourcesIniGroup, const FilePath & _resourcesIniPath )
 	{
         SERVICE_CREATE(GameService, &m_game);
 
@@ -897,10 +806,11 @@ namespace Menge
 
 		m_game->setLanguagePack( _language );
 
-		if( this->loadResourcePacks_( m_resourcesIniGroup, m_resourcesIniPath ) == false )
+		if( this->loadResourcePacks_( _resourcesIniGroup, _resourcesIniPath ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Application::setup Invalid load resourcesPack setting %s"
-				, m_resourcesIniPath.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Application::setup Invalid load resourcesPack setting %s:%s"
+				, _resourcesIniGroup.c_str()
+				, _resourcesIniPath.c_str()
 				);
 
 			return false;
@@ -1590,7 +1500,6 @@ namespace Menge
         SERVICE_DESTROY( NodeService, m_nodeService );
         
 		SERVICE_DESTROY( PrototypeService, m_prototypeService );
-		SERVICE_DESTROY( ConfigService, m_configService );
         SERVICE_DESTROY( Consts, m_consts );
 	}
 	//////////////////////////////////////////////////////////////////////////

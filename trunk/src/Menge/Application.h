@@ -66,11 +66,8 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize() override;
+        bool initialize( const String & _args ) override;
         void finalize() override;
-
-    public:
-        bool loadConfig( const String & _args, const ConstString & _fileGroup, const FilePath & _applicationPath ) override;
 		
 	protected:
 		bool loadResourcePacks_( const ConstString & _fileGroup, const FilePath & _resourceIni );
@@ -79,7 +76,7 @@ namespace Menge
 		bool getAllowFullscreenSwitchShortcut() const override;
         	
 	public:
-		bool createGame( const ConstString & _module, const ConstString & _language ) override;
+		bool createGame( const ConstString & _module, const ConstString & _language, const ConstString & _resourcesIniGroup, const FilePath & _resourcesIniPath ) override;
 		bool initializeGame( const String & _scriptInitParams ) override;
 
 	public:
@@ -105,7 +102,6 @@ namespace Menge
 		bool initializeResourceManager_();
 		bool initializeSceneManager_();
 		bool initializeTextManager_();
-		bool initializeConfigManager_();
         bool initializePrototypeManager_();
         bool initializeWatchdog_();
         bool initializeProfiler_();
@@ -260,7 +256,6 @@ namespace Menge
         AmplifierServiceInterface * m_amplifierService;
 		TextServiceInterface* m_textService;
 		NodeServiceInterface * m_nodeService;		
-		ConfigServiceInterface * m_configService;
         PrototypeServiceInterface * m_prototypeService;
         Consts * m_consts;
 
@@ -268,9 +263,6 @@ namespace Menge
         ProfilerServiceInterface * m_profiler;
 
 		void parseArguments_( const String& _arguments );
-
-		ConstString m_resourcesIniGroup;
-		FilePath m_resourcesIniPath;
 		
 		ResourceCursor * m_cursorResource;
 

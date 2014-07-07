@@ -63,7 +63,6 @@ namespace Menge
         void finalize() override;
 
     public:
-        void setBaseDir( const FilePath & _baseDir ) override;
         void setDevelopmentMode( bool _developmentMode ) override;
         void setPlatformName( const ConstString & _platformName ) override;
 
@@ -91,7 +90,7 @@ namespace Menge
 		void addLanguagePak( const ResourcePackDesc & _desc ) override;
 
 	public:
-		bool loadResourcePak( const FilePath & _baseDir, const ResourcePackDesc & _desc ) override;
+		bool loadResourcePak( const ResourcePackDesc & _desc ) override;
 
 	public:
 		bool applyConfigPaks() override;
@@ -158,7 +157,6 @@ namespace Menge
 		bool m_hasWindowPanel;
 		float m_timingFactor;
 
-		FilePath m_baseDir;
 		FilePath m_iconPath;
 
 		typedef std::vector<PakPtr> TVectorResourcePak;

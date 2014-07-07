@@ -28,7 +28,7 @@ namespace Menge
         bool _isValid() const override;
 
 	public:
-		void setPath( const FilePath& _path );
+		void setPath( const FilePath & _filePath );
 
 	public:
 		bool testPoint( const mt::vec2f & _point, float _minAlpha ) const override;
@@ -45,7 +45,7 @@ namespace Menge
         unsigned char * getHitBuffer_( size_t _level ) const;
 
     protected:
-		FilePath m_path;
+		FilePath m_filePath;
         ConstString m_codecType;
         ConstString m_converterType;
 

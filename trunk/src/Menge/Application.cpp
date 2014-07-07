@@ -104,6 +104,8 @@
 
 #   include "Core/String.h"
 
+#	include "Core/IniUtil.h"
+
 #   include "stdex/allocator.h"
 
 #	include <ctime>
@@ -111,6 +113,7 @@
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN(Consts, Menge::Consts);
+SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
 SERVICE_EXTERN(TextService, Menge::TextServiceInterface);
 SERVICE_EXTERN(NodeService, Menge::NodeServiceInterface);
 SERVICE_EXTERN(LoaderService, Menge::LoaderServiceInterface);
@@ -142,6 +145,7 @@ namespace Menge
 		, m_textService(nullptr)
         , m_nodeService(nullptr)
 		, m_prototypeService(nullptr)
+		, m_configService(nullptr)
         , m_amplifierService(nullptr)
 		, m_createRenderWindow(false)
 		, m_cursorMode(false)
@@ -243,6 +247,7 @@ namespace Menge
 
         ExecuteInitialize exinit( this );
 
+		exinit.add( &Application::initializeConfigManager_ );
         exinit.add( &Application::initializePrototypeManager_ );
         exinit.add( &Application::initializeNodeManager_ );        
         exinit.add( &Application::initializeAmplifierService_ );
@@ -274,22 +279,89 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool Application::setup( const String& _args, const WString & _companyName, const WString & _projectName, const ApplicationSettings & _setting )
+    bool Application::loadConfig( const String & _args, const ConstString & _fileGroup, const FilePath & _applicationPath )
     {
-		m_companyName = _companyName;
-		m_projectName = _projectName; 
+		this->parseArguments_( _args );
 
-        m_platformName = _setting.platformName;
-        m_projectCodename = _setting.projectCodename;
-		m_projectVersion = _setting.projectVersion;
-		m_projectVersionCheck = _setting.projectVersionCheck;
+		InputStreamInterfacePtr applicationInputStream = 
+			FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _applicationPath );
 
-        m_contentResolution = _setting.contentResolution;
-        m_fixedContentResolution = _setting.fixedContentResolution;
+		if( applicationInputStream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Application::setup Invalid open application settings %s"
+				, _applicationPath.c_str()
+				);
+
+			return false;
+		}
+
+		IniUtil::IniStore ini;
+		if( IniUtil::loadIni( ini, applicationInputStream, m_serviceProvider ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Application::setup Invalid load application settings %s"
+				, _applicationPath.c_str()
+				);
+
+			return false;
+		}
+
+		const char * gameIniPath = ini.getSettingValue( "Game", "Path" );
+
+		if( gameIniPath == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Application::setup Not found Game Path %s"
+				, _applicationPath.c_str()
+				);
+
+			return false;
+		}
+
+		FilePath c_gameIniPath = Helper::stringizeString( m_serviceProvider, gameIniPath );
+
+		if( CONFIG_SERVICE(m_serviceProvider)
+			->loadConfig( _fileGroup, c_gameIniPath ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Application::setup invalid load config %s:%s"
+				, _fileGroup.c_str()
+				, c_gameIniPath.c_str()
+				);
+
+			return false;
+		}
+
+		const char * resourcesIniPath = ini.getSettingValue( "Resource", "Path" );
+
+		if( resourcesIniPath == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Application::setup Not found Resources Path %s"
+				, _applicationPath.c_str()
+				);
+
+			return false;
+		}
+
+		m_resourcesIniGroup = _fileGroup;
+		m_resourcesIniPath = Helper::stringizeString( m_serviceProvider, resourcesIniPath );
+		
+		m_companyName = CONFIG_VALUE(m_serviceProvider, "Project", "Company", L"NONAME");
+		m_projectName = CONFIG_VALUE(m_serviceProvider, "Project", "Name", L"UNKNOWN");
+
+		m_platformName = CONFIG_VALUE(m_serviceProvider, "Project", "Platform", CONST_STRING_LOCAL(m_serviceProvider, "WIN"));
+		m_projectCodename = CONFIG_VALUE(m_serviceProvider, "Project", "Codename", ConstString::none());
+		m_projectVersion = CONFIG_VALUE(m_serviceProvider, "Project", "Version", 0U);
+		m_projectVersionCheck = CONFIG_VALUE(m_serviceProvider, "Project", "VersionCheck", true);
+
+        m_contentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "ContentResolution", Resolution(1024.f, 768.f));
+        m_fixedContentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "FixedContentResolution", true);
+		m_windowModeCheck = CONFIG_VALUE(m_serviceProvider, "Game", "WindowModeCheck", false);
+		
+
+		TVectorAspectRatioViewports aspectRatioViewports;
+		CONFIG_VALUES(m_serviceProvider, "Game", "AspectRatioViewport", aspectRatioViewports);
 
         for( TVectorAspectRatioViewports::const_iterator
-            it = _setting.aspectRatioViewports.begin(),
-            it_end = _setting.aspectRatioViewports.end();
+            it = aspectRatioViewports.begin(),
+            it_end = aspectRatioViewports.end();
         it != it_end;
         ++it )
         {
@@ -298,19 +370,105 @@ namespace Menge
            m_aspectRatioViewports[aspect] = it->viewport;
         }
 
-        m_windowResolution = _setting.windowResolution;
-
-        m_bits = _setting.bits;
-        m_fullscreen = _setting.fullscreen;
-        m_vsync = _setting.vsync;
-
-        m_windowModeCheck = _setting.windowModeCheck;
-
-        this->parseArguments_( _args );
-        this->setBaseDir( _setting.baseDir );
+        m_windowResolution = CONFIG_VALUE(m_serviceProvider, "Window", "Size", Resolution(1024.f, 768.f));
+        m_bits = CONFIG_VALUE(m_serviceProvider, "Window", "Bits", 32);
+        m_fullscreen = CONFIG_VALUE(m_serviceProvider, "Window", "Fullscreen", true);
+        m_vsync = CONFIG_VALUE(m_serviceProvider, "Window", "VSync", true);               
 
         return true;
     }
+	/////////////////////////////////////////////////////
+	bool Application::loadResourcePacks_( const ConstString & _fileGroup, const FilePath & _resourceIni )
+	{
+		InputStreamInterfacePtr resourceInputStream = 
+			FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _resourceIni );
+
+		if( resourceInputStream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("StartupConfigLoader::load Invalid open resourcesPack setting '%s'"
+				, _resourceIni.c_str()
+				);
+
+			return false;
+		}
+
+		IniUtil::IniStore ini;
+		if( IniUtil::loadIni( ini, resourceInputStream, m_serviceProvider ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("StartupConfigLoader::loadResourcePacks_ Invalid load resource settings '%s'"
+				, _resourceIni.c_str()
+				);
+
+			return false;
+		}
+
+		resourceInputStream = nullptr;
+
+		TVectorString resourcePacksSettings;
+		IniUtil::getIniValue( ini, "GAME_RESOURCES", "ResourcePack", resourcePacksSettings, m_serviceProvider );
+
+		ConstString c_dir = CONST_STRING_LOCAL(m_serviceProvider, "dir");
+
+		for( TVectorString::iterator
+			it = resourcePacksSettings.begin(),
+			it_end = resourcePacksSettings.end();
+		it != it_end;
+		++it )
+		{
+			const String & resourcePack = *it;
+
+			ResourcePackDesc pack;
+
+			pack.dev = false;
+			pack.preload = true;
+			pack.type = c_dir;
+
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type, m_serviceProvider );            
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.descriptionPath, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );			
+
+			m_game->addResourcePak( pack );
+		}
+
+		TVectorString languagePackSettings;
+		IniUtil::getIniValue( ini, "GAME_RESOURCES", "LanguagePack", languagePackSettings, m_serviceProvider );
+
+		for( TVectorString::iterator
+			it = languagePackSettings.begin(),
+			it_end = languagePackSettings.end();
+		it != it_end;
+		++it )
+		{
+			const String & resourcePack = *it;
+
+			ResourcePackDesc pack;
+
+			pack.dev = false;
+			pack.preload = true;
+			pack.type = c_dir;
+
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.descriptionPath, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );	
+
+			//IniUtil::getIniValue( ini, resourcePack.c_str(), "Text", pack.texts, m_serviceProvider );
+			//IniUtil::getIniValue( ini, resourcePack.c_str(), "Font", pack.fonts, m_serviceProvider );
+
+			m_game->addLanguagePak( pack );
+		}
+
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeNodeManager_()
 	{	
@@ -424,6 +582,25 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeConfigManager_()
+	{
+		LOGGER_WARNING(m_serviceProvider)("Inititalizing ConfigManager..." );
+
+		ConfigServiceInterface * configService;
+
+		if( SERVICE_CREATE( ConfigService, &configService ) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY( m_serviceProvider, configService );
+
+		m_configService = configService;
+
+		return true;
+	}
+
     //////////////////////////////////////////////////////////////////////////
     bool Application::initializePrototypeManager_()
     {
@@ -700,21 +877,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setBaseDir( const FilePath & _dir )
-	{
-		m_baseDir = _dir;
-
-		LOGGER_WARNING(m_serviceProvider)( "setBaseDir '%s'"
-			, m_baseDir.c_str()
-			);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const FilePath & Application::getBaseDir() const
-	{
-		return m_baseDir;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePacks, const TVectorResourcePackDesc & _languagePacks )
+	bool Application::createGame( const ConstString & _personalityModule, const ConstString & _language )
 	{
         SERVICE_CREATE(GameService, &m_game);
 
@@ -726,7 +889,6 @@ namespace Menge
             return false;
         }
 
-		m_game->setBaseDir( m_baseDir );
         m_game->setDevelopmentMode( m_developmentMode );
         m_game->setPlatformName( m_platformName );
         
@@ -735,28 +897,15 @@ namespace Menge
 
 		m_game->setLanguagePack( _language );
 
-		for( TVectorResourcePackDesc::const_iterator
-			it = _resourcePacks.begin(),
-			it_end = _resourcePacks.end();
-		it != it_end;
-		++it )
+		if( this->loadResourcePacks_( m_resourcesIniGroup, m_resourcesIniPath ) == false )
 		{
-			const ResourcePackDesc & desc = *it;
+			LOGGER_ERROR(m_serviceProvider)("Application::setup Invalid load resourcesPack setting %s"
+				, m_resourcesIniPath.c_str()
+				);
 
-			m_game->addResourcePak( desc );
+			return false;
 		}
-
-		for( TVectorResourcePackDesc::const_iterator
-			it = _languagePacks.begin(),
-			it_end = _languagePacks.end();
-		it != it_end;
-		++it )
-		{
-			const ResourcePackDesc & desc = *it;
-
-			m_game->addLanguagePak( desc );
-		}
-						
+					
 		if( m_game->applyConfigPaks() == false )
         {
             return false;
@@ -785,14 +934,8 @@ namespace Menge
 				}
 			}
         }
-
-        String personalityModule;                
-        if( Helper::unicodeToUtf8( m_serviceProvider, _module, personalityModule ) == false )
-        {
-            return false;
-        }
         
-		if( m_game->loadPersonality( Helper::stringizeString(m_serviceProvider, personalityModule) ) == false )
+		if( m_game->loadPersonality( _personalityModule ) == false )
 		{
 			return false;
 		}
@@ -874,11 +1017,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeGame( const TMapParams & _params, const String & _scriptInitParams )
+	bool Application::initializeGame( const String & _scriptInitParams )
 	{
+		TMapParams params;		
+		CONFIG_SECTION(m_serviceProvider, "Params", params);
+
 		FilePath accountPath = CONST_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
 
-		if( m_game->initialize( accountPath, m_projectVersion, m_projectVersionCheck, _params ) == false )
+		if( m_game->initialize( accountPath, m_projectVersion, m_projectVersionCheck, params ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application::initGame invalid initialize"
 				);
@@ -1444,7 +1590,7 @@ namespace Menge
         SERVICE_DESTROY( NodeService, m_nodeService );
         
 		SERVICE_DESTROY( PrototypeService, m_prototypeService );
-
+		SERVICE_DESTROY( ConfigService, m_configService );
         SERVICE_DESTROY( Consts, m_consts );
 	}
 	//////////////////////////////////////////////////////////////////////////

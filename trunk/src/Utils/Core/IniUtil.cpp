@@ -42,6 +42,22 @@ namespace Menge
 
 			return true;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		bool mergeIniValue( IniStore & _ini, const Char * _section, const Char * _key, const Char * _value, ServiceProviderInterface * _serviceProvider )
+		{
+			if( _ini.mergeSetting( _section, _key, _value ) == false )
+			{
+				LOGGER_ERROR(_serviceProvider)("setIniValue invalid set section %s key %s value %s"
+					, _section
+					, _key
+					, _value
+					);
+
+				return false;
+			}
+
+			return true;
+		}
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, WString & _value, ServiceProviderInterface * _serviceProvider )
         {
@@ -182,28 +198,50 @@ namespace Menge
 
             return true;
         }
-        //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, size_t & _value, ServiceProviderInterface * _serviceProvider )
-        {
-            (void)_serviceProvider;
+		//////////////////////////////////////////////////////////////////////////
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t & _value, ServiceProviderInterface * _serviceProvider )
+		{
+			(void)_serviceProvider;
 
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+			const Char * ini_value = _ini.getSettingValue( _section, _key );
 
-            if( ini_value == nullptr )
-            {
-                return false;
-            }
+			if( ini_value == nullptr )
+			{
+				return false;
+			}
 
-            size_t tmp_value;
-            if( sscanf( ini_value, "%u", &tmp_value ) != 1 )
-            {
-                return false;
-            }
+			int32_t tmp_value;
+			if( sscanf( ini_value, "%d", &tmp_value ) != 1 )
+			{
+				return false;
+			}
 
-            _value = tmp_value;
+			_value = tmp_value;
 
-            return true;
-        }
+			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t & _value, ServiceProviderInterface * _serviceProvider )
+		{
+			(void)_serviceProvider;
+
+			const Char * ini_value = _ini.getSettingValue( _section, _key );
+
+			if( ini_value == nullptr )
+			{
+				return false;
+			}
+
+			uint32_t tmp_value;
+			if( sscanf( ini_value, "%u", &tmp_value ) != 1 )
+			{
+				return false;
+			}
+
+			_value = tmp_value;
+
+			return true;
+		}
 		//////////////////////////////////////////////////////////////////////////
 		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float & _value, ServiceProviderInterface * _serviceProvider )
 		{

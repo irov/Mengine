@@ -1407,11 +1407,9 @@ namespace Menge
 
 			desc.path = _path;
 			desc.descriptionPath = _descriptionPath;
-
-			const ConstString & basePath = fileGroup->getPath();
-
+			
 			bool result = GAME_SERVICE(m_serviceProvider)
-				->loadResourcePak( basePath, desc );
+				->loadResourcePak( desc );
 
 			return result;
 		}

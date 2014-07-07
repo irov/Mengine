@@ -438,6 +438,7 @@ SET( APPLICATION_DEPENDENCIES
  Kernel
  Metacode 
  ServiceText
+ ServiceConfig
 )
 
 SET( APPLICATION_DEPENDENCIES

@@ -9,6 +9,7 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/InputSystemInterface.h"
+#	include "Interface/ConfigInterface.h"
 
 #	include "WindowsLayer/VistaWindowsLayer.h"
 
@@ -42,8 +43,6 @@
 
 #   include <WinBase.h>
 #   include <Psapi.h>
-
-#	include "StartupConfigLoader/StartupConfigLoader.h"
 
 #ifdef _MSC_VER
 #	define snprintf _snprintf
@@ -276,6 +275,17 @@ namespace Menge
 			return false;
 		}
 
+		FilePath applicationPath = CONST_STRING_LOCAL( m_serviceProvider, "application.ini" );
+
+		if( m_application->loadConfig( m_commandLine, ConstString::none(), applicationPath ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Application setup %s failed" 
+				, applicationPath.c_str()
+				);
+
+			return false;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -434,6 +444,10 @@ namespace Menge
 			return false;
 		}
 
+		LOGGER_WARNING(m_serviceProvider)("Current Path %ls"
+			, m_currentPath.c_str()
+			);
+
 		FilePath currentPath = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
 		// mount root		
 		if( m_fileService->mountFileGroup( ConstString::none(), currentPath, CONST_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
@@ -514,9 +528,9 @@ namespace Menge
 
 			m_userPath = buffer;
 			m_userPath += MENGE_FOLDER_DELIM;
-			m_userPath += m_companyName;
+			m_userPath += m_application->getCompanyName();
 			m_userPath += MENGE_FOLDER_DELIM;
-			m_userPath += m_projectName;
+			m_userPath += m_application->getProjectName();
 			m_userPath += MENGE_FOLDER_DELIM;
 		}
 
@@ -1290,6 +1304,11 @@ namespace Menge
 		m_enableDebug = false;
 #	endif
 
+		if( Helper::s_hasOption( " -maxfps ", m_commandLine ) == true )
+		{
+			m_maxfps = true;
+		}
+
 		if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )
 		{
 			m_developmentMode = true;
@@ -1362,16 +1381,6 @@ namespace Menge
 
 		if( this->initializeArchiveService_() == false )
 		{
-			return false;
-		}
-
-		StartupSettings settings;
-		if( this->setupApplicationSetting_( settings ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to setup application %ls"
-				, m_currentPath.c_str()
-				);
-
 			return false;
 		}
 
@@ -1473,6 +1482,14 @@ namespace Menge
 			return false;
 		}
 
+		m_winTimer = new WinTimer();
+		m_winTimer->initialize();
+
+		// seed randomizer
+		LARGE_INTEGER randomSeed;
+		::QueryPerformanceCounter(&randomSeed);
+		srand( randomSeed.LowPart );
+
 		LOGGER_WARNING(m_serviceProvider)( "initialize Application..." );
 		LOGGER_WARNING(m_serviceProvider)( "command: '%s'"
 			, m_commandLine.c_str()
@@ -1480,15 +1497,7 @@ namespace Menge
 
 		if( Helper::s_hasOption( " -noaccounts ", m_commandLine ) == true )
 		{
-			settings.applicationSettings.projectVersion = (size_t)-1;
-		}
-
-		if( m_application->setup( m_commandLine, m_companyName, m_projectName, settings.applicationSettings ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application setup failed" 
-				);
-
-			return false;
+			CONFIG_SET(m_serviceProvider, "Development", "NoAccount", "1");
 		}
 
 		{
@@ -1519,9 +1528,12 @@ namespace Menge
 			m_pluginPluginPathFinder->initialize( m_serviceProvider );
 		}
 
+		TVectorWString plugins;
+		CONFIG_VALUES(m_serviceProvider, "Plugins", "Name", plugins);
+
 		for( TVectorWString::const_iterator
-			it = settings.plugins.begin(),
-			it_end = settings.plugins.end();
+			it = plugins.begin(),
+			it_end = plugins.end();
 		it != it_end;
 		++it )
 		{
@@ -1542,9 +1554,12 @@ namespace Menge
 
 		if( m_noDevPluginsMode == false )
 		{
+			TVectorWString devPlugins;
+			CONFIG_VALUES(m_serviceProvider, "DevPlugins", "Name", devPlugins);
+
 			for( TVectorWString::const_iterator
-				it = settings.devPlugins.begin(),
-				it_end = settings.devPlugins.end();
+				it = devPlugins.begin(),
+				it_end = devPlugins.end();
 			it != it_end;
 			++it )
 			{
@@ -1562,9 +1577,12 @@ namespace Menge
 			}
 		}
 
+		TVectorString modules;
+		CONFIG_VALUES(m_serviceProvider, "Modules", "Name", modules);
+
 		for( TVectorString::const_iterator
-			it = settings.modules.begin(),
-			it_end = settings.modules.end();
+			it = modules.begin(),
+			it_end = modules.end();
 		it != it_end;
 		++it )
 		{
@@ -1586,14 +1604,16 @@ namespace Menge
 
 		if( languagePack.empty() == true )
 		{
-			languagePack = settings.defaultLocale;
+			languagePack = CONFIG_VALUE(m_serviceProvider, "Locale", "Default", "en");
 		}
 
 		LOGGER_WARNING(m_serviceProvider)("Locale %s"
 			, languagePack.c_str()
 			);
 
-		if( m_application->createGame( settings.personalityModule, Helper::stringizeString(m_serviceProvider, languagePack), settings.resourcePacks, settings.languagePacks ) == false )
+		String personalityModule = CONFIG_VALUE(m_serviceProvider, "Game", "PersonalityModule", "Personality" );
+
+		if( m_application->createGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application create game failed"
 				);
@@ -1602,7 +1622,7 @@ namespace Menge
 		}
 
 		LOGGER_INFO(m_serviceProvider)( "Application Initialize... %s"
-			, settings.applicationSettings.platformName.c_str() 
+			, m_application->getPlatformName().c_str()
 			);
 
 		const ConstString & projectTitle = m_application->getProjectTitle();
@@ -1615,7 +1635,9 @@ namespace Menge
 				);
 		}
 
-		if( settings.alreadyRunning == true )
+		bool alreadyRunning = CONFIG_VALUE(m_serviceProvider, "Game", "AlreadyRunning", true);
+
+		if( alreadyRunning == true )
 		{	
 			m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_serviceProvider);
 
@@ -1694,7 +1716,7 @@ namespace Menge
 
 		LOGGER_INFO(m_serviceProvider)( "Initializing Game data..." );
 
-		if( m_application->initializeGame( settings.appParams, scriptInit ) == false )
+		if( m_application->initializeGame( scriptInit ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application invalid initialize game"
 				);
@@ -1773,107 +1795,6 @@ namespace Menge
 		::SetForegroundWindow( m_hWnd );          // Slightly Higher Priority
 		::SetFocus( m_hWnd );                     // Sets Keyboard Focus To The Window
 		::UpdateWindow( m_hWnd );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::setupApplicationSetting_( StartupSettings & _settings )
-	{
-		StartupConfigLoader loader(m_serviceProvider);
-
-		FilePath applicationPath = CONST_STRING_LOCAL( m_serviceProvider, "application.ini" );
-
-		if( loader.load( ConstString::none(), applicationPath, _settings ) == false )
-		{
-			m_windowsLayer->messageBox( NULL 
-				, L"WinApplication::setupApplicationSetting_ invalid load startup config application.ini"
-				, L"Config Loading Error"
-				, MB_OK
-				);
-
-			return false;
-		}
-
-		m_projectName = _settings.projectName;
-		m_companyName = _settings.companyName;
-
-		String platformName;
-		Helper::s_getOption( " -platform:", m_commandLine, &platformName );
-
-		if( platformName.empty() == true )
-		{
-			platformName = "WIN";
-		}
-
-		_settings.applicationSettings.platformName = Helper::stringizeString( m_serviceProvider, platformName );
-
-		String utf8_currentPath;
-		if( Helper::unicodeToUtf8( m_serviceProvider, m_currentPath, utf8_currentPath ) == false )
-		{
-			m_windowsLayer->messageBox( NULL 
-				, L"Invalid convert currentPath from unicode to utf8"
-				, L"Config Loading Error"
-				, MB_OK
-				);
-
-			return false;
-		}
-
-		_settings.applicationSettings.baseDir = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
-
-		if( m_projectName.empty() == true )
-		{
-			m_windowsLayer->messageBox( NULL
-				, L"Invalid get project name from game setting"
-				, L"Config Loading Error"
-				, MB_OK
-				);
-
-			return false;
-		}
-
-		if( m_companyName.empty() == true )
-		{
-			m_windowsLayer->messageBox( NULL
-				, L"Invalid get company name from game setting"
-				, L"Config Loading Error"
-				, MB_OK
-				);
-
-			return false;
-		}
-
-		//if( languagePack.empty() == true )
-		//{
-		//	WChar localeBuff[64];
-		//	int localeBuffSize = ::GetLocaleInfo( LOCALE_USER_DEFAULT, LOCALE_SABBREVLANGNAME, localeBuff, 64 );
-		//	WString languagePackW = std::wstring(localeBuff, localeBuffSize);
-
-		//	WindowsLayer::unicodeToAnsi( languagePackW, languagePack );
-
-		//	std::transform( languagePack.begin(), languagePack.end(), 
-		//		languagePack.begin(), std::ptr_fun( &::tolower ) );
-		//}
-
-		m_maxfps = _settings.maxfps;
-
-		if( Helper::s_hasOption( " -maxfps ", m_commandLine ) == true )
-		{
-			m_maxfps = true;
-		}
-
-		if( m_maxfps == true )
-		{
-			_settings.applicationSettings.vsync = false;
-		}
-
-		m_winTimer = new WinTimer();
-		m_winTimer->initialize();
-
-		// seed randomizer
-		LARGE_INTEGER randomSeed;
-		::QueryPerformanceCounter(&randomSeed);
-		srand( randomSeed.LowPart );
 
 		return true;
 	}

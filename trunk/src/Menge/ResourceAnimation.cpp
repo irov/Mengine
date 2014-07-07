@@ -5,6 +5,7 @@
 #	include "ResourceImageDefault.h"
 
 #   include "Interface/ResourceInterface.h"
+#   include "Interface/ConfigInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -212,15 +213,15 @@ namespace Menge
 			}
 		}
 
-		size_t max_memory = 4 * 1024 * 1024;
-
-		if( total_memory > max_memory )
+		uint32_t animationMemoryLimit = CONFIG_VALUE(m_serviceProvider, "Limit", "AnimationMemoryLimit", 4194304U ); //4kb
+		
+		if( total_memory > animationMemoryLimit )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid: '%s' overflow %.2fmb max video memory %.2fmb (coeff %f)"
 				, this->getName().c_str()
 				, float(total_memory) / (1024.f * 1024.f)
-				, float(max_memory) / (1024.f * 1024.f)
-				, float(total_memory) / float(max_memory)
+				, float(animationMemoryLimit) / (1024.f * 1024.f)
+				, float(total_memory) / float(animationMemoryLimit)
 				);
 
 			return false;

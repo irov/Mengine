@@ -14,6 +14,7 @@
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/EventInterface.h"
 #   include "Interface/PhysicSystemInterface.h"
+#   include "Interface/ConfigInterface.h"
 
 #   include "Interface/StringizeInterface.h"
 
@@ -69,17 +70,17 @@ namespace Menge
         void finalize() override;
 
     public:
-        bool setup( const String& _args, const WString & _companyName, const WString & _projectName, const ApplicationSettings & _setting ) override;
+        bool loadConfig( const String & _args, const ConstString & _fileGroup, const FilePath & _applicationPath ) override;
 		
-	public:
-		const FilePath & getBaseDir() const override;
+	protected:
+		bool loadResourcePacks_( const ConstString & _fileGroup, const FilePath & _resourceIni );
 
 	public:
 		bool getAllowFullscreenSwitchShortcut() const override;
         	
 	public:
-		bool createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) override;
-		bool initializeGame( const TMapParams & _params, const String & _scriptInitParams ) override;
+		bool createGame( const ConstString & _module, const ConstString & _language ) override;
+		bool initializeGame( const String & _scriptInitParams ) override;
 
 	public:
 		void setFullscreenMode( bool _fullscreen ) override;
@@ -104,13 +105,12 @@ namespace Menge
 		bool initializeResourceManager_();
 		bool initializeSceneManager_();
 		bool initializeTextManager_();
+		bool initializeConfigManager_();
         bool initializePrototypeManager_();
         bool initializeWatchdog_();
         bool initializeProfiler_();
 
 	public:
-		void setBaseDir( const FilePath & _dir );
-
 		bool createRenderWindow( WindowHandle _renderWindowHandle ) override;
 
 		//void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect );
@@ -260,6 +260,7 @@ namespace Menge
         AmplifierServiceInterface * m_amplifierService;
 		TextServiceInterface* m_textService;
 		NodeServiceInterface * m_nodeService;		
+		ConfigServiceInterface * m_configService;
         PrototypeServiceInterface * m_prototypeService;
         Consts * m_consts;
 
@@ -268,7 +269,8 @@ namespace Menge
 
 		void parseArguments_( const String& _arguments );
 
-		FilePath m_baseDir;
+		ConstString m_resourcesIniGroup;
+		FilePath m_resourcesIniPath;
 		
 		ResourceCursor * m_cursorResource;
 
@@ -277,7 +279,7 @@ namespace Menge
 
 		ConstString m_platformName;
 		ConstString m_projectCodename;
-		size_t m_projectVersion;
+		uint32_t m_projectVersion;
 		bool m_projectVersionCheck;
 		
 		typedef std::vector<PluginInterface *> TVectorPlugins;

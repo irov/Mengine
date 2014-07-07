@@ -15,6 +15,7 @@
 #   include "Interface/NodeInterface.h"
 #   include "Interface/TextInterface.h"
 #   include "Interface/StringizeInterface.h"
+#   include "Interface/ConfigInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -86,11 +87,6 @@ namespace Menge
     ServiceProviderInterface * Game::getServiceProvider() const
     {
         return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Game::setBaseDir( const FilePath & _baseDir )
-    {
-        m_baseDir = _baseDir;
     }
     //////////////////////////////////////////////////////////////////////////
     void Game::setDevelopmentMode( bool _developmentMode )
@@ -370,21 +366,26 @@ namespace Menge
             return false;
         }
 
-		if( SERVICE_CREATE( AccountService, &m_accountService ) == false )
+		AccountServiceInterface * accountService;
+		if( SERVICE_CREATE( AccountService, &accountService ) == false )
         {
             return false;
         }
 		
-        if( SERVICE_REGISTRY( m_serviceProvider, m_accountService ) == false )
+        if( SERVICE_REGISTRY( m_serviceProvider, accountService ) == false )
 		{
 			return false;
 		}
 
+		m_accountService = accountService;
+
         m_accountLister = new ApplicationAccountManagerListener(m_serviceProvider, this);
 		
         m_accountService->initialize( _accountPath, _projectVersion, _projectVersionCheck, m_accountLister );
+
+		bool noLoadAccount = CONFIG_VALUE(m_serviceProvider, "Development", "NoAccount", false);
 		
-		if( _projectVersion != (size_t)-1 )
+		if( noLoadAccount == false )
 		{
 			if( m_accountService->loadAccounts() == false )
 		    {
@@ -611,7 +612,6 @@ namespace Menge
 		PakPtr pack = m_factoryPak.createObjectT();
 		
 		pack->setup( m_serviceProvider
-			, m_baseDir
 			, _desc.name
 			, _desc.type
 			, _desc.locale
@@ -637,7 +637,6 @@ namespace Menge
 
 		pack->setup(
 			m_serviceProvider
-			, m_baseDir
 			, _desc.name
 			, _desc.type
 			, _desc.locale
@@ -650,13 +649,12 @@ namespace Menge
 		m_languagePaks.push_back( pack );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadResourcePak( const FilePath & _baseDir, const ResourcePackDesc & _desc )
+	bool Game::loadResourcePak( const ResourcePackDesc & _desc )
 	{
 		PakPtr pack = m_factoryPak.createObjectT();
 
 		pack->setup(
 			m_serviceProvider
-			, _baseDir
 			, _desc.name
 			, _desc.type
 			, _desc.locale

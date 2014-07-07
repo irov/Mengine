@@ -19,7 +19,6 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
-        virtual void setBaseDir( const FilePath & _baseDir ) = 0;
         virtual void setDevelopmentMode( bool _developmentMode ) = 0;
         virtual void setPlatformName( const ConstString & _platformName ) = 0;
 
@@ -53,7 +52,7 @@ namespace Menge
 		virtual void addLanguagePak( const ResourcePackDesc & _desc ) = 0;
 
 	public:
-		virtual bool loadResourcePak( const FilePath & _baseDir, const ResourcePackDesc & _desc ) = 0;
+		virtual bool loadResourcePak( const ResourcePackDesc & _desc ) = 0;
 
 	public:
         virtual void setLanguagePack( const ConstString& _packName ) = 0;

@@ -7,6 +7,7 @@
 #   include "Core/FilePath.h"
 #	include "Core/Viewport.h"
 #	include "Core/Resolution.h"
+#	include "Core/Params.h"
 
 #	include "Interface/ServiceInterface.h"
 
@@ -37,7 +38,7 @@ namespace Menge
 
     class DynamicLibraryInterface;
 
-    typedef std::map<ConstString, WString> TMapParams;
+    
 
     class PlatformInterface
         : public ServiceInterface

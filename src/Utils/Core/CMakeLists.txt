@@ -58,6 +58,8 @@ src
 	String.cpp
     UnicodeFormat.h
     
+    Params.h
+    
     Stream.h
 	Rect.h
 	Rect.cpp

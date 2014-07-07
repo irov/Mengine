@@ -15,39 +15,6 @@
 
 namespace Menge
 {
-	struct ApplicationSettings
-	{
-		ApplicationSettings()
-			: projectVersion(0)
-			, projectVersionCheck(true)
-			, bits(32)
-			, fullscreen(true)
-			, vsync(true)
-			, windowModeCheck(false)
-			, fixedContentResolution(true)
-		{
-		}
-
-		FilePath baseDir;
-
-		ConstString platformName;
-		ConstString projectCodename;
-		size_t projectVersion;
-		bool projectVersionCheck;
-
-		Resolution contentResolution;
-        Resolution windowResolution;
-
-		TVectorAspectRatioViewports aspectRatioViewports;
-		
-		size_t bits;
-		bool fullscreen;
-		bool vsync;        
-
-        bool windowModeCheck;
-        bool fixedContentResolution;
-	};
-
 	struct ResourcePackDesc
 	{
 		ResourcePackDesc()
@@ -81,9 +48,7 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
-        virtual bool setup( const String & _args, const WString & _companyName, const WString & _projectName, const ApplicationSettings & _setting ) = 0;
-
-		virtual const FilePath & getBaseDir() const = 0;
+        virtual bool loadConfig( const String & _args, const ConstString & _fileGroup, const FilePath & _applicationPath ) = 0;
 		
 	public:
 		virtual bool getAllowFullscreenSwitchShortcut() const = 0;
@@ -111,9 +76,9 @@ namespace Menge
 		virtual void paint() = 0;
         virtual bool userEvent( const ConstString & _event, const TMapParams & _params ) = 0;
 
-	public:		
-		virtual bool createGame( const WString & _module, const ConstString & _language, const TVectorResourcePackDesc & _resourcePack, const TVectorResourcePackDesc & _languagePack ) = 0;
-		virtual bool initializeGame( const TMapParams & _params, const String & _scriptInitParams ) = 0;
+	public:
+		virtual bool createGame( const ConstString & _module, const ConstString & _language ) = 0;
+		virtual bool initializeGame( const String & _scriptInitParams ) = 0;
         
 	public:
 		virtual const WString & getCompanyName() const = 0;

@@ -7,6 +7,7 @@ src
     ModuleInterface.h
 	ScriptSystemInterface.h
 	CodecInterface.h
+    ConfigInterface.h
     DataInterface.h
     CacheInterface.h
     PlatformInterface.h

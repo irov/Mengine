@@ -91,15 +91,6 @@ namespace Menge
 			return false;
 		}
 
-		//ArchivatorInterfacePtr archivator = ARCHIVE_SERVICE(m_serviceProvider)
-		//	->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
-
-		//MemoryInputPtr memory = ARCHIVE_SERVICE(m_serviceProvider)
-		//	->compressStream( archivator, stream );
-
-		//size_t stream_size = stream->size();
-		//size_t memory_size = memory->size();
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

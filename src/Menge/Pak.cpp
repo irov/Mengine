@@ -29,7 +29,6 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Pak::setup( ServiceProviderInterface * _serviceProvider
-		, const FilePath & _baseDir
 		, const ConstString & _name
 		, const ConstString & _type
 		, const ConstString & _locale
@@ -46,7 +45,6 @@ namespace Menge
 		m_descriptionPath = _descriptionPath;
 		m_path = _path;
 		m_preload = _preload;
-		m_baseDir = _baseDir;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Pak::isPreload() const

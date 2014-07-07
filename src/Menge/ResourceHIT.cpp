@@ -37,7 +37,7 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceHIT * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceHIT *>(_meta);
 
-        metadata->swap_File_Path( m_path );
+        metadata->swap_File_Path( m_filePath );
         metadata->swap_File_Converter( m_converterType );
         
         metadata->swap_File_Codec( m_codecType );
@@ -47,7 +47,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_convert()
     {
-		bool result = this->convertDefault_( m_converterType, m_path, m_path, m_codecType );
+		bool result = this->convertDefault_( m_converterType, m_filePath, m_filePath, m_codecType );
 
         return result;
     }
@@ -57,13 +57,13 @@ namespace Menge
         const ConstString & category = this->getCategory();
 
         InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( category, m_path );
+            ->openInputFile( category, m_filePath );
 
         if( stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file '%s' not found"
                 , this->getName().c_str()
-                , m_path.c_str()
+                , m_filePath.c_str()
                 );
 
             return false;
@@ -76,7 +76,7 @@ namespace Menge
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file '%s' invalid create decoder '%s'"
                 , this->getName().c_str()
-                , m_path.c_str()
+                , m_filePath.c_str()
                 , m_codecType.c_str()
                 );
 
@@ -87,7 +87,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile: '%s' - hit file '%s' invalid initialize decoder '%s'"
 				, this->getName().c_str()
-				, m_path.c_str()
+				, m_filePath.c_str()
 				, m_codecType.c_str()
 				);
 
@@ -109,7 +109,7 @@ namespace Menge
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_compile %s invalid decode hit %s size %d (%d)"
                 , this->getName().c_str()
-                , m_path.c_str()
+                , m_filePath.c_str()
                 , m_mipmapsize
                 , mipmapsize
                 );
@@ -131,19 +131,60 @@ namespace Menge
         const ConstString & category = this->getCategory();
 
         bool exist = FILE_SERVICE(m_serviceProvider)
-            ->existFile( category, m_path, nullptr );
+            ->existFile( category, m_filePath, nullptr );
 
         if( exist == false )
         {
             return false;
         }
 
+		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( category, m_filePath );
+
+		if( stream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_isValid %s invalid open file %s:%s"
+				, m_name.c_str()
+				, category.c_str()
+				, m_filePath.c_str()
+				);
+
+			return false;
+		}
+
+		PickDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
+			->createDecoderT<PickDecoderInterfacePtr>( m_codecType );
+
+		if( decoder == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_isValid %s file %s:%s invalid decoder %s"
+				, m_name.c_str()
+				, category.c_str()
+				, m_filePath.c_str()
+				, m_codecType.c_str()
+				);
+
+			return false;
+		}
+
+		if( decoder->prepareData( stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceHIT::_isValid %s file %s:%s decoder initialize failed %s"
+				, m_name.c_str()
+				, category.c_str()
+				, m_filePath.c_str()
+				, m_codecType.c_str()
+				);
+
+			return false;
+		}
+
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceHIT::setPath( const FilePath & _path )
+	void ResourceHIT::setPath( const FilePath & _filePath )
 	{
-		m_path = _path;
+		m_filePath = _filePath;
 
         this->recompile();
 	}
@@ -234,7 +275,7 @@ namespace Menge
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceHIT::testRadius %s hit file %s invalid get level buffer %d:%d"
                 , this->getName().c_str()
-                , m_path.c_str()
+                , m_filePath.c_str()
                 , level
                 , m_mipmaplevel
                 );
@@ -285,7 +326,7 @@ namespace Menge
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceHIT::getHitBuffer_ %s hit file %s invalid get level buffer %d:%d"
                 , this->getName().c_str()
-                , m_path.c_str()
+                , m_filePath.c_str()
                 , _level
                 , m_mipmaplevel
                 );

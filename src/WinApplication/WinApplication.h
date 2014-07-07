@@ -25,8 +25,6 @@
 #	include "Interface/PrefetcherInterface.h"
 
 
-#   include "Utils/StartupConfigLoader/StartupConfigLoader.h"
-
 #	include "WinTimer.h"
 #	include "WinMouseEvent.h"
 
@@ -134,10 +132,6 @@ namespace Menge
 		bool initializeHttpService_();
 		bool initializePrefetcherService_();
 
-
-	protected:
-		bool setupApplicationSetting_( StartupSettings & _settings );
-
 	public:
 		LRESULT CALLBACK wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 
@@ -181,9 +175,6 @@ namespace Menge
 		WString m_currentPath;
 		WString m_userPath;
 		WString m_tempPath;
-
-		WString m_companyName;
-		WString m_projectName;		
 
 		Resolution m_windowResolution;
 

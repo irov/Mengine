@@ -30,13 +30,16 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _input, ServiceProviderInterface * _serviceProvider );
         //////////////////////////////////////////////////////////////////////////
+		bool mergeIniValue( IniStore & _ini, const Char * _section, const Char * _key, const Char * _value, ServiceProviderInterface * _serviceProvider );
+		//////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, WString & _value, ServiceProviderInterface * _serviceProvider ); 
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, String & _value, ServiceProviderInterface * _serviceProvider );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath & _value, ServiceProviderInterface * _serviceProvider );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution & _value, ServiceProviderInterface * _serviceProvider );
 		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ColourValue & _value, ServiceProviderInterface * _serviceProvider );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, bool & _value, ServiceProviderInterface * _serviceProvider );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, size_t & _value, ServiceProviderInterface * _serviceProvider );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t & _value, ServiceProviderInterface * _serviceProvider );
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t & _value, ServiceProviderInterface * _serviceProvider );
 		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float & _value, ServiceProviderInterface * _serviceProvider );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorString & _values, ServiceProviderInterface * _serviceProvider );
 		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorConstString & _values, ServiceProviderInterface * _serviceProvider );

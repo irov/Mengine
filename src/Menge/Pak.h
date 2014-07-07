@@ -19,7 +19,6 @@ namespace Menge
 
 	public:
 		void setup( ServiceProviderInterface * _serviceProvider
-			, const FilePath & _baseDir
 			, const ConstString & _name
 			, const ConstString & _type
 			, const ConstString & _locale
@@ -72,7 +71,6 @@ namespace Menge
 		ConstString m_platform;		
 		FilePath m_descriptionPath;
 
-        FilePath m_baseDir;
 		FilePath m_path;
 
 		TVectorFilePath m_pathScripts;

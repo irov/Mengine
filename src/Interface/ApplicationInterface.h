@@ -44,12 +44,9 @@ namespace Menge
         SERVICE_DECLARE("ApplicationService");
 
 	public:
-		virtual bool initialize() = 0;
+		virtual bool initialize( const String & _args ) = 0;
         virtual void finalize() = 0;
-
-    public:
-        virtual bool loadConfig( const String & _args, const ConstString & _fileGroup, const FilePath & _applicationPath ) = 0;
-		
+			
 	public:
 		virtual bool getAllowFullscreenSwitchShortcut() const = 0;
 
@@ -77,7 +74,7 @@ namespace Menge
         virtual bool userEvent( const ConstString & _event, const TMapParams & _params ) = 0;
 
 	public:
-		virtual bool createGame( const ConstString & _module, const ConstString & _language ) = 0;
+		virtual bool createGame( const ConstString & _module, const ConstString & _language, const ConstString & _resourcesIniGroup, const FilePath & _resourcesIniPath ) = 0;
 		virtual bool initializeGame( const String & _scriptInitParams ) = 0;
         
 	public:

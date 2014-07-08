@@ -103,6 +103,7 @@ namespace Menge
         m_textureSize = mt::vec2f(0.f, 0.f);
         m_maxSize = mt::vec2f(0.f, 0.f);
         m_size = mt::vec2f(0.f, 0.f);
+		m_offset = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
         m_isUVRotate = false;
         m_wrapU = false;
@@ -123,8 +124,12 @@ namespace Menge
         metadata->get_File_WrapX( m_wrapU );
         metadata->get_File_WrapY( m_wrapV );        
         metadata->get_File_TextureSize( m_textureSize );
-        
+        		
 		metadata->get_File_MaxSize( m_maxSize );
+
+		m_size = m_maxSize;
+		metadata->get_File_Size( m_size );
+		metadata->get_File_Offset( m_maxSize );
 		
         return true;
     }

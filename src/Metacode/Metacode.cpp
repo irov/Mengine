@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 52;
+        _needVersion = 53;
 
-        if( version != 52 )
+        if( version != 53 )
         {
             return false;
         }
@@ -1443,7 +1443,9 @@ namespace Metacode
         , File_Alpha_successful(false)
         , File_Codec_successful(false)
         , File_MaxSize_successful(false)
+        , File_Offset_successful(false)
         , File_Rotate_successful(false)
+        , File_Size_successful(false)
         , File_TextureSize_successful(false)
         , File_UV_successful(false)
         , File_WrapX_successful(false)
@@ -1498,6 +1500,17 @@ namespace Metacode
     
                 return true;
             }break;
+        case 12:
+            {
+                if( this->read( _buff, _size, _read, this->File_Offset ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_Offset_successful = true;
+    
+                return true;
+            }break;
         case 3:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
@@ -1519,6 +1532,17 @@ namespace Metacode
                 return true;
             }break;
         case 11:
+            {
+                if( this->read( _buff, _size, _read, this->File_Size ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_Size_successful = true;
+    
+                return true;
+            }break;
+        case 13:
             {
                 if( this->read( _buff, _size, _read, this->File_TextureSize ) == false )
                 {

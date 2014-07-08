@@ -32,6 +32,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadSystem::initialize()		
 	{
+		m_poolWin32ThreadIdentity.setMethodListener( this, &Win32ThreadSystem::onThreadIdentityRemove_ );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -149,5 +151,10 @@ namespace Menge
 		DWORD id = GetCurrentThreadId();
 
 		return (uint32_t)id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Win32ThreadSystem::onThreadIdentityRemove_( Win32ThreadIdentity * _identity )
+	{
+
 	}
 }

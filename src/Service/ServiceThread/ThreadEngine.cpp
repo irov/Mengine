@@ -131,7 +131,7 @@ namespace Menge
 
         if( threadIdentity == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ThreadEngine::addTask invalid create identity"               
+            LOGGER_ERROR(m_serviceProvider)("ThreadEngine::addTask invalid create thread"               
                 );
 
             return false;

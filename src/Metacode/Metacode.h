@@ -1123,6 +1123,46 @@ namespace Metacode
                 (_self->*_method)( this->File_MaxSize );
             }
             
+            bool has_File_Offset() const
+            {
+                return File_Offset_successful;
+            }
+            
+            bool get_File_Offset( mt::vec2f & _value ) const
+            {
+                if( File_Offset_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Offset;
+            
+                return true;
+            }
+            
+            bool swap_File_Offset( mt::vec2f & _value ) const
+            {
+                if( File_Offset_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Offset);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_Offset( C * _self, M _method )
+            {
+                if( File_Offset_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_Offset );
+            }
+            
             const Menge::ConstString & get_File_Path() const
             {
                 return this->File_Path;
@@ -1177,6 +1217,46 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_Rotate );
+            }
+            
+            bool has_File_Size() const
+            {
+                return File_Size_successful;
+            }
+            
+            bool get_File_Size( mt::vec2f & _value ) const
+            {
+                if( File_Size_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Size;
+            
+                return true;
+            }
+            
+            bool swap_File_Size( mt::vec2f & _value ) const
+            {
+                if( File_Size_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Size);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_Size( C * _self, M _method )
+            {
+                if( File_Size_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_Size );
             }
             
             bool has_File_TextureSize() const
@@ -1353,9 +1433,13 @@ namespace Metacode
             mutable Menge::ConstString File_Codec;
             bool File_MaxSize_successful;
             mutable mt::vec2f File_MaxSize;
+            bool File_Offset_successful;
+            mutable mt::vec2f File_Offset;
             mutable Menge::ConstString File_Path;
             bool File_Rotate_successful;
             mutable bool File_Rotate;
+            bool File_Size_successful;
+            mutable mt::vec2f File_Size;
             bool File_TextureSize_successful;
             mutable mt::vec2f File_TextureSize;
             bool File_UV_successful;

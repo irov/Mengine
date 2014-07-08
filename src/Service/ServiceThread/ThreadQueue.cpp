@@ -101,6 +101,12 @@ namespace Menge
 			}
 
 			ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket.createObjectT();
+			
+			if( packet->initialize( m_packetSize ) == false )
+			{
+				return;
+			}
+
 			size_t packetSize = m_packetSize;
 						
 			while( m_threadTasks.empty() == false && packetSize > 0 )
@@ -123,6 +129,15 @@ namespace Menge
 				if( THREAD_SERVICE(m_serviceProvider)
 					->addTask( packet, m_priority ) == false )
 				{
+					size_t count = packet->countTask();
+
+					for( size_t i = 0; i != count; ++i )
+					{
+						const ThreadTaskPtr & task = packet->getTask( i );
+
+						m_threadTasks.push( task );
+					}
+
 					return;
 				}
 

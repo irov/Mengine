@@ -40,6 +40,24 @@ namespace Menge
 		case PT_TRIANGLEFAN:
 			return _indexCount - 2;
 		}
+
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static DWORD s_toD3DBufferLock( EBufferLockFlag _flag )
+	{
+		switch( _flag )
+		{
+		case BLF_LOCK_NONE:
+			return 0;
+		case BLF_LOCK_DISCARD:
+			return D3DLOCK_DISCARD;
+		case BLF_LOCK_NOOVERWRITE:
+			return D3DLOCK_NOOVERWRITE;
+		case BLF_LOCK_NOSYSLOCK:
+			return D3DLOCK_NOSYSLOCK;
+		}
+
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1214,6 +1232,11 @@ namespace Menge
 		{
 			VBInfo & vbInfo = m_vertexBuffers.get_value(it);
 
+			if( vbInfo.pool == D3DPOOL_MANAGED )
+			{
+				continue;
+			}
+
 			IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateVertexBuffer, ( vbInfo.length, vbInfo.usage, vbInfo.fvf, vbInfo.pool, &vbInfo.pVB, NULL ) )
 			{
 				return false;
@@ -1227,6 +1250,11 @@ namespace Menge
 		++it )
 		{
 			IBInfo& ibInfo = m_indexBuffers.get_value(it);
+
+			if( ibInfo.pool == D3DPOOL_MANAGED )
+			{
+				continue;
+			}
 
 			IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, ( ibInfo.length, ibInfo.usage, ibInfo.format, ibInfo.pool, &ibInfo.pIB, NULL ) )
 			{
@@ -1387,38 +1415,48 @@ namespace Menge
             }            
         }
 
-        for( TMapVBInfo::iterator 
-            it = m_vertexBuffers.begin(), 
-            it_end = m_vertexBuffers.end();
-        it != it_end;
-        ++it )
-        {
-            VBInfo & vb = m_vertexBuffers.get_value(it);
+		for( TMapVBInfo::iterator 
+			it = m_vertexBuffers.begin(), 
+			it_end = m_vertexBuffers.end();
+		it != it_end;
+		++it )
+		{
+			VBInfo & vb = m_vertexBuffers.get_value(it);
 
-            if( vb.pVB != nullptr )
-            {
-                ULONG ref = vb.pVB->Release();
+			if( vb.pool == D3DPOOL_MANAGED )
+			{
+				continue;
+			}
+
+			if( vb.pVB != nullptr )
+			{
+				ULONG ref = vb.pVB->Release();
 				(void)ref;
-                vb.pVB = nullptr;
-            }
-        }
+				vb.pVB = nullptr;
+			}
+		}
 
 
-        for( TMapIBInfo::iterator 
-            it = m_indexBuffers.begin(), 
-            it_end = m_indexBuffers.end();
-        it != it_end;
-        ++it )
-        {
-            IBInfo & ib = m_indexBuffers.get_value(it);
+		for( TMapIBInfo::iterator 
+			it = m_indexBuffers.begin(), 
+			it_end = m_indexBuffers.end();
+		it != it_end;
+		++it )
+		{
+			IBInfo & ib = m_indexBuffers.get_value(it);
 
-            if( ib.pIB != nullptr )
-            {
-                ULONG ref = ib.pIB->Release();
+			if( ib.pool == D3DPOOL_MANAGED )
+			{
+				continue;
+			}
+
+			if( ib.pIB != nullptr )
+			{
+				ULONG ref = ib.pIB->Release();
 				(void)ref;
-                ib.pIB = nullptr;
-            }
-        }
+				ib.pIB = nullptr;
+			}
+		}
 
         for( size_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
         {
@@ -1483,7 +1521,6 @@ namespace Menge
 			return false;
 		}
 
-		//if(procGfxRestoreFunc) return procGfxRestoreFunc();
         if( m_listener != nullptr )
         {
             if( m_listener->onRenderSystemDeviceRestored() == false )
@@ -1542,14 +1579,16 @@ namespace Menge
         }
 
         DWORD Usage = D3DUSAGE_WRITEONLY;
+		D3DPOOL Pool = D3DPOOL_MANAGED;
 
         if( _dynamic == true )
         {
-            Usage |= D3DUSAGE_DYNAMIC;
+            Usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
+			Pool = D3DPOOL_DEFAULT;
         }
 
 		IDirect3DVertexBuffer9 * vb = nullptr;
-		IF_DXCALL(m_serviceProvider, m_pD3DDevice, CreateVertexBuffer, ( _verticesNum * _vertexSize, Usage, Vertex2D_declaration, D3DPOOL_DEFAULT, &vb, NULL ) )
+		IF_DXCALL(m_serviceProvider, m_pD3DDevice, CreateVertexBuffer, ( _verticesNum * _vertexSize, Usage, Vertex2D_declaration, Pool, &vb, NULL ) )
 		{
 			return 0;
 		}
@@ -1557,15 +1596,15 @@ namespace Menge
 		VBInfo vbInfo;
 		vbInfo.length = _verticesNum * _vertexSize;
 		vbInfo.vertexSize = _vertexSize;
-		vbInfo.usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
+		vbInfo.usage = Usage;
 		vbInfo.fvf = Vertex2D_declaration;
-		vbInfo.pool = D3DPOOL_DEFAULT;
+		vbInfo.pool = Pool;
 		vbInfo.pVB = vb;
 		
 		VBHandle newVBHandleCounter = ++m_vbHandleCounter;
 		m_vertexBuffers.insert( newVBHandleCounter, vbInfo );
 
-		return m_vbHandleCounter;
+		return newVBHandleCounter;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::releaseVertexBuffer( VBHandle _vbHandle )
@@ -1601,29 +1640,31 @@ namespace Menge
         }
 
         DWORD Usage = D3DUSAGE_WRITEONLY;
+		D3DPOOL Pool = D3DPOOL_MANAGED;
 
         if( _dynamic == true )
         {
-            Usage |= D3DUSAGE_DYNAMIC;
+            Usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
+			Pool = D3DPOOL_DEFAULT;
         }
 
 		IDirect3DIndexBuffer9 * ib = nullptr;
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, ( sizeof(RenderIndices2D) * _indiciesNum, Usage, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib, NULL ) )
+		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, ( sizeof(RenderIndices2D) * _indiciesNum, Usage, D3DFMT_INDEX16, Pool, &ib, NULL ) )
 		{
 			return 0;
 		}
 
 		IBInfo ibInfo;
 		ibInfo.length = sizeof(RenderIndices2D) * _indiciesNum;
-		ibInfo.usage = D3DUSAGE_WRITEONLY;
+		ibInfo.usage = Usage;
 		ibInfo.format = D3DFMT_INDEX16;
-		ibInfo.pool = D3DPOOL_DEFAULT;
+		ibInfo.pool = Pool;
 		ibInfo.pIB = ib;
 		// count from 1
 		IBHandle newIBHandleCounter = ++m_ibHandleCounter;
 		m_indexBuffers.insert( newIBHandleCounter, ibInfo );
 
-		return m_ibHandleCounter;
+		return newIBHandleCounter;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::releaseIndexBuffer( IBHandle _ibHandle )
@@ -1648,7 +1689,7 @@ namespace Menge
         m_indexBuffers.erase( _ibHandle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * DX9RenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, uint32_t _flags )
+	void * DX9RenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, EBufferLockFlag _flags )
 	{
         VBInfo * vbinfo = nullptr;
         if( m_vertexBuffers.has( _vbHandle, &vbinfo ) == false )
@@ -1673,9 +1714,10 @@ namespace Menge
 
 		IDirect3DVertexBuffer9 * vb = vbinfo->pVB;
 
-		void * lock = nullptr;
+		DWORD d3d_flag = s_toD3DBufferLock( _flags );
 
-		IF_DXCALL( m_serviceProvider, vb, Lock, ( _offset, _size, &lock, _flags ) )
+		void * lock = nullptr;
+		IF_DXCALL( m_serviceProvider, vb, Lock, ( _offset, _size, &lock, d3d_flag ) )
 		{
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockVertexBuffer vertex buffer %d invalid"
                 , _vbHandle
@@ -1714,7 +1756,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32_t _flags )
+	void * DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, EBufferLockFlag _flags )
 	{
         IBInfo * ibinfo;
 
@@ -1729,8 +1771,10 @@ namespace Menge
 
         IDirect3DIndexBuffer9 * ib = ibinfo->pIB;
         
+		DWORD d3d_flag = s_toD3DBufferLock( _flags );
+
 		void * lock = nullptr;
-		IF_DXCALL( m_serviceProvider, ib, Lock, ( _offset, _size, &lock, _flags ) )
+		IF_DXCALL( m_serviceProvider, ib, Lock, ( _offset, _size, &lock, d3d_flag ) )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockIndexBuffer index buffer %d invalid"
                 , _ibHandle

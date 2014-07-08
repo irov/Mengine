@@ -153,10 +153,14 @@ namespace Menge
 		TF_GAUSSIANCUBIC
 	};
 
-    const unsigned int LOCK_READONLY = 0x00000010L;
-    const unsigned int LOCK_DISCARD = 0x00002000L;
-    const unsigned int LOCK_NOOVERWRITE = 0x00001000L;
-    const unsigned int LOCK_NOSYSLOCK = 0x00000800L;
+	enum EBufferLockFlag
+	{
+		BLF_LOCK_NONE,
+		BLF_LOCK_READONLY,
+		BLF_LOCK_DISCARD,
+		BLF_LOCK_NOOVERWRITE,
+		BLF_LOCK_NOSYSLOCK
+	};
 
 	typedef size_t VBHandle; // Vertex Buffer Handle
 	typedef size_t IBHandle; // Index Buffer Handle
@@ -454,13 +458,13 @@ namespace Menge
 
 		virtual VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic ) = 0;
 		virtual void releaseVertexBuffer( VBHandle _vbHandle ) = 0;
-		virtual void * lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32_t _flags ) = 0;
+		virtual void * lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlockVertexBuffer( VBHandle _vbHandle ) = 0;
 		virtual void setVertexBuffer( VBHandle _vbHandle ) = 0;
 
 		virtual IBHandle createIndexBuffer( size_t _indiciesNum, bool _dynamic ) = 0;
 		virtual void releaseIndexBuffer( IBHandle _ibHandle ) = 0;
-		virtual void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32_t _flags ) = 0;
+		virtual void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) = 0;
 

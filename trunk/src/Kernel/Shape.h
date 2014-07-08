@@ -26,11 +26,14 @@ namespace Menge
         void setTextureWrapY( bool _wrap );
         bool getTextureWrapY() const;
 
-        void setSize( const mt::vec2f & _size );
-        const mt::vec2f & getSize() const;
-
         void setMaxSize( const mt::vec2f & _size );
         const mt::vec2f & getMaxSize() const;
+
+		void setSize( const mt::vec2f & _size );
+		const mt::vec2f & getSize() const;
+
+		void setOffset( const mt::vec2f & _size );
+		const mt::vec2f & getOffset() const;
 
         void setUVRotate( bool _rotate );
         bool getUVRotate() const;
@@ -83,8 +86,9 @@ namespace Menge
         bool m_textureWrapX;
         bool m_textureWrapY;
 
-        mt::vec2f m_size;
         mt::vec2f m_maxSize;
+		mt::vec2f m_size;
+		mt::vec2f m_offset;
 
         bool m_uvRotate;
         mt::vec4f m_uv;

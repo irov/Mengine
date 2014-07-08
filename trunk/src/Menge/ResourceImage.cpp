@@ -18,6 +18,7 @@ namespace Menge
         , m_textureSize(0.f, 0.f)
         , m_maxSize(0.f, 0.f)
         , m_size(0.f, 0.f)
+		, m_offset(0.f, 0.f)
         , m_uv_image(0.f, 0.f, 0.f, 0.f)
         , m_uv(0.f, 0.f, 0.f, 0.f)
         , m_uv_scale(0.f, 0.f, 0.f, 0.f)

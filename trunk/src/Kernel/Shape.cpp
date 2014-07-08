@@ -6,8 +6,9 @@ namespace Menge
     Shape::Shape()
         : m_textureWrapX(false)
         , m_textureWrapY(false)
-        , m_size(0.f, 0.f)
         , m_maxSize(0.f, 0.f)
+		, m_size(0.f, 0.f)
+		, m_offset(0.f, 0.f)
         , m_uvRotate(false)
         , m_uv(0.f, 0.f, 1.f, 1.f)
         , m_uv2(0.f, 0.f, 1.f, 1.f)
@@ -51,18 +52,6 @@ namespace Menge
         return m_textureWrapY;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Shape::setSize( const mt::vec2f & _size )
-    {
-        m_size = _size;
-
-        this->invalidateVertices();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const mt::vec2f & Shape::getSize() const
-    {
-        return m_size;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Shape::setMaxSize( const mt::vec2f & _size )
     {
         m_maxSize = _size;
@@ -74,6 +63,30 @@ namespace Menge
     {
         return m_maxSize;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Shape::setSize( const mt::vec2f & _size )
+	{
+		m_size = _size;
+
+		this->invalidateVertices();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Shape::getSize() const
+	{
+		return m_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Shape::setOffset( const mt::vec2f & _offset )
+	{
+		m_offset = _offset;
+
+		this->invalidateVertices();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Shape::getOffset() const
+	{
+		return m_offset;
+	}
     //////////////////////////////////////////////////////////////////////////
     void Shape::setUVRotate( bool _rotate )
     {
@@ -208,9 +221,11 @@ namespace Menge
 
         mt::vec4f percentPx( m_percentVisibility.x * m_maxSize.x, m_percentVisibility.y * m_maxSize.y,
             m_percentVisibility.z * m_maxSize.x, m_percentVisibility.w * m_maxSize.y );
-
-        percentPx.z -= (m_maxSize.x - m_size.x);
-        percentPx.w -= (m_maxSize.y - m_size.y);
+		
+		percentPx.x -= m_offset.x;
+		percentPx.y -= m_offset.y;
+        percentPx.z -= (m_maxSize.x - m_size.x - m_offset.x);
+        percentPx.w -= (m_maxSize.y - m_size.y - m_offset.y);
 
         if( m_textureWrapX == false && m_textureWrapY == false )
         {
@@ -390,9 +405,9 @@ namespace Menge
 
         mt::vec2f visOffset( m_size.x * percent.x, m_size.y * percent.y );
 
-        mt::vec2f size;
-        size.x = m_size.x - m_size.x * ( percent.x + percent.z );
-        size.y = m_size.y - m_size.y * ( percent.y + percent.w );
+        mt::vec2f percent_size;
+        percent_size.x = m_size.x - m_size.x * ( percent.x + percent.z );
+        percent_size.y = m_size.y - m_size.y * ( percent.y + percent.w );
 
         if( m_centerAlign == true )
         {
@@ -401,20 +416,40 @@ namespace Menge
             visOffset += alignOffset;
         }
 
+		visOffset = m_offset;
+		
+		if( m_flipX == true )
+		{
+			visOffset.x += m_maxSize.x - ( percent_size.x + m_offset.x );			
+		}
+		else
+		{
+			visOffset.x += m_offset.x;
+		}
+
+		if( m_flipY == true )
+		{
+			visOffset.y += m_maxSize.y - ( percent_size.y + m_offset.y );
+		}
+		else
+		{
+			visOffset.y += m_offset.y;
+		}
+
         m_verticesLocal[0].x = visOffset.x + 0.f;
         m_verticesLocal[0].y = visOffset.y + 0.f;
         m_verticesLocal[0].z = 0.f;
 
-        m_verticesLocal[1].x = visOffset.x + size.x;
+        m_verticesLocal[1].x = visOffset.x + percent_size.x;
         m_verticesLocal[1].y = visOffset.y + 0.f;
         m_verticesLocal[1].z = 0.f;
 
-        m_verticesLocal[2].x = visOffset.x + size.x;
-        m_verticesLocal[2].y = visOffset.y + size.y;
+        m_verticesLocal[2].x = visOffset.x + percent_size.x;
+        m_verticesLocal[2].y = visOffset.y + percent_size.y;
         m_verticesLocal[2].z = 0.f;
 
         m_verticesLocal[3].x = visOffset.x + 0.f;
-        m_verticesLocal[3].y = visOffset.y + size.y;
+        m_verticesLocal[3].y = visOffset.y + percent_size.y;
         m_verticesLocal[3].z = 0.f;
     }
     //////////////////////////////////////////////////////////////////////////

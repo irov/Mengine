@@ -21,6 +21,7 @@ namespace Menge
         inline const mt::vec2f & getTextureSize() const;
 		inline const mt::vec2f & getMaxSize() const;
 		inline const mt::vec2f & getSize() const;
+		inline const mt::vec2f & getOffset() const;
         inline const mt::vec2f & getBound() const;
 		inline const mt::vec4f & getUV() const;
         inline const mt::vec4f & getUVScale() const;
@@ -56,6 +57,7 @@ namespace Menge
         mt::vec2f m_textureSize;
         mt::vec2f m_maxSize;
         mt::vec2f m_size;
+		mt::vec2f m_offset;
 
         mt::vec4f m_uv_image;
         mt::vec4f m_uv;
@@ -84,6 +86,11 @@ namespace Menge
     {
         return m_size;
     }
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec2f & ResourceImage::getOffset() const
+	{
+		return m_offset;
+	}
     //////////////////////////////////////////////////////////////////////////
     inline const mt::vec4f & ResourceImage::getUV() const
     {

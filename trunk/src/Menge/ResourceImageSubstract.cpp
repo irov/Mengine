@@ -74,9 +74,11 @@ namespace Menge
         mt::vec2f uv_size(m_uv.z - m_uv.x, m_uv.w - m_uv.y);
 
         const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
-
         m_maxSize = maxSize * uv_size;
-        m_size = maxSize * uv_size;
+
+		const mt::vec2f & size = m_resourceImage->getSize();
+        m_size = size * uv_size;
+
         m_uv_image = m_uv;
 
         m_uv_scale = m_resourceImage->getUVScale();

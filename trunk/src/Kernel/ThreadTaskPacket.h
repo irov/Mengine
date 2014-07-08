@@ -13,7 +13,11 @@ namespace Menge
 		ThreadTaskPacket();
 
 	public:
+		bool initialize( size_t _packetSize );
+
+	public:
 		void addTask( const ThreadTaskPtr & _task );
+		const ThreadTaskPtr & getTask( size_t _index ) const;
 		size_t countTask() const;
 		
 	protected:

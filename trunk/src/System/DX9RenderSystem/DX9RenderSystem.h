@@ -76,13 +76,13 @@ namespace Menge
 
 		VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
-		void * lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, uint32_t _flags ) override;
+		void * lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, EBufferLockFlag _flags ) override;
 		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
 		void setVertexBuffer( VBHandle _vbHandle ) override;
 
 		IBHandle createIndexBuffer( size_t _indiciesNum, bool _dynamic ) override;
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
-		void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32_t _flags ) override;
+		void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, EBufferLockFlag _flags ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
 		void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) override;
 

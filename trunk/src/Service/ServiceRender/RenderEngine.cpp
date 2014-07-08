@@ -1136,7 +1136,7 @@ namespace Menge
 	VBHandle RenderEngine::createVertexBuffer( const RenderVertex2D * _buffer, size_t _count )
 	{
 		VBHandle vbHandle = RENDER_SYSTEM(m_serviceProvider)
-			->createVertexBuffer( _count, sizeof(RenderVertex2D), true );
+			->createVertexBuffer( _count, sizeof(RenderVertex2D), false );
 
 		if( vbHandle == 0 )
 		{
@@ -1203,13 +1203,13 @@ namespace Menge
 			->releaseIndexBuffer( _handle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::updateVertexBuffer( VBHandle _handle, const RenderVertex2D * _buffer, size_t _count  )
+	bool RenderEngine::updateVertexBuffer( VBHandle _handle, const RenderVertex2D * _buffer, size_t _count )
 	{
 		void * vbuffer = RENDER_SYSTEM(m_serviceProvider)->lockVertexBuffer( 
 			_handle
 			, 0
 			, _count * sizeof(RenderVertex2D)
-			, 0 
+			, BLF_LOCK_DISCARD
 			);
 
 		if( vbuffer == nullptr )
@@ -1236,7 +1236,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::updateIndicesBuffer( IBHandle _handle, const RenderIndices2D * _buffer, size_t _count )
 	{
-		void * ibuffer = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( _handle, 0, _count, 0 );
+		void * ibuffer = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
+			_handle
+			, 0
+			, _count
+			, BLF_LOCK_DISCARD
+			);
 
 		if( ibuffer == nullptr )
 		{
@@ -1277,14 +1282,12 @@ namespace Menge
 
 			return false;
 		}
-
-		uint32_t vbLockFlags = LOCK_DISCARD;
-
+				
 		void * vbData = RENDER_SYSTEM(m_serviceProvider)->lockVertexBuffer( 
 			m_vbHandle2D
 			, 0
 			, m_renderVertexCount * sizeof(RenderVertex2D)
-			, vbLockFlags 
+			, BLF_LOCK_DISCARD 
 			);
 
 		if( vbData == nullptr )
@@ -1297,14 +1300,11 @@ namespace Menge
 
 		RenderVertex2D * vertexBuffer = static_cast<RenderVertex2D *>(vbData);
 
-		uint32_t ibLockFlags = LOCK_DISCARD;
-		//uint32 ibLockFlags = 0;
-
 		void * ibData = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
 			m_ibHandle2D
 			, 0
 			, m_renderIndicesCount * sizeof(RenderIndices2D)
-			, ibLockFlags 
+			, BLF_LOCK_DISCARD 
 			);
 
 		if( ibData == nullptr )
@@ -1623,7 +1623,7 @@ namespace Menge
 		}
 
 		m_ibHandle2D = RENDER_SYSTEM(m_serviceProvider)
-			->createIndexBuffer( m_maxIndexCount, true );
+			->createIndexBuffer( m_maxIndexCount, false );
 
 		if( m_ibHandle2D == 0 )
 		{
@@ -1648,7 +1648,7 @@ namespace Menge
 		}
 
 		m_vbHandle2D = RENDER_SYSTEM(m_serviceProvider)
-			->createVertexBuffer( m_maxVertexCount, sizeof(RenderVertex2D), true );
+			->createVertexBuffer( m_maxVertexCount, sizeof(RenderVertex2D), false );
 
 		if( m_vbHandle2D == 0 )
 		{

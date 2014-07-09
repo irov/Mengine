@@ -263,11 +263,6 @@ namespace Menge
 
 		s_enlargePolygonFromLow( big_polygon, m_unitSize );
 
-		if( this->testBigHolesPolygon_( big_polygon ) == true )
-		{
-			return 0;
-		}
-
 		size_t id = ++m_enumeratorObstacles;
 
 		Obstacle * obstacle = new Obstacle;

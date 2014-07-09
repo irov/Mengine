@@ -415,9 +415,7 @@ namespace Menge
 
             visOffset += alignOffset;
         }
-
-		visOffset = m_offset;
-		
+				
 		if( m_flipX == true )
 		{
 			visOffset.x += m_maxSize.x - ( percent_size.x + m_offset.x );			

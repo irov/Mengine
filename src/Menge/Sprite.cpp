@@ -116,6 +116,9 @@ namespace	Menge
 
             const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
             this->setMaxSize( maxSize );
+
+			const mt::vec2f & offset = m_resourceImage->getOffset();
+			this->setOffset( offset );
         }
         else
         {

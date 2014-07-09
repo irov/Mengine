@@ -129,7 +129,7 @@ namespace Menge
 
 		m_size = m_maxSize;
 		metadata->get_File_Size( m_size );
-		metadata->get_File_Offset( m_maxSize );
+		metadata->get_File_Offset( m_offset );
 		
         return true;
     }

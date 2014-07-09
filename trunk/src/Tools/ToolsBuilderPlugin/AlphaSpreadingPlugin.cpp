@@ -55,7 +55,7 @@ namespace Menge
         InputStreamInterfacePtr input_stream = 
             FILE_SERVICE(serviceProvider)->openInputFile( ConstString::none(), inputFileName );
         
-        if( input_stream == 0 )
+        if( input_stream == nullptr )
         {
             char error[512];
             sprintf( error, "spreadingPngAlpha invalid PNG file '%s' not found"

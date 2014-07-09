@@ -39,9 +39,6 @@ namespace Menge
 		float width = (float)texture->getWidth();
 		float height = (float)texture->getHeight();
 
-		m_size.x = width;
-		m_size.y = height;
-
 		const Rect & rect = texture->getRect();
 
 		const RenderImageInterfacePtr & image = texture->getImage();
@@ -56,9 +53,21 @@ namespace Menge
 
         if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
         {
-            m_maxSize.x = m_size.x;
-            m_maxSize.y = m_size.y;
+            m_maxSize.x = width;
+            m_maxSize.y = height;
         }
+
+		if( m_size.x < 1.f || m_size.y < 1.f )
+		{
+			m_size.x = width;
+			m_size.y = height;
+
+			float ku = m_uv.z - m_uv.x;
+			float kv = m_uv.w - m_uv.y;
+
+			m_size.x *= ku;
+			m_size.y *= kv;
+		}
 
 		m_texture = texture;
 
@@ -72,13 +81,7 @@ namespace Menge
 		{
 			m_isAlpha = true;
 		}
-
-        float ku = m_uv.z - m_uv.x;
-        float kv = m_uv.w - m_uv.y;
-
-        m_size.x *= ku;
-        m_size.y *= kv;
-        
+		        
         if( m_isUVRotate == true )
         {
             std::swap( m_maxSize.x, m_maxSize.y );

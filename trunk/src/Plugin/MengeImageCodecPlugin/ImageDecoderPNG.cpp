@@ -69,8 +69,6 @@ namespace Menge
 	{
 		// create the chunk manage structure
 		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
-		//m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, &m_memories, &s_png_malloc_ptr, &s_png_free_ptr );
-		//m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, nullptr, &s_png_malloc_ptr, &s_png_free_ptr );
 		m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
 
 		if( m_png_ptr == nullptr )

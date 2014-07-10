@@ -243,7 +243,7 @@ namespace Menge
 
         double fps = av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
 
-		m_dataInfo.fps = (size_t)fps;
+		m_dataInfo.fps = (uint32_t)fps;
 
 		if( m_dataInfo.fps == 0 )
 		{

@@ -388,7 +388,12 @@ namespace Menge
 		{
 			RenderMaterial * material = *it;
 
-			if( s_equalMaterial( material, _material->getPrimitiveType(), _material->getTextureCount(), _material->getTextures(), _material->getStage() ) == false )
+			EPrimitiveType primitiveType = _material->getPrimitiveType();
+			size_t textureCount = _material->getTextureCount();
+			const RenderTextureInterfacePtr * textures = _material->getTextures();
+			const RenderStage * stage = _material->getStage();
+
+			if( s_equalMaterial( material, primitiveType, textureCount, textures, stage ) == false )
 			{
 				continue;
 			}

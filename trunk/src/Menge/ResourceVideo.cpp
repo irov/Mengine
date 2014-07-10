@@ -5,6 +5,7 @@
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/VideoCodecInterface.h"
 #   include "Interface/StringizeInterface.h"
+#   include "Interface/ConfigInterface.h"
 
 #	include "Kernel/ResourceImplement.h"
 
@@ -77,10 +78,23 @@ namespace Menge
             return false;
         }
 
+		const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
+
+		uint32_t Limit_VideoFrameRate = CONFIG_VALUE(m_serviceProvider, "Limit", "VideoFrameRate", 30U);
+		if( dataInfo->fps > Limit_VideoFrameRate )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceVideo.isValid: '%s' path '%s' invalid Frame rate %u more that %u"
+				, this->getName().c_str()
+				, m_path.c_str()
+				, dataInfo->fps
+				, Limit_VideoFrameRate
+				);
+
+			return false;
+		}
+
         if( m_noSeek == false )
-        {
-            const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
-			
+        {           			
 			for( float pts = 0.f; pts < 200.f; pts += dataInfo->frameTiming )
 			{
 				_decoder->seek( pts );

@@ -6,23 +6,9 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		template<class T>
-		class FIntrusiveSprayTreeForeachDestroy
-		{
-		public:
-			void operator() ( T * _entry )
-			{
-				_entry->destroy();
-			}
-		};
-	}
-
 	template<class T, size_t Count>
 	class IntrusiveSprayTree
-		: public stdex::intrusive_splay_tree<T>
+		: public stdex::intrusive_splay_tree<T, false, false>
 	{
 	public:
 		IntrusiveSprayTree()
@@ -44,11 +30,21 @@ namespace Menge
 
 		void clear()
 		{
-			FIntrusiveSprayTreeForeachDestroy<T> fistfd;
+			FIntrusiveSprayTreeForeachDestroy fistfd;
 			this->foreach( fistfd );
 
-			stdex::intrusive_splay_tree<T>::clear();
+			stdex::intrusive_splay_tree<T, false, false>::clear();
 		}
+
+	protected:
+		class FIntrusiveSprayTreeForeachDestroy
+		{
+		public:
+			void operator() ( T * _node )
+			{
+				_node->destroy();
+			}
+		};
 				
 	protected:
 		typedef FactoryPoolStore<T, Count> TFactoryNode;

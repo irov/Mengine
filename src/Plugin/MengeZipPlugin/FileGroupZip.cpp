@@ -395,6 +395,11 @@ namespace Menge
 
 		if( s_inflate_memory( buffer, info->unz_size, compress_memory, info->file_size ) == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed inflate"
+				, m_path.c_str()
+				, _fileName.c_str()
+				);
+
 			return false;
 		}
 		

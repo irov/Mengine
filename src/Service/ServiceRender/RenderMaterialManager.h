@@ -6,6 +6,8 @@
 
 #	include "Factory/FactoryStore.h"
 
+#	include "Core/IntrusiveSprayTree.h"
+
 #   include "stdex/binary_vector.h"
 
 namespace Menge
@@ -44,9 +46,6 @@ namespace Menge
 			, const RenderTextureInterfacePtr * _textures ) override;        
 		
 	protected:
-		void onRenderMaterialDestroy_( RenderMaterial * _material );
-
-    protected:
         bool createRenderStageGroup( const ConstString & _name, const RenderStage & _stage );
 
     protected:
@@ -60,10 +59,7 @@ namespace Menge
 		typedef FactoryPoolStore<RenderStageGroup, 256> TFactoryRenderStage; 
 		TFactoryRenderStage m_factoryStage;
 
-		typedef std::vector<RenderMaterial *> TVectorRenderMaterial;
-		TVectorRenderMaterial m_materials;
-
-		typedef FactoryPoolStore<RenderMaterial, 256> TFactoryRenderMaterial; 
-		TFactoryRenderMaterial m_factoryMaterial;
+		typedef IntrusiveSprayTreePtr<RenderMaterial, 256> TTreeRenderMaterials;
+		TTreeRenderMaterials m_materials;
     };
 }

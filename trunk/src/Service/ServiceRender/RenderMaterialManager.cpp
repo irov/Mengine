@@ -32,8 +32,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::initialize()
     {
-		m_factoryMaterial.setMethodListener( this, &RenderMaterialManager::onRenderMaterialDestroy_ );
-
         {
             RenderStage rs;
 
@@ -293,39 +291,6 @@ namespace Menge
 
         return false;
     }
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_equalMaterial( const RenderMaterial * _material		
-		, EPrimitiveType _primitiveType
-		, size_t _textureCount 
-		, const RenderTextureInterfacePtr * _textures
-		, const RenderStage * _stage
-		)
-	{
-		if( _material->getPrimitiveType() != _primitiveType )
-		{
-			return false;
-		}
-
-		if( _material->getTextureCount() != _textureCount )
-		{
-			return false;
-		}
-
-		for( size_t i = 0; i != _textureCount; ++i )
-		{
-			if( _material->getTexture(i) != _textures[i] )
-			{
-				return false;
-			}
-		}
-
-		if( _material->getStage() != _stage )
-		{
-			return false;
-		}
-
-		return true;
-	}
     //////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial( const ConstString & _stageName
 		, bool _wrapU
@@ -342,67 +307,18 @@ namespace Menge
 
 		const RenderStage * stage = &stageGroup->stage[ (_wrapU ? 1 : 0) + (_wrapV ? 2 : 0) ];
 
-		for( TVectorRenderMaterial::iterator
-			it = m_materials.begin(),
-			it_end = m_materials.end();
-		it != it_end;
-		++it )
-		{
-			RenderMaterial * material = *it;
-
-			if( s_equalMaterial( material, _primitiveType, _textureCount, _textures, stage ) == false )
-			{
-				continue;
-			}
-
-			return material;
-		}
-
-		RenderMaterial * material = m_factoryMaterial.createObjectT();
+		RenderMaterialPtr material = m_materials.create();
 
 		size_t id = ++m_materialEnumerator;
-		material->initialize( id, _primitiveType, stage );
-
-		material->setTexture( _textureCount, _textures );
+		material->initialize( id, _primitiveType, _textureCount, _textures, stage );
 		
-		m_materials.push_back( material );
+		RenderMaterial * insert_material;
+		if( m_materials.insert_exist( material.get(), &insert_material ) == false )
+		{
+			return insert_material;
+		}
 
 		return material;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderMaterialManager::onRenderMaterialDestroy_( RenderMaterial * _material )
-	{
-		if( _material == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::releaseMaterial material is nullptr"
-				);
-
-			return;
-		}
-
-		for( TVectorRenderMaterial::iterator
-			it = m_materials.begin(),
-			it_end = m_materials.end();
-		it != it_end;
-		++it )
-		{
-			RenderMaterial * material = *it;
-
-			EPrimitiveType primitiveType = _material->getPrimitiveType();
-			size_t textureCount = _material->getTextureCount();
-			const RenderTextureInterfacePtr * textures = _material->getTextures();
-			const RenderStage * stage = _material->getStage();
-
-			if( s_equalMaterial( material, primitiveType, textureCount, textures, stage ) == false )
-			{
-				continue;
-			}
-			
-			*it = m_materials.back();
-			m_materials.pop_back();
-			
-			return;
-		}
 	}
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::createRenderStageGroup( const ConstString & _name, const RenderStage & _stage )

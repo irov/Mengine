@@ -19,11 +19,7 @@ namespace	Menge
 	Sprite::Sprite()
 		: m_isCustomSize(false)
 		, m_customSize(0.f, 0.f)
-		, m_blendAdd(false)
-		, m_solid(false)
 		, m_material(nullptr)
-		, m_invalidateMaterial(true)
-		, m_disableTextureColor(false)
 		, m_texturesNum(0)
 	{
 	}
@@ -138,11 +134,6 @@ namespace	Menge
         m_textures[0] = m_resourceImage->getTexture();
         m_textures[1] = m_resourceImage->getTextureAlpha();
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Sprite::invalidateMaterial()
-    {
-        m_invalidateMaterial = true;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateMaterial()
 	{
@@ -230,8 +221,9 @@ namespace	Menge
 
 		if( m_material == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Sprite::updateMaterial_ %s m_material is NULL"
+			LOGGER_ERROR(m_serviceProvider)("Sprite::updateMaterial_ %s resource %s m_material is NULL"
 				, this->getName().c_str()
+				, m_resourceImage->getName().c_str()
 				);
 		}
 	}
@@ -280,33 +272,4 @@ namespace	Menge
 
         this->recompile();
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::disableTextureColor( bool _disable )
-	{
-		if( m_disableTextureColor == _disable )
-		{
-			return;
-		}
-
-		m_disableTextureColor = _disable;
-
-        this->invalidateMaterial();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setBlendAdd( bool _value )
-	{
-		if ( m_blendAdd == _value )
-		{
-			return;
-		}
-
-		m_blendAdd = _value;
-
-		this->invalidateMaterial();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Sprite::isBlendAdd() const
-	{
-		return m_blendAdd;
-	}
 }

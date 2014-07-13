@@ -1405,11 +1405,11 @@ namespace Menge
 		_ibPos = ibPos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_testRenderBB( RenderObject * _begin, RenderObject * _end, RenderObject * _ro )
+	static bool s_testRenderBB( const RenderObject * _begin, const RenderObject * _end, const RenderObject * _ro )
 	{
-		for( RenderObject * it = _begin; it != _end; ++it )
+		for( const RenderObject * it = _begin; it != _end; ++it )
 		{
-			RenderObject * ro_bath = it;
+			const RenderObject * ro_bath = it;
 
 			if( ro_bath->verticesNum == 0 )
 			{
@@ -1430,49 +1430,53 @@ namespace Menge
 		size_t vbPos = _vbPos;
 		size_t ibPos = _ibPos;
 
+		const RenderMaterial * ro_material = _ro->material.get();
+
 		TArrayRenderObject::iterator it_batch_start_end = _begin;
 		++it_batch_start_end;
 
-		TArrayRenderObject::iterator it_batch_start = _begin;
-		++it_batch_start;	
+		TArrayRenderObject::iterator it_batch = _begin;
+		++it_batch;	
 
-		for( ; it_batch_start != _end; ++it_batch_start )
+		for( ; it_batch != _end; ++it_batch )
 		{
-			RenderObject * ro_bath_start = it_batch_start;
+			RenderObject * ro_bath = it_batch;
 
-			if( ro_bath_start->verticesNum == 0 )
+			if( ro_bath->verticesNum == 0 )
 			{
 				continue;
 			}
 
-			if( _ro->material != ro_bath_start->material )
+			const RenderMaterial * ro_bath_material = ro_bath->material.get();
+
+			if( ro_material != ro_bath_material )
 			{
 				continue;
 			}
 			
-			if( s_testRenderBB( it_batch_start_end, it_batch_start, ro_bath_start ) == true )
+			if( s_testRenderBB( it_batch_start_end, it_batch, ro_bath ) == true )
 			{
 				break;
 			}
 
-			if( this->insertRenderObject_( ro_bath_start, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos ) == false )
+			if( this->insertRenderObject_( ro_bath, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos ) == false )
 			{
 				break;
 			}
 
-			_ro->dipVerticesNum += ro_bath_start->verticesNum;
-			_ro->dipIndiciesNum += ro_bath_start->indicesNum;
+			_ro->dipVerticesNum += ro_bath->verticesNum;
+			_ro->dipIndiciesNum += ro_bath->indicesNum;
 
-			ro_bath_start->material = nullptr;
+			ro_bath->material = nullptr;
 
-			ro_bath_start->dipVerticesNum = 0;
-			ro_bath_start->dipIndiciesNum = 0;
+			ro_bath->dipVerticesNum = 0;
+			ro_bath->dipIndiciesNum = 0;
 
-			vbPos += ro_bath_start->verticesNum;
-			ibPos += ro_bath_start->indicesNum;
+			vbPos += ro_bath->verticesNum;
+			ibPos += ro_bath->indicesNum;
 
-			ro_bath_start->verticesNum = 0;
-			ro_bath_start->indicesNum = 0;
+			ro_bath->verticesNum = 0;
+			ro_bath->indicesNum = 0;
 
 			++m_debugInfo.batch;
 		}

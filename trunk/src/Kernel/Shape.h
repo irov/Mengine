@@ -19,6 +19,12 @@ namespace Menge
         Shape();
         ~Shape();
 
+	public:
+		void disableTextureColor( bool _disable );
+
+		void setBlendAdd( bool _value );
+		bool isBlendAdd() const;
+
     public:
         void setTextureWrapX( bool _wrap );
         bool getTextureWrapX() const;
@@ -82,22 +88,18 @@ namespace Menge
     protected:
         inline const RenderVertex2D * getVerticesWM();
 
-    private:
-        bool m_textureWrapX;
-        bool m_textureWrapY;
-
+	protected:
+		inline void invalidateMaterial();
+		inline bool isInvalidateMaterial() const;
+		
+	protected:
         mt::vec2f m_maxSize;
 		mt::vec2f m_size;
 		mt::vec2f m_offset;
 
-        bool m_uvRotate;
         mt::vec4f m_uv;
         mt::vec4f m_uv2;
 
-        bool m_centerAlign;
-        bool m_flipX;
-        bool m_flipY;
-        
         mt::vec4f m_percentVisibility;
 
         TVectorRenderVertex2D m_maskPolygonVertex;
@@ -107,13 +109,40 @@ namespace Menge
         mt::vec2f m_textureUVScale;
 
         mt::vec3f m_verticesLocal[4];
-        bool m_invalidateVerticesLocal;
-
+        
         RenderVertex2D m_verticesWM[4];
+
+		bool m_textureWrapX;
+		bool m_textureWrapY;
+
+		bool m_uvRotate;
+
+		bool m_centerAlign;
+
+		bool m_flipX;
+		bool m_flipY;
+
+		bool m_invalidateVerticesLocal;
         bool m_invalidateVerticesWM;
 
         bool m_invalidateVerticesColor;
+
+		bool m_blendAdd;
+		bool m_solid;
+		bool m_disableTextureColor;
+
+		bool m_invalidateMaterial;
     };
+	//////////////////////////////////////////////////////////////////////////
+	inline void Shape::invalidateMaterial()
+	{
+		m_invalidateMaterial = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Shape::isInvalidateMaterial() const
+	{
+		return m_invalidateMaterial;
+	}
     //////////////////////////////////////////////////////////////////////////
     inline const RenderVertex2D * Shape::getVerticesWM()
     {

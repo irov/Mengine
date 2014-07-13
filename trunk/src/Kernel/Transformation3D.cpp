@@ -186,12 +186,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline static bool s_identityTransformationMatrix( const mt::mat4f & _m )
 	{
-		return fabsf( _m.v0.x - 1.f ) < 0.001f &&
-			fabsf( _m.v1.y - 1.f ) < 0.001f &&
-			fabsf( _m.v2.z - 1.f ) < 0.001f &&
-			fabsf( _m.v3.x ) < 0.001f &&
-			fabsf( _m.v3.y ) < 0.001f &&
-			fabsf( _m.v3.z ) < 0.001f;
+		float ident_e = _m.v0.x + _m.v1.y + _m.v2.z + _m.v3.x + _m.v3.y + _m.v3.z;
+
+		if( mt::cmp_f_f( ident_e, 3.f ) == false )
+		{
+			return false;
+		}
+
+		return mt::cmp_f_f( _m.v0.x, 1.f ) == true &&
+			mt::cmp_f_f( _m.v1.y, 1.f ) == true &&
+			mt::cmp_f_f( _m.v2.z, 1.f ) == true &&
+			mt::cmp_f_z( _m.v3.x ) == true &&
+			mt::cmp_f_z( _m.v3.y ) == true &&
+			mt::cmp_f_z( _m.v3.z ) == true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::updateLocalMatrix() const
@@ -207,11 +214,20 @@ namespace Menge
 		mat_scale.v1.y = m_scale.y;
 		mat_scale.v2.z = m_scale.z;
 				
-		if( fabsf( m_euler.x ) < mt::m_eps &&
-			fabsf( m_euler.y ) < mt::m_eps &&
-			fabsf( m_euler.z ) < mt::m_eps )
+		if( mt::cmp_f_z( m_euler.y ) == true &&
+			mt::cmp_f_z( m_euler.z ) == true )
 		{
-			m_localMatrix = mat_scale;
+			if( mt::cmp_f_z( m_euler.x ) == true )
+			{
+				m_localMatrix = mat_scale;
+			}
+			else
+			{
+				mt::mat4f mat_rot;
+				mt::make_rotate_x_axis_m4( mat_rot, m_euler.x );
+
+				mt::mul_m4_m4( m_localMatrix, mat_scale, mat_rot );
+			}
 		}
 		else
 		{

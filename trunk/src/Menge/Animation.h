@@ -2,6 +2,7 @@
 
 #	include "Sprite.h"
 
+//#	include "Kernel/Shape.h"
 #	include "Kernel/Animatable.h"
 
 #   include "ResourceAnimation.h"
@@ -20,6 +21,7 @@ namespace Menge
 		void setResourceAnimation( ResourceAnimation * _resourceAnimation );
 		ResourceAnimation * getResourceAnimation() const;
 
+	public:
 		size_t getFrameCount() const;
 		float getFrameDelay( size_t  _frame ) const;
 
@@ -57,6 +59,10 @@ namespace Menge
 	protected:
 		size_t getFrame_( float _timing, float & _delthaTiming ) const;
 		void updateCurrentFrame_();
+
+	protected:
+		void updateMaterial();
+		inline const RenderMaterialInterfacePtr & getMaterial();
 
 	protected:
 		ResourceHolder<ResourceAnimation> m_resourceAnimation;

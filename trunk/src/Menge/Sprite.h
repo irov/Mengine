@@ -31,11 +31,6 @@ namespace Menge
         ResourceImage * getResourceImage() const;
         
     public:
-		void disableTextureColor( bool _disable );
-
-		void setBlendAdd( bool _value );
-		bool isBlendAdd() const;
-
         void setCustomSize( const mt::vec2f & _size );
 
 	protected:
@@ -48,13 +43,11 @@ namespace Menge
         void _invalidateColor() override;
 
     protected:
-        void invalidateMaterial();
         void updateMaterial();
         inline const RenderMaterialInterfacePtr & getMaterial();
 
     protected:
-        void updateResource_();
-		
+        void updateResource_();		
         
 	protected:
 		bool compileResource_();
@@ -62,25 +55,19 @@ namespace Menge
 	protected:
 		ResourceHolder<ResourceImage> m_resourceImage;
 
-        bool m_isCustomSize;
         mt::vec2f m_customSize;
 
-		bool m_blendAdd;
-		bool m_solid;
-
 		RenderMaterialInterfacePtr m_material;
-
-        bool m_invalidateMaterial;
-
-		bool m_disableTextureColor;
-		
+	
 		size_t m_texturesNum;
 		RenderTextureInterfacePtr m_textures[2];
+
+		bool m_isCustomSize;
     };
     //////////////////////////////////////////////////////////////////////////
     inline const RenderMaterialInterfacePtr & Sprite::getMaterial()
     {
-        if( m_invalidateMaterial == true )
+        if( this->isInvalidateMaterial() == true )
         {
             this->updateMaterial();
         }

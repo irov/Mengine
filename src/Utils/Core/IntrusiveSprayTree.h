@@ -35,6 +35,15 @@ namespace Menge
 
 			stdex::intrusive_splay_tree<T, false, false>::clear();
 		}
+		
+	public:
+		template<class C, class M>
+		void setMethodListener( C * _self, M _method )
+		{
+			FactoryListenerInterfacePtr listener = new MethodFactoryListenerInterface<C, M, T>(_self, _method);
+
+			m_factoryNode.setListener( listener );
+		}
 
 	protected:
 		class FIntrusiveSprayTreeForeachDestroy
@@ -46,6 +55,39 @@ namespace Menge
 			}
 		};
 				
+	protected:
+		typedef FactoryPoolStore<T, Count> TFactoryNode;
+		TFactoryNode m_factoryNode;
+	};
+
+	template<class T, size_t Count>
+	class IntrusiveSprayTreePtr
+		: public stdex::intrusive_splay_tree<T, false, false>
+	{
+	public:
+		IntrusiveSprayTreePtr()
+		{
+			m_factoryNode.setMethodListener( this, &IntrusiveSprayTreePtr::onNodeDestroy_ );
+		}
+
+		~IntrusiveSprayTreePtr()
+		{
+		}
+
+	public:
+		T * create()
+		{
+			T * node = m_factoryNode.createObjectT();
+
+			return node;
+		}
+
+	protected:
+		void onNodeDestroy_( T * _t )
+		{
+			this->erase( _t );
+		}
+
 	protected:
 		typedef FactoryPoolStore<T, Count> TFactoryNode;
 		TFactoryNode m_factoryNode;

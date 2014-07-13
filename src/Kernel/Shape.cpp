@@ -21,12 +21,46 @@ namespace Menge
         , m_invalidateVerticesLocal(true)
         , m_invalidateVerticesWM(true)
         , m_invalidateVerticesColor(true)
+		, m_blendAdd(false)
+		, m_solid(false)
+		, m_invalidateMaterial(true)
+		, m_disableTextureColor(false)
+
     {
     }
     //////////////////////////////////////////////////////////////////////////
     Shape::~Shape()
     {
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Shape::disableTextureColor( bool _disable )
+	{
+		if( m_disableTextureColor == _disable )
+		{
+			return;
+		}
+
+		m_disableTextureColor = _disable;
+
+		this->invalidateMaterial();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Shape::setBlendAdd( bool _value )
+	{
+		if ( m_blendAdd == _value )
+		{
+			return;
+		}
+
+		m_blendAdd = _value;
+
+		this->invalidateMaterial();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Shape::isBlendAdd() const
+	{
+		return m_blendAdd;
+	}
     //////////////////////////////////////////////////////////////////////////
     void Shape::setTextureWrapX( bool _wrap )
     {

@@ -24,6 +24,7 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	enum EBlendFactor 
 	{
 		BF_ONE = 0,
@@ -37,9 +38,9 @@ namespace Menge
 		BF_ONE_MINUS_DEST_ALPHA,
 		BF_ONE_MINUS_SOURCE_ALPHA,
 
-		BF_FORCE_DWORD = 0x7fffffff
+		BF_MAX_VALUE
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	enum EPrimitiveType
 	{
 		PT_POINTLIST = 0,
@@ -49,27 +50,27 @@ namespace Menge
 		PT_TRIANGLESTRIP,
 		PT_TRIANGLEFAN,
 
-		PT_FORCE_DWORD = 0x7fffffff
+		PT_MAX_VALUE
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	enum ETextureAddressMode
 	{
 		TAM_CLAMP = 0,
 		TAM_WRAP,
 		TAM_MIRROR,
 
-		TAM_FORCE_DWORD = 0x7fffffff
+		TAM_MAX_VALUE
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	enum ECullMode
 	{
 		CM_CULL_NONE = 0,
 		CM_CULL_CW,
 		CM_CULL_CCW,
 
-		CM_CULL_FORCE_DWORD = 0x7fffffff
+		CM_MAX_VALUE
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	enum ECompareFunction
 	{
 		CMPF_ALWAYS_FAIL = 0,
@@ -81,36 +82,34 @@ namespace Menge
 		CMPF_GREATER_EQUAL,
 		CMPF_GREATER,
 
-		CMPF_FORCE_DWORD = 0x7fffffff
+		CMPF_MAX_VALUE
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	enum EFillMode
 	{
 		FM_POINT = 0,
 		FM_WIREFRAME,
 		FM_SOLID,
 
-		FM_FORCE_DWORD = 0x7fffffff
+		FM_MAX_VALUE
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	enum EFrameBufferType 
 	{
 		FBT_COLOR	= 0x1,
 		FBT_DEPTH   = 0x2,
 		FBT_STENCIL = 0x4,
-
-		FBT_FORCE_DWORD = 0x7fffffff
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	enum EShadeType
 	{
 		SHT_FLAT = 0,
 		SHT_GOURAUD,
 		SHT_PHONG,
 
-		SHT_FORCE_DWORD = 0x7fffffff
+		SHT_MAX_VALUE
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	enum ETextureOp
 	{
 		TOP_DISABLE = 0,
@@ -120,9 +119,9 @@ namespace Menge
 		TOP_ADD,
 		TOP_SUBSTRACT,
 
-		TOP_FORCE_DWORD = 0x7fffffff
+		TOP_MAX_VALUE
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	enum ETextureArgument
 	{
 		TARG_CURRENT = 0,
@@ -131,18 +130,18 @@ namespace Menge
 		TARG_TEXTURE,
 		TARG_TFACTOR,
 
-		TARG_FORCE_DWORD = 0x7fffffff
+		TARG_MAX_VALUE
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	enum ETextureFilterType
 	{
 		TFT_MAGNIFICATION = 0,
 		TFT_MINIFICATION,
 		TFT_MIPMAP,
 
-		TFT_FORCE_DWORD = 0x7fffffff
+		TFT_MAX_VALUE
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	enum ETextureFilter
 	{
 		TF_NONE = 0,
@@ -150,27 +149,33 @@ namespace Menge
 		TF_LINEAR,
 		TF_ANISOTROPIC,
 		TF_FLATCUBIC,
-		TF_GAUSSIANCUBIC
-	};
+		TF_GAUSSIANCUBIC,
 
+		TF_MAX_VALUE
+	};
+	//////////////////////////////////////////////////////////////////////////
 	enum EBufferLockFlag
 	{
-		BLF_LOCK_NONE,
+		BLF_LOCK_NONE = 0,
 		BLF_LOCK_READONLY,
 		BLF_LOCK_DISCARD,
 		BLF_LOCK_NOOVERWRITE,
-		BLF_LOCK_NOSYSLOCK
-	};
+		BLF_LOCK_NOSYSLOCK,
 
-	typedef size_t VBHandle; // Vertex Buffer Handle
-	typedef size_t IBHandle; // Index Buffer Handle
+		BLF_MAX_VALUE
+	};
 	//////////////////////////////////////////////////////////////////////////
 	enum ERenderImageMode
 	{
-		ERIM_NORMAL,
+		ERIM_NORMAL = 0,
 		ERIM_DYNAMIC,
-		ERIM_RENDER_TARGET
+		ERIM_RENDER_TARGET,
+
+		ERIM_MAX_VALUE
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef size_t VBHandle; // Vertex Buffer Handle
+	typedef size_t IBHandle; // Index Buffer Handle
 	//////////////////////////////////////////////////////////////////////////
 	class RenderImageInterface
 		: public FactorablePtr

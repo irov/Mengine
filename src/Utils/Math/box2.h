@@ -8,13 +8,6 @@ namespace mt
 {
 	struct box2f
 	{
-		/*union
-		{
-			struct {vec2f vb,ve;};
-			struct {vec2f v[2];};
-			struct {vec2f min,max;};
-		};*/
-
 		vec2f minimum; 
 		vec2f maximum;
 

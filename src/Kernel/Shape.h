@@ -75,18 +75,18 @@ namespace Menge
 
     protected:
         void invalidateVertices();
-        void updateVertices();
+        void updateVertices() const;
 
     protected:
         void invalidateVerticesWM();
-        void updateVerticesWM();
+        void updateVerticesWM() const;
 
     protected:
         void invalidateVerticesColor();
-        void updateVerticesColor();
+        void updateVerticesColor() const;
 
     protected:
-        inline const RenderVertex2D * getVerticesWM();
+        inline const RenderVertex2D * getVerticesWM() const;
 
 	protected:
 		inline void invalidateMaterial();
@@ -108,9 +108,8 @@ namespace Menge
         mt::vec2f m_textureUVOffset;
         mt::vec2f m_textureUVScale;
 
-        mt::vec3f m_verticesLocal[4];
-        
-        RenderVertex2D m_verticesWM[4];
+        mutable mt::vec3f m_verticesLocal[4];        
+        mutable RenderVertex2D m_verticesWM[4];
 
 		bool m_textureWrapX;
 		bool m_textureWrapY;
@@ -122,16 +121,14 @@ namespace Menge
 		bool m_flipX;
 		bool m_flipY;
 
-		bool m_invalidateVerticesLocal;
-        bool m_invalidateVerticesWM;
-
-        bool m_invalidateVerticesColor;
-
 		bool m_blendAdd;
 		bool m_solid;
 		bool m_disableTextureColor;
 
-		bool m_invalidateMaterial;
+		mutable bool m_invalidateVerticesLocal;
+		mutable bool m_invalidateVerticesWM;
+		mutable bool m_invalidateVerticesColor;
+		mutable bool m_invalidateMaterial;
     };
 	//////////////////////////////////////////////////////////////////////////
 	inline void Shape::invalidateMaterial()
@@ -144,7 +141,7 @@ namespace Menge
 		return m_invalidateMaterial;
 	}
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderVertex2D * Shape::getVerticesWM()
+    inline const RenderVertex2D * Shape::getVerticesWM() const
     {
         if( m_invalidateVerticesWM == true )
         {

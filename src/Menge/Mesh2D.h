@@ -44,7 +44,7 @@ namespace Menge
 
 		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
 
-		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
         void _invalidateColor() override;
 		void _invalidateWorldMatrix() override;
 
@@ -59,42 +59,41 @@ namespace Menge
 
 	protected:
 		void invalidateVertices();
-		void updateVertices();
+		void updateVertices() const;
 
 	protected:
 		void invalidateVerticesWM();
-		void updateVerticesWM();
+		void updateVerticesWM() const;
 
 	protected:
 		void invalidateVerticesColor();
-		void updateVerticesColor();
+		void updateVerticesColor() const;
 
 	protected:
-		inline const RenderVertex2D * getVerticesWM();
+		inline const RenderVertex2D * getVerticesWM() const;
 
 	protected:
 		ResourceHolder<ResourceImage> m_resourceImage;
 
-		bool m_blendAdd;
-		bool m_solid;
-
 		RenderMaterialInterfacePtr m_material;
-
-        bool m_invalidateMaterial;
 
 		size_t m_texturesNum;
 		RenderTextureInterfacePtr m_textures[2];
 
 		const MovieFrameShape * m_shape;
-		bool m_invalidateVerticesLocal;
 
-		RenderVertex2D m_verticesWM[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
-		bool m_invalidateVerticesWM;
-
+		mutable RenderVertex2D m_verticesWM[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
+		
 		size_t m_vertexCount;
 		size_t m_indicesCount;
 
-		bool m_invalidateVerticesColor;
+		bool m_blendAdd;
+		bool m_solid;
+
+		bool m_invalidateMaterial;
+		mutable bool m_invalidateVerticesLocal;
+		mutable bool m_invalidateVerticesWM;
+		mutable bool m_invalidateVerticesColor;
     };
     //////////////////////////////////////////////////////////////////////////
     inline const RenderMaterialInterfacePtr & Mesh2D::getMaterial()
@@ -107,7 +106,7 @@ namespace Menge
         return m_material;
     }
 	//////////////////////////////////////////////////////////////////////////
-	inline const RenderVertex2D * Mesh2D::getVerticesWM()
+	inline const RenderVertex2D * Mesh2D::getVerticesWM() const
 	{
 		if( m_invalidateVerticesWM == true )
 		{

@@ -508,7 +508,6 @@ namespace Menge
 		m_textSize.y = ( fontHeight + lineOffset ) * m_lines.size();
 
 		this->invalidateVertices_();
-		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::updateFont_() const
@@ -749,7 +748,7 @@ namespace Menge
 		return m_colorOutline;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_updateBoundingBox( mt::box2f & _boundingBox )
+	void TextField::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
 		Node::_updateBoundingBox( _boundingBox );
 
@@ -1065,6 +1064,8 @@ namespace Menge
     void TextField::invalidateVerticesWM_() const
     {
         m_invalidateVerticesWM = true;
+
+		this->invalidateBoundingBox();
     }
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::invalidateTextLines() const

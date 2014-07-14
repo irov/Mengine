@@ -39,7 +39,7 @@ namespace Menge
 
 		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
 
-		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
         void _invalidateColor() override;
 
     protected:

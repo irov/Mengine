@@ -126,7 +126,7 @@ namespace Menge
 		this->setScene( scene );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer::_updateBoundingBox( mt::box2f& _boundingBox )
+	void Layer::_updateBoundingBox( mt::box2f& _boundingBox ) const
 	{
         (void)_boundingBox;
 		// do nothing

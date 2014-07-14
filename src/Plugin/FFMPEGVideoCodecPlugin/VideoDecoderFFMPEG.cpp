@@ -3,7 +3,7 @@
 #	include "Core/File.h"
 #	include "Logger/Logger.h"
 
-#	include <limits.h>
+#	include <stdint.h>
 #	include <math.h>
 
 namespace Menge
@@ -304,6 +304,18 @@ namespace Menge
 			}
 		}
 
+		if( m_formatContext->streams[m_videoStreamId]->index_entries->min_distance != 0 ||
+			m_formatContext->streams[m_videoStreamId]->index_entries->timestamp != 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("=============================================================");
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode invalid min distance %d or timestamp %d"
+				, m_formatContext->streams[m_videoStreamId]->index_entries->min_distance
+				, m_formatContext->streams[m_videoStreamId]->index_entries->timestamp
+				);
+
+			video_error = true;
+		}
+
         if( video_error == true )
         {
             return false;
@@ -453,31 +465,40 @@ namespace Menge
             return false;
         }
 
-		if( fabsf(m_pts - _timing) < m_dataInfo.frameTiming * 0.5f )
+		float correct_timing = _timing;
+
+		if( _timing > m_dataInfo.duration - m_dataInfo.frameTiming )
+		{
+			correct_timing = m_dataInfo.duration - m_dataInfo.frameTiming;
+		}
+
+		if( fabsf(m_pts - correct_timing) < m_dataInfo.frameTiming * 0.5f )
 		{
 			return true;
 		}
-
+		
         //int64_t minTime = (int64_t)(_timing - m_dataInfo.frameTiming);
         //int64_t maxTime = (int64_t)(_timing + m_dataInfo.frameTiming);
-        int64_t needTime = (int64_t)(_timing);
+        int64_t needTime = (int64_t)(correct_timing);
+				
+		int preceedingKeyframe = av_index_search_timestamp( m_formatContext->streams[0], 1000, 0 );
 
         //if( av_seek_frame( m_formatContext, seekStreamIndex, _frame,  AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD ) < 0 )
         //int seek_err = avformat_seek_file( m_formatContext, m_videoStreamId, minTime, needTime, maxTime, AVSEEK_FLAG_ANY );
-        int seek_err = avformat_seek_file( m_formatContext, m_videoStreamId, ((int64_t)_I64_MIN), needTime, ((int64_t)_I64_MAX), 0 );
+        int seek_err = av_seek_frame( m_formatContext, m_videoStreamId, needTime, AVSEEK_FLAG_ANY );
 
         if( seek_err < 0 )
         {
             LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::seek %d:%f error [%d]"
                 , m_videoStreamId
-                , _timing
+                , correct_timing
                 , seek_err
                 );
 
             return false;
         }
 
-		m_pts = _timing;
+		m_pts = correct_timing;
 
         avcodec_flush_buffers( m_codecContext );
 

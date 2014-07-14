@@ -42,7 +42,6 @@ namespace Menge
 		}
       
         this->invalidateMaterial();
-		this->invalidateBoundingBox();
 
 		return true;
 	}
@@ -91,9 +90,6 @@ namespace Menge
         m_resourceImage = _resourceImage;
 
         this->recompile();
-
-        //this->invalidateVertices_();
-        this->invalidateBoundingBox();
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceImage * Mesh2D::getResourceImage() const
@@ -182,7 +178,7 @@ namespace Menge
 			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::_updateBoundingBox( mt::box2f & _boundingBox )
+	void Mesh2D::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
 		const RenderVertex2D * vertices = this->getVerticesWM();
 
@@ -211,9 +207,11 @@ namespace Menge
 	void Mesh2D::invalidateVerticesWM()
 	{
 		m_invalidateVerticesWM = true;
+
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::updateVertices()
+	void Mesh2D::updateVertices() const
 	{
 		m_invalidateVerticesLocal = false;
 
@@ -306,7 +304,7 @@ namespace Menge
 		m_invalidateVerticesColor = true;                
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::updateVerticesColor()
+	void Mesh2D::updateVerticesColor() const
 	{
 		m_invalidateVerticesColor = false;
 
@@ -356,7 +354,7 @@ namespace Menge
 		this->invalidateVerticesColor();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::updateVerticesWM()
+	void Mesh2D::updateVerticesWM() const
 	{
 		m_invalidateVerticesWM = false;
 

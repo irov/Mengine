@@ -21,23 +21,23 @@ namespace Menge
 			stdex::memorycopy( m_vertices, _vertices, VerticesCount );
 		}
 
-		inline const RenderVertex2D * getVertices()
+		inline const RenderVertex2D * getVertices() const
 		{
 			if( m_invalidateVertices != 0 )
 			{
-				updateVertices_();
+				this->updateVertices_();
 			}
 
 			return m_vertices;
 		}
 
-		inline void invalidateVertices( unsigned char _invalidate = 0xFF )
+		inline void invalidateVertices( unsigned char _invalidate = 0xFF ) const
 		{
 			m_invalidateVertices |= _invalidate;
 		}
 
 	private:
-		inline void updateVertices_()
+		inline void updateVertices_() const
 		{
 			this->_updateVertices( m_vertices, m_invalidateVertices );
 
@@ -45,11 +45,11 @@ namespace Menge
 		}
 	
 	protected:
-		virtual void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) = 0;
+		virtual void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) const = 0;
 
 	private:
-		RenderVertex2D m_vertices[VerticesCount];
-		unsigned char m_invalidateVertices;
+		mutable RenderVertex2D m_vertices[VerticesCount];
+		mutable unsigned char m_invalidateVertices;
 	};
 
 	typedef FixedVertices<4> QuadVertices;

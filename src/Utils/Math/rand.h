@@ -2,15 +2,13 @@
 
 #	include "config.h"
 
-//#	include <math.h>
-#	include <cstdlib>
-
+#	include <stdlib.h>
 
 namespace mt
 {
 	MATH_INLINE float randf( float _max )
 	{
-		float rnf = static_cast<float>( std::rand() ) / ( static_cast<float>(RAND_MAX) + 1.0f);
+		float rnf = static_cast<float>( ::rand() ) / ( static_cast<float>(RAND_MAX) + 1.0f);
 		float rf = _max * rnf;
 		return rf;
 	}

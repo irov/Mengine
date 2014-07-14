@@ -381,31 +381,12 @@ namespace Menge
 
         Nodies ns;
         ns.node = _node;
+		ns.animatable = dynamic_cast<Animatable *>(_node);
 		ns.layerId = _layer.id;
         ns.child = (_layer.parent != movie_layer_parent_none);
 
 		m_nodies[_layer.index] = ns;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	Node * Movie::getMovieNode_( const MovieLayer & _layer ) const
-	{	
-        size_t size = m_nodies.size();
-        if( _layer.index >= size )
-        {
-            return nullptr;
-        }
-
-        const Nodies & ns = m_nodies[_layer.index];
-
-		return ns.node;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Node * Movie::getMovieParent_( const MovieLayer & _layer ) const
-	{
-        const Nodies & ns = m_nodies[_layer.parent];
-
-		return ns.node;
-	}    
 	//////////////////////////////////////////////////////////////////////////
 	Node * Movie::getMovieSlot( const ConstString & _name ) const
 	{
@@ -444,12 +425,12 @@ namespace Menge
 
 			Node * node = this->getMovieNode_( layer );
 
-            if( node == nullptr )
-            {
-                continue;
-            }
+			if( node == nullptr )
+			{
+				continue;
+			}
 
-			Movie * movie = dynamic_cast<Movie *>(node);
+			Movie * movie = static_cast<Movie *>(node);
 
 			Node * slot = movie->getMovieSlot( _name );
 
@@ -509,7 +490,7 @@ namespace Menge
                 continue;
             }
 
-			Movie * movie = dynamic_cast<Movie *>(node);
+			Movie * movie = static_cast<Movie *>(node);
 
 			if( movie->hasMovieSlot( _name ) == false )
 			{
@@ -578,7 +559,7 @@ namespace Menge
 				continue;
 			}
 
-			Movie * movie = dynamic_cast<Movie *>(node);
+			Movie * movie = static_cast<Movie *>(node);
 
 			if( movie->filterLayers( _type, _visitor ) == false )
 			{
@@ -653,7 +634,7 @@ namespace Menge
 				continue;
 			}
 
-			Movie * movie = dynamic_cast<Movie *>(node);
+			Movie * movie = static_cast<Movie *>(node);
 			
 			if( movie->getLayerPathLength( _name, _length ) == false )
 			{
@@ -718,7 +699,7 @@ namespace Menge
 				continue;
 			}
 
-			Movie * movie = dynamic_cast<Movie *>(node);
+			Movie * movie = static_cast<Movie *>(node);
 			
 			if( movie->visitSubMovie( _visitor ) == false )
 			{
@@ -771,7 +752,7 @@ namespace Menge
                 continue;
             }
 
-            Movie * movie = dynamic_cast<Movie *>(node);
+            Movie * movie = static_cast<Movie *>(node);
 
             Movie * submovie = movie->getSubMovie( _name );
 
@@ -831,7 +812,7 @@ namespace Menge
                 continue;
             }
 
-            Movie * movie = dynamic_cast<Movie *>(node);
+            Movie * movie = static_cast<Movie *>(node);
 
             if( movie->hasSubMovie( _name ) == false )
             {
@@ -889,7 +870,7 @@ namespace Menge
                 continue;
             }
 
-            Movie * movie = dynamic_cast<Movie *>(node);
+            Movie * movie = static_cast<Movie *>(node);
 
             if( movie->visitSockets( _visitor ) == false )
             {
@@ -943,7 +924,7 @@ namespace Menge
                 continue;
             }
 
-            Movie * movie = dynamic_cast<Movie *>(node);
+            Movie * movie = static_cast<Movie *>(node);
 
             HotSpot * socket = movie->getSocket( _name );
 
@@ -1003,7 +984,7 @@ namespace Menge
                 continue;
             }
 
-            Movie * movie = dynamic_cast<Movie *>(node);
+            Movie * movie = static_cast<Movie *>(node);
 
             if( movie->hasSocket( _name ) == false )
             {
@@ -1060,7 +1041,7 @@ namespace Menge
                 continue;
             }
 
-            Movie * movie = dynamic_cast<Movie *>(node);
+            Movie * movie = static_cast<Movie *>(node);
 
             if( movie->setMovieEvent( _name, _cb ) == true )
             {
@@ -1116,7 +1097,7 @@ namespace Menge
                 continue;
             }
 
-            Movie * movie = dynamic_cast<Movie *>(node);
+            Movie * movie = static_cast<Movie *>(node);
 
             if( movie->hasMovieEvent( _name ) == true )
             {
@@ -1135,6 +1116,7 @@ namespace Menge
         ns.child = false;
 		ns.layerId = 0;
         ns.node = nullptr;
+		ns.animatable = nullptr;
         m_nodies.resize( maxLayerIndex + 1, ns );
 
         const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
@@ -1335,6 +1317,7 @@ namespace Menge
 		ns.child = false;
 		ns.layerId = 0;
 		ns.node = nullptr;
+		ns.animatable = nullptr;
 		m_nodies.resize( maxLayerIndex + 1, ns );
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
@@ -2172,7 +2155,7 @@ namespace Menge
 				continue;
 			}
 
-			Animatable * animatable = dynamic_cast<Animatable *>(node);
+			Animatable * animatable = this->getMovieAnimatable_( layer );
 
             if( layer.timeRemap == false )
             {
@@ -2208,7 +2191,7 @@ namespace Menge
                 continue;
             }
 
-			Animatable * animatable = dynamic_cast<Animatable *>(node);
+			Animatable * animatable = this->getMovieAnimatable_( layer );
 			
 			animatable->setTiming( 0.f );
 		}
@@ -2461,7 +2444,7 @@ namespace Menge
             }
             else if( layer.isExtra() == true )
             {
-                 MovieNodeExtra * extra = dynamic_cast<MovieNodeExtra *>(node);
+                 MovieNodeExtra * extra = static_cast<MovieNodeExtra *>(node);
 
                  extra->movieForwardUpdate( _time, _beginFrame, _endFrame, layer );
             }
@@ -2495,7 +2478,7 @@ namespace Menge
 
             if( _layer.isAnimatable() == true )
             {
-                Animatable * animatable = dynamic_cast<Animatable *>(_node);
+                Animatable * animatable = this->getMovieAnimatable_( _layer );
 
                 if( _layer.timeRemap == false )
                 {
@@ -2534,7 +2517,7 @@ namespace Menge
 
             if( _layer.isAnimatable() == true )
             {
-                Animatable * animatable = dynamic_cast<Animatable *>(_node);
+                Animatable * animatable = this->getMovieAnimatable_( _layer );
 
                 if( _layer.timeRemap == false )
                 {
@@ -2569,7 +2552,7 @@ namespace Menge
 
             if( _layer.isAnimatable() == true )
             {
-                Animatable * animatable = dynamic_cast<Animatable *>(_node);
+                Animatable * animatable = this->getMovieAnimatable_( _layer );
 
                 if( _layer.timeRemap == false )
                 {
@@ -2631,7 +2614,7 @@ namespace Menge
 
                 if( layer.isAnimatable() == true )
                 {
-                    Animatable * animatable = dynamic_cast<Animatable *>(node);
+                    Animatable * animatable = this->getMovieAnimatable_( layer );
 
                     if( animatable->isPlay() == true )
                     {
@@ -2653,7 +2636,7 @@ namespace Menge
 
                 if( layer.isAnimatable() == true )
                 {
-                    Animatable * animatable = dynamic_cast<Animatable *>(node);
+                    Animatable * animatable = this->getMovieAnimatable_( layer );
 
                     if( animatable->isPlay() == true )
                     {
@@ -2733,7 +2716,7 @@ namespace Menge
 
                 if( layer.isAnimatable() == true )
                 {
-                    Animatable * animatable = dynamic_cast<Animatable *>(node);
+                    Animatable * animatable = this->getMovieAnimatable_( layer );
                 
                     if( layer.timeRemap == false )
                     {
@@ -2808,7 +2791,7 @@ namespace Menge
 
                 if( layer.isAnimatable() == true )
                 {
-                    Animatable * animatable = dynamic_cast<Animatable *>(node);
+                    Animatable * animatable = this->getMovieAnimatable_( layer );
 
                     if( layer.timeRemap == false )
                     {
@@ -2850,7 +2833,7 @@ namespace Menge
 
                 if( layer.isAnimatable() == true )
                 {
-                    Animatable * animatable = dynamic_cast<Animatable *>(node);
+                    Animatable * animatable = this->getMovieAnimatable_( layer );
 
                     if( layer.timeRemap == false )
                     {
@@ -3009,15 +2992,9 @@ namespace Menge
 			{
 				continue;
 			}
-			
-			Node * node = this->getMovieNode_( layer );
+					
+			Animatable * animatable = this->getMovieAnimatable_( layer );
 
-            if( node == nullptr )
-            {
-                continue;
-            }
-			
-			Animatable * animatable = dynamic_cast<Animatable *>(node);
 			animatable->setSpeedFactor( _factor );
 		}
 	}
@@ -3049,14 +3026,8 @@ namespace Menge
 				continue;
 			}
 			
-			Node * node = this->getMovieNode_( layer );
-            
-            if( node == nullptr )
-            {
-                continue;
-            }
+			Animatable * animatable = this->getMovieAnimatable_( layer );
 
-			Animatable * animatable = dynamic_cast<Animatable *>(node);
 			animatable->setReverse( _reverse );
 		}
 	}

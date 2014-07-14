@@ -93,59 +93,59 @@ namespace Menge
 			return false;
 		}
 
-        if( m_noSeek == false )
-        {           			
-			for( float pts = 0.f; pts < 200.f; pts += dataInfo->frameTiming )
-			{
-				_decoder->seek( pts );
-            
-				float current_pts;
-				EVideoDecoderReadState state = VDRS_FAILURE;
-				
-				while( true, true )
-				{
-					state = _decoder->readNextFrame( current_pts );
+   //     if( m_noSeek == false )
+   //     {           			
+			//for( float pts = 0.f; pts < dataInfo->duration - dataInfo->frameTiming; pts += dataInfo->frameTiming )
+			//{
+			//	_decoder->seek( pts );
+   //         
+			//	float current_pts;
+			//	EVideoDecoderReadState state = VDRS_FAILURE;
+			//	
+			//	while( true, true )
+			//	{
+			//		state = _decoder->readNextFrame( current_pts );
 
-					if( state == VDRS_SKIP )
-					{
-						continue;
-					}
+			//		if( state == VDRS_SKIP )
+			//		{
+			//			continue;
+			//		}
 
-					break;
-				}
+			//		break;
+			//	}
 
-				if( state == VDRS_END_STREAM )
-				{
-					break;
-				}
+			//	if( state == VDRS_END_STREAM )
+			//	{
+			//		break;
+			//	}
 
-				if( state == VDRS_FAILURE )
-				{
-					LOGGER_ERROR(m_serviceProvider)("=============================================================");
-					LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid read next frame %f:%f (state %d)"
-						, dataInfo->frameTiming
-						, current_pts
-						, state
-						);
+			//	if( state == VDRS_FAILURE )
+			//	{
+			//		LOGGER_ERROR(m_serviceProvider)("=============================================================");
+			//		LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid read next frame %f:%f (state %d)"
+			//			, dataInfo->frameTiming
+			//			, current_pts
+			//			, state
+			//			);
 
-					return false;
-				}
+			//		return false;
+			//	}
 
-				if( fabsf(current_pts - pts) > dataInfo->frameTiming * 2.f )
-				{
-					LOGGER_ERROR(m_serviceProvider)("=============================================================");
-					LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid Key Frame %f %f:%f (need one)"
-						, dataInfo->frameTiming
-						, pts
-						, current_pts
-						);
+			//	if( fabsf(current_pts - pts) > dataInfo->frameTiming * 2.f )
+			//	{
+			//		LOGGER_ERROR(m_serviceProvider)("=============================================================");
+			//		LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid Key Frame %f %f:%f (need one)"
+			//			, dataInfo->frameTiming
+			//			, pts
+			//			, current_pts
+			//			);
 
-					return false;
-				}
-			}
+			//		return false;
+			//	}
+			//}
 
-            _decoder->seek( 0.f );
-        }
+            //_decoder->seek( 0.f );
+        //}
 
         return true;
     }

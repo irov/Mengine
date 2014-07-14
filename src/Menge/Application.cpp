@@ -892,8 +892,14 @@ namespace Menge
 			, m_renderViewport.getHeight()
 			);
 
-		m_createRenderWindow = RENDER_SERVICE(m_serviceProvider)->createRenderWindow( m_currentResolution, m_contentResolution, m_renderViewport, m_bits, fullscreen,
-														_renderWindowHandle, m_FSAAType, m_FSAAQuality );
+		m_createRenderWindow = RENDER_SERVICE(m_serviceProvider)->createRenderWindow( m_currentResolution
+			, m_contentResolution
+			, m_renderViewport
+			, m_bits
+			, fullscreen
+			, _renderWindowHandle
+			, m_FSAAType
+			, m_FSAAQuality );
 
 		if( m_createRenderWindow == false )
 		{

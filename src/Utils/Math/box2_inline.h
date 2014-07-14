@@ -3,16 +3,18 @@
 namespace mt
 {
 	MATH_METHOD_INLINE box2f::box2f()
+		: minimum(0.f, 0.f)
+		, maximum(0.f, 0.f)
 	{}
 
 	MATH_METHOD_INLINE box2f::box2f( const box2f & _box )
-		: minimum( _box.minimum )
-		, maximum( _box.maximum )
+		: minimum(_box.minimum)
+		, maximum(_box.maximum)
 	{}
 
 	MATH_METHOD_INLINE box2f::box2f( const vec2f & _min, const vec2f & _max )
-		: minimum( _min )
-		, maximum( _max )
+		: minimum(_min)
+		, maximum(_max)
 	{}
 
 	MATH_FUNCTION_INLINE void reset( box2f & box, const vec2f &initValue)

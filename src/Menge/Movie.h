@@ -173,8 +173,11 @@ namespace Menge
 
 	protected:
 		void addMovieNode_( const MovieLayer & _layer, Node * _node );
-		Node * getMovieNode_( const MovieLayer & _layer ) const;
-		Node * getMovieParent_( const MovieLayer & _layer ) const;
+
+	protected:
+		inline Node * getMovieNode_( const MovieLayer & _layer ) const;
+		inline Animatable * getMovieAnimatable_( const MovieLayer & _layer ) const;
+		inline Node * getMovieParent_( const MovieLayer & _layer ) const;
 
 	protected:		
 		void updateTiming_();
@@ -194,6 +197,7 @@ namespace Menge
         struct Nodies
         {	
             Node * node;
+			Animatable * animatable;
 			size_t layerId;
 			bool child;
         };
@@ -224,4 +228,25 @@ namespace Menge
         
 		bool m_parentMovie;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline Node * Movie::getMovieNode_( const MovieLayer & _layer ) const
+	{	
+		const Nodies & ns = m_nodies[_layer.index];
+
+		return ns.node;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline Animatable * Movie::getMovieAnimatable_( const MovieLayer & _layer ) const
+	{	
+		const Nodies & ns = m_nodies[_layer.index];
+
+		return ns.animatable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline Node * Movie::getMovieParent_( const MovieLayer & _layer ) const
+	{
+		const Nodies & ns = m_nodies[_layer.parent];
+
+		return ns.node;
+	}  
 }

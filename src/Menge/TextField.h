@@ -126,7 +126,7 @@ namespace Menge
 		void _release() override;
 
 		void _invalidateWorldMatrix() override;
-		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 		void _invalidateColor() override;
 
 	protected:

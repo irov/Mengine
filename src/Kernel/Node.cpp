@@ -1072,49 +1072,8 @@ namespace Menge
 			m_layer->calcScreenPosition( _position, _camera, this );
 		}
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void Node::_invalidateBoundingBox()
-	//{
-	//	invalidateVisibility();
-
-	//	if( m_parent )
-	//	{
-	//		m_parent->invalidateBoundingBox();
-	//	}
-	//}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::getBoundingBox( mt::box2f & _boundingBox )
-	{
-		const mt::box2f & _localBoundingBox = this->getLocalBoundingBox();
-		
-		_boundingBox = _localBoundingBox;
-		//BoundingBox::updateBoundingBox();
-		//m_invalidateBoundingBox = false;
-
-		//this->_updateBoundingBox( m_boundingBox );
-			
-		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
-		{
-			Node * node = *it;
-			
-			if( node->isCompile() == false )
-			{
-				continue;
-			}
-
-			if( node->isEnable() == false )
-			{
-				continue;
-			}
-
-			mt::box2f childrenBoundingBox;
-			node->getBoundingBox( childrenBoundingBox );
-
-			mt::merge_box( _boundingBox, childrenBoundingBox );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_updateBoundingBox( mt::box2f& _boundingBox )
+	void Node::_updateBoundingBox( mt::box2f& _boundingBox ) const
 	{
 		const mt::vec3f & wp = this->getWorldPosition();
 
@@ -1234,8 +1193,7 @@ namespace Menge
 			return;
 		}
 
-		mt::box2f bbox;
-		this->getBoundingBox( bbox );
+		const mt::box2f & bbox = this->getBoundingBox();
 			
 		vertexDebugBox[0].pos.x = bbox.minimum.x;
 		vertexDebugBox[0].pos.y = bbox.minimum.y;

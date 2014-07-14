@@ -123,7 +123,6 @@ namespace Menge
 		}
 
 		this->invalidateVertices();
-		this->invalidateBoundingBox();
 
 		return true;
 	}
@@ -166,7 +165,7 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::_updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices )
+	void Window::_updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) const
 	{
         (void)_invalidateVertices;
 
@@ -416,7 +415,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::_updateBoundingBox( mt::box2f& _boundingBox )
+	void Window::_updateBoundingBox( mt::box2f& _boundingBox ) const
 	{
 		const RenderVertex2D * vertices = this->getVertices();
 
@@ -433,6 +432,7 @@ namespace Menge
 		Node::_invalidateWorldMatrix();
 
 		this->invalidateVertices();
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_invalidateColor()

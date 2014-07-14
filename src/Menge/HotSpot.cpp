@@ -227,7 +227,7 @@ namespace Menge
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_updateBoundingBox( mt::box2f & _boundingBox )
+	void HotSpot::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
 		size_t numPoints = boost::geometry::num_points( m_polygon );
 

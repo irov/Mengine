@@ -2,97 +2,22 @@
 
 #   include "Interface/RenderSystemInterface.h"
 
-#	include "stdex/intrusive_splay_tree.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	class RenderMaterial
 		: public RenderMaterialInterface
-		, public stdex::intrusive_splay_node<RenderMaterial>
 	{
-	public:
-		typedef const RenderMaterial * key_type;
-
-		struct less_type
-		{
-			bool operator() ( const RenderMaterial * _l, const RenderMaterial * _r ) const
-			{
-				uint32_t l_hash = _l->m_hash;
-				uint32_t r_hash = _r->m_hash;
-
-				if( l_hash < r_hash )
-				{
-					return true;
-				}
-				else if ( l_hash > r_hash )
-				{
-					return false;
-				}
-
-				if( _l->getPrimitiveType() < _r->getPrimitiveType() )
-				{
-					return true;
-				}
-				else if( _l->getPrimitiveType() > _r->getPrimitiveType() )
-				{
-					return false;
-				}
-
-				size_t l_textCount = _l->getTextureCount();
-				size_t r_textCount = _r->getTextureCount();
-
-				if( l_textCount < r_textCount )
-				{
-					return true;
-				}
-				else if( l_textCount > r_textCount )
-				{
-					return false;
-				}
-
-				for( size_t i = 0; i != l_textCount; ++i )
-				{
-					if( _l->getTexture( i ) < _r->getTexture( i ) )
-					{
-						return true;
-					}
-					else if ( _l->getTexture( i ) > _r->getTexture( i ) )
-					{
-						return false;							
-					}
-				}
-
-				if( _l->getStage() < _r->getStage() )
-				{
-					return true;
-				}
-				else if( _l->getStage() > _r->getStage() )
-				{
-					return false;
-				}
-
-				return false;
-			}
-		};
-
-		struct key_getter_type
-		{
-			const RenderMaterial * operator()( const RenderMaterial * _node ) const
-			{
-				return _node;
-			}
-		};
-
 	public:
 		RenderMaterial();
 		~RenderMaterial();
 
 	public:
-		void initialize( size_t _id, EPrimitiveType _primitiveType, size_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage );
+		void initialize( size_t _id, uint32_t _hash, EPrimitiveType _primitiveType, size_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage );
 		
 	public:
 		inline size_t getId() const;
+		inline uint32_t getHash() const;
 		inline EPrimitiveType getPrimitiveType() const;
 		inline size_t getTextureCount() const;
 		inline const RenderTextureInterfacePtr & getTexture( size_t _index ) const;
@@ -100,7 +25,7 @@ namespace Menge
 
 		inline const RenderStage * getStage() const;
 
-	protected:		
+	protected:
 		size_t m_id;
 		uint32_t m_hash;
 
@@ -115,6 +40,11 @@ namespace Menge
 	inline size_t RenderMaterial::getId() const
 	{
 		return m_id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline uint32_t RenderMaterial::getHash() const
+	{
+		return m_hash;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline EPrimitiveType RenderMaterial::getPrimitiveType() const

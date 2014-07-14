@@ -71,7 +71,7 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 				
-		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 		void _invalidateColor() override;
 		void _invalidateWorldMatrix() override;
 
@@ -88,27 +88,24 @@ namespace Menge
 
 	protected:
 		void invalidateVertices();
-		void updateVertices();
+		void updateVertices() const;
 
 	protected:
 		void invalidateVerticesWM();
-		void updateVerticesWM();
+		void updateVerticesWM() const;
 
 	protected:
 		void invalidateVerticesColor();
-		void updateVerticesColor();
+		void updateVerticesColor() const;
 
 	protected:
-		inline const RenderVertex2D * getVerticesWM();
+		inline const RenderVertex2D * getVerticesWM() const;
 
 	protected:		
 		ResourceHolder<ResourceModel3D> m_resourceModel;
 
 		float m_frameTiming;
 		size_t m_currentFrame;
-
-		bool m_blendAdd;
-		bool m_solid;
 
 		RenderMaterialInterfacePtr m_material;
 		bool m_invalidateMaterial;
@@ -119,15 +116,18 @@ namespace Menge
 		Camera3D * m_camera;
 
 		const Model3DFrame * m_frame;
-		bool m_invalidateVerticesLocal;
-
-		RenderVertex2D m_verticesWM[MENGINE_MODEL_MAX_VERTEX];
-		bool m_invalidateVerticesWM;
+		
+		mutable RenderVertex2D m_verticesWM[MENGINE_MODEL_MAX_VERTEX];
 
 		size_t m_vertexCount;
 		size_t m_indicesCount;
 
-		bool m_invalidateVerticesColor;
+		bool m_blendAdd;
+		bool m_solid;
+
+		mutable bool m_invalidateVerticesLocal;
+		mutable bool m_invalidateVerticesWM;
+		mutable bool m_invalidateVerticesColor;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const RenderMaterialInterfacePtr & Model3D::getMaterial()
@@ -140,7 +140,7 @@ namespace Menge
 		return m_material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const RenderVertex2D * Model3D::getVerticesWM()
+	inline const RenderVertex2D * Model3D::getVerticesWM() const
 	{
 		if( m_invalidateVerticesWM == true )
 		{

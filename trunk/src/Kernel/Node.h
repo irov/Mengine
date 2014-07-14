@@ -267,10 +267,7 @@ namespace Menge
 		void updateRendering_();
 
 	protected:
-		void getBoundingBox( mt::box2f & _boundingBox );
-
-	protected:
-		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
+		void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
 
 	protected:
 		size_t m_cameraRevision;

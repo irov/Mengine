@@ -247,9 +247,11 @@ namespace Menge
     void Shape::invalidateVerticesWM()
     {
         m_invalidateVerticesWM = true;
+
+		this->invalidateBoundingBox();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Shape::updateVertices()
+    void Shape::updateVertices() const
     {
         m_invalidateVerticesLocal = false;
 
@@ -490,7 +492,7 @@ namespace Menge
         m_invalidateVerticesColor = true;                
     }
     //////////////////////////////////////////////////////////////////////////
-    void Shape::updateVerticesColor()
+    void Shape::updateVerticesColor() const
     {
         m_invalidateVerticesColor = false;
 
@@ -513,7 +515,7 @@ namespace Menge
         this->invalidateVerticesColor();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Shape::updateVerticesWM()
+    void Shape::updateVerticesWM() const
     {
         m_invalidateVerticesWM = false;
 

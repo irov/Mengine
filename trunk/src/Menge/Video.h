@@ -56,7 +56,7 @@ namespace Menge
 		void _release() override;
 		void _setEventListener( PyObject * _listener ) override;
 		void _invalidateWorldMatrix() override;
-		void _updateBoundingBox( mt::box2f & _boundingBox ) override;
+		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 		void _invalidateColor() override;
 		
     protected:
@@ -75,7 +75,7 @@ namespace Menge
 		bool _interrupt( size_t _enumerator ) override;
 
 	protected:
-		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) override;
+		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) const override;
 
 	protected:
 		void invalidateMaterial_();
@@ -100,8 +100,8 @@ namespace Menge
 		bool m_blendAdd;
 		bool m_autoStart;
 		bool m_needUpdate;
-		bool m_firstFrameUpdated;
-        bool m_textureUpdated;
+		bool m_invalidFirstFrame;
+        bool m_invalidVideoTexture;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const RenderMaterialInterfacePtr & Video::getMaterial()

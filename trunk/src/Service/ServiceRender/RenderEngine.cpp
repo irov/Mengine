@@ -924,6 +924,15 @@ namespace Menge
 		rp_vm.toBBox(bb_vp);
 
 		pass.bb = bb_vp;
+
+		const mt::mat4f & wm = pass.camera->getCameraWorldMatrix();
+
+		mt::mat4f wm_inv;
+		mt::inv_m4( wm_inv, wm );
+
+		mt::mul_v2_m4( pass.bb_inv.minimum, bb_vp.minimum, wm_inv );
+		mt::mul_v2_m4( pass.bb_inv.maximum, bb_vp.maximum, wm_inv );
+
 		pass.orthogonalProjection = pass.camera->isOrthogonalProjection();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1004,16 +1013,10 @@ namespace Menge
 			}
 			else
 			{
-				mt::box2f bb_vertices;
-				Helper::makeRenderBoundingBox( bb_vertices, _vertices, _verticesNum );
-
-				const mt::mat4f & wm = rp.camera->getCameraWorldMatrix();
-
-				mt::mul_v2_m4( bb.minimum, bb_vertices.minimum, wm );
-				mt::mul_v2_m4( bb.maximum, bb_vertices.maximum, wm );
+				Helper::makeRenderBoundingBox( bb, _vertices, _verticesNum );
 			}
 
-			if( mt::is_intersect( rp.bb, bb ) == false )
+			if( mt::is_intersect( rp.bb_inv, bb ) == false )
 			{
 				return;
 			}

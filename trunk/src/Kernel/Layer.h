@@ -44,7 +44,7 @@ namespace Menge
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
     protected:
-		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) override;
+		virtual void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
 
 	public:
 		virtual void calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node* _node ) const;

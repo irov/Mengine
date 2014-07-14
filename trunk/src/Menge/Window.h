@@ -35,12 +35,12 @@ namespace Menge
 		bool _compile() override;
 		void _release() override;
 		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
-		void _updateBoundingBox( mt::box2f& _boundingBox ) override;
+		void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
 		void _invalidateWorldMatrix() override;
 		void _invalidateColor() override;
 
 	protected:
-		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) override;
+		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) const override;
 
 	protected:
 		ResourceHolder<ResourceWindow> m_resourceWindow;

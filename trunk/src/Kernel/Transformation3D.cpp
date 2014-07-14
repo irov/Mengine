@@ -224,7 +224,7 @@ namespace Menge
 			else
 			{
 				mt::mat4f mat_rot;
-				mt::make_rotate_x_axis_m4( mat_rot, m_euler.x );
+				mt::make_rotate_z_axis_m4( mat_rot, m_euler.x );
 
 				mt::mul_m4_m4( m_localMatrix, mat_scale, mat_rot );
 			}

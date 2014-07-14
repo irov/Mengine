@@ -388,8 +388,6 @@ namespace	Menge
 	{
 		size_t partCount = 0;
 				
-		Node::_updateBoundingBox( m_localBoundingBox );
-
         static ParticleVertices s_particles[MENGINE_PARTICLE_MAX_COUNT];
 		static ParticleMesh s_meshes[MENGINE_PARTICLE_MAX_MESH];
 				
@@ -855,7 +853,7 @@ namespace	Menge
         m_emitter->changeEmitterModel( nullptr, 0 );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox )
+	void ParticleEmitter::_updateBoundingBox( mt::box2f& _boundingBox ) const
 	{
         (void)_boundingBox;
 		//Empty

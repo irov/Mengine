@@ -38,8 +38,7 @@ namespace	Menge
         this->updateResource_();
 
         this->invalidateMaterial();
-		this->invalidateBoundingBox();
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -87,9 +86,6 @@ namespace	Menge
         m_resourceImage = _resourceImage;
 
         this->recompile();
-
-        //this->invalidateVertices_();
-        this->invalidateBoundingBox();
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceImage * Sprite::getResourceImage() const
@@ -235,20 +231,21 @@ namespace	Menge
 		const RenderVertex2D * vertices = this->getVerticesWM();
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
+		const mt::box2f & bb = this->getBoundingBox();
+
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _viewport, _camera, material, vertices, 4, nullptr );
+			->addRenderQuad( _viewport, _camera, material, vertices, 4, &bb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox )
+	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
 		const RenderVertex2D * vertices = this->getVerticesWM();
 
-		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
+		mt::reset( _boundingBox, vertices[0].pos.x, vertices[0].pos.y );
 
-		for( size_t i = 1; i != 4; ++i )
-		{
-			mt::add_internal_point( _boundingBox, vertices[i].pos[0], vertices[i].pos[1] );
-		}
+		mt::add_internal_point( _boundingBox, vertices[1].pos.x, vertices[1].pos.y );
+		mt::add_internal_point( _boundingBox, vertices[2].pos.x, vertices[2].pos.y );
+		mt::add_internal_point( _boundingBox, vertices[3].pos.x, vertices[3].pos.y );
 	}
     //////////////////////////////////////////////////////////////////////////
     void Sprite::_invalidateColor()

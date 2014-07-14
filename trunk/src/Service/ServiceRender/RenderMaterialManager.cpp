@@ -4,6 +4,8 @@
 
 #   include "Logger/Logger.h"
 
+#	include "stdex/hash.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderMaterialManager, Menge::RenderMaterialServiceInterface, Menge::RenderMaterialManager );
 //////////////////////////////////////////////////////////////////////////
@@ -32,6 +34,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::initialize()
     {
+		m_factoryMaterial.setMethodListener( this, &RenderMaterialManager::onRenderMaterialDestroy_ );
+
         {
             RenderStage rs;
 
@@ -281,7 +285,13 @@ namespace Menge
 		}
 
 		m_stages.clear();
-		m_materials.clear();
+
+		for( size_t i = 0; i != MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE; ++i )
+		{
+			TVectorRenderMaterial & material = m_materials[i];
+
+			material.clear();
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::loadMaterials( const ConstString& _pakName, const FilePath& _fileName )
@@ -291,6 +301,56 @@ namespace Menge
 
         return false;
     }
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_equalMaterial( const RenderMaterial * _material
+		, EPrimitiveType _primitiveType
+		, size_t _textureCount 
+		, const RenderTextureInterfacePtr * _textures
+		, const RenderStage * _stage
+		)
+	{
+		if( _material->getPrimitiveType() != _primitiveType )
+		{
+			return false;
+		}
+
+		if( _material->getTextureCount() != _textureCount )
+		{
+			return false;
+		}
+
+		for( size_t i = 0; i != _textureCount; ++i )
+		{
+			if( _material->getTexture(i) != _textures[i] )
+			{
+				return false;
+			}
+		}
+
+		if( _material->getStage() != _stage )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////	
+	static uint32_t s_makeHash( EPrimitiveType _primitiveType, size_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage )
+	{
+		uint32_t hash = stdex::hash_base;
+
+		hash = stdex::hash_binary( hash, _primitiveType );
+		hash = stdex::hash_binary( hash, _textureCount );
+
+		for( size_t i = 0; i != _textureCount; ++i )
+		{
+			hash = stdex::hash_binary( hash, _textures[i].get() );
+		}
+
+		hash = stdex::hash_binary( hash, _stage );
+
+		return hash;
+	}
     //////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial( const ConstString & _stageName
 		, bool _wrapU
@@ -307,18 +367,92 @@ namespace Menge
 
 		const RenderStage * stage = &stageGroup->stage[ (_wrapU ? 1 : 0) + (_wrapV ? 2 : 0) ];
 
-		RenderMaterialPtr material = m_materials.create();
+		//uint32_t material_hash = s_makeHash( _primitiveType, _textureCount, _textures, stage );
 
-		size_t id = ++m_materialEnumerator;
-		material->initialize( id, _primitiveType, _textureCount, _textures, stage );
-		
-		RenderMaterial * insert_material;
-		if( m_materials.insert_exist( material.get(), &insert_material ) == false )
+		//uint32_t material_table_index = material_hash / 33554433U;
+
+
+		uint32_t material_hash = _textureCount ? _textures[0]->getId() : 0U;
+		uint32_t material_table_index = material_hash % MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE;
+
+		TVectorRenderMaterial & materials = m_materials[material_table_index];
+
+		for( TVectorRenderMaterial::iterator
+			it = materials.begin(),
+			it_end = materials.end();
+		it != it_end;
+		++it )
 		{
-			return insert_material;
+			RenderMaterial * material = *it;
+
+			if( material->getHash() != material_hash )
+			{
+				continue;
+			}
+			
+			if( s_equalMaterial( material, _primitiveType, _textureCount, _textures, stage ) == false )
+			{
+				continue;
+			}
+
+			return material;
 		}
 
+		RenderMaterial * material = m_factoryMaterial.createObjectT();
+
+		size_t id = ++m_materialEnumerator;
+		material->initialize( id, material_hash, _primitiveType, _textureCount, _textures, stage );
+		
+		materials.push_back( material );
+
 		return material;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderMaterialManager::onRenderMaterialDestroy_( RenderMaterial * _material )
+	{
+		if( _material == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::releaseMaterial material is nullptr"
+				);
+
+			return;
+		}
+
+		uint32_t material_hash = _material->getHash();
+
+		//uint32_t material_table_index = material_hash % MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE;
+		uint32_t material_table_index = material_hash % MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE;
+
+		TVectorRenderMaterial & materials = m_materials[material_table_index];
+
+		for( TVectorRenderMaterial::iterator
+			it = materials.begin(),
+			it_end = materials.end();
+		it != it_end;
+		++it )
+		{
+			RenderMaterial * material = *it;
+
+			if( material->getHash() != material_hash )
+			{
+				continue;
+			}
+			
+			EPrimitiveType primitiveType = _material->getPrimitiveType();
+			size_t textureCount = _material->getTextureCount();
+			const RenderTextureInterfacePtr * textures = _material->getTextures();
+			const RenderStage * stage = _material->getStage();
+
+			if( s_equalMaterial( material, primitiveType, textureCount, textures, stage ) == false )
+			{
+				continue;
+			}
+			
+			*it = materials.back();
+			materials.pop_back();
+			
+			return;
+		}
 	}
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::createRenderStageGroup( const ConstString & _name, const RenderStage & _stage )

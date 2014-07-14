@@ -29,9 +29,9 @@ namespace Menge
 		, m_timing(0.f)
 		, m_blendAdd(false)
         , m_needUpdate(false)
-		, m_textureUpdated(false)
-		, m_firstFrameUpdated(false)
-		, m_invalidateMaterial(false)
+		, m_invalidVideoTexture(true)
+		, m_invalidFirstFrame(true)
+		, m_invalidateMaterial(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -79,14 +79,14 @@ namespace Menge
 
 		float totalTiming = timing / scretch;
 
-		if( m_firstFrameUpdated == false )
+		if( m_invalidFirstFrame == true )
 		{
 			if( this->syncFirstFrame_() == false )
 			{
 				return;
 			}
 
-			m_firstFrameUpdated = true;
+			m_invalidFirstFrame = false;
 			m_needUpdate = true;
 			
 			this->sync_( totalTiming );	
@@ -105,8 +105,9 @@ namespace Menge
 		}
 
 		m_needUpdate = false;
-		m_textureUpdated = false;
-		m_firstFrameUpdated = false;
+
+		m_invalidVideoTexture = true;
+		m_invalidFirstFrame = true;
 
 		return true;
 	}
@@ -181,12 +182,12 @@ namespace Menge
 		this->updateUV_();
 		this->invalidateMaterial_();
 		this->invalidateVertices();
-		this->invalidateBoundingBox();
 
         m_timing = 0.f;
         m_needUpdate = false;
-		m_textureUpdated = false;
-		m_firstFrameUpdated = false;
+
+		m_invalidVideoTexture = true;
+		m_invalidFirstFrame = true;
 
 		return true;
 	}
@@ -283,14 +284,14 @@ namespace Menge
 	{
 		Node::_render( _viewport, _camera );
 
-		if( m_firstFrameUpdated == false )
+		if( m_invalidFirstFrame == true )
 		{
 			if( this->syncFirstFrame_() == false )
 			{
 				return;
 			}
 
-			m_firstFrameUpdated = true;
+			m_invalidFirstFrame = false;
 			m_needUpdate = true;
 		}
 
@@ -309,7 +310,7 @@ namespace Menge
             m_needUpdate = false;
 		}
 
-		if( m_textureUpdated == false )
+		if( m_invalidVideoTexture == true )
 		{
 			return;
 		}
@@ -322,7 +323,7 @@ namespace Menge
             ->addRenderQuad( _viewport, _camera, material, vertices, 4, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices )
+	void Video::_updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) const
 	{
         (void)_invalidateVertices;
 
@@ -384,21 +385,18 @@ namespace Menge
 		Node::_invalidateWorldMatrix();
 
 		this->invalidateVertices();
+		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_updateBoundingBox( mt::box2f & _boundingBox )
+	void Video::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
 		const RenderVertex2D * vertcies = this->getVertices();
 
-		mt::vec2f v( vertcies[0].pos[0], vertcies[0].pos[1] );
-		mt::reset( _boundingBox, v );
+		mt::reset( _boundingBox, vertcies[0].pos.x, vertcies[0].pos.y );
 
-		for( int i = 1; i != 4; ++i )
-		{
-			v.x = vertcies[i].pos[0];
-			v.y = vertcies[i].pos[1];
-			mt::add_internal_point( _boundingBox, v );
-		}
+		mt::add_internal_point( _boundingBox, vertcies[1].pos.x, vertcies[1].pos.y );
+		mt::add_internal_point( _boundingBox, vertcies[2].pos.x, vertcies[2].pos.y );
+		mt::add_internal_point( _boundingBox, vertcies[3].pos.x, vertcies[3].pos.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_invalidateColor()
@@ -543,13 +541,15 @@ namespace Menge
                 , m_resourceVideo->getName().c_str()
                 , seek_timing
                 );
+
+			return;
         }
 
         m_timing = 0.f;
         //m_needUpdate = this->sync_( frameTiming );
 
-		m_textureUpdated = false;
-		m_firstFrameUpdated = false;
+		m_invalidVideoTexture = true;
+		m_invalidFirstFrame = true;
     }
 	////////////////////////////////////////////////////////////////////
 	float Video::_getTiming() const
@@ -616,7 +616,7 @@ namespace Menge
        
 		texture->unlock();
 
-		m_textureUpdated = true;
+		m_invalidVideoTexture = false;
                 
 		return count != 0;
 	}

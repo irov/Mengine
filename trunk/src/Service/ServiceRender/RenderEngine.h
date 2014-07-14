@@ -84,6 +84,7 @@ namespace Menge
 
 		bool orthogonalProjection;
 		mt::box2f bb;
+		mt::box2f bb_inv;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderEngine

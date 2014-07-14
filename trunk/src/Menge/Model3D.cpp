@@ -251,7 +251,7 @@ namespace Menge
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_updateBoundingBox( mt::box2f & _boundingBox )
+	void Model3D::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
 		const RenderVertex2D * vertices = this->getVerticesWM();
 
@@ -282,7 +282,7 @@ namespace Menge
 		m_invalidateVerticesWM = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::updateVertices()
+	void Model3D::updateVertices() const
 	{
 		m_invalidateVerticesLocal = false;
 
@@ -377,7 +377,7 @@ namespace Menge
 		m_invalidateVerticesColor = true;                
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::updateVerticesColor()
+	void Model3D::updateVerticesColor() const
 	{
 		m_invalidateVerticesColor = false;
 
@@ -415,7 +415,7 @@ namespace Menge
 		return m_blendAdd;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::updateVerticesWM()
+	void Model3D::updateVerticesWM() const
 	{
 		m_invalidateVerticesWM = false;
 

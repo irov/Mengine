@@ -1837,13 +1837,18 @@ namespace Menge
 
 		m_vsync = m_application->getVSync();
 
-		if( m_maxfps == false )
+		if( m_maxfps == false && m_vsync == false )
 		{
 			m_fpsMonitor = new FPSMonitor();
 			m_fpsMonitor->initialize();
 
 			m_fpsMonitor->setActive( true );
 			m_fpsMonitor->setFrameTime( s_activeFrameTime );
+		}
+		
+		if( m_maxfps == true && m_vsync == true )
+		{
+			m_application->setVSync( false );
 		}
 
 		HWND hWndFgnd = ::GetForegroundWindow();

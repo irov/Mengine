@@ -127,11 +127,20 @@ namespace Menge
 
         this->updateRendering_();
 
-		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
-		{
-			Node * children = (*it);
+		Node * single = m_child.single();
 
-			children->activate();
+		if( single != nullptr )
+		{
+			single->activate();
+		}
+		else
+		{
+			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			{
+				Node * children = (*it);
+
+				children->activate();
+			}
 		}
 	
 		m_afterActive = true;
@@ -165,11 +174,20 @@ namespace Menge
 
 		this->_deactivate();
 
-		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
-		{
-			Node * children = *it;
+		Node * single = m_child.single();
 
-			children->deactivate();
+		if( single != nullptr )
+		{
+			single->deactivate();
+		}
+		else
+		{
+			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			{
+				Node * children = *it;
+
+				children->deactivate();
+			}
 		}
 
 		m_active = false;
@@ -670,11 +688,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::updateChild_( float _current, float _timing )
 	{
-		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+		Node * single = m_child.single();
+
+		if( single != nullptr )
 		{
-			Node * children = *it;
+			single->update( _current, _timing );
+		}
+		else
+		{
+			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			{
+				Node * children = *it;
 			
-			children->update( _current, _timing );
+				children->update( _current, _timing );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -746,11 +773,20 @@ namespace Menge
 			this->deactivate();
 		}
 
-		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
-		{
-            Node * node = (*it);
+		Node * single = m_child.single();
 
-			node->release();
+		if( single != nullptr )
+		{
+			single->release();
+		}
+		else
+		{
+			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			{
+				Node * node = (*it);
+
+				node->release();
+			}
 		}
 
 		Resource::release();
@@ -921,11 +957,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::renderChild_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
-		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
-		{
-            Node * node = (*it);
+		Node * single = m_child.single();
 
-			node->render( _viewport, _camera, _debugMask );
+		if( single != nullptr )
+		{
+			single->render( _viewport, _camera, _debugMask );
+		}
+		else
+		{
+			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			{
+				Node * node = (*it);
+
+				node->render( _viewport, _camera, _debugMask );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1033,11 +1078,20 @@ namespace Menge
 	{
 		m_layer = _layer;
 
-		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
-		{
-            Node * node = (*it);
+		Node * single = m_child.single();
 
-			node->setLayer( _layer );
+		if( single != nullptr )
+		{
+			single->setLayer( _layer );
+		}
+		else
+		{
+			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			{
+				Node * node = (*it);
+
+				node->setLayer( _layer );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1090,11 +1144,20 @@ namespace Menge
 
 		//this->setFullBlend( fullBlend );
 
-		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
-		{
-            Node * node = (*it);
+		Node * single = m_child.single();
 
-			node->invalidateColor();
+		if( single != nullptr )
+		{
+			single->invalidateColor();
+		}
+		else
+		{
+			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			{
+				Node * node = (*it);
+
+				node->invalidateColor();
+			}
 		}
 
 		this->updateRendering_();

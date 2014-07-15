@@ -131,13 +131,13 @@ namespace	Menge
 
 		size_t verticesOffset = 0;
 
-		for( TVectorElements::iterator
+		for( TVectorElements::const_iterator
 			it = m_elements.begin(),
 			it_end = m_elements.end();
 		it != it_end;
 		++it )
 		{
-			Element & el = *it;
+			const Element & el = *it;
 
 			RENDER_SERVICE(m_serviceProvider)
 				->addRenderQuad( _viewport, _camera, el.material, vertices + verticesOffset, 4, nullptr );

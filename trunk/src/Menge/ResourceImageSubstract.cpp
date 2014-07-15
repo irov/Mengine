@@ -25,9 +25,9 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSubstract *>(_meta);
         
         m_uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_textureSize = mt::vec2f(0.f, 0.f);
         m_maxSize = mt::vec2f(0.f, 0.f);
         m_size = mt::vec2f(0.f, 0.f);
+		m_offset = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
         m_isUVRotate = false;
         m_wrapU = false;
@@ -38,6 +38,12 @@ namespace Menge
         
         metadata->get_Image_Rotate( m_isUVRotate );
         metadata->get_Image_Alpha( m_isAlpha );
+
+		metadata->get_Image_MaxSize( m_maxSize );
+
+		m_size = m_maxSize;
+		metadata->get_Image_Size( m_size );
+		metadata->get_Image_Offset( m_offset );
 
         return true;
     }
@@ -73,11 +79,17 @@ namespace Menge
         //ToDo Fix Me isUVRotate
         mt::vec2f uv_size(m_uv.z - m_uv.x, m_uv.w - m_uv.y);
 
-        const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
-        m_maxSize = maxSize * uv_size;
+		if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
+		{
+			const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
+			m_maxSize = maxSize * uv_size;
+		}
 
-		const mt::vec2f & size = m_resourceImage->getSize();
-        m_size = size * uv_size;
+		if( m_size.x < 1.f || m_size.y < 1.f )
+		{
+			const mt::vec2f & size = m_resourceImage->getSize();
+			m_size = size * uv_size;
+		}
 
         m_uv_image = m_uv;
 

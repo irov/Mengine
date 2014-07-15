@@ -68,9 +68,9 @@ namespace Menge
 
         m_uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
         m_uv_alpha = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_textureSize = mt::vec2f(0.f, 0.f);
         m_maxSize = mt::vec2f(0.f, 0.f);
         m_size = mt::vec2f(0.f, 0.f);
+		m_offset = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
         m_wrapU = false;
         m_wrapV = false;
@@ -85,6 +85,12 @@ namespace Menge
         metadata->swap_FileAlpha_Path( m_fileNameAlpha );
         metadata->swap_FileAlpha_Codec( m_codecTypeAlpha );
         metadata->get_FileAlpha_UV( m_uv_alpha );
+
+		metadata->get_File_MaxSize( m_maxSize );
+
+		m_size = m_maxSize;
+		metadata->get_File_Size( m_size );
+		metadata->get_File_Offset( m_offset );
 
         return true;
 	}

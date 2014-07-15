@@ -100,7 +100,6 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageDefault *>(_meta);
 
         m_uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_textureSize = mt::vec2f(0.f, 0.f);
         m_maxSize = mt::vec2f(0.f, 0.f);
         m_size = mt::vec2f(0.f, 0.f);
 		m_offset = mt::vec2f(0.f, 0.f);
@@ -123,7 +122,6 @@ namespace Menge
         metadata->get_File_Rotate( m_isUVRotate );
         metadata->get_File_WrapX( m_wrapU );
         metadata->get_File_WrapY( m_wrapV );        
-        metadata->get_File_TextureSize( m_textureSize );
         		
 		metadata->get_File_MaxSize( m_maxSize );
 

@@ -52,10 +52,19 @@ namespace Menge
 	{
 		m_invalidateWorldMatrix = true;
 
-        for( TSlugTransformation3DChild it(m_relationChild); it.eof() == false; it.next_shuffle() )
-        {
-            (*it)->invalidateWorldMatrix();
-        }
+		Transformation3D * single = m_relationChild.single();
+
+		if( single != nullptr )
+		{
+			single->invalidateWorldMatrix();
+		}
+		else
+		{
+			for( TSlugTransformation3DChild it(m_relationChild); it.eof() == false; it.next_shuffle() )
+			{
+				(*it)->invalidateWorldMatrix();
+			}
+		}
 
 		this->_invalidateWorldMatrix();
 	}

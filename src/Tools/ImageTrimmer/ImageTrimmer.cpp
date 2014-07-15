@@ -358,8 +358,7 @@ namespace Menge
 
 		const ImageCodecDataInfo* decode_dataInfo = imageDecoder->getCodecDataInfo();
 
-		if( decode_dataInfo->channels != 4 ||
-			decode_dataInfo->width == 0 ||
+		if( decode_dataInfo->width == 0 ||
 			decode_dataInfo->height == 0 )
 		{
 			return false;
@@ -368,16 +367,14 @@ namespace Menge
 		ImageCodecOptions decode_options;
 
 		decode_options.channels = decode_dataInfo->channels;
-		decode_options.pitch = decode_dataInfo->width * 4U;
+		decode_options.pitch = decode_dataInfo->width * decode_dataInfo->channels;
 
 		imageDecoder->setOptions( &decode_options );
 
 		size_t width = decode_dataInfo->width;
 		size_t height = decode_dataInfo->height;
-
-
-
-		size_t bufferSize = width * height * 4U;
+		
+		size_t bufferSize = width * height * decode_dataInfo->channels;
 
 		std::vector<unsigned char> textureBuffer(bufferSize);
 
@@ -386,49 +383,71 @@ namespace Menge
 			return false;
 		}
 
-		size_t min_i = width - 1;
-		size_t min_j = height - 1;
-		size_t max_i = 0;
-		size_t max_j = 0;
+		size_t new_width;
+		size_t new_height;
 
-		for( size_t i = 0; i != width; ++i )
+		size_t min_i;
+		size_t min_j;
+		size_t max_i;
+		size_t max_j;
+		
+		if( decode_dataInfo->channels == 4 )
 		{
-			for( size_t j = 0; j != height; ++j )
+			min_i = width - 1;
+			min_j = height - 1;
+			max_i = 0;
+			max_j = 0;
+
+			for( size_t i = 0; i != width; ++i )
 			{
-				size_t index =  i + j * width;
-				unsigned char alpha = textureBuffer[index * 4 + 3];
-
-				if( alpha == 0 )
+				for( size_t j = 0; j != height; ++j )
 				{
-					continue;
-				}
+					size_t index =  i + j * width;
+					unsigned char alpha = textureBuffer[index * 4 + 3];
 
-				if( min_i > i )
-				{
-					min_i = i;
-				}
+					if( alpha == 0 )
+					{
+						continue;
+					}
 
-				if( min_j > j )
-				{
-					min_j = j;
-				}
+					if( min_i > i )
+					{
+						min_i = i;
+					}
 
-				if( max_i < i )
-				{
-					max_i = i;
-				}
+					if( min_j > j )
+					{
+						min_j = j;
+					}
 
-				if( max_j < j )
-				{
-					max_j = j;
+					if( max_i < i )
+					{
+						max_i = i;
+					}
+
+					if( max_j < j )
+					{
+						max_j = j;
+					}
 				}
 			}
+
+
+			new_width = max_i - min_i + 1;
+			new_height = max_j - min_j + 1;
+		}
+		else
+		{
+			new_width = width;
+			new_height = height;
+
+			min_i = 0;
+			min_j = 0;
+			max_i = width;
+			max_j = height;
 		}
 
-		size_t new_width = max_i - min_i + 1;
-		size_t new_height = max_j - min_j + 1;
-
-		size_t new_bufferSize = new_width * new_height * 4U;
+		size_t new_bufferSize = new_width * new_height * decode_dataInfo->channels;
 
 		std::vector<unsigned char> new_textureBuffer(new_bufferSize);
 
@@ -439,15 +458,10 @@ namespace Menge
 				size_t old_index = (min_i + i) + (min_j + j) * width;
 				size_t new_index = i + j * new_width;
 
-				unsigned char r = textureBuffer[old_index * 4 + 0];
-				unsigned char g = textureBuffer[old_index * 4 + 1];
-				unsigned char b = textureBuffer[old_index * 4 + 2];
-				unsigned char a = textureBuffer[old_index * 4 + 3];
-
-				new_textureBuffer[new_index * 4 + 0] = r;
-				new_textureBuffer[new_index * 4 + 1] = g;
-				new_textureBuffer[new_index * 4 + 2] = b;
-				new_textureBuffer[new_index * 4 + 3] = a;
+				for( size_t k = 0; k != decode_dataInfo->channels; ++k )
+				{
+					new_textureBuffer[new_index * decode_dataInfo->channels + k] = textureBuffer[old_index * decode_dataInfo->channels + k];
+				}
 			}
 		}
 
@@ -479,8 +493,8 @@ namespace Menge
 
 		ImageCodecOptions encode_options;
 
-		encode_options.pitch = new_width * 4;
-		encode_options.channels = 4;
+		encode_options.pitch = new_width * decode_dataInfo->channels;
+		encode_options.channels = decode_dataInfo->channels;
 
 		imageEncoder->setOptions( &encode_options );
 
@@ -488,7 +502,7 @@ namespace Menge
 		//dataInfo.format = _image->getHWPixelFormat();
 		encode_dataInfo.width = new_width;
 		encode_dataInfo.height = new_height;
-		encode_dataInfo.channels = 4;
+		encode_dataInfo.channels = decode_dataInfo->channels;
 		encode_dataInfo.depth = 1;
 		encode_dataInfo.mipmaps = 0;
 		encode_dataInfo.flags = 0;

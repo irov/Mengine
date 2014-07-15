@@ -334,23 +334,6 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////	
-	static uint32_t s_makeHash( EPrimitiveType _primitiveType, size_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage )
-	{
-		uint32_t hash = stdex::hash_base;
-
-		hash = stdex::hash_binary( hash, _primitiveType );
-		hash = stdex::hash_binary( hash, _textureCount );
-
-		for( size_t i = 0; i != _textureCount; ++i )
-		{
-			hash = stdex::hash_binary( hash, _textures[i].get() );
-		}
-
-		hash = stdex::hash_binary( hash, _stage );
-
-		return hash;
-	}
     //////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial( const ConstString & _stageName
 		, bool _wrapU
@@ -367,12 +350,8 @@ namespace Menge
 
 		const RenderStage * stage = &stageGroup->stage[ (_wrapU ? 1 : 0) + (_wrapV ? 2 : 0) ];
 
-		//uint32_t material_hash = s_makeHash( _primitiveType, _textureCount, _textures, stage );
-
-		//uint32_t material_table_index = material_hash / 33554433U;
-
-
 		uint32_t material_hash = _textureCount ? _textures[0]->getId() : 0U;
+
 		uint32_t material_table_index = material_hash % MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
 		TVectorRenderMaterial & materials = m_materials[material_table_index];
@@ -420,7 +399,6 @@ namespace Menge
 
 		uint32_t material_hash = _material->getHash();
 
-		//uint32_t material_table_index = material_hash % MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 		uint32_t material_table_index = material_hash % MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
 		TVectorRenderMaterial & materials = m_materials[material_table_index];

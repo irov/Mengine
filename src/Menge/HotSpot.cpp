@@ -267,12 +267,12 @@ namespace Menge
 		mt::box2f bb;
 		if( polygon_to_box2f( bb, polygonWM ) == false )
 		{
-			return false;
+			return m_outward;
 		}
 
 		if( mt::is_intersect( bb, _point ) == false )
 		{
-			return false;
+			return m_outward;
 		}
 
 		GeometryPoint p(_point.x, _point.y);
@@ -300,18 +300,18 @@ namespace Menge
 		mt::box2f bb;
 		if( polygon_to_box2f( bb, m_polygonWMVM ) == false )
 		{
-			return false;
+			return m_outward;
 		}
 
 		mt::box2f bb_screen;
 		if( polygon_to_box2f( bb_screen, _screenPoly ) == false )
 		{
-			return false;
+			return m_outward;
 		}
 
 		if( mt::is_intersect( bb, bb_screen ) == false )
 		{
-			return false;
+			return m_outward;
 		}
 
 		bool intersect = boost::geometry::intersects( m_polygonWMVM, _screenPoly );

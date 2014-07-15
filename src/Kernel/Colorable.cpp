@@ -1,6 +1,6 @@
 #	include "Kernel/Colorable.h"
 
-#	include <math.h>
+#	include "Math/utils.h"
 
 namespace Menge
 {
@@ -31,7 +31,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setPersonalAlpha( float _alpha )
 	{
-		if( fabsf(m_colorPersonal.getA() - _alpha) < 0.00001f )
+		if( mt::cmp_f_f( m_colorPersonal.getA(), _alpha) == true )
 		{ 
 			return;
 		}
@@ -57,7 +57,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setLocalAlpha( float _alpha )
 	{
-		if( fabsf(m_colorLocal.getA() - _alpha) < 0.00001f )
+		if( mt::cmp_f_f( m_colorLocal.getA(), _alpha ) == true )
 		{
 			return;
 		}

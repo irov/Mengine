@@ -128,9 +128,12 @@ namespace mt
 		}
 	}
 
-	MATH_FUNCTION_INLINE bool cmp_q_q(const quatf& _a, const quatf& _b, float eps)
+	MATH_FUNCTION_INLINE bool cmp_q_q( const quatf& _a, const quatf& _b )
 	{
-		return	(fabsf(_a.w - _b.w) < eps) && (fabsf(_a.x - _b.x) < eps) && (fabsf(_a.y - _b.y) < eps) && (fabsf(_a.z - _b.z) < eps);
+		return	mt::cmp_f_f( _a.w, _b.w ) == true && 
+			mt::cmp_f_f( _a.x, _b.x ) == true && 
+			mt::cmp_f_f( _a.y, _b.y ) == true && 
+			mt::cmp_f_f( _a.z, _b.z ) == true;
 	}
 
 	MATH_FUNCTION_INLINE bool operator==(const quatf& _a, const quatf& _b) 
@@ -250,10 +253,11 @@ namespace mt
 		return	out;
 	}
 
-	MATH_FUNCTION_INLINE void norm_safe_q(quatf& out, const quatf& _rhs, float err)
+	MATH_FUNCTION_INLINE void norm_safe_q( quatf& out, const quatf& _rhs )
 	{
 		float len = _rhs.norm();
-		if (len > err)
+
+		if( mt::cmp_f_z( len ) == false )
         {
 			out = _rhs / len;
 		}
@@ -329,7 +333,7 @@ namespace mt
 
 		_out.w = cosf_fast(angle);
 
-		if (fabsf(fsin) >= 0.00001f)
+		if( mt::cmp_f_z( fsin ) == false )
 		{
 			float coef = fsin/angle;
 			_out.x = coef * _rhs.x;
@@ -361,16 +365,19 @@ namespace mt
 
 		_out.w = 0.0f;
 
-		if (fabsf(_rhs[0]) < 1.0f)
+		if( fabsf(_rhs[0]) < 1.f )
 		{
 			float angle = cosf_fast(_rhs.w);
 			float fsin = sinf_fast(angle);
-			if (fabsf(fsin) >= 0.00001f)
+
+			if( mt::cmp_f_z( fsin ) == false )
 			{
 				float coef = angle/fsin;
 				_out.x = coef * _rhs.x;
 				_out.y = coef * _rhs.y;
 				_out.z = coef * _rhs.z;
+
+				return;
 			}
 		}
 

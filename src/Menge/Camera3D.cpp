@@ -124,6 +124,8 @@ namespace Menge
 	{
 		m_invalidateMatrix = false;
 
+		mt::inv_m4( m_worldMatrixInv, m_worldMatrix );
+
         const mt::mat4f & wm = this->getWorldMatrix();
 
         mt::vec3f wm_position;
@@ -168,12 +170,10 @@ namespace Menge
         projectViewport.end.x *= projection_factor_x;
         projectViewport.end.y *= projection_factor_y;
 
-		//mt::mat4f pm;
         RENDER_SERVICE(m_serviceProvider)
             ->makeProjectionFrustum( m_projectionMatrix, projectViewport, m_cameraNear, m_cameraFar );
 
-		//RENDER_SERVICE(m_serviceProvider)
-			//->makeProjectionPerspective( m_projectionMatrixWM, m_cameraFov, m_cameraAspect, m_cameraNear, m_cameraFar );
+		mt::inv_m4( m_projectionMatrixInv, m_projectionMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )

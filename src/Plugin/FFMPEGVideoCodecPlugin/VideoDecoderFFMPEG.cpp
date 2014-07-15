@@ -481,8 +481,6 @@ namespace Menge
         //int64_t maxTime = (int64_t)(_timing + m_dataInfo.frameTiming);
         int64_t needTime = (int64_t)(correct_timing);
 				
-		int preceedingKeyframe = av_index_search_timestamp( m_formatContext->streams[0], 1000, 0 );
-
         //if( av_seek_frame( m_formatContext, seekStreamIndex, _frame,  AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD ) < 0 )
         //int seek_err = avformat_seek_file( m_formatContext, m_videoStreamId, minTime, needTime, maxTime, AVSEEK_FLAG_ANY );
         int seek_err = av_seek_frame( m_formatContext, m_videoStreamId, needTime, AVSEEK_FLAG_ANY );

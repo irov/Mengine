@@ -64,6 +64,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Shape::setTextureWrapX( bool _wrap )
     {
+		if( m_textureWrapX == _wrap )
+		{
+			return;
+		}
+
         m_textureWrapX = _wrap;
 
         this->invalidateVertices();
@@ -76,6 +81,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Shape::setTextureWrapY( bool _wrap )
     {
+		if( m_textureWrapY == _wrap )
+		{
+			return;
+		}
+
         m_textureWrapY = _wrap;
 
         this->invalidateVertices();
@@ -88,6 +98,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Shape::setMaxSize( const mt::vec2f & _size )
     {
+		if( mt::cmp_v2_v2( m_maxSize, _size ) == true )
+		{
+			return;
+		}
+
         m_maxSize = _size;
 
         this->invalidateVertices();
@@ -100,6 +115,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Shape::setSize( const mt::vec2f & _size )
 	{
+		if( mt::cmp_v2_v2( m_size, _size ) == true )
+		{
+			return;
+		}
+
 		m_size = _size;
 
 		this->invalidateVertices();
@@ -112,6 +132,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Shape::setOffset( const mt::vec2f & _offset )
 	{
+		if( mt::cmp_v2_v2( m_offset, _offset ) == true )
+		{
+			return;
+		}
+
 		m_offset = _offset;
 
 		this->invalidateVertices();
@@ -124,6 +149,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Shape::setUVRotate( bool _rotate )
     {
+		if( m_uvRotate == _rotate )
+		{
+			return;
+		}
+
         m_uvRotate = _rotate;
 
         this->invalidateVertices();
@@ -136,6 +166,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Shape::setUV( const mt::vec4f & _uv )
     {
+		if( mt::cmp_v4_v4( m_uv, _uv ) == true )
+		{
+			return;
+		}
+
         m_uv = _uv;
 
         this->invalidateVertices();
@@ -148,6 +183,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Shape::setUV2( const mt::vec4f & _uv )
     {
+		if( mt::cmp_v4_v4( m_uv2, _uv ) == true )
+		{
+			return;
+		}
+
         m_uv2 = _uv;
 
         this->invalidateVertices();

@@ -73,7 +73,7 @@ namespace Menge
             MAGIC_RECT rect;
             float backgroundScale = Magic_GetBackgroundRect( id, &rect );
 
-            if( fabsf( backgroundScale - 1.f ) > 0.0001f )
+            if( mt::cmp_f_f( backgroundScale, 1.f ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer::isValid %s emitter %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
                     , m_name.c_str()

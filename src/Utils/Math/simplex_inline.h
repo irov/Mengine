@@ -1,3 +1,5 @@
+#	include "utils.h"
+
 #	include <math.h>
 
 namespace mt
@@ -104,9 +106,10 @@ namespace mt
 		{
 			float d = mt::dot_v3_v3(ABC,AO);
 
-			if( fabsf(d) > eps )
+			if( mt::cmp_f_z( d ) == false )
 			{
 				V = ( d > 0) ? ABC : -ABC;
+
 				return false;
 			} 
 			else

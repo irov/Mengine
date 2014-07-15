@@ -1,3 +1,5 @@
+#	include "utils.h"
+
 #	include <math.h>
 
 namespace mt
@@ -141,9 +143,11 @@ namespace mt
 		return len;
 	}
 
-	MATH_FUNCTION_INLINE bool cmp_v3_v3(const vec3f& _a, const vec3f& _b, float eps)
+	MATH_FUNCTION_INLINE bool cmp_v3_v3(const vec3f& _a, const vec3f& _b)
 	{
-		return	(fabsf(_a.x - _b.x) < eps) && (fabsf(_a.y - _b.y) < eps) && (fabsf(_a.z - _b.z) < eps);
+		return mt::cmp_f_f( _a.x, _b.x ) == true && 
+			mt::cmp_f_f( _a.y, _b.y ) == true && 
+			mt::cmp_f_f( _a.z, _b.z ) == true;
 	}
 
 	MATH_FUNCTION_INLINE bool operator==(const vec3f& _a, const vec3f& _b) 

@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 53;
+        _needVersion = 54;
 
-        if( version != 53 )
+        if( version != 54 )
         {
             return false;
         }
@@ -1293,8 +1293,11 @@ namespace Metacode
         , File_Alpha_successful(false)
         , File_CodecAlpha_successful(false)
         , File_CodecRGB_successful(false)
+        , File_MaxSize_successful(false)
+        , File_Offset_successful(false)
         , File_PathAlpha_successful(false)
         , File_PathRGB_successful(false)
+        , File_Size_successful(false)
         , File_UV_successful(false)
         , File_WrapX_successful(false)
         , File_WrapY_successful(false)
@@ -1348,6 +1351,28 @@ namespace Metacode
     
                 return true;
             }break;
+        case 11:
+            {
+                if( this->read( _buff, _size, _read, this->File_MaxSize ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_MaxSize_successful = true;
+    
+                return true;
+            }break;
+        case 13:
+            {
+                if( this->read( _buff, _size, _read, this->File_Offset ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_Offset_successful = true;
+    
+                return true;
+            }break;
         case 3:
             {
                 if( this->read( _buff, _size, _read, this->File_PathAlpha ) == false )
@@ -1367,6 +1392,17 @@ namespace Metacode
                 }
     
                 this->File_PathRGB_successful = true;
+    
+                return true;
+            }break;
+        case 12:
+            {
+                if( this->read( _buff, _size, _read, this->File_Size ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_Size_successful = true;
     
                 return true;
             }break;
@@ -1446,7 +1482,6 @@ namespace Metacode
         , File_Offset_successful(false)
         , File_Rotate_successful(false)
         , File_Size_successful(false)
-        , File_TextureSize_successful(false)
         , File_UV_successful(false)
         , File_WrapX_successful(false)
         , File_WrapY_successful(false)
@@ -1542,17 +1577,6 @@ namespace Metacode
     
                 return true;
             }break;
-        case 13:
-            {
-                if( this->read( _buff, _size, _read, this->File_TextureSize ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_TextureSize_successful = true;
-    
-                return true;
-            }break;
         case 5:
             {
                 if( this->read( _buff, _size, _read, this->File_UV ) == false )
@@ -1623,6 +1647,9 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::Meta_ResourceImageMultiplyRGBAndAlpha()
         : Meta_Resource()
+        , File_MaxSize_successful(false)
+        , File_Offset_successful(false)
+        , File_Size_successful(false)
         , File_WrapX_successful(false)
         , File_WrapY_successful(false)
         , FileAlpha_Codec_successful(false)
@@ -1648,6 +1675,39 @@ namespace Metacode
     
         switch( _id )
         {
+        case 11:
+            {
+                if( this->read( _buff, _size, _read, this->File_MaxSize ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_MaxSize_successful = true;
+    
+                return true;
+            }break;
+        case 13:
+            {
+                if( this->read( _buff, _size, _read, this->File_Offset ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_Offset_successful = true;
+    
+                return true;
+            }break;
+        case 12:
+            {
+                if( this->read( _buff, _size, _read, this->File_Size ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_Size_successful = true;
+    
+                return true;
+            }break;
         case 3:
             {
                 if( this->read( _buff, _size, _read, this->File_WrapX ) == false )
@@ -1846,7 +1906,10 @@ namespace Metacode
     Meta_DataBlock::Meta_ResourceImageSubstract::Meta_ResourceImageSubstract()
         : Meta_Resource()
         , Image_Alpha_successful(false)
+        , Image_MaxSize_successful(false)
+        , Image_Offset_successful(false)
         , Image_Rotate_successful(false)
+        , Image_Size_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1875,12 +1938,34 @@ namespace Metacode
     
                 return true;
             }break;
+        case 7:
+            {
+                if( this->read( _buff, _size, _read, this->Image_MaxSize ) == false )
+                {
+                    return false;
+                }
+    
+                this->Image_MaxSize_successful = true;
+    
+                return true;
+            }break;
         case 3:
             {
                 if( this->read( _buff, _size, _read, this->Image_Name ) == false )
                 {
                     return false;
                 }
+    
+                return true;
+            }break;
+        case 9:
+            {
+                if( this->read( _buff, _size, _read, this->Image_Offset ) == false )
+                {
+                    return false;
+                }
+    
+                this->Image_Offset_successful = true;
     
                 return true;
             }break;
@@ -1892,6 +1977,17 @@ namespace Metacode
                 }
     
                 this->Image_Rotate_successful = true;
+    
+                return true;
+            }break;
+        case 8:
+            {
+                if( this->read( _buff, _size, _read, this->Image_Size ) == false )
+                {
+                    return false;
+                }
+    
+                this->Image_Size_successful = true;
     
                 return true;
             }break;

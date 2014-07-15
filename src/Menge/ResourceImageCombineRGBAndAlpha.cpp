@@ -68,9 +68,9 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha *>(_meta);
 
         m_uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_textureSize = mt::vec2f(0.f, 0.f);
         m_maxSize = mt::vec2f(0.f, 0.f);
         m_size = mt::vec2f(0.f, 0.f);
+		m_offset = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
         m_wrapU = false;  
         m_wrapV = false;
@@ -85,6 +85,12 @@ namespace Menge
         metadata->get_File_Alpha( m_isAlpha );
         metadata->get_File_WrapX( m_wrapU );
         metadata->get_File_WrapY( m_wrapV );
+
+		metadata->get_File_MaxSize( m_maxSize );
+
+		m_size = m_maxSize;
+		metadata->get_File_Size( m_size );
+		metadata->get_File_Offset( m_offset );
 
         return true;
 	}

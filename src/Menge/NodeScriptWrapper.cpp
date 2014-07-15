@@ -1786,7 +1786,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		size_t s_rotateToIsometric( float _angle )
 		{
-			float norm_angle = mt::angle_norm( _angle );
+			float angle_norm = mt::angle_norm( _angle );
 
 			float pi_deltha [] = {
 				- mt::m_pi * 1.f / 12.f,
@@ -1829,14 +1829,12 @@ namespace Menge
 				float test_angle = pi_deltha[ i * 3 + 1];
 				float hight_angle = pi_deltha[ i * 3 + 2];
 
-				float rad = mt::angle_norm360( norm_angle );
-
-				if( mt::angle_length( norm_angle, low_angle ) > 0.f )
+				if( mt::angle_length( angle_norm, low_angle ) > 0.f )
 				{
 					continue;
 				}
 
-				if( mt::angle_length( norm_angle, hight_angle ) < 0.f )
+				if( mt::angle_length( angle_norm, hight_angle ) < 0.f )
 				{
 					continue;
 				}

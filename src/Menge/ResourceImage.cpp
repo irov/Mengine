@@ -15,7 +15,6 @@ namespace Menge
 	ResourceImage::ResourceImage()
         : m_texture(nullptr)
         , m_textureAlpha(nullptr)
-        , m_textureSize(0.f, 0.f)
         , m_maxSize(0.f, 0.f)
         , m_size(0.f, 0.f)
 		, m_offset(0.f, 0.f)

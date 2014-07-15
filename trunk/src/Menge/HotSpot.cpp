@@ -133,7 +133,7 @@ namespace Menge
 		m_invalidatePolygonWM = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::updatePolygonWM_()
+	void HotSpot::updatePolygonWM_() const
 	{
 		m_invalidatePolygonWM = false;
 
@@ -260,7 +260,7 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::testPoint( const mt::vec2f & _point )
+    bool HotSpot::testPoint( const mt::vec2f & _point ) const
     {
 		const Polygon & polygonWM = this->getPolygonWM();
 
@@ -282,7 +282,7 @@ namespace Menge
 		return intersect != m_outward;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testRadius( const mt::vec2f & _point, float _radius )
+	bool HotSpot::testRadius( const mt::vec2f & _point, float _radius ) const
 	{
 		(void)_radius;
 
@@ -291,7 +291,7 @@ namespace Menge
 		return intersect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testPolygon( const mt::vec2f & _point, const Polygon & _screenPoly )
+	bool HotSpot::testPolygon( const mt::vec2f & _point, const Polygon & _screenPoly ) const
 	{
 		const Polygon & polygonWM = this->getPolygonWM();
 

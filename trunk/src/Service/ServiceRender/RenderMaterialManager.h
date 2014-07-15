@@ -53,6 +53,9 @@ namespace Menge
     protected:
         bool createRenderStageGroup( const ConstString & _name, const RenderStage & _stage );
 
+	protected:
+		size_t makeMaterialIndex_();
+
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
@@ -69,5 +72,8 @@ namespace Menge
 
 		typedef FactoryPoolStore<RenderMaterial, 256> TFactoryRenderMaterial; 
 		TFactoryRenderMaterial m_factoryMaterial;
+
+		typedef std::vector<size_t> TVectorMaterialIndexer;
+		TVectorMaterialIndexer m_materialIndexer;
     };
 }

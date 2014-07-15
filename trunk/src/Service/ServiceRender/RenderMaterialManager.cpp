@@ -379,7 +379,7 @@ namespace Menge
 
 		RenderMaterial * material = m_factoryMaterial.createObjectT();
 
-		size_t id = ++m_materialEnumerator;
+		size_t id = this->makeMaterialIndex_();
 		material->initialize( id, material_hash, _primitiveType, _textureCount, _textures, stage );
 		
 		materials.push_back( material );
@@ -429,8 +429,11 @@ namespace Menge
 			*it = materials.back();
 			materials.pop_back();
 			
-			return;
+			break;
 		}
+
+		size_t materialId = _material->getId();
+		m_materialIndexer.push_back( materialId );
 	}
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::createRenderStageGroup( const ConstString & _name, const RenderStage & _stage )
@@ -470,4 +473,17 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	size_t RenderMaterialManager::makeMaterialIndex_()
+	{
+		if( m_materialIndexer.empty() == false )
+		{
+			size_t id = m_materialIndexer.back();
+			m_materialIndexer.pop_back();
+
+			return id;
+		}
+
+		return ++m_materialEnumerator;
+	}
 }

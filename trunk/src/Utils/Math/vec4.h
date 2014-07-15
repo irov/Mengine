@@ -61,7 +61,7 @@ namespace mt
 
 	MATH_FUNCTION_INLINE void set_v4_v3( vec4f & _out, const vec3f & _rhs );
 
-	MATH_FUNCTION_INLINE bool cmp_v4_v4(const vec4f& _a, const vec4f& _b, float eps = 0.00001f);
+	MATH_FUNCTION_INLINE bool cmp_v4_v4( const vec4f& _a, const vec4f& _b );
 
 	MATH_FUNCTION_INLINE void add_v4_v3(vec4f& _out, const vec4f& _a, const vec3f& _b);
 	MATH_FUNCTION_INLINE void add_v4_v4(vec4f& _out, const vec4f& _a, const vec4f& _b);

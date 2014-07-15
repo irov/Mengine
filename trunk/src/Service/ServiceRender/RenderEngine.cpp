@@ -907,6 +907,7 @@ namespace Menge
 	void RenderEngine::addRenderPass_()
 	{
 		RenderPass & pass = m_renderPasses.emplace();
+
 		pass.beginRenderObject = m_renderObjects.size();
 		pass.countRenderObject = 0;
 		pass.viewport = m_currentRenderViewport;
@@ -925,13 +926,15 @@ namespace Menge
 
 		pass.bb = bb_vp;
 
-		const mt::mat4f & wm = pass.camera->getCameraWorldMatrix();
-
-		mt::mat4f wm_inv;
-		mt::inv_m4( wm_inv, wm );
+		const mt::mat4f & wm_inv = pass.camera->getCameraWorldMatrixInv();
 
 		mt::mul_v2_m4( pass.bb_inv.minimum, bb_vp.minimum, wm_inv );
 		mt::mul_v2_m4( pass.bb_inv.maximum, bb_vp.maximum, wm_inv );
+
+		for( size_t i = 0; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )
+		{
+			pass.materialEnd[i] = nullptr;
+		}
 
 		pass.orthogonalProjection = pass.camera->isOrthogonalProjection();
 	}
@@ -1027,6 +1030,11 @@ namespace Menge
 		RenderObject & ro = m_renderObjects.emplace();
 
 		ro.material = _material;
+
+		size_t materialId = _material->getId();
+		size_t materialId2 = materialId % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
+
+		rp.materialEnd[materialId2] = &ro;
 
 		ro.ibHandle = m_ibHandle2D;
 		ro.vbHandle = m_vbHandle2D;
@@ -1428,20 +1436,28 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::batchRenderObjectSmart_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos )
+	void RenderEngine::batchRenderObjectSmart_( RenderPass * _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos )
 	{
 		size_t vbPos = _vbPos;
 		size_t ibPos = _ibPos;
 
 		const RenderMaterial * ro_material = _ro->material.get();
-
+		
 		TArrayRenderObject::iterator it_batch_start_end = _begin;
 		++it_batch_start_end;
 
 		TArrayRenderObject::iterator it_batch = _begin;
 		++it_batch;	
 
-		for( ; it_batch != _end; ++it_batch )
+		size_t materialId = ro_material->getId();
+		TArrayRenderObject::const_iterator it_end = _renderPass->materialEnd[materialId];
+
+		if( _begin == it_end )
+		{
+			return;
+		}
+
+		for( ; it_batch != it_end; ++it_batch )
 		{
 			RenderObject * ro_bath = it_batch;
 
@@ -1537,7 +1553,7 @@ namespace Menge
 
 					if( _renderPass->orthogonalProjection == true )
 					{
-						this->batchRenderObjectSmart_( it, it_end, ro, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
+						this->batchRenderObjectSmart_( _renderPass, it, ro, _vertexBuffer, _indicesBuffer, _vbSize, _ibSize, vbPos, ibPos );
 					}
 				}break;
 			}	

@@ -16,7 +16,9 @@ namespace Menge
 		void initialize( size_t _id, uint32_t _hash, EPrimitiveType _primitiveType, size_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage );
 		
 	public:
-		inline size_t getId() const;
+		size_t getId() const override;
+
+	public:
 		inline uint32_t getHash() const;
 		inline EPrimitiveType getPrimitiveType() const;
 		inline size_t getTextureCount() const;

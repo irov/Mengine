@@ -40,6 +40,9 @@
 #   define MENGINE_RENDER_DEBUG_VERTEX_MAX 8192
 #   endif
 
+#	ifndef MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX
+#	define MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX 512
+#	endif
 
 
 namespace Menge
@@ -81,10 +84,13 @@ namespace Menge
 
 		const RenderViewportInterface * viewport;
 		const RenderCameraInterface * camera;
-
-		bool orthogonalProjection;
+				
 		mt::box2f bb;
 		mt::box2f bb_inv;
+
+		const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
+
+		bool orthogonalProjection;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderEngine
@@ -130,6 +136,8 @@ namespace Menge
 	public:
 		void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) override;
 		const RenderMaterialInterfacePtr & getDebugMaterial() const override;
+
+	public:
 		RenderVertex2D * getDebugRenderVertex2D( size_t _count ) override;
 
 	public:
@@ -312,6 +320,6 @@ namespace Menge
 
 	protected:
 		void batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos );
-		void batchRenderObjectSmart_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos );
+		void batchRenderObjectSmart_( RenderPass * _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos );
 	};
 }

@@ -1,5 +1,7 @@
 #	include "angle.h"
 
+#	include "utils.h"
+
 #	include <math.h>
 
 namespace mt
@@ -133,9 +135,10 @@ namespace mt
 		return length;
 	}
 
-	MATH_FUNCTION_INLINE bool cmp_v2_v2(const vec2f& _a, const vec2f& _b, float eps)
+	MATH_FUNCTION_INLINE bool cmp_v2_v2(const vec2f& _a, const vec2f& _b )
 	{
-		return (fabsf(_a.x - _b.x) < eps) && (fabsf(_a.y - _b.y) < eps);
+		return mt::cmp_f_f( _a.x, _b.x ) == true &&
+			mt::cmp_f_f( _a.y, _b.y ) == true;
 	}
 
 	MATH_FUNCTION_INLINE bool operator==(const vec2f& _a, const vec2f& _b)

@@ -80,7 +80,9 @@ namespace	Menge
 		const mt::mat4f & wm = this->getWorldMatrix();
 		
 		m_viewMatrixInv = wm;
-		m_viewMatrix = mt::inv_m4( wm );
+		mt::inv_m4( m_viewMatrix, wm );
+
+		mt::inv_m4( m_worldMatrixInv, m_worldMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::updateProjectionMatrix_() const
@@ -149,6 +151,8 @@ namespace	Menge
 
 		RENDER_SERVICE(m_serviceProvider)
 			->makeProjectionOrthogonal( m_projectionMatrix, renderViewport, -1000.0f, 1000.0f );
+
+		mt::inv_m4( m_projectionMatrixInv, m_projectionMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )

@@ -71,7 +71,7 @@ namespace Menge
 		HotSpot::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testPoint( const mt::vec2f & _point )
+	bool HotSpotImage::testPoint( const mt::vec2f & _point ) const
 	{
 		const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -86,7 +86,7 @@ namespace Menge
 		return result != m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testRadius( const mt::vec2f & _point, float _radius )
+	bool HotSpotImage::testRadius( const mt::vec2f & _point, float _radius ) const
 	{
 		const mt::mat4f & wm = this->getWorldMatrix();
 

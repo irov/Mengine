@@ -43,7 +43,7 @@ namespace mt
 	MATH_FUNCTION_INLINE quatf operator*(const quatf& _rhs, float _val);
 	MATH_FUNCTION_INLINE quatf operator/(const quatf& _rhs, float _val);
 	
-	MATH_FUNCTION_INLINE bool cmp_q_q(const quatf& _a, const quatf& _b, float eps = 0.00001f);
+	MATH_FUNCTION_INLINE bool cmp_q_q( const quatf& _a, const quatf& _b );
 
 	MATH_FUNCTION_INLINE void add_q_q(quatf&	_out, const quatf& _a,const quatf& _b);
 	MATH_FUNCTION_INLINE void sub_q_q(quatf&	_out, const quatf& _a,const quatf& _b);
@@ -55,7 +55,7 @@ namespace mt
 
 	MATH_FUNCTION_INLINE void norm_q(quatf& _out, const quatf& _rhs);
 	MATH_FUNCTION_INLINE quatf norm_q(const quatf& _rhs);
-	MATH_FUNCTION_INLINE void norm_safe_q(quatf& out, const quatf& _rhs, float err = 1e-06);
+	MATH_FUNCTION_INLINE void norm_safe_q(quatf& out, const quatf& _rhs);
 	MATH_FUNCTION_INLINE quatf norm_safe_q(const quatf& _rhs);
 
 	MATH_FUNCTION_INLINE void q_from_angle_axis(quatf& out, const vec3f& _rhs, float _val);

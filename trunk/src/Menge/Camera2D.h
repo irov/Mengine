@@ -33,7 +33,11 @@ namespace Menge
 
 	public:
 		const mt::mat4f & getCameraWorldMatrix() const override;
+		const mt::mat4f & getCameraWorldMatrixInv() const override;
+
 		const mt::mat4f & getCameraProjectionMatrix() const override;
+		const mt::mat4f & getCameraProjectionMatrixInv() const override;
+
 		const mt::mat4f & getCameraViewMatrix() const override;
 		const mt::mat4f & getCameraViewMatrixInv() const override;
 
@@ -64,14 +68,16 @@ namespace Menge
 
 		Observer * m_observerChangeWindowResolution;
 
-		mt::mat4f m_worldMatrix;
-
-		bool m_widescreenSupport;
-		
+		mutable mt::mat4f m_worldMatrix;
+		mutable mt::mat4f m_worldMatrixInv;
+			
 		mutable mt::mat4f m_viewMatrix;
 		mutable mt::mat4f m_viewMatrixInv;
-		mutable mt::mat4f m_projectionMatrix;
 
+		mutable mt::mat4f m_projectionMatrix;
+		mutable mt::mat4f m_projectionMatrixInv;
+
+		mutable bool m_widescreenSupport;
 		mutable bool m_invalidateProjectionMatrix;
 		mutable bool m_invalidateMatrix;
 	};
@@ -101,6 +107,16 @@ namespace Menge
 		return m_worldMatrix;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & Camera2D::getCameraWorldMatrixInv() const
+	{
+		if( m_invalidateMatrix == true )
+		{
+			this->updateMatrix_();
+		}
+
+		return m_worldMatrixInv;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & Camera2D::getCameraProjectionMatrix() const
 	{
 		if( m_invalidateProjectionMatrix == true )
@@ -109,6 +125,16 @@ namespace Menge
 		}
 
 		return m_projectionMatrix;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::mat4f & Camera2D::getCameraProjectionMatrixInv() const
+	{
+		if( m_invalidateProjectionMatrix == true )
+		{
+			this->updateProjectionMatrix_();
+		}
+
+		return m_projectionMatrixInv;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & Camera2D::getCameraViewMatrix() const

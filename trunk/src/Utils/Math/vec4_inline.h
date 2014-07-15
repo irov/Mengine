@@ -1,3 +1,5 @@
+#	include "utils.h"
+
 #	include <math.h>
 
 namespace mt
@@ -146,17 +148,17 @@ namespace mt
 	}
 
 	/*	cmp	 */
-	MATH_FUNCTION_INLINE bool cmp_v4_v4(const vec4f& _a, const vec4f& _b, float eps)
+	MATH_FUNCTION_INLINE bool cmp_v4_v4(const vec4f& _a, const vec4f& _b )
 	{
-		return	(fabsf(_a.x - _b.x) < eps) 
-			&& (fabsf(_a.y - _b.y) < eps) 
-			&& (fabsf(_a.z - _b.z) < eps) 
-			&& (fabsf(_a.w - _b.w) < eps);
+		return	mt::cmp_f_f( _a.x, _b.x ) == true &&
+			mt::cmp_f_f( _a.y, _b.y ) == true && 
+			mt::cmp_f_f( _a.z, _b.z ) == true && 
+			mt::cmp_f_f( _a.w, _b.w ) == true;
 	}
 
 	MATH_FUNCTION_INLINE bool operator==(const vec4f& _a, const vec4f& _b) 
 	{
-		return cmp_v4_v4(_a, _b);
+		return cmp_v4_v4( _a, _b );
 	}
 
 	MATH_FUNCTION_INLINE bool operator!=(const vec4f& _a, const vec4f& _b) 

@@ -41,9 +41,9 @@ namespace Menge
 		MousePickerTrapInterface * getPickerTrap();
 		    
 	public:
-		virtual bool testPoint( const mt::vec2f & _point );
-		virtual bool testRadius( const mt::vec2f & _point, float _radius );
-		virtual bool testPolygon( const mt::vec2f & _point, const Polygon & _polygon );
+		virtual bool testPoint( const mt::vec2f & _point ) const;
+		virtual bool testRadius( const mt::vec2f & _point, float _radius ) const;
+		virtual bool testPolygon( const mt::vec2f & _point, const Polygon & _polygon ) const;
 
     public:        
         void onPickerEnter();
@@ -65,10 +65,10 @@ namespace Menge
 
 	protected:
 		void invalidatePolygonWM();
-		void updatePolygonWM_();
+		void updatePolygonWM_() const;
 
 	public:
-		inline const Polygon & getPolygonWM();
+		inline const Polygon & getPolygonWM() const;
 
 	protected:
 		void _localHide( bool _value ) override;
@@ -85,16 +85,17 @@ namespace Menge
         HotspotMousePickerAdapter m_mousePickerAdapter;
 
 		Polygon m_polygon;
-		Polygon m_polygonWM;
-		Polygon m_polygonWMVM;
+		mutable Polygon m_polygonWM;
+		mutable Polygon m_polygonWMVM;
 
 		uint32_t m_debugColor;
 
 		bool m_outward;
-		bool m_invalidatePolygonWM;
+		
+		mutable bool m_invalidatePolygonWM;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const Polygon & HotSpot::getPolygonWM()
+	inline const Polygon & HotSpot::getPolygonWM() const
 	{
 		if( m_invalidatePolygonWM == true )
 		{

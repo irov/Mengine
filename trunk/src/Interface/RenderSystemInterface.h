@@ -287,6 +287,8 @@ namespace Menge
     class RenderMaterialInterface
 		: public FactorablePtr
     {
+	public:
+		virtual size_t getId() const = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderMaterialInterface> RenderMaterialInterfacePtr;
@@ -407,7 +409,11 @@ namespace Menge
 	{
 	public:
 		virtual const mt::mat4f & getCameraWorldMatrix() const = 0;
+		virtual const mt::mat4f & getCameraWorldMatrixInv() const = 0;
+
 		virtual const mt::mat4f & getCameraProjectionMatrix() const = 0;
+		virtual const mt::mat4f & getCameraProjectionMatrixInv() const = 0;
+
 		virtual const mt::mat4f & getCameraViewMatrix() const = 0;
 		virtual const mt::mat4f & getCameraViewMatrixInv() const = 0;
 

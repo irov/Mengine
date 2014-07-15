@@ -5,8 +5,8 @@
 
 #   include "ResourceEmitterContainer.h"
 
-#	include "../Interface/RenderSystemInterface.h"
-#	include "../Interface/ParticleSystemInterface.h"
+#	include "Interface/RenderSystemInterface.h"
+#	include "Interface/ParticleSystemInterface.h"
 
 #	include "Math/mat3.h"
 

@@ -83,12 +83,22 @@ namespace Menge
 		{
 			const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
 			m_maxSize = maxSize * uv_size;
+
+			if( m_isUVRotate == true )
+			{
+				std::swap( m_maxSize.x, m_maxSize.y );
+			}
 		}
 
 		if( m_size.x < 1.f || m_size.y < 1.f )
 		{
 			const mt::vec2f & size = m_resourceImage->getSize();
 			m_size = size * uv_size;
+
+			if( m_isUVRotate == true )
+			{
+				std::swap( m_size.x, m_size.y );
+			}
 		}
 
         m_uv_image = m_uv;
@@ -98,13 +108,7 @@ namespace Menge
         
         m_wrapU = false;
         m_wrapV = false;
-
-        if( m_isUVRotate == true )
-        {
-            std::swap( m_maxSize.x, m_maxSize.y );
-            std::swap( m_size.x, m_size.y );
-        }
-        
+		        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

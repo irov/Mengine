@@ -66,6 +66,11 @@ namespace Menge
 
 			m_size.x *= ku;
 			m_size.y *= kv;
+
+			if( m_isUVRotate == true )
+			{
+				std::swap( m_size.x, m_size.y );
+			}
 		}
 
 		m_texture = texture;
@@ -80,12 +85,6 @@ namespace Menge
 		{
 			m_isAlpha = true;
 		}
-		        
-        if( m_isUVRotate == true )
-        {
-            std::swap( m_maxSize.x, m_maxSize.y );
-            std::swap( m_size.x, m_size.y );
-        }
 
         m_uv_image.x = m_uv_scale.x + (m_uv_scale.z - m_uv_scale.x) * m_uv.x;
         m_uv_image.y = m_uv_scale.y + (m_uv_scale.w - m_uv_scale.y) * m_uv.y;

@@ -542,12 +542,12 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     void ParticleEmitter::updateVertexWM_()
     {
-        const mt::mat4f & wm = this->getWorldMatrix();
+		if( this->isIdentityWorldMatrix() == true )
+		{
+			return;
+		}
 
-        if( mt::is_ident_m34( wm ) == true )
-        {
-            return;
-        }
+        const mt::mat4f & wm = this->getWorldMatrix();
 
         for( TVectorBatchs::const_iterator
             it = m_batchs.begin(),

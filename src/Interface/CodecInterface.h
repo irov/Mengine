@@ -45,7 +45,7 @@ namespace Menge
 		virtual void finalize() = 0;
 
     public:
-        virtual bool setOptions( CodecOptions * _options ) = 0;
+        virtual bool setOptions( const CodecOptions * _options ) = 0;
 
 	public:
         virtual const InputStreamInterfacePtr & getStream() const = 0;

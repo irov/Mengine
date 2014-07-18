@@ -7,11 +7,11 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool SoundDecoder::setOptions( CodecOptions * _options )
+    bool SoundDecoder::setOptions( const CodecOptions * _options )
     {
         if( _options != nullptr )
         {
-            m_options = *static_cast<SoundCodecOptions *>(_options);
+            m_options = *static_cast<const SoundCodecOptions *>(_options);
         }
 
         bool result = this->_invalidateOptions();

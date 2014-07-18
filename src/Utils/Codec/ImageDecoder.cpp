@@ -9,11 +9,11 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool ImageDecoder::setOptions( CodecOptions * _options )
+    bool ImageDecoder::setOptions( const CodecOptions * _options )
     {
         if( _options != nullptr )
         {
-            m_options = *static_cast<ImageCodecOptions *>(_options);
+            m_options = *static_cast<const ImageCodecOptions *>(_options);
         }
 
         if( m_options.pitch == 0 )

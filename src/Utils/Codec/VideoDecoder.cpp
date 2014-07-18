@@ -7,11 +7,11 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool VideoDecoder::setOptions( CodecOptions * _options )
+    bool VideoDecoder::setOptions( const CodecOptions * _options )
     {
         if( _options != nullptr )
         {
-            m_options = *static_cast<VideoCodecOptions *>(_options);
+            m_options = *static_cast<const VideoCodecOptions *>(_options);
         }
 
         bool result = this->_invalidateOptions();

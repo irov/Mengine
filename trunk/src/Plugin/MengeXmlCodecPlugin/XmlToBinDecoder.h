@@ -24,7 +24,7 @@ namespace Menge
         const InputStreamInterfacePtr & getStream() const override;
 
 	public:
-		bool setOptions( CodecOptions * _options ) override;
+		bool setOptions( const CodecOptions * _options ) override;
 
 	public:
 		void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;

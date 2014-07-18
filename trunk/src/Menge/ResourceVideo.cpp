@@ -80,6 +80,7 @@ namespace Menge
 
 		const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
 
+		
 		uint32_t Limit_VideoFrameRate = CONFIG_VALUE(m_serviceProvider, "Limit", "VideoFrameRate", 30U);
 		if( dataInfo->fps > Limit_VideoFrameRate )
 		{
@@ -92,6 +93,7 @@ namespace Menge
 
 			return false;
 		}
+
 
    //     if( m_noSeek == false )
    //     {           			

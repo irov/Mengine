@@ -7,11 +7,11 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool PickDecoder::setOptions( CodecOptions * _options )
+    bool PickDecoder::setOptions( const CodecOptions * _options )
     {
         if( _options != nullptr )
         {
-            m_options = *static_cast<PickCodecOptions *>(_options);
+            m_options = *static_cast<const PickCodecOptions *>(_options);
         }
 
         bool result = this->_invalidateOptions();

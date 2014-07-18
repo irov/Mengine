@@ -79,9 +79,9 @@ namespace Menge
         return m_stream;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool XmlToBinDecoder::setOptions( CodecOptions * _options )
+	bool XmlToBinDecoder::setOptions( const CodecOptions * _options )
 	{
-		m_options = *static_cast<XmlCodecOptions *>(_options);
+		m_options = *static_cast<const XmlCodecOptions *>(_options);
 
         return true;
 	}

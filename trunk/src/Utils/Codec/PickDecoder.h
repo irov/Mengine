@@ -13,7 +13,7 @@ namespace Menge
 		PickDecoder();
 
     public:
-        bool setOptions( CodecOptions * _options ) override;
+        bool setOptions( const CodecOptions * _options ) override;
 
     protected:
         virtual bool _invalidateOptions();

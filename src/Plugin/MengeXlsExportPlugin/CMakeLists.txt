@@ -9,6 +9,8 @@ src
     XlsScriptLogger.cpp
 )
 
+add_definitions(-DMENGE_PLUGIN_DLL)
+
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 
 					 ${THIRDPARTY_DIR}/pybind/include
                      ${THIRDPARTY_DIR}/boost

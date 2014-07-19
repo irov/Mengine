@@ -24,6 +24,8 @@ src
     ModelConverterMDLToMDZ.h
 )
 
+add_definitions(-DMENGE_PLUGIN_DLL)
+
 INCLUDE_DIRECTORIES(
 			${Mengine_SOURCE_DIR}/Utils    
             ${THIRDPARTY_DIR}/metabuf  

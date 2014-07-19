@@ -13,11 +13,13 @@ extern "C" // only required if using g++
 
 		return true;
 	}
+#	ifdef MENGE_PLUGIN_DLL
 	////////////////////////////////////////////////////////////////////////////
 	__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
 	{
 		return initPluginAstralaxParticlePlugin2( _plugin );
 	}
+#	endif
 }
 //////////////////////////////////////////////////////////////////////////
 namespace Menge

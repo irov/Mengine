@@ -14,6 +14,8 @@ src
     AstralaxParticlePlugin.def
 )
 
+add_definitions(-DMENGE_PLUGIN_DLL)
+
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/astralax )
 
 ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )

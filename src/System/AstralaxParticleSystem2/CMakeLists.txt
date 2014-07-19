@@ -14,6 +14,7 @@ src
     AstralaxParticlePlugin2.def
 )
 
+add_definitions(-DMENGE_PLUGIN_DLL)
 add_definitions(-DMAGIC_3D)
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/astralax )

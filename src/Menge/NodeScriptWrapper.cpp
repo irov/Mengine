@@ -8,7 +8,7 @@
 #   include "Interface/CacheInterface.h"
 #	include "Interface/HttpSystemInterface.h"
 #	include "Interface/PrefetcherInterface.h"
-#	include "Interface/WindowsLayerInterface.h"
+#	include "Interface/PlatformInterface.h"
 
 #	include "Kernel/ScriptClassWrapper.h"
 #	include "Kernel/ThreadTask.h"
@@ -1930,7 +1930,7 @@ namespace Menge
 				return false;
 			}
 
-			if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+			if( PLATFORM_SERVICE(m_serviceProvider)
 				->createDirectoryUserPicture( projectName, wc_fileName, &blob[0], blob.size() ) == false )
 			{
 				return false;
@@ -1956,7 +1956,7 @@ namespace Menge
 				return false;
 			}
 
-			if( WINDOWSLAYER_SERVICE(m_serviceProvider)
+			if( PLATFORM_SERVICE(m_serviceProvider)
 				->createDirectoryUserMusic( projectName, wc_fileName, &blob[0], blob.size() ) == false )
 			{
 				return false;

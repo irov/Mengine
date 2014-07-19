@@ -21,8 +21,7 @@
 #	include "Interface/ModuleInterface.h"
 #	include "Interface/DataInterface.h"
 #	include "Interface/CacheInterface.h"
-
-#   include "Utils/StartupConfigLoader/StartupConfigLoader.h"
+#	include "Interface/ConfigInterface.h"
 
 #	include "MarmaladeLogger.h"
 #   include "MarmaladeTimer.h"
@@ -95,12 +94,16 @@ namespace Menge
         void * checkpointMemory() const override;
         size_t diffMemory( void * _checkpoint ) const override;
 
+	protected:
+		bool getApplicationPath_( const char * _section, const char * _key, ConstString & _path );
+
     protected:
         bool initializeStringizeService_();
         bool initializeApplicationService_();
         bool initializeNotificationService_();
         bool initializeThreadEngine_();
         bool initializeFileEngine_();
+		bool initializeConfigEngine_();
         bool initializeLogEngine_();
         bool initializeMarmaladeLayerService_();
         bool initializeUnicodeEngine_();
@@ -128,7 +131,6 @@ namespace Menge
     private:
         MarmaladeLogger * m_loggerConsole;
         ApplicationInterface * m_application;
-        StartupSettings m_settings;
 
         bool	m_running;
         bool	m_active;
@@ -161,6 +163,7 @@ namespace Menge
 		ModuleServiceInterface * m_moduleService;
 		DataServiceInterface * m_dataService;
 		CacheServiceInterface * m_cacheService;
+		ConfigServiceInterface * m_configService;
 
 
         MarmaladeLayerInterface * m_marmaladeLayer; 

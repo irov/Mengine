@@ -67,6 +67,10 @@ namespace Menge
 		: public CodecFactoryInterface
 	{
 	public:
+		DecoderFactoryInterface(){};
+		virtual ~DecoderFactoryInterface(){};
+
+	public:
 		virtual DecoderInterfacePtr createDecoder() = 0;
         virtual const ConstString & getName() const = 0;
 	};

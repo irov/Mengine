@@ -74,12 +74,18 @@ namespace Menge
 		m_decoders.push_back( new DecoderFactory<ImageDecoderJPEG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "jpegImage")) );
         //m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ddsImage")) );
         //m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ddzImage")) );
+
+#	ifdef MENGINE_SUPPORT_DECODER_WEBP
         m_decoders.push_back( new DecoderFactory<ImageDecoderWEBP>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "webpImage")) );
+#	endif
 		//m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pvrtzImage")) );
 		//m_decoders.push_back( new DecoderFactory<ImageDecoderETZ1>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "etz1Image")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTC>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pvrImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderETC1>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "etcImage")) );
+
+#	ifdef MENGINE_SUPPORT_DECODER_CRN
 		m_decoders.push_back( new DecoderFactory<ImageDecoderCRN>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "crnImage")) );
+#	endif
 
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "png", CONST_STRING_LOCAL(m_serviceProvider, "pngImage") );

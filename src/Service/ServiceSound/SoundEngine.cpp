@@ -6,6 +6,8 @@
 
 #	include "Logger/Logger.h"
 
+#	include "Math/utils.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SoundService, Menge::SoundServiceInterface, Menge::SoundEngine );
 //////////////////////////////////////////////////////////////////////////
@@ -776,7 +778,7 @@ namespace Menge
 
         float current_pos = source->source->getPosMs();
 
-        if( fabsf( current_pos - _pos ) < 0.0001f )
+		if( mt::cmp_f_f( current_pos, _pos ) == true )
         {
             return true;
         }

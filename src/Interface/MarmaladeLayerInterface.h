@@ -22,5 +22,5 @@ namespace Menge
     };
 
 #   define MARMALADELAYER_SERVICE( serviceProvider )\
-    (Menge::Helper::getService<Menge::MarmaladeLayerInterface>(serviceProvider))
+    ((Menge::MarmaladeLayerInterface *)SERVICE_GET(serviceProvider, Menge::MarmaladeLayerInterface))
 }

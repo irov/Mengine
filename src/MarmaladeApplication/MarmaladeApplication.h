@@ -83,11 +83,14 @@ namespace Menge
         void notifyCursorUnClipping() override;
 
         bool openUrlInDefaultBrowser( const WString & _url ) override;
-        bool cmd( const WString & _command ) override;
 
         bool isDevelopmentMode() const override;
 
         void onEvent( const ConstString & _event, const TMapParams & _params );
+
+	public:
+		bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
+		bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 
     public:
         size_t getMemoryUsage() const override;
@@ -123,11 +126,7 @@ namespace Menge
 		bool initializeModuleEngine_();		
 		bool initializeDataManager_();
 		bool initializeCacheManager_();
-
-
-    protected:
-        bool setupApplicationSetting_();
-
+				
     private:
         MarmaladeLogger * m_loggerConsole;
         ApplicationInterface * m_application;

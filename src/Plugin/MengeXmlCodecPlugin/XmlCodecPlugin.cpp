@@ -20,13 +20,12 @@ extern "C" // only required if using g++
         return true;
     }
     ////////////////////////////////////////////////////////////////////////////
-#ifdef MENGE_COMPILER_MSVC
-	__declspec(dllexport) 
-#endif
-	bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
+#	ifdef MENGE_PLUGIN_DLL
+	__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
     {
         return initPluginMengeXmlCodec( _plugin );
     }
+#	endif
 }
 //////////////////////////////////////////////////////////////////////////
 namespace Menge

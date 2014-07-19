@@ -362,7 +362,7 @@ namespace Menge
 		memRange.pMem = new unsigned char[size];
 		memRange.size = size;
 		memRange.offset = 0;
-		memRange.flags = 0;
+		memRange.flags = BLF_LOCK_NONE;
         
         GLenum usage = GL_STATIC_DRAW;
 
@@ -409,7 +409,7 @@ namespace Menge
 		m_vBuffersMemory.erase( _vbHandle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MarmaladeRenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, uint32 _flags )
+	void * MarmaladeRenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, EBufferLockFlag _flags )
 	{
 		MemoryRange * range;
 		if( m_vBuffersMemory.has( _vbHandle, &range) == false )
@@ -463,7 +463,7 @@ namespace Menge
 		memRange.pMem = new unsigned char[size];
 		memRange.size = size;
 		memRange.offset = 0;
-		memRange.flags = 0;
+		memRange.flags = BLF_LOCK_NONE;
 
         GLenum usage = GL_STATIC_DRAW;
 
@@ -509,7 +509,7 @@ namespace Menge
 		m_iBuffersMemory.erase( _ibHandle );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MarmaladeRenderSystem::lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, uint32 _flags )
+	void * MarmaladeRenderSystem::lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, EBufferLockFlag _flags )
 	{
 		MemoryRange * range;
 		if( m_iBuffersMemory.has( _ibHandle, &range) == false )

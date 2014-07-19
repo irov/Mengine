@@ -9,6 +9,10 @@ namespace Menge
 	class Observer
 	{
 	public:
+		Observer(){};
+		virtual ~Observer(){};
+
+	public:
 		virtual void destroy() = 0;
 	};
 

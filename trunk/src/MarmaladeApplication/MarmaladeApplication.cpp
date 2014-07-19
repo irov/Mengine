@@ -17,7 +17,8 @@
 //#	include "AlreadyRunningMonitor.h"
 //#	include "CriticalErrorsMonitor.h"
 
-#	include "Utils/Core/FileLogger.h"
+#	include "Core/FileLogger.h"
+#	include "Core/IniUtil.h"
 
 //#	include "resource.h"
 
@@ -34,8 +35,6 @@
 //#	include <mhook.h>
 #	include "s3eDevice.h"
 #	include "s3e.h"
-
-#	include "StartupConfigLoader/StartupConfigLoader.h"
 
 #ifdef _MSC_VER
 #	define snprintf _snprintf
@@ -83,6 +82,7 @@ SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
 SERVICE_EXTERN(ModuleService, Menge::ModuleServiceInterface);
 SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
 SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
+SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
 
 
 extern "C" // only required if using g++
@@ -199,7 +199,7 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Application Initialize..."
             );
 
-        if( m_application->initialize() == false )
+        if( m_application->initialize( m_commandLine ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Application initialize failed" 
                 );
@@ -382,6 +382,82 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeApplication::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
+	{
+		FilePath applicationPath = CONST_STRING_LOCAL( m_serviceProvider, "application.ini" );
+
+		InputStreamInterfacePtr applicationInputStream = 
+			FILE_SERVICE(m_serviceProvider)->openInputFile( ConstString::none(), applicationPath );
+
+		if( applicationInputStream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeConfigEngine_ Invalid open application settings %s"
+				, applicationPath.c_str()
+				);
+
+			return false;
+		}
+
+		IniUtil::IniStore ini;
+		if( IniUtil::loadIni( ini, applicationInputStream, m_serviceProvider ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeConfigEngine_ Invalid load application settings %s"
+				, applicationPath.c_str()
+				);
+
+			return false;
+		}
+
+		const char * gameIniPath = ini.getSettingValue( _section, _key );
+
+		if( gameIniPath == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeConfigEngine_ Not found Game Path %s"
+				, applicationPath.c_str()
+				);
+
+			return false;
+		}
+
+		_path = Helper::stringizeString( m_serviceProvider, gameIniPath );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeApplication::initializeConfigEngine_()
+	{
+		LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
+
+		ConfigServiceInterface * configService;
+
+		if( SERVICE_CREATE(ConfigService, &configService) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY(m_serviceProvider, configService);
+
+		m_configService = configService;
+
+		FilePath gameIniPath;
+		if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
+		{
+			return false;
+		}
+
+		if( CONFIG_SERVICE(m_serviceProvider)
+			->loadConfig( ConstString::none(), gameIniPath ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeConfigEngine_ invalid load config %s"				
+				, gameIniPath.c_str()
+				);
+
+			return false;
+		}
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeStringizeService_()
     {
@@ -1035,44 +1111,6 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::setupApplicationSetting_()
-    {
-        StartupConfigLoader loader(m_serviceProvider);
-
-        FilePath applicationPath = Helper::stringizeString( m_serviceProvider, "application.ini" );
-
-        if( loader.load( ConstString::none(), applicationPath, m_settings ) == false )
-        {
-            return false;
-        }
-
-        m_projectName = m_settings.projectName;
-        m_companyName = m_settings.companyName;
-
-        String platformName;
-        Helper::s_getOption( " -platform:", m_commandLine, &platformName );
-
-        if( platformName.empty() == true )
-        {
-            platformName = "IPAD";
-        }
-
-        m_settings.applicationSettings.platformName = Helper::stringizeString( m_serviceProvider, platformName );
-        m_settings.applicationSettings.baseDir = m_currentPath;
-
-        if( m_projectName.empty() == true )
-        {
-            return false;
-        }
-
-        if( m_companyName.empty() == true )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::getMaxClientResolution( Resolution & _resolution ) const
     {
 		int32 width = s3eSurfaceGetInt(S3E_SURFACE_WIDTH);
@@ -1146,6 +1184,11 @@ namespace Menge
         {
             return false;
         }
+
+		if( this->initializeConfigEngine_() == false )
+		{
+			return false;
+		}
 
         if( this->initializeThreadEngine_() == false )
         {
@@ -1254,21 +1297,27 @@ namespace Menge
             m_pluginMengeSoundCodec->initialize( m_serviceProvider );
         }
 
-		if( m_application->setup( m_commandLine, m_settings.applicationSettings ) == false )
+		String languagePack;
+		Helper::s_getOption( " -lang:", m_commandLine, &languagePack );
+
+		if( languagePack.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)( "Application setup failed" 
-				);
-
-			return false;
+			languagePack = CONFIG_VALUE(m_serviceProvider, "Locale", "Default", "en");
 		}
-
-        String languagePack = m_settings.defaultLocale;
 
         LOGGER_WARNING(m_serviceProvider)("Locale %s"
             , languagePack.c_str()
             );
 
-        if( m_application->createGame( m_settings.personalityModule, Helper::stringizeString(m_serviceProvider, languagePack), m_settings.resourcePacks, m_settings.languagePacks ) == false )
+		String personalityModule = CONFIG_VALUE(m_serviceProvider, "Game", "PersonalityModule", "Personality" );
+
+		FilePath resourceIniPath;
+		if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
+		{
+			return false;
+		}
+
+        if( m_application->createGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack), ConstString::none(), resourceIniPath ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Application create game failed"
                 );
@@ -1277,12 +1326,12 @@ namespace Menge
         }
 
         LOGGER_INFO(m_serviceProvider)( "Application Initialize... %s"
-            , m_settings.applicationSettings.platformName.c_str() 
+            , m_application->getPlatformName().c_str()
             );
 
         LOGGER_INFO(m_serviceProvider)( "Initializing Game data..." );
 
-        if( m_application->initializeGame( m_settings.appParams, scriptInit ) == false )
+        if( m_application->initializeGame( scriptInit ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Application invalid initialize game"
                 );
@@ -1309,7 +1358,7 @@ namespace Menge
 
         m_timer->reset();
 
-		m_application->onTurnSound( true );
+		m_application->turnSound( true );
         
         while( true )
         {
@@ -1322,33 +1371,35 @@ namespace Menge
             
             s3eDeviceYield(0);
 
-            bool rendered = false;
-
             if( m_application->isFocus() == true )
             {
                 s3eDeviceBacklightOn();
-                rendered = m_application->onRender();
             }
 
             m_input->update();
             
-            bool updating = m_application->onUpdate();
+            bool updating = m_application->beginUpdate();
 
             float frameTime = m_timer->getDeltaTime();
 
             if( updating == true )
             {                
-                m_application->onTick( frameTime );
+                m_application->tick( frameTime );
             }
             else
             {
                 //Sleep?
             }
 
-            if( rendered == true )
-            {
-                m_application->onFlush();
-            }
+			if( m_application->isFocus() == true )
+			{
+				if( m_application->render() == true )
+				{
+					m_application->flush();
+				}
+			}
+
+			m_application->endUpdate();
         }
     }
     //////////////////////////////////////////////////////////////////////////

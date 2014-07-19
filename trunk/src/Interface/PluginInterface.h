@@ -9,6 +9,10 @@ namespace Menge
 	class PluginInterface
 	{
 	public:
+		PluginInterface(){};
+		virtual ~PluginInterface(){};
+
+	public:
 		virtual bool initialize( ServiceProviderInterface * _provider ) = 0;
 
     public:

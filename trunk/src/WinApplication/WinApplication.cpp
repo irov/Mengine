@@ -3025,6 +3025,22 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
+	{
+		bool successful = WINDOWSLAYER_SERVICE(m_serviceProvider)
+			->createDirectoryUserPicture(_path, _file, _data, _size);
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
+	{
+		bool successful = WINDOWSLAYER_SERVICE(m_serviceProvider)
+			->createDirectoryUserMusic(_path, _file, _data, _size);
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::getDesktopResolution( Resolution & _resolution ) const
 	{
 		int cxscreen = ::GetSystemMetrics( SM_CXSCREEN );

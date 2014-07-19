@@ -17,6 +17,10 @@ namespace Menge
 {
     class TimerInterface
     {
+	public:
+		TimerInterface(){};
+		virtual ~TimerInterface(){};
+
     public:
         virtual void initialize() = 0;
         virtual void reset() = 0;
@@ -36,9 +40,7 @@ namespace Menge
         virtual void proccessInput( unsigned int _key, unsigned int _char, bool _isDown ) = 0;
     };
 
-    class DynamicLibraryInterface;
-
-    
+    class DynamicLibraryInterface;    
 
     class PlatformInterface
         : public ServiceInterface
@@ -92,6 +94,10 @@ namespace Menge
         virtual size_t getMemoryUsage() const = 0;
         virtual void * checkpointMemory() const = 0;
         virtual size_t diffMemory( void * _checkpoint ) const = 0;
+
+	public:
+		virtual bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
+		virtual bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
     };
 
 #   define PLATFORM_SERVICE( serviceProvider )\

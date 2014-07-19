@@ -9,6 +9,10 @@ namespace Menge
 {
     class TimingListener
     {
+	public:
+		TimingListener(){};
+		virtual ~TimingListener(){};
+
     public:
         virtual bool updateTiming( size_t _id, float _timing ) = 0;
         virtual void removeTiming( size_t _id ) = 0;

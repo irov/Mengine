@@ -12,7 +12,7 @@ namespace Menge
 	{
 	public:
 		Factorable();
-		~Factorable();
+		virtual ~Factorable();
 
 	public:
 		void setFactory( Factory * _factory );

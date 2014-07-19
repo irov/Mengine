@@ -24,6 +24,10 @@ namespace Menge
 	class SoundListenerInterface
 	{
 	public:
+		SoundListenerInterface(){};
+		virtual ~SoundListenerInterface(){};
+
+	public:
 		virtual void onSoundPause( size_t _id ) = 0;
 		virtual void onSoundStop( size_t _id ) = 0;
 	};

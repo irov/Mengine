@@ -26,6 +26,10 @@ namespace Menge
 
 	class ServiceInterface
 	{
+	public:
+		ServiceInterface(){};
+		virtual ~ServiceInterface(){};
+
     public:
         virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
         virtual ServiceProviderInterface * getServiceProvider() const = 0;
@@ -40,6 +44,10 @@ namespace Menge
 
 	class ServiceProviderInterface
 	{
+	public:
+		ServiceProviderInterface(){};
+		virtual ~ServiceProviderInterface(){};
+
 	public:
 		virtual ServiceInterface * getService( const char * _name ) const = 0;
 
@@ -117,7 +125,7 @@ namespace Menge
     }\
     void SERVICE_NAME_DESTROY(Name)( Service * _service )\
     {\
-    delete static_cast<Implement *>(_service);\
+    delete _service;\
     }\
 	struct __mengine_dummy_factory##Name{}
 

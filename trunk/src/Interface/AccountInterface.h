@@ -40,6 +40,10 @@ namespace Menge
 
     class AccountServiceListener
     {
+	public:
+		AccountServiceListener(){};
+		virtual ~AccountServiceListener(){};
+
     public:
         virtual void onCreateAccount( const WString & _accountID ) = 0;
         virtual void onDeleteAccount( const WString & _accountID ) = 0;

@@ -152,6 +152,10 @@ namespace Menge
 	protected:
 		bool calcCursorPosition( mt::vec2f & _point ) const;
 
+	protected:
+		bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
+		bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
+
 	private:
 		WinTimer * m_winTimer;
 		FPSMonitor * m_fpsMonitor;

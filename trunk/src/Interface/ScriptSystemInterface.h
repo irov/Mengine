@@ -28,6 +28,10 @@ namespace Menge
 
     class ScriptClassInterface
     {
+	public:
+		ScriptClassInterface(){};
+		virtual ~ScriptClassInterface(){};
+
     public:
         virtual PyObject * wrap( Scriptable * _node ) = 0;
 

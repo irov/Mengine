@@ -42,7 +42,7 @@ namespace Menge
         return static_cast<float>(delta);
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned long MarmaladeTimer::getMilliseconds()
+    uint64_t MarmaladeTimer::getMilliseconds()
     {
         uint64 ms = s3eTimerGetMs();
         unsigned long ul_ms = static_cast<unsigned long>(ms);
@@ -50,7 +50,7 @@ namespace Menge
         return ul_ms;
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned long MarmaladeTimer::getMicroseconds()
+    uint64_t MarmaladeTimer::getMicroseconds()
     {
         if( m_supportNanoseconds == false )
         {
@@ -68,12 +68,12 @@ namespace Menge
         return ul_ms;
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned long MarmaladeTimer::getMillisecondsCPU()
+    uint64_t MarmaladeTimer::getMillisecondsCPU()
     {
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned long MarmaladeTimer::getMicrosecondsCPU()
+    uint64_t MarmaladeTimer::getMicrosecondsCPU()
     {
         return 0;
     }

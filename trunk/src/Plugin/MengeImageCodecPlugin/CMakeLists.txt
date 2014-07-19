@@ -60,6 +60,8 @@ src
     Model3DPack.cpp
 )
 
+add_definitions(-DMENGINE_SUPPORT_DECODER_WEBP)
+
 INCLUDE_DIRECTORIES( 
         ${Mengine_SOURCE_DIR}/Utils 
         ${THIRDPARTY_DIR}

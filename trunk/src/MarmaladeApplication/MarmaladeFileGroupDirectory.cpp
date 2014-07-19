@@ -123,7 +123,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileGroupDirectory::existFile( const FilePath & _fileName ) const
 	{
-        char filePath[MAX_PATH];
+        Char filePath[MAX_PATH];
         if( MARMALADELAYER_SERVICE(m_serviceProvider)
             ->concatenateFilePath( m_path, _fileName, filePath, MAX_PATH ) == false )
         {

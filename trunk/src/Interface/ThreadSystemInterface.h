@@ -74,10 +74,10 @@ namespace Menge
 		virtual void sleep( unsigned int _ms ) = 0;
 
 	public:
-		virtual uint32_t getCurrentThreadId() = 0;
+		virtual ThreadMutexInterfacePtr createMutex() = 0;
 
 	public:
-        virtual ThreadMutexInterfacePtr createMutex() = 0;
+		virtual uint32_t getCurrentThreadId() = 0;
 	};
 
 #   define THREAD_SYSTEM( serviceProvider )\

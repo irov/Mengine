@@ -1,5 +1,7 @@
 #	include "ImageDecoderCRN.h"
 
+#	ifdef MENGINE_SUPPORT_DECODER_CRN
+
 #	include "Core/CacheMemoryBuffer.h"
 
 #	include "Logger/Logger.h"
@@ -83,3 +85,5 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge
+
+#	endif

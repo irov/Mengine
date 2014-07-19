@@ -1,5 +1,7 @@
 #	pragma once
 
+#	ifdef MENGINE_SUPPORT_DECODER_CRN
+
 #	include "Codec/ImageDecoder.h"
 
 namespace Menge
@@ -21,3 +23,5 @@ namespace Menge
 		uint32_t m_data_size;
 	};
 }	// namespace Menge
+
+#	endif

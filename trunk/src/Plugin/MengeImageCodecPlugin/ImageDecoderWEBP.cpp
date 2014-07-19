@@ -1,5 +1,7 @@
 #	include "ImageDecoderWEBP.h"
 
+#	ifdef MENGINE_SUPPORT_DECODER_WEBP
+
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/CacheInterface.h"
 
@@ -153,3 +155,4 @@ namespace Menge
 
 }	// namespace Menge
 
+#	endif

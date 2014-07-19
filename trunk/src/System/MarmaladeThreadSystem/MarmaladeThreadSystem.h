@@ -37,10 +37,15 @@ namespace Menge
 	public:
 		ThreadIdentityPtr createThread( const ThreadTaskInterfacePtr & _listener, int _priority ) override;
 		bool joinThread( const ThreadIdentityPtr & _thread ) override;
+
+	public:
 		void sleep( unsigned int _ms ) override;
 
     public:
         ThreadMutexInterfacePtr createMutex() override;
+
+	public:
+		uint32_t getCurrentThreadId() override;
 	
 	protected:
         typedef FactoryPoolStore<MarmaladeThreadIdentity, 16> TPoolMarmaladeThreadIdentity;

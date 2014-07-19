@@ -313,15 +313,6 @@ namespace Menge
             return false;
         }
 
-        if( this->setupApplicationSetting_() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to setup application %ls"
-                , m_currentPath.c_str()
-                );
-
-            return false;
-        }
-
         //m_tempPath.clear();
         m_userPath.clear();
 
@@ -1408,11 +1399,6 @@ namespace Menge
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::cmd( const WString & _command )
-    {
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::finalize()
     {
 		if( m_timer != nullptr )
@@ -1512,6 +1498,15 @@ namespace Menge
     {
 
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeApplication::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
+	{
+		return false;
+	}
+	bool MarmaladeApplication::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
+	{
+		return false;
+	}
     //////////////////////////////////////////////////////////////////////////
     size_t MarmaladeApplication::getMemoryUsage() const
     {

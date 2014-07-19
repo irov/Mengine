@@ -1,5 +1,7 @@
 #	pragma once
 
+#	ifdef MENGINE_SUPPORT_DECODER_WEBP
+
 #	include "Codec/ImageDecoder.h"
 
 #	include "webp/decode.h"
@@ -30,4 +32,6 @@ namespace Menge
 		size_t m_memorySize;
 	};
 }
+
+#	endif
 

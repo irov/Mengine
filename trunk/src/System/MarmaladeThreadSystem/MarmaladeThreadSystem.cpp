@@ -118,4 +118,11 @@ namespace Menge
 
         return mutex;
     }
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t MarmaladeThreadSystem::getCurrentThreadId()
+	{
+		s3eThread * threadId = s3eThreadGetCurrent();
+
+		return (uint32_t)threadId;
+	}
 }

@@ -1323,7 +1323,9 @@ namespace Menge
 #   ifdef MENGE_PARTICLES
 		PARTICLE_SERVICE(m_serviceProvider)
 			->update();
+#	endif
 
+#   ifdef MENGE_PARTICLES2
 		PARTICLE_SERVICE2(m_serviceProvider)
 			->update();
 #   endif

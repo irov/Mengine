@@ -94,7 +94,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::loadImageFrame_( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec )
+	bool ResourceImage::loadImageFrame_( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codecType )
 	{
         LOGGER_INFO(m_serviceProvider)("ResourceImage::loadImageFrame_ %s load texture %s"
             , this->getName().c_str()
@@ -102,7 +102,7 @@ namespace Menge
             );
 
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-            ->loadTexture( _pakName, _fileName, _codec );
+            ->loadTexture( _pakName, _fileName, _codecType );
 
 		if( texture == nullptr )
 		{

@@ -22,6 +22,7 @@
 #	include "Interface/DataInterface.h"
 #	include "Interface/CacheInterface.h"
 #	include "Interface/ConfigInterface.h"
+#	include "Interface/PrefetcherInterface.h"
 
 #	include "MarmaladeLogger.h"
 #   include "MarmaladeTimer.h"
@@ -126,6 +127,7 @@ namespace Menge
 		bool initializeModuleEngine_();		
 		bool initializeDataManager_();
 		bool initializeCacheManager_();
+		bool initializePrefetcherService_();
 				
     private:
         MarmaladeLogger * m_loggerConsole;
@@ -163,6 +165,7 @@ namespace Menge
 		DataServiceInterface * m_dataService;
 		CacheServiceInterface * m_cacheService;
 		ConfigServiceInterface * m_configService;
+		PrefetcherServiceInterface * m_prefetcherService;
 
 
         MarmaladeLayerInterface * m_marmaladeLayer; 
@@ -177,5 +180,7 @@ namespace Menge
 		PluginInterface * m_pluginMengeXmlCodec;
         PluginInterface * m_pluginMengeImageCodec;
         PluginInterface * m_pluginMengeSoundCodec;
+		PluginInterface * m_pluginMengeZip;
+		PluginInterface * m_pluginPluginPathFinder;
     };
 }

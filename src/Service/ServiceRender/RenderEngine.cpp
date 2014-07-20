@@ -1778,9 +1778,9 @@ namespace Menge
 		double p = (a + b + c) * 0.5;
 
 		double sq_p = sqrt(p);
-		double sq_pa = sqrt(abs(p - a));
-		double sq_pb = sqrt(abs(p - b));
-		double sq_pc = sqrt(abs(p - c));
+		double sq_pa = sqrt(fabs(p - a));
+		double sq_pb = sqrt(fabs(p - b));
+		double sq_pc = sqrt(fabs(p - c));
 
 		double S = sq_p * sq_pa * sq_pb * sq_pc;
 

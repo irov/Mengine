@@ -54,8 +54,8 @@ namespace Menge
     {
         if( m_supportNanoseconds == false )
         {
-            unsigned long ms = this->getMilliseconds();
-            unsigned long mcs = ms * 1000;
+            uint64_t ms = this->getMilliseconds();
+            uint64_t mcs = ms * 1000;
 
             return mcs;
         }
@@ -63,7 +63,7 @@ namespace Menge
         int64 ns = s3eTimerGetUSTNanoseconds();
         uint64 ms = ns / 1000;
 
-        unsigned long ul_ms = static_cast<unsigned long>(ms);
+        uint64_t ul_ms = static_cast<uint64_t>(ms);
         
         return ul_ms;
     }

@@ -37,7 +37,7 @@ namespace Menge
         inline const RenderTextureInterfacePtr & getTextureAlpha() const;
         
 	protected:
-		bool loadImageFrame_( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec );
+		bool loadImageFrame_( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codecType );
 		
 		//bool createImageFrame_( ImageFrame & _frame, const ConstString& _name, const mt::vec2f& _size ) const;
 		bool prepareImageFrame_( const RenderTextureInterfacePtr & _texture );

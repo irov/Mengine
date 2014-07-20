@@ -72,11 +72,13 @@ namespace Menge
             Py_ErrFormatFlag = 0;
         }
 
-#	ifndef _DEBUG
-		pybind::initialize(false, false);
-#	else
-		pybind::initialize(false, false);
-#	endif     
+		if( pybind::initialize(false, false) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initialize invalid initialize pybind"
+				);
+
+			return false;
+		}
 
 #   if defined(WIN32) && defined(_DEBUG)
 		_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_WNDW );

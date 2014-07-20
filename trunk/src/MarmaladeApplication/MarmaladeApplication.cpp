@@ -83,6 +83,7 @@ SERVICE_EXTERN(ModuleService, Menge::ModuleServiceInterface);
 SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
 SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
 SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
+SERVICE_EXTERN(PrefetcherService, Menge::PrefetcherServiceInterface);
 
 
 extern "C" // only required if using g++
@@ -91,6 +92,9 @@ extern "C" // only required if using g++
     extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
     extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeXmlCodec( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
+
+	extern bool initPluginPathFinder( Menge::PluginInterface ** _plugin );
 }
 
 namespace Menge
@@ -564,6 +568,12 @@ namespace Menge
 
         m_archiveService = archiveService;
 
+		{
+			LOGGER_INFO(m_serviceProvider)( "initialize Zip..." );
+			initPluginMengeZip( &m_pluginMengeZip );
+			m_pluginMengeZip->initialize( m_serviceProvider );
+		}
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -972,6 +982,29 @@ namespace Menge
 
 		return true;
 	}	
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeApplication::initializePrefetcherService_()
+	{
+		LOGGER_INFO(m_serviceProvider)( "Inititalizing Prefetcher Service..." );
+
+		PrefetcherServiceInterface * prefetcherService;
+
+		if( SERVICE_CREATE( PrefetcherService, &prefetcherService ) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY( m_serviceProvider, prefetcherService );
+
+		if( prefetcherService->initialize() == false )
+		{
+			return false;
+		}
+
+		m_prefetcherService = prefetcherService;
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeCodecEngine_()
     {
@@ -1156,11 +1189,6 @@ namespace Menge
             return false;
         }
 
-        if( this->initializeArchiveService_() == false )
-        {
-            return false;
-        }
-
         if( this->initializeNotificationService_() == false )
         {
             return false;
@@ -1177,6 +1205,11 @@ namespace Menge
         }
 
 		if( this->initializeConfigEngine_() == false )
+		{
+			return false;
+		}
+
+		if( this->initializeArchiveService_() == false )
 		{
 			return false;
 		}
@@ -1254,6 +1287,11 @@ namespace Menge
             return false;
         }
 
+		if( this->initializePrefetcherService_() == false )
+		{
+			return false;
+		}
+
         if( this->initializePluginService_() == false )
         {
             return false;
@@ -1287,6 +1325,35 @@ namespace Menge
             initPluginMengeSoundCodec( &m_pluginMengeSoundCodec );
             m_pluginMengeSoundCodec->initialize( m_serviceProvider );
         }
+
+		{
+			LOGGER_INFO(m_serviceProvider)( "initialize Path Finder..." );
+
+			initPluginPathFinder( &m_pluginPluginPathFinder );
+			m_pluginPluginPathFinder->initialize( m_serviceProvider );
+		}
+
+		TVectorString modules;
+		CONFIG_VALUES(m_serviceProvider, "Modules", "Name", modules);
+
+		for( TVectorString::const_iterator
+			it = modules.begin(),
+			it_end = modules.end();
+		it != it_end;
+		++it )
+		{
+			const String & moduleName = *it;
+
+			if( MODULE_SERVICE(m_serviceProvider)
+				->runModule( Helper::stringizeString(m_serviceProvider, moduleName) ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Application Failed to run module %s"
+					, moduleName.c_str()
+					);
+
+				return false;
+			}
+		}
 
 		String languagePack;
 		Helper::s_getOption( " -lang:", m_commandLine, &languagePack );

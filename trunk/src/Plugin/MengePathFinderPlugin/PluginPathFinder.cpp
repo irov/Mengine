@@ -19,7 +19,7 @@ extern "C" // only required if using g++
 		return true;
 	}
 
-#   ifdef MENGINE_PLUGIN_DLL_PATH_FINDER
+#   ifdef MENGE_PLUGIN_DLL
 	////////////////////////////////////////////////////////////////////////////
 	__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
 	{

@@ -970,7 +970,16 @@ namespace Menge
 
 		HRESULT hr = m_pD3DDevice->TestCooperativeLevel();
 
-        if( hr == D3DERR_DEVICENOTRESET )
+		if( hr == D3DERR_DEVICELOST )
+		{
+			LOGGER_WARNING(m_serviceProvider)( "DX9RenderSystem::beginScene: D3DERR_DEVICELOST"
+				);
+
+			::Sleep( 100 );
+
+			return false;
+		}
+		else if( hr == D3DERR_DEVICENOTRESET )
         {
             LOGGER_WARNING(m_serviceProvider)( "DX9RenderSystem::beginScene: D3DERR_DEVICENOTRESET"
                 );
@@ -1153,7 +1162,7 @@ namespace Menge
 		if( this->restore_() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::changeWindowMode: Graphics change mode failed" 
-                );
+				);
 		}        
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1502,6 +1511,8 @@ namespace Menge
 
         if (hr == D3DERR_DEVICELOST)
         {
+			::Sleep(100);
+
             return false;
         }
         else if( FAILED( hr ) == true )
@@ -1609,6 +1620,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::releaseVertexBuffer( VBHandle _vbHandle )
 	{
+		if( _vbHandle == 0 )
+		{
+			return;
+		}
+
 		VBInfo * vb;
 		if( m_vertexBuffers.has( _vbHandle, &vb ) == false )
 		{
@@ -1669,6 +1685,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::releaseIndexBuffer( IBHandle _ibHandle )
 	{
+		if( _ibHandle == 0 )
+		{
+			return;
+		}
+
 		IBInfo * info = nullptr;
 		if( m_indexBuffers.has( _ibHandle, &info ) == false )
 		{
@@ -2477,10 +2498,10 @@ namespace Menge
         this->updateVSyncDPP_();
 
 		if( this->restore_() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setVSync: Graphics change mode failed" 
-                );
-        }
+		{
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setVSync: Graphics change mode failed" 
+				);
+		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::updateVSyncDPP_()

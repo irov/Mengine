@@ -259,7 +259,6 @@ namespace Menge
         encode_dataInfo.channels = 4;
         encode_dataInfo.depth = 1;
         encode_dataInfo.mipmaps = 0;
-        encode_dataInfo.flags = 0;
         encode_dataInfo.size = 0;	// we don't need this
 
         unsigned int bytesWritten = imageEncoder->encode( textureBuffer, &encode_dataInfo );

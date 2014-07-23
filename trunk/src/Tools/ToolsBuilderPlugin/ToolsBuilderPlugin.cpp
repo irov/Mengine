@@ -5,6 +5,7 @@
 #	include "AlphaSpreadingPlugin.h"
 #	include "XmlToAekConverter.h"
 #	include "FFMPEGToGVFConverter.h"
+#	include "PVRToHTFConverter.h"
 
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/ArchiveInterface.h"
@@ -361,6 +362,7 @@ static PyMethodDef ModuleMethods[] =
 	{"writeAek", Menge::writeAek, METH_VARARGS, "write aek"},	
 	{"convertPngToHit", Menge::convertPngToHit, METH_VARARGS, "convert png to hit"},
 	{"convertFFMPEGToGVF", Menge::convertFFMPEGToGVF, METH_VARARGS, "convert ffmpeg to gvf"},
+	{"convertPVRToHTF", Menge::convertPVRToHTF, METH_VARARGS, "convert pvr to htf"},	
 	{NULL, NULL, 0, NULL}
 };
 /////////////////////////////////////////////////////////////////////////////////////

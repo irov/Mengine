@@ -306,20 +306,31 @@ namespace Menge
 			}
 		}
 
-		bool NoCheckVideoKeyFrame = CONFIG_VALUE(m_serviceProvider, "Validation", "NoCheckVideoKeyFrame", false);
-
-		if( NoCheckVideoKeyFrame == false && m_options.noSeek == false )
+		if( m_options.noSeek == false )
 		{
 			if(	m_formatContext->streams[m_videoStreamId]->index_entries->min_distance != 0 ||
 				m_formatContext->streams[m_videoStreamId]->index_entries->timestamp != 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)("=============================================================");
-				LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode invalid min distance %d or timestamp %d"
-					, m_formatContext->streams[m_videoStreamId]->index_entries->min_distance
-					, m_formatContext->streams[m_videoStreamId]->index_entries->timestamp
-					);
+				bool NoCheckVideoKeyFrame = CONFIG_VALUE(m_serviceProvider, "Validation", "NoCheckVideoKeyFrame", false);
 
-				video_error = true;
+				if( NoCheckVideoKeyFrame == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("=============================================================");
+					LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode invalid min distance %d or timestamp %d"
+						, m_formatContext->streams[m_videoStreamId]->index_entries->min_distance
+						, m_formatContext->streams[m_videoStreamId]->index_entries->timestamp
+						);
+
+					video_error = true;
+				}
+				else
+				{
+					LOGGER_WARNING(m_serviceProvider)("=============================================================");
+					LOGGER_WARNING(m_serviceProvider)("VideoDecoderFFMPEG::decode invalid min distance %d or timestamp %d"
+						, m_formatContext->streams[m_videoStreamId]->index_entries->min_distance
+						, m_formatContext->streams[m_videoStreamId]->index_entries->timestamp
+						);
+				}
 			}
 		}
 

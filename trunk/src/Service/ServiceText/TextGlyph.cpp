@@ -77,10 +77,11 @@ namespace Menge
 		{
 		public:
 			TextGlyphSaxCallback( ServiceProviderInterface * _serviceProvider, TextGlyph * _textGlyph, const ConstString & _pakName, const FilePath & _path )
-				: m_serviceProvider(_serviceProvider)
+				: m_serviceProvider(_serviceProvider)				
 				, m_textGlyph(_textGlyph)
 				, m_pakName(_pakName)
 				, m_path(_path)
+				, m_glyphChar(nullptr)
 				, m_valid(false)
 			{
 			}
@@ -305,6 +306,16 @@ namespace Menge
 						}
 					}
 
+					if( m_glyphChar == nullptr )
+					{
+						LOGGER_ERROR(m_serviceProvider)("TextGlyph::initialize %s:%s invalid kerning m_glyphChar is nullptr"
+							, m_pakName.c_str()
+							, m_path.c_str()
+							);
+
+						return;
+					}
+
 					m_glyphChar->addKerning( glyphCode, advance );
 				}
 			}
@@ -324,11 +335,10 @@ namespace Menge
 			ServiceProviderInterface * m_serviceProvider;
 			TextGlyph * m_textGlyph;
 
-			TextGlyphChar * m_glyphChar;
-
 			const ConstString & m_pakName;
 			const FilePath & m_path;
 
+			TextGlyphChar * m_glyphChar;
 			bool m_valid;
 		};
 	}

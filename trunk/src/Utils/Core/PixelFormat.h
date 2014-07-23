@@ -111,6 +111,11 @@ namespace Menge
 			case PF_X8R8G8B8:
 			case PF_X8B8G8R8:
 				return HWWidth * HWHeight * _depth * 4;
+
+			case PF_ETC1:
+			case PF_PVRTC4_RGB:
+			case PF_PVRTC4_RGBA:
+				return ((HWWidth + 3) >> 2) * ((HWHeight + 3) >> 2) * _depth * 8;
 			}                
 
 			return 0;

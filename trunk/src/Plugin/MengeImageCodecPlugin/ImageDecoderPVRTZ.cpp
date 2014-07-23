@@ -144,11 +144,10 @@ namespace Menge
 				return false;
 			}
 		}
-
+		
 		m_dataInfo.width = header.width;
 		m_dataInfo.height = header.height;
 		m_dataInfo.mipmaps = header.numMipmaps;
-		m_dataInfo.flags = 0;
 
 		m_stream->seek( header.metaDataSize );
 
@@ -161,7 +160,7 @@ namespace Menge
 		if( ARCHIVE_SERVICE(m_serviceProvider)
 			->decompressStream( m_archivator, m_stream, m_compress_size, _buffer, _bufferSize, uncompress_size ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDZ::decode uncompress failed"
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPVRTZ::decode uncompress failed"
 				);
 
 			return 0;

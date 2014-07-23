@@ -1714,21 +1714,6 @@ namespace Menge
 				);
 		}
 
-		bool alreadyRunning = CONFIG_VALUE(m_serviceProvider, "Game", "AlreadyRunning", true);
-
-		if( alreadyRunning == true )
-		{	
-			m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_serviceProvider);
-
-			if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, wprojectTitle ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("Application invalid running monitor"
-					);
-
-				return false;
-			}
-		}
-
 		bool screenSaverMode = this->isSaverRunning();
 
 		if( screenSaverMode == true )
@@ -1801,6 +1786,21 @@ namespace Menge
 				);
 
 			return false;
+		}
+
+		bool alreadyRunning = CONFIG_VALUE(m_serviceProvider, "Game", "AlreadyRunning", true);
+
+		if( alreadyRunning == true )
+		{	
+			m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_serviceProvider);
+
+			if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, wprojectTitle ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Application invalid running monitor"
+					);
+
+				return false;
+			}
 		}
 
 		LOGGER_INFO(m_serviceProvider)( "Creating Render Window..." );

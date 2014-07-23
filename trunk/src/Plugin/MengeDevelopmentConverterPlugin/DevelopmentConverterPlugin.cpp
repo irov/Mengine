@@ -5,6 +5,7 @@
 
 #	include "HotspotImageConverterPNGToHIT.h"
 #	include "ParticleConverterPTCToPTZ.h"
+#	include "ImageConverterPVRToHTF.h"
 #	include "SoundConverterFFMPEGToOGG.h"
 #	include "VideoConverterFFMPEGToWEBM.h"
 #	include "VideoConverterFFMPEGToGVF.h"
@@ -53,6 +54,8 @@ namespace Menge
 		m_converters.push_back( new ConverterFactory<MovieKeyConverterXMLToAEK>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "xmlToAekMovie")) );
 		m_converters.push_back( new ConverterFactory<ModelConverterMDLToMDZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "mdlToMdzModel")) );
 		m_converters.push_back( new ConverterFactory<ParticleConverterPTCToPTZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ptc2ptz")) );
+		m_converters.push_back( new ConverterFactory<ImageConverterPVRToHTF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pvr2htf")) );
+		
 				
 		
 		for( TVectorHotspotImageConverters::iterator

@@ -14,7 +14,6 @@ namespace Menge
 			, height(0)
 			, depth(1)
 			, mipmaps(0)
-			, flags(0)
 			, quality(100)
 			, channels(0)
             , format(PF_UNKNOWN)
@@ -26,8 +25,6 @@ namespace Menge
 		
 		size_t depth;
 		size_t mipmaps;
-
-		unsigned int flags;
 
 		int quality;
 		size_t channels;

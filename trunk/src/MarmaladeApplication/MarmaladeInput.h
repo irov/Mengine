@@ -47,6 +47,9 @@ namespace Menge
         static void s_pointerTouchMotionEvent( s3ePointerTouchMotionEvent * _event, MarmaladeInput * _input );
         static void s_pointerButtonEvent( s3ePointerEvent * _event, MarmaladeInput * _input );
         static void s_pointerMotionEvent( s3ePointerMotionEvent * _event, MarmaladeInput * _input );
+		
+	protected:
+		void correctPoint_( int32 _x, int32 _y, mt::vec2f & _point ) const;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -63,6 +66,9 @@ namespace Menge
         s3eKey m_codes[255];
 
         bool m_showKeyboard;
+
+		float m_width;
+		float m_height;
 
     protected:
         bool setTouch_( uint32 _touchId, const mt::vec2f & _point, bool _active );

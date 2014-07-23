@@ -12,8 +12,10 @@ src
     XmlToBinDecoder.h
     XmlToAekConverter.cpp
     XmlToAekConverter.h
-    FFMPEGToGVFConverter.h
     FFMPEGToGVFConverter.cpp
+    FFMPEGToGVFConverter.h    
+    PVRToHTFConverter.cpp
+    PVRToHTFConverter.h    
     
     ToolsBuilderPlugin.def
 )

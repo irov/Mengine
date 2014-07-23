@@ -707,7 +707,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool destroyScheduler( ScheduleManagerInterface * _sm )
 		{
-			if( _sm != nullptr )
+			if( _sm == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Menge.destroyScheduler destroy scheduler is NULL"
 					);

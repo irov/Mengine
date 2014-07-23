@@ -71,7 +71,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const
     {
-		RenderTextureInterface * texture;
+		RenderTextureInterface * texture = nullptr;
 		bool result = m_textures.has( _fileName, &texture );
 
 		if( _texture != nullptr )
@@ -275,7 +275,6 @@ namespace Menge
         dataInfo.height = _texture->getHeight();		
         dataInfo.depth = 1;
         dataInfo.mipmaps = 0;
-        dataInfo.flags = 0;
         dataInfo.size = 0;	// we don't need this
         int pitch = 0;
 

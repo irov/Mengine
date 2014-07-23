@@ -1,5 +1,5 @@
-#	include "PickEncoderHIT.h"
-#   include "PickVerifyHIT.h"
+#	include "ImageEncoderHTF.h"
+#   include "ImageVerifyHTF.h"
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/ArchiveInterface.h"
@@ -12,15 +12,30 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	PickEncoderHIT::PickEncoderHIT()
+	static uint32_t s_convertFormat( PixelFormat _format )
+	{
+		switch(_format)
+		{
+		case PF_DXT1:
+			return 1;
+		case PF_ETC1:
+			return 2;
+		case PF_PVRTC4_RGB:
+			return 3;
+		}
+
+		return 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	ImageEncoderHTF::ImageEncoderHTF()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PickEncoderHIT::~PickEncoderHIT()
+	ImageEncoderHTF::~ImageEncoderHTF()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PickEncoderHIT::_initialize()
+	bool ImageEncoderHTF::_initialize()
 	{
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
 			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
@@ -33,23 +48,24 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t PickEncoderHIT::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
+	size_t ImageEncoderHTF::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
 	{
-		const PickCodecDataInfo * dataInfo = static_cast<const PickCodecDataInfo*>( _bufferDataInfo );
+		const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>( _bufferDataInfo );
 				
-		magic_number_type magic_number = GET_MAGIC_NUMBER(MAGIC_HIT);
+		magic_number_type magic_number = GET_MAGIC_NUMBER(MAGIC_HTF);
         m_stream->write( &magic_number, sizeof(magic_number) );
 			
-		magic_version_type magic_version = GET_MAGIC_VERSION(MAGIC_HIT);
+		magic_version_type magic_version = GET_MAGIC_VERSION(MAGIC_HTF);
         m_stream->write( &magic_version, sizeof(magic_version) );
 
         m_stream->write( &dataInfo->width, sizeof(dataInfo->width) );
         m_stream->write( &dataInfo->height, sizeof(dataInfo->height) );
-        m_stream->write( &dataInfo->mipmaplevel, sizeof(dataInfo->mipmaplevel) );
-		m_stream->write( &dataInfo->mipmapsize, sizeof(dataInfo->mipmapsize) );
-                
+
+		uint32_t format = s_convertFormat( dataInfo->format );
+        m_stream->write( &format, sizeof(format) );
+		                
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-            ->compressBuffer( m_archivator, _buffer, dataInfo->mipmapsize );
+            ->compressBuffer( m_archivator, _buffer, dataInfo->size );
 
 		if( compress_memory == nullptr )
         {

@@ -164,9 +164,9 @@ namespace Menge
 				{
 					const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it;
 
-					mt::vec2f anchorPoint2d;
-					mt::vec2f position2d;
-					mt::vec2f scale2d;
+					mt::vec2f anchorPoint2d(0.f, 0.f);
+					mt::vec2f position2d(0.f, 0.f);
+					mt::vec2f scale2d(0.f, 0.f);
 					float angle = 0.f;
 					float opacity = 1.f;
 
@@ -183,7 +183,6 @@ namespace Menge
 					meta_frame2d.get_Volume( volume );
 
 					MovieFrameSource frame;
-
 					frame.anchorPoint = mt::vec3f(anchorPoint2d, 0.f);
 					frame.position = mt::vec3f(position2d, 0.f);
 					frame.scale = mt::vec3f(scale2d, 1.f);
@@ -206,6 +205,13 @@ namespace Menge
 				frameLayer.count = count;
 
 				MovieFrameSource frame;
+				frame.anchorPoint = mt::vec3f(0.f, 0.f, 0.f);
+				frame.position = mt::vec3f(0.f, 0.f, 0.f);
+				frame.rotation = mt::vec3f(0.f, 0.f, 0.f);
+				frame.scale = mt::vec3f(0.f, 0.f, 0.f);
+				frame.opacity = 0.f;
+				frame.volume = 0.f;
+
 				bool frameLast = false;
 
 				const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::TVectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_IncludesKeyFrame2D();
@@ -292,8 +298,14 @@ namespace Menge
 
 			frameLayer.immutable = immutable ? 1 : 0;
 
-			MovieFrameSource frame;			
-
+			MovieFrameSource frame;
+			frame.anchorPoint = mt::vec3f(0.f, 0.f, 0.f);
+			frame.position = mt::vec3f(0.f, 0.f, 0.f);
+			frame.rotation = mt::vec3f(0.f, 0.f, 0.f);
+			frame.scale = mt::vec3f(0.f, 0.f, 0.f);
+			frame.opacity = 0.f;
+			frame.volume = 0.f;	
+			
 			const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D & includes_frame3d = meta_frames3d.get_IncludesKeyFrame3D();
 
 			for( Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D::const_iterator

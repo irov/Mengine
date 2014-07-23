@@ -188,7 +188,6 @@ namespace Menge
         m_dataInfo.depth = 1;
         m_dataInfo.size = decodedDataSize;
         m_dataInfo.mipmaps = 0;
-        m_dataInfo.flags = 0;
 
 		switch( color_type )
 		{

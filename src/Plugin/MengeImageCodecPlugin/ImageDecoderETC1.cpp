@@ -74,7 +74,6 @@ bool ImageDecoderETC1::_prepareData()
 	m_dataInfo.width = m_etc1_ptr.texWidth;
 	m_dataInfo.height = m_etc1_ptr.texHeight;
 	m_dataInfo.mipmaps = 0;
-	m_dataInfo.flags = 0;
 
 	return isValid;
 }

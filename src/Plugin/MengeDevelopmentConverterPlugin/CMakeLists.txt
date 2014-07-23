@@ -22,6 +22,8 @@ src
     MovieKeyConverterXMLToAEK.h
     ModelConverterMDLToMDZ.cpp
     ModelConverterMDLToMDZ.h
+    ImageConverterPVRToHTF.cpp
+    ImageConverterPVRToHTF.h
 )
 
 add_definitions(-DMENGE_PLUGIN_DLL)

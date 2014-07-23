@@ -1,5 +1,7 @@
 #   include "MarmaladeInput.h"
 
+#	include <s3eSurface.h>
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -59,6 +61,9 @@ namespace Menge
             touch.active = false;
         }
 
+		m_width = (float)s3eSurfaceGetInt(S3E_SURFACE_WIDTH);
+		m_height = (float)s3eSurfaceGetInt(S3E_SURFACE_HEIGHT);
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -117,12 +122,23 @@ namespace Menge
 
         return isDown;
     }
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeInput::correctPoint_( int32 _x, int32 _y, mt::vec2f & _point ) const
+	{
+		float x = (float)_x / m_width;
+		float y = (float)_y / m_height;
+
+		_point.x = x;
+		_point.y = y;
+	}
+	//////////////////////////////////////////////////////////////////////////
     void MarmaladeInput::s_keyboardKeyEvent( s3eKeyboardEvent * _event, MarmaladeInput * _input )
     {
         int32 cursorX = s3ePointerGetTouchX( 0 );
         int32 cursorY = s3ePointerGetTouchY( 0 );
-        mt::vec2f point((float)cursorX, (float)cursorY);
+        
+		mt::vec2f point;
+		_input->correctPoint_( cursorX, cursorY, point );
 
         s3eWChar ch = 0;
 
@@ -139,7 +155,9 @@ namespace Menge
     {
         int32 cursorX = s3ePointerGetTouchX( 0 );
         int32 cursorY = s3ePointerGetTouchY( 0 );
-        mt::vec2f point((float)cursorX, (float)cursorY);
+
+		mt::vec2f point;
+		_input->correctPoint_( cursorX, cursorY, point );
 
         s3eWChar ch = _event->m_Char;
         s3eKey code = s3eKeyFirst;
@@ -159,7 +177,9 @@ namespace Menge
 
         bool isDown = _event->m_Pressed != 0;
 
-        mt::vec2f point((float)_event->m_x, (float)_event->m_y);
+        mt::vec2f point;
+		_input->correctPoint_( _event->m_x, _event->m_y, point );
+
         if( _input->setTouch_( touchId, point, isDown ) == false )
         {
             return;
@@ -181,7 +201,8 @@ namespace Menge
             return;
         }
 
-        mt::vec2f point((float)_event->m_x, (float)_event->m_y);
+        mt::vec2f point;
+		_input->correctPoint_( _event->m_x, _event->m_y, point );
 
         mt::vec2f diff = point - desc.point;
 
@@ -196,7 +217,9 @@ namespace Menge
     void MarmaladeInput::s_pointerButtonEvent( s3ePointerEvent * _event, MarmaladeInput * _input )
     {
         bool isDown = _event->m_Pressed != 0;
-        mt::vec2f point((float)_event->m_x, (float)_event->m_y);
+
+		mt::vec2f point;
+		_input->correctPoint_( _event->m_x, _event->m_y, point );
 
         _input->setTouch_( 0, point, isDown );
 
@@ -214,7 +237,8 @@ namespace Menge
             return;
         }
 
-        mt::vec2f point((float)_event->m_x, (float)_event->m_y);
+		mt::vec2f point;
+		_input->correctPoint_( _event->m_x, _event->m_y, point );
 
         mt::vec2f diff = point - desc.point;
 

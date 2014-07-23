@@ -15,6 +15,9 @@
 //#	include "ImageDecoderETZ1.h"
 #	include "ImageDecoderCRN.h"
 
+#	include "ImageDecoderHTF.h"
+#	include "ImageEncoderHTF.h"
+
 #	include "ImageEncoderPNG.h"
 
 //#   include "ImageDecoderCombinerRGBAndAlpha.h"
@@ -87,6 +90,8 @@ namespace Menge
 		m_decoders.push_back( new DecoderFactory<ImageDecoderCRN>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "crnImage")) );
 #	endif
 
+		m_decoders.push_back( new DecoderFactory<ImageDecoderHTF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "htfImage")) );
+
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "png", CONST_STRING_LOCAL(m_serviceProvider, "pngImage") );
 
@@ -114,6 +119,9 @@ namespace Menge
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "crn", CONST_STRING_LOCAL(m_serviceProvider, "crnImage") );
 
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "htf", CONST_STRING_LOCAL(m_serviceProvider, "htfImage") );
+
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>(ConstString("jpgImage"), logService) );
 		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderMNE>("mneImage", logService) );
 		//m_decoders.push_back( new DecoderFactory<ImageDecoderDDS>(m_serviceProvider, Helper::StringizeString(m_serviceProvider, "ddsImage")) );
@@ -130,6 +138,7 @@ namespace Menge
 
         m_encoders.push_back( new EncoderFactory<PickEncoderHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "hitPick")) );     
 		m_encoders.push_back( new EncoderFactory<ImageEncoderPNG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pngImage")) );
+		m_encoders.push_back( new EncoderFactory<ImageEncoderHTF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "htfImage")) );
 
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "hit", CONST_STRING_LOCAL(m_serviceProvider, "hitPick") );

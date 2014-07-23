@@ -505,7 +505,6 @@ namespace Menge
 		encode_dataInfo.channels = decode_dataInfo->channels;
 		encode_dataInfo.depth = 1;
 		encode_dataInfo.mipmaps = 0;
-		encode_dataInfo.flags = 0;
 		encode_dataInfo.size = 0;
 
 		if( imageEncoder->encode( &new_textureBuffer[0], &encode_dataInfo ) == 0 )

@@ -1,8 +1,8 @@
 options
 {
 	lib
-	arm-cpu=6
-	arm-fpu=vfpv3
+	arm-arch=armv6
+	arm-fpu=vfp
 	strict-mkb
 	enable-exceptions
 	preinclude=preinclude_python.h

@@ -197,7 +197,7 @@ namespace Menge
 			Helper::unicodeToUtf8( m_serviceProvider, INI_Path, utf8_INI_Path );
 
 			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-				->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_INI_Path) );
+				->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_INI_Path), false );
 			
 			size_t size = stream->size();
 
@@ -303,7 +303,7 @@ namespace Menge
 			Helper::unicodeToUtf8( m_serviceProvider, PNG_Path, utf8_PNG_Path );
 
 			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-				->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_Path) );
+				->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_Path), false );
 
 			ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
 				->createDecoderT<ImageDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "pngImage") );
@@ -483,7 +483,7 @@ namespace Menge
 			Helper::unicodeToUtf8( m_serviceProvider, PNG_Path, utf8_PNG_Path );
 
 			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-				->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_Path) );
+				->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_Path), false );
 
 			ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
 				->createDecoderT<ImageDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "crnImage") );
@@ -561,7 +561,7 @@ namespace Menge
 				Helper::unicodeToUtf8( m_serviceProvider, DDS_Path, utf8_DDS_Path );
 
 				InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-					->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_DDS_Path) );
+					->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_DDS_Path), false );
 
 				size_t size = stream->size();
 

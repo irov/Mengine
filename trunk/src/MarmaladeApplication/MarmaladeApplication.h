@@ -181,6 +181,7 @@ namespace Menge
         PluginInterface * m_pluginMengeImageCodec;
         PluginInterface * m_pluginMengeSoundCodec;
 		PluginInterface * m_pluginMengeZip;
+		PluginInterface * m_pluginMengeLZ4;
 		PluginInterface * m_pluginPluginPathFinder;
     };
 }

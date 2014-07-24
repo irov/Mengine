@@ -107,7 +107,7 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned char * RenderSubTexture::lock( int* _pitch, const Rect& _rect, bool _readOnly ) const
+	void * RenderSubTexture::lock( int * _pitch, const Rect& _rect, bool _readOnly ) const
 	{
 		Rect rect;
 
@@ -116,7 +116,7 @@ namespace Menge
 		rect.right = m_hwRect.left + _rect.right;
 		rect.bottom = m_hwRect.top + _rect.bottom;
 
-        unsigned char * buffer = m_texture->lock( _pitch, rect, _readOnly );
+        void * buffer = m_texture->lock( _pitch, rect, _readOnly );
 
 		return buffer;
 	}

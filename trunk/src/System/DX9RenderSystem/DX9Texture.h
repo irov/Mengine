@@ -30,7 +30,7 @@ namespace Menge
         PixelFormat getHWPixelFormat() const override;
         
 	public:
-        unsigned char * lock( int* _pitch, const Rect& _rect, bool _readOnly ) override;
+        void * lock( int* _pitch, const Rect& _rect, bool _readOnly ) override;
 		void unlock() override;
 		               		
 	protected:

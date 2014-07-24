@@ -148,7 +148,6 @@ namespace Menge
 		m_dataInfo.width = header.dwWidth;
 		m_dataInfo.height = header.dwHeight;
         m_dataInfo.channels = 3;
-		m_dataInfo.flags = 0;
 		
         //bool decompressDXT = false;
         

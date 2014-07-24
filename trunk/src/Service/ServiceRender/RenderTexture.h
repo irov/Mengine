@@ -44,7 +44,7 @@ namespace Menge
 
 		size_t getChannels() const override;
 		
-		unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) const override;
+		void * lock( int * _pitch, const Rect & _rect, bool _readOnly = true ) const override;
 
 		void unlock() const override;
 

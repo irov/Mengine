@@ -16,8 +16,7 @@ src
 	ImageDecoderPNG.h
     #ImageDecoderDDZ.cpp
     #ImageDecoderDDZ.h
-    ImageDecoderHTF.cpp
-    ImageDecoderHTF.h    
+ 
     ImageDecoderCRN.cpp
     ImageDecoderCRN.h
     
@@ -48,10 +47,17 @@ src
     ImageDecoderPVRTZ.h
     ImageDecoderPVRTZ.cpp
     
-    ImageVerifyHTF.h
-    
+    ImageDecoderHTF.cpp
+    ImageDecoderHTF.h       
     ImageEncoderHTF.cpp
     ImageEncoderHTF.h
+    ImageVerifyHTF.h
+
+    ImageDecoderACF.cpp
+    ImageDecoderACF.h       
+    ImageEncoderACF.cpp
+    ImageEncoderACF.h
+    ImageVerifyACF.h
     
     #ImageDecoderETZ1.h
     #ImageDecoderETZ1.cpp

@@ -55,19 +55,22 @@ namespace Menge
         return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _fileName )
+	InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming )
 	{
 		(void)_fileName;
+		(void)_streaming;
 
-		Win32InputStream * inputStream = m_factoryInputStream.createObjectT();
+		Win32FileInputStream * inputStream = m_factoryInputStream.createObjectT();
 
 		inputStream->setServiceProvider( m_serviceProvider );
 
 		return inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileGroupDirectory::openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size )
+	bool Win32FileGroupDirectory::openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
 	{
+		(void)_streaming;
+
         if( _stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32FileGroupDirectory::openInputFile failed _stream == NULL"
@@ -93,7 +96,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile()
 	{
-		Win32OutputStream * outputStream = m_factoryOutputStream.createObjectT();
+		Win32FileOutputStream * outputStream = m_factoryOutputStream.createObjectT();
 
 		outputStream->setServiceProvider( m_serviceProvider );
 
@@ -125,16 +128,16 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MappedFileInterfacePtr Win32FileGroupDirectory::createMappedFile()
+	FileMappedInterfacePtr Win32FileGroupDirectory::createMappedFile()
 	{
-		Win32MappedFile * mappedStream = m_factoryWin32MappedFile.createObjectT();
+		Win32FileMapped * mappedStream = m_factoryWin32MappedFile.createObjectT();
 
 		mappedStream->setServiceProvider( m_serviceProvider );
 
 		return mappedStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileGroupDirectory::openMappedFile( const FilePath & _fileName, const MappedFileInterfacePtr & _stream )
+	bool Win32FileGroupDirectory::openMappedFile( const FilePath & _fileName, const FileMappedInterfacePtr & _stream )
 	{
 		if( _stream == nullptr )
 		{

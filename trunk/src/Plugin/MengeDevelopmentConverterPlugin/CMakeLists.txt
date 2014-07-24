@@ -24,6 +24,8 @@ src
     ModelConverterMDLToMDZ.h
     ImageConverterPVRToHTF.cpp
     ImageConverterPVRToHTF.h
+    ImageConverterPNGToACF.cpp
+    ImageConverterPNGToACF.h
 )
 
 add_definitions(-DMENGE_PLUGIN_DLL)

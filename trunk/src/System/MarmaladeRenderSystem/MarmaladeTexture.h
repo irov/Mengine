@@ -15,10 +15,10 @@ namespace Menge
 		~MarmaladeTexture();
 
     public:
-        void initialize( GLuint _uid, ERenderImageMode _mode, size_t _width, size_t _height, size_t _channels, int _pitch, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget );
+        void initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, size_t _width, size_t _height, size_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget );
 
 	public:
-        unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) override;
+        void * lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) override;
 		void unlock() override;
 	
 	public:
@@ -50,6 +50,8 @@ namespace Menge
         GLenum getWrapT() const;
 
 	private:
+		ServiceProviderInterface * m_serviceProvider;
+
 		GLuint m_uid;
 		bool m_isRenderTarget;
 		
@@ -66,14 +68,13 @@ namespace Menge
 		GLenum m_wrapS;
 		GLenum m_wrapT;
 
-		GLsizei m_pitch;
-
 		GLint m_internalFormat;
 
 		GLenum m_format;
 		GLenum m_type;
 
-		unsigned char* m_lock;
+		void * m_lock;
+		size_t m_bufferId;
 	};
 
     typedef stdex::intrusive_ptr<MarmaladeTexture> OGLTexturePtr;

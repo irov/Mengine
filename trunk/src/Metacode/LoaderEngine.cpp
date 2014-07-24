@@ -109,7 +109,7 @@ namespace Menge
 			}
 
 			file_bin = FILE_SERVICE(m_serviceProvider)
-                ->openInputFile( _pak, _path );
+                ->openInputFile( _pak, _path, false );
 
 			done = this->importBin_( file_bin, _metadata, nullptr );
 		}
@@ -273,7 +273,7 @@ namespace Menge
 			}
 
 			InputStreamInterfacePtr file_bin = 
-                FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path );
+                FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path, false );
 
 			if( file_bin == nullptr )
 			{
@@ -298,7 +298,7 @@ namespace Menge
 		}
 
 		InputStreamInterfacePtr file_bin = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path );
+            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path, false );
 
 		if( file_bin == nullptr )
 		{
@@ -306,7 +306,7 @@ namespace Menge
 		}
 
 		InputStreamInterfacePtr file_xml = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, c_path_xml_local );
+            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, c_path_xml_local, false );
 
 		if( file_xml == nullptr )
 		{
@@ -334,7 +334,7 @@ namespace Menge
 			}
 
 			file_bin = FILE_SERVICE(m_serviceProvider)
-                ->openInputFile( _pak, _path );
+                ->openInputFile( _pak, _path, false );
 		}
 
 		_file = file_bin;

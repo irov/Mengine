@@ -1,4 +1,4 @@
-#	include "Win32OutputStream.h"
+#	include "Win32FileOutputStream.h"
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
@@ -8,13 +8,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Win32OutputStream::Win32OutputStream()		
+	Win32FileOutputStream::Win32FileOutputStream()		
         : m_serviceProvider(nullptr)
         , m_hFile(INVALID_HANDLE_VALUE)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Win32OutputStream::~Win32OutputStream()
+	Win32FileOutputStream::~Win32FileOutputStream()
 	{
         if( m_hFile != INVALID_HANDLE_VALUE )
         {
@@ -23,12 +23,12 @@ namespace Menge
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Win32OutputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    void Win32FileOutputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32OutputStream::open( const FilePath & _folder, const FilePath& _fileName )
+	bool Win32FileOutputStream::open( const FilePath & _folder, const FilePath& _fileName )
 	{        
         WChar filePath[MAX_PATH];
         if( WINDOWSLAYER_SERVICE(m_serviceProvider)
@@ -61,7 +61,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32OutputStream::write( const void * _data, size_t _count )
+	bool Win32FileOutputStream::write( const void * _data, size_t _count )
 	{
 		DWORD bytesWritten = 0;
 		BOOL result = ::WriteFile( m_hFile, _data, _count, &bytesWritten, NULL );
@@ -78,7 +78,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32OutputStream::flush()
+	bool Win32FileOutputStream::flush()
 	{
 		if( ::FlushFileBuffers( m_hFile ) == FALSE )
         {

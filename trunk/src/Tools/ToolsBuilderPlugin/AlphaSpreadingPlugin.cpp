@@ -53,7 +53,7 @@ namespace Menge
         ConstString outputFileName = Helper::stringizeString(serviceProvider, utf8_outputFileName);
 
         InputStreamInterfacePtr input_stream = 
-            FILE_SERVICE(serviceProvider)->openInputFile( ConstString::none(), inputFileName );
+            FILE_SERVICE(serviceProvider)->openInputFile( ConstString::none(), inputFileName, false );
         
         if( input_stream == nullptr )
         {

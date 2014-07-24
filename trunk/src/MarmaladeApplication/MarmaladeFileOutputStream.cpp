@@ -1,4 +1,4 @@
-#	include "MarmaladeOutputStream.h"
+#	include "MarmaladeFileOutputStream.h"
 
 #	include "Interface/MarmaladeLayerInterface.h"
 
@@ -7,22 +7,22 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeOutputStream::MarmaladeOutputStream()		
+	MarmaladeFileOutputStream::MarmaladeFileOutputStream()		
         : m_serviceProvider(nullptr)
         , m_hFile(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeOutputStream::~MarmaladeOutputStream()
+	MarmaladeFileOutputStream::~MarmaladeFileOutputStream()
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeOutputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    void MarmaladeFileOutputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeOutputStream::open( const FilePath & _folder, const FilePath& _filename )
+	bool MarmaladeFileOutputStream::open( const FilePath & _folder, const FilePath& _filename )
 	{        
         char filePath[MAX_PATH];
         if( MARMALADELAYER_SERVICE(m_serviceProvider)
@@ -54,7 +54,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeOutputStream::_destroy()
+	void MarmaladeFileOutputStream::_destroy()
 	{
 		if( m_hFile != nullptr )
 		{
@@ -64,7 +64,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeOutputStream::write( const void * _data, size_t _count )
+	bool MarmaladeFileOutputStream::write( const void * _data, size_t _count )
 	{
         uint32 bytesWritten = s3eFileWrite( _data, 1, _count, m_hFile );
 
@@ -84,7 +84,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeOutputStream::flush()
+	bool MarmaladeFileOutputStream::flush()
 	{
 		s3eResult result = s3eFileFlush( m_hFile );
 

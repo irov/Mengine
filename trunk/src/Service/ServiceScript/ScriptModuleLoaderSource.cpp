@@ -22,14 +22,14 @@ namespace Menge
 		ConstStringHolderLocal holder_fullPath_local(m_path.c_str(), m_path.size());
 		ConstString c_fullPath_local(&holder_fullPath_local);
 
-		InputStreamInterfacePtr stream = m_group->createInputFile( c_fullPath_local );
+		InputStreamInterfacePtr stream = m_group->createInputFile( c_fullPath_local, false );
 
 		if( stream == nullptr )
 		{
 			return nullptr;
 		}
 
-		if( m_group->openInputFile( c_fullPath_local, stream, 0, 0 ) == false )
+		if( m_group->openInputFile( c_fullPath_local, stream, 0, 0, false ) == false )
 		{
 			return nullptr;
 		}

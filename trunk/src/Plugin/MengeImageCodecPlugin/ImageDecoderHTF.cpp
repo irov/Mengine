@@ -1,4 +1,5 @@
 #	include "ImageDecoderHTF.h"
+#   include "ImageVerifyHTF.h"
 
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/FileSystemInterface.h"
@@ -39,7 +40,7 @@ namespace Menge
 	bool ImageDecoderHTF::_initialize()
 	{		
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -51,9 +52,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderHTF::_prepareData()
 	{
-        m_stream->read( &m_uncompress_size, sizeof(m_uncompress_size) );
-        m_stream->read( &m_compress_size, sizeof(m_compress_size) );
-
         uint32_t magic;
         m_stream->read( &magic, sizeof(magic) );
 
@@ -75,7 +73,7 @@ namespace Menge
 
 			return false;
 		}
-        
+
 		uint32_t width;
         m_stream->read( &width, sizeof(width) );
 
@@ -84,6 +82,9 @@ namespace Menge
 
 		uint32_t format;
 		m_stream->read( &format, sizeof(format) );
+
+		m_stream->read( &m_uncompress_size, sizeof(m_uncompress_size) );
+		m_stream->read( &m_compress_size, sizeof(m_compress_size) );
 
 		m_dataInfo.width = width;
 		m_dataInfo.height = height;
@@ -98,11 +99,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderHTF::decode( void * _buffer, size_t _bufferSize )
 	{
-        (void)_bufferSize;
+        if( _bufferSize != m_uncompress_size )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderHTF::decode uncompress failed %d != %d"
+				, _bufferSize
+				, m_uncompress_size
+				);
+
+			return 0;
+		}
 
         size_t uncompress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->decompressStream( m_archivator, m_stream, m_compress_size, _buffer, _bufferSize, uncompress_size ) == false )
+            ->decompressStream( m_archivator, m_stream, m_compress_size, _buffer, m_uncompress_size, uncompress_size ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderHTF::decode uncompress failed"
                 );

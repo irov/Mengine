@@ -21,7 +21,7 @@ namespace Menge
 
     typedef stdex::intrusive_ptr<FileInputStreamInterface> FileInputStreamInterfacePtr;
 
-	class MappedFileInterface
+	class FileMappedInterface
 		: public FactorablePtr
 	{
 	public:
@@ -32,7 +32,7 @@ namespace Menge
         virtual bool openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory ) = 0;
 	};
 
-    typedef stdex::intrusive_ptr<MappedFileInterface> MappedFileInterfacePtr;
+    typedef stdex::intrusive_ptr<FileMappedInterface> FileMappedInterfacePtr;
 	
 	class FileOutputStreamInterface
 		: public OutputStreamInterface
@@ -58,16 +58,16 @@ namespace Menge
 		virtual bool removeFile( const FilePath & _fileName ) = 0;
 
     public:
-        virtual InputStreamInterfacePtr createInputFile( const FilePath & _fileName ) = 0;
-        virtual bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) = 0;
+        virtual InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) = 0;
+        virtual bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming ) = 0;
 			
     public:
         virtual OutputStreamInterfacePtr createOutputFile() = 0;
         virtual bool openOutputFile( const FilePath & _fileName, const OutputStreamInterfacePtr & _stream ) = 0;
 
 	public:
-		virtual MappedFileInterfacePtr createMappedFile() = 0;
-		virtual bool openMappedFile( const FilePath & _fileName, const MappedFileInterfacePtr & _stream ) = 0;
+		virtual FileMappedInterfacePtr createMappedFile() = 0;
+		virtual bool openMappedFile( const FilePath & _fileName, const FileMappedInterfacePtr & _stream ) = 0;
 
     public:
         virtual bool existDirectory( const FilePath & _path ) const = 0;
@@ -101,11 +101,11 @@ namespace Menge
 		virtual bool existFile( const ConstString & _fileGroupName, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const = 0;
 
 	public:
-		virtual InputStreamInterfacePtr openInputFile( const ConstString & _fileGroupName, const FilePath & _fileName ) = 0;
+		virtual InputStreamInterfacePtr openInputFile( const ConstString & _fileGroupName, const FilePath & _fileName, bool _streaming ) = 0;
 		virtual OutputStreamInterfacePtr openOutputFile( const ConstString & _fileGroupName, const FilePath & _fileName ) = 0;
 
     public:
-        virtual MappedFileInterfacePtr openMappedFile( const ConstString & _fileGroupName, const FilePath& _fileName ) = 0;
+        virtual FileMappedInterfacePtr openMappedFile( const ConstString & _fileGroupName, const FilePath& _fileName ) = 0;
 
     public:
         virtual bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const = 0;

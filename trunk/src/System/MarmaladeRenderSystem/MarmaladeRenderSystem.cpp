@@ -927,25 +927,16 @@ namespace Menge
 		GLint internalFormat = s_toGLInternalFormat( hwFormat );
 		GLint textureFormat = s_toGLColorFormat( hwFormat );
 		GLint textureType = s_getGLColorDataType( hwFormat );
-		GLint texturePitch = _width * hwChannels;
-
-		if( hwFormat == Menge::PF_ETC1 || 
-			hwFormat == Menge::PF_PVRTC4_RGB || 
-			hwFormat == Menge::PF_PVRTC4_RGBA )
-		{
-			GLuint size = (_width * _height) >> 1;
-			texturePitch = size / _height;
-		}
 
         MarmaladeTexture * texture = m_factoryOGLTexture.createObjectT();
 
 		texture->initialize( 
-            tuid
+			m_serviceProvider
+            , tuid
 			, ERIM_NORMAL
             , _width
             , _height
             , hwChannels
-            , texturePitch
             , hwFormat
             , internalFormat
             , textureFormat

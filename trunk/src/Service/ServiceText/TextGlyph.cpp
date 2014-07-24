@@ -349,7 +349,7 @@ namespace Menge
 		m_locale = _locale;
 
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( _pakName, _path );
+			->openInputFile( _pakName, _path, false );
 
 		if( stream == nullptr )
 		{

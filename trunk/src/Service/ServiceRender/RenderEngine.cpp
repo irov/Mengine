@@ -238,7 +238,7 @@ namespace Menge
 		rect.bottom = null_height;
 
 		int pitch = 0;
-		unsigned char* textureData = m_nullTexture->lock( &pitch, rect, false );
+		void * textureData = m_nullTexture->lock( &pitch, rect, false );
 
 		if( textureData == nullptr )
 		{
@@ -253,7 +253,8 @@ namespace Menge
 		for( size_t it = 0; it != null_height; ++it )
 		{
 			unsigned char null_color = 0xFF;
-			std::fill( textureData, textureData + pitch * it + null_width, null_color );
+			unsigned char * buffer_textureData = static_cast<unsigned char *>(textureData);
+			std::fill( buffer_textureData, buffer_textureData + pitch * it + null_width, null_color );
 		}
 
 		m_nullTexture->unlock();

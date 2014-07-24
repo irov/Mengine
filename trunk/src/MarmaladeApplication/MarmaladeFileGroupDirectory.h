@@ -2,8 +2,8 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#	include "MarmaladeInputStream.h"
-#	include "MarmaladeOutputStream.h"
+#	include "MarmaladeFileInputStream.h"
+#	include "MarmaladeFileOutputStream.h"
 
 #   include "Factory/FactoryStore.h"
 
@@ -24,16 +24,16 @@ namespace Menge
 		const FilePath & getPath() const override;
 
 	public:
-		InputStreamInterfacePtr createInputFile( const FilePath & _fileName ) override;
-		bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size ) override;
+		InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) override;
+		bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming ) override;
 
 	public:
 		OutputStreamInterfacePtr createOutputFile() override;
 		bool openOutputFile( const FilePath & _fileName, const OutputStreamInterfacePtr & _stream ) override;
 		
     public:
-        MappedFileInterfacePtr createMappedFile() override;
-		bool openMappedFile( const FilePath & _fileName, const MappedFileInterfacePtr & _stream ) override;
+        FileMappedInterfacePtr createMappedFile() override;
+		bool openMappedFile( const FilePath & _fileName, const FileMappedInterfacePtr & _stream ) override;
 
     public:
 		bool existFile( const FilePath & _fileName ) const override;
@@ -49,10 +49,10 @@ namespace Menge
 
 		FilePath m_path;
 
-        typedef FactoryPoolStore<MarmaladeInputStream, 8> TFactoryFileInputStream;
+        typedef FactoryPoolStore<MarmaladeFileInputStream, 8> TFactoryFileInputStream;
         TFactoryFileInputStream m_factoryInputStream;
 
-        typedef FactoryPoolStore<MarmaladeOutputStream, 4> TFactoryFileOutputStream;
+        typedef FactoryPoolStore<MarmaladeFileOutputStream, 4> TFactoryFileOutputStream;
         TFactoryFileOutputStream m_factoryOutputStream;
 	};
 }

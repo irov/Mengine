@@ -77,7 +77,6 @@ namespace Menge
 		m_dataInfo.width = header.texWidth;
 		m_dataInfo.height = header.texHeight;
 		m_dataInfo.mipmaps = 0;
-		m_dataInfo.flags = 0;
 
 		m_dataInfo.size = m_stream->size() - sizeof(ETC1_HEADER);
 		

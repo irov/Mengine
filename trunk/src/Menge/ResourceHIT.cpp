@@ -57,7 +57,7 @@ namespace Menge
         const ConstString & category = this->getCategory();
 
         InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( category, m_filePath );
+            ->openInputFile( category, m_filePath, false );
 
         if( stream == nullptr )
         {
@@ -139,7 +139,7 @@ namespace Menge
         }
 
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( category, m_filePath );
+			->openInputFile( category, m_filePath, false );
 
 		if( stream == nullptr )
 		{

@@ -1,21 +1,21 @@
 #	pragma once
 
 #	include "Interface/FileSystemInterface.h"
-#	include "Interface/WindowsLayerInterface.h"
+
+#   include <s3eFile.h>
 
 namespace Menge
-{
-
-#	ifndef MENGINE_WIN32_FILE_BUFFER_SIZE
-#	define MENGINE_WIN32_FILE_BUFFER_SIZE 8192
+{    	
+#	ifndef MENGINE_MARMALADE_FILE_BUFFER_SIZE
+#	define MENGINE_MARMALADE_FILE_BUFFER_SIZE 8192
 #	endif
 
-	class Win32InputStream
+	class MarmaladeFileInputStream
 		: public FileInputStreamInterface
 	{
 	public:
-		Win32InputStream();
-		~Win32InputStream();
+		MarmaladeFileInputStream();
+		~MarmaladeFileInputStream();
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );
@@ -30,24 +30,29 @@ namespace Menge
 		size_t size() const override;		
 
     public:
-        bool time( uint64_t & _time ) const override;
+        bool time( uint64 & _time ) const override;
 
-    protected:
-		bool openFile_( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath );
-        void close_();
+    public:
+        void _destroy() override;
 
-    protected:
+	protected:
+		bool read_( void * _buf, size_t _size, size_t & _read );
+
+	private:
         ServiceProviderInterface * m_serviceProvider;
 
-		HANDLE m_hFile;
+		s3eFile * m_hFile;
 
-		size_t m_size;
+		Menge::FilePath m_folder;
+		Menge::FilePath m_filename;
+				
+        size_t m_size;
 		size_t m_offset;
 
 		size_t m_carriage;
 		size_t m_capacity;
 		size_t m_reading;
 
-		char m_readCache[MENGINE_WIN32_FILE_BUFFER_SIZE];
+		uint8_t m_readCache[MENGINE_MARMALADE_FILE_BUFFER_SIZE];
 	};
 }	// namespace Menge

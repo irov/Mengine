@@ -62,7 +62,7 @@ namespace Menge
         ConstString c_dev = CONST_STRING_LOCAL( m_serviceProvider, "dev" );
 
         InputStreamInterfacePtr input = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( c_dev, full_input );
+            ->openInputFile( c_dev, full_input, false );
 
         uint32_t data_size = input->size();
 

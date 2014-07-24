@@ -103,6 +103,7 @@ extern "C" // only required if using g++
 	extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );	
 	extern bool initPluginMengeWin32FileGroup( Menge::PluginInterface ** _plugin );
 
 	extern bool initPluginPathFinder( Menge::PluginInterface ** _plugin );
@@ -193,6 +194,7 @@ namespace Menge
 		, m_pluginMengeSoundCodec(nullptr)
 		, m_pluginMengeVideoCodec(nullptr)
 		, m_pluginMengeZip(nullptr)
+		, m_pluginMengeLZ4(nullptr)
 		, m_pluginMengeWin32FileGroup(nullptr)
 		, m_fileLog(nullptr)
 		, m_profilerMode(false)
@@ -374,9 +376,15 @@ namespace Menge
 		m_archiveService = archiveService;
 
 		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Zip..." );
+			LOGGER_INFO(m_serviceProvider)("Initialize Zip...");
 			initPluginMengeZip( &m_pluginMengeZip );
 			m_pluginMengeZip->initialize( m_serviceProvider );
+		}
+
+		{
+			LOGGER_INFO(m_serviceProvider)("Initialize LZ4...");
+			initPluginMengeLZ4( &m_pluginMengeLZ4 );
+			m_pluginMengeLZ4->initialize( m_serviceProvider );
 		}
 
 		return true;
@@ -387,7 +395,7 @@ namespace Menge
 		FilePath applicationPath = CONST_STRING_LOCAL( m_serviceProvider, "application.ini" );
 
 		InputStreamInterfacePtr applicationInputStream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( ConstString::none(), applicationPath );
+			FILE_SERVICE(m_serviceProvider)->openInputFile( ConstString::none(), applicationPath, false );
 
 		if( applicationInputStream == nullptr )
 		{
@@ -1999,6 +2007,12 @@ namespace Menge
 		{
 			m_pluginMengeZip->destroy();
 			m_pluginMengeZip = nullptr;
+		}
+
+		if( m_pluginMengeLZ4 != nullptr )
+		{
+			m_pluginMengeLZ4->destroy();
+			m_pluginMengeLZ4 = nullptr;
 		}
 
 		if( m_pluginMengeWin32FileGroup != nullptr )

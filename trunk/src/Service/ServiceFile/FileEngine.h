@@ -39,11 +39,11 @@ namespace Menge
 		bool existFile( const ConstString& _fileGroupName, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const override;
 
 	public:
-		InputStreamInterfacePtr openInputFile( const ConstString& _fileGroupName, const FilePath& _fileName ) override;
+		InputStreamInterfacePtr openInputFile( const ConstString& _fileGroupName, const FilePath& _fileName, bool _streaming ) override;
 		OutputStreamInterfacePtr openOutputFile( const ConstString& _fileGroupName, const FilePath& _fileName ) override;
         
     public:
-        MappedFileInterfacePtr openMappedFile( const ConstString & _fileGroupName, const FilePath& _fileName ) override;
+        FileMappedInterfacePtr openMappedFile( const ConstString & _fileGroupName, const FilePath& _fileName ) override;
 
 	public:
         bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const override;

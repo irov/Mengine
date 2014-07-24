@@ -40,7 +40,7 @@ namespace Menge
         m_hwPixelFormat = _hwPixelFormat;
     }
 	///////////////////////////////////////////////////////////////////////////
-	unsigned char * DX9Texture::lock( int* _pitch, const Rect& _rect, bool _readOnly )
+	void * DX9Texture::lock( int* _pitch, const Rect& _rect, bool _readOnly )
 	{
 		int flags;
 		if( _readOnly == true )
@@ -66,7 +66,7 @@ namespace Menge
 
 		*_pitch = TRect.Pitch;
 
-		unsigned char * bits = static_cast<unsigned char *>(TRect.pBits);
+		void * bits = TRect.pBits;
 
 		return bits;
 	}

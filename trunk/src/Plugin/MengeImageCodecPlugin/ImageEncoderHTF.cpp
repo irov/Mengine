@@ -38,7 +38,7 @@ namespace Menge
 	bool ImageEncoderHTF::_initialize()
 	{
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -64,8 +64,9 @@ namespace Menge
 		uint32_t format = s_convertFormat( dataInfo->format );
         m_stream->write( &format, sizeof(format) );
 		                
+		size_t uncompressSize = dataInfo->size;
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-            ->compressBuffer( m_archivator, _buffer, dataInfo->size );
+            ->compressBuffer( m_archivator, _buffer, uncompressSize );
 
 		if( compress_memory == nullptr )
         {
@@ -78,7 +79,9 @@ namespace Menge
 		uint32_t compressSize;
 		const void * compressBuffer = compress_memory->getMemory( compressSize );
 		
+		m_stream->write( &uncompressSize, sizeof(uncompressSize) );
         m_stream->write( &compressSize, sizeof(compressSize) );
+
         m_stream->write( compressBuffer, compressSize );
 
 		return compressSize;

@@ -1,4 +1,4 @@
-#	include "Win32MappedFile.h"
+#	include "Win32FileMapped.h"
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
@@ -8,7 +8,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Win32MappedFile::Win32MappedFile()
+	Win32FileMapped::Win32FileMapped()
 		: m_serviceProvider(nullptr)
         , m_hFile(INVALID_HANDLE_VALUE)
 		, m_hMapping(INVALID_HANDLE_VALUE)
@@ -16,7 +16,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Win32MappedFile::~Win32MappedFile()
+	Win32FileMapped::~Win32FileMapped()
 	{       
 		if( m_memory != NULL )
 		{
@@ -46,12 +46,12 @@ namespace Menge
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Win32MappedFile::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    void Win32FileMapped::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32MappedFile::open( const FilePath & _folder, const FilePath & _fileName )
+	bool Win32FileMapped::open( const FilePath & _folder, const FilePath & _fileName )
 	{
         WChar filePath[MAX_PATH];
         if( WINDOWSLAYER_SERVICE(m_serviceProvider)
@@ -121,14 +121,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr Win32MappedFile::createFileStream()
+	InputStreamInterfacePtr Win32FileMapped::createFileStream()
 	{
 		MemoryProxyInput * memory = m_factoryMemoryProxyInput.createObjectT();
 
 		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32MappedFile::openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory )
+	bool Win32FileMapped::openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory )
 	{
 		MemoryProxyInput * memory = stdex::intrusive_get<MemoryProxyInput>(_stream);
 		

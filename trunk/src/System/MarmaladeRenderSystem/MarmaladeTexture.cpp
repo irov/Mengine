@@ -1,25 +1,28 @@
 #	include "MarmaladeTexture.h"
 
+#	include "Interface/CacheInterface.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeTexture::MarmaladeTexture()
-		: m_uid(0)
+		: m_serviceProvider(nullptr)
+		, m_uid(0)
 		, m_hwWidth(0)
 		, m_hwHeight(0)
         , m_hwChannels(0)
-		, m_pitch(0)
 		, m_hwPixelFormat(PF_UNKNOWN)
 		, m_internalFormat(0)
 		, m_format(0)
 		, m_type(0)
-		, m_isRenderTarget(false)
-		, m_lock(nullptr)
+		, m_isRenderTarget(false)		
 		, m_wrapS(0)
 		, m_wrapT(0)
 		, m_minFilter(0)
 		, m_magFilter(0)
 		, m_mode(ERIM_NORMAL)
+		, m_lock(nullptr)
+		, m_bufferId(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -27,13 +30,14 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeTexture::initialize( GLuint _uid, ERenderImageMode _mode, size_t _width, size_t _height, size_t _channels, int _pitch, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget )
+    void MarmaladeTexture::initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, size_t _width, size_t _height, size_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget )
     {
+		m_serviceProvider = _serviceProvider;
+
         m_uid = _uid;
         m_hwWidth = _width;
         m_hwHeight = _height;
         m_hwChannels = _channels;
-        m_pitch = _pitch;
         m_hwPixelFormat = _pixelFormat;
         m_internalFormat = _internalFormat;
         m_format = _format;
@@ -67,10 +71,14 @@ namespace Menge
         return m_hwPixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
-    unsigned char* MarmaladeTexture::lock( int* _pitch, const Rect& _rect, bool _readOnly )
+    void * MarmaladeTexture::lock( int * _pitch, const Rect & _rect, bool _readOnly )
     {
-		m_lock = new unsigned char[m_hwHeight * m_pitch];
-		*_pitch = static_cast<int>(m_pitch);
+		size_t size = Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, 1, m_hwPixelFormat );
+
+		m_bufferId = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( size, &m_lock, "MarmaladeTexture::lock" );
+		
+		*_pitch = size / m_hwHeight;
 
 		return m_lock;
     }
@@ -108,8 +116,11 @@ namespace Menge
 			}
 		}
 
-		delete [] m_lock;
-		m_lock = NULL;
+		CACHE_SERVICE(m_serviceProvider)
+			->unlockBuffer( m_bufferId );
+
+		m_bufferId = 0;
+		m_lock = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeTexture::_destroy()

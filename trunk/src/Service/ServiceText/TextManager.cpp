@@ -280,7 +280,7 @@ namespace Menge
 	bool TextManager::loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 	{
 		InputStreamInterfacePtr stream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( _pakName, _path );
+			FILE_SERVICE(m_serviceProvider)->openInputFile( _pakName, _path, false );
 
 		if( stream == nullptr )
 		{

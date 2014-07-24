@@ -165,7 +165,7 @@ namespace Menge
         }
 
 		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( CONST_STRING_LOCAL(m_serviceProvider, "user"), m_settingsPath );
+			->openInputFile( CONST_STRING_LOCAL(m_serviceProvider, "user"), m_settingsPath, false );
 
         if( file == nullptr )
         {
@@ -320,7 +320,7 @@ namespace Menge
 		ConstString fullpath = Helper::stringizeString( m_serviceProvider, path );
 
         InputStreamInterfacePtr stream = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( CONST_STRING(m_serviceProvider, user), fullpath );
+            FILE_SERVICE(m_serviceProvider)->openInputFile( CONST_STRING(m_serviceProvider, user), fullpath, false );
 
         if( stream == nullptr )
         {

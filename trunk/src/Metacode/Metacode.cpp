@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 54;
+        _needVersion = 55;
 
-        if( version != 54 )
+        if( version != 55 )
         {
             return false;
         }
@@ -1647,17 +1647,17 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::Meta_ResourceImageMultiplyRGBAndAlpha()
         : Meta_Resource()
+        , File_CodecAlpha_successful(false)
+        , File_CodecRGB_successful(false)
         , File_MaxSize_successful(false)
         , File_Offset_successful(false)
+        , File_PathAlpha_successful(false)
+        , File_PathRGB_successful(false)
         , File_Size_successful(false)
+        , File_UVAlpha_successful(false)
+        , File_UVRGB_successful(false)
         , File_WrapX_successful(false)
         , File_WrapY_successful(false)
-        , FileAlpha_Codec_successful(false)
-        , FileAlpha_Path_successful(false)
-        , FileAlpha_UV_successful(false)
-        , FileRGB_Codec_successful(false)
-        , FileRGB_Path_successful(false)
-        , FileRGB_UV_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1675,6 +1675,28 @@ namespace Metacode
     
         switch( _id )
         {
+        case 9:
+            {
+                if( this->read( _buff, _size, _read, this->File_CodecAlpha ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_CodecAlpha_successful = true;
+    
+                return true;
+            }break;
+        case 6:
+            {
+                if( this->read( _buff, _size, _read, this->File_CodecRGB ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_CodecRGB_successful = true;
+    
+                return true;
+            }break;
         case 11:
             {
                 if( this->read( _buff, _size, _read, this->File_MaxSize ) == false )
@@ -1697,6 +1719,28 @@ namespace Metacode
     
                 return true;
             }break;
+        case 8:
+            {
+                if( this->read( _buff, _size, _read, this->File_PathAlpha ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_PathAlpha_successful = true;
+    
+                return true;
+            }break;
+        case 5:
+            {
+                if( this->read( _buff, _size, _read, this->File_PathRGB ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_PathRGB_successful = true;
+    
+                return true;
+            }break;
         case 12:
             {
                 if( this->read( _buff, _size, _read, this->File_Size ) == false )
@@ -1705,6 +1749,28 @@ namespace Metacode
                 }
     
                 this->File_Size_successful = true;
+    
+                return true;
+            }break;
+        case 10:
+            {
+                if( this->read( _buff, _size, _read, this->File_UVAlpha ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_UVAlpha_successful = true;
+    
+                return true;
+            }break;
+        case 7:
+            {
+                if( this->read( _buff, _size, _read, this->File_UVRGB ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_UVRGB_successful = true;
     
                 return true;
             }break;
@@ -1727,72 +1793,6 @@ namespace Metacode
                 }
     
                 this->File_WrapY_successful = true;
-    
-                return true;
-            }break;
-        case 9:
-            {
-                if( this->read( _buff, _size, _read, this->FileAlpha_Codec ) == false )
-                {
-                    return false;
-                }
-    
-                this->FileAlpha_Codec_successful = true;
-    
-                return true;
-            }break;
-        case 8:
-            {
-                if( this->read( _buff, _size, _read, this->FileAlpha_Path ) == false )
-                {
-                    return false;
-                }
-    
-                this->FileAlpha_Path_successful = true;
-    
-                return true;
-            }break;
-        case 10:
-            {
-                if( this->read( _buff, _size, _read, this->FileAlpha_UV ) == false )
-                {
-                    return false;
-                }
-    
-                this->FileAlpha_UV_successful = true;
-    
-                return true;
-            }break;
-        case 6:
-            {
-                if( this->read( _buff, _size, _read, this->FileRGB_Codec ) == false )
-                {
-                    return false;
-                }
-    
-                this->FileRGB_Codec_successful = true;
-    
-                return true;
-            }break;
-        case 5:
-            {
-                if( this->read( _buff, _size, _read, this->FileRGB_Path ) == false )
-                {
-                    return false;
-                }
-    
-                this->FileRGB_Path_successful = true;
-    
-                return true;
-            }break;
-        case 7:
-            {
-                if( this->read( _buff, _size, _read, this->FileRGB_UV ) == false )
-                {
-                    return false;
-                }
-    
-                this->FileRGB_UV_successful = true;
     
                 return true;
             }break;

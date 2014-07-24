@@ -6,16 +6,10 @@ src
     
 	AlphaSpreadingPlugin.cpp
     AlphaSpreadingPlugin.h
-    HotspotImageConverter.cpp
-    HotspotImageConverter.h
     XmlToBinDecoder.cpp
     XmlToBinDecoder.h
     XmlToAekConverter.cpp
     XmlToAekConverter.h
-    FFMPEGToGVFConverter.cpp
-    FFMPEGToGVFConverter.h    
-    PVRToHTFConverter.cpp
-    PVRToHTFConverter.h    
     
     ToolsBuilderPlugin.def
 )
@@ -76,6 +70,7 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Win32ThreadSystem)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeXmlCodecPlugin)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeImageCodecPlugin)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeZipPlugin)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeLZ4Plugin)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeWin32FileGroupPlugin)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeDevelopmentConverterPlugin)
 

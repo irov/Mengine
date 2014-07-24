@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/ThreadSystemInterface.h"
 
 #	include "Factory/FactoryStore.h"
 
@@ -27,16 +28,16 @@ namespace Menge
 		bool existFile( const FilePath & _fileName ) const override;
 
     public:
-		InputStreamInterfacePtr createInputFile( const FilePath & _fileName ) override;
-		bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file, size_t _offset, size_t _size ) override;
+		InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) override;
+		bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file, size_t _offset, size_t _size, bool _streaming ) override;
 
     public:
         OutputStreamInterfacePtr createOutputFile() override;
         bool openOutputFile( const FilePath & _fileName, const OutputStreamInterfacePtr & _file ) override;
 
 	public:
-		MappedFileInterfacePtr createMappedFile() override;
-		bool openMappedFile( const FilePath & _fileName, const MappedFileInterfacePtr & _stream ) override;
+		FileMappedInterfacePtr createMappedFile() override;
+		bool openMappedFile( const FilePath & _fileName, const FileMappedInterfacePtr & _stream ) override;
 
     public:
         bool existDirectory( const FilePath & _path ) const override;
@@ -53,6 +54,9 @@ namespace Menge
 		FilePath m_path;
 
 		FileGroupInterfacePtr m_zipFileGroup;
+		InputStreamInterfacePtr m_zipFile;
+
+		ThreadMutexInterfacePtr m_mutex;
 	
 		struct FileInfo
 			: public Factorable

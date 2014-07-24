@@ -28,7 +28,7 @@ namespace Menge
 		m_locale = _locale;
 
 		InputStreamInterfacePtr xml_text = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( _pakName, _path );
+			->openInputFile( _pakName, _path, false );
 
 		if( xml_text == nullptr )
 		{

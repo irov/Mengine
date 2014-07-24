@@ -6,12 +6,12 @@ src
 	Win32FileGroupPlugin.cpp
     Win32FileGroupDirectory.cpp
     Win32FileGroupDirectory.h        
-	Win32InputStream.h
-	Win32InputStream.cpp
-	Win32OutputStream.cpp
-	Win32OutputStream.h
-    Win32MappedFile.h
-    Win32MappedFile.cpp    
+	Win32FileInputStream.h
+	Win32FileInputStream.cpp
+	Win32FileOutputStream.cpp
+	Win32FileOutputStream.h
+    Win32FileMapped.h
+    Win32FileMapped.cpp
 )
 
 INCLUDE_DIRECTORIES( 

@@ -83,7 +83,7 @@ namespace Menge
             const ConstString & category = this->getCategory();
 
             InputStreamInterfacePtr stream = 
-                FILE_SERVICE(m_serviceProvider)->openInputFile( category, filepath );
+                FILE_SERVICE(m_serviceProvider)->openInputFile( category, filepath, false );
 
             if( stream == nullptr )
             {

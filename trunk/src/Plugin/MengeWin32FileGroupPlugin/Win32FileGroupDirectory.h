@@ -2,9 +2,9 @@
 
 #   include "Interface/FileSystemInterface.h"
 
-#	include "Win32InputStream.h"
-#	include "Win32OutputStream.h"
-#	include "Win32MappedFile.h"
+#	include "Win32FileInputStream.h"
+#	include "Win32FileOutputStream.h"
+#	include "Win32FileMapped.h"
 
 namespace Menge
 {
@@ -27,16 +27,16 @@ namespace Menge
 		bool removeFile( const FilePath& _fileName ) override;
 
     public:
-		InputStreamInterfacePtr createInputFile( const FilePath & _fileName ) override;
-		bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file, size_t _offset, size_t _size ) override;
+		InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) override;
+		bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file, size_t _offset, size_t _size, bool _streaming ) override;
 		
     public:
 		OutputStreamInterfacePtr createOutputFile() override;        
 		bool openOutputFile( const FilePath& _fileName, const OutputStreamInterfacePtr & _file ) override;
 
 	public:
-		MappedFileInterfacePtr createMappedFile() override;
-		bool openMappedFile( const FilePath & _fileName, const MappedFileInterfacePtr & _stream ) override;
+		FileMappedInterfacePtr createMappedFile() override;
+		bool openMappedFile( const FilePath & _fileName, const FileMappedInterfacePtr & _stream ) override;
 
     public:
         bool existDirectory( const FilePath& _path ) const override;
@@ -51,13 +51,13 @@ namespace Menge
 
 		FilePath m_path;
 
-		typedef FactoryPoolStore<Win32InputStream, 8> TFactoryFileInputStream;
+		typedef FactoryPoolStore<Win32FileInputStream, 8> TFactoryFileInputStream;
 		TFactoryFileInputStream m_factoryInputStream;
 
-		typedef FactoryPoolStore<Win32OutputStream, 4> TFactoryFileOutputStream;
+		typedef FactoryPoolStore<Win32FileOutputStream, 4> TFactoryFileOutputStream;
 		TFactoryFileOutputStream m_factoryOutputStream;
 
-		typedef FactoryPoolStore<Win32MappedFile, 4> TFactoryWin32MappedFile;
+		typedef FactoryPoolStore<Win32FileMapped, 4> TFactoryWin32MappedFile;
 		TFactoryWin32MappedFile m_factoryWin32MappedFile;
 	};
 }	// namespace Menge

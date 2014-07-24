@@ -107,9 +107,9 @@ namespace Menge
 		return memroy_size;
 	}
     /////////////////////////////////////////////////////////////////////////////
-	unsigned char * RenderTexture::lock( int* _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
+	void * RenderTexture::lock( int * _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
 	{
-        unsigned char * buffer = m_image->lock( _pitch, _rect, _readOnly );
+        void * buffer = m_image->lock( _pitch, _rect, _readOnly );
 
 		return buffer;
 	}

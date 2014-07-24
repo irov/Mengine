@@ -284,7 +284,7 @@ namespace Menge
         rect.right = dataInfo.width;
         rect.bottom = dataInfo.height;
 
-        unsigned char * buffer = _texture->lock( &pitch, rect, true );
+        void * buffer = _texture->lock( &pitch, rect, true );
 
 		if( buffer == nullptr )
 		{
@@ -393,7 +393,7 @@ namespace Menge
 	ImageDecoderInterfacePtr RenderTextureManager::createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
 	{
 		InputStreamInterfacePtr stream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( _pakName, _fileName );
+			FILE_SERVICE(m_serviceProvider)->openInputFile( _pakName, _fileName, false );
 
 		if( stream == nullptr )
 		{
@@ -555,7 +555,7 @@ namespace Menge
     bool RenderTextureManager::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )
     {
         int pitch = 0;
-        unsigned char * textureBuffer = _texture->lock( &pitch, _rect, false );
+        void * textureBuffer = _texture->lock( &pitch, _rect, false );
 
         if( textureBuffer == nullptr )
         {
@@ -605,7 +605,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureManager::imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch )
+    void RenderTextureManager::imageQuality( const RenderTextureInterfacePtr & _texture, void * _textureBuffer, size_t _texturePitch )
     {
         size_t width = _texture->getWidth();
         size_t height = _texture->getHeight();
@@ -624,7 +624,7 @@ namespace Menge
                 , hwWidth
                 );
 
-            unsigned char * image_data = _textureBuffer;
+            unsigned char * image_data = static_cast<unsigned char *>(_textureBuffer);
             unsigned int pixel_size = _texturePitch / hwWidth;
 
             for( size_t j = 0; j != height; ++j )
@@ -646,11 +646,7 @@ namespace Menge
                 , hwHeight
                 );
 
-            unsigned char * image_data = _textureBuffer;
-
-    //        std::copy( image_data + (height - 1) * _texturePitch
-				//, image_data + height * _texturePitch
-				//, image_data + height * _texturePitch );
+            unsigned char * image_data = static_cast<unsigned char *>(_textureBuffer);
 
 			stdex::memorycopy( image_data + height * _texturePitch, image_data + (height - 1) * _texturePitch, _texturePitch );
         }

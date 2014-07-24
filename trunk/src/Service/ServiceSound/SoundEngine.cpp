@@ -272,7 +272,7 @@ namespace Menge
 		SoundDesc desc;
 
 		desc.stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( _pakName, _fileName );
+            ->openInputFile( _pakName, _fileName, _isStream );
         
         if( desc.stream == nullptr )
         {

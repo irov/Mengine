@@ -312,7 +312,7 @@ namespace Menge
 	bool Application::loadResourcePacks_( const ConstString & _fileGroup, const FilePath & _resourceIni )
 	{
 		InputStreamInterfacePtr resourceInputStream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _resourceIni );
+			FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _resourceIni, false );
 
 		if( resourceInputStream == nullptr )
 		{

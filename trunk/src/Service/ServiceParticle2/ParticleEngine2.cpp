@@ -59,7 +59,7 @@ namespace Menge
 	ParticleEmitterContainerInterface2Ptr ParticleEngine2::createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName )
 	{
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( _fileGroupName, _fileName );
+			->openInputFile( _fileGroupName, _fileName, false );
 		
 		if( stream == nullptr )
 		{

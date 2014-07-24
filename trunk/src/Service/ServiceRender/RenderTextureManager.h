@@ -49,7 +49,7 @@ namespace Menge
         bool hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const override;
 
     public:
-        void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) override;
+        void imageQuality( const RenderTextureInterfacePtr & _texture, void * _textureBuffer, size_t _texturePitch ) override;
 
         void cacheFileTexture( const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) override;
 

@@ -71,7 +71,7 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeDevelopmentConverterPlugin ${CMAKE_T
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeImageCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeImageCodecPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeXmlCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeXmlCodecPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeZipPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeZipPlugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeLZ4Plugin ${CMAKE_TEMP_DIR}/Plugin/MengeLZ4Plugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeWin32FileGroupPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeWin32FileGroupPlugin )
 
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Tools/AstralaxCompiler ${CMAKE_TEMP_DIR}/Tools/AstralaxCompiler )
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Tools/ToolsBuilderPlugin ${CMAKE_TEMP_DIR}/Tools/ToolsBuilderPlugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Tools ${CMAKE_TEMP_DIR}/Tools )

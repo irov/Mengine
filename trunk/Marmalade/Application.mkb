@@ -1,25 +1,23 @@
 #!/usr/bin/env mkb
 options
 {
-	arm-cpu=6
-	arm-fpu=vfpv3
+	arm-arch=armv6
+	arm-fpu=vfp
 	strict-mkb
 	enable-exceptions    
 	preinclude=preinclude_application.h
     
     #s3e-data-dir="d:/Projects/HolidayFunBuild_Marmalade/data"
-    s3e-data-dir="d:/Temp/HOG/data"
+    s3e-data-dir="d:/Projects/DynastyBuild_Marmalade/data"
+    #s3e-data-dir="d:/Temp/HOG/data"
 }
 
-librarypath
-{
-    ./lib
-}
+library "dependencies/marmalade-openal-master,openal-soft-1.13"
+library "dependencies/marm_libogg,libogg"
+library "dependencies/marm_libvorbis,libvorbis"
+library "dependencies/marm_libvorbis,libvorbisfile"
+library "dependencies/marmalade_astralax,mmagic"
 
-library "dependencies/marmalade-openal-master/,openal-soft-1.13"
-library "dependencies/marm_libogg/,libogg"
-library "dependencies/marm_libvorbis/,libvorbis"
-library "dependencies/marm_libvorbis/,libvorbisfile"
 
 library ".,Python"
 library ".,Dependencies"
@@ -52,19 +50,13 @@ includepaths
     "../dependencies/simpleini"
     "../dependencies/zlib"
     "../dependencies/libjpeg"
-    "../dependencies/stdex/include"
-    "../dependencies/astralax"
+    "../dependencies/stdex/include"    
     
     "dependencies/marmalade-openal-master/openal-soft-1.13/include/al"
     "dependencies/marmalade-openal-master/openal-soft-1.13/OpenAL32/include"
     "dependencies/marm_libogg/libogg-1.3.0/include"
     "dependencies/marm_libvorbis/libvorbis-1.3.2/include"
-    
-}
-
-library
-{
-    "../dependencies/astralax/marmalade,mmagic"
+    "dependencies/marmalade_astralax/include"    
 }
 
 files
@@ -111,4 +103,11 @@ files
     ("../src/System/AstralaxParticleSystem")	
 	"*.h"
 	"*.cpp"    
+}
+#### AUTO GENERATED deployment settings from DeployTool.exe. Do not edit below this line ####
+deployments
+{
+	["Default"]
+	caption='boo'
+	name='boo'
 }

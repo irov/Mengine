@@ -1,8 +1,8 @@
 options
 {
 	lib
-	arm-cpu=6
-	arm-fpu=vfpv3
+	arm-arch=armv6
+	arm-fpu=vfp
 	strict-mkb
 	enable-exceptions
 	preinclude=preinclude_dependencies.h
@@ -35,6 +35,7 @@ includepaths
     
 #    "../dependencies/simpleini"
     "../dependencies/zlib"
+    "../dependencies/lz4"
     "../dependencies/stdex/include"
 }
 
@@ -95,39 +96,11 @@ files
     uncompr.c
     zutil.c
     
-    #[webp]
-    #("../dependencies/libwebp/src")
-    #dec/alpha.c
-    #dec/buffer.c
-    #dec/frame.c
-    #dec/idec.c
-    #dec/io.c
-    #dec/layer.c
-    #dec/quant.c
-    #dec/tree.c
-    #dec/vp8.c
-    #dec/vp8l.c
-    #dec/webp.c    
-    
-    #dsp/cpu.c
-    #dsp/dec.c
-    ##dsp/dec_neon.c
-    ##dsp/dec_sse2.c
-    #dsp/lossless.c
-    #dsp/upsampling.c
-    ##dsp/upsampling_neon.c
-    ##dsp/upsampling_sse2.c
-    #dsp/yuv.c
-
-    #utils/bit_reader.c
-    #utils/color_cache.c
-    #utils/filters.c
-    #utils/huffman.c
-    #utils/quant_levels_dec.c
-    #utils/rescaler.c
-    #utils/thread.c
-    #utils/utils.c
-       
+    [lz4]
+    ("../dependencies/lz4")
+    lz4.c    
+    lz4hc.c
+           
     [pugixml]
 	("Modified/pugixml")
 	src/pugixml.hpp

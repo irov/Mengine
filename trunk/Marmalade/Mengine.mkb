@@ -2,8 +2,8 @@
 options
 {
 	lib
-	arm-cpu=6
-	arm-fpu=vfpv3
+	arm-arch=armv6
+	arm-fpu=vfp
 	strict-mkb
 	enable-exceptions
 	preinclude=preinclude_mengine.h
@@ -33,17 +33,18 @@ includepaths
 	"../dependencies/metabuf"
     "../dependencies/simpleini"
     "../dependencies/zlib"
+    "../dependencies/lz4"
     "../dependencies/libjpeg"
     "../dependencies/libwebp/src"
-        
+    
+    
     "../dependencies/stdex/include"
 	"../dependencies/utf8/source"
-	"../dependencies/lz4"
+    "../dependencies/crunch"
+    "../dependencies/fastpathfinder/include"
     
-    "dependencies/marmalade-openal-master/openal-soft-1.13/include/al"
-    "dependencies/marmalade-openal-master/openal-soft-1.13/OpenAL32/include"
-    "dependencies/marmalade-libvorbis-master/marm_libogg/libogg-1.3.0/include"
-    "dependencies/marmalade-libvorbis-master/marm_libvorbis/libvorbis-1.3.2/include"
+    "dependencies/marm_libogg/libogg-1.3.0/include"
+    "dependencies/marm_libvorbis/libvorbis-1.3.2/include"    
 }
 
 files
@@ -71,7 +72,18 @@ files
 	("../src/Menge")	
 	"*.h"
 	"*.cpp"
+    
+    [Plugin/MengeZipPlugin]
+    ("../src/Plugin/MengeZipPlugin")	
+	"*.h"
+	"*.cpp"    
 
+    [Plugin/MengeLZ4Plugin]
+    ("../src/Plugin/MengeLZ4Plugin")	
+	"*.h"
+	"*.cpp"    
+    
+    
     [Plugin/MengeImageCodecPlugin]
     ("../src/Plugin/MengeImageCodecPlugin")	
 	"*.h"
@@ -86,6 +98,11 @@ files
     ("../src/Plugin/MengeXmlCodecPlugin")	
 	"*.cpp"
 	"*.h"
+    
+    [Plugin/MengePathFinderPlugin]
+    ("../src/Plugin/MengePathFinderPlugin")	
+	"*.cpp"
+	"*.h"    
 
     [Plugin/MengeDevelopmentConverterPlugin]
     ("../src/Plugin/MengeDevelopmentConverterPlugin")	
@@ -97,7 +114,13 @@ files
     [Service/ServiceCodec]
     ("../src/Service/ServiceCodec")	
 	"*.h"
-	"*.cpp"    
+	"*.cpp"
+    
+    [Service/ServiceConfig]
+    ("../src/Service/ServiceConfig")	
+	"*.h"
+	"*.cpp"        
+    
     
     [Service/ServiceData]
     ("../src/Service/ServiceData")	
@@ -158,6 +181,11 @@ files
     ("../src/Service/ServiceParticle")	
 	"*.h"
 	"*.cpp"       
+
+    [Service/ServiceParticle2]
+    ("../src/Service/ServiceParticle2")	
+	"*.h"
+	"*.cpp"
     
     [Service/ServiceSound]
     ("../src/Service/ServiceSound")	
@@ -211,11 +239,6 @@ files
 
     [Utils/Logger]
 	("../src/Utils/Logger")	
-	"*.h"
-	"*.cpp"
-
-    [Utils/StartupConfigLoader]
-	("../src/Utils/StartupConfigLoader")	
 	"*.h"
 	"*.cpp"
 

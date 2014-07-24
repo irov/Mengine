@@ -133,7 +133,7 @@ namespace Menge
             );
 
         InputStreamInterfacePtr protocol_stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), m_options.pathProtocol );
+            ->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), m_options.pathProtocol, false );
 
 		//FILE * file_protocol = _wfopen( unicode_pathProtocol.c_str(), L"rb" );
 
@@ -165,7 +165,7 @@ namespace Menge
         }
         	
         InputStreamInterfacePtr xml_stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( CONST_STRING_LOCAL(m_serviceProvider, "dev"), m_options.pathXml );
+            ->openInputFile( CONST_STRING_LOCAL(m_serviceProvider, "dev"), m_options.pathXml, false );
 
         if( xml_stream == nullptr )
         {

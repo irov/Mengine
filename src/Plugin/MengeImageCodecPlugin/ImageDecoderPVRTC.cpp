@@ -89,8 +89,7 @@ bool ImageDecoderPVRTC::_prepareData()
 				m_dataInfo.format = Menge::PF_PVRTC4_RGB;
 			}break;
 		case PVRTC4RGBA:
-			{
-				
+			{				
 				m_dataInfo.format = Menge::PF_PVRTC4_RGBA;
 			}break;
 		case ETC1:

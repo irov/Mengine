@@ -61,7 +61,7 @@ namespace Menge
         ConstString full_output = concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
 		        
         InputStreamInterfacePtr stream_intput = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_input );
+            ->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false );
 
 		if( stream_intput == nullptr )
 		{
@@ -94,6 +94,19 @@ namespace Menge
 		}
 
 		const ImageCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
+
+		ImageCodecOptions decoder_options;
+		decoder_options.channels = 3;
+		decoder_options.pitch = dataInfo->width;		
+
+		if( decoder->setOptions( &decoder_options ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageConverterPVRToHTF::convert: %s invalid optionize decoder"
+				, m_options.inputFileName.c_str()
+				);
+
+			return false;
+		}	
 		
 		size_t data_size = dataInfo->size;
 		CacheMemoryBuffer data_buffer(m_serviceProvider, data_size, "ImageConverterPVRToHTF_data");
@@ -133,11 +146,11 @@ namespace Menge
 			return false;
 		}
 
-		ImageCodecOptions options;
-		options.channels = 3;
-		options.pitch = dataInfo->width;		
+		ImageCodecOptions encoder_options;
+		encoder_options.channels = 3;
+		encoder_options.pitch = dataInfo->width;		
 
-		if( encoder->setOptions( &options ) == false )
+		if( encoder->setOptions( &encoder_options ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ImageConverterPVRToHTF::convert: %s invalid optionize encoder"
 				, m_options.inputFileName.c_str()

@@ -59,7 +59,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ArchivatorZip::decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _uncompressSize )
+    bool ArchivatorZip::decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _decompressSize )
     {
         uLongf destLen = _bufferSize;
 
@@ -77,7 +77,7 @@ namespace Menge
             return false;
         }
 
-        _uncompressSize = destLen;
+        _decompressSize = destLen;
 
         return true;
     }

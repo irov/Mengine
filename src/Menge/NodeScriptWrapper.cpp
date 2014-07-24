@@ -178,6 +178,8 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         PyObject * textfield_setTextFormatArgs( TextField * _textField, PyObject * _args, PyObject * _kwds )
         {
+			(void)_kwds;
+
 			size_t args_count = pybind::tuple_size( _args );
 
 			TVectorString cs_args;
@@ -1444,6 +1446,8 @@ namespace Menge
 
 			void callback_node_attributes( const char * _node, size_t _count, const char ** _keys, const char ** _values )
 			{
+				(void)_node;
+
 				PyObject * py_attr = pybind::dict_new();
 				
 				for( size_t i = 0; i != _count; ++i )
@@ -1467,6 +1471,8 @@ namespace Menge
 
 			void callback_end_node( const char * _node )
 			{
+				(void)_node;
+
 				pybind::call_method( m_cb, "end", "()" );
 			}
 
@@ -1478,7 +1484,7 @@ namespace Menge
 		bool s_parseXml( const ConstString & _fileGroup, const FilePath & _path, PyObject * _cb )
 		{
 			InputStreamInterfacePtr stream = 
-				FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _path );
+				FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _path, false );
 
 			if( stream == nullptr )
 			{
@@ -1618,8 +1624,8 @@ namespace Menge
 					const FilePath & fileName = _resource->getFileName();
 					const ConstString & codecType = _resource->getCodecType();
 
-					PREFETCHER_SERVICE(m_serviceProvider)
-						->prefetchImageDecoder( m_category, fileName, codecType );
+					//PREFETCHER_SERVICE(m_serviceProvider)
+						//->prefetchImageDecoder( m_category, fileName, codecType );
 				}
 
 				void visit( ResourceMovie * _resource ) override
@@ -1627,8 +1633,8 @@ namespace Menge
 					const FilePath & fileName = _resource->getFileName();
 					const ConstString & dataflowType = _resource->getDataflowType();
 
-					PREFETCHER_SERVICE(m_serviceProvider)
-						->prefetchData( m_category, fileName, dataflowType );
+					//PREFETCHER_SERVICE(m_serviceProvider)
+						//->prefetchData( m_category, fileName, dataflowType );
 				}
 
 			protected:
@@ -1892,7 +1898,7 @@ namespace Menge
 			const FilePath & filePath = resourceFile->getFilePath();
 
 			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-				->openInputFile( category, filePath );
+				->openInputFile( category, filePath, false );
 
 			if( stream == nullptr )
 			{

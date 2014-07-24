@@ -1,11 +1,8 @@
 #	include "Interface/ServiceInterface.h"
 
 #	include "XmlToBinDecoder.h"
-#	include "HotspotImageConverter.h"
 #	include "AlphaSpreadingPlugin.h"
 #	include "XmlToAekConverter.h"
-#	include "FFMPEGToGVFConverter.h"
-#	include "PVRToHTFConverter.h"
 
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/ArchiveInterface.h"
@@ -58,6 +55,7 @@ extern "C" // only required if using g++
 	extern bool initPluginMengeWin32FileGroup( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );	
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );
 }
 
 PyObject * PyToolException;
@@ -313,6 +311,10 @@ namespace Menge
 		initPluginMengeZip( &plugin_zip );
 		plugin_zip->initialize( serviceProvider );
 
+		PluginInterface * plugin_lz4;
+		initPluginMengeLZ4( &plugin_lz4 );
+		plugin_lz4->initialize( serviceProvider );
+		
 		PluginInterface * plugin_image_codec;
 		initPluginMengeImageCodec( &plugin_image_codec );
 
@@ -353,6 +355,83 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType )
+	{		
+		String utf8_fromPath;
+		Helper::unicodeToUtf8( serviceProvider, _fromPath, utf8_fromPath );
+
+		String utf8_toPath;
+		Helper::unicodeToUtf8( serviceProvider, _toPath, utf8_toPath );
+
+		String utf8_convertType;
+		Helper::unicodeToUtf8( serviceProvider, _convertType, utf8_convertType );
+
+		ConverterOptions options;
+
+		options.pakName = ConstString::none();
+		options.inputFileName = Helper::stringizeString(serviceProvider, utf8_fromPath);
+		options.outputFileName = Helper::stringizeString(serviceProvider, utf8_toPath);
+
+		ConverterInterfacePtr converter = CONVERTER_SERVICE(serviceProvider)
+			->createConverter( Helper::stringizeString(serviceProvider, utf8_convertType) );
+
+		if( converter == nullptr )
+		{
+			LOGGER_ERROR(serviceProvider)("convertPVRToHTF can't create convert '%s'\nfrom: %s\nto: %s\n"
+				, utf8_convertType.c_str()
+				, options.inputFileName.c_str()
+				, options.outputFileName.c_str()
+				);
+
+			return false;
+		}
+
+		converter->setOptions( &options );
+
+		if( converter->convert() == false )
+		{
+			LOGGER_ERROR(serviceProvider)( "convertPVRToHTF can't convert '%s'\nfrom: %s\nto: %s\n"
+				, utf8_convertType.c_str()
+				, options.inputFileName.c_str()
+				, options.outputFileName.c_str()
+				);
+
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * convert( PyObject * self, PyObject * args )
+	{
+		(void)self;
+
+		const wchar_t * fromPath;
+		const wchar_t * toPath;
+		const wchar_t * convertType;
+
+		if( !PyArg_ParseTuple(args, "uuu", &fromPath, &toPath, &convertType ) )
+		{
+			LOGGER_ERROR(serviceProvider)("convert: error parse args"
+				);
+
+			return NULL;
+		}
+
+		if( s_convert( fromPath, toPath, convertType ) == false )
+		{
+			LOGGER_ERROR(serviceProvider)("convert: error process %ls to %ls convert %ls"
+				, fromPath
+				, toPath
+				, convertType
+				);
+
+			return NULL;
+		}
+
+		Py_RETURN_NONE;
+	}
 }
 /////////////////////////////////////////////////////////////////////////////////////
 static PyMethodDef ModuleMethods[] =
@@ -360,9 +439,7 @@ static PyMethodDef ModuleMethods[] =
 	{"spreadingPngAlpha", Menge::spreadingPngAlpha, METH_VARARGS, "spreading png alpha"},
 	{"writeBin", Menge::writeBin, METH_VARARGS, "write binary"},
 	{"writeAek", Menge::writeAek, METH_VARARGS, "write aek"},	
-	{"convertPngToHit", Menge::convertPngToHit, METH_VARARGS, "convert png to hit"},
-	{"convertFFMPEGToGVF", Menge::convertFFMPEGToGVF, METH_VARARGS, "convert ffmpeg to gvf"},
-	{"convertPVRToHTF", Menge::convertPVRToHTF, METH_VARARGS, "convert pvr to htf"},	
+	{"convert", Menge::convert, METH_VARARGS, "convert"},
 	{NULL, NULL, 0, NULL}
 };
 /////////////////////////////////////////////////////////////////////////////////////

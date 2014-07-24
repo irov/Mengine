@@ -162,7 +162,7 @@ namespace Menge
 				}
 
 				InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-					->openInputFile( category, fileName );
+					->openInputFile( category, fileName, false );
 
 				if( stream == nullptr )
 				{

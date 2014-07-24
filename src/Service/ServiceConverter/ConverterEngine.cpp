@@ -161,7 +161,7 @@ namespace Menge
             ->existFile( options.pakName, options.outputFileName, nullptr ) == true )
         {			
             InputStreamInterfacePtr oldFile = FILE_SERVICE(m_serviceProvider)
-                ->openInputFile( options.pakName, options.inputFileName );
+                ->openInputFile( options.pakName, options.inputFileName, false );
 
             if( oldFile == nullptr )
             {
@@ -179,7 +179,7 @@ namespace Menge
             oldFile = nullptr;
 
             InputStreamInterfacePtr newFile = FILE_SERVICE(m_serviceProvider)
-                ->openInputFile( options.pakName, options.outputFileName );
+                ->openInputFile( options.pakName, options.outputFileName, false );
 
             if( newFile == nullptr )
             {

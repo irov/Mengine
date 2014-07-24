@@ -28,8 +28,8 @@ namespace Menge
 		
 		bool loadImageFrameCombineRGBAndAlpha_( const ConstString& _pakName, const FilePath& _fileNameRGB, const FilePath& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha );
 		RenderTextureInterfacePtr createTextureRGBAndAlpha_( const ConstString& _pakName, const FilePath& _fileNameRGB, const FilePath& _fileNameAlpha, const ConstString & _codecRGB, const ConstString & _codecAlpha ) const;
-        bool loadRGBData_( unsigned char * _buffer, int _pitch, const ImageDecoderInterfacePtr & _imageDecoderRGB ) const;
-		bool loadAlphaData_( unsigned char * _buffer, int _pitch, const ImageDecoderInterfacePtr & _imageDecoderAlpha ) const;
+        bool loadRGBData_( void * _buffer, int _pitch, const ImageDecoderInterfacePtr & _imageDecoderRGB ) const;
+		bool loadAlphaData_( void * _buffer, int _pitch, const ImageDecoderInterfacePtr & _imageDecoderAlpha ) const;
 
 	protected:
 		bool _loader( const Metabuf::Metadata * _parser ) override;

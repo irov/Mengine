@@ -238,7 +238,7 @@ namespace Menge
 		return fileGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr FileEngine::openInputFile( const ConstString& _fileGroupName, const FilePath & _fileName )
+	InputStreamInterfacePtr FileEngine::openInputFile( const ConstString& _fileGroupName, const FilePath & _fileName, bool _streaming )
 	{
 		FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
 
@@ -251,7 +251,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		InputStreamInterfacePtr file = group->createInputFile( _fileName );
+		InputStreamInterfacePtr file = group->createInputFile( _fileName, _streaming );
 
 		if( file == nullptr )
 		{
@@ -262,7 +262,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( group->openInputFile( _fileName, file, 0, 0 ) == false )
+		if( group->openInputFile( _fileName, file, 0, 0, _streaming ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFile can't open input file '%s' '%s'"
 				, _fileGroupName.c_str()
@@ -312,7 +312,7 @@ namespace Menge
 		return file;
 	}
     //////////////////////////////////////////////////////////////////////////
-    MappedFileInterfacePtr FileEngine::openMappedFile( const ConstString & _fileGroupName, const FilePath & _fileName )
+    FileMappedInterfacePtr FileEngine::openMappedFile( const ConstString & _fileGroupName, const FilePath & _fileName )
     {
 		FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
 
@@ -325,7 +325,7 @@ namespace Menge
 			return nullptr;
 		}
 
-        MappedFileInterfacePtr mappedFile = group->createMappedFile();
+        FileMappedInterfacePtr mappedFile = group->createMappedFile();
 
         if( mappedFile == nullptr )
         {

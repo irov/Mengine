@@ -60,7 +60,7 @@ namespace Menge
         ConstString full_output = concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
 		        
         InputStreamInterfacePtr input = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_input );
+            ->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false );
 
         uint32_t data_size = input->size();
 

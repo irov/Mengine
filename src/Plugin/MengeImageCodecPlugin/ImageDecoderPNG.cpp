@@ -199,6 +199,7 @@ namespace Menge
 			{
 				m_dataInfo.channels = 4;
 			}break;			
+		case PNG_COLOR_TYPE_GRAY:
 		case PNG_COLOR_TYPE_GRAY_ALPHA:
 			{
 				m_dataInfo.channels = 1;
@@ -233,7 +234,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode invalid bufferSize %d != (%d * %d)"
                 , _bufferSize
                 , m_options.pitch
-                , m_dataInfo.height 
+                , m_dataInfo.height
                 );
 
             return 0;

@@ -78,13 +78,13 @@ namespace Menge
         metadata->get_File_WrapX( m_wrapU );
         metadata->get_File_WrapY( m_wrapV );
 
-        metadata->swap_FileRGB_Path( m_fileNameRGB );
-        metadata->swap_FileRGB_Codec( m_codecTypeRGB );
-        metadata->get_FileRGB_UV( m_uv );
+        metadata->swap_File_PathRGB( m_fileNameRGB );
+        metadata->swap_File_CodecRGB( m_codecTypeRGB );
+        metadata->get_File_UVRGB( m_uv );
 
-        metadata->swap_FileAlpha_Path( m_fileNameAlpha );
-        metadata->swap_FileAlpha_Codec( m_codecTypeAlpha );
-        metadata->get_FileAlpha_UV( m_uv_alpha );
+        metadata->swap_File_PathAlpha( m_fileNameAlpha );
+        metadata->swap_File_CodecAlpha( m_codecTypeAlpha );
+        metadata->get_File_UVAlpha( m_uv_alpha );
 
 		metadata->get_File_MaxSize( m_maxSize );
 
@@ -107,10 +107,14 @@ namespace Menge
         
         if( this->loadImageFrame_( category, m_fileNameRGB, m_codecTypeRGB ) == false )
         {
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageMultiplyRGBAndAlpha::_compile: '%s' can't load rgb image file '%s' codec '%s'"
+				, this->getName().c_str()
+				, m_fileNameRGB.c_str()
+				, m_codecTypeRGB.c_str()
+				);
+
             return false;
         }
-
-        m_isAlpha = true;
 
         if( m_codecTypeAlpha.empty() == true )
         {
@@ -123,9 +127,10 @@ namespace Menge
 
         if( textureAlpha == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceImageMultiplyRGBAndAlpha::_compile: '%s' can't load alpha image file '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceImageMultiplyRGBAndAlpha::_compile: '%s' can't load alpha image file '%s' codec '%s'"
                 , this->getName().c_str()
                 , m_fileNameAlpha.c_str()
+				, m_codecTypeAlpha.c_str()
                 );
 
             return false;

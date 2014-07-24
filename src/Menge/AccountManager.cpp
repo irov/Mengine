@@ -389,7 +389,7 @@ namespace Menge
 		}
         
 		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath );
+            ->openInputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath, false );
 
         if( file == nullptr )
         {

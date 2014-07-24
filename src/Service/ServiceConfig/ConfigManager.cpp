@@ -28,7 +28,7 @@ namespace Menge
 	bool ConfigManager::loadConfig( const ConstString & _fileGroup, const FilePath & _applicationPath )
 	{
 		InputStreamInterfacePtr applicationInputStream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _applicationPath );
+			FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _applicationPath, false );
 
 		if( applicationInputStream == nullptr )
 		{

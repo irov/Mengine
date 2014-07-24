@@ -93,6 +93,7 @@ extern "C" // only required if using g++
     extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeXmlCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );
 
 	extern bool initPluginPathFinder( Menge::PluginInterface ** _plugin );
 }
@@ -383,7 +384,7 @@ namespace Menge
 		FilePath applicationPath = CONST_STRING_LOCAL( m_serviceProvider, "application.ini" );
 
 		InputStreamInterfacePtr applicationInputStream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( ConstString::none(), applicationPath );
+			FILE_SERVICE(m_serviceProvider)->openInputFile( ConstString::none(), applicationPath, false );
 
 		if( applicationInputStream == nullptr )
 		{
@@ -572,6 +573,12 @@ namespace Menge
 			LOGGER_INFO(m_serviceProvider)( "initialize Zip..." );
 			initPluginMengeZip( &m_pluginMengeZip );
 			m_pluginMengeZip->initialize( m_serviceProvider );
+		}
+
+		{
+			LOGGER_INFO(m_serviceProvider)( "initialize LZ4..." );
+			initPluginMengeLZ4( &m_pluginMengeLZ4 );
+			m_pluginMengeLZ4->initialize( m_serviceProvider );
 		}
 
         return true;

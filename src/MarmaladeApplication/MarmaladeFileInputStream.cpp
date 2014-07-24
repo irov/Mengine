@@ -1,4 +1,4 @@
-#	include "MarmaladeInputStream.h"
+#	include "MarmaladeFileInputStream.h"
 
 #	include "Interface/MarmaladeLayerInterface.h"
 #	include "Interface/StringizeInterface.h"
@@ -8,25 +8,27 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeInputStream::MarmaladeInputStream()
+	MarmaladeFileInputStream::MarmaladeFileInputStream()
         : m_serviceProvider(nullptr)
         , m_hFile(nullptr)
 		, m_size(0)
 		, m_offset(0)
-		, m_pos(0)
+		, m_carriage(0)
+		, m_capacity(0)
+		, m_reading(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeInputStream::~MarmaladeInputStream()
+	MarmaladeFileInputStream::~MarmaladeFileInputStream()
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeInputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    void MarmaladeFileInputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeInputStream::open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size )
+	bool MarmaladeFileInputStream::open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size )
 	{
 		m_folder = _folder;
 		m_filename = _fileName;
@@ -73,7 +75,7 @@ namespace Menge
 			return false;
 		}
 
-		if( s3e_size - (_offset + _size) < 0 )
+		if( _offset + _size > (uint32)s3e_size )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open %ls invalid file range %d:%d size %d"
 				, filePath
@@ -87,17 +89,20 @@ namespace Menge
 
 		m_size = _size == 0 ? (size_t)s3e_size : _size;
 		m_offset = _offset;
-		m_pos = 0;
+		
+		m_carriage = 0;
+		m_capacity = 0;
+		m_reading = 0;
 
 		if( m_offset != 0 )
 		{
 			this->seek( 0 );
-		}		
+		}	
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeInputStream::_destroy()
+	void MarmaladeFileInputStream::_destroy()
 	{
 		if( m_hFile != nullptr )
 		{
@@ -106,71 +111,150 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MarmaladeInputStream::read( void * _buf, size_t _count )
+	size_t MarmaladeFileInputStream::read( void * _buf, size_t _count )
 	{     
-		if( m_pos + _count > m_size )
+		size_t pos = m_reading - m_capacity + m_carriage;
+
+		size_t correct_count = _count;
+
+		if( pos + _count > m_size )
 		{
-			_count = m_size - m_pos;
+			correct_count = m_size - pos;
 		}
 
-		uint32 s3e_count = static_cast<uint32>(_count);
-		uint32 bytesRead = s3eFileRead( _buf, 1, s3e_count, m_hFile );
-
-		if( bytesRead != s3e_count )
+		if( correct_count == m_size )
 		{
-			s3eFileError error = s3eFileGetError();
+			size_t bytesRead;
+			if( this->read_( _buf, correct_count, bytesRead ) == false )
+			{
+				return 0;
+			}
 
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::read (%d:%d) size %d get error %d"
-				, bytesRead
-				, _count
-				, m_size
-				, error
-				);
+			m_carriage = 0;
+			m_capacity = 0;
 
+			m_reading += bytesRead;
+
+			return bytesRead;
+		}
+
+		if( correct_count > MENGINE_MARMALADE_FILE_BUFFER_SIZE )
+		{            
+			size_t tail = m_capacity - m_carriage;
+
+			if( tail != 0 )
+			{
+				stdex::memorycopy( _buf, m_readCache + m_carriage, tail );
+			}
+
+			size_t toRead = correct_count - tail;
+			void * toBuffer = (uint8_t *)_buf + tail;
+
+			size_t bytesRead;
+			if( this->read_( toBuffer, toRead, bytesRead ) == false )
+			{
+				return 0;
+			}
+
+			m_carriage = 0;
+			m_capacity = 0;
+
+			m_reading += bytesRead;
+
+			return bytesRead + tail;
+		}
+
+		if( m_carriage + correct_count <= m_capacity )
+		{
+			stdex::memorycopy( _buf, m_readCache + m_carriage, correct_count );
+
+			m_carriage += correct_count;
+
+			return correct_count;
+		}
+
+		size_t tail = m_capacity - m_carriage;
+
+		if( tail != 0 )
+		{
+			stdex::memorycopy( _buf, m_readCache + m_carriage, tail );
+		}
+
+		size_t bytesRead;
+		if( this->read_( m_readCache, MENGINE_MARMALADE_FILE_BUFFER_SIZE, bytesRead ) == false )
+		{
 			return 0;
 		}
 
-		m_pos += (size_t)bytesRead;
+		size_t readSize = (std::min)(correct_count - tail, bytesRead);
 
-		return bytesRead;
+		unsigned char * read_buf = (unsigned char *)_buf + tail;
+		stdex::memorycopy( read_buf, m_readCache, readSize );
+
+		m_carriage = readSize;
+		m_capacity = bytesRead;
+
+		m_reading += bytesRead;
+
+		return readSize + tail;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeInputStream::seek( size_t _pos )
+	bool MarmaladeFileInputStream::read_( void * _buf, size_t _size, size_t & _read )
 	{
-		s3eResult result = s3eFileSeek( m_hFile, static_cast<int32>(m_offset + _pos), S3E_FILESEEK_SET );
+		uint32 s3e_count = static_cast<uint32>(_size);
+		uint32 bytesRead = s3eFileRead( _buf, 1, s3e_count, m_hFile );
 
-		if( result != S3E_RESULT_SUCCESS )
-		{
-			s3eFileError error = s3eFileGetError();
-
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::seek %d:%d size %d get error %d"
-				, m_offset
-				, _pos
-				, m_size
-				, error
-				);
-
-			return false;
-		}
-
-		m_pos = (size_t)_pos;
+		_read = (size_t)bytesRead;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MarmaladeInputStream::tell() const
+	bool MarmaladeFileInputStream::seek( size_t _pos )
 	{
-        //int32 current = s3eFileTell( m_hFile );
+		if( _pos >= m_reading - m_capacity && _pos < m_reading )
+		{
+			m_carriage = m_capacity - (m_reading - _pos);
+		}
+		else
+		{
+			s3eResult result = s3eFileSeek( m_hFile, static_cast<int32>(m_offset + _pos), S3E_FILESEEK_SET );
 
-        return m_pos;
+			if( result != S3E_RESULT_SUCCESS )
+			{
+				s3eFileError error = s3eFileGetError();
+
+				LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::seek %d:%d size %d get error %d"
+					, m_offset
+					, _pos
+					, m_size
+					, error
+					);
+
+				return false;
+			}
+
+			m_carriage = 0;
+			m_capacity = 0;
+
+			m_reading = _pos;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MarmaladeInputStream::size() const 
+	size_t MarmaladeFileInputStream::tell() const
+	{
+		size_t current = m_reading - m_capacity + m_carriage;
+
+		return current;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t MarmaladeFileInputStream::size() const 
 	{
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeInputStream::time( uint64 & _time ) const
+	bool MarmaladeFileInputStream::time( uint64 & _time ) const
 	{
 		if( m_hFile == nullptr )
 		{

@@ -146,7 +146,7 @@ namespace Menge
 
 		////////////////////////////////////// init RGB Decoder
 		InputStreamInterfacePtr streamRGB = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( _pakName, _fileNameRGB );
+			->openInputFile( _pakName, _fileNameRGB, false );
 
 		if( streamRGB == nullptr )
 		{
@@ -172,7 +172,7 @@ namespace Menge
 
 		///Load Alpha data
 		InputStreamInterfacePtr streamAlpha = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( _pakName, _fileNameAlpha );
+			->openInputFile( _pakName, _fileNameAlpha, false );
 
 		if( streamAlpha == nullptr )
 		{
@@ -220,7 +220,7 @@ namespace Menge
 		rect.bottom = dataInfoRGB->height;
 
 		int pitch = 0;
-		unsigned char * buffer = texture->lock( &pitch, rect, false );
+		void * buffer = texture->lock( &pitch, rect, false );
 		
 		if( buffer == nullptr )
 		{
@@ -276,7 +276,7 @@ namespace Menge
 		return texture;
 	}
 	/////////////////////////////////////////////////////////////////////////
-	bool ResourceImageCombineRGBAndAlpha::loadRGBData_( unsigned char * _buffer, int _pitch, const ImageDecoderInterfacePtr & _imageDecoderRGB ) const
+	bool ResourceImageCombineRGBAndAlpha::loadRGBData_( void * _buffer, int _pitch, const ImageDecoderInterfacePtr & _imageDecoderRGB ) const
 	{
 		//RGB
 		ImageCodecOptions optionsRGB;
@@ -300,7 +300,7 @@ namespace Menge
         return bufferSize == b;
 	}
     /////////////////////////////////////////////////////////////////////////
-    bool ResourceImageCombineRGBAndAlpha::loadAlphaData_( unsigned char * _buffer, int _pitch, const ImageDecoderInterfacePtr & _imageDecoderAlpha ) const
+    bool ResourceImageCombineRGBAndAlpha::loadAlphaData_( void * _buffer, int _pitch, const ImageDecoderInterfacePtr & _imageDecoderAlpha ) const
     {
         //Alpha
         ImageCodecOptions optionsAlpha;

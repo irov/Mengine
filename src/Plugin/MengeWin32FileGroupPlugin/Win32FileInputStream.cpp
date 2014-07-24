@@ -1,4 +1,4 @@
-#	include "Win32InputStream.h"
+#	include "Win32FileInputStream.h"
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
@@ -10,7 +10,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Win32InputStream::Win32InputStream()
+	Win32FileInputStream::Win32FileInputStream()
         : m_serviceProvider(nullptr)
         , m_hFile(INVALID_HANDLE_VALUE)
 		, m_size(0)
@@ -21,17 +21,17 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Win32InputStream::~Win32InputStream()
+	Win32FileInputStream::~Win32FileInputStream()
 	{
         this->close_();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Win32InputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    void Win32FileInputStream::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32InputStream::close_()
+    void Win32FileInputStream::close_()
     {
         if( m_hFile != INVALID_HANDLE_VALUE )
         {
@@ -40,7 +40,7 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size )
+	bool Win32FileInputStream::open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size )
 	{
 		WChar filePath[MAX_PATH];
 		if( this->openFile_( _folder, _fileName, filePath ) == false )
@@ -88,7 +88,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::openFile_( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath )
+	bool Win32FileInputStream::openFile_( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath )
 	{		
 		if( WINDOWSLAYER_SERVICE(m_serviceProvider)
 			->concatenateFilePath( _folder, _fileName, _filePath, MAX_PATH ) == false )
@@ -120,7 +120,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Win32InputStream::read( void * _buf, size_t _count )
+	size_t Win32FileInputStream::read( void * _buf, size_t _count )
 	{     
 		size_t pos = m_reading - m_capacity + m_carriage;
 		
@@ -133,17 +133,9 @@ namespace Menge
 
         if( correct_count == m_size )
         {
-            DWORD bytesRead = 0;
-            if( ::ReadFile( m_hFile, _buf, static_cast<DWORD>(correct_count), &bytesRead, NULL ) == FALSE )
+            size_t bytesRead;
+            if( this->read_( _buf, correct_count, bytesRead ) == false )
             {
-                DWORD dwError = GetLastError();
-
-                LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read %d:%d get error '%d'"
-                    , correct_count
-                    , m_size
-                    , dwError
-                    );
-
                 return 0;
             }
 
@@ -164,22 +156,14 @@ namespace Menge
                 stdex::memorycopy( _buf, m_readCache + m_carriage, tail );
             }
 
-			DWORD toRead = static_cast<DWORD>(correct_count - tail);
-			LPVOID toBuffer = (char *)_buf + tail;
+			size_t toRead = correct_count - tail;
+			void * toBuffer = (uint8_t *)_buf + tail;
 
-            DWORD bytesRead = 0;
-            if( ::ReadFile( m_hFile, toBuffer, toRead, &bytesRead, NULL ) == FALSE )
-            {
-                DWORD dwError = GetLastError();
-
-                LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read %d:%d get error '%d'"
-                    , correct_count - tail
-                    , m_size
-                    , dwError
-                    );
-
-                return 0;
-            }
+			size_t bytesRead;
+			if( this->read_( toBuffer, toRead, bytesRead ) == false )
+			{
+				return 0;
+			}
 
             m_carriage = 0;
             m_capacity = 0;
@@ -205,21 +189,13 @@ namespace Menge
             stdex::memorycopy( _buf, m_readCache + m_carriage, tail );
         }
 
-        DWORD bytesRead = 0;
-        if( ::ReadFile( m_hFile, m_readCache, MENGINE_WIN32_FILE_BUFFER_SIZE, &bytesRead, NULL ) == FALSE )
-        {
-            DWORD dwError = GetLastError();
-
-            LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read %d:%d get error '%d'"
-                , MENGINE_WIN32_FILE_BUFFER_SIZE
-                , m_size
-                , dwError
-                );
-
-            return 0;
-        }
+		size_t bytesRead;
+		if( this->read_( m_readCache, MENGINE_WIN32_FILE_BUFFER_SIZE, bytesRead ) == false )
+		{
+			return 0;
+		}
         
-        DWORD readSize = (std::min)( (DWORD)(correct_count - tail), bytesRead );
+        size_t readSize = (std::min)(correct_count - tail, bytesRead);
 
 		unsigned char * read_buf = (unsigned char *)_buf + tail;
         stdex::memorycopy( read_buf, m_readCache, readSize );
@@ -232,7 +208,28 @@ namespace Menge
         return readSize + tail;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::seek( size_t _pos )
+	bool Win32FileInputStream::read_( void * _buf, size_t _size, size_t & _read )
+	{
+		DWORD bytesRead = 0;
+		if( ::ReadFile( m_hFile, _buf, static_cast<DWORD>(_size), &bytesRead, NULL ) == FALSE )
+		{
+			DWORD dwError = GetLastError();
+
+			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::read %d:%d get error '%d'"
+				, _size
+				, m_size
+				, dwError
+				);
+
+			return false;
+		}
+
+		_read = (size_t)bytesRead;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32FileInputStream::seek( size_t _pos )
 	{
         if( _pos >= m_reading - m_capacity && _pos < m_reading )
         {
@@ -264,14 +261,14 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Win32InputStream::tell() const
+	size_t Win32FileInputStream::tell() const
 	{
         size_t current = m_reading - m_capacity + m_carriage;
 
         return current;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Win32InputStream::size() const 
+	size_t Win32FileInputStream::size() const 
 	{
 		return m_size;
 	}
@@ -341,7 +338,7 @@ namespace Menge
 		return ((((time_t) a2) << 16) << 16) + (a1 << 16) + a0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32InputStream::time( uint64_t & _time ) const
+	bool Win32FileInputStream::time( uint64_t & _time ) const
 	{
 		FILETIME creation;
 		FILETIME access;

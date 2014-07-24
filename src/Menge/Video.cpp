@@ -597,7 +597,7 @@ namespace Menge
 		}
 
         int pitch = 0;
-		unsigned char * lockRect = texture->lock( &pitch, rect, false );
+		void * lockRect = texture->lock( &pitch, rect, false );
 
 		if( lockRect == nullptr )
 		{

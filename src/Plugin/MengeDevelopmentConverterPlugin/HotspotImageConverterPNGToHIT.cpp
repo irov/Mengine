@@ -64,7 +64,7 @@ namespace Menge
 	bool HotspotImageConverterPNGToHIT::convert()
 	{
         InputStreamInterfacePtr input_stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( m_options.pakName, m_options.inputFileName );
+            ->openInputFile( m_options.pakName, m_options.inputFileName, false );
 
         if( input_stream == nullptr )
         {

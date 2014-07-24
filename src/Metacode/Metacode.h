@@ -1544,6 +1544,86 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
+            bool has_File_CodecAlpha() const
+            {
+                return File_CodecAlpha_successful;
+            }
+            
+            bool get_File_CodecAlpha( Menge::ConstString & _value ) const
+            {
+                if( File_CodecAlpha_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_CodecAlpha;
+            
+                return true;
+            }
+            
+            bool swap_File_CodecAlpha( Menge::ConstString & _value ) const
+            {
+                if( File_CodecAlpha_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_CodecAlpha);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_CodecAlpha( C * _self, M _method )
+            {
+                if( File_CodecAlpha_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_CodecAlpha );
+            }
+            
+            bool has_File_CodecRGB() const
+            {
+                return File_CodecRGB_successful;
+            }
+            
+            bool get_File_CodecRGB( Menge::ConstString & _value ) const
+            {
+                if( File_CodecRGB_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_CodecRGB;
+            
+                return true;
+            }
+            
+            bool swap_File_CodecRGB( Menge::ConstString & _value ) const
+            {
+                if( File_CodecRGB_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_CodecRGB);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_CodecRGB( C * _self, M _method )
+            {
+                if( File_CodecRGB_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_CodecRGB );
+            }
+            
             bool has_File_MaxSize() const
             {
                 return File_MaxSize_successful;
@@ -1624,6 +1704,86 @@ namespace Metacode
                 (_self->*_method)( this->File_Offset );
             }
             
+            bool has_File_PathAlpha() const
+            {
+                return File_PathAlpha_successful;
+            }
+            
+            bool get_File_PathAlpha( Menge::ConstString & _value ) const
+            {
+                if( File_PathAlpha_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_PathAlpha;
+            
+                return true;
+            }
+            
+            bool swap_File_PathAlpha( Menge::ConstString & _value ) const
+            {
+                if( File_PathAlpha_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_PathAlpha);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_PathAlpha( C * _self, M _method )
+            {
+                if( File_PathAlpha_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_PathAlpha );
+            }
+            
+            bool has_File_PathRGB() const
+            {
+                return File_PathRGB_successful;
+            }
+            
+            bool get_File_PathRGB( Menge::ConstString & _value ) const
+            {
+                if( File_PathRGB_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_PathRGB;
+            
+                return true;
+            }
+            
+            bool swap_File_PathRGB( Menge::ConstString & _value ) const
+            {
+                if( File_PathRGB_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_PathRGB);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_PathRGB( C * _self, M _method )
+            {
+                if( File_PathRGB_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_PathRGB );
+            }
+            
             bool has_File_Size() const
             {
                 return File_Size_successful;
@@ -1662,6 +1822,86 @@ namespace Metacode
                 }
             
                 (_self->*_method)( this->File_Size );
+            }
+            
+            bool has_File_UVAlpha() const
+            {
+                return File_UVAlpha_successful;
+            }
+            
+            bool get_File_UVAlpha( mt::vec4f & _value ) const
+            {
+                if( File_UVAlpha_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_UVAlpha;
+            
+                return true;
+            }
+            
+            bool swap_File_UVAlpha( mt::vec4f & _value ) const
+            {
+                if( File_UVAlpha_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_UVAlpha);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_UVAlpha( C * _self, M _method )
+            {
+                if( File_UVAlpha_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_UVAlpha );
+            }
+            
+            bool has_File_UVRGB() const
+            {
+                return File_UVRGB_successful;
+            }
+            
+            bool get_File_UVRGB( mt::vec4f & _value ) const
+            {
+                if( File_UVRGB_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_UVRGB;
+            
+                return true;
+            }
+            
+            bool swap_File_UVRGB( mt::vec4f & _value ) const
+            {
+                if( File_UVRGB_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_UVRGB);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_UVRGB( C * _self, M _method )
+            {
+                if( File_UVRGB_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_UVRGB );
             }
             
             bool has_File_WrapX() const
@@ -1744,246 +1984,6 @@ namespace Metacode
                 (_self->*_method)( this->File_WrapY );
             }
             
-            bool has_FileAlpha_Codec() const
-            {
-                return FileAlpha_Codec_successful;
-            }
-            
-            bool get_FileAlpha_Codec( Menge::ConstString & _value ) const
-            {
-                if( FileAlpha_Codec_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->FileAlpha_Codec;
-            
-                return true;
-            }
-            
-            bool swap_FileAlpha_Codec( Menge::ConstString & _value ) const
-            {
-                if( FileAlpha_Codec_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->FileAlpha_Codec);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_FileAlpha_Codec( C * _self, M _method )
-            {
-                if( FileAlpha_Codec_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->FileAlpha_Codec );
-            }
-            
-            bool has_FileAlpha_Path() const
-            {
-                return FileAlpha_Path_successful;
-            }
-            
-            bool get_FileAlpha_Path( Menge::ConstString & _value ) const
-            {
-                if( FileAlpha_Path_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->FileAlpha_Path;
-            
-                return true;
-            }
-            
-            bool swap_FileAlpha_Path( Menge::ConstString & _value ) const
-            {
-                if( FileAlpha_Path_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->FileAlpha_Path);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_FileAlpha_Path( C * _self, M _method )
-            {
-                if( FileAlpha_Path_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->FileAlpha_Path );
-            }
-            
-            bool has_FileAlpha_UV() const
-            {
-                return FileAlpha_UV_successful;
-            }
-            
-            bool get_FileAlpha_UV( mt::vec4f & _value ) const
-            {
-                if( FileAlpha_UV_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->FileAlpha_UV;
-            
-                return true;
-            }
-            
-            bool swap_FileAlpha_UV( mt::vec4f & _value ) const
-            {
-                if( FileAlpha_UV_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->FileAlpha_UV);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_FileAlpha_UV( C * _self, M _method )
-            {
-                if( FileAlpha_UV_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->FileAlpha_UV );
-            }
-            
-            bool has_FileRGB_Codec() const
-            {
-                return FileRGB_Codec_successful;
-            }
-            
-            bool get_FileRGB_Codec( Menge::ConstString & _value ) const
-            {
-                if( FileRGB_Codec_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->FileRGB_Codec;
-            
-                return true;
-            }
-            
-            bool swap_FileRGB_Codec( Menge::ConstString & _value ) const
-            {
-                if( FileRGB_Codec_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->FileRGB_Codec);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_FileRGB_Codec( C * _self, M _method )
-            {
-                if( FileRGB_Codec_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->FileRGB_Codec );
-            }
-            
-            bool has_FileRGB_Path() const
-            {
-                return FileRGB_Path_successful;
-            }
-            
-            bool get_FileRGB_Path( Menge::ConstString & _value ) const
-            {
-                if( FileRGB_Path_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->FileRGB_Path;
-            
-                return true;
-            }
-            
-            bool swap_FileRGB_Path( Menge::ConstString & _value ) const
-            {
-                if( FileRGB_Path_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->FileRGB_Path);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_FileRGB_Path( C * _self, M _method )
-            {
-                if( FileRGB_Path_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->FileRGB_Path );
-            }
-            
-            bool has_FileRGB_UV() const
-            {
-                return FileRGB_UV_successful;
-            }
-            
-            bool get_FileRGB_UV( mt::vec4f & _value ) const
-            {
-                if( FileRGB_UV_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->FileRGB_UV;
-            
-                return true;
-            }
-            
-            bool swap_FileRGB_UV( mt::vec4f & _value ) const
-            {
-                if( FileRGB_UV_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->FileRGB_UV);
-            
-                return true;
-            }
-            
-            template<class C, class M>
-            void method_FileRGB_UV( C * _self, M _method )
-            {
-                if( FileRGB_UV_successful == false )
-                {
-                    return;
-                }
-            
-                (_self->*_method)( this->FileRGB_UV );
-            }
-            
         protected:
             bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
             bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
@@ -1992,28 +1992,28 @@ namespace Metacode
         public:
         protected:
         protected:
+            bool File_CodecAlpha_successful;
+            mutable Menge::ConstString File_CodecAlpha;
+            bool File_CodecRGB_successful;
+            mutable Menge::ConstString File_CodecRGB;
             bool File_MaxSize_successful;
             mutable mt::vec2f File_MaxSize;
             bool File_Offset_successful;
             mutable mt::vec2f File_Offset;
+            bool File_PathAlpha_successful;
+            mutable Menge::ConstString File_PathAlpha;
+            bool File_PathRGB_successful;
+            mutable Menge::ConstString File_PathRGB;
             bool File_Size_successful;
             mutable mt::vec2f File_Size;
+            bool File_UVAlpha_successful;
+            mutable mt::vec4f File_UVAlpha;
+            bool File_UVRGB_successful;
+            mutable mt::vec4f File_UVRGB;
             bool File_WrapX_successful;
             mutable bool File_WrapX;
             bool File_WrapY_successful;
             mutable bool File_WrapY;
-            bool FileAlpha_Codec_successful;
-            mutable Menge::ConstString FileAlpha_Codec;
-            bool FileAlpha_Path_successful;
-            mutable Menge::ConstString FileAlpha_Path;
-            bool FileAlpha_UV_successful;
-            mutable mt::vec4f FileAlpha_UV;
-            bool FileRGB_Codec_successful;
-            mutable Menge::ConstString FileRGB_Codec;
-            bool FileRGB_Path_successful;
-            mutable Menge::ConstString FileRGB_Path;
-            bool FileRGB_UV_successful;
-            mutable mt::vec4f FileRGB_UV;
         };
         
         class Meta_ResourceImageSolid

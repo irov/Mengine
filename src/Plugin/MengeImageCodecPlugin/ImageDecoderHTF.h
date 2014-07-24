@@ -8,8 +8,6 @@
 
 namespace Menge
 {
-	DECLARE_MAGIC_NUMBER(MAGIC_HTF, 'H', 'T', 'F', '1', 1);
-
 	class ImageDecoderHTF
 		: public ImageDecoder
 	{
@@ -29,7 +27,7 @@ namespace Menge
 	private:       
 		ArchivatorInterfacePtr m_archivator;
 
-        uint32_t m_uncompress_size;
-        uint32_t m_compress_size;
+		uint32_t m_uncompress_size;
+		uint32_t m_compress_size;
 	};
 }	// namespace Menge

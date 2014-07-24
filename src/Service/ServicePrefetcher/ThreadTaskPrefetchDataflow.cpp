@@ -45,7 +45,7 @@ namespace Menge
 			return false;
 		}
 
-		m_stream = m_group->createInputFile( m_fileName );
+		m_stream = m_group->createInputFile( m_fileName, false );
 
 		if( m_stream == nullptr )
 		{
@@ -88,7 +88,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskPrefetchDataflow::_onMain()
 	{
-		if( m_group->openInputFile( m_fileName, m_stream, 0, 0 ) == false )
+		if( m_group->openInputFile( m_fileName, m_stream, 0, 0, false ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide open file '%s':'%s'"
 				, m_pakName.c_str()

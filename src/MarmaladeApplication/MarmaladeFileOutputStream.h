@@ -1,30 +1,34 @@
 #	pragma once
 
 #	include "Interface/FileSystemInterface.h"
-#	include "Interface/WindowsLayerInterface.h"
+
+#   include <s3eFile.h>
 
 namespace Menge
 {
-	class Win32OutputStream
+	class MarmaladeFileOutputStream
 		: public FileOutputStreamInterface
 	{
 	public:
-		Win32OutputStream();
-		~Win32OutputStream();
+		MarmaladeFileOutputStream();
+		~MarmaladeFileOutputStream();
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool open( const FilePath & _folder, const FilePath& _fileName ) override;
-
+		bool open( const FilePath & _folder, const FilePath& _filename ) override;
+        
 	public:
 		bool write( const void * _data, size_t _count ) override;
 		bool flush() override;
 
+    public:
+        void _destroy() override;
+
 	private:
         ServiceProviderInterface * m_serviceProvider;
         
-		HANDLE m_hFile;
+		s3eFile * m_hFile;
 	};
 }	// namespace Menge

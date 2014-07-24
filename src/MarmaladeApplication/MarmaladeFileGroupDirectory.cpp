@@ -35,19 +35,22 @@ namespace Menge
 		return m_path;
 	}
     //////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr MarmaladeFileGroupDirectory::createInputFile( const FilePath & _fileName )
+	InputStreamInterfacePtr MarmaladeFileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming )
 	{
 		(void)_fileName;
+		(void)_streaming;
 
-		MarmaladeInputStream * inputStream = m_factoryInputStream.createObjectT();
+		MarmaladeFileInputStream * inputStream = m_factoryInputStream.createObjectT();
 
         inputStream->setServiceProvider( m_serviceProvider );
 
 		return inputStream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeFileGroupDirectory::openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size )
+	bool MarmaladeFileGroupDirectory::openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
 	{
+		(void)_streaming;
+
 		if( _stream == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeFileGroupDirectory::openInputFile failed _stream == NULL"
@@ -73,7 +76,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr MarmaladeFileGroupDirectory::createOutputFile()
     {
-        MarmaladeOutputStream * outStream = m_factoryOutputStream.createObjectT();
+        MarmaladeFileOutputStream * outStream = m_factoryOutputStream.createObjectT();
 
         outStream->setServiceProvider( m_serviceProvider );
 
@@ -105,7 +108,7 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    MappedFileInterfacePtr MarmaladeFileGroupDirectory::createMappedFile()
+    FileMappedInterfacePtr MarmaladeFileGroupDirectory::createMappedFile()
     {
 		LOGGER_ERROR(m_serviceProvider)("MarmaladeFileGroupDirectory::createMappedFile not support"
 			);
@@ -113,7 +116,7 @@ namespace Menge
         return nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeFileGroupDirectory::openMappedFile( const FilePath & _fileName, const MappedFileInterfacePtr & _stream )
+	bool MarmaladeFileGroupDirectory::openMappedFile( const FilePath & _fileName, const FileMappedInterfacePtr & _stream )
 	{
 		LOGGER_ERROR(m_serviceProvider)("MarmaladeFileGroupDirectory::openMappedFile not support"
 			);

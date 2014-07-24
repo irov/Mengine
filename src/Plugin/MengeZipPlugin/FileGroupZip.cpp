@@ -75,6 +75,9 @@ namespace Menge
 
 			return false;
 		}
+
+		m_mutex = THREAD_SERVICE(m_serviceProvider)
+			->createMutex();
 		
 		return true;
 	}
@@ -95,7 +98,7 @@ namespace Menge
 		m_zipFileGroup = zipFileGroup;
 		
 		InputStreamInterfacePtr zipFile = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( ConstString::none(), m_path );
+			->openInputFile( ConstString::none(), m_path, false );
 
 		if( zipFile == nullptr )
 		{
@@ -211,12 +214,15 @@ namespace Menge
 			Utils::skip( zipFile, header.compressedSize );
 		}
 
+		m_zipFile = zipFile;
+
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
     void FileGroupZip::finalize()
     {
         m_zipFileGroup = nullptr;
+		m_zipFile = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath & FileGroupZip::getPath() const
@@ -269,7 +275,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _fileName )
+	InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _fileName, bool _streaming )
 	{
 		FileInfo * info = m_files.find( _fileName );
 
@@ -278,9 +284,9 @@ namespace Menge
 			return nullptr;
 		}
 			
-		if( info->compr_method == Z_NO_COMPRESSION )
+		if( _streaming == true )
 		{
-			InputStreamInterfacePtr stream = m_zipFileGroup->createInputFile( _fileName );
+			InputStreamInterfacePtr stream = m_zipFileGroup->createInputFile( _fileName, true );
 
 			return stream;
 		}
@@ -290,7 +296,7 @@ namespace Menge
 		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size )
+	bool FileGroupZip::openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
 	{
 		if( _stream == nullptr )
 		{
@@ -321,9 +327,19 @@ namespace Menge
 			return false;
 		}
 				
-		if( info->compr_method == Z_NO_COMPRESSION )
+		if( _streaming == true )
 		{
-			if( m_zipFileGroup->openInputFile( m_path, _stream, file_offset, file_size ) == false )
+			if( info->compr_method != Z_NO_COMPRESSION )
+			{
+				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFile: pak %s file %s invalid open, not support compress + stream"
+					, m_path.c_str()
+					, _fileName.c_str()
+					);
+
+				return false;
+			}
+
+			if( m_zipFileGroup->openInputFile( m_path, _stream, file_offset, file_size, true ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFile: pak %s file %s invalid open range %d:%d"
 					, m_path.c_str()
@@ -338,69 +354,71 @@ namespace Menge
 			return true;
 		}
 		
-		InputStreamInterfacePtr stream = m_zipFileGroup->createInputFile( m_path );
-
-		if( stream == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s invalid create stream"
-				, m_path.c_str()
-				, _fileName.c_str()
-				);
-
-			return nullptr;				 
-		}
-
-		if( m_zipFileGroup->openInputFile( m_path, stream, file_offset, file_size ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s invalid open range %d:%d"
-				, m_path.c_str()
-				, _fileName.c_str()
-				, file_offset
-				, file_size
-				);
-
-			return false;
-		}
-
 		MemoryInput * memory = stdex::intrusive_get<MemoryInput>(_stream);
-		void * buffer = memory->newMemory( info->unz_size );
-
-		if( buffer == nullptr )
+		
+		if( info->compr_method == Z_NO_COMPRESSION )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed new memory %d"
-				, m_path.c_str()
-				, _fileName.c_str()
-				, info->unz_size
-				);
+			void * buffer = memory->newMemory( info->file_size );
 
-			return false;
+			if( buffer == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed new memory %d"
+					, m_path.c_str()
+					, _fileName.c_str()
+					, info->unz_size
+					);
+
+				return false;
+			}
+
+			m_mutex->lock();
+			m_zipFile->seek( file_offset );
+			m_zipFile->read( buffer, info->file_size );
+			m_mutex->unlock();
 		}
-
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, info->file_size, "FileGroupZip_createInputFile");
-		void * compress_memory = compress_buffer.getMemory();
-
-		if( compress_memory == nullptr )
+		else
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed cache memory %d"
-				, m_path.c_str()
-				, _fileName.c_str()
-				, info->file_size
-				);
+			void * buffer = memory->newMemory( info->unz_size );
 
-			return false;
-		}
+			if( buffer == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed new memory %d"
+					, m_path.c_str()
+					, _fileName.c_str()
+					, info->unz_size
+					);
 
-		stream->read( compress_memory, info->file_size );
-		stream = nullptr;
+				return false;
+			}
 
-		if( s_inflate_memory( buffer, info->unz_size, compress_memory, info->file_size ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed inflate"
-				, m_path.c_str()
-				, _fileName.c_str()
-				);
+			CacheMemoryBuffer compress_buffer(m_serviceProvider, info->file_size, "FileGroupZip_createInputFile");
+			void * compress_memory = compress_buffer.getMemory();
 
-			return false;
+			if( compress_memory == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed cache memory %d"
+					, m_path.c_str()
+					, _fileName.c_str()
+					, info->file_size
+					);
+
+				return false;
+			}
+
+			m_mutex->lock();
+			m_zipFile->seek( file_offset );
+			m_zipFile->read( compress_memory, info->file_size );
+			m_mutex->unlock();
+
+			if( s_inflate_memory( buffer, info->unz_size, compress_memory, info->file_size ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed inflate"
+					, m_path.c_str()
+					, _fileName.c_str()
+					);
+
+				return false;
+			}
 		}
 		
 		return true;
@@ -414,7 +432,7 @@ namespace Menge
         return nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
-	MappedFileInterfacePtr FileGroupZip::createMappedFile()
+	FileMappedInterfacePtr FileGroupZip::createMappedFile()
 	{
 		LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createMappedFile unsupport method"
 			);
@@ -422,7 +440,7 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::openMappedFile( const FilePath & _fileName, const MappedFileInterfacePtr & _stream )
+	bool FileGroupZip::openMappedFile( const FilePath & _fileName, const FileMappedInterfacePtr & _stream )
 	{
 		(void)_fileName;
 		(void)_stream;

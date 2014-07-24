@@ -190,8 +190,8 @@ namespace Menge
 
 		virtual PixelFormat getHWPixelFormat() const = 0;
 
-	public:	
-		virtual unsigned char* lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) = 0;
+	public:
+		virtual void * lock( int * _pitch, const Rect& _rect, bool _readOnly = true ) = 0;
 		virtual void unlock() = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -220,7 +220,7 @@ namespace Menge
 		virtual size_t getHeight() const = 0;
 		virtual size_t getChannels() const = 0;
 
-		virtual unsigned char * lock( int * _pitch, const Rect & _rect, bool _readOnly = true ) const = 0;
+		virtual void * lock( int * _pitch, const Rect & _rect, bool _readOnly = true ) const = 0;
 		virtual void unlock() const = 0;
 
 		virtual size_t getMemoryUse() const = 0;
@@ -382,7 +382,7 @@ namespace Menge
 
     public:
         //virtual void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
-        virtual void imageQuality( const RenderTextureInterfacePtr & _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
+        virtual void imageQuality( const RenderTextureInterfacePtr & _texture, void * _textureBuffer, size_t _texturePitch ) = 0;
 
         virtual void cacheFileTexture( const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) = 0;
 

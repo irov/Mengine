@@ -266,6 +266,7 @@ namespace Menge
 		PluginInterface * m_pluginMengeSoundCodec;
 		PluginInterface * m_pluginMengeVideoCodec;
 		PluginInterface * m_pluginMengeZip;
+		PluginInterface * m_pluginMengeLZ4;
 		PluginInterface * m_pluginMengeWin32FileGroup;
 		PluginInterface * m_pluginPluginPathFinder;
 	};

@@ -9,12 +9,12 @@
 
 namespace Menge
 {
-	class Win32MappedFile
-		: public MappedFileInterface
+	class Win32FileMapped
+		: public FileMappedInterface
 	{
 	public:
-		Win32MappedFile();
-		~Win32MappedFile();
+		Win32FileMapped();
+		~Win32FileMapped();
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );

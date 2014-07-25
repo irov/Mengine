@@ -442,11 +442,20 @@ namespace Menge
 	{
 		this->visit( _visitor );
 
-		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
-		{
-			Node * children = (*it);
+		Node * single_child = m_child.single();
 
-			children->visitChild( _visitor );
+		if( single_child != nullptr )
+		{
+			single_child->visitChild( _visitor );
+		}
+		else
+		{
+			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			{
+				Node * children = (*it);
+
+				children->visitChild( _visitor );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

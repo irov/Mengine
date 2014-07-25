@@ -32,6 +32,9 @@ namespace Menge
 	public:
 		void updateAffectors( float _current, float _timing );
 
+	protected:
+		void updateAffector_( Affector * _affector, float _current, float _timing );
+
     protected:
         void updateAdd_();
 

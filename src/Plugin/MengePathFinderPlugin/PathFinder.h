@@ -2,8 +2,6 @@
 
 #	include "PathFinderWay.h"
 
-#	include "Kernel/ThreadTask.h"
-
 #	include "Factory/Factorable.h"
 
 #	include "fastpathfinder/pathfinder.h"
@@ -15,7 +13,7 @@ namespace Menge
 	typedef fastpathfinder::map TPathMap;
 	
 	class PathFinder
-		: public ThreadTask
+		: public FactorablePtr
 	{
 	public:
 		PathFinder();
@@ -30,10 +28,8 @@ namespace Menge
 	public:
 		PathFinderWay * getWay() const;
 
-	protected:
-		bool _onRun() override;
-		bool _onMain() override;
-		void _onComplete( bool _successful ) override;
+	public:
+		bool update( bool & _found );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

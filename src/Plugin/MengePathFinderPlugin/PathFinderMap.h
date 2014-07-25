@@ -107,8 +107,6 @@ namespace Menge
 
 		size_t m_enumeratorPathFinders;
 
-		ThreadQueueInterfacePtr m_threadPathFinders;
-
 		typedef FactoryPoolStore<PathFinder, 32> TFactoryPathFinder;
 		TFactoryPathFinder m_factoryPathFinder;
 

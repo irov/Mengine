@@ -117,28 +117,30 @@ namespace Menge
 				}
 				else
 				{
-	#	define READ_FRAME_SOURCE( Type, Member, Mask )\
+	#	define READ_FRAME_SOURCE( Type, Member1, Member2, Mask )\
 					{ \
 						uint8_t value_immutable; \
 						ar << value_immutable; \
 						if( value_immutable == 1 ) \
 						{ \
-							ar << frame.source.Member; \
+							ar << frame.source.Member1; \
 							frame.immutable_mask |= Mask; \
 						} \
 						else \
 						{ \
-							frame.Member = new Type [frames_size]; \
-							ar.readPODs( frame.Member, frames_size );\
+							frame.Member2 = new Type [frames_size]; \
+							ar.readPODs( frame.Member2, frames_size );\
 						} \
 					}
 			
-					READ_FRAME_SOURCE( mt::vec3f, anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
-					READ_FRAME_SOURCE( mt::vec3f, position, MOVIE_KEY_FRAME_IMMUTABLE_POSITION );
-					READ_FRAME_SOURCE( mt::vec3f, rotation, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION );
-					READ_FRAME_SOURCE( mt::vec3f, scale, MOVIE_KEY_FRAME_IMMUTABLE_SCALE );
-					READ_FRAME_SOURCE( float, opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
-					READ_FRAME_SOURCE( float, volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
+					READ_FRAME_SOURCE( mt::vec3f, anchorPoint, anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
+					READ_FRAME_SOURCE( mt::vec3f, position, position, MOVIE_KEY_FRAME_IMMUTABLE_POSITION );
+					READ_FRAME_SOURCE( float, rotation.x, rotation_x, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_X );
+					READ_FRAME_SOURCE( float, rotation.y, rotation_y, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Y );
+					READ_FRAME_SOURCE( float, rotation.z, rotation_z, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Z );
+					READ_FRAME_SOURCE( mt::vec3f, scale, scale, MOVIE_KEY_FRAME_IMMUTABLE_SCALE );
+					READ_FRAME_SOURCE( float, opacity, opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
+					READ_FRAME_SOURCE( float, volume, volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
 
 	#	undef READ_FRAME_SOURCE
 				}

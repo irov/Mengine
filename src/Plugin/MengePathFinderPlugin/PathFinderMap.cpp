@@ -71,14 +71,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::initialize()
 	{
-		m_threadPathFinders = THREAD_SERVICE(m_serviceProvider)
-			->runTaskQueue( 1, 1, -1 );
-
-		if( m_threadPathFinders == nullptr )
-		{
-			return false;
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -504,8 +496,6 @@ namespace Menge
 
 		pf->initialize( &m_map, _from, _to, m_gridSize );
 
-		m_threadPathFinders->addTask( pf );
-
 		PathFinderDesc desc;
 
 		size_t id = ++m_enumeratorPathFinders;
@@ -543,7 +533,6 @@ namespace Menge
 				continue;
 			}
 
-			desc.finder->cancel();
 			desc.finder = nullptr;
 			
 			pybind::decref( desc.cb );
@@ -566,8 +555,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::update()
 	{
-		TVectorPathFinderDesc pathcomplete;
-
 		for( TVectorPathFinderDesc::iterator
 			it = m_pathfinders.begin(),
 			it_end = m_pathfinders.end();
@@ -576,34 +563,18 @@ namespace Menge
 		{
 			PathFinderDesc & desc = *it;
 
-			if( desc.finder->isComplete() == false )
-			{
-				continue;
-			}
-
 			if( desc.complete == true )
 			{
 				continue;
 			}
-			
-			pathcomplete.push_back( desc );
-			
-			desc.finder = nullptr;
-			desc.complete = true;
-		}
 
-		TVectorPathFinderDesc::iterator it_erase = std::remove_if( m_pathfinders.begin(), m_pathfinders.end(), FPathFinderDead());
-		m_pathfinders.erase( it_erase, m_pathfinders.end() );
-		
-		for( TVectorPathFinderDesc::iterator
-			it = pathcomplete.begin(),
-			it_end = pathcomplete.end();
-		it != it_end;
-		++it )
-		{
-			PathFinderDesc & desc = *it;
-
-			if( desc.finder->isSuccessful() == false )
+			bool path_found;
+			if( desc.finder->update( path_found ) == false )
+			{
+				continue;
+			}
+			
+			if( path_found == false )
 			{
 				pybind::call( desc.cb, "(IOO)"
 					, desc.id
@@ -621,12 +592,16 @@ namespace Menge
 					, pybind::ptr(way)
 					);
 			}
-
+			
 			pybind::decref( desc.cb );
 			desc.cb = nullptr;
+
+			desc.finder = nullptr;
+			desc.complete = true;
 		}
 
-		pathcomplete.clear();
+		TVectorPathFinderDesc::iterator it_erase = std::remove_if( m_pathfinders.begin(), m_pathfinders.end(), FPathFinderDead());
+		m_pathfinders.erase( it_erase, m_pathfinders.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::setCamera2D( const RenderCameraInterface * _camera )

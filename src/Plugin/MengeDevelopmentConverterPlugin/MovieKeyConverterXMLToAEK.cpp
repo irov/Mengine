@@ -409,7 +409,9 @@ namespace Menge
 
 				WRITE_FRAME_SOURCE( mt::vec3f, anchorPoint );
 				WRITE_FRAME_SOURCE( mt::vec3f, position );
-				WRITE_FRAME_SOURCE( mt::vec3f, rotation );
+				WRITE_FRAME_SOURCE( float, rotation.x );
+				WRITE_FRAME_SOURCE( float, rotation.y );
+				WRITE_FRAME_SOURCE( float, rotation.z );
 				WRITE_FRAME_SOURCE( mt::vec3f, scale );
 				WRITE_FRAME_SOURCE( float, opacity );
 				WRITE_FRAME_SOURCE( float, volume );

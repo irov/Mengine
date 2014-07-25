@@ -299,7 +299,7 @@ namespace Menge
 			frame.anchorPoint, 
             coordinate,
 			frame.scale, 
-			frame.rotation 
+			frame.rotation
 			);
 		
 		if( _layer.isMovie() == false )

@@ -79,6 +79,7 @@ namespace Menge
 			size_t id;
 			PathFinderPtr finder;
 			PyObject * cb;
+			bool successful;
 			bool complete;
 		};
 
@@ -106,6 +107,8 @@ namespace Menge
 		TVectorPathFinderDesc m_pathfinders;		
 
 		size_t m_enumeratorPathFinders;
+
+		ThreadQueueInterfacePtr m_threadPathFinders;
 
 		typedef FactoryPoolStore<PathFinder, 32> TFactoryPathFinder;
 		TFactoryPathFinder m_factoryPathFinder;

@@ -61,7 +61,11 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 		void _setEventListener( PyObject * _listener ) override;
 
+	protected:
 		void _invalidateWorldMatrix() override;
+		
+	protected:
+		void _invalidHierarchy() override;
 
 	protected:
 		void invalidatePolygonWM();

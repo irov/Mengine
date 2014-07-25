@@ -61,31 +61,41 @@ namespace Menge
 		return m_way;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinder::update( bool & _found )
+	bool PathFinder::_onRun()
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PathFinder::_onMain()
 	{
 		bool found_path;
-		if( m_pathfinder.findPathNext( found_path ) == false )
+		while( m_pathfinder.findPathNext( found_path ) == false )
 		{
-			return false;
 		}
-
-		_found = found_path;
 
 		if( found_path == false )
 		{
-			return true;
+			return false;
 		}
 
 		m_pathfinder.findProcces();
 		m_pathfinder.findFilter();
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinder::_onComplete( bool _successful )
+	{
+		if( _successful == false )
+		{
+			return;
+		}
+		
 		m_way = new PathFinderWay();
 
 		m_way->setServiceProvider( m_serviceProvider );
 
 		const fastpathfinder::point_array & pa = m_pathfinder.getPathFilter();
 		m_way->initialize( m_from, m_to, m_gridSize, pa );
-
-		return true;
 	}
 }

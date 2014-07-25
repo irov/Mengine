@@ -1624,8 +1624,8 @@ namespace Menge
 					const FilePath & fileName = _resource->getFileName();
 					const ConstString & codecType = _resource->getCodecType();
 
-					//PREFETCHER_SERVICE(m_serviceProvider)
-						//->prefetchImageDecoder( m_category, fileName, codecType );
+					PREFETCHER_SERVICE(m_serviceProvider)
+						->prefetchImageDecoder( m_category, fileName, codecType );
 				}
 
 				void visit( ResourceMovie * _resource ) override
@@ -1633,8 +1633,8 @@ namespace Menge
 					const FilePath & fileName = _resource->getFileName();
 					const ConstString & dataflowType = _resource->getDataflowType();
 
-					//PREFETCHER_SERVICE(m_serviceProvider)
-						//->prefetchData( m_category, fileName, dataflowType );
+					PREFETCHER_SERVICE(m_serviceProvider)
+						->prefetchData( m_category, fileName, dataflowType );
 				}
 
 			protected:

@@ -57,11 +57,20 @@ namespace Menge
 
 				TListNodeChild & child = _node->getChild();
 
-				for( TSlugChild it(child); it.eof() == false; it.next_shuffle() )
-				{
-					Node * children = (*it);
+				Node * single_child = child.single();
 
-					this->visit( nodeViewport, nodeCamera, children );
+				if( single_child != nullptr )
+				{
+					this->visit( nodeViewport, nodeCamera, single_child );
+				}
+				else
+				{
+					for( TSlugChild it(child); it.eof() == false; it.next_shuffle() )
+					{
+						Node * children = (*it);
+
+						this->visit( nodeViewport, nodeCamera, children );
+					}
 				}
 			}
 

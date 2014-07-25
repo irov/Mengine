@@ -55,19 +55,33 @@ namespace Menge
 	{
         (void)_current;
 
-        for( TSlugAffector it(m_affectors); it.eof() == false; it.next_shuffle() )
-        {
-            Affector * affector = *it;
-            
-			bool end = affector->affect( _timing );
+		Affector * single_affector = m_affectors.single();
 
-			if( end == true )
+		if( single_affector != nullptr )
+		{
+			this->updateAffector_( single_affector, _current, _timing );
+		}
+		else
+		{
+			for( TSlugAffector it(m_affectors); it.eof() == false; it.next_shuffle() )
 			{
-				m_affectors.remove( affector );
+				Affector * affector = *it;
 
-                affector->complete();
-                affector->destroy();
+				this->updateAffector_( affector, _current, _timing );
 			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Affectorable::updateAffector_( Affector * _affector, float _current, float _timing )
+	{
+		bool end = _affector->affect( _timing );
+
+		if( end == true )
+		{
+			m_affectors.remove( _affector );
+
+			_affector->complete();
+			_affector->destroy();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

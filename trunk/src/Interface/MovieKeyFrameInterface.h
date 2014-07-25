@@ -18,7 +18,7 @@
 
 namespace Menge
 {
-	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 24);
+	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 25);
 
     struct MovieFrameSource
     {
@@ -32,10 +32,12 @@ namespace Menge
 
 	const size_t MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT		= 0x00000001;
 	const size_t MOVIE_KEY_FRAME_IMMUTABLE_POSITION			= 0x00000002;
-	const size_t MOVIE_KEY_FRAME_IMMUTABLE_ROTATION			= 0x00000004;
-	const size_t MOVIE_KEY_FRAME_IMMUTABLE_SCALE			= 0x00000008;
-	const size_t MOVIE_KEY_FRAME_IMMUTABLE_OPACITY			= 0x00000010;
-	const size_t MOVIE_KEY_FRAME_IMMUTABLE_VOLUME			= 0x00000020;
+	const size_t MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_X		= 0x00000004;
+	const size_t MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Y		= 0x00000008;
+	const size_t MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Z		= 0x00000010;
+	const size_t MOVIE_KEY_FRAME_IMMUTABLE_SCALE			= 0x00000020;
+	const size_t MOVIE_KEY_FRAME_IMMUTABLE_OPACITY			= 0x00000040;
+	const size_t MOVIE_KEY_FRAME_IMMUTABLE_VOLUME			= 0x00000080;
 	
     struct MovieLayerFrame
     {
@@ -43,8 +45,10 @@ namespace Menge
 		
 		mt::vec3f * anchorPoint;
 		mt::vec3f * position;
-		mt::vec3f * rotation;
 		mt::vec3f * scale;
+		float * rotation_x;
+		float * rotation_y;
+		float * rotation_z;		
 		float * opacity;
 		float * volume;
 

@@ -21,7 +21,9 @@ namespace Menge
 
 			delete [] layer.anchorPoint;
 			delete [] layer.position;
-			delete [] layer.rotation;
+			delete [] layer.rotation_x;
+			delete [] layer.rotation_y;
+			delete [] layer.rotation_z;
 			delete [] layer.scale;
 			delete [] layer.opacity;
 			delete [] layer.volume;
@@ -57,7 +59,9 @@ namespace Menge
 
 		layer.anchorPoint = nullptr;
 		layer.position = nullptr;
-		layer.rotation = nullptr;
+		layer.rotation_x = nullptr;
+		layer.rotation_y = nullptr;
+		layer.rotation_z = nullptr;
 		layer.scale = nullptr;
 		layer.opacity = nullptr;
 		layer.volume = nullptr;
@@ -126,22 +130,24 @@ namespace Menge
 			return true;
 		}
 		
-#	define MOVIE_FRAME_SETUP( Member, Mask )\
+#	define MOVIE_FRAME_SETUP( Member1, Member2, Mask )\
 		if( layer.immutable_mask & Mask ) \
 		{ \
-			_frame.Member = layer.source.Member; \
+			_frame.Member1 = layer.source.Member1; \
 		} \
 		else \
 		{ \
-			_frame.Member = layer.Member[_frameIndex]; \
+			_frame.Member1 = layer.Member2[_frameIndex]; \
 		}
 		
-		MOVIE_FRAME_SETUP( anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
-		MOVIE_FRAME_SETUP( position, MOVIE_KEY_FRAME_IMMUTABLE_POSITION );
-		MOVIE_FRAME_SETUP( rotation, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION );
-		MOVIE_FRAME_SETUP( scale, MOVIE_KEY_FRAME_IMMUTABLE_SCALE );
-		MOVIE_FRAME_SETUP( opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
-		MOVIE_FRAME_SETUP( volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
+		MOVIE_FRAME_SETUP( anchorPoint, anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
+		MOVIE_FRAME_SETUP( position, position, MOVIE_KEY_FRAME_IMMUTABLE_POSITION );
+		MOVIE_FRAME_SETUP( rotation.x, rotation_x, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_X );
+		MOVIE_FRAME_SETUP( rotation.y, rotation_y, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Y );
+		MOVIE_FRAME_SETUP( rotation.z, rotation_z, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Z );
+		MOVIE_FRAME_SETUP( scale, scale, MOVIE_KEY_FRAME_IMMUTABLE_SCALE );
+		MOVIE_FRAME_SETUP( opacity, opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
+		MOVIE_FRAME_SETUP( volume, volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
 		
 #	undef MOVIE_FRAME_SETUP
 				
@@ -151,16 +157,16 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		static void s_linerp( float & _out, float _in1, float _in2, float _scale )
+		static void s_linerp_f1( float & _out, float _in1, float _in2, float _scale )
 		{
 			_out = _in1 + ( _in2 - _in1 ) * _scale;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void s_linerp_f3( mt::vec3f & _out, const mt::vec3f & _in1, const mt::vec3f & _in2, float _scale )
 		{
-			s_linerp(_out.x, _in1.x, _in2.x, _scale);
-			s_linerp(_out.y, _in1.y, _in2.y, _scale);
-			s_linerp(_out.z, _in1.z, _in2.z, _scale);
+			s_linerp_f1(_out.x, _in1.x, _in2.x, _scale);
+			s_linerp_f1(_out.y, _in1.y, _in2.y, _scale);
+			s_linerp_f1(_out.z, _in1.z, _in2.z, _scale);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -215,28 +221,58 @@ namespace Menge
 			float value0 = layer.Member[ _frameIndex + 0 ]; \
 			float value1 = layer.Member[ _frameIndex + 1 ]; \
 			\
-			Helper::s_linerp( _frame.Member, value0, value1, _t ); \
+			Helper::s_linerp_f1( _frame.Member, value0, value1, _t ); \
 		}
 
 		MOVIE_FRAME_SETUP_F1( opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
 		MOVIE_FRAME_SETUP_F1( volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
 
-		if( layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_ROTATION )
+		if( layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_X )
 		{
-			_frame.rotation = layer.source.rotation;
+			_frame.rotation.x = layer.source.rotation.x;
 		}
 		else
 		{
-			const mt::vec3f & value0 = layer.rotation[ _frameIndex + 0 ];
-			const mt::vec3f & value1 = layer.rotation[ _frameIndex + 1 ];
+			float value0 = layer.rotation_x[_frameIndex + 0];
+			float value1 = layer.rotation_x[_frameIndex + 1];
 		
-			mt::vec3f correct_rotate_from;
-			mt::vec3f correct_rotate_to;
-			mt::angle_correct_interpolate_from_to( value0.x, value1.x, correct_rotate_from.x, correct_rotate_to.x );
-			mt::angle_correct_interpolate_from_to( value0.y, value1.y, correct_rotate_from.y, correct_rotate_to.y );
-			mt::angle_correct_interpolate_from_to( value0.z, value1.z, correct_rotate_from.z, correct_rotate_to.z );
+			float correct_rotate_from;
+			float correct_rotate_to;
+			mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
 
-			Helper::s_linerp_f3( _frame.rotation, correct_rotate_from, correct_rotate_to, _t );
+			Helper::s_linerp_f1( _frame.rotation.x, correct_rotate_from, correct_rotate_to, _t );
+		}
+
+		if( layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Y )
+		{
+			_frame.rotation.y = layer.source.rotation.y;
+		}
+		else
+		{
+			float value0 = layer.rotation_y[_frameIndex + 0];
+			float value1 = layer.rotation_y[_frameIndex + 1];
+
+			float correct_rotate_from;
+			float correct_rotate_to;
+			mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
+
+			Helper::s_linerp_f1( _frame.rotation.y, correct_rotate_from, correct_rotate_to, _t );
+		}
+
+		if( layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Z )
+		{
+			_frame.rotation.z = layer.source.rotation.z;
+		}
+		else
+		{
+			float value0 = layer.rotation_z[_frameIndex + 0];
+			float value1 = layer.rotation_z[_frameIndex + 1];
+
+			float correct_rotate_from;
+			float correct_rotate_to;
+			mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
+
+			Helper::s_linerp_f1( _frame.rotation.z, correct_rotate_from, correct_rotate_to, _t );
 		}
 
 		return true;

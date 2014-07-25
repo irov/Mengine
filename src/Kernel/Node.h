@@ -131,9 +131,6 @@ namespace Menge
 	protected:
 		void _invalidateColor() override;
 
-	protected:
-		void setParent_( Node * _node );
-
 	public:
 		inline Node * getParent() const;
 		inline bool hasParent() const;
@@ -156,6 +153,7 @@ namespace Menge
 
     protected:
         void removeChildren_( Node * _node );
+		void setParent_( Node * _node );
 
 	protected:
 		virtual bool _hasChildren( const ConstString & _name, bool _recursive ) const;
@@ -165,6 +163,30 @@ namespace Menge
 		virtual void _changeParent( Node * _oldParent, Node * _newParent );
 		virtual void _addChildren( Node * _node );
 		virtual void _removeChildren( Node * _node );
+
+		virtual void invalidHierarchy();
+		virtual void _invalidHierarchy();
+
+	protected:
+		template<class T>
+		T * findTypeParent()
+		{
+			if( m_parent == nullptr )
+			{
+				return nullptr;
+			}
+
+			T * type_parent = dynamic_cast<T *>(m_parent);
+			
+			if( type_parent != nullptr )
+			{
+				return type_parent;
+			}
+
+			T * find_type_parent = m_parent->findTypeParent<T>();
+
+			return find_type_parent;
+		}
 
 	protected:
 		Node * m_parent;

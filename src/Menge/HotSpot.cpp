@@ -128,6 +128,11 @@ namespace Menge
 		this->invalidatePolygonWM();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::_invalidHierarchy()
+	{
+		//HotSpot * parent = this->findTypeParent<HotSpot>();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::invalidatePolygonWM()
 	{
 		m_invalidatePolygonWM = true;

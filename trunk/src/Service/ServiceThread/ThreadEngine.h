@@ -10,12 +10,6 @@
 
 namespace Menge
 {    
-    struct ThreadTaskHandle
-    {
-        ThreadTaskInterfacePtr task;
-        ThreadIdentityPtr identity;
-    };
-
 	class ThreadEngine
         : public ThreadServiceInterface
 	{
@@ -31,17 +25,15 @@ namespace Menge
         bool initialize( size_t _threadCount ) override;
         void finalize() override;
 
-    public:
-        size_t taskInProgress() const;
-        bool isTaskOnProgress( const ThreadTaskInterfacePtr & _task ) const;
+	public:
+		bool createThread( const ConstString & _threadName, int _priority ) override;
 
     public:
-        bool addTask( const ThreadTaskInterfacePtr & _task, int _priority ) override;
+        bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task ) override;
         void joinTask( const ThreadTaskInterfacePtr & _task ) override;
-        void cancelTask( const ThreadTaskInterfacePtr & _task ) override;
 
 	public:
-		ThreadQueueInterfacePtr runTaskQueue( size_t _countThread, size_t _packetSize, int _priority ) override;
+		ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, size_t _countThread, size_t _packetSize ) override;
 
 	public:
         void update() override;
@@ -54,26 +46,39 @@ namespace Menge
 		uint32_t getCurrentThreadId() override;
 
     protected:
-        void testComplete_();
-        bool joinTask_( const ThreadTaskInterfacePtr & _task );
-
-    protected:
-        bool getThreadIdentity_( const ThreadTaskInterfacePtr & _task, ThreadIdentityPtr & _identity );
-
+		bool isTaskOnProgress_( const ThreadTaskInterfacePtr & _task, ThreadIdentityPtr & _identity ) const;
+		bool hasThread_( const ConstString & _name ) const;
+		
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
         size_t m_threadCount;
+		        
+		struct ThreadTaskDesc
+		{
+			ThreadTaskInterfacePtr task;
+			ThreadIdentityPtr identity;
+			ConstString threadName;
+			bool progress;
+			bool complete;
+		};
 
-		//ThreadMutexInterfacePtr m_allocatorPoolMutex;
-        
-        typedef std::vector<ThreadTaskHandle> TVectorThreadTaskHandle;
-        TVectorThreadTaskHandle m_taskThread;
+        typedef std::vector<ThreadTaskDesc> TVectorThreadTaskDesc;
+        TVectorThreadTaskDesc m_tasks;
 				
-		typedef std::vector<ThreadPoolPtr> TVectorThreadPool;
-		TVectorThreadPool m_threadPools;
+		typedef std::vector<ThreadQueuePtr> TVectorThreadQueues;
+		TVectorThreadQueues m_threadQueues;
 
 		typedef FactoryPoolStore<ThreadQueue, 4> TFactoryThreadQueue;
 		TFactoryThreadQueue m_factoryThreadQueue;
+
+		struct ThreadDesc
+		{
+			ConstString name;
+			ThreadIdentityPtr identity;
+		};
+
+		typedef std::vector<ThreadDesc> TVectorThreads;
+		TVectorThreads m_threads;
 	};
 }	// namespace Menge

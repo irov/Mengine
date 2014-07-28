@@ -31,14 +31,16 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		ThreadIdentityPtr createThread( const ThreadTaskInterfacePtr & _listener, int _priority ) override;
-		bool joinThread( const ThreadIdentityPtr & _thread ) override;
+		ThreadIdentityPtr createThread( int _priority ) override;
 
+	public:
         ThreadMutexInterfacePtr createMutex() override;
 
+	public:
 		void sleep( unsigned int _ms ) override;
 
-		uint32_t getCurrentThreadId() override;
+	public:
+		uint32_t getCurrentThreadId() const override;
 
 	protected:
 		void onThreadIdentityRemove_( Win32ThreadIdentity * _identity );

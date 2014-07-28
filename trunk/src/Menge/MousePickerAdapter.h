@@ -4,9 +4,6 @@
 
 namespace Menge
 {
-    class MousePickerSystemInterface;
-	struct PickerTrapState;
-
 	class MousePickerAdapter
 		: public MousePickerTrapInterface        
 	{

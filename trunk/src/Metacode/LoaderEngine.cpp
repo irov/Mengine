@@ -419,7 +419,7 @@ namespace Menge
 		}
 
 		InputStreamInterfacePtr file_bin = 
-            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path );
+            FILE_SERVICE(m_serviceProvider)->openInputFile( _pak, _path, false );
 
 		if( file_bin == nullptr )
 		{

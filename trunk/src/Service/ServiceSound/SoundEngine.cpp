@@ -2,6 +2,7 @@
 
 #	include "Interface/SoundCodecInterface.h"
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/StringizeInterface.h"
 #	include "Interface/CodecInterface.h"
 
 #	include "Logger/Logger.h"
@@ -44,8 +45,11 @@ namespace Menge
         m_threadSoundBufferUpdate = new ThreadJob();
 		m_threadSoundBufferUpdate->initialize( m_serviceProvider, 50 );
 
+		THREAD_SERVICE(m_serviceProvider)
+			->createThread( CONST_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), 0 );
+
         THREAD_SERVICE(m_serviceProvider)
-            ->addTask( m_threadSoundBufferUpdate, 0 );
+            ->addTask( CONST_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), m_threadSoundBufferUpdate );
 
 		return true;
 	}

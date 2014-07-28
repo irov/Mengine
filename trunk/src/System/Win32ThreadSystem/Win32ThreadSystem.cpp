@@ -32,106 +32,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadSystem::initialize()		
 	{
-		m_poolWin32ThreadIdentity.setMethodListener( this, &Win32ThreadSystem::onThreadIdentityRemove_ );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadSystem::finalize()
 	{
-		//for(TVectorPosixThreadIdentity::iterator
-		//	it = m_threadIdentities.begin(),
-		//	it_end = m_threadIdentities.end();
-		//it != it_end;
-		//++it )
-		//{
-		//	const Win32ThreadIdentityPtr & identity = *it;
-
-  //          HANDLE handle = identity->getHandle();
-  //          CloseHandle( handle );
-		//}
-
-		//m_threadIdentities.clear();
 	}
-    //////////////////////////////////////////////////////////////////////////
-    static unsigned int __stdcall s_tread_job( void * _userData )
-    {
-        ThreadTaskInterface * threadListener = static_cast<ThreadTaskInterface*>(_userData);
-
-        threadListener->main();
-
-        return 0;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	ThreadIdentityPtr Win32ThreadSystem::createThread( const ThreadTaskInterfacePtr & _thread, int _priority )
+	ThreadIdentityPtr Win32ThreadSystem::createThread( int _priority )
 	{
-		ThreadTaskInterface * thread_ptr = _thread.get();
-        //HANDLE handle = CreateThread( NULL, 0, &s_tread_job, (LPVOID)thread_ptr, 0, NULL);
+		Win32ThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObjectT();
 
-		HANDLE handle = (HANDLE)_beginthreadex( NULL, 0, &s_tread_job, (LPVOID)thread_ptr, 0, NULL );
+		ThreadMutexInterfacePtr mutex = this->createMutex();
 
-		if( handle == NULL )
-        {
-            DWORD error_code = GetLastError();
-
-            LOGGER_ERROR(m_serviceProvider)("Win32ThreadSystem::createThread: invalid create thread error code - %d"
-                , error_code
-                );
-
+		if( identity->initialize( m_serviceProvider, mutex, _priority ) == false )
+		{
             return nullptr;
         }
-
-        switch( _priority )
-        {   
-		case -2:
-			{
-				SetThreadPriority( handle, THREAD_PRIORITY_LOWEST );
-			}break;
-		case -1:
-			{
-				SetThreadPriority( handle, THREAD_PRIORITY_BELOW_NORMAL );
-			}break;
-		case 0:
-			{
-				SetThreadPriority( handle, THREAD_PRIORITY_NORMAL );
-			}break;
-		case 1:
-			{
-				SetThreadPriority( handle, THREAD_PRIORITY_ABOVE_NORMAL );
-			}break;
-		case 2:
-			{
-				SetThreadPriority( handle, THREAD_PRIORITY_HIGHEST );
-			}break;
-		case 3:
-			{
-				SetThreadPriority( handle, THREAD_PRIORITY_TIME_CRITICAL );
-			}break;
-        }        
-           
-        Win32ThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObjectT();
-        identity->initialize( handle, _thread );
-
-        //m_threadIdentities.push_back( identity );
 		
 		return identity;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32ThreadSystem::joinThread( const ThreadIdentityPtr & _thread )
-	{
-		Win32ThreadIdentity * identity = stdex::intrusive_get<Win32ThreadIdentity>(_thread);
-
-		const ThreadTaskInterfacePtr & listener = identity->getTask();
-		listener->cancel();
-
-		HANDLE treadHandle = identity->getHandle();
-
-		WaitForSingleObject( treadHandle, INFINITE );
-
-        CloseHandle( treadHandle );
-		    
-        return true;
-    }
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr Win32ThreadSystem::createMutex()
     {
@@ -146,15 +66,10 @@ namespace Menge
 		::Sleep( _ms );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t Win32ThreadSystem::getCurrentThreadId()
+	uint32_t Win32ThreadSystem::getCurrentThreadId() const
 	{
 		DWORD id = GetCurrentThreadId();
 
 		return (uint32_t)id;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Win32ThreadSystem::onThreadIdentityRemove_( Win32ThreadIdentity * _identity )
-	{
-
 	}
 }

@@ -110,8 +110,14 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_KEY)( handle, false, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_KEY2)( handle, false, "(IIOO)", _key, _char, pybind::get_bool(_isDown), pybind::get_bool(_repeating) );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_KEY)( handle, false, "(IffIOO)"
+				, _key
+				, _point.x
+				, _point.y
+				, _char
+				, pybind::get_bool(_isDown)
+				, pybind::get_bool(_repeating) 
+				);
 		}
 
 		if( handle == false )
@@ -128,8 +134,13 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON2)( handle, false, "(IffIO)", _touchId, _point.x, _point.y, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON)( handle, false, "(IffIO)"
+				, _touchId
+				, _point.x
+				, _point.y
+				, _button
+				, pybind::get_bool(_isDown) 
+				);
 		}
 
 		if( handle == false )
@@ -146,7 +157,13 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN)( handle, false, "(IffIO)"
+				, _touchId
+				, _point.x
+				, _point.y
+				, _button
+				, pybind::get_bool(_isDown) 
+				);
 		}
 
 		if( handle == false )
@@ -163,7 +180,13 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON_END)( handle, false, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON_END)( handle, false, "(IffIO)"
+				, _touchId
+				, _point.x
+				, _point.y
+				, _button
+				, pybind::get_bool(_isDown) 
+				);
 		}
 
 		if( handle == false )
@@ -180,7 +203,13 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_MOVE)( handle, false, "(Iffff)", _touchId, _point.x, _point.y, _x, _y );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_MOVE)( handle, false, "(Iffff)"
+				, _touchId
+				, _point.x
+				, _point.y
+				, _x
+				, _y 
+				);
 		}
 
 		if( handle == false )
@@ -197,7 +226,12 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_WHEEL)( handle, false, "(Iffi)", _touchId, _point.x, _point.y, _wheel );
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_WHEEL)( handle, false, "(Iffi)"
+				, _touchId
+				, _point.x
+				, _point.y
+				, _wheel 
+				);
 		}
 
 		if( handle == false )
@@ -217,7 +251,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::mouseEnter( const mt::vec2f & _point )
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_ENTER)( "(ff)", _point.x, _point.y );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_ENTER)( "(ff)"
+			, _point.x
+			, _point.y 
+			);
 
 		m_player->onAppMouseEnter();
 	}
@@ -267,9 +304,7 @@ namespace Menge
         this->registerEventMethod( EVENT_RENDER_VIEWPORT, "onRenderViewport", _embed );
 
         this->registerEventMethod( EVENT_KEY, "onHandleKeyEvent", _embed );
-		this->registerEventMethod( EVENT_KEY2, "onHandleKeyEvent2", _embed );
         this->registerEventMethod( EVENT_MOUSE_BUTTON, "onHandleMouseButtonEvent", _embed );
-		this->registerEventMethod( EVENT_MOUSE_BUTTON2, "onHandleMouseButtonEvent2", _embed );
         this->registerEventMethod( EVENT_MOUSE_BUTTON_BEGIN, "onHandleMouseButtonEventBegin", _embed );
         this->registerEventMethod( EVENT_MOUSE_BUTTON_END, "onHandleMouseButtonEventEnd", _embed );
         this->registerEventMethod( EVENT_MOUSE_MOVE, "onHandleMouseMove", _embed );

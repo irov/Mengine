@@ -6,12 +6,12 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Transformation3D::Transformation3D()
-		: m_origin(0.f, 0.f, 0.f)
+		: m_relationTransformation(nullptr)
+		, m_origin(0.f, 0.f, 0.f)
 		, m_coordinate(0.f, 0.f, 0.f)
 		, m_position(0.f, 0.f, 0.f)
 		, m_scale(1.f, 1.f, 1.f)
 		, m_euler(0.f, 0.f, 0.f)
-		, m_relationTransformation(nullptr)
 		, m_identityLocalMatrix(true)
 		, m_identityWorldMatrix(true)
         , m_invalidateWorldMatrix(true)
@@ -21,31 +21,31 @@ namespace Menge
 		mt::ident_m4( m_worldMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setRelationTransformation( Transformation3D * _relationTransformation )
+	void Transformation3D::setRelationTransformation( Transformation3D * _relation )
 	{
         if( m_relationTransformation != nullptr )
         {
-            m_relationTransformation->removeRelationChildren( this );
+            m_relationTransformation->removeRelationChildren_( this );
         }
 
-		m_relationTransformation = _relationTransformation;
+		m_relationTransformation = _relation;
 
         if( m_relationTransformation != nullptr )
         {
-            m_relationTransformation->addRelationChildren( this );
+            m_relationTransformation->addRelationChildren_( this );
         }
 
 		this->invalidateWorldMatrix();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Transformation3D::addRelationChildren( Transformation3D * _transformation )
+    void Transformation3D::addRelationChildren_( Transformation3D * _child )
     {
-        m_relationChild.push_back( _transformation );
+        m_relationChild.push_back( _child );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation3D::removeRelationChildren( Transformation3D * _transformation )
+    void Transformation3D::removeRelationChildren_( Transformation3D * _child )
     {
-        m_relationChild.erase( TListTransformation3DChild::iterator(_transformation, true) );
+        m_relationChild.remove( _child );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::invalidateWorldMatrix()
@@ -60,9 +60,11 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugTransformation3DChild it(m_relationChild); it.eof() == false; it.next_shuffle() )
+			for( TSlugTransformation3D it(m_relationChild); it.eof() == false; it.next_shuffle() )
 			{
-				(*it)->invalidateWorldMatrix();
+				Transformation3D * transform = *it;
+				
+				transform->invalidateWorldMatrix();
 			}
 		}
 

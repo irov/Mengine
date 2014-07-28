@@ -2,6 +2,7 @@
 #	include "PathFinderWay.h"
 
 #	include "Interface/WatchdogInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 namespace Menge
 {
@@ -71,8 +72,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::initialize()
 	{
+		THREAD_SERVICE(m_serviceProvider)
+			->createThread( CONST_STRING_LOCAL(m_serviceProvider, "ThreadPathFinderMap"), 0 );
+
 		m_threadPathFinders = THREAD_SERVICE(m_serviceProvider)
-			->runTaskQueue( 1, 1, -1 );
+			->runTaskQueue( CONST_STRING_LOCAL(m_serviceProvider, "ThreadPathFinderMap"), 1, 1 );
 
 		if( m_threadPathFinders == nullptr )
 		{

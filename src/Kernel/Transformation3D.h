@@ -7,11 +7,6 @@
 
 namespace Menge
 {
-    class Transformation3D;
-
-    typedef stdex::intrusive_slug_list_size<Transformation3D> TListTransformation3DChild;
-    typedef stdex::intrusive_slug<TListTransformation3DChild> TSlugTransformation3DChild;
-
 	class Transformation3D
         : public stdex::intrusive_slug_linked<Transformation3D>
 	{
@@ -19,12 +14,12 @@ namespace Menge
 		Transformation3D();
 
 	public:
-		void setRelationTransformation( Transformation3D * _relationTransformation );
+		void setRelationTransformation( Transformation3D * _relation );
 		inline Transformation3D * getRelationTransformation() const;
 
     protected:
-        void addRelationChildren( Transformation3D * _transformation );
-        void removeRelationChildren( Transformation3D * _transformation );
+        void addRelationChildren_( Transformation3D * _child );
+        void removeRelationChildren_( Transformation3D * _child );
 
 	public:
 		inline const mt::mat4f & getWorldMatrix() const;
@@ -91,18 +86,19 @@ namespace Menge
 		virtual void updateWorldMatrix() const;
 
 	protected:
-        mt::vec3f m_position;
+		Transformation3D * m_relationTransformation;
+
+		typedef stdex::intrusive_slug_list_size<Transformation3D> TListTransformation3D;
+		typedef stdex::intrusive_slug<TListTransformation3D> TSlugTransformation3D;
+		TListTransformation3D m_relationChild;
+
+		mt::vec3f m_position;
 		mt::vec3f m_origin;
 		mt::vec3f m_coordinate;
 
 		mt::vec3f m_scale;
 		mt::vec3f m_euler;
 				
-
-		Transformation3D * m_relationTransformation;
-
-        TListTransformation3DChild m_relationChild;
-
 		mutable mt::mat4f m_localMatrix;
 		mutable mt::mat4f m_worldMatrix;
 		mutable bool m_identityLocalMatrix;

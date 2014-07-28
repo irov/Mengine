@@ -150,7 +150,7 @@ namespace Menge
 		{
 			this->updateSwitchScene_();
 		}
-		else if ( m_removeScene == true )
+		else if( m_removeScene == true )
 		{
 			this->updateRemoveScene_();
 		}

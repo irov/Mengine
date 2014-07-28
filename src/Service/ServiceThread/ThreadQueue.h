@@ -20,8 +20,8 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
+		void setThreadName( const ConstString & _threadName );
 		void setThreadCount( size_t _count );
-		void setThreadPriority( int _priority );
 		void setPacketSize( size_t _size );
 
 	public:
@@ -38,8 +38,8 @@ namespace Menge
 
 	private:
 		ServiceProviderInterface * m_serviceProvider;
-
-		int m_priority;
+		
+		ConstString m_threadName;
 		size_t m_packetSize;
 
 		typedef stdex::queue<ThreadTaskInterfacePtr> TVectorThreadTask;
@@ -54,5 +54,5 @@ namespace Menge
 		bool m_cancel;
 	};
 
-	typedef stdex::intrusive_ptr<ThreadQueue> ThreadPoolPtr;
+	typedef stdex::intrusive_ptr<ThreadQueue> ThreadQueuePtr;
 }

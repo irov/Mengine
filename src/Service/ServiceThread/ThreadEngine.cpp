@@ -59,63 +59,105 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadEngine::finalize()
 	{	
-		for( TVectorThreadTaskHandle::iterator 
-			it =  m_taskThread.begin(),
-			it_end = m_taskThread.end();
+		for( TVectorThreadTaskDesc::iterator 
+			it =  m_tasks.begin(),
+			it_end = m_tasks.end();
 		it != it_end;
 		++it )
 		{
-			ThreadTaskHandle & taskThread = *it;
+			ThreadTaskDesc & taskThread = *it;
 
 			const ThreadTaskInterfacePtr & task = taskThread.task;
 
-			this->joinTask_( task );
+			this->joinTask( task );
 		}
 
-		m_taskThread.clear();
+		m_tasks.clear();
 
-		//stdex_threadsafe( nullptr, nullptr, nullptr );
-		//m_allocatorPoolMutex = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t ThreadEngine::taskInProgress() const
-	{
-        size_t count = m_taskThread.size();
-
-		return count;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::isTaskOnProgress( const ThreadTaskInterfacePtr & _task ) const
-	{
-		for( TVectorThreadTaskHandle::const_iterator 
-			it = m_taskThread.begin(),
-			it_end = m_taskThread.end();
+		for( TVectorThreads::iterator
+			it = m_threads.begin(),
+			it_end = m_threads.end();
 		it != it_end;
 		++it )
 		{
-			const ThreadTaskHandle & taskThread = *it;
-			const ThreadTaskInterfacePtr & task = taskThread.task;
+			ThreadDesc & desc = *it;
+
+			desc.identity->join();
+		}
+
+		m_threads.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ThreadEngine::isTaskOnProgress_( const ThreadTaskInterfacePtr & _task, ThreadIdentityPtr & _identity ) const
+	{
+		for( TVectorThreadTaskDesc::const_iterator 
+			it = m_tasks.begin(),
+			it_end = m_tasks.end();
+		it != it_end;
+		++it )
+		{
+			const ThreadTaskDesc & desc = *it;
+
+			const ThreadTaskInterfacePtr & task = desc.task;
 			
-			if( _task == task )
+			if( _task != task )
 			{
-				return true;
+				continue;
 			}
+			
+			if( desc.progress == false )
+			{
+				return false;
+			}
+
+			_identity = desc.identity;
+
+			return true;
 		}
 		
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::addTask( const ThreadTaskInterfacePtr & _task, int _priority )
+	bool ThreadEngine::createThread( const ConstString & _threadName, int _priority )
 	{
-        if( m_taskThread.size() == m_threadCount )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ThreadEngine::addTask is maximum %d"
-                , m_threadCount
-                );
+		ThreadIdentityPtr identity = THREAD_SYSTEM(m_serviceProvider)
+			->createThread( _priority );
 
-            return false;
-        }
+		ThreadDesc td;
+		td.name = _threadName;
+		td.identity = identity;
 
+		m_threads.push_back( td );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ThreadEngine::hasThread_( const ConstString & _name ) const
+	{
+		for( TVectorThreads::const_iterator
+			it = m_threads.begin(),
+			it_end = m_threads.end();
+		it != it_end;
+		++it )
+		{
+			const ThreadDesc & td = *it;
+
+			if( td.name == _name )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ThreadEngine::addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task )
+	{
+		if( this->hasThread_( _threadName ) == false )
+		{
+			return false;
+		}
+		
         bool state = _task->run();
 
         if( state == false )
@@ -126,159 +168,137 @@ namespace Menge
             return false;
         }
 
-        ThreadIdentityPtr threadIdentity = THREAD_SYSTEM(m_serviceProvider)
-            ->createThread( _task, _priority );
+        ThreadTaskDesc desc;
 
-        if( threadIdentity == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ThreadEngine::addTask invalid create thread"               
-                );
+        desc.task = _task;
+        desc.threadName = _threadName;
+		desc.identity = nullptr;
+		desc.progress = false;
+		desc.complete = false;
 
-            return false;
-        }
-
-        ThreadTaskHandle taskThread;
-
-        taskThread.task = _task;
-        taskThread.identity = threadIdentity;
-
-        m_taskThread.push_back( taskThread );
+        m_tasks.push_back( desc );
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadEngine::joinTask( const ThreadTaskInterfacePtr & _task )
 	{
-		if( this->isTaskOnProgress( _task ) == false )
-		{
-			return;
-		}
-
-		this->joinTask_( _task );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::joinTask_( const ThreadTaskInterfacePtr & _task )
-	{
-		ThreadIdentityPtr threadIdentity;
-		if( this->getThreadIdentity_( _task, threadIdentity ) == false )
-		{
-            LOGGER_ERROR(m_serviceProvider)("ThreadEngine::joinTask_: threadIdentity is null"
-                );
-
-			return false;
-		}
-
-		if( _task->cancel() == false )
-		{
-			return true;
-		}
-
-		if( THREAD_SYSTEM(m_serviceProvider)
-            ->joinThread( threadIdentity ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ThreadEngine::joinTask_: invalid join thread"
-                );
-
-            return false;
-        }
-
-        return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadEngine::cancelTask( const ThreadTaskInterfacePtr & _task )
-	{
-		if( this->isTaskOnProgress( _task ) == false )
-		{
-			return;
-		}
-
 		_task->cancel();
+
+		ThreadIdentityPtr threadIdentity;
+		if( this->isTaskOnProgress_( _task, threadIdentity ) == false )
+		{
+			return;
+		}
+
+		threadIdentity->joinTask();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ThreadQueueInterfacePtr ThreadEngine::runTaskQueue( size_t _countThread, size_t _packetSize, int _priority )
+	ThreadQueueInterfacePtr ThreadEngine::runTaskQueue( const ConstString & _threadName, size_t _countThread, size_t _packetSize )
 	{
-		ThreadPoolPtr taskPool = m_factoryThreadQueue.createObjectT();
+		ThreadQueuePtr taskQueue = m_factoryThreadQueue.createObjectT();
 
-		taskPool->setServiceProvider( m_serviceProvider );
-		taskPool->setThreadCount( _countThread );
-		taskPool->setPacketSize( _packetSize );
-		taskPool->setThreadPriority( _priority );
+		taskQueue->setServiceProvider( m_serviceProvider );
+		taskQueue->setThreadName( _threadName );
+		taskQueue->setThreadCount( _countThread );
+		taskQueue->setPacketSize( _packetSize );
 
-		m_threadPools.push_back( taskPool );
+		m_threadQueues.push_back( taskQueue );
 
-		return taskPool;
+		return taskQueue;
 	}
 	///////////////////////////////////////////////////////////////////////////
 	void ThreadEngine::update()
 	{
-		this->testComplete_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadEngine::testComplete_()
-	{
-		for( TVectorThreadTaskHandle::size_type it = 0,
-			it_end = m_taskThread.size();
-		it != it_end;
+		for( TVectorThreadTaskDesc::iterator
+			it_task = m_tasks.begin(),
+			it_task_end = m_tasks.end();
+		it_task != it_task_end;
+		++it_task )
+		{
+			ThreadTaskDesc & desc_task = *it_task;
+
+			if( desc_task.complete == true )
+			{
+				continue;
+			}
+
+			if( desc_task.progress == true )
+			{
+				if( desc_task.task->isComplete() == true )
+				{
+					desc_task.complete = true;
+					desc_task.progress = false;
+				}
+			}
+			else
+			{
+				ThreadTaskInterface * task = desc_task.task.get();
+
+				for( TVectorThreads::iterator
+					it_thread = m_threads.begin(),
+					it_thread_end = m_threads.end();
+				it_thread != it_thread_end;
+				++it_thread )
+				{
+					ThreadDesc & desc_thread = *it_thread;
+
+					if( desc_thread.name != desc_task.threadName )
+					{
+						continue;
+					}
+
+					if( desc_thread.identity->addTask( task ) == true )
+					{
+						desc_task.identity = desc_thread.identity;
+						desc_task.progress = true;
+						break;
+					}
+				}
+			}
+		}
+
+		for( TVectorThreadTaskDesc::size_type 
+			it_task = 0,
+			it_task_end = m_tasks.size();
+		it_task != it_task_end;
 		/*++it*/ )
 		{
-			const ThreadTaskHandle & handle = m_taskThread[it];
+			const ThreadTaskDesc & handle = m_tasks[it_task];
 
 			const ThreadTaskInterfacePtr & task = handle.task;
 
 			if( task->update() == false )
 			{
-				++it;
+				++it_task;
 			}
 			else
 			{
-				m_taskThread[it] = m_taskThread.back();
-				m_taskThread.pop_back();
-				--it_end;
+				m_tasks[it_task] = m_tasks.back();
+				m_tasks.pop_back();
+				--it_task_end;
 			}
 		}
 
-		for( TVectorThreadPool::size_type 
-			it = 0,
-			it_end = m_threadPools.size();
-		it != it_end;
+		for( TVectorThreadQueues::size_type 
+			it_task = 0,
+			it_task_end = m_threadQueues.size();
+		it_task != it_task_end;
 		/*++it*/ )
 		{
-			const ThreadPoolPtr & pool = m_threadPools[it];
+			const ThreadQueuePtr & pool = m_threadQueues[it_task];
 
 			if( pool->update() == false )
 			{
-				++it;
+				++it_task;
 			}
 			else
 			{
-				m_threadPools[it] = m_threadPools.back();
-				m_taskThread.pop_back();
-				--it_end;
+				m_threadQueues[it_task] = m_threadQueues.back();
+				m_tasks.pop_back();
+				--it_task_end;
 			}
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::getThreadIdentity_( const ThreadTaskInterfacePtr & _task, ThreadIdentityPtr & _identity )
-	{
-		for( TVectorThreadTaskHandle::iterator 
-			it = m_taskThread.begin(),
-			it_end = m_taskThread.end();
-		it != it_end;
-		++it )
-		{
-			ThreadTaskHandle & taskThread = *it;
-
-			if( taskThread.task != _task )
-			{
-				continue;
-			}
-
-			_identity = taskThread.identity;
-
-			return true;
-		}
-
-		return false;
 	}
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr ThreadEngine::createMutex()

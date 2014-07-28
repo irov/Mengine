@@ -1178,8 +1178,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void s_cancelTask( ThreadTask * _task )
         {
-            THREAD_SERVICE(m_serviceProvider)
-                ->cancelTask( _task );
+            _task->cancel();
         }
         //////////////////////////////////////////////////////////////////////////
         void s_joinTask( ThreadTask * _task )
@@ -1832,7 +1831,7 @@ namespace Menge
 			for( size_t i = 0; i != 8; ++i )
 			{
 				float low_angle = pi_deltha[ i * 3 + 0];
-				float test_angle = pi_deltha[ i * 3 + 1];
+				//float test_angle = pi_deltha[ i * 3 + 1];
 				float hight_angle = pi_deltha[ i * 3 + 2];
 
 				if( mt::angle_length( angle_norm, low_angle ) > 0.f )
@@ -1855,7 +1854,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		Polygon s_hotspotCorrect( HotSpot * _base, const TVectorHotSpot & _overlap )
 		{
-			const Polygon & base_polygon = _base->getPolygon();
+			//const Polygon & base_polygon = _base->getPolygon();
 
 			Polygon correct_polygon;
 

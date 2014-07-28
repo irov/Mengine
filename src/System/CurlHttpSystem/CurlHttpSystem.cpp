@@ -1,6 +1,7 @@
 #	include "CurlHttpSystem.h"
 
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 #	include "ThreadTaskDownloadAsset.h"
 
@@ -44,6 +45,9 @@ namespace Menge
 			return false;
 		}
 
+		THREAD_SERVICE(m_serviceProvider)
+			->createThread( CONST_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), -1 );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -82,7 +86,7 @@ namespace Menge
 			new ThreadTaskDownloadAsset( m_serviceProvider, _url, _category, _path, task_id, this );
 		
 		if( THREAD_SERVICE(m_serviceProvider)
-			->addTask( task, 0 ) == false )
+			->addTask( CONST_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), task ) == false )
 		{
 			delete task;
 
@@ -114,8 +118,7 @@ namespace Menge
 				continue;
 			}
 
-			THREAD_SERVICE(m_serviceProvider)
-				->cancelTask( desc.task );
+			desc.task->cancel();
 
 			return true;
 		}

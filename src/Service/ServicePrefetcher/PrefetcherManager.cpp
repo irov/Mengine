@@ -1,6 +1,7 @@
 #	include "PrefetcherManager.h"
 
 #	include "Interface/ThreadSystemInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PrefetcherService, Menge::PrefetcherServiceInterface, Menge::PrefetcherManager );
@@ -29,8 +30,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::initialize()
 	{
+		for( size_t i = 0; i != MENGINE_PREFETCHER_THREAD_COUNT; ++i )
+		{
+			THREAD_SERVICE(m_serviceProvider)
+				->createThread( CONST_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), -1 );
+		}
+
 		m_threadQueue = THREAD_SERVICE(m_serviceProvider)
-			->runTaskQueue( MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE, -1 );
+			->runTaskQueue( CONST_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
 
 		return true;
 	}

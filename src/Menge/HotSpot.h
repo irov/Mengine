@@ -38,7 +38,7 @@ namespace Menge
 		bool isMousePickerOver() const;
 
 	public:
-		MousePickerTrapInterface * getPickerTrap();
+		MousePickerTrapInterface * getPickerTrap() override;
 		    
 	public:
 		virtual bool testPoint( const mt::vec2f & _point ) const;

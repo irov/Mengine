@@ -13,17 +13,29 @@ namespace Menge
 		MarmaladeThreadIdentity();
 
     public:
-        void initialize( s3eThread * _thread, const ThreadTaskInterfacePtr & _task );
+        bool initialize( ServiceProviderInterface * _serviceProvider, const ThreadMutexInterfacePtr & _mutex, int _priority );
 		
 	public:
-		s3eThread * getThread() const;
+		void main();
 
 	public:
-		const ThreadTaskInterfacePtr & getTask() const;
+		bool addTask( ThreadTaskInterface * _task ) override;
+		void joinTask() override;
+
+	public:
+		void join() override;
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+		
+		ThreadMutexInterfacePtr m_mutex;
+
 		s3eThread * m_thread;
-		ThreadTaskInterfacePtr m_task;
+
+		ThreadTaskInterface * m_task;
+		
+		volatile bool m_complete;
+		volatile bool m_exit;
 	};
 
 	typedef stdex::intrusive_ptr<MarmaladeThreadIdentity> MarmaladeThreadIdentityPtr;

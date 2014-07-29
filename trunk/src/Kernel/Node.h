@@ -26,11 +26,12 @@ namespace Menge
 {		
 	class Layer;
 	class Scene;
+	class MousePickerTrapInterface;
 
 	struct RenderMaterial;
 
 	class ResourceReference;
-
+	
 	class VisitorResource
 	{
 	public:
@@ -274,6 +275,9 @@ namespace Menge
 
 	public:
 		virtual void visitResource( VisitorResource * _visitor );
+
+	public:
+		virtual MousePickerTrapInterface * getPickerTrap();
 
 	protected:
 		bool m_active;

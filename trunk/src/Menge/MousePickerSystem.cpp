@@ -18,8 +18,6 @@ namespace Menge
 	{
 		//////////////////////////////////////////////////////////////////////////
 		class PickerVisitor
-			: public Visitor
-			, public ConcreteVisitor<HotSpot>
 		{
 		public:
 			PickerVisitor( TVectorPickerTrapStates & _traps )
@@ -53,7 +51,7 @@ namespace Menge
 				m_currentViewport = nodeViewport;
 				m_currentCamera = nodeCamera;
 				
-				_node->visit( this );
+				this->accept( _node );
 
 				TListNodeChild & child = _node->getChild();
 
@@ -75,9 +73,14 @@ namespace Menge
 			}
 
 		protected:
-			void accept( HotSpot * _visited ) override
+			void accept( Node * _node )
 			{
-				MousePickerTrapInterface * trap = _visited->getPickerTrap();
+				MousePickerTrapInterface * trap = _node->getPickerTrap();
+
+				if( trap == nullptr )
+				{
+					return;
+				}
 
 				PickerTrapState * trapState = trap->getPicker();
 

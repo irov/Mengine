@@ -994,20 +994,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::renderChild_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
-		Node * single = m_child.single();
-
-		if( single != nullptr )
+		for( TListNodeChild::unslug_iterator
+			it = m_child.ubegin(),
+			it_end = m_child.uend();
+		it != it_end;
+		++it )
 		{
-			single->render( _viewport, _camera, _debugMask );
-		}
-		else
-		{
-			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
-			{
-				Node * node = (*it);
+			Node * node = (*it);
 
-				node->render( _viewport, _camera, _debugMask );
-			}
+			node->render( _viewport, _camera, _debugMask );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -61,6 +61,19 @@ namespace Menge
 				{
 					this->visit( nodeViewport, nodeCamera, single_child );
 				}
+				else if( child.countSlugs() == 0 )
+				{
+					for( TListNodeChild::unslug_iterator 
+						it = child.ubegin(),
+						it_end = child.uend();
+					it != it_end;
+					++it )
+					{
+						Node * children = (*it);
+
+						this->visit( nodeViewport, nodeCamera, children );
+					}
+				}
 				else
 				{
 					for( TSlugChild it(child); it.eof() == false; it.next_shuffle() )

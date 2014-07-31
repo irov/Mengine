@@ -58,8 +58,11 @@ namespace Menge
 		magic_version_type magic_version = GET_MAGIC_VERSION(MAGIC_HTF);
         m_stream->write( &magic_version, sizeof(magic_version) );
 
-        m_stream->write( &dataInfo->width, sizeof(dataInfo->width) );
-        m_stream->write( &dataInfo->height, sizeof(dataInfo->height) );
+		uint32_t width = dataInfo->width > 4 ? dataInfo->width : 4;
+        m_stream->write( &width, sizeof(width) );
+
+		uint32_t height = dataInfo->height > 4 ? dataInfo->height : 4;
+        m_stream->write( &height, sizeof(height) );
 
 		uint32_t format = s_convertFormat( dataInfo->format );
         m_stream->write( &format, sizeof(format) );

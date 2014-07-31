@@ -11,8 +11,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderMemory::decode( void * _buffer, size_t _bufferSize )
 	{
-		if( _bufferSize != m_options.pitch * m_dataInfo.height )
+		if( _bufferSize < m_options.pitch * m_dataInfo.height )
 		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderMemory::decode invalid bufferSize %d != (%d * %d)"
+				, _bufferSize
+				, m_options.pitch
+				, m_dataInfo.height
+				);
+
 			return 0;
 		}
 

@@ -4,12 +4,12 @@
 
 namespace Menge
 {
-	class ImageConverterPVRToHTF
+	class ImageConverterDDSToHTF
 		: public DevelopmentConverter
 	{
 	public:
-		ImageConverterPVRToHTF();
-		~ImageConverterPVRToHTF();
+		ImageConverterDDSToHTF();
+		~ImageConverterDDSToHTF();
 
 	public:
 		bool initialize() override;

@@ -91,8 +91,6 @@ namespace Menge
 
 			switch( _format )
 			{
-			case PF_DXT1:
-				return ((HWWidth + 3) / 4) * ( (HWHeight + 3) / 4 ) * 8;
 			case PF_DXT2:
 			case PF_DXT3:
 			case PF_DXT4:
@@ -112,8 +110,11 @@ namespace Menge
 			case PF_X8B8G8R8:
 				return HWWidth * HWHeight * _depth * 4;
 
+			case PF_DXT1:
 			case PF_ETC1:
-			case PF_PVRTC4_RGB:
+			case PF_PVRTC4_RGB:			
+				return ((HWWidth + 3) >> 2) * ((HWHeight + 3) >> 2) * _depth * 8;
+
 			case PF_PVRTC4_RGBA:
 				return ((HWWidth + 3) >> 2) * ((HWHeight + 3) >> 2) * _depth * 8;
 			}                

@@ -5,28 +5,23 @@ src
 	ImageCodecPlugin.h
 	ImageCodecPlugin.cpp
     
-   
-	#ImageCodecMNE.cpp
-	#ImageCodecMNE.h
+  
 	ImageDecoderJPEG.cpp
 	ImageDecoderJPEG.h
-	#ImageDecoderMNE.cpp
-	#ImageDecoderMNE.h
+    ImageDecoderWEBP.h
+    ImageDecoderWEBP.cpp    
 	ImageDecoderPNG.cpp
 	ImageDecoderPNG.h
-    #ImageDecoderDDZ.cpp
-    #ImageDecoderDDZ.h
  
     ImageDecoderCRN.cpp
     ImageDecoderCRN.h
     
+    ImageDecoderETC1.cpp
+    ImageDecoderETC1.h
     ImageDecoderPVRTC.cpp
     ImageDecoderPVRTC.h
-    
-    ImageDecoderETC1.cpp
-    ImageDecoderETC1.h    
-	#ImageDecoderCombinerRGBAndAlpha.cpp
-    #ImageDecoderCombinerRGBAndAlpha.h
+    ImageDecoderDDS.cpp
+    ImageDecoderDDS.h
 
 	ImageEncoderJPEG.cpp
 	ImageEncoderJPEG.h    
@@ -40,12 +35,6 @@ src
     
     PickEncoderHIT.cpp
     PickEncoderHIT.h
-   
-    ImageDecoderWEBP.h
-    ImageDecoderWEBP.cpp
-    
-    ImageDecoderPVRTZ.h
-    ImageDecoderPVRTZ.cpp
     
     ImageDecoderHTF.cpp
     ImageDecoderHTF.h       
@@ -58,9 +47,6 @@ src
     ImageEncoderACF.cpp
     ImageEncoderACF.h
     ImageVerifyACF.h
-    
-    #ImageDecoderETZ1.h
-    #ImageDecoderETZ1.cpp
     
     DataflowAEK.h
     DataflowAEK.cpp

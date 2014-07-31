@@ -577,7 +577,11 @@ namespace Menge
 
         BEGIN_WATCHDOG(m_serviceProvider, "texture decode");
 
-        unsigned int bufferSize = pitch * data->height;
+		size_t width = image->getHWWidth();
+		size_t height = image->getHWHeight();
+		PixelFormat pf = image->getHWPixelFormat();
+
+        size_t bufferSize = Helper::getTextureMemorySize( width, height, 1, pf );
         if( _imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTextureImageData Invalid decode");

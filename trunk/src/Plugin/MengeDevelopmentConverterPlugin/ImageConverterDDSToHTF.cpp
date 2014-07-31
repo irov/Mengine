@@ -1,4 +1,4 @@
-#	include "ImageConverterPVRToHTF.h"
+#	include "ImageConverterDDSToHTF.h"
 
 #	include "Interface/ParticleSystemInterface2.h"
 #	include "Interface/FileSystemInterface.h"
@@ -20,22 +20,22 @@
 namespace Menge
 {
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	ImageConverterPVRToHTF::ImageConverterPVRToHTF()
+	ImageConverterDDSToHTF::ImageConverterDDSToHTF()
 	{
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	ImageConverterPVRToHTF::~ImageConverterPVRToHTF()
+	ImageConverterDDSToHTF::~ImageConverterDDSToHTF()
 	{
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool ImageConverterPVRToHTF::initialize()
+	bool ImageConverterDDSToHTF::initialize()
 	{
         m_convertExt = ".htf";
 
 		return true;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool ImageConverterPVRToHTF::convert()
+	bool ImageConverterDDSToHTF::convert()
 	{
         FileGroupInterfacePtr fileGroup;
         if( FILE_SERVICE(m_serviceProvider)->hasFileGroup( m_options.pakName, &fileGroup ) == false )
@@ -65,7 +65,7 @@ namespace Menge
 		}
 
 		ImageDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-			->createDecoderT<ImageDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "pvrImage") );
+			->createDecoderT<ImageDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "ddsImage") );
 
 		if( decoder == nullptr )
 		{
@@ -78,7 +78,7 @@ namespace Menge
 
 		if( decoder->prepareData( stream_intput ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPVRToHTF::convert: %s invalid prepare decoder"
+			LOGGER_ERROR(m_serviceProvider)("ImageConverterDDSToHTF::convert: %s invalid prepare decoder"
 				, m_options.inputFileName.c_str()
 				);
 
@@ -101,12 +101,12 @@ namespace Menge
 		}	
 		
 		size_t data_size = dataInfo->size;
-		CacheMemoryBuffer data_buffer(m_serviceProvider, data_size, "ImageConverterPVRToHTF_data");
+		CacheMemoryBuffer data_buffer(m_serviceProvider, data_size, "ImageConverterDDSToHTF_data");
 		void * data_memory = data_buffer.getMemory();
 
 		if( decoder->decode( data_memory, data_size ) == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPVRToHTF::convert: %s invalid decode"
+			LOGGER_ERROR(m_serviceProvider)("ImageConverterDDSToHTF::convert: %s invalid decode"
 				, m_options.inputFileName.c_str()
 				);
 
@@ -118,7 +118,7 @@ namespace Menge
 
 		if( stream_output == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPVRToHTF::convert: %s invalid open output %s"
+			LOGGER_ERROR(m_serviceProvider)("ImageConverterDDSToHTF::convert: %s invalid open output %s"
 				, m_options.inputFileName.c_str()
 				, full_output.c_str()
 				);
@@ -131,7 +131,7 @@ namespace Menge
 
 		if( encoder->initialize( stream_output ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPVRToHTF::convert: %s invalid initialize encoder"
+			LOGGER_ERROR(m_serviceProvider)("ImageConverterDDSToHTF::convert: %s invalid initialize encoder"
 				, m_options.inputFileName.c_str()
 				);
 
@@ -144,7 +144,7 @@ namespace Menge
 
 		if( encoder->setOptions( &encoder_options ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPVRToHTF::convert: %s invalid optionize encoder"
+			LOGGER_ERROR(m_serviceProvider)("ImageConverterDDSToHTF::convert: %s invalid optionize encoder"
 				, m_options.inputFileName.c_str()
 				);
 
@@ -164,7 +164,7 @@ namespace Menge
 
 		if( encode_byte == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPVRToHTF::convert: %s invalid encode"
+			LOGGER_ERROR(m_serviceProvider)("ImageConverterDDSToHTF::convert: %s invalid encode"
 				, m_options.inputFileName.c_str()
 				);
 

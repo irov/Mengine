@@ -229,7 +229,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderPNG::decode( void * _buffer, size_t _bufferSize )
 	{	
-        if( _bufferSize != m_options.pitch * m_dataInfo.height )
+        if( _bufferSize < m_options.pitch * m_dataInfo.height )
         {
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode invalid bufferSize %d != (%d * %d)"
                 , _bufferSize

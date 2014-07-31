@@ -8,11 +8,11 @@
 #	include "ImageDecoderPNG.h"
 #	include "ImageDecoderJPEG.h"
 #	include "ImageDecoderWEBP.h"
-//#	include "ImageDecoderDDZ.h"
+
+#	include "ImageDecoderDDS.h"
 #	include "ImageDecoderPVRTC.h"
 #	include "ImageDecoderETC1.h"
-//#	include "ImageDecoderPVRTZ.h"
-//#	include "ImageDecoderETZ1.h"
+
 #	include "ImageDecoderCRN.h"
 
 #	include "ImageDecoderHTF.h"
@@ -21,11 +21,6 @@
 #	include "ImageEncoderACF.h"
 
 #	include "ImageEncoderPNG.h"
-
-//#   include "ImageDecoderCombinerRGBAndAlpha.h"
-//#	include "VideoDecoderFFMPEG.h"
-//#	include "VideoDecoderOGGTheora.h"
-//#	include "SoundDecoderOGGVorbis.h"
 
 #   include "PickDecoderHIT.h"
 #   include "PickEncoderHIT.h"
@@ -77,16 +72,14 @@ namespace Menge
 
         m_decoders.push_back( new DecoderFactory<ImageDecoderPNG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pngImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderJPEG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "jpegImage")) );
-        //m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ddsImage")) );
-        //m_decoders.push_back( new DecoderFactory<ImageDecoderDDZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ddzImage")) );
-
+        
 #	ifdef MENGINE_SUPPORT_DECODER_WEBP
         m_decoders.push_back( new DecoderFactory<ImageDecoderWEBP>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "webpImage")) );
 #	endif
-		//m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pvrtzImage")) );
-		//m_decoders.push_back( new DecoderFactory<ImageDecoderETZ1>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "etz1Image")) );
+
 		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTC>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pvrImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderETC1>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "etcImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderDDS>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ddsImage")) );
 
 #	ifdef MENGINE_SUPPORT_DECODER_CRN
 		m_decoders.push_back( new DecoderFactory<ImageDecoderCRN>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "crnImage")) );
@@ -108,13 +101,10 @@ namespace Menge
 			->registerCodecExt( "jpeg", CONST_STRING_LOCAL(m_serviceProvider, "jpegImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "pvz", CONST_STRING_LOCAL(m_serviceProvider, "pvrtzImage") );
-
-		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "etz", CONST_STRING_LOCAL(m_serviceProvider, "etz1Image") );
-
-		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "pvr", CONST_STRING_LOCAL(m_serviceProvider, "pvrImage") );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "dds", CONST_STRING_LOCAL(m_serviceProvider, "ddsImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "etc", CONST_STRING_LOCAL(m_serviceProvider, "etcImage") );
@@ -128,18 +118,6 @@ namespace Menge
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "acf", CONST_STRING_LOCAL(m_serviceProvider, "acfImage") );
 
-		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderJPEG>(ConstString("jpgImage"), logService) );
-		//m_decoders.push_back( new Detail::ImageDecoderSystem<ImageDecoderMNE>("mneImage", logService) );
-		//m_decoders.push_back( new DecoderFactory<ImageDecoderDDS>(m_serviceProvider, Helper::StringizeString(m_serviceProvider, "ddsImage")) );
-		//m_decoders.push_back( ne w Detail::ImageDecoderSystem<ImageDecoderCombinerRGBAndAlpha>("combinedImage", logService) );
-		
-		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderFFMPEG>("ffmpegVideo", logService) );
-
-		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("oggVideo", logService) );
-		//m_decoders.push_back( new Detail::ImageDecoderSystem<VideoDecoderOGGTheora>("ogvVideo", logService) );
-		//m_decoders.push_back( new Detail::DecoderSystem<SoundDecoderOGGVorbis>(m_serviceProvider, Helper::StringizeString(m_serviceProvider, "oggSound")) );
-		//m_decoders.push_back( new Detail::DecoderSystem<SoundDecoderOGGVorbis>(m_serviceProvider, Helper::StringizeString(m_serviceProvider, "ogvSound")) );
-
         m_decoders.push_back( new DecoderFactory<PickDecoderHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "hitPick")) );
 
         m_encoders.push_back( new EncoderFactory<PickEncoderHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "hitPick")) );     
@@ -149,8 +127,6 @@ namespace Menge
 
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "hit", CONST_STRING_LOCAL(m_serviceProvider, "hitPick") );
-
-		//VideoDecoderOGGTheora::createCoefTables_();
 
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),

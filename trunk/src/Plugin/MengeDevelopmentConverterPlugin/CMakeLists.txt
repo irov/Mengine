@@ -24,6 +24,8 @@ src
     ModelConverterMDLToMDZ.h
     ImageConverterPVRToHTF.cpp
     ImageConverterPVRToHTF.h
+    ImageConverterDDSToHTF.cpp
+    ImageConverterDDSToHTF.h
     ImageConverterPNGToACF.cpp
     ImageConverterPNGToACF.h
 )

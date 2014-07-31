@@ -1,8 +1,6 @@
 #	pragma once
 
 #	include "Interface/ConverterInterface.h"
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/LogSystemInterface.h"
 
 namespace Menge
 {

@@ -100,7 +100,7 @@ namespace Menge
 	bool XmlToBinDecoder::initialize()
 	{
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
 
 		if( m_archivator == nullptr )
 		{

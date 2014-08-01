@@ -4,7 +4,7 @@ project( webp )
 
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../libwebp )
 
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h ${SOURCE_DIR}/config.h COPYONLY)
+configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h ${SOURCE_DIR}/src/webp/config.h COPYONLY)
 
 set(sources
     ${SOURCE_DIR}/src/dec/alpha.c
@@ -12,7 +12,6 @@ set(sources
     ${SOURCE_DIR}/src/dec/frame.c
     ${SOURCE_DIR}/src/dec/idec.c
     ${SOURCE_DIR}/src/dec/io.c
-    ${SOURCE_DIR}/src/dec/layer.c
     ${SOURCE_DIR}/src/dec/quant.c
     ${SOURCE_DIR}/src/dec/tree.c
     ${SOURCE_DIR}/src/dec/vp8.c
@@ -23,13 +22,17 @@ set(sources
     ${SOURCE_DIR}/src/dsp/dec.c
     ${SOURCE_DIR}/src/dsp/dec_neon.c
     ${SOURCE_DIR}/src/dsp/dec_sse2.c
+    ${SOURCE_DIR}/src/dsp/dec_clip_tables.c
+    ${SOURCE_DIR}/src/dsp/dec_mips32.c
     ${SOURCE_DIR}/src/dsp/lossless.c
+    ${SOURCE_DIR}/src/dsp/lossless_sse2.c
     ${SOURCE_DIR}/src/dsp/upsampling.c
     ${SOURCE_DIR}/src/dsp/upsampling_neon.c
     ${SOURCE_DIR}/src/dsp/upsampling_sse2.c
     ${SOURCE_DIR}/src/dsp/yuv.c
+    ${SOURCE_DIR}/src/dsp/yuv_sse2.c
+    ${SOURCE_DIR}/src/dsp/alpha_processing.c
 
-    ${SOURCE_DIR}/src/utils/alpha_processing.c
     ${SOURCE_DIR}/src/utils/bit_reader.c
     ${SOURCE_DIR}/src/utils/color_cache.c
     ${SOURCE_DIR}/src/utils/filters.c

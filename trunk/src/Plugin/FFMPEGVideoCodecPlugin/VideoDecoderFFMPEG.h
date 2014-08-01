@@ -19,8 +19,6 @@ extern "C"
 
 namespace Menge
 {
-#   define VIDEO_FFMPEG_BUFFER_IO_SIZE 8192
-
 	class VideoDecoderFFMPEG
 		: public VideoDecoder
 	{
@@ -63,7 +61,7 @@ namespace Menge
 		
 		int m_outputPixelFormat;
 
-		uint8_t m_bufferIO[VIDEO_FFMPEG_BUFFER_IO_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
+		uint8_t m_bufferIO[FF_MIN_BUFFER_SIZE + FF_INPUT_BUFFER_PADDING_SIZE];
 		int m_videoStreamId;
 		
 		//float m_timing;

@@ -2,6 +2,8 @@
 
 #	include "Interface/CacheInterface.h"
 
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -100,20 +102,27 @@ namespace Menge
 			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
 			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
 			{
-				GLuint size = (m_hwWidth * m_hwHeight) >> 1;
-				glCompressedTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, size, m_lock);
-				break;
-			}
+				GLuint size = Helper::getTextureMemorySize(m_hwWidth, m_hwHeight, 1, m_hwPixelFormat);
+				glCompressedTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, size, m_lock);				
+			}break;
 			case GL_RGB:
 			{
 				glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, m_lock );
-				break;
-			}
+				
+			}break;
 			default:
 			{
-				glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, m_format, m_type, m_lock );
-				break;
-			}
+				glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, m_format, m_type, m_lock );				
+			}break;
+		}
+
+		GLenum gl_err = glGetError();
+
+		if( gl_err != GL_NO_ERROR )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock gl error %d"
+				, gl_err
+				);
 		}
 
 		CACHE_SERVICE(m_serviceProvider)

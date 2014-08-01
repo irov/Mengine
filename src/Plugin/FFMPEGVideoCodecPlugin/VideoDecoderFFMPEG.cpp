@@ -32,30 +32,47 @@ namespace Menge
 	
 				return size;
 			}break;
+
 		case SEEK_SET:
 			{
-				size_t offset;
-
-				if( _offset < 0 )
+				if( stream->seek( _offset ) == false )
 				{
-					size_t pos = stream->tell();
-
-					offset = pos + _offset;
-				}
-				else
-				{
-					offset = _offset;
+					return -1;
 				}
 
-				stream->seek( offset );
+				return _offset;
 			}break;
-		default:
+
+		case SEEK_CUR:
 			{
-				return -1;
+				size_t pos = stream->tell();
+
+				size_t offset = pos + _offset;
+
+				if( stream->seek( offset ) == false )
+				{
+					return -1;
+				}
+
+				return offset;
+			}break;
+		
+		case SEEK_END:
+			{
+				size_t size = stream->size();
+
+				size_t offset = size + _offset;
+
+				if( stream->seek( offset ) == false )
+				{
+					return -1;
+				}
+
+				return offset;
 			}break;
 		}
-		
-		return 0;
+
+		return -1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderFFMPEG::VideoDecoderFFMPEG()
@@ -79,40 +96,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderFFMPEG::_prepareData()
 	{
-        const int probe_buffer_io_size = 4096;
-
-        uint8_t filebuffer[probe_buffer_io_size + FF_INPUT_BUFFER_PADDING_SIZE];
-       
-        size_t stream_size = m_stream->size();
-        size_t probe_size = probe_buffer_io_size > stream_size ? stream_size : probe_buffer_io_size;
-
-        memset( filebuffer, 0, probe_buffer_io_size + FF_INPUT_BUFFER_PADDING_SIZE );
-
-        m_stream->read( filebuffer, probe_size );
-        m_stream->seek( 0 );
-
-        AVProbeData pd;
-        pd.filename = "";
-        pd.buf = (unsigned char *)filebuffer; 
-        pd.buf_size = probe_size;
-
-        int score = 0;
-        AVInputFormat * inputFormat = av_probe_input_format2( &pd, 1, &score );
-        
-        if( inputFormat == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: av_probe_input_format failed "
-                );
-
-            return false;
-        }
-
         //m_bufferIO = new uint8_t[ m_probeSize + FF_INPUT_BUFFER_PADDING_SIZE ];
-		memset( m_bufferIO + VIDEO_FFMPEG_BUFFER_IO_SIZE, 0, FF_INPUT_BUFFER_PADDING_SIZE );
+		memset( m_bufferIO + FF_MIN_BUFFER_SIZE, 0, FF_INPUT_BUFFER_PADDING_SIZE );
 
 		m_IOContext = avio_alloc_context(
 			 m_bufferIO //IO buffer
-			, VIDEO_FFMPEG_BUFFER_IO_SIZE //size of IO buffer
+			, FF_MIN_BUFFER_SIZE //size of IO buffer
 			, 0 //write flag set to 0
 			, m_stream.get()//IO source - it will be send as opaque argument to IO callbacks
 			, s_readIOWrapper //read callback 
@@ -120,17 +109,39 @@ namespace Menge
 			, s_seekIOWrapper //seek callback
 			);
 
-		//m_IOContext.is_streamed = 0;
-        //return true;
-
-		
 		m_formatContext = avformat_alloc_context();
 
 		m_formatContext->pb = m_IOContext;
-        
-        int open_input_error = avformat_open_input( &m_formatContext, "", inputFormat, nullptr );
 
-		if( open_input_error < 0 )
+		size_t stream_size = m_stream->size();
+		size_t probe_size = FF_MIN_BUFFER_SIZE < stream_size ? FF_MIN_BUFFER_SIZE : stream_size;
+
+		m_stream->read( m_bufferIO, probe_size );
+		m_stream->seek( 0 );
+
+		AVProbeData pd;
+		pd.filename = "";
+		pd.buf = m_bufferIO; 
+		pd.buf_size = probe_size;
+
+		AVInputFormat * inputFormat = av_probe_input_format( &pd, 1 );
+		
+		if( inputFormat == nullptr )
+		{
+		    LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: av_probe_input_format failed "
+		        );
+
+		    return false;
+		}
+
+		//inputFormat->flags |= AVFMT_NOFILE;
+
+		m_formatContext->iformat = inputFormat;
+		m_formatContext->flags = AVFMT_FLAG_CUSTOM_IO;
+		        
+        int open_input_error = avformat_open_input( &m_formatContext, "", nullptr, nullptr );
+
+		if( open_input_error != 0 )
 		{
 			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Couldn't open stream %d"
                 , open_input_error
@@ -234,7 +245,7 @@ namespace Menge
 
 		//av_init_packet(&packet);
 		//av_read_frame(m_formatContext, &packet);
-		//avcodec_decode_video2( m_codecContext ,m_Frame, &isGotPicture, &packet );
+		//avcodec_decode_video2( m_codecContext, m_frame, &isGotPicture, &packet );
 		//av_free_packet(&packet);
 
 		m_dataInfo.frameWidth = m_codecContext->width;
@@ -244,6 +255,7 @@ namespace Menge
 		m_dataInfo.frameHeightHW = m_codecContext->height;
 
         double fps = av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
+		//double fps = this->getFps_();
 
 		m_dataInfo.fps = (uint32_t)fps;
 

@@ -36,9 +36,9 @@ namespace Menge
             return;
         }
 
-        printf("VideoCodecPlugin::s_ffmpeg_log %d\n"
-            , _level
-            );
+		printf("VideoCodecPlugin::s_ffmpeg_log %d\n"
+			, _level
+			);
 
         vprintf( _format, _args );
     }
@@ -56,6 +56,8 @@ namespace Menge
         av_register_all();
 
         av_log_set_callback( &s_ffmpeg_log );
+
+		avformat_network_init();
 
 		m_decoders.push_back( new DecoderFactory<VideoDecoderFFMPEG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegVideo")) );
 		

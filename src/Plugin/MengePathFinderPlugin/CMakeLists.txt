@@ -18,6 +18,8 @@ ModulePathFinder
     ThreadWorkerPathFinder.h
     PathGraphNode.h
     PathGraph.h
+    AreaOfInterest.h
+    AreaOfInterest.cpp
 )
 
 ADD_FILTER(

@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 55;
+        _needVersion = 56;
 
-        if( version != 55 )
+        if( version != 56 )
         {
             return false;
         }
@@ -203,6 +203,51 @@ namespace Metacode
                 return true;
                 break;
             }
+        case 26:
+            {
+                Meta_DataBlock::Meta_ResourceCal3dAnimation * metadata = new Meta_DataBlock::Meta_ResourceCal3dAnimation ();
+                if( metadata->parse( _buff, _size, _read, m_userData ) == false )
+                {
+                    delete metadata;
+    
+                    return false;
+                }
+    
+                includes_Meta_Resource.push_back(metadata);
+    
+                return true;
+                break;
+            }
+        case 27:
+            {
+                Meta_DataBlock::Meta_ResourceCal3dMesh * metadata = new Meta_DataBlock::Meta_ResourceCal3dMesh ();
+                if( metadata->parse( _buff, _size, _read, m_userData ) == false )
+                {
+                    delete metadata;
+    
+                    return false;
+                }
+    
+                includes_Meta_Resource.push_back(metadata);
+    
+                return true;
+                break;
+            }
+        case 25:
+            {
+                Meta_DataBlock::Meta_ResourceCal3dSkeleton * metadata = new Meta_DataBlock::Meta_ResourceCal3dSkeleton ();
+                if( metadata->parse( _buff, _size, _read, m_userData ) == false )
+                {
+                    delete metadata;
+    
+                    return false;
+                }
+    
+                includes_Meta_Resource.push_back(metadata);
+    
+                return true;
+                break;
+            }
         case 9:
             {
                 Meta_DataBlock::Meta_ResourceCursorICO * metadata = new Meta_DataBlock::Meta_ResourceCursorICO ();
@@ -263,7 +308,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 25:
+        case 28:
             {
                 Meta_DataBlock::Meta_ResourceExternal * metadata = new Meta_DataBlock::Meta_ResourceExternal ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -796,6 +841,195 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceCal3dAnimation::Meta_ResourceCal3dAnimation()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Meta_DataBlock::Meta_ResourceCal3dAnimation::getId() const
+    {
+        return 26;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceCal3dAnimation::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
+        {
+            return true;
+        }
+    
+        switch( _id )
+        {
+        case 3:
+            {
+                if( this->read( _buff, _size, _read, this->File_Path ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceCal3dAnimation::_preparationIncludes( uint32_t _includes, uint32_t _count )
+    {
+        if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
+        {
+            return true;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceCal3dAnimation::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
+        {
+            return true;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceCal3dAnimation::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
+        {
+            return true;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceCal3dMesh::Meta_ResourceCal3dMesh()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Meta_DataBlock::Meta_ResourceCal3dMesh::getId() const
+    {
+        return 27;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceCal3dMesh::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
+        {
+            return true;
+        }
+    
+        switch( _id )
+        {
+        case 3:
+            {
+                if( this->read( _buff, _size, _read, this->File_Path ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceCal3dMesh::_preparationIncludes( uint32_t _includes, uint32_t _count )
+    {
+        if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
+        {
+            return true;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceCal3dMesh::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
+        {
+            return true;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceCal3dMesh::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
+        {
+            return true;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceCal3dSkeleton::Meta_ResourceCal3dSkeleton()
+        : Meta_Resource()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Meta_DataBlock::Meta_ResourceCal3dSkeleton::getId() const
+    {
+        return 25;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceCal3dSkeleton::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
+        {
+            return true;
+        }
+    
+        switch( _id )
+        {
+        case 3:
+            {
+                if( this->read( _buff, _size, _read, this->File_Path ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceCal3dSkeleton::_preparationIncludes( uint32_t _includes, uint32_t _count )
+    {
+        if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
+        {
+            return true;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceCal3dSkeleton::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
+        {
+            return true;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceCal3dSkeleton::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
+    {
+        if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
+        {
+            return true;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceCursorICO::Meta_ResourceCursorICO()
         : Meta_Resource()
     {
@@ -1094,7 +1328,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceExternal::getId() const
     {
-        return 25;
+        return 28;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceExternal::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )

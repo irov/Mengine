@@ -110,11 +110,11 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 
+		bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, int _bits, bool _fullscreen, 
 									WindowHandle _winHandle, int _FSAAType , int _FSAAQuality ) override;
 
 	public:
-		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen ) override;
+		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
 	public:
 		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material            
@@ -192,7 +192,8 @@ namespace Menge
 		void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float zn, float zf ) override;
 		void makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport ) override;
         void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign ) override;
-
+		
+	public:
 		const RenderDebugInfo & getDebugInfo() const override;
 		void resetFrameCount() override;
 
@@ -210,6 +211,10 @@ namespace Menge
 
 		void renderObjects_( RenderPass & _renderPass );
 		void renderObject_( RenderObject* _renderObject );
+
+	protected:
+		void calcRenderViewport_( const Viewport & _viewport, Viewport & _renderViewport ) const;
+
 
 	protected:
         bool makeBatches_();

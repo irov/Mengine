@@ -26,6 +26,7 @@ namespace Menge
 		size_t getHWWidth() const override;
 		size_t getHWHeight() const override;
         size_t getHWChannels() const override;
+		size_t getHWDepth() const override;
 
         PixelFormat getHWPixelFormat() const override;
         

@@ -73,7 +73,7 @@ namespace Menge
         m_dataInfo.channels = 1;
 		m_dataInfo.format = PF_A8;
 		
-		m_dataInfo.size = Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, m_dataInfo.depth, m_dataInfo.format );
+		m_dataInfo.size = Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, m_dataInfo.channels, m_dataInfo.depth, m_dataInfo.format );
         
 		return true;
 	}

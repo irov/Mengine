@@ -10,6 +10,12 @@ namespace Menge
         , m_compile(false)
     {
     }
+	//////////////////////////////////////////////////////////////////////////
+	ResourceHolderBase::ResourceHolderBase( ResourceReference * _resource )
+		: m_resource(_resource)
+		, m_compile(false)
+	{
+	}
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHolderBase::compile()
     {

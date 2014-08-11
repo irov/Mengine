@@ -99,10 +99,12 @@ namespace Menge
 	{
 		size_t HWWidth = m_image->getHWWidth();
 		size_t HWHeight = m_image->getHWHeight();
+		size_t HWChannels = m_image->getHWChannels();
+		size_t HWBits = m_image->getHWDepth();
 
 		PixelFormat HWFormat = m_image->getHWPixelFormat();
 
-		size_t memroy_size = Helper::getTextureMemorySize( HWWidth, HWHeight, 1, HWFormat );
+		size_t memroy_size = Helper::getTextureMemorySize( HWWidth, HWHeight, HWChannels, HWBits, HWFormat );
 
 		return memroy_size;
 	}

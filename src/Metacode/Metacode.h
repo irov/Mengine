@@ -218,6 +218,117 @@ namespace Metacode
             TVectorMeta_Sequence includes_Meta_Sequence;
         };
         
+        class Meta_ResourceCal3dAnimation
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceCal3dAnimation();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const Menge::ConstString & get_File_Path() const
+            {
+                return this->File_Path;
+            }
+            
+            void swap_File_Path( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->File_Path);
+            }
+            
+            template<class C, class M>
+            void method_File_Path( C * _self, M _method )
+            {
+                (_self->*_method)( this->File_Path );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::ConstString File_Path;
+        };
+        
+        class Meta_ResourceCal3dMesh
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceCal3dMesh();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const Menge::ConstString & get_File_Path() const
+            {
+                return this->File_Path;
+            }
+            
+            void swap_File_Path( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->File_Path);
+            }
+            
+            template<class C, class M>
+            void method_File_Path( C * _self, M _method )
+            {
+                (_self->*_method)( this->File_Path );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::ConstString File_Path;
+        };
+        
+        class Meta_ResourceCal3dSkeleton
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceCal3dSkeleton();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const Menge::ConstString & get_File_Path() const
+            {
+                return this->File_Path;
+            }
+            
+            void swap_File_Path( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->File_Path);
+            }
+            
+            template<class C, class M>
+            void method_File_Path( C * _self, M _method )
+            {
+                (_self->*_method)( this->File_Path );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::ConstString File_Path;
+        };
+        
         class Meta_ResourceCursorICO
             : public Meta_Resource
         { 

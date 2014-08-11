@@ -162,7 +162,7 @@ namespace Menge
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
 		RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-            ->createDynamicTexture( dataInfo->frameWidthHW, dataInfo->frameHeightHW, channels, dataInfo->format );
+            ->createDynamicTexture( dataInfo->frameWidthHW, dataInfo->frameHeightHW, channels, 1, dataInfo->format );
 
 		if( dynamicTexture == nullptr )
 		{
@@ -232,12 +232,12 @@ namespace Menge
 	{
 		m_needUpdate = false;
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false) );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_end( size_t _enumerator )
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed() ,_enumerator, pybind::get_bool(false));	
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false));	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::pause()

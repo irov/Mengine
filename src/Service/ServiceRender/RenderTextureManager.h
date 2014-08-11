@@ -39,9 +39,9 @@ namespace Menge
 		RenderTextureInterfacePtr createTextureFromDecoder_( const ImageDecoderInterfacePtr & _decoder );
 
     public:
-        RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
-        RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
-        RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+        RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
+        RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
+        RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
 
         RenderTextureInterfacePtr getTexture( const FilePath & _fileName ) const override;
 
@@ -58,7 +58,7 @@ namespace Menge
 
     public:
         void visitTexture( VisitorRenderTextureInterface * _visitor ) const override;
-		size_t getImageMemoryUse( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) const override;
+		size_t getImageMemoryUse( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) const override;
 
     public:
         const RenderTextureDebugInfo & getDebugInfo() override;
@@ -70,7 +70,7 @@ namespace Menge
         bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder );
 
 	protected:
-		void updateImageParams_( size_t & _width, size_t & _height, size_t & _channels, PixelFormat & _format ) const;
+		void updateImageParams_( size_t & _width, size_t & _height, size_t & _channels, size_t & _depth, PixelFormat & _format ) const;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

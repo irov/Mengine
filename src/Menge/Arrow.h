@@ -53,6 +53,10 @@ namespace Menge
 	public:
 		void calcMouseScreenPosition( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _worldPoint, mt::vec2f & _screenPoint ) const;
 		
+	protected:
+		void adaptScreenPosition_( const mt::vec2f & _screenPoint, mt::vec2f & _adaptScreenPoint ) const;
+		void adaptWorldPosition_( const mt::vec2f & _screenPoint, mt::vec2f & _adaptScreenPoint ) const;
+
 	public:
 		void onAppMouseLeave();
 		void onAppMouseEnter();

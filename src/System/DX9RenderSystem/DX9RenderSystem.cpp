@@ -769,7 +769,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::screenshot( const RenderImageInterfacePtr & _image, const float * _rect )
+	bool DX9RenderSystem::screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect )
 	{	
 		(void)_image;
 		(void)_rect;
@@ -803,7 +803,7 @@ namespace Menge
  		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, ( D3DTS_VIEW, (D3DMATRIX*)_modelview.buff() ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr DX9RenderSystem::createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderImageInterfacePtr DX9RenderSystem::createImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
 	{
 		IDirect3DTexture9 * dxTextureInterface = nullptr;
         
@@ -837,7 +837,7 @@ namespace Menge
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
 	{
 		IDirect3DTexture9 * dxTextureInterface = nullptr;
 
@@ -871,7 +871,7 @@ namespace Menge
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
 	{
 		IDirect3DTexture9 * dxTextureInterface = nullptr;		
 		if( this->d3dCreateTexture_( _width, _height, 1, D3DUSAGE_RENDERTARGET, _format, D3DPOOL_DEFAULT, &dxTextureInterface ) == false )

@@ -302,7 +302,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderJPEG::decode( void * _buffer, size_t _bufferSize )
 	{
-        if( _bufferSize != m_options.pitch * m_dataInfo.height )
+        if( _bufferSize < m_options.pitch * m_dataInfo.height )
         {
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::decode error, invalid buffer relation pitch to size bufferSize %d - pitch %d height %d"
                 , _bufferSize

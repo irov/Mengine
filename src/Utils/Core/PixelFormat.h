@@ -84,7 +84,7 @@ namespace Menge
 			return n;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		inline size_t getTextureMemorySize( size_t _width, size_t _height, size_t _depth, PixelFormat _format )
+		inline size_t getTextureMemorySize( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
 		{
 			size_t HWWidth = Helper::getTexturePOW2( _width );
 			size_t HWHeight = Helper::getTexturePOW2( _height );
@@ -117,6 +117,9 @@ namespace Menge
 
 			case PF_PVRTC4_RGBA:
 				return ((HWWidth + 3) >> 2) * ((HWHeight + 3) >> 2) * _depth * 8;
+
+			case PF_UNKNOWN:
+				return _width * _height * _depth * _channels;
 			}                
 
 			return 0;

@@ -67,7 +67,7 @@ namespace Menge
 		void clear( uint32_t _color ) override;
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
-		bool screenshot( const RenderImageInterfacePtr & _image, const float * _rect ) override;
+		bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
 		// входные данные: матрица 4 на 4
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
 		void setModelViewMatrix( const mt::mat4f & _modelview ) override;
@@ -129,12 +129,12 @@ namespace Menge
 		void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 		
 		// create empty render image
-		RenderImageInterfacePtr createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
-		RenderImageInterfacePtr createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+		RenderImageInterfacePtr createImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
+		RenderImageInterfacePtr createDynamicImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
 		
 		
 		// create render target image
-		RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+		RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
 		// отрисовка изображения
 
 		bool beginScene() override;

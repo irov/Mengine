@@ -96,6 +96,7 @@
 #	include "ScriptWrapper.h"
 
 #	include "Kernel/NodePrototypeGenerator.h"
+#	include "Kernel/ResourcePrototypeGenerator.h"
 
 #	include "Codec/ImageDecoderMemory.h"
 #	include "Codec/DecoderFactory.h"
@@ -653,59 +654,6 @@ namespace Menge
 
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////
-    namespace
-    {
-        template<class Type, size_t Count>
-        class ResourcePrototypeGenerator
-            : public PrototypeGeneratorInterface
-        {
-        public:
-            ResourcePrototypeGenerator( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider(_serviceProvider)
-            {
-            }
-
-        protected:
-            Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
-            {
-                ResourceReference * resource = m_factory.createObjectT();
-
-                if( resource == nullptr )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("ResourcePrototypeGenerator can't generate %s %s"
-                        , _category.c_str()
-                        , _prototype.c_str()
-                        );
-
-                    return nullptr;
-                }
-
-				resource->setServiceProvider( m_serviceProvider );
-                resource->setType( _prototype );                
-
-                return resource;
-            }
-
-            size_t count() const override
-            {
-                size_t count = m_factory.countObject();
-
-                return count;
-            }
-
-            void destroy() override
-            {
-                delete this;
-            }
-
-        protected:
-            ServiceProviderInterface * m_serviceProvider;
-
-            typedef FactoryPoolStore<Type, Count> TNodeFactory;
-            TNodeFactory m_factory;
-        };
-    }    
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeResourceManager_()
 	{
@@ -1679,16 +1627,16 @@ namespace Menge
                 dw = rh * contentAspect * one_div_width;
             }
 
-            float areaWidth = dw * rw;
-            float areaHeight = dh * rh;
+            float areaWidth = ceilf(dw * rw);
+            float areaHeight = ceilf(dh * rh);
 
             LOGGER_INFO(m_serviceProvider)("area [%d %d]"
                 , areaWidth
                 , areaHeight
                 );
 
-            _viewport.begin.x = ( rw - areaWidth ) * 0.5f;
-            _viewport.begin.y = ( rh - areaHeight ) * 0.5f;
+            _viewport.begin.x = ceilf(( rw - areaWidth ) * 0.5f);
+            _viewport.begin.y = ceilf(( rh - areaHeight ) * 0.5f);
             _viewport.end.x = _viewport.begin.x + areaWidth;
             _viewport.end.y = _viewport.begin.y + areaHeight;
 		}

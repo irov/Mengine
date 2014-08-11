@@ -4,8 +4,10 @@
 #	include "Interface/StringizeInterface.h"
 
 #	include "Factory/FactoryDefault.h"
+#	include "Kernel/ModuleFactory.h"
 
 #	include "ModulePathFinder.h"
+#	include "ModuleAreaOfInterest.h"
 #	include "ModuleCollisionGround.h"
 
 
@@ -29,42 +31,7 @@ extern "C" // only required if using g++
 }
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
-{
-	//////////////////////////////////////////////////////////////////////////
-	template<class T>
-	class ModuleFactory
-		: public ModuleFactoryInterface
-	{
-	public:
-		ModuleFactory( ServiceProviderInterface * _serviceProvider, const ConstString & _name )
-			: m_serviceProvider(_serviceProvider)
-			, m_name(_name)
-		{
-		}
-
-	public:
-		ModuleInterfacePtr createModule() override
-		{
-			ModuleInterface * module = m_factory.createObjectT();
-			module->setServiceProvider( m_serviceProvider );
-			module->setName( m_name );
-
-			return module;
-		}
-
-	protected:
-		void destroy() override
-		{
-			delete this;
-		}
-
-	protected:
-		ServiceProviderInterface * m_serviceProvider;
-		ConstString m_name;
-
-		typedef FactoryDefaultStore<T> TFactoryModule;
-		TFactoryModule m_factory;
-	};
+{	
 	//////////////////////////////////////////////////////////////////////////
 	PluginPathFinder::PluginPathFinder()
 		: m_serviceProvider(nullptr)
@@ -76,11 +43,15 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 
 		m_factoryModulePathFinder = new ModuleFactory<ModulePathFinder>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ModulePathFinder"));
+		m_factoryModuleAreaOfInterest = new ModuleFactory<ModuleAreaOfInterest>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ModuleAreaOfInterest"));
 		m_factoryModuleCollisionGround = new ModuleFactory<ModuleCollisionGround>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround"));
 		
 		MODULE_SERVICE(m_serviceProvider)
 			->registerModule( CONST_STRING_LOCAL(m_serviceProvider, "ModulePathFinder"), m_factoryModulePathFinder );
 
+		MODULE_SERVICE(m_serviceProvider)
+			->registerModule( CONST_STRING_LOCAL(m_serviceProvider, "ModuleAreaOfInterest"), m_factoryModuleAreaOfInterest );
+		
 		MODULE_SERVICE(m_serviceProvider)
 			->registerModule( CONST_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround"), m_factoryModuleCollisionGround );
 
@@ -93,9 +64,13 @@ namespace Menge
 			->unregisterModule( CONST_STRING_LOCAL(m_serviceProvider, "ModulePathFinder") );
 
 		MODULE_SERVICE(m_serviceProvider)
+			->unregisterModule( CONST_STRING_LOCAL(m_serviceProvider, "ModuleAreaOfInterest") );
+
+		MODULE_SERVICE(m_serviceProvider)
 			->unregisterModule( CONST_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround") );
 
 		m_factoryModulePathFinder = nullptr;
+		m_factoryModuleAreaOfInterest = nullptr;
 		m_factoryModuleCollisionGround = nullptr;
 
 		delete this;

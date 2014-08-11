@@ -133,6 +133,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::calcMouseWorldPosition( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const
 	{
+		mt::vec2f adaptScreenPoint;
+		this->adaptScreenPosition_( _screenPoint, adaptScreenPoint );
+
 		const Viewport & viewport = _viewport->getViewport();
 
 		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
@@ -148,12 +151,9 @@ namespace	Menge
 		mt::vec2f vp_end = viewport.end / contentResolutionSize;
 		mt::vec2f vp_size = viewportSize / contentResolutionSize;
 
-		mt::vec2f sp = (_screenPoint - vp_begin) / vp_size;
+		mt::vec2f sp = (adaptScreenPoint - vp_begin) / vp_size;
 
-		const mt::mat4f & pm = _camera->getCameraProjectionMatrix();
-
-		mt::mat4f pm_inv;
-		mt::inv_m4( pm_inv, pm );
+		const mt::mat4f & pm_inv = _camera->getCameraProjectionMatrixInv();
 
 		mt::vec2f p1 = sp * 2.f - mt::vec2f(1.f, 1.f);
 		p1.y = -p1.y;
@@ -161,10 +161,7 @@ namespace	Menge
 		mt::vec2f p_pm;
 		mt::mul_v2_m4( p_pm, p1, pm_inv );
 
-		const mt::mat4f & vm = _camera->getCameraViewMatrix();
-
-		mt::mat4f vm_inv;
-		mt::inv_m4( vm_inv, vm );
+		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
 
 		mt::vec2f p = p_pm;
 
@@ -176,13 +173,16 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::calcPointClick( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const
 	{
-		const Viewport & viewport = _viewport->getViewport();
+		mt::vec2f adaptScreenPoint;
+		this->adaptScreenPosition_( _screenPoint, adaptScreenPoint );
 
 		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
 			->getContentResolution();
 
 		mt::vec2f contentResolutionSize;
 		contentResolution.calcSize( contentResolutionSize );
+
+		const Viewport & viewport = _viewport->getViewport();
 
 		mt::vec2f viewportSize;
 		viewport.calcSize( viewportSize );
@@ -191,12 +191,9 @@ namespace	Menge
 		mt::vec2f vp_end = viewport.end / contentResolutionSize;
 		mt::vec2f vp_size = viewportSize / contentResolutionSize;
 
-		mt::vec2f sp = (_screenPoint - vp_begin) / vp_size;
+		mt::vec2f sp = (adaptScreenPoint - vp_begin) / vp_size;
 
-		const mt::mat4f & pm = _camera->getCameraProjectionMatrix();
-
-		mt::mat4f pm_inv;
-		mt::inv_m4( pm_inv, pm );
+		const mt::mat4f & pm_inv = _camera->getCameraProjectionMatrixInv();
 
 		mt::vec2f p1 = sp * 2.f - mt::vec2f(1.f, 1.f);
 		p1.y = -p1.y;
@@ -204,10 +201,7 @@ namespace	Menge
 		mt::vec2f p_pm;
 		mt::mul_v2_m4( p_pm, p1, pm_inv );
 
-		const mt::mat4f & vm = _camera->getCameraViewMatrix();
-
-		mt::mat4f vm_inv;
-		mt::inv_m4( vm_inv, vm );
+		const mt::mat4f & vm_inv = _camera->getCameraViewMatrixInv();
 		
 		EArrowType arrowType = this->getArrowType();
 
@@ -247,13 +241,16 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::calcPointDeltha( const RenderCameraInterface * _camera, const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) const
 	{
-		const mt::mat4f & pm = _camera->getCameraProjectionMatrix();
+		mt::vec2f adaptScreenPoint;
+		this->adaptScreenPosition_( _screenPoint, adaptScreenPoint );
 
-		mt::mat4f pm_inv;
-		mt::inv_m4( pm_inv, pm );
-
-		mt::vec2f p1 = (_screenPoint + _screenDeltha) * 2.f - mt::vec2f(1.f, 1.f);
+		mt::vec2f adaptScreenDeltha;
+		this->adaptScreenPosition_( _screenDeltha, adaptScreenDeltha );
+		
+		mt::vec2f p1 = (adaptScreenPoint + adaptScreenDeltha) * 2.f - mt::vec2f(1.f, 1.f);
 		p1.y = -p1.y;
+
+		const mt::mat4f & pm_inv = _camera->getCameraProjectionMatrixInv();
 
 		mt::vec2f p_pm;
 		mt::mul_v2_m4( p_pm, p1, pm_inv );
@@ -305,7 +302,50 @@ namespace	Menge
 
 		mt::vec2f sp = vp_begin + p_screen * vp_size;
 
-		_screenPoint = sp;
+		mt::vec2f adapt_sp;
+		this->adaptWorldPosition_( sp, adapt_sp );
+
+		_screenPoint = adapt_sp;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::adaptScreenPosition_( const mt::vec2f & _screenPoint, mt::vec2f & _adaptScreenPoint ) const
+	{
+		const Viewport & renderViewport = APPLICATION_SERVICE(m_serviceProvider)
+			->getRenderViewport();
+
+		const Resolution & currentResolution = APPLICATION_SERVICE(m_serviceProvider)
+			->getCurrentResolution();
+
+		mt::vec2f renderViewportSize;
+		renderViewport.calcSize( renderViewportSize );
+
+		mt::vec2f currentResolutionSize;
+		currentResolution.calcSize( currentResolutionSize );
+
+		mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
+		mt::vec2f windowOffset = renderViewport.begin / currentResolutionSize;
+
+		_adaptScreenPoint = (_screenPoint - windowOffset) / windowScale;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::adaptWorldPosition_( const mt::vec2f & _screenPoint, mt::vec2f & _adaptScreenPoint ) const
+	{
+		const Viewport & renderViewport = APPLICATION_SERVICE(m_serviceProvider)
+			->getRenderViewport();
+
+		const Resolution & currentResolution = APPLICATION_SERVICE(m_serviceProvider)
+			->getCurrentResolution();
+
+		mt::vec2f renderViewportSize;
+		renderViewport.calcSize( renderViewportSize );
+
+		mt::vec2f currentResolutionSize;
+		currentResolution.calcSize( currentResolutionSize );
+
+		mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
+		mt::vec2f windowOffset = renderViewport.begin / currentResolutionSize;
+
+		_adaptScreenPoint = _screenPoint * windowScale + windowOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )

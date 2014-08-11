@@ -4,6 +4,7 @@ ADD_SUBDIRECTORY( MengeZipPlugin )
 ADD_SUBDIRECTORY( MengeLZ4Plugin )
 
 ADD_SUBDIRECTORY( MengePathFinderPlugin )
+ADD_SUBDIRECTORY( MengeCal3dPlugin )
 
 if(WIN32)    
 	ADD_SUBDIRECTORY( MengeVideoCodecPlugin )

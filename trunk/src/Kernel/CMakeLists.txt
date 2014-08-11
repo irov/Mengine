@@ -31,7 +31,7 @@ ADD_FILTER(
 Node
 	Node.cpp
 	Node.h
-    NodePrototypeGenerator.h
+    NodePrototypeGenerator.h    
     ScriptClassWrapper.h
 )
 
@@ -129,6 +129,7 @@ ADD_FILTER(
 Resource
 	Resource.cpp
 	Resource.h
+    ResourcePrototypeGenerator.h
     ResourceReference.cpp
     ResourceReference.h
     ResourceCacher.h
@@ -178,6 +179,11 @@ ADD_FILTER(
 Manager\\\\Timing
 	TimingManager.cpp
 	TimingManager.h
+)
+
+ADD_FILTER(
+Module
+    ModuleFactory.h
 )
    
 INCLUDE_DIRECTORIES( 

@@ -207,7 +207,7 @@ namespace Menge
 				const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 				
 				size_t texture_memory = RENDERTEXTURE_SERVICE(m_serviceProvider)
-					->getImageMemoryUse( dataInfo->width, dataInfo->height, dataInfo->channels, dataInfo->format );
+					->getImageMemoryUse( dataInfo->width, dataInfo->height, dataInfo->channels, dataInfo->depth, dataInfo->format );
 
 				total_memory += texture_memory;						
 			}

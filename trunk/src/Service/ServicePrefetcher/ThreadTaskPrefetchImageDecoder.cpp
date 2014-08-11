@@ -122,7 +122,8 @@ namespace Menge
 
 		const ImageCodecDataInfo * dataInfo = m_imageDecoder->getCodecDataInfo();
 
-		size_t memoryUse = dataInfo->width * dataInfo->height * dataInfo->channels;
+		size_t memoryUse = Helper::getTextureMemorySize( dataInfo->width, dataInfo->height, dataInfo->channels, dataInfo->depth, dataInfo->format );
+
 		void * memory = m_memoryInput->newMemory( memoryUse );
 
 		if( memory == nullptr )

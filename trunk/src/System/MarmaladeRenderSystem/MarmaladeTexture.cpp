@@ -67,6 +67,11 @@ namespace Menge
     {
         return m_hwChannels;
     }
+	//////////////////////////////////////////////////////////////////////////
+	size_t MarmaladeTexture::getHWDepth() const
+	{
+		return 1;
+	}
     //////////////////////////////////////////////////////////////////////////
     PixelFormat MarmaladeTexture::getHWPixelFormat() const 
     {
@@ -75,7 +80,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void * MarmaladeTexture::lock( int * _pitch, const Rect & _rect, bool _readOnly )
     {
-		size_t size = Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, 1, m_hwPixelFormat );
+		size_t size = Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwChannels, 1, m_hwPixelFormat );
 
 		m_bufferId = CACHE_SERVICE(m_serviceProvider)
 			->lockBuffer( size, &m_lock, "MarmaladeTexture::lock" );
@@ -102,7 +107,7 @@ namespace Menge
 			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
 			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
 			{
-				GLuint size = Helper::getTextureMemorySize(m_hwWidth, m_hwHeight, 1, m_hwPixelFormat);
+				GLuint size = Helper::getTextureMemorySize(m_hwWidth, m_hwHeight, m_hwChannels, 1, m_hwPixelFormat);
 				glCompressedTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, size, m_lock);				
 			}break;
 			case GL_RGB:

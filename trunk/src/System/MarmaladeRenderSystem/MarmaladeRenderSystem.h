@@ -143,7 +143,7 @@ namespace Menge
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
 		// returns Texture interface handle or NULL if fails
-		RenderImageInterfacePtr createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+		RenderImageInterfacePtr createImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
 		// create render target image
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
@@ -151,9 +151,9 @@ namespace Menge
 		// RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height ) override;
 		// удаления изображения
         
-        RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+        RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
 
-		RenderImageInterfacePtr createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) override;
+		RenderImageInterfacePtr createDynamicImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
 
 		bool beginScene() override;
 		void endScene() override;

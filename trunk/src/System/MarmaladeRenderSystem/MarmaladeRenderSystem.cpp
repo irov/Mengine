@@ -915,7 +915,7 @@ namespace Menge
         return hwFormat;
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr MarmaladeRenderSystem::createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderImageInterfacePtr MarmaladeRenderSystem::createImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
 	{
         size_t hwChannels = _channels;
 
@@ -1054,12 +1054,12 @@ namespace Menge
     
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr MarmaladeRenderSystem::createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+    RenderImageInterfacePtr MarmaladeRenderSystem::createRenderTargetImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
     {
         return nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr MarmaladeRenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format )
+	RenderImageInterfacePtr MarmaladeRenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
 	{
 		return nullptr;
 	}

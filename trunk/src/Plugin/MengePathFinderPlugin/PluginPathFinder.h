@@ -19,6 +19,7 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 
 		ModuleFactoryInterfacePtr m_factoryModulePathFinder;
+		ModuleFactoryInterfacePtr m_factoryModuleAreaOfInterest;
 		ModuleFactoryInterfacePtr m_factoryModuleCollisionGround;
 	};
 }

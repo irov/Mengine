@@ -1,57 +1,86 @@
 #	pragma once
 
+#	include "Factory/Factorable.h"
+#	include "Factory/FactoryStore.h"
+
 #	include "Math/vec2.h"
 
 #	include <vector>
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	typedef std::vector<class AOIActor *> TVectorAOIActors;
+	//////////////////////////////////////////////////////////////////////////
+	class AOIActorProviderInterface
+	{
+	public:
+		virtual mt::vec2f getAOIActorPosition() const = 0;
+		virtual float getAOIActorRadius() const = 0;
 
+	public:
+		virtual void onAOIActorEnter( AOIActor * _actor ) = 0;
+		virtual void onAOIActorLeave( AOIActor * _actor ) = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class AOIActor
+		: public Factorable
 	{
 	public:
 		AOIActor();		
 
 	public:
-		void setRadius( float _radius );
+		void setProvider( AOIActorProviderInterface * _provider, void * _userData );
+		AOIActorProviderInterface * getProvider();
 
 	public:
-		void setPosition( const mt::vec2f & _pos );
+		void update();
+
+	public:
+		const mt::vec2f & getPosition() const;
+		float getRadius() const;
+
+	public:
+		void * getUserData() const;
 
 	public:
 		void addActorNeighbor( AOIActor * _actor );
 		void removeActorNeighbor( AOIActor * _actor );
 		bool isActorNeighbor( AOIActor * _actor ) const;
-
+	
 	public:
-		void update();
-		void dead();
-
+		void remove();
+		
 	protected:
-		virtual void onActorEnter( AOIActor * _actor ) = 0;
-		virtual void onActorLeave( AOIActor * _actor ) = 0;
+		AOIActorProviderInterface * m_provider;
 
-	protected:
-		float m_radius;
 		mt::vec2f m_position;
+		float m_radius;
+		void * m_userData;
 				
-		TVectorAOIActors m_neighbours;
-
-		bool m_dead;
+		TVectorAOIActors m_neighbours;		
 	};
-
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<AOIActor> AOIActorPtr;
+	//////////////////////////////////////////////////////////////////////////
 	class AreaOfInterest
 	{
 	public:
-		void addActor( AOIActor * _actor );
+		AreaOfInterest();
+
+	public:
+		AOIActor * createActor( AOIActorProviderInterface * _provider, void * _userData );
 		void removeActor( AOIActor * _actor );
 
 	public:
 		void update();
 
 	protected:
-		typedef std::vector<AOIActor *> TVectorAOIActors;
 		TVectorAOIActors m_actors;
+		TVectorAOIActors m_actorsAdd;
+		TVectorAOIActors m_actorsRemove;
+
+		typedef FactoryPoolStore<AOIActor, 32> TFactoryAOIActor;
+		TFactoryAOIActor m_factoryAOIActor;
 	};
 }

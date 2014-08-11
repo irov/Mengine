@@ -105,7 +105,7 @@ bool ImageDecoderPVRTC::_prepareData()
 	m_dataInfo.channels = 3;
 	m_dataInfo.depth = 1;
 	m_dataInfo.mipmaps = m_pvrtc_ptr.numMipmaps;
-	m_dataInfo.size = Menge::Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, m_dataInfo.depth, m_dataInfo.format );
+	m_dataInfo.size = Menge::Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, m_dataInfo.channels, m_dataInfo.depth, m_dataInfo.format );
 	
 	bool isValid = m_pvrtc_ptr.numFaces == 1  // supported only 1 face
 		&& m_pvrtc_ptr.numSurfaces == 1  // supported only 1 surface

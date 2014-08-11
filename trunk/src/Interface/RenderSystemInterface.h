@@ -187,6 +187,7 @@ namespace Menge
 		virtual size_t getHWWidth() const = 0;
 		virtual size_t getHWHeight() const = 0;
 		virtual size_t getHWChannels() const = 0;
+		virtual size_t getHWDepth() const = 0;
 
 		virtual PixelFormat getHWPixelFormat() const = 0;
 
@@ -368,9 +369,9 @@ namespace Menge
         virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) = 0;
 
     public:
-        virtual RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
-        virtual RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
-        virtual RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
+        virtual RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
+        virtual RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
+        virtual RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
 
 	public:
         virtual RenderTextureInterfacePtr getTexture( const FilePath & _fileName ) const = 0;
@@ -378,7 +379,7 @@ namespace Menge
         virtual bool hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const = 0;
 
 	public:
-		virtual size_t getImageMemoryUse( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) const = 0;
+		virtual size_t getImageMemoryUse( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) const = 0;
 
     public:
         //virtual void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
@@ -459,7 +460,7 @@ namespace Menge
     public:
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
-		virtual bool screenshot( const RenderImageInterfacePtr & _image, const float * _rect ) = 0;
+		virtual bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) = 0;
 		// входные данные: матрица 4 на 4
 		virtual	void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
 		virtual	void setModelViewMatrix( const mt::mat4f & _view ) = 0;
@@ -515,13 +516,13 @@ namespace Menge
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
 		// returns Texture interface handle or NULL if fails
-		virtual RenderImageInterfacePtr createImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
-		virtual RenderImageInterfacePtr createDynamicImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
+		virtual RenderImageInterfacePtr createImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
+		virtual RenderImageInterfacePtr createDynamicImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
 		// create render target image
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// returns Texture interface handle or NULL if fails
-		virtual RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, PixelFormat _format ) = 0;
+		virtual RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
 
 		//
 		// отрисовка изображения
@@ -610,10 +611,10 @@ namespace Menge
 		virtual ERenderBatchMode getBatchMode() const = 0;
 
 	public:
-		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, int _bits, bool _fullscreen, 
+		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, int _bits, bool _fullscreen, 
 			WindowHandle _winHandle, int _FSAAType , int _FSAAQuality ) = 0;
 
-		virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _viewport, bool _fullscreen ) = 0;
+		virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;
 
 	public:
 		virtual void clear( uint32_t _color ) = 0;

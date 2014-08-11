@@ -94,11 +94,11 @@ namespace Menge
 			;
 
 		pybind::interface_<fastpathfinder::graph>("PathGraph")
-			.def("addNode", &fastpathfinder::graph::addNode )
-			.def("addEdge", &fastpathfinder::graph::addEdge )
-			.def("addEdge2", &fastpathfinder::graph::addEdge2 )
-			.def("blockNode", &fastpathfinder::graph::blockNode )
-			.def_static("getPath", &s_fastpathfinder_graph_getPath )
+			.def( "addNode", &fastpathfinder::graph::addNode )
+			.def( "addEdge", &fastpathfinder::graph::addEdge )
+			.def( "addEdge2", &fastpathfinder::graph::addEdge2 )
+			.def( "blockNode", &fastpathfinder::graph::blockNode )
+			.def_static( "getPath", &s_fastpathfinder_graph_getPath )
 			;
 
 		pybind::def_functor( "createPathFinderGraph", this, &ModulePathFinder::createGraph );

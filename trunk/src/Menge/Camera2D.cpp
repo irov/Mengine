@@ -61,6 +61,7 @@ namespace	Menge
 
 		this->invalidateViewport_();
 	}
+	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::setWidescreenSupport( bool _value )
 	{
 		m_widescreenSupport = _value;

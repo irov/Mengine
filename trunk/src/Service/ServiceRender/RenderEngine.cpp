@@ -217,9 +217,10 @@ namespace Menge
 		size_t null_width = 4;
 		size_t null_height = 4;
 		size_t null_channels = 3;
+		size_t null_depth = 1;
 
 		m_nullTexture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->createTexture( null_width, null_height, null_channels, PF_UNKNOWN );
+			->createTexture( null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
 
 		if( m_nullTexture == nullptr )
 		{
@@ -301,7 +302,7 @@ namespace Menge
 		const RenderImageInterfacePtr & image = _texture->getImage();
 
 		RENDER_SYSTEM(m_serviceProvider)
-			->screenshot( image, _rect.buff() );
+			->screenshot( image, _rect );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onRenderSystemDeviceLost()
@@ -763,7 +764,75 @@ namespace Menge
 			->makeViewMatrixLookAt( _viewMatrix, _eye, _dir, _up, _sign );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderDebugInfo& RenderEngine::getDebugInfo() const
+	void RenderEngine::calcRenderViewport_( const Viewport & _viewport, Viewport & _renderViewport ) const
+	{
+		float renderWidth = m_renderViewport.getWidth();
+		float renderHeight = m_renderViewport.getHeight();
+
+		size_t contentWidth = m_contentResolution.getWidth();
+		size_t contentHeight = m_contentResolution.getHeight();
+
+		float scale_width = renderWidth / float(contentWidth);
+		float scale_height = renderHeight / float(contentHeight);
+				
+		Viewport renderViewport;
+		renderViewport.begin.x = _viewport.begin.x * scale_width;
+		renderViewport.begin.y = _viewport.begin.y * scale_height;
+		renderViewport.end.x = _viewport.end.x * scale_width;
+		renderViewport.end.y = _viewport.end.y * scale_height;
+
+		renderViewport.begin += m_renderViewport.begin;
+		renderViewport.end += m_renderViewport.begin;
+
+		float vp_x = ::floorf( renderViewport.begin.x + 0.5f );
+		float vp_y = ::floorf( renderViewport.begin.y + 0.5f );
+
+		float width = renderViewport.getWidth();
+		float height = renderViewport.getHeight();
+
+		float vp_width = ::floorf( width + 0.5f );
+		float vp_height = ::floorf( height + 0.5f );
+
+		mt::vec2f windowSize;
+		m_windowResolution.calcSize( windowSize );
+
+		if( vp_x >= windowSize.x || 
+			vp_y >= windowSize.y ||
+			vp_x + vp_width <= 0.f || 
+			vp_y + vp_height <= 0.f )
+		{
+			renderViewport.begin.x = 0.f;
+			renderViewport.begin.y = 0.f;
+			renderViewport.end.x = 0.f;
+			renderViewport.end.y = 0.f;
+		}
+		else
+		{
+			if( vp_x < 0.f )
+			{
+				renderViewport.begin.x = 0.f;
+			}
+
+			if( vp_x + vp_width > windowSize.x )
+			{
+				renderViewport.end.x = windowSize.x;
+			}
+
+			if( vp_y < 0.f )
+			{
+				renderViewport.begin.y = 0.f;
+			}
+
+			if( vp_y + vp_height > windowSize.y )
+			{
+				renderViewport.end.y = windowSize.y;
+			}
+		}
+
+		_renderViewport = renderViewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderDebugInfo & RenderEngine::getDebugInfo() const
 	{
 		return m_debugInfo;
 	}
@@ -806,71 +875,11 @@ namespace Menge
 				->setRenderTarget( nullptr, true );
 		}
 
-		float renderWidth = m_renderViewport.getWidth();
-		float renderHeight = m_renderViewport.getHeight();
-
-		size_t contentWidth = m_contentResolution.getWidth();
-		size_t contentHeight = m_contentResolution.getHeight();
-
-		float scale_width = renderWidth / float(contentWidth);
-		float scale_height = renderHeight / float(contentHeight);
-
 		const Viewport & viewport = _renderPass.viewport->getViewport();
 
 		Viewport renderViewport;
-		renderViewport.begin.x = viewport.begin.x * scale_width;
-		renderViewport.begin.y = viewport.begin.y * scale_height;
-		renderViewport.end.x = viewport.end.x * scale_width;
-		renderViewport.end.y = viewport.end.y * scale_height;
-
-		renderViewport.begin += m_renderViewport.begin;
-		renderViewport.end += m_renderViewport.begin;
-
-		float vp_x = ::floorf( renderViewport.begin.x + 0.5f );
-		float vp_y = ::floorf( renderViewport.begin.y + 0.5f );
-
-		float width = renderViewport.getWidth();
-		float height = renderViewport.getHeight();
-
-		float vp_width = ::floorf( width + 0.5f );
-		float vp_height = ::floorf( height + 0.5f );
-
-		mt::vec2f windowSize;
-		m_windowResolution.calcSize( windowSize );
+		this->calcRenderViewport_( viewport, renderViewport );
 		
-		if( vp_x >= windowSize.x || 
-			vp_y >= windowSize.y ||
-			vp_x + vp_width <= 0.f || 
-			vp_y + vp_height <= 0.f )
-		{
-			renderViewport.begin.x = 0.f;
-			renderViewport.begin.y = 0.f;
-			renderViewport.end.x = 0.f;
-			renderViewport.end.y = 0.f;
-		}
-		else
-		{
-			if( vp_x < 0.f )
-			{
-				renderViewport.begin.x = 0.f;
-			}
-			
-			if( vp_x + vp_width > windowSize.x )
-			{
-				renderViewport.end.x = windowSize.x;
-			}
-
-			if( vp_y < 0.f )
-			{
-				renderViewport.begin.y = 0.f;
-			}
-			
-			if( vp_y + vp_height > windowSize.y )
-			{
-				renderViewport.end.y = windowSize.y;
-			}
-		}
-
 		RENDER_SYSTEM(m_serviceProvider)
 			->setViewport( renderViewport );
 

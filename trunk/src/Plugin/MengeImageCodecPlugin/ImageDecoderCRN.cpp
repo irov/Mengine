@@ -59,7 +59,7 @@ namespace Menge
 			return false;
 		}
  
-		m_dataInfo.size = Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, 1, m_dataInfo.format );
+		m_dataInfo.size = Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, m_dataInfo.channels, m_dataInfo.depth, m_dataInfo.format );
 
 		m_data_size = crnex::get_crn_header_data_size( header );
         

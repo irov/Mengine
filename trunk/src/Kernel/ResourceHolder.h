@@ -8,6 +8,7 @@ namespace Menge
     {
     protected:
         ResourceHolderBase();
+		ResourceHolderBase( ResourceReference * _resource );
 
     public:        
         bool compile();
@@ -30,6 +31,16 @@ namespace Menge
     class ResourceHolder
         : public ResourceHolderBase
     {
+	public:
+		ResourceHolder()
+		{
+		}
+
+		ResourceHolder( T * _resource )
+			: ResourceHolderBase(_resource)
+		{
+		}
+
     public:
         T * get() const
         {

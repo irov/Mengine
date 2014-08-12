@@ -72,8 +72,11 @@ namespace Menge
 
 		m_prefetchDataReceiver.clear();
 
-		m_threadQueue->cancel();
-		m_threadQueue = nullptr;
+		if( m_threadQueue != nullptr )
+		{
+			m_threadQueue->cancel();
+			m_threadQueue = nullptr;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::prefetchImageDecoder( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )

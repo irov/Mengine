@@ -231,9 +231,9 @@ namespace Menge
 		, m_dstBlendFactor(GL_ZERO)
 		, m_activeTextureStage(0)
 		, m_activeTexture(0)
-		, m_activeRenderTarget(nullptr)
 		, m_VBHandleGenerator(0)
 		, m_IBHandleGenerator(0)
+		, m_depthMask(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

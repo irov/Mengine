@@ -309,9 +309,10 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::screenshot( const RenderImageInterfacePtr & _image, const float * _rect )
+	bool MarmaladeRenderSystem::screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect )
 	{
-        //NOT SUPPORT!
+		(_rect);
+        //ToDo!
 		
 		return false;
 	}

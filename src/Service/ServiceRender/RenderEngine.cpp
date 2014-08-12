@@ -1325,7 +1325,7 @@ namespace Menge
 			m_ibHandle2D
 			, 0
 			, m_renderIndicesCount * sizeof(RenderIndices2D)
-			, BLF_LOCK_DISCARD 
+			, BLF_LOCK_NONE 
 			);
 
 		if( ibData == nullptr )
@@ -1681,7 +1681,7 @@ namespace Menge
 		}
 
 		m_vbHandle2D = RENDER_SYSTEM(m_serviceProvider)
-			->createVertexBuffer( m_maxVertexCount, sizeof(RenderVertex2D), false );
+			->createVertexBuffer( m_maxVertexCount, sizeof(RenderVertex2D), true );
 
 		if( m_vbHandle2D == 0 )
 		{

@@ -504,6 +504,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t PathFinderMap::createPathFinder( const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
 	{
+		if( m_threadPathFinders == nullptr )
+		{
+			return 0;
+		}
+
 		PathFinderPtr pf = m_factoryPathFinder.createObjectT();
 
 		pf->initialize( &m_map, _from, _to, m_gridSize );

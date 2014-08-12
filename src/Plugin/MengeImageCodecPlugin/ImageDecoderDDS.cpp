@@ -127,7 +127,7 @@ namespace Menge
 			return false;				 
 		}
 
-		m_dataInfo.depth = header.dwDepth;
+		m_dataInfo.depth = 1;
 		m_dataInfo.mipmaps = header.dwMipMapCount;
 		m_dataInfo.width = header.dwWidth;
 		m_dataInfo.height = header.dwHeight;
@@ -142,7 +142,7 @@ namespace Menge
         }
 
         m_dataInfo.format = s_convertFourCCFormat( header.ddspf.dwFourCC );
-
+		
 		m_dataInfo.size = Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, m_dataInfo.channels, m_dataInfo.depth, m_dataInfo.format );
         
 		return true;

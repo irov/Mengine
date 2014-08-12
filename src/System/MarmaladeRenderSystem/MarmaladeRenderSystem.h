@@ -87,7 +87,7 @@ namespace Menge
         void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) override;
         void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign ) override;
 
-		bool screenshot( const RenderImageInterfacePtr & _image, const float * _rect ) override;
+		bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
 
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
 		void setModelViewMatrix( const mt::mat4f & _view ) override;

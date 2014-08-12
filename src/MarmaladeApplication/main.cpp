@@ -34,6 +34,9 @@ int main()
     //_callback.m_Realloc = &_s3eReallocFn;
     //s3eMemoryGetUserMemMgr(&_oldCallback);
     //s3eMemorySetUserMemMgr(&_callback);
+	printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+	printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!EPIC START!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+	printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
 
     char commandLine[S3E_CONFIG_STRING_MAX] = {0};
     if( s3eConfigGetString( "MENGINE", "CommandLine", commandLine ) == S3E_RESULT_ERROR )

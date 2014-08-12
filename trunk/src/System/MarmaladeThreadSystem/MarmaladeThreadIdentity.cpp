@@ -11,13 +11,14 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_thread(nullptr)
 		, m_task(nullptr)
+		, m_complete(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void * s_tread_job( void * _userData )
 	{
 		MarmaladeThreadIdentity * thread = static_cast<MarmaladeThreadIdentity *>(_userData);
-
+		
 		thread->main();
 
 		return 0;

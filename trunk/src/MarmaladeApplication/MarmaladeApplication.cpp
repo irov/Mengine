@@ -251,7 +251,13 @@ namespace Menge
             return false;
         }
 
-        threadSystem->initialize();
+        if( threadSystem->initialize() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ invalid initialize"
+				);
+
+			return false;
+		}
 
         ThreadServiceInterface * threadService;
         if( SERVICE_CREATE( ThreadService, &threadService ) == false )

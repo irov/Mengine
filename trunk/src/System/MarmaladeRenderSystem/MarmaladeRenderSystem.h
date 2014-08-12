@@ -228,13 +228,8 @@ namespace Menge
         TFactoryOGLTexture m_factoryOGLTexture;
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
-		size_t m_winWidth;
-		size_t m_winHeight;
-		size_t m_winContextWidth;
-		size_t m_winContextHeight;
 
 		bool m_depthMask;
-		OGLTexturePtr m_activeRenderTarget;
 	};
 
 }	// namespace Menge

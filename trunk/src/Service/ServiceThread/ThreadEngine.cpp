@@ -123,6 +123,11 @@ namespace Menge
 		ThreadIdentityPtr identity = THREAD_SYSTEM(m_serviceProvider)
 			->createThread( _priority );
 
+		if( identity == nullptr )
+		{
+			return false;
+		}
+
 		ThreadDesc td;
 		td.name = _threadName;
 		td.identity = identity;

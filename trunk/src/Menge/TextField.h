@@ -40,8 +40,8 @@ namespace Menge
 		~TextField();
 
 	public:
-		void setMaxLen( float _len );
-		float getMaxLen() const;
+		void setMaxLength( float _len );
+		float getMaxLength() const;
 
 	public:
 		void setTextID( const ConstString& _key );
@@ -175,6 +175,7 @@ namespace Menge
 		const ConstString & calcFontName() const;
 		float calcLineOffset() const;
 		float calcCharOffset() const;
+		float calcMaxLength() const;
 
 		const ColourValue & calcColorFont() const;
 		const ColourValue & calcColorOutline() const;
@@ -188,7 +189,7 @@ namespace Menge
 		ETextFieldHorizontAlign m_horizontAlign;
 		ETextFieldVerticalAlign m_verticalAlign;
 
-		float m_maxWidth;
+		float m_maxLength;
 
 		ConstString m_fontName;
 

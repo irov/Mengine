@@ -1841,7 +1841,7 @@ namespace Menge
 
 		float length = mt::length_v2_v2( begin, end );
 
-		layer_text->setMaxLen( length );
+		layer_text->setMaxLength( length );
 
 		return true;
 	}

@@ -93,6 +93,7 @@ namespace Menge
 				
 				float charOffset = 0.f;
 				float lineOffset = 0.f;
+				float maxLength = 0.f;
 
 				ColourValue colorFont;
 				ColourValue colorOutline;
@@ -221,6 +222,23 @@ namespace Menge
 
 						params |= EFP_COLOR_OUTLINE;
 					}
+					else if( strcmp( key, "MaxLength" ) == 0 )
+					{						
+						float length = 0.f;
+						if( sscanf( value, "%f", &length ) != 1 )
+						{
+							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s Override %s"
+								, m_pakName.c_str()
+								, m_path.c_str()
+								, text_key.c_str()
+								, value
+								);
+						}
+
+						maxLength = length;
+
+						params |= EFP_MAX_LENGTH;
+					}
 					else if( strcmp( key, "Override" ) == 0 )
 					{						
 						size_t Override = 0;
@@ -236,9 +254,18 @@ namespace Menge
 
 						isOverride = (Override != 0);
 					}
+					else
+					{
+						LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid tag %s for text %s"
+							, m_pakName.c_str()
+							, m_path.c_str()
+							, key
+							, text_key.c_str()
+							);
+					}
 				}
 
-				m_textManager->addTextEntry( text_key, text, font, colorFont, colorOutline, lineOffset, charOffset, params, isOverride );
+				m_textManager->addTextEntry( text_key, text, font, colorFont, colorOutline, lineOffset, charOffset, maxLength, params, isOverride );
 			}
 
 			void callback_end_node( const char * _node )
@@ -427,7 +454,7 @@ namespace Menge
 		return glyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, size_t _params, bool _isOverride )
+	void TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, size_t _params, bool _isOverride )
 	{		
 		TextEntry * textEntry_has = m_texts.find( _key );
 
@@ -450,7 +477,7 @@ namespace Menge
 			}
 			else
 			{
-				textEntry_has->initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _params );
+				textEntry_has->initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _params );
 			}
 			
             return;
@@ -458,7 +485,7 @@ namespace Menge
 
 		TextEntry * textEntry = m_texts.create();
 
-		textEntry->initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _params );
+		textEntry->initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _params );
 
         m_texts.insert( textEntry );
 	}

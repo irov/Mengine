@@ -146,12 +146,6 @@ namespace Menge
 
         size_t m_enumerator;
 
-		struct SoundDesc
-		{
-			InputStreamInterfacePtr stream;
-			SoundDecoderInterfacePtr codec;
-		};
-
         typedef stdex::template_pool<SoundSourceDesc, 32> TPoolSoundSourceDesc;
         TPoolSoundSourceDesc m_poolSoundSourceDesc;
 

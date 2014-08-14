@@ -91,11 +91,6 @@ namespace Menge
 
 			switch( _format )
 			{
-			case PF_DXT2:
-			case PF_DXT3:
-			case PF_DXT4:
-			case PF_DXT5:
-				return ((HWWidth + 3) / 4) * ( (HWHeight + 3) / 4) * 16;
 			case PF_L8:
 			case PF_A8:
 				return HWWidth * HWHeight * _depth * 1;
@@ -112,12 +107,26 @@ namespace Menge
 
 			case PF_DXT1:
 			case PF_ETC1:
+				return ((HWWidth + 3) >> 2) * ((HWHeight + 3) >> 2) * _depth * 8;
+
+			case PF_DXT2:
+			case PF_DXT3:
+			case PF_DXT4:
+			case PF_DXT5:
+				return ((HWWidth + 3) >> 2) * ((HWHeight + 3) >> 2) * _depth * 16;
+
 			case PF_PVRTC4_RGB:			
-				return ((HWWidth + 3) >> 2) * ((HWHeight + 3) >> 2) * _depth * 8;
-
 			case PF_PVRTC4_RGBA:
-				return ((HWWidth + 3) >> 2) * ((HWHeight + 3) >> 2) * _depth * 8;
+				{
+					size_t w = HWWidth >> 2;
+					size_t h = HWHeight >> 2;
 
+					if( w < 2 ) w = 2;
+					if( h < 2 ) h = 2;
+
+					return w * h * _depth * 8;
+				}
+				
 			case PF_UNKNOWN:
 				return _width * _height * _depth * _channels;
 			}                

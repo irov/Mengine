@@ -14,7 +14,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static uint32_t s_convertFormat( PixelFormat _format )
 	{
-		switch(_format)
+		switch( _format )
 		{
 		case PF_DXT1:
 			return 1;
@@ -58,10 +58,33 @@ namespace Menge
 		magic_version_type magic_version = GET_MAGIC_VERSION(MAGIC_HTF);
         m_stream->write( &magic_version, sizeof(magic_version) );
 
-		uint32_t width = dataInfo->width > 4 ? dataInfo->width : 4;
-        m_stream->write( &width, sizeof(width) );
+		uint32_t minsize;
 
-		uint32_t height = dataInfo->height > 4 ? dataInfo->height : 4;
+		switch( dataInfo->format )
+		{
+		case PF_DXT1:
+		case PF_ETC1:
+			{
+				minsize = 4;
+			}break;
+		case PF_PVRTC4_RGB:
+			{
+				minsize = 2;
+			}break;
+		default:
+			{
+				LOGGER_ERROR(m_serviceProvider)("ImageEncoderHTF::encode invalid format %d"
+					, dataInfo->format
+					);
+
+				return 0;
+			}break;
+		}
+
+		uint32_t width = dataInfo->width > minsize ? dataInfo->width : minsize;
+		uint32_t height = dataInfo->height > minsize ? dataInfo->height : minsize;
+
+        m_stream->write( &width, sizeof(width) );		
         m_stream->write( &height, sizeof(height) );
 
 		uint32_t format = s_convertFormat( dataInfo->format );
@@ -73,7 +96,7 @@ namespace Menge
 
 		if( compress_memory == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("PickEncoderHIT::encode invalid compress"
+            LOGGER_ERROR(m_serviceProvider)("ImageEncoderHTF::encode invalid compress"
                 );
 
             return 0;

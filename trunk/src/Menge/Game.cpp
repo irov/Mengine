@@ -606,7 +606,7 @@ namespace Menge
 	{
 		bool hasLocale = false;
 
-		for( TVectorResourcePak::iterator 
+		for( TVectorResourcePak::const_iterator 
 			it = m_languagePaks.begin(),
 			it_end = m_languagePaks.end();
 		it != it_end;
@@ -714,7 +714,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::applyConfigPaks()
 	{
-		for( TVectorResourcePak::iterator 
+		for( TVectorResourcePak::const_iterator 
 			it = m_resourcePaks.begin(),
 			it_end = m_resourcePaks.end();
 		it != it_end;
@@ -752,7 +752,7 @@ namespace Menge
 			}
 		}
 
-		for( TVectorResourcePak::iterator 
+		for( TVectorResourcePak::const_iterator 
 			it = m_paks.begin(), 
 			it_end = m_paks.end();
 		it != it_end;
@@ -773,7 +773,7 @@ namespace Menge
 
 		BEGIN_WATCHDOG(m_serviceProvider, "pak apply");
 
-		for( TVectorResourcePak::iterator 
+		for( TVectorResourcePak::const_iterator 
 			it = m_paks.begin(), 
 			it_end = m_paks.end();
 		it != it_end;

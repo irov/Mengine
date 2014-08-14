@@ -81,6 +81,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::prefetchImageDecoder( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
 	{
+		if( m_threadQueue == nullptr )
+		{
+			return false;
+		}
+
 		TMapPrefetchImageDecoderReceiver::iterator it_found = m_prefetchImageDecoderReceiver.find( _fileName );
 
 		if( it_found == m_prefetchImageDecoderReceiver.end() )
@@ -164,6 +169,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::prefetchData( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _dataflowType )
 	{
+		if( m_threadQueue == nullptr )
+		{
+			return false;
+		}
+
 		TMapPrefetchDataReceiver::iterator it_found = m_prefetchDataReceiver.find( _fileName );
 
 		if( it_found == m_prefetchDataReceiver.end() )

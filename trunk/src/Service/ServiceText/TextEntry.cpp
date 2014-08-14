@@ -6,11 +6,12 @@ namespace Menge
 	TextEntry::TextEntry()
 		: m_lineOffset(0.f)
 		, m_charOffset(0.f)
+		, m_maxLength(0.f)
 		, m_params(EFP_NONE)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextEntry::initialize( const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, size_t _params )
+	void TextEntry::initialize( const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, size_t _params )
 	{
 		m_key = _key;
 		m_text = _text;
@@ -22,6 +23,7 @@ namespace Menge
 
 		m_lineOffset = _lineOffset;
 		m_charOffset = _charOffset;
+		m_maxLength = _maxLength;
 
 		m_params = _params;
 	}
@@ -59,6 +61,11 @@ namespace Menge
 	float TextEntry::getCharOffset() const
 	{
 		return m_charOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float TextEntry::getMaxLength() const
+	{
+		return m_maxLength;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t TextEntry::getFontParams() const

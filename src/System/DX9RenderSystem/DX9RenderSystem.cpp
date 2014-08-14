@@ -805,6 +805,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr DX9RenderSystem::createImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
 	{
+		(void)_depth;
+
 		IDirect3DTexture9 * dxTextureInterface = nullptr;
         
 		if( this->d3dCreateTexture_( _width, _height, 1, 0,	_format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
@@ -839,6 +841,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
 	{
+		(void)_depth;
+
 		IDirect3DTexture9 * dxTextureInterface = nullptr;
 
 		if( this->d3dCreateTexture_( _width, _height, 1, 0, _format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
@@ -873,6 +877,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
 	{
+		(void)_depth;
+
 		IDirect3DTexture9 * dxTextureInterface = nullptr;		
 		if( this->d3dCreateTexture_( _width, _height, 1, D3DUSAGE_RENDERTARGET, _format, D3DPOOL_DEFAULT, &dxTextureInterface ) == false )
 		{

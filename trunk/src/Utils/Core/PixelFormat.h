@@ -107,13 +107,29 @@ namespace Menge
 
 			case PF_DXT1:
 			case PF_ETC1:
-				return ((HWWidth + 3) >> 2) * ((HWHeight + 3) >> 2) * _depth * 8;
+				{
+					size_t w = HWWidth >> 2;
+					size_t h = HWHeight >> 2;
+
+					if( w < 4 ) w = 4;
+					if( h < 4 ) h = 4;
+
+					return w * h * _depth * 8;
+				}
 
 			case PF_DXT2:
 			case PF_DXT3:
 			case PF_DXT4:
 			case PF_DXT5:
-				return ((HWWidth + 3) >> 2) * ((HWHeight + 3) >> 2) * _depth * 16;
+				{
+					size_t w = HWWidth >> 2;
+					size_t h = HWHeight >> 2;
+
+					if( w < 4 ) w = 4;
+					if( h < 4 ) h = 4;
+
+					return w * h * _depth * 16;
+				}
 
 			case PF_PVRTC4_RGB:			
 			case PF_PVRTC4_RGBA:

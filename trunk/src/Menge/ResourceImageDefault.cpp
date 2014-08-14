@@ -5,6 +5,7 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
 #	include "Interface/RenderSystemInterface.h"
+#	include "Interface/ConfigInterface.h"
 
 #   include "Logger/Logger.h"
 
@@ -86,6 +87,29 @@ namespace Menge
 				, category.c_str()
 				, m_fileName.c_str()
 				, m_codecType.c_str()
+				);
+
+			return false;
+		}
+
+		const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
+
+		uint32_t limitTextureWidth = CONFIG_SERVICE(m_serviceProvider)
+			->getValue( "Limit", "TextureWidth", 2048U );
+
+		uint32_t limitTextureHeight = CONFIG_SERVICE(m_serviceProvider)
+			->getValue( "Limit", "TextureHeight", 2048U );
+		
+		if( dataInfo->width > limitTextureWidth || dataInfo->height > limitTextureHeight )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid limit %d:%d texture size %d:%d "
+				, m_name.c_str()
+				, category.c_str()
+				, m_fileName.c_str()
+				, limitTextureWidth
+				, limitTextureHeight
+				, dataInfo->width
+				, dataInfo->height
 				);
 
 			return false;

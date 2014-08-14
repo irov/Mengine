@@ -80,11 +80,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderACF::decode( void * _buffer, size_t _bufferSize )
 	{
-		if( _bufferSize != m_uncompress_size )
+		if( _bufferSize < m_options.pitch * m_dataInfo.height )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode uncompress failed %d != %d"
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode invalid bufferSize %d != (%d * %d)"
 				, _bufferSize
-				, m_uncompress_size
+				, m_options.pitch
+				, m_dataInfo.height
 				);
 
 			return 0;

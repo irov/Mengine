@@ -35,7 +35,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageEncoderACF::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
 	{
-		const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>( _bufferDataInfo );
+		const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_bufferDataInfo);
 				
 		magic_number_type magic_number = GET_MAGIC_NUMBER(MAGIC_ACF);
         m_stream->write( &magic_number, sizeof(magic_number) );

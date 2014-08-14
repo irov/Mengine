@@ -4266,7 +4266,7 @@ namespace Menge
                     
 					.def_depricated( "getLength", &TextField::getTextSize, "use getTextSize" )
                     .def( "getTextSize", &TextField::getTextSize )
-                    .def( "setMaxLen", &TextField::setMaxLen )                    
+                    .def( "setMaxLen", &TextField::setMaxLength )                    
 
                     .def( "setNoneAlign", &TextField::setNoneAlign )
                     .def( "isNoneAlign", &TextField::isNoneAlign )

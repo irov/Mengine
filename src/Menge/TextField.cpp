@@ -30,7 +30,7 @@ namespace Menge
 		, m_fontParams(EFP_NONE)
 		, m_horizontAlign(ETFHA_NONE)
 		, m_verticalAlign(ETFVA_NONE)
-		, m_maxWidth(2048.f)
+		, m_maxLength(2048.f)
 		, m_maxCharCount((size_t)-1)
 		, m_charCount(0)
 		, m_charOffset(0.f)
@@ -254,16 +254,16 @@ namespace Menge
 		return m_charCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setMaxLen( float _len )
+	void TextField::setMaxLength( float _len )
 	{
-		m_maxWidth = _len;
+		m_maxLength = _len;
 
 		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float TextField::getMaxLen() const
+	float TextField::getMaxLength() const
 	{
-		return m_maxWidth;
+		return m_maxLength;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::getFontHeight() const
@@ -423,8 +423,9 @@ namespace Menge
 			}
 
 			float textLength = textLine.getLength();
+			float maxLength = this->calcMaxLength();
 
-			if( textLength > m_maxWidth )
+			if( textLength > maxLength )
 			{
 				TVectorString words;
 				Utils::split( words, *it, false, " " );
@@ -447,7 +448,7 @@ namespace Menge
 
 					float length = tl.getLength();
 
-					if( length > m_maxWidth )
+					if( length > maxLength )
 					{
 						TextLine line(m_serviceProvider, charOffset);
 
@@ -674,6 +675,23 @@ namespace Menge
 		}
 
 		return m_charOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float TextField::calcMaxLength() const
+	{
+		if( m_textEntry != nullptr )
+		{
+			size_t params = m_textEntry->getFontParams();
+
+			if( params & EFP_MAX_LENGTH )
+			{
+				float value = m_textEntry->getMaxLength();
+
+				return value;
+			}
+		}
+
+		return m_maxLength;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & TextField::calcColorFont() const

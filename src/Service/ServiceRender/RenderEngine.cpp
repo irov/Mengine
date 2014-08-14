@@ -214,8 +214,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createNullTexture_()
 	{
-		size_t null_width = 4;
-		size_t null_height = 4;
+		size_t null_width = 2;
+		size_t null_height = 2;
 		size_t null_channels = 3;
 		size_t null_depth = 1;
 
@@ -251,12 +251,25 @@ namespace Menge
 			return false;
 		}
 
-		for( size_t it = 0; it != null_height; ++it )
-		{
-			unsigned char null_color = 0xFF;
-			unsigned char * buffer_textureData = static_cast<unsigned char *>(textureData);
-			std::fill( buffer_textureData, buffer_textureData + pitch * it + null_width, null_color );
-		}
+		unsigned char * buffer_textureData = static_cast<unsigned char *>(textureData);
+
+		buffer_textureData[0] = 0xFF;
+		buffer_textureData[1] = 0x00;
+		buffer_textureData[2] = 0x00;
+
+		buffer_textureData[3] = 0x00;
+		buffer_textureData[4] = 0xFF;
+		buffer_textureData[5] = 0x00;
+
+		buffer_textureData += pitch;
+
+		buffer_textureData[0] = 0x00;
+		buffer_textureData[1] = 0x00;
+		buffer_textureData[2] = 0xFF;
+
+		buffer_textureData[3] = 0x00;
+		buffer_textureData[4] = 0x00;
+		buffer_textureData[5] = 0x00;
 
 		m_nullTexture->unlock();
 

@@ -22,7 +22,9 @@ namespace Menge
 		EFP_COLOR_FONT		= 0x00000002,
 		EFP_COLOR_OUTLINE	= 0x00000004,
 		EFP_LINE_OFFSET		= 0x00000008,
-		EFP_CHAR_OFFSET		= 0x00000010
+		EFP_CHAR_OFFSET		= 0x00000010,
+		EFP_MAX_LENGTH		= 0x00000020,
+		EFP_MAX_VALUE		= 0xffffffff
 	};
 	//////////////////////////////////////////////////////////////////////////
 	struct Glyph
@@ -77,6 +79,7 @@ namespace Menge
 		virtual const ColourValue & getColorOutline() const = 0;
 		virtual float getLineOffset() const = 0;
 		virtual float getCharOffset() const = 0;
+		virtual float getMaxLength() const = 0;
 
 	public:
 		virtual size_t getFontParams() const = 0;

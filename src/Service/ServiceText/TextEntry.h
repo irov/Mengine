@@ -29,7 +29,7 @@ namespace Menge
 		TextEntry();
 
 	public:
-		void initialize( const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, size_t _params );
+		void initialize( const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, size_t _params );
 
 	public:
 		const ConstString & getKey() const override;
@@ -41,6 +41,7 @@ namespace Menge
 		const ColourValue & getColorOutline() const override;
 		float getLineOffset() const override;
 		float getCharOffset() const override;
+		float getMaxLength() const override;
 
 	public:
 		size_t getFontParams() const override;
@@ -56,6 +57,7 @@ namespace Menge
 
 		float m_lineOffset;
 		float m_charOffset;
+		float m_maxLength;
 
 		size_t m_params;
 	};

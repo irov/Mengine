@@ -121,6 +121,7 @@ namespace Menge
 		    break;
 	    default:;
 	    }
+
 	    return GL_NEAREST;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -149,6 +150,7 @@ namespace Menge
 			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
 	    default:;
 	    }
+
 	    return 0;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -169,6 +171,7 @@ namespace Menge
 			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
 	    default:;
 	    }
+
 	    return 0;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -183,44 +186,87 @@ namespace Menge
 		    return GL_UNSIGNED_BYTE;
 	    default:;
 	    }
+
 	    return 0;
     }
-    //////////////////////////////////////////////////////////////////////////
-    static const GLenum s_toGLPrimitiveMode[] = 
-    {
-		    GL_POINTS			// PT_POINTLIST
-	    , GL_LINES			// PT_LINELIST
-	    , GL_LINE_STRIP		// PT_LINESTRIP
-	    , GL_TRIANGLES		// PT_TRIANGLELIST
-	    , GL_TRIANGLE_STRIP	// PT_TRIANGLESTRIP
-	    , GL_TRIANGLE_FAN	// PT_TRIANGLEFAN
-    };
-    //////////////////////////////////////////////////////////////////////////
-    static const GLenum s_toGLAddressMode[] = 
-    {
-		    GL_CLAMP_TO_EDGE		// TAM_CLAMP
-	    , GL_REPEAT				// TAM_WRAP
-	    //, GL_MIRRORED_REPEAT	// TAM_MIRROR
-    };
-    //////////////////////////////////////////////////////////////////////////
-    static const GLenum s_toGLTextureOp[] = 
-    {
-		    GL_REPLACE	// TOP_DISABLE
-	    , GL_REPLACE	// TOP_SELECTARG1
-	    , GL_REPLACE	// TOP_SELECTARG2
-	    , GL_MODULATE	// TOP_MODULATE
-	    , GL_ADD		// TOP_ADD
-	    , GL_SUBTRACT	// TOP_SUBSTRACT
-    };
-    //////////////////////////////////////////////////////////////////////////
-    static const GLenum s_toGLTextureArg[] = 
-    {
-		    GL_PREVIOUS		// TARG_CURRENT
-	    , GL_PRIMARY_COLOR	// TARG_DIFFUSE
-	    , GL_PRIMARY_COLOR	// TARG_SPECULAR
-	    , GL_TEXTURE		// TARG_TEXTURE
-	    , GL_CONSTANT		// TARG_TFACTOR
-    };
+	//////////////////////////////////////////////////////////////////////////
+	static GLenum s_getGLPrimitiveMode( EPrimitiveType _mode )
+	{
+		switch( _mode )
+		{
+		case PT_POINTLIST:
+			return GL_POINTS;
+		case PT_LINELIST:
+			return GL_LINES;
+		case PT_LINESTRIP:
+			return GL_LINE_STRIP;
+		case PT_TRIANGLELIST:
+			return GL_TRIANGLES;
+		case PT_TRIANGLESTRIP:
+			return GL_TRIANGLE_STRIP;
+		case PT_TRIANGLEFAN:
+			return GL_TRIANGLE_FAN;
+		default:;
+		}
+
+		return GL_POINTS;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static GLenum s_getGLAddressMode( ETextureAddressMode _mode )
+	{
+		switch( _mode )
+		{
+		case TAM_CLAMP:
+			return GL_CLAMP_TO_EDGE;
+		case TAM_WRAP:
+			return GL_REPEAT;
+		default:;
+		}
+
+		return GL_CLAMP_TO_EDGE;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static GLenum s_getGLTextureArg( ETextureArgument _arg )
+	{
+		switch( _arg )
+		{
+		case TARG_CURRENT:
+			return GL_PREVIOUS;
+		case TARG_DIFFUSE:
+			return GL_PRIMARY_COLOR;
+		case TARG_SPECULAR:
+			return GL_PRIMARY_COLOR;
+		case TARG_TEXTURE:
+			return GL_TEXTURE;
+		case TARG_TFACTOR:
+			return GL_CONSTANT;
+		default:;
+		}
+
+		return GL_PREVIOUS;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static GLenum s_getGLTextureOp( ETextureOp _op )
+	{
+		switch( _op )
+		{
+		case TOP_DISABLE:
+			return GL_REPLACE;
+		case TOP_SELECTARG1:
+			return GL_REPLACE;
+		case TOP_SELECTARG2:
+			return GL_REPLACE;
+		case TOP_MODULATE:
+			return GL_MODULATE;
+		case TOP_ADD:
+			return GL_ADD;
+		case TOP_SUBSTRACT:
+			return GL_SUBTRACT;
+		default:;
+		}
+		
+		return GL_REPLACE;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderSystem::MarmaladeRenderSystem()
 		: m_serviceProvider(nullptr)
@@ -630,7 +676,7 @@ namespace Menge
 		glClientActiveTexture( GL_TEXTURE1 );
 		glTexCoordPointer( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 24 ) );
 		
-        GLenum mode = s_toGLPrimitiveMode[ _type ];
+        GLenum mode = s_getGLPrimitiveMode( _type );
 		const uint16 * baseIndex = 0;
 		const uint16 * offsetIndex = baseIndex + _startIndex;
 		glDrawElements( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(offsetIndex) );
@@ -669,8 +715,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
 	{
-        GLenum modeUGL = s_toGLAddressMode[ _modeU ];
-        GLenum modeVGL = s_toGLAddressMode[ _modeV ];
+        GLenum modeUGL = s_getGLAddressMode( _modeU );
+        GLenum modeVGL = s_getGLAddressMode( _modeV );
         m_textureStage[_stage].wrapS = modeUGL;
         m_textureStage[_stage].wrapT = modeVGL;
 	}
@@ -825,9 +871,9 @@ namespace Menge
             _textrueOp = Menge::TOP_SELECTARG1;
         }
 
-        m_textureStage[_stage].colorOp = s_toGLTextureOp[ _textrueOp ];
-        m_textureStage[_stage].colorArg1 = s_toGLTextureArg[ _arg1 ];
-        m_textureStage[_stage].colorArg2 = s_toGLTextureArg[ _arg2 ];
+        m_textureStage[_stage].colorOp = s_getGLTextureOp( _textrueOp );
+        m_textureStage[_stage].colorArg1 = s_getGLTextureArg( _arg1 );
+        m_textureStage[_stage].colorArg2 = s_getGLTextureArg( _arg2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
@@ -846,9 +892,9 @@ namespace Menge
             _textrueOp = Menge::TOP_SELECTARG1;
         }
 
-        m_textureStage[_stage].alphaOp = s_toGLTextureOp[ _textrueOp ];
-        m_textureStage[_stage].alphaArg1 = s_toGLTextureArg[ _arg1 ];
-        m_textureStage[_stage].alphaArg2 = s_toGLTextureArg[ _arg2 ];
+        m_textureStage[_stage].alphaOp = s_getGLTextureOp( _textrueOp );
+        m_textureStage[_stage].alphaArg1 = s_getGLTextureArg( _arg1 );
+        m_textureStage[_stage].alphaArg2 = s_getGLTextureArg( _arg2 );
 	}
     void MarmaladeRenderSystem::setTextureStageTexCoordIndex( size_t _stage, size_t _index )
     {

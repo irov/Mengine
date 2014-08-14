@@ -84,6 +84,9 @@ namespace Menge
         size_t m_textureEnumerator;
 
         RenderTextureDebugInfo m_debugInfo;
+
+		size_t m_limitTextureWidth;
+		size_t m_limitTextureHeight;
 		
 		bool m_supportA8;
 		bool m_supportR8G8B8;

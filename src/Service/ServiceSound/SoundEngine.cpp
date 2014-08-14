@@ -273,12 +273,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterfacePtr SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _isStream )
 	{
-		SoundDesc desc;
-
-		desc.stream = FILE_SERVICE(m_serviceProvider)
+		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( _pakName, _fileName, _isStream );
         
-        if( desc.stream == nullptr )
+        if( stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't open sound file %s:%s"
                 , _pakName.c_str()
@@ -288,10 +286,10 @@ namespace Menge
             return nullptr;
         }
 
-		desc.codec = CODEC_SERVICE(m_serviceProvider)
+		SoundDecoderInterfacePtr codec = CODEC_SERVICE(m_serviceProvider)
             ->createDecoderT<SoundDecoderInterfacePtr>( _codecType );
 		
-    	if( desc.codec == nullptr )
+    	if( codec == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't create sound decoder for file %s:%s"
                 , _pakName.c_str()
@@ -301,7 +299,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( desc.codec->prepareData( desc.stream ) == false )
+		if( codec->prepareData( stream ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't initialize sound decoder for file %s:%s"
 				, _pakName.c_str()
@@ -311,7 +309,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		const SoundCodecDataInfo * dataInfo = desc.codec->getCodecDataInfo();
+		const SoundCodecDataInfo * dataInfo = codec->getCodecDataInfo();
 
 		bool true_stream = _isStream;
 
@@ -321,7 +319,7 @@ namespace Menge
 		}
 
 		SoundBufferInterfacePtr buffer = SOUND_SYSTEM(m_serviceProvider)
-            ->createSoundBuffer( desc.codec, true_stream );
+            ->createSoundBuffer( codec, true_stream );
 
         if( buffer == nullptr )
         {
@@ -332,11 +330,6 @@ namespace Menge
 
             return nullptr;
         }
-
-		if( _isStream == false )
-		{
-			desc.codec = nullptr;
-		}
 
 		return buffer;
 	}

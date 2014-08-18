@@ -74,6 +74,12 @@ files
 	"*.h"
 	"*.cpp"       
     
+    
+    [Plugin/MarmaladeAmplifierPlugin]
+    ("../src/Plugin/MarmaladeAmplifierPlugin")
+	"*.h"
+	"*.cpp"   
+    
     [System/MarmaladeThreadSystem]
     ("../src/System/MarmaladeThreadSystem")
 	"*.h"
@@ -109,5 +115,12 @@ deployments
 {
 	["Default"]
 	caption='boo'
+	embed-icf=0
+	iphone-appid='com.Argali.boo'
+	iphone-no-splash='1'
+	iphone-nosign=0
+	iphone-provisioning-profile='Argali.mobileprovision'
+	iphone-sign-for-distribution=1
+	iphone-signing-identity='iPhone Distribution'
 	name='boo'
 }

@@ -4,7 +4,7 @@
 #   define BOOST_NO_CXX11_NULLPTR
 
 #   define PYBIND_MARMALADE
-#   define PYBIND_PYTHON_VERSION 274
+#   define PYBIND_PYTHON_VERSION 276
 
 #   define Py_BUILD_CORE
 
@@ -20,7 +20,6 @@
 
 #   define nullptr 0
 #   define STDEX_UNSUPPOT_NULLPTR_T
-
 
 #	ifndef IW_DEBUG
 #		undef _DEBUG // In Marmalade _DEBUG is wrongly defined in x86 Release.

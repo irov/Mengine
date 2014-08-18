@@ -21,8 +21,10 @@ namespace Menge
 	public:
 		size_t read( void * _buf, size_t _count ) override;
 		bool seek( size_t _pos ) override;
+		bool skip( size_t _pos ) override;
 		size_t tell() const override;
         size_t size() const override;
+		bool eof() const override;
 
     public:
 		bool time( uint64_t & _time ) const override;

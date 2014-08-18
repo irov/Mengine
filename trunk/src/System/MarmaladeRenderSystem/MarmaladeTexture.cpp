@@ -125,10 +125,11 @@ namespace Menge
 
 		if( gl_err != GL_NO_ERROR )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock gl error %d param %d %d %d"
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock gl error %d param %d %d %d %d"
 				, gl_err
 				, m_hwWidth
 				, m_hwHeight
+				, m_internalFormat
 				, m_hwPixelFormat
 				);
 		}

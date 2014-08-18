@@ -50,6 +50,7 @@ src
     ProfilerInterface.h
     Model3DInterface.h
     PrefetcherInterface.h
+    AmplifierInterface.h
     
 	dummy.cpp
 )

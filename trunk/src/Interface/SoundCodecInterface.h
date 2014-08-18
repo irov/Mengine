@@ -10,8 +10,8 @@ namespace Menge
 	struct SoundCodecDataInfo
 		: public CodecDataInfo
 	{
-		int frequency;
-		int channels;
+		uint32_t frequency;
+		uint32_t channels;
 		float length;
 	};
 

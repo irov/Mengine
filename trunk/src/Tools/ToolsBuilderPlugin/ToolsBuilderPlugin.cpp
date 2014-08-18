@@ -356,7 +356,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType )
+	static bool s_convert( const WString & _fromPath, const WString & _toPath, const WString & _convertType, const WString & _params )
 	{		
 		String utf8_fromPath;
 		Helper::unicodeToUtf8( serviceProvider, _fromPath, utf8_fromPath );
@@ -367,11 +367,15 @@ namespace Menge
 		String utf8_convertType;
 		Helper::unicodeToUtf8( serviceProvider, _convertType, utf8_convertType );
 
+		String utf8_params;
+		Helper::unicodeToUtf8( serviceProvider, _params, utf8_params );		
+
 		ConverterOptions options;
 
 		options.pakName = ConstString::none();
 		options.inputFileName = Helper::stringizeString(serviceProvider, utf8_fromPath);
 		options.outputFileName = Helper::stringizeString(serviceProvider, utf8_toPath);
+		options.params = utf8_params;
 
 		ConverterInterfacePtr converter = CONVERTER_SERVICE(serviceProvider)
 			->createConverter( Helper::stringizeString(serviceProvider, utf8_convertType) );
@@ -410,8 +414,9 @@ namespace Menge
 		const wchar_t * fromPath;
 		const wchar_t * toPath;
 		const wchar_t * convertType;
+		const wchar_t * params;
 
-		if( !PyArg_ParseTuple(args, "uuu", &fromPath, &toPath, &convertType ) )
+		if( !PyArg_ParseTuple(args, "uuuu", &fromPath, &toPath, &convertType, &params ) )
 		{
 			LOGGER_ERROR(serviceProvider)("convert: error parse args"
 				);
@@ -419,7 +424,7 @@ namespace Menge
 			return NULL;
 		}
 
-		if( s_convert( fromPath, toPath, convertType ) == false )
+		if( s_convert( fromPath, toPath, convertType, params ) == false )
 		{
 			LOGGER_ERROR(serviceProvider)("convert: error process %ls to %ls convert %ls"
 				, fromPath

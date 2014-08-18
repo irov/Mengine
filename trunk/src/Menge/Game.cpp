@@ -5,7 +5,7 @@
 #	include "Player.h"
 #	include "Arrow.h"
 
-#	include "Interface/AmplifierServiceInterface.h"
+#	include "Interface/AmplifierInterface.h"
 #	include "Interface/WatchdogInterface.h"
 
 #	include "Interface/ScriptSystemInterface.h"
@@ -22,7 +22,6 @@
 #	include "Consts.h"
 
 #	include "Core/String.h"
-#	include "Core/File.h"
 
 #   include "pybind/pybind.hpp"
 

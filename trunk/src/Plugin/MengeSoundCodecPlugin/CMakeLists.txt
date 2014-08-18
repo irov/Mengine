@@ -7,6 +7,8 @@ src
 	SoundCodecPlugin.h
     SoundDecoderOGGVorbis.cpp
     SoundDecoderOGGVorbis.h
+    SoundDecoderWAV.cpp
+    SoundDecoderWAV.h
 )
 
 INCLUDE_DIRECTORIES(

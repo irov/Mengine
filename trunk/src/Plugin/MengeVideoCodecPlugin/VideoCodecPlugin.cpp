@@ -4,8 +4,6 @@
 #   include "VideoDecoderGVF.h"
 //#   include "VideoDecoderVPX.h"
 
-#	include "Core/File.h"
-
 #   include "Codec/DecoderFactory.h"
 
 #   include "Interface/StringizeInterface.h"

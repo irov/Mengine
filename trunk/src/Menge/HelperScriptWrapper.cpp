@@ -44,9 +44,8 @@
 
 #	include "Kernel/Affector.h"
 
-#	include "Utils/Core/File.h"
-#	include "Utils/Core/String.h"
-#   include "Utils/Core/CRC32.h"
+#	include "Core/String.h"
+#   include "Core/CRC32.h"
 
 #	include "Math/angle.h"
 

@@ -1,6 +1,7 @@
 #	include "SoundCodecPlugin.h"
 
 #	include "SoundDecoderOGGVorbis.h"
+#	include "SoundDecoderWAV.h"
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
@@ -41,9 +42,13 @@ namespace Menge
 
 		m_decoders.push_back( new DecoderFactory<SoundDecoderOGGVorbis>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "oggSound")) );
         m_decoders.push_back( new DecoderFactory<SoundDecoderOGGVorbis>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ogvSound")) );
+		m_decoders.push_back( new DecoderFactory<SoundDecoderWAV>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "wavSound")) );
 		
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "ogg", Helper::stringizeString(m_serviceProvider, "oggSound") );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->registerCodecExt( "wav", Helper::stringizeString(m_serviceProvider, "wavSound") );
 
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),

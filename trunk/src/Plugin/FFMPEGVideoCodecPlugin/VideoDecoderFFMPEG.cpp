@@ -2,7 +2,6 @@
 
 #	include "Interface/ConfigInterface.h"
 
-#	include "Core/File.h"
 #	include "Logger/Logger.h"
 
 #	include <stdint.h>

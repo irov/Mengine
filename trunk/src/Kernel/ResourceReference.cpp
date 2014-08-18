@@ -11,7 +11,6 @@
 #	include "Interface/NotificatorInterface.h"
 
 #   include "Logger/Logger.h"
-#   include "Core/File.h"
 
 namespace Menge
 {

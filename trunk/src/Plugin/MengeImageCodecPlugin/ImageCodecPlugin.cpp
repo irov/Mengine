@@ -32,8 +32,6 @@
 #   include "Codec/EncoderFactory.h"
 #   include "Codec/DataflowFactory.h"
 
-#	include "Core/File.h"
-
 extern "C" // only required if using g++
 {
     //////////////////////////////////////////////////////////////////////////

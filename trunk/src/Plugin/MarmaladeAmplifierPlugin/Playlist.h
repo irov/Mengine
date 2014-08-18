@@ -9,11 +9,6 @@
 
 namespace	Menge
 {
-	//! Playlist - список имен треков. Использует ресурс ResourcePlaylist для загрузки имен треков и определения зацикленности.
-	/*! 
-	* 
-	*/
-
 	class Playlist
 	{
 	public:

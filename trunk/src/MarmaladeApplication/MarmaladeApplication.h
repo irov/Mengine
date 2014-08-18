@@ -14,7 +14,6 @@
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/InputSystemInterface.h"
-#   include "Interface/AmplifierServiceInterface.h"
 #   include "Interface/PluginInterface.h"
 #	include "Interface/ArchiveInterface.h"
 #   include "Interface/MarmaladeLayerInterface.h"
@@ -120,8 +119,7 @@ namespace Menge
         bool initializeScriptEngine_();
         bool initializeCodecEngine_();
         bool initializeConverterEngine_();
-        bool initializeInputEngine_();
-        bool initializeAmplifierService_();
+        bool initializeInputEngine_();        
         bool initializePluginService_();
         bool initializeArchiveService_();
 		bool initializeModuleEngine_();		
@@ -158,7 +156,6 @@ namespace Menge
 		RenderMaterialServiceInterface * m_renderMaterialManager;
         SoundServiceInterface * m_soundService;
         ScriptServiceInterface * m_scriptService;
-        AmplifierServiceInterface * m_amplifierService;
         PluginServiceInterface * m_pluginService;
         ArchiveServiceInterface * m_archiveService;
 		ModuleServiceInterface * m_moduleService;
@@ -180,6 +177,7 @@ namespace Menge
 		PluginInterface * m_pluginMengeXmlCodec;
         PluginInterface * m_pluginMengeImageCodec;
         PluginInterface * m_pluginMengeSoundCodec;
+		PluginInterface * m_pluginMengeAmplifier;
 		PluginInterface * m_pluginMengeZip;
 		PluginInterface * m_pluginMengeLZ4;
 		PluginInterface * m_pluginPluginPathFinder;

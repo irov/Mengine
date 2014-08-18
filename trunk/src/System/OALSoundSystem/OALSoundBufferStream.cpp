@@ -81,7 +81,7 @@ namespace Menge
 
         if( dataInfo->channels != 2 )
         {
-            LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::load invalid channels %d mast be %d"
+            LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::load invalid channels %d must be %d"
                 , dataInfo->channels
                 , 2
                 );
@@ -333,13 +333,13 @@ namespace Menge
 		for( ALint curr_processed = 0; curr_processed != processed; ++curr_processed )
 		{
 			// Исключаем их из очереди
-            ALuint buffer;
-			alSourceUnqueueBuffers( m_sourceId, 1, &buffer );
+            ALuint bufferId;
+			alSourceUnqueueBuffers( m_sourceId, 1, &bufferId );
             OAL_CHECK_ERROR(m_serviceProvider);
                         
 			// Читаем очередную порцию данных
             unsigned int bytesWritten;
-			if( this->bufferData_( buffer, bytesWritten ) == false )
+			if( this->bufferData_( bufferId, bytesWritten ) == false )
             {
                 continue;
             }
@@ -370,15 +370,7 @@ namespace Menge
         char dataBuffer[OPENAL_STREAM_BUFFER_SIZE];
 
         unsigned int bytesWritten = m_soundDecoder->decode( dataBuffer, OPENAL_STREAM_BUFFER_SIZE );
-        //bytesWritten -= bytesWritten % 4;
-
-        if( bytesWritten == 0 )
-        {
-            _bytes = 0;
-
-            return true;
-        }
-             
+        
         alBufferData( _alBufferId, m_format, dataBuffer, bytesWritten, m_frequency );
         
         if( OAL_CHECK_ERROR(m_serviceProvider) == true )

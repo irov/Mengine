@@ -3,14 +3,6 @@
 set( MY_LIB_NAME Menge )
 
 ADD_FILTER(
-Amplifier
-	AmplifierService.cpp
-	AmplifierService.h
-	Playlist.cpp
-	Playlist.h
-)
-
-ADD_FILTER(
 Application
 	Application.cpp
 	Application.h
@@ -299,12 +291,6 @@ Resource\\\\Image
 	ResourceImageMultiplyRGBAndAlpha.h
 	ResourceImageSolid.h
     ResourceImageSolid.cpp
-)
-
-ADD_FILTER(
-Resource\\\\Playlist
-	ResourcePlaylist.cpp
-	ResourcePlaylist.h
 )
 
 ADD_FILTER(

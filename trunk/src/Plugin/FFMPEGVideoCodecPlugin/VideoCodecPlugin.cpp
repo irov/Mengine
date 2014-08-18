@@ -2,8 +2,6 @@
 
 #   include "VideoDecoderFFMPEG.h"
 
-#	include "Core/File.h"
-
 #   include "Codec/DecoderFactory.h"
 
 #   include "Interface/StringizeInterface.h"

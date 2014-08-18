@@ -3,7 +3,6 @@
 #	include "Interface/ApplicationInterface.h"
 
 #   include "Interface/PrototypeManagerInterface.h"
-#   include "Interface/AmplifierServiceInterface.h"
 #	include "Interface/TextInterface.h"
 
 #   include "Interface/InputSystemInterface.h"
@@ -98,7 +97,6 @@ namespace Menge
 	protected:
 		bool initializeNodeManager_();
 		bool initializeLoaderEngine_();
-        bool initializeAmplifierService_();
 		bool initializeResourceManager_();
 		bool initializeSceneManager_();
 		bool initializeTextManager_();
@@ -252,8 +250,7 @@ namespace Menge
 		DecoderFactoryInterfacePtr m_imageDecoderMemory;
 
 		LoaderServiceInterface * m_loaderService;
-		ResourceServiceInterface * m_resourceService;
-        AmplifierServiceInterface * m_amplifierService;
+		ResourceServiceInterface * m_resourceService;        
 		TextServiceInterface* m_textService;
 		NodeServiceInterface * m_nodeService;		
         PrototypeServiceInterface * m_prototypeService;

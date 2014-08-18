@@ -31,7 +31,6 @@
 #	include "CriticalErrorsMonitor.h"
 
 #	include "Core/FileLogger.h"
-#	include "Core/File.h"
 #	include "Core/IniUtil.h"
 
 #	include "resource.h"
@@ -101,6 +100,7 @@ extern "C" // only required if using g++
 	//////////////////////////////////////////////////////////////////////////
 	extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeAmplifier( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );	
@@ -192,6 +192,7 @@ namespace Menge
 		, m_muteMode(false)
 		, m_pluginMengeImageCodec(nullptr)
 		, m_pluginMengeSoundCodec(nullptr)
+		, m_pluginMengeAmplifier(nullptr)
 		, m_pluginMengeVideoCodec(nullptr)
 		, m_pluginMengeZip(nullptr)
 		, m_pluginMengeLZ4(nullptr)
@@ -1596,6 +1597,14 @@ namespace Menge
 		}
 
 		{
+			LOGGER_INFO(m_serviceProvider)( "initialize Amplifier..." );
+
+			initPluginMengeAmplifier( &m_pluginMengeAmplifier );
+			m_pluginMengeAmplifier->initialize( m_serviceProvider );
+			
+		}
+
+		{
 			LOGGER_INFO(m_serviceProvider)( "initialize Video Codec..." );
 
 			initPluginMengeVideoCodec( &m_pluginMengeVideoCodec );
@@ -1995,6 +2004,12 @@ namespace Menge
 		{
 			m_pluginMengeSoundCodec->destroy();
 			m_pluginMengeSoundCodec = nullptr;
+		}
+
+		if( m_pluginMengeAmplifier != nullptr )
+		{
+			m_pluginMengeAmplifier->destroy();
+			m_pluginMengeAmplifier = nullptr;
 		}
 
 		if( m_pluginMengeVideoCodec != nullptr )

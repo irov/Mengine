@@ -4,7 +4,6 @@
 
 #	include "Interface/StringizeInterface.h"
 
-#	include "Core/File.h"
 #	include "Core/ConstString.h"
 
 #   include "Codec/DecoderFactory.h"

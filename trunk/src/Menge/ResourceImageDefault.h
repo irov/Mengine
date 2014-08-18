@@ -21,7 +21,8 @@ namespace Menge
         const ConstString & getCodecType() const;
         
     public:
-        void setImagePath( const FilePath& _imagePath );
+        void setImagePath( const FilePath & _imagePath );
+		const FilePath & getImagePath() const;
 
 	protected:
 		bool _isValid() const override;
@@ -34,6 +35,8 @@ namespace Menge
 
 	protected:
         FilePath m_fileName;
-        ConstString m_codecType;                
+        ConstString m_codecType;
+
+		bool m_validNoExist;
 	};
 }

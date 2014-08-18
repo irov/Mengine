@@ -1,24 +1,23 @@
-#	include "AmplifierService.h"
+#	include "Amplifier.h"
 
 #   include "Interface/ResourceInterface.h"
-
-#   include "Logger/Logger.h"
-
-#	include "Consts.h"
+#   include "Interface/StringizeInterface.h"
 
 #	include "Playlist.h"
 
 #	include "ResourcePlaylist.h"
 
+#   include "Logger/Logger.h"
+
 #	include <cmath>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( AmplifierService, Menge::AmplifierServiceInterface, Menge::AmplifierService );
+SERVICE_FACTORY(Amplifier, Menge::AmplifierInterface, Menge::Amplifier);
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	AmplifierService::AmplifierService()
+	Amplifier::Amplifier()
 		: m_serviceProvider(nullptr)
 		, m_currentPlayList(nullptr)
         , m_sourceID(0)
@@ -31,7 +30,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AmplifierService::~AmplifierService()
+	Amplifier::~Amplifier()
 	{
 		//_release();
 		this->stop();
@@ -48,17 +47,17 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void AmplifierService::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    void Amplifier::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * AmplifierService::getServiceProvider() const
+    ServiceProviderInterface * Amplifier::getServiceProvider() const
     {
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool AmplifierService::loadPlayList_( const ConstString& _playlistResource )
+	bool Amplifier::loadPlayList_( const ConstString& _playlistResource )
 	{
 		TMapPlayList::iterator it = m_mapPlayLists.find( _playlistResource );
 
@@ -86,7 +85,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AmplifierService::playTrack( const ConstString& _playlistResource, size_t _index, float _pos, bool _looped )
+	bool Amplifier::playTrack( const ConstString& _playlistResource, size_t _index, float _pos, bool _looped )
 	{
 		if( this->loadPlayList_( _playlistResource ) == false )
 		{
@@ -104,7 +103,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t AmplifierService::getNumTracks() const
+	size_t Amplifier::getNumTracks() const
 	{
 		if( m_currentPlayList == nullptr )
 		{
@@ -116,7 +115,7 @@ namespace Menge
 		return numTracks;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t AmplifierService::getCurrentTrack() const
+	size_t Amplifier::getCurrentTrack() const
 	{
 		if( m_currentPlayList == nullptr )
 		{
@@ -128,7 +127,7 @@ namespace Menge
 		return index;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AmplifierService::play2_( float _pos )
+	bool Amplifier::play2_( float _pos )
 	{
         if( m_play == true )
         {
@@ -148,7 +147,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AmplifierService::preparePlay_( float _pos )
+	bool Amplifier::preparePlay_( float _pos )
 	{
 		if( m_currentPlayList == nullptr )
 		{
@@ -176,7 +175,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AmplifierService::play_()
+	bool Amplifier::play_()
 	{
 		if( SOUND_SERVICE(m_serviceProvider)->play( m_sourceID ) == false )
 		{
@@ -188,7 +187,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::shuffle( const ConstString & _playlist )
+	void Amplifier::shuffle( const ConstString & _playlist )
 	{
 		if( loadPlayList_( _playlist ) == false )
 		{
@@ -198,7 +197,7 @@ namespace Menge
 		m_currentPlayList->shuffle();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::stop()
+	void Amplifier::stop()
 	{
 		m_play = false;
 
@@ -211,7 +210,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::pause()
+	void Amplifier::pause()
 	{
 		if( m_sourceID == 0 )
 		{
@@ -224,7 +223,7 @@ namespace Menge
             ->pause( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::resume()
+	void Amplifier::resume()
 	{
 		if( m_sourceID == 0 )
 		{
@@ -237,7 +236,7 @@ namespace Menge
             ->play( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::onSoundStop( size_t _id )
+	void Amplifier::onSoundStop( size_t _id )
 	{
 		(void)_id;
 
@@ -270,12 +269,12 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::onSoundPause( size_t _id )
+	void Amplifier::onSoundPause( size_t _id )
 	{
 		(void)_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AmplifierService::prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codec, float _pos )
+	bool Amplifier::prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codec, float _pos )
 	{
 		this->stop();
 		//_release();
@@ -285,7 +284,7 @@ namespace Menge
 
 		if( m_buffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AmplifierService::prepareSound_: AmplifierService can't load sample '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::prepareSound_: AmplifierService can't load sample '%s'"
 				, _file.c_str() 
 				);
 
@@ -297,7 +296,7 @@ namespace Menge
 
 		if( m_sourceID == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AmplifierService::prepareSound_: AmplifierService can't create sound source '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::prepareSound_: AmplifierService can't create sound source '%s'"
 				, _file.c_str()
 				);
 
@@ -307,7 +306,7 @@ namespace Menge
 		if( SOUND_SERVICE(m_serviceProvider)
 			->setPosMs( m_sourceID, _pos ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AmplifierService::prepareSound_: AmplifierService can't set sound '%s' pos '%f'"
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::prepareSound_: AmplifierService can't set sound '%s' pos '%f'"
 				, _file.c_str()
 				, _pos
 				);
@@ -321,7 +320,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::release_()
+	void Amplifier::release_()
 	{
 		SOUND_SERVICE(m_serviceProvider)
             ->releaseSoundSource( m_sourceID );
@@ -331,27 +330,27 @@ namespace Menge
     	m_buffer = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString& AmplifierService::getPlayTrack() const
+	const ConstString& Amplifier::getPlayTrack() const
 	{
 		return m_currentPlaylistName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::setVolume( float _volume )
+	void Amplifier::setVolume( float _volume )
 	{
 		//m_volumeOverride = m_volume;
 		SOUND_SERVICE(m_serviceProvider)
-            ->setMusicVolume( CONST_STRING(m_serviceProvider, Generic), _volume );
+            ->setMusicVolume( CONST_STRING_LOCAL(m_serviceProvider, "Generic"), _volume );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float AmplifierService::getVolume() const
+	float Amplifier::getVolume() const
 	{
 		float volume = SOUND_SERVICE(m_serviceProvider)
-			->getMusicVolume( CONST_STRING(m_serviceProvider, Generic) );
+			->getMusicVolume( CONST_STRING_LOCAL(m_serviceProvider, "Generic") );
 
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float AmplifierService::getPosMs() const
+	float Amplifier::getPosMs() const
 	{
 		if( m_sourceID == 0 )
 		{
@@ -364,7 +363,7 @@ namespace Menge
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AmplifierService::setPosMs( float _posMs )
+	void Amplifier::setPosMs( float _posMs )
 	{
 		if( m_sourceID == 0 )
 		{

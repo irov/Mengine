@@ -8,10 +8,7 @@
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 
-#	include "Core/File.h"
-
 #   include "Logger/Logger.h"
-
 
 namespace Menge
 {

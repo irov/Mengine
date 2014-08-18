@@ -20,6 +20,7 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceImageDefault );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDefault::ResourceImageDefault()
+		: m_validNoExist(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -39,9 +40,14 @@ namespace Menge
 
 		bool exist = FILE_SERVICE(m_serviceProvider)
 			->existFile( category, m_fileName, nullptr );
-				
+		
 		if( exist == false )
 		{
+			if( m_validNoExist == true )
+			{
+				return true;
+			}
+
 			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s not exist file %s:%s"
 				, m_name.c_str()
 				, category.c_str()
@@ -152,6 +158,9 @@ namespace Menge
 		m_size = m_maxSize;
 		metadata->get_File_Size( m_size );
 		metadata->get_File_Offset( m_offset );
+
+		m_validNoExist = false;
+		metadata->get_File_NoExist( m_validNoExist );
 		
         return true;
     }
@@ -181,5 +190,10 @@ namespace Menge
         m_isUVRotate = false;
 		m_wrapU = false;
 		m_wrapV = false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const FilePath & ResourceImageDefault::getImagePath() const
+	{
+		return m_fileName;
 	}
 }

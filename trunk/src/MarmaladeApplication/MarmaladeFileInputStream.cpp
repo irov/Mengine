@@ -242,6 +242,17 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeFileInputStream::skip( size_t _pos )
+	{
+		size_t current = m_reading - m_capacity + m_carriage;
+
+		size_t seek_pos = current + _pos;
+
+		bool result = this->seek( seek_pos );
+
+		return result;			
+	}
+	//////////////////////////////////////////////////////////////////////////
 	size_t MarmaladeFileInputStream::tell() const
 	{
 		size_t current = m_reading - m_capacity + m_carriage;
@@ -252,6 +263,11 @@ namespace Menge
 	size_t MarmaladeFileInputStream::size() const 
 	{
 		return m_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeFileInputStream::eof() const
+	{
+		return (m_reading - m_capacity + m_carriage) == m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileInputStream::time( uint64 & _time ) const

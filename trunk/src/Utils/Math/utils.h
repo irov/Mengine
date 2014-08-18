@@ -25,11 +25,11 @@ namespace mt
 
 	MATH_INLINE bool cmp_f_f( float _a, float _b )
 	{
-		return (_a > (_b - mt::m_eps)) && (_a < (_b + mt::m_eps));
+		return (_a > (_b + mt::m_neps)) && (_a < (_b + mt::m_eps));
 	}
 
 	MATH_INLINE bool cmp_f_z( float _a )
 	{
-		return (_a > -mt::m_eps) && (_a < mt::m_eps);
+		return (_a > mt::m_neps) && (_a < mt::m_eps);
 	}
 }

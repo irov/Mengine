@@ -4,7 +4,7 @@
 #   define BOOST_NO_CXX11_NULLPTR
 
 #   define PYBIND_MARMALADE
-#   define PYBIND_PYTHON_VERSION 274
+#   define PYBIND_PYTHON_VERSION 276
 
 #   define TARGET_MARMALADE 1
 
@@ -18,10 +18,12 @@
 
 #	ifndef IW_DEBUG
 #		undef _DEBUG // In Marmalade _DEBUG is wrongly defined in x86 Release.
-#		define MENGE_MASTER_RELEASE
+//#		define MENGE_MASTER_RELEASE
 #	endif
 
 #   define MENGINE_CONFIG Config_Marmalade.h
+
+#	define MENGE_MASTER_RELEASE
 
 typedef void * nullptr_t;
 #   define nullptr 0

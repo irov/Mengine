@@ -5,6 +5,7 @@
 #	include "Interface/ConverterInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/PrefetcherInterface.h"
+#	include "Interface/ConfigInterface.h"
 
 //#	include "ResourceImageDefault.h"
 #	include "ResourceShape.h"
@@ -159,7 +160,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie::_isValid() const
     {
-		if( fabsf(m_frameDuration) < 0.0001f )
+		if( mt::cmp_f_z( m_frameDuration ) == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_isValid: '%s'm_frameDuration == 0.f"
 				, this->getName().c_str()
@@ -167,6 +168,26 @@ namespace Menge
 
 			return false;
 		}
+
+		size_t limitMovieWidth = CONFIG_SERVICE(m_serviceProvider)
+			->getValue("Limit", "MovieWidth", 16384U );
+
+		size_t limitMovieHeight = CONFIG_SERVICE(m_serviceProvider)
+			->getValue("Limit", "MovieHeight", 16384U );
+
+		if( m_size.x > limitMovieWidth || m_size.y > limitMovieHeight )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid %s invalid limit %d:%d size %f:%f"
+				, this->getName().c_str()
+				, limitMovieWidth
+				, limitMovieHeight
+				, m_size.x
+				, m_size.y
+				);
+
+			return false;
+		}
+
 
         for( TVectorMovieLayers::const_iterator
             it = m_layers.begin(),

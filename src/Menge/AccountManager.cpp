@@ -12,7 +12,6 @@
 #	include "Core/IniUtil.h"
 
 #	include "Core/String.h"
-#	include "Core/File.h"
 #	include "Core/UnicodeFormat.h"
 
 #	include "Config/Typedef.h"

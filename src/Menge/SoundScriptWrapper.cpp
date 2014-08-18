@@ -1,6 +1,6 @@
 #	include "ScriptWrapper.h"
 
-#	include "Interface/AmplifierServiceInterface.h"
+#	include "Interface/AmplifierInterface.h"
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/PlayerInterface.h"
 

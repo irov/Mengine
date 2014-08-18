@@ -12,6 +12,7 @@ namespace mt
 	const float	m_deg2rad = m_pi / 180.f;
 	const float	m_rad2deg = 180.f / m_pi;
 	const float m_eps = 0.00001f;
+	const float m_neps = -m_eps;
 }
 
 #	ifndef _DEBUG

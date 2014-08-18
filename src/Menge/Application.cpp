@@ -76,7 +76,6 @@
 #	include "ResourceVideo.h"
 #	include "ResourceMesh.h"
 #	include "ResourceSkeleton.h"
-#	include "ResourcePlaylist.h"
 #	include "ResourceSound.h"
 #	include "ResourceTileMap.h"
 #	include "ResourceTileSet.h"
@@ -120,7 +119,6 @@ SERVICE_EXTERN(ResourceService, Menge::ResourceServiceInterface);
 SERVICE_EXTERN(Watchdog, Menge::WatchdogInterface);
 SERVICE_EXTERN(GameService, Menge::GameServiceInterface);
 SERVICE_EXTERN(PrototypeService, Menge::PrototypeServiceInterface);
-SERVICE_EXTERN(AmplifierService, Menge::AmplifierServiceInterface);
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::ApplicationInterface, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -144,7 +142,6 @@ namespace Menge
 		, m_textService(nullptr)
         , m_nodeService(nullptr)
 		, m_prototypeService(nullptr)		
-        , m_amplifierService(nullptr)
 		, m_createRenderWindow(false)
 		, m_cursorMode(false)
 		, m_invalidateVsync(false)
@@ -247,7 +244,6 @@ namespace Menge
 				
         exinit.add( &Application::initializePrototypeManager_ );
         exinit.add( &Application::initializeNodeManager_ );        
-        exinit.add( &Application::initializeAmplifierService_ );
         exinit.add( &Application::initializeLoaderEngine_ );
         exinit.add( &Application::initializeResourceManager_ );
         exinit.add( &Application::initializeSceneManager_ );
@@ -634,26 +630,6 @@ namespace Menge
 
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::initializeAmplifierService_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Amplifier Service..." );
-
-        AmplifierServiceInterface * amplifierService;
-        if( SERVICE_CREATE( AmplifierService, &amplifierService ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, amplifierService ) == false )
-        {
-            return false;
-        }
-
-        m_amplifierService = amplifierService;
-
-        return true;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeResourceManager_()
 	{
@@ -693,7 +669,6 @@ namespace Menge
 		RESOURCE_FACTORY( m_serviceProvider, ResourceMovie );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceModel3D );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceVideo );
-		RESOURCE_FACTORY( m_serviceProvider, ResourcePlaylist );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceSound );		
 		RESOURCE_FACTORY( m_serviceProvider, ResourceFile );
 
@@ -1444,8 +1419,7 @@ namespace Menge
 
         SERVICE_DESTROY( Watchdog, m_watchdog );
         SERVICE_DESTROY( LoaderService, m_loaderService );
-        SERVICE_DESTROY( AmplifierService, m_amplifierService );
-
+        
 		if( m_textService != nullptr )
 		{
 			m_textService->finalize();
@@ -1747,7 +1721,7 @@ namespace Menge
 		this->calcRenderViewport_( m_currentResolution, m_renderViewport );
 		//m_renderEngine->applyRenderViewport( renderViewport );
 
-		LOGGER_ERROR(m_serviceProvider)("Application::invalidateWindow_ Render Viewport %f %f - %f %f"
+		LOGGER_WARNING(m_serviceProvider)("Application::invalidateWindow_ Render Viewport %f %f - %f %f"
 			, m_renderViewport.begin.x
 			, m_renderViewport.begin.y
 			, m_renderViewport.getWidth()

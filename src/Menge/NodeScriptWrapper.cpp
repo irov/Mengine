@@ -3893,6 +3893,7 @@ namespace Menge
             ;
 
         pybind::interface_<ResourceImageDefault, pybind::bases<ResourceImage> >("ResourceImageDefault", false)
+			.def( "getImagePath", &ResourceImageDefault::getImagePath )
             ;
 
 		pybind::interface_<ResourceImageMultiplyRGBAndAlpha, pybind::bases<ResourceImage> >("ResourceImageMultiplyRGBAndAlpha", false)

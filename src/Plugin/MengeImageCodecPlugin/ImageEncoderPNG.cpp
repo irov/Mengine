@@ -64,21 +64,15 @@ namespace Menge
 	size_t ImageEncoderPNG::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
 	{
 		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _bufferDataInfo );
-
-		png_infop info_ptr;
-		png_uint_32 width = (png_uint_32)dataInfo->width;
-		png_uint_32 height = (png_uint_32)dataInfo->height;
-		//int bit_depth = 8;
-		int color_type;
-		int pitch = m_options.pitch;
-		int pixel_depth = 8;
-
+			
 		// allocate/initialize the image information data.
-		info_ptr = png_create_info_struct( m_png_ptr );
+		png_infop info_ptr = png_create_info_struct( m_png_ptr );
 
 		if( info_ptr == nullptr )  
 		{
-			LOGGER_ERROR(m_serviceProvider)("PNG encoder error: Can't create info structure" );
+			LOGGER_ERROR(m_serviceProvider)("PNG encoder error: Can't create info structure" 
+				);
+
 			return 0;
 		}
 
@@ -92,6 +86,7 @@ namespace Menge
 			return 0;
 		}
 
+		int color_type;
 		if( dataInfo->channels == 3 )
 		{
 			color_type = PNG_COLOR_TYPE_RGB;
@@ -111,6 +106,10 @@ namespace Menge
 			return 0;
 		}
 
+		png_uint_32 width = (png_uint_32)dataInfo->width;
+		png_uint_32 height = (png_uint_32)dataInfo->height;
+		int pixel_depth = 8;
+		
 		png_set_IHDR( m_png_ptr, info_ptr, width, height, pixel_depth, color_type, PNG_INTERLACE_NONE,
 			PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE );
 
@@ -118,6 +117,8 @@ namespace Menge
 
 		// Write the file header information.
 		png_write_info( m_png_ptr, info_ptr );
+
+		int pitch = m_options.pitch;
 
         png_bytep png_buffer = (png_bytep)_buffer;
 

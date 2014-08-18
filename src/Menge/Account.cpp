@@ -12,7 +12,6 @@
 #	include "Core/CacheMemoryBuffer.h"
 #	include "Core/IniUtil.h"
 #	include "Core/String.h"
-#	include "Core/File.h"
 #	include "Core/CRC32.h"
 
 #	include "pybind/pybind.hpp"

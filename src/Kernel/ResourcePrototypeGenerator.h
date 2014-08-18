@@ -2,7 +2,7 @@
 
 #	include "Interface/PrototypeManagerInterface.h"
 
-#	include "Kernel/Resource.h"
+#	include "Kernel/ResourceReference.h"
 
 #	include "Core/ConstString.h"
 #	include "Factory/FactoryStore.h"

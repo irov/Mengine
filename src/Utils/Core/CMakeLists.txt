@@ -23,9 +23,6 @@ src
     IniUtil.h
     IniUtil.cpp
     
-    File.h
-    File.cpp
-    
     FilePath.h
     FilePath.cpp
     
@@ -36,6 +33,7 @@ src
 	MemoryInput.cpp
     
     PixelFormat.h
+    PixelFormat.cpp
         
 	MemoryProxyInput.h
 	MemoryProxyInput.cpp

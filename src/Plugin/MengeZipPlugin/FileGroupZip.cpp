@@ -9,7 +9,6 @@
 #	include "Core/CacheMemoryBuffer.h"
 #	include "Core/FilePath.h"
 #	include "Core/String.h"
-#   include "Core/File.h"
 
 #	include <string.h>
 #   include <stdio.h>
@@ -211,7 +210,7 @@ namespace Menge
 			
 			m_files.insert( fi );
 			
-			Utils::skip( zipFile, header.compressedSize );
+			zipFile->skip( header.compressedSize );
 		}
 
 		m_zipFile = zipFile;

@@ -1,10 +1,9 @@
 #	include "OALSoundSystem.h"
-#	include "Interface/LogSystemInterface.h"
-#	include "Config/Config.h"
-
-#	include "OALError.h"
+#	include "Interface/UnicodeInterface.h"
 
 #	include "Logger/Logger.h"
+
+#	include "OALError.h"
 
 #	include <algorithm>
 #	include <stdio.h>
@@ -15,9 +14,6 @@ SERVICE_FACTORY( SoundSystem, Menge::SoundSystemInterface, Menge::OALSoundSystem
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-#	define MAX_SOUND_SOURCES 32
-#	define MAX_SOUND_BUFFERS 16
-
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSystem::OALSoundSystem()
 		: m_serviceProvider(nullptr)
@@ -48,10 +44,10 @@ namespace Menge
 		alcInit();
 #	endif
 		
-        const ALCchar* str = alcGetString( nullptr, ALC_DEVICE_SPECIFIER );
+        const ALCchar* defaultDeviceSprcifier = alcGetString( nullptr, ALC_DEVICE_SPECIFIER );
         
-        LOGGER_WARNING(m_serviceProvider)("OpenAL device specifier [%s]"
-            , str
+        LOGGER_WARNING(m_serviceProvider)("OpenAL default device specifier [%s]"
+            , defaultDeviceSprcifier
             );
 				
         m_device = alcOpenDevice( nullptr );
@@ -79,6 +75,12 @@ namespace Menge
 			    }			
             }
 		}
+
+		const ALCchar* captureDeviceSpecifier = alcGetString( m_device, ALC_CAPTURE_DEVICE_SPECIFIER );
+
+		LOGGER_WARNING(m_serviceProvider)("OpenAL capture device specifier [%s]"
+			, captureDeviceSpecifier
+			);		
 
 		m_context = alcCreateContext( m_device, nullptr );
 

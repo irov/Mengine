@@ -1,5 +1,8 @@
 #	pragma once
 
+#	include <stdint.h>
+#	include <stddef.h>
+
 namespace Menge
 {
 	enum PixelFormat
@@ -89,70 +92,6 @@ namespace Menge
 			return n;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		inline size_t getTextureMemorySize( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
-		{
-			size_t HWWidth = Helper::getTexturePOW2( _width );
-			size_t HWHeight = Helper::getTexturePOW2( _height );
-
-			switch( _format )
-			{
-			case PF_L8:
-			case PF_A8:
-				return HWWidth * HWHeight * _depth * 1;
-			case PF_R8G8B8:
-			case PF_B8G8R8:
-				return HWWidth * HWHeight * _depth * 3;
-			case PF_A8R8G8B8:
-			case PF_A8B8G8R8:
-			case PF_B8G8R8A8:
-			case PF_R8G8B8A8:
-			case PF_X8R8G8B8:
-			case PF_X8B8G8R8:
-				return HWWidth * HWHeight * _depth * 4;
-
-			case PF_DXT1:
-			case PF_ETC1:
-				{
-					size_t w = HWWidth >> 2;
-					size_t h = HWHeight >> 2;
-
-					if( w < 4 ) w = 4;
-					if( h < 4 ) h = 4;
-
-					return w * h * _depth * 8;
-				}
-
-			case PF_DXT2:
-			case PF_DXT3:
-			case PF_DXT4:
-			case PF_DXT5:
-				{
-					size_t w = HWWidth >> 2;
-					size_t h = HWHeight >> 2;
-
-					if( w < 4 ) w = 4;
-					if( h < 4 ) h = 4;
-
-					return w * h * _depth * 16;
-				}
-
-			case PF_PVRTC4_RGB:			
-			case PF_PVRTC4_RGBA:
-				{
-					size_t w = HWWidth >> 2;
-					size_t h = HWHeight >> 2;
-
-					if( w < 2 ) w = 2;
-					if( h < 2 ) h = 2;
-
-					return w * h * _depth * 8;
-				}
-				
-			case PF_UNKNOWN:
-				return _width * _height * _depth * _channels;
-			}                
-
-			return 0;
-		}
+		size_t getTextureMemorySize( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format );
 	}
 }

@@ -16,7 +16,6 @@
 
 #   include "Logger/Logger.h"
 
-#	include "Core/File.h"
 #   include "Codec/ConverterFactory.h"
 
 extern "C" // only required if using g++

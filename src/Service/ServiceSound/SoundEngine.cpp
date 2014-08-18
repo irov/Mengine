@@ -43,7 +43,7 @@ namespace Menge
         m_silent = _silent;
 
         m_threadSoundBufferUpdate = new ThreadJob();
-		m_threadSoundBufferUpdate->initialize( m_serviceProvider, 50 );
+		m_threadSoundBufferUpdate->initialize( m_serviceProvider, 5 );
 
 		THREAD_SERVICE(m_serviceProvider)
 			->createThread( CONST_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), 0 );
@@ -313,10 +313,10 @@ namespace Menge
 
 		bool true_stream = _isStream;
 
-		if( dataInfo->length < 500 )
-		{
-			true_stream = false;
-		}
+		//if( dataInfo->length < 500 )
+		//{
+		//	true_stream = false;
+		//}
 
 		SoundBufferInterfacePtr buffer = SOUND_SYSTEM(m_serviceProvider)
             ->createSoundBuffer( codec, true_stream );

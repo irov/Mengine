@@ -7,7 +7,6 @@
 #	include "Logger/Logger.h"
 
 #	include "Core/String.h"
-#	include "Core/File.h"
 
 namespace Menge
 {

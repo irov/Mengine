@@ -235,6 +235,7 @@ namespace Menge
 
     protected:
         bool createNullTexture_();
+		bool createWhitePixelTexture_();
 
 	protected:
 		void updateTexture_( size_t _stageId, const RenderTextureInterfacePtr & _texture );
@@ -257,6 +258,7 @@ namespace Menge
 		mt::mat4f m_renderAreaProj;
         
         RenderTextureInterfacePtr m_nullTexture;	// dummy white pixel
+		RenderTextureInterfacePtr m_whitePixelTexture;
 
         RenderShaderInterface * m_shader;
 

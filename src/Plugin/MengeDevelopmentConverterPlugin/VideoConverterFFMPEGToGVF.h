@@ -19,5 +19,9 @@ namespace Menge
         	
     protected:
 		bool convert_( const FilePath & _input, const FilePath & _output );
+
+	protected:
+		bool removeTempDir_( const WString & _path );
+		bool createTempDir_( const WString & _path );
     };
 }	// namespace Menge

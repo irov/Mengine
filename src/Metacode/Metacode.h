@@ -1360,6 +1360,46 @@ namespace Metacode
                 (_self->*_method)( this->File_MaxSize );
             }
             
+            bool has_File_NoExist() const
+            {
+                return File_NoExist_successful;
+            }
+            
+            bool get_File_NoExist( bool & _value ) const
+            {
+                if( File_NoExist_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_NoExist;
+            
+                return true;
+            }
+            
+            bool swap_File_NoExist( bool & _value ) const
+            {
+                if( File_NoExist_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_NoExist);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_NoExist( C * _self, M _method )
+            {
+                if( File_NoExist_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_NoExist );
+            }
+            
             bool has_File_Offset() const
             {
                 return File_Offset_successful;
@@ -1630,6 +1670,8 @@ namespace Metacode
             mutable Menge::ConstString File_Codec;
             bool File_MaxSize_successful;
             mutable mt::vec2f File_MaxSize;
+            bool File_NoExist_successful;
+            mutable bool File_NoExist;
             bool File_Offset_successful;
             mutable mt::vec2f File_Offset;
             mutable Menge::ConstString File_Path;

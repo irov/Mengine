@@ -24,8 +24,6 @@
 
 #	include "SimpleIni.h"
 
-#	include "Core/File.h"
-
 #	include <ctime>
 #	include <algorithm>
 
@@ -73,7 +71,6 @@ SERVICE_EXTERN(SoundSystem, Menge::SoundSystemInterface);
 SERVICE_EXTERN(SilentSoundSystem, Menge::SoundSystemInterface);
 SERVICE_EXTERN(SoundService, Menge::SoundServiceInterface);
 
-SERVICE_EXTERN(AmplifierService, Menge::AmplifierServiceInterface);
 SERVICE_EXTERN(InputService, Menge::InputServiceInterface);
 SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
 SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
@@ -91,6 +88,7 @@ extern "C" // only required if using g++
     //////////////////////////////////////////////////////////////////////////
     extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
     extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeAmplifier( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeXmlCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );
@@ -1092,27 +1090,6 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeAmplifierService_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Amplifier Service..." );
-
-        AmplifierServiceInterface * amplifierService;
-        if( SERVICE_CREATE( AmplifierService, &amplifierService ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, amplifierService ) == false )
-        {
-            return false;
-        }
-
-        m_amplifierService = amplifierService;
-
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializePluginService_()
     {
         //LOGGER_INFO(m_serviceProvider)( "Initializing Plugin Service..." );
@@ -1290,11 +1267,6 @@ namespace Menge
             return false;
         }
 
-        if( this->initializeAmplifierService_() == false )
-        {
-            return false;
-        }
-
         if( this->initializeApplicationService_() == false )
         {
             return false;
@@ -1338,6 +1310,13 @@ namespace Menge
             initPluginMengeSoundCodec( &m_pluginMengeSoundCodec );
             m_pluginMengeSoundCodec->initialize( m_serviceProvider );
         }
+
+		{
+			LOGGER_INFO(m_serviceProvider)( "initialize Amplifier..." );
+
+			initPluginMengeAmplifier( &m_pluginMengeAmplifier );
+			m_pluginMengeAmplifier->initialize( m_serviceProvider );
+		}
 
 		{
 			LOGGER_INFO(m_serviceProvider)( "initialize Path Finder..." );

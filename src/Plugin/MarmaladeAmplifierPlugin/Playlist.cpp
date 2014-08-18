@@ -1,6 +1,6 @@
 #	include "Playlist.h"
 
-#	include "ResourceManager.h"
+#	include "Interface/ResourceInterface.h"
 
 #   include "Logger/Logger.h"
 #	include "Core/String.h"

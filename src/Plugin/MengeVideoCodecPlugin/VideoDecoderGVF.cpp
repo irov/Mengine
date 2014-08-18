@@ -1,6 +1,5 @@
 #	include "VideoDecoderGVF.h"
 
-#	include "Core/File.h"
 #	include "Core/CacheMemoryBuffer.h"
 
 #	include "Logger/Logger.h"

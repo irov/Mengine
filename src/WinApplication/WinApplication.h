@@ -264,6 +264,7 @@ namespace Menge
 
 		PluginInterface * m_pluginMengeImageCodec;
 		PluginInterface * m_pluginMengeSoundCodec;
+		PluginInterface * m_pluginMengeAmplifier;
 		PluginInterface * m_pluginMengeVideoCodec;
 		PluginInterface * m_pluginMengeZip;
 		PluginInterface * m_pluginMengeLZ4;

@@ -261,6 +261,17 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Win32FileInputStream::skip( size_t _pos )
+	{
+		size_t current = m_reading - m_capacity + m_carriage;
+
+		size_t seek_pos = current + _pos;
+
+		bool result = this->seek( seek_pos );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	size_t Win32FileInputStream::tell() const
 	{
         size_t current = m_reading - m_capacity + m_carriage;
@@ -271,6 +282,11 @@ namespace Menge
 	size_t Win32FileInputStream::size() const 
 	{
 		return m_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32FileInputStream::eof() const
+	{
+		return (m_reading - m_capacity + m_carriage) == m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static time_t s_FileTimeToUnixTime( const FILETIME * filetime )

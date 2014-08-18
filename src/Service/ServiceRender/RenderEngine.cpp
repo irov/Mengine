@@ -125,6 +125,7 @@ namespace Menge
 		//m_textures.clear();
 
 		m_nullTexture = nullptr;
+		m_whitePixelTexture = nullptr;
 
 		RENDER_SYSTEM(m_serviceProvider)->releaseVertexBuffer( m_vbHandle2D );
 		RENDER_SYSTEM(m_serviceProvider)->releaseIndexBuffer( m_vbHandle2D );
@@ -193,7 +194,15 @@ namespace Menge
 
 		if( this->createNullTexture_() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createRenderWindow invalid create null texture"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createRenderWindow invalid create __null__ texture"
+				);
+
+			return false;
+		}
+
+		if( this->createWhitePixelTexture_() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createRenderWindow invalid create WhitePixel texture"
 				);
 
 			return false;
@@ -219,12 +228,12 @@ namespace Menge
 		size_t null_channels = 3;
 		size_t null_depth = 1;
 
-		m_nullTexture = RENDERTEXTURE_SERVICE(m_serviceProvider)
+		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
 			->createTexture( null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
 
-		if( m_nullTexture == nullptr )
+		if( texture == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createWhitePixelTexture_ invalid create null texture %d:%d"
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createNullTexture_ invalid create null texture %d:%d"
 				, null_width
 				, null_height
 				);
@@ -239,11 +248,11 @@ namespace Menge
 		rect.bottom = null_height;
 
 		int pitch = 0;
-		void * textureData = m_nullTexture->lock( &pitch, rect, false );
+		void * textureData = texture->lock( &pitch, rect, false );
 
 		if( textureData == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createWhitePixelTexture_ invalid lock null texture %d:%d"
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createNullTexture_ invalid lock null texture %d:%d"
 				, null_width
 				, null_height
 				);
@@ -271,10 +280,81 @@ namespace Menge
 		buffer_textureData[4] = 0x00;
 		buffer_textureData[5] = 0x00;
 
-		m_nullTexture->unlock();
+		texture->unlock();
 
 		RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->cacheFileTexture( CONST_STRING_LOCAL(m_serviceProvider, "__null__"), m_nullTexture );
+			->cacheFileTexture( CONST_STRING_LOCAL(m_serviceProvider, "__null__"), texture );
+
+		m_nullTexture = texture;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::createWhitePixelTexture_()
+	{
+		size_t null_width = 2;
+		size_t null_height = 2;
+		size_t null_channels = 3;
+		size_t null_depth = 1;
+
+		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
+			->createTexture( null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
+
+		if( texture == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createWhitePixelTexture_ invalid create null texture %d:%d"
+				, null_width
+				, null_height
+				);
+
+			return false;
+		}
+
+		Rect rect;
+		rect.left = 0;
+		rect.top = 0;
+		rect.right = null_width;
+		rect.bottom = null_height;
+
+		int pitch = 0;
+		void * textureData = texture->lock( &pitch, rect, false );
+
+		if( textureData == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createWhitePixelTexture_ invalid lock null texture %d:%d"
+				, null_width
+				, null_height
+				);
+
+			return false;
+		}
+
+		unsigned char * buffer_textureData = static_cast<unsigned char *>(textureData);
+
+		buffer_textureData[0] = 0xFF;
+		buffer_textureData[1] = 0xFF;
+		buffer_textureData[2] = 0xFF;
+
+		buffer_textureData[3] = 0xFF;
+		buffer_textureData[4] = 0xFF;
+		buffer_textureData[5] = 0xFF;
+
+		buffer_textureData += pitch;
+
+		buffer_textureData[0] = 0xFF;
+		buffer_textureData[1] = 0xFF;
+		buffer_textureData[2] = 0xFF;
+
+		buffer_textureData[3] = 0xFF;
+		buffer_textureData[4] = 0xFF;
+		buffer_textureData[5] = 0xFF;
+
+		texture->unlock();
+
+		RENDERTEXTURE_SERVICE(m_serviceProvider)
+			->cacheFileTexture( CONST_STRING_LOCAL(m_serviceProvider, "WhitePixel"), texture );
+
+		m_whitePixelTexture = texture;
 
 		return true;
 	}

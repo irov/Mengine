@@ -326,7 +326,14 @@ namespace Menge
         options.channels = 4;
         //options.flags |= DF_CUSTOM_PITCH;
 
-        imageEncoder->setOptions( &options );
+        if( imageEncoder->setOptions( &options ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : invalid optionize '%s'"
+				, _fileName.c_str() 
+				);
+
+			return false;
+		}
 
         unsigned int bytesWritten = imageEncoder->encode( buffer, &dataInfo );
 

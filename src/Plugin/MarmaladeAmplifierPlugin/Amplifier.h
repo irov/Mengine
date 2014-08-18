@@ -1,6 +1,6 @@
 #	 pragma once
 
-#	include "Interface/AmplifierServiceInterface.h"
+#	include "Interface/AmplifierInterface.h"
 #	include "Interface/SoundSystemInterface.h"
 
 #	include "Core/ConstString.h"
@@ -14,13 +14,13 @@ namespace	Menge
 	class ResourcePlaylist;
 	class Playlist;
 
-	class AmplifierService
-		: public AmplifierServiceInterface
+	class Amplifier
+		: public AmplifierInterface
 		, public SoundListenerInterface	
 	{
 	public:
-		AmplifierService();
-		~AmplifierService();
+		Amplifier();
+		~Amplifier();
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;

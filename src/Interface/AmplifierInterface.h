@@ -6,10 +6,10 @@
 
 namespace Menge
 {
-	class AmplifierServiceInterface
+	class AmplifierInterface
 		: public ServiceInterface
 	{
-        SERVICE_DECLARE("AmplifierService")
+        SERVICE_DECLARE("Amplifier")
 
 	public:
 		virtual bool playTrack( const ConstString& _playlistResource, size_t _index, float _pos, bool _looped ) = 0;
@@ -34,5 +34,5 @@ namespace Menge
 	};
 
 #   define AMPLIFIER_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::AmplifierServiceInterface)
+    SERVICE_GET(serviceProvider, Menge::AmplifierInterface)
 }

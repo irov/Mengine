@@ -2,8 +2,6 @@
 
 #	include "Kernel/Scene.h"
 
-#	include "Camera2D.h"
-
 #	include "Interface/NodeInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 

@@ -245,7 +245,7 @@ namespace	Menge
 		this->adaptScreenPosition_( _screenPoint, adaptScreenPoint );
 
 		mt::vec2f adaptScreenDeltha;
-		this->adaptScreenPosition_( _screenDeltha, adaptScreenDeltha );
+		this->adaptScreenDeltha_( _screenDeltha, adaptScreenDeltha );
 		
 		mt::vec2f p1 = (adaptScreenPoint + adaptScreenDeltha) * 2.f - mt::vec2f(1.f, 1.f);
 		p1.y = -p1.y;
@@ -255,7 +255,7 @@ namespace	Menge
 		mt::vec2f p_pm;
 		mt::mul_v2_m4( p_pm, p1, pm_inv );
 
-		mt::vec2f p2 = (_screenPoint) * 2.f - mt::vec2f(1.f, 1.f);
+		mt::vec2f p2 = (adaptScreenPoint) * 2.f - mt::vec2f(1.f, 1.f);
 		p2.y = -p2.y;
 
 		mt::vec2f p_pm_base;
@@ -326,6 +326,25 @@ namespace	Menge
 		mt::vec2f windowOffset = renderViewport.begin / currentResolutionSize;
 
 		_adaptScreenPoint = (_screenPoint - windowOffset) / windowScale;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Arrow::adaptScreenDeltha_( const mt::vec2f & _screenDeltha, mt::vec2f & _adaptScreenDeltha ) const
+	{
+		const Viewport & renderViewport = APPLICATION_SERVICE(m_serviceProvider)
+			->getRenderViewport();
+
+		const Resolution & currentResolution = APPLICATION_SERVICE(m_serviceProvider)
+			->getCurrentResolution();
+
+		mt::vec2f renderViewportSize;
+		renderViewport.calcSize( renderViewportSize );
+
+		mt::vec2f currentResolutionSize;
+		currentResolution.calcSize( currentResolutionSize );
+
+		mt::vec2f windowScale = renderViewportSize / currentResolutionSize;		
+
+		_adaptScreenDeltha = _screenDeltha / windowScale;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Arrow::adaptWorldPosition_( const mt::vec2f & _screenPoint, mt::vec2f & _adaptScreenPoint ) const

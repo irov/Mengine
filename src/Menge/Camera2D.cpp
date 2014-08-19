@@ -10,9 +10,11 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::Camera2D()
-		: m_cameraRevision(1)    	
+		: m_cameraRevision(1)
+		, m_zNear(-1000.f)
+		, m_zFar(1000.f)
 		, m_observerChangeWindowResolution(nullptr)	
-		, m_widescreenSupport(true)
+		, m_fixedRenderport(false)
 		, m_invalidateProjectionMatrix(true)
 		, m_invalidateMatrix(true)
 	{		
@@ -62,16 +64,16 @@ namespace	Menge
 		this->invalidateViewport_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setWidescreenSupport( bool _value )
+	void Camera2D::setFixedRenderport( bool _value )
 	{
-		m_widescreenSupport = _value;
+		m_fixedRenderport = _value;
 
 		this->invalidateViewport_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Camera2D::getWidescreenSupport() const
+	bool Camera2D::getFixedRenderport() const
 	{
-		return m_widescreenSupport;
+		return m_fixedRenderport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::updateMatrix_() const
@@ -92,7 +94,7 @@ namespace	Menge
 
 		Viewport renderViewport;
 
-		if( m_widescreenSupport == true )
+		if( m_fixedRenderport == false )
 		{
 			float gameViewportAspect;
 			Viewport gameViewport;
@@ -100,43 +102,30 @@ namespace	Menge
 			APPLICATION_SERVICE(m_serviceProvider)
 				->getGameViewport( gameViewportAspect, gameViewport );
 
-			const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
-				->getContentResolution();
-
-			mt::vec2f contentResolutionSize;
-			contentResolution.calcSize( contentResolutionSize );
-
-			mt::vec2f viewportMaskBegin = gameViewport.begin / contentResolutionSize;
-			mt::vec2f viewportMaskEnd = gameViewport.end / contentResolutionSize;
-
 			Viewport renderViewportWM;
 
 			const mt::mat4f & wm = this->getWorldMatrix();
 			mt::mul_v2_m4( renderViewportWM.begin, m_renderport.begin, wm );
 			mt::mul_v2_m4( renderViewportWM.end, m_renderport.end, wm );
-
-			Viewport gameViewportSc;
-			gameViewportSc.begin = contentResolutionSize * viewportMaskBegin;
-			gameViewportSc.end = contentResolutionSize * viewportMaskEnd;
-
-			if( renderViewportWM.begin.x < gameViewportSc.begin.x )
+			
+			if( renderViewportWM.begin.x < gameViewport.begin.x )
 			{
-				renderViewportWM.begin.x = gameViewportSc.begin.x;
+				renderViewportWM.begin.x = gameViewport.begin.x;
 			}
 
-			if( renderViewportWM.begin.y < gameViewportSc.begin.y )
+			if( renderViewportWM.begin.y < gameViewport.begin.y )
 			{
-				renderViewportWM.begin.y = gameViewportSc.begin.y;
+				renderViewportWM.begin.y = gameViewport.begin.y;
 			}
 
-			if( renderViewportWM.end.x > gameViewportSc.end.x )
+			if( renderViewportWM.end.x > gameViewport.end.x )
 			{
-				renderViewportWM.end.x = gameViewportSc.end.x;
+				renderViewportWM.end.x = gameViewport.end.x;
 			}
 
-			if( renderViewportWM.end.y > gameViewportSc.end.y )
+			if( renderViewportWM.end.y > gameViewport.end.y )
 			{
-				renderViewportWM.end.y = gameViewportSc.end.y;
+				renderViewportWM.end.y = gameViewport.end.y;
 			}
 
 			mt::mat4f wm_inv;
@@ -151,7 +140,7 @@ namespace	Menge
 		}
 
 		RENDER_SERVICE(m_serviceProvider)
-			->makeProjectionOrthogonal( m_projectionMatrix, renderViewport, -1000.0f, 1000.0f );
+			->makeProjectionOrthogonal( m_projectionMatrix, renderViewport, m_zNear, m_zFar );
 
 		mt::inv_m4( m_projectionMatrixInv, m_projectionMatrix );
 	}

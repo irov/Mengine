@@ -76,6 +76,8 @@ namespace Menge
         virtual void setFullscreen( const Resolution & _resolution, bool _fullscreen ) = 0;
         virtual void setFixedContentResolution( const Resolution & _resolution, bool _fixed ) = 0;
         virtual void setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) = 0;
+		virtual void setGameViewport( const Viewport & _viewport, float _aspect ) = 0;
+
         virtual bool close() = 0;
 
         virtual void userEvent( const ConstString & _event, const TMapParams & _params ) = 0;

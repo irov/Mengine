@@ -4085,8 +4085,8 @@ namespace Menge
 
         pybind::interface_<Camera2D, pybind::bases<Node, Camera> >("Camera2D", false)
             .def( "setRenderport", &Camera2D::setRenderport )
-			.def( "setWidescreenSupport", &Camera2D::setWidescreenSupport )
-			.def( "getWidescreenSupport", &Camera2D::getWidescreenSupport )
+			.def( "setFixedRenderport", &Camera2D::setFixedRenderport )
+			.def( "getFixedRenderport", &Camera2D::getFixedRenderport )
             ;		
 
 		pybind::interface_<CameraTarget2D, pybind::bases<Node> >("CameraTarget2D", false)

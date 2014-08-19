@@ -6,7 +6,6 @@
 
 #	include "Player.h"
 
-#	include "Camera2D.h"
 #	include "Kernel/Scene.h"
 #	include "Layer2D.h"
 

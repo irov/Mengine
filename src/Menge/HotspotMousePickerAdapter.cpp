@@ -5,7 +5,6 @@
 #   include "HotspotMousePickerVisitor.h"
 
 #   include "HotSpot.h"
-#   include "Camera2D.h"
 
 namespace Menge
 {

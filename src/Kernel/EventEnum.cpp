@@ -9,6 +9,7 @@ namespace Menge
 		"EVENT_FULLSCREEN",
         "EVENT_FIXED_CONTENT_RESOLUTION",
         "EVENT_RENDER_VIEWPORT",
+		"EVENT_GAME_VIEWPORT",
 		"onAnimationEnd",
 		"onFrameEnd",
 		"onFrameTick",

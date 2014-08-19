@@ -46,6 +46,7 @@
 #	include "Layer2DLoop.h"
 #	include "RenderViewport.h"
 #	include "Camera2D.h"
+#	include "Camera2DScroll.h"
 #	include "CameraTarget2D.h"
 #	include "Camera3D.h"
 #	include "Layer2DAccumulator.h"
@@ -156,6 +157,7 @@ namespace Menge
 		, m_resourceCheckCritical(true)
 		, m_cursorResource(nullptr)
 		, m_fixedContentResolution(false)
+		, m_fixedDisplayResolution(false)
 		, m_vsync(false)
 		, m_fullScreen(true)
 		, m_bits(0)
@@ -281,6 +283,7 @@ namespace Menge
 
         m_contentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "ContentResolution", Resolution(1024, 768));
         m_fixedContentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "FixedContentResolution", true);
+		m_fixedDisplayResolution = CONFIG_VALUE(m_serviceProvider, "Game", "FixedDisplayResolution", true);
 		m_windowModeCheck = CONFIG_VALUE(m_serviceProvider, "Game", "WindowModeCheck", false);
 		
 
@@ -846,13 +849,21 @@ namespace Menge
             }
         }
 
-		//m_renderEngine->setRenderViewport( renderViewport );
-
         m_game->initializeRenderResources();
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
             ->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
-					
+		
+		m_game->setRenderViewport( m_renderViewport, m_contentResolution );
+
+		float gameViewportAspect;
+		Viewport gameViewport;
+
+		APPLICATION_SERVICE(m_serviceProvider)
+			->getGameViewport( gameViewportAspect, gameViewport );
+
+		m_game->setGameViewport( gameViewport, gameViewportAspect );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1577,7 +1588,7 @@ namespace Menge
 
         float r_aspect = _resolution.getAspectRatio();
         
-		if( m_fixedContentResolution == true )
+		if( m_fixedDisplayResolution == true )
 		{           
             float c_aspect = m_contentResolution.getAspectRatio();
 
@@ -1762,6 +1773,22 @@ namespace Menge
         if( m_game != nullptr )
         {
             m_game->setRenderViewport( m_renderViewport, m_contentResolution );
+
+			float gameViewportAspect;
+			Viewport gameViewport;
+
+			APPLICATION_SERVICE(m_serviceProvider)
+				->getGameViewport( gameViewportAspect, gameViewport );
+
+			m_game->setGameViewport( gameViewport, gameViewportAspect );
+
+			LOGGER_WARNING(m_serviceProvider)("Application::invalidateWindow_ Game Viewport %f %f - %f %f Aspect %f"
+				, gameViewport.begin.x
+				, gameViewport.begin.y
+				, gameViewport.end.x
+				, gameViewport.end.y
+				, gameViewportAspect
+				);
         }
 	}
 	////////////////////////////////////////////////////////////////////////////

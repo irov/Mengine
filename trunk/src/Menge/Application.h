@@ -235,8 +235,7 @@ namespace Menge
         TMapAspectRatioViewports m_aspectRatioViewports;
 
 		bool m_fixedContentResolution;
-
-
+		bool m_fixedDisplayResolution;
 		bool m_createRenderWindow;
 
 		unsigned int m_debugMask;

@@ -6,8 +6,6 @@
 #   include "Interface/EventInterface.h"
 #   include "Interface/ApplicationInterface.h"
 
-#	include "Camera2D.h"
-
 #	include "Player.h"
 
 #	include "Kernel/Scene.h"

@@ -120,6 +120,8 @@ namespace Menge
 		void setFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
         void setFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
         void setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) override;
+		void setGameViewport( const Viewport & _viewport, float _aspect ) override;
+
 		bool close() override;
 
         void userEvent( const ConstString & _event, const TMapParams & _params ) override;

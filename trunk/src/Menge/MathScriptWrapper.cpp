@@ -494,6 +494,18 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		static PyObject * Resolution_repr( PyObject * _obj, Resolution * _v )
+		{
+			(void)_obj;
+
+			Stringstream ss;
+			ss << "<Resolution: " << _v->getWidth() << ", " << _v->getHeight() << ">";
+
+			String repr = ss.str();
+
+			return pybind::ptr(repr);
+		}
+		//////////////////////////////////////////////////////////////////////////
 		static bool Viewport_convert( PyObject * _obj, void * _place, void * _user )
         {
             (void)_user;
@@ -538,6 +550,18 @@ namespace Menge
 			}
 
 			return false;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static PyObject * Viewport_repr( PyObject * _obj, Viewport * _v )
+		{
+			(void)_obj;
+
+			Stringstream ss;
+			ss << "<Viewport: " << _v->begin.x << ", " << _v->begin.y << ", " << _v->end.x << ", " << _v->end.y << ", " << ">";
+
+			String repr = ss.str();
+
+			return pybind::ptr(repr);
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static bool Rect_convert( PyObject * _obj, void * _place, void * _user )
@@ -674,6 +698,7 @@ namespace Menge
 		pybind::struct_<Viewport>("Viewport")
 			.def_constructor( pybind::init<mt::vec2f,mt::vec2f>() )
 			.def_convert( &ScriptMethod::Viewport_convert, nullptr )
+			.def_repr( &ScriptMethod::Viewport_repr )
 			.def_member( "begin", &Viewport::begin )
 			.def_member( "end", &Viewport::end )
 			.def( "getWidth", &Viewport::getWidth )
@@ -683,6 +708,7 @@ namespace Menge
 		pybind::struct_<ColourValue>("Color")
 			.def_constructor( pybind::init<float, float, float, float>() )
 			.def_convert( &ScriptMethod::color_convert, nullptr )
+			.def_repr( &ScriptMethod::color_repr )
 			.def( "getA", &ColourValue::getA )
 			.def( "getR", &ColourValue::getR )
 			.def( "getG", &ColourValue::getG )
@@ -690,13 +716,13 @@ namespace Menge
 			.def_property( "a", &ColourValue::getA, &ColourValue::setA )
 			.def_property( "r", &ColourValue::getR, &ColourValue::setR )
 			.def_property( "g", &ColourValue::getG, &ColourValue::setG )
-			.def_property( "b", &ColourValue::getB, &ColourValue::setB )
-			.def_repr( &ScriptMethod::color_repr )
+			.def_property( "b", &ColourValue::getB, &ColourValue::setB )			
 			;
 
 		pybind::struct_<Resolution>("Resolution")
 			.def_constructor( pybind::init<size_t, size_t>() )
 			.def_convert( &ScriptMethod::Resolution_convert, nullptr )
+			.def_repr( &ScriptMethod::Resolution_repr )
 			.def( "setWidth", &Resolution::setWidth )
 			.def( "setHeight", &Resolution::setHeight )
 			.def( "getWidth", &Resolution::getWidth )

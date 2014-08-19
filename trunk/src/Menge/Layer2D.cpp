@@ -1,8 +1,9 @@
 #	include "Layer2D.h"
 
+#	include "Camera2D.h"
+
 #	include "Kernel/Scene.h"
 
-#	include "Camera2D.h"
 #	include "RenderViewport.h"
 
 #	include "Interface/NodeInterface.h"
@@ -48,7 +49,7 @@ namespace	Menge
         Node::_deactivate();
     }
 	//////////////////////////////////////////////////////////////////////////
-	mt::vec2f Layer2D::cameraToLocal( Camera2D * _camera2D, const mt::vec2f& _point )
+	mt::vec2f Layer2D::cameraToLocal( const RenderCameraInterface * _camera2D, const mt::vec2f& _point )
 	{
 		const Viewport & viewport = _camera2D->getCameraRenderport();
 

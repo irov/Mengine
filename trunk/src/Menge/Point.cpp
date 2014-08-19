@@ -1,11 +1,6 @@
 #	include "Point.h"
 
-#	include "Camera2D.h"
-#	include "HotSpot.h"
-
 #   include "Interface/RenderSystemInterface.h"
-
-#	include "Sprite.h"
 
 namespace	Menge
 {

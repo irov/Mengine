@@ -368,12 +368,6 @@ namespace	Menge
 				->getCurrentTrack();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_musicSetVolume( float _volume )
-		{
-			AMPLIFIER_SERVICE(m_serviceProvider)
-				->setVolume( _volume );
-		}
-		//////////////////////////////////////////////////////////////////////////
 		float s_musicGetPosMs()
 		{
 			float posMs = AMPLIFIER_SERVICE(m_serviceProvider)
@@ -556,8 +550,7 @@ namespace	Menge
         pybind::def_functor( "musicResume", soundScriptMethod, &SoundScriptMethod::musicResume );
 		pybind::def_functor( "musicShuffle", soundScriptMethod, &SoundScriptMethod::musicShuffle );
 		pybind::def_functor( "musicGetPlaying", soundScriptMethod, &SoundScriptMethod::s_musicGetPlaying );
-		pybind::def_functor( "musicGetPlayingTrackIndex", soundScriptMethod, &SoundScriptMethod::s_musicGetPlayingTrackIndex );
-		pybind::def_functor( "musicSetVolume", soundScriptMethod, &SoundScriptMethod::s_musicSetVolume );
+		pybind::def_functor( "musicGetPlayingTrackIndex", soundScriptMethod, &SoundScriptMethod::s_musicGetPlayingTrackIndex );		
 		pybind::def_functor( "musicGetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicGetPosMs );
 		pybind::def_functor( "musicSetPosMs", soundScriptMethod, &SoundScriptMethod::s_musicSetPosMs );
 		pybind::def_functor( "musicFadeIn", soundScriptMethod, &SoundScriptMethod::s_musicFadeIn );

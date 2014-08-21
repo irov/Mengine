@@ -203,12 +203,6 @@ Object2D\\\\HotSpotShape
 )
 
 ADD_FILTER(
-Prefetcher
-    ThreadWorkerImageResourceCompile.h
-    ThreadWorkerImageResourceCompile.cpp
-)
-
-ADD_FILTER(
 Player
 	Player.cpp
 	Player.h
@@ -333,16 +327,6 @@ ADD_FILTER(
 Manager\\\\Resource
 	ResourceManager.cpp
 	ResourceManager.h
-)
-
-ADD_FILTER(
-Manager\\\\ThreadTask
-	ThreadTaskLoadResourceImage.h
-	ThreadTaskLoadResourceImage.cpp
-    ThreadTaskLoadImageResources.h
-    ThreadTaskLoadImageResources.cpp
-	ThreadTaskDeferredLoading.h
-	ThreadTaskDeferredLoading.cpp
 )
 
 ADD_FILTER(

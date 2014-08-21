@@ -23,7 +23,7 @@ namespace Menge
 		const ConstString & getCodecType() const;
 		
 	public:
-		bool isStreamable() const;		
+		bool isStreamable() const;
 		float getDefaultVolume() const;
 
 	public:

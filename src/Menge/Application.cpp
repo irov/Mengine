@@ -46,7 +46,6 @@
 #	include "Layer2DLoop.h"
 #	include "RenderViewport.h"
 #	include "Camera2D.h"
-#	include "Camera2DScroll.h"
 #	include "CameraTarget2D.h"
 #	include "Camera3D.h"
 #	include "Layer2DAccumulator.h"

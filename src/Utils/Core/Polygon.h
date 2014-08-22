@@ -24,6 +24,8 @@
 #   pragma warning(pop)
 #   endif
 
+#	include <stdex/stl_vector.h>
+
 namespace boost 
 {
     namespace geometry
@@ -73,15 +75,15 @@ namespace boost
 
 namespace Menge
 {
-    typedef std::vector<mt::vec2f> TVectorPoints;
-    typedef std::vector<uint16_t> TVectorIndices;
+    typedef stdex::vector<mt::vec2f> TVectorPoints;
+    typedef stdex::vector<uint16_t> TVectorIndices;
 
 	typedef boost::geometry::model::d2::point_xy<float> GeometryPoint;
-    typedef boost::geometry::model::polygon<mt::vec2f> Polygon;
+    typedef boost::geometry::model::polygon<mt::vec2f, true, true, stdex::vector, stdex::vector, stdex::stl_allocator, stdex::stl_allocator> Polygon;
     typedef boost::geometry::model::box<mt::vec2f> Box;
 	typedef boost::geometry::model::segment<mt::vec2f> Segment;
 
-	typedef std::vector<Polygon> TVectorPolygon;
+	typedef stdex::vector<Polygon> TVectorPolygon;
 
     bool triangulate_polygon( const Polygon & _polygon, TVectorPoints & _result );
     bool triangulate_polygon_indices( const Polygon & _polygon, TVectorIndices & _result );

@@ -14,7 +14,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	typedef std::vector<MovieFrameSource> TVectorMovieFrameSource;
+	typedef stdex::vector<MovieFrameSource> TVectorMovieFrameSource;
 	//////////////////////////////////////////////////////////////////////////
 	struct ConverterMovieLayerFrame
 	{
@@ -25,7 +25,7 @@ namespace Menge
 		uint8_t immutable;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef std::vector<ConverterMovieLayerFrame> TVectorConverterMovieFrameLayer;
+	typedef stdex::vector<ConverterMovieLayerFrame> TVectorConverterMovieFrameLayer;
 	//////////////////////////////////////////////////////////////////////////
 	MovieKeyConverterXMLToAEK::MovieKeyConverterXMLToAEK()
 	{

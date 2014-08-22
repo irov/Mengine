@@ -16,7 +16,7 @@
 
 #   include "Math/mat4.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -28,7 +28,7 @@ namespace Menge
 		uint32_t color;
 	};
 
-	typedef std::vector<ParticleVertices> TVectorParticleVerices;
+	typedef stdex::vector<ParticleVertices> TVectorParticleVerices;
 
 	struct ParticleMesh
 	{
@@ -131,7 +131,7 @@ namespace Menge
         //WString path;
     };
 
-    typedef std::vector<ParticleEmitterAtlas> TVectorParticleEmitterAtlas;
+    typedef stdex::vector<ParticleEmitterAtlas> TVectorParticleEmitterAtlas;
     
     class ParticleEmitterContainerVisitor
     {

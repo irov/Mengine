@@ -1,6 +1,7 @@
 #   pragma once
 
 #   include "stdex/const_string_holder.h"
+#   include "stdex/stl_vector.h"
 
 #   include "Factory/Factorable.h"
 
@@ -24,6 +25,6 @@ namespace Menge
         void _destroyString() override;
 
     protected:
-		char * m_buff;
+		TVectorChar m_buff;
     };
 }

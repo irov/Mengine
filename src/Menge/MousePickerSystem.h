@@ -4,8 +4,8 @@
 
 #	include "Core/Viewport.h"
 
-#	include <list>
-#	include <vector>
+#	include <stdex/stl_list.h>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {	
@@ -16,7 +16,7 @@ namespace Menge
 		const RenderCameraInterface * camera;
 	};
 
-	typedef std::vector<PickerTrapStateDesc> TVectorPickerTrapStates;
+	typedef stdex::vector<PickerTrapStateDesc> TVectorPickerTrapStates;
 	
 	class MousePickerSystem
 		: public MousePickerSystemInterface
@@ -80,7 +80,7 @@ namespace Menge
 		const RenderViewportInterface * m_viewport;
 		const RenderCameraInterface * m_camera;
 
-		typedef std::list<PickerTrapState> TPickerTrapState;
+		typedef stdex::list<PickerTrapState> TPickerTrapState;
 		TPickerTrapState m_pickerTrapState;
 
 		TVectorPickerTrapStates m_states;

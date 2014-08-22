@@ -10,9 +10,7 @@
 
 #   include "Core/Polygon.h"
 
-#	include <vector>
-#	include <map>
-
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -126,7 +124,7 @@ namespace Menge
         }
 	};
 
-	typedef std::vector<MovieLayer> TVectorMovieLayers;
+	typedef stdex::vector<MovieLayer> TVectorMovieLayers;
 
 	struct MovieLayerCamera3D
 	{

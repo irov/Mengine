@@ -154,11 +154,8 @@ namespace Menge
 		void updateJoins_();
 
 	protected:
-		typedef std::vector<Join *> TVectorJoins;
+		typedef stdex::vector<Join *> TVectorJoins;
 		TVectorJoins m_joins;
-
-		//typedef std::map<Node *, TVectorJoins> TMapJoins;
-		//TMapJoins m_nodeJoins;
 
 	protected:
 		void renderArrow_( unsigned int _debugMask );
@@ -185,7 +182,7 @@ namespace Menge
 		ScheduleManagerInterface * m_scheduleManager;
 		ScheduleManagerInterface * m_scheduleManagerGlobal;
 
-		typedef std::vector<ScheduleManagerInterface *> TVectorUserScheduler;
+		typedef stdex::vector<ScheduleManagerInterface *> TVectorUserScheduler;
 		TVectorUserScheduler m_schedulers;
 
         FactoryDefaultStore<ScheduleManager> m_factoryScheduleManager;

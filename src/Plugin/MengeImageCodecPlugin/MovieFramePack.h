@@ -5,7 +5,7 @@
 #	include "Math/vec2.h"
 #	include "Math/vec3.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 #	include <stdint.h>
 #	include <memory.h>

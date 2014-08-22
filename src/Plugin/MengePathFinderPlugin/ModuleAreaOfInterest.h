@@ -38,7 +38,7 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 		ConstString m_name;
 
-		typedef std::vector<AreaOfInterest *> TVectorAreaOfInterest;
+		typedef stdex::vector<AreaOfInterest *> TVectorAreaOfInterest;
 		TVectorAreaOfInterest m_aois;
 	};
 }

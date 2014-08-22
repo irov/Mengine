@@ -21,6 +21,7 @@ namespace Menge
 		, m_turn(false)
         , m_enumerator(0)
         , m_silent(false)
+		, m_supportStream(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -38,18 +39,22 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::initialize( bool _silent )
+	bool SoundEngine::initialize( bool _silent, bool _supportStream )
 	{
         m_silent = _silent;
+		m_supportStream = _supportStream;
 
-        m_threadSoundBufferUpdate = new ThreadJob();
-		m_threadSoundBufferUpdate->initialize( m_serviceProvider, 5 );
+		if( m_supportStream == true )
+		{
+			m_threadSoundBufferUpdate = new ThreadJob();
+			m_threadSoundBufferUpdate->initialize( m_serviceProvider, 5 );
 
-		THREAD_SERVICE(m_serviceProvider)
-			->createThread( CONST_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), 0 );
+			THREAD_SERVICE(m_serviceProvider)
+				->createThread( CONST_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), 0 );
 
-        THREAD_SERVICE(m_serviceProvider)
-            ->addTask( CONST_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), m_threadSoundBufferUpdate );
+			THREAD_SERVICE(m_serviceProvider)
+				->addTask( CONST_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), m_threadSoundBufferUpdate );
+		}
 
 		return true;
 	}
@@ -76,10 +81,37 @@ namespace Menge
 
         m_soundSourceMap.clear();
 
-        THREAD_SERVICE(m_serviceProvider)
-            ->joinTask( m_threadSoundBufferUpdate );  
+		if( m_threadSoundBufferUpdate != nullptr )
+		{
+			THREAD_SERVICE(m_serviceProvider)
+				->joinTask( m_threadSoundBufferUpdate );  
 
-		m_threadSoundBufferUpdate = nullptr;
+			m_threadSoundBufferUpdate = nullptr;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SoundEngine::supportStreamSound() const
+	{
+		return m_supportStream;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEngine::addSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider )
+	{
+		m_soundVolumeProviders.push_back( _soundVolumeProvider );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SoundEngine::removeSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider )
+	{
+		TVectorSoundVolumeProviders::iterator it_found = std::find( m_soundVolumeProviders.begin(), m_soundVolumeProviders.end(), _soundVolumeProvider );
+
+		if( it_found == m_soundVolumeProviders.end() )
+		{
+			return false;
+		}
+
+		m_soundVolumeProviders.erase( it_found );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::playSounds_()
@@ -187,6 +219,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t SoundEngine::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceType _type, bool _streamable )
 	{
+		if( m_supportStream == false && _streamable == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundSource: unsupport stream sound %s:%s"
+				);
+
+			return 0;
+		}
+
 		SoundSourceInterfacePtr sourceInterface = SOUND_SYSTEM(m_serviceProvider)
             ->createSoundSource( _isHeadMode, _buffer );
 
@@ -271,10 +311,20 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterfacePtr SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _isStream )
+	SoundBufferInterfacePtr SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _streamable )
 	{
+		if( m_supportStream == false && _streamable == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: unsupport stream sound %s:%s"
+				, _pakName.c_str()
+				, _fileName.c_str() 
+				);
+
+			return nullptr;
+		}
+
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( _pakName, _fileName, _isStream );
+            ->openInputFile( _pakName, _fileName, _streamable );
         
         if( stream == nullptr )
         {
@@ -309,17 +359,8 @@ namespace Menge
 			return nullptr;
 		}
 
-		const SoundCodecDataInfo * dataInfo = codec->getCodecDataInfo();
-
-		bool true_stream = _isStream;
-
-		//if( dataInfo->length < 500 )
-		//{
-		//	true_stream = false;
-		//}
-
 		SoundBufferInterfacePtr buffer = SOUND_SYSTEM(m_serviceProvider)
-            ->createSoundBuffer( codec, true_stream );
+            ->createSoundBuffer( codec, _streamable );
 
         if( buffer == nullptr )
         {
@@ -437,7 +478,7 @@ namespace Menge
 			size_t id;
 		};
 
-		typedef std::vector<SoundListenerStopDesc> TVectorSoundListeners;
+		typedef stdex::vector<SoundListenerStopDesc> TVectorSoundListeners;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::update( float _timing )
@@ -680,6 +721,29 @@ namespace Menge
 
             this->updateSourceVolume_( source, source->volume );
 		}
+
+		for( TVectorSoundVolumeProviders::iterator
+			it = m_soundVolumeProviders.begin(),
+			it_end = m_soundVolumeProviders.end();
+		it != it_end;
+		++it )
+		{
+			SoundVolumeProviderInterface * provider = *it;
+
+			float mixSoundVolume = 1.f;
+			mixSoundVolume *= m_commonVolume.mixVolume();
+			mixSoundVolume *= m_soundVolume.mixVolume();
+			
+			float mixMusicVolume = 1.f;
+			mixMusicVolume *= m_commonVolume.mixVolume();
+			mixMusicVolume *= m_musicVolume.mixVolume();
+							
+			float mixVoiceVolume = 1.f;
+			mixVoiceVolume *= m_commonVolume.mixVolume();
+			mixVoiceVolume *= m_voiceVolume.mixVolume();
+
+			provider->onSoundChangeVolume( mixSoundVolume, mixMusicVolume, mixVoiceVolume );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::setSourceVolume( size_t _emitter, float _volume )
@@ -847,7 +911,10 @@ namespace Menge
 			return;
 		}
 
-        m_threadSoundBufferUpdate->removeWorker( _source->bufferId );
+		if( m_threadSoundBufferUpdate != nullptr )
+		{
+	        m_threadSoundBufferUpdate->removeWorker( _source->bufferId );
+		}
 
         _source->worker = nullptr;
         _source->bufferId = 0;
@@ -876,7 +943,14 @@ namespace Menge
 
         _source->worker->initialize( m_serviceProvider, soundBuffer );
 
-        _source->bufferId = m_threadSoundBufferUpdate->addWorker( _source->worker );
+		if( m_threadSoundBufferUpdate != nullptr )
+		{
+			_source->bufferId = m_threadSoundBufferUpdate->addWorker( _source->worker );
+		}
+		else
+		{
+			_source->bufferId = 0;
+		}
     }
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getPosMs( size_t _emitter ) const

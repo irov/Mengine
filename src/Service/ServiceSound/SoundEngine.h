@@ -15,7 +15,7 @@
 
 #   include "stdex/binary_vector.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -59,11 +59,19 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-		bool initialize( bool _silent ) override;
+		bool initialize( bool _silent, bool _supportStream ) override;
 		void finalize() override;
 
 	public:
+		bool supportStreamSound() const override;
+
+	public:
 		void update( float _timing ) override;
+
+	public:
+		void addSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider ) override;
+		bool removeSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider ) override;
+
         
     public:
 		void onTurnStream( bool _turn ) override;
@@ -73,7 +81,7 @@ namespace Menge
 		size_t createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceType _type, bool _streamable ) override;
 
     public:
-		SoundBufferInterfacePtr createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _isStream ) override;  
+		SoundBufferInterfacePtr createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _streamable ) override;  
 
     public:
 		void setSoundVolume( const ConstString & _type, float _volume ) override;
@@ -157,7 +165,11 @@ namespace Menge
         typedef FactoryPoolStore<ThreadWorkerSoundBufferUpdate, 32> TPoolWorkerTaskSoundBufferUpdate;
         TPoolWorkerTaskSoundBufferUpdate m_poolWorkerTaskSoundBufferUpdate;
 
+		typedef stdex::vector<SoundVolumeProviderInterface *> TVectorSoundVolumeProviders;
+		TVectorSoundVolumeProviders m_soundVolumeProviders;
+
         bool m_silent;
+		bool m_supportStream;
 		bool m_muted;
 
 		bool m_turn;

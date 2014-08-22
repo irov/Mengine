@@ -50,6 +50,11 @@ namespace Menge
 			return false;
 		}
 
+		if( amplifier->initialize() == false )
+		{
+			return false;
+		}
+
 		m_amplifier = amplifier;
 
 		PROTOTYPE_SERVICE(m_serviceProvider)
@@ -60,6 +65,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PluginAmplifier::destroy()
 	{
+		if( m_amplifier != nullptr )
+		{
+			m_amplifier->finalize();
+		}
+
 		SERVICE_DESTROY( Amplifier, m_amplifier );
 
 		delete this;

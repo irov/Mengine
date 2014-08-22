@@ -39,7 +39,7 @@ namespace Menge
         virtual Eventable * getPickerEventable() = 0;
     };
 
-    typedef std::vector<MousePickerTrapInterface *> TVectorPickerTraps;
+    typedef stdex::vector<MousePickerTrapInterface *> TVectorPickerTraps;
 
     class MousePickerSystemInterface
         : public InputSystemHandler

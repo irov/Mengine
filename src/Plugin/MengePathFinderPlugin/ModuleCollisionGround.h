@@ -44,7 +44,7 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 		ConstString m_name;
 
-		typedef std::vector<CollisionGround *> TVectorCollisionGrounds;
+		typedef stdex::vector<CollisionGround *> TVectorCollisionGrounds;
 		TVectorCollisionGrounds m_grounds;
 	};
 }

@@ -67,13 +67,13 @@ namespace Menge
 		typedef FactoryPoolStore<RenderStageGroup, 256> TFactoryRenderStage; 
 		TFactoryRenderStage m_factoryStage;
 
-		typedef std::vector<RenderMaterial *> TVectorRenderMaterial;
+		typedef stdex::vector<RenderMaterial *> TVectorRenderMaterial;
 		TVectorRenderMaterial m_materials[MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE];
 
 		typedef FactoryPoolStore<RenderMaterial, 256> TFactoryRenderMaterial; 
 		TFactoryRenderMaterial m_factoryMaterial;
 
-		typedef std::vector<size_t> TVectorMaterialIndexer;
+		typedef stdex::vector<size_t> TVectorMaterialIndexer;
 		TVectorMaterialIndexer m_materialIndexer;
     };
 }

@@ -274,7 +274,7 @@ namespace Menge
             Observer * m_observerResourceCompile;
             Observer * m_observerResourceRelease;
 
-            typedef std::vector<ResourceReference *> TVectorResourceDesc;
+            typedef stdex::vector<ResourceReference *> TVectorResourceDesc;
             TVectorResourceDesc m_resources;
         };
     }

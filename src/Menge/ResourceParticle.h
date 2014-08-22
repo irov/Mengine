@@ -10,8 +10,6 @@
 #	include "Camera3D.h"
 #	include "RenderViewport.h"
 
-#	include <map>
-
 namespace Menge
 {
 	class ResourceImage;
@@ -51,12 +49,12 @@ namespace Menge
 
 		ConstString m_converterType;
 
-		typedef std::vector<ConstString> TVectorResourceImageName;
+		typedef stdex::vector<ConstString> TVectorResourceImageName;
 		TVectorResourceImageName m_resourceImageNames;
 
 		ParticleEmitterContainerInterface2Ptr m_container;
 
-		typedef std::vector<ResourceImage *> TVectorResourceImage;
+		typedef stdex::vector<ResourceImage *> TVectorResourceImage;
 		TVectorResourceImage m_resourceImages;
 	};
 }

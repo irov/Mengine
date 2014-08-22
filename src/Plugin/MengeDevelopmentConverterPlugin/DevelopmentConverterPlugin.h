@@ -18,7 +18,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::vector<ConverterFactoryInterface *> TVectorHotspotImageConverters;
+		typedef stdex::vector<ConverterFactoryInterface *> TVectorHotspotImageConverters;
 		TVectorHotspotImageConverters m_converters;
 	};
 }

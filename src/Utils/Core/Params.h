@@ -2,9 +2,9 @@
 
 #	include "Core/ConstString.h"
 
-#	include <map>
+#	include <stdex/stl_map.h>
 
 namespace Menge
 {
-	typedef std::map<ConstString, WString> TMapParams;
+	typedef stdex::map<ConstString, WString> TMapParams;
 }

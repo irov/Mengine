@@ -1,4 +1,4 @@
-#	 pragma once
+#	pragma once
 
 #	include "Interface/AmplifierInterface.h"
 #	include "Interface/SoundSystemInterface.h"
@@ -7,7 +7,7 @@
 
 #	include "Config/Typedef.h"
 
-#	include <map>
+#	include <stdex/stl_map.h>
 
 namespace	Menge
 {
@@ -22,6 +22,10 @@ namespace	Menge
 		Amplifier();
 		~Amplifier();
 
+	public:
+		bool initialize() override;
+		void finalize() override;
+
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
@@ -34,10 +38,7 @@ namespace	Menge
 		void pause() override;
 		void resume() override;
 		
-		const ConstString& getPlayTrack() const override;
-				
-		void setVolume( float _value ) override;
-		float getVolume() const override;
+		const ConstString & getPlayTrack() const override;
 		
 		size_t getNumTracks() const override;
 		size_t getCurrentTrack() const override;
@@ -54,7 +55,7 @@ namespace	Menge
 		float m_volumeOverride;
 		float m_currentSoundPosition;
 		
-		typedef	std::map<ConstString, Playlist *> TMapPlayList;
+		typedef	stdex::map<ConstString, Playlist *> TMapPlayList;
 		TMapPlayList m_mapPlayLists;
 
 		ConstString	m_currentPlaylistName;
@@ -74,7 +75,7 @@ namespace	Menge
 
     protected:
 		void release_();	
-		bool prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codec, float _pos );
+		bool prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codecType, float _pos );
 		bool loadPlayList_( const ConstString& _playlistResource );
 		bool preparePlay_( float _pos );
 

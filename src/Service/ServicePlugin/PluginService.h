@@ -2,7 +2,7 @@
 
 #   include "Interface/PluginInterface.h"
 
-#   include <map>
+#   include <stdex/stl_map.h>
 
 namespace Menge
 {
@@ -32,7 +32,7 @@ namespace Menge
             PluginInterface * plugin;
         };
 
-        typedef std::map<WString, PluginDesc> TMapPlugins;
+        typedef stdex::map<WString, PluginDesc> TMapPlugins;
         TMapPlugins m_plugins;
 
         String m_dllCreatePluginName;

@@ -41,7 +41,7 @@ int main()
     char commandLine[S3E_CONFIG_STRING_MAX] = {0};
     if( s3eConfigGetString( "MENGINE", "CommandLine", commandLine ) == S3E_RESULT_ERROR )
     {
-		printf("s3eConfigGetString %s:%s return error %s"
+		printf("s3eConfigGetString %s:%s return error '%s'\n"
 			, "MENGINE"
 			, "CommandLine"
 			, s3eConfigGetErrorString()

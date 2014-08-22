@@ -619,7 +619,7 @@ namespace Menge
 	{
         (void)_serviceProvider;
 
-		pybind::registration_stl_vector_type_cast<Polygon>();
+		pybind::registration_stl_vector_type_cast<Polygon, stdex::vector<Polygon> >();
 
 		pybind::struct_<mt::vec2f>("vec2f")
 			.def_constructor( pybind::init<float,float>() )

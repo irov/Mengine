@@ -1,19 +1,19 @@
 #   pragma once
 
-#	include <string>
-#   include <vector>
+#	include <stdex/stl_string.h>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
     typedef wchar_t WChar;
     typedef char Char;
 
-    typedef std::string String;
-    typedef std::wstring WString;
+    typedef stdex::string String;
+    typedef stdex::wstring WString;
 
-    typedef std::vector<Char> TVectorChar;
-    typedef std::vector<String> TVectorString;
+    typedef stdex::vector<Char> TVectorChar;
+    typedef stdex::vector<String> TVectorString;
 
-    typedef std::vector<WChar> TVectorWChar;
-    typedef std::vector<WString> TVectorWString;
+    typedef stdex::vector<WChar> TVectorWChar;
+    typedef stdex::vector<WString> TVectorWString;
 }

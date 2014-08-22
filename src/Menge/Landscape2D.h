@@ -16,7 +16,7 @@
 
 namespace Menge
 {
-	typedef std::vector<ResourceImage *> TVectorResourceImage;
+	typedef stdex::vector<ResourceImage *> TVectorResourceImage;
 
 	struct RenderMaterial;
 	struct RenderMaterialGroup;    
@@ -61,7 +61,7 @@ namespace Menge
 			RenderMaterialInterfacePtr material;
 		};
 
-		typedef std::vector<Element> TVectorElements;
+		typedef stdex::vector<Element> TVectorElements;
 		TVectorElements m_elements;
 				
 		TVectorRenderVertex2D m_verticesWM;

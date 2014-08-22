@@ -89,7 +89,6 @@ extern "C" // only required if using g++
     extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
     extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeAmplifier( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeXmlCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );
 
@@ -837,7 +836,7 @@ namespace Menge
 
         m_soundService = soundService;
 
-        if( m_soundService->initialize( false ) == false )
+        if( m_soundService->initialize( false, false ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound Engine"
                 );
@@ -889,7 +888,7 @@ namespace Menge
 
         m_soundService = soundService;
 
-        if( m_soundService->initialize( true ) == false )
+        if( m_soundService->initialize( true, false ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSilentSoundEngine_ Failed to initialize Sound Engine"
                 );
@@ -1290,13 +1289,6 @@ namespace Menge
         //	);
 
 		
-		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Xml Codec..." );
-
-			initPluginMengeXmlCodec( &m_pluginMengeXmlCodec );
-			m_pluginMengeXmlCodec->initialize( m_serviceProvider );
-		}
-
         {
             LOGGER_INFO(m_serviceProvider)( "initialize Image Codec..." );
 
@@ -1419,8 +1411,6 @@ namespace Menge
                 break;
             }
             
-            s3eDeviceYield(0);
-
             if( m_application->isFocus() == true )
             {
                 s3eDeviceBacklightOn();
@@ -1450,6 +1440,8 @@ namespace Menge
 			}
 
 			m_application->endUpdate();
+
+			s3eDeviceYield( 0 );
         }
     }
     //////////////////////////////////////////////////////////////////////////

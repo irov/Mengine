@@ -38,7 +38,7 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 		ConstString m_name;
 
-		typedef std::vector<PathFinderMap *> TPathFinderMaps;
+		typedef stdex::vector<PathFinderMap *> TPathFinderMaps;
 		TPathFinderMaps m_maps;
 	};
 }

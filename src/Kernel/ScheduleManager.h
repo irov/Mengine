@@ -4,7 +4,7 @@
 
 #	include "pybind/types.hpp"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -55,7 +55,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::vector<ScheduleEvent> TListSchedules;
+		typedef stdex::vector<ScheduleEvent> TListSchedules;
 		TListSchedules m_schedules;
 
 		size_t m_enumeratorSchedule;

@@ -54,45 +54,22 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::ImageDecoderPNG()
-		: m_png_ptr(nullptr)
-		, m_info_ptr(nullptr)
-		, m_row_bytes(0)
+		: m_row_bytes(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::~ImageDecoderPNG()
-	{	
-		png_destroy_read_struct( &m_png_ptr, &m_info_ptr, nullptr );
+	{			
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderPNG::_initialize()
 	{
-		// create the chunk manage structure
-		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
-		m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
-
-		if( m_png_ptr == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create read structure" 
-				);
-
-			return false;
-		}
-
-		// create the info structure
-		m_info_ptr = png_create_info_struct( m_png_ptr );
-
-		if( m_info_ptr == nullptr ) 
-		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create info structure" 
-				);
-
-			png_destroy_write_struct( &m_png_ptr, nullptr );
-
-			return false;
-		}
-
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageDecoderPNG::_finalize()
+	{
+		//png_destroy_read_struct( &png_ptr, &info_ptr, nullptr );
 	}
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoderPNG::_prepareData()
@@ -108,25 +85,50 @@ namespace Menge
 
             return false;
         }
+
+		// create the chunk manage structure
+		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
+		png_structp png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
+
+		if( png_ptr == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create read structure" 
+				);
+
+			return false;
+		}
+
+		// create the info structure
+		png_infop info_ptr = png_create_info_struct( png_ptr );
+
+		if( info_ptr == nullptr ) 
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create info structure" 
+				);
+
+			png_destroy_write_struct( &png_ptr, nullptr );
+
+			return false;
+		}
 		
-        if( setjmp( png_jmpbuf( m_png_ptr ) ) )
+        if( setjmp( png_jmpbuf( png_ptr ) ) )
         {
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize" 
                 );
 
-            png_destroy_write_struct( &m_png_ptr, &m_info_ptr );
+            png_destroy_write_struct( &png_ptr, &info_ptr );
 
             return false;
         }
 
         // init the IO
-        png_set_read_fn( m_png_ptr, m_stream.get(), s_readProc );
+        png_set_read_fn( png_ptr, m_stream.get(), s_readProc );
 
         // because we have already read the signature...
-        png_set_sig_bytes( m_png_ptr, PNG_BYTES_TO_CHECK );
+        png_set_sig_bytes( png_ptr, PNG_BYTES_TO_CHECK );
 
         // read the IHDR chunk
-        png_read_info( m_png_ptr, m_info_ptr );
+        png_read_info( png_ptr, info_ptr );
 
         png_uint_32 width = 0;
         png_uint_32 height = 0;
@@ -134,7 +136,7 @@ namespace Menge
         int bit_depth = 0;
         int interlace_method = 0;
 
-        png_get_IHDR( m_png_ptr, m_info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, nullptr, nullptr );
+        png_get_IHDR( png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, nullptr, nullptr );
 
         //png_set_interlace_handling( m_png_ptr );
         if( interlace_method != PNG_INTERLACE_NONE )
@@ -142,7 +144,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize PNG is interlacing (Engine not support to read this png format)"
                 );
 			
-            png_destroy_info_struct( m_png_ptr, &m_info_ptr );
+            png_destroy_info_struct( png_ptr, &info_ptr );
                
             return false;
         }
@@ -152,7 +154,7 @@ namespace Menge
         case PNG_COLOR_TYPE_RGB:
         case PNG_COLOR_TYPE_RGB_ALPHA:
 #   ifndef MENGE_RENDER_TEXTURE_RGBA
-            png_set_bgr(m_png_ptr);
+            png_set_bgr(png_ptr);
 #   endif
             break;
 
@@ -161,12 +163,12 @@ namespace Menge
             break;
         case PNG_COLOR_TYPE_GRAY_ALPHA:
 
-            png_set_strip_alpha(m_png_ptr);
+            png_set_strip_alpha(png_ptr);
             break;
         };
 
         // all transformations have been registered; now update info_ptr data
-        png_read_update_info( m_png_ptr, m_info_ptr );
+        png_read_update_info( png_ptr, info_ptr );
 
         //if( setjmp( png_jmpbuf( m_png_ptr ) ) ) 
         //{
@@ -177,9 +179,9 @@ namespace Menge
         //    return false;
         //}
 
-        png_get_IHDR( m_png_ptr, m_info_ptr, &width, &height, &bit_depth, &color_type, 0, 0, 0 );
+        png_get_IHDR( png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, 0, 0, 0 );
 
-        m_row_bytes = png_get_rowbytes( m_png_ptr, m_info_ptr );
+        m_row_bytes = png_get_rowbytes( png_ptr, info_ptr );
 
         size_t decodedDataSize = m_row_bytes * height;
 
@@ -213,8 +215,7 @@ namespace Menge
 				return false;
 			}
 		}
-
-
+		
         if( bit_depth != 8 )
         {
             LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't support non 8 bit depth - '%d'"
@@ -223,6 +224,8 @@ namespace Menge
 
             return false;
         }
+
+		png_destroy_read_struct( &png_ptr, &info_ptr, nullptr );
 
         return true;
     }
@@ -240,26 +243,104 @@ namespace Menge
             return 0;
         }
 
-        if( setjmp( png_jmpbuf( m_png_ptr ) ) )  
-        {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode" );
+		// create the chunk manage structure
+		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
+		png_structp png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
 
-            //png_destroy_write_struct(&m_png_ptr, 0);
-            //m_png_ptr = 0;
+		if( png_ptr == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create read structure" 
+				);
 
-            return 0;
-        }
+			return false;
+		}
 
+		// create the info structure
+		png_infop info_ptr = png_create_info_struct( png_ptr );
+
+		if( info_ptr == nullptr ) 
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't create info structure" 
+				);
+
+			png_destroy_write_struct( &png_ptr, nullptr );
+
+			return false;
+		}
+
+		if( setjmp( png_jmpbuf( png_ptr ) ) )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize" 
+				);
+
+			png_destroy_write_struct( &png_ptr, &info_ptr );
+
+			return false;
+		}
+
+		m_stream->seek( PNG_BYTES_TO_CHECK );
+
+		// init the IO
+		png_set_read_fn( png_ptr, m_stream.get(), s_readProc );
+
+		// because we have already read the signature...
+		png_set_sig_bytes( png_ptr, PNG_BYTES_TO_CHECK );
+
+		// read the IHDR chunk
+		png_read_info( png_ptr, info_ptr );
+
+		png_uint_32 width = 0;
+		png_uint_32 height = 0;
+		int color_type = 0;
+		int bit_depth = 0;
+		int interlace_method = 0;
+
+		png_get_IHDR( png_ptr, info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, nullptr, nullptr );
+
+		switch( color_type )
+		{
+		case PNG_COLOR_TYPE_RGB:
+		case PNG_COLOR_TYPE_RGB_ALPHA:
+#   ifndef MENGE_RENDER_TEXTURE_RGBA
+			png_set_bgr(png_ptr);
+#   endif
+			break;
+
+		case PNG_COLOR_TYPE_GRAY:
+
+			break;
+		case PNG_COLOR_TYPE_GRAY_ALPHA:
+
+			png_set_strip_alpha(png_ptr);
+			break;
+		};
+		
+		bool result = this->decodeROW_( png_ptr, _buffer );
+
+		png_read_end( png_ptr, info_ptr );
+
+		png_destroy_read_struct( &png_ptr, &info_ptr, nullptr );
+
+		if( result == false )
+		{
+			return 0;
+		}
+		
+		return _bufferSize;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageDecoderPNG::decodeROW_( png_structp png_ptr, void * _buffer )
+	{
 		if( m_options.flags & DF_READ_ALPHA_ONLY )
 		{
 			if( m_dataInfo.channels == 1 && m_options.channels == 1 )
 			{
-                png_bytep bufferCursor = (png_bytep)_buffer;
+				png_bytep bufferCursor = (png_bytep)_buffer;
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
-					png_read_row( m_png_ptr, bufferCursor, nullptr );
+					png_read_row( png_ptr, bufferCursor, nullptr );
 
-                    bufferCursor += m_options.pitch;
+					bufferCursor += m_options.pitch;
 				}
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 1 )
@@ -267,11 +348,11 @@ namespace Menge
 				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes, "ImageDecoderPNG_4_1");
 				png_byte * row_memory = row_buffer.getMemoryT<png_byte>();
 
-                png_bytep bufferCursor = (png_bytep)_buffer;
+				png_bytep bufferCursor = (png_bytep)_buffer;
 
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
-					png_read_row( m_png_ptr, row_memory, nullptr );
+					png_read_row( png_ptr, row_memory, nullptr );
 
 					size_t row_alpha = m_row_bytes / 4;
 					for( size_t j = 0; j != row_alpha; ++j )
@@ -282,15 +363,15 @@ namespace Menge
 					bufferCursor += m_options.pitch;
 				}
 			}
-            else
-            {
-                LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode DF_READ_ALPHA_ONLY not support chanells %d - %d"
-                    , m_dataInfo.channels
-                    , m_options.channels
-                    );
+			else
+			{
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode DF_READ_ALPHA_ONLY not support chanells %d - %d"
+					, m_dataInfo.channels
+					, m_options.channels
+					);
 
-                return 0;
-            }
+				return false;
+			}
 		}
 		else if( m_options.flags & DF_WRITE_ALPHA_ONLY )
 		{				
@@ -303,7 +384,7 @@ namespace Menge
 
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
-					png_read_row( m_png_ptr, row_memory, nullptr );
+					png_read_row( png_ptr, row_memory, nullptr );
 
 					for( size_t j = 0; j != m_row_bytes; ++j )
 					{
@@ -318,11 +399,11 @@ namespace Menge
 				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes, "ImageDecoderPNG_4_4");
 				png_byte * row_memory = row_buffer.getMemoryT<png_byte>();
 
-                png_bytep bufferCursor = (png_bytep)_buffer;
+				png_bytep bufferCursor = (png_bytep)_buffer;
 
 				for( size_t i = 0; i != m_dataInfo.height; ++i )
 				{
-					png_read_row( m_png_ptr, row_memory, nullptr );
+					png_read_row( png_ptr, row_memory, nullptr );
 
 					for( size_t j = 0; j != m_row_bytes; ++j )
 					{
@@ -332,69 +413,67 @@ namespace Menge
 					bufferCursor += m_options.pitch;
 				}
 			}
-            else
-            {
-                LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode DF_WRITE_ALPHA_ONLY not support chanells %d - %d"
-                    , m_dataInfo.channels
-                    , m_options.channels
-                    );
+			else
+			{
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode DF_WRITE_ALPHA_ONLY not support chanells %d - %d"
+					, m_dataInfo.channels
+					, m_options.channels
+					);
 
-                return 0;
-            }
+				return false;
+			}
 		}
 		else 
 		{
-            if( m_dataInfo.channels == 1 && m_options.channels == 4 )
-            {
-                png_bytep bufferCursor = (png_bytep)_buffer;
+			if( m_dataInfo.channels == m_options.channels )
+			{
+				png_bytep bufferCursor = (png_bytep)_buffer;
 
-                for( size_t i = 0; i != m_dataInfo.height; ++i )
-                {
-                    png_read_row( m_png_ptr, bufferCursor, nullptr );
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				{
+					png_read_row( png_ptr, bufferCursor, nullptr );
 
-                    bufferCursor += m_options.pitch;
-                }
+					bufferCursor += m_options.pitch;
+				}
+			}
+			else if( m_dataInfo.channels == 1 && m_options.channels == 4 )
+			{
+				png_bytep bufferCursor = (png_bytep)_buffer;
 
-                this->sweezleAlpha1( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
-            }
-    		else if( m_dataInfo.channels == 3 && m_options.channels == 4 )
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				{
+					png_read_row( png_ptr, bufferCursor, nullptr );
+
+					bufferCursor += m_options.pitch;
+				}
+
+				this->sweezleAlpha1( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
+			}
+			else if( m_dataInfo.channels == 3 && m_options.channels == 4 )
 			{           
-                png_bytep bufferCursor = (png_bytep)_buffer;
+				png_bytep bufferCursor = (png_bytep)_buffer;
 
-                for( size_t i = 0; i != m_dataInfo.height; ++i )
-                {
-                    png_read_row( m_png_ptr, bufferCursor, nullptr );
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				{
+					png_read_row( png_ptr, bufferCursor, nullptr );
 
-                    bufferCursor += m_options.pitch;
-                }
+					bufferCursor += m_options.pitch;
+				}
 
-                this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
-            }
-            else if( m_dataInfo.channels == m_options.channels )
-            {
-                png_bytep bufferCursor = (png_bytep)_buffer;
+				this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
+			}
+			else
+			{
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode DEFAULT not support chanells %d - %d"
+					, m_dataInfo.channels
+					, m_options.channels
+					);
 
-                for( size_t i = 0; i != m_dataInfo.height; ++i )
-                {
-                    png_read_row( m_png_ptr, bufferCursor, nullptr );
-
-                    bufferCursor += m_options.pitch;
-                }
-            }
-            else
-            {
-                LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode DEFAULT not support chanells %d - %d"
-                    , m_dataInfo.channels
-                    , m_options.channels
-                    );
-
-                return 0;
-            }
+				return false;
+			}
 		}
 
-		png_read_end( m_png_ptr, m_info_ptr );
-
-		return _bufferSize;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

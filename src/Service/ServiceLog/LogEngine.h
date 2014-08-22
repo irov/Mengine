@@ -4,7 +4,7 @@
 
 #	include <Logger/Logger.h>
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -39,7 +39,7 @@ namespace Menge
 		Menge::EMessageLevel m_verboseLevel;
         size_t m_verboseFlag;
 
-		typedef std::vector<LoggerInterface *> TVectorLoggers;
+		typedef stdex::vector<LoggerInterface *> TVectorLoggers;
 		TVectorLoggers m_loggers;
 	};
 }

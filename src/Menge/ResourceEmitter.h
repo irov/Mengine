@@ -5,8 +5,6 @@
 
 #	include "Kernel/ResourceReference.h"
 
-#	include <map>
-
 namespace Menge
 {
 	class ResourceEmitter

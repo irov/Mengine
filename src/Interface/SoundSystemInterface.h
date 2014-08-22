@@ -90,11 +90,21 @@ namespace Menge
 
     public:
 		virtual SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) = 0;
-		virtual SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) = 0;
+		virtual SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable ) = 0;
 	};
 
 #   define SOUND_SYSTEM( serviceProvider )\
     SERVICE_GET(serviceProvider, Menge::SoundSystemInterface)
+
+	class SoundVolumeProviderInterface
+	{
+	public:
+		SoundVolumeProviderInterface(){};
+		virtual ~SoundVolumeProviderInterface(){};
+
+	public:
+		virtual void onSoundChangeVolume( float _sound, float _music, float _voice ) = 0;
+	};
 
 	class SoundServiceInterface
 		: public ServiceInterface
@@ -102,11 +112,18 @@ namespace Menge
         SERVICE_DECLARE("SoundService")
 
     public:
-        virtual bool initialize( bool _silent ) = 0;
+        virtual bool initialize( bool _silent, bool _supportStream ) = 0;
         virtual void finalize() = 0;
 
 	public:
 		virtual void update( float _timing ) = 0;
+
+	public:
+		virtual bool supportStreamSound() const = 0;
+
+	public:
+		virtual void addSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider ) = 0;
+		virtual bool removeSoundVolumeProvider( SoundVolumeProviderInterface * _soundVolumeProvider ) = 0;
 
 	public:
 		virtual void onTurnStream( bool _turn ) = 0;
@@ -164,5 +181,5 @@ namespace Menge
 	};
 
 #   define SOUND_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::SoundServiceInterface)
+    ((Menge::SoundServiceInterface *)SERVICE_GET(serviceProvider, Menge::SoundServiceInterface))
 }

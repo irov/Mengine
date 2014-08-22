@@ -2,6 +2,8 @@
 
 #	include "ResourceTestPick.h"
 
+#	include "Config/Blobject.h"
+
 namespace Menge
 {
 	class ResourceHIT
@@ -54,6 +56,6 @@ namespace Menge
         uint32_t m_mipmaplevel;
         uint32_t m_mipmapsize;
 
-        unsigned char * m_mipmap;
+		mutable TBlobject m_mipmap;
 	};
 }	// namespace Menge

@@ -953,33 +953,103 @@ namespace Menge
 
 		const ConstString & textValue = m_textEntry->getText();
 
-		const char * str_textValue = textValue.c_str();
-		
-		StringFormat format(str_textValue);
+		size_t detectTextSize = textValue.size();
 
-		try
+		for( TVectorString::const_iterator
+			it = m_textFormatArgs.begin(),
+			it_end = m_textFormatArgs.end();
+		it != it_end;
+		++it )
 		{
-			for( TVectorString::const_iterator
-				it = m_textFormatArgs.begin(),
-				it_end = m_textFormatArgs.end();
-			it != it_end;
-			++it )
-			{
-				const String & arg = *it;
+			const String & str = *it;
+			
+			size_t size = str.size();
 
-				format = format % arg;
-			}
-
-			m_cacheText = format.str();
+			detectTextSize += size;
 		}
-		catch( const boost::io::format_error & _ex )
+
+		if( detectTextSize > 4000 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::getText %s TextID %s text %s invalid setup args %d error %s"
+			LOGGER_ERROR(m_serviceProvider)("TextField::getText %s TextID %s text %s invalid setup args %d overrlow"
 				, this->getName().c_str()
 				, m_textEntry->getKey().c_str()
 				, textValue.c_str()
 				, m_textFormatArgs.size()
-				, _ex.what()
+				);
+
+			return false;
+		}
+
+		const char * str_textValue = textValue.c_str();
+		
+		size_t argsCount = m_textFormatArgs.size();
+		
+		Char bufferText[4096];
+		bool bufferTextError = false;
+		switch( argsCount )
+		{
+		case 0:
+			{
+				m_cacheText = str_textValue;
+			}break;
+		case 1:
+			{
+				int len = sprintf( bufferText, str_textValue
+					, m_textFormatArgs[0].c_str()
+					);
+				
+				if( len < 0 )
+				{
+					bufferTextError = true;
+					break;
+				}		
+
+				m_cacheText = bufferText;
+			}break;
+		case 2:
+			{
+				int len = sprintf( bufferText, str_textValue
+					, m_textFormatArgs[0].c_str()
+					, m_textFormatArgs[1].c_str()
+					);
+
+				if( len < 0 )
+				{
+					bufferTextError = true;
+					break;
+				}		
+
+				m_cacheText = bufferText;
+			}break;
+		case 3:
+			{
+				int len = sprintf( bufferText, str_textValue
+					, m_textFormatArgs[0].c_str()
+					, m_textFormatArgs[1].c_str()
+					, m_textFormatArgs[2].c_str()
+					);
+
+				if( len < 0 )
+				{
+					bufferTextError = true;
+					break;
+				}		
+
+				m_cacheText = bufferText;
+			}break;
+		default:
+			{
+				bufferTextError = true;
+			}break;
+		}
+
+		if( bufferTextError == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextField::getText %s TextID %s text %s invalid setup args %d error"
+				, this->getName().c_str()
+				, m_textEntry->getKey().c_str()
+				, textValue.c_str()
+				, m_textFormatArgs.size()
 				);
 
 			return false;

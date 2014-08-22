@@ -13,7 +13,7 @@
 
 #   include "Math/vec3.h"
 
-#   include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -33,7 +33,7 @@ namespace Menge
 		RenderIndices2D indecies[MENGINE_MODEL_MAX_INDICES];
 	};
 
-	typedef std::vector<Model3DFrame> TVectorModel3DFrames;
+	typedef stdex::vector<Model3DFrame> TVectorModel3DFrames;
 
 	class Model3DInterface
 		: public DataInterface

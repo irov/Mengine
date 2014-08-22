@@ -6,7 +6,7 @@
 
 #	include "Factory/FactoryStore.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {    
@@ -63,10 +63,10 @@ namespace Menge
 			bool complete;
 		};
 
-        typedef std::vector<ThreadTaskDesc> TVectorThreadTaskDesc;
+        typedef stdex::vector<ThreadTaskDesc> TVectorThreadTaskDesc;
         TVectorThreadTaskDesc m_tasks;
 				
-		typedef std::vector<ThreadQueuePtr> TVectorThreadQueues;
+		typedef stdex::vector<ThreadQueuePtr> TVectorThreadQueues;
 		TVectorThreadQueues m_threadQueues;
 
 		typedef FactoryPoolStore<ThreadQueue, 4> TFactoryThreadQueue;
@@ -78,7 +78,7 @@ namespace Menge
 			ThreadIdentityPtr identity;
 		};
 
-		typedef std::vector<ThreadDesc> TVectorThreads;
+		typedef stdex::vector<ThreadDesc> TVectorThreads;
 		TVectorThreads m_threads;
 	};
 }	// namespace Menge

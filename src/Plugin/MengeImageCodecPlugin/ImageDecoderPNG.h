@@ -17,6 +17,7 @@ namespace Menge
 
 	public:
 		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		bool _prepareData() override;
@@ -24,9 +25,10 @@ namespace Menge
 	public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 
+	protected:
+		bool decodeROW_( png_structp png_ptr, void * _buffer );
+
 	private:
-		png_structp m_png_ptr;
-		png_infop m_info_ptr;
 		png_uint_32 m_row_bytes;		
 	};
 }	// namespace Menge

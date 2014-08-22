@@ -7,7 +7,7 @@
 
 #	include "Math/vec2.h"
 
-#   include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -111,11 +111,11 @@ namespace Menge
 			mt::vec2f point;
 		};
 
-		typedef std::vector<EventType> TVectorEventType;
-		typedef std::vector<KeyEventParams> TVectorKeyEventParams;
-		typedef std::vector<MouseButtonParams> TVectorMouseButtonParams;
-		typedef std::vector<MouseMoveParams> TVectorMouseMoveParams;
-		typedef std::vector<MousePositionParams> TVectorMousePositionParams;
+		typedef stdex::vector<EventType> TVectorEventType;
+		typedef stdex::vector<KeyEventParams> TVectorKeyEventParams;
+		typedef stdex::vector<MouseButtonParams> TVectorMouseButtonParams;
+		typedef stdex::vector<MouseMoveParams> TVectorMouseMoveParams;
+		typedef stdex::vector<MousePositionParams> TVectorMousePositionParams;
 
     protected:
 		void keyEvent_( const KeyEventParams& _params );
@@ -132,7 +132,7 @@ namespace Menge
 	private:
 		mt::vec2f m_cursorPosition;
 
-		typedef std::vector<InputMousePositionProvider*> TVectorMousePositionProviders;
+		typedef stdex::vector<InputMousePositionProvider *> TVectorMousePositionProviders;
 		TVectorMousePositionProviders m_mousePositionProviders;
 		
         TVectorEventType m_eventsAdd;

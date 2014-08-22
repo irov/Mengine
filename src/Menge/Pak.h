@@ -7,8 +7,6 @@
 
 #	include "Factory/FactorablePtr.h"
 
-#	include <map>
-
 namespace Menge
 {
 	class Pak

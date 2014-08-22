@@ -4,7 +4,7 @@
 #	include "Interface/CacheInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "Core/BlobjectRead.h"
+#	include "Core/Memory.h"
 #	include "Core/CacheMemoryBuffer.h"
 
 #	include "stdex/memory_reader.h"
@@ -128,7 +128,7 @@ namespace Menge
 						} \
 						else \
 						{ \
-							frame.Member2 = new Type [frames_size]; \
+							frame.Member2 = Helper::allocateMemory<Type>( frames_size ); \
 							ar.readPODs( frame.Member2, frames_size );\
 						} \
 					}

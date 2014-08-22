@@ -1,5 +1,10 @@
 #	pragma once
 
+#	include "Interface/ServiceInterface.h"
+#	include "Interface/StreamInterface.h"
+
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
 	template<class TDecoderInterface>
@@ -9,6 +14,8 @@ namespace Menge
 	public:
 		Decoder()
 			: m_serviceProvider(nullptr)
+			, m_rewindPos(0)
+			, m_initialize(false)
 		{
 		}
 
@@ -26,9 +33,17 @@ namespace Menge
 	public:
 		bool initialize() override
 		{
-			bool successful = this->_initialize();
+			if( m_initialize == true )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Decoder::initialize: alredy initialize!"
+					);
 
-			return successful;
+				return false;
+			}
+
+			m_initialize = this->_initialize();
+
+			return m_initialize;
 		}
 
 	protected:
@@ -40,6 +55,14 @@ namespace Menge
 	public:
 		void finalize() override
 		{
+			if( m_initialize == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Decoder::initialize: alredy finalize!"
+					);
+
+				return;
+			}
+
 			this->_finalize();
 
 			m_stream = nullptr;
@@ -49,6 +72,12 @@ namespace Menge
 		virtual void _finalize()
 		{
 			//Empty
+		}
+
+	protected:
+		void _destroy() override
+		{
+			this->finalize();
 		}
 
 	public:
@@ -64,7 +93,20 @@ namespace Menge
 
 			bool successful = this->_prepareData();
 
+			m_rewindPos = m_stream->tell();
+
 			return successful;
+		}
+
+	public:
+		void rewind() override
+		{			
+			this->_rewind();
+		}
+
+		virtual void _rewind()
+		{
+			m_stream->seek( m_rewindPos );
 		}
 
 	protected:
@@ -76,5 +118,9 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 		InputStreamInterfacePtr m_stream;
+
+		size_t m_rewindPos;
+
+		bool m_initialize;
 	};    
 }

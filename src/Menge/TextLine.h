@@ -26,7 +26,7 @@ namespace Menge
 		float advance;
 	};
 
-	typedef std::vector<CharData> TVectorCharData;
+	typedef stdex::vector<CharData> TVectorCharData;
 
 	class TextLine
 	{

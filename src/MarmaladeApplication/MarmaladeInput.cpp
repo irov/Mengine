@@ -8,6 +8,8 @@ namespace Menge
     MarmaladeInput::MarmaladeInput()
         : m_serviceProvider(nullptr)
         , m_showKeyboard(false)
+		, m_width(1024.f)
+		, m_height(768.f)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -41,12 +43,12 @@ namespace Menge
             s3ePointerRegister( S3E_POINTER_TOUCH_EVENT, (s3eCallback)&MarmaladeInput::s_pointerTouchEvent, this );
             s3ePointerRegister(S3E_POINTER_TOUCH_MOTION_EVENT, (s3eCallback)&MarmaladeInput::s_pointerTouchMotionEvent, this );
         }
-        else
-        {
-            s3ePointerRegister(S3E_POINTER_BUTTON_EVENT, (s3eCallback)&MarmaladeInput::s_pointerButtonEvent, this );
-            s3ePointerRegister(S3E_POINTER_MOTION_EVENT, (s3eCallback)&MarmaladeInput::s_pointerMotionEvent, this );
-        }
-
+		else
+		{
+			s3ePointerRegister(S3E_POINTER_BUTTON_EVENT, (s3eCallback)&MarmaladeInput::s_pointerButtonEvent, this );
+			s3ePointerRegister(S3E_POINTER_MOTION_EVENT, (s3eCallback)&MarmaladeInput::s_pointerMotionEvent, this );
+		}
+        
         s3eKeyboardRegister( S3E_KEYBOARD_KEY_EVENT, (s3eCallback)&MarmaladeInput::s_keyboardKeyEvent, this );
         s3eKeyboardRegister( S3E_KEYBOARD_CHAR_EVENT, (s3eCallback)&MarmaladeInput::s_keyboardCharEvent, this );
         
@@ -172,7 +174,7 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeInput::s_pointerTouchEvent( s3ePointerTouchEvent * _event, MarmaladeInput * _input )
-    {
+    {		
         uint32 touchId = _event->m_TouchID;
 
         bool isDown = _event->m_Pressed != 0;

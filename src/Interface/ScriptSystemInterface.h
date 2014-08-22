@@ -9,7 +9,7 @@
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 #	include <stdarg.h>
 

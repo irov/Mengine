@@ -3,6 +3,8 @@
 #	include "Interface/PluginInterface.h"
 #	include "Interface/CodecInterface.h"
 
+#	include <stdex/stl_vector.h>
+
 namespace Menge
 {
 	class VideoCodecPlugin
@@ -18,7 +20,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::vector<DecoderFactoryInterface *> TVectorVideoDecoders;
+		typedef stdex::vector<DecoderFactoryInterfacePtr> TVectorVideoDecoders;
 		TVectorVideoDecoders m_decoders;
 	};
 }

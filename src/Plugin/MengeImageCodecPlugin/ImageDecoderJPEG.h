@@ -30,6 +30,7 @@ namespace Menge
 
     protected:
 		bool _initialize() override;
+		void _finalize() override;
 
 	protected:
 		bool _prepareData() override;

@@ -1,8 +1,8 @@
 #   pragma once
 
-#   include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
-    typedef std::vector<float> Floats;
+    typedef stdex::vector<float> Floats;
 }

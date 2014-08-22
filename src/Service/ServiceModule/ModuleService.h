@@ -2,7 +2,8 @@
 
 #   include "Interface/ModuleInterface.h"
 
-#   include <map>
+#   include <stdex/stl_map.h>
+#   include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -32,10 +33,10 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::map<ConstString, ModuleFactoryInterfacePtr> TMapModuleFactory;
+		typedef stdex::map<ConstString, ModuleFactoryInterfacePtr> TMapModuleFactory;
         TMapModuleFactory m_moduleFactory;
 
-		typedef std::vector<ModuleInterfacePtr> TVectorModules;
+		typedef stdex::vector<ModuleInterfacePtr> TVectorModules;
 		TVectorModules m_modules;
     };
 }

@@ -45,7 +45,7 @@ namespace Menge
 		typedef stdex::queue<ThreadTaskInterfacePtr> TVectorThreadTask;
 		TVectorThreadTask m_threadTasks;
 
-		typedef std::vector<ThreadTaskInterfacePtr> TVectorCurrentThreadTask;
+		typedef stdex::vector<ThreadTaskInterfacePtr> TVectorCurrentThreadTask;
 		TVectorCurrentThreadTask m_currentTasks;
 
 		typedef FactoryPoolStore<ThreadTaskPacket, 4> TFactoryPoolTaskPacket;

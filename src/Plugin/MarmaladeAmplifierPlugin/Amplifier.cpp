@@ -9,6 +9,8 @@
 
 #   include "Logger/Logger.h"
 
+#	include <s3eAudio.h>
+
 #	include <cmath>
 
 //////////////////////////////////////////////////////////////////////////
@@ -20,8 +22,6 @@ namespace Menge
 	Amplifier::Amplifier()
 		: m_serviceProvider(nullptr)
 		, m_currentPlayList(nullptr)
-        , m_sourceID(0)
-		, m_buffer(nullptr)
 		, m_volume(1.f)
 		, m_volumeOverride(1.f)
 		, m_play(false)
@@ -56,6 +56,70 @@ namespace Menge
     {
         return m_serviceProvider;
     }
+	//////////////////////////////////////////////////////////////////////////
+	static int32 s_Amplifier_AudioCallback_Stop( s3eAudioCallbackData * _data, Amplifier * _amplifier )
+	{
+		(void)_data;
+
+		printf("s_Amplifier_AudioCallback_Stop %d\n"
+			, _data->m_ChannelID
+			);
+
+		_amplifier->onSoundStop();
+
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Amplifier::initialize()
+	{
+		if( s3eAudioGetInt( S3E_AUDIO_AVAILABLE ) == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::initialize: not support"
+				);
+
+			return false;
+		}
+
+		s3eResult result = s3eAudioRegister( S3E_AUDIO_STOP, (s3eCallback)&s_Amplifier_AudioCallback_Stop, this );
+
+		if( result != S3E_RESULT_SUCCESS )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::initialize: invalid register callback %d"
+				, result
+				);
+
+			return false;
+		}
+
+		SOUND_SERVICE(m_serviceProvider)
+			->addSoundVolumeProvider( this );
+
+#	define AMPLIFIER_SUPPORT_CODEC( Codec )\
+	LOGGER_WARNING(m_serviceProvider)("Amplifier::initialize: " #Codec " %s"\
+		, s3eAudioIsCodecSupported( Codec ) ? "support" : "unsupport!" )
+
+		AMPLIFIER_SUPPORT_CODEC( S3E_AUDIO_CODEC_MIDI );
+		AMPLIFIER_SUPPORT_CODEC( S3E_AUDIO_CODEC_MP3 );
+		AMPLIFIER_SUPPORT_CODEC( S3E_AUDIO_CODEC_AAC );
+		AMPLIFIER_SUPPORT_CODEC( S3E_AUDIO_CODEC_AACPLUS );
+		AMPLIFIER_SUPPORT_CODEC( S3E_AUDIO_CODEC_QCP );
+		AMPLIFIER_SUPPORT_CODEC( S3E_AUDIO_CODEC_PCM );
+		AMPLIFIER_SUPPORT_CODEC( S3E_AUDIO_CODEC_SPF );
+		AMPLIFIER_SUPPORT_CODEC( S3E_AUDIO_CODEC_AMR );
+		AMPLIFIER_SUPPORT_CODEC( S3E_AUDIO_CODEC_MP4 );
+
+#	undef AMPLIFIER_SUPPORT_CODEC
+		
+		return true;			
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::finalize()
+	{
+		SOUND_SERVICE(m_serviceProvider)
+			->removeSoundVolumeProvider( this );
+
+		s3eAudioUnRegister( S3E_AUDIO_STOP, (s3eCallback)&s_Amplifier_AudioCallback_Stop );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::loadPlayList_( const ConstString& _playlistResource )
 	{
@@ -95,10 +159,17 @@ namespace Menge
 		m_currentPlayList->setLooped1( _looped );
 		m_currentPlayList->setTrack( _index );
 
-		if( this->play2_( _pos ) == false )
+		if( m_play == true )
+		{
+			return true;
+		}
+
+		if( this->preparePlay_( _pos ) == false )
 		{
 			return false;
 		}
+
+		m_play = true;
 
 		return true;
 	}
@@ -127,26 +198,6 @@ namespace Menge
 		return index;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::play2_( float _pos )
-	{
-        if( m_play == true )
-        {
-            return true;
-        }
-
-		if( this->preparePlay_( _pos ) == false )
-		{
-			return false;
-		}
-
-		if( this->play_() == false )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::preparePlay_( float _pos )
 	{
 		if( m_currentPlayList == nullptr )
@@ -162,34 +213,17 @@ namespace Menge
 		}
 
 		const ConstString & category = m_currentPlayList->getCategory();
-		if( this->prepareSound_( category, track->path, track->codec, _pos ) == false )
+		if( this->play_( category, track->path, track->codec, _pos ) == false )
 		{
 			return false;
 		}
-
-		if( m_sourceID == 0 )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::play_()
-	{
-		if( SOUND_SERVICE(m_serviceProvider)->play( m_sourceID ) == false )
-		{
-			return false;
-		}
-
-		m_play = true;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::shuffle( const ConstString & _playlist )
 	{
-		if( loadPlayList_( _playlist ) == false )
+		if( this->loadPlayList_( _playlist ) == false )
 		{
 			return;
 		}
@@ -201,133 +235,113 @@ namespace Menge
 	{
 		m_play = false;
 
-		if( m_sourceID != 0 )
-		{
-			SOUND_SERVICE(m_serviceProvider)
-                ->stop( m_sourceID );
-
-			this->release_();
-		}
+		s3eAudioStop();				
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::pause()
 	{
-		if( m_sourceID == 0 )
-		{
-			return;
-		}
-
 		m_play = false;
 
-		SOUND_SERVICE(m_serviceProvider)
-            ->pause( m_sourceID );
+		s3eResult result = s3eAudioPause();
+
+		if( result != S3E_RESULT_SUCCESS )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::pause invalid %d"
+				, result
+				);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::resume()
 	{
-		if( m_sourceID == 0 )
-		{
-			return;
-		}
-
         m_play = true;
 
-        SOUND_SERVICE(m_serviceProvider)
-            ->play( m_sourceID );
+		s3eResult result = s3eAudioResume();
+
+		if( result != S3E_RESULT_SUCCESS )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::resume invalid %d"
+				, result
+				);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::onSoundStop( size_t _id )
+	void Amplifier::onSoundStop()
 	{
-		(void)_id;
-
 		if( m_play == false )
 		{
 			return;
 		}
 
-		//if( m_currentPlayList->getLooped() == false )
-		//{
         m_currentPlayList->next();
-        const TrackDesc * track = m_currentPlayList->getTrack();
 
+		const TrackDesc * track = m_currentPlayList->getTrack();
+		
         if( track != nullptr )
         {
             const ConstString & category = m_currentPlayList->getCategory();
             
-			if( this->prepareSound_( category, track->path, track->codec, 0.f ) == false )
+			if( this->play_( category, track->path, track->codec, 0.f ) == false )
 			{
 				return;
 			}
         }
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Amplifier::play_( const ConstString& _pakName, const FilePath& _filePath, const ConstString& _codec, float _pos )
+	{
+		printf("Amplifier::play_ %s:%s %f\n"
+			, _pakName.c_str()
+			, _filePath.c_str()
+			, _pos
+			);
 
-        if( m_sourceID != 0 )
-        {
-            //Holder<SoundEngine>::get()
-            //	->setVolume( m_sourceID, Holder<SoundEngine>::get()->getMusicVolume() );
-            this->play_();
-        }
-		//}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::onSoundPause( size_t _id )
-	{
-		(void)_id;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codec, float _pos )
-	{
 		this->stop();
-		//_release();
 
-		m_buffer = SOUND_SERVICE(m_serviceProvider)
-            ->createSoundBufferFromFile( _pakName, _file, _codec, true );
+		int32 s3e_pos = (int32)_pos;
 
-		if( m_buffer == nullptr )
+		s3eResult result = s3eAudioSetInt( S3E_AUDIO_POSITION, s3e_pos );
+
+		if( result != S3E_RESULT_SUCCESS )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::prepareSound_: AmplifierService can't load sample '%s'"
-				, _file.c_str() 
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't '%s:%s' set pos %d"
+				, _pakName.c_str()
+				, _filePath.c_str()
+				, s3e_pos
 				);
 
-			return false;			
+			return false;
 		}
+				
+		MemoryInputPtr memory = FILE_SERVICE(m_serviceProvider)
+			->openInputFileInMemory( _pakName, _filePath );
 
-		m_sourceID = SOUND_SERVICE(m_serviceProvider)
-            ->createSoundSource( false, m_buffer, EST_MUSIC, true );
-
-		if( m_sourceID == 0 )
+		if( memory == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::prepareSound_: AmplifierService can't create sound source '%s'"
-				, _file.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: invalid open sound '%s:%s'"
+				, _pakName.c_str()
+				, _filePath.c_str()
 				);
 
 			return false;
 		}
 
-		if( SOUND_SERVICE(m_serviceProvider)
-			->setPosMs( m_sourceID, _pos ) == false )
+		size_t size;
+		const void * buffer = memory->getMemory( size );
+
+		result = s3eAudioPlayFromBuffer( const_cast<void *>(buffer), size, 1 );
+				
+		if( result != S3E_RESULT_SUCCESS )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::prepareSound_: AmplifierService can't set sound '%s' pos '%f'"
-				, _file.c_str()
-				, _pos
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't play sound '%s:%s'"
+				, _pakName.c_str()
+				, _filePath.c_str()
 				);
 
 			return false;
-		}
-		
-		SOUND_SERVICE(m_serviceProvider)
-            ->setSourceListener( m_sourceID, this );
+		}	
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::release_()
-	{
-		SOUND_SERVICE(m_serviceProvider)
-            ->releaseSoundSource( m_sourceID );
-
-        m_sourceID = 0;
-
-    	m_buffer = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString& Amplifier::getPlayTrack() const
@@ -335,43 +349,50 @@ namespace Menge
 		return m_currentPlaylistName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::setVolume( float _volume )
-	{
-		//m_volumeOverride = m_volume;
-		SOUND_SERVICE(m_serviceProvider)
-            ->setMusicVolume( CONST_STRING_LOCAL(m_serviceProvider, "Generic"), _volume );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Amplifier::getVolume() const
-	{
-		float volume = SOUND_SERVICE(m_serviceProvider)
-			->getMusicVolume( CONST_STRING_LOCAL(m_serviceProvider, "Generic") );
-
-		return volume;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	float Amplifier::getPosMs() const
 	{
-		if( m_sourceID == 0 )
-		{
-			return 0.f;
-		}
+		int32 s3e_pos = s3eAudioGetInt( S3E_AUDIO_POSITION );
 
-		float pos = SOUND_SERVICE(m_serviceProvider)
-            ->getPosMs( m_sourceID );
-		
+		float pos = (float)s3e_pos;
+
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::setPosMs( float _posMs )
 	{
-		if( m_sourceID == 0 )
+		printf("Amplifier::setPosMs %f\n"
+			, _posMs
+			);
+
+		int32 s3e_pos = (int32)_posMs;
+		 
+		s3eResult result = s3eAudioSetInt( S3E_AUDIO_POSITION, s3e_pos );
+
+		if( result != S3E_RESULT_SUCCESS )
 		{
-            return;
-        }
-		
-        SOUND_SERVICE(m_serviceProvider)
-            ->setPosMs( m_sourceID, _posMs );
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::setPosMs invalid set S3E_AUDIO_POSITION %d"
+				, s3e_pos
+				);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::onSoundChangeVolume( float _sound, float _music, float _voice )
+	{
+		printf("Amplifier::onSoundChangeVolume %f %f %f\n"
+			, _sound
+			, _music
+			, _voice
+			);
+
+		int32 s3e_volume = (int32)(_music * S3E_AUDIO_MAX_VOLUME);
+
+		s3eResult result = s3eAudioSetInt( S3E_AUDIO_VOLUME, s3e_volume );
+
+		if( result != S3E_RESULT_SUCCESS )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::onSoundChangeVolume invalid set S3E_AUDIO_VOLUME %d"
+				, s3e_volume
+				);
+		}
+	}
 }

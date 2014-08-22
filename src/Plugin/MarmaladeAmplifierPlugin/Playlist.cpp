@@ -88,15 +88,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::next()
 	{
-		if ( m_oneTrackPlayed )
+		if( m_oneTrackPlayed == true )
 		{
 			return;
 		}
 
-		if ( ++m_trackIndex == m_tracks.size() && m_loop == true )
+		if( ++m_trackIndex == m_tracks.size() && m_loop == true )
 		{
 			m_trackIndex = 0;
-		}
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::first()

@@ -6,6 +6,7 @@
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 #	include "Core/String.h"
+#	include "Core/MemoryInput.h"
 
 #	include "Factory/Factorable.h"
 #	include "Factory/Factory.h"
@@ -60,6 +61,9 @@ namespace Menge
     public:
         virtual InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) = 0;
         virtual bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming ) = 0;
+
+	public:
+		virtual MemoryInputPtr openInputFileInMemory( const FilePath & _fileName, size_t _offset, size_t _size ) = 0;
 			
     public:
         virtual OutputStreamInterfacePtr createOutputFile() = 0;
@@ -101,11 +105,14 @@ namespace Menge
 		virtual bool existFile( const ConstString & _fileGroupName, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const = 0;
 
 	public:
-		virtual InputStreamInterfacePtr openInputFile( const ConstString & _fileGroupName, const FilePath & _fileName, bool _streaming ) = 0;
+		virtual InputStreamInterfacePtr openInputFile( const ConstString & _fileGroupName, const FilePath & _fileName, bool _streamable ) = 0;
 		virtual OutputStreamInterfacePtr openOutputFile( const ConstString & _fileGroupName, const FilePath & _fileName ) = 0;
 
     public:
         virtual FileMappedInterfacePtr openMappedFile( const ConstString & _fileGroupName, const FilePath& _fileName ) = 0;
+
+	public:
+		virtual MemoryInputPtr openInputFileInMemory( const ConstString & _fileGroupName, const FilePath & _fileName ) = 0;
 
     public:
         virtual bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const = 0;

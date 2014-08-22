@@ -11,8 +11,6 @@
 
 #	include "Interface/ServiceInterface.h"
 
-#   include <map>
-
 namespace Menge
 {
     class TimerInterface

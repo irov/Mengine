@@ -275,7 +275,7 @@ namespace Menge
             {
                 const char * value = _ini.getSettingValues( _section, _key, index );
 
-                _values.push_back( value );
+                _values.push_back( String(value) );
             }
 
             return true;

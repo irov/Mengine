@@ -13,6 +13,7 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	struct Obstacle
 	{
 		size_t id;
@@ -22,9 +23,9 @@ namespace Menge
 		mt::vec2f bigMinHole;
 		mt::vec2f bigMaxHole;
 	};
-	
-	typedef std::vector<Obstacle *> TVectorObstacles;
-	
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::vector<Obstacle *> TVectorObstacles;
+	//////////////////////////////////////////////////////////////////////////
 	class PathFinderMap
 	{
 	public:
@@ -97,13 +98,10 @@ namespace Menge
 	
 		TVectorObstacles m_obstacles;
 		
-		typedef std::vector<PathFinderPtr> TVectorPathFinder;
+		typedef stdex::vector<PathFinderPtr> TVectorPathFinder;
 		TVectorPathFinder m_pathFinders;
 
-		//typedef std::vector<PathFinderWay *> TVectorPathFinderWay;
-		//TVectorPathFinderWay m_pathFinderWays;
-
-		typedef std::vector<PathFinderDesc> TVectorPathFinderDesc;
+		typedef stdex::vector<PathFinderDesc> TVectorPathFinderDesc;
 		TVectorPathFinderDesc m_pathfinders;		
 
 		size_t m_enumeratorPathFinders;

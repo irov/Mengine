@@ -2,9 +2,7 @@
 
 #	include "Kernel/ResourceReference.h"
 
-#	include <vector>
-
-//class FileDataInterface;
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -15,7 +13,7 @@ namespace Menge
 		float volume;
 	};
 
-	typedef std::vector<TrackDesc> TVectorTrackDesc;
+	typedef stdex::vector<TrackDesc> TVectorTrackDesc;
 
 	class ResourcePlaylist
 		: public ResourceReference

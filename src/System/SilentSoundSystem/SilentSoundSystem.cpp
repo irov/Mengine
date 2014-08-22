@@ -65,9 +65,9 @@ namespace Menge
 		return soundSource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterfacePtr SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
+	SoundBufferInterfacePtr SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable )
 	{
-        (void)_isStream;
+        (void)_streamable;
 
 		SilentSoundBuffer * buffer = m_poolSilentSoundBuffer.createObjectT();
 

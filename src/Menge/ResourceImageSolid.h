@@ -3,7 +3,8 @@
 #	include "ResourceImage.h"
 #	include "Config/Typedef.h"
 #	include "Core/ColourValue.h"
-#	include <vector>
+
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {

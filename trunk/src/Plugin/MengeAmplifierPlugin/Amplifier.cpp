@@ -57,6 +57,16 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool Amplifier::initialize()
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Amplifier::finalize()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::loadPlayList_( const ConstString& _playlistResource )
 	{
 		TMapPlayList::iterator it = m_mapPlayLists.find( _playlistResource );
@@ -333,21 +343,6 @@ namespace Menge
 	const ConstString& Amplifier::getPlayTrack() const
 	{
 		return m_currentPlaylistName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::setVolume( float _volume )
-	{
-		//m_volumeOverride = m_volume;
-		SOUND_SERVICE(m_serviceProvider)
-            ->setMusicVolume( CONST_STRING_LOCAL(m_serviceProvider, "Generic"), _volume );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Amplifier::getVolume() const
-	{
-		float volume = SOUND_SERVICE(m_serviceProvider)
-			->getMusicVolume( CONST_STRING_LOCAL(m_serviceProvider, "Generic") );
-
-		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Amplifier::getPosMs() const

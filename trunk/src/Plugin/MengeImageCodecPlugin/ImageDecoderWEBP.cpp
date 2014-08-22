@@ -22,22 +22,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderWEBP::~ImageDecoderWEBP()
 	{
-		this->unlockBuffer_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderWEBP::_prepareData()
 	{
-		size_t bufferSize = m_stream->size();
-				
-		void * memory = nullptr;
-		m_bufferId = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( bufferSize, &memory, "ImageDecoderWEBP" );
-
-		m_memory = static_cast<uint8_t *>(memory);
-		m_memorySize = bufferSize;
-
-		m_stream->read( m_memory, m_memorySize );
-		
 		WebPBitstreamFeatures features;
         VP8StatusCode status = WebPGetFeatures( m_memory, m_memorySize, &features );
 
@@ -46,9 +34,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("ImageDecoderWEBP::_prepareData invalid WebPGetFeatures %d"
 				, status
 				);
-
-			this->unlockBuffer_();
-
+			
             return false;
         }
 		
@@ -69,20 +55,34 @@ namespace Menge
 		
 		m_dataInfo.mipmaps = 0;
 		m_dataInfo.channels = channels;
-		
-        //m_options.pitch = m_dataInfo.width * m_dataInfo.channels;
+		        
+		m_dataInfo.size = Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, m_dataInfo.channels, m_dataInfo.depth, m_dataInfo.format );
 
-		m_dataInfo.size = bufferSize;
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageDecoderWEBP::_initialize()
+	{
+		size_t bufferSize = m_stream->size();
+
+		void * memory = nullptr;
+		m_bufferId = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( bufferSize, &memory, "ImageDecoderWEBP" );
+
+		if( m_bufferId == 0 )
+		{
+			return false;
+		}
+
+		m_memory = static_cast<uint8_t *>(memory);
+		m_memorySize = bufferSize;
+
+		m_stream->read( m_memory, m_memorySize );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderWEBP::_finalize()
-	{
-		this->unlockBuffer_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoderWEBP::unlockBuffer_()
 	{
 		if( m_bufferId != 0 )
 		{
@@ -107,7 +107,7 @@ namespace Menge
 				return 0;
 			}
 
-			//this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, webp_buffer, m_options.pitch );
+			this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, webp_buffer, m_options.pitch );
 		}
 		else if( m_dataInfo.channels == 3 && m_options.channels == 3 )
 		{
@@ -131,7 +131,7 @@ namespace Menge
 				return 0;
 			}
 
-			//this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, webp_buffer, m_options.pitch );
+			this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, webp_buffer, m_options.pitch );
 		}
 		else if( m_dataInfo.channels == 3 && m_options.channels == 3 )
 		{

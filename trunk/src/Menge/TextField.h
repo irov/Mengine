@@ -30,7 +30,7 @@ namespace Menge
 		ETFVA_CENTER = 1,
 	};
 
-	typedef std::vector<TextLine> TVectorTextLine;
+	typedef stdex::vector<TextLine> TVectorTextLine;
 	
 	class TextField
 		: public Node

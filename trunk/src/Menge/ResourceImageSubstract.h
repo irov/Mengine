@@ -3,7 +3,7 @@
 #	include "ResourceImageDefault.h"
 #	include "Config/Typedef.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {	

@@ -16,8 +16,6 @@
 #	pragma warning(pop) 
 #	endif
 
-#	include <map>
-
 namespace Menge
 {
 	class AstralaxEmitterContainer2

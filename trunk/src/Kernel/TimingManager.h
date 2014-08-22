@@ -2,7 +2,7 @@
 
 #   include "Interface/TimingManagerInterface.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 #	include "pybind/types.hpp"
 
@@ -62,7 +62,7 @@ namespace Menge
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::vector<TimingEvent> TListTimings;
+		typedef stdex::vector<TimingEvent> TListTimings;
 		TListTimings m_timings;
 		
 		size_t m_enumerator;

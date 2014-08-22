@@ -13,7 +13,8 @@
 
 #   include "Math/vec3.h"
 
-#   include <vector>
+#   include <stdex/stl_vector.h>
+
 #	include <stdint.h>
 
 namespace Menge
@@ -58,7 +59,7 @@ namespace Menge
         bool immutable;
     };
 
-	typedef std::vector<MovieLayerFrame> TVectorMovieFrameLayer;
+	typedef stdex::vector<MovieLayerFrame> TVectorMovieFrameLayer;
 
     struct MovieLayerTimeRemap
     {
@@ -67,7 +68,7 @@ namespace Menge
         Floats times;
     };
 
-	typedef std::vector<MovieLayerTimeRemap> TVectorMovieLayerTimeRemap;
+	typedef stdex::vector<MovieLayerTimeRemap> TVectorMovieLayerTimeRemap;
 
 #	ifndef MENGINE_MOVIE_SHAPE_MAX_VERTEX
 #	define MENGINE_MOVIE_SHAPE_MAX_VERTEX 32
@@ -85,7 +86,7 @@ namespace Menge
 		uint8_t indexCount;
 	};
 
-	typedef std::vector<MovieFrameShape> TVectorMovieFrameShapes;
+	typedef stdex::vector<MovieFrameShape> TVectorMovieFrameShapes;
 
 	struct MovieLayerShapes
 	{
@@ -94,7 +95,7 @@ namespace Menge
 		TVectorMovieFrameShapes shapes;
 	};
 
-	typedef std::vector<MovieLayerShapes> TVectorMovieLayerShapes;
+	typedef stdex::vector<MovieLayerShapes> TVectorMovieLayerShapes;
 
 #	ifndef MENGINE_MOVIE_POLYGON_MAX_VERTEX
 #	define MENGINE_MOVIE_POLYGON_MAX_VERTEX 32
@@ -108,7 +109,7 @@ namespace Menge
 		uint8_t vertexCount;
 	};
 
-	typedef std::vector<MovieLayerPolygon> TVectorMovieLayerPolygons;
+	typedef stdex::vector<MovieLayerPolygon> TVectorMovieLayerPolygons;
 
 	class MovieFramePackInterface
 		: public DataInterface

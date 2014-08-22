@@ -4,7 +4,7 @@
 #	include "Interface/CodecInterface.h"
 #	include "Interface/DataInterface.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -21,10 +21,10 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::vector<DecoderFactoryInterfacePtr> TVectorDecoders;
+		typedef stdex::vector<DecoderFactoryInterfacePtr> TVectorDecoders;
 		TVectorDecoders m_decoders;
 
-		typedef std::vector<EncoderFactoryInterfacePtr> TVectorEncoders;
+		typedef stdex::vector<EncoderFactoryInterfacePtr> TVectorEncoders;
 		TVectorEncoders m_encoders;
 
 		DataflowFactoryInterfacePtr m_factoryAEK;

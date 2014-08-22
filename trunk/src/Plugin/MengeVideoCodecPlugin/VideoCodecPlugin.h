@@ -18,7 +18,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::vector<DecoderFactoryInterface *> TVectorVideoDecoders;
+		typedef stdex::vector<DecoderFactoryInterfacePtr> TVectorVideoDecoders;
 		TVectorVideoDecoders m_decoders;
 	};
 }

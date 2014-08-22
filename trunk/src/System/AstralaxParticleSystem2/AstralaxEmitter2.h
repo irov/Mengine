@@ -12,8 +12,8 @@
 #	pragma warning(pop) 
 #	endif
 
-#	include <string>
-#	include <vector>
+#	include <stdex/stl_string.h>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {

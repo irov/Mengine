@@ -47,7 +47,7 @@
 
 #	include "Math/vec4.h"
 
-#	include <map>
+#	include <stdex/stl_map.h>
 
 namespace Menge
 {
@@ -204,7 +204,7 @@ namespace Menge
 
 		ConsoleInterface * m_console;
 
-		typedef std::map<String, DynamicLibraryInterface *> TDynamicLibraries;
+		typedef stdex::map<String, DynamicLibraryInterface *> TDynamicLibraries;
 		TDynamicLibraries m_dynamicLibraries;
 
 		GameServiceInterface * m_game;
@@ -231,7 +231,7 @@ namespace Menge
 
 		Resolution m_contentResolution;
 
-        typedef std::map<float, Viewport> TMapAspectRatioViewports;
+        typedef stdex::map<float, Viewport> TMapAspectRatioViewports;
         TMapAspectRatioViewports m_aspectRatioViewports;
 
 		bool m_fixedContentResolution;
@@ -270,7 +270,7 @@ namespace Menge
 		uint32_t m_projectVersion;
 		bool m_projectVersionCheck;
 		
-		typedef std::vector<PluginInterface *> TVectorPlugins;
+		typedef stdex::vector<PluginInterface *> TVectorPlugins;
 		TVectorPlugins m_plugins;
 
 		bool m_allowFullscreenSwitchShortcut;

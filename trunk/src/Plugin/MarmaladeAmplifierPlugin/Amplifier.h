@@ -16,7 +16,7 @@ namespace	Menge
 
 	class Amplifier
 		: public AmplifierInterface
-		, public SoundListenerInterface	
+		, public SoundVolumeProviderInterface
 	{
 	public:
 		Amplifier();
@@ -27,6 +27,10 @@ namespace	Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
+		bool initialize() override;
+		void finalize() override;
+
+	public:
         bool playTrack( const ConstString& _playlistResource, size_t _index, float _pos, bool _looped ) override;
 		void shuffle( const ConstString& _playlist ) override;
 				
@@ -35,10 +39,7 @@ namespace	Menge
 		void resume() override;
 		
 		const ConstString& getPlayTrack() const override;
-				
-		void setVolume( float _value ) override;
-		float getVolume() const override;
-		
+					
 		size_t getNumTracks() const override;
 		size_t getCurrentTrack() const override;
 
@@ -47,7 +48,10 @@ namespace	Menge
 		void setPosMs( float _posMs ) override;
 		float getPosMs() const override;
 
-	private:
+	protected:
+		void onSoundChangeVolume( float _sound, float _music, float _voice ) override;
+
+	protected:
         ServiceProviderInterface * m_serviceProvider;
 
 		float m_volume;
@@ -60,25 +64,16 @@ namespace	Menge
 		ConstString	m_currentPlaylistName;
 		Playlist * m_currentPlayList;
 
-		size_t m_sourceID;
-		SoundBufferInterfacePtr m_buffer;
-
 		bool m_play;
 		bool m_needRefocus;
         bool m_turn;
 
-    protected:
-		void onSoundPause( size_t _id ) override;
-		void onSoundStop( size_t _id ) override;
-
+	public:		
+		void onSoundStop();
 
     protected:
-		void release_();	
-		bool prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codec, float _pos );
+		bool play_( const ConstString& _pakName, const FilePath& _filePath, const ConstString& _codec, float _pos );
 		bool loadPlayList_( const ConstString& _playlistResource );
 		bool preparePlay_( float _pos );
-
-		bool play2_( float _pos );
-		bool play_();
 	};
 }

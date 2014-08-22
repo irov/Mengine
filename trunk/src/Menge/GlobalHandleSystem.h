@@ -2,7 +2,7 @@
 
 #	include "Interface/GlobalHandleSystemInterface.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -52,11 +52,11 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
         		
-		typedef std::vector<GlobalMouseHandleDesc> TVectorGlobalMouseHandler;
+		typedef stdex::vector<GlobalMouseHandleDesc> TVectorGlobalMouseHandler;
 		TVectorGlobalMouseHandler m_globalMouseHandler;
         TVectorGlobalMouseHandler m_globalMouseHandlerAdd;
 
-		typedef std::vector<GlobalKeyHandleDesc> TVectorGlobalKeyHandler;
+		typedef stdex::vector<GlobalKeyHandleDesc> TVectorGlobalKeyHandler;
 		TVectorGlobalKeyHandler m_globalKeyHandler;
 
         size_t m_handlersEnumerator;

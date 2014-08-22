@@ -15,8 +15,6 @@
 
 #	include "Factory/FactoryStore.h"
 
-#	include <map>
-
 namespace Menge
 {
 	class Game;
@@ -161,7 +159,7 @@ namespace Menge
 
 		FilePath m_iconPath;
 
-		typedef std::vector<PakPtr> TVectorResourcePak;
+		typedef stdex::vector<PakPtr> TVectorResourcePak;
 		TVectorResourcePak m_paks;
 		TVectorResourcePak m_resourcePaks;
 		TVectorResourcePak m_languagePaks;

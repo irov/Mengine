@@ -16,7 +16,7 @@
 #	include "math/mat4.h"
 #	include "math/vec4.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 #	include "Core/ConstString.h"
 
@@ -270,10 +270,10 @@ namespace Menge
 
 		ERenderBatchMode m_batchMode;
 
-		typedef std::vector<VBHandle> TVectorVertexBuffer;
+		typedef stdex::vector<VBHandle> TVectorVertexBuffer;
 		TVectorVertexBuffer m_vertexBuffer;
 
-		typedef std::vector<IBHandle> TVectorIndexBuffer;
+		typedef stdex::vector<IBHandle> TVectorIndexBuffer;
 		TVectorIndexBuffer m_indexBuffer;
 
 		size_t m_maxVertexCount;

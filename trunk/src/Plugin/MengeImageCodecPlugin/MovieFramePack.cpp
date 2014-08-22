@@ -1,5 +1,6 @@
 #	include "MovieFramePack.h"
 
+#	include "Core/Memory.h"
 #	include "Math/angle.h"
 
 namespace Menge
@@ -19,14 +20,14 @@ namespace Menge
 		{
 			MovieLayerFrame & layer = *it;
 
-			delete [] layer.anchorPoint;
-			delete [] layer.position;
-			delete [] layer.rotation_x;
-			delete [] layer.rotation_y;
-			delete [] layer.rotation_z;
-			delete [] layer.scale;
-			delete [] layer.opacity;
-			delete [] layer.volume;
+			Helper::deleteMemory( layer.anchorPoint );
+			Helper::deleteMemory( layer.position );
+			Helper::deleteMemory( layer.rotation_x );
+			Helper::deleteMemory( layer.rotation_y );
+			Helper::deleteMemory( layer.rotation_z );
+			Helper::deleteMemory( layer.scale );
+			Helper::deleteMemory( layer.opacity );
+			Helper::deleteMemory( layer.volume );
 		}
 	}
     //////////////////////////////////////////////////////////////////////////

@@ -107,13 +107,18 @@ namespace Menge
 			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
 			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
 			{
-				GLuint size = Helper::getTextureMemorySize(m_hwWidth, m_hwHeight, m_hwChannels, 1, m_hwPixelFormat);
-				glCompressedTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, size, m_lock);				
+				GLuint textureMemorySize = Helper::getTextureMemorySize(m_hwWidth, m_hwHeight, m_hwChannels, 1, m_hwPixelFormat);
+				glCompressedTexImage2D(GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, textureMemorySize, m_lock);
+
+				LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock %d %d size %d"
+					, m_hwWidth
+					, m_hwHeight
+					, textureMemorySize
+					);
 			}break;
 			case GL_RGB:
 			{
-				glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, m_lock );
-				
+				glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, m_lock );				
 			}break;
 			default:
 			{

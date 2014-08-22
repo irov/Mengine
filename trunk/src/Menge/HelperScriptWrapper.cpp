@@ -36,8 +36,6 @@
 #	include <sstream>
 #	include <iomanip>
 
-#	include "ThreadTaskLoadPak.h"
-
 #	include "ResourceImage.h"
 #	include "ResourceCursorICO.h"
 #	include "AccountManager.h"

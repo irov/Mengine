@@ -39,7 +39,7 @@ namespace Menge
 			HttpDownloadAssetReceiver * receiver;
 		};
 
-		typedef std::vector<DownloadAssetDesc> TVectorDownloadAssets;
+		typedef stdex::vector<DownloadAssetDesc> TVectorDownloadAssets;
 		TVectorDownloadAssets m_downloadAssets;
 	};
 }

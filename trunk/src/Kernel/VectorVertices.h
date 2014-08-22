@@ -2,7 +2,7 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -12,7 +12,7 @@ namespace Menge
 		VectorVertices();
 
 	protected:
-		typedef std::vector<RenderVertex2D> TVectorVertex2D;
+		typedef stdex::vector<RenderVertex2D> TVectorVertex2D;
 
 	public:
 		inline TVectorVertex2D & getVertices();

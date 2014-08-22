@@ -14,13 +14,14 @@
 #	pragma warning(pop) 
 #	endif
 
-#	include <map>
+#   include <stdex/stl_map.h>
+#   include <stdex/stl_vector.h>
 
 namespace Menge
 {
 	class AstralaxEmitter;
 
-	typedef std::vector<HM_EMITTER> TVectorEmitters;
+	typedef stdex::vector<HM_EMITTER> TVectorEmitters;
 
 	class AstralaxEmitterContainer
 		: public ParticleEmitterContainerInterface
@@ -73,7 +74,7 @@ namespace Menge
         typedef FactoryPoolStore<AstralaxEmitter, 16> TFactoryPoolAstralaxEmitter;
         mutable TFactoryPoolAstralaxEmitter m_factoryPoolAstralaxEmitter;
 
-		typedef std::map<ConstString, EmitterPool> TMapEmitters;		
+		typedef stdex::map<ConstString, EmitterPool> TMapEmitters;		
 		TMapEmitters m_emitters;
 
 		TVectorParticleEmitterAtlas m_atlas;

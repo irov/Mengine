@@ -5,7 +5,7 @@
 
 #	include "Factory/FactoryStore.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -51,7 +51,7 @@ namespace Menge
 			bool lock;
 		};
 
-		typedef std::vector<CacheBufferMemory> TVectorCacheBufferMemory;
+		typedef stdex::vector<CacheBufferMemory> TVectorCacheBufferMemory;
 		TVectorCacheBufferMemory m_buffers;
 
 		size_t m_enumeratorId;

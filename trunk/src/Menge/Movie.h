@@ -202,7 +202,7 @@ namespace Menge
 			bool child;
         };
 
-		typedef std::vector<Nodies> TVectorNodies;
+		typedef stdex::vector<Nodies> TVectorNodies;
 		TVectorNodies m_nodies;
 		
 		typedef stdex::binary_vector<ConstString, Node *> TMapMovieSlots;

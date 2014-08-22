@@ -2,7 +2,7 @@
 
 #	include "ThreadTask.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -32,7 +32,7 @@ namespace Menge
 		void _onComplete( bool _successful ) override;
 
 	protected:
-		typedef std::vector<ThreadTaskPtr> TVectorThreadTasks;
+		typedef stdex::vector<ThreadTaskPtr> TVectorThreadTasks;
 		TVectorThreadTasks m_tasks;
 	};
 

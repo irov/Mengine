@@ -106,6 +106,7 @@
 #	include "Core/IniUtil.h"
 
 #   include "stdex/allocator.h"
+#   include "stdex/stl_list.h"
 
 #	include <ctime>
 #	include <sstream>
@@ -196,7 +197,7 @@ namespace Menge
 		{
 		protected:
 			typedef bool (Application::*TInitializeMethod)();
-			typedef std::list<TInitializeMethod> TListInitializeMethods;
+			typedef stdex::list<TInitializeMethod> TListInitializeMethods;
 
 		public:
 			ExecuteInitialize( Application * _app )
@@ -240,6 +241,8 @@ namespace Menge
         SERVICE_REGISTRY( m_serviceProvider, m_consts );
 
         m_consts->initialize();
+
+		new int;
 
         ExecuteInitialize exinit( this );
 				
@@ -1070,6 +1073,11 @@ namespace Menge
 						, m.block_size * m.block_total * m.chunk_count 
 						);
 				}
+
+				size_t global = stdex_globalmemoryuse();
+				float global_mb = float(global / (1024.f * 1024.f));
+				printf("-------------------------------------\n");
+				printf("global %.3f\n", global_mb);
 
 				float total_now_mb = float(total_now / (1024.f * 1024.f));
 				float total_max_mb = float(total_max / (1024.f * 1024.f));

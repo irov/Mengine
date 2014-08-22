@@ -16,6 +16,9 @@
 
 #	include "Config/Typedef.h"
 
+#	include <stdio.h>
+#	include <wchar.h>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( AccountService, Menge::AccountServiceInterface, Menge::AccountManager );
 //////////////////////////////////////////////////////////////////////////
@@ -76,7 +79,10 @@ namespace Menge
 	{
         size_t new_playerID = ++m_playerEnumerator;
 
-		WString accountID = (UnicodeFormat(L"Player_%d") % new_playerID).str();
+		wchar_t bufferAccountID[128];
+		swprintf( bufferAccountID, 128, L"Player_%d", new_playerID );
+
+		WString accountID = bufferAccountID;
         
 		AccountInterfacePtr account = this->createAccount_( accountID );
 

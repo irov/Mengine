@@ -28,6 +28,8 @@ src
     
     FileLogger.cpp
     FileLogger.h
+    
+    Memory.h
 	
 	MemoryInput.h
 	MemoryInput.cpp

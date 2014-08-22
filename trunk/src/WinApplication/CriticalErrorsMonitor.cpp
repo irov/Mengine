@@ -13,12 +13,18 @@
 
 namespace Menge
 {
-	static WString s_logPath;
-    static WString s_dumpPath;
+	//////////////////////////////////////////////////////////////////////////
+	struct CrashDumpExceptionHandlerData
+	{
+		WString logPath;
+		WString dumpPath;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	CrashDumpExceptionHandlerData * g_crashDumpExceptionHandlerData = nullptr;
     //////////////////////////////////////////////////////////////////////////
     static bool s_writeCrashDump( EXCEPTION_POINTERS * pExceptionPointers )
     {
-        HANDLE hFile = CreateFile( s_dumpPath.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
+        HANDLE hFile = CreateFile( g_crashDumpExceptionHandlerData->dumpPath.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
 
         if( hFile == INVALID_HANDLE_VALUE ) 
         {
@@ -74,7 +80,7 @@ namespace Menge
     }
 
 	//////////////////////////////////////////////////////////////////////////
-	static LONG WINAPI s_exceptionHandler(EXCEPTION_POINTERS* pExceptionPointers)
+	static LONG WINAPI s_exceptionHandler( EXCEPTION_POINTERS* pExceptionPointers )
 	{       
         s_writeCrashDump( pExceptionPointers );
                 
@@ -83,8 +89,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CriticalErrorsMonitor::run( const WString & _logPath, const WString & _dumpPath )
 	{
-		s_logPath = _logPath;
-        s_dumpPath = _dumpPath;
+		g_crashDumpExceptionHandlerData = new CrashDumpExceptionHandlerData;
+		g_crashDumpExceptionHandlerData->logPath = _logPath;
+        g_crashDumpExceptionHandlerData->dumpPath = _dumpPath;
 
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );

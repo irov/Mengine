@@ -1059,7 +1059,7 @@ namespace Menge
 
 		m_soundService = soundService;
 
-		if( m_soundService->initialize( false ) == false )
+		if( m_soundService->initialize( false, true ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeSoundEngine_ Failed to initialize Sound Engine"
 				);
@@ -1111,7 +1111,7 @@ namespace Menge
 
 		m_soundService = soundService;
 
-		if( m_soundService->initialize( true ) == false )
+		if( m_soundService->initialize( true, true ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeSilentSoundEngine_ Failed to initialize Sound Engine"
 				);

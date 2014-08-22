@@ -47,7 +47,7 @@ namespace Menge
 			bool real;
 		};
 
-		typedef std::vector<CollisionObjectDesc> TVectorCollisionObjects;
+		typedef stdex::vector<CollisionObjectDesc> TVectorCollisionObjects;
 		TVectorCollisionObjects m_objects;
 
 		bool m_dead;

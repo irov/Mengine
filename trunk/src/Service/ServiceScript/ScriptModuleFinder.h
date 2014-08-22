@@ -58,13 +58,13 @@ namespace Menge
             TVectorFilePath pathes;
         };
 
-        typedef std::vector<ModulePathes> TVectorModulePathes;
+        typedef stdex::vector<ModulePathes> TVectorModulePathes;
         TVectorModulePathes m_modulePaths;    
 
 		typedef FactoryPoolStore<ScriptModuleLoaderCode, 8> TFactoryScriptModuleLoaderCode;
 		TFactoryScriptModuleLoaderCode m_factoryScriptModuleLoaderCode;
 
-		typedef std::vector<ScriptModuleLoaderPtr> TMapModuleLoaders;
+		typedef stdex::vector<ScriptModuleLoaderPtr> TMapModuleLoaders;
 		TMapModuleLoaders m_loaders;
 
 #   ifndef MENGE_MASTER_RELEASE

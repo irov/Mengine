@@ -2,7 +2,7 @@
 
 #	include "Core/ConstString.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -22,7 +22,7 @@ namespace Menge
 			float value;
 		};
 
-		typedef std::vector<Mixer> TMixerVolume;
+		typedef stdex::vector<Mixer> TMixerVolume;
 		TMixerVolume m_mixer;
 	};
 }

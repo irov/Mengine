@@ -44,9 +44,6 @@ namespace Menge
 		InputStreamInterfacePtr m_stream;
 		ImageDecoderInterfacePtr m_imageDecoder;
 		MemoryInputPtr m_memoryInput;
-
-	protected:
-		ImageDecoderInterfacePtr m_imageDecoderMemory;
 	};
 
 	typedef stdex::intrusive_ptr<ThreadTaskPrefetchImageDecoder> ThreadTaskPrefetchImageDecoderPtr;

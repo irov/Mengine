@@ -39,7 +39,7 @@ namespace Menge
 			Box2DPhysicWorld * world;
 		};
 
-		typedef std::vector<WorldDesc> TVectorWorlds;
+		typedef stdex::vector<WorldDesc> TVectorWorlds;
 		TVectorWorlds m_worlds;
     };
 }

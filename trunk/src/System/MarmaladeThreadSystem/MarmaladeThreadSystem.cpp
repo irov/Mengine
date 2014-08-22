@@ -48,6 +48,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ThreadIdentityPtr MarmaladeThreadSystem::createThread( int _priority )
 	{
+		return nullptr;
+
 		MarmaladeThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObjectT();
 
 		ThreadMutexInterfacePtr mutex = this->createMutex();

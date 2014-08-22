@@ -35,11 +35,11 @@ namespace Menge
 		void collisionRadar_( CollisionRadar * _radar );
 
 	protected:
-		typedef std::vector<CollisionObject *> TVectorCollisionObjects;
+		typedef stdex::vector<CollisionObject *> TVectorCollisionObjects;
 		TVectorCollisionObjects m_objects;
 		TVectorCollisionObjects m_objectsAdd;
 
-		typedef std::vector<CollisionRadar *> TVectorCollisionRadars;
+		typedef stdex::vector<CollisionRadar *> TVectorCollisionRadars;
 		TVectorCollisionRadars m_radars;
 		TVectorCollisionRadars m_radarsAdd;
 	};	

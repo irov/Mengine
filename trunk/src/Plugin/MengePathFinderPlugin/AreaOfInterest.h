@@ -5,12 +5,12 @@
 
 #	include "Math/vec2.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	typedef std::vector<class AOIActor *> TVectorAOIActors;
+	typedef stdex::vector<class AOIActor *> TVectorAOIActors;
 	//////////////////////////////////////////////////////////////////////////
 	class AOIActorProviderInterface
 	{

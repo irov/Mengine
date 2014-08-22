@@ -5,9 +5,7 @@
 
 #	include "Kernel/ResourceReference.h"
 
-#	include "Utils/Core/Polygon.h"
-
-#	include <map>
+#	include "Core/Polygon.h"
 
 namespace Menge
 {
@@ -54,7 +52,7 @@ namespace Menge
 		
 		ParticleEmitterContainerInterfacePtr m_container;
 
-		typedef std::vector<RenderTextureInterfacePtr> TVectorAtlasRenderTextures;
+		typedef stdex::vector<RenderTextureInterfacePtr> TVectorAtlasRenderTextures;
 		TVectorAtlasRenderTextures m_atlasRenderTextures;
 	};
 }

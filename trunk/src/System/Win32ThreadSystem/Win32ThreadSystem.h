@@ -11,7 +11,7 @@
 
 #   include "stdex/pool.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -51,9 +51,6 @@ namespace Menge
 
         typedef FactoryPoolStore<Win32ThreadMutex, 16> TPoolWin32ThreadMutex;
         TPoolWin32ThreadMutex m_poolWin32ThreadMutex;
-
-		//typedef std::vector<Win32ThreadIdentityPtr> TVectorPosixThreadIdentity;
-		//TVectorPosixThreadIdentity m_threadIdentities;
 
 		ServiceProviderInterface * m_serviceProvider;
 	};

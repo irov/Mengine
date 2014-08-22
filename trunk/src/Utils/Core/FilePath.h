@@ -6,7 +6,7 @@
 
 #	include "stdex/array_string.h"
 
-#   include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -17,7 +17,7 @@ namespace Menge
     typedef ConstString FilePath; //UTF8
 	typedef stdex::array_string<MAX_PATH> PathString;
 
-    typedef std::vector<FilePath> TVectorFilePath;
+    typedef stdex::vector<FilePath> TVectorFilePath;
 
     FilePath concatenationFilePath( ServiceProviderInterface * _serviceProvider, const FilePath & _left, const FilePath & _right );
 }  

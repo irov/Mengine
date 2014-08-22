@@ -18,13 +18,13 @@ namespace Menge
 
 	public:
 		bool _prepareData() override;
+
+	public:
+		bool _initialize() override;
 		void _finalize() override;
 
 	public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
-
-	protected:
-		void unlockBuffer_();
 
 	protected:
 		size_t m_bufferId;

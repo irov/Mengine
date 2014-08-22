@@ -17,7 +17,7 @@ namespace Menge
     class Arrow;
 	class Affectorable;
 
-    typedef std::vector<Node *> TVectorNode;
+    typedef stdex::vector<Node *> TVectorNode;
     
     class PlayerServiceInterface
         : public ServiceInterface

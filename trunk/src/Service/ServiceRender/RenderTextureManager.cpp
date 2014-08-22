@@ -404,6 +404,10 @@ namespace Menge
 				return nullptr;
 			}
 		}
+		else
+		{
+			imageDecoder->rewind();
+		}
 
 		RenderTextureInterfacePtr texture = this->createTextureFromDecoder_( imageDecoder );
 

@@ -32,9 +32,10 @@ namespace Menge
 
 	public:
 		bool prepareData( const InputStreamInterfacePtr & _stream ) override;
-
+		
 	public:		
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
+		void rewind() override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

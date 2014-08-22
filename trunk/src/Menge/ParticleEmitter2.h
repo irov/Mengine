@@ -12,7 +12,7 @@
 
 #	include "Core/Polygon.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 #	define MENGINE_PARTICLE_MAX_ATLAS_TEXTURE 8
 
@@ -143,7 +143,7 @@ namespace Menge
 			mt::box2f bb;
 		};
 
-		typedef std::vector<Batch> TVectorBatchs;
+		typedef stdex::vector<Batch> TVectorBatchs;
 		TVectorBatchs m_batchs;
 
 		bool m_emitterTranslateWithParticle;

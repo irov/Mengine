@@ -36,7 +36,7 @@ namespace Menge
 		bool preload;
 	};
 
-	typedef std::vector<ResourcePackDesc> TVectorResourcePackDesc;
+	typedef stdex::vector<ResourcePackDesc> TVectorResourcePackDesc;
 
 	class ApplicationInterface
 		: public ServiceInterface

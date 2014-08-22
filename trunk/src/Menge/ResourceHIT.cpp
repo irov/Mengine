@@ -18,7 +18,6 @@ namespace Menge
 		: m_width(0)
 		, m_height(0)
         , m_mipmaplevel(0)
-		, m_mipmap(nullptr)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -101,9 +100,9 @@ namespace Menge
         m_mipmaplevel = dataInfo->mipmaplevel;
         
         size_t mipmapsize = dataInfo->mipmapsize;
-        m_mipmap = new unsigned char [mipmapsize];
+        m_mipmap.resize( mipmapsize );
         
-        m_mipmapsize = decoder->decode( m_mipmap, mipmapsize );
+        m_mipmapsize = decoder->decode( &m_mipmap[0], mipmapsize );
 
         if( m_mipmapsize != mipmapsize )
         {
@@ -122,8 +121,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceHIT::_release()
 	{
-        delete [] m_mipmap;
-		m_mipmap = nullptr;
+		TBlobject deleter;
+		m_mipmap.swap( deleter );
 	}
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_isValid() const
@@ -333,8 +332,10 @@ namespace Menge
 
             return nullptr;
         }
+
+		unsigned char * buffer = &m_mipmap[bufferOffset];
         
-        return m_mipmap + bufferOffset;
+        return buffer;
     }
 	//////////////////////////////////////////////////////////////////////////
     size_t ResourceHIT::getWidth() const

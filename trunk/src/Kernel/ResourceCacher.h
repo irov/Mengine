@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -135,7 +135,7 @@ namespace Menge
 		}
 
 	protected:
-		typedef std::vector<ResourceCacherDesc> TVectorResourceCacherDesc;
+		typedef stdex::vector<ResourceCacherDesc> TVectorResourceCacherDesc;
 		TVectorResourceCacherDesc m_cachers;
 	};
 }

@@ -88,7 +88,7 @@ namespace Menge
 		typedef IntrusiveSprayTree<ResourceEntry, 512> TMapResource;
 		TMapResource m_resources;
 
-		typedef std::vector<ResourceReference *> TVectorResources;
+		typedef stdex::vector<ResourceReference *> TVectorResources;
 		typedef stdex::binary_vector<ConstString, TVectorResources> TMapGroupResourceCache;
 		typedef stdex::binary_vector<ConstString, TMapGroupResourceCache> TMapCategoryResourceCache;
 		TMapCategoryResourceCache m_resourcesCache;

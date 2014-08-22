@@ -1,6 +1,7 @@
 # pragma once
 
 #	include "Core/ConstString.h"
+#	include "Core/String.h"
 #	include "Core/FilePath.h"
 
 #	include "Factory/FactorablePtr.h"
@@ -24,7 +25,7 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 
 		ConstString m_locale;
-		char * m_xml_buffer;
+		mutable TVectorChar m_xml_buffer;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<TextLocalePak> TextLocalePakPtr;

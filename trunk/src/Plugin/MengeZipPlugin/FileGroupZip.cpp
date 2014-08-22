@@ -299,6 +299,11 @@ namespace Menge
 	{
 		if( _stream == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFile: pak %s file %s stream is NULL"
+				, m_path.c_str()
+				, _fileName.c_str()
+				);
+
 			return false;
 		}
 
@@ -306,6 +311,11 @@ namespace Menge
 
 		if( info == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFile: pak %s file %s not found"
+				, m_path.c_str()
+				, _fileName.c_str()
+				);
+			
 			return false;
 		}
 
@@ -421,6 +431,107 @@ namespace Menge
 		}
 		
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MemoryInputPtr FileGroupZip::openInputFileInMemory( const FilePath & _fileName, size_t _offset, size_t _size )
+	{
+		FileInfo * info = m_files.find( _fileName );
+
+		if( info == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFileInMemory: pak %s file %s not found"
+				, m_path.c_str()
+				, _fileName.c_str()
+				);
+
+			return nullptr;
+		}
+
+		size_t file_offset = info->seek_pos + _offset;
+		size_t file_size = _size == 0 ? info->file_size : _size ;
+
+		if( _offset + file_size > info->file_size )
+		{
+			LOGGER_ERROR(m_serviceProvider)("FileGroupZip::openInputFileInMemory: pak %s file %s invalid open range %d:%d (file size is low %d:%d)"
+				, m_path.c_str()
+				, _fileName.c_str()
+				, _offset
+				, _size
+				, info->seek_pos
+				, info->file_size
+				);
+
+			return nullptr;
+		}
+
+		MemoryInputPtr memory = m_factoryMemoryInput.createObjectT();
+
+		if( info->compr_method == Z_NO_COMPRESSION )
+		{
+			void * buffer = memory->newMemory( info->file_size );
+
+			if( buffer == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed new memory %d"
+					, m_path.c_str()
+					, _fileName.c_str()
+					, info->unz_size
+					);
+
+				return nullptr;
+			}
+
+			m_mutex->lock();
+			m_zipFile->seek( file_offset );
+			m_zipFile->read( buffer, info->file_size );
+			m_mutex->unlock();
+		}
+		else
+		{
+			void * buffer = memory->newMemory( info->unz_size );
+
+			if( buffer == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed new memory %d"
+					, m_path.c_str()
+					, _fileName.c_str()
+					, info->unz_size
+					);
+
+				return nullptr;
+			}
+
+			CacheMemoryBuffer compress_buffer(m_serviceProvider, info->file_size, "FileGroupZip_createInputFile");
+			void * compress_memory = compress_buffer.getMemory();
+
+			if( compress_memory == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed cache memory %d"
+					, m_path.c_str()
+					, _fileName.c_str()
+					, info->file_size
+					);
+
+				return nullptr;
+			}
+
+			m_mutex->lock();
+			m_zipFile->seek( file_offset );
+			m_zipFile->read( compress_memory, info->file_size );
+			m_mutex->unlock();
+
+			if( s_inflate_memory( buffer, info->unz_size, compress_memory, info->file_size ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed inflate"
+					, m_path.c_str()
+					, _fileName.c_str()
+					);
+
+				return nullptr;
+			}
+		}
+
+		return memory;
 	}
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr FileGroupZip::createOutputFile()

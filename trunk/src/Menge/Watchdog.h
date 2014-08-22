@@ -4,7 +4,7 @@
 
 #	include "Config/Typedef.h"
 
-#	include <map>
+#	include <stdex/stl_map.h>
 
 namespace Menge
 {
@@ -24,7 +24,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef std::map<String, float> TMapWatchers;
+		typedef stdex::map<String, float> TMapWatchers;
 		TMapWatchers m_watchers;
 	};
 }

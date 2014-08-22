@@ -12,14 +12,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextLocalePak::TextLocalePak()
 		: m_serviceProvider(nullptr)
-		, m_xml_buffer(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TextLocalePak::~TextLocalePak()
 	{
-		delete [] m_xml_buffer;
-		m_xml_buffer = nullptr;
+		TVectorChar deleter;
+		m_xml_buffer.swap( deleter );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextLocalePak::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
@@ -42,16 +41,16 @@ namespace Menge
 
 		size_t xml_buffer_size = xml_text->size();
 
-		m_xml_buffer = new char[xml_buffer_size + 1];
+		m_xml_buffer.resize( xml_buffer_size + 1 );
 		m_xml_buffer[xml_buffer_size] = '\0';
 
-		xml_text->read( m_xml_buffer, xml_buffer_size );
+		xml_text->read( &m_xml_buffer[0], xml_buffer_size );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	char * TextLocalePak::getXmlBuffer() const
 	{
-		return m_xml_buffer;
+		return &m_xml_buffer[0];
 	}
 }

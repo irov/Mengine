@@ -29,7 +29,7 @@
 #	include "WinTimer.h"
 #	include "WinMouseEvent.h"
 
-#	include <map>
+#   include <stdex/stl_map.h>
 
 namespace Menge
 {
@@ -176,7 +176,7 @@ namespace Menge
 
 		WinMouseEvent m_mouseEvent;
 
-		typedef std::map<WString, HCURSOR> TMapCursors;
+		typedef stdex::map<WString, HCURSOR> TMapCursors;
 		TMapCursors m_cursors;
 
 		WString m_windowClassName;

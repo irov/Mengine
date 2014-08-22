@@ -2,7 +2,7 @@
 
 #	include "Kernel/ResourceReference.h"
 
-#	include <vector>
+#	include <stdex/stl_vector.h>
 
 namespace Menge
 {
@@ -20,7 +20,7 @@ namespace Menge
 		ConstString resourceName;
 	};
 
-	typedef std::vector<AnimationSequence> TVectorAnimationSequence;
+	typedef stdex::vector<AnimationSequence> TVectorAnimationSequence;
 
 	class ResourceAnimation
 		: public ResourceReference

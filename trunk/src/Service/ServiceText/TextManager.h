@@ -68,7 +68,7 @@ namespace Menge
 		typedef stdex::binary_vector<ConstString, TextGlyphPtr> TMapTextGlyph;
 		TMapTextGlyph m_glyphs;
 
-		typedef std::vector<TextLocalePakPtr> TVectorPaks;
+		typedef stdex::vector<TextLocalePakPtr> TVectorPaks;
 		TVectorPaks m_paks;
 		
 		ConstString m_defaultFontName;

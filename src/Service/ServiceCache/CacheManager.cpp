@@ -146,13 +146,7 @@ namespace Menge
 				
 				return 0;
 			}
-
-			LOGGER_ERROR(m_serviceProvider)("CacheManager::lockBuffer realloc %d memory %d to %d"
-				, buffer.id
-				, buffer.size
-				, _size
-				);
-						
+					
 			buffer.memory = memory;
 			buffer.size = _size;
 			buffer.doc = _doc;
@@ -182,13 +176,6 @@ namespace Menge
 		buffer.size = _size;
 		buffer.doc = _doc;		
 		buffer.lock = true;
-
-		LOGGER_ERROR(m_serviceProvider)("CacheManager::lockBuffer new %d memory %d to %d"
-			, buffer.id
-			, buffer.size
-			, _size
-			);
-
 
 		m_buffers.push_back( buffer );
 

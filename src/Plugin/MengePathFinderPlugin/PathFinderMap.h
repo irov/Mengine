@@ -111,6 +111,9 @@ namespace Menge
 		typedef FactoryPoolStore<PathFinder, 32> TFactoryPathFinder;
 		TFactoryPathFinder m_factoryPathFinder;
 
+		typedef FactoryPoolStore<PathFinderWay, 32> TFactoryPathFinderWay;
+		TFactoryPathFinderWay m_factoryPathFinderWay;
+
 		const RenderCameraInterface * m_camera;
 	};
 }

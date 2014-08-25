@@ -13,7 +13,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinder::~PathFinder()
 	{
-		delete m_way;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -21,7 +20,7 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinder::initialize( TPathMap * _map, const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize )
+	bool PathFinder::initialize( TPathMap * _map, const PathFinderWayPtr & _way, const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize )
 	{
 		if( _from.x < 0.f || _from.y < 0.f )
 		{
@@ -38,6 +37,8 @@ namespace Menge
 			return false;
 		}
 
+		m_way = _way;
+
 		m_from = _from;
 		m_to = _to;
 		m_gridSize = _gridSize;
@@ -52,11 +53,11 @@ namespace Menge
 		{
 			return false;
 		}
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PathFinderWay * PathFinder::getWay() const
+	const PathFinderWayPtr & PathFinder::getWay() const
 	{
 		return m_way;
 	}
@@ -91,10 +92,6 @@ namespace Menge
 			return;
 		}
 		
-		m_way = new PathFinderWay();
-
-		m_way->setServiceProvider( m_serviceProvider );
-
 		const fastpathfinder::point_array & pa = m_pathfinder.getPathFilter();
 		m_way->initialize( m_from, m_to, m_gridSize, pa );
 	}

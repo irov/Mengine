@@ -13,6 +13,7 @@ namespace Menge
 	typedef stdex::vector<mt::vec2f> TVectorWayPoint;
 	//////////////////////////////////////////////////////////////////////////
 	class PathFinderWay
+		: public FactorablePtr
 	{
 	public:
 		PathFinderWay();
@@ -40,6 +41,8 @@ namespace Menge
 
 		TVectorWayPoint m_way;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<PathFinderWay> PathFinderWayPtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline size_t PathFinderWay::getWayPointCount() const
 	{

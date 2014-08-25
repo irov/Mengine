@@ -25,10 +25,10 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( TPathMap * _map, const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize );
+		bool initialize( TPathMap * _map, const PathFinderWayPtr & _way, const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize );
 
 	public:
-		PathFinderWay * getWay() const;
+		const PathFinderWayPtr & getWay() const;
 
 	protected:
 		bool _onRun() override;
@@ -45,7 +45,7 @@ namespace Menge
 
 		TPathFinder m_pathfinder;
 
-		PathFinderWay * m_way;
+		PathFinderWayPtr m_way;
 	};
 
 	typedef stdex::intrusive_ptr<PathFinder> PathFinderPtr;

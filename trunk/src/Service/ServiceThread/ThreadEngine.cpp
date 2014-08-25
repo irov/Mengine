@@ -34,25 +34,28 @@ namespace Menge
     {
         return m_serviceProvider;
     }
-	////////////////////////////////////////////////////////////////////////////
-	//static void s_stdex_thread_lock( ThreadMutexInterface * _mutex )
-	//{
-	//	_mutex->lock();
-	//}
-	////////////////////////////////////////////////////////////////////////////
-	//static void s_stdex_thread_unlock( ThreadMutexInterface * _mutex )
-	//{
-	//	_mutex->unlock();
-	//}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_stdex_thread_lock( ThreadMutexInterface * _mutex )
+	{
+		_mutex->lock();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_stdex_thread_unlock( ThreadMutexInterface * _mutex )
+	{
+		_mutex->unlock();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::initialize( size_t _threadCount )
 	{
         m_threadCount = _threadCount;
 
-		//m_allocatorPoolMutex = THREAD_SYSTEM(m_serviceProvider)
-		//	->createMutex();
+		m_allocatorPoolMutex = THREAD_SYSTEM(m_serviceProvider)
+			->createMutex();
 
-		//stdex_threadsafe( m_allocatorPoolMutex.get(), (stdex_thread_lock_t)&s_stdex_thread_lock, (stdex_thread_unlock_t)&s_stdex_thread_unlock );
+		stdex_allocator_threadsafe( m_allocatorPoolMutex.get()
+			, (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
+			, (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock 
+			);
                 
         return true;
 	}
@@ -86,6 +89,11 @@ namespace Menge
 		}
 
 		m_threads.clear();
+
+		stdex_allocator_threadsafe( nullptr
+			, nullptr
+			, nullptr
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::isTaskOnProgress_( const ThreadTaskInterfacePtr & _task, ThreadIdentityPtr & _identity ) const

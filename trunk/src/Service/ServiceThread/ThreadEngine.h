@@ -52,6 +52,8 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
+		ThreadMutexInterfacePtr m_allocatorPoolMutex;
+
         size_t m_threadCount;
 		        
 		struct ThreadTaskDesc

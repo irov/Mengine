@@ -511,7 +511,9 @@ namespace Menge
 
 		PathFinderPtr pf = m_factoryPathFinder.createObjectT();
 
-		pf->initialize( &m_map, _from, _to, m_gridSize );
+		PathFinderWayPtr way = m_factoryPathFinderWay.createObjectT();
+
+		pf->initialize( &m_map, way, _from, _to, m_gridSize );
 
 		m_threadPathFinders->addTask( pf );
 
@@ -623,12 +625,12 @@ namespace Menge
 			}
 			else
 			{
-				PathFinderWay * way = desc.finder->getWay();
+				const PathFinderWayPtr & way = desc.finder->getWay();
 
 				pybind::call( desc.cb, "(IOO)"
 					, desc.id
 					, pybind::get_bool(true)
-					, pybind::ptr(way)
+					, pybind::ptr(way.get())
 					);
 			}
 

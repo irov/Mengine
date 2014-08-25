@@ -242,8 +242,6 @@ namespace Menge
 
         m_consts->initialize();
 
-		new int;
-
         ExecuteInitialize exinit( this );
 				
         exinit.add( &Application::initializePrototypeManager_ );
@@ -1053,7 +1051,7 @@ namespace Menge
             if( _key == KC_F3 && _isDown == true )
             {
 				stdex_memory_info_t mi[25];
-                size_t count = stdex_memoryinfo( mi, 25 );
+                size_t count = stdex_allocator_memoryinfo( mi, 25 );
 
 				size_t total_now = 0;
 				size_t total_max = 0;
@@ -1074,7 +1072,7 @@ namespace Menge
 						);
 				}
 
-				size_t global = stdex_globalmemoryuse();
+				size_t global = stdex_allocator_globalmemoryuse();
 				float global_mb = float(global / (1024.f * 1024.f));
 				printf("-------------------------------------\n");
 				printf("global %.3f\n", global_mb);

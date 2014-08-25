@@ -8,48 +8,37 @@
 
 namespace Menge
 {
-	typedef struct tagSourceManager {
-		/// public fields
+	//////////////////////////////////////////////////////////////////////////
+	struct DecoderJPEGSourceManager 
+	{
 		struct jpeg_source_mgr pub;
 
 		InputStreamInterface * stream;
-		/// start of buffer
 		JOCTET * buffer;
-		/// have we gotten any data yet ?
 		boolean start_of_file;
-	} SourceManager;
-
-	typedef SourceManager *	menge_src_ptr;
-    typedef DecoderJPEGErrorManager * menge_error_ptr;
+	};
 	//////////////////////////////////////////////////////////////////////////
 	static void	s_jpegErrorExit( j_common_ptr _cinfo ) 
 	{
-		menge_error_ptr mErr = (menge_error_ptr) _cinfo->err;
-		// always display the message
+		DecoderJPEGErrorManager * mErr = (DecoderJPEGErrorManager *)_cinfo->err;
+
 		(mErr->pub.output_message)( _cinfo );
 
-		// allow JPEG with a premature end of file
 		if( mErr->pub.msg_parm.i[0] != 13 )
 		{
-			// let the memory manager delete any temp files before we die
 			jpeg_destroy( _cinfo );
 
-			// Return control to the setjmp point
 			longjmp( mErr->setjmp_buffer, 1 );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	// Actual output of any JPEG message.  Note that this method does not know
-	// how to generate a message, only where to send it.
 	static void	s_jpegOutputMessage( j_common_ptr _cinfo ) 
 	{
 		char buffer[JMSG_LENGTH_MAX];
 
-		// create the message
 		(*_cinfo->err->format_message)(_cinfo, buffer);
-		// send it to user's message proc
 		
-		ImageDecoderJPEG * imageDecoderJPEG = static_cast<ImageDecoderJPEG*>(_cinfo->client_data);
+		ImageDecoderJPEG * imageDecoderJPEG = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
 		
 		ServiceProviderInterface * serviceProvider = imageDecoderJPEG->getServiceProvider();
 
@@ -57,53 +46,24 @@ namespace Menge
 			, buffer
 			);
 	}
-
-	// ----------------------------------------------------------
-	//   Source manager
-	// ----------------------------------------------------------
-
-	// Initialize source.  This is called by jpeg_read_header() before any
-	// data is actually read. Unlike init_destination(), it may leave
-	// bytes_in_buffer set to 0 (in which case a fill_input_buffer() call
-	// will occur immediately).
-
-	METHODDEF(void)
-		init_source (j_decompress_ptr cinfo) 
+	//////////////////////////////////////////////////////////////////////////
+	METHODDEF(void)	init_source( j_decompress_ptr cinfo ) 
 	{
-		menge_src_ptr src = (menge_src_ptr) cinfo->src;
-
-		// We reset the empty-input-file flag for each image,
-		// but we don't clear the input buffer.
-		// This is correct behavior for reading a series of images from one source.
+		DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
 		src->start_of_file = TRUE;
 	}
-
-	//This is called whenever bytes_in_buffer has reached zero and more
-	//data is wanted.  In typical applications, it should read fresh data
-	//into the buffer (ignoring the current state of next_input_byte and
-	//bytes_in_buffer), reset the pointer & count to the start of the
-	//buffer, and return TRUE indicating that the buffer has been reloaded.
-	//It is not necessary to fill the buffer entirely, only to obtain at
-	//least one more byte.  bytes_in_buffer MUST be set to a positive value
-	//if TRUE is returned.  A FALSE return should only be used when I/O
-	//suspension is desired.
-
-	METHODDEF(boolean)
-		fill_input_buffer (j_decompress_ptr cinfo)
+	//////////////////////////////////////////////////////////////////////////
+	METHODDEF(boolean) fill_input_buffer( j_decompress_ptr cinfo )
 	{
-		menge_src_ptr src = (menge_src_ptr) cinfo->src;
+		DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
 		size_t nbytes = src->stream->read( src->buffer, INPUT_BUF_SIZE );
 
 		if( nbytes <= 0 )
 		{
-			//if (src->start_of_file)	/* Treat empty input file as fatal error */
-			//	throw(cinfo, JERR_INPUT_EMPTY);
-
 			WARNMS(cinfo, JWRN_JPEG_EOF);
 
-			// Insert a fake EOI marker
 			src->buffer[0] = (JOCTET) 0xFF;
 			src->buffer[1] = (JOCTET) JPEG_EOI;
 
@@ -116,86 +76,42 @@ namespace Menge
 
 		return TRUE;
 	}
-
-	//Skip num_bytes worth of data.  The buffer pointer and count should
-	//be advanced over num_bytes input bytes, refilling the buffer as
-	//needed. This is used to skip over a potentially large amount of
-	//uninteresting data (such as an APPn marker). In some applications
-	//it may be possible to optimize away the reading of the skipped data,
-	//but it's not clear that being smart is worth much trouble; large
-	//skips are uncommon.  bytes_in_buffer may be zero on return.
-	//A zero or negative skip count should be treated as a no-op.
-
-	METHODDEF(void)
-		skip_input_data( j_decompress_ptr cinfo, long num_bytes )
+	//////////////////////////////////////////////////////////////////////////
+	METHODDEF(void)	skip_input_data( j_decompress_ptr cinfo, long num_bytes )
 	{
-		menge_src_ptr src = (menge_src_ptr) cinfo->src;
+		DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
-		//Just a dumb implementation for now.  Could use fseek() except
-		//it doesn't work on pipes.  Not clear that being smart is worth
-		//any trouble anyway --- large skips are infrequent.
-
-		if (num_bytes > 0)
+		if( num_bytes > 0 )
 		{
-			while (num_bytes > (long) src->pub.bytes_in_buffer) 
+			while( num_bytes > (long)src->pub.bytes_in_buffer )
 			{
 				num_bytes -= (long) src->pub.bytes_in_buffer;
 
 				(void) fill_input_buffer(cinfo);
-
-				// note we assume that fill_input_buffer will never return FALSE,
-				// so suspension need not be handled.
-
 			}
 
 			src->pub.next_input_byte += (size_t) num_bytes;
 			src->pub.bytes_in_buffer -= (size_t) num_bytes;
 		}
 	}
-
-	//Terminate source --- called by jpeg_finish_decompress
-	//after all data has been read.  Often a no-op.
-
-	//NB: *not* called by jpeg_abort or jpeg_destroy; surrounding
-	//application must deal with any cleanup that should happen even
-	//for error exit.
-
-	METHODDEF(void)
-		term_source (j_decompress_ptr cinfo)
+	//////////////////////////////////////////////////////////////////////////
+	METHODDEF(void)	term_source( j_decompress_ptr cinfo )
 	{
-        (void)cinfo;
-		// no work necessary here
+        (void)cinfo;		
 	}
-
-	// ----------------------------------------------------------
-	//   Source manager & Destination manager setup
-	// ----------------------------------------------------------
-
-	/**
-	Prepare for input from a stdio stream.
-	The caller must have already opened the stream, and is responsible
-	for closing it after finishing decompression.
-	*/
-	GLOBAL(void)
-		jpeg_menge_src ( j_decompress_ptr cinfo, InputStreamInterface * _stream ) 
+	GLOBAL(void) jpeg_menge_src( j_decompress_ptr cinfo, InputStreamInterface * _stream ) 
 	{
-		menge_src_ptr src;
+		DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
-		// allocate memory for the buffer. is released automatically in the end
-
-		if( cinfo->src == nullptr )
+		if( src == nullptr )
 		{
-			cinfo->src = (struct jpeg_source_mgr *) (*cinfo->mem->alloc_small)
-				((j_common_ptr) cinfo, JPOOL_PERMANENT, SIZEOF(SourceManager));
-
-			src = (menge_src_ptr) cinfo->src;
+			src = (DecoderJPEGSourceManager *) (*cinfo->mem->alloc_small)
+				((j_common_ptr) cinfo, JPOOL_PERMANENT, SIZEOF(DecoderJPEGSourceManager));
 
 			src->buffer = (JOCTET *) (*cinfo->mem->alloc_small)
 				((j_common_ptr) cinfo, JPOOL_PERMANENT, INPUT_BUF_SIZE * SIZEOF(JOCTET));
 		}
-
-		// initialize the jpeg pointer struct with pointers to functions
-		src = (menge_src_ptr) cinfo->src;
+				
 		src->pub.init_source = init_source;
 		src->pub.fill_input_buffer = fill_input_buffer;
 		src->pub.skip_input_data = skip_input_data;

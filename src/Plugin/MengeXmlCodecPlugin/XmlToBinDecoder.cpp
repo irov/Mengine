@@ -264,8 +264,10 @@ namespace Menge
 		return bin_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void XmlToBinDecoder::rewind()
+	bool XmlToBinDecoder::rewind()
 	{
-		m_stream->seek( 0 );
+		bool successful = m_stream->seek( 0 );
+
+		return successful;
 	}
 }

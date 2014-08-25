@@ -133,12 +133,6 @@ namespace Menge
 			return false;
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onRun: prefetch file '%s':'%s' %d"
-			, m_pakName.c_str()
-			, m_fileName.c_str()
-			, stream_size
-			);
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

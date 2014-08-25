@@ -19,11 +19,11 @@ namespace Menge
 	} DestinationManager;
 
 	typedef DestinationManager * menge_dst_ptr;
-	typedef EncoderJPEGErrorManager * menge_error_ptr;
+	typedef EncoderJPEGErrorManager * DecoderJPEGErrorManager;
 	//////////////////////////////////////////////////////////////////////////
 	static void	s_jpegErrorExit( j_common_ptr _cinfo ) 
 	{
-		menge_error_ptr mErr = (menge_error_ptr) _cinfo->err;
+		DecoderJPEGErrorManager mErr = (DecoderJPEGErrorManager) _cinfo->err;
 		// always display the message
 		(mErr->pub.output_message)( _cinfo );
 

@@ -99,14 +99,18 @@ namespace Menge
 		}
 
 	public:
-		void rewind() override
+		bool rewind() override
 		{			
-			this->_rewind();
+			bool successful = this->_rewind();
+
+			return successful;
 		}
 
-		virtual void _rewind()
+		virtual bool _rewind()
 		{
-			m_stream->seek( m_rewindPos );
+			bool successful = m_stream->seek( m_rewindPos );
+
+			return successful;
 		}
 
 	protected:

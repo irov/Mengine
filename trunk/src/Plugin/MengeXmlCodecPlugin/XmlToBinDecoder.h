@@ -35,7 +35,7 @@ namespace Menge
 		
 	public:		
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
-		void rewind() override;
+		bool rewind() override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

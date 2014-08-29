@@ -1230,6 +1230,169 @@ namespace Metacode
             mutable bool File_WrapY;
         };
         
+        class Meta_ResourceImageData
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceImageData();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            bool has_File_Codec() const
+            {
+                return File_Codec_successful;
+            }
+            
+            bool get_File_Codec( Menge::ConstString & _value ) const
+            {
+                if( File_Codec_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Codec;
+            
+                return true;
+            }
+            
+            bool swap_File_Codec( Menge::ConstString & _value ) const
+            {
+                if( File_Codec_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Codec);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_Codec( C * _self, M _method )
+            {
+                if( File_Codec_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_Codec );
+            }
+            
+            bool has_File_MaxSize() const
+            {
+                return File_MaxSize_successful;
+            }
+            
+            bool get_File_MaxSize( mt::vec2f & _value ) const
+            {
+                if( File_MaxSize_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_MaxSize;
+            
+                return true;
+            }
+            
+            bool swap_File_MaxSize( mt::vec2f & _value ) const
+            {
+                if( File_MaxSize_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_MaxSize);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_MaxSize( C * _self, M _method )
+            {
+                if( File_MaxSize_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_MaxSize );
+            }
+            
+            bool has_File_NoExist() const
+            {
+                return File_NoExist_successful;
+            }
+            
+            bool get_File_NoExist( bool & _value ) const
+            {
+                if( File_NoExist_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_NoExist;
+            
+                return true;
+            }
+            
+            bool swap_File_NoExist( bool & _value ) const
+            {
+                if( File_NoExist_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_NoExist);
+            
+                return true;
+            }
+            
+            template<class C, class M>
+            void method_File_NoExist( C * _self, M _method )
+            {
+                if( File_NoExist_successful == false )
+                {
+                    return;
+                }
+            
+                (_self->*_method)( this->File_NoExist );
+            }
+            
+            const Menge::ConstString & get_File_Path() const
+            {
+                return this->File_Path;
+            }
+            
+            void swap_File_Path( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->File_Path);
+            }
+            
+            template<class C, class M>
+            void method_File_Path( C * _self, M _method )
+            {
+                (_self->*_method)( this->File_Path );
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+        protected:
+        protected:
+            bool File_Codec_successful;
+            mutable Menge::ConstString File_Codec;
+            bool File_MaxSize_successful;
+            mutable mt::vec2f File_MaxSize;
+            bool File_NoExist_successful;
+            mutable bool File_NoExist;
+            mutable Menge::ConstString File_Path;
+        };
+        
         class Meta_ResourceImageDefault
             : public Meta_Resource
         { 

@@ -1,7 +1,8 @@
 #	include "ResourceAnimation.h"
 #	include "Kernel/ResourceImplement.h"
 
-#	include "ResourceImage.h"
+#	include "Kernel/ResourceImage.h"
+
 #	include "ResourceImageDefault.h"
 
 #   include "Interface/ResourceInterface.h"

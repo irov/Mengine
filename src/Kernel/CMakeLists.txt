@@ -141,6 +141,14 @@ Resource
 )
 
 ADD_FILTER(
+Resource\\\\Image
+	ResourceImage.cpp
+	ResourceImage.h
+	ResourceImageData.cpp
+	ResourceImageData.h
+)
+
+ADD_FILTER(
 Vertices
 	FixedVertices.h
 	VectorVertices.cpp

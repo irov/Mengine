@@ -6,13 +6,13 @@
 
 namespace Menge
 {
-	class ResourceImageDefault
-		: public ResourceImage
+	class ResourceImageData
+		: public ResourceReference
 	{
-		RESOURCE_DECLARE( ResourceImageDefault )
+		RESOURCE_DECLARE( ResourceImageData )
 
 	public:
-		ResourceImageDefault();
+		ResourceImageData();
         
     public:
         const FilePath & getFileName() const;
@@ -22,6 +22,10 @@ namespace Menge
         void setImagePath( const FilePath & _imagePath );
 		const FilePath & getImagePath() const;
 
+	public:
+		const mt::vec2f & getImageMaxSize() const;
+		unsigned char * getImageBuffer() const;
+
 	protected:
 		bool _isValid() const override;
 
@@ -30,11 +34,15 @@ namespace Menge
 
 	protected:
 		bool _compile() override;
+		void _release() override;
 
 	protected:
         FilePath m_fileName;
         ConstString m_codecType;
 
-		bool m_validNoExist;
+		mt::vec2f m_maxSize;
+		unsigned char * m_buffer;
+
+		bool m_validNoExist;		
 	};
 }

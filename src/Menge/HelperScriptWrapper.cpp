@@ -36,7 +36,7 @@
 #	include <sstream>
 #	include <iomanip>
 
-#	include "ResourceImage.h"
+#	include "Kernel/ResourceImage.h"
 #	include "ResourceCursorICO.h"
 #	include "AccountManager.h"
 

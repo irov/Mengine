@@ -1,8 +1,10 @@
 #	include "InputEngine.h"
-#	include "Application.h"
 
 #	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/ApplicationInterface.h"
 #	include "Interface/NotificatorInterface.h"
+
+#	include "Logger/Logger.h"
 
 #   include <algorithm>
 

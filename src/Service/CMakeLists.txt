@@ -20,6 +20,7 @@ ADD_SUBDIRECTORY( ServiceThread )
 ADD_SUBDIRECTORY( ServiceConfig )
 ADD_SUBDIRECTORY( ServiceProfiler )
 ADD_SUBDIRECTORY( ServiceArchive )
+ADD_SUBDIRECTORY( ServiceInput )
 
 if( WIN32 )
     ADD_SUBDIRECTORY( ServicePlugin )

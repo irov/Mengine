@@ -31,6 +31,9 @@ namespace Menge
 		fastpathfinder::graph * createGraph();
 
 	public:
+		bool setMapWeight( PathFinderMap * _map, const ConstString & _resourceName );
+
+	public:
 		void update( float _time, float _timing ) override;
 		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
 		

@@ -32,10 +32,20 @@ namespace Menge
         template<class T>
         T * createResourceT( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
         {
-            return static_cast<T*>(this->createResource(_category, _group, _name, _type));
+			ResourceReference * resource = this->createResource(_category, _group, _name, _type);
+
+#   ifdef _DEBUG
+			if( dynamic_cast<T*>(resource) == nullptr )
+			{
+				return nullptr;
+			}
+#   endif
+
+			T * t = static_cast<T*>(resource);
+
+			return t;
         }
-
-
+		
     public:
         virtual ResourceReference * getResource( const ConstString& _name ) const = 0;
 
@@ -51,7 +61,7 @@ namespace Menge
             }
 #   endif
 
-            T * t = static_cast<T*>(resource);
+            T * t = static_cast<T *>(resource);
 
             return t;
         }
@@ -70,12 +80,31 @@ namespace Menge
             }
 #   endif
 
-            T * t = static_cast<T*>(resource);
+            T * t = static_cast<T *>(resource);
 
             return t;
         }
 
         virtual bool hasResource( const ConstString& _name, ResourceReference ** _resource ) const = 0;
+		
+		template<class T>
+		bool hasResourceT( const ConstString& _name, T ** _resource ) const
+		{
+			ResourceReference * resource;			
+			bool exist = this->hasResource( _name, &resource );
+			
+#   ifdef _DEBUG
+			if( dynamic_cast<T *>(resource) == nullptr )
+			{
+				return false;
+			}
+#   endif
+
+			*_resource = static_cast<T *>(resource);
+
+			return exist;
+		}
+
         virtual bool validResource( const ConstString& _name ) const = 0;
 
         virtual bool validResourceType( const ConstString& _name, const ConstString& _type ) const = 0;

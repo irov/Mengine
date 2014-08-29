@@ -43,11 +43,11 @@ namespace Menge
 		m_to = _to;
 		m_gridSize = _gridSize;
 
-		uint32_t fx = (uint32_t)(_from.x / m_gridSize + 0.5f);
-		uint32_t fy = (uint32_t)(_from.y / m_gridSize + 0.5f);
+		uint16_t fx = (uint16_t)(_from.x / m_gridSize + 0.5f);
+		uint16_t fy = (uint16_t)(_from.y / m_gridSize + 0.5f);
 
-		uint32_t tx = (uint32_t)(_to.x / m_gridSize + 0.5f);
-		uint32_t ty = (uint32_t)(_to.y / m_gridSize + 0.5f);
+		uint16_t tx = (uint16_t)(_to.x / m_gridSize + 0.5f);
+		uint16_t ty = (uint16_t)(_to.y / m_gridSize + 0.5f);
 
 		if( m_pathfinder.findPathFirst( fx, fy, tx, ty ) == false )
 		{
@@ -69,8 +69,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinder::_onMain()
 	{
-		bool found_path;
-		while( m_pathfinder.findPathNext( found_path ) == false )
+		bool found_path = false;
+		while( m_pathfinder.walkerWave( found_path ) == false )
 		{
 		}
 
@@ -79,8 +79,11 @@ namespace Menge
 			return false;
 		}
 
-		m_pathfinder.findProcces();
-		m_pathfinder.findFilter();
+		if( m_pathfinder.findProcces() == false )
+		{
+			return false;
+		}
+		//m_pathfinder.findFilter();
 
 		return true;
 	}
@@ -92,7 +95,7 @@ namespace Menge
 			return;
 		}
 		
-		const fastpathfinder::point_array & pa = m_pathfinder.getPathFilter();
+		const fastpathfinder::point_array & pa = m_pathfinder.getPath();
 		m_way->initialize( m_from, m_to, m_gridSize, pa );
 	}
 }

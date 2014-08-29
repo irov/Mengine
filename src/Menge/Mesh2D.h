@@ -5,7 +5,7 @@
 
 #	include "Kernel/Node.h"
 
-#   include "ResourceImage.h"
+#   include "Kernel/ResourceImage.h"
 
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"

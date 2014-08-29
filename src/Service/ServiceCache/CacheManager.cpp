@@ -1,7 +1,7 @@
 #	include "CacheManager.h"
 
 #	include "Core/CacheMemoryBuffer.h"
-//#	include "Core/MutexGuard.h"
+#	include "Core/Memory.h"
 
 #	include "Logger/Logger.h"
 
@@ -62,7 +62,7 @@ namespace Menge
 					);
 			}
 
-			free( buffer.memory );
+			Helper::freeMemory( buffer.memory );
 		}
 
 		m_buffers.clear();
@@ -134,7 +134,7 @@ namespace Menge
 		{
 			CacheBufferMemory & buffer = m_buffers[minIndex];
 						
-			void * memory = realloc( buffer.memory, _size );
+			unsigned char * memory = Helper::reallocateMemory<unsigned char>( buffer.memory, _size );
 
 			if( memory == nullptr )
 			{
@@ -157,7 +157,7 @@ namespace Menge
 			return buffer.id;
 		}
 		
-		void * memory = malloc( _size );
+		unsigned char * memory = Helper::allocateMemory<unsigned char>( _size );
 
 		if( memory == nullptr )
 		{
@@ -171,7 +171,7 @@ namespace Menge
 		size_t new_id = ++m_enumeratorId;
 
 		CacheBufferMemory buffer;
-		buffer.id = new_id;		
+		buffer.id = new_id;
 		buffer.memory = memory;
 		buffer.size = _size;
 		buffer.doc = _doc;		

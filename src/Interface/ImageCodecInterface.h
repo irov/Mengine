@@ -32,11 +32,21 @@ namespace Menge
         PixelFormat format;
 	};
 
+	enum ImageDecoderOptions
+	{
+		DF_NONE				= 0x00000000,
+		DF_COUNT_ALPHA		= 0x00000001,
+		DF_READ_ALPHA_ONLY	= 0x00000002,
+		DF_QUALITY			= 0x00000004,
+		DF_WRITE_ALPHA_ONLY = 0x00000008,
+		DF_NOT_ADD_ALPHA	= 0x00000010
+	};
+
 	struct ImageCodecOptions
 		: public CodecOptions
 	{
         ImageCodecOptions()
-            : flags(0)
+            : flags(DF_NONE)
             , pitch(0)
             , channels(0)
         {
@@ -45,17 +55,6 @@ namespace Menge
         size_t flags;
 		size_t pitch;
         size_t channels;
-	};
-
-	enum ImageDecoderOptions
-	{
-		DF_NONE = 0x00000000,
-		DF_COUNT_ALPHA = 0x00000001,
-		DF_READ_ALPHA_ONLY = 0x00000002,
-		//DF_CUSTOM_PITCH = 0x00000004,
-		DF_QUALITY = 0x00000008,
-		DF_WRITE_ALPHA_ONLY = 0x00000010,
-        DF_NOT_ADD_ALPHA = 0x00000020
 	};
 
 	class ImageDecoderInterface

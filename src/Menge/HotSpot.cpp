@@ -3,6 +3,7 @@
 #	include "Interface/MousePickerSystemInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
+#	include "Interface/ResourceInterface.h"
 
 #	include "Player.h"
 
@@ -11,8 +12,7 @@
 
 #	include "Arrow.h"
 
-#	include "Interface/ResourceInterface.h"
-#	include "ResourceImage.h"
+#	include "Kernel/ResourceImage.h"
 
 #	include "Logger/Logger.h"
 

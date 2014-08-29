@@ -159,6 +159,9 @@ namespace Menge
         void updateVSyncDPP_();
         bool resetDevice_();
 
+	protected:
+		void updateViewport_( const Viewport & _viewport );
+
     protected:        
         void fixNPOTSupport_( size_t & _width, size_t & _height ) const;
 

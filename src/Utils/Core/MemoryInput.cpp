@@ -1,6 +1,10 @@
 #	include "MemoryInput.h"
 
+#	include "Memory.h"
+
 #	include "stdex/memorycopy.h"
+
+
 #	include <memory.h>
 
 namespace Menge
@@ -16,20 +20,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInput::~MemoryInput()
 	{
-        free( m_data );
+		Helper::freeMemory( m_data );
         m_data = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void * MemoryInput::newMemory( size_t _size )
 	{
-		void * memory = realloc( m_data, _size );
+		unsigned char * memory = Helper::reallocateMemory<unsigned char>( m_data, _size );
 
 		if( memory == nullptr )
 		{
 			return nullptr;
 		}
 
-		m_data = static_cast<unsigned char *>(memory);
+		m_data = memory;
 		m_size = _size;
 		m_pos = m_data;
 		m_end = m_data + m_size;

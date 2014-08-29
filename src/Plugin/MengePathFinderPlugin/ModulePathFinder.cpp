@@ -3,9 +3,12 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/PlayerInterface.h"
+#	include "Interface/ResourceInterface.h"
 
 #	include "PathFinderWay.h"
 #	include "PathGraphNode.h"
+
+#	include "Kernel/ResourceImageData.h"
 
 #	include "Kernel/ScriptClassWrapper.h"
 
@@ -123,6 +126,7 @@ namespace Menge
 			;
 
 		pybind::def_functor( "createPathFinderMap", this, &ModulePathFinder::createMap );
+		pybind::def_functor( "setPathFinderMapWeight", this, &ModulePathFinder::setMapWeight );
 
 		SCRIPT_SERVICE(m_serviceProvider)
 			->addWrapping( Helper::stringizeString(m_serviceProvider, "PathGraphNode"), new ScriptClassWrapper<PathGraphNode>() );
@@ -165,6 +169,29 @@ namespace Menge
 	fastpathfinder::graph * ModulePathFinder::createGraph()
 	{
 		return new fastpathfinder::graph;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ModulePathFinder::setMapWeight( PathFinderMap * _map, const ConstString & _resourceName )
+	{		
+		ResourceImageData * resource;
+		if( RESOURCE_SERVICE(m_serviceProvider)
+			->hasResourceT( _resourceName, &resource ) == false )
+		{
+			return false;
+		}
+
+		if( resource->incrementReference() == false )
+		{
+			return false;
+		}
+
+		unsigned char * buffer = resource->getImageBuffer();
+
+		_map->setMapWeight( buffer );
+
+		resource->decrementReference();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModulePathFinder::update( float _time, float _timing )

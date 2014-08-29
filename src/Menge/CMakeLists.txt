@@ -43,12 +43,6 @@ Service\\\\Watchdog
 )
 
 ADD_FILTER(
-Engine\\\\Input
-	InputEngine.cpp
-	InputEngine.h
-)
-
-ADD_FILTER(
 Arrow
 	Arrow.cpp
 	Arrow.h
@@ -258,14 +252,6 @@ Resource\\\\EmitterContainer
 )
 
 ADD_FILTER(
-Resource\\\\EmitterContainer2
-	ResourceEmitterContainer2.cpp
-	ResourceEmitterContainer2.h
-	ResourceEmitter2.cpp
-	ResourceEmitter2.h
-)
-
-ADD_FILTER(
 Resource\\\\Particle
 	ResourceParticle.cpp
 	ResourceParticle.h
@@ -273,8 +259,6 @@ Resource\\\\Particle
 
 ADD_FILTER(
 Resource\\\\Image
-	ResourceImage.cpp
-	ResourceImage.h
 	ResourceImageDefault.cpp
 	ResourceImageDefault.h
 	ResourceImageSubstract.cpp
@@ -368,15 +352,6 @@ ScriptWrapper
     NodeScriptWrapper.cpp	
     MathScriptWrapper.cpp
     SoundScriptWrapper.cpp
-)
-
-ADD_FILTER(
-ScriptWrapper2
-    EntityScriptWrapper2.cpp
-    HelperScriptWrapper2.cpp
-    NodeScriptWrapper2.cpp	
-    MathScriptWrapper2.cpp
-	SoundScriptWrapper2.cpp
 )
 
 

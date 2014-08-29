@@ -29,6 +29,8 @@
 
 #   include "Interface/ResourceInterface.h"
 
+#	include "Kernel/ResourceImageData.h"
+
 #	include "ResourceFile.h"
 #	include "ResourceMovie.h"
 #	include "ResourceAnimation.h"
@@ -38,7 +40,6 @@
 #   include "ResourceImageSolid.h"
 #   include "ResourceEmitterContainer.h"
 
-//#	include "ResourceImageDynamic.h"
 #	include "ResourceImageDefault.h"
 #	include "ResourceTestPick.h"
 #	include "ResourceHIT.h"
@@ -77,6 +78,7 @@
 //#	include "RigidBody3D.h"
 //#	include "CapsuleController.h"
 //#	include "Skeleton.h"
+#	include "RenderViewport.h"
 #	include "Camera2D.h"
 #	include "CameraTarget2D.h"
 
@@ -85,7 +87,7 @@
 #	include "Layer2DIsometric.h"
 #	include "Layer2DTexture.h"
 
-#   include "ResourceImage.h"
+#   include "Kernel/ResourceImage.h"
 
 //#	include "RigidBody2D.h"
 
@@ -3853,12 +3855,14 @@ namespace Menge
         //SCRIPT_CLASS_WRAPPING( RenderMesh );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Window );
 
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, RenderViewport );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Camera2D );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, CameraTarget2D );
         //SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceReference );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImage );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageData );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageDefault );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceAnimation );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceMovie );
@@ -4011,10 +4015,28 @@ namespace Menge
             ;
 
         pybind::interface_<ResourceImage, pybind::bases<ResourceReference> >("ResourceImage", false)
+			.def( "getMaxSize", &ResourceImage::getMaxSize )
+			.def( "getSize", &ResourceImage::getSize )
+			.def( "getOffset", &ResourceImage::getOffset )
+			.def( "getUV", &ResourceImage::getUV )
+			.def( "getUVScale", &ResourceImage::getUVScale )
+			.def( "getUVImage", &ResourceImage::getUVImage )
+			.def( "getUVAlpha", &ResourceImage::getUVAlpha )
+			.def( "isAlpha", &ResourceImage::isAlpha )
+			.def( "isWrapU", &ResourceImage::isWrapU )
+			.def( "isWrapV", &ResourceImage::isWrapV )
+			.def( "isUVRotate", &ResourceImage::isUVRotate )
             ;
+
+		pybind::interface_<ResourceImageData, pybind::bases<ResourceReference> >("ResourceImageData", false)
+			.def( "getImagePath", &ResourceImageData::getImagePath )
+			.def( "getCodecType", &ResourceImageData::getCodecType )
+			.def( "getImageMaxSize", &ResourceImageData::getImageMaxSize )
+			;
 
         pybind::interface_<ResourceImageDefault, pybind::bases<ResourceImage> >("ResourceImageDefault", false)
 			.def( "getImagePath", &ResourceImageDefault::getImagePath )
+			.def( "getCodecType", &ResourceImageDefault::getCodecType )
             ;
 
 		pybind::interface_<ResourceImageMultiplyRGBAndAlpha, pybind::bases<ResourceImage> >("ResourceImageMultiplyRGBAndAlpha", false)
@@ -4189,16 +4211,20 @@ namespace Menge
         pybind::interface_<ThreadTask>("Task")
             ;
 
+		pybind::interface_<RenderViewportInterface>("RenderViewportInterface")
+			.def( "getViewport", &RenderViewportInterface::getViewport )
+			;
+
+		pybind::interface_<RenderViewport, pybind::bases<Node, RenderViewportInterface> >("RenderViewport", false)
+			.def( "setFixedViewport", &RenderViewport::setFixedViewport )
+			.def( "getFixedViewport", &RenderViewport::getFixedViewport )
+			;
+
         pybind::interface_<RenderCameraInterface>("RenderCameraInterface")
             .def( "getCameraRenderport", &RenderCameraInterface::getCameraRenderport )
 			.def( "getRenderTarget", &RenderCameraInterface::getRenderTarget )
 			.def( "isOrthogonalProjection", &RenderCameraInterface::isOrthogonalProjection )			
             ;
-
-		pybind::interface_<RenderViewportInterface>("RenderViewportInterface")
-			.def( "getViewport", &RenderViewportInterface::getViewport )
-			;
-
 
 		pybind::interface_<Camera, pybind::bases<RenderCameraInterface> >("Camera")
 			.def( "setRenderTarget", &Camera2D::setRenderTarget )

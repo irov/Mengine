@@ -4,7 +4,7 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ResourceInterface.h"
 
-#	include "ResourceImage.h"
+#	include "Kernel/ResourceImage.h"
 
 #	include "Consts.h"
 

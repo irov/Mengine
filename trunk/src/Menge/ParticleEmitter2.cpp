@@ -31,6 +31,7 @@
 #   include "pybind/pybind.hpp"
 
 #	include "Core/RenderUtil.h"
+#	include "Core/Memory.h"
 
 namespace	Menge
 {
@@ -178,7 +179,7 @@ namespace	Menge
 
         m_resourceParticle.release();
 
-		delete [] m_vertices;        
+		Helper::freeMemory( m_vertices );
 		m_vertices = nullptr;
 
 		m_verticesCount = 0;
@@ -394,10 +395,7 @@ namespace	Menge
 		{			
 			m_verticesCount = flush.particleCount * 4;
 
-			delete [] m_vertices;
-			m_vertices = nullptr;
-
-			m_vertices = new RenderVertex2D [m_verticesCount];
+			m_vertices = Helper::reallocateMemory<RenderVertex2D>( m_vertices, m_verticesCount );
 		}
 
 		ColourValue color;

@@ -3,6 +3,8 @@
 
 #	include "Interface/FileSystemInterface.h"
 
+#	include "Core/Memory.h"
+
 #	include "Logger/Logger.h"
 
 namespace Menge
@@ -40,7 +42,7 @@ namespace Menge
 
 		m_bufferSize = fileStream->size();
 
-		m_buffer = new char [m_bufferSize];
+		m_buffer = Helper::allocateMemory<char>( m_bufferSize );
 
 		fileStream->read( m_buffer, m_bufferSize );
 
@@ -49,7 +51,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceCursorICO::_release()
 	{
-		delete [] m_buffer;
+		Helper::freeMemory( m_buffer );
 		m_buffer = nullptr;
 
 		m_bufferSize = 0;

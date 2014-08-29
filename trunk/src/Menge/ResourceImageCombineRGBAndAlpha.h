@@ -1,10 +1,8 @@
 #	pragma once
 
-#	include "ResourceImage.h"
+#	include "Kernel/ResourceImage.h"
 
 #	include "Config/Typedef.h"
-
-#	include <stdex/stl_vector.h>
 
 namespace Menge
 {

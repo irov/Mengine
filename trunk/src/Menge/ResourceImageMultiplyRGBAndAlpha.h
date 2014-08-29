@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "ResourceImage.h"
+#	include "Kernel/ResourceImage.h"
 
 #	include "Config/Typedef.h"
 

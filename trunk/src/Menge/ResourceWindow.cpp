@@ -5,7 +5,7 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Logger/Logger.h"
 
-#	include "ResourceImage.h"
+#	include "Kernel/ResourceImage.h"
 
 namespace Menge
 {

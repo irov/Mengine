@@ -41,7 +41,10 @@ namespace Menge
 
 	public:
 		void setMap( float _width, float _height, float _gridSize, float _unitSize );
-		bool testMap( const mt::vec2f & _point ) const;
+		void setMapWeight( const uint8_t * _weight );
+
+	public:
+		bool testMap( const mt::vec2f & _point ) const;			
 
 	public:
 		bool testPoint( const mt::vec2f & _point );
@@ -72,7 +75,7 @@ namespace Menge
 		bool testHolesPoint_( const mt::vec2f & _p ) const;
 
 	protected:
-		void obstacleCellMask_( Obstacle * _obstacle, uint32_t _mask );
+		void obstacleCellMask_( Obstacle * _obstacle, uint8_t _mask );
 
 	public:
 		struct PathFinderDesc

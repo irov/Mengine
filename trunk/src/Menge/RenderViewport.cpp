@@ -10,6 +10,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderViewport::RenderViewport()
 		: m_invalidateViewport(true)
+		, m_fixedViewport(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -34,6 +35,16 @@ namespace Menge
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
 			->removeObserver( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, m_observerChangeWindowResolution );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderViewport::setFixedViewport( bool _value )
+	{
+		m_fixedViewport = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderViewport::getFixedViewport() const
+	{
+		return m_fixedViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderViewport::setViewport( const Viewport & _viewport )
@@ -65,6 +76,9 @@ namespace Menge
 
 		mt::vec2f contentResolutionSize;
 		contentResolution.calcSize( contentResolutionSize );
+
+		mt::vec2f gameViewportSize;
+		gameViewport.calcSize( gameViewportSize );
 
 		mt::vec2f viewportMaskBegin = gameViewport.begin / contentResolutionSize;
 		mt::vec2f viewportMaskEnd = gameViewport.end / contentResolutionSize;

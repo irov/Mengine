@@ -12,8 +12,6 @@
 #	include "Core/ConstString.h"
 #	include "Core/String.h"
 
-#	include <cstdio>
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

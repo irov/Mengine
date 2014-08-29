@@ -21,7 +21,6 @@ namespace Menge
 		inline const mt::vec2f & getMaxSize() const;
 		inline const mt::vec2f & getSize() const;
 		inline const mt::vec2f & getOffset() const;
-        inline const mt::vec2f & getBound() const;
 		inline const mt::vec4f & getUV() const;
         inline const mt::vec4f & getUVScale() const;
 		inline const mt::vec4f & getUVImage() const;

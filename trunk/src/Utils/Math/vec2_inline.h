@@ -242,7 +242,7 @@ namespace mt
 
 	MATH_FUNCTION_INLINE float dot_v2_v2(const vec2f &a, const vec2f &b)
 	{
-		return a.x * b.x + a.y * b.y ;
+		return a.x * b.x + a.y * b.y;
 	}
 
 	MATH_FUNCTION_INLINE void norm_v2(vec2f& _out, const vec2f& _rhs)
@@ -253,20 +253,25 @@ namespace mt
 	MATH_FUNCTION_INLINE float norm_v2_f(vec2f& _out, const vec2f& _rhs)
 	{
 		float l = _rhs.length();
+
 		_out = _rhs / l;
+
 		return l;
 	}
 
 	MATH_FUNCTION_INLINE vec2f norm_v2(const vec2f& _rhs)
 	{
 		vec2f out;
+
 		norm_v2(out, _rhs);
+
 		return out;
 	}
 
 	MATH_FUNCTION_INLINE void norm_safe_v2(vec2f& _out, const vec2f& _rhs, float _err)
 	{
 		float len = _rhs.length();
+
 		if (len > _err)
         {
 			_out = _rhs / len;
@@ -281,12 +286,13 @@ namespace mt
 	{
 		vec2f out;
 		norm_safe_v2(out, _rhs);
+
 		return out;
 	}
 
 	MATH_FUNCTION_INLINE void perp_v2(vec2f&	_out, const vec2f& _rhs)
 	{
-		_out = vec2f(-_rhs.y,_rhs.x);
+		_out = vec2f(-_rhs.y, _rhs.x);
 	}
 
 	MATH_FUNCTION_INLINE vec2f perp(const vec2f&	_rhs)

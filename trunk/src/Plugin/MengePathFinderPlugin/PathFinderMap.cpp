@@ -94,12 +94,17 @@ namespace Menge
 
 		m_unitSize = _unitSize;
 
-		uint32_t map_width = (uint32_t)(_width / _gridSize + 0.5f);
-		uint32_t map_height = (uint32_t)(_height / _gridSize + 0.5f);
-		
+		uint16_t map_width = (uint16_t)(_width / _gridSize + 0.5f);
+		uint16_t map_height = (uint16_t)(_height / _gridSize + 0.5f);
+
 		m_map.initialize( map_width, map_height );
 
 		//m_pathfinder.initialize( &m_map );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderMap::setMapWeight( const uint8_t * _weight )
+	{
+		m_map.setCellWeightBuffer( _weight );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testMap( const mt::vec2f & _point ) const
@@ -107,7 +112,7 @@ namespace Menge
 		uint32_t px = (uint32_t)(_point.x / m_gridSize + 0.5f);
 		uint32_t py = (uint32_t)(_point.y / m_gridSize + 0.5f);
 
-		uint32_t mask;
+		uint8_t mask;
 		if( m_map.getCellMask( px, py, mask ) == false )
 		{
 			return false;
@@ -356,7 +361,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::obstacleCellMask_( Obstacle * _obstacle, uint32_t _mask )
+	void PathFinderMap::obstacleCellMask_( Obstacle * _obstacle, uint8_t _mask )
 	{
 		const Polygon & polygon = _obstacle->bigHole;
 		
@@ -513,7 +518,12 @@ namespace Menge
 
 		PathFinderWayPtr way = m_factoryPathFinderWay.createObjectT();
 
-		pf->initialize( &m_map, way, _from, _to, m_gridSize );
+		way->setServiceProvider( m_serviceProvider );
+
+		if( pf->initialize( &m_map, way, _from, _to, m_gridSize ) == false )
+		{
+			return 0;
+		}
 
 		m_threadPathFinders->addTask( pf );
 

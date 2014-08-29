@@ -29,13 +29,6 @@ box3
 )
 
 ADD_FILTER(
-convex_poly
-	convexpoly2.cpp
-	convexpoly2.h
-	convexpoly2_inline.h
-)
-
-ADD_FILTER(
 clamp
 	clamp.h
 )

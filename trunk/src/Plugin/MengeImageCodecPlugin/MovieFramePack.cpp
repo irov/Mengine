@@ -20,14 +20,14 @@ namespace Menge
 		{
 			MovieLayerFrame & layer = *it;
 
-			Helper::deleteMemory( layer.anchorPoint );
-			Helper::deleteMemory( layer.position );
-			Helper::deleteMemory( layer.rotation_x );
-			Helper::deleteMemory( layer.rotation_y );
-			Helper::deleteMemory( layer.rotation_z );
-			Helper::deleteMemory( layer.scale );
-			Helper::deleteMemory( layer.opacity );
-			Helper::deleteMemory( layer.volume );
+			Helper::freeMemory( layer.anchorPoint );
+			Helper::freeMemory( layer.position );
+			Helper::freeMemory( layer.rotation_x );
+			Helper::freeMemory( layer.rotation_y );
+			Helper::freeMemory( layer.rotation_z );
+			Helper::freeMemory( layer.scale );
+			Helper::freeMemory( layer.opacity );
+			Helper::freeMemory( layer.volume );
 		}
 	}
     //////////////////////////////////////////////////////////////////////////

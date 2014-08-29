@@ -6,7 +6,7 @@
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
 
-#   include "ResourceImage.h"
+#   include "Kernel/ResourceImage.h"
 #	include "ResourceModel3D.h"
 
 #	include "Core/ColourValue.h"

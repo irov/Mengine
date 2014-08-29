@@ -2,7 +2,7 @@
 
 #	include "Kernel/ResourceReference.h"
 
-#	include "ResourceImage.h"
+#	include "Kernel/ResourceImage.h"
 
 namespace Menge
 {

@@ -1,4 +1,4 @@
-#	include "Kernel/Resource.h"
+#	include "Resource.h"
 
 namespace Menge
 {

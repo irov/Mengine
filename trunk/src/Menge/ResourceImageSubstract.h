@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "ResourceImageDefault.h"
+
 #	include "Config/Typedef.h"
 
 #	include <stdex/stl_vector.h>

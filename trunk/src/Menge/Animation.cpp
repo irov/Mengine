@@ -4,7 +4,7 @@
 
 #	include "ResourceAnimation.h"
 
-#	include "ResourceImage.h"
+#	include "Kernel/ResourceImage.h"
 
 #	include "Logger/Logger.h"
 

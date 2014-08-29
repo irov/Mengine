@@ -1023,11 +1023,11 @@ namespace Menge
         
         if( m_viewport.equalViewport( clear_viewport ) == false )
         {
-            this->setViewport( clear_viewport );
+            this->updateViewport_( clear_viewport );
 
             this->clear_( 0 );
 
-            this->setViewport( m_viewport );
+            this->updateViewport_( m_viewport );
         }
         
         IF_DXCALL( m_serviceProvider, m_pD3DDevice, BeginScene, () )
@@ -1118,6 +1118,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setViewport( const Viewport & _viewport )
 	{
+		m_viewport = _viewport;
+
+		this->updateViewport_( _viewport );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::updateViewport_( const Viewport & _viewport )
+	{
         if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setViewport device not created"
@@ -1125,8 +1132,6 @@ namespace Menge
 
             return;
         }
-                
-        m_viewport = _viewport;
 
 		D3DVIEWPORT9 VP;
 

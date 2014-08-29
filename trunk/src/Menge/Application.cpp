@@ -61,8 +61,8 @@
 #	include "ResourceAnimation.h"
 #	include "ResourceEmitterContainer.h"
 #	include "ResourceEmitter.h"
-#	include "ResourceEmitterContainer2.h"
-#	include "ResourceEmitter2.h"
+
+#	include "Kernel/ResourceImageData.h"
 
 #	include "ResourceImageSolid.h"
 #	include "ResourceImageDefault.h"
@@ -664,6 +664,7 @@ namespace Menge
 		//RESOURCE_FACTORY( m_serviceProvider, ResourceFont );
 		//RESOURCE_FACTORY( m_serviceProvider, ResourceGlyph );
 		
+		RESOURCE_FACTORY( m_serviceProvider, ResourceImageData );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceImageDefault );
         RESOURCE_FACTORY( m_serviceProvider, ResourceImageSubstract );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceImageCombineRGBAndAlpha );
@@ -1053,32 +1054,38 @@ namespace Menge
 				stdex_memory_info_t mi[25];
                 size_t count = stdex_allocator_memoryinfo( mi, 25 );
 
-				size_t total_now = 0;
-				size_t total_max = 0;
+				size_t pool_now = 0;
+				size_t pool_max = 0;
 
 				for( size_t i = 0; i != count; ++i )
 				{
 					const stdex_memory_info_t & m = mi[i];
 
-					total_now += m.block_size * m.block_count;
-					total_max += m.block_size * m.block_total * m.chunk_count;
+					pool_now += m.block_size * m.block_count;
+					pool_max += m.block_size * m.block_total * m.chunk_count;
 
-					printf("block %d:%d %d alloc %d:%d\n"
+					printf("block %d:%d %d alloc %d:%d over %.2f\n"
 						, m.block_size
 						, m.chunk_count
 						, m.block_count
 						, m.block_size * m.block_count
-						, m.block_size * m.block_total * m.chunk_count 
+						, m.block_size * m.block_total * m.chunk_count
+						, float(m.block_size * m.block_total * m.chunk_count) / float(m.block_size * m.block_count)
 						);
 				}
+
+				float pool_now_mb = float(pool_now / (1024.f * 1024.f));
+				float pool_max_mb = float(pool_max / (1024.f * 1024.f));
+				printf("-------------------------------------\n");
+				printf("pool %.3f:%.3f\n", pool_now_mb, pool_max_mb);
 
 				size_t global = stdex_allocator_globalmemoryuse();
 				float global_mb = float(global / (1024.f * 1024.f));
 				printf("-------------------------------------\n");
 				printf("global %.3f\n", global_mb);
 
-				float total_now_mb = float(total_now / (1024.f * 1024.f));
-				float total_max_mb = float(total_max / (1024.f * 1024.f));
+				float total_now_mb = pool_now_mb + global_mb;;
+				float total_max_mb = pool_max_mb + global_mb;
 				printf("-------------------------------------\n");
 				printf("total %.3f:%.3f\n", total_now_mb, total_max_mb);
             }

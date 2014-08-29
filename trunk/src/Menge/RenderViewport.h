@@ -23,6 +23,10 @@ namespace Menge
 		void _deactivate() override;
 
 	public:
+		void setFixedViewport( bool _value );
+		bool getFixedViewport() const;
+
+	public:
 		void setViewport( const Viewport & _viewport );
 
 	public:
@@ -42,9 +46,10 @@ namespace Menge
 
 	protected:
 		Viewport m_viewport;
-
+		
 		Observer * m_observerChangeWindowResolution;
 
+		bool m_fixedViewport;
 		mutable Viewport m_viewportWM;		
 		mutable bool m_invalidateViewport;
 	};

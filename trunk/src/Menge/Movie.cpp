@@ -14,7 +14,6 @@
 #   include "ResourceEmitterContainer.h"
 #	include "ResourceEmitter.h"
 #   include "ResourceParticle.h"
-#	include "ResourceEmitter2.h"
 
 #   include "Interface/ApplicationInterface.h"
 

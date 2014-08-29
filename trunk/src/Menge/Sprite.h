@@ -3,12 +3,12 @@
 #	include "Kernel/Node.h"
 #	include "Kernel/Shape.h"
 
-#   include "ResourceImage.h"
+#   include "Kernel/ResourceImage.h"
 
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"
 
-#	include "../Interface/RenderSystemInterface.h"
+#	include "Interface/RenderSystemInterface.h"
 
 #	include "math/mat3.h"
 #	include "math/vec4.h"

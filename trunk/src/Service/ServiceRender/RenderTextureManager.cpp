@@ -441,7 +441,8 @@ namespace Menge
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image file '%s' was not found"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image file '%s:%s' was not found"
+				, _pakName.c_str()
 				, _fileName.c_str() 
 				);
 
@@ -453,7 +454,9 @@ namespace Menge
 
 		if( imageDecoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image decoder for file '%s' was not found"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image decoder '%s' for file '%s:%s' was not found"
+				, _codec.c_str()
+				, _pakName.c_str()
 				, _fileName.c_str() 
 				);
 
@@ -462,7 +465,9 @@ namespace Menge
 
 		if( imageDecoder->prepareData( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image decoder for file '%s' was not initialize"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image decoder '%s' for file '%s:%s' was not initialize"
+				, _codec.c_str()
+				, _pakName.c_str()
 				, _fileName.c_str() 
 				);
 

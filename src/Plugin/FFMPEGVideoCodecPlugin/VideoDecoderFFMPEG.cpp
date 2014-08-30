@@ -506,21 +506,25 @@ namespace Menge
 			return true;
 		}
 		
-        //int64_t minTime = (int64_t)(_timing - m_dataInfo.frameTiming);
-        //int64_t maxTime = (int64_t)(_timing + m_dataInfo.frameTiming);
+        int64_t minTime = (int64_t)(_timing - m_dataInfo.frameTiming);
+        int64_t maxTime = (int64_t)(_timing + m_dataInfo.frameTiming);
         int64_t needTime = (int64_t)(correct_timing);
 				
         //if( av_seek_frame( m_formatContext, seekStreamIndex, _frame,  AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD ) < 0 )
-        //int seek_err = avformat_seek_file( m_formatContext, m_videoStreamId, minTime, needTime, maxTime, AVSEEK_FLAG_ANY );
-        int seek_err = av_seek_frame( m_formatContext, m_videoStreamId, needTime, AVSEEK_FLAG_ANY );
+        int seek_err = avformat_seek_file( m_formatContext, m_videoStreamId, minTime, needTime, maxTime, AVSEEK_FLAG_ANY );
+        //int seek_err = av_seek_frame( m_formatContext, m_videoStreamId, needTime, AVSEEK_FLAG_ANY );
 
         if( seek_err < 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::seek %d:%f error [%d]"
+            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::seek %d from %f to %f duration %f error [%d]"
                 , m_videoStreamId
+				, m_pts
                 , correct_timing
+				, m_dataInfo.duration
                 , seek_err
                 );
+
+			int seek_err2 = avformat_seek_file( m_formatContext, m_videoStreamId, 0, 0, 0, 0 );
 
             return false;
         }

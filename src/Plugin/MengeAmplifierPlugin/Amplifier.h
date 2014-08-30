@@ -74,7 +74,6 @@ namespace	Menge
 
 
     protected:
-		void release_();	
 		bool prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codecType, float _pos );
 		bool loadPlayList_( const ConstString& _playlistResource );
 		bool preparePlay_( float _pos );

@@ -76,7 +76,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void VideoCodecPlugin::destroy()
+	void VideoCodecPlugin::finalize()
 	{
 		for( TVectorVideoDecoders::iterator
 			it = m_decoders.begin(),
@@ -90,6 +90,11 @@ namespace Menge
 				->unregisterDecoder( name );
 		}
 
+		m_decoders.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void VideoCodecPlugin::destroy()
+	{
 		delete this;
 	}
 }

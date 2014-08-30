@@ -32,29 +32,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	XmlCodecPlugin::XmlCodecPlugin()
 		: m_serviceProvider(nullptr)
-		, m_xml2bin(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool XmlCodecPlugin::initialize( ServiceProviderInterface * _serviceProvider )
 	{
 		m_serviceProvider = _serviceProvider;
-      		
-		m_xml2bin = new DecoderFactory<XmlToBinDecoder>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "bin"));
-
+      	
 		CODEC_SERVICE(m_serviceProvider)
-            ->registerDecoder( CONST_STRING_LOCAL(m_serviceProvider, "xml2bin"), m_xml2bin );
+            ->registerDecoder( CONST_STRING_LOCAL(m_serviceProvider, "xml2bin"), new DecoderFactory<XmlToBinDecoder>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "bin")) );
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void XmlCodecPlugin::destroy()
+	void XmlCodecPlugin::finalize()
 	{
 		CODEC_SERVICE(m_serviceProvider)
-            ->unregisterDecoder( CONST_STRING_LOCAL(m_serviceProvider, "xml2bin") );
-
-        m_xml2bin = nullptr;
-
+			->unregisterDecoder( CONST_STRING_LOCAL(m_serviceProvider, "xml2bin") );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void XmlCodecPlugin::destroy()
+	{
 		delete this;
 	}
 }

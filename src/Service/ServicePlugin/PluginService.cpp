@@ -27,6 +27,7 @@ namespace Menge
         {
             const PluginDesc & desc = it->second;
 
+			desc.plugin->finalize();
             desc.plugin->destroy();
             desc.dlib->destroy();
         }
@@ -137,6 +138,7 @@ namespace Menge
 
         const PluginDesc & desc = it_found->second;
 
+		desc.plugin->finalize();
         desc.plugin->destroy();
         desc.dlib->destroy();
 

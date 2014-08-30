@@ -142,6 +142,9 @@ namespace Menge
 #   define SERVICE_REGISTRY( Provider, Service )\
     Provider->registryService( Service->getServiceName(), Service )
 
+#   define SERVICE_UNREGISTRY( Provider, Service )\
+	Provider->unregistryService( Service->getServiceName() )
+
 #   define SERVICE_CREATE( Name, Service )\
     SERVICE_NAME_CREATE(Name)( Service )
 

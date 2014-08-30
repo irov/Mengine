@@ -32,19 +32,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::~Amplifier()
 	{
-		//_release();
-		this->stop();
-
-		for( TMapPlayList::iterator 
-			it = m_mapPlayLists.begin(),
-			it_end = m_mapPlayLists.end();
-		it != it_end;
-		++it)
-		{
-			Playlist * playlist = it->second;
-			
-			delete playlist;
-		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void Amplifier::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -64,14 +51,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::finalize()
 	{
+		this->stop();
 
+		for( TMapPlayList::iterator 
+			it = m_mapPlayLists.begin(),
+			it_end = m_mapPlayLists.end();
+		it != it_end;
+		++it)
+		{
+			Playlist * playlist = it->second;
+
+			delete playlist;
+		}
+
+		m_mapPlayLists.clear();
+
+		m_currentPlayList = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::loadPlayList_( const ConstString& _playlistResource )
 	{
-		TMapPlayList::iterator it = m_mapPlayLists.find( _playlistResource );
+		TMapPlayList::iterator it_found = m_mapPlayLists.find( _playlistResource );
 
-		if( it == m_mapPlayLists.end() )
+		if( it_found == m_mapPlayLists.end() )
 		{			
 			Playlist * playlist = new Playlist( m_serviceProvider );
 
@@ -86,11 +88,11 @@ namespace Menge
                 return false;
             }
 
-			it = m_mapPlayLists.insert( std::make_pair( _playlistResource, playlist ) ).first;
+			it_found = m_mapPlayLists.insert( std::make_pair( _playlistResource, playlist ) ).first;
 		}
 
 		m_currentPlaylistName = _playlistResource;
-		m_currentPlayList = it->second;
+		m_currentPlayList = it_found->second;
 
 		return true;
 	}
@@ -211,13 +213,19 @@ namespace Menge
 	{
 		m_play = false;
 
+		m_buffer = nullptr;
+
 		if( m_sourceID != 0 )
 		{
-			SOUND_SERVICE(m_serviceProvider)
-                ->stop( m_sourceID );
+			size_t sourceId = m_sourceID;
+			m_sourceID = 0;
 
-			this->release_();
-		}
+			SOUND_SERVICE(m_serviceProvider)
+                ->stop( sourceId );
+		
+			SOUND_SERVICE(m_serviceProvider)
+				->releaseSoundSource( sourceId );			
+		}				
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::pause()
@@ -328,16 +336,6 @@ namespace Menge
             ->setSourceListener( m_sourceID, this );
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::release_()
-	{
-		SOUND_SERVICE(m_serviceProvider)
-            ->releaseSoundSource( m_sourceID );
-
-        m_sourceID = 0;
-
-    	m_buffer = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString& Amplifier::getPlayTrack() const

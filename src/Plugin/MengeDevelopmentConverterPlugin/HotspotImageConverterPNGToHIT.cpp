@@ -9,6 +9,8 @@
 
 #	include "Logger/Logger.h"
 
+#	include "Core/CacheMemoryBuffer.h"
+
 #   include <math.h>
 
 namespace Menge
@@ -46,14 +48,14 @@ namespace Menge
 
 		const PickCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-		size_t mipmapsize = dataInfo->mipmapsize;
-		unsigned char * mipmap = new unsigned char [mipmapsize];
+		size_t bufferSize = dataInfo->mipmapsize;
 
-		size_t decode_mipmapsize = decoder->decode( mipmap, mipmapsize );
+		CacheMemoryBuffer memory(m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::validateVersion");
+		unsigned char * buffer = memory.getMemoryT<unsigned char>();
 
-		delete [] mipmap;
-
-		if( decode_mipmapsize != mipmapsize )
+		size_t decode_mipmapsize = decoder->decode( buffer, bufferSize );
+				
+		if( decode_mipmapsize != bufferSize )
 		{
 			return false;                
 		}
@@ -113,8 +115,10 @@ namespace Menge
         size_t mimmap_level;
         size_t mimmap_size = this->calcMimMapBufferLevelAndSize_( width, height, mimmap_level );
 
-        size_t bufferSize = width * height;        
-        unsigned char * buffer = new unsigned char [bufferSize + mimmap_size];
+        size_t bufferSize = width * height;
+		
+		CacheMemoryBuffer memory(m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::convert");
+		unsigned char * buffer = memory.getMemoryT<unsigned char>();
 
         if( imageDecoder->decode( buffer, bufferSize ) == 0 )
         {
@@ -173,9 +177,7 @@ namespace Menge
         encoder->encode( buffer, &di );
 
 		encoder->finalize();
-
-        delete [] buffer;
-
+		
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -200,7 +202,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void HotspotImageConverterPNGToHIT::makeMipMapLevel_( unsigned char * _buffer, size_t _width, size_t _height, size_t _level )
     {
-        unsigned char ** mipmap = new unsigned char * [_level];
+        unsigned char * mipmap[32];
         
         mipmap[0] = _buffer;
 
@@ -290,7 +292,5 @@ namespace Menge
                 }
             }
         }
-
-        delete [] mipmap;
     }
 }

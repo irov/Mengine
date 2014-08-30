@@ -21,6 +21,10 @@ namespace Menge
 		CodecEngine();
 		~CodecEngine();
 
+	public:
+		bool initialize() override;
+		void finalize() override;
+
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;

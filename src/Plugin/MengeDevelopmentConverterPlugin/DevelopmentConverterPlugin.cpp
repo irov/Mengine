@@ -76,7 +76,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DevelopmentConverterPlugin::destroy()
+	void DevelopmentConverterPlugin::finalize()
 	{
 		for( TVectorHotspotImageConverters::iterator
 			it = m_converters.begin(),
@@ -84,14 +84,19 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            ConverterFactoryInterface * converter = (*it);
+			ConverterFactoryInterface * converter = (*it);
 
 			const ConstString & name = converter->getName();
 
 			CONVERTER_SERVICE(m_serviceProvider)
-                ->unregisterConverter( name );
+				->unregisterConverter( name );
 		}
 
+		m_converters.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DevelopmentConverterPlugin::destroy()
+	{
 		delete this;
 	}
 }

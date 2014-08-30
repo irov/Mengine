@@ -172,7 +172,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageCodecPlugin::destroy()
+	void ImageCodecPlugin::finalize()
 	{
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),
@@ -183,8 +183,10 @@ namespace Menge
 			const ConstString & name = (*it)->getName();
 
 			CODEC_SERVICE(m_serviceProvider)
-                ->unregisterDecoder( name );
+				->unregisterDecoder( name );
 		}
+
+		m_decoders.clear();
 
 		// Encoders
 		for( TVectorEncoders::iterator
@@ -196,15 +198,20 @@ namespace Menge
 			const ConstString & name = (*it)->getName();
 
 			CODEC_SERVICE(m_serviceProvider)
-                ->unregisterEncoder( name );
+				->unregisterEncoder( name );
 		}
+
+		m_encoders.clear();
 
 		DATA_SERVICE(m_serviceProvider)
 			->unregisterDataflow( CONST_STRING_LOCAL(m_serviceProvider, "aekMovie") );
 
 		DATA_SERVICE(m_serviceProvider)
 			->unregisterDataflow( CONST_STRING_LOCAL(m_serviceProvider, "mdzModel") );
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ImageCodecPlugin::destroy()
+	{
 		delete this;
 	}
 }

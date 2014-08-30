@@ -95,11 +95,6 @@ namespace Menge
 		bool openUrlInDefaultBrowser( const WString & _url ) override;		
 
 	public:
-		size_t getMemoryUsage() const override;
-
-		void * checkpointMemory() const override;
-		size_t diffMemory( void * _checkpoint ) const override;
-
 		bool isSaverRunning() const;
 
 		bool isDevelopmentMode() const override;
@@ -262,13 +257,7 @@ namespace Menge
 		bool m_profilerMode;
 		bool m_muteMode;
 
-		PluginInterface * m_pluginMengeImageCodec;
-		PluginInterface * m_pluginMengeSoundCodec;
-		PluginInterface * m_pluginMengeAmplifier;
-		PluginInterface * m_pluginMengeVideoCodec;
-		PluginInterface * m_pluginMengeZip;
-		PluginInterface * m_pluginMengeLZ4;
-		PluginInterface * m_pluginMengeWin32FileGroup;
-		PluginInterface * m_pluginPluginPathFinder;
+		typedef stdex::vector<PluginInterface *> TVectorPlugins;
+		TVectorPlugins m_plugins;	
 	};
 }	// namespace Menge

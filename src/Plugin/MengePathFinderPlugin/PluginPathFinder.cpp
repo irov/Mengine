@@ -58,7 +58,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PluginPathFinder::destroy()
+	void PluginPathFinder::finalize()
 	{
 		MODULE_SERVICE(m_serviceProvider)
 			->unregisterModule( CONST_STRING_LOCAL(m_serviceProvider, "ModulePathFinder") );
@@ -72,7 +72,10 @@ namespace Menge
 		m_factoryModulePathFinder = nullptr;
 		m_factoryModuleAreaOfInterest = nullptr;
 		m_factoryModuleCollisionGround = nullptr;
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PluginPathFinder::destroy()
+	{
 		delete this;
 	}
 }

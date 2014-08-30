@@ -88,11 +88,6 @@ namespace Menge
     public:
         virtual bool openUrlInDefaultBrowser( const WString & _url ) = 0;       
 
-    public:
-        virtual size_t getMemoryUsage() const = 0;
-        virtual void * checkpointMemory() const = 0;
-        virtual size_t diffMemory( void * _checkpoint ) const = 0;
-
 	public:
 		virtual bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
 		virtual bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;

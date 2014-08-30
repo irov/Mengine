@@ -22,6 +22,7 @@ namespace Menge
 	void Box2DPhysicWorld::finalize()
 	{
 		delete m_world;
+		m_world = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PhysicBodyInterface * Box2DPhysicWorld::createBody( EPBType _type )

@@ -188,6 +188,7 @@ namespace Menge
 		if( m_moduleFinder != nullptr )
 		{
 			m_moduleFinder->finalize();
+
 			delete m_moduleFinder;
 			m_moduleFinder = nullptr;
 		}

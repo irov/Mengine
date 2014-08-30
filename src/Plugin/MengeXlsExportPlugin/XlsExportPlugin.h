@@ -15,6 +15,9 @@ namespace Menge
 
 	protected:
 		bool initialize( ServiceProviderInterface * _serviceProvider ) override;
+		void finalize() override;
+
+	protected:
 		void destroy() override;
 
 	protected:

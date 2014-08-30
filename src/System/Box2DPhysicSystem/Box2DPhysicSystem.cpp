@@ -71,7 +71,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const WorldDesc & desc = *it;
+			WorldDesc & desc = *it;
 
 			if( desc.name != _name )
 			{
@@ -79,6 +79,7 @@ namespace Menge
 			}
 			
 			delete desc.world;
+			desc.world = nullptr;
 
 			m_worlds.erase( it );
 

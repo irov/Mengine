@@ -60,6 +60,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void AstralaxParticlePlugin2::finalize()
+	{
+		if( m_particleSystem2 != nullptr )
+		{
+			m_particleSystem2->finalize();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticlePlugin2::destroy()
 	{
 		if( m_particleSystem2 != nullptr )

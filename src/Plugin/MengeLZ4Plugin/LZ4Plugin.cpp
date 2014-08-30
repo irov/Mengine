@@ -42,11 +42,14 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LZ4Plugin::destroy()
+	void LZ4Plugin::finalize()
 	{
 		ARCHIVE_SERVICE(m_serviceProvider)
 			->unregisterArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LZ4Plugin::destroy()
+	{
 		delete this;
 	}
 }

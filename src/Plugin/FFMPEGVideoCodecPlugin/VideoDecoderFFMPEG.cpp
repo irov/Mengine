@@ -34,7 +34,7 @@ namespace Menge
 
 		case SEEK_SET:
 			{
-				if( stream->seek( _offset ) == false )
+				if( stream->seek( (size_t)_offset ) == false )
 				{
 					return -1;
 				}
@@ -46,7 +46,7 @@ namespace Menge
 			{
 				size_t pos = stream->tell();
 
-				size_t offset = pos + _offset;
+				size_t offset = pos + (size_t)_offset;
 
 				if( stream->seek( offset ) == false )
 				{
@@ -60,7 +60,7 @@ namespace Menge
 			{
 				size_t size = stream->size();
 
-				size_t offset = size + _offset;
+				size_t offset = size + (size_t)_offset;
 
 				if( stream->seek( offset ) == false )
 				{

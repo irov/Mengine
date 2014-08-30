@@ -491,7 +491,15 @@ namespace Menge
 					);
 
 				return false;
-			} 
+			}
+			else if( state == VDRS_END_STREAM )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Video::syncFirstFrame_: '%s' reading first frame but this is last :("
+					, this->getName().c_str()
+					);
+
+				return false;
+			}
 			else if( state == VDRS_SKIP )
 			{
 				continue;	
@@ -533,6 +541,11 @@ namespace Menge
 		{		
 			seek_timing -= frameTiming;
 		}
+
+		m_timing = 0.f;
+
+		m_invalidVideoTexture = true;
+		m_invalidFirstFrame = true;
 		
 		if( m_videoDecoder->seek( seek_timing ) == false )
         {
@@ -544,12 +557,6 @@ namespace Menge
 
 			return;
         }
-
-        m_timing = 0.f;
-        //m_needUpdate = this->sync_( frameTiming );
-
-		m_invalidVideoTexture = true;
-		m_invalidFirstFrame = true;
     }
 	////////////////////////////////////////////////////////////////////
 	float Video::_getTiming() const

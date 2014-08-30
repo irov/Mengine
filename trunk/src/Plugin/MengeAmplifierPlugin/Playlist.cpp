@@ -14,8 +14,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Playlist::Playlist( ServiceProviderInterface * _serviceProvider )
 		: m_serviceProvider(_serviceProvider)
-        , m_loop(false)
-		, m_playlistResource(nullptr)    
+		, m_playlistResource(nullptr)
+        , m_loop(false)		
 		, m_oneTrackPlayed(false)
 		, m_oneTrackLooped(false)
 		, m_trackIndex(0)

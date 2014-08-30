@@ -544,9 +544,9 @@ namespace Menge
 	}
 }
 
-static std::wstring correct_path( const std::wstring & _path )
+static Menge::WString s_correct_path( const Menge::WString & _path )
 {
-	std::wstring true_path = _path;
+	Menge::WString true_path = _path;
 
 	if( _path[0] == L'/' )
 	{
@@ -562,9 +562,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	int cmd_num;
 	LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
 
-	std::wstring in;
-	std::wstring out;
-	std::wstring info;
+	Menge::WString in;
+	Menge::WString out;
+	Menge::WString info;
 
 	for( int i = 0; i < cmd_num; i += 2 )
 	{
@@ -609,9 +609,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		return 1;
 	}
 
-	in = correct_path(in);
-	out = correct_path(out);
-	info = correct_path(info);
+	in = s_correct_path(in);
+	out = s_correct_path(out);
+	info = s_correct_path(info);
 
 	Menge::ServiceProviderInterface * serviceProvider;
 	if( Menge::initializeEngine( &serviceProvider ) == false )

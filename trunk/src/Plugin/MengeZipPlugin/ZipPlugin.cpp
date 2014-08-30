@@ -47,14 +47,17 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ZipPlugin::destroy()
+	void ZipPlugin::finalize()
 	{
 		FILE_SERVICE(m_serviceProvider)
 			->unregisterFileGroupFactory( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
-		
+
 		ARCHIVE_SERVICE(m_serviceProvider)
 			->unregisterArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ZipPlugin::destroy()
+	{
 		delete this;
 	}
 }

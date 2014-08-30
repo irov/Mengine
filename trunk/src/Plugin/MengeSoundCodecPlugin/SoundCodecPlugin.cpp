@@ -65,7 +65,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundCodecPlugin::destroy()
+	void SoundCodecPlugin::finalize()
 	{
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),
@@ -76,9 +76,14 @@ namespace Menge
 			const ConstString & name = (*it)->getName();
 
 			CODEC_SERVICE(m_serviceProvider)
-                ->unregisterDecoder( name );
+				->unregisterDecoder( name );
 		}
 
+		m_decoders.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundCodecPlugin::destroy()
+	{
 		delete this;
 	}
 }

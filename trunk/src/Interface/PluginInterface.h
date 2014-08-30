@@ -14,8 +14,9 @@ namespace Menge
 
 	public:
 		virtual bool initialize( ServiceProviderInterface * _provider ) = 0;
+		virtual void finalize() = 0;
 
-    public:
+	public:
 		virtual void destroy() = 0;
 	};
 

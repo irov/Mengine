@@ -66,7 +66,7 @@ namespace Menge
 				, _path.c_str()
 				);
 
-			return false;
+			return 0;
 		}
 
 		if( FILE_SERVICE(m_serviceProvider)
@@ -77,18 +77,21 @@ namespace Menge
 				, _path.c_str()
 				);
 
-			return false;
+			return 0;
 		}
 
 		size_t task_id = ++m_enumeratorDownloadAsset;
 		
-		ThreadTaskDownloadAsset * task = 
+		ThreadTaskDownloadAssetPtr task = 
 			new ThreadTaskDownloadAsset( m_serviceProvider, _url, _category, _path, task_id, this );
 		
 		if( THREAD_SERVICE(m_serviceProvider)
 			->addTask( CONST_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), task ) == false )
 		{
-			delete task;
+			LOGGER_ERROR(m_serviceProvider)("CurlHttpSystem::downloadAsset category '%s' path '%s' invalid add task"
+				, _category.c_str()
+				, _path.c_str()
+				);
 
 			return 0;
 		}

@@ -190,13 +190,6 @@ namespace Menge
 		, m_developmentMode(false)
 		, m_noDevPluginsMode(false)
 		, m_muteMode(false)
-		, m_pluginMengeImageCodec(nullptr)
-		, m_pluginMengeSoundCodec(nullptr)
-		, m_pluginMengeAmplifier(nullptr)
-		, m_pluginMengeVideoCodec(nullptr)
-		, m_pluginMengeZip(nullptr)
-		, m_pluginMengeLZ4(nullptr)
-		, m_pluginMengeWin32FileGroup(nullptr)
 		, m_fileLog(nullptr)
 		, m_profilerMode(false)
 		, m_prefetcherService(nullptr)
@@ -378,14 +371,18 @@ namespace Menge
 
 		{
 			LOGGER_INFO(m_serviceProvider)("Initialize Zip...");
-			initPluginMengeZip( &m_pluginMengeZip );
-			m_pluginMengeZip->initialize( m_serviceProvider );
+			PluginInterface * plugin;
+			initPluginMengeZip( &plugin );
+			plugin->initialize( m_serviceProvider );
+			m_plugins.push_back( plugin );
 		}
 
 		{
 			LOGGER_INFO(m_serviceProvider)("Initialize LZ4...");
-			initPluginMengeLZ4( &m_pluginMengeLZ4 );
-			m_pluginMengeLZ4->initialize( m_serviceProvider );
+			PluginInterface * plugin;
+			initPluginMengeLZ4( &plugin );
+			plugin->initialize( m_serviceProvider );
+			m_plugins.push_back( plugin );
 		}
 
 		return true;
@@ -495,8 +492,13 @@ namespace Menge
 			return false;
 		}
 
-		initPluginMengeWin32FileGroup( &m_pluginMengeWin32FileGroup );
-		m_pluginMengeWin32FileGroup->initialize( m_serviceProvider );
+		{
+			LOGGER_INFO(m_serviceProvider)("Initialize Win32 file group...");
+			PluginInterface * plugin;
+			initPluginMengeWin32FileGroup( &plugin );
+			plugin->initialize( m_serviceProvider );
+			m_plugins.push_back( plugin );
+		}
 
 		if( m_enableDebug == false )
 		{
@@ -1180,6 +1182,11 @@ namespace Menge
 			return false;
 		}
 
+		if( codecService->initialize() == false )
+		{
+			return false;
+		}
+
 		if( SERVICE_REGISTRY( m_serviceProvider, codecService ) == false )
 		{
 			return false;
@@ -1582,41 +1589,29 @@ namespace Menge
 			CONFIG_SET(m_serviceProvider, "Development", "NoAccount", "1");
 		}
 
-		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Image Codec..." );
+#	define MENGINE_ADD_PLUGIN( Init, Info )\
+	{\
+		PluginInterface * plugin;\
+		Init( &plugin );\
+		if( plugin->initialize( m_serviceProvider ) == false )\
+		{\
+			LOGGER_ERROR(m_serviceProvider)( "Invalid %s", Info );\
+			plugin->destroy();\
+		}\
+		else\
+		{\
+			LOGGER_INFO(m_serviceProvider)( Info );\
+			m_plugins.push_back( plugin );\
+		}\
+	}		
 
-			initPluginMengeImageCodec( &m_pluginMengeImageCodec );
-			m_pluginMengeImageCodec->initialize( m_serviceProvider );
-		}
+		MENGINE_ADD_PLUGIN( initPluginMengeImageCodec, "initialize Plugin Image Codec..." );
+		MENGINE_ADD_PLUGIN( initPluginMengeSoundCodec, "initialize Plugin Sound Codec..." );
+		MENGINE_ADD_PLUGIN( initPluginMengeAmplifier, "initialize Plugin Amplifier..." );
+		MENGINE_ADD_PLUGIN( initPluginMengeVideoCodec, "initialize Plugin Video Codec..." );
+		MENGINE_ADD_PLUGIN( initPluginMengeVideoCodec, "initialize Plugin Path Finder..." );
 
-		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Sound Codec..." );
-
-			initPluginMengeSoundCodec( &m_pluginMengeSoundCodec );
-			m_pluginMengeSoundCodec->initialize( m_serviceProvider );
-		}
-
-		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Amplifier..." );
-
-			initPluginMengeAmplifier( &m_pluginMengeAmplifier );
-			m_pluginMengeAmplifier->initialize( m_serviceProvider );
-			
-		}
-
-		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Video Codec..." );
-
-			initPluginMengeVideoCodec( &m_pluginMengeVideoCodec );
-			m_pluginMengeVideoCodec->initialize( m_serviceProvider );
-		}				
-
-		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Path Finder..." );
-
-			initPluginPathFinder( &m_pluginPluginPathFinder );
-			m_pluginPluginPathFinder->initialize( m_serviceProvider );
-		}
+#	undef MENGINE_ADD_PLUGIN
 
 		TVectorWString plugins;
 		CONFIG_VALUES(m_serviceProvider, "Plugins", "Name", plugins);
@@ -1969,6 +1964,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::finalize()
 	{
+		int i = _heapchk();
+		printf("%d", i);
 		// Clean up
 		if( m_hWnd != NULL )
 		{
@@ -1989,51 +1986,20 @@ namespace Menge
 			m_fpsMonitor = nullptr;
 		}
 
+		for( TVectorPlugins::iterator
+			it = m_plugins.begin(),
+			it_end = m_plugins.end();
+		it != it_end;
+		++it )
+		{
+			PluginInterface * plugin = *it;
+
+			plugin->finalize();
+		}	
+
 		if( m_application != nullptr )
 		{
 			m_application->finalize();
-		}
-
-		if( m_pluginMengeImageCodec != nullptr )
-		{
-			m_pluginMengeImageCodec->destroy();
-			m_pluginMengeImageCodec = nullptr;
-		}
-
-		if( m_pluginMengeSoundCodec != nullptr )
-		{
-			m_pluginMengeSoundCodec->destroy();
-			m_pluginMengeSoundCodec = nullptr;
-		}
-
-		if( m_pluginMengeAmplifier != nullptr )
-		{
-			m_pluginMengeAmplifier->destroy();
-			m_pluginMengeAmplifier = nullptr;
-		}
-
-		if( m_pluginMengeVideoCodec != nullptr )
-		{
-			m_pluginMengeVideoCodec->destroy();
-			m_pluginMengeVideoCodec = nullptr;
-		}				
-
-		if( m_pluginMengeZip != nullptr )
-		{
-			m_pluginMengeZip->destroy();
-			m_pluginMengeZip = nullptr;
-		}
-
-		if( m_pluginMengeLZ4 != nullptr )
-		{
-			m_pluginMengeLZ4->destroy();
-			m_pluginMengeLZ4 = nullptr;
-		}
-
-		if( m_pluginMengeWin32FileGroup != nullptr )
-		{
-			m_pluginMengeWin32FileGroup->destroy();
-			m_pluginMengeWin32FileGroup = nullptr;
 		}
 
 		if( m_dataService != nullptr )
@@ -2074,8 +2040,13 @@ namespace Menge
 			m_fileService = nullptr;
 		}
 
-		SERVICE_DESTROY( CodecService, m_codecService );
-		m_codecService = nullptr;
+		if( m_codecService != nullptr)
+		{
+			m_codecService->finalize();
+			
+			SERVICE_DESTROY( CodecService, m_codecService );
+			m_codecService = nullptr;
+		}
 
 		if( m_particleService != nullptr )
 		{
@@ -2237,6 +2208,19 @@ namespace Menge
 			SERVICE_DESTROY( CacheService, m_cacheService );
 			m_cacheService = nullptr;
 		}
+
+		for( TVectorPlugins::iterator
+			it = m_plugins.begin(),
+			it_end = m_plugins.end();
+		it != it_end;
+		++it )
+		{
+			PluginInterface * plugin = *it;
+
+			plugin->destroy();
+		}	
+
+		m_plugins.clear();
 
 		if( m_alreadyRunningMonitor != nullptr )
 		{
@@ -3379,99 +3363,6 @@ namespace Menge
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t WinApplication::getMemoryUsage() const
-	{
-		//HANDLE hProc = GetCurrentProcess();
-		//PROCESS_MEMORY_COUNTERS info;
-		//info.cb = sizeof(info);
-		//BOOL okay = GetProcessMemoryInfo(hProc, (PROCESS_MEMORY_COUNTERS*)&info, sizeof(info));
-
-		//MEMORYSTATUSEX memInfo;
-		//memInfo.dwLength = sizeof(MEMORYSTATUSEX);
-		//GlobalMemoryStatusEx(&memInfo);
-
-
-		//MEMORYSTATUS m;
-		//m.dwLength = sizeof(m);
-		//GlobalMemoryStatus(&m);
-
-		//MEMORYSTATUSEX
-
-		//int ret_total_ram = (int)(m.dwTotalPhys>>20);
-		//int ret_avail_ram = (int)(m.dwAvailPhys>>20);
-
-
-		//int ret_total_memory = (int)(m.dwTotalPhys>>20) + (int)(m.dwTotalVirtual>>20);
-		//int ret_avail_memory = (int)(m.dwAvailPhys>>20) + (int)(m.dwAvailVirtual>>20);
-
-		//malloc(1);
-
-		//_CrtMemState ms1;
-		//_CrtMemCheckpoint(&ms1);        
-
-		//char b[200];
-		//new int;
-
-		//new float[25];
-
-		//std::string g("01234012340123401234");
-		//std::string g("0123401234");
-		//std::string g1("01234012340123401234");
-
-		//std::string g2;
-
-		//g2 = g + g1;
-
-		//size_t s = sizeof(std::string);
-
-		//_CrtMemState ms2;
-		//_CrtMemCheckpoint(&ms2);
-
-		//_CrtMemState diff;
-		//_CrtMemDifference(&diff, &ms1, &ms2);
-
-		//return info.WorkingSetSize;
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void * WinApplication::checkpointMemory() const
-	{
-#   ifdef _DEBUG
-		_CrtMemState * ms = new _CrtMemState;
-		_CrtMemCheckpoint(ms);
-
-		return ms;
-#   else
-		return nullptr;
-#   endif
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t WinApplication::diffMemory( void * _checkpoint ) const
-	{
-#   ifdef _DEBUG
-		_CrtMemState * ms1 = (_CrtMemState *)_checkpoint;
-
-		_CrtMemState ms2;
-		_CrtMemCheckpoint(&ms2);
-
-		_CrtMemState diff;
-		_CrtMemDifference(&diff, ms1, &ms2);
-
-		delete ms1;
-
-		size_t m = 0;
-		for( int i = 0; i != _MAX_BLOCKS; ++i )
-		{
-			m += diff.lSizes[i];
-		}
-
-		return m;
-#   else
-		return 0;
-#   endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -39,4 +39,6 @@ namespace Menge
 
 		bool m_successful;
 	};
+
+	typedef stdex::intrusive_ptr<ThreadTaskDownloadAsset> ThreadTaskDownloadAssetPtr;
 }

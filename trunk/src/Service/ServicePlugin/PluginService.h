@@ -20,7 +20,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        PluginInterface * loadPlugin( const WString & _name ) override;
+        PluginInterface * loadPlugin( const WString & _name ) override;		
         void unloadPlugin( const WString & _name ) override;
 
     protected:

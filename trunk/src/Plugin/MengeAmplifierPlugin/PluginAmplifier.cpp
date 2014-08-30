@@ -32,6 +32,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PluginAmplifier::PluginAmplifier()
 		: m_serviceProvider(nullptr)
+		, m_amplifier(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -41,6 +42,11 @@ namespace Menge
 
 		AmplifierInterface * amplifier;
 		if( SERVICE_CREATE( Amplifier, &amplifier ) == false )
+		{
+			return false;
+		}
+
+		if( amplifier->initialize() == false )
 		{
 			return false;
 		}
@@ -58,10 +64,22 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void PluginAmplifier::finalize()
+	{
+		if( m_amplifier != nullptr )
+		{
+			m_amplifier->finalize();
+		}				
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void PluginAmplifier::destroy()
 	{
-		SERVICE_DESTROY( Amplifier, m_amplifier );
-
+		if( m_amplifier != nullptr )
+		{
+			SERVICE_DESTROY( Amplifier, m_amplifier );
+			m_amplifier = nullptr;
+		}
+		
 		delete this;
 	}
 }

@@ -269,9 +269,6 @@ namespace Menge
 		ConstString m_projectCodename;
 		uint32_t m_projectVersion;
 		bool m_projectVersionCheck;
-		
-		typedef stdex::vector<PluginInterface *> TVectorPlugins;
-		TVectorPlugins m_plugins;
 
 		bool m_allowFullscreenSwitchShortcut;
 

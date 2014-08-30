@@ -41,11 +41,14 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32FileGroupPlugin::destroy()
+	void Win32FileGroupPlugin::finalize()
 	{
 		FILE_SERVICE(m_serviceProvider)
 			->unregisterFileGroupFactory( CONST_STRING_LOCAL(m_serviceProvider, "dir") );
-		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Win32FileGroupPlugin::destroy()
+	{
 		delete this;
 	}
 }

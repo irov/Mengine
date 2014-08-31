@@ -9,10 +9,9 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	struct DecoderJPEGSourceManager 
+	struct DecoderJPEGSourceManager
+		: public jpeg_source_mgr
 	{
-		struct jpeg_source_mgr pub;
-
 		InputStreamInterface * stream;
 		JOCTET * buffer;
 		boolean start_of_file;
@@ -47,14 +46,14 @@ namespace Menge
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	METHODDEF(void)	init_source( j_decompress_ptr cinfo ) 
+	METHODDEF(void)	s_init_source( j_decompress_ptr cinfo ) 
 	{
 		DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
 		src->start_of_file = TRUE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	METHODDEF(boolean) fill_input_buffer( j_decompress_ptr cinfo )
+	METHODDEF(boolean) s_fill_input_buffer( j_decompress_ptr cinfo )
 	{
 		DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
@@ -70,56 +69,59 @@ namespace Menge
 			nbytes = 2;
 		}
 
-		src->pub.next_input_byte = src->buffer;
-		src->pub.bytes_in_buffer = nbytes;
+		src->next_input_byte = src->buffer;
+		src->bytes_in_buffer = nbytes;
 		src->start_of_file = FALSE;
 
 		return TRUE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	METHODDEF(void)	skip_input_data( j_decompress_ptr cinfo, long num_bytes )
+	METHODDEF(void)	s_skip_input_data( j_decompress_ptr cinfo, long num_bytes )
 	{
 		DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 
 		if( num_bytes > 0 )
 		{
-			while( num_bytes > (long)src->pub.bytes_in_buffer )
+			while( num_bytes > (long)src->bytes_in_buffer )
 			{
-				num_bytes -= (long) src->pub.bytes_in_buffer;
+				num_bytes -= (long) src->bytes_in_buffer;
 
-				(void) fill_input_buffer(cinfo);
+				(void) s_fill_input_buffer(cinfo);
 			}
 
-			src->pub.next_input_byte += (size_t) num_bytes;
-			src->pub.bytes_in_buffer -= (size_t) num_bytes;
+			src->next_input_byte += (size_t) num_bytes;
+			src->bytes_in_buffer -= (size_t) num_bytes;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	METHODDEF(void)	term_source( j_decompress_ptr cinfo )
+	METHODDEF(void)	s_term_source( j_decompress_ptr cinfo )
 	{
         (void)cinfo;		
 	}
-	GLOBAL(void) jpeg_menge_src( j_decompress_ptr cinfo, InputStreamInterface * _stream ) 
+	//////////////////////////////////////////////////////////////////////////
+	GLOBAL(void) s_jpeg_menge_src( j_decompress_ptr cinfo, InputStreamInterface * _stream ) 
 	{
-		DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
-
-		if( src == nullptr )
+		if( cinfo->src == nullptr )
 		{
-			src = (DecoderJPEGSourceManager *) (*cinfo->mem->alloc_small)
+			DecoderJPEGSourceManager * manager = (DecoderJPEGSourceManager *)(*cinfo->mem->alloc_small)
 				((j_common_ptr) cinfo, JPOOL_PERMANENT, SIZEOF(DecoderJPEGSourceManager));
 
-			src->buffer = (JOCTET *) (*cinfo->mem->alloc_small)
+			manager->buffer = (JOCTET *) (*cinfo->mem->alloc_small)
 				((j_common_ptr) cinfo, JPOOL_PERMANENT, INPUT_BUF_SIZE * SIZEOF(JOCTET));
+
+			cinfo->src = (struct jpeg_source_mgr *)manager;
 		}
+
+		DecoderJPEGSourceManager * src = (DecoderJPEGSourceManager *)cinfo->src;
 				
-		src->pub.init_source = init_source;
-		src->pub.fill_input_buffer = fill_input_buffer;
-		src->pub.skip_input_data = skip_input_data;
-		src->pub.resync_to_restart = jpeg_resync_to_restart; // use default method 
-		src->pub.term_source = term_source;
+		src->init_source = s_init_source;
+		src->fill_input_buffer = s_fill_input_buffer;
+		src->skip_input_data = s_skip_input_data;
+		src->resync_to_restart = jpeg_resync_to_restart; // use default method 
+		src->term_source = s_term_source;
 		src->stream = _stream;
-		src->pub.bytes_in_buffer = 0;		// forces fill_input_buffer on first read 
-		src->pub.next_input_byte = nullptr;	// until buffer loaded 
+		src->bytes_in_buffer = 0;		// forces fill_input_buffer on first read 
+		src->next_input_byte = nullptr;	// until buffer loaded 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static int s_getQuality( jpeg_decompress_struct * _jpegObject )
@@ -171,8 +173,8 @@ namespace Menge
 		m_jpegObject.err = jpeg_std_error(&m_errorMgr.pub);
 		m_jpegObject.client_data = this;
 
-		m_errorMgr.pub.error_exit = s_jpegErrorExit;
-		m_errorMgr.pub.output_message = s_jpegOutputMessage;
+		m_errorMgr.pub.error_exit = &s_jpegErrorExit;
+		m_errorMgr.pub.output_message = &s_jpegOutputMessage;
 
 		jpeg_create_decompress( &m_jpegObject );
 
@@ -188,15 +190,11 @@ namespace Menge
 	{
 		if( setjmp( m_errorMgr.setjmp_buffer ) ) 
 		{
-			// If we get here, the JPEG code has signaled an error.
-			// We need to clean up the JPEG object and return.
-			jpeg_destroy_decompress( &m_jpegObject );
-
 			return false;
 		}
 
 		// step 2a: specify data source (eg, a handle)
-		jpeg_menge_src( &m_jpegObject, m_stream.get() );
+		s_jpeg_menge_src( &m_jpegObject, m_stream.get() );
 
 		// step 3: read handle parameters with jpeg_read_header()
 		jpeg_read_header( &m_jpegObject, TRUE );

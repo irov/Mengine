@@ -1609,7 +1609,7 @@ namespace Menge
 		MENGINE_ADD_PLUGIN( initPluginMengeSoundCodec, "initialize Plugin Sound Codec..." );
 		MENGINE_ADD_PLUGIN( initPluginMengeAmplifier, "initialize Plugin Amplifier..." );
 		MENGINE_ADD_PLUGIN( initPluginMengeVideoCodec, "initialize Plugin Video Codec..." );
-		MENGINE_ADD_PLUGIN( initPluginMengeVideoCodec, "initialize Plugin Path Finder..." );
+		MENGINE_ADD_PLUGIN( initPluginPathFinder, "initialize Plugin Path Finder..." );
 
 #	undef MENGINE_ADD_PLUGIN
 

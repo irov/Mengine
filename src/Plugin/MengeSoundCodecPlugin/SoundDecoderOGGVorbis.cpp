@@ -80,7 +80,7 @@ namespace Menge
         
         if( opcall_err < 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_initialize invalid ov_open_callbacks [%d]"
+            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_prepareData invalid ov_open_callbacks [%d]"
                 , opcall_err
                 );
 
@@ -92,7 +92,7 @@ namespace Menge
 
         if( vorbisInfo == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_initialize invalid ov_info"
+            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_prepareData invalid ov_info"
                 );
 
             return false;
@@ -100,7 +100,7 @@ namespace Menge
 
         if( vorbisInfo->channels != 2 )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_initialize invalid channels %d need %d"
+            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_prepareData invalid channels %d need %d"
                 , vorbisInfo->channels
                 , 2
                 );

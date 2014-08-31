@@ -26,6 +26,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderWEBP::_prepareData()
 	{
+		size_t bufferSize = m_stream->size();
+
+		void * memory = nullptr;
+		m_bufferId = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( bufferSize, &memory, "ImageDecoderWEBP" );
+
+		if( m_bufferId == 0 )
+		{
+			return false;
+		}
+
+		m_memory = static_cast<uint8_t *>(memory);
+		m_memorySize = bufferSize;
+
+		m_stream->read( m_memory, m_memorySize );
+
 		WebPBitstreamFeatures features;
         VP8StatusCode status = WebPGetFeatures( m_memory, m_memorySize, &features );
 
@@ -63,22 +79,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderWEBP::_initialize()
 	{
-		size_t bufferSize = m_stream->size();
-
-		void * memory = nullptr;
-		m_bufferId = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( bufferSize, &memory, "ImageDecoderWEBP" );
-
-		if( m_bufferId == 0 )
-		{
-			return false;
-		}
-
-		m_memory = static_cast<uint8_t *>(memory);
-		m_memorySize = bufferSize;
-
-		m_stream->read( m_memory, m_memorySize );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

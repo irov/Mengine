@@ -37,8 +37,7 @@ namespace mt
 		MATH_METHOD_INLINE float sqrlength() const;
 		MATH_METHOD_INLINE float length() const;
 
-		MATH_METHOD_INLINE vec2f & to_vec2f();
-		MATH_METHOD_INLINE const vec2f & to_vec2f() const;
+		MATH_METHOD_INLINE vec2f to_vec2f() const;
 
 		MATH_METHOD_INLINE float * buff();
 		MATH_METHOD_INLINE const float * buff() const;

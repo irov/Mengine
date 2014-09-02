@@ -47,7 +47,7 @@ namespace Menge
 		virtual void stop() = 0;
 
 	protected:
-		void call( bool _isEnd );
+		void end_( bool _isEnd );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -84,7 +84,7 @@ namespace Menge
 
         void complete() override
         {
-            this->call( true );
+            this->end_( true );
         }
 
 	protected:
@@ -116,7 +116,7 @@ namespace Menge
 		{
 			m_accumulator.stop();
 
-			this->call( false );
+			this->end_( false );
 		}
 
 	protected:
@@ -147,7 +147,7 @@ namespace Menge
 		{
 			m_interpolator.stop();
 
-			this->call( false );
+			this->end_( false );
 		}
 
 	protected:

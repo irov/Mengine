@@ -109,8 +109,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testMap( const mt::vec2f & _point ) const
 	{
-		uint32_t px = (uint32_t)(_point.x / m_gridSize + 0.5f);
-		uint32_t py = (uint32_t)(_point.y / m_gridSize + 0.5f);
+		uint16_t px = (uint16_t)(_point.x / m_gridSize + 0.5f);
+		uint16_t py = (uint16_t)(_point.y / m_gridSize + 0.5f);
 
 		uint8_t mask;
 		if( m_map.getCellMask( px, py, mask ) == false )
@@ -149,19 +149,19 @@ namespace Menge
 
 			mt::vec2f v0 = p1 - p0;
 			mt::vec2f v0_norm;
-			mt::norm_v2( v0_norm, v0 );
+			mt::norm_v2_v2( v0_norm, v0 );
 			mt::vec2f v0_norm_perp;
 			mt::perp_v2( v0_norm_perp, v0_norm );
 
 			mt::vec2f v1 = p2 - p1;
 			mt::vec2f v1_norm;
-			mt::norm_v2( v1_norm, v1 );
+			mt::norm_v2_v2( v1_norm, v1 );
 			mt::vec2f v1_norm_perp;
 			mt::perp_v2( v1_norm_perp, v1_norm );
 
 			mt::vec2f d = v0_norm_perp + v1_norm_perp;
 			mt::vec2f d_norm;
-			mt::norm_v2( d_norm, d );
+			mt::norm_v2_v2( d_norm, d );
 
 			d_norm *= _radius;
 
@@ -195,19 +195,19 @@ namespace Menge
 
 			mt::vec2f v0 = p1 - p0;
 			mt::vec2f v0_norm;
-			mt::norm_v2( v0_norm, v0 );
+			mt::norm_v2_v2( v0_norm, v0 );
 			mt::vec2f v0_norm_perp;
 			mt::perp_v2( v0_norm_perp, v0_norm );
 
 			mt::vec2f v1 = p2 - p1;
 			mt::vec2f v1_norm;
-			mt::norm_v2( v1_norm, v1 );
+			mt::norm_v2_v2( v1_norm, v1 );
 			mt::vec2f v1_norm_perp;
 			mt::perp_v2( v1_norm_perp, v1_norm );
 
 			mt::vec2f d = v0_norm_perp + v1_norm_perp;
 			mt::vec2f d_norm;
-			mt::norm_v2( d_norm, d );
+			mt::norm_v2_v2( d_norm, d );
 
 			d_norm *= _radius;
 
@@ -368,23 +368,23 @@ namespace Menge
 		const mt::vec2f & minp = _obstacle->bigMinHole;
 		const mt::vec2f & maxp = _obstacle->bigMaxHole;
 
-		uint32_t map_width = m_map.getWidth();
-		uint32_t map_height = m_map.getHeight();
+		uint16_t map_width = m_map.getWidth();
+		uint16_t map_height = m_map.getHeight();
 
-		uint32_t map_begin_i = (uint32_t)(minp.x / m_gridSize + 0.5f);
-		uint32_t map_begin_j = (uint32_t)(minp.y / m_gridSize + 0.5f);
+		uint16_t map_begin_i = (uint16_t)(minp.x / m_gridSize + 0.5f);
+		uint16_t map_begin_j = (uint16_t)(minp.y / m_gridSize + 0.5f);
 
-		uint32_t map_end_i = (uint32_t)(maxp.x / m_gridSize + 0.5f);
-		uint32_t map_end_j = (uint32_t)(maxp.y / m_gridSize + 0.5f);
+		uint16_t map_end_i = (uint16_t)(maxp.x / m_gridSize + 0.5f);
+		uint16_t map_end_j = (uint16_t)(maxp.y / m_gridSize + 0.5f);
 
-		uint32_t map_begin_i_crop = mt::crop( map_begin_i, 0U, map_width );
-		uint32_t map_begin_j_crop = mt::crop( map_begin_j, 0U, map_height );
-		uint32_t map_end_i_crop = mt::crop( map_end_i, 0U, map_width );
-		uint32_t map_end_j_crop = mt::crop( map_end_j, 0U, map_height );
+		uint16_t map_begin_i_crop = mt::crop( map_begin_i, (uint16_t)0, map_width );
+		uint16_t map_begin_j_crop = mt::crop( map_begin_j, (uint16_t)0, map_height );
+		uint16_t map_end_i_crop = mt::crop( map_end_i, (uint16_t)0, map_width );
+		uint16_t map_end_j_crop = mt::crop( map_end_j, (uint16_t)0, map_height );
 
-		for( uint32_t j = map_begin_j_crop; j != map_end_j_crop; ++j )
+		for( uint16_t j = map_begin_j_crop; j != map_end_j_crop; ++j )
 		{
-			for( uint32_t i = map_begin_i_crop; i != map_end_i_crop; ++i )
+			for( uint16_t i = map_begin_i_crop; i != map_end_i_crop; ++i )
 			{
 				float x = (i * m_gridSize) + m_gridSize * 0.5f;
 				float y = (j * m_gridSize) + m_gridSize * 0.5f;

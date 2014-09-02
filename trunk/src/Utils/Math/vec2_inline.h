@@ -245,7 +245,7 @@ namespace mt
 		return a.x * b.x + a.y * b.y;
 	}
 
-	MATH_FUNCTION_INLINE void norm_v2(vec2f& _out, const vec2f& _rhs)
+	MATH_FUNCTION_INLINE void norm_v2_v2(vec2f& _out, const vec2f& _rhs)
 	{
 		_out = _rhs / _rhs.length();
 	}
@@ -263,7 +263,7 @@ namespace mt
 	{
 		vec2f out;
 
-		norm_v2(out, _rhs);
+		norm_v2_v2(out, _rhs);
 
 		return out;
 	}

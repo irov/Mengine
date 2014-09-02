@@ -93,14 +93,9 @@ namespace mt
 		return len;
 	}
 
-	MATH_METHOD_INLINE vec2f & vec3f::to_vec2f()
+	MATH_METHOD_INLINE vec2f vec3f::to_vec2f() const
 	{
-		return *(vec2f *)(&x);
-	}
-
-	MATH_METHOD_INLINE const vec2f & vec3f::to_vec2f() const
-	{
-		return *(vec2f *)(&x);
+		return mt::vec2f(x, y);
 	}
 
 	MATH_METHOD_INLINE float * vec3f::buff()
@@ -340,7 +335,7 @@ namespace mt
 
 		vec2f d(dir[ind1], dir[ind2]);
 		vec2f n;
-		mt::norm_v2(n, d);
+		mt::norm_v2_v2(n, d);
 
 		if( (n.x >= 0) && (n.y >= 0) )
 		{

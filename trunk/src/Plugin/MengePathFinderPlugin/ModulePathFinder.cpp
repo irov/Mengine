@@ -7,6 +7,7 @@
 
 #	include "PathFinderWay.h"
 #	include "PathGraphNode.h"
+#	include "PathFinderWayAffector.h"
 
 #	include "Kernel/ResourceImageData.h"
 
@@ -124,9 +125,12 @@ namespace Menge
 			.def( "getWayPointCount", &PathFinderWay::getWayPointCount )
 			.def( "getWayPoint", &PathFinderWay::getWayPoint )
 			;
+	
 
-		pybind::def_functor( "createPathFinderMap", this, &ModulePathFinder::createMap );
+		pybind::def_functor( "createPathFinderMap", this, &ModulePathFinder::createMap );		
 		pybind::def_functor( "setPathFinderMapWeight", this, &ModulePathFinder::setMapWeight );
+
+		pybind::def_functor( "createPathFinderWayAffertor", this, &ModulePathFinder::createPathFinderWayAffertor );
 
 		SCRIPT_SERVICE(m_serviceProvider)
 			->addWrapping( Helper::stringizeString(m_serviceProvider, "PathGraphNode"), new ScriptClassWrapper<PathGraphNode>() );
@@ -169,6 +173,17 @@ namespace Menge
 	fastpathfinder::graph * ModulePathFinder::createGraph()
 	{
 		return new fastpathfinder::graph;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ModulePathFinder::createPathFinderWayAffertor( Node * _node, const PathFinderWay * _way, float _speed, float _step, PyObject * _cb )
+	{
+		PathFinderWayAffector * affector = new PathFinderWayAffector();
+
+		affector->initialize( _node, _way, _speed, _step, _cb );
+
+		size_t affectorId = _node->addAffector( affector );
+
+		return affectorId;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ModulePathFinder::setMapWeight( PathFinderMap * _map, const ConstString & _resourceName )

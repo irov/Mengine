@@ -1163,7 +1163,7 @@ namespace Menge
 	{
 		const mt::vec3f & wp = this->getWorldPosition();
 
-		const mt::vec2f & v2 = wp.to_vec2f();
+		mt::vec2f v2 = wp.to_vec2f();
 		mt::reset( _boundingBox, v2 );
 	}
 	//////////////////////////////////////////////////////////////////////////

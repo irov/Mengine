@@ -46,8 +46,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Join::update()
 	{
-		const mt::vec2f & pos_left = m_left->getLocalPosition().to_vec2f();
-		const mt::vec2f & pos_right = m_right->getLocalPosition().to_vec2f();
+		mt::vec2f pos_left = m_left->getLocalPosition().to_vec2f();
+		mt::vec2f pos_right = m_right->getLocalPosition().to_vec2f();
 
 		mt::vec2f offset = pos_right - pos_left;
 

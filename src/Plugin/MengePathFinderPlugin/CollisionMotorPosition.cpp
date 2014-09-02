@@ -57,7 +57,7 @@ namespace Menge
 		if( length_pos > 0.0001f )
 		{
 			mt::vec2f dir;
-			mt::norm_v2( dir, diff_pos.to_vec2f() );
+			mt::norm_v2_v2( dir, diff_pos.to_vec2f() );
 
 			if( m_moveStop == false )
 			{

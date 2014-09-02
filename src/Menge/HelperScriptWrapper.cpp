@@ -193,7 +193,7 @@ namespace Menge
 			sub_v2_v2(direction, _to, _from);
 
 			mt::vec2f direction_n;
-			norm_v2(direction_n, direction);
+			norm_v2_v2(direction_n, direction);
 
 			return direction_n;
 		}
@@ -201,7 +201,7 @@ namespace Menge
 		mt::vec2f mt_norm_v2( const mt::vec2f & _vec )
 		{
 			mt::vec2f v_n;
-			mt::norm_v2( v_n, _vec );
+			mt::norm_v2_v2( v_n, _vec );
 
 			return v_n;
 		}
@@ -262,10 +262,10 @@ namespace Menge
         float s_angle_between_two_vectors( const mt::vec2f & _v1, const mt::vec2f & _v2 )
         {
             mt::vec2f v1_norm;
-            mt::norm_v2( v1_norm, _v1 );
+            mt::norm_v2_v2( v1_norm, _v1 );
 
             mt::vec2f v2_norm;
-            mt::norm_v2( v2_norm, _v2 );
+            mt::norm_v2_v2( v2_norm, _v2 );
 
             float cos_v = mt::dot_v2_v2( v1_norm, v2_norm );
 

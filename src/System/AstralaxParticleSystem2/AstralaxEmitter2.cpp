@@ -111,8 +111,8 @@ namespace Menge
 				m_basePosition.y = adapt_pos.y;
 				m_basePosition.z = adapt_pos.z;
 
-				m_width = rect.right - rect.left;
-				m_height = rect.bottom - rect.top;
+				m_width = (float)(rect.right - rect.left);
+				m_height = (float)(rect.bottom - rect.top);
 
 				m_background = true;
 			}
@@ -128,8 +128,8 @@ namespace Menge
 				return false;
 			}
 
-			m_width = view.viewport_width;
-			m_height = view.viewport_height;
+			m_width = (float)view.viewport_width;
+			m_height = (float)view.viewport_height;
 
 			m_background = true;
 		}

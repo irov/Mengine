@@ -49,7 +49,7 @@ namespace Menge
 		mt::vec3f diff_pos = target_pos - obj_pos;
 
 		mt::vec2f dir;
-		mt::norm_v2( dir, diff_pos.to_vec2f() );
+		mt::norm_v2_v2( dir, diff_pos.to_vec2f() );
 
 		float dir_angle = mt::signed_angle( dir );
 		float obj_angle = _object->getRotateX();

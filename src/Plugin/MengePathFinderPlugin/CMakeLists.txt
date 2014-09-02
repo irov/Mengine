@@ -14,6 +14,8 @@ ModulePathFinder
 	PathFinderPool.h
     PathFinderWay.cpp
     PathFinderWay.h
+    PathFinderWayAffector.cpp
+    PathFinderWayAffector.h
     ThreadWorkerPathFinder.cpp
     ThreadWorkerPathFinder.h
     PathGraphNode.h

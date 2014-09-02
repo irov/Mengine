@@ -77,7 +77,7 @@ namespace Menge
 		}
 
 		mt::vec2f dir;
-		mt::norm_v2( dir, target2d_wp - camera_vpwm_center );
+		mt::norm_v2_v2( dir, target2d_wp - camera_vpwm_center );
 
 		float way_length = m_speed * _timing;
 

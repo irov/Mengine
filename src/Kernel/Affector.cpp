@@ -46,7 +46,7 @@ namespace Menge
 		return m_cb;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::call( bool _isEnd )
+	void Affector::end_( bool _isEnd )
 	{
 		m_cb->onAffectorEnd( m_id, _isEnd );
 	}

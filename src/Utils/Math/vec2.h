@@ -73,7 +73,7 @@ namespace mt
 	MATH_FUNCTION_INLINE float dot_v2_v2(const vec2f& a, const vec2f& b);
 
 	MATH_FUNCTION_INLINE float norm_v2_f(vec2f& _out, const vec2f& _rhs);
-	MATH_FUNCTION_INLINE void norm_v2(vec2f& _out, const vec2f& _rhs);
+	MATH_FUNCTION_INLINE void norm_v2_v2(vec2f& _out, const vec2f& _rhs);
 	MATH_FUNCTION_INLINE vec2f norm_v2(const vec2f& _rhs);
 	MATH_FUNCTION_INLINE void norm_safe_v2(vec2f& out, const vec2f& _rhs, float err = 0.00001f);
 	MATH_FUNCTION_INLINE vec2f norm_safe(const vec2f& _rhs);

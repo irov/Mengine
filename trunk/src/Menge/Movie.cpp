@@ -1243,6 +1243,13 @@ namespace Menge
                     return false;
                 }
             }
+			else if( layer.type == CONST_STRING(m_serviceProvider, SoundId) )
+			{
+				if( this->createMovieSoundId_( layer ) == false )
+				{
+					return false;
+				}
+			}
             else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter) )
             {
                 if( this->createMovieParticleEmitter_( layer ) == false )
@@ -1383,6 +1390,11 @@ namespace Menge
 		MovieSlot * layer_slot = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<MovieSlot>( CONST_STRING(m_serviceProvider, MovieSlot) );
 
+		if( layer_slot == nullptr )
+		{
+			return false;
+		}
+
         layer_slot->setName( _layer.name );
 
         layer_slot->setMovieName( m_name );
@@ -1399,6 +1411,11 @@ namespace Menge
         MovieSceneEffect * sceneeffect_slot = NODE_SERVICE(m_serviceProvider)
             ->createNodeT<MovieSceneEffect>( CONST_STRING(m_serviceProvider, MovieSceneEffect) );
 
+		if( sceneeffect_slot == nullptr )
+		{
+			return false;
+		}
+
         sceneeffect_slot->setName( _layer.name );
 
         m_sceneEffects.insert( _layer.name, sceneeffect_slot );
@@ -1413,6 +1430,11 @@ namespace Menge
 		Node * layer_slot = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Node>( CONST_STRING(m_serviceProvider, Node) );
 
+		if( layer_slot == nullptr )
+		{
+			return false;
+		}
+
         layer_slot->setName( _layer.name );
 
 		this->addMovieNode_( _layer, layer_slot );
@@ -1424,6 +1446,11 @@ namespace Menge
 	{
 		Sprite * layer_sprite = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Sprite>( CONST_STRING(m_serviceProvider, Sprite) );
+
+		if( layer_sprite == nullptr )
+		{
+			return false;
+		}
 
         ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceImage>( _layer.source );
@@ -1437,16 +1464,27 @@ namespace Menge
 
         layer_sprite->setName( _layer.name );
 
-		if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
+		if( _layer.blendingMode.empty() == true )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeNormal) )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
 		{
 			layer_sprite->setBlendAdd( true );
 		}
-		else if( _layer.blendingMode != CONST_STRING(m_serviceProvider, BlendingModeNormal) )
+		else
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s'  sprite  blending mode not supported '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
 				, m_name.c_str()
 				, _layer.name.c_str()
+				, _layer.blendingMode.c_str()
 				);
+
+			return false;
 		}
 
 		this->addMovieNode_( _layer, layer_sprite );
@@ -1458,6 +1496,11 @@ namespace Menge
 	{
 		Mesh2D * layer_mesh = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Mesh2D>( CONST_STRING(m_serviceProvider, Mesh2D) );
+
+		if( layer_mesh == nullptr )
+		{
+			return false;
+		}
 
 		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceImage>( _layer.source );
@@ -1471,16 +1514,27 @@ namespace Menge
 
 		layer_mesh->setName( _layer.name );
 
-		if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
+		if( _layer.blendingMode.empty() == true )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeNormal) )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
 		{
 			layer_mesh->setBlendAdd( true );
 		}
-		else if( _layer.blendingMode != CONST_STRING(m_serviceProvider, BlendingModeNormal) )
+		else
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s'  sprite  blending mode not supported '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
 				, m_name.c_str()
 				, _layer.name.c_str()
+				, _layer.blendingMode.c_str()
 				);
+
+			return false;
 		}
 
 		this->addMovieNode_( _layer, layer_mesh );
@@ -1506,6 +1560,11 @@ namespace Menge
 		Sprite * layer_sprite = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Sprite>( CONST_STRING(m_serviceProvider, Sprite) );
 
+		if( layer_sprite == nullptr )
+		{
+			return false;
+		}
+
         ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceImage>( CONST_STRING(m_serviceProvider, WhitePixel) );
 
@@ -1524,17 +1583,28 @@ namespace Menge
 		const mt::vec2f & size = resource->getSize();
 		layer_sprite->setCustomSize( size );
 
-        if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
+		if( _layer.blendingMode.empty() == true )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeNormal) )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
         {
             layer_sprite->setBlendAdd( true );
         }
-        else if( _layer.blendingMode != CONST_STRING(m_serviceProvider, BlendingModeNormal) )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie: '%s' blending mode not supported '%s'"
-                , m_name.c_str()
-                , _layer.name.c_str()
-                );
-        }
+		else
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				, _layer.blendingMode.c_str()
+				);
+
+			return false;
+		}
 
 		this->addMovieNode_( _layer, layer_sprite );
 
@@ -1545,6 +1615,11 @@ namespace Menge
     {
         HotSpotImage * layer_hotspotimage = NODE_SERVICE(m_serviceProvider)
             ->createNodeT<HotSpotImage>( CONST_STRING(m_serviceProvider, HotSpotImage) );
+
+		if( layer_hotspotimage == nullptr )
+		{
+			return false;
+		}
 
         ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceHIT>( _layer.source );
@@ -1570,6 +1645,11 @@ namespace Menge
         HotSpotShape * layer_hotspotshape = NODE_SERVICE(m_serviceProvider)
             ->createNodeT<HotSpotShape>( CONST_STRING(m_serviceProvider, HotSpotShape) );
 
+		if( layer_hotspotshape == nullptr )
+		{
+			return false;
+		}
+
         ResourceShape * resourceShape = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceShape>( _layer.source );
 
@@ -1594,6 +1674,11 @@ namespace Menge
 		Animation * layer_animation = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Animation>( CONST_STRING(m_serviceProvider, Animation) );
 
+		if( layer_animation == nullptr )
+		{
+			return false;
+		}
+
         ResourceAnimation * resourceAnimation = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceAnimation>( _layer.source );
 
@@ -1610,17 +1695,28 @@ namespace Menge
         layer_animation->setScretch( _layer.scretch );
         //layer_animation->setLoop( _layer.loop );
 
-        if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
+		if( _layer.blendingMode.empty() == true )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeNormal) )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
         {
 			layer_animation->setBlendAdd( true );
 		}
-        else if( _layer.blendingMode != CONST_STRING(m_serviceProvider, BlendingModeNormal) )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie: '%s' blending mode not supported '%s'"
-                , m_name.c_str()
-                , _layer.name.c_str()
-                );
-        }
+		else
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				, _layer.blendingMode.c_str()
+				);
+
+			return false;
+		}
 
 		this->addMovieNode_( _layer, layer_animation );
 
@@ -1631,6 +1727,11 @@ namespace Menge
 	{
 		Movie * layer_movie = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Movie>( CONST_STRING(m_serviceProvider, Movie) );
+
+		if( layer_movie == nullptr )
+		{
+			return false;
+		}
 
         layer_movie->setName( _layer.name );
 
@@ -1661,6 +1762,11 @@ namespace Menge
     {
         Movie * layer_movie = NODE_SERVICE(m_serviceProvider)
             ->createNodeT<Movie>( CONST_STRING(m_serviceProvider, Movie) );
+
+		if( layer_movie == nullptr )
+		{
+			return false;
+		}
 
         layer_movie->setName( _layer.name );
         
@@ -1694,6 +1800,11 @@ namespace Menge
 		MovieInternalObject * movie_internal = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<MovieInternalObject>( CONST_STRING(m_serviceProvider, MovieInternalObject) );
 
+		if( movie_internal == nullptr )
+		{
+			return false;
+		}
+
         movie_internal->setName( _layer.name );
 
         ResourceInternalObject * resourceInternalObject = RESOURCE_SERVICE(m_serviceProvider)
@@ -1719,6 +1830,11 @@ namespace Menge
 		Video * layer_video = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Video>( CONST_STRING(m_serviceProvider, Video) );
 
+		if( layer_video == nullptr )
+		{
+			return false;
+		}
+
         ResourceVideo * resourceVideo = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceVideo>( _layer.source );
 
@@ -1735,16 +1851,27 @@ namespace Menge
         layer_video->setScretch( _layer.scretch );
         //layer_video->setLoop( _layer.loop );
 
-		if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
+		if( _layer.blendingMode.empty() == true )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeNormal) )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
 		{
 			layer_video->setBlendAdd( true );
 		}
-		else if( _layer.blendingMode != CONST_STRING(m_serviceProvider, BlendingModeNormal) )
+		else
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' blending mode not supported '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
 				, m_name.c_str()
 				, _layer.name.c_str()
+				, _layer.blendingMode.c_str()
 				);
+
+			return false;
 		}
 
 		this->addMovieNode_( _layer, layer_video );
@@ -1756,6 +1883,11 @@ namespace Menge
 	{
 		SoundEmitter * layer_sound = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<SoundEmitter>( CONST_STRING(m_serviceProvider, SoundEmitter) );
+
+		if( layer_sound == nullptr )
+		{
+			return false;
+		}
 
         ResourceSound * resourceSound = RESOURCE_SERVICE(m_serviceProvider)
             ->getResourceReferenceT<ResourceSound>( _layer.source );
@@ -1777,11 +1909,47 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieSoundId_( const MovieLayer & _layer )
+	{
+		SoundEmitter * layer_sound = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<SoundEmitter>( CONST_STRING(m_serviceProvider, SoundEmitter) );
+
+		if( layer_sound == nullptr )
+		{
+			return false;
+		}
+
+		ResourceSound * resourceSound = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceSound>( _layer.name );
+
+		if( resourceSound == nullptr )
+		{
+			return false;
+		}
+
+		layer_sound->setResourceSound( resourceSound );
+		layer_sound->setName( _layer.name );
+		layer_sound->setIntervalStart( _layer.startInterval );
+
+		layer_sound->setPlayCount( _layer.playCount );
+		layer_sound->setScretch( _layer.scretch );
+		//layer_sound->setLoop( _layer.loop );
+
+		this->addMovieNode_( _layer, layer_sound );
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieText_( const MovieLayer & _layer )
     {
         TextField * layer_text = NODE_SERVICE(m_serviceProvider)
             ->createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
+
+		if( layer_text == nullptr )
+		{
+			return false;
+		}
 
         layer_text->setName( _layer.name );
         layer_text->setTextID( _layer.name ); //Name = TextID
@@ -1795,6 +1963,11 @@ namespace Menge
 	{
 		TextField * layer_text = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
+
+		if( layer_text == nullptr )
+		{
+			return false;
+		}
 
 		layer_text->setName( _layer.name );
 		layer_text->setTextID( _layer.name ); //Name = TextID
@@ -2520,7 +2693,7 @@ namespace Menge
 
                 if( _layer.timeRemap == false )
                 {
-                    if( animatable->isPlay() == true )
+                    if( animatable->isPlay() == true && _layer.isUnstoppable() == false )
                     {
                         animatable->stop();
 

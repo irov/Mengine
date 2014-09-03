@@ -25,6 +25,7 @@ namespace Menge
     const size_t MOVIE_LAYER_EXTRA = 0x0040;
     const size_t MOVIE_LAYER_SUB_MOVIE = 0x0080;
     const size_t MOVIE_LAYER_MESH_2D = 0x0100;
+	const size_t MOVIE_LAYER_UNSTOPPABLE = 0x0200;
 	
     const size_t movie_layer_parent_none = (size_t)-1;
 
@@ -122,6 +123,11 @@ namespace Menge
         {
             return (state & MOVIE_LAYER_SUB_MOVIE) > 0;
         }
+
+		bool isUnstoppable() const
+		{
+			return (state & MOVIE_LAYER_UNSTOPPABLE) > 0;
+		}
 	};
 
 	typedef stdex::vector<MovieLayer> TVectorMovieLayers;

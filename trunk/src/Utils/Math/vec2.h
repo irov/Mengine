@@ -87,7 +87,7 @@ namespace mt
 	MATH_FUNCTION_INLINE float is_left_v2(const vec2f& P0, const vec2f& P1, const vec2f& P2);
 	MATH_FUNCTION_INLINE float pseudo_cross_v2(const vec2f& a, const vec2f& b);
 
-	MATH_FUNCTION_INLINE void project_v2_v2(const vec2f& a, const vec2f& b, vec2f& result);
+	MATH_FUNCTION_INLINE void project_v2_v2(vec2f & out, const vec2f& a, const vec2f& b);
 
 	MATH_FUNCTION_INLINE vec2f slerp_v2_v2(const vec2f& a, const vec2f& b, float t);
 

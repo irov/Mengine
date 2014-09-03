@@ -84,10 +84,10 @@ namespace Menge
 			return false;
 		}
 
-		if( m_pathfinder.filterPath() == false )
-		{
-			return false;
-		}
+		//if( m_pathfinder.filterPath() == false )
+		//{
+		//	return false;
+		//}
 		
 		return true;
 	}
@@ -99,7 +99,7 @@ namespace Menge
 			return;
 		}
 		
-		const fastpathfinder::point_array & pa = m_pathfinder.getPathFilter();
+		const fastpathfinder::point_array & pa = m_pathfinder.getPath();
 		m_way->initialize( m_from, m_to, m_gridSize, pa );
 	}
 }

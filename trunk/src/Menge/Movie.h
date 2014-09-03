@@ -162,6 +162,7 @@ namespace Menge
 		bool createMovieInternalObject_( const MovieLayer & _layer );
 		bool createMovieVideo_( const MovieLayer & _layer );
 		bool createMovieSound_( const MovieLayer & _layer );
+		bool createMovieSoundId_( const MovieLayer & _layer );
         bool createMovieText_( const MovieLayer & _layer );  
 		bool createMovieTextCenter_( const MovieLayer & _layer );
         bool createMovieEvent_( const MovieLayer & _layer );

@@ -3350,19 +3350,43 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::ConstString & get_BlendingMode() const
+                bool has_BlendingMode() const
                 {
-                    return this->BlendingMode;
+                    return BlendingMode_successful;
                 }
                 
-                void swap_BlendingMode( Menge::ConstString & _value ) const
+                bool get_BlendingMode( Menge::ConstString & _value ) const
                 {
+                    if( BlendingMode_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->BlendingMode;
+                
+                    return true;
+                }
+                
+                bool swap_BlendingMode( Menge::ConstString & _value ) const
+                {
+                    if( BlendingMode_successful == false )
+                    {
+                        return false;
+                    }
+                
                     std::swap( _value, this->BlendingMode);
+                
+                    return true;
                 }
                 
                 template<class C, class M>
                 void method_BlendingMode( C * _self, M _method ) const
                 {
+                    if( BlendingMode_successful == false )
+                    {
+                        return;
+                    }
+                
                     (_self->*_method)( this->BlendingMode );
                 }
                 
@@ -3430,19 +3454,43 @@ namespace Metacode
                     (_self->*_method)( this->Out );
                 }
                 
-                const uint32_t & get_Parent() const
+                bool has_Parent() const
                 {
-                    return this->Parent;
+                    return Parent_successful;
                 }
                 
-                void swap_Parent( uint32_t & _value ) const
+                bool get_Parent( uint32_t & _value ) const
                 {
+                    if( Parent_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Parent;
+                
+                    return true;
+                }
+                
+                bool swap_Parent( uint32_t & _value ) const
+                {
+                    if( Parent_successful == false )
+                    {
+                        return false;
+                    }
+                
                     std::swap( _value, this->Parent);
+                
+                    return true;
                 }
                 
                 template<class C, class M>
                 void method_Parent( C * _self, M _method ) const
                 {
+                    if( Parent_successful == false )
+                    {
+                        return;
+                    }
+                
                     (_self->*_method)( this->Parent );
                 }
                 
@@ -3582,19 +3630,43 @@ namespace Metacode
                     (_self->*_method)( this->Source );
                 }
                 
-                const float & get_StartInterval() const
+                bool has_StartInterval() const
                 {
-                    return this->StartInterval;
+                    return StartInterval_successful;
                 }
                 
-                void swap_StartInterval( float & _value ) const
+                bool get_StartInterval( float & _value ) const
                 {
+                    if( StartInterval_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->StartInterval;
+                
+                    return true;
+                }
+                
+                bool swap_StartInterval( float & _value ) const
+                {
+                    if( StartInterval_successful == false )
+                    {
+                        return false;
+                    }
+                
                     std::swap( _value, this->StartInterval);
+                
+                    return true;
                 }
                 
                 template<class C, class M>
                 void method_StartInterval( C * _self, M _method ) const
                 {
+                    if( StartInterval_successful == false )
+                    {
+                        return;
+                    }
+                
                     (_self->*_method)( this->StartInterval );
                 }
                 
@@ -3742,11 +3814,13 @@ namespace Metacode
             public:
             protected:
             protected:
+                bool BlendingMode_successful;
                 mutable Menge::ConstString BlendingMode;
                 mutable float In;
                 mutable uint32_t Index;
                 mutable Menge::ConstString Name;
                 mutable float Out;
+                bool Parent_successful;
                 mutable uint32_t Parent;
                 bool PlayCount_successful;
                 mutable uint32_t PlayCount;
@@ -3755,6 +3829,7 @@ namespace Metacode
                 bool Shape_successful;
                 mutable bool Shape;
                 mutable Menge::ConstString Source;
+                bool StartInterval_successful;
                 mutable float StartInterval;
                 bool Stretch_successful;
                 mutable float Stretch;
@@ -3775,19 +3850,43 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::ConstString & get_BlendingMode() const
+                bool has_BlendingMode() const
                 {
-                    return this->BlendingMode;
+                    return BlendingMode_successful;
                 }
                 
-                void swap_BlendingMode( Menge::ConstString & _value ) const
+                bool get_BlendingMode( Menge::ConstString & _value ) const
                 {
+                    if( BlendingMode_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->BlendingMode;
+                
+                    return true;
+                }
+                
+                bool swap_BlendingMode( Menge::ConstString & _value ) const
+                {
+                    if( BlendingMode_successful == false )
+                    {
+                        return false;
+                    }
+                
                     std::swap( _value, this->BlendingMode);
+                
+                    return true;
                 }
                 
                 template<class C, class M>
                 void method_BlendingMode( C * _self, M _method ) const
                 {
+                    if( BlendingMode_successful == false )
+                    {
+                        return;
+                    }
+                
                     (_self->*_method)( this->BlendingMode );
                 }
                 
@@ -3855,19 +3954,43 @@ namespace Metacode
                     (_self->*_method)( this->Out );
                 }
                 
-                const uint32_t & get_Parent() const
+                bool has_Parent() const
                 {
-                    return this->Parent;
+                    return Parent_successful;
                 }
                 
-                void swap_Parent( uint32_t & _value ) const
+                bool get_Parent( uint32_t & _value ) const
                 {
+                    if( Parent_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Parent;
+                
+                    return true;
+                }
+                
+                bool swap_Parent( uint32_t & _value ) const
+                {
+                    if( Parent_successful == false )
+                    {
+                        return false;
+                    }
+                
                     std::swap( _value, this->Parent);
+                
+                    return true;
                 }
                 
                 template<class C, class M>
                 void method_Parent( C * _self, M _method ) const
                 {
+                    if( Parent_successful == false )
+                    {
+                        return;
+                    }
+                
                     (_self->*_method)( this->Parent );
                 }
                 
@@ -3967,19 +4090,43 @@ namespace Metacode
                     (_self->*_method)( this->Source );
                 }
                 
-                const float & get_StartInterval() const
+                bool has_StartInterval() const
                 {
-                    return this->StartInterval;
+                    return StartInterval_successful;
                 }
                 
-                void swap_StartInterval( float & _value ) const
+                bool get_StartInterval( float & _value ) const
                 {
+                    if( StartInterval_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->StartInterval;
+                
+                    return true;
+                }
+                
+                bool swap_StartInterval( float & _value ) const
+                {
+                    if( StartInterval_successful == false )
+                    {
+                        return false;
+                    }
+                
                     std::swap( _value, this->StartInterval);
+                
+                    return true;
                 }
                 
                 template<class C, class M>
                 void method_StartInterval( C * _self, M _method ) const
                 {
+                    if( StartInterval_successful == false )
+                    {
+                        return;
+                    }
+                
                     (_self->*_method)( this->StartInterval );
                 }
                 
@@ -4127,17 +4274,20 @@ namespace Metacode
             public:
             protected:
             protected:
+                bool BlendingMode_successful;
                 mutable Menge::ConstString BlendingMode;
                 mutable float In;
                 mutable uint32_t Index;
                 mutable Menge::ConstString Name;
                 mutable float Out;
+                bool Parent_successful;
                 mutable uint32_t Parent;
                 bool PlayCount_successful;
                 mutable uint32_t PlayCount;
                 bool Shape_successful;
                 mutable bool Shape;
                 mutable Menge::ConstString Source;
+                bool StartInterval_successful;
                 mutable float StartInterval;
                 bool Stretch_successful;
                 mutable float Stretch;

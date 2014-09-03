@@ -32,6 +32,9 @@ namespace Menge
 		inline size_t getWayPointCount() const;
 		inline const mt::vec2f & getWayPoint( size_t _index ) const;
 
+		inline const mt::vec2f & getWayFrom() const;
+		inline const mt::vec2f & getWayTo() const;
+
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
@@ -55,8 +58,19 @@ namespace Menge
 	{
 		const mt::vec2f & p = m_way[_index];
 
-		return p;
+		return p;	
 	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec2f & PathFinderWay::getWayFrom() const
+	{
+		return m_from;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::vec2f & PathFinderWay::getWayTo() const
+	{
+		return m_to;
+	}
+
 
 }
 

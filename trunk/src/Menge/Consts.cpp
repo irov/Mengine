@@ -112,6 +112,8 @@ namespace Menge
         INIT_CONST( MovieSceneEffect );
         INIT_CONST( MovieNullObject );
         INIT_CONST( MovieEvent );
+		INIT_CONST( SoundId );
+
         INIT_CONST( BlendingModeAdd );
         INIT_CONST( BlendingModeNormal );
 

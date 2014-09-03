@@ -326,12 +326,12 @@ namespace mt
 		return a.x * b.y - a.y * b.x;
 	}	
 
-	MATH_FUNCTION_INLINE void project_v2_v2(const vec2f& a, const vec2f& b, mt::vec2f& result) 
+	MATH_FUNCTION_INLINE void project_v2_v2(vec2f & out, const vec2f& a, const vec2f& b) 
 	{
 		float dp = dot_v2_v2(a, b);
 
-		result.x = dp * b.x;
-		result.y = dp * b.y;
+		out.x = dp * a.x;
+		out.y = dp * a.y;
 	}
 
 	MATH_FUNCTION_INLINE vec2f slerp_v2_v2(const vec2f& a, const vec2f& b, float t)

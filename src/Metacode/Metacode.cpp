@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 58;
+        _needVersion = 59;
 
-        if( version != 58 )
+        if( version != 59 )
         {
             return false;
         }
@@ -2894,9 +2894,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::Meta_MovieLayer2D()
         : Metabuf::Metadata()
+        , BlendingMode_successful(false)
+        , Parent_successful(false)
         , PlayCount_successful(false)
         , Polygon_successful(false)
         , Shape_successful(false)
+        , StartInterval_successful(false)
         , Stretch_successful(false)
         , Switch_successful(false)
         , TimeRemap_successful(false)
@@ -2919,9 +2922,11 @@ namespace Metacode
                     return false;
                 }
     
+                this->BlendingMode_successful = true;
+    
                 return true;
             }break;
-        case 6:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->In ) == false )
                 {
@@ -2930,7 +2935,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->Index ) == false )
                 {
@@ -2948,7 +2953,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->Out ) == false )
                 {
@@ -2957,12 +2962,14 @@ namespace Metacode
     
                 return true;
             }break;
-        case 2:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->Parent ) == false )
                 {
                     return false;
                 }
+    
+                this->Parent_successful = true;
     
                 return true;
             }break;
@@ -2999,7 +3006,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 2:
             {
                 if( this->read( _buff, _size, _read, this->Source ) == false )
                 {
@@ -3014,6 +3021,8 @@ namespace Metacode
                 {
                     return false;
                 }
+    
+                this->StartInterval_successful = true;
     
                 return true;
             }break;
@@ -3050,7 +3059,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 3:
             {
                 if( this->read( _buff, _size, _read, this->Type ) == false )
                 {
@@ -3097,8 +3106,11 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::Meta_MovieLayer3D()
         : Metabuf::Metadata()
+        , BlendingMode_successful(false)
+        , Parent_successful(false)
         , PlayCount_successful(false)
         , Shape_successful(false)
+        , StartInterval_successful(false)
         , Stretch_successful(false)
         , Switch_successful(false)
         , TimeRemap_successful(false)
@@ -3121,9 +3133,11 @@ namespace Metacode
                     return false;
                 }
     
+                this->BlendingMode_successful = true;
+    
                 return true;
             }break;
-        case 6:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->In ) == false )
                 {
@@ -3132,7 +3146,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->Index ) == false )
                 {
@@ -3150,7 +3164,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->Out ) == false )
                 {
@@ -3159,12 +3173,14 @@ namespace Metacode
     
                 return true;
             }break;
-        case 2:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->Parent ) == false )
                 {
                     return false;
                 }
+    
+                this->Parent_successful = true;
     
                 return true;
             }break;
@@ -3190,7 +3206,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 2:
             {
                 if( this->read( _buff, _size, _read, this->Source ) == false )
                 {
@@ -3205,6 +3221,8 @@ namespace Metacode
                 {
                     return false;
                 }
+    
+                this->StartInterval_successful = true;
     
                 return true;
             }break;
@@ -3241,7 +3259,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 3:
             {
                 if( this->read( _buff, _size, _read, this->Type ) == false )
                 {

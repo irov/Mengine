@@ -23,9 +23,7 @@ namespace Menge
     public:
         bool initialize();
 
-	public:
-
-#	define DECL_CONST( Const ) ConstString c_##Const
+#	define DECL_CONST( Const ) public: ConstString c_##Const
 
 		DECL_CONST( dir );
 		DECL_CONST( pak );
@@ -114,6 +112,7 @@ namespace Menge
 		DECL_CONST( MovieTextCenter );
 		DECL_CONST( MovieNullObject );
         DECL_CONST( MovieEvent );
+		DECL_CONST( SoundId );
 
 		DECL_CONST( BlendingModeAdd );
 		DECL_CONST( BlendingModeNormal );

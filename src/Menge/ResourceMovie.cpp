@@ -331,14 +331,15 @@ namespace Menge
 
             meta_layer2d.swap_Name( ml.name );
             meta_layer2d.swap_Source( ml.source );
-            meta_layer2d.swap_BlendingMode( ml.blendingMode );
-			meta_layer2d.swap_Type( ml.type );
-
-            ml.parent = meta_layer2d.get_Parent();
+            meta_layer2d.swap_Type( ml.type );
+			            
             ml.index = meta_layer2d.get_Index();
             ml.in = meta_layer2d.get_In();
             ml.out = meta_layer2d.get_Out();
-            ml.startInterval = meta_layer2d.get_StartInterval();
+
+			meta_layer2d.get_Parent( ml.parent );
+            meta_layer2d.get_StartInterval( ml.startInterval );
+			meta_layer2d.swap_BlendingMode( ml.blendingMode );
 
             meta_layer2d.get_TimeRemap( ml.timeRemap );
             meta_layer2d.get_Shape( ml.shape );
@@ -377,15 +378,17 @@ namespace Menge
             MovieLayerCamera3D camera;
 
             meta_layer3d.swap_Name( ml.name );
-            meta_layer3d.swap_Source( ml.source );
-            meta_layer3d.swap_BlendingMode( ml.blendingMode );
+            meta_layer3d.swap_Source( ml.source );            
 			meta_layer3d.swap_Type( ml.type );
 
-            ml.parent = meta_layer3d.get_Parent();
+            
             ml.index = meta_layer3d.get_Index();
             ml.in = meta_layer3d.get_In();
             ml.out = meta_layer3d.get_Out();
-            ml.startInterval = meta_layer3d.get_StartInterval();
+
+			meta_layer3d.get_Parent( ml.parent );
+            meta_layer3d.get_StartInterval( ml.startInterval );
+			meta_layer3d.swap_BlendingMode( ml.blendingMode );
 
             meta_layer3d.get_TimeRemap( ml.timeRemap );
             meta_layer3d.get_Shape( ml.shape );
@@ -489,6 +492,10 @@ namespace Menge
             {
                 it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO;
             }
+			else if( it->type == CONST_STRING(m_serviceProvider, SoundId) )
+			{
+				it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO | MOVIE_LAYER_UNSTOPPABLE;
+			}
             else if( it->type == CONST_STRING(m_serviceProvider, ParticleEmitter) )
             {
                 it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;

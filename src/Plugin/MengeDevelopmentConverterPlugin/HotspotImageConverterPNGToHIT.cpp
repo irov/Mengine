@@ -115,7 +115,7 @@ namespace Menge
         size_t mimmap_level;
         size_t mimmap_size = this->calcMimMapBufferLevelAndSize_( width, height, mimmap_level );
 
-        size_t bufferSize = width * height;
+        size_t bufferSize = width * height + mimmap_size;
 		
 		CacheMemoryBuffer memory(m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::convert");
 		unsigned char * buffer = memory.getMemoryT<unsigned char>();
@@ -172,7 +172,7 @@ namespace Menge
         di.width = width;
         di.height = height;
         di.mipmaplevel = mimmap_level;
-        di.mipmapsize = bufferSize + mimmap_size;
+        di.mipmapsize = bufferSize;
 
         encoder->encode( buffer, &di );
 

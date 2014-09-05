@@ -24,7 +24,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( Node * _node, const PathFinderWayPtr & _way, float _speed, float _step, PyObject * _cb );
+		bool initialize( Node * _node, const PathFinderWayPtr & _way, float _speed, PyObject * _cb );
 		
 	public:
 		bool affect( float _timing ) override;
@@ -43,7 +43,6 @@ namespace Menge
 		Node * m_node;
 		PathFinderWayPtr m_way;
 		float m_speed;
-		float m_step;
 		PyObject * m_cb;
 
 		size_t m_iterator;

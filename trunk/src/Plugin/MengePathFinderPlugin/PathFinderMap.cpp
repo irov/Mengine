@@ -98,8 +98,6 @@ namespace Menge
 		uint16_t map_height = (uint16_t)(_height / _gridSize + 0.5f);
 
 		m_map.initialize( map_width, map_height );
-
-		//m_pathfinder.initialize( &m_map );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::setMapWeight( const uint8_t * _weight )

@@ -554,9 +554,9 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::isThreeDNode( size_t _index )
+	bool ResourceMovie::isThreeDNode( size_t _index ) const
 	{
-		for( TVectorMovieLayers::iterator
+		for( TVectorMovieLayers::const_iterator
 			it = m_layers.begin(),
 			it_end = m_layers.end();
 		it != it_end;

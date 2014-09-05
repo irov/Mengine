@@ -175,11 +175,11 @@ namespace Menge
 		return new fastpathfinder::graph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ModulePathFinder::createPathFinderWayAffertor( Node * _node, const PathFinderWay * _way, float _speed, float _step, PyObject * _cb )
+	size_t ModulePathFinder::createPathFinderWayAffertor( Node * _node, const PathFinderWay * _way, float _speed, PyObject * _cb )
 	{
 		PathFinderWayAffector * affector = new PathFinderWayAffector();
 
-		if( affector->initialize( _node, _way, _speed, _step, _cb ) == false )
+		if( affector->initialize( _node, _way, _speed, _cb ) == false )
 		{
 			return 0;
 		}

@@ -32,9 +32,8 @@ namespace Menge
 
 			if( _ini.load( _ini.buff ) == false )
 			{
-				LOGGER_ERROR(_serviceProvider)("IniUtil::loadIni ini invalid load"
-					, size
-					, MENGINE_INI_BUFFER_SIZE
+				LOGGER_ERROR(_serviceProvider)("IniUtil::loadIni ini invalid load '%s'"
+					, _ini.getError()
 					);
 
 				return false;

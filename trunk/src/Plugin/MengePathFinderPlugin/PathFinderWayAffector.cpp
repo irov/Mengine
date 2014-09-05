@@ -9,7 +9,6 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_node(nullptr)
 		, m_speed(0.f)
-		, m_step(0.f)
 		, m_cb(nullptr)
 		, m_iterator(1)
 		, m_target(0.f, 0.f)
@@ -28,18 +27,17 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderWayAffector::initialize( Node * _node, const PathFinderWayPtr & _way, float _speed, float _step, PyObject * _cb )
+	bool PathFinderWayAffector::initialize( Node * _node, const PathFinderWayPtr & _way, float _speed, PyObject * _cb )
 	{
-		m_node = _node;
-		m_way = _way;
-		m_speed = _speed;
-		m_step = _step;
-
-		if( pybind::is_callable( m_cb ) == false )
+		if( pybind::is_callable( _cb ) == false )
 		{
 			return false;
 		}
 
+		m_node = _node;
+		m_way = _way;
+		m_speed = _speed;
+		
 		m_cb = _cb;
 		pybind::incref( m_cb );
 
@@ -109,7 +107,7 @@ namespace Menge
 		if( newTarget == true )
 		{
 			size_t id = this->getId();
-			pybind::call( m_cb, "iffO", id, m_target.x, m_target.y, pybind::get_bool(false) );
+			pybind::call( m_cb, "iOffffO", id, m_node->getEmbed(), new_position.x, new_position.y, m_target.x, m_target.y, pybind::get_bool(false) );
 		}
 
 		return false;
@@ -122,7 +120,7 @@ namespace Menge
 		m_node->setLocalPosition( new_pos );
 
 		size_t id = this->getId();
-		pybind::call( m_cb, "iffO", id, m_target.x, m_target.y, pybind::get_bool(true) );
+		pybind::call( m_cb, "iOffffO", id, m_node->getEmbed(), lp.x, lp.y, m_target.x, m_target.y, pybind::get_bool(true) );
 
 		pybind::decref(m_cb);
 		m_cb = nullptr;
@@ -130,8 +128,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::stop()
 	{
+		const mt::vec3f & lp = m_node->getLocalPosition();
+
 		size_t id = this->getId();
-		pybind::call( m_cb, "iffO", id, m_target.x, m_target.y, pybind::get_bool(true) );
+		pybind::call( m_cb, "iOffffO", id, m_node->getEmbed(), lp.x, lp.y, m_target.x, m_target.y, pybind::get_bool(true) );
 
 		pybind::decref(m_cb);
 		m_cb = nullptr;

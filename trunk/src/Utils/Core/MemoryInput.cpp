@@ -48,7 +48,7 @@ namespace Menge
 		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MemoryInput::read( void* _buf, size_t _count )
+	size_t MemoryInput::read( void * _buf, size_t _count )
 	{
 		size_t cnt = _count;
 		// Read over end of memory?
@@ -116,5 +116,13 @@ namespace Menge
         (void)_time;
 
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MemoryInput::memory( void ** _memory, size_t * _size )
+	{
+		*_memory = m_data;
+		*_size = m_size;
+
+		return true;
 	}
 }	// namespace Menge

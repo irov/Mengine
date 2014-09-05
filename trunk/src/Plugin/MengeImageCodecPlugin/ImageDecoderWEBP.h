@@ -27,9 +27,7 @@ namespace Menge
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 
 	protected:
-		size_t m_bufferId;
-		uint8_t * m_memory;
-		size_t m_memorySize;
+		bool decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * _buffer, size_t _bufferSize );
 	};
 }
 

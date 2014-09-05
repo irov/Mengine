@@ -131,4 +131,12 @@ namespace Menge
 
 		return false;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MemoryCacheInput::memory( void ** _memory, size_t * _size )
+	{
+		*_memory = m_data;
+		*_size = m_size;
+
+		return true;
+	}
 }	// namespace Menge

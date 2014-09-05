@@ -27,6 +27,9 @@ namespace Menge
     public:
 		bool time( uint64_t & _time ) const override;
 
+	public:
+		bool memory( void ** _memory, size_t * _size ) override;
+
 	protected:
 		unsigned char * m_data;
 		size_t m_size;

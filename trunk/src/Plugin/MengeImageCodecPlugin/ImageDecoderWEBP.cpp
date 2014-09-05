@@ -14,9 +14,6 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderWEBP::ImageDecoderWEBP()
-		: m_bufferId(0)
-		, m_memory(nullptr)
-		, m_memorySize(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -26,24 +23,45 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderWEBP::_prepareData()
 	{
-		size_t bufferSize = m_stream->size();
-
-		void * memory = nullptr;
-		m_bufferId = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( bufferSize, &memory, "ImageDecoderWEBP" );
-
-		if( m_bufferId == 0 )
-		{
-			return false;
-		}
-
-		m_memory = static_cast<uint8_t *>(memory);
-		m_memorySize = bufferSize;
-
-		m_stream->read( m_memory, m_memorySize );
-
+		VP8StatusCode status;
 		WebPBitstreamFeatures features;
-        VP8StatusCode status = WebPGetFeatures( m_memory, m_memorySize, &features );
+
+		size_t featuresBufferSize = 0;
+
+		void * streamMemory;
+		size_t streamSize;
+		if( m_stream->memory( &streamMemory, &streamSize ) == false )
+		{
+			do
+			{
+				featuresBufferSize += MENGINE_FILE_STREAM_BUFFER_SIZE;
+
+				CacheMemoryBuffer buffer(m_serviceProvider, featuresBufferSize, "ImageDecoderWEBP::_prepareData");
+				uint8_t * featuresMemory = buffer.getMemoryT<uint8_t>();
+
+				if( featuresMemory == nullptr )
+				{
+					LOGGER_ERROR(m_serviceProvider)("ImageDecoderWEBP::_prepareData invalid get memory %d"
+						, featuresBufferSize
+						);
+
+					return false;
+				}
+
+				m_stream->read( featuresMemory, featuresBufferSize );
+
+				status = WebPGetFeatures( featuresMemory, featuresBufferSize, &features );
+
+				m_stream->seek( 0 );
+			}
+			while( status == VP8_STATUS_NOT_ENOUGH_DATA );
+		}
+		else
+		{
+			const uint8_t * featuresMemory = static_cast<const uint8_t *>(streamMemory);
+
+			status = WebPGetFeatures( featuresMemory, streamSize, &features );
+		}
 
         if( status != VP8_STATUS_OK )
         {
@@ -84,74 +102,89 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ImageDecoderWEBP::_finalize()
 	{
-		if( m_bufferId != 0 )
-		{
-			CACHE_SERVICE(m_serviceProvider)
-				->unlockBuffer( m_bufferId );
-
-			m_bufferId = 0;
-		}
-
-		m_memory = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderWEBP::decode( void * _buffer, size_t _bufferSize )
-	{				
-        uint8_t * webp_buffer = static_cast<uint8_t *>(_buffer);
+	{			
+		uint8_t * webp_buffer = static_cast<uint8_t *>(_buffer);
+		size_t webp_buffer_size = _bufferSize;
 
-#	ifndef MENGE_RENDER_TEXTURE_RGBA
-		if( m_dataInfo.channels == 3 && m_options.channels == 4 )
+		void * streamMemory;
+		size_t streamSize;
+		if( m_stream->memory( &streamMemory, &streamSize ) == false )
 		{
-			if( WebPDecodeBGRAInto( m_memory, m_memorySize, webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
-			{
-				return 0;
-			}
+			size_t memorySize = m_stream->size();
 
-			this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, webp_buffer, m_options.pitch );
-		}
-		else if( m_dataInfo.channels == 3 && m_options.channels == 3 )
-		{
-			if( WebPDecodeBGRInto( m_memory, m_memorySize, webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+			CacheMemoryBuffer buffer(m_serviceProvider, memorySize, "ImageDecoderWEBP::decode");
+			void * memory = buffer.getMemory();
+
+			if( memory == nullptr )
 			{
-				return 0;
-			}
-		}
-		else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
-		{
-			if( WebPDecodeBGRAInto( m_memory, m_memorySize, webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
-			{
-				return 0;
-			}
-		}
-#	else
-		if( m_dataInfo.channels == 3 && m_options.channels == 4 )
-		{
-			if( WebPDecodeRGBAInto( m_memory, m_memorySize, webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
-			{
-				return 0;
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderWEBP::decode invalid get memory %d"
+					, memorySize
+					);
+
+				return false;
 			}
 
-			this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, webp_buffer, m_options.pitch );
-		}
-		else if( m_dataInfo.channels == 3 && m_options.channels == 3 )
-		{
-			if( WebPDecodeRGBInto( m_memory, m_memorySize, webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+			m_stream->read( memory, memorySize );
+
+			const uint8_t * webp_source = static_cast<const uint8_t *>(memory);
+			size_t webp_source_size = memorySize;
+			
+			if( this->decodeWEBP_( webp_source, webp_source_size, webp_buffer, webp_buffer_size ) == false )
 			{
 				return 0;
 			}
 		}
-		else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
+		else
 		{
-			if( WebPDecodeRGBAInto( m_memory, m_memorySize, webp_buffer, _bufferSize, m_options.pitch ) == nullptr )
+			const uint8_t * webp_source = static_cast<const uint8_t *>(streamMemory);
+			size_t webp_source_size = streamSize;
+
+			if( this->decodeWEBP_( webp_source, webp_source_size, webp_buffer, webp_buffer_size ) == false )
 			{
 				return 0;
 			}
 		}
-#	endif
-        
+		        
         return _bufferSize;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageDecoderWEBP::decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * _buffer, size_t _bufferSize )
+	{
+#	ifdef MENGE_RENDER_TEXTURE_RGBA
+#	define MENGINE_WEBP_DECODE_RGBA WebPDecodeRGBAInto
+#	define MENGINE_WEBP_DECODE_RGB WebPDecodeRGBInto
+#	else
+#	define MENGINE_WEBP_DECODE_RGBA WebPDecodeBGRAInto
+#	define MENGINE_WEBP_DECODE_RGB WebPDecodeBGRInto
+#	endif
 
+		if( m_dataInfo.channels == 4 && m_options.channels == 4 )
+		{
+			if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, _buffer, _bufferSize, m_options.pitch ) == nullptr )
+			{
+				return false;
+			}
+		}
+		else if( m_dataInfo.channels == 3 && m_options.channels == 4 )
+		{
+			if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, _buffer, _bufferSize, m_options.pitch ) == nullptr )
+			{
+				return false;
+			}
+		}
+		else if( m_dataInfo.channels == 3 && m_options.channels == 3 )
+		{
+			if( MENGINE_WEBP_DECODE_RGB( _source, _sourceSize, _buffer, _bufferSize, m_options.pitch ) == nullptr )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
 }	// namespace Menge
 
 #	endif

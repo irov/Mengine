@@ -13,6 +13,10 @@
 
 namespace Menge
 {
+#	ifndef MENGINE_FILE_STREAM_BUFFER_SIZE
+#	define MENGINE_FILE_STREAM_BUFFER_SIZE 4096
+#	endif
+
 	class FileInputStreamInterface
 		: public InputStreamInterface
 	{

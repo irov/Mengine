@@ -40,6 +40,7 @@ extern "C" // only required if using g++
 	extern bool initPluginMengeWin32FileGroup( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );	
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );
 }
 //////////////////////////////////////////////////////////////////////////
 static void message_error( const char * _format, ... )
@@ -290,6 +291,10 @@ namespace Menge
 		PluginInterface * plugin_zip;
 		initPluginMengeZip( &plugin_zip );
 		plugin_zip->initialize( serviceProvider );
+
+		PluginInterface * plugin_lz4;
+		initPluginMengeLZ4( &plugin_lz4 );
+		plugin_lz4->initialize( serviceProvider );
 		
 		PluginInterface * plugin_image_codec;
 		initPluginMengeImageCodec( &plugin_image_codec );
@@ -432,9 +437,21 @@ namespace Menge
 				}
 			}
 
+			if( min_i > max_i || min_j > max_j )
+			{
+				new_width = 1;
+				new_height = 1;
 
-			new_width = max_i - min_i + 1;
-			new_height = max_j - min_j + 1;
+				min_i = 0;
+				min_j = 0;
+				max_i = 1;
+				max_j = 1;
+			}
+			else
+			{
+				new_width = max_i - min_i + 1;
+				new_height = max_j - min_j + 1;
+			}
 		}
 		else
 		{
@@ -517,8 +534,8 @@ namespace Menge
 
 		ConstString c_info = Helper::stringizeString(serviceProvider, utf8_info);
 
-		OutputStreamInterfacePtr info_stream = 
-			FILE_SERVICE(serviceProvider)->openOutputFile( ConstString::none(), c_info );
+		OutputStreamInterfacePtr info_stream = FILE_SERVICE(serviceProvider)
+			->openOutputFile( ConstString::none(), c_info );
 
 		if( info_stream == nullptr )
 		{
@@ -538,7 +555,10 @@ namespace Menge
 
 		size_t info_buffer_size = strlen( info_buffer );
 
-		info_stream->write( info_buffer, info_buffer_size + 1 );
+		if( info_stream->write( info_buffer, info_buffer_size + 1 ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -587,26 +607,26 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( in.empty() == true )
 	{
-		message_error("not found 'in' param\n"
+		message_error("not found 'in' param"
 			);
 
-		return 1;
+		return 0;
 	}
 
 	if( out.empty() == true )
 	{
-		message_error("not found 'out' param\n"
+		message_error("not found 'out' param"
 			);
 
-		return 1;
+		return 0;
 	}
 
 	if( info.empty() == true )
 	{
-		message_error("not found 'info' param\n"
+		message_error("not found 'info' param"
 			);
 
-		return 1;
+		return 0;
 	}
 
 	in = s_correct_path(in);
@@ -616,12 +636,16 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	Menge::ServiceProviderInterface * serviceProvider;
 	if( Menge::initializeEngine( &serviceProvider ) == false )
 	{
-		return 1;
+		message_error( "ImageTrimmer invalid initialize" );
+
+		return 0;
 	}
 
 	if( Menge::trimImage( serviceProvider, in, out, info ) == false )
 	{
-		return 1;
+		message_error( "ImageTrimmer invalid trim" );
+
+		return 0;
 	}
 
 	return 0;

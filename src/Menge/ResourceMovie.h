@@ -224,7 +224,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		bool isThreeDNode( size_t _index );
+		bool isThreeDNode( size_t _index ) const;
 
 	protected:		
 		float m_frameDuration;

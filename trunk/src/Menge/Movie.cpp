@@ -1930,9 +1930,9 @@ namespace Menge
 
 		layer_sound->setResourceSound( resourceSound );
 		layer_sound->setName( _layer.name );
-		layer_sound->setIntervalStart( _layer.startInterval );
+		//layer_sound->setIntervalStart( _layer.startInterval );
 
-		layer_sound->setPlayCount( _layer.playCount );
+		layer_sound->setPlayCount( 1 );
 		layer_sound->setScretch( _layer.scretch );
 		//layer_sound->setLoop( _layer.loop );
 

@@ -147,7 +147,7 @@ namespace Menge
             return bytesRead;
         }
         
-        if( correct_count > MENGINE_WIN32_FILE_BUFFER_SIZE )
+        if( correct_count > MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE )
         {            
             size_t tail = m_capacity - m_carriage;
             
@@ -190,7 +190,7 @@ namespace Menge
         }
 
 		size_t bytesRead;
-		if( this->read_( m_readCache, MENGINE_WIN32_FILE_BUFFER_SIZE, bytesRead ) == false )
+		if( this->read_( m_readCache, MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE, bytesRead ) == false )
 		{
 			return 0;
 		}
@@ -376,5 +376,13 @@ namespace Menge
 		_time = (uint64_t)time;
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32FileInputStream::memory( void ** _memory, size_t * _size )
+	{
+		(void)_memory;
+		(void)_size;
+
+		return false;
 	}
 }	// namespace Menge

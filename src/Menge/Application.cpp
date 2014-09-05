@@ -860,8 +860,7 @@ namespace Menge
 		float gameViewportAspect;
 		Viewport gameViewport;
 
-		APPLICATION_SERVICE(m_serviceProvider)
-			->getGameViewport( gameViewportAspect, gameViewport );
+		this->getGameViewport( gameViewportAspect, gameViewport );
 
 		m_game->setGameViewport( gameViewport, gameViewportAspect );
 

@@ -6,8 +6,8 @@
 namespace Menge
 {
 
-#	ifndef MENGINE_WIN32_FILE_BUFFER_SIZE
-#	define MENGINE_WIN32_FILE_BUFFER_SIZE 8192
+#	ifndef MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE
+#	define MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE MENGINE_FILE_STREAM_BUFFER_SIZE
 #	endif
 
 	class Win32FileInputStream
@@ -34,6 +34,9 @@ namespace Menge
     public:
         bool time( uint64_t & _time ) const override;
 
+	public:
+		bool memory( void ** _memory, size_t * _size ) override;
+
     protected:
 		bool openFile_( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath );
         void close_();
@@ -51,6 +54,6 @@ namespace Menge
 		size_t m_capacity;
 		size_t m_reading;
 
-		uint8_t m_readCache[MENGINE_WIN32_FILE_BUFFER_SIZE];
+		uint8_t m_readCache[MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE];
 	};
 }	// namespace Menge

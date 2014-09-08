@@ -157,15 +157,6 @@ namespace Menge
 		m_indexBuffer.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::update( float _timing )
-	{
-		if( SERVICE_EXIST(m_serviceProvider, Menge::RenderTextureServiceInterface) == true )
-		{
-			RENDERTEXTURE_SERVICE(m_serviceProvider)
-				->update( _timing );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, int _bits, bool _fullscreen,
 		WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 	{

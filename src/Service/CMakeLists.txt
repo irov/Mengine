@@ -21,6 +21,7 @@ ADD_SUBDIRECTORY( ServiceConfig )
 ADD_SUBDIRECTORY( ServiceProfiler )
 ADD_SUBDIRECTORY( ServiceArchive )
 ADD_SUBDIRECTORY( ServiceInput )
+ADD_SUBDIRECTORY( ServiceGraveyard )
 
 if( WIN32 )
     ADD_SUBDIRECTORY( ServicePlugin )

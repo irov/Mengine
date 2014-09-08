@@ -365,11 +365,9 @@ namespace Menge
         virtual bool initialize() = 0;
         virtual void finalize() = 0;
 
-	public:
-		virtual void update( float _timing ) = 0;
-
     public:
         virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) = 0;
+		virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, size_t _width, size_t _height, size_t _channels ) = 0;
 
     public:
         virtual RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
@@ -589,9 +587,6 @@ namespace Menge
     public:
         virtual bool initialize( size_t _maxVertexCount, size_t _maxIndexCount ) = 0;
         virtual void finalize() = 0;
-
-	public:
-		virtual void update( float _timing ) = 0;
 
     public:
         virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material

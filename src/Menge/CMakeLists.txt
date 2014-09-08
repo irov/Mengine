@@ -383,6 +383,7 @@ SET( APPLICATION_DEPENDENCIES
  Kernel
  Metacode 
  ServiceText
+ ServiceGraveyard
 )
 
 SET( APPLICATION_DEPENDENCIES

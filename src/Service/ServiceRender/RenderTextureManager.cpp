@@ -51,7 +51,7 @@ namespace Menge
 		m_supportR8G8B8 = RENDER_SYSTEM(m_serviceProvider)
 			->supportTextureFormat( PF_R8G8B8 );
 
-		m_factoryRenderTexture.setMethodListener( this, &RenderTextureManager::onRenderTextureRelease_ );
+		m_factoryRenderTexture.setMethodListener( this, &RenderTextureManager::onRenderTextureDestroy_ );
 
 		m_limitTextureWidth = CONFIG_SERVICE(m_serviceProvider)
 			->getValue( "Limit", "TextureWidth", 2048U );
@@ -76,7 +76,41 @@ namespace Menge
 		}
 
         m_textures.clear();
+
+		for( TMapGrave::iterator
+			it = m_grave.begin(),
+			it_end = m_grave.end();
+		it != it_end;
+		++it )
+		{
+			RenderTextureGraveDesc & desc = m_grave.get_value( it );
+
+			desc.image = nullptr;
+		}
+
+		m_grave.clear();
     }
+	//////////////////////////////////////////////////////////////////////////
+	void RenderTextureManager::update( float _timing )
+	{
+		for( TMapGrave::iterator it = m_grave.begin(); it != m_grave.end(); )
+		{
+			RenderTextureGraveDesc & desc = m_grave.get_value( it );
+
+			desc.timing -= _timing;
+
+			if( desc.timing > 0.f )
+			{
+				++it;
+
+				continue;
+			}
+
+			desc.image = nullptr;
+
+			it = m_grave.erase( it );
+		}
+	}
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const
     {
@@ -91,7 +125,7 @@ namespace Menge
 		return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::getTexture( const FilePath& _fileName ) const
+    RenderTextureInterfacePtr RenderTextureManager::getTexture( const FilePath & _fileName ) const
     {
         TMapTextures::const_iterator it_find = m_textures.find( _fileName );
 
@@ -141,25 +175,7 @@ namespace Menge
             return nullptr;
         }
 
-        size_t id = ++m_textureEnumerator;
-
-        RenderTexture * texture = m_factoryRenderTexture.createObjectT();
-        texture->initialize( m_serviceProvider, image, _width, _height, _channels, id );
-
-#	ifndef MENGE_MASTER_RELEASE
-        size_t memroy_size = texture->getMemoryUse();
-
-        m_debugInfo.textureMemory += memroy_size;
-        ++m_debugInfo.textureCount;
-
-        LOGGER_INFO(m_serviceProvider)( "RenderEngine::createTexture creating texture %dx%d %d memory %d:%d"
-            , HWWidth
-            , HWHeight
-            , HWFormat
-            , memroy_size
-            , m_debugInfo.textureMemory
-            );
-#	endif
+        RenderTextureInterface * texture = this->createRenderTexture_( image, _width, _height, _channels );
 
         return texture;
     }
@@ -188,25 +204,7 @@ namespace Menge
             return nullptr;
         }
 
-        size_t id = ++m_textureEnumerator;
-
-        RenderTexture * texture = m_factoryRenderTexture.createObjectT();
-        texture->initialize( m_serviceProvider, image, _width, _height, _channels, id );
-
-#	ifndef MENGE_MASTER_RELEASE
-        size_t memroy_size = texture->getMemoryUse();
-
-        m_debugInfo.textureMemory += memroy_size;
-        ++m_debugInfo.textureCount;
-
-        LOGGER_INFO(m_serviceProvider)( "RenderEngine::createDynamicTexture creating dynamic texture %dx%d channels %d use memory %d:%d"
-            , HWWidth
-            , HWHeight
-            , HWChannels 
-            , memroy_size
-            , m_debugInfo.textureMemory
-            );
-#	endif
+        RenderTextureInterface * texture = this->createRenderTexture_( image, _width, _height, _channels );
 
         return texture;
     }
@@ -235,25 +233,7 @@ namespace Menge
             return nullptr;
         }
 
-        size_t id = ++m_textureEnumerator;
-
-        RenderTexture * texture = m_factoryRenderTexture.createObjectT();
-        texture->initialize( m_serviceProvider, image, _width, _height, _channels, id );
-
-#	ifndef MENGE_MASTER_RELEASE
-        size_t memroy_size = texture->getMemoryUse();
-
-        m_debugInfo.textureMemory += memroy_size;
-        ++m_debugInfo.textureCount;
-
-        LOGGER_INFO(m_serviceProvider)( "RenderEngine::createRenderTargetTexture creating render target texture %dx%d %d memory %d:%d"
-            , HWWidth
-            , HWHeight 
-            , HWChannels 
-            , memroy_size
-            , m_debugInfo.textureMemory
-            );
-#	endif
+        RenderTextureInterface * texture = this->createRenderTexture_( image, _width, _height, _channels );
 
         return texture;
     }
@@ -387,6 +367,23 @@ namespace Menge
 
             return cache_texture;
         }
+
+		TMapGrave::iterator it_grave_found = m_grave.find( _fileName );
+
+		if( it_grave_found != m_grave.end() )
+		{
+			RenderTextureGraveDesc & desc = m_grave.get_value( it_grave_found );
+			
+			RenderTextureInterface * texture = this->createRenderTexture_( desc.image, desc.width, desc.height, desc.channels );
+
+			texture->setFileName( _fileName );
+
+			m_textures.insert( _fileName, texture );
+
+			m_grave.erase( it_grave_found );
+
+			return texture;
+		}
 			
 		ImageDecoderInterfacePtr imageDecoder;
 		if( PREFETCHER_SERVICE(m_serviceProvider)
@@ -574,33 +571,75 @@ namespace Menge
 		(void)_depth; //ToDo
 	}
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureManager::onRenderTextureRelease_( RenderTextureInterface * _texture )
+    bool RenderTextureManager::onRenderTextureDestroy_( RenderTextureInterface * _texture )
     {
         const FilePath & filename = _texture->getFileName();
 
 		m_textures.erase( filename );
 
-#	ifndef MENGE_MASTER_RELEASE
-        size_t memroy_size = _texture->getMemoryUse();
+		RenderTextureGraveDesc desc;
+		
+		desc.image = _texture->getImage();
+		desc.width = _texture->getWidth();
+		desc.height = _texture->getHeight();
+		desc.channels = _texture->getChannels();
+		desc.timing = 1000.f;
 
-		const RenderImageInterfacePtr & image = _texture->getImage(); 
+		m_grave.insert( filename, desc );
 
-        size_t HWWidth = image->getHWWidth();
-        size_t HWHeight = image->getHWHeight();
-        PixelFormat HWPixelFormat = image->getHWPixelFormat();
+		this->releaseRenderTexture_( _texture );
 
-        m_debugInfo.textureMemory -= memroy_size;
-        --m_debugInfo.textureCount;
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderTextureInterface * RenderTextureManager::createRenderTexture_( const RenderImageInterfacePtr & _image, size_t _width, size_t _height, size_t _channels )
+	{
+		size_t id = ++m_textureEnumerator;
 
-        LOGGER_INFO(m_serviceProvider)( "RenderEngine::destroyTexture_ destroy %s texture %dx%d %d memory %d:%d"
-			, filename.c_str()
-            , HWWidth
-            , HWHeight
-            , HWPixelFormat
-            , memroy_size
-            , m_debugInfo.textureMemory
-            );
-#	endif
+		RenderTexture * texture = m_factoryRenderTexture.createObjectT();
+		texture->initialize( m_serviceProvider, _image, _width, _height, _channels, id );
+
+//#	ifndef MENGE_MASTER_RELEASE
+//		size_t memroy_size = texture->getMemoryUse();
+//
+//		m_debugInfo.textureMemory += memroy_size;
+//		++m_debugInfo.textureCount;
+//		
+//		LOGGER_INFO(m_serviceProvider)( "RenderEngine::createRenderTexture_ creating texture %dx%d %d memory %d:%d"
+//			, HWWidth
+//			, HWHeight
+//			, HWFormat
+//			, memroy_size
+//			, m_debugInfo.textureMemory
+//			);
+//#	endif
+
+		return texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderTextureManager::releaseRenderTexture_( RenderTextureInterface * _texture )
+	{
+//#	ifndef MENGE_MASTER_RELEASE
+//        size_t memroy_size = _texture->getMemoryUse();
+//
+//		const RenderImageInterfacePtr & image = _texture->getImage(); 
+//
+//        size_t HWWidth = image->getHWWidth();
+//        size_t HWHeight = image->getHWHeight();
+//        PixelFormat HWPixelFormat = image->getHWPixelFormat();
+//
+//        m_debugInfo.textureMemory -= memroy_size;
+//        --m_debugInfo.textureCount;
+//
+//        LOGGER_INFO(m_serviceProvider)( "RenderTextureManager::destroyTexture_ destroy %s texture %dx%d %d memory %d:%d"
+//			, filename.c_str()
+//            , HWWidth
+//            , HWHeight
+//            , HWPixelFormat
+//            , memroy_size
+//            , m_debugInfo.textureMemory
+//            );
+//#	endif
 
 		_texture->release();
     }
@@ -645,7 +684,7 @@ namespace Menge
         }
 
         END_WATCHDOG(m_serviceProvider, "texture decode", 1)("texture decode %s"
-            , _texture->getFileName().c_str()			
+            , _texture->getFileName().c_str()
             );
 
         //this->sweezleAlpha( _texture, textureBuffer, pitch );

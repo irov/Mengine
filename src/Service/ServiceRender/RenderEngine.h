@@ -110,6 +110,9 @@ namespace Menge
 		void finalize() override;
 
 	public:
+		void update( float _timing ) override;
+
+	public:
 		bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, int _bits, bool _fullscreen, 
 									WindowHandle _winHandle, int _FSAAType , int _FSAAQuality ) override;
 

@@ -13,6 +13,7 @@ namespace Menge
 		, m_prototype(_prototype)
 		, m_generator(_module)
 		, m_type(nullptr)
+		, m_count(0)
 	{
 		pybind::incref( m_generator );
 	}
@@ -93,6 +94,8 @@ namespace Menge
 			return nullptr;
 		}
 
+		++m_count;
+
 		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -103,6 +106,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t EntityPrototypeGenerator::count() const
 	{
-		return 0;
+		return m_count;
 	}
 }

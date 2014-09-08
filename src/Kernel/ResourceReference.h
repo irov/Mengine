@@ -37,6 +37,7 @@ namespace Menge
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+		ServiceProviderInterface * getServiceProvider() const;
 
 	public:
 		void setCategory( const ConstString & _category );

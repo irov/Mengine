@@ -37,7 +37,12 @@ namespace Menge
 
 		if( insert_it.second == false )
 		{
-			m_prototypes.set_value( insert_it.first, _generator );
+			LOGGER_ERROR(m_serviceProvider)("PrototypeManager::addPrototype add %s:%s alredy exist!"
+				, _category.c_str()
+				, _prototype.c_str()
+				);
+
+			return false;
 		}
 
         LOGGER_INFO(m_serviceProvider)("PrototypeManager::addPrototype add %s:%s"

@@ -49,6 +49,9 @@ namespace Menge
 		virtual ~ServiceProviderInterface(){};
 
 	public:
+		virtual bool existService( const char * _name ) const = 0;
+
+	public:
 		virtual ServiceInterface * getService( const char * _name ) const = 0;
 
     public:
@@ -88,6 +91,24 @@ namespace Menge
 
             return s_service;
         }
+
+		template<class T>
+		inline bool existService( ServiceProviderInterface * _serviceProvider )
+		{
+			static bool s_initialize = false;
+			static bool s_exist = false;
+
+			if( s_initialize == false )
+			{
+				s_initialize = true;
+
+				const char * serviceName = T::getServiceName();
+
+				s_exist = _serviceProvider->existService( serviceName );
+			}
+
+			return s_exist;
+		}
     }
 
 #	ifdef _DEBUG
@@ -97,6 +118,9 @@ namespace Menge
 #	define SERVICE_GET( serviceProvider, Type )\
 	(Menge::Helper::getService<Type>(serviceProvider))
 #	endif
+
+#	define SERVICE_EXIST( serviceProvider, Type )\
+	(Menge::Helper::existService<Type>(serviceProvider))
 
 #	define SERVICE_CALL( Service, Method, Args )\
 	(Service -> Method Args)

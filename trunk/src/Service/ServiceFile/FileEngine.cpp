@@ -43,6 +43,11 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void FileEngine::finalize()
+	{
+		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory )
 	{
 		m_factoryFileGroups.insert( _type, _factory );

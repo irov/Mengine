@@ -224,6 +224,9 @@ namespace Menge
 		void _release() override;
 
 	protected:
+		DataInterfacePtr compileData_( const FilePath & _path );
+
+	protected:
 		bool isThreeDNode( size_t _index ) const;
 
 	protected:		

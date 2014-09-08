@@ -36,6 +36,7 @@
 
 #   include "Interface/GameInterface.h"
 #   include "Interface/WatchdogInterface.h"
+#   include "Interface/GraveyardInterface.h"
 
 #   include "Consts.h"
 
@@ -103,6 +104,7 @@ namespace Menge
         bool initializePrototypeManager_();
         bool initializeWatchdog_();
         bool initializeProfiler_();
+		bool initializeGraveyard_();
 
 	public:
 		bool createRenderWindow( WindowHandle _renderWindowHandle ) override;
@@ -253,6 +255,7 @@ namespace Menge
 		TextServiceInterface* m_textService;
 		NodeServiceInterface * m_nodeService;		
         PrototypeServiceInterface * m_prototypeService;
+		GraveyardInterface * m_graveyard;
         Consts * m_consts;
 
 		WatchdogInterface * m_watchdog;

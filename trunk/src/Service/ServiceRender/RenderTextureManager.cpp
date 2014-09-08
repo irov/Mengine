@@ -4,6 +4,7 @@
 #   include "Interface/WatchdogInterface.h"
 #   include "Interface/StringizeInterface.h"
 #	include "Interface/PrefetcherInterface.h"
+#	include "Interface/GraveyardInterface.h"
 #	include "Interface/ConfigInterface.h"
 
 #	include "stdex/memorycopy.h"
@@ -75,42 +76,8 @@ namespace Menge
 			texture->release();
 		}
 
-        m_textures.clear();
-
-		for( TMapGrave::iterator
-			it = m_grave.begin(),
-			it_end = m_grave.end();
-		it != it_end;
-		++it )
-		{
-			RenderTextureGraveDesc & desc = m_grave.get_value( it );
-
-			desc.image = nullptr;
-		}
-
-		m_grave.clear();
+		m_textures.clear();
     }
-	//////////////////////////////////////////////////////////////////////////
-	void RenderTextureManager::update( float _timing )
-	{
-		for( TMapGrave::iterator it = m_grave.begin(); it != m_grave.end(); )
-		{
-			RenderTextureGraveDesc & desc = m_grave.get_value( it );
-
-			desc.timing -= _timing;
-
-			if( desc.timing > 0.f )
-			{
-				++it;
-
-				continue;
-			}
-
-			desc.image = nullptr;
-
-			it = m_grave.erase( it );
-		}
-	}
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const
     {
@@ -175,7 +142,7 @@ namespace Menge
             return nullptr;
         }
 
-        RenderTextureInterface * texture = this->createRenderTexture_( image, _width, _height, _channels );
+        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _channels );
 
         return texture;
     }
@@ -204,7 +171,7 @@ namespace Menge
             return nullptr;
         }
 
-        RenderTextureInterface * texture = this->createRenderTexture_( image, _width, _height, _channels );
+        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _channels );
 
         return texture;
     }
@@ -233,7 +200,7 @@ namespace Menge
             return nullptr;
         }
 
-        RenderTextureInterface * texture = this->createRenderTexture_( image, _width, _height, _channels );
+        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _channels );
 
         return texture;
     }
@@ -368,21 +335,16 @@ namespace Menge
             return cache_texture;
         }
 
-		TMapGrave::iterator it_grave_found = m_grave.find( _fileName );
+		RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE(m_serviceProvider)
+			->resurrectTexture( _fileName );
 
-		if( it_grave_found != m_grave.end() )
+		if( resurrect_texture != nullptr )
 		{
-			RenderTextureGraveDesc & desc = m_grave.get_value( it_grave_found );
-			
-			RenderTextureInterface * texture = this->createRenderTexture_( desc.image, desc.width, desc.height, desc.channels );
+			resurrect_texture->setFileName( _fileName );
 
-			texture->setFileName( _fileName );
+			m_textures.insert( _fileName, resurrect_texture.get() );
 
-			m_textures.insert( _fileName, texture );
-
-			m_grave.erase( it_grave_found );
-
-			return texture;
+			return resurrect_texture;
 		}
 			
 		ImageDecoderInterfacePtr imageDecoder;
@@ -433,8 +395,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderInterfacePtr RenderTextureManager::createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
 	{
-		InputStreamInterfacePtr stream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( _pakName, _fileName, false );
+		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( _pakName, _fileName, false );
 
 		if( stream == nullptr )
 		{
@@ -577,22 +539,15 @@ namespace Menge
 
 		m_textures.erase( filename );
 
-		RenderTextureGraveDesc desc;
-		
-		desc.image = _texture->getImage();
-		desc.width = _texture->getWidth();
-		desc.height = _texture->getHeight();
-		desc.channels = _texture->getChannels();
-		desc.timing = 1000.f;
-
-		m_grave.insert( filename, desc );
+		GRAVEYARD_SERVICE(m_serviceProvider)
+			->buryTexture( filename, _texture );
 
 		this->releaseRenderTexture_( _texture );
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterface * RenderTextureManager::createRenderTexture_( const RenderImageInterfacePtr & _image, size_t _width, size_t _height, size_t _channels )
+	RenderTextureInterfacePtr RenderTextureManager::createRenderTexture( const RenderImageInterfacePtr & _image, size_t _width, size_t _height, size_t _channels )
 	{
 		size_t id = ++m_textureEnumerator;
 

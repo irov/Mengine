@@ -19,6 +19,7 @@ namespace Menge
 
 	public:
 		bool initialize() override;
+		void finalize() override;
 
 	public:
 		void registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory ) override;

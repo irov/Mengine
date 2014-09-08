@@ -28,7 +28,6 @@ src
 	InputSystemInterface.h
 	MengineInterface.h
 	SoundSystemInterface.h
-	TextureInterface.h
 	ThreadSystemInterface.h
 	HttpSystemInterface.h
 	ConverterInterface.h
@@ -51,6 +50,7 @@ src
     Model3DInterface.h
     PrefetcherInterface.h
     AmplifierInterface.h
+    GraveyardInterface.h
     
 	dummy.cpp
 )

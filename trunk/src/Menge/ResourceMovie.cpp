@@ -653,37 +653,16 @@ namespace Menge
 			return false;
 		}
 
-		const ConstString& category = this->getCategory();
+		DataInterfacePtr data = this->compileData_( m_path );
 
-		DataInterfacePtr data;
-		if( PREFETCHER_SERVICE(m_serviceProvider)
-			->getData( m_path, data ) == false )
+		if( data == nullptr )
 		{
-			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-				->openInputFile( category, m_path, false );
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' can` t get frame pack '%s'"
+				, this->getName().c_str()
+				, m_path.c_str()
+				);
 
-			if( stream == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' don`t open Frames Pack '%s'"
-					, this->getName().c_str()
-					, m_path.c_str()
-					);
-
-				return false;
-			}
-
-			data = DATA_SERVICE(m_serviceProvider)
-				->dataflow( m_dataflowType, stream );
-
-			if( data == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' can` t get frame pack '%s'"
-					, this->getName().c_str()
-					, m_path.c_str()
-					);
-
-				return false;
-			}
+			return false;
 		}
 
 		m_keyFramePack = data;
@@ -701,6 +680,45 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	DataInterfacePtr ResourceMovie::compileData_( const FilePath & _path )
+	{
+		const ConstString & category = this->getCategory();
+
+		DataInterfacePtr data;
+		if( PREFETCHER_SERVICE(m_serviceProvider)
+			->getData( _path, data ) == false )
+		{
+			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+				->openInputFile( category, _path, false );
+
+			if( stream == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::compileData_: '%s' don`t open Frames Pack '%s'"
+					, this->getName().c_str()
+					, _path.c_str()
+					);
+
+				return nullptr;
+			}
+
+			data = DATA_SERVICE(m_serviceProvider)
+				->dataflow( m_dataflowType, stream );
+
+			if( data == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::compileData_: '%s' can` t dataflow '%s' from '%s'"
+					, this->getName().c_str()
+					, m_dataflowType.c_str()
+					, _path.c_str()
+					);
+
+				return nullptr;
+			}
+		}
+
+		return data;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie::_release()

@@ -120,6 +120,7 @@ SERVICE_EXTERN(ResourceService, Menge::ResourceServiceInterface);
 SERVICE_EXTERN(Watchdog, Menge::WatchdogInterface);
 SERVICE_EXTERN(GameService, Menge::GameServiceInterface);
 SERVICE_EXTERN(PrototypeService, Menge::PrototypeServiceInterface);
+SERVICE_EXTERN(Graveyard, Menge::GraveyardInterface);
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::ApplicationInterface, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -167,6 +168,7 @@ namespace Menge
         , m_windowModeCheck(false)
         , m_watchdog(nullptr)
         , m_profiler(nullptr)
+		, m_graveyard(nullptr)
 		, m_projectVersion(0)
 		, m_projectVersionCheck(false)
 	{
@@ -252,6 +254,7 @@ namespace Menge
         exinit.add( &Application::initializeTextManager_ );        
         exinit.add( &Application::initializeWatchdog_ );
         exinit.add( &Application::initializeProfiler_ );
+		exinit.add( &Application::initializeGraveyard_ );
 
         if( exinit.run() == false )
         {
@@ -564,6 +567,28 @@ namespace Menge
 
         return true;    
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeGraveyard_()
+	{
+		LOGGER_ERROR(m_serviceProvider)("Inititalizing Graveyard..." );
+
+		GraveyardInterface * graveyard;
+		if( SERVICE_CREATE( Graveyard, &graveyard ) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY( m_serviceProvider, graveyard );
+
+		if( graveyard->initialize() == false )
+		{
+			return false;
+		}
+
+		m_graveyard = graveyard;
+
+		return true;    
+	}
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
@@ -1315,9 +1340,9 @@ namespace Menge
 				->update( timing );
 		}
 
-		if( SERVICE_EXIST(m_serviceProvider, Menge::RenderServiceInterface) == true )
+		if( SERVICE_EXIST(m_serviceProvider, Menge::GraveyardInterface) == true )
 		{
-			RENDER_SERVICE(m_serviceProvider)
+			GRAVEYARD_SERVICE(m_serviceProvider)
 				->update( timing );
 		}
 		

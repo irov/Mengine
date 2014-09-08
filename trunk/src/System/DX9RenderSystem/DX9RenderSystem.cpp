@@ -836,6 +836,11 @@ namespace Menge
             , _channels
 			);
 
+		printf("RenderTextureManager::createRenderTexture_ %d %d\n"
+			, texDesc.Width
+			, texDesc.Height
+			);
+
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////

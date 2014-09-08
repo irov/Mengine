@@ -85,6 +85,28 @@ namespace Menge
         return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool ServiceProvider::existService( const char * _name ) const
+	{
+		for( size_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+		{
+			const ServiceDesc & desc = m_services[index];
+
+			if( desc.service == nullptr )
+			{
+				continue;
+			}
+
+			if( strcmp( desc.name, _name ) != 0 )
+			{
+				continue;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	ServiceInterface * ServiceProvider::getService( const char * _name ) const
 	{
         for( size_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )

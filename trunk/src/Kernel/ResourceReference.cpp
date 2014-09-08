@@ -30,6 +30,11 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * ResourceReference::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceReference::setCategory( const ConstString & _category )
 	{
 		m_category = _category;

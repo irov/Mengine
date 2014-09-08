@@ -14,6 +14,9 @@ namespace Menge
         ServiceProvider();
         ~ServiceProvider();
 
+	public:
+		bool existService( const char * _name ) const override;
+
     protected:
         ServiceInterface * getService( const char * _name ) const override;
 

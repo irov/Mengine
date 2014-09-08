@@ -12,8 +12,6 @@
 #   include "Factory/FactoryStore.h"
 #	include "Factory/FactoryDefault.h"
 
-#	include <list>
-
 namespace Menge
 {
     class RenderTextureManager
@@ -30,6 +28,9 @@ namespace Menge
     public:
         bool initialize() override;
         void finalize() override;
+
+	public:
+		void update( float _timing ) override;
 
     public:
         RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) override;
@@ -64,7 +65,10 @@ namespace Menge
         const RenderTextureDebugInfo & getDebugInfo() override;
 
 	protected:
-        void onRenderTextureRelease_( RenderTextureInterface * _texture );
+        bool onRenderTextureDestroy_( RenderTextureInterface * _texture );
+
+		RenderTextureInterface * createRenderTexture_( const RenderImageInterfacePtr & _image, size_t _width, size_t _height, size_t _channels );
+		void releaseRenderTexture_( RenderTextureInterface * _texture );
 
     protected:
         bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder );
@@ -77,6 +81,18 @@ namespace Menge
 
         typedef stdex::binary_vector<FilePath, RenderTextureInterface *> TMapTextures;
         TMapTextures m_textures;
+
+		struct RenderTextureGraveDesc
+		{
+			RenderImageInterfacePtr image;
+			size_t width;
+			size_t height;
+			size_t channels;
+			float timing;
+		};
+
+		typedef stdex::binary_vector<FilePath, RenderTextureGraveDesc> TMapGrave;
+		TMapGrave m_grave;
 
         typedef FactoryPoolStore<RenderTexture, 128> TFactoryRenderTexture;
         TFactoryRenderTexture m_factoryRenderTexture;

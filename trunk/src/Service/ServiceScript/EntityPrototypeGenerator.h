@@ -38,6 +38,8 @@ namespace Menge
 		ConstString m_prototype;
 		PyObject * m_generator;
 		PyObject * m_type;
+
+		size_t m_count;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<EntityPrototypeGenerator> EntityPrototypeGeneratorPtr;

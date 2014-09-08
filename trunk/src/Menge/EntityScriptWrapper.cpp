@@ -33,10 +33,10 @@ namespace Menge
             PrototypeGeneratorInterfacePtr generator = SCRIPT_SERVICE(m_serviceProvider)
 				->createEntityGenerator(_category, _prototype, _module);
 
-            PROTOTYPE_SERVICE(m_serviceProvider)
+            bool successful = PROTOTYPE_SERVICE(m_serviceProvider)
                 ->addPrototype( _category, _prototype, generator );
 
-            return true;
+            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_addEntityPrototypeFinder( const ConstString & _prototype, PyObject * _module )

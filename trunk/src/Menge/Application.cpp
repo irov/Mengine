@@ -1309,12 +1309,18 @@ namespace Menge
 
 		m_game->tick( timing );
 
-		if( SOUND_SERVICE(m_serviceProvider) )
+		if( SERVICE_EXIST(m_serviceProvider, Menge::SoundServiceInterface) == true )
 		{
-			SOUND_SERVICE(m_serviceProvider)->update( timing );
+			SOUND_SERVICE(m_serviceProvider)
+				->update( timing );
 		}
 
-
+		if( SERVICE_EXIST(m_serviceProvider, Menge::RenderServiceInterface) == true )
+		{
+			RENDER_SERVICE(m_serviceProvider)
+				->update( timing );
+		}
+		
 		//if( m_physicEngine )
 		//{
 		//	m_physicEngine->update( _timing );
@@ -2055,7 +2061,7 @@ namespace Menge
 	{
 		if( m_cursorResource != nullptr )
 		{
-			m_cursorResource->release();
+			m_cursorResource->decrementReference();
 		}
 
 		m_cursorResource = RESOURCE_SERVICE(m_serviceProvider)

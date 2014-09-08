@@ -6,8 +6,6 @@
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/WatchdogInterface.h"
 
-#	include "RenderSubTexture.h"
-
 //#	include "Megatextures.h"
 
 #	include "Core/RenderUtil.h"
@@ -157,10 +155,15 @@ namespace Menge
 		}
 
 		m_indexBuffer.clear();
-
-
-
-		//delete m_megatextures;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::update( float _timing )
+	{
+		if( SERVICE_EXIST(m_serviceProvider, Menge::RenderTextureServiceInterface) == true )
+		{
+			RENDERTEXTURE_SERVICE(m_serviceProvider)
+				->update( _timing );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, int _bits, bool _fullscreen,

@@ -6,8 +6,6 @@ src
 	RenderEngine.cpp	
 	RenderTexture.h
 	RenderTexture.cpp
-	RenderSubTexture.h
-	RenderSubTexture.cpp
     RenderTextureManager.h
     RenderTextureManager.cpp
     RenderMaterial.h

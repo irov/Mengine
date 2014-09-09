@@ -308,4 +308,12 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeFileInputStream::memory( void ** _memory, size_t * _size )
+	{
+		(void)_memory;
+		(void)_size;
+
+		return false;
+	}
 }	// namespace Menge

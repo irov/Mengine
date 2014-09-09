@@ -63,13 +63,16 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PluginAmplifier::destroy()
+	void PluginAmplifier::finalize()
 	{
 		if( m_amplifier != nullptr )
 		{
 			m_amplifier->finalize();
 		}
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PluginAmplifier::destroy()
+	{
 		SERVICE_DESTROY( Amplifier, m_amplifier );
 
 		delete this;

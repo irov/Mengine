@@ -35,13 +35,13 @@ namespace Menge
 			ResourceReference * resource = this->createResource(_category, _group, _name, _type);
 
 #   ifdef _DEBUG
-			if( dynamic_cast<T*>(resource) == nullptr )
+			if( dynamic_cast<T *>(resource) == nullptr )
 			{
 				return nullptr;
 			}
 #   endif
 
-			T * t = static_cast<T*>(resource);
+			T * t = static_cast<T *>(resource);
 
 			return t;
         }
@@ -55,7 +55,7 @@ namespace Menge
             ResourceReference * resource = this->getResource( _name );
 
 #   ifdef _DEBUG
-            if( dynamic_cast<T*>(resource) == nullptr )
+            if( dynamic_cast<T *>(resource) == nullptr )
             {
                 return nullptr;
             }
@@ -74,7 +74,7 @@ namespace Menge
             ResourceReference * resource = this->getResourceReference( _name );
 
 #   ifdef _DEBUG
-            if( dynamic_cast<T*>(resource) == nullptr )
+            if( dynamic_cast<T *>(resource) == nullptr )
             {
                 return nullptr;
             }
@@ -91,7 +91,10 @@ namespace Menge
 		bool hasResourceT( const ConstString& _name, T ** _resource ) const
 		{
 			ResourceReference * resource;			
-			bool exist = this->hasResource( _name, &resource );
+			if( this->hasResource( _name, &resource ) == false )
+			{
+				return false;
+			}
 			
 #   ifdef _DEBUG
 			if( dynamic_cast<T *>(resource) == nullptr )
@@ -102,7 +105,7 @@ namespace Menge
 
 			*_resource = static_cast<T *>(resource);
 
-			return exist;
+			return true;
 		}
 
         virtual bool validResource( const ConstString& _name ) const = 0;

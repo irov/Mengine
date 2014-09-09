@@ -118,9 +118,18 @@ namespace Menge
 		}
 
 		float frameDuration = m_resourceMovie->getFrameDuration();
-
 		m_currentFrame = (size_t)floorf( (_timing / frameDuration) + 0.5f );
-		m_frameTiming = _timing - m_currentFrame * frameDuration;
+
+		size_t frameCount = m_resourceMovie->getFrameCount();
+		if( m_currentFrame > frameCount )
+		{
+			m_currentFrame = frameCount;
+			m_frameTiming = 0.f;
+		}
+		else
+		{
+			m_frameTiming = _timing - m_currentFrame * frameDuration;
+		}		
 
 		if( this->isActivate() == true )
 		{

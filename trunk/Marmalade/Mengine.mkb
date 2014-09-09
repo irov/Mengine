@@ -31,16 +31,11 @@ includepaths
 	"../dependencies/boost"
 	"../dependencies/simpleini"
 	"../dependencies/metabuf"
-    "../dependencies/simpleini"
     "../dependencies/zlib"
     "../dependencies/lz4"
     "../dependencies/libjpeg"
-    "../dependencies/libwebp/src"
-    
-    
     "../dependencies/stdex/include"
 	"../dependencies/utf8/source"
-    "../dependencies/crunch"
     "../dependencies/fastpathfinder/include"
     
     "dependencies/marm_libogg/libogg-1.3.0/include"
@@ -93,23 +88,11 @@ files
     ("../src/Plugin/MengeSoundCodecPlugin")	
 	"*.h"
 	"*.cpp"    
-
-    [Plugin/MengeXmlCodecPlugin]
-    ("../src/Plugin/MengeXmlCodecPlugin")	
-	"*.cpp"
-	"*.h"
     
     [Plugin/MengePathFinderPlugin]
     ("../src/Plugin/MengePathFinderPlugin")	
 	"*.cpp"
 	"*.h"    
-
-    [Plugin/MengeDevelopmentConverterPlugin]
-    ("../src/Plugin/MengeDevelopmentConverterPlugin")	
-	"HotspotImageConverterPNGToHIT.*"
-	"MovieKeyConverterXMLToAEK.*"
-	"DevelopmentConverter.*"
-	"DevelopmentConverterPlugin.*"
     
     [Service/ServiceCodec]
     ("../src/Service/ServiceCodec")	
@@ -211,6 +194,16 @@ files
     ("../src/Service/ServiceText")	
 	"*.h"
 	"*.cpp"    	
+    
+    [Service/ServiceInput]
+    ("../src/Service/ServiceInput")	
+	"*.h"
+	"*.cpp"      
+    
+    [Service/ServiceGraveyard]
+    ("../src/Service/ServiceGraveyard")	
+	"*.h"
+	"*.cpp"       
 
     [System/SilentSoundSystem]
     ("../src/System/SilentSoundSystem")	

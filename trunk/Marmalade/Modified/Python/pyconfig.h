@@ -1,8 +1,6 @@
 #ifndef Py_PYCONFIG_H
 #define Py_PYCONFIG_H
 
-
-
 /* Define if --enable-ipv6 is specified */
 #define ENABLE_IPV6 1
 
@@ -278,7 +276,8 @@ void fprintf(FILE *, char *, ...);) *and* <stdarg.h> */
 
 
 /* Define if you want to compile in Python-specific mallocs */
-#define WITH_PYMALLOC 1
+//#define WITH_PYMALLOC 1
+#undef WITH_PYMALLOC
 
 /* Define if you want to compile in rudimentary thread support */
 #undef WITH_THREAD

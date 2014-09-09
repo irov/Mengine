@@ -686,36 +686,38 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		DataInterfacePtr data;
+		DataInterfacePtr prefetch_data;
 		if( PREFETCHER_SERVICE(m_serviceProvider)
-			->getData( _path, data ) == false )
+			->getData( _path, prefetch_data ) == true )
 		{
-			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-				->openInputFile( category, _path, false );
+			return prefetch_data;
+		}
+		
+		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( category, _path, false );
 
-			if( stream == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::compileData_: '%s' don`t open Frames Pack '%s'"
-					, this->getName().c_str()
-					, _path.c_str()
-					);
+		if( stream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::compileData_: '%s' don`t open Frames Pack '%s'"
+				, this->getName().c_str()
+				, _path.c_str()
+				);
 
-				return nullptr;
-			}
+			return nullptr;
+		}
 
-			data = DATA_SERVICE(m_serviceProvider)
-				->dataflow( m_dataflowType, stream );
+		DataInterfacePtr data = DATA_SERVICE(m_serviceProvider)
+			->dataflow( m_dataflowType, stream );
 
-			if( data == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::compileData_: '%s' can` t dataflow '%s' from '%s'"
-					, this->getName().c_str()
-					, m_dataflowType.c_str()
-					, _path.c_str()
-					);
+		if( data == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::compileData_: '%s' can` t dataflow '%s' from '%s'"
+				, this->getName().c_str()
+				, m_dataflowType.c_str()
+				, _path.c_str()
+				);
 
-				return nullptr;
-			}
+			return nullptr;
 		}
 
 		return data;

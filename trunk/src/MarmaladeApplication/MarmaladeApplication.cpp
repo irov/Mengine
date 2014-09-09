@@ -1558,20 +1558,4 @@ namespace Menge
 	{
 		return false;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    size_t MarmaladeApplication::getMemoryUsage() const
-    {
-        return 0;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void * MarmaladeApplication::checkpointMemory() const
-    {
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    size_t MarmaladeApplication::diffMemory( void * _checkpoint ) const
-    {
-        return 0;
-    }
-
 }

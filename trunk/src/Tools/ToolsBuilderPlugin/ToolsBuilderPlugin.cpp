@@ -421,7 +421,7 @@ namespace Menge
 			LOGGER_ERROR(serviceProvider)("convert: error parse args"
 				);
 
-			return NULL;
+			Py_RETURN_FALSE;
 		}
 
 		if( s_convert( fromPath, toPath, convertType, params ) == false )
@@ -432,10 +432,10 @@ namespace Menge
 				, convertType
 				);
 
-			return NULL;
+			Py_RETURN_FALSE;
 		}
 
-		Py_RETURN_NONE;
+		Py_RETURN_TRUE;
 	}
 }
 /////////////////////////////////////////////////////////////////////////////////////

@@ -92,11 +92,6 @@ namespace Menge
 		bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 		bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 
-    public:
-        size_t getMemoryUsage() const override;
-        void * checkpointMemory() const override;
-        size_t diffMemory( void * _checkpoint ) const override;
-
 	protected:
 		bool getApplicationPath_( const char * _section, const char * _key, ConstString & _path );
 

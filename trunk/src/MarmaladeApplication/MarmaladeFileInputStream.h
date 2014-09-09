@@ -34,6 +34,9 @@ namespace Menge
     public:
         bool time( uint64 & _time ) const override;
 
+	public:
+		bool memory( void ** _memory, size_t * _size ) override;
+
     public:
         void _destroy() override;
 

@@ -1964,8 +1964,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::finalize()
 	{
-		int i = _heapchk();
-		printf("%d", i);
 		// Clean up
 		if( m_hWnd != NULL )
 		{

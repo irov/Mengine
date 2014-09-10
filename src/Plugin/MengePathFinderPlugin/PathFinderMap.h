@@ -37,6 +37,9 @@ namespace Menge
 
 	public:
 		bool initialize();
+		void finalize();
+
+	public:
 		void update();
 
 	public:
@@ -101,9 +104,6 @@ namespace Menge
 	
 		TVectorObstacles m_obstacles;
 		
-		typedef stdex::vector<PathFinderPtr> TVectorPathFinder;
-		TVectorPathFinder m_pathFinders;
-
 		typedef stdex::vector<PathFinderDesc> TVectorPathFinderDesc;
 		TVectorPathFinderDesc m_pathfinders;		
 
@@ -113,9 +113,6 @@ namespace Menge
 
 		typedef FactoryPoolStore<PathFinder, 32> TFactoryPathFinder;
 		TFactoryPathFinder m_factoryPathFinder;
-
-		typedef FactoryPoolStore<PathFinderWay, 32> TFactoryPathFinderWay;
-		TFactoryPathFinderWay m_factoryPathFinderWay;
 
 		const RenderCameraInterface * m_camera;
 	};

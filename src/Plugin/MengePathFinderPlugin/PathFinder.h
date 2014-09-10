@@ -1,13 +1,15 @@
 #	pragma once
 
-#	include "PathFinderWay.h"
-
 #	include "Kernel/ThreadTask.h"
 
 #	include "Factory/Factorable.h"
 
 #	include "fastpathfinder/pathfinder.h"
 #	include "fastpathfinder/map.h"
+
+#	include "Math/vec2.h"
+
+#	include "pybind/pybind.hpp"
 
 namespace Menge
 {	
@@ -25,10 +27,10 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( TPathMap * _map, const PathFinderWayPtr & _way, const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize );
+		bool initialize( TPathMap * _map, const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize );
 
 	public:
-		const PathFinderWayPtr & getWay() const;
+		PyObject * getWay();
 
 	protected:
 		bool _onRun() override;
@@ -44,8 +46,7 @@ namespace Menge
 		float m_gridSize;
 
 		TPathFinder m_pathfinder;
-
-		PathFinderWayPtr m_way;
+		PyObject * m_way;
 	};
 
 	typedef stdex::intrusive_ptr<PathFinder> PathFinderPtr;

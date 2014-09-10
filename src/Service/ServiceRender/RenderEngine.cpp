@@ -1010,24 +1010,6 @@ namespace Menge
 		pass.viewport = m_currentRenderViewport;
 		pass.camera = m_currentRenderCamera;
 
-		const Viewport & rp = pass.camera->getCameraRenderport();
-
-		const mt::mat4f & vm_inv = pass.camera->getCameraViewMatrixInv();
-
-		Viewport rp_vm;
-		mt::mul_v2_m4( rp_vm.begin, rp.begin, vm_inv );
-		mt::mul_v2_m4( rp_vm.end, rp.end, vm_inv );
-
-		mt::box2f bb_vp;
-		rp_vm.toBBox(bb_vp);
-
-		pass.bb = bb_vp;
-
-		const mt::mat4f & wm_inv = pass.camera->getCameraWorldMatrixInv();
-
-		mt::mul_v2_m4( pass.bb_inv.minimum, bb_vp.minimum, wm_inv );
-		mt::mul_v2_m4( pass.bb_inv.maximum, bb_vp.maximum, wm_inv );
-
 		for( size_t i = 0; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )
 		{
 			pass.materialEnd[i] = nullptr;
@@ -1116,7 +1098,9 @@ namespace Menge
 				Helper::makeRenderBoundingBox( bb, _vertices, _verticesNum );
 			}
 
-			if( mt::is_intersect( rp.bb_inv, bb ) == false )
+			const mt::box2f & cameraBBWM = rp.camera->getCameraBBoxWM();
+
+			if( mt::is_intersect( cameraBBWM, bb ) == false )
 			{
 				return;
 			}

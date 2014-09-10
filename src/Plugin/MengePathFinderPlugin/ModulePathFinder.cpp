@@ -5,7 +5,6 @@
 #	include "Interface/PlayerInterface.h"
 #	include "Interface/ResourceInterface.h"
 
-#	include "PathFinderWay.h"
 #	include "PathGraphNode.h"
 #	include "PathFinderWayAffector.h"
 
@@ -121,11 +120,6 @@ namespace Menge
 			.def( "removePathFinder", &PathFinderMap::removePathFinder )
 			;
 
-		pybind::interface_<PathFinderWay>("PathFinderWay")
-			.def( "getWayPointCount", &PathFinderWay::getWayPointCount )
-			.def( "getWayPoint", &PathFinderWay::getWayPoint )
-			;
-	
 
 		pybind::def_functor( "createPathFinderMap", this, &ModulePathFinder::createMap );		
 		pybind::def_functor( "setPathFinderMapWeight", this, &ModulePathFinder::setMapWeight );
@@ -170,12 +164,19 @@ namespace Menge
 		return map;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ModulePathFinder::destroyMap( PathFinderMap * _map )
+	{
+		_map->finalize();
+
+		delete _map;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	fastpathfinder::graph * ModulePathFinder::createGraph()
 	{
 		return new fastpathfinder::graph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ModulePathFinder::createPathFinderWayAffertor( Node * _node, const PathFinderWay * _way, float _speed, PyObject * _cb )
+	size_t ModulePathFinder::createPathFinderWayAffertor( Node * _node, PyObject * _way, float _speed, PyObject * _cb )
 	{
 		PathFinderWayAffector * affector = new PathFinderWayAffector();
 

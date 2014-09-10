@@ -16,6 +16,7 @@ namespace mt
 		MATH_METHOD_INLINE box2f( const vec2f & _vb, const vec2f & _ve );
 	};
 
+	MATH_FUNCTION_INLINE void ident_box(box2f & box);
 	MATH_FUNCTION_INLINE void reset(box2f & box,const vec2f & initValue);
 	MATH_FUNCTION_INLINE void reset(box2f & box,float x, float y);
 	MATH_FUNCTION_INLINE void add_internal_point(box2f & box, float x,float y);

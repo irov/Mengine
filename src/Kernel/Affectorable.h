@@ -17,6 +17,9 @@ namespace Menge
 
 	public:
 		size_t addAffector( Affector * _affector );
+		void stopAffector( size_t _id );
+
+	public:
 		void stopAffectors( EAffectorType _type );
             
     public:

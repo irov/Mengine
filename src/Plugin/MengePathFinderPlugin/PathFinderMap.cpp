@@ -1,5 +1,4 @@
 #	include "PathFinderMap.h"
-#	include "PathFinderWay.h"
 
 #	include "Interface/WatchdogInterface.h"
 #	include "Interface/StringizeInterface.h"
@@ -84,6 +83,11 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderMap::finalize()
+	{
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::setMap( float _width, float _height, float _gridSize, float _unitSize )
@@ -514,11 +518,7 @@ namespace Menge
 
 		PathFinderPtr pf = m_factoryPathFinder.createObjectT();
 
-		PathFinderWayPtr way = m_factoryPathFinderWay.createObjectT();
-
-		way->setServiceProvider( m_serviceProvider );
-
-		if( pf->initialize( &m_map, way, _from, _to, m_gridSize ) == false )
+		if( pf->initialize( &m_map, _from, _to, m_gridSize ) == false )
 		{
 			return 0;
 		}
@@ -570,6 +570,10 @@ namespace Menge
 			desc.cb = nullptr;
 
 			desc.complete = true;
+
+			m_pathfinders.erase( it );
+
+			break;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -633,12 +637,12 @@ namespace Menge
 			}
 			else
 			{
-				const PathFinderWayPtr & way = desc.finder->getWay();
+				PyObject * way = desc.finder->getWay();
 
 				pybind::call( desc.cb, "(IOO)"
 					, desc.id
 					, pybind::get_bool(true)
-					, pybind::ptr(way.get())
+					, way
 					);
 			}
 

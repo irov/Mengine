@@ -37,9 +37,6 @@ namespace Menge
 		
 		Camera2D * m_renderCamera;
 		RenderViewport * m_renderViewport;
-		//Viewport m_viewportWM;
-		//mt::mat4f m_viewMatrix;
-		//mt::mat4f m_projectionMatrix;
 
 		bool m_hasViewport;
 	};

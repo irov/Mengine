@@ -85,7 +85,6 @@ namespace Menge
 		const RenderViewportInterface * viewport;
 		const RenderCameraInterface * camera;
 				
-		mt::box2f bb;
 		mt::box2f bb_inv;
 
 		const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];

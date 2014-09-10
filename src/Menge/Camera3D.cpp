@@ -21,11 +21,14 @@ namespace Menge
 		, m_cameraRightSign(1.f)
 		, m_notifyChangeWindowResolution(nullptr)
 		, m_invalidateMatrix(true)
+		, m_invalidateBB(true)
 	{
 		mt::ident_m4( m_worldMatrix );
 		mt::ident_m4( m_viewMatrix );
 		mt::ident_m4( m_viewMatrixInv );
 		mt::ident_m4( m_projectionMatrix );
+
+		mt::ident_box( m_bboxWM );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera3D::_activate()
@@ -174,6 +177,27 @@ namespace Menge
             ->makeProjectionFrustum( m_projectionMatrix, projectViewport, m_cameraNear, m_cameraFar );
 
 		mt::inv_m4( m_projectionMatrixInv, m_projectionMatrix );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::updateBBoxWM_() const
+	{
+		m_invalidateBB = false;
+
+		const Viewport & rp = this->getCameraRenderport();
+
+		const mt::mat4f & vm_inv = this->getCameraViewMatrixInv();
+
+		Viewport rp_vm;
+		mt::mul_v2_m4( rp_vm.begin, rp.begin, vm_inv );
+		mt::mul_v2_m4( rp_vm.end, rp.end, vm_inv );
+
+		mt::box2f bb_vp;
+		rp_vm.toBBox(bb_vp);
+
+		const mt::mat4f & wm_inv = this->getCameraWorldMatrixInv();
+
+		mt::mul_v2_m4( m_bboxWM.minimum, bb_vp.minimum, wm_inv );
+		mt::mul_v2_m4( m_bboxWM.maximum, bb_vp.maximum, wm_inv );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )

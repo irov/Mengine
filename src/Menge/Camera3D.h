@@ -46,6 +46,9 @@ namespace Menge
 		const mt::mat4f & getCameraViewMatrixInv() const override;
 
 	public:
+		const mt::box2f & getCameraBBoxWM() const override;
+
+	public:
 		bool isOrthogonalProjection() const override;
 
 	protected:
@@ -56,6 +59,7 @@ namespace Menge
 
 	protected:
 		void updateMatrix_() const;
+		void updateBBoxWM_() const;
 
 	protected:
 		void notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution );
@@ -83,13 +87,17 @@ namespace Menge
 
 		mutable mt::mat4f m_projectionMatrix;
 		mutable mt::mat4f m_projectionMatrixInv;
+
+		mutable mt::box2f m_bboxWM;
 		
 		mutable bool m_invalidateMatrix;
+		mutable bool m_invalidateBB;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline void Camera3D::invalidateMatrix_()
 	{
 		m_invalidateMatrix = true;
+		m_invalidateBB = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const Viewport & Camera3D::getCameraRenderport() const
@@ -155,6 +163,16 @@ namespace Menge
 		}
 
 		return m_viewMatrixInv;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const mt::box2f & Camera3D::getCameraBBoxWM() const
+	{
+		if( m_invalidateBB == true )
+		{
+			this->updateBBoxWM_();
+		}
+
+		return m_bboxWM;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Camera3D::isOrthogonalProjection() const

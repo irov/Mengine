@@ -921,6 +921,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::finalizeGame()
+	{
+		if( m_game != nullptr )
+		{
+			m_game->finalize();
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Application::parseArguments_( const String& _arguments )
 	{
 		String::size_type idx_particles = _arguments.find( " -particles " );
@@ -1442,14 +1450,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{		
+		if( m_game != nullptr )
+		{			
+			m_game->finalizeRenderResources();
+		}
+
 		CODEC_SERVICE(m_serviceProvider)
 			->unregisterDecoder( CONST_STRING(m_serviceProvider, memoryImage) );
-
-		if( m_game != nullptr )
-		{
-			m_game->finalizeRenderResources();
-			m_game->finalize();
-		}
 
         if( m_nodeService != nullptr )
         {

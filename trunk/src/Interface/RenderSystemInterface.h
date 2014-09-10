@@ -420,6 +420,9 @@ namespace Menge
 		virtual const mt::mat4f & getCameraViewMatrixInv() const = 0;
 
 	public:
+		virtual const mt::box2f & getCameraBBoxWM() const = 0; 
+
+	public:
 		virtual const Viewport & getCameraRenderport() const = 0;
 
 	public:

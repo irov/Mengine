@@ -38,6 +38,9 @@ namespace Menge
     protected:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
         
+	protected:
+		bool _rewind() override;
+
 	private:
 		jpeg_decompress_struct m_jpegObject;
 		DecoderJPEGErrorManager m_errorMgr;

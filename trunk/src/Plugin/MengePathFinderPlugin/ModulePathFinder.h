@@ -30,13 +30,15 @@ namespace Menge
 
 	public:
 		PathFinderMap * createMap();
+		void destroyMap( PathFinderMap * _map );
+
 		fastpathfinder::graph * createGraph();
 
 	public:
 		bool setMapWeight( PathFinderMap * _map, const ConstString & _resourceName );
 
 	public:
-		size_t createPathFinderWayAffertor( Node * _node, const PathFinderWay * _way, float _speed, PyObject * _cb );
+		size_t createPathFinderWayAffertor( Node * _node, PyObject * _way, float _speed, PyObject * _cb );
 
 	public:
 		void update( float _time, float _timing ) override;

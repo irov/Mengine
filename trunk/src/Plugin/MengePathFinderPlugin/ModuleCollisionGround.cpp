@@ -7,8 +7,6 @@
 #	include "Kernel/NodePrototypeGenerator.h"
 #	include "Kernel/ScriptClassWrapper.h"
 
-#	include "PathFinderWay.h"
-
 #	include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////

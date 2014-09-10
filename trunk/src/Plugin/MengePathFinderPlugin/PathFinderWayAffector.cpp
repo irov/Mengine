@@ -9,6 +9,7 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_node(nullptr)
 		, m_speed(0.f)
+		, m_way(nullptr)
 		, m_cb(nullptr)
 		, m_iterator(1)
 		, m_target(0.f, 0.f)
@@ -20,6 +21,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderWayAffector::~PathFinderWayAffector()
 	{
+		pybind::decref( m_cb );
+		pybind::decref( m_way );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -27,7 +30,7 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderWayAffector::initialize( Node * _node, const PathFinderWayPtr & _way, float _speed, PyObject * _cb )
+	bool PathFinderWayAffector::initialize( Node * _node, PyObject * _way, float _speed, PyObject * _cb )
 	{
 		if( pybind::is_callable( _cb ) == false )
 		{
@@ -35,7 +38,10 @@ namespace Menge
 		}
 
 		m_node = _node;
+
 		m_way = _way;
+		pybind::incref( m_way );
+
 		m_speed = _speed;
 		
 		m_cb = _cb;
@@ -148,20 +154,31 @@ namespace Menge
 		mt::vec2f acc_dir(0.f, 0.f);
 		size_t j = 4;
 
-		size_t wayCount = m_way->getWayPointCount();
+		size_t wayCount = pybind::list_size( m_way );	
 
 		if( m_iterator == wayCount )
 		{
-			m_target = m_way->getWayTo();
+			PyObject * py_to = pybind::list_getitem( m_way, wayCount - 1 );
+
+			mt::vec2f v_to;
+			pybind::extract_value( py_to, v_to );
+
+			m_target = v_to;
 
 			return true;
 		}
 
-		const mt::vec2f & v0 = m_way->getWayPoint( m_iterator );
+		PyObject * py_v0 = pybind::list_getitem( m_way, m_iterator );
+
+		mt::vec2f v0;
+		pybind::extract_value( py_v0, v0 );
 
 		for( size_t i = m_iterator; i != wayCount && j != 0; ++i )
 		{
-			const mt::vec2f & v = m_way->getWayPoint( i );
+			PyObject * py_v = pybind::list_getitem( m_way, i );
+
+			mt::vec2f v;
+			pybind::extract_value( py_v, v );			
 
 			mt::vec2f dir;
 			mt::sub_v2_v2( dir, v, lp_v2 );

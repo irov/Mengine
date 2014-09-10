@@ -3,8 +3,6 @@
 #	include "Kernel/Affector.h"
 #	include "Kernel/Node.h"
 
-#	include "PathFinderWay.h"
-
 #	include "Math/vec2.h"
 
 #	include "fastpathfinder/pathfinder.h"
@@ -24,7 +22,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( Node * _node, const PathFinderWayPtr & _way, float _speed, PyObject * _cb );
+		bool initialize( Node * _node, PyObject * _way, float _speed, PyObject * _cb );
 		
 	public:
 		bool affect( float _timing ) override;
@@ -41,7 +39,8 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 
 		Node * m_node;
-		PathFinderWayPtr m_way;
+		PyObject * m_way;
+
 		float m_speed;
 		PyObject * m_cb;
 

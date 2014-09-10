@@ -22,6 +22,22 @@ namespace Menge
 		return id;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Affectorable::stopAffector( size_t _id )
+	{
+		for( TSlugAffector it(m_affectors); it.eof() == false; it.next_shuffle() )
+		{
+			Affector * affector = *it;
+
+			if( affector->getId() == _id )
+			{
+				m_affectors.remove( affector );
+
+				affector->stop();
+				affector->destroy();
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Affectorable::stopAffectors( EAffectorType _type )
 	{
         for( TSlugAffector it(m_affectors); it.eof() == false; it.next_shuffle() )

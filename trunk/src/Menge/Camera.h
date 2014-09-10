@@ -18,7 +18,7 @@ namespace Menge
 		void setRenderTarget( const ConstString& _renderTarget );
 
 	public:
-		const ConstString& getRenderTarget() const override;
+		const ConstString & getRenderTarget() const override;
 
 	private:
 		ConstString m_renderTarget;

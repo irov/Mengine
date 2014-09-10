@@ -1984,6 +1984,11 @@ namespace Menge
 			m_fpsMonitor = nullptr;
 		}
 
+		if( m_application != nullptr )
+		{
+			m_application->finalizeGame();
+		}
+
 		for( TVectorPlugins::iterator
 			it = m_plugins.begin(),
 			it_end = m_plugins.end();
@@ -1993,7 +1998,7 @@ namespace Menge
 			PluginInterface * plugin = *it;
 
 			plugin->finalize();
-		}	
+		}
 
 		if( m_application != nullptr )
 		{

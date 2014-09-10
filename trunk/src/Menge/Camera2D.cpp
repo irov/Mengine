@@ -17,11 +17,14 @@ namespace	Menge
 		, m_fixedRenderport(false)
 		, m_invalidateProjectionMatrix(true)
 		, m_invalidateMatrix(true)
+		, m_invalidateBB(true)
 	{		
-		mt::ident_m4(m_worldMatrix);
-		mt::ident_m4(m_viewMatrix);
-		mt::ident_m4(m_viewMatrixInv);
-		mt::ident_m4(m_projectionMatrix);
+		mt::ident_m4( m_worldMatrix );
+		mt::ident_m4( m_viewMatrix );
+		mt::ident_m4( m_viewMatrixInv );
+		mt::ident_m4( m_projectionMatrix );
+		
+		mt::ident_box( m_bboxWM );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Camera2D::_activate()
@@ -86,6 +89,27 @@ namespace	Menge
 		mt::inv_m4( m_viewMatrix, wm );
 
 		mt::inv_m4( m_worldMatrixInv, m_worldMatrix );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera2D::updateBBoxWM_() const
+	{
+		m_invalidateBB = false;
+
+		const Viewport & rp = this->getCameraRenderport();
+
+		const mt::mat4f & vm_inv = this->getCameraViewMatrixInv();
+
+		Viewport rp_vm;
+		mt::mul_v2_m4( rp_vm.begin, rp.begin, vm_inv );
+		mt::mul_v2_m4( rp_vm.end, rp.end, vm_inv );
+
+		mt::box2f bb_vp;
+		rp_vm.toBBox(bb_vp);
+
+		const mt::mat4f & wm_inv = this->getCameraWorldMatrixInv();
+
+		mt::mul_v2_m4( m_bboxWM.minimum, bb_vp.minimum, wm_inv );
+		mt::mul_v2_m4( m_bboxWM.maximum, bb_vp.maximum, wm_inv );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::updateProjectionMatrix_() const

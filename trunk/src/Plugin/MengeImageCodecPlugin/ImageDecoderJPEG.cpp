@@ -298,4 +298,34 @@ namespace Menge
 		
 		return readSize;
 	}
-}	// namespace Menge
+	//////////////////////////////////////////////////////////////////////////
+	bool ImageDecoderJPEG::_rewind()
+	{
+		jpeg_destroy_decompress( &m_jpegObject );
+
+		m_jpegObject.err = jpeg_std_error(&m_errorMgr.pub);
+		m_jpegObject.client_data = this;
+
+		m_errorMgr.pub.error_exit = &s_jpegErrorExit;
+		m_errorMgr.pub.output_message = &s_jpegOutputMessage;
+
+		jpeg_create_decompress( &m_jpegObject );
+
+		if( setjmp( m_errorMgr.setjmp_buffer ) ) 
+		{
+			return false;
+		}
+
+		m_stream->seek( 0 );
+
+		// step 2a: specify data source (eg, a handle)
+		s_jpeg_menge_src( &m_jpegObject, m_stream.get() );
+
+		// step 3: read handle parameters with jpeg_read_header()
+		jpeg_read_header( &m_jpegObject, TRUE );
+
+		jpeg_calc_output_dimensions( &m_jpegObject );
+
+		return true;
+	}
+}

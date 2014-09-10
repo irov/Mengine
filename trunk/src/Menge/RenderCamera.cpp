@@ -21,7 +21,17 @@ namespace Menge
 
 		m_renderport = _renderport;
 		m_renderTarget = _target;
-
+		
 		m_isOrthonalProjection = _isOrthogonalProjection;
+
+		Viewport rp_vm;
+		mt::mul_v2_m4( rp_vm.begin, m_renderport.begin, m_viewMatrixInv );
+		mt::mul_v2_m4( rp_vm.end, m_renderport.end, m_viewMatrixInv );
+
+		mt::box2f bb_vp;
+		rp_vm.toBBox(bb_vp);
+
+		mt::mul_v2_m4( m_bboxWM.minimum, bb_vp.minimum, m_worldMatrixInv );
+		mt::mul_v2_m4( m_bboxWM.maximum, bb_vp.maximum, m_worldMatrixInv );
 	}
 }

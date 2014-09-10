@@ -20,6 +20,20 @@ namespace Menge
 
 	struct RenderMaterial;
 	struct RenderMaterialGroup;    
+
+	struct Landscape2DElement
+	{
+		ResourceImage * resource;
+		RenderMaterialInterfacePtr material;
+		size_t i;
+		size_t j;
+		mt::box2f bb;
+		mt::box2f bb_wm;
+
+		size_t refcount;
+	};
+
+	typedef stdex::vector<Landscape2DElement> TVectorLandscape2DElements;
 	
 	class Landscape2D 
 		: public Node
@@ -29,7 +43,7 @@ namespace Menge
 		~Landscape2D();
 
 	public:
-		void setBackParts( const TVectorResourceImage & _images, size_t countX, size_t countY );
+		void setBackParts( const TVectorResourceImage & _images, size_t _countX, size_t _countY, float _width, float _height );
 
 	protected:
 		bool _compile() override;
@@ -40,11 +54,17 @@ namespace Menge
 
     protected:
 		void _invalidateWorldMatrix() override;
-		void invalidateVerticesWM();
-		void updateVerticesWM_();
+		
+	protected:
+		void updateElementVertex_( const Landscape2DElement & _el, const mt::mat4f & _wm, RenderVertex2D * _vertices );
 
+	protected:
+		void updateVerticesWM_();
+		void updateElementWM_();
+
+	protected:
 		inline const RenderVertex2D * getVerticesWM();
-	
+		inline TVectorLandscape2DElements & getElementWM();
 		       
 	protected:
 		bool compileResources_();
@@ -52,20 +72,18 @@ namespace Menge
 	protected:
 		TVectorResourceImage m_images;
 
-		size_t m_countX;
-		size_t m_countY;		
+		size_t m_elementCountX;
+		size_t m_elementCountY;
+		float m_elementWidth;
+		float m_elementHeight;
 
-		struct Element
-		{
-			ResourceImage * resource;
-			RenderMaterialInterfacePtr material;
-		};
 
-		typedef stdex::vector<Element> TVectorElements;
-		TVectorElements m_elements;
+		TVectorLandscape2DElements m_elements;
 				
 		TVectorRenderVertex2D m_verticesWM;
-		bool m_invalidateVerticesWM;
+		
+		mutable bool m_invalidateVerticesWM;
+		mutable bool m_invalidateElementWM;
     };
 	//////////////////////////////////////////////////////////////////////////
 	inline const RenderVertex2D * Landscape2D::getVerticesWM()
@@ -76,5 +94,15 @@ namespace Menge
 		}
 
 		return &m_verticesWM[0];
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline TVectorLandscape2DElements & Landscape2D::getElementWM()
+	{
+		if( m_invalidateElementWM == true )
+		{
+			this->updateElementWM_();
+		}
+
+		return m_elements;
 	}
 }

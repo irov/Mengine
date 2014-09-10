@@ -4139,6 +4139,8 @@ namespace Menge
 
         pybind::interface_<Affectorable>("Affectorable")
             .def( "addAffector", &Affectorable::addAffector )
+			.def( "stopAffector", &Affectorable::stopAffector )
+			.def( "stopAllAffectors", &Affectorable::stopAllAffectors )
             ;
 
         pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, Colorable, Resource, Renderable, GlobalHandleAdapter, Affectorable> >("Node", false)

@@ -16,8 +16,8 @@ namespace mt
 		MATH_METHOD_INLINE vec2f & operator = (const vec2f & _rhs);
 		
 
-		MATH_METHOD_INLINE float operator [] ( int i ) const;
-		MATH_METHOD_INLINE float & operator [] ( int i );
+		MATH_METHOD_INLINE float operator [] ( size_t i ) const;
+		MATH_METHOD_INLINE float & operator [] ( size_t i );
 
 		template <int K>
 		MATH_INLINE float get() const

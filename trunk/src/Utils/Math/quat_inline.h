@@ -27,12 +27,12 @@ namespace mt
         ,w(_q.w)
 	{}
 
-	MATH_METHOD_INLINE float& quatf::operator[](int i)
+	MATH_METHOD_INLINE float& quatf::operator[](size_t i)
 	{
 		return (&x)[i];
 	}
 
-	MATH_METHOD_INLINE const float quatf::operator[](int i)const
+	MATH_METHOD_INLINE const float quatf::operator[](size_t i)const
 	{
 		return (&x)[i];
 	}

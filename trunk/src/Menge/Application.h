@@ -249,8 +249,6 @@ namespace Menge
 		float m_phycisTiming;
 		float m_maxTiming;
 
-		DecoderFactoryInterfacePtr m_imageDecoderMemory;
-
 		LoaderServiceInterface * m_loaderService;
 		ResourceServiceInterface * m_resourceService;        
 		TextServiceInterface* m_textService;

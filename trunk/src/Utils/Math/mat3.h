@@ -15,8 +15,8 @@ namespace mt
 		MATH_METHOD_INLINE mat3f();
 		MATH_METHOD_INLINE mat3f(const mat3f&	_rhs);
 
-		MATH_METHOD_INLINE vec3f& operator[](int i);
-		MATH_METHOD_INLINE const vec3f& operator[](int i)const;
+		MATH_METHOD_INLINE vec3f& operator[](size_t i);
+		MATH_METHOD_INLINE const vec3f& operator[](size_t i)const;
 
 		MATH_METHOD_INLINE mat3f& operator=(const mat3f& _rhs);
 

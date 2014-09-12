@@ -41,6 +41,37 @@ namespace Menge
         return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void * MemoryInput::copyMemory( const void * _source, size_t _size )
+	{
+		if( m_data != nullptr )
+		{
+			Helper::freeMemory( m_data );
+			m_data = nullptr;
+		}
+
+		unsigned char * memory = Helper::allocateMemory<unsigned char>( _size );
+
+		if( memory == nullptr )
+		{
+			return nullptr;
+		}
+
+		stdex::memorycopy( memory, _source, _size );
+
+		m_data = memory;
+		m_size = _size;
+		m_pos = m_data;
+		m_end = m_data + m_size;
+
+		return m_data;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MemoryInput::trimMemory( size_t _size )
+	{
+		m_size = _size;
+		m_end = m_data + m_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const void * MemoryInput::getMemory( size_t & _size ) const		
 	{
 		_size = m_size;

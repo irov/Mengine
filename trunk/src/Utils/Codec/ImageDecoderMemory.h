@@ -14,7 +14,7 @@ namespace Menge
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 
 	protected:
-		size_t decodeData_( void * _buffer ) const;
+		size_t decodeData_( void * _buffer, size_t _bufferSize ) const;
 	};    
 
 	typedef stdex::intrusive_ptr<ImageDecoderMemory> ImageDecoderMemoryPtr;	

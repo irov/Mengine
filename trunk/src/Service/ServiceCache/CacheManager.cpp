@@ -278,7 +278,7 @@ namespace Menge
 
 		size_t read_data = _stream->read( compress_memory, compress_size );
 
-		if( read_data != compress_size )
+		if( read_data != (size_t)compress_size )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ArchiveService::getData: invalid read data %d need %d"
 				, read_data
@@ -289,7 +289,7 @@ namespace Menge
 		}
 
 		void * binary_memory = nullptr;
-		size_t binary_buffer = this->lockBuffer( binary_size, &binary_memory, "ArchiveService::getData binary_memory" );
+		size_t binary_buffer = this->lockBuffer( (size_t)binary_size, &binary_memory, "ArchiveService::getData binary_memory" );
 
 		if( binary_buffer == 0 )
 		{

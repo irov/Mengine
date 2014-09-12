@@ -412,11 +412,12 @@ namespace Menge
 		}
 
 		m_arrow = _arrow;
-		m_arrow->setRenderCamera( m_arrowCamera2D );
-		m_arrow->setRenderViewport( m_renderViewport );
 
 		if( m_arrow != nullptr)
 		{
+			m_arrow->setRenderCamera( m_arrowCamera2D );
+			m_arrow->setRenderViewport( m_renderViewport );
+
 			if( m_scene != nullptr )
 			{
 				m_arrow->enable();

@@ -18,6 +18,7 @@
 #   include "Interface/ImageCodecInterface.h"
 #	include "Interface/LoaderInterface.h"
 #	include "Interface/ThreadSystemInterface.h"
+#	include "Interface/ParticleSystemInterface.h"
 
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
@@ -304,9 +305,7 @@ namespace Menge
 		}
 
 		plugin_win32_file_group->initialize( serviceProvider );	
-
-
-
+		
 		PluginInterface * plugin_zip;
 		initPluginMengeZip( &plugin_zip );
 		plugin_zip->initialize( serviceProvider );
@@ -338,6 +337,9 @@ namespace Menge
 
 		PLUGIN_SERVICE(serviceProvider)
 			->loadPlugin( L"MengeXmlCodecPlugin.dll" );
+
+		PLUGIN_SERVICE(serviceProvider)
+			->loadPlugin( L"AstralaxParticleSystem.dll" );
 
 		if( FILE_SERVICE(serviceProvider)
 			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir") ) == false )
@@ -437,6 +439,90 @@ namespace Menge
 
 		Py_RETURN_TRUE;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool s_magicParticlesAtlasFiles( const wchar_t * _path, PyObject * _atlasFiles )
+	{
+		String utf8_path;
+		if( Helper::unicodeToUtf8( serviceProvider, _path, utf8_path ) == false )
+		{
+			return false;
+		}
+
+		ConstString c_path = Helper::stringizeString(serviceProvider, utf8_path);
+
+		InputStreamInterfacePtr stream = FILE_SERVICE(serviceProvider)
+			->openInputFile( ConstString::none(), c_path, false );
+
+		if( stream == nullptr )
+		{
+			LOGGER_ERROR(serviceProvider)("magicParticlesAtlasFiles: Image file '%s' was not found"
+				, c_path.c_str() 
+				);
+
+			return false;
+		}
+
+		ParticleEmitterContainerInterfacePtr container = PARTICLE_SYSTEM(serviceProvider)
+			->createEmitterContainerFromMemory( stream );
+
+		if( container == nullptr )
+		{
+			LOGGER_ERROR(serviceProvider)("magicParticlesAtlasFiles: invalid create container '%s'"
+				, c_path.c_str() 
+				);
+
+			return false;
+		}
+
+		const TVectorParticleEmitterAtlas & atlas = container->getAtlas();
+
+		for( TVectorParticleEmitterAtlas::const_iterator
+			it = atlas.begin(),
+			it_end = atlas.end();
+		it != it_end;
+		++it )
+		{
+			const ParticleEmitterAtlas & atlas = *it;
+
+			const char * str_fileName = atlas.file.c_str();
+
+			PyObject * py_fileName = PyUnicode_FromString( str_fileName );
+
+			PyList_Append( _atlasFiles, py_fileName );
+			Py_DECREF( py_fileName );
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * magicParticlesAtlasFiles( PyObject * self, PyObject * args )
+	{
+		(void)self;
+
+		const wchar_t * path;
+
+		if( !PyArg_ParseTuple(args, "u", &path) )
+		{
+			LOGGER_ERROR(serviceProvider)("magicParticlesAtlasFiles: error parse args"
+				);
+
+			Py_RETURN_FALSE;
+		}
+
+		PyObject * atlasFiles = PyList_New( 0 );
+
+		if( s_magicParticlesAtlasFiles( path, atlasFiles ) == false )
+		{
+			LOGGER_ERROR(serviceProvider)("magicParticlesAtlasFiles: error process %ls"
+				, path
+				);
+
+			Py_RETURN_FALSE;
+		}
+
+		return atlasFiles;
+	}
+	
 }
 /////////////////////////////////////////////////////////////////////////////////////
 static PyMethodDef ModuleMethods[] =
@@ -445,6 +531,7 @@ static PyMethodDef ModuleMethods[] =
 	{"writeBin", Menge::writeBin, METH_VARARGS, "write binary"},
 	{"writeAek", Menge::writeAek, METH_VARARGS, "write aek"},	
 	{"convert", Menge::convert, METH_VARARGS, "convert"},
+	{"magicParticlesAtlasFiles", Menge::magicParticlesAtlasFiles, METH_VARARGS, "magicParticlesAtlasFiles"},
 	{NULL, NULL, 0, NULL}
 };
 /////////////////////////////////////////////////////////////////////////////////////

@@ -33,16 +33,25 @@ namespace Menge
         key.category = _category;
         key.prototype = _prototype;
 
-		TMapPrototypes::insert_type insert_it = m_prototypes.insert( key, _generator );
+		TMapPrototypes::insert_type it_insert = m_prototypes.insert( key, _generator );
 
-		if( insert_it.second == false )
+		if( it_insert.second == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("PrototypeManager::addPrototype add %s:%s alredy exist!"
-				, _category.c_str()
-				, _prototype.c_str()
-				);
+			PrototypeGeneratorInterfacePtr conflict_generator = m_prototypes.get_value( it_insert.first );
 
-			return false;
+			if( conflict_generator->count() > 0 )
+			{
+				LOGGER_ERROR(m_serviceProvider)("PrototypeManager::addPrototype add %s:%s alredy exist and use!"
+					, _category.c_str()
+					, _prototype.c_str()
+					);
+
+				return false;
+			}
+			else
+			{
+				m_prototypes.set_value( it_insert.first, _generator );
+			}
 		}
 
         LOGGER_INFO(m_serviceProvider)("PrototypeManager::addPrototype add %s:%s"

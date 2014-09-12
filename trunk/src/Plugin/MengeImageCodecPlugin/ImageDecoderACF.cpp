@@ -5,7 +5,11 @@
 #	include "Interface/FileSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
 
+#	include "Core/CacheMemoryBuffer.h"
+
 #   include "Config/Blobject.h"
+
+#	include "stdex/memorycopy.h"
 
 #	include "Logger/Logger.h"
 
@@ -80,6 +84,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderACF::decode( void * _buffer, size_t _bufferSize )
 	{
+		(void)_bufferSize;
 		//if( _bufferSize < m_options.pitch * m_dataInfo.height )
 		//{
 		//	LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode invalid bufferSize %d != (%d * %d)"
@@ -91,15 +96,43 @@ namespace Menge
 		//	return 0;
 		//}
 
-        size_t uncompress_size;
-        if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->decompressStream( m_archivator, m_stream, m_compress_size, _buffer, m_uncompress_size, uncompress_size ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode uncompress failed"
-                );
+		size_t uncompress_size;
+		if( m_options.pitch * m_dataInfo.height == m_uncompress_size )
+		{			
+			if( ARCHIVE_SERVICE(m_serviceProvider)
+				->decompressStream( m_archivator, m_stream, m_compress_size, _buffer, m_uncompress_size, uncompress_size ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode uncompress failed"
+					);
 
-            return 0;
-        }		
+				return 0;
+			}		
+		}
+		else
+		{
+			CacheMemoryBuffer buffer(m_serviceProvider, m_uncompress_size, "ImageDecoderACF::decode");
+			void * memory = buffer.getMemory();
+
+			if( ARCHIVE_SERVICE(m_serviceProvider)
+				->decompressStream( m_archivator, m_stream, m_compress_size, memory, m_uncompress_size, uncompress_size ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode uncompress failed"
+					);
+
+				return 0;
+			}	
+
+			const unsigned char * source_buffer = static_cast<const unsigned char *>(memory);
+			unsigned char * dest_buffer = static_cast<unsigned char *>(_buffer);
+
+			for( size_t j = 0; j != m_dataInfo.height; ++j )
+			{
+				stdex::memorycopy( dest_buffer, source_buffer, m_dataInfo.width * m_dataInfo.channels );
+
+				source_buffer += m_dataInfo.width * m_dataInfo.channels;
+				dest_buffer += m_options.pitch;
+			}	
+		}
 
 		return uncompress_size;
 	}

@@ -51,8 +51,8 @@ namespace Menge
 	private:
 		ServiceProviderInterface * m_serviceProvider;
 
-		ALCcontext* m_context;
-		ALCdevice* m_device;
+		ALCcontext * m_context;
+		ALCdevice * m_device;
 
         typedef FactoryPoolStore<OALSoundBuffer, 32> TPoolOALSoundBuffer;
         TPoolOALSoundBuffer m_poolOALSoundBuffer;

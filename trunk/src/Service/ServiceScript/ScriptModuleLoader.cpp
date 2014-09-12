@@ -11,6 +11,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ScriptModuleLoader::~ScriptModuleLoader()
 	{
+		pybind::decref( m_module );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptModuleLoader::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -21,6 +22,7 @@ namespace Menge
 	void ScriptModuleLoader::setModule( PyObject * _module )
 	{
 		m_module = _module;
+		pybind::incref( m_module );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * ScriptModuleLoader::getModule() const

@@ -19,8 +19,8 @@ namespace mt
 		MATH_METHOD_INLINE mat4f();
 		MATH_METHOD_INLINE mat4f(const mat4f& _rhs);
 	
-		MATH_METHOD_INLINE vec4f& operator [] (int i);
-		MATH_METHOD_INLINE const vec4f& operator [] (int i)const;
+		MATH_METHOD_INLINE vec4f& operator [] (size_t i);
+		MATH_METHOD_INLINE const vec4f& operator [] (size_t i)const;
 
 		MATH_METHOD_INLINE mat4f& operator = (const mat4f& _rhs);
 

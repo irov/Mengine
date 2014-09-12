@@ -30,13 +30,12 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter::initialize( ServiceProviderInterface * _serviceProvider, const AstralaxEmitterContainerPtr & _container, HM_EMITTER _id, const ConstString & _containerName, const ConstString & _emitterName )
+    bool AstralaxEmitter::initialize( ServiceProviderInterface * _serviceProvider, const AstralaxEmitterContainerPtr & _container, HM_EMITTER _id, const ConstString & _emitterName )
     {
         m_serviceProvider = _serviceProvider;
         m_container = _container;
         m_emitterId = _id;
         
-		m_containerName = _containerName;
 		m_emitterName = _emitterName;
 
         m_typesCount = Magic_GetParticlesTypeCount( m_emitterId );
@@ -84,8 +83,7 @@ namespace Menge
 
         if( mt::cmp_f_f( backgroundScale, 1.f ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("AstralaxEmitter::setupBasePosition_ %s:%s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
-                , m_containerName.c_str()
+            LOGGER_ERROR(m_serviceProvider)("AstralaxEmitter::setupBasePosition_ %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
 				, m_emitterName.c_str()
                 , backgroundScale
                 );
@@ -130,11 +128,6 @@ namespace Menge
 
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & AstralaxEmitter::getContainerName() const
-	{
-		return m_containerName;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & AstralaxEmitter::getEmitterName() const
 	{
@@ -615,7 +608,7 @@ namespace Menge
 
 		while( rendering.count != 0 )
 		{
-			if( _particlesLimit <= _flush.particleCount + rendering.count || 
+			if( _particlesLimit <= _flush.particleCount + (size_t)rendering.count || 
 				_meshLimit <= _flush.meshCount )
 			{
 				return false;
@@ -624,13 +617,13 @@ namespace Menge
 			ParticleMesh & mesh = _meshes[_flush.meshCount];
 
 			mesh.begin = _flush.particleCount;
-			mesh.size = rendering.count;
+			mesh.size = (size_t)rendering.count;
 			mesh.texture = rendering.texture_id;
 			mesh.intense = rendering.intense;
 
 			s_fillParticles_( _particles, _flush.particleCount, mesh.size );
 
-			_flush.particleCount += rendering.count;
+			_flush.particleCount += (size_t)rendering.count;
 			++_flush.meshCount;
 
 			Magic_CreateNextRenderedParticlesList( &rendering );

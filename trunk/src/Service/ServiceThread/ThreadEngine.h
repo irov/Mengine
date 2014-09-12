@@ -27,6 +27,7 @@ namespace Menge
 
 	public:
 		bool createThread( const ConstString & _threadName, int _priority ) override;
+		bool destroyThread( const ConstString & _threadName ) override;
 
     public:
         bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task ) override;

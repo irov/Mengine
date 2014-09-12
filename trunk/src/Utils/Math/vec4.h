@@ -28,8 +28,8 @@ namespace mt
 
 		MATH_METHOD_INLINE vec4f & operator=(const vec4f& _rhs);
 
-		MATH_METHOD_INLINE float &	operator [](int i);
-		MATH_METHOD_INLINE const float operator [](int i) const;
+		MATH_METHOD_INLINE float &	operator [](size_t i);
+		MATH_METHOD_INLINE const float operator [](size_t i) const;
 
 		MATH_METHOD_INLINE vec4f & operator+=(const vec4f&	_rhs);
 		MATH_METHOD_INLINE vec4f & operator-=(const vec4f&	_rhs);

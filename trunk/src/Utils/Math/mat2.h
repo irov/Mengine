@@ -18,8 +18,8 @@ namespace mt
 		MATH_METHOD_INLINE mat2f(const mat2f&	_rhs);
 		MATH_METHOD_INLINE mat2f(const vec2f&	_v0, const vec2f&	_v1);
 
-		MATH_METHOD_INLINE vec2f& operator[](int i);
-		MATH_METHOD_INLINE const vec2f& operator[](int i)const;
+		MATH_METHOD_INLINE vec2f& operator[](size_t i);
+		MATH_METHOD_INLINE const vec2f& operator[](size_t i)const;
 
 		MATH_METHOD_INLINE mat2f& operator=(const mat2f& _rhs);
 	};

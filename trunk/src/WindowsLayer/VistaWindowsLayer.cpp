@@ -366,9 +366,10 @@ namespace Menge
         return hwnd;
     }
     //////////////////////////////////////////////////////////////////////////
-    void VistaWindowsLayer::destroyWindow( HWND _hwnd )
+    void VistaWindowsLayer::destroyWindow( HWND _hWnd )
     {
-        ::DestroyWindow( _hwnd );
+		::CloseWindow( _hWnd );
+        ::DestroyWindow( _hWnd );
     }
     //////////////////////////////////////////////////////////////////////////
     LPVOID VistaWindowsLayer::getCreateParams( LPARAM _lParam )

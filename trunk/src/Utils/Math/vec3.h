@@ -27,8 +27,8 @@ namespace mt
 
 		MATH_METHOD_INLINE vec3f& operator= ( const vec3f & _rhs );
 	
-		MATH_METHOD_INLINE float operator [] ( int i ) const;
-		MATH_METHOD_INLINE float & operator [] ( int i );
+		MATH_METHOD_INLINE float operator [] ( size_t i ) const;
+		MATH_METHOD_INLINE float & operator [] ( size_t i );
 
 		MATH_METHOD_INLINE vec3f & operator += (const vec3f & _rhs);
 		MATH_METHOD_INLINE vec3f & operator -= (const vec3f & _rhs);

@@ -35,7 +35,7 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( const ConstString & _name ) override;
+        bool initialize() override;
 
     public:
         bool isValid() const override;
@@ -60,7 +60,6 @@ namespace Menge
 		
 	private:
         ServiceProviderInterface * m_serviceProvider;
-        ConstString m_name;
 
         struct EmitterPool
         {

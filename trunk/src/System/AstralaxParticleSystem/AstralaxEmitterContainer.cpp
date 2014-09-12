@@ -47,10 +47,8 @@ namespace Menge
 		return m_serviceProvider;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitterContainer::initialize( const ConstString & _name )
+    bool AstralaxEmitterContainer::initialize()
     {
-        m_name = _name;
-
 		m_factoryPoolAstralaxEmitter.setMethodListener( this, &AstralaxEmitterContainer::onEmitterDestroy_ );
 
         return true;
@@ -75,8 +73,7 @@ namespace Menge
 
             if( mt::cmp_f_f( backgroundScale, 1.f ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer::isValid %s emitter %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
-                    , m_name.c_str()
+                LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer::isValid emitter %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
                     , emitterName.c_str()
                     , backgroundScale
                     );
@@ -188,7 +185,7 @@ namespace Menge
 
 		AstralaxEmitter * emitter = m_factoryPoolAstralaxEmitter.createObjectT();
 
-        if( emitter->initialize( m_serviceProvider, this, id, m_name, _emitterName ) == false )
+        if( emitter->initialize( m_serviceProvider, this, id, _emitterName ) == false )
         {
             return nullptr;
         }

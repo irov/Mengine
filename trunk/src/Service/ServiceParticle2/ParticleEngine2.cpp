@@ -72,7 +72,7 @@ namespace Menge
 		}
 		
 		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SYSTEM2(m_serviceProvider)
-            ->createEmitterContainerFromMemory( _fileName, stream, m_archivator );
+            ->createEmitterContainerFromMemory( stream, m_archivator );
 
 		if( container == nullptr )
 		{

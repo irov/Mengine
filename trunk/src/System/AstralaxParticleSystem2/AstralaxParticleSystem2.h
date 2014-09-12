@@ -37,7 +37,7 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) override;
+		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) override;
 
 	protected:
 		void onContainerRelease_( AstralaxEmitterContainer2 * _contanier );

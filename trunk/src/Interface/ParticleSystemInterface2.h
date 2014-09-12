@@ -17,7 +17,7 @@ namespace Menge
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
     public:
-        virtual bool initialize( const ConstString & _name, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
+        virtual bool initialize( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
 		virtual void finalize() = 0;
 
     public:
@@ -39,7 +39,7 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
+		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
 	};
 
 #   define PARTICLE_SYSTEM2( serviceProvider )\

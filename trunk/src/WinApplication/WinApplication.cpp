@@ -190,6 +190,7 @@ namespace Menge
 		, m_developmentMode(false)
 		, m_noDevPluginsMode(false)
 		, m_muteMode(false)
+		, m_nopause(false)
 		, m_fileLog(nullptr)
 		, m_profilerMode(false)
 		, m_prefetcherService(nullptr)
@@ -1413,6 +1414,11 @@ namespace Menge
 			m_muteMode = true;
 		}
 
+		if( Helper::s_hasOption( " -nopause ", m_commandLine ) == true )
+		{
+			m_nopause = true;
+		}
+
 		String scriptInit;
 		Helper::s_getOption( " -s:", m_commandLine, &scriptInit );
 
@@ -1950,7 +1956,7 @@ namespace Menge
 				m_fpsMonitor->monitor();
 			}
 
-			if( m_application->isFocus() == true )
+			if( m_application->isFocus() == true && m_active == true )
 			{
 				if( m_application->render() == true )
 				{
@@ -1964,7 +1970,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::finalize()
 	{
-		// Clean up
+		m_mouseEvent.stop();
+						
 		if( m_hWnd != NULL )
 		{
 			m_windowsLayer->destroyWindow( m_hWnd );
@@ -2267,12 +2274,6 @@ namespace Menge
 	void WinApplication::stop()
 	{
 		m_running = false;
-
-		if( m_hWnd != NULL )
-		{
-			CloseWindow( m_hWnd );
-			m_hWnd = NULL;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static LRESULT CALLBACK s_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
@@ -2311,6 +2312,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	{
+		if( m_hWnd != hWnd )
+		{
+			LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
+
+			return result;
+		}
 		//print "wndProc"
 		//  if( uMsg != 0x200 && uMsg != 0x84 && uMsg != 0x20 )
 		//  {
@@ -3000,8 +3007,11 @@ namespace Menge
 
 		m_inputService->onMousePosition( 0, point );
 
-		m_application->setFocus( m_active, point );
-		m_inputService->onFocus( m_active );
+		if( m_nopause == false )
+		{
+			m_application->setFocus( m_active, point );
+			m_inputService->onFocus( m_active );
+		}
 
 		bool turnSound = m_active;
 		m_application->turnSound( turnSound );

@@ -54,13 +54,13 @@ namespace Menge
 			return 0;
 		}
 
-		int count;
+		size_t count;
 
 		String::size_type st_end = _fullname.find_first_of(']');
 
 		String num = _fullname.substr( st_begin + 1, st_end - st_begin - 1 );
 
-        if( Utils::stringToInt( num, count ) == false )
+        if( Utils::stringToUnsigned( num, count ) == false )
         {
             return 0;
         }
@@ -164,7 +164,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream )
+	ParticleEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream )
 	{
 		size_t fileSize = _stream->size();
 
@@ -173,8 +173,7 @@ namespace Menge
 
 		if( container_memory == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize %s invalid get memory %d"				
-				, _name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize invalid get memory %d"				
 				, fileSize
 				);
 
@@ -205,10 +204,9 @@ namespace Menge
 
 		container->setServiceProvider( m_serviceProvider );
 
-		if( container->initialize( _name ) == false )
+		if( container->initialize() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container %s"
-				, _name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container"
 				);
 
 			Magic_CloseFile( file );
@@ -219,8 +217,7 @@ namespace Menge
 		//Load emitters from root folder
 		if( this->loadEmittersFolder( "//", file, container ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid load emitters %s"
-				, _name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid load emitters"
 				);
 
 			return nullptr;

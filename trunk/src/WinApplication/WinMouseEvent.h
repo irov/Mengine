@@ -19,6 +19,9 @@ namespace Menge
 		BOOL verify( HWND _hWnd );
 		BOOL notify( HWND _hWnd );
 
+	public:
+		void stop();
+
 	private:	
 		UINT m_uTimer;
 		HWND m_hWnd;

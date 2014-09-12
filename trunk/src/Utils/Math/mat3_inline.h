@@ -12,12 +12,12 @@ namespace	mt
 	{
 	}
 
-	MATH_METHOD_INLINE vec3f& mat3f::operator [](int i)
+	MATH_METHOD_INLINE vec3f& mat3f::operator [](size_t i)
 	{
 		return (&v0)[i];
 	}
 
-	MATH_METHOD_INLINE const vec3f& mat3f::operator [](int i)const
+	MATH_METHOD_INLINE const vec3f& mat3f::operator [](size_t i)const
 	{
 		return (&v0)[i];
 	}

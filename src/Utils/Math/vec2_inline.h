@@ -27,12 +27,12 @@ namespace mt
         return *this;
     }
 
-	MATH_METHOD_INLINE float vec2f::operator [] ( int i ) const
+	MATH_METHOD_INLINE float vec2f::operator [] ( size_t i ) const
 	{
 		return (&x)[i];
 	}
 
-	MATH_METHOD_INLINE float& vec2f::operator [] ( int i )
+	MATH_METHOD_INLINE float& vec2f::operator [] ( size_t i )
 	{
 		return (&x)[i];
 	}

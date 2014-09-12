@@ -185,8 +185,9 @@ namespace Menge
         int seek_err = ov_time_seek( &m_oggVorbisFile, al_pos );
         if( seek_err != 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::seek timing %f error %d"
+            LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::seek timing %f is %f error %d"
                 , _timing
+				, m_dataInfo.length
                 , seek_err
                 );
 

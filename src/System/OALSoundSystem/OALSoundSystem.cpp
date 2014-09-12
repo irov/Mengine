@@ -150,7 +150,7 @@ namespace Menge
         {
             alcMakeContextCurrent( nullptr );
             
-            if( m_context )
+            if( m_context != nullptr )
             {
                 alcDestroyContext( m_context );                
                 m_context = nullptr;

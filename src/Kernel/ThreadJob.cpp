@@ -24,7 +24,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////        
-	void ThreadJob::initialize( ServiceProviderInterface * _serviceProvider, size_t _sleep )
+	void ThreadJob::initialize( ServiceProviderInterface * _serviceProvider, unsigned int _sleep )
 	{
 		m_serviceProvider = _serviceProvider;
 		m_sleep = _sleep;
@@ -135,7 +135,8 @@ namespace Menge
 				desc.mutex->unlock();
 			}
 
-			SERVICE_CALL( THREAD_SERVICE(m_serviceProvider), sleep, ( m_sleep ) );
+			THREAD_SERVICE(m_serviceProvider)
+				->sleep( m_sleep );
 		}
 
 		return true;

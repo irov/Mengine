@@ -25,7 +25,7 @@ namespace Menge
 
 	public:
 		const TVectorTrackDesc & getTracks() const;
-		const TrackDesc * getTrack( unsigned int _track ) const;
+		const TrackDesc * getTrack( size_t _track ) const;
 
 		bool getLoop() const;
 		bool getShuffle() const;

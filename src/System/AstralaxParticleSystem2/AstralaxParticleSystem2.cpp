@@ -44,16 +44,15 @@ namespace Menge
 		Magic_DestroyAll();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
+	ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
 	{
 		AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer.createObjectT();
 
 		container->setServiceProvider( m_serviceProvider );
 
-		if( container->initialize( _name, _stream, _archivator ) == false )
+		if( container->initialize( _stream, _archivator ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container %s"
-				, _name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container"
 				);
 			
 			return nullptr;

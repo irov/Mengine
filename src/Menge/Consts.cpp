@@ -129,6 +129,7 @@ namespace Menge
 		INIT_CONST( Fade );
 
 		INIT_CONST( memoryImage );
+		INIT_CONST( archiveImage );
 
 #	undef INIT_CONST
 

@@ -11,12 +11,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	WinMouseEvent::~WinMouseEvent()
 	{
-		if( m_uTimer != NULL && m_hWnd != NULL )
-		{
-			::KillTimer( m_hWnd, m_uTimer );
-			m_uTimer = 0;
-			m_hWnd = NULL;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BOOL WinMouseEvent::notify( HWND _hWnd )
@@ -52,5 +46,15 @@ namespace Menge
 		}
 
 		return TRUE;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void WinMouseEvent::stop()
+	{
+		if( m_uTimer != NULL && m_hWnd != NULL )
+		{
+			::KillTimer( m_hWnd, m_uTimer );
+			m_uTimer = 0;
+			m_hWnd = NULL;
+		}
 	}
 }

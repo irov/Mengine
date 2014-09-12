@@ -225,33 +225,33 @@ namespace	Menge
 			return sourceID;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		float s_soundGetPosMs( unsigned int _sourceID )
+		float s_soundGetPosMs( size_t _sourceID )
 		{
 			float pos =	SOUND_SERVICE(m_serviceProvider)
-				->getPosMs(_sourceID);
+				->getPosMs( _sourceID );
 
 			return pos;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_soundSetPosMs( unsigned int _sourceID, float _pos )
+		void s_soundSetPosMs( size_t _sourceID, float _pos )
 		{
 			SOUND_SERVICE(m_serviceProvider)
 				->setPosMs( _sourceID, _pos );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_soundStop( unsigned int _sourceID )
+		void s_soundStop( size_t _sourceID )
 		{
 			SOUND_SERVICE(m_serviceProvider)
 				->stop( _sourceID );
 		}
         //////////////////////////////////////////////////////////////////////////
-        void s_voiceStop( unsigned int _sourceID )
+        void s_voiceStop( size_t _sourceID )
         {
             SOUND_SERVICE(m_serviceProvider)
                 ->stop( _sourceID );
         }
 		//////////////////////////////////////////////////////////////////////////
-		void s_soundSourceSetVolume( unsigned int _sourceID, float _volume )
+		void s_soundSourceSetVolume( size_t _sourceID, float _volume )
 		{
 			if( SOUND_SERVICE(m_serviceProvider)
 				->setSourceVolume( _sourceID, _volume ) == false )
@@ -262,7 +262,7 @@ namespace	Menge
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
-		float s_soundSourceGetVolume( unsigned int _sourceID )
+		float s_soundSourceGetVolume( size_t _sourceID )
 		{
 			float volume = SOUND_SERVICE(m_serviceProvider)
 				->getSourceVolume( _sourceID );

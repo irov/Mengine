@@ -98,6 +98,8 @@
 #	include "Kernel/ResourcePrototypeGenerator.h"
 
 #	include "Codec/ImageDecoderMemory.h"
+#	include "Codec/ImageDecoderArchive.h"
+
 #	include "Codec/DecoderFactory.h"
 
 #	include "Config/Config.h"
@@ -269,10 +271,15 @@ namespace Menge
         ScriptWrapper::entityWrap( m_serviceProvider );
 
 
-		m_imageDecoderMemory = new DecoderFactory<ImageDecoderMemory>(m_serviceProvider, CONST_STRING(m_serviceProvider, memoryImage) );
+		DecoderFactoryInterfacePtr imageDecoderMemory = new DecoderFactory<ImageDecoderMemory>(m_serviceProvider, CONST_STRING(m_serviceProvider, memoryImage) );
+		DecoderFactoryInterfacePtr imageDecoderArchive = new DecoderFactory<ImageDecoderArchive>(m_serviceProvider, CONST_STRING(m_serviceProvider, archiveImage) );
+		
+		CODEC_SERVICE(m_serviceProvider)
+			->registerDecoder( CONST_STRING(m_serviceProvider, memoryImage), imageDecoderMemory );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerDecoder( CONST_STRING(m_serviceProvider, memoryImage), m_imageDecoderMemory );
+			->registerDecoder( CONST_STRING(m_serviceProvider, archiveImage), imageDecoderArchive );
+
 		
 		this->parseArguments_( _args );
 	
@@ -1246,17 +1253,17 @@ namespace Menge
 	void Application::setFocus( bool _focus, const mt::vec2f & _point )
 	{
 		//return;
-        LOGGER_INFO(m_serviceProvider)("Application::onFocus from %d to %d"
-                          , m_focus
-                          , _focus
-                          );
-        
 		if( m_focus == _focus ) 
 		{
 			return;
 		}
-
+		
 		m_focus = _focus;
+
+		LOGGER_INFO(m_serviceProvider)("Application::onFocus from %d to %d"
+			, m_focus
+			, _focus
+			);
 
 		if( m_game != nullptr )
 		{
@@ -1285,12 +1292,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::beginUpdate()
 	{	
-		if( THREAD_SERVICE(m_serviceProvider) )
+		if( SERVICE_EXIST(m_serviceProvider, Menge::ThreadServiceInterface) == true )
 		{
 			THREAD_SERVICE(m_serviceProvider)->update();
 		}
 
-		if( !m_update && !m_focus ) 
+		if( m_update == false && m_focus == false )
 		{						
 			return false;
 		}
@@ -1317,11 +1324,11 @@ namespace Menge
 
         //EVENT_SERVICE(m_serviceProvider)->update();
 
-		if( !m_focus && m_update )
+		if( m_focus == false && m_update == true )
 		{
 			m_update = false;
 		}
-		else if( m_focus && !m_update )
+		else if( m_focus == true && m_update == false )
 		{
 			m_update = true;
 		}
@@ -1457,6 +1464,9 @@ namespace Menge
 
 		CODEC_SERVICE(m_serviceProvider)
 			->unregisterDecoder( CONST_STRING(m_serviceProvider, memoryImage) );
+
+		CODEC_SERVICE(m_serviceProvider)
+			->unregisterDecoder( CONST_STRING(m_serviceProvider, archiveImage) );
 
         if( m_nodeService != nullptr )
         {

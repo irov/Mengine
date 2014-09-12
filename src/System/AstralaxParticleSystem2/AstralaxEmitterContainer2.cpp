@@ -30,10 +30,8 @@ namespace Menge
 		return m_serviceProvider;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitterContainer2::initialize( const ConstString & _name, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
+    bool AstralaxEmitterContainer2::initialize( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
     {
-		m_name = _name;
-
 		unsigned char * binary_memory;
 		size_t binary_size;
 
@@ -42,8 +40,7 @@ namespace Menge
 
 		if( m_bufferId == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize: %s invalid get data"
-				, _name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize: invalid get data"
 				);
 
 			return false;
@@ -118,8 +115,7 @@ namespace Menge
 
 		if( mf == MAGIC_ERROR )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory %s invalid open file in memory (alredy open)"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory (alredy open)"
 				);
 
 			return false;
@@ -127,8 +123,7 @@ namespace Menge
 
 		if( mf == MAGIC_UNKNOWN )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory %s invalid open file in memory (invalid format or version)"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory (invalid format or version)"
 				);
 
 			return false;
@@ -196,7 +191,7 @@ namespace Menge
 
 		AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter.createObjectT();
 
-        if( emitter->initialize( m_serviceProvider, id, m_name ) == false )
+        if( emitter->initialize( m_serviceProvider, id ) == false )
         {
             return nullptr;
         }

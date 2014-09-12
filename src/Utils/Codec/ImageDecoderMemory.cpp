@@ -28,29 +28,39 @@ namespace Menge
 		
 		if( m_dataInfo.channels == 3 && m_options.channels == 4 )
 		{
-			read_byte = this->decodeData_( _buffer );
+			read_byte = this->decodeData_( _buffer, _bufferSize );
 
 			this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
 		}
 		else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
 		{
-			read_byte = this->decodeData_( _buffer );
-		}
+			read_byte = this->decodeData_( _buffer, _bufferSize );
+		}	
 
 		return read_byte;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageDecoderMemory::decodeData_( void * _buffer ) const
+	size_t ImageDecoderMemory::decodeData_( void * _buffer, size_t _bufferSize ) const
 	{
 		size_t read_byte = 0;
 		
-		unsigned char * buffer_ptr = static_cast<unsigned char *>(_buffer);
-		for( size_t j = 0; j != m_dataInfo.height; ++j )
+		if( m_options.pitch == m_dataInfo.width * m_dataInfo.channels )
 		{
-			read_byte += m_stream->read( buffer_ptr, m_dataInfo.width * m_dataInfo.channels );
+			unsigned char * buffer_ptr = static_cast<unsigned char *>(_buffer);
 
-			buffer_ptr += m_options.pitch;
-		}	
+			read_byte += m_stream->read( buffer_ptr, _bufferSize );
+		}
+		else
+		{
+			unsigned char * buffer_ptr = static_cast<unsigned char *>(_buffer);
+
+			for( size_t j = 0; j != m_dataInfo.height; ++j )
+			{
+				read_byte += m_stream->read( buffer_ptr, m_dataInfo.width * m_dataInfo.channels );
+
+				buffer_ptr += m_options.pitch;
+			}	
+		}
 
 		return read_byte;
 	}

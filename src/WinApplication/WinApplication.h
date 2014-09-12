@@ -164,6 +164,7 @@ namespace Menge
 		bool m_active;
 
 		HWND m_hWnd;
+
 		bool m_hasWindowPanel;
 		bool m_cursorInArea;
 		bool m_clickOutArea;
@@ -256,6 +257,7 @@ namespace Menge
 		bool m_noDevPluginsMode;
 		bool m_profilerMode;
 		bool m_muteMode;
+		bool m_nopause;
 
 		typedef stdex::vector<PluginInterface *> TVectorPlugins;
 		TVectorPlugins m_plugins;	

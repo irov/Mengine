@@ -25,11 +25,8 @@ namespace Menge
 		~AstralaxEmitter2();
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, HM_EMITTER _id, const ConstString & _containerName );
+        bool initialize( ServiceProviderInterface * _serviceProvider, HM_EMITTER _id );
 		void finalize();
-
-	public:
-		const ConstString & getContainerName() const override;
 		
 	public:
 		void play() override;
@@ -103,8 +100,6 @@ namespace Menge
 		HM_EMITTER m_emitterId;
 
         mt::vec3f m_basePosition;		
-
-		ConstString m_containerName;
 
 		double m_tempScale;
 		double m_leftBorder;

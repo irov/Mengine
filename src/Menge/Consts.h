@@ -130,6 +130,7 @@ namespace Menge
 		DECL_CONST( Fade );
 
 		DECL_CONST( memoryImage );
+		DECL_CONST( archiveImage );
 
 #	undef DECL_CONST
 

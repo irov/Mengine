@@ -64,9 +64,6 @@ namespace Menge
         : public FactorablePtr
 	{
 	public:
-		virtual const ConstString & getContainerName() const = 0;
-
-	public:
 		virtual void play() = 0;
 		virtual void stop() = 0;
 		virtual void pause() = 0;
@@ -148,7 +145,7 @@ namespace Menge
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
     public:
-        virtual bool initialize( const ConstString & _name ) = 0;
+        virtual bool initialize() = 0;
 		
     public:
         virtual bool isValid() const = 0;
@@ -173,7 +170,7 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const ConstString & _name, const InputStreamInterfacePtr & _stream ) = 0;
+		virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream ) = 0;
 	};
 
 #   define PARTICLE_SYSTEM( serviceProvider )\

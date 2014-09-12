@@ -104,6 +104,7 @@ namespace Menge
 
 	public:
 		virtual bool createThread( const ConstString & _threadName, int _priority ) = 0;
+		virtual bool destroyThread( const ConstString & _threadName ) = 0;
 
     public:
         virtual bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task ) = 0;

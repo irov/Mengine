@@ -28,12 +28,10 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::initialize( ServiceProviderInterface * _serviceProvider, HM_EMITTER _id, const ConstString & _containerName )
+    bool AstralaxEmitter2::initialize( ServiceProviderInterface * _serviceProvider, HM_EMITTER _id )
     {
         m_serviceProvider = _serviceProvider;
         m_emitterId = _id;
-
-        m_containerName = _containerName;
 
         Magic_SetRandomMode( m_emitterId, false );
 
@@ -69,8 +67,7 @@ namespace Menge
 
 			if( mt::cmp_f_f( backgroundScale, 1.f ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("AstralaxEmitter::setupBasePosition_ %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
-					, m_containerName.c_str()
+				LOGGER_ERROR(m_serviceProvider)("AstralaxEmitter::setupBasePosition_ background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
 					, backgroundScale
 					);
 
@@ -136,11 +133,6 @@ namespace Menge
 
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & AstralaxEmitter2::getContainerName() const
-	{
-		return m_containerName;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::getBoundingBox( mt::box2f& _box ) const
 	{

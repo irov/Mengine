@@ -23,8 +23,8 @@ namespace mt
 
 		MATH_METHOD_INLINE void rotate(vec3f & v) const;
 		MATH_METHOD_INLINE void multiply(const quatf& left, const vec3f& right);
-		MATH_METHOD_INLINE float& operator[](int i);
-		MATH_METHOD_INLINE const float operator[](int i)const;
+		MATH_METHOD_INLINE float& operator[](size_t i);
+		MATH_METHOD_INLINE const float operator[](size_t i)const;
 
 		MATH_METHOD_INLINE quatf& operator=(const quatf &q);
 

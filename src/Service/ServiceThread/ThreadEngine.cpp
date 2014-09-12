@@ -128,6 +128,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::createThread( const ConstString & _threadName, int _priority )
 	{
+		if( this->hasThread_( _threadName ) == true )
+		{
+			return false;
+		}
+
 		ThreadIdentityPtr identity = THREAD_SYSTEM(m_serviceProvider)
 			->createThread( _priority );
 
@@ -143,6 +148,28 @@ namespace Menge
 		m_threads.push_back( td );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ThreadEngine::destroyThread( const ConstString & _threadName )
+	{
+		//for( TVectorThreads::iterator
+		//	it = m_threads.begin(),
+		//	it_end = m_threads.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	ThreadDesc & td = *it;
+
+		//	if( td.name != _name )
+		//	{
+		//		continue;;
+		//	}
+
+		//	td.identity->joinTask();
+		//	td.identity->join();
+		//}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::hasThread_( const ConstString & _name ) const

@@ -122,9 +122,6 @@ namespace Menge
 #	define SERVICE_EXIST( serviceProvider, Type )\
 	(Menge::Helper::existService<Type>(serviceProvider))
 
-#	define SERVICE_CALL( Service, Method, Args )\
-	(Service -> Method Args)
-
 #	define SERVICE_NAME_CREATE( Name )\
 	serviceCreate##Name
 

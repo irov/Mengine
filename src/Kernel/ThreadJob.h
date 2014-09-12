@@ -35,7 +35,7 @@ namespace Menge
 		~ThreadJob();
 
 	public:
-		void initialize( ServiceProviderInterface * _serviceProvider, size_t _sleep );
+		void initialize( ServiceProviderInterface * _serviceProvider, unsigned int _sleep );
 
 	public:
 		size_t addWorker( const ThreadWorkerInterfacePtr &_worker );
@@ -64,7 +64,7 @@ namespace Menge
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
-		size_t m_sleep;
+		unsigned int m_sleep;
   
 		size_t m_enumerator;
 		

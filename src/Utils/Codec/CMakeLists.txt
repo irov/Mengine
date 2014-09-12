@@ -16,6 +16,8 @@ src
     ImageDecoder.cpp
     ImageDecoderMemory.h
     ImageDecoderMemory.cpp
+    ImageDecoderArchive.h
+    ImageDecoderArchive.cpp
     ImageEncoder.cpp
     ImageEncoder.h        
 

@@ -13,22 +13,22 @@ namespace mt
 		v0.y = s; v1.y = c;
 	}
 
-	MATH_METHOD_INLINE mat2f::mat2f(const mat2f&	_rhs)
+	MATH_METHOD_INLINE mat2f::mat2f(const mat2f& _rhs)
 		:v0(_rhs.v0)
 		,v1(_rhs.v1)
 	{}
 
-	MATH_METHOD_INLINE mat2f::mat2f(const vec2f&	_v0, const vec2f&	_v1)
+	MATH_METHOD_INLINE mat2f::mat2f(const vec2f& _v0, const vec2f& _v1)
 		:v0(_v0)
 		,v1(_v1)
 	{}
 
-	MATH_METHOD_INLINE vec2f& mat2f::operator [](int i)
+	MATH_METHOD_INLINE vec2f& mat2f::operator [](size_t i)
 	{
 		return (&v0)[i];
 	}
 
-	MATH_METHOD_INLINE const vec2f& mat2f::operator [](int i)const
+	MATH_METHOD_INLINE const vec2f& mat2f::operator [](size_t i)const
 	{
 		return (&v0)[i];
 	}

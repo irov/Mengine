@@ -13,7 +13,11 @@ namespace Menge
 
     public:
         void * newMemory( size_t _size );
-		void * reallocMemory( size_t _size );
+		void * copyMemory( const void * _source, size_t _size );
+
+		void trimMemory( size_t _size );
+
+	public:
 		const void * getMemory( size_t & _size ) const;
 
 	public:

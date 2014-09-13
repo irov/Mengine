@@ -39,16 +39,10 @@ namespace	Menge
 			}
 
 		public:
-			bool initialize( ServiceProviderInterface * _serviceProvider, ResourceSound * _resource, size_t _sourceID, const SoundBufferInterfacePtr & _soundBuffer, PyObject * _cb )
+			bool initialize( ServiceProviderInterface * _serviceProvider, ResourceSound * _resource, const SoundBufferInterfacePtr & _soundBuffer, PyObject * _cb )
 			{
-				if( pybind::is_callable( _cb ) == false )
-				{
-					return false;
-				}
-
 				m_serviceProvider = _serviceProvider;
 				m_resource = _resource;
-				m_sourceID = _sourceID;
 				m_soundBuffer = _soundBuffer;
 
 				m_cb = _cb;				
@@ -66,16 +60,17 @@ namespace	Menge
 
 			void onSoundStop( size_t _id ) override
 			{	
-				(void)_id;
-
-				pybind::call( m_cb, "(i)", m_sourceID );
+				if( pybind::is_callable( m_cb ) == true )
+				{
+					pybind::call( m_cb, "(i)", _id );
+				}				
 
 				if( SOUND_SERVICE(m_serviceProvider)
-					->releaseSoundSource( m_sourceID ) == false )
+					->releaseSoundSource( _id ) == false )
 				{
 					LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_release %s emitter invalid release sound %d"
 						, m_resource->getName().c_str()
-						, m_sourceID
+						, _id
 						);
 				}
 				         
@@ -90,7 +85,6 @@ namespace	Menge
 		protected:
             ServiceProviderInterface * m_serviceProvider;
             ResourceSound * m_resource;
-			size_t m_sourceID;	
             SoundBufferInterfacePtr m_soundBuffer;
 			PyObject * m_cb;
 		};
@@ -155,21 +149,25 @@ namespace	Menge
                 return 0;
 			}
 
-			if( pybind::is_none( _cb ) == false )
+
+			MySoundNodeListenerInterface * snlistener = new MySoundNodeListenerInterface();
+
+			if( snlistener->initialize( m_serviceProvider, resource, soundBuffer, _cb ) == false )
 			{
-				MySoundNodeListenerInterface * snlistener = new MySoundNodeListenerInterface();
-			
-				if( snlistener->initialize( m_serviceProvider, resource, sourceID, soundBuffer, _cb ) == false )
-				{
-					delete snlistener;
-					resource->decrementReference();
+				LOGGER_ERROR(m_serviceProvider)("ScriptWrapper::createSoundSource invalid %s intialize listener"
+					, _resourceName.c_str()
+					, volume
+					);
 
-					return 0;
-				}
+				delete snlistener;
 
-				SOUND_SERVICE(m_serviceProvider)
-					->setSourceListener( sourceID, snlistener );
+				resource->decrementReference();
+
+				return 0;
 			}
+
+			SOUND_SERVICE(m_serviceProvider)
+				->setSourceListener( sourceID, snlistener );
 			
 			return sourceID;
 		}

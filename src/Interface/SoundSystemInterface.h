@@ -132,6 +132,8 @@ namespace Menge
 		virtual void onTurnStream( bool _turn ) = 0;
 		virtual void onTurnSound( bool _turn ) = 0;
 
+		virtual void updateVolume() = 0;
+
 	public:
 		virtual size_t createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceType _type, bool _streamable ) = 0;
 

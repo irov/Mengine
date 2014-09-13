@@ -1453,6 +1453,11 @@ namespace Menge
 				SOUND_SERVICE(m_serviceProvider)->onTurnStream( true );
 			}
 		}
+
+		if( SERVICE_EXIST(m_serviceProvider, SoundServiceInterface) == true )
+		{
+			SOUND_SERVICE(m_serviceProvider)->updateVolume();
+		}
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()

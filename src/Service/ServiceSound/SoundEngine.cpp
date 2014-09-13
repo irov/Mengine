@@ -125,16 +125,13 @@ namespace Menge
 		{
             SoundSourceDesc * source = m_soundSourceMap.get_value( it );
 			
+			source->turn = true;
+
 			if( source->state != ESS_PLAY )
 			{
 				continue;
 			}
-
-			if( source->turn == true )
-			{
-				continue;
-			}
-						
+									
 			if( source->source->play() == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("SoundEngine::playSounds_ invalid play"
@@ -142,12 +139,10 @@ namespace Menge
 
 				continue;
 			}
-
-			this->updateSourceVolume_( source, source->volume );
-
+			
 			this->playSoundBufferUpdate_( source );
 
-			source->turn = true;
+			this->updateSourceVolume_( source, source->volume );
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -160,7 +155,7 @@ namespace Menge
         ++it )
         {
             SoundSourceDesc * source = m_soundSourceMap.get_value( it );
-
+			
 			source->turn = false;
 
 			if( source->state != ESS_PLAY )
@@ -184,6 +179,8 @@ namespace Menge
 		{
             SoundSourceDesc * source = m_soundSourceMap.get_value( it );
 
+			source->turn = false;
+
 			if( source->state != ESS_PLAY )
 			{
 				continue;
@@ -201,7 +198,7 @@ namespace Menge
 		{
 			return;
 		}
-
+		
 		m_turnStream = _turn;
 
 		if( m_turnStream == true )
@@ -225,8 +222,6 @@ namespace Menge
         
 		SOUND_SYSTEM(m_serviceProvider)
             ->onTurnSound( m_turnSound );
-
-		this->updateVolume_();
     }
 	//////////////////////////////////////////////////////////////////////////
 	size_t SoundEngine::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceType _type, bool _streamable )
@@ -434,7 +429,7 @@ namespace Menge
 	{
 		m_soundVolume.setVolume( _type, _volume );
 
-		this->updateVolume_();
+		this->updateVolume();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getSoundVolume( const ConstString & _type ) const
@@ -448,7 +443,7 @@ namespace Menge
 	{
 		m_commonVolume.setVolume( _type, _volume );
 
-		this->updateVolume_();
+		this->updateVolume();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getCommonVolume( const ConstString & _type ) const
@@ -462,7 +457,7 @@ namespace Menge
 	{
 		m_musicVolume.setVolume( _type, _volume );
 
-		this->updateVolume_();
+		this->updateVolume();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getMusicVolume( const ConstString & _type ) const
@@ -476,7 +471,7 @@ namespace Menge
 	{
 		m_voiceVolume.setVolume( _type, _volume );
 
-		this->updateVolume_();
+		this->updateVolume();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getVoiceVolume( const ConstString & _type ) const
@@ -527,19 +522,21 @@ namespace Menge
 			//float length_ms = source->source->getLengthMs();
 			//float pos_ms = source->source->getPosMs();		
 
-			if( (source->worker != nullptr && source->worker->isDone() == true) || (source->timing <= 0.f && m_silent == true) )
+			if( (source->worker != nullptr && source->worker->isDone() == true) || (source->worker == nullptr && source->timing <= 0.f) )
 			{
 				source->state = ESS_STOP;
 				this->stopSoundBufferUpdate_( source );
 				source->source->stop();
 				source->timing = 0.f;
 
+				if( source->listener != nullptr )
+				{
+					SoundListenerStopDesc desc;
+					desc.listener = source->listener;
+					desc.id = source->soundId;
 
-				SoundListenerStopDesc desc;
-				desc.listener = source->listener;
-				desc.id = source->soundId;
-
-				m_listeners.push_back( desc );
+					m_listeners.push_back( desc );
+				}
 			}
 			else
 			{
@@ -562,7 +559,7 @@ namespace Menge
 	{
 		m_muted = _mute;
 
-		this->updateVolume_();
+		this->updateVolume();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::isMute() const
@@ -613,17 +610,20 @@ namespace Menge
 
                 source->timing = length_ms - pos_ms;
 
-                if( source->source->play() == false )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("SoundEngine::play invalid play"
-                        );
+				source->state = ESS_PLAY;
 
-                    return false;
-                }
+				if( source->turn == true )
+				{
+					if( source->source->play() == false )
+					{
+						LOGGER_ERROR(m_serviceProvider)("SoundEngine::play invalid play"
+							);
 
-                source->state = ESS_PLAY;
-
-                this->playSoundBufferUpdate_( source );
+						return false;
+					}
+				
+					this->playSoundBufferUpdate_( source );
+				}
             }break;
 		}
 
@@ -650,9 +650,12 @@ namespace Menge
 			{
 				source->state = ESS_PAUSE;
 
-				this->stopSoundBufferUpdate_( source );
+				if( source->turn == true )
+				{
+					this->stopSoundBufferUpdate_( source );
+				}
 
-				source->source->pause();
+				source->source->pause();				
 
 				if( source->listener != nullptr )
 				{
@@ -683,9 +686,12 @@ namespace Menge
 			{
 				source->state = ESS_STOP;
 
-				this->stopSoundBufferUpdate_( source );
+				if( source->turn == true )
+				{
+					this->stopSoundBufferUpdate_( source );
+				}
 
-				source->source->stop();
+				source->source->stop();				
 
 				if( source->listener != nullptr )
 				{
@@ -728,7 +734,7 @@ namespace Menge
 		source->listener = _listener;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::updateVolume_()
+	void SoundEngine::updateVolume()
 	{
 		for( TMapSoundSource::iterator 
 			it = m_soundSourceMap.begin(), 
@@ -918,16 +924,16 @@ namespace Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void SoundEngine::stopSoundBufferUpdate_( SoundSourceDesc * _source )
+    bool SoundEngine::stopSoundBufferUpdate_( SoundSourceDesc * _source )
     {
 		if( _source->streamable == false )
 		{
-			return;
+			return false;
 		}
 
 		if( _source->worker == nullptr )
 		{
-			return;
+			return false;
 		}
 
 		if( m_threadSoundBufferUpdate != nullptr )
@@ -937,13 +943,15 @@ namespace Menge
 
         _source->worker = nullptr;
         _source->bufferId = 0;
+
+		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundEngine::playSoundBufferUpdate_( SoundSourceDesc * _source )
+    bool SoundEngine::playSoundBufferUpdate_( SoundSourceDesc * _source )
     {
 		if( _source->streamable == false )
 		{
-			return;				 
+			return false;				 
 		}
 
 		if( _source->worker != nullptr )
@@ -951,7 +959,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine::playSoundBufferUpdate_ _source worker is not null"
 				);
 
-			return;
+			return false;
 		}
 
 		if( m_threadSoundBufferUpdate != nullptr )
@@ -971,6 +979,8 @@ namespace Menge
 			_source->worker = nullptr;
 			_source->bufferId = 0;
 		}
+
+		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getPosMs( size_t _emitter ) const

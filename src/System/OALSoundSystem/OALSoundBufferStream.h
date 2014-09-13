@@ -45,6 +45,7 @@ namespace Menge
 		
 		ALuint m_sourceId;
 
+		bool m_looped;
 		bool m_updating;
 
 	private:

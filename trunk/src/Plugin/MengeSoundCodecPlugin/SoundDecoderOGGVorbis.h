@@ -16,10 +16,12 @@ namespace Menge
 
 	public:
 		bool _prepareData() override;
+		bool _rewind() override;
 
 	public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
-
+		
+	public:
 		bool seek( float _timing ) override;
 		float timeTell() override;
 

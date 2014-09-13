@@ -38,6 +38,11 @@ namespace Menge
         return false;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool OALSoundBuffer::rewind()
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
 		m_alBufferId = m_soundSystem->genBufferId();
@@ -128,14 +133,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBuffer::stop( ALenum _source )
 	{		
-        alSourceRewind( _source );
+		alSourceStop( _source );
 		OAL_CHECK_ERROR(m_serviceProvider);
+		
+		{
+			ALint val;
 
-        alSourceStop( _source );
-        OAL_CHECK_ERROR(m_serviceProvider);
+			do 
+			{
+				alGetSourcei( _source, AL_SOURCE_STATE, &val );
+			} 
+			while( val == AL_PLAYING );
+		}
 
 		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
 		OAL_CHECK_ERROR(m_serviceProvider);
+
+        alSourceRewind( _source );
+		OAL_CHECK_ERROR(m_serviceProvider);	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBuffer::setTimePos( ALenum _source, float _pos ) const

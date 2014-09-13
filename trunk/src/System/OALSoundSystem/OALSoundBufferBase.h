@@ -20,11 +20,12 @@ namespace Menge
         virtual bool resume( ALenum _source ) = 0;
 		virtual	void pause( ALenum _source ) = 0;
 		virtual void stop( ALenum _source ) = 0;
-
+		
 	public:
 		virtual bool setTimePos( ALenum _source, float _pos ) const = 0;
 		virtual bool getTimePos( ALenum _source, float & _pos ) const = 0;		
 
+	public:
 		bool isStereo() const;
 		float getTimeTotal() const;
 

@@ -39,6 +39,11 @@ namespace Menge
 
         bool continue_update = m_soundBuffer->update();
 
+		if( continue_update == false )
+		{
+			m_done = true;
+		}
+
 		return continue_update;
 	}
 	//////////////////////////////////////////////////////////////////////////

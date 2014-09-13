@@ -27,6 +27,16 @@ namespace Menge
 		ETS_FREE
 	};
 
+	struct ThreadJobWorkerDesc
+	{
+		ThreadMutexInterfacePtr mutex;
+
+		ThreadWorkerInterfacePtr worker;
+
+		size_t id;
+		EThreadStatus status;
+	};
+
 	class ThreadJob
 		: public ThreadTask
 	{
@@ -51,24 +61,13 @@ namespace Menge
 	protected:
 		bool check_remove( size_t _id );
 
-	public:
-		struct WorkerDesc
-		{
-			ThreadMutexInterfacePtr mutex;
-
-			ThreadWorkerInterfacePtr worker;
-
-			size_t id;
-			EThreadStatus status;
-		};
-
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 		unsigned int m_sleep;
   
 		size_t m_enumerator;
 		
-		WorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
+		ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
 	};
 
 	typedef stdex::intrusive_ptr<ThreadJob> ThreadJobPtr;

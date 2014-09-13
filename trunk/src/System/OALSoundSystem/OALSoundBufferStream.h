@@ -30,17 +30,21 @@ namespace Menge
 	public:
 		bool update() override;
 
+	public:
+		bool rewind() override;
+
     protected:
-        bool bufferData_( ALuint _alBufferId, unsigned int & _bytes );
+        bool bufferData_( ALuint _alBufferId, size_t & _bytes );
 
         void removeBuffers_();
 		
-	private:
-		SoundDecoderInterfacePtr m_soundDecoder;
+	protected:
 		ALuint m_alBuffersId[OPENAL_STREAM_BUFFER_COUNT];
 
+		SoundDecoderInterfacePtr m_soundDecoder;
+		
 		ALuint m_sourceId;
-        bool m_loop;
+
 		bool m_updating;
 
 	private:

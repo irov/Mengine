@@ -20,6 +20,9 @@ namespace Menge
         bool update() override;
 
 	public:
+		bool rewind() override;
+
+	public:
 		bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;
 
 		bool play( ALenum _source, bool _looped, float _pos ) override;

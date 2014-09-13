@@ -70,7 +70,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceSound::_compile()
 	{   
-		return true;
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::_release()
@@ -157,6 +157,11 @@ namespace Menge
 
 		if( cacheSoundBuffer != nullptr )
 		{
+			if( cacheSoundBuffer->rewind() == false )
+			{
+				return nullptr;
+			}
+
 			return cacheSoundBuffer;
 		}
 
@@ -181,7 +186,7 @@ namespace Menge
 				, m_path.c_str()
 				);
 
-			return nullptr;			
+			return nullptr;
 		}
 
 		return soundBuffer;

@@ -18,8 +18,9 @@ namespace Menge
 	{
 		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
-			WorkerDesc & desc = m_workers[i];
+			ThreadJobWorkerDesc & desc = m_workers[i];
 
+			desc.worker = nullptr;
 			desc.mutex = nullptr;
 		}
 	}
@@ -31,7 +32,7 @@ namespace Menge
 
 		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
-			WorkerDesc & desc = m_workers[i];
+			ThreadJobWorkerDesc & desc = m_workers[i];
 			
 			desc.mutex = THREAD_SERVICE(m_serviceProvider)
 				->createMutex();
@@ -42,6 +43,25 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_thread_addWorker( ThreadJobWorkerDesc & desc, const ThreadWorkerInterfacePtr & _worker, size_t _id )
+	{
+		bool successful = false; 
+		desc.mutex->lock();
+
+		if( desc.status == ETS_FREE )
+		{
+			desc.worker = _worker;
+			desc.id = _id;
+			desc.status = ETS_WORK;
+
+			successful = true;
+		}
+
+		desc.mutex->unlock();
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	size_t ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker )
 	{
 		if( _worker == nullptr )
@@ -49,25 +69,18 @@ namespace Menge
 			return 0;
 		}
 
+		size_t new_id = ++m_enumerator;
+
 		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
-			WorkerDesc & desc = m_workers[i];
-
-			if( desc.status != ETS_FREE )
+			ThreadJobWorkerDesc & desc = m_workers[i];
+			
+			if( s_thread_addWorker( desc, _worker, new_id ) == false )
 			{
 				continue;
 			}
 
-			
-			desc.mutex->lock();
-			{
-				desc.worker = _worker;
-				desc.id = ++m_enumerator;
-				desc.status = ETS_WORK;
-			}
-			desc.mutex->unlock();
-
-			return desc.id;
+			return new_id;
 		}
 
 		LOGGER_ERROR(m_serviceProvider)("ThreadJob::addWorker overworkers more %d"
@@ -75,6 +88,30 @@ namespace Menge
 			);
 
 		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_thread_removeWorker( ThreadJobWorkerDesc & desc, size_t _id )
+	{
+		bool successful = false;
+
+		desc.mutex->lock();
+
+		if( desc.id == _id )
+		{
+			ThreadWorkerInterfacePtr worker = desc.worker;
+
+			desc.id = 0;
+			desc.worker = nullptr;
+			desc.status = ETS_FREE;
+
+			worker->onDone( _id );
+
+			successful = true;
+		}
+
+		desc.mutex->unlock();
+
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadJob::removeWorker( size_t _id )
@@ -86,27 +123,30 @@ namespace Menge
 
 		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
-			WorkerDesc & desc = m_workers[i];
-
-			if( desc.id != _id )
+			ThreadJobWorkerDesc & desc = m_workers[i];
+			
+			if( s_thread_removeWorker( desc, _id) == false )
 			{
 				continue;
 			}
-
-			desc.mutex->lock();
-			{
-				ThreadWorkerInterfacePtr worker = desc.worker;
-
-				desc.id = 0;
-				desc.worker = nullptr;
-				desc.status = ETS_FREE;
-
-				worker->onDone( _id );
-			}
-			desc.mutex->unlock();
 			
 			break;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_thread_mainWorker( ThreadJobWorkerDesc & desc )
+	{
+		desc.mutex->lock();
+
+		if( desc.status == ETS_WORK )
+		{
+			if( desc.worker->onWork( desc.id ) == false )
+			{
+				desc.status = ETS_DONE;
+			}
+		}
+		
+		desc.mutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadJob::_onMain()
@@ -115,24 +155,9 @@ namespace Menge
 		{   
 			for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 			{
-				WorkerDesc & desc = m_workers[i];
-
-				if( desc.status != ETS_WORK )
-				{
-					continue;
-				}
-				
-				desc.mutex->lock();
-				{
-					if( desc.status == ETS_WORK )
-					{
-						if( desc.worker->onWork( desc.id ) == false )
-						{
-							desc.status = ETS_DONE;
-						}
-					}
-				}	
-				desc.mutex->unlock();
+				ThreadJobWorkerDesc & desc = m_workers[i];
+		
+				s_thread_mainWorker( desc );
 			}
 
 			THREAD_SERVICE(m_serviceProvider)
@@ -142,29 +167,32 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void s_thread_updateWorker( ThreadJobWorkerDesc & desc )
+	{
+		desc.mutex->lock();
+
+		if( desc.status == ETS_DONE )
+		{
+			ThreadWorkerInterfacePtr worker = desc.worker;
+			size_t id = desc.id;
+
+			desc.worker = nullptr;
+			desc.id = 0;
+			desc.status = ETS_FREE;
+
+			worker->onDone( id );
+		}
+
+		desc.mutex->unlock();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ThreadJob::_onUpdate()
 	{
 		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
-			WorkerDesc & desc = m_workers[i];
+			ThreadJobWorkerDesc & desc = m_workers[i];
 
-			if( desc.status != ETS_DONE )
-			{
-				continue;
-			}
-
-			desc.mutex->lock();
-			{
-				ThreadWorkerInterfacePtr worker = desc.worker; 
-				size_t id = desc.id;
-
-				desc.worker = nullptr;
-				desc.id = 0;
-				desc.status = ETS_FREE;
-
-				worker->onDone( id );
-			}
-			desc.mutex->unlock();
+			s_thread_updateWorker( desc );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

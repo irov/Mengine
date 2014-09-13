@@ -37,6 +37,9 @@ namespace Menge
 	{
 	public:
 		virtual bool update() = 0;
+
+	public:
+		virtual bool rewind() = 0;
 	};
 
 	typedef stdex::intrusive_ptr<SoundBufferInterface> SoundBufferInterfacePtr;
@@ -152,7 +155,7 @@ namespace Menge
 		virtual bool setSourceVolume( size_t _emitter, float _volume ) = 0;
 		virtual float getSourceVolume( size_t _emitter ) const = 0;
 
-		virtual void releaseSoundSource( size_t _sourceID ) = 0;
+		virtual bool releaseSoundSource( size_t _sourceID ) = 0;
 		virtual bool validSoundSource( size_t _sourceID ) const = 0;
 
 	public:

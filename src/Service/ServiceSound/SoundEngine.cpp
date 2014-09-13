@@ -18,7 +18,8 @@ namespace Menge
 	SoundEngine::SoundEngine()
 		: m_serviceProvider(nullptr)
 		, m_muted(false)
-		, m_turn(false)
+		, m_turnStream(false)
+		, m_turnSound(false)
         , m_enumerator(0)
         , m_silent(false)
 		, m_supportStream(true)
@@ -123,7 +124,7 @@ namespace Menge
 		++it )
 		{
             SoundSourceDesc * source = m_soundSourceMap.get_value( it );
-
+			
 			if( source->state != ESS_PLAY )
 			{
 				continue;
@@ -133,8 +134,6 @@ namespace Menge
 			{
 				continue;
 			}
-
-			source->turn = true;
 						
 			if( source->source->play() == false )
 			{
@@ -147,6 +146,8 @@ namespace Menge
 			this->updateSourceVolume_( source, source->volume );
 
 			this->playSoundBufferUpdate_( source );
+
+			source->turn = true;
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -160,6 +161,8 @@ namespace Menge
         {
             SoundSourceDesc * source = m_soundSourceMap.get_value( it );
 
+			source->turn = false;
+
 			if( source->state != ESS_PLAY )
 			{
 				continue;
@@ -167,8 +170,7 @@ namespace Menge
 
 			this->stopSoundBufferUpdate_( source );
             
-			source->source->pause();
-			source->turn = false;
+			source->source->pause();			
         }
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -195,9 +197,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::onTurnStream( bool _turn )
 	{
-		m_turn = _turn;
+		if( m_turnStream == _turn )
+		{
+			return;
+		}
 
-		if( m_turn == true )
+		m_turnStream = _turn;
+
+		if( m_turnStream == true )
 		{
 			this->playSounds_();	
 		}
@@ -209,10 +216,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     void SoundEngine::onTurnSound( bool _turn )
     {
-		m_turn = _turn;
+		if( m_turnSound == _turn )
+		{
+			return;
+		}
+
+		m_turnSound = _turn;
         
 		SOUND_SYSTEM(m_serviceProvider)
-            ->onTurnSound( m_turn );
+            ->onTurnSound( m_turnSound );
 
 		this->updateVolume_();
     }
@@ -257,7 +269,7 @@ namespace Menge
 
         source->streamable = _streamable;
 		source->looped = false;
-		source->turn = m_turn;
+		source->turn = _streamable ? m_turnStream : m_turnSound;
 
 		this->updateSourceVolume_( source, 1.f );
 
@@ -270,7 +282,9 @@ namespace Menge
     {
         const SoundSourceInterfacePtr & sourceInterface = _source->source;
         
-        if( this->isMute() == true || m_turn == false )
+        if( this->isMute() == true || 
+			(m_turnStream == false && _source->streamable == true ) || 
+			(m_turnSound == false && _source->streamable == false) )
         {
             sourceInterface->setVolume( 0.f );
         }
@@ -375,7 +389,7 @@ namespace Menge
 		return buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::releaseSoundSource( size_t _sourceID )
+	bool SoundEngine::releaseSoundSource( size_t _sourceID )
 	{
 		TMapSoundSource::iterator it_find = m_soundSourceMap.find( _sourceID );
 		
@@ -385,21 +399,23 @@ namespace Menge
                 , _sourceID
                 );
 
-			return;
+			return false;
 		}
 
         SoundSourceDesc * source = m_soundSourceMap.get_value( it_find );
 
 		this->stopSoundBufferUpdate_( source );
 
-		source->listener = nullptr;
-
         source->source->stop();
         source->source = nullptr;
+
+		source->listener = nullptr;
 
 		m_soundSourceMap.erase( it_find );
         
         m_poolSoundSourceDesc.destroyT( source );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::validSoundSource( size_t _sourceID ) const
@@ -509,13 +525,14 @@ namespace Menge
 			}
 			
 			//float length_ms = source->source->getLengthMs();
-			//float pos_ms = source->source->getPosMs();
+			//float pos_ms = source->source->getPosMs();		
 
-			if( (source->worker != nullptr && source->worker->isDone() == true) || source->timing <= 0.f )
+			if( (source->worker != nullptr && source->worker->isDone() == true) || (source->timing <= 0.f && m_silent == true) )
 			{
 				source->state = ESS_STOP;
 				this->stopSoundBufferUpdate_( source );
 				source->source->stop();
+				source->timing = 0.f;
 
 
 				SoundListenerStopDesc desc;
@@ -524,8 +541,10 @@ namespace Menge
 
 				m_listeners.push_back( desc );
 			}
-
-			source->timing -= _timing;
+			else
+			{
+				source->timing -= _timing;
+			}
 		}
 
 		for( TVectorSoundListeners::iterator
@@ -935,20 +954,21 @@ namespace Menge
 			return;
 		}
 
-		ThreadWorkerSoundBufferUpdatePtr worker = m_poolWorkerTaskSoundBufferUpdate.createObjectT();
-
-        _source->worker = worker;
-
-        SoundBufferInterfacePtr soundBuffer = _source->source->getSoundBuffer();
-
-        _source->worker->initialize( m_serviceProvider, soundBuffer );
-
 		if( m_threadSoundBufferUpdate != nullptr )
 		{
+			ThreadWorkerSoundBufferUpdatePtr worker = m_poolWorkerTaskSoundBufferUpdate.createObjectT();
+
+			SoundBufferInterfacePtr soundBuffer = _source->source->getSoundBuffer();
+
+			worker->initialize( m_serviceProvider, soundBuffer );
+
+			_source->worker = worker;
+			
 			_source->bufferId = m_threadSoundBufferUpdate->addWorker( _source->worker );
 		}
 		else
 		{
+			_source->worker = nullptr;
 			_source->bufferId = 0;
 		}
     }

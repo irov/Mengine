@@ -100,7 +100,7 @@ namespace Menge
 		bool setSourceVolume( size_t _emitter, float _volume ) override;
 		float getSourceVolume( size_t _emitter ) const override;
 
-		void releaseSoundSource( size_t _sourceID ) override;
+		bool releaseSoundSource( size_t _sourceID ) override;
 
 		bool validSoundSource( size_t _sourceID ) const override;
 		
@@ -172,6 +172,7 @@ namespace Menge
 		bool m_supportStream;
 		bool m_muted;
 
-		bool m_turn;
+		bool m_turnStream;
+		bool m_turnSound;
 	};
 };

@@ -145,8 +145,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferStream::play( ALenum _source, bool _looped, float _pos )
 	{
+		(void)_looped;
+
 		m_sourceId = _source;
-        m_loop = _looped;
 
         if( _pos > m_length )
         {
@@ -171,6 +172,11 @@ namespace Menge
 		alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
 		OAL_CHECK_ERROR(m_serviceProvider);
 
+
+		//ALint al_loop = _looped ? AL_TRUE : AL_FALSE;
+		//alSourcei( m_sourceId, AL_LOOPING, al_loop );
+		//OAL_CHECK_ERROR(m_serviceProvider);
+
 		alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
 		OAL_CHECK_ERROR(m_serviceProvider);
 
@@ -187,7 +193,7 @@ namespace Menge
         {
             ALuint id = m_alBuffersId[i];
 
-            unsigned int bytesWritten;
+            size_t bytesWritten;
             if( this->bufferData_( id, bytesWritten ) == false )
             {
                 return false;
@@ -259,6 +265,16 @@ namespace Menge
             OAL_CHECK_ERROR(m_serviceProvider);
         }
 
+		{
+			ALint val;
+
+			do 
+			{
+				alGetSourcei( _source, AL_SOURCE_STATE, &val );
+			} 
+			while( val == AL_PLAYING );
+		}
+
         alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
         
         alSourceRewind( _source );
@@ -315,7 +331,7 @@ namespace Menge
 
         //// Check the status of the Source.  If it is not playing, then playback was completed,
         //// or the Source was starved of audio data, and needs to be restarted.
-        int state;
+        ALint state;
         alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
         OAL_CHECK_ERROR(m_serviceProvider);
 
@@ -330,6 +346,7 @@ namespace Menge
 		alGetSourcei( m_sourceId, AL_BUFFERS_PROCESSED, &processed );
         OAL_CHECK_ERROR(m_serviceProvider);
                        
+		bool end = false;
 		for( ALint curr_processed = 0; curr_processed != processed; ++curr_processed )
 		{
 			// Исключаем их из очереди
@@ -339,14 +356,21 @@ namespace Menge
                         
 			// Читаем очередную порцию данных
             unsigned int bytesWritten;
-			if( this->bufferData_( bufferId, bytesWritten ) == false )
-            {
-                continue;
-            }
+			this->bufferData_( bufferId, bytesWritten );
+
+			if( bytesWritten == 0 )
+			{
+				end = true;
+			}
 		}
 
 		if( state != AL_PLAYING && state != AL_PAUSED )
 		{
+			m_soundDecoder->rewind();
+			
+			alSourceStop( m_sourceId );
+			OAL_CHECK_ERROR(m_serviceProvider);
+
 			// If there are Buffers in the Source Queue then the Source was starved of audio
 			// data, so needs to be restarted (because there is more audio data to play)
 			ALint queuedBuffers;
@@ -357,6 +381,9 @@ namespace Menge
 			{
 				return false;
 			}
+
+			alSourceRewind( m_sourceId );
+			OAL_CHECK_ERROR(m_serviceProvider);
 			
 			alSourcePlay( m_sourceId );
 			OAL_CHECK_ERROR(m_serviceProvider);
@@ -365,12 +392,26 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferStream::bufferData_( ALuint _alBufferId, unsigned int & _bytes  )
+	bool OALSoundBufferStream::rewind()
+	{
+		bool successful = m_soundDecoder->rewind();
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+    bool OALSoundBufferStream::bufferData_( ALuint _alBufferId, size_t & _bytes  )
     {
         char dataBuffer[OPENAL_STREAM_BUFFER_SIZE];
 
-        unsigned int bytesWritten = m_soundDecoder->decode( dataBuffer, OPENAL_STREAM_BUFFER_SIZE );
+        size_t bytesWritten = m_soundDecoder->decode( dataBuffer, OPENAL_STREAM_BUFFER_SIZE );
+
+		_bytes = bytesWritten;
         
+		if( bytesWritten == 0 )
+		{
+			return true;
+		}
+
         alBufferData( _alBufferId, m_format, dataBuffer, bytesWritten, m_frequency );
         
         if( OAL_CHECK_ERROR(m_serviceProvider) == true )
@@ -387,8 +428,6 @@ namespace Menge
 
         alSourceQueueBuffers( m_sourceId, 1, &_alBufferId );
         OAL_CHECK_ERROR(m_serviceProvider);
-
-        _bytes = bytesWritten;
 
         return true;
     }

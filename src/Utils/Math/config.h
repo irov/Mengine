@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include <stdint.h>
+
 namespace mt
 {
 	const float m_pi = 3.14159265358979323846f;

@@ -26,6 +26,11 @@ namespace Menge
         return false;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool SilentSoundBuffer::rewind()
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool SilentSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
 		const SoundCodecDataInfo* dataInfo = _soundDecoder->getCodecDataInfo();

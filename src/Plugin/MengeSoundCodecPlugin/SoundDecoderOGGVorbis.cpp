@@ -126,6 +126,35 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool SoundDecoderOGGVorbis::_rewind()
+	{
+		if( m_stream->seek( 0 ) == false )
+		{
+			return false;
+		}
+
+		ov_clear( &m_oggVorbisFile );
+
+		ov_callbacks vorbisCallbacks;
+		vorbisCallbacks.read_func = s_readOgg;
+		vorbisCallbacks.seek_func = s_seekOgg;
+		vorbisCallbacks.tell_func = s_tellOgg;
+		vorbisCallbacks.close_func = s_closeOgg;
+
+		int opcall_err = ov_open_callbacks( m_stream.get(), &m_oggVorbisFile, nullptr, 0, vorbisCallbacks );
+		
+		if( opcall_err < 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_rewind invalid ov_open_callbacks [%d]"
+				, opcall_err
+				);
+
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	size_t SoundDecoderOGGVorbis::decode( void * _buffer, size_t _bufferSize )
 	{
 		long bytesDone = 0;

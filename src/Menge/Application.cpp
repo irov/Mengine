@@ -1421,36 +1421,36 @@ namespace Menge
     {
 		if( _turn == false )
 		{
-			if( SOUND_SERVICE(m_serviceProvider) )
+			if( SERVICE_EXIST(m_serviceProvider, SoundServiceInterface) == true )
 			{
-				SOUND_SERVICE(m_serviceProvider)->onTurnStream( _turn );
+				SOUND_SERVICE(m_serviceProvider)->onTurnStream( false );
 			}
 
-			if( m_game )
+			if( m_game != nullptr )
 			{
-				m_game->turnSound( _turn );
+				m_game->turnSound( false );
 			}
 
-			if( SOUND_SERVICE(m_serviceProvider) )
+			if( SERVICE_EXIST(m_serviceProvider, SoundServiceInterface) == true )
 			{
-				SOUND_SERVICE(m_serviceProvider)->onTurnSound( _turn );
+				SOUND_SERVICE(m_serviceProvider)->onTurnSound( false );
 			}
 		}
 		else
 		{
-			if( SOUND_SERVICE(m_serviceProvider) )
+			if( SERVICE_EXIST(m_serviceProvider, SoundServiceInterface) == true )
 			{
-				SOUND_SERVICE(m_serviceProvider)->onTurnSound( _turn );
+				SOUND_SERVICE(m_serviceProvider)->onTurnSound( true );
 			}
 
-			if( m_game )
+			if( m_game != nullptr )
 			{
-				m_game->turnSound( _turn );
+				m_game->turnSound( true );
 			}
 
-			if( SOUND_SERVICE(m_serviceProvider) )
+			if( SERVICE_EXIST(m_serviceProvider, SoundServiceInterface) == true )
 			{
-				SOUND_SERVICE(m_serviceProvider)->onTurnStream( _turn );
+				SOUND_SERVICE(m_serviceProvider)->onTurnStream( true );
 			}
 		}
     }

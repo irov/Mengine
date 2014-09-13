@@ -31,7 +31,7 @@ namespace Menge
 		this->releaseSourceId_();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem* _soundSystem )
+    void OALSoundSource::initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem )
     {
         m_serviceProvider = _serviceProvider;
         m_soundSystem = _soundSystem;

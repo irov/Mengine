@@ -32,7 +32,7 @@ namespace Menge
 
 		SoundBufferInterfacePtr m_soundBuffer;
 
-		bool m_done;
+		volatile bool m_done;
 	};
 
 	typedef stdex::intrusive_ptr<ThreadWorkerSoundBufferUpdate> ThreadWorkerSoundBufferUpdatePtr;

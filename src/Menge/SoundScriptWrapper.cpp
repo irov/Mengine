@@ -29,19 +29,32 @@ namespace	Menge
 			: public SoundListenerInterface
 		{
 		public:
-			MySoundNodeListenerInterface( ServiceProviderInterface * _serviceProvider, ResourceSound * _resource, size_t _sourceID, const SoundBufferInterfacePtr & _soundBuffer, PyObject * _cb )
-				: m_serviceProvider(_serviceProvider)
-                , m_resource(_resource)
-				, m_sourceID(_sourceID)
-                , m_soundBuffer(_soundBuffer)
-				, m_cb(_cb)
+			MySoundNodeListenerInterface()
 			{
-				pybind::incref(m_cb);
 			}
 
 			~MySoundNodeListenerInterface()
 			{
 				pybind::decref(m_cb);
+			}
+
+		public:
+			bool initialize( ServiceProviderInterface * _serviceProvider, ResourceSound * _resource, size_t _sourceID, const SoundBufferInterfacePtr & _soundBuffer, PyObject * _cb )
+			{
+				if( pybind::is_callable( _cb ) == false )
+				{
+					return false;
+				}
+
+				m_serviceProvider = _serviceProvider;
+				m_resource = _resource;
+				m_sourceID = _sourceID;
+				m_soundBuffer = _soundBuffer;
+
+				m_cb = _cb;				
+				pybind::incref(m_cb);
+
+				return true;
 			}
 
 		protected:
@@ -55,19 +68,19 @@ namespace	Menge
 			{	
 				(void)_id;
 
-				if( m_cb != nullptr && pybind::is_none( m_cb ) == false )
+				pybind::call( m_cb, "(i)", m_sourceID );
+
+				if( SOUND_SERVICE(m_serviceProvider)
+					->releaseSoundSource( m_sourceID ) == false )
 				{
-					pybind::call( m_cb, "(i)", m_sourceID );
+					LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_release %s emitter invalid release sound %d"
+						, m_resource->getName().c_str()
+						, m_sourceID
+						);
 				}
-
-				SOUND_SERVICE(m_serviceProvider)
-					->releaseSoundSource( m_sourceID );
-
-				if( m_resource != nullptr )
-				{                    
-					m_resource->decrementReference();
-					m_resource = nullptr;
-				}
+				         
+				m_resource->decrementReference();
+				m_resource = nullptr;
 
 				m_soundBuffer = nullptr;
 
@@ -107,6 +120,8 @@ namespace	Menge
 
             if( soundBuffer == nullptr )
             {
+				resource->decrementReference();
+
                 return 0;
             }
 
@@ -140,11 +155,21 @@ namespace	Menge
                 return 0;
 			}
 
-			SoundListenerInterface * snlistener = 
-				new MySoundNodeListenerInterface( m_serviceProvider, resource, sourceID, soundBuffer, _cb );
+			if( pybind::is_none( _cb ) == false )
+			{
+				MySoundNodeListenerInterface * snlistener = new MySoundNodeListenerInterface();
+			
+				if( snlistener->initialize( m_serviceProvider, resource, sourceID, soundBuffer, _cb ) == false )
+				{
+					delete snlistener;
+					resource->decrementReference();
 
-			SOUND_SERVICE(m_serviceProvider)
-				->setSourceListener( sourceID, snlistener );
+					return 0;
+				}
+
+				SOUND_SERVICE(m_serviceProvider)
+					->setSourceListener( sourceID, snlistener );
+			}
 			
 			return sourceID;
 		}

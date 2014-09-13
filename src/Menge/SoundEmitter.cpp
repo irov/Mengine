@@ -101,8 +101,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_release()
 	{ 
-		SOUND_SERVICE(m_serviceProvider)
-			->releaseSoundSource( m_sourceID );
+		if( SOUND_SERVICE(m_serviceProvider)
+			->releaseSoundSource( m_sourceID ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("SoundEmitter::_release %s emitter invalid release sound %d"
+				, this->getName().c_str()
+				, m_sourceID
+				);
+		}
 
 		m_sourceID = 0;
 

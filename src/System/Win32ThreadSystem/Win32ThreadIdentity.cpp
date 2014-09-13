@@ -79,11 +79,13 @@ namespace Menge
 		while( true, true )
 		{		
 			m_mutex->lock();
+
 			if( m_complete == false )
 			{				
 				m_task->main();
 				m_complete = true;
 			}
+
 			m_mutex->unlock();
 
 			if( m_exit == true )
@@ -97,32 +99,33 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadIdentity::addTask( ThreadTaskInterface * _task )
 	{
-		if( m_complete == false )
+		bool successful = false;
+
+		m_mutex->lock();
+
+		if( m_complete == true && m_exit == false )
 		{
-			return false;
+			m_task = _task;
+			m_complete = false;
+
+			successful = true;
 		}
 
-		if( m_exit == true )
-		{
-			return false;				 
-		}
+		m_mutex->unlock();
 		
-		m_task = _task;
-		m_complete = false;
-		
-		return true;
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadIdentity::joinTask()
-	{
-		if( m_complete == true )
+	{		
+		m_mutex->lock();
+
+		if( m_complete == false )
 		{
-			return;
+			m_complete = true;
+			m_task = nullptr;
 		}
 
-		m_mutex->lock();
-		m_complete = true;
-		m_task = nullptr;
 		m_mutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -85,6 +85,11 @@ namespace Menge
 			return;
 		}
 
+		if( m_playing == true )
+		{
+			return;
+		}
+
         if( m_soundBuffer == nullptr )
         {
             return;

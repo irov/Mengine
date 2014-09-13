@@ -871,12 +871,14 @@ namespace Menge
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_scheduleGlobalRemove( size_t _id )
+        bool s_scheduleGlobalRemove( size_t _id )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
 
-            sm->remove( _id );
+            bool successful = sm->remove( _id );
+
+			return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         void s_scheduleGlobalRemoveAll()

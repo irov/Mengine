@@ -127,6 +127,9 @@ namespace Menge
 
         bool isSilent() const override;
 
+	public:
+		void updateVolume() override;
+
     protected:
         void updateSourceVolume_( SoundSourceDesc * _source, float _volume );
 
@@ -137,12 +140,11 @@ namespace Menge
     protected:
         void playSounds_();
         void pauseSounds_();
-        void stopSounds_();        
-        void updateVolume_();
-
+        void stopSounds_();      
+        
     protected:
-        void stopSoundBufferUpdate_( SoundSourceDesc * _source );
-        void playSoundBufferUpdate_( SoundSourceDesc * _source );
+        bool stopSoundBufferUpdate_( SoundSourceDesc * _source );
+        bool playSoundBufferUpdate_( SoundSourceDesc * _source );
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

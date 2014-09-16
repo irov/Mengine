@@ -9,10 +9,12 @@ namespace Menge
 	//class OutputStreamInterface;
 	enum EMessageLevel
 	{
-		LM_ERROR = 0,
-		LM_WARNING = 1,
-		LM_LOG = 2,
-		LM_INFO = 3,
+		LM_FATAL = 0,
+		LM_CRITICAL = 1,
+		LM_ERROR = 2,
+		LM_WARNING = 3,
+		LM_LOG = 4,
+		LM_INFO = 5,
 
 		LM_MAX
 	};

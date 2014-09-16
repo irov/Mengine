@@ -29,6 +29,9 @@ namespace Menge
 	public:
 		bool _prepareData() override;
 
+	public:
+		bool _rewind() override;
+
     public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 	
@@ -42,9 +45,6 @@ namespace Menge
 
 	public:		
 		EVideoDecoderReadState readNextFrame( float & _pts ) override;
-
-    protected:
-        bool _invalidateOptions() override;
 
     protected:
         bool checkVideoCorrect_();

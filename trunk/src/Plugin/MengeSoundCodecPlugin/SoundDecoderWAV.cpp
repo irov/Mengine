@@ -38,7 +38,7 @@ namespace Menge
 		
 		m_stream->read( header.ChunkID, 4 );
 
-		if( magicTest4( header.ChunkID, "RIFF" ) == false )
+		if( Helper::magicTest4( header.ChunkID, "RIFF" ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundDecoderWAV::_prepareData invalid chunk id 'RIFF'" 
 				);
@@ -50,7 +50,7 @@ namespace Menge
 
 		m_stream->read( &header.Format, 4 );
 
-		if( magicTest4( header.Format, "WAVE" ) == false )
+		if( Helper::magicTest4( header.Format, "WAVE" ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundDecoderWAV::_prepareData invalid format 'WAVE'" 
 				);
@@ -60,7 +60,7 @@ namespace Menge
 		
 		m_stream->read( &header.Subchunk1ID, 4 );
 
-		if( magicTest4( header.Subchunk1ID, "fmt " ) == false )
+		if( Helper::magicTest4( header.Subchunk1ID, "fmt " ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundDecoderWAV::_prepareData invalid subchunk id 'fmt '" 
 				);
@@ -114,7 +114,7 @@ namespace Menge
         m_dataInfo.channels = header.NumChannels;
         m_dataInfo.frequency = header.SampleRate;
 
-		m_dataInfo.length = float(m_dataInfo.size) * 1000.f / float(m_dataInfo.frequency);
+		m_dataInfo.length = (float)(double(m_dataInfo.size) * 1000.0 / double(m_dataInfo.frequency));
 
         return true;
     }
@@ -129,7 +129,7 @@ namespace Menge
 			uint32_t Subchunk2Size;
 			m_stream->read( &Subchunk2Size, sizeof(Subchunk2Size) );
 
-			if( magicTest4( Subchunk2ID, "data" ) == true )
+			if( Helper::magicTest4( Subchunk2ID, "data" ) == true )
 			{
 				_size = Subchunk2Size;
 
@@ -163,16 +163,16 @@ namespace Menge
               
         size_t wav_pos = (size_t)((double)(_timing) * 0.001 * (double)(m_dataInfo.frequency));
 
-		bool result = m_stream->seek( wav_pos + m_chunkDataPos );
+		bool result = m_stream->seek( m_chunkDataPos + wav_pos );
         
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundDecoderWAV::timeTell()
+	float SoundDecoderWAV::tell()
 	{
 		size_t wav_pos = m_stream->tell();
 		
-		float length = float(wav_pos - m_chunkDataPos) * 1000.f / float(m_dataInfo.frequency);
+		float length = (float)(double(wav_pos - m_chunkDataPos) * 1000.0 / double(m_dataInfo.frequency));
 		       
 		return length;
 	}

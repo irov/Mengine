@@ -19,7 +19,7 @@ namespace Menge
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 
 		bool seek( float _timing ) override;
-		float timeTell() override;
+		float tell() override;
 
 	protected:		
 		bool findChunkData_( size_t & _size );

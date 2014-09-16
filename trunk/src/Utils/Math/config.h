@@ -17,9 +17,12 @@ namespace mt
 	const float m_neps = -m_eps;
 }
 
-#	ifndef _DEBUG
+#	ifdef _DEBUG
+#	define MATH_FORCE_INLINE 0
+#	else
 #	define MATH_FORCE_INLINE 1
 #	endif
+
 
 #	define MATH_INLINE inline
 

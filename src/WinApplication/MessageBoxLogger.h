@@ -2,19 +2,14 @@
 
 #	include "Interface/LogSystemInterface.h"
 
-#	include "WindowsLayer/WindowsIncluder.h"
-
 namespace Menge
 {
-	class ConsoleLogger
+	class MessageBoxLogger
 		: public LoggerInterface
 	{
 	public:
-		ConsoleLogger( ServiceProviderInterface * _serviceProvider );
-		~ConsoleLogger();
-
-	public:
-		void createConsole();
+		MessageBoxLogger( ServiceProviderInterface * _serviceProvider );
+		~MessageBoxLogger();
 
 	public:
 		void setVerboseLevel( EMessageLevel _level ) override;
@@ -31,17 +26,6 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		EMessageLevel m_verboseLevel;
-        size_t m_verboseFlag;
-
-		bool m_createConsole;
-		
-		TVectorWChar m_wBuffer;
-		TVectorChar m_aBuffer;
-
-		HANDLE m_ConsoleHandle;
-		
-		FILE *fp[3];
-		HANDLE lStdHandle[3];
-		int hConHandle[3];
+		size_t m_verboseFlag;
 	};
 }

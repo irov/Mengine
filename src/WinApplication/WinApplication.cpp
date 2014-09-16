@@ -25,6 +25,7 @@
 #   include <errno.h>
 
 #	include "ConsoleLogger.h"
+#	include "MessageBoxLogger.h"
 
 #	include "FPSMonitor.h"
 #	include "AlreadyRunningMonitor.h"
@@ -173,6 +174,7 @@ namespace Menge
 		, m_clickOutArea(false)
 		, m_hInstance(NULL)
 		, m_loggerConsole(nullptr)
+		, m_loggerMessageBox(nullptr)
 		, m_application(nullptr)
 		, m_fpsMonitor(nullptr)
 		, m_alreadyRunningMonitor(0)
@@ -758,6 +760,14 @@ namespace Menge
 			m_logService->registerLogger( m_loggerConsole );
 		}
 
+		{
+			m_loggerMessageBox = new MessageBoxLogger(m_serviceProvider);
+
+			m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
+
+			m_logService->registerLogger( m_loggerMessageBox );
+		}
+				
 		EMessageLevel m_logLevel;
 
 		if( m_developmentMode == true )

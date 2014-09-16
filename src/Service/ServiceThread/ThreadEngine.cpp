@@ -221,17 +221,21 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadEngine::joinTask( const ThreadTaskInterfacePtr & _task )
+	bool ThreadEngine::joinTask( const ThreadTaskInterfacePtr & _task )
 	{
 		_task->cancel();
 
 		ThreadIdentityPtr threadIdentity;
 		if( this->isTaskOnProgress_( _task, threadIdentity ) == false )
 		{
-			return;
+			return true;
 		}
 
-		threadIdentity->joinTask();
+		ThreadTaskInterface * ptr_task = _task.get();
+
+		bool successful = threadIdentity->joinTask( ptr_task );
+
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ThreadQueueInterfacePtr ThreadEngine::runTaskQueue( const ConstString & _threadName, size_t _countThread, size_t _packetSize )

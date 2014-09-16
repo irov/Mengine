@@ -82,7 +82,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBuffer::play( ALenum _source, bool _looped, float _pos )
+	bool OALSoundBuffer::play( ALuint _source, bool _looped, float _pos )
 	{
         ALint state = 0;
         alGetSourcei( _source, AL_SOURCE_STATE, &state );
@@ -114,7 +114,7 @@ namespace Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBuffer::resume( ALenum _source )
+    bool OALSoundBuffer::resume( ALuint _source )
     {
         alSourcePlay( _source );
         OAL_CHECK_ERROR(m_serviceProvider);
@@ -122,7 +122,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBuffer::pause( ALenum _source )
+	void OALSoundBuffer::pause( ALuint _source )
 	{
 		alSourcePause( _source );
 		OAL_CHECK_ERROR(m_serviceProvider);
@@ -131,7 +131,7 @@ namespace Menge
 		//OAL_CHECK_ERROR(m_serviceProvider);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBuffer::stop( ALenum _source )
+	void OALSoundBuffer::stop( ALuint _source )
 	{		
 		alSourceStop( _source );
 		OAL_CHECK_ERROR(m_serviceProvider);
@@ -153,7 +153,7 @@ namespace Menge
 		OAL_CHECK_ERROR(m_serviceProvider);	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBuffer::setTimePos( ALenum _source, float _pos ) const
+	bool OALSoundBuffer::setTimePos( ALuint _source, float _pos ) const
 	{
 		float al_pos = _pos * 0.001f;
 		alSourcef( _source, AL_SEC_OFFSET, al_pos );
@@ -166,7 +166,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBuffer::getTimePos( ALenum _source, float & _pos ) const
+	bool OALSoundBuffer::getTimePos( ALuint _source, float & _pos ) const
 	{
 		float al_pos = 0.f;
 

@@ -47,7 +47,7 @@ namespace Menge
 	{
 	public:
 		virtual bool addTask( ThreadTaskInterface * _task ) = 0;
-		virtual void joinTask() = 0;
+		virtual bool joinTask( ThreadTaskInterface * _task ) = 0;
 
 	public:
 		virtual void join() = 0;
@@ -108,7 +108,7 @@ namespace Menge
 
     public:
         virtual bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task ) = 0;
-        virtual void joinTask( const ThreadTaskInterfacePtr & _task ) = 0;
+        virtual bool joinTask( const ThreadTaskInterfacePtr & _task ) = 0;
 
 	public:
 		virtual ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, size_t _countThread, size_t _packetSize ) = 0;

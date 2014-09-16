@@ -85,7 +85,7 @@ namespace Menge
 		if( m_threadSoundBufferUpdate != nullptr )
 		{
 			THREAD_SERVICE(m_serviceProvider)
-				->joinTask( m_threadSoundBufferUpdate );  
+				->joinTask( m_threadSoundBufferUpdate );
 
 			m_threadSoundBufferUpdate = nullptr;
 		}

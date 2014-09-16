@@ -31,7 +31,7 @@ namespace Menge
 
     public:
         bool addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task ) override;
-        void joinTask( const ThreadTaskInterfacePtr & _task ) override;
+        bool joinTask( const ThreadTaskInterfacePtr & _task ) override;
 
 	public:
 		ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, size_t _countThread, size_t _packetSize ) override;

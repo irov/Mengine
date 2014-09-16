@@ -13,7 +13,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ThreadWorkerSoundBufferUpdate::ThreadWorkerSoundBufferUpdate()
 		: m_serviceProvider(nullptr)
-		, m_soundBuffer(nullptr)
 		, m_done(false)
 	{
 	}

@@ -487,8 +487,8 @@ namespace Menge
 
 		ConstString c_out = Helper::stringizeString(serviceProvider, utf8_out);
 
-		OutputStreamInterfacePtr output_stream = 
-			FILE_SERVICE(serviceProvider)->openOutputFile( ConstString::none(), c_out );
+		OutputStreamInterfacePtr output_stream = FILE_SERVICE(serviceProvider)
+			->openOutputFile( ConstString::none(), c_out );
 
 		if( output_stream == nullptr )
 		{

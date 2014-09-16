@@ -274,7 +274,14 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		int atlasCount = Magic_GetStaticAtlasCount( mf );
 
-		typedef std::vector<std::string> TVectorAtlas;
+		struct AtlasDesc
+		{
+			std::string path;
+			size_t width;
+			size_t height;
+		};
+
+		typedef std::vector<AtlasDesc> TVectorAtlas;
 		TVectorAtlas atlas;
 
 		for( int i = 0; i != atlasCount; ++i )
@@ -285,7 +292,12 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 				continue;
 			}
 
-			atlas.push_back( magicAtlas.file );		
+			AtlasDesc desc;
+			desc.path = magicAtlas.file;
+			desc.width = magicAtlas.width;
+			desc.height = magicAtlas.height;
+
+			atlas.push_back( desc );		
 		}
 
 		Magic_CloseFile( mf );
@@ -319,9 +331,21 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		it != it_end;
 		++it )
 		{
-			const std::string & atlas_path = *it;
+			const AtlasDesc & desc = *it;
 
-			fputs( atlas_path.c_str(), f_info );
+			fputs( desc.path.c_str(), f_info );
+			fputs( "\n", f_info );
+
+			CHAR s_atlasWidth[16];
+			sprintf_s( s_atlasWidth, 16, "%d", desc.width );
+
+			fputs( s_atlasWidth, f_info );
+			fputs( "\n", f_info );
+
+			CHAR s_atlasHeight[16];
+			sprintf_s( s_atlasHeight, 16, "%d", desc.height );
+
+			fputs( s_atlasHeight, f_info );
 			fputs( "\n", f_info );
 		}
 

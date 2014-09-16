@@ -6,6 +6,12 @@ ConsoleLogger
     ConsoleLogger.h
 )
 
+ADD_FILTER(
+MessageBoxLogger
+    MessageBoxLogger.cpp
+    MessageBoxLogger.h
+)
+
 #ADD_FILTER(
 #Resources
 #	menge.ico

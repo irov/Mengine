@@ -35,6 +35,7 @@ namespace Menge
 {
 	class SystemDLL;
 	class ConsoleLogger;
+	class MessageBoxLogger;
 	class Application;
 	class FPSMonitor;
 	class AlreadyRunningMonitor;
@@ -235,7 +236,8 @@ namespace Menge
 
 		FileLogger * m_fileLog;
 
-		ConsoleLogger* m_loggerConsole;
+		ConsoleLogger * m_loggerConsole;
+		MessageBoxLogger * m_loggerMessageBox;
 		String m_commandLine;
 
 		int m_lastMouseX;

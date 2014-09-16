@@ -221,6 +221,66 @@ namespace Menge
 			return false;
 		}
 
+		switch( m_options.pixelFormat )
+		{
+		case Menge::PF_A8R8G8B8:
+			{
+				m_outputPixelFormat = PIX_FMT_BGRA;
+			}break;
+		case Menge::PF_R8G8B8:
+			{
+				m_outputPixelFormat = PIX_FMT_RGB32;
+			}break;
+		default:
+			{
+				LOGGER_ERROR(m_serviceProvider)("pixel format %i is not supported"
+					, m_options.pixelFormat
+					);
+
+				return false;
+			}break;
+		}
+
+		m_imgConvertContext = sws_getCachedContext(
+			nullptr
+			, m_codecContext->width
+			, m_codecContext->height
+			, m_codecContext->pix_fmt
+			, m_codecContext->width 
+			, m_codecContext->height
+			, (::PixelFormat)m_outputPixelFormat
+			//, SWS_BICUBIC
+			, SWS_FAST_BILINEAR
+			, nullptr 
+			, nullptr
+			, nullptr );
+
+		if( m_imgConvertContext == nullptr )
+		{
+			m_imgConvertContext = sws_getContext(
+				m_codecContext->width
+				, m_codecContext->height
+				, m_codecContext->pix_fmt
+				, m_codecContext->width 
+				, m_codecContext->height
+				, (::PixelFormat)m_outputPixelFormat
+				//, SWS_BICUBIC
+				, SWS_FAST_BILINEAR
+				, nullptr 
+				, nullptr
+				, nullptr );
+
+			if( m_imgConvertContext == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::Cannot initialize the conversion context!"
+					);
+
+				return false;
+			}
+
+			m_imgConvertContextCache = false;
+		}
+
         //int picture_err = avpicture_alloc( &m_picture, m_codecContext->pix_fmt, m_codecContext->width, m_codecContext->height );
 
         //if( picture_err < 0 )
@@ -276,6 +336,193 @@ namespace Menge
 		m_dataInfo.format = PF_UNKNOWN;
 		m_dataInfo.clamp = true;
 
+#   ifdef _DEBUG
+		if( this->checkVideoCorrect_() == false )
+		{
+			return false;
+		}
+#   endif
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool VideoDecoderFFMPEG::_rewind()
+	{
+		this->clear_();
+
+		m_stream->seek( 0 );
+
+		memset( m_bufferIO + FF_MIN_BUFFER_SIZE, 0, FF_INPUT_BUFFER_PADDING_SIZE );
+
+		m_IOContext = avio_alloc_context(
+			m_bufferIO //IO buffer
+			, FF_MIN_BUFFER_SIZE //size of IO buffer
+			, 0 //write flag set to 0
+			, m_stream.get()//IO source - it will be send as opaque argument to IO callbacks
+			, s_readIOWrapper //read callback 
+			, nullptr //write callback
+			, s_seekIOWrapper //seek callback
+			);
+
+		m_formatContext = avformat_alloc_context();
+
+		m_formatContext->pb = m_IOContext;
+
+		size_t stream_size = m_stream->size();
+		size_t probe_size = FF_MIN_BUFFER_SIZE < stream_size ? FF_MIN_BUFFER_SIZE : stream_size;
+
+		m_stream->read( m_bufferIO, probe_size );
+		m_stream->seek( 0 );
+
+		AVProbeData pd;
+		pd.filename = "";
+		pd.buf = m_bufferIO; 
+		pd.buf_size = probe_size;
+
+		AVInputFormat * inputFormat = av_probe_input_format( &pd, 1 );
+
+		if( inputFormat == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: av_probe_input_format failed "
+				);
+
+			return false;
+		}
+
+		//inputFormat->flags |= AVFMT_NOFILE;
+
+		m_formatContext->iformat = inputFormat;
+		m_formatContext->flags = AVFMT_FLAG_CUSTOM_IO;
+
+		int open_input_error = avformat_open_input( &m_formatContext, "", nullptr, nullptr );
+
+		if( open_input_error != 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Couldn't open stream %d"
+				, open_input_error
+				);
+
+			return false;
+		}
+
+		int find_stream_info_error = avformat_find_stream_info( m_formatContext, nullptr );
+
+		if( find_stream_info_error < 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Couldn't find stream information %d"
+				, find_stream_info_error
+				);
+
+			return false; 
+		}
+
+		//av_dump_format(m_formatContext, 0, filename, 0);
+
+		// Find the first video stream
+		m_videoStreamId = -1;
+		for( size_t i = 0; i < m_formatContext->nb_streams; i++ )
+		{
+			if( m_formatContext->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO )
+			{
+				m_videoStreamId = i;
+				break;
+			}
+		}	
+
+		if( m_videoStreamId == -1 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Didn't find a video stream ");
+
+			return false; // Didn't find a video stream
+		}
+		// Get a pointer to the codec context for the video stream
+		AVCodecContext * streamCodecContext = m_formatContext->streams[m_videoStreamId]->codec;
+		AVCodecID codec_id = streamCodecContext->codec_id;
+
+		// Find the decoder for the video stream
+		AVCodec * codec = avcodec_find_decoder( codec_id );
+
+		if( codec == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Unsupported codec! ");
+
+			return false;
+		}
+
+		m_codecContext = streamCodecContext;
+
+		//m_codecContext = avcodec_alloc_context3( codec );
+
+		m_codecContext->thread_count = 1;
+
+		// Open codec
+		int error_open = avcodec_open2( m_codecContext, codec, NULL );
+
+		if( error_open < 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Could not open codec! %d"
+				, error_open
+				);
+
+			return false;
+		}        
+
+		m_frame = av_frame_alloc();
+
+		if( m_frame == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: can not allocate  video frame"
+				);
+
+			return false;
+		}
+
+		// Hack to correct wrong frame rates that seem to be generated by some codecs
+		if( m_codecContext->time_base.num > 1000 && m_codecContext->time_base.den == 1 )
+		{
+			m_codecContext->time_base.den = 1000;
+		}
+
+		m_imgConvertContext = sws_getCachedContext(
+			nullptr
+			, m_codecContext->width
+			, m_codecContext->height
+			, m_codecContext->pix_fmt
+			, m_codecContext->width 
+			, m_codecContext->height
+			, (::PixelFormat)m_outputPixelFormat
+			//, SWS_BICUBIC
+			, SWS_FAST_BILINEAR
+			, nullptr 
+			, nullptr
+			, nullptr );
+
+		if( m_imgConvertContext == nullptr )
+		{
+			m_imgConvertContext = sws_getContext(
+				m_codecContext->width
+				, m_codecContext->height
+				, m_codecContext->pix_fmt
+				, m_codecContext->width 
+				, m_codecContext->height
+				, (::PixelFormat)m_outputPixelFormat
+				//, SWS_BICUBIC
+				, SWS_FAST_BILINEAR
+				, nullptr 
+				, nullptr
+				, nullptr );
+
+			if( m_imgConvertContext == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::Cannot initialize the conversion context!"
+					);
+
+				return false;
+			}
+
+			m_imgConvertContextCache = false;
+		}
+
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -283,8 +530,8 @@ namespace Menge
     {
         bool video_error = false;
 
-        if( m_dataInfo.frameWidth != m_codecContext->width || 
-            m_dataInfo.frameHeight != m_codecContext->height )
+        if( m_dataInfo.frameWidth != (uint32_t)m_codecContext->width || 
+            m_dataInfo.frameHeight != (uint32_t)m_codecContext->height )
         {
             LOGGER_ERROR(m_serviceProvider)("=============================================================");
             LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::decode invalid width height %d:%d - %d:%d"
@@ -437,15 +684,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderFFMPEG::clear_()
 	{
-        if( m_imgConvertContext != nullptr )
-        {
-            if( m_imgConvertContextCache == true )
-            {
-                sws_freeContext( m_imgConvertContext );
-            }
+		if( m_imgConvertContext != nullptr )
+		{
+			if( m_imgConvertContextCache == true )
+			{
+				sws_freeContext( m_imgConvertContext );
+			}
 
-            m_imgConvertContext = nullptr;
-        }
+			m_imgConvertContext = nullptr;
+		}
 
         if( m_IOContext != nullptr )
         {
@@ -506,8 +753,8 @@ namespace Menge
 			return true;
 		}
 		
-        int64_t minTime = (int64_t)(_timing - m_dataInfo.frameTiming);
-        int64_t maxTime = (int64_t)(_timing + m_dataInfo.frameTiming);
+        int64_t minTime = (int64_t)(correct_timing - m_dataInfo.frameTiming);
+        int64_t maxTime = (int64_t)(correct_timing + m_dataInfo.frameTiming);
         int64_t needTime = (int64_t)(correct_timing);
 				
         //if( av_seek_frame( m_formatContext, seekStreamIndex, _frame,  AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD ) < 0 )
@@ -526,10 +773,25 @@ namespace Menge
 
 			int seek_err2 = avformat_seek_file( m_formatContext, m_videoStreamId, 0, 0, 0, 0 );
 
-            return false;
-        }
+			if( seek_err2 < 0 )
+			{
+				LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::seek try second to restart - %d from %f to %f duration %f error [%d]"
+					, m_videoStreamId
+					, m_pts
+					, 0
+					, m_dataInfo.duration
+					, seek_err
+					);
 
-		m_pts = correct_timing;
+				return false;
+			}
+
+			m_pts = 0.f;
+        }
+		else
+		{
+			m_pts = correct_timing;
+		}		
 
         avcodec_flush_buffers( m_codecContext );
 
@@ -540,78 +802,6 @@ namespace Menge
     {
         m_pitch = _pitch;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderFFMPEG::_invalidateOptions()
-	{            
-        if( m_codecContext == nullptr )
-        {
-            return false;
-        }
-
-		switch(m_options.pixelFormat)
-		{
-		case (Menge::PF_A8R8G8B8):
-			m_outputPixelFormat = PIX_FMT_BGRA;
-			break;
-		case (Menge::PF_R8G8B8):
-			m_outputPixelFormat = PIX_FMT_RGB32;
-			break;
-		default:
-			LOGGER_ERROR(m_serviceProvider)("pixel format %i is not supported"
-                , m_options.pixelFormat
-                );
-			break;
-		}
-
-		m_imgConvertContext = sws_getCachedContext(
-            nullptr
-            , m_codecContext->width
-            , m_codecContext->height
-            , m_codecContext->pix_fmt
-			, m_codecContext->width 
-            , m_codecContext->height
-            , (::PixelFormat)m_outputPixelFormat
-            //, SWS_BICUBIC
-            , SWS_FAST_BILINEAR
-			, nullptr 
-            , nullptr
-            , nullptr );
-
-		if( m_imgConvertContext == nullptr )
-		{
-            m_imgConvertContext = sws_getContext(
-                m_codecContext->width
-                , m_codecContext->height
-                , m_codecContext->pix_fmt
-                , m_codecContext->width 
-                , m_codecContext->height
-                , (::PixelFormat)m_outputPixelFormat
-                //, SWS_BICUBIC
-                , SWS_FAST_BILINEAR
-                , nullptr 
-                , nullptr
-                , nullptr );
-
-            if( m_imgConvertContext == nullptr )
-            {
-    			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::Cannot initialize the conversion context!"
-                    );
-
-                return false;
-            }
-
-            m_imgConvertContextCache = false;
-		}
-
-#   ifdef _DEBUG
-        if( this->checkVideoCorrect_() == false )
-        {
-            return false;
-        }
-#   endif
-
-        return true;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	float VideoDecoderFFMPEG::getTiming() const
 	{

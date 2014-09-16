@@ -23,9 +23,11 @@ namespace Menge
 		
 	public:
 		bool seek( float _timing ) override;
-		float timeTell() override;
+		float tell() override;
 
 	protected:
 		OggVorbis_File m_oggVorbisFile;
+
+		volatile bool m_process;
 	};
 }	// namespace Menge

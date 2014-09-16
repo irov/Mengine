@@ -191,6 +191,10 @@ namespace Menge
 	{
 		if( SOUND_SERVICE(m_serviceProvider)->play( m_sourceID ) == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_ invalid play %d"
+				, m_sourceID
+				);
+
 			return false;
 		}
 

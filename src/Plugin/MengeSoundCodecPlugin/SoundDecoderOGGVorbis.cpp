@@ -60,6 +60,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundDecoderOGGVorbis::SoundDecoderOGGVorbis()		
+		: m_process(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -115,8 +116,8 @@ namespace Menge
 
         //m_dataInfo.size = pcmTotal * 2 * vorbisInfo->channels;	// 2 bytes per sample x channels num
         m_dataInfo.size = size_pcmTotal * 2 * vorbisInfo->channels;	// 2 bytes per sample x channels num
-        m_dataInfo.channels = vorbisInfo->channels;
-        m_dataInfo.frequency = vorbisInfo->rate;
+        m_dataInfo.channels = (uint32_t)vorbisInfo->channels;
+        m_dataInfo.frequency = (uint32_t)vorbisInfo->rate;
 
         double al_total = ov_time_total( &m_oggVorbisFile, -1 );
         float total = (float)(al_total * 1000.0);
@@ -128,6 +129,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundDecoderOGGVorbis::_rewind()
 	{
+		if( m_process == true )
+		{
+			LOGGER_CRITICAL(m_serviceProvider)("SoundDecoderOGGVorbis::_rewind invalid process decoding!"
+				);
+
+			return false;
+		}
+
 		if( m_stream->seek( 0 ) == false )
 		{
 			return false;
@@ -157,6 +166,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t SoundDecoderOGGVorbis::decode( void * _buffer, size_t _bufferSize )
 	{
+		if( m_process == true )
+		{
+			LOGGER_CRITICAL(m_serviceProvider)("SoundDecoderOGGVorbis::decode invalid process decoding!"
+				);
+
+			return 0;
+		}
+
+		m_process = true;
+
 		long bytesDone = 0;
         long bytesReading = _bufferSize;
         
@@ -172,7 +191,8 @@ namespace Menge
                     , decodeSize
                     );
 
-                return 0;
+				bytesDone = 0;
+                break;
             }
 
             bytesReading -= decodeSize;
@@ -194,6 +214,8 @@ namespace Menge
             //}
 		}
 
+		m_process = false;
+
 		return bytesDone;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -208,12 +230,26 @@ namespace Menge
 
 			_timing = m_dataInfo.length;
         }
-              
-        double al_pos = (double)(_timing * 0.001f);
 
+		if( m_process == true )
+		{
+			LOGGER_CRITICAL(m_serviceProvider)("SoundDecoderOGGVorbis::seek invalid process decoding!"
+				);
+
+			return false;
+		}
+              
+        double al_pos = (double)(_timing) * 0.001;
         int seek_err = ov_time_seek( &m_oggVorbisFile, al_pos );
+
+		if( seek_err == OV_EINVAL )
+		{
+			seek_err = ov_time_seek( &m_oggVorbisFile, 0.0 );
+		}
+
         if( seek_err != 0 )
         {
+			//OV_ENOSEEK
             LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::seek timing %f is %f error %d"
                 , _timing
 				, m_dataInfo.length
@@ -226,12 +262,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundDecoderOGGVorbis::timeTell()
+	float SoundDecoderOGGVorbis::tell()
 	{
         //double al_total = ov_time_total( &m_oggVorbisFile, -1 );
 		double al_pos = ov_time_tell( &m_oggVorbisFile );
 
-        float float_pos = (float)(al_pos * 1000.f);
+        float float_pos = (float)(al_pos * 1000.0);
 
         if( float_pos > m_dataInfo.length )
         {

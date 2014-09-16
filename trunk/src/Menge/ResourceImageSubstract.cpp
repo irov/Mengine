@@ -33,13 +33,13 @@ namespace Menge
         m_wrapU = false;
         m_wrapV = false;
 
-        metadata->swap_Image_Name( m_resourceImageName );
+        m_resourceImageName = metadata->get_Image_Name();
         m_uv = metadata->get_Image_UV();
         
         metadata->get_Image_Rotate( m_isUVRotate );
         metadata->get_Image_Alpha( m_isAlpha );
 
-		metadata->get_Image_MaxSize( m_maxSize );
+		m_maxSize = metadata->get_Image_MaxSize();
 
 		m_size = m_maxSize;
 		metadata->get_Image_Size( m_size );
@@ -74,7 +74,6 @@ namespace Menge
                        
         m_texture = m_resourceImage->getTexture();
         m_textureAlpha = m_resourceImage->getTextureAlpha();
-
 
         //ToDo Fix Me isUVRotate
         mt::vec2f uv_size(m_uv.z - m_uv.x, m_uv.w - m_uv.y);

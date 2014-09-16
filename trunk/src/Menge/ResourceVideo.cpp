@@ -168,7 +168,7 @@ namespace Menge
 
 		if( cacheVideoDecoder != nullptr )
 		{
-			cacheVideoDecoder->seek( 0.f );
+			cacheVideoDecoder->rewind();
 
 			return cacheVideoDecoder;
 		}
@@ -201,16 +201,6 @@ namespace Menge
             return nullptr;
         }
 
-		if( videoDecoder->prepareData( videoStream ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder '%s' can't initialize video decoder for file '%s'"
-				, this->getName().c_str()
-				, m_path.c_str()
-				);
-
-			return nullptr;
-		}
-
         VideoCodecOptions videoCodecOptions;
 
         if( m_alpha == true )
@@ -233,6 +223,16 @@ namespace Menge
 
             return nullptr;
         }
+
+		if( videoDecoder->prepareData( videoStream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceVideo::createVideDecoder '%s' can't initialize video decoder for file '%s'"
+				, this->getName().c_str()
+				, m_path.c_str()
+				);
+
+			return nullptr;
+		}
 
 		m_videoDecoderCacher.addCache( videoDecoder );
 

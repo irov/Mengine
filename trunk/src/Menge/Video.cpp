@@ -81,15 +81,16 @@ namespace Menge
 
 		if( m_invalidFirstFrame == true )
 		{
-			if( this->syncFirstFrame_() == false )
-			{
-				return;
-			}
-
 			m_invalidFirstFrame = false;
 			m_needUpdate = true;
 			
-			this->sync_( totalTiming );	
+			if( this->sync_( totalTiming ) == false )
+			{
+				if( this->syncFirstFrame_() == false )
+				{
+					return;
+				}
+			}
 		}
 		else
 		{
@@ -415,6 +416,7 @@ namespace Menge
         bool needUpdate = false;
 
         float frameTiming = dataInfo->frameTiming;
+		float duration = dataInfo->duration;
 
 		while( m_timing >= frameTiming )
 		{            
@@ -433,7 +435,14 @@ namespace Menge
                 }
                 else
 				{
-                    float time = m_intervalStart + m_intervalBegin;
+                    float time = m_intervalBegin;
+
+					float intervalTime = duration * (m_playCount - m_playIterator);
+
+					if( m_intervalStart > intervalTime )
+					{
+						time += m_intervalStart - intervalTime;
+					}
 
                     if( time > frameTiming )
                     {
@@ -479,6 +488,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Video::syncFirstFrame_()
 	{
+		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
+				
+		float frameTiming = dataInfo->frameTiming;
+		float duration = dataInfo->duration;
+
 		while( true, true )
 		{
 			float pts;
@@ -494,11 +508,41 @@ namespace Menge
 			}
 			else if( state == VDRS_END_STREAM )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Video::syncFirstFrame_: '%s' reading first frame but this is last :("
-					, this->getName().c_str()
-					);
+				if( this->getLoop() == false && --m_playIterator == 0 )
+				{
+					this->stop();
 
-				return false;
+					break;
+				}
+				else
+				{
+					float time = m_intervalBegin;
+
+					float intervalTime = duration * (m_playCount - m_playIterator);
+
+					if( m_intervalStart > intervalTime )
+					{
+						time += m_intervalStart - intervalTime;
+					}
+
+					if( time > frameTiming )
+					{
+						time -= frameTiming;
+					}
+
+					if( m_videoDecoder->seek( time ) == false )
+					{
+						LOGGER_ERROR(m_serviceProvider)("Video::sync_ %s:%s invalid seek to %f"
+							, this->getName().c_str()
+							, m_resourceVideo->getName().c_str()
+							, time
+							);
+
+						return false;
+					}
+
+					m_timing += frameTiming;
+				}
 			}
 			else if( state == VDRS_SKIP )
 			{
@@ -523,7 +567,7 @@ namespace Menge
         }
 
         m_playIterator = this->getPlayCount();
-		
+				
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
         float frameTiming = dataInfo->frameTiming;
@@ -540,6 +584,15 @@ namespace Menge
 		if( seek_timing >= frameTiming )
 		{		
 			seek_timing -= frameTiming;
+		}
+
+		float duration = dataInfo->duration;
+
+		size_t skipIterator = (size_t)(m_intervalStart / duration);
+
+		if( skipIterator > 0 )
+		{
+			m_playIterator -= skipIterator;
 		}
 
 		m_timing = 0.f;

@@ -78,15 +78,15 @@ namespace Menge
         metadata->get_File_WrapX( m_wrapU );
         metadata->get_File_WrapY( m_wrapV );
 
-        metadata->swap_File_PathRGB( m_fileNameRGB );
+        m_fileNameRGB = metadata->get_File_PathRGB();
         metadata->swap_File_CodecRGB( m_codecTypeRGB );
         metadata->get_File_UVRGB( m_uv );
 
-        metadata->swap_File_PathAlpha( m_fileNameAlpha );
+        m_fileNameAlpha = metadata->get_File_PathAlpha();
         metadata->swap_File_CodecAlpha( m_codecTypeAlpha );
         metadata->get_File_UVAlpha( m_uv_alpha );
 
-		metadata->get_File_MaxSize( m_maxSize );
+		m_maxSize = metadata->get_File_MaxSize();
 
 		m_size = m_maxSize;
 		metadata->get_File_Size( m_size );

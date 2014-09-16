@@ -1,9 +1,0 @@
-//
-// Prefix header for all source files of the 'Mengine' target in the 'Mengine' project
-//
-
-#ifdef __OBJC__
-    #import <Cocoa/Cocoa.h>
-#endif
-
-#define override

@@ -2264,7 +2264,7 @@ namespace Menge
 
 		if( m_loggerConsole != nullptr )
 		{
-			if( m_logService )
+			if( m_logService != nullptr )
 			{
 				m_logService->unregisterLogger( m_loggerConsole );
 			}
@@ -2273,7 +2273,19 @@ namespace Menge
 			m_loggerConsole = nullptr;
 		}
 
+		if( m_loggerMessageBox != nullptr )
+		{
+			if( m_logService != nullptr )
+			{
+				m_logService->unregisterLogger( m_loggerMessageBox );
+			}
+
+			delete m_loggerMessageBox;
+			m_loggerMessageBox = nullptr;
+		}
+
 		SERVICE_DESTROY( LogService, m_logService );
+		m_logService = nullptr;
 
 		SERVICE_DESTROY( ServiceProvider, m_serviceProvider );
 		m_serviceProvider = nullptr;

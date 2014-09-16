@@ -1180,9 +1180,9 @@ namespace Menge
             _task->cancel();
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_joinTask( ThreadTask * _task )
+        bool s_joinTask( ThreadTask * _task )
         {
-            THREAD_SERVICE(m_serviceProvider)
+            return THREAD_SERVICE(m_serviceProvider)
                 ->joinTask( _task );
         }
         //////////////////////////////////////////////////////////////////////////

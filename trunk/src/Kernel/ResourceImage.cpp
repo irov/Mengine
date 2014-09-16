@@ -47,7 +47,7 @@ namespace Menge
         m_uv_scale.y = float(rect.top) / hwHeight;
         m_uv_scale.z = float(rect.right) / hwWidth;
         m_uv_scale.w = float(rect.bottom) / hwHeight;
-
+			
         if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
         {
             m_maxSize.x = width;
@@ -56,8 +56,8 @@ namespace Menge
 
 		if( m_size.x < 1.f || m_size.y < 1.f )
 		{
-			m_size.x = width;
-			m_size.y = height;
+			m_size.x = m_maxSize.x;
+			m_size.y = m_maxSize.y;
 
 			float ku = m_uv.z - m_uv.x;
 			float kv = m_uv.w - m_uv.y;

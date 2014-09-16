@@ -107,8 +107,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTask::update()
 	{
-		if( m_run == false ||			
-			m_complete == true )
+		if( m_run == false || m_complete == true )
 		{
 			return true;
 		}

@@ -60,9 +60,12 @@ namespace Menge
 		void end();
 
 	public:
-		bool isPlay() const;
+		inline bool isPlay() const;
+
+	public:
 		bool isInterrupt() const;
 
+	public:
 		size_t getPlayId() const;
 		float getPlayTime() const;
 
@@ -93,4 +96,9 @@ namespace Menge
 		bool m_loop;
 		bool m_reverse;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Animatable::isPlay() const
+	{
+		return m_play;
+	}
 }

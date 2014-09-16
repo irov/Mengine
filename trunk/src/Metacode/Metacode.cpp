@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 59;
+        _needVersion = 61;
 
-        if( version != 59 )
+        if( version != 61 )
         {
             return false;
         }
@@ -203,7 +203,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 27:
+        case 26:
             {
                 Meta_DataBlock::Meta_ResourceCal3dAnimation * metadata = new Meta_DataBlock::Meta_ResourceCal3dAnimation ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -218,7 +218,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 28:
+        case 27:
             {
                 Meta_DataBlock::Meta_ResourceCal3dMesh * metadata = new Meta_DataBlock::Meta_ResourceCal3dMesh ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -233,7 +233,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 26:
+        case 25:
             {
                 Meta_DataBlock::Meta_ResourceCal3dSkeleton * metadata = new Meta_DataBlock::Meta_ResourceCal3dSkeleton ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -308,7 +308,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 29:
+        case 28:
             {
                 Meta_DataBlock::Meta_ResourceExternal * metadata = new Meta_DataBlock::Meta_ResourceExternal ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -353,21 +353,6 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 22:
-            {
-                Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha * metadata = new Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha ();
-                if( metadata->parse( _buff, _size, _read, m_userData ) == false )
-                {
-                    delete metadata;
-    
-                    return false;
-                }
-    
-                includes_Meta_Resource.push_back(metadata);
-    
-                return true;
-                break;
-            }
         case 4:
             {
                 Meta_DataBlock::Meta_ResourceImageData * metadata = new Meta_DataBlock::Meta_ResourceImageData ();
@@ -398,7 +383,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 23:
+        case 22:
             {
                 Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha * metadata = new Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -428,7 +413,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 24:
+        case 23:
             {
                 Meta_DataBlock::Meta_ResourceImageSubstract * metadata = new Meta_DataBlock::Meta_ResourceImageSubstract ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -518,7 +503,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 25:
+        case 24:
             {
                 Meta_DataBlock::Meta_ResourceShape * metadata = new Meta_DataBlock::Meta_ResourceShape ();
                 if( metadata->parse( _buff, _size, _read, m_userData ) == false )
@@ -863,7 +848,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceCal3dAnimation::getId() const
     {
-        return 27;
+        return 26;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceCal3dAnimation::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -926,7 +911,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceCal3dMesh::getId() const
     {
-        return 28;
+        return 27;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceCal3dMesh::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -989,7 +974,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceCal3dSkeleton::getId() const
     {
-        return 26;
+        return 25;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceCal3dSkeleton::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -1343,7 +1328,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceExternal::getId() const
     {
-        return 29;
+        return 28;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceExternal::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -1537,192 +1522,6 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::Meta_ResourceImageCombineRGBAndAlpha()
-        : Meta_Resource()
-        , File_Alpha_successful(false)
-        , File_CodecAlpha_successful(false)
-        , File_CodecRGB_successful(false)
-        , File_MaxSize_successful(false)
-        , File_Offset_successful(false)
-        , File_PathAlpha_successful(false)
-        , File_PathRGB_successful(false)
-        , File_Size_successful(false)
-        , File_UV_successful(false)
-        , File_WrapX_successful(false)
-        , File_WrapY_successful(false)
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::getId() const
-    {
-        return 22;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
-    {
-        if( Meta_DataBlock::Meta_Resource::_parseArguments( _buff, _size, _read, _id ) == true )
-        {
-            return true;
-        }
-    
-        switch( _id )
-        {
-        case 7:
-            {
-                if( this->read( _buff, _size, _read, this->File_Alpha ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_Alpha_successful = true;
-    
-                return true;
-            }break;
-        case 4:
-            {
-                if( this->read( _buff, _size, _read, this->File_CodecAlpha ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_CodecAlpha_successful = true;
-    
-                return true;
-            }break;
-        case 6:
-            {
-                if( this->read( _buff, _size, _read, this->File_CodecRGB ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_CodecRGB_successful = true;
-    
-                return true;
-            }break;
-        case 11:
-            {
-                if( this->read( _buff, _size, _read, this->File_MaxSize ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_MaxSize_successful = true;
-    
-                return true;
-            }break;
-        case 13:
-            {
-                if( this->read( _buff, _size, _read, this->File_Offset ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_Offset_successful = true;
-    
-                return true;
-            }break;
-        case 3:
-            {
-                if( this->read( _buff, _size, _read, this->File_PathAlpha ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_PathAlpha_successful = true;
-    
-                return true;
-            }break;
-        case 5:
-            {
-                if( this->read( _buff, _size, _read, this->File_PathRGB ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_PathRGB_successful = true;
-    
-                return true;
-            }break;
-        case 12:
-            {
-                if( this->read( _buff, _size, _read, this->File_Size ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_Size_successful = true;
-    
-                return true;
-            }break;
-        case 8:
-            {
-                if( this->read( _buff, _size, _read, this->File_UV ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_UV_successful = true;
-    
-                return true;
-            }break;
-        case 9:
-            {
-                if( this->read( _buff, _size, _read, this->File_WrapX ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_WrapX_successful = true;
-    
-                return true;
-            }break;
-        case 10:
-            {
-                if( this->read( _buff, _size, _read, this->File_WrapY ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_WrapY_successful = true;
-    
-                return true;
-            }break;
-        }
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_preparationIncludes( uint32_t _includes, uint32_t _count )
-    {
-        if( Meta_DataBlock::Meta_Resource::_preparationIncludes( _includes, _count ) == true )
-        {
-            return true;
-        }
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
-    {
-        if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
-        {
-            return true;
-        }
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_DataBlock::Meta_ResourceImageCombineRGBAndAlpha::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
-    {
-        if( Meta_DataBlock::Meta_Resource::_parseGenerators( _buff, _size, _read, _generators ) == true )
-        {
-            return true;
-        }
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_ResourceImageData::Meta_ResourceImageData()
         : Meta_Resource()
         , File_Codec_successful(false)
@@ -1829,9 +1628,7 @@ namespace Metacode
         , File_MaxSize_successful(false)
         , File_NoExist_successful(false)
         , File_Offset_successful(false)
-        , File_Rotate_successful(false)
         , File_Size_successful(false)
-        , File_UV_successful(false)
         , File_WrapX_successful(false)
         , File_WrapY_successful(false)
     {
@@ -1851,7 +1648,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 6:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->File_Alpha ) == false )
                 {
@@ -1873,7 +1670,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 10:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->File_MaxSize ) == false )
                 {
@@ -1884,7 +1681,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 13:
+        case 11:
             {
                 if( this->read( _buff, _size, _read, this->File_NoExist ) == false )
                 {
@@ -1895,7 +1692,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 12:
+        case 10:
             {
                 if( this->read( _buff, _size, _read, this->File_Offset ) == false )
                 {
@@ -1915,18 +1712,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
-            {
-                if( this->read( _buff, _size, _read, this->File_Rotate ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_Rotate_successful = true;
-    
-                return true;
-            }break;
-        case 11:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->File_Size ) == false )
                 {
@@ -1937,18 +1723,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
-            {
-                if( this->read( _buff, _size, _read, this->File_UV ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_UV_successful = true;
-    
-                return true;
-            }break;
-        case 8:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->File_WrapX ) == false )
                 {
@@ -1959,7 +1734,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 9:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->File_WrapY ) == false )
                 {
@@ -2009,10 +1784,7 @@ namespace Metacode
         : Meta_Resource()
         , File_CodecAlpha_successful(false)
         , File_CodecRGB_successful(false)
-        , File_MaxSize_successful(false)
         , File_Offset_successful(false)
-        , File_PathAlpha_successful(false)
-        , File_PathRGB_successful(false)
         , File_Size_successful(false)
         , File_UVAlpha_successful(false)
         , File_UVRGB_successful(false)
@@ -2023,7 +1795,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::getId() const
     {
-        return 23;
+        return 22;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceImageMultiplyRGBAndAlpha::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -2064,8 +1836,6 @@ namespace Metacode
                     return false;
                 }
     
-                this->File_MaxSize_successful = true;
-    
                 return true;
             }break;
         case 13:
@@ -2086,8 +1856,6 @@ namespace Metacode
                     return false;
                 }
     
-                this->File_PathAlpha_successful = true;
-    
                 return true;
             }break;
         case 5:
@@ -2096,8 +1864,6 @@ namespace Metacode
                 {
                     return false;
                 }
-    
-                this->File_PathRGB_successful = true;
     
                 return true;
             }break;
@@ -2266,7 +2032,6 @@ namespace Metacode
     Meta_DataBlock::Meta_ResourceImageSubstract::Meta_ResourceImageSubstract()
         : Meta_Resource()
         , Image_Alpha_successful(false)
-        , Image_MaxSize_successful(false)
         , Image_Offset_successful(false)
         , Image_Rotate_successful(false)
         , Image_Size_successful(false)
@@ -2275,7 +2040,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceImageSubstract::getId() const
     {
-        return 24;
+        return 23;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceImageSubstract::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -2304,8 +2069,6 @@ namespace Metacode
                 {
                     return false;
                 }
-    
-                this->Image_MaxSize_successful = true;
     
                 return true;
             }break;
@@ -3734,7 +3497,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceShape::getId() const
     {
-        return 25;
+        return 24;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceShape::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )

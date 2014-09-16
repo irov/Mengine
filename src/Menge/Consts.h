@@ -61,7 +61,6 @@ namespace Menge
 		DECL_CONST( ResourceImageInAtlasCombineRGBAndAlpha );
 		DECL_CONST( ResourceImageSolid );
 		DECL_CONST( ResourceImageDefault );
-		DECL_CONST( ResourceImageCombineRGBAndAlpha );
 		DECL_CONST( ResourceImageDynamic );
 		DECL_CONST( ResourceHotspotImage );
 		DECL_CONST( ResourceImage );

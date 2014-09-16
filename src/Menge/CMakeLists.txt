@@ -263,8 +263,6 @@ Resource\\\\Image
 	ResourceImageDefault.h
 	ResourceImageSubstract.cpp
 	ResourceImageSubstract.h
-	ResourceImageCombineRGBAndAlpha.cpp
-	ResourceImageCombineRGBAndAlpha.h
 	ResourceImageMultiplyRGBAndAlpha.cpp
 	ResourceImageMultiplyRGBAndAlpha.h
 	ResourceImageSolid.h

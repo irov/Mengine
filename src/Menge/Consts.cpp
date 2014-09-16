@@ -64,7 +64,6 @@ namespace Menge
         INIT_CONST( ResourceImageInAtlasDefault );
         INIT_CONST( ResourceImageSolid );
         INIT_CONST( ResourceImageDefault );
-        INIT_CONST( ResourceImageCombineRGBAndAlpha );
         INIT_CONST( ResourceImageDynamic );
         INIT_CONST( ResourceHotspotImage );
         INIT_CONST( ResourceImage );

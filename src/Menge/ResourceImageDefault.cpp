@@ -103,8 +103,11 @@ namespace Menge
 
 		uint32_t limitTextureHeight = CONFIG_SERVICE(m_serviceProvider)
 			->getValue( "Limit", "TextureHeight", 2048U );
+
+		float width = (float)dataInfo->width;
+		float height = (float)dataInfo->height;
 		
-		if( dataInfo->width > limitTextureWidth || dataInfo->height > limitTextureHeight )
+		if( width > limitTextureWidth || height > limitTextureHeight )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid limit %d:%d texture size %d:%d "
 				, m_name.c_str()
@@ -114,6 +117,33 @@ namespace Menge
 				, limitTextureHeight
 				, dataInfo->width
 				, dataInfo->height
+				);
+
+			return false;
+		}
+
+		mt::vec2f test_size;
+		if( m_size.x < 1.f || m_size.y < 1.f )
+		{
+			test_size.x = m_maxSize.x;
+			test_size.y = m_maxSize.y;
+		}
+		else
+		{
+			test_size.x = m_size.x;
+			test_size.y = m_size.y;
+		}
+
+		if( (test_size.x != width || test_size.y != height) && ( test_size.x > 4.f && test_size.y > 4.f ) )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceImage::_isValid: '%s' file '%s:%s' incorrect size %f:%f texture %f:%f"
+				, this->getName().c_str()
+				, category.c_str()
+				, m_fileName.c_str()
+				, test_size.x
+				, test_size.y
+				, width
+				, height
 				);
 
 			return false;
@@ -132,7 +162,7 @@ namespace Menge
         m_size = mt::vec2f(0.f, 0.f);
 		m_offset = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
-        m_isUVRotate = false;
+		m_isUVRotate = false;
         m_wrapU = false;
         m_wrapV = false;
         
@@ -145,11 +175,9 @@ namespace Menge
                 ->findCodecType( m_fileName );
         }
 
-        metadata->get_File_UV( m_uv );
         metadata->get_File_Alpha( m_isAlpha );
-        metadata->get_File_Rotate( m_isUVRotate );
         metadata->get_File_WrapX( m_wrapU );
-        metadata->get_File_WrapY( m_wrapV );        
+        metadata->get_File_WrapY( m_wrapV );
         		
 		metadata->get_File_MaxSize( m_maxSize );
 

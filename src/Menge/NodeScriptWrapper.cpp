@@ -48,7 +48,6 @@
 #	include "ResourceInternalObject.h"
 
 #   include "ResourceImageMultiplyRGBAndAlpha.h"
-#   include "ResourceImageCombineRGBAndAlpha.h"
 #   include "ResourceImageSubstract.h"
 
 #	include "Player.h"
@@ -3878,7 +3877,6 @@ namespace Menge
         //SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceFont );       
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceWindow );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageMultiplyRGBAndAlpha );
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageCombineRGBAndAlpha );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSubstract );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceInternalObject );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceHIT );
@@ -4042,9 +4040,6 @@ namespace Menge
             ;
 
 		pybind::interface_<ResourceImageMultiplyRGBAndAlpha, pybind::bases<ResourceImage> >("ResourceImageMultiplyRGBAndAlpha", false)
-			;
-
-		pybind::interface_<ResourceImageCombineRGBAndAlpha, pybind::bases<ResourceImage> >("ResourceImageCombineRGBAndAlpha", false)
 			;
 
 		pybind::interface_<ResourceImageSubstract, pybind::bases<ResourceImage> >("ResourceImageSubstract", false)

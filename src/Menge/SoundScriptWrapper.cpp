@@ -185,8 +185,15 @@ namespace	Menge
 				return 0;
 			}
 
-			SOUND_SERVICE(m_serviceProvider)
-				->play( sourceID );
+			if( SOUND_SERVICE(m_serviceProvider)
+				->play( sourceID ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("soundPlay: invalid play '%s'"
+					, _resourceName.c_str()
+					);
+
+				return 0;
+			}
               
 			return sourceID;
 		}
@@ -204,8 +211,15 @@ namespace	Menge
                 return 0;
             }
 
-            SOUND_SERVICE(m_serviceProvider)
-                ->play( sourceID );
+            if( SOUND_SERVICE(m_serviceProvider)
+                ->play( sourceID ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("voicePlay: invalid play '%s'"
+					, _resourceName.c_str()
+					);
+
+				return 0;
+			}
 
             return sourceID;
         }

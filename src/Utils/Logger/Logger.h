@@ -25,9 +25,14 @@ namespace Menge
 #	define LOGGER_VERBOSE_LEVEL( LOGGER, LEVEL )\
 	if( LOGGER->validMessage(LEVEL, 0) == false) {} else Menge::LoggerOperator(LOGGER, LEVEL, 0)
 
+#	define LOGGER_FATAL( serviceProvider )\
+	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_FATAL )
+
+#	define LOGGER_CRITICAL( serviceProvider )\
+	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_CRITICAL )
+
 #	define LOGGER_ERROR( serviceProvider )\
 	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_ERROR )
-	//if( LOGGER->validVerboseLevel(Menge::LM_ERROR) == false) {} else Menge::LoggerOperator( LOGGER, 1 )
 		
 #	define LOGGER_WARNING( serviceProvider )\
 	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_WARNING )

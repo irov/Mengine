@@ -14,12 +14,15 @@ namespace Menge
 		static const magic_version_type magic_version = version;
 	};
 
-	inline bool magicTest4( const char * _header, const char * _magic )
+	namespace Helper
 	{
-		return (_header[0] == _magic[0]) 
-			&& (_header[1] == _magic[1])
-			&& (_header[2] == _magic[2])
-			&& (_header[3] == _magic[3]);
+		inline bool magicTest4( const char * _header, const char * _magic )
+		{
+			return (_header[0] == _magic[0]) 
+				&& (_header[1] == _magic[1])
+				&& (_header[2] == _magic[2])
+				&& (_header[3] == _magic[3]);
+		}
 	}
 
 #	define DECLARE_MAGIC_NUMBER( name, c0, c1, c2, c3, version)\

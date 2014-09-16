@@ -586,13 +586,13 @@ namespace Menge
 		return result;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::play( size_t _emitter )
+	bool SoundEngine::play( size_t _emitterId )
 	{
         SoundSourceDesc * source;
-		if( this->getSoundSourceDesc_( _emitter, &source ) == false )
+		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine:play not found emitter id %d"
-				, _emitter
+				, _emitterId
 				);
 
 			return false;
@@ -616,7 +616,8 @@ namespace Menge
 				{
 					if( source->source->play() == false )
 					{
-						LOGGER_ERROR(m_serviceProvider)("SoundEngine::play invalid play"
+						LOGGER_ERROR(m_serviceProvider)("SoundEngine::play invalid play %d"
+							, _emitterId
 							);
 
 						return false;
@@ -632,13 +633,13 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::pause( size_t _emitter )
+	bool SoundEngine::pause( size_t _emitterId )
 	{
         SoundSourceDesc * source;
-        if( this->getSoundSourceDesc_( _emitter, &source ) == false )
+        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine:pause not found emitter id %d"
-				, _emitter
+				, _emitterId
 				);
 
 			return false;
@@ -655,7 +656,8 @@ namespace Menge
 					this->stopSoundBufferUpdate_( source );
 				}
 
-				source->source->pause();				
+				source->source->pause();
+				source->timing = source->source->getPosMs();
 
 				if( source->listener != nullptr )
 				{
@@ -667,13 +669,13 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::stop( size_t _emitter )
+	bool SoundEngine::stop( size_t _emitterId )
 	{
         SoundSourceDesc * source;
-        if( this->getSoundSourceDesc_( _emitter, &source ) == false )
+        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine:stop not found emitter id %d"
-				, _emitter
+				, _emitterId
 				);
 
 			return false;
@@ -691,7 +693,8 @@ namespace Menge
 					this->stopSoundBufferUpdate_( source );
 				}
 
-				source->source->stop();				
+				source->source->stop();
+				source->timing = source->source->getPosMs();
 
 				if( source->listener != nullptr )
 				{
@@ -703,13 +706,13 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setLoop( size_t _emitter, bool _looped )
+	void SoundEngine::setLoop( size_t _emitterId, bool _looped )
 	{
         SoundSourceDesc * source;
-        if( this->getSoundSourceDesc_( _emitter, &source ) == false )
+        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine:setLoop not found emitter id %d"
-				, _emitter
+				, _emitterId
 				);
 
 			return;
@@ -771,13 +774,13 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::setSourceVolume( size_t _emitter, float _volume )
+	bool SoundEngine::setSourceVolume( size_t _emitterId, float _volume )
 	{
         SoundSourceDesc * source;
-        if( this->getSoundSourceDesc_( _emitter, &source ) == false )
+        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine:setVolume not found emitter id %d"
-				, _emitter
+				, _emitterId
 				);
 
 			return false;
@@ -790,13 +793,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::getLoop( size_t _emitter ) const
+	bool SoundEngine::getLoop( size_t _emitterId ) const
 	{
         const SoundSourceDesc * source;
-        if( this->getSoundSourceDesc_( _emitter, &source ) == false )
+        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine:getLoop not found emitter id %d"
-				, _emitter
+				, _emitterId
 				);
 
 			return false;
@@ -807,13 +810,13 @@ namespace Menge
 		return looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getSourceVolume( size_t _emitter ) const
+	float SoundEngine::getSourceVolume( size_t _emitterId ) const
 	{
         const SoundSourceDesc * source;
-        if( this->getSoundSourceDesc_( _emitter, &source ) == false )
+        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine:getVolume not found emitter id %d"
-				, _emitter
+				, _emitterId
 				);
 
 			return 0.f;
@@ -841,13 +844,13 @@ namespace Menge
 		return ms;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::setPosMs( size_t _emitter, float _pos )
+	bool SoundEngine::setPosMs( size_t _emitterId, float _pos )
 	{
         SoundSourceDesc * source;
-        if( this->getSoundSourceDesc_( _emitter, &source ) == false )
+        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine:setPosMs not found emitter id %d"
-				, _emitter
+				, _emitterId
 				);
 
 			return false;
@@ -856,7 +859,7 @@ namespace Menge
         if( source->source == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundEngine:setPosMs not setup source %d"
-                , _emitter
+                , _emitterId
                 );
 
 			return false;
@@ -874,7 +877,7 @@ namespace Menge
         if( _pos > lengthMs )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundEngine::setPosMs emitter %d pos %f length %f"
-                , _emitter
+                , _emitterId
                 , _pos
                 , lengthMs
                 );
@@ -983,13 +986,13 @@ namespace Menge
 		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getPosMs( size_t _emitter ) const
+	float SoundEngine::getPosMs( size_t _emitterId ) const
 	{
         const SoundSourceDesc * source;
-        if( this->getSoundSourceDesc_( _emitter, &source ) == false )
+        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine:getPosMs not found emitter id %d"
-				, _emitter
+				, _emitterId
 				);
 
 			return 0.f;

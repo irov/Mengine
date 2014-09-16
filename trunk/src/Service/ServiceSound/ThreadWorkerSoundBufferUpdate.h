@@ -6,10 +6,6 @@
 
 namespace Menge
 {
-    class ServiceProviderInterface;
-
-	struct SoundSourceDesc;
-
 	class ThreadWorkerSoundBufferUpdate
 		: public ThreadWorkerInterface
 	{

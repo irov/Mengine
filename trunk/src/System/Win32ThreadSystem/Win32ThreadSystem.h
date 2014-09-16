@@ -46,12 +46,12 @@ namespace Menge
 		void onThreadIdentityRemove_( Win32ThreadIdentity * _identity );
 	
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
         typedef FactoryPoolStore<Win32ThreadIdentity, 16> TPoolWin32ThreadIdentity;
         TPoolWin32ThreadIdentity m_poolWin32ThreadIdentity;
 
         typedef FactoryPoolStore<Win32ThreadMutex, 16> TPoolWin32ThreadMutex;
-        TPoolWin32ThreadMutex m_poolWin32ThreadMutex;
-
-		ServiceProviderInterface * m_serviceProvider;
+        TPoolWin32ThreadMutex m_poolWin32ThreadMutex;				
 	};
 }

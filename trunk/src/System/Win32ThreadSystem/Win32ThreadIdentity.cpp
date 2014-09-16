@@ -83,7 +83,9 @@ namespace Menge
 			if( m_complete == false )
 			{				
 				m_task->main();
-				m_complete = true;
+				m_task = nullptr;
+
+				m_complete = true;				
 			}
 
 			m_mutex->unlock();
@@ -122,8 +124,9 @@ namespace Menge
 
 		if( m_complete == false )
 		{
-			m_complete = true;
 			m_task = nullptr;
+
+			m_complete = true;			
 		}
 
 		m_mutex->unlock();

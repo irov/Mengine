@@ -144,7 +144,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBufferStream::play( ALenum _source, bool _looped, float _pos )
+	bool OALSoundBufferStream::play( ALuint _source, bool _looped, float _pos )
 	{		
 		m_sourceId = _source;
 		m_looped = _looped;
@@ -208,7 +208,7 @@ namespace Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferStream::resume( ALenum _source )
+    bool OALSoundBufferStream::resume( ALuint _source )
     {
 		(void)_source;
 
@@ -220,7 +220,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBufferStream::pause( ALenum _source )
+	void OALSoundBufferStream::pause( ALuint _source )
 	{
 		this->setUpdating( false );
         
@@ -229,7 +229,7 @@ namespace Menge
         //m_soundSystem->clearSourceId( _source );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBufferStream::stop( ALenum _source )
+	void OALSoundBufferStream::stop( ALuint _source )
 	{
 		this->setUpdating( false );
 
@@ -292,7 +292,7 @@ namespace Menge
 		return m_updating;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBufferStream::setTimePos( ALenum _source, float _pos ) const
+	bool OALSoundBufferStream::setTimePos( ALuint _source, float _pos ) const
 	{
 		(void)_source;
 
@@ -301,11 +301,11 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBufferStream::getTimePos( ALenum _source, float & _pos ) const
+	bool OALSoundBufferStream::getTimePos( ALuint _source, float & _pos ) const
 	{
         (void)_source;
 
-        float timeTell = m_soundDecoder->timeTell();
+        float timeTell = m_soundDecoder->tell();
 
         if( timeTell > m_length )
         {

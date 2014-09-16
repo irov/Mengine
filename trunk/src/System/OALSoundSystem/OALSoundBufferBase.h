@@ -16,14 +16,14 @@ namespace Menge
 	public:
 		virtual bool load( const SoundDecoderInterfacePtr & _soundDecoder ) = 0;
 
-		virtual bool play( ALenum _source, bool _looped, float _pos ) = 0;
-        virtual bool resume( ALenum _source ) = 0;
-		virtual	void pause( ALenum _source ) = 0;
-		virtual void stop( ALenum _source ) = 0;
+		virtual bool play( ALuint _source, bool _looped, float _pos ) = 0;
+        virtual bool resume( ALuint _source ) = 0;
+		virtual	void pause( ALuint _source ) = 0;
+		virtual void stop( ALuint _source ) = 0;
 		
 	public:
-		virtual bool setTimePos( ALenum _source, float _pos ) const = 0;
-		virtual bool getTimePos( ALenum _source, float & _pos ) const = 0;		
+		virtual bool setTimePos( ALuint _source, float _pos ) const = 0;
+		virtual bool getTimePos( ALuint _source, float & _pos ) const = 0;		
 
 	public:
 		bool isStereo() const;

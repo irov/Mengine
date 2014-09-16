@@ -62,6 +62,12 @@ namespace Menge
 
             if( m_soundBuffer->play( m_sourceId, m_loop, m_timing ) == false )
             {
+				LOGGER_ERROR(m_serviceProvider)("OALSoundSource::play invalid buffer play %d loop %d timing %f"
+					, m_sourceId
+					, m_loop
+					, m_timing
+					);
+
                 return false;
             }
         }

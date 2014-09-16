@@ -9,7 +9,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Win32ThreadIdentity::Win32ThreadIdentity()
         : m_serviceProvider(nullptr)
-		, m_handle(NULL)
+		, m_handle(INVALID_HANDLE_VALUE)
+		, m_hTaskSignalEvent(INVALID_HANDLE_VALUE)
         , m_task(nullptr)
 		, m_complete(true)
 		, m_exit(false)
@@ -71,13 +72,22 @@ namespace Menge
 			}break;
 		}    
 
+		m_hTaskSignalEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
+
+		if( m_hTaskSignalEvent == NULL )
+		{
+			return false;
+		}
+
 		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadIdentity::main()
 	{
-		while( true, true )
-		{		
+		bool done = false;
+
+		while( done == false )
+		{	
 			m_mutex->lock();
 
 			if( m_complete == false )
@@ -88,14 +98,17 @@ namespace Menge
 				m_complete = true;				
 			}
 
-			m_mutex->unlock();
-
 			if( m_exit == true )
 			{
-				break;
+				done = true;
 			}
-			
-			Sleep(10);			
+
+			m_mutex->unlock();
+
+			if( done == false )
+			{
+				WaitForSingleObject( m_hTaskSignalEvent, INFINITE );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -114,30 +127,44 @@ namespace Menge
 		}
 
 		m_mutex->unlock();
+
+		SetEvent( m_hTaskSignalEvent );
 		
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32ThreadIdentity::joinTask()
-	{		
+	bool Win32ThreadIdentity::joinTask( ThreadTaskInterface * _task )
+	{	
+		(void)_task;
+
+		bool successful = false;
+
 		m_mutex->lock();
 
 		if( m_complete == false )
 		{
 			m_task = nullptr;
 
-			m_complete = true;			
+			m_complete = true;
+
+			successful = true;
 		}
 
 		m_mutex->unlock();
+
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadIdentity::join()
 	{
+		m_mutex->lock();
 		m_exit = true;
+		m_mutex->unlock();
+
+		SetEvent( m_hTaskSignalEvent );
+		CloseHandle( m_hTaskSignalEvent );
 
 		WaitForSingleObject( m_handle, INFINITE );
-
 		CloseHandle( m_handle );
 	}
 }

@@ -20,7 +20,7 @@ namespace Menge
 
 	public:
 		bool addTask( ThreadTaskInterface * _task ) override;
-		void joinTask() override;
+		bool joinTask( ThreadTaskInterface * _task ) override;
 
 	public:
 		void join() override;
@@ -29,6 +29,8 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 
 		HANDLE m_handle;
+
+		HANDLE m_hTaskSignalEvent;
 
 		ThreadMutexInterfacePtr m_mutex;
 			

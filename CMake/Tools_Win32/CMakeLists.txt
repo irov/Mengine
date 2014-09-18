@@ -53,6 +53,7 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Metacode ${CMAKE_TEMP_DIR}/Metacode )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/WindowsLayer ${CMAKE_TEMP_DIR}/WindowsLayer )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/Win32UnicodeSystem ${CMAKE_TEMP_DIR}/System/Win32UnicodeSystem )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/Win32ThreadSystem ${CMAKE_TEMP_DIR}/System/Win32ThreadSystem )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/System/AstralaxParticleSystem ${CMAKE_TEMP_DIR}/System/AstralaxParticleSystem )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceProvider ${CMAKE_TEMP_DIR}/Service/ServiceProvider )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceStringize ${CMAKE_TEMP_DIR}/Service/ServiceStringize )

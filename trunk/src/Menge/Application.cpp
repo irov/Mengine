@@ -576,7 +576,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeGraveyard_()
 	{
-		LOGGER_ERROR(m_serviceProvider)("Inititalizing Graveyard..." );
+		LOGGER_WARNING(m_serviceProvider)("Inititalizing Graveyard..." );
 
 		GraveyardInterface * graveyard;
 		if( SERVICE_CREATE( Graveyard, &graveyard ) == false )

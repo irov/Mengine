@@ -33,30 +33,41 @@ SERVICE_FACTORY( GameService, Menge::GameServiceInterface, Menge::Game );
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ApplicationAccountManagerListener::ApplicationAccountManagerListener( ServiceProviderInterface * _serviceProvider, Game * _game )
+	GameAccountProvider::GameAccountProvider( ServiceProviderInterface * _serviceProvider, Game * _game )
 		: m_serviceProvider(_serviceProvider)
 		, m_game(_game)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ApplicationAccountManagerListener::onCreateAccount( const WString & _accountID )
+	void GameAccountProvider::onCreateAccount( const WString & _accountID )
 	{
 		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_CREATE_ACCOUNT)( "(u)", _accountID.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ApplicationAccountManagerListener::onDeleteAccount( const WString & _accountID )
+	void GameAccountProvider::onDeleteAccount( const WString & _accountID )
 	{
 		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_DELETE_ACCOUNT)( "(u)", _accountID.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ApplicationAccountManagerListener::onSelectAccount( const WString & _accountID )
+	void GameAccountProvider::onSelectAccount( const WString & _accountID )
 	{
 		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_SELECT_ACCOUNT)( "(u)", _accountID.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ApplicationAccountManagerListener::onUnselectAccount( const WString & _accountID )
+	void GameAccountProvider::onUnselectAccount( const WString & _accountID )
 	{
 		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_UNSELECT_ACCOUNT)( "(u)", _accountID.c_str() );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	GameSoundVolumeProvider::GameSoundVolumeProvider( ServiceProviderInterface * _serviceProvider, Game * _game )
+		: m_serviceProvider(_serviceProvider)
+		, m_game(_game)
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void GameSoundVolumeProvider::onSoundChangeVolume( float _sound, float _music, float _voice )
+	{
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_CHANGE_SOUND_VOLUME)( "(fff)", _sound, _music, _voice );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
@@ -64,7 +75,7 @@ namespace Menge
 		, m_developmentMode(false)
 		, m_hasWindowPanel(true)
 		, m_player(nullptr)
-		, m_accountLister(nullptr)
+		, m_accountProvider(nullptr)
 		, m_accountService(nullptr)
 		, m_defaultArrow(nullptr)
 		, m_timingFactor(1.f)
@@ -329,6 +340,8 @@ namespace Menge
         this->registerEventMethod( EVENT_SELECT_ACCOUNT, "onSelectAccount", _embed );
         this->registerEventMethod( EVENT_UNSELECT_ACCOUNT, "onUnselectAccount", _embed );
 
+		this->registerEventMethod( EVENT_CHANGE_SOUND_VOLUME, "onChangeSoundVolume", _embed );
+
         this->registerEventMethod( EVENT_CURSOR_MODE, "onCursorMode", _embed );
 
         this->registerEventMethod( EVENT_USER, "onUserEvent", _embed );
@@ -414,9 +427,9 @@ namespace Menge
 
 		m_accountService = accountService;
 
-        m_accountLister = new ApplicationAccountManagerListener(m_serviceProvider, this);
+        m_accountProvider = new GameAccountProvider(m_serviceProvider, this);
 		
-        m_accountService->initialize( _accountPath, _projectVersion, _projectVersionCheck, m_accountLister );
+        m_accountService->initialize( _accountPath, _projectVersion, _projectVersionCheck, m_accountProvider );
 
 		bool noLoadAccount = CONFIG_VALUE(m_serviceProvider, "Development", "NoAccount", false);
 		
@@ -459,6 +472,11 @@ namespace Menge
 		m_defaultArrow->setName( CONST_STRING(m_serviceProvider, Default) );
 
 		m_player->setArrow( m_defaultArrow );
+
+		m_soundVolumeProvider = new GameSoundVolumeProvider(m_serviceProvider, this);
+
+		SOUND_SERVICE(m_serviceProvider)
+			->addSoundVolumeProvider( m_soundVolumeProvider );
 
 		return true;
 	}
@@ -506,11 +524,17 @@ namespace Menge
             m_accountService = nullptr;
         }
 
-        if( m_accountLister != nullptr )
+        if( m_accountProvider != nullptr )
         {
-            delete m_accountLister;
-            m_accountLister = nullptr;
+            delete m_accountProvider;
+            m_accountProvider = nullptr;
         }
+
+		if( m_soundVolumeProvider != nullptr )
+		{
+			delete m_soundVolumeProvider;
+			m_soundVolumeProvider = nullptr;
+		}
 
 		if( m_player != nullptr )
 		{

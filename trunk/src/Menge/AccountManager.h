@@ -24,7 +24,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( const FilePath & _accountsPath, size_t _projectVersion, bool _projectVersionCheck, AccountServiceListener * _listener ) override;
+        bool initialize( const FilePath & _accountsPath, size_t _projectVersion, bool _projectVersionCheck, AccountProviderInterface * _listener ) override;
         void finalize() override;
 
 	public:
@@ -68,7 +68,7 @@ namespace Menge
 		size_t m_projectVersion;
 		bool m_projectVersionCheck;
 
-        AccountServiceListener * m_accountListener;
+        AccountProviderInterface * m_accountListener;
 
         ServiceProviderInterface * m_serviceProvider;
 		

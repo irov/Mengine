@@ -38,11 +38,11 @@ namespace Menge
 
 	typedef stdex::intrusive_ptr<AccountInterface> AccountInterfacePtr;
 
-    class AccountServiceListener
+    class AccountProviderInterface
     {
 	public:
-		AccountServiceListener(){};
-		virtual ~AccountServiceListener(){};
+		AccountProviderInterface(){};
+		virtual ~AccountProviderInterface(){};
 
     public:
         virtual void onCreateAccount( const WString & _accountID ) = 0;
@@ -63,7 +63,7 @@ namespace Menge
         SERVICE_DECLARE("AccountService")
 
     public:
-        virtual bool initialize( const FilePath & _accountsPath, size_t _projectVersion, bool _projectVersionCheck, AccountServiceListener * _listener ) = 0;
+        virtual bool initialize( const FilePath & _accountsPath, size_t _projectVersion, bool _projectVersionCheck, AccountProviderInterface * _listener ) = 0;
         virtual void finalize() = 0;
 
     public:

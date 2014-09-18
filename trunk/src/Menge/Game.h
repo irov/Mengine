@@ -7,6 +7,7 @@
 #	include "Interface/ApplicationInterface.h"
 #   include "Interface/InputSystemInterface.h"
 #	include "Interface/AccountInterface.h"
+#	include "Interface/SoundSystemInterface.h"
 
 #	include "Account.h"
 #	include "Pak.h"
@@ -19,17 +20,31 @@ namespace Menge
 {
 	class Game;
 
-	class ApplicationAccountManagerListener
-		: public AccountServiceListener
+	class GameAccountProvider
+		: public AccountProviderInterface		
 	{
 	public:
-		ApplicationAccountManagerListener( ServiceProviderInterface * _serviceProvider, Game * _game );
+		GameAccountProvider( ServiceProviderInterface * _serviceProvider, Game * _game );
 
 	protected:
 		void onCreateAccount( const WString & _accountID ) override;
 		void onDeleteAccount( const WString & _accountID ) override;
 		void onSelectAccount( const WString & _accountID ) override;
 		void onUnselectAccount( const WString & _accountID ) override;
+
+	protected:
+		ServiceProviderInterface * m_serviceProvider;
+		Game * m_game;
+	};
+
+	class GameSoundVolumeProvider
+		: public SoundVolumeProviderInterface
+	{
+	public:
+		GameSoundVolumeProvider( ServiceProviderInterface * _serviceProvider, Game * _game );
+
+	protected:
+		void onSoundChangeVolume( float _sound, float _music, float _voice ) override;
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
@@ -144,7 +159,9 @@ namespace Menge
 
 		Player* m_player;
 
-		ApplicationAccountManagerListener * m_accountLister; 
+		GameAccountProvider * m_accountProvider; 
+		GameSoundVolumeProvider * m_soundVolumeProvider;
+
 		AccountServiceInterface * m_accountService;
 
 		bool m_developmentMode;

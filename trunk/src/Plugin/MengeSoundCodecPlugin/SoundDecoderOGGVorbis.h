@@ -4,6 +4,8 @@
 
 #	include "vorbis/vorbisfile.h"
 
+#	include "Core/ThreadGuard.h"
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -28,6 +30,6 @@ namespace Menge
 	protected:
 		OggVorbis_File m_oggVorbisFile;
 
-		volatile bool m_process;
+		THREAD_GUARD_INIT;
 	};
 }	// namespace Menge

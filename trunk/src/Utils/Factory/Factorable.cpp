@@ -6,7 +6,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     Factorable::Factorable()
 	    : m_factory(nullptr)
-#   ifdef _DEBUG
+#   ifdef MENGINE_FACTORABLE_DEBUG
         , m_destroy(false)
 #   endif
     {
@@ -14,10 +14,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     Factorable::~Factorable()
     {
-#   ifdef _DEBUG
+#   ifdef MENGINE_FACTORABLE_DEBUG
         if( m_destroy == false && m_factory != nullptr )
         {            
-            throw FactorableException(); //Factorable delete!!!!!
+            STDEX_THROW_EXCEPTION("Factorable deleter but not destroy!!");
         }
 #   endif
     }
@@ -29,27 +29,32 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Factorable::destroy()
     {
-#   ifdef _DEBUG
+#   ifdef MENGINE_FACTORABLE_DEBUG
         if( m_destroy == true )
         {
-            throw FactorableException();
+            STDEX_THROW_EXCEPTION("m_destroy == true");
         }
 #   endif
 
-#   ifdef _DEBUG
+#   ifdef MENGINE_FACTORABLE_DEBUG
 		m_destroy = true;
 #   endif
 
         this->_destroy();
 
-#   ifdef _DEBUG
+#   ifdef MENGINE_FACTORABLE_DEBUG
 		this->_checkDestroy();
 #   endif
 
 		m_factory->destroyObject( this );
     }
-#   ifdef _DEBUG
+#   ifdef MENGINE_FACTORABLE_DEBUG
     //////////////////////////////////////////////////////////////////////////
+	bool Factorable::isDestroyed() const
+	{
+		return m_destroy;
+	}
+	//////////////////////////////////////////////////////////////////////////
     void Factorable::_checkDestroy()
     {
         //Empty

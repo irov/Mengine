@@ -35,13 +35,13 @@ namespace Menge
 
 	protected:
 		virtual void _onComplete( bool _successful );
-		
+
 	private:
 		volatile bool m_run;
 		volatile bool m_complete;
 		volatile bool m_finish;
 		volatile bool m_successful;
-		volatile bool m_cancel;
+		volatile bool m_cancel;				
 	};
 
 	typedef stdex::intrusive_ptr<ThreadTask> ThreadTaskPtr;

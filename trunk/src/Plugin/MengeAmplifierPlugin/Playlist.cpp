@@ -88,12 +88,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Playlist::next()
 	{
-		if ( m_oneTrackPlayed )
+		if( m_oneTrackPlayed == true )
 		{
 			return;
 		}
 
-		if ( ++m_trackIndex == m_tracks.size() && m_loop == true )
+		++m_trackIndex;
+
+		if( m_trackIndex == m_tracks.size() && m_loop == true )
 		{
 			m_trackIndex = 0;
 		}
@@ -107,9 +109,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const TrackDesc * Playlist::getTrack() const
 	{
-		if( m_trackIndex == m_tracks.size() )
+		if( m_trackIndex >= m_tracks.size() )
 		{
-			return 0;
+			return nullptr;
 		}
 
 		const TrackDesc & desc = m_tracks[m_trackIndex];
@@ -169,7 +171,7 @@ namespace Menge
 	{
 		if( _index >= m_tracks.size() )
 		{
-			return 0;
+			return nullptr;
 		}
 
 		return &m_tracks[_index];

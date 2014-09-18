@@ -2,13 +2,27 @@
 
 #   include "Interface/TimingManagerInterface.h"
 
-#	include <stdex/stl_vector.h>
+#	include <stdex/stl_list.h>
 
 #	include "pybind/types.hpp"
 
 namespace Menge
 {
-    class ServiceProviderInterface;
+	struct TimingEventDesc
+	{
+		TimingListenerInterface * listener;
+
+		float timing;
+		float delay;
+
+		size_t id;
+
+		bool dead;
+		bool freeze;
+
+		bool portions;
+		bool global;
+	};
 
 	class TimingManager
         : public TimingManagerInterface
@@ -20,25 +34,8 @@ namespace Menge
     public:
         void initialize( ServiceProviderInterface * _serviceProvider ) override;
 
-    public:
-		struct TimingEvent
-		{
-			TimingListener * listener;
-
-			float timing;
-			float delay;
-
-			size_t id;
-
-			bool dead;
-			bool freeze;
-
-			bool portions;
-			bool global;
-		};
-
 	public:
-		size_t timing( bool _portions, bool _global, float _delay, TimingListener * _listener ) override;
+		size_t timing( bool _portions, bool _global, float _delay, TimingListenerInterface * _listener ) override;
 
     public:
 		bool remove( size_t _timingID ) override;
@@ -53,16 +50,16 @@ namespace Menge
 		void update( float _current, float _timing ) override;
 
 	private:
-		bool findTimigEvent_( size_t _id, const TimingEvent *& _event ) const;
-		bool findTimigEvent_( size_t _id, TimingEvent *& _event );
+		bool findTimigEvent_( size_t _id, const TimingEventDesc *& _desc ) const;
+		bool findTimigEvent_( size_t _id, TimingEventDesc *& _desc );
 
 	protected:
-		void destroyTiming_( TimingEvent & _event );
+		void destroyTiming_( TimingEventDesc & _desc );
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef stdex::vector<TimingEvent> TListTimings;
+		typedef stdex::list<TimingEventDesc> TListTimings;
 		TListTimings m_timings;
 		
 		size_t m_enumerator;

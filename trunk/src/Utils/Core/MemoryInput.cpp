@@ -11,7 +11,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInput::MemoryInput()
-		: m_data(nullptr)
+		: m_serviceProvider(nullptr)
+		, m_data(nullptr)
 		, m_size(0)
 		, m_pos(nullptr)
 		, m_end(nullptr)		
@@ -22,6 +23,11 @@ namespace Menge
 	{
 		Helper::freeMemory( m_data );
         m_data = nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MemoryInput::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void * MemoryInput::newMemory( size_t _size )
@@ -81,6 +87,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryInput::read( void * _buf, size_t _count )
 	{
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryInput::read");
+
 		size_t cnt = _count;
 		// Read over end of memory?
 		if( m_pos + cnt > m_end )
@@ -103,6 +111,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryInput::seek( size_t _pos )
 	{
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryInput::seek");
+
 		if( _pos > m_size )
 		{
 			_pos = m_size;
@@ -115,6 +125,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryInput::skip( size_t _pos )
 	{
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryInput::skip");
+
 		if( m_pos + _pos > m_end )
 		{
 			_pos = 0;
@@ -132,12 +144,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryInput::eof() const
 	{
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryInput::eof");
+
 		return m_pos == m_end;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryInput::tell() const
 	{
-        size_t distance = std::distance( m_data, m_pos );
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryInput::tell");
+
+        size_t distance = m_pos - m_data;
 
 		return distance;
 	}

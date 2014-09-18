@@ -1,8 +1,12 @@
 #	include "Win32FileGroupDirectory.h"
 
+#	include "Interface/CacheInterface.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Core/String.h"
+
+#	include "WindowsLayer/WindowsIncluder.h"
 
 namespace Menge
 {
@@ -92,63 +96,6 @@ namespace Menge
         }
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	MemoryInputPtr Win32FileGroupDirectory::openInputFileInMemory( const FilePath & _fileName, size_t _offset, size_t _size )
-	{
-		InputStreamInterfacePtr stream = this->createInputFile( _fileName, false );
-
-		if( stream == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Win32FileGroupDirectory::openInputFileInMemory failed create stream '%s':'%s'"
-				, m_path.c_str()
-				, _fileName.c_str()
-				);
-
-			return nullptr;
-		}
-
-		FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface>(stream);
-
-		if( file->open( m_path, _fileName, _offset, _size ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Win32FileGroupDirectory::openInputFileInMemory failed open file '%s':'%s'"
-				, m_path.c_str()
-				, _fileName.c_str()
-				);
-
-			return nullptr;
-		}
-
-		MemoryInputPtr memory = m_factoryMemoryInput.createObjectT();
-
-		size_t stream_size = stream->size();
-
-		void * buffer = memory->newMemory( stream_size );
-
-		if( buffer == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Win32FileGroupDirectory::openInputFileInMemory '%s':'%s' invalid new memory %d"
-				, m_path.c_str()
-				, _fileName.c_str()
-				, stream_size
-				);
-
-			return nullptr;
-		}
-
-		if( file->read( buffer, stream_size ) != stream_size )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Win32FileGroupDirectory::openInputFileInMemory '%s':'%s' invalid read %d"
-				, m_path.c_str()
-				, _fileName.c_str()
-				, stream_size
-				);
-
-			return nullptr;
-		}
-
-		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile()

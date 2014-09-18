@@ -17,18 +17,55 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Win32ThreadIdentity::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * Win32ThreadIdentity::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static unsigned int __stdcall s_tread_job( void * _userData )
 	{
 		Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity*>(_userData);
 		
-		thread->main();
+		try
+		{
+			thread->main();
+		}
+		catch( const stdex::exception & ex )
+		{
+			ServiceProviderInterface * serviceProvider = thread->getServiceProvider();
+
+			LOGGER_CRITICAL(serviceProvider)("Win32ThreadIdentity stdex::exception '%s' file %d:%s"
+				, ex.doc
+				, ex.line
+				, ex.file
+				);
+		}
+		catch( const std::exception & ex )
+		{
+			ServiceProviderInterface * serviceProvider = thread->getServiceProvider();
+
+			LOGGER_CRITICAL(serviceProvider)("Win32ThreadIdentity std::exception '%s'"
+				, ex.what()
+				);
+		}
+		catch( ... )
+		{
+			ServiceProviderInterface * serviceProvider = thread->getServiceProvider();
+
+			LOGGER_CRITICAL(serviceProvider)("Win32ThreadIdentity unsupported exception"
+				);
+		}
 
 		return 0;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::initialize( ServiceProviderInterface * _serviceProvider, const ThreadMutexInterfacePtr & _mutex, int _priority )
+    bool Win32ThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int _priority )
     {
-		m_serviceProvider = _serviceProvider;
 		m_mutex = _mutex;
 
 		m_handle = (HANDLE)_beginthreadex( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
@@ -93,6 +130,7 @@ namespace Menge
 			if( m_complete == false )
 			{				
 				m_task->main();
+
 				m_task = nullptr;
 
 				m_complete = true;				

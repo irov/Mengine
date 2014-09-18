@@ -22,11 +22,11 @@ namespace Menge
 		virtual size_t getCurrentTrack() const = 0;
 		virtual size_t getNumTracks() const = 0;
 
-		virtual void shuffle( const ConstString& _playlist ) = 0;
+		virtual bool shuffle( const ConstString& _playlist ) = 0;
 
 		virtual void stop() = 0;
-		virtual void pause() = 0;
-		virtual void resume() = 0;
+		virtual bool pause() = 0;
+		virtual bool resume() = 0;
 		
 		virtual void setPosMs( float _posMs ) = 0;
 		virtual float getPosMs() const = 0;

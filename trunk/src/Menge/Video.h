@@ -36,6 +36,7 @@ namespace Menge
 		void setResourceVideo( ResourceVideo * _resourceVideo );
 		ResourceVideo * getResourceVideo() const;
 
+	public:
 		void _setTiming( float _timing ) override;
 		float _getTiming() const override;
 

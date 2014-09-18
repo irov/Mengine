@@ -3,6 +3,8 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/WindowsLayerInterface.h"
 
+#	include "Core/ThreadGuard.h"
+
 namespace Menge
 {
 
@@ -41,10 +43,11 @@ namespace Menge
 		bool openFile_( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath );
         void close_();
 		bool read_( void * _buf, size_t _size, size_t & _read );
+		bool seek_( size_t _pos );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
-
+		
 		HANDLE m_hFile;
 
 		size_t m_size;
@@ -55,5 +58,7 @@ namespace Menge
 		size_t m_reading;
 
 		uint8_t m_readCache[MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE];
+
+		THREAD_GUARD_INIT;
 	};
 }	// namespace Menge

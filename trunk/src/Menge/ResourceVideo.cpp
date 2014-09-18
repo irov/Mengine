@@ -212,6 +212,7 @@ namespace Menge
             videoCodecOptions.pixelFormat = Menge::PF_R8G8B8;
         }
 
+		videoCodecOptions.mock = CONFIG_VALUE(m_serviceProvider, "Development", "NoVideo", false);
         videoCodecOptions.noSeek = m_noSeek;
 
         if( videoDecoder->setOptions( &videoCodecOptions ) == false )

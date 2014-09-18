@@ -104,11 +104,30 @@ namespace Menge
 			return false;
 		}
 
+		if( m_currentPlayList == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::playTrack '%s' index %d pos %f loop %d invalid setup current play list"
+				, _playlistResource.c_str()
+				, _index
+				, _pos
+				, _looped
+				);
+
+			return false;
+		}
+
 		m_currentPlayList->setLooped1( _looped );
 		m_currentPlayList->setTrack( _index );
 
 		if( this->play2_( _pos ) == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::playTrack '%s' index %d pos %f loop %d invalid play"
+				, _playlistResource.c_str()
+				, _index
+				, _pos
+				, _looped
+				);
+
 			return false;
 		}
 
@@ -131,6 +150,9 @@ namespace Menge
 	{
 		if( m_currentPlayList == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::getCurrentTrack invalid setup current track, return 0"
+				);
+
 			return 0;
 		}
 
@@ -148,11 +170,17 @@ namespace Menge
 
 		if( this->preparePlay_( _pos ) == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::play2_ invalid prepare play"
+				);
+
 			return false;
 		}
 
 		if( this->play_() == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::play2_ invalid play"
+				);
+
 			return false;
 		}
 
@@ -163,6 +191,9 @@ namespace Menge
 	{
 		if( m_currentPlayList == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::preparePlay_ invalid current play list"
+				);
+
 			return false;
 		}
 
@@ -170,17 +201,27 @@ namespace Menge
 
 		if( track == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::preparePlay_ invalid get track"
+				);
+			
 			return false;
 		}
 
 		const ConstString & category = m_currentPlayList->getCategory();
+
 		if( this->prepareSound_( category, track->path, track->codec, _pos ) == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::preparePlay_ invalid prepare sound"
+				);
+
 			return false;
 		}
 
 		if( m_sourceID == 0 )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::preparePlay_ invalid source ID"
+				);
+
 			return false;
 		}
 
@@ -203,14 +244,29 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::shuffle( const ConstString & _playlist )
+	bool Amplifier::shuffle( const ConstString & _playlist )
 	{
-		if( loadPlayList_( _playlist ) == false )
+		if( this->loadPlayList_( _playlist ) == false )
 		{
-			return;
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::shuffle invalid load play list %s"
+				, _playlist.c_str()
+				);
+
+			return false;
+		}
+
+		if( m_currentPlayList == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::shuffle invalid setup current play list '%s'"
+				, _playlist.c_str()
+				);
+
+			return false;
 		}
 
 		m_currentPlayList->shuffle();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::stop()
@@ -232,30 +288,34 @@ namespace Menge
 		}				
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::pause()
+	bool Amplifier::pause()
 	{
 		if( m_sourceID == 0 )
 		{
-			return;
+			return false;
 		}
 
 		m_play = false;
 
 		SOUND_SERVICE(m_serviceProvider)
             ->pause( m_sourceID );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::resume()
+	bool Amplifier::resume()
 	{
 		if( m_sourceID == 0 )
 		{
-			return;
+			return false;
 		}
 
         m_play = true;
 
         SOUND_SERVICE(m_serviceProvider)
             ->play( m_sourceID );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::onSoundStop( size_t _id )
@@ -266,10 +326,17 @@ namespace Menge
 		{
 			return;
 		}
+				
+		if( m_currentPlayList == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::onSoundStop current play list is nullptr"
+				);
 
-		//if( m_currentPlayList->getLooped() == false )
-		//{
+			return;
+		}
+
         m_currentPlayList->next();
+		
         const TrackDesc * track = m_currentPlayList->getTrack();
 
         if( track != nullptr )

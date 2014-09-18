@@ -42,6 +42,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	bool Win32FileInputStream::open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size )
 	{
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::open");
+
 		WChar filePath[MAX_PATH];
 		if( this->openFile_( _folder, _fileName, filePath ) == false )
 		{
@@ -82,7 +84,10 @@ namespace Menge
 
 		if( m_offset != 0 )
 		{
-			this->seek( 0 );
+			if( this->seek_( 0 ) == false )
+			{
+				return false;
+			}
 		}
 
 		return true;
@@ -122,6 +127,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32FileInputStream::read( void * _buf, size_t _count )
 	{     
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::read");
+
 		size_t pos = m_reading - m_capacity + m_carriage;
 		
 		size_t correct_count = _count;
@@ -231,6 +238,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileInputStream::seek( size_t _pos )
 	{
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::seek");
+
+		bool successful = this->seek_( _pos );
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32FileInputStream::seek_( size_t _pos )
+	{
         if( _pos >= m_reading - m_capacity && _pos < m_reading )
         {
             m_carriage = m_capacity - (m_reading - _pos);
@@ -263,17 +279,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileInputStream::skip( size_t _pos )
 	{
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::skip");
+
 		size_t current = m_reading - m_capacity + m_carriage;
 
 		size_t seek_pos = current + _pos;
 
-		bool result = this->seek( seek_pos );
+		bool result = this->seek_( seek_pos );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32FileInputStream::tell() const
 	{
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::tell");
+
         size_t current = m_reading - m_capacity + m_carriage;
 
         return current;
@@ -286,6 +306,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileInputStream::eof() const
 	{
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::eof");
+
 		return (m_reading - m_capacity + m_carriage) == m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////

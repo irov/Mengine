@@ -20,7 +20,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Factorable * Factory::createObject()
 	{
-		THREAD_GUARD_CHECK(this);
+		THREAD_GUARD_CHECK(this, nullptr, "Factory::createObject");
 
 		++m_count;
 		intrusive_ptr_add_ref( this );
@@ -33,7 +33,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Factory::destroyObject( Factorable * _object )
 	{	
-		THREAD_GUARD_CHECK(this);
+		THREAD_GUARD_CHECK(this, nullptr, "Factory::destroyObject");
 
 		if( m_listener != nullptr )
 		{

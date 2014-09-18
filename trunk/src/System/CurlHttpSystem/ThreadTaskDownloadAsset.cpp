@@ -13,7 +13,7 @@ namespace Menge
 		: m_serviceProvider(_serviceProvider)
 		, m_url(_url)
 		, m_category(_category)
-		, m_filepath(_filepath)
+		, m_filePath(_filepath)
 		, m_id(_id)
 		, m_receiver(_receiver)
 		, m_successful(false)
@@ -23,7 +23,7 @@ namespace Menge
 	bool ThreadTaskDownloadAsset::_onRun()
 	{
 		m_stream = FILE_SERVICE(m_serviceProvider)
-			->openOutputFile( m_category, m_filepath );
+			->openOutputFile( m_category, m_filePath );
 
 		if( m_stream == nullptr )
 		{
@@ -99,7 +99,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("ThreadTaskDownloadAsset::_onMain invalid download asset from %s to %s:%s error %d:%s"
 				, m_url.c_str()
 				, m_category.c_str()
-				, m_filepath.c_str()
+				, m_filePath.c_str()
 				, res
 				, curl_easy_strerror(res)
 				);
@@ -116,7 +116,7 @@ namespace Menge
 		if( _successful == false )
 		{
 			FILE_SERVICE(m_serviceProvider)
-				->removeFile( m_category, m_filepath );
+				->removeFile( m_category, m_filePath );
 		}
 
 		m_receiver->onDownloadAssetComplete( m_id, _successful );

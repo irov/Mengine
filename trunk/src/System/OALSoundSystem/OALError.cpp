@@ -12,7 +12,7 @@ namespace Menge
 
 		if( error == AL_NO_ERROR )
 		{
-			return false;
+			return true;
 		}
 
 		const char * message = alGetString( error );
@@ -24,6 +24,6 @@ namespace Menge
 			, message
 			);	
 
-        return true;
+        return false;
 	}
 }

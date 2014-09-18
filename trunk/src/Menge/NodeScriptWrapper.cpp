@@ -632,7 +632,7 @@ namespace Menge
         }
         //////////////////////////////////////////////////////////////////////////
         class MyTimingListener
-            : public TimingListener
+            : public TimingListenerInterface
         {
         public:
             MyTimingListener( ServiceProviderInterface * _serviceProvider, PyObject * _script )
@@ -677,7 +677,7 @@ namespace Menge
             TimingManagerInterface * tm = PLAYER_SERVICE(m_serviceProvider)
                 ->getTimingManager();
 
-            TimingListener * listener = new MyTimingListener(m_serviceProvider, _script);
+            TimingListenerInterface * listener = new MyTimingListener(m_serviceProvider, _script);
 
             size_t id = tm->timing( _portion, _global, _timing, listener );
 

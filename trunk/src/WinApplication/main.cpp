@@ -40,6 +40,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	}
 	catch( const Menge::ServiceException & )
 	{
+
 	}
     
 	return 0;

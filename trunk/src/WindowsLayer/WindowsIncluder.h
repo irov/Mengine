@@ -12,9 +12,14 @@
 
 #	define WIN32_LEAN_AND_MEAN
 
+#	ifndef NOMINMAX
+#	define NOMINMAX
+#	endif
+
 #pragma warning(push, 0) 
 #	include <Windows.h>
 #   include <WinUser.h>
 
+#   include <shellapi.h>
 #   include <shlobj.h>
 #pragma warning(pop) 

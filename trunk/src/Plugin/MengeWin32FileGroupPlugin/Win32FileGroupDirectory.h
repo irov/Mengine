@@ -30,9 +30,6 @@ namespace Menge
 		InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) override;
 		bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file, size_t _offset, size_t _size, bool _streaming ) override;
 		
-	public:
-		MemoryInputPtr openInputFileInMemory( const FilePath & _fileName, size_t _offset, size_t _size ) override;
-
     public:
 		OutputStreamInterfacePtr createOutputFile() override;        
 		bool openOutputFile( const FilePath& _fileName, const OutputStreamInterfacePtr & _file ) override;
@@ -62,8 +59,5 @@ namespace Menge
 
 		typedef FactoryPoolStore<Win32FileMapped, 4> TFactoryWin32MappedFile;
 		TFactoryWin32MappedFile m_factoryWin32MappedFile;
-
-		typedef FactoryPoolStore<MemoryInput, 32> TFactoryMemoryInput;
-		TFactoryMemoryInput m_factoryMemoryInput;
 	};
 }	// namespace Menge

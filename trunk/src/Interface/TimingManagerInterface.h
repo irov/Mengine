@@ -7,11 +7,11 @@
 
 namespace Menge
 {
-    class TimingListener
+    class TimingListenerInterface
     {
 	public:
-		TimingListener(){};
-		virtual ~TimingListener(){};
+		TimingListenerInterface(){};
+		virtual ~TimingListenerInterface(){};
 
     public:
         virtual bool updateTiming( size_t _id, float _timing ) = 0;
@@ -28,7 +28,7 @@ namespace Menge
         virtual void initialize( ServiceProviderInterface * _serviceProvider ) = 0;
 
     public:
-        virtual size_t timing( bool _portions, bool _global, float _delay, TimingListener * _listener ) = 0;
+        virtual size_t timing( bool _portions, bool _global, float _delay, TimingListenerInterface * _listener ) = 0;
 
     public:
         virtual bool remove( size_t _timingID ) = 0;

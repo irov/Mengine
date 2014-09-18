@@ -414,7 +414,7 @@ namespace Menge
 
         alBufferData( _alBufferId, m_format, dataBuffer, bytesWritten, m_frequency );
         
-        if( OAL_CHECK_ERROR(m_serviceProvider) == true )
+        if( OAL_CHECK_ERROR(m_serviceProvider) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::play buffer=%d id=%d format=%d bytes=%d frequency=%d"
                 , _alBufferId

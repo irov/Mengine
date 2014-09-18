@@ -13,7 +13,11 @@ namespace Menge
 		Win32ThreadIdentity();
 
 	public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, const ThreadMutexInterfacePtr & _mutex, int _priority );
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+		ServiceProviderInterface * getServiceProvider() const;
+
+	public:
+        bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority );
 
 	public:
 		void main();

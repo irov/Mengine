@@ -1,14 +1,19 @@
 #	include "ThreadTaskPacket.h"
 
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTaskPacket::ThreadTaskPacket()
+		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPacket::initialize( size_t _packetSize )
+	bool ThreadTaskPacket::initialize( ServiceProviderInterface * _serviceProvider, size_t _packetSize )
 	{
+		m_serviceProvider = _serviceProvider;
+
 		m_tasks.reserve( _packetSize );
 
 		return true;

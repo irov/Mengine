@@ -298,15 +298,15 @@ namespace Menge
 
 		if( m_needUpdate == true )
 		{
-            if( this->fillVideoBuffer_() == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("Video::_render %s invalid fill video buffer (%s)"
-                    , this->getName().c_str()
-                    , m_resourceVideo->getName().c_str()
-                    );
+			if( this->fillVideoBuffer_() == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Video::_render %s invalid fill video buffer (%s)"
+					, this->getName().c_str()
+					, m_resourceVideo->getName().c_str()
+					);
 
 				return;
-            }
+			}
 
             m_needUpdate = false;
 		}

@@ -46,10 +46,12 @@ namespace Menge
 	{
         VideoCodecOptions()
             : pixelFormat(PF_UNKNOWN)
+			, mock(false)
             , noSeek(false)
         {}
 
 		PixelFormat pixelFormat;
+		bool mock;
         bool noSeek;
 	};
 

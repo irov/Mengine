@@ -660,12 +660,23 @@ namespace Menge
     {
         size_t width = _texture->getWidth();
         size_t height = _texture->getHeight();
-
-
+		
 		const RenderImageInterfacePtr & image = _texture->getImage(); 
 
         size_t hwWidth = image->getHWWidth();
         size_t hwHeight = image->getHWHeight();
+
+		PixelFormat hwPixelFormat = image->getHWPixelFormat();
+
+		if( hwPixelFormat != PF_A8R8G8B8 &&
+			hwPixelFormat != PF_A8B8G8R8 &&
+			hwPixelFormat != PF_B8G8R8A8 &&
+			hwPixelFormat != PF_R8G8B8A8 &&
+			hwPixelFormat != PF_X8R8G8B8 &&
+			hwPixelFormat != PF_X8B8G8R8 )
+		{
+			return;
+		}
 		
         // copy pixels on the edge for better image quality
         if( hwWidth > width )

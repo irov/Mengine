@@ -1060,7 +1060,7 @@ namespace Menge
 		}
 
 	    class TimingInterpolatorLinearVector
-		    : public TimingListener
+		    : public TimingListenerInterface
 		    //, public Eventable
 	    {
 	    public:
@@ -1119,7 +1119,7 @@ namespace Menge
 		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
 			    ->getTimingManager();
 
-		    TimingListener * timing =
+		    TimingListenerInterface * timing =
 			    new TimingInterpolatorLinearVector( m_serviceProvider, _time, _from, _to, _cb );
 
 		    size_t id = timingManager->timing( false, false, 0.f, timing );
@@ -1132,7 +1132,7 @@ namespace Menge
 		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
 			    ->getTimingManager();
 
-		    TimingListener * timing =
+		    TimingListenerInterface * timing =
 			    new TimingInterpolatorLinearVector( m_serviceProvider, _time, _from, _to, _cb );
 
 		    size_t id = timingManager->timing( false, true, 0.f, timing );
@@ -1141,7 +1141,7 @@ namespace Menge
 	    }
 
 	    class TimingInterpolatorLinearFloat
-		    : public TimingListener
+		    : public TimingListenerInterface
 	    {
 	    public:
 		    TimingInterpolatorLinearFloat( ServiceProviderInterface * _serviceProvider, float _time, float _from, float _to, PyObject * _cb )
@@ -1194,7 +1194,7 @@ namespace Menge
 		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
 			    ->getTimingManager();
 
-		    TimingListener * timing =
+		    TimingListenerInterface * timing =
 			    new TimingInterpolatorLinearFloat( m_serviceProvider, _time, _from, _to, _cb );
 
 		    size_t id = timingManager->timing( false, false, 0.f, timing );
@@ -1207,7 +1207,7 @@ namespace Menge
 		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
 			    ->getTimingManager();
 
-		    TimingListener * timing =
+		    TimingListenerInterface * timing =
 			    new TimingInterpolatorLinearFloat( m_serviceProvider, _time, _from, _to, _cb );
 
 		    size_t id = timingManager->timing( false, true, 0.f, timing );

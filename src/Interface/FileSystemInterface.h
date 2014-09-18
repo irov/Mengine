@@ -66,9 +66,6 @@ namespace Menge
         virtual InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) = 0;
         virtual bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming ) = 0;
 
-	public:
-		virtual MemoryInputPtr openInputFileInMemory( const FilePath & _fileName, size_t _offset, size_t _size ) = 0;
-			
     public:
         virtual OutputStreamInterfacePtr createOutputFile() = 0;
         virtual bool openOutputFile( const FilePath & _fileName, const OutputStreamInterfacePtr & _stream ) = 0;
@@ -115,9 +112,6 @@ namespace Menge
 
     public:
         virtual FileMappedInterfacePtr openMappedFile( const ConstString & _fileGroupName, const FilePath& _fileName ) = 0;
-
-	public:
-		virtual MemoryInputPtr openInputFileInMemory( const ConstString & _fileGroupName, const FilePath & _fileName ) = 0;
 
     public:
         virtual bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const = 0;

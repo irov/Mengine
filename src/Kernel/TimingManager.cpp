@@ -17,7 +17,7 @@ namespace Menge
 			{
 			}
 
-			bool operator()( const TimingManager::TimingEvent & _event ) const
+			bool operator()( const TimingEventDesc & _event ) const
 			{
 				return _event.id == m_id;
 			}
@@ -27,7 +27,7 @@ namespace Menge
 
 		struct FTimingDead
 		{
-			bool operator ()( const TimingManager::TimingEvent & _event ) const
+			bool operator ()( const TimingEventDesc & _event ) const
 			{
 				return _event.dead;				
 			}
@@ -49,7 +49,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            TimingListener * listener = it->listener;
+            TimingListenerInterface * listener = it->listener;
 
 			if( listener == nullptr )
 			{
@@ -65,29 +65,29 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	size_t TimingManager::timing( bool _portions, bool _global, float _delay, TimingListener * _listener )
+	size_t TimingManager::timing( bool _portions, bool _global, float _delay, TimingListenerInterface * _listener )
 	{
-		TimingEvent event;
+		TimingEventDesc desc;
 
-		event.listener = _listener;
+		desc.listener = _listener;
 		
-		event.timing = 0.f;
-		event.delay = _delay * 1000.f;
+		desc.timing = 0.f;
+		desc.delay = _delay * 1000.f;
 
 		size_t new_id = ++m_enumerator;
 
-		event.id = new_id;
-		event.dead = false;
-		event.freeze = m_freeze;
-		event.portions = _portions;
-		event.global = _global;
+		desc.id = new_id;
+		desc.dead = false;
+		desc.freeze = m_freeze;
+		desc.portions = _portions;
+		desc.global = _global;
 				
-		m_timings.push_back(event);
+		m_timings.push_back(desc);
 
-		return event.id;
+		return desc.id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TimingManager::findTimigEvent_( size_t _id, const TimingEvent *& _event ) const
+	bool TimingManager::findTimigEvent_( size_t _id, const TimingEventDesc *& _desc ) const
 	{
 		TListTimings::const_iterator it_find = 
 			std::find_if( m_timings.begin(), m_timings.end(), FTimingFind(_id) );
@@ -97,12 +97,12 @@ namespace Menge
 			return false;	
 		}
 
-		_event = &*it_find;
+		_desc = &*it_find;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TimingManager::findTimigEvent_( size_t _id, TimingEvent *& _event )
+	bool TimingManager::findTimigEvent_( size_t _id, TimingEventDesc *& desc )
 	{
 		TListTimings::iterator it_find = 
 			std::find_if( m_timings.begin(), m_timings.end(), FTimingFind(_id) );
@@ -112,14 +112,14 @@ namespace Menge
 			return false;	
 		}
 
-		_event = &*it_find;
+		desc = &*it_find;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TimingManager::remove( size_t _id )
 	{
-		TimingEvent * event;
+		TimingEventDesc * event;
 		if( this->findTimigEvent_( _id, event ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TimingManager::remove not found timing %d"
@@ -153,7 +153,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TimingManager::freeze( size_t _id, bool _freeze )
 	{
-		TimingEvent * event;
+		TimingEventDesc * event;
 		if( this->findTimigEvent_( _id, event ) == false )
 		{
 			return;
@@ -178,7 +178,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TimingManager::isFreeze( size_t _id ) const
 	{
-		const TimingEvent * event;
+		const TimingEventDesc * event;
 		if( this->findTimigEvent_( _id, event ) == false )
 		{
 			return false;
@@ -196,35 +196,35 @@ namespace Menge
 			return;
 		}
 
-		for( TListTimings::size_type 
-			it = 0,
-			it_end = m_timings.size();
+		for( TListTimings::iterator 
+			it = m_timings.begin(),
+			it_end = m_timings.end();
 		it != it_end;
 		++it )
 		{
-			TimingEvent event = m_timings[it];
+			TimingEventDesc & desc = *it;
 
-			if( event.dead == true )
+			if( desc.dead == true )
 			{				
 				continue;
 			}
 
-			if( event.freeze == true )
+			if( desc.freeze == true )
 			{
 				continue;
 			}
 
-			event.timing += _timing;
+			desc.timing += _timing;
 			
-			if( event.portions == true )
+			if( desc.portions == true )
 			{
-				while( event.timing > event.delay )
+				while( desc.timing > desc.delay )
 				{
-					event.timing -= event.delay;
+					desc.timing -= desc.delay;
 
-					if( event.listener->updateTiming( event.id, event.delay ) == true )
+					if( desc.listener->updateTiming( desc.id, desc.delay ) == true )
 					{
-						this->destroyTiming_( event );
+						this->destroyTiming_( desc );
 
 						break;
 					}
@@ -232,9 +232,9 @@ namespace Menge
 			}
 			else
 			{
-				if( event.listener->updateTiming( event.id, _timing ) == true )
+				if( desc.listener->updateTiming( desc.id, _timing ) == true )
 				{
-					this->destroyTiming_( event );
+					this->destroyTiming_( desc );
 				}
 			}
 		}
@@ -243,17 +243,17 @@ namespace Menge
 		m_timings.erase( it_erase, m_timings.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TimingManager::destroyTiming_( TimingEvent & _event )
+	void TimingManager::destroyTiming_( TimingEventDesc & _desc )
 	{
-		if( _event.dead == false )
+		if( _desc.dead == false )
 		{
-			_event.dead = true;
+			_desc.dead = true;
 
-			TimingListener * listener = _event.listener;
-			_event.listener = nullptr;
+			TimingListenerInterface * listener = _desc.listener;
+			_desc.listener = nullptr;
 
-			listener->removeTiming( _event.id );
-			listener->deleteTimingListener();			
+			listener->removeTiming( _desc.id );
+			listener->deleteTimingListener();
 		}		
 	}
 }

@@ -38,8 +38,5 @@ namespace Menge
 
 		typedef stdex::binary_vector<ConstString, ArchivatorInterfacePtr> TMapArchivators;
 		TMapArchivators m_archivators;
-
-		typedef FactoryPoolStore<MemoryInput, 4> TFactoryMemoryInput;
-		TFactoryMemoryInput m_factoryMemoryInput;
 	};
 }

@@ -27,8 +27,13 @@ namespace Menge
         inline static void intrusive_ptr_add_ref( FactorablePtr * _ptr );
         inline static void intrusive_ptr_dec_ref( FactorablePtr * _ptr );
 
-#   ifdef _DEBUG
-    protected:
+#	ifdef STDEX_INTRUSIVE_PTR_DEBUG
+	public:
+		inline static bool intrusive_ptr_check_ref( FactorablePtr * _ptr );
+#	endif
+		
+#   ifdef MENGINE_FACTORABLE_DEBUG
+	protected:
         void _checkDestroy() override;
 #   endif
 
@@ -48,4 +53,23 @@ namespace Menge
             _ptr->destroy();
         }
     }
+	//////////////////////////////////////////////////////////////////////////
+#	ifdef STDEX_INTRUSIVE_PTR_DEBUG
+	inline bool FactorablePtr::intrusive_ptr_check_ref( FactorablePtr * _ptr )
+	{
+#   ifdef MENGINE_FACTORABLE_DEBUG
+		if( _ptr->isDestroyed() == true )
+		{
+			return false;
+		}
+#	endif
+
+		if( _ptr->m_reference == 0 )
+		{
+			return false;
+		}
+
+		return true;
+	}
+#	endif
 }

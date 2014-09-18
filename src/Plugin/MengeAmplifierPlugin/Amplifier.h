@@ -32,11 +32,11 @@ namespace	Menge
 
 	public:
         bool playTrack( const ConstString& _playlistResource, size_t _index, float _pos, bool _looped ) override;
-		void shuffle( const ConstString& _playlist ) override;
+		bool shuffle( const ConstString& _playlist ) override;
 				
 		void stop() override;
-		void pause() override;
-		void resume() override;
+		bool pause() override;
+		bool resume() override;
 		
 		const ConstString & getPlayTrack() const override;
 		

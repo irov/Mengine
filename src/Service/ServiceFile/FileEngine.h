@@ -47,9 +47,6 @@ namespace Menge
         FileMappedInterfacePtr openMappedFile( const ConstString & _fileGroupName, const FilePath& _fileName ) override;
 
 	public:
-		MemoryInputPtr openInputFileInMemory( const ConstString & _fileGroupName, const FilePath & _fileName ) override;
-
-	public:
         bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const override;
 		bool createDirectory( const ConstString& _fileGroupName, const FilePath& _path ) override;
 		bool removeDirectory( const ConstString& _fileGroupName, const FilePath& _path ) override;

@@ -1,6 +1,9 @@
 #	pragma once
 
 #	include "Interface/StreamInterface.h"
+#	include "Interface/ServiceInterface.h"
+
+#	include "Core/ThreadGuard.h"
 
 namespace Menge
 {
@@ -10,6 +13,9 @@ namespace Menge
 	public:
 		MemoryProxyInput();
 		~MemoryProxyInput();
+
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     public:
         void * setMemory( void * _memory, size_t _offset, size_t _size );
@@ -30,11 +36,15 @@ namespace Menge
 		bool memory( void ** _memory, size_t * _size ) override;
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
 		unsigned char * m_data;
 		size_t m_size;
 
 		unsigned char * m_pos;
 		unsigned char * m_end;		
+
+		THREAD_GUARD_INIT;
 	};
 
 	typedef stdex::intrusive_ptr<MemoryProxyInput> MemoryProxyInputPtr;

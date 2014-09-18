@@ -41,3 +41,11 @@ elseif( APPLE )
         TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${magic_lib_path}/libimagic_simulator.a)
     ENDIF(${MENGINE_TARGET} STREQUAL "IPAD_SIMULATOR")
 endif( MINGW )
+
+foreach(dependency ${APPLICATION_DEPENDENCIES})
+	#MESSAGE( ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )
+	TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} debug ${dependency} )
+	TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} optimized ${dependency} )
+endforeach(dependency ${APPLICATION_DEPENDENCIES})
+
+TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${APPLICATION_LIBS} ) 

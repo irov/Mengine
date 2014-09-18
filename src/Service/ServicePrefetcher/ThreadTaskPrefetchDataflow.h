@@ -39,7 +39,7 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 
 		ConstString m_pakName;
-		FilePath m_fileName;
+		FilePath m_filePath;
 		ConstString m_dataflowType;
 		
 	protected:

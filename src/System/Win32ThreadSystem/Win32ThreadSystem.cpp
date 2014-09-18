@@ -43,10 +43,31 @@ namespace Menge
 	{
 		Win32ThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObjectT();
 
+		if( identity == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Win32ThreadSystem::createThread invalid create identity"
+				);
+
+			return nullptr;
+		}
+
+		identity->setServiceProvider( m_serviceProvider );
+
 		ThreadMutexInterfacePtr mutex = this->createMutex();
 
-		if( identity->initialize( m_serviceProvider, mutex, _priority ) == false )
+		if( mutex == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Win32ThreadSystem::createThread invalid create mutex"
+				);
+
+			return nullptr;
+		}
+
+		if( identity->initialize( mutex, _priority ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Win32ThreadSystem::createThread invalid initialize"
+				);
+			
             return nullptr;
         }
 		

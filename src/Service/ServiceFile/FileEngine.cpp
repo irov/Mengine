@@ -353,34 +353,6 @@ namespace Menge
 
         return mappedFile;
     }
-	//////////////////////////////////////////////////////////////////////////
-	MemoryInputPtr FileEngine::openInputFileInMemory( const ConstString & _fileGroupName, const FilePath & _fileName )
-	{
-		FileGroupInterfacePtr group = this->getFileGroup( _fileGroupName );
-
-		if( group == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFileInMemory can't get group '%s'"
-				, _fileGroupName.c_str()
-				);
-
-			return nullptr;
-		}
-
-		MemoryInputPtr memory = group->openInputFileInMemory( _fileName, 0, 0 );
-		
-		if( memory == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::openInputFileInMemory can't open input file '%s:%s'"
-				, _fileGroupName.c_str()
-				, _fileName.c_str()
-				);
-
-			return nullptr;
-		}
-
-		return memory;
-	}
     //////////////////////////////////////////////////////////////////////////
     bool FileEngine::existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const
     {

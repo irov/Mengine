@@ -3,6 +3,8 @@
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/StreamInterface.h"
 
+#	include "Core/ThreadGuard.h"
+
 namespace Menge
 {
 	class MemoryCacheInput
@@ -45,6 +47,8 @@ namespace Menge
 
 		unsigned char * m_pos;
 		unsigned char * m_end;		
+
+		THREAD_GUARD_INIT;
 	};
 
 	typedef stdex::intrusive_ptr<MemoryCacheInput> MemoryCacheInputPtr;

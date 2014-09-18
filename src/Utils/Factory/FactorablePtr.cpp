@@ -1,9 +1,5 @@
 #	include "FactorablePtr.h"
 
-#   ifdef _DEBUG
-#   include <exception>
-#   endif
-
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -14,10 +10,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     FactorablePtr::~FactorablePtr()
     {
-#   ifdef _DEBUG
+#   ifdef MENGINE_FACTORABLE_DEBUG
 		if( m_reference != 0 )
 		{
-			throw std::exception();
+			STDEX_THROW_EXCEPTION("m_reference != 0");
 		}
 #	endif
     }
@@ -32,12 +28,12 @@ namespace Menge
         return m_reference;
     }  
     //////////////////////////////////////////////////////////////////////////
-#   ifdef _DEBUG
+#   ifdef MENGINE_FACTORABLE_DEBUG
     void FactorablePtr::_checkDestroy()
     {
         if( m_reference != 0 )
         {
-            throw std::exception();
+            STDEX_THROW_EXCEPTION("m_reference != 0");
         }
     }
 #   endif

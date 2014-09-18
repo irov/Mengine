@@ -173,6 +173,7 @@ namespace Menge
 		, m_cursorInArea(false)
 		, m_clickOutArea(false)
 		, m_hInstance(NULL)
+		, m_serviceProvider(nullptr)
 		, m_loggerConsole(nullptr)
 		, m_loggerMessageBox(nullptr)
 		, m_application(nullptr)
@@ -190,6 +191,8 @@ namespace Menge
 		, m_cursor(nullptr)
 		, m_enableDebug(false)
 		, m_developmentMode(false)
+		, m_roamingMode(false)
+		, m_nologsMode(false)
 		, m_noDevPluginsMode(false)
 		, m_muteMode(false)
 		, m_nopause(false)
@@ -561,7 +564,7 @@ namespace Menge
 		//m_tempPath.clear();
 		m_userPath.clear();
 
-		if( m_developmentMode == true )
+		if( m_developmentMode == true && m_roamingMode == false )
 		{			
 			m_userPath += m_currentPath;
 			m_userPath += L"User";
@@ -648,6 +651,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeLogFile_()
 	{
+		if( m_nologsMode == true )
+		{
+			return true;
+		}
+
 		std::time_t ctTime; 
 		std::time(&ctTime);
 		std::tm* sTime = std::localtime( &ctTime );
@@ -665,7 +673,7 @@ namespace Menge
 		WString unicode_logFilename;
 		unicode_logFilename += L"Game";
 
-		if( m_developmentMode == true )
+		if( m_developmentMode == true && m_roamingMode == false )
 		{
 			unicode_logFilename += L"_";
 			unicode_logFilename += date;
@@ -748,7 +756,7 @@ namespace Menge
 
 		m_logService = logService;
 
-		if( Helper::s_hasOption( " -console ", m_commandLine ) == true )
+		if( Helper::s_hasOption( " -console ", m_commandLine ) == true && m_nologsMode == false )
 		{
 			m_loggerConsole = new ConsoleLogger(m_serviceProvider);
 
@@ -760,6 +768,7 @@ namespace Menge
 			m_logService->registerLogger( m_loggerConsole );
 		}
 
+		if( m_nologsMode == false )
 		{
 			m_loggerMessageBox = new MessageBoxLogger(m_serviceProvider);
 
@@ -770,7 +779,7 @@ namespace Menge
 				
 		EMessageLevel m_logLevel;
 
-		if( m_developmentMode == true )
+		if( m_developmentMode == true && m_roamingMode == false )
 		{
 			m_logLevel = LM_LOG;
 		}
@@ -797,6 +806,14 @@ namespace Menge
 		else if ( logLevel == "3" )
 		{
 			m_logLevel = LM_ERROR;
+		}
+		else if ( logLevel == "4" )
+		{
+			m_logLevel = LM_CRITICAL;
+		}
+		else if ( logLevel == "5" )
+		{
+			m_logLevel = LM_FATAL;
 		}
 
 		m_logService->setVerboseLevel( m_logLevel );
@@ -1429,6 +1446,16 @@ namespace Menge
 			m_nopause = true;
 		}
 
+		if( Helper::s_hasOption( " -roaming ", m_commandLine ) == true )
+		{
+			m_roamingMode = true;
+		}
+
+		if( Helper::s_hasOption( " -nologs ", m_commandLine ) == true )
+		{
+			m_nologsMode = true;
+		}
+
 		String scriptInit;
 		Helper::s_getOption( " -s:", m_commandLine, &scriptInit );
 
@@ -1603,6 +1630,11 @@ namespace Menge
 		if( Helper::s_hasOption( " -noaccounts ", m_commandLine ) == true )
 		{
 			CONFIG_SET(m_serviceProvider, "Development", "NoAccount", "1");
+		}
+
+		if( Helper::s_hasOption( " -novideo ", m_commandLine ) == true )
+		{
+			CONFIG_SET(m_serviceProvider, "Development", "NoVideo", "1");
 		}
 
 #	define MENGINE_ADD_PLUGIN( Init, Info )\
@@ -1929,52 +1961,74 @@ namespace Menge
 	{
 		m_winTimer->reset();
 
-		while( m_running )
+		try
 		{
-			float frameTime = m_winTimer->getDeltaTime();
-
-			//EXECUTION_STATE aState = ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED;
-			//
-			//if( m_windowsType == EWT_VISTA )
-			//{
-			//    aState = aState | ES_AWAYMODE_REQUIRED;
-			//}
-
-			//SetThreadExecutionState(aState);
-
-			MSG  msg;
-			while( m_windowsLayer->peekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
+			while( m_running )
 			{
-				::TranslateMessage( &msg );
+				float frameTime = m_winTimer->getDeltaTime();
 
-				m_windowsLayer->dispatchMessage( &msg );
-			}
+				//EXECUTION_STATE aState = ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED;
+				//
+				//if( m_windowsType == EWT_VISTA )
+				//{
+				//    aState = aState | ES_AWAYMODE_REQUIRED;
+				//}
 
-			bool updating = m_application->beginUpdate();
+				//SetThreadExecutionState(aState);
 
-			if( updating == true )
-			{
-				m_application->tick( frameTime );
-			}
-			else
-			{
-				Sleep(100);
-			}
-
-			if( m_vsync == false && m_maxfps == false )
-			{
-				m_fpsMonitor->monitor();
-			}
-
-			if( m_application->isFocus() == true && m_active == true )
-			{
-				if( m_application->render() == true )
+				MSG  msg;
+				while( m_windowsLayer->peekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
 				{
-					m_application->flush();
-				}
-			}     
+					::TranslateMessage( &msg );
 
-			m_application->endUpdate();
+					m_windowsLayer->dispatchMessage( &msg );
+				}
+
+				bool updating = m_application->beginUpdate();
+
+				if( updating == true )
+				{
+					m_application->tick( frameTime );
+				}
+				else
+				{
+					Sleep(100);
+				}
+
+				if( m_vsync == false && m_maxfps == false )
+				{
+					m_fpsMonitor->monitor();
+				}
+
+				if( m_application->isFocus() == true && m_active == true )
+				{
+					if( m_application->render() == true )
+					{
+						m_application->flush();
+					}
+				}     
+
+				m_application->endUpdate();
+			}
+		}
+		catch( const stdex::exception & ex )
+		{
+			LOGGER_CRITICAL(m_serviceProvider)("Win32ThreadIdentity stdex::exception '%s' file %d:%s"
+				, ex.doc
+				, ex.line
+				, ex.file
+				);
+		}
+		catch( const std::exception & ex )
+		{
+			LOGGER_CRITICAL(m_serviceProvider)("Win32ThreadIdentity std::exception '%s'"
+				, ex.what()
+				);
+		}
+		catch( ... )
+		{			
+			LOGGER_CRITICAL(m_serviceProvider)("Win32ThreadIdentity unsupported exception"
+				);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -3033,10 +3087,17 @@ namespace Menge
 		{
 			m_application->setFocus( m_active, point );
 			m_inputService->onFocus( m_active );
-		}
 
-		bool turnSound = m_active;
-		m_application->turnSound( turnSound );
+			bool turnSound = m_active;
+			m_application->turnSound( turnSound );
+		}
+		else
+		{
+			m_application->setFocus( true, point );
+			m_inputService->onFocus( true );
+
+			m_application->turnSound( true );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::calcCursorPosition( mt::vec2f & _point ) const

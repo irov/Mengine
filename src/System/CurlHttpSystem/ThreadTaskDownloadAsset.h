@@ -30,7 +30,7 @@ namespace Menge
 
 		String m_url;
 		ConstString m_category;
-		FilePath m_filepath;
+		FilePath m_filePath;
 
 		size_t m_id;
 		HttpDownloadAssetReceiver * m_receiver;

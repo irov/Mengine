@@ -1,12 +1,16 @@
 #	pragma once
 
+#	ifndef MENGINE_FACTORABLE_DEBUG_ENABLE
+#	ifdef _DEBUG
+#	define MENGINE_FACTORABLE_DEBUG
+#	endif
+#	else
+#	define MENGINE_FACTORABLE_DEBUG
+#	endif
+
 namespace Menge
 {
 	class Factory;
-
-    class FactorableException
-    {
-    };
 
 	class Factorable
 	{
@@ -24,7 +28,10 @@ namespace Menge
 	protected:
 		virtual void _destroy();
 
-#   ifdef _DEBUG
+#   ifdef MENGINE_FACTORABLE_DEBUG
+	public:
+		bool isDestroyed() const;
+
     protected:
         virtual void _checkDestroy();
 #   endif
@@ -32,7 +39,7 @@ namespace Menge
 	protected:
 		Factory * m_factory;
 
-#   ifdef _DEBUG
+#   ifdef MENGINE_FACTORABLE_DEBUG
         bool m_destroy;
 #   endif
 	};

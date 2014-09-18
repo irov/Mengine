@@ -3,6 +3,7 @@
 #	include "Interface/CacheInterface.h"
 
 #	include "Core/CacheMemoryBuffer.h"
+
 #	include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -118,7 +119,9 @@ namespace Menge
 	{
 		size_t compressSize2 = _archivator->compressBound( _size );
 
-		MemoryInputPtr memory = m_factoryMemoryInput.createObjectT();
+		MemoryInputPtr memory = CACHE_SERVICE(m_serviceProvider)
+			->createMemoryInput();
+
 		void * buffer = memory->newMemory( compressSize2 );
 
 		if( buffer == nullptr )

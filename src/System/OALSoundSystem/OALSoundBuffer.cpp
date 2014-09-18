@@ -5,6 +5,8 @@
 
 #	include "Core/CacheMemoryBuffer.h"
 
+#	include "Logger/Logger.h"
+
 #	include "OALError.h"
 
 namespace Menge
@@ -49,6 +51,9 @@ namespace Menge
 
 		if( m_alBufferId == 0 )
 		{
+			LOGGER_ERROR(m_serviceProvider)("OALSoundBuffer::load invalid gen buffer"
+				);
+
 			return false;
 		}
 
@@ -62,9 +67,28 @@ namespace Menge
 		CacheMemoryBuffer binary_buffer(m_serviceProvider, size, "OALSoundBuffer");
 		void * binary_memory = binary_buffer.getMemory();
 
-		size_t decode_size = _soundDecoder->decode( binary_memory, size );
-        decode_size -= decode_size % 4;
+		if( binary_memory == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("OALSoundBuffer::load invalid sound %d memory %d"
+				, size
+				);
 
+			return false;
+		}
+
+		size_t decode_size = _soundDecoder->decode( binary_memory, size );
+        
+		if( decode_size == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("OALSoundBuffer::load invalid sound %d decode %d"
+				, size
+				);
+
+			return false;
+		}
+		
+		decode_size -= decode_size % 4;
+		
 		if( m_channels == 1 )
 		{
 			m_format = AL_FORMAT_MONO16;
@@ -77,7 +101,11 @@ namespace Menge
 		}
 
 		alBufferData( m_alBufferId, m_format, binary_memory, decode_size, m_frequency );
-		OAL_CHECK_ERROR(m_serviceProvider);
+		
+		if( OAL_CHECK_ERROR(m_serviceProvider) == false )
+		{
+			return false;
+		}
 		
 		return true;
 	}
@@ -158,7 +186,7 @@ namespace Menge
 		float al_pos = _pos * 0.001f;
 		alSourcef( _source, AL_SEC_OFFSET, al_pos );
 		
-		if( OAL_CHECK_ERROR(m_serviceProvider) == true )
+		if( OAL_CHECK_ERROR(m_serviceProvider) == false )
 		{
 			return false;
 		}
@@ -172,7 +200,7 @@ namespace Menge
 
 		alGetSourcef( _source, AL_SEC_OFFSET, &al_pos );
 		
-        if( OAL_CHECK_ERROR(m_serviceProvider) == true )
+        if( OAL_CHECK_ERROR(m_serviceProvider) == false )
         {
             return false;
         }

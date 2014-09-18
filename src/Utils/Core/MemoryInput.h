@@ -2,6 +2,8 @@
 
 #	include "Interface/StreamInterface.h"
 
+#	include "Core/ThreadGuard.h"
+
 namespace Menge
 {
 	class MemoryInput
@@ -10,6 +12,9 @@ namespace Menge
 	public:
 		MemoryInput();
 		~MemoryInput();
+
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     public:
         void * newMemory( size_t _size );
@@ -35,11 +40,15 @@ namespace Menge
 		bool memory( void ** _memory, size_t * _size ) override;
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
 		unsigned char * m_data;
 		size_t m_size;
 
 		unsigned char * m_pos;
-		unsigned char * m_end;		
+		unsigned char * m_end;
+
+		THREAD_GUARD_INIT;
 	};
 
 	typedef stdex::intrusive_ptr<MemoryInput> MemoryInputPtr;

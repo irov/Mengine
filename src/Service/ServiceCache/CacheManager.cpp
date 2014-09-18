@@ -213,6 +213,8 @@ namespace Menge
 	{
 		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput.createObjectT();
 
+		memoryCache->setServiceProvider( m_serviceProvider );
+
 		return memoryCache;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -220,12 +222,16 @@ namespace Menge
 	{
 		MemoryProxyInput * memoryProxy = m_factoryPoolMemoryProxyInput.createObjectT();
 
+		memoryProxy->setServiceProvider( m_serviceProvider );
+
 		return memoryProxy;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInputPtr CacheManager::createMemoryInput()
 	{
 		MemoryInput * memory = m_factoryPoolMemoryInput.createObjectT();
+
+		memory->setServiceProvider( m_serviceProvider );
 
 		return memory;
 	}

@@ -78,11 +78,11 @@ namespace Menge
         metadata->get_File_WrapX( m_wrapU );
         metadata->get_File_WrapY( m_wrapV );
 
-        m_fileNameRGB = metadata->get_File_PathRGB();
+        metadata->swap_File_PathRGB( m_fileNameRGB );
         metadata->swap_File_CodecRGB( m_codecTypeRGB );
         metadata->get_File_UVRGB( m_uv );
 
-        m_fileNameAlpha = metadata->get_File_PathAlpha();
+        metadata->swap_File_PathAlpha( m_fileNameAlpha );
         metadata->swap_File_CodecAlpha( m_codecTypeAlpha );
         metadata->get_File_UVAlpha( m_uv_alpha );
 

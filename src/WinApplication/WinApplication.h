@@ -256,6 +256,8 @@ namespace Menge
 
 		bool m_enableDebug;
 		bool m_developmentMode;
+		bool m_roamingMode;
+		bool m_nologsMode;
 		bool m_noDevPluginsMode;
 		bool m_profilerMode;
 		bool m_muteMode;

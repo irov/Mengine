@@ -13,7 +13,7 @@ namespace Menge
 		ThreadTaskPacket();
 
 	public:
-		bool initialize( size_t _packetSize );
+		bool initialize( ServiceProviderInterface * _serviceProvider, size_t _packetSize );
 
 	public:
 		void addTask( const ThreadTaskPtr & _task );
@@ -32,6 +32,8 @@ namespace Menge
 		void _onComplete( bool _successful ) override;
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
 		typedef stdex::vector<ThreadTaskPtr> TVectorThreadTasks;
 		TVectorThreadTasks m_tasks;
 	};

@@ -3,6 +3,8 @@
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/StringizeInterface.h"
 
+#	include "Core/CacheMemoryBuffer.h"
+
 #	include "Playlist.h"
 
 #	include "ResourcePlaylist.h"
@@ -156,6 +158,11 @@ namespace Menge
 			return false;
 		}
 
+		if( m_currentPlayList == nullptr )
+		{
+			return false;
+		}
+
 		m_currentPlayList->setLooped1( _looped );
 		m_currentPlayList->setTrack( _index );
 
@@ -221,14 +228,21 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::shuffle( const ConstString & _playlist )
+	bool Amplifier::shuffle( const ConstString & _playlist )
 	{
 		if( this->loadPlayList_( _playlist ) == false )
 		{
-			return;
+			return false;
+		}
+
+		if( m_currentPlayList == nullptr )
+		{
+			return false;
 		}
 
 		m_currentPlayList->shuffle();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::stop()
@@ -238,7 +252,7 @@ namespace Menge
 		s3eAudioStop();				
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::pause()
+	bool Amplifier::pause()
 	{
 		m_play = false;
 
@@ -249,10 +263,14 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("Amplifier::pause invalid %d"
 				, result
 				);
+
+			return false;
 		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::resume()
+	bool Amplifier::resume()
 	{
         m_play = true;
 
@@ -263,7 +281,11 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("Amplifier::resume invalid %d"
 				, result
 				);
+
+			return false;
 		}
+
+		return true; 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::onSoundStop()
@@ -313,10 +335,10 @@ namespace Menge
 			return false;
 		}
 				
-		MemoryInputPtr memory = FILE_SERVICE(m_serviceProvider)
-			->openInputFileInMemory( _pakName, _filePath );
-
-		if( memory == nullptr )
+		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( _pakName, _filePath, false );
+		
+		if( stream == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: invalid open sound '%s:%s'"
 				, _pakName.c_str()
@@ -326,10 +348,12 @@ namespace Menge
 			return false;
 		}
 
-		size_t size;
-		const void * buffer = memory->getMemory( size );
+		size_t buffer_size = stream->size();
 
-		result = s3eAudioPlayFromBuffer( const_cast<void *>(buffer), size, 1 );
+		CacheMemoryBuffer buffer(m_serviceProvider, buffer_size, "Amplifier::play");
+		const void * buffer_memory = buffer.getMemory();
+
+		result = s3eAudioPlayFromBuffer( const_cast<void *>(buffer_memory), buffer_size, 1 );
 				
 		if( result != S3E_RESULT_SUCCESS )
 		{
@@ -344,7 +368,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString& Amplifier::getPlayTrack() const
+	const ConstString & Amplifier::getPlayTrack() const
 	{
 		return m_currentPlaylistName;
 	}

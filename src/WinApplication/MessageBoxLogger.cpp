@@ -52,6 +52,7 @@ namespace Menge
 	{	
 		(void)_level;
         (void)_flag;
+		(void)_count;
 		
 
 		MessageBoxA( NULL, _data, "Critical Error", MB_OK );

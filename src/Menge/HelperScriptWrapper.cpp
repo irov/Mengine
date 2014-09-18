@@ -596,12 +596,11 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			if( setting == L"True" )
-			{
-				return pybind::ret_true();
-			}
+			bool bool_value = setting == L"True" ? true : false;
 
-			return pybind::ret_false();
+			PyObject * py_value = pybind::ret_bool( bool_value );
+
+			return py_value;
 		}
 
 		PyObject * s_getSettingInt( const ConstString & _setting )
@@ -739,6 +738,29 @@ namespace Menge
 			const WString & value = account->getSetting( _setting );
 
 			PyObject * py_value = pybind::ptr( value );
+
+			return py_value;
+		}
+
+		PyObject * s_getAccountSettingBool( const WString& _accountID, const ConstString & _setting )
+		{
+			AccountInterfacePtr account = ACCOUNT_SERVICE(m_serviceProvider)
+				->getAccount( _accountID );
+
+			if( account == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("getAccountSettingUInt account '%ls' is none"
+					, _accountID.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const WString & setting = account->getSetting( _setting );
+
+			bool bool_value = setting == L"True" ? true : false;
+			
+			PyObject * py_value = pybind::ret_bool( bool_value );
 
 			return py_value;
 		}
@@ -1278,6 +1300,7 @@ namespace Menge
 		
 
 		pybind::def_functor( "getAccountSetting", helperScriptMethod, &HelperScriptMethod::s_getAccountSetting );
+		pybind::def_functor( "getAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingBool );
 		pybind::def_functor( "getAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingUInt );
 		
 				

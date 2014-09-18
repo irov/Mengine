@@ -90,6 +90,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Affectorable::updateAffector_( Affector * _affector, float _current, float _timing )
 	{
+		(void)_current;
+
 		bool end = _affector->affect( _timing );
 
 		if( end == true )

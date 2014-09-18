@@ -49,7 +49,7 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AccountManager::initialize( const FilePath & _accountsPath, size_t _projectVersion, bool _projectVersionCheck, AccountServiceListener * _listener )
+    bool AccountManager::initialize( const FilePath & _accountsPath, size_t _projectVersion, bool _projectVersionCheck, AccountProviderInterface * _listener )
     {
         m_accountsPath = _accountsPath;
 		m_projectVersion = _projectVersion;

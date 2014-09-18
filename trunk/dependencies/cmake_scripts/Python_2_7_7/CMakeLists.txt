@@ -97,6 +97,7 @@ configure_file(Modified/wininit.c ${SOURCE_DIR}/Modules/wininit.c COPYONLY)
 
 configure_file(Modified/pymem.h ${SOURCE_DIR}/Include/pymem.h COPYONLY)
 configure_file(Modified/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
+
 if( WIN32 )
     configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
 	configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)

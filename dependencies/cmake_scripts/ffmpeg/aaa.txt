@@ -49,6 +49,7 @@ LDFLAGS='-mwindows' ./configure \
 --enable-cross-compile \
 --arch=x86 \
 --cpu=i686 \
+--disable-yasm \
 --target-os=mingw32 \
 --disable-debug
 

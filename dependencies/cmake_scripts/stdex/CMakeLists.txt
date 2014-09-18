@@ -16,6 +16,8 @@ ${SOURCE_DIR}/src/xml_sax_parser.cpp
 ${SOURCE_DIR}/src/ini.cpp
 )
 
+#add_definitions(-Dstdex_allocator_disable)
+
 include_directories( ${SOURCE_DIR}/include )
 
 add_library( ${PROJECT_NAME}_static STATIC ${sources} )

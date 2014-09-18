@@ -82,17 +82,24 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeThreadIdentity::joinTask()
+	bool MarmaladeThreadIdentity::joinTask( ThreadTaskInterface * _task )
 	{
 		if( m_complete == true )
 		{
-			return;
+			return false;
 		}
 
 		m_mutex->lock();
-		m_complete = true;
-		m_task = nullptr;
+
+		if( m_task == _task )
+		{
+			m_complete = true;
+			m_task = nullptr;
+		}
+
 		m_mutex->unlock();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeThreadIdentity::join()

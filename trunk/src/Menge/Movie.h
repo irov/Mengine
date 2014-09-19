@@ -165,6 +165,7 @@ namespace Menge
 		bool createMovieSoundId_( const MovieLayer & _layer );
         bool createMovieText_( const MovieLayer & _layer );  
 		bool createMovieTextCenter_( const MovieLayer & _layer );
+		bool createMovieSprite_( const MovieLayer & _layer );
         bool createMovieEvent_( const MovieLayer & _layer );
 		bool createMovieParticleEmitter_( const MovieLayer & _layer );
 		bool createMovieParticleEmitter2_( const MovieLayer & _layer );

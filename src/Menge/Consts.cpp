@@ -108,6 +108,7 @@ namespace Menge
         INIT_CONST( MovieSocketShape );
         INIT_CONST( MovieText );
 		INIT_CONST( MovieTextCenter );
+		INIT_CONST( MovieSprite );
         INIT_CONST( MovieSceneEffect );
         INIT_CONST( MovieNullObject );
         INIT_CONST( MovieEvent );

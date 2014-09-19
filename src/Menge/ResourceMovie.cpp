@@ -253,10 +253,11 @@ namespace Menge
 
             if( framePack->hasLayer( layer.index ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid layer %d '%s'"
+                LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid layer %d '%s' type '%s'"
                     , this->getName().c_str()
                     , layer.index
                     , layer.name.c_str()
+					, layer.type.c_str()
                     );
 
                 return false;
@@ -264,17 +265,21 @@ namespace Menge
 
 			if( layer.type == CONST_STRING(m_serviceProvider, MovieSceneEffect) 
 				|| layer.type == CONST_STRING(m_serviceProvider, MovieText)
-				|| layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) 
+				|| layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) 				
+				|| layer.type == CONST_STRING(m_serviceProvider, Sound)
+				|| layer.type == CONST_STRING(m_serviceProvider, SoundId)
+				|| layer.type == CONST_STRING(m_serviceProvider, MovieSprite)
 				)
 			{
 				bool hide = framePack->isLayerPermanentlyHide( layer.index );
 
 				if( hide == true )
 				{
-					LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' permanently hide"
+					LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' type '%s' permanently hide"
 						, this->getName().c_str()
 						, layer.index
 						, layer.name.c_str()
+						, layer.type.c_str()
 						);
 
 					return false;
@@ -495,6 +500,10 @@ namespace Menge
 			else if( it->type == CONST_STRING(m_serviceProvider, SoundId) )
 			{
 				it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO | MOVIE_LAYER_UNSTOPPABLE;
+			}
+			else if( it->type == CONST_STRING(m_serviceProvider, MovieSprite) )
+			{
+				it->state |= MOVIE_LAYER_NODE;
 			}
             else if( it->type == CONST_STRING(m_serviceProvider, ParticleEmitter) )
             {

@@ -109,6 +109,7 @@ namespace Menge
         DECL_CONST( MovieSceneEffect );
         DECL_CONST( MovieText );
 		DECL_CONST( MovieTextCenter );
+		DECL_CONST( MovieSprite );
 		DECL_CONST( MovieNullObject );
         DECL_CONST( MovieEvent );
 		DECL_CONST( SoundId );

@@ -1165,6 +1165,13 @@ namespace Menge
 					return false;
 				}
 			}
+			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieSprite) )
+			{
+				if( this->createMovieSprite_( layer ) == false )
+				{
+					return false;
+				}
+			}
             else if ( layer.type == CONST_STRING(m_serviceProvider, MovieNullObject) )
             {
                 if( this->createMovieNullObject_( layer ) == false )
@@ -1983,6 +1990,32 @@ namespace Menge
 		layer_text->setCenterAlign();
 		
 		this->addMovieNode_( _layer, layer_text );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieSprite_( const MovieLayer & _layer )
+	{
+		Sprite * layer_sprite = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<Sprite>( CONST_STRING(m_serviceProvider, Sprite) );
+
+		if( layer_sprite == nullptr )
+		{
+			return false;
+		}
+
+		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceImage>( _layer.name );
+
+		if( resourceImage == nullptr )
+		{
+			return false;
+		}
+
+		layer_sprite->setResourceImage( resourceImage );
+		layer_sprite->setName( _layer.name );
+
+		this->addMovieNode_( _layer, layer_sprite );
 
 		return true;
 	}

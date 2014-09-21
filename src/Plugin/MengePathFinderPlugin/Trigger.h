@@ -4,6 +4,8 @@
 
 #	include "AreaOfInterest.h"
 
+#	include "pybind/pybind.hpp"
+
 namespace Menge
 {
 	class Trigger
@@ -12,6 +14,7 @@ namespace Menge
 	{
 	public:
 		Trigger();
+		~Trigger();
 
 	public:
 		void setRadius( float _radius );
@@ -20,6 +23,10 @@ namespace Menge
 	public:
 		void setAOI( AreaOfInterest * _aoi );
 		AreaOfInterest * getAOI() const;
+
+	public:
+		void setUserData( PyObject * _data );
+		PyObject * getUserData();
 
 	protected:
 		mt::vec2f getAOIActorPosition() const override;
@@ -39,6 +46,8 @@ namespace Menge
 	protected:
 		AreaOfInterest * m_aoi;
 		AOIActor * m_actor;
+
+		PyObject * m_data;
 		
 		float m_radius;
 	};

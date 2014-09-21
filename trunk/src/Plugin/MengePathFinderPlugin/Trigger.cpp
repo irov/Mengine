@@ -6,8 +6,14 @@ namespace Menge
 	Trigger::Trigger()
 		: m_aoi(nullptr)
 		, m_actor(nullptr)
+		, m_data(nullptr)
 		, m_radius(0.f)
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Trigger::~Trigger()
+	{
+		pybind::decref( m_data );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trigger::setRadius( float _radius )
@@ -28,6 +34,20 @@ namespace Menge
 	AreaOfInterest * Trigger::getAOI() const
 	{
 		return m_aoi;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Trigger::setUserData( PyObject * _data )
+	{
+		pybind::decref( m_data );
+		m_data = _data;
+		pybind::incref( m_data );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * Trigger::getUserData()
+	{
+		pybind::incref( m_data );
+
+		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec2f Trigger::getAOIActorPosition() const

@@ -49,6 +49,8 @@ namespace Menge
 			.def( "getRadius", &Trigger::getRadius )
 			.def( "setAOI", &Trigger::setAOI )
 			.def( "getAOI", &Trigger::getAOI )
+			.def( "setUserData", &Trigger::setUserData )
+			.def( "getUserData", &Trigger::getUserData )			
 			;
 
 		SCRIPT_SERVICE(m_serviceProvider)

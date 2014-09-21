@@ -444,10 +444,8 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, Gyroscope );
 		NODE_FACTORY( m_serviceProvider, Isometric );
 		
-#   ifdef MENGE_PARTICLES
 		NODE_FACTORY( m_serviceProvider, ParticleEmitter );
 		NODE_FACTORY( m_serviceProvider, ParticleEmitter2 );
-#   endif
 
 		NODE_FACTORY( m_serviceProvider, HotSpot );
         NODE_FACTORY( m_serviceProvider, HotSpotImage );
@@ -685,12 +683,10 @@ namespace Menge
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceAnimation );
 
-#   ifdef MENGE_PARTICLES
 		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitterContainer );
 		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitter );
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceParticle );
-#   endif
 
 		//RESOURCE_FACTORY( m_serviceProvider, ResourceFont );
 		//RESOURCE_FACTORY( m_serviceProvider, ResourceGlyph );
@@ -1303,15 +1299,17 @@ namespace Menge
 		INPUT_SERVICE(m_serviceProvider)
 			->update();
 
-#   ifdef MENGE_PARTICLES
-		PARTICLE_SERVICE(m_serviceProvider)
-			->update();
-#	endif
+		if( SERVICE_EXIST(m_serviceProvider, Menge::ParticleServiceInterface) == true )
+		{
+			PARTICLE_SERVICE(m_serviceProvider)
+				->update();
+		}
 
-#   ifdef MENGE_PARTICLES2
-		PARTICLE_SERVICE2(m_serviceProvider)
-			->update();
-#   endif
+		if( SERVICE_EXIST(m_serviceProvider, Menge::ParticleServiceInterface2) == true )
+		{
+			PARTICLE_SERVICE2(m_serviceProvider)
+				->update();
+		}
 
 		if( m_game->beginUpdate() == false )
 		{

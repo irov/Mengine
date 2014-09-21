@@ -26,8 +26,5 @@ namespace Menge
 	
 	private:       
 		ArchivatorInterfacePtr m_archivator;
-
-		uint32_t m_uncompress_size;
-		uint32_t m_compress_size;
 	};
 }	// namespace Menge

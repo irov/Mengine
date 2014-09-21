@@ -8,10 +8,12 @@
 
 #   include "Config/Blobject.h"
 
-#   include <map>
+#	include "Core/Magic.h"
 
 namespace Menge
 {
+	DECLARE_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA, 'A', 'C', 'D', '1', 1 );
+
     class AccountInterface
 		: public FactorablePtr
     {
@@ -63,7 +65,7 @@ namespace Menge
         SERVICE_DECLARE("AccountService")
 
     public:
-        virtual bool initialize( const FilePath & _accountsPath, size_t _projectVersion, bool _projectVersionCheck, AccountProviderInterface * _listener ) = 0;
+        virtual bool initialize( const FilePath & _accountsPath, uint32_t _projectVersion, AccountProviderInterface * _listener ) = 0;
         virtual void finalize() = 0;
 
     public:

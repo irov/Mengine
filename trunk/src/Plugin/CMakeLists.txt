@@ -3,6 +3,7 @@ ADD_SUBDIRECTORY( MengeSoundCodecPlugin )
 ADD_SUBDIRECTORY( MengeAmplifierPlugin )
 ADD_SUBDIRECTORY( MengeZipPlugin )
 ADD_SUBDIRECTORY( MengeLZ4Plugin )
+ADD_SUBDIRECTORY( MengeOggVorbisPlugin )
 ADD_SUBDIRECTORY( MengePathFinderPlugin )
 #ADD_SUBDIRECTORY( MengeCal3dPlugin )
 

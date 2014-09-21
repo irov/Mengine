@@ -5,6 +5,8 @@
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Core/Stream.h"
+
 #   include "Config/Blobject.h"
 
 #	include "Logger/Logger.h"
@@ -35,38 +37,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageEncoderACF::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
 	{
+		if( Helper::writeStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_ACF), GET_MAGIC_VERSION(MAGIC_ACF) ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageEncoderACF::encode invalid write magic header"
+				);
+
+			return 0;
+		}
+
 		const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_bufferDataInfo);
 				
-		magic_number_type magic_number = GET_MAGIC_NUMBER(MAGIC_ACF);
-        m_stream->write( &magic_number, sizeof(magic_number) );
-
-		magic_version_type magic_version = GET_MAGIC_VERSION(MAGIC_ACF);
-        m_stream->write( &magic_version, sizeof(magic_version) );
-
         m_stream->write( &dataInfo->width, sizeof(dataInfo->width) );
         m_stream->write( &dataInfo->height, sizeof(dataInfo->height) );
 
-		size_t uncompressSize = dataInfo->size;
-		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-            ->compressBuffer( m_archivator, _buffer, uncompressSize );
+		if( Helper::writeStreamArchiveBuffer( m_serviceProvider, m_stream, m_archivator, false, _buffer, dataInfo->size ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageEncoderACF::encode invalid write buffer"
+				);
 
-		if( compress_memory == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("PickEncoderHIT::encode invalid compress"
-                );
+			return 0;
+		}
 
-            return 0;
-        }
-
-		uint32_t compressSize;
-		const void * compressBuffer = compress_memory->getMemory( compressSize );
-		
-		m_stream->write( &uncompressSize, sizeof(uncompressSize) );
-        m_stream->write( &compressSize, sizeof(compressSize) );
-
-        m_stream->write( compressBuffer, compressSize );
-
-		return compressSize;
+		return dataInfo->size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -171,7 +171,6 @@ namespace Menge
         , m_profiler(nullptr)
 		, m_graveyard(nullptr)
 		, m_projectVersion(0)
-		, m_projectVersionCheck(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -288,7 +287,6 @@ namespace Menge
 		m_platformName = CONFIG_VALUE(m_serviceProvider, "Project", "Platform", CONST_STRING_LOCAL(m_serviceProvider, "WIN"));
 		m_projectCodename = CONFIG_VALUE(m_serviceProvider, "Project", "Codename", ConstString::none());
 		m_projectVersion = CONFIG_VALUE(m_serviceProvider, "Project", "Version", 0U);
-		m_projectVersionCheck = CONFIG_VALUE(m_serviceProvider, "Project", "VersionCheck", true);
 
         m_contentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "ContentResolution", Resolution(1024, 768));
         m_fixedContentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "FixedContentResolution", true);
@@ -900,7 +898,7 @@ namespace Menge
 
 		FilePath accountPath = CONST_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
 
-		if( m_game->initialize( accountPath, m_projectVersion, m_projectVersionCheck, params ) == false )
+		if( m_game->initialize( accountPath, m_projectVersion, params ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application::initGame invalid initialize"
 				);

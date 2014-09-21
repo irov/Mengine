@@ -9,6 +9,8 @@
 
 #	include "Archive/ArchiveWrite.hpp"
 
+#	include "Core/Stream.h"
+
 #	include "Logger/Logger.h"
 
 namespace Menge
@@ -637,38 +639,32 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieKeyConverterXMLToAEK::writeFramePak_( const TBlobject & _buffer )
-	{
-		uint32_t binary_aek_size = _buffer.size();
-		
-		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compressBuffer( m_archivator, &_buffer[0], binary_aek_size );
-
-		if( compress_memory == nullptr)
-		{
-			return false;
-		}
-		
+	{	
 		OutputStreamInterfacePtr output_stream = FILE_SERVICE(m_serviceProvider)
 			->openOutputFile( m_options.pakName, m_options.outputFileName );
 
 		if( output_stream == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::writeFramePak_ invalid open file %s:%s"
+				, m_options.pakName.c_str()
+				, m_options.outputFileName.c_str()
+				);
+
 			return false;
 		}
 
-		magic_number_type magic_number = GET_MAGIC_NUMBER(MAGIC_AEK);
-		output_stream->write( &magic_number, sizeof(magic_number) );
+		const void * buffer_memory = &_buffer[0];
+		size_t buffer_size = _buffer.size();
 
-		magic_version_type magic_version = GET_MAGIC_VERSION(MAGIC_AEK);
-		output_stream->write( &magic_version, sizeof(magic_version) );
+		if( Helper::writeStreamArchiveData( m_serviceProvider, output_stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_AEK), GET_MAGIC_VERSION(MAGIC_AEK), false, buffer_memory, buffer_size ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::writeFramePak_ invalid write stream %s:%s"
+				, m_options.pakName.c_str()
+				, m_options.outputFileName.c_str()
+				);
 
-		output_stream->write( &binary_aek_size, sizeof(binary_aek_size) );
-
-		uint32_t compressSize;
-		const void * compressBuffer = compress_memory->getMemory( compressSize );
-
-		output_stream->write( &compressSize, sizeof(compressSize) );
-		output_stream->write( compressBuffer, compressSize );
+			return false;
+		}
 
 		return true;
 	}

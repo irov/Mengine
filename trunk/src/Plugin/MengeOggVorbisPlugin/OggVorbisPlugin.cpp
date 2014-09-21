@@ -1,6 +1,6 @@
-#	include "SoundCodecPlugin.h"
+#	include "OggVorbisPlugin.h"
 
-#	include "SoundDecoderWAV.h"
+#	include "SoundDecoderOGGVorbis.h"
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
@@ -11,9 +11,9 @@
 extern "C" // only required if using g++
 {
     //////////////////////////////////////////////////////////////////////////
-    bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin )
+    bool initPluginMengeOggVorbis( Menge::PluginInterface ** _plugin )
     {
-        *_plugin = new Menge::SoundCodecPlugin();
+        *_plugin = new Menge::OggVorbisPlugin();
 
         return true;
     }
@@ -22,7 +22,7 @@ extern "C" // only required if using g++
     ////////////////////////////////////////////////////////////////////////////
     __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
     {
-        return initPluginMengeImageCodec( _plugin );
+        return initPluginMengeOggVorbis( _plugin );
     }
 #   endif
 }
@@ -30,19 +30,20 @@ extern "C" // only required if using g++
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	SoundCodecPlugin::SoundCodecPlugin()
+	OggVorbisPlugin::OggVorbisPlugin()
         : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundCodecPlugin::initialize( ServiceProviderInterface * _serviceProvider )
+	bool OggVorbisPlugin::initialize( ServiceProviderInterface * _serviceProvider )
 	{
         m_serviceProvider = _serviceProvider;
 
-		m_decoders.push_back( new DecoderFactory<SoundDecoderWAV>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "wavSound")) );
+		m_decoders.push_back( new DecoderFactory<SoundDecoderOGGVorbis>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "oggSound")) );
+        m_decoders.push_back( new DecoderFactory<SoundDecoderOGGVorbis>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ogvSound")) );
 		
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "wav", Helper::stringizeString(m_serviceProvider, "wavSound") );
+			->registerCodecExt( "ogg", Helper::stringizeString(m_serviceProvider, "oggSound") );
 
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),
@@ -59,7 +60,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundCodecPlugin::finalize()
+	void OggVorbisPlugin::finalize()
 	{
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),
@@ -76,7 +77,7 @@ namespace Menge
 		m_decoders.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundCodecPlugin::destroy()
+	void OggVorbisPlugin::destroy()
 	{
 		delete this;
 	}

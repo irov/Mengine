@@ -1,16 +1,18 @@
-set( MY_LIB_NAME MengeSoundCodecPlugin )
+set( MY_LIB_NAME MengeOggVorbisPlugin )
 
 ADD_FILTER(
 src
-	SoundCodecPlugin.cpp
-	SoundCodecPlugin.def
-	SoundCodecPlugin.h
-    SoundDecoderWAV.cpp
-    SoundDecoderWAV.h
+	OggVorbisPlugin.cpp
+	OggVorbisPlugin.def
+	OggVorbisPlugin.h
+    SoundDecoderOGGVorbis.cpp
+    SoundDecoderOGGVorbis.h
 )
 
 INCLUDE_DIRECTORIES(
     ${Mengine_SOURCE_DIR}/Utils
+    ${THIRDPARTY_DIR}/vorbis/include
+    ${THIRDPARTY_DIR}/ogg/include          
 	)
 
 
@@ -30,6 +32,9 @@ SET( APPLICATION_DEPENDENCIES
 
 SET( APPLICATION_LIBS
     ${APPLICATION_LIBS}    
+    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}vorbisfile_static${MENGINE_LIB_SUFFIX}
+    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}vorbis_static${MENGINE_LIB_SUFFIX}
+    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}ogg_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX}
     )
 

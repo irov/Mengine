@@ -11,6 +11,7 @@
 #   include "Core/Magic.h"
 #   include "Core/FilePath.h"
 #	include "Core/CacheMemoryBuffer.h"
+#	include "Core/Stream.h"
 
 #   include "Config/Blobject.h"
 
@@ -62,42 +63,34 @@ namespace Menge
         InputStreamInterfacePtr input = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false );
 
-        uint32_t data_size = input->size();
+        size_t uncompressSize = input->size();
 
-		CacheMemoryBuffer data_buffer(m_serviceProvider, data_size, "ParticleConverterPTCToPTZ_data");
+		CacheMemoryBuffer data_buffer(m_serviceProvider, uncompressSize, "ParticleConverterPTCToPTZ_data");
 		TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
 
-        input->read( data_memory, data_size );
+        input->read( data_memory, uncompressSize );
+		
+        OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
+            ->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
 
-		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compressBuffer( m_archivator, data_memory, data_size );
-
-		if( compress_memory == nullptr )
+		if( output == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: %s invalid compress"
-				, m_options.inputFileName.c_str()
+			LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: invalid open '%s'"
+				, full_output.c_str()
 				);
 
 			return false;
 		}
-		
-        OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
-		
-		magic_number_type magic_header = GET_MAGIC_NUMBER(MAGIC_PTZ);
-		output->write( &magic_header, sizeof(magic_header) );
 
-		magic_version_type magic_version = GET_MAGIC_VERSION(MAGIC_PTZ);
-		output->write( &magic_version, sizeof(magic_version) );
+		if( Helper::writeStreamArchiveData( m_serviceProvider, output, m_archivator, GET_MAGIC_NUMBER(MAGIC_PTZ), GET_MAGIC_VERSION(MAGIC_PTZ), false, data_memory, uncompressSize ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: invalid write '%s'"
+				, full_output.c_str()
+				);
 
-        output->write( &data_size, sizeof(data_size) );
+			return false;
+		}
 
-		uint32_t compress_size;
-		const void * compress_buffer = compress_memory->getMemory( compress_size );
-
-        output->write( &compress_size, sizeof(compress_size) );
-        output->write( compress_buffer, compress_size );
-
-        return true;
+		return true;
 	}
 }

@@ -1,9 +1,8 @@
-#include <stddef.h>
-#include <stdint.h>
+#	include "CRC32.h"
 
 namespace Menge
 {
-    const uint_least32_t Crc32Table[256] = {
+    const uint32_t Crc32Table[256] = {
         0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,
         0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
         0x0EDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988,
@@ -70,15 +69,20 @@ namespace Menge
         0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
     };
 
-    uint_least32_t make_crc32(const unsigned char * buf, size_t len)
-    {
-        uint_least32_t crc = 0xFFFFFFFF;
-        
-        while (len--)
-        {
-            crc = (crc >> 8) ^ Crc32Table[(crc ^ *buf++) & 0xFF];
-        }
+	namespace Helper
+	{
+		uint32_t make_crc32( const void * _buffer, size_t _size )
+		{
+			uint32_t crc = 0xFFFFFFFF;
 
-        return crc ^ 0xFFFFFFFF;
-    }
+			const unsigned char * byte_buffer = reinterpret_cast<const unsigned char *>(_buffer);
+
+			while( _size-- )
+			{
+				crc = (crc >> 8) ^ Crc32Table[(crc ^ *byte_buffer++) & 0xFF];
+			}
+
+			return crc ^ 0xFFFFFFFF;
+		}
+	}
 }

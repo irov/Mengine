@@ -74,7 +74,7 @@ namespace Menge
 		GLenum m_format;
 		GLenum m_type;
 
-		void * m_lock;
+		void * m_buffer;
 		size_t m_bufferId;
 	};
 

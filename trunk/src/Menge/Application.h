@@ -270,7 +270,6 @@ namespace Menge
 		ConstString m_platformName;
 		ConstString m_projectCodename;
 		uint32_t m_projectVersion;
-		bool m_projectVersionCheck;
 
 		bool m_allowFullscreenSwitchShortcut;
 

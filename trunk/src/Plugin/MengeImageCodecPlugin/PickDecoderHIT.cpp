@@ -5,6 +5,8 @@
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Core/Stream.h"
+
 #   include "Config/Blobject.h"
 
 #	include "Logger/Logger.h"
@@ -36,63 +38,33 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool PickDecoderHIT::_prepareData()
     {
-        magic_number_type magic;
-        m_stream->read( &magic, sizeof(magic) );
+		if( Helper::loadStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_HIT), GET_MAGIC_VERSION(MAGIC_HIT) ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("PickEncoderHIT::decode invalid load magic header"
+				);
 
-        if( magic != GET_MAGIC_NUMBER(MAGIC_HIT) )
-        {
-            LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid magic %u need %u"
-				, magic
-				, GET_MAGIC_NUMBER(MAGIC_HIT)
-                );
-
-            return false;
-        }
-		       
-		magic_version_type version;
-        m_stream->read( &version, sizeof(version) );
-
-        if( version != GET_MAGIC_VERSION(MAGIC_HIT) )
-        {
-            LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid hit version %u need %u"
-                , version
-                , GET_MAGIC_VERSION(MAGIC_HIT)
-                );
-			
-            return false;
-        }
+			return 0;
+		}
 
         m_stream->read( &m_dataInfo.width, sizeof(m_dataInfo.width) );
         m_stream->read( &m_dataInfo.height, sizeof(m_dataInfo.height) );
         m_stream->read( &m_dataInfo.mipmaplevel, sizeof(m_dataInfo.mipmaplevel) );
         m_stream->read( &m_dataInfo.mipmapsize, sizeof(m_dataInfo.mipmapsize) );	
 
-        m_stream->read( &m_mipmapcompresssize, sizeof(m_mipmapcompresssize) );
-
-        if( m_mipmapcompresssize == 0 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid m_mipmapcompresssize is 0 (hit file incorupt)"
-                );
-
-            return false;
-        }
-
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	size_t PickDecoderHIT::decode( void * _buffer, size_t _bufferSize )
 	{	        	
-        size_t decompressSize;
-        if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->decompressStream( m_archivator, m_stream, m_mipmapcompresssize, _buffer, _bufferSize, decompressSize ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("PickDecoderHIT::decode invalid uncompress"
-                );
+		if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, _buffer, _bufferSize ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("PickEncoderHIT::decode invalid load magic header"
+				);
 
-            return 0;
-        }
+			return 0;
+		}
         
-		return decompressSize;
+		return _bufferSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

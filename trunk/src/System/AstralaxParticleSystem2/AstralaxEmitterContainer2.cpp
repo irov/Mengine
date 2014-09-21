@@ -5,6 +5,7 @@
 #   include "Logger/Logger.h"
 
 #	include "Core/String.h"
+#	include "Core/Stream.h"
 
 namespace Menge
 {
@@ -35,10 +36,7 @@ namespace Menge
 		unsigned char * binary_memory;
 		size_t binary_size;
 
-		m_bufferId = CACHE_SERVICE(m_serviceProvider)
-			->getArchiveData( _stream, _archivator, GET_MAGIC_NUMBER(MAGIC_PTZ), GET_MAGIC_VERSION(MAGIC_PTZ), &binary_memory, binary_size );
-
-		if( m_bufferId == 0 )
+		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, _archivator, GET_MAGIC_NUMBER(MAGIC_PTZ), GET_MAGIC_VERSION(MAGIC_PTZ), m_bufferId, &binary_memory, binary_size ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize: invalid get data"
 				);
@@ -51,6 +49,7 @@ namespace Menge
 		{
 			CACHE_SERVICE(m_serviceProvider)
 				->unlockBuffer( m_bufferId );
+
 			m_bufferId = 0;
 
 			return false;
@@ -67,6 +66,7 @@ namespace Menge
 	{
 		CACHE_SERVICE(m_serviceProvider)
 			->unlockBuffer( m_bufferId );
+
 		m_bufferId = 0;
 
 		Magic_CloseFile( m_mf );

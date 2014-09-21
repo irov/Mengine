@@ -11,6 +11,7 @@
 
 #   include "Core/FilePath.h"
 #	include "Core/CacheMemoryBuffer.h"
+#	include "Core/Stream.h"
 
 #   include "Config/Blobject.h"
 
@@ -47,7 +48,7 @@ namespace Menge
         FileGroupInterfacePtr fileGroup;
         if( FILE_SERVICE(m_serviceProvider)->hasFileGroup( m_options.pakName, &fileGroup ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: not found file group '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ModelConverterMDLToMDZ::convert_: not found file group '%s'"
                 , m_options.pakName.c_str()
                 );
 
@@ -64,41 +65,33 @@ namespace Menge
         InputStreamInterfacePtr input = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( c_dev, full_input, false );
 
-        uint32_t data_size = input->size();
+        size_t uncompressSize = input->size();
 
-		CacheMemoryBuffer data_buffer(m_serviceProvider, data_size, "ModelConverterMDLToMDZ_data");
+		CacheMemoryBuffer data_buffer(m_serviceProvider, uncompressSize, "ModelConverterMDLToMDZ_data");
 		TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
 
-        input->read( data_memory, data_size );
-
-		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compressBuffer( m_archivator, data_memory, data_size );
-
-        if( compress_memory == 0 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: %s invalid compress"
-                , m_options.inputFileName.c_str()
-                );
-
-            return false;
-        }
+        input->read( data_memory, uncompressSize );
 
 		OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( c_dev, full_output );
+			->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
 
-		magic_number_type magic_number = GET_MAGIC_NUMBER(MAGIC_MDL);
-		output->write( &magic_number, sizeof(magic_number) );
+		if( output == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ModelConverterMDLToMDZ::convert_: invalid open '%s'"
+				, full_output.c_str()
+				);
 
-		magic_version_type magic_version = GET_MAGIC_NUMBER(MAGIC_MDL);
-		output->write( &magic_version, sizeof(magic_version) );
+			return false;
+		}
 
-        output->write( &data_size, sizeof(data_size) );
-		
-		uint32_t compress_size;
-		const void * compress_buffer = compress_memory->getMemory( compress_size );
+		if( Helper::writeStreamArchiveData( m_serviceProvider, output, m_archivator, GET_MAGIC_NUMBER(MAGIC_MDL), GET_MAGIC_VERSION(MAGIC_MDL), false, data_memory, uncompressSize ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ModelConverterMDLToMDZ::convert_: invalid write '%s'"
+				, full_output.c_str()
+				);
 
-		output->write( &compress_size, sizeof(compress_size) );
-		output->write( compress_buffer, compress_size );
+			return false;
+		}
 
         return true;
 	}

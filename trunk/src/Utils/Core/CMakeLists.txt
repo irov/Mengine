@@ -60,9 +60,11 @@ src
     
     Params.h
     
-    Stream.h
 	Rect.h
 	Rect.cpp
+    
+    Stream.h
+    Stream.cpp
 	
     ConstString.h
     

@@ -5,6 +5,8 @@
 #	include "Interface/FileSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
 
+#	include "Core/Stream.h"
+
 #   include "Config/Blobject.h"
 
 #	include "Logger/Logger.h"
@@ -28,8 +30,6 @@ namespace Menge
     };
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderHTF::ImageDecoderHTF()
-		: m_uncompress_size(0)
-		, m_compress_size(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -52,23 +52,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderHTF::_prepareData()
 	{
-        uint32_t magic;
-        m_stream->read( &magic, sizeof(magic) );
-
-        if( magic != GET_MAGIC_NUMBER(MAGIC_HTF) )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoderHTF::initialize invalid htf file magic number" 
-                );
-
-            return false;
-        }
-
-		uint32_t version;
-		m_stream->read( &version, sizeof(version) );
-
-		if( version != GET_MAGIC_VERSION(MAGIC_HTF) )
+		if( Helper::loadStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_HTF), GET_MAGIC_VERSION(MAGIC_HTF) ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderHTF::initialize invalid htf file magic version" 
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderHTF::_prepareData invalid load magic header"
 				);
 
 			return false;
@@ -83,9 +69,6 @@ namespace Menge
 		uint32_t format;
 		m_stream->read( &format, sizeof(format) );
 
-		m_stream->read( &m_uncompress_size, sizeof(m_uncompress_size) );
-		m_stream->read( &m_compress_size, sizeof(m_compress_size) );
-
 		m_dataInfo.width = width;
 		m_dataInfo.height = height;
         m_dataInfo.channels = 3;
@@ -99,27 +82,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderHTF::decode( void * _buffer, size_t _bufferSize )
 	{
-        if( _bufferSize != m_uncompress_size )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderHTF::decode uncompress failed %d != %d"
-				, _bufferSize
-				, m_uncompress_size
-				);
-
-			return 0;
-		}
-
-        size_t uncompress_size;
-        if( ARCHIVE_SERVICE(m_serviceProvider)
-            ->decompressStream( m_archivator, m_stream, m_compress_size, _buffer, m_uncompress_size, uncompress_size ) == false )
+		if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, _buffer, _bufferSize ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoderHTF::decode uncompress failed"
+            LOGGER_ERROR(m_serviceProvider)("ImageDecoderHTF::decode invalid load"
                 );
 
             return 0;
         }		
 
-		return uncompress_size;
+		return _bufferSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

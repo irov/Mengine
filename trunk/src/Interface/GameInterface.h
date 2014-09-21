@@ -15,7 +15,7 @@ namespace Menge
         SERVICE_DECLARE("GameService")
 
     public:
-        virtual bool initialize( const FilePath & _accountPath, size_t _projectVersion, bool _projectVersionCheck, const TMapParams & _params ) = 0;
+        virtual bool initialize( const FilePath & _accountPath, uint32_t _projectVersion, const TMapParams & _params ) = 0;
         virtual void finalize() = 0;
 
     public:

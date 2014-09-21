@@ -139,7 +139,7 @@ namespace Menge
             return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool unsignedToString( size_t _value, String & _str )
+		bool unsignedToString( uint32_t _value, String & _str )
 		{
 			Stringstream ss;
 			ss << _value;
@@ -169,7 +169,7 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool unsignedToWString( size_t _value, WString & _str )
+		bool unsignedToWString( uint32_t _value, WString & _str )
 		{
 			WStringstream ss;
 			ss << _value;
@@ -204,7 +204,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool stringToUnsigned( const String & _str, size_t & _value )
+        bool stringToUnsigned( const String & _str, uint32_t & _value )
         {
             Stringstream ss;
             ss << _str;
@@ -358,7 +358,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool wstringToUnsigned( const WString & _str, size_t & _value )
+        bool wstringToUnsigned( const WString & _str, uint32_t & _value )
         {
             WStringstream ss;
             ss << _str;

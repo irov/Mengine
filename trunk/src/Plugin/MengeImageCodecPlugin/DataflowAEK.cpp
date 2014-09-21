@@ -6,6 +6,7 @@
 
 #	include "Core/Memory.h"
 #	include "Core/CacheMemoryBuffer.h"
+#	include "Core/Stream.h"
 
 #	include "stdex/memory_reader.h"
 
@@ -55,13 +56,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
-		unsigned char * binary_memory;
-		size_t binary_size;
-
-		uint32_t bufferId = CACHE_SERVICE(m_serviceProvider)
-			->getArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_AEK), GET_MAGIC_VERSION(MAGIC_AEK), &binary_memory, binary_size );
-
-		if( bufferId == 0 )
+		CacheBufferID bufferId;
+		unsigned char * bufferMemory;
+		size_t bufferSize;
+		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_AEK), GET_MAGIC_VERSION(MAGIC_AEK), bufferId, &bufferMemory, bufferSize ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: invalid get data"
 				);
@@ -70,8 +68,8 @@ namespace Menge
 		}
 
 		MovieFramePack * pack = stdex::intrusive_get<MovieFramePack>(_data);
-
-		bool successful = this->loadBuffer_( pack, binary_memory, binary_size );
+		
+		bool successful = this->loadBuffer_( pack, bufferMemory, bufferSize );
 
 		CACHE_SERVICE(m_serviceProvider)
 			->unlockBuffer( bufferId );

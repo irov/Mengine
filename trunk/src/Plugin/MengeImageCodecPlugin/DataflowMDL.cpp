@@ -6,6 +6,7 @@
 
 #	include "Core/BlobjectRead.h"
 #	include "Core/CacheMemoryBuffer.h"
+#	include "Core/Stream.h"
 
 #	include "Logger/Logger.h"
 
@@ -53,13 +54,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowMDL::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
-		unsigned char * binary_memory;
-		size_t binary_size;
-
-		uint32_t bufferId = CACHE_SERVICE(m_serviceProvider)
-			->getArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_MDL), GET_MAGIC_VERSION(MAGIC_MDL), &binary_memory, binary_size );
-
-		if( bufferId == 0 )
+		CacheBufferID bufferId;
+		unsigned char * bufferMemory;
+		size_t bufferSize;
+		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_MDL), GET_MAGIC_VERSION(MAGIC_MDL), bufferId, &bufferMemory, bufferSize ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DataflowMDL::load: invalid get data"
 				);
@@ -67,7 +65,7 @@ namespace Menge
 			return false;
 		}
 
-		BlobjectRead ar(binary_memory, binary_size);
+		BlobjectRead ar(bufferMemory, bufferSize);
 		
 		uint32_t frameCount;
 		ar >> frameCount;

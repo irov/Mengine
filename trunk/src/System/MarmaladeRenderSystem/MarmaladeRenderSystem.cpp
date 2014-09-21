@@ -930,50 +930,58 @@ namespace Menge
 
     }
     //////////////////////////////////////////////////////////////////////////
-    PixelFormat MarmaladeRenderSystem::findFormatFromChannels_( size_t & _channels, PixelFormat _format ) const
+    void MarmaladeRenderSystem::findFormatFromChannels_( PixelFormat _format, size_t _channels, PixelFormat & _hwFormat, size_t & _hwChannels ) const
     {
-        PixelFormat hwFormat = PF_UNKNOWN;
-
         switch( _format )
         {
         case PF_UNKNOWN:
             {
                 if( _channels == 1 )
                 {
-                    hwFormat = PF_X8R8G8B8;
-                    _channels = 4;
+                    _hwFormat = PF_A8;
+                    _hwChannels = 1;
                 }
                 else if( _channels == 3 )
                 {
-                    hwFormat = PF_X8R8G8B8;
-                    _channels = 4;
+                    _hwFormat = PF_X8R8G8B8;
+                    _hwChannels = 4;
                 }
                 else if( _channels == 4 )
                 {
-                    hwFormat = PF_A8R8G8B8;
+                    _hwFormat = PF_A8R8G8B8;
+					_hwChannels = 4;
                 }
             }break;
         default:
             {
-                hwFormat = _format;
+                _hwFormat = _format;
+				_hwChannels = _channels;
             }break;
         }
-
-        return hwFormat;
     }
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr MarmaladeRenderSystem::createImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
 	{
-        size_t hwChannels = _channels;
+        size_t hwChannels;
+        PixelFormat hwFormat;
+		this->findFormatFromChannels_( _format, _channels, hwFormat, hwChannels );
 
-        PixelFormat hwFormat = this->findFormatFromChannels_( hwChannels, _format );
+		GLint internalFormat = s_toGLInternalFormat( hwFormat );
+
+		if( internalFormat == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createImage invalid get GL Texture format for PF %d"
+				, hwFormat
+				);
+
+			return nullptr;
+		}
+
+		GLint textureFormat = s_toGLColorFormat( hwFormat );
+		GLint textureType = s_getGLColorDataType( hwFormat );
 
 		GLuint tuid = 0;
 		glGenTextures( 1, &tuid );
-
-		GLint internalFormat = s_toGLInternalFormat( hwFormat );
-		GLint textureFormat = s_toGLColorFormat( hwFormat );
-		GLint textureType = s_getGLColorDataType( hwFormat );
 
         MarmaladeTexture * texture = m_factoryOGLTexture.createObjectT();
 

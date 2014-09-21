@@ -403,7 +403,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::initialize( const FilePath & _accountPath, size_t _projectVersion, bool _projectVersionCheck, const TMapParams & _params )
+	bool Game::initialize( const FilePath & _accountPath, uint32_t _projectVersion, const TMapParams & _params )
 	{
 		m_params = _params;
 
@@ -429,7 +429,7 @@ namespace Menge
 
         m_accountProvider = new GameAccountProvider(m_serviceProvider, this);
 		
-        m_accountService->initialize( _accountPath, _projectVersion, _projectVersionCheck, m_accountProvider );
+        m_accountService->initialize( _accountPath, _projectVersion, m_accountProvider );
 
 		bool noLoadAccount = CONFIG_VALUE(m_serviceProvider, "Development", "NoAccount", false);
 		

@@ -650,7 +650,7 @@ namespace Menge
 
 			const WString & setting = currentAccount->getSetting( _setting );
 
-			size_t value;
+			uint32_t value;
 			if( Utils::wstringToUnsigned( setting, value ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("getSettingUInt: can't scanf from [%s]"
@@ -781,7 +781,7 @@ namespace Menge
 
 			const WString & setting = account->getSetting( _setting );
 
-			size_t value;
+			uint32_t value;
 			if( Utils::wstringToUnsigned( setting, value ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("getAccountSettingUInt account '%ls'can't scanf from '%s'"

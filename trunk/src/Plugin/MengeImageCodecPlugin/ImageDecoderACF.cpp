@@ -6,6 +6,7 @@
 #   include "Interface/StringizeInterface.h"
 
 #	include "Core/CacheMemoryBuffer.h"
+#	include "Core/Stream.h"
 
 #   include "Config/Blobject.h"
 
@@ -17,8 +18,6 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderACF::ImageDecoderACF()
-		: m_uncompress_size(0)
-		, m_compress_size(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -41,23 +40,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderACF::_prepareData()
 	{
-        uint32_t magic;
-        m_stream->read( &magic, sizeof(magic) );
-
-        if( magic != GET_MAGIC_NUMBER(MAGIC_ACF) )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::initialize invalid htf file magic number" 
-                );
-
-            return false;
-        }
-
-		uint32_t version;
-		m_stream->read( &version, sizeof(version) );
-
-		if( version != GET_MAGIC_VERSION(MAGIC_ACF) )
+		if( Helper::loadStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_ACF), GET_MAGIC_VERSION(MAGIC_ACF) ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::initialize invalid htf file magic version" 
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::_prepareData invalid load magic header"
 				);
 
 			return false;
@@ -68,9 +53,6 @@ namespace Menge
 
 		uint32_t height;
 		m_stream->read( &height, sizeof(height) );
-
-		m_stream->read( &m_uncompress_size, sizeof(m_uncompress_size) );
-		m_stream->read( &m_compress_size, sizeof(m_compress_size) );
 
 		m_dataInfo.width = width;
 		m_dataInfo.height = height;
@@ -85,42 +67,48 @@ namespace Menge
 	size_t ImageDecoderACF::decode( void * _buffer, size_t _bufferSize )
 	{
 		(void)_bufferSize;
-		//if( _bufferSize < m_options.pitch * m_dataInfo.height )
-		//{
-		//	LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode invalid bufferSize %d != (%d * %d)"
-		//		, _bufferSize
-		//		, m_options.pitch
-		//		, m_dataInfo.height
-		//		);
 
-		//	return 0;
-		//}
+		size_t dataSize;
+		if( Helper::loadStreamArchiveBufferSize( m_serviceProvider, m_stream, dataSize ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode invalid load data size"
+				);
 
-		size_t uncompress_size;
-		if( m_options.pitch * m_dataInfo.height == m_uncompress_size )
-		{			
-			if( ARCHIVE_SERVICE(m_serviceProvider)
-				->decompressStream( m_archivator, m_stream, m_compress_size, _buffer, m_uncompress_size, uncompress_size ) == false )
+			return 0;
+		}
+
+		if( dataSize > _bufferSize )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode overrlow data size %d need %d"
+				, dataSize
+				, _bufferSize
+				);
+
+			return 0;
+		}
+		
+		if( m_options.pitch * m_dataInfo.height == dataSize )
+		{		
+			if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, _buffer, _bufferSize ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode uncompress failed"
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode invalid load"
 					);
 
 				return 0;
-			}		
+			}
 		}
 		else
 		{
-			CacheMemoryBuffer buffer(m_serviceProvider, m_uncompress_size, "ImageDecoderACF::decode");
+			CacheMemoryBuffer buffer(m_serviceProvider, dataSize, "ImageDecoderACF::decode");
 			void * memory = buffer.getMemory();
 
-			if( ARCHIVE_SERVICE(m_serviceProvider)
-				->decompressStream( m_archivator, m_stream, m_compress_size, memory, m_uncompress_size, uncompress_size ) == false )
+			if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, memory, dataSize ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode uncompress failed"
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderACF::decode invalid load"
 					);
 
 				return 0;
-			}	
+			}
 
 			const unsigned char * source_buffer = static_cast<const unsigned char *>(memory);
 			unsigned char * dest_buffer = static_cast<unsigned char *>(_buffer);
@@ -134,7 +122,7 @@ namespace Menge
 			}	
 		}
 
-		return uncompress_size;
+		return _bufferSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -14,6 +14,8 @@
 
 namespace Menge
 {
+	typedef size_t CacheBufferID;
+
 	class CacheServiceInterface
 		: public ServiceInterface
 	{
@@ -24,11 +26,8 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual size_t lockBuffer( size_t _size, void ** _memory, const char * _doc ) = 0;
-		virtual void unlockBuffer( size_t _bufferId ) = 0;
-
-	public:
-		virtual size_t getArchiveData( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, unsigned char ** _data, size_t & _size ) = 0;
+		virtual CacheBufferID lockBuffer( size_t _size, void ** _memory, const char * _doc ) = 0;
+		virtual void unlockBuffer( CacheBufferID _bufferId ) = 0;
 
 	public:
 		virtual MemoryCacheInputPtr createMemoryCacheInput() = 0;

@@ -180,7 +180,7 @@ namespace Menge
         void setSeparateAlphaBlendMode() override;
 
     protected:
-        PixelFormat findFormatFromChannels_( size_t & _channels, PixelFormat _format ) const;
+        void findFormatFromChannels_( PixelFormat _format, size_t _channels, PixelFormat & _hwFormat, size_t & _hwChannels ) const;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;

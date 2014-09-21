@@ -47,7 +47,7 @@ namespace Menge
         text_it != text_end;
         )
 		{			
-			size_t code = 0;
+			uint32_t code = 0;
 			utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
 			
 			if( err != utf8::internal::UTF8_OK )
@@ -69,7 +69,7 @@ namespace Menge
 			GlyphCode glyphChar;
 			glyphChar.setCode( code );
 
-			size_t code_next = 0;
+			uint32_t code_next = 0;
 			const char * text_it_next = text_it;		
 			utf8::internal::utf_error err_next = utf8::internal::validate_next( text_it_next, text_end, code_next );
 

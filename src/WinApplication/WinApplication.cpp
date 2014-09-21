@@ -105,6 +105,7 @@ extern "C" // only required if using g++
 	extern bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );	
+	extern bool initPluginMengeOggVorbis( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeWin32FileGroup( Menge::PluginInterface ** _plugin );
 
 	extern bool initPluginPathFinder( Menge::PluginInterface ** _plugin );
@@ -1655,6 +1656,7 @@ namespace Menge
 
 		MENGINE_ADD_PLUGIN( initPluginMengeImageCodec, "initialize Plugin Image Codec..." );
 		MENGINE_ADD_PLUGIN( initPluginMengeSoundCodec, "initialize Plugin Sound Codec..." );
+		MENGINE_ADD_PLUGIN( initPluginMengeOggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
 		MENGINE_ADD_PLUGIN( initPluginMengeAmplifier, "initialize Plugin Amplifier..." );
 		MENGINE_ADD_PLUGIN( initPluginMengeVideoCodec, "initialize Plugin Video Codec..." );
 		MENGINE_ADD_PLUGIN( initPluginPathFinder, "initialize Plugin Path Finder..." );

@@ -26,7 +26,7 @@ namespace Menge
 		~Account();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const FilePath & _folder, size_t _projectVersion, bool _projectVersionCheck );
+		bool initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const FilePath & _folder, uint32_t _projectVersion );
         
 	public:
 		const WString & getName() const override;
@@ -54,8 +54,7 @@ namespace Menge
 		ArchivatorInterfacePtr m_archivator;
 
 		WString m_name;
-		size_t m_projectVersion;
-		bool m_projectVersionCheck;
+		uint32_t m_projectVersion;
 
         FilePath m_folder;
         FilePath m_settingsPath;

@@ -1575,7 +1575,7 @@ namespace Menge
 					continue;
 				}
 
-				size_t code = 0;
+				uint32_t code = 0;
 				const char * test_text = text_utf8;
 				utf8::internal::utf_error err = utf8::internal::validate_next( test_text, test_text + text_utf8_len, code );
 				

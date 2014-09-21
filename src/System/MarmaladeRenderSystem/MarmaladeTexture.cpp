@@ -23,7 +23,7 @@ namespace Menge
 		, m_minFilter(0)
 		, m_magFilter(0)
 		, m_mode(ERIM_NORMAL)
-		, m_lock(nullptr)
+		, m_buffer(nullptr)
 		, m_bufferId(0)
 	{
 	}
@@ -83,11 +83,11 @@ namespace Menge
 		size_t size = Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwChannels, 1, m_hwPixelFormat );
 
 		m_bufferId = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( size, &m_lock, "MarmaladeTexture::lock" );
+			->lockBuffer( size, &m_buffer, "MarmaladeTexture::lock" );
 		
 		*_pitch = size / m_hwHeight;
 
-		return m_lock;
+		return m_buffer;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeTexture::unlock()
@@ -115,15 +115,15 @@ namespace Menge
 			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
 			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
 			{				
-				glCompressedTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, textureMemorySize, m_lock );
+				glCompressedTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, textureMemorySize, m_buffer );
 			}break;
 			case GL_RGB:
 			{
-				glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, m_lock );				
+				glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, m_buffer );				
 			}break;
 			default:
 			{
-				glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, m_format, m_type, m_lock );				
+				glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, m_format, m_type, m_buffer );				
 			}break;
 		}
 
@@ -144,7 +144,7 @@ namespace Menge
 			->unlockBuffer( m_bufferId );
 
 		m_bufferId = 0;
-		m_lock = nullptr;
+		m_buffer = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeTexture::_destroy()

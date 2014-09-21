@@ -17,7 +17,7 @@ namespace Menge
 		bool _initialize() override;
 
 	public:
-		size_t encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo ) override;
+		size_t encode( const void * _buffer, const CodecDataInfo * _dataInfo ) override;
 
 	protected:
 		ArchivatorInterfacePtr m_archivator;

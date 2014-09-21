@@ -54,20 +54,19 @@ namespace Menge
 			return 0;
 		}
 
-		size_t count;
-
 		String::size_type st_end = _fullname.find_first_of(']');
 
 		String num = _fullname.substr( st_begin + 1, st_end - st_begin - 1 );
 
-        if( Utils::stringToUnsigned( num, count ) == false )
+		uint32_t str_count;
+        if( Utils::stringToUnsigned( num, str_count ) == false )
         {
             return 0;
         }
 
 		_name = _fullname.substr( 0, st_begin );
 
-		return count;
+		return (size_t)str_count;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxParticleSystem::loadEmitters_( HM_FILE _file, const AstralaxEmitterContainerPtr & _container )

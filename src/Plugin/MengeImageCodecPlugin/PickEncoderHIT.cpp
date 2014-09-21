@@ -5,6 +5,8 @@
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Core/Stream.h"
+
 #   include "Config/Blobject.h"
 
 #	include "Logger/Logger.h"
@@ -35,37 +37,33 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t PickEncoderHIT::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
 	{
+		if( Helper::writeStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_HIT), GET_MAGIC_VERSION(MAGIC_HIT) ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("PickEncoderHIT::encode invalid write magic header"
+				);
+
+			return 0;
+		}
+
 		const PickCodecDataInfo * dataInfo = static_cast<const PickCodecDataInfo*>( _bufferDataInfo );
-				
-		magic_number_type magic_number = GET_MAGIC_NUMBER(MAGIC_HIT);
-        m_stream->write( &magic_number, sizeof(magic_number) );
-			
-		magic_version_type magic_version = GET_MAGIC_VERSION(MAGIC_HIT);
-        m_stream->write( &magic_version, sizeof(magic_version) );
 
         m_stream->write( &dataInfo->width, sizeof(dataInfo->width) );
         m_stream->write( &dataInfo->height, sizeof(dataInfo->height) );
         m_stream->write( &dataInfo->mipmaplevel, sizeof(dataInfo->mipmaplevel) );
 		m_stream->write( &dataInfo->mipmapsize, sizeof(dataInfo->mipmapsize) );
-                
-		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-            ->compressBuffer( m_archivator, _buffer, dataInfo->mipmapsize );
 
-		if( compress_memory == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("PickEncoderHIT::encode invalid compress"
-                );
+		const void * write_buffer = _buffer;
+		size_t write_size = (size_t)dataInfo->mipmapsize;
+              
+		if( Helper::writeStreamArchiveBuffer( m_serviceProvider, m_stream, m_archivator, false, write_buffer, write_size ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("PickEncoderHIT::encode invalid write magic header"
+				);
 
-            return 0;
-        }
+			return 0;
+		}
 
-		uint32_t compressSize;
-		const void * compressBuffer = compress_memory->getMemory( compressSize );
-		
-        m_stream->write( &compressSize, sizeof(compressSize) );
-        m_stream->write( compressBuffer, compressSize );
-
-		return compressSize;
+		return write_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

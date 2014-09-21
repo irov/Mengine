@@ -31,7 +31,6 @@ namespace Menge
 		, m_currentAccount(nullptr)
 		, m_playerEnumerator(0)
 		, m_projectVersion(0)
-		, m_projectVersionCheck(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -49,11 +48,10 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AccountManager::initialize( const FilePath & _accountsPath, size_t _projectVersion, bool _projectVersionCheck, AccountProviderInterface * _listener )
+    bool AccountManager::initialize( const FilePath & _accountsPath, uint32_t _projectVersion, AccountProviderInterface * _listener )
     {
         m_accountsPath = _accountsPath;
 		m_projectVersion = _projectVersion;
-		m_projectVersionCheck = _projectVersionCheck;
         m_accountListener = _listener;
 
         return true;
@@ -77,7 +75,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AccountInterfacePtr AccountManager::createAccount()
 	{
-        size_t new_playerID = ++m_playerEnumerator;
+        uint32_t new_playerID = ++m_playerEnumerator;
 
 		wchar_t bufferAccountID[128];
 		swprintf( bufferAccountID, 128, L"Player_%d", new_playerID );
@@ -179,7 +177,7 @@ namespace Menge
 
         AccountPtr newAccount = m_factoryAccounts.createObjectT();
 		
-		if( newAccount->initialize( m_serviceProvider, _accountID, folder, m_projectVersion, m_projectVersionCheck ) == false )
+		if( newAccount->initialize( m_serviceProvider, _accountID, folder, m_projectVersion ) == false )
 		{
 			return nullptr;				 
 		}

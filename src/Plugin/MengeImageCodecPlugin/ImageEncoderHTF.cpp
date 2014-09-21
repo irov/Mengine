@@ -5,6 +5,8 @@
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Core/Stream.h"
+
 #   include "Config/Blobject.h"
 
 #	include "Logger/Logger.h"
@@ -48,41 +50,20 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageEncoderHTF::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
+	size_t ImageEncoderHTF::encode( const void * _buffer, const CodecDataInfo* _dataInfo )
 	{
-		const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>( _bufferDataInfo );
-				
-		magic_number_type magic_number = GET_MAGIC_NUMBER(MAGIC_HTF);
-        m_stream->write( &magic_number, sizeof(magic_number) );
-			
-		magic_version_type magic_version = GET_MAGIC_VERSION(MAGIC_HTF);
-        m_stream->write( &magic_version, sizeof(magic_version) );
-
-		uint32_t minsize;
-
-		switch( dataInfo->format )
+		if( Helper::writeStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_HTF), GET_MAGIC_VERSION(MAGIC_HTF) ) == false )
 		{
-		case PF_DXT1:
-		case PF_ETC1:
-			{
-				minsize = 4;
-			}break;
-		case PF_PVRTC4_RGB:
-			{
-				minsize = 2;
-			}break;
-		default:
-			{
-				LOGGER_ERROR(m_serviceProvider)("ImageEncoderHTF::encode invalid format %d"
-					, dataInfo->format
-					);
+			LOGGER_ERROR(m_serviceProvider)("ImageEncoderHTF::encode invalid write magic header"
+				);
 
-				return 0;
-			}break;
+			return 0;
 		}
 
-		uint32_t width = dataInfo->width > minsize ? dataInfo->width : minsize;
-		uint32_t height = dataInfo->height > minsize ? dataInfo->height : minsize;
+		const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_dataInfo);
+
+		uint32_t width = dataInfo->width;
+		uint32_t height = dataInfo->height;
 
         m_stream->write( &width, sizeof(width) );		
         m_stream->write( &height, sizeof(height) );
@@ -90,27 +71,15 @@ namespace Menge
 		uint32_t format = s_convertFormat( dataInfo->format );
         m_stream->write( &format, sizeof(format) );
 		                
-		size_t uncompressSize = dataInfo->size;
-		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-            ->compressBuffer( m_archivator, _buffer, uncompressSize );
-
-		if( compress_memory == nullptr )
+		if( Helper::writeStreamArchiveBuffer( m_serviceProvider, m_stream, m_archivator, false, _buffer, dataInfo->size ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ImageEncoderHTF::encode invalid compress"
+            LOGGER_ERROR(m_serviceProvider)("ImageEncoderHTF::encode invalid write buffer"
                 );
 
             return 0;
         }
 
-		uint32_t compressSize;
-		const void * compressBuffer = compress_memory->getMemory( compressSize );
-		
-		m_stream->write( &uncompressSize, sizeof(uncompressSize) );
-        m_stream->write( &compressSize, sizeof(compressSize) );
-
-        m_stream->write( compressBuffer, compressSize );
-
-		return compressSize;
+		return dataInfo->size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

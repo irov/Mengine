@@ -340,8 +340,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			sprintf_s( s_atlasWidth, 16, "%d", desc.width );
 
 			fputs( s_atlasWidth, f_info );
-			fputs( "\n", f_info );
-
+			fputs( "\n", f_info );  
+			 
 			CHAR s_atlasHeight[16];
 			sprintf_s( s_atlasHeight, 16, "%d", desc.height );
 

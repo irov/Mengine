@@ -24,7 +24,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( const FilePath & _accountsPath, size_t _projectVersion, bool _projectVersionCheck, AccountProviderInterface * _listener ) override;
+        bool initialize( const FilePath & _accountsPath, uint32_t _projectVersion, AccountProviderInterface * _listener ) override;
         void finalize() override;
 
 	public:
@@ -65,8 +65,7 @@ namespace Menge
 
 	protected:
         FilePath m_accountsPath;
-		size_t m_projectVersion;
-		bool m_projectVersionCheck;
+		uint32_t m_projectVersion;
 
         AccountProviderInterface * m_accountListener;
 
@@ -82,6 +81,6 @@ namespace Menge
 
 		AccountInterfacePtr m_currentAccount;
 
-		size_t m_playerEnumerator;
+		uint32_t m_playerEnumerator;
 	};
 }

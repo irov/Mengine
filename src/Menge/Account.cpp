@@ -3,6 +3,7 @@
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/StringizeInterface.h"
+#   include "Interface/CacheInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
 #	include "Consts.h"
@@ -12,7 +13,7 @@
 #	include "Core/CacheMemoryBuffer.h"
 #	include "Core/IniUtil.h"
 #	include "Core/String.h"
-#	include "Core/CRC32.h"
+#	include "Core/Stream.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -22,7 +23,6 @@ namespace Menge
 	Account::Account()
 		: m_serviceProvider(nullptr)
 		, m_projectVersion(0)
-		, m_projectVersionCheck(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,12 +40,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Account::initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const FilePath & _folder, size_t _projectVersion, bool _projectVersionCheck )
+	bool Account::initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const FilePath & _folder, uint32_t _projectVersion )
 	{
 		m_serviceProvider = _serviceProvider;
 		m_name = _name;
 		m_projectVersion = _projectVersion;
-		m_projectVersionCheck = _projectVersionCheck;
 
 		m_folder = _folder;
 
@@ -189,39 +188,36 @@ namespace Menge
 
         file = nullptr;
 
-		if( m_projectVersionCheck == true )
+		String projectVersion_s;
+		if( IniUtil::getIniValue( ini, "PROJECT", "VERSION", projectVersion_s, m_serviceProvider ) == false )
 		{
-			String projectVersion_s;
-			if( IniUtil::getIniValue( ini, "PROJECT", "VERSION", projectVersion_s, m_serviceProvider ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed not found project version"
-					, m_name.c_str()
-					);
+			LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed not found project version"
+				, m_name.c_str()
+				);
 
-				return false;
-			}
+			return false;
+		}
 
-			size_t projectVersion = 0;
-			if( Utils::stringToUnsigned( projectVersion_s, projectVersion ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed invalid project version '%s'"
-					, m_name.c_str()
-					, projectVersion_s.c_str()
-					);
+		uint32_t projectVersion = 0;
+		if( Utils::stringToUnsigned( projectVersion_s, projectVersion ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed invalid project version '%s'"
+				, m_name.c_str()
+				, projectVersion_s.c_str()
+				);
 
-				return false;
-			}
+			return false;
+		}
 
-			if( m_projectVersion != projectVersion )
-			{
-				LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed invalid project version '%d' need '%d'"
-					, m_name.c_str()
-					, projectVersion
-					, m_projectVersion
-					);
+		if( m_projectVersion != projectVersion )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' failed invalid project version '%d' need '%d'"
+				, m_name.c_str()
+				, projectVersion
+				, m_projectVersion
+				);
 
-				return false;
-			}
+			return false;
 		}
 
 		for( TMapSettings::iterator 
@@ -331,69 +327,41 @@ namespace Menge
             return false;
         }
 
-        size_t file_size = stream->size();
+		
+		CacheBufferID bufferId;
+		unsigned char * data_memory;
+		size_t data_size;
+		
+		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_ACCOUNT_DATA), GET_MAGIC_VERSION(MAGIC_ACCOUNT_DATA), bufferId, &data_memory, data_size ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load file %s"
+				, m_name.c_str()
+				, fullpath.c_str()
+				);
 
-        uint32_t load_crc32 = 0;
-        if( stream->read( &load_crc32, sizeof(load_crc32) ) != sizeof(load_crc32) )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load file %s (load crc32)"
-                , m_name.c_str()
-                , fullpath.c_str()
-                );
+			return false;
+		}
 
-            return false;
-        }
+        _data.assign( data_memory, data_memory + data_size );
 
-        uint32_t load_data_size = 0;
-        if( stream->read( &load_data_size, sizeof(load_data_size) ) != sizeof(load_data_size) )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load file %s (load data size)"
-                , m_name.c_str()
-                , fullpath.c_str()
-                );
-
-            return false;
-        }
-
-        size_t load_compress_size = file_size - sizeof(load_crc32) - sizeof(load_data_size);
-
-		CacheMemoryBuffer data_buffer(m_serviceProvider, load_compress_size, "Account_loadBinaryFile");
-		TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
-        
-		stream->read( data_memory, load_compress_size );
-
-        stream = nullptr;
-
-        size_t check_crc32 = make_crc32( data_memory, load_compress_size );
-
-        if( load_crc32 != check_crc32 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls: invalid load file %s (crc32 incorect)"
-                , m_name.c_str()
-                , fullpath.c_str()
-                );
-
-            return false;
-        }
-
-        _data.resize( load_data_size );
-
-        size_t uncompress_size;
-        if( m_archivator->decompress( &_data[0], load_data_size, data_memory, load_compress_size, uncompress_size ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls: invalid load file %s (uncompress failed)"
-                , m_name.c_str()
-                , fullpath.c_str()
-                );
-
-            return false;
-        }
+		CACHE_SERVICE(m_serviceProvider)
+			->unlockBuffer( bufferId );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Account::writeBinaryFile( const FilePath & _fileName, const TBlobject & _data )
     {
+		if( _data.empty() == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls write empty file %s"
+				, m_name.c_str()
+				, _fileName.c_str()
+				);
+
+			return false;
+		}
+
 		PathString path;
 		
 		path += m_folder;
@@ -407,7 +375,7 @@ namespace Menge
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write file %s (not create)"
+            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid open file %s"
                 , m_name.c_str()
                 , _fileName.c_str()
                 );
@@ -415,65 +383,18 @@ namespace Menge
             return false;
         }
 
-        if( _data.empty() == true )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls write empty file %s"
-                , m_name.c_str()
-                , _fileName.c_str()
-                );
+		const uint8_t * data_memory = &_data[0];
+		size_t data_size = _data.size();
 
-            return false;
-        }
+		if( Helper::writeStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_ACCOUNT_DATA), GET_MAGIC_VERSION(MAGIC_ACCOUNT_DATA), true, data_memory, data_size ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write file %s"
+				, m_name.c_str()
+				, _fileName.c_str()
+				);
 
-        uint32_t data_size = _data.size();
-
-		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
-			->compressBuffer( m_archivator, &_data[0], data_size );
-        
-        if( compress_memory == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid compress file %s"
-                , m_name.c_str()
-                , _fileName.c_str()
-                );
-
-            return false;
-        }
-
-		uint32_t compressSize;
-		const void * compressBuffer = compress_memory->getMemory( compressSize );
-
-        uint32_t value_crc32 = make_crc32( (const unsigned char *)compressBuffer, compressSize );
-
-        if( stream->write( &value_crc32, sizeof(value_crc32) ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write 'crc32' %s (not create)"
-                , m_name.c_str()
-                , _fileName.c_str()
-                );
-
-            return false;
-        }
-
-        if( stream->write( &data_size, sizeof(data_size) ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write 'data size' %s (not create)"
-                , m_name.c_str()
-                , _fileName.c_str()
-                );
-
-            return false;
-        }
-                
-        if( stream->write( compressBuffer, compressSize ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls invalid write 'data' %s (not create)"
-                , m_name.c_str()
-                , _fileName.c_str()
-                );
-
-            return false;
-        }
+			return false;
+		}
 
         return true;
     }

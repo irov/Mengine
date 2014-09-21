@@ -4,5 +4,5 @@
 
 namespace Menge
 {
-	DECLARE_MAGIC_NUMBER(MAGIC_HTF, 'H', 'T', 'F', '1', 1);
+	DECLARE_MAGIC_NUMBER(MAGIC_HTF, 'H', 'T', 'F', '1', 2);
 }

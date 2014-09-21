@@ -207,7 +207,56 @@ namespace Menge
 			return 0;
 		}
 
-		if( m_options.flags & DF_READ_ALPHA_ONLY )
+		if( m_options.flags == 0 )
+		{
+			if( m_dataInfo.channels == m_options.channels )
+			{
+				png_bytep bufferCursor = (png_bytep)_buffer;
+
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				{
+					png_read_row( m_png_ptr, bufferCursor, nullptr );
+
+					bufferCursor += m_options.pitch;
+				}
+			}
+			else if( m_dataInfo.channels == 1 && m_options.channels == 4 )
+			{
+				png_bytep bufferCursor = (png_bytep)_buffer;
+
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				{
+					png_read_row( m_png_ptr, bufferCursor, nullptr );
+
+					bufferCursor += m_options.pitch;
+				}
+
+				this->sweezleAlpha1( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
+			}
+			else if( m_dataInfo.channels == 3 && m_options.channels == 4 )
+			{           
+				png_bytep bufferCursor = (png_bytep)_buffer;
+
+				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				{
+					png_read_row( m_png_ptr, bufferCursor, nullptr );
+
+					bufferCursor += m_options.pitch;
+				}
+
+				this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
+			}			
+			else
+			{
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode DEFAULT not support chanells %d - %d"
+					, m_dataInfo.channels
+					, m_options.channels
+					);
+
+				return 0;
+			}
+		}
+		else if( m_options.flags & DF_READ_ALPHA_ONLY )
 		{
 			if( m_dataInfo.channels == 1 && m_options.channels == 1 )
 			{
@@ -301,52 +350,11 @@ namespace Menge
 		}
 		else 
 		{
-			if( m_dataInfo.channels == 1 && m_options.channels == 4 )
-			{
-				png_bytep bufferCursor = (png_bytep)_buffer;
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode unsupport options flag %d"
+				, m_options.flags
+				);
 
-				for( size_t i = 0; i != m_dataInfo.height; ++i )
-				{
-					png_read_row( m_png_ptr, bufferCursor, nullptr );
-
-					bufferCursor += m_options.pitch;
-				}
-
-				this->sweezleAlpha1( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
-			}
-			else if( m_dataInfo.channels == 3 && m_options.channels == 4 )
-			{           
-				png_bytep bufferCursor = (png_bytep)_buffer;
-
-				for( size_t i = 0; i != m_dataInfo.height; ++i )
-				{
-					png_read_row( m_png_ptr, bufferCursor, nullptr );
-
-					bufferCursor += m_options.pitch;
-				}
-
-				this->sweezleAlpha3( m_dataInfo.width, m_dataInfo.height, _buffer, m_options.pitch );
-			}
-			else if( m_dataInfo.channels == m_options.channels )
-			{
-				png_bytep bufferCursor = (png_bytep)_buffer;
-
-				for( size_t i = 0; i != m_dataInfo.height; ++i )
-				{
-					png_read_row( m_png_ptr, bufferCursor, nullptr );
-
-					bufferCursor += m_options.pitch;
-				}
-			}
-			else
-			{
-				LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::decode DEFAULT not support chanells %d - %d"
-					, m_dataInfo.channels
-					, m_options.channels
-					);
-
-				return 0;
-			}
+			return 0;
 		}
 
 		png_read_end( m_png_ptr, m_info_ptr );

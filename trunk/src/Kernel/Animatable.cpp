@@ -115,17 +115,17 @@ namespace Menge
 		return m_reverse;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Animatable::setPlayCount( size_t _count )
+    void Animatable::setPlayCount( uint32_t _count )
     {
         m_playCount = _count;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Animatable::getPlayCount() const
+    uint32_t Animatable::getPlayCount() const
     {
         return m_playCount;
     }
 	//////////////////////////////////////////////////////////////////////////
-	size_t Animatable::getPlayIterator() const
+	uint32_t Animatable::getPlayIterator() const
 	{
 		return m_playIterator;
 	}
@@ -146,7 +146,7 @@ namespace Menge
         return m_scretch;
     }
 	//////////////////////////////////////////////////////////////////////////
-	size_t Animatable::play( float _time )
+	uint32_t Animatable::play( float _time )
 	{
 		m_interrupt = false;
 
@@ -169,7 +169,7 @@ namespace Menge
 
 		m_play = true;
 
-		size_t id = ++m_enumerator;
+		uint32_t id = ++m_enumerator;
 
 		return id;
 	}
@@ -227,7 +227,7 @@ namespace Menge
 		return m_interrupt;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Animatable::getPlayId() const
+	uint32_t Animatable::getPlayId() const
 	{
 		return m_enumerator;
 	}

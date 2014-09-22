@@ -104,30 +104,30 @@ namespace Menge
 				
 				for( size_t i = 0; i != _count; ++i )
 				{
-					const char * key = _keys[i];
-					const char * value = _values[i];
+					const char * str_key = _keys[i];
+					const char * str_value = _values[i];
 
-					if( strcmp( key, "Key") == 0 )
+					if( strcmp( str_key, "Key") == 0 )
 					{
-						text_key = Helper::stringizeStringExternal( m_serviceProvider, value, (size_t)-1 );
+						text_key = Helper::stringizeStringExternal( m_serviceProvider, str_value, (size_t)-1 );
 					}
-					else if( strcmp( key, "Value" ) == 0 )
+					else if( strcmp( str_key, "Value" ) == 0 )
 					{
-						size_t value_size = strlen( value );
+						size_t str_value_size = strlen( str_value );
 
-						const char * value_end = value + value_size;
-						const char * value_valid = utf8::find_invalid( value, value_end );
+						const char * str_value_end = str_value + str_value_size;
+						const char * str_value_valid = utf8::find_invalid( str_value, str_value_end );
 
-						if( value_valid != value_end )
+						if( str_value_valid != str_value_end )
 						{
 							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read text |%s| invalid utf8 char |%s|"
 								, m_pakName.c_str()
 								, m_path.c_str()
-								, value
-								, value_valid
+								, str_value
+								, str_value_valid
 								);
 
-							String str(value, value_size);
+							String str(str_value, str_value_size);
 							String temp;
 							utf8::replace_invalid(str.begin(), str.end(), std::back_inserter(temp));
 
@@ -139,62 +139,62 @@ namespace Menge
 						}
 						else
 						{
-							text = Helper::stringizeStringExternal( m_serviceProvider, value, value_size );
+							text = Helper::stringizeStringExternal( m_serviceProvider, str_value, str_value_size );
 						}
 					}
-					else if( strcmp( key, "Font" ) == 0 )
+					else if( strcmp( str_key, "Font" ) == 0 )
 					{
-						font = Helper::stringizeStringExternal( m_serviceProvider, value, (size_t)-1 );
+						font = Helper::stringizeStringExternal( m_serviceProvider, str_value, (size_t)-1 );
 
 						params |= EFP_FONT;
 					}
-					else if( strcmp( key, "CharOffset" ) == 0 )
+					else if( strcmp( str_key, "CharOffset" ) == 0 )
 					{
-						float charOffset = 0.f;
-						if( sscanf( value, "%f", &charOffset ) != 1 )
+						float value = 0.f;
+						if( sscanf( str_value, "%f", &value ) != 1 )
 						{
 							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s charOffset %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
-								, value
+								, str_value
 								);
 						}
 
-						charOffset = charOffset;
+						charOffset = value;
 
 						params |= EFP_CHAR_OFFSET;
 					}
-					else if( strcmp( key, "LineOffset" ) == 0 )
+					else if( strcmp( str_key, "LineOffset" ) == 0 )
 					{
-						float lineOffset = 0.f;
-						if( sscanf( value, "%f", &lineOffset ) != 1 )
+						float value = 0.f;
+						if( sscanf( str_value, "%f", &value ) != 1 )
 						{
 							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
-								, value
+								, str_value
 								);
 						}
 
-						lineOffset = lineOffset;
+						lineOffset = value;
 
 						params |= EFP_LINE_OFFSET;
 					}			
-					else if( strcmp( key, "Color" ) == 0 )
+					else if( strcmp( str_key, "Color" ) == 0 )
 					{
 						float r;
 						float g;
 						float b;
 						float a;
-						if( sscanf( value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
+						if( sscanf( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
 						{
 							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
-								, value
+								, str_value
 								);
 						}
 
@@ -202,19 +202,19 @@ namespace Menge
 
 						params |= EFP_COLOR_FONT;
 					}	
-					else if( strcmp( key, "ColorOutline" ) == 0 )
+					else if( strcmp( str_key, "ColorOutline" ) == 0 )
 					{
 						float r;
 						float g;
 						float b;
 						float a;
-						if( sscanf( value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
+						if( sscanf( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
 						{
 							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
-								, value
+								, str_value
 								);
 						}
 
@@ -222,44 +222,44 @@ namespace Menge
 
 						params |= EFP_COLOR_OUTLINE;
 					}
-					else if( strcmp( key, "MaxLength" ) == 0 )
+					else if( strcmp( str_key, "MaxLength" ) == 0 )
 					{						
-						float length = 0.f;
-						if( sscanf( value, "%f", &length ) != 1 )
+						float value = 0.f;
+						if( sscanf( str_value, "%f", &value ) != 1 )
 						{
 							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s Override %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
-								, value
+								, str_value
 								);
 						}
 
-						maxLength = length;
+						maxLength = value;
 
 						params |= EFP_MAX_LENGTH;
 					}
-					else if( strcmp( key, "Override" ) == 0 )
+					else if( strcmp( str_key, "Override" ) == 0 )
 					{						
-						size_t Override = 0;
-						if( sscanf( value, "%d", &Override ) != 1 )
+						size_t value = 0;
+						if( sscanf( str_value, "%d", &value ) != 1 )
 						{
 							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s Override %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
-								, value
+								, str_value
 								);
 						}
 
-						isOverride = (Override != 0);
+						isOverride = (value != 0);
 					}
 					else
 					{
 						LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid tag %s for text %s"
 							, m_pakName.c_str()
 							, m_path.c_str()
-							, key
+							, str_key
 							, text_key.c_str()
 							);
 					}

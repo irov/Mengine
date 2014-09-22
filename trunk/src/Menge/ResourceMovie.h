@@ -27,7 +27,7 @@ namespace Menge
     const size_t MOVIE_LAYER_MESH_2D = 0x0100;
 	const size_t MOVIE_LAYER_UNSTOPPABLE = 0x0200;
 	
-    const size_t movie_layer_parent_none = (size_t)-1;
+    const size_t movie_layer_parent_none = (uint32_t)-1;
 
 	struct MovieLayer
 	{
@@ -53,18 +53,18 @@ namespace Menge
 		ConstString name;
 		ConstString type;
 
-		size_t id;
-		size_t index;
-		size_t parent;
+		uint32_t id;
+		uint32_t index;
+		uint32_t parent;
 
-        size_t playCount;        
+        uint32_t playCount;        
         float scretch;
 
 		float in;
 		float out;
 		float startInterval;
 
-        size_t state;
+        uint32_t state;
 
 		ConstString blendingMode;
 		ConstString keyFramesName;
@@ -178,8 +178,8 @@ namespace Menge
 		float getFrameDuration() const;
 		float getDuration() const;
 
-		size_t getFrameCount() const;
-		size_t getMaxLayerIndex() const;
+		uint32_t getFrameCount() const;
+		uint32_t getMaxLayerIndex() const;
 
 		const mt::vec2f & getSize() const;
 
@@ -244,7 +244,7 @@ namespace Menge
 
 		MovieFramePackInterfacePtr m_keyFramePack;
 
-		size_t m_frameCount;
+		uint32_t m_frameCount;
 
 		mt::vec2f m_size;
 
@@ -253,7 +253,7 @@ namespace Menge
 		bool m_hasCamera3D;
 		MovieLayerCamera3D m_camera3D;
 
-		size_t m_maxLayerIndex;
+		uint32_t m_maxLayerIndex;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const MovieFramePackInterfacePtr & ResourceMovie::getFramePack() const

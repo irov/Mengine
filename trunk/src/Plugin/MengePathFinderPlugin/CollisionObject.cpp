@@ -66,8 +66,10 @@ namespace Menge
 		return m_ghost;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CollisionObject::update( float _timing )
+	void CollisionObject::_update( float _current, float _timing )
 	{
+		(void)_current;
+
 		if( m_motor == nullptr )
 		{
 			return;

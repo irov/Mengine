@@ -134,7 +134,7 @@ namespace Menge
 
         _stream->read( header_buff, Metabuf::header_size );
 
-        uint32_t header_read = 0;
+        size_t header_read = 0;
         uint32_t readVersion;
         uint32_t needVersion;
 

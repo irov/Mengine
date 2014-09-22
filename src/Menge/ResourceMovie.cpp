@@ -53,12 +53,12 @@ namespace Menge
 		return m_duration;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceMovie::getFrameCount() const
+	uint32_t ResourceMovie::getFrameCount() const
 	{
 		return m_frameCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceMovie::getMaxLayerIndex() const
+	uint32_t ResourceMovie::getMaxLayerIndex() const
 	{
 		return m_maxLayerIndex;
 	}
@@ -440,7 +440,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            m_maxLayerIndex = std::max( m_maxLayerIndex, it->index );
+            m_maxLayerIndex = m_maxLayerIndex > it->index ? m_maxLayerIndex : it->index;
             
 			if( it->type == CONST_STRING(m_serviceProvider, MovieSlot) )
             {
@@ -558,7 +558,7 @@ namespace Menge
 			}
 		}
 
-        m_frameCount = (size_t)((m_duration / m_frameDuration) + 0.5f) - 1;
+        m_frameCount = (uint32_t)((m_duration / m_frameDuration) + 0.5f) - 1;
 
         return true;
 	}
@@ -581,7 +581,7 @@ namespace Menge
 				return true;
 			}
 
-			if( it->parent == 0 || it->parent == (size_t)-1 )
+			if( it->parent == 0 || it->parent == (uint32_t)-1 )
 			{
 				return false;
 			}

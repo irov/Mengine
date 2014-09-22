@@ -34,10 +34,10 @@ namespace Menge
 		void setReverse( bool _value);
 		bool getReverse() const;
 
-        void setPlayCount( size_t _count );
-        size_t getPlayCount() const;
+        void setPlayCount( uint32_t _count );
+        uint32_t getPlayCount() const;
 
-		size_t getPlayIterator() const;
+		uint32_t getPlayIterator() const;
 
         void setScretch( float _scretch );
         float getScretch() const;
@@ -54,7 +54,7 @@ namespace Menge
 		virtual void _setReverse( bool _value );
 
 	public:
-		size_t play( float _time );
+		uint32_t play( float _time );
 		bool stop();
 		bool interrupt();
 		void end();
@@ -66,7 +66,7 @@ namespace Menge
 		bool isInterrupt() const;
 
 	public:
-		size_t getPlayId() const;
+		uint32_t getPlayId() const;
 		float getPlayTime() const;
 
 	protected:
@@ -77,7 +77,7 @@ namespace Menge
 		virtual bool _interrupt( size_t _enumerator ) = 0;		
 
 	protected:
-		size_t m_enumerator;
+		uint32_t m_enumerator;
 		
 		float m_playTime;
 
@@ -86,8 +86,8 @@ namespace Menge
         float m_intervalBegin;
         float m_intervalEnd;
         
-        size_t m_playCount;
-		size_t m_playIterator;
+        uint32_t m_playCount;
+		uint32_t m_playIterator;
         float m_scretch;
 		
 		bool m_play;

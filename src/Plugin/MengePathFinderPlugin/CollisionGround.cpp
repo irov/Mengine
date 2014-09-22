@@ -114,22 +114,6 @@ namespace Menge
 		m_radars.insert( m_radars.end(), m_radarsAdd.begin(), m_radarsAdd.end() );
 		m_radarsAdd.clear();
 
-		for( TVectorCollisionObjects::iterator
-			it = m_objects.begin(),
-			it_end = m_objects.end();
-		it != it_end;
-		++it )
-		{
-			CollisionObject * object = *it;
-
-			if( object->getDead() == true )
-			{
-				continue;
-			}
-			
-			object->update( _timing );						
-		}
-
 		for( TVectorCollisionObjects::size_type
 			it = 0,
 			it_end = m_objects.size();

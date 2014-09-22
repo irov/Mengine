@@ -537,7 +537,7 @@ namespace Menge
 				continue;
 			}
 			
-			size_t layerId = nd.layerId;
+			uint32_t layerId = nd.layerId;
 
 			const MovieLayer & layer = layers[layerId];
 

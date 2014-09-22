@@ -200,7 +200,7 @@ namespace Menge
         {	
             Node * node;
 			Animatable * animatable;
-			size_t layerId;
+			uint32_t layerId;
 			bool child;
         };
 

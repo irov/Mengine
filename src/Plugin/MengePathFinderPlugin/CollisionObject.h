@@ -34,7 +34,7 @@ namespace Menge
 		bool getGhost() const;
 
 	public:
-		void update( float _timing );
+		void _update( float _current, float _timing ) override;
 
 	protected:
 		float m_radius;

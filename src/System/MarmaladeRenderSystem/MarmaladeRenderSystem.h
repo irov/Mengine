@@ -37,7 +37,6 @@ namespace Menge
             , alphaOp(0)
             , alphaArg1(0)
             , alphaArg2(0)
-			, enabled(false)
         {
 
         }
@@ -55,7 +54,6 @@ namespace Menge
         GLenum alphaOp;
         GLenum alphaArg1;
         GLenum alphaArg2;
-		bool enabled;
     };
     
 	class MarmaladeRenderSystem 

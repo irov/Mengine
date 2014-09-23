@@ -2444,14 +2444,12 @@ namespace Menge
 		D3DSAMPLERSTATETYPE textureFilterType = s_toD3DTextureFilterType( _filterType );
 		D3DTEXTUREFILTERTYPE textureFilter = s_toD3DTextureFilter( _filter );
 
-		if( m_samplerStates[_stage][textureFilterType] == textureFilter )
+		if( m_samplerStates[_stage][textureFilterType] != textureFilter )
 		{
-			return;
+			m_samplerStates[_stage][textureFilterType] = textureFilter;
+
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, textureFilterType, textureFilter ) );
 		}
-
-		m_samplerStates[_stage][textureFilterType] = textureFilter;
-
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, textureFilterType, textureFilter ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration )

@@ -12,8 +12,6 @@
 
 #   define Py_BUILD_CORE
 
-#	define Z_SOLO
-
 #   define SIGBREAK        21
 
 #   define LIBPNG_NO_MMX

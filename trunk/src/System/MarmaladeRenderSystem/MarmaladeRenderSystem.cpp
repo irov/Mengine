@@ -325,7 +325,7 @@ namespace Menge
 	{
         m_resolution = _resolution;
 
-		for( int i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
+		for( uint32_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
 			glActiveTexture( GL_TEXTURE0 + i );
 			glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE );
@@ -343,13 +343,16 @@ namespace Menge
 		glDisable( GL_CULL_FACE );
 		glDisable( GL_LIGHTING );
 		glEnable( GL_BLEND );
+
 		glActiveTexture( GL_TEXTURE0 );
+		glEnable( GL_TEXTURE_2D ); 
+
+		glActiveTexture( GL_TEXTURE1 );
 		glEnable( GL_TEXTURE_2D ); 
 		
         glDepthMask( GL_FALSE );
 		glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-
-        m_textureStage[0].enabled = false;
+		        
         m_depthMask = false;
         		
         return true;
@@ -487,7 +490,7 @@ namespace Menge
 		}
 	
 		glBindBuffer( GL_ARRAY_BUFFER, range->bufId );
-		glBufferSubData( GL_ARRAY_BUFFER, range->offset, range->size, range->pMem );        
+		glBufferSubData( GL_ARRAY_BUFFER, range->offset, range->size, range->pMem + range->offset );        
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 
 		gl_check_error();
@@ -525,7 +528,7 @@ namespace Menge
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 
 		glBufferData( GL_ELEMENT_ARRAY_BUFFER, memRange.size, NULL, usage );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_currentIndexBuffer );
 
 		gl_check_error();
 
@@ -587,7 +590,7 @@ namespace Menge
 		}
 		
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, range->bufId );
-		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, range->offset, range->size, range->pMem );
+		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, range->offset, range->size, range->pMem + range->offset );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 
 		gl_check_error();
@@ -625,13 +628,15 @@ namespace Menge
 			glActiveTexture(GL_TEXTURE0 + i);
 			glEnable(GL_TEXTURE_2D);
 
-			glBindTexture(GL_TEXTURE_2D, textureStage.texture);
+			
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter );
 
+			glBindTexture( GL_TEXTURE_2D, textureStage.texture );
+			
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 
 			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, textureStage.colorOp);
@@ -683,9 +688,9 @@ namespace Menge
 
 		gl_check_error();
 		
-		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
-		glDisableClientState( GL_COLOR_ARRAY ); 
 		glDisableClientState( GL_VERTEX_ARRAY );
+		glDisableClientState( GL_COLOR_ARRAY );
+		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 		
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );

@@ -15,7 +15,7 @@ namespace Menge
     {
     public:
         virtual Factorable * generate( const ConstString & _category, const ConstString & _prototype ) = 0;
-        virtual size_t count() const = 0;
+        virtual uint32_t count() const = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<PrototypeGeneratorInterface> PrototypeGeneratorInterfacePtr;

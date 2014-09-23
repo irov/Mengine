@@ -10,7 +10,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPacket::initialize( ServiceProviderInterface * _serviceProvider, size_t _packetSize )
+	bool ThreadTaskPacket::initialize( ServiceProviderInterface * _serviceProvider, uint32_t _packetSize )
 	{
 		m_serviceProvider = _serviceProvider;
 
@@ -24,14 +24,14 @@ namespace Menge
 		m_tasks.push_back( _task );	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ThreadTaskPtr & ThreadTaskPacket::getTask( size_t _index ) const
+	const ThreadTaskPtr & ThreadTaskPacket::getTask( uint32_t _index ) const
 	{
 		return m_tasks[_index];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ThreadTaskPacket::countTask() const
+	uint32_t ThreadTaskPacket::countTask() const
 	{
-		size_t count = m_tasks.size();
+		uint32_t count = m_tasks.size();
 
 		return count;
 	}

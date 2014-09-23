@@ -43,7 +43,7 @@ namespace Menge
 #	endif
 
     public:
-        const ConstString & getCacheConstString( size_t _index ) const;
+        const ConstString & getCacheConstString( uint32_t _index ) const;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

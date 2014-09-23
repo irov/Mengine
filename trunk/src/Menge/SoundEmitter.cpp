@@ -138,7 +138,7 @@ namespace Menge
         return m_resourceSound;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::onSoundPause( size_t _soundId )
+	void SoundEmitter::onSoundPause( uint32_t _soundId )
 	{
 		(void)_soundId;
 
@@ -148,7 +148,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::onSoundStop( size_t _soundId )
+	void SoundEmitter::onSoundStop( uint32_t _soundId )
 	{
 		(void)_soundId;
 
@@ -184,7 +184,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::_restart( float _time, size_t _enumerator )
+	bool SoundEmitter::_restart( float _time, uint32_t _enumerator )
 	{
         (void)_time;
         (void)_enumerator;
@@ -193,7 +193,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_stop( size_t _enumerator )
+	void SoundEmitter::_stop( uint32_t _enumerator )
 	{
 		if( m_sourceID != 0 )
 		{
@@ -204,7 +204,7 @@ namespace Menge
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_SOUND_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_end( size_t _enumerator )
+	void SoundEmitter::_end( uint32_t _enumerator )
 	{
 		if( m_sourceID != 0 )
 		{
@@ -279,7 +279,7 @@ namespace Menge
 		this->registerEvent( EVENT_SOUND_END, ("onSoundEnd"), _listener, &m_onSoundStopEvent );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEmitter::_interrupt( size_t _enumerator )
+	bool SoundEmitter::_interrupt( uint32_t _enumerator )
 	{
         (void)_enumerator;
 

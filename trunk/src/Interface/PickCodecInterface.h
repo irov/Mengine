@@ -27,7 +27,7 @@ namespace Menge
 	struct PickCodecOptions
 		: public CodecOptions
 	{
-		int pitch;
+		size_t pitch;
 	};
 
 	class PickDecoderInterface

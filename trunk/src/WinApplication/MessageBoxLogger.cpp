@@ -23,12 +23,12 @@ namespace Menge
 		m_verboseLevel = _level;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MessageBoxLogger::setVerboseFlag( size_t _flag )
+    void MessageBoxLogger::setVerboseFlag( uint32_t _flag )
     {
         m_verboseFlag = _flag;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MessageBoxLogger::validMessage( EMessageLevel _level, size_t _flag ) const
+	bool MessageBoxLogger::validMessage( EMessageLevel _level, uint32_t _flag ) const
 	{
 		if( m_verboseLevel < _level )
 		{

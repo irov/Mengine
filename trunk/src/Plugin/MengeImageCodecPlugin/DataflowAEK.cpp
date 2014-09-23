@@ -196,7 +196,7 @@ namespace Menge
 
 				shapes.shapes.resize( shapes_size );
 
-				for( size_t j = 0; j != shapes_size; ++j )
+				for( uint32_t j = 0; j != shapes_size; ++j )
 				{
 					MovieFrameShape & shape = shapes.shapes[j];
 
@@ -236,7 +236,7 @@ namespace Menge
 
 				polygon.vertexCount = vertexCount;
 
-				for( size_t j = 0; j != vertexCount; ++j )
+				for( uint32_t j = 0; j != vertexCount; ++j )
 				{
 					mt::vec2f v;
 					ar << v.x;

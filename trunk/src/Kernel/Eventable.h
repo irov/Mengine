@@ -67,7 +67,7 @@ namespace Menge
 
 	public:
 		bool operator () ( bool & _value, bool _default, const char * _format, ... ) const;
-		bool operator () ( size_t & _value, size_t _default, const char * _format, ... ) const;
+		bool operator () ( uint32_t & _value, uint32_t _default, const char * _format, ... ) const;
 		bool operator () ( Scriptable *& _value, Scriptable * _default, const char * _format, ... ) const;
 		bool operator () ( PyObject *& _value, PyObject * _default, const char * _format, ... ) const;
 

@@ -18,7 +18,7 @@ namespace Menge
 		, m_looped(false)
 		, m_updating(false)
 	{
-        for( size_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
+        for( uint32_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
         {
             m_alBuffersId[i] = 0;
         }
@@ -31,7 +31,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OALSoundBufferStream::removeBuffers_()
     {
-        for( size_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
+        for( uint32_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
         {
             ALuint id = m_alBuffersId[i];
 
@@ -46,7 +46,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferStream::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
-        for( size_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
+        for( uint32_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
         {
             ALuint id = m_soundSystem->genBufferId();
 
@@ -189,7 +189,7 @@ namespace Menge
             return false;
         }
         
-        for( size_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
+        for( uint32_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
         {
             ALuint id = m_alBuffersId[i];
 
@@ -355,7 +355,7 @@ namespace Menge
             OAL_CHECK_ERROR(m_serviceProvider);
                         
 			// Читаем очередную порцию данных
-            unsigned int bytesWritten;
+            size_t bytesWritten;
 			this->bufferData_( bufferId, bytesWritten );
 
 			if( bytesWritten == 0 )

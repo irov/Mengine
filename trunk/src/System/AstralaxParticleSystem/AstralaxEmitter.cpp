@@ -377,9 +377,9 @@ namespace Menge
 		return intensive;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes )
+	bool AstralaxEmitter::changeEmitterImage( uint32_t _width, uint32_t _height, unsigned char * _data, size_t _bytes )
 	{
-		if( Magic_ChangeImage( m_emitterId, -1, _width, _height, _data, _bytes ) == MAGIC_ERROR )
+		if( Magic_ChangeImage( m_emitterId, -1, (int)_width, (int)_height, _data, (int)_bytes ) == MAGIC_ERROR )
 		{
 			return false;
 		}
@@ -387,7 +387,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::changeEmitterModel( float * _points, int _count )
+	bool AstralaxEmitter::changeEmitterModel( float * _points, uint32_t _count )
 	{
 		MAGIC_TRIANGLE * triangle = reinterpret_cast<MAGIC_TRIANGLE *>(_points);
 
@@ -552,9 +552,9 @@ namespace Menge
 		return m_background;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count )
+	static void s_fillParticles_( ParticleVertices * _particles, uint32_t _offset, uint32_t _count )
 	{
-		for( size_t i = 0; i != _count; ++i )
+		for( uint32_t i = 0; i != _count; ++i )
 		{
 			MAGIC_PARTICLE_VERTEXES vertexes;
 			Magic_GetNextParticleVertexes( &vertexes );
@@ -590,7 +590,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter::flushParticles( ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
+	bool AstralaxEmitter::flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, ParticleVertices * _particles, uint32_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
 	{
 		_flush.particleCount = 0;
 		_flush.meshCount = 0;
@@ -608,7 +608,7 @@ namespace Menge
 
 		while( rendering.count != 0 )
 		{
-			if( _particlesLimit <= _flush.particleCount + (size_t)rendering.count || 
+			if( _particlesLimit <= _flush.particleCount + (uint32_t)rendering.count || 
 				_meshLimit <= _flush.meshCount )
 			{
 				return false;
@@ -617,13 +617,13 @@ namespace Menge
 			ParticleMesh & mesh = _meshes[_flush.meshCount];
 
 			mesh.begin = _flush.particleCount;
-			mesh.size = (size_t)rendering.count;
+			mesh.size = (uint32_t)rendering.count;
 			mesh.texture = rendering.texture_id;
 			mesh.intense = rendering.intense;
 
 			s_fillParticles_( _particles, _flush.particleCount, mesh.size );
 
-			_flush.particleCount += (size_t)rendering.count;
+			_flush.particleCount += (uint32_t)rendering.count;
 			++_flush.meshCount;
 
 			Magic_CreateNextRenderedParticlesList( &rendering );

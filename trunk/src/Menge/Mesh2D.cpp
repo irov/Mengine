@@ -184,7 +184,7 @@ namespace Menge
 
 		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
 
-		for( size_t i = 1; i != m_vertexCount; ++i )
+		for( uint32_t i = 1; i != m_vertexCount; ++i )
 		{
 			mt::add_internal_point( _boundingBox, vertices[i].pos[0], vertices[i].pos[1] );
 		}
@@ -223,7 +223,7 @@ namespace Menge
 		{
 			// RGB(A)
 			{
-				for( size_t i = 0; i != m_vertexCount; ++i )
+				for( uint32_t i = 0; i != m_vertexCount; ++i )
 				{
 					const mt::vec2f & uv = m_shape->uv[i];
 
@@ -238,7 +238,7 @@ namespace Menge
 			// Alpha
 			//if( m_textures[1] != nullptr )
 			{
-				for( size_t i = 0; i != m_vertexCount; ++i )
+				for( uint32_t i = 0; i != m_vertexCount; ++i )
 				{
 					const mt::vec2f & uv = m_shape->uv[i];
 
@@ -254,7 +254,7 @@ namespace Menge
 		{
 			// RGB(A)
 			{
-				for( size_t i = 0; i != m_vertexCount; ++i )
+				for( uint32_t i = 0; i != m_vertexCount; ++i )
 				{
 					const mt::vec2f & uv = m_shape->uv[i];
 
@@ -269,7 +269,7 @@ namespace Menge
 			// Alpha
 			//if( m_textures[1] != nullptr )
 			{
-				for( size_t i = 0; i != m_vertexCount; ++i )
+				for( uint32_t i = 0; i != m_vertexCount; ++i )
 				{
 					const mt::vec2f & uv = m_shape->uv[i];
 
@@ -365,7 +365,7 @@ namespace Menge
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
-		for( size_t i = 0; i != m_vertexCount; ++i )
+		for( uint32_t i = 0; i != m_vertexCount; ++i )
 		{
 			const mt::vec2f & pos = m_shape->pos[i];
 

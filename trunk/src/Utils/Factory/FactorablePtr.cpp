@@ -23,7 +23,7 @@ namespace Menge
 		Factorable::destroy();
 	}
     //////////////////////////////////////////////////////////////////////////
-    size_t FactorablePtr::getReference() const
+    uint32_t FactorablePtr::getReference() const
     {
         return m_reference;
     }  

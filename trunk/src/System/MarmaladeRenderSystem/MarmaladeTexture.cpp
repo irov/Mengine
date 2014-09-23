@@ -1,7 +1,5 @@
 #	include "MarmaladeTexture.h"
 
-#	include "Interface/CacheInterface.h"
-
 #	include "Logger/Logger.h"
 
 namespace Menge
@@ -32,7 +30,7 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeTexture::initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, size_t _width, size_t _height, size_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget )
+    void MarmaladeTexture::initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget )
     {
 		m_serviceProvider = _serviceProvider;
 
@@ -53,22 +51,22 @@ namespace Menge
 		return m_mode;
 	}
     //////////////////////////////////////////////////////////////////////////
-    size_t MarmaladeTexture::getHWWidth() const 
+    uint32_t MarmaladeTexture::getHWWidth() const 
     {
         return m_hwWidth;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MarmaladeTexture::getHWHeight() const 
+    uint32_t MarmaladeTexture::getHWHeight() const 
     {
         return m_hwHeight;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MarmaladeTexture::getHWChannels() const
+    uint32_t MarmaladeTexture::getHWChannels() const
     {
         return m_hwChannels;
     }
 	//////////////////////////////////////////////////////////////////////////
-	size_t MarmaladeTexture::getHWDepth() const
+	uint32_t MarmaladeTexture::getHWDepth() const
 	{
 		return 1;
 	}
@@ -78,7 +76,7 @@ namespace Menge
         return m_hwPixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
-    void * MarmaladeTexture::lock( int * _pitch, const Rect & _rect, bool _readOnly )
+    void * MarmaladeTexture::lock( size_t * _pitch, const Rect & _rect, bool _readOnly )
     {
 		size_t size = Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwChannels, 1, m_hwPixelFormat );
 

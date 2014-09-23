@@ -20,8 +20,8 @@ namespace Menge
 		bool isDone() const;
 
 	public:
-		bool onWork( size_t _id ) override;
-		void onDone( size_t _id ) override;
+		bool onWork( uint32_t _id ) override;
+		void onDone( uint32_t _id ) override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

@@ -52,13 +52,13 @@ namespace	Menge
 			}
 
 		protected:
-			void onSoundPause( size_t _id ) override
+			void onSoundPause( uint32_t _id ) override
 			{
 				(void)_id;
 				//Empty
 			}
 
-			void onSoundStop( size_t _id ) override
+			void onSoundStop( uint32_t _id ) override
 			{	
 				if( pybind::is_callable( m_cb ) == true )
 				{
@@ -100,7 +100,7 @@ namespace	Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		size_t s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceType _type, PyObject * _cb )
+		uint32_t s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceType _type, PyObject * _cb )
 		{
 			ResourceSound * resource = RESOURCE_SERVICE(m_serviceProvider)
 				->getResourceT<ResourceSound>( _resourceName );
@@ -121,7 +121,7 @@ namespace	Menge
 
 			bool streamable = resource->isStreamable();
 
-			size_t sourceID = SOUND_SERVICE(m_serviceProvider)
+			uint32_t sourceID = SOUND_SERVICE(m_serviceProvider)
                 ->createSoundSource( true, soundBuffer, _type, streamable );
 
 			if( sourceID == 0 )
@@ -172,9 +172,9 @@ namespace	Menge
 			return sourceID;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		size_t s_soundPlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
+		uint32_t s_soundPlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
 		{
-			size_t sourceID = s_createSoundSource( _resourceName, _loop, EST_SOUND, _cb );
+			uint32_t sourceID = s_createSoundSource( _resourceName, _loop, EST_SOUND, _cb );
 
 			if( sourceID == 0 )
 			{
@@ -198,9 +198,9 @@ namespace	Menge
 			return sourceID;
 		}
         //////////////////////////////////////////////////////////////////////////
-		size_t s_voicePlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
+		uint32_t s_voicePlay( const ConstString & _resourceName, bool _loop, PyObject * _cb )
         {
-            size_t sourceID = s_createSoundSource( _resourceName, _loop, EST_VOICE, _cb );
+            uint32_t sourceID = s_createSoundSource( _resourceName, _loop, EST_VOICE, _cb );
 
             if( sourceID == 0 )
             {
@@ -224,9 +224,9 @@ namespace	Menge
             return sourceID;
         }
 		//////////////////////////////////////////////////////////////////////////
-		size_t s_soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, PyObject * _cb )
+		uint32_t s_soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, PyObject * _cb )
 		{
-			size_t sourceID = s_createSoundSource(_resourceName, _loop, EST_SOUND, _cb);
+			uint32_t sourceID = s_createSoundSource(_resourceName, _loop, EST_SOUND, _cb);
 
 			if( sourceID == 0 )
 			{
@@ -262,7 +262,7 @@ namespace	Menge
 			return sourceID;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		float s_soundGetPosMs( size_t _sourceID )
+		float s_soundGetPosMs( uint32_t _sourceID )
 		{
 			float pos =	SOUND_SERVICE(m_serviceProvider)
 				->getPosMs( _sourceID );
@@ -270,25 +270,25 @@ namespace	Menge
 			return pos;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_soundSetPosMs( size_t _sourceID, float _pos )
+		void s_soundSetPosMs( uint32_t _sourceID, float _pos )
 		{
 			SOUND_SERVICE(m_serviceProvider)
 				->setPosMs( _sourceID, _pos );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_soundStop( size_t _sourceID )
+		void s_soundStop( uint32_t _sourceID )
 		{
 			SOUND_SERVICE(m_serviceProvider)
 				->stop( _sourceID );
 		}
         //////////////////////////////////////////////////////////////////////////
-        void s_voiceStop( size_t _sourceID )
+        void s_voiceStop( uint32_t _sourceID )
         {
             SOUND_SERVICE(m_serviceProvider)
                 ->stop( _sourceID );
         }
 		//////////////////////////////////////////////////////////////////////////
-		void s_soundSourceSetVolume( size_t _sourceID, float _volume )
+		void s_soundSourceSetVolume( uint32_t _sourceID, float _volume )
 		{
 			if( SOUND_SERVICE(m_serviceProvider)
 				->setSourceVolume( _sourceID, _volume ) == false )
@@ -299,7 +299,7 @@ namespace	Menge
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
-		float s_soundSourceGetVolume( size_t _sourceID )
+		float s_soundSourceGetVolume( uint32_t _sourceID )
 		{
 			float volume = SOUND_SERVICE(m_serviceProvider)
 				->getSourceVolume( _sourceID );
@@ -333,13 +333,13 @@ namespace	Menge
 				->getCommonVolume( CONST_STRING(m_serviceProvider, Generic) );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void musicPlayTrack( const ConstString & _list, size_t _index, float _pos, bool _isLooped )
+		void musicPlayTrack( const ConstString & _list, uint32_t _index, float _pos, bool _isLooped )
 		{
 			AMPLIFIER_SERVICE(m_serviceProvider)
 				->playTrack( _list, _index, _pos, _isLooped );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		size_t musicGetNumTracks()
+		uint32_t musicGetNumTracks()
 		{
 			return AMPLIFIER_SERVICE(m_serviceProvider)
 				->getNumTracks();
@@ -399,7 +399,7 @@ namespace	Menge
 				->getPlayTrack();
 		}
 		//////////////////////////////////////////////////////////////////////////
-		size_t s_musicGetPlayingTrackIndex()
+		uint32_t s_musicGetPlayingTrackIndex()
 		{
 			return AMPLIFIER_SERVICE(m_serviceProvider)
 				->getCurrentTrack();
@@ -454,7 +454,7 @@ namespace	Menge
 			}
 
 		protected:
-			void onAffectorEnd( size_t _id, bool _isEnd ) override
+			void onAffectorEnd( uint32_t _id, bool _isEnd ) override
 			{
 				if( m_cb == nullptr )
 				{
@@ -490,7 +490,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////		
 		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<SoundScriptMethod, void (SoundScriptMethod::*)(float), float> m_affectorCreatorMusic;
 		//////////////////////////////////////////////////////////////////////////
-		size_t s_musicFadeIn( float _time, PyObject * _cb )
+		uint32_t s_musicFadeIn( float _time, PyObject * _cb )
 		{
 			MusicAffectorCallback * callback = createMusicAffectorCallback( _cb );
 
@@ -504,12 +504,12 @@ namespace	Menge
 			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
 				->getAffectorable();
 
-			size_t id = affectorable->addAffector( affector );
+			uint32_t id = affectorable->addAffector( affector );
 
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		size_t s_musicFadeOut( float _time, PyObject * _cb )
+		uint32_t s_musicFadeOut( float _time, PyObject * _cb )
 		{
 			MusicAffectorCallback * callback = createMusicAffectorCallback( _cb );
 
@@ -523,7 +523,7 @@ namespace	Menge
 			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
 				->getAffectorable();
 
-			size_t id = affectorable->addAffector( affector );
+			uint32_t id = affectorable->addAffector( affector );
 
 			return id;
 		}

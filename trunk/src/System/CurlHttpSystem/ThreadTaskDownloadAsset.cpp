@@ -9,7 +9,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ThreadTaskDownloadAsset::ThreadTaskDownloadAsset( ServiceProviderInterface * _serviceProvider, const String & _url, const ConstString & _category, const FilePath & _filepath, size_t _id, HttpDownloadAssetReceiver * _receiver )
+	ThreadTaskDownloadAsset::ThreadTaskDownloadAsset( ServiceProviderInterface * _serviceProvider, const String & _url, const ConstString & _category, const FilePath & _filepath, uint32_t _id, HttpDownloadAssetReceiver * _receiver )
 		: m_serviceProvider(_serviceProvider)
 		, m_url(_url)
 		, m_category(_category)
@@ -37,7 +37,7 @@ namespace Menge
 	{
 		OutputStreamInterface * stream_ptr = (OutputStreamInterface *)_userp;
 
-		size_t realsize = _size * _nmemb;
+		uint32_t realsize = _size * _nmemb;
 
 		stream_ptr->write( _contents, realsize );
 

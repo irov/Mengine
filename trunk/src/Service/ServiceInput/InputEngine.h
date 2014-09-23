@@ -34,12 +34,12 @@ namespace Menge
 		void update() override;
 
 	public:
-		bool isKeyDown( size_t _keyCode ) const override;
-		bool isExclusiveKeyDown( size_t _keyCode ) const override;
+		bool isKeyDown( uint32_t _keyCode ) const override;
+		bool isExclusiveKeyDown( uint32_t _keyCode ) const override;
 		bool isAnyKeyDown() const override;
 		
 		bool isAnyMouseButtonDown() const override;
-		bool isMouseButtonDown( size_t _button ) const override;
+		bool isMouseButtonDown( uint32_t _button ) const override;
 
         void setCursorPosition( const mt::vec2f & _point ) override;
 		const mt::vec2f & getCursorPosition() const override;
@@ -52,16 +52,16 @@ namespace Menge
 		void onFocus( bool _focus ) override;
 
 	public:
-		void onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) override;
+		void onKeyEvent( const mt::vec2f & _point, uint32_t _key, uint32_t _char, bool _isDown ) override;
 
 	public:
-		void onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		void onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
-		void onMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
+		void onMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _point, uint32_t _button, bool _isDown ) override;
+		void onMouseMove( uint32_t _touchId, const mt::vec2f & _point, float _x, float _y ) override;
+		void onMouseWheel( uint32_t _touchId, const mt::vec2f & _point, int _wheel ) override;
 
-		void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) override;
-        void onMouseEnter( unsigned int _touchId, const mt::vec2f & _point ) override;
-        void onMouseLeave( unsigned int _touchId, const mt::vec2f & _point ) override;
+		void onMousePosition( uint32_t _touchId, const mt::vec2f & _point ) override;
+        void onMouseEnter( uint32_t _touchId, const mt::vec2f & _point ) override;
+        void onMouseLeave( uint32_t _touchId, const mt::vec2f & _point ) override;
 
 	private:
 		ServiceProviderInterface * m_serviceProvider;
@@ -81,23 +81,23 @@ namespace Menge
 		{
 			mt::vec2f point;
 
-			unsigned int key;
-			unsigned int character;
+			uint32_t key;
+			uint32_t character;
 			bool isDown;
 		};
 
 		struct MouseButtonParams
 		{
-			unsigned int touchId;
+			uint32_t touchId;
 			mt::vec2f point;
 
-			unsigned int button;
+			uint32_t button;
 			bool isDown;
 		};
 
 		struct MouseMoveParams
 		{
-			unsigned int touchId;
+			uint32_t touchId;
 			mt::vec2f point;
 
 			float x;
@@ -107,7 +107,7 @@ namespace Menge
 
 		struct MousePositionParams
 		{
-			unsigned int touchId;
+			uint32_t touchId;
 			mt::vec2f point;
 		};
 

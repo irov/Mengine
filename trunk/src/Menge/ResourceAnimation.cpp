@@ -231,14 +231,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceAnimation::getSequenceCount() const
+	uint32_t ResourceAnimation::getSequenceCount() const
 	{
-        size_t size = m_sequence.size();
+        uint32_t size = m_sequence.size();
 
 		return size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ResourceAnimation::getSequenceDelay( size_t _index ) const
+	float ResourceAnimation::getSequenceDelay( uint32_t _index ) const
 	{
         const AnimationSequence & sequence = m_sequence[_index];
 
@@ -247,7 +247,7 @@ namespace Menge
 		return delay;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceAnimation::getSequenceResourceName( size_t _index ) const
+	const ConstString & ResourceAnimation::getSequenceResourceName( uint32_t _index ) const
 	{
         const AnimationSequence & sequence = m_sequence[_index];
 
@@ -256,10 +256,10 @@ namespace Menge
 		return resourceName;
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceAnimation::getLastFrameIndex() const
+	uint32_t ResourceAnimation::getLastFrameIndex() const
 	{
-        size_t size = m_sequence.size();
-        size_t lastIndex = size - 1;
+        uint32_t size = m_sequence.size();
+        uint32_t lastIndex = size - 1;
 
 		return lastIndex;	
 	}
@@ -274,7 +274,7 @@ namespace Menge
 		return m_sequence;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage * ResourceAnimation::getSequenceResource( size_t _index ) const
+	ResourceImage * ResourceAnimation::getSequenceResource( uint32_t _index ) const
 	{
         const AnimationSequence & sequence = m_sequence[_index];
 

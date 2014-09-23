@@ -37,14 +37,14 @@ namespace Menge
 		bool testRadius( const mt::vec2f & _point, float _radius, float _minAlpha ) const override;
 
 	public:
-		size_t getWidth() const override;
-        size_t getHeight() const override;
+		uint32_t getWidth() const override;
+        uint32_t getHeight() const override;
 
     public:
         unsigned char * getBuffer() const override;
 
     protected:
-        unsigned char * getHitBuffer_( size_t _level ) const;
+        unsigned char * getHitBuffer_( uint32_t _level ) const;
 
     protected:
 		FilePath m_filePath;

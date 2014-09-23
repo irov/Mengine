@@ -16,7 +16,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ThreadJob::~ThreadJob()
 	{
-		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+		for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
 			ThreadJobWorkerDesc & desc = m_workers[i];
 
@@ -30,7 +30,7 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 		m_sleep = _sleep;
 
-		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+		for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
 			ThreadJobWorkerDesc & desc = m_workers[i];
 			
@@ -43,7 +43,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_thread_addWorker( ThreadJobWorkerDesc & desc, const ThreadWorkerInterfacePtr & _worker, size_t _id )
+	static bool s_thread_addWorker( ThreadJobWorkerDesc & desc, const ThreadWorkerInterfacePtr & _worker, uint32_t _id )
 	{
 		bool successful = false; 
 		desc.mutex->lock();
@@ -62,16 +62,16 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker )
+	uint32_t ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker )
 	{
 		if( _worker == nullptr )
 		{
 			return 0;
 		}
 
-		size_t new_id = ++m_enumerator;
+		uint32_t new_id = ++m_enumerator;
 
-		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+		for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
 			ThreadJobWorkerDesc & desc = m_workers[i];
 			
@@ -90,7 +90,7 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_thread_removeWorker( ThreadJobWorkerDesc & desc, size_t _id )
+	static bool s_thread_removeWorker( ThreadJobWorkerDesc & desc, uint32_t _id )
 	{
 		bool successful = false;
 
@@ -114,14 +114,14 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadJob::removeWorker( size_t _id )
+	void ThreadJob::removeWorker( uint32_t _id )
 	{
 		if( _id == 0 )
 		{
 			return;
 		}
 
-		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+		for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
 			ThreadJobWorkerDesc & desc = m_workers[i];
 			
@@ -153,7 +153,7 @@ namespace Menge
 	{
 		while( this->isCancel() == false )
 		{   
-			for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+			for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 			{
 				ThreadJobWorkerDesc & desc = m_workers[i];
 		
@@ -174,7 +174,7 @@ namespace Menge
 		if( desc.status == ETS_DONE )
 		{
 			ThreadWorkerInterfacePtr worker = desc.worker;
-			size_t id = desc.id;
+			uint32_t id = desc.id;
 
 			desc.worker = nullptr;
 			desc.id = 0;
@@ -188,7 +188,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadJob::_onUpdate()
 	{
-		for( size_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+		for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
 		{
 			ThreadJobWorkerDesc & desc = m_workers[i];
 

@@ -25,12 +25,12 @@ namespace Menge
 	{
 		ResourceImage * resource;
 		RenderMaterialInterfacePtr material;
-		size_t i;
-		size_t j;
+		uint32_t i;
+		uint32_t j;
 		mt::box2f bb;
 		mt::box2f bb_wm;
 
-		size_t refcount;
+		uint32_t refcount;
 	};
 
 	typedef stdex::vector<Landscape2DElement> TVectorLandscape2DElements;
@@ -43,7 +43,7 @@ namespace Menge
 		~Landscape2D();
 
 	public:
-		void setBackParts( const TVectorResourceImage & _images, size_t _countX, size_t _countY, float _width, float _height );
+		void setBackParts( const TVectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height );
 
 	protected:
 		bool _compile() override;
@@ -72,8 +72,8 @@ namespace Menge
 	protected:
 		TVectorResourceImage m_images;
 
-		size_t m_elementCountX;
-		size_t m_elementCountY;
+		uint32_t m_elementCountX;
+		uint32_t m_elementCountY;
 		float m_elementWidth;
 		float m_elementHeight;
 

@@ -32,8 +32,8 @@ namespace Menge
 
 	struct ParticleMesh
 	{
-		size_t begin;
-		size_t size;
+		uint32_t begin;
+		uint32_t size;
 
 		int texture;
 		bool intense;
@@ -41,8 +41,8 @@ namespace Menge
 
 	struct ParticleEmitterRenderFlush
 	{
-		size_t meshCount;
-		size_t particleCount;
+		uint32_t meshCount;
+		uint32_t particleCount;
 	};
 
 	struct ParticleCamera
@@ -85,7 +85,7 @@ namespace Menge
 		virtual bool getCamera( ParticleCamera & _camera ) const = 0;
 
 	public:
-		virtual bool flushParticles( ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
+		virtual bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, ParticleVertices * _particles, uint32_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
 
 	public:
 		virtual bool isBackground() const = 0;
@@ -100,8 +100,8 @@ namespace Menge
 		virtual void setEmitterTranslateWithParticle( bool _value ) = 0;
 
 	public:
-		virtual bool changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) = 0;
-		virtual bool changeEmitterModel( float * _points, int _count ) = 0;
+		virtual bool changeEmitterImage( uint32_t _width, uint32_t _height, unsigned char * _data, size_t _bytes ) = 0;
+		virtual bool changeEmitterModel( float * _points, uint32_t _count ) = 0;
 
     public:
 		virtual void setPosition( const mt::vec3f & _pos ) = 0;
@@ -182,13 +182,13 @@ namespace Menge
         SERVICE_DECLARE("ParticleService")
 
     public:
-        virtual size_t renderParticlesCount( size_t _count ) = 0;
+        virtual uint32_t renderParticlesCount( uint32_t _count ) = 0;
 
 	public:
         virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) = 0;
 
     public:
-        virtual size_t getMaxParticlesCount() const = 0;
+        virtual uint32_t getMaxParticlesCount() const = 0;
 
     public:
         virtual void update() = 0;

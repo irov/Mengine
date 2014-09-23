@@ -118,9 +118,9 @@ namespace Menge
 		}
 
 		float frameDuration = m_resourceMovie->getFrameDuration();
-		m_currentFrame = (size_t)floorf( (_timing / frameDuration) + 0.5f );
+		m_currentFrame = (uint32_t)floorf( (_timing / frameDuration) + 0.5f );
 
-		size_t frameCount = m_resourceMovie->getFrameCount();
+		uint32_t frameCount = m_resourceMovie->getFrameCount();
 		if( m_currentFrame > frameCount )
 		{
 			m_currentFrame = frameCount;
@@ -190,7 +190,7 @@ namespace Menge
 
         if( m_reverse == true )
         {
-            size_t frameCount = m_resourceMovie->getFrameCount();
+            uint32_t frameCount = m_resourceMovie->getFrameCount();
 
             this->updateForwardFrame_( _time, frameCount, m_currentFrame );
             //this->updateAnimatablePlay_();
@@ -206,7 +206,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::_restart( float _time, size_t _enumerator )
+	bool Movie::_restart( float _time, uint32_t _enumerator )
 	{
         (void)_enumerator;
 
@@ -217,7 +217,7 @@ namespace Menge
 
         if( m_reverse == true )
         {
-            size_t frameCount = m_resourceMovie->getFrameCount();
+            uint32_t frameCount = m_resourceMovie->getFrameCount();
 
             this->updateForwardFrame_( _time, frameCount, m_currentFrame );
             //this->updateAnimatablePlay_();
@@ -233,21 +233,21 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_stop( size_t _enumerator )
+	void Movie::_stop( uint32_t _enumerator )
 	{
 		this->stopAnimation_();
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOVIE_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_end( size_t _enumerator )
+	void Movie::_end( uint32_t _enumerator )
 	{
 		this->stopAnimation_();
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOVIE_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, size_t _frameId, bool _interpolate, bool _first )
+	bool Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, uint32_t _frameId, bool _interpolate, bool _first )
 	{	
 		const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
@@ -606,7 +606,7 @@ namespace Menge
 			mt::vec3f pos = start_frame.position;
 			float len = 0.f;
 
-			for( size_t i = 1; i != indexCount; ++i )
+			for( uint32_t i = 1; i != indexCount; ++i )
 			{
 				MovieFrameSource frame;
 				framePack->getLayerFrame( layer->index, i, frame );
@@ -1118,7 +1118,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createLayers_()
     {
-        size_t maxLayerIndex = m_resourceMovie->getMaxLayerIndex();
+        uint32_t maxLayerIndex = m_resourceMovie->getMaxLayerIndex();
 
         Nodies ns;
         ns.child = false;
@@ -1333,7 +1333,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::compileLayers_()
 	{
-		size_t maxLayerIndex = m_resourceMovie->getMaxLayerIndex();
+		uint32_t maxLayerIndex = m_resourceMovie->getMaxLayerIndex();
 
 		Nodies ns;
 		ns.child = false;
@@ -2485,23 +2485,23 @@ namespace Menge
     void Movie::updateForward_( float _time )
     {
         float frameDuration = m_resourceMovie->getFrameDuration();
-        size_t frameCount = m_resourceMovie->getFrameCount();
+        uint32_t frameCount = m_resourceMovie->getFrameCount();
 
         const mt::vec2f & loopSegment = m_resourceMovie->getLoopSegment();
 
         if( m_intervalEnd > 0.f )
         {
-            frameCount = (size_t)((m_intervalStart + m_intervalEnd) / frameDuration + 0.5f) - 1;
+            frameCount = (uint32_t)((m_intervalStart + m_intervalEnd) / frameDuration + 0.5f) - 1;
         }
         else
         {   
             if( loopSegment.y > 0.f )
             {
-                frameCount = (size_t)(loopSegment.y / frameDuration + 0.5f) - 1;
+                frameCount = (uint32_t)(loopSegment.y / frameDuration + 0.5f) - 1;
             }
         }
         
-        size_t lastFrame = m_currentFrame;
+        uint32_t lastFrame = m_currentFrame;
 
         //bool needUpdate = true;
 
@@ -2577,7 +2577,7 @@ namespace Menge
         float duration = m_resourceMovie->getDuration();
         //size_t frameCount = m_resourceMovie->getFrameCount();
 
-        size_t lastFrame = m_currentFrame;
+        uint32_t lastFrame = m_currentFrame;
         
         bool needUpdate = false;
 
@@ -2628,7 +2628,7 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::updateForwardFrame_( float _time, size_t _beginFrame, size_t _endFrame )
+	void Movie::updateForwardFrame_( float _time, uint32_t _beginFrame, uint32_t _endFrame )
 	{
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
@@ -2665,7 +2665,7 @@ namespace Menge
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::updateForwardFrameNode_( float _time, size_t _beginFrame, size_t _endFrame, const MovieLayer & _layer, Node * _node )
+    void Movie::updateForwardFrameNode_( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer, Node * _node )
     {
         (void)_time;
 
@@ -2674,8 +2674,8 @@ namespace Menge
 
         float frameDuration = m_resourceMovie->getFrameDuration();
 
-        size_t indexIn = (size_t)((layerIn / frameDuration) + 0.5f);
-        size_t indexOut = (size_t)((layerOut / frameDuration) + 0.5f);
+        uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
+        uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
 
         if( indexIn > _endFrame || indexOut < _beginFrame )
         {
@@ -2684,7 +2684,7 @@ namespace Menge
 
         if( _beginFrame < indexIn && _endFrame >= indexIn && _endFrame < indexOut )
         {
-			size_t frameId = _endFrame - indexIn;
+			uint32_t frameId = _endFrame - indexIn;
 
             this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, true );
 
@@ -2701,7 +2701,7 @@ namespace Menge
                         animatable->stop();
                     }
 
-                    size_t frame = _endFrame - indexIn;
+                    uint32_t frame = _endFrame - indexIn;
                     float timing = frame * frameDuration;
 
                     animatable->setTiming( timing );
@@ -2760,7 +2760,7 @@ namespace Menge
         }
         else if( _beginFrame >= indexIn && _endFrame >= indexIn && _endFrame < indexOut )
         {
-			size_t frameId = _endFrame - indexIn;
+			uint32_t frameId = _endFrame - indexIn;
 		
             this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, false );
 
@@ -2787,7 +2787,7 @@ namespace Menge
         }			
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Movie::updateBackwardFrame_( size_t _beginFrame, size_t _endFrame )
+    void Movie::updateBackwardFrame_( uint32_t _beginFrame, uint32_t _endFrame )
     {
         float frameDuration = m_resourceMovie->getFrameDuration();
 
@@ -2809,8 +2809,8 @@ namespace Menge
             float layerIn = layer.in;
             float layerOut = layer.out;
 
-            size_t indexIn = (size_t)((layerIn / frameDuration) + 0.5f);
-            size_t indexOut = (size_t)((layerOut / frameDuration) + 0.5f);
+            uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
+            uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
 
             if( indexIn > _beginFrame || indexOut < _endFrame )
             {
@@ -2821,7 +2821,7 @@ namespace Menge
 
             if( _beginFrame >= indexOut && _endFrame <= indexOut && _endFrame > indexIn )
             {
-				size_t frameId = _endFrame - indexIn;
+				uint32_t frameId = _endFrame - indexIn;
                 this->updateFrameNode_( layer, node, frameId, false, true );
 
                 node->localHide(false);
@@ -2835,7 +2835,7 @@ namespace Menge
                         animatable->stop();
                     }
 
-                    size_t frame = _endFrame - indexIn;
+                    uint32_t frame = _endFrame - indexIn;
                     float timing = frame * frameDuration;
 
                     animatable->setTiming( timing );
@@ -2863,7 +2863,7 @@ namespace Menge
             }
             else if( _beginFrame < indexOut && _endFrame <= indexOut && _endFrame > indexIn )
             {
-				size_t frameId = _endFrame - indexIn;
+				uint32_t frameId = _endFrame - indexIn;
 
                 this->updateFrameNode_( layer, node, frameId, false, false );
             }			
@@ -2888,7 +2888,6 @@ namespace Menge
 	void Movie::updateTiming_()
 	{
 		float frameDuration = m_resourceMovie->getFrameDuration();
-		//size_t frameCount = m_resourceMovie->getFrameCount();
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
@@ -2903,8 +2902,8 @@ namespace Menge
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
-			size_t indexIn = (size_t)((layerIn / frameDuration) + 0.5f);
-			size_t indexOut = (size_t)((layerOut / frameDuration) + 0.5f);
+			uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
 		
 			Node * node = this->getMovieNode_( layer );
 
@@ -2915,7 +2914,7 @@ namespace Menge
 
 			if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
 			{            
-				size_t frameId = m_currentFrame - indexIn;
+				uint32_t frameId = m_currentFrame - indexIn;
 
                 this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
 
@@ -2980,8 +2979,8 @@ namespace Menge
             float layerIn = layer.in;
             float layerOut = layer.out;
 
-            size_t indexIn = (size_t)((layerIn / frameDuration) + 0.5f);
-            size_t indexOut = (size_t)((layerOut / frameDuration) + 0.5f);
+            uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
+            uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
 
             if( indexIn > m_currentFrame || indexOut < m_currentFrame )
             {
@@ -2997,7 +2996,7 @@ namespace Menge
 
             if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
             {                
-                size_t frameId = m_currentFrame - indexIn;
+                uint32_t frameId = m_currentFrame - indexIn;
 
                 this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
 
@@ -3041,7 +3040,7 @@ namespace Menge
             }
             else
             {
-				size_t frameId = indexOut - indexIn;
+				uint32_t frameId = indexOut - indexIn;
 
                 node->localHide( true );
 
@@ -3080,7 +3079,6 @@ namespace Menge
 	void Movie::updateClipLastFrame_()
 	{
 		float frameDuration = m_resourceMovie->getFrameDuration();
-		//size_t frameCount = m_resourceMovie->getFrameCount();
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
@@ -3095,8 +3093,8 @@ namespace Menge
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
-			size_t indexIn = (size_t)((layerIn / frameDuration) + 0.5f);
-			size_t indexOut = (size_t)((layerOut / frameDuration) + 0.5f);
+			uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
 
 			if( indexOut < m_currentFrame )
 			{
@@ -3246,7 +3244,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::_interrupt( size_t _enumerator )
+	bool Movie::_interrupt( uint32_t _enumerator )
 	{
         (void)_enumerator;
 

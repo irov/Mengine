@@ -566,7 +566,7 @@ namespace Menge
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        for( size_t i = 0; i != 4; ++i )
+        for( uint32_t i = 0; i != 4; ++i )
         {
             const mt::vec3f & pos = m_verticesLocal[i];
 

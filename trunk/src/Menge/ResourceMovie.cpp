@@ -137,7 +137,7 @@ namespace Menge
         class FindResourceMovieValidParent
         {
         public:
-            FindResourceMovieValidParent( size_t _parent )
+            FindResourceMovieValidParent( uint32_t _parent )
                 : m_parent(_parent)
             {
             }
@@ -154,7 +154,7 @@ namespace Menge
             }
 
         protected:
-            size_t m_parent;
+            uint32_t m_parent;
         };
     }
     //////////////////////////////////////////////////////////////////////////
@@ -169,20 +169,23 @@ namespace Menge
 			return false;
 		}
 
-		size_t limitMovieWidth = CONFIG_SERVICE(m_serviceProvider)
+		uint32_t limitMovieWidth = CONFIG_SERVICE(m_serviceProvider)
 			->getValue("Limit", "MovieWidth", 16384U );
 
-		size_t limitMovieHeight = CONFIG_SERVICE(m_serviceProvider)
+		uint32_t limitMovieHeight = CONFIG_SERVICE(m_serviceProvider)
 			->getValue("Limit", "MovieHeight", 16384U );
 
-		if( m_size.x > limitMovieWidth || m_size.y > limitMovieHeight )
+		uint32_t width = (uint32_t)(m_size.x + 0.5f);
+		uint32_t height = (uint32_t)(m_size.y + 0.5f);
+
+		if( width > limitMovieWidth || height > limitMovieHeight )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid %s invalid limit %d:%d size %f:%f"
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid %s invalid limit %d:%d size %d:%d"
 				, this->getName().c_str()
 				, limitMovieWidth
 				, limitMovieHeight
-				, m_size.x
-				, m_size.y
+				, width
+				, height
 				);
 
 			return false;
@@ -450,7 +453,7 @@ namespace Menge
             {
                 it->state |= MOVIE_LAYER_NODE;
 
-                it->parent = (size_t)-1;
+                it->parent = (uint32_t)-1;
             }
             else if( it->type == CONST_STRING(m_serviceProvider, MovieText) )
             {
@@ -563,7 +566,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::isThreeDNode( size_t _index ) const
+	bool ResourceMovie::isThreeDNode( uint32_t _index ) const
 	{
 		for( TVectorMovieLayers::const_iterator
 			it = m_layers.begin(),

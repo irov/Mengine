@@ -44,7 +44,7 @@ namespace Menge
 		float getMaxLength() const override;
 
 	public:
-		size_t getFontParams() const override;
+		uint32_t getFontParams() const override;
 
 	protected:
 		ConstString m_key;
@@ -59,7 +59,7 @@ namespace Menge
 		float m_charOffset;
 		float m_maxLength;
 
-		size_t m_params;
+		uint32_t m_params;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<TextEntry> TextEntryPtr;

@@ -13,12 +13,12 @@ namespace Menge
 		ThreadTaskPacket();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, size_t _packetSize );
+		bool initialize( ServiceProviderInterface * _serviceProvider, uint32_t _packetSize );
 
 	public:
 		void addTask( const ThreadTaskPtr & _task );
-		const ThreadTaskPtr & getTask( size_t _index ) const;
-		size_t countTask() const;
+		const ThreadTaskPtr & getTask( uint32_t _index ) const;
+		uint32_t countTask() const;
 		
 	protected:
 		bool _onMain() override;

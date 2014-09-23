@@ -309,7 +309,7 @@ namespace Menge
         }
 
         m_windowResolution = CONFIG_VALUE(m_serviceProvider, "Window", "Size", Resolution(1024, 768));
-        m_bits = CONFIG_VALUE(m_serviceProvider, "Window", "Bits", 32);
+        m_bits = CONFIG_VALUE(m_serviceProvider, "Window", "Bits", 32U);
         m_fullscreen = CONFIG_VALUE(m_serviceProvider, "Window", "Fullscreen", true);
         m_vsync = CONFIG_VALUE(m_serviceProvider, "Window", "VSync", true);               
 
@@ -624,7 +624,7 @@ namespace Menge
                 return scene;
             }
 
-            size_t count() const override
+            uint32_t count() const override
             {
                 return 0;
             }
@@ -1057,7 +1057,7 @@ namespace Menge
 
 			if( _key == KC_0 && _isDown )
 			{
-				static size_t batchMode = RENDER_SERVICE(m_serviceProvider)
+				static uint32_t batchMode = RENDER_SERVICE(m_serviceProvider)
 					->getBatchMode();
 
 				++batchMode;
@@ -1083,19 +1083,19 @@ namespace Menge
             if( _key == KC_F3 && _isDown == true )
             {
 				stdex_memory_info_t mi[25];
-                size_t count = stdex_allocator_memoryinfo( mi, 25 );
+                uint32_t count = stdex_allocator_memoryinfo( mi, 25 );
 
 				size_t pool_now = 0;
 				size_t pool_max = 0;
 
-				for( size_t i = 0; i != count; ++i )
+				for( uint32_t i = 0; i != count; ++i )
 				{
 					const stdex_memory_info_t & m = mi[i];
 
 					pool_now += m.block_size * m.block_count;
 					pool_max += m.block_size * m.block_total * m.chunk_count;
 
-					printf("block %d:%d %d alloc %d:%d over %.2f\n"
+					printf("block %lu:%lu %lu alloc %lu:%lu over %.2f\n"
 						, m.block_size
 						, m.chunk_count
 						, m.block_count
@@ -1510,21 +1510,21 @@ namespace Menge
 
 		float aspect = m_windowResolution.getAspectRatio();
 
-		size_t resHeight = m_windowResolution.getHeight();
-        size_t resWidth = m_windowResolution.getWidth();
+		uint32_t resHeight = m_windowResolution.getHeight();
+        uint32_t resWidth = m_windowResolution.getWidth();
 
-		size_t dresHeight = dres.getHeight();
-        size_t dresWidth = dres.getWidth();
+		uint32_t dresHeight = dres.getHeight();
+        uint32_t dresWidth = dres.getWidth();
 
 		if( resHeight > dresHeight )
 		{
-			size_t new_witdh = static_cast<size_t>( float(resHeight) * aspect + 0.5f );
-            size_t new_height = dresHeight;
+			uint32_t new_witdh = static_cast<uint32_t>( float(resHeight) * aspect + 0.5f );
+            uint32_t new_height = dresHeight;
 
             if( new_witdh > dresWidth )
             {
                 new_witdh = dresWidth;
-                new_height = static_cast<size_t>( float(dresWidth) / aspect + 0.5f );
+                new_height = static_cast<uint32_t>( float(dresWidth) / aspect + 0.5f );
             }
 
 			_windowResolution.setWidth( new_witdh );			
@@ -1532,12 +1532,12 @@ namespace Menge
 		}
 		else if( resWidth > dresWidth )
         {
-            size_t new_witdh = dresWidth;
-            size_t new_height = static_cast<size_t>( float(resWidth) / aspect + 0.5f );
+            uint32_t new_witdh = dresWidth;
+            uint32_t new_height = static_cast<uint32_t>( float(resWidth) / aspect + 0.5f );
 
             if( new_height > dresHeight )
             {
-                new_witdh = static_cast<size_t>( float(dresHeight) * aspect + 0.5f );
+                new_witdh = static_cast<uint32_t>( float(dresHeight) * aspect + 0.5f );
                 new_height = dresHeight;
             }
 
@@ -1951,7 +1951,7 @@ namespace Menge
 		return m_projectCodename;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Application::getProjectVersion() const
+	uint32_t Application::getProjectVersion() const
 	{
 		return m_projectVersion;
 	}

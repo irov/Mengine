@@ -13,23 +13,23 @@ namespace Menge
 
 	public:
 		void setVerboseLevel( EMessageLevel _level ) override;
-        void setVerboseFlag( size_t _flag ) override;
+        void setVerboseFlag( uint32_t _flag ) override;
 
     public:
-		bool validMessage( EMessageLevel _level, size_t _flag ) const override;
+		bool validMessage( EMessageLevel _level, uint32_t _flag ) const override;
 
 	public:
 		OutputStreamInterfacePtr getStream() const;
 
 	protected:
-		void log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count ) override;
+		void log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _count ) override;
 
     protected:
 		void flush() override;
 
 	protected:
 		EMessageLevel m_verboseLevel;
-        size_t m_verboseFlag;
+        uint32_t m_verboseFlag;
 
 		OutputStreamInterfacePtr m_stream;
 	};

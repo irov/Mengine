@@ -59,7 +59,7 @@ namespace Menge
 		return m_moveStop;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline static size_t s_rotateToState( float _angle )
+	inline static uint32_t s_rotateToState( float _angle )
 	{
 		float norm_angle = mt::angle_norm( _angle );
 
@@ -98,7 +98,7 @@ namespace Menge
 		};
 
 
-		for( size_t i = 0; i != 8; ++i )
+		for( uint32_t i = 0; i != 8; ++i )
 		{
 			float low_angle = pi_deltha[ i * 3 + 0];
 			float test_angle = pi_deltha[ i * 3 + 1];
@@ -139,7 +139,7 @@ namespace Menge
 		m_finish = _finish;
 		
 		float angle = _object->getRotateX();
-		size_t rotateState = s_rotateToState( angle );
+		uint32_t rotateState = s_rotateToState( angle );
 
 		pybind::call( m_cb, "(OiOOO)"
 			, pybind::ptr(_object)

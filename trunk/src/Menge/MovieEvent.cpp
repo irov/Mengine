@@ -31,7 +31,7 @@ namespace Menge
         m_resourceMovie = _resourceMovie;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieEvent::_movieForwardUpdate( float _time, size_t _beginFrame, size_t _endFrame, const MovieLayer & _layer )
+    void MovieEvent::_movieForwardUpdate( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer )
     {
         (void)_time;
 
@@ -45,8 +45,8 @@ namespace Menge
 
         float frameDuration = m_resourceMovie->getFrameDuration();
 
-        size_t indexIn = (size_t)((layerIn / frameDuration) + 0.5f);
-        size_t indexOut = (size_t)((layerOut / frameDuration) + 0.5f);
+        uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
+        uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
 
         if( indexIn > _endFrame || indexOut < _beginFrame )
         {

@@ -72,7 +72,7 @@ namespace Menge
             return false;
         }
 		
-        size_t channels;
+        uint32_t channels;
 		if( features.has_alpha == 0 )
 		{	
 			channels = 3;

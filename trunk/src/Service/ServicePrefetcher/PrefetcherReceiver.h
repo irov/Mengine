@@ -52,7 +52,7 @@ namespace Menge
 		}
 
 	protected:
-		size_t m_refcount;
+		uint32_t m_refcount;
 
 		T m_receiverData;
 	};

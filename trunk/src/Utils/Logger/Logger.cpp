@@ -7,7 +7,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	LoggerOperator::LoggerOperator( LogServiceInterface * _log, EMessageLevel _level, size_t _flag )
+	LoggerOperator::LoggerOperator( LogServiceInterface * _log, EMessageLevel _level, uint32_t _flag )
 		: m_log(_log)
 		, m_level(_level)
         , m_flag(_flag)
@@ -28,7 +28,7 @@ namespace Menge
 
         if( size < 0 )
         {
-            char msg [] = "LoggerOperator::operator invalid message :(\n";
+            const char msg [] = "LoggerOperator::operator invalid message :(\n";
             this->logMessage( msg, sizeof(msg) );
 
 			size = _snprintf( str, 2048 - 1, "%s", _format );

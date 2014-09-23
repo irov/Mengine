@@ -31,16 +31,16 @@ namespace Menge
 
     public:
         RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) override;
-		RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, size_t _width, size_t _height, size_t _channels ) override;
+		RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, uint32_t _channels ) override;
 
 	protected:
 		ImageDecoderInterfacePtr createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec );
 		RenderTextureInterfacePtr createTextureFromDecoder_( const ImageDecoderInterfacePtr & _decoder );
 
     public:
-        RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
-        RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
-        RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
+        RenderTextureInterfacePtr createTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
+        RenderTextureInterfacePtr createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
+        RenderTextureInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 
         RenderTextureInterfacePtr getTexture( const FilePath & _fileName ) const override;
 
@@ -57,7 +57,7 @@ namespace Menge
 
     public:
         void visitTexture( VisitorRenderTextureInterface * _visitor ) const override;
-		size_t getImageMemoryUse( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) const override;
+		size_t getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const override;
 
     public:
         const RenderTextureDebugInfo & getDebugInfo() override;
@@ -70,7 +70,7 @@ namespace Menge
         bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder );
 
 	protected:
-		void updateImageParams_( size_t & _width, size_t & _height, size_t & _channels, size_t & _depth, PixelFormat & _format ) const;
+		void updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -81,12 +81,12 @@ namespace Menge
         typedef FactoryPoolStore<RenderTexture, 128> TFactoryRenderTexture;
         TFactoryRenderTexture m_factoryRenderTexture;
 
-        size_t m_textureEnumerator;
+        uint32_t m_textureEnumerator;
 
         RenderTextureDebugInfo m_debugInfo;
 
-		size_t m_limitTextureWidth;
-		size_t m_limitTextureHeight;
+		uint32_t m_limitTextureWidth;
+		uint32_t m_limitTextureHeight;
 		
 		bool m_supportA8;
 		bool m_supportR8G8B8;

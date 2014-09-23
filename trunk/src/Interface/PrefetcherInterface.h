@@ -12,8 +12,8 @@ namespace Menge
 {
 	struct PrefetcherDebugInfo
 	{
-		size_t decoderCount;
-		size_t dataCount;
+		uint32_t decoderCount;
+		uint32_t dataCount;
 	};
 
 	class PrefetcherServiceInterface

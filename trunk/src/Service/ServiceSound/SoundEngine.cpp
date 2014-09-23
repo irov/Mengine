@@ -224,7 +224,7 @@ namespace Menge
             ->onTurnSound( m_turnSound );
     }
 	//////////////////////////////////////////////////////////////////////////
-	size_t SoundEngine::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceType _type, bool _streamable )
+	uint32_t SoundEngine::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceType _type, bool _streamable )
 	{
 		if( m_supportStream == false && _streamable == true )
 		{
@@ -248,7 +248,7 @@ namespace Menge
 		SoundSourceDesc * source = m_poolSoundSourceDesc.createT();
 
 		++m_enumerator;
-		size_t soundId = m_enumerator;
+		uint32_t soundId = m_enumerator;
 		source->soundId = soundId;
 
 		source->source = sourceInterface;
@@ -384,7 +384,7 @@ namespace Menge
 		return buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::releaseSoundSource( size_t _sourceID )
+	bool SoundEngine::releaseSoundSource( uint32_t _sourceID )
 	{
 		TMapSoundSource::iterator it_find = m_soundSourceMap.find( _sourceID );
 		
@@ -413,7 +413,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::validSoundSource( size_t _sourceID ) const
+	bool SoundEngine::validSoundSource( uint32_t _sourceID ) const
 	{
 		TMapSoundSource::const_iterator it_find = m_soundSourceMap.find( _sourceID );
 
@@ -486,7 +486,7 @@ namespace Menge
 		struct SoundListenerStopDesc
 		{
 			SoundListenerInterface * listener;
-			size_t id;
+			uint32_t id;
 		};
 
 		typedef stdex::vector<SoundListenerStopDesc> TVectorSoundListeners;
@@ -572,21 +572,21 @@ namespace Menge
         return m_silent;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundEngine::getSoundSourceDesc_( size_t _emitterId, SoundSourceDesc ** _desc )
+    bool SoundEngine::getSoundSourceDesc_( uint32_t _emitterId, SoundSourceDesc ** _desc )
     {
         bool result = m_soundSourceMap.has( _emitterId, _desc );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundEngine::getSoundSourceDesc_( size_t _emitterId, const SoundSourceDesc ** _desc ) const
+    bool SoundEngine::getSoundSourceDesc_( uint32_t _emitterId, const SoundSourceDesc ** _desc ) const
     {
 		bool result = m_soundSourceMap.has( _emitterId, _desc );
 
 		return result;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::play( size_t _emitterId )
+	bool SoundEngine::play( uint32_t _emitterId )
 	{
         SoundSourceDesc * source;
 		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -633,7 +633,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::pause( size_t _emitterId )
+	bool SoundEngine::pause( uint32_t _emitterId )
 	{
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -669,7 +669,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::stop( size_t _emitterId )
+	bool SoundEngine::stop( uint32_t _emitterId )
 	{
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -706,7 +706,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setLoop( size_t _emitterId, bool _looped )
+	void SoundEngine::setLoop( uint32_t _emitterId, bool _looped )
 	{
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -722,7 +722,7 @@ namespace Menge
 		source->source->setLoop( _looped );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setSourceListener( size_t _emitter, SoundListenerInterface* _listener )
+	void SoundEngine::setSourceListener( uint32_t _emitter, SoundListenerInterface* _listener )
 	{
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitter, &source ) == false )
@@ -774,7 +774,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::setSourceVolume( size_t _emitterId, float _volume )
+	bool SoundEngine::setSourceVolume( uint32_t _emitterId, float _volume )
 	{
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -793,7 +793,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::getLoop( size_t _emitterId ) const
+	bool SoundEngine::getLoop( uint32_t _emitterId ) const
 	{
         const SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -810,7 +810,7 @@ namespace Menge
 		return looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getSourceVolume( size_t _emitterId ) const
+	float SoundEngine::getSourceVolume( uint32_t _emitterId ) const
 	{
         const SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -827,7 +827,7 @@ namespace Menge
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getLengthMs( size_t _emitter ) const
+	float SoundEngine::getLengthMs( uint32_t _emitter ) const
 	{
         const SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitter, &source ) == false )
@@ -844,7 +844,7 @@ namespace Menge
 		return ms;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::setPosMs( size_t _emitterId, float _pos )
+	bool SoundEngine::setPosMs( uint32_t _emitterId, float _pos )
 	{
         SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
@@ -865,13 +865,6 @@ namespace Menge
 			return false;
         }
 
-        float current_pos = source->source->getPosMs();
-
-		if( mt::cmp_f_f( current_pos, _pos ) == true )
-        {
-            return true;
-        }
-
         float lengthMs = source->source->getLengthMs();
         
         if( _pos > lengthMs )
@@ -882,7 +875,7 @@ namespace Menge
                 , lengthMs
                 );
 
-            return false;
+			_pos = lengthMs;
         }
 
         source->timing = lengthMs - _pos;
@@ -893,6 +886,18 @@ namespace Menge
         {
             this->stopSoundBufferUpdate_( source );
         }
+
+		float current_pos = source->source->getPosMs();
+
+		if( mt::cmp_f_f( current_pos, _pos ) == true )
+		{
+			if( hasBufferUpdate == true )				
+			{
+				this->playSoundBufferUpdate_( source );
+			}
+
+			return true;
+		}
         
         bool playing = source->source->isPlaying();
         
@@ -986,9 +991,9 @@ namespace Menge
 		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getPosMs( size_t _emitterId ) const
+	float SoundEngine::getPosMs( uint32_t _emitterId )
 	{
-        const SoundSourceDesc * source;
+        SoundSourceDesc * source;
         if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
         {
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine:getPosMs not found emitter id %d"
@@ -1003,7 +1008,19 @@ namespace Menge
 			return 0.f;
 		}
 
+		bool hasBufferUpdate = source->worker != nullptr;
+
+		if( hasBufferUpdate == true )
+		{
+			this->stopSoundBufferUpdate_( source );
+		}
+
         float pos = source->source->getPosMs();
+
+		if( hasBufferUpdate == true )				
+		{
+			this->playSoundBufferUpdate_( source );
+		}
 		
 		return pos;
 	}

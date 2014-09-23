@@ -8,10 +8,12 @@
 
 namespace Menge
 {
+	typedef uint32_t HttpAssetID;
+
 	class HttpDownloadAssetReceiver
 	{
 	public:
-		virtual void onDownloadAssetComplete( size_t _id, bool _successful ) = 0;
+		virtual void onDownloadAssetComplete( HttpAssetID _id, bool _successful ) = 0;
 	};
 
     class HttpSystemInterface
@@ -24,8 +26,8 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual size_t downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpDownloadAssetReceiver * _receiver ) = 0;
-		virtual bool cancelAsset( size_t _id ) = 0;
+		virtual HttpAssetID downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpDownloadAssetReceiver * _receiver ) = 0;
+		virtual bool cancelAsset( HttpAssetID _id ) = 0;
 	};
 
 #   define HTTP_SYSTEM( serviceProvider )\

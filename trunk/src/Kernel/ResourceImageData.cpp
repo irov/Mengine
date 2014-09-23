@@ -169,9 +169,9 @@ namespace Menge
 
 		const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
-		size_t width = dataInfo->width;
-		size_t height = dataInfo->height;
-		size_t channels = dataInfo->channels;
+		uint32_t width = dataInfo->width;
+		uint32_t height = dataInfo->height;
+		uint32_t channels = dataInfo->channels;
 		PixelFormat format = dataInfo->format;
 
 		size_t memorySize = Helper::getTextureMemorySize( width, height, channels, 1, format );

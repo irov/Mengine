@@ -257,7 +257,7 @@ namespace Menge
 
 		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
 
-		for( size_t i = 1; i != m_vertexCount; ++i )
+		for( uint32_t i = 1; i != m_vertexCount; ++i )
 		{
 			mt::add_internal_point( _boundingBox, vertices[i].pos[0], vertices[i].pos[1] );
 		}
@@ -296,7 +296,7 @@ namespace Menge
 		{
 			// RGB(A)
 			{
-				for( size_t i = 0; i != m_vertexCount; ++i )
+				for( uint32_t i = 0; i != m_vertexCount; ++i )
 				{
 					const mt::vec2f & uv = m_frame->uv[i];
 
@@ -311,7 +311,7 @@ namespace Menge
 			// Alpha
 			//if( m_textures[1] != nullptr )
 			{
-				for( size_t i = 0; i != m_vertexCount; ++i )
+				for( uint32_t i = 0; i != m_vertexCount; ++i )
 				{
 					const mt::vec2f & uv = m_frame->uv[i];
 
@@ -327,7 +327,7 @@ namespace Menge
 		{
 			// RGB(A)
 			{
-				for( size_t i = 0; i != m_vertexCount; ++i )
+				for( uint32_t i = 0; i != m_vertexCount; ++i )
 				{
 					const mt::vec2f & uv = m_frame->uv[i];
 
@@ -342,7 +342,7 @@ namespace Menge
 			// Alpha
 			//if( m_textures[1] != nullptr )
 			{
-				for( size_t i = 0; i != m_vertexCount; ++i )
+				for( uint32_t i = 0; i != m_vertexCount; ++i )
 				{
 					const mt::vec2f & uv = m_frame->uv[i];
 
@@ -426,7 +426,7 @@ namespace Menge
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
-		for( size_t i = 0; i != m_vertexCount; ++i )
+		for( uint32_t i = 0; i != m_vertexCount; ++i )
 		{
 			const mt::vec3f & pos = m_frame->pos[i];
 
@@ -450,14 +450,14 @@ namespace Menge
 
 		const Model3DInterfacePtr & model = m_resourceModel->getModel();
 
-		size_t frameCount = model->getFrameCount();
+		uint32_t frameCount = model->getFrameCount();
 		float frameDelay = model->getFrameDelay();
 		
 		float speedFactor = this->getSpeedFactor();
 		float scretch = this->getScretch();
 		m_frameTiming += _timing * speedFactor / scretch;
 		
-		size_t lastFrame = m_currentFrame;
+		uint32_t lastFrame = m_currentFrame;
 
 		if( m_currentFrame != frameCount )
 		{
@@ -536,7 +536,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Model3D::_restart( float _time, size_t _enumerator )
+	bool Model3D::_restart( float _time, uint32_t _enumerator )
 	{
 		(void)_time;
 		(void)_enumerator;
@@ -551,7 +551,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_stop( size_t _enumerator )
+	void Model3D::_stop( uint32_t _enumerator )
 	{
 		(void)_enumerator;
 
@@ -565,7 +565,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_end( size_t _enumerator )
+	void Model3D::_end( uint32_t _enumerator )
 	{
 		(void)_enumerator;
 
@@ -579,7 +579,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Model3D::getFrame_( float _timing, float & _delthaTiming ) const
+	uint32_t Model3D::getFrame_( float _timing, float & _delthaTiming ) const
 	{
 		if( _timing <= 0.f )
 		{
@@ -590,7 +590,7 @@ namespace Menge
 
 		const Model3DInterfacePtr & model = m_resourceModel->getModel();
 
-		size_t frameCount = model->getFrameCount();
+		uint32_t frameCount = model->getFrameCount();
 		float frameDelay = model->getFrameDelay();
 
 		float duration = frameCount * frameDelay;
@@ -607,7 +607,7 @@ namespace Menge
 			}
 		}
 		
-		for( size_t frame = 0; frame != frameCount; ++frame )
+		for( uint32_t frame = 0; frame != frameCount; ++frame )
 		{
 			_timing -= frameDelay;
 
@@ -633,12 +633,12 @@ namespace Menge
 			return;
 		}
 
-		size_t firstFrame = 0;
+		uint32_t firstFrame = 0;
 
 		this->setCurrentFrame_( firstFrame );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::setCurrentFrame_( size_t _frame )
+	void Model3D::setCurrentFrame_( uint32_t _frame )
 	{
 		if( this->isCompile() == false )
 		{
@@ -651,7 +651,7 @@ namespace Menge
 
 		const Model3DInterfacePtr & model = m_resourceModel->getModel();
 
-		size_t frameCount = model->getFrameCount();
+		uint32_t frameCount = model->getFrameCount();
 				
 		if( _frame >= frameCount )	
 		{
@@ -683,9 +683,9 @@ namespace Menge
 
 		const Model3DInterfacePtr & model = m_resourceModel->getModel();
 
-		size_t frameCount = model->getFrameCount();
+		uint32_t frameCount = model->getFrameCount();
 
-		size_t lastFrame = frameCount - 1;
+		uint32_t lastFrame = frameCount - 1;
 
 		this->setCurrentFrame_( lastFrame );
 	}
@@ -731,7 +731,7 @@ namespace Menge
 		return timing; 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Model3D::_interrupt( size_t _enumerator )
+	bool Model3D::_interrupt( uint32_t _enumerator )
 	{
 		(void)_enumerator;
 

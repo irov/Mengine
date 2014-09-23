@@ -31,7 +31,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void split( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delims )
 		{
-			size_t numSplits = 0;
+			uint32_t numSplits = 0;
 			String::size_type start = 0;
 			String::size_type pos = 0;
 
@@ -62,7 +62,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		void wsplit( TVectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims )
 		{
-			size_t numSplits = 0;
+			uint32_t numSplits = 0;
 			WString::size_type start = 0;
 			WString::size_type pos = 0;
 

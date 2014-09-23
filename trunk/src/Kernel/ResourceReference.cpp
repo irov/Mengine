@@ -7,7 +7,7 @@
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 
-#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificationServiceInterface.h"
 #	include "Interface/NotificatorInterface.h"
 
 #   include "Logger/Logger.h"

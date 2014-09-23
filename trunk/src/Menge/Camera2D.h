@@ -2,7 +2,7 @@
 
 #	include "Camera.h"
 
-#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificationServiceInterface.h"
 
 #	include "Kernel/Node.h"
 
@@ -48,7 +48,7 @@ namespace Menge
 		bool isOrthogonalProjection() const override;
 
 	public:
-		inline size_t getCameraRevision() const;
+		inline uint32_t getCameraRevision() const;
 
 	protected:
 		void _invalidateWorldMatrix() override;
@@ -66,7 +66,7 @@ namespace Menge
 		void notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution );
 
 	protected:
-		size_t m_cameraRevision;
+		uint32_t m_cameraRevision;
 
 		Viewport m_renderport;
 		float m_zNear;
@@ -91,7 +91,7 @@ namespace Menge
 		mutable bool m_invalidateBB;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline size_t Camera2D::getCameraRevision() const
+	inline uint32_t Camera2D::getCameraRevision() const
 	{
 		return m_cameraRevision;
 	}

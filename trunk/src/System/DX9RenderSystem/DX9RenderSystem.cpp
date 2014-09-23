@@ -24,7 +24,7 @@ namespace Menge
 	static const D3DFORMAT D16SFormats[] = { D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (D3DFORMAT) 0 };
 	static const D3DFORMAT D16Formats[]	= { D3DFMT_D16, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, (D3DFORMAT) 0 };
 	//////////////////////////////////////////////////////////////////////////
-	static size_t s_getPrimitiveCount( EPrimitiveType _pType, size_t _indexCount )
+	static uint32_t s_getPrimitiveCount( EPrimitiveType _pType, uint32_t _indexCount )
 	{
 		switch( _pType )
 		{
@@ -308,7 +308,7 @@ namespace Menge
 		return D3DTEXF_NONE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static size_t s_format_id_( D3DFORMAT _format )
+	static uint32_t s_format_id_( D3DFORMAT _format )
 	{
 		switch(_format) {
 		case D3DFMT_R5G6B5:		return 1;
@@ -347,7 +347,7 @@ namespace Menge
 	{
 		//m_syncTargets[0] = NULL;
 		//m_syncTargets[1] = NULL;
-        for( size_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+        for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
         {
             m_currentTexture[i] = nullptr;
         }
@@ -615,7 +615,7 @@ namespace Menge
 #	undef REFRESH_SAMPLER_STATE			
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, int _bits, 
+	bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, 
 		bool _fullscreen, WindowHandle _winHandle, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
 	{
         (void)_bits;
@@ -803,7 +803,7 @@ namespace Menge
  		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, ( D3DTS_VIEW, (D3DMATRIX*)_modelview.buff() ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr DX9RenderSystem::createImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
+	RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
 	{
 		(void)_depth;
 
@@ -839,7 +839,7 @@ namespace Menge
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
+	RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
 	{
 		(void)_depth;
 
@@ -875,7 +875,7 @@ namespace Menge
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
+	RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
 	{
 		(void)_depth;
 
@@ -1086,7 +1086,7 @@ namespace Menge
 		++m_frames;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint16_t _stencil )
+	void DX9RenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -1313,7 +1313,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels, DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture )
+	bool DX9RenderSystem::d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -1346,7 +1346,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, Clear, ( 0, NULL, D3DCLEAR_TARGET, _color, 0.f, 0 ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setTextureMatrix( size_t _stage, const float* _texture )
+	void DX9RenderSystem::setTextureMatrix( uint32_t _stage, const float* _texture )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -1478,7 +1478,7 @@ namespace Menge
 			}
 		}
 
-        for( size_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+        for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
         {
             IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTexture, ( i, nullptr ) )
 			{
@@ -1590,7 +1590,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	VBHandle DX9RenderSystem::createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic )
+	VBHandle DX9RenderSystem::createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic )
 	{
         if( m_pD3DDevice == NULL )
         {
@@ -1656,7 +1656,7 @@ namespace Menge
         m_vertexBuffers.erase( _vbHandle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IBHandle DX9RenderSystem::createIndexBuffer( size_t _indiciesNum, bool _dynamic )
+	IBHandle DX9RenderSystem::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
 	{
         if( m_pD3DDevice == NULL )
         {
@@ -1721,7 +1721,7 @@ namespace Menge
         m_indexBuffers.erase( _ibHandle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * DX9RenderSystem::lockVertexBuffer( VBHandle _vbHandle, size_t _offset, size_t _size, EBufferLockFlag _flags )
+	void * DX9RenderSystem::lockVertexBuffer( VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
 	{
         VBInfo * vbinfo = nullptr;
         if( m_vertexBuffers.has( _vbHandle, &vbinfo ) == false )
@@ -1788,7 +1788,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, EBufferLockFlag _flags )
+	void * DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
 	{
         IBInfo * ibinfo;
 
@@ -1880,7 +1880,7 @@ namespace Menge
         m_currentVB = _vbHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex )
+	void DX9RenderSystem::setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex )
 	{
         (void) _baseVertexIndex;
         
@@ -1917,8 +1917,8 @@ namespace Menge
         m_currentIB = _ibHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, size_t _baseVertexIndex,
-		size_t _minIndex, size_t _verticesNum, size_t _startIndex, size_t _indexCount )
+	void DX9RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
+		uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount )
 	{
         (void)_baseVertexIndex;
 
@@ -1939,7 +1939,7 @@ namespace Menge
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setTexture( size_t _stage, const RenderImageInterfacePtr & _texture )
+	void DX9RenderSystem::setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -2011,7 +2011,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_DESTBLEND, factor ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
+	void DX9RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
 	{	
         if( m_pD3DDevice == nullptr )
         {
@@ -2339,7 +2339,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_LIGHTING, value ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp, ETextureArgument _arg1, ETextureArgument _arg2 )
+	void DX9RenderSystem::setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp, ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -2374,7 +2374,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp, ETextureArgument _arg1, ETextureArgument _arg2 )
+	void DX9RenderSystem::setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp, ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -2409,7 +2409,7 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setTextureStageTexCoordIndex( size_t _stage, size_t _index )
+    void DX9RenderSystem::setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index )
     {
         if( m_pD3DDevice == nullptr )
         {
@@ -2431,7 +2431,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_TEXCOORDINDEX, index ) );		
     }
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
+	void DX9RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -2454,7 +2454,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, textureFilterType, textureFilter ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setVertexDeclaration( size_t _vertexSize, uint32_t _declaration )
+	void DX9RenderSystem::setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration )
 	{
         (void)_vertexSize;
 

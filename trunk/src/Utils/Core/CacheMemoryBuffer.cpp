@@ -1,7 +1,5 @@
 #	include "CacheMemoryBuffer.h"
 
-#	include "Interface/CacheInterface.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -12,7 +10,7 @@ namespace Menge
 		, m_memory(nullptr)
 	{
 		void * memory = nullptr;
-		size_t bufferId = CACHE_SERVICE(m_serviceProvider)
+		CacheBufferID bufferId = CACHE_SERVICE(m_serviceProvider)
 			->lockBuffer( m_size, &memory, _doc );
 
 		if( bufferId != 0 )

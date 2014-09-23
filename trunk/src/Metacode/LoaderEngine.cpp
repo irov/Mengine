@@ -432,7 +432,7 @@ namespace Menge
 	}
 #	endif
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & LoaderEngine::getCacheConstString( size_t _index ) const
+    const ConstString & LoaderEngine::getCacheConstString( uint32_t _index ) const
     {
         return m_bufferConstString[_index];
     }

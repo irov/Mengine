@@ -3,7 +3,7 @@
 #	include "Interface/ApplicationInterface.h"
 
 #   include "Interface/StringizeInterface.h"
-#   include "Interface/NotificationServiceInterace.h"
+#   include "Interface/NotificationServiceInterface.h"
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/ThreadSystemInterface.h"
 #   include "Interface/RenderSystemInterface.h"

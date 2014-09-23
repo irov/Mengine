@@ -112,7 +112,7 @@ namespace Menge
 
 		if( newTarget == true )
 		{
-			size_t id = this->getId();
+			uint32_t id = this->getId();
 			pybind::call( m_cb, "iOffffO", id, m_node->getEmbed(), new_position.x, new_position.y, m_target.x, m_target.y, pybind::get_bool(false) );
 		}
 
@@ -125,7 +125,7 @@ namespace Menge
 		mt::vec3f new_pos(m_target.x, m_target.y, lp.z);
 		m_node->setLocalPosition( new_pos );
 
-		size_t id = this->getId();
+		uint32_t id = this->getId();
 		pybind::call( m_cb, "iOffffO", id, m_node->getEmbed(), lp.x, lp.y, m_target.x, m_target.y, pybind::get_bool(true) );
 
 		pybind::decref(m_cb);
@@ -136,7 +136,7 @@ namespace Menge
 	{
 		const mt::vec3f & lp = m_node->getLocalPosition();
 
-		size_t id = this->getId();
+		uint32_t id = this->getId();
 		pybind::call( m_cb, "iOffffO", id, m_node->getEmbed(), lp.x, lp.y, m_target.x, m_target.y, pybind::get_bool(true) );
 
 		pybind::decref(m_cb);
@@ -152,9 +152,9 @@ namespace Menge
 		mt::vec2f lp_v2 = lp.to_vec2f();
 
 		mt::vec2f acc_dir(0.f, 0.f);
-		size_t j = 4;
+		uint32_t j = 4;
 
-		size_t wayCount = pybind::list_size( m_way );	
+		uint32_t wayCount = pybind::list_size( m_way );	
 
 		if( m_iterator == wayCount )
 		{
@@ -173,7 +173,7 @@ namespace Menge
 		mt::vec2f v0;
 		pybind::extract_value( py_v0, v0 );
 
-		for( size_t i = m_iterator; i != wayCount && j != 0; ++i )
+		for( uint32_t i = m_iterator; i != wayCount && j != 0; ++i )
 		{
 			PyObject * py_v = pybind::list_getitem( m_way, i );
 

@@ -44,7 +44,7 @@ namespace Menge
 		float m_speed;
 		PyObject * m_cb;
 
-		size_t m_iterator;
+		uint32_t m_iterator;
 		mt::vec2f m_target;
 		float m_length;
 		float m_timing;

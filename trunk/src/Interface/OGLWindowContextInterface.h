@@ -15,11 +15,10 @@ namespace Menge
 	class OGLWindowContext
 	{
 	public:
-		virtual bool initialize( std::size_t _width, std::size_t _height, int _bits,
-									bool _fullscreen, WindowHandle _winHandle, bool _waitForVSync ) = 0;
+		virtual bool initialize( uint32_t _width, uint32_t _height, uint32_t _bits, bool _fullscreen, WindowHandle _winHandle, bool _waitForVSync ) = 0;
 		virtual void swapBuffers() = 0;
 		virtual void setVSync( bool _vsync ) = 0;
-		virtual void setFullscreenMode( std::size_t _width, std::size_t _height, bool _fullscreen ) = 0;
+		virtual void setFullscreenMode( uint32_t _width, uint32_t _height, bool _fullscreen ) = 0;
 	};
 
 	void createWindowContext( OGLWindowContext** _pWindowContext );

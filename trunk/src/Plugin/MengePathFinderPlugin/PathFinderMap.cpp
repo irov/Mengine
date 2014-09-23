@@ -135,15 +135,15 @@ namespace Menge
 			return;
 		}
 
-		size_t numpoints = _ring.size();
+		Polygon::ring_type::size_type numpoints = _ring.size();
 
 		--numpoints;
 
-		for( size_t i = 0; i != numpoints; ++i )
+		for( Polygon::ring_type::size_type i = 0; i != numpoints; ++i )
 		{
-			size_t i0 = (i + numpoints - 1) % numpoints;
-			size_t i1 = (i + numpoints + 0) % numpoints;
-			size_t i2 = (i + numpoints + 1) % numpoints;
+			Polygon::ring_type::size_type i0 = (i + numpoints - 1) % numpoints;
+			Polygon::ring_type::size_type i1 = (i + numpoints + 0) % numpoints;
+			Polygon::ring_type::size_type i2 = (i + numpoints + 1) % numpoints;
 
 			const mt::vec2f & p0 = _ring[i0];
 			const mt::vec2f & p1 = _ring[i1];
@@ -181,15 +181,15 @@ namespace Menge
 			return;
 		}
 
-		size_t numpoints = _ring.size();
+		Polygon::ring_type::size_type numpoints = _ring.size();
 
 		--numpoints;
 
-		for( size_t i = 0; i != numpoints; ++i )
+		for( Polygon::ring_type::size_type i = 0; i != numpoints; ++i )
 		{
-			size_t i0 = (i + numpoints - 1) % numpoints;
-			size_t i1 = (i + numpoints + 0) % numpoints;
-			size_t i2 = (i + numpoints + 1) % numpoints;
+			Polygon::ring_type::size_type i0 = (i + numpoints - 1) % numpoints;
+			Polygon::ring_type::size_type i1 = (i + numpoints + 0) % numpoints;
+			Polygon::ring_type::size_type i2 = (i + numpoints + 1) % numpoints;
 			
 			const mt::vec2f & p0 = _ring[i0];
 			const mt::vec2f & p1 = _ring[i1];
@@ -259,7 +259,7 @@ namespace Menge
 		return test;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t PathFinderMap::addObstacle( const Polygon & _polygon )
+	uint32_t PathFinderMap::addObstacle( const Polygon & _polygon )
 	{	
 		if( boost::geometry::num_points(_polygon) == 0 )
 		{
@@ -274,7 +274,7 @@ namespace Menge
 
 		s_enlargePolygonFromLow( big_polygon, m_unitSize );
 
-		size_t id = ++m_enumeratorObstacles;
+		uint32_t id = ++m_enumeratorObstacles;
 
 		Obstacle * obstacle = new Obstacle;
 		obstacle->id = id;
@@ -298,7 +298,7 @@ namespace Menge
 		return id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::removeObstacle( size_t _id )
+	void PathFinderMap::removeObstacle( uint32_t _id )
 	{
 		for( TVectorObstacles::iterator
 			it = m_obstacles.begin(),
@@ -509,7 +509,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t PathFinderMap::createPathFinder( const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
+	uint32_t PathFinderMap::createPathFinder( const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
 	{
 		if( m_threadPathFinders == nullptr )
 		{
@@ -527,7 +527,7 @@ namespace Menge
 
 		PathFinderDesc desc;
 
-		size_t id = ++m_enumeratorPathFinders;
+		uint32_t id = ++m_enumeratorPathFinders;
 		desc.id = id;
 
 		desc.finder = pf;
@@ -543,7 +543,7 @@ namespace Menge
 		return id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::removePathFinder( size_t _finderId )
+	void PathFinderMap::removePathFinder( uint32_t _finderId )
 	{
 		for( TVectorPathFinderDesc::iterator
 			it = m_pathfinders.begin(),
@@ -660,14 +660,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::renderPolygonRing_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Polygon::ring_type & _ring, uint32_t _color )
 	{
-		size_t numpoints = _ring.size();
+		Polygon::ring_type::size_type numpoints = _ring.size();
 
 		if( numpoints == 0 )
 		{
 			return;
 		}
 
-		size_t vertexCount = numpoints * 2;
+		Polygon::ring_type::size_type vertexCount = numpoints * 2;
 
 		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
 			->getDebugRenderVertex2D( vertexCount );
@@ -677,12 +677,12 @@ namespace Menge
 			return;
 		}
 
-		for( size_t i = 0; i != numpoints; ++i )
+		for( Polygon::ring_type::size_type i = 0; i != numpoints; ++i )
 		{
-			size_t j = (i + 1) % numpoints;
+			Polygon::ring_type::size_type j = (i + 1) % numpoints;
 
 			mt::vec2f trP0 = _ring[i];
-			RenderVertex2D & v0 = vertices[i*2+0];
+			RenderVertex2D & v0 = vertices[i*2 + 0];
 
 			v0.pos.x = trP0.x;
 			v0.pos.y = trP0.y;

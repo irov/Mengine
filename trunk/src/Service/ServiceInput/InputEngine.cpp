@@ -1,6 +1,6 @@
 #	include "InputEngine.h"
 
-#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificationServiceInterface.h"
 #	include "Interface/ApplicationInterface.h"
 #	include "Interface/NotificatorInterface.h"
 
@@ -136,14 +136,14 @@ namespace Menge
         m_mousePositionEventParams.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputEngine::isKeyDown( size_t _keyCode ) const
+	bool InputEngine::isKeyDown( uint32_t _keyCode ) const
 	{
 		bool isDown = m_keyBuffer[_keyCode];
 
 		return isDown;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputEngine::isExclusiveKeyDown( size_t _keyCode ) const
+	bool InputEngine::isExclusiveKeyDown( uint32_t _keyCode ) const
 	{
 		bool isDown = m_keyBuffer[_keyCode];
 
@@ -152,7 +152,7 @@ namespace Menge
 			return false;
 		}
 
-		size_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + 256, true );
+		uint32_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + 256, true );
 		
 		if( keyDownCount != 1 )
 		{
@@ -164,7 +164,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isAnyKeyDown() const
 	{
-		size_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + 256, true );
+		uint32_t keyDownCount = std::count( m_keyBuffer, m_keyBuffer + 256, true );
 
 		return keyDownCount != 0;
 	}
@@ -174,7 +174,7 @@ namespace Menge
 		return m_mouseBuffer[0] || m_mouseBuffer[1] || m_mouseBuffer[2];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputEngine::isMouseButtonDown( size_t _button ) const
+	bool InputEngine::isMouseButtonDown( uint32_t _button ) const
 	{
 		return m_mouseBuffer[_button];
 	}

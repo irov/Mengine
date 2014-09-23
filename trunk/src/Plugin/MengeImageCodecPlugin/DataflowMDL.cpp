@@ -112,7 +112,7 @@ namespace Menge
 		pack->initialize( frameCount, vertexCount, indicesCount, frameDelay );
 		pack->setCamera( cameraFOV, cameraWidth / cameraHeight, cameraRightSign );
 		
-		for( size_t i = 0; i != frameCount; ++i )
+		for( uint32_t i = 0; i != frameCount; ++i )
 		{
 			Model3DFrame & frame = pack->mutableFrame( i );
 						

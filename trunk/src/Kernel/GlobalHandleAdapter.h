@@ -61,7 +61,7 @@ namespace Menge
 		bool m_globalMouseEvent;
 		bool m_globalKeyEvent;
 
-        size_t m_globalMouseId;
-        size_t m_globalKeyId;
+        uint32_t m_globalMouseId;
+        uint32_t m_globalKeyId;
 	};
 }

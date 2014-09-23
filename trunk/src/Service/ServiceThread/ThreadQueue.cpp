@@ -24,12 +24,12 @@ namespace Menge
 		m_threadName = _threadName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadQueue::setThreadCount( size_t _count )
+	void ThreadQueue::setThreadCount( uint32_t _count )
 	{
 		m_currentTasks.resize( _count );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadQueue::setPacketSize( size_t _size )
+	void ThreadQueue::setPacketSize( uint32_t _size )
 	{
 		m_packetSize = _size;
 	}
@@ -106,7 +106,7 @@ namespace Menge
 				return;
 			}
 
-			size_t packetSize = m_packetSize;
+			uint32_t packetSize = m_packetSize;
 						
 			while( m_threadTasks.empty() == false && packetSize > 0 )
 			{
@@ -128,9 +128,9 @@ namespace Menge
 				if( THREAD_SERVICE(m_serviceProvider)
 					->addTask( m_threadName, packet ) == false )
 				{
-					size_t count = packet->countTask();
+					uint32_t count = packet->countTask();
 
-					for( size_t i = 0; i != count; ++i )
+					for( uint32_t i = 0; i != count; ++i )
 					{
 						const ThreadTaskPtr & task = packet->getTask( i );
 

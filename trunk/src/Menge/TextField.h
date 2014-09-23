@@ -101,7 +101,7 @@ namespace Menge
 		void setVerticalCenterAlign();
 		bool isVerticalCenterAlign() const;
 		
-		size_t getMaxCharCount() const;
+		uint32_t getMaxCharCount() const;
 		void setMaxCharCount( int _maxCharCount );
 
 		void setPixelsnap( bool _pixelsnap );
@@ -111,7 +111,7 @@ namespace Menge
 		const mt::vec2f& getTextSize() const;
 
     public:
-		size_t getCharCount() const;
+		uint32_t getCharCount() const;
 
 	protected:
 		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
@@ -199,11 +199,11 @@ namespace Menge
 		ColourValue m_colorFont;
 		ColourValue m_colorOutline;
 
-		size_t m_fontParams;
+		uint32_t m_fontParams;
 		
-		size_t m_maxCharCount;
+		uint32_t m_maxCharCount;
 
-		mutable size_t m_charCount;
+		mutable uint32_t m_charCount;
 		mutable mt::vec2f m_textSize;
 
 		bool m_outline;

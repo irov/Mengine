@@ -21,10 +21,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderTexture::initialize( ServiceProviderInterface * _serviceProvider
         , const RenderImageInterfacePtr & _image
-        , size_t _width
-        , size_t _height
-        , size_t _channels
-        , size_t _id
+        , uint32_t _width
+        , uint32_t _height
+        , uint32_t _channels
+        , uint32_t _id
         )
     {
         m_serviceProvider = _serviceProvider;
@@ -65,7 +65,7 @@ namespace Menge
 		return m_image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderTexture::getId() const
+	uint32_t RenderTexture::getId() const
 	{
 		return m_id;
 	}
@@ -80,27 +80,27 @@ namespace Menge
 		return m_fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderTexture::getWidth() const
+	uint32_t RenderTexture::getWidth() const
 	{
 		return m_width;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderTexture::getHeight() const
+	uint32_t RenderTexture::getHeight() const
 	{
 		return m_height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderTexture::getChannels() const
+	uint32_t RenderTexture::getChannels() const
 	{
 		return m_channels;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t RenderTexture::getMemoryUse() const
 	{
-		size_t HWWidth = m_image->getHWWidth();
-		size_t HWHeight = m_image->getHWHeight();
-		size_t HWChannels = m_image->getHWChannels();
-		size_t HWBits = m_image->getHWDepth();
+		uint32_t HWWidth = m_image->getHWWidth();
+		uint32_t HWHeight = m_image->getHWHeight();
+		uint32_t HWChannels = m_image->getHWChannels();
+		uint32_t HWBits = m_image->getHWDepth();
 
 		PixelFormat HWFormat = m_image->getHWPixelFormat();
 
@@ -109,7 +109,7 @@ namespace Menge
 		return memroy_size;
 	}
     /////////////////////////////////////////////////////////////////////////////
-	void * RenderTexture::lock( int * _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
+	void * RenderTexture::lock( size_t * _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
 	{
         void * buffer = m_image->lock( _pitch, _rect, _readOnly );
 

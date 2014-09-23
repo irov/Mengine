@@ -31,7 +31,7 @@ namespace	Menge
 		void finalize() override;
 
 	public:
-        bool playTrack( const ConstString& _playlistResource, size_t _index, float _pos, bool _looped ) override;
+        bool playTrack( const ConstString& _playlistResource, uint32_t _index, float _pos, bool _looped ) override;
 		bool shuffle( const ConstString& _playlist ) override;
 				
 		void stop() override;
@@ -40,8 +40,8 @@ namespace	Menge
 		
 		const ConstString& getPlayTrack() const override;
 					
-		size_t getNumTracks() const override;
-		size_t getCurrentTrack() const override;
+		uint32_t getNumTracks() const override;
+		uint32_t getCurrentTrack() const override;
 
 		//void onTurnSound( bool _turn ) override;
 		

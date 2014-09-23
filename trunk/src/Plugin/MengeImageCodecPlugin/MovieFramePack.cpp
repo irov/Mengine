@@ -31,27 +31,27 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MovieFramePack::initialize( size_t _size )
+    void MovieFramePack::initialize( uint32_t _size )
     {
         m_layers.resize( _size );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void MovieFramePack::initializeTimeremap( size_t _size )
+	void MovieFramePack::initializeTimeremap( uint32_t _size )
 	{
 		m_timeremap.resize( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MovieFramePack::initializeShapes( size_t _size )
+	void MovieFramePack::initializeShapes( uint32_t _size )
 	{
 		m_shapes.resize( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MovieFramePack::initializePolygons( size_t _size )
+	void MovieFramePack::initializePolygons( uint32_t _size )
 	{
 		m_polygons.resize( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MovieLayerFrame & MovieFramePack::initializeLayer( size_t _layerIndex, size_t _count, bool _immutable )
+	MovieLayerFrame & MovieFramePack::initializeLayer( uint32_t _layerIndex, uint32_t _count, bool _immutable )
 	{
 		MovieLayerFrame & layer = m_layers[_layerIndex];
 
@@ -72,7 +72,7 @@ namespace Menge
 		return layer;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool MovieFramePack::hasLayer( size_t _layerIndex ) const
+    bool MovieFramePack::hasLayer( uint32_t _layerIndex ) const
     {
         if( (_layerIndex - 1) >= m_layers.size() )
         {
@@ -82,35 +82,35 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	const MovieLayerFrame & MovieFramePack::getLayer( size_t _layerIndex ) const
+	const MovieLayerFrame & MovieFramePack::getLayer( uint32_t _layerIndex ) const
 	{
 		const MovieLayerFrame & frameLayer = m_layers[_layerIndex - 1];
 
 		return frameLayer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MovieLayerTimeRemap & MovieFramePack::mutableLayerTimeRemap( size_t _layerIndex )
+	MovieLayerTimeRemap & MovieFramePack::mutableLayerTimeRemap( uint32_t _layerIndex )
 	{
 		MovieLayerTimeRemap & timeremap = m_timeremap[_layerIndex];
 
 		return timeremap;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MovieLayerShapes & MovieFramePack::mutableLayerShape( size_t _layerIndex )
+	MovieLayerShapes & MovieFramePack::mutableLayerShape( uint32_t _layerIndex )
 	{
 		MovieLayerShapes & shapes = m_shapes[_layerIndex];
 
 		return shapes;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MovieLayerPolygon & MovieFramePack::mutableLayerPolygon( size_t _layerIndex )
+	MovieLayerPolygon & MovieFramePack::mutableLayerPolygon( uint32_t _layerIndex )
 	{
 		MovieLayerPolygon & polygon = m_polygons[_layerIndex];
 
 		return polygon;
 	}
 	///////////////////////////////////////////////////////////////////////
-	bool MovieFramePack::getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const
+	bool MovieFramePack::getLayerFrame( uint32_t _layerIndex, uint32_t _frameIndex, MovieFrameSource & _frame ) const
 	{
         if( (_layerIndex - 1) >= m_layers.size() )
         {
@@ -171,7 +171,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MovieFramePack::getLayerFrameInterpolate( size_t _layerIndex, size_t _frameIndex, float _t, MovieFrameSource & _frame ) const
+	bool MovieFramePack::getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource & _frame ) const
 	{
 		if( (_layerIndex - 1) >= m_layers.size() )
 		{
@@ -279,7 +279,7 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool MovieFramePack::getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const
+    bool MovieFramePack::getLayerTimeRemap( uint32_t _layerIndex, uint32_t _frameIndex, float & _time ) const
     {
 		for( TVectorMovieLayerTimeRemap::const_iterator
 			it = m_timeremap.begin(),
@@ -304,7 +304,7 @@ namespace Menge
 		return false;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MovieFramePack::getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const
+	bool MovieFramePack::getLayerShape( uint32_t _layerIndex, uint32_t _frameIndex, const MovieFrameShape ** _shape ) const
 	{
 		for( TVectorMovieLayerShapes::const_iterator
 			it = m_shapes.begin(),
@@ -329,7 +329,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MovieFramePack::getLayerPolygon( size_t _layerIndex, const mt::vec2f ** _polygon, uint8_t & _vertexCount ) const
+	bool MovieFramePack::getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t & _vertexCount ) const
 	{
 		for( TVectorMovieLayerPolygons::const_iterator
 			it = m_polygons.begin(),
@@ -345,7 +345,7 @@ namespace Menge
 			}
 
 			*_polygon = polygon.polygon;
-			_vertexCount = (size_t)polygon.vertexCount;
+			_vertexCount = polygon.vertexCount;
 
 			return true;
 		}
@@ -353,7 +353,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MovieFramePack::isLayerPermanentlyHide( size_t _layerIndex ) const
+	bool MovieFramePack::isLayerPermanentlyHide( uint32_t _layerIndex ) const
 	{
 		if( (_layerIndex - 1) >= m_layers.size() )
 		{

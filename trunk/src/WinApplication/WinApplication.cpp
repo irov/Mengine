@@ -819,7 +819,7 @@ namespace Menge
 
 		m_logService->setVerboseLevel( m_logLevel );
 
-		size_t verboseFlag = 0;
+		uint32_t verboseFlag = 0;
 
 		if( m_profilerMode )
 		{
@@ -1952,8 +1952,8 @@ namespace Menge
 
 		RECT clientArea = workArea;
 		::AdjustWindowRect( &clientArea, WS_OVERLAPPEDWINDOW, FALSE );
-		size_t maxClientWidth = 2 * (workArea.right - workArea.left) - (clientArea.right - clientArea.left);
-		size_t maxClientHeight = 2 * (workArea.bottom - workArea.top) - (clientArea.bottom - clientArea.top);
+		uint32_t maxClientWidth = 2 * (workArea.right - workArea.left) - (clientArea.right - clientArea.left);
+		uint32_t maxClientHeight = 2 * (workArea.bottom - workArea.top) - (clientArea.bottom - clientArea.top);
 
 		_resolution.setWidth( maxClientWidth );
 		_resolution.setHeight( maxClientHeight );

@@ -45,7 +45,7 @@ namespace Menge
 		_mutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::initialize( size_t _threadCount )
+	bool ThreadEngine::initialize( uint32_t _threadCount )
 	{
         m_threadCount = _threadCount;
 
@@ -238,7 +238,7 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ThreadQueueInterfacePtr ThreadEngine::runTaskQueue( const ConstString & _threadName, size_t _countThread, size_t _packetSize )
+	ThreadQueueInterfacePtr ThreadEngine::runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize )
 	{
 		ThreadQueuePtr taskQueue = m_factoryThreadQueue.createObjectT();
 

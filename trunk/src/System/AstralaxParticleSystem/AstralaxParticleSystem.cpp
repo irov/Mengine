@@ -43,7 +43,7 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static size_t s_getCountTag( const String & _fullname, String & _name )
+	static uint32_t s_getCountTag( const String & _fullname, String & _name )
 	{
 		String::size_type st_begin = _fullname.find_first_of('[');
 
@@ -66,7 +66,7 @@ namespace Menge
 
 		_name = _fullname.substr( 0, st_begin );
 
-		return (size_t)str_count;
+		return str_count;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxParticleSystem::loadEmitters_( HM_FILE _file, const AstralaxEmitterContainerPtr & _container )
@@ -139,10 +139,10 @@ namespace Menge
         MAGIC_POSITION pos;
         Magic_GetEmitterPosition( id, &pos );
 
-        size_t count = s_getCountTag( m_loadEmitterCacheFullname, m_loadEmitterCacheName );
+        uint32_t count = s_getCountTag( m_loadEmitterCacheFullname, m_loadEmitterCacheName );
 
 		TVectorEmitters emitters;
-		for( size_t i = 0; i != count; ++i )
+		for( uint32_t i = 0; i != count; ++i )
 		{
 			HM_EMITTER duplicated_id = Magic_LoadEmitter( _file, _magicName );
 
@@ -165,7 +165,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream )
 	{
-		size_t fileSize = _stream->size();
+		uint32_t fileSize = _stream->size();
 
 		CacheMemoryBuffer container_buffer(m_serviceProvider, fileSize, "AstralaxEmitterContainer2");
 		void * container_memory = container_buffer.getMemory();

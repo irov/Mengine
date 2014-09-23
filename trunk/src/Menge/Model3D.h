@@ -50,15 +50,15 @@ namespace Menge
 
 	protected:
 		bool _play( float _time ) override;
-		bool _restart( float _time, size_t _enumerator ) override;
-		void _stop( size_t _enumerator ) override;
-		void _end( size_t _enumerator ) override;
-		bool _interrupt( size_t _enumerator ) override;
+		bool _restart( float _time, uint32_t _enumerator ) override;
+		void _stop( uint32_t _enumerator ) override;
+		void _end( uint32_t _enumerator ) override;
+		bool _interrupt( uint32_t _enumerator ) override;
 
 	protected:
-		size_t getFrame_( float _timing, float & _delthaTiming ) const;
+		uint32_t getFrame_( float _timing, float & _delthaTiming ) const;
 		void updateCurrentFrame_();
-		void setCurrentFrame_( size_t _frame );
+		void setCurrentFrame_( uint32_t _frame );
 
 	protected:
 		void _update( float _current, float _timing ) override;
@@ -105,12 +105,12 @@ namespace Menge
 		ResourceHolder<ResourceModel3D> m_resourceModel;
 
 		float m_frameTiming;
-		size_t m_currentFrame;
+		uint32_t m_currentFrame;
 
 		RenderMaterialInterfacePtr m_material;
 		bool m_invalidateMaterial;
 
-		size_t m_texturesNum;
+		uint32_t m_texturesNum;
 		RenderTextureInterfacePtr m_textures[2];
 
 		Camera3D * m_camera;
@@ -119,8 +119,8 @@ namespace Menge
 		
 		mutable RenderVertex2D m_verticesWM[MENGINE_MODEL_MAX_VERTEX];
 
-		size_t m_vertexCount;
-		size_t m_indicesCount;
+		uint32_t m_vertexCount;
+		uint32_t m_indicesCount;
 
 		bool m_blendAdd;
 		bool m_solid;

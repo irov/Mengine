@@ -149,7 +149,7 @@ namespace Menge
 			return false;
 		}
 
-        size_t channels;
+        uint32_t channels;
 
 		if ( m_resourceVideo->isAlpha() == true )
 		{
@@ -229,14 +229,14 @@ namespace Menge
 		m_material = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_stop( size_t _enumerator )
+	void Video::_stop( uint32_t _enumerator )
 	{
 		m_needUpdate = false;
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_end( size_t _enumerator )
+	void Video::_end( uint32_t _enumerator )
 	{
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false));	
 	}
@@ -266,7 +266,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Video::_restart( float _time, size_t _enumerator )
+	bool Video::_restart( float _time, uint32_t _enumerator )
 	{
         (void)_time;
         (void)_enumerator;
@@ -588,7 +588,7 @@ namespace Menge
 
 		float duration = dataInfo->duration;
 
-		size_t skipIterator = (size_t)(m_intervalStart / duration);
+		uint32_t skipIterator = (uint32_t)((m_intervalStart / duration) + 0.5f);
 
 		if( skipIterator > 0 )
 		{
@@ -643,8 +643,8 @@ namespace Menge
 		{
 			rect.left = 0;
 			rect.top = 0;
-			rect.right = (size_t)m_frameSize.x;
-			rect.bottom = (size_t)m_frameSize.y;
+			rect.right = (uint32_t)m_frameSize.x;
+			rect.bottom = (uint32_t)m_frameSize.y;
 		}
 		else
 		{
@@ -656,7 +656,7 @@ namespace Menge
 			rect.bottom = image->getHWHeight();
 		}
 
-        int pitch = 0;
+        size_t pitch = 0;
 		void * lockRect = texture->lock( &pitch, rect, false );
 
 		if( lockRect == nullptr )
@@ -672,16 +672,16 @@ namespace Menge
 		}
 
 		m_videoDecoder->setPitch( pitch );
-        size_t count = m_videoDecoder->decode( lockRect, pitch * rect.bottom );
+        size_t bytes = m_videoDecoder->decode( lockRect, pitch * rect.bottom );
        
 		texture->unlock();
 
 		m_invalidVideoTexture = false;
                 
-		return count != 0;
+		return bytes != 0;
 	}
 	////////////////////////////////////////////////////////////////////
-	bool Video::_interrupt( size_t _enumerator )
+	bool Video::_interrupt( uint32_t _enumerator )
 	{
         (void)_enumerator;
 
@@ -700,8 +700,8 @@ namespace Menge
 
 			const RenderImageInterfacePtr & image = texture->getImage();
 
-			size_t hwWidth = image->getHWWidth();
-			size_t hwHeight = image->getHWHeight();
+			uint32_t hwWidth = image->getHWWidth();
+			uint32_t hwHeight = image->getHWHeight();
 
 			float scaleLeft = float(rect.left) / float(hwWidth);
 			float scaleTop = float(rect.top) / float(hwHeight);

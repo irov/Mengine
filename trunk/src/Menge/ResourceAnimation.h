@@ -31,12 +31,12 @@ namespace Menge
 		ResourceAnimation();
 
 	public:
-		size_t getSequenceCount() const;
-		float getSequenceDelay( size_t _index ) const;		
-		const ConstString& getSequenceResourceName( size_t _index ) const;
-		ResourceImage * getSequenceResource( size_t _index ) const;
+		uint32_t getSequenceCount() const;
+		float getSequenceDelay( uint32_t _index ) const;		
+		const ConstString& getSequenceResourceName( uint32_t _index ) const;
+		ResourceImage * getSequenceResource( uint32_t _index ) const;
 
-		size_t getLastFrameIndex() const;
+		uint32_t getLastFrameIndex() const;
 		float getSequenceDuration() const;
 
 	public:

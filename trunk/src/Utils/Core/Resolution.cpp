@@ -9,28 +9,28 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Resolution::Resolution( size_t _width, size_t _height )
+	Resolution::Resolution( uint32_t _width, uint32_t _height )
 		: m_width(_width)
 		, m_height(_height)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Resolution::setWidth( size_t _width )
+	void Resolution::setWidth( uint32_t _width )
 	{
 		m_width = _width;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Resolution::getWidth() const
+	uint32_t Resolution::getWidth() const
 	{
 		return m_width;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Resolution::setHeight( size_t _height )
+	void Resolution::setHeight( uint32_t _height )
 	{
 		m_height = _height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Resolution::getHeight() const
+	uint32_t Resolution::getHeight() const
 	{
 		return m_height;
 	}

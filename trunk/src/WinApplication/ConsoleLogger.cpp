@@ -46,12 +46,12 @@ namespace Menge
 		m_verboseLevel = _level;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ConsoleLogger::setVerboseFlag( size_t _flag )
+    void ConsoleLogger::setVerboseFlag( uint32_t _flag )
     {
         m_verboseFlag = _flag;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ConsoleLogger::validMessage( EMessageLevel _level, size_t _flag ) const
+	bool ConsoleLogger::validMessage( EMessageLevel _level, uint32_t _flag ) const
 	{
 		if( m_verboseLevel < _level )
 		{
@@ -140,7 +140,7 @@ namespace Menge
 		std::cout << "console ready.." << std::endl;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConsoleLogger::log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count )
+	void ConsoleLogger::log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _count )
 	{	
         (void)_flag;
 

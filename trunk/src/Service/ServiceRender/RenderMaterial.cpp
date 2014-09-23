@@ -16,13 +16,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterial::~RenderMaterial()
 	{
-		for( size_t i = 0; i != m_textureCount; ++i )
+		for( uint32_t i = 0; i != m_textureCount; ++i )
 		{
 			m_textures[i] = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderMaterial::initialize( size_t _id, uint32_t _hash, EPrimitiveType _primitiveType, size_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage )
+	void RenderMaterial::initialize( uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage )
 	{
 		m_id = _id;
 		m_hash = _hash;
@@ -31,7 +31,7 @@ namespace Menge
 
 		m_textureCount = _textureCount;
 
-		for( size_t i = 0; i != m_textureCount; ++i )
+		for( uint32_t i = 0; i != m_textureCount; ++i )
 		{
 			m_textures[i] = _textures[i];
 		}

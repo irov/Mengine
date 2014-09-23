@@ -71,10 +71,10 @@ namespace Menge
 
 	protected:
 		virtual bool _play( float _time ) = 0;
-		virtual bool _restart( float _time, size_t _enumerator ) = 0;
-		virtual void _stop( size_t _enumerator ) = 0;
-		virtual void _end( size_t _enumerator ) = 0;
-		virtual bool _interrupt( size_t _enumerator ) = 0;		
+		virtual bool _restart( float _time, uint32_t _enumerator ) = 0;
+		virtual void _stop( uint32_t _enumerator ) = 0;
+		virtual void _end( uint32_t _enumerator ) = 0;
+		virtual bool _interrupt( uint32_t _enumerator ) = 0;		
 
 	protected:
 		uint32_t m_enumerator;

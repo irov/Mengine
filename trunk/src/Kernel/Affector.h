@@ -19,7 +19,7 @@ namespace Menge
 		: public Factorable
 	{
 	public:
-		virtual void onAffectorEnd( size_t _id, bool _isEnd ) = 0;
+		virtual void onAffectorEnd( uint32_t _id, bool _isEnd ) = 0;
 	};
 
 	class Affector
@@ -34,8 +34,8 @@ namespace Menge
         void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type );
 
 	public:
-		void setId( size_t _id );
-		size_t getId() const;
+		void setId( uint32_t _id );
+		uint32_t getId() const;
 
 	public:
 		EAffectorType getType() const;
@@ -54,7 +54,7 @@ namespace Menge
 		AffectorCallback * m_cb;
 
 		EAffectorType m_type;
-		size_t m_id;
+		uint32_t m_id;
 	};
     //////////////////////////////////////////////////////////////////////////
 	template<class C, class M>

@@ -68,7 +68,7 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::initialize( size_t _maxVertexCount, size_t _maxIndexCount )
+	bool RenderEngine::initialize( uint32_t _maxVertexCount, uint32_t _maxIndexCount )
 	{
 		m_maxVertexCount = _maxVertexCount;
 		m_maxIndexCount = _maxIndexCount;        
@@ -157,7 +157,7 @@ namespace Menge
 		m_indexBuffer.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, int _bits, bool _fullscreen,
+	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
 		WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
 	{
 		m_windowResolution = _resolution;
@@ -217,10 +217,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createNullTexture_()
 	{
-		size_t null_width = 2;
-		size_t null_height = 2;
-		size_t null_channels = 3;
-		size_t null_depth = 1;
+		uint32_t null_width = 2;
+		uint32_t null_height = 2;
+		uint32_t null_channels = 3;
+		uint32_t null_depth = 1;
 
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
 			->createTexture( null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
@@ -241,7 +241,7 @@ namespace Menge
 		rect.right = null_width;
 		rect.bottom = null_height;
 
-		int pitch = 0;
+		size_t pitch = 0;
 		void * textureData = texture->lock( &pitch, rect, false );
 
 		if( textureData == nullptr )
@@ -286,10 +286,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createWhitePixelTexture_()
 	{
-		size_t null_width = 2;
-		size_t null_height = 2;
-		size_t null_channels = 3;
-		size_t null_depth = 1;
+		uint32_t null_width = 2;
+		uint32_t null_height = 2;
+		uint32_t null_channels = 3;
+		uint32_t null_depth = 1;
 
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
 			->createTexture( null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
@@ -310,7 +310,7 @@ namespace Menge
 		rect.right = null_width;
 		rect.bottom = null_height;
 
-		int pitch = 0;
+		size_t pitch = 0;
 		void * textureData = texture->lock( &pitch, rect, false );
 
 		if( textureData == nullptr )
@@ -506,7 +506,7 @@ namespace Menge
 		
 		m_currentStage = _stage;
 
-		for( size_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
+		for( uint32_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 		{
 			RenderTextureStage & current_texture_stage = m_currentTextureStage[stageId];
 			const RenderTextureStage & texture_stage = m_currentStage->textureStage[stageId];
@@ -604,10 +604,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::updateTexture_( size_t _stageId, const RenderTextureInterfacePtr & _texture )
+	void RenderEngine::updateTexture_( uint32_t _stageId, const RenderTextureInterfacePtr & _texture )
 	{
-		size_t texture_id = _texture->getId();
-		size_t current_texture_id = m_currentTexturesID[_stageId];
+		uint32_t texture_id = _texture->getId();
+		uint32_t current_texture_id = m_currentTexturesID[_stageId];
 
 		if( texture_id != current_texture_id || current_texture_id != 0 )
 		{
@@ -622,7 +622,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::updateMaterial_( const RenderMaterialPtr & _material )
 	{		
-		size_t materialId = _material->getId();
+		uint32_t materialId = _material->getId();
 
 		if( m_currentMaterialId == materialId )
 		{
@@ -631,11 +631,11 @@ namespace Menge
 
 		m_currentMaterialId = materialId;
 
-		size_t textureCount = _material->getTextureCount();
+		uint32_t textureCount = _material->getTextureCount();
 
 		if( m_currentTextureStages > textureCount )
 		{
-			for( size_t stageId = textureCount; stageId != m_currentTextureStages; ++stageId )
+			for( uint32_t stageId = textureCount; stageId != m_currentTextureStages; ++stageId )
 			{
 				this->disableTextureStage_( stageId );
 			}
@@ -643,7 +643,7 @@ namespace Menge
 
 		m_currentTextureStages = textureCount;
 
-		for( size_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
+		for( uint32_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 		{
 			const RenderTextureInterfacePtr & texture = _material->getTexture( stageId );
 
@@ -707,7 +707,7 @@ namespace Menge
 		++m_debugInfo.dips;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::disableTextureStage_( size_t _stage )
+	void RenderEngine::disableTextureStage_( uint32_t _stage )
 	{
 		RenderTextureStage & stage = m_currentTextureStage[_stage];
 
@@ -856,8 +856,8 @@ namespace Menge
 		float renderWidth = m_renderViewport.getWidth();
 		float renderHeight = m_renderViewport.getHeight();
 
-		size_t contentWidth = m_contentResolution.getWidth();
-		size_t contentHeight = m_contentResolution.getHeight();
+		uint32_t contentWidth = m_contentResolution.getWidth();
+		uint32_t contentHeight = m_contentResolution.getHeight();
 
 		float scale_width = renderWidth / float(contentWidth);
 		float scale_height = renderHeight / float(contentHeight);
@@ -1010,7 +1010,7 @@ namespace Menge
 		pass.viewport = m_currentRenderViewport;
 		pass.camera = m_currentRenderCamera;
 
-		for( size_t i = 0; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )
+		for( uint32_t i = 0; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )
 		{
 			pass.materialEnd[i] = nullptr;
 		}
@@ -1019,8 +1019,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material        
-		, const RenderVertex2D * _vertices, size_t _verticesNum
-		, const RenderIndices2D * _indices, size_t _indicesNum
+		, const RenderVertex2D * _vertices, uint32_t _verticesNum
+		, const RenderIndices2D * _indices, uint32_t _indicesNum
 		, const mt::box2f * _bb )
 	{
 		if( _viewport == nullptr )
@@ -1112,8 +1112,8 @@ namespace Menge
 
 		ro.material = _material;
 
-		size_t materialId = _material->getId();
-		size_t materialId2 = materialId % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
+		uint32_t materialId = _material->getId();
+		uint32_t materialId2 = materialId % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
 
 		rp.materialEnd[materialId2] = &ro;
 
@@ -1153,10 +1153,10 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-		, const RenderVertex2D * _vertices, size_t _verticesNum
+		, const RenderVertex2D * _vertices, uint32_t _verticesNum
 		, const mt::box2f * _bb )
 	{
-		size_t indicesNum = (_verticesNum / 4) * 6;
+		uint32_t indicesNum = (_verticesNum / 4) * 6;
 
 		if( indicesNum >= MENGINE_RENDER_INDICES_QUAD )
 		{
@@ -1172,10 +1172,10 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-		, const RenderVertex2D * _vertices, size_t _verticesNum
+		, const RenderVertex2D * _vertices, uint32_t _verticesNum
 		, const mt::box2f * _bb )
 	{
-		size_t indicesNum = _verticesNum;
+		uint32_t indicesNum = _verticesNum;
 
 		if( indicesNum >= MENGINE_RENDER_INDICES_LINE )
 		{
@@ -1200,10 +1200,10 @@ namespace Menge
 		return m_debugMaterial;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderVertex2D * RenderEngine::getDebugRenderVertex2D( size_t _count )
+	RenderVertex2D * RenderEngine::getDebugRenderVertex2D( uint32_t _count )
 	{
-		size_t renderVertex2DSize = m_debugRenderVertex2D.size();
-		size_t renderVertex2DCapacity = m_debugRenderVertex2D.capacity();
+		uint32_t renderVertex2DSize = m_debugRenderVertex2D.size();
+		uint32_t renderVertex2DCapacity = m_debugRenderVertex2D.capacity();
 
 		if( renderVertex2DSize + _count > renderVertex2DCapacity )
 		{
@@ -1225,7 +1225,7 @@ namespace Menge
 		return m_batchMode;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	VBHandle RenderEngine::createVertexBuffer( const RenderVertex2D * _buffer, size_t _count )
+	VBHandle RenderEngine::createVertexBuffer( const RenderVertex2D * _buffer, uint32_t _count )
 	{
 		VBHandle vbHandle = RENDER_SYSTEM(m_serviceProvider)
 			->createVertexBuffer( _count, sizeof(RenderVertex2D), false );
@@ -1242,7 +1242,7 @@ namespace Menge
 		return vbHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IBHandle RenderEngine::createIndicesBuffer( const RenderIndices2D * _buffer, size_t _count )
+	IBHandle RenderEngine::createIndicesBuffer( const RenderIndices2D * _buffer, uint32_t _count )
 	{
 		IBHandle ibHandle = RENDER_SYSTEM(m_serviceProvider)
 			->createIndexBuffer( _count, false );
@@ -1295,7 +1295,7 @@ namespace Menge
 			->releaseIndexBuffer( _handle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::updateVertexBuffer( VBHandle _handle, const RenderVertex2D * _buffer, size_t _count )
+	bool RenderEngine::updateVertexBuffer( VBHandle _handle, const RenderVertex2D * _buffer, uint32_t _count )
 	{
 		void * vbuffer = RENDER_SYSTEM(m_serviceProvider)->lockVertexBuffer( 
 			_handle
@@ -1326,7 +1326,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::updateIndicesBuffer( IBHandle _handle, const RenderIndices2D * _buffer, size_t _count )
+	bool RenderEngine::updateIndicesBuffer( IBHandle _handle, const RenderIndices2D * _buffer, uint32_t _count )
 	{
 		void * ibuffer = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
 			_handle
@@ -1430,10 +1430,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize )
+	void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize )
 	{
-		size_t vbPos = 0;
-		size_t ibPos = 0;
+		uint32_t vbPos = 0;
+		uint32_t ibPos = 0;
 
 		for( TArrayRenderPass::iterator 
 			it = m_renderPasses.begin(), 
@@ -1447,10 +1447,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos )
+	void RenderEngine::batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
 	{
-		size_t vbPos = _vbPos;
-		size_t ibPos = _ibPos;
+		uint32_t vbPos = _vbPos;
+		uint32_t ibPos = _ibPos;
 
 		TArrayRenderObject::iterator it_batch_begin = _begin;
 		++it_batch_begin;
@@ -1517,10 +1517,10 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::batchRenderObjectSmart_( RenderPass * _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos )
+	void RenderEngine::batchRenderObjectSmart_( RenderPass * _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
 	{
-		size_t vbPos = _vbPos;
-		size_t ibPos = _ibPos;
+		uint32_t vbPos = _vbPos;
+		uint32_t ibPos = _ibPos;
 
 		const RenderMaterial * ro_material = _ro->material.get();
 		
@@ -1530,7 +1530,7 @@ namespace Menge
 		TArrayRenderObject::iterator it_batch = _begin;
 		++it_batch;	
 
-		size_t materialId = ro_material->getId();
+		uint32_t materialId = ro_material->getId();
 		TArrayRenderObject::const_iterator it_end = _renderPass->materialEnd[materialId];
 
 		if( _begin == it_end )
@@ -1585,10 +1585,10 @@ namespace Menge
 		_ibPos = ibPos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t & _vbPos, size_t & _ibPos )
+	void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
 	{
-		size_t vbPos = _vbPos;
-		size_t ibPos = _ibPos;
+		uint32_t vbPos = _vbPos;
+		uint32_t ibPos = _ibPos;
 
 		TArrayRenderObject::iterator it = m_renderObjects.advance( _renderPass->beginRenderObject );
 		TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
@@ -1644,7 +1644,7 @@ namespace Menge
 		_ibPos = ibPos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, size_t _vbSize, size_t _ibSize, size_t _vbPos, size_t _ibPos ) const
+	bool RenderEngine::insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t _vbPos, uint32_t _ibPos ) const
 	{   
 		if( stdex::memorycopy_safe_pod( _vertexBuffer, _vbPos, _vbSize, _renderObject->vertexData, _renderObject->verticesNum ) == false )
 		{
@@ -1868,9 +1868,9 @@ namespace Menge
 		return S;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::calcQuadSquare_( const RenderVertex2D * _vertex, size_t _num )
+	void RenderEngine::calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _num )
 	{
-		for( size_t i = 0; i != (_num / 4); ++i )
+		for( uint32_t i = 0; i != (_num / 4); ++i )
 		{
 			const RenderVertex2D & v0 = _vertex[i*4 + 0];
 			const RenderVertex2D & v1 = _vertex[i*4 + 1];
@@ -1886,11 +1886,11 @@ namespace Menge
 		m_debugInfo.object += 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::calcMeshSquare_( const RenderVertex2D * _vertex, size_t _verteNum, const RenderIndices2D * _indices, size_t _indicesNum )
+	void RenderEngine::calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _verteNum, const RenderIndices2D * _indices, uint32_t _indicesNum )
 	{
 		(void)_verteNum;
 
-		for( size_t i = 0; i != (_indicesNum / 3); ++i )
+		for( uint32_t i = 0; i != (_indicesNum / 3); ++i )
 		{
 			RenderIndices2D i0 = _indices[i + 0];
 			RenderIndices2D i1 = _indices[i + 1];

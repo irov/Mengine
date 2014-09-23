@@ -34,7 +34,7 @@ namespace Menge
 		MemoryInputPtr createMemoryInput() override;
 
 	protected:
-		size_t lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc );
+		CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc );
 		
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

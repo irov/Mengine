@@ -54,7 +54,7 @@ namespace Menge
         
         this->fillKeys_();
 
-        for( size_t i = 0; i != MENGINE_MAX_TOUCHES; ++i )
+        for( uint32_t i = 0; i != MENGINE_MAX_TOUCHES; ++i )
         {
             TouchDesc & touch = m_touches[i];
 
@@ -282,7 +282,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeInput::fillKeys_()
     {
-        for( size_t i = 0; i != 255; ++i )
+        for( uint32_t i = 0; i != 255; ++i )
         {
             m_keys[i] = (KeyCode)255;
         }
@@ -376,7 +376,7 @@ namespace Menge
 
         m_keys[s3eKeyNumLock] = Menge::KC_NUMLOCK;
 
-        for( size_t i = 0; i != 255; ++i )
+        for( uint32_t i = 0; i != 255; ++i )
         {
             KeyCode code = m_keys[i];
 

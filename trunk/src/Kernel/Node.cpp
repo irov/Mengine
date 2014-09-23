@@ -1320,7 +1320,7 @@ namespace Menge
 		vertexDebugBox[7].pos.y = bbox.minimum.y;
 
 
-		for( size_t i = 0; i != 8; ++i )
+		for( uint32_t i = 0; i != 8; ++i )
 		{
 			vertexDebugBox[i].pos.z = 0.f;
 

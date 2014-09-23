@@ -9,7 +9,7 @@ namespace Menge
 	{
     }
     //////////////////////////////////////////////////////////////////////////
-	void MarmaladeLogger::log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count )
+	void MarmaladeLogger::log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _size )
 	{
 		//s3eDebugErrorPrintf("%s"
   //          , _data 
@@ -29,12 +29,12 @@ namespace Menge
         (void)_level;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeLogger::setVerboseFlag( size_t _flag )
+    void MarmaladeLogger::setVerboseFlag( uint32_t _flag )
     {
         (void)_flag;
     }
     //////////////////////////////////////////////////////////////////////////
-	bool MarmaladeLogger::validMessage( EMessageLevel _level, size_t _flag ) const
+	bool MarmaladeLogger::validMessage( EMessageLevel _level, uint32_t _flag ) const
 	{
         (void)_level;
         (void)_flag;

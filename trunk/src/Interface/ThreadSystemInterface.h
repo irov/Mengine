@@ -78,7 +78,7 @@ namespace Menge
 		virtual ThreadIdentityPtr createThread( int _priority ) = 0;
 
 	public:
-		virtual void sleep( unsigned int _ms ) = 0;
+		virtual void sleep( uint32_t _ms ) = 0;
 
 	public:
 		virtual ThreadMutexInterfacePtr createMutex() = 0;
@@ -96,7 +96,7 @@ namespace Menge
         SERVICE_DECLARE("ThreadService")
 
     public:
-        virtual bool initialize( size_t _threadCount ) = 0;
+        virtual bool initialize( uint32_t _threadCount ) = 0;
         virtual void finalize() = 0;
 
     public:
@@ -111,7 +111,7 @@ namespace Menge
         virtual bool joinTask( const ThreadTaskInterfacePtr & _task ) = 0;
 
 	public:
-		virtual ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, size_t _countThread, size_t _packetSize ) = 0;
+		virtual ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize ) = 0;
 
     public:
         virtual ThreadMutexInterfacePtr createMutex() = 0;

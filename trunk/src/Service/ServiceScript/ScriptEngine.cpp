@@ -90,7 +90,7 @@ namespace Menge
 
         this->addGlobalModule( "Menge", m_moduleMenge );
 
-        size_t python_version = pybind::get_python_version();
+        uint32_t python_version = pybind::get_python_version();
         this->addGlobalModule( "_PYTHON_VERSION", pybind::build_value("d", python_version) );
 
 		pybind::set_currentmodule( m_moduleMenge );

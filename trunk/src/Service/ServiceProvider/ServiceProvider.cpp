@@ -12,7 +12,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ServiceProvider::ServiceProvider()
     {
-        for( size_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+        for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
         {
             ServiceDesc & desc = m_services[index];
 
@@ -36,7 +36,7 @@ namespace Menge
 			return false;
 		}
 
-        for( size_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+        for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
         {
             ServiceDesc & desc = m_services[index];
 
@@ -87,7 +87,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ServiceProvider::existService( const char * _name ) const
 	{
-		for( size_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+		for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
 		{
 			const ServiceDesc & desc = m_services[index];
 
@@ -109,7 +109,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ServiceInterface * ServiceProvider::getService( const char * _name ) const
 	{
-        for( size_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+        for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
         {
             const ServiceDesc & desc = m_services[index];
 

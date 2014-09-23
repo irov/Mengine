@@ -55,13 +55,13 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual size_t renderParticlesCount( size_t _count ) = 0;
+		virtual uint32_t renderParticlesCount( uint32_t _count ) = 0;
 
 	public:
 		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) = 0;
 
 	public:
-		virtual size_t getMaxParticlesCount() const = 0;
+		virtual uint32_t getMaxParticlesCount() const = 0;
 
 	public:
 		virtual void update() = 0;

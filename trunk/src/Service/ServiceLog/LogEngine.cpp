@@ -42,12 +42,12 @@ namespace Menge
 		m_verboseLevel = _level;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void LogEngine::setVerboseFlag( size_t _flag )
+    void LogEngine::setVerboseFlag( uint32_t _flag )
     {
         m_verboseFlag = _flag;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool LogEngine::validMessage( EMessageLevel _level, size_t _flag ) const
+	bool LogEngine::validMessage( EMessageLevel _level, uint32_t _flag ) const
 	{
 		if( m_verboseLevel < _level )
 		{
@@ -67,7 +67,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LogEngine::logMessage( EMessageLevel _level, size_t _flag, const char * _message, size_t _size  )
+	void LogEngine::logMessage( EMessageLevel _level, uint32_t _flag, const char * _message, size_t _size  )
 	{
 		for( TVectorLoggers::iterator 
 			it = m_loggers.begin(), 
@@ -101,7 +101,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LogEngine::unregisterLogger( LoggerInterface* _logger )
+	void LogEngine::unregisterLogger( LoggerInterface * _logger )
 	{
 		TVectorLoggers::iterator it_find = 
 			std::find( m_loggers.begin(), m_loggers.end(), _logger );

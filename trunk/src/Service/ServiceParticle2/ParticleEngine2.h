@@ -33,18 +33,18 @@ namespace Menge
 		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) override;
 
 	public:
-		size_t getMaxParticlesCount() const override;
-		void setMaxParticlesCount( size_t _count );
+		uint32_t getMaxParticlesCount() const override;
+		void setMaxParticlesCount( uint32_t _count );
 
 	public:		
-		size_t renderParticlesCount( size_t _count );
+		uint32_t renderParticlesCount( uint32_t _count );
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
 		ArchivatorInterfacePtr m_archivator;
 
-		size_t m_maxParticlesNum;
-		size_t m_renderParticleNum;
+		uint32_t m_maxParticlesNum;
+		uint32_t m_renderParticleNum;
 	};
 };

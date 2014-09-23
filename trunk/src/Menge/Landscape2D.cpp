@@ -139,7 +139,7 @@ namespace	Menge
 			}
 		}
 		
-		size_t elementVertexOffset = 0;
+		uint32_t elementVertexOffset = 0;
 
 		for( TVectorLandscape2DElements::const_iterator
 			it = elementsWM.begin(),
@@ -165,7 +165,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::setBackParts( const TVectorResourceImage & _images, size_t _countX, size_t _countY, float _width, float _height)
+	void Landscape2D::setBackParts( const TVectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height)
 	{
 		m_elementCountX = _countX;
 		m_elementCountY = _countY;
@@ -174,10 +174,10 @@ namespace	Menge
 
 		m_images = _images;
 
-		size_t i = 0;
-		size_t j = 0;
+		uint32_t i = 0;
+		uint32_t j = 0;
 
-		size_t elementCount = m_images.size();
+		uint32_t elementCount = m_images.size();
 		m_elements.reserve( elementCount );
 		m_verticesWM.resize( elementCount * 4 );
 
@@ -311,8 +311,8 @@ namespace	Menge
 		float x_offset = 0.f;
 		float y_offset = 0.f;
 
-		size_t index_offset = 0;
-		size_t vertex_offset = 0;
+		uint32_t index_offset = 0;
+		uint32_t vertex_offset = 0;
 
 		for( TVectorLandscape2DElements::iterator
 			it = m_elements.begin(),

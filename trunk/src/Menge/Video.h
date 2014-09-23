@@ -70,10 +70,10 @@ namespace Menge
 
 	protected:
 		bool _play( float _time ) override;
-		bool _restart( float _time, size_t _enumerator ) override;
-		void _stop( size_t _enumerator ) override;
-		void _end( size_t _enumerator ) override;
-		bool _interrupt( size_t _enumerator ) override;
+		bool _restart( float _time, uint32_t _enumerator ) override;
+		void _stop( uint32_t _enumerator ) override;
+		void _end( uint32_t _enumerator ) override;
+		bool _interrupt( uint32_t _enumerator ) override;
 
 	protected:
 		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) const override;

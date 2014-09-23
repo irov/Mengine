@@ -32,19 +32,19 @@ namespace Menge
 		SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable ) override;
 
 	public:
-		size_t genSourceId();
-		void releaseSourceId( size_t _sourceId );
+		uint32_t genSourceId();
+		void releaseSourceId( uint32_t _sourceId );
 
-		size_t genBufferId();
-		void releaseBufferId( size_t _sourceId );
+		uint32_t genBufferId();
+		void releaseBufferId( uint32_t _sourceId );
 
 	public:
-		void clearSourceId( size_t _sourceId );
+		void clearSourceId( uint32_t _sourceId );
 
 	private:
 		ServiceProviderInterface * m_serviceProvider;
 
-        size_t m_enumerate;
+        uint32_t m_enumerate;
 
         typedef FactoryPoolStore<SilentSoundBuffer, 32> TPoolSilentSoundBuffer;
         TPoolSilentSoundBuffer m_poolSilentSoundBuffer;

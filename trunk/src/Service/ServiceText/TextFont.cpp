@@ -113,7 +113,7 @@ namespace Menge
 		return m_height;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t TextFont::getFontParams() const
+	uint32_t TextFont::getFontParams() const
 	{
 		return m_params;
 	}

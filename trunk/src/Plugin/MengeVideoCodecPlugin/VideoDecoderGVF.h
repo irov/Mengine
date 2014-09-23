@@ -32,8 +32,8 @@ namespace Menge
 
 	protected:
 		gvf_decoder * m_gvf;
-		size_t m_frame;
-		size_t m_frames;
+		uint32_t m_frame;
+		uint32_t m_frames;
 		float m_pts;		
 
 		size_t m_pitch;

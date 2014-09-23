@@ -8,7 +8,7 @@
 #   include "Interface/EventInterface.h"
 #	include "Interface/UnicodeInterface.h"
 
-#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificationServiceInterface.h"
 #	include "Interface/NotificatorInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/PrefetcherInterface.h"
@@ -1086,7 +1086,7 @@ namespace Menge
 		//}
 
 		bool done = true;
-		size_t count = 10;
+		uint32_t count = 10;
 
 		while( done == true && --count )
 		{
@@ -1197,7 +1197,7 @@ namespace Menge
                 return;
             }
 
-			size_t count = _generator->count();
+			uint32_t count = _generator->count();
 
 			if( count == 0 )
 			{
@@ -1277,7 +1277,7 @@ namespace Menge
 			//size_t particlesCount = 
 			//	Holder<ParticleEngine>::get()->getFrameParticlesCount();
 
-			size_t particlesCount = 0;
+			uint32_t particlesCount = 0;
 
 			Stringstream ss;
 
@@ -1311,7 +1311,7 @@ namespace Menge
 					}
 
 				public:
-					size_t getCount() const
+					uint32_t getCount() const
 					{
 						return m_count;
 					}
@@ -1328,7 +1328,7 @@ namespace Menge
 					}
 
 				protected:
-					size_t m_count;
+					uint32_t m_count;
 				};
 
 				CompileResourceVisitor crv;
@@ -1376,7 +1376,7 @@ namespace Menge
                 protected:
                     void visit_scope( pybind::class_type_scope * _scope ) override
                     {   
-                        size_t count = _scope->getObjectCount();
+                        uint32_t count = _scope->getObjectCount();
 
                         if( count == 0 )
                         {
@@ -1404,7 +1404,7 @@ namespace Menge
 
                 protected:                    
                     Stringstream & m_ss;
-                    size_t m_count;
+                    uint32_t m_count;
                 };
 
                 MyVisitorClassTypeScope mvcts(ss);

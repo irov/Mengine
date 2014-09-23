@@ -55,7 +55,7 @@ namespace	Menge
         , m_emitterTranslateWithParticle(true)
 		, m_invalidateMaterial(true)
 	{
-		for( size_t i = 0; i != MENGINE_PARTICLE_MAX_ATLAS_TEXTURE; ++i )
+		for( uint32_t i = 0; i != MENGINE_PARTICLE_MAX_ATLAS_TEXTURE; ++i )
 		{
 			m_materials[i * 2 + 0] = nullptr;
 			m_materials[i * 2 + 1] = nullptr;
@@ -153,7 +153,7 @@ namespace	Menge
         bool loop = this->getLoop();
         m_emitter->setLoop( loop );
 
-        size_t polygon_count = boost::geometry::num_points( m_polygon );
+        uint32_t polygon_count = boost::geometry::num_points( m_polygon );
 
         if( polygon_count != 0 )
         {
@@ -186,7 +186,7 @@ namespace	Menge
 
         m_batchs.clear();
 		
-		for( size_t i = 0; i != MENGINE_PARTICLE_MAX_ATLAS_TEXTURE; ++i )
+		for( uint32_t i = 0; i != MENGINE_PARTICLE_MAX_ATLAS_TEXTURE; ++i )
 		{
 			m_materials[i * 2 + 0] = nullptr;
 			m_materials[i * 2 + 1] = nullptr;
@@ -256,7 +256,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter2::_restart( float _time, size_t _enumerator )
+	bool ParticleEmitter2::_restart( float _time, uint32_t _enumerator )
 	{
         (void)_time;
         (void)_enumerator;
@@ -283,7 +283,7 @@ namespace	Menge
 		m_emitter->pause();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_stop( size_t _enumerator )
+	void ParticleEmitter2::_stop( uint32_t _enumerator )
 	{
 		if( this->isActivate() == false )
 		{
@@ -295,7 +295,7 @@ namespace	Menge
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_end( size_t _enumerator )
+	void ParticleEmitter2::_end( uint32_t _enumerator )
 	{
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
 	}
@@ -310,7 +310,7 @@ namespace	Menge
 		m_emitter->setLoop( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter2::_interrupt( size_t _enumerator )
+	bool ParticleEmitter2::_interrupt( uint32_t _enumerator )
 	{
         (void)_enumerator;
 
@@ -378,7 +378,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter2::updateParticleVertex_()
 	{
-		size_t partCount = 0;
+		uint32_t partCount = 0;
 				
         ParticleVertices s_particles[MENGINE_PARTICLE_MAX_COUNT];
 		ParticleMesh s_meshes[MENGINE_PARTICLE_MAX_MESH];
@@ -403,7 +403,7 @@ namespace	Menge
 
 		ARGB color_argb = color.getAsARGB();
 		
-		for( size_t
+		for( uint32_t
 			it_mesh = 0,
 			it_mesh_end = flush.meshCount;
 		it_mesh != it_mesh_end;
@@ -417,7 +417,7 @@ namespace	Menge
 
 			const mt::vec4f & mesh_uv = texture->getUV();
 
-			for( size_t
+			for( uint32_t
 				it = mesh.begin,
 				it_end = mesh.begin + mesh.size;
 			it != it_end;
@@ -512,7 +512,7 @@ namespace	Menge
 			batch.begin = mesh.begin * 4;
 			batch.size = mesh.size * 4;
 
-			size_t materialIndex = mesh.texture * 2 + (mesh.intense ? 0 : 1);
+			uint32_t materialIndex = mesh.texture * 2 + (mesh.intense ? 0 : 1);
 			
 			batch.material = this->getMaterial( materialIndex );
 
@@ -549,7 +549,7 @@ namespace	Menge
         {
             const Batch & batch = *it;
 
-            for( size_t 
+            for( uint32_t 
                 index = batch.begin, 
                 index_end = batch.begin + batch.size; 
             index != index_end; 
@@ -588,7 +588,7 @@ namespace	Menge
 	{
 		m_invalidateMaterial = false;
 
-		size_t imageCount = m_resourceParticle->getAtlasImageCount();
+		uint32_t imageCount = m_resourceParticle->getAtlasImageCount();
 
 		if( imageCount > MENGINE_PARTICLE_MAX_ATLAS_TEXTURE )
 		{
@@ -601,7 +601,7 @@ namespace	Menge
 			return;
 		}
 
-		for( size_t i = 0; i != imageCount; ++i )
+		for( uint32_t i = 0; i != imageCount; ++i )
 		{
 			ResourceImage * image = m_resourceParticle->getAtlasImageResource( i );
 
@@ -739,8 +739,8 @@ namespace	Menge
 			return false;
 		}
 
-		size_t alphaWidth = resourceHIT->getWidth();
-		size_t alphaHeight = resourceHIT->getHeight();
+		uint32_t alphaWidth = resourceHIT->getWidth();
+		uint32_t alphaHeight = resourceHIT->getHeight();
 
         unsigned char * alphaBuffer = resourceHIT->getBuffer();
         
@@ -782,7 +782,7 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
     bool ParticleEmitter2::compilePolygon_()
     {
-        size_t n = boost::geometry::num_points( m_polygon );
+        uint32_t n = boost::geometry::num_points( m_polygon );
 
         if( n == 0 )
         {
@@ -809,7 +809,7 @@ namespace	Menge
 		}
         
         float * triangles_ptr = points.front().buff();
-        size_t triangles_size = points.size() / 3;
+        uint32_t triangles_size = points.size() / 3;
 
         if( m_emitter->changeEmitterModel( triangles_ptr, triangles_size ) == false)
 		{

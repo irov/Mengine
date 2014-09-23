@@ -42,9 +42,9 @@ namespace Menge
 		}
 
 	public:
-		size_t countObject() const
+		uint32_t countObject() const
 		{
-			size_t count = m_ptr->countObject();
+			uint32_t count = m_ptr->countObject();
 
 			return count;
 		}
@@ -83,7 +83,7 @@ namespace Menge
 		M m_method;
 	};
 
-	template<class T, size_t Count>
+	template<class T, uint32_t Count>
 	class FactoryPoolStore
 	{
 	public:
@@ -138,9 +138,9 @@ namespace Menge
 		}
 
 	public:
-		size_t countObject() const
+		uint32_t countObject() const
 		{
-			size_t count = m_ptr->countObject();
+			uint32_t count = m_ptr->countObject();
 
 			return count;
 		}

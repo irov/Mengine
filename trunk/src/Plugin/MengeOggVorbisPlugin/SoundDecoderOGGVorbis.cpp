@@ -255,7 +255,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float SoundDecoderOGGVorbis::tell()
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "SoundDecoderOGGVorbis::_prepareData");
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "SoundDecoderOGGVorbis::tell");
 
 		double al_pos = ov_time_tell( &m_oggVorbisFile );
 

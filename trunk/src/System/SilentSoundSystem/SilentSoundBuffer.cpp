@@ -52,7 +52,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundBuffer::play( size_t _id, bool _looped, float _pos )
+	void SilentSoundBuffer::play( uint32_t _id, bool _looped, float _pos )
 	{
         (void)_id;
         (void)_looped;
@@ -65,7 +65,7 @@ namespace Menge
         m_pauseTime = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundBuffer::pause( size_t _id )
+	void SilentSoundBuffer::pause( uint32_t _id )
 	{
         (void)_id;
 
@@ -75,7 +75,7 @@ namespace Menge
         m_pauseTime = sec;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundBuffer::stop( size_t _id )
+	void SilentSoundBuffer::stop( uint32_t _id )
 	{
         (void)_id;
 
@@ -83,7 +83,7 @@ namespace Menge
         m_pauseTime = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SilentSoundBuffer::getTimePos( size_t _id ) const
+	float SilentSoundBuffer::getTimePos( uint32_t _id ) const
 	{
         (void)_id;
 

@@ -128,7 +128,7 @@ namespace Menge
 		return m_alphaTest;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    size_t HotSpotImage::getWidth() const
+    uint32_t HotSpotImage::getWidth() const
     {
         if( m_resourceHIT == nullptr )
         {
@@ -139,12 +139,12 @@ namespace Menge
             return 0;
         }
 
-        size_t width = m_resourceHIT->getWidth();
+        uint32_t width = m_resourceHIT->getWidth();
 
         return width;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t HotSpotImage::getHeight() const
+    uint32_t HotSpotImage::getHeight() const
     {
         if( m_resourceHIT == nullptr )
         {
@@ -155,7 +155,7 @@ namespace Menge
             return 0;
         }
 
-        size_t height = m_resourceHIT->getHeight();
+        uint32_t height = m_resourceHIT->getHeight();
 
         return height;
     }

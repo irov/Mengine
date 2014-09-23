@@ -21,7 +21,7 @@ namespace Menge
 		bool convert() override;
         	
     protected:
-        size_t calcMimMapBufferLevelAndSize_( size_t _width, size_t _height, size_t & _level );
-        void makeMipMapLevel_( unsigned char * _buffer, size_t _width, size_t _height, size_t _level );
+        size_t calcMimMapBufferLevelAndSize_( uint32_t _width, uint32_t _height, uint32_t & _level );
+        void makeMipMapLevel_( unsigned char * _buffer, uint32_t _width, uint32_t _height, uint32_t _level );
     };
 }	// namespace Menge

@@ -11,7 +11,7 @@ namespace Menge
 		: public ThreadTask
 	{
 	public:
-		ThreadTaskDownloadAsset( ServiceProviderInterface * _serviceProvider, const String & _url, const ConstString & _category, const FilePath & _filepath, size_t _id, HttpDownloadAssetReceiver * _receiver );
+		ThreadTaskDownloadAsset( ServiceProviderInterface * _serviceProvider, const String & _url, const ConstString & _category, const FilePath & _filepath, uint32_t _id, HttpDownloadAssetReceiver * _receiver );
 		
 	protected:
 		bool _onRun() override;
@@ -32,7 +32,7 @@ namespace Menge
 		ConstString m_category;
 		FilePath m_filePath;
 
-		size_t m_id;
+		uint32_t m_id;
 		HttpDownloadAssetReceiver * m_receiver;
 
 		OutputStreamInterfacePtr m_stream;

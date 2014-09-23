@@ -30,7 +30,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::initialize()
 	{
-		for( size_t i = 0; i != MENGINE_PREFETCHER_THREAD_COUNT; ++i )
+		for( uint32_t i = 0; i != MENGINE_PREFETCHER_THREAD_COUNT; ++i )
 		{
 			THREAD_SERVICE(m_serviceProvider)
 				->createThread( CONST_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), -1 );

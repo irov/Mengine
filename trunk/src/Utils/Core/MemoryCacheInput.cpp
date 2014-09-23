@@ -43,7 +43,7 @@ namespace Menge
 		this->uncache_();
 
 		void * memory;
-		size_t bufferId = CACHE_SERVICE(m_serviceProvider)
+		uint32_t bufferId = CACHE_SERVICE(m_serviceProvider)
 			->lockBuffer( _size, &memory, _doc );
 
 		if( bufferId == 0 )
@@ -62,11 +62,11 @@ namespace Menge
         return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MemoryCacheInput::read( void * _buf, size_t _count )
+	size_t MemoryCacheInput::read( void * _buf, size_t _size )
 	{
 		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryCacheInput::read");
 
-		size_t cnt = _count;
+		size_t cnt = _size;
 		// Read over end of memory?
 		if( m_pos + cnt > m_end )
 		{

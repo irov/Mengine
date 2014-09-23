@@ -214,14 +214,14 @@ namespace Menge
 
 		float m_time;
 
-		size_t m_fps;
+		uint32_t m_fps;
 
 //#	ifndef MENGE_MASTER_RELEASE
 	public:
 		void toggleDebugText() override;
 
 	protected:
-		size_t m_showDebugText;
+		uint32_t m_showDebugText;
 		TextField * m_debugText;
 		Camera2D * m_debugCamera2D;
 //#	endif

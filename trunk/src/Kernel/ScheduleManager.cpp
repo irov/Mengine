@@ -14,7 +14,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         struct FScheduleFind
         {
-            FScheduleFind( size_t _id )
+            FScheduleFind( uint32_t _id )
                 : m_id(_id)
             {
             }
@@ -24,7 +24,7 @@ namespace Menge
                 return _event.id == m_id;
             }
 
-            size_t m_id;
+            uint32_t m_id;
         };
         //////////////////////////////////////////////////////////////////////////
         struct FScheduleDead
@@ -53,7 +53,7 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ScheduleManager::schedule( float _timing, const ScheduleListenerPtr & _listener )
+    uint32_t ScheduleManager::schedule( float _timing, const ScheduleListenerPtr & _listener )
     {
         ScheduleEvent event;
 
@@ -68,7 +68,7 @@ namespace Menge
         return event.id;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScheduleManager::remove( size_t _id )
+    bool ScheduleManager::remove( uint32_t _id )
     {
         const ScheduleEvent * event = this->findEvent_( _id );
 
@@ -169,7 +169,7 @@ namespace Menge
         m_schedules.erase( it_erase, m_schedules.end() );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScheduleManager::freeze( size_t _id, bool _freeze )
+    bool ScheduleManager::freeze( uint32_t _id, bool _freeze )
     {
         const ScheduleEvent * event = this->findEvent_( _id );
 
@@ -187,7 +187,7 @@ namespace Menge
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScheduleManager::isFreeze( size_t _id ) const
+    bool ScheduleManager::isFreeze( uint32_t _id ) const
     {
         const ScheduleEvent * event = this->findEvent_( _id );
 
@@ -213,7 +213,7 @@ namespace Menge
 		return m_freezeAll;
 	}
     //////////////////////////////////////////////////////////////////////////
-    float ScheduleManager::time( size_t _id ) const
+    float ScheduleManager::time( uint32_t _id ) const
     {
         const ScheduleEvent * event = this->findEvent_( _id );
 
@@ -231,7 +231,7 @@ namespace Menge
         return adapt_timing;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ScheduleManager::ScheduleEvent * ScheduleManager::findEvent_( size_t _id ) const
+    const ScheduleManager::ScheduleEvent * ScheduleManager::findEvent_( uint32_t _id ) const
     {
         TListSchedules::const_iterator it_find = 
             std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );

@@ -51,14 +51,14 @@ namespace Menge
 		float m_volume;
 		bool m_loop;		
 
-		size_t m_sourceId;
+		uint32_t m_sourceId;
 		float m_timing;
 
 		SilentSoundBufferPtr m_soundBuffer;		
 		SilentSoundSystem * m_soundSystem;
 
     private:
-        void apply_( size_t _source );
+        void apply_( uint32_t _source );
 		void unloadBuffer_();
 	};
 

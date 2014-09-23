@@ -22,7 +22,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( size_t _threadCount ) override;
+        bool initialize( uint32_t _threadCount ) override;
         void finalize() override;
 
 	public:
@@ -34,7 +34,7 @@ namespace Menge
         bool joinTask( const ThreadTaskInterfacePtr & _task ) override;
 
 	public:
-		ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, size_t _countThread, size_t _packetSize ) override;
+		ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize ) override;
 
 	public:
         void update() override;
@@ -43,7 +43,7 @@ namespace Menge
         ThreadMutexInterfacePtr createMutex() override;
 
     public:
-        void sleep( unsigned int _ms ) override;
+        void sleep( uint32_t _ms ) override;
 		uint32_t getCurrentThreadId() override;
 
     protected:
@@ -55,7 +55,7 @@ namespace Menge
 
 		ThreadMutexInterfacePtr m_allocatorPoolMutex;
 
-        size_t m_threadCount;
+        uint32_t m_threadCount;
 		        
 		struct ThreadTaskDesc
 		{

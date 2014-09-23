@@ -68,7 +68,7 @@ namespace Menge
 		return m_maxLength;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t TextEntry::getFontParams() const
+	uint32_t TextEntry::getFontParams() const
 	{
 		return m_params;
 	}

@@ -173,16 +173,16 @@ namespace Menge
 		m_resourceImages.clear();		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage * ResourceParticle::getAtlasImageResource( size_t _atlasId ) const
+	ResourceImage * ResourceParticle::getAtlasImageResource( uint32_t _atlasId ) const
 	{
 		ResourceImage * resource = m_resourceImages[_atlasId];
 
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceParticle::getAtlasImageCount() const
+	uint32_t ResourceParticle::getAtlasImageCount() const
 	{
-		size_t count = m_resourceImages.size();
+		uint32_t count = m_resourceImages.size();
 
 		return count;
 	}

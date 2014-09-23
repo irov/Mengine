@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	template<class T, size_t Count>
+	template<class T, uint32_t Count>
 	class FactoryPool
 		: public Factory
 	{

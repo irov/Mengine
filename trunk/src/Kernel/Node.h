@@ -296,7 +296,7 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
 
 	protected:
-		size_t m_cameraRevision;
+		uint32_t m_cameraRevision;
 
 	public:
 		void setShallowGrave(); //Shallow Grave prevents any damage from killing the targetted hero. 

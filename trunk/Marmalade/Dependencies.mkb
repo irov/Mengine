@@ -1,10 +1,10 @@
+#!/usr/bin/env mkb
+
 options
 {
 	lib
-	arm-arch=armv6
-	arm-fpu=vfp
-	strict-mkb
-	enable-exceptions
+    strict-mkb
+    enable-exceptions
 	preinclude=preinclude_dependencies.h
 }
 
@@ -28,22 +28,19 @@ includepaths
 	"../dependencies/metabuf"
 
 	"./Modified/pugixml/src"
-#	"../dependencies/pugixml/src"
     
     "./Modified/Python"
-	"../dependencies/Python-2.7.6"
+	"../dependencies/Python-2.7.7"
     
-#    "../dependencies/simpleini"
     "../dependencies/zlib"
     "../dependencies/lz4"
     "../dependencies/stdex/include"
 }
 
-
 files
-{
-	("../src/config")
+{	
 	[Config]
+    ("../src/Config")
 	"*.h"
 
     [metabuf]
@@ -57,17 +54,13 @@ files
 	"*.hpp" 
     
     [pybind]
-	("../dependencies/pybind")	    
-    "include/config/*.hpp"
-    "include/pybind/*.hpp"
-	"src/*.cpp"
-    
-#    [simpleini]
-#    ("../dependencies/simpleini")
-#    SimpleIni.h
-#    ConvertUTF.c
-#    ConvertUTF.h
-    
+	("../dependencies/pybind/include/config")
+    "*.hpp"
+    ("../dependencies/pybind/include/pybind")
+    "*.hpp"
+    ("../dependencies/pybind/src")
+	"*.cpp"
+        
     [zlib]
     ("../dependencies/zlib")
     crc32.h
@@ -84,10 +77,6 @@ files
     compress.c
     crc32.c
     deflate.c
-    #gzclose.c
-    #gzlib.c
-    #gzread.c
-    #gzwrite.c
     infback.c
     inffast.c
     inflate.c
@@ -98,20 +87,16 @@ files
     
     [lz4]
     ("../dependencies/lz4")
-    lz4.c    
+    lz4.c
     lz4hc.c
-           
-    [pugixml]
-	("Modified/pugixml")
-	src/pugixml.hpp
-	src/pugiconfig.hpp
-    src/pugixml.cpp    
-
-#    ("../dependencies/pugixml")
-#    src/pugixml.hpp
-#    src/pugixml.cpp    
     
     [stdex]
-    ("../dependencies/stdex")
-    "src/*.cpp"
+    ("../dependencies/stdex/src")
+    "*.cpp"
+           
+    [pugixml]
+	("./Modified/pugixml")
+	src/pugixml.hpp
+	src/pugiconfig.hpp
+    src/pugixml.cpp
 }

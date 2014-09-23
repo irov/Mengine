@@ -4,9 +4,15 @@
 #   define BOOST_NO_CXX11_NULLPTR
 
 #   define PYBIND_MARMALADE
-#   define PYBIND_PYTHON_VERSION 276
+#   define PYBIND_PYTHON_VERSION 277
+
+#	ifdef __APPLE__
+#	define PYBIND_EXTRACT_SIZE_T
+#	endif
 
 #   define Py_BUILD_CORE
+
+#	define Z_SOLO
 
 #   define SIGBREAK        21
 
@@ -20,6 +26,10 @@
 
 #   define nullptr 0
 #   define STDEX_UNSUPPOT_NULLPTR_T
+
+#   ifdef __APPLE__
+#       define TARGET_OS_MAC 1
+#   endif
 
 #	ifndef IW_DEBUG
 #		undef _DEBUG // In Marmalade _DEBUG is wrongly defined in x86 Release.

@@ -4,7 +4,11 @@
 #   define BOOST_NO_CXX11_NULLPTR
 
 #   define PYBIND_MARMALADE
-#   define PYBIND_PYTHON_VERSION 276
+#   define PYBIND_PYTHON_VERSION 277
+
+#	ifdef __APPLE__
+#	define PYBIND_EXTRACT_SIZE_T
+#	endif
 
 #   define TARGET_MARMALADE 1
 

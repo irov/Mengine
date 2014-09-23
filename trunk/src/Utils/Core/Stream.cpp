@@ -259,7 +259,7 @@ namespace Menge
 			}
 
 			uint32_t load_binary_size;
-			if( _stream->read( &load_binary_size, sizeof(load_binary_size) ) == sizeof(load_binary_size) )
+			if( _stream->read( &load_binary_size, sizeof(load_binary_size) ) != sizeof(load_binary_size) )
 			{
 				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveBufferSize: invalid read binary size"
 					);

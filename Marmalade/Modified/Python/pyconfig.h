@@ -41,6 +41,8 @@
 //#define HAVE_LONG_LONG
 #undef HAVE_LONG_LONG
 
+#define PY_NO_SHORT_FLOAT_REPR
+
 /* Define to 1 if you have the `memmove' function. */
 #define HAVE_MEMMOVE 1
 

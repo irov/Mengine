@@ -5,7 +5,11 @@
 
 
 #   define PYBIND_MARMALADE
-#   define PYBIND_PYTHON_VERSION 274
+#   define PYBIND_PYTHON_VERSION 277
+
+#	ifdef __APPLE__
+#	define PYBIND_EXTRACT_SIZE_T
+#	endif
 
 #   define PUGIXML_NO_STL
 

@@ -12,10 +12,6 @@ ${SOURCE_DIR}/adler32.c
 ${SOURCE_DIR}/compress.c
 ${SOURCE_DIR}/crc32.c
 ${SOURCE_DIR}/deflate.c
-${SOURCE_DIR}/gzclose.c
-${SOURCE_DIR}/gzlib.c
-${SOURCE_DIR}/gzread.c
-${SOURCE_DIR}/gzwrite.c
 ${SOURCE_DIR}/infback.c
 ${SOURCE_DIR}/inffast.c
 ${SOURCE_DIR}/inflate.c

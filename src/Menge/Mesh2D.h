@@ -77,15 +77,15 @@ namespace Menge
 
 		RenderMaterialInterfacePtr m_material;
 
-		size_t m_texturesNum;
+		uint32_t m_texturesNum;
 		RenderTextureInterfacePtr m_textures[2];
 
 		const MovieFrameShape * m_shape;
 
 		mutable RenderVertex2D m_verticesWM[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
 		
-		size_t m_vertexCount;
-		size_t m_indicesCount;
+		uint32_t m_vertexCount;
+		uint32_t m_indicesCount;
 
 		bool m_blendAdd;
 		bool m_solid;

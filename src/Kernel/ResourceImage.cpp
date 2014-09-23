@@ -73,7 +73,7 @@ namespace Menge
 
 		m_texture = texture;
 
-		size_t channels = texture->getChannels();
+		uint32_t channels = texture->getChannels();
 
 		if( channels == 3 )
 		{

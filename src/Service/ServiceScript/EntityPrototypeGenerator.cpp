@@ -104,7 +104,7 @@ namespace Menge
 		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t EntityPrototypeGenerator::count() const
+	uint32_t EntityPrototypeGenerator::count() const
 	{
 		return m_count;
 	}

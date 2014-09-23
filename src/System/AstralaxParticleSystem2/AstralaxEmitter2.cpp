@@ -321,9 +321,9 @@ namespace Menge
 		return intensive;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes )
+	bool AstralaxEmitter2::changeEmitterImage( uint32_t _width, uint32_t _height, unsigned char * _data, size_t _bytes )
 	{
-		if( Magic_ChangeImage( m_emitterId, -1, _width, _height, _data, _bytes ) == MAGIC_ERROR )
+		if( Magic_ChangeImage( m_emitterId, -1, (int)_width, (int)_height, _data, (int)_bytes ) == MAGIC_ERROR )
 		{
 			return false;
 		}
@@ -331,7 +331,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::changeEmitterModel( float * _points, int _count )
+	bool AstralaxEmitter2::changeEmitterModel( float * _points, uint32_t _count )
 	{
 		MAGIC_TRIANGLE * triangle = reinterpret_cast<MAGIC_TRIANGLE *>(_points);
 
@@ -508,9 +508,9 @@ namespace Menge
 		return m_background;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_fillParticles_( ParticleVertices * _particles, size_t _offset, size_t _count, const mt::mat4f & _vpm, float _width, float _height )
+	static void s_fillParticles_( ParticleVertices * _particles, uint32_t _offset, uint32_t _count, const mt::mat4f & _vpm, float _width, float _height )
 	{
-		for( size_t i = 0; i != _count; ++i )
+		for( uint32_t i = 0; i != _count; ++i )
 		{
 			MAGIC_PARTICLE_VERTEXES vertexes;
 			Magic_GetNextParticleVertexes( &vertexes );
@@ -578,7 +578,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::flushParticles( ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
+	bool AstralaxEmitter2::flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, ParticleVertices * _particles, uint32_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
 	{
 		_flush.particleCount = 0;
 		_flush.meshCount = 0;

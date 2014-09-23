@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	template<class T, size_t Count>
+	template<class T, uint32_t Count>
 	class IntrusiveSprayTree
 		: public stdex::intrusive_splay_tree<T, false, false>
 	{
@@ -60,7 +60,7 @@ namespace Menge
 		TFactoryNode m_factoryNode;
 	};
 
-	template<class T, size_t Count>
+	template<class T, uint32_t Count>
 	class IntrusiveSprayTreePtr
 		: public stdex::intrusive_splay_tree<T, false, false>
 	{

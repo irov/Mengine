@@ -31,18 +31,18 @@ namespace Menge
         float volume;
     };
 
-	const size_t MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT		= 0x00000001;
-	const size_t MOVIE_KEY_FRAME_IMMUTABLE_POSITION			= 0x00000002;
-	const size_t MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_X		= 0x00000004;
-	const size_t MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Y		= 0x00000008;
-	const size_t MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Z		= 0x00000010;
-	const size_t MOVIE_KEY_FRAME_IMMUTABLE_SCALE			= 0x00000020;
-	const size_t MOVIE_KEY_FRAME_IMMUTABLE_OPACITY			= 0x00000040;
-	const size_t MOVIE_KEY_FRAME_IMMUTABLE_VOLUME			= 0x00000080;
+	const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT		= 0x00000001;
+	const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_POSITION			= 0x00000002;
+	const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_X		= 0x00000004;
+	const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Y		= 0x00000008;
+	const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Z		= 0x00000010;
+	const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_SCALE			= 0x00000020;
+	const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_OPACITY			= 0x00000040;
+	const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_VOLUME			= 0x00000080;
 	
     struct MovieLayerFrame
     {
-		size_t count;		
+		uint32_t count;		
 		
 		mt::vec3f * anchorPoint;
 		mt::vec3f * position;
@@ -53,7 +53,7 @@ namespace Menge
 		float * opacity;
 		float * volume;
 
-		size_t immutable_mask;
+		uint32_t immutable_mask;
 		
         MovieFrameSource source;
         bool immutable;
@@ -115,20 +115,20 @@ namespace Menge
 		: public DataInterface
 	{
 	public:
-		virtual bool hasLayer( size_t _layerIndex ) const = 0;
-		virtual const MovieLayerFrame & getLayer( size_t _layerIndex ) const = 0;
+		virtual bool hasLayer( uint32_t _layerIndex ) const = 0;
+		virtual const MovieLayerFrame & getLayer( uint32_t _layerIndex ) const = 0;
 
 	public:
-		virtual bool getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const = 0;
-		virtual bool getLayerFrameInterpolate( size_t _layerIndex, size_t _frameIndex, float _t, MovieFrameSource & _frame ) const = 0;
+		virtual bool getLayerFrame( uint32_t _layerIndex, uint32_t _frameIndex, MovieFrameSource & _frame ) const = 0;
+		virtual bool getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource & _frame ) const = 0;
 
 	public:
-		virtual bool getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const = 0;
-		virtual bool getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const = 0;
-		virtual bool getLayerPolygon( size_t _layerIndex, const mt::vec2f ** _polygon, uint8_t & _vertexCount ) const = 0;
+		virtual bool getLayerTimeRemap( uint32_t _layerIndex, uint32_t _frameIndex, float & _time ) const = 0;
+		virtual bool getLayerShape( uint32_t _layerIndex, uint32_t _frameIndex, const MovieFrameShape ** _shape ) const = 0;
+		virtual bool getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t & _vertexCount ) const = 0;
 
 	public:
-		virtual bool isLayerPermanentlyHide( size_t _layerIndex ) const = 0;
+		virtual bool isLayerPermanentlyHide( uint32_t _layerIndex ) const = 0;
 	};
 
 	typedef stdex::intrusive_ptr<MovieFramePackInterface> MovieFramePackInterfacePtr;

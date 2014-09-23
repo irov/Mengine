@@ -15,7 +15,7 @@ namespace Menge
 	struct PickerTrapState
 	{
 		class MousePickerTrapInterface * trap;
-		size_t id;
+		uint32_t id;
 		bool picked;
 		bool handle;
 		bool dead;
@@ -68,7 +68,7 @@ namespace Menge
 		virtual void updateTrap() = 0;
 
     public:
-        virtual size_t getPickerTrapCount() const = 0;
+        virtual uint32_t getPickerTrapCount() const = 0;
 
     public:
         virtual void handleMouseEnter( const mt::vec2f & _point ) = 0;

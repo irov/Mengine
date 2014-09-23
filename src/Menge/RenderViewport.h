@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
-#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificationServiceInterface.h"
 
 #	include "Kernel/Node.h"
 

@@ -10,8 +10,8 @@ namespace Menge
 		: public FactorablePtr
     {
     public:
-        virtual void onScheduleComplete( size_t _id ) = 0;
-        virtual void onScheduleStop( size_t _id ) = 0;
+        virtual void onScheduleComplete( uint32_t _id ) = 0;
+        virtual void onScheduleStop( uint32_t _id ) = 0;
     };
 
 	typedef stdex::intrusive_ptr<ScheduleListener> ScheduleListenerPtr;
@@ -23,17 +23,17 @@ namespace Menge
         virtual void initialize( ServiceProviderInterface * _serviceProvider ) = 0;
 
     public:
-        virtual size_t schedule( float _timing, const ScheduleListenerPtr & _listener ) = 0;
+        virtual uint32_t schedule( float _timing, const ScheduleListenerPtr & _listener ) = 0;
 
-        virtual bool remove( size_t _id ) = 0;
+        virtual bool remove( uint32_t _id ) = 0;
         virtual void removeAll() = 0;
 
-        virtual bool freeze( size_t _id, bool _freeze ) = 0;
+        virtual bool freeze( uint32_t _id, bool _freeze ) = 0;
         virtual void freezeAll( bool _freeze ) = 0;
 		virtual bool isFreezeAll() const = 0;
-        virtual bool isFreeze( size_t _id ) const = 0;
+        virtual bool isFreeze( uint32_t _id ) const = 0;
 
-        virtual float time( size_t _id ) const = 0;
+        virtual float time( uint32_t _id ) const = 0;
 
     public:
         virtual void update( float _current, float _timing ) = 0;

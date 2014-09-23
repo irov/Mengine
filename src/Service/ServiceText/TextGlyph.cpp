@@ -97,11 +97,11 @@ namespace Menge
 				(void)_node;
 			}
 
-			void callback_node_attributes( const char * _node, size_t _count, const char ** _keys, const char ** _values )
+			void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
 			{				
 				if( strcmp( _node, "font" ) == 0 )
 				{
-					for( size_t i = 0; i != _count; ++i )
+					for( uint32_t i = 0; i != _count; ++i )
 					{
 						const char * key = _keys[i];
 						const char * value = _values[i];
@@ -117,7 +117,7 @@ namespace Menge
 				}
 				else if( strcmp( _node, "description" ) == 0 )
 				{
-					for( size_t i = 0; i != _count; ++i )
+					for( uint32_t i = 0; i != _count; ++i )
 					{
 						const char * key = _keys[i];
 						const char * value = _values[i];
@@ -140,7 +140,7 @@ namespace Menge
 				}
 				else if( strcmp( _node, "metrics" ) == 0 )
 				{
-					for( size_t i = 0; i != _count; ++i )
+					for( uint32_t i = 0; i != _count; ++i )
 					{
 						const char * key = _keys[i];
 						const char * value = _values[i];
@@ -196,7 +196,7 @@ namespace Menge
 					mt::vec4f rect(0.f, 0.f, 0.f, 0.f);
 					const char * id = "";
 					
-					for( size_t i = 0; i != _count; ++i )
+					for( uint32_t i = 0; i != _count; ++i )
 					{
 						const char * key = _keys[i];
 						const char * value = _values[i];
@@ -269,7 +269,7 @@ namespace Menge
 					float advance = 0.f;
 					GlyphCode glyphCode;					
 
-					for( size_t i = 0; i != _count; ++i )
+					for( uint32_t i = 0; i != _count; ++i )
 					{
 						const char * key = _keys[i];
 						const char * value = _values[i];

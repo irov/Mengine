@@ -18,7 +18,7 @@ namespace Menge
 	class PhysicShapeConvex
 	{
 		mt::vec2f p[8];
-		size_t count;
+		uint32_t count;
 	};
 
 	class PhysicShapeCircle
@@ -41,7 +41,7 @@ namespace Menge
 	class PhysicShapeChain
 	{
 		mt::vec2f * p;
-		size_t count;
+		uint32_t count;
 
 		bool loop;
 	};

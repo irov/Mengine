@@ -14,7 +14,7 @@ namespace Menge
 	{		
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Model3DPack::initialize( size_t _frameCount, size_t _vertexCount, size_t _indicesCount, float _frameDelay )
+    void Model3DPack::initialize( uint32_t _frameCount, uint32_t _vertexCount, uint32_t _indicesCount, float _frameDelay )
     {
 		m_frameCount = _frameCount;
 		m_vertexCount = _vertexCount;
@@ -32,24 +32,24 @@ namespace Menge
 		m_cameraRightSign = _rightSign;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Model3DFrame & Model3DPack::mutableFrame( size_t _frameId )
+	Model3DFrame & Model3DPack::mutableFrame( uint32_t _frameId )
 	{
 		 Model3DFrame & frame = m_model3DFrames[_frameId];
 
 		 return frame;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	size_t Model3DPack::getFrameCount() const
+	uint32_t Model3DPack::getFrameCount() const
 	{
 		return m_frameCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Model3DPack::getVertexCount() const
+	uint32_t Model3DPack::getVertexCount() const
 	{
 		return m_vertexCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Model3DPack::getIndicesCount() const
+	uint32_t Model3DPack::getIndicesCount() const
 	{
 		return m_indicesCount;
 	}
@@ -74,7 +74,7 @@ namespace Menge
 		return m_frameDelay;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Model3DFrame * Model3DPack::getFrame( size_t _frameId ) const
+	const Model3DFrame * Model3DPack::getFrame( uint32_t _frameId ) const
 	{
 		const Model3DFrame & frame = m_model3DFrames[_frameId];
 

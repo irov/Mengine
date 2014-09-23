@@ -56,7 +56,7 @@ namespace Menge
 		curl_global_cleanup();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t CurlHttpSystem::downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpDownloadAssetReceiver * _receiver )
+	uint32_t CurlHttpSystem::downloadAsset( const String & _url, const ConstString & _category, const FilePath & _path, HttpDownloadAssetReceiver * _receiver )
 	{
 		if( FILE_SERVICE(m_serviceProvider)
 			->hasFileGroup( _category, nullptr ) == false )
@@ -80,7 +80,7 @@ namespace Menge
 			return 0;
 		}
 
-		size_t task_id = ++m_enumeratorDownloadAsset;
+		uint32_t task_id = ++m_enumeratorDownloadAsset;
 		
 		ThreadTaskDownloadAssetPtr task = 
 			new ThreadTaskDownloadAsset( m_serviceProvider, _url, _category, _path, task_id, this );
@@ -106,7 +106,7 @@ namespace Menge
 		return task_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool CurlHttpSystem::cancelAsset( size_t _id )
+	bool CurlHttpSystem::cancelAsset( uint32_t _id )
 	{
 		for( TVectorDownloadAssets::iterator
 			it = m_downloadAssets.begin(),
@@ -129,7 +129,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CurlHttpSystem::onDownloadAssetComplete( size_t _id, bool _successful )
+	void CurlHttpSystem::onDownloadAssetComplete( uint32_t _id, bool _successful )
 	{
 		for( TVectorDownloadAssets::iterator
 			it = m_downloadAssets.begin(),

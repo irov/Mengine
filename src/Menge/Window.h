@@ -52,7 +52,7 @@ namespace Menge
             mt::vec2f initialSize;
             RenderMaterialInterfacePtr material;
 
-            size_t textureCount;
+            uint32_t textureCount;
             RenderTextureInterfacePtr textures[2];
         };
 

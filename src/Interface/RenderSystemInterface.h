@@ -174,8 +174,8 @@ namespace Menge
 		ERIM_MAX_VALUE
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef size_t VBHandle; // Vertex Buffer Handle
-	typedef size_t IBHandle; // Index Buffer Handle
+	typedef uint32_t VBHandle; // Vertex Buffer Handle
+	typedef uint32_t IBHandle; // Index Buffer Handle
 	//////////////////////////////////////////////////////////////////////////
 	class RenderImageInterface
 		: public FactorablePtr
@@ -184,15 +184,15 @@ namespace Menge
 		virtual ERenderImageMode getMode() const = 0;
 
 	public:
-		virtual size_t getHWWidth() const = 0;
-		virtual size_t getHWHeight() const = 0;
-		virtual size_t getHWChannels() const = 0;
-		virtual size_t getHWDepth() const = 0;
+		virtual uint32_t getHWWidth() const = 0;
+		virtual uint32_t getHWHeight() const = 0;
+		virtual uint32_t getHWChannels() const = 0;
+		virtual uint32_t getHWDepth() const = 0;
 
 		virtual PixelFormat getHWPixelFormat() const = 0;
 
 	public:
-		virtual void * lock( int * _pitch, const Rect& _rect, bool _readOnly = true ) = 0;
+		virtual void * lock( size_t * _pitch, const Rect& _rect, bool _readOnly = true ) = 0;
 		virtual void unlock() = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -207,7 +207,7 @@ namespace Menge
 	public:
 		virtual const RenderImageInterfacePtr & getImage() const = 0;
 
-		virtual size_t getId() const = 0;
+		virtual uint32_t getId() const = 0;
 
 		virtual const Rect & getRect() const = 0;
 		virtual const Rect & getHWRect() const = 0;
@@ -217,11 +217,11 @@ namespace Menge
 		virtual void setFileName( const FilePath & _fileName ) = 0;
 		virtual const FilePath & getFileName() const = 0;
 
-		virtual size_t getWidth() const = 0;
-		virtual size_t getHeight() const = 0;
-		virtual size_t getChannels() const = 0;
+		virtual uint32_t getWidth() const = 0;
+		virtual uint32_t getHeight() const = 0;
+		virtual uint32_t getChannels() const = 0;
 
-		virtual void * lock( int * _pitch, const Rect & _rect, bool _readOnly = true ) const = 0;
+		virtual void * lock( size_t * _pitch, const Rect & _rect, bool _readOnly = true ) const = 0;
 		virtual void unlock() const = 0;
 
 		virtual size_t getMemoryUse() const = 0;
@@ -261,7 +261,7 @@ namespace Menge
         ETextureArgument alphaArg1;
         ETextureArgument alphaArg2;
 
-        size_t texCoordIndex;
+        uint32_t texCoordIndex;
     };
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderStage
@@ -289,7 +289,7 @@ namespace Menge
 		: public FactorablePtr
     {
 	public:
-		virtual size_t getId() const = 0;
+		virtual uint32_t getId() const = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderMaterialInterface> RenderMaterialInterfacePtr;
@@ -315,20 +315,20 @@ namespace Menge
 			, bool _wrapU
 			, bool _wrapV
 			, EPrimitiveType _primitiveType
-			, size_t _textureCount
+			, uint32_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERMATERIAL_SERVICE( serviceProvider )\
     ((Menge::RenderMaterialServiceInterface*)SERVICE_GET(serviceProvider, Menge::RenderMaterialServiceInterface))
     //////////////////////////////////////////////////////////////////////////
-    const int VDECL_XYZ = 0x002;
-    const int VDECL_XYZRHW = 0x004;
-    const int VDECL_NORMAL = 0x010;
-    const int VDECL_DIFFUSE = 0x040;
-    const int VDECL_SPECULAR = 0x080;
-    const int VDECL_TEX1 = 0x100;
-    const int VDECL_TEX2 = 0x200;
+    const uint32_t VDECL_XYZ		= 0x00000002;
+    const uint32_t VDECL_XYZRHW		= 0x00000004;
+    const uint32_t VDECL_NORMAL		= 0x00000010;
+    const uint32_t VDECL_DIFFUSE	= 0x00000040;
+    const uint32_t VDECL_SPECULAR	= 0x00000080;
+    const uint32_t VDECL_TEX1		= 0x00000100;
+    const uint32_t VDECL_TEX2		= 0x00000200;
     //////////////////////////////////////////////////////////////////////////
     struct RenderVertex2D
     {
@@ -347,7 +347,7 @@ namespace Menge
     struct RenderTextureDebugInfo
     {
         size_t textureMemory;
-        size_t textureCount;
+        uint32_t textureCount;
     };
     //////////////////////////////////////////////////////////////////////////
     class VisitorRenderTextureInterface
@@ -367,12 +367,12 @@ namespace Menge
 
     public:
         virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) = 0;
-		virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, size_t _width, size_t _height, size_t _channels ) = 0;
+		virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, uint32_t _channels ) = 0;
 
     public:
-        virtual RenderTextureInterfacePtr createTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
-        virtual RenderTextureInterfacePtr createDynamicTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
-        virtual RenderTextureInterfacePtr createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
+        virtual RenderTextureInterfacePtr createTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
+        virtual RenderTextureInterfacePtr createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
+        virtual RenderTextureInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 
 	public:
         virtual RenderTextureInterfacePtr getTexture( const FilePath & _fileName ) const = 0;
@@ -380,7 +380,7 @@ namespace Menge
         virtual bool hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const = 0;
 
 	public:
-		virtual size_t getImageMemoryUse( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) const = 0;
+		virtual size_t getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const = 0;
 
     public:
         //virtual void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
@@ -451,7 +451,7 @@ namespace Menge
     public:
         virtual void setRenderListener( RenderSystemListener * _listener ) = 0;
 
-		virtual bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
+		virtual bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) = 0;
 
     public:
@@ -470,30 +470,30 @@ namespace Menge
 		virtual	void setModelViewMatrix( const mt::mat4f & _view ) = 0;
 		virtual	void setWorldMatrix( const mt::mat4f & _view ) = 0;
 
-		virtual void setTextureMatrix( size_t _stage, const float* _texture ) = 0;
+		virtual void setTextureMatrix( uint32_t _stage, const float * _texture ) = 0;
 
-		virtual VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic ) = 0;
+		virtual VBHandle createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic ) = 0;
 		virtual void releaseVertexBuffer( VBHandle _vbHandle ) = 0;
-		virtual void * lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, EBufferLockFlag _flags ) = 0;
+		virtual void * lockVertexBuffer(  VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlockVertexBuffer( VBHandle _vbHandle ) = 0;
 		virtual void setVertexBuffer( VBHandle _vbHandle ) = 0;
 
-		virtual IBHandle createIndexBuffer( size_t _indiciesNum, bool _dynamic ) = 0;
+		virtual IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) = 0;
 		virtual void releaseIndexBuffer( IBHandle _ibHandle ) = 0;
-		virtual void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, EBufferLockFlag _flags ) = 0;
+		virtual void * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
-		virtual void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) = 0;
+		virtual void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) = 0;
 
-		virtual void setVertexDeclaration( size_t _vertexSize, uint32_t _declaration ) = 0;
+		virtual void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) = 0;
 
         virtual RenderShaderInterface * createShader( const void * _code, size_t _len ) = 0;
         virtual void setShader( RenderShaderInterface * _shader ) = 0;
 
-		virtual void drawIndexedPrimitive( EPrimitiveType _type, size_t _baseVertexIndex,
-			size_t _minIndex, size_t _verticesNum, size_t _startIndex, size_t _indexCount ) = 0;
+		virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
+			uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount ) = 0;
 
-		virtual void setTexture( size_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
-		virtual void setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;
+		virtual void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
+		virtual void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;
 		virtual void setTextureFactor( uint32_t _color ) = 0;
 		virtual void setSrcBlendFactor( EBlendFactor _src ) = 0;
 		virtual void setDstBlendFactor( EBlendFactor _dst ) = 0;
@@ -508,25 +508,25 @@ namespace Menge
 		virtual void setAlphaBlendEnable( bool _alphaBlend ) = 0;
 		virtual void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha ) = 0;
 		virtual void setLightingEnable( bool _light ) = 0;
-		virtual void setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp,
+		virtual void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,
 												ETextureArgument _arg1, ETextureArgument _arg2 ) = 0;
-		virtual void setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp,
+		virtual void setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,
 												ETextureArgument _arg1, ETextureArgument _arg2 ) = 0;
 
-        virtual void setTextureStageTexCoordIndex( size_t _stage, size_t _index ) = 0;
-		virtual void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) = 0;
+        virtual void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) = 0;
+		virtual void setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) = 0;
 		// create texture
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
 		// returns Texture interface handle or NULL if fails
-		virtual RenderImageInterfacePtr createImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
-		virtual RenderImageInterfacePtr createDynamicImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
+		virtual RenderImageInterfacePtr createImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
+		virtual RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 		// create render target image
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// returns Texture interface handle or NULL if fails
-		virtual RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) = 0;
+		virtual RenderImageInterfacePtr createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 
 		//
 		// отрисовка изображения
@@ -535,10 +535,7 @@ namespace Menge
 		virtual bool beginScene() = 0;
 		virtual void endScene() = 0;
 		virtual void swapBuffers() = 0;
-		virtual void clearFrameBuffer( uint32_t _frameBufferTypes
-											, uint32_t _color = 0
-											, float _depth = 1.0f
-											, uint16_t _stencil = 0 ) = 0;
+		virtual void clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil ) = 0;
 
 		virtual void setViewport( const Viewport & _viewport ) = 0;
 
@@ -565,21 +562,21 @@ namespace Menge
 
     struct RenderDebugInfo
     {
-        size_t frameCount;
-        size_t dips;
+        uint32_t frameCount;
+        uint32_t dips;
 
         double fillrate;
-        size_t object;
-        size_t triangle;
-		size_t batch;
+        uint32_t object;
+        uint32_t triangle;
+		uint32_t batch;
         //size_t megatextures;
     };
 
 	enum ERenderBatchMode
 	{
-		ERBM_NONE,
-		ERBM_NORMAL,
-		ERBM_SMART
+		ERBM_NONE = 0,
+		ERBM_NORMAL = 1,
+		ERBM_SMART = 2
 	};
 
 	class RenderServiceInterface
@@ -588,34 +585,34 @@ namespace Menge
         SERVICE_DECLARE("RenderService")
 
     public:
-        virtual bool initialize( size_t _maxVertexCount, size_t _maxIndexCount ) = 0;
+        virtual bool initialize( uint32_t _maxVertexCount, uint32_t _maxIndexCount ) = 0;
         virtual void finalize() = 0;
 
     public:
         virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, size_t _verticesNum
-            , const RenderIndices2D * _indices, size_t _indicesNum
+            , const RenderVertex2D * _vertices, uint32_t _verticesNum
+            , const RenderIndices2D * _indices, uint32_t _indicesNum
 			, const mt::box2f * _bb ) = 0;
 
         virtual void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, size_t _verticesNum
+            , const RenderVertex2D * _vertices, uint32_t _verticesNum
 			, const mt::box2f * _bb ) = 0;
 
         virtual void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, size_t _verticesNum
+            , const RenderVertex2D * _vertices, uint32_t _verticesNum
 			, const mt::box2f * _bb ) = 0;
 
 	public:
 		virtual void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) = 0;
 		virtual const RenderMaterialInterfacePtr & getDebugMaterial() const = 0;
-		virtual RenderVertex2D * getDebugRenderVertex2D( size_t _count ) = 0;
+		virtual RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) = 0;
 
 	public:
 		virtual void setBatchMode( ERenderBatchMode _mode ) = 0;
 		virtual ERenderBatchMode getBatchMode() const = 0;
 
 	public:
-		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, int _bits, bool _fullscreen, 
+		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen, 
 			WindowHandle _winHandle, int _FSAAType , int _FSAAQuality ) = 0;
 
 		virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;

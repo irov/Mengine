@@ -4,8 +4,8 @@
 
 namespace Menge
 {
-	const size_t SERVICE_PROVIDER_NAME_SIZE = 64;
-    const size_t SERVICE_PROVIDER_COUNT = 64;
+	const uint32_t SERVICE_PROVIDER_NAME_SIZE = 64;
+    const uint32_t SERVICE_PROVIDER_COUNT = 64;
 
 	class ServiceProvider
 		: public ServiceProviderInterface

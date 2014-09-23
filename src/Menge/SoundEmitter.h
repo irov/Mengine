@@ -23,10 +23,10 @@ namespace Menge
 
 	protected:
 		bool _play( float _time ) override;
-		bool _restart( float _time, size_t _enumerator ) override;
-		void _stop( size_t _id ) override;
-		void _end( size_t _id ) override;
-		bool _interrupt( size_t _id ) override;
+		bool _restart( float _time, uint32_t _enumerator ) override;
+		void _stop( uint32_t _id ) override;
+		void _end( uint32_t _id ) override;
+		bool _interrupt( uint32_t _id ) override;
 		void _setTiming( float _timing ) override;
 
     protected:
@@ -43,8 +43,8 @@ namespace Menge
         ResourceSound * getResourceSound() const;
 
     protected:
-		void onSoundPause( size_t _soundId ) override;
-		void onSoundStop( size_t _soundId ) override;
+		void onSoundPause( uint32_t _soundId ) override;
+		void onSoundStop( uint32_t _soundId ) override;
 		
 	protected:
 		bool _activate() override;
@@ -61,7 +61,7 @@ namespace Menge
 
         SoundBufferInterfacePtr m_soundBuffer;
         
-		size_t m_sourceID;
+		uint32_t m_sourceID;
 
 		bool m_isHeadMode;
 

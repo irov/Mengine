@@ -17,7 +17,7 @@
 
 #   include "Interface/StringizeInterface.h"
 
-#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificationServiceInterface.h"
 #	include "Interface/NotificatorInterface.h"
 
 #   include "Interface/MousePickerSystemInterface.h"
@@ -172,7 +172,7 @@ namespace Menge
 	public:
 		const ConstString & getProjectTitle() const override;
 		const ConstString & getProjectCodename() const override;
-		size_t getProjectVersion() const override;
+		uint32_t getProjectVersion() const override;
 
 	public:
 		const Resolution & getWindowResolution() const;
@@ -227,7 +227,7 @@ namespace Menge
 		Resolution m_renderResolution;
 
 		Resolution m_windowResolution;
-		int m_bits;
+		uint32_t m_bits;
 		bool m_textureFiltering;
 		int	m_FSAAType;
 		int m_FSAAQuality;
@@ -243,7 +243,7 @@ namespace Menge
 
 		unsigned int m_debugMask;
 		
-		size_t m_countThreads;
+		uint32_t m_countThreads;
 
 		bool m_resetTiming;
 		float m_phycisTiming;

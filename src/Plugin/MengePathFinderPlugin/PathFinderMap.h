@@ -16,7 +16,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	struct Obstacle
 	{
-		size_t id;
+		uint32_t id;
 
 		Polygon hole;
 		Polygon bigHole;
@@ -52,12 +52,12 @@ namespace Menge
 	public:
 		bool testPoint( const mt::vec2f & _point );
 		bool testObstacle( const Polygon & _polygon );
-		size_t addObstacle( const Polygon & _polygon );
-		void removeObstacle( size_t _id );
+		uint32_t addObstacle( const Polygon & _polygon );
+		void removeObstacle( uint32_t _id );
 		
 	public:
-		size_t createPathFinder( const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb );
-		void removePathFinder( size_t _finderId );
+		uint32_t createPathFinder( const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb );
+		void removePathFinder( uint32_t _finderId );
 
 	protected:
 		void clearPathFinderComplete_();
@@ -83,7 +83,7 @@ namespace Menge
 	public:
 		struct PathFinderDesc
 		{
-			size_t id;
+			uint32_t id;
 			PathFinderPtr finder;
 			PyObject * cb;
 			bool successful;
@@ -100,14 +100,14 @@ namespace Menge
 
 		TPathMap m_map;		
 		
-		size_t m_enumeratorObstacles;
+		uint32_t m_enumeratorObstacles;
 	
 		TVectorObstacles m_obstacles;
 		
 		typedef stdex::vector<PathFinderDesc> TVectorPathFinderDesc;
 		TVectorPathFinderDesc m_pathfinders;		
 
-		size_t m_enumeratorPathFinders;
+		uint32_t m_enumeratorPathFinders;
 
 		ThreadQueueInterfacePtr m_threadPathFinders;
 

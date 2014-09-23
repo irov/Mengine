@@ -21,15 +21,15 @@ namespace Menge
 		Model3DPack();
         
 	public:
-		void initialize( size_t _frameCount, size_t _vertexCount, size_t _indeciesCount, float _frameDelay );
+		void initialize( uint32_t _frameCount, uint32_t _vertexCount, uint32_t _indeciesCount, float _frameDelay );
 		void setCamera( float _fov, float _aspect, float _rightSign );
 
-		Model3DFrame & mutableFrame( size_t _frameId );
+		Model3DFrame & mutableFrame( uint32_t _frameId );
 
 	public:
-		size_t getFrameCount() const override;
-		size_t getVertexCount() const override;
-		size_t getIndicesCount() const override;
+		uint32_t getFrameCount() const override;
+		uint32_t getVertexCount() const override;
+		uint32_t getIndicesCount() const override;
 		float getCameraFOV() const override;
 		float getCameraAspect() const override;
 		float getCameraRightSign() const override;
@@ -38,12 +38,12 @@ namespace Menge
 		float getFrameDelay() const override;
 
 	public:
-		const Model3DFrame * getFrame( size_t _frameId ) const override;
+		const Model3DFrame * getFrame( uint32_t _frameId ) const override;
 		
 	protected:
-		size_t m_frameCount;
-		size_t m_vertexCount;
-		size_t m_indicesCount;
+		uint32_t m_frameCount;
+		uint32_t m_vertexCount;
+		uint32_t m_indicesCount;
 
 		float m_cameraFOV;
 		float m_cameraAspect;

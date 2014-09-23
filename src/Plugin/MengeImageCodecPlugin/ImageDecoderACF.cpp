@@ -113,7 +113,7 @@ namespace Menge
 			const unsigned char * source_buffer = static_cast<const unsigned char *>(memory);
 			unsigned char * dest_buffer = static_cast<unsigned char *>(_buffer);
 
-			for( size_t j = 0; j != m_dataInfo.height; ++j )
+			for( uint32_t j = 0; j != m_dataInfo.height; ++j )
 			{
 				stdex::memorycopy( dest_buffer, source_buffer, m_dataInfo.width * m_dataInfo.channels );
 

@@ -22,11 +22,11 @@ namespace Menge
 		ResourceAnimation * getResourceAnimation() const;
 
 	public:
-		size_t getFrameCount() const;
-		float getFrameDelay( size_t  _frame ) const;
+		uint32_t getFrameCount() const;
+		float getFrameDelay( uint32_t  _frame ) const;
 
-		void setCurrentFrame( size_t _frame );
-		size_t getCurrentFrame() const;
+		void setCurrentFrame( uint32_t _frame );
+		uint32_t getCurrentFrame() const;
 
 	protected:
 		void _setTiming( float _timming ) override;
@@ -39,10 +39,10 @@ namespace Menge
 
 	protected:
 		bool _play( float _time ) override;
-		bool _restart( float _time, size_t _enumerator ) override;
-		void _stop( size_t _enumerator ) override;
-		void _end( size_t _enumerator ) override;
-		bool _interrupt( size_t _enumerator ) override;
+		bool _restart( float _time, uint32_t _enumerator ) override;
+		void _stop( uint32_t _enumerator ) override;
+		void _end( uint32_t _enumerator ) override;
+		bool _interrupt( uint32_t _enumerator ) override;
 
 	protected:
 		void _update( float _current, float _timing ) override;
@@ -57,7 +57,7 @@ namespace Menge
 		void _setEventListener( PyObject * _listener ) override;
 
 	protected:
-		size_t getFrame_( float _timing, float & _delthaTiming ) const;
+		uint32_t getFrame_( float _timing, float & _delthaTiming ) const;
 		void updateCurrentFrame_();
 
 	protected:
@@ -69,7 +69,7 @@ namespace Menge
 
 		float m_frameTiming;
 
-		size_t m_currentFrame;
+		uint32_t m_currentFrame;
 		
 		bool m_onFrameEndEvent;
 		bool m_onFrameEndTick;

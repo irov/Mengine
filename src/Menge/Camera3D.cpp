@@ -4,7 +4,7 @@
 #	include "Application.h"
 
 #	include "Interface/RenderSystemInterface.h"
-#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificationServiceInterface.h"
 #	include "Interface/NotificatorInterface.h"
 
 namespace Menge
@@ -152,8 +152,8 @@ namespace Menge
 		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
 			->getContentResolution();
 
-		size_t contentResolutionWidth = contentResolution.getWidth();
-		size_t contentResolutionHeight = contentResolution.getHeight();
+		uint32_t contentResolutionWidth = contentResolution.getWidth();
+		uint32_t contentResolutionHeight = contentResolution.getHeight();
 
 		float gameViewportAspect;
 		Viewport gameViewport;

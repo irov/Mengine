@@ -21,8 +21,8 @@ namespace Menge
 
 	public:
 		void setThreadName( const ConstString & _threadName );
-		void setThreadCount( size_t _count );
-		void setPacketSize( size_t _size );
+		void setThreadCount( uint32_t _count );
+		void setPacketSize( uint32_t _size );
 
 	public:
 		bool update();
@@ -40,7 +40,7 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 		
 		ConstString m_threadName;
-		size_t m_packetSize;
+		uint32_t m_packetSize;
 
 		typedef stdex::queue<ThreadTaskInterfacePtr> TVectorThreadTask;
 		TVectorThreadTask m_threadTasks;

@@ -30,8 +30,8 @@ namespace Menge
 		const ParticleEmitterContainerInterface2Ptr & getContainer() const;
 
 	public:
-		ResourceImage * getAtlasImageResource( size_t _atlasId ) const;
-		size_t getAtlasImageCount() const;
+		ResourceImage * getAtlasImageResource( uint32_t _atlasId ) const;
+		uint32_t getAtlasImageCount() const;
 
 	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;

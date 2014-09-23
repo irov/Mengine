@@ -138,7 +138,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderGVF::seek( float _timing )
 	{
-        m_frame = (size_t)((_timing / m_dataInfo.frameTiming) + 0.5f);
+        m_frame = (uint32_t)((_timing / m_dataInfo.frameTiming) + 0.5f);
         m_pts = _timing;
 
 		return true;

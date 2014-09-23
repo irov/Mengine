@@ -11,7 +11,7 @@
 
 namespace Menge
 {
-	template<class Type, size_t Count>
+	template<class Type, uint32_t Count>
 	class ResourcePrototypeGenerator
 		: public PrototypeGeneratorInterface
 	{
@@ -42,9 +42,9 @@ namespace Menge
 			return resource;
 		}
 
-		size_t count() const override
+		uint32_t count() const override
 		{
-			size_t count = m_factory.countObject();
+			uint32_t count = m_factory.countObject();
 
 			return count;
 		}

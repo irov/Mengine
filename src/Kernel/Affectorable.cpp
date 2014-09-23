@@ -11,9 +11,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Affectorable::addAffector( Affector * _affector )
+	uint32_t Affectorable::addAffector( Affector * _affector )
 	{
-		size_t id = ++m_enumerator;
+		uint32_t id = ++m_enumerator;
 
 		_affector->setId( id );
 
@@ -22,7 +22,7 @@ namespace Menge
 		return id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affectorable::stopAffector( size_t _id )
+	void Affectorable::stopAffector( uint32_t _id )
 	{
 		for( TSlugAffector it(m_affectors); it.eof() == false; it.next_shuffle() )
 		{

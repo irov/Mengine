@@ -30,11 +30,11 @@ namespace Menge
 			return ((aCROSSbp >= 0.0f) && (bCROSScp >= 0.0f) && (cCROSSap >= 0.0f));
 		}
 
-		static bool s_snip( const Polygon::ring_type & _ring, size_t u, size_t v, size_t w, size_t n, size_t *V )
+		static bool s_snip( const Polygon::ring_type & _ring, uint32_t u, uint32_t v, uint32_t w, uint32_t n, uint32_t * V )
 		{
-            size_t Vu = V[u];
-            size_t Vv = V[v];
-            size_t Vw = V[w];
+            uint32_t Vu = V[u];
+            uint32_t Vv = V[v];
+            uint32_t Vw = V[w];
 
 			float Ax = _ring[Vu].x;
 			float Ay = _ring[Vu].y;  
@@ -50,14 +50,14 @@ namespace Menge
 				return false; 
 			}
 
-			for( size_t p = 0; p < n; p++ )
+			for( uint32_t p = 0; p < n; p++ )
 			{
 				if( (p == u) || (p == v) || (p == w) ) 
 				{
 					continue;
 				}
 
-                size_t Vp = V[p];
+                uint32_t Vp = V[p];
 
 				float Px = _ring[Vp].x;
 				float Py = _ring[Vp].y;
@@ -75,7 +75,7 @@ namespace Menge
     bool triangulate_polygon_indices( const Polygon & _polygon, TVectorIndices & _result )
     {
 		/* allocate and initialize list of Vertices in polygon */ 
-		size_t n = boost::geometry::num_points(_polygon);
+		uint32_t n = boost::geometry::num_points(_polygon);
 
         --n; // for correct polygon
 
@@ -84,31 +84,31 @@ namespace Menge
             return false;
         }
 
-		size_t *V = new size_t[n];  /* we want a counter-clockwise polygon in V */ 
+		uint32_t *V = new uint32_t[n];  /* we want a counter-clockwise polygon in V */ 
 
         double area_polygon = boost::geometry::area( _polygon );
 
 		if( area_polygon < 0.0 )
 		{
-			for( size_t v=0; v<n; v++ )
+			for( uint32_t v=0; v<n; v++ )
 			{
 				V[v] = v;
 			}
 		}
 		else
 		{
-			for( size_t v=0; v<n; v++ ) 
+			for( uint32_t v=0; v<n; v++ ) 
 			{
 				V[v] = (n-1)-v;  
 			}
 		}
 
-		size_t nv = n;  /*  remove nv-2 Vertices, creating 1 triangle every time */
-		size_t count = 2 * nv;   /* error detection */ 
+		uint32_t nv = n;  /*  remove nv-2 Vertices, creating 1 triangle every time */
+		uint32_t count = 2 * nv;   /* error detection */ 
 
         const Polygon::ring_type & countour = _polygon.outer();
         
-		for( size_t m = 0, v = nv - 1; nv > 2; )
+		for( uint32_t m = 0, v = nv - 1; nv > 2; )
 		{
 			/* if we loop, it is probably a non-simple polygon */
 			if (0 == (count--))
@@ -130,7 +130,7 @@ namespace Menge
 				v = 0;     /* new v    */
 			}
 
-			size_t w = v+1;
+			uint32_t w = v+1;
 			if (nv <= w) 
 			{
 				w = 0;     /* next     */  
@@ -138,9 +138,9 @@ namespace Menge
 
 			if( detail::s_snip( countour, u, v, w, nv, V ) )
 			{
-				size_t a = V[u];
-				size_t b = V[v]; 
-				size_t c = V[w];
+				uint32_t a = V[u];
+				uint32_t b = V[v]; 
+				uint32_t c = V[w];
                 
 				_result.push_back( (uint16_t)a );
 				_result.push_back( (uint16_t)b );
@@ -148,7 +148,7 @@ namespace Menge
 
 				m++; 
 
-                for( size_t s = v, t = v + 1; t < nv; s++, t++ ) 
+                for( uint32_t s = v, t = v + 1; t < nv; s++, t++ ) 
 				{
 					V[s] = V[t];
 				}
@@ -167,7 +167,7 @@ namespace Menge
 	bool triangulate_polygon(const Polygon & _polygon, TVectorPoints & _result)
 	{
 		/* allocate and initialize list of Vertices in polygon */ 
-		size_t n = boost::geometry::num_points(_polygon);
+		uint32_t n = boost::geometry::num_points(_polygon);
 
         --n; // for correct polygon
 
@@ -176,31 +176,31 @@ namespace Menge
             return false;
         }
 
-		size_t *V = new size_t[n];  /* we want a counter-clockwise polygon in V */ 
+		uint32_t *V = new uint32_t[n];  /* we want a counter-clockwise polygon in V */ 
 
         double area_polygon = boost::geometry::area( _polygon );
 
 		if( area_polygon < 0.0 )
 		{
-			for( size_t v=0; v<n; v++ )
+			for( uint32_t v=0; v<n; v++ )
 			{
 				V[v] = v;
 			}
 		}
 		else
 		{
-			for( size_t v=0; v<n; v++ ) 
+			for( uint32_t v=0; v<n; v++ ) 
 			{
 				V[v] = (n-1)-v;  
 			}
 		}
 
-		size_t nv = n;  /*  remove nv-2 Vertices, creating 1 triangle every time */
-		size_t count = 2 * nv;   /* error detection */ 
+		uint32_t nv = n;  /*  remove nv-2 Vertices, creating 1 triangle every time */
+		uint32_t count = 2 * nv;   /* error detection */ 
 
         const Polygon::ring_type & countour = _polygon.outer();
         
-		for( size_t m = 0, v = nv - 1; nv > 2; )
+		for( uint32_t m = 0, v = nv - 1; nv > 2; )
 		{
 			/* if we loop, it is probably a non-simple polygon */
 			if (0 == (count--))
@@ -222,7 +222,7 @@ namespace Menge
 				v = 0;     /* new v    */
 			}
 
-			size_t w = v+1;
+			uint32_t w = v+1;
 			if (nv <= w) 
 			{
 				w = 0;     /* next     */  
@@ -230,9 +230,9 @@ namespace Menge
 
 			if( detail::s_snip( countour, u, v, w, nv, V ) )
 			{
-				size_t a = V[u];
-				size_t b = V[v]; 
-				size_t c = V[w];
+				uint32_t a = V[u];
+				uint32_t b = V[v]; 
+				uint32_t c = V[w];
 
                 const mt::vec2f & Ca = countour[a];
                 const mt::vec2f & Cb = countour[b];
@@ -244,7 +244,7 @@ namespace Menge
 
 				m++; 
 
-                for( size_t s = v, t = v + 1; t < nv; s++, t++ ) 
+                for( uint32_t s = v, t = v + 1; t < nv; s++, t++ ) 
 				{
 					V[s] = V[t];
 				}
@@ -344,11 +344,11 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	size_t polygon_size( const Polygon & _polygon )
+	uint32_t polygon_size( const Polygon & _polygon )
 	{
 		const Polygon::ring_type & ring = _polygon.outer();
 
-		size_t ring_size = ring.size();
+		uint32_t ring_size = ring.size();
 
 		return ring_size;
 	}
@@ -362,27 +362,27 @@ namespace Menge
 		return points;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t polygon_inners( const Polygon & _polygon )
+	uint32_t polygon_inners( const Polygon & _polygon )
 	{
 		const Polygon::inner_container_type & inners = _polygon.inners();
 
-		size_t inners_count = inners.size();
+		uint32_t inners_count = inners.size();
 
 		return inners_count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t polygon_inner_size( const Polygon & _polygon, size_t _index )
+	uint32_t polygon_inner_size( const Polygon & _polygon, uint32_t _index )
 	{
 		const Polygon::inner_container_type & inners = _polygon.inners();
 
 		const Polygon::ring_type & ring = inners[_index];
 
-		size_t ring_size = ring.size();
+		uint32_t ring_size = ring.size();
 
 		return ring_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f * polygon_inner_points( const Polygon & _polygon, size_t _index )
+	const mt::vec2f * polygon_inner_points( const Polygon & _polygon, uint32_t _index )
 	{
 		const Polygon::inner_container_type & inners = _polygon.inners();
 
@@ -393,7 +393,7 @@ namespace Menge
 		return points;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & polygon_point( const Polygon & _polygon, size_t _index )
+	const mt::vec2f & polygon_point( const Polygon & _polygon, uint32_t _index )
 	{
 		const Polygon::ring_type & ring = _polygon.outer();
 
@@ -402,11 +402,11 @@ namespace Menge
 		return point;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_pnpoly( size_t nvert, const mt::vec2f * vert, float testx, float testy )
+	static bool s_pnpoly( uint32_t nvert, const mt::vec2f * vert, float testx, float testy )
 	{
 		bool c = false;
 
-		for( size_t i = 0, j = nvert - 1; i < nvert; j = i++ )
+		for( uint32_t i = 0, j = nvert - 1; i < nvert; j = i++ )
 		{
 			float vertix = vert[i].x;
 			float vertiy = vert[i].y;
@@ -425,7 +425,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool intersection_polygon_point( const Polygon & _polygon, float _x, float _y )
 	{
-		size_t vertex_count = polygon_size( _polygon );
+		uint32_t vertex_count = polygon_size( _polygon );
 		const mt::vec2f * points = polygon_points( _polygon );
 
 		if( s_pnpoly( vertex_count, points, _x, _y ) == false )
@@ -433,11 +433,11 @@ namespace Menge
 			return false;
 		}
 
-		size_t inners = polygon_inners( _polygon );
+		uint32_t inners = polygon_inners( _polygon );
 
-		for( size_t k = 0; k != inners; ++k )
+		for( uint32_t k = 0; k != inners; ++k )
 		{
-			size_t vertex_count = polygon_inner_size( _polygon, k );
+			uint32_t vertex_count = polygon_inner_size( _polygon, k );
 			const mt::vec2f * points = polygon_inner_points( _polygon, k );
 
 			if( s_pnpoly( vertex_count, points, _x, _y ) == true )

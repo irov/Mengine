@@ -56,7 +56,7 @@ namespace Menge
 
 		struct PrefetchImageDecoderReceiver
 		{
-			size_t refcount;
+			uint32_t refcount;
 			ThreadTaskPrefetchImageDecoderPtr prefetcher;
 		};
 
@@ -68,7 +68,7 @@ namespace Menge
 
 		struct PrefetchDataReceiver
 		{
-			size_t refcount;
+			uint32_t refcount;
 			ThreadTaskPrefetchDataflowPtr prefetcher;
 		};
 

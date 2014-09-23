@@ -172,7 +172,7 @@ namespace Menge
 		{
             const CharData & data = *it_char;
 
-			for( size_t i = 0; i != 4; ++i )
+			for( uint32_t i = 0; i != 4; ++i )
 			{
 				RenderVertex2D & renderVertex = _renderObject[renderObjectNum + i];
 				const mt::vec3f & charVertex = data.renderVertex[i];

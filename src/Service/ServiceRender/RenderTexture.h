@@ -17,10 +17,10 @@ namespace Menge
     public:
         void initialize( ServiceProviderInterface * _serviceProvider
             , const RenderImageInterfacePtr & _image
-            , size_t _width
-            , size_t _height
-            , size_t _channels
-            , size_t _id
+            , uint32_t _width
+            , uint32_t _height
+            , uint32_t _channels
+            , uint32_t _id
 			);
 
 	public:
@@ -29,7 +29,7 @@ namespace Menge
 	public:
 		const RenderImageInterfacePtr & getImage() const override;
         
-		size_t getId() const override;
+		uint32_t getId() const override;
 
 		void setFileName( const FilePath & _fileName ) override;
 		const FilePath & getFileName() const override;
@@ -39,12 +39,12 @@ namespace Menge
 
 		const mt::vec4f & getUV() const override;
 
-		size_t getWidth() const override;
-		size_t getHeight() const override;
+		uint32_t getWidth() const override;
+		uint32_t getHeight() const override;
 
-		size_t getChannels() const override;
+		uint32_t getChannels() const override;
 		
-		void * lock( int * _pitch, const Rect & _rect, bool _readOnly = true ) const override;
+		void * lock( size_t * _pitch, const Rect & _rect, bool _readOnly = true ) const override;
 
 		void unlock() const override;
 
@@ -57,14 +57,14 @@ namespace Menge
 
 		FilePath m_fileName;
 		
-		size_t m_width;
-		size_t m_height;
-		size_t m_channels;
+		uint32_t m_width;
+		uint32_t m_height;
+		uint32_t m_channels;
 		
 		Rect m_rect;
         Rect m_hwRect;
 		mt::vec4f m_uv;
 
-		size_t m_id;
+		uint32_t m_id;
 	};
 }	// namespace Menge

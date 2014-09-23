@@ -59,7 +59,7 @@ namespace Menge
 
 		RenderMaterialInterfacePtr m_material;
 	
-		size_t m_texturesNum;
+		uint32_t m_texturesNum;
 		RenderTextureInterfacePtr m_textures[2];
 
 		bool m_isCustomSize;

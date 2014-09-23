@@ -51,6 +51,8 @@ src
     PrefetcherInterface.h
     AmplifierInterface.h
     GraveyardInterface.h
+    GlobalHandleSystemInterface.h
+    NotificationServiceInterface.h
     
 	dummy.cpp
 )

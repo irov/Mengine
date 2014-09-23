@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
+#	include "Interface/CacheInterface.h"
 
 #   include "IwGL.h"
 #   include "s3e.h"
@@ -15,19 +16,19 @@ namespace Menge
 		~MarmaladeTexture();
 
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, size_t _width, size_t _height, size_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget );
+        void initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget );
 
 	public:
-        void * lock( int* _pitch, const Rect& _rect, bool _readOnly = true ) override;
+        void * lock( size_t * _pitch, const Rect& _rect, bool _readOnly ) override;
 		void unlock() override;
 	
 	public:
 		ERenderImageMode getMode() const override;
 
-		size_t getHWWidth() const override;
-		size_t getHWHeight() const override;
-        size_t getHWChannels() const override;
-		size_t getHWDepth() const override;
+		uint32_t getHWWidth() const override;
+		uint32_t getHWHeight() const override;
+        uint32_t getHWChannels() const override;
+		uint32_t getHWDepth() const override;
 
 		PixelFormat getHWPixelFormat() const override;
 
@@ -60,9 +61,9 @@ namespace Menge
 
 		ERenderImageMode m_mode;
 
-		size_t m_hwWidth;
-		size_t m_hwHeight;
-        size_t m_hwChannels;
+		uint32_t m_hwWidth;
+		uint32_t m_hwHeight;
+        uint32_t m_hwChannels;
 
 		GLenum m_minFilter;
 		GLenum m_magFilter;
@@ -75,7 +76,7 @@ namespace Menge
 		GLenum m_type;
 
 		void * m_buffer;
-		size_t m_bufferId;
+		CacheBufferID m_bufferId;
 	};
 
     typedef stdex::intrusive_ptr<MarmaladeTexture> OGLTexturePtr;

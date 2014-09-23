@@ -27,7 +27,7 @@ namespace Menge
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void DX9Texture::initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, size_t _hwWidth, size_t _hwHeight, size_t _hwChannels, PixelFormat _hwPixelFormat )
+    void DX9Texture::initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
     {
 		m_serviceProvider = _serviceProvider;
         m_d3dTexture = _d3dInterface;
@@ -40,9 +40,9 @@ namespace Menge
         m_hwPixelFormat = _hwPixelFormat;
     }
 	///////////////////////////////////////////////////////////////////////////
-	void * DX9Texture::lock( int* _pitch, const Rect& _rect, bool _readOnly )
+	void * DX9Texture::lock( size_t * _pitch, const Rect& _rect, bool _readOnly )
 	{
-		int flags;
+		DWORD flags;
 		if( _readOnly == true )
 		{
 			flags = D3DLOCK_READONLY;
@@ -59,12 +59,12 @@ namespace Menge
 		rect.right = _rect.right;
 
 		D3DLOCKED_RECT TRect;
-		IF_DXCALL( m_serviceProvider, m_d3dTexture, LockRect, (0, &TRect, &rect, flags) )
+		IF_DXCALL( m_serviceProvider, m_d3dTexture, LockRect, (0U, &TRect, &rect, flags) )
 		{
 			return nullptr;
 		}
 
-		*_pitch = TRect.Pitch;
+		*_pitch = (size_t)TRect.Pitch;
 
 		void * bits = TRect.pBits;
 
@@ -86,12 +86,12 @@ namespace Menge
 		return m_mode;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t DX9Texture::getHWWidth() const
+	uint32_t DX9Texture::getHWWidth() const
 	{
 		return m_hwWidth;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t DX9Texture::getHWHeight() const
+	uint32_t DX9Texture::getHWHeight() const
 	{
 		return m_hwHeight;
 	}
@@ -101,12 +101,12 @@ namespace Menge
         return m_hwPixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t DX9Texture::getHWChannels() const
+    uint32_t DX9Texture::getHWChannels() const
     {
         return m_hwChannels;
     }
 	//////////////////////////////////////////////////////////////////////////
-	size_t DX9Texture::getHWDepth() const
+	uint32_t DX9Texture::getHWDepth() const
 	{
 		return 1; //ToDo
 	}

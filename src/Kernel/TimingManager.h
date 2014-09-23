@@ -15,7 +15,7 @@ namespace Menge
 		float timing;
 		float delay;
 
-		size_t id;
+		uint32_t id;
 
 		bool dead;
 		bool freeze;
@@ -35,23 +35,23 @@ namespace Menge
         void initialize( ServiceProviderInterface * _serviceProvider ) override;
 
 	public:
-		size_t timing( bool _portions, bool _global, float _delay, TimingListenerInterface * _listener ) override;
+		uint32_t timing( bool _portions, bool _global, float _delay, TimingListenerInterface * _listener ) override;
 
     public:
-		bool remove( size_t _timingID ) override;
+		bool remove( uint32_t _timingID ) override;
 		void removeAll( bool _global ) override;
 
-		void freeze( size_t _id, bool _freeze ) override;
+		void freeze( uint32_t _id, bool _freeze ) override;
 		void freezeAll( bool _freeze ) override;
 
-		bool isFreeze( size_t _id ) const override;
+		bool isFreeze( uint32_t _id ) const override;
 
 	public:
 		void update( float _current, float _timing ) override;
 
 	private:
-		bool findTimigEvent_( size_t _id, const TimingEventDesc *& _desc ) const;
-		bool findTimigEvent_( size_t _id, TimingEventDesc *& _desc );
+		bool findTimigEvent_( uint32_t _id, const TimingEventDesc *& _desc ) const;
+		bool findTimigEvent_( uint32_t _id, TimingEventDesc *& _desc );
 
 	protected:
 		void destroyTiming_( TimingEventDesc & _desc );
@@ -62,7 +62,7 @@ namespace Menge
 		typedef stdex::list<TimingEventDesc> TListTimings;
 		TListTimings m_timings;
 		
-		size_t m_enumerator;
+		uint32_t m_enumerator;
 		bool m_freeze;		
 	};
 }

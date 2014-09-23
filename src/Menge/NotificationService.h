@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Interface/NotificationServiceInterace.h"
+#	include "Interface/NotificationServiceInterface.h"
 
 #   include <stdex/binary_vector.h>
 
@@ -22,20 +22,20 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		void addObserver( size_t _id, Observer * _observer ) override;
-		void removeObserver( size_t _id, Observer * _observer ) override;
+		void addObserver( uint32_t _id, Observer * _observer ) override;
+		void removeObserver( uint32_t _id, Observer * _observer ) override;
 
 	protected:
-		void visitObservers( size_t _id, VisitorObserver * _visitor ) override;
+		void visitObservers( uint32_t _id, VisitorObserver * _visitor ) override;
 		
 	protected:
-		void invalidObserver_( size_t _id );
+		void invalidObserver_( uint32_t _id );
 
 	protected:		
         ServiceProviderInterface * m_serviceProvider;
 
 		typedef stdex::vector<Observer *> TVectorObservers;
-		typedef stdex::binary_vector<size_t, TVectorObservers> TMapObservers;
+		typedef stdex::binary_vector<uint32_t, TVectorObservers> TMapObservers;
 		TMapObservers m_mapObserves;
 	};
 }

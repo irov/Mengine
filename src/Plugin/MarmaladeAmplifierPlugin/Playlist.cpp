@@ -155,17 +155,17 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Playlist::currentTrackIndex() const
+	uint32_t Playlist::currentTrackIndex() const
 	{
 		return m_trackIndex;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Playlist::numTracks() const
+	uint32_t Playlist::numTracks() const
 	{
 		return m_tracks.size();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TrackDesc * Playlist::getTrackByIndex( size_t _index )
+	const TrackDesc * Playlist::getTrackByIndex( uint32_t _index )
 	{
 		if( _index >= m_tracks.size() )
 		{
@@ -175,7 +175,7 @@ namespace Menge
 		return &m_tracks[_index];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Playlist::setTrack( size_t _index )
+	void Playlist::setTrack( uint32_t _index )
 	{
 		if( _index >= m_tracks.size() )
 		{

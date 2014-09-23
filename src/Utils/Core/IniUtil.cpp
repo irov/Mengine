@@ -268,9 +268,9 @@ namespace Menge
         {
             (void)_serviceProvider;
 
-            size_t count = _ini.countSettingValues( _section, _key );
+            uint32_t count = _ini.countSettingValues( _section, _key );
 
-            for( size_t index = 0; index != count; ++index )
+            for( uint32_t index = 0; index != count; ++index )
             {
                 const char * value = _ini.getSettingValues( _section, _key, index );
 
@@ -284,9 +284,9 @@ namespace Menge
 		{
 			(void)_serviceProvider;
 
-			size_t count = _ini.countSettingValues( _section, _key );
+			uint32_t count = _ini.countSettingValues( _section, _key );
 
-			for( size_t index = 0; index != count; ++index )
+			for( uint32_t index = 0; index != count; ++index )
 			{
 				const char * value = _ini.getSettingValues( _section, _key, index );
 
@@ -300,9 +300,9 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorWString & _values, ServiceProviderInterface * _serviceProvider )
         {
-            size_t count = _ini.countSettingValues( _section, _key );
+            uint32_t count = _ini.countSettingValues( _section, _key );
 
-            for( size_t index = 0; index != count; ++index )
+            for( uint32_t index = 0; index != count; ++index )
             {
                 const char * value = _ini.getSettingValues( _section, _key, index );
 
@@ -317,9 +317,9 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorAspectRatioViewports & _values, ServiceProviderInterface * _serviceProvider )
         {
-            size_t count = _ini.countSettingValues( _section, _key );
+            uint32_t count = _ini.countSettingValues( _section, _key );
 
-            for( size_t index = 0; index != count; ++index )
+            for( uint32_t index = 0; index != count; ++index )
             {
                 const char * ini_value = _ini.getSettingValues( _section, _key, index );
 
@@ -351,9 +351,9 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool getIniAllSettings( const IniStore & _ini, const Char * _section, TMapParams & _values, ServiceProviderInterface * _serviceProvider )
         {
-            size_t count = _ini.countSettings( _section );
+            uint32_t count = _ini.countSettings( _section );
 
-            for( size_t index = 0; index != count; ++index )
+            for( uint32_t index = 0; index != count; ++index )
             {
                 const char * key;
                 const char * value;
@@ -381,7 +381,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool writeIniSection( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _file, const char * _section, size_t _sectionSize )
+        bool writeIniSection( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _file, const char * _section, uint32_t _sectionSize )
         {        
             (void)_serviceProvider;
 

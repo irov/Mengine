@@ -303,13 +303,13 @@ namespace Menge
 		virtual void update() = 0;
 
 	public:
-		virtual bool isKeyDown( size_t _keyCode ) const = 0;
-		virtual bool isExclusiveKeyDown( size_t _keyCode ) const = 0;
+		virtual bool isKeyDown( uint32_t _keyCode ) const = 0;
+		virtual bool isExclusiveKeyDown( uint32_t _keyCode ) const = 0;
 		virtual bool isAnyKeyDown() const = 0;
 
 	public:
 		virtual bool isAnyMouseButtonDown() const = 0;
-		virtual bool isMouseButtonDown( size_t _button ) const = 0;
+		virtual bool isMouseButtonDown( uint32_t _buttonId ) const = 0;
 
         virtual void setCursorPosition( const mt::vec2f & _point ) = 0;
 		virtual const mt::vec2f & getCursorPosition() const = 0;
@@ -322,17 +322,17 @@ namespace Menge
 		virtual void onFocus( bool _focus ) = 0;
 
 	public:
-		virtual void onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown ) = 0;
+		virtual void onKeyEvent( const mt::vec2f & _point, uint32_t _key, uint32_t _char, bool _isDown ) = 0;
 
 	public:
-		virtual void onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) = 0;
-		virtual void onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) = 0;
-		virtual void onMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
+		virtual void onMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _point, uint32_t _button, bool _isDown ) = 0;
+		virtual void onMouseMove( uint32_t _touchId, const mt::vec2f & _point, float _x, float _y ) = 0;
+		virtual void onMouseWheel( uint32_t _touchId, const mt::vec2f & _point, int _whell ) = 0;
 
 	public:
-		virtual void onMousePosition( unsigned int _touchId, const mt::vec2f & _point ) = 0;
-        virtual void onMouseEnter( unsigned int _touchId, const mt::vec2f & _point ) = 0;
-        virtual void onMouseLeave( unsigned int _touchId, const mt::vec2f & _point ) = 0;
+		virtual void onMousePosition( uint32_t _touchId, const mt::vec2f & _point ) = 0;
+        virtual void onMouseEnter( uint32_t _touchId, const mt::vec2f & _point ) = 0;
+        virtual void onMouseLeave( uint32_t _touchId, const mt::vec2f & _point ) = 0;
 	};
 
 #   define INPUT_SERVICE( serviceProvider )\

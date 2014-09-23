@@ -40,7 +40,7 @@ namespace Menge
 		float getFontHeight() const override;
 
 	public:
-		size_t getFontParams() const override;
+		uint32_t getFontParams() const override;
 
 		const ColourValue & getColorFont() const override;
 		const ColourValue & getColorOutline() const override;
@@ -69,7 +69,7 @@ namespace Menge
 		ConstString m_name;
 		float m_height;
 		
-		size_t m_params;
+		uint32_t m_params;
 
 		ColourValue m_colourFont;
 		ColourValue m_colourOutline;

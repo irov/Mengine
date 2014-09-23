@@ -46,7 +46,7 @@ namespace Menge
 		intrusive_ptr_dec_ref( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Factory::countObject() const
+	uint32_t Factory::countObject() const
 	{
 		return m_count;
 	}

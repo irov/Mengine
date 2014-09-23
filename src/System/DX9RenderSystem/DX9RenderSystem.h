@@ -16,8 +16,8 @@ namespace Menge
 {
 	struct VBInfo
 	{
-		size_t length;
-		size_t vertexSize;
+		uint32_t length;
+		uint32_t vertexSize;
 		DWORD usage;
 		DWORD fvf;
 		D3DPOOL pool;
@@ -26,7 +26,7 @@ namespace Menge
 
 	struct IBInfo
 	{
-		size_t length;
+		uint32_t length;
 		DWORD usage;
 		D3DFORMAT format;
 		D3DPOOL pool;
@@ -55,7 +55,7 @@ namespace Menge
         void setRenderListener( RenderSystemListener * _listener ) override;
 		
 	public:
-		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
+		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 		
         void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
@@ -71,35 +71,35 @@ namespace Menge
 		// входные данные: матрица 4 на 4
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
 		void setModelViewMatrix( const mt::mat4f & _modelview ) override;
-		void setTextureMatrix( size_t _stage, const float* _texture ) override;
+		void setTextureMatrix( uint32_t _stage, const float* _texture ) override;
 		void setWorldMatrix( const mt::mat4f & _world ) override;
 
-		VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic ) override;
+		VBHandle createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
-		void * lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, EBufferLockFlag _flags ) override;
+		void * lockVertexBuffer(  VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
 		void setVertexBuffer( VBHandle _vbHandle ) override;
 
-		IBHandle createIndexBuffer( size_t _indiciesNum, bool _dynamic ) override;
+		IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
-		void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, EBufferLockFlag _flags ) override;
+		void * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
-		void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) override;
+		void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
 
-		void setVertexDeclaration( size_t _vertexSize, uint32_t _declaration ) override;
+		void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) override;
 
         RenderShaderInterface * createShader( const void * _code, size_t _len ) override;
         void setShader( RenderShaderInterface * _shader ) override;
 
 		void drawIndexedPrimitive( EPrimitiveType _type
-			, size_t _baseVertexIndex
-			, size_t _minIndex
-			, size_t _verticesNum
-			, size_t _startIndex
-			, size_t _indexCount ) override;
+			, uint32_t _baseVertexIndex
+			, uint32_t _minIndex
+			, uint32_t _verticesNum
+			, uint32_t _startIndex
+			, uint32_t _indexCount ) override;
 
-		void setTexture( size_t _stage, const RenderImageInterfacePtr & _texture ) override;
-		void setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
+		void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
+		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32_t _color ) override;
 
 		void setSrcBlendFactor( EBlendFactor _src ) override;
@@ -119,28 +119,28 @@ namespace Menge
 		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha ) override;
 		void setLightingEnable( bool _light ) override;
 
-		void setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp,
+		void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,
 										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
-		void setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp,
+		void setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,
 										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
 
-        void setTextureStageTexCoordIndex( size_t _stage, size_t _index ) override;
+        void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
 
-		void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
+		void setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 		
 		// create empty render image
-		RenderImageInterfacePtr createImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
-		RenderImageInterfacePtr createDynamicImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
+		RenderImageInterfacePtr createImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
+		RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 		
 		
 		// create render target image
-		RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
+		RenderImageInterfacePtr createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 		// отрисовка изображения
 
 		bool beginScene() override;
 		void endScene() override;
 		void swapBuffers() override;
-		void clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color = 0, float _depth = 1.0f, uint16_t _stencil = 0 ) override;
+		void clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil ) override;
 
 		void setViewport( const Viewport & _viewport ) override;
 
@@ -163,7 +163,7 @@ namespace Menge
 		void updateViewport_( const Viewport & _viewport );
 
     protected:        
-        void fixNPOTSupport_( size_t & _width, size_t & _height ) const;
+        void fixNPOTSupport_( uint32_t & _width, uint32_t & _height ) const;
 
 	private:
 		ServiceProviderInterface * m_serviceProvider;
@@ -205,7 +205,7 @@ namespace Menge
 
 		//void createSyncTargets_();
 
-		bool d3dCreateTexture_( UINT Width, UINT Height, UINT MipLevels,
+		bool d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels,
 			DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture );
 
 		void refreshRenderStates_();

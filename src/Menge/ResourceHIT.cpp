@@ -99,7 +99,7 @@ namespace Menge
         m_height = dataInfo->height;
         m_mipmaplevel = dataInfo->mipmaplevel;
         
-        size_t mipmapsize = dataInfo->mipmapsize;
+        uint32_t mipmapsize = dataInfo->mipmapsize;
         m_mipmap.resize( mipmapsize );
         
         m_mipmapsize = decoder->decode( &m_mipmap[0], mipmapsize );
@@ -198,8 +198,8 @@ namespace Menge
 			return false;
 		}
 
-		size_t i = (size_t)fi;
-		size_t j = (size_t)fj;
+		uint32_t i = (uint32_t)fi;
+		uint32_t j = (uint32_t)fj;
 
 		if( i >= m_width || j >= m_height )
 		{
@@ -207,7 +207,7 @@ namespace Menge
 		}
 
 		unsigned char minAlpha = (unsigned char)(_minAlpha * 255.0f);
-		size_t index = j * m_width + i;
+		uint32_t index = j * m_width + i;
 		
         unsigned char * alphaBuffer = this->getHitBuffer_( 0 );
 		unsigned char alpha = alphaBuffer[index];
@@ -258,10 +258,10 @@ namespace Menge
 			fj = h;
 		}
 
-		size_t i = (size_t)fi;
-		size_t j = (size_t)fj;
+		uint32_t i = (uint32_t)fi;
+		uint32_t j = (uint32_t)fj;
 
-        size_t level = (size_t)(logf( _radius ) / logf( 2.f ));
+        uint32_t level = (uint32_t)(logf( _radius ) / logf( 2.f ));
 
         if( level >= m_mipmaplevel )
         {
@@ -285,8 +285,8 @@ namespace Menge
         i >>= level;
         j >>= level;
 
-        size_t alphaWidth = m_width >> level;
-        size_t alphaHeight = m_height >> level;
+        uint32_t alphaWidth = m_width >> level;
+        uint32_t alphaHeight = m_height >> level;
 
         if( i == alphaWidth )
         {
@@ -299,7 +299,7 @@ namespace Menge
         }
 		
 		unsigned char minAlpha = (unsigned char)(_minAlpha * 255.0f);
-		size_t index = i + j * alphaWidth;
+		uint32_t index = i + j * alphaWidth;
 				
         unsigned char alpha = alphaBuffer[index];
 
@@ -311,13 +311,13 @@ namespace Menge
 		return false;
 	}
     //////////////////////////////////////////////////////////////////////////
-    unsigned char * ResourceHIT::getHitBuffer_( size_t _level ) const
+    unsigned char * ResourceHIT::getHitBuffer_( uint32_t _level ) const
     {
-        size_t bufferOffset = 0;
+        uint32_t bufferOffset = 0;
 
-        for( size_t l = 0; l != _level; ++l )
+        for( uint32_t l = 0; l != _level; ++l )
         {
-            size_t offset = (m_width >> l) * (m_height >> l);
+            uint32_t offset = (m_width >> l) * (m_height >> l);
             bufferOffset += offset;
         }
 
@@ -338,12 +338,12 @@ namespace Menge
         return buffer;
     }
 	//////////////////////////////////////////////////////////////////////////
-    size_t ResourceHIT::getWidth() const
+    uint32_t ResourceHIT::getWidth() const
     {
         return m_width;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t ResourceHIT::getHeight() const
+    uint32_t ResourceHIT::getHeight() const
     {
         return m_height;
     }

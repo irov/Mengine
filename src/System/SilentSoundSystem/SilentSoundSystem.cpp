@@ -82,35 +82,35 @@ namespace Menge
 		return buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t SilentSoundSystem::genSourceId()
+	uint32_t SilentSoundSystem::genSourceId()
 	{
-		size_t new_id = ++m_enumerate;
+		uint32_t new_id = ++m_enumerate;
 
 		return new_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSystem::releaseSourceId( size_t _sourceId )
+	void SilentSoundSystem::releaseSourceId( uint32_t _sourceId )
 	{
         (void)_sourceId;
 
         //Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t SilentSoundSystem::genBufferId()
+	uint32_t SilentSoundSystem::genBufferId()
 	{
-        size_t new_id = ++m_enumerate;
+        uint32_t new_id = ++m_enumerate;
 
         return new_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSystem::releaseBufferId( size_t _sourceId )
+	void SilentSoundSystem::releaseBufferId( uint32_t _sourceId )
 	{
         (void)_sourceId;
 
         //Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSystem::clearSourceId( size_t _sourceId )
+	void SilentSoundSystem::clearSourceId( uint32_t _sourceId )
 	{
         (void)_sourceId;
 

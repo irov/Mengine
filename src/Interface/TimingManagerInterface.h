@@ -14,8 +14,8 @@ namespace Menge
 		virtual ~TimingListenerInterface(){};
 
     public:
-        virtual bool updateTiming( size_t _id, float _timing ) = 0;
-        virtual void removeTiming( size_t _id ) = 0;
+        virtual bool updateTiming( uint32_t _id, float _timing ) = 0;
+        virtual void removeTiming( uint32_t _id ) = 0;
 
     public:
         virtual void deleteTimingListener() const = 0;
@@ -28,16 +28,16 @@ namespace Menge
         virtual void initialize( ServiceProviderInterface * _serviceProvider ) = 0;
 
     public:
-        virtual size_t timing( bool _portions, bool _global, float _delay, TimingListenerInterface * _listener ) = 0;
+        virtual uint32_t timing( bool _portions, bool _global, float _delay, TimingListenerInterface * _listener ) = 0;
 
     public:
-        virtual bool remove( size_t _timingID ) = 0;
+        virtual bool remove( uint32_t _id ) = 0;
         virtual void removeAll( bool _global ) = 0;
 
-        virtual void freeze( size_t _id, bool _freeze ) = 0;
+        virtual void freeze( uint32_t _id, bool _freeze ) = 0;
         virtual void freezeAll( bool _freeze ) = 0;
 
-        virtual bool isFreeze( size_t _id ) const = 0;
+        virtual bool isFreeze( uint32_t _id ) const = 0;
 
     public:
         virtual void update( float _current, float _timing ) = 0;

@@ -13,33 +13,33 @@ namespace Menge
 		~RenderMaterial();
 
 	public:
-		void initialize( size_t _id, uint32_t _hash, EPrimitiveType _primitiveType, size_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage );
+		void initialize( uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage );
 		
 	public:
-		size_t getId() const override;
+		uint32_t getId() const override;
 
 	public:
 		inline uint32_t getHash() const;
 		inline EPrimitiveType getPrimitiveType() const;
-		inline size_t getTextureCount() const;
-		inline const RenderTextureInterfacePtr & getTexture( size_t _index ) const;
+		inline uint32_t getTextureCount() const;
+		inline const RenderTextureInterfacePtr & getTexture( uint32_t _index ) const;
 		inline const RenderTextureInterfacePtr * getTextures() const;
 
 		inline const RenderStage * getStage() const;
 
 	protected:
-		size_t m_id;
+		uint32_t m_id;
 		uint32_t m_hash;
 
 		EPrimitiveType m_primitiveType;
 
-		size_t m_textureCount;
+		uint32_t m_textureCount;
 		RenderTextureInterfacePtr m_textures[MENGE_MAX_TEXTURE_STAGES];
 
 		const RenderStage * m_stage;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline size_t RenderMaterial::getId() const
+	inline uint32_t RenderMaterial::getId() const
 	{
 		return m_id;
 	}
@@ -54,12 +54,12 @@ namespace Menge
 		return m_primitiveType;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline size_t RenderMaterial::getTextureCount() const
+	inline uint32_t RenderMaterial::getTextureCount() const
 	{
 		return m_textureCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const RenderTextureInterfacePtr & RenderMaterial::getTexture( size_t _index ) const
+	inline const RenderTextureInterfacePtr & RenderMaterial::getTexture( uint32_t _index ) const
 	{
 		return m_textures[_index];
 	}

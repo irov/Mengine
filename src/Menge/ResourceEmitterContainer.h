@@ -30,8 +30,8 @@ namespace Menge
 		const ParticleEmitterContainerInterfacePtr & getContainer() const;
 
 	public:
-		const RenderTextureInterfacePtr & getAtlasTexture( size_t _atlasId );
-		size_t getAtlasTextureCount() const;
+		const RenderTextureInterfacePtr & getAtlasTexture( uint32_t _atlasId );
+		uint32_t getAtlasTextureCount() const;
 
 	public:
 		bool _loader( const Metabuf::Metadata * _parser ) override;

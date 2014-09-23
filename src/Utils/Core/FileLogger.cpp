@@ -17,12 +17,12 @@ namespace Menge
 		m_verboseLevel = _level;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void FileLogger::setVerboseFlag( size_t _flag )
+    void FileLogger::setVerboseFlag( uint32_t _flag )
     {
         m_verboseFlag = _flag;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool FileLogger::validMessage( EMessageLevel _level, size_t _flag ) const
+	bool FileLogger::validMessage( EMessageLevel _level, uint32_t _flag ) const
 	{
 		if( m_verboseLevel < _level )
 		{
@@ -42,7 +42,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void FileLogger::log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count )
+	void FileLogger::log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _count )
 	{
         (void)_level;
         (void)_flag;

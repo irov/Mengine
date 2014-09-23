@@ -60,7 +60,7 @@ namespace Menge
 		void handleMouseLeave() override;
 
 	public:
-		size_t getPickerTrapCount() const override;
+		uint32_t getPickerTrapCount() const override;
 
 	private:
 		bool proccesTraps_( const mt::vec2f & _point, TVectorPickerTrapStates & _states );
@@ -69,7 +69,7 @@ namespace Menge
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
-		size_t m_enumerator;
+		uint32_t m_enumerator;
 
 		bool m_block;
         bool m_handleValue;
@@ -85,6 +85,6 @@ namespace Menge
 
 		TVectorPickerTrapStates m_states;
 
-		size_t m_pickerTrapCount;
+		uint32_t m_pickerTrapCount;
 	};
 }

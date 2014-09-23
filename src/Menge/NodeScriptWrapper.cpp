@@ -182,7 +182,7 @@ namespace Menge
 			TVectorString cs_args;
 			cs_args.reserve( args_count );
 
-			for( size_t it = 0; it != args_count; ++it )
+			for( uint32_t it = 0; it != args_count; ++it )
 			{
 				PyObject * py_string = pybind::tuple_getitem( _args, it );
 
@@ -421,7 +421,7 @@ namespace Menge
             return duration; 
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t movie_getFrameCount( Movie * _movie )
+        uint32_t movie_getFrameCount( Movie * _movie )
         {
             ResourceMovie * resourceMovie = _movie->getResourceMovie();
 
@@ -434,7 +434,7 @@ namespace Menge
                 return 0;
             }
 
-            size_t count = resourceMovie->getFrameCount();
+            uint32_t count = resourceMovie->getFrameCount();
 
             return count; 
         }
@@ -648,7 +648,7 @@ namespace Menge
             }
 
         protected:
-            bool updateTiming( size_t _id, float _timing ) override
+            bool updateTiming( uint32_t _id, float _timing ) override
             {
                 SCRIPT_SERVICE(m_serviceProvider)
                     ->callFunction( m_script, "(ifO)", _id, _timing, pybind::get_bool(false) );
@@ -656,7 +656,7 @@ namespace Menge
                 return false;
             }
 
-            void removeTiming( size_t _id ) override
+            void removeTiming( uint32_t _id ) override
             {
                 SCRIPT_SERVICE(m_serviceProvider)
                     ->callFunction( m_script, "(ifO)", _id, 0.f, pybind::get_bool(true) );
@@ -672,19 +672,19 @@ namespace Menge
             PyObject * m_script;
         };
         //////////////////////////////////////////////////////////////////////////
-        size_t timing( bool _portion, bool _global, float _timing, PyObject * _script )
+        uint32_t timing( bool _portion, bool _global, float _timing, PyObject * _script )
         {
             TimingManagerInterface * tm = PLAYER_SERVICE(m_serviceProvider)
                 ->getTimingManager();
 
             TimingListenerInterface * listener = new MyTimingListener(m_serviceProvider, _script);
 
-            size_t id = tm->timing( _portion, _global, _timing, listener );
+            uint32_t id = tm->timing( _portion, _global, _timing, listener );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool timingRemove( size_t _id )
+        bool timingRemove( uint32_t _id )
         {
             TimingManagerInterface * tm = PLAYER_SERVICE(m_serviceProvider)
                 ->getTimingManager();
@@ -745,7 +745,7 @@ namespace Menge
 			}
 
         protected:
-            void onScheduleComplete( size_t _id ) override
+            void onScheduleComplete( uint32_t _id ) override
             {
                 SCRIPT_SERVICE(m_serviceProvider)
                     ->callFunction( m_cb, "(iO)", _id, pybind::get_bool(false) );
@@ -753,7 +753,7 @@ namespace Menge
                 //    ->addEventFormat( EVENT_SCHEDULE, m_pyObject, "(iO)", _id, pybind::get_bool(false) );
             }
 
-            void onScheduleStop( size_t _id ) override
+            void onScheduleStop( uint32_t _id ) override
             {
                 SCRIPT_SERVICE(m_serviceProvider)
                     ->callFunction( m_cb, "(iO)", _id, pybind::get_bool(true) );
@@ -769,7 +769,7 @@ namespace Menge
 		typedef FactoryPoolStore<PyObjectScheduleListener, 8> TFactoryPyObjectScheduleListener;
 		TFactoryPyObjectScheduleListener m_factoryPyObjectScheduleListener;
         //////////////////////////////////////////////////////////////////////////
-        size_t schedule( float _timing, PyObject * _script )
+        uint32_t schedule( float _timing, PyObject * _script )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
@@ -778,23 +778,23 @@ namespace Menge
 
 			sl->initialize( m_serviceProvider, _script );
 
-            size_t id = sm->schedule( _timing, sl );
+            uint32_t id = sm->schedule( _timing, sl );
 
             return id;
         }
 		//////////////////////////////////////////////////////////////////////////
-		size_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, PyObject * _script )
+		uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, PyObject * _script )
 		{
 			PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObjectT();
 
 			sl->initialize( m_serviceProvider, _script );
 
-			size_t id = _scheduleManager->schedule( _timing, sl );
+			uint32_t id = _scheduleManager->schedule( _timing, sl );
 
 			return id;
 		}
         //////////////////////////////////////////////////////////////////////////
-        bool scheduleRemove( size_t _id )
+        bool scheduleRemove( uint32_t _id )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
@@ -812,7 +812,7 @@ namespace Menge
             sm->removeAll();
         }	
         //////////////////////////////////////////////////////////////////////////
-        bool s_scheduleFreeze( size_t _id, bool _freeze )
+        bool s_scheduleFreeze( uint32_t _id, bool _freeze )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
@@ -838,7 +838,7 @@ namespace Menge
             sm->freezeAll( false );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_scheduleIsFreeze( size_t _id )
+        bool s_scheduleIsFreeze( uint32_t _id )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
@@ -846,7 +846,7 @@ namespace Menge
             return sm->isFreeze( _id );
         }
         //////////////////////////////////////////////////////////////////////////
-        float s_scheduleTime( size_t _id )
+        float s_scheduleTime( uint32_t _id )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
@@ -856,7 +856,7 @@ namespace Menge
             return time;
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t s_scheduleGlobal( float _timing, PyObject * _script )
+        uint32_t s_scheduleGlobal( float _timing, PyObject * _script )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
@@ -865,12 +865,12 @@ namespace Menge
 
 			sl->initialize( m_serviceProvider, _script );
 
-            size_t id = sm->schedule( _timing, sl );
+            uint32_t id = sm->schedule( _timing, sl );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_scheduleGlobalRemove( size_t _id )
+        bool s_scheduleGlobalRemove( uint32_t _id )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
@@ -888,7 +888,7 @@ namespace Menge
             sm->removeAll();
         }	
         //////////////////////////////////////////////////////////////////////////
-        bool s_scheduleGlobalFreeze( size_t _id, bool _freeze )
+        bool s_scheduleGlobalFreeze( uint32_t _id, bool _freeze )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
@@ -914,7 +914,7 @@ namespace Menge
             sm->freezeAll( false );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_scheduleGlobalIsFreeze( size_t _id )
+        bool s_scheduleGlobalIsFreeze( uint32_t _id )
         {
             ScheduleManagerInterface* sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
@@ -924,7 +924,7 @@ namespace Menge
             return freeze;
         }
         //////////////////////////////////////////////////////////////////////////
-        float s_scheduleGlobalTime( size_t _id )
+        float s_scheduleGlobalTime( uint32_t _id )
         {
             ScheduleManagerInterface* sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
@@ -964,13 +964,13 @@ namespace Menge
                 ->isMouseButtonDown( _button );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_isKeyDown( size_t _key )
+        bool s_isKeyDown( uint32_t _key )
         {
             return INPUT_SERVICE(m_serviceProvider)
                 ->isKeyDown( _key );
         }
 		//////////////////////////////////////////////////////////////////////////		
-		bool s_isExclusiveKeyDown( size_t _key )
+		bool s_isExclusiveKeyDown( uint32_t _key )
 		{
 			return INPUT_SERVICE(m_serviceProvider)
 				->isExclusiveKeyDown( _key );
@@ -1100,12 +1100,12 @@ namespace Menge
             return vp.begin;
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t s_Animatable_play( Animatable * _animatable )
+        uint32_t s_Animatable_play( Animatable * _animatable )
         {
             float time = PLAYER_SERVICE(m_serviceProvider)
                 ->getTime();
 
-            size_t id = _animatable->play( time );
+            uint32_t id = _animatable->play( time );
 
             return id;
         }
@@ -1301,7 +1301,7 @@ namespace Menge
 			arrow->calcMouseScreenPosition( renderCamera, renderViewport, _pos, _screen );
 		}
         //////////////////////////////////////////////////////////////////////////
-        void s_pushMouseMove( size_t _touchId, const mt::vec2f & _pos )
+        void s_pushMouseMove( uint32_t _touchId, const mt::vec2f & _pos )
         {
             const mt::vec2f & cp = INPUT_SERVICE(m_serviceProvider)
                 ->getCursorPosition();
@@ -1315,7 +1315,7 @@ namespace Menge
                 ->onMouseMove( _touchId, cp, mp.x, mp.y );
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_pushMouseButtonEvent( size_t _touchId, const mt::vec2f & _pos, unsigned int _button, bool _isDown )
+        void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, unsigned int _button, bool _isDown )
         {
 			mt::vec2f pos_screen;
 			this->s_calcMouseScreenPosition( _pos, pos_screen );
@@ -1338,7 +1338,7 @@ namespace Menge
 			return codename;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_sleep( size_t _time )
+		void s_sleep( uint32_t _time )
 		{
 			THREAD_SYSTEM(m_serviceProvider)
 				->sleep( _time );
@@ -1360,7 +1360,7 @@ namespace Menge
 			}
 
 		protected:
-			void onDownloadAssetComplete( size_t _id, bool _successful ) override
+			void onDownloadAssetComplete( uint32_t _id, bool _successful ) override
 			{
 				pybind::call( m_cb, "iO", _id, pybind::get_bool(_successful) );
 			}
@@ -1369,15 +1369,15 @@ namespace Menge
 			PyObject * m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		size_t s_downloadAsset( const String & _url, const ConstString & _category, const FilePath & _filepath, PyObject * _cb )
+		uint32_t s_downloadAsset( const String & _url, const ConstString & _category, const FilePath & _filepath, PyObject * _cb )
 		{
-			size_t id = HTTP_SYSTEM(m_serviceProvider)
+			uint32_t id = HTTP_SYSTEM(m_serviceProvider)
 				->downloadAsset( _url, _category, _filepath, new PyHttpDownloadAssetReceiver(_cb) );
 
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_cancelDownloadAsset( size_t _id )
+		void s_cancelDownloadAsset( uint32_t _id )
 		{
 			HTTP_SYSTEM(m_serviceProvider)
 				->cancelAsset( _id );
@@ -1442,13 +1442,13 @@ namespace Menge
 				pybind::call_method( m_cb, "begin", "(s)", _node );
 			}
 
-			void callback_node_attributes( const char * _node, size_t _count, const char ** _keys, const char ** _values )
+			void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
 			{
 				(void)_node;
 
 				PyObject * py_attr = pybind::dict_new();
 				
-				for( size_t i = 0; i != _count; ++i )
+				for( uint32_t i = 0; i != _count; ++i )
 				{
 					const char * key = _keys[i];
 					const char * value = _values[i];
@@ -1788,7 +1788,7 @@ namespace Menge
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		size_t s_rotateToIsometric( float _angle )
+		uint32_t s_rotateToIsometric( float _angle )
 		{
 			float angle_norm = mt::angle_norm( _angle );
 
@@ -1827,7 +1827,7 @@ namespace Menge
 			};
 
 
-			for( size_t i = 0; i != 8; ++i )
+			for( uint32_t i = 0; i != 8; ++i )
 			{
 				float low_angle = pi_deltha[ i * 3 + 0];
 				//float test_angle = pi_deltha[ i * 3 + 1];
@@ -2205,7 +2205,7 @@ namespace Menge
 			}
 
 		protected:
-			void onAffectorEnd( size_t _id, bool _isEnd ) override
+			void onAffectorEnd( uint32_t _id, bool _isEnd ) override
 			{
 				if( m_cb == nullptr )
 				{
@@ -2244,7 +2244,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorAccumulateLinear;
         //////////////////////////////////////////////////////////////////////////
-        size_t velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, PyObject* _cb )
+        uint32_t velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, PyObject* _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -2263,13 +2263,13 @@ namespace Menge
             mt::vec3f linearSpeed = _dir * _speed;
             _node->setLinearSpeed( linearSpeed );
 
-            size_t id = _node->addAffector( affector );
+            uint32_t id = _node->addAffector( affector );
 
             return id;
         }
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorInterpolateLinear;
         //////////////////////////////////////////////////////////////////////////
-        size_t moveTo( Node * _node, float _time, const mt::vec3f& _point, PyObject* _cb )
+        uint32_t moveTo( Node * _node, float _time, const mt::vec3f& _point, PyObject* _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -2293,14 +2293,14 @@ namespace Menge
 
             _node->setLinearSpeed( linearSpeed );
 
-            size_t id = _node->addAffector( affector );
+            uint32_t id = _node->addAffector( affector );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorInterpolateQuadratic;
         //////////////////////////////////////////////////////////////////////////
-        size_t accMoveTo( Node * _node, float _time, const mt::vec3f& _point, PyObject* _cb )
+        uint32_t accMoveTo( Node * _node, float _time, const mt::vec3f& _point, PyObject* _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -2319,14 +2319,14 @@ namespace Menge
                 , &mt::length_v3
                 );
 
-            size_t id = _node->addAffector( affector );
+            uint32_t id = _node->addAffector( affector );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadraticBezier<Node, void (Node::*)( const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateQuadraticBezier;
         //////////////////////////////////////////////////////////////////////////
-        size_t bezier2To( Node * _node
+        uint32_t bezier2To( Node * _node
             , float _time
             , const mt::vec3f& _point1
             , const mt::vec3f& _point2
@@ -2347,14 +2347,14 @@ namespace Menge
                 , &mt::length_v3
                 );
 
-            size_t id = _node->addAffector( affector );
+            uint32_t id = _node->addAffector( affector );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateCubicBezier<Node, void (Node::*)( const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateCubicBezier;
         //////////////////////////////////////////////////////////////////////////
-        size_t bezier3To( Node * _node
+        uint32_t bezier3To( Node * _node
             , float _time
             , const mt::vec3f& _point1
             , const mt::vec3f& _point2
@@ -2377,7 +2377,7 @@ namespace Menge
                 , &mt::length_v3
                 );
 
-            size_t id = _node->addAffector( affector );
+            uint32_t id = _node->addAffector( affector );
 
             return id;
         }
@@ -2390,7 +2390,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)( float ), float> m_odeAffectorCreatorInterpolateLinear;
         //////////////////////////////////////////////////////////////////////////
-        size_t angleTo( Node * _node, float _time, float _angle, PyObject* _cb )
+        uint32_t angleTo( Node * _node, float _time, float _angle, PyObject* _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -2417,14 +2417,14 @@ namespace Menge
             float angularSpeed = fabsf( correct_angle_from - correct_angle_to ) * invTime;
 
             _node->setAngularSpeed( angularSpeed );				
-            size_t id = _node->addAffector( affector );
+            uint32_t id = _node->addAffector( affector );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)( float ), float> m_nodeAffectorCreatorInterpolateQuadraticFloat;
         //////////////////////////////////////////////////////////////////////////
-        size_t accAngleTo( Node * _node, float _time, float _angle, PyObject* _cb )
+        uint32_t accAngleTo( Node * _node, float _time, float _angle, PyObject* _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -2450,7 +2450,7 @@ namespace Menge
                 , &fabsf
                 );				
 
-            size_t id = _node->addAffector( affector );
+            uint32_t id = _node->addAffector( affector );
 
             return id;
         }
@@ -2460,7 +2460,7 @@ namespace Menge
             _node->stopAffectors( ETA_SCALE );
         }	
         //////////////////////////////////////////////////////////////////////////
-        size_t scaleTo( Node * _node, float _time, const mt::vec3f& _scale, PyObject* _cb )
+        uint32_t scaleTo( Node * _node, float _time, const mt::vec3f& _scale, PyObject* _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -2489,7 +2489,7 @@ namespace Menge
                 , &mt::length_v3
                 );
 
-            size_t id = _node->addAffector( affector );
+            uint32_t id = _node->addAffector( affector );
 
             return id;
         }
@@ -2508,7 +2508,7 @@ namespace Menge
 			return 1.0f;
 		}
         //////////////////////////////////////////////////////////////////////////
-        size_t colorTo( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
+        uint32_t colorTo( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
         {
 
             if( _node->isActivate() == false )
@@ -2527,12 +2527,12 @@ namespace Menge
                 , &s_length_color
                 );
 
-            size_t id = _node->addAffector( affector );
+			uint32_t id = _node->addAffector( affector );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        size_t alphaTo( Node * _node, float _time, float _alpha, PyObject* _cb )
+        uint32_t alphaTo( Node * _node, float _time, float _alpha, PyObject* _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -2542,14 +2542,14 @@ namespace Menge
             ColourValue color = _node->getLocalColor();
             color.setA( _alpha );
 
-            size_t id = colorTo( _node, _time, color, _cb );
+            uint32_t id = colorTo( _node, _time, color, _cb );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Shape, void (Shape::*)( const mt::vec4f & ), mt::vec4f> m_NodeAffectorCreatorInterpolateLinearVec4;
         //////////////////////////////////////////////////////////////////////////
-        size_t setPercentVisibilityTo( Shape * _shape, float _time, const mt::vec4f& _percent, PyObject* _cb )
+        uint32_t setPercentVisibilityTo( Shape * _shape, float _time, const mt::vec4f& _percent, PyObject* _cb )
         {
             if( _shape->isActivate() == false )
             {
@@ -2566,7 +2566,7 @@ namespace Menge
                 , &mt::length_v4 
                 );
 
-            size_t id = _shape->addAffector( affector );
+            uint32_t id = _shape->addAffector( affector );
 
             return id;
         }
@@ -2761,7 +2761,7 @@ namespace Menge
 		typedef stdex::template_pool<PyGlobalMouseMoveHandler, 32> TPoolPyGlobalMouseMoveHandlers;
 		TPoolPyGlobalMouseMoveHandlers m_poolPyGlobalMouseMoveHandlers;
         //////////////////////////////////////////////////////////////////////////
-        size_t s_addMouseMoveHandler( PyObject * _cb )
+        uint32_t s_addMouseMoveHandler( PyObject * _cb )
         {
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
@@ -2770,12 +2770,12 @@ namespace Menge
 
 			handler->initialize( m_serviceProvider, _cb );
             
-            size_t id = globalHandleSystem->addGlobalMouseEventable( handler );
+            uint32_t id = globalHandleSystem->addGlobalMouseEventable( handler );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_removeMouseMoveHandler( size_t _id )
+        bool s_removeMouseMoveHandler( uint32_t _id )
         {
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
@@ -2898,7 +2898,7 @@ namespace Menge
 		typedef stdex::template_pool<PyGlobalMouseHandlerButton, 32> TPoolPyGlobalMouseHandlerButtons;
 		TPoolPyGlobalMouseHandlerButtons m_poolPyGlobalMouseHandlerButtons;
         //////////////////////////////////////////////////////////////////////////
-        size_t s_addMouseButtonHandler( PyObject * _cb )
+        uint32_t s_addMouseButtonHandler( PyObject * _cb )
         {
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
@@ -2907,12 +2907,12 @@ namespace Menge
 			
 			handler->initialize( m_serviceProvider, _cb );
 
-            size_t id = globalHandleSystem->addGlobalMouseEventable( handler );
+            uint32_t id = globalHandleSystem->addGlobalMouseEventable( handler );
 
             return id;
         }
 		//////////////////////////////////////////////////////////////////////////
-		bool s_removeMouseButtonHandler( size_t _id )
+		bool s_removeMouseButtonHandler( uint32_t _id )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
@@ -3036,7 +3036,7 @@ namespace Menge
 		typedef stdex::template_pool<PyGlobalMouseHandlerButtonEnd, 32> TPoolPyGlobalMouseHandlerButtonEnds;
 		TPoolPyGlobalMouseHandlerButtonEnds m_poolPyGlobalMouseHandlerButtonEnds;
         //////////////////////////////////////////////////////////////////////////
-        size_t s_addMouseButtonHandlerEnd( PyObject * _cb )
+        uint32_t s_addMouseButtonHandlerEnd( PyObject * _cb )
         {
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
@@ -3045,12 +3045,12 @@ namespace Menge
 
 			handler->initialize( m_serviceProvider, _cb );
 
-            size_t id = globalHandleSystem->addGlobalMouseEventable( handler );
+            uint32_t id = globalHandleSystem->addGlobalMouseEventable( handler );
 
             return id;
         }
 		//////////////////////////////////////////////////////////////////////////
-		bool s_removeMouseButtonHandlerEnd( size_t _id )
+		bool s_removeMouseButtonHandlerEnd( uint32_t _id )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
@@ -3177,7 +3177,7 @@ namespace Menge
 		typedef stdex::template_pool<PyGlobalMouseHandlerButtonBegin, 32> TPoolPyGlobalMouseHandlerButtonBegins;
 		TPoolPyGlobalMouseHandlerButtonBegins m_poolPyGlobalMouseHandlerButtonBegins;
 		//////////////////////////////////////////////////////////////////////////
-		size_t s_addMouseButtonHandlerBegin( PyObject * _cb )
+		uint32_t s_addMouseButtonHandlerBegin( PyObject * _cb )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
@@ -3186,12 +3186,12 @@ namespace Menge
 			
 			handler->initialize( m_serviceProvider, _cb );
 			
-			size_t id = globalHandleSystem->addGlobalMouseEventable( handler );
+			uint32_t id = globalHandleSystem->addGlobalMouseEventable( handler );
 
 			return id;
 		}
         //////////////////////////////////////////////////////////////////////////
-        bool s_removeMouseButtonHandlerBegin( size_t _id )
+        bool s_removeMouseButtonHandlerBegin( uint32_t _id )
         {
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
@@ -3264,19 +3264,19 @@ namespace Menge
 			PyObject * m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		size_t s_addKeyHandler( PyObject * _cb )
+		uint32_t s_addKeyHandler( PyObject * _cb )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
 
 			PyGlobalKeyHandler * handler = new PyGlobalKeyHandler(m_serviceProvider, _cb);
 
-			size_t id = globalHandleSystem->addGlobalKeyEventable( handler );
+			uint32_t id = globalHandleSystem->addGlobalKeyEventable( handler );
 
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool s_removeKeyHandler( size_t _id )
+		bool s_removeKeyHandler( uint32_t _id )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
@@ -3453,7 +3453,7 @@ namespace Menge
 
 					const MovieLayerFrame & frames = _framePack->getLayer( _layer.index );
 
-					for( size_t i = 0; i != frames.count; ++i )
+					for( uint32_t i = 0; i != frames.count; ++i )
 					{
 						MovieFrameSource frame_source; 
 						_framePack->getLayerFrame( _layer.index, i, frame_source );

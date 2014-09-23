@@ -318,7 +318,7 @@ namespace Menge
 			}
 		}
 
-		size_t pngs_index = 1;
+		uint32_t pngs_index = 1;
 						
 		{
 			while( true, true )
@@ -343,14 +343,14 @@ namespace Menge
 			, frame_count
 			);
 
-		size_t width = 0;
-		size_t height = 0;
+		uint32_t width = 0;
+		uint32_t height = 0;
 		
 		if( alpha == 1 )
 		{
 			LOGGER_WARNING(m_serviceProvider)("gvf split rgb and alpha");
 
-			for( size_t index = 0; index != frame_count; ++index )
+			for( uint32_t index = 0; index != frame_count; ++index )
 			{
 				WCHAR PNG_Path[MAX_PATH];
 				swprintf_s( PNG_Path, MAX_PATH, L"%sgvf_pngs\\frame_%03d.png", TempPath, index + 1 );
@@ -472,9 +472,9 @@ namespace Menge
 					size_t bufferSizeRGB = dataInfoRGB.width * dataInfoRGB.height * dataInfoRGB.channels;
 					unsigned char * bufferMemoryRGB = new unsigned char[bufferSizeRGB];
 
-					for( size_t j = 0; j != height; ++j )
+					for( uint32_t j = 0; j != height; ++j )
 					{
-						for( size_t i = 0; i != width; ++i )
+						for( uint32_t i = 0; i != width; ++i )
 						{
 							unsigned char * pitchMemoryRGBA = bufferMemoryRGBA + (j * width + i) * 4;
 							unsigned char * pitchMemoryRGB = bufferMemoryRGB + (j * width + i) * 3;
@@ -556,9 +556,9 @@ namespace Menge
 					size_t bufferSizeAlpha = dataInfoAlpha.width * dataInfoAlpha.height * dataInfoAlpha.channels;
 					unsigned char * bufferMemoryAlpha = new unsigned char[bufferSizeAlpha];
 
-					for( size_t j = 0; j != height; ++j )
+					for( uint32_t j = 0; j != height; ++j )
 					{
-						for( size_t i = 0; i != width; ++i )
+						for( uint32_t i = 0; i != width; ++i )
 						{
 							unsigned char * pitchMemoryRGBA = bufferMemoryRGBA + (j * width + i) * 4;
 							unsigned char * pitchMemoryAlpha = bufferMemoryAlpha + (j * width + i) * 1;
@@ -583,19 +583,19 @@ namespace Menge
 			}
 		}
 
-		size_t width_pow2 = 0;
-		size_t height_pow2 = 0;
+		uint32_t width_pow2 = 0;
+		uint32_t height_pow2 = 0;
 
 		LOGGER_WARNING(m_serviceProvider)("gvf create htf");
 
 		if( m_options.params.find("-dxt1") != String::npos )
 		{			
-			const size_t process_count = 4;
+			const uint32_t process_count = 4;
 
 			OutputStreamInterfacePtr pngs_stream[process_count];
 
 			//create dds
-			for( size_t process = 0; process != process_count; ++process )
+			for( uint32_t process = 0; process != process_count; ++process )
 			{
 				WCHAR PNGS_Path[MAX_PATH];
 				swprintf_s( PNGS_Path, MAX_PATH, L"%sgvf_pngs\\frames_%d.txt", TempPath, process );
@@ -607,8 +607,8 @@ namespace Menge
 					->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_pngs_path) );
 			}
 
-			size_t process_index = 0;
-			for( size_t index = 1; index != pngs_index; ++index )
+			uint32_t process_index = 0;
+			for( uint32_t index = 1; index != pngs_index; ++index )
 			{	
 				WCHAR PNG_Path[MAX_PATH];
 
@@ -617,12 +617,12 @@ namespace Menge
 				String utf8_png_path;
 				Helper::unicodeToUtf8(m_serviceProvider, PNG_Path, utf8_png_path);				
 
-				size_t process_current = (process_index++) % process_count;
+				uint32_t process_current = (process_index++) % process_count;
 
 				pngs_stream[process_current]->write( utf8_png_path.c_str(), utf8_png_path.size() );
 			}
 
-			for( size_t process = 0; process != process_count; ++process )
+			for( uint32_t process = 0; process != process_count; ++process )
 			{
 				pngs_stream[process]->flush();
 				pngs_stream[process] = nullptr;
@@ -639,7 +639,7 @@ namespace Menge
 
 			PROCESS_INFORMATION lpProcessInformation[process_count];
 
-			for( size_t process = 0; process != process_count; ++process )
+			for( uint32_t process = 0; process != process_count; ++process )
 			{
 				WString process_buffer = buffer;
 
@@ -688,7 +688,7 @@ namespace Menge
 				CloseHandle( lpProcessInformation[process].hThread );
 			}
 
-			for( size_t process = 0; process != process_count; ++process )
+			for( uint32_t process = 0; process != process_count; ++process )
 			{
 				WaitForSingleObject( lpProcessInformation[process].hProcess, INFINITE );
 
@@ -737,7 +737,7 @@ namespace Menge
 		}
 		else if( m_options.params.find("-etc1") != String::npos )
 		{			
-			for( size_t index = 1; index != pngs_index; ++index )
+			for( uint32_t index = 1; index != pngs_index; ++index )
 			{	
 				WCHAR PNG_Path[MAX_PATH];
 				swprintf_s( PNG_Path, MAX_PATH, L"%sgvf_pngs_rgb\\frame_%03d.png\n", TempPath, index );
@@ -887,7 +887,7 @@ namespace Menge
 		LOGGER_WARNING(m_serviceProvider)("gvf save frames");
 
 		{
-			for( size_t index = 0; index != frame_count; ++index )
+			for( uint32_t index = 0; index != frame_count; ++index )
 			{
 				WCHAR DDS_Path[MAX_PATH];
 				swprintf_s( DDS_Path, MAX_PATH, L"%sgvf_pngs\\frame_%03d.crn", TempPath, index + 1 );
@@ -898,7 +898,7 @@ namespace Menge
 				InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
 					->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_DDS_Path), false );
 
-				size_t size = stream->size();
+				uint32_t size = stream->size();
 
 				unsigned char * buffer = new unsigned char [size];
 				stream->read( buffer, size );

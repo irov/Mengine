@@ -213,7 +213,7 @@ namespace Menge
 			{
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
-				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				for( uint32_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, bufferCursor, nullptr );
 
@@ -224,7 +224,7 @@ namespace Menge
 			{
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
-				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				for( uint32_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, bufferCursor, nullptr );
 
@@ -237,7 +237,7 @@ namespace Menge
 			{           
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
-				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				for( uint32_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, bufferCursor, nullptr );
 
@@ -261,7 +261,7 @@ namespace Menge
 			if( m_dataInfo.channels == 1 && m_options.channels == 1 )
 			{
 				png_bytep bufferCursor = (png_bytep)_buffer;
-				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				for( uint32_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, bufferCursor, nullptr );
 
@@ -275,12 +275,12 @@ namespace Menge
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
-				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				for( uint32_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, row_memory, nullptr );
 
-					size_t row_alpha = m_row_bytes / 4;
-					for( size_t j = 0; j != row_alpha; ++j )
+					png_uint_32 row_alpha = m_row_bytes / 4;
+					for( png_uint_32 j = 0; j != row_alpha; ++j )
 					{
 						bufferCursor[j] = row_memory[j*4+3];
 					}
@@ -307,11 +307,11 @@ namespace Menge
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
-				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				for( uint32_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, row_memory, nullptr );
 
-					for( size_t j = 0; j != m_row_bytes; ++j )
+					for( png_uint_32 j = 0; j != m_row_bytes; ++j )
 					{
 						bufferCursor[j*4+3] = row_memory[j];
 					}
@@ -326,11 +326,11 @@ namespace Menge
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
-				for( size_t i = 0; i != m_dataInfo.height; ++i )
+				for( uint32_t i = 0; i != m_dataInfo.height; ++i )
 				{
 					png_read_row( m_png_ptr, row_memory, nullptr );
 
-					for( size_t j = 0; j != m_row_bytes; ++j )
+					for( png_uint_32 j = 0; j != m_row_bytes; ++j )
 					{
 						bufferCursor[j*4+3] = row_memory[j*4+3];
 					}

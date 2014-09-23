@@ -34,7 +34,7 @@ namespace Menge
 		void destroyObject( Factorable * _object );
 
 	public:
-		size_t countObject() const;
+		uint32_t countObject() const;
 
 	protected:
 		virtual Factorable * _createObject() = 0;
@@ -43,7 +43,7 @@ namespace Menge
 	protected:
 		FactoryListenerInterfacePtr m_listener;
 
-		size_t m_count;
+		uint32_t m_count;
 
 		THREAD_GUARD_INIT
 	};

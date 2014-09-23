@@ -31,7 +31,7 @@ namespace	Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-        bool playTrack( const ConstString& _playlistResource, size_t _index, float _pos, bool _looped ) override;
+        bool playTrack( const ConstString& _playlistResource, uint32_t _index, float _pos, bool _looped ) override;
 		bool shuffle( const ConstString& _playlist ) override;
 				
 		void stop() override;
@@ -40,8 +40,8 @@ namespace	Menge
 		
 		const ConstString & getPlayTrack() const override;
 		
-		size_t getNumTracks() const override;
-		size_t getCurrentTrack() const override;
+		uint32_t getNumTracks() const override;
+		uint32_t getCurrentTrack() const override;
 
 		//void onTurnSound( bool _turn ) override;
 		
@@ -61,7 +61,7 @@ namespace	Menge
 		ConstString	m_currentPlaylistName;
 		Playlist * m_currentPlayList;
 
-		size_t m_sourceID;
+		uint32_t m_sourceID;
 		SoundBufferInterfacePtr m_buffer;
 
 		bool m_play;
@@ -69,8 +69,8 @@ namespace	Menge
         bool m_turn;
 
     protected:
-		void onSoundPause( size_t _id ) override;
-		void onSoundStop( size_t _id ) override;
+		void onSoundPause( uint32_t _id ) override;
+		void onSoundStop( uint32_t _id ) override;
 
 
     protected:

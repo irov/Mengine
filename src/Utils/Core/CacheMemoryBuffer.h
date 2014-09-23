@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
+#	include "Interface/CacheInterface.h"
 
 #	include "Config/Typedef.h"
 
@@ -35,6 +36,6 @@ namespace Menge
 		size_t m_size;
 
 		void * m_memory;
-		size_t m_bufferId;
+		CacheBufferID m_bufferId;
 	};
 }

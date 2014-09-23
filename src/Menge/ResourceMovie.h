@@ -16,18 +16,18 @@ namespace Menge
 {
 	class ResourceShape;
 
-    const size_t MOVIE_LAYER_NODE = 0x0001;
-    const size_t MOVIE_LAYER_ANIMATABLE = 0x0002;
-    const size_t MOVIE_LAYER_MOVIE = 0x0004;
-    const size_t MOVIE_LAYER_THREED = 0x0008;
-    const size_t MOVIE_LAYER_AUDIO = 0x0010;
-    const size_t MOVIE_LAYER_EVENT = 0x0020;
-    const size_t MOVIE_LAYER_EXTRA = 0x0040;
-    const size_t MOVIE_LAYER_SUB_MOVIE = 0x0080;
-    const size_t MOVIE_LAYER_MESH_2D = 0x0100;
-	const size_t MOVIE_LAYER_UNSTOPPABLE = 0x0200;
+    const uint32_t MOVIE_LAYER_NODE = 0x0001;
+    const uint32_t MOVIE_LAYER_ANIMATABLE = 0x0002;
+    const uint32_t MOVIE_LAYER_MOVIE = 0x0004;
+    const uint32_t MOVIE_LAYER_THREED = 0x0008;
+    const uint32_t MOVIE_LAYER_AUDIO = 0x0010;
+    const uint32_t MOVIE_LAYER_EVENT = 0x0020;
+    const uint32_t MOVIE_LAYER_EXTRA = 0x0040;
+    const uint32_t MOVIE_LAYER_SUB_MOVIE = 0x0080;
+    const uint32_t MOVIE_LAYER_MESH_2D = 0x0100;
+	const uint32_t MOVIE_LAYER_UNSTOPPABLE = 0x0200;
 	
-    const size_t movie_layer_parent_none = (uint32_t)-1;
+    const uint32_t movie_layer_parent_none = (uint32_t)-1;
 
 	struct MovieLayer
 	{
@@ -227,7 +227,7 @@ namespace Menge
 		DataInterfacePtr compileData_( const FilePath & _path );
 
 	protected:
-		bool isThreeDNode( size_t _index ) const;
+		bool isThreeDNode( uint32_t _index ) const;
 
 	protected:		
 		float m_frameDuration;

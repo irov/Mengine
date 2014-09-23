@@ -21,10 +21,10 @@ namespace Menge
 		}
 
 		template<class T>
-		inline void writePODs( const T * _t, size_t _count )
+		inline void writePODs( const T * _t, uint32_t _count )
 		{
 			const void * buff = (const void *)(_t);
-			m_stream->write( buff, _count * sizeof(T) );
+			m_stream->write( buff, sizeof(T) * _count );
 		}
 
 		inline bool write( const void * _t, size_t _size )

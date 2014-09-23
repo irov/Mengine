@@ -64,7 +64,7 @@ namespace Menge
 				ResourceReference * resource = _entry->resource;
 
 #   ifndef MENGE_MASTER_RELEASE
-				size_t refcount = resource->countReference();
+				uint32_t refcount = resource->countReference();
 				if ( refcount != 0 )
 				{
 					LOGGER_WARNING(m_serviceProvider)("ResourceManager::~ResourceManager resource %s refcount %d"
@@ -648,7 +648,7 @@ namespace Menge
 			{
 				ResourceReference * resource = _entry->resource;
 
-				size_t count = resource->countReference();
+				uint32_t count = resource->countReference();
 
 				if( count == 0 )
 				{
@@ -661,7 +661,7 @@ namespace Menge
 				}
 
 				size_t memoryUse = resource->memoryUse();
-				float memoryUseMb = float(memoryUse)/(1024.f);
+				float memoryUseMb = (float)(memoryUse)/(1024.f);
 
 				const ConstString & name = _entry->resource->getName();
 

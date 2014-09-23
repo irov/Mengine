@@ -208,16 +208,16 @@ namespace Menge
 		m_container = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderTextureInterfacePtr & ResourceEmitterContainer::getAtlasTexture( size_t _atlasId )
+	const RenderTextureInterfacePtr & ResourceEmitterContainer::getAtlasTexture( uint32_t _atlasId )
 	{
         const RenderTextureInterfacePtr & texture = m_atlasRenderTextures[_atlasId];
 
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ResourceEmitterContainer::getAtlasTextureCount() const
+	uint32_t ResourceEmitterContainer::getAtlasTextureCount() const
 	{
-		size_t count = m_atlasRenderTextures.size();
+		uint32_t count = m_atlasRenderTextures.size();
 
 		return count;
 	}

@@ -31,7 +31,7 @@ namespace Menge
 		, m_horizontAlign(ETFHA_NONE)
 		, m_verticalAlign(ETFVA_NONE)
 		, m_maxLength(2048.f)
-		, m_maxCharCount((size_t)-1)
+		, m_maxCharCount((uint32_t)-1)
 		, m_charCount(0)
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)
@@ -180,9 +180,9 @@ namespace Menge
             return;
         }
 
-		size_t countVertex;
+		uint32_t countVertex;
 		
-		if( m_maxCharCount == (size_t)-1 )
+		if( m_maxCharCount == (uint32_t)-1 )
 		{
 			countVertex = textVertices.size();
 		}
@@ -218,9 +218,9 @@ namespace Menge
 			return;
 		}
 
-		size_t countVertex;
+		uint32_t countVertex;
 
-		if( m_maxCharCount == (size_t)-1 )
+		if( m_maxCharCount == (uint32_t)-1 )
 		{
 			countVertex = outlineVertices.size();
 		}
@@ -235,7 +235,7 @@ namespace Menge
             ->addRenderQuad( _viewport, _camera, material, vertices, countVertex, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t TextField::getCharCount() const
+	uint32_t TextField::getCharCount() const
 	{
 		if (this->isCompile() == false)
 		{
@@ -584,7 +584,7 @@ namespace Menge
 	{
 		if( m_textEntry != nullptr )
 		{
-			size_t params = m_textEntry->getFontParams();
+			uint32_t params = m_textEntry->getFontParams();
 
 			if( params & EFP_FONT )
 			{
@@ -609,7 +609,7 @@ namespace Menge
 	{
 		if( m_textEntry != nullptr )
 		{
-			size_t params = m_textEntry->getFontParams();
+			uint32_t params = m_textEntry->getFontParams();
 
 			if( params & EFP_LINE_OFFSET )
 			{
@@ -628,7 +628,7 @@ namespace Menge
 
 		if( font != nullptr )
 		{
-			size_t params = font->getFontParams();
+			uint32_t params = font->getFontParams();
 
 			if( params & EFP_LINE_OFFSET )
 			{
@@ -645,7 +645,7 @@ namespace Menge
 	{
 		if( m_textEntry != nullptr )
 		{
-			size_t params = m_textEntry->getFontParams();
+			uint32_t params = m_textEntry->getFontParams();
 
 			if( params & EFP_CHAR_OFFSET )
 			{
@@ -664,7 +664,7 @@ namespace Menge
 
 		if( font != nullptr )
 		{
-			size_t params = font->getFontParams();
+			uint32_t params = font->getFontParams();
 
 			if( params & EFP_CHAR_OFFSET )
 			{
@@ -681,7 +681,7 @@ namespace Menge
 	{
 		if( m_textEntry != nullptr )
 		{
-			size_t params = m_textEntry->getFontParams();
+			uint32_t params = m_textEntry->getFontParams();
 
 			if( params & EFP_MAX_LENGTH )
 			{
@@ -698,7 +698,7 @@ namespace Menge
 	{
 		if( m_textEntry != nullptr )
 		{
-			size_t params = m_textEntry->getFontParams();
+			uint32_t params = m_textEntry->getFontParams();
 
 			if( params & EFP_COLOR_FONT )
 			{
@@ -717,7 +717,7 @@ namespace Menge
 
 		if( font != nullptr )
 		{
-			size_t params = font->getFontParams();
+			uint32_t params = font->getFontParams();
 
 			if( params & EFP_COLOR_FONT )
 			{
@@ -734,7 +734,7 @@ namespace Menge
 	{
 		if( m_textEntry != nullptr )
 		{
-			size_t params = m_textEntry->getFontParams();
+			uint32_t params = m_textEntry->getFontParams();
 
 			if( params & EFP_COLOR_OUTLINE )
 			{
@@ -753,7 +753,7 @@ namespace Menge
 
 		if( font != nullptr )
 		{
-			size_t params = font->getFontParams();
+			uint32_t params = font->getFontParams();
 
 			if( params & EFP_COLOR_OUTLINE )
 			{
@@ -829,7 +829,7 @@ namespace Menge
 		this->invalidateVertices_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t TextField::getMaxCharCount() const
+	uint32_t TextField::getMaxCharCount() const
 	{
 		return m_maxCharCount;
 	}

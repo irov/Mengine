@@ -21,8 +21,8 @@ namespace Menge
 		void setAlphaTest( float _value );
 		float getAlphaTest() const;
 
-        size_t getWidth() const;
-        size_t getHeight() const;
+        uint32_t getWidth() const;
+        uint32_t getHeight() const;
 
 	public:
         void setResourceHIT( ResourceHIT * _resourceHIT );

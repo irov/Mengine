@@ -57,11 +57,11 @@ namespace Menge
         return pybind::ptr( str_repr );
     }
     //////////////////////////////////////////////////////////////////////////
-    static size_t s_ConstString_hash( PyObject * _obj, ConstString * _cs )
+    static uint32_t s_ConstString_hash( PyObject * _obj, ConstString * _cs )
     {
         (void)_obj;
 
-		size_t hash = pybind::_get_string_hash( _cs->c_str(), _cs->size() );
+		uint32_t hash = pybind::_get_string_hash( _cs->c_str(), _cs->size() );
 			
 		return hash;
     }

@@ -104,14 +104,14 @@ namespace Menge
 		
 		const fastpathfinder::point_array & pa = m_pathfinder.getPath();
 
-		size_t pa_size = pa.size();
+		fastpathfinder::point_array::size_type pa_size = pa.size();
 
 		PyObject * py_way = pybind::list_new( pa_size );
 
 		PyObject * py_from = pybind::ptr( m_from );
 		pybind::list_setitem( py_way, 0, py_from );
 
-		for( size_t i = 1; i != (pa_size - 1); ++i )
+		for( fastpathfinder::point_array::size_type i = 1; i != (pa_size - 1); ++i )
 		{
 			fastpathfinder::point p = pa[i];
 

@@ -259,7 +259,7 @@ namespace Menge
             {
                 JSAMPROW rgb_buffer = (JSAMPROW)_buffer;
 
-                for( size_t j = 0; j != m_dataInfo.height; ++j )
+                for( uint32_t j = 0; j != m_dataInfo.height; ++j )
                 {
                     jpeg_read_scanlines( &m_jpegObject, &rgb_buffer, 1 );
 
@@ -270,9 +270,9 @@ namespace Menge
                 if( m_options.channels == 4 && (m_options.flags & DF_NOT_ADD_ALPHA) == 0)
                 {
                     JSAMPROW alpha_buffer = (JSAMPROW)_buffer;
-                    for( size_t j = 0; j != m_dataInfo.height; ++j )
+                    for( uint32_t j = 0; j != m_dataInfo.height; ++j )
                     {
-                        for( size_t i = 0; i != m_dataInfo.width; ++i )
+                        for( uint32_t i = 0; i != m_dataInfo.width; ++i )
                         {
                             alpha_buffer[i * 4 + 3] = 255; // alpha
                         }

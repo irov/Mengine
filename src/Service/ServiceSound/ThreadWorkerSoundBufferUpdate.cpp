@@ -32,7 +32,7 @@ namespace Menge
 		return m_done;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadWorkerSoundBufferUpdate::onWork( size_t _id )
+	bool ThreadWorkerSoundBufferUpdate::onWork( uint32_t _id )
  	{
         (void)_id;
 
@@ -46,7 +46,7 @@ namespace Menge
 		return continue_update;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadWorkerSoundBufferUpdate::onDone( size_t _id )
+	void ThreadWorkerSoundBufferUpdate::onDone( uint32_t _id )
 	{
 		(void)_id;
 

@@ -13,7 +13,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         struct FFindMouseHandler
         {
-            FFindMouseHandler( size_t _id )
+            FFindMouseHandler( uint32_t _id )
                 : m_id(_id)
             {
             }
@@ -23,7 +23,7 @@ namespace Menge
                 return _handle.id == m_id;
             }
 
-            size_t m_id;
+            uint32_t m_id;
         };
         //////////////////////////////////////////////////////////////////////////
         struct FDeadMouseHandler
@@ -41,7 +41,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         struct FFindKeyHandler
         {
-            FFindKeyHandler( size_t _id )
+            FFindKeyHandler( uint32_t _id )
                 : m_id(_id)
             {
             }
@@ -51,7 +51,7 @@ namespace Menge
                 return _handle.id == m_id;
             }
 
-            size_t m_id;
+            uint32_t m_id;
         };
         //////////////////////////////////////////////////////////////////////////
         struct FDeadKeyHandler
@@ -196,11 +196,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t GlobalHandleSystem::addGlobalMouseEventable( GlobalMouseHandler * _handler )
+	uint32_t GlobalHandleSystem::addGlobalMouseEventable( GlobalMouseHandler * _handler )
 	{
 		GlobalMouseHandleDesc desc;
 
-        size_t new_id = ++m_handlersEnumerator;
+        uint32_t new_id = ++m_handlersEnumerator;
         desc.id = new_id;
 
 		desc.handler = _handler;
@@ -211,7 +211,7 @@ namespace Menge
         return new_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	GlobalMouseHandler * GlobalHandleSystem::removeGlobalMouseEventable( size_t _id )
+	GlobalMouseHandler * GlobalHandleSystem::removeGlobalMouseEventable( uint32_t _id )
 	{
         TVectorGlobalMouseHandler::iterator it_found_add = std::find_if( m_globalMouseHandlerAdd.begin(), m_globalMouseHandlerAdd.end(), FFindMouseHandler(_id) );
 
@@ -242,11 +242,11 @@ namespace Menge
         return handler;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t GlobalHandleSystem::addGlobalKeyEventable( GlobalKeyHandler * _handler )
+	uint32_t GlobalHandleSystem::addGlobalKeyEventable( GlobalKeyHandler * _handler )
 	{
 		GlobalKeyHandleDesc desc;
 
-        size_t new_id = ++m_handlersEnumerator;
+        uint32_t new_id = ++m_handlersEnumerator;
         desc.id = new_id;
 
 		desc.handler = _handler;
@@ -257,7 +257,7 @@ namespace Menge
         return new_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	GlobalKeyHandler * GlobalHandleSystem::removeGlobalKeyEventable( size_t _id )
+	GlobalKeyHandler * GlobalHandleSystem::removeGlobalKeyEventable( uint32_t _id )
 	{
         TVectorGlobalKeyHandler::iterator it_found = std::find_if( m_globalKeyHandler.begin(), m_globalKeyHandler.end(), FFindKeyHandler(_id) );
 

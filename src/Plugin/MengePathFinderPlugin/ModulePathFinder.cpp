@@ -176,7 +176,7 @@ namespace Menge
 		return new fastpathfinder::graph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ModulePathFinder::createPathFinderWayAffertor( Node * _node, PyObject * _way, float _speed, PyObject * _cb )
+	uint32_t ModulePathFinder::createPathFinderWayAffertor( Node * _node, PyObject * _way, float _speed, PyObject * _cb )
 	{
 		PathFinderWayAffector * affector = new PathFinderWayAffector();
 
@@ -185,7 +185,7 @@ namespace Menge
 			return 0;
 		}
 
-		size_t affectorId = _node->addAffector( affector );
+		uint32_t affectorId = _node->addAffector( affector );
 
 		return affectorId;
 	}

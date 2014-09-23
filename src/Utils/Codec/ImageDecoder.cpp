@@ -52,30 +52,30 @@ namespace Menge
 		m_dataInfo = *static_cast<const ImageCodecDataInfo *>(_dataInfo);
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ImageDecoder::sweezleAlpha1( size_t _width, size_t _height, void * _buffer, size_t _pitch )
+    void ImageDecoder::sweezleAlpha1( uint32_t _width, uint32_t _height, void * _buffer, size_t _pitch )
     {
         unsigned char * sweezle_buffer = static_cast<unsigned char *>(_buffer);
 
-        for( size_t h = _height; h != 0; --h )
+        for( uint32_t h = _height; h != 0; --h )
         {
             size_t hp = (h - 1) * _pitch;
 
-            for( size_t w = _width; w != 0; --w )
+            for( uint32_t w = _width; w != 0; --w )
             {
                 sweezle_buffer[hp + (w - 1) * 4 + 3] = sweezle_buffer[hp + (w - 1)];
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ImageDecoder::sweezleAlpha3( size_t _width, size_t _height, void * _buffer, size_t _pitch )
+    void ImageDecoder::sweezleAlpha3( uint32_t _width, uint32_t _height, void * _buffer, size_t _pitch )
     {
         unsigned char * sweezle_buffer = static_cast<unsigned char *>(_buffer);
 
-        for( size_t h = _height; h != 0; --h )
+        for( uint32_t h = _height; h != 0; --h )
         {
             size_t hp = (h - 1) * _pitch;
 
-            for( size_t w = _width; w != 0; --w )
+            for( uint32_t w = _width; w != 0; --w )
             {
                 unsigned char * sweezle_buffer_rgba = sweezle_buffer + hp + (w - 1) * 4;
                 unsigned char * sweezle_buffer_rgb = sweezle_buffer + hp + (w - 1) * 3;

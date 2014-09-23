@@ -64,7 +64,7 @@ namespace	Menge
 		float base_x = floorf( camera_vm_inv.v3.x * m_parallax.x / size.x );
 		float base_y = floorf( camera_vm_inv.v3.y * m_parallax.y / size.y );
 
-		for( size_t i = 0; i != 4; ++i )
+		for( uint32_t i = 0; i != 4; ++i )
 		{
 			RenderCamera & rc = m_camera[i];
 

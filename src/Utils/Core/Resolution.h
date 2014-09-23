@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include <cstddef>
+#	include <stdint.h>
 
 #	include "Math/vec2.h"
 
@@ -10,14 +10,14 @@ namespace Menge
 	{
 	public:
 		Resolution();
-		Resolution( size_t _width, size_t _height );
+		Resolution( uint32_t _width, uint32_t _height );
 
 	public:
-		void setWidth( size_t _width );
-		size_t getWidth() const;
+		void setWidth( uint32_t _width );
+		uint32_t getWidth() const;
 
-		void setHeight( size_t _height );
-		size_t getHeight() const;
+		void setHeight( uint32_t _height );
+		uint32_t getHeight() const;
 
 		float getAspectRatio() const;
 
@@ -28,7 +28,7 @@ namespace Menge
 		bool operator == ( const Resolution & _resolution ) const;
 
 	protected:
-		size_t m_width;
-		size_t m_height;
+		uint32_t m_width;
+		uint32_t m_height;
 	};
 }

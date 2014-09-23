@@ -11,11 +11,11 @@ namespace Menge
         , public GlobalKeyHandler
     {
     public:
-        virtual size_t addGlobalMouseEventable( GlobalMouseHandler * _handler ) = 0;
-        virtual GlobalMouseHandler * removeGlobalMouseEventable( size_t _id ) = 0;
+        virtual uint32_t addGlobalMouseEventable( GlobalMouseHandler * _handler ) = 0;
+        virtual GlobalMouseHandler * removeGlobalMouseEventable( uint32_t _id ) = 0;
 
-        virtual size_t addGlobalKeyEventable( GlobalKeyHandler * _handler ) = 0;
-        virtual GlobalKeyHandler * removeGlobalKeyEventable( size_t _id ) = 0;
+        virtual uint32_t addGlobalKeyEventable( GlobalKeyHandler * _handler ) = 0;
+        virtual GlobalKeyHandler * removeGlobalKeyEventable( uint32_t _id ) = 0;
 
     public:
         virtual void update() = 0;

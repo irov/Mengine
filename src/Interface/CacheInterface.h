@@ -14,7 +14,7 @@
 
 namespace Menge
 {
-	typedef size_t CacheBufferID;
+	typedef uint32_t CacheBufferID;
 
 	class CacheServiceInterface
 		: public ServiceInterface

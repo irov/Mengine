@@ -20,38 +20,38 @@ namespace Menge
 		~MovieFramePack();
         
     public:
-        void initialize( size_t _size );
-		void initializeTimeremap( size_t _size );
-		void initializeShapes( size_t _size );
-		void initializePolygons( size_t _size );
+        void initialize( uint32_t _size );
+		void initializeTimeremap( uint32_t _size );
+		void initializeShapes( uint32_t _size );
+		void initializePolygons( uint32_t _size );
 		
 
 	public:
-		MovieLayerFrame & initializeLayer( size_t _layerIndex, size_t _count, bool _immutable );
+		MovieLayerFrame & initializeLayer( uint32_t _layerIndex, uint32_t _count, bool _immutable );
 
 	public:
-        bool hasLayer( size_t _layerIndex ) const override;
-		const MovieLayerFrame & getLayer( size_t _layerIndex ) const override;
+        bool hasLayer( uint32_t _layerIndex ) const override;
+		const MovieLayerFrame & getLayer( uint32_t _layerIndex ) const override;
 
 	public:
-		bool getLayerFrame( size_t _layerIndex, size_t _frameIndex, MovieFrameSource & _frame ) const override;
-		bool getLayerFrameInterpolate( size_t _layerIndex, size_t _frameIndex, float _t, MovieFrameSource & _frame ) const override;
+		bool getLayerFrame( uint32_t _layerIndex, uint32_t _frameIndex, MovieFrameSource & _frame ) const override;
+		bool getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource & _frame ) const override;
 
     public:
-        bool getLayerTimeRemap( size_t _layerIndex, size_t _frameIndex, float & _time ) const override;
-		bool getLayerShape( size_t _layerIndex, size_t _frameIndex, const MovieFrameShape ** _shape ) const override;
-		bool getLayerPolygon( size_t _layerIndex, const mt::vec2f ** _polygon, uint8_t & _vertexCount ) const override;
+        bool getLayerTimeRemap( uint32_t _layerIndex, uint32_t _frameIndex, float & _time ) const override;
+		bool getLayerShape( uint32_t _layerIndex, uint32_t _frameIndex, const MovieFrameShape ** _shape ) const override;
+		bool getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t & _vertexCount ) const override;
 
 	public:
-		bool isLayerPermanentlyHide( size_t _layerIndex ) const override;
+		bool isLayerPermanentlyHide( uint32_t _layerIndex ) const override;
 
 	public:
 		inline const TVectorMovieFrameLayer & getLayers() const;
 
 	public:
-        MovieLayerTimeRemap & mutableLayerTimeRemap( size_t _index );
-		MovieLayerShapes & mutableLayerShape( size_t _index );
-		MovieLayerPolygon & mutableLayerPolygon( size_t _index );
+        MovieLayerTimeRemap & mutableLayerTimeRemap( uint32_t _index );
+		MovieLayerShapes & mutableLayerShape( uint32_t _index );
+		MovieLayerPolygon & mutableLayerPolygon( uint32_t _index );
 
 	public:		
 		inline const TVectorMovieLayerTimeRemap & getTimeremap() const;

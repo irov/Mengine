@@ -10,7 +10,7 @@ namespace Menge
 	class DX9ErrorHelper
 	{
 	public:
-		DX9ErrorHelper( ServiceProviderInterface * _serviceProvider, const char * _file, size_t _line, const char * _method );
+		DX9ErrorHelper( ServiceProviderInterface * _serviceProvider, const char * _file, uint32_t _line, const char * _method );
 		
 	public:
 		bool operator == ( HRESULT _hr );
@@ -18,7 +18,7 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 		const char * m_file;
-		size_t m_line;
+		uint32_t m_line;
 		const char * m_method;
 	};
 	//////////////////////////////////////////////////////////////////////////

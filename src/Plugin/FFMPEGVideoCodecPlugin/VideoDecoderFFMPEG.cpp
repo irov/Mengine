@@ -399,7 +399,7 @@ namespace Menge
 
 		// Find the first video stream
 		m_videoStreamId = -1;
-		for( size_t i = 0; i < m_formatContext->nb_streams; i++ )
+		for( uint32_t i = 0; i < m_formatContext->nb_streams; i++ )
 		{
 			if( m_formatContext->streams[i]->codec->codec_type == AVMEDIA_TYPE_VIDEO )
 			{

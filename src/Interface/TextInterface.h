@@ -51,7 +51,7 @@ namespace Menge
 		virtual float getFontHeight() const = 0;
 
 	public:
-		virtual size_t getFontParams() const = 0;
+		virtual uint32_t getFontParams() const = 0;
 
 		virtual const ColourValue & getColorFont() const = 0;
 		virtual const ColourValue & getColorOutline() const = 0;
@@ -82,7 +82,7 @@ namespace Menge
 		virtual float getMaxLength() const = 0;
 
 	public:
-		virtual size_t getFontParams() const = 0;
+		virtual uint32_t getFontParams() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class VisitorTextFontInterface

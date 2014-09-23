@@ -78,7 +78,7 @@ namespace Menge
 				(void)_node;
 			}
 
-			void callback_node_attributes( const char * _node, size_t _count, const char ** _keys, const char ** _values )
+			void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
 			{
 				if( strcmp( _node, "Text" ) != 0 )
 				{
@@ -100,9 +100,9 @@ namespace Menge
 
 				bool isOverride = false;
 
-				size_t params = 0;
+				uint32_t params = 0;
 				
-				for( size_t i = 0; i != _count; ++i )
+				for( uint32_t i = 0; i != _count; ++i )
 				{
 					const char * str_key = _keys[i];
 					const char * str_value = _values[i];
@@ -241,7 +241,7 @@ namespace Menge
 					}
 					else if( strcmp( str_key, "Override" ) == 0 )
 					{						
-						size_t value = 0;
+						uint32_t value = 0;
 						if( sscanf( str_value, "%d", &value ) != 1 )
 						{
 							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s Override %s"
@@ -454,7 +454,7 @@ namespace Menge
 		return glyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, size_t _params, bool _isOverride )
+	void TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride )
 	{		
 		TextEntry * textEntry_has = m_texts.find( _key );
 

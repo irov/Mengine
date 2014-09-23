@@ -5,6 +5,7 @@
 #   include "stdex/intrusive_ptr.h"
 
 #   include <stddef.h>
+#   include <stdint.h>
 
 //typedef stdex::intrusive_ptr<Type> TypePtr;
 
@@ -21,7 +22,7 @@ namespace Menge
 		void destroy() override;
 
 	public:
-        size_t getReference() const;
+        uint32_t getReference() const;
 
 	public:
         inline static void intrusive_ptr_add_ref( FactorablePtr * _ptr );
@@ -38,7 +39,7 @@ namespace Menge
 #   endif
 
     protected:
-        size_t m_reference;
+        uint32_t m_reference;
 	};
     //////////////////////////////////////////////////////////////////////////
 	inline void FactorablePtr::intrusive_ptr_add_ref( FactorablePtr * _ptr )

@@ -109,10 +109,10 @@ namespace Menge
 
         imageDecoder->setOptions( &optionsAlpha );
 
-        size_t width = dataInfo->width;
-        size_t height = dataInfo->height;
+        uint32_t width = dataInfo->width;
+        uint32_t height = dataInfo->height;
 
-        size_t mimmap_level;
+        uint32_t mimmap_level;
         size_t mimmap_size = this->calcMimMapBufferLevelAndSize_( width, height, mimmap_level );
 
         size_t bufferSize = width * height + mimmap_size;
@@ -181,15 +181,15 @@ namespace Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    size_t HotspotImageConverterPNGToHIT::calcMimMapBufferLevelAndSize_( size_t _width, size_t _height, size_t & _level )
+    size_t HotspotImageConverterPNGToHIT::calcMimMapBufferLevelAndSize_( uint32_t _width, uint32_t _height, uint32_t & _level )
     {
-        size_t mipmap_pow_width = (size_t)(logf( (float)_width ) / logf( 2.f ));
-        size_t mipmap_pow_height = (size_t)(logf( (float)_height ) / logf( 2.f ));
+        uint32_t mipmap_pow_width = (uint32_t)(logf( (float)_width ) / logf( 2.f ));
+        uint32_t mipmap_pow_height = (uint32_t)(logf( (float)_height ) / logf( 2.f ));
 
-        size_t mipmap_level = (std::min)(mipmap_pow_width, mipmap_pow_height) + 1;
+        uint32_t mipmap_level = (std::min)(mipmap_pow_width, mipmap_pow_height) + 1;
 
         size_t bufferOffset = 0;
-        for( size_t i = 1; i != mipmap_level; ++i )
+        for( uint32_t i = 1; i != mipmap_level; ++i )
         {
             size_t offset = (_width >> i) * (_height >> i);
             bufferOffset += offset;
@@ -200,14 +200,14 @@ namespace Menge
         return bufferOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotspotImageConverterPNGToHIT::makeMipMapLevel_( unsigned char * _buffer, size_t _width, size_t _height, size_t _level )
+    void HotspotImageConverterPNGToHIT::makeMipMapLevel_( unsigned char * _buffer, uint32_t _width, uint32_t _height, uint32_t _level )
     {
         unsigned char * mipmap[32];
         
         mipmap[0] = _buffer;
 
         size_t bufferOffset = _width * _height;
-        for( size_t i = 1; i != _level; ++i )
+        for( uint32_t i = 1; i != _level; ++i )
         {
             mipmap[i] = _buffer + bufferOffset;
 
@@ -215,32 +215,32 @@ namespace Menge
             bufferOffset += offset;
         }
 
-        size_t mipmap_width = _width;
-        size_t mipmap_height = _height;
+        uint32_t mipmap_width = _width;
+        uint32_t mipmap_height = _height;
 
-        for( size_t
+        for( uint32_t
             it = 1,
             it_end = _level;
         it != it_end;
         ++it )
         {
-            size_t prev_width = mipmap_width >> (it - 1);
-            size_t prev_height = mipmap_height >> (it - 1);
+            uint32_t prev_width = mipmap_width >> (it - 1);
+            uint32_t prev_height = mipmap_height >> (it - 1);
 
-            size_t cur_width = mipmap_width >> it;
-            size_t cur_height = mipmap_height >> it;
+            uint32_t cur_width = mipmap_width >> it;
+            uint32_t cur_height = mipmap_height >> it;
 
             unsigned char * prev_buff = mipmap[it - 1];
             unsigned char * cur_buff = mipmap[it];
 
-            for( size_t i = 0; i != cur_width; ++i )
+            for( uint32_t i = 0; i != cur_width; ++i )
             {
-                for( size_t j = 0; j != cur_height; ++j )
+                for( uint32_t j = 0; j != cur_height; ++j )
                 {
-                    size_t i0 = (i * 2 + 0) + (j * 2 + 0) * prev_width;
-                    size_t i1 = (i * 2 + 1) + (j * 2 + 0) * prev_width;
-                    size_t i2 = (i * 2 + 0) + (j * 2 + 1) * prev_width;
-                    size_t i3 = (i * 2 + 1) + (j * 2 + 1) * prev_width;
+                    uint32_t i0 = (i * 2 + 0) + (j * 2 + 0) * prev_width;
+                    uint32_t i1 = (i * 2 + 1) + (j * 2 + 0) * prev_width;
+                    uint32_t i2 = (i * 2 + 0) + (j * 2 + 1) * prev_width;
+                    uint32_t i3 = (i * 2 + 1) + (j * 2 + 1) * prev_width;
 
                     unsigned char v0 = prev_buff[i0];
                     unsigned char v1 = prev_buff[i1];
@@ -254,8 +254,8 @@ namespace Menge
 
 					if( i == (cur_width - 1) && (prev_width % 2) == 1 )
 					{
-						size_t i4 = (i * 2 + 2) + (j * 2 + 0) * prev_width;
-						size_t i5 = (i * 2 + 2) + (j * 2 + 1) * prev_width;
+						uint32_t i4 = (i * 2 + 2) + (j * 2 + 0) * prev_width;
+						uint32_t i5 = (i * 2 + 2) + (j * 2 + 1) * prev_width;
 
 						unsigned char v4 = prev_buff[i4];
 						unsigned char v5 = prev_buff[i5];
@@ -267,8 +267,8 @@ namespace Menge
 
 					if( j == (cur_height - 1) && (prev_height % 2) == 1 )
 					{
-						size_t i4 = (i * 2 + 0) + (j * 2 + 2) * prev_width;
-						size_t i5 = (i * 2 + 1) + (j * 2 + 2) * prev_width;
+						uint32_t i4 = (i * 2 + 0) + (j * 2 + 2) * prev_width;
+						uint32_t i5 = (i * 2 + 1) + (j * 2 + 2) * prev_width;
 
 						unsigned char v4 = prev_buff[i4];
 						unsigned char v5 = prev_buff[i5];
@@ -281,7 +281,7 @@ namespace Menge
 					if( i == (cur_width - 1) && (prev_width % 2) == 1 && 
 						j == (cur_height - 1) && (prev_height % 2) == 1 )
 					{
-						size_t i4 = (i * 2 + 2) + (j * 2 + 2) * prev_width;
+						uint32_t i4 = (i * 2 + 2) + (j * 2 + 2) * prev_width;
 
 						unsigned char v4 = prev_buff[i4];
 

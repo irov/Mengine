@@ -30,7 +30,7 @@ namespace Menge
 		void destroy() override;
 
 	protected:
-		size_t count() const override;
+		uint32_t count() const override;
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
@@ -39,7 +39,7 @@ namespace Menge
 		PyObject * m_generator;
 		PyObject * m_type;
 
-		size_t m_count;
+		uint32_t m_count;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<EntityPrototypeGenerator> EntityPrototypeGeneratorPtr;

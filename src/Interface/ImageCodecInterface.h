@@ -20,14 +20,14 @@ namespace Menge
 		{
 		}
 
-        size_t width;
-		size_t height;
+        uint32_t width;
+		uint32_t height;
 		
-		size_t depth;
-		size_t mipmaps;
+		uint32_t depth;
+		uint32_t mipmaps;
 
 		int quality;
-		size_t channels;
+		uint32_t channels;
 
         PixelFormat format;
 	};
@@ -52,9 +52,9 @@ namespace Menge
         {
         }
 
-        size_t flags;
+        uint32_t flags;
 		size_t pitch;
-        size_t channels;
+        uint32_t channels;
 	};
 
 	class ImageDecoderInterface

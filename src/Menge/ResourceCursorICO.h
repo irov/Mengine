@@ -27,6 +27,6 @@ namespace Menge
 		FilePath m_path;
 				
 		char * m_buffer;
-		size_t m_bufferSize;
+		uint32_t m_bufferSize;
 	};
 }

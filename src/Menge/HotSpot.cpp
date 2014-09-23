@@ -233,7 +233,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
-		size_t numPoints = boost::geometry::num_points( m_polygon );
+		uint32_t numPoints = boost::geometry::num_points( m_polygon );
 
 		if( numPoints == 0 )
 		{
@@ -251,7 +251,7 @@ namespace Menge
 
 		mt::reset( _boundingBox, wmp );
 
-		for( size_t
+		for( uint32_t
 			it = 1,
 			it_end = numPoints;
 		it != it_end; 
@@ -335,14 +335,14 @@ namespace Menge
 			return;
 		}
 
-		size_t numpoints = boost::geometry::num_points(m_polygon);
+		uint32_t numpoints = boost::geometry::num_points(m_polygon);
 
 		if( numpoints == 0 )
 		{
 			return;
 		}
 
-		size_t vertexCount = numpoints * 2;
+		uint32_t vertexCount = numpoints * 2;
 
 		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
 			->getDebugRenderVertex2D( vertexCount );
@@ -356,9 +356,9 @@ namespace Menge
 
 		const Polygon::ring_type & ring = m_polygon.outer();
 
-		for( size_t i = 0; i != numpoints; ++i )
+		for( uint32_t i = 0; i != numpoints; ++i )
 		{
-			size_t j = (i + 1) % numpoints;
+			uint32_t j = (i + 1) % numpoints;
 
 			mt::vec2f trP0;
 			mt::mul_v2_m4( trP0, ring[i], worldMat );

@@ -77,7 +77,7 @@ namespace Menge
         void setRenderListener( RenderSystemListener * _listener ) override;
 
 	public:
-		bool createRenderWindow( const Resolution & _resolution, int _bits, bool _fullscreen, WindowHandle _winHandle,
+		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 
 
@@ -91,29 +91,29 @@ namespace Menge
 
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
 		void setModelViewMatrix( const mt::mat4f & _view ) override;
-		void setTextureMatrix( size_t _stage, const float* _texture ) override;
+		void setTextureMatrix( uint32_t _stage, const float* _texture ) override;
         void setWorldMatrix( const mt::mat4f & _view ) override;
 
-		VBHandle createVertexBuffer( size_t _verticesNum, size_t _vertexSize, bool _dynamic ) override;
+		VBHandle createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
-		void* lockVertexBuffer(  VBHandle _vbHandle, size_t _offset, size_t _size, EBufferLockFlag _flags ) override;
+		void* lockVertexBuffer(  VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
 		void setVertexBuffer( VBHandle _vbHandle ) override;
 
-		IBHandle createIndexBuffer( size_t _indiciesNum, bool _dynamic ) override;
+		IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
-		void * lockIndexBuffer( IBHandle _ibHandle, size_t _offset, size_t _size, EBufferLockFlag _flags ) override;
+		void * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
-		void setIndexBuffer( IBHandle _ibHandle, size_t _baseVertexIndex ) override;
+		void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
 
-		void setVertexDeclaration( size_t _vertexSize, uint32 _declaration ) override;
+		void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) override;
 
-		void drawIndexedPrimitive( EPrimitiveType _type, size_t _baseVertexIndex,
-			size_t _minIndex, size_t _verticesNum, size_t _startIndex, size_t _indexCount ) override;
+		void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
+			uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount ) override;
 
-		void setTexture( size_t _stage, const RenderImageInterfacePtr & _texture ) override;
-		void setTextureAddressing( size_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
-		void setTextureFactor( uint32 _color ) override;
+		void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
+		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
+		void setTextureFactor( uint32_t _color ) override;
 		void setSrcBlendFactor( EBlendFactor _src ) override;
 		void setDstBlendFactor( EBlendFactor _dst ) override;
 		void setCullMode( ECullMode _mode ) override;
@@ -125,16 +125,16 @@ namespace Menge
 		void setShadeType( EShadeType _sType ) override;
 		void setAlphaTestEnable( bool _alphaTest ) override;
 		void setAlphaBlendEnable( bool _alphaBlend ) override;
-		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8 _alpha ) override;
+		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha ) override;
 		void setLightingEnable( bool _light ) override;
-		void setTextureStageColorOp( size_t _stage, ETextureOp _textrueOp,
+		void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,
 			ETextureArgument _arg1, ETextureArgument _arg2 ) override;
-		void setTextureStageAlphaOp( size_t _stage, ETextureOp _textrueOp,
+		void setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,
 			ETextureArgument _arg1, ETextureArgument _arg2 ) override;
-        void setTextureStageTexCoordIndex( size_t _stage, size_t _index ) override;
-		void setTextureStageFilter( size_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
+        void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
+		void setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 		
-        RenderShaderInterface * createShader( const void * _code, size_t _len ) override;
+        RenderShaderInterface * createShader( const void * _buffer, size_t _size ) override;
         void setShader( RenderShaderInterface * _shader ) override;
         
         
@@ -143,7 +143,7 @@ namespace Menge
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
 		// returns Texture interface handle or NULL if fails
-		RenderImageInterfacePtr createImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
+		RenderImageInterfacePtr createImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 		// create render target image
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
@@ -151,17 +151,14 @@ namespace Menge
 		// RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height ) override;
 		// удаления изображения
         
-        RenderImageInterfacePtr createRenderTargetImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
+        RenderImageInterfacePtr createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 
-		RenderImageInterfacePtr createDynamicImage( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) override;
+		RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 
 		bool beginScene() override;
 		void endScene() override;
 		void swapBuffers() override;
-		void clearFrameBuffer( uint32 _frameBufferTypes
-			, uint32 _color = 0
-			, float _depth = 1.0f
-			, uint16 _stencil = 0 ) override;
+		void clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil ) override;
 
 		void setViewport( const Viewport & _viewport ) override;
 
@@ -175,12 +172,12 @@ namespace Menge
 
 		void setVSync( bool _vSync ) override;
 
-        void clear( uint32 _color ) override;
+        void clear( uint32_t _color ) override;
         
         void setSeparateAlphaBlendMode() override;
 
     protected:
-        void findFormatFromChannels_( PixelFormat _format, size_t _channels, PixelFormat & _hwFormat, size_t & _hwChannels ) const;
+        void findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
@@ -221,7 +218,7 @@ namespace Menge
 		TMapIBufferMemory m_iBuffersMemory;
 		TMapIBufferMemory m_iBuffersLocks;
 
-		size_t m_activeTextureStage;
+		uint32_t m_activeTextureStage;
 		GLuint m_activeTexture;
 
         typedef FactoryPoolStore<MarmaladeTexture, 128> TFactoryOGLTexture;

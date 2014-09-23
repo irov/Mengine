@@ -8,7 +8,7 @@ namespace Menge
 {
     struct GlobalMouseHandleDesc
     {
-        size_t id;
+        uint32_t id;
 
         GlobalMouseHandler * handler;
         bool dead;
@@ -16,7 +16,7 @@ namespace Menge
 
     struct GlobalKeyHandleDesc
     {
-        size_t id;
+        uint32_t id;
 
         GlobalKeyHandler * handler;
         bool dead;
@@ -29,11 +29,11 @@ namespace Menge
         GlobalHandleSystem( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		size_t addGlobalMouseEventable( GlobalMouseHandler * _handler ) override;
-		GlobalMouseHandler * removeGlobalMouseEventable( size_t _id ) override;
+		uint32_t addGlobalMouseEventable( GlobalMouseHandler * _handler ) override;
+		GlobalMouseHandler * removeGlobalMouseEventable( uint32_t _id ) override;
 
-		size_t addGlobalKeyEventable( GlobalKeyHandler * _handler ) override;
-		GlobalKeyHandler * removeGlobalKeyEventable( size_t _id ) override;
+		uint32_t addGlobalKeyEventable( GlobalKeyHandler * _handler ) override;
+		GlobalKeyHandler * removeGlobalKeyEventable( uint32_t _id ) override;
 
 	public:
 		void update() override;
@@ -59,6 +59,6 @@ namespace Menge
 		typedef stdex::vector<GlobalKeyHandleDesc> TVectorGlobalKeyHandler;
 		TVectorGlobalKeyHandler m_globalKeyHandler;
 
-        size_t m_handlersEnumerator;
+        uint32_t m_handlersEnumerator;
 	};
 }

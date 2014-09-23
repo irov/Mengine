@@ -20,7 +20,7 @@ namespace Menge
         void setResourceMovie( ResourceMovie * _resourceMovie );
 
     protected:
-        void _movieForwardUpdate( float _time, size_t _beginFrame, size_t _endFrame, const MovieLayer & _layer ) override;        
+        void _movieForwardUpdate( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer ) override;        
 
     protected:
         PyObject * m_cb;

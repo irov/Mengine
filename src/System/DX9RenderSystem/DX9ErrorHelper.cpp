@@ -11,7 +11,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DX9ErrorHelper::DX9ErrorHelper( ServiceProviderInterface * _serviceProvider, const char * _file, size_t _line, const char * _method )
+	DX9ErrorHelper::DX9ErrorHelper( ServiceProviderInterface * _serviceProvider, const char * _file, uint32_t _line, const char * _method )
 		: m_serviceProvider(_serviceProvider)
 		, m_file(_file)
 		, m_line(_line)

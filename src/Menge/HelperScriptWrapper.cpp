@@ -1027,7 +1027,7 @@ namespace Menge
 			return unicode;
 		}
 
-		size_t s_getTextCharCountByKey( const ConstString& _key )
+		uint32_t s_getTextCharCountByKey( const ConstString& _key )
 		{
 			const TextEntryInterface * entry;
 			if( TEXT_SERVICE(m_serviceProvider)
@@ -1040,7 +1040,7 @@ namespace Menge
 
 			const ConstString & text = entry->getText();
 
-			size_t count = text.size();
+			uint32_t count = text.size();
 
 			return count;
 		}
@@ -1102,7 +1102,7 @@ namespace Menge
 		    }
 
 	    protected:
-		    bool updateTiming( size_t _id, float _timing ) override
+		    bool updateTiming( uint32_t _id, float _timing ) override
 		    {
 			    mt::vec2f out;
 			    bool done = m_interpolator.update( _timing, &out );
@@ -1117,7 +1117,7 @@ namespace Menge
 			    return done;
 		    }
 
-		    void removeTiming( size_t _id ) override
+		    void removeTiming( uint32_t _id ) override
 		    {			
 			    SCRIPT_SERVICE(m_serviceProvider)
 				    ->callFunction( m_cb, "(iOO)", _id, pybind::get_none(), pybind::get_bool(false) );
@@ -1136,7 +1136,7 @@ namespace Menge
 		    ValueInterpolatorLinear<mt::vec2f> m_interpolator;		
 	    };
 
-	    size_t addInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
+	    uint32_t addInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
 	    {
 		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
 			    ->getTimingManager();
@@ -1144,12 +1144,12 @@ namespace Menge
 		    TimingListenerInterface * timing =
 			    new TimingInterpolatorLinearVector( m_serviceProvider, _time, _from, _to, _cb );
 
-		    size_t id = timingManager->timing( false, false, 0.f, timing );
+		    uint32_t id = timingManager->timing( false, false, 0.f, timing );
 
 		    return id;
 	    }
 
-	    size_t addGlobalInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
+	    uint32_t addGlobalInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
 	    {
 		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
 			    ->getTimingManager();
@@ -1157,7 +1157,7 @@ namespace Menge
 		    TimingListenerInterface * timing =
 			    new TimingInterpolatorLinearVector( m_serviceProvider, _time, _from, _to, _cb );
 
-		    size_t id = timingManager->timing( false, true, 0.f, timing );
+		    uint32_t id = timingManager->timing( false, true, 0.f, timing );
 
 		    return id;
 	    }
@@ -1181,7 +1181,7 @@ namespace Menge
 		    }
 
 	    protected:
-		    bool updateTiming( size_t _id, float _timing ) override
+		    bool updateTiming( uint32_t _id, float _timing ) override
 		    {
 			    float out;
 			    bool done = m_interpolator.update( _timing, &out );
@@ -1192,7 +1192,7 @@ namespace Menge
 			    return done;
 		    }
 
-		    void removeTiming( size_t _id ) override
+		    void removeTiming( uint32_t _id ) override
 		    {			
 			    SCRIPT_SERVICE(m_serviceProvider)
 				    ->callFunction( m_cb, "(iOO)", _id, pybind::get_none(), pybind::get_bool(false) );
@@ -1211,7 +1211,7 @@ namespace Menge
 		    ValueInterpolatorLinear<float> m_interpolator;
 	    };
 
-	    size_t addInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
+	    uint32_t addInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
 	    {
 		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
 			    ->getTimingManager();
@@ -1219,12 +1219,12 @@ namespace Menge
 		    TimingListenerInterface * timing =
 			    new TimingInterpolatorLinearFloat( m_serviceProvider, _time, _from, _to, _cb );
 
-		    size_t id = timingManager->timing( false, false, 0.f, timing );
+		    uint32_t id = timingManager->timing( false, false, 0.f, timing );
 
 		    return id;
 	    }
 
-	    size_t addGlobalInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
+	    uint32_t addGlobalInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
 	    {
 		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
 			    ->getTimingManager();
@@ -1232,7 +1232,7 @@ namespace Menge
 		    TimingListenerInterface * timing =
 			    new TimingInterpolatorLinearFloat( m_serviceProvider, _time, _from, _to, _cb );
 
-		    size_t id = timingManager->timing( false, true, 0.f, timing );
+		    uint32_t id = timingManager->timing( false, true, 0.f, timing );
 
 		    return id;
 	    }

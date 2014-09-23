@@ -41,7 +41,7 @@ namespace Menge
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        inline bool unicodeToUtf8Size( ServiceProviderInterface * _serviceProvide, const WString::value_type * _unicode, WString::size_type _unicodeSize , String & _utf8 )
+        inline bool unicodeToUtf8Size( ServiceProviderInterface * _serviceProvide, const WString::value_type * _unicode, WString::size_type _unicodeSize, String & _utf8 )
         {
             UnicodeServiceInterface * unicodeService = UNICODE_SERVICE(_serviceProvide);
 

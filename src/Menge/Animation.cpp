@@ -58,7 +58,7 @@ namespace	Menge
 			_timing -= deltha;
 		}
 
-		size_t frameCount = m_resourceAnimation->getSequenceCount();
+		uint32_t frameCount = m_resourceAnimation->getSequenceCount();
 
 		float speedFactor = this->getSpeedFactor();
 		float scretch = this->getScretch();
@@ -66,7 +66,7 @@ namespace	Menge
 
 		float frameDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
         
-		size_t lastFrame = m_currentFrame;
+		uint32_t lastFrame = m_currentFrame;
 
         if( m_currentFrame != frameCount )
         {
@@ -209,7 +209,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Animation::_restart( float _time, size_t _enumerator )
+	bool Animation::_restart( float _time, uint32_t _enumerator )
 	{
         (void)_time;
         (void)_enumerator;
@@ -224,7 +224,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_stop( size_t _enumerator )
+	void Animation::_stop( uint32_t _enumerator )
 	{
 		if( this->isCompile() == false )
 		{
@@ -241,7 +241,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_end( size_t _enumerator )
+	void Animation::_end( uint32_t _enumerator )
 	{
 		if( this->isCompile() == false )
 		{
@@ -258,7 +258,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Animation::getFrame_( float _timing, float & _delthaTiming ) const
+	uint32_t Animation::getFrame_( float _timing, float & _delthaTiming ) const
 	{
 		if( _timing <= 0.f )
 		{
@@ -281,9 +281,9 @@ namespace	Menge
 			}
 		}
 
-		size_t count = m_resourceAnimation->getSequenceCount();
+		uint32_t count = m_resourceAnimation->getSequenceCount();
 
-		for( size_t frame = 0; frame != count; ++frame )
+		for( uint32_t frame = 0; frame != count; ++frame )
 		{
 			float delay = m_resourceAnimation->getSequenceDelay( frame );
 
@@ -327,12 +327,12 @@ namespace	Menge
 		this->registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener, &m_onAnimationEndEvent );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Animation::getCurrentFrame() const
+	uint32_t Animation::getCurrentFrame() const
 	{
 		return m_currentFrame;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Animation::getFrameCount() const
+	uint32_t Animation::getFrameCount() const
 	{
 		if( this->isCompile() == false )
 		{
@@ -343,12 +343,12 @@ namespace	Menge
 			return 0;
 		}
 
-        size_t count = m_resourceAnimation->getSequenceCount();
+        uint32_t count = m_resourceAnimation->getSequenceCount();
 
 		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Animation::getFrameDelay( size_t  _frame ) const
+	float Animation::getFrameDelay( uint32_t _frame ) const
 	{
 		if( this->isCompile() == false )
 		{
@@ -364,7 +364,7 @@ namespace	Menge
         return delay;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setCurrentFrame( size_t _frame )
+	void Animation::setCurrentFrame( uint32_t _frame )
 	{
 		if( this->isCompile() == false )
 		{
@@ -375,7 +375,7 @@ namespace	Menge
 			return;
 		}
 
-		size_t sequenceCount = m_resourceAnimation->getSequenceCount();
+		uint32_t sequenceCount = m_resourceAnimation->getSequenceCount();
 
 		if( _frame >= sequenceCount )	
 		{
@@ -396,16 +396,16 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setFirstFrame()
 	{
-		size_t firstFrame = 0;
+		uint32_t firstFrame = 0;
 
 		this->setCurrentFrame( firstFrame );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_setLastFrame()
 	{
-		size_t sequenceCount = m_resourceAnimation->getSequenceCount();
+		uint32_t sequenceCount = m_resourceAnimation->getSequenceCount();
 
-		size_t lastFrame = sequenceCount - 1;
+		uint32_t lastFrame = sequenceCount - 1;
 
 		this->setCurrentFrame( lastFrame );
 	}
@@ -444,7 +444,7 @@ namespace	Menge
 
 		float timing = 0.f;
 
-		for( size_t frame = 0; frame != m_currentFrame; ++frame )
+		for( uint32_t frame = 0; frame != m_currentFrame; ++frame )
 		{
 			float delay = m_resourceAnimation->getSequenceDelay( frame );
 
@@ -456,7 +456,7 @@ namespace	Menge
 		return timing; 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Animation::_interrupt( size_t _enumerator )
+	bool Animation::_interrupt( uint32_t _enumerator )
 	{
         (void)_enumerator;
 

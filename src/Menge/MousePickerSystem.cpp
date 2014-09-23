@@ -213,7 +213,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PickerTrapState * MousePickerSystem::regTrap( MousePickerTrapInterface * _trap )
 	{
-		size_t id = ++m_enumerator;
+		uint32_t id = ++m_enumerator;
 
 		PickerTrapState state;
 
@@ -682,9 +682,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MousePickerSystem::getPickerTrapCount() const
+	uint32_t MousePickerSystem::getPickerTrapCount() const
 	{
-		size_t count = 0;
+		uint32_t count = 0;
 
 		for( TPickerTrapState::const_iterator
 			it = m_pickerTrapState.begin();

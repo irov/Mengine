@@ -7,7 +7,7 @@ namespace Menge
 	class LoggerOperator
 	{
 	public:
-		LoggerOperator( LogServiceInterface * _logger, EMessageLevel _level, size_t _flag );
+		LoggerOperator( LogServiceInterface * _logger, EMessageLevel _level, uint32_t _flag );
 
 	public:
 		LoggerOperator & operator()( const char * _format, ... );
@@ -18,7 +18,7 @@ namespace Menge
 	protected:
 		LogServiceInterface * m_log;
 		EMessageLevel m_level;
-        size_t m_flag;
+        uint32_t m_flag;
 	};
 }
 

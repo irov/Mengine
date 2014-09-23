@@ -14,8 +14,8 @@ namespace Menge
 		virtual bool testRadius( const mt::vec2f& _point, float _radius, float _minAlpha ) const = 0;
 
     public:
-        virtual size_t getWidth() const = 0;
-        virtual size_t getHeight() const = 0;
+        virtual uint32_t getWidth() const = 0;
+        virtual uint32_t getHeight() const = 0;
 
     public:
         virtual unsigned char * getBuffer() const = 0;

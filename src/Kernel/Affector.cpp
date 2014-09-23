@@ -26,12 +26,12 @@ namespace Menge
         m_type = _type;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::setId( size_t _id )
+	void Affector::setId( uint32_t _id )
 	{
 		m_id = _id;
 	}
     //////////////////////////////////////////////////////////////////////////
-    size_t Affector::getId() const
+    uint32_t Affector::getId() const
     {
         return m_id;
     }

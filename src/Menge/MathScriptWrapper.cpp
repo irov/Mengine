@@ -74,7 +74,7 @@ namespace Menge
             return pybind::ptr(repr);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static float vec2_sequence( mt::vec2f * _vec, size_t _index )
+		static float vec2_sequence( mt::vec2f * _vec, uint32_t _index )
 		{
 			if( _index > 2 )
 			{
@@ -96,7 +96,7 @@ namespace Menge
             return pybind::ptr(repr);
         }
 		//////////////////////////////////////////////////////////////////////////
-		static float vec3_sequence( mt::vec3f * _vec, size_t _index )
+		static float vec3_sequence( mt::vec3f * _vec, uint32_t _index )
 		{
 			if( _index > 3 )
 			{
@@ -118,7 +118,7 @@ namespace Menge
             return pybind::ptr(repr);
         }
 		//////////////////////////////////////////////////////////////////////////
-		static float vec4_sequence( mt::vec4f * _vec, size_t _index )
+		static float vec4_sequence( mt::vec4f * _vec, uint32_t _index )
 		{
 			if( _index > 4 )
 			{
@@ -366,9 +366,9 @@ namespace Menge
 
 			Polygon * polygon = (Polygon*)_place;
 
-			size_t size = pybind::list_size( _obj );
+			uint32_t size = pybind::list_size( _obj );
 
-			for( size_t i = 0; i != size; ++i )
+			for( uint32_t i = 0; i != size; ++i )
 			{
 				PyObject * py_point = pybind::list_getitem( _obj, i );
 
@@ -462,8 +462,8 @@ namespace Menge
 				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
 				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
 
-				size_t width = pybind::extract<size_t>(i0);
-				size_t height = pybind::extract<size_t>(i1);
+				uint32_t width = pybind::extract<uint32_t>(i0);
+				uint32_t height = pybind::extract<uint32_t>(i1);
 
 				impl->setWidth( width );
 				impl->setHeight( height );
@@ -482,8 +482,8 @@ namespace Menge
 				PyObject * i0 = pybind::list_getitem( _obj, 0 );
 				PyObject * i1 = pybind::list_getitem( _obj, 1 );
 
-				size_t width = pybind::extract<size_t>(i0);
-				size_t height = pybind::extract<size_t>(i1);
+				uint32_t width = pybind::extract<uint32_t>(i0);
+				uint32_t height = pybind::extract<uint32_t>(i1);
 
 				impl->setWidth( width );
 				impl->setHeight( height );
@@ -671,7 +671,7 @@ namespace Menge
 			;
 
 		pybind::struct_<Rect>("Rect")
-			.def_constructor( pybind::init<size_t,size_t,size_t,size_t>() )
+			.def_constructor( pybind::init<uint32_t,uint32_t,uint32_t,uint32_t>() )
 			.def_convert( &ScriptMethod::Rect_convert, nullptr )
 			.def_member( "left", &Rect::left )
 			.def_member( "top",  &Rect::top ) 
@@ -720,7 +720,7 @@ namespace Menge
 			;
 
 		pybind::struct_<Resolution>("Resolution")
-			.def_constructor( pybind::init<size_t, size_t>() )
+			.def_constructor( pybind::init<uint32_t, uint32_t>() )
 			.def_convert( &ScriptMethod::Resolution_convert, nullptr )
 			.def_repr( &ScriptMethod::Resolution_repr )
 			.def( "setWidth", &Resolution::setWidth )

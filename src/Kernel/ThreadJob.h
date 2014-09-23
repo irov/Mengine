@@ -14,8 +14,8 @@ namespace Menge
 		: public FactorablePtr
 	{
 	public:
-		virtual bool onWork( size_t _id ) = 0;
-		virtual void onDone( size_t _id ) = 0;
+		virtual bool onWork( uint32_t _id ) = 0;
+		virtual void onDone( uint32_t _id ) = 0;
 	};
 
 	typedef stdex::intrusive_ptr<ThreadWorkerInterface> ThreadWorkerInterfacePtr;
@@ -33,7 +33,7 @@ namespace Menge
 
 		ThreadWorkerInterfacePtr worker;
 
-		size_t id;
+		uint32_t id;
 		EThreadStatus status;
 	};
 
@@ -48,8 +48,8 @@ namespace Menge
 		void initialize( ServiceProviderInterface * _serviceProvider, unsigned int _sleep );
 
 	public:
-		size_t addWorker( const ThreadWorkerInterfacePtr &_worker );
-		void removeWorker( size_t _id );
+		uint32_t addWorker( const ThreadWorkerInterfacePtr &_worker );
+		void removeWorker( uint32_t _id );
 
 	protected:
 		bool _onMain() override;
@@ -59,13 +59,13 @@ namespace Menge
 		void destroy() override;
 
 	protected:
-		bool check_remove( size_t _id );
+		bool check_remove( uint32_t _id );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 		unsigned int m_sleep;
   
-		size_t m_enumerator;
+		uint32_t m_enumerator;
 		
 		ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
 	};

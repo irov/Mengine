@@ -106,12 +106,12 @@ namespace Menge
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::createTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
+    RenderTextureInterfacePtr RenderTextureManager::createTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
     {
-		size_t HWWidth = _width;
-		size_t HWHeight = _height;
-		size_t HWChannels = _channels;
-		size_t HWDepth = _depth;
+		uint32_t HWWidth = _width;
+		uint32_t HWHeight = _height;
+		uint32_t HWChannels = _channels;
+		uint32_t HWDepth = _depth;
 
 		PixelFormat HWFormat = _format;
 
@@ -147,12 +147,12 @@ namespace Menge
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::createDynamicTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
+    RenderTextureInterfacePtr RenderTextureManager::createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
     {
-		size_t HWWidth = _width;
-		size_t HWHeight = _height;
-		size_t HWChannels = _channels;
-		size_t HWDepth = _depth;
+		uint32_t HWWidth = _width;
+		uint32_t HWHeight = _height;
+		uint32_t HWChannels = _channels;
+		uint32_t HWDepth = _depth;
 		PixelFormat HWFormat = _format;
 
 		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
@@ -176,12 +176,12 @@ namespace Menge
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::createRenderTargetTexture( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format )
+    RenderTextureInterfacePtr RenderTextureManager::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
     {
-		size_t HWWidth = _width;
-		size_t HWHeight = _height;
-		size_t HWChannels = _channels;
-		size_t HWDepth = _depth;
+		uint32_t HWWidth = _width;
+		uint32_t HWHeight = _height;
+		uint32_t HWChannels = _channels;
+		uint32_t HWDepth = _depth;
 		PixelFormat HWFormat = _format;
 
 		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
@@ -248,14 +248,14 @@ namespace Menge
         dataInfo.depth = 1;
         dataInfo.mipmaps = 0;
         dataInfo.size = 0;	// we don't need this
-        int pitch = 0;
-
+        
         Rect rect;
         rect.left = 0;
         rect.top = 0;
         rect.right = dataInfo.width;
         rect.bottom = dataInfo.height;
 
+		size_t pitch = 0;
         void * buffer = _texture->lock( &pitch, rect, true );
 
 		if( buffer == nullptr )
@@ -440,10 +440,10 @@ namespace Menge
 	{
 		const ImageCodecDataInfo* dataInfo = _decoder->getCodecDataInfo();
 
-		size_t image_width = dataInfo->width;
-		size_t image_height = dataInfo->height;
-		size_t image_channels = dataInfo->channels;
-		size_t image_depth = dataInfo->depth;
+		uint32_t image_width = dataInfo->width;
+		uint32_t image_height = dataInfo->height;
+		uint32_t image_channels = dataInfo->channels;
+		uint32_t image_depth = dataInfo->depth;
 
 		RenderTextureInterfacePtr texture = this->createTexture( image_width, image_height, image_channels, image_depth, dataInfo->format );
 		
@@ -472,12 +472,12 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderTextureManager::getImageMemoryUse( size_t _width, size_t _height, size_t _channels, size_t _depth, PixelFormat _format ) const
+	size_t RenderTextureManager::getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const
 	{
-		size_t HWWidth = _width;
-		size_t HWHeight = _height;
-		size_t HWChannels = _channels;
-		size_t HWDepth = _depth;
+		uint32_t HWWidth = _width;
+		uint32_t HWHeight = _height;
+		uint32_t HWChannels = _channels;
+		uint32_t HWDepth = _depth;
 		PixelFormat HWFormat = _format;
 
 		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
@@ -487,7 +487,7 @@ namespace Menge
 		return memoryUse;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	void RenderTextureManager::updateImageParams_( size_t & _width, size_t & _height, size_t & _channels, size_t & _depth, PixelFormat & _format ) const
+	void RenderTextureManager::updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const
 	{
 		if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
 		{
@@ -547,9 +547,9 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterfacePtr RenderTextureManager::createRenderTexture( const RenderImageInterfacePtr & _image, size_t _width, size_t _height, size_t _channels )
+	RenderTextureInterfacePtr RenderTextureManager::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, uint32_t _channels )
 	{
-		size_t id = ++m_textureEnumerator;
+		uint32_t id = ++m_textureEnumerator;
 
 		RenderTexture * texture = m_factoryRenderTexture.createObjectT();
 		texture->initialize( m_serviceProvider, _image, _width, _height, _channels, id );
@@ -601,7 +601,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )
     {
-        int pitch = 0;
+        size_t pitch = 0;
         void * textureBuffer = _texture->lock( &pitch, _rect, false );
 
         if( textureBuffer == nullptr )
@@ -622,10 +622,10 @@ namespace Menge
 
         BEGIN_WATCHDOG(m_serviceProvider, "texture decode");
 
-		size_t width = image->getHWWidth();
-		size_t height = image->getHWHeight();
-		size_t channels = image->getHWChannels();
-		size_t depth = image->getHWDepth();
+		uint32_t width = image->getHWWidth();
+		uint32_t height = image->getHWHeight();
+		uint32_t channels = image->getHWChannels();
+		uint32_t depth = image->getHWDepth();
 		PixelFormat pf = image->getHWPixelFormat();
 
         size_t bufferSize = Helper::getTextureMemorySize( width, height, channels, depth, pf );
@@ -658,13 +658,13 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::imageQuality( const RenderTextureInterfacePtr & _texture, void * _textureBuffer, size_t _texturePitch )
     {
-        size_t width = _texture->getWidth();
-        size_t height = _texture->getHeight();
+        uint32_t width = _texture->getWidth();
+        uint32_t height = _texture->getHeight();
 		
 		const RenderImageInterfacePtr & image = _texture->getImage(); 
 
-        size_t hwWidth = image->getHWWidth();
-        size_t hwHeight = image->getHWHeight();
+        uint32_t hwWidth = image->getHWWidth();
+        uint32_t hwHeight = image->getHWHeight();
 
 		PixelFormat hwPixelFormat = image->getHWPixelFormat();
 
@@ -687,9 +687,9 @@ namespace Menge
                 );
 
             unsigned char * image_data = static_cast<unsigned char *>(_textureBuffer);
-            unsigned int pixel_size = _texturePitch / hwWidth;
+            size_t pixel_size = _texturePitch / hwWidth;
 
-            for( size_t j = 0; j != height; ++j )
+            for( uint32_t j = 0; j != height; ++j )
             {
      //           std::copy( image_data + (width - 1) * pixel_size
 					//, image_data + width * pixel_size

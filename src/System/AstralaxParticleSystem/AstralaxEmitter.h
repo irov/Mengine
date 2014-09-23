@@ -64,7 +64,7 @@ namespace Menge
 		bool getCamera( ParticleCamera & _camera ) const override;
 
 	public:
-		bool flushParticles( ParticleMesh * _meshes, size_t _meshLimit, ParticleVertices * _particles, size_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override;
+		bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, ParticleVertices * _particles, uint32_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override;
 
 	public:
 		//void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
@@ -74,8 +74,8 @@ namespace Menge
 		bool isIntensive() const override;
 
 	public:
-		bool changeEmitterImage( int _width, int _height, unsigned char* _data, int _bytes ) override;
-		bool changeEmitterModel( float * _points, int _count ) override;
+		bool changeEmitterImage( uint32_t _width, uint32_t _height, unsigned char * _data, size_t _bytes ) override;
+		bool changeEmitterModel( float * _points, uint32_t _count ) override;
 		
 	public:
 		void setPosition( const mt::vec3f & _pos ) override;

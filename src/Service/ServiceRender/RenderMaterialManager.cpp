@@ -286,7 +286,7 @@ namespace Menge
 
 		m_stages.clear();
 
-		for( size_t i = 0; i != MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE; ++i )
+		for( uint32_t i = 0; i != MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE; ++i )
 		{
 			TVectorRenderMaterial & material = m_materials[i];
 
@@ -304,7 +304,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_equalMaterial( const RenderMaterial * _material
 		, EPrimitiveType _primitiveType
-		, size_t _textureCount 
+		, uint32_t _textureCount 
 		, const RenderTextureInterfacePtr * _textures
 		, const RenderStage * _stage
 		)
@@ -319,7 +319,7 @@ namespace Menge
 			return false;
 		}
 
-		for( size_t i = 0; i != _textureCount; ++i )
+		for( uint32_t i = 0; i != _textureCount; ++i )
 		{
 			if( _material->getTexture(i) != _textures[i] )
 			{
@@ -339,7 +339,7 @@ namespace Menge
 		, bool _wrapU
 		, bool _wrapV
 		, EPrimitiveType _primitiveType
-		, size_t _textureCount
+		, uint32_t _textureCount
 		, const RenderTextureInterfacePtr * _textures )
 	{
 		const RenderStageGroup * stageGroup;
@@ -379,7 +379,7 @@ namespace Menge
 
 		RenderMaterial * material = m_factoryMaterial.createObjectT();
 
-		size_t id = this->makeMaterialIndex_();
+		uint32_t id = this->makeMaterialIndex_();
 		material->initialize( id, material_hash, _primitiveType, _textureCount, _textures, stage );
 		
 		materials.push_back( material );
@@ -417,7 +417,7 @@ namespace Menge
 			}
 			
 			EPrimitiveType primitiveType = _material->getPrimitiveType();
-			size_t textureCount = _material->getTextureCount();
+			uint32_t textureCount = _material->getTextureCount();
 			const RenderTextureInterfacePtr * textures = _material->getTextures();
 			const RenderStage * stage = _material->getStage();
 
@@ -432,7 +432,7 @@ namespace Menge
 			break;
 		}
 
-		size_t materialId = _material->getId();
+		uint32_t materialId = _material->getId();
 		m_materialIndexer.push_back( materialId );
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -454,7 +454,7 @@ namespace Menge
 		stageGroup->stage[2] = _stage;
 		stageGroup->stage[3] = _stage;
 
-		for( size_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
 			stageGroup->stage[0].textureStage[i].addressU = TAM_CLAMP;
 			stageGroup->stage[0].textureStage[i].addressV = TAM_CLAMP;
@@ -474,11 +474,11 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	size_t RenderMaterialManager::makeMaterialIndex_()
+	uint32_t RenderMaterialManager::makeMaterialIndex_()
 	{
 		if( m_materialIndexer.empty() == false )
 		{
-			size_t id = m_materialIndexer.back();
+			uint32_t id = m_materialIndexer.back();
 			m_materialIndexer.pop_back();
 
 			return id;

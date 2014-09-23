@@ -44,7 +44,7 @@ namespace Menge
 			, bool _wrapU
 			, bool _wrapV
 			, EPrimitiveType _primitiveType
-			, size_t _textureCount
+			, uint32_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) override;        
 		
 	protected:
@@ -54,12 +54,12 @@ namespace Menge
         bool createRenderStageGroup( const ConstString & _name, const RenderStage & _stage );
 
 	protected:
-		size_t makeMaterialIndex_();
+		uint32_t makeMaterialIndex_();
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		size_t m_materialEnumerator;
+		uint32_t m_materialEnumerator;
 
         typedef stdex::binary_vector<ConstString, RenderStageGroup *> TMapRenderStage;
         TMapRenderStage m_stages;
@@ -73,7 +73,7 @@ namespace Menge
 		typedef FactoryPoolStore<RenderMaterial, 256> TFactoryRenderMaterial; 
 		TFactoryRenderMaterial m_factoryMaterial;
 
-		typedef stdex::vector<size_t> TVectorMaterialIndexer;
+		typedef stdex::vector<uint32_t> TVectorMaterialIndexer;
 		TVectorMaterialIndexer m_materialIndexer;
     };
 }

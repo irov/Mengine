@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-	template<size_t VerticesCount>
+	template<uint32_t VerticesCount>
 	class FixedVertices
 	{
 	public:

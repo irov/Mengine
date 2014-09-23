@@ -39,9 +39,9 @@ namespace Menge
 		: public DataInterface
 	{
 	public:
-		virtual size_t getFrameCount() const = 0;
-		virtual size_t getVertexCount() const = 0;
-		virtual size_t getIndicesCount() const = 0;
+		virtual uint32_t getFrameCount() const = 0;
+		virtual uint32_t getVertexCount() const = 0;
+		virtual uint32_t getIndicesCount() const = 0;
 		virtual float getCameraFOV() const = 0;
 		virtual float getCameraAspect() const = 0;
 		virtual float getCameraRightSign() const = 0;
@@ -50,7 +50,7 @@ namespace Menge
 		virtual float getFrameDelay() const = 0;
 
 	public:
-		virtual const Model3DFrame * getFrame( size_t _frameId ) const = 0; 
+		virtual const Model3DFrame * getFrame( uint32_t _frameId ) const = 0; 
 	};
 
 	typedef stdex::intrusive_ptr<Model3DInterface> Model3DInterfacePtr;

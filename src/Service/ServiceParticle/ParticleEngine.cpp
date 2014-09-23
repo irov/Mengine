@@ -67,12 +67,12 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ParticleEngine::getMaxParticlesCount() const
+	uint32_t ParticleEngine::getMaxParticlesCount() const
 	{
 		return m_maxParticlesNum;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine::setMaxParticlesCount( size_t _count )
+	void ParticleEngine::setMaxParticlesCount( uint32_t _count )
 	{
 		m_maxParticlesNum = _count;
 	}
@@ -82,9 +82,9 @@ namespace Menge
 		m_renderParticleNum = m_maxParticlesNum;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ParticleEngine::renderParticlesCount( size_t _count )
+	uint32_t ParticleEngine::renderParticlesCount( uint32_t _count )
 	{
-        size_t count = m_renderParticleNum - _count;
+        uint32_t count = m_renderParticleNum - _count;
 
 		return count;
 	}

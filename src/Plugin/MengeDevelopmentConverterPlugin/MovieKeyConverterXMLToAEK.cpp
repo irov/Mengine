@@ -145,7 +145,7 @@ namespace Menge
 		{
 			const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D & meta_frames2d = *it;
 
-			size_t layerIndex = meta_frames2d.get_LayerIndex();
+			uint32_t layerIndex = meta_frames2d.get_LayerIndex();
 
 			ConverterMovieLayerFrame & frameLayer = frameLayers[layerIndex - 1];
 
@@ -172,7 +172,7 @@ namespace Menge
 					float angle = 0.f;
 					float opacity = 1.f;
 
-					size_t count = 1;
+					uint32_t count = 1;
 
 					float volume = 1.f;
 
@@ -201,7 +201,7 @@ namespace Menge
 			}
 			else
 			{
-				size_t count = 0;
+				uint32_t count = 0;
 				meta_frames2d.get_Count( count );
 
 				frameLayer.count = count;
@@ -226,7 +226,7 @@ namespace Menge
 				{
 					const Metacode::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it;
 
-					size_t count = 1;
+					uint32_t count = 1;
 
 					mt::vec2f anchorPoint2d(0.f, 0.f);
 					mt::vec2f position2d(0.f, 0.f);
@@ -268,7 +268,7 @@ namespace Menge
 					frame.rotation.y = 0.f;
 					frame.rotation.z = 0.f;
 
-					for( size_t i = 0; i != count; ++i )
+					for( uint32_t i = 0; i != count; ++i )
 					{
 						frameLayer.frames.push_back( frame );
 					}
@@ -286,11 +286,11 @@ namespace Menge
 		{
 			const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D & meta_frames3d = *it;
 
-			size_t layerIndex = meta_frames3d.get_LayerIndex();
+			uint32_t layerIndex = meta_frames3d.get_LayerIndex();
 
 			ConverterMovieLayerFrame & frameLayer = frameLayers[layerIndex - 1];
 
-			size_t count = 0;
+			uint32_t count = 0;
 			meta_frames3d.get_Count( count );
 
 			frameLayer.count = count;
@@ -318,7 +318,7 @@ namespace Menge
 			{
 				const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & meta_frame3d = *it;
 
-				size_t count = 1;
+				uint32_t count = 1;
 				
 				meta_frame3d.get_AnchorPoint( frame.anchorPoint );
 				meta_frame3d.get_Position( frame.position );
@@ -332,7 +332,7 @@ namespace Menge
 
 				if( frameLayer.immutable == 0 )
 				{
-					for( size_t i = 0; i != count; ++i )
+					for( uint32_t i = 0; i != count; ++i )
 					{
 						frameLayer.frames.push_back( frame );
 					}
@@ -379,7 +379,7 @@ namespace Menge
 					Type value = frames[0].Member; \
 					\
 					uint8_t value_immutable = 1; \
-					for( size_t i = 1; i != frame.count; ++i ) \
+					for( uint32_t i = 1; i != frame.count; ++i ) \
 					{ \
 						const MovieFrameSource & source = frames[i]; \
 						\
@@ -400,7 +400,7 @@ namespace Menge
 					} \
 					else \
 					{ \
-						for( size_t i = 0; i != frame.count; ++i ) \
+						for( uint32_t i = 0; i != frame.count; ++i ) \
 						{ \
 							const MovieFrameSource & source = frames[i]; \
 							\
@@ -435,7 +435,7 @@ namespace Menge
 		{
 			const Metacode::Meta_KeyFramesPack::Meta_TimeRemap & meta_timeremap = *it;
 
-			size_t layerIndex = meta_timeremap.get_LayerIndex();
+			uint32_t layerIndex = meta_timeremap.get_LayerIndex();
 
 			aw << (uint32_t)layerIndex;
 
@@ -463,7 +463,7 @@ namespace Menge
 		{
 			const Metacode::Meta_KeyFramesPack::Meta_ImageShape & meta_imageshape = *it;
 
-			size_t layerIndex = meta_imageshape.get_LayerIndex();
+			uint32_t layerIndex = meta_imageshape.get_LayerIndex();
 
 			aw << (uint32_t)layerIndex;
 
@@ -512,7 +512,7 @@ namespace Menge
 
 					boost::geometry::correct( shape_vertex );
 
-					size_t shapeVertexCount = boost::geometry::num_points( shape_vertex ) - 1;
+					uint32_t shapeVertexCount = boost::geometry::num_points( shape_vertex ) - 1;
 
 					if( shapeVertexCount >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
 					{
@@ -536,7 +536,7 @@ namespace Menge
 						return false;
 					}
 
-					size_t shapeIndicesCount = shape_indices.size();
+					uint32_t shapeIndicesCount = shape_indices.size();
 
 					if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
 					{
@@ -552,7 +552,7 @@ namespace Menge
 					shape.vertexCount = shapeVertexCount;
 					shape.indexCount = shapeIndicesCount;
 
-					for( size_t i = 0; i != shapeVertexCount; ++i )
+					for( uint32_t i = 0; i != shapeVertexCount; ++i )
 					{
 						mt::vec2f & pos = shape.pos[i];
 
@@ -566,7 +566,7 @@ namespace Menge
 						uv.y = pos.y / height;
 					}
 
-					for( size_t i = 0; i != shapeIndicesCount; ++i )
+					for( uint32_t i = 0; i != shapeIndicesCount; ++i )
 					{
 						RenderIndices2D & indices = shape.indices[i];
 
@@ -601,13 +601,13 @@ namespace Menge
 		{
 			const Metacode::Meta_KeyFramesPack::Meta_Polygon & meta_polygon = *it;
 
-			size_t layerIndex = meta_polygon.get_LayerIndex();
+			uint32_t layerIndex = meta_polygon.get_LayerIndex();
 
 			aw << (uint32_t)layerIndex;
 
 			const Menge::Polygon & polygon = meta_polygon.get_Value();
 
-			size_t polygon_size = Menge::polygon_size( polygon );
+			uint32_t polygon_size = Menge::polygon_size( polygon );
 
 			if( polygon_size >= MENGINE_MOVIE_POLYGON_MAX_VERTEX )
 			{
@@ -626,7 +626,7 @@ namespace Menge
 			{
 				const Polygon::ring_type & countour = polygon.outer();
 
-				for( size_t i = 0; i != polygon_size; ++i )
+				for( uint32_t i = 0; i != polygon_size; ++i )
 				{
 					const mt::vec2f & p = countour[i];
 					aw << p.x;

@@ -12,7 +12,7 @@ namespace Menge
 	{
 		struct FTimingFind
 		{
-			FTimingFind( size_t _id )
+			FTimingFind( uint32_t _id )
 				: m_id(_id)
 			{
 			}
@@ -22,7 +22,7 @@ namespace Menge
 				return _event.id == m_id;
 			}
 
-			size_t m_id;
+			uint32_t m_id;
 		};
 
 		struct FTimingDead
@@ -65,7 +65,7 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	size_t TimingManager::timing( bool _portions, bool _global, float _delay, TimingListenerInterface * _listener )
+	uint32_t TimingManager::timing( bool _portions, bool _global, float _delay, TimingListenerInterface * _listener )
 	{
 		TimingEventDesc desc;
 
@@ -74,7 +74,7 @@ namespace Menge
 		desc.timing = 0.f;
 		desc.delay = _delay * 1000.f;
 
-		size_t new_id = ++m_enumerator;
+		uint32_t new_id = ++m_enumerator;
 
 		desc.id = new_id;
 		desc.dead = false;
@@ -87,7 +87,7 @@ namespace Menge
 		return desc.id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TimingManager::findTimigEvent_( size_t _id, const TimingEventDesc *& _desc ) const
+	bool TimingManager::findTimigEvent_( uint32_t _id, const TimingEventDesc *& _desc ) const
 	{
 		TListTimings::const_iterator it_find = 
 			std::find_if( m_timings.begin(), m_timings.end(), FTimingFind(_id) );
@@ -102,7 +102,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TimingManager::findTimigEvent_( size_t _id, TimingEventDesc *& desc )
+	bool TimingManager::findTimigEvent_( uint32_t _id, TimingEventDesc *& desc )
 	{
 		TListTimings::iterator it_find = 
 			std::find_if( m_timings.begin(), m_timings.end(), FTimingFind(_id) );
@@ -117,7 +117,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TimingManager::remove( size_t _id )
+	bool TimingManager::remove( uint32_t _id )
 	{
 		TimingEventDesc * event;
 		if( this->findTimigEvent_( _id, event ) == false )
@@ -151,7 +151,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TimingManager::freeze( size_t _id, bool _freeze )
+	void TimingManager::freeze( uint32_t _id, bool _freeze )
 	{
 		TimingEventDesc * event;
 		if( this->findTimigEvent_( _id, event ) == false )
@@ -176,7 +176,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TimingManager::isFreeze( size_t _id ) const
+	bool TimingManager::isFreeze( uint32_t _id ) const
 	{
 		const TimingEventDesc * event;
 		if( this->findTimigEvent_( _id, event ) == false )

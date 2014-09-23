@@ -99,10 +99,10 @@ namespace Menge
 
 	protected:
 		bool _play( float _time ) override;
-		bool _restart( float _time, size_t _enumerator ) override;
-		void _stop( size_t _enumerator ) override;
-		void _end( size_t _enumerator ) override;
-		bool _interrupt( size_t _enumerator ) override;
+		bool _restart( float _time, uint32_t _enumerator ) override;
+		void _stop( uint32_t _enumerator ) override;
+		void _end( uint32_t _enumerator ) override;
+		bool _interrupt( uint32_t _enumerator ) override;
 
 	protected:
 		bool _compile() override;
@@ -124,16 +124,16 @@ namespace Menge
         void updateForward_( float _time );
         void updateBackward_();
         
-        void updateForwardFrame_( float _time, size_t _beginFrame, size_t _endFrame );
-        void updateBackwardFrame_( size_t _beginFrame, size_t _endFrame );
+        void updateForwardFrame_( float _time, uint32_t _beginFrame, uint32_t _endFrame );
+        void updateBackwardFrame_( uint32_t _beginFrame, uint32_t _endFrame );
 
-        void updateForwardFrameNode_( float _time, size_t _beginFrame, size_t _endFrame, const MovieLayer &, Node * _node );
+        void updateForwardFrameNode_( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer &, Node * _node );
 
 	protected:
 		void _setEventListener( PyObject * _embed ) override;
 
 	private:
-		bool updateFrameNode_( const MovieLayer & layer, Node * _node, size_t _frameId, bool _interpolate, bool _start );
+		bool updateFrameNode_( const MovieLayer & layer, Node * _node, uint32_t _frameId, bool _interpolate, bool _start );
 
 	private:
 		bool setupParent_();
@@ -226,7 +226,7 @@ namespace Menge
         TMapInternalObjects m_internals;
 
 		float m_frameTiming;
-		size_t m_currentFrame;
+		uint32_t m_currentFrame;
         
 		bool m_parentMovie;
 	};

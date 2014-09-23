@@ -25,6 +25,6 @@ namespace Menge
 		bool findChunkData_( size_t & _size );
 
 	protected:
-		size_t m_chunkDataPos;
+		uint32_t m_chunkDataPos;
 	};
 }	// namespace Menge

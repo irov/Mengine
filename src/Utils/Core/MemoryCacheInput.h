@@ -21,7 +21,7 @@ namespace Menge
         void * cacheMemory( size_t _size, const char * _doc );
 
 	public:
-		size_t read( void * _buf, size_t _count ) override;
+		size_t read( void * _buf, size_t _size ) override;
 		bool seek( size_t _pos ) override;
 		bool skip( size_t _pos ) override;
 		size_t tell() const override;
@@ -40,7 +40,7 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		size_t m_bufferId;
+		uint32_t m_bufferId;
 
 		unsigned char * m_data;
 		size_t m_size;

@@ -37,7 +37,7 @@ namespace Menge
 	Window::Window()
 		: m_clientSize(100.f, 100.f)
 	{
-		for( size_t i = 0; i < ResourceWindow_Count; i++ )
+		for( uint32_t i = 0; i < ResourceWindow_Count; i++ )
 		{
             WindowEdge & edge = m_edge[i];
 
@@ -80,7 +80,7 @@ namespace Menge
             return false;
         }
 
-		for( size_t i = 0; i < ResourceWindow_Count; ++i )
+		for( uint32_t i = 0; i < ResourceWindow_Count; ++i )
 		{
 			ResourceImage * image = m_resourceWindow->getResource( i );
 
@@ -129,7 +129,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_release()
 	{
-		for( size_t i = 0; i != ResourceWindow_Count; ++i )
+		for( uint32_t i = 0; i != ResourceWindow_Count; ++i )
 		{
             WindowEdge & edge = m_edge[i];
 
@@ -156,7 +156,7 @@ namespace Menge
                 ->addRenderQuad( _viewport, _camera, edge.material, &vertices[0*4], 4, nullptr );
         }
 
-        for( size_t i = 1; i != ResourceWindow_Count; ++i )
+        for( uint32_t i = 1; i != ResourceWindow_Count; ++i )
         {
             const WindowEdge & edge = m_edge[i];
 
@@ -339,7 +339,7 @@ namespace Menge
 
 		const mt::mat4f& worldMatrix = this->getWorldMatrix();
 
-		for( size_t i = 0; i != ResourceWindow_Count; ++i )
+		for( uint32_t i = 0; i != ResourceWindow_Count; ++i )
 		{   
             mt::vec4f uv;
             
@@ -421,7 +421,7 @@ namespace Menge
 
 		mt::reset( _boundingBox, vertices[0].pos[0], vertices[0].pos[1] );
 
-		for( size_t i = 1; i != 4; ++i )
+		for( uint32_t i = 1; i != 4; ++i )
 		{
 			mt::add_internal_point( _boundingBox, vertices[i].pos[0], vertices[i].pos[1] );
 		}

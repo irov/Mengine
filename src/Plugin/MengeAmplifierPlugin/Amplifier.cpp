@@ -97,7 +97,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::playTrack( const ConstString& _playlistResource, size_t _index, float _pos, bool _looped )
+	bool Amplifier::playTrack( const ConstString& _playlistResource, uint32_t _index, float _pos, bool _looped )
 	{
 		if( this->loadPlayList_( _playlistResource ) == false )
 		{
@@ -134,19 +134,19 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Amplifier::getNumTracks() const
+	uint32_t Amplifier::getNumTracks() const
 	{
 		if( m_currentPlayList == nullptr )
 		{
 			return 0;
 		}
 
-        size_t numTracks = m_currentPlayList->numTracks();
+        uint32_t numTracks = m_currentPlayList->numTracks();
 
 		return numTracks;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t Amplifier::getCurrentTrack() const
+	uint32_t Amplifier::getCurrentTrack() const
 	{
 		if( m_currentPlayList == nullptr )
 		{
@@ -156,7 +156,7 @@ namespace Menge
 			return 0;
 		}
 
-		size_t index = m_currentPlayList->currentTrackIndex();
+		uint32_t index = m_currentPlayList->currentTrackIndex();
 
 		return index;
 	}
@@ -277,7 +277,7 @@ namespace Menge
 
 		if( m_sourceID != 0 )
 		{
-			size_t sourceId = m_sourceID;
+			uint32_t sourceId = m_sourceID;
 			m_sourceID = 0;
 
 			SOUND_SERVICE(m_serviceProvider)
@@ -318,7 +318,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::onSoundStop( size_t _id )
+	void Amplifier::onSoundStop( uint32_t _id )
 	{
 		(void)_id;
 
@@ -358,7 +358,7 @@ namespace Menge
 		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::onSoundPause( size_t _id )
+	void Amplifier::onSoundPause( uint32_t _id )
 	{
 		(void)_id;
 	}

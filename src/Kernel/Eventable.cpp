@@ -90,7 +90,7 @@ namespace Menge
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool s_askPyEventVaList( ServiceProviderInterface * _serviceProvider, size_t & _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _va )
+        static bool s_askPyEventVaList( ServiceProviderInterface * _serviceProvider, uint32_t & _result, EEventName _event, PyObject * _pyevent, const char * _format, va_list _va )
         {
             pybind::incref( _pyevent );
 
@@ -373,7 +373,7 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool EventableAskOperator::operator () ( size_t & _value, size_t _default, const char * _format, ... ) const
+	bool EventableAskOperator::operator () ( uint32_t & _value, uint32_t _default, const char * _format, ... ) const
 	{
 		va_list valist;
 		va_start(valist, _format);

@@ -10,9 +10,9 @@ namespace Menge
         : public Node
 	{
     public:
-        void movieForwardUpdate( float _time, size_t _beginFrame, size_t _endFrame, const MovieLayer & _layer );
+        void movieForwardUpdate( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer );
 
     protected:
-        virtual void _movieForwardUpdate( float _time, size_t _beginFrame, size_t _endFrame, const MovieLayer & _layer ) = 0;
+        virtual void _movieForwardUpdate( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer ) = 0;
 	};
 }

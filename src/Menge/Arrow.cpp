@@ -384,8 +384,8 @@ namespace	Menge
 			}break;
 		case EAT_RADIUS:
 			{
-				size_t numpoints = 4;
-				size_t vertexCount = numpoints * 2;
+				uint32_t numpoints = 4;
+				uint32_t vertexCount = numpoints * 2;
 
 				RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
 					->getDebugRenderVertex2D( vertexCount );
@@ -406,9 +406,9 @@ namespace	Menge
 				ring[2] = mt::vec2f(0, half_radius);
 				ring[3] = mt::vec2f(-half_radius, 0);
 
-				for( size_t i = 0; i != numpoints; ++i )
+				for( uint32_t i = 0; i != numpoints; ++i )
 				{
-					size_t j = (i + 1) % numpoints;
+					uint32_t j = (i + 1) % numpoints;
 
 					mt::vec2f trP0;
 					mt::mul_v2_m4( trP0, ring[i], worldMat );
@@ -452,14 +452,14 @@ namespace	Menge
 			}break;
 		case EAT_POLYGON:
 			{
-				size_t numpoints = boost::geometry::num_points( m_polygon );
+				uint32_t numpoints = boost::geometry::num_points( m_polygon );
 
 				if( numpoints == 0 )
 				{
 					return;
 				}
 
-				size_t vertexCount = numpoints * 2;
+				uint32_t vertexCount = numpoints * 2;
 
 				RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
 					->getDebugRenderVertex2D( vertexCount );
@@ -473,9 +473,9 @@ namespace	Menge
 
 				const Polygon::ring_type & ring = m_polygon.outer();
 
-				for( size_t i = 0; i != numpoints; ++i )
+				for( uint32_t i = 0; i != numpoints; ++i )
 				{
-					size_t j = (i + 1) % numpoints;
+					uint32_t j = (i + 1) % numpoints;
 
 					mt::vec2f trP0;
 					mt::mul_v2_m4( trP0, ring[i], worldMat );

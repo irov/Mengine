@@ -13,7 +13,7 @@ namespace Menge
 		"__ETA_LAST__"
 	};
 
-	const char * affectorToString( size_t _event )
+	const char * affectorToString( uint32_t _event )
 	{
 		return s_affectorToString[_event];
 	}

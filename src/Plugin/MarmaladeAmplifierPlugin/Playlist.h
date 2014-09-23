@@ -35,21 +35,21 @@ namespace	Menge
 		
 		const TrackDesc * getTrack() const;
         
-		size_t currentTrackIndex() const;
-		size_t numTracks() const;
-		const TrackDesc * getTrackByIndex( size_t _index );
+		uint32_t currentTrackIndex() const;
+		uint32_t numTracks() const;
+		const TrackDesc * getTrackByIndex( uint32_t _index );
 
-		void setTrack(size_t _index);
+		void setTrack( uint32_t _index );
 		void setLooped1( bool _loop );
 
-		const ConstString& getCategory() const;
+		const ConstString & getCategory() const;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
 		ResourcePlaylist * m_playlistResource;
 
 		TVectorTrackDesc m_tracks;
-		size_t m_trackIndex;
+		uint32_t m_trackIndex;
 		
 		bool m_loop;
 

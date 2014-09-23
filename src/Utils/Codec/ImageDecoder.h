@@ -23,8 +23,8 @@ namespace Menge
 		const ImageCodecDataInfo * getCodecDataInfo() const override;
 
     protected:
-        void sweezleAlpha1( size_t _width, size_t _height, void * _buffer, size_t _pitch );
-        void sweezleAlpha3( size_t _width, size_t _height, void * _buffer, size_t _pitch );
+        void sweezleAlpha1( uint32_t _width, uint32_t _height, void * _buffer, size_t _pitch );
+        void sweezleAlpha3( uint32_t _width, uint32_t _height, void * _buffer, size_t _pitch );
 
     protected:
         ImageCodecOptions m_options;

@@ -407,9 +407,10 @@ namespace Menge
 	VBHandle MarmaladeRenderSystem::createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic )
 	{
 		size_t size = _verticesNum * _vertexSize;
+		unsigned char * memory = new unsigned char[size];
 
 		MemoryRange memRange;
-		memRange.pMem = new unsigned char[size];
+		memRange.pMem = memory;
 		memRange.size = size;
 		memRange.offset = 0;
 		memRange.flags = BLF_LOCK_NONE;
@@ -448,13 +449,14 @@ namespace Menge
 		
 		delete [] range->pMem;
 
-		glDeleteBuffers( 1, &range->bufId );
-		gl_check_error();
-		
-        if( _vbHandle == m_currentVertexBuffer )
+		if( _vbHandle == m_currentVertexBuffer )
 		{
+			glBindBuffer( GL_ARRAY_BUFFER, 0 );
 			m_currentVertexBuffer = 0;
 		}
+
+		glDeleteBuffers( 1, &range->bufId );
+		gl_check_error();
 
 		m_vBuffersMemory.erase( _vbHandle );
 	}
@@ -490,7 +492,7 @@ namespace Menge
 		}
 	
 		glBindBuffer( GL_ARRAY_BUFFER, range->bufId );
-		glBufferSubData( GL_ARRAY_BUFFER, range->offset, range->size, range->pMem + range->offset );        
+		glBufferSubData( GL_ARRAY_BUFFER, range->offset, range->size, range->pMem );        
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 
 		gl_check_error();
@@ -508,9 +510,10 @@ namespace Menge
 	IBHandle MarmaladeRenderSystem::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
 	{
 		size_t size = _indiciesNum * sizeof( uint16 );
+		unsigned char * memory = new unsigned char[size];
 
         MemoryRange memRange;
-		memRange.pMem = new unsigned char[size];
+		memRange.pMem = memory;
 		memRange.size = size;
 		memRange.offset = 0;
 		memRange.flags = BLF_LOCK_NONE;
@@ -528,7 +531,7 @@ namespace Menge
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 
 		glBufferData( GL_ELEMENT_ARRAY_BUFFER, memRange.size, NULL, usage );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_currentIndexBuffer );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 
 		gl_check_error();
 
@@ -548,13 +551,16 @@ namespace Menge
 			return;
 		}
 
-		delete [] range->pMem;
-		glDeleteBuffers( 1, &range->bufId );
-
-        if( _ibHandle == m_currentIndexBuffer )
+		if( _ibHandle == m_currentIndexBuffer )
 		{
+			glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 			m_currentIndexBuffer = 0;
 		}
+
+		delete [] range->pMem;
+
+		glDeleteBuffers( 1, &range->bufId );
+		gl_check_error();
 
 		m_iBuffersMemory.erase( _ibHandle );		
 	}
@@ -590,7 +596,7 @@ namespace Menge
 		}
 		
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, range->bufId );
-		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, range->offset, range->size, range->pMem + range->offset );
+		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, range->offset, range->size, range->pMem );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 
 		gl_check_error();
@@ -618,7 +624,7 @@ namespace Menge
 		{
 			const TextureStage & textureStage = m_textureStage[i];
 
-			if( textureStage.enabled == false )
+			if( textureStage.texture == 0 )
 			{
 				glActiveTexture(GL_TEXTURE0 + i);
 				glDisable(GL_TEXTURE_2D);
@@ -670,11 +676,12 @@ namespace Menge
 		gl_check_error();
 
 		glEnableClientState( GL_VERTEX_ARRAY );
-		glEnableClientState( GL_COLOR_ARRAY );
-		glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+		glVertexPointer( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) );
 
-		glVertexPointer( 3, GL_FLOAT, 32, 0 );
-		glColorPointer( 4, GL_UNSIGNED_BYTE, 32,  reinterpret_cast<const GLvoid *>( 12 ) );        
+		glEnableClientState( GL_COLOR_ARRAY );
+		glColorPointer( 4, GL_UNSIGNED_BYTE, 32,  reinterpret_cast<const GLvoid *>( 12 ) );
+
+		glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 
 		glClientActiveTexture( GL_TEXTURE0 );
 		glTexCoordPointer( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 16 ) );
@@ -864,14 +871,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
-        if( _textrueOp == Menge::TOP_DISABLE )
-        {
-            m_textureStage[_stage].enabled = false;
-            return;
-        }
-
-        m_textureStage[_stage].enabled = true;
-
         if( _textrueOp == Menge::TOP_SELECTARG2 )
         {
             _arg1 = _arg2;
@@ -885,15 +884,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
-        if( _textrueOp == Menge::TOP_DISABLE )
-        {
-            m_textureStage[_stage].enabled = false;
-
-            return;
-        }
-
-        m_textureStage[_stage].enabled = true;
-
         if( _textrueOp == Menge::TOP_SELECTARG2 )
         {
             _arg1 = _arg2;

@@ -24,31 +24,30 @@ namespace Menge
     struct TextureStage
     {
         TextureStage()
-            : enabled(false)
-            , minFilter(TF_LINEAR)
-            , magFilter(TF_LINEAR)
-            , wrapS(GL_CLAMP_TO_EDGE)
-            , wrapT(GL_CLAMP_TO_EDGE)
-            , mengeMinFilter(TF_LINEAR)
-            , mengeMipFilter(TF_LINEAR)
+            : minFilter(0)
+            , magFilter(0)
+            , wrapS(0)
+            , wrapT(0)
+			, mengeMinFilter(TF_NONE)
+            , mengeMipFilter(TF_NONE)
             , texture(0)
-            , colorOp(GL_MODULATE)
-            , colorArg1(GL_TEXTURE)
-            , colorArg2(GL_PRIMARY_COLOR)
-            , alphaOp(GL_MODULATE)
-            , alphaArg1(GL_TEXTURE)
-            , alphaArg2(GL_PRIMARY_COLOR)
+            , colorOp(0)
+            , colorArg1(0)
+            , colorArg2(0)
+            , alphaOp(0)
+            , alphaArg1(0)
+            , alphaArg2(0)
+			, enabled(false)
         {
 
         }
-
-        bool enabled;
+		        
         GLenum minFilter;
         GLenum magFilter;
         GLenum wrapS;
         GLenum wrapT;
-        Menge::ETextureFilter mengeMinFilter;
-        Menge::ETextureFilter mengeMipFilter;
+        ETextureFilter mengeMinFilter;
+        ETextureFilter mengeMipFilter;
         GLuint texture;
         GLenum colorOp;
         GLenum colorArg1;
@@ -56,6 +55,7 @@ namespace Menge
         GLenum alphaOp;
         GLenum alphaArg1;
         GLenum alphaArg2;
+		bool enabled;
     };
     
 	class MarmaladeRenderSystem 
@@ -199,7 +199,16 @@ namespace Menge
 
 		struct MemoryRange
 		{
-			unsigned char* pMem;
+			MemoryRange()
+				: pMem(nullptr)
+				, size(0)
+				, offset(0)
+				, flags(BLF_LOCK_NONE)
+				, bufId(0)
+			{
+			}
+
+			unsigned char * pMem;
 			size_t size;
 			size_t offset;
             EBufferLockFlag flags;

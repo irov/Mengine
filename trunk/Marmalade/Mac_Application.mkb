@@ -1,0 +1,105 @@
+#!/usr/bin/env mkb
+options
+{
+    strict-mkb
+    enable-exceptions
+	preinclude=preinclude_application.h
+    
+    #s3e-data-dir="d:/Projects/HolidayFunBuild_Marmalade/data"
+    s3e-data-dir="/Users/admin/Desktop/DynastyBuild_Marmalade/data"
+    #s3e-data-dir="d:/Temp/HOG/data"
+}
+
+library
+{
+    ".,Python"
+    ".,Dependencies"
+    ".,Mengine"
+    
+    "./dependencies/marmalade-openal,openal-soft-1.13"
+   
+    "./dependencies/marmalade-astralax,mmagic"
+}
+
+
+defines
+{
+}
+
+subprojects 
+{
+    iwutil
+    iwgl
+}
+
+includepaths
+{
+    "."
+    "./Modified/boost"
+    
+	"../src"
+	"../src/Utils"
+	"../src/MarmaladeApplication"
+    
+	"../dependencies"
+	"../dependencies/pugixml/src"
+	"../dependencies/pybind/include"
+	"../dependencies/boost"
+	"../dependencies/simpleini"
+	"../dependencies/metabuf"
+    "../dependencies/simpleini"
+    "../dependencies/zlib"
+    "../dependencies/libjpeg"
+    "../dependencies/stdex/include"    
+
+    "./dependencies/marmalade-astralax/include"
+    
+    "./dependencies/marmalade-openal/openal-soft-1.13/include/al"
+    "./dependencies/marmalade-openal/openal-soft-1.13/OpenAL32/include"
+}
+
+files
+{
+    [Config]
+	("../src/Config")	
+	"*.h"
+    
+    [Interface]
+	("../src/Interface")	
+	"*.h"
+    
+	[MarmaladeApplication]
+    ("../src/MarmaladeApplication")	
+	"*.h"
+	"*.cpp"           
+    
+    [Plugin/MarmaladeAmplifierPlugin]
+    ("../src/Plugin/MarmaladeAmplifierPlugin")
+	"*.h"
+	"*.cpp"   
+    
+    [System/MarmaladeThreadSystem]
+    ("../src/System/MarmaladeThreadSystem")
+	"*.h"
+	"*.cpp"
+
+    [System/MarmaladeUnicodeSystem]
+    ("../src/System/MarmaladeUnicodeSystem")	
+	"*.h"
+	"*.cpp"       
+	
+    [System/MarmaladeRenderSystem]
+    ("../src/System/MarmaladeRenderSystem")	
+	"*.h"
+	"*.cpp"
+    
+    [System/OALSoundSystem]
+    ("../src/System/OALSoundSystem")
+	"*.h"
+	"*.cpp"    
+    
+    [System/AstralaxParticleSystem]
+    ("../src/System/AstralaxParticleSystem")	
+	"*.h"
+	"*.cpp"    
+}

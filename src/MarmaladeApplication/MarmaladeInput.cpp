@@ -31,14 +31,14 @@ namespace Menge
     {
         int32 pointer = s3ePointerGetInt( S3E_POINTER_AVAILABLE );
 
-        if( pointer == 0 )
+		if( pointer == S3E_FALSE )
         {
             return false;
         }
 
         int32 multiTouch = s3ePointerGetInt( S3E_POINTER_MULTI_TOUCH_AVAILABLE );
 
-        if( multiTouch == 1 )
+		if( multiTouch == S3E_TRUE )
         {
             s3ePointerRegister( S3E_POINTER_TOUCH_EVENT, (s3eCallback)&MarmaladeInput::s_pointerTouchEvent, this );
             s3ePointerRegister(S3E_POINTER_TOUCH_MOTION_EVENT, (s3eCallback)&MarmaladeInput::s_pointerTouchMotionEvent, this );
@@ -65,6 +65,10 @@ namespace Menge
 
 		m_width = (float)s3eSurfaceGetInt(S3E_SURFACE_WIDTH);
 		m_height = (float)s3eSurfaceGetInt(S3E_SURFACE_HEIGHT);
+
+#	ifdef __MACH__
+		s3eKeyboardSetInt( S3E_KEYBOARD_GET_CHAR, 1 );
+#	endif
 
         return true;
     }

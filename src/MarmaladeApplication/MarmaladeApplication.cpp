@@ -32,6 +32,7 @@
 
 //#	include <mhook.h>
 #	include "s3eDevice.h"
+#	include "s3eWindow.h"
 #	include "s3e.h"
 
 #ifdef _MSC_VER
@@ -1388,6 +1389,12 @@ namespace Menge
             return false;
         }
 
+		s3ePointerSetInt( S3E_POINTER_HIDE_CURSOR, 1 );
+
+		m_timer->reset();
+
+		m_application->turnSound( true );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1398,10 +1405,6 @@ namespace Menge
             return;
         }
 
-        m_timer->reset();
-
-		m_application->turnSound( true );
-        
         while( true )
         {
             s3eBool quit = s3eDeviceCheckQuitRequest();
@@ -1523,7 +1526,14 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::notifyCursorModeChanged( bool _mode )
     {
-
+		if( _mode == true )
+		{
+			s3ePointerSetInt( S3E_POINTER_HIDE_CURSOR, 0 );
+		}
+		else
+		{
+			s3ePointerSetInt( S3E_POINTER_HIDE_CURSOR, 1 );
+		}		
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::notifyCursorClipping( const Viewport & _viewport )

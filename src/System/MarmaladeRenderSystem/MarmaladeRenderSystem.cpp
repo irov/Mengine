@@ -685,9 +685,24 @@ namespace Menge
 		{
 			return;
 		}
+				
+		GLuint bufId = 0;
+		glGenBuffers( 1, &bufId );
+
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
+
+		glBufferData( GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(uint16_t), nullptr, GL_STATIC_DRAW );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+
+		const uint16_t * baseIndex1 = reinterpret_cast<const uint16_t *>(ib_range->pMem);
+		const uint16_t * offsetIndex1 = baseIndex1 + _startIndex;
+
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
+		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, 0, _indexCount * sizeof(uint16_t), offsetIndex1 );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 		
 		glBindBuffer( GL_ARRAY_BUFFER, vb_range->bufId );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ib_range->bufId );
+		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 
 		gl_check_error();
 
@@ -705,9 +720,9 @@ namespace Menge
 		glTexCoordPointer( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 24 ) );
 		
         GLenum mode = s_getGLPrimitiveMode( _type );
-		const uint16_t * baseIndex = nullptr;
-		const uint16_t * offsetIndex = baseIndex + _startIndex;
-		glDrawElements( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(offsetIndex) );
+		//const uint16_t * baseIndex = reinterpret_cast<const uint16_t *>(ib_range->pMem);
+		//const uint16_t * offsetIndex = baseIndex + _startIndex;
+		glDrawElements( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(nullptr) );
 
 		gl_check_error();
 		
@@ -716,7 +731,8 @@ namespace Menge
 		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
 		
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+		glDeleteBuffers( 1, &bufId );
+		//glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 
 		gl_check_error();
 	}

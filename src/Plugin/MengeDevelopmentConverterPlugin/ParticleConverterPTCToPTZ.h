@@ -23,6 +23,9 @@ namespace Menge
 		bool convert_( const FilePath & _input, const FilePath & _output );
 
 	protected:
+		bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
+
+	protected:
 		ArchivatorInterfacePtr m_archivator;
     };
 }	// namespace Menge

@@ -543,7 +543,7 @@ namespace Menge
 
 		GLuint bufId = 0;
 
-#	ifndef __OSX__
+#	ifndef __MACH__
 		glGenBuffers( 1, &bufId );
 
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
@@ -572,7 +572,7 @@ namespace Menge
 
 		if( _ibHandle == m_currentIndexBuffer )
 		{
-#	ifndef __OSX__
+#	ifndef __MACH__
 			glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 #	endif
 
@@ -581,7 +581,7 @@ namespace Menge
 
 		delete [] range->pMem;
 
-#	ifndef __OSX__
+#	ifndef __MACH__
 		glDeleteBuffers( 1, &range->bufId );
 		gl_check_error();
 #	endif
@@ -619,7 +619,7 @@ namespace Menge
 			return nullptr;
 		}
 		
-#	ifndef __OSX__
+#	ifndef __MACH__
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, range->bufId );
 		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, range->offset, range->size, range->pMem );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
@@ -696,7 +696,7 @@ namespace Menge
 		}
 				
 
-#	ifndef __OSX__
+#	ifndef __MACH__
 		glBindBuffer( GL_ARRAY_BUFFER, vb_range->bufId );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ib_range->bufId );
 

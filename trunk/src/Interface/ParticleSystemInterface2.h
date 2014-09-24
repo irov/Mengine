@@ -7,7 +7,7 @@
 
 namespace Menge
 {
-	DECLARE_MAGIC_NUMBER( MAGIC_PTZ, 'P', 'T', 'Z', '2', 1 );
+	DECLARE_MAGIC_NUMBER( MAGIC_PTZ, 'P', 'T', 'Z', '2', 2 );
 
 	class ParticleEmitterContainerInterface2
         : public FactorablePtr

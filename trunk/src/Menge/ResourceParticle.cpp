@@ -80,7 +80,7 @@ namespace Menge
 
 		if( container == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer2::_isValid %s can't create container file '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_isValid %s can't create container file '%s'"
 				, m_name.c_str()
 				, m_fileName.c_str() 
 				);
@@ -90,7 +90,7 @@ namespace Menge
 
 		if( container->isValid() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer2::_isValid %s can't valid container '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_isValid %s can't valid container '%s'"
 				, m_name.c_str()
 				, m_fileName.c_str() 
 				);
@@ -109,7 +109,7 @@ namespace Menge
 			if( RESOURCE_SERVICE(m_serviceProvider)
 				->hasResource( name, nullptr ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer2::_isValid %s can't get image resource '%s'"
+				LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_isValid %s can't get image resource '%s'"
 					, m_name.c_str()
 					, name.c_str()
 					);
@@ -130,7 +130,7 @@ namespace Menge
 
 		if( m_container == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer2::_compile %s can't create container file '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_compile %s can't create container file '%s'"
 				, m_name.c_str()
 				, m_fileName.c_str() 
 				);

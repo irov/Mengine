@@ -1428,7 +1428,7 @@ namespace Menge
             }
             else
             {
-                //Sleep?
+                s3eDeviceYield( 20 );
             }
 
 			if( m_application->isFocus() == true )

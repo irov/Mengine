@@ -299,13 +299,57 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeRenderSystem::initialize()
 	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing OpenGL RenderSystem..." );
+		LOGGER_WARNING(m_serviceProvider)("Initializing OpenGL RenderSystem...");
 
         if( IwGLInit() == false )
         {
             return false;
         }
 
+		LOGGER_WARNING(m_serviceProvider)("Vendor      : %s", (const char*)glGetString( GL_VENDOR ) );
+		LOGGER_WARNING(m_serviceProvider)("Renderer    : %s", (const char*)glGetString( GL_RENDERER ) );
+		LOGGER_WARNING(m_serviceProvider)("Version     : %s", (const char*)glGetString( GL_VERSION ) );
+		LOGGER_WARNING(m_serviceProvider)("Extensions  : %s", (const char*)glGetString( GL_EXTENSIONS ) );
+
+		if( sizeof(RenderVertex2D) != 32 )
+		{
+			return false;
+		}
+
+		for( uint32_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			glActiveTexture( GL_TEXTURE0 + i );
+			glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE );
+			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR );
+			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR );
+			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA );
+			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA );			
+			glDisable( GL_TEXTURE_2D );
+
+			m_textureStage[i] = TextureStage();
+		}
+
+		glFrontFace( GL_CW );
+		glDisable( GL_DEPTH_TEST );
+		glDisable( GL_STENCIL_TEST );
+		glDisable( GL_CULL_FACE );
+		glDisable( GL_LIGHTING );
+		glDisable( GL_BLEND );
+		glDisable( GL_ALPHA_TEST );
+		glDisable( GL_DITHER );
+
+		glDepthMask( GL_FALSE );
+		//glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
+
+		glMatrixMode( GL_MODELVIEW );
+		glLoadIdentity();
+
+		glMatrixMode( GL_PROJECTION );
+		glLoadIdentity();
+
+		glMatrixMode( GL_TEXTURE );
+		glLoadIdentity();
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -325,35 +369,7 @@ namespace Menge
 	{
         m_resolution = _resolution;
 
-		for( uint32_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
-		{
-			glActiveTexture( GL_TEXTURE0 + i );
-			glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE );
-			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR );
-			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR );
-			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA );
-			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA );			
-			glDisable( GL_TEXTURE_2D );
 
-            m_textureStage[i] = TextureStage();
-		}
-        
-		glFrontFace( GL_CW );
-		glDisable( GL_DEPTH_TEST );
-		glDisable( GL_CULL_FACE );
-		glDisable( GL_LIGHTING );
-		glEnable( GL_BLEND );
-
-		glActiveTexture( GL_TEXTURE0 );
-		glEnable( GL_TEXTURE_2D ); 
-
-		glActiveTexture( GL_TEXTURE1 );
-		glEnable( GL_TEXTURE_2D ); 
-		
-        glDepthMask( GL_FALSE );
-		glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
-		        
-        m_depthMask = false;
         		
         return true;
 	}
@@ -632,16 +648,16 @@ namespace Menge
 			}
 
 			glActiveTexture(GL_TEXTURE0 + i);
+
 			glEnable(GL_TEXTURE_2D);
 
+			glBindTexture( GL_TEXTURE_2D, textureStage.texture );
 			
 
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter );
 			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter );
-
-			glBindTexture( GL_TEXTURE_2D, textureStage.texture );
 			
 			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
 
@@ -679,7 +695,7 @@ namespace Menge
 		glVertexPointer( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) );
 
 		glEnableClientState( GL_COLOR_ARRAY );
-		glColorPointer( 4, GL_UNSIGNED_BYTE, 32,  reinterpret_cast<const GLvoid *>( 12 ) );
+		glColorPointer( 4, GL_UNSIGNED_BYTE, 32, reinterpret_cast<const GLvoid *>( 12 ) );
 
 		glEnableClientState( GL_TEXTURE_COORD_ARRAY );
 

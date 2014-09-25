@@ -59,42 +59,42 @@ namespace Menge
 		, m_currentFrame(0)        
 		, m_renderCamera3D(nullptr)
 		, m_renderViewport(nullptr)
-        , m_parentMovie(false)
+		, m_parentMovie(false)
 	{	
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie::setResourceMovie( ResourceMovie * _resourceMovie )
-    {
-        if( m_resourceMovie == _resourceMovie )
-        {
-            return;
-        }
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::setResourceMovie( ResourceMovie * _resourceMovie )
+	{
+		if( m_resourceMovie == _resourceMovie )
+		{
+			return;
+		}
 
-        m_resourceMovie = _resourceMovie;
+		m_resourceMovie = _resourceMovie;
 
-        this->destroyLayers_();
+		this->destroyLayers_();
 
-        if( m_resourceMovie != nullptr )
-        {
-            if( this->createLayers_() == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("Movie.setResourceMovie: '%s' can't create layer '%s'"
-                    , m_name.c_str()
-                    , m_resourceMovie->getName().c_str()
-                    );
+		if( m_resourceMovie != nullptr )
+		{
+			if( this->createLayers_() == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie.setResourceMovie: '%s' can't create layer '%s'"
+					, m_name.c_str()
+					, m_resourceMovie->getName().c_str()
+					);
 
-                m_resourceMovie = nullptr;
-                return;
-            }            
-        }  
+				m_resourceMovie = nullptr;
+				return;
+			}            
+		}  
 
-        this->recompile();      
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ResourceMovie * Movie::getResourceMovie() const
-    {
-        return m_resourceMovie;
-    }
+		this->recompile();      
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceMovie * Movie::getResourceMovie() const
+	{
+		return m_resourceMovie;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setParentMovie( bool _value )
 	{
@@ -158,8 +158,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_play( float _time )
 	{
-        //return false;
-        (void)_time;
+		//return false;
+		(void)_time;
 
 		if( this->isActivate() == false )
 		{
@@ -171,64 +171,64 @@ namespace Menge
 		//	, _time
 		//	);
 
-        //if( this->getName() == "Movie_OpenNewspaper"
-        //    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
-        //    //&& m_resourceMovieName != "Movie401_StreetToChurch_WallZOOM_otv"
-        //    )
-        //{
-        //    printf("!");
-        //}
-        
-        //m_frameTiming = 0.f;
+		//if( this->getName() == "Movie_OpenNewspaper"
+		//    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
+		//    //&& m_resourceMovieName != "Movie401_StreetToChurch_WallZOOM_otv"
+		//    )
+		//{
+		//    printf("!");
+		//}
 
-        //const ConstString & group = m_resourceMovie->getGroup();
+		//m_frameTiming = 0.f;
 
-        //if( group != "Inventory" )
-        //{
-        //    return false;
-        //}
+		//const ConstString & group = m_resourceMovie->getGroup();
 
-        if( m_reverse == true )
-        {
-            uint32_t frameCount = m_resourceMovie->getFrameCount();
+		//if( group != "Inventory" )
+		//{
+		//    return false;
+		//}
 
-            this->updateForwardFrame_( _time, frameCount, m_currentFrame );
-            //this->updateAnimatablePlay_();
-        }
-        else
-        {
-            //this->updateForwardFrame_( _time, 0, m_currentFrame );
-            this->updateAnimatablePlay_();
-        }
+		if( m_reverse == true )
+		{
+			uint32_t frameCount = m_resourceMovie->getFrameCount();
 
-        m_playIterator = this->getPlayCount();
+			this->updateForwardFrame_( _time, frameCount, m_currentFrame );
+			//this->updateAnimatablePlay_();
+		}
+		else
+		{
+			//this->updateForwardFrame_( _time, 0, m_currentFrame );
+			this->updateAnimatablePlay_();
+		}
+
+		m_playIterator = this->getPlayCount();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_restart( float _time, uint32_t _enumerator )
 	{
-        (void)_enumerator;
+		(void)_enumerator;
 
 		if( this->isActivate() == false )
 		{
 			return false;
 		}
 
-        if( m_reverse == true )
-        {
-            uint32_t frameCount = m_resourceMovie->getFrameCount();
+		if( m_reverse == true )
+		{
+			uint32_t frameCount = m_resourceMovie->getFrameCount();
 
-            this->updateForwardFrame_( _time, frameCount, m_currentFrame );
-            //this->updateAnimatablePlay_();
-        }
-        else
-        {
-            //this->updateForwardFrame_( _time, 0, m_currentFrame );
-            this->updateAnimatablePlay_();
-        }
+			this->updateForwardFrame_( _time, frameCount, m_currentFrame );
+			//this->updateAnimatablePlay_();
+		}
+		else
+		{
+			//this->updateForwardFrame_( _time, 0, m_currentFrame );
+			this->updateAnimatablePlay_();
+		}
 
-        m_playIterator = this->getPlayCount();
+		m_playIterator = this->getPlayCount();
 
 		return true;
 	}
@@ -279,7 +279,7 @@ namespace Menge
 		{
 			return true;
 		}
-		
+
 		MovieFrameSource frame;
 		if( _interpolate == true && _layer.immutable == false )
 		{
@@ -300,16 +300,16 @@ namespace Menge
 			}
 		}
 
-        const mt::vec3f coordinate(0.f, 0.f, 0.f);
+		const mt::vec3f coordinate(0.f, 0.f, 0.f);
 
 		_node->setTransformation( 
 			frame.position, 
 			frame.anchorPoint, 
-            coordinate,
+			coordinate,
 			frame.scale, 
 			frame.rotation
 			);
-		
+
 		if( _layer.isMovie() == false )
 		{
 			_node->setPersonalAlpha( frame.opacity );
@@ -322,17 +322,17 @@ namespace Menge
 		if( _layer.isAudio() == true )
 		{
 #   ifdef _DEBUG
-            if( dynamic_cast<Soundable *>( _node ) == nullptr )
-            {
-                LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Audio but node is not Soundable %s:%s"
-                    , this->getName().c_str()
-                    , _layer.name.c_str()
-                    , _node->getName().c_str()
-                    , _node->getType().c_str()
-                    );
+			if( dynamic_cast<Soundable *>( _node ) == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Audio but node is not Soundable %s:%s"
+					, this->getName().c_str()
+					, _layer.name.c_str()
+					, _node->getName().c_str()
+					, _node->getType().c_str()
+					);
 
-                return false;
-            }
+				return false;
+			}
 #   endif
 
 			SoundEmitter * sounding = static_cast<SoundEmitter *>( _node );
@@ -354,7 +354,7 @@ namespace Menge
 			return;
 		}
 
-        m_playIterator = this->getPlayCount();
+		m_playIterator = this->getPlayCount();
 
 		this->setTiming( 0.f );
 	}
@@ -369,7 +369,7 @@ namespace Menge
 
 			return;
 		}
-		
+
 		float duration = m_resourceMovie->getDuration();
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
@@ -387,11 +387,11 @@ namespace Menge
 			_node->localHide( true );
 		}
 
-        Nodies ns;
-        ns.node = _node;
+		Nodies ns;
+		ns.node = _node;
 		ns.animatable = dynamic_cast<Animatable *>(_node);
 		ns.layerId = _layer.id;
-        ns.child = (_layer.parent != movie_layer_parent_none);
+		ns.child = (_layer.parent != movie_layer_parent_none);
 
 		m_nodies[_layer.index] = ns;
 	}
@@ -493,10 +493,10 @@ namespace Menge
 
 			Node * node = this->getMovieNode_( layer );
 
-            if( node == nullptr )
-            {
-                continue;
-            }
+			if( node == nullptr )
+			{
+				continue;
+			}
 
 			Movie * movie = static_cast<Movie *>(node);
 
@@ -507,7 +507,7 @@ namespace Menge
 
 			return true;
 		}
-				
+
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -536,7 +536,7 @@ namespace Menge
 			{
 				continue;
 			}
-			
+
 			uint32_t layerId = nd.layerId;
 
 			const MovieLayer & layer = layers[layerId];
@@ -594,8 +594,8 @@ namespace Menge
 		if( m_resourceMovie->hasLayer( _name, &layer ) == true )
 		{			
 			float frameDuration = m_resourceMovie->getFrameDuration();
-			uint32_t indexIn = (uint32_t)(layer->in / frameDuration);
-			uint32_t indexOut = (uint32_t)(layer->out / frameDuration);
+			uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
 			uint32_t indexCount = indexOut - indexIn;
 
 			const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
@@ -643,7 +643,7 @@ namespace Menge
 			}
 
 			Movie * movie = static_cast<Movie *>(node);
-			
+
 			if( movie->getLayerPathLength( _name, _length ) == false )
 			{
 				continue;
@@ -708,7 +708,7 @@ namespace Menge
 			}
 
 			Movie * movie = static_cast<Movie *>(node);
-			
+
 			if( movie->visitSubMovie( _visitor ) == false )
 			{
 				continue;
@@ -717,447 +717,447 @@ namespace Menge
 
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    Movie * Movie::getSubMovie( const ConstString & _name ) const
-    {
-        if( m_resourceMovie == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie::getSubMovie %s invalid not compile"
-                , m_name.c_str()
-                );
-
-            return nullptr;
-        }
-
-        TMapSubMovies::const_iterator it_found = m_subMovies.find( _name );
-
-        if( it_found != m_subMovies.end() )
-        {	
-            Movie * submovie = m_subMovies.get_value( it_found );
-
-            return submovie;
-        }
-
-        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-        for( TVectorMovieLayers::const_iterator
-            it = layers.begin(),
-            it_end = layers.end();
-        it != it_end;
-        ++it )
-        {
-            const MovieLayer & layer = *it;
-
-            if( layer.isMovie() == false || layer.isSubMovie() == true )
-            {
-                continue;
-            }
-
-            Node * node = this->getMovieNode_( layer );
-
-            if( node == nullptr )
-            {
-                continue;
-            }
-
-            Movie * movie = static_cast<Movie *>(node);
-
-            Movie * submovie = movie->getSubMovie( _name );
-
-            if( submovie == nullptr )
-            {
-                continue;
-            }
-
-            return submovie;
-        }
-
-        LOGGER_ERROR(m_serviceProvider)("Movie::getSubMovie: %s not found submovie %s"
-            , m_name.c_str()
-            , _name.c_str()
-            );
-
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Movie::hasSubMovie( const ConstString & _name ) const
-    {
-        if( m_resourceMovie == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie.hasSubMovie %s invalid not compile"
-                , m_name.c_str()
-                );
-
-            return nullptr;
-        }
-
-        TMapSubMovies::const_iterator it_found = m_subMovies.find( _name );
-
-        if( it_found != m_subMovies.end() )
-        {	
-            return true;
-        }
-
-        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-        for( TVectorMovieLayers::const_iterator
-            it = layers.begin(),
-            it_end = layers.end();
-        it != it_end;
-        ++it )
-        {
-            const MovieLayer & layer = *it;
-
-            if( layer.isMovie() == false || layer.isSubMovie() == true )
-            {
-                continue;
-            }
-
-            Node * node = this->getMovieNode_( layer );
-
-            if( node == nullptr )
-            {
-                continue;
-            }
-
-            Movie * movie = static_cast<Movie *>(node);
-
-            if( movie->hasSubMovie( _name ) == false )
-            {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Movie::visitSockets( VisitorMovieSocket * _visitor )
-    {
-        if( m_resourceMovie == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie.visitSockets %s invalid not compile"
-                , m_name.c_str()
-                );
-
-            return false;
-        }
-
-        for( TMapSockets::const_iterator
-            it = m_sockets.begin(),
-            it_end = m_sockets.end();
-        it != it_end;
-        ++it )
-        {
-            const ConstString & name = m_sockets.get_key( it );
-            HotSpot * hotspot = m_sockets.get_value( it );
-
-            _visitor->visitSocket( this, name, hotspot );
-        }
-
-        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-        for( TVectorMovieLayers::const_iterator
-            it = layers.begin(),
-            it_end = layers.end();
-        it != it_end;
-        ++it )
-        {
-            const MovieLayer & layer = *it;
-
-            if( layer.isMovie() == false || layer.isSubMovie() == true )
-            {
-                continue;
-            }
-
-            Node * node = this->getMovieNode_( layer );
-
-            if( node == nullptr )
-            {
-                continue;
-            }
-
-            Movie * movie = static_cast<Movie *>(node);
-
-            if( movie->visitSockets( _visitor ) == false )
-            {
-                continue;
-            }
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    HotSpot * Movie::getSocket( const ConstString & _name ) const
-    {
-        if( m_resourceMovie == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie.getSocket %s invalid not compile %s"
-                , m_name.c_str()
-                , _name.c_str()
-                );
-
-            return nullptr;
-        }
-
-        TMapSockets::const_iterator it_found = m_sockets.find( _name );
-
-        if( it_found != m_sockets.end() )
-        {	
-            HotSpot * slot = m_sockets.get_value( it_found );
-
-            return slot;
-        }
-
-        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-        for( TVectorMovieLayers::const_iterator
-            it = layers.begin(),
-            it_end = layers.end();
-        it != it_end;
-        ++it )
-        {
-            const MovieLayer & layer = *it;
-
-            if( layer.isMovie() == false || layer.isSubMovie() == true )
-            {
-                continue;
-            }
-
-            Node * node = this->getMovieNode_( layer );
-
-            if( node == nullptr )
-            {
-                continue;
-            }
-
-            Movie * movie = static_cast<Movie *>(node);
-
-            HotSpot * socket = movie->getSocket( _name );
-
-            if( socket == nullptr )
-            {
-                continue;
-            }
-
-            return socket;
-        }
-
-        LOGGER_ERROR(m_serviceProvider)("Movie::getSocket: %s not found slot %s"
-            , m_name.c_str()
-            , _name.c_str()
-            );
-
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Movie::hasSocket( const ConstString & _name ) const
-    {
-        if( m_resourceMovie == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie.hasSocket %s invalid not compile"
-                , m_name.c_str()
-                );
-
-            return nullptr;
-        }
-
-        TMapSockets::const_iterator it_found = m_sockets.find( _name );
-
-        if( it_found != m_sockets.end() )
-        {	
-            return true;
-        }
-
-        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-        for( TVectorMovieLayers::const_iterator
-            it = layers.begin(),
-            it_end = layers.end();
-        it != it_end;
-        ++it )
-        {
-            const MovieLayer & layer = *it;
-
-            if( layer.isMovie() == false || layer.isSubMovie() == true )
-            {
-                continue;
-            }
-
-            Node * node = this->getMovieNode_( layer );
-
-            if( node == nullptr )
-            {
-                continue;
-            }
-
-            Movie * movie = static_cast<Movie *>(node);
-
-            if( movie->hasSocket( _name ) == false )
-            {
-                continue;
-            }
-
-            return true;
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Movie::setMovieEvent( const ConstString & _name, PyObject * _cb ) const
-    {
-        if( m_resourceMovie == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie.setMovieEvent %s invalid not compile"
-                , m_name.c_str()
-                );
-
-            return false;
-        }
-
-        TMapMovieEvent::const_iterator it_found = m_events.find( _name );
-
-        if( it_found != m_events.end() )
-        {	
-            MovieEvent * event = m_events.get_value( it_found );
-
-            event->setEvent( _cb );
-
-            return true;
-        }
-
-        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-        for( TVectorMovieLayers::const_iterator
-            it = layers.begin(),
-            it_end = layers.end();
-        it != it_end;
-        ++it )
-        {
-            const MovieLayer & layer = *it;
-
-            if( layer.isMovie() == false || layer.isSubMovie() == true )
-            {
-                continue;
-            }
-
-            Node * node = this->getMovieNode_( layer );
-
-            if( node == nullptr )
-            {
-                continue;
-            }
-
-            Movie * movie = static_cast<Movie *>(node);
-
-            if( movie->setMovieEvent( _name, _cb ) == true )
-            {
-                return true;
-            }
-        }
-
-        LOGGER_ERROR(m_serviceProvider)("Movie::setMovieEvent: %s not found event %s"
-            , m_name.c_str()
-            , _name.c_str()
-            );
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Movie::hasMovieEvent( const ConstString & _name ) const
-    {
-        if( m_resourceMovie == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie.hasMovieEvent %s invalid not compile"
-                , m_name.c_str()
-                );
-
-            return false;
-        }
-
-        TMapMovieEvent::const_iterator it_found = m_events.find( _name );
-
-        if( it_found != m_events.end() )
-        {	
-            return true;
-        }
-
-        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-        for( TVectorMovieLayers::const_iterator
-            it = layers.begin(),
-            it_end = layers.end();
-        it != it_end;
-        ++it )
-        {
-            const MovieLayer & layer = *it;
-
-            if( layer.isMovie() == false || layer.isSubMovie() == true )
-            {
-                continue;
-            }
-
-            Node * node = this->getMovieNode_( layer );
-
-            if( node == nullptr )
-            {
-                continue;
-            }
-
-            Movie * movie = static_cast<Movie *>(node);
-
-            if( movie->hasMovieEvent( _name ) == true )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Movie::createLayers_()
-    {
-        uint32_t maxLayerIndex = m_resourceMovie->getMaxLayerIndex();
-
-        Nodies ns;
-        ns.child = false;
+	//////////////////////////////////////////////////////////////////////////
+	Movie * Movie::getSubMovie( const ConstString & _name ) const
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::getSubMovie %s invalid not compile"
+				, m_name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		TMapSubMovies::const_iterator it_found = m_subMovies.find( _name );
+
+		if( it_found != m_subMovies.end() )
+		{	
+			Movie * submovie = m_subMovies.get_value( it_found );
+
+			return submovie;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			Movie * submovie = movie->getSubMovie( _name );
+
+			if( submovie == nullptr )
+			{
+				continue;
+			}
+
+			return submovie;
+		}
+
+		LOGGER_ERROR(m_serviceProvider)("Movie::getSubMovie: %s not found submovie %s"
+			, m_name.c_str()
+			, _name.c_str()
+			);
+
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::hasSubMovie( const ConstString & _name ) const
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie.hasSubMovie %s invalid not compile"
+				, m_name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		TMapSubMovies::const_iterator it_found = m_subMovies.find( _name );
+
+		if( it_found != m_subMovies.end() )
+		{	
+			return true;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			if( movie->hasSubMovie( _name ) == false )
+			{
+				continue;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::visitSockets( VisitorMovieSocket * _visitor )
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie.visitSockets %s invalid not compile"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+		for( TMapSockets::const_iterator
+			it = m_sockets.begin(),
+			it_end = m_sockets.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & name = m_sockets.get_key( it );
+			HotSpot * hotspot = m_sockets.get_value( it );
+
+			_visitor->visitSocket( this, name, hotspot );
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			if( movie->visitSockets( _visitor ) == false )
+			{
+				continue;
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	HotSpot * Movie::getSocket( const ConstString & _name ) const
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie.getSocket %s invalid not compile %s"
+				, m_name.c_str()
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		TMapSockets::const_iterator it_found = m_sockets.find( _name );
+
+		if( it_found != m_sockets.end() )
+		{	
+			HotSpot * slot = m_sockets.get_value( it_found );
+
+			return slot;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			HotSpot * socket = movie->getSocket( _name );
+
+			if( socket == nullptr )
+			{
+				continue;
+			}
+
+			return socket;
+		}
+
+		LOGGER_ERROR(m_serviceProvider)("Movie::getSocket: %s not found slot %s"
+			, m_name.c_str()
+			, _name.c_str()
+			);
+
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::hasSocket( const ConstString & _name ) const
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie.hasSocket %s invalid not compile"
+				, m_name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		TMapSockets::const_iterator it_found = m_sockets.find( _name );
+
+		if( it_found != m_sockets.end() )
+		{	
+			return true;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			if( movie->hasSocket( _name ) == false )
+			{
+				continue;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::setMovieEvent( const ConstString & _name, PyObject * _cb ) const
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie.setMovieEvent %s invalid not compile"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+		TMapMovieEvent::const_iterator it_found = m_events.find( _name );
+
+		if( it_found != m_events.end() )
+		{	
+			MovieEvent * event = m_events.get_value( it_found );
+
+			event->setEvent( _cb );
+
+			return true;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			if( movie->setMovieEvent( _name, _cb ) == true )
+			{
+				return true;
+			}
+		}
+
+		LOGGER_ERROR(m_serviceProvider)("Movie::setMovieEvent: %s not found event %s"
+			, m_name.c_str()
+			, _name.c_str()
+			);
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::hasMovieEvent( const ConstString & _name ) const
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie.hasMovieEvent %s invalid not compile"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+		TMapMovieEvent::const_iterator it_found = m_events.find( _name );
+
+		if( it_found != m_events.end() )
+		{	
+			return true;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			if( movie->hasMovieEvent( _name ) == true )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createLayers_()
+	{
+		uint32_t maxLayerIndex = m_resourceMovie->getMaxLayerIndex();
+
+		Nodies ns;
+		ns.child = false;
 		ns.layerId = 0;
-        ns.node = nullptr;
+		ns.node = nullptr;
 		ns.animatable = nullptr;
-        m_nodies.resize( maxLayerIndex + 1, ns );
+		m_nodies.resize( maxLayerIndex + 1, ns );
 
-        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-        for( TVectorMovieLayers::const_iterator
-            it = layers.begin(),
-            it_end = layers.end();
-        it != it_end;
-        ++it )
-        {
-            const MovieLayer & layer = *it;
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
 
-            if ( layer.type == CONST_STRING(m_serviceProvider, MovieSlot) )
-            {
-                if( this->createMovieSlot_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else if ( layer.type == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
-            {
-                if( this->createMovieSceneEffect_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else if ( layer.type == CONST_STRING(m_serviceProvider, MovieText) )
-            {
-                if( this->createMovieText_( layer ) == false )
-                {
-                    return false;
-                }
-            }
+			if ( layer.type == CONST_STRING(m_serviceProvider, MovieSlot) )
+			{
+				if( this->createMovieSlot_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
+			{
+				if( this->createMovieSceneEffect_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieText) )
+			{
+				if( this->createMovieText_( layer ) == false )
+				{
+					return false;
+				}
+			}
 			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) )
 			{
 				if( this->createMovieTextCenter_( layer ) == false )
@@ -1172,15 +1172,15 @@ namespace Menge
 					return false;
 				}
 			}
-            else if ( layer.type == CONST_STRING(m_serviceProvider, MovieNullObject) )
-            {
-                if( this->createMovieNullObject_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else if( layer.type == CONST_STRING(m_serviceProvider, Image) )
-            {
+			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieNullObject) )
+			{
+				if( this->createMovieNullObject_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else if( layer.type == CONST_STRING(m_serviceProvider, Image) )
+			{
 				if( layer.shape == false )
 				{
 					if( this->createMovieImage_( layer ) == false )
@@ -1195,70 +1195,70 @@ namespace Menge
 						return false;
 					}
 				}
-            }
-            else if( layer.type == CONST_STRING(m_serviceProvider, SolidSprite) )
-            {
-                if( this->createMovieImageSolid_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketImage) )
-            {
-                if( this->createMovieSocketImage_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketShape) )
-            {
-                if( this->createMovieSocketShape_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else if( layer.type == CONST_STRING(m_serviceProvider, Animation) )
-            {
-                if( this->createMovieAnimation_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else if( layer.type == CONST_STRING(m_serviceProvider, Movie) )
-            {
-                if( this->createMovieMovie_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else if( layer.type == CONST_STRING(m_serviceProvider, SubMovie) )
-            {
-                if( this->createMovieSubMovie_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else if( layer.type == CONST_STRING(m_serviceProvider, MovieInternalObject) )
-            {				
-                if( this->createMovieInternalObject_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else if( layer.type == CONST_STRING(m_serviceProvider, Video) )
-            {
-                if( this->createMovieVideo_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else if( layer.type == CONST_STRING(m_serviceProvider, Sound) )
-            {
-                if( this->createMovieSound_( layer ) == false )
-                {
-                    return false;
-                }
-            }
+			}
+			else if( layer.type == CONST_STRING(m_serviceProvider, SolidSprite) )
+			{
+				if( this->createMovieImageSolid_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketImage) )
+			{
+				if( this->createMovieSocketImage_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketShape) )
+			{
+				if( this->createMovieSocketShape_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else if( layer.type == CONST_STRING(m_serviceProvider, Animation) )
+			{
+				if( this->createMovieAnimation_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else if( layer.type == CONST_STRING(m_serviceProvider, Movie) )
+			{
+				if( this->createMovieMovie_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else if( layer.type == CONST_STRING(m_serviceProvider, SubMovie) )
+			{
+				if( this->createMovieSubMovie_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else if( layer.type == CONST_STRING(m_serviceProvider, MovieInternalObject) )
+			{				
+				if( this->createMovieInternalObject_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else if( layer.type == CONST_STRING(m_serviceProvider, Video) )
+			{
+				if( this->createMovieVideo_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else if( layer.type == CONST_STRING(m_serviceProvider, Sound) )
+			{
+				if( this->createMovieSound_( layer ) == false )
+				{
+					return false;
+				}
+			}
 			else if( layer.type == CONST_STRING(m_serviceProvider, SoundId) )
 			{
 				if( this->createMovieSoundId_( layer ) == false )
@@ -1266,13 +1266,13 @@ namespace Menge
 					return false;
 				}
 			}
-            else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter) )
-            {
-                if( this->createMovieParticleEmitter_( layer ) == false )
-                {
-                    return false;
-                }
-            }
+			else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter) )
+			{
+				if( this->createMovieParticleEmitter_( layer ) == false )
+				{
+					return false;
+				}
+			}
 			else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter2) )
 			{
 				if( this->createMovieParticleEmitter2_( layer ) == false )
@@ -1280,56 +1280,56 @@ namespace Menge
 					return false;
 				}
 			}
-            else if( layer.type == CONST_STRING(m_serviceProvider, MovieEvent) )
-            {
-                if( this->createMovieEvent_( layer ) == false )
-                {
-                    return false;
-                }
-            }
-            else
-            {
-                LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't create layer_node '%s' type '%s'"
-                    , m_name.c_str()
-                    , layer.source.c_str()
-                    , layer.type.c_str()
-                    );
+			else if( layer.type == CONST_STRING(m_serviceProvider, MovieEvent) )
+			{
+				if( this->createMovieEvent_( layer ) == false )
+				{
+					return false;
+				}
+			}
+			else
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't create layer_node '%s' type '%s'"
+					, m_name.c_str()
+					, layer.source.c_str()
+					, layer.type.c_str()
+					);
 
-                return false;
-            }
-        }
+				return false;
+			}
+		}
 
-        for( TVectorNodies::reverse_iterator
-            it = m_nodies.rbegin(),
-            it_end = m_nodies.rend();
-        it != it_end;
-        ++it )
-        {
-            const Nodies & ns = *it;
+		for( TVectorNodies::reverse_iterator
+			it = m_nodies.rbegin(),
+			it_end = m_nodies.rend();
+		it != it_end;
+		++it )
+		{
+			const Nodies & ns = *it;
 
-            if( ns.node == nullptr )
-            {
-                continue;
-            }
+			if( ns.node == nullptr )
+			{
+				continue;
+			}
 
-            if( ns.child == false )
-            {
-                continue;
-            }
+			if( ns.child == false )
+			{
+				continue;
+			}
 
-            this->addChildren( ns.node );
-        }
+			this->addChildren( ns.node );
+		}
 
-        this->createCamera3D_();
-				
+		this->createCamera3D_();
+
 		if( m_resourceMovie->hasAnchorPoint() == true )
 		{
 			const mt::vec3f & anchorPoint = m_resourceMovie->getAnchorPoint();
 			this->setOrigin( anchorPoint );
 		}
 
-        return true;
-    }
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::compileLayers_()
 	{
@@ -1370,36 +1370,36 @@ namespace Menge
 
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Movie::destroyLayers_()
-    {
-        for( TVectorNodies::const_iterator 
-            it = m_nodies.begin(),
-            it_end = m_nodies.end();
-        it != it_end;
-        ++it )
-        {
-            const Nodies & ns = *it;
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::destroyLayers_()
+	{
+		for( TVectorNodies::const_iterator 
+			it = m_nodies.begin(),
+			it_end = m_nodies.end();
+		it != it_end;
+		++it )
+		{
+			const Nodies & ns = *it;
 
-            if( ns.node == nullptr )
-            {
-                continue;
-            }
+			if( ns.node == nullptr )
+			{
+				continue;
+			}
 
-            ns.node->destroy();
-        }
+			ns.node->destroy();
+		}
 
-        m_nodies.clear();
+		m_nodies.clear();
 
-        m_slots.clear();
-        m_subMovies.clear();
-        m_sockets.clear();
-        m_events.clear();
-        m_sceneEffects.clear();
-        m_internals.clear();
+		m_slots.clear();
+		m_subMovies.clear();
+		m_sockets.clear();
+		m_events.clear();
+		m_sceneEffects.clear();
+		m_internals.clear();
 
-        this->destroyCamera3D_();
-    }
+		this->destroyCamera3D_();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieSlot_( const MovieLayer & _layer )
 	{
@@ -1411,35 +1411,35 @@ namespace Menge
 			return false;
 		}
 
-        layer_slot->setName( _layer.name );
+		layer_slot->setName( _layer.name );
 
-        layer_slot->setMovieName( m_name );
+		layer_slot->setMovieName( m_name );
 
 		m_slots.insert( _layer.name, layer_slot );
 
 		this->addMovieNode_( _layer, layer_slot );
-		
+
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool Movie::createMovieSceneEffect_( const MovieLayer & _layer )
-    {
-        MovieSceneEffect * sceneeffect_slot = NODE_SERVICE(m_serviceProvider)
-            ->createNodeT<MovieSceneEffect>( CONST_STRING(m_serviceProvider, MovieSceneEffect) );
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieSceneEffect_( const MovieLayer & _layer )
+	{
+		MovieSceneEffect * sceneeffect_slot = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<MovieSceneEffect>( CONST_STRING(m_serviceProvider, MovieSceneEffect) );
 
 		if( sceneeffect_slot == nullptr )
 		{
 			return false;
 		}
 
-        sceneeffect_slot->setName( _layer.name );
+		sceneeffect_slot->setName( _layer.name );
 
-        m_sceneEffects.insert( _layer.name, sceneeffect_slot );
+		m_sceneEffects.insert( _layer.name, sceneeffect_slot );
 
-        this->addMovieNode_( _layer, sceneeffect_slot );
+		this->addMovieNode_( _layer, sceneeffect_slot );
 
-        return true;
-    }
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieNullObject_( const MovieLayer & _layer )
 	{
@@ -1451,7 +1451,7 @@ namespace Menge
 			return false;
 		}
 
-        layer_slot->setName( _layer.name );
+		layer_slot->setName( _layer.name );
 
 		this->addMovieNode_( _layer, layer_slot );
 
@@ -1468,8 +1468,8 @@ namespace Menge
 			return false;
 		}
 
-        ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceReferenceT<ResourceImage>( _layer.source );
+		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceImage>( _layer.source );
 
 		if( resourceImage == nullptr )
 		{
@@ -1478,7 +1478,7 @@ namespace Menge
 
 		layer_sprite->setResourceImage( resourceImage );
 
-        layer_sprite->setName( _layer.name );
+		layer_sprite->setName( _layer.name );
 
 		if( _layer.blendingMode.empty() == true )
 		{
@@ -1581,8 +1581,8 @@ namespace Menge
 			return false;
 		}
 
-        ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceReferenceT<ResourceImage>( CONST_STRING(m_serviceProvider, WhitePixel) );
+		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceImage>( CONST_STRING(m_serviceProvider, WhitePixel) );
 
 		if( resourceImage == nullptr )
 		{
@@ -1591,7 +1591,7 @@ namespace Menge
 
 		layer_sprite->setResourceImage( resourceImage );
 
-        layer_sprite->setName( _layer.name );
+		layer_sprite->setName( _layer.name );
 
 		const ColourValue & color = resource->getColor();
 		layer_sprite->setLocalColor( color );
@@ -1608,9 +1608,9 @@ namespace Menge
 			//Empty
 		}
 		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
-        {
-            layer_sprite->setBlendAdd( true );
-        }
+		{
+			layer_sprite->setBlendAdd( true );
+		}
 		else
 		{
 			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
@@ -1626,64 +1626,64 @@ namespace Menge
 
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool Movie::createMovieSocketImage_( const MovieLayer & _layer )
-    {
-        HotSpotImage * layer_hotspotimage = NODE_SERVICE(m_serviceProvider)
-            ->createNodeT<HotSpotImage>( CONST_STRING(m_serviceProvider, HotSpotImage) );
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieSocketImage_( const MovieLayer & _layer )
+	{
+		HotSpotImage * layer_hotspotimage = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<HotSpotImage>( CONST_STRING(m_serviceProvider, HotSpotImage) );
 
 		if( layer_hotspotimage == nullptr )
 		{
 			return false;
 		}
 
-        ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceReferenceT<ResourceHIT>( _layer.source );
+		ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceHIT>( _layer.source );
 
 		if( resourceHIT == nullptr )
 		{
 			return false;
 		}
 
-        layer_hotspotimage->setResourceHIT( resourceHIT );
+		layer_hotspotimage->setResourceHIT( resourceHIT );
 
-        layer_hotspotimage->setName( _layer.name );
+		layer_hotspotimage->setName( _layer.name );
 
-        m_sockets.insert( _layer.name, layer_hotspotimage );
-		
-        this->addMovieNode_( _layer, layer_hotspotimage );
+		m_sockets.insert( _layer.name, layer_hotspotimage );
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Movie::createMovieSocketShape_( const MovieLayer & _layer )
-    {
-        HotSpotShape * layer_hotspotshape = NODE_SERVICE(m_serviceProvider)
-            ->createNodeT<HotSpotShape>( CONST_STRING(m_serviceProvider, HotSpotShape) );
+		this->addMovieNode_( _layer, layer_hotspotimage );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieSocketShape_( const MovieLayer & _layer )
+	{
+		HotSpotShape * layer_hotspotshape = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<HotSpotShape>( CONST_STRING(m_serviceProvider, HotSpotShape) );
 
 		if( layer_hotspotshape == nullptr )
 		{
 			return false;
 		}
 
-        ResourceShape * resourceShape = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceReferenceT<ResourceShape>( _layer.source );
+		ResourceShape * resourceShape = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceShape>( _layer.source );
 
 		if( resourceShape == nullptr )
 		{
 			return false;
 		}
 
-        layer_hotspotshape->setResourceShape( resourceShape );
+		layer_hotspotshape->setResourceShape( resourceShape );
 
-        layer_hotspotshape->setName( _layer.name );
+		layer_hotspotshape->setName( _layer.name );
 
-        m_sockets.insert( _layer.name, layer_hotspotshape );
+		m_sockets.insert( _layer.name, layer_hotspotshape );
 
-        this->addMovieNode_( _layer, layer_hotspotshape );
+		this->addMovieNode_( _layer, layer_hotspotshape );
 
-        return true;
-    }
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieAnimation_( const MovieLayer & _layer )
 	{
@@ -1695,8 +1695,8 @@ namespace Menge
 			return false;
 		}
 
-        ResourceAnimation * resourceAnimation = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceReferenceT<ResourceAnimation>( _layer.source );
+		ResourceAnimation * resourceAnimation = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceAnimation>( _layer.source );
 
 		if( resourceAnimation == nullptr )
 		{
@@ -1704,12 +1704,12 @@ namespace Menge
 		}
 
 		layer_animation->setResourceAnimation( resourceAnimation );
-        layer_animation->setName( _layer.name );
+		layer_animation->setName( _layer.name );
 
 		layer_animation->setIntervalStart( _layer.startInterval );
-        layer_animation->setPlayCount( _layer.playCount );
-        layer_animation->setScretch( _layer.scretch );
-        //layer_animation->setLoop( _layer.loop );
+		layer_animation->setPlayCount( _layer.playCount );
+		layer_animation->setScretch( _layer.scretch );
+		//layer_animation->setLoop( _layer.loop );
 
 		if( _layer.blendingMode.empty() == true )
 		{
@@ -1720,7 +1720,7 @@ namespace Menge
 			//Empty
 		}
 		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
-        {
+		{
 			layer_animation->setBlendAdd( true );
 		}
 		else
@@ -1749,10 +1749,10 @@ namespace Menge
 			return false;
 		}
 
-        layer_movie->setName( _layer.name );
+		layer_movie->setName( _layer.name );
 
-        ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceReferenceT<ResourceMovie>( _layer.source );
+		ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceMovie>( _layer.source );
 
 		if( resourceMovie == nullptr )
 		{
@@ -1760,12 +1760,12 @@ namespace Menge
 		}
 
 		layer_movie->setResourceMovie( resourceMovie );
-		
+
 		layer_movie->setIntervalStart( _layer.startInterval );
-        
-        layer_movie->setPlayCount( _layer.playCount );
-        layer_movie->setScretch( _layer.scretch );
-        //layer_movie->setLoop( _layer.loop );
+
+		layer_movie->setPlayCount( _layer.playCount );
+		layer_movie->setScretch( _layer.scretch );
+		//layer_movie->setLoop( _layer.loop );
 
 		layer_movie->setParentMovie( true );
 
@@ -1773,43 +1773,43 @@ namespace Menge
 
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool Movie::createMovieSubMovie_( const MovieLayer & _layer )
-    {
-        Movie * layer_movie = NODE_SERVICE(m_serviceProvider)
-            ->createNodeT<Movie>( CONST_STRING(m_serviceProvider, Movie) );
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieSubMovie_( const MovieLayer & _layer )
+	{
+		Movie * layer_movie = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<Movie>( CONST_STRING(m_serviceProvider, Movie) );
 
 		if( layer_movie == nullptr )
 		{
 			return false;
 		}
 
-        layer_movie->setName( _layer.name );
-        
-        ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceReferenceT<ResourceMovie>( _layer.source );
+		layer_movie->setName( _layer.name );
+
+		ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceMovie>( _layer.source );
 
 		if( resourceMovie == nullptr )
 		{
 			return false;
 		}
 
-        layer_movie->setResourceMovie( resourceMovie );
+		layer_movie->setResourceMovie( resourceMovie );
 
-        layer_movie->setIntervalStart( _layer.startInterval );
+		layer_movie->setIntervalStart( _layer.startInterval );
 
-        layer_movie->setPlayCount( _layer.playCount );
-        layer_movie->setScretch( _layer.scretch );
-        //layer_movie->setLoop( _layer.loop );
+		layer_movie->setPlayCount( _layer.playCount );
+		layer_movie->setScretch( _layer.scretch );
+		//layer_movie->setLoop( _layer.loop );
 
-        layer_movie->setParentMovie( true );
+		layer_movie->setParentMovie( true );
 
-        m_subMovies.insert( _layer.name, layer_movie );
+		m_subMovies.insert( _layer.name, layer_movie );
 
-        this->addMovieNode_( _layer, layer_movie );
+		this->addMovieNode_( _layer, layer_movie );
 
-        return true;
-    }
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieInternalObject_( const MovieLayer & _layer )
 	{
@@ -1821,10 +1821,10 @@ namespace Menge
 			return false;
 		}
 
-        movie_internal->setName( _layer.name );
+		movie_internal->setName( _layer.name );
 
-        ResourceInternalObject * resourceInternalObject = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceT<ResourceInternalObject>( _layer.source );
+		ResourceInternalObject * resourceInternalObject = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceT<ResourceInternalObject>( _layer.source );
 
 		if( resourceInternalObject == nullptr )
 		{
@@ -1832,9 +1832,9 @@ namespace Menge
 		}
 
 		movie_internal->setMovie( this );
-        movie_internal->setResourceInternalObject( resourceInternalObject );
+		movie_internal->setResourceInternalObject( resourceInternalObject );
 
-        m_internals.insert( _layer.name, movie_internal );
+		m_internals.insert( _layer.name, movie_internal );
 
 		this->addMovieNode_( _layer, movie_internal );
 
@@ -1851,8 +1851,8 @@ namespace Menge
 			return false;
 		}
 
-        ResourceVideo * resourceVideo = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceReferenceT<ResourceVideo>( _layer.source );
+		ResourceVideo * resourceVideo = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceVideo>( _layer.source );
 
 		if( resourceVideo == nullptr )
 		{
@@ -1860,12 +1860,12 @@ namespace Menge
 		}
 
 		layer_video->setResourceVideo( resourceVideo );
-        layer_video->setName( _layer.name );
+		layer_video->setName( _layer.name );
 
 		layer_video->setIntervalStart( _layer.startInterval );
-        layer_video->setPlayCount( _layer.playCount );
-        layer_video->setScretch( _layer.scretch );
-        //layer_video->setLoop( _layer.loop );
+		layer_video->setPlayCount( _layer.playCount );
+		layer_video->setScretch( _layer.scretch );
+		//layer_video->setLoop( _layer.loop );
 
 		if( _layer.blendingMode.empty() == true )
 		{
@@ -1905,8 +1905,8 @@ namespace Menge
 			return false;
 		}
 
-        ResourceSound * resourceSound = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceReferenceT<ResourceSound>( _layer.source );
+		ResourceSound * resourceSound = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceSound>( _layer.source );
 
 		if( resourceSound == nullptr )
 		{
@@ -1914,12 +1914,12 @@ namespace Menge
 		}
 
 		layer_sound->setResourceSound( resourceSound );
-        layer_sound->setName( _layer.name );
+		layer_sound->setName( _layer.name );
 		layer_sound->setIntervalStart( _layer.startInterval );
 
-        layer_sound->setPlayCount( _layer.playCount );
-        layer_sound->setScretch( _layer.scretch );
-        //layer_sound->setLoop( _layer.loop );
+		layer_sound->setPlayCount( _layer.playCount );
+		layer_sound->setScretch( _layer.scretch );
+		//layer_sound->setLoop( _layer.loop );
 
 		this->addMovieNode_( _layer, layer_sound );
 
@@ -1956,24 +1956,24 @@ namespace Menge
 
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool Movie::createMovieText_( const MovieLayer & _layer )
-    {
-        TextField * layer_text = NODE_SERVICE(m_serviceProvider)
-            ->createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieText_( const MovieLayer & _layer )
+	{
+		TextField * layer_text = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<TextField>( CONST_STRING(m_serviceProvider, TextField) );
 
 		if( layer_text == nullptr )
 		{
 			return false;
 		}
 
-        layer_text->setName( _layer.name );
-        layer_text->setTextID( _layer.name ); //Name = TextID
+		layer_text->setName( _layer.name );
+		layer_text->setTextID( _layer.name ); //Name = TextID
 
-        this->addMovieNode_( _layer, layer_text );
+		this->addMovieNode_( _layer, layer_text );
 
-        return true;
-    }
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieTextCenter_( const MovieLayer & _layer )
 	{
@@ -1988,7 +1988,7 @@ namespace Menge
 		layer_text->setName( _layer.name );
 		layer_text->setTextID( _layer.name ); //Name = TextID
 		layer_text->setCenterAlign();
-		
+
 		this->addMovieNode_( _layer, layer_text );
 
 		return true;
@@ -2059,30 +2059,30 @@ namespace Menge
 
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool Movie::createMovieEvent_( const MovieLayer & _layer )
-    {
-        MovieEvent * layer_event = NODE_SERVICE(m_serviceProvider)
-            ->createNodeT<MovieEvent>( CONST_STRING(m_serviceProvider, MovieEvent) );
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::createMovieEvent_( const MovieLayer & _layer )
+	{
+		MovieEvent * layer_event = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<MovieEvent>( CONST_STRING(m_serviceProvider, MovieEvent) );
 
-        layer_event->setName( _layer.name );
+		layer_event->setName( _layer.name );
 
-        layer_event->setResourceMovie( m_resourceMovie );
+		layer_event->setResourceMovie( m_resourceMovie );
 
-        m_events.insert( _layer.name, layer_event );
+		m_events.insert( _layer.name, layer_event );
 
-        this->addMovieNode_( _layer, layer_event );
+		this->addMovieNode_( _layer, layer_event );
 
-        return true;
-    }
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieParticleEmitter_( const MovieLayer & _layer )
 	{
 		ParticleEmitter * layer_particles = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<ParticleEmitter>( CONST_STRING(m_serviceProvider, ParticleEmitter) );
-        
-        ResourceEmitter * resourceEmitter = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceReferenceT<ResourceEmitter>( _layer.source );
+
+		ResourceEmitter * resourceEmitter = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceEmitter>( _layer.source );
 
 		if( resourceEmitter == nullptr )
 		{
@@ -2100,12 +2100,12 @@ namespace Menge
 		}
 
 		layer_particles->setResourceEmitterContainer( resourceEmitterContainer );
-        layer_particles->setName( _layer.name );
+		layer_particles->setName( _layer.name );
 
-        //layer_particles->setIntervalStart( _layer.startInterval );        
-        layer_particles->setPlayCount( _layer.playCount );
-        layer_particles->setScretch( _layer.scretch );
-        //layer_particles->setLoop( _layer.loop );
+		//layer_particles->setIntervalStart( _layer.startInterval );        
+		layer_particles->setPlayCount( _layer.playCount );
+		layer_particles->setScretch( _layer.scretch );
+		//layer_particles->setLoop( _layer.loop );
 
 		layer_particles->setLoop( true );
 
@@ -2171,40 +2171,40 @@ namespace Menge
 			return false;
 		}
 
-        if( m_resourceMovie.compile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie::_compile '%s' movie resource %s not compile"
-                , m_name.c_str() 
-                , m_resourceMovie->getName().c_str()
-                );
+		if( m_resourceMovie.compile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::_compile '%s' movie resource %s not compile"
+				, m_name.c_str() 
+				, m_resourceMovie->getName().c_str()
+				);
 
-            return false;
-        }
-        
+			return false;
+		}
+
 		bool reverse = this->getReverse();
 		this->updateReverse_( reverse );
 
-        Layer * layer = this->getLayer();
+		Layer * layer = this->getLayer();
 
-        for( TMapSceneEffects::iterator
-            it = m_sceneEffects.begin(),
-            it_end = m_sceneEffects.end();
-        it != it_end;
-        ++it )
-        {
-            MovieSceneEffect * sceneEffect = m_sceneEffects.get_value( it );
+		for( TMapSceneEffects::iterator
+			it = m_sceneEffects.begin(),
+			it_end = m_sceneEffects.end();
+		it != it_end;
+		++it )
+		{
+			MovieSceneEffect * sceneEffect = m_sceneEffects.get_value( it );
 
-            sceneEffect->setPropagateNode( layer );
-        }
+			sceneEffect->setPropagateNode( layer );
+		}
 
 		if( this->setupParent_() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s' can't setup layer parents"
-                , m_name.c_str()
-                );
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s' can't setup layer parents"
+				, m_name.c_str()
+				);
 
-            return false;
-        }
+			return false;
+		}
 
 		if( this->compileLayers_() == false )
 		{
@@ -2218,16 +2218,16 @@ namespace Menge
 
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Movie::_release()
-    {	
-        this->removeParent_();
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::_release()
+	{	
+		this->removeParent_();
 
-        //const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-        //this->releaseLayers_();
+		//const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		//this->releaseLayers_();
 
-        m_resourceMovie.release();
-    }
+		m_resourceMovie.release();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateCamera_()
 	{
@@ -2240,13 +2240,13 @@ namespace Menge
 		++it )
 		{
 			const MovieLayer & layer = *it;
-			
+
 			Node * node = this->getMovieNode_( layer );
 
-            if( node == nullptr )
-            {
-                continue;
-            }
+			if( node == nullptr )
+			{
+				continue;
+			}
 
 			if( layer.isThreeD() == true )
 			{
@@ -2258,7 +2258,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::setupParent_()
 	{
-        //float frameDuration = m_resourceMovie->getFrameDuration();
+		//float frameDuration = m_resourceMovie->getFrameDuration();
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
@@ -2272,14 +2272,14 @@ namespace Menge
 
 			Node * node = this->getMovieNode_( layer );
 
-            if( node == nullptr )
-            {
-                continue;
-            }
-             
-            this->updateFrameNode_( layer, node, 0, false, true );
-                 
-            if( layer.parent != 0 && layer.parent != movie_layer_parent_none )
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			this->updateFrameNode_( layer, node, 0, false, true );
+
+			if( layer.parent != 0 && layer.parent != movie_layer_parent_none )
 			{
 				Node * node_parent = this->getMovieParent_( layer );
 
@@ -2297,7 +2297,7 @@ namespace Menge
 			}
 		}
 
-        return true;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::removeParent_()
@@ -2314,10 +2314,10 @@ namespace Menge
 
 			Node * node = this->getMovieNode_( layer );
 
-            if( node == nullptr )
-            {
-                continue;
-            }
+			if( node == nullptr )
+			{
+				continue;
+			}
 
 			if( layer.parent == 0 )
 			{
@@ -2341,7 +2341,7 @@ namespace Menge
 
 			return;
 		}
-        
+
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( TVectorMovieLayers::const_iterator
@@ -2354,10 +2354,10 @@ namespace Menge
 
 			Node * node = this->getMovieNode_( layer );
 
-            if( node == nullptr )
-            {
-                continue;
-            }
+			if( node == nullptr )
+			{
+				continue;
+			}
 
 			if( layer.switcher == true )
 			{
@@ -2371,13 +2371,13 @@ namespace Menge
 
 			Animatable * animatable = this->getMovieAnimatable_( layer );
 
-            if( layer.timeRemap == false )
-            {
-                if( animatable->isPlay() == true )
-                {
-                    animatable->stop();
-                }
-            }
+			if( layer.timeRemap == false )
+			{
+				if( animatable->isPlay() == true )
+				{
+					animatable->stop();
+				}
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2400,13 +2400,13 @@ namespace Menge
 
 			Node * node = this->getMovieNode_( layer );
 
-            if( node == nullptr )
-            {
-                continue;
-            }
+			if( node == nullptr )
+			{
+				continue;
+			}
 
 			Animatable * animatable = this->getMovieAnimatable_( layer );
-			
+
 			animatable->setTiming( 0.f );
 		}
 	}
@@ -2417,7 +2417,7 @@ namespace Menge
 		{
 			return false;
 		}
-		
+
 		this->updateCamera_();
 
 		return true;
@@ -2426,7 +2426,7 @@ namespace Menge
 	void Movie::_deactivate()
 	{
 		this->stop();
-		
+
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2451,13 +2451,13 @@ namespace Menge
 			return;
 		}
 
-        //if( this->getName() == "Movie_OpenNewspaper"
-        //    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
-        //    //&& m_resourceMovieName != "Movie401_StreetToChurch_WallZOOM_otv"
-        //    )
-        //{
-        //    printf("!");
-        //}
+		//if( this->getName() == "Movie_OpenNewspaper"
+		//    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
+		//    //&& m_resourceMovieName != "Movie401_StreetToChurch_WallZOOM_otv"
+		//    )
+		//{
+		//    printf("!");
+		//}
 
 		if( m_playTime > _current )
 		{
@@ -2465,168 +2465,168 @@ namespace Menge
 			_timing -= deltha;
 		}
 
-        //float frameDuration = m_resourceMovie->getFrameDuration();
+		//float frameDuration = m_resourceMovie->getFrameDuration();
 
-        float speedFactor = this->getSpeedFactor();
+		float speedFactor = this->getSpeedFactor();
 		float realTiming = _timing * speedFactor;
 
 		m_frameTiming += realTiming;
-        
-        if( m_reverse == true )
-        {
-            this->updateBackward_();
-        }
-        else
-        {
-            this->updateForward_( _current );
-        }
+
+		if( m_reverse == true )
+		{
+			this->updateBackward_();
+		}
+		else
+		{
+			this->updateForward_( _current );
+		}
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Movie::updateForward_( float _time )
-    {
-        float frameDuration = m_resourceMovie->getFrameDuration();
-        uint32_t frameCount = m_resourceMovie->getFrameCount();
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateForward_( float _time )
+	{
+		float frameDuration = m_resourceMovie->getFrameDuration();
+		uint32_t frameCount = m_resourceMovie->getFrameCount();
 
-        const mt::vec2f & loopSegment = m_resourceMovie->getLoopSegment();
+		const mt::vec2f & loopSegment = m_resourceMovie->getLoopSegment();
 
-        if( m_intervalEnd > 0.f )
-        {
-            frameCount = (uint32_t)((m_intervalStart + m_intervalEnd) / frameDuration) - 1;
-        }
-        else
-        {   
-            if( loopSegment.y > 0.f )
-            {
-                frameCount = (uint32_t)(loopSegment.y / frameDuration) - 1;
-            }
-        }
-        
-        uint32_t lastFrame = m_currentFrame;
+		if( m_intervalEnd > 0.f )
+		{
+			frameCount = (uint32_t)((m_intervalStart + m_intervalEnd) / frameDuration + 0.5f) - 1;
+		}
+		else
+		{   
+			if( loopSegment.y > 0.f )
+			{
+				frameCount = (uint32_t)(loopSegment.y / frameDuration + 0.5f) - 1;
+			}
+		}
 
-        //bool needUpdate = true;
+		uint32_t lastFrame = m_currentFrame;
 
-        if( m_currentFrame != frameCount )
-        {
-            while( m_frameTiming >= frameDuration )
-            {
-                m_frameTiming -= frameDuration;
+		//bool needUpdate = true;
 
-                ++m_currentFrame;
+		if( m_currentFrame != frameCount )
+		{
+			while( m_frameTiming >= frameDuration )
+			{
+				m_frameTiming -= frameDuration;
 
-                //needUpdate = true;
+				++m_currentFrame;
 
-                if ( m_currentFrame == frameCount )
-                {
-                    this->updateForwardFrame_( _time, lastFrame, frameCount );
+				//needUpdate = true;
 
-                    //needUpdate = false;
+				if ( m_currentFrame == frameCount )
+				{
+					this->updateForwardFrame_( _time, lastFrame, frameCount );
+
+					//needUpdate = false;
 
 					bool loop = this->getLoop();
 					bool interrupt = this->isInterrupt();
 
-                    if( loop == false && --m_playIterator == 0 || interrupt == true )
-                    {
-                        lastFrame = frameCount;
-                        m_currentFrame = frameCount;
+					if( loop == false && --m_playIterator == 0 || interrupt == true )
+					{
+						lastFrame = frameCount;
+						m_currentFrame = frameCount;
 
-                        this->end();
+						this->end();
 
-                        return;
-                    }
-                    else
-                    {   
-                        //this->setTiming( 0.f );
+						return;
+					}
+					else
+					{   
+						//this->setTiming( 0.f );
 
-                        float beginTiming = m_frameTiming + loopSegment.x;
+						float beginTiming = m_frameTiming + loopSegment.x;
 
-                        this->setTiming( beginTiming );
+						this->setTiming( beginTiming );
 
-                        lastFrame = m_currentFrame;
+						lastFrame = m_currentFrame;
 
-                        this->updateAnimatablePlay_();
+						this->updateAnimatablePlay_();
 
-                        //needUpdate = false;
-                    }
-                }	
-            }
-        }
-        else
-        {
+						//needUpdate = false;
+					}
+				}	
+			}
+		}
+		else
+		{
 			this->updateForwardFrame_( _time, lastFrame, frameCount );
 
-            this->end();
+			this->end();
 
 			return;
-        }
+		}
 
-        //if( needUpdate == true )
-        //{
-            //printf("Movie::update %s %d:%d\n"
-            //    , this->getName().c_str()
-            //    , lastFrame
-            //    , m_currentFrame
-            //    );
+		//if( needUpdate == true )
+		//{
+		//printf("Movie::update %s %d:%d\n"
+		//    , this->getName().c_str()
+		//    , lastFrame
+		//    , m_currentFrame
+		//    );
 
-			this->updateForwardFrame_( _time, lastFrame, m_currentFrame );
-        //}
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie::updateBackward_()
-    {
-        float frameDuration = m_resourceMovie->getFrameDuration();
-        float duration = m_resourceMovie->getDuration();
-        //size_t frameCount = m_resourceMovie->getFrameCount();
+		this->updateForwardFrame_( _time, lastFrame, m_currentFrame );
+		//}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateBackward_()
+	{
+		float frameDuration = m_resourceMovie->getFrameDuration();
+		float duration = m_resourceMovie->getDuration();
+		//size_t frameCount = m_resourceMovie->getFrameCount();
 
-        uint32_t lastFrame = m_currentFrame;
-        
-        bool needUpdate = false;
+		uint32_t lastFrame = m_currentFrame;
 
-        if( m_currentFrame != 0 )
-        {
-            while( m_frameTiming >= frameDuration )
-            {
-                m_frameTiming -= frameDuration;
-                
-                --m_currentFrame;
+		bool needUpdate = false;
 
-                needUpdate = true;
+		if( m_currentFrame != 0 )
+		{
+			while( m_frameTiming >= frameDuration )
+			{
+				m_frameTiming -= frameDuration;
 
-                if( m_currentFrame == 0 )
-                {
-                    this->updateBackwardFrame_( lastFrame, 0 );
+				--m_currentFrame;
 
-                    needUpdate = false;
+				needUpdate = true;
 
-                    if( this->getLoop() == false && --m_playIterator == 0 )
-                    {           
-                        lastFrame = 0;
-                        m_currentFrame = 0;
+				if( m_currentFrame == 0 )
+				{
+					this->updateBackwardFrame_( lastFrame, 0 );
 
-                        this->end();
+					needUpdate = false;
 
-                        break;
-                    }
-                    else
-                    {                      
-                        this->setTiming( duration );
+					if( this->getLoop() == false && --m_playIterator == 0 )
+					{           
+						lastFrame = 0;
+						m_currentFrame = 0;
 
-                        lastFrame = m_currentFrame;
+						this->end();
 
-                        needUpdate = true;
-                    }
-                }
-            }
-        }
-        else
-        {
-            this->end();
-        }
+						break;
+					}
+					else
+					{                      
+						this->setTiming( duration );
 
-        if( needUpdate == true )
-        {
-            this->updateBackwardFrame_( lastFrame, m_currentFrame );
-        }
-    }
+						lastFrame = m_currentFrame;
+
+						needUpdate = true;
+					}
+				}
+			}
+		}
+		else
+		{
+			this->end();
+		}
+
+		if( needUpdate == true )
+		{
+			this->updateBackwardFrame_( lastFrame, m_currentFrame );
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateForwardFrame_( float _time, uint32_t _beginFrame, uint32_t _endFrame )
 	{
@@ -2640,250 +2640,250 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-            if( layer.isSubMovie() == true )
-            {
-                continue;
-            }
-            
-            Node * node = this->getMovieNode_( layer );
-            
-            if( node == nullptr )
-            {
-                continue;
-            }
+			if( layer.isSubMovie() == true )
+			{
+				continue;
+			}
 
-            if( layer.isNode() == true )
-            {
-                this->updateForwardFrameNode_( _time, _beginFrame, _endFrame, layer, node );
-            }
-            else if( layer.isExtra() == true )
-            {
-                 MovieNodeExtra * extra = static_cast<MovieNodeExtra *>(node);
+			Node * node = this->getMovieNode_( layer );
 
-                 extra->movieForwardUpdate( _time, _beginFrame, _endFrame, layer );
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie::updateForwardFrameNode_( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer, Node * _node )
-    {
-        (void)_time;
+			if( node == nullptr )
+			{
+				continue;
+			}
 
-        float layerIn = _layer.in;
-        float layerOut = _layer.out;
+			if( layer.isNode() == true )
+			{
+				this->updateForwardFrameNode_( _time, _beginFrame, _endFrame, layer, node );
+			}
+			else if( layer.isExtra() == true )
+			{
+				MovieNodeExtra * extra = static_cast<MovieNodeExtra *>(node);
 
-        float frameDuration = m_resourceMovie->getFrameDuration();
-
-        uint32_t indexIn = (uint32_t)((layerIn / frameDuration));
-        uint32_t indexOut = (uint32_t)((layerOut / frameDuration));
-
-        if( indexIn > _endFrame || indexOut < _beginFrame )
-        {
-            return;
-        }
-
-        if( _beginFrame < indexIn && _endFrame >= indexIn && _endFrame < indexOut )
-        {
-			uint32_t frameId = _endFrame - indexIn;
-
-            this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, true );
-
-            _node->localHide( false );
-
-            if( _layer.isAnimatable() == true )
-            {
-                Animatable * animatable = this->getMovieAnimatable_( _layer );
-
-                if( _layer.timeRemap == false )
-                {
-                    if( animatable->isPlay() == true )
-                    {
-                        animatable->stop();
-                    }
-
-                    uint32_t frame = _endFrame - indexIn;
-                    float timing = frame * frameDuration;
-
-                    animatable->setTiming( timing );
-
-
-                    float movieTiming = this->getTiming();
-                    animatable->play( movieTiming );
-                }
-                else
-                {
-					const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
-
-                    float timing;
-                    if( framePack->getLayerTimeRemap( _layer.index, _endFrame - indexIn, timing ) == false )
-                    {
-                        return;
-                    }
-
-                    animatable->setTiming( timing );
-                }
-            }
-        }
-        else if( _endFrame >= indexOut && _beginFrame >= indexIn && _beginFrame < indexOut )
-        {
-            //printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
-            _node->localHide( true );
-
-            if( _layer.isAnimatable() == true )
-            {
-                Animatable * animatable = this->getMovieAnimatable_( _layer );
-
-                if( _layer.timeRemap == false )
-                {
-                    if( animatable->isPlay() == true && _layer.isUnstoppable() == false )
-                    {
-                        animatable->stop();
-
-                        ///Test TestTestTestTest
-                        float timing = (indexOut - indexIn) * frameDuration;                        
-                        animatable->setTiming( timing );
-                    }
-                }
-                else
-                {
-					const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
-
-                    float timing;
-                    if( framePack->getLayerTimeRemap( _layer.index, indexOut - indexIn, timing ) == false )
-                    {
-                        return;
-                    }
-
-                    animatable->setTiming( timing );
-                }
-            }
-        }
-        else if( _beginFrame >= indexIn && _endFrame >= indexIn && _endFrame < indexOut )
-        {
-			uint32_t frameId = _endFrame - indexIn;
-		
-            this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, false );
-
-            if( _layer.isAnimatable() == true )
-            {
-                Animatable * animatable = this->getMovieAnimatable_( _layer );
-
-                if( _layer.timeRemap == false )
-                {
-                }
-                else
-                {
-					const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
-
-                    float timing;
-                    if( framePack->getLayerTimeRemap( _layer.index, _endFrame - indexIn, timing ) == false )
-                    {
-                        return;
-                    }
-
-                    animatable->setTiming( timing );
-                }
-            }
-        }			
+				extra->movieForwardUpdate( _time, _beginFrame, _endFrame, layer );
+			}
+		}
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Movie::updateBackwardFrame_( uint32_t _beginFrame, uint32_t _endFrame )
-    {
-        float frameDuration = m_resourceMovie->getFrameDuration();
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateForwardFrameNode_( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer, Node * _node )
+	{
+		(void)_time;
 
-        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		float layerIn = _layer.in;
+		float layerOut = _layer.out;
 
-        for( TVectorMovieLayers::const_iterator
-            it = layers.begin(),
-            it_end = layers.end();
-        it != it_end;
-        ++it )
-        {
-            const MovieLayer & layer = *it;
+		float frameDuration = m_resourceMovie->getFrameDuration();
 
-            if( layer.isSubMovie() == true )
-            {
-                continue;
-            }
+		uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
+		uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
 
-            float layerIn = layer.in;
-            float layerOut = layer.out;
+		if( indexIn > _endFrame || indexOut < _beginFrame )
+		{
+			return;
+		}
 
-            uint32_t indexIn = (uint32_t)((layerIn / frameDuration));
-            uint32_t indexOut = (uint32_t)((layerOut / frameDuration));
+		if( _beginFrame < indexIn && _endFrame >= indexIn && _endFrame < indexOut )
+		{
+			uint32_t frameId = _endFrame - indexIn;
 
-            if( indexIn > _beginFrame || indexOut < _endFrame )
-            {
-                continue;
-            }
-            
-            Node * node = this->getMovieNode_( layer );			
+			this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, true );
 
-            if( _beginFrame >= indexOut && _endFrame <= indexOut && _endFrame > indexIn )
-            {
+			_node->localHide( false );
+
+			if( _layer.isAnimatable() == true )
+			{
+				Animatable * animatable = this->getMovieAnimatable_( _layer );
+
+				if( _layer.timeRemap == false )
+				{
+					if( animatable->isPlay() == true )
+					{
+						animatable->stop();
+					}
+
+					uint32_t frame = _endFrame - indexIn;
+					float timing = frame * frameDuration;
+
+					animatable->setTiming( timing );
+
+
+					float movieTiming = this->getTiming();
+					animatable->play( movieTiming );
+				}
+				else
+				{
+					const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
+					float timing;
+					if( framePack->getLayerTimeRemap( _layer.index, _endFrame - indexIn, timing ) == false )
+					{
+						return;
+					}
+
+					animatable->setTiming( timing );
+				}
+			}
+		}
+		else if( _endFrame >= indexOut && _beginFrame >= indexIn && _beginFrame < indexOut )
+		{
+			//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
+			_node->localHide( true );
+
+			if( _layer.isAnimatable() == true )
+			{
+				Animatable * animatable = this->getMovieAnimatable_( _layer );
+
+				if( _layer.timeRemap == false )
+				{
+					if( animatable->isPlay() == true && _layer.isUnstoppable() == false )
+					{
+						animatable->stop();
+
+						///Test TestTestTestTest
+						float timing = (indexOut - indexIn) * frameDuration;                        
+						animatable->setTiming( timing );
+					}
+				}
+				else
+				{
+					const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
+					float timing;
+					if( framePack->getLayerTimeRemap( _layer.index, indexOut - indexIn, timing ) == false )
+					{
+						return;
+					}
+
+					animatable->setTiming( timing );
+				}
+			}
+		}
+		else if( _beginFrame >= indexIn && _endFrame >= indexIn && _endFrame < indexOut )
+		{
+			uint32_t frameId = _endFrame - indexIn;
+
+			this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, false );
+
+			if( _layer.isAnimatable() == true )
+			{
+				Animatable * animatable = this->getMovieAnimatable_( _layer );
+
+				if( _layer.timeRemap == false )
+				{
+				}
+				else
+				{
+					const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+
+					float timing;
+					if( framePack->getLayerTimeRemap( _layer.index, _endFrame - indexIn, timing ) == false )
+					{
+						return;
+					}
+
+					animatable->setTiming( timing );
+				}
+			}
+		}			
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateBackwardFrame_( uint32_t _beginFrame, uint32_t _endFrame )
+	{
+		float frameDuration = m_resourceMovie->getFrameDuration();
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			float layerIn = layer.in;
+			float layerOut = layer.out;
+
+			uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
+
+			if( indexIn > _beginFrame || indexOut < _endFrame )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );			
+
+			if( _beginFrame >= indexOut && _endFrame <= indexOut && _endFrame > indexIn )
+			{
 				uint32_t frameId = _endFrame - indexIn;
-                this->updateFrameNode_( layer, node, frameId, false, true );
+				this->updateFrameNode_( layer, node, frameId, false, true );
 
-                node->localHide(false);
+				node->localHide(false);
 
-                if( layer.isAnimatable() == true )
-                {
-                    Animatable * animatable = this->getMovieAnimatable_( layer );
+				if( layer.isAnimatable() == true )
+				{
+					Animatable * animatable = this->getMovieAnimatable_( layer );
 
-                    if( animatable->isPlay() == true )
-                    {
-                        animatable->stop();
-                    }
+					if( animatable->isPlay() == true )
+					{
+						animatable->stop();
+					}
 
-                    uint32_t frame = _endFrame - indexIn;
-                    float timing = frame * frameDuration;
+					uint32_t frame = _endFrame - indexIn;
+					float timing = frame * frameDuration;
 
-                    animatable->setTiming( timing );
+					animatable->setTiming( timing );
 
-                    float playTime = this->getPlayTime();
-                    animatable->play( playTime );                                       
-                }
-            }
-            else if( _endFrame <= indexIn && _beginFrame <= indexOut && _beginFrame > indexIn )
-            {
-                node->localHide(true);
+					float playTime = this->getPlayTime();
+					animatable->play( playTime );                                       
+				}
+			}
+			else if( _endFrame <= indexIn && _beginFrame <= indexOut && _beginFrame > indexIn )
+			{
+				node->localHide(true);
 
-                if( layer.isAnimatable() == true )
-                {
-                    Animatable * animatable = this->getMovieAnimatable_( layer );
+				if( layer.isAnimatable() == true )
+				{
+					Animatable * animatable = this->getMovieAnimatable_( layer );
 
-                    if( animatable->isPlay() == true )
-                    {
-                        animatable->stop();
+					if( animatable->isPlay() == true )
+					{
+						animatable->stop();
 
-                        float timing = (indexOut - indexIn) * frameDuration;
-                        animatable->setTiming( timing );
-                    }
-                }
-            }
-            else if( _beginFrame < indexOut && _endFrame <= indexOut && _endFrame > indexIn )
-            {
+						float timing = (indexOut - indexIn) * frameDuration;
+						animatable->setTiming( timing );
+					}
+				}
+			}
+			else if( _beginFrame < indexOut && _endFrame <= indexOut && _endFrame > indexIn )
+			{
 				uint32_t frameId = _endFrame - indexIn;
 
-                this->updateFrameNode_( layer, node, frameId, false, false );
-            }			
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie::_localHide( bool _value )
-    {
-        this->hide( _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie::_setPersonalColor( const ColourValue& _color )
-    {
-        this->setLocalColor( _color );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie::_setPersonalAlpha( float _alpha )
-    {
-        this->setLocalAlpha( _alpha );
-    }
+				this->updateFrameNode_( layer, node, frameId, false, false );
+			}			
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::_localHide( bool _value )
+	{
+		this->hide( _value );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::_setPersonalColor( const ColourValue& _color )
+	{
+		this->setLocalColor( _color );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::_setPersonalAlpha( float _alpha )
+	{
+		this->setLocalAlpha( _alpha );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateTiming_()
 	{
@@ -2902,21 +2902,21 @@ namespace Menge
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
-			uint32_t indexIn = (uint32_t)((layerIn / frameDuration));
-			uint32_t indexOut = (uint32_t)((layerOut / frameDuration));
-		
+			uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
+
 			Node * node = this->getMovieNode_( layer );
 
-            if( node == nullptr )
-            {
-                continue;
-            }
+			if( node == nullptr )
+			{
+				continue;
+			}
 
 			if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
 			{            
 				uint32_t frameId = m_currentFrame - indexIn;
 
-                this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
+				this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
 
 				if( layer.switcher == true && m_currentFrame + 1 == indexOut )
 				{
@@ -2927,154 +2927,154 @@ namespace Menge
 					node->localHide(false);
 				}
 
-                if( layer.isAnimatable() == true )
-                {
-                    Animatable * animatable = this->getMovieAnimatable_( layer );
-                
-                    if( layer.timeRemap == false )
-                    {
-                        float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
-                        animatable->setTiming( timing );
-                    }
-                    else
-                    {
+				if( layer.isAnimatable() == true )
+				{
+					Animatable * animatable = this->getMovieAnimatable_( layer );
+
+					if( layer.timeRemap == false )
+					{
+						float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
+						animatable->setTiming( timing );
+					}
+					else
+					{
 						const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
-                        float timing;
-                        if( framePack->getLayerTimeRemap( layer.index, m_currentFrame - indexIn, timing ) == false )
-                        {
-                            continue;
-                        }
+						float timing;
+						if( framePack->getLayerTimeRemap( layer.index, m_currentFrame - indexIn, timing ) == false )
+						{
+							continue;
+						}
 
-                        animatable->setTiming( timing );
-                    }
-                }
+						animatable->setTiming( timing );
+					}
+				}
 			}
-            else
-            {
-                node->localHide(true);
-            }
+			else
+			{
+				node->localHide(true);
+			}
 		}
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Movie::updateAnimatablePlay_()
-    {
-        float frameDuration = m_resourceMovie->getFrameDuration();
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::updateAnimatablePlay_()
+	{
+		float frameDuration = m_resourceMovie->getFrameDuration();
 
-        const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-        for( TVectorMovieLayers::const_iterator
-            it = layers.begin(),
-            it_end = layers.end();
-        it != it_end;
-        ++it )
-        {
-            const MovieLayer & layer = *it;
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
 
-            if( layer.isSubMovie() == true )
-            {
-                continue;
-            }
+			if( layer.isSubMovie() == true )
+			{
+				continue;
+			}
 
-            float layerIn = layer.in;
-            float layerOut = layer.out;
+			float layerIn = layer.in;
+			float layerOut = layer.out;
 
-            uint32_t indexIn = (uint32_t)((layerIn / frameDuration));
-            uint32_t indexOut = (uint32_t)((layerOut / frameDuration));
+			uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
 
-            if( indexIn > m_currentFrame || indexOut < m_currentFrame )
-            {
-                continue;
-            }
+			if( indexIn > m_currentFrame || indexOut < m_currentFrame )
+			{
+				continue;
+			}
 
-            Node * node = this->getMovieNode_( layer );			
-            
-            if( node == nullptr )
-            {
-                continue;
-            }
+			Node * node = this->getMovieNode_( layer );			
 
-            if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
-            {                
-                uint32_t frameId = m_currentFrame - indexIn;
+			if( node == nullptr )
+			{
+				continue;
+			}
 
-                this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
+			if( m_currentFrame >= indexIn && m_currentFrame < indexOut )
+			{                
+				uint32_t frameId = m_currentFrame - indexIn;
 
-                node->localHide( false );
+				this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
 
-                if( layer.isAnimatable() == true )
-                {
-                    Animatable * animatable = this->getMovieAnimatable_( layer );
+				node->localHide( false );
 
-                    if( layer.timeRemap == false )
-                    {
-                        if( animatable->isPlay() == true && animatable->getLoop() == false )
-                        {
-                            animatable->stop();
-                        }
+				if( layer.isAnimatable() == true )
+				{
+					Animatable * animatable = this->getMovieAnimatable_( layer );
 
-                        float timing = frameId * frameDuration;
+					if( layer.timeRemap == false )
+					{
+						if( animatable->isPlay() == true && animatable->getLoop() == false )
+						{
+							animatable->stop();
+						}
 
-                        animatable->setTiming( timing );
+						float timing = frameId * frameDuration;
 
-                        float movieTiming = this->getTiming();
+						animatable->setTiming( timing );
+
+						float movieTiming = this->getTiming();
 
 						if( animatable->isPlay() == false )
-                        {
+						{
 							animatable->play( movieTiming );
 						}
-                    }
-                    else
-                    {
+					}
+					else
+					{
 						const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
-                        float timing;
-                        if( framePack->getLayerTimeRemap( layer.index, frameId, timing ) == false )
-                        {
-                            continue;
-                        }
+						float timing;
+						if( framePack->getLayerTimeRemap( layer.index, frameId, timing ) == false )
+						{
+							continue;
+						}
 
-                        animatable->setTiming( timing );
-                    }
-                }
-            }
-            else
-            {
+						animatable->setTiming( timing );
+					}
+				}
+			}
+			else
+			{
 				uint32_t frameId = indexOut - indexIn;
 
-                node->localHide( true );
+				node->localHide( true );
 
-                if( layer.isAnimatable() == true )
-                {
-                    Animatable * animatable = this->getMovieAnimatable_( layer );
+				if( layer.isAnimatable() == true )
+				{
+					Animatable * animatable = this->getMovieAnimatable_( layer );
 
-                    if( layer.timeRemap == false )
-                    {
-                        if( animatable->isPlay() == true )
-                        {
-                            animatable->stop();
+					if( layer.timeRemap == false )
+					{
+						if( animatable->isPlay() == true )
+						{
+							animatable->stop();
 
-                            ///Test TestTestTestTest
-                            float timing = frameId * frameDuration;
-                            animatable->setTiming( timing );
-                        }
-                    }
-                    else
-                    {
+							///Test TestTestTestTest
+							float timing = frameId * frameDuration;
+							animatable->setTiming( timing );
+						}
+					}
+					else
+					{
 						const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
-                        float timing;
-                        if( framePack->getLayerTimeRemap( layer.index, frameId, timing ) == false )
-                        {
-                            continue;
-                        }
+						float timing;
+						if( framePack->getLayerTimeRemap( layer.index, frameId, timing ) == false )
+						{
+							continue;
+						}
 
-                        animatable->setTiming( timing );
-                    }
-                }
-            }
-        }
-    }
+						animatable->setTiming( timing );
+					}
+				}
+			}
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateClipLastFrame_()
 	{
@@ -3093,8 +3093,8 @@ namespace Menge
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
-			uint32_t indexIn = (uint32_t)((layerIn / frameDuration));
-			uint32_t indexOut = (uint32_t)((layerOut / frameDuration));
+			uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
 
 			if( indexOut < m_currentFrame )
 			{
@@ -3103,10 +3103,10 @@ namespace Menge
 
 			Node * node = this->getMovieNode_( layer );
 
-            if( node == nullptr )
-            {
-                continue;
-            }
+			if( node == nullptr )
+			{
+				continue;
+			}
 
 			if( m_currentFrame > indexIn )
 			{
@@ -3122,11 +3122,11 @@ namespace Menge
 			return;
 		}
 
-        m_renderCamera3D = NODE_SERVICE(m_serviceProvider)
-            ->createNodeT<Camera3D>( CONST_STRING(m_serviceProvider, Camera3D) );
+		m_renderCamera3D = NODE_SERVICE(m_serviceProvider)
+			->createNodeT<Camera3D>( CONST_STRING(m_serviceProvider, Camera3D) );
 
-        const ConstString & name = this->getName();
-        m_renderCamera3D->setName( name );
+		const ConstString & name = this->getName();
+		m_renderCamera3D->setName( name );
 
 		const MovieLayerCamera3D & camera3D = m_resourceMovie->getCamera3D();
 
@@ -3159,7 +3159,7 @@ namespace Menge
 		vp.end.y = camera3D.height;
 
 		m_renderViewport->setViewport( vp );
-        
+
 		this->addChildren( m_renderViewport );
 		//m_renderCamera3D->setRelationTransformation( NULL );
 	}
@@ -3186,10 +3186,10 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("Warning: Movie::_setSpeedFactor not compile '%s'"
 				, m_name.c_str() 
 				);	
-			
+
 			return;
 		}
-		
+
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( TVectorMovieLayers::const_iterator
@@ -3204,7 +3204,7 @@ namespace Menge
 			{
 				continue;
 			}
-					
+
 			Animatable * animatable = this->getMovieAnimatable_( layer );
 
 			animatable->setSpeedFactor( _factor );
@@ -3237,7 +3237,7 @@ namespace Menge
 			{
 				continue;
 			}
-			
+
 			Animatable * animatable = this->getMovieAnimatable_( layer );
 
 			animatable->setReverse( _reverse );
@@ -3246,7 +3246,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::_interrupt( uint32_t _enumerator )
 	{
-        (void)_enumerator;
+		(void)_enumerator;
 
 		return false;
 	}

@@ -76,6 +76,7 @@ namespace Menge
 		, m_hasWindowPanel(true)
 		, m_player(nullptr)
 		, m_accountProvider(nullptr)
+		, m_soundVolumeProvider(nullptr)
 		, m_accountService(nullptr)
 		, m_defaultArrow(nullptr)
 		, m_timingFactor(1.f)

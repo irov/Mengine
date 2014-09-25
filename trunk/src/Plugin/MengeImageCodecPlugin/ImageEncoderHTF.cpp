@@ -65,7 +65,10 @@ namespace Menge
 		uint32_t width = dataInfo->width;
 		uint32_t height = dataInfo->height;
 
-        m_stream->write( &width, sizeof(width) );		
+		width = width > 4 ? width : 4;
+		height = height > 4 ? height : 4;
+
+        m_stream->write( &width, sizeof(width) );
         m_stream->write( &height, sizeof(height) );
 
 		uint32_t format = s_convertFormat( dataInfo->format );

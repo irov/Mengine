@@ -118,7 +118,7 @@ namespace Menge
 		}
 
 		float frameDuration = m_resourceMovie->getFrameDuration();
-		m_currentFrame = (uint32_t)floorf( (_timing / frameDuration) + 0.5f );
+		m_currentFrame = (uint32_t)(_timing / frameDuration);
 
 		uint32_t frameCount = m_resourceMovie->getFrameCount();
 		if( m_currentFrame > frameCount )
@@ -594,8 +594,8 @@ namespace Menge
 		if( m_resourceMovie->hasLayer( _name, &layer ) == true )
 		{			
 			float frameDuration = m_resourceMovie->getFrameDuration();
-			uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
-			uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
+			uint32_t indexIn = (uint32_t)(layer->in / frameDuration);
+			uint32_t indexOut = (uint32_t)(layer->out / frameDuration);
 			uint32_t indexCount = indexOut - indexIn;
 
 			const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
@@ -2491,13 +2491,13 @@ namespace Menge
 
         if( m_intervalEnd > 0.f )
         {
-            frameCount = (uint32_t)((m_intervalStart + m_intervalEnd) / frameDuration + 0.5f) - 1;
+            frameCount = (uint32_t)((m_intervalStart + m_intervalEnd) / frameDuration) - 1;
         }
         else
         {   
             if( loopSegment.y > 0.f )
             {
-                frameCount = (uint32_t)(loopSegment.y / frameDuration + 0.5f) - 1;
+                frameCount = (uint32_t)(loopSegment.y / frameDuration) - 1;
             }
         }
         
@@ -2674,8 +2674,8 @@ namespace Menge
 
         float frameDuration = m_resourceMovie->getFrameDuration();
 
-        uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
-        uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
+        uint32_t indexIn = (uint32_t)((layerIn / frameDuration));
+        uint32_t indexOut = (uint32_t)((layerOut / frameDuration));
 
         if( indexIn > _endFrame || indexOut < _beginFrame )
         {
@@ -2809,8 +2809,8 @@ namespace Menge
             float layerIn = layer.in;
             float layerOut = layer.out;
 
-            uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
-            uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
+            uint32_t indexIn = (uint32_t)((layerIn / frameDuration));
+            uint32_t indexOut = (uint32_t)((layerOut / frameDuration));
 
             if( indexIn > _beginFrame || indexOut < _endFrame )
             {
@@ -2902,8 +2902,8 @@ namespace Menge
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
-			uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
-			uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
+			uint32_t indexIn = (uint32_t)((layerIn / frameDuration));
+			uint32_t indexOut = (uint32_t)((layerOut / frameDuration));
 		
 			Node * node = this->getMovieNode_( layer );
 
@@ -2979,8 +2979,8 @@ namespace Menge
             float layerIn = layer.in;
             float layerOut = layer.out;
 
-            uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
-            uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
+            uint32_t indexIn = (uint32_t)((layerIn / frameDuration));
+            uint32_t indexOut = (uint32_t)((layerOut / frameDuration));
 
             if( indexIn > m_currentFrame || indexOut < m_currentFrame )
             {
@@ -3093,8 +3093,8 @@ namespace Menge
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
-			uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
-			uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
+			uint32_t indexIn = (uint32_t)((layerIn / frameDuration));
+			uint32_t indexOut = (uint32_t)((layerOut / frameDuration));
 
 			if( indexOut < m_currentFrame )
 			{

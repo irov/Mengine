@@ -159,7 +159,7 @@ namespace	Menge
 				{
 					m_texturesNum = 1;
 
-					stageName = CONST_STRING(m_serviceProvider, SolidSprite);
+					stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
 				}
             }
 			else

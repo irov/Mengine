@@ -1626,6 +1626,21 @@ namespace Menge
 						->prefetchImageDecoder( m_category, fileName, codecType );
 				}
 
+				void visit( ResourceImageMultiplyRGBAndAlpha * _resource ) override
+				{
+					const FilePath & fileRGBName = _resource->getFileRGBName();
+					const ConstString & codecRGBType = _resource->getCodecRGBType();
+
+					PREFETCHER_SERVICE(m_serviceProvider)
+						->prefetchImageDecoder( m_category, fileRGBName, codecRGBType );
+
+					const FilePath & fileAlphaName = _resource->getFileAlphaName();
+					const ConstString & codecAlphaType = _resource->getCodecAlphaType();
+
+					PREFETCHER_SERVICE(m_serviceProvider)
+						->prefetchImageDecoder( m_category, fileAlphaName, codecAlphaType );
+				}
+
 				void visit( ResourceMovie * _resource ) override
 				{
 					const FilePath & fileName = _resource->getFileName();
@@ -1668,6 +1683,19 @@ namespace Menge
 
 					PREFETCHER_SERVICE(m_serviceProvider)
 						->unfetchImageDecoder( fileName );
+				}
+
+				void visit( ResourceImageMultiplyRGBAndAlpha * _resource ) override
+				{
+					const FilePath & fileRGBName = _resource->getFileRGBName();
+
+					PREFETCHER_SERVICE(m_serviceProvider)
+						->unfetchImageDecoder( fileRGBName );
+
+					const FilePath & fileAlphaName = _resource->getFileAlphaName();
+
+					PREFETCHER_SERVICE(m_serviceProvider)
+						->unfetchImageDecoder( fileAlphaName );
 				}
 
 				void visit( ResourceMovie * _resource ) override

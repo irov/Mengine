@@ -7,6 +7,7 @@ namespace Menge
 {
 	class ResourceReference;
 	class ResourceImageDefault;
+	class ResourceImageMultiplyRGBAndAlpha;
 	class ResourceImageSet;
 	class ResourceImageCell;
 
@@ -39,6 +40,7 @@ namespace Menge
 		virtual void visit(ResourceMeshMS3D* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 		//virtual void visit(ResourceTilePolygon* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 		virtual void visit(ResourceImageDefault* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
+		virtual void visit(ResourceImageMultiplyRGBAndAlpha* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 		virtual void visit(ResourceImageSet* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 		virtual void visit(ResourceImageCell* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 		virtual void visit(ResourceMaterial* _resource) { this->visit( (ResourceReference*)( _resource ) ); };

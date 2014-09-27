@@ -176,5 +176,7 @@ namespace Menge
 		PluginInterface * m_pluginMengeZip;
 		PluginInterface * m_pluginMengeLZ4;
 		PluginInterface * m_pluginPluginPathFinder;
+
+		bool m_developmentMode;
     };
 }

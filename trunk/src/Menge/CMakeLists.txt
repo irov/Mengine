@@ -66,8 +66,6 @@ ADD_FILTER(
 MousePickerTrap
 	MousePickerSystem.cpp
 	MousePickerSystem.h
-	MousePickerAdapter.cpp
-	MousePickerAdapter.h
 )
 
 SOURCE_GROUP( Object2D )
@@ -94,8 +92,6 @@ ADD_FILTER(
 Object2D\\\\HotSpot
 	HotSpot.cpp
 	HotSpot.h
-    HotspotMousePickerAdapter.h
-    HotspotMousePickerAdapter.cpp
     HotspotMousePickerVisitor.h
     HotspotMousePickerVisitor.cpp
 )

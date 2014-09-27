@@ -77,7 +77,8 @@ namespace Menge
 	{
 		m_memoryMutex->lock();
 
-		CacheBufferID buffer_id = this->lockBufferNoMutex_( _size, _memory, _doc );
+		CacheBufferID buffer_id = 
+			this->lockBufferNoMutex_( _size, _memory, _doc );
 
 		m_memoryMutex->unlock();
 

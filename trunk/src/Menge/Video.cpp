@@ -425,7 +425,11 @@ namespace Menge
                        
             needUpdate = true;
 
-			if( state == VDRS_END_STREAM )
+			if( state == VDRS_SUCCESS )
+			{
+				//Empty
+			}
+			else if( state == VDRS_END_STREAM )
 			{	
 				if( this->getLoop() == false && --m_playIterator == 0 )
                 {
@@ -498,7 +502,11 @@ namespace Menge
 			float pts;
 			EVideoDecoderReadState state = m_videoDecoder->readNextFrame( pts );
 
-			if( state == VDRS_FAILURE )
+			if( state == VDRS_SUCCESS )
+			{
+				//Empty
+			}
+			else if( state == VDRS_FAILURE )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Video::syncFirstFrame_: '%s' error reading first frame"
 					, this->getName().c_str()

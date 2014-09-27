@@ -44,9 +44,13 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_thread_addWorker( ThreadJobWorkerDesc & desc, const ThreadWorkerInterfacePtr & _worker, uint32_t _id )
-	{
-		bool successful = false; 
-		desc.mutex->lock();
+	{	
+		if( desc.mutex->try_lock() == false )
+		{
+			return false;
+		}
+
+		bool successful = false;
 
 		if( desc.status == ETS_FREE )
 		{
@@ -92,26 +96,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_thread_removeWorker( ThreadJobWorkerDesc & desc, uint32_t _id )
 	{
-		bool successful = false;
-
+		if( desc.id != _id )
+		{
+			return false;
+		}
+		
 		desc.mutex->lock();
 
-		if( desc.id == _id )
-		{
-			ThreadWorkerInterfacePtr worker = desc.worker;
+		ThreadWorkerInterfacePtr worker = desc.worker;
 
-			desc.id = 0;
-			desc.worker = nullptr;
-			desc.status = ETS_FREE;
-
-			worker->onDone( _id );
-
-			successful = true;
-		}
+		desc.id = 0;
+		desc.worker = nullptr;
+		desc.status = ETS_FREE;
 
 		desc.mutex->unlock();
 
-		return successful;
+		worker->onDone( _id );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadJob::removeWorker( uint32_t _id )
@@ -169,21 +171,32 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_thread_updateWorker( ThreadJobWorkerDesc & desc )
 	{
-		desc.mutex->lock();
+		if( desc.mutex->try_lock() == false )
+		{
+			return;
+		}
+
+		bool successful = false;
+		ThreadWorkerInterfacePtr worker;
+		uint32_t id;
 
 		if( desc.status == ETS_DONE )
 		{
-			ThreadWorkerInterfacePtr worker = desc.worker;
-			uint32_t id = desc.id;
+			worker = desc.worker;
+			id = desc.id;
+			successful = true;
 
 			desc.worker = nullptr;
 			desc.id = 0;
-			desc.status = ETS_FREE;
-
-			worker->onDone( id );
+			desc.status = ETS_FREE;			
 		}
 
 		desc.mutex->unlock();
+
+		if( successful == true )
+		{
+			worker->onDone( id );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadJob::_onUpdate()

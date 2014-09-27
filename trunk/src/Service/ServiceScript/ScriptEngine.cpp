@@ -355,13 +355,20 @@ namespace Menge
 			return pybind::ret_none();
 		}
 
-		EntityPrototypeGeneratorPtr entityGenerator = 
-			stdex::intrusive_dynamic_cast<EntityPrototypeGeneratorPtr>(generator);
-
-		if( entityGenerator == nullptr )
+#	ifdef _DEBUG
+		if( stdex::intrusive_dynamic_cast<EntityPrototypeGeneratorPtr>(generator) == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("ScriptEngine::importEntity: can't cast to EntityPrototypeGenerator '%s' '%s'"
+				, _category.c_str()
+				, _prototype.c_str()
+				);
+
 			return pybind::ret_none();
 		}
+#	endif
+
+		EntityPrototypeGeneratorPtr entityGenerator = 
+			stdex::intrusive_static_cast<EntityPrototypeGeneratorPtr>(generator);
 
 		PyObject * py_type = entityGenerator->preparePythonType();
 

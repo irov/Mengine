@@ -161,6 +161,7 @@ namespace Menge
 		, m_moduleService(nullptr)
 		, m_dataService(nullptr)
 		, m_cacheService(nullptr)
+		, m_developmentMode(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -837,7 +838,7 @@ namespace Menge
 
         m_soundService = soundService;
 
-        if( m_soundService->initialize( false, false ) == false )
+        if( m_soundService->initialize( false, true ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound Engine"
                 );
@@ -1143,6 +1144,11 @@ namespace Menge
 
         String scriptInit;
         Helper::s_getOption( " -s:", m_commandLine, &scriptInit );
+
+		if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )
+		{
+			m_developmentMode = true;
+		}
 
         ServiceProviderInterface * serviceProvider;
         if( SERVICE_CREATE( ServiceProvider, &serviceProvider ) == false )
@@ -1552,7 +1558,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::isDevelopmentMode() const
     {
-        return true;
+        return m_developmentMode;
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::onEvent( const ConstString & _event, const TMapParams & _params )

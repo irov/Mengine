@@ -34,9 +34,6 @@ namespace Menge
     public:
 		virtual PickerTrapState * getPicker() const = 0;
         virtual PyObject * getPickerEmbed() = 0;
-
-    public:
-        virtual Eventable * getPickerEventable() = 0;
     };
 
     typedef stdex::vector<MousePickerTrapInterface *> TVectorPickerTraps;

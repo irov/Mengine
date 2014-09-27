@@ -70,9 +70,6 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const;
 
     protected:
-        virtual void _setServiceProvider( ServiceProviderInterface * _serviceProvider );
-
-    protected:
         ServiceProviderInterface * m_serviceProvider;
 
 	public:

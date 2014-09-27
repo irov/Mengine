@@ -61,6 +61,9 @@ namespace Menge
     public:
         virtual void lock() = 0;
         virtual void unlock() = 0;
+
+	public:
+		virtual bool try_lock() = 0;
     };
 
 	typedef stdex::intrusive_ptr<ThreadMutexInterface> ThreadMutexInterfacePtr;

@@ -1,5 +1,7 @@
 #	include "HotSpot.h"
 
+#   include "HotspotMousePickerVisitor.h"
+
 #	include "Interface/MousePickerSystemInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
@@ -14,28 +16,29 @@
 
 #	include "Kernel/ResourceImage.h"
 
+#	include "pybind/system.hpp"
+#	include "pybind/extract.hpp"
+
 #	include "Logger/Logger.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::HotSpot()
-		: m_debugColor(0x00000000)
-		, m_invalidatePolygonWM(true)
+		: m_debugColor(0x00000000)		
 		, m_outward(false)
+		, m_invalidatePolygonWM(true)
+		, m_picker(nullptr)
+		, m_defaultHandle(true)		
+		, m_onMouseMoveEvent(false)
+		, m_onMouseEnterEvent(false)
+		, m_onMouseLeaveEvent(false)
 	{
-        m_mousePickerAdapter.setHotspot( this );
-        m_mousePickerAdapter.setDefaultHandle( true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::~HotSpot()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void HotSpot::_setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_mousePickerAdapter.setServiceProvider( _serviceProvider );
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::setPolygon( const Polygon & _polygon )
 	{
@@ -61,47 +64,33 @@ namespace Menge
 	{
 		return m_outward;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void HotSpot::setDefaultHandle( bool _handle )
-    {
-        m_mousePickerAdapter.setDefaultHandle( _handle );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::getDefaultHandle() const
-    {
-        bool handle = m_mousePickerAdapter.getDefaultHandle();
-
-        return handle;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::isMousePickerOver() const
 	{
-		if( m_mousePickerAdapter.isActivePicker() == false )
+		if( m_picker == nullptr )
 		{
 			return false;
 		}
-
-		PickerTrapState * trap = m_mousePickerAdapter.getPicker();
-
-		bool picked = trap->picked;
+		
+		bool picked = m_picker->picked;
 
 		return picked;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerTrapInterface * HotSpot::getPickerTrap()
 	{
-		return &m_mousePickerAdapter;
+		return this;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void HotSpot::onPickerEnter()
-    {
-		m_debugColor = 0xFFFF0000;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void HotSpot::onPickerLeave()
-    {
-		m_debugColor = 0xFFFFFFFF;
-    }
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::setDefaultHandle( bool _handle )
+	{
+		m_defaultHandle = _handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::getDefaultHandle() const
+	{
+		return m_defaultHandle;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::clearPoints()
 	{
@@ -114,7 +103,15 @@ namespace Menge
 	{
 		Node::_setEventListener( _listener );
 
-		m_mousePickerAdapter.setEventListener( _listener );
+		this->registerEvent( EVENT_KEY, ("onHandleKeyEvent"), _listener );
+		this->registerEvent( EVENT_MOUSE_BUTTON, ("onHandleMouseButtonEvent"), _listener );
+		this->registerEvent( EVENT_MOUSE_BUTTON_BEGIN, ("onHandleMouseButtonEventBegin"), _listener );
+		this->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
+		this->registerEvent( EVENT_MOUSE_WHEEL, ("onHandleMouseWheel"), _listener );
+
+		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener, &m_onMouseMoveEvent );
+		this->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener, &m_onMouseLeaveEvent );
+		this->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener, &m_onMouseEnterEvent );
 
 		this->registerEvent( EVENT_ACTIVATE, ("onActivate"), _listener );
 		this->registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _listener );
@@ -146,32 +143,199 @@ namespace Menge
 		polygon_wm( m_polygonWM, m_polygon, wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	PickerTrapState * HotSpot::getPicker() const
+	{
+		return m_picker;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::activatePicker_()
 	{
-		if( m_mousePickerAdapter.isActivePicker() == true )
+		if( m_picker != nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("HotSpot::activatePicker_ '%s' alredy activate picker"
+				, this->getName().c_str()
+				);
+
+			return;
+		}
+
+		MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE(m_serviceProvider)
+			->getMousePickerSystem();
+
+		if( mousePickerSystem == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("HotSpot::activatePicker_ '%s' invalid get mouse picker system"
+				, this->getName().c_str()
+				);
+
 			return;
 		}
 
 		m_debugColor = 0xFFFFFFFF;
 
-		m_mousePickerAdapter.activatePicker();
+		m_picker = mousePickerSystem->regTrap( this );
+
+		mousePickerSystem->updateTrap();
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)( "()" );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::deactivatePicker_()
 	{
-		if( m_mousePickerAdapter.isActivePicker() == false )
+		if( m_picker == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("HotSpot::activatePicker_ '%s' alredy deactivate picker"
+				, this->getName().c_str()
+				);
+
 			return;
 		}
 
-		m_mousePickerAdapter.deactivatePicker();
+		MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE(m_serviceProvider)
+			->getMousePickerSystem();
+
+		if( mousePickerSystem == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("HotSpot::activatePicker_ '%s' invalid get mouse picker system"
+				, this->getName().c_str()
+				);
+
+			return;
+		}
+
+		mousePickerSystem->unregTrap( m_picker );
+		m_picker = nullptr;
+
+		mousePickerSystem->updateTrap();
 
 		m_debugColor = 0x00000000;
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DEACTIVATE)( "()" );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::onMouseLeave()
+	{
+		m_debugColor = 0xFFFFFFFF;
+
+		if( m_onMouseLeaveEvent == true )
+		{
+			EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOUSE_LEAVE)( "(O)"
+				, this->getEmbed() 
+				);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::onMouseEnter( const mt::vec2f & _point )
+	{
+		m_debugColor = 0xFFFF0000;
+
+		bool handle = m_defaultHandle;
+
+		if( m_onMouseEnterEvent == true )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
+		{
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_ENTER)( handle, m_defaultHandle, "(Off)"
+				, this->getEmbed() 
+				, _point.x
+				, _point.y
+				);
+		}		
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
+	{
+		bool handle = false;
+				
+		EVENTABLE_ASK(m_serviceProvider, this, EVENT_KEY)( handle, m_defaultHandle, "(OIffIOO)"
+			, this->getEmbed()
+			, _key
+			, _point.x
+			, _point.y
+			, _char
+			, pybind::get_bool(_isDown)
+			, pybind::get_bool(_repeating)
+			);
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	{
+		bool handle = false;
+
+		EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON)( handle, m_defaultHandle, "(OIffIO)"
+			, this->getEmbed()
+			, _touchId
+			, _point.x
+			, _point.y
+			, _button
+			, pybind::get_bool(_isDown) 
+			);
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////	
+	bool HotSpot::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	{
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN)( "(OIffIO)"
+			, this->getEmbed()
+			, _touchId
+			, _point.x
+			, _point.y
+			, _button
+			, pybind::get_bool(_isDown) 
+			);
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	{		
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOUSE_BUTTON_END)( "(OIffIO)"
+			, this->getEmbed()
+			, _touchId
+			, _point.x
+			, _point.y
+			, _button
+			, pybind::get_bool(_isDown) 
+			);
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y )
+	{
+		bool handle = m_defaultHandle;
+
+		if( m_onMouseMoveEvent == true )
+		{			
+			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_MOVE)( handle, m_defaultHandle, "(OIffff)"
+				, this->getEmbed()
+				, _touchId
+				, _point.x
+				, _point.y
+				, _x
+				, _y
+				);
+		}
+
+		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
+	{
+		bool handle = false;
+				
+		EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_WHEEL)( handle, m_defaultHandle, "(OIffi)"
+			, this->getEmbed()
+			, _touchId
+			, _point.x
+			, _point.y
+			, _wheel 
+			);
+
+		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_localHide( bool _value )
@@ -321,6 +485,33 @@ namespace Menge
 		bool intersect = boost::geometry::intersects( m_polygonWMVM, _screenPoly );
 
 		return intersect != m_outward;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, Arrow * _arrow )
+	{
+		if( this->isActivate() == false )
+		{
+			return false;
+		}
+
+		Layer * layer = this->getLayer();
+
+		if( layer == nullptr )
+		{
+			return false;
+		}
+
+		HotspotMousePickerVisitor mp(this, _viewport, _camera, _point, _arrow);
+		bool result = mp.test( layer );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PyObject * HotSpot::getPickerEmbed()
+	{
+		PyObject * embed = this->getEmbed();
+
+		return embed;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )

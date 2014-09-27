@@ -19,6 +19,9 @@ namespace Menge
         void lock() override;
         void unlock() override;
 
+	protected:
+		bool try_lock() override;
+
     protected:
         void _destroy() override;
 

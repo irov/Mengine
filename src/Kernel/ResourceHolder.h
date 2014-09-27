@@ -1,68 +1,39 @@
 #   pragma once
 
+#   include "ResourceReference.h"
+
 namespace Menge
 {
-    class ResourceReference;
-
-    class ResourceHolderBase
-    {
-    protected:
-        ResourceHolderBase();
-		ResourceHolderBase( ResourceReference * _resource );
-
-    public:        
-        bool compile();
-        void release();
-
-    protected:
-        void setResource( ResourceReference * _resource );
-        
-        inline ResourceReference * getResource() const
-        {
-            return m_resource;
-        }
-
-    protected:
-        ResourceReference * m_resource;
-        bool m_compile;
-    };
     //////////////////////////////////////////////////////////////////////////
     template<class T>
     class ResourceHolder
-        : public ResourceHolderBase
     {
 	public:
 		ResourceHolder()
+			: m_resource(nullptr)
+			, m_compile(false)
 		{
 		}
 
 		ResourceHolder( T * _resource )
-			: ResourceHolderBase(_resource)
+			: m_resource(_resource)
+			, m_compile(false)
 		{
 		}
 
     public:
         T * get() const
         {
-            ResourceReference * resource = this->getResource();
-
-#   ifdef _DEBUG
-            if( dynamic_cast<T *>(resource) == nullptr )
-            {
-                return nullptr;
-            }
-#   endif
-
-            T * t = static_cast<T *>(resource);
-
-            return t;
+            return m_resource;
         }
 
     public:
         ResourceHolder<T> & operator = ( T * _resource )
         {
-            this->setResource( _resource );
+			this->release();
 
+			m_resource = _resource;
+			
             return *this;
         }
         
@@ -98,5 +69,37 @@ namespace Menge
 
             return result;
         }
+
+	public:
+		bool compile()
+		{
+			if( m_resource == nullptr )
+			{
+				return false;
+			}
+
+			if( m_resource->incrementReference() == 0 )
+			{
+				return false;
+			}
+
+			m_compile = true;
+
+			return true;             
+		}
+		
+		void release()
+		{
+			if( m_compile == true )
+			{
+				m_resource->decrementReference();
+			}
+
+			m_compile = false;
+		}
+
+	protected:
+		T * m_resource;
+		bool m_compile;
     };
 }

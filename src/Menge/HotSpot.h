@@ -2,7 +2,7 @@
 
 #	include "Kernel/Node.h"
 
-#	include "HotspotMousePickerAdapter.h"
+#   include "Interface/MousePickerSystemInterface.h"
 
 #	include "Core/Polygon.h"
 
@@ -12,15 +12,13 @@ namespace Menge
 
 	class HotSpot
 		: public Node
+		, public MousePickerTrapInterface
 	{
 		DECLARE_VISITABLE();
 
 	public:
 		HotSpot();
 		~HotSpot();
-
-    protected:
-        void _setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
 		void setPolygon( const Polygon & _polygon );
@@ -30,24 +28,23 @@ namespace Menge
 		void setOutward( bool _value );
 		bool getOutward() const;
 
-    public:
-        void setDefaultHandle( bool _handle );
-        bool getDefaultHandle() const;
-
 	public:
 		bool isMousePickerOver() const;
 
 	public:
 		MousePickerTrapInterface * getPickerTrap() override;
+
+	public:
+		void setDefaultHandle( bool _handle );
+		bool getDefaultHandle() const;
+
+	public:
+		PickerTrapState * getPicker() const override;
 		    
 	public:
 		virtual bool testPoint( const mt::vec2f & _point ) const;
 		virtual bool testRadius( const mt::vec2f & _point, float _radius ) const;
 		virtual bool testPolygon( const mt::vec2f & _point, const Polygon & _polygon ) const;
-
-    public:        
-        void onPickerEnter();
-        void onPickerLeave();
 
 	public:
 		void clearPoints();
@@ -83,11 +80,28 @@ namespace Menge
 		void deactivatePicker_();
 
 	protected:
-		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
+		bool pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, Arrow * _arrow ) override;
+		
+	protected:
+		PyObject * getPickerEmbed() override;
 
 	protected:
-        HotspotMousePickerAdapter m_mousePickerAdapter;
+		bool onMouseEnter( const mt::vec2f & _point ) override;
+		void onMouseLeave() override;
 
+	protected:
+		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) override;
+
+		bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;		
+		bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
+		bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
+		bool handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
+
+	protected:
+		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
+
+	protected:        
 		Polygon m_polygon;
 		mutable Polygon m_polygonWM;
 		mutable Polygon m_polygonWMVM;
@@ -97,6 +111,16 @@ namespace Menge
 		bool m_outward;
 		
 		mutable bool m_invalidatePolygonWM;
+
+	protected:
+		PickerTrapState * m_picker;
+
+		bool m_defaultHandle;
+
+	private:
+		bool m_onMouseEnterEvent;
+		bool m_onMouseLeaveEvent;
+		bool m_onMouseMoveEvent;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const Polygon & HotSpot::getPolygonWM() const

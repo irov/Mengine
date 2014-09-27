@@ -70,7 +70,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::_addChildren( Node * _node )
 	{
-		Layer * layer = dynamic_cast<Layer*>(_node);
+		Layer * layer = dynamic_cast<Layer *>(_node);
 
 		if( layer != nullptr )
 		{
@@ -85,7 +85,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Scene::_removeChildren( Node * _node )
     {
-		Layer * layer = dynamic_cast<Layer*>(_node);
+		Layer * layer = dynamic_cast<Layer *>(_node);
 
         if( layer != nullptr )
         {   
@@ -124,7 +124,7 @@ namespace Menge
 		{
 			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
 			{
-				Scene * subScene = dynamic_cast<Scene*>( *it );
+				Scene * subScene = dynamic_cast<Scene *>( *it );
 
 				if( subScene != nullptr )
 				{

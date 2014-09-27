@@ -24,6 +24,16 @@ namespace Menge
     {
         LeaveCriticalSection( &m_cs );
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32ThreadMutex::try_lock()
+	{
+		if( TryEnterCriticalSection( &m_cs ) == FALSE )
+		{
+			return false;
+		}
+
+		return true; 
+	}
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::_destroy()
     {

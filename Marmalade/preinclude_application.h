@@ -1,8 +1,9 @@
 #   pragma once
 
 #   define BOOST_UBLAS_UNSUPPORTED_COMPILER 0
+#   define BOOST_NO_CXX11_RVALUE_REFERENCES
 #   define BOOST_NO_CXX11_NULLPTR
-
+#	define BOOST_NO_STD_WSTRING
 
 #   define PYBIND_MARMALADE
 #   define PYBIND_PYTHON_VERSION 277
@@ -28,6 +29,10 @@
 
 #   define nullptr 0
 #   define STDEX_UNSUPPOT_NULLPTR_T
+
+#	ifndef IW_DEBUG
+#		undef _DEBUG // In Marmalade _DEBUG is wrongly defined in x86 Release.
+#	endif
     
 #   define _BIG_ENDIAN
 

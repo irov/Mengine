@@ -1105,6 +1105,10 @@ namespace Menge
 				return;
 			}
 		}
+		else
+		{
+			mt::reset( bb, 0.f, 0.f );
+		}
 
 		++rp.countRenderObject;
 

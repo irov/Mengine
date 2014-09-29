@@ -13,11 +13,14 @@ namespace Menge
         MarmaladeThreadMutex();
 
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider );
+        bool initialize( ServiceProviderInterface * _serviceProvider );
 
     protected:
         void lock() override;
         void unlock() override;
+
+	protected:
+		bool try_lock() override;
 
     protected:
         void _destroy() override;

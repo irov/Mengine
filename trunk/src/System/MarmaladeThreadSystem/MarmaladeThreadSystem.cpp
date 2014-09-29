@@ -2,7 +2,7 @@
 
 #	include "Logger/Logger.h"
 
-#   include <unistd.h>
+#   include "s3eDevice.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY(ThreadSystem, Menge::ThreadSystemInterface, Menge::MarmaladeThreadSystem);
@@ -33,7 +33,8 @@ namespace Menge
 	{
         if( s3eThreadAvailable() == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::initialize s3eThread extension not present");
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::initialize s3eThread extension not present"
+				);
 
             return false;
         }
@@ -54,6 +55,9 @@ namespace Menge
 
         if( identity->initialize( m_serviceProvider, mutex, _priority ) == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::createThread invalid initialize"
+				);
+
 			return nullptr;
 		}
 
@@ -64,13 +68,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeThreadSystem::sleep( unsigned int _ms )
 	{
-        ::usleep( _ms * 1000 );
+        s3eDeviceYield( _ms );
 	}
 	//////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr MarmaladeThreadSystem::createMutex()
     {
         MarmaladeThreadMutexPtr mutex = m_poolMarmaladeThreadMutex.createObjectT();
-        mutex->initialize( m_serviceProvider );
+        
+		if( mutex->initialize( m_serviceProvider ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::createMutex invalid initialize"
+				);
+
+			return nullptr;
+		}
 
         return mutex;
     }

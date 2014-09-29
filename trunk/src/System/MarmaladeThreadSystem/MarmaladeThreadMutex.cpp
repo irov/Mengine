@@ -1,5 +1,7 @@
 #   include "MarmaladeThreadMutex.h"
 
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -9,22 +11,67 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeThreadMutex::initialize( ServiceProviderInterface * _serviceProvider )
+    bool MarmaladeThreadMutex::initialize( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
 
-        m_cs = s3eThreadLockCreate();
+        s3eThreadLock * cs = s3eThreadLockCreate();
+
+		if( cs == nullptr )
+		{
+			return false;
+		}
+
+		m_cs = cs;
+
+		return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeThreadMutex::lock()
     {
-        s3eThreadLockAcquire( m_cs );
+        s3eResult err = s3eThreadLockAcquire( m_cs );
+
+		if( err != S3E_RESULT_SUCCESS )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadMutex::lock invalid lock %d"
+				, err
+				);
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeThreadMutex::unlock()
     {
-        s3eThreadLockRelease( m_cs );
+        s3eResult err = s3eThreadLockRelease( m_cs );
+
+		if( err != S3E_RESULT_SUCCESS )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadMutex::unlock invalid lock %d"
+				, err
+				);
+		}
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeThreadMutex::try_lock()
+	{
+		s3eResult err = s3eThreadLockAcquire( m_cs, 0 );
+
+		if( err == S3E_RESULT_SUCCESS )
+		{
+			return true;
+		}
+		else if( err == S3E_THREAD_ERR_TIMEOUT )
+		{
+			return false;
+		}
+		else
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadMutex::lock invalid lock %d"
+				, err
+				);
+		}
+
+		return false;
+	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeThreadMutex::_destroy()
     {

@@ -124,7 +124,7 @@ deployments
 	caption='boo'
 	embed-icf=0
 	iphone-appid='com.Argali.boo'
-	iphone-no-splash='1'
+	iphone-no-splash=1
 	iphone-nosign=0
 	iphone-provisioning-profile='Argali.mobileprovision'
 	iphone-sign-for-distribution=1

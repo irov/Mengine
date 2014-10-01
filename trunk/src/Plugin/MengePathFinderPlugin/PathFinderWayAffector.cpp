@@ -11,11 +11,8 @@ namespace Menge
 		, m_speed(0.f)
 		, m_way(nullptr)
 		, m_cb(nullptr)
-		, m_iterator(1)
-		, m_target(0.f, 0.f)
-		, m_length(0.f)
-		, m_timing(0.f)
-		, m_targetInvalidate(true)
+		, m_iterator(0)
+		, m_wayCount(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -47,89 +44,103 @@ namespace Menge
 		m_cb = _cb;
 		pybind::incref( m_cb );
 
+		m_iterator = 1;
+		m_wayCount = pybind::list_size( m_way );
+
+		if( m_wayCount < 2 )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PathFinderWayAffector::prepare()
+	{
+		const mt::vec3f & lp = m_node->getLocalPosition();
+
+		PyObject * py_wp = pybind::list_getitem( m_way, 1 );
+
+		mt::vec2f wp;
+		if( pybind::extract_value( py_wp, wp ) == false )
+		{
+			return false;
+		}
+
+		uint32_t id = this->getId();
+		pybind::call( m_cb, "iOffffOOO", id, m_node->getEmbed(), lp.x, lp.y, wp.x, wp.y, pybind::get_bool(true), pybind::get_bool(false), pybind::get_bool(false) );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderWayAffector::affect( float _timing )
 	{
+		float step = m_speed * _timing;
+
 		bool newTarget = false;
-
-		if( m_targetInvalidate == true )
-		{
-			newTarget = true;
-
-			if( this->invalidateTarget_() == true )
-			{
-				return true;
-			}
-		}
-
-		mt::vec3f lp = m_node->getLocalPosition();
 		
-		m_timing += _timing;
-				
-		if( m_timing * m_speed > m_length )
+		for( ; m_iterator != m_wayCount; ++m_iterator )
 		{
-			newTarget = true;
+			PyObject * py_wp = pybind::list_getitem( m_way, m_iterator );
 
-			do
+			mt::vec2f wp;
+			pybind::extract_value( py_wp, wp );
+
+			const mt::vec3f & lp3 = m_node->getLocalPosition();
+			mt::vec2f lp = lp3.to_vec2f();			
+
+			mt::vec2f distance;
+			mt::sub_v2_v2( distance, wp, lp );
+			
+			float length = mt::length_v2( distance );
+
+			if( length > step )
 			{
-				m_timing -= m_length / m_speed;
+				mt::vec2f dir;
+				dir = distance / length;
 
-				lp.x = m_target.x;
-				lp.y = m_target.y;
-				lp.z = lp.z;
+				mt::vec2f new_pos;
+				new_pos = lp + dir * step;
 
-				m_node->setLocalPosition( lp );
+				mt::vec3f new_pos3;
+				new_pos3.x = new_pos.x;
+				new_pos3.y = new_pos.y;
+				new_pos3.z = lp3.z;
 
-				if( this->invalidateTarget_() == true )
-				{	
-					return true;
+				m_node->setLocalPosition( new_pos3 );
+
+				if( newTarget == true )
+				{
+					uint32_t id = this->getId();
+					pybind::call( m_cb, "iOffffOOO", id, m_node->getEmbed(), lp.x, lp.y, wp.x, wp.y, pybind::get_bool(false), pybind::get_bool(false), pybind::get_bool(false) );
 				}
+
+				return false;
 			}
-			while( m_timing * m_speed > m_length );
+			else
+			{
+				step -= length;
 
-			_timing = m_timing;
-		}
-		
-		mt::vec2f lp_v2 = lp.to_vec2f();
+				mt::vec3f new_pos3;
+				new_pos3.x = wp.x;
+				new_pos3.y = wp.y;
+				new_pos3.z = lp3.z;
 
-		mt::vec2f dir;
-		mt::sub_v2_v2( dir, m_target, lp_v2 );
+				m_node->setLocalPosition( new_pos3 );
 
-		mt::vec2f dir_n;
-		mt::norm_v2_v2( dir_n, dir );
-
-		mt::vec2f dir_n_s;
-		mt::mul_v2_f( dir_n_s, dir_n, m_speed * _timing );
-
-		mt::vec2f new_position;
-		mt::add_v2_v2( new_position, lp_v2, dir_n_s );
-
-		//printf("%f %f\n", new_position.x, new_position.y);
-		mt::vec3f new_position_v3(new_position.x, new_position.y, lp.z);
-		m_node->setLocalPosition( new_position_v3 );
-
-		if( newTarget == true )
-		{
-			uint32_t id = this->getId();
-			pybind::call( m_cb, "iOffffO", id, m_node->getEmbed(), new_position.x, new_position.y, m_target.x, m_target.y, pybind::get_bool(false) );
+				newTarget = true;
+			}
 		}
 
-		return false;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::complete()
 	{
 		const mt::vec3f & lp = m_node->getLocalPosition();
-		mt::vec3f new_pos(m_target.x, m_target.y, lp.z);
-		m_node->setLocalPosition( new_pos );
 
 		uint32_t id = this->getId();
-		pybind::call( m_cb, "iOffffO", id, m_node->getEmbed(), lp.x, lp.y, m_target.x, m_target.y, pybind::get_bool(true) );
-
-		pybind::decref(m_cb);
-		m_cb = nullptr;
+		pybind::call( m_cb, "iOffffOOO", id, m_node->getEmbed(), lp.x, lp.y, lp.x, lp.y, pybind::get_bool(false), pybind::get_bool(false), pybind::get_bool(true) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::stop()
@@ -137,78 +148,7 @@ namespace Menge
 		const mt::vec3f & lp = m_node->getLocalPosition();
 
 		uint32_t id = this->getId();
-		pybind::call( m_cb, "iOffffO", id, m_node->getEmbed(), lp.x, lp.y, m_target.x, m_target.y, pybind::get_bool(true) );
-
-		pybind::decref(m_cb);
-		m_cb = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderWayAffector::invalidateTarget_()
-	{
-		m_targetInvalidate = false;
-
-		const mt::vec3f & lp = m_node->getLocalPosition();
-
-		mt::vec2f lp_v2 = lp.to_vec2f();
-
-		mt::vec2f acc_dir(0.f, 0.f);
-		uint32_t j = 4;
-
-		uint32_t wayCount = pybind::list_size( m_way );	
-
-		if( m_iterator == wayCount )
-		{
-			PyObject * py_to = pybind::list_getitem( m_way, wayCount - 1 );
-
-			mt::vec2f v_to;
-			pybind::extract_value( py_to, v_to );
-
-			m_target = v_to;
-
-			return true;
-		}
-
-		PyObject * py_v0 = pybind::list_getitem( m_way, m_iterator );
-
-		mt::vec2f v0;
-		pybind::extract_value( py_v0, v0 );
-
-		for( uint32_t i = m_iterator; i != wayCount && j != 0; ++i )
-		{
-			PyObject * py_v = pybind::list_getitem( m_way, i );
-
-			mt::vec2f v;
-			pybind::extract_value( py_v, v );			
-
-			mt::vec2f dir;
-			mt::sub_v2_v2( dir, v, lp_v2 );
-
-			mt::vec2f dir_n;
-			mt::norm_v2_v2( dir_n, dir );
-
-			acc_dir += dir_n / (float)(i + 1);
-
-			--j;
-		}
-
-		mt::vec2f acc_dir_n;
-		mt::norm_v2_v2( acc_dir_n, acc_dir );
-
-		mt::vec2f acc_pos;
-		mt::add_v2_v2(acc_pos, lp_v2, acc_dir_n);
-
-		mt::vec2f v0_dir;
-		mt::sub_v2_v2( v0_dir, v0, lp_v2 );
-
-		mt::vec2f step;
-		mt::project_v2_v2( step, acc_dir_n, v0_dir );
-
-		m_target = lp_v2 + step;
-		m_length = mt::length_v2_v2(lp_v2, m_target);
-		
-		++m_iterator;
-
-		return false;
+		pybind::call( m_cb, "iOffffOOO", id, m_node->getEmbed(), lp.x, lp.y, lp.x, lp.y, pybind::get_bool(false), pybind::get_bool(true), pybind::get_bool(false) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::destroy()

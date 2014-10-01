@@ -16,6 +16,11 @@ namespace Menge
 		uint32_t id = ++m_enumerator;
 
 		_affector->setId( id );
+		
+		if( _affector->prepare() == false )
+		{
+			return false;
+		}
 
 		m_affectors.push_back( _affector );
 

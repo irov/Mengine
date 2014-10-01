@@ -14,14 +14,22 @@ namespace Menge
 		//s3eDebugErrorPrintf("%s"
   //          , _data 
   //          );
-        printf("%s"
-            , _data
-            );
+		printf( _data );
+
+		if( _level == LM_CRITICAL )
+		{
+			s3eDebugErrorShow( S3E_MESSAGE_CONTINUE_STOP, _data );
+		}
+
+		if( _level == LM_FATAL )
+		{
+			s3eDebugErrorShow( S3E_MESSAGE_CONTINUE_STOP, _data );
+		}
 	}
     //////////////////////////////////////////////////////////////////////////
 	void MarmaladeLogger::flush()
 	{
-		fflush(stdout);
+		//fflush(stdout);
 	}
     //////////////////////////////////////////////////////////////////////////
 	void MarmaladeLogger::setVerboseLevel( EMessageLevel _level )

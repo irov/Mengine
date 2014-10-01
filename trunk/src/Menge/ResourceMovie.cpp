@@ -763,7 +763,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie::hasLayer( const ConstString & _name, const MovieLayer ** _layer ) const
+	bool ResourceMovie::hasMovieLayer( const ConstString & _name, const MovieLayer ** _layer ) const
 	{
 		for( TVectorMovieLayers::const_iterator
 			it = m_layers.begin(),

@@ -578,11 +578,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::getLayerPathLength( const ConstString & _name, float & _length ) const
+	bool Movie::hasMovieLayer( const ConstString & _name ) const
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::getLayerPathLength %s invalid get layer %s not compile"
+			LOGGER_ERROR(m_serviceProvider)("Movie::hasLayer %s invalid get layer %s not compile"
 				, m_name.c_str()
 				, _name.c_str()
 				);
@@ -591,31 +591,63 @@ namespace Menge
 		}
 
 		const MovieLayer * layer;
-		if( m_resourceMovie->hasLayer( _name, &layer ) == true )
-		{			
-			float frameDuration = m_resourceMovie->getFrameDuration();
-			uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
-			uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
-			uint32_t indexCount = indexOut - indexIn;
+		if( m_resourceMovie->hasMovieLayer( _name, &layer ) == true )
+		{	
+			return true;
+		}
 
-			const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-			MovieFrameSource start_frame;
-			framePack->getLayerFrame( layer->index, 0, start_frame );
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
 
-			mt::vec3f pos = start_frame.position;
-			float len = 0.f;
-
-			for( uint32_t i = 1; i != indexCount; ++i )
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
 			{
-				MovieFrameSource frame;
-				framePack->getLayerFrame( layer->index, i, frame );
-
-				len += mt::length_v3_v3( pos, frame.position );
-				pos = frame.position;
+				continue;
 			}
 
-			_length = len;
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			if( movie->hasMovieLayer( _name ) == false )
+			{
+				continue;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, const Movie ** _movie ) const
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::getLayer %s invalid get layer %s not compile"
+				, m_name.c_str()
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		const MovieLayer * layer;
+		if( m_resourceMovie->hasMovieLayer( _name, &layer ) == true )
+		{	
+			*_layer = layer;
+			*_movie = this;
 
 			return true;
 		}
@@ -644,20 +676,23 @@ namespace Menge
 
 			Movie * movie = static_cast<Movie *>(node);
 
-			if( movie->getLayerPathLength( _name, _length ) == false )
+			const Movie * sub_movie;
+			const MovieLayer * sub_movie_layer;
+			if( movie->getMovieLayer( _name, &sub_movie_layer, &sub_movie ) == false )
 			{
 				continue;
 			}
 
+			*_layer = sub_movie_layer;
+			*_movie = sub_movie;
+
 			return true;
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("Movie::getLayerPathLength %s not found layer %s"
+		LOGGER_ERROR(m_serviceProvider)("Movie::getLayer %s not found layer %s"
 			, m_name.c_str()
 			, _name.c_str()
 			);
-
-		_length = 0.f;
 
 		return false;
 	}

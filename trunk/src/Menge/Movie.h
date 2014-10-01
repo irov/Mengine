@@ -59,8 +59,9 @@ namespace Menge
 	public:
 		bool filterLayers( const ConstString & _type, VisitorMovieLayer * _visitor );
 
-	public:
-		bool getLayerPathLength( const ConstString & _name, float & _length ) const;
+	public:		
+		bool getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, const Movie ** _movie ) const;
+		bool hasMovieLayer( const ConstString & _name ) const;
 
 	public:
 		Node * getMovieSlot( const ConstString & _name ) const;

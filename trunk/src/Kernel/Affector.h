@@ -42,6 +42,9 @@ namespace Menge
 		AffectorCallback * getCb() const;
 
 	public:
+		virtual bool prepare();
+
+	public:
 		virtual bool affect( float _timing ) = 0;
         virtual void complete() = 0;
 		virtual void stop() = 0;

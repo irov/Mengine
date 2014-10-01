@@ -178,7 +178,7 @@ namespace Menge
 
 		bool successful = false;
 		ThreadWorkerInterfacePtr worker;
-		uint32_t id;
+		uint32_t id = 0;
 
 		if( desc.status == ETS_DONE )
 		{

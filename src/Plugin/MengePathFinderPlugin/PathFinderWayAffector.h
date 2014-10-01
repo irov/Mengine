@@ -25,6 +25,7 @@ namespace Menge
 		bool initialize( Node * _node, PyObject * _way, float _speed, PyObject * _cb );
 		
 	public:
+		bool prepare() override;
 		bool affect( float _timing ) override;
 		void complete() override;
 		void stop() override;
@@ -45,10 +46,7 @@ namespace Menge
 		PyObject * m_cb;
 
 		uint32_t m_iterator;
-		mt::vec2f m_target;
-		float m_length;
-		float m_timing;
-		bool m_targetInvalidate;		
+		uint32_t m_wayCount;	
 	};
 }
 

@@ -10,6 +10,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     StringizeService::StringizeService()
         : m_serviceProvider(nullptr)
+		, m_memory(0)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -51,6 +52,8 @@ namespace Menge
 			string->setValue( buffer, store_value, _size );
 
 			stringHolder = string;
+
+			m_memory += 16;
 		}
 		else if( _size < 32 )
 		{
@@ -60,6 +63,8 @@ namespace Menge
 			string->setValue( buffer, store_value, _size );
 
 			stringHolder = string;
+
+			m_memory += 32;
 		}
 		else if( _size < 64 )
 		{
@@ -69,6 +74,8 @@ namespace Menge
 			string->setValue( buffer, store_value, _size );
 
 			stringHolder = string;
+
+			m_memory += 64;
 		}
 		else if( _size < 128 )
 		{
@@ -78,6 +85,8 @@ namespace Menge
 			string->setValue( buffer, store_value, _size );
 
 			stringHolder = string;
+
+			m_memory += 128;
 		}
 		else if( _size < 256 )
 		{
@@ -87,6 +96,8 @@ namespace Menge
 			string->setValue( buffer, store_value, _size );
 
 			stringHolder = string;
+
+			m_memory += 256;
 		}
         else
         {
@@ -94,6 +105,8 @@ namespace Menge
             stringSTL->setValue( _str, _size );
 
             stringHolder = stringSTL;
+
+			m_memory += _size;
         }
 
         _cstr = ConstString(stringHolder);

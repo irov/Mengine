@@ -57,5 +57,7 @@ namespace Menge
 
 		typedef FactoryPoolStore<ConstStringHolderStringExternal, 128> FactoryPoolStringExternal;
 		FactoryPoolStringExternal m_poolStringExternal;
+
+		size_t m_memory;
 	};
 }

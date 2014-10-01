@@ -59,15 +59,20 @@ namespace Menge
 		{
 			return true;
 		}
-		else if( err == S3E_THREAD_ERR_TIMEOUT )
+		else if( err == S3E_RESULT_ERROR )
 		{
-			return false;
-		}
-		else
-		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadMutex::lock invalid lock %d"
-				, err
-				);
+			s3eThreadError thread_err = s3eThreadGetError();
+
+			if( thread_err == S3E_THREAD_ERR_TIMEOUT )
+			{
+				return false;
+			}
+			else
+			{
+				LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadMutex::lock invalid lock %d"
+					, thread_err
+					);
+			}
 		}
 
 		return false;

@@ -461,15 +461,126 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		PyObject * movie_getLayerPathLength( Movie * _movie, const ConstString & _name )
 		{
-			float length;
-			if( _movie->getLayerPathLength( _name, length ) == false )
+			const MovieLayer * layer;
+			const Movie * sub_movie;						
+			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
 			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::getLayerPathLength: '%s' not found layer '%s'"
+					, _movie->getName().c_str()
+					, _name.c_str()
+					);
+
 				return pybind::ret_none();
 			}
 
-			PyObject * py_length = pybind::ptr( length );
+			ResourceMovie * resourceMovie = sub_movie->getResourceMovie();
+
+			float frameDuration = resourceMovie->getFrameDuration();
+			uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
+			uint32_t indexCount = indexOut - indexIn;
+
+			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
+
+			MovieFrameSource start_frame;
+			framePack->getLayerFrame( layer->index, 0, start_frame );
+
+			mt::vec3f pos = start_frame.position;
+			float len = 0.f;
+
+			for( uint32_t i = 1; i != indexCount; ++i )
+			{
+				MovieFrameSource frame;
+				framePack->getLayerFrame( layer->index, i, frame );
+
+				len += mt::length_v3_v3( pos, frame.position );
+				pos = frame.position;
+			}
+
+			PyObject * py_length = pybind::ptr( len );
 
 			return py_length;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * movie_getLayerPath( Movie * _movie, const ConstString & _name )
+		{
+			const MovieLayer * layer;
+			const Movie * sub_movie;
+			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::getLayerPathLength: '%s' not found layer '%s'"
+					, _movie->getName().c_str()
+					, _name.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			ResourceMovie * resourceMovie = sub_movie->getResourceMovie();
+
+			float frameDuration = resourceMovie->getFrameDuration();
+			uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
+			uint32_t indexCount = indexOut - indexIn;
+
+			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
+
+			PyObject * py_path = pybind::list_new( 0 );
+
+			for( uint32_t i = 0; i != indexCount; ++i )
+			{
+				MovieFrameSource frame;
+				framePack->getLayerFrame( layer->index, i, frame );
+
+				PyObject * py_pos = pybind::ptr( frame.position );
+
+				pybind::list_appenditem( py_path, py_pos );
+				pybind::decref( py_pos );
+			}
+
+			return py_path;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * movie_getLayerPath2( Movie * _movie, const ConstString & _name )
+		{
+			const MovieLayer * layer;
+			const Movie * sub_movie;
+			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::getLayerPathLength: '%s' not found layer '%s'"
+					, _movie->getName().c_str()
+					, _name.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			ResourceMovie * resourceMovie = sub_movie->getResourceMovie();
+
+			float frameDuration = resourceMovie->getFrameDuration();
+			uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
+			uint32_t indexCount = indexOut - indexIn;
+
+			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
+
+			PyObject * py_path = pybind::list_new( 0 );
+
+			for( uint32_t i = 0; i != indexCount; ++i )
+			{
+				MovieFrameSource frame;
+				framePack->getLayerFrame( layer->index, i, frame );
+
+				mt::vec2f pos;
+				pos.x = frame.position.x;
+				pos.y = frame.position.y;
+				PyObject * py_pos = pybind::ptr( pos );
+				
+				pybind::list_appenditem( py_path, py_pos );
+				pybind::decref( py_pos );
+			}
+
+			return py_path;
 		}
         //////////////////////////////////////////////////////////////////////////
         void Transformation3D_removeRelationTransformation( Transformation3D * _transformation )
@@ -496,7 +607,7 @@ namespace Menge
 		bool ResourceMovie_hasLayer( ResourceMovie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
-			bool successful = _movie->hasLayer( _name, &layer );
+			bool successful = _movie->hasMovieLayer( _name, &layer );
 
 			return successful;
 		}
@@ -1821,38 +1932,40 @@ namespace Menge
 			float angle_norm = mt::angle_norm( _angle );
 
 			float pi_deltha [] = {
-				- mt::m_pi * 1.f / 12.f,
-				mt::m_pi * 0.f / 12.f, 
-				mt::m_pi * 1.f / 12.f,
+				mt::m_deg2rad * -15.f,
+				mt::m_deg2rad * 0.f, 
+				mt::m_deg2rad * 15.f,
 
-				mt::m_pi * 1.f / 12.f,
-				mt::m_pi * 2.f / 12.f, 
-				mt::m_pi * 4.f / 12.f,
+				mt::m_deg2rad * 15.f,
+				mt::m_deg2rad * 30.f, 
+				mt::m_deg2rad * 45.f,
 
-				mt::m_pi * 4.f / 12.f,
-				mt::m_pi * 6.f / 12.f,
-				mt::m_pi * 8.f / 12.f,
+				mt::m_deg2rad * 45.f,
+				mt::m_deg2rad * 90.f,
+				mt::m_deg2rad * 135.f,
 
-				mt::m_pi * 8.f / 12.f,
-				mt::m_pi * 10.f / 12.f, 
-				mt::m_pi * 11.f / 12.f,
+				mt::m_deg2rad * 135.f,
+				mt::m_deg2rad * 150.f,
+				mt::m_deg2rad * 165.f,
 
-				mt::m_pi * 11.f / 12.f,
-				mt::m_pi * 12.f / 12.f,
-				mt::m_pi * 13.f / 12.f,
+				mt::m_deg2rad * 165.f,
+				mt::m_deg2rad * 180.f,
+				mt::m_deg2rad * 195.f,
 
-				mt::m_pi * 13.f / 12.f,
-				mt::m_pi * 14.f / 12.f,
-				mt::m_pi * 16.f / 12.f,
+				mt::m_deg2rad * 195.f,
+				mt::m_deg2rad * 210.f,
+				mt::m_deg2rad * 225.f,
 
-				mt::m_pi * 16.f / 12.f,
-				mt::m_pi * 18.f / 12.f,
-				mt::m_pi * 20.f / 12.f,
+				mt::m_deg2rad * 225.f,
+				mt::m_deg2rad * 270.f,
+				mt::m_deg2rad * 315.f,
 
-				mt::m_pi * 20.f / 12.f,
-				mt::m_pi * 22.f / 12.f,
-				mt::m_pi * 23.f / 12.f,
+				mt::m_deg2rad * 315.f,
+				mt::m_deg2rad * 330.f,
+				mt::m_deg2rad * 345.f,
 			};
+
+			float deg = angle_norm * mt::m_rad2deg;
 
 
 			for( uint32_t i = 0; i != 8; ++i )
@@ -4674,18 +4787,20 @@ namespace Menge
                     .def_proxy_static( "getFrameCount", nodeScriptMethod, &NodeScriptMethod::movie_getFrameCount )
                     .def_proxy_static( "getSize", nodeScriptMethod, &NodeScriptMethod::movie_getSize )
 					.def_proxy_static( "getLayerPathLength", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPathLength )
+					.def_proxy_static( "getLayerPath", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath )
+					.def_proxy_static( "getLayerPath2", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath2 )
                     ;
 
                 pybind::interface_<MovieSlot, pybind::bases<Node> >("MovieSlot", false)
                     ;
 
                 pybind::interface_<MovieInternalObject, pybind::bases<Node> >("MovieInternalObject", false)
-                    ;				
+                    ;
 
                 pybind::interface_<Video, pybind::bases<Node , Animatable> >("Video", false)                    
                     .def( "setResourceVideo", &Video::setResourceVideo )
                     .def( "getResourceVideo", &Video::getResourceVideo )
-                    .def( "pause",&Video::pause )
+                    .def( "pause", &Video::pause )
                     ;
 
                 pybind::interface_<Window, pybind::bases<Node> >("Window", false)

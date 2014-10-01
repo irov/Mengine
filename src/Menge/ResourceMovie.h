@@ -207,7 +207,9 @@ namespace Menge
 		inline const MovieFramePackInterfacePtr & getFramePack() const;
 
 	public:
-		bool hasLayer( const ConstString & _name, const MovieLayer ** _layer ) const;
+
+	public:
+		bool hasMovieLayer( const ConstString & _name, const MovieLayer ** _layer ) const;
 
     public:
 		void visitResourceMovie( VisitorResourceMovie * _visitor );

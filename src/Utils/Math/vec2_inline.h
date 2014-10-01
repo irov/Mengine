@@ -170,6 +170,13 @@ namespace mt
 		_out.y = _a.y - _b.y;
 	}
 
+	MATH_FUNCTION_INLINE void dir_v2_v2(vec2f& _out,const vec2f& _a, const vec2f& _b)
+	{
+		vec2f out;
+		mt::sub_v2_v2( out, _a, _b );
+		mt::norm_v2_v2( _out, out );
+	}
+
 	MATH_FUNCTION_INLINE vec2f operator-(const vec2f& _a, const vec2f& _b) 
 	{
 		vec2f out;

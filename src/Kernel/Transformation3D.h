@@ -7,6 +7,7 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	class Transformation3D
         : public stdex::intrusive_slug_linked<Transformation3D>
 	{

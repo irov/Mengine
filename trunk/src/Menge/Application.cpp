@@ -161,7 +161,6 @@ namespace Menge
 		, m_fixedContentResolution(false)
 		, m_fixedDisplayResolution(false)
 		, m_vsync(false)
-		, m_fullScreen(true)
 		, m_bits(0)
 		, m_FSAAType(0)
 		, m_FSAAQuality(0)
@@ -311,7 +310,7 @@ namespace Menge
         m_windowResolution = CONFIG_VALUE(m_serviceProvider, "Window", "Size", Resolution(1024, 768));
         m_bits = CONFIG_VALUE(m_serviceProvider, "Window", "Bits", 32U);
         m_fullscreen = CONFIG_VALUE(m_serviceProvider, "Window", "Fullscreen", true);
-        m_vsync = CONFIG_VALUE(m_serviceProvider, "Window", "VSync", true);               
+        m_vsync = CONFIG_VALUE(m_serviceProvider, "Window", "VSync", true);
 
         return true;
     }

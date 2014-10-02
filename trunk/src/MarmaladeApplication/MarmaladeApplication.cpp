@@ -73,7 +73,6 @@ SERVICE_EXTERN(SilentSoundSystem, Menge::SoundSystemInterface);
 SERVICE_EXTERN(SoundService, Menge::SoundServiceInterface);
 
 SERVICE_EXTERN(InputService, Menge::InputServiceInterface);
-SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
 SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
 SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
 
@@ -229,6 +228,8 @@ namespace Menge
             return false;
         }
 
+		m_notificationService = notificationService;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -257,6 +258,8 @@ namespace Menge
 
 			return false;
 		}
+
+		m_threadSystem = threadSystem;
 
         ThreadServiceInterface * threadService;
         if( SERVICE_CREATE( ThreadService, &threadService ) == false )
@@ -473,6 +476,8 @@ namespace Menge
             return false;
         }
 
+		m_stringizeService = stringizeService;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -576,14 +581,20 @@ namespace Menge
 
 		{
 			LOGGER_INFO(m_serviceProvider)( "initialize Zip..." );
-			initPluginMengeZip( &m_pluginMengeZip );
-			m_pluginMengeZip->initialize( m_serviceProvider );
+
+			PluginInterface * pluginMengeZip;
+			initPluginMengeZip( &pluginMengeZip );
+			pluginMengeZip->initialize( m_serviceProvider );
+			m_plugins.push_back( pluginMengeZip );
 		}
 
 		{
 			LOGGER_INFO(m_serviceProvider)( "initialize LZ4..." );
-			initPluginMengeLZ4( &m_pluginMengeLZ4 );
-			m_pluginMengeLZ4->initialize( m_serviceProvider );
+
+			PluginInterface * pluginMengeLZ4;
+			initPluginMengeLZ4( &pluginMengeLZ4 );
+			pluginMengeLZ4->initialize( m_serviceProvider );
+			m_plugins.push_back( pluginMengeLZ4 );
 		}
 
         return true;
@@ -603,6 +614,8 @@ namespace Menge
         {
             return false;
         }
+
+		m_unicodeSystem = unicodeSystem;
 
         UnicodeServiceInterface * unicodeService;
         if( SERVICE_CREATE( UnicodeService, &unicodeService ) == false )
@@ -733,6 +746,8 @@ namespace Menge
             return false;
         }
 
+		m_renderSystem = renderSystem;
+
         RenderServiceInterface * renderService;
         if( SERVICE_CREATE( RenderService, &renderService ) == false )
         {
@@ -821,6 +836,8 @@ namespace Menge
 
             return false;
         }
+
+		m_soundSystem = soundSystem;
 
         SoundServiceInterface * soundService;
         if( SERVICE_CREATE( SoundService, &soundService ) == false )
@@ -1038,24 +1055,6 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeConverterEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Codec Service..." );
-
-        ConverterServiceInterface * converterService;
-        if( SERVICE_CREATE( ConverterService, &converterService ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, converterService ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeInputEngine_()
     {
         LOGGER_INFO(m_serviceProvider)( "Initializing Input Service..." );
@@ -1263,11 +1262,6 @@ namespace Menge
             return false;
         }
 
-        if( this->initializeConverterEngine_() == false )
-        {
-            return false;
-        }
-
         if( this->initializeInputEngine_() == false )
         {
             return false;
@@ -1299,29 +1293,37 @@ namespace Menge
         {
             LOGGER_INFO(m_serviceProvider)( "initialize Image Codec..." );
 
-            initPluginMengeImageCodec( &m_pluginMengeImageCodec );
-            m_pluginMengeImageCodec->initialize( m_serviceProvider );
+			Menge::PluginInterface * pluginMengeImageCodec;
+            initPluginMengeImageCodec( &pluginMengeImageCodec );
+            pluginMengeImageCodec->initialize( m_serviceProvider );
+			m_plugins.push_back( pluginMengeImageCodec );
         }
 
         {
             LOGGER_INFO(m_serviceProvider)( "initialize Sound Codec..." );
 
-            initPluginMengeSoundCodec( &m_pluginMengeSoundCodec );
-            m_pluginMengeSoundCodec->initialize( m_serviceProvider );
+			Menge::PluginInterface * pluginMengeSoundCodec;
+            initPluginMengeSoundCodec( &pluginMengeSoundCodec );
+            pluginMengeSoundCodec->initialize( m_serviceProvider );
+			m_plugins.push_back( pluginMengeSoundCodec );
         }
 
 		{
 			LOGGER_INFO(m_serviceProvider)( "initialize Amplifier..." );
 
-			initPluginMengeAmplifier( &m_pluginMengeAmplifier );
-			m_pluginMengeAmplifier->initialize( m_serviceProvider );
+			Menge::PluginInterface * pluginMengeAmplifier;
+			initPluginMengeAmplifier( &pluginMengeAmplifier );
+			pluginMengeAmplifier->initialize( m_serviceProvider );
+			m_plugins.push_back( pluginMengeAmplifier );
 		}
 
 		{
 			LOGGER_INFO(m_serviceProvider)( "initialize Path Finder..." );
 
-			initPluginPathFinder( &m_pluginPluginPathFinder );
-			m_pluginPluginPathFinder->initialize( m_serviceProvider );
+			Menge::PluginInterface * pluginPluginPathFinder;
+			initPluginPathFinder( &pluginPluginPathFinder );
+			pluginPluginPathFinder->initialize( m_serviceProvider );
+			m_plugins.push_back( pluginPluginPathFinder );
 		}
 
 		TVectorString modules;
@@ -1472,6 +1474,239 @@ namespace Menge
 			delete m_input;
 			m_input = nullptr;
 		}
+
+		for( TVectorPlugins::iterator
+			it = m_plugins.begin(),
+			it_end = m_plugins.end();
+		it != it_end;
+		++it )
+		{
+			PluginInterface * plugin = *it;
+
+			plugin->finalize();
+		}
+
+		if( m_application != nullptr )
+		{
+			m_application->finalize();
+		}
+
+		if( m_dataService != nullptr )
+		{
+			m_dataService->finalize();
+			SERVICE_DESTROY( DataService, m_dataService );
+		}
+
+		if( m_moduleService != nullptr )
+		{
+			SERVICE_DESTROY( ModuleService, m_moduleService );
+			m_moduleService = nullptr;
+		}
+
+		if( m_inputService != nullptr )
+		{
+			m_inputService->finalize();
+
+			SERVICE_DESTROY( InputService, m_inputService );
+			m_inputService = nullptr;
+		}
+
+		SERVICE_DESTROY( UnicodeService, m_unicodeService );        
+		m_unicodeService = nullptr;
+
+		SERVICE_DESTROY( UnicodeSystem, m_unicodeSystem );
+		m_unicodeSystem = nullptr;
+
+		if( m_fileService != nullptr )
+		{            
+			SERVICE_DESTROY( FileService, m_fileService );
+			m_fileService = nullptr;
+		}
+
+		if( m_codecService != nullptr)
+		{
+			m_codecService->finalize();
+
+			SERVICE_DESTROY( CodecService, m_codecService );
+			m_codecService = nullptr;
+		}
+
+		if( m_particleService != nullptr )
+		{
+			SERVICE_DESTROY( ParticleService, m_particleService );
+			m_particleService = nullptr;
+		}
+
+		if( m_soundService != nullptr )
+		{
+			m_soundService->finalize();
+
+			SERVICE_DESTROY( SoundService, m_soundService );
+			m_soundService = nullptr;
+		}
+
+		if( m_soundSystem != nullptr )
+		{
+			m_soundSystem->finalize();
+
+			SERVICE_DESTROY( SoundSystem, m_soundSystem );        
+			m_soundSystem = nullptr;
+		}
+
+		SERVICE_DESTROY( Application, m_application );
+		m_application = nullptr;
+
+		if( m_scriptService != nullptr )
+		{
+			m_scriptService->finalize();
+		}
+
+		if( m_renderService != nullptr )
+		{
+			m_renderService->finalize();
+		}
+
+		if( m_renderMaterialManager != nullptr )
+		{
+			m_renderMaterialManager->finalize();
+		}
+
+		if( m_renderTextureManager != nullptr )
+		{
+			m_renderTextureManager->finalize();
+		}
+
+		if( m_renderSystem != nullptr )
+		{
+			m_renderSystem->finalize();
+		}
+
+		if( m_renderService != nullptr )
+		{
+			SERVICE_DESTROY( RenderService, m_renderService );
+			m_renderService = nullptr;
+		}
+
+		if( m_renderMaterialManager != nullptr )
+		{
+			SERVICE_DESTROY( RenderMaterialManager, m_renderMaterialManager );
+			m_renderMaterialManager = nullptr;
+		}
+
+		if( m_renderTextureManager != nullptr )
+		{
+			SERVICE_DESTROY( RenderTextureManager, m_renderTextureManager );
+			m_renderTextureManager = nullptr;
+		}        
+
+		if( m_renderSystem != nullptr )
+		{
+			SERVICE_DESTROY( RenderSystem, m_renderSystem );
+			m_renderSystem = nullptr;
+		}
+
+		if( m_prefetcherService != nullptr )
+		{
+			m_prefetcherService->finalize();
+
+			SERVICE_DESTROY( PrefetcherService, m_prefetcherService );
+			m_prefetcherService = nullptr;
+		}
+
+		if( m_threadService != nullptr )
+		{
+			m_threadService->finalize();
+
+			SERVICE_DESTROY( ThreadService, m_threadService );
+			m_threadService = nullptr;
+		}        
+
+		if( m_threadSystem != nullptr )
+		{
+			m_threadSystem->finalize();
+
+			SERVICE_DESTROY( ThreadSystem, m_threadSystem );
+			m_threadSystem = nullptr;
+		}
+
+		if( m_notificationService != nullptr )
+		{
+			SERVICE_DESTROY(NotificationService, m_notificationService);
+			m_notificationService = nullptr;
+		}
+
+		if( m_scriptService != nullptr )
+		{
+			SERVICE_DESTROY( ScriptService, m_scriptService );
+			m_scriptService = nullptr;
+		}
+
+		if( m_configService != nullptr )
+		{
+			SERVICE_DESTROY( ConfigService, m_configService );
+			m_configService = nullptr;
+		}
+
+		if( m_stringizeService != nullptr )
+		{
+			SERVICE_DESTROY( StringizeService, m_stringizeService );
+			m_stringizeService = nullptr;
+		}
+
+		if( m_fileLog != nullptr )
+		{
+			if( m_logService != nullptr )
+			{
+				m_logService->unregisterLogger( m_fileLog );
+			}
+
+			delete m_fileLog;
+			m_fileLog = nullptr;
+		}
+
+		if( m_archiveService != nullptr )
+		{
+			SERVICE_DESTROY( ArchiveService, m_archiveService );
+			m_archiveService = nullptr;
+		}
+
+		if( m_cacheService != nullptr )
+		{
+			m_cacheService->finalize();
+			SERVICE_DESTROY( CacheService, m_cacheService );
+			m_cacheService = nullptr;
+		}
+
+		for( TVectorPlugins::iterator
+			it = m_plugins.begin(),
+			it_end = m_plugins.end();
+		it != it_end;
+		++it )
+		{
+			PluginInterface * plugin = *it;
+
+			plugin->destroy();
+		}	
+
+		m_plugins.clear();
+
+
+		if( m_loggerConsole != nullptr )
+		{
+			if( m_logService != nullptr )
+			{
+				m_logService->unregisterLogger( m_loggerConsole );
+			}
+
+			delete m_loggerConsole;
+			m_loggerConsole = nullptr;
+		}
+
+		SERVICE_DESTROY( LogService, m_logService );
+		m_logService = nullptr;
+
+		SERVICE_DESTROY( ServiceProvider, m_serviceProvider );
+		m_serviceProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::stop()

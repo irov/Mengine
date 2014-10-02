@@ -223,11 +223,13 @@ namespace Menge
 		bool m_focus;
 		bool m_update;
 
-		bool m_fullscreen;
-		Resolution m_renderResolution;
-
 		Resolution m_windowResolution;
 		uint32_t m_bits;
+		bool m_fullscreen;
+		bool m_vsync;
+
+		Resolution m_renderResolution;
+
 		bool m_textureFiltering;
 		int	m_FSAAType;
 		int m_FSAAQuality;
@@ -273,8 +275,7 @@ namespace Menge
 
 		bool m_allowFullscreenSwitchShortcut;
 
-		bool m_fullScreen;
-		bool m_vsync;
+		
 		bool m_invalidateVsync;
 		bool m_cursorMode;
 		bool m_invalidateCursorMode;

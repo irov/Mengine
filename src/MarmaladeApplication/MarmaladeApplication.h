@@ -113,7 +113,6 @@ namespace Menge
         bool initializeNodeManager_();
         bool initializeScriptEngine_();
         bool initializeCodecEngine_();
-        bool initializeConverterEngine_();
         bool initializeInputEngine_();        
         bool initializePluginService_();
         bool initializeArchiveService_();
@@ -139,25 +138,29 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
         InputServiceInterface * m_inputService;
+		UnicodeSystemInterface * m_unicodeSystem;
         UnicodeServiceInterface * m_unicodeService;
         LogServiceInterface * m_logService;
         FileServiceInterface * m_fileService;
         CodecServiceInterface * m_codecService;
+		ThreadSystemInterface * m_threadSystem;
         ThreadServiceInterface * m_threadService;
         ParticleServiceInterface * m_particleService;
+		RenderSystemInterface * m_renderSystem;
         RenderServiceInterface * m_renderService;
-		PhysicSystemInterface * m_physicSystem;
 		RenderTextureServiceInterface * m_renderTextureManager;
 		RenderMaterialServiceInterface * m_renderMaterialManager;
+		SoundSystemInterface * m_soundSystem;
         SoundServiceInterface * m_soundService;
         ScriptServiceInterface * m_scriptService;
-        PluginServiceInterface * m_pluginService;
         ArchiveServiceInterface * m_archiveService;
 		ModuleServiceInterface * m_moduleService;
 		DataServiceInterface * m_dataService;
 		CacheServiceInterface * m_cacheService;
 		ConfigServiceInterface * m_configService;
 		PrefetcherServiceInterface * m_prefetcherService;
+		NotificationServiceInterface * m_notificationService;
+		StringizeServiceInterface * m_stringizeService;
 
 
         MarmaladeLayerInterface * m_marmaladeLayer; 
@@ -169,13 +172,8 @@ namespace Menge
         MarmaladeTimer * m_timer;
         MarmaladeInput * m_input;
 
-		PluginInterface * m_pluginMengeXmlCodec;
-        PluginInterface * m_pluginMengeImageCodec;
-        PluginInterface * m_pluginMengeSoundCodec;
-		PluginInterface * m_pluginMengeAmplifier;
-		PluginInterface * m_pluginMengeZip;
-		PluginInterface * m_pluginMengeLZ4;
-		PluginInterface * m_pluginPluginPathFinder;
+		typedef stdex::vector<PluginInterface *> TVectorPlugins;
+		TVectorPlugins m_plugins;	
 
 		bool m_developmentMode;
     };

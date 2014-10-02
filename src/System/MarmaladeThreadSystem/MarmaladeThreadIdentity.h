@@ -36,6 +36,8 @@ namespace Menge
 		
 		volatile bool m_complete;
 		volatile bool m_exit;
+
+		bool m_join;
 	};
 
 	typedef stdex::intrusive_ptr<MarmaladeThreadIdentity> MarmaladeThreadIdentityPtr;

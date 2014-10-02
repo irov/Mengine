@@ -2,7 +2,7 @@
 
 #	include "Logger/Logger.h"
 
-#   include <unistd.h>
+#	include "s3eDevice.h"
 
 namespace Menge
 {
@@ -12,6 +12,7 @@ namespace Menge
 		, m_thread(nullptr)
 		, m_task(nullptr)
 		, m_complete(true)
+		, m_join(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,71 +41,102 @@ namespace Menge
 			return false;
 		}
 
+		m_thread = s3e_thread;
+
 		return true;
     }	
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeThreadIdentity::main()
 	{
-		while( true, true )
+		bool work = true;
+		while( work )
 		{		
 			m_mutex->lock();
-			if( m_complete == false )
-			{				
-				m_task->main();
-				m_complete = true;
+			{
+				if( m_complete == false )
+				{				
+					m_task->main();
+					m_complete = true;
+				}
+
+				if( m_exit == true )
+				{
+					work = false;
+				}
 			}
 			m_mutex->unlock();
-
-			if( m_exit == true )
-			{
-				break;
-			}
-
-			::usleep( 10 * 1000 );
+			
+			s3eDeviceYield( 10 );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeThreadIdentity::addTask( ThreadTaskInterface * _task )
 	{
-		if( m_complete == false )
+		bool successful = true;
+		m_mutex->lock();
+		{
+			if( m_complete == false )
+			{
+				successful = false;
+			}
+
+			if( m_exit == true )
+			{
+				successful = false;
+			}
+		}
+		m_mutex->unlock();
+
+		if( successful == false )
 		{
 			return false;
 		}
 
-		if( m_exit == true )
+		m_mutex->lock();
 		{
-			return false;				 
+			m_task = _task;
+			m_complete = false;
 		}
+		m_mutex->unlock();
 
-		m_task = _task;
-		m_complete = false;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeThreadIdentity::joinTask( ThreadTaskInterface * _task )
 	{
-		if( m_complete == true )
-		{
-			return false;
-		}
+		bool successful = false;
 
 		m_mutex->lock();
 
-		if( m_task == _task )
-		{
-			m_complete = true;
-			m_task = nullptr;
+		if( m_complete == false )
+		{			
+			if( m_task == _task )
+			{
+				m_complete = true;
+				m_task = nullptr;
+
+				successful = true;
+			}
 		}
 
 		m_mutex->unlock();
 
-		return true;
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeThreadIdentity::join()
 	{
-		m_exit = true;
+		if( m_join == true )
+		{
+			return;
+		}
+
+		m_mutex->lock();
+		{
+			m_exit = true;
+		}
+		m_mutex->unlock();
 
 		ThreadTaskInterface * join_task = nullptr;
 		s3eResult result = s3eThreadJoin( m_thread, (void**)&join_task );
@@ -115,5 +147,7 @@ namespace Menge
 				, s3eThreadGetErrorString()
 				);						
 		}
+
+		m_join = true;
 	}
 }

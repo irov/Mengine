@@ -121,29 +121,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadIdentity::main()
 	{
-		bool done = false;
+		bool work = true;
 
-		while( done == false )
+		while( work == true )
 		{	
 			m_mutex->lock();
 
 			if( m_complete == false )
-			{				
+			{
 				m_task->main();
 
 				m_task = nullptr;
 
-				m_complete = true;				
+				m_complete = true;
 			}
 
 			if( m_exit == true )
 			{
-				done = true;
+				work = false;
 			}
 
 			m_mutex->unlock();
 
-			if( done == false )
+			if( work == true )
 			{
 				WaitForSingleObject( m_hTaskSignalEvent, INFINITE );
 			}

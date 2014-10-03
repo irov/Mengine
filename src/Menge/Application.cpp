@@ -1745,6 +1745,13 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
+	void Application::changeWindowResolution( const Resolution & _resolution )
+	{
+		m_windowResolution = _resolution;
+
+		this->invalidateWindow_();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Application::setFullscreenMode( bool _fullscreen )
 	{
 		if( m_fullscreen == _fullscreen )

@@ -84,6 +84,9 @@ namespace Menge
 		void finalizeGame() override;
 
 	public:
+		void changeWindowResolution( const Resolution & _resolution ) override;
+
+	public:
 		void setFullscreenMode( bool _fullscreen ) override;
 		bool getFullscreenMode() const override;
 

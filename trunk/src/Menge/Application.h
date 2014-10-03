@@ -76,6 +76,9 @@ namespace Menge
 		bool getAllowFullscreenSwitchShortcut() const override;
         	
 	public:
+		void setDefaultWindowDescription( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _vsync ) override;
+
+	public:
 		bool createGame( const ConstString & _module, const ConstString & _language, const ConstString & _resourcesIniGroup, const FilePath & _resourcesIniPath ) override;
 		bool initializeGame( const String & _scriptInitParams ) override;
 		void finalizeGame() override;

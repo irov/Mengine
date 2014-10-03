@@ -1754,6 +1754,13 @@ namespace Menge
 			return false;
 		}
 
+		Resolution defaultWindowResolution = CONFIG_VALUE(m_serviceProvider, "Window", "Size", Resolution(1024, 768));
+		uint32_t defaultWindowBits = CONFIG_VALUE(m_serviceProvider, "Window", "Bits", 32U);
+		bool defaultWindowFullscreen = CONFIG_VALUE(m_serviceProvider, "Window", "Fullscreen", true);
+		bool defaultWindowVSync = CONFIG_VALUE(m_serviceProvider, "Window", "VSync", true);
+
+		m_application->setDefaultWindowDescription( defaultWindowResolution, defaultWindowBits, defaultWindowFullscreen, defaultWindowVSync );
+
 		if( m_application->createGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack), ConstString::none(), resourceIniPath ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application create game failed"

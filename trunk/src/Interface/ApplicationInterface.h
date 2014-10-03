@@ -74,6 +74,9 @@ namespace Menge
         virtual bool userEvent( const ConstString & _event, const TMapParams & _params ) = 0;
 
 	public:
+		virtual void setDefaultWindowDescription( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _vsync ) = 0;
+
+	public:
 		virtual bool createGame( const ConstString & _module, const ConstString & _language, const ConstString & _resourcesIniGroup, const FilePath & _resourcesIniPath ) = 0;
 		virtual bool initializeGame( const String & _scriptInitParams ) = 0;
 		virtual void finalizeGame() = 0;

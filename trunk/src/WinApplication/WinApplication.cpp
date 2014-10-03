@@ -3296,7 +3296,7 @@ namespace Menge
 
 			FILE * file = _wfopen( icoFile.c_str(), L"wb" );
 
-			if( file == 0 )
+			if( file == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup can't create cursor cach file %ls"
 					, icoFile.c_str()

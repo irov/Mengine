@@ -1415,6 +1415,21 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	static int32 s3eCallback_S3E_SURFACE_SCREENSIZE( void * _systemData, void * _userData )
+	{
+		s3eSurfaceOrientation * orientation = static_cast<s3eSurfaceOrientation *>(_systemData);
+
+		ApplicationInterface * app = static_cast<ApplicationInterface *>(_userData);
+		
+		Resolution resolution;
+		resolution.setWidth( orientation->m_Width );
+		resolution.setHeight( orientation->m_Height );
+
+		app->changeWindowResolution( resolution );
+
+		return 0;
+	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::loop()
     {
@@ -1422,6 +1437,11 @@ namespace Menge
         {
             return;
         }
+
+		if( s3eSurfaceRegister( S3E_SURFACE_SCREENSIZE, &s3eCallback_S3E_SURFACE_SCREENSIZE, m_application ) != S3E_RESULT_SUCCESS )
+		{
+			return;
+		}
 
         while( true )
         {
@@ -1767,7 +1787,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
-
+		
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::notifyVsyncChanged( bool _vsync )

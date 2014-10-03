@@ -307,11 +307,6 @@ namespace Menge
            m_aspectRatioViewports[aspect] = it->viewport;
         }
 
-        m_windowResolution = CONFIG_VALUE(m_serviceProvider, "Window", "Size", Resolution(1024, 768));
-        m_bits = CONFIG_VALUE(m_serviceProvider, "Window", "Bits", 32U);
-        m_fullscreen = CONFIG_VALUE(m_serviceProvider, "Window", "Fullscreen", true);
-        m_vsync = CONFIG_VALUE(m_serviceProvider, "Window", "VSync", true);
-
         return true;
     }
 	/////////////////////////////////////////////////////
@@ -734,6 +729,14 @@ namespace Menge
 		m_textService->initialize();
 		
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setDefaultWindowDescription( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _vsync )
+	{
+		m_windowResolution = _resolution;
+		m_bits = _bits;
+		m_fullscreen = _fullscreen;
+		m_vsync = _vsync;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createGame( const ConstString & _personalityModule, const ConstString & _language, const ConstString & _resourcesIniGroup, const FilePath & _resourcesIniPath )

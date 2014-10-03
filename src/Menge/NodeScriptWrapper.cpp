@@ -1231,6 +1231,7 @@ namespace Menge
 				return;
 			}
 
+			_node->removeFromParent();
             _node->destroy();
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1932,6 +1933,66 @@ namespace Menge
 			float angle_norm = mt::angle_norm( _angle );
 
 			float pi_deltha [] = {
+				mt::m_pi * -1.f / 12.f,
+				mt::m_pi * 0.f / 12.f, 
+				mt::m_pi * 1.f / 12.f,
+
+				mt::m_pi * 1.f / 12.f,
+				mt::m_pi * 2.f / 12.f, 
+				mt::m_pi * 4.f / 12.f,
+
+				mt::m_pi * 4.f / 12.f,
+				mt::m_pi * 6.f / 12.f,
+				mt::m_pi * 8.f / 12.f,
+
+				mt::m_pi * 8.f / 12.f,
+				mt::m_pi * 10.f / 12.f, 
+				mt::m_pi * 11.f / 12.f,
+
+				mt::m_pi * 11.f / 12.f,
+				mt::m_pi * 12.f / 12.f,
+				mt::m_pi * 13.f / 12.f,
+
+				mt::m_pi * 13.f / 12.f,
+				mt::m_pi * 14.f / 12.f,
+				mt::m_pi * 16.f / 12.f,
+
+				mt::m_pi * 16.f / 12.f,
+				mt::m_pi * 18.f / 12.f,
+				mt::m_pi * 20.f / 12.f,
+
+				mt::m_pi * 20.f / 12.f,
+				mt::m_pi * 22.f / 12.f,
+				mt::m_pi * 23.f / 12.f,
+			};
+
+			for( uint32_t i = 0; i != 8; ++i )
+			{
+				float low_angle = pi_deltha[ i * 3 + 0];
+				//float test_angle = pi_deltha[ i * 3 + 1];
+				float hight_angle = pi_deltha[ i * 3 + 2];
+
+				if( mt::angle_length( angle_norm, low_angle ) > 0.f )
+				{
+					continue;
+				}
+
+				if( mt::angle_length( angle_norm, hight_angle ) < 0.f )
+				{
+					continue;
+				}
+
+				return i;
+			}
+
+			return 0;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		uint32_t s_rotateToDiometric( float _angle )
+		{
+			float angle_norm = mt::angle_norm( _angle );
+
+			float pi_deltha [] = {
 				mt::m_deg2rad * -15.f,
 				mt::m_deg2rad * 0.f, 
 				mt::m_deg2rad * 15.f,
@@ -1965,9 +2026,6 @@ namespace Menge
 				mt::m_deg2rad * 345.f,
 			};
 
-			float deg = angle_norm * mt::m_rad2deg;
-
-
 			for( uint32_t i = 0; i != 8; ++i )
 			{
 				float low_angle = pi_deltha[ i * 3 + 0];
@@ -1988,7 +2046,7 @@ namespace Menge
 			}
 
 			return 0;
-		}
+		}		
 		//////////////////////////////////////////////////////////////////////////
 		typedef stdex::vector<HotSpot *> TVectorHotSpot;
 		//////////////////////////////////////////////////////////////////////////
@@ -5047,6 +5105,7 @@ namespace Menge
 			pybind::def_functor( "uncacheResources", nodeScriptMethod, &NodeScriptMethod::s_uncacheResources );
 
 			pybind::def_functor( "rotateToIsometric", nodeScriptMethod, &NodeScriptMethod::s_rotateToIsometric );
+			pybind::def_functor( "rotateToDiometric", nodeScriptMethod, &NodeScriptMethod::s_rotateToDiometric );
 
 			pybind::def_functor( "hotspotCorrect", nodeScriptMethod, &NodeScriptMethod::s_hotspotCorrect );
 

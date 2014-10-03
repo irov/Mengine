@@ -91,12 +91,15 @@ namespace Menge
 		for( TVectorAOIActors::iterator
 			it = m_neighbours.begin(),
 			it_end = m_neighbours.end();
-		it != it_end; )
+		it != it_end; 
+		++it )
 		{
 			AOIActor * neignbour = *it;
 
 			neignbour->removeActorNeighbor( this );
 		}
+
+		m_neighbours.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	AreaOfInterest::AreaOfInterest()

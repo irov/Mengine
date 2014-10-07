@@ -31,8 +31,8 @@ namespace Menge
 		, const ConstString & _type
 		, const ConstString & _locale
 		, const ConstString & _platform
-		, const FilePath & _descriptionPath
-		, const FilePath & _path
+		, const ConstString & _descriptionPath
+		, const ConstString & _path
 		, bool _preload	)
 	{
 		m_serviceProvider = _serviceProvider;
@@ -65,7 +65,7 @@ namespace Menge
 		return m_platform;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const FilePath & Pak::getPath() const
+	const ConstString & Pak::getPath() const
 	{
 		return m_path;
 	}
@@ -214,7 +214,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Pak::apply()
 	{
-		for( TVectorFilePath::const_iterator
+		for( TVectorConstString::const_iterator
 			it = m_resourcesDesc.begin(),
 			it_end = m_resourcesDesc.end();
 		it != it_end;
@@ -240,7 +240,7 @@ namespace Menge
             //    );
 		}
 
-		for( TVectorFilePath::iterator
+		for( TVectorConstString::iterator
 			it = m_pathFonts.begin(),
 			it_end = m_pathFonts.end();
 		it != it_end;
@@ -254,13 +254,13 @@ namespace Menge
 			}
 		}
 
-		for( TVectorFilePath::iterator
+		for( TVectorConstString::iterator
 			it = m_pathTexts.begin(),
 			it_end = m_pathTexts.end();
 		it != it_end;
 		++it )
 		{
-            const FilePath & path = *it;
+            const ConstString & path = *it;
 
 			if( this->loadText_( m_name, path ) == false )
             {
@@ -271,7 +271,7 @@ namespace Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool Pak::loadText_( const ConstString & _pakName, const FilePath & _path )
+    bool Pak::loadText_( const ConstString & _pakName, const ConstString & _path )
     {
         bool result = TEXT_SERVICE(m_serviceProvider)
 			->loadTextEntry( m_locale, _pakName, _path );
@@ -279,7 +279,7 @@ namespace Menge
         return result;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Pak::loadFont_( const ConstString & _pakName, const FilePath & _path )
+	bool Pak::loadFont_( const ConstString & _pakName, const ConstString & _path )
 	{
 		bool result = TEXT_SERVICE(m_serviceProvider)
 			->loadFonts( m_locale, _pakName, _path );
@@ -287,17 +287,17 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::addResource_( const FilePath & _path )
+	void Pak::addResource_( const ConstString & _path )
 	{
 		m_resourcesDesc.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::addTextPath_( const FilePath & _path )
+	void Pak::addTextPath_( const ConstString & _path )
 	{
 		m_pathTexts.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::addScriptPath_( const FilePath & _path )
+	void Pak::addScriptPath_( const ConstString & _path )
 	{
 		m_pathScripts.push_back( _path );
 	}
@@ -307,7 +307,7 @@ namespace Menge
 		m_pathModules.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::addFontPath_( const FilePath & _font )
+	void Pak::addFontPath_( const ConstString & _font )
 	{
 		m_pathFonts.push_back( _font );
 	}

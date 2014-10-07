@@ -16,8 +16,8 @@ namespace Menge
 	{		
 		ConstString pakName; 
 
-		FilePath inputFileName;
-        FilePath outputFileName;
+		ConstString inputFileName;
+        ConstString outputFileName;
 
 		String params;
 	};
@@ -69,7 +69,7 @@ namespace Menge
 		virtual ConverterInterfacePtr createConverter( const ConstString & _type ) = 0; 
 
     public:
-        virtual bool convert( const ConstString & _converter, const ConstString & _category, const FilePath & _in, FilePath & _out ) = 0;
+        virtual bool convert( const ConstString & _converter, const ConstString & _category, const ConstString & _in, ConstString & _out ) = 0;
 	};
 
 #   define CONVERTER_SERVICE( serviceProvider )\

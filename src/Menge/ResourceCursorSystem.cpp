@@ -31,6 +31,6 @@ namespace Menge
 	{
 		_size = 0;
 
-		return 0;
+		return nullptr;
 	}
 }

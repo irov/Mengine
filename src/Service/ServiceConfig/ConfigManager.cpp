@@ -25,7 +25,7 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigManager::loadConfig( const ConstString & _fileGroup, const FilePath & _applicationPath )
+	bool ConfigManager::loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath )
 	{
 		InputStreamInterfacePtr applicationInputStream = 
 			FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _applicationPath, false );

@@ -21,7 +21,7 @@ namespace Menge
 
 
 #   define STRINGIZE_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::StringizeServiceInterface)
+    ((Menge::StringizeServiceInterface*)SERVICE_GET(serviceProvider, Menge::StringizeServiceInterface))
 
     namespace Helper
     {

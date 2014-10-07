@@ -199,7 +199,7 @@ namespace Menge
 		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::addModulePath( const ConstString & _pak, const TVectorFilePath& _pathes, const TVectorConstString & _modules )
+	void ScriptEngine::addModulePath( const ConstString & _pak, const TVectorConstString & _pathes, const TVectorConstString & _modules )
 	{
         m_moduleFinder->addModulePath( _pak, _pathes );
 

@@ -98,7 +98,7 @@ namespace Menge
 		return fileGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::mountFileGroup( const ConstString& _fileGroupName, const FilePath& _path, const ConstString & _type )
+	bool FileEngine::mountFileGroup( const ConstString & _fileGroupName, const ConstString & _path, const ConstString & _type )
 	{
 		LOGGER_INFO(m_serviceProvider)( "FileEngine:mountFileSystem _fileGroupName '%s' _path '%s' _type '%s'"
 			, _fileGroupName.c_str() 
@@ -196,6 +196,7 @@ namespace Menge
 	bool FileEngine::existFile( const ConstString& _fileGroupName, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const
 	{
 		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileGroupName );
+
 		if( it_find == m_fileSystemMap.end() )
 		{
 			return false;

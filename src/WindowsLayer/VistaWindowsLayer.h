@@ -68,7 +68,7 @@ namespace Menge
         //LONG deleteRegistryValue( HKEY _hKey, const Menge::WString & _lpKeyName, const Menge::WString & _lpValueName );
 
         bool makeFormatMessage( HRESULT _hresult, WString & _out ) override;
-        bool concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity ) override;
+        bool concatenateFilePath( const ConstString & _folder, const ConstString & _fileName, WChar * _filePath, size_t _capacity ) override;
 
 		bool cmd( const WString & _command ) override;
 

@@ -20,22 +20,22 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::setFilePath( const FilePath& _path )
+	void ResourceEmitterContainer::setFilePath( const ConstString & _path )
 	{
 		m_fileName = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const FilePath& ResourceEmitterContainer::getFilePath() const
+	const ConstString & ResourceEmitterContainer::getFilePath() const
 	{
 		return m_fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceEmitterContainer::setFolderPath( const FilePath& _folder )
+	void ResourceEmitterContainer::setFolderPath( const ConstString & _folder )
 	{
 		m_folder = _folder;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const FilePath& ResourceEmitterContainer::getFolderPath() const
+	const ConstString & ResourceEmitterContainer::getFolderPath() const
 	{
 		return m_folder;
 	}
@@ -76,7 +76,7 @@ namespace Menge
         it != it_end;
         ++it )
         {            
-            const FilePath & filename = it->file;
+            const ConstString & filename = it->file;
 
             ConstString filepath = this->makeTexturePath_( filename );
 
@@ -160,7 +160,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const FilePath & filename = it->file;
+			const ConstString & filename = it->file;
 
             ConstString filepath = this->makeTexturePath_( filename );
 
@@ -188,7 +188,7 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    ConstString ResourceEmitterContainer::makeTexturePath_( const FilePath & _filepath ) const
+    ConstString ResourceEmitterContainer::makeTexturePath_( const ConstString & _filepath ) const
     {        
 		PathString cache_path;
         

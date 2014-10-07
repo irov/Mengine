@@ -26,11 +26,11 @@ namespace Menge
 		~Account();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const FilePath & _folder, uint32_t _projectVersion );
+		bool initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const ConstString & _folder, uint32_t _projectVersion );
         
 	public:
 		const WString & getName() const override;
-        const FilePath & getFolder() const override;
+        const ConstString & getFolder() const override;
 
     public:
 		bool addSetting( const ConstString & _setting, const WString& _defaultValue, PyObject* _applyFunc ) override;
@@ -45,8 +45,8 @@ namespace Menge
 		bool save() override;
 
     public:
-        bool loadBinaryFile( const FilePath & _fileName, TBlobject & _data ) override;
-        bool writeBinaryFile( const FilePath & _fileName, const TBlobject & _data ) override;
+        bool loadBinaryFile( const ConstString & _fileName, TBlobject & _data ) override;
+        bool writeBinaryFile( const ConstString & _fileName, const TBlobject & _data ) override;
 	
 	protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -56,8 +56,8 @@ namespace Menge
 		WString m_name;
 		uint32_t m_projectVersion;
 
-        FilePath m_folder;
-        FilePath m_settingsPath;
+        ConstString m_folder;
+        ConstString m_settingsPath;
         		
         struct Setting
         {

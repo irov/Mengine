@@ -30,7 +30,7 @@ namespace Menge
 		ConverterInterfacePtr createConverter( const ConstString & _type ) override; 
 
     public:
-        bool convert( const ConstString & _converter, const ConstString & _category, const FilePath & _in, FilePath & _out ) override;
+        bool convert( const ConstString & _converter, const ConstString & _category, const ConstString & _in, ConstString & _out ) override;
 			
 	protected:
         ServiceProviderInterface * m_serviceProvider;

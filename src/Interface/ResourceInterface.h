@@ -24,7 +24,7 @@ namespace Menge
 		virtual void finalize() = 0;
 
     public:
-        virtual bool loadResource( const ConstString & _pakName, const ConstString & _path ) = 0;
+        virtual bool loadResource( const ConstString & _pakName, const FilePath & _path ) = 0;
 
     public:
         virtual ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;

@@ -4,14 +4,14 @@
 
 namespace Menge
 {
-    FilePath concatenationFilePath( ServiceProviderInterface * _serviceProvider, const FilePath & _left, const FilePath & _right )
+    ConstString concatenationFilePath( ServiceProviderInterface * _serviceProvider, const ConstString & _left, const ConstString & _right )
     {
         PathString path;
 
 		path += _left;
 		path += _right;
        
-        FilePath c_path = Helper::stringizeString( _serviceProvider, path );
+        ConstString c_path = Helper::stringizeString( _serviceProvider, path );
 
         return c_path;
     }

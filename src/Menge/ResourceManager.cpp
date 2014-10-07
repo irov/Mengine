@@ -92,7 +92,7 @@ namespace Menge
 		m_resources.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::loadResource( const ConstString & _pakName, const ConstString & _path )
+	bool ResourceManager::loadResource( const ConstString & _pakName, const FilePath & _path )
 	{
 		Metacode::Meta_DataBlock datablock;
 
@@ -130,7 +130,7 @@ namespace Menge
         {
             const Metacode::Meta_DataBlock::Meta_Include & meta_include = *it;
 
-            const ConstString & path = meta_include.get_Path();
+            const FilePath & path = meta_include.get_Path();
 
             if( this->loadResource( _pakName, path ) == false )
             {

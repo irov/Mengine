@@ -355,7 +355,7 @@ namespace Menge
 			font->setServiceProvider( m_serviceProvider );
 			font->setName( fontName );
 
-			FilePath glyphPath;
+			ConstString glyphPath;
 			if( IniUtil::getIniValue( ini, fontName.c_str(), "Glyph", glyphPath, m_serviceProvider ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts invalid %s:%s font %s don't setup Glyph"
@@ -383,7 +383,7 @@ namespace Menge
 
 			font->setGlyph( glyph );
 
-			FilePath pathImage;
+			ConstString pathImage;
 			if( IniUtil::getIniValue( ini, fontName.c_str(), "Image", pathImage, m_serviceProvider ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts invalid %s:%s font %s dont setup Image"
@@ -395,9 +395,9 @@ namespace Menge
 				return false;
 			}
 
-			FilePath pathOutline;
+			ConstString pathOutline;
 			IniUtil::getIniValue( ini, fontName.c_str(), "Outline", pathOutline, m_serviceProvider );
-
+			
 			font->setTexturePath( _pakName, pathImage, pathOutline );
 
 			ColourValue colourFont;
@@ -436,7 +436,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextGlyphPtr TextManager::loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	TextGlyphPtr TextManager::loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const ConstString & _path )
 	{
 		TextGlyphPtr glyph_has;
 		if( m_glyphs.has_copy( _path, glyph_has ) == true )

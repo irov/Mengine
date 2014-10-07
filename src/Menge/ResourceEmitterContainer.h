@@ -20,11 +20,11 @@ namespace Menge
 		ResourceEmitterContainer();
 
 	public:
-		void setFilePath( const FilePath& _path );
-		const FilePath& getFilePath() const;
+		void setFilePath( const ConstString & _path );
+		const ConstString & getFilePath() const;
 
-		void setFolderPath( const FilePath& _path );
-		const FilePath& getFolderPath() const;
+		void setFolderPath( const ConstString & _path );
+		const ConstString & getFolderPath() const;
 		
 	public:
 		const ParticleEmitterContainerInterfacePtr & getContainer() const;
@@ -44,11 +44,11 @@ namespace Menge
         bool _isValid() const override;
 
     protected:
-        ConstString makeTexturePath_( const FilePath & _filepath ) const;
+        ConstString makeTexturePath_( const ConstString & _filepath ) const;
 
 	private:
-		FilePath m_fileName;
-		FilePath m_folder;
+		ConstString m_fileName;
+		ConstString m_folder;
 		
 		ParticleEmitterContainerInterfacePtr m_container;
 

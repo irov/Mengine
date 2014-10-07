@@ -95,6 +95,7 @@ namespace Menge
 	void Trigger::_deactivate()
 	{
 		m_aoi->removeActor( m_actor );
+		m_actor = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trigger::_setEventListener( PyObject * _listener )

@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 61;
+        _needVersion = 63;
 
-        if( version != 61 )
+        if( version != 63 )
         {
             return false;
         }

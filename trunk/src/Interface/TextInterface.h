@@ -122,5 +122,5 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define TEXT_SERVICE( serviceProvider )\
-	SERVICE_GET(serviceProvider, Menge::TextServiceInterface)
+	((Menge::TextServiceInterface*)SERVICE_GET(serviceProvider, Menge::TextServiceInterface))
 }

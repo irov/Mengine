@@ -86,19 +86,46 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void AOIActor::addActorConnect( AOIActor * _actor )
+	{
+		TVectorAOIActors::iterator it_erase = std::find( m_connects.begin(), m_connects.end(), _actor );
+
+		if( it_erase != m_connects.end() )
+		{
+			return;
+		}
+
+		m_connects.push_back( _actor );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AOIActor::removeActorConnect( AOIActor * _actor )
+	{
+		TVectorAOIActors::iterator it_erase = std::find( m_connects.begin(), m_connects.end(), _actor );
+
+		if( it_erase == m_connects.end() )
+		{
+			return;
+		}
+
+		*it_erase = m_connects.back();
+		m_connects.pop_back();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void AOIActor::remove()
 	{
 		for( TVectorAOIActors::iterator
-			it = m_neighbours.begin(),
-			it_end = m_neighbours.end();
+			it = m_connects.begin(),
+			it_end = m_connects.end();
 		it != it_end; 
 		++it )
 		{
 			AOIActor * neignbour = *it;
 
 			neignbour->removeActorNeighbor( this );
+			neignbour->removeActorConnect( this );
 		}
 
+		m_connects.clear();
 		m_neighbours.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -132,6 +159,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AreaOfInterest::removeActor( AOIActor * _actor )
 	{		
+		_actor->remove();
+
 		m_actorsRemove.push_back( _actor );
 
 		s_removeFromActors( m_actorsAdd, _actor );
@@ -145,9 +174,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			AOIActor * actor = *it;
-
-			actor->remove();
+			AOIActor * actor = *it;			
 
 			s_removeFromActors( m_actors, actor );
 
@@ -192,10 +219,16 @@ namespace Menge
 				if( mt::sqrlength_v2_v2( position, position2 ) < d_radius )
 				{
 					actor->addActorNeighbor( actor2 );
+
+					actor->addActorConnect( actor2 );
+					actor2->addActorConnect( actor );
 				}
 				else
 				{
 					actor->removeActorNeighbor( actor2 );
+
+					actor->removeActorConnect( actor2 );
+					actor2->removeActorConnect( actor );
 				}				
 			}
 		}

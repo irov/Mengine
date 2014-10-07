@@ -18,11 +18,11 @@ namespace Menge
 		~FileGroupZip();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path ) override;
+		bool initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _path ) override;
 		void finalize() override;
 		
     public:
-        const FilePath & getPath() const override;
+        const ConstString & getPath() const override;
         
 	public:
 		bool existFile( const FilePath & _fileName ) const override;
@@ -51,7 +51,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		FilePath m_path;
+		ConstString m_path;
 
 		FileGroupInterfacePtr m_zipFileGroup;
 		InputStreamInterfacePtr m_zipFile;
@@ -78,7 +78,7 @@ namespace Menge
 			size_t seek_pos;
 			size_t file_size;
 			size_t unz_size;
-			uint16_t compr_method;
+			uint32_t compr_method;
 		};
 
 		typedef IntrusiveSprayTree<FileInfo, 512> TMapFileInfo;

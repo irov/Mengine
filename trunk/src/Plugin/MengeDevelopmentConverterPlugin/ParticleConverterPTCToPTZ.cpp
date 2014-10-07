@@ -96,9 +96,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleConverterPTCToPTZ::validateVersion( const InputStreamInterfacePtr & _stream ) const
 	{
-		unsigned char * binary_memory;
-		size_t binary_size;
-
 		if( Helper::loadStreamMagicHeader( m_serviceProvider, _stream, GET_MAGIC_NUMBER(MAGIC_PTZ), GET_MAGIC_VERSION(MAGIC_PTZ) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::validateVersion: invalid magic header"

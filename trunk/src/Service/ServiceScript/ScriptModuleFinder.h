@@ -29,7 +29,7 @@ namespace Menge
 		void setEmbed( PyObject * _embed );
 
     public:
-        void addModulePath( const ConstString & _pak, const TVectorFilePath & _pathes );
+        void addModulePath( const ConstString & _pak, const TVectorConstString & _pathes );
 
     public:
         PyObject * find_module( PyObject * _module, PyObject * _path );
@@ -55,7 +55,7 @@ namespace Menge
         struct ModulePathes
         {
             ConstString pak;
-            TVectorFilePath pathes;
+            TVectorConstString pathes;
         };
 
         typedef stdex::vector<ModulePathes> TVectorModulePathes;

@@ -43,7 +43,7 @@ namespace Menge
 		m_embed = _embed;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ScriptModuleFinder::addModulePath( const ConstString & _pak, const TVectorFilePath& _pathes )
+    void ScriptModuleFinder::addModulePath( const ConstString & _pak, const TVectorConstString & _pathes )
     {
         ModulePathes mp;
         mp.pak = _pak;
@@ -194,13 +194,21 @@ namespace Menge
         {
             const ModulePathes & mp = *it;
 
-            for( TVectorFilePath::const_iterator
+			FileGroupInterfacePtr fileGroup = FILE_SERVICE(m_serviceProvider)
+				->getFileGroup( mp.pak );
+
+			if( fileGroup == nullptr )
+			{
+				continue;
+			}
+
+            for( TVectorConstString::const_iterator
                 it_path = mp.pathes.begin(),
                 it_path_end = mp.pathes.end();
             it_path != it_path_end;
             ++it_path )
             {
-                const FilePath & path = *it_path;
+                const ConstString & path = *it_path;
 				
 				PathString & fullPath = _loader->modifyPath();
 				fullPath += path;
@@ -210,8 +218,7 @@ namespace Menge
 				ConstStringHolderLocal holder_fullPath_local(fullPath.c_str(), fullPath.size());
 				ConstString c_fullPath_local(&holder_fullPath_local);
 
-				FileGroupInterfacePtr fileGroup;
-                if( FILE_SERVICE(m_serviceProvider)->existFile( mp.pak, c_fullPath_local, &fileGroup ) == false )
+                if( fileGroup->existFile( c_fullPath_local ) == false )
                 {
                     continue;
                 }

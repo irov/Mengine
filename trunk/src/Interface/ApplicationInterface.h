@@ -29,8 +29,8 @@ namespace Menge
 		ConstString locale;
 		ConstString platform;
 
-        FilePath path;
-		FilePath descriptionPath;
+        ConstString path;
+		ConstString descriptionPath;
 
         bool dev;
 		bool preload;

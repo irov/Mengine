@@ -29,7 +29,7 @@ namespace Menge
 		FileGroupInterfacePtr createFileGroup( const ConstString & _type );
 
 	public:	// FileEngine Interface
-		bool mountFileGroup( const ConstString& _fileGroupName, const FilePath& _path, const ConstString & _type ) override;
+		bool mountFileGroup( const ConstString& _fileGroupName, const ConstString & _path, const ConstString & _type ) override;
 		void unmountFileGroup( const ConstString& _fileGroupName ) override;
 
     public:

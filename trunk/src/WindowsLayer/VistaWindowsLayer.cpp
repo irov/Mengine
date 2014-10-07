@@ -540,7 +540,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity )
+    bool VistaWindowsLayer::concatenateFilePath( const ConstString & _folder, const ConstString & _fileName, WChar * _filePath, size_t _capacity )
     {        
         size_t folderSize = _folder.size();
 		size_t dirSize = _fileName.size();

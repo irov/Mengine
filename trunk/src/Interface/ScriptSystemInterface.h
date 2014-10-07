@@ -56,7 +56,7 @@ namespace Menge
 		virtual bool bootstrapModules() = 0;
 
 	public:
-		virtual void addModulePath( const ConstString & _pak, const TVectorFilePath & _pathes, const TVectorConstString & _modules ) = 0;
+		virtual void addModulePath( const ConstString & _pak, const TVectorConstString & _pathes, const TVectorConstString & _modules ) = 0;
 
 		virtual PyObject * importModule( const ConstString& _name ) = 0;
 

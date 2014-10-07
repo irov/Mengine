@@ -2090,7 +2090,7 @@ namespace Menge
 
 		if( m_cursorMode == true && m_cursorResource != nullptr )
 		{
-			const FilePath & cursorName = m_cursorResource->getPath();
+			const ConstString & cursorName = m_cursorResource->getName();
 
 			size_t cursorBufferSize;
 			void * cursorBufferPtr = m_cursorResource->getBuffer( cursorBufferSize );
@@ -2131,7 +2131,7 @@ namespace Menge
 			return;
 		}
 
-		const FilePath & cursorName = m_cursorResource->getPath();
+		const ConstString & cursorName = m_cursorResource->getName();
 
 		size_t cursorBufferSize;
 		void * cursorBufferPtr = m_cursorResource->getBuffer( cursorBufferSize );

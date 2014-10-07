@@ -61,7 +61,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path )
+	bool FileGroupZip::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _path )
 	{
         m_serviceProvider = _serviceProvider;
 
@@ -188,7 +188,7 @@ namespace Menge
 				continue;
 			}
 
-			FilePath fileName = Helper::stringizeStringSize(m_serviceProvider, fileNameBuffer, header.fileNameLen);
+			ConstString fileName = Helper::stringizeStringSize(m_serviceProvider, fileNameBuffer, header.fileNameLen);
 			
 			if( header.compressionMethod != Z_NO_COMPRESSION && header.compressionMethod != Z_DEFLATED )
 			{
@@ -225,7 +225,7 @@ namespace Menge
 		m_zipFile = nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
-	const FilePath & FileGroupZip::getPath() const
+	const ConstString & FileGroupZip::getPath() const
 	{
 		return m_path;
 	}

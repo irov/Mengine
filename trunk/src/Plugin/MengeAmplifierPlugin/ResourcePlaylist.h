@@ -8,7 +8,7 @@ namespace Menge
 {
 	struct TrackDesc
 	{
-		FilePath path;
+		ConstString path;
 		ConstString codec;
 		float volume;
 	};

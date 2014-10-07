@@ -926,7 +926,7 @@ namespace Menge
 				return false;
 			}
 
-            FilePath filepath = Helper::stringizeString( m_serviceProvider, utf8_fileName );
+            ConstString filepath = Helper::stringizeString( m_serviceProvider, utf8_fileName );
             
             if( currentAccount->writeBinaryFile( filepath, _data ) == false )
             {
@@ -967,7 +967,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-            FilePath filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
+            ConstString filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
 
             TBlobject blob;
             if( currentAccount->loadBinaryFile( filename, blob ) == false )

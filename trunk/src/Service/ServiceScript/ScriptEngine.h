@@ -53,7 +53,7 @@ namespace Menge
         void addGlobalModule( const String & _name, PyObject * _module ) override;
         void removeGlobalModule( const String & _name ) override;
 
-        void addModulePath( const ConstString & _pak, const TVectorFilePath & _pathes, const TVectorConstString & _modules ) override;
+        void addModulePath( const ConstString & _pak, const TVectorConstString & _pathes, const TVectorConstString & _modules ) override;
 
 	public:
 		bool bootstrapModules() override;

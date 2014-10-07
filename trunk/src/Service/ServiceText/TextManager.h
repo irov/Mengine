@@ -54,7 +54,7 @@ namespace Menge
 		void addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride );
 
 	protected:
-		TextGlyphPtr loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path );
+		TextGlyphPtr loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const ConstString & _path );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

@@ -49,7 +49,7 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		bool loadResource( const ConstString & _pakName, const ConstString & _path ) override;
+		bool loadResource( const ConstString & _pakName, const FilePath & _path ) override;
 		
 	public:
 		ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;

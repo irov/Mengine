@@ -452,7 +452,7 @@ namespace Menge
 
 		m_configService = configService;
 
-		FilePath gameIniPath;
+		ConstString gameIniPath;
 		if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
 		{
 			return false;
@@ -534,7 +534,8 @@ namespace Menge
 			, m_currentPath.c_str()
 			);
 
-		FilePath currentPath = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
+		ConstString currentPath = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
+
 		// mount root		
 		if( m_fileService->mountFileGroup( ConstString::none(), currentPath, CONST_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
 		{
@@ -630,7 +631,7 @@ namespace Menge
 			return false;
 		}
 
-		FilePath userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
+		ConstString userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
 
 		// mount user directory
 		if( m_fileService->mountFileGroup( CONST_STRING_LOCAL(m_serviceProvider, "user"), userPath, CONST_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
@@ -1748,7 +1749,7 @@ namespace Menge
 
 		String personalityModule = CONFIG_VALUE(m_serviceProvider, "Game", "PersonalityModule", "Personality" );
 
-		FilePath resourceIniPath;
+		ConstString resourceIniPath;
 		if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
 		{
 			return false;
@@ -3260,7 +3261,7 @@ namespace Menge
 		//::ClipCursor( NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyCursorIconSetup( const FilePath & _name, void * _buffer, size_t _size )
+	void WinApplication::notifyCursorIconSetup( const ConstString & _name, void * _buffer, size_t _size )
 	{
 		WString unicode_name;        
 		if( Helper::utf8ToUnicode( m_serviceProvider, _name, unicode_name ) == false )

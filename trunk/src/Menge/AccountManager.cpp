@@ -158,7 +158,7 @@ namespace Menge
             return nullptr;
         }
 
-        FilePath folder = Helper::stringizeString( m_serviceProvider, utf8_path );
+        ConstString folder = Helper::stringizeString( m_serviceProvider, utf8_path );
 
         if( FILE_SERVICE(m_serviceProvider)
             ->existDirectory( CONST_STRING(m_serviceProvider, user), folder ) == false )

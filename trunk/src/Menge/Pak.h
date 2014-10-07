@@ -21,8 +21,8 @@ namespace Menge
 			, const ConstString & _type
 			, const ConstString & _locale
 			, const ConstString & _platform
-			, const FilePath & _descriptionPath
-			, const FilePath & _path
+			, const ConstString & _descriptionPath
+			, const ConstString & _path
 			, bool _preload
 			);
 
@@ -33,7 +33,7 @@ namespace Menge
 		const ConstString & getLocale() const;
 		const ConstString & getPlatfrom() const;
 
-		const FilePath & getPath() const;
+		const ConstString & getPath() const;
 
 	public:
 		bool load();
@@ -47,20 +47,20 @@ namespace Menge
 		void addModulePath_( const String & _path );
 
 	protected:
-		void addResource_( const FilePath & _path );
-        void addTextPath_( const FilePath & _path );
-		void addScriptPath_( const FilePath & _path );
+		void addResource_( const ConstString & _path );
+        void addTextPath_( const ConstString & _path );
+		void addScriptPath_( const ConstString & _path );
 		void addScriptModule_( const ConstString & _path );
-		void addFontPath_( const FilePath & _font );
+		void addFontPath_( const ConstString & _font );
 
     protected:
-        bool loadText_( const ConstString & _pakName, const FilePath & _path );
-		bool loadFont_( const ConstString & _pakName, const FilePath & _path );
+        bool loadText_( const ConstString & _pakName, const ConstString & _path );
+		bool loadFont_( const ConstString & _pakName, const ConstString & _path );
 				
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		TVectorFilePath m_resourcesDesc;
+		TVectorConstString m_resourcesDesc;
 				
 		ConstString m_name;
 		ConstString m_type;
@@ -69,13 +69,13 @@ namespace Menge
 		ConstString m_platform;		
 		FilePath m_descriptionPath;
 
-		FilePath m_path;
+		ConstString m_path;
 
-		TVectorFilePath m_pathScripts;
+		TVectorConstString m_pathScripts;
 		TVectorConstString m_pathModules;
 
-		TVectorFilePath m_pathFonts;
-		TVectorFilePath m_pathTexts;
+		TVectorConstString m_pathFonts;
+		TVectorConstString m_pathTexts;
 
         bool m_preload;
 	};

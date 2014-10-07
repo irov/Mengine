@@ -1,5 +1,6 @@
 #   include "Metatype.h"
 
+#   include "Interface/ServiceInterface.h"
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/StringizeInterface.h"
 
@@ -65,14 +66,24 @@ namespace Metabuf
         ar.readPODs( &_value[0], size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void archive_read( stdex::memory_reader & ar, Menge::ConstString & _value, void * _userData )
+	void archive_read( stdex::memory_reader & ar, Menge::ConstString & _value, void * _userData )
 	{
-        Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
+		Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
 
-		uint32_t index;
-		ar.readSize( index );
+		uint32_t id;
+		ar.readPOD( id );
 
-        _value = loader->getCacheConstString( index );
+		if( id == ((uint32_t)-1) )
+		{
+			uint32_t index;
+			ar.readSize( index );
+
+			_value = loader->getCacheConstString( index );
+		}
+		else
+		{
+			stdex::throw_memory_reader_exception();
+		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void archive_read( stdex::memory_reader & ar, Menge::WChar & _value, void * _userData )

@@ -40,7 +40,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Account::initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const FilePath & _folder, uint32_t _projectVersion )
+	bool Account::initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const ConstString & _folder, uint32_t _projectVersion )
 	{
 		m_serviceProvider = _serviceProvider;
 		m_name = _name;
@@ -71,7 +71,7 @@ namespace Menge
 		return m_name;
 	}
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & Account::getFolder() const
+    const ConstString & Account::getFolder() const
     {
         return m_folder;
     }
@@ -304,7 +304,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-    bool Account::loadBinaryFile( const FilePath & _fileName, TBlobject & _data )
+    bool Account::loadBinaryFile( const ConstString & _fileName, TBlobject & _data )
     {        
 		PathString path;
 
@@ -350,7 +350,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::writeBinaryFile( const FilePath & _fileName, const TBlobject & _data )
+    bool Account::writeBinaryFile( const ConstString & _fileName, const TBlobject & _data )
     {
 		if( _data.empty() == true )
 		{

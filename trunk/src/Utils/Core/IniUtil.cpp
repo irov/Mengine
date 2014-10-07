@@ -91,7 +91,7 @@ namespace Menge
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath & _value, ServiceProviderInterface * _serviceProvider )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString & _value, ServiceProviderInterface * _serviceProvider )
         {
             const Char * ini_value = _ini.getSettingValue( _section, _key );
 

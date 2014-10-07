@@ -17,7 +17,7 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool loadConfig( const ConstString & _fileGroup, const FilePath & _applicationPath ) override;
+		bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) override;
 
 	public:
 		void setValue( const Char * _section, const Char * _key, const Char * _value ) override;

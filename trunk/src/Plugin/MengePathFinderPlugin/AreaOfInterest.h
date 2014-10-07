@@ -47,6 +47,10 @@ namespace Menge
 		void addActorNeighbor( AOIActor * _actor );
 		void removeActorNeighbor( AOIActor * _actor );
 		bool isActorNeighbor( AOIActor * _actor ) const;
+
+	public:
+		void addActorConnect( AOIActor * _actor );
+		void removeActorConnect( AOIActor * _actor );
 	
 	public:
 		void remove();
@@ -58,7 +62,8 @@ namespace Menge
 		float m_radius;
 		void * m_userData;
 				
-		TVectorAOIActors m_neighbours;		
+		TVectorAOIActors m_neighbours;
+		TVectorAOIActors m_connects;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<AOIActor> AOIActorPtr;

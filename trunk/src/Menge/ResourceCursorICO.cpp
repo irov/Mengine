@@ -13,7 +13,7 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceCursorICO );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceCursorICO::ResourceCursorICO()
-		: m_buffer(0)
+		: m_buffer(nullptr)
 		, m_bufferSize(0)
 	{
 	}

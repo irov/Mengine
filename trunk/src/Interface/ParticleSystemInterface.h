@@ -124,7 +124,7 @@ namespace Menge
 
     struct ParticleEmitterAtlas
     {
-        FilePath file;
+        ConstString file;
         //WString path;
     };
 

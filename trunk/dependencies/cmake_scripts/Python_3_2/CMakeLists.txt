@@ -219,7 +219,7 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/thread.c
                 ${SOURCE_DIR}/Python/thread_nt.h
                 ${SOURCE_DIR}/Python/traceback.c
-                ${SOURCE_DIR}/Python/dynload_win.c         
+                ${SOURCE_DIR}/Python/dynload_win.c   
                 
                 ${SOURCE_DIR}/PC/_subprocess.c                
                 ${SOURCE_DIR}/PC/config.c

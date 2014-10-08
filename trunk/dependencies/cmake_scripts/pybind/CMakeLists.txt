@@ -28,14 +28,14 @@ if(NOT MSVC)
 endif(NOT MSVC)
 
 add_definitions(-DPy_BUILD_CORE)
-add_definitions(-DPYBIND_PYTHON_VERSION=276)
+add_definitions(-DPYBIND_PYTHON_VERSION=278)
 
 include_directories(${SOURCE_DIR}/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Python-2.7.6)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Python-2.7.8)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)
 
 IF(WIN32)
-    include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python-2.7.6/PC)
+    include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python-2.7.8/PC)
 ENDIF(WIN32)
 
 add_library( ${PROJECT_NAME}_static STATIC ${sources} )

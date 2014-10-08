@@ -399,8 +399,8 @@ namespace Menge
 	{
 		FilePath applicationPath = CONST_STRING_LOCAL( m_serviceProvider, "application.ini" );
 
-		InputStreamInterfacePtr applicationInputStream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( ConstString::none(), applicationPath, false );
+		InputStreamInterfacePtr applicationInputStream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( ConstString::none(), applicationPath, false );
 
 		if( applicationInputStream == nullptr )
 		{
@@ -1361,15 +1361,15 @@ namespace Menge
 		//    return false;
 		//}
 
-		m_inputService = inputService;
-
-		if( m_inputService->initialize() == false )
+		if( inputService->initialize() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeInputEngine_ Failed to initialize Input Engine"
 				);
 
 			return false;
 		}
+
+		m_inputService = inputService;
 
 		return true;
 	}

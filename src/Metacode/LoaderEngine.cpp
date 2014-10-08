@@ -91,12 +91,13 @@ namespace Menge
 			
 			PathString cache_path_xml;
 			
-			cache_path_xml += _path;
-			
+			cache_path_xml += _path;			
 			cache_path_xml.replace_last( "xml" );
 
-			ConstStringHolderLocal holder_path_xml_local( cache_path_xml.c_str(), cache_path_xml.size() );
-			ConstString c_path_xml_local(&holder_path_xml_local);
+			ConstStringHolderLocal holder_path_xml_local;
+			ConstString c_path_xml_local;
+			STRINGIZE_SERVICE(m_serviceProvider)
+				->stringizeLocal( cache_path_xml.c_str(), cache_path_xml.size(), c_path_xml_local, holder_path_xml_local );
 			
 			if( this->makeBin_( _pak, c_path_xml_local, _path ) == false )
 			{
@@ -260,8 +261,10 @@ namespace Menge
 		cache_path_xml += _path;
 		cache_path_xml.replace_last( "xml" );
 
-		ConstStringHolderLocal holder_path_xml_local( cache_path_xml.c_str(), cache_path_xml.size() );
-		ConstString c_path_xml_local(&holder_path_xml_local);
+		ConstStringHolderLocal holder_path_xml_local;
+		ConstString c_path_xml_local;
+		STRINGIZE_SERVICE(m_serviceProvider)
+			->stringizeLocal( cache_path_xml.c_str(), cache_path_xml.size(), c_path_xml_local, holder_path_xml_local );
         
 		if( FILE_SERVICE(m_serviceProvider)->existFile( _pak, c_path_xml_local, nullptr ) == false )
 		{

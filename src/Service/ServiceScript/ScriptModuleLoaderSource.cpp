@@ -19,8 +19,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptModuleLoaderSource::load_module( PyObject * _module )
     {   
-		ConstStringHolderLocal holder_fullPath_local(m_path.c_str(), m_path.size());
-		ConstString c_fullPath_local(&holder_fullPath_local);
+		ConstStringHolderLocal holder_fullPath_local;
+		ConstString c_fullPath_local;
+		STRINGIZE_SERVICE(m_serviceProvider)
+			->stringizeLocal( m_path.c_str(), m_path.size(), c_fullPath_local, holder_fullPath_local );
 
 		InputStreamInterfacePtr stream = m_group->createInputFile( c_fullPath_local, false );
 

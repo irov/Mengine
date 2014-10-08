@@ -23,8 +23,8 @@ namespace Menge
 		void main();
 
 	public:
-		bool addTask( ThreadTaskInterface * _task ) override;
-		bool joinTask( ThreadTaskInterface * _task ) override;
+		bool processTask( ThreadTaskInterface * _task ) override;
+		bool joinTask() override;
 
 	public:
 		void join() override;

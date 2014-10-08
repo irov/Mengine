@@ -46,8 +46,8 @@ namespace Menge
 		: public FactorablePtr
 	{
 	public:
-		virtual bool addTask( ThreadTaskInterface * _task ) = 0;
-		virtual bool joinTask( ThreadTaskInterface * _task ) = 0;
+		virtual bool processTask( ThreadTaskInterface * _task ) = 0;
+		virtual bool joinTask() = 0;
 
 	public:
 		virtual void join() = 0;

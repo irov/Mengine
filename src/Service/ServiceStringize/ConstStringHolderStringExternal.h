@@ -4,6 +4,10 @@
 
 #   include "stdex/const_string_holder.h"
 
+#	include "pybind/system.hpp"
+
+#	include "Core/Hash.h"
+
 namespace Menge
 {
 	class ConstStringHolderStringExternal
@@ -14,8 +18,10 @@ namespace Menge
 		void setValue( const char * _value, size_t _size )
 		{
 			m_value = _value;
+			
+			hash_type hash = Helper::makeHash( _value, _size );
 
-			this->setup( m_value, _size, false );
+			this->setup( m_value, _size, hash, false );
 		}
 
 	protected:

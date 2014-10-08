@@ -150,7 +150,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32ThreadIdentity::addTask( ThreadTaskInterface * _task )
+	bool Win32ThreadIdentity::processTask( ThreadTaskInterface * _task )
 	{
 		bool successful = false;
 
@@ -171,10 +171,8 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32ThreadIdentity::joinTask( ThreadTaskInterface * _task )
+	bool Win32ThreadIdentity::joinTask()
 	{	
-		(void)_task;
-
 		bool successful = false;
 
 		m_mutex->lock();

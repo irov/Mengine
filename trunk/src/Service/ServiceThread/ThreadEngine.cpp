@@ -152,22 +152,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::destroyThread( const ConstString & _threadName )
 	{
-		//for( TVectorThreads::iterator
-		//	it = m_threads.begin(),
-		//	it_end = m_threads.end();
-		//it != it_end;
-		//++it )
-		//{
-		//	ThreadDesc & td = *it;
+		for( TVectorThreads::iterator
+			it = m_threads.begin(),
+			it_end = m_threads.end();
+		it != it_end;
+		++it )
+		{
+			ThreadDesc & td = *it;
 
-		//	if( td.name != _name )
-		//	{
-		//		continue;;
-		//	}
+			if( td.name != _threadName )
+			{
+				continue;
+			}
 
-		//	td.identity->joinTask();
-		//	td.identity->join();
-		//}
+			td.identity->joinTask();
+			td.identity->join();
+
+			return true;
+		}
 
 		return false;
 	}
@@ -230,10 +232,8 @@ namespace Menge
 		{
 			return true;
 		}
-
-		ThreadTaskInterface * ptr_task = _task.get();
-
-		bool successful = threadIdentity->joinTask( ptr_task );
+				
+		bool successful = threadIdentity->joinTask();
 
 		return successful;
 	}
@@ -292,7 +292,7 @@ namespace Menge
 						continue;
 					}
 
-					if( desc_thread.identity->addTask( task ) == true )
+					if( desc_thread.identity->processTask( task ) == true )
 					{
 						desc_task.identity = desc_thread.identity;
 						desc_task.progress = true;

@@ -23,6 +23,9 @@ src
     IniUtil.h
     IniUtil.cpp
     
+    Hash.h
+    Hash.cpp
+    
     FilePath.h
     FilePath.cpp
     

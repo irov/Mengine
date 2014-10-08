@@ -6,7 +6,6 @@
 
 #   include "ConstStringHolderStringExternal.h"
 #   include "ConstStringHolderStringSTL.h"
-#   include "ConstStringHolderWStringSTL.h"
 #   include "ConstStringHolderStringSize.h"
 
 namespace Menge
@@ -25,6 +24,7 @@ namespace Menge
 
 	public:
 		bool stringize( const char * _str, size_t _size, bool _external, ConstString & _cstr ) override;
+		void stringizeLocal( const char * _str, size_t _size, ConstString & _cstr, ConstStringHolderLocal & _holder ) override;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;

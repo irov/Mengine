@@ -1,5 +1,7 @@
 #	include "StringizeService.h"
 
+#	include "Core/Hash.h"
+
 #	include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
@@ -113,4 +115,13 @@ namespace Menge
 
 		return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void StringizeService::stringizeLocal( const char * _str, size_t _size, ConstString & _cstr, ConstStringHolderLocal & _holder )
+	{
+		ConstString::hash_type hash = Helper::makeHash( _str, _size );
+
+		_holder.setup( _str, _size, hash );
+
+		_cstr = ConstString(&_holder);
+	}
 }

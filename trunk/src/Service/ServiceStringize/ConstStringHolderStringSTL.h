@@ -25,6 +25,6 @@ namespace Menge
         void _destroyString() override;
 
     protected:
-		TVectorChar m_buff;
+		char * m_buff;
     };
 }

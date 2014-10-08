@@ -61,7 +61,7 @@ namespace Menge
     {
         (void)_obj;
 
-		uint32_t hash = pybind::_get_string_hash( _cs->c_str(), _cs->size() );
+		uint32_t hash = _cs->hash();
 			
 		return hash;
     }

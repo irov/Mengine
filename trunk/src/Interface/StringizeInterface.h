@@ -17,6 +17,7 @@ namespace Menge
 
 	public:
 		virtual bool stringize( const char * _str, size_t _size, bool _external, ConstString & _cstr ) = 0;
+		virtual void stringizeLocal( const char * _str, size_t _size, ConstString & _cstr, ConstStringHolderLocal & _holder ) = 0;
 	};
 
 

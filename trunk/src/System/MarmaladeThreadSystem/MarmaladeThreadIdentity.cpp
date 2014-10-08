@@ -70,7 +70,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeThreadIdentity::addTask( ThreadTaskInterface * _task )
+	bool MarmaladeThreadIdentity::processTask( ThreadTaskInterface * _task )
 	{
 		bool successful = true;
 		m_mutex->lock();
@@ -103,7 +103,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeThreadIdentity::joinTask( ThreadTaskInterface * _task )
+	bool MarmaladeThreadIdentity::joinTask()
 	{
 		bool successful = false;
 
@@ -111,13 +111,10 @@ namespace Menge
 
 		if( m_complete == false )
 		{			
-			if( m_task == _task )
-			{
-				m_complete = true;
-				m_task = nullptr;
+			m_complete = true;
+			m_task = nullptr;
 
-				successful = true;
-			}
+			successful = true;
 		}
 
 		m_mutex->unlock();

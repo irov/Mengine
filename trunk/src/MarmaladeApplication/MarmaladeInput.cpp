@@ -98,6 +98,12 @@ namespace Menge
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void MarmaladeInput::updateSurfaceResolution()
+    {
+        m_width = (float)s3eSurfaceGetInt(S3E_SURFACE_WIDTH);
+        m_height = (float)s3eSurfaceGetInt(S3E_SURFACE_HEIGHT);
+    }
     //////////////////////////////////////////////////////////////////////////    
     void MarmaladeInput::showKeyboard( bool _value )
     {

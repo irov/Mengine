@@ -27,6 +27,9 @@ namespace Menge
 
     public:
         bool update();
+        
+    public:
+        void updateSurfaceResolution();
 
     public:
         void showKeyboard( bool _value ); 

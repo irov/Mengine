@@ -1414,7 +1414,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	static int32 s3eCallback_S3E_SURFACE_SCREENSIZE( void * _systemData, void * _userData )
+	static int32 s3eCallback_Application_S3E_SURFACE_SCREENSIZE( void * _systemData, void * _userData )
 	{
 		s3eSurfaceOrientation * orientation = static_cast<s3eSurfaceOrientation *>(_systemData);
 
@@ -1429,6 +1429,17 @@ namespace Menge
 		return 0;
 	}
     //////////////////////////////////////////////////////////////////////////
+    static int32 s3eCallback_Input_S3E_SURFACE_SCREENSIZE( void * _systemData, void * _userData )
+    {
+        s3eSurfaceOrientation * orientation = static_cast<s3eSurfaceOrientation *>(_systemData);
+        
+        MarmaladeInput * input = static_cast<MarmaladeInput *>(_userData);
+        
+        input->updateSurfaceResolution();
+        
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::loop()
     {
         if( m_application == nullptr )
@@ -1436,10 +1447,15 @@ namespace Menge
             return;
         }
 
-		if( s3eSurfaceRegister( S3E_SURFACE_SCREENSIZE, &s3eCallback_S3E_SURFACE_SCREENSIZE, m_application ) != S3E_RESULT_SUCCESS )
+		if( s3eSurfaceRegister( S3E_SURFACE_SCREENSIZE, &s3eCallback_Application_S3E_SURFACE_SCREENSIZE, m_application ) != S3E_RESULT_SUCCESS )
 		{
 			return;
 		}
+        
+        if( s3eSurfaceRegister( S3E_SURFACE_SCREENSIZE, &s3eCallback_Input_S3E_SURFACE_SCREENSIZE, m_input ) != S3E_RESULT_SUCCESS )
+        {
+            return;
+        }
 
         while( true )
         {

@@ -14,7 +14,7 @@ namespace Menge
 		//s3eDebugErrorPrintf("%s"
   //          , _data 
   //          );
-		printf( _data );
+		printf( "%s", _data );
 
 		if( _level == LM_CRITICAL )
 		{

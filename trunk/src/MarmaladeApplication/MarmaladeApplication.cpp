@@ -22,8 +22,6 @@
 
 //#	include "resource.h"
 
-#	include "SimpleIni.h"
-
 #	include <ctime>
 #	include <algorithm>
 

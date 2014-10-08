@@ -138,14 +138,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptModuleFinder::find_module_source_( PyObject * _module, const ScriptModuleLoaderPtr & _loader )
 	{
-		bool successful = this->find_module_( _module, _loader, ".py", sizeof(".py"), "__init__.py", sizeof("__init__.py") );
+		bool successful = this->find_module_( _module, _loader, ".py", sizeof(".py") - 1, "__init__.py", sizeof("__init__.py") - 1 );
 
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptModuleFinder::find_module_code_( PyObject * _module, const ScriptModuleLoaderPtr &  _loader )
 	{
-		bool successful = this->find_module_( _module, _loader, ".pyz", sizeof(".pyz"), "__init__.pyz", sizeof("__init__.pyz") );
+		bool successful = this->find_module_( _module, _loader, ".pyz", sizeof(".pyz") - 1, "__init__.pyz", sizeof("__init__.pyz") - 1 );
 
 		return successful;
 	}
@@ -173,7 +173,7 @@ namespace Menge
 				return false;
 			}
 
-			if( this->findModule_( modulePathCache, modulePathCacheLen + _extI, _loader ) == false )
+			if( this->findModule_( modulePathCache, modulePathCacheLen + 1 + _extI, _loader ) == false )
 			{
 				return false;
 			}

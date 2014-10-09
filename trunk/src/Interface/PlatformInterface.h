@@ -94,5 +94,5 @@ namespace Menge
     };
 
 #   define PLATFORM_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::PlatformInterface)
+    ((Menge::PlatformInterface*)SERVICE_GET(serviceProvider, Menge::PlatformInterface))
 }

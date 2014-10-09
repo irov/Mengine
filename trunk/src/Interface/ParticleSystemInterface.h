@@ -170,11 +170,12 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream ) = 0;
+		virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory() = 0;
+		virtual bool loadEmitterContainerFromMemory( const ParticleEmitterContainerInterfacePtr & _container, const InputStreamInterfacePtr & _stream ) = 0;
 	};
 
 #   define PARTICLE_SYSTEM( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::ParticleSystemInterface)
+    ((Menge::ParticleSystemInterface*)SERVICE_GET(serviceProvider, Menge::ParticleSystemInterface))
 
     class ParticleServiceInterface
         : public ServiceInterface

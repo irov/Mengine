@@ -53,11 +53,21 @@ namespace Menge
 		}
 		
 		ParticleEmitterContainerInterfacePtr container = PARTICLE_SYSTEM(m_serviceProvider)
-            ->createEmitterContainerFromMemory( stream );
+            ->createEmitterContainerFromMemory();
 
 		if( container == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEngine can't create emitter container '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ParticleEngine::createEmitterContainerFromFile can't create emitter container '%s'"
+				, _fileName.c_str() 
+				);
+
+			return nullptr;
+		}
+
+		if( PARTICLE_SYSTEM(m_serviceProvider)
+			->loadEmitterContainerFromMemory( container, stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ParticleEngine::createEmitterContainerFromFile can't load emitter container '%s'"
 				, _fileName.c_str() 
 				);
 

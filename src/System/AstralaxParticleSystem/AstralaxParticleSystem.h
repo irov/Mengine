@@ -37,7 +37,8 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream ) override;
+		ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory() override;
+		bool loadEmitterContainerFromMemory( const ParticleEmitterContainerInterfacePtr & _container, const InputStreamInterfacePtr & _stream ) override;
 
 	protected:
 		bool loadEmitter( const char * _magicName, HM_FILE _file, const AstralaxEmitterContainerPtr & _container );
@@ -51,8 +52,5 @@ namespace Menge
 
         typedef FactoryPoolStore<AstralaxEmitterContainer, 16> TFactoryPoolAstralaxEmitterContainer;
         TFactoryPoolAstralaxEmitterContainer m_factoryPoolAstralaxEmitterContainer;
-
-		String m_loadEmitterCacheFullname;
-		String m_loadEmitterCacheName;
 	};
 }

@@ -152,9 +152,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadIdentity::processTask( ThreadTaskInterface * _task )
 	{
-		bool successful = false;
+		if( m_mutex->try_lock() == false )
+		{
+			return false;
+		}
 
-		m_mutex->lock();
+		bool successful = false;
 
 		if( m_complete == true && m_exit == false )
 		{

@@ -73,9 +73,9 @@ namespace Menge
         return m_loopSegment;
     }
 	//////////////////////////////////////////////////////////////////////////
-	const FilePath & ResourceMovie::getFileName() const
+	const FilePath & ResourceMovie::getFilePath() const
 	{
-		return m_path;
+		return m_filePath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceMovie::getDataflowType() const
@@ -214,7 +214,7 @@ namespace Menge
             }
         }
 
-        if( m_path.empty() == true )
+        if( m_filePath.empty() == true )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' don`t have Key Frames Pack Path"
                 , this->getName().c_str()
@@ -226,13 +226,13 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( category, m_path, false );
+			->openInputFile( category, m_filePath, false );
 
 		if( stream == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid open file '%s'"
 				, this->getName().c_str()
-				, m_path.c_str()
+				, m_filePath.c_str()
 				);
 
 			return false;
@@ -306,7 +306,7 @@ namespace Menge
 
 		m_hasAnchorPoint = metadata->get_Anchor_Point( m_anchorPoint );
                 
-        metadata->swap_KeyFramesPackPath_Path( m_path );
+        metadata->swap_KeyFramesPackPath_Path( m_filePath );
 		metadata->swap_KeyFramesPackPath_Codec( m_dataflowType );
 		metadata->swap_KeyFramesPackPath_Converter( m_converterType );
 
@@ -601,7 +601,7 @@ namespace Menge
 	{
 		//bool result = this->convertDefault_( m_converter, m_path, m_path, m_codecType );
 
-		if( m_path.empty() == true )
+		if( m_filePath.empty() == true )
 		{
 			return false;
 		}
@@ -612,13 +612,13 @@ namespace Menge
 
 			PathString xml_path;
 			
-			xml_path += m_path;
+			xml_path += m_filePath;
 			xml_path.replace_last( "xml" );
 
 			ConstString c_xml_path = Helper::stringizeString( m_serviceProvider, xml_path );
 
 			if( CONVERTER_SERVICE(m_serviceProvider)
-				->convert( m_converterType, m_category, c_xml_path, m_path ) == false )
+				->convert( m_converterType, m_category, c_xml_path, m_filePath ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' can't convert '%s':'%s'"
 					, this->getName().c_str() 
@@ -633,14 +633,14 @@ namespace Menge
 		if( m_dataflowType.empty() == true )
 		{
 			m_dataflowType = CODEC_SERVICE(m_serviceProvider)
-				->findCodecType( m_path );
+				->findCodecType( m_filePath );
 		}
 
 		if( m_dataflowType.empty() == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
 				, this->getName().c_str()
-				, m_path.c_str()
+				, m_filePath.c_str()
 				);
 
 			return false;
@@ -656,7 +656,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_path.empty() == true )
+		if( m_filePath.empty() == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' don`t have Key Frames Pack Path"
 				, this->getName().c_str()
@@ -665,13 +665,13 @@ namespace Menge
 			return false;
 		}
 
-		DataInterfacePtr data = this->compileData_( m_path );
+		DataInterfacePtr data = this->compileData_( m_filePath );
 
 		if( data == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' can` t get frame pack '%s'"
 				, this->getName().c_str()
-				, m_path.c_str()
+				, m_filePath.c_str()
 				);
 
 			return false;
@@ -696,15 +696,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DataInterfacePtr ResourceMovie::compileData_( const FilePath & _path )
 	{
-		const ConstString & category = this->getCategory();
-
 		DataInterfacePtr prefetch_data;
 		if( PREFETCHER_SERVICE(m_serviceProvider)
 			->getData( _path, prefetch_data ) == true )
 		{
 			return prefetch_data;
 		}
-		
+
+		const ConstString & category = this->getCategory();
+				
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( category, _path, false );
 

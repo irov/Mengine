@@ -8,8 +8,11 @@ namespace Menge
 		: m_stream(_fileStream)
 		, m_verboseLevel(LM_INFO)
         , m_verboseFlag(0xFFFFFFFF)
+	{		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	FileLogger::~FileLogger()
 	{
-		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileLogger::setVerboseLevel( EMessageLevel _level )

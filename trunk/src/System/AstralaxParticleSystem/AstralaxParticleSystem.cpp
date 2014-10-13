@@ -45,10 +45,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static uint32_t s_getCountTag( const char * _fullname, char * _name )
 	{
-		if( strlen(_fullname) > 100 )
+		if( strlen(_fullname) >= MENGINE_ASTRALAX_EMITTER_NAME_MAX )
 		{
 			return (uint32_t)-1;
 		}
+
+		_name[0] = '\0';
 
 		const char * st_begin = strchr( _fullname, '[' );
 
@@ -61,7 +63,7 @@ namespace Menge
 
 		const char * st_end = strchr( _fullname, ']' );
 
-		char num[128];
+		char num[MENGINE_ASTRALAX_EMITTER_NAME_MAX];
 		num[0] = '\0';
 
 		strncat( num, st_begin + 1, st_end - st_begin - 1 );
@@ -147,14 +149,14 @@ namespace Menge
         MAGIC_POSITION pos;
         Magic_GetEmitterPosition( id, &pos );
 
-		char emitterName[100];
-		emitterName[0] = '\0';
+		char emitterName[MENGINE_ASTRALAX_EMITTER_NAME_MAX];		
         uint32_t count = s_getCountTag( _magicName, emitterName );
 
 		if( count == (uint32_t)-1 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::loadEmitter invalid emitterName %s (maybe len > 100)"
+			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::loadEmitter invalid emitterName %s (maybe len > %d)"
 				, _magicName
+				, MENGINE_ASTRALAX_EMITTER_NAME_MAX
 				);
 
 			return false;
@@ -168,7 +170,7 @@ namespace Menge
 			emitters.push_back( duplicated_id );
 		}
 
-		if( _container->addEmitterIds( Helper::stringizeString(m_serviceProvider, emitterName), id, pos, emitters ) == false )
+		if( _container->addEmitterIds( emitterName, id, pos, emitters ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::loadEmitter alredy add %s"
 				, emitterName
@@ -182,7 +184,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory()
+	ParticleEmitterContainerInterfacePtr AstralaxParticleSystem::createParticleEmitterContainer()
 	{
 		AstralaxEmitterContainerPtr container = m_factoryPoolAstralaxEmitterContainer.createObjectT();
 
@@ -199,7 +201,7 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxParticleSystem::loadEmitterContainerFromMemory( const ParticleEmitterContainerInterfacePtr & _container, const InputStreamInterfacePtr & _stream )
+	bool AstralaxParticleSystem::loadParticleEmitterContainerFromMemory( const ParticleEmitterContainerInterfacePtr & _container, const InputStreamInterfacePtr & _stream )
 	{
 		AstralaxEmitterContainerPtr astralax_container = stdex::intrusive_static_cast<AstralaxEmitterContainerPtr>(_container);
 
@@ -260,7 +262,7 @@ namespace Menge
 
 			ParticleEmitterAtlas atlas;
 
-			atlas.file = Helper::stringizeString( m_serviceProvider, magicAtlas.file );
+			strcpy( atlas.file, magicAtlas.file );
 			//atlas.path = magicAtlas.path;
 
 			astralax_container->addAtlas( atlas );

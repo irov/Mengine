@@ -140,6 +140,15 @@ namespace Menge
 			return false;
 		}
 
+		if( bit_depth != 8 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't support non 8 bit depth - '%d'"
+				, bit_depth
+				);
+
+			return false;
+		}
+
 		switch( color_type )
 		{
 		case PNG_COLOR_TYPE_RGB:
@@ -166,24 +175,12 @@ namespace Menge
 
 		png_byte channels = png_get_channels( m_png_ptr, m_info_ptr );
 
-		size_t decodedDataSize = m_row_bytes * height;
-
 		m_dataInfo.width = width;
 		m_dataInfo.height = height;
-		m_dataInfo.depth = 1;
-		m_dataInfo.size = decodedDataSize;
-		m_dataInfo.mipmaps = 0;
+		m_dataInfo.depth = 1;		
+		m_dataInfo.mipmaps = 1;
 		m_dataInfo.channels = channels;
-
-		if( bit_depth != 8 )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't support non 8 bit depth - '%d'"
-				, bit_depth
-				);
-
-			return false;
-		}
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

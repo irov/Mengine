@@ -26,7 +26,7 @@ namespace Menge
         void update() override;
 
 	public:
-		ParticleEmitterContainerInterfacePtr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) override;
+		ParticleEmitterContainerInterfacePtr createParticleEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) override;
 		
 	public:
 		uint32_t getMaxParticlesCount() const override;

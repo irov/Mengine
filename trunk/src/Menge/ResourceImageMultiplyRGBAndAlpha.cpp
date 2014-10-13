@@ -22,22 +22,22 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceImageMultiplyRGBAndAlpha::getFileRGBName() const
+    const FilePath & ResourceImageMultiplyRGBAndAlpha::getFilePathRGB() const
     {
-        return m_fileNameRGB;
+        return m_filePathRGB;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceImageMultiplyRGBAndAlpha::getCodecRGBType() const
+    const ConstString & ResourceImageMultiplyRGBAndAlpha::getCodecTypeRGB() const
     {
         return m_codecTypeRGB;
     }
 	//////////////////////////////////////////////////////////////////////////
-	const FilePath & ResourceImageMultiplyRGBAndAlpha::getFileAlphaName() const
+	const FilePath & ResourceImageMultiplyRGBAndAlpha::getFilePathAlpha() const
 	{
-		return m_fileNameAlpha;
+		return m_filePathAlpha;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageMultiplyRGBAndAlpha::getCodecAlphaType() const
+	const ConstString & ResourceImageMultiplyRGBAndAlpha::getCodecTypeAlpha() const
 	{
 		return m_codecTypeAlpha;
 	}
@@ -47,13 +47,13 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 		
 		if( FILE_SERVICE(m_serviceProvider)
-			->existFile( category, m_fileNameRGB, nullptr ) == false )
+			->existFile( category, m_filePathRGB, nullptr ) == false )
 		{
 			return false;
 		}
 
 		if( FILE_SERVICE(m_serviceProvider)
-			->existFile( category, m_fileNameAlpha, nullptr ) == false )
+			->existFile( category, m_filePathAlpha, nullptr ) == false )
 		{
 			return false;
 		}
@@ -78,11 +78,11 @@ namespace Menge
         metadata->get_File_WrapX( m_wrapU );
         metadata->get_File_WrapY( m_wrapV );
 
-        metadata->swap_File_PathRGB( m_fileNameRGB );
+        metadata->swap_File_PathRGB( m_filePathRGB );
         metadata->swap_File_CodecRGB( m_codecTypeRGB );
         metadata->get_File_UVRGB( m_uv );
 
-        metadata->swap_File_PathAlpha( m_fileNameAlpha );
+        metadata->swap_File_PathAlpha( m_filePathAlpha );
         metadata->swap_File_CodecAlpha( m_codecTypeAlpha );
         metadata->get_File_UVAlpha( m_uv_alpha );
 
@@ -102,14 +102,14 @@ namespace Menge
         if( m_codecTypeRGB.empty() == true )
         {
             m_codecTypeRGB = CODEC_SERVICE(m_serviceProvider)
-                ->findCodecType( m_fileNameRGB );
+                ->findCodecType( m_filePathRGB );
         }
         
-        if( this->loadImageFrame_( category, m_fileNameRGB, m_codecTypeRGB ) == false )
+        if( this->loadImageFrame_( category, m_filePathRGB, m_codecTypeRGB ) == false )
         {
 			LOGGER_ERROR(m_serviceProvider)("ResourceImageMultiplyRGBAndAlpha::_compile: '%s' can't load rgb image file '%s' codec '%s'"
 				, this->getName().c_str()
-				, m_fileNameRGB.c_str()
+				, m_filePathRGB.c_str()
 				, m_codecTypeRGB.c_str()
 				);
 
@@ -119,17 +119,17 @@ namespace Menge
         if( m_codecTypeAlpha.empty() == true )
         {
             m_codecTypeAlpha = CODEC_SERVICE(m_serviceProvider)
-                ->findCodecType( m_fileNameAlpha );
+                ->findCodecType( m_filePathAlpha );
         }
         	
         RenderTextureInterfacePtr textureAlpha = RENDERTEXTURE_SERVICE(m_serviceProvider)
-            ->loadTexture( category, m_fileNameAlpha, m_codecTypeAlpha );
+            ->loadTexture( category, m_filePathAlpha, m_codecTypeAlpha );
 
         if( textureAlpha == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceImageMultiplyRGBAndAlpha::_compile: '%s' can't load alpha image file '%s' codec '%s'"
                 , this->getName().c_str()
-                , m_fileNameAlpha.c_str()
+                , m_filePathAlpha.c_str()
 				, m_codecTypeAlpha.c_str()
                 );
 

@@ -69,14 +69,16 @@ namespace Menge
 		uint32_t format;
 		m_stream->read( &format, sizeof(format) );
 
+		uint32_t mipmaps;
+		m_stream->read( &mipmaps, sizeof(mipmaps) );
+				
 		m_dataInfo.width = width;
 		m_dataInfo.height = height;
         m_dataInfo.channels = 3;
 		
         m_dataInfo.format = s_convertFormat( format );
-
-		m_dataInfo.size = Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, m_dataInfo.channels, m_dataInfo.depth, m_dataInfo.format );
-        
+		m_dataInfo.mipmaps = mipmaps;
+				
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -88,7 +90,7 @@ namespace Menge
                 );
 
             return 0;
-        }		
+        }
 
 		return _bufferSize;
 	}

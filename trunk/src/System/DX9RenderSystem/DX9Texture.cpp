@@ -40,7 +40,7 @@ namespace Menge
         m_hwPixelFormat = _hwPixelFormat;
     }
 	///////////////////////////////////////////////////////////////////////////
-	void * DX9Texture::lock( size_t * _pitch, const Rect& _rect, bool _readOnly )
+	void * DX9Texture::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
 	{
 		DWORD flags;
 		if( _readOnly == true )
@@ -59,7 +59,7 @@ namespace Menge
 		rect.right = _rect.right;
 
 		D3DLOCKED_RECT TRect;
-		IF_DXCALL( m_serviceProvider, m_d3dTexture, LockRect, (0U, &TRect, &rect, flags) )
+		IF_DXCALL( m_serviceProvider, m_d3dTexture, LockRect, (_level, &TRect, &rect, flags) )
 		{
 			return nullptr;
 		}
@@ -71,9 +71,9 @@ namespace Menge
 		return bits;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9Texture::unlock()
+	void DX9Texture::unlock( uint32_t _level )
 	{
-		DXCALL( m_serviceProvider, m_d3dTexture ,UnlockRect, (0) );
+		DXCALL( m_serviceProvider, m_d3dTexture, UnlockRect, (_level) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	IDirect3DTexture9 * DX9Texture::getDXTextureInterface() const

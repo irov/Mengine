@@ -6,14 +6,20 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
 	MarmaladeLogger::MarmaladeLogger()
+		: m_verboseLevel(LM_INFO)
+		, m_verboseFlag(0xFFFFFFFF)
 	{
     }
+	//////////////////////////////////////////////////////////////////////////
+	MarmaladeLogger::~MarmaladeLogger()
+	{
+	}
     //////////////////////////////////////////////////////////////////////////
 	void MarmaladeLogger::log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _size )
 	{
-		//s3eDebugErrorPrintf("%s"
-  //          , _data 
-  //          );
+		(void)_level;
+		(void)_flag;
+
 		printf( "%s", _data );
 
 		if( _level == LM_CRITICAL )
@@ -34,18 +40,30 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	void MarmaladeLogger::setVerboseLevel( EMessageLevel _level )
 	{
-        (void)_level;
+        m_verboseLevel = _level;
 	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeLogger::setVerboseFlag( uint32_t _flag )
     {
-        (void)_flag;
+        m_verboseFlag = _flag;
     }
     //////////////////////////////////////////////////////////////////////////
 	bool MarmaladeLogger::validMessage( EMessageLevel _level, uint32_t _flag ) const
 	{
-        (void)_level;
-        (void)_flag;
+		if( m_verboseLevel < _level )
+		{
+			return false;
+		}
+
+		if( _flag == 0 )
+		{
+			return true;
+		}
+
+		if( (m_verboseFlag & _flag) == 0 )
+		{
+			return false;
+		}
 
         return true;
 	}

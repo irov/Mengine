@@ -217,13 +217,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createNullTexture_()
 	{
+		uint32_t null_mipmaps = 1;
 		uint32_t null_width = 2;
 		uint32_t null_height = 2;
 		uint32_t null_channels = 3;
 		uint32_t null_depth = 1;
 
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->createTexture( null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
+			->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
 
 		if( texture == nullptr )
 		{
@@ -242,7 +243,7 @@ namespace Menge
 		rect.bottom = null_height;
 
 		size_t pitch = 0;
-		void * textureData = texture->lock( &pitch, rect, false );
+		void * textureData = texture->lock( &pitch, 0, rect, false );
 
 		if( textureData == nullptr )
 		{
@@ -274,7 +275,7 @@ namespace Menge
 		buffer_textureData[4] = 0x00;
 		buffer_textureData[5] = 0x00;
 
-		texture->unlock();
+		texture->unlock( 0 );
 
 		RENDERTEXTURE_SERVICE(m_serviceProvider)
 			->cacheFileTexture( CONST_STRING_LOCAL(m_serviceProvider, "__null__"), texture );
@@ -286,13 +287,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createWhitePixelTexture_()
 	{
+		uint32_t null_mipmaps = 1;
 		uint32_t null_width = 2;
 		uint32_t null_height = 2;
 		uint32_t null_channels = 3;
 		uint32_t null_depth = 1;
 
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->createTexture( null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
+			->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
 
 		if( texture == nullptr )
 		{
@@ -311,7 +313,7 @@ namespace Menge
 		rect.bottom = null_height;
 
 		size_t pitch = 0;
-		void * textureData = texture->lock( &pitch, rect, false );
+		void * textureData = texture->lock( &pitch, 0, rect, false );
 
 		if( textureData == nullptr )
 		{
@@ -343,7 +345,7 @@ namespace Menge
 		buffer_textureData[4] = 0xFF;
 		buffer_textureData[5] = 0xFF;
 
-		texture->unlock();
+		texture->unlock( 0 );
 
 		RENDERTEXTURE_SERVICE(m_serviceProvider)
 			->cacheFileTexture( CONST_STRING_LOCAL(m_serviceProvider, "WhitePixel"), texture );
@@ -795,7 +797,7 @@ namespace Menge
 				, stage.texCoordIndex
 				);
 
-			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
+			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MIPMAP, TF_LINEAR );
 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MAGNIFICATION, TF_LINEAR );
 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MINIFICATION, TF_LINEAR );
 

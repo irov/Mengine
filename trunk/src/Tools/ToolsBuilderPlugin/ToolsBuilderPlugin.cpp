@@ -463,11 +463,21 @@ namespace Menge
 		}
 
 		ParticleEmitterContainerInterfacePtr container = PARTICLE_SYSTEM(serviceProvider)
-			->createEmitterContainerFromMemory( stream );
+			->createParticleEmitterContainer();
 
 		if( container == nullptr )
 		{
 			LOGGER_ERROR(serviceProvider)("magicParticlesAtlasFiles: invalid create container '%s'"
+				, c_path.c_str() 
+				);
+
+			return false;
+		}
+
+		if( PARTICLE_SYSTEM(serviceProvider)
+			->loadParticleEmitterContainerFromMemory( container, stream ) == false )
+		{
+			LOGGER_ERROR(serviceProvider)("magicParticlesAtlasFiles: invalid load container '%s'"
 				, c_path.c_str() 
 				);
 
@@ -483,10 +493,8 @@ namespace Menge
 		++it )
 		{
 			const ParticleEmitterAtlas & atlas = *it;
-
-			const char * str_fileName = atlas.file.c_str();
-
-			PyObject * py_fileName = PyUnicode_FromString( str_fileName );
+			
+			PyObject * py_fileName = PyUnicode_FromString( atlas.file );
 
 			PyList_Append( _atlasFiles, py_fileName );
 			Py_DECREF( py_fileName );

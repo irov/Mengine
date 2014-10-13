@@ -47,18 +47,33 @@ namespace Menge
 
 		const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_bufferDataInfo);
 				
-        m_stream->write( &dataInfo->width, sizeof(dataInfo->width) );
-        m_stream->write( &dataInfo->height, sizeof(dataInfo->height) );
+		uint32_t width = dataInfo->width;
+        m_stream->write( &width, sizeof(width) );
 
-		if( Helper::writeStreamArchiveBuffer( m_serviceProvider, m_stream, m_archivator, false, _buffer, dataInfo->size ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ImageEncoderACF::encode invalid write buffer"
-				);
+		uint32_t height = dataInfo->height;
+        m_stream->write( &height, sizeof(height) );
 
-			return 0;
+		uint32_t mipmaps = dataInfo->mipmaps;
+		m_stream->write( &mipmaps, sizeof(mipmaps) );
+
+		const unsigned char * mipmap_buffer = reinterpret_cast<const unsigned char *>(_buffer);
+
+		for( uint32_t i = 0; i != mipmaps; ++i )
+		{   
+			size_t mipmap_size = dataInfo->size[i];
+
+			if( Helper::writeStreamArchiveBuffer( m_serviceProvider, m_stream, m_archivator, false, mipmap_buffer, mipmap_size ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ImageEncoderACF::encode invalid write buffer"
+					);
+
+				return 0;
+			}
+
+			mipmap_buffer += mipmap_size;
 		}
 
-		return dataInfo->size;
+		return dataInfo->size[0];
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

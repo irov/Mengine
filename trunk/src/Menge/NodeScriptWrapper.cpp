@@ -1731,7 +1731,7 @@ namespace Menge
 			protected:
 				void visit( ResourceImageDefault * _resource ) override
 				{
-					const FilePath & fileName = _resource->getFileName();
+					const FilePath & fileName = _resource->getFilePath();
 					const ConstString & codecType = _resource->getCodecType();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
@@ -1740,14 +1740,14 @@ namespace Menge
 
 				void visit( ResourceImageMultiplyRGBAndAlpha * _resource ) override
 				{
-					const FilePath & fileRGBName = _resource->getFileRGBName();
-					const ConstString & codecRGBType = _resource->getCodecRGBType();
+					const FilePath & fileRGBName = _resource->getFilePathRGB();
+					const ConstString & codecRGBType = _resource->getCodecTypeRGB();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
 						->prefetchImageDecoder( m_category, fileRGBName, codecRGBType );
 
-					const FilePath & fileAlphaName = _resource->getFileAlphaName();
-					const ConstString & codecAlphaType = _resource->getCodecAlphaType();
+					const FilePath & fileAlphaName = _resource->getFilePathAlpha();
+					const ConstString & codecAlphaType = _resource->getCodecTypeAlpha();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
 						->prefetchImageDecoder( m_category, fileAlphaName, codecAlphaType );
@@ -1755,13 +1755,13 @@ namespace Menge
 
 				void visit( ResourceMovie * _resource ) override
 				{
-					const FilePath & fileName = _resource->getFileName();
+					const FilePath & filePath = _resource->getFilePath();
 					const ConstString & dataflowType = _resource->getDataflowType();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
-						->prefetchData( m_category, fileName, dataflowType );
+						->prefetchData( m_category, filePath, dataflowType );
 				}
-
+				
 			protected:
 				ServiceProviderInterface * m_serviceProvider;
 				ConstString m_category;
@@ -1791,7 +1791,7 @@ namespace Menge
 			protected:
 				void visit( ResourceImageDefault * _resource ) override
 				{
-					const FilePath & fileName = _resource->getFileName();
+					const FilePath & fileName = _resource->getFilePath();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
 						->unfetchImageDecoder( fileName );
@@ -1799,12 +1799,12 @@ namespace Menge
 
 				void visit( ResourceImageMultiplyRGBAndAlpha * _resource ) override
 				{
-					const FilePath & fileRGBName = _resource->getFileRGBName();
+					const FilePath & fileRGBName = _resource->getFilePathRGB();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
 						->unfetchImageDecoder( fileRGBName );
 
-					const FilePath & fileAlphaName = _resource->getFileAlphaName();
+					const FilePath & fileAlphaName = _resource->getFilePathAlpha();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
 						->unfetchImageDecoder( fileAlphaName );
@@ -1812,12 +1812,12 @@ namespace Menge
 
 				void visit( ResourceMovie * _resource ) override
 				{
-					const FilePath & fileName = _resource->getFileName();
+					const FilePath & fileName = _resource->getFilePath();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
 						->unfetchData( fileName );
 				}
-
+				
 			protected:
 				ServiceProviderInterface * m_serviceProvider;
 			};
@@ -3787,13 +3787,13 @@ namespace Menge
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        typedef stdex::vector<ConstString> TVectorConstString;
+        typedef stdex::vector<String> TVectorConstString;
         //////////////////////////////////////////////////////////////////////////
         class ResourceEmitterContainerVisitor
             : public ParticleEmitterContainerVisitor
         {
         public:
-            void visitEmitterName( const ConstString& _emitterName )
+            void visitEmitterName( const char * _emitterName )
             {
                 catchedNames.push_back( _emitterName );
             }

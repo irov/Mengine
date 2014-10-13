@@ -37,8 +37,8 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory() override;
-		bool loadEmitterContainerFromMemory( const ParticleEmitterContainerInterfacePtr & _container, const InputStreamInterfacePtr & _stream ) override;
+		ParticleEmitterContainerInterfacePtr createParticleEmitterContainer() override;
+		bool loadParticleEmitterContainerFromMemory( const ParticleEmitterContainerInterfacePtr & _container, const InputStreamInterfacePtr & _stream ) override;
 
 	protected:
 		bool loadEmitter( const char * _magicName, HM_FILE _file, const AstralaxEmitterContainerPtr & _container );

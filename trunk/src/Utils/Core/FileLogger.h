@@ -10,6 +10,7 @@ namespace Menge
 	{
 	public:
 		FileLogger( const OutputStreamInterfacePtr & _fileStream );
+		virtual ~FileLogger();
 
 	public:
 		void setVerboseLevel( EMessageLevel _level ) override;

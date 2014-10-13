@@ -106,7 +106,7 @@ namespace Menge
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::createTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+    RenderTextureInterfacePtr RenderTextureManager::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
     {
 		uint32_t HWWidth = _width;
 		uint32_t HWHeight = _height;
@@ -130,7 +130,7 @@ namespace Menge
 		}
 		
 		RenderImageInterfacePtr image = RENDER_SYSTEM(m_serviceProvider)
-			->createImage( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
+			->createImage( _mipmaps, HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
         if( image == nullptr )
         {
@@ -142,7 +142,7 @@ namespace Menge
             return nullptr;
         }
 
-        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _channels );
+        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _mipmaps, _width, _height, _channels );
 
         return texture;
     }
@@ -171,7 +171,7 @@ namespace Menge
             return nullptr;
         }
 
-        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _channels );
+        RenderTextureInterfacePtr texture = this->createRenderTexture( image, 1, _width, _height, _channels );
 
         return texture;
     }
@@ -200,7 +200,7 @@ namespace Menge
             return nullptr;
         }
 
-        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _channels );
+        RenderTextureInterfacePtr texture = this->createRenderTexture( image, 1, _width, _height, _channels );
 
         return texture;
     }
@@ -246,8 +246,8 @@ namespace Menge
         dataInfo.width = _texture->getWidth();
         dataInfo.height = _texture->getHeight();		
         dataInfo.depth = 1;
-        dataInfo.mipmaps = 0;
-        dataInfo.size = 0;	// we don't need this
+        dataInfo.mipmaps = 1;
+        dataInfo.size[0] = 0;	// we don't need this
         
         Rect rect;
         rect.left = 0;
@@ -256,7 +256,7 @@ namespace Menge
         rect.bottom = dataInfo.height;
 
 		size_t pitch = 0;
-        void * buffer = _texture->lock( &pitch, rect, true );
+        void * buffer = _texture->lock( &pitch, 0, rect, true );
 
 		if( buffer == nullptr )
 		{
@@ -279,12 +279,14 @@ namespace Menge
 				, _fileName.c_str() 
 				);
 
+			_texture->unlock( 0 );
+
 			return false;
 		}
 
         unsigned int bytesWritten = imageEncoder->encode( buffer, &dataInfo );
 
-        _texture->unlock();
+        _texture->unlock( 0 );
 
         if( bytesWritten == 0 )
         {
@@ -440,16 +442,18 @@ namespace Menge
 	{
 		const ImageCodecDataInfo* dataInfo = _decoder->getCodecDataInfo();
 
+		uint32_t image_mipmaps = dataInfo->mipmaps;
 		uint32_t image_width = dataInfo->width;
 		uint32_t image_height = dataInfo->height;
 		uint32_t image_channels = dataInfo->channels;
 		uint32_t image_depth = dataInfo->depth;
 
-		RenderTextureInterfacePtr texture = this->createTexture( image_width, image_height, image_channels, image_depth, dataInfo->format );
+		RenderTextureInterfacePtr texture = this->createTexture( image_mipmaps, image_width, image_height, image_channels, image_depth, dataInfo->format );
 		
 		if( texture == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createTextureFromDecoder_: invalid create texture %d:%d channels %d format %d"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createTextureFromDecoder_: invalid create texture %d mipmaps %d:%d channels %d format %d"
+				, image_mipmaps
 				, image_width
 				, image_height
 				, image_channels
@@ -547,12 +551,12 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterfacePtr RenderTextureManager::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, uint32_t _channels )
+	RenderTextureInterfacePtr RenderTextureManager::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels )
 	{
 		uint32_t id = ++m_textureEnumerator;
 
 		RenderTexture * texture = m_factoryRenderTexture.createObjectT();
-		texture->initialize( m_serviceProvider, _image, _width, _height, _channels, id );
+		texture->initialize( m_serviceProvider, _image, _mipmaps, _width, _height, _channels, id );
 
 //#	ifndef MENGE_MASTER_RELEASE
 //		size_t memroy_size = texture->getMemoryUse();
@@ -601,26 +605,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )
     {
-        size_t pitch = 0;
-        void * textureBuffer = _texture->lock( &pitch, _rect, false );
-
-        if( textureBuffer == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTextureImageData Invalid lock");
-
-            return false;
-        }
-
-        ImageCodecOptions options;
-
+		BEGIN_WATCHDOG(m_serviceProvider, "texture decode");
+		
 		const RenderImageInterfacePtr & image = _texture->getImage();
-
-        options.channels = image->getHWChannels();
-        options.pitch = pitch;
-
-        _imageDecoder->setOptions( &options );
-
-        BEGIN_WATCHDOG(m_serviceProvider, "texture decode");
 
 		uint32_t width = image->getHWWidth();
 		uint32_t height = image->getHWHeight();
@@ -628,30 +615,52 @@ namespace Menge
 		uint32_t depth = image->getHWDepth();
 		PixelFormat pf = image->getHWPixelFormat();
 
-        size_t bufferSize = Helper::getTextureMemorySize( width, height, channels, depth, pf );
-        if( _imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTextureImageData Invalid decode");
+		uint32_t mipmaps = _texture->getMipmaps();
 
-            _texture->unlock();
+		for( uint32_t i = 0; i != mipmaps; ++i )
+		{
+			size_t pitch = 0;
+			void * textureBuffer = _texture->lock( &pitch, i, _rect, false );
 
-            return false;
-        }
+			if( textureBuffer == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTextureImageData Invalid lock");
 
-        END_WATCHDOG(m_serviceProvider, "texture decode", 1)("texture decode %s"
-            , _texture->getFileName().c_str()
-            );
+				return false;
+			}
+			
+			ImageCodecOptions options;
+			options.channels = channels;
+			options.pitch = pitch;
+			options.miplevel = i;
 
-        //this->sweezleAlpha( _texture, textureBuffer, pitch );
-        this->imageQuality( _texture, textureBuffer, pitch );
+			uint32_t miplevel_width = width >> i;
+			uint32_t miplevel_height = height >> i;
 
-        BEGIN_WATCHDOG(m_serviceProvider, "texture unlock");
+			_imageDecoder->setOptions( &options );
+			
+			size_t bufferSize = Helper::getTextureMemorySize( miplevel_width, miplevel_height, channels, depth, pf );
+			if( _imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
+			{
+				LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTextureImageData Invalid decode");
 
-        _texture->unlock();
+				_texture->unlock( i );
 
-        END_WATCHDOG(m_serviceProvider, "texture unlock", 1)("texture unlock %s"
-            , _texture->getFileName().c_str()
-            );
+				return false;
+			}
+
+			//this->sweezleAlpha( _texture, textureBuffer, pitch );
+			if( mipmaps == 1 )
+			{
+				this->imageQuality( _texture, textureBuffer, pitch );
+			}
+
+			_texture->unlock( i );
+		}
+
+		END_WATCHDOG(m_serviceProvider, "texture decode", 1)("texture decode %s"
+			, _texture->getFileName().c_str()
+			);
 		
         return true;
     }

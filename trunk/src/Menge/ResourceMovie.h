@@ -186,7 +186,7 @@ namespace Menge
         const mt::vec2f & getLoopSegment() const;
 
 	public:
-		const FilePath & getFileName() const;
+		const FilePath & getFilePath() const;
 		const ConstString & getDataflowType() const;
 
     public:
@@ -240,7 +240,7 @@ namespace Menge
 		bool m_hasAnchorPoint;
 		mt::vec3f m_anchorPoint;
 		
-        FilePath m_path;
+        FilePath m_filePath;
 		ConstString m_dataflowType;
 		ConstString m_converterType;
 

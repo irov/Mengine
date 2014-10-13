@@ -97,7 +97,9 @@ bool ImageDecoderPVRTC::_prepareData()
 				m_dataInfo.format = Menge::PF_ETC1;
 			}break;
 		default:
-			return false; // not supported format
+			{
+				return false; // not supported format
+			}break;
 	}
 	
 	m_dataInfo.width = m_pvrtc_ptr.width;
@@ -105,11 +107,9 @@ bool ImageDecoderPVRTC::_prepareData()
 	m_dataInfo.channels = 3;
 	m_dataInfo.depth = 1;
 	m_dataInfo.mipmaps = m_pvrtc_ptr.numMipmaps;
-	m_dataInfo.size = Menge::Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, m_dataInfo.channels, m_dataInfo.depth, m_dataInfo.format );
 	
 	bool isValid = m_pvrtc_ptr.numFaces == 1  // supported only 1 face
-		&& m_pvrtc_ptr.numSurfaces == 1  // supported only 1 surface
-		&& m_dataInfo.mipmaps < 2 ; // mipmapping is disabled, so is not supported.
+		&& m_pvrtc_ptr.numSurfaces == 1;  // supported only 1 surface		
 	
 	return isValid;
 }

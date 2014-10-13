@@ -22,9 +22,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const FilePath & ResourceImageDefault::getFileName() const
+	const FilePath & ResourceImageDefault::getFilePath() const
 	{
-		return m_fileName;
+		return m_filePath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceImageDefault::getCodecType() const
@@ -37,7 +37,7 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		bool exist = FILE_SERVICE(m_serviceProvider)
-			->existFile( category, m_fileName, nullptr );
+			->existFile( category, m_filePath, nullptr );
 		
 		if( exist == false )
 		{
@@ -49,21 +49,21 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s not exist file %s:%s"
 				, m_name.c_str()
 				, category.c_str()
-				, m_fileName.c_str()
+				, m_filePath.c_str()
 				);
 
 			return false;
 		}
         
         InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( category, m_fileName, false );
+			->openInputFile( category, m_filePath, false );
 
         if( stream == nullptr )
         {
 			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s invalid open file %s:%s"
 				, m_name.c_str()
 				, category.c_str()
-				, m_fileName.c_str()
+				, m_filePath.c_str()
 				);
 
             return false;
@@ -77,7 +77,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid decoder %s"
 				, m_name.c_str()
 				, category.c_str()
-				, m_fileName.c_str()
+				, m_filePath.c_str()
 				, m_codecType.c_str()
 				);
 
@@ -89,7 +89,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s decoder initialize failed %s"
 				, m_name.c_str()
 				, category.c_str()
-				, m_fileName.c_str()
+				, m_filePath.c_str()
 				, m_codecType.c_str()
 				);
 
@@ -112,7 +112,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid limit %d:%d texture size %d:%d "
 				, m_name.c_str()
 				, category.c_str()
-				, m_fileName.c_str()
+				, m_filePath.c_str()
 				, limitTextureWidth
 				, limitTextureHeight
 				, dataInfo->width
@@ -139,7 +139,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("ResourceImage::_isValid: '%s' file '%s:%s' incorrect size %f:%f texture %f:%f"
 				, this->getName().c_str()
 				, category.c_str()
-				, m_fileName.c_str()
+				, m_filePath.c_str()
 				, test_size.x
 				, test_size.y
 				, width
@@ -166,13 +166,13 @@ namespace Menge
         m_wrapU = false;
         m_wrapV = false;
         
-        metadata->swap_File_Path( m_fileName );
+        metadata->swap_File_Path( m_filePath );
         metadata->swap_File_Codec( m_codecType );
 
         if( m_codecType.empty() == true )
         {
             m_codecType = CODEC_SERVICE(m_serviceProvider)
-                ->findCodecType( m_fileName );
+                ->findCodecType( m_filePath );
         }
 
         metadata->get_File_Alpha( m_isAlpha );
@@ -195,7 +195,7 @@ namespace Menge
 	{	
 		const ConstString & category = this->getCategory();
 					
-		if( this->loadImageFrame_( category, m_fileName, m_codecType ) == false )
+		if( this->loadImageFrame_( category, m_filePath, m_codecType ) == false )
 		{
 			return false;
 		}
@@ -205,7 +205,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::setImagePath( const FilePath& _imagePath )
 	{
-        m_fileName = _imagePath;
+        m_filePath = _imagePath;
 
         m_codecType = CODEC_SERVICE(m_serviceProvider)
             ->findCodecType( _imagePath );
@@ -220,6 +220,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath & ResourceImageDefault::getImagePath() const
 	{
-		return m_fileName;
+		return m_filePath;
 	}
 }

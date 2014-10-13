@@ -4,6 +4,7 @@
 #	include "Interface/StreamInterface.h"
 
 #	include "Config/Typedef.h"
+#	include "Config/String.h"
 
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
@@ -124,7 +125,7 @@ namespace Menge
 
     struct ParticleEmitterAtlas
     {
-        ConstString file;
+        char file[MAX_PATH];
         //WString path;
     };
 
@@ -133,7 +134,7 @@ namespace Menge
     class ParticleEmitterContainerVisitor
     {
     public:
-        virtual void visitEmitterName( const ConstString & _name ) = 0;
+        virtual void visitEmitterName( const char * _name ) = 0;
         virtual void visitAtlas( const ParticleEmitterAtlas & _atlas ) = 0;
     };
 	
@@ -170,8 +171,8 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromMemory() = 0;
-		virtual bool loadEmitterContainerFromMemory( const ParticleEmitterContainerInterfacePtr & _container, const InputStreamInterfacePtr & _stream ) = 0;
+		virtual ParticleEmitterContainerInterfacePtr createParticleEmitterContainer() = 0;
+		virtual bool loadParticleEmitterContainerFromMemory( const ParticleEmitterContainerInterfacePtr & _container, const InputStreamInterfacePtr & _stream ) = 0;
 	};
 
 #   define PARTICLE_SYSTEM( serviceProvider )\
@@ -186,7 +187,7 @@ namespace Menge
         virtual uint32_t renderParticlesCount( uint32_t _count ) = 0;
 
 	public:
-        virtual ParticleEmitterContainerInterfacePtr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) = 0;
+        virtual ParticleEmitterContainerInterfacePtr createParticleEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) = 0;
 
     public:
         virtual uint32_t getMaxParticlesCount() const = 0;

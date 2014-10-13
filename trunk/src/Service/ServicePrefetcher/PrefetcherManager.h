@@ -2,6 +2,7 @@
 
 #	include "ThreadTaskPrefetchImageDecoder.h"
 #	include "ThreadTaskPrefetchDataflow.h"
+#	include "ThreadTaskPrefetchParticleEmitterContainer.h"
 
 #	include "Factory/FactoryStore.h"
 

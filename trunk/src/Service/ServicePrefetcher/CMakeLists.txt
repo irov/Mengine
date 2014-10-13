@@ -9,6 +9,8 @@ src
     ThreadTaskPrefetchDataflow.cpp
     ThreadTaskPrefetchImageDecoder.h
     ThreadTaskPrefetchImageDecoder.cpp
+    ThreadTaskPrefetchParticleEmitterContainer.h
+    ThreadTaskPrefetchParticleEmitterContainer.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

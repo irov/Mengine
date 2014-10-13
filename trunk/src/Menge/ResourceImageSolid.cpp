@@ -14,9 +14,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const FilePath & ResourceImageSolid::getFileName() const 
+	const FilePath & ResourceImageSolid::getFilePath() const 
 	{
-		return m_fileName;
+		return m_filePath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & ResourceImageSolid::getCodecType() const 

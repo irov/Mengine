@@ -119,12 +119,20 @@ namespace Menge
 			return false;
 		}
 
-		if( (header.dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT && header.dwMipMapCount > 0 )
-		{
-			LOGGER_WARNING(m_serviceProvider)("ImageDecoderDDS::initialize dds file has mipmaps" 
-                );                        
+		//if( (header.dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT && header.dwMipMapCount > 0 )
+		//{
+		//	LOGGER_WARNING(m_serviceProvider)("ImageDecoderDDS::initialize dds file has mipmaps" 
+  //              );                        
 
-			return false;				 
+		//	return false;				 
+		//}
+
+		if( (header.ddspf.dwFlags & DDPF_FOURCC) == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDS::initialize dds file no compress" 
+				);
+
+			return false;
 		}
 
 		m_dataInfo.depth = 1;
@@ -133,17 +141,7 @@ namespace Menge
 		m_dataInfo.height = header.dwHeight;
         m_dataInfo.channels = 3;
         
-        if( (header.ddspf.dwFlags & DDPF_FOURCC) == 0 )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoderDDS::initialize dds file no compress" 
-                );
-
-            return false;
-        }
-
         m_dataInfo.format = s_convertFourCCFormat( header.ddspf.dwFourCC );
-		
-		m_dataInfo.size = Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, m_dataInfo.channels, m_dataInfo.depth, m_dataInfo.format );
         
 		return true;
 	}
@@ -152,7 +150,7 @@ namespace Menge
 	{
         (void)_bufferSize;
 
-		size_t byte = m_stream->read( _buffer, m_dataInfo.size );
+		size_t byte = m_stream->read( _buffer, _bufferSize );
 
 		return byte;
 	}

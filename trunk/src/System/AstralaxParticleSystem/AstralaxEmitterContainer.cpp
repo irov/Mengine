@@ -16,25 +16,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitterContainer::~AstralaxEmitterContainer()
 	{
-		for( TMapEmitters::const_iterator 
-			it = m_emitters.begin(), 
+		for( TVectorEmitterDescs::iterator
+			it = m_emitters.begin(),
 			it_end = m_emitters.end();
 		it != it_end;
 		++it )
 		{
-			const EmitterPool & pool = it->second;
+			EmitterDesc & desc = *it;
 
-            Magic_UnloadEmitter( pool.id );
+			Magic_UnloadEmitter( desc.id );
 
 			for( TVectorEmitters::const_iterator
-				it_pool = pool.emitters.begin(),
-				it_pool_end = pool.emitters.end();
+				it_pool = desc.emitters.begin(),
+				it_pool_end = desc.emitters.end();
 			it_pool != it_pool_end;
 			++it_pool )
 			{
-				Magic_UnloadEmitter( *it_pool );
+				HM_EMITTER emitter_id = *it_pool;
+
+				Magic_UnloadEmitter( emitter_id );
 			}
-		}
+		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitterContainer::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -56,111 +58,139 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitterContainer::isValid() const
     {
-        for( TMapEmitters::const_iterator
-            it = m_emitters.begin(),
-            it_end = m_emitters.end();
-        it != it_end;
-        ++it )
-        {
-            const ConstString & emitterName = it->first;
+		for( TVectorEmitterDescs::const_iterator
+			it = m_emitters.begin(),
+			it_end = m_emitters.end();
+		it != it_end;
+		++it )
+		{
+			const EmitterDesc & desc = *it;
+			
+			HM_EMITTER id = Magic_DuplicateEmitter( desc.id );
 
-            const EmitterPool & emitter = it->second;
+			MAGIC_RECT rect;
+			float backgroundScale = Magic_GetBackgroundRect( id, &rect );
 
-            HM_EMITTER id = Magic_DuplicateEmitter( emitter.id );
+			if( mt::cmp_f_f( backgroundScale, 1.f ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer::isValid emitter %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
+					, desc.name
+					, backgroundScale
+					);
 
-            MAGIC_RECT rect;
-            float backgroundScale = Magic_GetBackgroundRect( id, &rect );
+				return false;
+			}
 
-            if( mt::cmp_f_f( backgroundScale, 1.f ) == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer::isValid emitter %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
-                    , emitterName.c_str()
-                    , backgroundScale
-                    );
-
-                return false;
-            }
-
-            Magic_UnloadEmitter( id );
-        }
-
+			Magic_UnloadEmitter( id );
+		}
+	
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitterContainer::addEmitterIds( const ConstString & _name, HM_EMITTER _id, MAGIC_POSITION _pos, const TVectorEmitters & _emitters )
+	const AstralaxEmitterContainer::EmitterDesc * AstralaxEmitterContainer::findEmitterDesc_( const char * _name ) const
 	{
-		TMapEmitters::iterator it_found = m_emitters.find( _name );
+		for( TVectorEmitterDescs::const_iterator
+			it = m_emitters.begin(),
+			it_end = m_emitters.end();
+		it != it_end;
+		++it )
+		{
+			const EmitterDesc & desc = *it;
 
-		if( it_found != m_emitters.end() )
+			if( strcmp( desc.name, _name) != 0 )
+			{
+				continue;
+			}
+
+			return &desc;			
+		}
+
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxEmitterContainer::addEmitterIds( const char * _name, HM_EMITTER _id, MAGIC_POSITION _pos, const TVectorEmitters & _emitters )
+	{
+		const EmitterDesc * find_desc = this->findEmitterDesc_( _name );
+
+		if( find_desc != nullptr )
 		{
 			return false;
 		}
 
-		EmitterPool pool;
+		if( strlen(_name) >= MENGINE_ASTRALAX_EMITTER_NAME_MAX )
+		{
+			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer::addEmitterIds emitters name '%s' more %d len"
+				, _name
+				, MENGINE_ASTRALAX_EMITTER_NAME_MAX
+				);
 
-        pool.id = _id;
-        pool.pos = _pos;
-		pool.emitters = _emitters;
-		pool.dublicate = (_emitters.empty() == true);
+			return false;
+		}
 
-		m_emitters.insert( std::make_pair( _name, pool ) );
+		EmitterDesc new_desc;
+		
+		strcpy( new_desc.name, _name );
+        new_desc.id = _id;
+        new_desc.pos = _pos;
+		new_desc.emitters = _emitters;
+		new_desc.dublicate = (_emitters.empty() == true);
+
+		m_emitters.push_back( new_desc );
 
 		return true;			 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HM_EMITTER AstralaxEmitterContainer::getEmitterId( const ConstString & _name ) const
+	HM_EMITTER AstralaxEmitterContainer::getEmitterId( const char * _name ) const
 	{
-		TMapEmitters::const_iterator it = m_emitters.find( _name );
+		const EmitterDesc * desc = this->findEmitterDesc_( _name );
 
-		if( it == m_emitters.end() )
+		if( desc == nullptr )
 		{
 			return 0;
 		}
 
-		const EmitterPool & pool = it->second;
-
 		HM_EMITTER result_id;
 
-		if( pool.dublicate == true )
+		if( desc->dublicate == true )
 		{
-			HM_EMITTER duplicated_id = Magic_DuplicateEmitter( pool.id );
+			HM_EMITTER duplicated_id = Magic_DuplicateEmitter( desc->id );
 
 			result_id = duplicated_id;
 		}
 		else
 		{
-			if( pool.emitters.empty() == true )
+			if( desc->emitters.empty() == true )
 			{
 				return 0;
 			}
 
-			HM_EMITTER pool_id = pool.emitters.back();
-			pool.emitters.pop_back();
+			HM_EMITTER pool_id = desc->emitters.back();
+			desc->emitters.pop_back();
 
 			result_id = pool_id;
 		}
 
-        Magic_SetEmitterPosition( result_id, const_cast<MAGIC_POSITION *>(&pool.pos) );
+        Magic_SetEmitterPosition( result_id, &desc->pos );
 
 		return result_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer::releaseEmitterId( const ConstString & _name, HM_EMITTER _id )
+	void AstralaxEmitterContainer::releaseEmitterId( const char * _name, HM_EMITTER _id )
 	{
-		TMapEmitters::iterator it = m_emitters.find( _name );
+		const EmitterDesc * desc = this->findEmitterDesc_( _name );
 
-		if( it == m_emitters.end() )
+		if( desc == nullptr )
 		{
 			return;
 		}
 
-		if( it->second.dublicate == true )
+		if( desc->dublicate == true )
 		{
 			Magic_UnloadEmitter( _id );
 		}
 		else
 		{
-			it->second.emitters.push_back( _id );
+			desc->emitters.push_back( _id );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -176,7 +206,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterInterfacePtr AstralaxEmitterContainer::createEmitter( const ConstString & _emitterName )
 	{
-		HM_EMITTER id = this->getEmitterId( _emitterName );
+		HM_EMITTER id = this->getEmitterId( _emitterName.c_str() );
 
 		if( id == 0 )
 		{
@@ -185,7 +215,7 @@ namespace Menge
 
 		AstralaxEmitter * emitter = m_factoryPoolAstralaxEmitter.createObjectT();
 
-        if( emitter->initialize( m_serviceProvider, this, id, _emitterName ) == false )
+        if( emitter->initialize( m_serviceProvider, this, id, _emitterName.c_str() ) == false )
         {
             return nullptr;
         }
@@ -200,24 +230,28 @@ namespace Menge
 		emitter->finalize();
 	}
 	////////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitterContainer::visitContainer( ParticleEmitterContainerVisitor * visitor )
+	void AstralaxEmitterContainer::visitContainer( ParticleEmitterContainerVisitor * _visitor )
 	{
-		for( TMapEmitters::iterator 
-			it = m_emitters.begin(), 
+		for( TVectorEmitterDescs::const_iterator
+			it = m_emitters.begin(),
 			it_end = m_emitters.end();
 		it != it_end;
-		++it )
+		++it)
 		{
-			visitor->visitEmitterName( it->first );
-		}
+			const EmitterDesc & desc = *it;
 
-		for (TVectorParticleEmitterAtlas::iterator
+			_visitor->visitEmitterName( desc.name );
+		}
+				
+		for( TVectorParticleEmitterAtlas::const_iterator
 			it = m_atlas.begin(),
 			it_end = m_atlas.end();
 		it != it_end;
 		++it)
 		{
-			visitor->visitAtlas( *(it) );
+			const ParticleEmitterAtlas & atlas = *it;
+
+			_visitor->visitAtlas( atlas );
 		}
 	}
 }

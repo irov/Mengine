@@ -77,6 +77,7 @@ namespace Menge
 		RenderTextureGraveDesc desc;
 
 		desc.image = _texture->getImage();
+		desc.mipmaps = _texture->getMipmaps();
 		desc.width = _texture->getWidth();
 		desc.height = _texture->getHeight();
 		desc.channels = _texture->getChannels();
@@ -102,7 +103,7 @@ namespace Menge
 		RenderTextureGraveDesc & desc = m_textures.get_value( it_found );
 
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->createRenderTexture( desc.image, desc.width, desc.height, desc.channels );
+			->createRenderTexture( desc.image, desc.mipmaps, desc.width, desc.height, desc.channels );
 
 		m_textures.erase( it_found );
 

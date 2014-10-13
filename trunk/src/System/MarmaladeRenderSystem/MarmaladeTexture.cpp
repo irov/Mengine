@@ -8,6 +8,7 @@ namespace Menge
 	MarmaladeTexture::MarmaladeTexture()
 		: m_serviceProvider(nullptr)
 		, m_uid(0)
+		, m_hwMipmaps(0)
 		, m_hwWidth(0)
 		, m_hwHeight(0)
         , m_hwChannels(0)
@@ -21,8 +22,9 @@ namespace Menge
 		, m_minFilter(0)
 		, m_magFilter(0)
 		, m_mode(ERIM_NORMAL)
-		, m_buffer(nullptr)
-		, m_bufferId(0)
+		, m_lockMemory(nullptr)
+		, m_lockBufferId(0)
+		, m_lockLevel(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -30,11 +32,12 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeTexture::initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget )
+    void MarmaladeTexture::initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget )
     {
 		m_serviceProvider = _serviceProvider;
 
         m_uid = _uid;
+		m_hwMipmaps = _mipmaps;
         m_hwWidth = _width;
         m_hwHeight = _height;
         m_hwChannels = _channels;
@@ -76,19 +79,41 @@ namespace Menge
         return m_hwPixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
-    void * MarmaladeTexture::lock( size_t * _pitch, const Rect & _rect, bool _readOnly )
+    void * MarmaladeTexture::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
     {
-		size_t size = Helper::getTextureMemorySize( m_hwWidth, m_hwHeight, m_hwChannels, 1, m_hwPixelFormat );
+		uint32_t miplevel_width = m_hwWidth >> _level;
+		uint32_t miplevel_height = m_hwHeight >> _level;
 
-		m_bufferId = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( size, &m_buffer, "MarmaladeTexture::lock" );
+		size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
+
+		void * memory;
+		m_lockBufferId = CACHE_SERVICE(m_serviceProvider)
+			->lockBuffer( size, &memory, "MarmaladeTexture::lock" );
+
+		if( memory == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::lock invalid cache memory %d (l %d w %d h %d c %d f %d)"
+				, size
+				, _level
+				, miplevel_width
+				, miplevel_height
+				, m_hwChannels
+				, m_hwPixelFormat
+				);
+
+			return nullptr;
+		}
+
+		m_lockMemory = memory;
 		
-		*_pitch = size / m_hwHeight;
+		*_pitch = size / miplevel_height;
+		
+		m_lockLevel = _level;
 
-		return m_buffer;
+		return m_lockMemory;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeTexture::unlock()
+	void MarmaladeTexture::unlock( uint32_t _level )
 	{		
 		glBindTexture( GL_TEXTURE_2D, m_uid );
 
@@ -99,29 +124,29 @@ namespace Menge
 
         glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE );
 
-		GLuint textureMemorySize = Helper::getTextureMemorySize(m_hwWidth, m_hwHeight, m_hwChannels, 1, m_hwPixelFormat);
+		uint32_t miplevel_width = m_hwWidth >> _level;
+		uint32_t miplevel_height = m_hwHeight >> _level;
 
-		LOGGER_INFO(m_serviceProvider)("MarmaladeTexture::unlock %d %d size %d"
-			, m_hwWidth
-			, m_hwHeight
+		GLuint textureMemorySize = Helper::getTextureMemorySize(miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat);
+
+		LOGGER_INFO(m_serviceProvider)("MarmaladeTexture::unlock l %d w %d d %d"
+			, _level
+			, miplevel_width
+			, miplevel_height
 			, textureMemorySize
 			);
 
 		switch( m_internalFormat )
-	    {
-			case GL_ETC1_RGB8_OES:
-			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
-			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+		{
+		case GL_ETC1_RGB8_OES:
+		case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+		case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
 			{				
-				glCompressedTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, textureMemorySize, m_buffer );
+				glCompressedTexImage2D( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, m_lockMemory );
 			}break;
-			case GL_RGB:
+		default:
 			{
-				glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, m_buffer );				
-			}break;
-			default:
-			{
-				glTexImage2D( GL_TEXTURE_2D, 0, m_internalFormat, m_hwWidth, m_hwHeight, 0, m_format, m_type, m_buffer );				
+				glTexImage2D( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, m_format, m_type, m_lockMemory );				
 			}break;
 		}
 
@@ -129,20 +154,22 @@ namespace Menge
 
 		if( gl_err != GL_NO_ERROR )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock gl error %d param %d %d %d %d"
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock gl error %d param l %d w %d h %d i %d p %d"
 				, gl_err
-				, m_hwWidth
-				, m_hwHeight
+				, _level
+				, miplevel_width
+				, miplevel_height
 				, m_internalFormat
 				, m_hwPixelFormat
 				);
 		}
 
 		CACHE_SERVICE(m_serviceProvider)
-			->unlockBuffer( m_bufferId );
+			->unlockBuffer( m_lockBufferId );
 
-		m_bufferId = 0;
-		m_buffer = nullptr;
+		m_lockLevel = 0;
+		m_lockBufferId = 0;
+		m_lockMemory = nullptr;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeTexture::_destroy()

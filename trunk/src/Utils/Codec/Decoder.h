@@ -91,11 +91,16 @@ namespace Menge
 		{
 			m_stream = _stream;
 
-			bool successful = this->_prepareData();
+			if( this->_prepareData() == false )
+			{
+				return false;
+			}
+			
+			this->_prepareSize();
 
 			m_rewindPos = m_stream->tell();
 
-			return successful;
+			return true;
 		}
 
 	public:
@@ -117,6 +122,11 @@ namespace Menge
 		virtual bool _prepareData()
 		{
 			return true;
+		}
+
+		virtual void _prepareSize()
+		{
+			//Empty
 		}
 
 	protected:

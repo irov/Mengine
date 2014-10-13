@@ -521,8 +521,8 @@ namespace Menge
 		encode_dataInfo.height = new_height;
 		encode_dataInfo.channels = decode_dataInfo->channels;
 		encode_dataInfo.depth = 1;
-		encode_dataInfo.mipmaps = 0;
-		encode_dataInfo.size = 0;
+		encode_dataInfo.mipmaps = 1;
+		encode_dataInfo.size[0] = 0;
 
 		if( imageEncoder->encode( &new_textureBuffer[0], &encode_dataInfo ) == 0 )
 		{

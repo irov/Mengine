@@ -5,6 +5,7 @@
 
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
+#   include "Interface/PrefetcherInterface.h"
 #   include "Interface/StringizeInterface.h"
 
 #	include "Logger/Logger.h"
@@ -56,7 +57,7 @@ namespace Menge
         const ConstString & category = this->getCategory();
 
         ParticleEmitterContainerInterfacePtr container = PARTICLE_SERVICE(m_serviceProvider)
-            ->createEmitterContainerFromFile( category, m_fileName );
+            ->createParticleEmitterContainerFromFile( category, m_fileName );
 
         if( container == nullptr )
         {
@@ -76,7 +77,9 @@ namespace Menge
         it != it_end;
         ++it )
         {            
-            const ConstString & filename = it->file;
+			const ParticleEmitterAtlas & atlas = *it;
+
+			ConstString filename = Helper::stringizeString( m_serviceProvider, atlas.file );
 
             ConstString filepath = this->makeTexturePath_( filename );
 
@@ -135,23 +138,42 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceEmitterContainer::_compile()
+	ParticleEmitterContainerInterfacePtr ResourceEmitterContainer::compileContainer_( const FilePath & _path )
 	{
 		const ConstString & category = this->getCategory();
 
-		m_container = PARTICLE_SERVICE(m_serviceProvider)
-			->createEmitterContainerFromFile( category, m_fileName );
+		ParticleEmitterContainerInterfacePtr container = PARTICLE_SERVICE(m_serviceProvider)
+			->createParticleEmitterContainerFromFile( category, m_fileName );
 
-		if( m_container == nullptr )
+		if( container == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_compile %s can't create container file '%s'"
-                , m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::compileContainer_ %s can't create container file '%s'"
+				, m_name.c_str()
 				, m_fileName.c_str() 
 				);
 
-			return false;
+			return nullptr;
 		}
-		
+
+		return container;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceEmitterContainer::_compile()
+	{		
+		ParticleEmitterContainerInterfacePtr container = this->compileContainer_( m_fileName );
+
+		if( container == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_compile %s can't compile container file '%s'"
+				, m_name.c_str()
+				, m_fileName.c_str() 
+				);
+
+			return nullptr;
+		}
+
+		m_container = container;
+
 		const TVectorParticleEmitterAtlas & atlas = m_container->getAtlas();
 		
 		for( TVectorParticleEmitterAtlas::const_iterator
@@ -160,7 +182,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const ConstString & filename = it->file;
+			const ParticleEmitterAtlas & atlas = *it;
+
+			ConstString filename = Helper::stringizeString( m_serviceProvider, atlas.file );
 
             ConstString filepath = this->makeTexturePath_( filename );
 

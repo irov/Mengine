@@ -15,7 +15,7 @@ namespace Menge
 		ResourceImageDefault();
         
     public:
-        const FilePath & getFileName() const;
+        const FilePath & getFilePath() const;
         const ConstString & getCodecType() const;
         
     public:
@@ -32,7 +32,7 @@ namespace Menge
 		bool _compile() override;
 
 	protected:
-        FilePath m_fileName;
+        FilePath m_filePath;
         ConstString m_codecType;
 
 		bool m_validNoExist;

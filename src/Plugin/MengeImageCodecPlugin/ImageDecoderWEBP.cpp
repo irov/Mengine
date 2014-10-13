@@ -87,10 +87,8 @@ namespace Menge
 		m_dataInfo.height = features.height;
 		m_dataInfo.depth = 1;
 		
-		m_dataInfo.mipmaps = 0;
+		m_dataInfo.mipmaps = 1;
 		m_dataInfo.channels = channels;
-		        
-		m_dataInfo.size = Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, m_dataInfo.channels, m_dataInfo.depth, m_dataInfo.format );
 
 		return true;
 	}

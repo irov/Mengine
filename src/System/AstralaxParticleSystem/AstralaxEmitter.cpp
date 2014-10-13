@@ -30,13 +30,13 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter::initialize( ServiceProviderInterface * _serviceProvider, const AstralaxEmitterContainerPtr & _container, HM_EMITTER _id, const ConstString & _emitterName )
+    bool AstralaxEmitter::initialize( ServiceProviderInterface * _serviceProvider, const AstralaxEmitterContainerPtr & _container, HM_EMITTER _id, const char * _emitterName )
     {
         m_serviceProvider = _serviceProvider;
         m_container = _container;
         m_emitterId = _id;
         
-		m_emitterName = _emitterName;
+		strcpy( m_emitterName, _emitterName );
 
         m_typesCount = Magic_GetParticlesTypeCount( m_emitterId );
 
@@ -84,7 +84,7 @@ namespace Menge
         if( mt::cmp_f_f( backgroundScale, 1.f ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("AstralaxEmitter::setupBasePosition_ %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
-				, m_emitterName.c_str()
+				, m_emitterName
                 , backgroundScale
                 );
 
@@ -129,11 +129,6 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & AstralaxEmitter::getEmitterName() const
-	{
-		return m_emitterName;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	const AstralaxEmitterContainerPtr & AstralaxEmitter::getContainer() const
 	{
 		return m_container;
@@ -141,7 +136,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static mt::box2f s_getEmitterBBox( HM_EMITTER _emitter )
 	{
-		mt::box2f box( mt::vec2f (0.f, 0.f), mt::vec2f(0.f, 0.f) );
+		mt::box2f box(mt::vec2f(0.f, 0.f), mt::vec2f(0.f, 0.f));
 
 		bool isFolder = Magic_IsFolder( _emitter );
 

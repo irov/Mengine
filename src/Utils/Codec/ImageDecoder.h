@@ -13,7 +13,7 @@ namespace Menge
 		ImageDecoder();
 
 	public:
-        bool setOptions( const CodecOptions * _options ) override;
+		bool setOptions( const CodecOptions * _options ) override;
 
     protected:
         virtual bool _invalidateOptions();
@@ -25,6 +25,9 @@ namespace Menge
     protected:
         void sweezleAlpha1( uint32_t _width, uint32_t _height, void * _buffer, size_t _pitch );
         void sweezleAlpha3( uint32_t _width, uint32_t _height, void * _buffer, size_t _pitch );
+
+	protected:
+		void _prepareSize() override;
 
     protected:
         ImageCodecOptions m_options;

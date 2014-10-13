@@ -50,7 +50,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageEncoderHTF::encode( const void * _buffer, const CodecDataInfo* _dataInfo )
+	size_t ImageEncoderHTF::encode( const void * _buffer, const CodecDataInfo * _dataInfo )
 	{
 		if( Helper::writeStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_HTF), GET_MAGIC_VERSION(MAGIC_HTF) ) == false )
 		{
@@ -73,16 +73,28 @@ namespace Menge
 
 		uint32_t format = s_convertFormat( dataInfo->format );
         m_stream->write( &format, sizeof(format) );
-		                
-		if( Helper::writeStreamArchiveBuffer( m_serviceProvider, m_stream, m_archivator, false, _buffer, dataInfo->size ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ImageEncoderHTF::encode invalid write buffer"
-                );
 
-            return 0;
-        }
+		uint32_t mipmaps = dataInfo->mipmaps;
+		m_stream->write( &mipmaps, sizeof(mipmaps) );
 
-		return dataInfo->size;
+		const unsigned char * mipmap_buffer = reinterpret_cast<const unsigned char *>(_buffer);
+
+		for( uint32_t i = 0; i != mipmaps; ++i )
+		{             
+			size_t mipmap_size = dataInfo->size[i];
+
+			if( Helper::writeStreamArchiveBuffer( m_serviceProvider, m_stream, m_archivator, false, mipmap_buffer, mipmap_size ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ImageEncoderHTF::encode invalid write buffer"
+					);
+
+				return 0;
+			}
+
+			mipmap_buffer += mipmap_size;
+		}
+
+		return dataInfo->size[0];
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

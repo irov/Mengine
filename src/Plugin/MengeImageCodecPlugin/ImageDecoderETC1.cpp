@@ -45,7 +45,6 @@ bool ImageDecoderETC1::_prepareData()
 	{
 		m_stream->seek(0);
 	}
-	m_dataInfo.size = m_stream->size() - sizeof(ETC1Header);
 
 	m_stream->read(&m_etc1_ptr, sizeof(ETC1Header));
 	m_needSeek = false;
@@ -62,8 +61,7 @@ bool ImageDecoderETC1::_prepareData()
 	m_etc1_ptr.origHeight = readBEUint16(buffer + ETC1_PKM_HEIGHT_OFFSET);
 	m_etc1_ptr.origWidth = readBEUint16(buffer + ETC1_PKM_WIDTH_OFFSET);
 
-	bool isValid = m_etc1_ptr.format == 0 // ETC1_RGB_NO_MIPMAPS 
-		&& m_etc1_ptr.texWidth >= m_etc1_ptr.origWidth 
+	bool isValid = m_etc1_ptr.texWidth >= m_etc1_ptr.origWidth 
 		&& m_etc1_ptr.texWidth - m_etc1_ptr.origWidth < 4 
 		&& m_etc1_ptr.texHeight >= m_etc1_ptr.origHeight 
 		&& m_etc1_ptr.texHeight - m_etc1_ptr.origHeight < 4;
@@ -73,7 +71,7 @@ bool ImageDecoderETC1::_prepareData()
 	//m_dataInfo.format = Menge::PF_ETC1;
 	m_dataInfo.width = m_etc1_ptr.texWidth;
 	m_dataInfo.height = m_etc1_ptr.texHeight;
-	m_dataInfo.mipmaps = 0;
+	m_dataInfo.mipmaps = 1;
 
 	return isValid;
 }

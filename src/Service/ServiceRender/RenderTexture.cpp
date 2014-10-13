@@ -7,11 +7,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::RenderTexture()
         : m_serviceProvider(nullptr)
+		, m_mipmaps(0)
 		, m_width(0)
 		, m_height(0)
         , m_channels(0)
 		, m_uv(0.f, 0.f, 1.f, 1.f)
-        , m_id(0)        
+        , m_id(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -21,6 +22,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderTexture::initialize( ServiceProviderInterface * _serviceProvider
         , const RenderImageInterfacePtr & _image
+		, uint32_t _mipmaps
         , uint32_t _width
         , uint32_t _height
         , uint32_t _channels
@@ -30,9 +32,12 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
 
         m_image = _image;
+
+		m_mipmaps = _mipmaps;
         m_width = _width;
         m_height = _height;
         m_channels = _channels;
+
         m_id = _id;
 
         m_rect.left = 0;
@@ -80,6 +85,11 @@ namespace Menge
 		return m_fileName;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	uint32_t RenderTexture::getMipmaps() const
+	{
+		return m_mipmaps;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	uint32_t RenderTexture::getWidth() const
 	{
 		return m_width;
@@ -109,16 +119,16 @@ namespace Menge
 		return memroy_size;
 	}
     /////////////////////////////////////////////////////////////////////////////
-	void * RenderTexture::lock( size_t * _pitch, const Rect& _rect, bool _readOnly /*= true */ ) const
+	void * RenderTexture::lock( size_t * _pitch, uint32_t _miplevel, const Rect& _rect, bool _readOnly /*= true */ ) const
 	{
-        void * buffer = m_image->lock( _pitch, _rect, _readOnly );
+        void * buffer = m_image->lock( _pitch, _miplevel, _rect, _readOnly );
 
 		return buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderTexture::unlock() const
+	void RenderTexture::unlock( uint32_t _miplevel ) const
 	{
-		m_image->unlock();
+		m_image->unlock( _miplevel );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Rect & RenderTexture::getRect() const

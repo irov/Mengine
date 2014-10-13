@@ -90,16 +90,6 @@ namespace Menge
 			return false;
 		}
 
-		if( m_stream == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide open file '%s':'%s'"
-				, m_pakName.c_str()
-				, m_filePath.c_str()
-				);
-
-			return false;
-		}
-
 		size_t stream_size = m_stream->size();
 
 		void * memory = m_memoryInput->newMemory( stream_size );

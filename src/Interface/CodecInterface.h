@@ -16,8 +16,7 @@
 namespace Menge
 {
 	struct CodecDataInfo 
-	{
-		size_t size;
+	{		
 	};
 
 	struct CodecOptions

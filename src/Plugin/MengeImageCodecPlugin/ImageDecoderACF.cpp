@@ -54,13 +54,15 @@ namespace Menge
 		uint32_t height;
 		m_stream->read( &height, sizeof(height) );
 
+		uint32_t mipmaps;
+		m_stream->read( &mipmaps, sizeof(mipmaps) );
+
 		m_dataInfo.width = width;
 		m_dataInfo.height = height;
         m_dataInfo.channels = 1;
 		m_dataInfo.format = PF_A8;
-		
-		m_dataInfo.size = Helper::getTextureMemorySize( m_dataInfo.width, m_dataInfo.height, m_dataInfo.channels, m_dataInfo.depth, m_dataInfo.format );
-        
+		m_dataInfo.mipmaps = mipmaps;
+       
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

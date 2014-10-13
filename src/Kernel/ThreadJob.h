@@ -33,8 +33,9 @@ namespace Menge
 
 		ThreadWorkerInterfacePtr worker;
 
-		uint32_t id;
-		EThreadStatus status;
+		volatile uint32_t id;
+
+		volatile uint32_t status;
 	};
 
 	class ThreadJob

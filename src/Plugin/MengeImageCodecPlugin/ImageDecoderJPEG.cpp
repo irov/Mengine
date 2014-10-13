@@ -202,14 +202,13 @@ namespace Menge
 		jpeg_calc_output_dimensions( &m_jpegObject );
 
 		m_dataInfo.depth = 1;
-		m_dataInfo.mipmaps = 0;
+		m_dataInfo.mipmaps = 1;
 		m_dataInfo.width = m_jpegObject.image_width;
 		m_dataInfo.height = m_jpegObject.image_height;
 		m_dataInfo.quality = s_getQuality( &m_jpegObject );
 		
 		m_dataInfo.channels = m_jpegObject.out_color_components;
-		m_dataInfo.size = m_dataInfo.width * m_dataInfo.height * m_dataInfo.channels;
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

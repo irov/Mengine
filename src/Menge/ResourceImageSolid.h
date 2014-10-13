@@ -18,7 +18,7 @@ namespace Menge
 		ResourceImageSolid();
 
 	public:
-		const FilePath & getFileName() const;
+		const FilePath & getFilePath() const;
 		const ConstString & getCodecType() const;
 		const ColourValue & getColor() const;
 
@@ -34,7 +34,7 @@ namespace Menge
 	protected:
 		ColourValue m_color;
 		ConstString m_codecType; //empty
-		FilePath m_fileName; //empty
+		FilePath m_filePath; //empty
 	};
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -17,11 +17,11 @@ namespace Menge
 		ResourceImageMultiplyRGBAndAlpha();
 
 	public:
-        const FilePath & getFileRGBName() const;
-        const ConstString & getCodecRGBType() const;
+        const FilePath & getFilePathRGB() const;
+        const ConstString & getCodecTypeRGB() const;
 
-		const FilePath & getFileAlphaName() const;
-		const ConstString & getCodecAlphaType() const;
+		const FilePath & getFilePathAlpha() const;
+		const ConstString & getCodecTypeAlpha() const;
 
 	protected:
 		bool _isValid() const override;
@@ -33,10 +33,10 @@ namespace Menge
 		bool _compile() override;
 
 	protected:
-        FilePath m_fileNameAlpha;
+        FilePath m_filePathAlpha;
         ConstString m_codecTypeAlpha;
 
-        FilePath m_fileNameRGB;			
+        FilePath m_filePathRGB;			
         ConstString m_codecTypeRGB;
 	};
 }

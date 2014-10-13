@@ -4,32 +4,49 @@
 
 #	include "Core/PixelFormat.h"
 
+#	define MENGINE_IMAGE_MIPLEVEL_MAX 16
+
 namespace Menge
 {
 	struct ImageCodecDataInfo
 		: public CodecDataInfo
 	{
 		ImageCodecDataInfo()
-			: width(0)
+			: mipmaps(1)
+			, width(0)
 			, height(0)
-			, depth(1)
-			, mipmaps(0)
-			, quality(100)
 			, channels(0)
+			, depth(1)
+			, quality(100)			
             , format(PF_UNKNOWN)
 		{
 		}
 
-        uint32_t width;
+        uint32_t mipmaps;
+		uint32_t width;
 		uint32_t height;
-		
-		uint32_t depth;
-		uint32_t mipmaps;
-
-		int quality;
 		uint32_t channels;
+		uint32_t depth;
+		
+		int quality;
 
         PixelFormat format;
+
+		size_t size[MENGINE_IMAGE_MIPLEVEL_MAX];
+
+		size_t getFullSize() const
+		{
+			size_t full_size = 0;
+
+			for( uint32_t i = 0; i != mipmaps; ++i )
+			{
+				size_t s = size[0];
+
+				full_size += s;
+			}
+
+			return full_size;
+		}
 	};
 
 	enum ImageDecoderOptions
@@ -49,12 +66,14 @@ namespace Menge
             : flags(DF_NONE)
             , pitch(0)
             , channels(0)
+			, miplevel(0)
         {
         }
 
         uint32_t flags;
 		size_t pitch;
         uint32_t channels;
+		uint32_t miplevel;
 	};
 
 	class ImageDecoderInterface

@@ -665,7 +665,7 @@ namespace Menge
 		}
 
         size_t pitch = 0;
-		void * lockRect = texture->lock( &pitch, rect, false );
+		void * lockRect = texture->lock( &pitch, 0, rect, false );
 
 		if( lockRect == nullptr )
 		{
@@ -682,7 +682,7 @@ namespace Menge
 		m_videoDecoder->setPitch( pitch );
         size_t bytes = m_videoDecoder->decode( lockRect, pitch * rect.bottom );
        
-		texture->unlock();
+		texture->unlock( 0 );
 
 		m_invalidVideoTexture = false;
                 

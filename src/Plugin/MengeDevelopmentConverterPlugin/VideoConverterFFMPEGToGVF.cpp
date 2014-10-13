@@ -459,8 +459,8 @@ namespace Menge
 					dataInfoRGB.height = height;		
 					dataInfoRGB.channels = 3;
 					dataInfoRGB.depth = 1;				
-					dataInfoRGB.mipmaps = 0;
-					dataInfoRGB.size = width * height * 3;	// we don't need this
+					dataInfoRGB.mipmaps = 1;
+					dataInfoRGB.size[0] = width * height * 3;	// we don't need this
 
 					ImageCodecOptions options;		
 
@@ -543,8 +543,8 @@ namespace Menge
 					dataInfoAlpha.height = height;		
 					dataInfoAlpha.channels = 1;
 					dataInfoAlpha.depth = 1;				
-					dataInfoAlpha.mipmaps = 0;
-					dataInfoAlpha.size = width * height * 1;	// we don't need this
+					dataInfoAlpha.mipmaps = 1;
+					dataInfoAlpha.size[0] = width * height * 1;	// we don't need this
 
 					ImageCodecOptions options;		
 

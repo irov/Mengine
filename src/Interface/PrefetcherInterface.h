@@ -4,6 +4,7 @@
 
 #	include "Interface/ImageCodecInterface.h"
 #	include "Interface/DataInterface.h"
+#	include "Interface/ParticleSystemInterface.h"
 
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
@@ -44,6 +45,6 @@ namespace Menge
 	};
 
 #   define PREFETCHER_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::PrefetcherServiceInterface)
+	((Menge::PrefetcherServiceInterface*)SERVICE_GET(serviceProvider, Menge::PrefetcherServiceInterface))
 }
 

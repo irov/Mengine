@@ -8,6 +8,7 @@ namespace Menge
 	{
 	public:
 		MarmaladeLogger();
+		virtual ~MarmaladeLogger();
 
 	public:
 		void setVerboseLevel( EMessageLevel _level ) override;
@@ -18,5 +19,9 @@ namespace Menge
 	public:
 		void log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _count ) override;
 		void flush() override;
+
+	protected:
+		EMessageLevel m_verboseLevel;
+		uint32_t m_verboseFlag;
 	};
 }

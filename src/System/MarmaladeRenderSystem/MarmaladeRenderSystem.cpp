@@ -18,23 +18,48 @@ SERVICE_FACTORY(RenderSystem, Menge::RenderSystemInterface, Menge::MarmaladeRend
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-	static void gl_check_error()
+	//////////////////////////////////////////////////////////////////////////
+	static const char * get_gl_error_string( GLenum _err )
+	{
+		switch( _err )
+		{
+		case GL_NO_ERROR:
+			return "GL_NO_ERROR";
+		case GL_INVALID_ENUM:
+			return "GL_INVALID_ENUM";
+		case GL_INVALID_VALUE:
+			return "GL_INVALID_VALUE";
+		case GL_INVALID_OPERATION:
+			return "GL_INVALID_OPERATION";
+		case GL_OUT_OF_MEMORY:
+			return "GL_OUT_OF_MEMORY";
+		default:
+			break;
+		};
+
+		return "GL Invalid Error Code";
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void gl_check_error( ServiceProviderInterface * _serviceProvider )
 	{
 		GLenum err = glGetError(); // GL_INVALID_OPERATION
-
+		
 		if( err == GL_NO_ERROR )
 		{
 			return;
 		}
 
-		printf("!!!!!!!!!!!!!!!GL ERROR %d\n"
-			, err
+		const char * err_message = get_gl_error_string( err );
+
+		LOGGER_ERROR(_serviceProvider)("MarmaladeRenderSystem GL Error: %s (%d)"
+			, err_message
+			, err			
 			);
 	}
     //////////////////////////////////////////////////////////////////////////
     static const GLenum s_toGLBlendFactor[] = 
     {
-		    GL_ONE					// BF_ONE
+		GL_ONE						// BF_ONE
 	    , GL_ZERO					// BF_ZERO
 	    , GL_DST_COLOR				// BF_DEST_COLOUR
 	    , GL_SRC_COLOR				// BF_SOURCE_COLOUR
@@ -48,7 +73,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     static const GLenum s_toGLCmpFunc[] =
     {
-		    GL_NEVER		// CMPF_ALWAYS_FAIL
+		GL_NEVER		// CMPF_ALWAYS_FAIL
 	    , GL_ALWAYS		// CMPF_ALWAYS_PASS
 	    , GL_LESS		// CMPF_LESS
 	    , GL_LEQUAL		// CMPF_LESS_EQUAL
@@ -67,22 +92,31 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     static const GLenum s_toGLShadeMode[] = 
     {
-		    GL_FLAT	// SHT_FLAT
+		GL_FLAT		// SHT_FLAT
 	    , GL_SMOOTH	// SHT_GOURAUD
 	    , GL_SMOOTH	// SHT_PHONG
     };
     //////////////////////////////////////////////////////////////////////////
-    static const GLenum s_toGLFilter[] = 
+    static const GLenum s_toMagFilter( Menge::ETextureFilter _magFilter )
     {
-		    GL_NEAREST	// TF_NONE
-	    , GL_NEAREST	// TF_POINT
-	    , GL_LINEAR		// TF_LINEAR
-	    , GL_LINEAR		// TF_ANISOTROPIC
-	    , GL_LINEAR		// TF_FLATCUBIC
-	    , GL_LINEAR		// TF_GAUSSIANCUBIC
+		switch( _magFilter )
+		{
+		case Menge::TF_NONE:
+		case Menge::TF_POINT:
+			return GL_NEAREST;
+			break;
+		case Menge::TF_LINEAR:
+		case Menge::TF_ANISOTROPIC:
+		case Menge::TF_FLATCUBIC:
+		case Menge::TF_GAUSSIANCUBIC:
+			return GL_LINEAR;
+			break;
+		};
+
+		return GL_NEAREST;
     };
     //////////////////////////////////////////////////////////////////////////
-    static GLenum s_toGLMinMipFilter( Menge::ETextureFilter _minFilter, Menge::ETextureFilter _mipFilter )
+    static GLenum s_toGLMinFilter( Menge::ETextureFilter _minFilter, Menge::ETextureFilter _mipFilter )
     {
 	    switch( _minFilter )
 	    {
@@ -123,7 +157,7 @@ namespace Menge
 	    default:;
 	    }
 
-	    return GL_NEAREST;
+	    return GL_NEAREST_MIPMAP_NEAREST;
     }
     //////////////////////////////////////////////////////////////////////////
     static int s_toGLInternalFormat( Menge::PixelFormat _format )
@@ -159,6 +193,8 @@ namespace Menge
     {
 	    switch( _format )
 	    {
+		case Menge::PF_R8G8B8:
+			return GL_RGB;
 	    case Menge::PF_X8R8G8B8:
 	    case Menge::PF_A8R8G8B8:
 		    return GL_RGBA;
@@ -180,6 +216,8 @@ namespace Menge
     {
 	    switch( _format )
 	    {
+		case Menge::PF_R8G8B8:
+			return GL_UNSIGNED_BYTE;
 	    case Menge::PF_X8R8G8B8:
 	    case Menge::PF_A8R8G8B8:
 		    return GL_UNSIGNED_BYTE;
@@ -451,7 +489,7 @@ namespace Menge
         VBHandle vbHandle = ++m_VBHandleGenerator;
 		m_vBuffersMemory.insert( vbHandle, memRange );
 
-		gl_check_error();
+		gl_check_error( m_serviceProvider );
 		
         return vbHandle;
 	}
@@ -473,7 +511,7 @@ namespace Menge
 		}
 
 		glDeleteBuffers( 1, &range->bufId );
-		gl_check_error();
+		gl_check_error( m_serviceProvider );
 
 		m_vBuffersMemory.erase( _vbHandle );
 	}
@@ -512,7 +550,7 @@ namespace Menge
 		glBufferSubData( GL_ARRAY_BUFFER, range->offset, range->size, range->pMem );        
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );
 
-		gl_check_error();
+		gl_check_error( m_serviceProvider );
 
 		m_vBuffersLocks.erase( _vbHandle );		
 
@@ -552,7 +590,7 @@ namespace Menge
 		glBufferData( GL_ELEMENT_ARRAY_BUFFER, memRange.size, NULL, usage );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 
-		gl_check_error();
+		gl_check_error( m_serviceProvider );
 #	endif
 
 		memRange.bufId = bufId;
@@ -584,7 +622,7 @@ namespace Menge
 
 #	ifndef __MACH__
 		glDeleteBuffers( 1, &range->bufId );
-		gl_check_error();
+		gl_check_error( m_serviceProvider );
 #	endif
 
 		m_iBuffersMemory.erase( _ibHandle );		
@@ -624,7 +662,7 @@ namespace Menge
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, range->bufId );
 		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, range->offset, range->size, range->pMem );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-		gl_check_error();
+		gl_check_error( m_serviceProvider );
 #	endif		
 		
 		m_iBuffersLocks.erase( _ibHandle );		
@@ -701,7 +739,7 @@ namespace Menge
 		glBindBuffer( GL_ARRAY_BUFFER, vb_range->bufId );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ib_range->bufId );
 
-		gl_check_error();
+		gl_check_error( m_serviceProvider );
 
 		glEnableClientState( GL_VERTEX_ARRAY );
 		glVertexPointer( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) );
@@ -720,7 +758,7 @@ namespace Menge
 		const uint16_t * baseIndex = nullptr;
 		const uint16_t * offsetIndex = baseIndex + _startIndex;
 		glDrawElements( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(offsetIndex) );
-		gl_check_error();
+		gl_check_error( m_serviceProvider );
 
 #	else	
 		//////////////////////////////////////////////////////////////////////////
@@ -746,7 +784,7 @@ namespace Menge
 		glBindBuffer( GL_ARRAY_BUFFER, vb_range->bufId );
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
 
-		gl_check_error();
+		gl_check_error( m_serviceProvider );
 
 		glEnableClientState( GL_VERTEX_ARRAY );
 		glVertexPointer( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) );
@@ -764,7 +802,7 @@ namespace Menge
 		GLenum mode = s_getGLPrimitiveMode( _type );
 
 		glDrawElements( mode, _indexCount, GL_UNSIGNED_SHORT, nullptr );
-		gl_check_error();
+		gl_check_error( m_serviceProvider );
 
 		glDeleteBuffers( 1, &bufId );	
 #	endif
@@ -776,7 +814,7 @@ namespace Menge
 		glBindBuffer( GL_ARRAY_BUFFER, 0 );		
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
 
-		gl_check_error();
+		gl_check_error( m_serviceProvider );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture )
@@ -980,16 +1018,16 @@ namespace Menge
         if( _filterType == Menge::TFT_MINIFICATION )
         {
             tStage.mengeMinFilter = _filter;
-            tStage.minFilter = s_toGLMinMipFilter( tStage.mengeMinFilter, tStage.mengeMipFilter );
+            tStage.minFilter = s_toGLMinFilter( tStage.mengeMinFilter, tStage.mengeMipFilter );
         }
         else if( _filterType == Menge::TFT_MIPMAP )
         {
             tStage.mengeMipFilter = _filter;
-            tStage.minFilter = s_toGLMinMipFilter( tStage.mengeMinFilter, tStage.mengeMipFilter );
+            tStage.minFilter = s_toGLMinFilter( tStage.mengeMinFilter, tStage.mengeMipFilter );
         }
         else if( _filterType == Menge::TFT_MAGNIFICATION )
         {
-            tStage.magFilter = s_toGLFilter[ _filter ];
+            tStage.magFilter = s_toMagFilter( _filter );
         }
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -1033,25 +1071,35 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr MarmaladeRenderSystem::createImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+	RenderImageInterfacePtr MarmaladeRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
 	{
         uint32_t hwChannels;
         PixelFormat hwFormat;
 		this->findFormatFromChannels_( _format, _channels, hwFormat, hwChannels );
 
-		GLint internalFormat = s_toGLInternalFormat( hwFormat );
+		GLint textureInternalFormat = s_toGLInternalFormat( hwFormat );
 
-		if( internalFormat == 0 )
+		if( textureInternalFormat == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createImage invalid get GL Texture format for PF %d"
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createImage invalid get GL Texture Internal format for PF %d"
 				, hwFormat
 				);
 
 			return nullptr;
 		}
 
-		GLint textureFormat = s_toGLColorFormat( hwFormat );
-		GLint textureType = s_getGLColorDataType( hwFormat );
+		GLint textureColorFormat = s_toGLColorFormat( hwFormat );
+
+		if( textureColorFormat == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createImage invalid get GL Texture Color format for PF %d"
+				, hwFormat
+				);
+
+			return nullptr;
+		}
+
+		GLint textureColorDataType = s_getGLColorDataType( hwFormat );
 
 		GLuint tuid = 0;
 		glGenTextures( 1, &tuid );
@@ -1062,13 +1110,14 @@ namespace Menge
 			m_serviceProvider
             , tuid
 			, ERIM_NORMAL
+			, _mipmaps
             , _width
             , _height
             , hwChannels
             , hwFormat
-            , internalFormat
-            , textureFormat
-            , textureType
+            , textureInternalFormat
+            , textureColorFormat
+            , textureColorDataType
             , false );
 
 		GLenum wrapS = GL_CLAMP_TO_EDGE;

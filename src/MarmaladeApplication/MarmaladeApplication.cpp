@@ -1125,8 +1125,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::getMaxClientResolution( Resolution & _resolution ) const
     {
-		int32 width = s3eSurfaceGetInt(S3E_SURFACE_WIDTH);
-		int32 height = s3eSurfaceGetInt(S3E_SURFACE_HEIGHT);
+		int32 width = s3eSurfaceGetInt( S3E_SURFACE_WIDTH );
+		int32 height = s3eSurfaceGetInt( S3E_SURFACE_HEIGHT );
 
 		_resolution.setWidth( width );
 		_resolution.setHeight( height );

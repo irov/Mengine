@@ -803,13 +803,13 @@ namespace Menge
  		DXCALL( m_serviceProvider, m_pD3DDevice, SetTransform, ( D3DTS_VIEW, (D3DMATRIX*)_modelview.buff() ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+	RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
 	{
 		(void)_depth;
 
 		IDirect3DTexture9 * dxTextureInterface = nullptr;
         
-		if( this->d3dCreateTexture_( _width, _height, 1, 0,	_format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
+		if( this->d3dCreateTexture_( _width, _height, _mipmaps, 0,	_format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem.createImage: can't create texture %dx%d %d"
 				, _width

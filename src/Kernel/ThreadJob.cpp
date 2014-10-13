@@ -45,12 +45,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_thread_addWorker( ThreadJobWorkerDesc & desc, const ThreadWorkerInterfacePtr & _worker, uint32_t _id )
 	{	
-		if( desc.mutex->try_lock() == false )
+		if( desc.status != ETS_FREE )
 		{
 			return false;
 		}
 
 		bool successful = false;
+
+		desc.mutex->lock();
 
 		if( desc.status == ETS_FREE )
 		{
@@ -101,19 +103,31 @@ namespace Menge
 			return false;
 		}
 		
+		bool successful = false;
+
+		ThreadWorkerInterfacePtr worker;
+
 		desc.mutex->lock();
 
-		ThreadWorkerInterfacePtr worker = desc.worker;
+		if( desc.status != ETS_FREE )
+		{
+			worker = desc.worker;
 
-		desc.id = 0;
-		desc.worker = nullptr;
-		desc.status = ETS_FREE;
+			desc.id = 0;
+			desc.worker = nullptr;
+			desc.status = ETS_FREE;
+
+			successful = true;
+		}
 
 		desc.mutex->unlock();
 
-		worker->onDone( _id );
+		if( successful == true )
+		{
+			worker->onDone( _id );
+		}
 
-		return true;
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadJob::removeWorker( uint32_t _id )
@@ -138,8 +152,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_thread_mainWorker( ThreadJobWorkerDesc & desc )
 	{
-		desc.mutex->lock();
+		if( desc.status != ETS_WORK )
+		{
+			return;
+		}
 
+		desc.mutex->lock();
+		
 		if( desc.status == ETS_WORK )
 		{
 			if( desc.worker->onWork( desc.id ) == false )
@@ -171,7 +190,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_thread_updateWorker( ThreadJobWorkerDesc & desc )
 	{
-		if( desc.mutex->try_lock() == false )
+		if( desc.status != ETS_DONE )
 		{
 			return;
 		}
@@ -179,16 +198,19 @@ namespace Menge
 		bool successful = false;
 		ThreadWorkerInterfacePtr worker;
 		uint32_t id = 0;
+		
+		desc.mutex->lock();
 
 		if( desc.status == ETS_DONE )
 		{
 			worker = desc.worker;
 			id = desc.id;
-			successful = true;
 
 			desc.worker = nullptr;
 			desc.id = 0;
 			desc.status = ETS_FREE;			
+
+			successful = true;
 		}
 
 		desc.mutex->unlock();

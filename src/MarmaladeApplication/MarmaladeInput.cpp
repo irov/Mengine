@@ -63,8 +63,7 @@ namespace Menge
             touch.active = false;
         }
 
-		m_width = (float)s3eSurfaceGetInt(S3E_SURFACE_WIDTH);
-		m_height = (float)s3eSurfaceGetInt(S3E_SURFACE_HEIGHT);
+		this->updateSurfaceResolution();
 
 #	ifdef __MACH__
 		s3eKeyboardSetInt( S3E_KEYBOARD_GET_CHAR, 1 );
@@ -101,8 +100,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeInput::updateSurfaceResolution()
     {
-        m_width = (float)s3eSurfaceGetInt(S3E_SURFACE_WIDTH);
-        m_height = (float)s3eSurfaceGetInt(S3E_SURFACE_HEIGHT);
+        m_width = (float)s3eSurfaceGetInt( S3E_SURFACE_WIDTH );
+        m_height = (float)s3eSurfaceGetInt( S3E_SURFACE_HEIGHT );
     }
     //////////////////////////////////////////////////////////////////////////    
     void MarmaladeInput::showKeyboard( bool _value )

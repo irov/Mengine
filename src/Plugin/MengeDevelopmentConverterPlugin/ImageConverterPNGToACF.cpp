@@ -108,7 +108,7 @@ namespace Menge
 			return false;
 		}	
 		
-		size_t data_size = dataInfo->size;
+		size_t data_size = dataInfo->size[0];
 		CacheMemoryBuffer data_buffer(m_serviceProvider, data_size, "ImageConverterPNGToACF_data");
 		void * data_memory = data_buffer.getMemory();
 
@@ -160,11 +160,11 @@ namespace Menge
 		}
 
 		ImageCodecDataInfo htfDataInfo;
-		htfDataInfo.size = dataInfo->size;
+		stdex::memorycopy_pod( htfDataInfo.size, dataInfo->size, 16 );
 		htfDataInfo.width = dataInfo->width;
 		htfDataInfo.height = dataInfo->height;
 		htfDataInfo.depth = 1;
-		htfDataInfo.mipmaps = 0;
+		htfDataInfo.mipmaps = 1;
 		htfDataInfo.channels = 1;
 		htfDataInfo.format = PF_UNKNOWN;
 

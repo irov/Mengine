@@ -192,8 +192,8 @@ namespace Menge
 		virtual PixelFormat getHWPixelFormat() const = 0;
 
 	public:
-		virtual void * lock( size_t * _pitch, const Rect& _rect, bool _readOnly = true ) = 0;
-		virtual void unlock() = 0;
+		virtual void * lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly = true ) = 0;
+		virtual void unlock( uint32_t _level ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderImageInterface> RenderImageInterfacePtr;
@@ -217,12 +217,14 @@ namespace Menge
 		virtual void setFileName( const FilePath & _fileName ) = 0;
 		virtual const FilePath & getFileName() const = 0;
 
+		virtual uint32_t getMipmaps() const = 0;
+
 		virtual uint32_t getWidth() const = 0;
 		virtual uint32_t getHeight() const = 0;
 		virtual uint32_t getChannels() const = 0;
 
-		virtual void * lock( size_t * _pitch, const Rect & _rect, bool _readOnly = true ) const = 0;
-		virtual void unlock() const = 0;
+		virtual void * lock( size_t * _pitch, uint32_t _miplevel, const Rect & _rect, bool _readOnly = true ) const = 0;
+		virtual void unlock( uint32_t _miplevel ) const = 0;
 
 		virtual size_t getMemoryUse() const = 0;
 	};
@@ -367,10 +369,10 @@ namespace Menge
 
     public:
         virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) = 0;
-		virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, uint32_t _channels ) = 0;
+		virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels ) = 0;
 
     public:
-        virtual RenderTextureInterfacePtr createTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
+        virtual RenderTextureInterfacePtr createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
         virtual RenderTextureInterfacePtr createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
         virtual RenderTextureInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 
@@ -520,7 +522,7 @@ namespace Menge
 		// [in/out] _height ( desired texture height, returns actual texture height )
 		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
 		// returns Texture interface handle or NULL if fails
-		virtual RenderImageInterfacePtr createImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
+		virtual RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 		virtual RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 		// create render target image
 		// [in/out] _width ( desired texture width, returns actual texture width )

@@ -144,7 +144,7 @@ namespace Menge
 
 			if( resourceImageDefault != nullptr )
 			{
-				const FilePath & fileName = resourceImageDefault->getFileName();
+				const FilePath & fileName = resourceImageDefault->getFilePath();
 				const ConstString & category = resourceImageDefault->getCategory();
 
 				bool exist = FILE_SERVICE(m_serviceProvider)

@@ -408,7 +408,7 @@ namespace Menge
             return nullptr;
         }
 
-        entity->setServiceProvider( m_serviceProvider );        
+        entity->setServiceProvider( m_serviceProvider );
 		entity->setType( _type );
         entity->setPrototype( _prototype );
 
@@ -463,6 +463,7 @@ namespace Menge
 	PyObject * ScriptEngine::askFunctionVA( PyObject * _object, const char * _params, va_list _valist )
 	{
 		PyObject * result = pybind::ask_va( _object, _params, _valist );
+
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -32,6 +32,16 @@ namespace Menge
             return false;
         }
 
+		if( m_options.miplevel > MENGINE_IMAGE_MIPLEVEL_MAX )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoder::setOptions miplevel %d > %d"
+				, m_options.miplevel
+				, MENGINE_IMAGE_MIPLEVEL_MAX
+				);
+
+			return false;
+		}
+
         bool result = this->_invalidateOptions();
 
         return result;
@@ -87,4 +97,16 @@ namespace Menge
             }
         }
     }
+	//////////////////////////////////////////////////////////////////////////
+	void ImageDecoder::_prepareSize()
+	{
+		for( uint32_t i = 0; i != m_dataInfo.mipmaps; ++i )
+		{
+			uint32_t mipmap_width = m_dataInfo.width >> i;
+			uint32_t mipmap_height = m_dataInfo.height >> i;
+			size_t size = Helper::getTextureMemorySize( mipmap_width, mipmap_height, m_dataInfo.channels, m_dataInfo.depth, m_dataInfo.format );
+
+			m_dataInfo.size[i] = size;
+		}
+	}
 }

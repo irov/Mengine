@@ -38,8 +38,8 @@
 #define HAVE_INET_ATON 1
 
 /* Define this if you have the type long long. */
-//#define HAVE_LONG_LONG
-#undef HAVE_LONG_LONG
+#define HAVE_LONG_LONG 1
+//#undef HAVE_LONG_LONG
 
 #define PY_NO_SHORT_FLOAT_REPR
 
@@ -234,7 +234,7 @@ void fprintf(FILE *, char *, ...);) *and* <stdarg.h> */
 #define SIZEOF_LONG 4
 
 /* The size of a `long long', as computed by sizeof. */
-#define SIZEOF_LONG_LONG 4
+#define SIZEOF_LONG_LONG 8
 
 /* The number of bytes in an off_t. */
 #define SIZEOF_OFF_T 8
@@ -361,6 +361,6 @@ We just want to avoid a redefinition error message. */
 //#define PY_LONG_LONG __int64
 //#endif
 
-//#define PY_FORMAT_LONG_LONG "ull"
+#define PY_FORMAT_LONG_LONG "ll"
 
 #endif /*Py_PYCONFIG_H*/

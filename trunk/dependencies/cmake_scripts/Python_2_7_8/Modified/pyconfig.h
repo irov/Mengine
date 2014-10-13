@@ -295,8 +295,8 @@ typedef int pid_t;
 #endif
 
 /* 64 bit ints are usually spelt __int64 unless compiler has overridden */
-//#define HAVE_LONG_LONG 1
-#undef HAVE_LONG_LONG
+#define HAVE_LONG_LONG 1
+//#undef HAVE_LONG_LONG
 
 #ifndef PY_LONG_LONG
 #	define PY_LONG_LONG __int64

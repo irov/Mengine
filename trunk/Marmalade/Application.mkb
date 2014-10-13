@@ -67,7 +67,12 @@ includepaths
 }
 
 files
-{
+{    
+    [MarmaladeSettings]
+    (data)
+    app.icf
+    app.config.txt
+
     [Config]
 	("../src/Config")	
 	"*.h"

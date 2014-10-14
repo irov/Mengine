@@ -81,7 +81,7 @@ namespace Menge
 
 		for( uint32_t i = 0; i != mipmaps; ++i )
 		{             
-			size_t mipmap_size = dataInfo->size[i];
+			size_t mipmap_size = dataInfo->getMipMapSize( i );
 
 			if( Helper::writeStreamArchiveBuffer( m_serviceProvider, m_stream, m_archivator, false, mipmap_buffer, mipmap_size ) == false )
 			{
@@ -94,7 +94,7 @@ namespace Menge
 			mipmap_buffer += mipmap_size;
 		}
 
-		return dataInfo->size[0];
+		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

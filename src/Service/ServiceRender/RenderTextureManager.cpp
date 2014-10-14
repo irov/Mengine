@@ -247,7 +247,7 @@ namespace Menge
         dataInfo.height = _texture->getHeight();		
         dataInfo.depth = 1;
         dataInfo.mipmaps = 1;
-        dataInfo.size[0] = 0;	// we don't need this
+        dataInfo.size = 0;	// we don't need this
         
         Rect rect;
         rect.left = 0;
@@ -632,7 +632,6 @@ namespace Menge
 			ImageCodecOptions options;
 			options.channels = channels;
 			options.pitch = pitch;
-			options.miplevel = i;
 
 			uint32_t miplevel_width = width >> i;
 			uint32_t miplevel_height = height >> i;

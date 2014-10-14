@@ -119,13 +119,14 @@ namespace Menge
 			return false;
 		}
 
-		//if( (header.dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT && header.dwMipMapCount > 0 )
-		//{
-		//	LOGGER_WARNING(m_serviceProvider)("ImageDecoderDDS::initialize dds file has mipmaps" 
-  //              );                        
-
-		//	return false;				 
-		//}
+		if( (header.dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT )
+		{
+			m_dataInfo.mipmaps = 1 + header.dwMipMapCount;
+		}
+		else
+		{
+			m_dataInfo.mipmaps = 1;
+		}
 
 		if( (header.ddspf.dwFlags & DDPF_FOURCC) == 0 )
 		{
@@ -136,7 +137,6 @@ namespace Menge
 		}
 
 		m_dataInfo.depth = 1;
-		m_dataInfo.mipmaps = header.dwMipMapCount;
 		m_dataInfo.width = header.dwWidth;
 		m_dataInfo.height = header.dwHeight;
         m_dataInfo.channels = 3;

@@ -96,8 +96,6 @@ namespace Menge
 				return false;
 			}
 			
-			this->_prepareSize();
-
 			m_rewindPos = m_stream->tell();
 
 			return true;
@@ -122,11 +120,6 @@ namespace Menge
 		virtual bool _prepareData()
 		{
 			return true;
-		}
-
-		virtual void _prepareSize()
-		{
-			//Empty
 		}
 
 	protected:

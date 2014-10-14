@@ -393,8 +393,6 @@ namespace Menge
 			pybind::call( cb, "(OO)", m_scene->getEmbed(), pybind::get_bool(true) );
 			pybind::decref( cb );
 		}
-	
-        m_switchSceneName.clear();
 
 		return;
 	}

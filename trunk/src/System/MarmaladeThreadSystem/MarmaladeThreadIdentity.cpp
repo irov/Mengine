@@ -12,7 +12,6 @@ namespace Menge
 		, m_thread(nullptr)
 		, m_task(nullptr)
 		, m_complete(true)
-		, m_join(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -71,36 +70,25 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeThreadIdentity::processTask( ThreadTaskInterface * _task )
-	{
-		bool successful = true;
-		m_mutex->lock();
-		{
-			if( m_complete == false )
-			{
-				successful = false;
-			}
-
-			if( m_exit == true )
-			{
-				successful = false;
-			}
-		}
-		m_mutex->unlock();
-
-		if( successful == false )
+	{		
+		if( m_mutex->try_lock() == false )
 		{
 			return false;
 		}
 
-		m_mutex->lock();
+		bool successful = false;
+
+		if( m_complete == true && m_exit == false )
 		{
 			m_task = _task;
 			m_complete = false;
+
+			successful = true;
 		}
+
 		m_mutex->unlock();
-
-
-		return true;
+		
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeThreadIdentity::joinTask()
@@ -110,9 +98,9 @@ namespace Menge
 		m_mutex->lock();
 
 		if( m_complete == false )
-		{			
-			m_complete = true;
+		{	
 			m_task = nullptr;
+			m_complete = true;			
 
 			successful = true;
 		}
@@ -124,11 +112,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeThreadIdentity::join()
 	{
-		if( m_join == true )
-		{
-			return;
-		}
-
 		m_mutex->lock();
 		{
 			m_exit = true;
@@ -144,7 +127,5 @@ namespace Menge
 				, s3eThreadGetErrorString()
 				);						
 		}
-
-		m_join = true;
 	}
 }

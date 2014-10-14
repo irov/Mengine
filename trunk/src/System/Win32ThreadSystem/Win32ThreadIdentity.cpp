@@ -183,7 +183,6 @@ namespace Menge
 		if( m_complete == false )
 		{
 			m_task = nullptr;
-
 			m_complete = true;
 
 			successful = true;
@@ -197,7 +196,9 @@ namespace Menge
 	void Win32ThreadIdentity::join()
 	{
 		m_mutex->lock();
-		m_exit = true;
+		{
+			m_exit = true;
+		}
 		m_mutex->unlock();
 
 		SetEvent( m_hTaskSignalEvent );

@@ -4,8 +4,6 @@
 
 #	include "Core/PixelFormat.h"
 
-#	define MENGINE_IMAGE_MIPLEVEL_MAX 16
-
 namespace Menge
 {
 	struct ImageCodecDataInfo
@@ -32,7 +30,7 @@ namespace Menge
 
         PixelFormat format;
 
-		size_t size[MENGINE_IMAGE_MIPLEVEL_MAX];
+		size_t size;
 
 		size_t getFullSize() const
 		{
@@ -40,12 +38,29 @@ namespace Menge
 
 			for( uint32_t i = 0; i != mipmaps; ++i )
 			{
-				size_t s = size[0];
+				size_t s = this->getMipMapSize(i);
 
 				full_size += s;
 			}
 
 			return full_size;
+		}
+
+		size_t getMipMapSize( size_t _level ) const
+		{
+			size_t mipmap_width = (width >> _level);
+			size_t mipmap_height = (height >> _level);
+
+			size_t mipmap_size = Helper::getTextureMemorySize( mipmap_width, mipmap_height, channels, depth, format );
+						
+			return mipmap_size;
+		}
+
+		size_t getSize() const
+		{
+			size_t size = Helper::getTextureMemorySize( width, height, channels, depth, format );
+
+			return size;
 		}
 	};
 
@@ -66,14 +81,12 @@ namespace Menge
             : flags(DF_NONE)
             , pitch(0)
             , channels(0)
-			, miplevel(0)
         {
         }
 
         uint32_t flags;
 		size_t pitch;
         uint32_t channels;
-		uint32_t miplevel;
 	};
 
 	class ImageDecoderInterface

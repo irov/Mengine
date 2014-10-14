@@ -62,7 +62,7 @@ namespace Menge
         m_dataInfo.channels = 1;
 		m_dataInfo.format = PF_A8;
 		m_dataInfo.mipmaps = mipmaps;
-       
+      
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

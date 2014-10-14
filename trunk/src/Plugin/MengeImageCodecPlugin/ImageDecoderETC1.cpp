@@ -71,7 +71,8 @@ bool ImageDecoderETC1::_prepareData()
 	//m_dataInfo.format = Menge::PF_ETC1;
 	m_dataInfo.width = m_etc1_ptr.texWidth;
 	m_dataInfo.height = m_etc1_ptr.texHeight;
-	m_dataInfo.mipmaps = 1;
+	
+	m_dataInfo.mipmaps = 1 + m_etc1_ptr.format;
 
 	return isValid;
 }

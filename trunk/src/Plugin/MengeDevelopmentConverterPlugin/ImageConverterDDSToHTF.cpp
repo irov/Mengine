@@ -108,11 +108,10 @@ namespace Menge
 		{
 			ImageCodecOptions decoder_options;
 
-			size_t miplevel_data_size = dataInfo->size[i];
+			size_t miplevel_data_size = dataInfo->getMipMapSize( i );
 
 			decoder_options.pitch = miplevel_data_size / (dataInfo->height >> i);
 			decoder_options.channels = 3;
-			decoder_options.miplevel = i;
 
 			if( decoder->setOptions( &decoder_options ) == false )
 			{
@@ -183,7 +182,6 @@ namespace Menge
 		}
 
 		ImageCodecDataInfo htfDataInfo;
-		stdex::memorycopy_pod( htfDataInfo.size, dataInfo->size, 16 );
 		htfDataInfo.width = dataInfo->width;
 		htfDataInfo.height = dataInfo->height;
 		htfDataInfo.depth = 1;

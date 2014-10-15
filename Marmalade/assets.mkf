@@ -1,0 +1,26 @@
+assets
+{
+	[Zombieland_Android]
+	("d:/Projects/ZombielandBuild_ETC1")
+    Locale_RU    
+    app.config.txt
+    application.ini    
+	Framework2.pak
+    Framework3.pak    
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak    
+    
+    [Zombieland_IOS]
+	("d:/Projects/ZombielandBuild_PVRTC")
+    Locale_RU
+    app.config.txt
+    application.ini    
+	Framework2.pak
+    Framework3.pak    
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak    
+}

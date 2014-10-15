@@ -8,9 +8,7 @@ options
 	enable-exceptions    
 	preinclude=preinclude_application.h
     
-    #s3e-data-dir="d:/Projects/HolidayFunBuild_Marmalade/data"
     s3e-data-dir="d:/Projects/DynastyBuild_Marmalade/data"
-    #s3e-data-dir="d:/Temp/HOG/data"
 }
 
 library
@@ -19,11 +17,7 @@ library
     ".,Dependencies"
     ".,Mengine"
     
-    "dependencies/marmalade-openal,openal-soft-1.13"
-    #"dependencies/marm_libogg,libogg"
-    #"dependencies/marm_libvorbis,libvorbis"
-    #"dependencies/marm_libvorbis,libvorbisfile"
-    
+    "dependencies/marmalade-openal,openal-soft-1.13"   
     "dependencies/marmalade-astralax,mmagic"
 }
 
@@ -122,17 +116,25 @@ files
 	"*.h"
 	"*.cpp"    
 }
+
+subproject assets.mkf
+
 #### AUTO GENERATED deployment settings from DeployTool.exe. Do not edit below this line ####
 deployments
 {
 	["Default"]
-	caption='boo'
-	embed-icf=0
+	["Zombieland_Android"]
+	app-icf='d:/Projects/ZombielandBuild_ETC1/app.icf'
+	assets='Zombieland_Android'
+	caption='Zombieland'
+	name='Zombieland'
+	["Zombieland_IOS"]
+	app-icf='d:/Projects/ZombielandBuild_PVRTC/app.icf'
+	assets='Zombieland_IOS'
+	caption='Zombieland'
 	iphone-appid='com.Argali.boo'
-	iphone-no-splash='1'
-	iphone-nosign=0
 	iphone-provisioning-profile='Argali.mobileprovision'
 	iphone-sign-for-distribution=1
 	iphone-signing-identity='iPhone Distribution'
-	name='boo'
+	name='Zombieland'
 }

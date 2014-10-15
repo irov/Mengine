@@ -187,21 +187,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline Node * Movie::getMovieNode_( const MovieLayer & _layer ) const
 	{	
-		const Nodies & ns = m_nodies[_layer.index];
+		const Nodies & ns = m_nodies[_layer.index - 1];
 
 		return ns.node;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline Animatable * Movie::getMovieAnimatable_( const MovieLayer & _layer ) const
 	{	
-		const Nodies & ns = m_nodies[_layer.index];
+		const Nodies & ns = m_nodies[_layer.index - 1];
 
 		return ns.animatable;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline Node * Movie::getMovieParent_( const MovieLayer & _layer ) const
 	{
-		const Nodies & ns = m_nodies[_layer.parent];
+		const Nodies & ns = m_nodies[_layer.parent - 1];
 
 		return ns.node;
 	}  

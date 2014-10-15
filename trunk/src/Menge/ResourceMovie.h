@@ -26,6 +26,7 @@ namespace Menge
     const uint32_t MOVIE_LAYER_SUB_MOVIE = 0x0080;
     const uint32_t MOVIE_LAYER_MESH_2D = 0x0100;
 	const uint32_t MOVIE_LAYER_UNSTOPPABLE = 0x0200;
+	const uint32_t MOVIE_LAYER_SCENE_EFFECT = 0x0400;
 	
     const uint32_t movie_layer_parent_none = (uint32_t)-1;
 
@@ -127,6 +128,11 @@ namespace Menge
 		bool isUnstoppable() const
 		{
 			return (state & MOVIE_LAYER_UNSTOPPABLE) > 0;
+		}
+
+		bool isSceneEffect() const
+		{
+			return (state & MOVIE_LAYER_SCENE_EFFECT) > 0;
 		}
 	};
 

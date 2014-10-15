@@ -58,6 +58,7 @@
 #	include "Sprite.h"
 #   include "MovieSlot.h"
 #	include "MovieInternalObject.h"
+#   include "MovieEvent.h"
 #	include "Animation.h"
 #	include "Model3D.h"
 #	include "HotSpot.h"
@@ -266,9 +267,149 @@ namespace Menge
 
             return unicode;            
         }
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * movie_getMovieNode( Movie * _movie, const ConstString & _name, const ConstString & _type )
+		{
+			Node * node;
+			Movie * submovie;
+			if( _movie->getMovieNode( _name, _type, &node, &submovie ) == false )
+			{
+				return pybind::ret_none();
+			}
+
+			PyObject * py_node = pybind::ptr( node );
+
+			return py_node;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool movie_hasMovieNode( Movie * _movie, const ConstString & _name, const ConstString & _type )
+		{
+			Node * node;
+			Movie * submovie;
+			bool successful = _movie->hasMovieNode( _name, _type, &node, &submovie );
+
+			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * movie_getMovieSlot( Movie * _movie, const ConstString & _name )
+		{
+			Node * node;
+			Movie * submovie;
+			if( _movie->getMovieNode( _name, CONST_STRING(m_serviceProvider, MovieSlot), &node, &submovie ) == false )
+			{
+				return pybind::ret_none();
+			}
+			
+			PyObject * py_node = pybind::ptr( node );
+
+			return py_node;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool movie_hasMovieSlot( Movie * _movie, const ConstString & _name )
+		{
+			Node * node;
+			Movie * submovie;
+			bool successful = _movie->hasMovieNode( _name, CONST_STRING(m_serviceProvider, MovieSlot), &node, &submovie );
+
+			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * movie_getSubMovie( Movie * _movie, const ConstString & _name )
+		{
+			Node * node;
+			Movie * submovie;
+			if( _movie->getMovieNode( _name, CONST_STRING(m_serviceProvider, SubMovie), &node, &submovie ) == false )
+			{
+				return pybind::ret_none();
+			}
+
+			PyObject * py_node = pybind::ptr( node );
+
+			return py_node;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool movie_hasSubMovie( Movie * _movie, const ConstString & _name )
+		{
+			Node * node;
+			Movie * submovie;
+			bool successful = _movie->hasMovieNode( _name, CONST_STRING(m_serviceProvider, SubMovie), &node, &submovie );
+
+			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * movie_getSocket( Movie * _movie, const ConstString & _name )
+		{
+			Node * node;
+			Movie * submovie;
+
+			if( _movie->hasMovieNode( _name, CONST_STRING(m_serviceProvider, MovieSocketImage), &node, &submovie ) == true )
+			{
+				PyObject * py_node = pybind::ptr( node );
+
+				return py_node;
+			}
+
+			if( _movie->hasMovieNode( _name, CONST_STRING(m_serviceProvider, MovieSocketShape), &node, &submovie ) == true )
+			{
+				PyObject * py_node = pybind::ptr( node );
+
+				return py_node;
+			}
+
+			LOGGER_ERROR(m_serviceProvider)("Movie::getSocket: %s not found %s"
+				, _movie->getName().c_str()
+				, _name.c_str()
+				);
+
+			return pybind::ret_none();
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool movie_hasSocket( Movie * _movie, const ConstString & _name )
+		{
+			Node * node;
+			Movie * submovie;
+
+			if( _movie->hasMovieNode( _name, CONST_STRING(m_serviceProvider, MovieSocketImage), &node, &submovie ) == true )
+			{
+				return true;
+			}
+
+			if( _movie->hasMovieNode( _name, CONST_STRING(m_serviceProvider, MovieSocketShape), &node, &submovie ) == true )
+			{
+				return true;
+			}
+
+			return false;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool movie_setMovieEvent( Movie * _movie, const ConstString & _name, PyObject * _cb )
+		{
+			Node * node;
+			Movie * submovie;
+
+			if( _movie->getMovieNode( _name, CONST_STRING(m_serviceProvider, MovieEvent), &node, &submovie ) == false )
+			{
+				return false;
+			}
+
+			MovieEvent * ev = static_cast<MovieEvent *>(node);
+
+			ev->setEvent( _cb );
+
+			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool movie_hasMovieEvent( Movie * _movie, const ConstString & _name )
+		{
+			Node * node;
+			Movie * submovie;
+			bool successful = _movie->hasMovieNode( _name, CONST_STRING(m_serviceProvider, MovieEvent), &node, &submovie );
+
+			return successful;
+		}
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovieSocket
-            : public VisitorMovieSocket
+            : public VisitorMovieNode
         {
         public:
             PythonVisitorMovieSocket( PyObject * _list )
@@ -277,11 +418,15 @@ namespace Menge
             }
 
         protected:
-            void visitSocket( Movie * _movie, const ConstString & _name, HotSpot * _hotspot ) override
+            void visitMovieNode( Movie * _movie, Node * _node ) override
             {
+				HotSpot * hotspot = static_cast<HotSpot *>(_node);
+
+				const ConstString & name = hotspot->getName();
+
 				PyObject * py_movie = pybind::ptr( _movie );
-                PyObject * py_name = pybind::ptr( _name );
-                PyObject * py_hotspot = pybind::ptr( _hotspot );
+                PyObject * py_name = pybind::ptr( name );
+                PyObject * py_hotspot = pybind::ptr( hotspot );
 
                 PyObject * py_tuple = pybind::tuple_new(3);
 
@@ -302,13 +447,14 @@ namespace Menge
             PyObject * py_list = pybind::list_new(0);
 
 			PythonVisitorMovieSocket visitor(py_list);
-			_movie->visitSockets( &visitor );
+			_movie->visitMovieNode( CONST_STRING(m_serviceProvider, MovieSocketImage), &visitor );
+			_movie->visitMovieNode( CONST_STRING(m_serviceProvider, MovieSocketShape), &visitor );
 
             return py_list;
         }
 		//////////////////////////////////////////////////////////////////////////
 		class PythonVisitorMovieSubMovie
-			: public VisitorMovieSubMovie
+			: public VisitorMovieNode
 		{
 		public:
 			PythonVisitorMovieSubMovie( PyObject * _list )
@@ -317,11 +463,14 @@ namespace Menge
 			}
 
 		protected:
-			void visitSubMovie( Movie * _movie, const ConstString & _name, Movie * _subMovie ) override
+			void visitMovieNode( Movie * _movie, Node * _node ) override
 			{
+				Movie * subMovie = static_cast<Movie *>(_node);
+				const ConstString & name = subMovie->getName();
+
 				PyObject * py_movie = pybind::ptr( _movie );
-				PyObject * py_name = pybind::ptr( _name );
-				PyObject * py_subMovie = pybind::ptr( _subMovie );
+				PyObject * py_name = pybind::ptr( name );
+				PyObject * py_subMovie = pybind::ptr( subMovie );
 
 				PyObject * py_tuple = pybind::tuple_new(3);
 
@@ -342,13 +491,13 @@ namespace Menge
 			PyObject * py_list = pybind::list_new(0);
 
 			PythonVisitorMovieSubMovie visitor(py_list);
-			_movie->visitSubMovie( &visitor );
+			_movie->visitMovieNode( CONST_STRING(m_serviceProvider, SubMovie), &visitor );
 
 			return py_list;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class PythonVisitorMovieLayer
-			: public VisitorMovieLayer
+			: public VisitorMovieNode
 		{
 		public:
 			PythonVisitorMovieLayer( PyObject * _list )
@@ -357,7 +506,7 @@ namespace Menge
 			}
 
 		protected:
-			void visitLayer( Movie * _movie, Node * _layer ) override
+			void visitMovieNode( Movie * _movie, Node * _layer ) override
 			{
 				PyObject * py_movie = pybind::ptr( _movie );
 				PyObject * py_layer = pybind::ptr( _layer );
@@ -375,12 +524,12 @@ namespace Menge
 			PyObject * m_list;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_filterLayers( Movie * _movie, const ConstString & _type )
+		PyObject * movie_filterNodies( Movie * _movie, const ConstString & _type )
 		{
 			PyObject * py_list = pybind::list_new(0);
 
 			PythonVisitorMovieLayer visitor(py_list);
-			_movie->filterLayers( _type, &visitor );
+			_movie->visitMovieNode( _type, &visitor );
 
 			return py_list;
 		}
@@ -462,7 +611,7 @@ namespace Menge
 		PyObject * movie_getLayerPathLength( Movie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
-			const Movie * sub_movie;						
+			Movie * sub_movie;						
 			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Movie::getLayerPathLength: '%s' not found layer '%s'"
@@ -505,7 +654,7 @@ namespace Menge
 		PyObject * movie_getLayerPath( Movie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
-			const Movie * sub_movie;
+			Movie * sub_movie;
 			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Movie::getLayerPathLength: '%s' not found layer '%s'"
@@ -544,7 +693,7 @@ namespace Menge
 		PyObject * movie_getLayerPath2( Movie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
-			const Movie * sub_movie;
+			Movie * sub_movie;
 			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Movie::getLayerPathLength: '%s' not found layer '%s'"
@@ -4829,17 +4978,19 @@ namespace Menge
                     .def( "getResourceMovie", &Movie::getResourceMovie )
                     .def( "setReverse", &Movie::setReverse )
                     .def( "getReverse", &Movie::getReverse )		
-                    .def( "getMovieSlot", &Movie::getMovieSlot )
-                    .def( "hasMovieSlot", &Movie::hasMovieSlot )
-                    .def( "getSubMovie", &Movie::getSubMovie )
-                    .def( "hasSubMovie", &Movie::hasSubMovie )
-                    .def( "getSocket", &Movie::getSocket )
-                    .def( "hasSocket", &Movie::hasSocket )
-                    .def( "setMovieEvent", &Movie::setMovieEvent )
-                    .def( "hasMovieEvent", &Movie::hasMovieEvent )
-                    .def_proxy_static( "getSockets", nodeScriptMethod, &NodeScriptMethod::movie_getSockets )
+					.def_proxy_static( "getMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlot )
+					.def_proxy_static( "hasMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieSlot )
+					.def_proxy_static( "getSubMovie", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovie )
+					.def_proxy_static( "hasSubMovie", nodeScriptMethod, &NodeScriptMethod::movie_hasSubMovie )
+					.def_proxy_static( "getSocket", nodeScriptMethod, &NodeScriptMethod::movie_getSocket )
+					.def_proxy_static( "hasSocket", nodeScriptMethod, &NodeScriptMethod::movie_hasSocket )
+					.def_proxy_static( "setMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_setMovieEvent )
+					.def_proxy_static( "hasMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieEvent )
+                    .def_proxy_static( "getSockets", nodeScriptMethod, &NodeScriptMethod::movie_getSockets )	
 					.def_proxy_static( "getSubMovies", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovies )
-					.def_proxy_static( "filterLayers", nodeScriptMethod, &NodeScriptMethod::movie_filterLayers )					
+					.def_proxy_static( "getMovieNode", nodeScriptMethod, &NodeScriptMethod::movie_getMovieNode )
+					.def_proxy_static( "hasMovieNode", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieNode )
+					.def_proxy_static( "filterLayers", nodeScriptMethod, &NodeScriptMethod::movie_filterNodies )
                     .def_proxy_static( "getFrameDuration", nodeScriptMethod, &NodeScriptMethod::movie_getFrameDuration )
                     .def_proxy_static( "getDuration", nodeScriptMethod, &NodeScriptMethod::movie_getDuration )
                     .def_proxy_static( "getFrameCount", nodeScriptMethod, &NodeScriptMethod::movie_getFrameCount )

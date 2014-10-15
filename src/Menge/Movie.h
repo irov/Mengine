@@ -23,23 +23,11 @@ namespace Menge
 	struct MovieLayer;
 	struct MovieFrameSource;    
 
-	class VisitorMovieLayer
+	class VisitorMovieNode
 	{
 	public:
-		virtual void visitLayer( Movie * _movie, Node * _layer ) = 0;
+		virtual void visitMovieNode( Movie * _movie, Node * _node ) = 0;
 	};
-
-	class VisitorMovieSubMovie
-	{
-	public:
-		virtual void visitSubMovie( Movie * _movie, const ConstString & _name, Movie * _subMovie ) = 0;
-	};
-
-    class VisitorMovieSocket
-    {
-    public:
-        virtual void visitSocket( Movie * _movie, const ConstString & _name, HotSpot * _hotspot ) = 0;
-    };
 
 	class Movie
 		: public Node
@@ -57,31 +45,14 @@ namespace Menge
 		bool isParentMovie() const;
 
 	public:
-		bool filterLayers( const ConstString & _type, VisitorMovieLayer * _visitor );
+		bool visitMovieNode( const ConstString & _type, VisitorMovieNode * _visitor );
+
+		bool getMovieNode( const ConstString & _name, const ConstString & _type, Node ** _node, Movie ** _movie );
+		bool hasMovieNode( const ConstString & _name, const ConstString & _type, Node ** _node, Movie ** _movie );
 
 	public:		
-		bool getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, const Movie ** _movie ) const;
+		bool getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, Movie ** _movie );
 		bool hasMovieLayer( const ConstString & _name ) const;
-
-	public:
-		Node * getMovieSlot( const ConstString & _name ) const;
-		bool hasMovieSlot( const ConstString & _name ) const;
-
-    public:
-		bool visitSubMovie( VisitorMovieSubMovie * _visitor );
-
-        Movie * getSubMovie( const ConstString & _name ) const;
-        bool hasSubMovie( const ConstString & _name ) const;
-
-    public:
-        bool visitSockets( VisitorMovieSocket * _visitor );
-
-        HotSpot * getSocket( const ConstString & _name ) const;
-        bool hasSocket( const ConstString & _name ) const;
-
-    public:
-        bool setMovieEvent( const ConstString & _name, PyObject * _cb ) const;
-        bool hasMovieEvent( const ConstString & _name ) const;
 
 	protected:
 		void _setReverse( bool _reverse ) override;
@@ -208,24 +179,6 @@ namespace Menge
 		typedef stdex::vector<Nodies> TVectorNodies;
 		TVectorNodies m_nodies;
 		
-		typedef stdex::binary_vector<ConstString, Node *> TMapMovieSlots;
-		TMapMovieSlots m_slots;
-
-        typedef stdex::binary_vector<ConstString, Movie *> TMapSubMovies;
-        TMapSubMovies m_subMovies;
-
-        typedef stdex::binary_vector<ConstString, HotSpot *> TMapSockets;
-        TMapSockets m_sockets;
-
-        typedef stdex::binary_vector<ConstString, MovieEvent *> TMapMovieEvent;
-        TMapMovieEvent m_events;
-
-        typedef stdex::binary_vector<ConstString, MovieSceneEffect *> TMapSceneEffects;
-        TMapSceneEffects m_sceneEffects;
-
-        typedef stdex::binary_vector<ConstString, MovieInternalObject *> TMapInternalObjects;
-        TMapInternalObjects m_internals;
-
 		float m_frameTiming;
 		uint32_t m_currentFrame;
         

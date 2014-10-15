@@ -396,122 +396,7 @@ namespace Menge
 		m_nodies[_layer.index] = ns;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Movie::getMovieSlot( const ConstString & _name ) const
-	{
-		if( m_resourceMovie == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.getMovieSlot %s invalid not compile"
-				, m_name.c_str()
-				);
-
-			return nullptr;
-		}
-
-		TMapMovieSlots::const_iterator it_found = m_slots.find( _name );
-
-		if( it_found != m_slots.end() )
-		{	
-			Node * slot = m_slots.get_value( it_found );
-
-			return slot;
-		}
-
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
-
-			if( layer.isMovie() == false || layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
-			Node * node = this->getMovieNode_( layer );
-
-			if( node == nullptr )
-			{
-				continue;
-			}
-
-			Movie * movie = static_cast<Movie *>(node);
-
-			Node * slot = movie->getMovieSlot( _name );
-
-			if( slot == nullptr )
-			{
-				continue;
-			}
-
-			return slot;
-		}
-
-		LOGGER_ERROR(m_serviceProvider)("Movie::getMovieSlot: %s not found slot %s"
-			, m_name.c_str()
-			, _name.c_str()
-			);
-
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie::hasMovieSlot( const ConstString & _name ) const
-	{
-		if( m_resourceMovie == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.hasMovieSlot %s invalid not compile"
-				, m_name.c_str()
-				);
-
-			return nullptr;
-		}
-
-		TMapMovieSlots::const_iterator it_found = m_slots.find( _name );
-
-		if( it_found != m_slots.end() )
-		{	
-			return true;
-		}
-
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
-
-			if( layer.isMovie() == false || layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
-			Node * node = this->getMovieNode_( layer );
-
-			if( node == nullptr )
-			{
-				continue;
-			}
-
-			Movie * movie = static_cast<Movie *>(node);
-
-			if( movie->hasMovieSlot( _name ) == false )
-			{
-				continue;
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie::filterLayers( const ConstString & _type, VisitorMovieLayer * _visitor )
+	bool Movie::visitMovieNode( const ConstString & _type, VisitorMovieNode * _visitor )
 	{
 		if( m_resourceMovie == nullptr )
 		{
@@ -543,7 +428,7 @@ namespace Menge
 
 			if( _type.empty() == false && layer.type == _type )
 			{
-				_visitor->visitLayer( this, nd.node );
+				_visitor->visitMovieNode( this, nd.node );
 			}
 		}
 
@@ -569,13 +454,153 @@ namespace Menge
 
 			Movie * movie = static_cast<Movie *>(node);
 
-			if( movie->filterLayers( _type, _visitor ) == false )
+			if( movie->visitMovieNode( _type, _visitor ) == false )
 			{
 				continue;
 			}
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::getMovieNode( const ConstString & _name, const ConstString & _type, Node ** _node, Movie ** _movie )
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie.getMovieNode %s invalid not compile %s:%s"
+				, m_name.c_str()
+				, _name.c_str()
+				, _type.c_str()
+				);
+
+			return false;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorNodies::const_iterator
+			it = m_nodies.begin(),
+			it_end = m_nodies.end();
+		it != it_end;
+		++it )
+		{
+			const Nodies & n = *it;
+
+			const MovieLayer & layer = layers[n.layerId];
+
+			if( layer.name != _name || layer.type != _type )
+			{
+				continue;
+			}
+
+			*_node = n.node;
+			*_movie = this;
+
+			return true;
+		}
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			if( movie->getMovieNode( _name, _type, _node, _movie ) == true )
+			{
+				return true;
+			}
+		}
+
+		LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode: %s not found slot %s:%s"
+			, m_name.c_str()
+			, _name.c_str()
+			, _type.c_str()
+			);
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::hasMovieNode( const ConstString & _name, const ConstString & _type, Node ** _node, Movie ** _movie )
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie.hasMovieNode %s invalid not compile (%s:%s)"
+				, m_name.c_str()
+				, _name.c_str()
+				, _type.c_str()
+				);
+
+			return false;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorNodies::const_iterator
+			it = m_nodies.begin(),
+			it_end = m_nodies.end();
+		it != it_end;
+		++it )
+		{
+			const Nodies & n = *it;
+
+			const MovieLayer & layer = layers[n.layerId];
+
+			if( layer.name != _name || layer.type != _type )
+			{
+				continue;
+			}
+
+			*_node = n.node;
+			*_movie = this;
+
+			return true;
+		}
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getMovieNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			if( movie->hasMovieNode( _name, _type, _node, _movie ) == true )
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::hasMovieLayer( const ConstString & _name ) const
@@ -631,7 +656,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, const Movie ** _movie ) const
+	bool Movie::getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, Movie ** _movie )
 	{
 		if( this->isCompile() == false )
 		{
@@ -676,15 +701,10 @@ namespace Menge
 
 			Movie * movie = static_cast<Movie *>(node);
 
-			const Movie * sub_movie;
-			const MovieLayer * sub_movie_layer;
-			if( movie->getMovieLayer( _name, &sub_movie_layer, &sub_movie ) == false )
+			if( movie->getMovieLayer( _name, _layer, _movie ) == false )
 			{
 				continue;
 			}
-
-			*_layer = sub_movie_layer;
-			*_movie = sub_movie;
 
 			return true;
 		}
@@ -693,460 +713,6 @@ namespace Menge
 			, m_name.c_str()
 			, _name.c_str()
 			);
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie::visitSubMovie( VisitorMovieSubMovie * _visitor )
-	{
-		if( m_resourceMovie == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::visitSubMovie %s invalid not compile"
-				, m_name.c_str()
-				);
-
-			return false;
-		}
-
-		for( TMapSubMovies::const_iterator
-			it = m_subMovies.begin(),
-			it_end = m_subMovies.end();
-		it != it_end;
-		++it )
-		{
-			const ConstString & name = m_subMovies.get_key( it );
-			Movie * submovie = m_subMovies.get_value( it );
-
-			_visitor->visitSubMovie( this, name, submovie );
-		}
-
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
-
-			if( layer.isMovie() == false || layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
-			Node * node = this->getMovieNode_( layer );
-
-			if( node == nullptr )
-			{
-				continue;
-			}
-
-			Movie * movie = static_cast<Movie *>(node);
-
-			if( movie->visitSubMovie( _visitor ) == false )
-			{
-				continue;
-			}
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Movie * Movie::getSubMovie( const ConstString & _name ) const
-	{
-		if( m_resourceMovie == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::getSubMovie %s invalid not compile"
-				, m_name.c_str()
-				);
-
-			return nullptr;
-		}
-
-		TMapSubMovies::const_iterator it_found = m_subMovies.find( _name );
-
-		if( it_found != m_subMovies.end() )
-		{	
-			Movie * submovie = m_subMovies.get_value( it_found );
-
-			return submovie;
-		}
-
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
-
-			if( layer.isMovie() == false || layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
-			Node * node = this->getMovieNode_( layer );
-
-			if( node == nullptr )
-			{
-				continue;
-			}
-
-			Movie * movie = static_cast<Movie *>(node);
-
-			Movie * submovie = movie->getSubMovie( _name );
-
-			if( submovie == nullptr )
-			{
-				continue;
-			}
-
-			return submovie;
-		}
-
-		LOGGER_ERROR(m_serviceProvider)("Movie::getSubMovie: %s not found submovie %s"
-			, m_name.c_str()
-			, _name.c_str()
-			);
-
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie::hasSubMovie( const ConstString & _name ) const
-	{
-		if( m_resourceMovie == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.hasSubMovie %s invalid not compile"
-				, m_name.c_str()
-				);
-
-			return nullptr;
-		}
-
-		TMapSubMovies::const_iterator it_found = m_subMovies.find( _name );
-
-		if( it_found != m_subMovies.end() )
-		{	
-			return true;
-		}
-
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
-
-			if( layer.isMovie() == false || layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
-			Node * node = this->getMovieNode_( layer );
-
-			if( node == nullptr )
-			{
-				continue;
-			}
-
-			Movie * movie = static_cast<Movie *>(node);
-
-			if( movie->hasSubMovie( _name ) == false )
-			{
-				continue;
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie::visitSockets( VisitorMovieSocket * _visitor )
-	{
-		if( m_resourceMovie == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.visitSockets %s invalid not compile"
-				, m_name.c_str()
-				);
-
-			return false;
-		}
-
-		for( TMapSockets::const_iterator
-			it = m_sockets.begin(),
-			it_end = m_sockets.end();
-		it != it_end;
-		++it )
-		{
-			const ConstString & name = m_sockets.get_key( it );
-			HotSpot * hotspot = m_sockets.get_value( it );
-
-			_visitor->visitSocket( this, name, hotspot );
-		}
-
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
-
-			if( layer.isMovie() == false || layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
-			Node * node = this->getMovieNode_( layer );
-
-			if( node == nullptr )
-			{
-				continue;
-			}
-
-			Movie * movie = static_cast<Movie *>(node);
-
-			if( movie->visitSockets( _visitor ) == false )
-			{
-				continue;
-			}
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	HotSpot * Movie::getSocket( const ConstString & _name ) const
-	{
-		if( m_resourceMovie == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.getSocket %s invalid not compile %s"
-				, m_name.c_str()
-				, _name.c_str()
-				);
-
-			return nullptr;
-		}
-
-		TMapSockets::const_iterator it_found = m_sockets.find( _name );
-
-		if( it_found != m_sockets.end() )
-		{	
-			HotSpot * slot = m_sockets.get_value( it_found );
-
-			return slot;
-		}
-
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
-
-			if( layer.isMovie() == false || layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
-			Node * node = this->getMovieNode_( layer );
-
-			if( node == nullptr )
-			{
-				continue;
-			}
-
-			Movie * movie = static_cast<Movie *>(node);
-
-			HotSpot * socket = movie->getSocket( _name );
-
-			if( socket == nullptr )
-			{
-				continue;
-			}
-
-			return socket;
-		}
-
-		LOGGER_ERROR(m_serviceProvider)("Movie::getSocket: %s not found slot %s"
-			, m_name.c_str()
-			, _name.c_str()
-			);
-
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie::hasSocket( const ConstString & _name ) const
-	{
-		if( m_resourceMovie == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.hasSocket %s invalid not compile"
-				, m_name.c_str()
-				);
-
-			return nullptr;
-		}
-
-		TMapSockets::const_iterator it_found = m_sockets.find( _name );
-
-		if( it_found != m_sockets.end() )
-		{	
-			return true;
-		}
-
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
-
-			if( layer.isMovie() == false || layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
-			Node * node = this->getMovieNode_( layer );
-
-			if( node == nullptr )
-			{
-				continue;
-			}
-
-			Movie * movie = static_cast<Movie *>(node);
-
-			if( movie->hasSocket( _name ) == false )
-			{
-				continue;
-			}
-
-			return true;
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie::setMovieEvent( const ConstString & _name, PyObject * _cb ) const
-	{
-		if( m_resourceMovie == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.setMovieEvent %s invalid not compile"
-				, m_name.c_str()
-				);
-
-			return false;
-		}
-
-		TMapMovieEvent::const_iterator it_found = m_events.find( _name );
-
-		if( it_found != m_events.end() )
-		{	
-			MovieEvent * event = m_events.get_value( it_found );
-
-			event->setEvent( _cb );
-
-			return true;
-		}
-
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
-
-			if( layer.isMovie() == false || layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
-			Node * node = this->getMovieNode_( layer );
-
-			if( node == nullptr )
-			{
-				continue;
-			}
-
-			Movie * movie = static_cast<Movie *>(node);
-
-			if( movie->setMovieEvent( _name, _cb ) == true )
-			{
-				return true;
-			}
-		}
-
-		LOGGER_ERROR(m_serviceProvider)("Movie::setMovieEvent: %s not found event %s"
-			, m_name.c_str()
-			, _name.c_str()
-			);
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie::hasMovieEvent( const ConstString & _name ) const
-	{
-		if( m_resourceMovie == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.hasMovieEvent %s invalid not compile"
-				, m_name.c_str()
-				);
-
-			return false;
-		}
-
-		TMapMovieEvent::const_iterator it_found = m_events.find( _name );
-
-		if( it_found != m_events.end() )
-		{	
-			return true;
-		}
-
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
-		{
-			const MovieLayer & layer = *it;
-
-			if( layer.isMovie() == false || layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
-			Node * node = this->getMovieNode_( layer );
-
-			if( node == nullptr )
-			{
-				continue;
-			}
-
-			Movie * movie = static_cast<Movie *>(node);
-
-			if( movie->hasMovieEvent( _name ) == true )
-			{
-				return true;
-			}
-		}
 
 		return false;
 	}
@@ -1426,13 +992,6 @@ namespace Menge
 
 		m_nodies.clear();
 
-		m_slots.clear();
-		m_subMovies.clear();
-		m_sockets.clear();
-		m_events.clear();
-		m_sceneEffects.clear();
-		m_internals.clear();
-
 		this->destroyCamera3D_();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1450,8 +1009,6 @@ namespace Menge
 
 		layer_slot->setMovieName( m_name );
 
-		m_slots.insert( _layer.name, layer_slot );
-
 		this->addMovieNode_( _layer, layer_slot );
 
 		return true;
@@ -1468,8 +1025,6 @@ namespace Menge
 		}
 
 		sceneeffect_slot->setName( _layer.name );
-
-		m_sceneEffects.insert( _layer.name, sceneeffect_slot );
 
 		this->addMovieNode_( _layer, sceneeffect_slot );
 
@@ -1684,8 +1239,6 @@ namespace Menge
 
 		layer_hotspotimage->setName( _layer.name );
 
-		m_sockets.insert( _layer.name, layer_hotspotimage );
-
 		this->addMovieNode_( _layer, layer_hotspotimage );
 
 		return true;
@@ -1712,8 +1265,6 @@ namespace Menge
 		layer_hotspotshape->setResourceShape( resourceShape );
 
 		layer_hotspotshape->setName( _layer.name );
-
-		m_sockets.insert( _layer.name, layer_hotspotshape );
 
 		this->addMovieNode_( _layer, layer_hotspotshape );
 
@@ -1839,8 +1390,6 @@ namespace Menge
 
 		layer_movie->setParentMovie( true );
 
-		m_subMovies.insert( _layer.name, layer_movie );
-
 		this->addMovieNode_( _layer, layer_movie );
 
 		return true;
@@ -1868,8 +1417,6 @@ namespace Menge
 
 		movie_internal->setMovie( this );
 		movie_internal->setResourceInternalObject( resourceInternalObject );
-
-		m_internals.insert( _layer.name, movie_internal );
 
 		this->addMovieNode_( _layer, movie_internal );
 
@@ -2104,8 +1651,6 @@ namespace Menge
 
 		layer_event->setResourceMovie( m_resourceMovie );
 
-		m_events.insert( _layer.name, layer_event );
-
 		this->addMovieNode_( _layer, layer_event );
 
 		return true;
@@ -2219,15 +1764,26 @@ namespace Menge
 		bool reverse = this->getReverse();
 		this->updateReverse_( reverse );
 
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
 		Layer * layer = this->getLayer();
 
-		for( TMapSceneEffects::iterator
-			it = m_sceneEffects.begin(),
-			it_end = m_sceneEffects.end();
+		for( TVectorNodies::iterator
+			it = m_nodies.begin(),
+			it_end = m_nodies.end();
 		it != it_end;
 		++it )
 		{
-			MovieSceneEffect * sceneEffect = m_sceneEffects.get_value( it );
+			const Nodies & nodies = *it;
+
+			const MovieLayer & l = layers[nodies.layerId];
+
+			if( l.isSceneEffect() == false )
+			{
+				continue;
+			}
+
+			MovieSceneEffect * sceneEffect = static_cast<MovieSceneEffect *>(nodies.node);
 
 			sceneEffect->setPropagateNode( layer );
 		}

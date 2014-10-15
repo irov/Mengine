@@ -451,7 +451,7 @@ namespace Menge
             }
             else if( it->type == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
             {
-                it->state |= MOVIE_LAYER_NODE;
+                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_SCENE_EFFECT;
 
                 it->parent = (uint32_t)-1;
             }

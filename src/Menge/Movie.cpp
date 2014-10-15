@@ -393,7 +393,7 @@ namespace Menge
 		ns.layerId = _layer.id;
 		ns.child = (_layer.parent != movie_layer_parent_none);
 
-		m_nodies[_layer.index] = ns;
+		m_nodies[_layer.index - 1] = ns;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::visitMovieNode( const ConstString & _type, VisitorMovieNode * _visitor )
@@ -726,7 +726,7 @@ namespace Menge
 		ns.layerId = 0;
 		ns.node = nullptr;
 		ns.animatable = nullptr;
-		m_nodies.resize( maxLayerIndex + 1, ns );
+		m_nodies.resize( maxLayerIndex, ns );
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
@@ -941,7 +941,7 @@ namespace Menge
 		ns.layerId = 0;
 		ns.node = nullptr;
 		ns.animatable = nullptr;
-		m_nodies.resize( maxLayerIndex + 1, ns );
+		m_nodies.resize( maxLayerIndex, ns );
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 

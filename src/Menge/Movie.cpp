@@ -409,27 +409,22 @@ namespace Menge
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorNodies::const_iterator
-			it = m_nodies.begin(),
-			it_end = m_nodies.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const Nodies & nd = *it;
+			const MovieLayer & layer = *it;
 
-			if( nd.node == nullptr )
+			if( _type.empty() == false && layer.type != _type )
 			{
 				continue;
 			}
 
-			uint32_t layerId = nd.layerId;
+			Node * node = this->getLayerNode_( layer );
 
-			const MovieLayer & layer = layers[layerId];
-
-			if( _type.empty() == false && layer.type == _type )
-			{
-				_visitor->visitMovieNode( this, nd.node );
-			}
+			_visitor->visitMovieNode( this, node );
 		}
 
 		for( TVectorMovieLayers::const_iterator
@@ -445,7 +440,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
@@ -478,22 +473,22 @@ namespace Menge
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorNodies::const_iterator
-			it = m_nodies.begin(),
-			it_end = m_nodies.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const Nodies & n = *it;
-
-			const MovieLayer & layer = layers[n.layerId];
+			const MovieLayer & layer = *it;
 
 			if( layer.name != _name || layer.type != _type )
 			{
 				continue;
 			}
 
-			*_node = n.node;
+			Node * node = this->getLayerNode_( layer );
+
+			*_node = node;
 			*_movie = this;
 
 			return true;
@@ -512,7 +507,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
@@ -551,22 +546,22 @@ namespace Menge
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
-		for( TVectorNodies::const_iterator
-			it = m_nodies.begin(),
-			it_end = m_nodies.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const Nodies & n = *it;
-
-			const MovieLayer & layer = layers[n.layerId];
+			const MovieLayer & layer = *it;
 
 			if( layer.name != _name || layer.type != _type )
 			{
 				continue;
 			}
 
-			*_node = n.node;
+			Node * node = this->getLayerNode_( layer );
+
+			*_node = node;
 			*_movie = this;
 
 			return true;
@@ -585,7 +580,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
@@ -636,7 +631,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
@@ -692,7 +687,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
@@ -721,12 +716,7 @@ namespace Menge
 	{
 		uint32_t maxLayerIndex = m_resourceMovie->getMaxLayerIndex();
 
-		Nodies ns;
-		ns.child = false;
-		ns.layerId = 0;
-		ns.node = nullptr;
-		ns.animatable = nullptr;
-		m_nodies.resize( maxLayerIndex, ns );
+		m_nodies.resize( maxLayerIndex );
 
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
@@ -934,15 +924,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::compileLayers_()
 	{
-		uint32_t maxLayerIndex = m_resourceMovie->getMaxLayerIndex();
-
-		Nodies ns;
-		ns.child = false;
-		ns.layerId = 0;
-		ns.node = nullptr;
-		ns.animatable = nullptr;
-		m_nodies.resize( maxLayerIndex, ns );
-
 		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( TVectorMovieLayers::const_iterator
@@ -1609,7 +1590,7 @@ namespace Menge
 			return true;
 		}
 
-		Node * node = this->getMovieNode_( _layer );
+		Node * node = this->getLayerNode_( _layer );
 
 		if( node == nullptr )
 		{
@@ -1768,22 +1749,22 @@ namespace Menge
 
 		Layer * layer = this->getLayer();
 
-		for( TVectorNodies::iterator
-			it = m_nodies.begin(),
-			it_end = m_nodies.end();
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
 		it != it_end;
 		++it )
 		{
-			const Nodies & nodies = *it;
-
-			const MovieLayer & l = layers[nodies.layerId];
+			const MovieLayer & l = *it;
 
 			if( l.isSceneEffect() == false )
 			{
 				continue;
 			}
 
-			MovieSceneEffect * sceneEffect = static_cast<MovieSceneEffect *>(nodies.node);
+			Node * node = this->getLayerNode_( l );
+
+			MovieSceneEffect * sceneEffect = static_cast<MovieSceneEffect *>(node);
 
 			sceneEffect->setPropagateNode( layer );
 		}
@@ -1832,7 +1813,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
@@ -1861,7 +1842,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
@@ -1872,7 +1853,7 @@ namespace Menge
 
 			if( layer.parent != 0 && layer.parent != movie_layer_parent_none )
 			{
-				Node * node_parent = this->getMovieParent_( layer );
+				Node * node_parent = this->getLayerParent_( layer );
 
 				if( node_parent == nullptr )
 				{
@@ -1903,7 +1884,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
@@ -1943,7 +1924,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
@@ -1960,7 +1941,7 @@ namespace Menge
 				continue;
 			}
 
-			Animatable * animatable = this->getMovieAnimatable_( layer );
+			Animatable * animatable = this->getLayerAnimatable_( layer );
 
 			if( layer.timeRemap == false )
 			{
@@ -1989,14 +1970,14 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
 				continue;
 			}
 
-			Animatable * animatable = this->getMovieAnimatable_( layer );
+			Animatable * animatable = this->getLayerAnimatable_( layer );
 
 			animatable->setTiming( 0.f );
 		}
@@ -2236,7 +2217,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
@@ -2283,7 +2264,7 @@ namespace Menge
 
 			if( _layer.isAnimatable() == true )
 			{
-				Animatable * animatable = this->getMovieAnimatable_( _layer );
+				Animatable * animatable = this->getLayerAnimatable_( _layer );
 
 				if( _layer.timeRemap == false )
 				{
@@ -2322,7 +2303,7 @@ namespace Menge
 
 			if( _layer.isAnimatable() == true )
 			{
-				Animatable * animatable = this->getMovieAnimatable_( _layer );
+				Animatable * animatable = this->getLayerAnimatable_( _layer );
 
 				if( _layer.timeRemap == false )
 				{
@@ -2357,7 +2338,7 @@ namespace Menge
 
 			if( _layer.isAnimatable() == true )
 			{
-				Animatable * animatable = this->getMovieAnimatable_( _layer );
+				Animatable * animatable = this->getLayerAnimatable_( _layer );
 
 				if( _layer.timeRemap == false )
 				{
@@ -2408,7 +2389,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = this->getMovieNode_( layer );			
+			Node * node = this->getLayerNode_( layer );			
 
 			if( _beginFrame >= indexOut && _endFrame <= indexOut && _endFrame > indexIn )
 			{
@@ -2419,7 +2400,7 @@ namespace Menge
 
 				if( layer.isAnimatable() == true )
 				{
-					Animatable * animatable = this->getMovieAnimatable_( layer );
+					Animatable * animatable = this->getLayerAnimatable_( layer );
 
 					if( animatable->isPlay() == true )
 					{
@@ -2441,7 +2422,7 @@ namespace Menge
 
 				if( layer.isAnimatable() == true )
 				{
-					Animatable * animatable = this->getMovieAnimatable_( layer );
+					Animatable * animatable = this->getLayerAnimatable_( layer );
 
 					if( animatable->isPlay() == true )
 					{
@@ -2496,7 +2477,7 @@ namespace Menge
 			uint32_t indexIn = (uint32_t)((layerIn / frameDuration) + 0.5f);
 			uint32_t indexOut = (uint32_t)((layerOut / frameDuration) + 0.5f);
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
@@ -2520,7 +2501,7 @@ namespace Menge
 
 				if( layer.isAnimatable() == true )
 				{
-					Animatable * animatable = this->getMovieAnimatable_( layer );
+					Animatable * animatable = this->getLayerAnimatable_( layer );
 
 					if( layer.timeRemap == false )
 					{
@@ -2578,7 +2559,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = this->getMovieNode_( layer );			
+			Node * node = this->getLayerNode_( layer );			
 
 			if( node == nullptr )
 			{
@@ -2595,7 +2576,7 @@ namespace Menge
 
 				if( layer.isAnimatable() == true )
 				{
-					Animatable * animatable = this->getMovieAnimatable_( layer );
+					Animatable * animatable = this->getLayerAnimatable_( layer );
 
 					if( layer.timeRemap == false )
 					{
@@ -2637,7 +2618,7 @@ namespace Menge
 
 				if( layer.isAnimatable() == true )
 				{
-					Animatable * animatable = this->getMovieAnimatable_( layer );
+					Animatable * animatable = this->getLayerAnimatable_( layer );
 
 					if( layer.timeRemap == false )
 					{
@@ -2692,7 +2673,7 @@ namespace Menge
 				continue;
 			}
 
-			Node * node = this->getMovieNode_( layer );
+			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
 			{
@@ -2796,7 +2777,7 @@ namespace Menge
 				continue;
 			}
 
-			Animatable * animatable = this->getMovieAnimatable_( layer );
+			Animatable * animatable = this->getLayerAnimatable_( layer );
 
 			animatable->setSpeedFactor( _factor );
 		}
@@ -2829,7 +2810,7 @@ namespace Menge
 				continue;
 			}
 
-			Animatable * animatable = this->getMovieAnimatable_( layer );
+			Animatable * animatable = this->getLayerAnimatable_( layer );
 
 			animatable->setReverse( _reverse );
 		}

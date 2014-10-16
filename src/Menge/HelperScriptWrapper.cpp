@@ -96,7 +96,10 @@ namespace Menge
 
 		void s_debug()
 		{
-			printf("debug!");
+#	ifdef _MSC_VER
+			_asm int 3;
+#	endif
+			printf("debug!\n");
 		}
 
         void s_setCursorPosition( const mt::vec2f & _pos )

@@ -1294,6 +1294,11 @@ namespace Menge
 				ss << "Smart Batch: " << mode << " " << rdi.batch <<  std::endl;
 				ss << "Texture Memory Usage: " << (float)rtdi.textureMemory / (1024.f*1024.f) << std::endl;
 				ss << "Texture Count: " << rtdi.textureCount << std::endl;
+
+				uint32_t processHandleCount = PLATFORM_SERVICE(m_serviceProvider)
+					->getProcessHandleCount();
+
+				ss << "Handle Count: " << processHandleCount << std::endl;
 				ss << "Particles: " << particlesCount << std::endl;
 			}
 

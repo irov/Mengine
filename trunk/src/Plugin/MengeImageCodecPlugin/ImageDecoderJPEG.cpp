@@ -206,8 +206,39 @@ namespace Menge
 		m_dataInfo.width = m_jpegObject.image_width;
 		m_dataInfo.height = m_jpegObject.image_height;
 		m_dataInfo.quality = s_getQuality( &m_jpegObject );
+
+		if( m_jpegObject.jpeg_color_space != JCS_RGB )
+		{
+			const char * jcs_err[] =
+			{
+				"JCS_UNKNOWN",		/* error/unspecified */
+				"JCS_GRAYSCALE",		/* monochrome */
+				"JCS_RGB",		/* red/green/blue, standard RGB (sRGB) */
+				"JCS_YCbCr",		/* Y/Cb/Cr (also known as YUV), standard YCC */
+				"JCS_CMYK",		/* C/M/Y/K */
+				"JCS_YCCK",		/* Y/Cb/Cr/K */
+				"JCS_BG_RGB",		/* big gamut red/green/blue, bg- sRGB */
+				"JCS_BG_YCC"		/* big gamut Y/Cb/Cr, bg-sYCC */
+			};
+
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::_prepareData unsupport %s (%d) (only RGB)"
+				, jcs_err[m_jpegObject.jpeg_color_space]
+				, m_jpegObject.jpeg_color_space				
+				);
+
+			return false;
+		}
 		
-		m_dataInfo.channels = m_jpegObject.out_color_components;
+		if( m_jpegObject.num_components != 3 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::_prepareData invalid color components %d"
+				, m_jpegObject.num_components
+				);
+
+			return false;
+		}
+
+		m_dataInfo.channels = 3;
 		
 		return true;
 	}
@@ -235,24 +266,8 @@ namespace Menge
 
 		jpeg_start_decompress( &m_jpegObject );
 
-		if( m_options.flags & DF_READ_ALPHA_ONLY )
-		{
-            if( m_options.channels == 1 )
-            {
-			    memset( _buffer, 255, _bufferSize );
 
-                return _bufferSize;
-            }
-            else
-            {
-                LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::decode DF_READ_ALPHA_ONLY m_options.channels %d != 4"
-                    , m_options.channels
-                    );
-
-                return 0;
-            }			
-		}
-        else
+        if( m_options.flags == 0 )
         {
             if( m_options.channels == 4 || m_options.channels == 3 )
             {
@@ -289,6 +304,23 @@ namespace Menge
                 return 0;
             }
         }
+		else if( m_options.flags & DF_READ_ALPHA_ONLY )
+		{
+			if( m_options.channels == 1 )
+			{
+				memset( _buffer, 255, _bufferSize );
+
+				return _bufferSize;
+			}
+			else
+			{
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::decode DF_READ_ALPHA_ONLY m_options.channels %d != 4"
+					, m_options.channels
+					);
+
+				return 0;
+			}			
+		}
 
 		m_jpegObject.output_scanline = m_jpegObject.output_height;
 		jpeg_finish_decompress( &m_jpegObject );

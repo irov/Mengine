@@ -18,12 +18,6 @@ extern "C"
 
 namespace Menge
 {
-	struct EncoderJPEGErrorManager
-	{
-		jpeg_error_mgr pub;
-		jmp_buf setjmp_buffer;
-	};
-
 	class ImageEncoderJPEG
 		: public ImageEncoder
 	{
@@ -35,10 +29,6 @@ namespace Menge
 		bool _initialize() override;
 
 	public:
-		size_t encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo ) override;
-
-	private:
-		jpeg_compress_struct * m_jpegObject;
-		EncoderJPEGErrorManager * m_errorMgr;
+		size_t encode( const void * _buffer, const CodecDataInfo * _bufferDataInfo ) override;
 	};
 }	// namespace Menge

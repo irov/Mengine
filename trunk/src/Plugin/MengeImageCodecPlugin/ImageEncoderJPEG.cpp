@@ -8,7 +8,8 @@
 
 namespace Menge
 {
-	typedef struct tagDestinationManager 
+	//////////////////////////////////////////////////////////////////////////
+	struct DestinationManager 
 	{
 		/// public fields
 		struct jpeg_destination_mgr pub;
@@ -16,16 +17,32 @@ namespace Menge
 		OutputStreamInterfacePtr m_stream;
 		/// start of buffer
 		JOCTET * buffer;
-	} DestinationManager;
-
+	};
+	//////////////////////////////////////////////////////////////////////////
 	typedef DestinationManager * menge_dst_ptr;
-	typedef EncoderJPEGErrorManager * DecoderJPEGErrorManager;
+	//////////////////////////////////////////////////////////////////////////
+	struct EncoderJPEGErrorManager
+	{
+		jpeg_error_mgr pub;
+		jmp_buf setjmp_buffer;
+	};
 	//////////////////////////////////////////////////////////////////////////
 	static void	s_jpegErrorExit( j_common_ptr _cinfo ) 
 	{
-		DecoderJPEGErrorManager mErr = (DecoderJPEGErrorManager) _cinfo->err;
+		EncoderJPEGErrorManager * mErr = (EncoderJPEGErrorManager *)_cinfo->err;
 		// always display the message
-		(mErr->pub.output_message)( _cinfo );
+		char buffer[JMSG_LENGTH_MAX];
+
+		// create the message
+		(*mErr->pub.format_message)(_cinfo, buffer);
+		// send it to user's message proc
+		//FreeImage_OutputMessageProc(s_format_id, buffer);
+
+		ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface*>(_cinfo->client_data);
+
+		LOGGER_ERROR(serviceProvider)("s_jpegErrorExit %s"
+			, buffer
+			);
 
 		// allow JPEG with a premature end of file
 		if( mErr->pub.msg_parm.i[0] != 13 )
@@ -42,14 +59,16 @@ namespace Menge
 	// how to generate a message, only where to send it.
 	static void	s_jpegOutputMessage( j_common_ptr _cinfo ) 
 	{
+		EncoderJPEGErrorManager * mErr = (EncoderJPEGErrorManager *)_cinfo->err;
+
 		char buffer[JMSG_LENGTH_MAX];
 
 		// create the message
-		(*_cinfo->err->format_message)(_cinfo, buffer);
+		(*mErr->pub.format_message)(_cinfo, buffer);
 		// send it to user's message proc
 		//FreeImage_OutputMessageProc(s_format_id, buffer);
 
-        ServiceProviderInterface * serviceProvider = static_cast<ImageEncoderJPEG*>(_cinfo->client_data)->getServiceProvider();
+        ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface*>(_cinfo->client_data);
 
 		LOGGER_ERROR(serviceProvider)("s_jpegOutputMessage %s"
             , buffer
@@ -64,14 +83,14 @@ namespace Menge
 	METHODDEF(void)
 		init_destination (j_compress_ptr cinfo) 
 	{
-			menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
+		menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
 
-			dest->buffer = (JOCTET *)
-				(*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
-				OUTPUT_BUF_SIZE * SIZEOF(JOCTET));
+		dest->buffer = (JOCTET *)
+			(*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
+			OUTPUT_BUF_SIZE * SIZEOF(JOCTET));
 
-			dest->pub.next_output_byte = dest->buffer;
-			dest->pub.free_in_buffer = OUTPUT_BUF_SIZE;
+		dest->pub.next_output_byte = dest->buffer;
+		dest->pub.free_in_buffer = OUTPUT_BUF_SIZE;
 	}
 
 	//This is called whenever the buffer has filled (free_in_buffer
@@ -86,14 +105,14 @@ namespace Menge
 	METHODDEF(boolean)
 		empty_output_buffer (j_compress_ptr cinfo) 
 	{
-			menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
+		menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
 
-			dest->m_stream->write( dest->buffer, OUTPUT_BUF_SIZE );
+		dest->m_stream->write( dest->buffer, OUTPUT_BUF_SIZE );
 
-			dest->pub.next_output_byte = dest->buffer;
-			dest->pub.free_in_buffer = OUTPUT_BUF_SIZE;
+		dest->pub.next_output_byte = dest->buffer;
+		dest->pub.free_in_buffer = OUTPUT_BUF_SIZE;
 
-			return TRUE;
+		return TRUE;
 	}
 
 	//Terminate destination --- called by jpeg_finish_compress() after all
@@ -103,16 +122,16 @@ namespace Menge
 	METHODDEF(void)
 		term_destination (j_compress_ptr cinfo) 
 	{
-			menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
+		menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
 
-			size_t datacount = OUTPUT_BUF_SIZE - dest->pub.free_in_buffer;
+		size_t datacount = OUTPUT_BUF_SIZE - dest->pub.free_in_buffer;
 
-			// write any data remaining in the buffer
+		// write any data remaining in the buffer
 
-			if (datacount > 0) 
-			{
-				dest->m_stream->write(dest->buffer, (unsigned int)datacount );
-			}
+		if (datacount > 0) 
+		{
+			dest->m_stream->write(dest->buffer, (unsigned int)datacount );
+		}
 	}
 
 
@@ -121,111 +140,90 @@ namespace Menge
 	//for closing it after finishing compression.
 	GLOBAL(void) jpeg_menge_dst(j_compress_ptr cinfo, OutputStreamInterface * _stream ) 
 	{
-			menge_dst_ptr dest;
+		menge_dst_ptr dest;
 
-			if( cinfo->dest == nullptr )
-			{
-				cinfo->dest = (struct jpeg_destination_mgr *)(*cinfo->mem->alloc_small)
-					((j_common_ptr) cinfo, JPOOL_PERMANENT, SIZEOF(DestinationManager));
-			}
+		if( cinfo->dest == nullptr )
+		{
+			cinfo->dest = (struct jpeg_destination_mgr *)(*cinfo->mem->alloc_small)
+				((j_common_ptr) cinfo, JPOOL_PERMANENT, SIZEOF(DestinationManager));
+		}
 
-			dest = (menge_dst_ptr) cinfo->dest;
-			dest->pub.init_destination = init_destination;
-			dest->pub.empty_output_buffer = empty_output_buffer;
-			dest->pub.term_destination = term_destination;
-			dest->m_stream = _stream;
+		dest = (menge_dst_ptr) cinfo->dest;
+		dest->pub.init_destination = init_destination;
+		dest->pub.empty_output_buffer = empty_output_buffer;
+		dest->pub.term_destination = term_destination;
+		dest->m_stream = _stream;
 	}
-
-
 	//////////////////////////////////////////////////////////////////////////
 	ImageEncoderJPEG::ImageEncoderJPEG()
-		: m_errorMgr(nullptr)
-		, m_jpegObject(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageEncoderJPEG::~ImageEncoderJPEG()
 	{
-		if( m_jpegObject != nullptr )
-		{
-			jpeg_destroy_compress( m_jpegObject );
-
-			delete m_jpegObject;
-			m_jpegObject = nullptr;
-		}
-
-		if( m_errorMgr != nullptr )
-		{
-			delete m_errorMgr;
-			m_errorMgr = nullptr;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t ImageEncoderJPEG::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
-	{
-		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _bufferDataInfo );
-		
-		m_jpegObject->image_width = (JDIMENSION)dataInfo->width;
-		m_jpegObject->image_height = (JDIMENSION)dataInfo->height;
-		m_jpegObject->input_components = 3;
-		m_jpegObject->in_color_space = JCS_RGB;
-
-		int pitch = m_options.pitch;
-		//int pixel_depth = 8;
-
-		jpeg_set_defaults( m_jpegObject );
-		jpeg_set_quality( m_jpegObject, dataInfo->quality, TRUE /* limit to baseline-JPEG values */);
-
-		jpeg_start_compress( m_jpegObject, TRUE);
-
-        JSAMPROW jpeg_buffer = (JSAMPROW)_buffer;
-
-		JSAMPROW row_pointer[1];	// pointer to JSAMPLE row[s]
-		while (m_jpegObject->next_scanline < m_jpegObject->image_height) 
-		{
-			// jpeg_write_scanlines expects an array of pointers to scanlines.
-			// Here the array is only one element long, but you could pass
-			// more than one scanline at a time if that's more convenient.
-			row_pointer[0] = &jpeg_buffer[m_jpegObject->next_scanline * pitch];
-			(void) jpeg_write_scanlines( m_jpegObject, row_pointer, 1);
-		}
-
-		// Step 6: Finish compression
-
-		jpeg_finish_compress(m_jpegObject);
-
-
-		return pitch * dataInfo->height;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageEncoderJPEG::_initialize()
 	{
-		m_errorMgr = new EncoderJPEGErrorManager;
-		m_jpegObject = new jpeg_compress_struct;
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t ImageEncoderJPEG::encode( const void * _buffer, const CodecDataInfo* _dataInfo )
+	{
+		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _dataInfo );
 
-		// step 1: allocate and initialize JPEG compression object
-		m_jpegObject->err = jpeg_std_error(&m_errorMgr->pub);
-		m_jpegObject->client_data = this;
+		EncoderJPEGErrorManager errorMgr;
 
-		m_errorMgr->pub.error_exit     = s_jpegErrorExit;
-		m_errorMgr->pub.output_message = s_jpegOutputMessage;
+		errorMgr.pub.error_exit = &s_jpegErrorExit;
+		errorMgr.pub.output_message = &s_jpegOutputMessage;
 
-		if( setjmp( m_errorMgr->setjmp_buffer ) ) 
+		if( setjmp( errorMgr.setjmp_buffer ) )
 		{
 			// If we get here, the JPEG code has signaled an error.
 			// We need to clean up the JPEG object and return.
-			jpeg_destroy_compress( m_jpegObject );
+			
+			return 0;
+		}
+		
+		struct jpeg_compress_struct cinfo = {0};
+		cinfo.err = jpeg_std_error(&errorMgr.pub);
+		cinfo.client_data = m_serviceProvider;
 
-			delete m_jpegObject;
-			m_jpegObject = nullptr;
+		jpeg_create_compress( &cinfo );
 
-			return false;
+		jpeg_menge_dst( &cinfo, m_stream.get() );
+
+		cinfo.image_width = (JDIMENSION)dataInfo->width;
+		cinfo.image_height = (JDIMENSION)dataInfo->height;
+		cinfo.input_components = 3;
+		cinfo.in_color_space = JCS_RGB;
+				
+		//int pixel_depth = 8;
+
+		jpeg_set_defaults( &cinfo );
+		jpeg_set_quality( &cinfo, dataInfo->quality, TRUE );
+
+		jpeg_start_compress( &cinfo, TRUE);
+
+        JSAMPROW jpeg_buffer = (JSAMPROW)_buffer;
+
+		size_t pitch = m_options.pitch;
+
+		JSAMPROW row_pointer[1];	// pointer to JSAMPLE row[s]
+		while (cinfo.next_scanline < cinfo.image_height) 
+		{
+			// jpeg_write_scanlines expects an array of pointers to scanlines.
+			// Here the array is only one element long, but you could pass
+			// more than one scanline at a time if that's more convenient.
+			row_pointer[0] = jpeg_buffer + cinfo.next_scanline * pitch;
+			(void) jpeg_write_scanlines( &cinfo, row_pointer, 1);
 		}
 
-		jpeg_create_compress( m_jpegObject );
+		// Step 6: Finish compression
 
-		jpeg_menge_dst( m_jpegObject, m_stream.get() );
+		jpeg_finish_compress( &cinfo );
+		jpeg_destroy_compress( &cinfo );
 
-		return true;
+		return pitch * dataInfo->height;
 	}
 }	// namespace Menge

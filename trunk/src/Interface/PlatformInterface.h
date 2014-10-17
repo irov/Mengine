@@ -85,6 +85,8 @@ namespace Menge
 
         //virtual void setAsScreensaver( bool _set ) = 0;
 
+		virtual uint32_t getProcessHandleCount() const = 0;
+
     public:
         virtual bool openUrlInDefaultBrowser( const WString & _url ) = 0;       
 

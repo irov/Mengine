@@ -44,6 +44,7 @@
 
 #   include <WinBase.h>
 #   include <Psapi.h>
+#	include <tlhelp32.h>
 
 #ifdef _MSC_VER
 #	define snprintf _snprintf
@@ -3419,6 +3420,30 @@ namespace Menge
 	bool WinApplication::isDevelopmentMode() const
 	{
 		return m_developmentMode;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t WinApplication::getProcessHandleCount() const
+	{
+		// first determine the id of the current process
+		DWORD const  id = GetCurrentProcessId();
+
+		// then get a process list snapshot.
+		HANDLE const  snapshot = CreateToolhelp32Snapshot( TH32CS_SNAPALL, 0 );
+
+		// initialize the process entry structure.
+		PROCESSENTRY32 entry = { 0 };
+		entry.dwSize = sizeof( entry );
+
+		// get the first process info.
+		BOOL ret = TRUE;
+		ret = Process32First( snapshot, &entry );
+		while( ret && entry.th32ProcessID != id ) {
+			ret = Process32Next( snapshot, &entry );
+		}
+		CloseHandle( snapshot );
+		return ret 
+			?   entry.cntThreads
+			:   0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::onEvent( const ConstString & _event, const TMapParams & _params )

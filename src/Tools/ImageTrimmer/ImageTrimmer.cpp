@@ -33,6 +33,8 @@
 #	include "Interface/ArchiveInterface.h"
 
 #   include "WindowsLayer/VistaWindowsLayer.h"
+
+#	include "Logger/Logger.h"
 	
 //////////////////////////////////////////////////////////////////////////
 extern "C" // only required if using g++
@@ -135,27 +137,46 @@ namespace Menge
 			return false;
 		}
 
-		class MyLoggerInterface
+		class MyLogger
 			: public LoggerInterface
 		{
 		public:
+			MyLogger()
+				: m_verboseLevel(LM_WARNING)
+				, m_verboseFlag(0xFFFFFFFF)
+			{
+			}
+
+		public:
 			void setVerboseLevel( EMessageLevel _level ) override 
 			{
-				(void)_level;
+				m_verboseLevel = _level;
 			};
 
 			void setVerboseFlag( size_t _flag ) override 
 			{
-				(void)_flag;
+				m_verboseFlag = _flag;
 			};
 
 		public:
 			bool validMessage( EMessageLevel _level, size_t _flag ) const override 
 			{ 
-				(void)_level;
-				(void)_flag;
+				if( m_verboseLevel < _level )
+				{
+					return false;
+				}
 
-				return true; 
+				if( _flag == 0 )
+				{
+					return true;
+				}
+
+				if( (m_verboseFlag & _flag) == 0 )
+				{
+					return false;
+				}
+
+				return true;
 			};
 
 		public:
@@ -165,7 +186,7 @@ namespace Menge
 				(void)_flag;
 				(void)_count;
 
-				printf("%s"
+				message_error("%s"
 					, _data
 					);
 			}
@@ -173,10 +194,14 @@ namespace Menge
 			void flush() override 
 			{
 			}
+
+		protected:
+			EMessageLevel m_verboseLevel;
+			uint32_t m_verboseFlag;
 		};
 
 		logService->setVerboseLevel( LM_WARNING );
-		logService->registerLogger( new MyLoggerInterface );
+		logService->registerLogger( new MyLogger );
 
 		if( SERVICE_REGISTRY(serviceProvider, logService) == false )
 		{
@@ -642,7 +667,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	if( Menge::trimImage( serviceProvider, in, out, info ) == false )
 	{
-		message_error( "ImageTrimmer invalid trim" );
+		message_error( "ImageTrimmer invalid trim %ls"
+			, in.c_str()
+			);
 
 		return 0;
 	}

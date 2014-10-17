@@ -179,6 +179,7 @@ namespace Menge
 
 			return false; // Didn't find a video stream
 		}
+
 		// Get a pointer to the codec context for the video stream
         AVCodecContext * streamCodecContext = m_formatContext->streams[m_videoStreamId]->codec;
 		AVCodecID codec_id = streamCodecContext->codec_id;
@@ -194,10 +195,6 @@ namespace Menge
         }
                 
         m_codecContext = streamCodecContext;
-
-        //m_codecContext = avcodec_alloc_context3( codec );
-                
-        m_codecContext->thread_count = 1;
 		
 		// Open codec
         int error_open = avcodec_open2( m_codecContext, codec, NULL );

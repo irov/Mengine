@@ -21,6 +21,7 @@
 #	include "ImageEncoderACF.h"
 
 #	include "ImageEncoderPNG.h"
+#	include "ImageEncoderJPEG.h"
 
 #   include "PickDecoderHIT.h"
 #   include "PickEncoderHIT.h"
@@ -116,12 +117,13 @@ namespace Menge
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "acf", CONST_STRING_LOCAL(m_serviceProvider, "acfImage") );
 
-        m_decoders.push_back( new DecoderFactory<PickDecoderHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "hitPick")) );
-
-        m_encoders.push_back( new EncoderFactory<PickEncoderHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "hitPick")) );     
 		m_encoders.push_back( new EncoderFactory<ImageEncoderPNG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pngImage")) );
+		m_encoders.push_back( new EncoderFactory<ImageEncoderJPEG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "jpegImage")) );
 		m_encoders.push_back( new EncoderFactory<ImageEncoderHTF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "htfImage")) );
 		m_encoders.push_back( new EncoderFactory<ImageEncoderACF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "acfImage")) );
+
+		m_decoders.push_back( new DecoderFactory<PickDecoderHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "hitPick")) );
+		m_encoders.push_back( new EncoderFactory<PickEncoderHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "hitPick")) );
 
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "hit", CONST_STRING_LOCAL(m_serviceProvider, "hitPick") );

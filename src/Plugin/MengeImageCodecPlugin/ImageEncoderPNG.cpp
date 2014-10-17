@@ -118,7 +118,7 @@ namespace Menge
 		// Write the file header information.
 		png_write_info( m_png_ptr, info_ptr );
 
-		int pitch = m_options.pitch;
+		size_t pitch = m_options.pitch;
 
         png_bytep png_buffer = (png_bytep)_buffer;
 

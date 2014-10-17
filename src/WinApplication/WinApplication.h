@@ -101,6 +101,9 @@ namespace Menge
 		bool isDevelopmentMode() const override;
 		//void setAsScreensaver( bool _set );
 
+	public:
+		uint32_t getProcessHandleCount() const override;
+
 	protected:
 		bool initializeStringizeService_();
 		bool initializeApplicationService_();

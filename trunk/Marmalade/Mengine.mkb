@@ -16,7 +16,6 @@ defines
 
 subprojects 
 {
-	iwutil
     iwgl
 }
 
@@ -28,7 +27,6 @@ includepaths
 	"../src"
 	"../src/Utils"
 	"../src/MarmaladeApplication"
-	"../dependencies"
 	"../dependencies/pugixml/src"
 	"../dependencies/pybind/include"
 	"../dependencies/boost"
@@ -36,7 +34,6 @@ includepaths
 	"../dependencies/metabuf"
     "../dependencies/zlib"
     "../dependencies/lz4"
-    "../dependencies/libjpeg"
     "../dependencies/stdex/include"
 	"../dependencies/utf8/source"
     "../dependencies/fastpathfinder/include"

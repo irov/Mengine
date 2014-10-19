@@ -50,12 +50,7 @@ files
 	("../dependencies/metabuf/metabuf")	
 	"*.hpp"
 	"*.cpp"
-	
-	[Xml2Metabuf]
-	("../dependencies/metabuf/xml2metabuf")
-	"*.cpp"
-	"*.hpp" 
-    
+	    
     [pybind]
 	("../dependencies/pybind/include/config")
     "*.hpp"

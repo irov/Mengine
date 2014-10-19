@@ -86,11 +86,14 @@ namespace Menge
 
         bool isDevelopmentMode() const override;
 
-        void onEvent( const ConstString & _event, const TMapParams & _params );
+        void onEvent( const ConstString & _event, const TMapParams & _params ) override;
 
 	public:
 		bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 		bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
+
+	public:
+		uint32_t getProcessHandleCount() const override;
 
 	protected:
 		bool getApplicationPath_( const char * _section, const char * _key, ConstString & _path );

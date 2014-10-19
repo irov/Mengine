@@ -16,7 +16,7 @@ namespace Menge
 
 		OutputStreamInterfacePtr m_stream;
 		/// start of buffer
-		JOCTET * buffer;
+		unsigned char * buffer;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef DestinationManager * menge_dst_ptr;
@@ -85,9 +85,9 @@ namespace Menge
 	{
 		menge_dst_ptr dest = (menge_dst_ptr) cinfo->dest;
 
-		dest->buffer = (JOCTET *)
+		dest->buffer = (unsigned char *)
 			(*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
-			OUTPUT_BUF_SIZE * SIZEOF(JOCTET));
+			OUTPUT_BUF_SIZE * sizeof(unsigned char));
 
 		dest->pub.next_output_byte = dest->buffer;
 		dest->pub.free_in_buffer = OUTPUT_BUF_SIZE;
@@ -145,7 +145,7 @@ namespace Menge
 		if( cinfo->dest == nullptr )
 		{
 			cinfo->dest = (struct jpeg_destination_mgr *)(*cinfo->mem->alloc_small)
-				((j_common_ptr) cinfo, JPOOL_PERMANENT, SIZEOF(DestinationManager));
+				((j_common_ptr) cinfo, JPOOL_PERMANENT, sizeof(DestinationManager));
 		}
 
 		dest = (menge_dst_ptr) cinfo->dest;

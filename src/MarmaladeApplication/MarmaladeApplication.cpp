@@ -1849,8 +1849,14 @@ namespace Menge
 	{
 		return false;
 	}
+	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeApplication::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
 	{
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t MarmaladeApplication::getProcessHandleCount() const
+	{
+		return 0U;
 	}
 }

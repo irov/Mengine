@@ -4763,8 +4763,6 @@ namespace Menge
                     .def( "getTextSize", &TextField::getTextSize )
                     .def( "setMaxLen", &TextField::setMaxLength )                    
 
-                    .def( "setNoneAlign", &TextField::setNoneAlign )
-                    .def( "isNoneAlign", &TextField::isNoneAlign )
                     .def( "setCenterAlign", &TextField::setCenterAlign )
                     .def( "isCenterAlign", &TextField::isCenterAlign )
                     .def( "setRightAlign", &TextField::setRightAlign )

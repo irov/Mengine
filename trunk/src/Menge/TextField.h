@@ -18,10 +18,9 @@ namespace Menge
 {
 	enum ETextFieldHorizontAlign
 	{
-		ETFHA_NONE = 0,
+		ETFHA_RIGHT = 0,
 		ETFHA_CENTER = 1,
-		ETFHA_LEFT = 2,
-		ETFHA_RIGHT = 3
+		ETFHA_LEFT = 2
 	};
 
 	enum ETextFieldVerticalAlign
@@ -83,9 +82,6 @@ namespace Menge
 		float getCharOffset() const;
 
 	public:
-		void setNoneAlign();
-		bool isNoneAlign() const;
-
 		void setCenterAlign();
 		bool isCenterAlign() const;
 

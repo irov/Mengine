@@ -28,7 +28,7 @@ namespace Menge
 		: m_textSize(0.f, 0.f)
 		, m_invalidateFont(true)
 		, m_fontParams(EFP_NONE)
-		, m_horizontAlign(ETFHA_NONE)
+		, m_horizontAlign(ETFHA_RIGHT)
 		, m_verticalAlign(ETFVA_NONE)
 		, m_maxLength(2048.f)
 		, m_maxCharCount((uint32_t)-1)
@@ -801,7 +801,7 @@ namespace Menge
 
 		switch( m_horizontAlign )
 		{
-		case ETFHA_NONE:
+		case ETFHA_LEFT:
 			{
 				offset = 0.f;
 			}break;
@@ -812,10 +812,6 @@ namespace Menge
 		case ETFHA_RIGHT:
 			{
 				offset = -_line.getLength();
-			}break;
-		case ETFHA_LEFT:
-			{
-				offset = _line.getLength();
 			}break;
 		}
 
@@ -1092,18 +1088,6 @@ namespace Menge
 	bool TextField::isVerticalCenterAlign() const
 	{
 		return m_verticalAlign == ETFVA_CENTER;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextField::setNoneAlign()
-	{
-		m_horizontAlign = ETFHA_NONE;
-
-		this->invalidateTextLines();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isNoneAlign() const
-	{
-		return m_horizontAlign == ETFHA_NONE;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setCenterAlign()

@@ -78,7 +78,7 @@ namespace Menge
 
 	public:
 		virtual bool createGame( const ConstString & _module, const ConstString & _language, const ConstString & _resourcesIniGroup, const FilePath & _resourcesIniPath ) = 0;
-		virtual bool initializeGame( const String & _scriptInitParams ) = 0;
+		virtual bool initializeGame( const FilePath & _accountPath, const String & _scriptInitParams ) = 0;
 		virtual void finalizeGame() = 0;
         
 	public:

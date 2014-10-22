@@ -40,7 +40,7 @@ namespace Menge
 		bool _activate() override;
 		
 	protected:
-		void _addChildren( Node * _node ) override;
+		void _addChild( Node * _node ) override;
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
     protected:

@@ -199,29 +199,136 @@ namespace Menge
 		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::addModulePath( const ConstString & _pak, const TVectorConstString & _pathes, const TVectorConstString & _modules )
+	void ScriptEngine::addModulePath( const ConstString & _pak, const TVectorScriptModulePak & _modules )
 	{
-        m_moduleFinder->addModulePath( _pak, _pathes );
+		TVectorConstString pathes;
+		
+		for( TVectorScriptModulePak::const_iterator
+			it = _modules.begin(),
+			it_end = _modules.end();
+		it != it_end;
+		++it )
+		{
+			const ScriptModulePak & pak = *it;
+
+			pathes.push_back( pak.path );
+		}
+
+        m_moduleFinder->addModulePath( _pak, pathes );
 
 		m_bootstrapperModules.insert( m_bootstrapperModules.end(), _modules.begin(), _modules.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::bootstrapModules()
 	{
-		for( TVectorConstString::const_iterator
+		for( TVectorScriptModulePak::const_iterator
 			it = m_bootstrapperModules.begin(),
 			it_end = m_bootstrapperModules.end();
 		it != it_end;
 		++it )
 		{
-			const ConstString & module = *it;
+			const ScriptModulePak & pak = *it;
 
-			if( this->importModule( module ) == nullptr )
+			if( pak.module.empty() == true )
+			{
+				continue;
+			}
+
+			PyObject * module = this->importModule( pak.module );
+
+			if( module == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::bootstrapModules invalid import module %s"
-					, module.c_str()
+					, pak.module.c_str()
 					);
 
+				return false;
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScriptEngine::initializeModules()
+	{
+		for( TVectorScriptModulePak::const_iterator
+			it = m_bootstrapperModules.begin(),
+			it_end = m_bootstrapperModules.end();
+		it != it_end;
+		++it )
+		{
+			const ScriptModulePak & pak = *it;
+
+			if( pak.module.empty() == true )
+			{
+				continue;
+			}
+
+			if( pak.initializer.empty() == true )
+			{
+				continue;
+			}
+
+			PyObject * module = this->importModule( pak.module );
+
+			if( module == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules invalid import module %s"
+					, pak.module.c_str()
+					);
+
+				return false;
+			}
+
+			if( this->hasModuleFunction( module, pak.initializer.c_str() ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules invalid has module %s initializer %s"
+					, pak.module.c_str()
+					, pak.initializer.c_str()
+					);
+
+				return false;
+			}
+
+			PyObject * module_function = this->getModuleFunction( module, pak.initializer.c_str() );
+
+			if( module_function == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules module %s invalid get initializer %s"
+					, pak.module.c_str()
+					, pak.initializer.c_str()
+					);
+
+				return false;
+			}
+
+			PyObject * py_function = this->askFunction( module_function, "()" );
+
+			if( py_function == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules module %s invalid call initializer %s"
+					, pak.module.c_str()
+					, pak.initializer.c_str()
+					);
+
+				return false;
+			}
+
+			if( pybind::bool_check( py_function ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules module %s invalid call initializer %s need return bool [True|False] but return is '%s'"
+					, pak.module.c_str()
+					, pak.initializer.c_str()
+					, pybind::object_repr( py_function )
+					);
+
+				return false;
+			}
+
+			bool successful = pybind::extract<bool>( py_function );
+
+			if( successful == false )
+			{
 				return false;
 			}
 		}
@@ -262,7 +369,7 @@ namespace Menge
 		{
 			ScriptEngine::handleException();
 
-			LOGGER_WARNING(m_serviceProvider)( "ScriptEngine: invalid import module '%s'(c-exception)"
+			LOGGER_ERROR(m_serviceProvider)( "ScriptEngine: invalid import module '%s'(c-exception)"
 				, _name.c_str()
 				);
 
@@ -280,7 +387,7 @@ namespace Menge
 
 		if( module == nullptr )
 		{			
-			LOGGER_WARNING(m_serviceProvider)( "ScriptEngine: invalid import module '%s'(script)"
+			LOGGER_ERROR(m_serviceProvider)( "ScriptEngine: invalid import module '%s'(script)"
 				, _name.c_str()
 				);
 

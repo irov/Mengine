@@ -355,6 +355,16 @@ namespace Menge
 			pack.preload = true;
 			pack.type = c_dir;
 
+			if( ini.hasSection( resourcePack.c_str() ) == false )
+			{
+				LOGGER_CRITICAL(m_serviceProvider)("Application::loadResourcePacks_ %s invalid load resource pack no found section for '%s'"
+					, _resourceIni.c_str()
+					, resourcePack.c_str()
+					);
+
+				return false;
+			}
+
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type, m_serviceProvider );            
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path, m_serviceProvider );
@@ -376,7 +386,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const String & resourcePack = *it;
+			const String & languagePack = *it;
 
 			ResourcePackDesc pack;
 
@@ -384,14 +394,24 @@ namespace Menge
 			pack.preload = true;
 			pack.type = c_dir;
 
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.descriptionPath, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );	
+			if( ini.hasSection( languagePack.c_str() ) == false )
+			{
+				LOGGER_CRITICAL(m_serviceProvider)("Application::loadResourcePacks_ %s invalid load language pack no found section for '%s'"
+					, _resourceIni.c_str()
+					, languagePack.c_str()
+					);
+
+				return false;
+			}
+
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Name", pack.name, m_serviceProvider );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Type", pack.type, m_serviceProvider );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Path", pack.path, m_serviceProvider );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Locale", pack.locale, m_serviceProvider );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Platform", pack.platform, m_serviceProvider );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Description", pack.descriptionPath, m_serviceProvider );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "Dev", pack.dev, m_serviceProvider );
+			IniUtil::getIniValue( ini, languagePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );	
 
 			m_game->addLanguagePak( pack );
 		}
@@ -793,6 +813,9 @@ namespace Menge
 
 				if( m_resourceCheckCritical == true )
 				{
+					LOGGER_CRITICAL(m_serviceProvider)("Fix Resources"
+						);
+
 					return false;
 				}
 			}
@@ -893,14 +916,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeGame( const String & _scriptInitParams )
+	bool Application::initializeGame( const FilePath & _accountPath, const String & _scriptInitParams )
 	{
 		TMapParams params;		
 		CONFIG_SECTION(m_serviceProvider, "Params", params);
 
-		FilePath accountPath = CONST_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
-
-		if( m_game->initialize( accountPath, m_projectVersion, params ) == false )
+		if( m_game->initialize( _accountPath, m_projectVersion, params, _scriptInitParams ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application::initGame invalid initialize"
 				);
@@ -908,17 +929,10 @@ namespace Menge
 			return false;
 		}
 
-        if( m_game->run( _scriptInitParams ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Application::runGame invalid run %s"
-                , _scriptInitParams.c_str()
-                );
-
-            return false;
-        }
-
         m_game->setCursorMode( m_cursorMode );
-        
+
+		m_game->run();
+		        
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -102,7 +102,7 @@ namespace Menge
 		_screen.y = sc.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer::_addChildren( Node * _node )
+	void Layer::_addChild( Node * _node )
 	{
 		_node->setLayer( this );
 	}

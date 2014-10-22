@@ -89,7 +89,7 @@ namespace Menge
 		m_camera->setCameraAspect( cameraAspect );
 		m_camera->setCameraRightSign( cameraRightSign );
 
-		this->addChildren( m_camera );
+		this->addChild( m_camera );
 		this->setRenderCamera( m_camera );
 
 		m_vertexCount = model->getVertexCount();

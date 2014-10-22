@@ -15,15 +15,15 @@ namespace Menge
         SERVICE_DECLARE("GameService")
 
     public:
-        virtual bool initialize( const FilePath & _accountPath, uint32_t _projectVersion, const TMapParams & _params ) = 0;
+        virtual bool initialize( const FilePath & _accountPath, uint32_t _projectVersion, const TMapParams & _params, const String & _scriptInitParams ) = 0;
         virtual void finalize() = 0;
+
+	public:
+		virtual void run() = 0;
 
     public:
         virtual void setDevelopmentMode( bool _developmentMode ) = 0;
         virtual void setPlatformName( const ConstString & _platformName ) = 0;
-
-    public:
-        virtual bool run( const String& _scriptInitParams ) = 0;
 
     public:
         virtual bool beginUpdate() = 0;

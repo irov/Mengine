@@ -151,7 +151,7 @@ namespace Menge
 			return false;
 		}
 
-		if( this->addChildren( node ) == false )
+		if( this->addChild( node ) == false )
 		{
 			const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
 			const ConstString & internalName = m_resourceInternalObject->getInternalName();		

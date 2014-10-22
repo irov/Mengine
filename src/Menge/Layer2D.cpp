@@ -94,7 +94,7 @@ namespace	Menge
 				return;
 			}
 
-			this->addChildren( m_renderCamera );
+			this->addChild( m_renderCamera );
 
             m_renderViewport = NODE_SERVICE(m_serviceProvider)
 				->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
@@ -108,7 +108,7 @@ namespace	Menge
 				return;
 			}
 
-			this->addChildren( m_renderViewport );
+			this->addChild( m_renderViewport );
 		}
 
 		m_renderCamera->setRenderport( m_viewport );

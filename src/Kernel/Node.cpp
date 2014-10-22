@@ -258,7 +258,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::removeAllChild()
+	void Node::removeChildren()
 	{
 		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
 		{
@@ -289,12 +289,12 @@ namespace Menge
 			return true;
 		}
 
-		bool result = m_parent->removeChildren( this );
+		bool result = m_parent->removeChild( this );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::addChildren( Node * _node )
+	bool Node::addChild( Node * _node )
 	{
 		if( _node == nullptr )
 		{
@@ -305,12 +305,12 @@ namespace Menge
 			return false;
 		}
 
-		bool result = this->addChildren_( m_child.end(), _node );
+		bool result = this->addChild_( m_child.end(), _node );
 
         return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::addChildrenFront( Node * _node )
+	bool Node::addChildFront( Node * _node )
 	{
 		if( _node == nullptr )
 		{
@@ -321,12 +321,12 @@ namespace Menge
 			return false;
 		}
 
-		bool result = this->addChildren_( m_child.begin(), _node );
+		bool result = this->addChild_( m_child.begin(), _node );
 
         return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::addChildrenAfter( Node* _node, Node * _after )
+	bool Node::addChildAfter( Node* _node, Node * _after )
 	{
 		if( _node == nullptr )
 		{
@@ -354,12 +354,12 @@ namespace Menge
 			return false;
 		}
 
-		bool result = this->addChildren_( it_found, _node );
+		bool result = this->addChild_( it_found, _node );
 
         return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::addChildren_( TListNodeChild::iterator _insert, Node * _node )
+	bool Node::addChild_( TListNodeChild::iterator _insert, Node * _node )
 	{
 		//if( this->isChildren( _node, false ) )
 		//{
@@ -382,24 +382,24 @@ namespace Menge
 				return true;
 			}
 			
-			this->eraseChildren_( _node );
+			this->eraseChild_( _node );
 			
-			this->insertChildren_( _insert, _node );			
+			this->insertChild_( _insert, _node );			
 		}
 		else
 		{
 			if( parent != nullptr )
 			{
-				parent->removeChildren_( _node );
+				parent->removeChild_( _node );
 			}
 
-			this->insertChildren_( _insert, _node );
+			this->insertChild_( _insert, _node );
 
             _node->setLayer( m_layer );
 			_node->setParent_( this );
 		}
 
-		this->_addChildren( _node );
+		this->_addChild( _node );
 
 		if( this->isActivate() == false && _node->isActivate() == true )
 		{            
@@ -420,18 +420,18 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::insertChildren_( TListNodeChild::iterator _insert, Node * _node )
+	void Node::insertChild_( TListNodeChild::iterator _insert, Node * _node )
 	{
 		m_child.insert( _insert, _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::eraseChildren_( Node * _node )
+	void Node::eraseChild_( Node * _node )
 	{
         TListNodeChild::iterator it_node(_node, true);
 		m_child.erase( it_node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::visitChild( Visitor * _visitor )
+	void Node::visitChildren( Visitor * _visitor )
 	{
 		this->visit( _visitor );
 
@@ -439,7 +439,7 @@ namespace Menge
 
 		if( single_child != nullptr )
 		{
-			single_child->visitChild( _visitor );
+			single_child->visitChildren( _visitor );
 		}
 		else
 		{
@@ -447,12 +447,12 @@ namespace Menge
 			{
 				Node * children = (*it);
 
-				children->visitChild( _visitor );
+				children->visitChildren( _visitor );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::removeChildren( Node * _node )
+	bool Node::removeChild( Node * _node )
 	{
 #	ifdef _DEBUG
 		if( stdex::intrusive_has( m_child.begin(), m_child.end(), _node ) == false )
@@ -476,7 +476,7 @@ namespace Menge
 			return false;
 		}
 
-        this->removeChildren_( _node );
+        this->removeChild_( _node );
 		
 		//NODE_SERVICE(m_serviceProvider)
 		//	->addHomeless( _node );
@@ -484,14 +484,14 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Node::removeChildren_( Node * _node )
+    void Node::removeChild_( Node * _node )
     {
-        this->_removeChildren( _node );
+        this->_removeChild( _node );
 
         _node->setParent_( nullptr );
         _node->setLayer( nullptr );
 
-        this->eraseChildren_( _node );
+        this->eraseChild_( _node );
     }
 	//////////////////////////////////////////////////////////////////////////
 	namespace
@@ -532,7 +532,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Node::findChildren( const ConstString & _name, bool _recursion ) const
+	Node * Node::findChild( const ConstString & _name, bool _recursion ) const
 	{
 		TListNodeChild::const_iterator it_found =
 			s_node_find_child( m_child, &Identity::getName, _name );
@@ -554,14 +554,14 @@ namespace Menge
 			{
 				Node * children = (*it);
 
-				if( Node * node = children->findChildren( _name, true ) )
+				if( Node * node = children->findChild( _name, true ) )
 				{
 					return node;
 				}
 			}
 		}
 
-		if( Node * node = this->_findChildren( _name, _recursion ) )
+		if( Node * node = this->_findChild( _name, _recursion ) )
 		{
 			return node;
 		}
@@ -569,7 +569,7 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Node::_findChildren( const ConstString & _name, bool _recursion ) const
+	Node * Node::_findChild( const ConstString & _name, bool _recursion ) const
 	{
         (void)_name;
         (void)_recursion;
@@ -577,7 +577,7 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::hasChildren( const ConstString & _name, bool _recursive ) const
+	bool Node::hasChild( const ConstString & _name, bool _recursive ) const
 	{
 		TListNodeChild::const_iterator it_found =
 			s_node_find_child( m_child, &Identity::getName, _name );
@@ -596,14 +596,14 @@ namespace Menge
 			++it )
 			{
 				Node * children = (*it);
-				if( children->hasChildren( _name, true ) == true )
+				if( children->hasChild( _name, true ) == true )
 				{
 					return true;
 				}
 			}
 		}
 
-		if( this->_hasChildren( _name, _recursive ) == true )
+		if( this->_hasChild( _name, _recursive ) == true )
 		{
 			return true;
 		}
@@ -611,7 +611,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::_hasChildren( const ConstString & _name, bool _recursive ) const
+	bool Node::_hasChild( const ConstString & _name, bool _recursive ) const
 	{
         (void)_name;
         (void)_recursive;
@@ -619,7 +619,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::emptyChild() const
+	bool Node::emptyChildren() const
 	{
 		return m_child.empty();
 	}
@@ -631,13 +631,13 @@ namespace Menge
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_addChildren( Node * _node )
+	void Node::_addChild( Node * _node )
 	{
         (void)_node;
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_removeChildren( Node * _node )
+	void Node::_removeChild( Node * _node )
 	{
         (void)_node;
 		//Empty

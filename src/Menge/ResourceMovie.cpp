@@ -272,6 +272,7 @@ namespace Menge
 				|| layer.type == CONST_STRING(m_serviceProvider, Sound)
 				|| layer.type == CONST_STRING(m_serviceProvider, SoundId)
 				|| layer.type == CONST_STRING(m_serviceProvider, MovieSprite)
+				|| layer.type == CONST_STRING(m_serviceProvider, MovieSlot)
 				)
 			{
 				bool hide = framePack->isLayerPermanentlyHide( layer.index );

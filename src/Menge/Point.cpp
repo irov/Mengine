@@ -2,7 +2,7 @@
 
 #   include "Interface/RenderSystemInterface.h"
 
-namespace	Menge
+namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Point::Point()

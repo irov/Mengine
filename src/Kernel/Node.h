@@ -133,34 +133,34 @@ namespace Menge
 		inline Node * getParent() const;
 		inline bool hasParent() const;
 
-		bool addChildren( Node * _node );
-		bool addChildrenFront( Node* _node );
-		bool addChildrenAfter( Node* _node, Node * _after );
-		bool removeChildren( Node * _node );        
-		void removeAllChild();
+		bool addChild( Node * _node );
+		bool addChildFront( Node* _node );
+		bool addChildAfter( Node* _node, Node * _after );
+		bool removeChild( Node * _node );        
+		void removeChildren();
 		bool removeFromParent();
 		
 		void destroyAllChild();
 
-		inline TListNodeChild & getChild();
-		inline const TListNodeChild & getChild() const;
+		inline TListNodeChild & getChildren();
+		inline const TListNodeChild & getChildren() const;
 
-		Node * findChildren( const ConstString & _name, bool _recursion ) const;
-		bool hasChildren( const ConstString & _name, bool _recursive ) const;
-		bool emptyChild() const;
+		Node * findChild( const ConstString & _name, bool _recursion ) const;
+		bool hasChild( const ConstString & _name, bool _recursive ) const;
+		bool emptyChildren() const;
 
     protected:
-        void removeChildren_( Node * _node );
+        void removeChild_( Node * _node );
 		void setParent_( Node * _node );
 
 	protected:
-		virtual bool _hasChildren( const ConstString & _name, bool _recursive ) const;
-		virtual Node * _findChildren( const ConstString & _name, bool _recursion ) const;
+		virtual bool _hasChild( const ConstString & _name, bool _recursive ) const;
+		virtual Node * _findChild( const ConstString & _name, bool _recursion ) const;
 
 	protected:
 		virtual void _changeParent( Node * _oldParent, Node * _newParent );
-		virtual void _addChildren( Node * _node );
-		virtual void _removeChildren( Node * _node );
+		virtual void _addChild( Node * _node );
+		virtual void _removeChild( Node * _node );
 
 		virtual void invalidHierarchy();
 		virtual void _invalidHierarchy();
@@ -192,13 +192,13 @@ namespace Menge
 		TListNodeChild m_child;
 
 	private:
-		bool addChildren_( TListNodeChild::iterator _insert, Node * _node );
+		bool addChild_( TListNodeChild::iterator _insert, Node * _node );
 
-		void insertChildren_( TListNodeChild::iterator _insert, Node * _node );
-		void eraseChildren_( Node * _node );
+		void insertChild_( TListNodeChild::iterator _insert, Node * _node );
+		void eraseChild_( Node * _node );
 
 	public:
-		void visitChild( Visitor * _visitor );
+		void visitChildren( Visitor * _visitor );
 
 	public:
 		void destroy() override;
@@ -340,12 +340,12 @@ namespace Menge
 		return m_rendering;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline TListNodeChild & Node::getChild()
+	inline TListNodeChild & Node::getChildren()
 	{
 		return m_child;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const TListNodeChild & Node::getChild() const
+	inline const TListNodeChild & Node::getChildren() const
 	{
 		return m_child;
 	}

@@ -39,6 +39,15 @@ namespace Menge
         virtual void destroy() = 0;
     };
 
+	struct ScriptModulePak
+	{
+		ConstString path;
+		ConstString module;
+		ConstString initializer;
+	};
+
+	typedef stdex::vector<ScriptModulePak> TVectorScriptModulePak;
+
 	class ScriptServiceInterface
 		: public ServiceInterface
 	{
@@ -54,9 +63,10 @@ namespace Menge
 
 	public:
 		virtual bool bootstrapModules() = 0;
+		virtual bool initializeModules() = 0;
 
 	public:
-		virtual void addModulePath( const ConstString & _pak, const TVectorConstString & _pathes, const TVectorConstString & _modules ) = 0;
+		virtual void addModulePath( const ConstString & _pak, const TVectorScriptModulePak & _modules ) = 0;
 
 		virtual PyObject * importModule( const ConstString& _name ) = 0;
 

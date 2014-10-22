@@ -53,10 +53,11 @@ namespace Menge
         void addGlobalModule( const String & _name, PyObject * _module ) override;
         void removeGlobalModule( const String & _name ) override;
 
-        void addModulePath( const ConstString & _pak, const TVectorConstString & _pathes, const TVectorConstString & _modules ) override;
+        void addModulePath( const ConstString & _pak, const TVectorScriptModulePak & _modules ) override;
 
 	public:
 		bool bootstrapModules() override;
+		bool initializeModules() override;
 
 	public:
 		PrototypeGeneratorInterfacePtr createEntityGenerator( const ConstString & _category, const ConstString & _prototype, PyObject * _generator ) override;
@@ -92,7 +93,7 @@ namespace Menge
 
 		PyObject * m_moduleMenge;
 
-		TVectorConstString m_bootstrapperModules;
+		TVectorScriptModulePak m_bootstrapperModules;
 
 		ScriptLogger * m_loger;
 		ScriptLoggerError * m_errorLogger;

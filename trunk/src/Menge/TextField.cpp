@@ -28,7 +28,7 @@ namespace Menge
 		: m_textSize(0.f, 0.f)
 		, m_invalidateFont(true)
 		, m_fontParams(EFP_NONE)
-		, m_horizontAlign(ETFHA_RIGHT)
+		, m_horizontAlign(ETFHA_LEFT)
 		, m_verticalAlign(ETFVA_NONE)
 		, m_maxLength(2048.f)
 		, m_maxCharCount((uint32_t)-1)
@@ -464,6 +464,7 @@ namespace Menge
 
 						newLine.clear();
 						newLine = words.front();
+
 						words.erase( words.begin() );
 					}
 					else

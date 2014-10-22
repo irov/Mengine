@@ -141,8 +141,16 @@ namespace Menge
 		{
 			const Metacode::Meta_Pak::Meta_Scripts & scripts = *it;
 
-			scripts.method_Path( this, &Pak::addScriptPath_ );
-			scripts.method_Module( this, &Pak::addScriptModule_ );
+			ConstString Path;
+			scripts.swap_Path( Path );
+
+			ConstString Module;
+			scripts.swap_Module( Module );
+
+			ConstString Initializer;
+			scripts.swap_Initializer( Initializer );
+
+			this->addScriptPak_( Path, Module, Initializer );
 		}
 
 		const Metacode::Meta_Pak::TVectorMeta_Fonts & includes_fonts = pak.get_IncludesFonts();
@@ -155,7 +163,9 @@ namespace Menge
 		{
 			const Metacode::Meta_Pak::Meta_Fonts & fonts = *it;
 
-			fonts.method_Path( this, &Pak::addFontPath_ );
+			ConstString Path;
+			fonts.swap_Path( Path );
+			this->addFontPath_( Path );
 		}
 
 		const Metacode::Meta_Pak::TVectorMeta_Resources & includes_resources = pak.get_IncludesResources();
@@ -178,7 +188,9 @@ namespace Menge
 			{
 				const Metacode::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it;
 
-				meta_resource.method_Path( this, &Pak::addResource_ );
+				ConstString Path;
+				meta_resource.swap_Path( Path );
+				this->addResource_( Path );
 			}
 		}
 
@@ -202,12 +214,14 @@ namespace Menge
 			{
 				const Metacode::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it;
 
-                meta_text.method_Path( this, &Pak::addTextPath_ );
+				ConstString Path;
+                meta_text.swap_Path( Path );
+				this->addTextPath_( Path );
 			}
 		}
 
 		SCRIPT_SERVICE(m_serviceProvider)
-            ->addModulePath( m_name, m_pathScripts, m_pathModules );
+            ->addModulePath( m_name, m_scriptsPak );
 
 		return true;
 	}
@@ -297,14 +311,14 @@ namespace Menge
 		m_pathTexts.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::addScriptPath_( const ConstString & _path )
+	void Pak::addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer )
 	{
-		m_pathScripts.push_back( _path );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Pak::addScriptModule_( const ConstString & _path )
-	{
-		m_pathModules.push_back( _path );
+		ScriptModulePak pak;
+		pak.path = _path;
+		pak.module = _module;
+		pak.initializer = _initializer;
+
+		m_scriptsPak.push_back( pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Pak::addFontPath_( const ConstString & _font )

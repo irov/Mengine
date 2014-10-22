@@ -68,7 +68,7 @@ namespace Menge
 		return m_mainLayer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_addChildren( Node * _node )
+	void Scene::_addChild( Node * _node )
 	{
 		Layer * layer = dynamic_cast<Layer *>(_node);
 
@@ -83,7 +83,7 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Scene::_removeChildren( Node * _node )
+    void Scene::_removeChild( Node * _node )
     {
 		Layer * layer = dynamic_cast<Layer *>(_node);
 

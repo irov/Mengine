@@ -80,7 +80,7 @@ namespace Menge
 
 	public:
 		bool createGame( const ConstString & _module, const ConstString & _language, const ConstString & _resourcesIniGroup, const FilePath & _resourcesIniPath ) override;
-		bool initializeGame( const String & _scriptInitParams ) override;
+		bool initializeGame( const FilePath & _accountPath, const String & _scriptInitParams ) override;
 		void finalizeGame() override;
 
 	public:

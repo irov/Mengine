@@ -53,7 +53,7 @@ namespace Menge
 				
 				this->accept( _node );
 
-				TListNodeChild & child = _node->getChild();
+				TListNodeChild & child = _node->getChildren();
 
 				Node * single_child = child.single();
 

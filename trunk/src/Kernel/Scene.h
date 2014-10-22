@@ -41,8 +41,8 @@ namespace Menge
 		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
 
 	protected:
-		void _addChildren( Node * _layer ) override;
-        void _removeChildren( Node * _node ) override;
+		void _addChild( Node * _layer ) override;
+        void _removeChild( Node * _node ) override;
 
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;        
 

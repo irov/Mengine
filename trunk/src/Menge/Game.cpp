@@ -328,6 +328,7 @@ namespace Menge
         this->registerEventMethod( EVENT_ON_TIMING_FACTOR, "onTimingFactor", _embed );
 
         this->registerEventMethod( EVENT_PREPARATION, "onPreparation", _embed );
+		this->registerEventMethod( EVENT_RUN, "onRun", _embed );
         this->registerEventMethod( EVENT_INITIALIZE, "onInitialize", _embed );
         this->registerEventMethod( EVENT_INITIALIZE_RENDER_RESOURCES, "onInitializeRenderResources", _embed );
         this->registerEventMethod( EVENT_ACCOUNT_FINALIZE, "onAccountFinalize", _embed );
@@ -404,7 +405,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::initialize( const FilePath & _accountPath, uint32_t _projectVersion, const TMapParams & _params )
+	bool Game::initialize( const FilePath & _accountPath, uint32_t _projectVersion, const TMapParams & _params, const String & _scriptInitParams )
 	{
 		m_params = _params;
 
@@ -479,25 +480,38 @@ namespace Menge
 		SOUND_SERVICE(m_serviceProvider)
 			->addSoundVolumeProvider( m_soundVolumeProvider );
 
+		bool isMaster = !m_developmentMode;
+
+		LOGGER_WARNING(m_serviceProvider)("Initialize params '%s' platform = '%s' master = '%d'"
+			, _scriptInitParams.c_str()
+			, m_platformName.c_str()
+			, isMaster
+			);
+
+		bool result = false;
+		EVENTABLE_ASK(m_serviceProvider, this, EVENT_INITIALIZE)( result, true, "(sOO)", _scriptInitParams.c_str(), pybind::ptr(m_platformName), pybind::get_bool(isMaster) );
+
+		if( result == false )
+		{
+			return false;
+		}
+
+		if( SCRIPT_SERVICE(m_serviceProvider)
+			->initializeModules() == false )
+		{
+			return false;
+		}
+
 		return true;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool Game::run( const String& _scriptInitParams )
-    {
-        bool isMaster = !m_developmentMode;
-
-        LOGGER_WARNING(m_serviceProvider)("Initialize params '%s' platform = '%s' master = '%d'"
-            , _scriptInitParams.c_str()
-            , m_platformName.c_str()
-            , isMaster
-            );
-
-
-        bool result = false;
-        EVENTABLE_ASK(m_serviceProvider, this, EVENT_INITIALIZE)( result, true, "(ssO)", _scriptInitParams.c_str(), m_platformName.c_str(), pybind::get_bool(isMaster) );
-
-        return result;
-    }
+	//////////////////////////////////////////////////////////////////////////
+	void Game::run()
+	{
+		LOGGER_WARNING(m_serviceProvider)("Run game"
+			);
+				
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_RUN)( "()" );
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::destroyArrow()
 	{
@@ -549,8 +563,6 @@ namespace Menge
 		      
 		m_resourcePaks.clear();
 		m_languagePaks.clear();
-
-		m_paks.clear();
 				
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DESTROY)( "()" );
 	}
@@ -632,7 +644,7 @@ namespace Menge
         EVENTABLE_CALL(m_serviceProvider, this, EVENT_USER)( "(OO)", pybind::ptr(_event), pybind::ptr(_params) );
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadLocalePaksByName_( const ConstString & _locale, const ConstString & _platform )
+	bool Game::loadLocalePaksByName_( TVectorResourcePak & _paks, const ConstString & _locale, const ConstString & _platform )
 	{
 		bool hasLocale = false;
 
@@ -657,7 +669,7 @@ namespace Menge
 				continue;
 			}
 
-			m_paks.push_back( pak );
+			_paks.push_back( pak );
 
 			hasLocale = true;
 		}
@@ -744,6 +756,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::applyConfigPaks()
 	{
+		TVectorResourcePak paks;
+
 		for( TVectorResourcePak::const_iterator 
 			it = m_resourcePaks.begin(),
 			it_end = m_resourcePaks.end();
@@ -759,12 +773,12 @@ namespace Menge
 				continue;
 			}
 
-			m_paks.push_back( pak );
+			paks.push_back( pak );
 		}
-
-		if( this->loadLocalePaksByName_( m_languagePak, m_platformName ) == false )			
+		
+		if( this->loadLocalePaksByName_( paks, m_languagePak, m_platformName ) == false )			
 		{
-			if( this->loadLocalePaksByName_( CONST_STRING(m_serviceProvider, eng), m_platformName ) == false )
+			if( this->loadLocalePaksByName_( paks, CONST_STRING(m_serviceProvider, eng), m_platformName ) == false )
 			{
 				if( m_languagePaks.empty() == false )
 				{
@@ -772,7 +786,7 @@ namespace Menge
 
 					const ConstString & pakName = firstPak->getName();
 
-					this->loadLocalePaksByName_( pakName, m_platformName );
+					this->loadLocalePaksByName_( paks, pakName, m_platformName );
 				}
 				else
 				{
@@ -783,8 +797,8 @@ namespace Menge
 		}
 
 		for( TVectorResourcePak::const_iterator 
-			it = m_paks.begin(), 
-			it_end = m_paks.end();
+			it = paks.begin(), 
+			it_end = paks.end();
 		it != it_end;
 		++it )
 		{
@@ -804,8 +818,8 @@ namespace Menge
 		BEGIN_WATCHDOG(m_serviceProvider, "pak apply");
 
 		for( TVectorResourcePak::const_iterator 
-			it = m_paks.begin(), 
-			it_end = m_paks.end();
+			it = paks.begin(), 
+			it_end = paks.end();
 		it != it_end;
 		++it )
 		{
@@ -823,6 +837,9 @@ namespace Menge
 		}
 
 		END_WATCHDOG(m_serviceProvider, "pak apply", 0)("");
+
+		m_resourcePaks.clear();
+		m_languagePaks.clear();
 
         return true;
 	}

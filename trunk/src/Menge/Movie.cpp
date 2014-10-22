@@ -908,7 +908,7 @@ namespace Menge
 				continue;
 			}
 
-			this->addChildren( ns.node );
+			this->addChild( ns.node );
 		}
 
 		this->createCamera3D_();
@@ -2716,7 +2716,7 @@ namespace Menge
 
 		m_renderCamera3D->setRenderport( rp );
 
-		this->addChildren( m_renderCamera3D );
+		this->addChild( m_renderCamera3D );
 
 		m_renderViewport = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
@@ -2732,7 +2732,7 @@ namespace Menge
 
 		m_renderViewport->setViewport( vp );
 
-		this->addChildren( m_renderViewport );
+		this->addChild( m_renderViewport );
 		//m_renderCamera3D->setRelationTransformation( NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -20,6 +20,8 @@ namespace Menge
 {
 	class Game;
 
+	typedef stdex::vector<PakPtr> TVectorResourcePak;
+
 	class GameAccountProvider
 		: public AccountProviderInterface		
 	{
@@ -72,8 +74,11 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( const FilePath & _accountPath, uint32_t _projectVersion, const TMapParams & _params ) override;
+        bool initialize( const FilePath & _accountPath, uint32_t _projectVersion, const TMapParams & _params, const String & _scriptInitParams ) override;
         void finalize() override;
+
+	public:
+		void run() override;
 
     public:
         void setDevelopmentMode( bool _developmentMode ) override;
@@ -89,9 +94,6 @@ namespace Menge
 
     public:
 		void render() override;
-
-    public:
-        bool run( const String& _scriptInitParams ) override;
 
     public:
 		void initializeRenderResources() override;
@@ -112,7 +114,7 @@ namespace Menge
         const ConstString & getLanguagePack() const override;
 
 	protected:
-		bool loadLocalePaksByName_( const ConstString & _locale, const ConstString & _platform );
+		bool loadLocalePaksByName_( TVectorResourcePak & _paks, const ConstString & _locale, const ConstString & _platform );
 			
 	public:
 		void setCursorMode( bool _mode ) override;
@@ -175,9 +177,7 @@ namespace Menge
 		float m_timingFactor;
 
 		FilePath m_iconPath;
-
-		typedef stdex::vector<PakPtr> TVectorResourcePak;
-		TVectorResourcePak m_paks;
+					
 		TVectorResourcePak m_resourcePaks;
 		TVectorResourcePak m_languagePaks;
 

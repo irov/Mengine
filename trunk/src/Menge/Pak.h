@@ -1,6 +1,7 @@
 #	pragma once
 
 #   include "Interface/ResourceInterface.h"
+#   include "Interface/ScriptSystemInterface.h"
 
 #	include "Core/String.h"
 #   include "Core/FilePath.h"
@@ -49,8 +50,7 @@ namespace Menge
 	protected:
 		void addResource_( const ConstString & _path );
         void addTextPath_( const ConstString & _path );
-		void addScriptPath_( const ConstString & _path );
-		void addScriptModule_( const ConstString & _path );
+		void addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer );
 		void addFontPath_( const ConstString & _font );
 
     protected:
@@ -71,8 +71,7 @@ namespace Menge
 
 		ConstString m_path;
 
-		TVectorConstString m_pathScripts;
-		TVectorConstString m_pathModules;
+		TVectorScriptModulePak m_scriptsPak;
 
 		TVectorConstString m_pathFonts;
 		TVectorConstString m_pathTexts;

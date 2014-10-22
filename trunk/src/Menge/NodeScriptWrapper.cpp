@@ -1331,7 +1331,7 @@ namespace Menge
             Arrow * arrow = PLAYER_SERVICE(m_serviceProvider)
                 ->getArrow();
 
-            _layer->addChildren( arrow );
+            _layer->addChild( arrow );
         }
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getHotSpotImageSize( HotSpotImage * _hotspotImage )
@@ -2511,7 +2511,7 @@ namespace Menge
                 return NULL;
             }
 
-            _node->addChildren( newNode );
+            _node->addChild( newNode );
 
             return newNode;
         }
@@ -4015,7 +4015,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void s_visitChild( Node * _node, PyObject * _cb )
         {
-            TListNodeChild & child = _node->getChild();
+            TListNodeChild & child = _node->getChildren();
 
             for( TListNodeChild::iterator
                 it = child.begin(),
@@ -4497,16 +4497,16 @@ namespace Menge
             .def( "freeze", &Node::freeze )
             .def( "isFreeze", &Node::isFreeze )
 			.def( "isRenderable", &Node::isRenderable )
-            .def( "addChildren", &Node::addChildren )
-            .def( "addChildrenFront", &Node::addChildrenFront )
-            .def( "addChildrenAfter", &Node::addChildrenAfter )
-            .def( "removeChildren", &Node::removeChildren )
-            .def( "removeAllChild", &Node::removeAllChild )
+            .def( "addChildren", &Node::addChild )
+            .def( "addChildrenFront", &Node::addChildFront )
+            .def( "addChildrenAfter", &Node::addChildAfter )
+            .def( "removeChildren", &Node::removeChild )
+            .def( "removeAllChild", &Node::removeChildren )
             .def( "removeFromParent", &Node::removeFromParent )			
             //.def_static( "getChild", &ScriptMethod::s_getChild )
-            .def( "findChildren", &Node::findChildren )            
-            .def( "emptyChild", &Node::emptyChild )
-            .def( "hasChildren", &Node::hasChildren )
+            .def( "findChildren", &Node::findChild )            
+            .def( "emptyChild", &Node::emptyChildren )
+            .def( "hasChildren", &Node::hasChild )
             .def( "update", &Node::update )
             .def( "getParent", &Node::getParent )
 			.def( "hasParent", &Node::hasParent )

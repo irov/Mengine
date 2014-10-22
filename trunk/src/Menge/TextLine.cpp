@@ -162,7 +162,9 @@ namespace Menge
 
 		size_t renderObjectNum = _renderObject.size();
 
-		_renderObject.resize( renderObjectNum + m_charsData.size() * 4 );
+		size_t chars_size = m_charsData.size();
+
+		_renderObject.resize( renderObjectNum + chars_size * 4 );
 
 		for( TVectorCharData::const_iterator
 			it_char = m_charsData.begin(), 

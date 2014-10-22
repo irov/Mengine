@@ -97,7 +97,7 @@ namespace Menge
 				);
 		}
 
-        m_homeless->addChildren( _homeless );
+        m_homeless->addChild( _homeless );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeManager::clearHomeless()

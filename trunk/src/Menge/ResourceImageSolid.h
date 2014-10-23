@@ -20,6 +20,8 @@ namespace Menge
 	public:
 		const FilePath & getFilePath() const;
 		const ConstString & getCodecType() const;
+
+	public:
 		const ColourValue & getColor() const;
 
 	protected:

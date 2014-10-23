@@ -348,7 +348,7 @@ namespace Menge
 
 			return module;
 		}
-		catch (...)
+		catch( ... )
 		{
 			ScriptEngine::handleException();
 		}

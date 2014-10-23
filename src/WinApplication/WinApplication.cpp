@@ -1753,6 +1753,9 @@ namespace Menge
 		ConstString resourceIniPath;
 		if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
 		{
+			LOGGER_CRITICAL(m_serviceProvider)("Application invalid setup resource path"
+				);
+
 			return false;
 		}
 
@@ -1765,7 +1768,7 @@ namespace Menge
 
 		if( m_application->createGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack), ConstString::none(), resourceIniPath ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Application create game failed"
+			LOGGER_CRITICAL(m_serviceProvider)("Application create game failed"
 				);
 
 			return false;
@@ -1855,7 +1858,7 @@ namespace Menge
 
 		if( m_application->initializeGame( accountPath, scriptInit ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Application invalid initialize game"
+			LOGGER_CRITICAL(m_serviceProvider)("Application invalid initialize game"
 				);
 
 			return false;
@@ -1902,7 +1905,7 @@ namespace Menge
 
 		if( m_application->createRenderWindow( m_hWnd ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Application not create render window"
+			LOGGER_CRITICAL(m_serviceProvider)("Application not create render window"
 				);
 
 			return false;

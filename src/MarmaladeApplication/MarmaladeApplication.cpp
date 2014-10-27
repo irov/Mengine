@@ -1388,9 +1388,14 @@ namespace Menge
             , m_application->getPlatformName().c_str()
             );
 
-        LOGGER_INFO(m_serviceProvider)( "Initializing Game data..." );
 
-        if( m_application->initializeGame( scriptInit ) == false )
+		FilePath accountPath = CONST_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
+
+        LOGGER_INFO(m_serviceProvider)( "Initializing Game data... %s"
+			, accountPath.c_str()
+			);
+				
+        if( m_application->initializeGame( accountPath, scriptInit ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Application invalid initialize game"
                 );

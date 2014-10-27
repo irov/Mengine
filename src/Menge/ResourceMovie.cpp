@@ -246,6 +246,8 @@ namespace Menge
 			return false;
 		}
 				
+		bool layers_successful = true;
+
         for( TVectorMovieLayers::const_iterator
             it = m_layers.begin(),
             it_end = m_layers.end();
@@ -263,7 +265,9 @@ namespace Menge
 					, layer.type.c_str()
                     );
 
-                return false;
+				layers_successful = false;
+
+                continue;
             }
 
 			if( layer.type == CONST_STRING(m_serviceProvider, MovieSceneEffect) 
@@ -286,12 +290,14 @@ namespace Menge
 						, layer.type.c_str()
 						);
 
-					return false;
+					layers_successful = false;
+
+					continue;
 				}
 			}
         }
 
-        return true;
+        return layers_successful;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::_loader( const Metabuf::Metadata * _meta )

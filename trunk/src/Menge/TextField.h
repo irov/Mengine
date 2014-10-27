@@ -91,14 +91,14 @@ namespace Menge
 		void setLeftAlign();
 		bool isLeftAlign() const;
 
-		void setVerticalNoneAlign();
-		bool isVerticalNoneAlign() const;
+		void setVerticalTopAlign();
+		bool isVerticalTopAlign() const;
 
 		void setVerticalCenterAlign();
 		bool isVerticalCenterAlign() const;
 		
-		uint32_t getMaxCharCount() const;
-		void setMaxCharCount( int _maxCharCount );
+		void setMaxCharCount( uint32_t _maxCharCount );
+		uint32_t getMaxCharCount() const;		
 
 		void setPixelsnap( bool _pixelsnap );
 		bool getPixelsnap() const;

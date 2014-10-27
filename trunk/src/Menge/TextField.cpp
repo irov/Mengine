@@ -831,7 +831,7 @@ namespace Menge
 		return m_maxCharCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setMaxCharCount( int  _maxCharCount ) 
+	void TextField::setMaxCharCount( uint32_t _maxCharCount ) 
 	{
 		m_maxCharCount = _maxCharCount;
 
@@ -1055,7 +1055,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setVerticalNoneAlign()
+	void TextField::setVerticalTopAlign()
 	{
 		m_verticalAlign = ETFVA_NONE;
 
@@ -1074,7 +1074,7 @@ namespace Menge
 		return m_pixelsnap;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isVerticalNoneAlign() const
+	bool TextField::isVerticalTopAlign() const
 	{
 		return m_verticalAlign == ETFVA_NONE;
 	}

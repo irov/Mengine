@@ -1852,10 +1852,12 @@ namespace Menge
 		m_cursors[L"IDC_HAND"] = LoadCursor( NULL, IDC_HAND );
 		m_cursors[L"IDC_HELP"] = LoadCursor( NULL, IDC_HELP );
 
-		LOGGER_INFO(m_serviceProvider)( "Initializing Game data..." );
-
 		FilePath accountPath = CONST_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
-
+		
+		LOGGER_INFO(m_serviceProvider)( "Initializing Game data... %s"
+			, accountPath.c_str()
+			);
+				
 		if( m_application->initializeGame( accountPath, scriptInit ) == false )
 		{
 			LOGGER_CRITICAL(m_serviceProvider)("Application invalid initialize game"

@@ -4770,8 +4770,8 @@ namespace Menge
                     .def( "setLeftAlign", &TextField::setLeftAlign )
                     .def( "isLeftAlign", &TextField::isLeftAlign )
 
-                    .def( "setVerticalNoneAlign", &TextField::setVerticalNoneAlign )
-                    .def( "isVerticalNoneAlign", &TextField::isVerticalNoneAlign )
+                    .def( "setVerticalTopAlign", &TextField::setVerticalTopAlign )
+                    .def( "isVerticalTopAlign", &TextField::isVerticalTopAlign )
                     .def( "setVerticalCenterAlign", &TextField::setVerticalCenterAlign )
                     .def( "isVerticalCenterAlign", &TextField::isVerticalCenterAlign )
 					

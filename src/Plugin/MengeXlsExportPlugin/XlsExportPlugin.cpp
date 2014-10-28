@@ -164,6 +164,10 @@ namespace Menge
 			return false;
 		}
 
+		PyObject * module_builtins = pybind::get_builtins();
+
+		pybind::def_functor( "Error", this, &XlsExportPlugin::error_, module_builtins );
+
 		pybind::call_method( py_xlsxExporter, "export", "(s)"
 			, _projectName
 			);
@@ -171,5 +175,12 @@ namespace Menge
         pybind::decref( py_xlsxExporter );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void XlsExportPlugin::error_( const wchar_t * _msg )
+	{
+		LOGGER_ERROR(m_serviceProvider)("%ls"
+			, _msg
+			);
 	}
 }

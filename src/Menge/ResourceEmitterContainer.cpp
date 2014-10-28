@@ -61,7 +61,9 @@ namespace Menge
 
         if( container == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_isValid %s can't create container file '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceEmitterContainer::_isValid '%s:%s' resource %s can't create container file '%s'"
+				, m_category.c_str()
+				, m_group.c_str()
                 , m_name.c_str()
                 , m_fileName.c_str() 
                 );
@@ -138,7 +140,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterfacePtr ResourceEmitterContainer::compileContainer_( const FilePath & _path )
+	ParticleEmitterContainerInterfacePtr ResourceEmitterContainer::compileContainer_()
 	{
 		const ConstString & category = this->getCategory();
 
@@ -160,7 +162,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceEmitterContainer::_compile()
 	{		
-		ParticleEmitterContainerInterfacePtr container = this->compileContainer_( m_fileName );
+		ParticleEmitterContainerInterfacePtr container = this->compileContainer_();
 
 		if( container == nullptr )
 		{

@@ -207,38 +207,38 @@ namespace Menge
 		m_dataInfo.height = m_jpegObject.image_height;
 		m_dataInfo.quality = s_getQuality( &m_jpegObject );
 
-		if( m_jpegObject.jpeg_color_space != JCS_RGB )
-		{
-			const char * jcs_err[] =
-			{
-				"JCS_UNKNOWN",		/* error/unspecified */
-				"JCS_GRAYSCALE",		/* monochrome */
-				"JCS_RGB",		/* red/green/blue, standard RGB (sRGB) */
-				"JCS_YCbCr",		/* Y/Cb/Cr (also known as YUV), standard YCC */
-				"JCS_CMYK",		/* C/M/Y/K */
-				"JCS_YCCK",		/* Y/Cb/Cr/K */
-				"JCS_BG_RGB",		/* big gamut red/green/blue, bg- sRGB */
-				"JCS_BG_YCC"		/* big gamut Y/Cb/Cr, bg-sYCC */
-			};
+		//if( m_jpegObject.jpeg_color_space != JCS_RGB )
+		//{
+		//	const char * jcs_err[] =
+		//	{
+		//		"JCS_UNKNOWN",		/* error/unspecified */
+		//		"JCS_GRAYSCALE",		/* monochrome */
+		//		"JCS_RGB",		/* red/green/blue, standard RGB (sRGB) */
+		//		"JCS_YCbCr",		/* Y/Cb/Cr (also known as YUV), standard YCC */
+		//		"JCS_CMYK",		/* C/M/Y/K */
+		//		"JCS_YCCK",		/* Y/Cb/Cr/K */
+		//		"JCS_BG_RGB",		/* big gamut red/green/blue, bg- sRGB */
+		//		"JCS_BG_YCC"		/* big gamut Y/Cb/Cr, bg-sYCC */
+		//	};
 
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::_prepareData unsupport %s (%d) (only RGB)"
-				, jcs_err[m_jpegObject.jpeg_color_space]
-				, m_jpegObject.jpeg_color_space				
-				);
+		//	LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::_prepareData unsupport %s (%d) (only RGB)"
+		//		, jcs_err[m_jpegObject.jpeg_color_space]
+		//		, m_jpegObject.jpeg_color_space				
+		//		);
 
-			return false;
-		}
-		
-		if( m_jpegObject.num_components != 3 )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::_prepareData invalid color components %d"
-				, m_jpegObject.num_components
-				);
+		//	return false;
+		//}
+		//
+		//if( m_jpegObject.num_components != 3 )
+		//{
+		//	LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::_prepareData invalid color components %d"
+		//		, m_jpegObject.num_components
+		//		);
 
-			return false;
-		}
+		//	return false;
+		//}
 
-		m_dataInfo.channels = 3;
+		m_dataInfo.channels = RGB_PIXELSIZE;
 		
 		return true;
 	}
@@ -265,11 +265,10 @@ namespace Menge
 		}
 
 		jpeg_start_decompress( &m_jpegObject );
-
-
+		
         if( m_options.flags == 0 )
         {
-            if( m_options.channels == 4 || m_options.channels == 3 )
+            if( m_options.channels == m_dataInfo.channels )
             {
                 JSAMPROW rgb_buffer = (JSAMPROW)_buffer;
 
@@ -281,7 +280,8 @@ namespace Menge
                     rgb_buffer += m_options.pitch;
                 }
 
-                if( m_options.channels == 4 && (m_options.flags & DF_NOT_ADD_ALPHA) == 0)
+#	if RGB_PIXELSIZE == 4
+                if( (m_options.flags & DF_NOT_ADD_ALPHA) == 0)
                 {
                     JSAMPROW alpha_buffer = (JSAMPROW)_buffer;
                     for( uint32_t j = 0; j != m_dataInfo.height; ++j )
@@ -294,11 +294,13 @@ namespace Menge
                         alpha_buffer += m_options.pitch;
                     }
                 }
+#	endif
             }
             else
             {
-                LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::decode DEFAULT m_options.channels %d != 4"
+                LOGGER_ERROR(m_serviceProvider)("ImageDecoderJPEG::decode DEFAULT m_options.channels %d != %d"
                     , m_options.channels
+					, m_dataInfo.channels
                     );
 
                 return 0;

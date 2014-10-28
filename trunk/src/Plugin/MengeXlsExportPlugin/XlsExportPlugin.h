@@ -23,6 +23,9 @@ namespace Menge
 	protected:
 		bool proccess_( const char * _projectName );
 
+	protected:
+		void error_( const wchar_t * _msg );
+
     protected:
         ServiceProviderInterface * m_serviceProvider;
 	};

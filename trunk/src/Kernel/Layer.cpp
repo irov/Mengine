@@ -86,7 +86,7 @@ namespace Menge
 	{
         (void)_layer;
 
-		//Node::setLayer( this );
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Layer::calcScreenPosition( mt::vec2f & _screen, const RenderCameraInterface * _camera, Node* _node ) const

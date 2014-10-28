@@ -11,16 +11,18 @@ extern "C"
 #	include "jinclude.h"
 #	include "jpeglib.h"
 #	include "jerror.h"
+#	define JPEG_INTERNALS
+#	include "jmorecfg.h"
 }
 
 namespace Menge
 {
-    struct DecoderJPEGErrorManager
-    {
-        struct jpeg_error_mgr pub;
-        jmp_buf setjmp_buffer;
-    };
-    
+	struct DecoderJPEGErrorManager
+	{
+		struct jpeg_error_mgr pub;
+		jmp_buf setjmp_buffer;
+	};
+
 	class ImageDecoderJPEG
 		: public ImageDecoder
 	{
@@ -28,16 +30,16 @@ namespace Menge
 		ImageDecoderJPEG();
 		~ImageDecoderJPEG();
 
-    protected:
+	protected:
 		bool _initialize() override;
 		void _finalize() override;
 
 	protected:
 		bool _prepareData() override;
 
-    protected:
+	protected:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
-        
+
 	protected:
 		bool _rewind() override;
 

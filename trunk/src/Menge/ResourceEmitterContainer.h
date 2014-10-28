@@ -47,7 +47,7 @@ namespace Menge
         ConstString makeTexturePath_( const ConstString & _filepath ) const;
 
 	protected:
-		ParticleEmitterContainerInterfacePtr compileContainer_( const FilePath & _path );
+		ParticleEmitterContainerInterfacePtr compileContainer_();
 
 	private:
 		ConstString m_fileName;

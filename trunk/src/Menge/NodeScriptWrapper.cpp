@@ -192,7 +192,11 @@ namespace Menge
 					String key;
 					if( pybind::extract_value( py_string, key ) == false )
 					{
-						return nullptr;
+						LOGGER_ERROR(m_serviceProvider)("textfield_setTextFormatArgs %s invalid get str %s"
+							, pybind::object_repr( py_string )
+							);
+
+						return pybind::ret_false();
 					}
 
 					cs_args.push_back( key );
@@ -202,7 +206,11 @@ namespace Menge
 					WString key;
 					if( pybind::extract_value( py_string, key ) == false )
 					{
-						return nullptr;
+						LOGGER_ERROR(m_serviceProvider)("textfield_setTextFormatArgs %s invalid get unicode %s"
+							, pybind::object_repr( py_string )
+							);
+
+						return pybind::ret_false();
 					}
 
 					String utf8_arg;
@@ -220,16 +228,16 @@ namespace Menge
 							, pybind::object_repr( py_string )
 							);
 
-						return nullptr;							 
+						return pybind::ret_false();							 
 					}
 
 					cs_args.push_back( String(value) );
 				}
 			}
 						
-			bool result = _textField->setTextFormatArgs( cs_args );
+			_textField->setTextFormatArgs( cs_args );
 			
-			return pybind::ret_bool( result );
+			return pybind::ret_true();
         }
 		//////////////////////////////////////////////////////////////////////////
 		TVectorWString textfield_getTextFormatArgs( TextField * _textField )

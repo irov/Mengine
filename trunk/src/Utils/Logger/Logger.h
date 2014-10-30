@@ -33,6 +33,9 @@ namespace Menge
 
 #	define LOGGER_ERROR( serviceProvider )\
 	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_ERROR )
+
+#	define LOGGER_PERFORMANCE( serviceProvider )\
+	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_PERFOMANCE )
 		
 #	define LOGGER_WARNING( serviceProvider )\
 	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_WARNING )

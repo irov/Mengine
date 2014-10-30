@@ -195,7 +195,8 @@ namespace Menge
 
 		cinfo.image_width = (JDIMENSION)dataInfo->width;
 		cinfo.image_height = (JDIMENSION)dataInfo->height;
-		cinfo.input_components = 3;
+		cinfo.input_components = dataInfo->channels;
+
 		cinfo.in_color_space = JCS_RGB;
 				
 		//int pixel_depth = 8;
@@ -203,7 +204,7 @@ namespace Menge
 		jpeg_set_defaults( &cinfo );
 		jpeg_set_quality( &cinfo, dataInfo->quality, TRUE );
 
-		jpeg_start_compress( &cinfo, TRUE);
+		jpeg_start_compress( &cinfo, TRUE );
 
         JSAMPROW jpeg_buffer = (JSAMPROW)_buffer;
 

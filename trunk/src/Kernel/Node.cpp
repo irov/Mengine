@@ -136,7 +136,7 @@ namespace Menge
 	
 		m_afterActive = true;
 
-		this->_afterActivate();		
+		this->_afterActivate();
 
 		//if( m_active == false )
 		//{
@@ -152,9 +152,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::deactivate()
 	{
-		if( m_afterActive == false || m_active == false )
+		if( m_active == false )
 		{
 			return;
+		}
+
+		if( m_afterActive == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Node::deactivate %s invalid deactivate in 'activate state'"
+				, this->getName().c_str()
+				);
+
+			//return;
 		}
 
 		m_afterActive = false;

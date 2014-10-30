@@ -286,6 +286,7 @@ namespace Menge
 		
 		m_fontParams |= EFP_FONT;
 
+		this->invalidateFont();
 		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -890,23 +891,12 @@ namespace Menge
 		return key;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextField::setTextFormatArgs( const TVectorString & _args )
+	void TextField::setTextFormatArgs( const TVectorString & _args )
 	{
-		if( m_textEntry == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::setTextFormatArgs %s not set TextID. Please first setup TextID"
-				, this->getName().c_str()
-				);
-
-			return false;
-		}
-
 		m_textFormatArgs = _args;
 
 		this->invalidateFont();
 		this->invalidateTextLines();
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::removeTextFormatArgs()

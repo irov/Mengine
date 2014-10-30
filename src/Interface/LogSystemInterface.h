@@ -12,9 +12,10 @@ namespace Menge
 		LM_FATAL = 0,
 		LM_CRITICAL = 1,
 		LM_ERROR = 2,
-		LM_WARNING = 3,
-		LM_LOG = 4,
-		LM_INFO = 5,
+		LM_PERFOMANCE = 3,
+		LM_WARNING = 4,
+		LM_LOG = 5,
+		LM_INFO = 6,
 
 		LM_MAX
 	};

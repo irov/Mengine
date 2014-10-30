@@ -69,6 +69,10 @@ namespace Menge
 	{
 		if( m_picker == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("HotSpot::isMousePickerOver %s not activate picker"
+				, this->getName().c_str()
+				);
+
 			return false;
 		}
 		

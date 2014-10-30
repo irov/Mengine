@@ -21,7 +21,19 @@ namespace Menge
 	{
 		DecoderJPEGErrorManager * mErr = (DecoderJPEGErrorManager *)_cinfo->err;
 
-		(mErr->pub.output_message)( _cinfo );
+		{
+			char buffer[JMSG_LENGTH_MAX];
+
+			(*_cinfo->err->format_message)(_cinfo, buffer);
+
+			ImageDecoderJPEG * imageDecoderJPEG = static_cast<ImageDecoderJPEG *>(_cinfo->client_data);
+
+			ServiceProviderInterface * serviceProvider = imageDecoderJPEG->getServiceProvider();
+
+			LOGGER_ERROR(serviceProvider)("ImageDecoderJPEG::ErrorMessage %s"
+				, buffer
+				);
+		}
 
 		if( mErr->pub.msg_parm.i[0] != 13 )
 		{

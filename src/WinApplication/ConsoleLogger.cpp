@@ -145,60 +145,40 @@ namespace Menge
         (void)_flag;
 
 		CONSOLE_SCREEN_BUFFER_INFO consoleInfo;
-		if( ::GetConsoleScreenBufferInfo(m_ConsoleHandle, &consoleInfo) == FALSE )
+		if( ::GetConsoleScreenBufferInfo( m_ConsoleHandle, &consoleInfo ) == FALSE )
 		{
 			return;
 		}
 
 		WORD textColor;
-		switch(_level)
+		switch( _level )
 		{
 		case LM_ERROR:
 			textColor = FOREGROUND_RED;
 			break;
+		case LM_PERFOMANCE:
+			textColor = FOREGROUND_BLUE | FOREGROUND_RED;
+			break;
 		case LM_WARNING:
-			textColor = FOREGROUND_RED | FOREGROUND_GREEN;						//yellow
+			textColor = FOREGROUND_RED | FOREGROUND_GREEN;
 			break;
 		case LM_INFO:
-			textColor = FOREGROUND_GREEN | FOREGROUND_BLUE;						//light blue
+			textColor = FOREGROUND_GREEN | FOREGROUND_BLUE;
 			break;
 		default:
-			//textColor = FOREGROUND_GREEN | FOREGROUND_BLUE | FOREGROUND_RED;	//white
 			textColor = consoleInfo.wAttributes;
 			break;
 		}
+
 		::SetConsoleTextAttribute( m_ConsoleHandle, textColor);
 
 		std::cout.write( _data, _count );
-		//std::wcout.write( ws_data.c_str(), ws_data.size );
 
-		//UINT CP = GetConsoleCP();
-		//SetConsoleCP(65001);
-
-		//DWORD data_len;
-		//WriteConsole( GetStdHandle(STD_OUTPUT_HANDLE), ws_data.data(), ws_data.size(), &data_len, NULL );
-		//SetConsoleCP(CP);
-
-		//_setmode(_fileno(stdout), 0x40000); 
-		//wprintf( ws_data.c_str() );
-
-		//char * locale = setlocale(LC_ALL, "en_US.utf8"); // Get the CRT's current locale.
-		//std::locale lollocale(locale);
-		//setlocale(LC_ALL, locale); // Restore the CRT.
-
-		//std::wcout.imbue(lollocale); // Now set the std::wcout to have the locale that we got from the CRT.
-		//std::wcout << ws_data;
-
-
-		//::SetConsoleScreenBufferInfo(m_ConsoleHandle, consoleInfo);
-		::SetConsoleTextAttribute(m_ConsoleHandle, consoleInfo.wAttributes);
-
-		//LPDWORD writtenCharsCount;
-		//::WriteConsoleA( , ansi.c_str(), ansi.length(), &writtenCharsCount, NULL );
+		::SetConsoleTextAttribute( m_ConsoleHandle, consoleInfo.wAttributes );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ConsoleLogger::flush()
 	{
-
+		//Empty
 	}
 }	// namespace Menge

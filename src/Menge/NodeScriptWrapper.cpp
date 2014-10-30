@@ -1402,7 +1402,8 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void quitApplication()
         {
-            APPLICATION_SERVICE(m_serviceProvider)->quit();
+            APPLICATION_SERVICE(m_serviceProvider)
+				->quit();
         }
         //////////////////////////////////////////////////////////////////////////
         bool directResourceCompile( const ConstString& _nameResource )

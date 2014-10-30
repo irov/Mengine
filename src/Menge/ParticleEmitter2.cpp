@@ -97,7 +97,7 @@ namespace	Menge
 	{      		
 		if( m_resourceParticle == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::_compile '%s' resource is null"
+			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter2::_compile '%s' resource is null"
 				, m_name.c_str()
 				);
 
@@ -106,7 +106,7 @@ namespace	Menge
 
         if( m_resourceParticle.compile() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::_compile '%s' resource '%s' not compile"
+            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter2::_compile '%s' resource '%s' not compile"
                 , m_name.c_str()
                 , m_resourceParticle->getName().c_str()
                 );
@@ -118,7 +118,7 @@ namespace	Menge
 
 		if( container == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::_compile '%s' can't open container file '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter2::_compile '%s' can't open container file '%s'"
 				, m_name.c_str()
 				, m_resourceParticle->getName().c_str() 
 				);
@@ -130,7 +130,7 @@ namespace	Menge
 
 		if( m_emitter == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter '%s' can't create emitter source '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter2::_compile '%s' can't create emitter source '%s'"
 				, m_name.c_str()
 				, m_resourceParticle->getName().c_str()
 				);

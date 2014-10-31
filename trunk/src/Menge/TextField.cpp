@@ -102,7 +102,7 @@ namespace Menge
 		this->invalidateVerticesWM_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateVertexData_( const ColourValue & _color, TVectorRenderVertex2D& _vertexData )
+	void TextField::updateVertexData_( const ColourValue & _color, TVectorRenderVertex2D & _vertexData )
 	{
 		_vertexData.clear();
 

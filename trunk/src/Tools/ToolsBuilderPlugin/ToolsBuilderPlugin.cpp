@@ -26,7 +26,7 @@
 
 #   include "Logger\Logger.h"
 
-#   include <Python.h>
+#	include <pybind/pybind.hpp>
 
 SERVICE_EXTERN(ServiceProvider, Menge::ServiceProviderInterface);
 
@@ -551,6 +551,13 @@ struct PyModuleDef module_def = {
 	ModuleMethods,
 	NULL, NULL, NULL, NULL
 };
+//////////////////////////////////////////////////////////////////////////
+static void s_error( const wchar_t * _msg )
+{
+	LOGGER_ERROR(Menge::serviceProvider)("%ls"
+		, _msg
+		);
+}
 ///////////////////////////////////////////////////////////////////////////////////
 PyMODINIT_FUNC PyInit_ToolsBuilderPlugin(void)
 {
@@ -575,5 +582,11 @@ PyMODINIT_FUNC PyInit_ToolsBuilderPlugin(void)
 
 	PyModule_AddObject( m, "error", PyToolException );
 
+	pybind::initialize( false, false );
+
+	PyObject * module_builtins = pybind::get_builtins();
+
+	pybind::def_function( "Error", &s_error, module_builtins );
+	
 	return m;
 }

@@ -59,7 +59,8 @@ src
     
     String.h
 	String.cpp
-    UnicodeFormat.h
+    
+    StringFormat.h
     
     Params.h
     

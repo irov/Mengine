@@ -17,11 +17,15 @@ src
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 			         ${THIRDPARTY_DIR}/pugixml/src
                      ${THIRDPARTY_DIR}/metabuf
+                     ${THIRDPARTY_DIR}/pybind/include
                      ${THIRDPARTY_DIR}/Python32/PC
                      ${THIRDPARTY_DIR}/Python32/include
 )
  
 ADD_LIBRARY( ${MY_LIB_NAME} SHARED  ${SRC_FILES} )
+
+add_definitions(-DPy_ENABLE_SHARED)
+add_definitions(-DPYBIND_PYTHON_VERSION=320)
 
 SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS}/EXPORT:dllCreatePlugin")
 
@@ -77,9 +81,9 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeDevelopmentConverterPlugin)
 
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_DIR}/Python32/libs/python32.lib
-    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}python_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX}
+    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}pybind32dll_static${MENGINE_LIB_SUFFIX}
     )
     
 foreach(dependency ${APPLICATION_DEPENDENCIES})

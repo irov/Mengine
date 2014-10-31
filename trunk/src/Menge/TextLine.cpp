@@ -11,10 +11,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextLine::TextLine( ServiceProviderInterface * _serviceProvider, float _charOffset )
 		: m_serviceProvider(_serviceProvider)
-        , m_charOffset(_charOffset)
 		, m_length(0.f)
-		, m_invalidateTextLine(true)
+        , m_charOffset(_charOffset)
 		, m_offset(0.f)
+		, m_invalidateTextLine(true)		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -89,6 +89,9 @@ namespace mt
 
 	MATH_FUNCTION_INLINE void qpos_to_rot_m4(mat4f& out, const quatf& _rhs, const vec3f& _pos);
 	MATH_FUNCTION_INLINE mat4f qpos_to_rot_m4(const quatf& _rhs, const vec3f& _pos);
+
+	MATH_FUNCTION_INLINE void make_quat_from_euler( quatf & _out, const mt::vec3f & _euler );
+	MATH_FUNCTION_INLINE void quat_to_euler( const quatf & _q, mt::vec3f & _euler );
 };
 
 #	if MATH_FORCE_INLINE == 1

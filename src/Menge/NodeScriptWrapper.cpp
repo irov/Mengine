@@ -2756,7 +2756,7 @@ namespace Menge
 
             angleStop( _node );
 
-            float angle = _node->getRotateZ();
+            float angle = _node->getOrientationZ();
 
             float correct_angle_from = angle;
             float correct_angle_to = _angle;
@@ -2765,7 +2765,7 @@ namespace Menge
 			NodeAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
 
             Affector* affector = m_odeAffectorCreatorInterpolateLinear.create( m_serviceProvider
-                , callback, ETA_ANGLE, _node, &Node::setRotateX
+                , callback, ETA_ANGLE, _node, &Node::setOrientationX
                 , correct_angle_from, correct_angle_to, _time
                 , &fabsf 
                 );				
@@ -2792,7 +2792,7 @@ namespace Menge
 
             angleStop( _node );
 
-            float angle = _node->getRotateZ();
+            float angle = _node->getOrientationZ();
 
             float correct_angle_from = angle;
             float correct_angle_to = _angle;
@@ -2802,7 +2802,7 @@ namespace Menge
 
             Affector* affector = 
                 m_nodeAffectorCreatorInterpolateQuadraticFloat.create( m_serviceProvider
-                , callback, ETA_ANGLE, _node, &Node::setRotateX
+                , callback, ETA_ANGLE, _node, &Node::setOrientationX
                 , correct_angle_from, correct_angle_to, angularSpeed, _time
                 , &fabsf
                 );				
@@ -4317,14 +4317,17 @@ namespace Menge
             .def( "getOrigin", &Transformation3D::getOrigin )
             .def_proxy_static( "setScale", nodeScriptMethod, &NodeScriptMethod::Transformation3D_setScale )
             .def( "getScale", &Transformation3D::getScale )
-            .def( "setRotateX", &Transformation3D::setRotateX )
-            .def( "getRotateX", &Transformation3D::getRotateX )
-            .def( "setRotateY", &Transformation3D::setRotateY )
-            .def( "getRotateY", &Transformation3D::getRotateY )
-            .def( "setRotateZ", &Transformation3D::setRotateZ )
-            .def( "getRotateZ", &Transformation3D::getRotateZ )
-            .def( "setAngle", &Transformation3D::setRotateX )
-            .def( "getAngle", &Transformation3D::getRotateX )
+            .def( "setOrientationX", &Transformation3D::setOrientationX )
+            .def( "getOrientationX", &Transformation3D::getOrientationX )
+            .def( "setOrientationY", &Transformation3D::setOrientationY )
+            .def( "getOrientationY", &Transformation3D::getOrientationY )
+            .def( "setOrientationZ", &Transformation3D::setOrientationZ )
+            .def( "getOrientationZ", &Transformation3D::getOrientationZ )
+			.def( "setOrientation", &Transformation3D::setOrientation )
+			.def( "getOrientation", &Transformation3D::getOrientation )
+
+            .def( "setAngle", &Transformation3D::setOrientationX )
+            .def( "getAngle", &Transformation3D::getOrientationX )
 
             .def( "translate", &Transformation3D::translate )
 			.def( "lookAt", &Transformation3D::lookAt )

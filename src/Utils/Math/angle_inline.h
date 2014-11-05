@@ -124,7 +124,7 @@ namespace mt
 		return ((delta >= delta1) && (delta1 >= 0.f));
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float sinf_fast_pi_pi( float x )
+	static inline float sinf_fast_pi_pi( float x )
 	{
 		float sin;
 

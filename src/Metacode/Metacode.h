@@ -4583,6 +4583,35 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_Orientation() const
+                {
+                    return Orientation_successful;
+                }
+                
+                bool get_Orientation( mt::vec3f & _value ) const
+                {
+                    if( Orientation_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Orientation;
+                
+                    return true;
+                }
+                
+                bool swap_Orientation( mt::vec3f & _value ) const
+                {
+                    if( Orientation_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Orientation);
+                
+                    return true;
+                }
+                
                 bool has_Position() const
                 {
                     return Position_successful;
@@ -4713,6 +4742,8 @@ namespace Metacode
                 mutable uint32_t Count;
                 bool Opacity_successful;
                 mutable float Opacity;
+                bool Orientation_successful;
+                mutable mt::vec3f Orientation;
                 bool Position_successful;
                 mutable mt::vec3f Position;
                 bool Rotation_successful;

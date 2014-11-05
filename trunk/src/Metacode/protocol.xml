@@ -1,0 +1,378 @@
+<Protocol Version = "65">
+  <Type Name="Menge::String" Evict="string"/>
+  <Type Name="Menge::WString" Evict="wstring"/>
+  <Type Name="Menge::ConstString" Evict="string_id"/>
+  <Type Name="bool" Evict="uint8_t"/>
+  <Type Name="uint32_t" Evict="uint32_t"/>
+  <Type Name="Menge::WChar" Evict="wchar_t"/>
+  <Type Name="float" Evict="float"/>
+  <Type Name="mt::vec2f" Evict="float2"/>
+  <Type Name="mt::vec3f" Evict="float3"/>
+  <Type Name="mt::vec4f" Evict="float4"/>
+  <Type Name="Menge::ColourValue" Evict="float4"/>
+  <Type Name="Menge::GlyphCode" Evict="utf8"/>
+  <Type Name="Menge::Polygon" Evict="floats"/>
+  <Type Name="Menge::Floats" Evict="floats"/>
+
+  <Node Name="DataBlock">
+    <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
+
+    <Node Name="Include">
+      <Attribute Name="Path" Type="Menge::ConstString" Required="1"/>
+    </Node>
+
+    <Node Name="Resource" Generator="Type">
+      <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
+      <Attribute Name="Type" Type="Menge::ConstString" Required="1"/>
+    </Node>
+
+    <Node Name="ResourceImageData" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
+
+      <Member Node="File" Name="MaxSize" Type="mt::vec2f"/>      
+      <Member Node="File" Name="NoExist" Type="bool"/>
+    </Node>
+
+    <Node Name="ResourceImageDefault" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
+      <Member Node="File" Name="Alpha" Type="bool"/>
+      <Member Node="File" Name="WrapX" Type="bool"/>
+      <Member Node="File" Name="WrapY" Type="bool"/>
+      
+      <Member Node="File" Name="MaxSize" Type="mt::vec2f"/>
+      <Member Node="File" Name="Size" Type="mt::vec2f"/>
+      <Member Node="File" Name="Offset" Type="mt::vec2f"/>
+
+      <Member Node="File" Name="NoExist" Type="bool"/>
+    </Node>
+
+    <Node Name="ResourceEmitterContainer" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="Folder" Name="Path" Type="Menge::ConstString" Required="1"/>
+    </Node>
+
+    <Node Name="ResourceEmitter" Inheritance = "Resource">
+      <Member Node="Container" Name="Name" Type="Menge::ConstString" Required="1"/>
+      <Member Node="Emitter" Name="Name" Type="Menge::ConstString" Required="1"/>
+      <Member Node="EmitterRelative" Name="Value" Type="bool" Required="1"/>
+      <Member Node="Offset" Name="Value" Type="mt::vec2f"/>
+    </Node>
+
+    <Node Name="ResourceParticle" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
+
+      <Member Node="AtlasCount" Name="Value" Type="uint32_t" Required="1"/>
+
+      <Node Name="Atlas">
+        <Attribute Name="Index" Type="uint32_t" Required="1"/>
+        <Attribute Name="ResourceName" Type="Menge::ConstString" Required="1"/>
+      </Node>
+    </Node>
+
+    <Node Name="ResourceCursorSystem" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+    </Node>
+
+    <Node Name="ResourceCursorICO" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+    </Node>
+    
+    <Node Name="ResourceFile" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+    </Node>
+    
+    <Node Name="ResourceSound" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
+      <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
+      <Member Node="DefaultVolume" Name="Value" Type="float"/>
+      <Member Node="IsStreamable" Name="Value" Type="bool"/>
+    </Node>
+
+    <Node Name="ResourcePlaylist" Inheritance = "Resource">
+      <Member Node="Loop" Name="Value" Type="bool"/>
+      <Member Node="Shuffle" Name="Value" Type="bool"/>
+      <Node Name="Tracks">
+        <Node Name="Track">
+          <Attribute Name="File" Type="Menge::ConstString" Required="1"/>
+          <Attribute Name="Codec" Type="Menge::ConstString"/>
+        </Node>
+      </Node>
+    </Node>
+
+    <Node Name="ResourceWindow" Inheritance = "Resource">
+      <Member Node="WindowBackground" Name="ResourceImageName" Type="Menge::ConstString"/>
+
+      <Member Node="WindowLeftTop" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
+      <Member Node="WindowTop" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
+      <Member Node="WindowRightTop" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
+      <Member Node="WindowRight" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
+      <Member Node="WindowRightBottom" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
+      <Member Node="WindowBottom" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
+      <Member Node="WindowLeftBottom" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
+      <Member Node="WindowLeft" Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
+
+      <Member Node="WindowLeftTop" Name="Offset" Type="mt::vec2f" Required="1"/>
+      <Member Node="WindowTop" Name="Offset" Type="mt::vec2f" Required="1"/>
+      <Member Node="WindowRightTop" Name="Offset" Type="mt::vec2f" Required="1"/>
+      <Member Node="WindowRight" Name="Offset" Type="mt::vec2f" Required="1"/>
+      <Member Node="WindowRightBottom" Name="Offset" Type="mt::vec2f" Required="1"/>
+      <Member Node="WindowBottom" Name="Offset" Type="mt::vec2f" Required="1"/>
+      <Member Node="WindowLeftBottom" Name="Offset" Type="mt::vec2f" Required="1"/>
+      <Member Node="WindowLeft" Name="Offset" Type="mt::vec2f" Required="1"/>
+    </Node>
+
+    <Node Name="ResourceMovie" Inheritance = "Resource">
+      <Member Node="FrameDuration" Name="Value" Type="float"/>
+      <Member Node="Duration" Name="Value" Type="float"/>
+      <Member Node="Width" Name="Value" Type="float"/>
+      <Member Node="Height" Name="Value" Type="float"/>
+      <Member Node="KeyFramesPackPath" Name="Path" Type="Menge::ConstString"/>
+      <Member Node="KeyFramesPackPath" Name="Codec" Type="Menge::ConstString"/>
+      <Member Node="KeyFramesPackPath" Name="Converter" Type="Menge::ConstString"/>
+      <Member Node="Loop" Name="Segment" Type="mt::vec2f"/>
+      <Member Node="Anchor" Name="Point" Type="mt::vec3f"/>    
+
+      <Node Name="MovieLayer2D">
+        <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>        
+        <Attribute Name="Source" Type="Menge::ConstString" Required="1"/>
+        <Attribute Name="Type" Type="Menge::ConstString" Required="1"/>
+        <Attribute Name="Index" Type="uint32_t" Required="1"/>
+        <Attribute Name="In" Type="float" Required="1"/>
+        <Attribute Name="Out" Type="float" Required="1"/>
+        <Attribute Name="Parent" Type="uint32_t"/>
+        <Attribute Name="StartInterval" Type="float"/>
+        <Attribute Name="BlendingMode" Type="Menge::ConstString"/>
+        <Attribute Name="TimeRemap" Type="bool"/>
+        <Attribute Name="Shape" Type="bool"/>
+        <Attribute Name="Polygon" Type="bool"/>
+        <Attribute Name="PlayCount" Type="uint32_t"/>
+        <Attribute Name="Stretch" Type="float"/>
+        <Attribute Name="Switch" Type="bool"/>
+      </Node>
+
+      <Node Name="MovieLayer3D">
+        <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>        
+        <Attribute Name="Source" Type="Menge::ConstString" Required="1"/>
+        <Attribute Name="Type" Type="Menge::ConstString" Required="1"/>
+        <Attribute Name="Index" Type="uint32_t" Required="1"/>
+        <Attribute Name="In" Type="float" Required="1"/>
+        <Attribute Name="Out" Type="float" Required="1"/>
+        <Attribute Name="Parent" Type="uint32_t"/>
+        <Attribute Name="StartInterval" Type="float"/>
+        <Attribute Name="BlendingMode" Type="Menge::ConstString"/>
+        <Attribute Name="TimeRemap" Type="bool"/>
+        <Attribute Name="Shape" Type="bool"/>
+        <Attribute Name="PlayCount" Type="uint32_t"/>
+        <Attribute Name="Stretch" Type="float"/>
+        <Attribute Name="Switch" Type="bool"/>
+      </Node>
+
+      <Node Name="MovieCamera3D">
+        <Attribute Name="CameraPosition" Type="mt::vec3f" Required="1"/>
+        <Attribute Name="CameraInterest" Type="mt::vec3f" Required="1"/>
+        <Attribute Name="CameraFOV" Type="float" Required="1"/>
+        <Attribute Name="CameraAspect" Type="float" Required="1"/>
+        <Attribute Name="Width" Type="float" Required="1"/>
+        <Attribute Name="Height" Type="float" Required="1"/>
+      </Node>
+    </Node>
+
+    <Node Name="ResourceVideo" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Alpha" Type="bool"/>
+      <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
+      <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
+      <Member Node="File" Name="NoSeek" Type="bool"/>
+      <Member Node="File" Name="FrameRate" Type="float"/>
+    </Node>
+
+    <Node Name="ResourceAnimation" Inheritance = "Resource">
+      <Node Name="Sequence">
+        <Attribute Name="ResourceImageName" Type="Menge::ConstString" Required="1"/>
+        <Attribute Name="Delay" Type="float" Required="1"/>
+      </Node>
+    </Node>
+
+    <Node Name="ResourceHIT" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
+      <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
+    </Node>
+
+    <Node Name="ResourceModel3D" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Dataflow" Type="Menge::ConstString"/>
+      <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
+      <Member Node="Image" Name="Resource" Type="Menge::ConstString" Required="1"/>
+    </Node>
+
+    <Node Name="ResourceImageSolid" Inheritance = "Resource">
+      <Member Node="Size" Name="Value" Type="mt::vec2f" Required="1"/>
+      <Member Node="Color" Name="Value" Type="Menge::ColourValue" Required="1"/>
+    </Node>
+
+    <Node Name="ResourceInternalObject" Inheritance = "Resource">
+      <Member Node="Internal" Name="Name" Type="Menge::ConstString" Required="1"/>
+      <Member Node="Internal" Name="Group" Type="Menge::ConstString" Required="1"/>
+    </Node>
+
+    <Node Name="ResourceImageMultiplyRGBAndAlpha" Inheritance = "Resource">
+      <Member Node="File" Name="WrapX" Type="bool"/>
+      <Member Node="File" Name="WrapY" Type="bool"/>
+
+      <Member Node="File" Name="PathRGB" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="CodecRGB" Type="Menge::ConstString"/>
+      <Member Node="File" Name="UVRGB" Type="mt::vec4f"/>
+
+      <Member Node="File" Name="PathAlpha" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="CodecAlpha" Type="Menge::ConstString"/>
+      <Member Node="File" Name="UVAlpha" Type="mt::vec4f"/>
+
+      <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
+      <Member Node="File" Name="Size" Type="mt::vec2f"/>
+      <Member Node="File" Name="Offset" Type="mt::vec2f"/>
+    </Node>
+
+    <Node Name="ResourceImageSubstract" Inheritance = "Resource">
+      <Member Node="Image" Name="Name" Type="Menge::ConstString" Required="1"/>
+      <Member Node="Image" Name="UV" Type="mt::vec4f" Required="1"/>
+      <Member Node="Image" Name="Rotate" Type="bool"/>
+      <Member Node="Image" Name="Alpha" Type="bool"/>
+
+      <Member Node="Image" Name="MaxSize" Type="mt::vec2f" Required="1"/>
+      <Member Node="Image" Name="Size" Type="mt::vec2f"/>
+      <Member Node="Image" Name="Offset" Type="mt::vec2f"/>
+    </Node>
+
+    <Node Name="ResourceShape" Inheritance = "Resource">
+      <Member Node="Polygon" Name="Value" Type="Menge::Polygon" Required="1"/>
+    </Node>
+
+    <Node Name="ResourceCal3dSkeleton" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+    </Node>
+
+    <Node Name="ResourceCal3dAnimation" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+    </Node>
+
+    <Node Name="ResourceCal3dMesh" Inheritance = "Resource">
+      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+    </Node>
+
+    <Node Name="ResourceExternal" Inheritance = "Resource" NoWrite = "1"/>
+  </Node>
+
+
+  <Node Name="Pak">
+    <Node Name="Scripts">
+      <Attribute Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Attribute Name="Module" Type="Menge::ConstString"/>
+      <Attribute Name="Initializer" Type="Menge::ConstString"/>
+    </Node>
+
+    <Node Name="Fonts">
+      <Attribute Name="Path" Type="Menge::ConstString" Required="1"/>
+    </Node>
+
+    <Node Name="Resources">
+      <Node Name="Resource">
+        <Attribute Name="Path" Type="Menge::ConstString" Required="1"/>
+      </Node>
+    </Node>
+
+    <Node Name="Texts">
+      <Node Name="Text">
+        <Attribute Name="Path" Type="Menge::ConstString" Required="1"/>
+      </Node>
+    </Node>
+  </Node>
+
+  <Node Name="Font">
+    <Attribute Name="height" Type="float" Required="1"/>
+
+    <Node Name="Char">
+      <Attribute Name="width" Type="float" Required="1"/>
+      <Attribute Name="offset" Type="mt::vec2f" Required="1"/>
+      <Attribute Name="rect" Type="mt::vec4f" Required="1"/>
+      <Attribute Name="code" Type="Menge::GlyphCode" Required="1"/>
+
+      <Node Name="Kerning">
+        <Attribute Name="advance" Type="float" Required="1"/>
+        <Attribute Name="id" Type="Menge::GlyphCode" Required="1"/>
+      </Node>
+    </Node>
+  </Node>
+
+  <Node Name="Texts">
+    <Node Name="Text">
+      <Attribute Name="Key" Type="Menge::ConstString" Required="1"/>
+      <Attribute Name="Value" Type="Menge::WString"/>
+      <Attribute Name="Font" Type="Menge::ConstString"/>
+      <Attribute Name="CharOffset" Type="float"/>
+      <Attribute Name="LineOffset" Type="float"/>
+    </Node>
+  </Node>
+
+  <Node Name="KeyFramesPack">
+    <Attribute Name="MaxIndex" Type="uint32_t" Required="1"/>
+
+    <Node Name="TimeRemap">
+      <Attribute Name="LayerIndex" Type="uint32_t" Required="1"/>
+      <Attribute Name="Time" Type="Menge::Floats" Required="1"/>
+    </Node>
+    
+    <Node Name="Polygon">
+      <Attribute Name="LayerIndex" Type="uint32_t" Required="1"/>
+      <Attribute Name="Value" Type="Menge::Polygon" Required="1"/>
+    </Node>    
+
+    <Node Name="ImageShape">
+      <Attribute Name="LayerIndex" Type="uint32_t" Required="1"/>
+      <Attribute Name="Width" Type="float" Required="1"/>
+      <Attribute Name="Height" Type="float" Required="1"/>
+      <Attribute Name="Immutable" Type="bool"/>
+      <Attribute Name="Count" Type="uint32_t"/>
+      <Node Name="Shape">
+        <Attribute Name="Polygon" Type="Menge::Polygon" Required="1"/>
+      </Node>
+    </Node>
+
+    <Node Name="KeyFrames2D">
+      <Attribute Name="LayerIndex" Type="uint32_t" Required="1"/>
+      <Attribute Name="Immutable" Type="bool"/>
+      <Attribute Name="Count" Type="uint32_t"/>
+
+      <Node Name="KeyFrame2D">
+        <Attribute Name="AnchorPoint" Type="mt::vec2f"/>
+        <Attribute Name="Position" Type="mt::vec2f"/>
+        <Attribute Name="Scale" Type="mt::vec2f"/>
+        <Attribute Name="Rotation" Type="float"/>
+        <Attribute Name="Opacity" Type="float"/>
+        <Attribute Name="Volume" Type="float"/>
+        <Attribute Name="Count" Type="uint32_t"/>
+      </Node>
+    </Node>
+
+    <Node Name="KeyFrames3D">
+      <Attribute Name="LayerIndex" Type="uint32_t" Required="1"/>
+      <Attribute Name="Immutable" Type="bool"/>
+      <Attribute Name="Count" Type="uint32_t"/>
+
+      <Node Name="KeyFrame3D">
+        <Attribute Name="AnchorPoint" Type="mt::vec3f"/>
+        <Attribute Name="Position" Type="mt::vec3f"/>
+        <Attribute Name="Scale" Type="mt::vec3f"/>
+        <Attribute Name="Rotation" Type="mt::vec3f"/>
+        <Attribute Name="Orientation" Type="mt::vec3f"/>
+        <Attribute Name="Opacity" Type="float"/>
+        <Attribute Name="Volume" Type="float"/>
+        <Attribute Name="Count" Type="uint32_t"/>
+      </Node>
+    </Node>
+  </Node>
+</Protocol>

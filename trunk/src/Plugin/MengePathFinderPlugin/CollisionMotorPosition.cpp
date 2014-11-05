@@ -83,7 +83,7 @@ namespace Menge
 			}
 			
 			float dir_angle = mt::signed_angle( dir );
-			float obj_angle = _object->getRotateX();
+			float obj_angle = _object->getOrientationX();
 
 			float diff_angle = mt::angle_length( obj_angle, dir_angle );
 
@@ -100,13 +100,13 @@ namespace Menge
 					obj_angle += step_angle * diff_angle;
 				}
 
-				_object->setRotateX( obj_angle );
+				_object->setOrientationX( obj_angle );
 				rotating = true;
 			}
 		}
 		else
 		{
-			float obj_angle = _object->getRotateX();
+			float obj_angle = _object->getOrientationX();
 
 			float diff_angle = mt::angle_length( obj_angle, m_angle );
 
@@ -124,7 +124,7 @@ namespace Menge
 					obj_angle += step_angle * diff_angle;					
 				}
 
-				_object->setRotateX( obj_angle );
+				_object->setOrientationX( obj_angle );
 				rotating = true;
 			}
 			else

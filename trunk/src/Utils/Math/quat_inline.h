@@ -178,13 +178,12 @@ namespace mt
 		return out;
 	}
 
-	/*	Mult  Q &  Q */
-	MATH_FUNCTION_INLINE void mul_q_q(quatf& out, const quatf& _rhs, const quatf& in2)
+	MATH_FUNCTION_INLINE void mul_q_q(quatf& _out, const quatf& _q1, const quatf& _q2)
 	{
-		out[0]=_rhs[0] * in2[0] - _rhs[1] * in2[1] - _rhs[2] * in2[2] - _rhs[3]*in2[3];
-		out[1]=_rhs[0] * in2[1] + _rhs[1] * in2[0] + _rhs[2] * in2[3] - _rhs[3]*in2[2];
-		out[2]=_rhs[0] * in2[2] + _rhs[2] * in2[0] + _rhs[3] * in2[1] - _rhs[1]*in2[3];
-		out[3]=_rhs[0] * in2[3] + _rhs[3] * in2[0] + _rhs[1] * in2[2] - _rhs[2]*in2[1];
+		_out.x = _q1.y * _q2.z - _q1.z * _q2.y + _q1.x *_q2.w + _q1.w * _q2.x;
+		_out.y = _q1.z * _q2.x - _q1.x * _q2.z + _q1.y *_q2.w + _q1.w * _q2.y;
+		_out.z = _q1.x * _q2.y - _q1.y * _q2.x + _q1.z *_q2.w + _q1.w * _q2.z;
+		_out.w = _q1.w * _q2.w - _q1.x * _q2.x - _q1.y *_q2.y - _q1.z * _q2.z;
 	}
 
 	MATH_FUNCTION_INLINE quatf operator*(const quatf& _a, const quatf& _b)
@@ -586,5 +585,46 @@ namespace mt
 		mat4f	out;
 		qpos_to_rot_m4(out,_rhs,_pos);
 		return	out;
+	}
+
+	MATH_FUNCTION_INLINE void make_quat_from_euler( quatf & _out, const mt::vec3f & _euler )
+	{
+		float c1 = cosf_fast( _euler.z * 0.5f );
+		float c2 = cosf_fast( _euler.y * 0.5f );
+		float c3 = cosf_fast( _euler.x * 0.5f );
+		float s1 = sinf_fast( _euler.z * 0.5f );
+		float s2 = sinf_fast( _euler.y * 0.5f );
+		float s3 = sinf_fast( _euler.x * 0.5f );
+
+		_out.x = c1 * c2 * s3 - s1 * s2 * c3;
+		_out.y = c1 * s2 * c3 + s1 * c2 * s3;
+		_out.z = s1 * c2 * c3 - c1 * s2 * s3;
+		_out.w = c1 * c2 * c3 + s1 * s2 * s3;
+	}
+
+	MATH_FUNCTION_INLINE void quat_to_euler( const quatf & _q, mt::vec3f & _euler )
+	{
+		float sqw = _q.w * _q.w;
+		float sqx = _q.x * _q.x;
+		float sqy = _q.y * _q.y;
+		float sqz = _q.z * _q.z;
+
+		_euler.y = asinf( 2.f * (_q.w * _q.y - _q.x * _q.z ) );
+
+		if( mt::m_half_pi - fabsf( _euler.y ) > mt::m_eps )
+		{
+			_euler.z = atan2f( 2.f * (_q.x * _q.y + _q.w * _q.z), sqx - sqy - sqz + sqw );
+			_euler.x = atan2f( 2.f * (_q.w * _q.x + _q.y * _q.z), sqw - sqx - sqy + sqz );
+		} 
+		else 
+		{
+			_euler.z = atan2f( 2.f * (_q.y * _q.z - _q.x * _q.z), 2.f * (_q.x * _q.z + _q.y * _q.w) );
+			_euler.x = 0.f;
+
+			if( _euler.y < 0.f )
+			{
+				_euler.z = mt::m_pi - _euler.z;
+			}
+		}		
 	}
 }

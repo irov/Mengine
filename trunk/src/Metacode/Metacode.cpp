@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 64;
+        _needVersion = 65;
 
-        if( version != 64 )
+        if( version != 65 )
         {
             return false;
         }
@@ -4902,6 +4902,7 @@ namespace Metacode
         , AnchorPoint_successful(false)
         , Count_successful(false)
         , Opacity_successful(false)
+        , Orientation_successful(false)
         , Position_successful(false)
         , Rotation_successful(false)
         , Scale_successful(false)
@@ -4929,7 +4930,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->Count ) == false )
                 {
@@ -4940,7 +4941,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->Opacity ) == false )
                 {
@@ -4948,6 +4949,17 @@ namespace Metacode
                 }
     
                 this->Opacity_successful = true;
+    
+                return true;
+            }break;
+        case 5:
+            {
+                if( this->read( _buff, _size, _read, this->Orientation ) == false )
+                {
+                    return false;
+                }
+    
+                this->Orientation_successful = true;
     
                 return true;
             }break;
@@ -4984,7 +4996,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->Volume ) == false )
                 {

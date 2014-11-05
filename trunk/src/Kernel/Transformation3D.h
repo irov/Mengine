@@ -46,25 +46,25 @@ namespace Menge
 		void setScale( const mt::vec3f& _scale );
 		inline const mt::vec3f& getScale() const;
 
-		void setRotateX( float _angle );
-		inline float getRotateX() const;
+		void setOrientationX( float _angle );
+		inline float getOrientationX() const;
 
-		void setRotateY( float _angle );
-		inline float getRotateY() const;
+		void setOrientationY( float _angle );
+		inline float getOrientationY() const;
 
-		void setRotateZ( float _angle );
-		inline float getRotateZ() const;
+		void setOrientationZ( float _angle );
+		inline float getOrientationZ() const;
 
-		void setRotation( const mt::vec3f & _euler );
-		inline const mt::vec3f & getRotation() const;
+		void setOrientation( const mt::vec3f & _orientation );
+		inline const mt::vec3f & getOrientation() const;
 
 	public:
 		void setCoordinate( const mt::vec3f& _coordinate );
 		inline const mt::vec3f& getCoordinate() const;
 
 	public:
-		void setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _rotate );
-        void getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f & _coordinate, mt::vec3f& _scale, mt::vec3f& _rotate );
+		void setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _orientation );
+        void getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f & _coordinate, mt::vec3f& _scale, mt::vec3f& _orientation );
 
         void resetTransformation();
 		
@@ -98,15 +98,14 @@ namespace Menge
 		mt::vec3f m_coordinate;
 
 		mt::vec3f m_scale;
-		mt::vec3f m_euler;
+		mt::vec3f m_orientation;
 				
 		mutable mt::mat4f m_localMatrix;
 		mutable mt::mat4f m_worldMatrix;
 		mutable bool m_identityLocalMatrix;
 		mutable bool m_identityWorldMatrix;
 		mutable bool m_invalidateLocalMatrix;
-		mutable bool m_invalidateWorldMatrix;
-		
+		mutable bool m_invalidateWorldMatrix;		
 	};
     //////////////////////////////////////////////////////////////////////////
     inline Transformation3D * Transformation3D::getRelationTransformation() const
@@ -134,24 +133,24 @@ namespace Menge
 		return m_scale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline float Transformation3D::getRotateX() const
+	inline float Transformation3D::getOrientationX() const
 	{
-		return m_euler.x;
+		return m_orientation.x;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline float Transformation3D::getRotateY() const
+	inline float Transformation3D::getOrientationY() const
 	{
-		return m_euler.y;
+		return m_orientation.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline float Transformation3D::getRotateZ() const
+	inline float Transformation3D::getOrientationZ() const
 	{
-		return m_euler.z;
+		return m_orientation.z;
 	}
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec3f & Transformation3D::getRotation() const
+    inline const mt::vec3f & Transformation3D::getOrientation() const
     {
-        return m_euler;
+        return m_orientation;
     }
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Transformation3D::isInvalidateWorldMatrix() const

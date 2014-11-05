@@ -959,11 +959,11 @@ namespace mt
 		}
 		else
 		{
-			y = -asinf( sinY );
-			float cosY = cosf_fast( y );
+			z = -asinf( sinY );
+			float cosY = cosf_fast( z );
 
 			x = atan2f( _rotate.v1.x / cosY, _rotate.v0.x / cosY );
-			z = atan2f( _rotate.v2.y / cosY, _rotate.v2.z / cosY );
+			y = atan2f( _rotate.v2.y / cosY, _rotate.v2.z / cosY );
 		}
 
 		_euler.x = x;

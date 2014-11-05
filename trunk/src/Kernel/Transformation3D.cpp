@@ -11,7 +11,7 @@ namespace Menge
 		, m_coordinate(0.f, 0.f, 0.f)
 		, m_position(0.f, 0.f, 0.f)
 		, m_scale(1.f, 1.f, 1.f)
-		, m_euler(0.f, 0.f, 0.f)
+		, m_orientation(0.f, 0.f, 0.f)
 		, m_identityLocalMatrix(true)
 		, m_identityWorldMatrix(true)
         , m_invalidateWorldMatrix(true)
@@ -95,72 +95,72 @@ namespace Menge
 		this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setRotateX( float _angle )
+	void Transformation3D::setOrientationX( float _angle )
 	{
-		if( mt::cmp_f_f( m_euler.x, _angle ) == true )
+		if( mt::cmp_f_f( m_orientation.x, _angle ) == true )
 		{
 			return;
 		}
 
-		m_euler.x = _angle;
+		m_orientation.x = _angle;
 
 		this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setRotateY( float _angle )
+	void Transformation3D::setOrientationY( float _angle )
 	{
-		if( mt::cmp_f_f( m_euler.y, _angle ) == true )
+		if( mt::cmp_f_f( m_orientation.y, _angle ) == true )
 		{
 			return;
 		}
 
-		m_euler.y = _angle;
+		m_orientation.y = _angle;
 
 		this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setRotateZ( float _angle )
+	void Transformation3D::setOrientationZ( float _angle )
 	{
-		if( mt::cmp_f_f( m_euler.z, _angle ) == true )
+		if( mt::cmp_f_f( m_orientation.z, _angle ) == true )
 		{
 			return;
 		}
 
-		m_euler.z = _angle;
+		m_orientation.z = _angle;
 
 		this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setRotation( const mt::vec3f & _euler )
+	void Transformation3D::setOrientation( const mt::vec3f & _euler )
 	{
-		if( mt::cmp_v3_v3( m_euler, _euler ) == true )
+		if( mt::cmp_v3_v3( m_orientation, _euler ) == true )
 		{
 			return;
 		}
 
-		m_euler = _euler;
+		m_orientation = _euler;
 
         this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _rotate )
+	void Transformation3D::setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _orientation )
 	{
 		m_position = _position;
 		m_origin = _origin;
         m_coordinate = _coordinate;
 		m_scale = _scale;
-		m_euler = _rotate;
+		m_orientation = _orientation;
 
 		this->invalidateLocalMatrix();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Transformation3D::getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f & _coordinate, mt::vec3f& _scale, mt::vec3f& _rotate )
+    void Transformation3D::getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f & _coordinate, mt::vec3f& _scale, mt::vec3f& _orientation )
     {
         _position = m_position;
         _origin = m_origin;
         _coordinate = m_coordinate;
         _scale = m_scale;
-        _rotate = m_euler;
+        _orientation = m_orientation;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::resetTransformation()
@@ -169,7 +169,7 @@ namespace Menge
 		m_coordinate = mt::vec3f(0.f, 0.f, 0.f);
 		m_position = mt::vec3f(0.f, 0.f, 0.f);
 		m_scale = mt::vec3f(1.f, 1.f, 1.f);
-		m_euler = mt::vec3f(0.f, 0.f, 0.f);
+		m_orientation = mt::vec3f(0.f, 0.f, 0.f);
 
 		this->invalidateLocalMatrix();
 	}
@@ -188,11 +188,11 @@ namespace Menge
 		mt::mat4f mr;
 		mt::make_rotate_m4_direction( mr, dir, _up );
 
-		mt::vec3f euler;
-		mt::make_euler_angles( euler, mr );
+		mt::vec3f orientation;
+		mt::make_euler_angles( orientation, mr );
 
 		this->setLocalPosition( _position );
-		this->setRotation( euler );
+		this->setOrientation( orientation );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline static bool s_identityTransformationMatrix( const mt::mat4f & _m )
@@ -225,17 +225,17 @@ namespace Menge
 		mat_scale.v1.y = m_scale.y;
 		mat_scale.v2.z = m_scale.z;
 				
-		if( mt::cmp_f_z( m_euler.y ) == true &&
-			mt::cmp_f_z( m_euler.z ) == true )
+		if( mt::cmp_f_z( m_orientation.y ) == true &&
+			mt::cmp_f_z( m_orientation.z ) == true )
 		{
-			if( mt::cmp_f_z( m_euler.x ) == true )
+			if( mt::cmp_f_z( m_orientation.x ) == true )
 			{
 				m_localMatrix = mat_scale;
 			}
 			else
 			{
 				mt::mat4f mat_rot;
-				mt::make_rotate_z_axis_m4( mat_rot, m_euler.x );
+				mt::make_rotate_z_axis_m4( mat_rot, m_orientation.x );
 
 				mt::mul_m4_m4( m_localMatrix, mat_scale, mat_rot );
 			}
@@ -243,7 +243,7 @@ namespace Menge
 		else
 		{
 			mt::mat4f mat_rot;
-			mt::make_rotate_m4_euler( mat_rot, m_euler.x, m_euler.y, m_euler.z );
+			mt::make_rotate_m4_euler( mat_rot, m_orientation.x, m_orientation.y, m_orientation.z );
         
 			mt::mul_m4_m4( m_localMatrix, mat_scale, mat_rot );
 		}

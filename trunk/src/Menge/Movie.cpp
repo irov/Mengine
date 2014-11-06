@@ -2274,7 +2274,7 @@ namespace Menge
 					}
 
 					uint32_t frame = _endFrame - indexIn;
-					float timing = frame * frameDuration;
+					float timing = float(frame) * frameDuration;
 
 					animatable->setTiming( timing );
 
@@ -2312,7 +2312,8 @@ namespace Menge
 						animatable->stop();
 
 						///Test TestTestTestTest
-						float timing = (indexOut - indexIn) * frameDuration;                        
+						uint32_t frame = indexOut - indexIn;
+						float timing = frame * frameDuration;                        
 						animatable->setTiming( timing );
 					}
 				}

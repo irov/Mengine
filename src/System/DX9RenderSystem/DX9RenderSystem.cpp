@@ -1603,11 +1603,11 @@ namespace Menge
         DWORD Usage = D3DUSAGE_WRITEONLY;
 		D3DPOOL Pool = D3DPOOL_MANAGED;
 
-        if( _dynamic == true )
-        {
-            Usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
-			Pool = D3DPOOL_DEFAULT;
-        }
+   //     if( _dynamic == true )
+   //     {
+   //         Usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
+			//Pool = D3DPOOL_DEFAULT;
+   //     }
 
 		IDirect3DVertexBuffer9 * vb = nullptr;
 		IF_DXCALL(m_serviceProvider, m_pD3DDevice, CreateVertexBuffer, ( _verticesNum * _vertexSize, Usage, Vertex2D_declaration, Pool, &vb, NULL ) )
@@ -1622,6 +1622,7 @@ namespace Menge
 		vbInfo.fvf = Vertex2D_declaration;
 		vbInfo.pool = Pool;
 		vbInfo.pVB = vb;
+		vbInfo.dynamic = _dynamic;
 		
 		VBHandle newVBHandleCounter = ++m_vbHandleCounter;
 		m_vertexBuffers.insert( newVBHandleCounter, vbInfo );
@@ -1669,11 +1670,11 @@ namespace Menge
         DWORD Usage = D3DUSAGE_WRITEONLY;
 		D3DPOOL Pool = D3DPOOL_MANAGED;
 
-        if( _dynamic == true )
-        {
-            Usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
-			Pool = D3DPOOL_DEFAULT;
-        }
+   //     if( _dynamic == true )
+   //     {
+   //         Usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
+			//Pool = D3DPOOL_DEFAULT;
+   //     }
 
 		IDirect3DIndexBuffer9 * ib = nullptr;
 		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, ( sizeof(RenderIndices2D) * _indiciesNum, Usage, D3DFMT_INDEX16, Pool, &ib, NULL ) )
@@ -1687,7 +1688,8 @@ namespace Menge
 		ibInfo.format = D3DFMT_INDEX16;
 		ibInfo.pool = Pool;
 		ibInfo.pIB = ib;
-		// count from 1
+		ibInfo.dynamic = _dynamic;
+				
 		IBHandle newIBHandleCounter = ++m_ibHandleCounter;
 		m_indexBuffers.insert( newIBHandleCounter, ibInfo );
 

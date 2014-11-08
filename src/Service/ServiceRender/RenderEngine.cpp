@@ -125,8 +125,15 @@ namespace Menge
 		m_nullTexture = nullptr;
 		m_whitePixelTexture = nullptr;
 
-		RENDER_SYSTEM(m_serviceProvider)->releaseVertexBuffer( m_vbHandle2D );
-		RENDER_SYSTEM(m_serviceProvider)->releaseIndexBuffer( m_vbHandle2D );
+		RENDER_SYSTEM(m_serviceProvider)
+			->releaseVertexBuffer( m_vbHandle2D );
+
+		m_vbHandle2D = 0;
+
+		RENDER_SYSTEM(m_serviceProvider)
+			->releaseIndexBuffer( m_ibHandle2D );
+
+		m_ibHandle2D = 0;
 
 		for( TVectorVertexBuffer::iterator
 			it = m_vertexBuffer.begin(),

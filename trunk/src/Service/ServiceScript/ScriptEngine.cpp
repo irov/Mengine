@@ -184,12 +184,6 @@ namespace Menge
 
 		m_scriptWrapper.clear();       
 
-        delete m_logger;
-		m_logger = nullptr;
-
-        delete m_loggerError;
-		m_loggerError = nullptr;
-
 		if( m_moduleFinder != nullptr )
 		{
 			m_moduleFinder->finalize();
@@ -198,7 +192,14 @@ namespace Menge
 			m_moduleFinder = nullptr;
 		}
 
+		delete m_logger;
+		m_logger = nullptr;
+
         pybind::setStdOutHandle( nullptr );
+
+		delete m_loggerError;
+		m_loggerError = nullptr;
+
         pybind::setStdErrorHandle( nullptr );
 
 		pybind::finalize();

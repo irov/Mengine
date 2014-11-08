@@ -22,6 +22,7 @@ namespace Menge
 		DWORD fvf;
 		D3DPOOL pool;
 		IDirect3DVertexBuffer9* pVB;
+		bool dynamic;
 	};
 
 	struct IBInfo
@@ -31,6 +32,7 @@ namespace Menge
 		D3DFORMAT format;
 		D3DPOOL pool;
 		IDirect3DIndexBuffer9* pIB;
+		bool dynamic;
 	};
 
 	class DX9RenderSystem

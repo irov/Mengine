@@ -127,6 +127,7 @@ namespace Menge
         ConstString cstr = CONST_STRING_LOCAL(serviceProvider, S);\
         PyObject * py_obj = pybind::ptr( cstr );\
         pybind::set_attr( py_dc, S, py_obj );\
+		pybind::decref( py_obj );\
         }
 
         DEF_CONST_STRING( _serviceProvider, "Main" );

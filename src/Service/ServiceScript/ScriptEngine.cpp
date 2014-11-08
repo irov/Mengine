@@ -36,8 +36,8 @@ namespace Menge
 		: m_serviceProvider(nullptr)
         , m_moduleFinder(nullptr)
         , m_moduleMenge(nullptr)
-		, m_loger(nullptr)
-        , m_errorLogger(nullptr)        
+		, m_logger(nullptr)
+        , m_loggerError(nullptr)        
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -87,23 +87,28 @@ namespace Menge
 #	endif
 
 		m_moduleMenge = this->initModule( "Menge" );
-
         this->addGlobalModule( "Menge", m_moduleMenge );
+		//pybind::decref( m_moduleMenge );
 
         uint32_t python_version = pybind::get_python_version();
-        this->addGlobalModule( "_PYTHON_VERSION", pybind::build_value("d", python_version) );
+
+		PyObject * py_python_version = pybind::ptr( python_version );
+        this->addGlobalModule( "_PYTHON_VERSION", py_python_version );
+		pybind::decref( py_python_version );
 
 		pybind::set_currentmodule( m_moduleMenge );
 
-		m_loger = new ScriptLogger(m_serviceProvider);
+		m_logger = new ScriptLogger(m_serviceProvider);
 
-		PyObject * pyLogger = m_loger->embedding();
-		pybind::setStdOutHandle( pyLogger );
+		PyObject * py_logger = m_logger->embedding();
+		pybind::setStdOutHandle( py_logger );
+		pybind::decref( py_logger );
 
-		m_errorLogger = new ScriptLoggerError(m_serviceProvider);
+		m_loggerError = new ScriptLoggerError(m_serviceProvider);
 
-		PyObject * pyErrorLogger = m_errorLogger->embedding();
-		pybind::setStdErrorHandle( pyErrorLogger );
+		PyObject * py_loggerError = m_loggerError->embedding();
+		pybind::setStdErrorHandle( py_loggerError );
+		pybind::decref( py_loggerError );
 
         
                 
@@ -179,11 +184,11 @@ namespace Menge
 
 		m_scriptWrapper.clear();       
 
-        delete m_loger;
-		m_loger = nullptr;
+        delete m_logger;
+		m_logger = nullptr;
 
-        delete m_errorLogger;
-		m_errorLogger = nullptr;
+        delete m_loggerError;
+		m_loggerError = nullptr;
 
 		if( m_moduleFinder != nullptr )
 		{

@@ -95,8 +95,8 @@ namespace Menge
 
 		TVectorScriptModulePak m_bootstrapperModules;
 
-		ScriptLogger * m_loger;
-		ScriptLoggerError * m_errorLogger;
+		ScriptLogger * m_logger;
+		ScriptLoggerError * m_loggerError;
 
 		typedef stdex::binary_vector<ConstString, PyObject *> TMapModules;
 		typedef stdex::binary_vector<ConstString, TMapModules> TMapCategoryPrototypies;

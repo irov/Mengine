@@ -120,9 +120,10 @@ namespace Menge
 
 						if( str_value_valid != str_value_end )
 						{
-							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read text |%s| invalid utf8 char |%s|"
+							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read text key %s value |%s| invalid utf8 char |%s|"
 								, m_pakName.c_str()
 								, m_path.c_str()
+								, text_key.c_str()
 								, str_value
 								, str_value_valid
 								);
@@ -140,6 +141,15 @@ namespace Menge
 						else
 						{
 							text = Helper::stringizeStringExternal( m_serviceProvider, str_value, str_value_size );
+						}
+
+						if( text.empty() == true )
+						{
+							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid text key %s value is empty"
+								, m_pakName.c_str()
+								, m_path.c_str()
+								, text_key.c_str()
+								);
 						}
 					}
 					else if( strcmp( str_key, "Font" ) == 0 )

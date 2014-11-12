@@ -85,9 +85,6 @@ namespace Menge
 
         RenderTextureDebugInfo m_debugInfo;
 
-		uint32_t m_limitTextureWidth;
-		uint32_t m_limitTextureHeight;
-		
 		bool m_supportA8;
 		bool m_supportR8G8B8;
     };

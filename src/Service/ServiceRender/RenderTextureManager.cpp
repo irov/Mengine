@@ -20,8 +20,6 @@ namespace Menge
     RenderTextureManager::RenderTextureManager()
         : m_serviceProvider(nullptr)
         , m_textureEnumerator(0)
-		, m_limitTextureWidth(2048)
-		, m_limitTextureHeight(2048)
 		, m_supportA8(false)
 		, m_supportR8G8B8(false)
     {
@@ -53,12 +51,6 @@ namespace Menge
 			->supportTextureFormat( PF_R8G8B8 );
 
 		m_factoryRenderTexture.setMethodListener( this, &RenderTextureManager::onRenderTextureDestroy_ );
-
-		m_limitTextureWidth = CONFIG_SERVICE(m_serviceProvider)
-			->getValue( "Limit", "TextureWidth", 2048U );
-
-		m_limitTextureHeight = CONFIG_SERVICE(m_serviceProvider)
-			->getValue( "Limit", "TextureHeight", 2048U );
 
 		return true;
     }
@@ -117,18 +109,6 @@ namespace Menge
 
 		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
-		if( HWWidth > m_limitTextureWidth || HWHeight > m_limitTextureHeight )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createTexture_ invalid limit %d:%d texture size %d:%d "
-				, m_limitTextureWidth
-				, m_limitTextureHeight
-				, HWWidth
-				, HWHeight
-				);
-				
-			return nullptr;
-		}
-		
 		RenderImageInterfacePtr image = RENDER_SYSTEM(m_serviceProvider)
 			->createImage( _mipmaps, HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 

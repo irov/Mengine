@@ -1564,6 +1564,10 @@ namespace Menge
 
 		if( layer_sprite == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::createMovieSprite_ layer %s invalid create 'Sprite'"
+				, _layer.name.c_str()
+				);
+
 			return false;
 		}
 
@@ -1572,6 +1576,11 @@ namespace Menge
 
 		if( resourceImage == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::createMovieSprite_ layer %s invalid get resource for image %s"
+				, _layer.name.c_str()
+				, _layer.name.c_str()
+				);
+
 			return false;
 		}
 

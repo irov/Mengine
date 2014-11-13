@@ -62,9 +62,6 @@ namespace Menge
 		void _invalidateWorldMatrix() override;
 		
 	protected:
-		void _invalidHierarchy() override;
-
-	protected:
 		void invalidatePolygonWM();
 		void updatePolygonWM_() const;
 

@@ -48,4 +48,20 @@ namespace Menge
     {
         this->setLocalAlpha( _alpha );
     }
+	//////////////////////////////////////////////////////////////////////////
+	void MovieSlot::_changeParent( Node * _oldParent, Node * _newParent )
+	{
+		(void)_newParent;
+
+		if( _oldParent == nullptr )
+		{
+			return;
+		}
+		
+		LOGGER_ERROR(m_serviceProvider)("MovieSlot::_changeParent slot %s:%s movie %s (please don't change parent it's dange)"
+			, this->getName().c_str()
+			, this->getType().c_str()
+			, m_movieName.c_str()
+			);
+	}
 }

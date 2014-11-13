@@ -161,31 +161,7 @@ namespace Menge
 		virtual void _changeParent( Node * _oldParent, Node * _newParent );
 		virtual void _addChild( Node * _node );
 		virtual void _removeChild( Node * _node );
-
-		virtual void invalidHierarchy();
-		virtual void _invalidHierarchy();
-
-	protected:
-		template<class T>
-		T * findTypeParent()
-		{
-			if( m_parent == nullptr )
-			{
-				return nullptr;
-			}
-
-			T * type_parent = dynamic_cast<T *>(m_parent);
-			
-			if( type_parent != nullptr )
-			{
-				return type_parent;
-			}
-
-			T * find_type_parent = m_parent->findTypeParent<T>();
-
-			return find_type_parent;
-		}
-
+		
 	protected:
 		Node * m_parent;
 

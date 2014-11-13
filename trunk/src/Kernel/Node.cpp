@@ -245,8 +245,6 @@ namespace Menge
 		this->setRelationTransformation( _parent );
 
 		this->_changeParent( oldparent, _parent );
-		
-		this->invalidHierarchy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::destroyAllChild()
@@ -649,32 +647,6 @@ namespace Menge
 	void Node::_removeChild( Node * _node )
 	{
         (void)_node;
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::invalidHierarchy()
-	{
-		this->_invalidHierarchy();
-
-		Node * single = m_child.single();
-
-		if( single != nullptr )
-		{
-			single->invalidHierarchy();
-		}
-		else
-		{
-			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
-			{
-				Node * children = *it;
-
-				children->invalidHierarchy();
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_invalidHierarchy()
-	{
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////

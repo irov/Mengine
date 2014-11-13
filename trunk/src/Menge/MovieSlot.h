@@ -20,6 +20,9 @@ namespace Menge
         void _setPersonalColor( const ColourValue& _color ) override;
         void _setPersonalAlpha( float _alpha ) override;
 
+	protected:
+		void _changeParent( Node * _oldParent, Node * _newParent ) override;
+
     protected:
         ConstString m_movieName;
 	};

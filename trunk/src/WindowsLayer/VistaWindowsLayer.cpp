@@ -14,6 +14,19 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	static void PathCorrectBackslash( WChar * _out, const WChar * _in )
+	{
+		wcscpy( _out, _in );
+
+		WChar * pch = wcschr( _out, '/' );
+		while( pch != NULL )
+		{
+			*pch = '\\';
+
+			pch = wcschr( pch + 1, '/' );
+		}
+	}
     //////////////////////////////////////////////////////////////////////////
     VistaWindowsLayer::VistaWindowsLayer()
         : m_serviceProvider(nullptr)
@@ -141,7 +154,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::setCurrentDirectory( const WChar * _path )
     {
-        if( ::SetCurrentDirectory( _path ) == FALSE )
+		WChar pathCorrect[MAX_PATH];
+		PathCorrectBackslash( pathCorrect, _path );
+
+        if( ::SetCurrentDirectory( pathCorrect ) == FALSE )
         {
             return false;
         }
@@ -174,49 +190,102 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::createDirectory( const WChar * _path )
     {
-        int cd_code = ::SHCreateDirectoryEx( NULL, _path, NULL );
+		WChar pathCorrect[MAX_PATH];
+		PathCorrectBackslash( pathCorrect, _path );
+		
+		PathRemoveBackslash( pathCorrect );
 
-        if( cd_code == ERROR_SUCCESS )
-        {
-            return true;
-        }
+		BOOL isDir = PathIsDirectoryW( pathCorrect );
 
-        if( cd_code == ERROR_ALREADY_EXISTS )
-        {
-            LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls alredy exists"
-                , _path
-                );
+		if( isDir == TRUE )
+		{
+			return true;
+		}
 
-            return true;
-        }
-    
-        DWORD err = GetLastError();
+		TVectorWString paths;
 
-        WString message;
-        this->makeFormatMessage( err, message );
+		while( true, true )
+		{
+			paths.push_back( pathCorrect );
 
-        LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectory invalid create dir '%ls' - '%ls'"
-            , _path
-            , message.c_str()
-            );
+			if( PathRemoveFileSpecW( pathCorrect ) == FALSE )
+			{
+				break;
+			}
 
-        return false;
+			BOOL isDir = PathIsDirectoryW( pathCorrect );
+
+			if( isDir == FILE_ATTRIBUTE_DIRECTORY )
+			{
+				break;
+			}
+		}
+
+		for( TVectorWString::reverse_iterator
+			it = paths.rbegin(),
+			it_end = paths.rend();
+		it != it_end;
+		++it )
+		{
+			const WString & path = *it;
+
+			BOOL successful = CreateDirectory( path.c_str(), NULL );
+
+			if( successful == FALSE )
+			{
+				DWORD err = GetLastError();
+
+				switch( err )
+				{
+				case ERROR_ALREADY_EXISTS:
+					{
+						LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls alredy exists"
+							, path.c_str()
+							);
+
+						return false;
+					}break;
+				case ERROR_PATH_NOT_FOUND:
+					{
+						LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls not found"
+							, path.c_str()
+							);
+
+						return false;
+					}break;
+				default:
+					{
+						LOGGER_WARNING(m_serviceProvider)("VistaWindowsLayer::createDirectory %ls unknown error %d"
+							, path.c_str()
+							, err
+							);
+
+						return false;
+					}break;
+				}
+			}
+		}
+
+		return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::fileExists( const WChar * _path )
     {
-        size_t len = wcslen( _path );
+		WChar pathCorrect[MAX_PATH];
+		PathCorrectBackslash( pathCorrect, _path );
+
+        size_t len = wcslen( pathCorrect );
         if( len == 0 )	// current dir
         {
             return true;
         }
 
-        if( _path[len - 1] == L':' )	// root dir
+        if( pathCorrect[len - 1] == L':' )	// root dir
         {
             return true;	// let it be
         }
 
-        DWORD attributes = GetFileAttributes( _path );
+        DWORD attributes = GetFileAttributes( pathCorrect );
 
         if( attributes == INVALID_FILE_ATTRIBUTES )
         {
@@ -229,7 +298,10 @@ namespace Menge
     HANDLE VistaWindowsLayer::createFile( const WChar * _path, DWORD _desiredAccess,
         DWORD _sharedMode, DWORD _creationDisposition )
     {
-        HANDLE handle = ::CreateFile( _path, _desiredAccess, _sharedMode, NULL,
+		WChar pathCorrect[MAX_PATH];
+		PathCorrectBackslash( pathCorrect, _path );
+
+        HANDLE handle = ::CreateFile( pathCorrect, _desiredAccess, _sharedMode, NULL,
             _creationDisposition, FILE_ATTRIBUTE_NORMAL, NULL );
 
 		if( handle == INVALID_HANDLE_VALUE )
@@ -237,7 +309,7 @@ namespace Menge
 			DWORD err_code = GetLastError();
 
 			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createFile invalid create file %ls err %d"
-				, _path
+				, pathCorrect
 				, err_code
 				);
 
@@ -245,7 +317,7 @@ namespace Menge
 		}
 
 #ifdef _DEBUG
-		if( this->validateFile_( _path ) == false )
+		if( this->validateFile_( pathCorrect ) == false )
 		{
 			::CloseHandle( handle );
 
@@ -559,11 +631,14 @@ namespace Menge
         filePath[filePathSize] = L'\0';
         filePathSize += 1; //Null
 
+		WChar filePathW[MAX_PATH];
         if( UNICODE_SERVICE(m_serviceProvider)
-            ->utf8ToUnicode( filePath, filePathSize, _filePath, _capacity, nullptr ) == false )
+            ->utf8ToUnicode( filePath, filePathSize, filePathW, _capacity, nullptr ) == false )
         {
             return false;
         }
+
+		PathCorrectBackslash( _filePath, filePathW );
         
         return true;
     }
@@ -587,33 +662,27 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VistaWindowsLayer::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
+	bool VistaWindowsLayer::createDirectoryUser_( const WChar * _userPath, const WString & _path, const WString & _file, const void * _data, size_t _size )
 	{
-		WCHAR szPath[MAX_PATH];
+		WChar szPath[MAX_PATH] = {0};
 
-		if(FAILED(SHGetFolderPath(NULL
-			, CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
-			, NULL
-			, 0
-			, szPath))) 
-		{
-			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
-				, _path.c_str()
-				, _file.c_str()
-				);
+		PathAppend( szPath, _userPath );
 
-			return false;
-		}	
+		WChar pathCorrect[MAX_PATH];
+		PathCorrectBackslash( pathCorrect, _path.c_str() );
 
-		PathAppend( szPath, _path.c_str() );
+		WChar fileCorrect[MAX_PATH];
+		PathCorrectBackslash( fileCorrect, _file.c_str() );
+
+		PathAppend( szPath, pathCorrect );
 
 		if( this->fileExists( szPath ) == false )
 		{
 			if( this->createDirectory( szPath ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createDirectory %s"
-					, _path.c_str()
-					, _file.c_str()
+					, pathCorrect
+					, fileCorrect
 					, szPath
 					);
 
@@ -621,7 +690,7 @@ namespace Menge
 			}
 		}
 
-		PathAppend( szPath, _file.c_str() );
+		PathAppend( szPath, fileCorrect );
 
 		HANDLE hFile = this->createFile( szPath 
 			, GENERIC_WRITE
@@ -632,8 +701,8 @@ namespace Menge
 		if( hFile == INVALID_HANDLE_VALUE )
 		{
 			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createFile %s"
-				, _path.c_str()
-				, _file.c_str()
+				, pathCorrect
+				, fileCorrect
 				, szPath
 				);
 
@@ -642,12 +711,44 @@ namespace Menge
 
 		DWORD bytesWritten = 0;
 		BOOL result = ::WriteFile( hFile, _data, _size, &bytesWritten, NULL );
-		
+
 		::CloseHandle( hFile );
 
 		if( result == FALSE )
 		{
 			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid writeFile %s"
+				, pathCorrect
+				, fileCorrect
+				, szPath
+				);
+
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool VistaWindowsLayer::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
+	{
+		WCHAR szPath[MAX_PATH];
+
+		if(FAILED(SHGetFolderPath(NULL
+			, CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
+			, NULL
+			, 0
+			, szPath))) 
+		{
+			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+				, _path.c_str()
+				, _file.c_str()
+				);
+
+			return false;
+		}
+
+		if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
 				, _path.c_str()
 				, _file.c_str()
 				, szPath
@@ -677,49 +778,9 @@ namespace Menge
 			return false;
 		}	
 
-		PathAppend( szPath, _path.c_str() );
-
-		if( this->fileExists( szPath ) == false )
+		if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
 		{
-			if( this->createDirectory( szPath ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid createDirectory %s"
-					, _path.c_str()
-					, _file.c_str()
-					, szPath
-					);
-
-				return false;
-			}
-		}
-
-		PathAppend( szPath, _file.c_str() );
-
-		HANDLE hFile = this->createFile( szPath 
-			, GENERIC_WRITE
-			, FILE_SHARE_READ | FILE_SHARE_WRITE
-			, CREATE_ALWAYS
-			);
-
-		if( hFile == INVALID_HANDLE_VALUE )
-		{
-			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid createFile %s"
-				, _path.c_str()
-				, _file.c_str()
-				, szPath
-				);
-
-			return false;
-		}
-
-		DWORD bytesWritten = 0;
-		BOOL result = ::WriteFile( hFile, _data, _size, &bytesWritten, NULL );
-
-		::CloseHandle( hFile );
-
-		if( result == FALSE )
-		{
-			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid writeFile %s"
+			LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::createDirectoryUserMusic: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
 				, _path.c_str()
 				, _file.c_str()
 				, szPath

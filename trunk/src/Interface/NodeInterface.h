@@ -40,6 +40,7 @@ namespace Menge
 
     public:
         virtual void addHomeless( Node * _homeless ) = 0;
+		virtual bool isHomeless( Node * _node ) const = 0;
         virtual void clearHomeless() = 0;
     };
 

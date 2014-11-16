@@ -99,6 +99,20 @@ namespace Menge
 
         m_homeless->addChild( _homeless );
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool NodeManager::isHomeless( Node * _node ) const
+	{
+		if( _node == nullptr )
+		{
+			return false;
+		}
+
+		Node * parent = _node->getParent();
+
+		bool is = parent == m_homeless;
+
+		return is;
+	}
     //////////////////////////////////////////////////////////////////////////
     void NodeManager::clearHomeless()
     {

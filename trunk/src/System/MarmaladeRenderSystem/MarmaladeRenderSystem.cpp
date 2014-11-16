@@ -1240,7 +1240,64 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr MarmaladeRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
 	{
-		return nullptr;
+		uint32_t hwChannels;
+		PixelFormat hwFormat;
+		this->findFormatFromChannels_( _format, _channels, hwFormat, hwChannels );
+
+		GLint textureInternalFormat = s_toGLInternalFormat( hwFormat );
+
+		if( textureInternalFormat == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createImage invalid get GL Texture Internal format for PF %d"
+				, hwFormat
+				);
+
+			return nullptr;
+		}
+
+		GLint textureColorFormat = s_toGLColorFormat( hwFormat );
+
+		if( textureColorFormat == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createImage invalid get GL Texture Color format for PF %d"
+				, hwFormat
+				);
+
+			return nullptr;
+		}
+
+		GLint textureColorDataType = s_getGLColorDataType( hwFormat );
+
+		GLuint tuid = 0;
+		glGenTextures( 1, &tuid );
+
+		MarmaladeTexture * texture = m_factoryOGLTexture.createObjectT();
+
+		texture->initialize( 
+			m_serviceProvider
+			, tuid
+			, ERIM_DYNAMIC
+			, 1
+			, _width
+			, _height
+			, hwChannels
+			, hwFormat
+			, textureInternalFormat
+			, textureColorFormat
+			, textureColorDataType
+			, false );
+
+		GLenum wrapS = GL_CLAMP_TO_EDGE;
+		GLenum wrapT = GL_CLAMP_TO_EDGE;
+		GLenum minFilter = GL_LINEAR;
+		GLenum magFilter = GL_LINEAR;
+
+		texture->setMagFilter( magFilter );
+		texture->setMinFilter( minFilter );
+		texture->setWrapS( wrapS );
+		texture->setWrapT( wrapT );
+
+		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )

@@ -1,116 +1,132 @@
 #	include "VideoDecoderGVF.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#   include "Interface/StringizeInterface.h"
+
+#	include "Core/Stream.h"
 
 #	include "Logger/Logger.h"
-
-#	include "inc/crn_decomp_ext.h"
-
-#	include <stdint.h>
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static int s_gvf_read( void * _user, void * _buffer, uint32_t _size )
-	{
-		InputStreamInterface * stream = (InputStreamInterface *)_user;
-
-		if( stream->read( _buffer, _size ) != _size )
-		{
-			return GVF_READ_FAILED;
-		}
-
-		return GVF_READ_SUCCESSFUL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static int s_gvf_seek( void * _user, uint32_t _size )
-	{
-		InputStreamInterface * stream = (InputStreamInterface *)_user;
-
-		if( stream->seek( _size ) == false )
-		{
-			return GVF_SEEK_FAILED;
-		}
-
-		return GVF_SEEK_SUCCESSFUL;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderGVF::VideoDecoderGVF()
-		: m_gvf(nullptr)
-		, m_frame(0)
-		, m_frames(0)
+		: m_frame(0)
+		, m_frameCount(0)
 		, m_pts(0.f)
-		, m_pitch(0)
-		, m_temp_size(0)
+		, m_framesOffset(nullptr)
     {
 	}
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderGVF::~VideoDecoderGVF()
 	{
-		gvf_decoder_destroy( m_gvf );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool VideoDecoderGVF::_initialize()
+	{		
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void VideoDecoderGVF::_finalize()
+	{
+		delete [] m_framesOffset;
+		m_framesOffset = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderGVF::_prepareData()
 	{
-		gvf_error_t err = gvf_decoder_create( &m_gvf, m_stream.get(), &s_gvf_read, &s_gvf_seek );
+		uint32_t magic;
+		m_stream->read( &magic, sizeof(magic) );
 
-		if( err != GVF_ERROR_SUCCESSFUL )
+		if( magic != 0x2EFA8000 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("VideoDecoderGVF::_initialize invalid err code %d"
-				, err
-				);
-
 			return false;
 		}
 
-		m_dataInfo.frameWidth = gvf_get_width_source( m_gvf );
-        m_dataInfo.frameHeight = gvf_get_height_source( m_gvf );
-		m_dataInfo.frameWidthHW = gvf_get_width_frame( m_gvf );
-		m_dataInfo.frameHeightHW = gvf_get_height_frame( m_gvf );
+		uint32_t version;
+		m_stream->read( &version, sizeof(version) );
 
-		m_dataInfo.fps = gvf_get_fps( m_gvf );
+		if( version != 1 )
+		{
+			return false;
+		}
+
+		uint32_t width;
+		m_stream->read( &width, sizeof(width) );
+
+		uint32_t height;
+		m_stream->read( &height, sizeof(height) );
+
+		uint32_t format;
+		m_stream->read( &format, sizeof(format) );
+
+		uint32_t duration_ms;
+		m_stream->read( &duration_ms, sizeof(duration_ms) );
+
+		uint32_t framerate;
+		m_stream->read( &framerate, sizeof(framerate) );
+
+		uint32_t framecount;
+		m_stream->read( &framecount, sizeof(framecount) );
+		
+		m_dataInfo.frameWidth = width;
+        m_dataInfo.frameHeight = height;
+
+		m_dataInfo.fps = framerate;
 		m_dataInfo.frameTiming = 1000.f / float(m_dataInfo.fps);
 
-		m_frames = gvf_get_frames( m_gvf );
-		m_dataInfo.duration = float(m_frames) / float(m_dataInfo.fps);
-
-		uint16_t gvf_format = gvf_get_format( m_gvf );
-
-		if( gvf_format == GVF_FORMAT_DXT5 )
-		{
-			m_dataInfo.format = PF_DXT5;
-		}
-		else if( gvf_format == GVF_FORMAT_DXT1 )
+		m_dataInfo.duration = float(duration_ms);
+		
+		if( format == 0 )
 		{
 			m_dataInfo.format = PF_DXT1;
 		}
-		
+		else if( format == 1 )
+		{
+			m_dataInfo.format = PF_ETC1;
+		}
+		else if( format == 2 )
+		{
+			m_dataInfo.format = PF_PVRTC4_RGB;
+		}
+		else
+		{
+			return false;
+		}
+
 		m_dataInfo.clamp = false;
 
-		m_temp_size = gvf_get_temp_size( m_gvf );
+		m_frameCount = framecount;
+
+		m_framesOffset = new size_t [framecount];
+
+		for( uint32_t i = 0; i != framecount; ++i )
+		{
+			uint32_t offset;
+			m_stream->read( &offset, sizeof(offset) );
+
+			m_framesOffset[i] = (size_t)offset;
+		}
 
 		return true;
 	}
 	////////////////////////////////////////////////////////////////////////// 
 	size_t VideoDecoderGVF::decode( void * _buffer, size_t _bufferSize )
 	{
-		CacheMemoryBuffer row_buffer(m_serviceProvider, m_temp_size, "VideoDecoderGVF");
-		void * temp_buffer = row_buffer.getMemory();
+		size_t frameOffset = m_framesOffset[m_frame];
 
-		gvf_error_t err = gvf_decode_frame( m_gvf, m_frame, temp_buffer, m_temp_size );
-
-		if( err != GVF_ERROR_SUCCESSFUL )
+		m_stream->seek( frameOffset );
+		
+		if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, _buffer, _bufferSize ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("VideoDecoderGVF::decode invalid err code %d"
-				, err
-				);
-
-			return 0;
-		}
-
-		if( crnex::decode_crn( _buffer, _bufferSize, temp_buffer, m_temp_size, m_pitch ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("VideoDecoderGVF::decode invalid decode crn"
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderGVF::decode invalid load"
 				);
 
 			return 0;
@@ -121,16 +137,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EVideoDecoderReadState VideoDecoderGVF::readNextFrame( float & _pts )
 	{	
-        if( m_frame + 1 == m_frames )
+        if( m_frame + 1 == m_frameCount )
         {
+			m_pts = m_dataInfo.duration;
 			_pts = m_pts;
 
             return VDRS_END_STREAM;
 		}
 
 		++m_frame;
-		m_pts += m_dataInfo.frameTiming;
 
+		m_pts += m_dataInfo.frameTiming;
         _pts = m_pts;
 
         return VDRS_SUCCESS;
@@ -146,7 +163,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void VideoDecoderGVF::setPitch( size_t _pitch )
     {
-       m_pitch = _pitch;
+		(void)_pitch;
+       //Empty
     }
 	//////////////////////////////////////////////////////////////////////////
 	float VideoDecoderGVF::getTiming() const

@@ -163,7 +163,7 @@ namespace Menge
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
 		RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-            ->createDynamicTexture( dataInfo->frameWidthHW, dataInfo->frameHeightHW, channels, 1, dataInfo->format );
+            ->createDynamicTexture( dataInfo->frameWidth, dataInfo->frameHeight, channels, 1, dataInfo->format );
 
 		if( dynamicTexture == nullptr )
 		{
@@ -651,8 +651,8 @@ namespace Menge
 		{
 			rect.left = 0;
 			rect.top = 0;
-			rect.right = (uint32_t)m_frameSize.x;
-			rect.bottom = (uint32_t)m_frameSize.y;
+			rect.right = texture->getWidth();
+			rect.bottom = texture->getHeight();
 		}
 		else
 		{
@@ -680,7 +680,9 @@ namespace Menge
 		}
 
 		m_videoDecoder->setPitch( pitch );
-        size_t bytes = m_videoDecoder->decode( lockRect, pitch * rect.bottom );
+
+		size_t bufferSize = texture->getMemoryUse();
+        size_t bytes = m_videoDecoder->decode( lockRect, bufferSize );
        
 		texture->unlock( 0 );
 
@@ -698,36 +700,24 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////
 	void Video::updateUV_()
 	{
-		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
+		const RenderTextureInterfacePtr & texture = m_textures[0];
 
-		if( dataInfo->clamp == true )
-		{
-			const RenderTextureInterfacePtr & texture = m_textures[0];
+		const Rect & rect = texture->getRect();
 
-			const Rect & rect = texture->getRect();
+		const RenderImageInterfacePtr & image = texture->getImage();
 
-			const RenderImageInterfacePtr & image = texture->getImage();
+		uint32_t hwWidth = image->getHWWidth();
+		uint32_t hwHeight = image->getHWHeight();
 
-			uint32_t hwWidth = image->getHWWidth();
-			uint32_t hwHeight = image->getHWHeight();
+		float scaleLeft = float(rect.left) / float(hwWidth);
+		float scaleTop = float(rect.top) / float(hwHeight);
+		float scaleRight = float(rect.right) / float(hwWidth);
+		float scaleBottom = float(rect.bottom) / float(hwHeight);
 
-			float scaleLeft = float(rect.left) / float(hwWidth);
-			float scaleTop = float(rect.top) / float(hwHeight);
-			float scaleRight = float(rect.right) / float(hwWidth);
-			float scaleBottom = float(rect.bottom) / float(hwHeight);
-
-			m_uv.x = scaleLeft;
-			m_uv.y = scaleTop;
-			m_uv.z = scaleLeft + (scaleRight - scaleLeft);
-			m_uv.w = scaleTop + (scaleBottom - scaleTop);
-		}
-		else
-		{
-			m_uv.x = 0.f;
-			m_uv.y = 0.f;
-			m_uv.z = 1.f;
-			m_uv.w = 1.f;
-		}
+		m_uv.x = scaleLeft;
+		m_uv.y = scaleTop;
+		m_uv.z = scaleLeft + (scaleRight - scaleLeft);
+		m_uv.w = scaleTop + (scaleBottom - scaleTop);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::invalidateMaterial_()

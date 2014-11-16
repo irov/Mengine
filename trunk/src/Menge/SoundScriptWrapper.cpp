@@ -375,22 +375,28 @@ namespace	Menge
 				->stop();
 		}
         //////////////////////////////////////////////////////////////////////////
-        void musicPause()
+        bool musicPause()
         {
-            AMPLIFIER_SERVICE(m_serviceProvider)
+            bool successful = AMPLIFIER_SERVICE(m_serviceProvider)
                 ->pause();
+
+			return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        void musicResume()
+        bool musicResume()
         {
-            AMPLIFIER_SERVICE(m_serviceProvider)
+            bool successful = AMPLIFIER_SERVICE(m_serviceProvider)
                 ->resume();
+
+			return successful;
         }
 		//////////////////////////////////////////////////////////////////////////
-		void musicShuffle( const ConstString & _list )
+		bool musicShuffle( const ConstString & _list )
 		{
-			AMPLIFIER_SERVICE(m_serviceProvider)
+			bool successful = AMPLIFIER_SERVICE(m_serviceProvider)
 				->shuffle( _list );
+
+			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		const ConstString & s_musicGetPlaying()

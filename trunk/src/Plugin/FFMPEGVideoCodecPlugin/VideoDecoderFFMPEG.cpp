@@ -287,9 +287,6 @@ namespace Menge
 		m_dataInfo.frameWidth = m_codecContext->width;
 		m_dataInfo.frameHeight = m_codecContext->height;		
 
-		m_dataInfo.frameWidthHW = m_codecContext->width;
-		m_dataInfo.frameHeightHW = m_codecContext->height;
-
         double fps = av_q2d( m_formatContext->streams[m_videoStreamId]->r_frame_rate );
 
 		m_dataInfo.fps = (uint32_t)fps;
@@ -578,9 +575,11 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////////// 
 	size_t VideoDecoderFFMPEG::decode( void * _buffer, size_t _bufferSize )
 	{
+		(void)_bufferSize;
+
 		if( m_options.mock == true )
 		{
-			return _bufferSize;
+			return 1;
 		}
 
         uint8_t * ffmpeg_buffer = (uint8_t *)_buffer;
@@ -612,7 +611,7 @@ namespace Menge
             return 0;
         }
 
-        return _bufferSize;
+        return 1;
     }
 	//////////////////////////////////////////////////////////////////////////
 	EVideoDecoderReadState VideoDecoderFFMPEG::readNextFrame( float & _pts )

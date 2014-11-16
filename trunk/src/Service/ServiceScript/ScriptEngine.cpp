@@ -19,6 +19,8 @@
 #	include <iostream>
 #	include <stdarg.h>
 
+#	include "pybind/debug.hpp"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -31,6 +33,62 @@ SERVICE_FACTORY( ScriptService, Menge::ScriptServiceInterface, Menge::ScriptEngi
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	class My_observer_bind_call
+		: public pybind::observer_bind_call
+	{
+	public:
+		My_observer_bind_call( ServiceProviderInterface * _serviceProvider )
+			: m_serviceProvider(_serviceProvider)
+			, m_count(0)
+		{
+		}
+
+	public:
+		void begin_bind_call( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
+		{
+			size_t count = LOG_SERVICE(m_serviceProvider)
+				->getCountMessage( LM_ERROR );
+
+			m_count = count;
+		}
+
+		void end_bind_call( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
+		{
+			size_t count = LOG_SERVICE(m_serviceProvider)
+				->getCountMessage( LM_ERROR );
+
+			if( m_count == count )
+			{
+				return;
+			}
+
+			if( strcmp( _className, "ScriptLogger" ) == 0 )
+			{
+				return;
+			}
+
+			if( strcmp( _className, "ErrorScriptLogger" ) == 0 )
+			{
+				return;
+			}
+
+			LOGGER_ERROR(m_serviceProvider)("script call %s::%s and get error!"
+				, _className
+				, _functionName
+				);
+
+			bool exist;
+			PyObject * module_traceback = pybind::module_import("traceback", exist );
+
+			pybind::call_method( module_traceback, "print_stack", "()" );
+		}
+
+	protected:		
+		ServiceProviderInterface * m_serviceProvider;
+
+		size_t m_count;
+	};
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::ScriptEngine()
 		: m_serviceProvider(nullptr)
@@ -57,11 +115,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::initialize()
 	{
-////#	ifndef _DEBUG
-		//++Py_OptimizeFlag;
-////#	endif
-//		++Py_NoSiteFlag;
-//		//Py_IgnoreEnvironmentFlag++;
         if( PLATFORM_SERVICE(m_serviceProvider)
             ->isDevelopmentMode() == true )
         {
@@ -95,7 +148,7 @@ namespace Menge
 		PyObject * py_python_version = pybind::ptr( python_version );
         this->addGlobalModule( "_PYTHON_VERSION", py_python_version );
 		pybind::decref( py_python_version );
-
+		
 		pybind::set_currentmodule( m_moduleMenge );
 
 		m_logger = new ScriptLogger(m_serviceProvider);
@@ -110,30 +163,12 @@ namespace Menge
 		pybind::setStdErrorHandle( py_loggerError );
 		pybind::decref( py_loggerError );
 
-        
-                
-        //pybind::class_<ScriptZipHolder>("ScriptZipHolder", true)
-        //    .def_call( &ScriptZipHolder::make_finder )
-        //    .def("find_module", &ScriptZipFinder::find_module )
-        //    ;
-
-        //pybind::class_<ScriptModuleLoaderCode>("ScriptModuleLoaderCode", true)
-        //    .def("load_module", &ScriptModuleLoaderCode::load_module)
-        //    ;
-
-        //pybind::class_<ScriptModuleLoaderSource>("ScriptModuleLoaderSource", true)
-        //    .def("load_module", &ScriptModuleLoaderSource::load_module)
-        //    ;
 
         pybind::class_<ScriptModuleFinder>("ScriptModuleFinder", true)
             .def("find_module", &ScriptModuleFinder::find_module)   
 			.def("load_module", &ScriptModuleFinder::load_module)
             ;
         
-        //pybind::class_<ScriptZipLoader>("ScriptZipLoader", true)
-            //.def("load_module", &ScriptZipLoader::load_module)
-            //;
-
         m_moduleFinder = new ScriptModuleFinder();
 
 		if( m_moduleFinder->initialize( m_serviceProvider ) == false )
@@ -149,27 +184,21 @@ namespace Menge
 		m_moduleFinder->setEmbed( py_moduleFinder );
 
         pybind::_set_module_finder( py_moduleFinder );
-        
+
+		pybind::set_observer_bind_call( new My_observer_bind_call(m_serviceProvider) );
+
+		bool gc_exist;
+		PyObject * gc = pybind::module_import( "gc", gc_exist );
+
+		pybind::call_method( gc, "disable", "()" );
+		
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::finalize()
 	{
         this->removeGlobalModule( "Menge" );
-
-		//for( TMapModules::iterator
-		//	it = m_modules.begin(),
-		//	it_end = m_modules.end();
-		//it != it_end;
-		//++it )
-		//{
-  //          //PyObject * module = m_modules.get_value(it);
-  //          
-  //          //pybind::module_fini( module );			
-		//}
-               
-        //pybind::module_fini( m_moduleMenge );
-
+		this->removeGlobalModule( "_PYTHON_VERSION" );
 
 		for( TMapScriptWrapper::iterator 
 			it = m_scriptWrapper.begin(),

@@ -2,7 +2,7 @@
 
 #	include "Codec/VideoDecoder.h"
 
-#	include "gvf.h"
+#   include "Interface/ArchiveInterface.h"
 
 namespace Menge
 {
@@ -13,6 +13,10 @@ namespace Menge
 	public:
 		VideoDecoderGVF();
 		~VideoDecoderGVF();
+
+	public:
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		bool _prepareData() override;
@@ -31,13 +35,13 @@ namespace Menge
 		EVideoDecoderReadState readNextFrame( float & _pts ) override;
 
 	protected:
-		gvf_decoder * m_gvf;
+		ArchivatorInterfacePtr m_archivator;
+
 		uint32_t m_frame;
-		uint32_t m_frames;
-		float m_pts;		
+		uint32_t m_frameCount;
 
-		size_t m_pitch;
+		float m_pts;
 
-		uint32_t m_temp_size;
+		size_t * m_framesOffset;
 	};
 }	// namespace Menge

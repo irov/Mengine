@@ -17,7 +17,7 @@ namespace Menge
 		LM_LOG = 5,
 		LM_INFO = 6,
 
-		LM_MAX
+		LM_MAX = 7
 	};
 
 	class LoggerInterface
@@ -48,6 +48,7 @@ namespace Menge
 
 	public:
 		virtual void logMessage( Menge::EMessageLevel _level, uint32_t _flag, const char * _message, size_t _size  ) = 0;
+		virtual size_t getCountMessage( Menge::EMessageLevel _level ) = 0;
 
 	public:
 		virtual bool registerLogger( LoggerInterface* _logger ) = 0;

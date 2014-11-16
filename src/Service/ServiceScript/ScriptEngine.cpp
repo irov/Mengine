@@ -191,7 +191,7 @@ namespace Menge
 		PyObject * gc = pybind::module_import( "gc", gc_exist );
 
 		pybind::call_method( gc, "disable", "()" );
-		
+
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -538,6 +538,8 @@ namespace Menge
 
 			return nullptr;
 		}
+
+		//pybind::decref( py_entity );
         
 		Entity * entity = pybind::extract<Entity *>( py_entity );
 

@@ -57,6 +57,11 @@ namespace Menge
 		{
 			return;
 		}
+
+		if( _newParent == nullptr )
+		{
+			return;
+		}
 		
 		LOGGER_ERROR(m_serviceProvider)("MovieSlot::_changeParent slot %s:%s movie %s (please don't change parent it's dange)"
 			, this->getName().c_str()

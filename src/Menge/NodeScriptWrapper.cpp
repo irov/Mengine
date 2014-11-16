@@ -1261,6 +1261,14 @@ namespace Menge
 
 			_node->release();
         }
+		//////////////////////////////////////////////////////////////////////////
+		bool s_isHomeless( Node * _node )
+		{
+			bool is = NODE_SERVICE(m_serviceProvider)
+				->isHomeless( _node );
+
+			return is;
+		}
         //////////////////////////////////////////////////////////////////////////
         float s_getTimingFactor( )
         {
@@ -5210,7 +5218,9 @@ namespace Menge
             pybind::def_functor( "getTimingFactor", nodeScriptMethod, &NodeScriptMethod::s_getTimingFactor );
             pybind::def_functor( "setTimingFactor", nodeScriptMethod, &NodeScriptMethod::s_setTimingFactor );
 
-            pybind::def_functor( "addHomeless", nodeScriptMethod, &NodeScriptMethod::s_addHomeless );
+            pybind::def_functor( "addHomeless", nodeScriptMethod, &NodeScriptMethod::s_addHomeless );						
+			pybind::def_functor( "isHomeless", nodeScriptMethod, &NodeScriptMethod::s_isHomeless );
+
             pybind::def_functor( "cancelTask", nodeScriptMethod, &NodeScriptMethod::s_cancelTask );
             pybind::def_functor( "joinTask", nodeScriptMethod, &NodeScriptMethod::s_joinTask );
 

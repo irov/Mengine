@@ -5,10 +5,6 @@
 
 #	include "Core/PixelFormat.h"
 
-#define PNG_BYTES_TO_CHECK 8
-
-#define _MAX( a, b ) (( a <= b )? b : a)
-
 enum PixelType
 {
 	PVRTC2RGB = 0,

@@ -86,6 +86,7 @@ extern "C" // only required if using g++
     //////////////////////////////////////////////////////////////////////////
     extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
     extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeAmplifier( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );
@@ -1307,6 +1308,15 @@ namespace Menge
         }
 
 		{
+			LOGGER_INFO(m_serviceProvider)( "initialize Video Codec..." );
+
+			Menge::PluginInterface * pluginMengeVideoCodec;
+			initPluginMengeVideoCodec( &pluginMengeVideoCodec );
+			pluginMengeVideoCodec->initialize( m_serviceProvider );
+			m_plugins.push_back( pluginMengeVideoCodec );
+		}
+
+		{
 			LOGGER_INFO(m_serviceProvider)( "initialize Amplifier..." );
 
 			Menge::PluginInterface * pluginMengeAmplifier;
@@ -1405,12 +1415,14 @@ namespace Menge
 
         LOGGER_INFO(m_serviceProvider)( "Creating Render Window..." );
 
-        if( m_application->createRenderWindow( 0 ) == false )
+        if( m_application->createRenderWindow( nullptr ) == false )
         {
             return false;
         }
 
+#	ifndef _DEBUG
 		s3ePointerSetInt( S3E_POINTER_HIDE_CURSOR, 1 );
+#	endif
 
 		m_timer->reset();
 

@@ -256,12 +256,36 @@ namespace Menge
 	{
 		m_play = false;
 
+		int32 s3eAudio_status = s3eAudioGetInt( S3E_AUDIO_STATUS );
+		
+		if( s3eAudio_status == -1 )
+		{
+			s3eAudioError s3eAudio_error = s3eAudioGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::pause invalid get status %d"
+				, s3eAudio_error
+				);
+
+			return false;
+		}
+		
+		if( s3eAudio_status != S3E_AUDIO_PLAYING )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::pause invalid status S3E_AUDIO_PLAYING != %d"
+				, s3eAudio_status
+				);
+
+			return false;
+		}
+
 		s3eResult result = s3eAudioPause();
 
-		if( result != S3E_RESULT_SUCCESS )
+		if( result == S3E_RESULT_ERROR )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::pause invalid %d"
-				, result
+			s3eAudioError s3eAudio_error = s3eAudioGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::pause invalid s3eAudioPause %d"
+				, s3eAudio_error
 				);
 
 			return false;
@@ -274,12 +298,36 @@ namespace Menge
 	{
         m_play = true;
 
+		int32 s3eAudio_status = s3eAudioGetInt( S3E_AUDIO_STATUS );
+
+		if( s3eAudio_status == -1 )
+		{
+			s3eAudioError s3eAudio_error = s3eAudioGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::resume invalid get status %d"
+				, s3eAudio_error
+				);
+
+			return false;
+		}
+
+		if( s3eAudio_status != S3E_AUDIO_PAUSED )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::resume invalid status S3E_AUDIO_PAUSED != %d"
+				, s3eAudio_status
+				);
+
+			return false;
+		}
+
 		s3eResult result = s3eAudioResume();
 
-		if( result != S3E_RESULT_SUCCESS )
+		if( result == S3E_RESULT_ERROR )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::resume invalid %d"
-				, result
+			s3eAudioError s3eAudio_error = s3eAudioGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::resume invalid s3eAudioResume %d"
+				, s3eAudio_error
 				);
 
 			return false;
@@ -324,12 +372,15 @@ namespace Menge
 
 		s3eResult result = s3eAudioSetInt( S3E_AUDIO_POSITION, s3e_pos );
 
-		if( result != S3E_RESULT_SUCCESS )
+		if( result == S3E_RESULT_ERROR )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't '%s:%s' set pos %d"
+			s3eAudioError s3eAudio_error = s3eAudioGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't '%s:%s' set pos %d error %d"
 				, _pakName.c_str()
 				, _filePath.c_str()
 				, s3e_pos
+				, s3eAudio_error
 				);
 
 			return false;
@@ -355,11 +406,14 @@ namespace Menge
 
 		result = s3eAudioPlayFromBuffer( const_cast<void *>(buffer_memory), buffer_size, 1 );
 				
-		if( result != S3E_RESULT_SUCCESS )
+		if( result == S3E_RESULT_ERROR )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't play sound '%s:%s'"
+			s3eAudioError s3eAudio_error = s3eAudioGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't play sound '%s:%s' error %d"
 				, _pakName.c_str()
 				, _filePath.c_str()
+				, s3eAudio_error
 				);
 
 			return false;
@@ -377,6 +431,17 @@ namespace Menge
 	{
 		int32 s3e_pos = s3eAudioGetInt( S3E_AUDIO_POSITION );
 
+		if( s3e_pos == -1 )
+		{
+			s3eAudioError s3eAudio_error = s3eAudioGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::getPosMs invalid get audio position %d"
+				, s3eAudio_error
+				);
+
+			return 0.f;
+		}
+
 		float pos = (float)s3e_pos;
 
 		return pos;
@@ -392,7 +457,7 @@ namespace Menge
 		 
 		s3eResult result = s3eAudioSetInt( S3E_AUDIO_POSITION, s3e_pos );
 
-		if( result != S3E_RESULT_SUCCESS )
+		if( result == S3E_RESULT_ERROR )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Amplifier::setPosMs invalid set S3E_AUDIO_POSITION %d"
 				, s3e_pos
@@ -402,11 +467,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::onSoundChangeVolume( float _sound, float _music, float _voice )
 	{
-		int32 s3e_volume = (int32)(_music * S3E_AUDIO_MAX_VOLUME);
+		int32 s3e_volume = (int32)(_music * float(S3E_AUDIO_MAX_VOLUME));
 
 		s3eResult result = s3eAudioSetInt( S3E_AUDIO_VOLUME, s3e_volume );
 
-		if( result != S3E_RESULT_SUCCESS )
+		if( result == S3E_RESULT_ERROR )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Amplifier::onSoundChangeVolume invalid set S3E_AUDIO_VOLUME %d"
 				, s3e_volume

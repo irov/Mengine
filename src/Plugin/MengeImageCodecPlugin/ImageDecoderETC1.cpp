@@ -3,8 +3,6 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
-#define PNG_BYTES_TO_CHECK 8
-
 #	include <string.h>
 
 static uint16_t readBEUint16(const char* pIn) 
@@ -54,6 +52,7 @@ bool ImageDecoderETC1::_prepareData()
 		LOGGER_ERROR(m_serviceProvider)("ImageDecoderETC1::initialize Bad or not ETC1 file" );
 		return false;
 	}
+
 	char * buffer = reinterpret_cast<char *>(&m_etc1_ptr);
 	m_etc1_ptr.format = readBEUint16(buffer + ETC1_PKM_FORMAT_OFFSET);
 	m_etc1_ptr.texHeight = readBEUint16(buffer + ETC1_PKM_ENCODED_HEIGHT_OFFSET);

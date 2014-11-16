@@ -13,6 +13,10 @@ namespace Menge
         , m_serviceProvider(nullptr)
         , m_verboseFlag(0)
 	{
+		for( size_t i = 0; i != LM_MAX; ++i )
+		{
+			m_countMessage[i] = 0;
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	LogEngine::~LogEngine()
@@ -69,6 +73,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void LogEngine::logMessage( EMessageLevel _level, uint32_t _flag, const char * _message, size_t _size  )
 	{
+		++m_countMessage[_level];
+
 		for( TVectorLoggers::iterator 
 			it = m_loggers.begin(), 
 			it_end = m_loggers.end();
@@ -84,6 +90,13 @@ namespace Menge
 
 			logger->log( _level, _flag, _message, _size );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t LogEngine::getCountMessage( Menge::EMessageLevel _level )
+	{
+		size_t count = m_countMessage[_level];
+
+		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool LogEngine::registerLogger( LoggerInterface * _logger )

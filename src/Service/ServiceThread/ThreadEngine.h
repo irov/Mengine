@@ -83,5 +83,7 @@ namespace Menge
 
 		typedef stdex::vector<ThreadDesc> TVectorThreads;
 		TVectorThreads m_threads;
+
+		bool m_threadAvaliable;
 	};
 }	// namespace Menge

@@ -1,6 +1,7 @@
 #	include "ImageDecoderArchive.h"
 
 #	include "Core/CacheMemoryBuffer.h"
+#	include "Core/CacheMemoryStream.h"
 
 #   include "Logger/Logger.h"
 
@@ -77,14 +78,11 @@ namespace Menge
 		void * stream_memory;
 		if( m_stream->memory( &stream_memory, &stream_size ) == false )
 		{
-			size_t size = m_stream->size();
+			CacheMemoryStream buffer(m_serviceProvider, m_stream, "ImageDecoderArchive::decodeData_");
+			const void * cache_buffer = buffer.getMemory();
+			size_t cache_size = buffer.getSize();
 
-			CacheMemoryBuffer buffer(m_serviceProvider, size, "ImageDecoderArchive::decodeData_");
-			void * cache_buffer = buffer.getMemory();
-
-			m_stream->read( cache_buffer, size );
-
-			decodyByte = this->decompressData_( cache_buffer, size, _buffer, m_uncompressSize );
+			decodyByte = this->decompressData_( cache_buffer, cache_size, _buffer, m_uncompressSize );
 		}
 		else
 		{

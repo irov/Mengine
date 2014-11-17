@@ -16,7 +16,7 @@ namespace Menge
 		~MarmaladeTexture();
 
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget );
+        void initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
 
 	public:
         void * lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly ) override;
@@ -36,7 +36,6 @@ namespace Menge
 		void _destroy() override;
 
 	public: 
-		bool isRenderTarget() const;
 		GLuint getUId() const;
 		
 		void setMinFilter( GLenum _minFilter );
@@ -55,7 +54,6 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 
 		GLuint m_uid;
-		bool m_isRenderTarget;
 		
 		PixelFormat m_hwPixelFormat;
 

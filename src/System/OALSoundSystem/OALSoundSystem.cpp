@@ -1,5 +1,7 @@
 #	include "OALSoundSystem.h"
+
 #	include "Interface/UnicodeInterface.h"
+#	include "Interface/ThreadSystemInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -19,6 +21,7 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_context(nullptr)
 		, m_device(nullptr)
+		, m_threadAvaliable(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -141,6 +144,9 @@ namespace Menge
 		alListenerfv( AL_ORIENTATION, lorient );
         OAL_CHECK_ERROR(m_serviceProvider);
 
+		m_threadAvaliable = THREAD_SYSTEM(m_serviceProvider)
+			->avaliable();
+
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -205,7 +211,7 @@ namespace Menge
 	{
 		OALSoundBufferBase * base = nullptr;
 
-        if( _isStream == false )
+        if( _isStream == false || m_threadAvaliable == false )
         {
             OALSoundBuffer * buffer = m_poolOALSoundBuffer.createObjectT();
             

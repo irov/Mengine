@@ -62,5 +62,7 @@ namespace Menge
 
         typedef FactoryPoolStore<OALSoundSource, 32> TPoolOALSoundSource;
         TPoolOALSoundSource m_poolOALSoundSource;
+
+		bool m_threadAvaliable;
     };
 }	// namespace Menge

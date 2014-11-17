@@ -10,7 +10,7 @@
 #	include "Logger/Logger.h"
 
 #   include "Core/FilePath.h"
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/CacheMemoryStream.h"
 #	include "Core/Stream.h"
 
 #   include "Config/Blobject.h"
@@ -67,11 +67,9 @@ namespace Menge
 
         size_t uncompressSize = input->size();
 
-		CacheMemoryBuffer data_buffer(m_serviceProvider, uncompressSize, "ModelConverterMDLToMDZ_data");
-		TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
-
-        input->read( data_memory, uncompressSize );
-
+		CacheMemoryStream data_buffer(m_serviceProvider, input, "ModelConverterMDLToMDZ_data");
+		const TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
+		
 		OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
 			->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
 

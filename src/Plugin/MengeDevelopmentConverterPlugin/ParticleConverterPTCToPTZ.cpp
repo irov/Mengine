@@ -10,7 +10,7 @@
 
 #   include "Core/Magic.h"
 #   include "Core/FilePath.h"
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/CacheMemoryStream.h"
 #	include "Core/Stream.h"
 
 #   include "Config/Blobject.h"
@@ -62,14 +62,20 @@ namespace Menge
 		        
         InputStreamInterfacePtr input = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false );
-
-        size_t uncompressSize = input->size();
-
-		CacheMemoryBuffer data_buffer(m_serviceProvider, uncompressSize, "ParticleConverterPTCToPTZ_data");
-		TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
-
-        input->read( data_memory, uncompressSize );
 		
+		CacheMemoryStream data_buffer(m_serviceProvider, input, "ParticleConverterPTCToPTZ_data");
+		const TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
+		size_t data_size = data_buffer.getSize();
+
+		if( data_memory == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: invalid cache memory '%s'"
+				, full_input.c_str()
+				);
+
+			return false;
+		}
+
         OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
 
@@ -82,7 +88,7 @@ namespace Menge
 			return false;
 		}
 
-		if( Helper::writeStreamArchiveData( m_serviceProvider, output, m_archivator, GET_MAGIC_NUMBER(MAGIC_PTZ), GET_MAGIC_VERSION(MAGIC_PTZ), false, data_memory, uncompressSize ) == false )
+		if( Helper::writeStreamArchiveData( m_serviceProvider, output, m_archivator, GET_MAGIC_NUMBER(MAGIC_PTZ), GET_MAGIC_VERSION(MAGIC_PTZ), false, data_memory, data_size ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleConverterPTCToPTZ::convert_: invalid write '%s'"
 				, full_output.c_str()

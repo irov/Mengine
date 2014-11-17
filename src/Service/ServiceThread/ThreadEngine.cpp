@@ -18,6 +18,7 @@ namespace Menge
 	ThreadEngine::ThreadEngine()
 		: m_serviceProvider(nullptr)      
         , m_threadCount(0)
+		, m_threadAvaliable(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -47,6 +48,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::initialize( uint32_t _threadCount )
 	{
+		m_threadAvaliable = THREAD_SYSTEM(m_serviceProvider)
+			->avaliable();
+
+		if( m_threadAvaliable == false )
+		{
+			return true;
+		}
+
         m_threadCount = _threadCount;
 
 		m_allocatorPoolMutex = THREAD_SYSTEM(m_serviceProvider)
@@ -128,6 +137,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::createThread( const ConstString & _threadName, int _priority )
 	{
+		if( m_threadAvaliable == false )
+		{
+			return false;
+		}
+
 		if( this->hasThread_( _threadName ) == true )
 		{
 			return false;
@@ -240,6 +254,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ThreadQueueInterfacePtr ThreadEngine::runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize )
 	{
+		if( m_threadAvaliable == false )
+		{
+			return nullptr;
+		}
+
 		ThreadQueuePtr taskQueue = m_factoryThreadQueue.createObjectT();
 
 		taskQueue->setServiceProvider( m_serviceProvider );

@@ -1,6 +1,5 @@
 #	include "CacheManager.h"
 
-#	include "Core/CacheMemoryBuffer.h"
 #	include "Core/Memory.h"
 #	include "Core/CRC32.h"
 

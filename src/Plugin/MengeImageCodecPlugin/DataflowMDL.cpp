@@ -5,7 +5,6 @@
 #	include "Interface/StringizeInterface.h"
 
 #	include "Core/BlobjectRead.h"
-#	include "Core/CacheMemoryBuffer.h"
 #	include "Core/Stream.h"
 
 #	include "Logger/Logger.h"

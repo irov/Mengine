@@ -4,8 +4,6 @@
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/CacheInterface.h"
 
-#	include "Core/CacheMemoryBuffer.h"
-
 #   include "Config/Blobject.h"
 
 #   include "Logger/Logger.h"

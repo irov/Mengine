@@ -102,6 +102,20 @@ namespace Menge
 			printf("debug!\n");
 		}
 
+		size_t s_globalmemoryuse()
+		{
+			size_t gmu = stdex_allocator_globalmemoryuse();
+
+			return gmu;
+		}
+
+		size_t s_memoryuse()
+		{
+			size_t gmu = stdex_allocator_memoryuse();
+
+			return gmu;
+		}
+
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
@@ -1390,5 +1404,7 @@ namespace Menge
         pybind::def_functor( "setCursorPosition", helperScriptMethod, &HelperScriptMethod::s_setCursorPosition );
 
 		pybind::def_functor( "debug", helperScriptMethod, &HelperScriptMethod::s_debug );
+		pybind::def_functor( "globalmemoryuse", helperScriptMethod, &HelperScriptMethod::s_globalmemoryuse );
+		pybind::def_functor( "memoryuse", helperScriptMethod, &HelperScriptMethod::s_memoryuse );
 	}
 }

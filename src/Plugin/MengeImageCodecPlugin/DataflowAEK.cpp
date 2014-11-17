@@ -5,7 +5,6 @@
 #	include "Interface/StringizeInterface.h"
 
 #	include "Core/Memory.h"
-#	include "Core/CacheMemoryBuffer.h"
 #	include "Core/Stream.h"
 
 #	include "stdex/memory_reader.h"

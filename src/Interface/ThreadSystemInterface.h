@@ -78,6 +78,9 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
+		virtual bool avaliable() const = 0;
+
+	public:
 		virtual ThreadIdentityPtr createThread( int _priority ) = 0;
 
 	public:

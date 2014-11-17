@@ -16,7 +16,6 @@ namespace Menge
 		, m_internalFormat(0)
 		, m_format(0)
 		, m_type(0)
-		, m_isRenderTarget(false)		
 		, m_wrapS(0)
 		, m_wrapT(0)
 		, m_minFilter(0)
@@ -32,11 +31,12 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeTexture::initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type, bool _isRenderTarget )
+    void MarmaladeTexture::initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
     {
 		m_serviceProvider = _serviceProvider;
-
-        m_uid = _uid;
+		        
+		m_uid = _uid;
+		m_mode = _mode;
 		m_hwMipmaps = _mipmaps;
         m_hwWidth = _width;
         m_hwHeight = _height;
@@ -44,9 +44,16 @@ namespace Menge
         m_hwPixelFormat = _pixelFormat;
         m_internalFormat = _internalFormat;
         m_format = _format;
-        m_type = _type;
-        m_isRenderTarget = _isRenderTarget;
-		m_mode = _mode;
+        m_type = _type;		
+
+		glBindTexture( GL_TEXTURE_2D, m_uid );
+
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_wrapS );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_minFilter );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_magFilter );
+
+        glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE );
     }
 	//////////////////////////////////////////////////////////////////////////
 	ERenderImageMode MarmaladeTexture::getMode() const
@@ -117,13 +124,6 @@ namespace Menge
 	{		
 		glBindTexture( GL_TEXTURE_2D, m_uid );
 
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_wrapS );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_minFilter );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_magFilter );
-
-        glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE );
-
 		uint32_t miplevel_width = m_hwWidth >> _level;
 		uint32_t miplevel_height = m_hwHeight >> _level;
 
@@ -136,18 +136,42 @@ namespace Menge
 			, textureMemorySize
 			);
 
-		switch( m_internalFormat )
+		//if( m_mode == ERIM_NORMAL )
 		{
-		case GL_ETC1_RGB8_OES:
-		case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
-		case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-			{				
-				glCompressedTexImage2D( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, m_lockMemory );
-			}break;
-		default:
+			switch( m_internalFormat )
 			{
-				glTexImage2D( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, m_format, m_type, m_lockMemory );				
-			}break;
+			case GL_ETC1_RGB8_OES:
+			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+				{				
+					glCompressedTexImage2D( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, m_lockMemory );
+				}break;
+			default:
+				{
+					glTexImage2D( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, m_format, m_type, m_lockMemory );				
+				}break;
+			}
+		}
+		//else if( m_mode == ERIM_DYNAMIC )
+		//{
+		//	switch( m_internalFormat )
+		//	{
+		//	case GL_ETC1_RGB8_OES:
+		//	case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+		//	case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+		//		{			
+		//			glCompressedTexImage2D( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, m_lockMemory );
+		//			glCompressedTexSubImage2D( GL_TEXTURE_2D, m_lockLevel, 0, 0, miplevel_width, miplevel_height, m_internalFormat, textureMemorySize, m_lockMemory );
+		//		}break;
+		//	default:
+		//		{
+		//			glTexSubImage2D( GL_TEXTURE_2D, m_lockLevel, 0, 0, miplevel_width, miplevel_height, m_format, m_type, m_lockMemory );				
+		//		}break;
+		//	}
+		//}
+		//else
+		{
+			//Empty
 		}
 
 		GLenum gl_err = glGetError();
@@ -175,11 +199,6 @@ namespace Menge
 	void MarmaladeTexture::_destroy()
 	{
 		glDeleteTextures( 1, &m_uid );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeTexture::isRenderTarget() const
-	{
-		return m_isRenderTarget;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	GLuint MarmaladeTexture::getUId() const

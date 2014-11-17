@@ -68,11 +68,9 @@ namespace Menge
 	{
         (void)_bufferSize;
 
-		CacheMemoryBuffer dxt_buffer(m_serviceProvider, m_data_size, "ImageDecoderCRN");
-		void * row_memory = dxt_buffer.getMemory();
-
-		m_stream->read( row_memory, m_data_size );
-
+		CacheMemoryStream dxt_buffer(m_serviceProvider, m_stream, m_data_size, "ImageDecoderCRN");
+		const void * row_memory = dxt_buffer.getMemory();
+		
 		if( crnex::decode_crn( _buffer, _bufferSize, row_memory, m_data_size, m_options.pitch ) == false )
 		{
 			return 0;

@@ -48,6 +48,9 @@ src
     
     CacheMemoryBuffer.h
     CacheMemoryBuffer.cpp
+    
+    CacheMemoryStream.h
+    CacheMemoryStream.cpp
 	
     ValueInterpolator.h
     

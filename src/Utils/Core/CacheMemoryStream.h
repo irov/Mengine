@@ -1,18 +1,18 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
-#	include "Interface/StreamInterface.h"
 #	include "Interface/CacheInterface.h"
 
 #	include "Config/Typedef.h"
 
 namespace Menge
 {
-	class CacheMemoryBuffer
+	class CacheMemoryStream
 	{
 	public:
-		CacheMemoryBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc );
-		~CacheMemoryBuffer();
+		CacheMemoryStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const char * _doc );
+		CacheMemoryStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size, const char * _doc );
+		~CacheMemoryStream();
 
 	public:
 		inline size_t getSize() const
@@ -21,15 +21,15 @@ namespace Menge
 		}
 
 	public:
-		inline void * getMemory() const
+		inline const void * getMemory() const
 		{
 			return m_memory;
 		}
 
 		template<class T>
-		inline T * getMemoryT() const
+		inline const T * getMemoryT() const
 		{
-			return static_cast<T *>(m_memory);
+			return static_cast<const T *>(m_memory);
 		}
 
 	public:

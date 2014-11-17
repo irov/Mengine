@@ -35,6 +35,9 @@ namespace Menge
 		void finalize() override;
 
 	public:
+		bool avaliable() const override;
+
+	public:
 		ThreadIdentityPtr createThread( int _priority ) override;
 		
 	public:

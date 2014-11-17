@@ -2,6 +2,7 @@
 
 #	include "Interface/CacheInterface.h"
 
+#	include "Core/CacheMemoryStream.h"
 #	include "Core/CacheMemoryBuffer.h"
 
 #	include "Logger/Logger.h"
@@ -72,15 +73,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
 	{
-		CacheMemoryBuffer compress_buffer(m_serviceProvider, _size, "ArchiveService::decompressStream");
-		void * compress_memory = compress_buffer.getMemory();
-
-		size_t read_memory = _stream->read( compress_memory, _size );
-
-		if( read_memory != _size )
+		CacheMemoryStream compress_buffer(m_serviceProvider, _stream, _size, "ArchiveService::decompressStream");
+		const void * compress_memory = compress_buffer.getMemory();
+				
+		if( compress_memory == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ArchiveService::decomress: invalid compress buffer read %d need %d"
-				, read_memory
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::decomress: invalid compress buffer %d"
 				, _size
 				);
 
@@ -103,14 +101,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInputPtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream )
 	{
-		size_t stream_size = _stream->size();
+		CacheMemoryStream binary_buffer(m_serviceProvider, _stream, "ArchiveService::compressStream");
+		const void * binary_memory = binary_buffer.getMemory();
+		size_t binary_size = binary_buffer.getSize();
 
-		CacheMemoryBuffer binary_buffer(m_serviceProvider, stream_size, "ArchiveService::compressStream");
-		void * binary_memory = binary_buffer.getMemory();
+		if( binary_memory == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ArchiveService::compressStream: invalid cache buffer"
+				);
 
-		_stream->read( binary_memory, stream_size );
-
-		MemoryInputPtr compress_memory = this->compressBuffer( _archivator, binary_memory, stream_size );
+			return nullptr;
+		}
+				
+		MemoryInputPtr compress_memory = this->compressBuffer( _archivator, binary_memory, binary_size );
 
 		return compress_memory;
 	}

@@ -3,7 +3,7 @@
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/CacheMemoryStream.h"
 
 #	include "Playlist.h"
 
@@ -368,24 +368,6 @@ namespace Menge
 
 		this->stop();
 
-		int32 s3e_pos = (int32)_pos;
-
-		s3eResult result = s3eAudioSetInt( S3E_AUDIO_POSITION, s3e_pos );
-
-		if( result == S3E_RESULT_ERROR )
-		{
-			s3eAudioError s3eAudio_error = s3eAudioGetError();
-
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't '%s:%s' set pos %d error %d"
-				, _pakName.c_str()
-				, _filePath.c_str()
-				, s3e_pos
-				, s3eAudio_error
-				);
-
-			return false;
-		}
-				
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( _pakName, _filePath, false );
 		
@@ -399,14 +381,13 @@ namespace Menge
 			return false;
 		}
 
-		size_t buffer_size = stream->size();
-
-		CacheMemoryBuffer buffer(m_serviceProvider, buffer_size, "Amplifier::play");
+		CacheMemoryStream buffer(m_serviceProvider, stream, "Amplifier::play");
 		const void * buffer_memory = buffer.getMemory();
-
-		result = s3eAudioPlayFromBuffer( const_cast<void *>(buffer_memory), buffer_size, 1 );
+		size_t buffer_size = buffer.getSize();
 				
-		if( result == S3E_RESULT_ERROR )
+		s3eResult result_play = s3eAudioPlayFromBuffer( const_cast<void *>(buffer_memory), buffer_size, 1 );
+				
+		if( result_play == S3E_RESULT_ERROR )
 		{
 			s3eAudioError s3eAudio_error = s3eAudioGetError();
 
@@ -418,6 +399,24 @@ namespace Menge
 
 			return false;
 		}	
+
+		int32 s3e_pos = (int32)_pos;
+
+		s3eResult result_position = s3eAudioSetInt( S3E_AUDIO_POSITION, s3e_pos );
+
+		if( result_position == S3E_RESULT_ERROR )
+		{
+			s3eAudioError s3eAudio_error = s3eAudioGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't '%s:%s' set pos %d error %d"
+				, _pakName.c_str()
+				, _filePath.c_str()
+				, s3e_pos
+				, s3eAudio_error
+				);
+
+			return false;
+		}
 
 		return true;
 	}

@@ -1117,8 +1117,7 @@ namespace Menge
             , hwFormat
             , textureInternalFormat
             , textureColorFormat
-            , textureColorDataType
-            , false );
+            , textureColorDataType );
 
 		GLenum wrapS = GL_CLAMP_TO_EDGE;
 		GLenum wrapT = GL_CLAMP_TO_EDGE;
@@ -1284,8 +1283,7 @@ namespace Menge
 			, hwFormat
 			, textureInternalFormat
 			, textureColorFormat
-			, textureColorDataType
-			, false );
+			, textureColorDataType );
 
 		GLenum wrapS = GL_CLAMP_TO_EDGE;
 		GLenum wrapT = GL_CLAMP_TO_EDGE;

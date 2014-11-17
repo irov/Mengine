@@ -464,7 +464,7 @@ namespace Menge
 #	ifdef _DEBUG
 		if( stdex::intrusive_has( m_child.begin(), m_child.end(), _node ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("Node::removeChildren %s not found children %s"
+            LOGGER_ERROR(m_serviceProvider)("Node::removeChild %s not found children %s"
                 , this->getName().c_str()
                 , _node->getName().c_str()
                 );

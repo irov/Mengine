@@ -39,6 +39,11 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Win32ThreadSystem::avaliable() const
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	ThreadIdentityPtr Win32ThreadSystem::createThread( int _priority )
 	{
 		Win32ThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObjectT();

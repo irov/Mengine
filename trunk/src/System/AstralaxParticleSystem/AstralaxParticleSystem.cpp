@@ -2,7 +2,7 @@
 
 #   include "Interface/StringizeInterface.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/CacheMemoryStream.h"
 #   include "Core/String.h"
 
 #   include "Logger/Logger.h"
@@ -205,21 +205,16 @@ namespace Menge
 	{
 		AstralaxEmitterContainerPtr astralax_container = stdex::intrusive_static_cast<AstralaxEmitterContainerPtr>(_container);
 
-		uint32_t fileSize = _stream->size();
-
-		CacheMemoryBuffer container_buffer(m_serviceProvider, fileSize, "AstralaxEmitterContainer2");
-		void * container_memory = container_buffer.getMemory();
+		CacheMemoryStream container_buffer(m_serviceProvider, _stream, "AstralaxEmitterContainer2");
+		const void * container_memory = container_buffer.getMemory();
 
 		if( container_memory == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize invalid get memory %d"				
-				, fileSize
+			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize invalid get memory"				
 				);
 
 			return false;
 		}
-
-		_stream->read( container_memory, fileSize );
 
 		HM_FILE file = Magic_OpenFileInMemory( static_cast<const char*>(container_memory) );
 

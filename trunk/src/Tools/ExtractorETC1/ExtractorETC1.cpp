@@ -144,8 +144,19 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	
 	FILE * file_in = _wfopen( inCanonicalizeQuote, L"rb" );
 
+	if( file_in == NULL )
+	{
+		message_error("in file not found %ls"
+			, inCanonicalizeQuote
+			);
+
+		return 1;
+	}
+
 	PVRTextureHeader header;
 	fread( &header, sizeof(header), 1, file_in );
+
+	fseek( file_in, header.metaDataSize, SEEK_CUR );
 
 	uint32_t w = (header.width + 3) / 4;
 	uint32_t h = (header.height + 3) / 4;
@@ -161,6 +172,15 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	PathUnquoteSpaces( outCanonicalizeQuote );
 
 	FILE * file_out = _wfopen( outCanonicalizeQuote, L"wb" );
+
+	if( file_out == NULL )
+	{
+		message_error("out file not fount %ls"
+			, inCanonicalizeQuote
+			);
+
+		return 1;
+	}
 
 	fwrite( etc1_byte, 1, size, file_out );
 	fclose( file_out );	

@@ -6,6 +6,7 @@
 #	include "Interface/CacheInterface.h"
 
 #	include "Core/CacheMemoryBuffer.h"
+#	include "Core/CacheMemoryStream.h"
 
 #	include "Logger/Logger.h"
 
@@ -111,26 +112,19 @@ namespace Menge
 		size_t streamSize;
 		if( m_stream->memory( &streamMemory, &streamSize ) == false )
 		{
-			size_t memorySize = m_stream->size();
+			CacheMemoryStream buffer(m_serviceProvider, m_stream, "ImageDecoderWEBP::decode");
+			const uint8_t * buffer_memory = buffer.getMemoryT<uint8_t>();
+			size_t buffer_size = buffer.getSize();
 
-			CacheMemoryBuffer buffer(m_serviceProvider, memorySize, "ImageDecoderWEBP::decode");
-			void * memory = buffer.getMemory();
-
-			if( memory == nullptr )
+			if( buffer_memory == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ImageDecoderWEBP::decode invalid get memory %d"
-					, memorySize
+				LOGGER_ERROR(m_serviceProvider)("ImageDecoderWEBP::decode invalid get memory"
 					);
 
 				return false;
 			}
-
-			m_stream->read( memory, memorySize );
-
-			const uint8_t * webp_source = static_cast<const uint8_t *>(memory);
-			size_t webp_source_size = memorySize;
 			
-			if( this->decodeWEBP_( webp_source, webp_source_size, webp_buffer, webp_buffer_size ) == false )
+			if( this->decodeWEBP_( buffer_memory, buffer_size, webp_buffer, webp_buffer_size ) == false )
 			{
 				return 0;
 			}

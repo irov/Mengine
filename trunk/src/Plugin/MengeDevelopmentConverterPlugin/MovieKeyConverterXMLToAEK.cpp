@@ -309,6 +309,9 @@ namespace Menge
 			frame.scale = mt::vec3f(0.f, 0.f, 0.f);
 			frame.opacity = 0.f;
 			frame.volume = 0.f;	
+
+			mt::vec3f rotation(0.f, 0.f, 0.f);
+			mt::vec3f orientation(0.f, 0.f, 0.f);
 			
 			const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::TVectorMeta_KeyFrame3D & includes_frame3d = meta_frames3d.get_IncludesKeyFrame3D();
 
@@ -321,9 +324,6 @@ namespace Menge
 				const Metacode::Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & meta_frame3d = *it;
 
 				uint32_t count = 1;
-
-				mt::vec3f rotation(0.f, 0.f, 0.f);
-				mt::vec3f orientation(0.f, 0.f, 0.f);
 				
 				meta_frame3d.get_AnchorPoint( frame.anchorPoint );
 				meta_frame3d.get_Position( frame.position );

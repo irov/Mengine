@@ -329,7 +329,7 @@ namespace Menge
 				meta_frame3d.get_Position( frame.position );
 				meta_frame3d.get_Rotation( rotation );
 				meta_frame3d.get_Orientation( orientation );
-				meta_frame3d.get_Scale( frame.scale );                
+				meta_frame3d.get_Scale( frame.scale );
 				meta_frame3d.get_Opacity( frame.opacity );
 				meta_frame3d.get_Count( count );
 

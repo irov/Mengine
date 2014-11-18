@@ -157,6 +157,8 @@ namespace Menge
 			return;
 		}
 
+		m_active = false;
+
 		if( m_afterActive == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Node::deactivate %s invalid deactivate in 'activate state'"
@@ -189,9 +191,7 @@ namespace Menge
 				children->deactivate();
 			}
 		}
-
-		m_active = false;
-
+				
 		this->_afterDeactivate();		
 
 		this->updateRendering_();

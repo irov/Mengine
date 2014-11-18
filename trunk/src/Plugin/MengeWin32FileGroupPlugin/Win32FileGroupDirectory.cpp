@@ -218,8 +218,10 @@ namespace Menge
 			return false;
 		}
 
+		//Double Zero!
 		size_t fp_len = wcslen(filePath);
 		filePath[fp_len] = L'\0';
+		filePath[fp_len + 1] = L'\0';
 
 		SHFILEOPSTRUCT fileop;
 		ZeroMemory(&fileop, sizeof(SHFILEOPSTRUCT));
@@ -236,9 +238,8 @@ namespace Menge
 
 		if( err != 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFolder %s:%s error %d"
-				, m_path.c_str()
-				, _path.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFolder %ls error %d"
+				, filePath
 				, err
 				);
 

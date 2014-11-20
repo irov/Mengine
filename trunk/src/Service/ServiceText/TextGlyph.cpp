@@ -367,7 +367,7 @@ namespace Menge
 		char * memory = buffer.getMemoryT<char>();
 
 		stream->read( memory, xml_buffer_size );
-		memory[xml_buffer_size] = 0;
+		memory[xml_buffer_size] = '\0';
 
 		TextGlyphSaxCallback tmsc(m_serviceProvider, this, _pakName, _path);
 		if( stdex::xml_sax_parse( memory, tmsc ) == false )

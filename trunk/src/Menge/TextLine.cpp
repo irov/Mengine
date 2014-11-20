@@ -90,7 +90,7 @@ namespace Menge
 			Glyph glyph;
 			if( _font->getGlyph( glyphChar, glyphCharNext, &glyph ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("TextLine for fontName %s invalid glyph %d:%d"
+				LOGGER_ERROR(m_serviceProvider)("TextLine for fontName %s invalid glyph %d next %d"
 					, _font->getName().c_str()
 					, code
 					, code_next

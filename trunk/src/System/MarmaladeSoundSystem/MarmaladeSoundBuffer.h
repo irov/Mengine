@@ -1,33 +1,54 @@
 #	pragma once
 
-#	include "MarmaladeSoundBufferBase.h"
+#	include "Interface/SoundSystemInterface.h"
+#	include "Interface/SoundCodecInterface.h"
+
+#	include <s3eSound.h>
 
 namespace Menge
 {
-	class MarmaladeSoundSystem;
-
 	class MarmaladeSoundBuffer
-		: public MarmaladeSoundBufferBase
+		: public SoundBufferInterface
 	{
 	public:
 		MarmaladeSoundBuffer();
-		~MarmaladeSoundBuffer();
-
-    public:
-        void initialize( ServiceProviderInterface * _serviceProvider, MarmaladeSoundSystem * _soundSystem );
+		virtual ~MarmaladeSoundBuffer();
 
 	public:
-		bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;
+		void setServiceProvider( ServiceProviderInterface * m_serviceProvider );
 
-		void play( ALenum _source, bool _looped, float _pos ) override;
-		void pause( ALenum _source ) override;
-		void stop( ALenum _source ) override;
-		bool getTimePos( ALenum _source, float & _pos ) const override;
+	public:
+		uint32_t getFrequency(){ return m_frequency; }
+		uint32_t getChannels(){ return m_channels; }
+		uint32_t getSamples(){ return m_samples; }
+		uint32_t getBits(){ return m_bits; }
+		float getLength(){ return m_length; }
+		bool getStereo(){ return m_stereo; }
 
+	public:
+		bool load( const SoundDecoderInterfacePtr & _soundDecoder );
+
+	public:
+		bool update() override;
+
+	public:
+		bool rewind() override;
+
+	public:
+		const SoundDecoderInterfacePtr & getDecoder() const;
+        
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-		MarmaladeSoundSystem * m_soundSystem;
+		ServiceProviderInterface * m_serviceProvider;
+		SoundDecoderInterfacePtr m_soundDecoder;
 
-		ALuint m_alBufferId;
+		uint32_t m_frequency;
+		uint32_t m_channels;
+		uint32_t m_samples;
+		uint32_t m_bits;
+		float m_length;
+
+		bool m_stereo;
 	};
+
+	typedef stdex::intrusive_ptr<MarmaladeSoundBuffer> MarmaladeSoundBufferPtr;
 }	// namespace Menge

@@ -19,6 +19,7 @@ namespace Menge
 	Node::Node()
 		: m_serviceProvider(nullptr)
         , m_active(false)
+		, m_deactivating(false)
 		, m_afterActive(false)
 		, m_enable(true)
 		, m_freeze(false)
@@ -157,7 +158,12 @@ namespace Menge
 			return;
 		}
 
-		m_active = false;
+		if( m_deactivating == true )
+		{
+			return;
+		}
+
+		m_deactivating = true;
 
 		if( m_afterActive == false )
 		{
@@ -191,6 +197,9 @@ namespace Menge
 				children->deactivate();
 			}
 		}
+
+		m_active = false;
+		m_deactivating = false;
 				
 		this->_afterDeactivate();		
 

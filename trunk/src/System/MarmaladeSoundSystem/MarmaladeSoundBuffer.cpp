@@ -1,139 +1,60 @@
 #	include "MarmaladeSoundBuffer.h"
-#	include "MarmaladeSoundSystem.h"
 
-#	include "Interface/SoundCodecInterface.h"
-
-#	include "MarmaladeError.h"
+#	include "MarmaladeSoundError.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeSoundBuffer::MarmaladeSoundBuffer()
 		: m_serviceProvider(nullptr)
-        , m_soundSystem(nullptr)
-		, m_alBufferId(0)
+		, m_frequency(0)
+		, m_channels(0)
+		, m_samples(0)
+		, m_bits(0)
+		, m_length(0.f)
+		, m_stereo(false)
 	{
-		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeSoundBuffer::~MarmaladeSoundBuffer()
 	{
-		if( m_alBufferId != 0 )
-		{
-			m_soundSystem->releaseBufferId( m_alBufferId );
-			m_alBufferId = 0;
-		}
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeSoundBuffer::initialize( ServiceProviderInterface * _serviceProvider, MarmaladeSoundSystem * _soundSystem )
-    {
-        m_serviceProvider = _serviceProvider;
-        m_soundSystem = _soundSystem;
-    }
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeSoundBuffer::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
-		m_alBufferId = m_soundSystem->genBufferId();		
-
-		if( m_alBufferId == 0 )
-		{
-			// TODO: report in case of error
-			//printf( "Error: %s\n", alGetString( error ) );
-			return false;
-		}
-
-		const SoundCodecDataInfo* dataInfo = _soundDecoder->getCodecDataInfo();
+		const SoundCodecDataInfo * dataInfo = _soundDecoder->getCodecDataInfo();
 
 		m_frequency = dataInfo->frequency;
 		m_channels = dataInfo->channels;
-		m_time_total = dataInfo->length;
-		size_t size = dataInfo->size;
+		m_samples = dataInfo->size / dataInfo->channels;
+		m_length = dataInfo->length;
+		m_stereo = dataInfo->stereo;
+		m_bits = dataInfo->bits;
 
-        //printf("OALSoundBuffer::load %.4f\n"
-        //    , float(size) / 1024.f
-        //    );
-
-		unsigned char* buffer = new unsigned char[ size /*+ fixed_sound_buffer_size*/ ];
-		unsigned int decode_size = _soundDecoder->decode( buffer, size );
-
-		if( m_channels == 1 )
-		{
-			m_format = AL_FORMAT_MONO16;
-			m_isStereo = false;
-		}
-		else
-		{
-			m_format = AL_FORMAT_STEREO16;
-			m_isStereo = true;
-		}
-
-		alBufferData( m_alBufferId, m_format, buffer, decode_size, m_frequency );
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-		delete[] buffer;		
+		m_soundDecoder = _soundDecoder;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundBuffer::play( ALenum _source, bool _looped, float _pos )
+	const SoundDecoderInterfacePtr & MarmaladeSoundBuffer::getDecoder() const
 	{
-		ALint state = 0;
-		alGetSourcei( _source, AL_SOURCE_STATE, &state );
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-		if( state == AL_PLAYING )
-		{
-			alSourceStop( _source );
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-		}
-
-		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-		alSourcei( _source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE );
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-		alSourcei( _source, AL_BUFFER, m_alBufferId );
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-		alSourcef( _source, AL_SEC_OFFSET, _pos );
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-		alSourcePlay( _source );
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+		return m_soundDecoder;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundBuffer::pause( ALenum _source )
+	bool MarmaladeSoundBuffer::update()
 	{
-		alSourcePause( _source );
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+		// do nothing
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundBuffer::stop( ALenum _source )
+	bool MarmaladeSoundBuffer::rewind()
 	{
-		alSourceStop( _source );
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-		alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundBuffer::getTimePos( ALenum _source, float & _pos ) const
-	{
-		float pos = 0.f;
-
-		alGetSourcef( _source, AL_SEC_OFFSET, &pos );
-		
-        if( MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider) == true )
-        {
-            return false;
-        }
-
-        _pos = pos;
-
+		// do nothing
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

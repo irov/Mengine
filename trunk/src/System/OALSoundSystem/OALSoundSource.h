@@ -29,9 +29,6 @@ namespace Menge
 		void setVolume( float _volume ) override;
 		float getVolume() const override;
 
-		void setPosition( const mt::vec3f & _pos ) override;
-		const mt::vec3f & getPosition() const override;
-
 		void setLoop( bool _loop ) override;
 		bool getLoop() const override;
 

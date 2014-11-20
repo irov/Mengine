@@ -1,12 +1,15 @@
 #   pragma once
 
 #	include "Interface/SoundSystemInterface.h"
-#	include <AL/al.h>
+
+#	include "MarmaladeSoundBuffer.h"
+#	include "MarmaladeSoundFilter.h"
+
+#	include <s3eSound.h>
 
 namespace Menge
 {
 	class MarmaladeSoundSystem;
-	class MarmaladeSoundBufferBase;
 
 	class MarmaladeSoundSource
 		: public SoundSourceInterface
@@ -16,7 +19,7 @@ namespace Menge
 		~MarmaladeSoundSource();
         
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, MarmaladeSoundSystem* _soundSystem );
+        void initialize( ServiceProviderInterface * _serviceProvider, MarmaladeSoundSystem * _soundSystem );
 
 	public:
 		bool play() override;
@@ -27,9 +30,6 @@ namespace Menge
 		void setVolume( float _volume ) override;
 		float getVolume() const override;
 
-		void setPosition( const mt::vec3f & _pos ) override;
-		const mt::vec3f & getPosition() const override;
-
 		void setLoop( bool _loop ) override;
 		bool getLoop() const override;
 
@@ -37,32 +37,45 @@ namespace Menge
 		float getPosMs() const override;
 		bool setPosMs( float _posMs ) override;
 
-		void setSoundBuffer( SoundBufferInterface* _soundBuffer ) override;
-		SoundBufferInterface* getSoundBuffer() const override;
+		void setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer ) override;
+		SoundBufferInterfacePtr getSoundBuffer() const override;
 
 	public:
-		void setHeadMode( bool _headMode );
-		bool getHeadMode() const;
+		static int32 s_AudioCallback( void * _sys, void * _user );
+		static int32 s_EndSampleCallback( void * _sys, void * _user );
+		static int32 s_StopAudioCallback( void * _sys, void * _user );
 
-    protected:
-        void unloadBuffer_();
+		int32 audioCallback( s3eSoundGenAudioInfo * _info );
+		void endSampleCallback( s3eSoundEndSampleInfo * _info );
+		void stopAudioCallback( s3eSoundEndSampleInfo * _info );
 
+	private:
+		void checkMemoryCache_();
+		
     private:
         ServiceProviderInterface * m_serviceProvider;
-        
-        MarmaladeSoundSystem * m_soundSystem;
+		MarmaladeSoundSystem * m_soundSystem;
 
-        mt::vec3f m_position;
+		MarmaladeSoundBufferPtr m_soundBuffer;
+
 		float m_volume;
-		void apply_( ALuint _source );
+		bool m_playing;
+		bool m_pausing;
+		bool m_loop;
 
-		ALuint m_sourceId;
-		float m_timing;
+		int m_soundChannel;
+				
+		int32 m_filterBufferPos;
+		//int16 m_filterBufferL[MARMALADE_SOUND_NUM_COEFFICIENTS];
+		//int16 m_filterBufferR[MARMALADE_SOUND_NUM_COEFFICIENTS];
+		//double m_filterCoefficients[MARMALADE_SOUND_NUM_COEFFICIENTS];
 
-		MarmaladeSoundBufferBase* m_soundBuffer;
-
-        bool m_headMode;
-        bool m_playing;
-        bool m_loop;
+		volatile uint8 m_volume_s3e;
+		volatile bool m_stereo_s3e;
+		volatile uint32 m_carriage_s3e;
+		volatile uint32 m_W;
+		volatile uint32 m_L;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<MarmaladeSoundSource> MarmaladeSoundSourcePtr;
 }	// namespace Menge

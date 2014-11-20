@@ -29,12 +29,16 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeThreadMutex::lock()
     {
-        s3eResult err = s3eThreadLockAcquire( m_cs );
+        s3eResult err = s3eThreadLockAcquire( m_cs, -1 );
 
 		if( err != S3E_RESULT_SUCCESS )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadMutex::lock invalid lock %d"
-				, err
+			s3eThreadError thread_err = s3eThreadGetError();
+			const char * thread_err_str = s3eThreadGetErrorString();
+
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadMutex::lock invalid lock %s:%d"
+				, thread_err_str
+				, thread_err
 				);
 		}
     }
@@ -45,8 +49,12 @@ namespace Menge
 
 		if( err != S3E_RESULT_SUCCESS )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadMutex::unlock invalid lock %d"
-				, err
+			s3eThreadError thread_err = s3eThreadGetError();
+			const char * thread_err_str = s3eThreadGetErrorString();
+
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadMutex::unlock invalid lock %s:%d"
+				, thread_err_str
+				, thread_err
 				);
 		}
     }
@@ -69,7 +77,10 @@ namespace Menge
 			}
 			else
 			{
-				LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadMutex::lock invalid lock %d"
+				const char * thread_err_str = s3eThreadGetErrorString();
+
+				LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadMutex::lock invalid lock %s code %d"
+					, thread_err_str
 					, thread_err
 					);
 			}

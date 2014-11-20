@@ -14,14 +14,19 @@ namespace Menge
 			: size(0)
 			, frequency(0)
 			, channels(0)
+			, bits(0)
 			, length(0.f)
+			, stereo(false)
 		{
 		}
 
 		size_t size;
 		uint32_t frequency;
 		uint32_t channels;
+		uint32_t bits;
+
 		float length;
+		bool stereo;
 	};
 
 	struct SoundCodecOptions

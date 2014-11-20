@@ -14,7 +14,6 @@ namespace Menge
 	OALSoundSource::OALSoundSource()
 		: m_serviceProvider(nullptr)         
         , m_soundSystem(nullptr)
-        , m_position(0.f, 0.f, 0.f)
 		, m_volume(1.f)
 		, m_sourceId(0)
 		, m_timing(0.f)
@@ -162,22 +161,6 @@ namespace Menge
 	float OALSoundSource::getVolume() const 
 	{
 		return m_volume;
-	}
-	//////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::setPosition( const mt::vec3f & _pos )
-	{
-		m_position = _pos;
-
-		if( m_playing == true && m_sourceId != 0 )
-		{
-			alSourcefv( m_sourceId, AL_POSITION, _pos.buff() );
-			OAL_CHECK_ERROR(m_serviceProvider);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-    const mt::vec3f & OALSoundSource::getPosition() const 
-	{
-		return m_position;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::setLoop( bool _loop )
@@ -341,10 +324,10 @@ namespace Menge
 		alSourcei( _source, AL_LOOPING, AL_FALSE );	
 		OAL_CHECK_ERROR(m_serviceProvider);
 
-		alSourcefv( _source, AL_POSITION, m_position.buff() );
+		alSource3f( _source, AL_POSITION, 0.f, 0.f, 0.f );
 		OAL_CHECK_ERROR(m_serviceProvider);
 
-        alSource3f( _source, AL_VELOCITY, 0.0, 0.0, 0.0);
+        alSource3f( _source, AL_VELOCITY, 0.f, 0.f, 0.f);
         OAL_CHECK_ERROR(m_serviceProvider);
 
 		alSourcef( _source, AL_MIN_GAIN, 0.f );
@@ -353,7 +336,7 @@ namespace Menge
 		alSourcef( _source, AL_MAX_GAIN, 1.f );
 		OAL_CHECK_ERROR(m_serviceProvider);
 
-        alSourcef( _source, AL_PITCH, 1.0);
+        alSourcef( _source, AL_PITCH, 1.f);
         OAL_CHECK_ERROR(m_serviceProvider);
 
 		alSourcef( _source, AL_GAIN, m_volume );

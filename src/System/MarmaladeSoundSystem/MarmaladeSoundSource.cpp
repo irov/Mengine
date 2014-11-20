@@ -1,118 +1,372 @@
 #	include "MarmaladeSoundSource.h"
 
-#	include "MarmaladeError.h"
 #	include "MarmaladeSoundSystem.h"
-#	include "MarmaladeSoundBufferBase.h"
+
+#	include "MarmaladeSoundError.h"
 
 #	include "Logger/Logger.h"
 
-#   include <math.h>
+#	include "s3eDevice.h"
+#	include "s3eMemory.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeSoundSource::MarmaladeSoundSource()
-		: m_serviceProvider(nullptr)         
-        , m_soundSystem(nullptr)
-		, m_volume(1.f)
-		, m_sourceId(0)
-		, m_timing(0.f)
-        , m_soundBuffer(nullptr)
-        , m_headMode(true)
-        , m_playing(false)
-        , m_loop(false)
+#	define MARMALADE_SOUND_BUFFER_SIZE 882000
+	//////////////////////////////////////////////////////////////////////////
+	struct SoundMemoryCache
 	{
-		m_position[0] = 0.0f;
-		m_position[1] = 0.0f;
-		m_position[2] = 0.0f;
+		int16 * memory;
+		bool destroy;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	volatile SoundMemoryCache s_soundMemoryCache[64];
+	//////////////////////////////////////////////////////////////////////////
+	MarmaladeSoundSource::MarmaladeSoundSource()
+		: m_serviceProvider(nullptr)
+		, m_soundSystem(nullptr)
+		, m_volume(1.f)
+		, m_playing(false)
+		, m_pausing(false)
+        , m_loop(false)
+		, m_soundChannel(-1)
+		, m_volume_s3e(255)
+		, m_stereo_s3e(true)
+		, m_carriage_s3e(0)
+		, m_W(0)
+		, m_L(0)
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeSoundSource::~MarmaladeSoundSource()
 	{
-		this->stop();
+		if( m_playing == true || m_pausing == true )
+		{
+			this->stop();
+		}
+
+		this->checkMemoryCache_();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeSoundSource::initialize( ServiceProviderInterface * _serviceProvider, MarmaladeSoundSystem* _soundSystem )
+    void MarmaladeSoundSource::initialize( ServiceProviderInterface * _serviceProvider, MarmaladeSoundSystem * _soundSystem )
     {
         m_serviceProvider = _serviceProvider;
-        m_soundSystem = _soundSystem;
+		m_soundSystem = _soundSystem;				
     }
+	//////////////////////////////////////////////////////////////////////////
+	int32 MarmaladeSoundSource::s_AudioCallback( void * _sys, void * _user )
+	{
+		s3eSoundGenAudioInfo * info = (s3eSoundGenAudioInfo *)_sys;
+		MarmaladeSoundSource * source = (MarmaladeSoundSource *)_user;
+
+		int32 samplesPlayed = source->audioCallback( info );
+
+		return samplesPlayed;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int32 MarmaladeSoundSource::s_EndSampleCallback( void * _sys, void * _user )
+	{
+		s3eSoundEndSampleInfo * info = (s3eSoundEndSampleInfo*)_sys;
+		MarmaladeSoundSource * source = (MarmaladeSoundSource *)_user;
+
+		source->endSampleCallback( info );
+
+		return info->m_RepsRemaining;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int32 MarmaladeSoundSource::s_StopAudioCallback( void * _sys, void * _user )
+	{
+		s3eSoundEndSampleInfo * info = (s3eSoundEndSampleInfo*)_sys;
+		MarmaladeSoundSource * source = (MarmaladeSoundSource *)_user;
+
+		source->stopAudioCallback( info );
+
+		return info->m_RepsRemaining;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int32 MarmaladeSoundSource::audioCallback( s3eSoundGenAudioInfo * _info )
+	{
+		_info->m_EndSample = 0;
+
+		int16 * target = _info->m_Target;
+
+		uint32 inputSampleSize = m_stereo_s3e == true ? 2 : 1;
+
+		int32 samplesPlayed = 0;
+
+		// For stereo output, info->m_NumSamples is number of l/r pairs (each sample is 32bit)
+		// info->m_OrigNumSamples always measures the total number of 16 bit samples,
+		// regardless of whether input was mono or stereo.
+
+		uint32 outputSampleSize = _info->m_Stereo ? 2 : 1;
+		uint32 numSamples = _info->m_NumSamples;			
+		
+		// Loop through samples (mono) or sample-pairs (stereo) required.
+		// If stereo, we copy the 16bit sample for each l/r channel and do per
+		// left/right channel processing on each sample for the pair. i needs
+		// scaling when comparing to input sample count as that is always 16bit.
+		for( uint32 i = 0; i != numSamples; ++i )
+		{
+			// For each sample (pair) required, we either do:
+			//  * get mono sample if input is mono (output can be either)
+			//  * get left sample if input is stereo (output can be either)
+			//  * get right sample if input and output are both stereo
+
+			uint32 outPosLeft = ((m_carriage_s3e + i) * m_W / m_L) * inputSampleSize;
+
+			// Stop when hitting end of data. Must scale to 16bit if stereo
+			// (m_OrigNumSamples is always 16bit) and by resample factor as we're
+			// looping through output position, not input.
+			if( outPosLeft >= _info->m_OrigNumSamples )
+			{	
+				_info->m_EndSample = 1;
+
+				if( _info->m_Mix == 0 )
+				{
+					std::memset( target, 0, (numSamples - i) * outputSampleSize * sizeof(int16) );
+				}
+
+				break;
+			}
+
+			int16 yLeft = (_info->m_OrigStart[outPosLeft + 0] * m_volume_s3e) >> 8;
+			int16 yRight = (_info->m_OrigStart[outPosLeft + 1] * m_volume_s3e) >> 8;
+	
+			////apply FIR filter to output to remove artifacts
+			//m_filterBufferPos = (m_filterBufferPos + 1) % MARMALADE_SOUND_NUM_COEFFICIENTS;
+
+			//// use circular buffer to store previous inputs
+			//m_filterBufferL[m_filterBufferPos] = yLeft;
+
+			//yLeft = 0;
+			//for( int k = 0; k != MARMALADE_SOUND_NUM_COEFFICIENTS; ++k )
+			//{
+			//	yLeft += (int16)(m_filterCoefficients[k] * m_filterBufferL[(m_filterBufferPos + k) % MARMALADE_SOUND_NUM_COEFFICIENTS]);
+			//}
+
+			//m_filterBufferR[m_filterBufferPos] = yRight;
+			//
+			//yRight = 0;
+			//for( int k = 0; k != MARMALADE_SOUND_NUM_COEFFICIENTS; ++k )
+			//{
+			//	yRight += (int16)(m_filterCoefficients[k] * m_filterBufferR[(m_filterBufferPos + k) % MARMALADE_SOUND_NUM_COEFFICIENTS]);
+			//}
+
+
+			int16 origL = 0;
+			int16 origR = 0;
+			if( _info->m_Mix != 0 )
+			{
+				origL = *target;
+				origR = *(target+1);
+			}
+
+			*target++ = s_clipToInt16(yLeft + origL);
+			*target++ = s_clipToInt16(yRight + origR);
+			
+			samplesPlayed++;
+		}
+
+		// Update global output pointer (track samples played in app)
+		m_carriage_s3e += samplesPlayed;
+
+		// Inform s3e sound how many samples we played
+		return samplesPlayed;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeSoundSource::endSampleCallback( s3eSoundEndSampleInfo * _info )
+	{
+		if( _info->m_RepsRemaining == 0 )
+		{
+			s_soundMemoryCache[_info->m_Channel].destroy = true;
+
+			m_carriage_s3e = 0;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeSoundSource::stopAudioCallback( s3eSoundEndSampleInfo * _info )
+	{
+		if( _info->m_RepsRemaining == 0 )
+		{
+			s_soundMemoryCache[_info->m_Channel].destroy = true;
+
+			m_carriage_s3e = 0;
+		}
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeSoundSource::play()
 	{
-		if( m_playing == true || m_soundBuffer == NULL )
+		if( m_playing == true )
 		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeSoundSource::play alredy play"
+				);
+
+			return false;
+		}
+
+		if( m_pausing == true )
+		{
+			if( s3eSoundChannelResume( m_soundChannel ) == S3E_RESULT_ERROR )
+			{
+				MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+
+				return false;
+			}
+
+			m_pausing = false;
+
 			return true;
 		}
 
-		m_sourceId = m_soundSystem->genSourceId();
+		int soundChannel = s3eSoundGetFreeChannel();
 
-		if( m_sourceId == 0 )
+		if( soundChannel == -1 )
 		{
 			return false;
 		}
 
-		this->apply_( m_sourceId );
-		m_soundBuffer->play( m_sourceId, m_loop, m_timing );
-	
-		m_playing = true;
+		if( s3eSoundChannelRegister( soundChannel, S3E_CHANNEL_GEN_AUDIO, &s_AudioCallback, this ) == S3E_RESULT_ERROR )
+		{
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 
+			return false;
+		}
+
+		if( s3eSoundChannelRegister( soundChannel, S3E_CHANNEL_END_SAMPLE, &s_EndSampleCallback, this ) == S3E_RESULT_ERROR )
+		{
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+
+			return false;
+		}
+
+		if( s3eSoundChannelRegister( soundChannel, S3E_CHANNEL_STOP_AUDIO, &s_EndSampleCallback, this ) == S3E_RESULT_ERROR )
+		{
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+
+			return false;
+		}
+
+		if( m_soundSystem->isDeviceStereo() == true )
+		{
+			if( s3eSoundChannelRegister( soundChannel, S3E_CHANNEL_GEN_AUDIO_STEREO, &s_AudioCallback, this ) == S3E_RESULT_ERROR )
+			{
+				MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+
+				return false;
+			}
+		}
+				
+		m_filterBufferPos = -1;
+
+		const SoundDecoderInterfacePtr & decoder = m_soundBuffer->getDecoder();
+
+		const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
+
+		this->checkMemoryCache_();
+
+		int16 * memory_s3e = (int16 *)s3eMallocBase( dataInfo->size );
+
+		decoder->decode( memory_s3e, dataInfo->size );
+
+		if( s_soundMemoryCache[soundChannel].memory != nullptr )
+		{
+ 			return false;
+		}
+
+		s_soundMemoryCache[soundChannel].memory = memory_s3e;
+		s_soundMemoryCache[soundChannel].destroy = false;
+
+		if( s3eSoundChannelPlay( soundChannel, memory_s3e, m_soundBuffer->getSamples(), (m_loop == true ? 0 : 1), 0 ) == S3E_RESULT_ERROR )
+		{
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+
+			s3eFreeBase( memory_s3e );
+
+			return false;
+		}
+
+		LOGGER_ERROR(m_serviceProvider)("play channel!!!!!!!!!! %d"
+			, soundChannel
+			);
+		
+		m_playing = true;
+		m_pausing = false;
+
+		m_soundChannel = soundChannel;
+		
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeSoundSource::pause()
 	{
-		if( m_playing == false || m_soundBuffer == NULL )
+		if( m_playing == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeSoundSource::pause invalid 'not playing'"
+				);
+
 			return;
 		}
 
-		m_playing = false;
-
-		if( m_sourceId == 0 )
+		if( m_pausing == true )
 		{
-            return;
-        }
-         
-        float timing = 0.f;
-        if( m_soundBuffer->getTimePos( m_sourceId, timing ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("OALSoundSource::pause invalid get time pos %d (play %d)"
-                , m_sourceId
-                , m_playing
-                );
-        }
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeSoundSource::pause invalid 'alredy pausing'"
+				);
 
-        m_timing = timing;
+			return;
+		}
 
-        ALuint sourceId = m_sourceId;
-        m_sourceId = 0;
+		if( s3eSoundChannelPause( m_soundChannel ) == S3E_RESULT_ERROR )
+		{
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+		}
 
-        m_soundBuffer->stop( sourceId );
-        m_soundSystem->releaseSourceId( sourceId );
+		m_playing = false;
+		m_pausing = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeSoundSource::stop()
 	{
-		if( m_playing == false )
+		if( m_playing == false && m_pausing == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeSoundSource::stop invalid 'not playing or pausing'"
+				);
+
 			return;
 		}
 
-		m_playing = false;
-
-		if( m_sourceId != 0 )
+		if( m_soundSystem->isDeviceStereo() == true )
 		{
-            ALuint sourceId = m_sourceId;
-            m_sourceId = 0;
+			if( s3eSoundChannelUnRegister( m_soundChannel, S3E_CHANNEL_GEN_AUDIO_STEREO ) == S3E_RESULT_ERROR )
+			{
+				MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 
-			m_soundBuffer->stop( sourceId );
-// 			alSourceRewind( m_sourceId );
-// 			OAL_CHECK_ERROR();
-			m_soundSystem->releaseSourceId( sourceId );
+				return;
+			}
 		}
 
-		m_timing = 0.f;
+		if( s3eSoundChannelUnRegister( m_soundChannel, S3E_CHANNEL_GEN_AUDIO ) == S3E_RESULT_ERROR )
+		{
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+
+			return;
+		}
+
+		if( s3eSoundChannelUnRegister( m_soundChannel, S3E_CHANNEL_END_SAMPLE ) == S3E_RESULT_ERROR )
+		{
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+
+			return;
+		}
+
+		if( s3eSoundChannelStop( m_soundChannel ) == S3E_RESULT_ERROR )
+		{
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+		}
+
+		m_soundChannel = -1;
+		
+		m_playing = false;
+		m_pausing = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeSoundSource::isPlaying() const 
@@ -123,33 +377,13 @@ namespace Menge
 	void MarmaladeSoundSource::setVolume( float _volume )
 	{
 		m_volume = _volume;
-        	
-        if( m_playing == true && m_sourceId != 0 )
-		{
-			alSourcef( m_sourceId, AL_GAIN, m_volume );
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-		}
+
+		m_volume_s3e = (uint8)(m_volume * S3E_SOUND_MAX_VOLUME);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float MarmaladeSoundSource::getVolume() const 
 	{
 		return m_volume;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::setPosition( const mt::vec3f & _pos )
-	{
-		m_position = _pos;
-
-		if( m_playing == true && m_sourceId != 0 )
-		{
-			alSourcefv( m_sourceId, AL_POSITION, m_position.buff() );
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & MarmaladeSoundSource::getPosition() const 
-	{
-		return m_position;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeSoundSource::setLoop( bool _loop )
@@ -164,123 +398,92 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float MarmaladeSoundSource::getLengthMs() const
 	{
-		if( m_soundBuffer != NULL )
+		if( m_soundBuffer == nullptr )
 		{
-			return m_soundBuffer->getTimeTotal() * 1000.f;
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeSoundSource::getLengthMs invalid sound buffer"
+				);
+
+			return 0.f;
 		}
 
-		return 0.f;
+		float time_sound = m_soundBuffer->getLength();
+
+		return time_sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float MarmaladeSoundSource::getPosMs() const
 	{
-		if( m_soundBuffer == NULL )
-		{
-			return 0.f;
-		}
+		uint32 pos = m_carriage_s3e * m_L / m_W;
 
-		if( m_sourceId == 0 )
-		{
-			return m_timing * 1000.f;
-		}
-			
-		float posms = 0.f;
-        if( m_soundBuffer->getTimePos( m_sourceId, posms ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("OALSoundSource::getPosMs invalid get time pos %d (play %d)"
-                , m_sourceId
-                , m_playing
-                );
+		uint32_t frequency = m_soundBuffer->getFrequency();
+		uint32_t channels = m_soundBuffer->getChannels();
+		uint32_t bits = m_soundBuffer->getBits();
 
-            return 0.f;
-        }
-		
-		//timing dont assign to zero when m_soundBuffer is stopped!
-		if( fabsf(posms) < 0.0001f && fabsf(m_timing) > 0.0001f )
-		{ 
-			posms = m_timing;
-		}
+		float posMs = (float)(pos * 1000 / (frequency * channels * bits));
 
-		posms *= 1000.f;
-		
-		return posms;		
+		return posMs;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeSoundSource::setPosMs( float _posMs )
 	{
-        m_timing = _posMs * 0.001f;	
+		if( m_playing == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeSoundSource::setPosMs invalid setup pos if playing! [%f]"
+				, _posMs
+				);
+
+			return false;
+		}
+
+		uint32 ms = (uint32)_posMs;
+
+		uint32_t frequency = m_soundBuffer->getFrequency();
+		uint32_t channels = m_soundBuffer->getChannels();
+		uint32_t bits = m_soundBuffer->getBits();
+
+		uint32_t pos = ms * (frequency * channels * bits) / 1000;
+
+		m_carriage_s3e = pos * m_W / m_L;
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::setSoundBuffer( SoundBufferInterface* _soundBuffer )
+	void MarmaladeSoundSource::setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer )
 	{
-		this->unloadBuffer_();
+		m_soundBuffer = stdex::intrusive_static_cast<MarmaladeSoundBufferPtr>(_soundBuffer);
 
-		m_soundBuffer = static_cast<MarmaladeSoundBufferBase*>( _soundBuffer );
+		m_stereo_s3e = m_soundBuffer->getStereo();
+
+		int32 inputFrequency = m_soundBuffer->getFrequency();
+		int32 outputFrequency = s3eSoundGetInt( S3E_SOUND_OUTPUT_FREQ );		
+
+		int32 gcd = s_GCD( inputFrequency, outputFrequency );
+		m_W	= inputFrequency / gcd;
+		m_L	= outputFrequency / gcd;
+
+		//std::memset( m_filterBufferL, 0, sizeof(int16) * MARMALADE_SOUND_NUM_COEFFICIENTS );
+		//std::memset( m_filterBufferR, 0, sizeof(int16) * MARMALADE_SOUND_NUM_COEFFICIENTS );
+		//s_setupFilterCoefficients( m_filterCoefficients, inputFrequency, outputFrequency );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::unloadBuffer_()
-	{
-		if( m_soundBuffer != NULL && m_playing == true )
-		{
-			this->stop();
-		}
-
-		m_soundBuffer = NULL;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::setHeadMode( bool _headMode )
-	{
-		m_headMode = _headMode;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSource::getHeadMode() const
-	{
-		return m_headMode;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::apply_( ALuint _source )
-	{
-		if( m_headMode )
-		{
-			alSourcei( _source, AL_SOURCE_RELATIVE, AL_TRUE );
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-			alSourcef( _source, AL_ROLLOFF_FACTOR, 0.f );
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-			alSource3f( _source, AL_DIRECTION, 0.f, 0.f, 0.f );
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-		} 
-		else 
-		{
-			alSourcei( _source, AL_SOURCE_RELATIVE, AL_FALSE );
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-			alSourcef( _source, AL_ROLLOFF_FACTOR, 1.f );
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-		}
-
-		alSourcei( _source, AL_LOOPING, AL_FALSE );	
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-		alSourcefv( _source, AL_POSITION, &(m_position[0]) );
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-		alSourcef( _source, AL_MIN_GAIN, 0.f );
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-		alSourcef( _source, AL_MAX_GAIN, 1.f );
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-		alSourcef( _source, AL_GAIN, m_volume );
-		MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterface* MarmaladeSoundSource::getSoundBuffer() const
+	SoundBufferInterfacePtr MarmaladeSoundSource::getSoundBuffer() const
 	{
 		return m_soundBuffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeSoundSource::checkMemoryCache_()
+	{
+		for( uint32_t i = 0; i != 64; ++i )
+		{
+			volatile SoundMemoryCache & cache = s_soundMemoryCache[i];
+
+			if( cache.destroy == true )
+			{
+				s3eFreeBase( cache.memory );
+
+				cache.memory = nullptr;
+				cache.destroy = false;
+			}
+		}
+	}
 }	// namespace Menge

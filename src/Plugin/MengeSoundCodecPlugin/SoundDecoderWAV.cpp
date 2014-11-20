@@ -113,8 +113,10 @@ namespace Menge
         m_dataInfo.size = chunkDataSize;
         m_dataInfo.channels = header.NumChannels;
         m_dataInfo.frequency = header.SampleRate;
+		m_dataInfo.bits = header.BitsPerSample / 8;
 
-		m_dataInfo.length = (float)(double(m_dataInfo.size) * 1000.0 / double(m_dataInfo.frequency));
+		m_dataInfo.length = (float)(m_dataInfo.size * 1000 / (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits));
+		m_dataInfo.stereo = header.NumChannels == 2 ? true : false;
 
         return true;
     }
@@ -161,7 +163,7 @@ namespace Menge
 			_timing = m_dataInfo.length;
         }
               
-        size_t wav_pos = (size_t)((double)(_timing) * 0.001 * (double)(m_dataInfo.frequency));
+        size_t wav_pos = ((size_t)(_timing) * (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits)) / 1000;
 
 		bool result = m_stream->seek( m_chunkDataPos + wav_pos );
         
@@ -172,7 +174,7 @@ namespace Menge
 	{
 		size_t wav_pos = m_stream->tell();
 		
-		float length = (float)(double(wav_pos - m_chunkDataPos) * 1000.0 / double(m_dataInfo.frequency));
+		float length = (float)((wav_pos - m_chunkDataPos) * 1000 / (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits));
 		       
 		return length;
 	}

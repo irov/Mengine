@@ -254,6 +254,7 @@ namespace Menge
 
 	protected:
 		bool m_active;
+		bool m_deactivating;
 		bool m_afterActive;
 		bool m_enable;
 

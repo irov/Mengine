@@ -2,21 +2,16 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
-#	include "MarmaladeSoundBufferBase.h"
+#	include "MarmaladeSoundBufferMemory.h"
 #	include "MarmaladeSoundBufferStream.h"
 #	include "MarmaladeSoundSource.h"
 
-#   include "Utils/Factory/FactoryPool.h"
+#   include "Factory/FactoryStore.h"
 
-#	include <AL/al.h>
-#	include <AL/alc.h>
+#	include <s3eSound.h>
 
 namespace Menge
 {
-	class MarmaladeSoundSource;
-
-	class ServiceProviderInterface;
-
 	class MarmaladeSoundSystem
 		: public SoundSystemInterface
 	{
@@ -35,35 +30,35 @@ namespace Menge
 	public:
 		void onTurnSound( bool _turn ) override;
 
-	public:
-		SoundSourceInterface* createSoundSource( bool _isHeadMode, SoundBufferInterface * _sample ) override;
-
-		SoundBufferInterface* createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) override;
-		//SoundBufferInterface* createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) override;
+	public:		
+		SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) override;
 
 	public:
-		ALuint genSourceId();
-		void releaseSourceId( ALuint _sourceId );
+		SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer ) override;
 
-		ALuint genBufferId();
-		void releaseBufferId( ALuint _bufferId );
+	protected:
+		void formActiveChannelsAndDecode_( uint32_t & _samplesAvailable );
+		int32 mixSources_( int numSamples, int hasSamples, int16* target );
+
+	protected:
+		void setupFilter_();
 
 	public:
-		void clearSourceId( ALuint _sourceId );
+		bool isDeviceStereo() const { return m_isDeviceStereo; }
 
-	private:
+	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		ALCcontext* m_context;
-		ALCdevice* m_device;
-
-        typedef FactoryPool<MarmaladeSoundBuffer, 32> TPoolOALSoundBuffer;
+        typedef FactoryPoolStore<MarmaladeSoundBufferMemory, 32> TPoolOALSoundBuffer;
         TPoolOALSoundBuffer m_poolOALSoundBuffer;
 
-        typedef FactoryPool<MarmaladeSoundBufferStream, 32> TPoolOALSoundBufferStream;
+        typedef FactoryPoolStore<MarmaladeSoundBufferStream, 32> TPoolOALSoundBufferStream;
         TPoolOALSoundBufferStream m_poolOALSoundBufferStream;
 
-        typedef FactoryPool<MarmaladeSoundSource, 32> TPoolOALSoundSource;
+        typedef FactoryPoolStore<MarmaladeSoundSource, 32> TPoolOALSoundSource;
         TPoolOALSoundSource m_poolOALSoundSource;
+
+		bool m_isDeviceStereo;
+		int32 m_soundOutputFrequence;
     };
 }	// namespace Menge

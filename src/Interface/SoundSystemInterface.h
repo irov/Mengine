@@ -57,9 +57,6 @@ namespace Menge
 		virtual void setVolume( float _volume ) = 0;
 		virtual float getVolume() const = 0;
 
-		virtual void setPosition( const mt::vec3f & _pos ) = 0;
-		virtual const mt::vec3f & getPosition() const = 0;
-
 		virtual void setLoop( bool _loop ) = 0;
 		virtual bool getLoop() const = 0;
 
@@ -91,9 +88,11 @@ namespace Menge
     public:
 		virtual void onTurnSound( bool _turn ) = 0;
 
-    public:
-		virtual SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) = 0;
+	public:
 		virtual SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable ) = 0;
+
+    public:
+		virtual SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) = 0;		
 	};
 
 #   define SOUND_SYSTEM( serviceProvider )\

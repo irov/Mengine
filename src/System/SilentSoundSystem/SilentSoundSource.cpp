@@ -14,7 +14,6 @@ namespace Menge
 		: m_headMode(true)
 		, m_playing(false)
 		, m_volume(1.f)
-        , m_position(0.f, 0.f, 0.f)
 		, m_loop(false)
 		, m_soundBuffer(nullptr)
 		, m_soundSystem(nullptr)
@@ -103,16 +102,6 @@ namespace Menge
 	float SilentSoundSource::getVolume() const 
 	{
 		return m_volume;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSource::setPosition( const mt::vec3f & _pos )
-	{
-        m_position = _pos;
-	}
-	//////////////////////////////////////////////////////////////////////////
-    const mt::vec3f & SilentSoundSource::getPosition() const 
-	{
-		return m_position;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSource::setLoop( bool _loop )

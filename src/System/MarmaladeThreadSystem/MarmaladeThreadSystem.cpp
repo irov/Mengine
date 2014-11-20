@@ -31,7 +31,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeThreadSystem::initialize()		
 	{
-        if( s3eThreadAvailable() == 0 )
+        if( s3eThreadAvailable() == S3E_FALSE )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::initialize s3eThread extension not present"
 				);
@@ -60,7 +60,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeThreadSystem::avaliable() const
 	{
-		return false;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ThreadIdentityPtr MarmaladeThreadSystem::createThread( int _priority )

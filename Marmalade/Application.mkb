@@ -101,15 +101,15 @@ files
 	"*.h"
 	"*.cpp"
     
-#    [System/MarmaladeSoundSystem]
-#    ("../src/System/MarmaladeSoundSystem")
-#	"*.h"
-#	"*.cpp"    
-
-    [System/OALSoundSystem]
-    ("../src/System/OALSoundSystem")
+    [System/MarmaladeSoundSystem]
+    ("../src/System/MarmaladeSoundSystem")
 	"*.h"
 	"*.cpp"    
+
+#    [System/OALSoundSystem]
+#    ("../src/System/OALSoundSystem")
+#	"*.h"
+#	"*.cpp"    
     
     [System/AstralaxParticleSystem]
     ("../src/System/AstralaxParticleSystem")	
@@ -123,6 +123,11 @@ subproject assets.mkf
 deployments
 {
 	["Default"]
+	["HolidayFun_Android"]
+	assets='HolidayFun_Android'
+	caption='CandyStorm'
+	name='CandyStorm'
+	splashscreen-auto-onblack='1'
 	["Zombieland_Android"]
 	app-icf='d:/Projects/ZombielandBuild_ETC1/app.icf'
 	assets='Zombieland_Android'

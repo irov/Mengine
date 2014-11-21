@@ -94,7 +94,14 @@ files
     [Plugin/MengePathFinderPlugin]
     ("../src/Plugin/MengePathFinderPlugin")	
 	"*.cpp"
-	"*.h"    
+	"*.h"  
+
+    [Plugin/MengeVideoCodecPlugin]
+    ("../src/Plugin/MengeVideoCodecPlugin")
+    VideoCodecPlugin.h
+    VideoCodecPlugin.cpp
+    VideoDecoderGVF.h
+    VideoDecoderGVF.cpp
     
     [Service/ServiceCodec]
     ("../src/Service/ServiceCodec")	

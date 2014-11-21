@@ -794,11 +794,14 @@ namespace Menge
             return false;
         }
 
-		if( TEXT_SERVICE(m_serviceProvider)
-			->validate() == false )
+		if( m_developmentMode == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextService invalid validate!"
-				);
+			if( TEXT_SERVICE(m_serviceProvider)
+				->validate() == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("TextService invalid validate!"
+					);
+			}
 		}
 
 		const ConstString & defaultFontName = TEXT_SERVICE(m_serviceProvider)

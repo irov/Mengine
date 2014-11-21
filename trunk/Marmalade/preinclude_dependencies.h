@@ -8,6 +8,11 @@
 #   define PYBIND_MARMALADE
 #   define PYBIND_PYTHON_VERSION 277
 
+#	define STDEX_ALLOCATOR_INCLUDE "s3eMemory.h"
+#	define STDEX_ALLOCATOR_MALLOC s3eMallocBase
+#	define STDEX_ALLOCATOR_REALLOC s3eReallocBase
+#	define STDEX_ALLOCATOR_FREE s3eFreeBase
+
 #	ifdef __APPLE__
 #	    define PYBIND_EXTRACT_SIZE_T
 #	endif

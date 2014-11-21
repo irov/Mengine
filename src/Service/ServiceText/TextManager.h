@@ -46,6 +46,12 @@ namespace Menge
 		void releaseFont( const TextFontInterfacePtr & _font ) override;
 
 		void visitFonts( VisitorTextFontInterface * _vistitor ) override;
+
+	public:
+		bool validate() const override;
+
+	protected:
+		void _validateText( TextEntry * _text ) const;
 		
 	public:
 		const ConstString & getDefaultFontName() const override;

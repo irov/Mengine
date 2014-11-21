@@ -607,7 +607,7 @@ namespace Menge
 
 			if( params & EFP_FONT )
 			{
-				const ConstString & fontName = m_textEntry->getFont();
+				const ConstString & fontName = m_textEntry->getFontName();
 
 				return fontName;
 			}

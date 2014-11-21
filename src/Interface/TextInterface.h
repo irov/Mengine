@@ -74,7 +74,7 @@ namespace Menge
 		virtual const ConstString & getText() const = 0;
 
 	public:
-		virtual const ConstString & getFont() const = 0;
+		virtual const ConstString & getFontName() const = 0;
 		virtual const ColourValue & getColorFont() const = 0;
 		virtual const ColourValue & getColorOutline() const = 0;
 		virtual float getLineOffset() const = 0;
@@ -119,6 +119,9 @@ namespace Menge
 
 	public:
 		virtual const ConstString & getDefaultFontName() const = 0;
+
+	public:
+		virtual bool validate() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define TEXT_SERVICE( serviceProvider )\

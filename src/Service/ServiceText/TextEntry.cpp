@@ -11,12 +11,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextEntry::initialize( const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, size_t _params )
+	void TextEntry::initialize( const ConstString & _key, const ConstString & _text, const ConstString & _fontName, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, size_t _params )
 	{
 		m_key = _key;
 		m_text = _text;
 
-		m_font = _font;
+		m_fontName = _fontName;
 
 		m_colorFont = _colorFont;
 		m_colorOutline = _colorOutline;
@@ -38,9 +38,9 @@ namespace Menge
 		return m_text;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextEntry::getFont() const
+	const ConstString & TextEntry::getFontName() const
 	{
-		return m_font;
+		return m_fontName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & TextEntry::getColorFont() const

@@ -275,22 +275,6 @@ namespace Menge
 					}
 				}
 
-#	ifdef _DEBUG
-				if( fontName.empty() == false )
-				{
-					TextFontInterfacePtr font;
-					if( m_textManager->existFont( fontName, font ) == false )
-					{
-						LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s not found font %s for text %s"
-							, m_pakName.c_str()
-							, m_path.c_str()
-							, fontName.c_str()
-							, text_key.c_str()
-							);
-					}
-				}
-#	endif
-
 				m_textManager->addTextEntry( text_key, text, fontName, colorFont, colorOutline, lineOffset, charOffset, maxLength, params, isOverride );
 			}
 
@@ -605,4 +589,79 @@ namespace Menge
 	{
 		return m_defaultFontName;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class ForeachTextValidate
+		{
+		public:
+			ForeachTextValidate( ServiceProviderInterface * _serviceProvider, const TextManager * _textManager )
+				: m_serviceProvider(_serviceProvider)
+				, m_textManager(_textManager)
+				, m_successful(true)
+			{
+			}
+
+		public:
+			bool isSuccessful() const
+			{
+				return m_successful;
+			}
+
+		public:
+			void operator() ( TextEntry * _text )
+			{
+				const ConstString & textKey = _text->getKey();
+				const ConstString & fontName = _text->getFontName();
+
+				if( fontName.empty() == false )
+				{
+					TextFontInterfacePtr font;
+					if( m_textManager->existFont( fontName, font ) == false )
+					{
+						LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource not found font %s for text %s"
+							, fontName.c_str()
+							, textKey.c_str()
+							);
+
+						m_successful = false;
+					}
+				}
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			const TextManager * m_textManager;
+			bool m_successful;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextManager::validate() const
+	{
+		bool successful = true;
+
+		if( m_defaultFontName.empty() == false )
+		{
+			TextFontInterfacePtr font;
+			if( this->existFont( m_defaultFontName, font ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("TextManager::validate not found default font %s"
+					, m_defaultFontName.c_str()
+					);
+
+				successful = false;
+			}
+		}
+		
+		ForeachTextValidate ftv(m_serviceProvider, this);
+		m_texts.foreach( ftv );
+
+		if( ftv.isSuccessful() == false )
+		{
+			successful = false;
+		}
+
+		return successful;
+	}
+
 }

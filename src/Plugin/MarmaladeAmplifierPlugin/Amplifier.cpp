@@ -380,7 +380,7 @@ namespace Menge
 
 			return false;
 		}
-
+		
 		CacheMemoryStream buffer(m_serviceProvider, stream, "Amplifier::play");
 		const void * buffer_memory = buffer.getMemory();
 		size_t buffer_size = buffer.getSize();

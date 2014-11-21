@@ -1818,6 +1818,15 @@ namespace Menge
 				->visitFonts( &mvtf );
 		}
 		//////////////////////////////////////////////////////////////////////////
+		bool s_hasFont( const ConstString & _fontName )
+		{
+			TextFontInterfacePtr font;
+			bool has = TEXT_SERVICE(m_serviceProvider)
+				->existFont( _fontName, font );
+
+			return has;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		bool s_validateFont( const ConstString & _fontName, const String & _text, PyObject * _cb )
 		{
 			TextFontInterfacePtr font;
@@ -5266,7 +5275,8 @@ namespace Menge
 			pybind::def_functor( "existFile", nodeScriptMethod, &NodeScriptMethod::s_existFile );
 			pybind::def_functor( "parseXml", nodeScriptMethod, &NodeScriptMethod::s_parseXml );
 
-			pybind::def_functor( "visitFonts", nodeScriptMethod, &NodeScriptMethod::s_visitFonts );
+			pybind::def_functor( "visitFonts", nodeScriptMethod, &NodeScriptMethod::s_visitFonts );			
+			pybind::def_functor( "hasFont", nodeScriptMethod, &NodeScriptMethod::s_hasFont );
 			pybind::def_functor( "validateFont", nodeScriptMethod, &NodeScriptMethod::s_validateFont );
 
 			pybind::def_functor( "prefetchResources", nodeScriptMethod, &NodeScriptMethod::s_prefetchResources );

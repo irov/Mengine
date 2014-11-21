@@ -280,10 +280,27 @@ namespace Menge
 		return fontHeight;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setFontName( const ConstString & _name )
+	void TextField::setFontName( const ConstString & _fontName )
 	{
-		m_fontName = _name;
-		
+#	ifdef _DEBUG
+		if( _fontName.empty() == false )
+		{
+			TextFontInterfacePtr font;
+			if( TEXT_SERVICE(m_serviceProvider)
+				->existFont( _fontName, font ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("TextField::setFontName %s not found font %s"
+					, m_name.c_str()
+					, _fontName.c_str()
+					);
+
+				return;
+			}
+		}
+#	endif
+
+		m_fontName = _fontName;
+				
 		m_fontParams |= EFP_FONT;
 
 		this->invalidateFont();

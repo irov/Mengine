@@ -89,7 +89,7 @@ namespace Menge
 
 
 				ConstString text;
-				ConstString font;
+				ConstString fontName;
 				
 				float charOffset = 0.f;
 				float lineOffset = 0.f;
@@ -154,7 +154,7 @@ namespace Menge
 					}
 					else if( strcmp( str_key, "Font" ) == 0 )
 					{
-						font = Helper::stringizeStringExternal( m_serviceProvider, str_value, (size_t)-1 );
+						fontName = Helper::stringizeStringExternal( m_serviceProvider, str_value, (size_t)-1 );
 
 						params |= EFP_FONT;
 					}
@@ -275,7 +275,23 @@ namespace Menge
 					}
 				}
 
-				m_textManager->addTextEntry( text_key, text, font, colorFont, colorOutline, lineOffset, charOffset, maxLength, params, isOverride );
+#	ifdef _DEBUG
+				if( fontName.empty() == false )
+				{
+					TextFontInterfacePtr font;
+					if( m_textManager->existFont( fontName, font ) == false )
+					{
+						LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s not found font %s for text %s"
+							, m_pakName.c_str()
+							, m_path.c_str()
+							, fontName.c_str()
+							, text_key.c_str()
+							);
+					}
+				}
+#	endif
+
+				m_textManager->addTextEntry( text_key, text, fontName, colorFont, colorOutline, lineOffset, charOffset, maxLength, params, isOverride );
 			}
 
 			void callback_end_node( const char * _node )

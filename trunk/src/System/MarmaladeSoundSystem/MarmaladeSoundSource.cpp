@@ -6,21 +6,21 @@
 
 #	include "Logger/Logger.h"
 
+#	include "stdex/allocator.h"
+
 #	include "s3eDevice.h"
-#	include "s3eMemory.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-#	define MARMALADE_SOUND_BUFFER_SIZE 882000
-	//////////////////////////////////////////////////////////////////////////
-	struct SoundMemoryCache
+	struct SoundMemoryDesc
 	{
-		int16 * memory;
+		uint32 carriage;
+		int16 * memory;		
 		bool destroy;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	volatile SoundMemoryCache s_soundMemoryCache[64];
+	volatile static SoundMemoryDesc s_soundMemoryDesc[64];
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeSoundSource::MarmaladeSoundSource()
 		: m_serviceProvider(nullptr)
@@ -86,6 +86,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	int32 MarmaladeSoundSource::audioCallback( s3eSoundGenAudioInfo * _info )
 	{
+		volatile SoundMemoryDesc & desc = s_soundMemoryDesc[_info->m_Channel];
+
 		_info->m_EndSample = 0;
 
 		int16 * target = _info->m_Target;
@@ -112,7 +114,7 @@ namespace Menge
 			//  * get left sample if input is stereo (output can be either)
 			//  * get right sample if input and output are both stereo
 
-			uint32 outPosLeft = ((m_carriage_s3e + i) * m_W / m_L) * inputSampleSize;
+			uint32 outPosLeft = ((desc.carriage + i) * m_W / m_L) * inputSampleSize;
 
 			// Stop when hitting end of data. Must scale to 16bit if stereo
 			// (m_OrigNumSamples is always 16bit) and by resample factor as we're
@@ -168,7 +170,7 @@ namespace Menge
 		}
 
 		// Update global output pointer (track samples played in app)
-		m_carriage_s3e += samplesPlayed;
+		desc.carriage += samplesPlayed;
 
 		// Inform s3e sound how many samples we played
 		return samplesPlayed;
@@ -178,9 +180,7 @@ namespace Menge
 	{
 		if( _info->m_RepsRemaining == 0 )
 		{
-			s_soundMemoryCache[_info->m_Channel].destroy = true;
-
-			m_carriage_s3e = 0;
+			s_soundMemoryDesc[_info->m_Channel].destroy = true;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -188,9 +188,7 @@ namespace Menge
 	{
 		if( _info->m_RepsRemaining == 0 )
 		{
-			s_soundMemoryCache[_info->m_Channel].destroy = true;
-
-			m_carriage_s3e = 0;
+			s_soundMemoryDesc[_info->m_Channel].destroy = true;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -206,6 +204,13 @@ namespace Menge
 
 		if( m_pausing == true )
 		{
+			uint32 carriage = s_soundMemoryDesc[m_soundChannel].carriage;
+
+			if( m_carriage_s3e != carriage )
+			{
+				s_soundMemoryDesc[m_soundChannel].carriage = carriage;
+			}
+
 			if( s3eSoundChannelResume( m_soundChannel ) == S3E_RESULT_ERROR )
 			{
 				MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
@@ -264,23 +269,24 @@ namespace Menge
 
 		this->checkMemoryCache_();
 
-		int16 * memory_s3e = (int16 *)s3eMallocBase( dataInfo->size );
+		int16 * memory_s3e = (int16 *)stdex_malloc( dataInfo->size );
 
 		decoder->decode( memory_s3e, dataInfo->size );
 
-		if( s_soundMemoryCache[soundChannel].memory != nullptr )
+		if( s_soundMemoryDesc[soundChannel].memory != nullptr )
 		{
  			return false;
 		}
 
-		s_soundMemoryCache[soundChannel].memory = memory_s3e;
-		s_soundMemoryCache[soundChannel].destroy = false;
+		s_soundMemoryDesc[soundChannel].carriage = m_carriage_s3e;
+		s_soundMemoryDesc[soundChannel].memory = memory_s3e;
+		s_soundMemoryDesc[soundChannel].destroy = false;
 
 		if( s3eSoundChannelPlay( soundChannel, memory_s3e, m_soundBuffer->getSamples(), (m_loop == true ? 0 : 1), 0 ) == S3E_RESULT_ERROR )
 		{
 			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 
-			s3eFreeBase( memory_s3e );
+			stdex_free( memory_s3e );
 
 			return false;
 		}
@@ -320,6 +326,10 @@ namespace Menge
 			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 		}
 
+		s3eDeviceYield();
+
+		m_carriage_s3e = s_soundMemoryDesc[m_soundChannel].carriage;
+
 		m_playing = false;
 		m_pausing = true;
 	}
@@ -334,36 +344,33 @@ namespace Menge
 			return;
 		}
 
+		if( s3eSoundChannelStop( m_soundChannel ) == S3E_RESULT_ERROR )
+		{
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+		}
+
+		s3eDeviceYield();
+
 		if( m_soundSystem->isDeviceStereo() == true )
 		{
 			if( s3eSoundChannelUnRegister( m_soundChannel, S3E_CHANNEL_GEN_AUDIO_STEREO ) == S3E_RESULT_ERROR )
 			{
 				MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-				return;
 			}
 		}
 
 		if( s3eSoundChannelUnRegister( m_soundChannel, S3E_CHANNEL_GEN_AUDIO ) == S3E_RESULT_ERROR )
 		{
 			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-			return;
 		}
 
 		if( s3eSoundChannelUnRegister( m_soundChannel, S3E_CHANNEL_END_SAMPLE ) == S3E_RESULT_ERROR )
 		{
 			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-
-			return;
-		}
-
-		if( s3eSoundChannelStop( m_soundChannel ) == S3E_RESULT_ERROR )
-		{
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 		}
 
 		m_soundChannel = -1;
+		m_carriage_s3e = 0;
 		
 		m_playing = false;
 		m_pausing = false;
@@ -413,7 +420,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float MarmaladeSoundSource::getPosMs() const
 	{
-		uint32 pos = m_carriage_s3e * m_L / m_W;
+		uint32 carriage = (m_playing == false || m_pausing == true) 
+			? m_carriage_s3e 
+			: s_soundMemoryDesc[m_soundChannel].carriage;
+
+		uint32 pos = carriage * m_L / m_W;
 
 		uint32_t frequency = m_soundBuffer->getFrequency();
 		uint32_t channels = m_soundBuffer->getChannels();
@@ -475,11 +486,11 @@ namespace Menge
 	{
 		for( uint32_t i = 0; i != 64; ++i )
 		{
-			volatile SoundMemoryCache & cache = s_soundMemoryCache[i];
+			volatile SoundMemoryDesc & cache = s_soundMemoryDesc[i];
 
 			if( cache.destroy == true )
 			{
-				s3eFreeBase( cache.memory );
+				stdex_free( cache.memory );
 
 				cache.memory = nullptr;
 				cache.destroy = false;

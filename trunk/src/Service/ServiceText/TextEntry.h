@@ -36,7 +36,7 @@ namespace Menge
 		const ConstString & getText() const override;
 
 	public:
-		const ConstString & getFont() const override;
+		const ConstString & getFontName() const override;
 		const ColourValue & getColorFont() const override;
 		const ColourValue & getColorOutline() const override;
 		float getLineOffset() const override;
@@ -50,7 +50,7 @@ namespace Menge
 		ConstString m_key;
 		ConstString m_text;
 
-		ConstString m_font;
+		ConstString m_fontName;
 
 		ColourValue m_colorFont;
 		ColourValue m_colorOutline;

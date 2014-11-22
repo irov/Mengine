@@ -75,10 +75,6 @@ namespace Menge
 		void visitGroupResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const override;
 			
 	public:
-		bool directResourceCompile( const ConstString& _name ) override;
-		void directResourceRelease( const ConstString& _name ) override;
-
-	public:
 		void dumpResources( const String & _tag );
 
 	protected:

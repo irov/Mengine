@@ -1422,13 +1422,57 @@ namespace Menge
 				->quit();
         }
         //////////////////////////////////////////////////////////////////////////
-        bool directResourceCompile( const ConstString& _nameResource )
+        bool directResourceCompile( const ConstString & _nameResource )
         {
-            bool result = RESOURCE_SERVICE(m_serviceProvider)
-                ->directResourceCompile( _nameResource );
+            ResourceReference * resource;				
+			if( RESOURCE_SERVICE(m_serviceProvider)
+                ->hasResource( _nameResource, &resource ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("directResourceCompile: not found resource '%s'"
+					, _nameResource.c_str()
+					);
 
-            return result;
+				return false;
+			}
+
+			if( resource->incrementReference() == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("directResourceCompile: resource '%s' type '%s' invalid compile"
+					, _nameResource.c_str()
+					, resource->getType().c_str()
+					);
+
+				return false;
+			}
+
+            return true;
         }
+		//////////////////////////////////////////////////////////////////////////
+		bool directResourceRelease( const ConstString & _nameResource )
+		{
+			ResourceReference * resource;				
+			if( RESOURCE_SERVICE(m_serviceProvider)
+				->hasResource( _nameResource, &resource ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("directResourceRelease: not found resource '%s'"
+					, _nameResource.c_str()
+					);
+				
+				return false;
+			}
+
+			if( resource->decrementReference() == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("directResourceCompile: resource '%s' type '%s' invalid release"
+					, _nameResource.c_str()
+					, resource->getType().c_str()
+					);
+
+				return false;
+			}
+
+			return true;
+		}
         //////////////////////////////////////////////////////////////////////////
         ResourceReference * s_getResourceReference( const ConstString& _nameResource )
         {
@@ -1445,12 +1489,6 @@ namespace Menge
             }
 
             return resource;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void directResourceRelease( const ConstString& _nameResource )
-        {
-            RESOURCE_SERVICE(m_serviceProvider)
-                ->directResourceRelease( _nameResource );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_cancelTask( ThreadTask * _task )

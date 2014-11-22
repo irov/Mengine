@@ -49,11 +49,13 @@ namespace Menge
 
         if( m_hFile == nullptr )
         {
+			const char * error_str = s3eFileGetErrorString();
             s3eFileError error = s3eFileGetError();
 
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open s3eFileOpen %s:%s get error %d"
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open s3eFileOpen %s:%s get error %s [%d]"
                 , m_folder.c_str()
                 , m_filename.c_str()
+				, error_str
                 , error
                 );
 
@@ -64,11 +66,13 @@ namespace Menge
 
 		if( s3e_size == -1 )
 		{
+			const char * error_str = s3eFileGetErrorString();
 			s3eFileError error = s3eFileGetError();
 
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open s3eFileGetSize %s:%s get error %d"
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open s3eFileGetSize %s:%s get error %s [%d]"
 				, m_folder.c_str()
 				, m_filename.c_str()
+				, error_str
 				, error
 				);
 
@@ -221,12 +225,14 @@ namespace Menge
 
 			if( result != S3E_RESULT_SUCCESS )
 			{
+				const char * error_str = s3eFileGetErrorString();
 				s3eFileError error = s3eFileGetError();
 
-				LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::seek %d:%d size %d get error %d"
+				LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::seek %d:%d size %d get error %s [%d]"
 					, m_offset
 					, _pos
 					, m_size
+					, error_str
 					, error
 					);
 
@@ -293,11 +299,13 @@ namespace Menge
 		
 		if( res == (uint64)-1 )
 		{
+			const char * error_str = s3eFileGetErrorString();
 			s3eFileError err = s3eFileGetError();
 
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open invalid get file modified '%s':'%s' - '%d'"
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open invalid get file modified '%s':'%s' error %s [%d]"
 				, m_folder.c_str()
 				, m_filename.c_str()
+				, error_str
 				, err
 				);
 

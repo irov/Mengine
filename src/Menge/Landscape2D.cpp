@@ -112,7 +112,7 @@ namespace	Menge
 
 				if( el.refcount == 1 )
 				{
-					if( el.resource->incrementReference() == 0 )
+					if( el.resource->incrementReference() == false )
 					{
 						LOGGER_ERROR(m_serviceProvider)("Landscape2D::_render '%s' image resource %s not compile"
 							, m_name.c_str() 

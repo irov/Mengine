@@ -470,7 +470,7 @@ namespace Menge
 		
 		ResourceReference * resource = entry->resource;
 
-		if( resource->incrementReference() == 0 )
+		if( resource->incrementReference() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceManager::getResource: resource '%s' '%s' is not compile!"
 				, _name.c_str()
@@ -588,44 +588,6 @@ namespace Menge
 
 			resource->accept( _visitor );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::directResourceCompile( const ConstString & _name )
-	{
-		const ResourceEntry * entry = m_resources.find( _name );
-
-		if( entry == nullptr )
-		{
-			LOGGER_WARNING(m_serviceProvider)("ResourceManager::directResourceCompile: resource '%s' does not exist"
-				, _name.c_str()
-				);
-
-			return false;
-		}
-		
-		ResourceReference * ref = entry->resource;
-
-		ref->incrementReference();
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::directResourceRelease( const ConstString& _name )
-	{
-		const ResourceEntry * entry = m_resources.find( _name );
-
-		if( entry == nullptr )
-		{
-			LOGGER_WARNING(m_serviceProvider)("ResourceManager::directResourceRelease: resource '%s' does not exist"
-				, _name.c_str()
-				);
-
-			return;
-		}
-
-		ResourceReference * ref = entry->resource;
-
-		ref->decrementReference();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace

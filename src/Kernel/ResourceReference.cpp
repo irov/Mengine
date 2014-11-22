@@ -169,7 +169,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceReference::cache()
 	{
-		if( this->incrementReference() == 0 )
+		if( this->incrementReference() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceReference::cache: '%s:%s' invalid increment reference"
 				, this->getGroup().c_str()

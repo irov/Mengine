@@ -119,10 +119,6 @@ namespace Menge
         virtual bool validationResources() const = 0; 
 
     public:
-        virtual bool directResourceCompile( const ConstString& _name ) = 0;
-        virtual void directResourceRelease( const ConstString& _name ) = 0;
-
-    public:
         virtual void dumpResources( const String & _tag ) = 0;
     };
 

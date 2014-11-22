@@ -10,8 +10,8 @@ namespace Menge
 		Reference();
 
 	public:
-		uint32_t incrementReference();
-		uint32_t decrementReference();
+		bool incrementReference();
+		bool decrementReference();
 
 		uint32_t countReference() const;
 

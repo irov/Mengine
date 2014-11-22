@@ -9,24 +9,26 @@ namespace Menge
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t Reference::incrementReference()
+	bool Reference::incrementReference()
 	{
 		if( ++m_refcounter == 1 )
 		{
 			if( this->_incrementZero() == false )
 			{
 				m_refcounter = 0;
+
+				return false;
 			}
 		}
 
-		return m_refcounter;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t Reference::decrementReference()
+	bool Reference::decrementReference()
 	{
 		if( m_refcounter == 0 )
 		{			
-			return 0;
+			return false;
 		}
 
 		if( --m_refcounter == 0 )
@@ -34,7 +36,7 @@ namespace Menge
 			this->_decrementZero();
 		}
 
-		return m_refcounter;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Reference::_incrementZero()

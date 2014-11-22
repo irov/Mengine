@@ -551,7 +551,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( font_has->incrementReference() == 0 )
+		if( font_has->incrementReference() == false )
 		{
 			return nullptr;
 		}

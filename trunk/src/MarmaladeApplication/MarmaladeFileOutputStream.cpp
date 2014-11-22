@@ -40,11 +40,13 @@ namespace Menge
 
         if( m_hFile == NULL )
         {
-            s3eFileError error = s3eFileGetError();
+			const char * error_str = s3eFileGetErrorString();
+            s3eFileError error = s3eFileGetError();			
 
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::open %s:%s get error %d"
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::open %s:%s get error %s [%d]"
                 , _folder.c_str()
                 , _filename.c_str()
+				, error_str
                 , error
                 );
 
@@ -70,11 +72,13 @@ namespace Menge
 
         if( bytesWritten != _count )
         {
+			const char * error_str = s3eFileGetErrorString();
             s3eFileError error = s3eFileGetError();
             
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::write %d:%d get error %d"
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::write %d:%d get error %s [%d]"
                 , bytesWritten
                 , _count
+				, error_str
                 , error
                 );
 
@@ -90,9 +94,11 @@ namespace Menge
 
         if( result != S3E_RESULT_SUCCESS )
         {
+			const char * error_str = s3eFileGetErrorString();
             s3eFileError error = s3eFileGetError();
 
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::flush get error %d"
+            LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::flush get error %s [%d]"
+				, error_str
                 , error
                 );
 

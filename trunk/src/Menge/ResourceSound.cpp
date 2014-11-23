@@ -7,6 +7,7 @@
 #   include "Interface/LogSystemInterface.h"
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
+#   include "Interface/ConfigInterface.h"
 
 #   include "Logger/Logger.h"
 
@@ -123,11 +124,14 @@ namespace Menge
 
         const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-        if( dataInfo->length > 500.f && m_isStreamable == false )
+		float limitNoStreamSoundDuration = CONFIG_VALUE(m_serviceProvider, "Limit", "NoStreamSoundDuration", 2000.f ); //4kb
+
+        if( dataInfo->length > limitNoStreamSoundDuration && m_isStreamable == false )
         {
-            LOGGER_WARNING(m_serviceProvider)("SoundEngine::_isValid: %s setup to stream (time %.4f > 500.0 ms)\nfile - %s:%s"
+            LOGGER_WARNING(m_serviceProvider)("SoundEngine::_isValid: %s setup to stream (time %.4f > %.4f ms)\nfile - %s:%s"
                 , m_name.c_str()
                 , dataInfo->length
+				, limitNoStreamSoundDuration
                 , category.c_str()
                 , m_path.c_str() 
                 );

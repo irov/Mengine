@@ -13,7 +13,7 @@
 #	include "ImageDecoderPVRTC.h"
 #	include "ImageDecoderETC1.h"
 
-#	include "ImageDecoderCRN.h"
+//#	include "ImageDecoderCRN.h"
 
 #	include "ImageDecoderHTF.h"
 #	include "ImageEncoderHTF.h"
@@ -80,9 +80,9 @@ namespace Menge
 		m_decoders.push_back( new DecoderFactory<ImageDecoderETC1>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "etcImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderDDS>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ddsImage")) );
 
-#	ifdef MENGINE_SUPPORT_DECODER_CRN
-		m_decoders.push_back( new DecoderFactory<ImageDecoderCRN>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "crnImage")) );
-#	endif
+//#	ifdef MENGINE_SUPPORT_DECODER_CRN
+//		m_decoders.push_back( new DecoderFactory<ImageDecoderCRN>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "crnImage")) );
+//#	endif
 
 		m_decoders.push_back( new DecoderFactory<ImageDecoderHTF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "htfImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderACF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "acfImage")) );

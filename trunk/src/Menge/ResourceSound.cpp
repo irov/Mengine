@@ -22,9 +22,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceSound::setPath( const FilePath& _path )
+	void ResourceSound::setFilePath( const FilePath& _path )
 	{
-		m_path = _path;
+		m_filePath = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSound::setCodecType( const ConstString& _codec )
@@ -42,7 +42,7 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceSound * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceSound *>(_meta);
 
-        metadata->swap_File_Path( m_path );
+        metadata->swap_File_Path( m_filePath );
         metadata->swap_File_Codec( m_codecType );
         metadata->swap_File_Converter( m_converter );
 
@@ -57,14 +57,14 @@ namespace Menge
 		return m_isStreamable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const FilePath & ResourceSound::getPath() const
+	const FilePath & ResourceSound::getFilePath() const
 	{
-		return m_path;
+		return m_filePath;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::_convert()
     {
-		bool result = this->convertDefault_( m_converter, m_path, m_path, m_codecType );
+		bool result = this->convertDefault_( m_converter, m_filePath, m_filePath, m_codecType );
 
         return result;
     }
@@ -84,14 +84,14 @@ namespace Menge
         const ConstString & category = this->getCategory();
 
         InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( category, m_path, m_isStreamable );
+            ->openInputFile( category, m_filePath, m_isStreamable );
 
         if( stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("ResourceSound::_isValid: %s can't open sound file %s:%s"
                 , m_name.c_str()
                 , category.c_str()
-                , m_path.c_str() 
+                , m_filePath.c_str() 
                 );
 
             return false;
@@ -105,7 +105,7 @@ namespace Menge
             LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s can't create sound decoder for file %s:%s"
                 , m_name.c_str()
                 , category.c_str()
-                , m_path.c_str() 
+                , m_filePath.c_str() 
                 );
 
             return false;
@@ -116,7 +116,7 @@ namespace Menge
 			LOGGER_ERROR(m_serviceProvider)("SoundEngine::_isValid: %s can't initialize sound decoder for file %s:%s"
 				, m_name.c_str()
 				, category.c_str()
-				, m_path.c_str() 
+				, m_filePath.c_str() 
 				);
 
 			return false;
@@ -133,7 +133,7 @@ namespace Menge
                 , dataInfo->length
 				, limitNoStreamSoundDuration
                 , category.c_str()
-                , m_path.c_str() 
+                , m_filePath.c_str() 
                 );
         }
 
@@ -146,7 +146,7 @@ namespace Menge
         {
             LOGGER_ERROR(m_serviceProvider)("SoundEngine::isValid '%s' can't create buffer '%s'"
                 , this->getName().c_str()
-                , m_path.c_str()
+                , m_filePath.c_str()
                 );
 
             return false;
@@ -181,13 +181,13 @@ namespace Menge
 		const ConstString & category = this->getCategory();
 
 		SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE(m_serviceProvider)
-			->createSoundBufferFromFile( category, m_path, m_codecType, m_isStreamable );
+			->createSoundBufferFromFile( category, m_filePath, m_codecType, m_isStreamable );
 
 		if( soundBuffer == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceSound::createSoundBuffer: '%s' can't load sound '%s'"
 				, this->getName().c_str() 
-				, m_path.c_str()
+				, m_filePath.c_str()
 				);
 
 			return nullptr;

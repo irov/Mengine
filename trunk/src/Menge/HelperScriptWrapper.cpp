@@ -39,6 +39,7 @@
 #	include "Kernel/ResourceImage.h"
 #	include "ResourceCursorICO.h"
 #	include "AccountManager.h"
+#	include "Core/CacheMemoryBuffer.h"
 
 #	include "Kernel/Affector.h"
 
@@ -52,6 +53,7 @@
 #	include "Kernel/TimingManager.h"
 
 #   include "pybind/pybind.hpp"
+#   include "pybind/pickle.hpp"
 
 namespace Menge
 {
@@ -919,7 +921,7 @@ namespace Menge
 			return name;
 		}
 
-		bool s_writeAccountBinaryFile( const WString & _fileName, const TBlobject & _data )
+		bool s_writeAccountBinaryFile( const WString & _fileName, PyObject * _data, PyObject * _pickleTypes )
 		{
             String utf8_fileName;
             if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
@@ -944,8 +946,27 @@ namespace Menge
 			}
 
             ConstString filepath = Helper::stringizeString( m_serviceProvider, utf8_fileName );
+
+			size_t size;
+			pybind::pickle( _data, _pickleTypes, nullptr, 0, size );
+
+			CacheMemoryBuffer buffer(m_serviceProvider, size, "s_writeAccountBinaryFile");
+			void * memory_buffer = buffer.getMemory();
+			size_t memory_size = buffer.getSize();
+
+			if( pybind::pickle( _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
+			{
+				const WString & accountName = currentAccount->getName();
+
+				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: account %ls invalid pickle"
+					, accountName.c_str()
+					, _fileName.c_str()
+					);
+
+				return false;
+			}
             
-            if( currentAccount->writeBinaryFile( filepath, _data ) == false )
+            if( currentAccount->writeBinaryFile( filepath, memory_buffer, memory_size ) == false )
             {
                 const WString & accountName = currentAccount->getName();
 
@@ -960,7 +981,7 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * s_loadAccountBinaryFile( const WString & _fileName )
+		PyObject * s_loadAccountBinaryFile( const WString & _fileName, PyObject * _pickleTypes )
 		{
             String utf8_fileName;
             if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
@@ -986,8 +1007,11 @@ namespace Menge
 
             ConstString filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
 
-            TBlobject blob;
-            if( currentAccount->loadBinaryFile( filename, blob ) == false )
+            const void * buffer_data;
+			size_t buffer_size;
+			CacheBufferID bufferId = currentAccount->loadBinaryFile( filename, &buffer_data, buffer_size );
+
+            if( bufferId == 0 )
             {
                 const WString & accountName = currentAccount->getName();
 
@@ -998,9 +1022,23 @@ namespace Menge
 
                 return pybind::ret_none();
             }
-
 	
-            PyObject * py_data = pybind::string_from_char_size( reinterpret_cast<char *>(&blob[0]), blob.size() );
+            PyObject * py_data = pybind::unpickle( buffer_data, buffer_size, _pickleTypes );
+
+			CACHE_SERVICE(m_serviceProvider)
+				->unlockBuffer( bufferId );
+
+			if( py_data == nullptr )
+			{
+				const WString & accountName = currentAccount->getName();
+
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountBinaryFile: account %ls invalid unpickle file %ls"
+					, accountName.c_str()
+					, _fileName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
 
 			return py_data;
 		}

@@ -16,8 +16,8 @@ namespace Menge
 		ResourceSound();
 
 	public:
-		void setPath( const FilePath & _path );
-		const FilePath& getPath() const;
+		void setFilePath( const FilePath & _path );
+		const FilePath& getFilePath() const;
 				
 		void setCodecType( const ConstString & _codec );
 		const ConstString & getCodecType() const;
@@ -47,7 +47,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		FilePath m_path;
+		FilePath m_filePath;
 
 		ConstString m_codecType;
 		ConstString m_converter;

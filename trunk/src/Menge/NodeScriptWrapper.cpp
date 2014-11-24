@@ -1762,7 +1762,7 @@ namespace Menge
 			{
 				(void)_node;
 
-				PyObject * py_attr = pybind::dict_new();
+				PyObject * py_attr = pybind::dict_new_presized( _count );
 				
 				for( uint32_t i = 0; i != _count; ++i )
 				{
@@ -1966,6 +1966,15 @@ namespace Menge
 						->prefetchImageDecoder( m_category, fileAlphaName, codecAlphaType );
 				}
 
+				void visit( ResourceSound * _resource ) override
+				{
+					const FilePath & filePath = _resource->getFilePath();
+					const ConstString & codecType = _resource->getCodecType();
+
+					PREFETCHER_SERVICE(m_serviceProvider)
+						->prefetchSoundDecoder( m_category, filePath, codecType );
+				}
+
 				void visit( ResourceMovie * _resource ) override
 				{
 					const FilePath & filePath = _resource->getFilePath();
@@ -2021,6 +2030,14 @@ namespace Menge
 
 					PREFETCHER_SERVICE(m_serviceProvider)
 						->unfetchImageDecoder( fileAlphaName );
+				}
+
+				void visit( ResourceSound * _resource ) override
+				{
+					const FilePath & filePath = _resource->getFilePath();
+
+					PREFETCHER_SERVICE(m_serviceProvider)
+						->unfetchSoundDecoder( filePath );
 				}
 
 				void visit( ResourceMovie * _resource ) override

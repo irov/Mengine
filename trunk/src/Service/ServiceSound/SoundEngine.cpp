@@ -4,6 +4,7 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/CodecInterface.h"
+#	include "Interface/PrefetcherInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -320,6 +321,47 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
+	SoundDecoderInterfacePtr SoundEngine::createSoundDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _streamable )
+	{
+		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( _pakName, _fileName, _streamable );
+
+		if( stream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundDecoder_: Can't open sound file %s:%s"
+				, _pakName.c_str()
+				, _fileName.c_str() 
+				);
+
+			return nullptr;
+		}
+
+		SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE(m_serviceProvider)
+			->createDecoderT<SoundDecoderInterfacePtr>( _codecType );
+
+		if( soundDecoder == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundDecoder_: Can't create sound decoder for file %s:%s"
+				, _pakName.c_str()
+				, _fileName.c_str() 
+				);
+
+			return nullptr;
+		}
+
+		if( soundDecoder->prepareData( stream ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundDecoder_: Can't initialize sound decoder for file %s:%s"
+				, _pakName.c_str()
+				, _fileName.c_str() 
+				);
+
+			return nullptr;
+		}
+
+		return soundDecoder;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterfacePtr SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _streamable )
 	{
 		if( m_supportStream == false && _streamable == true )
@@ -332,44 +374,45 @@ namespace Menge
 			return nullptr;
 		}
 
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( _pakName, _fileName, _streamable );
-        
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't open sound file %s:%s"
-                , _pakName.c_str()
-                , _fileName.c_str() 
-                );
+		SoundDecoderInterfacePtr soundDecoder;
+		if( _streamable == false )
+		{		
+			if( PREFETCHER_SERVICE(m_serviceProvider)
+				->getSoundDecoder( _fileName, soundDecoder ) == false )
+			{
+				soundDecoder = this->createSoundDecoder_( _pakName, _fileName, _codecType, false );
+			}
+			else
+			{
+				if( soundDecoder->rewind() == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTexture invalid rewind decoder '%s':'%s'"
+						, _pakName.c_str()
+						, _fileName.c_str()
+						);
 
-            return nullptr;
-        }
-
-		SoundDecoderInterfacePtr codec = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType );
-		
-    	if( codec == nullptr )
+					return nullptr;
+				}
+			}
+		}
+		else
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't create sound decoder for file %s:%s"
-                , _pakName.c_str()
-				, _fileName.c_str() 
-				);
-
-			return nullptr;
+			soundDecoder = this->createSoundDecoder_( _pakName, _fileName, _codecType, true );
 		}
 
-		if( codec->prepareData( stream ) == false )
+		if( soundDecoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile: Can't initialize sound decoder for file %s:%s"
+			LOGGER_ERROR(m_serviceProvider)("SoundEngine::createSoundBufferFromFile invalid create decoder '%s':'%s' type %s"
 				, _pakName.c_str()
-				, _fileName.c_str() 
+				, _fileName.c_str()
+				, _codecType.c_str()
 				);
 
 			return nullptr;
 		}
 
 		SoundBufferInterfacePtr buffer = SOUND_SYSTEM(m_serviceProvider)
-            ->createSoundBuffer( codec, _streamable );
+            ->createSoundBuffer( soundDecoder, _streamable );
 
         if( buffer == nullptr )
         {

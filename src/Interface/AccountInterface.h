@@ -2,6 +2,7 @@
 
 #   include "Interface/ServiceInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
+#   include "Interface/CacheInterface.h"
 
 #   include "Core/ConstString.h"
 #	include "Factory/FactorablePtr.h"
@@ -34,8 +35,8 @@ namespace Menge
         virtual bool save() = 0;
 
     public:
-        virtual bool loadBinaryFile( const ConstString & _filename, TBlobject & _data ) = 0;
-        virtual bool writeBinaryFile( const ConstString & _filename, const TBlobject & _data ) = 0;
+        virtual CacheBufferID loadBinaryFile( const ConstString & _filename, const void ** _data, size_t & _size ) = 0;
+        virtual bool writeBinaryFile( const ConstString & _filename, const void * _data, size_t _size ) = 0;
     };
 
 	typedef stdex::intrusive_ptr<AccountInterface> AccountInterfacePtr;

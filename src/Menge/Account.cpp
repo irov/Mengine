@@ -304,7 +304,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-    bool Account::loadBinaryFile( const ConstString & _fileName, TBlobject & _data )
+    CacheBufferID Account::loadBinaryFile( const ConstString & _fileName, const void ** _data, size_t & _size )
     {        
 		PathString path;
 
@@ -324,9 +324,8 @@ namespace Menge
                 , fullpath.c_str()
                 );
 
-            return false;
+            return 0;
         }
-
 		
 		CacheBufferID bufferId;
 		unsigned char * data_memory;
@@ -342,17 +341,15 @@ namespace Menge
 			return false;
 		}
 
-        _data.assign( data_memory, data_memory + data_size );
+		*_data = data_memory;
+		_size = data_size;
 
-		CACHE_SERVICE(m_serviceProvider)
-			->unlockBuffer( bufferId );
-
-        return true;
+        return bufferId;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::writeBinaryFile( const ConstString & _fileName, const TBlobject & _data )
+    bool Account::writeBinaryFile( const ConstString & _fileName, const void * _data, size_t _size )
     {
-		if( _data.empty() == true )
+		if( _data == nullptr || _size == 0 )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::writeBinaryFile: account %ls write empty file %s"
 				, m_name.c_str()
@@ -383,8 +380,8 @@ namespace Menge
             return false;
         }
 
-		const uint8_t * data_memory = &_data[0];
-		size_t data_size = _data.size();
+		const void * data_memory = _data;
+		size_t data_size = _size;
 
 		if( Helper::writeStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_ACCOUNT_DATA), GET_MAGIC_VERSION(MAGIC_ACCOUNT_DATA), true, data_memory, data_size ) == false )
 		{

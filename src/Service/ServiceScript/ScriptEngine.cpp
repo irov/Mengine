@@ -81,6 +81,11 @@ namespace Menge
 			bool exist;
 			PyObject * module_traceback = pybind::module_import("traceback", exist );
 
+			if( module_traceback == nullptr )
+			{
+				return;
+			}
+
 			pybind::call_method( module_traceback, "print_stack", "()" );
 		}
 

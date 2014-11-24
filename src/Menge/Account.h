@@ -45,8 +45,8 @@ namespace Menge
 		bool save() override;
 
     public:
-        bool loadBinaryFile( const ConstString & _fileName, TBlobject & _data ) override;
-        bool writeBinaryFile( const ConstString & _fileName, const TBlobject & _data ) override;
+        CacheBufferID loadBinaryFile( const ConstString & _fileName, const void ** _data, size_t & _size ) override;
+        bool writeBinaryFile( const ConstString & _fileName, const void * _data, size_t _size ) override;
 	
 	protected:
         ServiceProviderInterface * m_serviceProvider;

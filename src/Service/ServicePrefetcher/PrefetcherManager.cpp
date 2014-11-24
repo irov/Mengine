@@ -167,6 +167,94 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool PrefetcherManager::prefetchSoundDecoder( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
+	{
+		if( m_threadQueue == nullptr )
+		{
+			return false;
+		}
+
+		TMapPrefetchSoundDecoderReceiver::iterator it_found = m_prefetchSoundDecoderReceiver.find( _fileName );
+
+		if( it_found == m_prefetchSoundDecoderReceiver.end() )
+		{
+			PrefetchSoundDecoderReceiver receiver;
+			receiver.refcount = 1;
+
+			ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder.createObjectT();
+			task->setServiceProvider( m_serviceProvider );
+			task->initialize( _pakName, _fileName, _codec );
+
+			receiver.prefetcher = task;
+
+			m_prefetchSoundDecoderReceiver.insert( _fileName, receiver );
+
+			m_threadQueue->addTask( task );
+
+			return true;
+		}
+
+		PrefetchSoundDecoderReceiver & receiver = m_prefetchSoundDecoderReceiver.get_value( it_found );
+
+		++receiver.refcount;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PrefetcherManager::unfetchSoundDecoder( const FilePath& _fileName )
+	{
+		TMapPrefetchSoundDecoderReceiver::iterator it_found = m_prefetchSoundDecoderReceiver.find( _fileName );
+
+		if( it_found == m_prefetchSoundDecoderReceiver.end() )
+		{
+			return;
+		}
+
+		PrefetchSoundDecoderReceiver & receiver = m_prefetchSoundDecoderReceiver.get_value( it_found );
+
+		if( --receiver.refcount > 0 )
+		{
+			return;
+		}
+
+		receiver.prefetcher->cancel();
+
+		m_prefetchSoundDecoderReceiver.erase( it_found );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PrefetcherManager::getSoundDecoder( const FilePath & _fileName, SoundDecoderInterfacePtr & _decoder ) const
+	{
+		TMapPrefetchSoundDecoderReceiver::const_iterator it_found = m_prefetchSoundDecoderReceiver.find( _fileName );
+
+		if( it_found == m_prefetchSoundDecoderReceiver.end() )
+		{
+			return false;
+		}
+
+		const PrefetchSoundDecoderReceiver & receiver = m_prefetchSoundDecoderReceiver.get_value( it_found );
+
+		if( receiver.prefetcher->isComplete() == false )
+		{
+			return false;
+		}
+
+		if( receiver.prefetcher->isSuccessful() == false )
+		{
+			return false;
+		}
+
+		const SoundDecoderInterfacePtr & prefetch_decoder = receiver.prefetcher->getDecoder();
+
+		if( prefetch_decoder == nullptr )
+		{
+			return false;
+		}
+
+		_decoder = prefetch_decoder;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::prefetchData( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _dataflowType )
 	{
 		if( m_threadQueue == nullptr )

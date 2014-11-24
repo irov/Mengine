@@ -3,7 +3,7 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/StreamInterface.h"
 #	include "Interface/FileSystemInterface.h"
-#	include "Interface/ImageCodecInterface.h"
+#	include "Interface/SoundCodecInterface.h"
 
 #	include "Kernel/ThreadTask.h"
 
@@ -11,11 +11,11 @@
 
 namespace Menge
 {
-	class ThreadTaskPrefetchImageDecoder
+	class ThreadTaskPrefetchSoundDecoder
 		: public ThreadTask
 	{
 	public:
-		ThreadTaskPrefetchImageDecoder();
+		ThreadTaskPrefetchSoundDecoder();
 	
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
@@ -24,7 +24,7 @@ namespace Menge
 		void initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec );
 		
 	public:
-		const ImageDecoderInterfacePtr & getDecoder() const;
+		const SoundDecoderInterfacePtr & getDecoder() const;
 
 	protected:
 		bool _onRun() override;
@@ -41,9 +41,9 @@ namespace Menge
 	protected:
 		FileGroupInterfacePtr m_group;
 		InputStreamInterfacePtr m_stream;
-		ImageDecoderInterfacePtr m_imageDecoder;
+		SoundDecoderInterfacePtr m_soundDecoder;
 		MemoryInputPtr m_memoryInput;
 	};
 
-	typedef stdex::intrusive_ptr<ThreadTaskPrefetchImageDecoder> ThreadTaskPrefetchImageDecoderPtr;
+	typedef stdex::intrusive_ptr<ThreadTaskPrefetchSoundDecoder> ThreadTaskPrefetchSoundDecoderPtr;
 }

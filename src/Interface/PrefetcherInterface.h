@@ -3,6 +3,7 @@
 #	include "Interface/ServiceInterface.h"
 
 #	include "Interface/ImageCodecInterface.h"
+#	include "Interface/SoundCodecInterface.h"
 #	include "Interface/DataInterface.h"
 #	include "Interface/ParticleSystemInterface.h"
 
@@ -32,6 +33,13 @@ namespace Menge
 
 	public:
 		virtual bool getImageDecoder( const FilePath & _fileName, ImageDecoderInterfacePtr & _decoder ) const = 0;
+		
+	public:
+		virtual bool prefetchSoundDecoder( const ConstString & _pakName, const FilePath & _fileName, const ConstString & _codec ) = 0;
+		virtual void unfetchSoundDecoder( const FilePath & _fileName ) = 0;
+
+	public:
+		virtual bool getSoundDecoder( const FilePath & _fileName, SoundDecoderInterfacePtr & _decoder ) const = 0;
 		
 	public:
 		virtual bool prefetchData( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _dataflowType ) = 0;

@@ -1,6 +1,7 @@
 #	include "Interface/PrefetcherInterface.h"
 
 #	include "ThreadTaskPrefetchImageDecoder.h"
+#	include "ThreadTaskPrefetchSoundDecoder.h"
 #	include "ThreadTaskPrefetchDataflow.h"
 
 #	include "Factory/FactoryStore.h"
@@ -33,11 +34,18 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		bool prefetchImageDecoder( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec ) override;
-		void unfetchImageDecoder( const FilePath& _fileName ) override;
+		bool prefetchImageDecoder( const ConstString & _pakName, const FilePath & _fileName, const ConstString & _codec ) override;
+		void unfetchImageDecoder( const FilePath & _fileName ) override;
 
 	public:
 		bool getImageDecoder( const FilePath & _fileName, ImageDecoderInterfacePtr & _decoder ) const override;
+
+	public:
+		bool prefetchSoundDecoder( const ConstString & _pakName, const FilePath & _fileName, const ConstString & _codec ) override;
+		void unfetchSoundDecoder( const FilePath & _fileName ) override;
+
+	public:
+		bool getSoundDecoder( const FilePath & _fileName, SoundDecoderInterfacePtr & _decoder ) const override;
 
 	public:
 		bool prefetchData( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _dataflowType ) override;
@@ -65,6 +73,18 @@ namespace Menge
 		
 		typedef stdex::binary_vector<FilePath, PrefetchImageDecoderReceiver> TMapPrefetchImageDecoderReceiver;
 		TMapPrefetchImageDecoderReceiver m_prefetchImageDecoderReceiver;
+
+		struct PrefetchSoundDecoderReceiver
+		{
+			uint32_t refcount;
+			ThreadTaskPrefetchSoundDecoderPtr prefetcher;
+		};
+
+		typedef FactoryPoolStore<ThreadTaskPrefetchSoundDecoder, 16> TFactoryThreadTaskPrefetchSoundDecoder;
+		TFactoryThreadTaskPrefetchSoundDecoder m_factoryThreadTaskPrefetchSoundDecoder;
+
+		typedef stdex::binary_vector<FilePath, PrefetchSoundDecoderReceiver> TMapPrefetchSoundDecoderReceiver;
+		TMapPrefetchSoundDecoderReceiver m_prefetchSoundDecoderReceiver;
 
 		struct PrefetchDataReceiver
 		{

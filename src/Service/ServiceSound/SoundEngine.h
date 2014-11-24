@@ -83,6 +83,9 @@ namespace Menge
     public:
 		SoundBufferInterfacePtr createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _streamable ) override;  
 
+	protected:
+		SoundDecoderInterfacePtr createSoundDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _streamable );
+
     public:
 		void setSoundVolume( const ConstString & _type, float _volume ) override;
 		float getSoundVolume( const ConstString & _type ) const override;

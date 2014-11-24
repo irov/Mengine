@@ -1,4 +1,4 @@
-#	include "ThreadTaskPrefetchImageDecoder.h"
+#	include "ThreadTaskPrefetchSoundDecoder.h"
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/CodecInterface.h"
@@ -13,29 +13,29 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ThreadTaskPrefetchImageDecoder::ThreadTaskPrefetchImageDecoder()
+	ThreadTaskPrefetchSoundDecoder::ThreadTaskPrefetchSoundDecoder()
 		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchImageDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	void ThreadTaskPrefetchSoundDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
 	{
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchImageDecoder::initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
+	void ThreadTaskPrefetchSoundDecoder::initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
 	{
 		m_pakName = _pakName;
 		m_filePath = _fileName;
 		m_codec = _codec;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ImageDecoderInterfacePtr & ThreadTaskPrefetchImageDecoder::getDecoder() const
+	const SoundDecoderInterfacePtr & ThreadTaskPrefetchSoundDecoder::getDecoder() const
 	{
-		return m_imageDecoder;
+		return m_soundDecoder;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPrefetchImageDecoder::_onRun()
+	bool ThreadTaskPrefetchSoundDecoder::_onRun()
 	{
 		m_group = FILE_SERVICE(m_serviceProvider)
 			->getFileGroup( m_pakName );
@@ -60,12 +60,12 @@ namespace Menge
 			return nullptr;
 		}
 		
-		m_imageDecoder = CODEC_SERVICE(m_serviceProvider)
-			->createDecoderT<ImageDecoderInterfacePtr>( m_codec );
+		m_soundDecoder = CODEC_SERVICE(m_serviceProvider)
+			->createDecoderT<SoundDecoderInterfacePtr>( m_codec );
 
-		if( m_imageDecoder == nullptr )
+		if( m_soundDecoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide create codec %s"
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onRun: invalide create codec %s"
 				, m_codec.c_str() 
 				);
 
@@ -78,11 +78,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPrefetchImageDecoder::_onMain()
+	bool ThreadTaskPrefetchSoundDecoder::_onMain()
 	{		
 		if( m_group->openInputFile( m_filePath, m_stream, 0, 0, false ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide open file '%s':'%s'"
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onRun: invalide open file '%s':'%s'"
 				, m_pakName.c_str()
 				, m_filePath.c_str()
 				);
@@ -96,7 +96,7 @@ namespace Menge
 
 		if( memory == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onMain: '%s' invalid alloc memory '%d'"
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onMain: '%s' invalid alloc memory '%d'"
 				, m_filePath.c_str() 
 				, stream_size
 				);
@@ -106,7 +106,7 @@ namespace Menge
 
 		if( m_stream->read( memory, stream_size ) != stream_size )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onMain: '%s' invalid read stream '%d'"
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onMain: '%s' invalid read stream '%d'"
 				, m_filePath.c_str() 
 				, stream_size
 				);
@@ -114,9 +114,9 @@ namespace Menge
 			return false;
 		}
 
-		if( m_imageDecoder->prepareData( m_memoryInput ) == false )
+		if( m_soundDecoder->prepareData( m_memoryInput ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onMain: decoder for file '%s' was not initialize"
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onMain: decoder for file '%s' was not initialize"
 				, m_filePath.c_str() 
 				);
 
@@ -126,7 +126,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchImageDecoder::_onComplete( bool _successful )
+	void ThreadTaskPrefetchSoundDecoder::_onComplete( bool _successful )
 	{
 		(void) _successful;
 

@@ -326,8 +326,6 @@ namespace Menge
 			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 		}
 
-		s3eDeviceYield();
-
 		m_carriage_s3e = s_soundMemoryDesc[m_soundChannel].carriage;
 
 		m_playing = false;
@@ -348,9 +346,7 @@ namespace Menge
 		{
 			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 		}
-
-		s3eDeviceYield();
-
+		
 		if( m_soundSystem->isDeviceStereo() == true )
 		{
 			if( s3eSoundChannelUnRegister( m_soundChannel, S3E_CHANNEL_GEN_AUDIO_STEREO ) == S3E_RESULT_ERROR )
@@ -365,6 +361,12 @@ namespace Menge
 		}
 
 		if( s3eSoundChannelUnRegister( m_soundChannel, S3E_CHANNEL_END_SAMPLE ) == S3E_RESULT_ERROR )
+		{
+			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+		}
+
+
+		if( s3eSoundChannelUnRegister( soundChannel, S3E_CHANNEL_STOP_AUDIO ) == S3E_RESULT_ERROR )
 		{
 			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 		}
@@ -430,7 +432,9 @@ namespace Menge
 		uint32_t channels = m_soundBuffer->getChannels();
 		uint32_t bits = m_soundBuffer->getBits();
 
-		float posMs = (float)(pos * 1000 / (frequency * channels * bits));
+		uint32_t bytePerSec = (frequency * channels * bits);
+
+		float posMs = (float)(pos * 1000 / bytePerSec);
 
 		return posMs;
 	}

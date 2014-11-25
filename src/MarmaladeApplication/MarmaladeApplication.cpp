@@ -91,7 +91,10 @@ extern "C" // only required if using g++
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );
 
+	extern bool initPluginMengeOggVorbis( Menge::PluginInterface ** _plugin );
+
 	extern bool initPluginPathFinder( Menge::PluginInterface ** _plugin );
+	
 }
 
 namespace Menge
@@ -1306,6 +1309,15 @@ namespace Menge
             pluginMengeSoundCodec->initialize( m_serviceProvider );
 			m_plugins.push_back( pluginMengeSoundCodec );
         }
+
+		{
+			LOGGER_INFO(m_serviceProvider)( "initialize Ogg Vorbis Codec..." );
+
+			Menge::PluginInterface * pluginMengeOggVorbis;
+			initPluginMengeOggVorbis( &pluginMengeOggVorbis );
+			pluginMengeOggVorbis->initialize( m_serviceProvider );
+			m_plugins.push_back( pluginMengeOggVorbis );
+		}
 
 		{
 			LOGGER_INFO(m_serviceProvider)( "initialize Video Codec..." );

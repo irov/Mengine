@@ -571,7 +571,6 @@ namespace Menge
         uint32_t object;
         uint32_t triangle;
 		uint32_t batch;
-        //size_t megatextures;
     };
 
 	enum ERenderBatchMode
@@ -644,6 +643,11 @@ namespace Menge
 
    public:
         virtual void enableDebugMode( bool _enable ) = 0;
+		virtual bool isDebugMode() const = 0;
+
+		virtual void endLimitRenderObjects() = 0;
+		virtual void increfLimitRenderObjects() = 0;
+		virtual void decrefLimitRenderObjects() = 0;
 
     public:
         virtual void onWindowClose() = 0;

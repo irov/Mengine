@@ -52,7 +52,8 @@ namespace Menge
 		virtual void pause() = 0;
 		virtual void stop() = 0;
 
-		virtual bool isPlaying() const = 0;
+		virtual bool isPlay() const = 0;
+		virtual bool isPause() const = 0;
 
 		virtual void setVolume( float _volume ) = 0;
 		virtual float getVolume() const = 0;

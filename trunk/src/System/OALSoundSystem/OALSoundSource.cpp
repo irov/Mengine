@@ -90,7 +90,7 @@ namespace Menge
 			return;
 		}
 
-		if( m_playing == true )
+		if( m_pausing == true )
 		{
 			return;
 		}
@@ -107,8 +107,7 @@ namespace Menge
 
 		m_playing = false;
         m_pausing = true;
-
-         
+		 
         float timing = 0.f;
         if( m_soundBuffer->getTimePos( m_sourceId, timing ) == false )
         {
@@ -119,17 +118,13 @@ namespace Menge
         }
 
         m_timing = timing;
-
-        //ALuint sourceId = m_sourceId;
-        //m_sourceId = 0;
-
-        m_soundBuffer->pause( m_sourceId );
-        //m_soundSystem->releaseSourceId( sourceId );        
+		
+        m_soundBuffer->pause( m_sourceId );       
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::stop()
 	{
-		if( m_playing == false )
+		if( m_playing == false && m_pausing == false )
 		{
 			return;
 		}
@@ -142,9 +137,14 @@ namespace Menge
 		m_timing = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundSource::isPlaying() const 
+	bool OALSoundSource::isPlay() const 
 	{
 		return m_playing;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool OALSoundSource::isPause() const
+	{
+		return m_pausing;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSource::setVolume( float _volume )
@@ -199,6 +199,11 @@ namespace Menge
 		{
 			return m_timing;
 		}
+
+		if( m_pausing == true )
+		{
+			return m_timing;
+		}
 			
 		float posms = 0.f;
         if( m_soundBuffer->getTimePos( m_sourceId, posms ) == false )
@@ -222,6 +227,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundSource::setPosMs( float _posMs )
 	{
+		if( m_playing == true )
+		{
+			return false;
+		}
+
         float posmc = _posMs;
 
         float total = m_soundBuffer->getTimeTotal();
@@ -280,8 +290,6 @@ namespace Menge
             m_sourceId = 0;
 
             m_soundBuffer->stop( sourceId );
-            // 			alSourceRewind( m_sourceId );
-            // 			OAL_CHECK_ERROR();
             m_soundSystem->releaseSourceId( sourceId );
         }
     }

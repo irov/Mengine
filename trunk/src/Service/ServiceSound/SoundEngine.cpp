@@ -443,7 +443,7 @@ namespace Menge
         SoundSourceDesc * source = m_soundSourceMap.get_value( it_find );
 
 		this->stopSoundBufferUpdate_( source );
-
+		
         source->source->stop();
         source->source = nullptr;
 
@@ -942,9 +942,10 @@ namespace Menge
 			return true;
 		}
         
-        bool playing = source->source->isPlaying();
+        bool playing = source->source->isPlay();
+		bool pausing = source->source->isPause();
         
-        if( playing == true )
+        if( playing == true && pausing == false )
         {
             source->source->pause();
         }
@@ -954,7 +955,7 @@ namespace Menge
             return false;
         }
 
-        if( playing == true )
+        if( playing == true && pausing == false )
         {
             if( source->source->play() == false )
             {

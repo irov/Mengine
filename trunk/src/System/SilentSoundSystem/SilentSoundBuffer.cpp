@@ -7,6 +7,14 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	static float s_getTimeMs()
+	{
+		clock_t cl = clock();
+		float sec = (float)(cl) / float(CLOCKS_PER_SEC);
+
+		return sec;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	SilentSoundBuffer::SilentSoundBuffer()
         : m_playTime(0.f)
         , m_pauseTime(0.f)
@@ -58,19 +66,30 @@ namespace Menge
         (void)_looped;
         (void)_pos;
 
-        clock_t cl = clock();
-        float sec = (float)(cl) / float(CLOCKS_PER_SEC);
+        float sec = s_getTimeMs();
 
         m_playTime = sec;
         m_pauseTime = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool SilentSoundBuffer::resume( uint32_t _id )
+	{
+		(void)_id;
+
+		float sec = s_getTimeMs();
+		float deltha = m_pauseTime - m_playTime;
+
+		m_playTime = sec - deltha;
+		m_pauseTime = 0.f;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundBuffer::pause( uint32_t _id )
 	{
         (void)_id;
-
-        clock_t cl = clock();
-        float sec = (float)(cl) / float(CLOCKS_PER_SEC);
+		        
+        float sec = s_getTimeMs();
 
         m_pauseTime = sec;
 	}
@@ -92,8 +111,7 @@ namespace Menge
             return m_pauseTime;
         }
 
-        clock_t cl = clock();
-        float sec = (float)(cl) / float(CLOCKS_PER_SEC);
+        float sec = s_getTimeMs();
 
 		return sec - m_playTime;
 	}

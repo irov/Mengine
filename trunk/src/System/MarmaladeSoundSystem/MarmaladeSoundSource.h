@@ -25,8 +25,12 @@ namespace Menge
 		bool play() override;
 		void pause() override;
 		void stop() override;
-		bool isPlaying() const override;
 
+	public:
+		bool isPlay() const override;
+		bool isPause() const override;		
+
+	public:
 		void setVolume( float _volume ) override;
 		float getVolume() const override;
 

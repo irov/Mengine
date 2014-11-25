@@ -5,6 +5,7 @@
 #	include "Interface/ImageCodecInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/WatchdogInterface.h"
+#   include "Interface/ConfigInterface.h"
 
 //#	include "Megatextures.h"
 
@@ -48,6 +49,9 @@ namespace Menge
 		, m_renderIndicesCount(0)
 		, m_batchMode(ERBM_SMART)
 		, m_currentMaterialId(0)
+		, m_iterateRenderObjects(0)
+		, m_limitRenderObjects(0)
+		, m_stopRenderObjects(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -101,6 +105,29 @@ namespace Menge
 		//m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
 		m_defaultRenderTarget = CONST_STRING_LOCAL(m_serviceProvider, "Window");
+
+		uint32_t batchMode = CONFIG_SERVICE(m_serviceProvider)
+			->getValue( "Engine", "RenderServiceBatchMode", 2 );
+
+		switch( batchMode )
+		{
+		case 0:
+			{
+				m_batchMode = ERBM_NONE;
+			}break;
+		case 1:
+			{
+				m_batchMode = ERBM_NORMAL;
+			}break;
+		case 2:
+			{
+				m_batchMode = ERBM_SMART;
+			}break;
+		default:
+			{
+				m_batchMode = ERBM_SMART;
+			}break;
+		}
 
 		return true;
 	}
@@ -433,7 +460,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onWindowClose()
 	{
-		if( m_windowCreated )
+		if( m_windowCreated == true )
 		{
 			RENDER_SYSTEM(m_serviceProvider)
 				->onWindowClose();
@@ -449,6 +476,9 @@ namespace Menge
 		m_debugInfo.fillrate = 0.f;
 		m_debugInfo.object = 0;
 		m_debugInfo.triangle = 0;
+
+		m_iterateRenderObjects = 0;
+		m_stopRenderObjects = false;
 
 		m_currentRenderCamera = nullptr;
 		m_currentRenderViewport = nullptr;
@@ -1117,6 +1147,11 @@ namespace Menge
 		else
 		{
 			mt::reset( bb, 0.f, 0.f );
+		}
+		
+		if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
+		{
+			return;
 		}
 
 		++rp.countRenderObject;
@@ -1852,6 +1887,31 @@ namespace Menge
 	void RenderEngine::enableDebugMode( bool _enable )
 	{
 		m_debugMode = _enable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderEngine::isDebugMode() const
+	{
+		return m_debugMode;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::endLimitRenderObjects()
+	{
+		m_stopRenderObjects = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::increfLimitRenderObjects()
+	{
+		++m_limitRenderObjects;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderEngine::decrefLimitRenderObjects()
+	{
+		if( m_limitRenderObjects == 0 )
+		{
+			return;
+		}
+
+		--m_limitRenderObjects;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Viewport & RenderEngine::getRenderViewport() const

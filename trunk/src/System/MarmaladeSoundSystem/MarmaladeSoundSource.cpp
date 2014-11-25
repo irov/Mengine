@@ -15,6 +15,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	struct SoundMemoryDesc
 	{
+		int soundChannel;
 		uint32 carriage;
 		int16 * memory;		
 		bool destroy;
@@ -230,6 +231,13 @@ namespace Menge
 			return false;
 		}
 
+		this->checkMemoryCache_();
+
+		if( s_soundMemoryDesc[soundChannel].memory != nullptr )
+		{
+			return false;
+		}
+
 		if( s3eSoundChannelRegister( soundChannel, S3E_CHANNEL_GEN_AUDIO, &s_AudioCallback, this ) == S3E_RESULT_ERROR )
 		{
 			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
@@ -267,17 +275,11 @@ namespace Menge
 
 		const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-		this->checkMemoryCache_();
-
 		int16 * memory_s3e = (int16 *)stdex_malloc( dataInfo->size );
 
 		decoder->decode( memory_s3e, dataInfo->size );
 
-		if( s_soundMemoryDesc[soundChannel].memory != nullptr )
-		{
- 			return false;
-		}
-
+		s_soundMemoryDesc[soundChannel].soundChannel = soundChannel;
 		s_soundMemoryDesc[soundChannel].carriage = m_carriage_s3e;
 		s_soundMemoryDesc[soundChannel].memory = memory_s3e;
 		s_soundMemoryDesc[soundChannel].destroy = false;
@@ -290,11 +292,7 @@ namespace Menge
 
 			return false;
 		}
-
-		LOGGER_ERROR(m_serviceProvider)("play channel!!!!!!!!!! %d"
-			, soundChannel
-			);
-		
+	
 		m_playing = true;
 		m_pausing = false;
 
@@ -336,9 +334,6 @@ namespace Menge
 	{
 		if( m_playing == false && m_pausing == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeSoundSource::stop invalid 'not playing or pausing'"
-				);
-
 			return;
 		}
 
@@ -347,30 +342,6 @@ namespace Menge
 			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 		}
 		
-		if( m_soundSystem->isDeviceStereo() == true )
-		{
-			if( s3eSoundChannelUnRegister( m_soundChannel, S3E_CHANNEL_GEN_AUDIO_STEREO ) == S3E_RESULT_ERROR )
-			{
-				MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-			}
-		}
-
-		if( s3eSoundChannelUnRegister( m_soundChannel, S3E_CHANNEL_GEN_AUDIO ) == S3E_RESULT_ERROR )
-		{
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-		}
-
-		if( s3eSoundChannelUnRegister( m_soundChannel, S3E_CHANNEL_END_SAMPLE ) == S3E_RESULT_ERROR )
-		{
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-		}
-
-
-		if( s3eSoundChannelUnRegister( soundChannel, S3E_CHANNEL_STOP_AUDIO ) == S3E_RESULT_ERROR )
-		{
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-		}
-
 		m_soundChannel = -1;
 		m_carriage_s3e = 0;
 		
@@ -378,9 +349,14 @@ namespace Menge
 		m_pausing = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSource::isPlaying() const 
+	bool MarmaladeSoundSource::isPlay() const 
 	{
 		return m_playing;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeSoundSource::isPause() const
+	{
+		return m_pausing;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeSoundSource::setVolume( float _volume )
@@ -492,12 +468,41 @@ namespace Menge
 		{
 			volatile SoundMemoryDesc & cache = s_soundMemoryDesc[i];
 
-			if( cache.destroy == true )
+			if( cache.destroy == false )
 			{
-				stdex_free( cache.memory );
+				continue;
+			}
+			
+			stdex_free( cache.memory );
 
-				cache.memory = nullptr;
-				cache.destroy = false;
+			cache.memory = nullptr;
+			cache.destroy = false;
+			
+			
+			int soundChannel = cache.soundChannel;
+			cache.soundChannel = -1;
+			
+			if( m_soundSystem->isDeviceStereo() == true )
+			{
+				if( s3eSoundChannelUnRegister( soundChannel, S3E_CHANNEL_GEN_AUDIO_STEREO ) == S3E_RESULT_ERROR )
+				{
+					MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+				}
+			}
+
+			if( s3eSoundChannelUnRegister( soundChannel, S3E_CHANNEL_GEN_AUDIO ) == S3E_RESULT_ERROR )
+			{
+				MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+			}
+
+			if( s3eSoundChannelUnRegister( soundChannel, S3E_CHANNEL_END_SAMPLE ) == S3E_RESULT_ERROR )
+			{
+				MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
+			}
+
+			if( s3eSoundChannelUnRegister( soundChannel, S3E_CHANNEL_STOP_AUDIO ) == S3E_RESULT_ERROR )
+			{
+				MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 			}
 		}
 	}

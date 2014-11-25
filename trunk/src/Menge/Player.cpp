@@ -1257,6 +1257,9 @@ namespace Menge
 		MODULE_SERVICE(m_serviceProvider)
 			->render( m_renderViewport, m_renderCamera, debugMask );
 
+		RENDER_SERVICE(m_serviceProvider)
+			->endLimitRenderObjects();
+
 		if( m_arrow && m_arrow->hasParent() == false )
 		{
 			m_arrow->render( m_renderViewport, m_arrowCamera2D, debugMask );
@@ -1427,6 +1430,7 @@ namespace Menge
                 ->getGameViewport( gameViewportAspect, gameViewport );
 
             m_debugText->setLocalPosition( mt::vec3f(gameViewport.begin, 0.f) );
+
 			m_debugText->render( m_renderViewport, m_debugCamera2D, debugMask );
 		}
 //#	endif
@@ -1445,7 +1449,7 @@ namespace Menge
 			m_scene->onAppMouseLeave();
 		}
 
-		if( m_mousePickerSystem )
+		if( m_mousePickerSystem != nullptr )
 		{
 			m_mousePickerSystem->handleMouseLeave();
 		}

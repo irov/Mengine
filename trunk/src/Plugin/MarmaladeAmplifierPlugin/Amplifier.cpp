@@ -63,10 +63,6 @@ namespace Menge
 	{
 		(void)_data;
 
-		printf("s_Amplifier_AudioCallback_Stop %d\n"
-			, _data->m_ChannelID
-			);
-
 		_amplifier->onSoundStop();
 
 		return 0;
@@ -360,12 +356,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::play_( const ConstString& _pakName, const FilePath& _filePath, const ConstString& _codec, float _pos )
 	{
-		printf("Amplifier::play_ %s:%s %f\n"
-			, _pakName.c_str()
-			, _filePath.c_str()
-			, _pos
-			);
-
 		this->stop();
 
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
@@ -448,10 +438,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::setPosMs( float _posMs )
 	{
-		printf("Amplifier::setPosMs %f\n"
-			, _posMs
-			);
-
 		int32 s3e_pos = (int32)_posMs;
 		 
 		s3eResult result = s3eAudioSetInt( S3E_AUDIO_POSITION, s3e_pos );

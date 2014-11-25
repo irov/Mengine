@@ -161,7 +161,13 @@ namespace Menge
 		void clear( uint32_t _color ) override;
 		void setSeparateAlphaBlendMode() override;
 
+	public:
         void enableDebugMode( bool _enable ) override;
+		bool isDebugMode() const override;
+
+		void endLimitRenderObjects() override;
+		void increfLimitRenderObjects() override;
+		void decrefLimitRenderObjects() override;
         
 		
     public:
@@ -213,8 +219,7 @@ namespace Menge
 
 	protected:
 		void calcRenderViewport_( const Viewport & _viewport, Viewport & _renderViewport ) const;
-
-
+		
 	protected:
         bool makeBatches_();
 
@@ -324,6 +329,10 @@ namespace Menge
 
         bool m_debugMode;
 
+		bool m_stopRenderObjects;
+		uint32_t m_limitRenderObjects;
+		uint32_t m_iterateRenderObjects;
+		
 	protected:
 		void batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos );
 		void batchRenderObjectSmart_( RenderPass * _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos );

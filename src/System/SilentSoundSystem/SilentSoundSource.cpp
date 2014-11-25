@@ -13,6 +13,7 @@ namespace Menge
 	SilentSoundSource::SilentSoundSource()
 		: m_headMode(true)
 		, m_playing(false)
+		, m_pausing(false)
 		, m_volume(1.f)
 		, m_loop(false)
 		, m_soundBuffer(nullptr)
@@ -34,64 +35,98 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SilentSoundSource::play()
 	{
-		if( m_playing == true || m_soundBuffer == nullptr )
+		if( m_playing == true )
+		{
+			return true;
+		}
+
+		if( m_soundBuffer == nullptr )
 		{
 			return false;
 		}
 
-		m_sourceId = m_soundSystem->genSourceId();
-
-		if( m_sourceId == 0 )
+		if( m_pausing == false )
 		{
-			return false;
-		}
+			m_sourceId = m_soundSystem->genSourceId();
 
-		m_soundBuffer->play( m_sourceId, m_loop, m_timing );
+			if( m_sourceId == 0 )
+			{
+				return false;
+			}
+
+			m_soundBuffer->play( m_sourceId, m_loop, m_timing );
+		}
+		else
+		{
+			m_soundBuffer->resume( m_sourceId );
+		}
 	
 		m_playing = true;
+		m_pausing = false;
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSource::pause()
 	{
-		if( m_playing == false || m_soundBuffer == nullptr )
-		{
-			return;
-		}
-
-		m_playing = false;
-
-		if( m_sourceId != 0 )
-		{
-			m_timing = m_soundBuffer->getTimePos( m_sourceId );
-
-			m_soundBuffer->stop( m_sourceId );
-			m_soundSystem->releaseSourceId( m_sourceId );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSource::stop()
-	{
 		if( m_playing == false )
 		{
 			return;
 		}
 
+		if( m_pausing == true )
+		{
+			return;
+		}
+
+		if( m_soundBuffer == nullptr )
+		{
+			return;
+		}
+
+		if( m_sourceId == 0 )
+		{
+			return;
+		}
+
 		m_playing = false;
+		m_pausing = true;
+
+		m_timing = m_soundBuffer->getTimePos( m_sourceId );
+
+		m_soundBuffer->pause( m_sourceId );		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SilentSoundSource::stop()
+	{
+		if( m_playing == false && m_pausing == false )
+		{
+			return;
+		}
+
+		m_playing = false;
+		m_pausing = false;
 
 		if( m_sourceId != 0 )
 		{
-			m_soundBuffer->stop( m_sourceId );
-			m_soundSystem->releaseSourceId( m_sourceId );
+			uint32_t sourceId = m_sourceId;
+			m_sourceId = 0;
+
+			m_soundBuffer->stop( sourceId );
+			m_soundSystem->releaseSourceId( sourceId );
 		}
 
-		m_timing = 0.0f;
+		m_timing = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SilentSoundSource::isPlaying() const 
+	bool SilentSoundSource::isPlay() const 
 	{
 		return m_playing;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SilentSoundSource::isPause() const
+	{
+		return m_pausing;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSource::setVolume( float _volume )
@@ -137,6 +172,11 @@ namespace Menge
 		{
 			return 0.f;
 		}
+
+		if( m_pausing == true )
+		{
+			return m_timing;
+		}
 			
 		float posms = m_soundBuffer->getTimePos( m_sourceId );
 		
@@ -153,15 +193,11 @@ namespace Menge
 	{
 		if( m_playing == true )
 		{
-			this->stop();
-			m_timing = _posMs;
-			this->play();
-		}
-		else
-		{
-			m_timing = _posMs;
+			return false;
 		}
 
+		m_timing = _posMs;
+		
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

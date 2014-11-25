@@ -21,6 +21,7 @@ namespace Menge
 		bool load( const SoundDecoderInterfacePtr & _soundDecoder );
 
 		void play( uint32_t _id, bool _looped, float _pos );
+		bool resume( uint32_t _id );
 		void pause( uint32_t _id );
 		void stop( uint32_t _id );
 

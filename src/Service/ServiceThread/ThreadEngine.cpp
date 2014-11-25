@@ -1,5 +1,7 @@
 #	include "ThreadEngine.h"
 
+#   include "Interface/ConfigInterface.h"
+
 #	include "Kernel/ThreadTask.h"
 #	include "Kernel/ThreadTaskPacket.h"
 
@@ -48,6 +50,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::initialize( uint32_t _threadCount )
 	{
+		bool avaliable = CONFIG_SERVICE(m_serviceProvider)
+			->getValue( "Engine", "ThreadServiceAvaliable", true );
+
+		if( avaliable == false )
+		{
+			return true;
+		}
+
 		m_threadAvaliable = THREAD_SYSTEM(m_serviceProvider)
 			->avaliable();
 
@@ -209,6 +219,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task )
 	{
+		if( m_threadAvaliable == false )
+		{
+			return false;
+		}
+
 		if( this->hasThread_( _threadName ) == false )
 		{
 			return false;
@@ -366,6 +381,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr ThreadEngine::createMutex()
     {
+		if( m_threadAvaliable == false )
+		{
+			return nullptr;
+		}
+
         ThreadMutexInterfacePtr mutex = THREAD_SYSTEM(m_serviceProvider)
             ->createMutex();
 
@@ -380,6 +400,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t ThreadEngine::getCurrentThreadId()
 	{
+		if( m_threadAvaliable == false )
+		{
+			return 0;
+		}
+
 		uint32_t id = THREAD_SYSTEM(m_serviceProvider)
 			->getCurrentThreadId();
 

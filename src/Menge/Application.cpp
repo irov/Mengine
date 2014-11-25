@@ -1044,10 +1044,23 @@ namespace Menge
 				}
 			}
 
-			if( _key == KC_F5 && _isDown )
+			if( _key == KC_F5 && _isDown == true )
 			{
 				m_resourceService->dumpResources("Application");
 			}
+
+			if( _key == KC_OEM_MINUS && _isDown == true )
+			{
+				RENDER_SERVICE(m_serviceProvider)
+					->decrefLimitRenderObjects();
+			}
+
+			if( _key == KC_OEM_PLUS && _isDown == true )
+			{
+				RENDER_SERVICE(m_serviceProvider)
+					->increfLimitRenderObjects();
+			}
+
 
 			//if( _key == KC_F4 && _isDown && m_enableDebug )
 			//{
@@ -1075,13 +1088,22 @@ namespace Menge
 			//	}
 			//}
 
-			if( _key == KC_F11 && _isDown )
+			if( _key == KC_F11 && _isDown == true )
 			{
                 PLAYER_SERVICE(m_serviceProvider)
 					->toggleDebugText();
 			}
 
-			if( _key == KC_0 && _isDown )
+			if( _key == KC_P && _isDown == true && INPUT_SERVICE(m_serviceProvider)->isKeyDown( KC_CONTROL ) == true )
+			{
+				static bool s_particle_enable = true;
+
+				s_particle_enable = !s_particle_enable;
+
+				this->setParticlesEnabled( s_particle_enable );
+			}
+
+			if( _key == KC_0 && _isDown == true )
 			{
 				static uint32_t batchMode = RENDER_SERVICE(m_serviceProvider)
 					->getBatchMode();

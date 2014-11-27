@@ -126,6 +126,8 @@ namespace Menge
             return desc.service;
         }
 
+		throw ServiceException(_name, "not found!", __FILE__, __LINE__);
+
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////

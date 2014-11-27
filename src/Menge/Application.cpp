@@ -170,6 +170,7 @@ namespace Menge
         , m_profiler(nullptr)
 		, m_graveyard(nullptr)
 		, m_projectVersion(0)
+		, m_debugPause(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1047,18 +1048,25 @@ namespace Menge
 			if( _key == KC_F5 && _isDown == true )
 			{
 				m_resourceService->dumpResources("Application");
+
+
 			}
 
 			if( _key == KC_OEM_MINUS && _isDown == true )
 			{
-				RENDER_SERVICE(m_serviceProvider)
-					->decrefLimitRenderObjects();
+				if( RENDER_SERVICE(m_serviceProvider)
+					->decrefLimitRenderObjects() == false )
+				{
+					m_debugPause = false;
+				}				
 			}
 
 			if( _key == KC_OEM_PLUS && _isDown == true )
 			{
 				RENDER_SERVICE(m_serviceProvider)
 					->increfLimitRenderObjects();
+
+				m_debugPause = true;
 			}
 
 
@@ -1383,6 +1391,11 @@ namespace Menge
 	void Application::tick( float _timing )
 	{
 		float timing = _timing;
+
+		if( m_debugPause == true )
+		{
+			timing = 0.f;
+		}
 
 		if( _timing > m_maxTiming )
 		{
@@ -2201,6 +2214,11 @@ namespace Menge
 	{
 		PLATFORM_SERVICE(m_serviceProvider)
 			->hideKeyboard();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::debugPause( bool _pause )
+	{
+		m_debugPause = _pause;
 	}
 }
 

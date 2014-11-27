@@ -7,11 +7,11 @@
 
 namespace Menge
 {
-	class VideoCodecPlugin
+	class FFMPEGVideoCodecPlugin
 		: public PluginInterface
 	{
 	public:
-		VideoCodecPlugin();
+		FFMPEGVideoCodecPlugin();
 
 	protected:
 		bool initialize( ServiceProviderInterface * _serviceProvider ) override;

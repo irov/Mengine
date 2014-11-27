@@ -19,30 +19,30 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	signed int s_YTable[ 256 ];
-	signed int s_BUTable[ 256 ];
-	signed int s_GUTable[ 256 ];
-	signed int s_GVTable[ 256 ];
-	signed int s_RVTable[ 256 ];	
+	signed int s_YTable[256];
+	signed int s_BUTable[256];
+	signed int s_GUTable[256];
+	signed int s_GVTable[256];
+	signed int s_RVTable[256];	
 	//////////////////////////////////////////////////////////////////////////
 	static void s_createCoefTables()
 	{
 		//used to bring the table into the high side (scale up) so we
 		//can maintain high precision and not use floats (FIXED POINT)
-		int scale = 1L << 13,	temp;
+		int scale = 1L << 13;
 
-		for ( signed int i = 0; i < 256; i++ )
+		for ( int i = 0; i < 256; i++ )
 		{
-			temp = i - 128;
+			int temp = i - 128;
 
-			s_YTable[i]  = (signed int)((1.164 * scale + 0.5) * (i - 16));	//Calc Y component
+			s_YTable[i]  = (int)((1.164 * scale + 0.5) * (i - 16));	//Calc Y component
 
-			s_RVTable[i] = (signed int)((1.596 * scale + 0.5) * temp);		//Calc R component
+			s_RVTable[i] = (int)((1.596 * scale + 0.5) * temp);		//Calc R component
 
-			s_GUTable[i] = (signed int)((0.391 * scale + 0.5) * temp);		//Calc G u & v components
-			s_GVTable[i] = (signed int)((0.813 * scale + 0.5) * temp);
+			s_GUTable[i] = (int)((0.391 * scale + 0.5) * temp);		//Calc G u & v components
+			s_GVTable[i] = (int)((0.813 * scale + 0.5) * temp);
 
-			s_BUTable[i] = (signed int)((2.018 * scale + 0.5) * temp);		//Calc B component
+			s_BUTable[i] = (int)((2.018 * scale + 0.5) * temp);		//Calc B component
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,12 @@ namespace Menge
 		theora_comment_init( &m_theoraComment );
 		theora_info_init( &m_theoraInfo );
 
-		s_createCoefTables();
+		static bool s_initializeCoefTables = false;
+		if( s_initializeCoefTables == false )
+		{
+			s_initializeCoefTables = true;
+			s_createCoefTables();
+		}		
 
 		return true;
 	}
@@ -98,7 +103,6 @@ namespace Menge
 			{
 				// кончился файл, на данном этапе это ошибка
 				LOGGER_ERROR(m_serviceProvider)( "Theora Codec Error: bad file" );
-				clear_();
 
 				return false;
 			}
@@ -141,7 +145,6 @@ namespace Menge
 				if( ogg_stream_init( &oggStreamStateTest, ogg_page_serialno(&m_oggPage) ) != 0 )
 				{
 					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_init" );
-					clear_();
 
 					return false;
 				}
@@ -150,7 +153,6 @@ namespace Menge
 				if( ogg_stream_pagein( &oggStreamStateTest, &m_oggPage) != 0 )
 				{
 					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_pagein" );
-					clear_();
 
 					return false;
 				}
@@ -158,7 +160,6 @@ namespace Menge
 				if( ogg_stream_packetout( &oggStreamStateTest, &m_oggPacket ) == -1 )
 				{
 					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_packetout" );
-					clear_();
 
 					return false;
 				}
@@ -208,7 +209,7 @@ namespace Menge
 			{
 				// ошибка декодирования, поврежденный поток
 				LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_packetout" );
-				clear_();
+
 				return false;
 			}
 
@@ -221,7 +222,7 @@ namespace Menge
 				{
 					// ошибка декодирования, поврежденный поток
 					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during theora_decode_header (corrupt stream)" );
-					clear_();
+
 					return false;
 				}
 
@@ -248,7 +249,7 @@ namespace Menge
 				{
 					// опять файл кончился!
 					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: eof searched. terminate..." );
-					clear_();
+
 					return false;
 				}
 			}
@@ -266,7 +267,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void VideoDecoderTheora::clear_()
+	void VideoDecoderTheora::_finalize()
 	{
 		ogg_stream_clear( &m_oggStreamState );
 		theora_clear( &m_theoraState );
@@ -283,13 +284,15 @@ namespace Menge
 		{
 			// ошибка декодирования
 			LOGGER_ERROR(m_serviceProvider)("error during theora_decode_YUVout...");
+
+			return 0;
 		}
 
 		unsigned char * byte_buffer = static_cast<unsigned char *>(_buffer);
 
 		this->decodeBuffer_( byte_buffer, _bufferSize );
 
-		return m_lastReadBytes;
+		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderTheora::decodeBuffer_( unsigned char * _buffer, size_t _size )

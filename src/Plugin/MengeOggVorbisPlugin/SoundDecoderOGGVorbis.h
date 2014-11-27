@@ -17,6 +17,10 @@ namespace Menge
 		~SoundDecoderOGGVorbis();
 
 	public:
+		bool _initialize() override;
+		void _finalize() override;
+
+	public:
 		bool _prepareData() override;
 		bool _rewind() override;
 
@@ -29,6 +33,8 @@ namespace Menge
 
 	protected:
 		OggVorbis_File m_oggVorbisFile;
+
+		bool m_oggVorbisFileInitialize;
 
 		THREAD_GUARD_INIT;
 	};

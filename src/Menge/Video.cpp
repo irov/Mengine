@@ -415,7 +415,7 @@ namespace Menge
 	
         bool needUpdate = false;
 
-        float frameTiming = dataInfo->frameTiming;
+        float frameTiming = dataInfo->getFrameTiming();
 		float duration = dataInfo->duration;
 
 		while( m_timing >= frameTiming )
@@ -494,7 +494,7 @@ namespace Menge
 	{
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 				
-		float frameTiming = dataInfo->frameTiming;
+		float frameTiming = dataInfo->getFrameTiming();
 		float duration = dataInfo->duration;
 
 		while( true, true )
@@ -578,7 +578,7 @@ namespace Menge
 				
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
-        float frameTiming = dataInfo->frameTiming;
+        float frameTiming = dataInfo->getFrameTiming();
 
         float frameRate = m_resourceVideo->getFrameRate();
 

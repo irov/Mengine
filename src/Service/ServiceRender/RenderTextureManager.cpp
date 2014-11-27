@@ -227,7 +227,6 @@ namespace Menge
         dataInfo.height = _texture->getHeight();		
         dataInfo.depth = 1;
         dataInfo.mipmaps = 1;
-        dataInfo.size = 0;	// we don't need this
         
         Rect rect;
         rect.left = 0;

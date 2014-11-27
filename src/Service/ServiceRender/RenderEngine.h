@@ -167,7 +167,7 @@ namespace Menge
 
 		void endLimitRenderObjects() override;
 		void increfLimitRenderObjects() override;
-		void decrefLimitRenderObjects() override;
+		bool decrefLimitRenderObjects() override;
         
 		
     public:

@@ -149,6 +149,9 @@ namespace Menge
         virtual void showKeyboard() = 0;
         virtual void hideKeyboard() = 0;
 
+	public:
+		virtual void debugPause( bool _pause ) = 0;
+
     public:
         virtual void quit() = 0;
 	};

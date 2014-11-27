@@ -30,8 +30,6 @@ namespace Menge
 
         PixelFormat format;
 
-		size_t size;
-
 		size_t getFullSize() const
 		{
 			size_t full_size = 0;

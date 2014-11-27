@@ -2,9 +2,9 @@ set( MY_LIB_NAME FFMPEGVideoCodecPlugin )
 
 ADD_FILTER(
 src
-	VideoCodecPlugin.def
-	VideoCodecPlugin.h
-	VideoCodecPlugin.cpp
+	FFMPEGVideoCodecPlugin.def
+	FFMPEGVideoCodecPlugin.h
+	FFMPEGVideoCodecPlugin.cpp
     
     VideoDecoderFFMPEG.cpp
 	VideoDecoderFFMPEG.h

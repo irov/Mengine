@@ -9,6 +9,7 @@
 
 #   include "Logger/Logger.h"
 
+#	include "Core/CacheMemoryBuffer.h"
 #	include "Core/ConstString.h"
 #	include "Core/String.h"
 
@@ -30,6 +31,21 @@ namespace Menge
 	const ConstString & ResourceImageDefault::getCodecType() const
 	{
 		return m_codecType;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_allPixelsTransparency( const void * _buffer, size_t _size )
+	{
+		const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer);
+
+		for( size_t i = 0; i != _size; i += 4 )
+		{
+			if( pixel_memory[i + 3] != 0 )
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_isValid() const
@@ -147,6 +163,53 @@ namespace Menge
 				);
 
 			return false;
+		}
+
+		if( dataInfo->channels == 4 )
+		{
+			size_t texture_size = dataInfo->getSize();
+			CacheMemoryBuffer buffer(m_serviceProvider, texture_size, "ResourceImageDefault::_isValid" );
+			void * buffer_memory = buffer.getMemory();
+
+			ImageCodecOptions options;
+			options.channels = 4;
+			options.pitch = dataInfo->width * options.channels;
+
+			if( imageDecoder->setOptions( &options ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid optionizing"
+					, m_name.c_str()
+					, category.c_str()
+					, m_filePath.c_str()
+					, m_codecType.c_str()
+					);
+
+				return false;
+			}
+
+			if( imageDecoder->decode( buffer_memory, texture_size ) == 0 )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid decode %s"
+					, m_name.c_str()
+					, category.c_str()
+					, m_filePath.c_str()
+					, m_codecType.c_str()
+					);
+
+				return false;
+			}
+
+			if( s_allPixelsTransparency( buffer_memory, texture_size ) == true )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s codec %s all pixels transparency!"
+					, m_name.c_str()
+					, category.c_str()
+					, m_filePath.c_str()
+					, m_codecType.c_str()
+					);
+
+				return false;
+			}
 		}
 
 		return true;

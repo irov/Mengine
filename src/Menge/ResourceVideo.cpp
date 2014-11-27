@@ -19,7 +19,8 @@ namespace Menge
 	ResourceVideo::ResourceVideo()
 		: m_alpha(false)
         , m_noSeek(false)
-        , m_frameRate(0.f)
+        , m_frameRate(0)
+		, m_duration(0)		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -44,6 +45,7 @@ namespace Menge
         metadata->get_File_Alpha( m_alpha );
         metadata->get_File_NoSeek( m_noSeek );
         metadata->get_File_FrameRate( m_frameRate );
+		metadata->get_File_Duration( m_duration );
 
         return true;
 	}
@@ -212,8 +214,11 @@ namespace Menge
             videoCodecOptions.pixelFormat = Menge::PF_R8G8B8;
         }
 
+		videoCodecOptions.duration = m_duration;
+		videoCodecOptions.fps = m_frameRate;
+
 		videoCodecOptions.mock = CONFIG_VALUE(m_serviceProvider, "Development", "NoVideo", false);
-        videoCodecOptions.noSeek = m_noSeek;
+        videoCodecOptions.noSeek = m_noSeek;		
 
         if( videoDecoder->setOptions( &videoCodecOptions ) == false )
         {

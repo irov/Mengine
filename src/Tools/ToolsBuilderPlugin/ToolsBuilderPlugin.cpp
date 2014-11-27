@@ -19,6 +19,7 @@
 #	include "Interface/LoaderInterface.h"
 #	include "Interface/ThreadSystemInterface.h"
 #	include "Interface/ParticleSystemInterface.h"
+#	include "Interface/ConfigInterface.h"
 
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
@@ -37,6 +38,7 @@ SERVICE_EXTERN(UnicodeService, Menge::UnicodeServiceInterface);
 
 SERVICE_EXTERN(StringizeService, Menge::StringizeServiceInterface);
 SERVICE_EXTERN(LogService, Menge::LogServiceInterface);
+SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
 SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
 SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
 SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
@@ -170,13 +172,24 @@ namespace Menge
 			return false;
 		}
 
+		LOGGER_WARNING(serviceProvider)("Inititalizing Config Manager..." );
+
+		ConfigServiceInterface * configService;
+
+		if( SERVICE_CREATE( ConfigService, &configService ) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY( serviceProvider, configService );
+
 		ConverterServiceInterface * converterService;
 		if( SERVICE_CREATE( ConverterService, &converterService ) == false )
 		{
 			return false;
 		}
 
-		if( SERVICE_REGISTRY(serviceProvider, converterService) == false )
+		if( SERVICE_REGISTRY( serviceProvider, converterService ) == false )
 		{
 			return false;
 		}
@@ -561,14 +574,28 @@ static void s_error( const wchar_t * _msg )
 ///////////////////////////////////////////////////////////////////////////////////
 PyMODINIT_FUNC PyInit_ToolsBuilderPlugin(void)
 {
-	if( Menge::initialize() == false )
+	try
 	{
-		printf("PyInit_ToolsBuilderPlugin Menge::initialize failed\n"
+		if( Menge::initialize() == false )
+		{
+			printf("PyInit_ToolsBuilderPlugin Menge::initialize failed\n"
+				);
+
+			return NULL;
+		}
+	}
+	catch( const Menge::ServiceException & se )
+	{
+		printf("ServiceException %s exception %s file %d:%d"
+			, se.serviceName
+			, se.what
+			, se.line
+			, se.file
 			);
 
 		return NULL;
 	}
-
+		
 	PyObject * m =  PyModule_Create( &module_def );
 
 	if( m == NULL )
@@ -581,7 +608,7 @@ PyMODINIT_FUNC PyInit_ToolsBuilderPlugin(void)
 	Py_INCREF( PyToolException );
 
 	PyModule_AddObject( m, "error", PyToolException );
-
+		
 	pybind::initialize( false, false );
 
 	PyObject * module_builtins = pybind::get_builtins();

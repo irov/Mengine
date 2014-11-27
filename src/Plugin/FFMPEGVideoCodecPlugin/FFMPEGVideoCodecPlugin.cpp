@@ -1,4 +1,4 @@
-#	include "VideoCodecPlugin.h"
+#	include "FFMPEGVideoCodecPlugin.h"
 
 #   include "VideoDecoderFFMPEG.h"
 
@@ -11,7 +11,7 @@ extern "C" // only required if using g++
 	//////////////////////////////////////////////////////////////////////////
 	bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin )
 	{
-		*_plugin = new Menge::VideoCodecPlugin();
+		*_plugin = new Menge::FFMPEGVideoCodecPlugin();
 
 		return true;
 	}
@@ -41,12 +41,12 @@ namespace Menge
         vprintf( _format, _args );
     }
 	//////////////////////////////////////////////////////////////////////////
-	VideoCodecPlugin::VideoCodecPlugin()
+	FFMPEGVideoCodecPlugin::FFMPEGVideoCodecPlugin()
 		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoCodecPlugin::initialize( ServiceProviderInterface * _serviceProvider )
+	bool FFMPEGVideoCodecPlugin::initialize( ServiceProviderInterface * _serviceProvider )
 	{
 		m_serviceProvider = _serviceProvider;
 
@@ -74,7 +74,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void VideoCodecPlugin::finalize()
+	void FFMPEGVideoCodecPlugin::finalize()
 	{
 		for( TVectorVideoDecoders::iterator
 			it = m_decoders.begin(),
@@ -89,7 +89,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void VideoCodecPlugin::destroy()
+	void FFMPEGVideoCodecPlugin::destroy()
 	{
 		delete this;
 	}

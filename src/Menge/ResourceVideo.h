@@ -58,7 +58,8 @@ namespace Menge
         ConstString m_converterType;
 		ConstString m_codecType;
 
-        float m_frameRate;
+        uint32_t m_frameRate;
+		float m_duration;
 
 		typedef ResourceCacher<VideoDecoderInterfacePtr> TCacherVideoDecoder;
 		mutable TCacherVideoDecoder m_videoDecoderCacher;

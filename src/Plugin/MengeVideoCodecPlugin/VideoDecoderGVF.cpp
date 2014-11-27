@@ -80,7 +80,6 @@ namespace Menge
         m_dataInfo.frameHeight = height;
 
 		m_dataInfo.fps = framerate;
-		m_dataInfo.frameTiming = 1000.f / float(m_dataInfo.fps);
 
 		m_dataInfo.duration = float(duration_ms);
 		
@@ -147,7 +146,7 @@ namespace Menge
 
 		++m_frame;
 
-		m_pts += m_dataInfo.frameTiming;
+		m_pts += m_dataInfo.getFrameTiming();
         _pts = m_pts;
 
         return VDRS_SUCCESS;
@@ -155,7 +154,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderGVF::seek( float _timing )
 	{
-        m_frame = (uint32_t)((_timing / m_dataInfo.frameTiming) + 0.5f);
+		float frameTiming = m_dataInfo.getFrameTiming();
+        m_frame = (uint32_t)((_timing / frameTiming) + 0.5f);
         m_pts = _timing;
 
 		return true;

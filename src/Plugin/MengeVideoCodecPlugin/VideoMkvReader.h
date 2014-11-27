@@ -11,7 +11,10 @@ namespace Menge
 		: public mkvparser::IMkvReader
 	{
 	public:
-		VideoMkvReader( const InputStreamInterfacePtr & _stream );
+		VideoMkvReader();
+
+	public:
+		bool initialize( const InputStreamInterfacePtr & _stream );
 
 	protected:
 		int Read( long long _offset, long _len, unsigned char * _buf ) override;

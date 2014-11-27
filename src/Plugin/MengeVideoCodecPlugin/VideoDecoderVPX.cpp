@@ -1,7 +1,6 @@
 #	include "VideoDecoderVPX.h"
 #	include "VideoI420ToRGB24.h"
 
-#	include "Core/File.h"
 #	include "Logger/Logger.h"
 
 #   define vpx_interface (vpx_codec_vp8_dx())
@@ -10,7 +9,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderVPX::VideoDecoderVPX()
-		: m_reader(nullptr)
+		: m_segment(nullptr)
 		, m_track(nullptr)
 		, m_blockEntry(nullptr)
 		, m_frame(nullptr)
@@ -24,7 +23,6 @@ namespace Menge
 	{
 		free( m_frame );
 
-		delete m_reader;
 		delete m_segment;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -42,13 +40,18 @@ namespace Menge
             return false;
         }
 
-		m_reader = new VideoMkvReader(m_stream);
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool VideoDecoderVPX::_prepareData()
+	{
+		m_reader.initialize( m_stream );
 
 		mkvparser::EBMLHeader ebmlHeader;
 		long long pos = 0;
-		ebmlHeader.Parse( m_reader, pos );
+		ebmlHeader.Parse( &m_reader, pos );
 				
-		mkvparser::Segment::CreateInstance( m_reader, pos, m_segment );
+		mkvparser::Segment::CreateInstance( &m_reader, pos, m_segment );
 
 		if( m_segment->Load() != 0 )
 		{
@@ -90,8 +93,12 @@ namespace Menge
 		m_dataInfo.frameWidth = m_track->GetWidth();
 		m_dataInfo.frameHeight = m_track->GetHeight();
 		const double rate = m_track->GetFrameRate();
-		m_dataInfo.frameTiming = 33.3333f;
-		m_dataInfo.fps = 30;
+		const mkvparser::SegmentInfo * segmentInfo = m_segment->GetInfo();
+		long long segment_timeCodeScale = segmentInfo->GetTimeCodeScale();
+		long long segment_duration = segmentInfo->GetDuration();
+		m_dataInfo.duration = (float)(segment_duration / segment_timeCodeScale);
+		m_dataInfo.fps = m_options.fps;
+		m_dataInfo.clamp = true;
 
         return true;
 	}
@@ -133,7 +140,7 @@ namespace Menge
 
 			m_frame = (unsigned char *)realloc( m_frame, m_frameSize );
 
-			frame.Read( m_reader, m_frame );
+			frame.Read( &m_reader, m_frame );
 
 			vpx_codec_err_t err_decode = vpx_codec_decode( &m_codec, m_frame, m_frameSize, NULL, 0);
 
@@ -145,7 +152,7 @@ namespace Menge
 
 		m_track->GetNext( m_blockEntry, m_blockEntry );
         
-        m_pts += m_dataInfo.frameTiming;
+        m_pts += m_dataInfo.getFrameTiming();
 
         return VDRS_SUCCESS;
     }

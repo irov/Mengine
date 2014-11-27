@@ -61,20 +61,20 @@ namespace Menge
 		Application();
 		~Application();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
 
-    public:
-        bool initialize( const String & _args ) override;
-        void finalize() override;
-		
+	public:
+		bool initialize( const String & _args ) override;
+		void finalize() override;
+
 	protected:
 		bool loadResourcePacks_( const ConstString & _fileGroup, const FilePath & _resourceIni );
 
 	public:
 		bool getAllowFullscreenSwitchShortcut() const override;
-        	
+
 	public:
 		void setDefaultWindowDescription( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _vsync ) override;
 
@@ -90,8 +90,8 @@ namespace Menge
 		void setFullscreenMode( bool _fullscreen ) override;
 		bool getFullscreenMode() const override;
 
-    public:
-        bool isValidWindowMode() const override;
+	public:
+		bool isValidWindowMode() const override;
 
 	public:
 		bool getVSync() const override;
@@ -108,9 +108,9 @@ namespace Menge
 		bool initializeResourceManager_();
 		bool initializeSceneManager_();
 		bool initializeTextManager_();
-        bool initializePrototypeManager_();
-        bool initializeWatchdog_();
-        bool initializeProfiler_();
+		bool initializePrototypeManager_();
+		bool initializeWatchdog_();
+		bool initializeProfiler_();
 		bool initializeGraveyard_();
 
 	public:
@@ -119,7 +119,7 @@ namespace Menge
 		//void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect );
 
 		void quit();
-		
+
 	public:
 		void calcWindowResolution( Resolution & _windowResolution ) const override;
 
@@ -138,8 +138,8 @@ namespace Menge
 		void endUpdate() override;
 		void setFocus( bool _focus, const mt::vec2f & _point ) override;
 		void close() override;
-        
-        void turnSound( bool _turn ) override;
+
+		void turnSound( bool _turn ) override;
 
 		void mouseEnter( const mt::vec2f & _point ) override;
 		void mouseLeave() override;		
@@ -149,11 +149,11 @@ namespace Menge
 		bool mouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
 		bool mouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
 		void mousePosition( unsigned int _touchId, const mt::vec2f & _point ) override;
-		
-		
+
+
 		void paint() override;
 
-        bool userEvent( const ConstString & _event, const TMapParams & _params ) override;
+		bool userEvent( const ConstString & _event, const TMapParams & _params ) override;
 
 	public:
 		void setParticlesEnabled( bool _enabled ) override;
@@ -183,13 +183,13 @@ namespace Menge
 	public:
 		const Resolution & getWindowResolution() const;
 
-    public:
-        void setFixedContentResolution( bool _fixedContetResolution ) override; 
+	public:
+		void setFixedContentResolution( bool _fixedContetResolution ) override; 
 		bool getFixedContentResolution() const override;
 
 	public:
 		void enableDebug( bool _enable );
-        		
+
 		void updateNotification();
 		void setVSync( bool _vsync ) override;
 		void setCursorMode( bool _mode ) override;
@@ -201,12 +201,15 @@ namespace Menge
 		void showKeyboard() override;
 		void hideKeyboard() override;
 
-    public:
-        bool findBestAspectViewport_( float _aspect, float & _bestAspect, Viewport & _viewport ) const; 
+	public:
+		void debugPause( bool _pause ) override;
+		
+	protected:
+		bool findBestAspectViewport_( float _aspect, float & _bestAspect, Viewport & _viewport ) const; 
 
 	protected:		
 		void calcRenderViewport_( const Resolution & _resolution, Viewport & _viewport );
-        void invalidateWindow_();
+		void invalidateWindow_();
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
@@ -242,15 +245,15 @@ namespace Menge
 
 		Resolution m_contentResolution;
 
-        typedef stdex::map<float, Viewport> TMapAspectRatioViewports;
-        TMapAspectRatioViewports m_aspectRatioViewports;
+		typedef stdex::map<float, Viewport> TMapAspectRatioViewports;
+		TMapAspectRatioViewports m_aspectRatioViewports;
 
 		bool m_fixedContentResolution;
 		bool m_fixedDisplayResolution;
 		bool m_createRenderWindow;
 
 		unsigned int m_debugMask;
-		
+
 		uint32_t m_countThreads;
 
 		bool m_resetTiming;
@@ -261,15 +264,15 @@ namespace Menge
 		ResourceServiceInterface * m_resourceService;        
 		TextServiceInterface* m_textService;
 		NodeServiceInterface * m_nodeService;		
-        PrototypeServiceInterface * m_prototypeService;
+		PrototypeServiceInterface * m_prototypeService;
 		GraveyardInterface * m_graveyard;
-        Consts * m_consts;
+		Consts * m_consts;
 
 		WatchdogInterface * m_watchdog;
-        ProfilerServiceInterface * m_profiler;
+		ProfilerServiceInterface * m_profiler;
 
 		void parseArguments_( const String& _arguments );
-		
+
 		ResourceCursor * m_cursorResource;
 
 		WString m_companyName;
@@ -281,7 +284,7 @@ namespace Menge
 
 		bool m_allowFullscreenSwitchShortcut;
 
-		
+
 		bool m_invalidateVsync;
 		bool m_cursorMode;
 		bool m_invalidateCursorMode;
@@ -290,10 +293,12 @@ namespace Menge
 		bool m_inputMouseButtonEventBlock;
 		bool m_developmentMode;
 		bool m_masterMode;
-        bool m_nofullscreenMode;
+		bool m_nofullscreenMode;
 
-        bool m_windowModeCheck;
-        bool m_resourceCheck;
+		bool m_windowModeCheck;
+		bool m_resourceCheck;
 		bool m_resourceCheckCritical;
+
+		bool m_debugPause;
 	};
 }

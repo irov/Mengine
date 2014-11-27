@@ -299,8 +299,6 @@ namespace Menge
 			return false; 
 		}
 		
-		m_dataInfo.frameTiming = 1000.f / float(m_dataInfo.fps);
-
         int64_t len = m_formatContext->duration - m_formatContext->start_time;
 
         double d_duration = double(len * 1000.0) / double(AV_TIME_BASE);
@@ -618,7 +616,8 @@ namespace Menge
 	{		
 		if( m_options.mock == true )
 		{
-			m_pts += m_dataInfo.frameTiming;
+			float frameTiming = m_dataInfo.getFrameTiming();
+			m_pts += frameTiming;
 
 			_pts = m_pts;
 
@@ -732,12 +731,14 @@ namespace Menge
 
 		float correct_timing = _timing;
 
-		if( _timing > m_dataInfo.duration - m_dataInfo.frameTiming )
+		float frameTiming = m_dataInfo.getFrameTiming();
+
+		if( _timing > m_dataInfo.duration - frameTiming )
 		{
-			correct_timing = m_dataInfo.duration - m_dataInfo.frameTiming;
+			correct_timing = m_dataInfo.duration - frameTiming;
 		}
 
-		if( fabsf(m_pts - correct_timing) < m_dataInfo.frameTiming * 0.5f )
+		if( fabsf(m_pts - correct_timing) < frameTiming * 0.5f )
 		{
 			return true;
 		}
@@ -749,8 +750,8 @@ namespace Menge
 			return true;
 		}
 		
-        int64_t minTime = (int64_t)(correct_timing - m_dataInfo.frameTiming);
-        int64_t maxTime = (int64_t)(correct_timing + m_dataInfo.frameTiming);
+        int64_t minTime = (int64_t)(correct_timing - frameTiming);
+        int64_t maxTime = (int64_t)(correct_timing + frameTiming);
         int64_t needTime = (int64_t)(correct_timing);
 				
         //if( av_seek_frame( m_formatContext, seekStreamIndex, _frame,  AVSEEK_FLAG_FRAME | AVSEEK_FLAG_BACKWARD ) < 0 )

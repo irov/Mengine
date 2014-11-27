@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 65;
+        _needVersion = 66;
 
-        if( version != 65 )
+        if( version != 66 )
         {
             return false;
         }
@@ -3669,6 +3669,7 @@ namespace Metacode
         , File_Alpha_successful(false)
         , File_Codec_successful(false)
         , File_Converter_successful(false)
+        , File_Duration_successful(false)
         , File_FrameRate_successful(false)
         , File_NoSeek_successful(false)
     {
@@ -3718,6 +3719,17 @@ namespace Metacode
                 }
     
                 this->File_Converter_successful = true;
+    
+                return true;
+            }break;
+        case 9:
+            {
+                if( this->read( _buff, _size, _read, this->File_Duration ) == false )
+                {
+                    return false;
+                }
+    
+                this->File_Duration_successful = true;
     
                 return true;
             }break;

@@ -38,9 +38,14 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     
 		winApplication.finalize();
 	}
-	catch( const Menge::ServiceException & )
+	catch( const Menge::ServiceException & se )
 	{
-
+		printf("ServiceException %s exception %s file %d:%d"
+			, se.serviceName
+			, se.what
+			, se.line
+			, se.file
+			);
 	}
     
 	return 0;

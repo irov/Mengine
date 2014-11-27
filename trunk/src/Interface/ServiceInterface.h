@@ -4,8 +4,9 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
     class ServiceProviderInterface;
-
+	//////////////////////////////////////////////////////////////////////////
 	class ServiceException
 	{
 	public:
@@ -23,7 +24,7 @@ namespace Menge
 		const char * file;
 		uint32_t line;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class ServiceInterface
 	{
 	public:
@@ -34,14 +35,14 @@ namespace Menge
         virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
         virtual ServiceProviderInterface * getServiceProvider() const = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class ServiceListenerInterface
 	{
 	public:
 		virtual bool onRegistryService( ServiceProviderInterface * _serviceProvider, ServiceInterface * _service ) = 0;
         virtual void onUnregistryService( ServiceProviderInterface * _serviceProvider, ServiceInterface * _service ) = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class ServiceProviderInterface
 	{
 	public:
@@ -61,9 +62,10 @@ namespace Menge
 	public:
 		virtual void throwException( const char * _serviceName, const char * _what, const char * _file, uint32_t _line ) = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
+		//////////////////////////////////////////////////////////////////////////
         template<class T>
 #   ifdef _DEBUG
         inline T * getService( ServiceProviderInterface * _serviceProvider, const char * _file, uint32_t _line )
@@ -91,7 +93,7 @@ namespace Menge
 
             return s_service;
         }
-
+		//////////////////////////////////////////////////////////////////////////
 		template<class T>
 		inline bool existService( ServiceProviderInterface * _serviceProvider )
 		{
@@ -110,7 +112,7 @@ namespace Menge
 			return s_exist;
 		}
     }
-
+	//////////////////////////////////////////////////////////////////////////
 #	ifdef _DEBUG
 #	define SERVICE_GET( serviceProvider, Type )\
 	(Menge::Helper::getService<Type>(serviceProvider, __FILE__, __LINE__))

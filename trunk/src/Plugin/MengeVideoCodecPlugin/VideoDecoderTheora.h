@@ -16,6 +16,7 @@ namespace Menge
 
 	public:
 		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		bool _prepareData() override;
@@ -50,7 +51,6 @@ namespace Menge
 
 	private:
 		bool readHeader_();
-		void clear_();
 		size_t buffer_data_();
 		void decodeBuffer_( unsigned char * _buffer, size_t _pitch );
 		int readFrame_();

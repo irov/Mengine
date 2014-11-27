@@ -647,7 +647,7 @@ namespace Menge
 
 		virtual void endLimitRenderObjects() = 0;
 		virtual void increfLimitRenderObjects() = 0;
-		virtual void decrefLimitRenderObjects() = 0;
+		virtual bool decrefLimitRenderObjects() = 0;
 
     public:
         virtual void onWindowClose() = 0;

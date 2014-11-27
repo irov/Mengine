@@ -60,14 +60,29 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundDecoderOGGVorbis::SoundDecoderOGGVorbis()
+		: m_oggVorbisFileInitialize(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundDecoderOGGVorbis::~SoundDecoderOGGVorbis()
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "SoundDecoderOGGVorbis::_prepareData");
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SoundDecoderOGGVorbis::_initialize()
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundDecoderOGGVorbis::_finalize()
+	{
+		THREAD_GUARD_SCOPE(this, m_serviceProvider, "SoundDecoderOGGVorbis::_finalize");
 
-		ov_clear( &m_oggVorbisFile );
+		if( m_oggVorbisFileInitialize == true )
+		{
+			m_oggVorbisFileInitialize = false;
+
+			ov_clear( &m_oggVorbisFile );
+		}		
 	}
     //////////////////////////////////////////////////////////////////////////
     bool SoundDecoderOGGVorbis::_prepareData()
@@ -90,6 +105,8 @@ namespace Menge
 
             return false;
         }
+
+		m_oggVorbisFileInitialize = true;
 
         //MENGE_LOG_INFO( "SoundDecoderOGGVorbis::readHeader_ 2" );
         vorbis_info* vorbisInfo = ov_info( &m_oggVorbisFile, -1 );

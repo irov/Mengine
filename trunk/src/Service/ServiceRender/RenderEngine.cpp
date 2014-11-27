@@ -1148,11 +1148,29 @@ namespace Menge
 		{
 			mt::reset( bb, 0.f, 0.f );
 		}
-		
+
+
+#	ifdef _DEBUG
 		if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
 		{
 			return;
 		}
+
+		if( m_debugMode == true )
+		{
+			RenderMaterialPtr material = _material;
+
+			EPrimitiveType primitiveType = material->getPrimitiveType();
+
+			switch( primitiveType )
+			{
+			case PT_TRIANGLELIST:
+				{
+					this->calcQuadSquare_( _vertices, _verticesNum );
+				}break;
+			}
+		}
+#	endif
 
 		++rp.countRenderObject;
 
@@ -1160,7 +1178,22 @@ namespace Menge
 
 		ro.material = _material;
 
-		uint32_t materialId = _material->getId();
+#	ifdef _DEBUG
+		if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
+		{				
+			RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
+				->getMaterial( CONST_STRING_LOCAL(m_serviceProvider, "OnlyColor")
+				, false, false
+				, ro.material->getPrimitiveType()
+				, 0
+				, nullptr
+				);
+
+			ro.material = new_material;
+		}
+#	endif
+
+		uint32_t materialId = ro.material->getId();
 		uint32_t materialId2 = materialId % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
 
 		rp.materialEnd[materialId2] = &ro;
@@ -1182,20 +1215,7 @@ namespace Menge
 		ro.dipIndiciesNum = 0;
 
 		ro.bb = bb;
-
-		if( m_debugMode == true )
-		{
-			EPrimitiveType primitiveType = ro.material->getPrimitiveType();
-
-			switch( primitiveType )
-			{
-			case PT_TRIANGLELIST:
-				{
-					this->calcQuadSquare_( _vertices, _verticesNum );
-				}break;
-			}
-		}
-
+		
 		m_renderVertexCount += _verticesNum;
 		m_renderIndicesCount += _indicesNum;
 	}
@@ -1904,14 +1924,16 @@ namespace Menge
 		++m_limitRenderObjects;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::decrefLimitRenderObjects()
+	bool RenderEngine::decrefLimitRenderObjects()
 	{
 		if( m_limitRenderObjects == 0 )
 		{
-			return;
+			return false;
 		}
 
 		--m_limitRenderObjects;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const Viewport & RenderEngine::getRenderViewport() const

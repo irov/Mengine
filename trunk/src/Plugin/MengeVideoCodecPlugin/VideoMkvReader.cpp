@@ -3,12 +3,20 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	VideoMkvReader::VideoMkvReader( const InputStreamInterfacePtr & _stream )
-		: m_stream(_stream)
-		, m_size(0)
+	VideoMkvReader::VideoMkvReader()
+		: m_size(0)
 		, m_pos(0)
 	{
+		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool VideoMkvReader::initialize( const InputStreamInterfacePtr & _stream )
+	{
+		m_stream = _stream;
+
 		m_size = m_stream->size();
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int VideoMkvReader::Read( long long _offset, long _len, unsigned char * _buf )

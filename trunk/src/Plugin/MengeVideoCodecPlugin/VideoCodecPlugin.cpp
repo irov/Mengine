@@ -1,8 +1,8 @@
 #	include "VideoCodecPlugin.h"
 
-//#   include "VideoDecoderFFMPEG.h"
 #   include "VideoDecoderGVF.h"
 //#   include "VideoDecoderVPX.h"
+#	include "VideoDecoderTheora.h"
 
 #   include "Codec/DecoderFactory.h"
 
@@ -28,22 +28,6 @@ extern "C" // only required if using g++
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-    ////////////////////////////////////////////////////////////////////////////
-    //static void s_ffmpeg_log( void* _impl, int _level, const char* _format, va_list _args )
-    //{
-    //    (void)_impl;
-
-    //    if( _level > AV_LOG_ERROR )
-    //    {
-    //        return;
-    //    }
-
-    //    printf("VideoCodecPlugin::s_ffmpeg_log %d\n"
-    //        , _level
-    //        );
-
-    //    vprintf( _format, _args );
-    //}
 	//////////////////////////////////////////////////////////////////////////
 	VideoCodecPlugin::VideoCodecPlugin()
 		: m_serviceProvider(nullptr)
@@ -53,15 +37,11 @@ namespace Menge
 	bool VideoCodecPlugin::initialize( ServiceProviderInterface * _serviceProvider )
 	{
 		m_serviceProvider = _serviceProvider;
-
-        //avcodec_register_all();
-        //av_register_all();
-
-        //av_log_set_callback( &s_ffmpeg_log );
-
-		//m_decoders.push_back( new DecoderFactory<VideoDecoderFFMPEG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegVideo")) );
-        m_decoders.push_back( new DecoderFactory<VideoDecoderGVF>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "gvfVideo")) );
+		        
+		m_decoders.push_back( new DecoderFactory<VideoDecoderGVF>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "gvfVideo")) );
         //m_decoders.push_back( new DecoderFactory<VideoDecoderVPX>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "vpxVideo")) );
+		m_decoders.push_back( new DecoderFactory<VideoDecoderTheora>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "theoraVideo")) );
+		
 		
 		for( TVectorVideoDecoders::iterator
 			it = m_decoders.begin(),

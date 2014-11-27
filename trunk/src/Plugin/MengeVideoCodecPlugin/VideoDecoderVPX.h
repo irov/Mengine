@@ -22,6 +22,9 @@ namespace Menge
 
 	public:
 		bool _initialize() override;
+
+	public:
+		bool _prepareData() override;
         
     public:
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
@@ -39,7 +42,7 @@ namespace Menge
 	protected:
         vpx_codec_ctx_t m_codec;
 
-		VideoMkvReader * m_reader;
+		VideoMkvReader m_reader;
 
 		mkvparser::Segment * m_segment;
 

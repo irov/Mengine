@@ -1,18 +1,8 @@
-/*
- *	VideoDecoderOGGTheora.cpp
- *
- *	Created by _Berserk_ on 19.12.2008
- *	Copyright 2008 Menge. All rights reserved.
- *
- */
+#	include "VideoDecoderTheora.h"
 
-#	include "VideoDecoderOGGTheora.h"
-//#	include "Interface/FileSystemInterface.h"
+#	include "Logger/Logger.h"
 
-#	include "Utils/Logger/Logger.h"
-#	include "Utils/Core/File.h"
-
-#	define OGG_BUFFER_SIZE 8192
+#	define OGG_BUFFER_SIZE 4096
 
 //Defines
 #define MAX( a, b ) ((a > b) ? a : b)
@@ -28,41 +18,48 @@
 
 namespace Menge
 {
-
-	signed int VideoDecoderOGGTheora::ms_YTable[ 256 ];
-	signed int VideoDecoderOGGTheora::ms_BUTable[ 256 ];
-	signed int VideoDecoderOGGTheora::ms_GUTable[ 256 ];
-	signed int VideoDecoderOGGTheora::ms_GVTable[ 256 ];
-	signed int VideoDecoderOGGTheora::ms_RVTable[ 256 ];
-
 	//////////////////////////////////////////////////////////////////////////
-	VideoDecoderOGGTheora::VideoDecoderOGGTheora( CodecServiceInterface * _service, InputStreamInterface * _stream, LogSystemInterface * _logSystem )
-		: VideoDecoder(_service, _stream)
-		, m_eof( true )
+	signed int s_YTable[ 256 ];
+	signed int s_BUTable[ 256 ];
+	signed int s_GUTable[ 256 ];
+	signed int s_GVTable[ 256 ];
+	signed int s_RVTable[ 256 ];	
+	//////////////////////////////////////////////////////////////////////////
+	static void s_createCoefTables()
+	{
+		//used to bring the table into the high side (scale up) so we
+		//can maintain high precision and not use floats (FIXED POINT)
+		int scale = 1L << 13,	temp;
+
+		for ( signed int i = 0; i < 256; i++ )
+		{
+			temp = i - 128;
+
+			s_YTable[i]  = (signed int)((1.164 * scale + 0.5) * (i - 16));	//Calc Y component
+
+			s_RVTable[i] = (signed int)((1.596 * scale + 0.5) * temp);		//Calc R component
+
+			s_GUTable[i] = (signed int)((0.391 * scale + 0.5) * temp);		//Calc G u & v components
+			s_GVTable[i] = (signed int)((0.813 * scale + 0.5) * temp);
+
+			s_BUTable[i] = (signed int)((2.018 * scale + 0.5) * temp);		//Calc B component
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	VideoDecoderTheora::VideoDecoderTheora()
+		: VideoDecoder()
+		, m_eof(true)
 		, m_currentFrame(0)
 		, m_lastReadBytes(0)
+		, m_pitch(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	VideoDecoderOGGTheora::~VideoDecoderOGGTheora()
+	VideoDecoderTheora::~VideoDecoderTheora()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int VideoDecoderOGGTheora::decode( unsigned char* _buffer, unsigned int _bufferSize )
-	{
-		// декодируем страничку в YUV-виде в спец. структуру yuv_buffer
-		if( theora_decode_YUVout(&m_theoraState, &m_yuvBuffer) != 0 )
-		{
-			// ошибка декодирования
-			LOGGER_ERROR(m_logSystem)( "error during theora_decode_YUVout..." );
-		}
-
-		decodeBuffer_( _buffer, _bufferSize );
-
-		return m_lastReadBytes;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderOGGTheora::initialize()
+	bool VideoDecoderTheora::_initialize()
 	{
 		std::fill( (char*)&m_oggStreamState, (char*)&m_oggStreamState + sizeof(ogg_stream_state), 0x00 );
 		std::fill( (char*)&m_oggSyncState, (char*)&m_oggSyncState + sizeof(ogg_sync_state), 0x00 );
@@ -83,6 +80,13 @@ namespace Menge
 		theora_comment_init( &m_theoraComment );
 		theora_info_init( &m_theoraInfo );
 
+		s_createCoefTables();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool VideoDecoderTheora::_prepareData()
+	{
 		// Ogg file open; parse the headers
 		// Only interested in Vorbis/Theora streams 
 		bool stateFlag = false;
@@ -93,7 +97,7 @@ namespace Menge
 			if( buffer_data_() == 0 )
 			{
 				// кончился файл, на данном этапе это ошибка
-				LOGGER_ERROR(m_logSystem)( "Theora Codec Error: bad file" );
+				LOGGER_ERROR(m_serviceProvider)( "Theora Codec Error: bad file" );
 				clear_();
 
 				return false;
@@ -136,7 +140,7 @@ namespace Menge
 				// идентификатором потока, как и у текущей странички
 				if( ogg_stream_init( &oggStreamStateTest, ogg_page_serialno(&m_oggPage) ) != 0 )
 				{
-					LOGGER_ERROR(m_logSystem)( "TheoraCodec Error: error during ogg_stream_init" );
+					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_init" );
 					clear_();
 
 					return false;
@@ -145,7 +149,7 @@ namespace Menge
 				// добавляем страницу в тестовый поток
 				if( ogg_stream_pagein( &oggStreamStateTest, &m_oggPage) != 0 )
 				{
-					LOGGER_ERROR(m_logSystem)( "TheoraCodec Error: error during ogg_stream_pagein" );
+					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_pagein" );
 					clear_();
 
 					return false;
@@ -153,7 +157,7 @@ namespace Menge
 				// декодируем данные из этого тестового потока в пакет
 				if( ogg_stream_packetout( &oggStreamStateTest, &m_oggPacket ) == -1 )
 				{
-					LOGGER_ERROR(m_logSystem)( "TheoraCodec Error: error during ogg_stream_packetout" );
+					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_packetout" );
 					clear_();
 
 					return false;
@@ -203,7 +207,7 @@ namespace Menge
 			if( result < 0 )
 			{
 				// ошибка декодирования, поврежденный поток
-				LOGGER_ERROR(m_logSystem)( "TheoraCodec Error: error during ogg_stream_packetout" );
+				LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_packetout" );
 				clear_();
 				return false;
 			}
@@ -216,7 +220,7 @@ namespace Menge
 				if( result2 < 0 )
 				{
 					// ошибка декодирования, поврежденный поток
-					LOGGER_ERROR(m_logSystem)( "TheoraCodec Error: error during theora_decode_header (corrupt stream)" );
+					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during theora_decode_header (corrupt stream)" );
 					clear_();
 					return false;
 				}
@@ -243,7 +247,7 @@ namespace Menge
 				if( ret == 0 )
 				{
 					// опять файл кончился!
-					LOGGER_ERROR(m_logSystem)( "TheoraCodec Error: eof searched. terminate..." );
+					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: eof searched. terminate..." );
 					clear_();
 					return false;
 				}
@@ -254,13 +258,15 @@ namespace Menge
 		theora_decode_init( &m_theoraState, &m_theoraInfo );
 
 		
-		m_dataInfo.frame_width = m_theoraInfo.width;
-		m_dataInfo.frame_height = m_theoraInfo.height;
+		m_dataInfo.frameWidth = m_theoraInfo.width;
+		m_dataInfo.frameHeight = m_theoraInfo.height;
+		m_dataInfo.duration = m_options.duration;
+		m_dataInfo.fps = m_options.fps;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void VideoDecoderOGGTheora::clear_()
+	void VideoDecoderTheora::clear_()
 	{
 		ogg_stream_clear( &m_oggStreamState );
 		theora_clear( &m_theoraState );
@@ -270,12 +276,28 @@ namespace Menge
 		ogg_sync_clear( &m_oggSyncState );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void VideoDecoderOGGTheora::decodeBuffer_( unsigned char* _buffer, int _pitch )
+	size_t VideoDecoderTheora::decode( void * _buffer, size_t _bufferSize )
+	{
+		// декодируем страничку в YUV-виде в спец. структуру yuv_buffer
+		if( theora_decode_YUVout( &m_theoraState, &m_yuvBuffer ) != 0 )
+		{
+			// ошибка декодирования
+			LOGGER_ERROR(m_serviceProvider)("error during theora_decode_YUVout...");
+		}
+
+		unsigned char * byte_buffer = static_cast<unsigned char *>(_buffer);
+
+		this->decodeBuffer_( byte_buffer, _bufferSize );
+
+		return m_lastReadBytes;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void VideoDecoderTheora::decodeBuffer_( unsigned char * _buffer, size_t _size )
 	{
 		//Convert 4:2:0 YUV YCrCb to an RGB24 Bitmap
 		//convenient pointers
 		unsigned char *dstBitmap = _buffer;
-		unsigned char *dstBitmapOffset = _buffer + _pitch;
+		unsigned char *dstBitmapOffset = _buffer + m_pitch;
 
 		unsigned char *ySrc = (unsigned char*)m_yuvBuffer.y,
 			*uSrc = (unsigned char*)m_yuvBuffer.u,
@@ -283,7 +305,7 @@ namespace Menge
 			*ySrc2 = ySrc + m_yuvBuffer.y_stride;
 
 		//Calculate buffer offsets
-		unsigned int dstOff = _pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
+		unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
 		int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
 
 
@@ -320,10 +342,10 @@ namespace Menge
 				v = vSrc[x];
 
 				//get corresponding lookup values
-				rgbY= ms_YTable[*ySrc];				
-				rV  = ms_RVTable[v];
-				gUV = ms_GUTable[u] + ms_GVTable[v];
-				bU  = ms_BUTable[u];
+				rgbY= s_YTable[*ySrc];				
+				rV  = s_RVTable[v];
+				gUV = s_GUTable[u] + s_GVTable[v];
+				bU  = s_BUTable[u];
 				++ySrc;
 
 				//scale down - brings are values back into the 8 bits of a byte
@@ -339,7 +361,7 @@ namespace Menge
 
 				//And repeat for other pixels (note, y is unique for each
 				//pixel, while uv are not)
-				rgbY = ms_YTable[*ySrc];
+				rgbY = s_YTable[*ySrc];
 				r = (rgbY + rV)  >> 13;
 				g = (rgbY - gUV) >> 13;
 				b = (rgbY + bU)  >> 13;
@@ -349,7 +371,7 @@ namespace Menge
 				dstBitmap[4+COLOR_A] = 255;
 				++ySrc;
 
-				rgbY = ms_YTable[*ySrc2];
+				rgbY = s_YTable[*ySrc2];
 				r = (rgbY + rV)  >> 13;
 				g = (rgbY - gUV) >> 13;
 				b = (rgbY + bU)  >> 13;
@@ -359,7 +381,7 @@ namespace Menge
 				dstBitmapOffset[COLOR_A] = 255;
 				++ySrc2;
 
-				rgbY = ms_YTable[*ySrc2];
+				rgbY = s_YTable[*ySrc2];
 				r = (rgbY + rV)  >> 13;
 				g = (rgbY - gUV) >> 13;
 				b = (rgbY + bU)  >> 13;
@@ -387,18 +409,18 @@ namespace Menge
 			uSrc			+= m_yuvBuffer.uv_stride;
 			vSrc			+= m_yuvBuffer.uv_stride;
 		} //end for y
-
 	}
 	//////////////////////////////////////////////////////////////////////////
-	std::streamsize VideoDecoderOGGTheora::buffer_data_()
+	size_t VideoDecoderTheora::buffer_data_()
 	{
 		char* buffer = ogg_sync_buffer( &m_oggSyncState, OGG_BUFFER_SIZE );
-		std::streamsize bytes = m_stream->read( buffer, OGG_BUFFER_SIZE );	
+		size_t bytes = m_stream->read( buffer, OGG_BUFFER_SIZE );	
 		ogg_sync_wrote( &m_oggSyncState, bytes );
+
 		return bytes;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int VideoDecoderOGGTheora::readFrame_()
+	EVideoDecoderReadState VideoDecoderTheora::readNextFrame( float & _pts )
 	{
 		m_lastReadBytes = 0;
 		// theora processing...
@@ -408,13 +430,15 @@ namespace Menge
 			// надо надергать данных из физического потока и затолкать их в логический поток
 
 			// читаем данные из файла
-			std::streamsize bytes = buffer_data_();
+			size_t bytes = buffer_data_();
+
 			if( bytes == 0 )
 			{
-				m_eof = true;
-				break;
+				return VDRS_END_STREAM;
 			}
+
 			m_lastReadBytes += bytes;
+
 			if( m_lastReadBytes == 0 )
 			{
 				// файл кончился, необходимо выполнить закрывающие действия
@@ -423,7 +447,7 @@ namespace Menge
 
 				//LOG_NUMBER(LOG_NOTE, "frames: ", current_frame);
 				//FINISHED=true;
-				return 0;
+				return VDRS_END_STREAM;
 			}
 
 			while( ogg_sync_pageout(&m_oggSyncState, &m_oggPage ) > 0 )
@@ -442,62 +466,47 @@ namespace Menge
 		// загружаем пакет в декодер theora
 		if( theora_decode_packetin(&m_theoraState,&m_oggPacket) == OC_BADPACKET)
 		{
-			// ошибка декодирования
-			LOGGER_ERROR(m_logSystem)( "error during theora_decode_packetin..." );
+			return VDRS_FAILURE;
 		}
 
-		return m_lastReadBytes;
+		return VDRS_SUCCESS;
+	}
+	////////////////////////////////////////////////////////////////////////////
+	//int VideoDecoderTheora::readNextFrame( float _timing )
+	//{
+	//	int ret = 0;
+	//	float frame_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos ) * 1000.0f;
+	//	if( frame_time < _timing )
+	//	{
+	//		ret = -1;
+	//	}
+	//	else if( frame_time > _timing )
+	//	{
+	//		ret = 1;
+	//	}
+	//	while( frame_time < _timing )
+	//	{
+	//		readFrame_();
+	//		frame_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos ) * 1000.0f;	
+	//	}
+	//	return ret;
+	//}
+	//////////////////////////////////////////////////////////////////////////
+	bool VideoDecoderTheora::seek( float _timing )
+	{
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void VideoDecoderOGGTheora::createCoefTables_()
+	float VideoDecoderTheora::getTiming() const
 	{
-		//used to bring the table into the high side (scale up) so we
-		//can maintain high precision and not use floats (FIXED POINT)
-		int scale = 1L << 13,	temp;
+		float timing = theora_granule_time( &m_theoraState, m_theoraState.granulepos ) * 1000.f;
 
-		for ( signed int i = 0; i < 256; i++ )
-		{
-			temp = i - 128;
-
-			ms_YTable[i]  = (signed int)((1.164 * scale + 0.5) * (i - 16));	//Calc Y component
-
-			ms_RVTable[i] = (signed int)((1.596 * scale + 0.5) * temp);		//Calc R component
-
-			ms_GUTable[i] = (signed int)((0.391 * scale + 0.5) * temp);		//Calc G u & v components
-			ms_GVTable[i] = (signed int)((0.813 * scale + 0.5) * temp);
-
-			ms_BUTable[i] = (signed int)((2.018 * scale + 0.5) * temp);		//Calc B component
-		}
+		return timing;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int VideoDecoderOGGTheora::sync( float _timing )
+	void VideoDecoderTheora::setPitch( size_t _pitch )
 	{
-		int ret = 0;
-		float frame_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos ) * 1000.0f;
-		if( frame_time < _timing )
-		{
-			ret = -1;
-		}
-		else if( frame_time > _timing )
-		{
-			ret = 1;
-		}
-		while( frame_time < _timing )
-		{
-			readFrame_();
-			frame_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos ) * 1000.0f;	
-		}
-		return ret;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderOGGTheora::seek( float _timing )
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderOGGTheora::eof()
-	{
-		return Utils::eof( m_stream ) || m_eof;
+		m_pitch = _pitch;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

@@ -143,7 +143,7 @@ namespace Menge
         {
             if( _reimport == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invalid version read %d need %d"
+                LOGGER_ERROR(m_serviceProvider)("LoaderEngine::loadBinary invalid version read %d need %d (Update you protocol file)"
                     , readVersion
                     , needVersion
                     );

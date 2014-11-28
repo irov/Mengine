@@ -257,10 +257,20 @@ namespace Menge
 
 		// наконец мы получили, все, что хотели. инициализируем декодеры
 		theora_decode_init( &m_theoraState, &m_theoraInfo );
+				
+		if( m_options.alpha == true )
+		{
+			m_dataInfo.frameWidth = m_theoraInfo.width;
+			m_dataInfo.frameHeight = m_theoraInfo.height / 2;
+			m_dataInfo.channel = 4;
+		}
+		else
+		{
+			m_dataInfo.frameWidth = m_theoraInfo.width;
+			m_dataInfo.frameHeight = m_theoraInfo.height;
+			m_dataInfo.channel = 3;
+		}
 
-		
-		m_dataInfo.frameWidth = m_theoraInfo.width;
-		m_dataInfo.frameHeight = m_theoraInfo.height;
 		m_dataInfo.duration = m_options.duration;
 		m_dataInfo.fps = m_options.fps;
 
@@ -299,13 +309,6 @@ namespace Menge
 	{
 		//Convert 4:2:0 YUV YCrCb to an RGB24 Bitmap
 		//convenient pointers
-		unsigned char *dstBitmap = _buffer;
-		unsigned char *dstBitmapOffset = _buffer + m_pitch;
-
-		unsigned char *ySrc = (unsigned char*)m_yuvBuffer.y,
-			*uSrc = (unsigned char*)m_yuvBuffer.u,
-			*vSrc = (unsigned char*)m_yuvBuffer.v,
-			*ySrc2 = ySrc + m_yuvBuffer.y_stride;
 
 		//Calculate buffer offsets
 		unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
@@ -313,105 +316,347 @@ namespace Menge
 
 
 		//Check if upside down, if so, reverse buffers and offsets
-		if ( m_yuvBuffer.y_height < 0 )
-		{
-			m_yuvBuffer.y_height = -m_yuvBuffer.y_height;
-			ySrc		 += (m_yuvBuffer.y_height - 1) * m_yuvBuffer.y_stride;
+		//if ( m_yuvBuffer.y_height < 0 )
+		//{
+		//	m_yuvBuffer.y_height = -m_yuvBuffer.y_height;
+		//	ySrc += (m_yuvBuffer.y_height - 1) * m_yuvBuffer.y_stride;
 
-			uSrc += ((m_yuvBuffer.y_height / 2) - 1) * m_yuvBuffer.uv_stride;
-			vSrc += ((m_yuvBuffer.y_height / 2) - 1) * m_yuvBuffer.uv_stride;
+		//	uSrc += ((m_yuvBuffer.y_height / 2) - 1) * m_yuvBuffer.uv_stride;
+		//	vSrc += ((m_yuvBuffer.y_height / 2) - 1) * m_yuvBuffer.uv_stride;
 
-			ySrc2 = ySrc - m_yuvBuffer.y_stride;
-			yOff  = -m_yuvBuffer.y_width - ( m_yuvBuffer.y_stride * 2 );
+		//	ySrc2 = ySrc - m_yuvBuffer.y_stride;
+		//	yOff = -m_yuvBuffer.y_width - ( m_yuvBuffer.y_stride * 2 );
 
-			m_yuvBuffer.uv_stride = -m_yuvBuffer.uv_stride;
-		}
+		//	m_yuvBuffer.uv_stride = -m_yuvBuffer.uv_stride;
+		//}
 
 		//Cut width and height in half (uv field is only half y field)
 		m_yuvBuffer.y_height = m_yuvBuffer.y_height >> 1;
 		m_yuvBuffer.y_width = m_yuvBuffer.y_width >> 1;
 
-		//Convientient temp vars
-		signed int r, g, b, u, v, bU, gUV, rV, rgbY;
-		int x;
-
-		//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-		for (int y = m_yuvBuffer.y_height; y > 0; --y)
+		if( m_options.alpha == false && m_options.pixelFormat == PF_X8R8G8B8 )
 		{
-			for (x = 0; x < m_yuvBuffer.y_width; ++x) 
+			unsigned char * dstBitmap = _buffer;
+			unsigned char * dstBitmapOffset = _buffer + m_pitch;
+
+			unsigned char * ySrc = (unsigned char*)m_yuvBuffer.y;
+			unsigned char * uSrc = (unsigned char*)m_yuvBuffer.u;
+			unsigned char * vSrc = (unsigned char*)m_yuvBuffer.v;
+			unsigned char * ySrc2 = ySrc + m_yuvBuffer.y_stride;
+
+			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
+			for( int y = m_yuvBuffer.y_height; y > 0; --y )
 			{
-				//Get uv pointers for row
-				u = uSrc[x]; 
-				v = vSrc[x];
+				for( int x = 0; x < m_yuvBuffer.y_width; ++x )
+				{
+					//Get uv pointers for row
+					int u = uSrc[x]; 
+					int v = vSrc[x];
 
-				//get corresponding lookup values
-				rgbY= s_YTable[*ySrc];				
-				rV  = s_RVTable[v];
-				gUV = s_GUTable[u] + s_GVTable[v];
-				bU  = s_BUTable[u];
-				++ySrc;
+					//get corresponding lookup values
+					int rgbY = s_YTable[*ySrc];				
+					int rV = s_RVTable[v];
+					int gUV = s_GUTable[u] + s_GVTable[v];
+					int bU = s_BUTable[u];
+					++ySrc;
 
-				//scale down - brings are values back into the 8 bits of a byte
-				r = (rgbY + rV ) >> 13;
-				g = (rgbY - gUV) >> 13;
-				b = (rgbY + bU ) >> 13;
+					//scale down - brings are values back into the 8 bits of a byte
+					int r = (rgbY + rV ) >> 13;
+					int g = (rgbY - gUV) >> 13;
+					int b = (rgbY + bU ) >> 13;
 
-				//Clip to RGB values (255 0)
-				CLIP_RGB_COLOR( r, dstBitmap[COLOR_R] );
-				CLIP_RGB_COLOR( g, dstBitmap[COLOR_G] );
-				CLIP_RGB_COLOR( b, dstBitmap[COLOR_B] );
-				dstBitmap[COLOR_A] = 255;
+					//Clip to RGB values (255 0)
+					CLIP_RGB_COLOR( r, dstBitmap[COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmap[COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmap[COLOR_B] );
+					dstBitmap[COLOR_A] = 255;
 
-				//And repeat for other pixels (note, y is unique for each
-				//pixel, while uv are not)
-				rgbY = s_YTable[*ySrc];
-				r = (rgbY + rV)  >> 13;
-				g = (rgbY - gUV) >> 13;
-				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmap[4+COLOR_R] );
-				CLIP_RGB_COLOR( g, dstBitmap[4+COLOR_G] );
-				CLIP_RGB_COLOR( b, dstBitmap[4+COLOR_B] );
-				dstBitmap[4+COLOR_A] = 255;
-				++ySrc;
+					//And repeat for other pixels (note, y is unique for each
+					//pixel, while uv are not)
+					rgbY = s_YTable[*ySrc];
+					r = (rgbY + rV)  >> 13;
+					g = (rgbY - gUV) >> 13;
+					b = (rgbY + bU)  >> 13;
+					CLIP_RGB_COLOR( r, dstBitmap[4+COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmap[4+COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmap[4+COLOR_B] );
+					dstBitmap[4+COLOR_A] = 255;
+					++ySrc;
 
-				rgbY = s_YTable[*ySrc2];
-				r = (rgbY + rV)  >> 13;
-				g = (rgbY - gUV) >> 13;
-				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_R] );
-				CLIP_RGB_COLOR( g, dstBitmapOffset[COLOR_G] );
-				CLIP_RGB_COLOR( b, dstBitmapOffset[COLOR_B] );
-				dstBitmapOffset[COLOR_A] = 255;
-				++ySrc2;
+					rgbY = s_YTable[*ySrc2];
+					r = (rgbY + rV)  >> 13;
+					g = (rgbY - gUV) >> 13;
+					b = (rgbY + bU)  >> 13;
+					CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmapOffset[COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmapOffset[COLOR_B] );
+					dstBitmapOffset[COLOR_A] = 255;
+					++ySrc2;
 
-				rgbY = s_YTable[*ySrc2];
-				r = (rgbY + rV)  >> 13;
-				g = (rgbY - gUV) >> 13;
-				b = (rgbY + bU)  >> 13;
-				CLIP_RGB_COLOR( r, dstBitmapOffset[4+COLOR_R] );
-				CLIP_RGB_COLOR( g, dstBitmapOffset[4+COLOR_G] );
-				CLIP_RGB_COLOR( b, dstBitmapOffset[4+COLOR_B] );
-				dstBitmapOffset[4+COLOR_A] = 255;
-				++ySrc2;
+					rgbY = s_YTable[*ySrc2];
+					r = (rgbY + rV)  >> 13;
+					g = (rgbY - gUV) >> 13;
+					b = (rgbY + bU)  >> 13;
+					CLIP_RGB_COLOR( r, dstBitmapOffset[4+COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmapOffset[4+COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmapOffset[4+COLOR_B] );
+					dstBitmapOffset[4+COLOR_A] = 255;
+					++ySrc2;
 
-				/*dstBitmap[COLOR_G] = 0;
-				dstBitmap[COLOR_G+4] = 0;
-				dstBitmapOffset[COLOR_G] = 0;
-				dstBitmapOffset[COLOR_G+4] = 0;*/
+					/*dstBitmap[COLOR_G] = 0;
+					dstBitmap[COLOR_G+4] = 0;
+					dstBitmapOffset[COLOR_G] = 0;
+					dstBitmapOffset[COLOR_G+4] = 0;*/
 
-				//Advance inner loop offsets
-				dstBitmap += 4 << 1;
-				dstBitmapOffset += 4 << 1;
-			} // end for x
+					//Advance inner loop offsets
+					dstBitmap += 4 << 1;
+					dstBitmapOffset += 4 << 1;
+				} // end for x
 
-			//Advance destination pointers by offsets
-			dstBitmap		+= dstOff;
-			dstBitmapOffset += dstOff;
-			ySrc			+= yOff;
-			ySrc2			+= yOff;
-			uSrc			+= m_yuvBuffer.uv_stride;
-			vSrc			+= m_yuvBuffer.uv_stride;
-		} //end for y
+				//Advance destination pointers by offsets
+				dstBitmap		+= dstOff;
+				dstBitmapOffset += dstOff;
+				ySrc			+= yOff;
+				ySrc2			+= yOff;
+				uSrc			+= m_yuvBuffer.uv_stride;
+				vSrc			+= m_yuvBuffer.uv_stride;
+			} //end for y
+		}
+		else if( m_options.alpha == false && m_options.pixelFormat == PF_R8G8B8 )
+		{
+			unsigned char * dstBitmap = _buffer;
+			unsigned char * dstBitmapOffset = _buffer + m_pitch;
+
+			unsigned char * ySrc = (unsigned char*)m_yuvBuffer.y;
+			unsigned char * uSrc = (unsigned char*)m_yuvBuffer.u;
+			unsigned char * vSrc = (unsigned char*)m_yuvBuffer.v;
+			unsigned char * ySrc2 = ySrc + m_yuvBuffer.y_stride;
+
+			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
+			for( int y = m_yuvBuffer.y_height; y > 0; --y )
+			{
+				for( int x = 0; x < m_yuvBuffer.y_width; ++x )
+				{
+					//Get uv pointers for row
+					int u = uSrc[x]; 
+					int v = vSrc[x];
+
+					//get corresponding lookup values
+					int rgbY = s_YTable[*ySrc];				
+					int rV = s_RVTable[v];
+					int gUV = s_GUTable[u] + s_GVTable[v];
+					int bU = s_BUTable[u];
+					++ySrc;
+
+					//scale down - brings are values back into the 8 bits of a byte
+					int r = (rgbY + rV ) >> 13;
+					int g = (rgbY - gUV) >> 13;
+					int b = (rgbY + bU ) >> 13;
+
+					//Clip to RGB values (255 0)
+					CLIP_RGB_COLOR( r, dstBitmap[COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmap[COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmap[COLOR_B] );
+
+					//And repeat for other pixels (note, y is unique for each
+					//pixel, while uv are not)
+					rgbY = s_YTable[*ySrc];
+					r = (rgbY + rV)  >> 13;
+					g = (rgbY - gUV) >> 13;
+					b = (rgbY + bU)  >> 13;
+					CLIP_RGB_COLOR( r, dstBitmap[3+COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmap[3+COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmap[3+COLOR_B] );
+					++ySrc;
+
+					rgbY = s_YTable[*ySrc2];
+					r = (rgbY + rV)  >> 13;
+					g = (rgbY - gUV) >> 13;
+					b = (rgbY + bU)  >> 13;
+					CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmapOffset[COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmapOffset[COLOR_B] );
+					++ySrc2;
+
+					rgbY = s_YTable[*ySrc2];
+					r = (rgbY + rV)  >> 13;
+					g = (rgbY - gUV) >> 13;
+					b = (rgbY + bU)  >> 13;
+					CLIP_RGB_COLOR( r, dstBitmapOffset[3+COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmapOffset[3+COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmapOffset[3+COLOR_B] );
+					++ySrc2;
+
+					/*dstBitmap[COLOR_G] = 0;
+					dstBitmap[COLOR_G+4] = 0;
+					dstBitmapOffset[COLOR_G] = 0;
+					dstBitmapOffset[COLOR_G+4] = 0;*/
+
+					//Advance inner loop offsets
+					dstBitmap += 3 << 1;
+					dstBitmapOffset += 3 << 1;
+				} // end for x
+
+				//Advance destination pointers by offsets
+				dstBitmap		+= dstOff;
+				dstBitmapOffset += dstOff;
+				ySrc			+= yOff;
+				ySrc2			+= yOff;
+				uSrc			+= m_yuvBuffer.uv_stride;
+				vSrc			+= m_yuvBuffer.uv_stride;
+			} //end for y
+		}
+		else if( m_options.alpha == true )
+		{
+			unsigned char * dstBitmap = _buffer;
+			unsigned char * dstBitmapOffset = _buffer + m_pitch;
+
+			unsigned char * ySrc = (unsigned char*)m_yuvBuffer.y;
+			unsigned char * uSrc = (unsigned char*)m_yuvBuffer.u;
+			unsigned char * vSrc = (unsigned char*)m_yuvBuffer.v;
+			unsigned char * ySrc2 = ySrc + m_yuvBuffer.y_stride;
+
+			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
+			int y_rgb_height_begin = m_yuvBuffer.y_height;
+			int y_rgb_height_end = m_yuvBuffer.y_height / 2;
+			for( int y = y_rgb_height_begin; y > y_rgb_height_end; --y )
+			{
+				for( int x = 0; x < m_yuvBuffer.y_width; ++x )
+				{
+					//Get uv pointers for row
+					int u = uSrc[x]; 
+					int v = vSrc[x];
+
+					//get corresponding lookup values
+					int rgbY = s_YTable[*ySrc];				
+					int rV = s_RVTable[v];
+					int gUV = s_GUTable[u] + s_GVTable[v];
+					int bU = s_BUTable[u];
+					++ySrc;
+
+					//scale down - brings are values back into the 8 bits of a byte
+					int r = (rgbY + rV ) >> 13;
+					int g = (rgbY - gUV) >> 13;
+					int b = (rgbY + bU ) >> 13;
+
+					//Clip to RGB values (255 0)
+					CLIP_RGB_COLOR( r, dstBitmap[COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmap[COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmap[COLOR_B] );
+
+					//And repeat for other pixels (note, y is unique for each
+					//pixel, while uv are not)
+					rgbY = s_YTable[*ySrc];
+					r = (rgbY + rV)  >> 13;
+					g = (rgbY - gUV) >> 13;
+					b = (rgbY + bU)  >> 13;
+					CLIP_RGB_COLOR( r, dstBitmap[4+COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmap[4+COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmap[4+COLOR_B] );
+					++ySrc;
+
+					rgbY = s_YTable[*ySrc2];
+					r = (rgbY + rV)  >> 13;
+					g = (rgbY - gUV) >> 13;
+					b = (rgbY + bU)  >> 13;
+					CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmapOffset[COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmapOffset[COLOR_B] );
+					++ySrc2;
+
+					rgbY = s_YTable[*ySrc2];
+					r = (rgbY + rV)  >> 13;
+					g = (rgbY - gUV) >> 13;
+					b = (rgbY + bU)  >> 13;
+					CLIP_RGB_COLOR( r, dstBitmapOffset[4+COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmapOffset[4+COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmapOffset[4+COLOR_B] );
+					++ySrc2;
+
+					/*dstBitmap[COLOR_G] = 0;
+					dstBitmap[COLOR_G+4] = 0;
+					dstBitmapOffset[COLOR_G] = 0;
+					dstBitmapOffset[COLOR_G+4] = 0;*/
+
+					//Advance inner loop offsets
+					dstBitmap += 4 << 1;
+					dstBitmapOffset += 4 << 1;
+				} // end for x
+
+				//Advance destination pointers by offsets
+				dstBitmap		+= dstOff;
+				dstBitmapOffset += dstOff;
+				ySrc			+= yOff;
+				ySrc2			+= yOff;
+				uSrc			+= m_yuvBuffer.uv_stride;
+				vSrc			+= m_yuvBuffer.uv_stride;
+			} //end for y
+
+			dstBitmap = _buffer;
+			dstBitmapOffset = _buffer + m_pitch;
+
+			ySrc = (unsigned char*)m_yuvBuffer.y;
+			uSrc = (unsigned char*)m_yuvBuffer.u;
+			vSrc = (unsigned char*)m_yuvBuffer.v;
+			ySrc2 = ySrc + m_yuvBuffer.y_stride;
+
+			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
+			int y_alpha_height_begin = m_yuvBuffer.y_height / 2;
+			int y_alpha_height_end = 0;
+			for( int y = y_alpha_height_begin; y > y_alpha_height_end; --y )
+			{
+				for( int x = 0; x < m_yuvBuffer.y_width; ++x )
+				{
+					//Get uv pointers for row
+					int v = vSrc[x];
+
+					//get corresponding lookup values
+					int rgbY = s_YTable[*ySrc];				
+					int rV = s_RVTable[v];
+					++ySrc;
+
+					//scale down - brings are values back into the 8 bits of a byte
+					int r = (rgbY + rV) >> 13;
+
+					//Clip to RGB values (255 0)
+					CLIP_RGB_COLOR( r, dstBitmap[COLOR_A] );
+
+					//And repeat for other pixels (note, y is unique for each
+					//pixel, while uv are not)
+					rgbY = s_YTable[*ySrc];
+					r = (rgbY + rV)  >> 13;
+					CLIP_RGB_COLOR( r, dstBitmap[4+COLOR_A] );
+					++ySrc;
+
+					rgbY = s_YTable[*ySrc2];
+					r = (rgbY + rV)  >> 13;
+					CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_A] );
+					++ySrc2;
+
+					rgbY = s_YTable[*ySrc2];
+					r = (rgbY + rV)  >> 13;
+					CLIP_RGB_COLOR( r, dstBitmapOffset[4+COLOR_A] );
+					++ySrc2;
+
+					/*dstBitmap[COLOR_G] = 0;
+					dstBitmap[COLOR_G+4] = 0;
+					dstBitmapOffset[COLOR_G] = 0;
+					dstBitmapOffset[COLOR_G+4] = 0;*/
+
+					//Advance inner loop offsets
+					dstBitmap += 4 << 1;
+					dstBitmapOffset += 4 << 1;
+				} // end for x
+
+				//Advance destination pointers by offsets
+				dstBitmap		+= dstOff;
+				dstBitmapOffset += dstOff;
+				ySrc			+= yOff;
+				ySrc2			+= yOff;
+				uSrc			+= m_yuvBuffer.uv_stride;
+				vSrc			+= m_yuvBuffer.uv_stride;
+			} //end for y
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t VideoDecoderTheora::buffer_data_()

@@ -1058,6 +1058,9 @@ namespace Menge
 					->decrefLimitRenderObjects() == false )
 				{
 					m_debugPause = false;
+
+					RENDER_SERVICE(m_serviceProvider)
+						->enableDebugMode( false );
 				}				
 			}
 
@@ -1065,6 +1068,12 @@ namespace Menge
 			{
 				RENDER_SERVICE(m_serviceProvider)
 					->increfLimitRenderObjects();
+
+				if( m_debugPause == false )
+				{
+					RENDER_SERVICE(m_serviceProvider)
+						->enableDebugMode( true );
+				}
 
 				m_debugPause = true;
 			}

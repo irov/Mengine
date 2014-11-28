@@ -327,7 +327,7 @@ namespace Menge
 		bool m_alphaBlendEnable;
 		bool m_alphaTestEnable;
 
-        bool m_debugMode;
+        uint32_t m_debugMode;
 
 		bool m_stopRenderObjects;
 		uint32_t m_limitRenderObjects;

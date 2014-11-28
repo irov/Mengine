@@ -1,6 +1,6 @@
 #	include "VideoCodecPlugin.h"
 
-#   include "VideoDecoderGVF.h"
+//#   include "VideoDecoderGVF.h"
 //#   include "VideoDecoderVPX.h"
 #	include "VideoDecoderTheora.h"
 
@@ -38,9 +38,10 @@ namespace Menge
 	{
 		m_serviceProvider = _serviceProvider;
 		        
-		m_decoders.push_back( new DecoderFactory<VideoDecoderGVF>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "gvfVideo")) );
+		//m_decoders.push_back( new DecoderFactory<VideoDecoderGVF>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "gvfVideo")) );
         //m_decoders.push_back( new DecoderFactory<VideoDecoderVPX>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "vpxVideo")) );
-		m_decoders.push_back( new DecoderFactory<VideoDecoderTheora>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "theoraVideo")) );
+		m_decoders.push_back( new DecoderFactory<VideoDecoderTheora>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ogvVideo")) );
+		m_decoders.push_back( new DecoderFactory<VideoDecoderTheora>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ogvaVideo")) );
 		
 		
 		for( TVectorVideoDecoders::iterator

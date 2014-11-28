@@ -41,7 +41,7 @@ namespace Menge
 		, m_depthBufferWriteEnable(false)
 		, m_alphaBlendEnable(false)
 		, m_alphaTestEnable(false)
-		, m_debugMode(false)
+		, m_debugMode(0)
 		, m_currentStage(nullptr)
 		, m_nullTexture(nullptr)
 		, m_debugMaterial(nullptr)
@@ -1149,18 +1149,16 @@ namespace Menge
 			mt::reset( bb, 0.f, 0.f );
 		}
 
+		RenderMaterialPtr ro_material = _material;
 
-#	ifdef _DEBUG
-		if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
+		if( m_debugMode > 0 )
 		{
-			return;
-		}
+			if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
+			{
+				return;
+			}
 
-		if( m_debugMode == true )
-		{
-			RenderMaterialPtr material = _material;
-
-			EPrimitiveType primitiveType = material->getPrimitiveType();
+			EPrimitiveType primitiveType = ro_material->getPrimitiveType();
 
 			switch( primitiveType )
 			{
@@ -1169,30 +1167,27 @@ namespace Menge
 					this->calcQuadSquare_( _vertices, _verticesNum );
 				}break;
 			}
+
+			if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
+			{				
+				RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->getMaterial( CONST_STRING_LOCAL(m_serviceProvider, "OnlyColor")
+					, false, false
+					, ro_material->getPrimitiveType()
+					, 0
+					, nullptr
+					);
+
+				ro_material = new_material;
+			}
 		}
-#	endif
 
 		++rp.countRenderObject;
 
 		RenderObject & ro = m_renderObjects.emplace();
 
-		ro.material = _material;
-
-#	ifdef _DEBUG
-		if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
-		{				
-			RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING_LOCAL(m_serviceProvider, "OnlyColor")
-				, false, false
-				, ro.material->getPrimitiveType()
-				, 0
-				, nullptr
-				);
-
-			ro.material = new_material;
-		}
-#	endif
-
+		ro.material = ro_material;
+		
 		uint32_t materialId = ro.material->getId();
 		uint32_t materialId2 = materialId % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
 
@@ -1906,12 +1901,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::enableDebugMode( bool _enable )
 	{
-		m_debugMode = _enable;
+		m_debugMode += (_enable == true ? 1 : -1);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::isDebugMode() const
 	{
-		return m_debugMode;
+		return m_debugMode > 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::endLimitRenderObjects()

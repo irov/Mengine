@@ -59,10 +59,11 @@ namespace Menge
                 const char * envString = eventToString( _event );
                 const char * typeName = typeid(T).name();
                 const char * objRepr = pybind::object_repr( py_result );
+				const char * eventRepr = pybind::object_repr( _pyevent );
 
-                LOGGER_ERROR(_serviceProvider)("Eventable: '%s' '%s' must return '%s', but return '%s'"
+                LOGGER_ERROR(_serviceProvider)("Eventable: '%s' script '%s' must return '%s', but return '%s'"
                     , envString
-                    , pybind::object_repr( _pyevent )
+                    , eventRepr
                     , typeName
                     , objRepr
                     );

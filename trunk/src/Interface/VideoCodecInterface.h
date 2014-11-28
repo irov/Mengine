@@ -29,6 +29,7 @@ namespace Menge
 		uint32_t frameWidth;
 		uint32_t frameHeight;
 		uint32_t fps;
+		uint32_t channel;
 
 		float duration;
 
@@ -49,6 +50,7 @@ namespace Menge
             : pixelFormat(PF_UNKNOWN)
 			, duration(0.f)
 			, fps(0)
+			, alpha(false)
 			, mock(false)
             , noSeek(false)
         {}
@@ -57,6 +59,7 @@ namespace Menge
 		
 		float duration;
 		uint32_t fps;
+		bool alpha;
 
 		bool mock;
         bool noSeek;

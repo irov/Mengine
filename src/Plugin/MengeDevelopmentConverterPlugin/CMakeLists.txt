@@ -14,6 +14,10 @@ src
 	SoundConverterFFMPEGToOGG.h
 	VideoConverterFFMPEGToWEBM.cpp
 	VideoConverterFFMPEGToWEBM.h
+    VideoConverterFFMPEGToOGV.cpp
+    VideoConverterFFMPEGToOGV.h
+    VideoConverterFFMPEGToOGVA.cpp
+    VideoConverterFFMPEGToOGVA.h
 	VideoConverterFFMPEGToGVF.cpp
 	VideoConverterFFMPEGToGVF.h
 	ParticleConverterPTCToPTZ.cpp

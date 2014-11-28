@@ -96,61 +96,6 @@ namespace Menge
 			return false;
 		}
 
-
-   //     if( m_noSeek == false )
-   //     {           			
-			//for( float pts = 0.f; pts < dataInfo->duration - dataInfo->frameTiming; pts += dataInfo->frameTiming )
-			//{
-			//	_decoder->seek( pts );
-   //         
-			//	float current_pts;
-			//	EVideoDecoderReadState state = VDRS_FAILURE;
-			//	
-			//	while( true, true )
-			//	{
-			//		state = _decoder->readNextFrame( current_pts );
-
-			//		if( state == VDRS_SKIP )
-			//		{
-			//			continue;
-			//		}
-
-			//		break;
-			//	}
-
-			//	if( state == VDRS_END_STREAM )
-			//	{
-			//		break;
-			//	}
-
-			//	if( state == VDRS_FAILURE )
-			//	{
-			//		LOGGER_ERROR(m_serviceProvider)("=============================================================");
-			//		LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid read next frame %f:%f (state %d)"
-			//			, dataInfo->frameTiming
-			//			, current_pts
-			//			, state
-			//			);
-
-			//		return false;
-			//	}
-
-			//	if( fabsf(current_pts - pts) > dataInfo->frameTiming * 2.f )
-			//	{
-			//		LOGGER_ERROR(m_serviceProvider)("=============================================================");
-			//		LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: invalid Key Frame %f %f:%f (need one)"
-			//			, dataInfo->frameTiming
-			//			, pts
-			//			, current_pts
-			//			);
-
-			//		return false;
-			//	}
-			//}
-
-            //_decoder->seek( 0.f );
-        //}
-
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -207,18 +152,26 @@ namespace Menge
 
         if( m_alpha == true )
         {
-            videoCodecOptions.pixelFormat = Menge::PF_A8R8G8B8;
+            videoCodecOptions.pixelFormat = PF_A8R8G8B8;
         }
         else
         {
-            videoCodecOptions.pixelFormat = Menge::PF_R8G8B8;
+			if( RENDER_SYSTEM(m_serviceProvider)->supportTextureFormat( PF_R8G8B8 ) == true )
+			{
+				videoCodecOptions.pixelFormat = PF_R8G8B8;
+			}
+			else
+			{
+				videoCodecOptions.pixelFormat = PF_X8R8G8B8;
+			}
         }
 
 		videoCodecOptions.duration = m_duration;
 		videoCodecOptions.fps = m_frameRate;
+		videoCodecOptions.alpha = m_alpha;
 
 		videoCodecOptions.mock = CONFIG_VALUE(m_serviceProvider, "Development", "NoVideo", false);
-        videoCodecOptions.noSeek = m_noSeek;		
+        videoCodecOptions.noSeek = m_noSeek;
 
         if( videoDecoder->setOptions( &videoCodecOptions ) == false )
         {

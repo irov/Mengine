@@ -383,7 +383,10 @@ namespace Menge
     {
 		if( m_threadAvaliable == false )
 		{
-			return nullptr;
+			 ThreadMutexInterfacePtr mutex_dummy = 
+				 m_poolThreadMutexDummy.createObjectT();
+
+			return mutex_dummy;
 		}
 
         ThreadMutexInterfacePtr mutex = THREAD_SYSTEM(m_serviceProvider)

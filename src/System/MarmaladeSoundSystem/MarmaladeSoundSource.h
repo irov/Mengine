@@ -45,17 +45,8 @@ namespace Menge
 		SoundBufferInterfacePtr getSoundBuffer() const override;
 
 	public:
-		static int32 s_AudioCallback( void * _sys, void * _user );
-		static int32 s_EndSampleCallback( void * _sys, void * _user );
-		static int32 s_StopAudioCallback( void * _sys, void * _user );
+		void complete();
 
-		int32 audioCallback( s3eSoundGenAudioInfo * _info );
-		void endSampleCallback( s3eSoundEndSampleInfo * _info );
-		void stopAudioCallback( s3eSoundEndSampleInfo * _info );
-
-	private:
-		void checkMemoryCache_();
-		
     private:
         ServiceProviderInterface * m_serviceProvider;
 		MarmaladeSoundSystem * m_soundSystem;
@@ -67,18 +58,18 @@ namespace Menge
 		bool m_pausing;
 		bool m_loop;
 
-		int m_soundChannel;
+		uint32_t m_soundId;
 				
-		int32 m_filterBufferPos;
+		//int32 m_filterBufferPos;
 		//int16 m_filterBufferL[MARMALADE_SOUND_NUM_COEFFICIENTS];
 		//int16 m_filterBufferR[MARMALADE_SOUND_NUM_COEFFICIENTS];
 		//double m_filterCoefficients[MARMALADE_SOUND_NUM_COEFFICIENTS];
 
-		volatile uint8 m_volume_s3e;
-		volatile bool m_stereo_s3e;
-		volatile uint32 m_carriage_s3e;
-		volatile uint32 m_W;
-		volatile uint32 m_L;
+		uint8 m_volume_s3e;
+		bool m_stereo_s3e;
+		uint32 m_carriage_s3e;
+		uint32 m_W;
+		uint32 m_L;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MarmaladeSoundSource> MarmaladeSoundSourcePtr;

@@ -138,6 +138,7 @@ namespace Menge
         m_dataInfo.size = size_pcmTotal * 2 * vorbisInfo->channels;	// 2 bytes per sample x channels num
         m_dataInfo.channels = (uint32_t)vorbisInfo->channels;
         m_dataInfo.frequency = (uint32_t)vorbisInfo->rate;
+		m_dataInfo.stereo = true;
 		m_dataInfo.bits = 2;
 
         double al_total = ov_time_total( &m_oggVorbisFile, -1 );

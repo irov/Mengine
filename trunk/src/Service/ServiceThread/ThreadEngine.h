@@ -3,6 +3,7 @@
 #	include "Interface/ThreadSystemInterface.h"
 
 #	include "ThreadQueue.h"
+#	include "ThreadMutexDummy.h"
 
 #	include "Factory/FactoryStore.h"
 
@@ -74,6 +75,9 @@ namespace Menge
 
 		typedef FactoryPoolStore<ThreadQueue, 4> TFactoryThreadQueue;
 		TFactoryThreadQueue m_factoryThreadQueue;
+
+		typedef FactoryPoolStore<ThreadMutexDummy, 16> TPoolThreadMutexDummy;
+		TPoolThreadMutexDummy m_poolThreadMutexDummy;	
 
 		struct ThreadDesc
 		{

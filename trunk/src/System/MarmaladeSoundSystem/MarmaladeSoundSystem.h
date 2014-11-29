@@ -12,6 +12,30 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	class MarmaladeSoundSource;
+	//////////////////////////////////////////////////////////////////////////
+	struct SoundMemoryDesc
+	{
+		MarmaladeSoundSource * source;
+
+		uint32 carriage;
+		uint32 size;
+		int16 * memory;
+		uint32 sampleStep;
+
+		uint8 volume;
+		int32 count;
+		bool play;
+		bool pause;
+		bool stop;
+		bool end;
+	};
+	//////////////////////////////////////////////////////////////////////////
+#	ifndef MENGINE_MARMALADE_SOUND_MAX_COUNT
+#	define MENGINE_MARMALADE_SOUND_MAX_COUNT 16
+#	endif
+	//////////////////////////////////////////////////////////////////////////
 	class MarmaladeSoundSystem
 		: public SoundSystemInterface
 	{
@@ -24,8 +48,14 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
+		uint32_t newSound( MarmaladeSoundSource * _source );
+		volatile SoundMemoryDesc * getSound( uint32_t _index );
+
+	public:
 		bool initialize() override;
         void finalize() override;
+
+		void update() override;
 		
 	public:
 		void onTurnSound( bool _turn ) override;
@@ -60,5 +90,9 @@ namespace Menge
 
 		bool m_isDeviceStereo;
 		int32 m_soundOutputFrequence;
+
+		volatile SoundMemoryDesc m_soundMemoryDesc[MENGINE_MARMALADE_SOUND_MAX_COUNT];
+
+		int m_soundChannel;
     };
 }	// namespace Menge

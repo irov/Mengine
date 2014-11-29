@@ -8,9 +8,16 @@
 #define MAX( a, b ) ((a > b) ? a : b)
 #define MIN( a, b ) ((a < b) ? a : b)
 
-#define COLOR_R 2
-#define COLOR_G 1
-#define COLOR_B 0
+#	ifdef MENGE_RENDER_TEXTURE_RGBA
+#		define COLOR_R 0
+#		define COLOR_G 1
+#		define COLOR_B 2
+#	else
+#		define COLOR_R 2
+#		define COLOR_G 1
+#		define COLOR_B 0
+#	endif
+
 #define COLOR_A 3
 
 #define CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
@@ -311,10 +318,6 @@ namespace Menge
 		//convenient pointers
 
 		//Calculate buffer offsets
-		unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
-		int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
-
-
 		//Check if upside down, if so, reverse buffers and offsets
 		//if ( m_yuvBuffer.y_height < 0 )
 		//{
@@ -330,15 +333,17 @@ namespace Menge
 		//	m_yuvBuffer.uv_stride = -m_yuvBuffer.uv_stride;
 		//}
 
-		//Cut width and height in half (uv field is only half y field)
-		m_yuvBuffer.y_height = m_yuvBuffer.y_height >> 1;
-		m_yuvBuffer.y_width = m_yuvBuffer.y_width >> 1;
-
 		if( m_options.alpha == false && m_options.pixelFormat == PF_X8R8G8B8 )
 		{
 			unsigned char * dstBitmap = _buffer;
 			unsigned char * dstBitmapOffset = _buffer + m_pitch;
 
+			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
+			int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
+
+			m_yuvBuffer.y_height = m_yuvBuffer.y_height >> 1;
+			m_yuvBuffer.y_width = m_yuvBuffer.y_width >> 1;
+			
 			unsigned char * ySrc = (unsigned char*)m_yuvBuffer.y;
 			unsigned char * uSrc = (unsigned char*)m_yuvBuffer.u;
 			unsigned char * vSrc = (unsigned char*)m_yuvBuffer.v;
@@ -427,6 +432,12 @@ namespace Menge
 			unsigned char * dstBitmap = _buffer;
 			unsigned char * dstBitmapOffset = _buffer + m_pitch;
 
+			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 3;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
+			int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
+
+			m_yuvBuffer.y_height = m_yuvBuffer.y_height >> 1;
+			m_yuvBuffer.y_width = m_yuvBuffer.y_width >> 1;
+
 			unsigned char * ySrc = (unsigned char*)m_yuvBuffer.y;
 			unsigned char * uSrc = (unsigned char*)m_yuvBuffer.u;
 			unsigned char * vSrc = (unsigned char*)m_yuvBuffer.v;
@@ -511,6 +522,12 @@ namespace Menge
 			unsigned char * dstBitmap = _buffer;
 			unsigned char * dstBitmapOffset = _buffer + m_pitch;
 
+			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
+			int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
+
+			m_yuvBuffer.y_height = m_yuvBuffer.y_height >> 1;
+			m_yuvBuffer.y_width = m_yuvBuffer.y_width >> 1;
+			
 			unsigned char * ySrc = (unsigned char*)m_yuvBuffer.y;
 			unsigned char * uSrc = (unsigned char*)m_yuvBuffer.u;
 			unsigned char * vSrc = (unsigned char*)m_yuvBuffer.v;

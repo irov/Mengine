@@ -23,7 +23,7 @@ namespace Menge
         bool _convert() override;
 
     public:
-        float getFrameRate() const;
+        uint32_t getFrameRate() const;
 
 	public:
 		const FilePath & getFilePath() const;

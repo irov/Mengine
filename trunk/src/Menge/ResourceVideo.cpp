@@ -28,7 +28,7 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    float ResourceVideo::getFrameRate() const
+    uint32_t ResourceVideo::getFrameRate() const
     {
         return m_frameRate;
     }

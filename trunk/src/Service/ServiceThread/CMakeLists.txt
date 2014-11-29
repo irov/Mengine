@@ -6,6 +6,7 @@ src
 	ThreadEngine.cpp
     ThreadQueue.h
     ThreadQueue.cpp    
+    ThreadMutexDummy.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

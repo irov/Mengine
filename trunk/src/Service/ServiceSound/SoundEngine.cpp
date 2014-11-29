@@ -537,6 +537,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::update( float _timing )
 	{
+		SOUND_SYSTEM(m_serviceProvider)
+			->update();
+
 		TVectorSoundListeners m_listeners;
 
 		for( TMapSoundSource::iterator 

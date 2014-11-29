@@ -23,6 +23,9 @@ namespace Menge
 	public:
 		bool initialize() override;
         void finalize() override;
+
+	public:
+		void update() override;
 		
 	public:
 		void onTurnSound( bool _turn ) override;

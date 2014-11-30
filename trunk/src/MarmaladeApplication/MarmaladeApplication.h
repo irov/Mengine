@@ -125,8 +125,16 @@ namespace Menge
 		bool initializePrefetcherService_();
 				
     private:
+		ServiceProviderInterface * m_serviceProvider;
+		ApplicationInterface * m_application;
+		
+		MarmaladeLayerInterface * m_marmaladeLayer;
+
         MarmaladeLogger * m_loggerConsole;
-        ApplicationInterface * m_application;
+		FileLogger * m_fileLog;
+
+		MarmaladeTimer * m_timer;
+		MarmaladeInput * m_input;
 
         bool	m_running;
         bool	m_active;
@@ -137,9 +145,7 @@ namespace Menge
 
         WString m_projectName;
         WString m_companyName;
-
-        ServiceProviderInterface * m_serviceProvider;
-
+		
         InputServiceInterface * m_inputService;
 		UnicodeSystemInterface * m_unicodeSystem;
         UnicodeServiceInterface * m_unicodeService;
@@ -164,16 +170,8 @@ namespace Menge
 		PrefetcherServiceInterface * m_prefetcherService;
 		NotificationServiceInterface * m_notificationService;
 		StringizeServiceInterface * m_stringizeService;
-
-
-        MarmaladeLayerInterface * m_marmaladeLayer; 
-
-        FileLogger * m_fileLog;
-
+         
         String m_commandLine;
-
-        MarmaladeTimer * m_timer;
-        MarmaladeInput * m_input;
 
 		typedef stdex::vector<PluginInterface *> TVectorPlugins;
 		TVectorPlugins m_plugins;	

@@ -1,5 +1,7 @@
 #   include "MarmaladeInput.h"
 
+#	include "Config/String.h"
+
 #	include <s3eSurface.h>
 
 namespace Menge
@@ -50,7 +52,6 @@ namespace Menge
 		}
         
         s3eKeyboardRegister( S3E_KEYBOARD_KEY_EVENT, (s3eCallback)&MarmaladeInput::s_keyboardKeyEvent, this );
-        s3eKeyboardRegister( S3E_KEYBOARD_CHAR_EVENT, (s3eCallback)&MarmaladeInput::s_keyboardCharEvent, this );
         
         this->fillKeys_();
 
@@ -71,6 +72,31 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeInput::finalize()
+	{
+		int32 pointer = s3ePointerGetInt( S3E_POINTER_AVAILABLE );
+
+		if( pointer == S3E_FALSE )
+		{
+			return;
+		}
+
+		int32 multiTouch = s3ePointerGetInt( S3E_POINTER_MULTI_TOUCH_AVAILABLE );
+
+		if( multiTouch == S3E_TRUE )
+		{
+			s3ePointerUnRegister( S3E_POINTER_TOUCH_EVENT, (s3eCallback)&MarmaladeInput::s_pointerTouchEvent );
+			s3ePointerUnRegister(S3E_POINTER_TOUCH_MOTION_EVENT, (s3eCallback)&MarmaladeInput::s_pointerTouchMotionEvent );
+		}
+		else
+		{
+			s3ePointerUnRegister(S3E_POINTER_BUTTON_EVENT, (s3eCallback)&MarmaladeInput::s_pointerButtonEvent );
+			s3ePointerUnRegister(S3E_POINTER_MOTION_EVENT, (s3eCallback)&MarmaladeInput::s_pointerMotionEvent );
+		}
+
+		s3eKeyboardUnRegister( S3E_KEYBOARD_KEY_EVENT, (s3eCallback)&MarmaladeInput::s_keyboardKeyEvent );
+	}
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeInput::update()
     {
@@ -143,7 +169,7 @@ namespace Menge
 		_point.y = y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void MarmaladeInput::s_keyboardKeyEvent( s3eKeyboardEvent * _event, MarmaladeInput * _input )
+    int32 MarmaladeInput::s_keyboardKeyEvent( s3eKeyboardEvent * _event, MarmaladeInput * _input )
     {
         int32 cursorX = s3ePointerGetTouchX( 0 );
         int32 cursorY = s3ePointerGetTouchY( 0 );
@@ -151,7 +177,7 @@ namespace Menge
 		mt::vec2f point;
 		_input->correctPoint_( cursorX, cursorY, point );
 
-        s3eWChar ch = 0;
+        s3eWChar ch = s3eKeyboardGetChar();
 
         KeyCode code = _input->getKeyCode_( _event->m_Key );
         bool isDown = _event->m_Pressed != 0;
@@ -160,29 +186,11 @@ namespace Menge
 
         INPUT_SERVICE(serviceProvider)
             ->onKeyEvent( point, code, ch, isDown );
+
+		return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeInput::s_keyboardCharEvent( s3eKeyboardCharEvent * _event, MarmaladeInput * _input )
-    {
-        int32 cursorX = s3ePointerGetTouchX( 0 );
-        int32 cursorY = s3ePointerGetTouchY( 0 );
-
-		mt::vec2f point;
-		_input->correctPoint_( cursorX, cursorY, point );
-
-        s3eWChar ch = _event->m_Char;
-        s3eKey code = s3eKeyFirst;
-
-        ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
-
-        INPUT_SERVICE(serviceProvider)
-            ->onKeyEvent( point, code, ch, true );
-
-        INPUT_SERVICE(serviceProvider)
-            ->onKeyEvent( point, code, ch, false );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeInput::s_pointerTouchEvent( s3ePointerTouchEvent * _event, MarmaladeInput * _input )
+    int32 MarmaladeInput::s_pointerTouchEvent( s3ePointerTouchEvent * _event, MarmaladeInput * _input )
     {		
         uint32 touchId = _event->m_TouchID;
 
@@ -193,23 +201,25 @@ namespace Menge
 
         if( _input->setTouch_( touchId, point, isDown ) == false )
         {
-            return;
+            return 0;
         }
         
         ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
 
         INPUT_SERVICE(serviceProvider)
             ->onMouseButtonEvent( touchId, point, 0, isDown );
+
+		return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeInput::s_pointerTouchMotionEvent( s3ePointerTouchMotionEvent * _event, MarmaladeInput * _input )
+    int32 MarmaladeInput::s_pointerTouchMotionEvent( s3ePointerTouchMotionEvent * _event, MarmaladeInput * _input )
     {
         uint32 touchId = _event->m_TouchID;
 
         TouchDesc desc;
         if( _input->getTouch_( touchId, desc ) == false )
         {
-            return;
+            return 0;
         }
 
         mt::vec2f point;
@@ -223,9 +233,11 @@ namespace Menge
 
         INPUT_SERVICE(serviceProvider)
             ->onMouseMove( touchId, point, diff.x, diff.y );
+
+		return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeInput::s_pointerButtonEvent( s3ePointerEvent * _event, MarmaladeInput * _input )
+    int32 MarmaladeInput::s_pointerButtonEvent( s3ePointerEvent * _event, MarmaladeInput * _input )
     {
         bool isDown = _event->m_Pressed != 0;
 
@@ -238,14 +250,16 @@ namespace Menge
 
         INPUT_SERVICE(serviceProvider)
             ->onMouseButtonEvent( 0, point, 0, isDown );
+
+		return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeInput::s_pointerMotionEvent( s3ePointerMotionEvent * _event, MarmaladeInput * _input )
+    int32 MarmaladeInput::s_pointerMotionEvent( s3ePointerMotionEvent * _event, MarmaladeInput * _input )
     {
         TouchDesc desc;
         if( _input->getTouch_( 0, desc ) == false )
         {
-            return;
+            return 0;
         }
 
 		mt::vec2f point;
@@ -259,6 +273,8 @@ namespace Menge
 
         INPUT_SERVICE(serviceProvider)
             ->onMouseMove( 0, point, diff.x, diff.y );
+
+		return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeInput::setTouch_( uint32 _touchId, const mt::vec2f & _point, bool _active )

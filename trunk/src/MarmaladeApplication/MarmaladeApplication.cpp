@@ -153,15 +153,39 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     MarmaladeApplication::MarmaladeApplication()
-        : m_running(true)
+        : m_serviceProvider(nullptr)
         , m_application(nullptr)
-        , m_logService(nullptr)
-        , m_fileService(nullptr)
-        , m_inputService(nullptr)
         , m_marmaladeLayer(nullptr)
+        , m_loggerConsole(nullptr)
+        , m_fileLog(nullptr)
+        , m_timer(nullptr)
+		, m_input(nullptr)
+		, m_running(false)
+		, m_active(false)
+		, m_inputService(nullptr)
+		, m_unicodeSystem(nullptr)
+		, m_unicodeService(nullptr)
+		, m_logService(nullptr)
+		, m_fileService(nullptr)
+		, m_codecService(nullptr)
+		, m_threadSystem(nullptr)
+		, m_threadService(nullptr)
+		, m_particleService(nullptr)
+		, m_renderSystem(nullptr)
+		, m_renderService(nullptr)
+		, m_renderTextureManager(nullptr)
+		, m_renderMaterialManager(nullptr)
+		, m_soundSystem(nullptr)
+		, m_soundService(nullptr)
+		, m_scriptService(nullptr)
+		, m_archiveService(nullptr)
 		, m_moduleService(nullptr)
 		, m_dataService(nullptr)
 		, m_cacheService(nullptr)
+		, m_configService(nullptr)
+		, m_prefetcherService(nullptr)
+		, m_notificationService(nullptr)
+		, m_stringizeService(nullptr)
 		, m_developmentMode(false)
     {
     }
@@ -1164,13 +1188,6 @@ namespace Menge
             return false;
         }
 
-		m_timer = new MarmaladeTimer;
-		m_timer->initialize();
-
-		m_input = new MarmaladeInput;
-		m_input->setServiceProvider( m_serviceProvider );
-		m_input->initialize();
-
         if( this->initializeStringizeService_() == false )
         {
             return false;
@@ -1238,11 +1255,15 @@ namespace Menge
                 return false;
             }
         }
+
+		s3eDeviceYield(0);
         
         if( this->initializeScriptEngine_() == false )
         {
             return false;
         }
+
+		s3eDeviceYield(0);
 
 		if( this->initializeModuleEngine_() == false )
 		{
@@ -1284,13 +1305,12 @@ namespace Menge
             return false;
         }
         
-        //const WString & projectTitle = m_application->getProjectTitle();
+		m_timer = new MarmaladeTimer;
+		m_timer->initialize();
 
-        //const char * versionInfo = Application::getVersionInfo();
-        //LOGGER_INFO(m_serviceProvider)( "SVN Revision: %s"
-        //	, versionInfo
-        //	);
-
+		m_input = new MarmaladeInput;
+		m_input->setServiceProvider( m_serviceProvider );
+		m_input->initialize();
 		
         {
             LOGGER_INFO(m_serviceProvider)( "initialize Image Codec..." );
@@ -1397,7 +1417,8 @@ namespace Menge
 
 		m_application->setDefaultWindowDescription( defaultWindowResolution, defaultWindowBits, defaultWindowFullscreen, defaultWindowVSync );
 
-
+		s3eDeviceYield(0);
+		
         if( m_application->createGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack), ConstString::none(), resourceIniPath ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Application create game failed"
@@ -1416,6 +1437,8 @@ namespace Menge
         LOGGER_INFO(m_serviceProvider)( "Initializing Game data... %s"
 			, accountPath.c_str()
 			);
+
+		s3eDeviceYield(0);
 				
         if( m_application->initializeGame( accountPath, scriptInit ) == false )
         {
@@ -1432,7 +1455,7 @@ namespace Menge
             return false;
         }
 
-#	ifndef _DEBUG
+#	ifndef _DEBUG		
 		s3ePointerSetInt( S3E_POINTER_HIDE_CURSOR, 1 );
 #	endif
 
@@ -1544,6 +1567,7 @@ namespace Menge
 
 		if( m_input != nullptr )
 		{
+			m_input->finalize();
 			delete m_input;
 			m_input = nullptr;
 		}

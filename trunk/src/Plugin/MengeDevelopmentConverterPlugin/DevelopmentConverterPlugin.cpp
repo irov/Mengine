@@ -50,18 +50,18 @@ namespace Menge
 	{
         m_serviceProvider = _serviceProvider;        
        
-		m_converters.push_back( new ConverterFactory<HotspotImageConverterPNGToHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "png2hit")) );
-		m_converters.push_back( new ConverterFactory<SoundConverterFFMPEGToOGG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegToOggSound")) );
-		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToWEBM>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegToWebM")) );
-		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToOGV>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegToOGV")) );
-		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToOGVA>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegToOGVA")) );
-		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToGVF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegToGVF")) );		
-		m_converters.push_back( new ConverterFactory<MovieKeyConverterXMLToAEK>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "xmlToAekMovie")) );
-		m_converters.push_back( new ConverterFactory<ModelConverterMDLToMDZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "mdlToMdzModel")) );
-		m_converters.push_back( new ConverterFactory<ParticleConverterPTCToPTZ>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ptc2ptz")) );
-		m_converters.push_back( new ConverterFactory<ImageConverterPVRToHTF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pvr2htf")) );
-		m_converters.push_back( new ConverterFactory<ImageConverterDDSToHTF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "dds2htf")) );		
-		m_converters.push_back( new ConverterFactory<ImageConverterPNGToACF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "png2acf")) );
+		m_converters.push_back( new ConverterFactory<HotspotImageConverterPNGToHIT>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "png2hit")) );
+		m_converters.push_back( new ConverterFactory<SoundConverterFFMPEGToOGG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToOggSound")) );
+		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToWEBM>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToWebM")) );
+		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToOGV>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToOGV")) );
+		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToOGVA>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToOGVA")) );
+		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToGVF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToGVF")) );		
+		m_converters.push_back( new ConverterFactory<MovieKeyConverterXMLToAEK>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "xmlToAekMovie")) );
+		m_converters.push_back( new ConverterFactory<ModelConverterMDLToMDZ>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "mdlToMdzModel")) );
+		m_converters.push_back( new ConverterFactory<ParticleConverterPTCToPTZ>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ptc2ptz")) );
+		m_converters.push_back( new ConverterFactory<ImageConverterPVRToHTF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "pvr2htf")) );
+		m_converters.push_back( new ConverterFactory<ImageConverterDDSToHTF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "dds2htf")) );		
+		m_converters.push_back( new ConverterFactory<ImageConverterPNGToACF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "png2acf")) );
 		
 		for( TVectorHotspotImageConverters::iterator
 			it = m_converters.begin(),

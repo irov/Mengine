@@ -3,15 +3,17 @@
 #	include "Config/String.h"
 
 #	include <s3eSurface.h>
+#	include <s3eDevice.h>
 
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     MarmaladeInput::MarmaladeInput()
-        : m_serviceProvider(nullptr)
-        , m_showKeyboard(false)
+        : m_serviceProvider(nullptr)        
 		, m_width(1024.f)
 		, m_height(768.f)
+		, m_showKeyboard(false)
+		, m_alwaysKeyboard(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -37,7 +39,7 @@ namespace Menge
         {
             return false;
         }
-
+		
         int32 multiTouch = s3ePointerGetInt( S3E_POINTER_MULTI_TOUCH_AVAILABLE );
 
 		if( multiTouch == S3E_TRUE )
@@ -66,9 +68,21 @@ namespace Menge
 
 		this->updateSurfaceResolution();
 
-#	ifdef __MACH__
-		s3eKeyboardSetInt( S3E_KEYBOARD_GET_CHAR, 1 );
-#	endif
+		int32 deviceId = s3eDeviceGetInt( S3E_DEVICE_OS );
+
+		if( deviceId == S3E_OS_ID_WINDOWS || deviceId == S3E_OS_ID_OSX || deviceId == S3E_OS_ID_LINUX  )
+		{
+			m_alwaysKeyboard = true;
+		}
+		else
+		{
+			m_alwaysKeyboard = false;
+		}
+
+		if( m_alwaysKeyboard == true )
+		{
+			s3eKeyboardSetInt( S3E_KEYBOARD_GET_CHAR, 1 );
+		}
 
         return true;
     }
@@ -100,7 +114,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeInput::update()
     {
-        if( m_showKeyboard == true )
+        if( m_alwaysKeyboard == false && m_showKeyboard == true )
         {
             s3eKeyboardSetInt(S3E_KEYBOARD_GET_CHAR, 1);
 
@@ -134,9 +148,9 @@ namespace Menge
     {
         m_showKeyboard = _value;
 
-        if( m_showKeyboard == false )
+        if( m_alwaysKeyboard == false && m_showKeyboard == false )
         {
-            s3eKeyboardSetInt(S3E_KEYBOARD_GET_CHAR, 0);
+            s3eKeyboardSetInt( S3E_KEYBOARD_GET_CHAR, 0 );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -177,7 +191,14 @@ namespace Menge
 		mt::vec2f point;
 		_input->correctPoint_( cursorX, cursorY, point );
 
-        s3eWChar ch = s3eKeyboardGetChar();
+		s3eWChar ch = 0;
+
+		int newCharState = s3eKeyboardGetInt( S3E_KEYBOARD_GET_CHAR );
+
+		if( newCharState == 1 )
+		{
+			ch = s3eKeyboardGetChar();
+		}
 
         KeyCode code = _input->getKeyCode_( _event->m_Key );
         bool isDown = _event->m_Pressed != 0;
@@ -309,15 +330,19 @@ namespace Menge
     {
         for( uint32_t i = 0; i != 255; ++i )
         {
-            m_keys[i] = (KeyCode)255;
+            m_keys[i] = KC_UNASSIGNED;
         }
 
         m_keys[s3eKeyBack] = Menge::KC_ESCAPE;
         m_keys[s3eKeyMenu] = Menge::KC_MENU;
 
         m_keys[s3eKeyTab] = Menge::KC_TAB;
-        m_keys[s3eKeyShift] = Menge::KC_SHIFT;
-        m_keys[s3eKeyControl] = Menge::KC_CONTROL;
+        m_keys[s3eKeyLeftShift] = Menge::KC_LSHIFT;
+		m_keys[s3eKeyRightShift] = Menge::KC_RSHIFT;
+        m_keys[s3eKeyLeftControl] = Menge::KC_LCONTROL;
+		m_keys[s3eKeyRightControl] = Menge::KC_RCONTROL;
+		m_keys[s3eKeyLeftAlt] = Menge::KC_LMENU;
+		m_keys[s3eKeyRightAlt] = Menge::KC_RMENU;
         m_keys[s3eKeyPause] = Menge::KC_PAUSE;
         m_keys[s3eKeyCapsLock] = Menge::KC_CAPITAL;
         m_keys[s3eKeyEsc] = Menge::KC_ESCAPE;
@@ -399,6 +424,11 @@ namespace Menge
         m_keys[s3eKeyF11] = Menge::KC_F11;
         m_keys[s3eKeyF12] = Menge::KC_F12;
 
+		m_keys[s3eKeyLeftBracket] = Menge::KC_OEM_4;
+		m_keys[s3eKeyRightBracket] = Menge::KC_OEM_6;
+		m_keys[s3eKeyEquals] = Menge::KC_OEM_PLUS;
+		m_keys[s3eKeyMinus] = Menge::KC_OEM_MINUS;
+
         m_keys[s3eKeyNumLock] = Menge::KC_NUMLOCK;
 
         for( uint32_t i = 0; i != 255; ++i )
@@ -422,11 +452,6 @@ namespace Menge
         }
 
         KeyCode code = m_keys[_key];
-
-        if( code >= 0xFF )
-        {
-            return KC_UNASSIGNED;
-        }
         
         return code; 
     }

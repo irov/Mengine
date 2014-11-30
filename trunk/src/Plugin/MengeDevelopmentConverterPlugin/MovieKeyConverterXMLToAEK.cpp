@@ -44,7 +44,7 @@ namespace Menge
 		m_convertExt = ".aek";
 
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
+			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -73,7 +73,7 @@ namespace Menge
 	bool MovieKeyConverterXMLToAEK::validateVersion( const InputStreamInterfacePtr & _stream ) const
 	{
 		MovieFramePackInterfacePtr framePack = DATA_SERVICE(m_serviceProvider)
-			->dataflowT<MovieFramePackInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "aekMovie"), _stream );
+			->dataflowT<MovieFramePackInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "aekMovie"), _stream );
 
 		if( framePack == nullptr )
 		{

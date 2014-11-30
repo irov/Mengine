@@ -34,7 +34,7 @@ namespace Menge
 	bool DataflowMDL::initialize()
 	{
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
+			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
 
 		if( m_archivator == nullptr )
 		{

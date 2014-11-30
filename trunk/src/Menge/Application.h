@@ -99,9 +99,6 @@ namespace Menge
 	public:
 		bool isFocus() const override;
 
-	public:
-		const ConstString & getPlatformName() const override;
-
 	protected:
 		bool initializeNodeManager_();
 		bool initializeLoaderEngine_();
@@ -278,7 +275,6 @@ namespace Menge
 		WString m_companyName;
 		WString m_projectName;
 
-		ConstString m_platformName;
 		ConstString m_projectCodename;
 		uint32_t m_projectVersion;
 

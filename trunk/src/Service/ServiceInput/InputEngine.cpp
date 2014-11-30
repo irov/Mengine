@@ -136,6 +136,51 @@ namespace Menge
         m_mousePositionEventParams.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool InputEngine::isAltDown() const
+	{
+		if( this->isKeyDown( KC_LMENU ) == true )
+		{
+			return true;
+		}
+
+		if( this->isKeyDown( KC_RMENU ) == true )
+		{
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool InputEngine::isShiftDown() const
+	{
+		if( this->isKeyDown( KC_LSHIFT ) == true )
+		{
+			return true;
+		}
+
+		if( this->isKeyDown( KC_RSHIFT ) == true )
+		{
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool InputEngine::isCtrlDown() const
+	{
+		if( this->isKeyDown( KC_LCONTROL ) == true )
+		{
+			return true;
+		}
+
+		if( this->isKeyDown( KC_RCONTROL ) == true )
+		{
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isKeyDown( uint32_t _keyCode ) const
 	{
 		bool isDown = m_keyBuffer[_keyCode];

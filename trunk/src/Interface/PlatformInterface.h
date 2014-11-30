@@ -45,6 +45,9 @@ namespace Menge
     {
         SERVICE_DECLARE("PlatformService");
 
+	public:
+		virtual const ConstString & getPlatformName() const = 0;
+
     public:
         virtual void stop() = 0;
 

@@ -100,7 +100,7 @@ namespace Menge
 	bool XmlToBinDecoder::initialize()
 	{
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
+			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -133,7 +133,7 @@ namespace Menge
             );
 
         InputStreamInterfacePtr protocol_stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), m_options.pathProtocol, false );
+            ->openInputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), m_options.pathProtocol, false );
 
 		//FILE * file_protocol = _wfopen( unicode_pathProtocol.c_str(), L"rb" );
 
@@ -167,7 +167,7 @@ namespace Menge
         }
         	
         InputStreamInterfacePtr xml_stream = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( CONST_STRING_LOCAL(m_serviceProvider, "dev"), m_options.pathXml, false );
+            ->openInputFile( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dev"), m_options.pathXml, false );
 
         if( xml_stream == nullptr )
         {
@@ -240,7 +240,7 @@ namespace Menge
 			->compressBuffer( m_archivator, &bin_buf[0], bin_size );
 
         OutputStreamInterfacePtr bin_stream = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( CONST_STRING_LOCAL(m_serviceProvider, "dev"), m_options.pathBin );
+            ->openOutputFile( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dev"), m_options.pathBin );
 
         if( bin_stream == nullptr )
         {

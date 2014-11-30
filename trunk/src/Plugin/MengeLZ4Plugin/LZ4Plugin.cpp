@@ -37,7 +37,7 @@ namespace Menge
         m_serviceProvider = _provider;
 	
 		ARCHIVE_SERVICE(m_serviceProvider)
-			->registerArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4"), new FactorableUnique<ArchivatorLZ4>() );
+			->registerArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4"), new FactorableUnique<ArchivatorLZ4>() );
 
         return true;
 	}
@@ -45,7 +45,7 @@ namespace Menge
 	void LZ4Plugin::finalize()
 	{
 		ARCHIVE_SERVICE(m_serviceProvider)
-			->unregisterArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
+			->unregisterArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LZ4Plugin::destroy()

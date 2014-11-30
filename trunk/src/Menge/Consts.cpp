@@ -26,7 +26,7 @@ namespace Menge
     bool Consts::initialize()
     {
 #	define INIT_CONST( Const ) \
-		c_##Const = CONST_STRING_LOCAL(m_serviceProvider, #Const )
+		c_##Const = STRINGIZE_STRING_LOCAL(m_serviceProvider, #Const )
 
         INIT_CONST( dir );
         INIT_CONST( pak );

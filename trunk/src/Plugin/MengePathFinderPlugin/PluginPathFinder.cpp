@@ -42,18 +42,18 @@ namespace Menge
 	{
 		m_serviceProvider = _serviceProvider;
 
-		m_factoryModulePathFinder = new ModuleFactory<ModulePathFinder>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ModulePathFinder"));
-		m_factoryModuleAreaOfInterest = new ModuleFactory<ModuleAreaOfInterest>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ModuleAreaOfInterest"));
-		m_factoryModuleCollisionGround = new ModuleFactory<ModuleCollisionGround>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround"));
+		m_factoryModulePathFinder = new ModuleFactory<ModulePathFinder>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModulePathFinder"));
+		m_factoryModuleAreaOfInterest = new ModuleFactory<ModuleAreaOfInterest>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleAreaOfInterest"));
+		m_factoryModuleCollisionGround = new ModuleFactory<ModuleCollisionGround>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround"));
 		
 		MODULE_SERVICE(m_serviceProvider)
-			->registerModule( CONST_STRING_LOCAL(m_serviceProvider, "ModulePathFinder"), m_factoryModulePathFinder );
+			->registerModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModulePathFinder"), m_factoryModulePathFinder );
 
 		MODULE_SERVICE(m_serviceProvider)
-			->registerModule( CONST_STRING_LOCAL(m_serviceProvider, "ModuleAreaOfInterest"), m_factoryModuleAreaOfInterest );
+			->registerModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleAreaOfInterest"), m_factoryModuleAreaOfInterest );
 		
 		MODULE_SERVICE(m_serviceProvider)
-			->registerModule( CONST_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround"), m_factoryModuleCollisionGround );
+			->registerModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround"), m_factoryModuleCollisionGround );
 
 		return true;
 	}
@@ -61,13 +61,13 @@ namespace Menge
 	void PluginPathFinder::finalize()
 	{
 		MODULE_SERVICE(m_serviceProvider)
-			->unregisterModule( CONST_STRING_LOCAL(m_serviceProvider, "ModulePathFinder") );
+			->unregisterModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModulePathFinder") );
 
 		MODULE_SERVICE(m_serviceProvider)
-			->unregisterModule( CONST_STRING_LOCAL(m_serviceProvider, "ModuleAreaOfInterest") );
+			->unregisterModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleAreaOfInterest") );
 
 		MODULE_SERVICE(m_serviceProvider)
-			->unregisterModule( CONST_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround") );
+			->unregisterModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround") );
 
 		m_factoryModulePathFinder = nullptr;
 		m_factoryModuleAreaOfInterest = nullptr;

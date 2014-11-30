@@ -238,7 +238,7 @@ namespace Menge
 			Helper::unicodeToUtf8( m_serviceProvider, INI_Path, utf8_INI_Path );
 
 			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-				->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_INI_Path), false );
+				->openInputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_INI_Path), false );
 			
 			size_t size = stream->size();
 
@@ -359,7 +359,7 @@ namespace Menge
 				Helper::unicodeToUtf8( m_serviceProvider, PNG_Path, utf8_PNG_Path );
 
 				InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-					->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_Path), false );
+					->openInputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_Path), false );
 
 				if( stream == nullptr )
 				{
@@ -371,7 +371,7 @@ namespace Menge
 				}
 
 				ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-					->createDecoderT<ImageDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "pngImage") );
+					->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage") );
 
 				if( imageDecoder == nullptr )
 				{
@@ -421,7 +421,7 @@ namespace Menge
 					Helper::unicodeToUtf8( m_serviceProvider, PNG_RGB_Path, utf8_PNG_RGB_Path );
 
 					OutputStreamInterfacePtr streamRGB = FILE_SERVICE(m_serviceProvider)
-						->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_RGB_Path) );
+						->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_RGB_Path) );
 
 					if( streamRGB == nullptr )
 					{
@@ -433,7 +433,7 @@ namespace Menge
 					}
 
 					ImageEncoderInterfacePtr imageEncoderRGB = CODEC_SERVICE(m_serviceProvider)
-						->createEncoderT<ImageEncoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "pngImage") );
+						->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage") );
 
 					if( imageEncoderRGB == nullptr )
 					{
@@ -504,7 +504,7 @@ namespace Menge
 					Helper::unicodeToUtf8( m_serviceProvider, PNG_Alpha_Path, utf8_PNG_Alpha_Path );
 
 					OutputStreamInterfacePtr streamAlpha = FILE_SERVICE(m_serviceProvider)
-						->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_Alpha_Path) );
+						->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_Alpha_Path) );
 
 					if( streamAlpha == nullptr )
 					{
@@ -516,7 +516,7 @@ namespace Menge
 					}
 
 					ImageEncoderInterfacePtr imageEncoderAlpha = CODEC_SERVICE(m_serviceProvider)
-						->createEncoderT<ImageEncoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "pngImage") );
+						->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage") );
 
 					if( imageEncoderAlpha == nullptr )
 					{
@@ -602,7 +602,7 @@ namespace Menge
 				Helper::unicodeToUtf8(m_serviceProvider, PNGS_Path, utf8_pngs_path);
 
 				pngs_stream[process] = FILE_SERVICE(m_serviceProvider)
-					->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_pngs_path) );
+					->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_pngs_path) );
 			}
 
 			uint32_t process_index = 0;
@@ -704,10 +704,10 @@ namespace Menge
 				Helper::unicodeToUtf8( m_serviceProvider, PNG_Path, utf8_PNG_Path );
 
 				InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-					->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_Path), false );
+					->openInputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PNG_Path), false );
 
 				ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-					->createDecoderT<ImageDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "crnImage") );
+					->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "crnImage") );
 
 				if( imageDecoder == nullptr )
 				{
@@ -809,10 +809,10 @@ namespace Menge
 				Helper::unicodeToUtf8( m_serviceProvider, PVR_Path, utf8_PVR_Path );
 
 				InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-					->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PVR_Path), false );
+					->openInputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_PVR_Path), false );
 
 				ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-					->createDecoderT<ImageDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "pvrImage") );
+					->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "pvrImage") );
 
 				if( imageDecoder == nullptr )
 				{
@@ -894,7 +894,7 @@ namespace Menge
 				Helper::unicodeToUtf8( m_serviceProvider, DDS_Path, utf8_DDS_Path );
 
 				InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-					->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_DDS_Path), false );
+					->openInputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, utf8_DDS_Path), false );
 
 				uint32_t size = stream->size();
 
@@ -920,7 +920,7 @@ namespace Menge
 		}
 
 		OutputStreamInterfacePtr gvf_stream = FILE_SERVICE(m_serviceProvider)
-			->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, full_output) );
+			->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev"), Helper::stringizeString(m_serviceProvider, full_output) );
 
 		OutputStreamWriter gvf_wr(gvf_stream);
 		

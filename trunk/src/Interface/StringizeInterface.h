@@ -67,7 +67,7 @@ namespace Menge
 		}
 	}
 
-#	define CONST_STRING_LOCAL( serviceProvider, str )\
+#	define STRINGIZE_STRING_LOCAL( serviceProvider, str )\
 	Helper::stringizeStringSize( serviceProvider, str, (sizeof(str) - 1) )
 }
 

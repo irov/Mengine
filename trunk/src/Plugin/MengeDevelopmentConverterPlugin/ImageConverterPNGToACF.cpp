@@ -33,7 +33,7 @@ namespace Menge
         m_convertExt = ".acf";
 
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
+			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -61,7 +61,7 @@ namespace Menge
         ConstString full_output = concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
 		        
         InputStreamInterfacePtr stream_intput = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false );
+            ->openInputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false );
 
 		if( stream_intput == nullptr )
 		{
@@ -73,7 +73,7 @@ namespace Menge
 		}
 
 		ImageDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-			->createDecoderT<ImageDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "pngImage") );
+			->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage") );
 
 		if( decoder == nullptr )
 		{
@@ -122,7 +122,7 @@ namespace Menge
 		}
 
         OutputStreamInterfacePtr stream_output = FILE_SERVICE(m_serviceProvider)
-            ->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
+            ->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
 
 		if( stream_output == nullptr )
 		{
@@ -135,7 +135,7 @@ namespace Menge
 		}
 
 		ImageEncoderInterfacePtr encoder = CODEC_SERVICE(m_serviceProvider)
-			->createEncoderT<ImageEncoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "acfImage") );
+			->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "acfImage") );
 
 		if( encoder->initialize( stream_output ) == false )
 		{

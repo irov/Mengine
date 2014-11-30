@@ -59,7 +59,7 @@ namespace Menge
 		m_amplifier = amplifier;
 
 		PROTOTYPE_SERVICE(m_serviceProvider)
-			->addPrototype( CONST_STRING_LOCAL(m_serviceProvider, "Resource"), CONST_STRING_LOCAL(m_serviceProvider, "ResourcePlaylist"), new ResourcePrototypeGenerator<ResourcePlaylist, 8>(m_serviceProvider) );
+			->addPrototype( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Resource"), STRINGIZE_STRING_LOCAL(m_serviceProvider, "ResourcePlaylist"), new ResourcePrototypeGenerator<ResourcePlaylist, 8>(m_serviceProvider) );
 
         return true;
 	}

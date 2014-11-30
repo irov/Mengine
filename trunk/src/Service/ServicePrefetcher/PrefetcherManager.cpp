@@ -33,11 +33,11 @@ namespace Menge
 		for( uint32_t i = 0; i != MENGINE_PREFETCHER_THREAD_COUNT; ++i )
 		{
 			THREAD_SERVICE(m_serviceProvider)
-				->createThread( CONST_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), -1 );
+				->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), -1 );
 		}
 
 		m_threadQueue = THREAD_SERVICE(m_serviceProvider)
-			->runTaskQueue( CONST_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
+			->runTaskQueue( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
 
 		return true;
 	}

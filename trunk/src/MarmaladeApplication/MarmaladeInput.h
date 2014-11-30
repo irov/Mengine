@@ -68,11 +68,12 @@ namespace Menge
         
         KeyCode m_keys[255];
         s3eKey m_codes[255];
-
-        bool m_showKeyboard;
-
+		
 		float m_width;
 		float m_height;
+
+		bool m_showKeyboard;
+		bool m_alwaysKeyboard;
 
     protected:
         bool setTouch_( uint32 _touchId, const mt::vec2f & _point, bool _active );

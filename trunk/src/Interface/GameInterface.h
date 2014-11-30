@@ -23,7 +23,6 @@ namespace Menge
 
     public:
         virtual void setDevelopmentMode( bool _developmentMode ) = 0;
-        virtual void setPlatformName( const ConstString & _platformName ) = 0;
 
     public:
         virtual bool beginUpdate() = 0;

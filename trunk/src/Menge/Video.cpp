@@ -580,11 +580,11 @@ namespace Menge
 
         float frameTiming = dataInfo->getFrameTiming();
 
-        float frameRate = m_resourceVideo->getFrameRate();
+        uint32_t frameRate = m_resourceVideo->getFrameRate();
 
-        if( frameRate > 0.f )
+        if( frameRate > 0 )
         {
-            frameTiming = 1000.f / frameRate;
+            frameTiming = 1000.f / float(frameRate);
         }
 
 		float seek_timing = _timing;

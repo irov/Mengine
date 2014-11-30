@@ -398,7 +398,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
 	{
-		FilePath applicationPath = CONST_STRING_LOCAL( m_serviceProvider, "application.ini" );
+		FilePath applicationPath = STRINGIZE_STRING_LOCAL( m_serviceProvider, "application.ini" );
 
 		InputStreamInterfacePtr applicationInputStream = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( ConstString::none(), applicationPath, false );
@@ -445,6 +445,11 @@ namespace Menge
 		ConfigServiceInterface * configService;
 
 		if( SERVICE_CREATE( ConfigService, &configService ) == false )
+		{
+			return false;
+		}
+
+		if( configService->initialize() == false )
 		{
 			return false;
 		}
@@ -538,7 +543,7 @@ namespace Menge
 		ConstString currentPath = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
 
 		// mount root		
-		if( m_fileService->mountFileGroup( ConstString::none(), currentPath, CONST_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
+		if( m_fileService->mountFileGroup( ConstString::none(), currentPath, STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount application directory %ls"
 				, m_currentPath.c_str()
@@ -549,7 +554,7 @@ namespace Menge
 
 #	ifndef MENGE_MASTER_RELEASE
 		// mount root		
-		if( m_fileService->mountFileGroup( CONST_STRING_LOCAL(m_serviceProvider, "dev"), ConstString::none(), CONST_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
+		if( m_fileService->mountFileGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dev"), ConstString::none(), STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount dev directory %ls"
 				, m_currentPath.c_str()
@@ -635,7 +640,7 @@ namespace Menge
 		ConstString userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
 
 		// mount user directory
-		if( m_fileService->mountFileGroup( CONST_STRING_LOCAL(m_serviceProvider, "user"), userPath, CONST_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
+		if( m_fileService->mountFileGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user"), userPath, STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed to mount user directory %ls"
 				, m_userPath.c_str()
@@ -644,9 +649,9 @@ namespace Menge
 			return false;
 		}
 
-		if( m_fileService->existDirectory( CONST_STRING_LOCAL(m_serviceProvider, "user"), ConstString::none() ) == false )
+		if( m_fileService->existDirectory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user"), ConstString::none() ) == false )
 		{
-			m_fileService->createDirectory( CONST_STRING_LOCAL(m_serviceProvider, "user"), ConstString::none() );
+			m_fileService->createDirectory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user"), ConstString::none() );
 		}
 
 		return true;
@@ -697,7 +702,7 @@ namespace Menge
 		FilePath logFilename = Helper::stringizeString( m_serviceProvider, utf8_logFilename );
 
 		OutputStreamInterfacePtr fileLogInterface = 
-			m_fileService->openOutputFile( CONST_STRING_LOCAL(m_serviceProvider, "user"), logFilename );
+			m_fileService->openOutputFile( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user"), logFilename );
 
 		if( fileLogInterface != nullptr )
 		{
@@ -1044,7 +1049,7 @@ namespace Menge
 		}
 
 		RenderMaterialInterfacePtr debugMaterial = m_renderMaterialManager
-			->getMaterial( CONST_STRING_LOCAL(m_serviceProvider, "Debug"), false, false, PT_LINELIST, 0, nullptr );
+			->getMaterial( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Debug"), false, false, PT_LINELIST, 0, nullptr );
 
 		m_renderService->setDebugMaterial( debugMaterial );
 
@@ -1489,6 +1494,8 @@ namespace Menge
 			return false;
 		}
 
+		m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "WIN");
+
 		if( this->initializeLogEngine_() == false )
 		{
 			return false;
@@ -1775,7 +1782,7 @@ namespace Menge
 		}
 
 		LOGGER_INFO(m_serviceProvider)( "Application Initialize... %s"
-			, m_application->getPlatformName().c_str()
+			, m_platformName.c_str()
 			);
 
 		const ConstString & projectTitle = m_application->getProjectTitle();
@@ -1852,7 +1859,7 @@ namespace Menge
 		m_cursors[L"IDC_HAND"] = LoadCursor( NULL, IDC_HAND );
 		m_cursors[L"IDC_HELP"] = LoadCursor( NULL, IDC_HELP );
 
-		FilePath accountPath = CONST_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
+		FilePath accountPath = STRINGIZE_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
 		
 		LOGGER_INFO(m_serviceProvider)( "Initializing Game data... %s"
 			, accountPath.c_str()
@@ -2368,6 +2375,11 @@ namespace Menge
 	void WinApplication::stop()
 	{
 		m_running = false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & WinApplication::getPlatformName() const
+	{
+		return m_platformName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static LRESULT CALLBACK s_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )

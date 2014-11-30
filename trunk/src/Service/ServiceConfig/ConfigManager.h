@@ -17,6 +17,10 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
+		bool initialize() override;
+		void finalize() override;
+
+	public:
 		bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) override;
 
 	public:
@@ -43,7 +47,9 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		IniUtil::IniStore m_ini;
+		ConstString m_platformName;
+
+		IniUtil::IniStore m_ini;		
 	};
 }
 

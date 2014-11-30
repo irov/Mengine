@@ -188,11 +188,6 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Application::getPlatformName() const
-	{
-		return m_platformName;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
 		class ExecuteInitialize
@@ -284,7 +279,6 @@ namespace Menge
 		m_companyName = CONFIG_VALUE(m_serviceProvider, "Project", "Company", L"NONAME");
 		m_projectName = CONFIG_VALUE(m_serviceProvider, "Project", "Name", L"UNKNOWN");
 
-		m_platformName = CONFIG_VALUE(m_serviceProvider, "Project", "Platform", CONST_STRING_LOCAL(m_serviceProvider, "WIN"));
 		m_projectCodename = CONFIG_VALUE(m_serviceProvider, "Project", "Codename", ConstString::none());
 		m_projectVersion = CONFIG_VALUE(m_serviceProvider, "Project", "Version", 0U);
 
@@ -340,7 +334,7 @@ namespace Menge
 		TVectorString resourcePacksSettings;
 		IniUtil::getIniValue( ini, "GAME_RESOURCES", "ResourcePack", resourcePacksSettings, m_serviceProvider );
 
-		ConstString c_dir = CONST_STRING_LOCAL(m_serviceProvider, "dir");
+		ConstString c_dir = STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir");
 
 		for( TVectorString::iterator
 			it = resourcePacksSettings.begin(),
@@ -443,7 +437,7 @@ namespace Menge
 
 #	define NODE_FACTORY( serviceProvider, Type )\
         PROTOTYPE_SERVICE(serviceProvider)\
-            ->addPrototype( CONST_STRING(serviceProvider, Node), CONST_STRING_LOCAL( serviceProvider, #Type), new NodePrototypeGenerator<Type, 128>(serviceProvider) );
+            ->addPrototype( CONST_STRING(serviceProvider, Node), STRINGIZE_STRING_LOCAL( serviceProvider, #Type), new NodePrototypeGenerator<Type, 128>(serviceProvider) );
 
 		LOGGER_WARNING(m_serviceProvider)("Creating Object Factory..." );
 
@@ -518,7 +512,7 @@ namespace Menge
 
         SERVICE_REGISTRY( m_serviceProvider, loaderService );
 
-		if( loaderService->initialize( CONST_STRING_LOCAL(m_serviceProvider, "protocol.xml") ) == false )
+		if( loaderService->initialize( STRINGIZE_STRING_LOCAL(m_serviceProvider, "protocol.xml") ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application::initializeLoaderEngine_ invalid initialize Loader Engine"
 				);
@@ -692,7 +686,7 @@ namespace Menge
 
 
 #	define RESOURCE_FACTORY( serviceProvider, Type ) \
-    PROTOTYPE_SERVICE(serviceProvider)->addPrototype( CONST_STRING(serviceProvider, Resource), CONST_STRING_LOCAL(serviceProvider, #Type), new ResourcePrototypeGenerator<Type, 128>(m_serviceProvider) )
+    PROTOTYPE_SERVICE(serviceProvider)->addPrototype( CONST_STRING(serviceProvider, Resource), STRINGIZE_STRING_LOCAL(serviceProvider, #Type), new ResourcePrototypeGenerator<Type, 128>(m_serviceProvider) )
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceAnimation );
 
@@ -773,7 +767,6 @@ namespace Menge
         }
 
         m_game->setDevelopmentMode( m_developmentMode );
-        m_game->setPlatformName( m_platformName );
         
 		LOGGER_INFO(m_serviceProvider)( "Application:createGame load game resource"
 			);
@@ -1111,7 +1104,7 @@ namespace Menge
 					->toggleDebugText();
 			}
 
-			if( _key == KC_P && _isDown == true && INPUT_SERVICE(m_serviceProvider)->isKeyDown( KC_CONTROL ) == true )
+			if( _key == KC_P && _isDown == true && INPUT_SERVICE(m_serviceProvider)->isCtrlDown() == true )
 			{
 				static bool s_particle_enable = true;
 
@@ -2013,7 +2006,7 @@ namespace Menge
 		}
 
         const TextEntryInterface * entry;
-		if( TEXT_SERVICE(m_serviceProvider)->existText( CONST_STRING_LOCAL(m_serviceProvider, "APPLICATION_TITLE"), &entry ) == false )
+		if( TEXT_SERVICE(m_serviceProvider)->existText( STRINGIZE_STRING_LOCAL(m_serviceProvider, "APPLICATION_TITLE"), &entry ) == false )
 		{
             return Utils::emptyConstString();
 		}

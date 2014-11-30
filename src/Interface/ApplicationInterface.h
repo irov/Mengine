@@ -144,8 +144,6 @@ namespace Menge
 
         virtual unsigned int getDebugMask() const = 0;
 
-        virtual const ConstString & getPlatformName() const = 0;
-
         virtual void showKeyboard() = 0;
         virtual void hideKeyboard() = 0;
 

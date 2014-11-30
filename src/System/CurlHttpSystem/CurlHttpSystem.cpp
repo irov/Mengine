@@ -46,7 +46,7 @@ namespace Menge
 		}
 
 		THREAD_SERVICE(m_serviceProvider)
-			->createThread( CONST_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), -1 );
+			->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), -1 );
 
 		return true;
 	}
@@ -86,7 +86,7 @@ namespace Menge
 			new ThreadTaskDownloadAsset( m_serviceProvider, _url, _category, _path, task_id, this );
 		
 		if( THREAD_SERVICE(m_serviceProvider)
-			->addTask( CONST_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), task ) == false )
+			->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadCurlHttpSystem"), task ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("CurlHttpSystem::downloadAsset category '%s' path '%s' invalid add task"
 				, _category.c_str()

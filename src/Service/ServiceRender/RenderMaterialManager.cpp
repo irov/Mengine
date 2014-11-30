@@ -49,7 +49,7 @@ namespace Menge
             rs.textureStage[0].alphaOp = TOP_MODULATE;
             rs.textureStage[0].colorOp = TOP_MODULATE;
 
-            this->createRenderStageGroup( CONST_STRING_LOCAL(m_serviceProvider, "BlendSprite"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "BlendSprite"), rs );
 		}
 
         {
@@ -65,7 +65,7 @@ namespace Menge
             rs.textureStage[0].alphaOp = TOP_MODULATE;
             rs.textureStage[0].colorOp = TOP_MODULATE;
 
-            this->createRenderStageGroup( CONST_STRING_LOCAL(m_serviceProvider, "SolidSprite"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "SolidSprite"), rs );
         }
 
         {
@@ -81,7 +81,7 @@ namespace Menge
             rs.textureStage[0].alphaOp = TOP_MODULATE;
             rs.textureStage[0].colorOp = TOP_SELECTARG1;
 
-            this->createRenderStageGroup( CONST_STRING_LOCAL(m_serviceProvider, "Accumulator"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Accumulator"), rs );
         }
 
         {
@@ -111,7 +111,7 @@ namespace Menge
             ts1.alphaArg2 = TARG_CURRENT;
             ts1.texCoordIndex = 1;
 
-            this->createRenderStageGroup( CONST_STRING_LOCAL(m_serviceProvider, "ExternalAlpha"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ExternalAlpha"), rs );
         }
 
         {
@@ -141,7 +141,7 @@ namespace Menge
             ts1.alphaArg2 = TARG_CURRENT;
             ts1.texCoordIndex = 1;
 
-            this->createRenderStageGroup( CONST_STRING_LOCAL(m_serviceProvider, "ExternalAlphaIntensive"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ExternalAlphaIntensive"), rs );
         }
 
         {
@@ -171,7 +171,7 @@ namespace Menge
             ts1.alphaArg2 = TARG_CURRENT;
             ts1.texCoordIndex = 1;
 
-            this->createRenderStageGroup( CONST_STRING_LOCAL(m_serviceProvider, "ExternalAlpha_OnlyColor"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ExternalAlpha_OnlyColor"), rs );
         }
 
         {
@@ -201,7 +201,7 @@ namespace Menge
             ts1.alphaArg2 = TARG_CURRENT;
             ts1.texCoordIndex = 1;
 
-            this->createRenderStageGroup( CONST_STRING_LOCAL(m_serviceProvider, "ExternalAlphaIntensive_OnlyColor"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ExternalAlphaIntensive_OnlyColor"), rs );
         }
 
         {
@@ -217,7 +217,7 @@ namespace Menge
             rs.textureStage[0].alphaOp = TOP_MODULATE;
             rs.textureStage[0].colorOp = TOP_SELECTARG2;
 
-            this->createRenderStageGroup( CONST_STRING_LOCAL(m_serviceProvider, "OnlyColor"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "OnlyColor"), rs );
         }
 
         {
@@ -233,7 +233,7 @@ namespace Menge
             rs.textureStage[0].colorOp = TOP_SELECTARG2;
             rs.textureStage[0].alphaOp = TOP_SELECTARG2;
 
-            this->createRenderStageGroup( CONST_STRING_LOCAL(m_serviceProvider, "Debug"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Debug"), rs );
         }
 
         {
@@ -249,7 +249,7 @@ namespace Menge
             rs.textureStage[0].colorOp = TOP_MODULATE;
             rs.textureStage[0].alphaOp = TOP_MODULATE;
 
-            this->createRenderStageGroup( CONST_STRING_LOCAL(m_serviceProvider, "ParticleIntensive"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ParticleIntensive"), rs );
         }
 
         {
@@ -265,7 +265,7 @@ namespace Menge
             rs.textureStage[0].colorOp = TOP_MODULATE;
             rs.textureStage[0].alphaOp = TOP_MODULATE;
 
-            this->createRenderStageGroup( CONST_STRING_LOCAL(m_serviceProvider, "ParticleBlend"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ParticleBlend"), rs );
         }
 
         return true;

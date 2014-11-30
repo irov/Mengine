@@ -52,10 +52,10 @@ namespace Menge
 			m_threadSoundBufferUpdate->initialize( m_serviceProvider, 5 );
 
 			THREAD_SERVICE(m_serviceProvider)
-				->createThread( CONST_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), 0 );
+				->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), 0 );
 
 			THREAD_SERVICE(m_serviceProvider)
-				->addTask( CONST_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), m_threadSoundBufferUpdate );
+				->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), m_threadSoundBufferUpdate );
 		}
 
 		return true;

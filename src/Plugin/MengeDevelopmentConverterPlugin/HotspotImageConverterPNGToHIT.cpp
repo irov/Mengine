@@ -34,7 +34,7 @@ namespace Menge
 	bool HotspotImageConverterPNGToHIT::validateVersion( const InputStreamInterfacePtr & _stream ) const
 	{
 		PickDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-			->createDecoderT<PickDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "hitPick") );
+			->createDecoderT<PickDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "hitPick") );
 
 		if( decoder == nullptr )
 		{
@@ -78,7 +78,7 @@ namespace Menge
         }
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<ImageDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "pngImage") );
+            ->createDecoderT<ImageDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage") );
 
         if( imageDecoder == nullptr )
         {
@@ -147,7 +147,7 @@ namespace Menge
         }
 
         PickEncoderInterfacePtr encoder = CODEC_SERVICE(m_serviceProvider)
-            ->createEncoderT<PickEncoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "hitPick") );
+            ->createEncoderT<PickEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "hitPick") );
         
         if( encoder == nullptr )
         {

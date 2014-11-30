@@ -82,7 +82,6 @@ namespace Menge
 
     public:
         void setDevelopmentMode( bool _developmentMode ) override;
-        void setPlatformName( const ConstString & _platformName ) override;
 
     public:
         PlayerServiceInterface * getPlayer() const override;
@@ -185,7 +184,6 @@ namespace Menge
 		TFactoryPak m_factoryPak;
 
 		ConstString m_languagePak;
-		ConstString m_platformName;
 				
 		TMapParams m_params;
 

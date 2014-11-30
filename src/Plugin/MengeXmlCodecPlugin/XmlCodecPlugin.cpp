@@ -40,7 +40,7 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
       	
 		CODEC_SERVICE(m_serviceProvider)
-            ->registerDecoder( CONST_STRING_LOCAL(m_serviceProvider, "xml2bin"), new DecoderFactory<XmlToBinDecoder>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "bin")) );
+            ->registerDecoder( STRINGIZE_STRING_LOCAL(m_serviceProvider, "xml2bin"), new DecoderFactory<XmlToBinDecoder>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "bin")) );
 
         return true;
 	}
@@ -48,7 +48,7 @@ namespace Menge
 	void XmlCodecPlugin::finalize()
 	{
 		CODEC_SERVICE(m_serviceProvider)
-			->unregisterDecoder( CONST_STRING_LOCAL(m_serviceProvider, "xml2bin") );
+			->unregisterDecoder( STRINGIZE_STRING_LOCAL(m_serviceProvider, "xml2bin") );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XmlCodecPlugin::destroy()

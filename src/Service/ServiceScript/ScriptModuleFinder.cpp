@@ -22,7 +22,7 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip") );
 
 		if( m_archivator == nullptr )
 		{

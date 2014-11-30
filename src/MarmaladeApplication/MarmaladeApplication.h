@@ -56,6 +56,9 @@ namespace Menge
         void loop();
         void stop()	override;
 
+	public:
+		const ConstString & getPlatformName() const override;
+
     public:
         void getDesktopResolution( Resolution & _resolution ) const override;
 
@@ -134,10 +137,11 @@ namespace Menge
 		FileLogger * m_fileLog;
 
 		MarmaladeTimer * m_timer;
-		MarmaladeInput * m_input;
+		MarmaladeInput * m_marmaladeInput;
 
-        bool	m_running;
-        bool	m_active;
+		String m_commandLine;
+		
+		ConstString m_platformName;
 
         FilePath m_currentPath;
         WString m_userPath;
@@ -170,11 +174,12 @@ namespace Menge
 		PrefetcherServiceInterface * m_prefetcherService;
 		NotificationServiceInterface * m_notificationService;
 		StringizeServiceInterface * m_stringizeService;
-         
-        String m_commandLine;
 
 		typedef stdex::vector<PluginInterface *> TVectorPlugins;
 		TVectorPlugins m_plugins;	
+
+		bool m_running;
+		bool m_active;
 
 		bool m_developmentMode;
     };

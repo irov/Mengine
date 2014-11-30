@@ -39,10 +39,10 @@ namespace Menge
         m_serviceProvider = _provider;
 	
 		FILE_SERVICE(m_serviceProvider)
-			->registerFileGroupFactory( CONST_STRING_LOCAL(m_serviceProvider, "zip"), new FactorableUnique<FactoryDefault<FileGroupZip> >() );
+			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip"), new FactorableUnique<FactoryDefault<FileGroupZip> >() );
 
 		ARCHIVE_SERVICE(m_serviceProvider)
-			->registerArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip"), new FactorableUnique<ArchivatorZip>() );
+			->registerArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip"), new FactorableUnique<ArchivatorZip>() );
 
         return true;
 	}
@@ -50,10 +50,10 @@ namespace Menge
 	void ZipPlugin::finalize()
 	{
 		FILE_SERVICE(m_serviceProvider)
-			->unregisterFileGroupFactory( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+			->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip") );
 
 		ARCHIVE_SERVICE(m_serviceProvider)
-			->unregisterArchivator( CONST_STRING_LOCAL(m_serviceProvider, "zip") );
+			->unregisterArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip") );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ZipPlugin::destroy()

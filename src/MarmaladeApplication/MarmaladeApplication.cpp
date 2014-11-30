@@ -159,7 +159,7 @@ namespace Menge
         , m_loggerConsole(nullptr)
         , m_fileLog(nullptr)
         , m_timer(nullptr)
-		, m_input(nullptr)
+		, m_marmaladeInput(nullptr)
 		, m_running(false)
 		, m_active(false)
 		, m_inputService(nullptr)
@@ -415,7 +415,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeApplication::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
 	{
-		FilePath applicationPath = CONST_STRING_LOCAL( m_serviceProvider, "application.ini" );
+		FilePath applicationPath = STRINGIZE_STRING_LOCAL( m_serviceProvider, "application.ini" );
 
 		InputStreamInterfacePtr applicationInputStream = 
 			FILE_SERVICE(m_serviceProvider)->openInputFile( ConstString::none(), applicationPath, false );
@@ -469,6 +469,11 @@ namespace Menge
 		SERVICE_REGISTRY(m_serviceProvider, configService);
 
 		m_configService = configService;
+
+		if( m_configService->initialize() == false )
+		{
+			return false;
+		}
 
 		FilePath gameIniPath;
 		if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
@@ -1162,7 +1167,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initialize( const String & _commandLine )
     {
-        m_commandLine = _commandLine;
+        m_commandLine = " " + _commandLine + " ";
 
         setlocale( LC_CTYPE, "" );
         //::timeBeginPeriod( 1 );
@@ -1193,6 +1198,30 @@ namespace Menge
             return false;
         }
 
+		int32 deviceClass = s3eDeviceGetInt( S3E_DEVICE_CLASS );
+
+		switch( deviceClass )
+		{
+		case  S3E_DEVICE_CLASS_WINDOWS_GENERIC:
+			{
+				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "WIN");
+			}break;
+		case S3E_DEVICE_CLASS_OSX_DESKTOP:
+			{
+				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "OSX");
+			}break;
+		case S3E_DEVICE_CLASS_IPHONE:
+			{
+				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "IOS");
+			}break;
+		case S3E_DEVICE_CLASS_ANDROID_GENERIC:
+			{
+				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "ANDROID");
+			}break;
+		default:
+			break;
+		};
+				
         if( this->initializeLogEngine_() == false )
         {
             return false;
@@ -1304,13 +1333,19 @@ namespace Menge
         {
             return false;
         }
+
+		const char * deviceId = s3eDeviceGetString( S3E_DEVICE_ID );
+
+		LOGGER_WARNING(m_serviceProvider)("Device: %s"
+			, deviceId
+			);
         
 		m_timer = new MarmaladeTimer;
 		m_timer->initialize();
 
-		m_input = new MarmaladeInput;
-		m_input->setServiceProvider( m_serviceProvider );
-		m_input->initialize();
+		m_marmaladeInput = new MarmaladeInput;
+		m_marmaladeInput->setServiceProvider( m_serviceProvider );
+		m_marmaladeInput->initialize();
 		
         {
             LOGGER_INFO(m_serviceProvider)( "initialize Image Codec..." );
@@ -1427,18 +1462,17 @@ namespace Menge
             return false;
         }
 
+		s3eDeviceYield(0);
+
         LOGGER_INFO(m_serviceProvider)( "Application Initialize... %s"
-            , m_application->getPlatformName().c_str()
+            , m_platformName.c_str()
             );
 
-
-		FilePath accountPath = CONST_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
+		FilePath accountPath = STRINGIZE_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
 
         LOGGER_INFO(m_serviceProvider)( "Initializing Game data... %s"
 			, accountPath.c_str()
 			);
-
-		s3eDeviceYield(0);
 				
         if( m_application->initializeGame( accountPath, scriptInit ) == false )
         {
@@ -1504,7 +1538,7 @@ namespace Menge
 			return;
 		}
         
-        if( s3eSurfaceRegister( S3E_SURFACE_SCREENSIZE, &s3eCallback_Input_S3E_SURFACE_SCREENSIZE, m_input ) != S3E_RESULT_SUCCESS )
+        if( s3eSurfaceRegister( S3E_SURFACE_SCREENSIZE, &s3eCallback_Input_S3E_SURFACE_SCREENSIZE, m_marmaladeInput ) != S3E_RESULT_SUCCESS )
         {
             return;
         }
@@ -1523,7 +1557,7 @@ namespace Menge
                 s3eDeviceBacklightOn();
             }
 
-            m_input->update();
+            m_marmaladeInput->update();
             
             bool updating = m_application->beginUpdate();
 
@@ -1565,11 +1599,11 @@ namespace Menge
 			m_timer = nullptr;
 		}
 
-		if( m_input != nullptr )
+		if( m_marmaladeInput != nullptr )
 		{
-			m_input->finalize();
-			delete m_input;
-			m_input = nullptr;
+			m_marmaladeInput->finalize();
+			delete m_marmaladeInput;
+			m_marmaladeInput = nullptr;
 		}
 
 		for( TVectorPlugins::iterator
@@ -1811,6 +1845,11 @@ namespace Menge
         m_running = false;
         s3eDeviceRequestQuit();
     }
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & MarmaladeApplication::getPlatformName() const
+	{
+		return m_platformName;
+	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::getDesktopResolution( Resolution & _resolution ) const
     {
@@ -1838,17 +1877,17 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::showKeyboard()
     {
-		if( m_input != nullptr )
+		if( m_marmaladeInput != nullptr )
 		{
-			m_input->showKeyboard( true );
+			m_marmaladeInput->showKeyboard( true );
 		}
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::hideKeyboard()
     {
-		if( m_input != nullptr )
+		if( m_marmaladeInput != nullptr )
 		{
-			m_input->showKeyboard( false );
+			m_marmaladeInput->showKeyboard( false );
 		}
     }
     //////////////////////////////////////////////////////////////////////////

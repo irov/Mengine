@@ -39,7 +39,7 @@ namespace Menge
 		m_protocolPath = _protocolPath;
 
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
+			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -348,7 +348,7 @@ namespace Menge
 	bool LoaderEngine::makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin )
 	{
 		XmlDecoderInterfacePtr decoder = CODEC_SERVICE(m_serviceProvider)
-            ->createDecoderT<XmlDecoderInterfacePtr>( CONST_STRING_LOCAL(m_serviceProvider, "xml2bin") );
+            ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "xml2bin") );
 
 		if( decoder == nullptr )
 		{

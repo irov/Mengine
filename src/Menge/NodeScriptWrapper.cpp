@@ -1558,7 +1558,7 @@ namespace Menge
             const RenderTextureInterfacePtr & texture = resource->getTexture();
 
             RENDERTEXTURE_SERVICE(m_serviceProvider)
-                ->saveImage( texture, CONST_STRING(m_serviceProvider, user), CONST_STRING_LOCAL(m_serviceProvider, "pngImage"), _fileName );
+                ->saveImage( texture, CONST_STRING(m_serviceProvider, user), STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage"), _fileName );
         }
         //////////////////////////////////////////////////////////////////////////
         void setParticlesEnabled( bool _enabled )
@@ -2529,7 +2529,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         const ConstString & s_getPlatformName()
         {
-            const ConstString & platformName = APPLICATION_SERVICE(m_serviceProvider)
+            const ConstString & platformName = PLATFORM_SERVICE(m_serviceProvider)
                 ->getPlatformName();
 
             return platformName;

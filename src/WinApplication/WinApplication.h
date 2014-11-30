@@ -62,6 +62,9 @@ namespace Menge
 		void stop()	override;
 
 	public:
+		const ConstString & getPlatformName() const override;
+
+	public:
 		HWND createWindow( const Menge::WString & _name, const Resolution & _resolution, bool _fullscreen );
 
 		void getDesktopResolution( Resolution & _resolution ) const override;
@@ -161,6 +164,8 @@ namespace Menge
 		AlreadyRunningMonitor * m_alreadyRunningMonitor;
 
 		ApplicationInterface * m_application;
+
+		ConstString m_platformName;
 
 		EWindowsType m_windowsType;
 

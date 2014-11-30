@@ -56,7 +56,7 @@ namespace Menge
 		m_settingsPath = Helper::stringizeString( m_serviceProvider, settingsPath );
 
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
+			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -152,7 +152,7 @@ namespace Menge
 	bool Account::load()
 	{
         if( FILE_SERVICE(m_serviceProvider)
-			->existFile( CONST_STRING_LOCAL(m_serviceProvider, "user"), m_settingsPath, nullptr ) == false )
+			->existFile( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user"), m_settingsPath, nullptr ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Account::load account '%ls' settings not found '%s'"
                 , m_name.c_str()
@@ -163,7 +163,7 @@ namespace Menge
         }
 
 		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( CONST_STRING_LOCAL(m_serviceProvider, "user"), m_settingsPath, false );
+			->openInputFile( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user"), m_settingsPath, false );
 
         if( file == nullptr )
         {

@@ -57,7 +57,7 @@ namespace Menge
 			->addWrapping( Helper::stringizeString(m_serviceProvider, "Trigger"), new ScriptClassWrapper<Trigger>() );
 		
 		PROTOTYPE_SERVICE(m_serviceProvider)
-			->addPrototype( CONST_STRING_LOCAL(m_serviceProvider, "Node"), CONST_STRING_LOCAL(m_serviceProvider, "Trigger"), new NodePrototypeGenerator<Trigger, 128>(m_serviceProvider) );
+			->addPrototype( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Node"), STRINGIZE_STRING_LOCAL(m_serviceProvider, "Trigger"), new NodePrototypeGenerator<Trigger, 128>(m_serviceProvider) );
 
 		return true;
 	}

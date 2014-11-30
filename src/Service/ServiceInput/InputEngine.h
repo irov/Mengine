@@ -34,6 +34,11 @@ namespace Menge
 		void update() override;
 
 	public:
+		bool isAltDown() const override;
+		bool isShiftDown() const override;
+		bool isCtrlDown() const override;
+
+	public:
 		bool isKeyDown( uint32_t _keyCode ) const override;
 		bool isExclusiveKeyDown( uint32_t _keyCode ) const override;
 		bool isAnyKeyDown() const override;

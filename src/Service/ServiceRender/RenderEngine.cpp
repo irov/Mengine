@@ -104,7 +104,7 @@ namespace Menge
 
 		//m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
-		m_defaultRenderTarget = CONST_STRING_LOCAL(m_serviceProvider, "Window");
+		m_defaultRenderTarget = STRINGIZE_STRING_LOCAL(m_serviceProvider, "Window");
 
 		uint32_t batchMode = CONFIG_SERVICE(m_serviceProvider)
 			->getValue( "Engine", "RenderServiceBatchMode", 2 );
@@ -312,7 +312,7 @@ namespace Menge
 		texture->unlock( 0 );
 
 		RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->cacheFileTexture( CONST_STRING_LOCAL(m_serviceProvider, "__null__"), texture );
+			->cacheFileTexture( STRINGIZE_STRING_LOCAL(m_serviceProvider, "__null__"), texture );
 
 		m_nullTexture = texture;
 
@@ -382,7 +382,7 @@ namespace Menge
 		texture->unlock( 0 );
 
 		RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->cacheFileTexture( CONST_STRING_LOCAL(m_serviceProvider, "WhitePixel"), texture );
+			->cacheFileTexture( STRINGIZE_STRING_LOCAL(m_serviceProvider, "WhitePixel"), texture );
 
 		m_whitePixelTexture = texture;
 
@@ -1171,7 +1171,7 @@ namespace Menge
 			if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
 			{				
 				RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING_LOCAL(m_serviceProvider, "OnlyColor")
+					->getMaterial( STRINGIZE_STRING_LOCAL(m_serviceProvider, "OnlyColor")
 					, false, false
 					, ro_material->getPrimitiveType()
 					, 0

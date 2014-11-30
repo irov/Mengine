@@ -33,7 +33,7 @@ namespace Menge
         m_convertExt = ".mdz";
 
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(m_serviceProvider, "lz4") );
+			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
 
 		if( m_archivator == nullptr )
 		{
@@ -60,7 +60,7 @@ namespace Menge
         ConstString full_input = concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
         ConstString full_output = concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
 
-        ConstString c_dev = CONST_STRING_LOCAL( m_serviceProvider, "dev" );
+        ConstString c_dev = STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" );
 
         InputStreamInterfacePtr input = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( c_dev, full_input, false );
@@ -71,7 +71,7 @@ namespace Menge
 		const TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
 		
 		OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
-			->openOutputFile( CONST_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
+			->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
 
 		if( output == nullptr )
 		{

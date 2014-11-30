@@ -57,7 +57,7 @@ namespace Menge
 
 		avformat_network_init();
 
-		m_decoders.push_back( new DecoderFactory<VideoDecoderFFMPEG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ffmpegVideo")) );
+		m_decoders.push_back( new DecoderFactory<VideoDecoderFFMPEG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegVideo")) );
 		
 		for( TVectorVideoDecoders::iterator
 			it = m_decoders.begin(),

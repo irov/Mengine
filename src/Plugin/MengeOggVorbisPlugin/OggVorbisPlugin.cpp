@@ -39,8 +39,8 @@ namespace Menge
 	{
         m_serviceProvider = _serviceProvider;
 
-		m_decoders.push_back( new DecoderFactory<SoundDecoderOGGVorbis>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "oggSound")) );
-        m_decoders.push_back( new DecoderFactory<SoundDecoderOGGVorbis>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ogvSound")) );
+		m_decoders.push_back( new DecoderFactory<SoundDecoderOGGVorbis>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "oggSound")) );
+        m_decoders.push_back( new DecoderFactory<SoundDecoderOGGVorbis>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ogvSound")) );
 		
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "ogg", Helper::stringizeString(m_serviceProvider, "oggSound") );

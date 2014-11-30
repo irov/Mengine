@@ -39,7 +39,7 @@ namespace Menge
 	{
         m_serviceProvider = _serviceProvider;
 
-		m_decoders.push_back( new DecoderFactory<SoundDecoderWAV>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "wavSound")) );
+		m_decoders.push_back( new DecoderFactory<SoundDecoderWAV>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "wavSound")) );
 		
 		CODEC_SERVICE(m_serviceProvider)
 			->registerCodecExt( "wav", Helper::stringizeString(m_serviceProvider, "wavSound") );

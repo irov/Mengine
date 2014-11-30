@@ -105,11 +105,6 @@ namespace Menge
         m_developmentMode = _developmentMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::setPlatformName( const ConstString & _platformName )
-    {
-        m_platformName = _platformName;
-    }
-    //////////////////////////////////////////////////////////////////////////
     PlayerServiceInterface * Game::getPlayer() const
     {
         return m_player;
@@ -482,14 +477,16 @@ namespace Menge
 
 		bool isMaster = !m_developmentMode;
 
-		LOGGER_WARNING(m_serviceProvider)("Initialize params '%s' platform = '%s' master = '%d'"
+		LOGGER_WARNING(m_serviceProvider)("Initialize params '%s' master = '%d'"
 			, _scriptInitParams.c_str()
-			, m_platformName.c_str()
 			, isMaster
 			);
 
+		const ConstString & platformName = PLATFORM_SERVICE(m_serviceProvider)
+			->getPlatformName();
+
 		bool result = false;
-		EVENTABLE_ASK(m_serviceProvider, this, EVENT_INITIALIZE)( result, true, "(sOO)", _scriptInitParams.c_str(), pybind::ptr(m_platformName), pybind::get_bool(isMaster) );
+		EVENTABLE_ASK(m_serviceProvider, this, EVENT_INITIALIZE)( result, true, "(sOO)", _scriptInitParams.c_str(), pybind::ptr(platformName), pybind::get_bool(isMaster) );
 
 		if( result == false )
 		{
@@ -756,6 +753,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::applyConfigPaks()
 	{
+		const ConstString & platformName = PLATFORM_SERVICE(m_serviceProvider)
+			->getPlatformName();
+
 		TVectorResourcePak paks;
 
 		for( TVectorResourcePak::const_iterator 
@@ -768,7 +768,7 @@ namespace Menge
 
 			const ConstString & pakPlatform = pak->getPlatfrom();
 
-			if( pakPlatform.empty() == false && pakPlatform != m_platformName )
+			if( pakPlatform.empty() == false && pakPlatform != platformName )
 			{
 				continue;
 			}
@@ -776,9 +776,9 @@ namespace Menge
 			paks.push_back( pak );
 		}
 		
-		if( this->loadLocalePaksByName_( paks, m_languagePak, m_platformName ) == false )			
+		if( this->loadLocalePaksByName_( paks, m_languagePak, platformName ) == false )			
 		{
-			if( this->loadLocalePaksByName_( paks, CONST_STRING(m_serviceProvider, eng), m_platformName ) == false )
+			if( this->loadLocalePaksByName_( paks, CONST_STRING(m_serviceProvider, eng), platformName ) == false )
 			{
 				if( m_languagePaks.empty() == false )
 				{
@@ -786,7 +786,7 @@ namespace Menge
 
 					const ConstString & pakName = firstPak->getName();
 
-					this->loadLocalePaksByName_( paks, pakName, m_platformName );
+					this->loadLocalePaksByName_( paks, pakName, platformName );
 				}
 				else
 				{

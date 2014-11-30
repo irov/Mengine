@@ -69,64 +69,64 @@ namespace Menge
 	{
         m_serviceProvider = _provider;
 
-        m_decoders.push_back( new DecoderFactory<ImageDecoderPNG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pngImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderJPEG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "jpegImage")) );
+        m_decoders.push_back( new DecoderFactory<ImageDecoderPNG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderJPEG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "jpegImage")) );
         
 #	ifdef MENGINE_SUPPORT_DECODER_WEBP
-        m_decoders.push_back( new DecoderFactory<ImageDecoderWEBP>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "webpImage")) );
+        m_decoders.push_back( new DecoderFactory<ImageDecoderWEBP>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "webpImage")) );
 #	endif
 
-		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTC>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pvrImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderETC1>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "etcImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderDDS>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "ddsImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderPVRTC>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "pvrImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderETC1>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "etcImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderDDS>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ddsImage")) );
 
 //#	ifdef MENGINE_SUPPORT_DECODER_CRN
 //		m_decoders.push_back( new DecoderFactory<ImageDecoderCRN>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "crnImage")) );
 //#	endif
 
-		m_decoders.push_back( new DecoderFactory<ImageDecoderHTF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "htfImage")) );
-		m_decoders.push_back( new DecoderFactory<ImageDecoderACF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "acfImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderHTF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "htfImage")) );
+		m_decoders.push_back( new DecoderFactory<ImageDecoderACF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "acfImage")) );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "png", CONST_STRING_LOCAL(m_serviceProvider, "pngImage") );
+			->registerCodecExt( "png", STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "PNG", CONST_STRING_LOCAL(m_serviceProvider, "pngImage") );
+			->registerCodecExt( "PNG", STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "jpg", CONST_STRING_LOCAL(m_serviceProvider, "jpegImage") );
+			->registerCodecExt( "jpg", STRINGIZE_STRING_LOCAL(m_serviceProvider, "jpegImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "jpeg", CONST_STRING_LOCAL(m_serviceProvider, "jpegImage") );
+			->registerCodecExt( "jpeg", STRINGIZE_STRING_LOCAL(m_serviceProvider, "jpegImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "pvr", CONST_STRING_LOCAL(m_serviceProvider, "pvrImage") );
+			->registerCodecExt( "pvr", STRINGIZE_STRING_LOCAL(m_serviceProvider, "pvrImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "dds", CONST_STRING_LOCAL(m_serviceProvider, "ddsImage") );
+			->registerCodecExt( "dds", STRINGIZE_STRING_LOCAL(m_serviceProvider, "ddsImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "etc", CONST_STRING_LOCAL(m_serviceProvider, "etcImage") );
+			->registerCodecExt( "etc", STRINGIZE_STRING_LOCAL(m_serviceProvider, "etcImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "crn", CONST_STRING_LOCAL(m_serviceProvider, "crnImage") );
+			->registerCodecExt( "crn", STRINGIZE_STRING_LOCAL(m_serviceProvider, "crnImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "htf", CONST_STRING_LOCAL(m_serviceProvider, "htfImage") );
+			->registerCodecExt( "htf", STRINGIZE_STRING_LOCAL(m_serviceProvider, "htfImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "acf", CONST_STRING_LOCAL(m_serviceProvider, "acfImage") );
+			->registerCodecExt( "acf", STRINGIZE_STRING_LOCAL(m_serviceProvider, "acfImage") );
 
-		m_encoders.push_back( new EncoderFactory<ImageEncoderPNG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "pngImage")) );
-		m_encoders.push_back( new EncoderFactory<ImageEncoderJPEG>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "jpegImage")) );
-		m_encoders.push_back( new EncoderFactory<ImageEncoderHTF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "htfImage")) );
-		m_encoders.push_back( new EncoderFactory<ImageEncoderACF>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "acfImage")) );
+		m_encoders.push_back( new EncoderFactory<ImageEncoderPNG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage")) );
+		m_encoders.push_back( new EncoderFactory<ImageEncoderJPEG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "jpegImage")) );
+		m_encoders.push_back( new EncoderFactory<ImageEncoderHTF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "htfImage")) );
+		m_encoders.push_back( new EncoderFactory<ImageEncoderACF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "acfImage")) );
 
-		m_decoders.push_back( new DecoderFactory<PickDecoderHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "hitPick")) );
-		m_encoders.push_back( new EncoderFactory<PickEncoderHIT>(m_serviceProvider, CONST_STRING_LOCAL(m_serviceProvider, "hitPick")) );
+		m_decoders.push_back( new DecoderFactory<PickDecoderHIT>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "hitPick")) );
+		m_encoders.push_back( new EncoderFactory<PickEncoderHIT>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "hitPick")) );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "hit", CONST_STRING_LOCAL(m_serviceProvider, "hitPick") );
+			->registerCodecExt( "hit", STRINGIZE_STRING_LOCAL(m_serviceProvider, "hitPick") );
 
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),
@@ -157,19 +157,19 @@ namespace Menge
 		DataflowInterfacePtr aek = m_factoryAEK->createDataflow();
 
 		DATA_SERVICE(m_serviceProvider)
-			->registerDataflow( CONST_STRING_LOCAL(m_serviceProvider, "aekMovie"), aek );
+			->registerDataflow( STRINGIZE_STRING_LOCAL(m_serviceProvider, "aekMovie"), aek );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "aek", CONST_STRING_LOCAL(m_serviceProvider, "aekMovie") );
+			->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL(m_serviceProvider, "aekMovie") );
 
 		m_factoryMDL = new DataflowFactory<DataflowMDL>(m_serviceProvider);
 		DataflowInterfacePtr mdl = m_factoryMDL->createDataflow();
 
 		DATA_SERVICE(m_serviceProvider)
-			->registerDataflow( CONST_STRING_LOCAL(m_serviceProvider, "mdzModel"), mdl );
+			->registerDataflow( STRINGIZE_STRING_LOCAL(m_serviceProvider, "mdzModel"), mdl );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->registerCodecExt( "mdz", CONST_STRING_LOCAL(m_serviceProvider, "mdzModel") );
+			->registerCodecExt( "mdz", STRINGIZE_STRING_LOCAL(m_serviceProvider, "mdzModel") );
 
         return true;
 	}
@@ -206,10 +206,10 @@ namespace Menge
 		m_encoders.clear();
 
 		DATA_SERVICE(m_serviceProvider)
-			->unregisterDataflow( CONST_STRING_LOCAL(m_serviceProvider, "aekMovie") );
+			->unregisterDataflow( STRINGIZE_STRING_LOCAL(m_serviceProvider, "aekMovie") );
 
 		DATA_SERVICE(m_serviceProvider)
-			->unregisterDataflow( CONST_STRING_LOCAL(m_serviceProvider, "mdzModel") );
+			->unregisterDataflow( STRINGIZE_STRING_LOCAL(m_serviceProvider, "mdzModel") );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ImageCodecPlugin::destroy()

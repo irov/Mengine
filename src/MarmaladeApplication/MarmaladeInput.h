@@ -24,6 +24,7 @@ namespace Menge
 
     public:
         bool initialize();
+		void finalize();
 
     public:
         bool update();
@@ -44,12 +45,12 @@ namespace Menge
         s3eKey gets3eKey_( KeyCode _code ) const;
 
     protected:
-        static void s_keyboardKeyEvent( s3eKeyboardEvent * _event, MarmaladeInput * _input );
-        static void s_keyboardCharEvent( s3eKeyboardCharEvent * _event, MarmaladeInput * _input );
-        static void s_pointerTouchEvent( s3ePointerTouchEvent * _event, MarmaladeInput * _input );
-        static void s_pointerTouchMotionEvent( s3ePointerTouchMotionEvent * _event, MarmaladeInput * _input );
-        static void s_pointerButtonEvent( s3ePointerEvent * _event, MarmaladeInput * _input );
-        static void s_pointerMotionEvent( s3ePointerMotionEvent * _event, MarmaladeInput * _input );
+        static int32 s_keyboardKeyEvent( s3eKeyboardEvent * _event, MarmaladeInput * _input );
+        //static int32 s_keyboardCharEvent( s3eKeyboardCharEvent * _event, MarmaladeInput * _input );
+        static int32 s_pointerTouchEvent( s3ePointerTouchEvent * _event, MarmaladeInput * _input );
+        static int32 s_pointerTouchMotionEvent( s3ePointerTouchMotionEvent * _event, MarmaladeInput * _input );
+        static int32 s_pointerButtonEvent( s3ePointerEvent * _event, MarmaladeInput * _input );
+        static int32 s_pointerMotionEvent( s3ePointerMotionEvent * _event, MarmaladeInput * _input );
 		
 	protected:
 		void correctPoint_( int32 _x, int32 _y, mt::vec2f & _point ) const;

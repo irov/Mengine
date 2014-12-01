@@ -1198,9 +1198,9 @@ namespace Menge
             return false;
         }
 
-		int32 deviceClass = s3eDeviceGetInt( S3E_DEVICE_CLASS );
-
-		switch( deviceClass )
+		int32 deviceClassID = s3eDeviceGetInt( S3E_DEVICE_CLASS );
+		
+		switch( deviceClassID )
 		{
 		case  S3E_DEVICE_CLASS_WINDOWS_GENERIC:
 			{
@@ -1334,11 +1334,44 @@ namespace Menge
             return false;
         }
 
-		const char * deviceId = s3eDeviceGetString( S3E_DEVICE_ID );
-
-		LOGGER_WARNING(m_serviceProvider)("Device: %s"
-			, deviceId
+		LOGGER_WARNING(m_serviceProvider)("Device info:"
 			);
+
+		const char * deviceID = s3eDeviceGetString( S3E_DEVICE_ID );
+
+		LOGGER_WARNING(m_serviceProvider)("ID: %s"
+			, deviceID
+			);
+
+		const char * deviceOS = s3eDeviceGetString( S3E_DEVICE_OS );
+
+		LOGGER_WARNING(m_serviceProvider)("OS: %s"
+			, deviceOS
+			);
+
+		const char * deviceOSVersion= s3eDeviceGetString( S3E_DEVICE_OS_VERSION );
+
+		LOGGER_WARNING(m_serviceProvider)("OS Version: %s"
+			, deviceOSVersion
+			);
+
+		const char * deviceClass = s3eDeviceGetString( S3E_DEVICE_CLASS );
+
+		LOGGER_WARNING(m_serviceProvider)("Class: %s"
+			, deviceClass
+			);
+
+		const char * deviceArchitecture = s3eDeviceGetString( S3E_DEVICE_ARCHITECTURE );
+
+		LOGGER_WARNING(m_serviceProvider)("Architecture: %s"
+			, deviceArchitecture
+			);
+
+		const char * deviceName = s3eDeviceGetString( S3E_DEVICE_NAME );
+
+		LOGGER_WARNING(m_serviceProvider)("Name: %s"
+			, deviceName
+			);		
         
 		m_timer = new MarmaladeTimer;
 		m_timer->initialize();

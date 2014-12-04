@@ -64,8 +64,9 @@ namespace Menge
 	static PyObject * s_fastpathfinder_graph_getPath( fastpathfinder::graph * _graph, fastpathfinder::graph_node * _from, fastpathfinder::graph_node * _to )
 	{
 		fastpathfinder::vector_graph_node path;
-		_graph->getPath( _from, _to, path );
 
+		_graph->getPath( _from, _to, path );
+		
 		PyObject * py_path = pybind::list_new(0);
 
 		for( fastpathfinder::vector_graph_node::iterator

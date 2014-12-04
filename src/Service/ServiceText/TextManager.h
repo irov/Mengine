@@ -48,6 +48,10 @@ namespace Menge
 		void visitFonts( VisitorTextFontInterface * _vistitor ) override;
 
 	public:
+		void setEnableText( bool _enable ) override;
+		bool getEnableText() const override;
+
+	public:
 		bool validate() const override;
 
 	protected:
@@ -78,6 +82,8 @@ namespace Menge
 		TVectorPaks m_paks;
 		
 		ConstString m_defaultFontName;
+
+		bool m_enableText;
 
 		typedef FactoryPoolStore<TextFont, 16> TFactoryTextFont;
 		TFactoryTextFont m_factoryTextFont;

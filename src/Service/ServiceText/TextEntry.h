@@ -33,7 +33,7 @@ namespace Menge
 
 	public:
 		const ConstString & getKey() const override;
-		const ConstString & getText() const override;
+		const ConstString & getValue() const override;
 
 	public:
 		const ConstString & getFontName() const override;

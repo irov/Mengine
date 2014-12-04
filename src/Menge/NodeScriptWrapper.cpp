@@ -74,6 +74,7 @@
 #	include "SoundEmitter.h"
 #	include "ParticleEmitter.h"
 #	include "Point.h"
+#	include "Line.h"
 #	include "Camera3d.h"
 //#	include "RigidBody3D.h"
 //#	include "CapsuleController.h"
@@ -760,6 +761,21 @@ namespace Menge
             
             _transformation->setScale( _scale );
         }
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * ResourceMovie_getLayerPosition( ResourceMovie * _movie, const ConstString & _name )
+		{
+			const MovieLayer * layer;
+			bool successful = _movie->hasMovieLayer( _name, &layer );
+
+			if( successful == false )
+			{
+				return pybind::ret_none();
+			}
+
+			PyObject * py_position = pybind::ptr( layer->position );
+
+			return py_position;
+		}
 		//////////////////////////////////////////////////////////////////////////
 		bool ResourceMovie_hasLayer( ResourceMovie * _movie, const ConstString & _name )
 		{
@@ -2449,6 +2465,99 @@ namespace Menge
 			_arrow->calcPointClick( _camera, _viewport, _screenPoint, wp );
 
 			return wp;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * s_getMovieSlotsPosition( const ConstString & _groupName, const ConstString & _movieName )
+		{
+			stdex::array_string<128> buffer;
+			buffer.append( "Movie" );			
+			buffer.append( _groupName.c_str(), _groupName.size() );
+			buffer.append( "_" );
+			buffer.append( _movieName.c_str(), _movieName.size() );
+
+			ConstString resourceMovieName = Helper::stringizeStringSize( m_serviceProvider, buffer.c_str(), buffer.size() );
+
+			ResourceMovie * resourceMovie;
+
+			if( RESOURCE_SERVICE(m_serviceProvider)
+				->hasResourceT<ResourceMovie>( resourceMovieName, &resourceMovie ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_getMovieSlotsPosition: not found resource movie %s"
+					, resourceMovieName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_list = pybind::list_new( 0 );
+
+			const TVectorMovieLayers & layers = resourceMovie->getLayers();
+
+			for( TVectorMovieLayers::const_iterator
+				it = layers.begin(),
+				it_end = layers.end();
+			it != it_end;
+			++it )
+			{
+				const MovieLayer & layer = *it;
+
+				if( layer.type != CONST_STRING(m_serviceProvider, MovieSlot) )
+				{
+					continue;
+				}
+
+				PyObject * py_tuple = pybind::tuple_new( 2 );
+				
+				PyObject * py_name = pybind::ptr( layer.name );
+				PyObject * py_position = pybind::ptr( layer.position );
+
+				pybind::tuple_setitem( py_tuple, 0, py_name );
+				pybind::tuple_setitem( py_tuple, 1, py_position );
+
+				pybind::list_appenditem( py_list, py_tuple );
+
+				pybind::decref( py_tuple );
+			}
+
+			return py_list;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * s_getMovieSlotPosition( const ConstString & _groupName, const ConstString & _movieName, const ConstString & _slotName )
+		{
+			stdex::array_string<128> buffer;
+			buffer.append( "Movie" );			
+			buffer.append( _groupName.c_str(), _groupName.size() );
+			buffer.append( "_" );
+			buffer.append( _movieName.c_str(), _movieName.size() );
+
+			ConstString resourceMovieName = Helper::stringizeStringSize( m_serviceProvider, buffer.c_str(), buffer.size() );
+
+			ResourceMovie * resourceMovie;
+
+			if( RESOURCE_SERVICE(m_serviceProvider)
+				->hasResourceT<ResourceMovie>( resourceMovieName, &resourceMovie ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("getMovieSlotPosition: not found resource movie %s"
+					, resourceMovieName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			const MovieLayer * layer;
+			if( resourceMovie->hasMovieLayer( _slotName, &layer ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("getMovieSlotPosition: movie %s not found slot %s"
+					, resourceMovieName.c_str()
+					, _slotName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_position = pybind::ptr( layer->position );
+
+			return py_position;
 		}
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getCursorPosition()
@@ -4270,6 +4379,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieInternalObject );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Model3D );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Point );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Line );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Landscape2D );
         //SCRIPT_CLASS_WRAPPING( TilePolygon );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Video );
@@ -4487,6 +4597,7 @@ namespace Menge
 			.def("hasAnchorPoint", &ResourceMovie::hasAnchorPoint)
 			.def("getAnchorPoint", &ResourceMovie::getAnchorPoint)
 			.def_proxy_static("hasLayer", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_hasLayer)
+			.def_proxy_static("getLayerPosition", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_getLayerPosition)
             ;        
 
         pybind::interface_<ResourceAnimation, pybind::bases<ResourceReference> >("ResourceAnimation", false)
@@ -4870,6 +4981,13 @@ namespace Menge
                 pybind::interface_<Point, pybind::bases<Node> >("Point", false)
                     //.def( "testHotSpot", &Point::testHotSpot )
                     ;
+
+				pybind::interface_<Line, pybind::bases<Node> >("Line", false)
+					.def( "setFrom", &Line::setFrom )
+					.def( "getFrom", &Line::getFrom )
+					.def( "setTo", &Line::setTo )
+					.def( "getTo", &Line::getTo )
+					;
 
                 pybind::interface_<Layer, pybind::bases<Node> >("Layer", false)
                     .def( "setMain", &Layer::setMain )
@@ -5350,6 +5468,9 @@ namespace Menge
 
 			pybind::def_functor( "screenToWorldPoint", nodeScriptMethod, &NodeScriptMethod::s_screenToWorldPoint );
 			pybind::def_functor( "screenToWorldClick", nodeScriptMethod, &NodeScriptMethod::s_screenToWorldClick );
+
+			pybind::def_functor( "getMovieSlotsPosition", nodeScriptMethod, &NodeScriptMethod::s_getMovieSlotsPosition );
+			pybind::def_functor( "getMovieSlotPosition", nodeScriptMethod, &NodeScriptMethod::s_getMovieSlotPosition );			
         }
     }
 }

@@ -1,5 +1,8 @@
 #	include "Application.h"
 
+#	include "Interface/UnicodeInterface.h"
+#	include "Interface/TextInterface.h"
+
 #	include "Game.h"
 
 #	include "Logger/Logger.h"
@@ -26,6 +29,7 @@
 #	include "Gyroscope.h"
 #	include "TilePolygon.h"
 #	include "Point.h"
+#	include "Line.h"
 #	include "SoundEmitter.h"
 #	include "Sprite.h"
 #	include "Isometric.h"
@@ -88,8 +92,6 @@
 #	include "ResourceCursorICO.h"
 #	include "ResourceCursorSystem.h"
 #	include "ResourceInternalObject.h"
-
-#	include "Interface/UnicodeInterface.h"
 
 #	include "ScriptWrapper.h"
 
@@ -461,6 +463,7 @@ namespace Menge
 		//NODE_FACTORY( ShadowCaster2D );
 		//NODE_FACTORY( TilePolygon );
 		NODE_FACTORY( m_serviceProvider, Point );
+		NODE_FACTORY( m_serviceProvider, Line );
 		//NODE_FACTORY( RigidBody2D );
 		//NODE_FACTORY( PhysicalBody2D );
 		NODE_FACTORY( m_serviceProvider, SoundEmitter );
@@ -1111,6 +1114,15 @@ namespace Menge
 				s_particle_enable = !s_particle_enable;
 
 				this->setParticlesEnabled( s_particle_enable );
+			}
+
+			if( _key == KC_T && _isDown == true && INPUT_SERVICE(m_serviceProvider)->isCtrlDown() == true )
+			{
+				static bool s_text_enable = true;
+
+				s_text_enable = !s_text_enable;
+
+				TEXT_SERVICE(m_serviceProvider)->setEnableText( s_text_enable );
 			}
 
 			if( _key == KC_0 && _isDown == true )
@@ -2011,7 +2023,7 @@ namespace Menge
             return Utils::emptyConstString();
 		}
 
-		const ConstString & text = entry->getText();
+		const ConstString & text = entry->getValue();
 
 		return text;
 	}

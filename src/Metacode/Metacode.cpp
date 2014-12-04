@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 66;
+        _needVersion = 67;
 
-        if( version != 66 )
+        if( version != 67 )
         {
             return false;
         }
@@ -2661,6 +2661,7 @@ namespace Metacode
         , Parent_successful(false)
         , PlayCount_successful(false)
         , Polygon_successful(false)
+        , Position_successful(false)
         , Shape_successful(false)
         , StartInterval_successful(false)
         , Stretch_successful(false)
@@ -2755,6 +2756,17 @@ namespace Metacode
                 }
     
                 this->Polygon_successful = true;
+    
+                return true;
+            }break;
+        case 16:
+            {
+                if( this->read( _buff, _size, _read, this->Position ) == false )
+                {
+                    return false;
+                }
+    
+                this->Position_successful = true;
     
                 return true;
             }break;
@@ -2872,6 +2884,8 @@ namespace Metacode
         , BlendingMode_successful(false)
         , Parent_successful(false)
         , PlayCount_successful(false)
+        , Polygon_successful(false)
+        , Position_successful(false)
         , Shape_successful(false)
         , StartInterval_successful(false)
         , Stretch_successful(false)
@@ -2947,7 +2961,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 12:
+        case 13:
             {
                 if( this->read( _buff, _size, _read, this->PlayCount ) == false )
                 {
@@ -2955,6 +2969,28 @@ namespace Metacode
                 }
     
                 this->PlayCount_successful = true;
+    
+                return true;
+            }break;
+        case 12:
+            {
+                if( this->read( _buff, _size, _read, this->Polygon ) == false )
+                {
+                    return false;
+                }
+    
+                this->Polygon_successful = true;
+    
+                return true;
+            }break;
+        case 16:
+            {
+                if( this->read( _buff, _size, _read, this->Position ) == false )
+                {
+                    return false;
+                }
+    
+                this->Position_successful = true;
     
                 return true;
             }break;
@@ -2989,7 +3025,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 13:
+        case 14:
             {
                 if( this->read( _buff, _size, _read, this->Stretch ) == false )
                 {
@@ -3000,7 +3036,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 14:
+        case 15:
             {
                 if( this->read( _buff, _size, _read, this->Switch ) == false )
                 {

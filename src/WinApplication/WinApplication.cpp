@@ -449,14 +449,14 @@ namespace Menge
 			return false;
 		}
 
+		SERVICE_REGISTRY( m_serviceProvider, configService );
+
+		m_configService = configService;
+
 		if( configService->initialize() == false )
 		{
 			return false;
 		}
-
-		SERVICE_REGISTRY( m_serviceProvider, configService );
-
-		m_configService = configService;
 
 		ConstString gameIniPath;
 		if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )

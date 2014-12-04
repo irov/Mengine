@@ -103,6 +103,13 @@ Object2D\\\\Point
 )
 
 ADD_FILTER(
+Object2D\\\\Line
+	Line.cpp
+	Line.h
+)
+
+
+ADD_FILTER(
 Object2D\\\\SoundEmitter
 	SoundEmitter.cpp
 	SoundEmitter.h

@@ -19,18 +19,55 @@ namespace Menge
 		{
 			return;
 		}
-		//const mt::vec3f& pos = getWorldPosition();
 
-		//mt::vec2f pos;
-		//mt::mul_v2_m3_r( pos, getWorldPosition(), getWorldMatrix() );
-		//mt::vec3f pos1( pos + mt::vec2f( -5.0f, -5.0f ) );
-		//mt::vec3f pos2( pos + mt::vec2f( 5.0f, -5.0f ) );
-		//mt::vec3f pos3( pos + mt::vec2f( 5.0f, 5.0f ) );
-		//mt::vec3f pos4( pos + mt::vec2f( -5.0f, 5.0f ) );
-		//renderEngine->renderLine( 0xFF00FFFF, pos1, pos2 );
-		//renderEngine->renderLine( 0xFF00FFFF, pos2, pos3 );
-		//renderEngine->renderLine( 0xFF00FFFF, pos1, pos4 );
-		//renderEngine->renderLine( 0xFF00FFFF, pos4, pos3 );
+		const mt::vec3f & pos = this->getWorldPosition();
+
+		RenderVertex2D * vertexPointBox = RENDER_SERVICE(m_serviceProvider)
+			->getDebugRenderVertex2D( 4 * 2 );
+
+		float debugWidth = 5.f;
+
+		vertexPointBox[0].pos.x = pos.x - debugWidth;
+		vertexPointBox[0].pos.y = pos.y - debugWidth;
+
+		vertexPointBox[1].pos.x = pos.x + debugWidth;
+		vertexPointBox[1].pos.y = pos.y - debugWidth;
+
+		vertexPointBox[2].pos.x = pos.x + debugWidth;
+		vertexPointBox[2].pos.y = pos.y - debugWidth;
+
+		vertexPointBox[3].pos.x = pos.x + debugWidth;
+		vertexPointBox[3].pos.y = pos.y + debugWidth;
+
+		vertexPointBox[4].pos.x = pos.x + debugWidth;
+		vertexPointBox[4].pos.y = pos.y + debugWidth;
+
+		vertexPointBox[5].pos.x = pos.x - debugWidth;
+		vertexPointBox[5].pos.y = pos.y + debugWidth;
+
+		vertexPointBox[6].pos.x = pos.x - debugWidth;
+		vertexPointBox[6].pos.y = pos.y + debugWidth;
+
+		vertexPointBox[7].pos.x = pos.x - debugWidth;
+		vertexPointBox[7].pos.y = pos.y - debugWidth;
+
+
+		for( uint32_t i = 0; i != 8; ++i )
+		{
+			vertexPointBox[i].pos.z = 0.f;
+
+			vertexPointBox[i].color = 0xFF00FF00;
+			vertexPointBox[i].uv.x = 0.f;
+			vertexPointBox[i].uv.y = 0.f;
+			vertexPointBox[i].uv2.x = 0.f;
+			vertexPointBox[i].uv2.y = 0.f;
+		}
+
+		const RenderMaterialInterfacePtr & debugMaterial = RENDER_SERVICE(m_serviceProvider)
+			->getDebugMaterial();
+
+		RENDER_SERVICE(m_serviceProvider)
+			->addRenderLine( _viewport, _camera, debugMaterial, vertexPointBox, 8, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 

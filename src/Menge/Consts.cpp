@@ -49,6 +49,7 @@ namespace Menge
         INIT_CONST( HotSpotImage );
         INIT_CONST( HotSpotShape );
         INIT_CONST( Point );
+		INIT_CONST( Line );
         INIT_CONST( Window );
         INIT_CONST( Image );
         INIT_CONST( Video );

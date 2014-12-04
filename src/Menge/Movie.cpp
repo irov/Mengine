@@ -987,8 +987,9 @@ namespace Menge
 		}
 
 		layer_slot->setName( _layer.name );
+		layer_slot->setLocalPosition( _layer.position );
 
-		layer_slot->setMovieName( m_name );
+		layer_slot->setMovieName( m_name );		
 
 		this->addMovieNode_( _layer, layer_slot );
 
@@ -1023,6 +1024,7 @@ namespace Menge
 		}
 
 		layer_slot->setName( _layer.name );
+		layer_slot->setLocalPosition( _layer.position );
 
 		this->addMovieNode_( _layer, layer_slot );
 
@@ -1208,6 +1210,9 @@ namespace Menge
 			return false;
 		}
 
+		layer_hotspotimage->setName( _layer.name );
+		layer_hotspotimage->setLocalPosition( _layer.position );
+
 		ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceHIT>( _layer.source );
 
@@ -1215,10 +1220,8 @@ namespace Menge
 		{
 			return false;
 		}
-
+		
 		layer_hotspotimage->setResourceHIT( resourceHIT );
-
-		layer_hotspotimage->setName( _layer.name );
 
 		this->addMovieNode_( _layer, layer_hotspotimage );
 
@@ -1235,6 +1238,9 @@ namespace Menge
 			return false;
 		}
 
+		layer_hotspotshape->setName( _layer.name );
+		layer_hotspotshape->setLocalPosition( _layer.position );
+
 		ResourceShape * resourceShape = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceShape>( _layer.source );
 
@@ -1244,9 +1250,7 @@ namespace Menge
 		}
 
 		layer_hotspotshape->setResourceShape( resourceShape );
-
-		layer_hotspotshape->setName( _layer.name );
-
+		
 		this->addMovieNode_( _layer, layer_hotspotshape );
 
 		return true;
@@ -1317,6 +1321,7 @@ namespace Menge
 		}
 
 		layer_movie->setName( _layer.name );
+		layer_movie->setLocalPosition( _layer.position );
 
 		ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceMovie>( _layer.source );
@@ -1352,6 +1357,7 @@ namespace Menge
 		}
 
 		layer_movie->setName( _layer.name );
+		layer_movie->setLocalPosition( _layer.position );
 
 		ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceMovie>( _layer.source );
@@ -1387,6 +1393,7 @@ namespace Menge
 		}
 
 		movie_internal->setName( _layer.name );
+		movie_internal->setLocalPosition( _layer.position );
 
 		ResourceInternalObject * resourceInternalObject = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceInternalObject>( _layer.source );
@@ -1638,6 +1645,7 @@ namespace Menge
 			->createNodeT<MovieEvent>( CONST_STRING(m_serviceProvider, MovieEvent) );
 
 		layer_event->setName( _layer.name );
+		layer_event->setLocalPosition( _layer.position );
 
 		layer_event->setResourceMovie( m_resourceMovie );
 

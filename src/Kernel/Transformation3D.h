@@ -40,6 +40,7 @@ namespace Menge
 		void setLocalPosition( const mt::vec3f & _position );
 		inline const mt::vec3f & getLocalPosition() const;
 
+	public:
 		void setOrigin( const mt::vec3f& _origin );
 		inline const mt::vec3f& getOrigin() const;
 

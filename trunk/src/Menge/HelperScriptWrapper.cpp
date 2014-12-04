@@ -98,10 +98,11 @@ namespace Menge
 
 		void s_debug()
 		{
+			printf("debug!\n");
+
 #	ifdef _MSC_VER
 			_asm int 3;
-#	endif
-			printf("debug!\n");
+#	endif			
 		}
 
 		size_t s_globalmemoryuse()
@@ -215,6 +216,19 @@ namespace Menge
 			norm_v2_v2(direction_n, direction);
 
 			return direction_n;
+		}
+
+		float my_angle_from_v3_v3( const mt::vec2f & _from, const mt::vec2f & _to )
+		{
+			mt::vec2f direction;
+			sub_v2_v2(direction, _to, _from);
+
+			mt::vec2f direction_n;
+			norm_v2_v2(direction_n, direction);
+
+			float angle = mt::signed_angle( direction_n );
+
+			return angle;
 		}
 
 		mt::vec2f mt_norm_v2( const mt::vec2f & _vec )
@@ -1068,7 +1082,7 @@ namespace Menge
 					);
 			}
 
-			const ConstString & text = entry->getText();
+			const ConstString & text = entry->getValue();
 
             WString unicode;
             if( Helper::utf8ToUnicode(m_serviceProvider, text, unicode ) == false )
@@ -1093,7 +1107,7 @@ namespace Menge
 					);
 			}
 
-			const ConstString & text = entry->getText();
+			const ConstString & text = entry->getValue();
 
 			uint32_t count = text.size();
 
@@ -1322,6 +1336,7 @@ namespace Menge
 		pybind::def_functor( "acosf", helperScriptMethod, &HelperScriptMethod::mt_acosf );
 		pybind::def_functor( "atanf", helperScriptMethod, &HelperScriptMethod::mt_atanf );
 		pybind::def_functor( "direction", helperScriptMethod, &HelperScriptMethod::mt_direction );
+		pybind::def_functor( "angle_from_v3_v3", helperScriptMethod, &HelperScriptMethod::my_angle_from_v3_v3 );
         pybind::def_functor( "norm_v2", helperScriptMethod, &HelperScriptMethod::mt_norm_v2 );
 
         pybind::def_functor( "angle_correct_interpolate_from_to", helperScriptMethod, &HelperScriptMethod::s_angle_correct_interpolate_from_to );

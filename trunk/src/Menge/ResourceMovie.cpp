@@ -6,6 +6,7 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/PrefetcherInterface.h"
 #	include "Interface/ConfigInterface.h"
+#	include "Interface/TextInterface.h"
 
 //#	include "ResourceImageDefault.h"
 #	include "ResourceShape.h"
@@ -295,6 +296,28 @@ namespace Menge
 					continue;
 				}
 			}
+
+			if( layer.type == CONST_STRING(m_serviceProvider, MovieText)
+				|| layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) 	
+				)
+			{
+				const TextEntryInterface * entry;
+				if( TEXT_SERVICE(m_serviceProvider)
+					->existText( layer.name, &entry ) == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' type '%s' text %s not found"
+						, this->getName().c_str()
+						, layer.index
+						, layer.name.c_str()
+						, layer.type.c_str()
+						, layer.name.c_str()
+						);
+
+					layers_successful = false;
+
+					continue;
+				}
+			}
         }
 
         return layers_successful;
@@ -362,6 +385,7 @@ namespace Menge
             meta_layer2d.get_PlayCount( ml.playCount );
             meta_layer2d.get_Stretch( ml.scretch );
 			meta_layer2d.get_Switch( ml.switcher );
+			meta_layer2d.get_Position( ml.position );
 
             if( ml.in < 0.f )
             {
@@ -407,9 +431,11 @@ namespace Menge
 
             meta_layer3d.get_TimeRemap( ml.timeRemap );
             meta_layer3d.get_Shape( ml.shape );
+			meta_layer3d.get_Polygon( ml.polygon );
             meta_layer3d.get_PlayCount( ml.playCount );
             meta_layer3d.get_Stretch( ml.scretch );
 			meta_layer3d.get_Switch( ml.switcher );
+			meta_layer3d.get_Position( ml.position );
 				
             if( ml.in < 0.f )
             {

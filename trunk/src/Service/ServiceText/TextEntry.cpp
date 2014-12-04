@@ -33,7 +33,7 @@ namespace Menge
 		return m_key;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextEntry::getText() const
+	const ConstString & TextEntry::getValue() const
 	{
 		return m_text;
 	}

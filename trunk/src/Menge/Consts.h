@@ -46,6 +46,7 @@ namespace Menge
         DECL_CONST( HotSpotImage );
         DECL_CONST( HotSpotShape );
         DECL_CONST( Point );
+		DECL_CONST( Line );
 		DECL_CONST( Window );
 		DECL_CONST( Image );
 		DECL_CONST( Video );

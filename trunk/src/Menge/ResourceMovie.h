@@ -71,7 +71,9 @@ namespace Menge
 		ConstString keyFramesName;
 		FilePath keyFramesPath;
 
-		ConstString source;		
+		ConstString source;
+
+		mt::vec3f position;
 
 		bool immutable;
 		bool timeRemap;
@@ -211,8 +213,6 @@ namespace Menge
 
 	public:
 		inline const MovieFramePackInterfacePtr & getFramePack() const;
-
-	public:
 
 	public:
 		bool hasMovieLayer( const ConstString & _name, const MovieLayer ** _layer ) const;

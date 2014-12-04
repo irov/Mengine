@@ -130,12 +130,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
-		//printf("Animation::_render %s %d %f\n"
-		//	, m_name.c_str()
-		//	, m_currentFrame
-		//	, this->getTiming()
-		//	);
-
 		Sprite::_render( _viewport, _camera );
 	}
 	//////////////////////////////////////////////////////////////////////////

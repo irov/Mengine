@@ -164,6 +164,11 @@ namespace Menge
 			return;
 		}
 
+		if( TEXT_SERVICE(m_serviceProvider)->getEnableText() == false )
+		{
+			return;
+		}
+
 		this->renderOutline_( _viewport, _camera );
 
 		const RenderMaterialInterfacePtr & material = this->getMaterialFont();
@@ -554,6 +559,7 @@ namespace Menge
 			{
 				TEXT_SERVICE(m_serviceProvider)
 					->releaseFont( m_font );
+
 				m_font = nullptr;
 
 				m_materialFont = nullptr;
@@ -955,7 +961,7 @@ namespace Menge
 	{
 		m_cacheText.clear();
 
-		const ConstString & textValue = m_textEntry->getText();
+		const ConstString & textValue = m_textEntry->getValue();
 
 		const char * str_textValue = textValue.c_str();
 		

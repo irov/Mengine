@@ -2205,6 +2205,35 @@ namespace Metacode
                     return true;
                 }
                 
+                bool has_Position() const
+                {
+                    return Position_successful;
+                }
+                
+                bool get_Position( mt::vec3f & _value ) const
+                {
+                    if( Position_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Position;
+                
+                    return true;
+                }
+                
+                bool swap_Position( mt::vec3f & _value ) const
+                {
+                    if( Position_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Position);
+                
+                    return true;
+                }
+                
                 bool has_Shape() const
                 {
                     return Shape_successful;
@@ -2390,6 +2419,8 @@ namespace Metacode
                 mutable uint32_t PlayCount;
                 bool Polygon_successful;
                 mutable bool Polygon;
+                bool Position_successful;
+                mutable mt::vec3f Position;
                 bool Shape_successful;
                 mutable bool Shape;
                 mutable Menge::ConstString Source;
@@ -2537,6 +2568,64 @@ namespace Metacode
                     }
                 
                     std::swap( _value, this->PlayCount);
+                
+                    return true;
+                }
+                
+                bool has_Polygon() const
+                {
+                    return Polygon_successful;
+                }
+                
+                bool get_Polygon( bool & _value ) const
+                {
+                    if( Polygon_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Polygon;
+                
+                    return true;
+                }
+                
+                bool swap_Polygon( bool & _value ) const
+                {
+                    if( Polygon_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Polygon);
+                
+                    return true;
+                }
+                
+                bool has_Position() const
+                {
+                    return Position_successful;
+                }
+                
+                bool get_Position( mt::vec3f & _value ) const
+                {
+                    if( Position_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Position;
+                
+                    return true;
+                }
+                
+                bool swap_Position( mt::vec3f & _value ) const
+                {
+                    if( Position_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Position);
                 
                     return true;
                 }
@@ -2724,6 +2813,10 @@ namespace Metacode
                 mutable uint32_t Parent;
                 bool PlayCount_successful;
                 mutable uint32_t PlayCount;
+                bool Polygon_successful;
+                mutable bool Polygon;
+                bool Position_successful;
+                mutable mt::vec3f Position;
                 bool Shape_successful;
                 mutable bool Shape;
                 mutable Menge::ConstString Source;

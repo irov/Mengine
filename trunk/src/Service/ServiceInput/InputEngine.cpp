@@ -138,6 +138,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isAltDown() const
 	{
+		if( this->isKeyDown( KC_MENU ) == true )
+		{
+			return true;
+		}
+
 		if( this->isKeyDown( KC_LMENU ) == true )
 		{
 			return true;
@@ -153,6 +158,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isShiftDown() const
 	{
+		if( this->isKeyDown( KC_SHIFT ) == true )
+		{
+			return true;
+		}
+
 		if( this->isKeyDown( KC_LSHIFT ) == true )
 		{
 			return true;
@@ -168,6 +178,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isCtrlDown() const
 	{
+		if( this->isKeyDown( KC_CONTROL ) == true )
+		{
+			return true;
+		}
+
 		if( this->isKeyDown( KC_LCONTROL ) == true )
 		{
 			return true;

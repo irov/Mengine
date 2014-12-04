@@ -71,7 +71,7 @@ namespace Menge
 	{
 	public:
 		virtual const ConstString & getKey() const = 0;
-		virtual const ConstString & getText() const = 0;
+		virtual const ConstString & getValue() const = 0;
 
 	public:
 		virtual const ConstString & getFontName() const = 0;
@@ -116,6 +116,10 @@ namespace Menge
 
 	public:
 		virtual void visitFonts( VisitorTextFontInterface * _vistitor ) = 0;
+
+	public:
+		virtual void setEnableText( bool _enable ) = 0;
+		virtual bool getEnableText() const = 0;
 
 	public:
 		virtual const ConstString & getDefaultFontName() const = 0;

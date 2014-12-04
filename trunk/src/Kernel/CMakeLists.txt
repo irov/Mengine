@@ -66,7 +66,7 @@ Node\\\\Identity
 )
 
 ADD_FILTER(
-Node\\\\Identity
+Node\\\\Entity
 	Entity.cpp
 	Entity.h
 )

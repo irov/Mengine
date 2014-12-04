@@ -181,8 +181,6 @@ namespace Menge
 			return false;
 		}
 
-		//printf("Animatable stop\n");
-
 		m_playTime = 0.f;
 		m_play = false;
 		m_interrupt = false;
@@ -213,8 +211,6 @@ namespace Menge
 		{
 			return;
 		}
-
-		//printf("Animatable end\n");
 
 		m_play = false;
 		m_interrupt = false;

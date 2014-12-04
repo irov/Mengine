@@ -24,6 +24,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextManager::TextManager()
         : m_serviceProvider(nullptr)
+		, m_enableText(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -472,7 +473,7 @@ namespace Menge
 		{
 			if( _isOverride == false )
 			{
-				const ConstString & text = textEntry_has->getText();
+				const ConstString & text = textEntry_has->getValue();
 
 				WString ws_text;
 				Helper::utf8ToUnicode( m_serviceProvider, text, ws_text );
@@ -626,6 +627,58 @@ namespace Menge
 
 						m_successful = false;
 					}
+
+					const ConstString & value = _text->getValue();
+
+					const char * text_str = value.c_str();
+					size_t text_len = value.size();
+
+					for( const char
+						*text_it = text_str,
+						*text_end = text_str + text_len + 1;
+					text_it != text_end;
+					)
+					{			
+						uint32_t code = 0;
+						utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
+
+						if( err != utf8::internal::UTF8_OK )
+						{
+							LOGGER_ERROR(m_serviceProvider)("Text %s invalid utf8 |%s| err code %d"
+								, textKey.c_str()
+								, text_it
+								, err
+								);
+
+							m_successful = false;
+
+							continue;
+						}
+
+						if( code == 0 )
+						{
+							continue;
+						}
+
+						if( code == 10 )
+						{
+							continue;
+						}
+
+						GlyphCode glyphChar;
+						glyphChar.setCode( code );
+
+						if( font->hasGlyph( glyphChar ) == false )
+						{
+							LOGGER_ERROR(m_serviceProvider)("Text %s fontName %s not found glyph code '%d'"
+								, textKey.c_str()
+								, fontName.c_str()
+								, code
+								);
+
+							m_successful = false;
+						}
+					}
 				}
 			}
 
@@ -662,5 +715,15 @@ namespace Menge
 		}
 
 		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextManager::setEnableText( bool _enable )
+	{
+		m_enableText = _enable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextManager::getEnableText() const
+	{
+		return m_enableText;
 	}
 }

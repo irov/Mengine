@@ -1167,6 +1167,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initialize( const String & _commandLine )
     {
+		this->initializeMarmaladePauseCallback_();
+
         m_commandLine = " " + _commandLine + " ";
 
         setlocale( LC_CTYPE, "" );
@@ -1558,6 +1560,55 @@ namespace Menge
         
         return 0;
     }
+	//////////////////////////////////////////////////////////////////////////
+	static int32 s3eCallback_UnPause( void * _systemData, void * _userData )
+	{
+		(void)_systemData;
+
+		MarmaladeApplication * application = static_cast<MarmaladeApplication *>(_userData);
+
+		application->setActivate( true );
+
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static int32 s3eCallback_Pause( void * _systemData, void * _userData )
+	{
+		(void)_systemData;
+
+		MarmaladeApplication * application = static_cast<MarmaladeApplication *>(_userData);
+
+		application->setActivate( false );
+
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeApplication::setActivate( bool _value )
+	{
+		m_active = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeApplication::initializeMarmaladePauseCallback_()
+	{
+		m_active = true;
+
+		bool successful = true;
+
+		successful &= s3eDeviceRegister( S3E_DEVICE_UNPAUSE, &s3eCallback_UnPause, this ) == S3E_RESULT_SUCCESS;
+		successful &= s3eDeviceRegister( S3E_DEVICE_FOREGROUND, &s3eCallback_UnPause, this ) == S3E_RESULT_SUCCESS;
+		
+		successful &= s3eDeviceRegister( S3E_DEVICE_BACKGROUND, &s3eCallback_Pause, this ) == S3E_RESULT_SUCCESS;
+		successful &= s3eDeviceRegister( S3E_DEVICE_PAUSE, &s3eCallback_Pause, this ) == S3E_RESULT_SUCCESS;
+
+		if( successful == false )
+		{
+			s3eDeviceUnRegister( S3E_DEVICE_UNPAUSE, &s3eCallback_UnPause );
+			s3eDeviceUnRegister( S3E_DEVICE_FOREGROUND, &s3eCallback_UnPause );
+
+			s3eDeviceUnRegister( S3E_DEVICE_BACKGROUND, &s3eCallback_Pause );
+			s3eDeviceUnRegister( S3E_DEVICE_PAUSE, &s3eCallback_Pause );						
+		}
+	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::loop()
     {
@@ -1568,13 +1619,69 @@ namespace Menge
 
 		if( s3eSurfaceRegister( S3E_SURFACE_SCREENSIZE, &s3eCallback_Application_S3E_SURFACE_SCREENSIZE, m_application ) != S3E_RESULT_SUCCESS )
 		{
-			return;
+			const char * err_str = s3eSurfaceGetErrorString();
+			s3eSurfaceError err = s3eSurfaceGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_SURFACE_SCREENSIZE %s [%d]"
+				, err_str
+				, err
+				);
 		}
-        
-        if( s3eSurfaceRegister( S3E_SURFACE_SCREENSIZE, &s3eCallback_Input_S3E_SURFACE_SCREENSIZE, m_marmaladeInput ) != S3E_RESULT_SUCCESS )
-        {
-            return;
-        }
+
+		if( s3eSurfaceRegister( S3E_SURFACE_SCREENSIZE, &s3eCallback_Input_S3E_SURFACE_SCREENSIZE, m_marmaladeInput ) != S3E_RESULT_SUCCESS )
+		{
+			const char * err_str = s3eSurfaceGetErrorString();
+			s3eSurfaceError err = s3eSurfaceGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_SURFACE_SCREENSIZE %s [%d]"
+				, err_str
+				, err
+				);
+		}
+
+		if( s3eDeviceRegister( S3E_DEVICE_UNPAUSE, &s3eCallback_UnPause, m_application ) != S3E_RESULT_SUCCESS )
+		{
+			const char * err_str = s3eDeviceGetErrorString();
+			s3eDeviceError err = s3eDeviceGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_DEVICE_UNPAUSE %s [%d]"
+				, err_str
+				, err
+				);
+		}
+
+		if( s3eDeviceRegister( S3E_DEVICE_PAUSE, &s3eCallback_Pause, m_application ) != S3E_RESULT_SUCCESS )
+		{
+			const char * err_str = s3eDeviceGetErrorString();
+			s3eDeviceError err = s3eDeviceGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_DEVICE_PAUSE %s [%d]"
+				, err_str
+				, err
+				);
+		}
+
+		if( s3eDeviceRegister( S3E_DEVICE_FOREGROUND, &s3eCallback_UnPause, m_application ) != S3E_RESULT_SUCCESS )
+		{
+			const char * err_str = s3eDeviceGetErrorString();
+			s3eDeviceError err = s3eDeviceGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_DEVICE_FOREGROUND %s [%d]"
+				, err_str
+				, err
+				);
+		}
+
+		if( s3eDeviceRegister( S3E_DEVICE_BACKGROUND, &s3eCallback_Pause, m_application ) != S3E_RESULT_SUCCESS )
+		{
+			const char * err_str = s3eDeviceGetErrorString();
+			s3eDeviceError err = s3eDeviceGetError();
+
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_DEVICE_BACKGROUND %s [%d]"
+				, err_str
+				, err
+				);
+		}
 
         while( true )
         {
@@ -1584,6 +1691,13 @@ namespace Menge
             {
                 break;
             }
+
+			if( m_active == false )
+			{
+				s3eDeviceYield( 20 );
+
+				continue;
+			}
             
             if( m_application->isFocus() == true )
             {

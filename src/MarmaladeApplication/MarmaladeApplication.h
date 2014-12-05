@@ -126,8 +126,14 @@ namespace Menge
 		bool initializeDataManager_();
 		bool initializeCacheManager_();
 		bool initializePrefetcherService_();
+
+	public:
+		void setActivate( bool _value );
+
+	protected:
+		void initializeMarmaladePauseCallback_();
 				
-    private:
+	protected:
 		ServiceProviderInterface * m_serviceProvider;
 		ApplicationInterface * m_application;
 		

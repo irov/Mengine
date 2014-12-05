@@ -765,7 +765,7 @@ namespace Menge
 		}
 
 		ArchivatorInterfacePtr archivator = ARCHIVE_SERVICE(serviceProvider)
-			->getArchivator( CONST_STRING_LOCAL(serviceProvider, "lz4") );
+			->getArchivator( STRINGIZE_STRING_LOCAL(serviceProvider, "lz4") );
 
 		size_t compressBound = archivator->compressBound( bufferSize );
 

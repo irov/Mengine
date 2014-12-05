@@ -3115,7 +3115,7 @@ namespace Menge
 
 		if( m_nopause == false )
 		{
-			m_application->setFocus( m_active, point );
+			m_application->setFocus( m_active, true, point );
 			m_inputService->onFocus( m_active );
 
 			bool turnSound = m_active;
@@ -3123,7 +3123,7 @@ namespace Menge
 		}
 		else
 		{
-			m_application->setFocus( true, point );
+			m_application->setFocus( true, true, point );
 			m_inputService->onFocus( true );
 
 			m_application->turnSound( true );

@@ -133,7 +133,7 @@ namespace Menge
 		bool beginUpdate() override;
 		void tick( float _timing ) override;
 		void endUpdate() override;
-		void setFocus( bool _focus, const mt::vec2f & _point ) override;
+		void setFocus( bool _focus, bool _mouse, const mt::vec2f & _point ) override;
 		void close() override;
 
 		void turnSound( bool _turn ) override;

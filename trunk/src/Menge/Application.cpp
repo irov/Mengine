@@ -1312,7 +1312,7 @@ namespace Menge
 		return m_focus;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setFocus( bool _focus, const mt::vec2f & _point )
+	void Application::setFocus( bool _focus, bool _mouse, const mt::vec2f & _point )
 	{
 		//return;
 		if( m_focus == _focus ) 
@@ -1331,13 +1331,16 @@ namespace Menge
 		{
 			m_game->setFocus( m_focus );
 
-			if( m_focus == false )
+			if( _mouse == true )
 			{
-				this->mouseLeave();
-			}
-			else
-			{
-				this->mouseEnter( _point );
+				if( m_focus == false )
+				{
+					this->mouseLeave();
+				}
+				else
+				{
+					this->mouseEnter( _point );
+				}
 			}
 		}
 		/*if( m_focus == true )

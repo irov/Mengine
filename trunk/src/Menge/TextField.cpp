@@ -862,7 +862,7 @@ namespace Menge
         this->invalidateTextLines();	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setTextID( const ConstString& _key )
+	void TextField::setTextID( const ConstString & _key )
 	{	
 		m_textFormatArgs.clear();
 
@@ -916,6 +916,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextFormatArgs( const TVectorString & _args )
 	{
+		if( m_textFormatArgs == _args )
+		{
+			return;
+		}
+
 		m_textFormatArgs = _args;
 
 		this->invalidateFont();

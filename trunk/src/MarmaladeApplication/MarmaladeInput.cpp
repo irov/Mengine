@@ -191,13 +191,18 @@ namespace Menge
 		mt::vec2f point;
 		_input->correctPoint_( cursorX, cursorY, point );
 
-		s3eWChar ch = 0;
+		uint32_t ch = 0;
 
 		int newCharState = s3eKeyboardGetInt( S3E_KEYBOARD_GET_CHAR );
 
 		if( newCharState == 1 )
 		{
-			ch = s3eKeyboardGetChar();
+			s3eWChar s3e_ch = s3eKeyboardGetChar();
+
+			if( s3e_ch != S3E_WEOF )
+			{
+				ch = s3e_ch;
+			}
 		}
 
         KeyCode code = _input->getKeyCode_( _event->m_Key );
@@ -333,6 +338,7 @@ namespace Menge
             m_keys[i] = KC_UNASSIGNED;
         }
 
+		m_keys[s3eKeyEnter] = Menge::KC_RETURN;
         m_keys[s3eKeyBack] = Menge::KC_ESCAPE;
         m_keys[s3eKeyMenu] = Menge::KC_MENU;
 

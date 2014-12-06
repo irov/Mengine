@@ -4,10 +4,11 @@ options
 {
 	arm-arch=armv6
 	arm-fpu=vfp
-	strict-mkb
+	#strict-mkb
 	enable-exceptions    
 	preinclude=preinclude_application.h
     
+    app-icf="app.icf"
     s3e-data-dir="d:/Projects/DynastyBuild_Marmalade/data"
 }
 
@@ -59,7 +60,6 @@ includepaths
 files
 {    
     [MarmaladeSettings]
-    (data)
     app.icf
     app.config.txt
 
@@ -115,10 +115,23 @@ deployments
 {
 	["Default"]
 	["HolidayFun_Android"]
+	app-icf='d:/Projects/HolidayFunBuild_ETC1/app.icf'
 	assets='HolidayFun_Android'
 	caption='CandyStorm'
+	icon='d:/Projects/HolidayFunBuild_ETC1/logo.png'
 	name='CandyStorm'
-	splashscreen-auto-onblack='1'
+	provider='Argali'
+	["HolidayFun_IOS"]
+	app-icf='d:/Projects/HolidayFunBuild_PVRTC/app.icf'
+	assets='HolidayFun_IOS'
+	caption='CandyStorm'
+	icon='d:/Projects/HolidayFunBuild_PVRTC/logo.png'
+	iphone-appid='com.Argali.boo'
+	iphone-provisioning-profile='Argali.mobileprovision'
+	iphone-sign-for-distribution=1
+	iphone-signing-identity='iPhone Distribution'
+	name='CandyStorm'
+	provider='Argali'
 	["Zombieland_Android"]
 	app-icf='d:/Projects/ZombielandBuild_ETC1/app.icf'
 	assets='Zombieland_Android'

@@ -34,5 +34,17 @@ assets
     Game.ini
     Game.pak
     ResourcePack.ini
-    Resources.pak        
+    Resources.pak
+    
+	[HolidayFun_IOS]
+	("d:/Projects/HolidayFunBuild_PVRTC")
+    Localization
+    app.config.txt
+    application.ini
+	Framework2.pak
+    Framework3.pak
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak 
 }

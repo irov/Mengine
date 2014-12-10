@@ -17,7 +17,7 @@ namespace Menge
 #   ifdef MENGINE_FACTORABLE_DEBUG
         if( m_destroy == false && m_factory != nullptr )
         {            
-            STDEX_THROW_EXCEPTION("Factorable deleter but not destroy!!");
+            MENGINE_THROW_EXCEPTION("Factorable deleter but not destroy!!");
         }
 #   endif
     }
@@ -32,7 +32,7 @@ namespace Menge
 #   ifdef MENGINE_FACTORABLE_DEBUG
         if( m_destroy == true )
         {
-            STDEX_THROW_EXCEPTION("m_destroy == true");
+            MENGINE_THROW_EXCEPTION("m_destroy == true");
         }
 #   endif
 

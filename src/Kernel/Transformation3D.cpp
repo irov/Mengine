@@ -2,6 +2,8 @@
 
 #	include "Math/angle.h"
 
+#	include "Core/Exception.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -215,6 +217,17 @@ namespace Menge
 	void Transformation3D::updateLocalMatrix() const
 	{
 		m_invalidateLocalMatrix = false;
+
+#	ifdef _DEBUG
+		if( mt::cmp_f_z( m_scale.x ) == true || mt::cmp_f_z( m_scale.y ) == true || mt::cmp_f_z( m_scale.z ) == true )
+		{
+			MENGINE_THROW_EXCEPTION("Transformation has zero scale [%f, %f, %f]"
+				, m_scale.x
+				, m_scale.y
+				, m_scale.z
+				);
+		}
+#	endif
 
 		mt::mat4f mat_scale;
 		mt::ident_m4( mat_scale );

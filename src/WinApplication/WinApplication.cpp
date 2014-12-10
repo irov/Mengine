@@ -2036,14 +2036,6 @@ namespace Menge
 				m_application->endUpdate();
 			}
 		}
-		catch( const stdex::exception & ex )
-		{
-			LOGGER_CRITICAL(m_serviceProvider)("Win32ThreadIdentity stdex::exception '%s' file %d:%s"
-				, ex.doc
-				, ex.line
-				, ex.file
-				);
-		}
 		catch( const std::exception & ex )
 		{
 			LOGGER_CRITICAL(m_serviceProvider)("Win32ThreadIdentity std::exception '%s'"
@@ -2052,7 +2044,7 @@ namespace Menge
 		}
 		catch( ... )
 		{			
-			LOGGER_CRITICAL(m_serviceProvider)("Win32ThreadIdentity unsupported exception"
+			LOGGER_CRITICAL(m_serviceProvider)("Win32ThreadIdentity unknown exception"
 				);
 		}
 	}

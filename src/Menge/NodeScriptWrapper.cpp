@@ -748,16 +748,16 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void Transformation3D_setScale( Transformation3D * _transformation, const mt::vec3f & _scale )
         {
-            if( _scale.x == 0.f || _scale.y == 0.f || _scale.z == 0.f )
-            {
+			if( mt::cmp_f_z( _scale.x ) == true || mt::cmp_f_z( _scale.y ) == true || mt::cmp_f_z( _scale.z ) == true )
+			{
 				pybind::throw_exception("Transformation3D::setScale scale xyz not zero! (%f %f %f)"
 					, _scale.x
 					, _scale.y
 					, _scale.z
 					);
 
-                return;
-            }
+				return;
+			}
             
             _transformation->setScale( _scale );
         }
@@ -3005,7 +3005,7 @@ namespace Menge
                 return 0;
             }
 
-            if( _scale.x == 0.f || _scale.y == 0.f || _scale.z == 0.f )
+            if( mt::cmp_f_z( _scale.x ) == true || mt::cmp_f_z( _scale.y ) == true || mt::cmp_f_z( _scale.z ) == true )
             {
                 LOGGER_ERROR(m_serviceProvider)("Node::scaleTo %s scale xyz not zero! (%f %f %f)"
                     , _node->getName().c_str()
@@ -5033,6 +5033,8 @@ namespace Menge
 					.def( "getPolygonWM", &HotSpot::getPolygonWM )
 					.def( "setOutward", &HotSpot::setOutward )
 					.def( "getOutward", &HotSpot::getOutward )
+					.def( "setGlobal", &HotSpot::setGlobal )
+					.def( "getGlobal", &HotSpot::getGlobal )
                     .def( "setDefaultHandle", &HotSpot::setDefaultHandle )
                     .def( "getDefaultHandle", &HotSpot::getDefaultHandle )
 					.def( "isMousePickerOver", &HotSpot::isMousePickerOver )

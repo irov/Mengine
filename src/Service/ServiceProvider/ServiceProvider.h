@@ -25,9 +25,6 @@ namespace Menge
 		bool unregistryService( const char * _name ) override;
         
 	protected:
-		void throwException( const char * _serviceName, const char * _what, const char * _file, uint32_t _line ) override;
-
-	protected:
         struct ServiceDesc
         {
             char name[SERVICE_PROVIDER_NAME_SIZE];

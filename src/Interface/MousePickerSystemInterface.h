@@ -17,6 +17,7 @@ namespace Menge
 		class MousePickerTrapInterface * trap;
 		uint32_t id;
 		bool picked;
+		bool down;
 		bool handle;
 		bool dead;
 	};

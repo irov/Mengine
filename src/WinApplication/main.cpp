@@ -38,14 +38,9 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     
 		winApplication.finalize();
 	}
-	catch( const Menge::ServiceException & se )
-	{
-		printf("ServiceException %s exception %s file %d:%d"
-			, se.serviceName
-			, se.what
-			, se.line
-			, se.file
-			);
+	catch( const std::exception & se )
+	{		
+		MessageBoxA( NULL, se.what(), "Mengine exception", MB_OK );
 	}
     
 	return 0;

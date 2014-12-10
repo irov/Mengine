@@ -51,7 +51,7 @@ namespace Menge
 			}
 			else
 			{
-				throw ThreadGuardException(_file, _line, _doc);
+				MENGINE_THROW_EXCEPTION_FL(_file, _line)(_doc);
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -82,7 +82,7 @@ namespace Menge
 						);
 				}
 
-				throw ThreadGuardException(m_file, m_line, m_doc);
+				MENGINE_THROW_EXCEPTION_FL(m_file, m_line)(m_doc);
 			}
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,7 @@ namespace Menge
 						);
 				}
 				
-				throw ThreadGuardException(m_file, m_line, m_doc);
+				MENGINE_THROW_EXCEPTION_FL(m_file, m_line)(m_doc);
 			}
 		}
 	}

@@ -48,6 +48,7 @@ namespace Menge
             , state(0)
 			, immutable(false)
 			, switcher(false)
+			, block(false)
 		{
 		}
 
@@ -81,6 +82,7 @@ namespace Menge
 		bool polygon;
 		bool loop;
 		bool switcher;
+		bool block;
 
         bool isNode() const
         {

@@ -220,6 +220,7 @@ namespace Menge
 		state.trap = _trap;
 		state.id = id;
 		state.picked = false;
+		state.down = false;
 		state.handle = false;
 		state.dead = false;
 
@@ -325,9 +326,24 @@ namespace Menge
 				continue;
 			}
 			
+			if( _isDown == false )
+			{
+				if( state->down == false )
+				{
+					continue;
+				}
+
+				state->down = false;
+			}
+			
 			if( state->picked == false )
 			{
 				continue;
+			}
+
+			if( _isDown == true )
+			{
+				state->down = true;
 			}
 			
 			MousePickerTrapInterface * trap = state->trap;
@@ -376,6 +392,11 @@ namespace Menge
 			{
 				continue;
 			}
+
+			if( _isDown == false && state->down == false )
+			{
+				continue;
+			}
 			
 			MousePickerTrapInterface * trap = state->trap;
 
@@ -420,6 +441,11 @@ namespace Menge
 			}
 
 			if( state->picked == false )
+			{
+				continue;
+			}
+
+			if( _isDown == false && state->down == false )
 			{
 				continue;
 			}

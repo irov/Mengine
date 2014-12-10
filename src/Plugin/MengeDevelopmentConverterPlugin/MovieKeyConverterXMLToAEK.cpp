@@ -199,6 +199,21 @@ namespace Menge
 
 					frameLayer.source = frame;
 					frameLayer.count = count;
+
+					if( mt::cmp_f_z( frame.scale.x ) == true )
+					{
+						frame.scale.x = mt::m_eps2;
+					}
+
+					if( mt::cmp_f_z( frame.scale.y ) == true )
+					{
+						frame.scale.y = mt::m_eps2;
+					}
+
+					if( mt::cmp_f_z( frame.scale.z ) == true )
+					{
+						frame.scale.z = mt::m_eps2;
+					}
 				}
 			}
 			else
@@ -212,7 +227,7 @@ namespace Menge
 				frame.anchorPoint = mt::vec3f(0.f, 0.f, 0.f);
 				frame.position = mt::vec3f(0.f, 0.f, 0.f);
 				frame.rotation = mt::vec3f(0.f, 0.f, 0.f);
-				frame.scale = mt::vec3f(0.f, 0.f, 0.f);
+				frame.scale = mt::vec3f(1.f, 1.f, 1.f);
 				frame.opacity = 0.f;
 				frame.volume = 0.f;
 
@@ -270,6 +285,21 @@ namespace Menge
 					frame.rotation.y = 0.f;
 					frame.rotation.z = 0.f;
 
+					if( mt::cmp_f_z( frame.scale.x ) == true )
+					{
+						frame.scale.x = mt::m_eps2;
+					}
+
+					if( mt::cmp_f_z( frame.scale.y ) == true )
+					{
+						frame.scale.y = mt::m_eps2;
+					}
+
+					if( mt::cmp_f_z( frame.scale.z ) == true )
+					{
+						frame.scale.z = mt::m_eps2;
+					}
+
 					for( uint32_t i = 0; i != count; ++i )
 					{
 						frameLayer.frames.push_back( frame );
@@ -306,7 +336,7 @@ namespace Menge
 			frame.anchorPoint = mt::vec3f(0.f, 0.f, 0.f);
 			frame.position = mt::vec3f(0.f, 0.f, 0.f);
 			frame.rotation = mt::vec3f(0.f, 0.f, 0.f);
-			frame.scale = mt::vec3f(0.f, 0.f, 0.f);
+			frame.scale = mt::vec3f(1.f, 1.f, 1.f);
 			frame.opacity = 0.f;
 			frame.volume = 0.f;	
 
@@ -346,6 +376,21 @@ namespace Menge
 				mt::mul_q_q( qor, qo, qr );
 
 				mt::quat_to_euler( qor, frame.rotation );
+
+				if( mt::cmp_f_z( frame.scale.x ) == true )
+				{
+					frame.scale.x = mt::m_eps2;
+				}
+
+				if( mt::cmp_f_z( frame.scale.y ) == true )
+				{
+					frame.scale.y = mt::m_eps2;
+				}
+
+				if( mt::cmp_f_z( frame.scale.z ) == true )
+				{
+					frame.scale.z = mt::m_eps2;
+				}
 				
 				if( frameLayer.immutable == 0 )
 				{

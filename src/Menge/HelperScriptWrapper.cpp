@@ -107,9 +107,9 @@ namespace Menge
 
 		size_t s_globalmemoryuse()
 		{
-			size_t gmu = stdex_allocator_globalmemoryuse();
+			size_t mu = stdex_allocator_globalmemoryuse();
 
-			return gmu;
+			return mu;
 		}
 
 		size_t s_memoryuse()

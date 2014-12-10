@@ -21,16 +21,6 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		class ThreadGuardException
-			: public stdex::exception
-		{
-		public:
-			ThreadGuardException( const char * _file, uint32_t _line, const char * _doc )
-				: stdex::exception(_file, _line, _doc)
-			{
-			}
-		};
-		//////////////////////////////////////////////////////////////////////////
 		class ThreadGuard
 		{
 		public:

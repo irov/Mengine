@@ -5,9 +5,12 @@ PROJECT( MengeDependencies )
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-#ADD_SUBDIRECTORY( crunch )
 ADD_SUBDIRECTORY( lz4 )
-ADD_SUBDIRECTORY( libgvf )
+ADD_SUBDIRECTORY( libogg )
+ADD_SUBDIRECTORY( libvorbis )
+ADD_SUBDIRECTORY( libvorbisfile )
+ADD_SUBDIRECTORY( libtheora )
+
 #ADD_SUBDIRECTORY( cal3d )
 
 #ADD_SUBDIRECTORY( libvpx )
@@ -85,9 +88,6 @@ if(APPLE)
     ADD_SUBDIRECTORY( Python_Mac )
 endif(APPLE)
 
-ADD_SUBDIRECTORY( ogg )
-ADD_SUBDIRECTORY( vorbis )
-ADD_SUBDIRECTORY( vorbisfile )
 #ADD_SUBDIRECTORY( theora )
 
 

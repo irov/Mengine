@@ -5,22 +5,11 @@ project( libvpx )
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../libvpx )
 
 IF(MSVC)
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/vs10/vpx_config.h ${SOURCE_DIR}/vpx_config.h COPYONLY)
-
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/vs10/vpx_version.h ${SOURCE_DIR}/vpx_version.h COPYONLY)
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/vs10/vpx_config.c ${SOURCE_DIR}/vpx_config.c COPYONLY)
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/vs10/vp9_rtcd.h ${SOURCE_DIR}/vp9_rtcd.h COPYONLY)
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/vs10/vpx_scale_rtcd.h ${SOURCE_DIR}/vpx_scale_rtcd.h COPYONLY)
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/vs10/vpx_config.h ${SOURCE_DIR}/vpx_config.h COPYONLY)
 ENDIF(MSVC)
 
 IF(MINGW)
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/mingw/vpx_config.h ${SOURCE_DIR}/vpx_config.h COPYONLY)
-
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/mingw/vpx_version.h ${SOURCE_DIR}/vpx_version.h COPYONLY)
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/mingw/vpx_config.h ${SOURCE_DIR}/vpx_config.h COPYONLY)
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/mingw/vpx_config.c ${SOURCE_DIR}/vpx_config.c COPYONLY)
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/mingw/vp9_rtcd.h ${SOURCE_DIR}/vp9_rtcd.h COPYONLY)
-#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/mingw/vpx_scale_rtcd.h ${SOURCE_DIR}/vpx_scale_rtcd.h COPYONLY)
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/mingw/vpx_config.h ${SOURCE_DIR}/vpx_config.h COPYONLY)
 ENDIF(MINGW)
 
 
@@ -75,42 +64,6 @@ set( sources
     ${SOURCE_DIR}/vp8/decoder/decodframe.c
     ${SOURCE_DIR}/vp8/decoder/detokenize.c
     ${SOURCE_DIR}/vp8/decoder/onyxd_if.c
-    
-    ${SOURCE_DIR}/vp9/common/vp9_alloccommon.c
-    ${SOURCE_DIR}/vp9/common/vp9_convolve.c
-    ${SOURCE_DIR}/vp9/common/vp9_debugmodes.c
-    ${SOURCE_DIR}/vp9/common/vp9_entropy.c
-    ${SOURCE_DIR}/vp9/common/vp9_entropymode.c
-    ${SOURCE_DIR}/vp9/common/vp9_entropymv.c
-    ${SOURCE_DIR}/vp9/common/vp9_extend.c
-    ${SOURCE_DIR}/vp9/common/vp9_filter.c
-    ${SOURCE_DIR}/vp9/common/vp9_findnearmv.c
-    ${SOURCE_DIR}/vp9/common/generic/vp9_systemdependent.c
-    ${SOURCE_DIR}/vp9/common/vp9_idct.c
-    ${SOURCE_DIR}/vp9/common/vp9_pred_common.c    
-    ${SOURCE_DIR}/vp9/common/vp9_rtcd.c
-    ${SOURCE_DIR}/vp9/common/vp9_scale.c
-    ${SOURCE_DIR}/vp9/common/vp9_seg_common.c
-    ${SOURCE_DIR}/vp9/common/vp9_tile_common.c
-    ${SOURCE_DIR}/vp9/common/vp9_loopfilter.c
-    ${SOURCE_DIR}/vp9/common/vp9_loopfilter_filters.c
-    ${SOURCE_DIR}/vp9/common/vp9_mvref_common.c
-    ${SOURCE_DIR}/vp9/common/vp9_quant_common.c
-    ${SOURCE_DIR}/vp9/common/vp9_reconinter.c
-    ${SOURCE_DIR}/vp9/common/vp9_reconintra.c
-    ${SOURCE_DIR}/vp9/common/vp9_treecoder.c
-    ${SOURCE_DIR}/vp9/common/vp9_common_data.c
-    ${SOURCE_DIR}/vp9/common/vp9_scan.c
-    
-    ${SOURCE_DIR}/vp9/vp9_dx_iface.c
-    
-    ${SOURCE_DIR}/vp9/decoder/vp9_dboolhuff.c
-    ${SOURCE_DIR}/vp9/decoder/vp9_decodemv.c
-    ${SOURCE_DIR}/vp9/decoder/vp9_decodframe.c
-    ${SOURCE_DIR}/vp9/decoder/vp9_detokenize.c                       
-    ${SOURCE_DIR}/vp9/decoder/vp9_thread.c
-    ${SOURCE_DIR}/vp9/decoder/vp9_onyxd_if.c
-    ${SOURCE_DIR}/vp9/decoder/vp9_dsubexp.c
     
     ${SOURCE_DIR}/vpx_config.c
     )

@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( ogg )
 
-SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../ogg )
+SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../libogg )
 
 configure_file(Modified/os_types.h ${SOURCE_DIR}/include/ogg/os_types.h COPYONLY)
 

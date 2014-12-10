@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
-project( libwebm )
+project( webm )
 
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../libwebm )
 

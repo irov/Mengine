@@ -2,7 +2,7 @@ CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
 project( vorbis )
 
-SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../vorbis )
+SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../libvorbis )
 
 # OUR SOURCES
 set( vorbis_sources
@@ -28,7 +28,8 @@ ${SOURCE_DIR}/lib/synthesis.c
 ${SOURCE_DIR}/lib/window.c
 )
 
-include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../ogg/include)
+include_directories(${SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../libogg/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)
 
 add_library( ${PROJECT_NAME}_static STATIC ${vorbis_sources} )

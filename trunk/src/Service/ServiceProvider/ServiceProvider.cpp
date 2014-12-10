@@ -126,29 +126,6 @@ namespace Menge
             return desc.service;
         }
 
-		throw ServiceException(_name, "not found!", __FILE__, __LINE__);
-
 		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ServiceProvider::throwException( const char * _serviceName, const char * _what, const char * _file, uint32_t _line )
-	{
-		ServiceInterface * service = this->getService( "LogService" );
-		if( service != nullptr )
-		{
-			LogServiceInterface * logService = static_cast<LogServiceInterface *>(service);
-
-			char msg[2048];
-			size_t msg_size = sprintf(msg, "ServiceProvider::throwException '%s' throw '%s'\nfile: %s (%d)"
-				, _serviceName
-				, _what
-				, _file
-				, _line
-				);
-
-			logService->logMessage( Menge::LM_ERROR, 0, msg, msg_size );		
-		}
-
-		throw ServiceException(_serviceName, _what, _file, _line);
 	}
  }

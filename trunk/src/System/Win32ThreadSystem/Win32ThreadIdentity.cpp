@@ -35,21 +35,11 @@ namespace Menge
 		{
 			thread->main();
 		}
-		catch( const stdex::exception & ex )
-		{
-			ServiceProviderInterface * serviceProvider = thread->getServiceProvider();
-
-			LOGGER_CRITICAL(serviceProvider)("Win32ThreadIdentity stdex::exception '%s' file %d:%s"
-				, ex.doc
-				, ex.line
-				, ex.file
-				);
-		}
 		catch( const std::exception & ex )
 		{
 			ServiceProviderInterface * serviceProvider = thread->getServiceProvider();
 
-			LOGGER_CRITICAL(serviceProvider)("Win32ThreadIdentity std::exception '%s'"
+			LOGGER_CRITICAL(serviceProvider)("Win32ThreadIdentity std::exception exception '%s'"
 				, ex.what()
 				);
 		}
@@ -57,7 +47,7 @@ namespace Menge
 		{
 			ServiceProviderInterface * serviceProvider = thread->getServiceProvider();
 
-			LOGGER_CRITICAL(serviceProvider)("Win32ThreadIdentity unsupported exception"
+			LOGGER_CRITICAL(serviceProvider)("Win32ThreadIdentity unknown exception"
 				);
 		}
 

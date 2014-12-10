@@ -1,5 +1,7 @@
 #	include "FactorablePtr.h"
 
+#	include "Core/Exception.h"
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -13,7 +15,9 @@ namespace Menge
 #   ifdef MENGINE_FACTORABLE_DEBUG
 		if( m_reference != 0 )
 		{
-			STDEX_THROW_EXCEPTION("m_reference != 0");
+			MENGINE_THROW_EXCEPTION("m_reference %d != 0"
+				, m_reference
+				);
 		}
 #	endif
     }
@@ -33,7 +37,9 @@ namespace Menge
     {
         if( m_reference != 0 )
         {
-            STDEX_THROW_EXCEPTION("m_reference != 0");
+            MENGINE_THROW_EXCEPTION("m_reference %d != 0"
+				, m_reference
+				);
         }
     }
 #   endif

@@ -27,6 +27,7 @@ namespace Menge
 	HotSpot::HotSpot()
 		: m_debugColor(0x00000000)		
 		, m_outward(false)
+		, m_global(false)
 		, m_invalidatePolygonWM(true)
 		, m_picker(nullptr)
 		, m_defaultHandle(true)		
@@ -63,6 +64,16 @@ namespace Menge
 	bool HotSpot::getOutward() const
 	{
 		return m_outward;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::setGlobal( bool _value )
+	{
+		m_global = _value;		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::getGlobal() const
+	{
+		return m_global;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::isMousePickerOver() const
@@ -434,6 +445,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::testPoint( const mt::vec2f & _point ) const
     {
+		if( m_global == true )
+		{
+			return true;
+		}
+
 		const Polygon & polygonWM = this->getPolygonWM();
 
 		mt::box2f bb;
@@ -465,6 +481,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::testPolygon( const mt::vec2f & _point, const Polygon & _screenPoly ) const
 	{
+		if( m_global == true )
+		{
+			return true;
+		}
+
 		const Polygon & polygonWM = this->getPolygonWM();
 
 		polygon_transpose( m_polygonWMVM, polygonWM, -_point );

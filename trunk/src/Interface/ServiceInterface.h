@@ -2,28 +2,12 @@
 
 #	include "Config/Typedef.h"
 
+#	include "Core/Exception.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
     class ServiceProviderInterface;
-	//////////////////////////////////////////////////////////////////////////
-	class ServiceException
-	{
-	public:
-		ServiceException( const char * _serviceName, const char * _what, const char * _file, uint32_t _line )
-			: serviceName(_serviceName)
-			, what(_what)
-			, file(_file)
-			, line(_line)
-		{
-		}
-
-	public:	
-		const char * serviceName;
-		const char * what;
-		const char * file;
-		uint32_t line;
-	};
 	//////////////////////////////////////////////////////////////////////////
 	class ServiceInterface
 	{
@@ -58,9 +42,6 @@ namespace Menge
     public:
 		virtual bool registryService( const char * _name, ServiceInterface * _service ) = 0;
 		virtual bool unregistryService( const char * _name ) = 0;
-
-	public:
-		virtual void throwException( const char * _serviceName, const char * _what, const char * _file, uint32_t _line ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
     namespace Helper
@@ -82,9 +63,19 @@ namespace Menge
                 ServiceInterface * service = _serviceProvider->getService( serviceName );
 
 #   ifdef _DEBUG
+				if( service == nullptr )
+				{
+					MENGINE_THROW_EXCEPTION_FL(_file, _line)("Service %s not found"
+						, serviceName
+						);
+				}
+
                 if( dynamic_cast<T *>(service) == nullptr )
                 {
-					_serviceProvider->throwException( serviceName, "Not Found", _file, _line );					
+					MENGINE_THROW_EXCEPTION_FL(_file, _line)("Service %s invalid cast to %s"
+						, serviceName
+						, typeid(T).name()
+						);
                 }
 #   endif
 

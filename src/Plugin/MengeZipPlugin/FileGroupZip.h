@@ -6,7 +6,7 @@
 #	include "Factory/FactoryStore.h"
 
 #	include "Core/MemoryInput.h"
-#   include "Core/IntrusiveSprayTree.h"
+#   include "Core/IntrusiveSplayTree.h"
 
 namespace Menge
 {
@@ -81,7 +81,7 @@ namespace Menge
 			uint32_t compr_method;
 		};
 
-		typedef IntrusiveSprayTree<FileInfo, 512> TMapFileInfo;
+		typedef IntrusiveSplayTree<FileInfo, 512> TMapFileInfo;
 		TMapFileInfo m_files;
 	};
 }	// namespace Menge

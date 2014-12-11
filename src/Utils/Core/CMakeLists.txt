@@ -83,7 +83,8 @@ src
     
     OutputStreamWriter.h   
     
-    IntrusiveSprayTree.h
+    IntrusiveSplayTree.h
+   
     Magic.h
 )
 

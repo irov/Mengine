@@ -7,15 +7,15 @@
 namespace Menge
 {
 	template<class T, uint32_t Count>
-	class IntrusiveSprayTree
+	class IntrusiveSplayTree
 		: public stdex::intrusive_splay_tree<T, false, false>
 	{
 	public:
-		IntrusiveSprayTree()
+		IntrusiveSplayTree()
 		{
 		}
 
-		~IntrusiveSprayTree()
+		~IntrusiveSplayTree()
 		{
 			this->clear();
 		}
@@ -30,7 +30,7 @@ namespace Menge
 
 		void clear()
 		{
-			FIntrusiveSprayTreeForeachDestroy fistfd;
+			FIntrusiveSplayTreeForeachDestroy fistfd;
 			this->foreach( fistfd );
 
 			stdex::intrusive_splay_tree<T, false, false>::clear();
@@ -46,7 +46,7 @@ namespace Menge
 		}
 
 	protected:
-		class FIntrusiveSprayTreeForeachDestroy
+		class FIntrusiveSplayTreeForeachDestroy
 		{
 		public:
 			void operator() ( T * _node )
@@ -61,16 +61,16 @@ namespace Menge
 	};
 
 	template<class T, uint32_t Count>
-	class IntrusiveSprayTreePtr
+	class IntrusiveSplayTreePtr
 		: public stdex::intrusive_splay_tree<T, false, false>
 	{
 	public:
-		IntrusiveSprayTreePtr()
+		IntrusiveSplayTreePtr()
 		{
-			m_factoryNode.setMethodListener( this, &IntrusiveSprayTreePtr::onNodeDestroy_ );
+			m_factoryNode.setMethodListener( this, &IntrusiveSplayTreePtr::onNodeDestroy_ );
 		}
 
-		~IntrusiveSprayTreePtr()
+		~IntrusiveSplayTreePtr()
 		{
 		}
 

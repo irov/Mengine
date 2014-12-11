@@ -4,7 +4,7 @@
 
 #   include "Factory/FactoryStore.h"
 
-#   include "Core/IntrusiveSprayTree.h"
+#   include "Core/IntrusiveSplayTree.h"
 
 #   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 

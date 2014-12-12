@@ -323,6 +323,31 @@ namespace Menge
 			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		PyObject * movie_getMovieText( Movie * _movie, const ConstString & _name )
+		{
+			Node * node;
+			Movie * submovie;
+
+			if( _movie->getMovieNode( _name, CONST_STRING(m_serviceProvider, MovieText), &node, &submovie ) == false )
+			{
+				return pybind::ret_none();
+			}
+
+			PyObject * py_node = pybind::ptr( node );
+
+			return py_node;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool movie_hasMovieText( Movie * _movie, const ConstString & _name )
+		{
+			Node * node;
+			Movie * submovie;
+
+			bool successful = _movie->hasMovieNode( _name, CONST_STRING(m_serviceProvider, MovieText), &node, &submovie );
+
+			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		PyObject * movie_getSubMovie( Movie * _movie, const ConstString & _name )
 		{
 			Node * node;
@@ -5182,6 +5207,8 @@ namespace Menge
                     .def( "getReverse", &Movie::getReverse )		
 					.def_proxy_static( "getMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlot )
 					.def_proxy_static( "hasMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieSlot )
+					.def_proxy_static( "getMovieText", nodeScriptMethod, &NodeScriptMethod::movie_getMovieText )
+					.def_proxy_static( "hasMovieText", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieText )
 					.def_proxy_static( "getSubMovie", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovie )
 					.def_proxy_static( "hasSubMovie", nodeScriptMethod, &NodeScriptMethod::movie_hasSubMovie )
 					.def_proxy_static( "getSocket", nodeScriptMethod, &NodeScriptMethod::movie_getSocket )

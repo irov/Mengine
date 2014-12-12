@@ -350,8 +350,6 @@ namespace Menge
 
         const Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer2D & includes_layer2d = metadata->get_IncludesMovieLayer2D();
 
-		uint32_t layer_enumerator = 0;
-
         for( Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer2D::const_iterator
             it = includes_layer2d.begin(),
             it_end = includes_layer2d.end();
@@ -363,8 +361,6 @@ namespace Menge
             m_layers.push_back( MovieLayer() );
             MovieLayer & ml = m_layers.back();
 
-			uint32_t layer_id = layer_enumerator++;
-			ml.id = layer_id;
             ml.state = 0;
 
             meta_layer2d.swap_Name( ml.name );
@@ -386,10 +382,11 @@ namespace Menge
             meta_layer2d.get_Stretch( ml.scretch );
 			meta_layer2d.get_Switch( ml.switcher );
 			meta_layer2d.get_Position( ml.position );
+			meta_layer2d.get_Params( ml.params );
 
             if( ml.in < 0.f )
             {
-                ml.startInterval += -ml.in;
+                ml.startInterval -= ml.in;
                 ml.in = 0.f;
             }
 
@@ -436,10 +433,11 @@ namespace Menge
             meta_layer3d.get_Stretch( ml.scretch );
 			meta_layer3d.get_Switch( ml.switcher );
 			meta_layer3d.get_Position( ml.position );
+			meta_layer3d.get_Params( ml.params );
 				
             if( ml.in < 0.f )
             {
-                ml.startInterval += -ml.in;
+                ml.startInterval -= ml.in;
                 ml.in = 0.f;
             }
 
@@ -486,7 +484,7 @@ namespace Menge
             {
                 it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_SCENE_EFFECT;
 
-                it->parent = (uint32_t)-1;
+                it->parent = movie_layer_parent_none;
             }
             else if( it->type == CONST_STRING(m_serviceProvider, MovieText) )
             {
@@ -617,7 +615,7 @@ namespace Menge
 				return true;
 			}
 
-			if( it->parent == 0 || it->parent == (uint32_t)-1 )
+			if( it->parent == 0 || it->parent == movie_layer_parent_none )
 			{
 				return false;
 			}

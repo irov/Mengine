@@ -2118,6 +2118,35 @@ namespace Metacode
                     std::swap( _value, this->Out);
                 }
                 
+                bool has_Params() const
+                {
+                    return Params_successful;
+                }
+                
+                bool get_Params( uint32_t & _value ) const
+                {
+                    if( Params_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Params;
+                
+                    return true;
+                }
+                
+                bool swap_Params( uint32_t & _value ) const
+                {
+                    if( Params_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Params);
+                
+                    return true;
+                }
+                
                 bool has_Parent() const
                 {
                     return Parent_successful;
@@ -2413,6 +2442,8 @@ namespace Metacode
                 mutable uint32_t Index;
                 mutable Menge::ConstString Name;
                 mutable float Out;
+                bool Params_successful;
+                mutable uint32_t Params;
                 bool Parent_successful;
                 mutable uint32_t Parent;
                 bool PlayCount_successful;
@@ -2514,6 +2545,35 @@ namespace Metacode
                     std::swap( _value, this->Out);
                 }
                 
+                bool has_Params() const
+                {
+                    return Params_successful;
+                }
+                
+                bool get_Params( uint32_t & _value ) const
+                {
+                    if( Params_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Params;
+                
+                    return true;
+                }
+                
+                bool swap_Params( uint32_t & _value ) const
+                {
+                    if( Params_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Params);
+                
+                    return true;
+                }
+                
                 bool has_Parent() const
                 {
                     return Parent_successful;
@@ -2809,6 +2869,8 @@ namespace Metacode
                 mutable uint32_t Index;
                 mutable Menge::ConstString Name;
                 mutable float Out;
+                bool Params_successful;
+                mutable uint32_t Params;
                 bool Parent_successful;
                 mutable uint32_t Parent;
                 bool PlayCount_successful;

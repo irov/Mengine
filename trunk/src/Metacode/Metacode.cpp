@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 67;
+        _needVersion = 69;
 
-        if( version != 67 )
+        if( version != 69 )
         {
             return false;
         }
@@ -2658,6 +2658,7 @@ namespace Metacode
     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::Meta_MovieLayer2D()
         : Metabuf::Metadata()
         , BlendingMode_successful(false)
+        , Params_successful(false)
         , Parent_successful(false)
         , PlayCount_successful(false)
         , Polygon_successful(false)
@@ -2723,6 +2724,17 @@ namespace Metacode
                 {
                     return false;
                 }
+    
+                return true;
+            }break;
+        case 17:
+            {
+                if( this->read( _buff, _size, _read, this->Params ) == false )
+                {
+                    return false;
+                }
+    
+                this->Params_successful = true;
     
                 return true;
             }break;
@@ -2882,6 +2894,7 @@ namespace Metacode
     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::Meta_MovieLayer3D()
         : Metabuf::Metadata()
         , BlendingMode_successful(false)
+        , Params_successful(false)
         , Parent_successful(false)
         , PlayCount_successful(false)
         , Polygon_successful(false)
@@ -2947,6 +2960,17 @@ namespace Metacode
                 {
                     return false;
                 }
+    
+                return true;
+            }break;
+        case 17:
+            {
+                if( this->read( _buff, _size, _read, this->Params ) == false )
+                {
+                    return false;
+                }
+    
+                this->Params_successful = true;
     
                 return true;
             }break;

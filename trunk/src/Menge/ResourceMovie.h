@@ -30,32 +30,33 @@ namespace Menge
 	
     const uint32_t movie_layer_parent_none = (uint32_t)-1;
 
+	const uint32_t MOVIE_LAYER_PARAM_TEXT_HORIZONTAL_CENTER = 0x00000001;
+	const uint32_t MOVIE_LAYER_PARAM_TEXT_VERTICAL_CENTER = 0x00000002;
+
 	struct MovieLayer
 	{
 		MovieLayer()
-			: id(0)
-			, index(movie_layer_parent_none)
+			: index(0)
 			, parent(0)
-            , timeRemap(false)
-			, shape(false)
-			, polygon(false)
             , playCount(1)
             , scretch(1.f)
-            , loop(false)
 			, in(0.f)
 			, out(0.f)
 			, startInterval(0.f)
             , state(0)
+			, params(0)
 			, immutable(false)
 			, switcher(false)
-			, block(false)
+			, timeRemap(false)
+			, shape(false)
+			, polygon(false)
+			, loop(false)
 		{
 		}
 
 		ConstString name;
 		ConstString type;
 
-		uint32_t id;
 		uint32_t index;
 		uint32_t parent;
 
@@ -76,13 +77,19 @@ namespace Menge
 
 		mt::vec3f position;
 
+		uint32_t params;
+
 		bool immutable;
 		bool timeRemap;
 		bool shape;
 		bool polygon;
 		bool loop;
 		bool switcher;
-		bool block;
+
+		bool hasParam( uint32_t _param ) const
+		{
+			return (params & _param) > 0;
+		}
 
         bool isNode() const
         {

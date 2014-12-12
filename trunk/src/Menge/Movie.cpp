@@ -390,7 +390,6 @@ namespace Menge
 		Nodies ns;
 		ns.node = _node;
 		ns.animatable = dynamic_cast<Animatable *>(_node);
-		ns.layerId = _layer.id;
 		ns.child = (_layer.parent != movie_layer_parent_none);
 
 		m_nodies[_layer.index - 1] = ns;
@@ -522,7 +521,7 @@ namespace Menge
 			}
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode: %s not found slot %s:%s"
+		LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode: %s not found node %s:%s"
 			, m_name.c_str()
 			, _name.c_str()
 			, _type.c_str()
@@ -1539,6 +1538,16 @@ namespace Menge
 
 		layer_text->setName( _layer.name );
 		layer_text->setTextID( _layer.name ); //Name = TextID
+
+		if( _layer.hasParam( MOVIE_LAYER_PARAM_TEXT_HORIZONTAL_CENTER ) == true )
+		{
+			layer_text->setCenterAlign();
+		}
+
+		if( _layer.hasParam( MOVIE_LAYER_PARAM_TEXT_VERTICAL_CENTER ) == true )
+		{
+			layer_text->setVerticalCenterAlign();
+		}
 
 		this->addMovieNode_( _layer, layer_text );
 

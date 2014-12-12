@@ -201,9 +201,6 @@ namespace Menge
 		void _invalidateWorldMatrix() override;
 		//void _invalidateBoundingBox() override;
 
-	protected:
-		bool _checkVisibility( const Viewport & _viewport ) override;
-
 	public:
 		bool compile() override;
 		void release() override;

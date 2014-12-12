@@ -6,8 +6,6 @@ namespace Menge
 	Renderable::Renderable()
 		: m_hide(false)
 		, m_localHide(false)
-		, m_visibility(false)
-		, m_invalidateVisibility(true)
 	{
 		
 	}
@@ -61,14 +59,5 @@ namespace Menge
 	{
         (void)_value;
 		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Renderable::checkVisibility( const Viewport& _viewport )
-	{
-		m_visibility = this->_checkVisibility( _viewport );
-
-		m_invalidateVisibility = false;
-
-		return m_visibility;
 	}
 }

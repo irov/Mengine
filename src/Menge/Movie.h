@@ -173,13 +173,11 @@ namespace Menge
 			Nodies()
 				: node(nullptr)
 				, animatable(nullptr)
-				, layerId(0)
-				,child(false)
+				, child(false)
 			{}
 
             Node * node;
 			Animatable * animatable;
-			uint32_t layerId;
 			bool child;
         };
 

@@ -6,7 +6,7 @@
 
 namespace Menge
 {
-    class ScheduleListener
+    class ScheduleListenerInterface
 		: public FactorablePtr
     {
     public:
@@ -14,7 +14,7 @@ namespace Menge
         virtual void onScheduleStop( uint32_t _id ) = 0;
     };
 
-	typedef stdex::intrusive_ptr<ScheduleListener> ScheduleListenerPtr;
+	typedef stdex::intrusive_ptr<ScheduleListenerInterface> ScheduleListenerInterfacePtr;
 
     class ScheduleManagerInterface
         : public Factorable
@@ -23,7 +23,7 @@ namespace Menge
         virtual void initialize( ServiceProviderInterface * _serviceProvider ) = 0;
 
     public:
-        virtual uint32_t schedule( float _timing, const ScheduleListenerPtr & _listener ) = 0;
+        virtual uint32_t schedule( float _timing, const ScheduleListenerInterfacePtr & _listener ) = 0;
 
         virtual bool remove( uint32_t _id ) = 0;
         virtual void removeAll() = 0;

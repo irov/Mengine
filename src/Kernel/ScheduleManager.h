@@ -23,7 +23,7 @@ namespace Menge
     public:
 		struct ScheduleEvent
 		{
-			ScheduleListenerPtr listener;
+			ScheduleListenerInterfacePtr listener;
 
 			float timing;
 			uint32_t id;
@@ -33,7 +33,7 @@ namespace Menge
 		};
 
 	public:
-		uint32_t schedule( float _timing, const ScheduleListenerPtr & _listener ) override;
+		uint32_t schedule( float _timing, const ScheduleListenerInterfacePtr & _listener ) override;
 
     public:
 		bool remove( uint32_t _id ) override;

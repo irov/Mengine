@@ -1150,162 +1150,6 @@ namespace Menge
 			return true;
 		}
 
-	    class TimingInterpolatorLinearVector
-		    : public TimingListenerInterface
-		    //, public Eventable
-	    {
-	    public:
-		    TimingInterpolatorLinearVector( ServiceProviderInterface * _serviceProvider, float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
-			    : m_serviceProvider(_serviceProvider)
-                , m_cb(_cb)
-		    {
-			    pybind::incref(m_cb);
-
-			    m_interpolator.start( _from, _to, _time, &mt::length_v2 );
-		    }
-
-		    ~TimingInterpolatorLinearVector()
-		    {
-			    pybind::decref(m_cb);
-				m_cb = nullptr;
-		    }
-
-	    protected:
-		    bool updateTiming( uint32_t _id, float _timing ) override
-		    {
-			    mt::vec2f out;
-			    bool done = m_interpolator.update( _timing, &out );
-			
-			    PyObject * py_out = pybind::ptr(out);
-
-                SCRIPT_SERVICE(m_serviceProvider)
-                    ->callFunction( m_cb, "(iOO)", _id, py_out, pybind::get_bool(done) );
-
-			    pybind::decref( py_out );
-
-			    return done;
-		    }
-
-		    void removeTiming( uint32_t _id ) override
-		    {			
-			    SCRIPT_SERVICE(m_serviceProvider)
-				    ->callFunction( m_cb, "(iOO)", _id, pybind::get_none(), pybind::get_bool(false) );
-		    }
-
-            void deleteTimingListener() const override
-            {
-                delete this;
-            }
-
-	    protected:
-            ServiceProviderInterface * m_serviceProvider;
-
-		    PyObject * m_cb;
-
-		    ValueInterpolatorLinear<mt::vec2f> m_interpolator;		
-	    };
-
-	    uint32_t addInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
-	    {
-		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
-			    ->getTimingManager();
-
-		    TimingListenerInterface * timing =
-			    new TimingInterpolatorLinearVector( m_serviceProvider, _time, _from, _to, _cb );
-
-		    uint32_t id = timingManager->timing( false, false, 0.f, timing );
-
-		    return id;
-	    }
-
-	    uint32_t addGlobalInterpolatorLinearVector( float _time, const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
-	    {
-		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
-			    ->getTimingManager();
-
-		    TimingListenerInterface * timing =
-			    new TimingInterpolatorLinearVector( m_serviceProvider, _time, _from, _to, _cb );
-
-		    uint32_t id = timingManager->timing( false, true, 0.f, timing );
-
-		    return id;
-	    }
-
-	    class TimingInterpolatorLinearFloat
-		    : public TimingListenerInterface
-	    {
-	    public:
-		    TimingInterpolatorLinearFloat( ServiceProviderInterface * _serviceProvider, float _time, float _from, float _to, PyObject * _cb )
-			    : m_serviceProvider(_serviceProvider)
-                , m_cb(_cb)
-		    {
-			    pybind::incref(m_cb);
-			    m_interpolator.start( _from, _to, _time, &fabsf );
-		    }
-
-		    ~TimingInterpolatorLinearFloat()
-		    {
-			    pybind::decref( m_cb );
-				m_cb = nullptr;
-		    }
-
-	    protected:
-		    bool updateTiming( uint32_t _id, float _timing ) override
-		    {
-			    float out;
-			    bool done = m_interpolator.update( _timing, &out );
-
-			    SCRIPT_SERVICE(m_serviceProvider)
-				    ->callFunction( m_cb, "(ifO)", _id, out, pybind::get_bool(done), pybind::get_bool(false) );
-
-			    return done;
-		    }
-
-		    void removeTiming( uint32_t _id ) override
-		    {			
-			    SCRIPT_SERVICE(m_serviceProvider)
-				    ->callFunction( m_cb, "(iOO)", _id, pybind::get_none(), pybind::get_bool(false) );
-		    }
-
-            void deleteTimingListener() const override
-            {
-                delete this;
-            }
-
-	    protected:
-            ServiceProviderInterface * m_serviceProvider;
-
-		    PyObject * m_cb;
-
-		    ValueInterpolatorLinear<float> m_interpolator;
-	    };
-
-	    uint32_t addInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
-	    {
-		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
-			    ->getTimingManager();
-
-		    TimingListenerInterface * timing =
-			    new TimingInterpolatorLinearFloat( m_serviceProvider, _time, _from, _to, _cb );
-
-		    uint32_t id = timingManager->timing( false, false, 0.f, timing );
-
-		    return id;
-	    }
-
-	    uint32_t addGlobalInterpolatorLinearFloat( float _time, float _from, float _to, PyObject * _cb )
-	    {
-		    TimingManagerInterface * timingManager = PLAYER_SERVICE(m_serviceProvider)
-			    ->getTimingManager();
-
-		    TimingListenerInterface * timing =
-			    new TimingInterpolatorLinearFloat( m_serviceProvider, _time, _from, _to, _cb );
-
-		    uint32_t id = timingManager->timing( false, true, 0.f, timing );
-
-		    return id;
-	    }
-
     protected:
         ServiceProviderInterface * m_serviceProvider;
     };
@@ -1317,11 +1161,11 @@ namespace Menge
 		//srand( (unsigned)std::time( NULL ) );
         HelperScriptMethod * helperScriptMethod = new HelperScriptMethod(_serviceProvider);
 
-        pybind::def_functor( "addInterpolatorLinearVector", helperScriptMethod, &HelperScriptMethod::addInterpolatorLinearVector );
-		pybind::def_functor( "addInterpolatorLinearFloat", helperScriptMethod, &HelperScriptMethod::addInterpolatorLinearFloat);
+  //      pybind::def_functor( "addInterpolatorLinearVector", helperScriptMethod, &HelperScriptMethod::addInterpolatorLinearVector );
+		//pybind::def_functor( "addInterpolatorLinearFloat", helperScriptMethod, &HelperScriptMethod::addInterpolatorLinearFloat);
 
-		pybind::def_functor( "addGlobalInterpolatorLinearVector", helperScriptMethod, &HelperScriptMethod::addGlobalInterpolatorLinearVector );
-		pybind::def_functor( "addGlobalInterpolatorLinearFloat", helperScriptMethod, &HelperScriptMethod::addGlobalInterpolatorLinearFloat);		
+		//pybind::def_functor( "addGlobalInterpolatorLinearVector", helperScriptMethod, &HelperScriptMethod::addGlobalInterpolatorLinearVector );
+		//pybind::def_functor( "addGlobalInterpolatorLinearFloat", helperScriptMethod, &HelperScriptMethod::addGlobalInterpolatorLinearFloat);		
 
         pybind::def_functor( "rand", helperScriptMethod, &HelperScriptMethod::mt_rand );
 		pybind::def_functor( "randf", helperScriptMethod, &HelperScriptMethod::mt_randf );

@@ -174,11 +174,13 @@ namespace Menge
 				: node(nullptr)
 				, animatable(nullptr)
 				, child(false)
+				, hide(false)
 			{}
 
             Node * node;
 			Animatable * animatable;
 			bool child;
+			bool hide;
         };
 
 		typedef stdex::vector<Nodies> TVectorNodies;

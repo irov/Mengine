@@ -4983,12 +4983,20 @@ namespace Menge
                     .def( "getTextSize", &TextField::getTextSize )
                     .def( "setMaxLen", &TextField::setMaxLength )                    
 
-                    .def( "setCenterAlign", &TextField::setCenterAlign )
-                    .def( "isCenterAlign", &TextField::isCenterAlign )
-                    .def( "setRightAlign", &TextField::setRightAlign )
-                    .def( "isRightAlign", &TextField::isRightAlign )
-                    .def( "setLeftAlign", &TextField::setLeftAlign )
-                    .def( "isLeftAlign", &TextField::isLeftAlign )
+                    .def( "setCenterAlign", &TextField::setHorizontalCenterAlign )
+                    .def( "isCenterAlign", &TextField::isHorizontalCenterAlign )
+                    .def( "setRightAlign", &TextField::setHorizontalRightAlign )
+                    .def( "isRightAlign", &TextField::isHorizontalRightAlign )
+                    .def( "setLeftAlign", &TextField::setHorizontalLeftAlign )
+                    .def( "isLeftAlign", &TextField::isHorizontalLeftAlign )
+
+					.def( "setHorizontalCenterAlign", &TextField::setHorizontalCenterAlign )
+					.def( "isHorizontalCenterAlign", &TextField::isHorizontalCenterAlign )
+					.def( "setHorizontalRightAlign", &TextField::setHorizontalRightAlign )
+					.def( "isHorizontalRightAlign", &TextField::isHorizontalRightAlign )
+					.def( "setHorizontalLeftAlign", &TextField::setHorizontalLeftAlign )
+					.def( "isHorizontalLeftAlign", &TextField::isHorizontalLeftAlign )
+
 
                     .def( "setVerticalTopAlign", &TextField::setVerticalTopAlign )
                     .def( "isVerticalTopAlign", &TextField::isVerticalTopAlign )

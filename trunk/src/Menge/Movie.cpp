@@ -1541,7 +1541,7 @@ namespace Menge
 
 		if( _layer.hasParam( MOVIE_LAYER_PARAM_TEXT_HORIZONTAL_CENTER ) == true )
 		{
-			layer_text->setCenterAlign();
+			layer_text->setHorizontalCenterAlign();
 		}
 
 		if( _layer.hasParam( MOVIE_LAYER_PARAM_TEXT_VERTICAL_CENTER ) == true )
@@ -1566,7 +1566,7 @@ namespace Menge
 
 		layer_text->setName( _layer.name );
 		layer_text->setTextID( _layer.name ); //Name = TextID
-		layer_text->setCenterAlign();
+		layer_text->setHorizontalCenterAlign();
 
 		this->addMovieNode_( _layer, layer_text );
 

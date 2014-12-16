@@ -82,14 +82,14 @@ namespace Menge
 		float getCharOffset() const;
 
 	public:
-		void setCenterAlign();
-		bool isCenterAlign() const;
+		void setHorizontalCenterAlign();
+		bool isHorizontalCenterAlign() const;
 
-		void setRightAlign();
-		bool isRightAlign() const;
+		void setHorizontalRightAlign();
+		bool isHorizontalRightAlign() const;
 
-		void setLeftAlign();
-		bool isLeftAlign() const;
+		void setHorizontalLeftAlign();
+		bool isHorizontalLeftAlign() const;
 
 		void setVerticalTopAlign();
 		bool isVerticalTopAlign() const;
@@ -97,6 +97,7 @@ namespace Menge
 		void setVerticalCenterAlign();
 		bool isVerticalCenterAlign() const;
 		
+	public:
 		void setMaxCharCount( uint32_t _maxCharCount );
 		uint32_t getMaxCharCount() const;		
 

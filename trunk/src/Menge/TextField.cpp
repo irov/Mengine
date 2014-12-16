@@ -400,9 +400,9 @@ namespace Menge
 		m_invalidateTextLines = false;
 
 		m_lines.clear();
+		m_textSize.x = 0.f;
+		m_textSize.y = 0.f;
 		m_charCount = 0;
-
-        String space_delim = " ";
 
 		const TextFontInterfacePtr & font = this->getFont();
 
@@ -422,14 +422,18 @@ namespace Menge
 				, this->getName().c_str()
 				, m_textEntry->getKey().c_str()
 				);
+
+			return;
 		}
+
+		String space_delim = " ";
 
 		TVectorString lines;
 		Utils::split( lines, m_cacheText, false, "\n" );
 
 		float charOffset = this->calcCharOffset();
 		
-		for(TVectorString::iterator 
+		for(TVectorString::const_iterator 
 			it = lines.begin(),
 			it_end = lines.end(); 
 		it != it_end; 
@@ -522,8 +526,11 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			maxlen = (std::max)( maxlen, it->getLength() );
-			m_charCount += it->getCharsDataSize();
+			float length = it->getLength();
+			maxlen = (std::max)( maxlen, length );
+
+			int chars = it->getCharsDataSize();
+			m_charCount += chars;
 		}
 
 		m_textSize.x = maxlen;
@@ -1037,38 +1044,38 @@ namespace Menge
 		return m_verticalAlign == ETFVA_CENTER;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setCenterAlign()
+	void TextField::setHorizontalCenterAlign()
 	{
 		m_horizontAlign = ETFHA_CENTER;
 
 		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isCenterAlign() const
+	bool TextField::isHorizontalCenterAlign() const
 	{
 		return m_horizontAlign == ETFHA_CENTER;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setRightAlign()
+	void TextField::setHorizontalRightAlign()
 	{
 		m_horizontAlign = ETFHA_RIGHT;
 
 		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isRightAlign() const
+	bool TextField::isHorizontalRightAlign() const
 	{
 		return m_horizontAlign == ETFHA_RIGHT;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::setLeftAlign()
+	void TextField::setHorizontalLeftAlign()
 	{
 		m_horizontAlign = ETFHA_LEFT;
 
 		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextField::isLeftAlign() const
+	bool TextField::isHorizontalLeftAlign() const
 	{
 		return m_horizontAlign == ETFHA_LEFT;
 	}

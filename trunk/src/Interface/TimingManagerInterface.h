@@ -2,24 +2,19 @@
 
 #   include "Interface/ServiceInterface.h"
 
-#   include "Config/Typedef.h"
-#   include "Factory/Factorable.h"
+#   include "Factory/FactorablePtr.h"
 
 namespace Menge
 {
     class TimingListenerInterface
+		: public FactorablePtr
     {
-	public:
-		TimingListenerInterface(){};
-		virtual ~TimingListenerInterface(){};
-
     public:
         virtual bool updateTiming( uint32_t _id, float _timing ) = 0;
         virtual void removeTiming( uint32_t _id ) = 0;
-
-    public:
-        virtual void deleteTimingListener() const = 0;
     };
+
+	typedef stdex::intrusive_ptr<TimingListenerInterface> TimingListenerInterfacePtr;
 
     class TimingManagerInterface
         : public Factorable
@@ -28,11 +23,11 @@ namespace Menge
         virtual void initialize( ServiceProviderInterface * _serviceProvider ) = 0;
 
     public:
-        virtual uint32_t timing( bool _portions, bool _global, float _delay, TimingListenerInterface * _listener ) = 0;
+        virtual uint32_t timing( float _delay, const TimingListenerInterfacePtr & _listener ) = 0;
 
     public:
         virtual bool remove( uint32_t _id ) = 0;
-        virtual void removeAll( bool _global ) = 0;
+        virtual void removeAll() = 0;
 
         virtual void freeze( uint32_t _id, bool _freeze ) = 0;
         virtual void freezeAll( bool _freeze ) = 0;

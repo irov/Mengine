@@ -90,10 +90,15 @@ namespace Menge
 		ScheduleManagerInterface * getScheduleManager() const override;
 		ScheduleManagerInterface * getScheduleManagerGlobal() const override;
 
+	public:
+		TimingManagerInterface * createTimingManager() override;
+		bool destroyTimingManager( TimingManagerInterface * _timing ) override;
+
     public:
 		TimingManagerInterface * getTimingManager() const override;
         TimingManagerInterface * getTimingManagerGlobal() const override;
 
+	public:
 		Affectorable * getAffectorable() const override;
 		Affectorable * getAffectorableGlobal() const override;
 
@@ -189,6 +194,9 @@ namespace Menge
 
 		TimingManagerInterface * m_timingManager;
         TimingManagerInterface * m_timingManagerGlobal;
+
+		typedef stdex::vector<TimingManagerInterface *> TVectorUserTiming;
+		TVectorUserTiming m_timingers;
 
         FactoryDefaultStore<TimingManager> m_factoryTimingManager;
 

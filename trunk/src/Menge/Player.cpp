@@ -169,7 +169,7 @@ namespace Menge
 			}
 
 			m_scheduleManager->removeAll();
-			m_timingManager->removeAll(false);
+			m_timingManager->removeAll();
 			m_affectorable->stopAllAffectors();
 
 			m_globalHandleSystem->clear();
@@ -300,7 +300,7 @@ namespace Menge
 		}
 
 		m_scheduleManager->removeAll();
-		m_timingManager->removeAll(false);
+		m_timingManager->removeAll();
 		m_affectorable->stopAllAffectors();
 
 		if( oldScene != nullptr && m_destroyOldScene == true && m_destroyAfterSwitch == false )
@@ -532,6 +532,36 @@ namespace Menge
 	{
 		return m_scheduleManagerGlobal;
 	}	
+	//////////////////////////////////////////////////////////////////////////
+	TimingManagerInterface * Player::createTimingManager()
+	{
+		TimingManagerInterface * tm = m_factoryTimingManager.createObjectT();
+
+		tm->initialize( m_serviceProvider );
+
+		m_timingers.push_back( tm );
+
+		return tm;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Player::destroyTimingManager( TimingManagerInterface * _timing )
+	{	
+		TVectorUserTiming::iterator it_found = std::find( m_timingers.begin(), m_timingers.end(), _timing );
+
+		if( it_found == m_timingers.end() )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Player::destroyTimingManager timing not found!"
+				);
+
+			return false;
+		}
+
+		m_timingers.erase( it_found );
+
+		_timing->destroy();
+
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	TimingManagerInterface * Player::getTimingManager() const
 	{

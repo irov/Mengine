@@ -939,56 +939,88 @@ namespace Menge
             return APPLICATION_SERVICE(m_serviceProvider)
                 ->getInputMouseButtonEventBlock();
         }
+		//////////////////////////////////////////////////////////////////////////
+		TimingManagerInterface * createTiming()
+		{
+			TimingManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
+				->createTimingManager();
+			
+			return sm;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool destroyTiming( TimingManagerInterface * _tm )
+		{
+			if( _tm == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Menge.destroyTiming destroy is NULL"
+					);
+
+				return false;
+			}
+
+			bool successful = PLAYER_SERVICE(m_serviceProvider)
+				->destroyTimingManager( _tm );
+
+			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		class PyObjectTimingListener
+			: public TimingListenerInterface
+		{
+		public:
+			PyObjectTimingListener()
+				: m_serviceProvider(nullptr)
+				, m_script(nullptr)
+			{
+			}
+
+			~PyObjectTimingListener()
+			{
+				pybind::decref(m_script);
+			}
+
+		public:
+			void initialize( ServiceProviderInterface * _serviceProvider, PyObject * _script )
+			{
+				m_serviceProvider = _serviceProvider;
+				m_script = _script;
+
+				pybind::incref( m_script );
+			}
+
+		protected:
+			bool updateTiming( uint32_t _id, float _timing ) override
+			{
+				SCRIPT_SERVICE(m_serviceProvider)
+					->callFunction( m_script, "(ifO)", _id, _timing, pybind::get_bool(false) );
+
+				return false;
+			}
+
+			void removeTiming( uint32_t _id ) override
+			{
+				SCRIPT_SERVICE(m_serviceProvider)
+					->callFunction( m_script, "(ifO)", _id, 0.f, pybind::get_bool(true) );
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			PyObject * m_script;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		typedef FactoryPoolStore<PyObjectTimingListener, 8> TFactoryPyObjectTimingListener;
+		TFactoryPyObjectTimingListener m_factoryPyObjectTimingListener;
         //////////////////////////////////////////////////////////////////////////
-        class MyTimingListener
-            : public TimingListenerInterface
-        {
-        public:
-            MyTimingListener( ServiceProviderInterface * _serviceProvider, PyObject * _script )
-                : m_serviceProvider(_serviceProvider)
-                , m_script(_script)
-            {
-                pybind::incref(m_script);
-            }
-
-            ~MyTimingListener()
-            {
-                pybind::decref(m_script);
-            }
-
-        protected:
-            bool updateTiming( uint32_t _id, float _timing ) override
-            {
-                SCRIPT_SERVICE(m_serviceProvider)
-                    ->callFunction( m_script, "(ifO)", _id, _timing, pybind::get_bool(false) );
-
-                return false;
-            }
-
-            void removeTiming( uint32_t _id ) override
-            {
-                SCRIPT_SERVICE(m_serviceProvider)
-                    ->callFunction( m_script, "(ifO)", _id, 0.f, pybind::get_bool(true) );
-            }
-
-            void deleteTimingListener() const override
-            {
-                delete this;
-            }
-
-        protected:
-            ServiceProviderInterface * m_serviceProvider;
-            PyObject * m_script;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t timing( bool _portion, bool _global, float _timing, PyObject * _script )
+        uint32_t timing( float _timing, PyObject * _script )
         {
             TimingManagerInterface * tm = PLAYER_SERVICE(m_serviceProvider)
                 ->getTimingManager();
 
-            TimingListenerInterface * listener = new MyTimingListener(m_serviceProvider, _script);
+            PyObjectTimingListener * listener = m_factoryPyObjectTimingListener.createObjectT();
+			
+			listener->initialize( m_serviceProvider, _script );
 
-            uint32_t id = tm->timing( _portion, _global, _timing, listener );
+            uint32_t id = tm->timing( _timing, listener );
 
             return id;
         }
@@ -1007,9 +1039,7 @@ namespace Menge
 		{
 			ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
 				->createSchedulerManager();
-
-			sm->initialize( m_serviceProvider );
-
+			
 			return sm;
 		}
 		//////////////////////////////////////////////////////////////////////////
@@ -1030,7 +1060,7 @@ namespace Menge
 		}
         //////////////////////////////////////////////////////////////////////////
         class PyObjectScheduleListener
-            : public ScheduleListener
+            : public ScheduleListenerInterface
         {
         public:
             PyObjectScheduleListener()
@@ -1099,6 +1129,17 @@ namespace Menge
 			sl->initialize( m_serviceProvider, _script );
 
 			uint32_t id = _scheduleManager->schedule( _timing, sl );
+
+			return id;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		uint32_t TimingManagerInterface_timing( TimingManagerInterface * _timingManager, float _timing, PyObject * _script )
+		{
+			PyObjectTimingListener * tl = m_factoryPyObjectTimingListener.createObjectT();
+
+			tl->initialize( m_serviceProvider, _script );
+
+			uint32_t id = _timingManager->timing( _timing, tl );
 
 			return id;
 		}
@@ -5285,6 +5326,15 @@ namespace Menge
 				.def( "freezeAll", &ScheduleManagerInterface::freezeAll )
 				.def( "isFreeze", &ScheduleManagerInterface::isFreeze )
 				.def( "time", &ScheduleManagerInterface::time )
+				;
+
+			pybind::interface_<TimingManagerInterface>("TimingManagerInterface", true)
+				.def_proxy_static( "timing", nodeScriptMethod, &NodeScriptMethod::TimingManagerInterface_timing )
+				.def( "remove", &TimingManagerInterface::remove )
+				.def( "removeAll", &TimingManagerInterface::removeAll )
+				.def( "freeze", &TimingManagerInterface::freeze )
+				.def( "freezeAll", &TimingManagerInterface::freezeAll )
+				.def( "isFreeze", &TimingManagerInterface::isFreeze )
 				;
 
 			pybind::def_functor( "createScheduler", nodeScriptMethod, &NodeScriptMethod::createScheduler );

@@ -59,6 +59,10 @@ namespace Menge
         virtual ScheduleManagerInterface * getScheduleManager() const = 0;
         virtual ScheduleManagerInterface * getScheduleManagerGlobal() const = 0;
 
+	public:
+		virtual TimingManagerInterface * createTimingManager() = 0;
+		virtual bool destroyTimingManager( TimingManagerInterface * _timing ) = 0;
+
     public:
         virtual TimingManagerInterface * getTimingManager() const = 0;
         virtual TimingManagerInterface * getTimingManagerGlobal() const = 0;

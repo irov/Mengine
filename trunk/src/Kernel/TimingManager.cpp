@@ -6,6 +6,8 @@
 
 #	include <algorithm>
 
+#	include "Math/utils.h"
+
 namespace Menge
 {
 	namespace
@@ -43,21 +45,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TimingManager::~TimingManager()
 	{
-        for( TListTimings::const_iterator
-            it = m_timings.begin(),
-            it_end = m_timings.end();
-        it != it_end;
-        ++it )
-        {
-            TimingListenerInterface * listener = it->listener;
-
-			if( listener == nullptr )
-			{
-				continue;
-			}
-
-            listener->deleteTimingListener();
-        }
 	}
     //////////////////////////////////////////////////////////////////////////
     void TimingManager::initialize( ServiceProviderInterface * _serviceProvider )
@@ -65,8 +52,17 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t TimingManager::timing( bool _portions, bool _global, float _delay, TimingListenerInterface * _listener )
+	uint32_t TimingManager::timing( float _delay, const TimingListenerInterfacePtr & _listener )
 	{
+		if( _delay < 0.f || mt::cmp_f_z( _delay ) == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TimingManager::timing invalid delay %f"
+				, _delay
+				);
+
+			return 0;
+		}
+
 		TimingEventDesc desc;
 
 		desc.listener = _listener;
@@ -79,9 +75,7 @@ namespace Menge
 		desc.id = new_id;
 		desc.dead = false;
 		desc.freeze = m_freeze;
-		desc.portions = _portions;
-		desc.global = _global;
-				
+
 		m_timings.push_back(desc);
 
 		return desc.id;
@@ -134,7 +128,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TimingManager::removeAll( bool _global )
+	void TimingManager::removeAll()
 	{
 		for( TListTimings::iterator 
 			it = m_timings.begin(), 
@@ -142,11 +136,6 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			if( _global == false && it->global == true )
-			{
-				continue;
-			}
-
 			this->destroyTiming_( *it );
 		}
 	}
@@ -216,25 +205,15 @@ namespace Menge
 
 			desc.timing += _timing;
 			
-			if( desc.portions == true )
+			while( desc.timing > desc.delay )
 			{
-				while( desc.timing > desc.delay )
-				{
-					desc.timing -= desc.delay;
+				desc.timing -= desc.delay;
 
-					if( desc.listener->updateTiming( desc.id, desc.delay ) == true )
-					{
-						this->destroyTiming_( desc );
-
-						break;
-					}
-				}
-			}
-			else
-			{
-				if( desc.listener->updateTiming( desc.id, _timing ) == true )
+				if( desc.listener->updateTiming( desc.id, desc.delay ) == true )
 				{
 					this->destroyTiming_( desc );
+
+					break;
 				}
 			}
 		}
@@ -249,11 +228,10 @@ namespace Menge
 		{
 			_desc.dead = true;
 
-			TimingListenerInterface * listener = _desc.listener;
+			TimingListenerInterfacePtr listener = _desc.listener;
 			_desc.listener = nullptr;
 
 			listener->removeTiming( _desc.id );
-			listener->deleteTimingListener();
 		}		
 	}
 }

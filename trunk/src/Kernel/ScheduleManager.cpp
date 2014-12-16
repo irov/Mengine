@@ -53,7 +53,7 @@ namespace Menge
         m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ScheduleManager::schedule( float _timing, const ScheduleListenerPtr & _listener )
+    uint32_t ScheduleManager::schedule( float _timing, const ScheduleListenerInterfacePtr & _listener )
     {
         ScheduleEvent event;
 

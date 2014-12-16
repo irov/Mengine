@@ -10,7 +10,7 @@ namespace Menge
 {
 	struct TimingEventDesc
 	{
-		TimingListenerInterface * listener;
+		TimingListenerInterfacePtr listener;
 
 		float timing;
 		float delay;
@@ -19,9 +19,6 @@ namespace Menge
 
 		bool dead;
 		bool freeze;
-
-		bool portions;
-		bool global;
 	};
 
 	class TimingManager
@@ -35,11 +32,11 @@ namespace Menge
         void initialize( ServiceProviderInterface * _serviceProvider ) override;
 
 	public:
-		uint32_t timing( bool _portions, bool _global, float _delay, TimingListenerInterface * _listener ) override;
+		uint32_t timing( float _delay, const TimingListenerInterfacePtr & _listener ) override;
 
     public:
 		bool remove( uint32_t _timingID ) override;
-		void removeAll( bool _global ) override;
+		void removeAll() override;
 
 		void freeze( uint32_t _id, bool _freeze ) override;
 		void freezeAll( bool _freeze ) override;

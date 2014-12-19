@@ -314,31 +314,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void VideoDecoderTheora::decodeBuffer_( unsigned char * _buffer, size_t _size )
 	{
-		//Convert 4:2:0 YUV YCrCb to an RGB24 Bitmap
-		//convenient pointers
-
-		//Calculate buffer offsets
-		//Check if upside down, if so, reverse buffers and offsets
-		//if ( m_yuvBuffer.y_height < 0 )
-		//{
-		//	m_yuvBuffer.y_height = -m_yuvBuffer.y_height;
-		//	ySrc += (m_yuvBuffer.y_height - 1) * m_yuvBuffer.y_stride;
-
-		//	uSrc += ((m_yuvBuffer.y_height / 2) - 1) * m_yuvBuffer.uv_stride;
-		//	vSrc += ((m_yuvBuffer.y_height / 2) - 1) * m_yuvBuffer.uv_stride;
-
-		//	ySrc2 = ySrc - m_yuvBuffer.y_stride;
-		//	yOff = -m_yuvBuffer.y_width - ( m_yuvBuffer.y_stride * 2 );
-
-		//	m_yuvBuffer.uv_stride = -m_yuvBuffer.uv_stride;
-		//}
-
 		if( m_options.alpha == false && m_options.pixelFormat == PF_X8R8G8B8 )
 		{
 			unsigned char * dstBitmap = _buffer;
 			unsigned char * dstBitmapOffset = _buffer + m_pitch;
 
-			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
+			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 4;
 			int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
 
 			m_yuvBuffer.y_height = m_yuvBuffer.y_height >> 1;
@@ -432,7 +413,7 @@ namespace Menge
 			unsigned char * dstBitmap = _buffer;
 			unsigned char * dstBitmapOffset = _buffer + m_pitch;
 
-			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 3;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
+			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 3;
 			int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
 
 			m_yuvBuffer.y_height = m_yuvBuffer.y_height >> 1;

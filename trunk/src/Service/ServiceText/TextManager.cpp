@@ -626,6 +626,8 @@ namespace Menge
 							);
 
 						m_successful = false;
+
+						return;
 					}
 
 					const ConstString & value = _text->getValue();

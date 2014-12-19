@@ -1873,9 +1873,11 @@ namespace Menge
 			return false;
 		}
 
+		bool dublicate = Helper::s_hasOption( " -dublicate ", m_commandLine );
+
 		bool alreadyRunning = CONFIG_VALUE(m_serviceProvider, "Game", "AlreadyRunning", true);
 
-		if( alreadyRunning == true )
+		if( alreadyRunning == true && dublicate == false )
 		{	
 			m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_serviceProvider);
 

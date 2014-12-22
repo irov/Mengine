@@ -21,7 +21,6 @@
 #	include <cstdio>
 #	include <clocale>
 
-#	include <shlobj.h>
 #   include <errno.h>
 
 #	include "ConsoleLogger.h"

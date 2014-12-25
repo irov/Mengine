@@ -482,7 +482,7 @@ namespace Menge
 
 		virtual IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) = 0;
 		virtual void releaseIndexBuffer( IBHandle _ibHandle ) = 0;
-		virtual void * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
+		virtual RenderIndices2D * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) = 0;
 

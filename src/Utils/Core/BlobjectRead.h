@@ -52,7 +52,7 @@ namespace Menge
 			//stdex::unchecked_array_iterator<TBlobject::value_type *> chkd_begin((TBlobject::value_type *)_begin);
 			//std::copy( it_begin, m_seek, chkd_begin );
 
-			stdex::memorycopy( _begin, it_begin, _size );
+			stdex::memorycopy( _begin, 0, it_begin, _size );
 		}
 
 		const TBlobject::value_type * selectBuffer( size_t _size )

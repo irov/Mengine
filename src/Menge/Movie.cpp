@@ -316,7 +316,7 @@ namespace Menge
 		}
 		else
 		{
-			_node->setLocalAlpha( frame.opacity );
+			_node->setLocalColorAlpha( frame.opacity );
 		}
 
 		if( _layer.isAudio() == true )
@@ -2481,7 +2481,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setPersonalAlpha( float _alpha )
 	{
-		this->setLocalAlpha( _alpha );
+		this->setLocalColorAlpha( _alpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateTiming_()

@@ -160,7 +160,7 @@ namespace Menge
             
             if( tail != 0 )
             {
-                stdex::memorycopy( _buf, m_readCache + m_carriage, tail );
+                stdex::memorycopy( _buf, 0, m_readCache + m_carriage, tail );
             }
 
 			size_t toRead = correct_count - tail;
@@ -182,7 +182,7 @@ namespace Menge
         
         if( m_carriage + correct_count <= m_capacity )
         {
-			stdex::memorycopy( _buf, m_readCache + m_carriage, correct_count );
+			stdex::memorycopy( _buf, 0, m_readCache + m_carriage, correct_count );
 
             m_carriage += correct_count;
 
@@ -193,7 +193,7 @@ namespace Menge
 
         if( tail != 0 )
         {
-            stdex::memorycopy( _buf, m_readCache + m_carriage, tail );
+            stdex::memorycopy( _buf, 0, m_readCache + m_carriage, tail );
         }
 
 		size_t bytesRead;
@@ -204,8 +204,7 @@ namespace Menge
         
         size_t readSize = (std::min)(correct_count - tail, bytesRead);
 
-		unsigned char * read_buf = (unsigned char *)_buf + tail;
-        stdex::memorycopy( read_buf, m_readCache, readSize );
+        stdex::memorycopy( _buf, tail, m_readCache, readSize );
 
         m_carriage = readSize;
         m_capacity = bytesRead;

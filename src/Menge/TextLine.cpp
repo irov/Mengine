@@ -109,10 +109,10 @@ namespace Menge
 
 			charData.code = glyphChar;	
 
-			mt::ident_v3( charData.renderVertex[0] );
-			mt::ident_v3( charData.renderVertex[1] );
-			mt::ident_v3( charData.renderVertex[2] );
-			mt::ident_v3( charData.renderVertex[3] );
+			mt::ident_v2( charData.vertex[0] );
+			mt::ident_v2( charData.vertex[1] );
+			mt::ident_v2( charData.vertex[2] );
+			mt::ident_v2( charData.vertex[3] );
 
 			charData.uv = glyph.uv;
 
@@ -151,7 +151,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::prepareRenderObject(	mt::vec2f & _offset		
 		, const mt::vec4f & _uv
-		, unsigned int _argb	
+		, ARGB _argb	
         , bool _pixelsnap
 		, TVectorRenderVertex2D& _renderObject ) const
 	{
@@ -177,9 +177,9 @@ namespace Menge
 			for( uint32_t i = 0; i != 4; ++i )
 			{
 				RenderVertex2D & renderVertex = _renderObject[renderObjectNum + i];
-				const mt::vec3f & charVertex = data.renderVertex[i];
-				
 
+				const mt::vec2f & charVertex = data.vertex[i];
+				
                 if( _pixelsnap == true )
                 {
                     renderVertex.pos.x = floorf( charVertex.x + 0.5f );
@@ -191,7 +191,7 @@ namespace Menge
                     renderVertex.pos.y = charVertex.y;
                 }                
 
-				renderVertex.pos.z = charVertex.z;
+				renderVertex.pos.z = 0.f;
 
 				renderVertex.color = _argb;
 
@@ -237,12 +237,12 @@ namespace Menge
 			mt::vec2f size = cd.size;
 
 			mt::vec2f offset = _offset + cd.offset;
-			mt::vec3f v3_offset(offset.x, offset.y, 0.f);
+			mt::vec2f v3_offset = offset;
 			
-            cd.renderVertex[0] = v3_offset + mt::vec3f(0.f, 0.0f, 0.f);;
-			cd.renderVertex[1] = v3_offset + mt::vec3f(size.x, 0.0f, 0.f);
-			cd.renderVertex[2] = v3_offset + mt::vec3f(size.x, size.y, 0.f);
-			cd.renderVertex[3] = v3_offset + mt::vec3f(0.0f, size.y, 0.f);
+            cd.vertex[0] = v3_offset + mt::vec2f(0.f, 0.0f);
+			cd.vertex[1] = v3_offset + mt::vec2f(size.x, 0.0f);
+			cd.vertex[2] = v3_offset + mt::vec2f(size.x, size.y);
+			cd.vertex[3] = v3_offset + mt::vec2f(0.0f, size.y);
 
 			_offset.x += cd.advance + m_charOffset;
 		}

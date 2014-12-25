@@ -682,7 +682,7 @@ namespace Menge
 					//, image_data + width * pixel_size
 					//, image_data + width * pixel_size );
 
-				stdex::memorycopy( image_data + width * pixel_size, image_data + (width - 1) * pixel_size, pixel_size );
+				stdex::memorycopy( image_data, width * pixel_size, image_data + (width - 1) * pixel_size, pixel_size );
 
                 image_data += _texturePitch;
             }
@@ -697,7 +697,7 @@ namespace Menge
 
             unsigned char * image_data = static_cast<unsigned char *>(_textureBuffer);
 
-			stdex::memorycopy( image_data + height * _texturePitch, image_data + (height - 1) * _texturePitch, _texturePitch );
+			stdex::memorycopy( image_data, height * _texturePitch, image_data + (height - 1) * _texturePitch, _texturePitch );
         }
     }
     //////////////////////////////////////////////////////////////////////////

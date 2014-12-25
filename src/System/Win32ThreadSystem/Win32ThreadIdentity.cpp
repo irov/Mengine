@@ -10,7 +10,6 @@ namespace Menge
 	Win32ThreadIdentity::Win32ThreadIdentity()
         : m_serviceProvider(nullptr)
 		, m_handle(INVALID_HANDLE_VALUE)
-		, m_hTaskSignalEvent(INVALID_HANDLE_VALUE)
         , m_task(nullptr)
 		, m_complete(true)
 		, m_exit(false)
@@ -99,13 +98,6 @@ namespace Menge
 			}break;
 		}    
 
-		m_hTaskSignalEvent = CreateEvent( NULL, FALSE, FALSE, NULL );
-
-		if( m_hTaskSignalEvent == NULL )
-		{
-			return false;
-		}
-
 		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -133,10 +125,7 @@ namespace Menge
 
 			m_mutex->unlock();
 
-			if( work == true )
-			{
-				WaitForSingleObject( m_hTaskSignalEvent, INFINITE );
-			}
+			Sleep( 10 );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -159,8 +148,6 @@ namespace Menge
 
 		m_mutex->unlock();
 
-		SetEvent( m_hTaskSignalEvent );
-		
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -190,9 +177,6 @@ namespace Menge
 			m_exit = true;
 		}
 		m_mutex->unlock();
-
-		SetEvent( m_hTaskSignalEvent );
-		CloseHandle( m_hTaskSignalEvent );
 
 		WaitForSingleObject( m_handle, INFINITE );
 		CloseHandle( m_handle );

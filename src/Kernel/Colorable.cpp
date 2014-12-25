@@ -55,14 +55,50 @@ namespace Menge
 		this->invalidateColor();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Colorable::setLocalAlpha( float _alpha )
+	void Colorable::setLocalColorR( float _value )
 	{
-		if( mt::cmp_f_f( m_colorLocal.getA(), _alpha ) == true )
+		if( mt::cmp_f_f( m_colorLocal.getR(), _value ) == true )
 		{
 			return;
 		}
 
-		m_colorLocal.setA( _alpha );
+		m_colorLocal.setR( _value );
+
+		this->invalidateColor();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Colorable::setLocalColorG( float _value )
+	{
+		if( mt::cmp_f_f( m_colorLocal.getG(), _value ) == true )
+		{
+			return;
+		}
+
+		m_colorLocal.setG( _value );
+
+		this->invalidateColor();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Colorable::setLocalColorB( float _value )
+	{
+		if( mt::cmp_f_f( m_colorLocal.getB(), _value ) == true )
+		{
+			return;
+		}
+
+		m_colorLocal.setB( _value );
+
+		this->invalidateColor();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Colorable::setLocalColorAlpha( float _value )
+	{
+		if( mt::cmp_f_f( m_colorLocal.getA(), _value ) == true )
+		{
+			return;
+		}
+
+		m_colorLocal.setA( _value );
 
 		this->invalidateColor();
 	}

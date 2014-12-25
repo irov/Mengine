@@ -46,7 +46,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_setPersonalAlpha( float _alpha )
     {
-        this->setLocalAlpha( _alpha );
+        this->setLocalColorAlpha( _alpha );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void MovieSlot::_changeParent( Node * _oldParent, Node * _newParent )

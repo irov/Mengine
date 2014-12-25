@@ -34,8 +34,6 @@ namespace Menge
 
 		HANDLE m_handle;
 
-		HANDLE m_hTaskSignalEvent;
-
 		ThreadMutexInterfacePtr m_mutex;
 			
         ThreadTaskInterface * m_task;

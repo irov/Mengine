@@ -62,7 +62,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		stdex::memorycopy( memory, _source, _size );
+		stdex::memorycopy( memory, 0, _source, _size );
 
 		m_data = memory;
 		m_size = _size;
@@ -101,7 +101,7 @@ namespace Menge
 			return 0;
 		}
 
-		stdex::memorycopy( _buf, m_pos, cnt );
+		stdex::memorycopy( _buf, 0, m_pos, cnt );
 		//std::copy( m_pos, m_pos + cnt, (unsigned char *)_buf );
 
 		m_pos += cnt;

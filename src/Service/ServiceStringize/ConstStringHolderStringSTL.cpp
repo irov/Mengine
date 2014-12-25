@@ -18,7 +18,7 @@ namespace Menge
     {
 		m_buff = Helper::allocateMemory<char>( _size + 1 );
 
-		stdex::memorycopy( m_buff, _value, _size );
+		stdex::memorycopy( m_buff, 0, _value, _size );
 		m_buff[_size] = '\0';
 
 		hash_type hash = Helper::makeHash( m_buff, _size );

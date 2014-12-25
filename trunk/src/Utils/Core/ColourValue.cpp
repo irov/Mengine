@@ -7,19 +7,21 @@ namespace Menge
 	{
 		m_invalidateARGB = false;
 
+		const float rgba_255 = 255.f;
+
 #   ifdef MENGE_RENDER_TEXTURE_RGBA
-		uint8_t a8 = static_cast<uint8_t>(m_a * 255.f);
-		uint8_t b8 = static_cast<uint8_t>(m_r * 255.f);
-		uint8_t g8 = static_cast<uint8_t>(m_g * 255.f);
-		uint8_t r8 = static_cast<uint8_t>(m_b * 255.f);
+		uint8_t a8 = static_cast<uint8_t>(m_a * rgba_255);
+		uint8_t b8 = static_cast<uint8_t>(m_r * rgba_255);
+		uint8_t g8 = static_cast<uint8_t>(m_g * rgba_255);
+		uint8_t r8 = static_cast<uint8_t>(m_b * rgba_255);
 #	else // MENGE_RENDER_TEXTURE_RGBA
-		uint8_t a8 = static_cast<uint8_t>(m_a * 255.f);
-		uint8_t r8 = static_cast<uint8_t>(m_r * 255.f);
-		uint8_t g8 = static_cast<uint8_t>(m_g * 255.f);
-		uint8_t b8 = static_cast<uint8_t>(m_b * 255.f);
+		uint8_t a8 = static_cast<uint8_t>(m_a * rgba_255);
+		uint8_t r8 = static_cast<uint8_t>(m_r * rgba_255);
+		uint8_t g8 = static_cast<uint8_t>(m_g * rgba_255);
+		uint8_t b8 = static_cast<uint8_t>(m_b * rgba_255);
 #	endif // MENGE_RENDER_TEXTURE_RGBA
 
-		m_argb = (a8 << 24) + (r8 << 16) + (g8 << 8) + b8;
+		m_argb = (a8 << 24) + (r8 << 16) + (g8 << 8) + (b8 << 0);
 
 		if( m_argb == 0xFFFFFFFF )
 		{
@@ -39,11 +41,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setAsARGB( const ARGB _val )
 	{
+		m_invalidateARGB = false;
 		m_argb = _val;
 
 		if( _val == 0xFFFFFFFF )
-		{
-			m_invalidateARGB = false;
+		{			
 			m_identity = true;
 
 			m_r = 1.f;
@@ -54,21 +56,20 @@ namespace Menge
 			return;
 		}
 
-		const float rgba_255 = 1.f / 255.f;
+		const float rgba_1_div_255 = 1.f / 255.f;
 
 #   ifdef MENGE_RENDER_TEXTURE_RGBA
-		m_a = ((m_argb >> 24) & 0xFF) * rgba_255;
-		m_b = ((m_argb >> 16) & 0xFF) * rgba_255;
-		m_g = ((m_argb >> 8) & 0xFF) * rgba_255;
-		m_r = (m_argb & 0xFF) * rgba_255;
+		m_a = ((m_argb >> 24) & 0xFF) * rgba_1_div_255;
+		m_b = ((m_argb >> 16) & 0xFF) * rgba_1_div_255;
+		m_g = ((m_argb >> 8) & 0xFF) * rgba_1_div_255;
+		m_r = ((m_argb >> 0) & 0xFF) * rgba_1_div_255;
 #	else // MENGE_RENDER_TEXTURE_RGBA
-		m_a = ((m_argb >> 24) & 0xFF) * rgba_255;
-		m_r = ((m_argb >> 16) & 0xFF) * rgba_255;
-		m_g = ((m_argb >> 8) & 0xFF) * rgba_255;
-		m_b = (m_argb & 0xFF) * rgba_255;
+		m_a = ((m_argb >> 24) & 0xFF) * rgba_1_div_255;
+		m_r = ((m_argb >> 16) & 0xFF) * rgba_1_div_255;
+		m_g = ((m_argb >> 8) & 0xFF) * rgba_1_div_255;
+		m_b = ((m_argb >> 0) & 0xFF) * rgba_1_div_255;
 #	endif // MENGE_RENDER_TEXTURE_RGBA
 
-		m_invalidateARGB = false;
 		m_identity = false;
 	}
 	//////////////////////////////////////////////////////////////////////////

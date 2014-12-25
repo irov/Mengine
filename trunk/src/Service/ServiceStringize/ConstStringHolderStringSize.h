@@ -24,7 +24,7 @@ namespace Menge
 	public:
 		const char * initialize( const char * _value, size_t _size )
 		{
-			stdex::memorycopy( m_buff, _value, _size );
+			stdex::memorycopy( m_buff, 0, _value, _size );
 			m_buff[_size] = '\0';
 
 			return m_buff;

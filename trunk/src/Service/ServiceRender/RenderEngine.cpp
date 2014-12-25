@@ -1375,7 +1375,7 @@ namespace Menge
 			return false;
 		}
 
-		stdex::memorycopy( vbuffer, _buffer, _count * sizeof(RenderVertex2D) );
+		stdex::memorycopy( vbuffer, 0, _buffer, _count * sizeof(RenderVertex2D) );
 		//std::copy( _buffer + 0, _buffer + _count, static_cast<RenderVertex2D*>(vbuffer) );
 
 		if( RENDER_SYSTEM(m_serviceProvider)->unlockVertexBuffer( _handle ) == false )
@@ -1391,7 +1391,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::updateIndicesBuffer( IBHandle _handle, const RenderIndices2D * _buffer, uint32_t _count )
 	{
-		void * ibuffer = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
+		RenderIndices2D * ibuffer = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
 			_handle
 			, 0
 			, _count
@@ -1406,8 +1406,7 @@ namespace Menge
 			return false;
 		}
 
-		stdex::memorycopy( ibuffer, _buffer, _count * sizeof(RenderIndices2D) );
-		//std::copy( _buffer + 0, _buffer + _count, static_cast<uint16_t*>(ibuffer) );
+		stdex::memorycopy_pod( ibuffer, 0, _buffer, _count );
 
 		if( RENDER_SYSTEM(m_serviceProvider)->unlockIndexBuffer( _handle ) == false )
 		{
@@ -1455,7 +1454,7 @@ namespace Menge
 
 		RenderVertex2D * vertexBuffer = static_cast<RenderVertex2D *>(vbData);
 
-		void * ibData = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
+		RenderIndices2D * ibData = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
 			m_ibHandle2D
 			, 0
 			, m_renderIndicesCount * sizeof(RenderIndices2D)

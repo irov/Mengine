@@ -51,6 +51,9 @@ namespace Menge
 		void setTextFormatArgs( const TVectorString & _args );
 		void removeTextFormatArgs();
 		const TVectorString & getTextFormatArgs() const;
+
+	public:
+		size_t getTextExpectedArgument() const;
 		
 	public:
 		const String & getText() const;

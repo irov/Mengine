@@ -584,13 +584,10 @@ PyMODINIT_FUNC PyInit_ToolsBuilderPlugin(void)
 			return NULL;
 		}
 	}
-	catch( const Menge::ServiceException & se )
+	catch( const std::exception & se )
 	{
-		printf("ServiceException %s exception %s file %d:%d"
-			, se.serviceName
-			, se.what
-			, se.line
-			, se.file
+		printf("PyInit_ToolsBuilderPlugin exception %s"
+			, se.what()
 			);
 
 		return NULL;

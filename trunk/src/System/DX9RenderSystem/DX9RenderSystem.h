@@ -84,7 +84,7 @@ namespace Menge
 
 		IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
-		void * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
+		RenderIndices2D * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
 		void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
 

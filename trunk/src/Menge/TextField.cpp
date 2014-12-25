@@ -106,8 +106,6 @@ namespace Menge
 	{
 		_vertexData.clear();
 
-		const TVectorTextLine & lines = this->getTextLines();
-       
 		const TextFontInterfacePtr & font = this->getFont();
 
 		if( font == nullptr )
@@ -122,6 +120,8 @@ namespace Menge
 
 		float lineOffset = this->calcLineOffset();
 
+		const TVectorTextLine & lines = this->getTextLines();
+
 		mt::vec2f offset(0.f, 0.f);
 		switch( m_verticalAlign )
 		{
@@ -131,9 +131,13 @@ namespace Menge
 			}break;
 		case ETFVA_CENTER:
 			{
-				offset.y = -(fontHeght + lineOffset) * lines.size() * 0.5f;
+				TVectorTextLine::size_type line_count = lines.size();
+
+				offset.y = -(fontHeght + lineOffset) * line_count * 0.5f;
 			}break;
 		}
+
+		ARGB argb = _color.getAsARGB();
 
 		for( TVectorTextLine::const_iterator
 			it_line = lines.begin(),
@@ -145,8 +149,6 @@ namespace Menge
 
             float alignOffsetX = this->getHorizontAlignOffset_( line );
 			offset.x = alignOffsetX;
-
-			ARGB argb = _color.getAsARGB();
 
 			line.prepareRenderObject( offset, uv, argb, m_pixelsnap, _vertexData );
 
@@ -196,7 +198,7 @@ namespace Menge
 			countVertex = m_maxCharCount * 4;
 		}
 
-		TVectorRenderVertex2D::value_type * vertices = &(textVertices[0]);
+		const TVectorRenderVertex2D::value_type * vertices = &(textVertices[0]);
 
         RENDER_SERVICE(m_serviceProvider)
             ->addRenderQuad( _viewport, _camera, material, vertices, countVertex, nullptr );
@@ -967,6 +969,42 @@ namespace Menge
 		}
 
 		return m_cacheText;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t TextField::getTextExpectedArgument() const
+	{
+		if( m_textEntry == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextField::getTextExpectedArgument '%s:%s' not compile"
+				, this->getName().c_str()
+				, this->getTextID().c_str()
+				);
+
+			return 0;
+		}
+
+		const ConstString & textValue = m_textEntry->getValue();
+
+		const char * str_textValue = textValue.c_str();
+
+		try
+		{
+			StringFormat fmt(str_textValue);
+
+			int expected_args = fmt.expected_args();
+
+			return (size_t)expected_args;
+		}
+		catch( const boost::io::format_error & _ex )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextField::getTextExpectedArgument '%s:%s' except error '%s'"
+				, this->getName().c_str()
+				, this->getTextID().c_str()
+				, _ex.what()
+				);
+		}
+
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////	
 	bool TextField::updateTextCache_() const

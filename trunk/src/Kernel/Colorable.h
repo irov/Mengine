@@ -19,8 +19,17 @@ namespace Menge
 		void setLocalColor( const ColourValue& _color );
 		inline const ColourValue & getLocalColor() const;
 
-		void setLocalAlpha( float _alpha );
-		inline float getLocalAlpha() const;
+		void setLocalColorR( float _value );
+		inline float getLocalColorR() const;
+
+		void setLocalColorG( float _value );
+		inline float getLocalColorG() const;
+
+		void setLocalColorB( float _value );
+		inline float getLocalColorB() const;
+
+		void setLocalColorAlpha( float _value );
+		inline float getLocalColorAlpha() const;
 
 	public:
 		inline bool isLocalTransparent() const;
@@ -90,7 +99,22 @@ namespace Menge
 		return m_colorLocal;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline float Colorable::getLocalAlpha() const
+	inline float Colorable::getLocalColorR() const
+	{
+		return m_colorLocal.getR();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float Colorable::getLocalColorG() const
+	{
+		return m_colorLocal.getG();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float Colorable::getLocalColorB() const
+	{
+		return m_colorLocal.getB();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float Colorable::getLocalColorAlpha() const
 	{
 		return m_colorLocal.getA();
 	}

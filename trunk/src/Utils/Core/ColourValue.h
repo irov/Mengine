@@ -27,7 +27,8 @@ namespace Menge
 			: m_a(_a)
 			, m_r(_r)
 			, m_g(_g)
-			, m_b(_b)			
+			, m_b(_b)
+			, m_argb(0xFFFFFFFF)
 			, m_invalidateARGB(true)
 			, m_identity(false)
 		{ 

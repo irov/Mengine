@@ -117,7 +117,7 @@ namespace Menge
 
 			for( uint32_t j = 0; j != m_dataInfo.height; ++j )
 			{
-				stdex::memorycopy( dest_buffer, source_buffer, m_dataInfo.width * m_dataInfo.channels );
+				stdex::memorycopy( dest_buffer, 0, source_buffer, m_dataInfo.width * m_dataInfo.channels );
 
 				source_buffer += m_dataInfo.width * m_dataInfo.channels;
 				dest_buffer += m_options.pitch;

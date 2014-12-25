@@ -19,7 +19,7 @@ namespace Menge
 	struct CharData
 	{
 		GlyphCode code;
-		mt::vec3f renderVertex[4];
+		mt::vec2f vertex[4];
 		mt::vec4f uv;
 		mt::vec2f offset;
 		mt::vec2f size;
@@ -40,7 +40,7 @@ namespace Menge
 		void prepareRenderObject(
 			mt::vec2f & offset
 			, const mt::vec4f & _uv
-			, unsigned int _argb
+			, ARGB _argb
             , bool _pixelsnap
 			, TVectorRenderVertex2D & _renderObject ) const;
 

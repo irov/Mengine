@@ -1790,7 +1790,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
+	RenderIndices2D * DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
 	{
         IBInfo * ibinfo;
 
@@ -1817,7 +1817,9 @@ namespace Menge
             return nullptr;
         }
 
-		return lock;
+		RenderIndices2D * indices = static_cast<RenderIndices2D *>(lock);
+
+		return indices;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::unlockIndexBuffer( IBHandle _ibHandle )

@@ -45,10 +45,6 @@
 #   include <Psapi.h>
 #	include <tlhelp32.h>
 
-#ifdef _MSC_VER
-#	define snprintf _snprintf
-#endif
-
 SERVICE_EXTERN(ServiceProvider, Menge::ServiceProviderInterface);
 SERVICE_EXTERN(Application, Menge::ApplicationInterface);
 SERVICE_EXTERN(StringizeService, Menge::StringizeServiceInterface);

@@ -2065,7 +2065,7 @@ namespace Menge
 
 		//float frameDuration = m_resourceMovie->getFrameDuration();
 
-		float speedFactor = this->getSpeedFactor();
+		float speedFactor = this->getAnimationSpeedFactor();
 		float realTiming = _timing * speedFactor;
 
 		m_frameTiming += realTiming;
@@ -2806,7 +2806,7 @@ namespace Menge
 
 			Animatable * animatable = this->getLayerAnimatable_( layer );
 
-			animatable->setSpeedFactor( _factor );
+			animatable->setAnimationSpeedFactor( _factor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

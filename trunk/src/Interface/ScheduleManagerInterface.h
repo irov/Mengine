@@ -35,6 +35,10 @@ namespace Menge
 
         virtual float time( uint32_t _id ) const = 0;
 
+	public:
+		virtual void setSpeedFactor( float _factor ) = 0;
+		virtual float getSpeedFactor() const = 0;
+
     public:
         virtual void update( float _current, float _timing ) = 0;
     };

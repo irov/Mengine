@@ -23,6 +23,7 @@ namespace Menge
 		, m_afterActive(false)
 		, m_enable(true)
 		, m_freeze(false)
+		, m_speedFactor(1.f)
 		, m_rendering(false)
 		, m_parent(nullptr)
 		, m_layer(nullptr)
@@ -681,6 +682,16 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Node::setSpeedFactor( float _speedFactor )
+	{
+		m_speedFactor = _speedFactor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Node::getSpeedFactor() const
+	{
+		return m_speedFactor;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::update( float _current, float _timing )
 	{
 		if( this->isActivate() == false )
@@ -693,13 +704,15 @@ namespace Menge
 			return;
 		}
 
+		float total_timing = _timing * m_speedFactor;
+
 		this->setShallowGrave();
 
-		this->_update( _current, _timing );
+		this->_update( _current, total_timing );
 
-		Affectorable::updateAffectors( _current, _timing );
+		Affectorable::updateAffectors( _current, total_timing );
 		
-		this->updateChild_( _current, _timing );
+		this->updateChild_( _current, total_timing );
 
 		this->removeShallowGrave();
 	}

@@ -6,7 +6,7 @@ namespace Menge
 	Animatable::Animatable()
 		: m_enumerator(0)
 		, m_playTime(0.f)
-		, m_speedFactor(1.f)
+		, m_animationSpeedFactor(1.f)
 		, m_intervalStart(0.f)
         , m_intervalBegin(0.f)
         , m_intervalEnd(-1.f)
@@ -27,21 +27,11 @@ namespace Menge
         this->_setLoop( _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Animatable::getLoop() const
+	void Animatable::setAnimationSpeedFactor( float _factor )
 	{
-		return m_loop;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animatable::setSpeedFactor( float _factor )
-	{
-		m_speedFactor = _factor;
+		m_animationSpeedFactor = _factor;
 
 		this->_setSpeedFactor( _factor );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Animatable::getSpeedFactor() const
-	{
-		return m_speedFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::setTiming( float _timing )
@@ -109,26 +99,11 @@ namespace Menge
 
 		this->_setReverse( _value );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Animatable::getReverse() const
-	{
-		return m_reverse;
-	}
     //////////////////////////////////////////////////////////////////////////
     void Animatable::setPlayCount( uint32_t _count )
     {
         m_playCount = _count;
     }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Animatable::getPlayCount() const
-    {
-        return m_playCount;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t Animatable::getPlayIterator() const
-	{
-		return m_playIterator;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::_setReverse( bool _value )
 	{
@@ -139,11 +114,6 @@ namespace Menge
     void Animatable::setScretch( float _scretch )
     {
         m_scretch = _scretch;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float Animatable::getScretch() const
-    {
-        return m_scretch;
     }
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t Animatable::play( float _time )
@@ -218,21 +188,6 @@ namespace Menge
 		this->_end( m_enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Animatable::isInterrupt() const
-	{
-		return m_interrupt;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t Animatable::getPlayId() const
-	{
-		return m_enumerator;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Animatable::getPlayTime() const
-	{
-		return m_playTime;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Animatable::_setLoop( bool _value )
 	{
         (void)_value;
@@ -250,25 +205,10 @@ namespace Menge
 		m_intervalStart = _startInterval;
 	}
     //////////////////////////////////////////////////////////////////////////
-    float Animatable::getStartInterval() const
-    {
-        return m_intervalStart;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Animatable::setInterval( float _begin, float _end )
     {
         m_intervalBegin = _begin;
         m_intervalEnd = _end;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float Animatable::getIntervalBegin() const
-    {
-        return m_intervalBegin;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float Animatable::getIntervalEnd() const
-    {
-        return m_intervalEnd;
     }
 	//////////////////////////////////////////////////////////////////////////
 }

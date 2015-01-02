@@ -44,6 +44,10 @@ namespace Menge
 		bool isFreeze( uint32_t _id ) const override;
 
 	public:
+		void setSpeedFactor( float _factor ) override;
+		float getSpeedFactor() const override;
+
+	public:
 		void update( float _current, float _timing ) override;
 
 	private:
@@ -55,6 +59,8 @@ namespace Menge
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
+
+		float m_speedFactor;
 
 		typedef stdex::list<TimingEventDesc> TListTimings;
 		TListTimings m_timings;

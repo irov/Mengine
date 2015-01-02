@@ -28,8 +28,8 @@ namespace Menge
 			float timing;
 			uint32_t id;
 
-			mutable bool dead;
-			mutable bool freeze;
+			bool dead;
+			bool freeze;
 		};
 
 	public:
@@ -45,15 +45,21 @@ namespace Menge
 		bool isFreeze( uint32_t _id ) const override;
 
 		float time( uint32_t _id ) const override;
+
+	public:
+		void setSpeedFactor( float _factor ) override;
+		float getSpeedFactor() const override;
 		
 	public:
 		void update( float _current, float _timing ) override;
 
     protected:
-        bool removeEvent_( const ScheduleEvent & _event );
+        bool removeEvent_( ScheduleEvent & _event );
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
+
+		float m_speedFactor;
 
 		typedef stdex::vector<ScheduleEvent> TListSchedules;
 		TListSchedules m_schedules;
@@ -62,6 +68,7 @@ namespace Menge
 		bool m_freezeAll;
 
     protected:
-        const ScheduleEvent * findEvent_( uint32_t _id ) const;
+		bool findScheduleEvent_( uint32_t _id, const ScheduleEvent *& _desc ) const;
+		bool findScheduleEvent_( uint32_t _id, ScheduleEvent *& _desc );
 	};
 }

@@ -989,7 +989,7 @@ namespace Menge
 			}
 
 		protected:
-			bool updateTiming( uint32_t _id, float _timing ) override
+			bool onTimingUpdate( uint32_t _id, float _timing ) override
 			{
 				SCRIPT_SERVICE(m_serviceProvider)
 					->callFunction( m_script, "(ifO)", _id, _timing, pybind::get_bool(false) );
@@ -997,7 +997,7 @@ namespace Menge
 				return false;
 			}
 
-			void removeTiming( uint32_t _id ) override
+			void onTimingStop( uint32_t _id ) override
 			{
 				SCRIPT_SERVICE(m_serviceProvider)
 					->callFunction( m_script, "(ifO)", _id, 0.f, pybind::get_bool(true) );
@@ -4726,8 +4726,8 @@ namespace Menge
             .def( "stop", &Animatable::stop )
             .def( "isPlay", &Animatable::isPlay )
             .def( "getPlayId", &Animatable::getPlayId )
-            .def( "setSpeedFactor", &Animatable::setSpeedFactor )
-            .def( "getSpeedFactor", &Animatable::getSpeedFactor )
+            .def( "setAnimationSpeedFactor", &Animatable::setAnimationSpeedFactor )
+            .def( "getAnimationSpeedFactor", &Animatable::getAnimationSpeedFactor )
             .def( "setFirstFrame", &Animatable::setFirstFrame )
             .def( "setLastFrame", &Animatable::setLastFrame )
             .def( "setTiming", &Animatable::setTiming )
@@ -4763,6 +4763,8 @@ namespace Menge
             .def( "isActivate", &Node::isActivate )
             .def( "freeze", &Node::freeze )
             .def( "isFreeze", &Node::isFreeze )
+			.def( "setSpeedFactor", &Node::setSpeedFactor )
+			.def( "getSpeedFactor", &Node::getSpeedFactor )
 			.def( "isRenderable", &Node::isRenderable )
             .def( "addChildren", &Node::addChild )
             .def( "addChildrenFront", &Node::addChildFront )
@@ -5333,6 +5335,8 @@ namespace Menge
 				.def( "freezeAll", &ScheduleManagerInterface::freezeAll )
 				.def( "isFreeze", &ScheduleManagerInterface::isFreeze )
 				.def( "time", &ScheduleManagerInterface::time )
+				.def( "setSpeedFactor", &ScheduleManagerInterface::setSpeedFactor )
+				.def( "getSpeedFactor", &ScheduleManagerInterface::getSpeedFactor )
 				;
 
 			pybind::interface_<TimingManagerInterface>("TimingManagerInterface", true)
@@ -5342,6 +5346,8 @@ namespace Menge
 				.def( "freeze", &TimingManagerInterface::freeze )
 				.def( "freezeAll", &TimingManagerInterface::freezeAll )
 				.def( "isFreeze", &TimingManagerInterface::isFreeze )
+				.def( "setSpeedFactor", &TimingManagerInterface::setSpeedFactor )
+				.def( "getSpeedFactor", &TimingManagerInterface::getSpeedFactor )
 				;
 
 			pybind::def_functor( "createScheduler", nodeScriptMethod, &NodeScriptMethod::createScheduler );

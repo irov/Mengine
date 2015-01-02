@@ -38,6 +38,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TimingManager::TimingManager()
 		: m_serviceProvider(nullptr)
+		, m_speedFactor(1.f)
         , m_enumerator(0)
 		, m_freeze(false)
 	{
@@ -176,6 +177,16 @@ namespace Menge
 		return event->freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TimingManager::setSpeedFactor( float _factor )
+	{
+		m_speedFactor = _factor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float TimingManager::getSpeedFactor() const
+	{
+		return m_speedFactor;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void TimingManager::update( float _current, float _timing )
 	{
         (void)_current;
@@ -184,6 +195,8 @@ namespace Menge
 		{
 			return;
 		}
+
+		float total_timing = _timing * m_speedFactor;
 
 		for( TListTimings::iterator 
 			it = m_timings.begin(),
@@ -203,13 +216,13 @@ namespace Menge
 				continue;
 			}
 
-			desc.timing += _timing;
+			desc.timing += total_timing;
 			
 			while( desc.timing > desc.delay )
 			{
 				desc.timing -= desc.delay;
 
-				if( desc.listener->updateTiming( desc.id, desc.delay ) == true )
+				if( desc.listener->onTimingUpdate( desc.id, desc.delay ) == true )
 				{
 					this->destroyTiming_( desc );
 
@@ -231,7 +244,7 @@ namespace Menge
 			TimingListenerInterfacePtr listener = _desc.listener;
 			_desc.listener = nullptr;
 
-			listener->removeTiming( _desc.id );
+			listener->onTimingStop( _desc.id );
 		}		
 	}
 }

@@ -224,6 +224,10 @@ namespace Menge
 		virtual void _freeze( bool _value );
 
 	public:
+		void setSpeedFactor( float _speedFactor );
+		float getSpeedFactor() const;
+	
+	public:
 		void update( float _current, float _timing ) override;
 
 	protected:
@@ -254,6 +258,8 @@ namespace Menge
 		bool m_deactivating;
 		bool m_afterActive;
 		bool m_enable;
+
+		float m_speedFactor;
 
 		bool m_freeze;
 

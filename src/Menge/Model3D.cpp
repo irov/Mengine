@@ -453,7 +453,7 @@ namespace Menge
 		uint32_t frameCount = model->getFrameCount();
 		float frameDelay = model->getFrameDelay();
 		
-		float speedFactor = this->getSpeedFactor();
+		float speedFactor = this->getAnimationSpeedFactor();
 		float scretch = this->getScretch();
 		m_frameTiming += _timing * speedFactor / scretch;
 		

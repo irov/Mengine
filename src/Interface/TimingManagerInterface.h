@@ -10,8 +10,8 @@ namespace Menge
 		: public FactorablePtr
     {
     public:
-        virtual bool updateTiming( uint32_t _id, float _timing ) = 0;
-        virtual void removeTiming( uint32_t _id ) = 0;
+        virtual bool onTimingUpdate( uint32_t _id, float _timing ) = 0;
+        virtual void onTimingStop( uint32_t _id ) = 0;
     };
 
 	typedef stdex::intrusive_ptr<TimingListenerInterface> TimingListenerInterfacePtr;
@@ -33,6 +33,9 @@ namespace Menge
         virtual void freezeAll( bool _freeze ) = 0;
 
         virtual bool isFreeze( uint32_t _id ) const = 0;
+
+		virtual void setSpeedFactor( float _factor ) = 0;
+		virtual float getSpeedFactor() const = 0;
 
     public:
         virtual void update( float _current, float _timing ) = 0;

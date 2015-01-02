@@ -13,17 +13,17 @@ namespace Menge
 
 	public:
 		void setLoop( bool _value );
-		bool getLoop() const;
+		inline bool getLoop() const;
 
-		void setSpeedFactor( float _factor );
-		float getSpeedFactor() const;
+		void setAnimationSpeedFactor( float _factor );
+		inline float getAnimationSpeedFactor() const;
 
 		void setIntervalStart( float _startInterval );
-		float getStartInterval() const;
+		inline float getStartInterval() const;
 
         void setInterval( float _begin, float _end );
-        float getIntervalBegin() const;
-        float getIntervalEnd() const;
+        inline float getIntervalBegin() const;
+        inline float getIntervalEnd() const;
 		
 		void setFirstFrame();
 		void setLastFrame();		
@@ -32,15 +32,15 @@ namespace Menge
 		float getTiming() const;
 
 		void setReverse( bool _value);
-		bool getReverse() const;
+		inline bool getReverse() const;
 
         void setPlayCount( uint32_t _count );
-        uint32_t getPlayCount() const;
+        inline uint32_t getPlayCount() const;
 
-		uint32_t getPlayIterator() const;
+		inline uint32_t getPlayIterator() const;
 
         void setScretch( float _scretch );
-        float getScretch() const;
+        inline float getScretch() const;
 
     protected:
         virtual void _setLoop( bool _value );
@@ -63,11 +63,11 @@ namespace Menge
 		inline bool isPlay() const;
 
 	public:
-		bool isInterrupt() const;
+		inline bool isInterrupt() const;
 
 	public:
-		uint32_t getPlayId() const;
-		float getPlayTime() const;
+		inline uint32_t getPlayId() const;
+		inline float getPlayTime() const;
 
 	protected:
 		virtual bool _play( float _time ) = 0;
@@ -81,7 +81,7 @@ namespace Menge
 		
 		float m_playTime;
 
-		float m_speedFactor;        
+		float m_animationSpeedFactor;        
 		float m_intervalStart;
         float m_intervalBegin;
         float m_intervalEnd;
@@ -100,5 +100,65 @@ namespace Menge
 	inline bool Animatable::isPlay() const
 	{
 		return m_play;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Animatable::getLoop() const
+	{
+		return m_loop;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float Animatable::getAnimationSpeedFactor() const
+	{
+		return m_animationSpeedFactor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Animatable::getReverse() const
+	{
+		return m_reverse;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline uint32_t Animatable::getPlayCount() const
+	{
+		return m_playCount;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline uint32_t Animatable::getPlayIterator() const
+	{
+		return m_playIterator;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float Animatable::getScretch() const
+	{
+		return m_scretch;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Animatable::isInterrupt() const
+	{
+		return m_interrupt;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline uint32_t Animatable::getPlayId() const
+	{
+		return m_enumerator;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float Animatable::getPlayTime() const
+	{
+		return m_playTime;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float Animatable::getStartInterval() const
+	{
+		return m_intervalStart;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float Animatable::getIntervalBegin() const
+	{
+		return m_intervalBegin;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline float Animatable::getIntervalEnd() const
+	{
+		return m_intervalEnd;
 	}
 }

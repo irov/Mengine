@@ -72,7 +72,7 @@ namespace Menge
 			_timing -= deltha;
 		}
 
-		float speedFactor = this->getSpeedFactor();
+		float speedFactor = this->getAnimationSpeedFactor();
 		float timing = _timing * speedFactor;
 
 		float scretch = this->getScretch();

@@ -38,10 +38,10 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     ScheduleManager::ScheduleManager()
         : m_serviceProvider(nullptr)
+		, m_speedFactor(1.f)
         , m_enumeratorSchedule(0)
         , m_freezeAll(false)
     {
-
     }
     //////////////////////////////////////////////////////////////////////////
     ScheduleManager::~ScheduleManager()
@@ -70,9 +70,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::remove( uint32_t _id )
     {
-        const ScheduleEvent * event = this->findEvent_( _id );
+        ScheduleEvent * event;
 
-        if( event == nullptr )
+        if( this->findScheduleEvent_( _id, event ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ScheduleManager::remove not found shedule '%d'"
                 , _id
@@ -103,11 +103,13 @@ namespace Menge
         it != it_end;
         ++it)
         {
-            this->removeEvent_( *it );
+			ScheduleEvent & event = *it;
+
+            this->removeEvent_( event );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScheduleManager::removeEvent_( const ScheduleEvent & _event )
+    bool ScheduleManager::removeEvent_( ScheduleEvent & _event )
     {
         if( _event.dead == true )
         {
@@ -116,7 +118,10 @@ namespace Menge
 
         _event.dead = true;
 
-        _event.listener->onScheduleStop( _event.id );
+		ScheduleListenerInterfacePtr listener = _event.listener;
+		_event.listener = nullptr;
+
+        listener->onScheduleStop( _event.id );
 
 		return true;
     }
@@ -129,6 +134,8 @@ namespace Menge
         {
             return;
         }
+
+		float total_timing = _timing * m_speedFactor;
 
         for( TListSchedules::size_type 
             it = 0,
@@ -153,7 +160,7 @@ namespace Menge
 				continue;
 			}
 
-            if( event.timing < _timing )
+            if( event.timing < total_timing )
             {
                 event.dead = true;
 
@@ -161,7 +168,7 @@ namespace Menge
             }
             else
             {
-                event.timing -= _timing;
+                event.timing -= total_timing;
             }
         }
 
@@ -171,9 +178,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::freeze( uint32_t _id, bool _freeze )
     {
-        const ScheduleEvent * event = this->findEvent_( _id );
+        ScheduleEvent * event;
 
-        if( event == nullptr )
+        if( this->findScheduleEvent_( _id, event ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ScheduleManager::freeze not found shedule '%d'"
                 , _id
@@ -189,9 +196,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::isFreeze( uint32_t _id ) const
     {
-        const ScheduleEvent * event = this->findEvent_( _id );
+        const ScheduleEvent * event;
 
-        if( event == nullptr )
+        if( this->findScheduleEvent_( _id, event ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ScheduleManager::isFreeze not found shedule '%d'"
                 , _id
@@ -215,9 +222,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     float ScheduleManager::time( uint32_t _id ) const
     {
-        const ScheduleEvent * event = this->findEvent_( _id );
+		const ScheduleEvent * event;
 
-        if( event == nullptr )
+		if( this->findScheduleEvent_( _id, event ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("ScheduleManager::time not found shedule '%d'"
                 , _id
@@ -230,17 +237,44 @@ namespace Menge
 
         return adapt_timing;
     }
-    //////////////////////////////////////////////////////////////////////////
-    const ScheduleManager::ScheduleEvent * ScheduleManager::findEvent_( uint32_t _id ) const
+	//////////////////////////////////////////////////////////////////////////
+	void ScheduleManager::setSpeedFactor( float _factor )
+	{
+		m_speedFactor = _factor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ScheduleManager::getSpeedFactor() const
+	{
+		return m_speedFactor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScheduleManager::findScheduleEvent_( uint32_t _id, ScheduleEvent *& _desc )
+	{
+		TListSchedules::iterator it_find = 
+			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
+
+		if( it_find == m_schedules.end() )
+		{
+			return false;
+		}
+
+		_desc = &*it_find;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+    bool ScheduleManager::findScheduleEvent_( uint32_t _id, const ScheduleEvent *& _desc ) const
     {
         TListSchedules::const_iterator it_find = 
             std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
 
         if( it_find == m_schedules.end() )
         {
-            return nullptr;
+            return false;
         }
 
-        return &*it_find;
+		_desc = &*it_find;
+
+        return true;
     }
 }

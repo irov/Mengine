@@ -1603,6 +1603,29 @@ namespace Menge
 		layer_sprite->setResourceImage( resourceImage );
 		layer_sprite->setName( _layer.name );
 
+		if( _layer.blendingMode.empty() == true )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeNormal) )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
+		{
+			layer_sprite->setBlendAdd( true );
+		}
+		else
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
+				, m_name.c_str()
+				, _layer.name.c_str()
+				, _layer.blendingMode.c_str()
+				);
+
+			return false;
+		}
+
 		this->addMovieNode_( _layer, layer_sprite );
 
 		return true;

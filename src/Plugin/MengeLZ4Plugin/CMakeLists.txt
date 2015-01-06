@@ -10,7 +10,7 @@ src
 
 INCLUDE_DIRECTORIES( 
         ${Mengine_SOURCE_DIR}/Utils 
-        ${THIRDPARTY_DIR}/lz4
+        ${THIRDPARTY_DIR}/lz4/lib
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

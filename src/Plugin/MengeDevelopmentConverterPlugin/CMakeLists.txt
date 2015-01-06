@@ -39,7 +39,6 @@ add_definitions(-DMENGE_PLUGIN_DLL)
 INCLUDE_DIRECTORIES(
 			${Mengine_SOURCE_DIR}/Utils    
             ${THIRDPARTY_DIR}/metabuf  
-            ${THIRDPARTY_DIR}/lz4
             ${THIRDPARTY_DIR}/libgvf
 	)
     

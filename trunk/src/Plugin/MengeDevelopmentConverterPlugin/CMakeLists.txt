@@ -18,8 +18,6 @@ src
     VideoConverterFFMPEGToOGV.h
     VideoConverterFFMPEGToOGVA.cpp
     VideoConverterFFMPEGToOGVA.h
-	VideoConverterFFMPEGToGVF.cpp
-	VideoConverterFFMPEGToGVF.h
 	ParticleConverterPTCToPTZ.cpp
 	ParticleConverterPTCToPTZ.h    
     MovieKeyConverterXMLToAEK.cpp
@@ -38,13 +36,9 @@ add_definitions(-DMENGE_PLUGIN_DLL)
 
 INCLUDE_DIRECTORIES(
 			${Mengine_SOURCE_DIR}/Utils    
-            ${THIRDPARTY_DIR}/metabuf  
-            ${THIRDPARTY_DIR}/libgvf
+            ${THIRDPARTY_DIR}/metabuf 
 	)
     
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/ffmpeg/include )
-
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/cmake_scripts/ffmpeg )
 
 ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
 
@@ -60,14 +54,6 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAK
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}metabuf_static${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}lz4_static${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}libgvf_static${MENGINE_LIB_SUFFIX})
-
-SET(
- VIDEO_CODEC_STATIC_LIBS
- ${THIRDPARTY_DIR}/ffmpeg/lib/avcodec.lib
- ${THIRDPARTY_DIR}/ffmpeg/lib/avformat.lib
- ${THIRDPARTY_DIR}/ffmpeg/lib/avutil.lib
- ${THIRDPARTY_DIR}/ffmpeg/lib/swscale.lib
- )
 
 
 SET( APPLICATION_DEPENDENCIES

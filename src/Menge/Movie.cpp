@@ -171,10 +171,10 @@ namespace Menge
 		//	, _time
 		//	);
 
-		//if( this->getName() == "Movie_OpenNewspaper"
-		//    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
-		//    //&& m_resourceMovieName != "Movie401_StreetToChurch_WallZOOM_otv"
-		//    )
+		//if( this->getName() == "Bus_Zombie_In"
+		    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
+		    //&& m_resourceMovieName != "Movie401_StreetToChurch_WallZOOM_otv"
+		    //)
 		//{
 		//    printf("!");
 		//}
@@ -391,6 +391,9 @@ namespace Menge
 		ns.node = _node;
 		ns.animatable = dynamic_cast<Animatable *>(_node);
 		ns.child = (_layer.parent != movie_layer_parent_none);
+
+		_node->setName( _layer.name );
+		_node->setLocalPosition( _layer.position );
 
 		m_nodies[_layer.index - 1] = ns;
 	}
@@ -734,35 +737,35 @@ namespace Menge
 					return false;
 				}
 			}
-			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
+			else if( layer.type == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
 			{
 				if( this->createMovieSceneEffect_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieText) )
+			else if( layer.type == CONST_STRING(m_serviceProvider, MovieText) )
 			{
 				if( this->createMovieText_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) )
+			else if( layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) )
 			{
 				if( this->createMovieTextCenter_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieSprite) )
+			else if( layer.type == CONST_STRING(m_serviceProvider, MovieSprite) )
 			{
 				if( this->createMovieSprite_( layer ) == false )
 				{
 					return false;
 				}
 			}
-			else if ( layer.type == CONST_STRING(m_serviceProvider, MovieNullObject) )
+			else if( layer.type == CONST_STRING(m_serviceProvider, MovieNullObject) )
 			{
 				if( this->createMovieNullObject_( layer ) == false )
 				{
@@ -985,9 +988,6 @@ namespace Menge
 			return false;
 		}
 
-		layer_slot->setName( _layer.name );
-		layer_slot->setLocalPosition( _layer.position );
-
 		layer_slot->setMovieName( m_name );		
 
 		this->addMovieNode_( _layer, layer_slot );
@@ -1005,8 +1005,6 @@ namespace Menge
 			return false;
 		}
 
-		sceneeffect_slot->setName( _layer.name );
-
 		this->addMovieNode_( _layer, sceneeffect_slot );
 
 		return true;
@@ -1021,9 +1019,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		layer_slot->setName( _layer.name );
-		layer_slot->setLocalPosition( _layer.position );
 
 		this->addMovieNode_( _layer, layer_slot );
 
@@ -1049,8 +1044,6 @@ namespace Menge
 		}
 
 		layer_sprite->setResourceImage( resourceImage );
-
-		layer_sprite->setName( _layer.name );
 
 		if( _layer.blendingMode.empty() == true )
 		{
@@ -1099,8 +1092,6 @@ namespace Menge
 		}
 
 		layer_mesh->setResourceImage( resourceImage );
-
-		layer_mesh->setName( _layer.name );
 
 		if( _layer.blendingMode.empty() == true )
 		{
@@ -1163,8 +1154,6 @@ namespace Menge
 
 		layer_sprite->setResourceImage( resourceImage );
 
-		layer_sprite->setName( _layer.name );
-
 		const ColourValue & color = resource->getColor();
 		layer_sprite->setLocalColor( color );
 
@@ -1209,9 +1198,6 @@ namespace Menge
 			return false;
 		}
 
-		layer_hotspotimage->setName( _layer.name );
-		layer_hotspotimage->setLocalPosition( _layer.position );
-
 		ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceHIT>( _layer.source );
 
@@ -1236,9 +1222,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		layer_hotspotshape->setName( _layer.name );
-		layer_hotspotshape->setLocalPosition( _layer.position );
 
 		ResourceShape * resourceShape = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceShape>( _layer.source );
@@ -1274,7 +1257,6 @@ namespace Menge
 		}
 
 		layer_animation->setResourceAnimation( resourceAnimation );
-		layer_animation->setName( _layer.name );
 
 		layer_animation->setIntervalStart( _layer.startInterval );
 		layer_animation->setPlayCount( _layer.playCount );
@@ -1319,9 +1301,6 @@ namespace Menge
 			return false;
 		}
 
-		layer_movie->setName( _layer.name );
-		layer_movie->setLocalPosition( _layer.position );
-
 		ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceMovie>( _layer.source );
 
@@ -1355,9 +1334,6 @@ namespace Menge
 			return false;
 		}
 
-		layer_movie->setName( _layer.name );
-		layer_movie->setLocalPosition( _layer.position );
-
 		ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceMovie>( _layer.source );
 
@@ -1390,9 +1366,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		movie_internal->setName( _layer.name );
-		movie_internal->setLocalPosition( _layer.position );
 
 		ResourceInternalObject * resourceInternalObject = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceInternalObject>( _layer.source );
@@ -1429,7 +1402,6 @@ namespace Menge
 		}
 
 		layer_video->setResourceVideo( resourceVideo );
-		layer_video->setName( _layer.name );
 
 		layer_video->setIntervalStart( _layer.startInterval );
 		layer_video->setPlayCount( _layer.playCount );
@@ -1483,7 +1455,7 @@ namespace Menge
 		}
 
 		layer_sound->setResourceSound( resourceSound );
-		layer_sound->setName( _layer.name );
+
 		layer_sound->setIntervalStart( _layer.startInterval );
 
 		layer_sound->setPlayCount( _layer.playCount );
@@ -1514,7 +1486,6 @@ namespace Menge
 		}
 
 		layer_sound->setResourceSound( resourceSound );
-		layer_sound->setName( _layer.name );
 		//layer_sound->setIntervalStart( _layer.startInterval );
 
 		layer_sound->setPlayCount( 1 );
@@ -1536,7 +1507,6 @@ namespace Menge
 			return false;
 		}
 
-		layer_text->setName( _layer.name );
 		layer_text->setTextID( _layer.name ); //Name = TextID
 
 		if( _layer.hasParam( MOVIE_LAYER_PARAM_TEXT_HORIZONTAL_CENTER ) == true )
@@ -1564,7 +1534,6 @@ namespace Menge
 			return false;
 		}
 
-		layer_text->setName( _layer.name );
 		layer_text->setTextID( _layer.name ); //Name = TextID
 		layer_text->setHorizontalCenterAlign();
 
@@ -1601,7 +1570,6 @@ namespace Menge
 		}
 
 		layer_sprite->setResourceImage( resourceImage );
-		layer_sprite->setName( _layer.name );
 
 		if( _layer.blendingMode.empty() == true )
 		{
@@ -1676,9 +1644,6 @@ namespace Menge
 		MovieEvent * layer_event = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<MovieEvent>( CONST_STRING(m_serviceProvider, MovieEvent) );
 
-		layer_event->setName( _layer.name );
-		layer_event->setLocalPosition( _layer.position );
-
 		layer_event->setResourceMovie( m_resourceMovie );
 
 		this->addMovieNode_( _layer, layer_event );
@@ -1710,7 +1675,6 @@ namespace Menge
 		}
 
 		layer_particles->setResourceEmitterContainer( resourceEmitterContainer );
-		layer_particles->setName( _layer.name );
 
 		//layer_particles->setIntervalStart( _layer.startInterval );        
 		layer_particles->setPlayCount( _layer.playCount );
@@ -1756,7 +1720,6 @@ namespace Menge
 		}
 
 		layer_particles->setResourceParticle( resourceParticle );
-		layer_particles->setName( _layer.name );
 
 		//layer_particles->setIntervalStart( _layer.startInterval );        
 		layer_particles->setPlayCount( _layer.playCount );

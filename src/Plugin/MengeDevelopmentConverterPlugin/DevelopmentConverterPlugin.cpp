@@ -12,7 +12,6 @@
 #	include "VideoConverterFFMPEGToWEBM.h"
 #	include "VideoConverterFFMPEGToOGV.h"
 #	include "VideoConverterFFMPEGToOGVA.h"
-#	include "VideoConverterFFMPEGToGVF.h"
 #	include "MovieKeyConverterXMLToAEK.h"
 #	include "ModelConverterMDLToMDZ.h"
 
@@ -55,7 +54,6 @@ namespace Menge
 		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToWEBM>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToWebM")) );
 		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToOGV>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToOGV")) );
 		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToOGVA>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToOGVA")) );
-		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToGVF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToGVF")) );		
 		m_converters.push_back( new ConverterFactory<MovieKeyConverterXMLToAEK>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "xmlToAekMovie")) );
 		m_converters.push_back( new ConverterFactory<ModelConverterMDLToMDZ>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "mdlToMdzModel")) );
 		m_converters.push_back( new ConverterFactory<ParticleConverterPTCToPTZ>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ptc2ptz")) );

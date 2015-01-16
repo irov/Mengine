@@ -1715,91 +1715,63 @@ namespace Metacode
                 return true;
             }
             
-            bool has_Duration_Value() const
+            bool has_Bounds_Box() const
             {
-                return Duration_Value_successful;
+                return Bounds_Box_successful;
             }
             
-            bool get_Duration_Value( float & _value ) const
+            bool get_Bounds_Box( mt::box2f & _value ) const
             {
-                if( Duration_Value_successful == false )
+                if( Bounds_Box_successful == false )
                 {
                     return false;
                 }
             
-                _value = this->Duration_Value;
+                _value = this->Bounds_Box;
             
                 return true;
             }
             
-            bool swap_Duration_Value( float & _value ) const
+            bool swap_Bounds_Box( mt::box2f & _value ) const
             {
-                if( Duration_Value_successful == false )
+                if( Bounds_Box_successful == false )
                 {
                     return false;
                 }
             
+                std::swap(_value, this->Bounds_Box);
+            
+                return true;
+            }
+            
+            const float & get_Duration_Value() const
+            {
+                return this->Duration_Value;
+            }
+            
+            void swap_Duration_Value( float & _value ) const
+            {
                 std::swap(_value, this->Duration_Value);
-            
-                return true;
             }
             
-            bool has_FrameDuration_Value() const
+            const float & get_FrameDuration_Value() const
             {
-                return FrameDuration_Value_successful;
+                return this->FrameDuration_Value;
             }
             
-            bool get_FrameDuration_Value( float & _value ) const
+            void swap_FrameDuration_Value( float & _value ) const
             {
-                if( FrameDuration_Value_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->FrameDuration_Value;
-            
-                return true;
-            }
-            
-            bool swap_FrameDuration_Value( float & _value ) const
-            {
-                if( FrameDuration_Value_successful == false )
-                {
-                    return false;
-                }
-            
                 std::swap(_value, this->FrameDuration_Value);
-            
-                return true;
             }
             
-            bool has_Height_Value() const
+            const float & get_Height_Value() const
             {
-                return Height_Value_successful;
+                return this->Height_Value;
             }
             
-            bool get_Height_Value( float & _value ) const
+            void swap_Height_Value( float & _value ) const
             {
-                if( Height_Value_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->Height_Value;
-            
-                return true;
-            }
-            
-            bool swap_Height_Value( float & _value ) const
-            {
-                if( Height_Value_successful == false )
-                {
-                    return false;
-                }
-            
                 std::swap(_value, this->Height_Value);
-            
-                return true;
             }
             
             bool has_KeyFramesPackPath_Codec() const
@@ -1860,33 +1832,14 @@ namespace Metacode
                 return true;
             }
             
-            bool has_KeyFramesPackPath_Path() const
+            const Menge::ConstString & get_KeyFramesPackPath_Path() const
             {
-                return KeyFramesPackPath_Path_successful;
+                return this->KeyFramesPackPath_Path;
             }
             
-            bool get_KeyFramesPackPath_Path( Menge::ConstString & _value ) const
+            void swap_KeyFramesPackPath_Path( Menge::ConstString & _value ) const
             {
-                if( KeyFramesPackPath_Path_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->KeyFramesPackPath_Path;
-            
-                return true;
-            }
-            
-            bool swap_KeyFramesPackPath_Path( Menge::ConstString & _value ) const
-            {
-                if( KeyFramesPackPath_Path_successful == false )
-                {
-                    return false;
-                }
-            
                 std::swap(_value, this->KeyFramesPackPath_Path);
-            
-                return true;
             }
             
             bool has_Loop_Segment() const
@@ -1918,33 +1871,14 @@ namespace Metacode
                 return true;
             }
             
-            bool has_Width_Value() const
+            const float & get_Width_Value() const
             {
-                return Width_Value_successful;
+                return this->Width_Value;
             }
             
-            bool get_Width_Value( float & _value ) const
+            void swap_Width_Value( float & _value ) const
             {
-                if( Width_Value_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->Width_Value;
-            
-                return true;
-            }
-            
-            bool swap_Width_Value( float & _value ) const
-            {
-                if( Width_Value_successful == false )
-                {
-                    return false;
-                }
-            
                 std::swap(_value, this->Width_Value);
-            
-                return true;
             }
             
         protected:
@@ -2897,21 +2831,18 @@ namespace Metacode
         protected:
             bool Anchor_Point_successful;
             mutable mt::vec3f Anchor_Point;
-            bool Duration_Value_successful;
+            bool Bounds_Box_successful;
+            mutable mt::box2f Bounds_Box;
             mutable float Duration_Value;
-            bool FrameDuration_Value_successful;
             mutable float FrameDuration_Value;
-            bool Height_Value_successful;
             mutable float Height_Value;
             bool KeyFramesPackPath_Codec_successful;
             mutable Menge::ConstString KeyFramesPackPath_Codec;
             bool KeyFramesPackPath_Converter_successful;
             mutable Menge::ConstString KeyFramesPackPath_Converter;
-            bool KeyFramesPackPath_Path_successful;
             mutable Menge::ConstString KeyFramesPackPath_Path;
             bool Loop_Segment_successful;
             mutable mt::vec2f Loop_Segment;
-            bool Width_Value_successful;
             mutable float Width_Value;
         public:
             typedef stdex::auto_array<Meta_MovieCamera3D> TVectorMeta_MovieCamera3D;

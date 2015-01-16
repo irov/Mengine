@@ -4662,6 +4662,8 @@ namespace Menge
 			.def("getSocketShape", &ResourceMovie::getSocketShape)
 			.def("hasAnchorPoint", &ResourceMovie::hasAnchorPoint)
 			.def("getAnchorPoint", &ResourceMovie::getAnchorPoint)
+			.def("hasBoundBox", &ResourceMovie::hasBoundBox)
+			.def("getBoundBox", &ResourceMovie::getBoundBox)
 			.def_proxy_static("hasLayer", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_hasLayer)
 			.def_proxy_static("getLayerPosition", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_getLayerPosition)
             ;        

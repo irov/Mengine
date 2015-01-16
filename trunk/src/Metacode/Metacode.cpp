@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 69;
+        _needVersion = 71;
 
-        if( version != 69 )
+        if( version != 71 )
         {
             return false;
         }
@@ -2329,14 +2329,10 @@ namespace Metacode
     Meta_DataBlock::Meta_ResourceMovie::Meta_ResourceMovie()
         : Meta_Resource()
         , Anchor_Point_successful(false)
-        , Duration_Value_successful(false)
-        , FrameDuration_Value_successful(false)
-        , Height_Value_successful(false)
+        , Bounds_Box_successful(false)
         , KeyFramesPackPath_Codec_successful(false)
         , KeyFramesPackPath_Converter_successful(false)
-        , KeyFramesPackPath_Path_successful(false)
         , Loop_Segment_successful(false)
-        , Width_Value_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2365,14 +2361,23 @@ namespace Metacode
     
                 return true;
             }break;
+        case 12:
+            {
+                if( this->read( _buff, _size, _read, this->Bounds_Box ) == false )
+                {
+                    return false;
+                }
+    
+                this->Bounds_Box_successful = true;
+    
+                return true;
+            }break;
         case 4:
             {
                 if( this->read( _buff, _size, _read, this->Duration_Value ) == false )
                 {
                     return false;
                 }
-    
-                this->Duration_Value_successful = true;
     
                 return true;
             }break;
@@ -2383,8 +2388,6 @@ namespace Metacode
                     return false;
                 }
     
-                this->FrameDuration_Value_successful = true;
-    
                 return true;
             }break;
         case 6:
@@ -2393,8 +2396,6 @@ namespace Metacode
                 {
                     return false;
                 }
-    
-                this->Height_Value_successful = true;
     
                 return true;
             }break;
@@ -2427,8 +2428,6 @@ namespace Metacode
                     return false;
                 }
     
-                this->KeyFramesPackPath_Path_successful = true;
-    
                 return true;
             }break;
         case 10:
@@ -2449,8 +2448,6 @@ namespace Metacode
                     return false;
                 }
     
-                this->Width_Value_successful = true;
-    
                 return true;
             }break;
         }
@@ -2467,19 +2464,19 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 14:
+        case 15:
             {
                 includes_Meta_MovieCamera3D.reserve( _count );
                 return true;
                 break;
             }
-        case 12:
+        case 13:
             {
                 includes_Meta_MovieLayer2D.reserve( _count );
                 return true;
                 break;
             }
-        case 13:
+        case 14:
             {
                 includes_Meta_MovieLayer3D.reserve( _count );
                 return true;
@@ -2499,7 +2496,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 14:
+        case 15:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & metadata = includes_Meta_MovieCamera3D.emplace_back();
     
@@ -2511,7 +2508,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 12:
+        case 13:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & metadata = includes_Meta_MovieLayer2D.emplace_back();
     
@@ -2523,7 +2520,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 13:
+        case 14:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & metadata = includes_Meta_MovieLayer3D.emplace_back();
     
@@ -2558,7 +2555,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::getId() const
     {
-        return 14;
+        return 15;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -2673,7 +2670,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::getId() const
     {
-        return 12;
+        return 13;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -2909,7 +2906,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::getId() const
     {
-        return 13;
+        return 14;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )

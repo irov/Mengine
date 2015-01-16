@@ -305,6 +305,18 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		static PyObject * box2f_repr( PyObject * _obj, mt::box2f * _v )
+		{
+			(void)_obj;
+
+			Stringstream ss;
+			ss << "<box2f: " << _v->minimum.x << ", " << _v->minimum.y << ", " << _v->maximum.x << ", " << _v->maximum.y << ">";
+
+			String repr = ss.str();
+
+			return pybind::ptr(repr);
+		}
+		//////////////////////////////////////////////////////////////////////////
 		static bool box2f_convert( PyObject * _obj, void * _place, void * _user )
         {
             (void)_user;
@@ -666,6 +678,7 @@ namespace Menge
 		pybind::struct_<mt::box2f>("box2f")
 			.def_constructor( pybind::init<mt::vec2f,mt::vec2f>() )
 			.def_convert( &ScriptMethod::box2f_convert, nullptr )
+			.def_repr( &ScriptMethod::box2f_repr )
 			.def_member( "minimum", &mt::box2f::minimum )
 			.def_member( "maximum", &mt::box2f::maximum )
 			;
@@ -703,6 +716,11 @@ namespace Menge
 			.def_member( "end", &Viewport::end )
 			.def( "getWidth", &Viewport::getWidth )
 			.def( "getHeight", &Viewport::getHeight )
+			.def( "testPoint", &Viewport::testPoint )
+			.def( "testBBox", &Viewport::testBBox )
+			.def( "testRectangle", &Viewport::testRectangle )
+			.def( "existBBox", &Viewport::existBBox )
+			.def( "existRectangle", &Viewport::existRectangle )
 			;
 
 		pybind::struct_<ColourValue>("Color")

@@ -15,6 +15,8 @@
 #   include "Math/vec3.h"
 #   include "Math/vec4.h"
 
+#   include "Math/box2.h"
+
 namespace Metabuf
 {
     //////////////////////////////////////////////////////////////////////////
@@ -34,5 +36,6 @@ namespace Metabuf
     void archive_read( stdex::memory_reader & ar, Menge::Floats & _value, void * _userData );	
     void archive_read( stdex::memory_reader & ar, mt::vec2f & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, mt::vec3f & _value, void * _userData );
-    void archive_read( stdex::memory_reader & ar, mt::vec4f & _value, void * _userData );    
+    void archive_read( stdex::memory_reader & ar, mt::vec4f & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, mt::box2f & _value, void * _userData );
 }

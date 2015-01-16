@@ -35,6 +35,7 @@ namespace Menge
 		, m_size(0.f, 0.f)
 		, m_maxLayerIndex(0)
 		, m_hasCamera3D(false)
+		, m_hasBoundBox(false)
 		, m_hasAnchorPoint(false)
 		, m_anchorPoint(0.f, 0.f, 0.f)
 	{
@@ -131,6 +132,16 @@ namespace Menge
 	const mt::vec3f & ResourceMovie::getAnchorPoint() const
 	{
 		return m_anchorPoint;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceMovie::hasBoundBox() const
+	{
+		return m_hasBoundBox;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::box2f & ResourceMovie::getBoundBox() const
+	{
+		return m_boundbox;
 	}
     //////////////////////////////////////////////////////////////////////////
     namespace
@@ -328,12 +339,18 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceMovie * metadata
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceMovie *>(_meta);
 
-        metadata->get_Duration_Value( m_duration );
-        metadata->get_FrameDuration_Value( m_frameDuration );
-        metadata->get_Width_Value( m_size.x );
-        metadata->get_Height_Value( m_size.y );
-        metadata->get_Loop_Segment( m_loopSegment );
-
+        m_duration = metadata->get_Duration_Value();
+        m_frameDuration = metadata->get_FrameDuration_Value();
+        m_size.x = metadata->get_Width_Value();
+        m_size.y = metadata->get_Height_Value();
+        
+		if( metadata->get_Loop_Segment( m_loopSegment ) == false )
+		{
+			m_loopSegment.x = 0.f;
+			m_loopSegment.y = m_duration;
+		}
+		
+		m_hasBoundBox = metadata->get_Bounds_Box( m_boundbox );
 		m_hasAnchorPoint = metadata->get_Anchor_Point( m_anchorPoint );
                 
         metadata->swap_KeyFramesPackPath_Path( m_filePath );

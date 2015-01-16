@@ -218,6 +218,10 @@ namespace Menge
 		const mt::vec3f & getAnchorPoint() const;
 
 	public:
+		bool hasBoundBox() const;
+		const mt::box2f & getBoundBox() const;
+
+	public:
 		bool hasCamera3D() const;
 
 	public:
@@ -251,6 +255,9 @@ namespace Menge
 		float m_duration;
 
         mt::vec2f m_loopSegment;
+
+		bool m_hasBoundBox;
+		mt::box2f m_boundbox;
 
 		bool m_hasAnchorPoint;
 		mt::vec3f m_anchorPoint;

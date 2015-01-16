@@ -230,4 +230,14 @@ namespace Metabuf
         ar.readPOD( _value.z );
         ar.readPOD( _value.w );
     }
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, mt::box2f & _value, void * _userData )
+	{
+		(void)_userData;
+
+		ar.readPOD( _value.minimum.x );
+		ar.readPOD( _value.minimum.y );
+		ar.readPOD( _value.maximum.x );
+		ar.readPOD( _value.maximum.y );
+	}
 }

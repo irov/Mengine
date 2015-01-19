@@ -33,10 +33,6 @@ SET( CMAKE_TEMP_DIR ${MENGINE_REPOSITORY}/CMakeTemp/Tools_WIN32/${CMAKE_BUILD_TY
 
 # implementation
 
-ADD_DEFINITIONS(-D"MENGINE_CONFIG=Config_Tool_WIN32.h")
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Config_Tool_WIN32.h ${SOURCE_DIR}/Config/Config_Tool_WIN32.h COPYONLY)
-
 SET( MENGE_DEPENDENCIES )
 SET( APPLICATION_DEPENDENCIES )
 SET( APPLICATION_LIBS )
@@ -67,6 +63,7 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceLog ${CMAKE_TEMP_DIR}/Service/Ser
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServicePlugin ${CMAKE_TEMP_DIR}/Service/ServicePlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceUnicode ${CMAKE_TEMP_DIR}/Service/ServiceUnicode )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceThread ${CMAKE_TEMP_DIR}/Service/ServiceThread )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceConfig ${CMAKE_TEMP_DIR}/Service/ServiceConfig )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeDevelopmentConverterPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeDevelopmentConverterPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeImageCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeImageCodecPlugin )

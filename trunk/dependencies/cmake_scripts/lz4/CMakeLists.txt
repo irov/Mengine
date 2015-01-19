@@ -6,9 +6,10 @@ SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../lz4 )
 
 # OUR SOURCES
 set( SOURCES
-${SOURCE_DIR}/lz4.c
-${SOURCE_DIR}/lz4hc.c
+${SOURCE_DIR}/lib/lz4.c
+${SOURCE_DIR}/lib/lz4hc.c
 )
 
-include_directories(${SOURCE_DIR})
+include_directories(${SOURCE_DIR}/lib)
+
 add_library( ${PROJECT_NAME}_static STATIC ${SOURCES} )

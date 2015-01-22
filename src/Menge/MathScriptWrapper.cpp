@@ -132,18 +132,7 @@ namespace Menge
 		{
             (void)_user;
 
-			if( pybind::instance_of<mt::vec3f>( _obj ) == true )
-			{
-				mt::vec3f v3 = pybind::extract<mt::vec3f>(_obj);
-
-				mt::vec2f * impl = (mt::vec2f *)_place;
-
-				impl->x = v3.x;
-				impl->y = v3.y;
-
-				return true;
-			}
-			else if( pybind::tuple_check( _obj ) == true )
+			if( pybind::tuple_check( _obj ) == true )
 			{
 				if( pybind::tuple_size( _obj ) != 2 )
 				{
@@ -177,6 +166,17 @@ namespace Menge
 
 				return true;
 			}
+			else if( pybind::instance_of<mt::vec3f>( _obj ) == true )
+			{
+				mt::vec3f v3 = pybind::extract<mt::vec3f>(_obj);
+
+				mt::vec2f * impl = (mt::vec2f *)_place;
+
+				impl->x = v3.x;
+				impl->y = v3.y;
+
+				return true;
+			}
 
 			return false;
 		}
@@ -185,19 +185,7 @@ namespace Menge
 		{
             (void)_user;
 
-			if( pybind::instance_of<mt::vec2f>( _obj ) == true )
-			{
-				mt::vec2f v2 = pybind::extract<mt::vec2f>(_obj);
-
-				mt::vec3f * impl = (mt::vec3f *)_place;
-
-				impl->x = v2.x;
-				impl->y = v2.y;
-				impl->z = 0.f;
-
-				return true;
-			}
-			else if( pybind::tuple_check( _obj ) == true )
+			if( pybind::tuple_check( _obj ) == true )
 			{
 				if( pybind::tuple_size( _obj ) < 2 || pybind::tuple_size( _obj ) > 3 )
 				{
@@ -231,7 +219,7 @@ namespace Menge
 					return false;
 				}
 
-				mt::vec4f * impl = (mt::vec4f *)_place;
+				mt::vec3f * impl = (mt::vec3f *)_place;
 
 				PyObject * i0 = pybind::list_getitem( _obj, 0 );
 				PyObject * i1 = pybind::list_getitem( _obj, 1 );
@@ -248,6 +236,18 @@ namespace Menge
 				{
 					impl->z = 0.f;
 				}
+
+				return true;
+			}
+			else if( pybind::instance_of<mt::vec2f>( _obj ) == true )
+			{
+				mt::vec2f v2 = pybind::extract<mt::vec2f>(_obj);
+
+				mt::vec3f * impl = (mt::vec3f *)_place;
+
+				impl->x = v2.x;
+				impl->y = v2.y;
+				impl->z = 0.f;
 
 				return true;
 			}

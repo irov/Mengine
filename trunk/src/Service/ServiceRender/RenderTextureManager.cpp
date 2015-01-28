@@ -114,7 +114,7 @@ namespace Menge
 
         if( image == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::createTexture_ invalid create image %dx%d"
+            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createTexture_ invalid create image %dx%d"
                 , HWWidth
                 , HWHeight
                 );
@@ -142,7 +142,7 @@ namespace Menge
 
         if( image == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::createDynamicTexture couldn't create image %dx%d channels %d"
+            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createDynamicTexture couldn't create image %dx%d channels %d"
                 , HWWidth
                 , HWHeight
                 , HWChannels
@@ -192,7 +192,7 @@ namespace Menge
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't create file '%s' '%s'"
+            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::saveImage : can't create file '%s' '%s'"
                 , _fileGroupName.c_str()
                 , _fileName.c_str() 
                 );
@@ -205,7 +205,7 @@ namespace Menge
 
         if( imageEncoder == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't create encoder for filename '%s'"
+            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::saveImage : can't create encoder for filename '%s'"
                 , _fileName.c_str() 
                 );
 
@@ -214,7 +214,7 @@ namespace Menge
 
 		if( imageEncoder->initialize( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't initialize encoder for filename '%s'"
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::saveImage : can't initialize encoder for filename '%s'"
 				, _fileName.c_str() 
 				);
 
@@ -239,7 +239,7 @@ namespace Menge
 
 		if( buffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : can't lock texture '%s'"
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::saveImage : can't lock texture '%s'"
 				, _fileName.c_str() 
 				);
 
@@ -254,7 +254,7 @@ namespace Menge
 
         if( imageEncoder->setOptions( &options ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : invalid optionize '%s'"
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::saveImage : invalid optionize '%s'"
 				, _fileName.c_str() 
 				);
 
@@ -269,7 +269,7 @@ namespace Menge
 
         if( bytesWritten == 0 )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::saveImage : Error while encoding image data"
+            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::saveImage : Error while encoding image data"
                 );
 
             return false;
@@ -300,7 +300,7 @@ namespace Menge
 
         m_textures.insert( _fileName, texture_ptr );
 
-        LOGGER_INFO(m_serviceProvider)( "RenderEngine::cacheFileTexture cache texture %s"
+        LOGGER_INFO(m_serviceProvider)( "RenderTextureManager::cacheFileTexture cache texture %s"
             , _fileName.c_str()
             );
     }
@@ -381,7 +381,7 @@ namespace Menge
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image file '%s:%s' was not found"
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createImageDecoder_: Image file '%s:%s' was not found"
 				, _pakName.c_str()
 				, _fileName.c_str() 
 				);
@@ -394,7 +394,7 @@ namespace Menge
 
 		if( imageDecoder == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image decoder '%s' for file '%s:%s' was not found"
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createImageDecoder_: Image decoder '%s' for file '%s:%s' was not found"
 				, _codec.c_str()
 				, _pakName.c_str()
 				, _fileName.c_str() 
@@ -405,7 +405,7 @@ namespace Menge
 
 		if( imageDecoder->prepareData( stream ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createImageDecoder_: Image decoder '%s' for file '%s:%s' was not initialize"
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createImageDecoder_: Image decoder '%s' for file '%s:%s' was not initialize"
 				, _codec.c_str()
 				, _pakName.c_str()
 				, _fileName.c_str() 
@@ -431,7 +431,7 @@ namespace Menge
 		
 		if( texture == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createTextureFromDecoder_: invalid create texture %d mipmaps %d:%d channels %d format %d"
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createTextureFromDecoder_: invalid create texture %d mipmaps %d:%d channels %d format %d"
 				, image_mipmaps
 				, image_width
 				, image_height
@@ -446,7 +446,7 @@ namespace Menge
 
 		if( this->loadTextureRectImageData( texture, rect, _decoder ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createTextureFromDecoder_: invalid decode texture"
+			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createTextureFromDecoder_: invalid decode texture"
 				);
 
 			return nullptr;
@@ -543,7 +543,7 @@ namespace Menge
 //		m_debugInfo.textureMemory += memroy_size;
 //		++m_debugInfo.textureCount;
 //		
-//		LOGGER_INFO(m_serviceProvider)( "RenderEngine::createRenderTexture_ creating texture %dx%d %d memory %d:%d"
+//		LOGGER_INFO(m_serviceProvider)( "RenderTextureManager::createRenderTexture_ creating texture %dx%d %d memory %d:%d"
 //			, HWWidth
 //			, HWHeight
 //			, HWFormat
@@ -603,7 +603,7 @@ namespace Menge
 
 			if( textureBuffer == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTextureImageData Invalid lock");
+				LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTextureImageData Invalid lock");
 
 				return false;
 			}
@@ -620,7 +620,7 @@ namespace Menge
 			size_t bufferSize = Helper::getTextureMemorySize( miplevel_width, miplevel_height, channels, depth, pf );
 			if( _imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)("RenderEngine::loadTextureImageData Invalid decode");
+				LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTextureImageData Invalid decode");
 
 				_texture->unlock( i );
 

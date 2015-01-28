@@ -13,7 +13,7 @@ namespace Menge
 		CacheBufferID bufferId = CACHE_SERVICE(m_serviceProvider)
 			->lockBuffer( m_size, &memory, _doc );
 
-		if( bufferId != 0 )
+		if( bufferId != INVALID_CACHE_BUFFER_ID )
 		{
 			m_bufferId = bufferId;
 			m_memory = static_cast<unsigned char *>(memory);

@@ -46,7 +46,7 @@ namespace Menge
 		uint32_t bufferId = CACHE_SERVICE(m_serviceProvider)
 			->lockBuffer( _size, &memory, _doc );
 
-		if( bufferId == 0 )
+		if( bufferId == INVALID_CACHE_BUFFER_ID )
 		{
 			return nullptr;
 		}

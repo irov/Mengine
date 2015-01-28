@@ -119,7 +119,7 @@ namespace Menge
 			CacheBufferID binaryBufferId = CACHE_SERVICE(_serviceProvider)
 				->lockBuffer( binary_size, &binaryMemory, "loadStreamArchiveBuffer binary_memory" );
 
-			if( binaryBufferId == 0 )
+			if( binaryBufferId == INVALID_CACHE_BUFFER_ID )
 			{
 				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveBuffer: invalid get memory %d (binary)"
 					, binary_size

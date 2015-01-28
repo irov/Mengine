@@ -97,7 +97,7 @@ namespace Menge
 		m_lockBufferId = CACHE_SERVICE(m_serviceProvider)
 			->lockBuffer( size, &memory, "MarmaladeTexture::lock" );
 
-		if( memory == nullptr )
+		if( m_lockBufferId == INVALID_CACHE_BUFFER_ID )
 		{
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::lock invalid cache memory %d (l %d w %d h %d c %d f %d)"
 				, size

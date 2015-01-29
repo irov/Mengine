@@ -8,6 +8,8 @@ options
 	enable-exceptions    
 	preinclude=preinclude_application.h
     
+    module_path="./dependencies/marmalade-astralax"
+    
     app-icf="app.icf"
     s3e-data-dir="d:/Projects/DynastyBuild_Marmalade/data"
 }
@@ -20,9 +22,7 @@ library
     
     "./dependencies/marm_libogg,libogg"
     "./dependencies/marm_libvorbis,libvorbis"
-    "./dependencies/marm_libvorbis,libvorbisfile"
-    
-    "./dependencies/marmalade-astralax,mmagic"
+    "./dependencies/marm_libvorbis,libvorbisfile"    
 }
 
 
@@ -34,6 +34,7 @@ subprojects
 {
     iwutil
     iwgl
+    mmagic
 }
 
 includepaths
@@ -54,7 +55,7 @@ includepaths
     "../dependencies/libjpeg"
     "../dependencies/stdex/include"    
     
-    "dependencies/marmalade-astralax/include"
+    "./dependencies/marmalade-astralax/lib"
 }
 
 files

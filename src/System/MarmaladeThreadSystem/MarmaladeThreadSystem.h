@@ -47,7 +47,7 @@ namespace Menge
         ThreadMutexInterfacePtr createMutex() override;
 
 	public:
-		uint32_t getCurrentThreadId() const override;
+		ptrdiff_t getCurrentThreadId() const override;
 	
 	protected:
         typedef FactoryPoolStore<MarmaladeThreadIdentity, 16> TPoolMarmaladeThreadIdentity;

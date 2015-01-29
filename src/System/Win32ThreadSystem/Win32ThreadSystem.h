@@ -43,7 +43,7 @@ namespace Menge
 		void sleep( unsigned int _ms ) override;
 
 	public:
-		uint32_t getCurrentThreadId() const override;
+		ptrdiff_t getCurrentThreadId() const override;
 
 	protected:
 		void onThreadIdentityRemove_( Win32ThreadIdentity * _identity );

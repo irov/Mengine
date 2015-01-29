@@ -90,7 +90,7 @@ namespace Menge
 		virtual ThreadMutexInterfacePtr createMutex() = 0;
 
 	public:
-		virtual uint32_t getCurrentThreadId() const = 0;
+		virtual ptrdiff_t getCurrentThreadId() const = 0;
 	};
 
 #   define THREAD_SYSTEM( serviceProvider )\
@@ -126,7 +126,7 @@ namespace Menge
 		virtual void sleep( unsigned int _ms ) = 0;
 
 	public:
-		virtual uint32_t getCurrentThreadId() = 0;
+		virtual ptrdiff_t getCurrentThreadId() = 0;
     };
 
 #   define THREAD_SERVICE( serviceProvider )\

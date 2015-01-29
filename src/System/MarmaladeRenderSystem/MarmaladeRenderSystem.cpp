@@ -628,7 +628,7 @@ namespace Menge
 		m_iBuffersMemory.erase( _ibHandle );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MarmaladeRenderSystem::lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
+	RenderIndices2D * MarmaladeRenderSystem::lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
 	{
 		MemoryRange * range;
 		if( m_iBuffersMemory.has( _ibHandle, &range) == false )
@@ -645,7 +645,7 @@ namespace Menge
 
 		m_iBuffersLocks.insert( _ibHandle, memRange );
 		
-        void * mem = reinterpret_cast<void *>(memRange.pMem);
+        RenderIndices2D * mem = reinterpret_cast<RenderIndices2D *>(memRange.pMem);
 
         return mem;
 	}

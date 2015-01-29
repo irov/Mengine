@@ -89,7 +89,7 @@ namespace Menge
 		size_t minSize = (size_t)(0);
 		size_t maxSize = (size_t)(-1);
 
-		const CacheBufferID INVALID_ID = (size_t)(-1);
+		const CacheBufferID INVALID_ID = (CacheBufferID)(-1);
 
 		CacheBufferID minIndex = INVALID_ID;
 		CacheBufferID maxIndex = INVALID_ID;

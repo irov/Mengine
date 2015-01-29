@@ -33,6 +33,59 @@ namespace Menge
 		return m_codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static bool s_checkRowTransparency( const void * _buffer, size_t _width, size_t _height, size_t _row )
+	{				
+		(void)_height;
+
+		const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer) + _row * _width * 4;
+
+		for( size_t i = 0; i != _width; ++i )
+		{
+			if( pixel_memory[i * 4 + 3] != 0 )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_checkColumnTransparency( const void * _buffer, size_t _width, size_t _height, size_t _column )
+	{				
+		const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer);
+
+		for( size_t i = 0; i != _height; ++i )
+		{
+			if( pixel_memory[i * _width * 4 + _column * 4 + 3] != 0 )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_checkRowColumnTransparency( const void * _buffer, size_t _width, size_t _height )
+	{	
+		for( size_t i = 0; i != _width; ++i )
+		{
+			if( s_checkColumnTransparency( _buffer, _width, _height, i ) == true )
+			{
+				return true;
+			}
+		}
+
+		for( size_t j = 0; j != _height; ++j )
+		{
+			if( s_checkRowTransparency( _buffer, _width, _height, j ) == true )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static bool s_allPixelsTransparency( const void * _buffer, size_t _size )
 	{
 		const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer);
@@ -209,6 +262,21 @@ namespace Menge
 					);
 
 				return false;
+			}
+
+			if( CONFIG_SERVICE(m_serviceProvider)->getValue( "Check", "ImageRowColumnTransparency", false ) == true )
+			{
+				if( s_checkRowColumnTransparency( buffer_memory, dataInfo->width, dataInfo->height ) == true )
+				{
+					LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s codec %s row or column pixels transparency!"
+						, m_name.c_str()
+						, category.c_str()
+						, m_filePath.c_str()
+						, m_codecType.c_str()
+						);
+
+					return false;
+				}
 			}
 		}
 

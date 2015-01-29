@@ -17,7 +17,7 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool initialize() override;
+		bool initialize( const ConstString & _platformName ) override;
 		void finalize() override;
 
 	public:

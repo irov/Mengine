@@ -448,7 +448,7 @@ namespace Menge
 
 		m_configService = configService;
 
-		if( configService->initialize() == false )
+		if( configService->initialize( m_platformName ) == false )
 		{
 			return false;
 		}

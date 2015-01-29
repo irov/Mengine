@@ -401,14 +401,14 @@ namespace Menge
             ->sleep( _ms );
     }
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t ThreadEngine::getCurrentThreadId()
+	ptrdiff_t ThreadEngine::getCurrentThreadId()
 	{
 		if( m_threadAvaliable == false )
 		{
-			return 0;
+			return 0U;
 		}
 
-		uint32_t id = THREAD_SYSTEM(m_serviceProvider)
+		ptrdiff_t id = THREAD_SYSTEM(m_serviceProvider)
 			->getCurrentThreadId();
 
 		return id;

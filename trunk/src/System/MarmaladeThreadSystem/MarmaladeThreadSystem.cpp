@@ -102,10 +102,10 @@ namespace Menge
         return mutex;
     }
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t MarmaladeThreadSystem::getCurrentThreadId() const
+	ptrdiff_t MarmaladeThreadSystem::getCurrentThreadId() const
 	{
 		s3eThread * threadId = s3eThreadGetCurrent();
-
-		return (uint32_t)threadId;
+		
+		return (ptrdiff_t)threadId;
 	}
 }

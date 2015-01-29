@@ -93,10 +93,10 @@ namespace Menge
 		::Sleep( _ms );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t Win32ThreadSystem::getCurrentThreadId() const
+	ptrdiff_t Win32ThreadSystem::getCurrentThreadId() const
 	{
 		DWORD id = GetCurrentThreadId();
 
-		return (uint32_t)id;
+		return (ptrdiff_t)id;
 	}
 }

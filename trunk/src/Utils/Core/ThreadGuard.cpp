@@ -7,7 +7,7 @@
 //////////////////////////////////////////////////////////////////////////
 #	include "WindowsLayer/WindowsIncluder.h"
 
-#	define MENGINE_THREAD_GUARD_GET_CURRENT_THREAD_ID() ((uint32_t)GetCurrentThreadId())
+#	define MENGINE_THREAD_GUARD_GET_CURRENT_THREAD_ID() ((ptrdiff_t)GetCurrentThreadId())
 #	else
 #	define MENGINE_THREAD_GUARD_GET_CURRENT_THREAD_ID() (0U)
 #	endif

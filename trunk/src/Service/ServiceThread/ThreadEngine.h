@@ -45,7 +45,7 @@ namespace Menge
 
     public:
         void sleep( uint32_t _ms ) override;
-		uint32_t getCurrentThreadId() override;
+		ptrdiff_t getCurrentThreadId() override;
 
     protected:
 		bool isTaskOnProgress_( const ThreadTaskInterfacePtr & _task, ThreadIdentityPtr & _identity ) const;

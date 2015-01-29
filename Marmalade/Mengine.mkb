@@ -33,7 +33,7 @@ includepaths
 	"../dependencies/simpleini"
 	"../dependencies/metabuf"
     "../dependencies/zlib"
-    "../dependencies/lz4"
+    "../dependencies/lz4/lib"
     "../dependencies/stdex/include"
 	"../dependencies/utf8/source"
     "../dependencies/fastpathfinder/include"

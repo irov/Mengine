@@ -31,6 +31,7 @@
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/ThreadSystemInterface.h"
 #	include "Interface/ArchiveInterface.h"
+#	include "Interface/ConfigInterface.h"
 
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
@@ -76,6 +77,7 @@ SERVICE_EXTERN(UnicodeService, Menge::UnicodeServiceInterface);
 SERVICE_EXTERN(ArchiveService, Menge::ArchiveServiceInterface);
 
 SERVICE_EXTERN(FileService, Menge::FileServiceInterface);
+SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -232,6 +234,19 @@ namespace Menge
 			return false;
 		}
 
+		ConfigServiceInterface * configService;
+		if( SERVICE_CREATE( ConfigService, &configService ) == false )
+		{
+			return false;
+		}
+
+		SERVICE_REGISTRY(serviceProvider, configService);
+		
+		if( configService->initialize( Helper::stringizeString(serviceProvider, "WIN") ) == false )
+		{
+			return false;
+		}
+					
 		ThreadSystemInterface * threadSystem;
 		if( SERVICE_CREATE( ThreadSystem, &threadSystem ) == false )
 		{
@@ -873,9 +888,19 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	info = s_correct_path(info);
 
 	Menge::ServiceProviderInterface * serviceProvider;
-	if( Menge::initializeEngine( &serviceProvider ) == false )
+
+	try
 	{
-		message_error( "ImageTrimmer invalid initialize" );
+		if( Menge::initializeEngine( &serviceProvider ) == false )
+		{
+			message_error( "ImageTrimmer invalid initialize" );
+
+			return 0;
+		}
+	}
+	catch( const std::exception & se )
+	{		
+		MessageBoxA( NULL, se.what(), "Mengine exception", MB_OK );
 
 		return 0;
 	}

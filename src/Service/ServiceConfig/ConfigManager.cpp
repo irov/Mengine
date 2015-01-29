@@ -25,10 +25,9 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigManager::initialize()
+	bool ConfigManager::initialize( const ConstString & _platformName )
 	{
-		m_platformName = PLATFORM_SERVICE(m_serviceProvider)
-			->getPlatformName();
+		m_platformName = _platformName;
 
 		return true;
 	}

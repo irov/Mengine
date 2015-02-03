@@ -487,7 +487,7 @@ namespace Menge
 	{
 		ScheduleManagerInterface * sm = m_factoryScheduleManager.createObjectT();
 
-		sm->initialize( m_serviceProvider );
+		sm->setServiceProvider( m_serviceProvider );
 
 		m_schedulers.push_back( sm );
 
@@ -537,7 +537,7 @@ namespace Menge
 	{
 		TimingManagerInterface * tm = m_factoryTimingManager.createObjectT();
 
-		tm->initialize( m_serviceProvider );
+		tm->setServiceProvider( m_serviceProvider );
 
 		m_timingers.push_back( tm );
 
@@ -589,16 +589,16 @@ namespace Menge
 		m_globalHandleSystem = new GlobalHandleSystem(m_serviceProvider);
 		
         m_scheduleManager = m_factoryScheduleManager.createObjectT();
-        m_scheduleManager->initialize( m_serviceProvider );
+        m_scheduleManager->setServiceProvider( m_serviceProvider );
 
 		m_scheduleManagerGlobal = m_factoryScheduleManager.createObjectT();
-        m_scheduleManagerGlobal->initialize( m_serviceProvider );
+        m_scheduleManagerGlobal->setServiceProvider( m_serviceProvider );
 
 		m_timingManager = m_factoryTimingManager.createObjectT();
-        m_timingManager->initialize(m_serviceProvider);
+        m_timingManager->setServiceProvider( m_serviceProvider );
 
         m_timingManagerGlobal = m_factoryTimingManager.createObjectT();
-        m_timingManager->initialize(m_serviceProvider);
+        m_timingManagerGlobal->setServiceProvider( m_serviceProvider );
 
 		m_affectorable = new Affectorable;
 		m_affectorableGlobal = new Affectorable;

@@ -20,7 +20,8 @@ namespace Menge
         : public Factorable
     {
     public:
-        virtual void initialize( ServiceProviderInterface * _serviceProvider ) = 0;
+        virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
     public:
         virtual uint32_t timing( float _delay, const TimingListenerInterfacePtr & _listener ) = 0;

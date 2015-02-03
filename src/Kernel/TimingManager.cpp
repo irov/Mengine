@@ -48,10 +48,15 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void TimingManager::initialize( ServiceProviderInterface * _serviceProvider )
+    void TimingManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
     }
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * TimingManager::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t TimingManager::timing( float _delay, const TimingListenerInterfacePtr & _listener )
 	{

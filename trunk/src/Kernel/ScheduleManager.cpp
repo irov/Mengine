@@ -47,11 +47,16 @@ namespace Menge
     ScheduleManager::~ScheduleManager()
     {
     }
-    //////////////////////////////////////////////////////////////////////////
-    void ScheduleManager::initialize( ServiceProviderInterface * _serviceProvider ) 
-    {
-        m_serviceProvider = _serviceProvider;
-    }
+	//////////////////////////////////////////////////////////////////////////
+	void ScheduleManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * ScheduleManager::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
     //////////////////////////////////////////////////////////////////////////
     uint32_t ScheduleManager::schedule( float _timing, const ScheduleListenerInterfacePtr & _listener )
     {

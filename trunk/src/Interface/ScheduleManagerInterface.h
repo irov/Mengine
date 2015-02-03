@@ -19,8 +19,9 @@ namespace Menge
     class ScheduleManagerInterface
         : public Factorable
     {
-    public:
-        virtual void initialize( ServiceProviderInterface * _serviceProvider ) = 0;
+	public:
+		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
     public:
         virtual uint32_t schedule( float _timing, const ScheduleListenerInterfacePtr & _listener ) = 0;

@@ -17,8 +17,9 @@ namespace Menge
 		ScheduleManager();
 		~ScheduleManager();
 
-    public:
-        void initialize( ServiceProviderInterface * _serviceProvider ) override;
+	public:        
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
 
     public:
 		struct ScheduleEvent

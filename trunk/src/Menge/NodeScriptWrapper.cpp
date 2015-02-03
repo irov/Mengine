@@ -5328,7 +5328,21 @@ namespace Menge
             pybind::def_functor( "timing", nodeScriptMethod, &NodeScriptMethod::timing );
             pybind::def_functor( "timingRemove", nodeScriptMethod, &NodeScriptMethod::timingRemove );
 
-			
+			pybind::interface_<TimingManagerInterface>("TimingManagerInterface", true)
+				.def_proxy_static( "timing", nodeScriptMethod, &NodeScriptMethod::TimingManagerInterface_timing )
+				.def( "remove", &TimingManagerInterface::remove )
+				.def( "removeAll", &TimingManagerInterface::removeAll )
+				.def( "freeze", &TimingManagerInterface::freeze )
+				.def( "freezeAll", &TimingManagerInterface::freezeAll )
+				.def( "isFreeze", &TimingManagerInterface::isFreeze )
+				.def( "setSpeedFactor", &TimingManagerInterface::setSpeedFactor )
+				.def( "getSpeedFactor", &TimingManagerInterface::getSpeedFactor )
+				;
+
+			pybind::def_functor( "createTiming", nodeScriptMethod, &NodeScriptMethod::createTiming );
+			pybind::def_functor( "destroyTiming", nodeScriptMethod, &NodeScriptMethod::destroyTiming );
+
+						
 			pybind::interface_<ScheduleManagerInterface>("ScheduleManagerInterface", true)
 				.def_proxy_static( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
 				.def( "remove", &ScheduleManagerInterface::remove )
@@ -5341,17 +5355,8 @@ namespace Menge
 				.def( "getSpeedFactor", &ScheduleManagerInterface::getSpeedFactor )
 				;
 
-			pybind::interface_<TimingManagerInterface>("TimingManagerInterface", true)
-				.def_proxy_static( "timing", nodeScriptMethod, &NodeScriptMethod::TimingManagerInterface_timing )
-				.def( "remove", &TimingManagerInterface::remove )
-				.def( "removeAll", &TimingManagerInterface::removeAll )
-				.def( "freeze", &TimingManagerInterface::freeze )
-				.def( "freezeAll", &TimingManagerInterface::freezeAll )
-				.def( "isFreeze", &TimingManagerInterface::isFreeze )
-				.def( "setSpeedFactor", &TimingManagerInterface::setSpeedFactor )
-				.def( "getSpeedFactor", &TimingManagerInterface::getSpeedFactor )
-				;
 
+			
 			pybind::def_functor( "createScheduler", nodeScriptMethod, &NodeScriptMethod::createScheduler );
 			pybind::def_functor( "destroyScheduler", nodeScriptMethod, &NodeScriptMethod::destroyScheduler );				
 

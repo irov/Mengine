@@ -28,9 +28,10 @@ namespace Menge
 		TimingManager();
 		~TimingManager();
 
-    public:
-        void initialize( ServiceProviderInterface * _serviceProvider ) override;
-
+    public:        
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
+		
 	public:
 		uint32_t timing( float _delay, const TimingListenerInterfacePtr & _listener ) override;
 

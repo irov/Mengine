@@ -726,6 +726,17 @@ namespace Menge
 
 		m_schedulers.clear();
 
+		for( TVectorUserTiming::iterator
+			it = m_timingers.begin(),
+			it_end = m_timingers.end();
+		it != it_end;
+		++it )
+		{
+			TimingManagerInterface * tm = *it;
+
+			tm->destroy();
+		}
+
 		if( m_timingManager != nullptr )
 		{
 			m_timingManager->destroy();
@@ -982,6 +993,17 @@ namespace Menge
 
 		m_timingManager->update( gameTime, _timing );
         m_timingManagerGlobal->update( gameTime, _timing );
+
+		for( TVectorUserTiming::iterator
+			it = m_timingers.begin(),
+			it_end = m_timingers.end();
+		it != it_end;
+		++it )
+		{
+			TimingManagerInterface * tm = *it;
+
+			tm->update( gameTime, _timing );
+		}
 
 		MODULE_SERVICE(m_serviceProvider)
 			->update( gameTime, _timing );

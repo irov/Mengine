@@ -1,4 +1,4 @@
-<Protocol Version = "65">
+<Protocol Version = "71">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string_id"/>
@@ -9,6 +9,7 @@
   <Type Name="mt::vec2f" Evict="float2"/>
   <Type Name="mt::vec3f" Evict="float3"/>
   <Type Name="mt::vec4f" Evict="float4"/>
+  <Type Name="mt::box2f" Evict="float4"/>
   <Type Name="Menge::ColourValue" Evict="float4"/>
   <Type Name="Menge::GlyphCode" Evict="utf8"/>
   <Type Name="Menge::Polygon" Evict="floats"/>
@@ -126,15 +127,16 @@
     </Node>
 
     <Node Name="ResourceMovie" Inheritance = "Resource">
-      <Member Node="FrameDuration" Name="Value" Type="float"/>
-      <Member Node="Duration" Name="Value" Type="float"/>
-      <Member Node="Width" Name="Value" Type="float"/>
-      <Member Node="Height" Name="Value" Type="float"/>
-      <Member Node="KeyFramesPackPath" Name="Path" Type="Menge::ConstString"/>
+      <Member Node="FrameDuration" Name="Value" Type="float" Required="1"/>
+      <Member Node="Duration" Name="Value" Type="float" Required="1"/>
+      <Member Node="Width" Name="Value" Type="float" Required="1"/>
+      <Member Node="Height" Name="Value" Type="float" Required="1"/>
+      <Member Node="KeyFramesPackPath" Name="Path" Type="Menge::ConstString" Required="1"/>
       <Member Node="KeyFramesPackPath" Name="Codec" Type="Menge::ConstString"/>
       <Member Node="KeyFramesPackPath" Name="Converter" Type="Menge::ConstString"/>
-      <Member Node="Loop" Name="Segment" Type="mt::vec2f"/>
-      <Member Node="Anchor" Name="Point" Type="mt::vec3f"/>    
+      <Member Node="Loop" Name="Segment" Type="mt::vec2f"/>      
+      <Member Node="Anchor" Name="Point" Type="mt::vec3f"/>
+      <Member Node="Bounds" Name="Box" Type="mt::box2f"/>
 
       <Node Name="MovieLayer2D">
         <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>        
@@ -152,6 +154,8 @@
         <Attribute Name="PlayCount" Type="uint32_t"/>
         <Attribute Name="Stretch" Type="float"/>
         <Attribute Name="Switch" Type="bool"/>
+        <Attribute Name="Position" Type="mt::vec3f"/>
+        <Attribute Name="Params" Type="uint32_t"/>
       </Node>
 
       <Node Name="MovieLayer3D">
@@ -166,9 +170,12 @@
         <Attribute Name="BlendingMode" Type="Menge::ConstString"/>
         <Attribute Name="TimeRemap" Type="bool"/>
         <Attribute Name="Shape" Type="bool"/>
+        <Attribute Name="Polygon" Type="bool"/>
         <Attribute Name="PlayCount" Type="uint32_t"/>
         <Attribute Name="Stretch" Type="float"/>
         <Attribute Name="Switch" Type="bool"/>
+        <Attribute Name="Position" Type="mt::vec3f"/>
+        <Attribute Name="Params" Type="uint32_t"/>
       </Node>
 
       <Node Name="MovieCamera3D">
@@ -187,7 +194,8 @@
       <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
       <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
       <Member Node="File" Name="NoSeek" Type="bool"/>
-      <Member Node="File" Name="FrameRate" Type="float"/>
+      <Member Node="File" Name="FrameRate" Type="uint32_t"/>
+      <Member Node="File" Name="Duration" Type="float"/>
     </Node>
 
     <Node Name="ResourceAnimation" Inheritance = "Resource">

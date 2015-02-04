@@ -8,7 +8,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderCamera::initialize( const mt::mat4f & _wm, const mt::mat4f & _pm, const mt::mat4f & _vm, const Viewport & _renderport, const ConstString & _target, bool _isOrthogonalProjection )
+	void RenderCamera::initialize( const mt::mat4f & _wm, const mt::mat4f & _pm, const mt::mat4f & _vm, const Viewport & _renderport, bool _isOrthogonalProjection )
 	{
 		m_worldMatrix = _wm;
 		mt::inv_m4( m_worldMatrixInv, m_worldMatrix );
@@ -20,8 +20,7 @@ namespace Menge
 		mt::inv_m4( m_viewMatrixInv, m_viewMatrix );
 
 		m_renderport = _renderport;
-		m_renderTarget = _target;
-		
+				
 		m_isOrthonalProjection = _isOrthogonalProjection;
 
 		Viewport rp_vm;

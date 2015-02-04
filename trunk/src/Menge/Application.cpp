@@ -34,6 +34,7 @@
 #	include "Sprite.h"
 #	include "Isometric.h"
 #	include "Mesh2D.h"
+#	include "Grid2D.h"
 #	include "TextField.h"
 #	include "TileMap.h"
 #	include "Track.h"
@@ -469,6 +470,7 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, SoundEmitter );
 		NODE_FACTORY( m_serviceProvider, Sprite );
 		NODE_FACTORY( m_serviceProvider, Mesh2D );
+		NODE_FACTORY( m_serviceProvider, Grid2D );
 		NODE_FACTORY( m_serviceProvider, TextField );
 		//NODE_FACTORY( TileMap );
 		//NODE_FACTORY( Track );

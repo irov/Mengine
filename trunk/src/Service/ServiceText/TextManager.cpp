@@ -100,6 +100,7 @@ namespace Menge
 				ColourValue colorOutline;
 
 				bool isOverride = false;
+				bool isEmpty = false;
 
 				uint32_t params = 0;
 				
@@ -142,15 +143,6 @@ namespace Menge
 						else
 						{
 							text = Helper::stringizeStringExternal( m_serviceProvider, str_value, str_value_size );
-						}
-
-						if( text.empty() == true )
-						{
-							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid text key %s value is empty"
-								, m_pakName.c_str()
-								, m_path.c_str()
-								, text_key.c_str()
-								);
 						}
 					}
 					else if( strcmp( str_key, "Font" ) == 0 )
@@ -255,7 +247,7 @@ namespace Menge
 						uint32_t value = 0;
 						if( sscanf( str_value, "%d", &value ) != 1 )
 						{
-							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s Override %s"
+							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s tag 'Override' %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -264,6 +256,21 @@ namespace Menge
 						}
 
 						isOverride = (value != 0);
+					}
+					else if( strcmp( str_key, "Empty" ) == 0 )
+					{						
+						uint32_t value = 0;
+						if( sscanf( str_value, "%d", &value ) != 1 )
+						{
+							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s tag 'Empty' %s"
+								, m_pakName.c_str()
+								, m_path.c_str()
+								, text_key.c_str()
+								, str_value
+								);
+						}
+
+						isEmpty = (value != 0);
 					}
 					else
 					{
@@ -274,6 +281,15 @@ namespace Menge
 							, text_key.c_str()
 							);
 					}
+				}
+
+				if( text.empty() == true && isEmpty == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid text key %s value is empty"
+						, m_pakName.c_str()
+						, m_path.c_str()
+						, text_key.c_str()
+						);
 				}
 
 				m_textManager->addTextEntry( text_key, text, fontName, colorFont, colorOutline, lineOffset, charOffset, maxLength, params, isOverride );

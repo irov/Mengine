@@ -48,8 +48,6 @@
 namespace Menge
 {
 	//struct Material;
-	class Camera;
-
 	struct RenderVertex2D;
 
 	struct ImageCodecDataInfo;
@@ -130,7 +128,7 @@ namespace Menge
 			, const mt::box2f * _bb ) override;
 		
 	protected:
-		void addRenderPass_();
+		void createRenderPass_();
 
 	public:
 		void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) override;
@@ -157,7 +155,6 @@ namespace Menge
 		void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) override;
 
     public:
-		void setRenderTargetTexture( const RenderTextureInterfacePtr & _image, bool _clear ) override;
 		void clear( uint32_t _color ) override;
 		void setSeparateAlphaBlendMode() override;
 
@@ -171,10 +168,6 @@ namespace Menge
         
 		
     public:
-		//void	setProjectionMatrix( const mt::mat4f& _projection );
-		//void	setViewMatrix( const mt::mat4f& _view );
-		//void	setWorldMatrix( const mt::mat4f& _world );
-
 		bool beginScene() override;
 		void endScene() override;
 		void swapBuffers() override;
@@ -185,17 +178,15 @@ namespace Menge
 		void onWindowActive( bool _active );
 		void onWindowClose() override;
 
-		void setRenderTarget( const ConstString & _target, bool _clear = true );
-		const ConstString & getRenderTarget() const;
-
+	public:
         const Viewport & getRenderViewport() const;
 
 		bool isWindowCreated() const override;
 		
-		void makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
+		void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
 		void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) override;
 		void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float zn, float zf ) override;
-		void makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport ) override;
+		void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) override;
         void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign ) override;
 		
 	public:
@@ -205,7 +196,7 @@ namespace Menge
 		void setVSync( bool _vSync ) override;
 		bool getVSync() const override;
 
-	private:			
+	protected:			
 		void disableTextureStage_( uint32_t _stage );
 
 		void setRenderSystemDefaults_();
@@ -233,7 +224,7 @@ namespace Menge
 
 		bool recreate2DBuffers_();
         		
-    private:
+    protected:
         void calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum );
         void calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _verteNum, const RenderIndices2D * _indices, uint32_t _indicesNum );
 
@@ -246,7 +237,7 @@ namespace Menge
 		void updateMaterial_( const RenderMaterialPtr & _material );
 		void updateStage_( const RenderStage * _stage );
 
-	private:
+	protected:
         ServiceProviderInterface * m_serviceProvider;
 
 		bool m_windowCreated;
@@ -256,9 +247,6 @@ namespace Menge
 		
 		Resolution m_contentResolution;
 		
-		ConstString m_currentRenderTarget;
-        ConstString m_defaultRenderTarget;
-
 		mt::mat4f m_renderAreaProj;
         
         RenderTextureInterfacePtr m_nullTexture;	// dummy white pixel

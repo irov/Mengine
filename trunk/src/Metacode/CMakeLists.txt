@@ -5,7 +5,8 @@ Metabuf
 	Metacode.cpp
 	Metacode.h
     Metatype.cpp
-    Metatype.h    
+    Metatype.h
+    protocol.xml
 )
 
 ADD_FILTER(

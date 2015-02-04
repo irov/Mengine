@@ -20,8 +20,6 @@ Camera
 	Camera3D.h
 	Frustum.cpp
 	Frustum.h
-	Camera.h
-	Camera.cpp
     RenderViewport.h
     RenderViewport.cpp
     RenderCamera.h
@@ -131,6 +129,12 @@ ADD_FILTER(
 Object2D\\\\Landscape2D
 	Landscape2D.cpp
 	Landscape2D.h
+)
+
+ADD_FILTER(
+Object2D\\\\Grid2D
+	Grid2D.cpp
+	Grid2D.h
 )
 
 ADD_FILTER(
@@ -264,6 +268,8 @@ ADD_FILTER(
 Resource\\\\Image
 	ResourceImageDefault.cpp
 	ResourceImageDefault.h
+    ResourceImageRender.cpp
+    ResourceImageRender.h
 	ResourceImageSubstract.cpp
 	ResourceImageSubstract.h
 	ResourceImageMultiplyRGBAndAlpha.cpp

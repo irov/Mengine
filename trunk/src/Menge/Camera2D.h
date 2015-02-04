@@ -1,7 +1,6 @@
 #	pragma once
 
-#	include "Camera.h"
-
+#	include "Interface/RenderSystemInterface.h"
 #	include "Interface/NotificationServiceInterface.h"
 
 #	include "Kernel/Node.h"
@@ -12,7 +11,7 @@ namespace Menge
 {
 	class Camera2D
 		: public Node
-        , public Camera
+        , public RenderCameraInterface
 	{
 	public:
 		Camera2D();

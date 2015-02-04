@@ -81,9 +81,6 @@ namespace Menge
 		inline const RenderMaterialInterfacePtr & getMaterial();
 
 	protected:
-		void updateResource_();
-
-	protected:
 		bool compileResource_();
 
 	protected:
@@ -109,9 +106,6 @@ namespace Menge
 
 		RenderMaterialInterfacePtr m_material;
 		bool m_invalidateMaterial;
-
-		uint32_t m_texturesNum;
-		RenderTextureInterfacePtr m_textures[2];
 
 		Camera3D * m_camera;
 

@@ -18,7 +18,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Model3D::Model3D()
 		: m_material(nullptr)
-		, m_texturesNum(0)
 		, m_blendAdd(false)
 		, m_solid(false)
 		, m_frame(nullptr)
@@ -43,8 +42,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		this->updateResource_();
 
 		this->invalidateMaterial();
 		this->invalidateBoundingBox();
@@ -108,9 +105,6 @@ namespace Menge
 			m_camera = nullptr;
 		}
 
-		m_textures[0] = nullptr;
-		m_textures[1] = nullptr;
-
 		m_material = nullptr;
 		m_frame = nullptr;
 	}
@@ -135,23 +129,6 @@ namespace Menge
 		return m_resourceModel;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::updateResource_()
-	{
-		//bool uvRotate = m_resourceImage->isUVRotate();
-		//this->setUVRotate( uvRotate );
-
-		//const mt::vec4f & uv = m_resourceImage->getUVImage();
-		//this->setUV( uv );
-
-		//const mt::vec4f & uvAlpha = m_resourceImage->getUVAlpha();
-		//this->setUV2( uvAlpha );
-
-		const ResourceImage * resourceImage =  m_resourceModel->getResourceImage();
-
-		m_textures[0] = resourceImage->getTexture();
-		m_textures[1] = resourceImage->getTextureAlpha();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Model3D::invalidateMaterial()
 	{
 		m_invalidateMaterial = true;
@@ -161,9 +138,15 @@ namespace Menge
 	{
 		m_invalidateMaterial = false;
 
-		const ResourceImage * resourceImage =  m_resourceModel->getResourceImage();
+		const ResourceImage * resourceImage = m_resourceModel->getResourceImage();
 
 		const RenderTextureInterfacePtr & textureAlpha = resourceImage->getTextureAlpha();
+
+		uint32_t texturesNum = 0;
+		RenderTextureInterfacePtr textures[2];
+
+		textures[0] = resourceImage->getTexture();
+		textures[1] = resourceImage->getTextureAlpha();
 
 		ConstString stageName;
 
@@ -171,26 +154,26 @@ namespace Menge
 		{
 			if( resourceImage->isAlpha() == true || m_solid == false )
 			{
-				m_texturesNum = 2;
+				texturesNum = 2;
 
 				stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
 			}
 			else
 			{
-				m_texturesNum = 1;
+				texturesNum = 1;
 
 				stageName = CONST_STRING(m_serviceProvider, SolidSprite);
 			}
 		}
 		else if( m_blendAdd == true )
 		{
-			m_texturesNum = 1;
+			texturesNum = 1;
 
 			stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
 		}
 		else
 		{
-			m_texturesNum = 1;
+			texturesNum = 1;
 
 			if( resourceImage->isAlpha() == true || m_solid == false )
 			{
@@ -206,7 +189,7 @@ namespace Menge
 		bool wrapV = resourceImage->isWrapV();
 
 		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, m_texturesNum, m_textures );
+			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, texturesNum, textures );
 
 		if( m_material == nullptr )
 		{

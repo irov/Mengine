@@ -348,7 +348,9 @@ namespace Menge
 			return nullptr;
 		}
 
-		const RenderStage * stage = &stageGroup->stage[ (_wrapU ? 1 : 0) + (_wrapV ? 2 : 0) ];
+		uint32_t stageWrapId = (_wrapU ? 1 : 0) + (_wrapV ? 2 : 0);
+
+		const RenderStage * stage = &stageGroup->stage[stageWrapId];
 
 		uint32_t material_hash = _textureCount ? _textures[0]->getId() : 0U;
 

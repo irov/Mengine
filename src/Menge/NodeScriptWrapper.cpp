@@ -65,6 +65,7 @@
 #	include "HotSpotImage.h"
 #   include "HotSpotShape.h"
 #	include "Landscape2D.h"
+#	include "Grid2D.h"
 //#	include "Light2D.h"
 #	include "ShadowCaster2D.h"
 #	include "Gyroscope.h"
@@ -4447,6 +4448,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Point );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Line );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Landscape2D );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Grid2D );
         //SCRIPT_CLASS_WRAPPING( TilePolygon );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Video );
         //SCRIPT_CLASS_WRAPPING( FFCamera3D );
@@ -4840,15 +4842,10 @@ namespace Menge
 
         pybind::interface_<RenderCameraInterface>("RenderCameraInterface")
             .def( "getCameraRenderport", &RenderCameraInterface::getCameraRenderport )
-			.def( "getRenderTarget", &RenderCameraInterface::getRenderTarget )
 			.def( "isOrthogonalProjection", &RenderCameraInterface::isOrthogonalProjection )			
             ;
 
-		pybind::interface_<Camera, pybind::bases<RenderCameraInterface> >("Camera")
-			.def( "setRenderTarget", &Camera2D::setRenderTarget )
-			;
-
-        pybind::interface_<Camera2D, pybind::bases<Node, Camera> >("Camera2D", false)
+        pybind::interface_<Camera2D, pybind::bases<Node, RenderCameraInterface> >("Camera2D", false)
             .def( "setRenderport", &Camera2D::setRenderport )
 			.def( "setFixedRenderport", &Camera2D::setFixedRenderport )
 			.def( "getFixedRenderport", &Camera2D::getFixedRenderport )
@@ -5163,6 +5160,18 @@ namespace Menge
 					.def( "setBackParts", &Landscape2D::setBackParts )
 					;
 
+				pybind::interface_<Grid2D, pybind::bases<Node> >("Grid2D", false)
+					.def( "setResourceImage", &Grid2D::setResourceImage )
+					.def( "getResourceImage", &Grid2D::getResourceImage )
+					.def( "setWidth", &Grid2D::setWidth )
+					.def( "getWidth", &Grid2D::getWidth )
+					.def( "setHeight", &Grid2D::setHeight )
+					.def( "getHeight", &Grid2D::getHeight )
+					.def( "setCountX", &Grid2D::setCountX )
+					.def( "getCountX", &Grid2D::getCountX )
+					.def( "setCountY", &Grid2D::setCountY )
+					.def( "getCountY", &Grid2D::getCountY )
+					;
 
                 pybind::interface_<Sprite, pybind::bases<Shape> >("Sprite", false)
                     .def_depricated( "setImageResource", &Sprite::setResourceImage, "Use setResourceImage" )
@@ -5578,6 +5587,8 @@ namespace Menge
 
 			pybind::def_functor( "getMovieSlotsPosition", nodeScriptMethod, &NodeScriptMethod::s_getMovieSlotsPosition );
 			pybind::def_functor( "getMovieSlotPosition", nodeScriptMethod, &NodeScriptMethod::s_getMovieSlotPosition );
+
+			
         }
     }
 }

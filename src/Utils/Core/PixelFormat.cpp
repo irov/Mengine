@@ -14,17 +14,25 @@ namespace Menge
 			{
 			case PF_L8:
 			case PF_A8:
-				return HWWidth * HWHeight * _depth * 1;
+				{
+					return HWWidth * HWHeight * _depth * 1;
+				}break;
+
 			case PF_R8G8B8:
 			case PF_B8G8R8:
-				return HWWidth * HWHeight * _depth * 3;
+				{
+					return HWWidth * HWHeight * _depth * 3;
+				}break;
+
 			case PF_A8R8G8B8:
 			case PF_A8B8G8R8:
 			case PF_B8G8R8A8:
 			case PF_R8G8B8A8:
 			case PF_X8R8G8B8:
 			case PF_X8B8G8R8:
-				return HWWidth * HWHeight * _depth * 4;
+				{
+					return HWWidth * HWHeight * _depth * 4;
+				}break;
 
 			case PF_DXT1:			
 				{
@@ -34,7 +42,7 @@ namespace Menge
 					size_t size = w * h * _depth * 8;
 
 					return size;
-				}
+				}break;
 
 			case PF_DXT2:
 			case PF_DXT3:
@@ -47,7 +55,7 @@ namespace Menge
 					size_t size = w * h * _depth * 16;
 
 					return size;
-				}
+				}break;
 
 			case PF_PVRTC4_RGB:			
 			case PF_PVRTC4_RGBA:
@@ -63,7 +71,7 @@ namespace Menge
 					size_t size = widthBlocks * heightBlocks * ((blockSize  * bpp) / 8);
 
 					return size;
-				}
+				}break;
 
 			case PF_ETC1:
 				{
@@ -73,11 +81,13 @@ namespace Menge
 					uint32_t size = w * h * _depth * 8;
 
 					return size;
-				}
+				}break;
 				
 			case PF_UNKNOWN:
-				return _width * _height * _depth * _channels;
-			}                
+				{
+					return _width * _height * _depth * _channels;
+				}break;
+			}
 
 			return 0;
 		}

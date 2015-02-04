@@ -21,7 +21,7 @@
 #define COLOR_A 3
 
 #define CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
-	rgb_char_buffer = MAX( MIN(rgb_color_test, 255), 0 )
+	rgb_char_buffer = (unsigned char)(MAX( MIN(rgb_color_test, 255), 0 ))
 
 namespace Menge
 {
@@ -745,7 +745,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float VideoDecoderTheora::getTiming() const
 	{
-		float timing = theora_granule_time( &m_theoraState, m_theoraState.granulepos ) * 1000.f;
+		double granule_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
+		
+		float timing = (float)(granule_time * 1000.0);
 
 		return timing;
 	}

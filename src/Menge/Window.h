@@ -51,9 +51,6 @@ namespace Menge
         {
             mt::vec2f initialSize;
             RenderMaterialInterfacePtr material;
-
-            uint32_t textureCount;
-            RenderTextureInterfacePtr textures[2];
         };
 
 		WindowEdge m_edge[ResourceWindow_Count];

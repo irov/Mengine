@@ -13,7 +13,7 @@ namespace Menge
 		RenderCamera();
 		
 	public:
-		void initialize( const mt::mat4f & _wm, const mt::mat4f & _pm, const mt::mat4f & _vm, const Viewport & _renderport, const ConstString & _target, bool _isOrthogonalProjection );
+		void initialize( const mt::mat4f & _wm, const mt::mat4f & _pm, const mt::mat4f & _vm, const Viewport & _renderport, bool _isOrthogonalProjection );
 
 	protected:
 		const mt::mat4f & getCameraWorldMatrix() const override;
@@ -28,10 +28,7 @@ namespace Menge
 
 	protected:
 		const Viewport & getCameraRenderport() const override;
-
-	protected:
-		const ConstString & getRenderTarget() const override;
-
+		
 	protected:
 		bool isOrthogonalProjection() const override;
 
@@ -47,7 +44,6 @@ namespace Menge
 
 		Viewport m_renderport;
 
-		ConstString m_renderTarget;
 		bool m_isOrthonalProjection;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -89,11 +85,6 @@ namespace Menge
 	inline const Viewport & RenderCamera::getCameraRenderport() const
 	{
 		return m_renderport;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const ConstString & RenderCamera::getRenderTarget() const
-	{
-		return m_renderTarget;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool RenderCamera::isOrthogonalProjection() const

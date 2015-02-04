@@ -1,6 +1,5 @@
 #	include "DX9RenderSystem.h"
 #	include "DX9Texture.h"
-#	include "DX9RenderTexture.h"
 #   include "DX9RenderShader.h"
 
 #	include "DX9ErrorHelper.h"
@@ -343,6 +342,7 @@ namespace Menge
         , m_adapterToUse(D3DADAPTER_DEFAULT)
         , m_deviceType(D3DDEVTYPE_HAL)
         , m_waitForVSync(false)
+		, m_oldRenderTarget(nullptr)
         //, m_currentTexture(nullptr)
 	{
 		//m_syncTargets[0] = NULL;
@@ -891,17 +891,17 @@ namespace Menge
 			return nullptr;
 		}
 		
-        IDirect3DSurface9 * dxSurfaceInterface = nullptr;
-		IF_DXCALL( m_serviceProvider, dxTextureInterface, GetSurfaceLevel, (0, &dxSurfaceInterface) )
-		{
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem.createRenderTargetImage: can't get surface level %dx%d %d"
-                , _width
-                , _height
-                , _format
-                );
+  //      IDirect3DSurface9 * dxSurfaceInterface = nullptr;
+		//IF_DXCALL( m_serviceProvider, dxTextureInterface, GetSurfaceLevel, (0, &dxSurfaceInterface) )
+		//{
+  //          LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem.createRenderTargetImage: can't get surface level %dx%d %d"
+  //              , _width
+  //              , _height
+  //              , _format
+  //              );
 
-			return nullptr;
-		}
+		//	return nullptr;
+		//}
 
         D3DSURFACE_DESC texDesc;
         IF_DXCALL( m_serviceProvider, dxTextureInterface, GetLevelDesc, ( 0, &texDesc ) )
@@ -909,10 +909,10 @@ namespace Menge
 			return nullptr;
 		}
 
-		DX9RenderTexture* dxTexture = m_factoryDX9RenderTexture.createObjectT();
+		DX9Texture * dxTexture = m_factoryDX9Texture.createObjectT();
 
         dxTexture->initialize( m_serviceProvider, dxTextureInterface, ERIM_RENDER_TARGET, texDesc.Width, texDesc.Height, _channels, _format );
-        dxTexture->setSurface( dxSurfaceInterface );
+        //dxTexture->setSurface( dxSurfaceInterface );
 
         LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createRenderTargetImage: texture created %dx%d %d"
             , texDesc.Width
@@ -1177,12 +1177,71 @@ namespace Menge
 		}        
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear )
+	bool DX9RenderSystem::lockRenderTarget( const RenderImageInterfacePtr & _renderTarget )
 	{
-		(void)_renderTarget;
-		(void)_clear;
+		ERenderImageMode mode = _renderTarget->getMode();
 
-        return false;
+		if( mode != ERIM_RENDER_TARGET )
+		{
+			return false;
+		}
+
+		IF_DXCALL( m_serviceProvider, m_pD3DDevice, GetRenderTarget, (0, &m_oldRenderTarget) )
+		{
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockRenderTarget: can't get render target"
+				);
+
+			return false;
+		}
+
+		DX9TexturePtr texture = stdex::intrusive_static_cast<DX9TexturePtr>(_renderTarget);
+
+		IDirect3DTexture9 * dx_texture = texture->getDXTextureInterface();
+
+		IDirect3DSurface9 * dx_surface;
+		IF_DXCALL( m_serviceProvider, dx_texture, GetSurfaceLevel, (0, &dx_surface) )
+		{
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockRenderTarget: can't get surface level"
+				);
+
+			return false;
+		}
+
+		IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderTarget, ( 0, dx_surface ) )
+		{
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockRenderTarget: can't set render target"
+				);
+
+			return false;
+		}
+
+		dx_surface->Release();
+
+        return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool DX9RenderSystem::unlockRenderTarget()
+	{
+		if( m_oldRenderTarget == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::unlockRenderTarget: can't get surface level"
+				);
+
+			return false;
+		}
+
+		IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderTarget, ( 0, m_oldRenderTarget ) )
+		{
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::unlockRenderTarget: can't set render target"
+				);
+
+			return false;
+		}
+
+		m_oldRenderTarget->Release();
+		m_oldRenderTarget = nullptr;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::supportTextureFormat( PixelFormat _format ) const

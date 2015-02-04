@@ -55,13 +55,10 @@ namespace Menge
 	protected:
 		ResourceHolder<ResourceImage> m_resourceImage;
 
-        mt::vec2f m_customSize;
-
 		RenderMaterialInterfacePtr m_material;
-	
-		uint32_t m_texturesNum;
-		RenderTextureInterfacePtr m_textures[2];
 
+        mt::vec2f m_customSize;	
+	
 		bool m_isCustomSize;
     };
     //////////////////////////////////////////////////////////////////////////

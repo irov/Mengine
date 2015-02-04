@@ -17,10 +17,8 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
-		: m_isCustomSize(false)
-		, m_customSize(0.f, 0.f)
-		, m_material(nullptr)
-		, m_texturesNum(0)
+		: m_customSize(0.f, 0.f)
+		, m_isCustomSize(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -69,9 +67,6 @@ namespace	Menge
 	void Sprite::_release()
 	{
         m_resourceImage.release();
-
-        m_textures[0] = nullptr;
-        m_textures[1] = nullptr;
 
 		m_material = nullptr;
 	}
@@ -126,14 +121,17 @@ namespace	Menge
 
         const mt::vec4f & uvAlpha = m_resourceImage->getUVAlpha();
         this->setUV2( uvAlpha );
-
-        m_textures[0] = m_resourceImage->getTexture();
-        m_textures[1] = m_resourceImage->getTextureAlpha();
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateMaterial()
 	{
         m_invalidateMaterial = false;
+
+		uint32_t texturesNum = 0;
+		RenderTextureInterfacePtr textures[2];
+
+		textures[0] = m_resourceImage->getTexture();
+		textures[1] = m_resourceImage->getTextureAlpha();
 
         const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
 
@@ -145,19 +143,19 @@ namespace	Menge
             {
 				if( m_disableTextureColor == true )
 				{
-					m_texturesNum = 2;
+					texturesNum = 2;
 
 					stageName = CONST_STRING(m_serviceProvider, ExternalAlphaIntensive_OnlyColor);
 				}
 				else if( m_resourceImage->isAlpha() == true || m_solid == false )
 				{
-					m_texturesNum = 2;
+					texturesNum = 2;
 
 					stageName = CONST_STRING(m_serviceProvider, ExternalAlphaIntensive);
 				}
 				else
 				{
-					m_texturesNum = 1;
+					texturesNum = 1;
 
 					stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
 				}
@@ -166,19 +164,19 @@ namespace	Menge
 			{
 				if( m_disableTextureColor == true )
 				{
-					m_texturesNum = 2;
+					texturesNum = 2;
 
 					stageName = CONST_STRING(m_serviceProvider, ExternalAlpha_OnlyColor);
 				}
 				else if( m_resourceImage->isAlpha() == true || m_solid == false )
 				{
-					m_texturesNum = 2;
+					texturesNum = 2;
 
 					stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
 				}
 				else
 				{
-					m_texturesNum = 1;
+					texturesNum = 1;
 
 					stageName = CONST_STRING(m_serviceProvider, SolidSprite);
 				}
@@ -186,7 +184,7 @@ namespace	Menge
         }
 		else
 		{
-			m_texturesNum = 1;
+			texturesNum = 1;
 
 			if( m_blendAdd == true )
 			{
@@ -213,7 +211,7 @@ namespace	Menge
 		bool wrapV = m_resourceImage->isWrapV();
 
 		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, m_texturesNum, m_textures );
+			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, texturesNum, textures );
 
 		if( m_material == nullptr )
 		{

@@ -613,8 +613,6 @@ namespace Menge
 		m_camera2D = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
 
-		m_camera2D->setRenderTarget( CONST_STRING(m_serviceProvider, Window) );
-				
 		m_camera2D->setRenderport( vp );
 
 		//mt::vec2f vp_pos(crx * 0.5f, cry * 0.5f);
@@ -635,14 +633,11 @@ namespace Menge
 		m_arrowCamera2D = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
 
-		m_arrowCamera2D->setRenderTarget( CONST_STRING(m_serviceProvider, Window) );
 		m_arrowCamera2D->setRenderport( vp );
 		m_arrowCamera2D->enable();
 				
 		m_debugCamera2D = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
-
-		m_debugCamera2D->setRenderTarget( CONST_STRING(m_serviceProvider, Window) );
 
 		m_debugCamera2D->setRenderport( vp );
 

@@ -17,7 +17,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Mesh2D::Mesh2D()
 		: m_material(nullptr)
-		, m_texturesNum(0)
 		, m_blendAdd(false)
 		, m_solid(false)
 		, m_shape(nullptr)
@@ -74,9 +73,6 @@ namespace Menge
 	{
         m_resourceImage.release();
 
-        m_textures[0] = nullptr;
-        m_textures[1] = nullptr;
-		
 		m_material = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -106,8 +102,11 @@ namespace Menge
 	{
         m_invalidateMaterial = false;
 
-		m_textures[0] = m_resourceImage->getTexture();
-		m_textures[1] = m_resourceImage->getTextureAlpha();
+		uint32_t texturesNum = 0;
+		RenderTextureInterfacePtr textures[2];
+
+		textures[0] = m_resourceImage->getTexture();
+		textures[1] = m_resourceImage->getTextureAlpha();
 		
         const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
 
@@ -117,26 +116,26 @@ namespace Menge
         {
             if( m_resourceImage->isAlpha() == true || m_solid == false )
             {
-                m_texturesNum = 2;
+                texturesNum = 2;
 
 				stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
             }
             else
             {
-                m_texturesNum = 1;
+                texturesNum = 1;
 				
 				stageName = CONST_STRING(m_serviceProvider, SolidSprite);
             }
         }
 		else if( m_blendAdd == true )
 		{
-			m_texturesNum = 1;
+			texturesNum = 1;
 
 			stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
 		}
 		else
 		{
-			m_texturesNum = 1;
+			texturesNum = 1;
 
 			if( m_resourceImage->isAlpha() == true || m_solid == false )
 			{
@@ -152,7 +151,7 @@ namespace Menge
 		bool wrapV = m_resourceImage->isWrapV();
 
 		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, m_texturesNum, m_textures );
+			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, texturesNum, textures );
 
 		if( m_material == nullptr )
 		{

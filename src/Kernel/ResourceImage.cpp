@@ -31,7 +31,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::prepareImageFrame_( const RenderTextureInterfacePtr & texture )
+	void ResourceImage::prepareImageFrame_( const RenderTextureInterfacePtr & texture )
 	{
 		float width = (float)texture->getWidth();
 		float height = (float)texture->getHeight();
@@ -88,8 +88,6 @@ namespace Menge
         m_uv_image.y = m_uv_scale.y + (m_uv_scale.w - m_uv_scale.y) * m_uv.y;
         m_uv_image.z = m_uv_scale.x + (m_uv_scale.z - m_uv_scale.x) * m_uv.z;
         m_uv_image.w = m_uv_scale.y + (m_uv_scale.w - m_uv_scale.y) * m_uv.w;
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImage::loadImageFrame_( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codecType )
@@ -112,10 +110,7 @@ namespace Menge
 			return false;
 		}
 
-		if( this->prepareImageFrame_( texture ) == false )
-		{
-			return false;
-		}
+		this->prepareImageFrame_( texture );
 
 		return true;
 	}

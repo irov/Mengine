@@ -44,9 +44,6 @@ namespace Menge
 			edge.initialSize.x = 0.f;
             edge.initialSize.y = 0.f;
             edge.material = nullptr;
-            edge.textureCount = 0;
-            edge.textures[0] = nullptr;
-            edge.textures[1] = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -97,8 +94,12 @@ namespace Menge
             const RenderTextureInterfacePtr & texture = image->getTexture();
             const RenderTextureInterfacePtr & textureAlpha = image->getTextureAlpha();
 
-            edge.textures[0] = texture;
-            edge.textures[1] = textureAlpha;
+
+			uint32_t textureCount = 0;
+			RenderTextureInterfacePtr textures[2];
+
+            textures[0] = texture;
+            textures[1] = textureAlpha;
 
 			ConstString stageName;
 
@@ -106,20 +107,20 @@ namespace Menge
             {
                 stageName = CONST_STRING(m_serviceProvider, BlendSprite);
 				
-                edge.textureCount = 1;
+                textureCount = 1;
             }
             else
             {
                 stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
 
-                edge.textureCount = 2;
+                textureCount = 2;
             }            
 
 			bool wrapU = c_WindowWrapU[i];
 			bool wrapV = c_WindowWrapV[i];
 
 			edge.material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, edge.textureCount, edge.textures );
+				->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, textureCount, textures );
 		}
 
 		this->invalidateVertices();
@@ -134,9 +135,6 @@ namespace Menge
             WindowEdge & edge = m_edge[i];
 
 			edge.material = nullptr;
-
-			edge.textures[0] = nullptr;
-            edge.textures[1] = nullptr;
 		}
 
         m_resourceWindow.release();
@@ -560,7 +558,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Window::hasBackground() const
 	{
-		if( m_edge[ResourceWindow_Background].textures[0] == nullptr )
+		if( m_edge[ResourceWindow_Background].material == nullptr )
 		{
 			return false;
 		}

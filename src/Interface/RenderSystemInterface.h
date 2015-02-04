@@ -331,6 +331,12 @@ namespace Menge
     const uint32_t VDECL_SPECULAR	= 0x00000080;
     const uint32_t VDECL_TEX1		= 0x00000100;
     const uint32_t VDECL_TEX2		= 0x00000200;
+	//////////////////////////////////////////////////////////////////////////
+	static const uint32_t Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX2;
+	//////////////////////////////////////////////////////////////////////////
+	typedef uint16_t RenderIndices2D;
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::vector<RenderIndices2D> TVectorRenderIndices2D;
     //////////////////////////////////////////////////////////////////////////
     struct RenderVertex2D
     {
@@ -340,11 +346,7 @@ namespace Menge
         mt::vec2f uv2;
     };
 	//////////////////////////////////////////////////////////////////////////
-	typedef uint16_t RenderIndices2D;
-    //////////////////////////////////////////////////////////////////////////
-    static const uint32_t Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX2;
-    //////////////////////////////////////////////////////////////////////////
-    typedef stdex::vector<RenderVertex2D> TVectorRenderVertex2D;
+	typedef stdex::vector<RenderVertex2D> TVectorRenderVertex2D;
     //////////////////////////////////////////////////////////////////////////
     struct RenderTextureDebugInfo
     {
@@ -426,9 +428,6 @@ namespace Menge
 
 	public:
 		virtual const Viewport & getCameraRenderport() const = 0;
-
-	public:
-		virtual const ConstString & getRenderTarget() const = 0;
 
 	public:
 		virtual bool isOrthogonalProjection() const = 0;
@@ -542,7 +541,9 @@ namespace Menge
 		virtual void setViewport( const Viewport & _viewport ) = 0;
 
 		virtual void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) = 0;
-		virtual bool setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear ) = 0;
+		
+		virtual bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) = 0;
+		virtual bool unlockRenderTarget() = 0;
 
 		//new
 		//virtual LightInterface * createLight( const String & _name ) = 0;
@@ -637,9 +638,6 @@ namespace Menge
 
 	//public:
 	//	virtual bool loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder ) = 0;
-
-	public:
-		virtual void setRenderTargetTexture( const RenderTextureInterfacePtr & _texture, bool _clear ) = 0;
 
    public:
         virtual void enableDebugMode( bool _enable ) = 0;

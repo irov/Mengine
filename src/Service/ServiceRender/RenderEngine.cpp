@@ -104,22 +104,20 @@ namespace Menge
 
 		//m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
-		m_defaultRenderTarget = STRINGIZE_STRING_LOCAL(m_serviceProvider, "Window");
-
 		uint32_t batchMode = CONFIG_SERVICE(m_serviceProvider)
 			->getValue( "Engine", "RenderServiceBatchMode", 2 );
 
 		switch( batchMode )
 		{
-		case 0:
+		case 0U:
 			{
 				m_batchMode = ERBM_NONE;
 			}break;
-		case 1:
+		case 1U:
 			{
 				m_batchMode = ERBM_NORMAL;
 			}break;
-		case 2:
+		case 2U:
 			{
 				m_batchMode = ERBM_SMART;
 			}break;
@@ -489,8 +487,6 @@ namespace Menge
 		m_renderVertexCount = 0;
 		m_renderIndicesCount = 0;
 
-		m_currentRenderTarget = m_defaultRenderTarget;
-
 		if( RENDER_SYSTEM(m_serviceProvider)->beginScene() == false )
 		{
 			return false;
@@ -517,18 +513,6 @@ namespace Menge
 			->swapBuffers();
 
 		m_debugInfo.frameCount += 1;		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderTarget( const ConstString& _target, bool _clear )
-	{
-		(void)_clear;
-
-		m_currentRenderTarget = _target;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString& RenderEngine::getRenderTarget() const
-	{
-		return m_currentRenderTarget;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::isWindowCreated() const
@@ -965,7 +949,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::resetFrameCount()
 	{
-		m_debugInfo.frameCount = 0;
+		m_debugInfo.frameCount = 0U;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderPasses_()
@@ -990,16 +974,6 @@ namespace Menge
 	void RenderEngine::renderPass_( RenderPass & _renderPass )
 	{
 		const RenderCameraInterface * camera = _renderPass.camera;
-
-		const ConstString& renderTarget = camera->getRenderTarget();
-
-		if( renderTarget != m_currentRenderTarget && renderTarget.empty() == false )
-		{
-			m_currentRenderTarget = renderTarget;
-
-			RENDER_SYSTEM(m_serviceProvider)
-				->setRenderTarget( nullptr, true );
-		}
 
 		const Viewport & viewport = _renderPass.viewport->getViewport();
 
@@ -1040,16 +1014,16 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addRenderPass_()
+	void RenderEngine::createRenderPass_()
 	{
 		RenderPass & pass = m_renderPasses.emplace();
 
 		pass.beginRenderObject = m_renderObjects.size();
-		pass.countRenderObject = 0;
+		pass.countRenderObject = 0U;
 		pass.viewport = m_currentRenderViewport;
 		pass.camera = m_currentRenderCamera;
 
-		for( uint32_t i = 0; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )
+		for( uint32_t i = 0U; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )
 		{
 			pass.materialEnd[i] = nullptr;
 		}
@@ -1119,7 +1093,7 @@ namespace Menge
 			m_currentRenderCamera = _camera;
 			m_currentRenderViewport = _viewport;
 
-			this->addRenderPass_();
+			this->createRenderPass_();
 		}
 
 		RenderPass & rp = m_renderPasses.back();
@@ -1880,16 +1854,6 @@ namespace Menge
 	{
 		RENDER_SYSTEM(m_serviceProvider)
 			->clear( _color );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderTargetTexture( const RenderTextureInterfacePtr & _texture, bool _clear )
-	{
-		const RenderImageInterfacePtr & image = _texture->getImage();
-
-		RENDER_SYSTEM(m_serviceProvider)
-			->setRenderTarget( image, _clear );
-
-		this->restoreRenderSystemStates_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setSeparateAlphaBlendMode()

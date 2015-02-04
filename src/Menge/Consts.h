@@ -77,6 +77,7 @@ namespace Menge
 		DECL_CONST( CreateTexture );
 		DECL_CONST( Sprite );
 		DECL_CONST( Mesh2D );
+		DECL_CONST( Grid2D );
 		DECL_CONST( Animation );
 		DECL_CONST( RenderViewport );
 		DECL_CONST( Camera2D );

@@ -2,7 +2,7 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-#   include "DX9RenderTexture.h"
+#   include "DX9Texture.h"
 
 #   include "Factory/FactoryStore.h"
 
@@ -147,8 +147,7 @@ namespace Menge
 		void setViewport( const Viewport & _viewport ) override;
 
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
-		bool setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear ) override;
-
+		
 		bool supportTextureFormat( PixelFormat _format ) const override;
 
 		void onWindowMovedOrResized() override;
@@ -156,6 +155,13 @@ namespace Menge
 
 		void setVSync( bool _vSync ) override;
 		void setSeparateAlphaBlendMode() override;
+
+	public:
+		bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) override;
+		bool unlockRenderTarget() override;
+
+	protected:
+		LPDIRECT3DSURFACE9 m_oldRenderTarget;
 
     protected:
         void updateVSyncDPP_();
@@ -239,9 +245,6 @@ namespace Menge
 
         typedef FactoryPoolStore<DX9Texture, 128> TFactoryDX9Texture;
         TFactoryDX9Texture m_factoryDX9Texture;
-
-        typedef FactoryPoolStore<DX9RenderTexture, 4> TFactoryDX9RenderTexture;
-        TFactoryDX9RenderTexture m_factoryDX9RenderTexture;
 		
 		bool m_syncReady;
         bool m_waitForVSync;

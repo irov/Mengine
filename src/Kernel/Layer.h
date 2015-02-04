@@ -12,7 +12,6 @@ namespace Menge
 	class Scene;
 	class HotSpot;
 	class Arrow;
-	class Camera;
 
 	class Layer
 		: public Node

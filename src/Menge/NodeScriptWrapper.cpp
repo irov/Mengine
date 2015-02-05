@@ -2637,6 +2637,7 @@ namespace Menge
 				, m_time(0.f)
 				, m_radius(0.f)
 				, m_penumbra(0.f)
+				, m_timing(0.f)
 			{
 			}
 
@@ -2653,29 +2654,52 @@ namespace Menge
 		protected:
 			bool affect( float _timing ) override
 			{
+				m_timing += _timing;
+
+				bool complete = false;
+				if( m_timing + _timing > m_time )
+				{
+					m_timing = m_time;
+					complete = true;
+				}
+
+				float a1 = m_timing / m_time;
+
+				float radius = m_radius * a1;
+
 				float width = m_grid->getWidth();
 				float height = m_grid->getHeight();
 
 				uint32_t countX = m_grid->getCountX();
 				uint32_t countY = m_grid->getCountY();
 
-				float pos_step_x = width / float(countX - 1);
-				float pos_step_y = height / float(countY - 1);
+				float pos_step_x = width / float(countX);
+				float pos_step_y = height / float(countY);
 
+				float pos_radius = (pos_step_x + pos_step_y) * 0.5f;
+				
 				for( uint32_t j = 0; j != countY; ++j )
 				{
 					for( uint32_t i = 0; i != countX; ++i )
 					{
 						mt::vec2f grid_pos(pos_step_x * i, pos_step_y * j);
 
-						if( mt::sqrlength_v2_v2( m_pos, grid_pos ) < m_radius * m_radius )
+						float pos_distance = mt::length_v2_v2( m_pos, grid_pos );
+
+						if( pos_distance < radius )
 						{
-							m_grid->setGridColor( i, j, ColourValue(0x00000000) );
-						}							
+							m_grid->setGridColor( i, j, ColourValue(0x00FFFFFF) );
+						}
+						else if( pos_distance < radius + pos_radius )
+						{
+							float a0 = (pos_distance - radius) / pos_radius;
+
+							m_grid->setGridColor( i, j, ColourValue(a0, 1.f, 1.f, 1.f) );
+						}
 					}
 				}
 
-				return true;
+				return complete;
 			}
 
 			void complete() override
@@ -2693,6 +2717,8 @@ namespace Menge
 			float m_time;
 			float m_radius;
 			float m_penumbra;
+
+			float m_timing;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPoolStore<AffectorGridBurnTransparency, 4> m_factoryAffectorGridBurnTransparency;

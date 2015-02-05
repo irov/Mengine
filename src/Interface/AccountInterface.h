@@ -34,9 +34,13 @@ namespace Menge
         virtual bool load() = 0;
         virtual bool save() = 0;
 
-    public:
-        virtual CacheBufferID loadBinaryFile( const ConstString & _filename, const void ** _data, size_t & _size ) = 0;
-        virtual bool writeBinaryFile( const ConstString & _filename, const void * _data, size_t _size ) = 0;
+	public:
+		virtual InputStreamInterfacePtr openReadBinaryFile( const FilePath & _fileName ) = 0;
+		virtual OutputStreamInterfacePtr openWriteBinaryFile( const FilePath & _fileName ) = 0;
+
+    public:		
+        virtual CacheBufferID loadBinaryFile( const ConstString & _filename, const void ** _data, size_t & _size ) = 0;        
+		virtual bool writeBinaryFile( const ConstString & _filename, const void * _data, size_t _size ) = 0;
     };
 
 	typedef stdex::intrusive_ptr<AccountInterface> AccountInterfacePtr;

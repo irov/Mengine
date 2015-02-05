@@ -935,7 +935,7 @@ namespace Menge
 			return name;
 		}
 
-		bool s_writeAccountBinaryFile( const WString & _fileName, PyObject * _data, PyObject * _pickleTypes )
+		bool s_writeAccountPickleFile( const WString & _fileName, PyObject * _data, PyObject * _pickleTypes )
 		{
             String utf8_fileName;
             if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
@@ -952,7 +952,7 @@ namespace Menge
 
 			if( currentAccount == nullptr )
 			{                
-				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid write file %ls (currentAccount is none)"
+				LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: invalid write file %ls (currentAccount is none)"
                     , _fileName.c_str()
 					);
 
@@ -972,19 +972,18 @@ namespace Menge
 			{
 				const WString & accountName = currentAccount->getName();
 
-				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: account %ls invalid pickle"
+				LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account %ls invalid pickle"
 					, accountName.c_str()
-					, _fileName.c_str()
 					);
 
 				return false;
 			}
-            
+
             if( currentAccount->writeBinaryFile( filepath, memory_buffer, memory_size ) == false )
             {
                 const WString & accountName = currentAccount->getName();
 
-                LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: account %ls invalid write file %ls"
+                LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account %ls invalid write file %ls"
                     , accountName.c_str()
                     , _fileName.c_str()
                     );
@@ -995,12 +994,12 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * s_loadAccountBinaryFile( const WString & _fileName, PyObject * _pickleTypes )
+		PyObject * s_loadAccountPickleFile( const WString & _fileName, PyObject * _pickleTypes )
 		{
             String utf8_fileName;
             if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("s_loadAccountBinaryFile: invalid convert filename %ls to utf8"
+                LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid convert filename %ls to utf8"
                     , _fileName.c_str()
                     );
 
@@ -1012,7 +1011,7 @@ namespace Menge
 
 			if( currentAccount == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountBinaryFile: invalid load file %ls (currentAccount is none)"
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (currentAccount is none)"
                     , _fileName.c_str()
 					);
 
@@ -1029,7 +1028,7 @@ namespace Menge
             {
                 const WString & accountName = currentAccount->getName();
 
-                LOGGER_ERROR(m_serviceProvider)("s_loadAccountBinaryFile: account %ls invalid load file %ls"
+                LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: account %ls invalid load file %ls"
                     , accountName.c_str()
                     , _fileName.c_str()
                     );
@@ -1046,8 +1045,240 @@ namespace Menge
 			{
 				const WString & accountName = currentAccount->getName();
 
-				LOGGER_ERROR(m_serviceProvider)("s_loadAccountBinaryFile: account %ls invalid unpickle file %ls"
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: account %ls invalid unpickle file %ls"
 					, accountName.c_str()
+					, _fileName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			return py_data;
+		}
+
+		bool s_writeAccountBinaryFile_Depricated( const WString & _fileName, const TBlobject & _data )
+		{
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+				->getCurrentAccount();
+
+			if( currentAccount == nullptr )
+			{                
+				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid get current account"
+					);
+
+				return false;
+			}
+
+			String utf8_fileName;
+			if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid file %ls convert to utf8"                    
+					, _fileName.c_str()
+					);
+
+				return false;                     
+			}
+
+			ConstString filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
+
+			OutputStreamInterfacePtr stream = currentAccount->openWriteBinaryFile( filename );
+			
+			if( stream == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid open file %ls"
+					, _fileName.c_str()
+					);
+
+				return false;
+			}
+
+			ArchivatorInterfacePtr archivator = ARCHIVE_SERVICE(m_serviceProvider)
+				->getArchivator( Helper::stringizeString(m_serviceProvider, "zip") );
+
+			if( archivator == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid get archivator 'zip'"
+					);
+
+				return false;
+			}
+
+			uint32_t data_size = _data.size();
+
+			MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
+				->compressBuffer( archivator, &_data[0], data_size );
+
+			if( compress_memory == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid compress file %ls"
+					, _fileName.c_str()
+					);
+
+				return false;
+			}
+
+			uint32_t compressSize;
+			const void * compressBuffer = compress_memory->getMemory( compressSize );
+
+			uint32_t value_crc32 = Helper::make_crc32( (const unsigned char *)compressBuffer, compressSize );
+
+			if( stream->write( &value_crc32, sizeof(value_crc32) ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid write 'crc32' %ls"
+					, _fileName.c_str()
+					);
+
+				return false;
+			}
+
+			if( stream->write( &data_size, sizeof(data_size) ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid write 'data size' %ls"
+					, _fileName.c_str()
+					);
+
+				return false;
+			}
+
+			if( stream->write( compressBuffer, compressSize ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_writeAccountBinaryFile: invalid write 'data' %ls"
+					, _fileName.c_str()
+					);
+
+				return false;
+			}
+
+			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * s_loadAccountBinaryFile_Depricated( const WString & _fileName )
+		{
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+				->getCurrentAccount();
+
+			if( currentAccount == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (currentAccount is none)"
+					, _fileName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			String utf8_fileName;
+			if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid convert filename %ls to utf8"
+					, _fileName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+			
+			ConstString filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
+
+			InputStreamInterfacePtr stream = currentAccount->openReadBinaryFile( filename );
+
+			if( stream == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid open file '%ls'"
+					, _fileName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			size_t file_size = stream->size();
+
+			uint32_t load_crc32 = 0;
+			if( stream->read( &load_crc32, sizeof(load_crc32) ) != sizeof(load_crc32) )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (load crc32)"
+					, _fileName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			uint32_t load_data_size = 0;
+			if( stream->read( &load_data_size, sizeof(load_data_size) ) != sizeof(load_data_size) )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (load data size)"
+					, _fileName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			size_t load_compress_size = file_size - sizeof(load_crc32) - sizeof(load_data_size);
+
+			TBlobject archive_blob;
+			archive_blob.resize( load_compress_size );
+
+			TBlobject::value_type * archive_blob_buffer = &archive_blob[0];
+			
+			if( stream->read( archive_blob_buffer, load_compress_size ) != load_compress_size )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (load data)"
+					, _fileName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			stream = nullptr;
+
+			size_t check_crc32 = Helper::make_crc32( &archive_blob[0], load_compress_size );
+
+			if( load_crc32 != check_crc32 )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (crc32 incorect)"
+					, _fileName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			ArchivatorInterfacePtr archivator = ARCHIVE_SERVICE(m_serviceProvider)
+				->getArchivator( Helper::stringizeString(m_serviceProvider, "zip") );
+
+			if( archivator == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid get archivator %s"
+					, "zip"
+					);
+
+				return pybind::ret_none();
+			}
+
+			TBlobject data_blob;
+			data_blob.resize( load_data_size );
+
+			size_t uncompress_size;
+			if( archivator->decompress( &data_blob[0], load_data_size, &archive_blob[0], load_compress_size, uncompress_size ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: file '%ls' invalid decompress"
+					, _fileName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			if( load_data_size != uncompress_size )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: file '%ls' invalid decompress size"
+					, _fileName.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_data = pybind::string_from_char_size( (const char *)&data_blob[0], load_data_size );
+
+			if( py_data == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: %ls invalid make python string"
 					, _fileName.c_str()
 					);
 
@@ -1235,9 +1466,12 @@ namespace Menge
 		pybind::def_functor( "hasDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_hasDefaultAccount );		
 		pybind::def_functor( "selectDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_selectDefaultAccount );		
 
-        pybind::def_functor( "writeUserBinaryFile", helperScriptMethod, &HelperScriptMethod::s_writeAccountBinaryFile );
-        pybind::def_functor( "loadUserBinaryFile", helperScriptMethod, &HelperScriptMethod::s_loadAccountBinaryFile );
+        pybind::def_functor( "writeAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_writeAccountPickleFile );
+        pybind::def_functor( "loadAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_loadAccountPickleFile );
 
+		pybind::def_functor( "writeAccountBinaryFile_Depricated", helperScriptMethod, &HelperScriptMethod::s_writeAccountBinaryFile_Depricated );
+		pybind::def_functor( "loadAccountBinaryFile_Depricated", helperScriptMethod, &HelperScriptMethod::s_loadAccountBinaryFile_Depricated );
+		
 
 		pybind::def_functor( "setParticlesEnabled", helperScriptMethod, &HelperScriptMethod::s_setParticlesEnabled );
 

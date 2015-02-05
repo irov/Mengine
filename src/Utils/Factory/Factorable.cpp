@@ -34,9 +34,7 @@ namespace Menge
         {
             MENGINE_THROW_EXCEPTION("m_destroy == true");
         }
-#   endif
 
-#   ifdef MENGINE_FACTORABLE_DEBUG
 		m_destroy = true;
 #   endif
 
@@ -44,6 +42,13 @@ namespace Menge
 
 #   ifdef MENGINE_FACTORABLE_DEBUG
 		this->_checkDestroy();
+#   endif
+		
+#   ifdef MENGINE_FACTORABLE_DEBUG
+		if( m_factory == nullptr )
+		{
+			MENGINE_THROW_EXCEPTION("m_factory == nullptr");
+		}
 #   endif
 
 		m_factory->destroyObject( this );

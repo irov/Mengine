@@ -88,6 +88,36 @@ namespace	Menge
 		return m_countY;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Grid2D::setGridColor( uint32_t _i, uint32_t _j, const ColourValue & _value )
+	{
+		if( _i >= m_countX || _j >= m_countY )
+		{
+			return false;
+		}
+
+		uint32_t index = _i + _j * m_countX;
+
+		m_vertices[index].color = _value.getAsARGB();
+
+		m_invalidateVerticesWM = true;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Grid2D::getGridColor( uint32_t _i, uint32_t _j, ColourValue & _value ) const
+	{
+		if( _i >= m_countX || _j >= m_countY )
+		{
+			return false;
+		}
+
+		uint32_t index = _i + _j * m_countX;
+
+		_value.setAsARGB( m_vertices[index].color );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Grid2D::_compile()
 	{
 		if( m_resourceImage == nullptr )
@@ -131,9 +161,9 @@ namespace	Menge
 		float pos_uv_x = 1.f / float(m_countX - 1);
 		float pos_uv_y = 1.f / float(m_countY - 1);
 
-		for( uint32_t i = 0; i != m_countX; ++i )
+		for( uint32_t j = 0; j != m_countY; ++j )
 		{
-			for( uint32_t j = 0; j != m_countY; ++j )
+			for( uint32_t i = 0; i != m_countX; ++i )
 			{
 				RenderVertex2D & vertex = *vertices_iterator++;
 
@@ -141,7 +171,7 @@ namespace	Menge
 				vertex.pos.y = pos_step_y * j;
 				vertex.pos.z = 0.f;
 
-				vertex.color = 0x00FFFFFF;
+				vertex.color = 0xFFFFFFFF;
 
 				vertex.uv.x = pos_uv_x * i;
 				vertex.uv.y = pos_uv_y * j;
@@ -154,9 +184,9 @@ namespace	Menge
 
 		TVectorRenderIndices2D::iterator indices_iterator = m_indices.begin();
 		
-		for( uint32_t i = 0; i != (m_countX - 1); ++i )
+		for( uint32_t j = 0; j != (m_countY - 1); ++j )
 		{
-			for( uint32_t j = 0; j != (m_countY - 1); ++j )
+			for( uint32_t i = 0; i != (m_countX - 1); ++i )
 			{
 				uint32_t i0 = (i + 0) + (j + 0) * m_countX;
 				uint32_t i1 = (i + 1) + (j + 0) * m_countX;
@@ -283,6 +313,10 @@ namespace	Menge
 			RenderVertex2D & vertex_w = *it_w;
 
 			mt::mul_v3_m4( vertex_w.pos, vertex.pos, wm );
+			
+			vertex_w.color = vertex.color;
+			vertex_w.uv = vertex.uv;
+			vertex_w.uv2 = vertex.uv2;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

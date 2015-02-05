@@ -14,14 +14,14 @@
 namespace Menge
 {
     class ServiceProviderInterface;
-
+	//////////////////////////////////////////////////////////////////////////
 	class AffectorCallback
 		: public Factorable
 	{
 	public:
 		virtual void onAffectorEnd( uint32_t _id, bool _isEnd ) = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class Affector
         : public stdex::intrusive_slug_linked<Affector>
         , public Factorable
@@ -31,7 +31,8 @@ namespace Menge
 		virtual ~Affector();
 
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type );
+        void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+		void setAffectorType( EAffectorType _type );
 
 	public:
 		void setId( uint32_t _id );
@@ -39,7 +40,6 @@ namespace Menge
 
 	public:
 		EAffectorType getType() const;
-		AffectorCallback * getCb() const;
 
 	public:
 		virtual bool prepare();
@@ -49,20 +49,34 @@ namespace Menge
         virtual void complete() = 0;
 		virtual void stop() = 0;
 
-	protected:
-		void end_( bool _isEnd );
-
     protected:
         ServiceProviderInterface * m_serviceProvider;
-		AffectorCallback * m_cb;
 
 		EAffectorType m_type;
 		uint32_t m_id;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	class CallbackAffector
+		: public Affector
+	{
+	public:
+		CallbackAffector();
+		~CallbackAffector();
+
+	public:
+		void setCallback( AffectorCallback * _cb );
+		AffectorCallback * getCallback() const;
+
+	protected:
+		void end_( bool _isEnd );
+
+	protected:
+		AffectorCallback * m_cb;
+	};
     //////////////////////////////////////////////////////////////////////////
 	template<class C, class M>
 	class MemeberAffector
-		: public Affector
+		: public CallbackAffector
 	{
 	public:
         MemeberAffector()
@@ -71,10 +85,8 @@ namespace Menge
 		{
 		}
 
-        void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type, C * _self, M _method )
-        {
-            Affector::initialize( _serviceProvider, _cb, _type );
-
+        void initialize( C * _self, M _method )
+        {			
             m_self = _self;
             m_method = _method;
         }
@@ -163,10 +175,9 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type, C * _self, M _method
-			, const T & _start, const T & _dir, float _speed, ABS _abs)
+		void initialize( C * _self, M _method, const T & _start, const T & _dir, float _speed, ABS _abs)
 		{
-            MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>::initialize( _serviceProvider, _cb, _type, _self, _method );
+            MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>::initialize( _self, _method );
 			MemberAffectorAccumulate<C,M,T,ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed, _abs );
 		}        
 	};
@@ -177,11 +188,9 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
-            , C * _self, M _method
-            , const T & _start, const T & _end, float _time, ABS _abs)
+		void initialize( C * _self, M _method, const T & _start, const T & _end, float _time, ABS _abs)
 		{
-            MemberAffectorInterpolate<C,M,T,ValueInterpolatorLinear>::initialize( _serviceProvider, _cb, _type, _self, _method );
+            MemberAffectorInterpolate<C,M,T,ValueInterpolatorLinear>::initialize( _self, _method );
 			MemberAffectorInterpolate<C,M,T,ValueInterpolatorLinear>::m_interpolator.start( _start, _end, _time, _abs );
 		}
 	};
@@ -192,11 +201,9 @@ namespace Menge
 	{
 	public:
 		template< typename ABS >
-		void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
-			, C * _self, M _method
-			, const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
+		void initialize( C * _self, M _method, const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		{
-            MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadratic>::initialize( _serviceProvider, _cb, _type, _self, _method );
+            MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadratic>::initialize( _self, _method );
 			MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadratic>::m_interpolator.start( _start, _end, _v0, _time, _abs );
 		}
 	};
@@ -207,12 +214,9 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
-			, C * _self, M _method
-			, const T & _start, const T & _end, const T & _v0
-			, float _time, ABS _abs)
+		void initialize( C * _self, M _method, const T & _start, const T & _end, const T & _v0, float _time, ABS _abs)
 		{
-            MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadraticBezier>::initialize( _serviceProvider, _cb, _type, _self, _method );
+            MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadraticBezier>::initialize( _self, _method );
 			MemberAffectorInterpolate<C,M,T,ValueInterpolatorQuadraticBezier>::m_interpolator.start( _start, _end, _v0, _time, _abs );
 		}
 	};
@@ -223,12 +227,9 @@ namespace Menge
 	{
 	public:
 		template<class ABS>
-		void initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
-			, C * _self, M _method
-			, const T & _start, const T & _end, const T & _v0, const T & _v1
-			, float _time, ABS _abs)
+		void initialize( C * _self, M _method, const T & _start, const T & _end, const T & _v0, const T & _v1, float _time, ABS _abs)
 		{
-            MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>::initialize( _serviceProvider, _cb, _type, _self, _method );
+            MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>::initialize( _self, _method );
 			MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>::m_interpolator.start( _start, _end, _v0, _v1, _time, _abs );
 		}
 	};
@@ -243,16 +244,18 @@ namespace Menge
 
         public:
             template<class ABS>
-            Affector * create( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
+            Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, AffectorCallback * _cb
                 , C * _self, M _method
                 , const T & _pos, const T & _dir, float _speed, ABS _abs )
             {
                 AffectorType * affector = m_factory.createObjectT();
 
-                affector->initialize(_serviceProvider, _cb, _type
-                    , _self, _method
-                    , _pos, _dir, _speed
-                    , _abs );
+				affector->setServiceProvider( _serviceProvider );
+				affector->setAffectorType( _type );
+
+				affector->setCallback( _cb );
+
+                affector->initialize( _self, _method, _pos, _dir, _speed, _abs );
 
                 return affector;
             }
@@ -269,16 +272,18 @@ namespace Menge
 
         public:
             template<class ABS>
-            Affector * create( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
+            Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, AffectorCallback * _cb
                 , C * _self, M _method
                 , const T & _start, const T & _end, float _time, ABS _abs )
             {
                 AffectorType * affector = m_factory.createObjectT();
 
-                affector->initialize(_serviceProvider, _cb, _type
-                    , _self, _method
-                    , _start, _end, _time
-                    , _abs );
+				affector->setServiceProvider( _serviceProvider );
+				affector->setAffectorType( _type );
+
+				affector->setCallback( _cb );
+
+                affector->initialize( _self, _method, _start, _end, _time, _abs );
 
                 return affector;
             }
@@ -296,16 +301,18 @@ namespace Menge
 
         public:
             template<class ABS>
-		    Affector * create( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
+		    Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, AffectorCallback * _cb
 			    , C * _self, M _method
 			    , const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		    {
                 AffectorType * affector = m_factory.createObjectT();
 
-                affector->initialize(_serviceProvider, _cb, _type
-                    , _self, _method
-                    , _start, _end, _v0, _time
-                    , _abs );
+				affector->setServiceProvider( _serviceProvider );
+				affector->setAffectorType( _type );
+
+				affector->setCallback( _cb );
+
+                affector->initialize( _self, _method, _start, _end, _v0, _time, _abs );
 
                 return affector;
 		    }
@@ -323,16 +330,18 @@ namespace Menge
 
         public:
             template<class ABS>
-		    Affector * create( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
+		    Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, AffectorCallback * _cb
 			    , C * _self, M _method
 			    , const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		    {
                 AffectorType * affector = m_factory.createObjectT();
 
-                affector->initialize(_serviceProvider, _cb, _type
-                    , _self, _method
-                    , _start, _end, _v0, _time
-                    , _abs );
+				affector->setServiceProvider( _serviceProvider );
+				affector->setAffectorType( _type );
+
+				affector->setCallback( _cb );
+
+                affector->initialize( _self, _method, _start, _end, _v0, _time, _abs );
 
                 return affector;
 		    }
@@ -350,16 +359,18 @@ namespace Menge
 
         public:
             template<class ABS>
-            Affector * create( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type
+            Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, AffectorCallback * _cb
                 , C * _self, M _method
                 , const T & _start, const T & _end, const T & _v0, const T & _v1, float _time, ABS _abs )
             {
                 AffectorType * affector = m_factory.createObjectT();
 
-                affector->initialize(_serviceProvider, _cb, _type
-                    , _self, _method
-                    , _start, _end, _v0, _v1, _time
-                    , _abs );
+				affector->setServiceProvider( _serviceProvider );
+				affector->setAffectorType( _type );
+
+				affector->setCallback( _cb );
+
+                affector->initialize( _self, _method, _start, _end, _v0, _v1, _time, _abs );
 
                 return affector;
             }

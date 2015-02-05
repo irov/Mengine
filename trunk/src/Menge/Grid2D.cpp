@@ -97,7 +97,9 @@ namespace	Menge
 
 		uint32_t index = _i + _j * m_countX;
 
-		m_vertices[index].color = _value.getAsARGB();
+		ARGB argb = _value.getAsARGB();
+
+		m_vertices[index].color = argb;
 
 		m_invalidateVerticesWM = true;
 
@@ -155,11 +157,11 @@ namespace	Menge
 
 		TVectorRenderVertex2D::iterator vertices_iterator = m_vertices.begin();
 
-		float pos_step_x = m_width / float(m_countX - 1);
-		float pos_step_y = m_height / float(m_countY - 1);
+		float pos_step_x = m_width / float(m_countX);
+		float pos_step_y = m_height / float(m_countY);
 
-		float pos_uv_x = 1.f / float(m_countX - 1);
-		float pos_uv_y = 1.f / float(m_countY - 1);
+		float pos_uv_x = 1.f / float(m_countX);
+		float pos_uv_y = 1.f / float(m_countY);
 
 		for( uint32_t j = 0; j != m_countY; ++j )
 		{

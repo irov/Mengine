@@ -44,6 +44,10 @@ namespace Menge
 		bool load() override;
 		bool save() override;
 
+	public:
+		InputStreamInterfacePtr openReadBinaryFile( const FilePath & _fileName ) override;
+		OutputStreamInterfacePtr openWriteBinaryFile( const FilePath & _fileName ) override;
+
     public:
         CacheBufferID loadBinaryFile( const ConstString & _fileName, const void ** _data, size_t & _size ) override;
         bool writeBinaryFile( const ConstString & _fileName, const void * _data, size_t _size ) override;

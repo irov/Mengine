@@ -502,7 +502,7 @@ namespace	Menge
 
 			Affector* affector = 
 				m_affectorCreatorMusic.create( m_serviceProvider
-				, callback, ETA_POSITION, this, &SoundScriptMethod::___musicFade
+				, ETA_POSITION, callback, this, &SoundScriptMethod::___musicFade
 				, 1.f, 0.f, _time
 				, &fabsf
 				);
@@ -521,7 +521,7 @@ namespace	Menge
 
 			Affector* affector = 
 				m_affectorCreatorMusic.create( m_serviceProvider
-				, callback, ETA_POSITION, this, &SoundScriptMethod::___musicFade
+				, ETA_POSITION, callback, this, &SoundScriptMethod::___musicFade
 				, 0.f, 1.f, _time
 				, &fabsf
 				);

@@ -40,6 +40,9 @@ namespace Menge
 		void setCountY( uint32_t _count );
 		uint32_t getCountY() const;
 
+		bool setGridColor( uint32_t _i, uint32_t _j, const ColourValue & _value );
+		bool getGridColor( uint32_t _i, uint32_t _j, ColourValue & _value ) const;
+
 	protected:
 		bool _compile() override;
 		void _release() override;

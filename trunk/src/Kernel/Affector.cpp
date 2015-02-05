@@ -9,7 +9,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Affector::Affector()
 		: m_serviceProvider(nullptr)
-        , m_cb(nullptr)
 		, m_type(ETA_POSITION)	
         , m_id(0)
 	{
@@ -19,10 +18,13 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Affector::initialize( ServiceProviderInterface * _serviceProvider, AffectorCallback * _cb, EAffectorType _type )
+    void Affector::setServiceProvider( ServiceProviderInterface * _serviceProvider )		
     {
         m_serviceProvider = _serviceProvider;
-        m_cb = _cb;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Affector::setAffectorType( EAffectorType _type )
+	{
         m_type = _type;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -41,18 +43,34 @@ namespace Menge
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AffectorCallback * Affector::getCb() const
-	{
-		return m_cb;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Affector::prepare()
 	{
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::end_( bool _isEnd )
+	CallbackAffector::CallbackAffector()
+		: m_cb(nullptr)
 	{
-		m_cb->onAffectorEnd( m_id, _isEnd );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	CallbackAffector::~CallbackAffector()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void CallbackAffector::setCallback( AffectorCallback * _cb )
+	{
+		m_cb = _cb;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	AffectorCallback * CallbackAffector::getCallback() const
+	{
+		return m_cb;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void CallbackAffector::end_( bool _isEnd )
+	{
+		uint32_t id = this->getId();
+
+		m_cb->onAffectorEnd( id, _isEnd );
 	}
 }	// namespace Menge

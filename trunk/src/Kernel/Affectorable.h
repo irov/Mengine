@@ -10,14 +10,16 @@
 
 namespace Menge
 {
+	typedef uint32_t AFFECTOR_ID;
+
 	class Affectorable
 	{
 	public:
 		Affectorable();
 
 	public:
-		uint32_t addAffector( Affector * _affector );
-		void stopAffector( uint32_t _id );
+		AFFECTOR_ID addAffector( Affector * _affector );
+		void stopAffector( AFFECTOR_ID _id );
 
 	public:
 		void stopAffectors( EAffectorType _type );

@@ -20,6 +20,10 @@ namespace Menge
 		const Polygon & getPolygon() const;
     
 	public:
+		void setGlobal( bool _value );
+		bool getGlobal() const;
+
+	public:
 		bool testPoint( const mt::vec2f & _point ) const override;
 		bool testRadius( const mt::vec2f & _point, float _radius ) const override;
 		bool testPolygon( const mt::vec2f & _point, const Polygon & _polygon ) const override;
@@ -47,6 +51,8 @@ namespace Menge
 		Polygon m_polygon;
 		mutable Polygon m_polygonWM;
 		mutable Polygon m_polygonTemp;
+
+		bool m_global;
 
 		mutable bool m_invalidatePolygonWM;
 	};

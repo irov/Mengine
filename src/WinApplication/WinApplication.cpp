@@ -1849,10 +1849,10 @@ namespace Menge
 			, mem_st.dwAvailPageFile / 1024L 
 			);
 
-		m_cursors[L"IDC_ARROW"] = LoadCursor( NULL, IDC_ARROW );
-		m_cursors[L"IDC_UPARROW"] = LoadCursor( NULL, IDC_UPARROW );
-		m_cursors[L"IDC_HAND"] = LoadCursor( NULL, IDC_HAND );
-		m_cursors[L"IDC_HELP"] = LoadCursor( NULL, IDC_HELP );
+		m_cursors[STRINGIZE_STRING_LOCAL(m_serviceProvider, "IDC_ARROW")] = LoadCursor( NULL, IDC_ARROW );
+		m_cursors[STRINGIZE_STRING_LOCAL(m_serviceProvider, "IDC_UPARROW")] = LoadCursor( NULL, IDC_UPARROW );
+		m_cursors[STRINGIZE_STRING_LOCAL(m_serviceProvider, "IDC_HAND")] = LoadCursor( NULL, IDC_HAND );
+		m_cursors[STRINGIZE_STRING_LOCAL(m_serviceProvider, "IDC_HELP")] = LoadCursor( NULL, IDC_HELP );
 
 		FilePath accountPath = STRINGIZE_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
 		
@@ -3270,74 +3270,90 @@ namespace Menge
 		//::ClipCursor( NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyCursorIconSetup( const ConstString & _name, void * _buffer, size_t _size )
+	bool WinApplication::notifyCursorIconSetup( const ConstString & _name, void * _buffer, size_t _size )
 	{
-		WString unicode_name;        
-		if( Helper::utf8ToUnicode( m_serviceProvider, _name, unicode_name ) == false )
-		{
-			return;
-		}
-
-		TMapCursors::iterator it_found = m_cursors.find( unicode_name );
+		TMapCursors::iterator it_found = m_cursors.find( _name );
 
 		if( it_found == m_cursors.end() )
 		{
-			WString icoDir;
+			FileGroupInterfacePtr userGroup = m_fileService->getFileGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user") );
 
-			icoDir += m_userPath;
-			icoDir += L"IconCache";
-
-			m_windowsLayer->createDirectory( icoDir.c_str() );
-
-			WString icoFile;
-
-			icoFile += icoDir;
-			icoFile += MENGE_FOLDER_DELIM;
-			icoFile += unicode_name;
-
-			WString::size_type pos1 = icoFile.find_last_of( L'/' );
-			WString::size_type pos2 = icoFile.find_last_of( L'\\' );
-
-			WString::size_type pos = (std::max)(pos1, pos2);
-
-			WString icoDir2 = icoFile.substr( 0, pos );
-
-			m_windowsLayer->createDirectory( icoDir2.c_str() );
-
-			FILE * file = _wfopen( icoFile.c_str(), L"wb" );
-
-			if( file == nullptr )
+			if( userGroup->createDirectory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "IconCache") ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup can't create cursor cach file %ls"
-					, icoFile.c_str()
+				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s can't create directory 'IconCache'"
+					, _name.c_str()
 					);
-
-				return;
+				
+				return false;
 			}
 
-			fwrite( _buffer, _size, 1, file );
-			fclose( file );
+			OutputStreamInterfacePtr stream = userGroup->createOutputFile();
 
-			//HCURSOR cursor = LoadCursorFromFile( _fileName.c_str() );
-			HCURSOR cursor = ::LoadCursorFromFile( icoFile.c_str() );
+			if( stream == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s can't create output stream"
+					, _name.c_str()
+					);
+
+				return false;
+			}
+
+			PathString icoFile;
+			icoFile += "IconCache";
+			icoFile += MENGE_FOLDER_DELIM;
+			icoFile += _name;
+
+			ConstString c_icoFile = Helper::stringizeString( m_serviceProvider, icoFile );
+
+			if( userGroup->openOutputFile( c_icoFile, stream ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s can't open output stream '%s'"
+					, _name.c_str()
+					, c_icoFile.c_str()
+					);
+
+				return false;
+			}
+
+			if( stream->write( _buffer, _size ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s can't write output stream '%s'"
+					, _name.c_str()
+					, c_icoFile.c_str()
+					);
+
+				return false;
+			}
+
+			WString unicode_icoFile;        
+			if( Helper::utf8ToUnicode( m_serviceProvider, c_icoFile, unicode_icoFile ) == false )
+			{
+				return false;
+			}
+			
+			HCURSOR cursor = ::LoadCursorFromFileW( unicode_icoFile.c_str() );
 
 			DWORD errCode = ::GetLastError();
 
 			if( errCode != 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup errCode %d"
+				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s for file %ls errCode %d"
+					, _name.c_str()
+					, unicode_icoFile.c_str()
 					, errCode 
 					);
 
-				return;
+				return false;
 			}
 
-			it_found = m_cursors.insert( std::make_pair( unicode_name, cursor ) ).first;
+			it_found = m_cursors.insert( std::make_pair( _name, cursor ) ).first;
 		}
 
 		m_cursor = it_found->second;
 
 		::SetCursor( m_cursor );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	unsigned int WinApplication::translateVirtualKey_( unsigned int _vkc, unsigned int _vk )

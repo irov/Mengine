@@ -120,11 +120,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::testPoint( const mt::vec2f & _point ) const
 	{
-		if( m_global == true )
-		{
-			return !m_outward;
-		}
-
 		const mt::box2f & bb = this->getBoundingBox();
 
 		if( mt::is_intersect( bb, _point ) == false )
@@ -147,11 +142,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::testRadius( const mt::vec2f & _point, float _radius ) const
 	{
-		if( m_global == true )
-		{
-			return !m_outward;
-		}
-
 		const mt::box2f & bb = this->getBoundingBox();
 
 		if( mt::is_intersect( bb, _point, _radius ) == false )
@@ -174,11 +164,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotImage::testPolygon( const mt::vec2f & _point, const Polygon & _polygon ) const
 	{
-		if( m_global == true )
-		{
-			return !m_outward;
-		}
-
 		if( polygon_empty( _polygon ) == true )
 		{
 			return m_outward;

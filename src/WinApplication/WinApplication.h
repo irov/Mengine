@@ -87,7 +87,7 @@ namespace Menge
 		void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
 		void notifyVsyncChanged( bool _vsync ) override;
 		void notifyCursorModeChanged( bool _mode ) override;
-		void notifyCursorIconSetup( const ConstString & _name, void * _buffer, size_t _size ) override;
+		bool notifyCursorIconSetup( const ConstString & _name, void * _buffer, size_t _size ) override;
 
 		void notifyCursorClipping( const Viewport & _viewport ) override;
 		void notifyCursorUnClipping() override;
@@ -181,7 +181,7 @@ namespace Menge
 
 		WinMouseEvent m_mouseEvent;
 
-		typedef stdex::map<WString, HCURSOR> TMapCursors;
+		typedef stdex::map<ConstString, HCURSOR> TMapCursors;
 		TMapCursors m_cursors;
 
 		WString m_windowClassName;

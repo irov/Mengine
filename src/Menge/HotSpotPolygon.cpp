@@ -25,7 +25,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotPolygon::HotSpotPolygon()
-		: m_invalidatePolygonWM(true)
+		: m_global(false)
+		, m_invalidatePolygonWM(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -53,6 +54,16 @@ namespace Menge
 		m_polygon.clear();
 
 		this->invalidateBoundingBox();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpotPolygon::setGlobal( bool _value )
+	{
+		m_global = _value;		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpotPolygon::getGlobal() const
+	{
+		return m_global;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotPolygon::_invalidateWorldMatrix()
@@ -132,15 +143,16 @@ namespace Menge
 
 		GeometryPoint p(_point.x, _point.y);
 
-		bool intersect = boost::geometry::intersects( polygonWM, p );
+		if( boost::geometry::intersects( polygonWM, p ) == false )
+		{
+			return m_outward;
+		}
 
-		return intersect != m_outward;
+		return !m_outward;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotPolygon::testRadius( const mt::vec2f & _point, float _radius ) const
 	{
-		return HotSpotPolygon::testPoint( _point );
-
 		if( m_global == true )
 		{
 			return !m_outward;
@@ -163,9 +175,12 @@ namespace Menge
 		GeometryPoint p(_point.x, _point.y);
 
 		//TODO: check polygon and circle
-		bool intersect = boost::geometry::intersects( polygonWM, p );
+		if( boost::geometry::intersects( polygonWM, p ) == false )
+		{
+			return m_outward;
+		}
 
-		return intersect != m_outward;
+		return !m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotPolygon::testPolygon( const mt::vec2f & _point, const Polygon & _polygon ) const
@@ -202,9 +217,12 @@ namespace Menge
 
 		const Polygon & polygonWM = this->getPolygonWM();
 
-		bool intersect = boost::geometry::intersects( polygonWM, m_polygonTemp );
+		if( boost::geometry::intersects( polygonWM, m_polygonTemp ) == false )
+		{
+			return m_outward;
+		}
 
-		return intersect != m_outward;
+		return !m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotPolygon::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )

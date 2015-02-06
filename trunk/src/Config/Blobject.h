@@ -6,5 +6,5 @@
 
 namespace Menge
 {
-    typedef stdex::vector<uint8_t> TBlobject;
+    typedef stdex::vector<uint8_t> Blobject;
 }

@@ -64,7 +64,7 @@ namespace Menge
             ->openInputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false );
 		
 		CacheMemoryStream data_buffer(m_serviceProvider, input, "ParticleConverterPTCToPTZ_data");
-		const TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
+		const Blobject::value_type * data_memory = data_buffer.getMemoryT<Blobject::value_type>();
 		size_t data_size = data_buffer.getSize();
 
 		if( data_memory == nullptr )

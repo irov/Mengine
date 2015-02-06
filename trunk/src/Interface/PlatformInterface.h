@@ -2,6 +2,7 @@
 
 #	include "Config/Typedef.h"
 #   include "Config/String.h"
+#   include "Config/Blobject.h"
 
 #	include "Core/ConstString.h"
 #   include "Core/FilePath.h"
@@ -68,7 +69,7 @@ namespace Menge
         virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
         virtual void notifyVsyncChanged( bool _vsync ) = 0;
         virtual void notifyCursorModeChanged( bool _mode ) = 0;
-        virtual bool notifyCursorIconSetup( const ConstString & _name, void * _buffer, size_t _size ) = 0;
+        virtual bool notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const Blobject & _buffer ) = 0;
 
         virtual void notifyCursorClipping( const Viewport & _viewport ) = 0;
         virtual void notifyCursorUnClipping() = 0;

@@ -13,8 +13,6 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceCursorICO );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceCursorICO::ResourceCursorICO()
-		: m_buffer(nullptr)
-		, m_bufferSize(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -35,26 +33,29 @@ namespace Menge
 		InputStreamInterfacePtr fileStream = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( category, m_path, false );
 
-		if( fileStream == 0 )
+		if( fileStream == nullptr )
 		{
 			return false;
 		}
 
-		m_bufferSize = fileStream->size();
+		size_t buffer_size = fileStream->size();
 
-		m_buffer = Helper::allocateMemory<char>( m_bufferSize );
+		if( buffer_size == 0 )
+		{
+			return false;
+		}
 
-		fileStream->read( m_buffer, m_bufferSize );
+		m_buffer.resize( buffer_size );
+
+		fileStream->read( &m_buffer[0], buffer_size );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceCursorICO::_release()
 	{
-		Helper::freeMemory( m_buffer );
-		m_buffer = nullptr;
-
-		m_bufferSize = 0;
+		Blobject buffer_deleter;
+		m_buffer.swap( buffer_deleter );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath & ResourceCursorICO::getPath() const
@@ -62,10 +63,8 @@ namespace Menge
 		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * ResourceCursorICO::getBuffer( size_t & _size ) const
+	const Blobject & ResourceCursorICO::getBuffer() const
 	{
-		_size = m_bufferSize;
-
 		return m_buffer;
 	}
 }

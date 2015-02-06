@@ -1056,7 +1056,7 @@ namespace Menge
 			return py_data;
 		}
 
-		bool s_writeAccountBinaryFile_deprecated( const WString & _fileName, const TBlobject & _data )
+		bool s_writeAccountBinaryFile_deprecated( const WString & _fileName, const Blobject & _data )
 		{
 			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
@@ -1213,10 +1213,10 @@ namespace Menge
 
 			size_t load_compress_size = file_size - sizeof(load_crc32) - sizeof(load_data_size);
 
-			TBlobject archive_blob;
+			Blobject archive_blob;
 			archive_blob.resize( load_compress_size );
 
-			TBlobject::value_type * archive_blob_buffer = &archive_blob[0];
+			Blobject::value_type * archive_blob_buffer = &archive_blob[0];
 			
 			if( stream->read( archive_blob_buffer, load_compress_size ) != load_compress_size )
 			{
@@ -1252,7 +1252,7 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			TBlobject data_blob;
+			Blobject data_blob;
 			data_blob.resize( load_data_size );
 
 			size_t uncompress_size;

@@ -202,4 +202,70 @@ namespace Menge
 
 		mt::set_box_from_min_max( _boundingBox, minimal_wm, maximal_wm );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpotImage::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
+	{
+		(void)_viewport;
+		(void)_camera;
+		(void)_debugMask;
+
+		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
+		{
+			return;
+		}
+
+		if( m_debugColor == 0x00000000 )
+		{
+			return;
+		}
+
+		const mt::box2f & box = this->getBoundingBox();
+
+		RenderVertex2D * vertexPointBox = RENDER_SERVICE(m_serviceProvider)
+			->getDebugRenderVertex2D( 4 * 2 );
+
+		float debugWidth = 5.f;
+
+		vertexPointBox[0].pos.x = box.minimum.x;
+		vertexPointBox[0].pos.y = box.minimum.y;
+
+		vertexPointBox[1].pos.x = box.maximum.x;
+		vertexPointBox[1].pos.y = box.minimum.y;
+
+		vertexPointBox[2].pos.x = box.maximum.x;
+		vertexPointBox[2].pos.y = box.minimum.y;
+
+		vertexPointBox[3].pos.x = box.maximum.x;
+		vertexPointBox[3].pos.y = box.maximum.y;
+
+		vertexPointBox[4].pos.x = box.maximum.x;
+		vertexPointBox[4].pos.y = box.maximum.y;
+
+		vertexPointBox[5].pos.x = box.minimum.x;
+		vertexPointBox[5].pos.y = box.maximum.y;
+
+		vertexPointBox[6].pos.x = box.minimum.x;
+		vertexPointBox[6].pos.y = box.maximum.y;
+
+		vertexPointBox[7].pos.x = box.minimum.x;
+		vertexPointBox[7].pos.y = box.minimum.y;
+
+
+		for( uint32_t i = 0; i != 8; ++i )
+		{
+			vertexPointBox[i].pos.z = 0.f;
+
+			vertexPointBox[i].color = m_debugColor;
+			vertexPointBox[i].uv.x = 0.f;
+			vertexPointBox[i].uv.y = 0.f;
+			vertexPointBox[i].uv2.x = 0.f;
+			vertexPointBox[i].uv2.y = 0.f;
+		}
+
+		const RenderMaterialInterfacePtr & debugMaterial = RENDER_SERVICE(m_serviceProvider)
+			->getDebugMaterial();
+
+		RENDER_SERVICE(m_serviceProvider)
+			->addRenderLine( _viewport, _camera, debugMaterial, vertexPointBox, 8, nullptr );
+	}
 }	// namespace Menge

@@ -27,10 +27,8 @@ namespace Menge
 		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * ResourceCursorSystem::getBuffer( size_t & _size ) const
-	{
-		_size = 0;
-
-		return nullptr;
+	const Blobject & ResourceCursorSystem::getBuffer() const
+	{		
+		return m_buffer;
 	}
 }

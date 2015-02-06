@@ -148,7 +148,7 @@ namespace Menge
 
 		size_t protocol_size = protocol_stream->size();
 
-		TBlobject protocol_buf;
+		Blobject protocol_buf;
 		protocol_buf.resize( protocol_size );
 
         protocol_stream->read( &protocol_buf[0], protocol_size );
@@ -189,7 +189,7 @@ namespace Menge
             return 0;
         }
 
-        TBlobject xml_buf;
+        Blobject xml_buf;
 		xml_buf.resize( xml_size );
 
         xml_stream->read( &xml_buf[0], xml_size );
@@ -208,7 +208,7 @@ namespace Menge
         xml_metabuf.addSerializator( "wchar_t", &s_write_wchar_t, (void*)m_serviceProvider );
         xml_metabuf.addSerializator( "utf8", &s_write_utf8, (void*)m_serviceProvider );
 		
-        TBlobject header_buf;
+        Blobject header_buf;
 		header_buf.resize( Metabuf::header_size );
 
         size_t header_size;
@@ -222,7 +222,7 @@ namespace Menge
             return 0;
         }
 
-        TBlobject bin_buf;
+        Blobject bin_buf;
 		bin_buf.resize( xml_size * 2 );
 
         uint32_t bin_size;

@@ -32,6 +32,9 @@ namespace Menge
 	protected:
 		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 
+	protected:
+		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
+
     protected:
 		bool _compile() override;
 		void _release() override;

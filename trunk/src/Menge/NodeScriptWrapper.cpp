@@ -1893,7 +1893,7 @@ namespace Menge
 			size_t size = stream->size();
 
 			CacheMemoryBuffer binary_buffer(m_serviceProvider, size + 1, "parseXml");
-			TBlobject::value_type * memory = binary_buffer.getMemoryT<TBlobject::value_type>();
+			Blobject::value_type * memory = binary_buffer.getMemoryT<Blobject::value_type>();
 
 			stream->read( memory, size );
 			memory[size] = 0;
@@ -2396,7 +2396,7 @@ namespace Menge
 			return correct_polygon;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool s_copyFile_( const ConstString & _resourceFileName, TBlobject & _blob )
+		bool s_copyFile_( const ConstString & _resourceFileName, Blobject & _blob )
 		{
 			ResourceFile * resourceFile =  RESOURCE_SERVICE(m_serviceProvider)
 				->getResourceT<ResourceFile>( _resourceFileName );
@@ -2434,7 +2434,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_copyUserPicture( const ConstString & _resourceFileName, const String & _fileName )
 		{
-			TBlobject blob;
+			Blobject blob;
 			if( this->s_copyFile_( _resourceFileName, blob ) == false )
 			{
 				return false;
@@ -2460,7 +2460,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_copyUserMusic( const ConstString & _resourceFileName, const String & _fileName )
 		{
-			TBlobject blob;
+			Blobject blob;
 			if( this->s_copyFile_( _resourceFileName, blob ) == false )
 			{
 				return false;
@@ -4604,9 +4604,9 @@ namespace Menge
     }
 
     struct extract_TBlobject_type
-        : public pybind::type_cast_result<TBlobject>
+        : public pybind::type_cast_result<Blobject>
     {
-        bool apply( PyObject * _obj, TBlobject & _value ) override
+        bool apply( PyObject * _obj, Blobject & _value ) override
         {
             if( pybind::string_check( _obj ) == true )
             {
@@ -4628,7 +4628,7 @@ namespace Menge
             return true;
         }
 
-        PyObject * wrap( pybind::type_cast_result<TBlobject>::TCastRef _value ) override
+        PyObject * wrap( pybind::type_cast_result<Blobject>::TCastRef _value ) override
         {
             PyObject * py_value = pybind::string_from_char_size( reinterpret_cast<const char *>(&_value[0]), _value.size() );
 
@@ -4642,7 +4642,7 @@ namespace Menge
     {        
         NodeScriptMethod * nodeScriptMethod = new NodeScriptMethod(_serviceProvider);
         
-        pybind::registration_type_cast<TBlobject>( new extract_TBlobject_type );
+        pybind::registration_type_cast<Blobject>( new extract_TBlobject_type );
 
 		pybind::registration_stl_vector_type_cast<ResourceImage *, stdex::vector<ResourceImage *> >();
 		pybind::registration_stl_vector_type_cast<HotSpotPolygon *, stdex::vector<HotSpotPolygon *> >();

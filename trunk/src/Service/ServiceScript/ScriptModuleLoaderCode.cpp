@@ -102,7 +102,7 @@ namespace Menge
         _stream->read( &compress_size, sizeof(compress_size) );
 		
 		CacheMemoryBuffer code_buffer(m_serviceProvider, code_size, "unmarshal_code_buffer");
-		TBlobject::value_type * code_memory = code_buffer.getMemoryT<TBlobject::value_type>();
+		Blobject::value_type * code_memory = code_buffer.getMemoryT<Blobject::value_type>();
 
         size_t uncompress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)

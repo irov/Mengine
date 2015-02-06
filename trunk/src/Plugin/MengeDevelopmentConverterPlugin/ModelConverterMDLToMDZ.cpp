@@ -68,7 +68,7 @@ namespace Menge
         size_t uncompressSize = input->size();
 
 		CacheMemoryStream data_buffer(m_serviceProvider, input, "ModelConverterMDLToMDZ_data");
-		const TBlobject::value_type * data_memory = data_buffer.getMemoryT<TBlobject::value_type>();
+		const Blobject::value_type * data_memory = data_buffer.getMemoryT<Blobject::value_type>();
 		
 		OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
 			->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );

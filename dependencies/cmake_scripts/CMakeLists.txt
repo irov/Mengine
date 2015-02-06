@@ -81,7 +81,7 @@ if(WIN32)
     #ADD_SUBDIRECTORY( Python_2_7_5 )
     #ADD_SUBDIRECTORY( Python_2_7_6 )
     #ADD_SUBDIRECTORY( Python_2_7_7 )
-    ADD_SUBDIRECTORY( Python_2_7_8 )
+    ADD_SUBDIRECTORY( Python_2_7_9 )
 endif(WIN32)
 
 if(APPLE)

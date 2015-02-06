@@ -63,6 +63,7 @@
 #	include "Model3D.h"
 #	include "HotSpot.h"
 #	include "HotSpotPolygon.h"
+#	include "HotSpotBubbles.h"
 #	include "HotSpotImage.h"
 #   include "HotSpotShape.h"
 #	include "Landscape2D.h"
@@ -4540,6 +4541,7 @@ namespace Menge
         //SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DPhysic );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpot );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotPolygon );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotBubbles );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotImage );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotShape );
 
@@ -5223,18 +5225,18 @@ namespace Menge
                     .def( "testPoint", &HotSpot::testPoint )
 					.def( "setOutward", &HotSpot::setOutward )
 					.def( "getOutward", &HotSpot::getOutward )
-					.def( "setGlobal", &HotSpot::setGlobal )
-					.def( "getGlobal", &HotSpot::getGlobal )
                     .def( "setDefaultHandle", &HotSpot::setDefaultHandle )
                     .def( "getDefaultHandle", &HotSpot::getDefaultHandle )
 					.def( "isMousePickerOver", &HotSpot::isMousePickerOver )
                     ;
 
-				pybind::interface_<HotSpotPolygon, pybind::bases<HotSpot> >("HotSpotPolygon", false)
-					.def( "clearPoints", &HotSpotPolygon::clearPoints )
+				pybind::interface_<HotSpotPolygon, pybind::bases<HotSpot> >("HotSpotPolygon", false)					
 					.def( "setPolygon", &HotSpotPolygon::setPolygon )
 					.def( "getPolygon", &HotSpotPolygon::getPolygon )					
 					.def( "getPolygonWM", &HotSpotPolygon::getPolygonWM )
+					.def( "clearPoints", &HotSpotPolygon::clearPoints )
+					.def( "setGlobal", &HotSpotPolygon::setGlobal )
+					.def( "getGlobal", &HotSpotPolygon::getGlobal )
 					.def_proxy_static( "getLocalPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalPolygonCenter )
 					.def_proxy_static( "getWorldPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldPolygonCenter )
 					.def_proxy_static( "getWorldPolygon", nodeScriptMethod, &NodeScriptMethod::s_getWorldPolygon )
@@ -5253,6 +5255,10 @@ namespace Menge
                     .def( "getWidth", &HotSpotImage::getWidth )
                     .def( "getHeight", &HotSpotImage::getHeight )
                     ;
+
+				pybind::interface_<HotSpotBubbles, pybind::bases<HotSpot> >("HotSpotBubbles", false)
+					.def( "addBubble", &HotSpotBubbles::addBubble )
+					;
 
 				pybind::interface_<Shape, pybind::bases<Node> >("Shape", false)
 					.def( "setCenterAlign", &Shape::setCenterAlign )

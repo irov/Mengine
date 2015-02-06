@@ -25,10 +25,6 @@ namespace Menge
 		bool getOutward() const;
 
 	public:
-		void setGlobal( bool _value );
-		bool getGlobal() const;
-
-	public:
 		bool isMousePickerOver() const;
 
 	public:
@@ -83,8 +79,7 @@ namespace Menge
 	protected:        
 		uint32_t m_debugColor;
 
-		bool m_outward;
-		bool m_global;
+		bool m_outward;		
 
 	protected:
 		PickerTrapState * m_picker;

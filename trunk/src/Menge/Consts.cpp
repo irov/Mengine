@@ -46,6 +46,7 @@ namespace Menge
 		INIT_CONST( Layer2DParallax );
 		INIT_CONST( Layer2DIsometric );
 		INIT_CONST( HotSpotPolygon );
+		INIT_CONST( HotSpotBubbles );
         INIT_CONST( HotSpotImage );
         INIT_CONST( HotSpotShape );
         INIT_CONST( Point );

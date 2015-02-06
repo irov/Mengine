@@ -195,9 +195,7 @@ namespace Menge
 		
 		PathRemoveBackslash( pathCorrect );
 
-		BOOL isDir = PathIsDirectoryW( pathCorrect );
-
-		if( isDir == TRUE )
+		if( PathIsDirectoryW( pathCorrect ) == FILE_ATTRIBUTE_DIRECTORY )
 		{
 			return true;
 		}
@@ -213,9 +211,7 @@ namespace Menge
 				break;
 			}
 
-			BOOL isDir = PathIsDirectoryW( pathCorrect );
-
-			if( isDir == FILE_ATTRIBUTE_DIRECTORY )
+			if( PathIsDirectoryW( pathCorrect ) == FILE_ATTRIBUTE_DIRECTORY )
 			{
 				break;
 			}

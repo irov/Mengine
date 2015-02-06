@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "HotSpot.h"
+#	include "HotSpotPolygon.h"
 
 #   include "ResourceShape.h"
 
 namespace Menge
 {
     class HotSpotShape
-        : public HotSpot
+        : public HotSpotPolygon
     {
     public:
         HotSpotShape();

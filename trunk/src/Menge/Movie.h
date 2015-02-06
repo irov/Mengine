@@ -18,7 +18,6 @@ namespace Menge
     class MovieInternalObject;
 
 	class Movie;
-    class HotSpot;
 
 	struct MovieLayer;
 	struct MovieFrameSource;    

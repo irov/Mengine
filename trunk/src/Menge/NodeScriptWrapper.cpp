@@ -62,6 +62,7 @@
 #	include "Animation.h"
 #	include "Model3D.h"
 #	include "HotSpot.h"
+#	include "HotSpotPolygon.h"
 #	include "HotSpotImage.h"
 #   include "HotSpotShape.h"
 #	include "Landscape2D.h"
@@ -811,7 +812,7 @@ namespace Menge
 			return successful;
 		}
         //////////////////////////////////////////////////////////////////////////
-        mt::vec2f s_getLocalPolygonCenter( HotSpot * _hs )
+        mt::vec2f s_getLocalPolygonCenter( HotSpotPolygon * _hs )
         {
             mt::vec2f pc(0.f, 0.f);
 
@@ -843,7 +844,7 @@ namespace Menge
             return pc;
         }
         //////////////////////////////////////////////////////////////////////////
-        mt::vec2f s_getWorldPolygonCenter( HotSpot * _hs )
+        mt::vec2f s_getWorldPolygonCenter( HotSpotPolygon * _hs )
         {
             mt::vec2f pc = s_getLocalPolygonCenter( _hs );
 
@@ -855,7 +856,7 @@ namespace Menge
             return world_pc;
         }
         //////////////////////////////////////////////////////////////////////////
-        Polygon s_getWorldPolygon( HotSpot * _hs )
+        Polygon s_getWorldPolygon( HotSpotPolygon * _hs )
         {
             const Polygon & polygon = _hs->getPolygon();
 
@@ -877,7 +878,7 @@ namespace Menge
             return polygon;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_testHotspot( HotSpot * _left, HotSpot * _right )
+        bool s_testHotspot( HotSpotPolygon * _left, HotSpotPolygon * _right )
         {
             const Polygon & left_poligon = _left->getPolygon();
             const mt::mat4f & left_wm = _left->getWorldMatrix();
@@ -2361,22 +2362,22 @@ namespace Menge
 			return 0;
 		}		
 		//////////////////////////////////////////////////////////////////////////
-		typedef stdex::vector<HotSpot *> TVectorHotSpot;
+		typedef stdex::vector<HotSpotPolygon *> TVectorHotSpotPolygon;
 		//////////////////////////////////////////////////////////////////////////
-		Polygon s_hotspotCorrect( HotSpot * _base, const TVectorHotSpot & _overlap )
+		Polygon s_hotspotCorrect( HotSpotPolygon * _base, const TVectorHotSpotPolygon & _overlap )
 		{
 			(void)_base;
 			//const Polygon & base_polygon = _base->getPolygon();
 
 			Polygon correct_polygon;
 
-			for( TVectorHotSpot::const_iterator
+			for( TVectorHotSpotPolygon::const_iterator
 				it = _overlap.begin(),
 				it_end = _overlap.end();
 			it != it_end;
 			++it )
 			{
-				const HotSpot * overlap_hotspot = *it;
+				const HotSpotPolygon * overlap_hotspot = *it;
 
 				const Polygon & overlap_polygon = overlap_hotspot->getPolygon();
 
@@ -2673,8 +2674,8 @@ namespace Menge
 				uint32_t countX = m_grid->getCountX();
 				uint32_t countY = m_grid->getCountY();
 
-				float pos_step_x = width / float(countX);
-				float pos_step_y = height / float(countY);
+				float pos_step_x = width / float(countX - 1);
+				float pos_step_y = height / float(countY - 1);
 
 				float pos_radius = (pos_step_x + pos_step_y) * 0.5f;
 				
@@ -4537,7 +4538,8 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DParallax );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DIsometric );
         //SCRIPT_CLASS_WRAPPING( _serviceProvider, Layer2DPhysic );
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpot );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpot );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotPolygon );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotImage );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotShape );
 
@@ -4641,7 +4643,7 @@ namespace Menge
         pybind::registration_type_cast<TBlobject>( new extract_TBlobject_type );
 
 		pybind::registration_stl_vector_type_cast<ResourceImage *, stdex::vector<ResourceImage *> >();
-		pybind::registration_stl_vector_type_cast<HotSpot *, stdex::vector<HotSpot *> >();
+		pybind::registration_stl_vector_type_cast<HotSpotPolygon *, stdex::vector<HotSpotPolygon *> >();
 		
 		pybind::registration_stl_map_type_cast<ConstString, WString, stdex::map<ConstString, WString> >();
 
@@ -5219,10 +5221,6 @@ namespace Menge
 
                 pybind::interface_<HotSpot, pybind::bases<Node> >("HotSpot", false)
                     .def( "testPoint", &HotSpot::testPoint )
-                    .def( "clearPoints", &HotSpot::clearPoints )
-                    .def( "getPolygon", &HotSpot::getPolygon )
-                    .def( "setPolygon", &HotSpot::setPolygon )
-					.def( "getPolygonWM", &HotSpot::getPolygonWM )
 					.def( "setOutward", &HotSpot::setOutward )
 					.def( "getOutward", &HotSpot::getOutward )
 					.def( "setGlobal", &HotSpot::setGlobal )
@@ -5230,10 +5228,22 @@ namespace Menge
                     .def( "setDefaultHandle", &HotSpot::setDefaultHandle )
                     .def( "getDefaultHandle", &HotSpot::getDefaultHandle )
 					.def( "isMousePickerOver", &HotSpot::isMousePickerOver )
-                    .def_proxy_static( "getLocalPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalPolygonCenter )
-                    .def_proxy_static( "getWorldPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldPolygonCenter )
-                    .def_proxy_static( "getWorldPolygon", nodeScriptMethod, &NodeScriptMethod::s_getWorldPolygon )
                     ;
+
+				pybind::interface_<HotSpotPolygon, pybind::bases<HotSpot> >("HotSpotPolygon", false)
+					.def( "clearPoints", &HotSpotPolygon::clearPoints )
+					.def( "setPolygon", &HotSpotPolygon::setPolygon )
+					.def( "getPolygon", &HotSpotPolygon::getPolygon )					
+					.def( "getPolygonWM", &HotSpotPolygon::getPolygonWM )
+					.def_proxy_static( "getLocalPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalPolygonCenter )
+					.def_proxy_static( "getWorldPolygonCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldPolygonCenter )
+					.def_proxy_static( "getWorldPolygon", nodeScriptMethod, &NodeScriptMethod::s_getWorldPolygon )
+					;			
+
+				pybind::interface_<HotSpotShape, pybind::bases<HotSpotPolygon> >("HotSpotShape", false)
+					.def( "setResourceShape", &HotSpotShape::setResourceShape )
+					.def( "getResourceShape", &HotSpotShape::getResourceShape )
+					;
 
                 pybind::interface_<HotSpotImage, pybind::bases<HotSpot> >("HotSpotImage", false)
                     .def( "setResourceHIT", &HotSpotImage::setResourceHIT )
@@ -5242,11 +5252,6 @@ namespace Menge
                     .def( "getAlphaTest", &HotSpotImage::getAlphaTest )
                     .def( "getWidth", &HotSpotImage::getWidth )
                     .def( "getHeight", &HotSpotImage::getHeight )
-                    ;
-
-                pybind::interface_<HotSpotShape, pybind::bases<HotSpot> >("HotSpotShape", false)
-                    .def( "setResourceShape", &HotSpotShape::setResourceShape )
-                    .def( "getResourceShape", &HotSpotShape::getResourceShape )
                     ;
 
 				pybind::interface_<Shape, pybind::bases<Node> >("Shape", false)

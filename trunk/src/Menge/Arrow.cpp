@@ -3,8 +3,6 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/InputSystemInterface.h"
 
-#	include "HotSpot.h"
-
 #	include "Game.h"
 #	include "Player.h"
 

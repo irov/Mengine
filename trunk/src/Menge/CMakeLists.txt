@@ -90,6 +90,15 @@ ADD_FILTER(
 Object2D\\\\HotSpot
 	HotSpot.cpp
 	HotSpot.h
+	HotSpotPolygon.cpp
+	HotSpotPolygon.h
+	HotSpotImage.cpp
+	HotSpotImage.h
+	HotSpotBubbles.cpp
+	HotSpotBubbles.h
+	HotSpotShape.cpp
+	HotSpotShape.h
+    
     HotspotMousePickerVisitor.h
     HotspotMousePickerVisitor.cpp
 )
@@ -189,18 +198,6 @@ ADD_FILTER(
 Object2D\\\\Window
 	Window.cpp
 	Window.h
-)
-
-ADD_FILTER(
-Object2D\\\\HotSpotImage
-	HotSpotImage.cpp
-	HotSpotImage.h
-)
-
-ADD_FILTER(
-Object2D\\\\HotSpotShape
-	HotSpotShape.cpp
-	HotSpotShape.h
 )
 
 ADD_FILTER(

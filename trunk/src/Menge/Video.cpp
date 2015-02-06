@@ -386,7 +386,6 @@ namespace Menge
 		Node::_invalidateWorldMatrix();
 
 		this->invalidateVertices();
-		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateBoundingBox( mt::box2f & _boundingBox ) const

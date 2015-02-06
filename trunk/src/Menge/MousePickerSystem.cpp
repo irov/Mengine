@@ -6,8 +6,6 @@
 #	include "Kernel/Scene.h"
 #	include "Player.h"
 
-#	include "HotSpot.h"
-
 #	include "Logger/Logger.h"
 
 #	include <algorithm>

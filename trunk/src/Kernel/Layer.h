@@ -10,7 +10,6 @@
 namespace Menge
 {
 	class Scene;
-	class HotSpot;
 	class Arrow;
 
 	class Layer

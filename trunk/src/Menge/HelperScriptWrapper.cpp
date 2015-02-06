@@ -1056,7 +1056,7 @@ namespace Menge
 			return py_data;
 		}
 
-		bool s_writeAccountBinaryFile_Depricated( const WString & _fileName, const TBlobject & _data )
+		bool s_writeAccountBinaryFile_deprecated( const WString & _fileName, const TBlobject & _data )
 		{
 			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
@@ -1152,7 +1152,7 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * s_loadAccountBinaryFile_Depricated( const WString & _fileName )
+		PyObject * s_loadAccountBinaryFile_deprecated( const WString & _fileName )
 		{
 			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
@@ -1469,10 +1469,9 @@ namespace Menge
         pybind::def_functor( "writeAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_writeAccountPickleFile );
         pybind::def_functor( "loadAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_loadAccountPickleFile );
 
-		pybind::def_functor( "writeAccountBinaryFile_Depricated", helperScriptMethod, &HelperScriptMethod::s_writeAccountBinaryFile_Depricated );
-		pybind::def_functor( "loadAccountBinaryFile_Depricated", helperScriptMethod, &HelperScriptMethod::s_loadAccountBinaryFile_Depricated );
+		pybind::def_functor( "writeAccountBinaryFile_deprecated", helperScriptMethod, &HelperScriptMethod::s_writeAccountBinaryFile_deprecated );
+		pybind::def_functor( "loadAccountBinaryFile_deprecated", helperScriptMethod, &HelperScriptMethod::s_loadAccountBinaryFile_deprecated );
 		
-
 		pybind::def_functor( "setParticlesEnabled", helperScriptMethod, &HelperScriptMethod::s_setParticlesEnabled );
 
 		//pybind::def_function( "unicode", &ScriptHelper::s_unicode );

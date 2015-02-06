@@ -10,7 +10,7 @@ namespace Menge
 	class BlobjectRead
 	{
 	public:
-		BlobjectRead( TBlobject::value_type * _buffer, TBlobject::size_type _size )
+		BlobjectRead( Blobject::value_type * _buffer, Blobject::size_type _size )
 			: m_begin(_buffer)
 			, m_end(_buffer + _size)
 			, m_seek(_buffer)
@@ -33,20 +33,20 @@ namespace Menge
 		template<class T>
 		inline void readPOD( T & _t )
 		{
-			TBlobject::value_type * buff = reinterpret_cast<TBlobject::value_type *>(&_t);
+			Blobject::value_type * buff = reinterpret_cast<Blobject::value_type *>(&_t);
 			this->readBuffer( buff, sizeof(T) );
 		}
 
 		template<class T>
 		inline void readPODs( T * _t, size_t _count )
 		{
-			TBlobject::value_type * buff = reinterpret_cast<TBlobject::value_type *>(_t);
+			Blobject::value_type * buff = reinterpret_cast<Blobject::value_type *>(_t);
 			this->readBuffer( buff, _count * sizeof(T) );
 		}
 
-		inline void readBuffer( TBlobject::value_type * _begin, size_t _size )
+		inline void readBuffer( Blobject::value_type * _begin, size_t _size )
 		{
-			TBlobject::value_type * it_begin = m_seek;
+			Blobject::value_type * it_begin = m_seek;
 			m_seek += _size;
 
 			//stdex::unchecked_array_iterator<TBlobject::value_type *> chkd_begin((TBlobject::value_type *)_begin);
@@ -55,9 +55,9 @@ namespace Menge
 			stdex::memorycopy( _begin, 0, it_begin, _size );
 		}
 
-		const TBlobject::value_type * selectBuffer( size_t _size )
+		const Blobject::value_type * selectBuffer( size_t _size )
 		{
-			const TBlobject::value_type * buff = m_seek;
+			const Blobject::value_type * buff = m_seek;
 			m_seek += _size;
 
 			return buff;
@@ -83,9 +83,9 @@ namespace Menge
 		}
 
 	protected:
-		TBlobject::value_type * m_begin;
-		TBlobject::value_type * m_end;
-		TBlobject::value_type * m_seek;
+		Blobject::value_type * m_begin;
+		Blobject::value_type * m_end;
+		Blobject::value_type * m_seek;
 	};
 
 	template<class T>

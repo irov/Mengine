@@ -131,7 +131,7 @@ namespace Menge
 			return false;
 		}
 
-        TBlobject::value_type header_buff[Metabuf::header_size];
+        Blobject::value_type header_buff[Metabuf::header_size];
 
         _stream->read( header_buff, Metabuf::header_size );
 
@@ -183,7 +183,7 @@ namespace Menge
         _stream->read( &compress_size, sizeof(compress_size) );
 
 		CacheMemoryBuffer binary_buffer(m_serviceProvider, bin_size, "importBin_binary");
-		TBlobject::value_type * binary_memory = binary_buffer.getMemoryT<TBlobject::value_type>();
+		Blobject::value_type * binary_memory = binary_buffer.getMemoryT<Blobject::value_type>();
 		
         size_t uncompress_size = 0;
         if( ARCHIVE_SERVICE(m_serviceProvider)

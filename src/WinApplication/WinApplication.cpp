@@ -57,9 +57,7 @@ SERVICE_EXTERN(ModuleService, Menge::ModuleServiceInterface);
 SERVICE_EXTERN(ThreadSystem, Menge::ThreadSystemInterface);
 SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
 
-SERVICE_EXTERN(ParticleSystem, Menge::ParticleSystemInterface);
 SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
-SERVICE_EXTERN(ParticleSystem2, Menge::ParticleSystemInterface2);
 SERVICE_EXTERN(ParticleService2, Menge::ParticleServiceInterface2);
 
 SERVICE_EXTERN(RenderSystem, Menge::RenderSystemInterface);
@@ -3270,18 +3268,28 @@ namespace Menge
 		//::ClipCursor( NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::notifyCursorIconSetup( const ConstString & _name, void * _buffer, size_t _size )
+	bool WinApplication::notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const Blobject & _buffer )
 	{
-		TMapCursors::iterator it_found = m_cursors.find( _name );
+		TMapCursors::iterator it_found = m_cursors.find( _path );
 
 		if( it_found == m_cursors.end() )
 		{
+			if( _buffer.empty() == true )
+			{
+				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s buffer empty"
+					, _path.c_str()
+					);
+
+				return false;
+			}
+
 			FileGroupInterfacePtr userGroup = m_fileService->getFileGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user") );
 
 			if( userGroup->createDirectory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "IconCache") ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s can't create directory 'IconCache'"
+				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup name %s path %s can't create directory 'IconCache'"
 					, _name.c_str()
+					, _path.c_str()
 					);
 				
 				return false;
@@ -3291,8 +3299,9 @@ namespace Menge
 
 			if( stream == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s can't create output stream"
+				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup name %s path %s can't create output stream"
 					, _name.c_str()
+					, _path.c_str()
 					);
 
 				return false;
@@ -3301,49 +3310,64 @@ namespace Menge
 			PathString icoFile;
 			icoFile += "IconCache";
 			icoFile += MENGE_FOLDER_DELIM;
-			icoFile += _name;
+			icoFile += _path;
+			icoFile += ".ico";
 
 			ConstString c_icoFile = Helper::stringizeString( m_serviceProvider, icoFile );
 
 			if( userGroup->openOutputFile( c_icoFile, stream ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s can't open output stream '%s'"
+				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup name %s path %s can't open output stream '%s'"
 					, _name.c_str()
+					, _path.c_str()
 					, c_icoFile.c_str()
 					);
 
 				return false;
 			}
 
-			if( stream->write( _buffer, _size ) == false )
+			if( stream->write( &_buffer[0], _buffer.size() ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s can't write output stream '%s'"
+				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup name %s path %s can't write output stream '%s'"
 					, _name.c_str()
+					, _path.c_str()
 					, c_icoFile.c_str()
 					);
 
 				return false;
 			}
+
+			stream->flush();
+			stream = nullptr;
 
 			WString unicode_icoFile;        
 			if( Helper::utf8ToUnicode( m_serviceProvider, c_icoFile, unicode_icoFile ) == false )
 			{
+				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup name %s path %s can't file name '%s' to unicode"
+					, _name.c_str()
+					, _path.c_str()
+					, c_icoFile.c_str()
+					);
+
 				return false;
 			}
 			
 			HCURSOR cursor = ::LoadCursorFromFileW( unicode_icoFile.c_str() );
 
-			DWORD errCode = ::GetLastError();
-
-			if( errCode != 0 )
+			if( cursor == NULL )
 			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s for file %ls errCode %d"
-					, _name.c_str()
-					, unicode_icoFile.c_str()
-					, errCode 
-					);
+				DWORD errCode = ::GetLastError();
 
-				return false;
+				if( errCode != 0 )
+				{
+					LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s for file %ls errCode %d"
+						, _name.c_str()
+						, unicode_icoFile.c_str()
+						, errCode 
+						);
+
+					return false;
+				}
 			}
 
 			it_found = m_cursors.insert( std::make_pair( _name, cursor ) ).first;

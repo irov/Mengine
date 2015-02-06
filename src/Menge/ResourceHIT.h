@@ -56,6 +56,6 @@ namespace Menge
         uint32_t m_mipmaplevel;
         uint32_t m_mipmapsize;
 
-		mutable TBlobject m_mipmap;
+		mutable Blobject m_mipmap;
 	};
 }	// namespace Menge

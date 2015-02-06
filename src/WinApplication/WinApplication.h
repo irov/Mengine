@@ -87,7 +87,7 @@ namespace Menge
 		void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
 		void notifyVsyncChanged( bool _vsync ) override;
 		void notifyCursorModeChanged( bool _mode ) override;
-		bool notifyCursorIconSetup( const ConstString & _name, void * _buffer, size_t _size ) override;
+		bool notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const Blobject & _buffer ) override;
 
 		void notifyCursorClipping( const Viewport & _viewport ) override;
 		void notifyCursorUnClipping() override;

@@ -5,5 +5,5 @@
 
 namespace Menge
 {
-	typedef TBlobject Archive;
+	typedef Blobject Archive;
 }

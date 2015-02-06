@@ -2171,13 +2171,14 @@ namespace Menge
 
 		if( m_cursorMode == true && m_cursorResource != nullptr )
 		{
-			const ConstString & cursorName = m_cursorResource->getName();
+			const ConstString & name = m_cursorResource->getName();
 
-			size_t cursorBufferSize;
-			void * cursorBufferPtr = m_cursorResource->getBuffer( cursorBufferSize );
+			const FilePath & path = m_cursorResource->getPath();
+
+			const Blobject & buffer = m_cursorResource->getBuffer();
 
 			PLATFORM_SERVICE(m_serviceProvider)
-				->notifyCursorIconSetup( cursorName, cursorBufferPtr, cursorBufferSize );
+				->notifyCursorIconSetup( name, path, buffer );
 		}
 
 		m_invalidateCursorMode = true;
@@ -2212,13 +2213,13 @@ namespace Menge
 			return;
 		}
 
-		const ConstString & cursorName = m_cursorResource->getName();
+		const ConstString & name = m_cursorResource->getName();
+		const FilePath & path = m_cursorResource->getPath();
 
-		size_t cursorBufferSize;
-		void * cursorBufferPtr = m_cursorResource->getBuffer( cursorBufferSize );
+		const Blobject & buffer = m_cursorResource->getBuffer();
 
 		PLATFORM_SERVICE(m_serviceProvider)
-			->notifyCursorIconSetup( cursorName, cursorBufferPtr, cursorBufferSize );
+			->notifyCursorIconSetup( name, path, buffer );
 	}
 	////////////////////////////////////////////////////////////////////////////
 	//void Application::setAsScreensaver( bool _set )

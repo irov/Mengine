@@ -14,12 +14,14 @@ namespace Menge
 
 	public:
 		const FilePath & getPath() const override;
-		void * getBuffer( size_t & _size ) const override;
+		const Blobject & getBuffer() const override;
 
 	protected:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:
-		FilePath m_path;	
+		FilePath m_path;
+
+		Blobject m_buffer;
 	};
 }

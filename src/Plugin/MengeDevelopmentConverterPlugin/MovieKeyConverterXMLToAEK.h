@@ -25,8 +25,8 @@ namespace Menge
 		bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
 
 	protected:
-		bool loadFramePak_( TBlobject & _buffer );
-		bool writeFramePak_( const TBlobject & _buffer );
+		bool loadFramePak_( Blobject & _buffer );
+		bool writeFramePak_( const Blobject & _buffer );
 
 	protected:
 		ArchivatorInterfacePtr m_archivator;

@@ -18,7 +18,7 @@ namespace Menge
 	ParticleEngine::ParticleEngine()
 		: m_serviceProvider(nullptr)
 		, m_maxParticlesNum(2000)
-		, m_renderParticleNum(0)        
+		, m_renderParticleNum(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

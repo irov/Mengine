@@ -56,7 +56,7 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool MovieKeyConverterXMLToAEK::convert()
 	{
-		TBlobject buffer;
+		Blobject buffer;
 		if( this->loadFramePak_( buffer ) == false )
 		{
 			return false;
@@ -83,7 +83,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MovieKeyConverterXMLToAEK::loadFramePak_( TBlobject & _buffer )
+	bool MovieKeyConverterXMLToAEK::loadFramePak_( Blobject & _buffer )
 	{
 		bool exist = false;
 
@@ -700,7 +700,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MovieKeyConverterXMLToAEK::writeFramePak_( const TBlobject & _buffer )
+	bool MovieKeyConverterXMLToAEK::writeFramePak_( const Blobject & _buffer )
 	{	
 		OutputStreamInterfacePtr output_stream = FILE_SERVICE(m_serviceProvider)
 			->openOutputFile( m_options.pakName, m_options.outputFileName );

@@ -2,6 +2,8 @@
 
 #	include "Kernel/ResourceReference.h"
 
+#	include "Config/Blobject.h"
+
 namespace Menge
 {
 	class ResourceCursor
@@ -9,6 +11,6 @@ namespace Menge
 	{
 	public:
 		virtual const FilePath & getPath() const = 0;
-		virtual void * getBuffer( size_t & _size ) const = 0;
+		virtual const Blobject & getBuffer() const = 0;
 	};
 }

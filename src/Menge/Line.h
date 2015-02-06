@@ -4,8 +4,6 @@
 
 namespace Menge
 {
-	class HotSpot;
-
 	class Line
 		: public Node
 	{

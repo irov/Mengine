@@ -14,9 +14,9 @@ namespace Menge
 		~HotSpotImage();
 
 	public:
-		bool testPoint( const mt::vec2f & _point ) const override;
-		bool testRadius( const mt::vec2f & _point, float _radius ) const override;
-		
+		void setResourceHIT( ResourceHIT * _resourceHIT );
+		ResourceHIT * getResourceHIT() const;
+
 	public:
 		void setAlphaTest( float _value );
 		float getAlphaTest() const;
@@ -24,9 +24,13 @@ namespace Menge
         uint32_t getWidth() const;
         uint32_t getHeight() const;
 
-	public:
-        void setResourceHIT( ResourceHIT * _resourceHIT );
-		ResourceHIT * getResourceHIT() const;
+	protected:
+		bool testPoint( const mt::vec2f & _point ) const override;
+		bool testRadius( const mt::vec2f & _point, float _radius ) const override;
+		bool testPolygon( const mt::vec2f & _point, const Polygon & _polygon ) const override;
+
+	protected:
+		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 
     protected:
 		bool _compile() override;

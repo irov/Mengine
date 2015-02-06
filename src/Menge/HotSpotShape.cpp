@@ -24,7 +24,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotShape::_compile()
     {
-        if( HotSpot::_compile() == false )
+        if( HotSpotPolygon::_compile() == false )
         {
             return false;
         }
@@ -59,7 +59,7 @@ namespace Menge
     {
         m_resourceShape.release();
 
-        HotSpot::_release();
+        HotSpotPolygon::_release();
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpotShape::setResourceShape( ResourceShape * _resourceShape )

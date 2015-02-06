@@ -24,6 +24,9 @@
 #	include "ParticleEmitter.h"
 #	include "ParticleEmitter2.h"
 #	include "HotSpot.h"
+#	include "HotSpotPolygon.h"
+#	include "HotSpotImage.h"
+#	include "HotSpotShape.h"
 //#	include "Light2D.h"
 #	include "ShadowCaster2D.h"
 #	include "Gyroscope.h"
@@ -56,8 +59,6 @@
 #	include "Layer2DAccumulator.h"
 #	include "Layer3D.h"
 #	include "Window.h"
-#	include "HotSpotImage.h"
-#	include "HotSpotShape.h"
 #	include "Layer2DTexture.h"
 #	include "PhysicalBody2D.h"
 #	include "Landscape2D.h"
@@ -457,7 +458,7 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, ParticleEmitter );
 		NODE_FACTORY( m_serviceProvider, ParticleEmitter2 );
 
-		NODE_FACTORY( m_serviceProvider, HotSpot );
+		NODE_FACTORY( m_serviceProvider, HotSpotPolygon );
         NODE_FACTORY( m_serviceProvider, HotSpotImage );
         NODE_FACTORY( m_serviceProvider, HotSpotShape );
 		//NODE_FACTORY( Light2D );

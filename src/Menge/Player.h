@@ -21,7 +21,6 @@ namespace Menge
 {	
     class Game;
 	class Scene;
-	class HotSpot;
 	class Arrow;
 	class TextField;
 

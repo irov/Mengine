@@ -53,6 +53,12 @@ namespace mt
 		if ( external_box.minimum.y < box.minimum.y ) box.minimum.y = external_box.minimum.y;
 	}
 
+	MATH_FUNCTION_INLINE void transpose_box( box2f & _box, const mt::vec2f & _pos )
+	{
+		_box.minimum += _pos;
+		_box.maximum += _pos;
+	}
+
 	MATH_FUNCTION_INLINE void set_box_from_min_max( box2f & box, const vec2f &minimum, const vec2f &maximum)
 	{
 		box.minimum = minimum;
@@ -129,6 +135,31 @@ namespace mt
     {
         return is_intersect( _a.minimum, _a.maximum, _b, _b );
     }
+
+	MATH_FUNCTION_INLINE bool is_intersect(const box2f & _a, const vec2f & _b, float _radius)
+	{
+		if( _a.minimum.x > _b.x + _radius )
+		{
+			return false;
+		}
+
+		if( _a.maximum.x < _b.x - _radius )
+		{
+			return false;
+		}
+
+		if( _a.minimum.y > _b.y + _radius )
+		{
+			return false;
+		}
+
+		if( _a.maximum.y < _b.y - _radius )
+		{
+			return false;
+		}
+
+		return true;
+	}
 
 	MATH_FUNCTION_INLINE vec2f box_size( const box2f& _box )
 	{

@@ -42,7 +42,7 @@ namespace Menge
         DECL_CONST( Layer2D );
 		DECL_CONST( Layer2DParallax );
 		DECL_CONST( Layer2DIsometric );
-        DECL_CONST( HotSpot );
+		DECL_CONST( HotSpotPolygon );
         DECL_CONST( HotSpotImage );
         DECL_CONST( HotSpotShape );
         DECL_CONST( Point );

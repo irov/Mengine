@@ -344,6 +344,15 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool polygon_empty( const Polygon & _polygon )
+	{
+		const Polygon::ring_type & ring = _polygon.outer();
+
+		uint32_t ring_size = ring.size();
+
+		return ring_size == 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	uint32_t polygon_size( const Polygon & _polygon )
 	{
 		const Polygon::ring_type & ring = _polygon.outer();

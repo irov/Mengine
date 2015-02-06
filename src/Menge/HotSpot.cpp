@@ -3,18 +3,12 @@
 #   include "HotspotMousePickerVisitor.h"
 
 #	include "Interface/MousePickerSystemInterface.h"
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/ResourceInterface.h"
-
-#	include "Player.h"
 
 #	include "Kernel/Scene.h"
 #	include "Layer2D.h"
 
+#	include "Player.h"
 #	include "Arrow.h"
-
-#	include "Kernel/ResourceImage.h"
 
 #	include "pybind/system.hpp"
 #	include "pybind/extract.hpp"
@@ -28,7 +22,6 @@ namespace Menge
 		: m_debugColor(0x00000000)		
 		, m_outward(false)
 		, m_global(false)
-		, m_invalidatePolygonWM(true)
 		, m_picker(nullptr)
 		, m_defaultHandle(true)		
 		, m_onMouseMoveEvent(false)
@@ -39,21 +32,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	HotSpot::~HotSpot()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::setPolygon( const Polygon & _polygon )
-	{
-		m_polygon = _polygon;
-
-		boost::geometry::correct( m_polygon );
-
-		this->invalidateBoundingBox();
-		this->invalidatePolygonWM();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Polygon & HotSpot::getPolygon() const
-	{
-		return m_polygon;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::setOutward( bool _value )
@@ -107,13 +85,6 @@ namespace Menge
 		return m_defaultHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::clearPoints()
-	{
-		m_polygon.clear();
-
-		this->invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_setEventListener( PyObject * _listener )
 	{
 		Node::_setEventListener( _listener );
@@ -130,27 +101,6 @@ namespace Menge
 
 		this->registerEvent( EVENT_ACTIVATE, ("onActivate"), _listener );
 		this->registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _listener );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_invalidateWorldMatrix()
-	{
-		Node::_invalidateWorldMatrix();
-
-		this->invalidatePolygonWM();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::invalidatePolygonWM()
-	{
-		m_invalidatePolygonWM = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::updatePolygonWM_() const
-	{
-		m_invalidatePolygonWM = false;
-
-		const mt::mat4f & wm = this->getWorldMatrix();
-
-		polygon_wm( m_polygonWM, m_polygon, wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PickerTrapState * HotSpot::getPicker() const
@@ -410,109 +360,7 @@ namespace Menge
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_updateBoundingBox( mt::box2f & _boundingBox ) const
-	{
-		uint32_t numPoints = boost::geometry::num_points( m_polygon );
-
-		if( numPoints == 0 )
-		{
-			Node::_updateBoundingBox( _boundingBox );
-
-			return;
-		}
-
-		const Polygon::ring_type & ring = m_polygon.outer();
-
-		const mt::mat4f & wm = this->getWorldMatrix();
-
-		mt::vec2f wmp;
-		mt::mul_v2_m4( wmp, ring[0], wm );
-
-		mt::reset( _boundingBox, wmp );
-
-		for( uint32_t
-			it = 1,
-			it_end = numPoints;
-		it != it_end; 
-		++it )
-		{
-			mt::vec2f wmp;
-			mt::mul_v2_m4( wmp, ring[it], wm );
-
-			mt::add_internal_point( _boundingBox, wmp );
-		}
-	}
-    //////////////////////////////////////////////////////////////////////////
-    bool HotSpot::testPoint( const mt::vec2f & _point ) const
-    {
-		if( m_global == true )
-		{
-			return true;
-		}
-
-		const Polygon & polygonWM = this->getPolygonWM();
-
-		mt::box2f bb;
-		if( polygon_to_box2f( bb, polygonWM ) == false )
-		{
-			return m_outward;
-		}
-
-		if( mt::is_intersect( bb, _point ) == false )
-		{
-			return m_outward;
-		}
-
-		GeometryPoint p(_point.x, _point.y);
-
-		bool intersect = boost::geometry::intersects( polygonWM, p );
-
-		return intersect != m_outward;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testRadius( const mt::vec2f & _point, float _radius ) const
-	{
-		(void)_radius;
-
-		bool intersect = this->testPoint( _point );
-
-		return intersect;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::testPolygon( const mt::vec2f & _point, const Polygon & _screenPoly ) const
-	{
-		if( m_global == true )
-		{
-			return true;
-		}
-
-		const Polygon & polygonWM = this->getPolygonWM();
-
-		polygon_transpose( m_polygonWMVM, polygonWM, -_point );
-
-		mt::box2f bb;
-		if( polygon_to_box2f( bb, m_polygonWMVM ) == false )
-		{
-			return m_outward;
-		}
-
-		mt::box2f bb_screen;
-		if( polygon_to_box2f( bb_screen, _screenPoly ) == false )
-		{
-			return m_outward;
-		}
-
-		if( mt::is_intersect( bb, bb_screen ) == false )
-		{
-			return m_outward;
-		}
-
-		bool intersect = boost::geometry::intersects( m_polygonWMVM, _screenPoly );
-
-		return intersect != m_outward;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, Arrow * _arrow )
+	bool HotSpot::pick( const mt::vec2f & _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, Arrow * _arrow )
 	{
 		if( this->isActivate() == false )
 		{
@@ -538,83 +386,4 @@ namespace Menge
 
 		return embed;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
-	{
-		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) == 0 )
-		{
-			return;
-		}
-
-		if( m_debugColor == 0x00000000 )
-		{
-			return;
-		}
-
-		uint32_t numpoints = boost::geometry::num_points(m_polygon);
-
-		if( numpoints == 0 )
-		{
-			return;
-		}
-
-		uint32_t vertexCount = numpoints * 2;
-
-		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
-			->getDebugRenderVertex2D( vertexCount );
-
-		if( vertices == nullptr )
-		{
-			return;
-		}
-
-		const mt::mat4f & worldMat = this->getWorldMatrix();
-
-		const Polygon::ring_type & ring = m_polygon.outer();
-
-		for( uint32_t i = 0; i != numpoints; ++i )
-		{
-			uint32_t j = (i + 1) % numpoints;
-
-			mt::vec2f trP0;
-			mt::mul_v2_m4( trP0, ring[i], worldMat );
-
-			RenderVertex2D & v0 = vertices[i*2+0];
-
-			v0.pos.x = trP0.x;
-			v0.pos.y = trP0.y;
-			v0.pos.z = 0.f;
-
-			v0.color = m_debugColor;
-			v0.uv.x = 0.f;
-			v0.uv.y = 0.f;
-			v0.uv2.x = 0.f;
-			v0.uv2.y = 0.f;
-
-			mt::vec2f trP1;
-			mt::mul_v2_m4( trP1, ring[j], worldMat );
-
-			RenderVertex2D & v1 = vertices[i*2+1];
-
-			v1.pos.x = trP1.x;
-			v1.pos.y = trP1.y;
-			v1.pos.z = 0.f;
-
-			v1.color = m_debugColor;
-			v1.uv.x = 0.f;
-			v1.uv.y = 0.f;
-			v1.uv2.x = 0.f;
-			v1.uv2.y = 0.f;
-		}
-
-		const RenderMaterialInterfacePtr & debugMaterial = RENDER_SERVICE(m_serviceProvider)
-			->getDebugMaterial();
-
-		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
-            , vertices
-			, vertexCount
-			, nullptr
-            );
-	}
-//#	endif
 }

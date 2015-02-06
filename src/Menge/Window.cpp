@@ -430,7 +430,6 @@ namespace Menge
 		Node::_invalidateWorldMatrix();
 
 		this->invalidateVertices();
-		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Window::_invalidateColor()

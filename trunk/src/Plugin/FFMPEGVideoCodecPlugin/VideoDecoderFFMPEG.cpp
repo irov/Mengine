@@ -127,7 +127,7 @@ namespace Menge
 		
 		if( inputFormat == nullptr )
 		{
-		    LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: av_probe_input_format failed "
+		    LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::_prepareData av_probe_input_format failed "
 		        );
 
 		    return false;
@@ -142,7 +142,7 @@ namespace Menge
 
 		if( open_input_error != 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Couldn't open stream %d"
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::_prepareData Couldn't open stream %d"
                 , open_input_error
                 );
 
@@ -153,7 +153,7 @@ namespace Menge
 
 		if( find_stream_info_error < 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Couldn't find stream information %d"
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::_prepareData Couldn't find stream information %d"
                 , find_stream_info_error
                 );
 
@@ -175,7 +175,7 @@ namespace Menge
 		
 		if( m_videoStreamId == -1 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Didn't find a video stream ");
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::_prepareData Didn't find a video stream ");
 
 			return false; // Didn't find a video stream
 		}
@@ -189,7 +189,7 @@ namespace Menge
 
         if( codec == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Unsupported codec! ");
+            LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::_prepareData Unsupported codec! ");
 
             return false;
         }
@@ -201,7 +201,7 @@ namespace Menge
 		
         if( error_open < 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: Could not open codec! %d"
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::_prepareData Could not open codec! %d"
                 , error_open
                 );
 
@@ -212,7 +212,7 @@ namespace Menge
 
 		if( m_frame == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG:: can not allocate  video frame"
+			LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::_prepareData can not allocate  video frame"
                 );
 
 			return false;
@@ -224,13 +224,17 @@ namespace Menge
 			{
 				m_outputPixelFormat = PIX_FMT_BGRA;
 			}break;
+		case Menge::PF_X8R8G8B8:
+			{
+				m_outputPixelFormat = PIX_FMT_0RGB32;
+			}break;
 		case Menge::PF_R8G8B8:
 			{
 				m_outputPixelFormat = PIX_FMT_RGB32;
 			}break;
 		default:
 			{
-				LOGGER_ERROR(m_serviceProvider)("pixel format %i is not supported"
+				LOGGER_ERROR(m_serviceProvider)("VideoDecoderFFMPEG::_prepareData pixel format %i is not supported"
 					, m_options.pixelFormat
 					);
 

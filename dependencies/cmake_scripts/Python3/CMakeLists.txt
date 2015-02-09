@@ -88,7 +88,7 @@ file(MAKE_DIRECTORY ${python32_BINARY_DIR}/Modules)
 #endif(WIN32)
 #configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
 
-file(COPY pyconfig.h DESTINATION ${SOURCE_DIR}/PC)
+#file(COPY pyconfig.h DESTINATION ${SOURCE_DIR}/PC)
 file(COPY dl_nt.c DESTINATION ${SOURCE_DIR}/PC)
 file(COPY getbuildinfo.c DESTINATION ${SOURCE_DIR}/Modules)
 
@@ -262,6 +262,17 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_struct.c
                 ${SOURCE_DIR}/Modules/_weakref.c
                 ${SOURCE_DIR}/Modules/_tracemalloc.c
+                ${SOURCE_DIR}/Modules/_opcode.c
+                ${SOURCE_DIR}/Modules/_stat.c
+                ${SOURCE_DIR}/Modules/_winapi.c
+                ${SOURCE_DIR}/Modules/_operator.c
+                
+                ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_cn.c
+                ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_hk.c
+                ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_iso2022.c
+                ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_jp.c
+                ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_kr.c
+                ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_tw.c
                                 
                 ${SOURCE_DIR}/Modules/_io/_iomodule.c
                 ${SOURCE_DIR}/Modules/_io/bufferedio.c

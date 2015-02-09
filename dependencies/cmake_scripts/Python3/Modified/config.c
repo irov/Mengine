@@ -12,10 +12,13 @@ extern PyObject* PyInit_audioop(void);
 extern PyObject* PyInit_binascii(void);
 extern PyObject* PyInit_cmath(void);
 extern PyObject* PyInit_errno(void);
+extern PyObject* PyInit_faulthandler(void);
+extern PyObject* PyInit__tracemalloc(void);
 extern PyObject* PyInit_gc(void);
 extern PyObject* PyInit_math(void);
 extern PyObject* PyInit__md5(void);
 extern PyObject* PyInit_nt(void);
+extern PyObject* PyInit__operator(void);
 extern PyObject* PyInit_signal(void);
 extern PyObject* PyInit__sha1(void);
 extern PyObject* PyInit__sha256(void);
@@ -45,9 +48,17 @@ extern PyObject* PyInit__struct(void);
 extern PyObject* PyInit__datetime(void);
 extern PyObject* PyInit__functools(void);
 extern PyObject* PyInit__json(void);
-//extern PyObject* PyInit_zlib(void);
+extern PyObject* PyInit_zlib(void);
+extern PyObject* PyInit_pyexpat(void);
 
 extern PyObject* PyInit__multibytecodec(void);
+extern PyObject* PyInit__codecs_cn(void);
+extern PyObject* PyInit__codecs_hk(void);
+extern PyObject* PyInit__codecs_iso2022(void);
+extern PyObject* PyInit__codecs_jp(void);
+extern PyObject* PyInit__codecs_kr(void);
+extern PyObject* PyInit__codecs_tw(void);
+extern PyObject* PyInit__winapi(void);
 extern PyObject* PyInit__lsprof(void);
 extern PyObject* PyInit__ast(void);
 extern PyObject* PyInit__io(void);
@@ -55,9 +66,8 @@ extern PyObject* PyInit__pickle(void);
 extern PyObject* PyInit_atexit(void);
 extern PyObject* _PyWarnings_Init(void);
 extern PyObject* PyInit__string(void);
-
-extern PyObject* PyInit_pyexpat(void);
-extern PyObject* PyInit_zlib(void);
+extern PyObject* PyInit__stat(void);
+extern PyObject* PyInit__opcode(void);
 
 /* tools/freeze/makeconfig.py marker for additional "extern" */
 /* -- ADDMODULE MARKER 1 -- */
@@ -77,9 +87,11 @@ struct _inittab _PyImport_Inittab[] = {
     {"binascii", PyInit_binascii},
     {"cmath", PyInit_cmath},
     {"errno", PyInit_errno},
+    {"faulthandler", PyInit_faulthandler},
     {"gc", PyInit_gc},
     {"math", PyInit_math},
     {"nt", PyInit_nt}, /* Use the NT os functions, not posix */
+    {"_operator", PyInit__operator},
     {"signal", PyInit_signal},
     {"_md5", PyInit__md5},
     {"_sha1", PyInit__sha1},
@@ -93,6 +105,10 @@ struct _inittab _PyImport_Inittab[] = {
     {"msvcrt", PyInit_msvcrt},
     {"_locale", PyInit__locale},
 #endif
+    {"_tracemalloc", PyInit__tracemalloc},
+    /* XXX Should _winapi go in a WIN32 block?  not WIN64? */
+    {"_winapi", PyInit__winapi},
+
     {"_codecs", PyInit__codecs},
     {"_weakref", PyInit__weakref},
     {"_random", PyInit__random},
@@ -114,10 +130,17 @@ struct _inittab _PyImport_Inittab[] = {
 
     {"xxsubtype", PyInit_xxsubtype},
     {"zipimport", PyInit_zipimport},
-//    {"zlib", PyInit_zlib},
+    {"zlib", PyInit_zlib},
+	{"pyexpat", PyInit_pyexpat},
 
     /* CJK codecs */
     {"_multibytecodec", PyInit__multibytecodec},
+    {"_codecs_cn", PyInit__codecs_cn},
+    {"_codecs_hk", PyInit__codecs_hk},
+    {"_codecs_iso2022", PyInit__codecs_iso2022},
+    {"_codecs_jp", PyInit__codecs_jp},
+    {"_codecs_kr", PyInit__codecs_kr},
+    {"_codecs_tw", PyInit__codecs_tw},
 
 /* tools/freeze/makeconfig.py marker for additional "_inittab" entries */
 /* -- ADDMODULE MARKER 2 -- */
@@ -126,10 +149,9 @@ struct _inittab _PyImport_Inittab[] = {
     {"marshal", PyMarshal_Init},
 
     /* This lives it with import.c */
-    {"imp", PyInit_imp},
+    {"_imp", PyInit_imp},
 
     /* These entries are here for sys.builtin_module_names */
-    {"__main__", NULL},
     {"builtins", NULL},
     {"sys", NULL},
     {"_warnings", _PyWarnings_Init},
@@ -138,8 +160,8 @@ struct _inittab _PyImport_Inittab[] = {
     {"_io", PyInit__io},
     {"_pickle", PyInit__pickle},
     {"atexit", PyInit_atexit},
-    {"pyexpat", PyInit_pyexpat},
-    {"zlib", PyInit_zlib},
+    {"_stat", PyInit__stat},
+    {"_opcode", PyInit__opcode},
 
     /* Sentinel */
     {0, 0}

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 
 project(python3)
 
-SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Python-3.3.1 )
+SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Python-3.4.2 )
 
 REMOVE_DEFINITIONS(-Doverride)
 
@@ -66,6 +66,7 @@ add_python_module(errno     MOD_SRCS ${SOURCE_DIR}/Modules/errnomodule.c)
 #add_python_module(pwd       MOD_SRCS ${TRUE_DIR}/Modules/pwdmodule.c)
 add_python_module(_sre      MOD_SRCS ${SOURCE_DIR}/Modules/_sre.c)
 add_python_module(_codecs   MOD_SRCS ${SOURCE_DIR}/Modules/_codecsmodule.c)
+add_python_module(zipimport MOD_SRCS ${SOURCE_DIR}/Modules/zipimport.c)
 add_python_module(_symtable MOD_SRCS ${SOURCE_DIR}/Modules/symtablemodule.c)
 add_python_module(xxsubtype MOD_SRCS ${SOURCE_DIR}/Modules/xxsubtype.c)
 add_python_module(_struct MOD_SRCS ${SOURCE_DIR}/Modules/_struct.c)
@@ -87,19 +88,23 @@ file(MAKE_DIRECTORY ${python32_BINARY_DIR}/Modules)
 #endif(WIN32)
 #configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
 
-configure_file(Configure/getbuildinfo.c ${SOURCE_DIR}/Modules/getbuildinfo.c COPYONLY)
+file(COPY pyconfig.h DESTINATION ${SOURCE_DIR}/PC)
+file(COPY dl_nt.c DESTINATION ${SOURCE_DIR}/PC)
+file(COPY getbuildinfo.c DESTINATION ${SOURCE_DIR}/Modules)
 
 
-configure_file(Configure/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
-configure_file(Configure/random.c ${SOURCE_DIR}/Python/random.c COPYONLY)
+#configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
+file(WRITE ${python32_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
 
 if( WIN32 )
-    configure_file(Configure/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
-	configure_file(Configure/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/config.c.cmake ${SOURCE_DIR}/PC/config.c COPYONLY)
+	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
 else( WIN32 )
-    configure_file(Configure/config.c ${SOURCE_DIR}/NOPC/config.c COPYONLY)
-	configure_file(Configure/pyconfig.h ${SOURCE_DIR}/NOPC/pyconfig.h COPYONLY)
+	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/pyconfig.h.cmake ${SOURCE_DIR}/pyconfig.h)
 endif( WIN32 )
+
+#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Modules/zipimport.c ${SOURCE_DIR}/Modules/zipimport.c COPYONLY)
+#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Include/MengeStdioWrapper.h ${SOURCE_DIR}/Include/MengeStdioWrapper.h COPYONLY)
 
 ############################## 
 
@@ -131,10 +136,14 @@ set(OBJECT_SRCS
         ${SOURCE_DIR}/Objects/classobject.c
         ${SOURCE_DIR}/Objects/codeobject.c
         ${SOURCE_DIR}/Objects/complexobject.c
+        ${SOURCE_DIR}/Objects/stringlib/count.h
         ${SOURCE_DIR}/Objects/descrobject.c
         ${SOURCE_DIR}/Objects/dictobject.c
         ${SOURCE_DIR}/Objects/enumobject.c
         ${SOURCE_DIR}/Objects/exceptions.c
+        ${SOURCE_DIR}/Objects/stringlib/fastsearch.h
+        ${SOURCE_DIR}/Objects/fileobject.c
+        ${SOURCE_DIR}/Objects/stringlib/find.h
         ${SOURCE_DIR}/Objects/floatobject.c
         ${SOURCE_DIR}/Objects/frameobject.c
         ${SOURCE_DIR}/Objects/funcobject.c
@@ -147,16 +156,18 @@ set(OBJECT_SRCS
         ${SOURCE_DIR}/Objects/moduleobject.c
         ${SOURCE_DIR}/Objects/object.c
         ${SOURCE_DIR}/Objects/obmalloc.c
+        ${SOURCE_DIR}/Objects/stringlib/partition.h
         ${SOURCE_DIR}/Objects/rangeobject.c
         ${SOURCE_DIR}/Objects/setobject.c
         ${SOURCE_DIR}/Objects/sliceobject.c
+        ${SOURCE_DIR}/Objects/stringlib/split.h
         ${SOURCE_DIR}/Objects/structseq.c
         ${SOURCE_DIR}/Objects/tupleobject.c
         ${SOURCE_DIR}/Objects/typeobject.c
+        #${SOURCE_DIR}/Objects/unicodectype.c
+       # ${SOURCE_DIR}/Objects/unicodeobject.c
+        ${SOURCE_DIR}/Objects/unicodetype_db.h
         ${SOURCE_DIR}/Objects/weakrefobject.c
-        ${SOURCE_DIR}/Objects/accu.c
-        ${SOURCE_DIR}/Objects/fileobject.c
-        ${SOURCE_DIR}/Objects/namespaceobject.c
         )
    
 set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DIR}/Objects/unicodectype.c)
@@ -184,6 +195,8 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/getversion.c
                 ${SOURCE_DIR}/Python/graminit.c
                 ${SOURCE_DIR}/Python/import.c
+                ${SOURCE_DIR}/Python/importdl.c
+                ${SOURCE_DIR}/Python/importdl.h
                 ${SOURCE_DIR}/Python/marshal.c
                 ${SOURCE_DIR}/Python/modsupport.c
                 ${SOURCE_DIR}/Python/mysnprintf.c
@@ -203,12 +216,18 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/structmember.c
                 ${SOURCE_DIR}/Python/symtable.c
                 ${SOURCE_DIR}/Python/sysmodule.c
+                ${SOURCE_DIR}/Python/thread.c
+                ${SOURCE_DIR}/Python/thread_nt.h
                 ${SOURCE_DIR}/Python/traceback.c
-                ${SOURCE_DIR}/Python/random.c
+                ${SOURCE_DIR}/Python/dynload_win.c   
                 
+                ${SOURCE_DIR}/PC/_subprocess.c                
                 ${SOURCE_DIR}/PC/config.c
+                ${SOURCE_DIR}/PC/dl_nt.c
                 ${SOURCE_DIR}/PC/getpathp.c
-                #${SOURCE_DIR}/PC/winreg.c
+                ${SOURCE_DIR}/PC/import_nt.c
+                ${SOURCE_DIR}/PC/msvcrtmodule.c
+                ${SOURCE_DIR}/PC/winreg.c
                 
                 
                 #${MACHDEP_SRCS}
@@ -231,29 +250,68 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_bisectmodule.c
                 ${SOURCE_DIR}/Modules/_codecsmodule.c
                 ${SOURCE_DIR}/Modules/_collectionsmodule.c
-                ${SOURCE_DIR}/Modules/_functoolsmodule.c                
-                ${SOURCE_DIR}/Modules/_localemodule.c                
+                ${SOURCE_DIR}/Modules/_csv.c
+                ${SOURCE_DIR}/Modules/_functoolsmodule.c
+                ${SOURCE_DIR}/Modules/_heapqmodule.c
+                ${SOURCE_DIR}/Modules/_json.c
+                ${SOURCE_DIR}/Modules/_localemodule.c
+                ${SOURCE_DIR}/Modules/_lsprof.c
                 ${SOURCE_DIR}/Modules/_math.c
                 ${SOURCE_DIR}/Modules/_math.h
-                ${SOURCE_DIR}/Modules/_pickle.c                
+                ${SOURCE_DIR}/Modules/_pickle.c
+                ${SOURCE_DIR}/Modules/_randommodule.c
+                ${SOURCE_DIR}/Modules/_sre.c
                 ${SOURCE_DIR}/Modules/_struct.c
+                ${SOURCE_DIR}/Modules/_time.c
+                ${SOURCE_DIR}/Modules/_time.h
                 ${SOURCE_DIR}/Modules/_weakref.c
-                               
+                
+                ${SOURCE_DIR}/Modules/_io/_iomodule.c
+                ${SOURCE_DIR}/Modules/_io/bufferedio.c
+                ${SOURCE_DIR}/Modules/_io/bytesio.c
+                ${SOURCE_DIR}/Modules/_io/fileio.c
+                ${SOURCE_DIR}/Modules/_io/iobase.c
+                ${SOURCE_DIR}/Modules/_io/stringio.c
+                ${SOURCE_DIR}/Modules/_io/textio.c
+                
                 ${SOURCE_DIR}/Modules/cjkcodecs/multibytecodec.c
                 
-                ${SOURCE_DIR}/Modules/arraymodule.c                                
+                ${SOURCE_DIR}/Modules/arraymodule.c
+                ${SOURCE_DIR}/Modules/atexitmodule.c
+                ${SOURCE_DIR}/Modules/audioop.c
                 ${SOURCE_DIR}/Modules/binascii.c
-                ${SOURCE_DIR}/Modules/cmathmodule.c                
+                ${SOURCE_DIR}/Modules/cmathmodule.c
+                ${SOURCE_DIR}/Modules/_datetimemodule.c
                 ${SOURCE_DIR}/Modules/errnomodule.c
                 ${SOURCE_DIR}/Modules/gcmodule.c
                 ${SOURCE_DIR}/Modules/itertoolsmodule.c
                 ${SOURCE_DIR}/Modules/main.c
-                ${SOURCE_DIR}/Modules/mathmodule.c                
-                ${SOURCE_DIR}/Modules/operator.c                                
+                ${SOURCE_DIR}/Modules/mathmodule.c
+                ${SOURCE_DIR}/Modules/md5module.c
+                ${SOURCE_DIR}/Modules/mmapmodule.c
+                ${SOURCE_DIR}/Modules/operator.c
+                ${SOURCE_DIR}/Modules/parsermodule.c
+                ${SOURCE_DIR}/Modules/posixmodule.c
+                ${SOURCE_DIR}/Modules/rotatingtree.c
+                ${SOURCE_DIR}/Modules/rotatingtree.h
+                ${SOURCE_DIR}/Modules/sha1module.c
+                ${SOURCE_DIR}/Modules/sha256module.c
+                ${SOURCE_DIR}/Modules/sha512module.c
                 ${SOURCE_DIR}/Modules/signalmodule.c
                 ${SOURCE_DIR}/Modules/symtablemodule.c
-                ${SOURCE_DIR}/Modules/faulthandler.c
-                                
+                ${SOURCE_DIR}/Modules/_threadmodule.c
+                ${SOURCE_DIR}/Modules/timemodule.c
+                ${SOURCE_DIR}/Modules/xxsubtype.c
+                ${SOURCE_DIR}/Modules/zipimport.c
+                
+                
+                ${SOURCE_DIR}/Modules/pyexpat.c
+                
+                ${SOURCE_DIR}/Modules/expat/xmlparse.c
+                ${SOURCE_DIR}/Modules/expat/xmlrole.c
+                ${SOURCE_DIR}/Modules/expat/xmltok.c
+                
+                ${SOURCE_DIR}/Modules/zlibmodule.c
                 
                 
                 #${SOURCE_DIR}/Modules/timemodule.c
@@ -261,8 +319,6 @@ set(MODULE_SRCS
 				#${SOURCE_DIR}/Modules/arraymodule.c
 				#${SOURCE_DIR}/Modules/datetimemodule.c				
                 ${MOD_SRCS} )
-                
-set( MODULE_SRCS ${MODULE_SRCS} Configure/mockup.c )                
 				
 if( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )
@@ -271,13 +327,13 @@ else( NOT WIN32 )
 	${SOURCE_DIR}/PC/getpathp.c	)
 endif( NOT WIN32 )
 
-#set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
-#set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"2.6\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
+set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
+set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"3.4.2\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
 
-include_directories(${SOURCE_DIR}/Include)
-
+include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 if(WIN32)
-  include_directories(${SOURCE_DIR}/PC ${SOURCE_DIR}/Python)  
+  include_directories(${SOURCE_DIR}/PC ${SOURCE_DIR}/Python ${SOURCE_DIR}/Modules/expat)
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../zlib)
   if(MSVC)
 	  add_definitions(-DWIN32 -D_WINDOWS -D_MSC_VER=1400)
   else(MSVC)

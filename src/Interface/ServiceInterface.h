@@ -4,6 +4,10 @@
 
 #	include "Core/Exception.h"
 
+#   ifdef _DEBUG
+#	   include <typeinfo>
+#	endif
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

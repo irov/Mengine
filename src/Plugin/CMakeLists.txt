@@ -10,7 +10,7 @@ ADD_SUBDIRECTORY( MengePathFinderPlugin )
 if(WIN32)    
 	ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
     ADD_SUBDIRECTORY( MengeWin32FileGroupPlugin )
-    ADD_SUBDIRECTORY( FFMPEGVideoCodecPlugin )
+    #ADD_SUBDIRECTORY( FFMPEGVideoCodecPlugin )
     
     if(MSVC)        
         ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )        

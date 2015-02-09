@@ -255,11 +255,12 @@ namespace Menge
 		bin_stream->write( &FORMAT_VERSION_BIN, sizeof(FORMAT_VERSION_BIN) );        
         bin_stream->write( &bin_size, sizeof(bin_size) );
 
-		uint32_t compress_size;
+		size_t compress_size;
 		const void * compress_buffer = compress_memory->getMemory( compress_size );
 
-        bin_stream->write( &compress_size, sizeof(compress_size) );
-        bin_stream->write( compress_buffer, compress_size );
+		uint32_t write_compress_size = (uint32_t)compress_size;
+        bin_stream->write( &compress_size, sizeof(write_compress_size) );
+        bin_stream->write( compress_buffer, write_compress_size );
 		
 		return bin_size;
 	}

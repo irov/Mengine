@@ -1,42 +1,18 @@
 ADD_SUBDIRECTORY( AstralaxParticleSystem )
 ADD_SUBDIRECTORY( AstralaxParticleSystem2 )
 
-ADD_SUBDIRECTORY( Box2DPhysicSystem )
-#ADD_SUBDIRECTORY( MengeLogSystem )
 ADD_SUBDIRECTORY( OALSoundSystem )
 ADD_SUBDIRECTORY( SilentSoundSystem )
-#ADD_SUBDIRECTORY( ICUUnicodeSystem )
-#ADD_SUBDIRECTORY( PosixThreadSystem )
-#ADD_SUBDIRECTORY( PythonScriptSystem )
-
 
 if( WIN32 )
     ADD_SUBDIRECTORY( Win32UnicodeSystem )
     ADD_SUBDIRECTORY( Win32ThreadSystem )
-    ADD_SUBDIRECTORY( CurlHttpSystem )
+    #ADD_SUBDIRECTORY( CurlHttpSystem )
 endif( WIN32 )
-    
-if( APPLE )	
-	IF(${MENGINE_TARGET} STREQUAL "MACOS")
-		#ADD_SUBDIRECTORY( MengeMacOSFileSystem )
-		ADD_SUBDIRECTORY( PosixFileSystem )
-	ENDIF(${MENGINE_TARGET} STREQUAL "MACOS")
-endif( APPLE )
 
 if( WIN32 )
-	#if( MENGE_DX9 )
-		#ADD_SUBDIRECTORY( MengeDX9RenderSystem )
-	#else( MENGE_DX9 )
-		#ADD_SUBDIRECTORY( MengeDX8RenderSystem )
-		#ADD_SUBDIRECTORY( OGLRenderSystem )
-	#endif( MENGE_DX9 )
     ADD_SUBDIRECTORY( DX9RenderSystem )
 endif( WIN32 )
-
-if( APPLE )	
-	ADD_SUBDIRECTORY( OGLRenderSystem )
-endif( APPLE )
-
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

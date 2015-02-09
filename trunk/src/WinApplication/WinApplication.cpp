@@ -87,7 +87,7 @@ SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
 SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
 SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
 
-SERVICE_EXTERN(HttpSystem, Menge::HttpSystemInterface);
+//SERVICE_EXTERN(HttpSystem, Menge::HttpSystemInterface);
 SERVICE_EXTERN(PrefetcherService, Menge::PrefetcherServiceInterface); 
 
 extern "C" // only required if using g++
@@ -1276,21 +1276,21 @@ namespace Menge
 	{
 		LOGGER_INFO(m_serviceProvider)( "Inititalizing Http Service..." );
 
-		HttpSystemInterface * httpSystem;
+		//HttpSystemInterface * httpSystem;
 
-		if( SERVICE_CREATE( HttpSystem, &httpSystem ) == false )
-		{
-			return false;
-		}
+		//if( SERVICE_CREATE( HttpSystem, &httpSystem ) == false )
+		//{
+		//	return false;
+		//}
 
-		SERVICE_REGISTRY( m_serviceProvider, httpSystem );
+		//SERVICE_REGISTRY( m_serviceProvider, httpSystem );
 
-		if( httpSystem->initialize() == false )
-		{
-			return false;
-		}
+		//if( httpSystem->initialize() == false )
+		//{
+		//	return false;
+		//}
 
-		m_httpSystem = httpSystem;
+		//m_httpSystem = httpSystem;
 
 		return true;
 	}

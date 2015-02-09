@@ -164,7 +164,6 @@ namespace Menge
 		void setViewport( const Viewport & _viewport ) override;
 
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
-		bool setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear ) override;
 
 		bool supportTextureFormat( PixelFormat _format ) const override;
 

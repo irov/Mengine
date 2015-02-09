@@ -1213,11 +1213,6 @@ namespace Menge
 		//m_winContextWidth = _resolution.getWidth();
 		//m_winContextHeight = _resolution.getHeight();
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::setRenderTarget( const RenderImageInterfacePtr & _renderTarget, bool _clear )
-	{
-        return true;
-	}
     //////////////////////////////////////////////////////////////////////////
 	bool MarmaladeRenderSystem::supportTextureFormat( PixelFormat _format ) const
 	{

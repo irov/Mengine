@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 
 project(python3)
 
-SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Python-3.4.2 )
+SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Python3 )
 
 REMOVE_DEFINITIONS(-Doverride)
 
@@ -96,12 +96,8 @@ file(COPY getbuildinfo.c DESTINATION ${SOURCE_DIR}/Modules)
 #configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
 file(WRITE ${python32_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
 
-if( WIN32 )
-    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/config.c.cmake ${SOURCE_DIR}/PC/config.c COPYONLY)
-	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
-else( WIN32 )
-	configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_3_2/pyconfig.h.cmake ${SOURCE_DIR}/pyconfig.h)
-endif( WIN32 )
+configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
+configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
 
 #configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Modules/zipimport.c ${SOURCE_DIR}/Modules/zipimport.c COPYONLY)
 #configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_scripts/Python_2_7/Include/MengeStdioWrapper.h ${SOURCE_DIR}/Include/MengeStdioWrapper.h COPYONLY)
@@ -167,7 +163,9 @@ set(OBJECT_SRCS
         #${SOURCE_DIR}/Objects/unicodectype.c
        # ${SOURCE_DIR}/Objects/unicodeobject.c
         ${SOURCE_DIR}/Objects/unicodetype_db.h
-        ${SOURCE_DIR}/Objects/weakrefobject.c
+        ${SOURCE_DIR}/Objects/weakrefobject.c        
+        ${SOURCE_DIR}/Objects/namespaceobject.c
+        ${SOURCE_DIR}/Objects/accu.c
         )
    
 set(OBJECT_SRCS ${OBJECT_SRCS} ${SOURCE_DIR}/Objects/unicodeobject.c ${SOURCE_DIR}/Objects/unicodectype.c)
@@ -219,13 +217,13 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/thread.c
                 ${SOURCE_DIR}/Python/thread_nt.h
                 ${SOURCE_DIR}/Python/traceback.c
-                ${SOURCE_DIR}/Python/dynload_win.c   
+                ${SOURCE_DIR}/Python/dynload_win.c
+                ${SOURCE_DIR}/Python/random.c
+                ${SOURCE_DIR}/Python/pyhash.c                
                 
-                ${SOURCE_DIR}/PC/_subprocess.c                
                 ${SOURCE_DIR}/PC/config.c
                 ${SOURCE_DIR}/PC/dl_nt.c
                 ${SOURCE_DIR}/PC/getpathp.c
-                ${SOURCE_DIR}/PC/import_nt.c
                 ${SOURCE_DIR}/PC/msvcrtmodule.c
                 ${SOURCE_DIR}/PC/winreg.c
                 
@@ -262,10 +260,9 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_randommodule.c
                 ${SOURCE_DIR}/Modules/_sre.c
                 ${SOURCE_DIR}/Modules/_struct.c
-                ${SOURCE_DIR}/Modules/_time.c
-                ${SOURCE_DIR}/Modules/_time.h
                 ${SOURCE_DIR}/Modules/_weakref.c
-                
+                ${SOURCE_DIR}/Modules/_tracemalloc.c
+                                
                 ${SOURCE_DIR}/Modules/_io/_iomodule.c
                 ${SOURCE_DIR}/Modules/_io/bufferedio.c
                 ${SOURCE_DIR}/Modules/_io/bytesio.c
@@ -289,7 +286,6 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/mathmodule.c
                 ${SOURCE_DIR}/Modules/md5module.c
                 ${SOURCE_DIR}/Modules/mmapmodule.c
-                ${SOURCE_DIR}/Modules/operator.c
                 ${SOURCE_DIR}/Modules/parsermodule.c
                 ${SOURCE_DIR}/Modules/posixmodule.c
                 ${SOURCE_DIR}/Modules/rotatingtree.c
@@ -303,6 +299,9 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/timemodule.c
                 ${SOURCE_DIR}/Modules/xxsubtype.c
                 ${SOURCE_DIR}/Modules/zipimport.c
+                
+                ${SOURCE_DIR}/Modules/faulthandler.c
+                ${SOURCE_DIR}/Modules/hashtable.c
                 
                 
                 ${SOURCE_DIR}/Modules/pyexpat.c

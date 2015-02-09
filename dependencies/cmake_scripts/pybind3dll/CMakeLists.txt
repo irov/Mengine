@@ -1,6 +1,6 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
                                              
-project(pybind32)
+project(pybind3dll)
 
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../pybind )
 
@@ -31,15 +31,15 @@ if(NOT MSVC)
     ADD_DEFINITIONS(-D"nullptr_t=void*")    
 endif(NOT MSVC)
 
-add_definitions(-DPy_BUILD_CORE)
-add_definitions(-DPYBIND_PYTHON_VERSION=320)
+add_definitions(-DPy_ENABLE_SHARED)
+add_definitions(-DPYBIND_PYTHON_VERSION=342)
 
 include_directories(${SOURCE_DIR}/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Python32)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Python3)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)
 
 IF(WIN32)
-    include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python32/PC)
+    include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python3/PC)
 ENDIF(WIN32)
 
 add_library( ${PROJECT_NAME}_static STATIC ${sources} )

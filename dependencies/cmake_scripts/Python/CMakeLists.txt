@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.4.5 FATAL_ERROR)
 
 project(python)
 
-SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Python-2.7.9 )
+SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../Python )
 
 REMOVE_DEFINITIONS(-Doverride)
 
@@ -239,7 +239,7 @@ else( NOT WIN32 )
 endif( NOT WIN32 )
 
 set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
-set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"2.7.8\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
+set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"2.7.9\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
 
 #include_directories(${SOURCE_DIR}/Modules/zlib ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})

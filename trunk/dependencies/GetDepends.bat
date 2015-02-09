@@ -36,7 +36,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 
 :: %toolsdir%\wget\wget.exe --no-clobber http://download.icu-project.org/files/icu4c/49.1.2/icu4c-49_1_2-src.zip
 
-
+%toolsdir%\wget\wget.exe --no-clobber http://www.astralax.ru/download/programm/magic_win_140704.zip
 
 
 
@@ -102,6 +102,11 @@ if EXIST openal-soft rmdir /s /q openal-soft
 7za x -y openal-soft-1.16.0.tar.bz2
 7za x -y openal-soft-1.16.0.tar
 move openal-soft-1.16.0 openal-soft
+
+if EXIST astralax rmdir /s /q astralax
+7za x -y magic_win_140704.zip
+move win astralax
+
 
 :: svn\bin\svn export --force http://svn.python.org/projects/python/tags/r264/ Python
 :: svn\bin\svn export --force http://svn.xiph.org/tags/ogg/libogg-1.1.3 ogg

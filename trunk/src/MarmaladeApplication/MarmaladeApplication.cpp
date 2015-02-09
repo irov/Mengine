@@ -371,7 +371,7 @@ namespace Menge
         FilePath userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
 
         // mount user directory
-        if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), userPath, Helper::stringizeString(m_serviceProvider, "dir") ) == false )
+        if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), userPath, c_dir ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication: failed to mount user directory %ls"
                 , m_userPath.c_str()
@@ -400,7 +400,7 @@ namespace Menge
 #	ifndef MENGE_MASTER_RELEASE
 		ConstString c_dev = Helper::stringizeString( m_serviceProvider, "dev" );
 		// mount root		
-		if( m_fileService->mountFileGroup( c_dev, ConstString::none(), ConstString::none(), c_dir, false ) == false )
+		if( m_fileService->mountFileGroup( c_dev, ConstString::none(), c_dir ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount dev directory %ls"
 				, m_currentPath.c_str()
@@ -470,7 +470,7 @@ namespace Menge
 
 		m_configService = configService;
 
-		if( m_configService->initialize() == false )
+		if( m_configService->initialize( m_platformName ) == false )
 		{
 			return false;
 		}
@@ -2070,8 +2070,9 @@ namespace Menge
 
     }
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::notifyCursorIconSetup( const FilePath & _name, void * _buffer, size_t _size )
+    bool MarmaladeApplication::notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const Blobject & _buffer )
     {
+		return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::isDevelopmentMode() const

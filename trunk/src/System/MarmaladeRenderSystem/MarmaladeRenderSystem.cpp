@@ -1131,6 +1131,18 @@ namespace Menge
 
 		return texture;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeRenderSystem::lockRenderTarget( const RenderImageInterfacePtr & _renderTarget )
+	{
+		//TODO
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeRenderSystem::unlockRenderTarget()
+	{
+		//TODO
+		return false;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeRenderSystem::beginScene()
     {

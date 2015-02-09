@@ -153,6 +153,9 @@ namespace Menge
 
 		RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 
+		bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) override;
+		bool unlockRenderTarget() override;
+
 		bool beginScene() override;
 		void endScene() override;
 		void swapBuffers() override;

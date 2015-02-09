@@ -12,7 +12,7 @@ options
 includepaths
 {
     "./Modified/Python"
-	"../dependencies/Python-2.7.8/Include"
+	"../dependencies/Python/Include"
     "../dependencies/stdex/include"
 }
 
@@ -27,7 +27,7 @@ files
     pyconfig.h
     pymem.h
     
-    ("../dependencies/Python-2.7.8/Python")    
+    ("../dependencies/Python/Python")    
     codecs.c
     frozenmain.c
     getcompiler.c    
@@ -68,7 +68,7 @@ files
     pyctype.c
     random.c
     
-    ("../dependencies/Python-2.7.8/Modules")
+    ("../dependencies/Python/Modules")
     gcmodule.c
     getpath.c
     operator.c
@@ -85,7 +85,7 @@ files
     cStringIO.c
 	_weakref.c
     
-    ("../dependencies/Python-2.7.8/Objects")
+    ("../dependencies/Python/Objects")
     methodobject.c
     bytearrayobject.c
     bytes_methods.c
@@ -127,7 +127,7 @@ files
     capsule.c
     memoryobject.c
     
-    ("../dependencies/Python-2.7.8/Parser")
+    ("../dependencies/Python/Parser")
     acceler.c
     parser.h
     grammar1.c

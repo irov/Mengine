@@ -16,7 +16,7 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://www.ijg.org/files/jpegsr9a.zip
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.webmproject.org/releases/webp/libwebp-0.4.2.tar.gz
 
-:: %toolsdir%\wget\wget.exe --no-clobber http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.6.6.zip
+:: %toolsdir%\wget\wget.exe --no-clobber http://subversion.tigris.org/files/documents/15/47914/svn-win32-1.8..zip
                                      
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.xiph.org/releases/ogg/libogg-1.3.2.zip
 %toolsdir%\wget\wget.exe --no-clobber http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.4.zip
@@ -31,8 +31,8 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 %toolsdir%\wget\wget.exe --no-clobber http://kcat.strangesoft.net/openal-releases/openal-soft-1.16.0.tar.bz2
 
 
-%toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/2.7.9/Python-2.7.9.tgz
-%toolsdir%\wget\wget.exe --no-clobber http://python.org/ftp/python/3.4.2/Python-3.4.2.tgz
+%toolsdir%\wget\wget.exe --no-clobber --no-check-certificate http://python.org/ftp/python/2.7.9/Python-2.7.9.tgz
+%toolsdir%\wget\wget.exe --no-clobber --no-check-certificate http://python.org/ftp/python/3.4.2/Python-3.4.2.tgz
 
 :: %toolsdir%\wget\wget.exe --no-clobber http://download.icu-project.org/files/icu4c/49.1.2/icu4c-49_1_2-src.zip
 
@@ -64,19 +64,33 @@ if EXIST libjpeg rmdir /s /q libjpeg
 7za x -y jpegsr9a.zip
 move jpeg-9a libjpeg
 
-if EXIST Python-2.7.9 rmdir /s /q Python-2.7.9
+
+if EXIST libwebp rmdir /s /q libwebp
+7za x -y libwebp-0.4.2.tar.gz
+7za x -y libwebp-0.4.2.tar
+move libwebp-0.4.2 libwebp
+
+if EXIST Python rmdir /s /q Python
 7za x -y Python-2.7.9.tgz
 7za x -y Python-2.7.9.tar
+move Python-2.7.9 Python
 
-if EXIST Python-3.4.2 rmdir /s /q Python-3.4.2
+if EXIST Python3 rmdir /s /q Python3
 7za x -y Python-3.4.2.tgz
 7za x -y Python-3.4.2.tar
+move Python-3.4.2 Python3
 
-if EXIST libogg-1.3.2 rmdir /s /q libogg-1.3.2
+if EXIST libogg rmdir /s /q libogg
 7za x -y libogg-1.3.2.zip
+move libogg-1.3.2 libogg
 
-if EXIST libvorbis-1.3.4 rmdir /s /q libvorbis-1.3.4
+if EXIST libvorbis rmdir /s /q libvorbis
 7za x -y libvorbis-1.3.4.zip
+move libvorbis-1.3.4 libvorbis
+
+if EXIST libtheora rmdir /s /q libtheora
+7za x -y libtheora-1.1.1.zip
+move libtheora-1.1.1 libtheora
 
 :: if EXIST libcurl rmdir /s /q libcurl
 :: 7za x -y -olibcurl libcurl-7.19.3-win32-ssl-msvc.zip
@@ -84,13 +98,10 @@ if EXIST libvorbis-1.3.4 rmdir /s /q libvorbis-1.3.4
 :: if EXIST icu rmdir /s /q icu
 :: 7za x -y icu4c-49_1_2-src.zip
 
-if EXIST openal-soft-1.16.0 rmdir /s /q openal-soft-1.16.0
+if EXIST openal-soft rmdir /s /q openal-soft
 7za x -y openal-soft-1.16.0.tar.bz2
 7za x -y openal-soft-1.16.0.tar
-
-if EXIST svn rmdir /s /q svn
-7za x -y svn-win32-1.6.6.zip    
-move svn-win32-1.6.6 svn
+move openal-soft-1.16.0 openal-soft
 
 :: svn\bin\svn export --force http://svn.python.org/projects/python/tags/r264/ Python
 :: svn\bin\svn export --force http://svn.xiph.org/tags/ogg/libogg-1.1.3 ogg
@@ -103,13 +114,13 @@ move svn-win32-1.6.6 svn
 :: svn\bin\svn checkout http://simpleini.googlecode.com/svn/trunk simpleini
 :: svn\bin\svn export --force -r2465 svn://connect.creativelabs.com/OpenAL/trunk OpenAL
 
-svn\bin\svn checkout http://pugixml.googlecode.com/svn/trunk pugixml
-svn\bin\svn checkout https://svn.code.sf.net/p/pybind/code/trunk pybind
-svn\bin\svn checkout https://svn.code.sf.net/p/metabuf/code/trunk metabuf
-svn\bin\svn checkout https://svn.code.sf.net/p/stdex2/code/trunk stdex
-svn\bin\svn checkout http://svn.code.sf.net/p/utfcpp/code/v2_0 utf8
-svn\bin\svn checkout http://lz4.googlecode.com/svn/trunk lz4
-svn\bin\svn checkout https://svn.code.sf.net/p/fastpathfinder/code fastpathfinder
+svn checkout http://pugixml.googlecode.com/svn/trunk pugixml
+svn checkout https://svn.code.sf.net/p/pybind/code/trunk pybind
+svn checkout https://svn.code.sf.net/p/metabuf/code/trunk metabuf
+svn checkout https://svn.code.sf.net/p/stdex2/code/trunk stdex
+svn checkout http://svn.code.sf.net/p/utfcpp/code/v2_0 utf8
+svn checkout http://lz4.googlecode.com/svn/trunk lz4
+svn checkout https://svn.code.sf.net/p/fastpathfinder/code fastpathfinder
 
 goto end
 

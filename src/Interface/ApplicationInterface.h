@@ -12,32 +12,10 @@
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/PlatformInterface.h"
 #	include "Interface/ModuleInterface.h"
+#	include "Interface/GameInterface.h"
 
 namespace Menge
 {
-	struct ResourcePackDesc
-	{
-		ResourcePackDesc()
-			: dev(false)
-			, preload(true)
-		{
-		}
-
-        ConstString name;
-		ConstString type;
-
-		ConstString locale;
-		ConstString platform;
-
-        ConstString path;
-		ConstString descriptionPath;
-
-        bool dev;
-		bool preload;
-	};
-
-	typedef stdex::vector<ResourcePackDesc> TVectorResourcePackDesc;
-
 	class ApplicationInterface
 		: public ServiceInterface
 	{
@@ -77,7 +55,7 @@ namespace Menge
 		virtual void setDefaultWindowDescription( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _vsync ) = 0;
 
 	public:
-		virtual bool createGame() = 0;
+		virtual GameServiceInterface * createGame() = 0;
 		virtual bool loadResourcePacks( const ConstString & _fileGroup, const FilePath & _resourceIni ) = 0;
 		virtual bool initializeGame( const ConstString & _module, const ConstString & _language, const FilePath & _accountPath, const String & _scriptInitParams ) = 0;
 		virtual void finalizeGame() = 0;

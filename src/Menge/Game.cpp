@@ -559,7 +559,6 @@ namespace Menge
 		this->destroyArrow();
 		      
 		m_resourcePaks.clear();
-		m_languagePaks.clear();
 				
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DESTROY)( "()" );
 	}
@@ -646,8 +645,8 @@ namespace Menge
 		bool hasLocale = false;
 
 		for( TVectorResourcePak::const_iterator 
-			it = m_languagePaks.begin(),
-			it_end = m_languagePaks.end();
+			it = m_resourcePaks.begin(),
+			it_end = m_resourcePaks.end();
 		it != it_end;
 		++it )
 		{
@@ -698,29 +697,27 @@ namespace Menge
 		m_resourcePaks.push_back( pack );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::addLanguagePak( const ResourcePackDesc & _desc )
+	PakInterfacePtr Game::getResourcePak( const ConstString & _name ) const
 	{
-#   ifdef MENGE_MASTER_RELEASE
-		if( _desc.dev == true )
+		for( TVectorResourcePak::const_iterator 
+			it = m_resourcePaks.begin(),
+			it_end = m_resourcePaks.end();
+		it != it_end;
+		++it )
 		{
-			return;
+			const PakPtr & pak = *it;
+
+			const ConstString & name = pak->getName();
+
+			if( name != _name )
+			{
+				continue;
+			}
+
+			return pak;
 		}
-#   endif
 
-		PakPtr pack = m_factoryPak.createObjectT();
-
-		pack->setup(
-			m_serviceProvider
-			, _desc.name
-			, _desc.type
-			, _desc.locale
-			, _desc.platform
-			, _desc.descriptionPath
-			, _desc.path
-			, _desc.preload
-			);
-
-		m_languagePaks.push_back( pack );
+		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadResourcePak( const ResourcePackDesc & _desc )
@@ -773,6 +770,13 @@ namespace Menge
 				continue;
 			}
 
+			const ConstString & locale = pak->getLocale();
+
+			if( locale.empty() == false )
+			{
+				continue;
+			}
+
 			paks.push_back( pak );
 		}
 		
@@ -780,19 +784,8 @@ namespace Menge
 		{
 			if( this->loadLocalePaksByName_( paks, CONST_STRING(m_serviceProvider, eng), platformName ) == false )
 			{
-				if( m_languagePaks.empty() == false )
-				{
-					const PakPtr & firstPak = m_languagePaks.front();
-
-					const ConstString & pakName = firstPak->getName();
-
-					this->loadLocalePaksByName_( paks, pakName, platformName );
-				}
-				else
-				{
-					LOGGER_WARNING(m_serviceProvider)("Game::loadConfigPaks not set locale pak"						
-						);
-				}
+				LOGGER_WARNING(m_serviceProvider)("Game::loadConfigPaks not set locale pak"						
+					);
 			}
 		}
 
@@ -839,7 +832,6 @@ namespace Menge
 		END_WATCHDOG(m_serviceProvider, "pak apply", 0)("");
 
 		m_resourcePaks.clear();
-		m_languagePaks.clear();
 
         return true;
 	}

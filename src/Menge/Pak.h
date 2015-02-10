@@ -1,5 +1,6 @@
 #	pragma once
 
+#   include "Interface/GameInterface.h"
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 
@@ -11,7 +12,7 @@
 namespace Menge
 {
 	class Pak
-		: public FactorablePtr
+		: public PakInterface
 	{
 	public:
 		Pak();
@@ -28,13 +29,20 @@ namespace Menge
 			);
 
 	public:
-		bool isPreload() const;
+		const ConstString & getName() const override;
 
-		const ConstString & getName() const;
-		const ConstString & getLocale() const;
-		const ConstString & getPlatfrom() const;
+	public:
+		void setPreload( bool _value ) override;
+		bool isPreload() const override;
 
-		const ConstString & getPath() const;
+		void setLocale( const ConstString & _locale ) override;
+		const ConstString & getLocale() const override;
+
+		void setPlatfrom( const ConstString & _platform ) override;
+		const ConstString & getPlatfrom() const override;
+
+		void setPath( const ConstString & _path ) override;
+		const ConstString & getPath() const override;
 
 	public:
 		bool load();

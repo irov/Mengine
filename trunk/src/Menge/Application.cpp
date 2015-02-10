@@ -418,7 +418,7 @@ namespace Menge
 			IniUtil::getIniValue( ini, languagePack.c_str(), "Dev", pack.dev, m_serviceProvider );
 			IniUtil::getIniValue( ini, languagePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );	
 
-			m_game->addLanguagePak( pack );
+			m_game->addResourcePak( pack );
 		}
 
 		return true;

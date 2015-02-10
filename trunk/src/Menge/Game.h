@@ -100,8 +100,8 @@ namespace Menge
 
 		bool loadPersonality( const ConstString & _module ) override;
 		
-		void addResourcePak( const ResourcePackDesc & _desc ) override;
-		void addLanguagePak( const ResourcePackDesc & _desc ) override;
+		void addResourcePak( const ResourcePackDesc & _desc ) override;		
+		PakInterfacePtr getResourcePak( const ConstString & _name ) const override;
 
 	public:
 		bool loadResourcePak( const ResourcePackDesc & _desc ) override;
@@ -178,7 +178,6 @@ namespace Menge
 		FilePath m_iconPath;
 					
 		TVectorResourcePak m_resourcePaks;
-		TVectorResourcePak m_languagePaks;
 
 		typedef FactoryPoolStore<Pak, 8> TFactoryPak;
 		TFactoryPak m_factoryPak;

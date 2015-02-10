@@ -29,7 +29,29 @@ namespace Menge
 	};
 
 	typedef stdex::vector<ResourcePackDesc> TVectorResourcePackDesc;
-    
+
+	class PakInterface
+		: public FactorablePtr
+	{
+	public:
+		virtual const ConstString & getName() const = 0;
+
+	public:
+		virtual void setPreload( bool _value ) = 0;
+		virtual bool isPreload() const = 0;
+
+		virtual void setLocale( const ConstString & _locale ) = 0;
+		virtual const ConstString & getLocale() const = 0;
+
+		virtual void setPlatfrom( const ConstString & _platform ) = 0;
+		virtual const ConstString & getPlatfrom() const = 0;
+
+		virtual void setPath( const ConstString & _path ) = 0;
+		virtual const ConstString & getPath() const = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<PakInterface> PakInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class GameServiceInterface
         : public ServiceInterface
         , public InputSystemHandler
@@ -70,7 +92,7 @@ namespace Menge
 
     public:
 		virtual void addResourcePak( const ResourcePackDesc & _desc ) = 0;
-		virtual void addLanguagePak( const ResourcePackDesc & _desc ) = 0;
+		virtual PakInterfacePtr getResourcePak( const ConstString & _name ) const = 0;
 
 	public:
 		virtual bool loadResourcePak( const ResourcePackDesc & _desc ) = 0;

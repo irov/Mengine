@@ -91,7 +91,7 @@ namespace Menge
         virtual bool hasParam( const ConstString & _paramName ) const = 0;
 
     public:
-		virtual void addResourcePak( const ResourcePackDesc & _desc ) = 0;
+		virtual void createResourcePak( const ResourcePackDesc & _desc ) = 0;
 		virtual PakInterfacePtr getResourcePak( const ConstString & _name ) const = 0;
 
 	public:

@@ -379,7 +379,7 @@ namespace Menge
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );			
 
-			m_game->addResourcePak( pack );
+			m_game->createResourcePak( pack );
 		}
 
 		TVectorString languagePackSettings;
@@ -418,7 +418,7 @@ namespace Menge
 			IniUtil::getIniValue( ini, languagePack.c_str(), "Dev", pack.dev, m_serviceProvider );
 			IniUtil::getIniValue( ini, languagePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );	
 
-			m_game->addResourcePak( pack );
+			m_game->createResourcePak( pack );
 		}
 
 		return true;

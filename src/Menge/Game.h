@@ -100,7 +100,7 @@ namespace Menge
 
 		bool loadPersonality( const ConstString & _module ) override;
 		
-		void addResourcePak( const ResourcePackDesc & _desc ) override;		
+		void createResourcePak( const ResourcePackDesc & _desc ) override;		
 		PakInterfacePtr getResourcePak( const ConstString & _name ) const override;
 
 	public:

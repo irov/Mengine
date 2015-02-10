@@ -673,7 +673,7 @@ namespace Menge
 		return hasLocale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::addResourcePak( const ResourcePackDesc & _desc )
+	void Game::createResourcePak( const ResourcePackDesc & _desc )
 	{
 #   ifdef MENGE_MASTER_RELEASE
 		if( _desc.dev == true )

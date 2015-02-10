@@ -79,8 +79,9 @@ namespace Menge
 		void setDefaultWindowDescription( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _vsync ) override;
 
 	public:
-		bool createGame( const ConstString & _module, const ConstString & _language, const ConstString & _resourcesIniGroup, const FilePath & _resourcesIniPath ) override;
-		bool initializeGame( const FilePath & _accountPath, const String & _scriptInitParams ) override;
+		bool createGame() override;
+		bool loadResourcePacks( const ConstString & _fileGroup, const FilePath & _resourceIni ) override;
+		bool initializeGame( const ConstString & _personalityModule, const ConstString & _language, const FilePath & _accountPath, const String & _scriptInitParams ) override;
 		void finalizeGame() override;
 
 	public:

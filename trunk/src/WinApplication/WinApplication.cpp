@@ -1736,19 +1736,23 @@ namespace Menge
 			}
 		}
 
-		String languagePack;
-		Helper::s_getOption( " -lang:", m_commandLine, &languagePack );
+		Resolution defaultWindowResolution = CONFIG_VALUE(m_serviceProvider, "Window", "Size", Resolution(1024, 768));
+		uint32_t defaultWindowBits = CONFIG_VALUE(m_serviceProvider, "Window", "Bits", 32U);
+		bool defaultWindowFullscreen = CONFIG_VALUE(m_serviceProvider, "Window", "Fullscreen", true);
+		bool defaultWindowVSync = CONFIG_VALUE(m_serviceProvider, "Window", "VSync", true);
 
-		if( languagePack.empty() == true )
-		{
-			languagePack = CONFIG_VALUE(m_serviceProvider, "Locale", "Default", "en");
-		}
+		m_application->setDefaultWindowDescription( defaultWindowResolution, defaultWindowBits, defaultWindowFullscreen, defaultWindowVSync );
 
-		LOGGER_WARNING(m_serviceProvider)("Locale %s"
-			, languagePack.c_str()
+		LOGGER_INFO(m_serviceProvider)( "Application Create..."
 			);
 
-		String personalityModule = CONFIG_VALUE(m_serviceProvider, "Game", "PersonalityModule", "Personality" );
+		if( m_application->createGame() == false )
+		{
+			LOGGER_CRITICAL(m_serviceProvider)("Application create game failed"
+				);
+
+			return false;
+		}
 
 		ConstString resourceIniPath;
 		if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
@@ -1759,16 +1763,13 @@ namespace Menge
 			return false;
 		}
 
-		Resolution defaultWindowResolution = CONFIG_VALUE(m_serviceProvider, "Window", "Size", Resolution(1024, 768));
-		uint32_t defaultWindowBits = CONFIG_VALUE(m_serviceProvider, "Window", "Bits", 32U);
-		bool defaultWindowFullscreen = CONFIG_VALUE(m_serviceProvider, "Window", "Fullscreen", true);
-		bool defaultWindowVSync = CONFIG_VALUE(m_serviceProvider, "Window", "VSync", true);
+		LOGGER_INFO(m_serviceProvider)( "Application load resource packs... %s"
+			, resourceIniPath.c_str()
+			);
 
-		m_application->setDefaultWindowDescription( defaultWindowResolution, defaultWindowBits, defaultWindowFullscreen, defaultWindowVSync );
-
-		if( m_application->createGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack), ConstString::none(), resourceIniPath ) == false )
+		if( m_application->loadResourcePacks( ConstString::none(), resourceIniPath ) == false )
 		{
-			LOGGER_CRITICAL(m_serviceProvider)("Application create game failed"
+			LOGGER_CRITICAL(m_serviceProvider)("Application invalid initialize game"
 				);
 
 			return false;
@@ -1853,12 +1854,26 @@ namespace Menge
 		m_cursors[STRINGIZE_STRING_LOCAL(m_serviceProvider, "IDC_HELP")] = LoadCursor( NULL, IDC_HELP );
 
 		FilePath accountPath = STRINGIZE_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
-		
+				
 		LOGGER_INFO(m_serviceProvider)( "Initializing Game data... %s"
 			, accountPath.c_str()
 			);
+
+		String languagePack;
+		Helper::s_getOption( " -lang:", m_commandLine, &languagePack );
+
+		if( languagePack.empty() == true )
+		{
+			languagePack = CONFIG_VALUE(m_serviceProvider, "Locale", "Default", "en");
+		}
+
+		LOGGER_WARNING(m_serviceProvider)("Locale %s"
+			, languagePack.c_str()
+			);
+
+		String personalityModule = CONFIG_VALUE(m_serviceProvider, "Game", "PersonalityModule", "Personality" );
 				
-		if( m_application->initializeGame( accountPath, scriptInit ) == false )
+		if( m_application->initializeGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack), accountPath, scriptInit ) == false )
 		{
 			LOGGER_CRITICAL(m_serviceProvider)("Application invalid initialize game"
 				);

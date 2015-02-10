@@ -124,8 +124,8 @@ namespace Menge
 		const Resolution & getCurrentResolution() const override;
 
 		const Viewport & getRenderViewport() const override;
-
 		const Resolution & getContentResolution() const override;
+
 		void getGameViewport( float & _aspect, Viewport & _viewport ) const override;
 
 	public:

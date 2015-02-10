@@ -247,7 +247,7 @@ namespace Menge
         ExecuteInitialize exinit( this );
 				
         exinit.add( &Application::initializePrototypeManager_ );
-        exinit.add( &Application::initializeNodeManager_ );        
+        exinit.add( &Application::initializeNodeManager_ );
         exinit.add( &Application::initializeLoaderEngine_ );
         exinit.add( &Application::initializeResourceManager_ );
         exinit.add( &Application::initializeSceneManager_ );
@@ -292,7 +292,6 @@ namespace Menge
 		m_fixedDisplayResolution = CONFIG_VALUE(m_serviceProvider, "Game", "FixedDisplayResolution", true);
 		m_windowModeCheck = CONFIG_VALUE(m_serviceProvider, "Game", "WindowModeCheck", false);
 		
-
 		TVectorAspectRatioViewports aspectRatioViewports;
 		CONFIG_VALUES(m_serviceProvider, "Game", "AspectRatioViewport", aspectRatioViewports);
 

@@ -22,8 +22,9 @@ namespace Menge
 
 	public:
 		bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) override;
-
+		
 	public:
+		void addValue( const Char * _section, const Char * _key, const Char * _value ) override;
 		void setValue( const Char * _section, const Char * _key, const Char * _value ) override;
 
 	public:
@@ -49,7 +50,18 @@ namespace Menge
 
 		ConstString m_platformName;
 
-		IniUtil::IniStore m_ini;		
+		IniUtil::IniStore m_ini;
+
+		struct ModifySetting
+		{
+			const char * section;
+			const char * key;
+
+			String value;
+		};
+
+		typedef stdex::vector<ModifySetting> TVectorModifySetting;
+		TVectorModifySetting m_modifySettings;
 	};
 }
 

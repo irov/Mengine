@@ -63,9 +63,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ConfigManager::addValue( const Char * _section, const Char * _key, const Char * _value )
+	{
+		IniUtil::addIniValue( m_ini, _section, _key, _value, m_serviceProvider );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ConfigManager::setValue( const Char * _section, const Char * _key, const Char * _value )
 	{
-		IniUtil::mergeIniValue( m_ini, _section, _key, _value, m_serviceProvider );
+		IniUtil::setIniValue( m_ini, _section, _key, _value, m_serviceProvider );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace Helper

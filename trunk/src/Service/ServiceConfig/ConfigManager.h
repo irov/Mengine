@@ -24,8 +24,8 @@ namespace Menge
 		bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) override;
 		
 	public:
-		void addValue( const Char * _section, const Char * _key, const Char * _value ) override;
-		void setValue( const Char * _section, const Char * _key, const Char * _value ) override;
+		bool addValue( const Char * _section, const Char * _key, const Char * _value ) override;
+		bool setValue( const Char * _section, const Char * _key, const Char * _value ) override;
 
 	public:
 		bool getValue( const Char * _section, const Char * _key, bool _default ) const override;

@@ -28,8 +28,8 @@ namespace Menge
 		virtual bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) = 0;
 
 	public:
-		virtual void addValue( const Char * _section, const Char * _key, const Char * _value ) = 0;
-		virtual void setValue( const Char * _section, const Char * _key, const Char * _value ) = 0;
+		virtual bool addValue( const Char * _section, const Char * _key, const Char * _value ) = 0;
+		virtual bool setValue( const Char * _section, const Char * _key, const Char * _value ) = 0;
 
 	public:
 		virtual bool getValue( const Char * _section, const Char * _key, bool _default ) const = 0;

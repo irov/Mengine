@@ -33,7 +33,7 @@ includepaths
 	"./Modified/pugixml/src"
     
     "./Modified/Python"
-	"../dependencies/Python"
+	"../dependencies/Python-2.7.9"
     
     "../dependencies/zlib"
     #"../dependencies/lz4"

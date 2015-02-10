@@ -28,6 +28,7 @@ namespace Menge
 		virtual bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) = 0;
 
 	public:
+		virtual void addValue( const Char * _section, const Char * _key, const Char * _value ) = 0;
 		virtual void setValue( const Char * _section, const Char * _key, const Char * _value ) = 0;
 
 	public:
@@ -54,6 +55,9 @@ namespace Menge
 
 #	define CONFIG_VALUE( serviceProvider, section, key, default )\
 	(CONFIG_SERVICE( serviceProvider )->getValue( section, key, default ))
+
+#	define CONFIG_ADD( serviceProvider, section, key, value )\
+	(CONFIG_SERVICE( serviceProvider )->addValue( section, key, value ))
 
 #	define CONFIG_SET( serviceProvider, section, key, value )\
 	(CONFIG_SERVICE( serviceProvider )->setValue( section, key, value ))

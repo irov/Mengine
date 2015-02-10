@@ -310,8 +310,13 @@ namespace Menge
         return true;
     }
 	/////////////////////////////////////////////////////
-	bool Application::loadResourcePacks_( const ConstString & _fileGroup, const FilePath & _resourceIni )
+	bool Application::loadResourcePacks( const ConstString & _fileGroup, const FilePath & _resourceIni )
 	{
+		if( m_game == nullptr )
+		{
+			return false;
+		}
+
 		InputStreamInterfacePtr resourceInputStream = 
 			FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _resourceIni, false );
 
@@ -762,7 +767,7 @@ namespace Menge
 		m_vsync = _vsync;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createGame( const ConstString & _personalityModule, const ConstString & _language, const ConstString & _resourcesIniGroup, const FilePath & _resourcesIniPath )
+	bool Application::createGame()
 	{
         SERVICE_CREATE(GameService, &m_game);
 
@@ -776,68 +781,6 @@ namespace Menge
 
         m_game->setDevelopmentMode( m_developmentMode );
         
-		LOGGER_INFO(m_serviceProvider)( "Application:createGame load game resource"
-			);
-
-		m_game->setLanguagePack( _language );
-
-		if( this->loadResourcePacks_( _resourcesIniGroup, _resourcesIniPath ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application::setup Invalid load resourcesPack setting %s:%s"
-				, _resourcesIniGroup.c_str()
-				, _resourcesIniPath.c_str()
-				);
-
-			return false;
-		}
-					
-		if( m_game->applyConfigPaks() == false )
-        {
-            return false;
-        }
-
-		if( m_developmentMode == true )
-		{
-			if( TEXT_SERVICE(m_serviceProvider)
-				->validate() == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("TextService invalid validate!"
-					);
-			}
-		}
-
-		const ConstString & defaultFontName = TEXT_SERVICE(m_serviceProvider)
-			->getDefaultFontName();
-
-		if( defaultFontName.empty() == true )
-		{
-			LOGGER_ERROR(m_serviceProvider)("TextService not setup default font name!"
-				);
-		}
-
-        if( m_developmentMode == true && m_resourceCheck == true )
-        {
-            if( RESOURCE_SERVICE(m_serviceProvider)
-                ->validationResources() == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("Resources validation is invalid!!!!!!!!!!!!!"
-					);
-
-				if( m_resourceCheckCritical == true )
-				{
-					LOGGER_CRITICAL(m_serviceProvider)("Fix Resources"
-						);
-
-					return false;
-				}
-			}
-        }
-        
-		if( m_game->loadPersonality( _personalityModule ) == false )
-		{
-			return false;
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -928,8 +871,53 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeGame( const FilePath & _accountPath, const String & _scriptInitParams )
+	bool Application::initializeGame( const ConstString & _personalityModule, const ConstString & _language, const FilePath & _accountPath, const String & _scriptInitParams )
 	{
+		if( m_game == nullptr )
+		{
+			return false;
+		}
+
+		LOGGER_INFO(m_serviceProvider)( "Application:initializeGame load game resource"
+			);
+
+		m_game->setLanguagePack( _language );
+		
+		if( m_game->applyConfigPaks() == false )
+		{
+			return false;
+		}
+
+		if( m_developmentMode == true && m_resourceCheck == true )
+		{
+			if( TEXT_SERVICE(m_serviceProvider)
+				->validate() == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("TextService invalid validate!"
+					);
+			}
+
+			if( RESOURCE_SERVICE(m_serviceProvider)
+				->validationResources() == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Resources validation is invalid!!!!!!!!!!!!!"
+					);
+
+				if( m_resourceCheckCritical == true )
+				{
+					LOGGER_CRITICAL(m_serviceProvider)("Fix Resources"
+						);
+
+					return false;
+				}
+			}
+		}
+
+		if( m_game->loadPersonality( _personalityModule ) == false )
+		{
+			return false;
+		}
+
 		TMapParams params;		
 		CONFIG_SECTION(m_serviceProvider, "Params", params);
 

@@ -711,7 +711,14 @@ namespace Menge
 	{
 		bool successful = true;
 
-		if( m_defaultFontName.empty() == false )
+		if( m_defaultFontName.empty() == true )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextManager::validate not setup default font name!"
+				);
+
+			successful = false;
+		}
+		else
 		{
 			TextFontInterfacePtr font;
 			if( this->existFont( m_defaultFontName, font ) == false )

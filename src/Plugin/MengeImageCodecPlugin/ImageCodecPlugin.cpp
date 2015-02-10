@@ -7,7 +7,10 @@
 
 #	include "ImageDecoderPNG.h"
 #	include "ImageDecoderJPEG.h"
-#	include "ImageDecoderWEBP.h"
+
+#	ifdef MENGINE_SUPPORT_DECODER_WEBP
+#		include "ImageDecoderWEBP.h"
+#	endif
 
 #	include "ImageDecoderDDS.h"
 #	include "ImageDecoderPVRTC.h"

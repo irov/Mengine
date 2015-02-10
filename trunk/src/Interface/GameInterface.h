@@ -1,12 +1,34 @@
 #   pragma once
 
 #   include "Interface/ServiceInterface.h"
-#   include "Interface/ApplicationInterface.h"
 #   include "Interface/PlayerInterface.h"
+
+#	include "Core/Params.h"
 
 namespace Menge
 {
-    class Node;
+	struct ResourcePackDesc
+	{
+		ResourcePackDesc()
+			: dev(false)
+			, preload(true)
+		{
+		}
+
+		ConstString name;
+		ConstString type;
+
+		ConstString locale;
+		ConstString platform;
+
+		ConstString path;
+		ConstString descriptionPath;
+
+		bool dev;
+		bool preload;
+	};
+
+	typedef stdex::vector<ResourcePackDesc> TVectorResourcePackDesc;
     
     class GameServiceInterface
         : public ServiceInterface

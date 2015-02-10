@@ -1746,7 +1746,9 @@ namespace Menge
 		LOGGER_INFO(m_serviceProvider)( "Application Create..."
 			);
 
-		if( m_application->createGame() == false )
+		GameServiceInterface * game = m_application->createGame();
+
+		if( game == nullptr )
 		{
 			LOGGER_CRITICAL(m_serviceProvider)("Application create game failed"
 				);

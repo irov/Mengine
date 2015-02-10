@@ -767,7 +767,7 @@ namespace Menge
 		m_vsync = _vsync;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::createGame()
+	GameServiceInterface * Application::createGame()
 	{
         SERVICE_CREATE(GameService, &m_game);
 
@@ -776,12 +776,12 @@ namespace Menge
             LOGGER_INFO(m_serviceProvider)( "Application:createGame invalid register game service"
                 );
 
-            return false;
+            return nullptr;
         }
-
+		
         m_game->setDevelopmentMode( m_developmentMode );
         
-		return true;
+		return m_game;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::createRenderWindow( WindowHandle _renderWindowHandle )

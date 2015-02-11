@@ -25,7 +25,8 @@ namespace Menge
 		case PF_PVRTC4_RGB:
 			return 3;
 		default:
-			return 0;
+			{
+			}break;
 		}
 
 		return 0;

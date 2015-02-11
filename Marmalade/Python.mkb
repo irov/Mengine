@@ -9,7 +9,7 @@ options
     enable-exceptions
 	preinclude=preinclude_python.h
     
-    cflags="-Wno-error=unused-value"
+    cflags="-Wno-error=unused-value -Wno-error=strict-overflow -Wno-error=unused-but-set-variable"
 }
 
 includepaths
@@ -142,6 +142,7 @@ files
     firstsets.c
     parsetok.c
     myreadline.c    
+    pgen.c
     bitset.c
     parser.c
     metagrammar.c

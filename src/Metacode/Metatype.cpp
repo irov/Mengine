@@ -16,7 +16,7 @@ namespace Metabuf
 		uint8_t bool_value;
 		ar.readPOD( bool_value );
 
-		_value = (bool)bool_value;
+		_value = !!bool_value;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void archive_read( stdex::memory_reader & ar, uint8_t & _value, void * _userData )

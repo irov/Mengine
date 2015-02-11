@@ -511,6 +511,9 @@ namespace Menge
 					_format = PF_A8R8G8B8;
 				}
 			}break;
+		default:
+			{
+			}break;
 		}
 
 		(void)_depth; //ToDo
@@ -636,9 +639,7 @@ namespace Menge
 			_texture->unlock( i );
 		}
 
-		END_WATCHDOG(m_serviceProvider, "texture decode", 1)("texture decode %s"
-			, _texture->getFileName().c_str()
-			);
+		END_WATCHDOG(m_serviceProvider, "texture decode", 1)("texture decode %s", _texture->getFileName().c_str());
 		
         return true;
     }

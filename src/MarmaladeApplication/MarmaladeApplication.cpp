@@ -1488,10 +1488,21 @@ namespace Menge
 		m_application->setDefaultWindowDescription( defaultWindowResolution, defaultWindowBits, defaultWindowFullscreen, defaultWindowVSync );
 
 		s3eDeviceYield(0);
+
+		GameServiceInterface * gameService = m_application->createGame();
+
+		if( gameService == nullptr )
+		{
+			LOGGER_CRITICAL(m_serviceProvider)( "Application create game failed"
+				);
+
+			return false;
+		}
 		
-        if( m_application->createGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack), ConstString::none(), resourceIniPath ) == false )
+        if( m_application->loadResourcePacks( ConstString::none(), resourceIniPath ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)( "Application create game failed"
+            LOGGER_CRITICAL(m_serviceProvider)( "Application invalid load resource pak %s"
+				, resourceIniPath.c_str()
                 );
 
             return false;
@@ -1509,7 +1520,7 @@ namespace Menge
 			, accountPath.c_str()
 			);
 				
-        if( m_application->initializeGame( accountPath, scriptInit ) == false )
+        if( m_application->initializeGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack), accountPath, scriptInit ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "Application invalid initialize game"
                 );
@@ -1553,6 +1564,8 @@ namespace Menge
     static int32 s3eCallback_Input_S3E_SURFACE_SCREENSIZE( void * _systemData, void * _userData )
     {
         s3eSurfaceOrientation * orientation = static_cast<s3eSurfaceOrientation *>(_systemData);
+		
+		(void)orientation;
         
         MarmaladeInput * input = static_cast<MarmaladeInput *>(_userData);
         

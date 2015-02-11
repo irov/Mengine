@@ -20,20 +20,15 @@ namespace Menge
 #	define WATCHDOG_SERVICE( serviceProvider )\
 	SERVICE_GET(serviceProvider, Menge::WatchdogInterface)
 
+
 #   ifdef MENGE_MASTER_RELEASE
-#   define WATCHDOG( serviceProvider, tag )\
-    (0.f)
-#   else //MENGE_MASTER_RELEASE
-#   define WATCHDOG( serviceProvider, tag )\
-    WATCHDOG_SERVICE(serviceProvider)->watch(tag)
-#   endif //MENGE_MASTER_RELEASE
-
-#   define LOGGER_WATCHDOG( serviceProvider, level )\
-    if( LOG_SERVICE(serviceProvider)->validMessage(Menge::LM_ERROR, level) == false) {} else Menge::LoggerOperator(LOG_SERVICE(serviceProvider), Menge::LM_ERROR, level)
-
-#   define BEGIN_WATCHDOG( serviceProvider, tag )\
-    WATCHDOG(serviceProvider, tag)
-
-#   define END_WATCHDOG( serviceProvider, tag, level )\
-    LOGGER_WATCHDOG(serviceProvider, level)("(%.4f)", WATCHDOG(m_serviceProvider, tag))
+#		define WATCHDOG( serviceProvider, tag ) (0.f)
+#		define BEGIN_WATCHDOG( serviceProvider, tag )
+#		define END_WATCHDOG2(...) 
+#		define END_WATCHDOG( serviceProvider, tag, level ) END_WATCHDOG2
+#	else
+#		define WATCHDOG( serviceProvider, tag ) WATCHDOG_SERVICE(serviceProvider)->watch(tag)
+#		define BEGIN_WATCHDOG( serviceProvider, tag ) WATCHDOG(serviceProvider, tag)
+#		define END_WATCHDOG( serviceProvider, tag, level ) if( LOG_SERVICE(serviceProvider)->validMessage(Menge::LM_ERROR, level) == false){}else Menge::LoggerOperator(LOG_SERVICE(serviceProvider), Menge::LM_ERROR, level)("(%.4f)", WATCHDOG(m_serviceProvider, tag))
+#	endif
 }

@@ -298,6 +298,10 @@ namespace Menge
 
 		int32 numChannels = s3eSoundGetInt( S3E_SOUND_NUM_CHANNELS );
 
+		LOGGER_WARNING(m_serviceProvider)("MarmaladeSoundSystem sound channels %d"
+			, numChannels
+			);
+
 		int soundChannel = s3eSoundGetFreeChannel();
 
 		if( s3eSoundChannelRegister( soundChannel, S3E_CHANNEL_GEN_AUDIO, &s_AudioCallbackMono, (void *)m_soundMemoryDesc ) == S3E_RESULT_ERROR )

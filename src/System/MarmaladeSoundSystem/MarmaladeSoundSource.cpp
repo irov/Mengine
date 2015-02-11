@@ -237,11 +237,7 @@ namespace Menge
 		uint32 pos = carriage;
 
 		uint32_t frequency = m_soundBuffer->getFrequency();
-		uint32_t channels = m_soundBuffer->getChannels();
-		//uint32_t bits = m_soundBuffer->getBits();
-
-		//uint32_t bytePerSec = (frequency * channels * bits);
-
+		
 		float posMs = (float)(pos * 1000 / frequency * m_L / m_W);
 
 		return posMs;
@@ -261,12 +257,9 @@ namespace Menge
 		uint32 ms = (uint32)_posMs;
 
 		uint32_t frequency = m_soundBuffer->getFrequency();
-		uint32_t channels = m_soundBuffer->getChannels();
-		//uint32_t bits = m_soundBuffer->getBits();
 
 		uint32_t pos = (ms * frequency) / 1000 * m_W / m_L;
 
-		//m_carriage_s3e = pos * m_W / m_L;
 		m_carriage_s3e = pos;
 
         return true;

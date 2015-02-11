@@ -496,7 +496,7 @@ namespace Menge
 		float frameTiming = dataInfo->getFrameTiming();
 		float duration = dataInfo->duration;
 
-		while( true, true )
+		for(;;)
 		{
 			float pts;
 			EVideoDecoderReadState state = m_videoDecoder->readNextFrame( pts );

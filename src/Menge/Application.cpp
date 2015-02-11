@@ -1157,12 +1157,12 @@ namespace Menge
 					pool_now += m.block_size * m.block_count;
 					pool_max += m.block_size * m.block_total * m.chunk_count;
 
-					printf("block %lu:%lu %lu alloc %lu:%lu over %.2f\n"
-						, m.block_size
-						, m.chunk_count
-						, m.block_count
-						, m.block_size * m.block_count
-						, m.block_size * m.block_total * m.chunk_count
+					printf("block %u:%u %u alloc %u:%u over %.2f\n"
+						, (uint32_t)m.block_size
+						, (uint32_t)m.chunk_count
+						, (uint32_t)m.block_count
+						, (uint32_t)m.block_size * m.block_count
+						, (uint32_t)m.block_size * m.block_total * m.chunk_count
 						, ( m.block_count > 0 ) ? float(m.block_size * m.block_total * m.chunk_count) / float(m.block_size * m.block_count) : 0.f
 						);
 				}

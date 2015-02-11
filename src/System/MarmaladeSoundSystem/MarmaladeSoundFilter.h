@@ -16,7 +16,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const double PI = 3.14159265358979323846;
 	//////////////////////////////////////////////////////////////////////////
-	static void s_genSinc( double sinc[], size_t N, double fc )
+	inline static void s_genSinc( double sinc[], size_t N, double fc )
 	{		
 		const double M = N - 1;
 
@@ -28,7 +28,7 @@ namespace Menge
 		}        
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_wBlackman( double w[], size_t N )
+	inline static void s_wBlackman( double w[], size_t N )
 	{
 		const double M = N - 1;
 
@@ -41,7 +41,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static inline void s_wHanning( double w[], size_t N )
+	inline static void s_wHanning( double w[], size_t N )
 	{
 		const double M = N - 1;
 
@@ -51,7 +51,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static inline void s_wHamming( double w[], size_t N )
+	inline static void s_wHamming( double w[], size_t N )
 	{
 		const double M = N-1;
 
@@ -61,7 +61,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_wsfirLP( double h[], ESoundWindowConstants mode, double fc )
+	inline static void s_wsfirLP( double h[], ESoundWindowConstants mode, double fc )
 	{
 		double w[MARMALADE_SOUND_NUM_COEFFICIENTS];		// window function
 		double sinc[MARMALADE_SOUND_NUM_COEFFICIENTS];	// sinc function
@@ -92,7 +92,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_setupFilterCoefficients( double _filterCoefficients[], int _inputFrequence, int _outputFrequence )
+	inline static void s_setupFilterCoefficients( double _filterCoefficients[], int _inputFrequence, int _outputFrequence )
 	{
 		int minimumFrequence = _inputFrequence < _outputFrequence ? _inputFrequence : _outputFrequence;
 		double fc = ((double)minimumFrequence / 2.0) / (double)_outputFrequence; // half the input sample rate (eg nyquist limit of input)
@@ -101,7 +101,7 @@ namespace Menge
 		s_wsfirLP( _filterCoefficients, ESWC_BLACKMAN, fc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static int32 s_GCD( int32 a, int32 b )
+	inline static int32 s_GCD( int32 a, int32 b )
 	{
 		while( true )
 		{
@@ -115,7 +115,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static inline int16 s_clipToInt16( int32 sval )
+	inline static int16 s_clipToInt16( int32 sval )
 	{
 		const int32 minval = INT16_MIN;
 		const int32 maxval = INT16_MAX;

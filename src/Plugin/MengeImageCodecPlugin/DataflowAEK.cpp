@@ -96,7 +96,7 @@ namespace Menge
 				uint8_t immutable;
 				ar << immutable;
 									
-				MovieLayerFrame & frame = _pack->initializeLayer( it_layer, frames_size, (bool)immutable );
+				MovieLayerFrame & frame = _pack->initializeLayer( it_layer, frames_size, !!immutable );
 
 				if( frames_size == 0 )
 				{

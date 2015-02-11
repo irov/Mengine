@@ -672,6 +672,9 @@ namespace Menge
 					this->playSoundBufferUpdate_( source );
 				}
             }break;
+		default:
+			{
+			}break;
 		}
 
 		this->updateSourceVolume_( source, source->volume );
@@ -710,6 +713,9 @@ namespace Menge
 					source->listener->onSoundPause( source->soundId );
 				}
 			}
+		default:
+			{
+			}break;
 		}
 
         return true;
@@ -747,6 +753,9 @@ namespace Menge
 					source->listener->onSoundStop( source->soundId );
 				}
 			}
+		default:
+			{
+			}break;
 		}
 
         return true;

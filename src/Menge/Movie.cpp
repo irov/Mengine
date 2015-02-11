@@ -2108,7 +2108,7 @@ namespace Menge
 					bool loop = this->getLoop();
 					bool interrupt = this->isInterrupt();
 
-					if( loop == false && --m_playIterator == 0 || interrupt == true )
+					if( (loop == false && --m_playIterator == 0) || interrupt == true )
 					{
 						lastFrame = frameCount;
 						m_currentFrame = frameCount;

@@ -5,6 +5,7 @@ options
 	arm-arch=armv6
 	arm-fpu=vfp
 	#strict-mkb
+    strict-compile
 	enable-exceptions    
 	preinclude=preinclude_application.h
     

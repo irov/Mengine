@@ -1,5 +1,11 @@
 #   pragma once
 
+#	pragma warning (disable:4554)
+#	pragma warning (disable:4018)
+#	pragma warning (disable:4244)
+#	pragma warning (disable:4700)
+
+
 #   define BOOST_UBLAS_UNSUPPORTED_COMPILER 0
 #   define BOOST_NO_CXX11_RVALUE_REFERENCES
 #   define BOOST_NO_CXX11_NULLPTR
@@ -46,3 +52,5 @@
 #		endif
 #	include <stddef.h>
 #	endif
+
+#	define OV_EXCLUDE_STATIC_CALLBACKS

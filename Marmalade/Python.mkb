@@ -5,8 +5,11 @@ options
     arm-arch=armv6
 	arm-fpu=vfp
     strict-mkb
+    strict-compile
     enable-exceptions
 	preinclude=preinclude_python.h
+    
+    cflags="-Wno-error=unused-value"
 }
 
 includepaths
@@ -138,8 +141,7 @@ files
     node.c
     firstsets.c
     parsetok.c
-    myreadline.c
-    pgen.c
+    myreadline.c    
     bitset.c
     parser.c
     metagrammar.c

@@ -7,8 +7,12 @@ options
     arm-arch=armv6
 	arm-fpu=vfp
     strict-mkb
+    strict-compile
     enable-exceptions
 	preinclude=preinclude_dependencies.h
+    
+    cflags="-Wno-error=parentheses -Wno-error=unused-but-set-variable -Wno-error=unused-function"
+    
 }
 
 defines
@@ -30,9 +34,10 @@ includepaths
 	"../dependencies/boost"
 	"../dependencies/metabuf"
 
-	"./Modified/pugixml/src"
-    
+	"./Modified/pugixml/src"    
     "./Modified/Python"
+    "./Modified/lz4"
+    
 	"../dependencies/Python-2.7.9"
     
     "../dependencies/zlib"

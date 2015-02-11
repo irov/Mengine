@@ -1,9 +1,11 @@
 #   pragma once
 
-#	pragma warning (disable:4554)
-#	pragma warning (disable:4018)
-#	pragma warning (disable:4244)
-#	pragma warning (disable:4700)
+#   ifdef _MSC_VER
+#		pragma warning (disable:4554)
+#		pragma warning (disable:4018)
+#		pragma warning (disable:4244)
+#		pragma warning (disable:4700)
+#	endif
 
 
 #   define BOOST_UBLAS_UNSUPPORTED_COMPILER 0

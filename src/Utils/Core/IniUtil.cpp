@@ -19,7 +19,7 @@ namespace Menge
 
 			if( size >= MENGINE_INI_BUFFER_SIZE )
 			{
-				LOGGER_ERROR(_serviceProvider)("IniUtil::loadIni ini size %d max %d"
+				LOGGER_ERROR(_serviceProvider)("IniUtil::loadIni ini size %u max %u"
 					, size
 					, MENGINE_INI_BUFFER_SIZE
 					);
@@ -136,9 +136,9 @@ namespace Menge
                 return false;
             }
 
-            int width;
-            int height;
-            if( sscanf( ini_value, "%d %d", &width, &height ) != 2 )
+            uint32_t width;
+            uint32_t height;
+            if( sscanf( ini_value, "%u %u", &width, &height ) != 2 )
             {
                 LOGGER_ERROR(_serviceProvider)("getIniValue section %s key %s value %s invalid parse resolution"
                     , _section
@@ -202,9 +202,9 @@ namespace Menge
                 return false;
             }
 
-            int tmp_value;
+            uint32_t tmp_value;
 
-            if( sscanf( ini_value, "%d", &tmp_value ) != 1 )
+            if( sscanf( ini_value, "%u", &tmp_value ) != 1 )
             {
                 return false;
             }

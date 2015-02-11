@@ -2537,7 +2537,7 @@ namespace Menge
 			}
 			else
 			{
-				node->localHide(true);
+				node->localHide( true );
 			}
 		}
 	}

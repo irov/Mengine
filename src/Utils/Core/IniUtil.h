@@ -14,7 +14,7 @@
 #	include "Core/ColourValue.h"
 
 #	ifndef MENGINE_INI_BUFFER_SIZE 
-#	define MENGINE_INI_BUFFER_SIZE 16384
+#	define MENGINE_INI_BUFFER_SIZE 16384U
 #	endif
 
 namespace Menge

@@ -28,7 +28,7 @@ namespace mt
 	{
 		float angle2 = mt::angle_norm( _angle + mt::m_pi );
 		
-		angle2 -= mt::m_pi;
+		angle2 += mt::m_negative_pi;
 
 		return angle2;
 	}

@@ -224,8 +224,6 @@ namespace Menge
 		RenderVertex2D * vertexPointBox = RENDER_SERVICE(m_serviceProvider)
 			->getDebugRenderVertex2D( 4 * 2 );
 
-		float debugWidth = 5.f;
-
 		vertexPointBox[0].pos.x = box.minimum.x;
 		vertexPointBox[0].pos.y = box.minimum.y;
 

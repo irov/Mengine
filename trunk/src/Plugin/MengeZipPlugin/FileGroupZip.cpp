@@ -144,7 +144,7 @@ namespace Menge
 
 		char fileNameBuffer[MAX_FILENAME];
 
-		while( true, true )
+		for(;;)
 		{
 			zipFile->seek( header_offset );
 

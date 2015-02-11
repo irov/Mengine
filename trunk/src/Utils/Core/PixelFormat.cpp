@@ -87,6 +87,9 @@ namespace Menge
 				{
 					return _width * _height * _depth * _channels;
 				}break;
+
+			default:
+				return 0;
 			}
 
 			return 0;

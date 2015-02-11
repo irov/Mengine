@@ -94,62 +94,11 @@ namespace Menge
             .def_repr( &s_ConstString_repr )
             .def_hash( &s_ConstString_hash )
             ;
-
-        //pybind::registration_type_cast<ConstString>( new extract_ConstString_type(_serviceProvider) );
-
-        //constScriptMethod = new ConstsScriptMethod(_serviceProvider);
-        	
-        //PyObject * module = pybind::get_currentmodule();
-
-        //pybind::interface_<ConstsScriptMethod>("ConstsScriptMethod")
-        //    ;
-
-        //PyObject * py_dc = pybind::ptr( constScriptMethod );
-                
-        //pybind::set_attr( module, "Consts", py_dc );
-
-//#   define DEF_CONST_STRING( serviceProvider, S )\
-//        {\
-//        ConstString cstr = STRINGIZE_STRING_LOCAL(serviceProvider, S);\
-//        PyObject * py_obj = pybind::ptr( cstr );\
-//        pybind::set_attr( py_dc, S, py_obj );\
-//		pybind::decref( py_obj );\
-//        }
-
-        //DEF_CONST_STRING( _serviceProvider, "Main" );
-        //DEF_CONST_STRING( _serviceProvider, "Scene" );
-        //DEF_CONST_STRING( _serviceProvider, "Node" );
-        //DEF_CONST_STRING( _serviceProvider, "Layer2D" );
-        //DEF_CONST_STRING( _serviceProvider, "TextField" );
-        //DEF_CONST_STRING( _serviceProvider, "Sprite" );
-        //DEF_CONST_STRING( _serviceProvider, "ParticleEmitter" );
-        //DEF_CONST_STRING( _serviceProvider, "HotSpot" );
-        //DEF_CONST_STRING( _serviceProvider, "Movie" );
-        //DEF_CONST_STRING( _serviceProvider, "Point" );
-        //DEF_CONST_STRING( _serviceProvider, "Video" );
-        //DEF_CONST_STRING( _serviceProvider, "Animation" );
-        //DEF_CONST_STRING( _serviceProvider, "Window" );
-        //DEF_CONST_STRING( _serviceProvider, "HotSpotImage" );
-        //DEF_CONST_STRING( _serviceProvider, "WhitePixel" );
-
-        //DEF_CONST_STRING( _serviceProvider, "AccountEnumerator" );
-        //DEF_CONST_STRING( _serviceProvider, "DefaultAccountID" );
-        //DEF_CONST_STRING( _serviceProvider, "SelectAccountID" );
-        //DEF_CONST_STRING( _serviceProvider, "Account" );
-
-#   undef DEF_CONST_STRING
 	}
-
+	//////////////////////////////////////////////////////////////////////////
     void ScriptWrapper::constsUnwrap( ServiceProviderInterface * _serviceProvider )
     {
         (void)_serviceProvider;
-
-        //delete constScriptMethod;
-		//constScriptMethod = nullptr;
-
-        //PyObject * module = pybind::get_currentmodule();
-
-        //pybind::set_attr( module, "Consts", pybind::get_none() );
     }
 }
 

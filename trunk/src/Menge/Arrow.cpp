@@ -146,7 +146,7 @@ namespace	Menge
 		viewport.calcSize( viewportSize );
 
 		mt::vec2f vp_begin = viewport.begin / contentResolutionSize;
-		mt::vec2f vp_end = viewport.end / contentResolutionSize;
+		//mt::vec2f vp_end = viewport.end / contentResolutionSize;
 		mt::vec2f vp_size = viewportSize / contentResolutionSize;
 
 		mt::vec2f sp = (adaptScreenPoint - vp_begin) / vp_size;
@@ -186,7 +186,7 @@ namespace	Menge
 		viewport.calcSize( viewportSize );
 
 		mt::vec2f vp_begin = viewport.begin / contentResolutionSize;
-		mt::vec2f vp_end = viewport.end / contentResolutionSize;
+		//mt::vec2f vp_end = viewport.end / contentResolutionSize;
 		mt::vec2f vp_size = viewportSize / contentResolutionSize;
 
 		mt::vec2f sp = (adaptScreenPoint - vp_begin) / vp_size;
@@ -295,7 +295,7 @@ namespace	Menge
 		viewport.calcSize( viewportSize );
 
 		mt::vec2f vp_begin = viewport.begin / contentResolutionSize;
-		mt::vec2f vp_end = viewport.end / contentResolutionSize;
+		//mt::vec2f vp_end = viewport.end / contentResolutionSize;
 		mt::vec2f vp_size = viewportSize / contentResolutionSize;
 
 		mt::vec2f sp = vp_begin + p_screen * vp_size;

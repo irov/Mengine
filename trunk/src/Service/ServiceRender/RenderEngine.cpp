@@ -1140,6 +1140,9 @@ namespace Menge
 				{
 					this->calcQuadSquare_( _vertices, _verticesNum );
 				}break;
+			default:
+				{
+				}break;
 			}
 
 			if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )

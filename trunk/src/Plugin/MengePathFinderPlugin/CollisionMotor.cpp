@@ -101,10 +101,10 @@ namespace Menge
 		for( uint32_t i = 0; i != 8; ++i )
 		{
 			float low_angle = pi_deltha[ i * 3 + 0];
-			float test_angle = pi_deltha[ i * 3 + 1];
+			//float test_angle = pi_deltha[ i * 3 + 1];
 			float hight_angle = pi_deltha[ i * 3 + 2];
 
-			float rad = mt::angle_norm360( norm_angle );
+			//float rad = mt::angle_norm360( norm_angle );
 
 			if( mt::angle_length( norm_angle, low_angle ) > 0.f )
 			{

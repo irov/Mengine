@@ -111,6 +111,9 @@ namespace Menge
 		case Menge::TF_GAUSSIANCUBIC:
 			return GL_LINEAR;
 			break;
+		default:
+			{
+			}break;
 		};
 
 		return GL_NEAREST;
@@ -415,7 +418,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeRenderSystem::screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect )
 	{
-		(_rect);
+		(void)_image;
+		(void)_rect;
         //ToDo!
 		
 		return false;

@@ -187,7 +187,7 @@ namespace Menge
 		long bytesDone = 0;
         long bytesReading = _bufferSize;
         
-		while( true, true )
+		for(;;)
 		{            
             int current_section = 0;
             char * readBuffer = (char *)_buffer + bytesDone;

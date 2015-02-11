@@ -11,7 +11,7 @@ options
     enable-exceptions
 	preinclude=preinclude_dependencies.h
     
-    cflags="-Wno-error=parentheses -Wno-error=unused-but-set-variable -Wno-error=unused-function"
+    cflags="-Wno-error=parentheses -Wno-error=unused-but-set-variable -Wno-error=unused-function -Wno-error=aggressive-loop-optimizations"
     
 }
 

@@ -363,4 +363,8 @@ We just want to avoid a redefinition error message. */
 
 #define PY_FORMAT_LONG_LONG "ll"
 
+#if defined __aarch64__
+#	define PY_FORMAT_SIZE_T "l"
+#endif
+
 #endif /*Py_PYCONFIG_H*/

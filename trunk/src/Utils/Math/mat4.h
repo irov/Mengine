@@ -89,13 +89,6 @@ namespace mt
 
 	MATH_FUNCTION_INLINE void extract_m4_m3(mat3f& _out, const mat4f& _rhs);
 
-	MATH_FUNCTION_INLINE float minor_m4(const mat4f& _rhs, const int r0, const int r1, const int r2, const int c0, const int c1, const int c2);
-
-	MATH_FUNCTION_INLINE float det_m4(const mat4f& _rhs);
-
-	MATH_FUNCTION_INLINE void adj_m4(mat4f& _out, const mat4f& _rhs);
-	MATH_FUNCTION_INLINE mat4f adj_m4(const mat4f& _rhs);
-
 	MATH_FUNCTION_INLINE void inv_m4(mat4f& _out, const mat4f& _rhs);
 	MATH_FUNCTION_INLINE mat4f inv_m4(const mat4f& _rhs);
 

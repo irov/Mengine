@@ -11,8 +11,8 @@ extern void init_ast(void);
 extern void initunicodedata(void);
 extern void initmath(void);
 //extern void initnt(void);
-//extern void initcPickle(void);
-//extern void initcStringIO(void);
+extern void initcPickle(void);
+extern void initcStringIO(void);
 extern void init_weakref(void);
 
 struct _inittab _PyImport_Inittab[] = {
@@ -38,8 +38,8 @@ struct _inittab _PyImport_Inittab[] = {
 	/* This lives in gcmodule.c */
 	{"gc", initgc},
     
-    //{"cPickle", initcPickle},
-    //{"cStringIO", initcStringIO},
+    {"cPickle", initcPickle},
+    {"cStringIO", initcStringIO},
 	{"_weakref", init_weakref},
     
 	/* Sentinel */

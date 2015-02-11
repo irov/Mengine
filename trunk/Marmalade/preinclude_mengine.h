@@ -46,4 +46,6 @@ typedef void * nullptr_t;
 
 #   define STDEX_UNSUPPOT_NULLPTR_T
 
+#	define OV_EXCLUDE_STATIC_CALLBACKS
+
 #   define _snprintf snprintf

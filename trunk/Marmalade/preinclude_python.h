@@ -1,5 +1,11 @@
 #   pragma once
 
+#	pragma warning (disable:4554)
+#	pragma warning (disable:4018)
+#	pragma warning (disable:4244)
+#	pragma warning (disable:4700)
+#	pragma warning (disable:4305)
+
 #   define Py_BUILD_CORE
 
 #   define SIGBREAK        21

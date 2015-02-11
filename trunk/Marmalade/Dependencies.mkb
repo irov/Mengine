@@ -54,7 +54,12 @@ files
 	("../dependencies/metabuf/metabuf")	
 	"*.hpp"
 	"*.cpp"
-	    
+    
+    [Xml2Metabuf]
+	("../dependencies/metabuf/xml2metabuf")
+	"*.hpp"
+	"*.cpp"    
+		    
     [pybind]
 	("../dependencies/pybind/include/config")
     "*.hpp"
@@ -87,10 +92,10 @@ files
     uncompr.c
     zutil.c
     
-    #[lz4]
-    #("../dependencies/lz4/lib")
-    #lz4.c
-    #lz4hc.c
+    [lz4]
+    ("../dependencies/lz4/lib")
+    lz4.c
+    lz4hc.c
     
     [stdex]
     ("../dependencies/stdex/src")

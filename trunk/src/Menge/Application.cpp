@@ -1161,8 +1161,8 @@ namespace Menge
 						, (uint32_t)m.block_size
 						, (uint32_t)m.chunk_count
 						, (uint32_t)m.block_count
-						, (uint32_t)m.block_size * m.block_count
-						, (uint32_t)m.block_size * m.block_total * m.chunk_count
+						, (uint32_t)(m.block_size * m.block_count)
+						, (uint32_t)(m.block_size * m.block_total * m.chunk_count)
 						, ( m.block_count > 0 ) ? float(m.block_size * m.block_total * m.chunk_count) / float(m.block_size * m.block_count) : 0.f
 						);
 				}

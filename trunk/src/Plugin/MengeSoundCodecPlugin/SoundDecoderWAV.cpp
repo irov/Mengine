@@ -174,7 +174,7 @@ namespace Menge
 	{
 		size_t wav_pos = m_stream->tell();
 		
-		float length = (float)((wav_pos - m_chunkDataPos) * 1000 / (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits));
+		float length = (float)((wav_pos - m_chunkDataPos) * 1000.f / float(m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits));
 		       
 		return length;
 	}

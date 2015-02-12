@@ -188,7 +188,7 @@ namespace Menge
 	{
 		m_volume = _volume;
 
-		m_volume_s3e = (uint8)(m_volume * S3E_SOUND_MAX_VOLUME);
+		m_volume_s3e = (uint8)(m_volume * (S3E_SOUND_MAX_VOLUME - 1));
 
 		if( m_playing == true )
 		{

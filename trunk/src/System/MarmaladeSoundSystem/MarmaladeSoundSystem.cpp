@@ -403,7 +403,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeSoundSystem::onTurnSound( bool _turn )
 	{
-        (void)_turn;
+		if( _turn == false )
+		{
+			s3eSoundPauseAllChannels();
+		}
+		else
+		{
+			s3eSoundResumeAllChannels();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterfacePtr MarmaladeSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )

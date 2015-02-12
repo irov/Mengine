@@ -497,7 +497,7 @@ namespace Menge
 			return false;
 		}
 
-		const TVectorParticleEmitterAtlas & atlas = container->getAtlas();
+		const TVectorParticleEmitterAtlas &  atlas = container->getAtlas();
 
 		for( TVectorParticleEmitterAtlas::const_iterator
 			it = atlas.begin(),

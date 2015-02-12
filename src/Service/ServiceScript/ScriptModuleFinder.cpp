@@ -55,7 +55,7 @@ namespace Menge
         (void)_module;
         (void)_path;
 
-#   ifndef MENGE_MASTER_RELEASE
+#   ifndef MENGINE_MASTER_RELEASE
 		{
 			ScriptModuleLoaderPtr loaderSource = m_factoryScriptModuleLoaderSource.createObjectT();
 
@@ -150,15 +150,15 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ScriptModuleFinder::find_module_( PyObject * _module, const ScriptModuleLoaderPtr & _loader, const char * _ext, size_t _extN, const char * _init, size_t _extI )
     {
-		char modulePathCache[MAX_PATH];
+		char modulePathCache[MENGINE_MAX_PATH];
         
 		size_t modulePathCacheLen;
-		if( this->convertDotToSlash_( modulePathCache, MAX_PATH, _module, modulePathCacheLen ) == false )
+		if( this->convertDotToSlash_( modulePathCache, MENGINE_MAX_PATH, _module, modulePathCacheLen ) == false )
 		{
 			return false;
 		}
 
-		if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen, MAX_PATH, _ext, _extN ) == false )
+		if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen, MENGINE_MAX_PATH, _ext, _extN ) == false )
 		{
 			return false;
 		}
@@ -166,7 +166,7 @@ namespace Menge
         if( this->findModule_( modulePathCache, modulePathCacheLen + _extN, _loader ) == false )
 		{
 			modulePathCache[modulePathCacheLen] = MENGE_FOLDER_RESOURCE_DELIM;
-			if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MAX_PATH, _init, _extI ) == false )
+			if( stdex::memorycopy_safe( modulePathCache, modulePathCacheLen + 1, MENGINE_MAX_PATH, _init, _extI ) == false )
 			{
 				return false;
 			}

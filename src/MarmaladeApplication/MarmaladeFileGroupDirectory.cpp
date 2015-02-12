@@ -126,9 +126,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileGroupDirectory::existFile( const FilePath & _fileName ) const
 	{
-        Char filePath[MAX_PATH];
+        Char filePath[MENGINE_MAX_PATH];
         if( MARMALADELAYER_SERVICE(m_serviceProvider)
-            ->concatenateFilePath( m_path, _fileName, filePath, MAX_PATH ) == false )
+            ->concatenateFilePath( m_path, _fileName, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::existFile invalid concatenate '%s':'%s'"
                 , m_path.c_str()
@@ -153,9 +153,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeFileGroupDirectory::removeFile( const FilePath& _filename )
     {
-        char filePath[MAX_PATH];
+        char filePath[MENGINE_MAX_PATH];
         if( MARMALADELAYER_SERVICE(m_serviceProvider)
-            ->concatenateFilePath( m_path, _filename, filePath, MAX_PATH ) == false )
+            ->concatenateFilePath( m_path, _filename, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::deleteFile invalid concatenate '%s':'%s'"
                 , m_path.c_str()
@@ -175,9 +175,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeFileGroupDirectory::existDirectory( const FilePath & _filename ) const
     {
-        char filePath[MAX_PATH];
+        char filePath[MENGINE_MAX_PATH];
         if( MARMALADELAYER_SERVICE(m_serviceProvider)
-            ->concatenateFilePath( m_path, _filename, filePath, MAX_PATH ) == false )
+            ->concatenateFilePath( m_path, _filename, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::existFile invalid concatenate '%s':'%s'"
                 , m_path.c_str()
@@ -202,9 +202,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileGroupDirectory::createDirectory( const FilePath& _filename )
 	{
-        char filePath[MAX_PATH];
+        char filePath[MENGINE_MAX_PATH];
         if( MARMALADELAYER_SERVICE(m_serviceProvider)
-            ->concatenateFilePath( m_path, _filename, filePath, MAX_PATH ) == false )
+            ->concatenateFilePath( m_path, _filename, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::createFolder invalid concatenate '%s':'%s'"
                 , m_path.c_str()
@@ -224,9 +224,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileGroupDirectory::removeDirectory( const FilePath& _filename )
 	{
-        char filePath[MAX_PATH];
+        char filePath[MENGINE_MAX_PATH];
         if( MARMALADELAYER_SERVICE(m_serviceProvider)
-            ->concatenateFilePath( m_path, _filename, filePath, MAX_PATH ) == false )
+            ->concatenateFilePath( m_path, _filename, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::createFolder invalid concatenate '%s':'%s'"
                 , m_path.c_str()

@@ -81,9 +81,7 @@ namespace Menge
         {            
 			const ParticleEmitterAtlas & atlas = *it;
 
-			ConstString filename = Helper::stringizeString( m_serviceProvider, atlas.file );
-
-            ConstString filepath = this->makeTexturePath_( filename );
+            ConstString filepath = this->makeTexturePath_( atlas.filename );
 
             const ConstString & category = this->getCategory();
 
@@ -186,9 +184,7 @@ namespace Menge
 		{
 			const ParticleEmitterAtlas & atlas = *it;
 
-			ConstString filename = Helper::stringizeString( m_serviceProvider, atlas.file );
-
-            ConstString filepath = this->makeTexturePath_( filename );
+            ConstString filepath = this->makeTexturePath_( atlas.filename );
 
             const ConstString & category = this->getCategory();
 

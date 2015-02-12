@@ -223,7 +223,7 @@ namespace Menge
 
 		uint32_t m_fps;
 
-//#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGINE_MASTER_RELEASE
 	public:
 		void toggleDebugText() override;
 

@@ -38,7 +38,7 @@ namespace Menge
         int int_unicodeSize = static_cast<int>(_unicodeSize);
         int int_utf8Capacity = static_cast<int>(_utf8Capacity);
 
-        if( int_unicodeSize == -1 && int_utf8Capacity != 0 )
+        if( int_unicodeSize == UNICODE_UNSIZE && int_utf8Capacity != 0 )
         {
             ++int_utf8Capacity;
         }
@@ -63,7 +63,7 @@ namespace Menge
             return false;
         }
 
-        if( int_unicodeSize == -1 )
+        if( int_unicodeSize == UNICODE_UNSIZE )
         {
             --utf8_size;
         }
@@ -74,7 +74,7 @@ namespace Menge
             *_utf8Size = u_utf8_size;
         }
 
-        if( _utf8 != nullptr )
+        if( _utf8 != nullptr && _utf8Capacity != 0 )
         {
             _utf8[ utf8_size ] = '\0';
         }
@@ -87,7 +87,7 @@ namespace Menge
         int int_utf8Size = static_cast<int>(_utf8Size);
         int int_unicodeCapacity = static_cast<int>(_unicodeCapacity);
 
-        if( int_utf8Size == -1 && int_unicodeCapacity != 0 )
+        if( int_utf8Size == UNICODE_UNSIZE && int_unicodeCapacity != 0 )
         {
             ++int_unicodeCapacity;
         }
@@ -117,7 +117,7 @@ namespace Menge
             return false;
         }
 
-        if( int_utf8Size == -1 )
+        if( int_utf8Size == UNICODE_UNSIZE )
         {
             --wc_size;
         }
@@ -128,7 +128,7 @@ namespace Menge
             *_sizeUnicode = u_wc_size;
         }
 
-        if( _unicode != nullptr )
+        if( _unicode != nullptr && _unicodeCapacity != 0 )
         {
             _unicode[ wc_size ] = L'\0';
         }

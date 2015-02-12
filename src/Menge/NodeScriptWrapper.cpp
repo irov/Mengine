@@ -4363,7 +4363,7 @@ namespace Menge
             ++it )
             {
                 PyObject * py_dict = pybind::dict_new();
-                PyObject * py_node_file = pybind::ptr( (*it).file );
+                PyObject * py_node_file = pybind::ptr( (*it).filename );
                 //PyObject * py_node_path = pybind::ptr((*it).path);
 
                 pybind::dict_setstring( py_dict, "file", py_node_file );

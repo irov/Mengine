@@ -237,8 +237,8 @@ namespace Menge
 		WString unicode_path;
 		Helper::utf8ToUnicode(m_serviceProvider, _path, unicode_path);
 
-		wchar_t unicode_shortpath[MAX_PATH];
-		DWORD unicode_shortpath_len = GetShortPathName( unicode_path.c_str(), unicode_shortpath, MAX_PATH );
+		wchar_t unicode_shortpath[MENGINE_MAX_PATH];
+		DWORD unicode_shortpath_len = GetShortPathName( unicode_path.c_str(), unicode_shortpath, MENGINE_MAX_PATH );
 
 		size_t utf8_shortpath_len;
 		if( UNICODE_SERVICE(m_serviceProvider)
@@ -545,7 +545,7 @@ namespace Menge
 			return false;
 		}
 
-#	ifndef MENGE_MASTER_RELEASE
+#	ifndef MENGINE_MASTER_RELEASE
 		// mount root		
 		if( m_fileService->mountFileGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dev"), ConstString::none(), STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
 		{
@@ -573,7 +573,7 @@ namespace Menge
 		}
 		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
 		{
-			WChar buffer[MAX_PATH];
+			WChar buffer[MENGINE_MAX_PATH];
 			LPITEMIDLIST itemIDList;
 
 			HRESULT hr = SHGetSpecialFolderLocation( NULL,
@@ -3429,8 +3429,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::isSaverRunning() const
 	{ 		
-		WChar fileName[MAX_PATH];
-		if( m_windowsLayer->getModuleFileName( NULL, fileName, MAX_PATH ) == false )
+		WChar fileName[MENGINE_MAX_PATH];
+		if( m_windowsLayer->getModuleFileName( NULL, fileName, MENGINE_MAX_PATH ) == false )
 		{
 			return false;
 		}
@@ -3521,7 +3521,7 @@ namespace Menge
 	bool WinApplication::openUrlInDefaultBrowser( const WString & _url )
 	{
 		//size_t cmd_path_size = 0;
-		//wchar_t cmd_path [MAX_PATH];
+		//wchar_t cmd_path [MENGINE_MAX_PATH];
 		wchar_t * cmd_path = _wgetenv( L"COMSPEC" );
 
 		WString params = L"/c start " + _url;

@@ -881,7 +881,7 @@ namespace Menge
 			);
 
 		m_game->setLanguagePack( _language );
-		
+
 		if( m_game->applyConfigPaks() == false )
 		{
 			return false;

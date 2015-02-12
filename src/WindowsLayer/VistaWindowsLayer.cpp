@@ -154,7 +154,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::setCurrentDirectory( const WChar * _path )
     {
-		WChar pathCorrect[MAX_PATH];
+		WChar pathCorrect[MENGINE_MAX_PATH];
 		PathCorrectBackslash( pathCorrect, _path );
 
         if( ::SetCurrentDirectory( pathCorrect ) == FALSE )
@@ -167,8 +167,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::setModuleCurrentDirectory()
     {
-        WChar exeFilePath[MAX_PATH];
-        ::GetModuleFileName( NULL, exeFilePath, MAX_PATH );
+        WChar exeFilePath[MENGINE_MAX_PATH];
+        ::GetModuleFileName( NULL, exeFilePath, MENGINE_MAX_PATH );
 
         WString unicode_exeFilePath(exeFilePath);
         WString::size_type slashPos = unicode_exeFilePath.find_last_of( L'\\' );
@@ -190,7 +190,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::createDirectory( const WChar * _path )
     {
-		WChar pathCorrect[MAX_PATH];
+		WChar pathCorrect[MENGINE_MAX_PATH];
 		PathCorrectBackslash( pathCorrect, _path );
 		
 		PathRemoveBackslash( pathCorrect );
@@ -267,7 +267,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::fileExists( const WChar * _path )
     {
-		WChar pathCorrect[MAX_PATH];
+		WChar pathCorrect[MENGINE_MAX_PATH];
 		PathCorrectBackslash( pathCorrect, _path );
 
         size_t len = wcslen( pathCorrect );
@@ -294,7 +294,7 @@ namespace Menge
     HANDLE VistaWindowsLayer::createFile( const WChar * _path, DWORD _desiredAccess,
         DWORD _sharedMode, DWORD _creationDisposition )
     {
-		WChar pathCorrect[MAX_PATH];
+		WChar pathCorrect[MENGINE_MAX_PATH];
 		PathCorrectBackslash( pathCorrect, _path );
 
         HANDLE handle = ::CreateFile( pathCorrect, _desiredAccess, _sharedMode, NULL,
@@ -337,28 +337,6 @@ namespace Menge
 		}
 
 		const WChar * filename = PathFindFileName( _path );
-
-		//WCHAR finalPath[MAX_PATH];
-		//GetFinalPathNameByHandle( handle, finalPath, MAX_PATH, VOLUME_NAME_DOS );
-
-		//WCHAR canonicalizePath[MAX_PATH];
-		//PathCanonicalize( canonicalizePath, finalPath );
-
-		//WCHAR currentDirectory[MAX_PATH];
-		//GetCurrentDirectory( MAX_PATH, currentDirectory );
-
-		//WCHAR relativePath[MAX_PATH];
-		//if( PathRelativePathTo( relativePath, currentDirectory, FILE_ATTRIBUTE_DIRECTORY, canonicalizePath, FILE_ATTRIBUTE_NORMAL ) == FALSE )
-		//{
-		//    LOGGER_ERROR(m_serviceProvider)("File invalid relative path\nfrom: %ls\nto: %ls"
-		//        , currentDirectory
-		//        , canonicalizePath
-		//        );
-		//    
-		//    ::CloseHandle( handle );
-
-		//    return INVALID_HANDLE_VALUE;
-		//}
 
 		if( wcscmp( filename, wfd.cFileName ) != 0 )
 		{
@@ -484,9 +462,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::getCurrentDirectory( WString & _path )
     {
-        WChar buffer[MAX_PATH];
+        WChar buffer[MENGINE_MAX_PATH];
 
-        if( ::GetCurrentDirectory( MAX_PATH, buffer ) == 0 )
+        if( ::GetCurrentDirectory( MENGINE_MAX_PATH, buffer ) == 0 )
         {
             return false;
         }
@@ -615,19 +593,19 @@ namespace Menge
                         
         size_t filePathSize = folderSize + dirSize;
         
-        if( filePathSize >= MAX_PATH )
+        if( filePathSize >= MENGINE_MAX_PATH )
         {
             return false;
         }
 
-        Char filePath[MAX_PATH];
+        Char filePath[MENGINE_MAX_PATH];
         stdex::memorycopy(filePath, 0, _folder.c_str(), folderSize);
 		stdex::memorycopy(filePath, folderSize, _fileName.c_str(), dirSize);
 
         filePath[filePathSize] = L'\0';
         filePathSize += 1; //Null
 
-		WChar filePathW[MAX_PATH];
+		WChar filePathW[MENGINE_MAX_PATH];
         if( UNICODE_SERVICE(m_serviceProvider)
             ->utf8ToUnicode( filePath, filePathSize, filePathW, _capacity, nullptr ) == false )
         {
@@ -660,14 +638,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VistaWindowsLayer::createDirectoryUser_( const WChar * _userPath, const WString & _path, const WString & _file, const void * _data, size_t _size )
 	{
-		WChar szPath[MAX_PATH] = {0};
+		WChar szPath[MENGINE_MAX_PATH] = {0};
 
 		PathAppend( szPath, _userPath );
 
-		WChar pathCorrect[MAX_PATH];
+		WChar pathCorrect[MENGINE_MAX_PATH];
 		PathCorrectBackslash( pathCorrect, _path.c_str() );
 
-		WChar fileCorrect[MAX_PATH];
+		WChar fileCorrect[MENGINE_MAX_PATH];
 		PathCorrectBackslash( fileCorrect, _file.c_str() );
 
 		PathAppend( szPath, pathCorrect );
@@ -726,7 +704,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VistaWindowsLayer::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
 	{
-		WCHAR szPath[MAX_PATH];
+		WCHAR szPath[MENGINE_MAX_PATH];
 
 		if(FAILED(SHGetFolderPath(NULL
 			, CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
@@ -758,7 +736,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VistaWindowsLayer::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
 	{
-		WCHAR szPath[MAX_PATH];
+		WCHAR szPath[MENGINE_MAX_PATH];
 
 		if(FAILED(SHGetFolderPath(NULL
 			, CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE

@@ -370,14 +370,14 @@ namespace Menge
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
 
-#   ifndef MENGE_MASTER_RELEASE
+#   ifndef MENGINE_MASTER_RELEASE
         PlayerResourceUselessCompile unlessCompile(m_serviceProvider);
         unlessCompile.begin();
 #   endif
 
         m_scene->enable();
 
-#   ifndef MENGE_MASTER_RELEASE
+#   ifndef MENGINE_MASTER_RELEASE
         unlessCompile.end();
 #   endif
 
@@ -1312,7 +1312,7 @@ namespace Menge
 			m_arrow->render( m_renderViewport, m_arrowCamera2D, debugMask );
 		}
 
-//#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGINE_MASTER_RELEASE
 
 		if( m_showDebugText != 0 )
 		{			
@@ -1550,7 +1550,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-//#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGINE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
 	void Player::toggleDebugText()
 	{

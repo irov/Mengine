@@ -397,7 +397,7 @@ namespace Menge
             m_logService->registerLogger( m_fileLog );
         }
 
-#	ifndef MENGE_MASTER_RELEASE
+#	ifndef MENGINE_MASTER_RELEASE
 		ConstString c_dev = Helper::stringizeString( m_serviceProvider, "dev" );
 		// mount root		
 		if( m_fileService->mountFileGroup( c_dev, ConstString::none(), c_dir ) == false )

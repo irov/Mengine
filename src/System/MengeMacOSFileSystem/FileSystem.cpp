@@ -11,7 +11,7 @@
 
 #include <CoreServices/CoreServices.h>
 
-#	ifndef MENGE_MASTER_RELEASE
+#	ifndef MENGINE_MASTER_RELEASE
 #		define LOG( message )\
 	if( m_logSystem ) m_logSystem->logMessage( message + StringA("\n"), LM_LOG );
 #	else

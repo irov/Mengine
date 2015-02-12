@@ -540,7 +540,7 @@ namespace Menge
 		RenderTexture * texture = m_factoryRenderTexture.createObjectT();
 		texture->initialize( m_serviceProvider, _image, _mipmaps, _width, _height, _channels, id );
 
-//#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGINE_MASTER_RELEASE
 //		size_t memroy_size = texture->getMemoryUse();
 //
 //		m_debugInfo.textureMemory += memroy_size;
@@ -560,7 +560,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderTextureManager::releaseRenderTexture_( RenderTextureInterface * _texture )
 	{
-//#	ifndef MENGE_MASTER_RELEASE
+//#	ifndef MENGINE_MASTER_RELEASE
 //        size_t memroy_size = _texture->getMemoryUse();
 //
 //		const RenderImageInterfacePtr & image = _texture->getImage(); 

@@ -139,7 +139,7 @@ namespace Menge
         //    , this->getCategory().c_str()
         //    );
 
-#   ifndef MENGE_MASTER_RELEASE
+#   ifndef MENGINE_MASTER_RELEASE
         NOTIFICATION_SERVICE(m_serviceProvider)
             ->notify( NOTIFICATOR_RESOURCE_COMPILE, this );
 #   endif
@@ -151,7 +151,7 @@ namespace Menge
 	{
 		this->release();
 
-#   ifndef MENGE_MASTER_RELEASE
+#   ifndef MENGINE_MASTER_RELEASE
         NOTIFICATION_SERVICE(m_serviceProvider)
             ->notify( NOTIFICATOR_RESOURCE_RELEASE, this );
 #	endif

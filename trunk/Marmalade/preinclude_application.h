@@ -20,10 +20,10 @@
 #   define PUGIXML_NO_STL
 #   define PUGIXML_NO_XPATH
 
-#   define MENGINE_CONFIG Config_Marmalade.h
-#   define MENGINE_MARMALADE
+#	define MENGINE_MASTER_RELEASE
 
-#	define MENGE_MASTER_RELEASE
+#   define MENGINE_MARMALADE
+#	define MENGINE_MAX_PATH 128
 
 #   define nullptr 0
 #   define STDEX_UNSUPPOT_NULLPTR_T

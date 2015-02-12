@@ -26,9 +26,10 @@
 #		undef _DEBUG // In Marmalade _DEBUG is wrongly defined in x86 Release.
 #	endif
 
-#   define MENGINE_CONFIG Config_Marmalade.h
+#	define MENGINE_MASTER_RELEASE
 
-#	define MENGE_MASTER_RELEASE
+#   define MENGINE_MARMALADE
+#	define MENGINE_MAX_PATH 128
 
 typedef void * nullptr_t;
 #   define nullptr 0

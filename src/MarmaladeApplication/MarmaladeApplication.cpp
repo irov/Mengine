@@ -1705,9 +1705,11 @@ namespace Menge
                 break;
             }
 
+			float frameTime = m_timer->getDeltaTime();
+
 			if( m_active == false )
 			{
-				s3eDeviceYield( 20 );
+				s3eDeviceYield( 100 );
 
 				continue;
 			}
@@ -1720,8 +1722,6 @@ namespace Menge
             m_marmaladeInput->update();
             
             bool updating = m_application->beginUpdate();
-
-            float frameTime = m_timer->getDeltaTime();
 
             if( updating == true )
             {                

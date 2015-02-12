@@ -237,6 +237,22 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static voidpf s_alloc_func(voidpf opaque, uInt items, uInt size)
+	{
+		(void)opaque;
+
+		void * memory = stdex_malloc( items * size );
+
+		return memory;
+	}
+	//////////////////////////////////////////////////////////////////////////	
+	static void s_free_func( voidpf opaque, voidpf address )
+	{
+		(void)opaque;
+
+		stdex_free( address );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	static bool s_inflate_memory( void * _buffer, size_t _capacity, const void * _src, size_t _size )
 	{
 		z_stream zs;
@@ -249,8 +265,8 @@ namespace Menge
 		zs.avail_out = (uInt)_capacity;
 		//if ((uLong)stream.avail_out != *destLen) return Z_BUF_ERROR;
 
-		zs.zalloc = (alloc_func)0;
-		zs.zfree = (free_func)0;
+		zs.zalloc = &s_alloc_func;
+		zs.zfree = &s_free_func;
 
 		int err_init = inflateInit2( &zs, -MAX_WBITS );
 
@@ -322,7 +338,7 @@ namespace Menge
 		}
 
 		size_t file_offset = info->seek_pos + _offset;
-		size_t file_size = _size == 0 ? info->file_size : _size ;
+		size_t file_size = _size == 0 ? info->file_size : _size;
 	
 		if( _offset + file_size > info->file_size )
 		{

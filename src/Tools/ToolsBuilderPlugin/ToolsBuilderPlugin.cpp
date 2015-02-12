@@ -507,7 +507,7 @@ namespace Menge
 		{
 			const ParticleEmitterAtlas & atlas = *it;
 			
-			PyObject * py_fileName = PyUnicode_FromString( atlas.file );
+			PyObject * py_fileName = PyUnicode_FromString( atlas.filename.c_str() );
 
 			PyList_Append( _atlasFiles, py_fileName );
 			Py_DECREF( py_fileName );

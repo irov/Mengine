@@ -30,9 +30,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileOutputStream::open( const FilePath & _folder, const FilePath& _fileName )
 	{        
-        WChar filePath[MAX_PATH];
+        WChar filePath[MENGINE_MAX_PATH];
         if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( _folder, _fileName, filePath, MAX_PATH ) == false )
+			->concatenateFilePath( _folder, _fileName, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32OutputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folder.c_str()

@@ -67,7 +67,7 @@ namespace Menge
 		typedef stdex::vector<ScriptModuleLoaderPtr> TMapModuleLoaders;
 		TMapModuleLoaders m_loaders;
 
-#   ifndef MENGE_MASTER_RELEASE
+#   ifndef MENGINE_MASTER_RELEASE
 		typedef FactoryPoolStore<ScriptModuleLoaderSource, 8> TFactoryScriptModuleLoaderSource;
 		TFactoryScriptModuleLoaderSource m_factoryScriptModuleLoaderSource;
 #	endif

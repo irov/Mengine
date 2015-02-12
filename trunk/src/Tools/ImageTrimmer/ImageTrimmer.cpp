@@ -425,7 +425,7 @@ namespace Menge
 
 		if( imageDecoder->decode( &textureBuffer[0], bufferSize ) == 0U )
 		{
-			return false;
+			return false; 
 		}
 
 		size_t new_width;

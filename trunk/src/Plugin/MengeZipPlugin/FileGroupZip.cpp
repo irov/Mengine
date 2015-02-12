@@ -17,7 +17,7 @@
 #	include "../dependencies/zlib/zlib.h"
 
 #	define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
-#	define MAX_FILENAME 1024
+#	define ZIP_MAX_FILENAME 1024
 
 namespace Menge
 {
@@ -142,7 +142,7 @@ namespace Menge
 
 		header_offset += arc_offset;
 
-		char fileNameBuffer[MAX_FILENAME];
+		char fileNameBuffer[ZIP_MAX_FILENAME];
 
 		for(;;)
 		{

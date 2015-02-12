@@ -41,9 +41,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileGroupDirectory::existFile( const FilePath & _fileName ) const
 	{
-		WChar filePath[MAX_PATH];
+		WChar filePath[MENGINE_MAX_PATH];
 		if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( m_path, _fileName, filePath, MAX_PATH ) == false )
+			->concatenateFilePath( m_path, _fileName, filePath, MENGINE_MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::existFile invlalid concatenate filePath '%s':'%s'"
 				, m_path.c_str()
@@ -166,9 +166,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::existDirectory( const FilePath & _path ) const
     {
-		WChar filePath[MAX_PATH];
+		WChar filePath[MENGINE_MAX_PATH];
 		if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( m_path, _path, filePath, MAX_PATH ) == false )
+			->concatenateFilePath( m_path, _path, filePath, MENGINE_MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::existFolder invlalid concatenate filePath '%s':'%s'"
 				, m_path.c_str()
@@ -186,9 +186,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileGroupDirectory::createDirectory( const FilePath & _path )
 	{
-		WChar filePath[MAX_PATH];
+		WChar filePath[MENGINE_MAX_PATH];
 		if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( m_path, _path, filePath, MAX_PATH ) == false )
+			->concatenateFilePath( m_path, _path, filePath, MENGINE_MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::createFolder invlalid concatenate filePath '%s':'%s'"
 				, m_path.c_str()
@@ -206,9 +206,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileGroupDirectory::removeDirectory( const FilePath & _path )
 	{
-		WChar filePath[MAX_PATH];
+		WChar filePath[MENGINE_MAX_PATH];
 		if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( m_path, _path, filePath, MAX_PATH ) == false )
+			->concatenateFilePath( m_path, _path, filePath, MENGINE_MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFolder invlalid concatenate filePath '%s':'%s'"
 				, m_path.c_str()
@@ -251,9 +251,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileGroupDirectory::removeFile( const FilePath & _fileName )
 	{
-		WChar filePath[MAX_PATH];
+		WChar filePath[MENGINE_MAX_PATH];
 		if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( m_path, _fileName, filePath, MAX_PATH ) == false )
+			->concatenateFilePath( m_path, _fileName, filePath, MENGINE_MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32FileSystem::deleteFile invlalid concatenate filePath '%s':'%s'"
 				, m_path.c_str()

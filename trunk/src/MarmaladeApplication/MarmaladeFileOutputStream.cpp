@@ -24,9 +24,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileOutputStream::open( const FilePath & _folder, const FilePath& _filename )
 	{        
-        char filePath[MAX_PATH];
+        char filePath[MENGINE_MAX_PATH];
         if( MARMALADELAYER_SERVICE(m_serviceProvider)
-            ->concatenateFilePath( _folder, _filename, filePath, MAX_PATH ) == false )
+            ->concatenateFilePath( _folder, _filename, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::open invalid concatenate '%s':'%s'"
                 , _folder.c_str()

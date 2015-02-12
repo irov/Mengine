@@ -257,8 +257,7 @@ namespace Menge
 
 			ParticleEmitterAtlas atlas;
 
-			strcpy( atlas.file, magicAtlas.file );
-			//atlas.path = magicAtlas.path;
+			atlas.filename = Helper::stringizeString( m_serviceProvider, magicAtlas.file );
 
 			astralax_container->addAtlas( atlas );
 		}

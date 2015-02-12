@@ -63,7 +63,7 @@ namespace Menge
 			{
 				ResourceReference * resource = _entry->resource;
 
-#   ifndef MENGE_MASTER_RELEASE
+#   ifndef MENGINE_MASTER_RELEASE
 				uint32_t refcount = resource->countReference();
 				if ( refcount != 0 )
 				{
@@ -211,7 +211,7 @@ namespace Menge
                 continue;
             }
             
-#	ifndef MENGE_MASTER_RELEASE
+#	ifndef MENGINE_MASTER_RELEASE
 			if( resource->convert() == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid convert"

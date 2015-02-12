@@ -355,7 +355,7 @@ namespace Menge
         SCRIPT_SERVICE(m_serviceProvider)
             ->addGlobalModule( "_DEVELOPMENT", pybind::get_bool(m_developmentMode) );
 
-#   ifdef MENGE_MASTER_RELEASE
+#   ifdef MENGINE_MASTER_RELEASE
         SCRIPT_SERVICE(m_serviceProvider)
             ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool(true) );
 #   else
@@ -675,7 +675,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::createResourcePak( const ResourcePackDesc & _desc )
 	{
-#   ifdef MENGE_MASTER_RELEASE
+#   ifdef MENGINE_MASTER_RELEASE
 		if( _desc.dev == true )
 		{
 			return;

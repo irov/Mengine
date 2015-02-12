@@ -12,8 +12,8 @@
 
 namespace Menge
 {
-#   ifndef MAX_PATH
-#   define MAX_PATH 260
+#   ifndef MENGINE_MAX_PATH
+#   define MENGINE_MAX_PATH 260
 #   endif
 
 #	define MENGINE_FILE_PATH_INVALID_ID	((uint32_t)-1)
@@ -21,7 +21,7 @@ namespace Menge
 	typedef ConstString FilePath;
 
 	//typedef ConstString FilePath; //UTF8
-	typedef stdex::array_string<MAX_PATH> PathString;
+	typedef stdex::array_string<MENGINE_MAX_PATH> PathString;
 
     typedef stdex::vector<FilePath> TVectorFilePath;
 

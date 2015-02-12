@@ -5,10 +5,6 @@
 #	include "Config/String.h"
 #   include "Core/FilePath.h"
 
-#   ifndef MAX_PATH
-#   define MAX_PATH 260
-#   endif
-
 namespace Menge
 {
     class MarmaladeLayerInterface

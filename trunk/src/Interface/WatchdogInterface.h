@@ -21,7 +21,7 @@ namespace Menge
 	SERVICE_GET(serviceProvider, Menge::WatchdogInterface)
 
 
-#   ifdef MENGE_MASTER_RELEASE
+#   ifdef MENGINE_MASTER_RELEASE
 #		define WATCHDOG( serviceProvider, tag ) (0.f)
 #		define BEGIN_WATCHDOG( serviceProvider, tag )
 #		define END_WATCHDOG2(...) 

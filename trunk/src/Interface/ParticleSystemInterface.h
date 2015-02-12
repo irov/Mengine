@@ -125,8 +125,7 @@ namespace Menge
 
     struct ParticleEmitterAtlas
     {
-        char file[MAX_PATH];
-        //WString path;
+		FilePath filename;
     };
 
     typedef stdex::vector<ParticleEmitterAtlas> TVectorParticleEmitterAtlas;

@@ -38,7 +38,7 @@ namespace Menge
 		bool importBin_( const InputStreamInterfacePtr & _bin, Metabuf::Metadata * _metadata, bool * _reimport );
 		bool openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist );
 
-#	ifndef MENGE_MASTER_RELEASE
+#	ifndef MENGINE_MASTER_RELEASE
 		bool makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin );
 #	endif
 

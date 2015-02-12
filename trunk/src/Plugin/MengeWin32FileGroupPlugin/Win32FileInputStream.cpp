@@ -44,7 +44,7 @@ namespace Menge
 	{
 		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::open");
 
-		WChar filePath[MAX_PATH];
+		WChar filePath[MENGINE_MAX_PATH];
 		if( this->openFile_( _folder, _fileName, filePath ) == false )
 		{
 			return false;
@@ -96,7 +96,7 @@ namespace Menge
 	bool Win32FileInputStream::openFile_( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath )
 	{		
 		if( WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->concatenateFilePath( _folder, _fileName, _filePath, MAX_PATH ) == false )
+			->concatenateFilePath( _folder, _fileName, _filePath, MENGINE_MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Win32InputStream::open invlalid concatenate filePath '%s':'%s'"
 				, _folder.c_str()

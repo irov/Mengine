@@ -61,12 +61,12 @@ namespace Menge
         {
             String exportPath = currentPath + "Python3Lib\\";
 
-            char utf8_shortpath[MAX_PATH * 2];
+            char utf8_shortpath[MENGINE_MAX_PATH * 2];
 
             size_t utf8_shortpath_len = PLATFORM_SERVICE(m_serviceProvider)
-				->getShortPathName( exportPath, utf8_shortpath, MAX_PATH * 2 );
+				->getShortPathName( exportPath, utf8_shortpath, MENGINE_MAX_PATH * 2 );
 
-            wchar_t unicode_shortpath[MAX_PATH];
+            wchar_t unicode_shortpath[MENGINE_MAX_PATH];
 
             size_t unicode_shortpath_len;
 
@@ -104,16 +104,16 @@ namespace Menge
 		{
 			String stdPath = currentPath + "Python3Lib\\";
 
-			char utf8_shortpath[MAX_PATH * 2];
+			char utf8_shortpath[MENGINE_MAX_PATH * 2];
 			size_t utf8_shortpath_len = PLATFORM_SERVICE(m_serviceProvider)
-				->getShortPathName( stdPath, utf8_shortpath, MAX_PATH * 2 );
+				->getShortPathName( stdPath, utf8_shortpath, MENGINE_MAX_PATH * 2 );
 
-			wchar_t unicode_shortpath[MAX_PATH];
+			wchar_t unicode_shortpath[MENGINE_MAX_PATH];
 
 			size_t unicode_shortpath_len;
 
 			if( UNICODE_SERVICE(m_serviceProvider)
-				->utf8ToUnicode( utf8_shortpath, utf8_shortpath_len, unicode_shortpath, MAX_PATH, &unicode_shortpath_len ) == false )
+				->utf8ToUnicode( utf8_shortpath, utf8_shortpath_len, unicode_shortpath, MENGINE_MAX_PATH, &unicode_shortpath_len ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ScriptEngine.updateModulePath_: invalid filepath '%s'"
 					, stdPath.c_str()
@@ -132,16 +132,16 @@ namespace Menge
 		{
 			String stdPath = currentPath + "XlsxExport\\";
 
-			char utf8_shortpath[MAX_PATH * 2];
+			char utf8_shortpath[MENGINE_MAX_PATH * 2];
 			size_t utf8_shortpath_len = PLATFORM_SERVICE(m_serviceProvider)
-				->getShortPathName( stdPath, utf8_shortpath, MAX_PATH * 2 );
+				->getShortPathName( stdPath, utf8_shortpath, MENGINE_MAX_PATH * 2 );
 
-			wchar_t unicode_shortpath[MAX_PATH];
+			wchar_t unicode_shortpath[MENGINE_MAX_PATH];
 
 			size_t unicode_shortpath_len;
 
 			if( UNICODE_SERVICE(m_serviceProvider)
-				->utf8ToUnicode( utf8_shortpath, utf8_shortpath_len, unicode_shortpath, MAX_PATH, &unicode_shortpath_len ) == false )
+				->utf8ToUnicode( utf8_shortpath, utf8_shortpath_len, unicode_shortpath, MENGINE_MAX_PATH, &unicode_shortpath_len ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ScriptEngine.updateModulePath_: invalid filepath '%s'"
 					, stdPath.c_str()

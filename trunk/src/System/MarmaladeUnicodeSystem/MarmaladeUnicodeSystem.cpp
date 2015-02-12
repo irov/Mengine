@@ -29,6 +29,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeUnicodeSystem::unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {
+		if( _unicodeSize == UNICODE_UNSIZE && _utf8Capacity != 0 )
+		{
+			_utf8Capacity += 1;
+		}
+
         const ucs2char * ucs_unicode = reinterpret_cast<const ucs2char *>(_unicode);
         int utf8_size = IwWideCharToUTF8( ucs_unicode, _unicodeSize, _utf8, _utf8Capacity );
 
@@ -37,13 +42,18 @@ namespace Menge
             return false;
         }
 
+		if( _utf8Capacity == UNICODE_UNSIZE )
+		{
+			utf8_size -= 1;
+		}
+
         if( _utf8Size != nullptr )
         {
             size_t u_utf8_size = (size_t)utf8_size;
             *_utf8Size = u_utf8_size;
         }
         
-        if( _utf8 != nullptr )
+		if( _utf8 != nullptr && _utf8Capacity != 0 )
         {
             _utf8[utf8_size] = '\0';
         }
@@ -52,8 +62,13 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeUnicodeSystem::utf8ToUnicode( const char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
-	{
-        ucs2char * uc_unicode = reinterpret_cast<ucs2char *>(_unicode);
+	{		
+		if( _utf8Size == UNICODE_UNSIZE && _unicodeCapacity != 0 )
+		{
+			_unicodeCapacity += 1;
+		}
+
+		ucs2char * uc_unicode = reinterpret_cast<ucs2char *>(_unicode);
         int wc_size = IwUTF8ToWideChar( _utf8, _utf8Size, uc_unicode, _unicodeCapacity);
 
         if( wc_size == iwutf8_invalid_cast )
@@ -61,13 +76,18 @@ namespace Menge
             return false;
         }
 
+		if( _utf8Size == UNICODE_UNSIZE )
+		{
+			wc_size -= 1;
+		}
+
         if( _sizeUnicode != nullptr )
-        {
+        {			
             size_t u_wc_size = (size_t)wc_size;
             *_sizeUnicode = u_wc_size;
         }
 
-        if( _unicode != nullptr )
+        if( _unicode != nullptr && _unicodeCapacity != 0 )
         {
             _unicode[wc_size] = L'\0';
         }

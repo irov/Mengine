@@ -23,7 +23,7 @@ namespace Menge
     {
         (void)_user;
 
-        size_t utf8_size = strlen( _value ); 
+        uint32_t utf8_size = (uint32_t)strlen( _value ); 
 
         _metabuf->writeSize( utf8_size );        
         _metabuf->writeCount( &_value[0], utf8_size );
@@ -35,7 +35,7 @@ namespace Menge
     {
         (void)_user;
 
-        size_t utf8_size = strlen( _value ); 
+        uint32_t utf8_size = (uint32_t)strlen( _value ); 
 
         _metabuf->writeSize( utf8_size );
         _metabuf->writeCount( &_value[0], utf8_size );
@@ -51,7 +51,7 @@ namespace Menge
         const char * text_it = _value;
         const char * text_end = _value + len + 1;
         
-        size_t code;
+        uint32_t code;
 		utf8::internal::validate_next( text_it, text_end, code );
 
         _metabuf->write( code );
@@ -225,7 +225,7 @@ namespace Menge
         Blobject bin_buf;
 		bin_buf.resize( xml_size * 2 );
 
-        uint32_t bin_size;
+        size_t bin_size;
 		if( xml_metabuf.convert( &bin_buf[0], xml_size * 2, &xml_buf[0], xml_size, bin_size ) == false )
 		{
             LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error convert %s error:\n%s"
@@ -252,14 +252,16 @@ namespace Menge
         }
 
         bin_stream->write( &header_buf[0], Metabuf::header_size );
-		bin_stream->write( &FORMAT_VERSION_BIN, sizeof(FORMAT_VERSION_BIN) );        
-        bin_stream->write( &bin_size, sizeof(bin_size) );
+		bin_stream->write( &FORMAT_VERSION_BIN, sizeof(FORMAT_VERSION_BIN) );
+
+		uint32_t write_bin_size = (uint32_t)bin_size;
+        bin_stream->write( &write_bin_size, sizeof(write_bin_size) );
 
 		size_t compress_size;
 		const void * compress_buffer = compress_memory->getMemory( compress_size );
 
 		uint32_t write_compress_size = (uint32_t)compress_size;
-        bin_stream->write( &compress_size, sizeof(write_compress_size) );
+        bin_stream->write( &write_compress_size, sizeof(write_compress_size) );
         bin_stream->write( compress_buffer, write_compress_size );
 		
 		return bin_size;

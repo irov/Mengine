@@ -1077,8 +1077,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr MarmaladeRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
 	{
-        uint32_t hwChannels;
-        PixelFormat hwFormat;
+        uint32_t hwChannels = 0;
+        PixelFormat hwFormat = PF_UNKNOWN;
 		this->findFormatFromChannels_( _format, _channels, hwFormat, hwChannels );
 
 		GLint textureInternalFormat = s_toGLInternalFormat( hwFormat );
@@ -1250,8 +1250,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr MarmaladeRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
 	{
-		uint32_t hwChannels;
-		PixelFormat hwFormat;
+		uint32_t hwChannels = 0;
+		PixelFormat hwFormat = PF_UNKNOWN;
 		this->findFormatFromChannels_( _format, _channels, hwFormat, hwChannels );
 
 		GLint textureInternalFormat = s_toGLInternalFormat( hwFormat );

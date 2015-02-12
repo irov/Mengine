@@ -9,7 +9,10 @@ options
     strict-compile
     enable-exceptions
 	preinclude=preinclude_mengine.h
+    
+    cflags="-Wno-error=unused-local-typedefs -Wno-error=maybe-uninitialized"
 }
+
 
 defines
 {	
@@ -107,6 +110,18 @@ files
     VideoCodecPlugin.cpp
     VideoDecoderTheora.h
     VideoDecoderTheora.cpp
+    
+    [Plugin/MengeXmlCodecPlugin]
+    ("../src/Plugin/MengeXmlCodecPlugin")	
+	"*.cpp"
+	"*.h"
+
+    [Plugin/MengeDevelopmentConverterPlugin]
+    ("../src/Plugin/MengeDevelopmentConverterPlugin")	
+	"HotspotImageConverterPNGToHIT.*"
+	"MovieKeyConverterXMLToAEK.*"
+	"DevelopmentConverter.*"
+	"DevelopmentConverterPlugin.*"
     
     [Service/ServiceCodec]
     ("../src/Service/ServiceCodec")	

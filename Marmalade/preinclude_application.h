@@ -20,17 +20,16 @@
 #   define PUGIXML_NO_STL
 #   define PUGIXML_NO_XPATH
 
-#	define MENGINE_MASTER_RELEASE
+#	ifndef IW_DEBUG
+#		undef _DEBUG // In Marmalade _DEBUG is wrongly defined in x86 Release.
+#	    define MENGINE_MASTER_RELEASE
+#	endif
 
 #   define MENGINE_MARMALADE
 #	define MENGINE_MAX_PATH 128
 
 #   define nullptr 0
 #   define STDEX_UNSUPPOT_NULLPTR_T
-
-#	ifndef IW_DEBUG
-#		undef _DEBUG // In Marmalade _DEBUG is wrongly defined in x86 Release.
-#	endif
     
 #   define _BIG_ENDIAN
 

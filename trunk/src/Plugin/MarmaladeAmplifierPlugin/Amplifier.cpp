@@ -86,8 +86,12 @@ namespace Menge
 
 		if( result != S3E_RESULT_SUCCESS )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::initialize: invalid register callback %d"
-				, result
+			s3eAudioError s3eAudio_error = s3eAudioGetError();
+			const char * s3eAudio_string = s3eAudioGetErrorString();
+
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::initialize: invalid register callback %d [%s]"
+				, s3eAudio_error
+				, s3eAudio_string
 				);
 
 			return false;
@@ -462,8 +466,13 @@ namespace Menge
 
 		if( result == S3E_RESULT_ERROR )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::setPosMs invalid set S3E_AUDIO_POSITION %d"
+			s3eAudioError s3eAudio_error = s3eAudioGetError();
+			const char * s3eAudio_string = s3eAudioGetErrorString();
+
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::setPosMs invalid set S3E_AUDIO_POSITION %d error %d [%s]"
 				, s3e_pos
+				, s3eAudio_error
+				, s3eAudio_string
 				);
 		}
 	}
@@ -476,8 +485,13 @@ namespace Menge
 
 		if( result == S3E_RESULT_ERROR )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::onSoundChangeVolume invalid set S3E_AUDIO_VOLUME %d"
+			s3eAudioError s3eAudio_error = s3eAudioGetError();
+			const char * s3eAudio_string = s3eAudioGetErrorString();
+
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::onSoundChangeVolume invalid set S3E_AUDIO_VOLUME %d error %d [%s]"
 				, s3e_volume
+				, s3eAudio_error
+				, s3eAudio_string
 				);
 		}
 	}

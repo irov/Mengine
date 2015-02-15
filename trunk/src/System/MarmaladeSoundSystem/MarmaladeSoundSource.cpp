@@ -20,21 +20,16 @@ namespace Menge
 		, m_playing(false)
 		, m_pausing(false)
         , m_loop(false)
-		, m_volume_s3e(255)
-		, m_stereo_s3e(true)
-		, m_carriage_s3e(0)
-		, m_soundDesc(nullptr)
-		, m_W(0)
-		, m_L(0)
+		, m_position(0.f)
+		, m_soundId(INVALID_SOUND_ID)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeSoundSource::~MarmaladeSoundSource()
 	{
-		if( m_playing == true || m_pausing == true )
-		{
-			this->stop();
-		}
+		m_soundSystem->removeSoundDesc( m_soundId );
+
+		m_soundId = INVALID_SOUND_ID;
 	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeSoundSource::initialize( ServiceProviderInterface * _serviceProvider, MarmaladeSoundSystem * _soundSystem )
@@ -55,70 +50,25 @@ namespace Menge
 
 		if( m_pausing == true )
 		{
-			if( m_soundDesc == nullptr )
+			if( m_soundSystem->resumeSoundDesc( m_soundId, m_position ) == false )
 			{
 				return false;
 			}
-
-			uint32 carriage = m_soundDesc->carriage;
-
-			if( m_carriage_s3e != carriage )
-			{
-				m_soundDesc->carriage = carriage;
-			}
-
-			m_soundDesc->pause = false;
 
 			m_pausing = false;
 
 			return true;
 		}
+		
+		m_soundId = m_soundSystem->playSoundDesc( this, m_position, m_volume, m_loop == true ? -1 : 1 );
 
-		m_soundDesc = m_soundSystem->newSound();
-
-		if( m_soundDesc == nullptr )
-		{
-			return false;
-		}
-
-		const SoundDecoderInterfacePtr & decoder = m_soundBuffer->getDecoder();
-
-		if( decoder->rewind() == false )
-		{
-			return false;
-		}
-
-		const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
-
-		void * memory_s3e = stdex_malloc( dataInfo->size );
-
-		size_t size = decoder->decode( memory_s3e, dataInfo->size );
-
-		if( size != dataInfo->size )
+		if( m_soundId == INVALID_SOUND_ID )
 		{
 			return false;
 		}
 
 		m_playing = true;
 		m_pausing = false;
-							
-		m_soundDesc->source = this;
-
-		m_soundDesc->carriage = m_carriage_s3e;
-		m_soundDesc->size = (((uint32_t)dataInfo->length) * dataInfo->frequency) / 1000 * m_L / m_W;
-		m_soundDesc->memory = (int16 *)memory_s3e;
-
-		uint32_t sampleSize = (dataInfo->stereo == true ? 2 : 1);
-		m_soundDesc->sampleStep = sampleSize;
-		m_soundDesc->volume = m_volume_s3e;
-
-		m_soundDesc->pause = false;
-		m_soundDesc->stop = false;
-		m_soundDesc->end = false;
-
-		m_soundDesc->count = m_loop == true ? -1 : 1;
-
-		m_soundDesc->play = true;
 		
         return true;
 	}
@@ -141,14 +91,10 @@ namespace Menge
 			return;
 		}
 
-		if( m_soundDesc == nullptr )
+		if( m_soundSystem->pauseSoundDesc( m_soundId, m_position ) == false )
 		{
 			return;
 		}
-
-		m_soundDesc->pause = true;
-
-		m_carriage_s3e = m_soundDesc->carriage;
 
 		m_playing = false;
 		m_pausing = true;
@@ -161,15 +107,12 @@ namespace Menge
 			return;
 		}
 
-		if( m_soundDesc == nullptr )
+		if( m_soundSystem->stopSoundDesc( m_soundId ) == false )
 		{
 			return;
 		}
-
-		m_soundDesc->stop = true;
-		m_soundDesc->pause = false;
 		
-		m_carriage_s3e = 0;
+		m_position = 0.f;
 		
 		m_playing = false;
 		m_pausing = false;
@@ -177,8 +120,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeSoundSource::complete()
 	{
-		m_soundDesc = nullptr;
-		m_carriage_s3e = 0;
+		m_soundId = INVALID_SOUND_ID;
+		m_position = 0.f;
 
 		m_playing = false;
 		m_pausing = false;
@@ -197,20 +140,13 @@ namespace Menge
 	void MarmaladeSoundSource::setVolume( float _volume )
 	{
 		m_volume = _volume;
-
-		m_volume_s3e = (uint8)(m_volume * (S3E_SOUND_MAX_VOLUME - 1));
-
+		
 		if( m_playing == false )
 		{
 			return;
 		}
 		
-		if( m_soundDesc == nullptr )
-		{
-			return;
-		}
-
-		m_soundDesc->volume = m_volume_s3e;
+		m_soundSystem->setSoundDescVolume( m_soundId, _volume );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float MarmaladeSoundSource::getVolume() const 
@@ -238,32 +174,38 @@ namespace Menge
 			return 0.f;
 		}
 
-		float time_sound = m_soundBuffer->getLength();
+		const SoundDecoderInterfacePtr & decoder = m_soundBuffer->getDecoder();
+
+		if( decoder == nullptr )
+		{
+			return 0.f;
+		}
+
+		const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
+
+		float time_sound = dataInfo->length;
 
 		return time_sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float MarmaladeSoundSource::getPosMs() const
 	{
-		uint32 carriage = 0;
-		
-		if( m_playing == false || m_pausing == true )
+		if( m_playing == false )
 		{
-			carriage = m_carriage_s3e;
-		}
-		else
-		{
-			if( m_soundDesc == nullptr )
-			{
-				return 0.f;
-			}
-
-			carriage = m_soundDesc->carriage;
+			return 0.f;
 		}
 
-		uint32_t frequency = m_soundBuffer->getFrequency();
-		
-		float posMs = (float)(carriage * 1000 / frequency * m_L / m_W);
+		if( m_pausing == true )
+		{
+			return m_position;
+		}
+
+		float posMs = 0.f;
+
+		if( m_soundSystem->getSoundDescPosition( m_soundId, posMs ) == false )
+		{
+			return 0.f;
+		}
 
 		return posMs;
 	}
@@ -279,33 +221,14 @@ namespace Menge
 			return false;
 		}
 
-		uint32 ms = (uint32)_posMs;
+		m_position = _posMs;
 
-		uint32_t frequency = m_soundBuffer->getFrequency();
-
-		uint32_t pos = (ms * frequency) / 1000 * m_W / m_L;
-
-		m_carriage_s3e = pos;
-
-        return true;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeSoundSource::setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer )
 	{
-		m_soundBuffer = stdex::intrusive_static_cast<MarmaladeSoundBufferPtr>(_soundBuffer);
-
-		m_stereo_s3e = m_soundBuffer->getStereo();
-
-		int32 inputFrequency = m_soundBuffer->getFrequency();
-		int32 outputFrequency = s3eSoundGetInt( S3E_SOUND_OUTPUT_FREQ );		
-
-		int32 gcd = s_GCD( inputFrequency, outputFrequency );
-		m_W	= inputFrequency / gcd;
-		m_L	= outputFrequency / gcd;
-
-		//std::memset( m_filterBufferL, 0, sizeof(int16) * MARMALADE_SOUND_NUM_COEFFICIENTS );
-		//std::memset( m_filterBufferR, 0, sizeof(int16) * MARMALADE_SOUND_NUM_COEFFICIENTS );
-		//s_setupFilterCoefficients( m_filterCoefficients, inputFrequency, outputFrequency );
+		m_soundBuffer = _soundBuffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterfacePtr MarmaladeSoundSource::getSoundBuffer() const

@@ -39,7 +39,7 @@ namespace Menge
 		virtual bool update() = 0;
 
 	public:
-		virtual bool rewind() = 0;
+		virtual const SoundDecoderInterfacePtr & getDecoder() const = 0;
 	};
 
 	typedef stdex::intrusive_ptr<SoundBufferInterface> SoundBufferInterfacePtr;

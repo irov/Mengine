@@ -101,9 +101,9 @@ namespace Menge
 		s_wsfirLP( _filterCoefficients, ESWC_BLACKMAN, fc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline static int32 s_GCD( int32 a, int32 b )
+	inline static uint32_t s_GCD( uint32_t a, uint32_t b )
 	{
-		while( true )
+		for(;;)
 		{
 			a = a % b;
 			if (a == 0)

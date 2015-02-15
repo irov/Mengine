@@ -10,6 +10,8 @@
 namespace Menge
 {
 	class MarmaladeSoundSystem;
+	
+	struct MarmaladeSoundMemoryDesc;
 
 	class MarmaladeSoundSource
 		: public SoundSourceInterface
@@ -58,7 +60,7 @@ namespace Menge
 		bool m_pausing;
 		bool m_loop;
 
-		uint32_t m_soundId;
+		volatile MarmaladeSoundMemoryDesc * m_soundDesc;
 				
 		//int32 m_filterBufferPos;
 		//int16 m_filterBufferL[MARMALADE_SOUND_NUM_COEFFICIENTS];

@@ -70,9 +70,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::initialize()
 	{
-		if( s3eAudioGetInt( S3E_AUDIO_AVAILABLE ) == 0 )
+		LOGGER_INFO(m_serviceProvider)( "Starting Marmalade Amplifier..." );
+
+		int32 available = s3eAudioGetInt( S3E_AUDIO_AVAILABLE );
+		
+		if( available == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::initialize: not support"
+			LOGGER_ERROR(m_serviceProvider)("Unavailable..."
 				);
 
 			return false;
@@ -257,9 +261,11 @@ namespace Menge
 		if( s3eAudio_status == -1 )
 		{
 			s3eAudioError s3eAudio_error = s3eAudioGetError();
+			const char * s3eAudio_string = s3eAudioGetErrorString();
 
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::pause invalid get status %d"
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::pause invalid get status %d [%s]"
 				, s3eAudio_error
+				, s3eAudio_string
 				);
 
 			return false;
@@ -279,9 +285,11 @@ namespace Menge
 		if( result == S3E_RESULT_ERROR )
 		{
 			s3eAudioError s3eAudio_error = s3eAudioGetError();
+			const char * s3eAudio_string = s3eAudioGetErrorString();
 
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::pause invalid s3eAudioPause %d"
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::pause invalid s3eAudioPause %d [%s]"
 				, s3eAudio_error
+				, s3eAudio_string
 				);
 
 			return false;
@@ -299,9 +307,11 @@ namespace Menge
 		if( s3eAudio_status == -1 )
 		{
 			s3eAudioError s3eAudio_error = s3eAudioGetError();
+			const char * s3eAudio_string = s3eAudioGetErrorString();
 
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::resume invalid get status %d"
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::resume invalid get status %d [%s]"
 				, s3eAudio_error
+				, s3eAudio_string
 				);
 
 			return false;
@@ -321,9 +331,11 @@ namespace Menge
 		if( result == S3E_RESULT_ERROR )
 		{
 			s3eAudioError s3eAudio_error = s3eAudioGetError();
+			const char * s3eAudio_string = s3eAudioGetErrorString();
 
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::resume invalid s3eAudioResume %d"
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::resume invalid s3eAudioResume %d [%s]"
 				, s3eAudio_error
+				, s3eAudio_string
 				);
 
 			return false;
@@ -380,11 +392,13 @@ namespace Menge
 		if( result_play == S3E_RESULT_ERROR )
 		{
 			s3eAudioError s3eAudio_error = s3eAudioGetError();
+			const char * s3eAudio_string = s3eAudioGetErrorString();
 
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't play sound '%s:%s' error %d"
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't play sound '%s:%s' error %d [%s]"
 				, _pakName.c_str()
 				, _filePath.c_str()
 				, s3eAudio_error
+				, s3eAudio_string
 				);
 
 			return false;
@@ -397,12 +411,14 @@ namespace Menge
 		if( result_position == S3E_RESULT_ERROR )
 		{
 			s3eAudioError s3eAudio_error = s3eAudioGetError();
+			const char * s3eAudio_string = s3eAudioGetErrorString();
 
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't '%s:%s' set pos %d error %d"
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't '%s:%s' set pos %d error %d [%s]"
 				, _pakName.c_str()
 				, _filePath.c_str()
 				, s3e_pos
 				, s3eAudio_error
+				, s3eAudio_string
 				);
 
 			return false;
@@ -423,9 +439,11 @@ namespace Menge
 		if( s3e_pos == -1 )
 		{
 			s3eAudioError s3eAudio_error = s3eAudioGetError();
+			const char * s3eAudio_string = s3eAudioGetErrorString();
 
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::getPosMs invalid get audio position %d"
+			LOGGER_ERROR(m_serviceProvider)("Amplifier::getPosMs invalid get audio position %d [%s]"
 				, s3eAudio_error
+				, s3eAudio_string
 				);
 
 			return 0.f;

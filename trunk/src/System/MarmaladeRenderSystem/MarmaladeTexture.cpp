@@ -22,7 +22,7 @@ namespace Menge
 		, m_magFilter(0)
 		, m_mode(ERIM_NORMAL)
 		, m_lockMemory(nullptr)
-		, m_lockBufferId(0)
+		, m_lockBufferId(INVALID_CACHE_BUFFER_ID)
 		, m_lockLevel(0)
 	{
 	}
@@ -94,10 +94,10 @@ namespace Menge
 		size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
 		void * memory;
-		m_lockBufferId = CACHE_SERVICE(m_serviceProvider)
+		CacheBufferID lockBufferId = CACHE_SERVICE(m_serviceProvider)
 			->lockBuffer( size, &memory, "MarmaladeTexture::lock" );
 
-		if( m_lockBufferId == INVALID_CACHE_BUFFER_ID )
+		if( lockBufferId == INVALID_CACHE_BUFFER_ID )
 		{
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::lock invalid cache memory %d (l %d w %d h %d c %d f %d)"
 				, size
@@ -111,6 +111,7 @@ namespace Menge
 			return nullptr;
 		}
 
+		m_lockBufferId = lockBufferId;
 		m_lockMemory = memory;
 		
 		*_pitch = size / miplevel_height;
@@ -192,7 +193,7 @@ namespace Menge
 			->unlockBuffer( m_lockBufferId );
 
 		m_lockLevel = 0;
-		m_lockBufferId = 0;
+		m_lockBufferId = INVALID_CACHE_BUFFER_ID;
 		m_lockMemory = nullptr;		
 	}
 	//////////////////////////////////////////////////////////////////////////

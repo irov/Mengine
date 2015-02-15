@@ -38,37 +38,30 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t MarmaladeSoundSystem::newSound( MarmaladeSoundSource * _source )
+	volatile MarmaladeSoundMemoryDesc * MarmaladeSoundSystem::newSound()
 	{
 		for( uint32_t i = 0; i != MENGINE_MARMALADE_SOUND_MAX_COUNT; ++i )
 		{
-			volatile SoundMemoryDesc & desc = m_soundMemoryDesc[i];
+			volatile MarmaladeSoundMemoryDesc & desc = m_soundMemoryDesc[i];
 			
 			if( desc.memory != nullptr )
 			{
 				continue;
 			}
-
-			desc.source = _source;
-
-			return i;
+			
+			return &desc;
 		}
 
-		return (uint32_t)-1;
+		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	volatile SoundMemoryDesc * MarmaladeSoundSystem::getSound( uint32_t _index )
-	{
-		return m_soundMemoryDesc + _index;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static uint32_t s_getAvailableDesc( volatile SoundMemoryDesc ** _out, volatile SoundMemoryDesc * _from )
+	static uint32_t s_getAvailableDesc( volatile MarmaladeSoundMemoryDesc ** _out, volatile MarmaladeSoundMemoryDesc * _from )
 	{
 		uint32_t availableCount = 0;
 
 		for( uint32_t index_desc = 0; index_desc != MENGINE_MARMALADE_SOUND_MAX_COUNT; ++index_desc )
 		{
-			volatile SoundMemoryDesc & desc = _from[index_desc];
+			volatile MarmaladeSoundMemoryDesc & desc = _from[index_desc];
 
 			if( desc.play == false || desc.end == true || desc.pause == true )
 			{
@@ -98,36 +91,34 @@ namespace Menge
 	static int32 s_AudioCallbackMono( void * _sys, void * _user )
 	{
 		s3eSoundGenAudioInfo * info = (s3eSoundGenAudioInfo *)_sys;
-		volatile SoundMemoryDesc * soundMemoryDesc = (volatile SoundMemoryDesc *)_user;
+		volatile MarmaladeSoundMemoryDesc * soundMemoryDesc = (volatile MarmaladeSoundMemoryDesc *)_user;
 
-		info->m_EndSample = 0;
+		info->m_EndSample = S3E_FALSE;
 
-		int16 * target = info->m_Target;
-
-		volatile SoundMemoryDesc * availableDesc[MENGINE_MARMALADE_SOUND_MAX_COUNT];
+		volatile MarmaladeSoundMemoryDesc * availableDesc[MENGINE_MARMALADE_SOUND_MAX_COUNT];
 		uint32_t availableCount = s_getAvailableDesc( availableDesc, soundMemoryDesc );				
 
-		if( availableCount == 0 )
-		{
-			memset( target, 0, 1 * 1 * sizeof(int16) );
-
-			return 1;
-		}
+		int16 * target = info->m_Target;
 
 		uint32 numSamples = info->m_NumSamples;
 
 		if( info->m_Mix == 0 )
 		{
-			memset( target, 0, numSamples * 1 * sizeof(int16) );
+			memset( target, 0, numSamples * 1 * sizeof(int16) );			
+		}
+
+		if( availableCount == 0 )
+		{
+			return numSamples;
 		}
 				
 		for( uint32_t sample = 0; sample != numSamples; ++sample )
 		{		
-			int32 origM = (int32)*(target+0);
+			int32 origM = (int32)*(target + 0);
 
 			for( uint32_t index = 0; index != availableCount; )
 			{
-				volatile SoundMemoryDesc * desc = availableDesc[index];
+				volatile MarmaladeSoundMemoryDesc * desc = availableDesc[index];
 
 				uint32 sampleStep = desc->sampleStep;
 
@@ -146,15 +137,17 @@ namespace Menge
 					if( desc->count == -1 || --desc->count > 0 )
 					{
 						desc->carriage = 0;
+
+						++index;
 					}
 					else
 					{
 						desc->play = false;
 						desc->end = true;
-					}
 
-					--availableCount;
-					availableDesc[index] = availableDesc[availableCount];
+						--availableCount;
+						availableDesc[index] = availableDesc[availableCount];
+					}
 				}
 				else
 				{
@@ -171,37 +164,35 @@ namespace Menge
 	static int32 s_AudioCallbackStereo( void * _sys, void * _user )
 	{
 		s3eSoundGenAudioInfo * info = (s3eSoundGenAudioInfo *)_sys;
-		volatile SoundMemoryDesc * soundMemoryDesc = (volatile SoundMemoryDesc *)_user;
+		volatile MarmaladeSoundMemoryDesc * soundMemoryDesc = (volatile MarmaladeSoundMemoryDesc *)_user;
 
-		info->m_EndSample = 0;
+		info->m_EndSample = S3E_FALSE;
 
-		volatile SoundMemoryDesc * availableDesc[MENGINE_MARMALADE_SOUND_MAX_COUNT];
+		volatile MarmaladeSoundMemoryDesc * availableDesc[MENGINE_MARMALADE_SOUND_MAX_COUNT];
 		uint32_t availableCount = s_getAvailableDesc( availableDesc, soundMemoryDesc );		
 
 		int16 * target = info->m_Target;
 
-		if( availableCount == 0 )
-		{
-			memset( target, 0, 1 * 2 * sizeof(int16) );
-
-			return 1;
-		}
-		
 		uint32 numSamples = info->m_NumSamples;
 
 		if( info->m_Mix == 0 )
 		{
-			memset( target, 0, numSamples * 2 * sizeof(int16) );
+			memset( target, 0, numSamples * 2 * sizeof(int16) );			
 		}
 
+		if( availableCount == 0 )
+		{
+			return numSamples;
+		}
+		
 		for( uint32_t sample = 0; sample != numSamples; ++sample )
 		{		
-			int32 origL = (int32)*(target+0);
-			int32 origR = (int32)*(target+1);
+			int32 origL = (int32)*(target + 0);
+			int32 origR = (int32)*(target + 1);
 
 			for( uint32_t index = 0; index != availableCount; )
 			{
-				volatile SoundMemoryDesc * desc = availableDesc[index];
+				volatile MarmaladeSoundMemoryDesc * desc = availableDesc[index];
 
 				uint32 sampleStep = desc->sampleStep;
 
@@ -219,18 +210,20 @@ namespace Menge
 
 				if( desc->carriage == desc->size )
 				{
-					if( desc->count == -1 || --desc->count > 0 )
+					if( desc->count == -1 || (--desc->count) > 0 )
 					{
 						desc->carriage = 0;
+						
+						++index;
 					}
 					else
 					{
 						desc->play = false;
 						desc->end = true;
-					}
 
-					--availableCount;
-					availableDesc[index] = availableDesc[availableCount];
+						--availableCount;
+						availableDesc[index] = availableDesc[availableCount];
+					}
 				}
 				else
 				{
@@ -242,12 +235,21 @@ namespace Menge
 			*target++ = s_clipToInt16(origR);
 		}
 
-		return info->m_NumSamples;
+		return numSamples;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeSoundSystem::initialize()
 	{
 		LOGGER_INFO(m_serviceProvider)( "Starting Marmalade Sound System..." );
+
+		int32 available = s3eSoundGetInt( S3E_SOUND_AVAILABLE );
+
+		if( available == 0 )
+		{
+			LOGGER_INFO(m_serviceProvider)( "Unavailable..." );
+
+			return false;
+		}
 
 		int32 propertyStereoEnabled = s3eSoundGetInt( S3E_SOUND_STEREO_ENABLED );
 
@@ -266,11 +268,6 @@ namespace Menge
 			m_isDeviceStereo = false;
 		}
 
-		if( s3eSoundSetInt( S3E_SOUND_DEFAULT_FREQ, 44100 ) == S3E_RESULT_ERROR )
-		{
-			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
-		}
-
 		m_soundOutputFrequence = s3eSoundGetInt( S3E_SOUND_OUTPUT_FREQ );
 
 		if( m_soundOutputFrequence == -1 )
@@ -282,8 +279,9 @@ namespace Menge
 
 		for( uint32_t i = 0; i != MENGINE_MARMALADE_SOUND_MAX_COUNT; ++i )
 		{
-			volatile SoundMemoryDesc & desc = m_soundMemoryDesc[i];
+			volatile MarmaladeSoundMemoryDesc & desc = m_soundMemoryDesc[i];
 						
+			desc.source = nullptr;
 			desc.carriage = 0;
 			desc.size = 0;
 			desc.memory = nullptr;
@@ -361,7 +359,7 @@ namespace Menge
 	{
 		for( uint32 index_desc = 0; index_desc != MENGINE_MARMALADE_SOUND_MAX_COUNT; ++index_desc )
 		{
-			volatile SoundMemoryDesc & desc = m_soundMemoryDesc[index_desc];
+			volatile MarmaladeSoundMemoryDesc & desc = m_soundMemoryDesc[index_desc];
 
 			if( desc.end == false )
 			{
@@ -369,20 +367,23 @@ namespace Menge
 			}
 
 			stdex_free( desc.memory );
+			desc.memory = nullptr;
 			
 			desc.carriage = 0;
 			desc.size = 0;
-			desc.memory = nullptr;
 			desc.sampleStep = 0;
 			desc.volume = 0;
 			desc.count = 0;
 			desc.pause = false;
 			desc.play = false;
 			desc.stop = false;
+			
+			MarmaladeSoundSource * source = desc.source;
+			desc.source = nullptr;
+
 			desc.end = false;
 
-			desc.source->complete();
-			desc.source = nullptr;
+			source->complete();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

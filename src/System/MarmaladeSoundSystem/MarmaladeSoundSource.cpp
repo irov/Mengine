@@ -23,7 +23,7 @@ namespace Menge
 		, m_volume_s3e(255)
 		, m_stereo_s3e(true)
 		, m_carriage_s3e(0)
-		, m_soundId((uint32_t)-1)
+		, m_soundDesc(nullptr)
 		, m_W(0)
 		, m_L(0)
 	{
@@ -55,29 +55,32 @@ namespace Menge
 
 		if( m_pausing == true )
 		{
-			volatile SoundMemoryDesc * desc = m_soundSystem->getSound( m_soundId );
+			if( m_soundDesc == nullptr )
+			{
+				return false;
+			}
 
-			uint32 carriage = desc->carriage;
+			uint32 carriage = m_soundDesc->carriage;
 
 			if( m_carriage_s3e != carriage )
 			{
-				desc->carriage = carriage;
+				m_soundDesc->carriage = carriage;
 			}
 
-			desc->pause = false;
+			m_soundDesc->pause = false;
 
 			m_pausing = false;
 
 			return true;
 		}
 
-		m_soundId = m_soundSystem->newSound( this );
+		m_soundDesc = m_soundSystem->newSound();
 
-		if( m_soundId == (uint32_t)-1 )
+		if( m_soundDesc == nullptr )
 		{
 			return false;
 		}
-				
+
 		const SoundDecoderInterfacePtr & decoder = m_soundBuffer->getDecoder();
 
 		if( decoder->rewind() == false )
@@ -87,7 +90,7 @@ namespace Menge
 
 		const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-		int16 * memory_s3e = (int16 *)stdex_malloc( dataInfo->size );
+		void * memory_s3e = stdex_malloc( dataInfo->size );
 
 		size_t size = decoder->decode( memory_s3e, dataInfo->size );
 
@@ -98,24 +101,24 @@ namespace Menge
 
 		m_playing = true;
 		m_pausing = false;
+							
+		m_soundDesc->source = this;
 
-		volatile SoundMemoryDesc * desc = m_soundSystem->getSound( m_soundId );
-					
-		desc->carriage = m_carriage_s3e;
-		desc->size = (((uint32_t)dataInfo->length) * dataInfo->frequency) / 1000 * m_W / m_L;
-		desc->memory = memory_s3e;
+		m_soundDesc->carriage = m_carriage_s3e;
+		m_soundDesc->size = (((uint32_t)dataInfo->length) * dataInfo->frequency) / 1000 * m_L / m_W;
+		m_soundDesc->memory = (int16 *)memory_s3e;
 
 		uint32_t sampleSize = (dataInfo->stereo == true ? 2 : 1);
-		desc->sampleStep = sampleSize;
-		desc->volume = m_volume_s3e;
+		m_soundDesc->sampleStep = sampleSize;
+		m_soundDesc->volume = m_volume_s3e;
 
-		desc->pause = false;
-		desc->stop = false;
-		desc->end = false;
+		m_soundDesc->pause = false;
+		m_soundDesc->stop = false;
+		m_soundDesc->end = false;
 
-		desc->count = m_loop == true ? -1 : 1;
+		m_soundDesc->count = m_loop == true ? -1 : 1;
 
-		desc->play = true;
+		m_soundDesc->play = true;
 		
         return true;
 	}
@@ -138,11 +141,14 @@ namespace Menge
 			return;
 		}
 
-		volatile SoundMemoryDesc * desc = m_soundSystem->getSound( m_soundId );
+		if( m_soundDesc == nullptr )
+		{
+			return;
+		}
 
-		desc->pause = true;
+		m_soundDesc->pause = true;
 
-		m_carriage_s3e = desc->carriage;
+		m_carriage_s3e = m_soundDesc->carriage;
 
 		m_playing = false;
 		m_pausing = true;
@@ -155,9 +161,13 @@ namespace Menge
 			return;
 		}
 
-		volatile SoundMemoryDesc * desc = m_soundSystem->getSound( m_soundId );
+		if( m_soundDesc == nullptr )
+		{
+			return;
+		}
 
-		desc->stop = true;
+		m_soundDesc->stop = true;
+		m_soundDesc->pause = false;
 		
 		m_carriage_s3e = 0;
 		
@@ -167,7 +177,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeSoundSource::complete()
 	{
-		m_soundId = 0;
+		m_soundDesc = nullptr;
 		m_carriage_s3e = 0;
 
 		m_playing = false;
@@ -190,12 +200,17 @@ namespace Menge
 
 		m_volume_s3e = (uint8)(m_volume * (S3E_SOUND_MAX_VOLUME - 1));
 
-		if( m_playing == true )
+		if( m_playing == false )
 		{
-			volatile SoundMemoryDesc * desc = m_soundSystem->getSound( m_soundId );
-
-			desc->volume = m_volume_s3e;
+			return;
 		}
+		
+		if( m_soundDesc == nullptr )
+		{
+			return;
+		}
+
+		m_soundDesc->volume = m_volume_s3e;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float MarmaladeSoundSource::getVolume() const 
@@ -230,15 +245,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float MarmaladeSoundSource::getPosMs() const
 	{
-		uint32 carriage = (m_playing == false || m_pausing == true) 
-			? m_carriage_s3e 
-			: m_soundSystem->getSound( m_soundId )->carriage;
+		uint32 carriage = 0;
+		
+		if( m_playing == false || m_pausing == true )
+		{
+			carriage = m_carriage_s3e;
+		}
+		else
+		{
+			if( m_soundDesc == nullptr )
+			{
+				return 0.f;
+			}
 
-		uint32 pos = carriage;
+			carriage = m_soundDesc->carriage;
+		}
 
 		uint32_t frequency = m_soundBuffer->getFrequency();
 		
-		float posMs = (float)(pos * 1000 / frequency * m_L / m_W);
+		float posMs = (float)(carriage * 1000 / frequency * m_L / m_W);
 
 		return posMs;
 	}

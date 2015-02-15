@@ -15,7 +15,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	class MarmaladeSoundSource;
 	//////////////////////////////////////////////////////////////////////////
-	struct SoundMemoryDesc
+	struct MarmaladeSoundMemoryDesc
 	{
 		MarmaladeSoundSource * source;
 
@@ -48,8 +48,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		uint32_t newSound( MarmaladeSoundSource * _source );
-		volatile SoundMemoryDesc * getSound( uint32_t _index );
+		volatile MarmaladeSoundMemoryDesc * newSound();
 
 	public:
 		bool initialize() override;
@@ -91,7 +90,7 @@ namespace Menge
 		bool m_isDeviceStereo;
 		int32 m_soundOutputFrequence;
 
-		volatile SoundMemoryDesc m_soundMemoryDesc[MENGINE_MARMALADE_SOUND_MAX_COUNT];
+		volatile MarmaladeSoundMemoryDesc m_soundMemoryDesc[MENGINE_MARMALADE_SOUND_MAX_COUNT];
 
 		int m_soundChannel;
     };

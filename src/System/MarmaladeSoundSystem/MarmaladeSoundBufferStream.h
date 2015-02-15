@@ -13,9 +13,6 @@ namespace Menge
 
 	public:
 		bool update() override;
-
-	public:
-		bool rewind() override;
 	};
 	
 }	// namespace Menge

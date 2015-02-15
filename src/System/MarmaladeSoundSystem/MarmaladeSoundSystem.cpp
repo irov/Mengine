@@ -38,21 +38,222 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	volatile MarmaladeSoundMemoryDesc * MarmaladeSoundSystem::newSound()
+	float MarmaladeSoundSystem::carriageToPosition_( uint32 _carriage, uint32_t _frequency ) const
+	{
+		uint32_t gcd = s_GCD( _frequency, m_soundOutputFrequence );
+		uint32_t W = _frequency / gcd;
+		uint32_t L = m_soundOutputFrequence / gcd;
+
+		float posMs = (float)(_carriage * 1000 * L / (_frequency * W));
+
+		return posMs;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32 MarmaladeSoundSystem::positionToCarriage_( float _position, uint32_t _frequency ) const
+	{
+		uint32_t gcd = s_GCD( _frequency, m_soundOutputFrequence );
+		uint32_t W = _frequency / gcd;
+		uint32_t L = m_soundOutputFrequence / gcd;
+
+		uint32 carriage = uint32_t(_position * _frequency) * W / (L * 1000);
+
+		return carriage;
+	}
+	//////////////////////////////////////////////////////////////////////////	
+	uint32_t MarmaladeSoundSystem::playSoundDesc( MarmaladeSoundSource * _source, float _position, float _volume, int32 _count )
 	{
 		for( uint32_t i = 0; i != MENGINE_MARMALADE_SOUND_MAX_COUNT; ++i )
 		{
 			volatile MarmaladeSoundMemoryDesc & desc = m_soundMemoryDesc[i];
 			
-			if( desc.memory != nullptr )
+			if( desc.memory != nullptr || desc.play == true )
 			{
 				continue;
 			}
+
+			SoundBufferInterfacePtr soundBuffer = _source->getSoundBuffer();
+
+			if( soundBuffer == nullptr )
+			{
+				return INVALID_SOUND_ID;
+			}
+
+			const SoundDecoderInterfacePtr & decoder = soundBuffer->getDecoder();
+
+			if( decoder->rewind() == false )
+			{
+				return INVALID_SOUND_ID;
+			}
+
+			const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
+
+			void * memory_s3e = stdex_malloc( dataInfo->size );
+
+			size_t size = decoder->decode( memory_s3e, dataInfo->size );
+
+			if( size != dataInfo->size )
+			{
+				return INVALID_SOUND_ID;
+			}
+
+			desc.source = _source;
+
+			uint32_t inputFrequency = dataInfo->frequency;
+
+			uint32 carriage = this->positionToCarriage_( _position, inputFrequency );
+			desc.carriage = carriage;
 			
-			return &desc;
+			uint32 carriage_max = this->positionToCarriage_( dataInfo->length, inputFrequency );
+			desc.size = carriage_max;
+
+			desc.memory = (int16 *)memory_s3e;
+
+			desc.frequency = inputFrequency;
+
+			uint32_t sampleSize = (dataInfo->stereo == true ? 2 : 1);
+			desc.sampleStep = sampleSize;
+			
+			uint8 volume_s3e = (uint8)(_volume * (S3E_SOUND_MAX_VOLUME - 1));
+			desc.volume = volume_s3e;
+
+			desc.pause = false;
+			desc.stop = false;
+			desc.end = false;
+
+			desc.count = _count;
+
+			desc.play = true;
+			
+			return i;
 		}
 
-		return nullptr;
+		return INVALID_SOUND_ID;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeSoundSystem::removeSoundDesc( uint32_t _id )
+	{
+		if( _id == INVALID_SOUND_ID )
+		{
+			return;
+		}
+
+		if( _id >= MENGINE_MARMALADE_SOUND_MAX_COUNT )
+		{
+			return;
+		}
+
+		volatile MarmaladeSoundMemoryDesc & desc = m_soundMemoryDesc[_id];
+
+		desc.source = nullptr;
+		desc.stop = true;
+		desc.pause = false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeSoundSystem::stopSoundDesc( uint32_t _id )
+	{
+		if( _id == INVALID_SOUND_ID )
+		{
+			return false;
+		}
+
+		if( _id >= MENGINE_MARMALADE_SOUND_MAX_COUNT )
+		{
+			return false;
+		}
+
+		volatile MarmaladeSoundMemoryDesc & desc = m_soundMemoryDesc[_id];
+
+		desc.stop = true;
+		desc.pause = false;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeSoundSystem::pauseSoundDesc( uint32_t _id, float & _position )
+	{
+		if( _id == INVALID_SOUND_ID )
+		{
+			return false;
+		}
+
+		if( _id >= MENGINE_MARMALADE_SOUND_MAX_COUNT )
+		{
+			return false;
+		}
+
+		volatile MarmaladeSoundMemoryDesc & desc = m_soundMemoryDesc[_id];
+
+		float position = this->carriageToPosition_( desc.carriage, desc.frequency );
+		
+		_position = position;
+
+		desc.pause = true;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeSoundSystem::resumeSoundDesc( uint32_t _id, float _position )
+	{
+		if( _id == INVALID_SOUND_ID )
+		{
+			return false;
+		}
+
+		if( _id >= MENGINE_MARMALADE_SOUND_MAX_COUNT )
+		{
+			return false;
+		}
+
+		volatile MarmaladeSoundMemoryDesc & desc = m_soundMemoryDesc[_id];
+
+		uint32 carriage = this->positionToCarriage_( _position, desc.frequency );
+
+		desc.carriage = carriage;
+		desc.pause = false;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeSoundSystem::setSoundDescVolume( uint32_t _id, float _volume )
+	{
+		if( _id == INVALID_SOUND_ID )
+		{
+			return false;
+		}
+
+		if( _id >= MENGINE_MARMALADE_SOUND_MAX_COUNT )
+		{
+			return false;
+		}
+
+		volatile MarmaladeSoundMemoryDesc & desc = m_soundMemoryDesc[_id];
+
+		uint8 volume_s3e = (uint8)(_volume * (S3E_SOUND_MAX_VOLUME - 1));
+
+		desc.volume = volume_s3e;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeSoundSystem::getSoundDescPosition( uint32_t _id, float & _position )
+	{
+		if( _id == INVALID_SOUND_ID )
+		{
+			return false;
+		}
+
+		if( _id >= MENGINE_MARMALADE_SOUND_MAX_COUNT )
+		{
+			return false;
+		}
+
+		volatile MarmaladeSoundMemoryDesc & desc = m_soundMemoryDesc[_id];
+
+		float position = this->carriageToPosition_( desc.carriage, desc.frequency );
+
+		_position = position;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static uint32_t s_getAvailableDesc( volatile MarmaladeSoundMemoryDesc ** _out, volatile MarmaladeSoundMemoryDesc * _from )
@@ -285,6 +486,7 @@ namespace Menge
 			desc.carriage = 0;
 			desc.size = 0;
 			desc.memory = nullptr;
+			desc.frequency = 0;
 			desc.sampleStep = 0;
 			desc.volume = 0;
 			desc.count = 0;
@@ -371,6 +573,7 @@ namespace Menge
 			
 			desc.carriage = 0;
 			desc.size = 0;
+			desc.frequency = 0;
 			desc.sampleStep = 0;
 			desc.volume = 0;
 			desc.count = 0;
@@ -383,7 +586,10 @@ namespace Menge
 
 			desc.end = false;
 
-			source->complete();
+			if( source != nullptr )
+			{
+				source->complete();
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

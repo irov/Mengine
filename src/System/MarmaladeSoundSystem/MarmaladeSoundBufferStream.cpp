@@ -19,9 +19,4 @@ namespace Menge
 	{
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundBufferStream::rewind()
-	{
-		return true;
-	}
 }	// namespace Menge

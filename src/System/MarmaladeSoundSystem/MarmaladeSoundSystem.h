@@ -22,6 +22,7 @@ namespace Menge
 		uint32 carriage;
 		uint32 size;
 		int16 * memory;
+		uint32_t frequency;
 		uint32 sampleStep;
 
 		uint8 volume;
@@ -36,6 +37,8 @@ namespace Menge
 #	define MENGINE_MARMALADE_SOUND_MAX_COUNT 16
 #	endif
 	//////////////////////////////////////////////////////////////////////////
+	static const uint32_t INVALID_SOUND_ID = (uint32_t)-1;
+	//////////////////////////////////////////////////////////////////////////
 	class MarmaladeSoundSystem
 		: public SoundSystemInterface
 	{
@@ -48,7 +51,20 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		volatile MarmaladeSoundMemoryDesc * newSound();
+		uint32_t playSoundDesc( MarmaladeSoundSource * _source, float _position, float _volume, int32 _count );
+		void removeSoundDesc( uint32_t _id );
+		bool stopSoundDesc( uint32_t _id );
+		
+		bool pauseSoundDesc( uint32_t _id, float & _position );
+		bool resumeSoundDesc( uint32_t _id, float _position );
+
+		bool setSoundDescVolume( uint32_t _id, float _volume ); 
+
+		bool getSoundDescPosition( uint32_t _id, float & _position );
+
+	protected:
+		float carriageToPosition_( uint32 _carriage, uint32_t _frequency ) const;
+		uint32 positionToCarriage_( float _position, uint32_t _frequency ) const;
 
 	public:
 		bool initialize() override;

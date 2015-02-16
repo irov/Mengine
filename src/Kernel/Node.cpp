@@ -1217,7 +1217,7 @@ namespace Menge
         float worldAlpha = worldColour.getA();
         float personalAlpha = this->getPersonalAlpha();
 
-        bool solid = worldAlpha * personalAlpha == 1.f;
+		bool solid = mt::cmp_f_f( worldAlpha * personalAlpha, 1.f );
 
         return solid;
     }

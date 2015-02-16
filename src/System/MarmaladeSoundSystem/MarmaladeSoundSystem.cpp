@@ -44,7 +44,7 @@ namespace Menge
 		uint32_t W = _frequency / gcd;
 		uint32_t L = m_soundOutputFrequence / gcd;
 
-		float posMs = (float)(_carriage * 1000 * L / (_frequency * W));
+		float posMs = (float)(_carriage * 1000 * W / (_frequency * L));
 
 		return posMs;
 	}
@@ -55,7 +55,7 @@ namespace Menge
 		uint32_t W = _frequency / gcd;
 		uint32_t L = m_soundOutputFrequence / gcd;
 
-		uint32 carriage = uint32_t(_position * _frequency) * W / (L * 1000);
+		uint32 carriage = uint32_t(_position * _frequency) * L / (W * 1000);
 
 		return carriage;
 	}

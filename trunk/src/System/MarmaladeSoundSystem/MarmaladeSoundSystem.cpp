@@ -475,7 +475,7 @@ namespace Menge
 		{
 			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 
-			m_soundOutputFrequence = 22050;
+			return false;
 		}
 
 		for( uint32_t i = 0; i != MENGINE_MARMALADE_SOUND_MAX_COUNT; ++i )

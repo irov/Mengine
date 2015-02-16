@@ -5,8 +5,6 @@
 #	include "MarmaladeSoundBuffer.h"
 #	include "MarmaladeSoundFilter.h"
 
-#	include <s3eSound.h>
-
 namespace Menge
 {
 	class MarmaladeSoundSystem;

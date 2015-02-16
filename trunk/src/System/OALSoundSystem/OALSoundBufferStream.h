@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "OALSoundBuffer.h"
+#	include "OALSoundBufferMemory.h"
 
 namespace Menge
 {
@@ -8,7 +8,7 @@ namespace Menge
 #   define OPENAL_STREAM_BUFFER_SIZE (44100)
 
 	class OALSoundBufferStream
-		: public OALSoundBuffer
+		: public OALSoundBufferBase
 	{
 	public:
 		OALSoundBufferStream();
@@ -30,9 +30,6 @@ namespace Menge
 	public:
 		bool update() override;
 
-	public:
-		bool rewind() override;
-
     protected:
         bool bufferData_( ALuint _alBufferId, size_t & _bytes );
 
@@ -40,17 +37,15 @@ namespace Menge
 		
 	protected:
 		ALuint m_alBuffersId[OPENAL_STREAM_BUFFER_COUNT];
-
-		SoundDecoderInterfacePtr m_soundDecoder;
 		
 		ALuint m_sourceId;
 
 		bool m_looped;
 		bool m_updating;
 
-	private:
-		void setUpdating( bool _updating );
-		bool getUpdating() const;
+	protected:
+		void setUpdating_( bool _updating );
+		bool getUpdating_() const;
 	};
 	
 }	// namespace Menge

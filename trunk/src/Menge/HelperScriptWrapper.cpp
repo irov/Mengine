@@ -1024,7 +1024,7 @@ namespace Menge
 			size_t buffer_size;
 			CacheBufferID bufferId = currentAccount->loadBinaryFile( filename, &buffer_data, buffer_size );
 
-            if( bufferId == 0 )
+            if( bufferId == INVALID_CACHE_BUFFER_ID )
             {
                 const WString & accountName = currentAccount->getName();
 

@@ -13,8 +13,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBufferStream::OALSoundBufferStream()
-		: m_soundDecoder(nullptr)
-		, m_sourceId(0)
+		: m_sourceId(0)
 		, m_looped(false)
 		, m_updating(false)
 	{
@@ -64,16 +63,6 @@ namespace Menge
 
             m_alBuffersId[i] = id;
         }
-
-		//m_alBufferId2 = m_soundSystem->genBufferId();
-		//if( m_alBufferId2 == 0 )
-		//{
-		//	// TODO: report in case of error
-  //          LOGGER_ERROR(m_serviceProvider)("OALSoundBufferStream::load invalid gen second buffer ID"
-  //              );
-
-		//	return false;
-		//}
 
 		m_soundDecoder = _soundDecoder;
 
@@ -203,7 +192,7 @@ namespace Menge
 		alSourcePlay( m_sourceId );
 		OAL_CHECK_ERROR(m_serviceProvider);
 
-		this->setUpdating( true );
+		this->setUpdating_( true );
 
         return true;
 	}
@@ -215,14 +204,14 @@ namespace Menge
         alSourcePlay( m_sourceId );
         OAL_CHECK_ERROR(m_serviceProvider);
 
-        this->setUpdating( true );
+        this->setUpdating_( true );
 
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::pause( ALuint _source )
 	{
-		this->setUpdating( false );
+		this->setUpdating_( false );
         
         alSourcePause( _source );
         OAL_CHECK_ERROR(m_serviceProvider);
@@ -231,7 +220,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::stop( ALuint _source )
 	{
-		this->setUpdating( false );
+		this->setUpdating_( false );
 
         ALint process_count = 0;
         // Получаем количество отработанных буферов
@@ -282,12 +271,12 @@ namespace Menge
 		//m_soundDecoder->seek( 0.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBufferStream::setUpdating( bool _updating )
+	void OALSoundBufferStream::setUpdating_( bool _updating )
 	{
 		m_updating = _updating;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBufferStream::getUpdating() const
+	bool OALSoundBufferStream::getUpdating_() const
 	{
 		return m_updating;
 	}
@@ -390,13 +379,6 @@ namespace Menge
 		}	
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBufferStream::rewind()
-	{
-		bool successful = m_soundDecoder->rewind();
-
-		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
     bool OALSoundBufferStream::bufferData_( ALuint _alBufferId, size_t & _bytes  )

@@ -1,4 +1,4 @@
-#	include "OALSoundBuffer.h"
+#	include "OALSoundBufferMemory.h"
 #	include "OALSoundSystem.h"
 
 #	include "Interface/SoundCodecInterface.h"
@@ -12,15 +12,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OALSoundBuffer::OALSoundBuffer()
-		: m_serviceProvider(nullptr)
-        , m_soundSystem(nullptr)
-		, m_alBufferId(0)
+	OALSoundBufferMemory::OALSoundBufferMemory()
+		: m_alBufferId(0)
 	{
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OALSoundBuffer::~OALSoundBuffer()
+	OALSoundBufferMemory::~OALSoundBufferMemory()
 	{
 		if( m_alBufferId != 0 )
 		{
@@ -29,23 +27,12 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundBuffer::initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem )
-    {
-        m_serviceProvider = _serviceProvider;
-        m_soundSystem = _soundSystem;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBuffer::update()
+    bool OALSoundBufferMemory::update()
     {
         return false;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBuffer::rewind()
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
+	bool OALSoundBufferMemory::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
 		m_alBufferId = m_soundSystem->genBufferId();
 
@@ -57,7 +44,9 @@ namespace Menge
 			return false;
 		}
 
-		const SoundCodecDataInfo* dataInfo = _soundDecoder->getCodecDataInfo();
+		m_soundDecoder = _soundDecoder;
+
+		const SoundCodecDataInfo* dataInfo = m_soundDecoder->getCodecDataInfo();
 
 		m_frequency = dataInfo->frequency;
 		m_channels = dataInfo->channels;
@@ -76,7 +65,7 @@ namespace Menge
 			return false;
 		}
 
-		size_t decode_size = _soundDecoder->decode( binary_memory, size );
+		size_t decode_size = m_soundDecoder->decode( binary_memory, size );
         
 		if( decode_size == 0 )
 		{
@@ -110,7 +99,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBuffer::play( ALuint _source, bool _looped, float _pos )
+	bool OALSoundBufferMemory::play( ALuint _source, bool _looped, float _pos )
 	{
         ALint state = 0;
         alGetSourcei( _source, AL_SOURCE_STATE, &state );
@@ -142,7 +131,7 @@ namespace Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBuffer::resume( ALuint _source )
+    bool OALSoundBufferMemory::resume( ALuint _source )
     {
         alSourcePlay( _source );
         OAL_CHECK_ERROR(m_serviceProvider);
@@ -150,7 +139,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBuffer::pause( ALuint _source )
+	void OALSoundBufferMemory::pause( ALuint _source )
 	{
 		alSourcePause( _source );
 		OAL_CHECK_ERROR(m_serviceProvider);
@@ -159,7 +148,7 @@ namespace Menge
 		//OAL_CHECK_ERROR(m_serviceProvider);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OALSoundBuffer::stop( ALuint _source )
+	void OALSoundBufferMemory::stop( ALuint _source )
 	{		
 		alSourceStop( _source );
 		OAL_CHECK_ERROR(m_serviceProvider);
@@ -181,7 +170,7 @@ namespace Menge
 		OAL_CHECK_ERROR(m_serviceProvider);	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBuffer::setTimePos( ALuint _source, float _pos ) const
+	bool OALSoundBufferMemory::setTimePos( ALuint _source, float _pos ) const
 	{
 		float al_pos = _pos * 0.001f;
 		alSourcef( _source, AL_SEC_OFFSET, al_pos );
@@ -194,7 +183,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundBuffer::getTimePos( ALuint _source, float & _pos ) const
+	bool OALSoundBufferMemory::getTimePos( ALuint _source, float & _pos ) const
 	{
 		float al_pos = 0.f;
 

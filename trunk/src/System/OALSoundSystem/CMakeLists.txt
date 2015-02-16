@@ -4,8 +4,8 @@ ADD_FILTER(
 src
 	OALSoundBufferBase.cpp
 	OALSoundBufferBase.h
-	OALSoundBuffer.cpp
-	OALSoundBuffer.h
+	OALSoundBufferMemory.cpp
+	OALSoundBufferMemory.h
 	OALSoundBufferStream.cpp
 	OALSoundBufferStream.h
 	OALSoundSource.cpp

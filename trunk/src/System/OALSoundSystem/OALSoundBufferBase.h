@@ -6,6 +6,8 @@
 
 namespace Menge
 {
+	class OALSoundSystem;
+
 	class OALSoundBufferBase
 		: public SoundBufferInterface
 	{
@@ -13,6 +15,12 @@ namespace Menge
 		OALSoundBufferBase();
 		virtual ~OALSoundBufferBase();
        
+	public:
+		void initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem );
+
+	public:
+		const SoundDecoderInterfacePtr & getDecoder() const override;
+
 	public:
 		virtual bool load( const SoundDecoderInterfacePtr & _soundDecoder ) = 0;
 
@@ -30,6 +38,11 @@ namespace Menge
 		float getTimeTotal() const;
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+		OALSoundSystem * m_soundSystem;
+
+		SoundDecoderInterfacePtr m_soundDecoder;
+
         ALenum m_format;
 
 		int m_frequency;

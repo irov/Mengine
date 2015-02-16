@@ -218,7 +218,7 @@ namespace Menge
 
         if( _isStream == false || m_threadAvaliable == false )
         {
-            OALSoundBuffer * buffer = m_poolOALSoundBuffer.createObjectT();
+            OALSoundBufferMemory * buffer = m_poolOALSoundBuffer.createObjectT();
             
             buffer->initialize( m_serviceProvider, this );
 

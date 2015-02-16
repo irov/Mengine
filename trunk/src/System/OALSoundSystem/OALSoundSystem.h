@@ -57,7 +57,7 @@ namespace Menge
 		ALCcontext * m_context;
 		ALCdevice * m_device;
 
-        typedef FactoryPoolStore<OALSoundBuffer, 32> TPoolOALSoundBuffer;
+        typedef FactoryPoolStore<OALSoundBufferMemory, 32> TPoolOALSoundBuffer;
         TPoolOALSoundBuffer m_poolOALSoundBuffer;
 
         typedef FactoryPoolStore<OALSoundBufferStream, 32> TPoolOALSoundBufferStream;

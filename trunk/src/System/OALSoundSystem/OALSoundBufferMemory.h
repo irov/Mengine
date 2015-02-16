@@ -4,23 +4,15 @@
 
 namespace Menge
 {
-	class OALSoundSystem;
-
-	class OALSoundBuffer
+	class OALSoundBufferMemory
 		: public OALSoundBufferBase
 	{
 	public:
-		OALSoundBuffer();
-		~OALSoundBuffer();
+		OALSoundBufferMemory();
+		~OALSoundBufferMemory();
         
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem );
-
-    public:
         bool update() override;
-
-	public:
-		bool rewind() override;
 
 	public:
 		bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;
@@ -35,9 +27,6 @@ namespace Menge
 		bool getTimePos( ALuint _source, float & _pos ) const override;
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-		OALSoundSystem * m_soundSystem;
-
 		ALuint m_alBufferId;
 	};
 }	// namespace Menge

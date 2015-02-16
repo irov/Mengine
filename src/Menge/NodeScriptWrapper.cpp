@@ -30,6 +30,7 @@
 #   include "Interface/ResourceInterface.h"
 
 #	include "Kernel/ResourceImageData.h"
+#	include "Kernel/ScriptHolder.h"
 
 #	include "ResourceFile.h"
 #	include "ResourceMovie.h"
@@ -4545,6 +4546,8 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotImage );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, HotSpotShape );
 
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, ScriptHolder );
+
         //SCRIPT_CLASS_WRAPPING( Light2D );
         //SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Sprite );
@@ -4889,7 +4892,8 @@ namespace Menge
             .def( "addChildrenAfter", &Node::addChildAfter )
             .def( "removeChildren", &Node::removeChild )
             .def( "removeAllChild", &Node::removeChildren )
-            .def( "removeFromParent", &Node::removeFromParent )			
+            .def( "removeFromParent", &Node::removeFromParent )
+			.def( "destroyAllChild", &Node::destroyAllChild )
             //.def_static( "getChild", &ScriptMethod::s_getChild )
             .def( "findChildren", &Node::findChild )            
             .def( "emptyChild", &Node::emptyChildren )
@@ -5173,6 +5177,9 @@ namespace Menge
                     .def( "getMaxCharCount", &TextField::getMaxCharCount )
                     .def( "getCharCount", &TextField::getCharCount )
                     ;
+
+				pybind::interface_<ScriptHolder, pybind::bases<Node> >("ScriptHolder", false)
+					;
 
                 pybind::interface_<Point, pybind::bases<Node> >("Point", false)
                     //.def( "testHotSpot", &Point::testHotSpot )

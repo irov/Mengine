@@ -18,6 +18,7 @@
 
 // All Node type
 #	include "Kernel/Entity.h"
+#	include "Kernel/ScriptHolder.h"
 
 #	include "Animation.h"
 #	include "Arrow.h"
@@ -453,6 +454,7 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, Node );
 
 		NODE_FACTORY( m_serviceProvider, Entity );
+		NODE_FACTORY( m_serviceProvider, ScriptHolder );
 		NODE_FACTORY( m_serviceProvider, Arrow );
 		NODE_FACTORY( m_serviceProvider, Scene );
 

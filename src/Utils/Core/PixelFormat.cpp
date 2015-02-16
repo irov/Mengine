@@ -89,7 +89,8 @@ namespace Menge
 				}break;
 
 			default:
-				return 0;
+				{
+				}break;
 			}
 
 			return 0;

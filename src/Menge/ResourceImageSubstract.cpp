@@ -81,6 +81,7 @@ namespace Menge
 		if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
 		{
 			const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
+			
 			m_maxSize = maxSize * uv_size;
 
 			if( m_isUVRotate == true )
@@ -92,6 +93,7 @@ namespace Menge
 		if( m_size.x < 1.f || m_size.y < 1.f )
 		{
 			const mt::vec2f & size = m_resourceImage->getSize();
+			
 			m_size = size * uv_size;
 
 			if( m_isUVRotate == true )

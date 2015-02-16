@@ -6,7 +6,7 @@ namespace Menge
 	CacheMemoryBuffer::CacheMemoryBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc )
 		: m_serviceProvider(_serviceProvider)
 		, m_size(_size)
-		, m_bufferId(0)		
+		, m_bufferId(INVALID_CACHE_BUFFER_ID)		
 		, m_memory(nullptr)
 	{
 		void * memory = nullptr;
@@ -22,7 +22,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	CacheMemoryBuffer::~CacheMemoryBuffer()
 	{
-		if( m_bufferId != 0 )
+		if( m_bufferId != INVALID_CACHE_BUFFER_ID )
 		{
 			CACHE_SERVICE(m_serviceProvider)
 				->unlockBuffer( m_bufferId );

@@ -161,9 +161,14 @@ namespace Menge
 
 		if( cacheSoundBuffer != nullptr )
 		{
-			if( cacheSoundBuffer->rewind() == false )
+			const SoundDecoderInterfacePtr & decode = cacheSoundBuffer->getDecoder();
+
+			if( decode != nullptr )
 			{
-				return nullptr;
+				if( decode->rewind() == false )
+				{
+					return nullptr;
+				}
 			}
 
 			return cacheSoundBuffer;

@@ -524,7 +524,7 @@ namespace Menge
 			}
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode: %s not found node %s:%s"
+		LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode: %s not found node %s type %s"
 			, m_name.c_str()
 			, _name.c_str()
 			, _type.c_str()

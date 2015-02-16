@@ -15,7 +15,7 @@ namespace Menge
         bool update() override;
 
 	public:
-		bool rewind() override;
+		const SoundDecoderInterfacePtr & getDecoder() const override;
 
 	public:
 		bool load( const SoundDecoderInterfacePtr & _soundDecoder );
@@ -30,6 +30,8 @@ namespace Menge
         float getTimeTotal() const;
 
     public:
+		SoundDecoderInterfacePtr m_soundDecoder;
+
         float m_playTime;
         float m_pauseTime;
 

@@ -34,14 +34,16 @@ namespace Menge
         return false;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool SilentSoundBuffer::rewind()
+	const SoundDecoderInterfacePtr & SilentSoundBuffer::getDecoder() const
 	{
-		return true;
+		return m_soundDecoder;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SilentSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
-		const SoundCodecDataInfo* dataInfo = _soundDecoder->getCodecDataInfo();
+		m_soundDecoder = _soundDecoder;
+
+		const SoundCodecDataInfo* dataInfo = m_soundDecoder->getCodecDataInfo();
 
 		m_frequency = dataInfo->frequency;
 		m_channels = dataInfo->channels;

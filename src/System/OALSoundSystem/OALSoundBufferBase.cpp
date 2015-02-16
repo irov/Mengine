@@ -6,7 +6,9 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBufferBase::OALSoundBufferBase()
-        : m_format(0)
+		: m_serviceProvider(nullptr)
+		, m_soundSystem(nullptr)	
+		, m_format(0)
         , m_frequency(0)
         , m_channels(0)
         , m_length(0.f)
@@ -16,6 +18,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundBufferBase::~OALSoundBufferBase()
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OALSoundBufferBase::initialize( ServiceProviderInterface * _serviceProvider, OALSoundSystem * _soundSystem )
+	{
+		m_serviceProvider = _serviceProvider;
+		m_soundSystem = _soundSystem;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const SoundDecoderInterfacePtr & OALSoundBufferBase::getDecoder() const
+	{
+		return m_soundDecoder;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool OALSoundBufferBase::isStereo() const

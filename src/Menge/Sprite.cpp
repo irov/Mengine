@@ -147,7 +147,7 @@ namespace	Menge
 
 					stageName = CONST_STRING(m_serviceProvider, ExternalAlphaIntensive_OnlyColor);
 				}
-				else if( m_resourceImage->isAlpha() == true || m_solid == false )
+				else if( m_resourceImage->isAlpha() == true )
 				{
 					texturesNum = 2;
 

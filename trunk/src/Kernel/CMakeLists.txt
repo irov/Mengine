@@ -54,6 +54,12 @@ Node\\\\Join
 )
 
 ADD_FILTER(
+Node\\\\ScriptHolder
+	ScriptHolder.cpp
+	ScriptHolder.h
+)
+
+ADD_FILTER(
 Node\\\\BoundingBox
 	BoundingBox.cpp
 	BoundingBox.h

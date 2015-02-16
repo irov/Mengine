@@ -168,11 +168,17 @@ namespace	Menge
 
 					stageName = CONST_STRING(m_serviceProvider, ExternalAlpha_OnlyColor);
 				}
-				else if( m_resourceImage->isAlpha() == true || m_solid == false )
+				else if( m_resourceImage->isAlpha() == true )
 				{
 					texturesNum = 2;
 
 					stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
+				}
+				else if( m_solid == false )
+				{
+					texturesNum = 1;
+
+					stageName = CONST_STRING(m_serviceProvider, BlendSprite);
 				}
 				else
 				{

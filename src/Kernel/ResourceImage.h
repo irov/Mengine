@@ -29,19 +29,18 @@ namespace Menge
 		inline bool isAlpha() const;
         inline bool isWrapU() const;
         inline bool isWrapV() const;
-        inline bool isUVRotate() const;
+        inline bool isUVRGBRotate() const;
+		inline bool isUVAlphaRotate() const;
     
     public:
 		inline const RenderTextureInterfacePtr & getTexture() const;
         inline const RenderTextureInterfacePtr & getTextureAlpha() const;
         
-	protected:
-		bool loadImageFrame_( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codecType );
-		void prepareImageFrame_( const RenderTextureInterfacePtr & _texture );
-
-
     protected:
         void _release() override;
+
+	protected:
+		void prepareImageFrame_( const RenderTextureInterfacePtr & _texture );
 
 	protected:
 		size_t memoryUse() const override;
@@ -54,14 +53,16 @@ namespace Menge
         mt::vec2f m_size;
 		mt::vec2f m_offset;
 
-        mt::vec4f m_uv_image;
+        
         mt::vec4f m_uv;
         mt::vec4f m_uv_scale;
-
+		mt::vec4f m_uv_image;
         mt::vec4f m_uv_alpha;
 
         bool m_isAlpha;
-        bool m_isUVRotate;
+        
+		bool m_isUVRGBRotate;
+		bool m_isUVAlphaRotate;
 
         bool m_wrapU;
         bool m_wrapV;        
@@ -117,10 +118,15 @@ namespace Menge
         return m_isAlpha;
     }
 	//////////////////////////////////////////////////////////////////////////
-    inline bool ResourceImage::isUVRotate() const
+    inline bool ResourceImage::isUVRGBRotate() const
     {
-        return m_isUVRotate;
+        return m_isUVRGBRotate;
     }
+	//////////////////////////////////////////////////////////////////////////
+	inline bool ResourceImage::isUVAlphaRotate() const
+	{
+		return m_isUVAlphaRotate;
+	}
     //////////////////////////////////////////////////////////////////////////
     inline bool ResourceImage::isWrapU() const
     {

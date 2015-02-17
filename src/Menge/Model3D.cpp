@@ -273,7 +273,7 @@ namespace Menge
 
 		const mt::vec4f & image_uv = resourceImage->getUVImage();
 		const mt::vec4f & image_uvAlpha = resourceImage->getUVAlpha();
-		bool uvRotate = resourceImage->isUVRotate();
+		bool uvRotate = resourceImage->isUVRGBRotate();
 
 		if( uvRotate == false )
 		{

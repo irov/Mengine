@@ -113,7 +113,7 @@ namespace	Menge
             this->setMaxSize( m_customSize );
         }
 
-        bool uvRotate = m_resourceImage->isUVRotate();
+        bool uvRotate = m_resourceImage->isUVRGBRotate();
         this->setUVRotate( uvRotate );
 
         const mt::vec4f & uv = m_resourceImage->getUVImage();

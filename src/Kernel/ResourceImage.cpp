@@ -1,10 +1,5 @@
 #	include "ResourceImage.h"
 
-#	include "Interface/ImageCodecInterface.h"
-#   include "Interface/RenderSystemInterface.h"
-#   include "Interface/FileSystemInterface.h"
-#   include "Interface/CodecInterface.h"
-
 #	include "Logger/Logger.h"
 
 namespace Menge
@@ -15,13 +10,14 @@ namespace Menge
         , m_textureAlpha(nullptr)
         , m_maxSize(0.f, 0.f)
         , m_size(0.f, 0.f)
-		, m_offset(0.f, 0.f)
-        , m_uv_image(0.f, 0.f, 0.f, 0.f)
-        , m_uv(0.f, 0.f, 0.f, 0.f)
-        , m_uv_scale(0.f, 0.f, 0.f, 0.f)
-        , m_uv_alpha(0.f, 0.f, 0.f, 0.f)
+		, m_offset(0.f, 0.f)        
+        , m_uv(0.f, 0.f, 1.f, 1.f)
+        , m_uv_scale(1.f, 1.f, 1.f, 1.f)
+		, m_uv_image(0.f, 0.f, 1.f, 1.f)
+        , m_uv_alpha(0.f, 0.f, 1.f, 1.f)
         , m_isAlpha(false)
-        , m_isUVRotate(false)
+        , m_isUVRGBRotate(false)
+		, m_isUVAlphaRotate(false)
         , m_wrapU(false)
         , m_wrapV(false)        
 	{
@@ -31,28 +27,30 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImage::prepareImageFrame_( const RenderTextureInterfacePtr & texture )
+	void ResourceImage::prepareImageFrame_( const RenderTextureInterfacePtr & _texture )
 	{
-		float width = (float)texture->getWidth();
-		float height = (float)texture->getHeight();
+		m_texture = _texture;
 
-		const Rect & rect = texture->getRect();
+		float width = (float)m_texture->getWidth();
+		float height = (float)m_texture->getHeight();
 
-		const RenderImageInterfacePtr & image = texture->getImage();
+		const Rect & rect = m_texture->getRect();
 
-        float hwWidth = (float)image->getHWWidth();
-        float hwHeight = (float)image->getHWHeight();
+		const RenderImageInterfacePtr & image = m_texture->getImage();
 
-        m_uv_scale.x = float(rect.left) / hwWidth;
-        m_uv_scale.y = float(rect.top) / hwHeight;
-        m_uv_scale.z = float(rect.right) / hwWidth;
-        m_uv_scale.w = float(rect.bottom) / hwHeight;
-			
-        if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
-        {
-            m_maxSize.x = width;
-            m_maxSize.y = height;
-        }
+		float hwWidth = (float)image->getHWWidth();
+		float hwHeight = (float)image->getHWHeight();
+
+		m_uv_scale.x = float(rect.left) / hwWidth;
+		m_uv_scale.y = float(rect.top) / hwHeight;
+		m_uv_scale.z = float(rect.right) / hwWidth;
+		m_uv_scale.w = float(rect.bottom) / hwHeight;
+
+		if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
+		{
+			m_maxSize.x = width;
+			m_maxSize.y = height;
+		}
 
 		if( m_size.x < 1.f || m_size.y < 1.f )
 		{
@@ -65,15 +63,13 @@ namespace Menge
 			m_size.x *= ku;
 			m_size.y *= kv;
 
-			if( m_isUVRotate == true )
+			if( m_isUVRGBRotate == true )
 			{
 				std::swap( m_size.x, m_size.y );
 			}
 		}
-
-		m_texture = texture;
-
-		uint32_t channels = texture->getChannels();
+		
+		uint32_t channels = m_texture->getChannels();
 
 		if( channels == 3 )
 		{
@@ -84,35 +80,10 @@ namespace Menge
 			m_isAlpha = true;
 		}
 
-        m_uv_image.x = m_uv_scale.x + (m_uv_scale.z - m_uv_scale.x) * m_uv.x;
-        m_uv_image.y = m_uv_scale.y + (m_uv_scale.w - m_uv_scale.y) * m_uv.y;
-        m_uv_image.z = m_uv_scale.x + (m_uv_scale.z - m_uv_scale.x) * m_uv.z;
-        m_uv_image.w = m_uv_scale.y + (m_uv_scale.w - m_uv_scale.y) * m_uv.w;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImage::loadImageFrame_( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codecType )
-	{
-        LOGGER_INFO(m_serviceProvider)("ResourceImage::loadImageFrame_ %s load texture %s"
-            , this->getName().c_str()
-            , _fileName.c_str()
-            );
-
-		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-            ->loadTexture( _pakName, _fileName, _codecType );
-
-		if( texture == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImage::loadImageFrame_: '%s' can't load image file '%s'"
-				, this->getName().c_str()
-				, _fileName.c_str()
-				);
-
-			return false;
-		}
-
-		this->prepareImageFrame_( texture );
-
-		return true;
+		m_uv_image.x = m_uv_scale.x + (m_uv_scale.z - m_uv_scale.x) * m_uv.x;
+		m_uv_image.y = m_uv_scale.y + (m_uv_scale.w - m_uv_scale.y) * m_uv.y;
+		m_uv_image.z = m_uv_scale.x + (m_uv_scale.z - m_uv_scale.x) * m_uv.z;
+		m_uv_image.w = m_uv_scale.y + (m_uv_scale.w - m_uv_scale.y) * m_uv.w;
 	}
 	//////////////////////////////////////////////////////////////////////////
     void ResourceImage::_release()

@@ -1010,307 +1010,6 @@ namespace Metacode
             mutable bool File_WrapY;
         };
         
-        class Meta_ResourceImageMultiplyRGBAndAlpha
-            : public Meta_Resource
-        { 
-        public:
-            Meta_ResourceImageMultiplyRGBAndAlpha();
-        
-        public:
-            uint32_t getId() const override;
-        
-        public:
-            bool has_File_CodecAlpha() const
-            {
-                return File_CodecAlpha_successful;
-            }
-            
-            bool get_File_CodecAlpha( Menge::ConstString & _value ) const
-            {
-                if( File_CodecAlpha_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_CodecAlpha;
-            
-                return true;
-            }
-            
-            bool swap_File_CodecAlpha( Menge::ConstString & _value ) const
-            {
-                if( File_CodecAlpha_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_CodecAlpha);
-            
-                return true;
-            }
-            
-            bool has_File_CodecRGB() const
-            {
-                return File_CodecRGB_successful;
-            }
-            
-            bool get_File_CodecRGB( Menge::ConstString & _value ) const
-            {
-                if( File_CodecRGB_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_CodecRGB;
-            
-                return true;
-            }
-            
-            bool swap_File_CodecRGB( Menge::ConstString & _value ) const
-            {
-                if( File_CodecRGB_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_CodecRGB);
-            
-                return true;
-            }
-            
-            const mt::vec2f & get_File_MaxSize() const
-            {
-                return this->File_MaxSize;
-            }
-            
-            void swap_File_MaxSize( mt::vec2f & _value ) const
-            {
-                std::swap(_value, this->File_MaxSize);
-            }
-            
-            bool has_File_Offset() const
-            {
-                return File_Offset_successful;
-            }
-            
-            bool get_File_Offset( mt::vec2f & _value ) const
-            {
-                if( File_Offset_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_Offset;
-            
-                return true;
-            }
-            
-            bool swap_File_Offset( mt::vec2f & _value ) const
-            {
-                if( File_Offset_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_Offset);
-            
-                return true;
-            }
-            
-            const Menge::ConstString & get_File_PathAlpha() const
-            {
-                return this->File_PathAlpha;
-            }
-            
-            void swap_File_PathAlpha( Menge::ConstString & _value ) const
-            {
-                std::swap(_value, this->File_PathAlpha);
-            }
-            
-            const Menge::ConstString & get_File_PathRGB() const
-            {
-                return this->File_PathRGB;
-            }
-            
-            void swap_File_PathRGB( Menge::ConstString & _value ) const
-            {
-                std::swap(_value, this->File_PathRGB);
-            }
-            
-            bool has_File_Size() const
-            {
-                return File_Size_successful;
-            }
-            
-            bool get_File_Size( mt::vec2f & _value ) const
-            {
-                if( File_Size_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_Size;
-            
-                return true;
-            }
-            
-            bool swap_File_Size( mt::vec2f & _value ) const
-            {
-                if( File_Size_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_Size);
-            
-                return true;
-            }
-            
-            bool has_File_UVAlpha() const
-            {
-                return File_UVAlpha_successful;
-            }
-            
-            bool get_File_UVAlpha( mt::vec4f & _value ) const
-            {
-                if( File_UVAlpha_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_UVAlpha;
-            
-                return true;
-            }
-            
-            bool swap_File_UVAlpha( mt::vec4f & _value ) const
-            {
-                if( File_UVAlpha_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_UVAlpha);
-            
-                return true;
-            }
-            
-            bool has_File_UVRGB() const
-            {
-                return File_UVRGB_successful;
-            }
-            
-            bool get_File_UVRGB( mt::vec4f & _value ) const
-            {
-                if( File_UVRGB_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_UVRGB;
-            
-                return true;
-            }
-            
-            bool swap_File_UVRGB( mt::vec4f & _value ) const
-            {
-                if( File_UVRGB_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_UVRGB);
-            
-                return true;
-            }
-            
-            bool has_File_WrapX() const
-            {
-                return File_WrapX_successful;
-            }
-            
-            bool get_File_WrapX( bool & _value ) const
-            {
-                if( File_WrapX_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_WrapX;
-            
-                return true;
-            }
-            
-            bool swap_File_WrapX( bool & _value ) const
-            {
-                if( File_WrapX_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_WrapX);
-            
-                return true;
-            }
-            
-            bool has_File_WrapY() const
-            {
-                return File_WrapY_successful;
-            }
-            
-            bool get_File_WrapY( bool & _value ) const
-            {
-                if( File_WrapY_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_WrapY;
-            
-                return true;
-            }
-            
-            bool swap_File_WrapY( bool & _value ) const
-            {
-                if( File_WrapY_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_WrapY);
-            
-                return true;
-            }
-            
-        protected:
-            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
-            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
-            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
-            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
-        public:
-        protected:
-        protected:
-            bool File_CodecAlpha_successful;
-            mutable Menge::ConstString File_CodecAlpha;
-            bool File_CodecRGB_successful;
-            mutable Menge::ConstString File_CodecRGB;
-            mutable mt::vec2f File_MaxSize;
-            bool File_Offset_successful;
-            mutable mt::vec2f File_Offset;
-            mutable Menge::ConstString File_PathAlpha;
-            mutable Menge::ConstString File_PathRGB;
-            bool File_Size_successful;
-            mutable mt::vec2f File_Size;
-            bool File_UVAlpha_successful;
-            mutable mt::vec4f File_UVAlpha;
-            bool File_UVRGB_successful;
-            mutable mt::vec4f File_UVRGB;
-            bool File_WrapX_successful;
-            mutable bool File_WrapX;
-            bool File_WrapY_successful;
-            mutable bool File_WrapY;
-        };
-        
         class Meta_ResourceImageSolid
             : public Meta_Resource
         { 
@@ -1528,6 +1227,205 @@ namespace Metacode
             bool Image_Size_successful;
             mutable mt::vec2f Image_Size;
             mutable mt::vec4f Image_UV;
+        };
+        
+        class Meta_ResourceImageSubstractRGBAndAlpha
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceImageSubstractRGBAndAlpha();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const mt::vec2f & get_Image_MaxSize() const
+            {
+                return this->Image_MaxSize;
+            }
+            
+            void swap_Image_MaxSize( mt::vec2f & _value ) const
+            {
+                std::swap(_value, this->Image_MaxSize);
+            }
+            
+            const Menge::ConstString & get_Image_NameAlpha() const
+            {
+                return this->Image_NameAlpha;
+            }
+            
+            void swap_Image_NameAlpha( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->Image_NameAlpha);
+            }
+            
+            const Menge::ConstString & get_Image_NameRGB() const
+            {
+                return this->Image_NameRGB;
+            }
+            
+            void swap_Image_NameRGB( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->Image_NameRGB);
+            }
+            
+            bool has_Image_Offset() const
+            {
+                return Image_Offset_successful;
+            }
+            
+            bool get_Image_Offset( mt::vec2f & _value ) const
+            {
+                if( Image_Offset_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Image_Offset;
+            
+                return true;
+            }
+            
+            bool swap_Image_Offset( mt::vec2f & _value ) const
+            {
+                if( Image_Offset_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Image_Offset);
+            
+                return true;
+            }
+            
+            bool has_Image_Size() const
+            {
+                return Image_Size_successful;
+            }
+            
+            bool get_Image_Size( mt::vec2f & _value ) const
+            {
+                if( Image_Size_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Image_Size;
+            
+                return true;
+            }
+            
+            bool swap_Image_Size( mt::vec2f & _value ) const
+            {
+                if( Image_Size_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Image_Size);
+            
+                return true;
+            }
+            
+            const mt::vec4f & get_Image_UVAlpha() const
+            {
+                return this->Image_UVAlpha;
+            }
+            
+            void swap_Image_UVAlpha( mt::vec4f & _value ) const
+            {
+                std::swap(_value, this->Image_UVAlpha);
+            }
+            
+            bool has_Image_UVAlphaRotate() const
+            {
+                return Image_UVAlphaRotate_successful;
+            }
+            
+            bool get_Image_UVAlphaRotate( bool & _value ) const
+            {
+                if( Image_UVAlphaRotate_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Image_UVAlphaRotate;
+            
+                return true;
+            }
+            
+            bool swap_Image_UVAlphaRotate( bool & _value ) const
+            {
+                if( Image_UVAlphaRotate_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Image_UVAlphaRotate);
+            
+                return true;
+            }
+            
+            const mt::vec4f & get_Image_UVRGB() const
+            {
+                return this->Image_UVRGB;
+            }
+            
+            void swap_Image_UVRGB( mt::vec4f & _value ) const
+            {
+                std::swap(_value, this->Image_UVRGB);
+            }
+            
+            bool has_Image_UVRGBRotate() const
+            {
+                return Image_UVRGBRotate_successful;
+            }
+            
+            bool get_Image_UVRGBRotate( bool & _value ) const
+            {
+                if( Image_UVRGBRotate_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Image_UVRGBRotate;
+            
+                return true;
+            }
+            
+            bool swap_Image_UVRGBRotate( bool & _value ) const
+            {
+                if( Image_UVRGBRotate_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Image_UVRGBRotate);
+            
+                return true;
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable mt::vec2f Image_MaxSize;
+            mutable Menge::ConstString Image_NameAlpha;
+            mutable Menge::ConstString Image_NameRGB;
+            bool Image_Offset_successful;
+            mutable mt::vec2f Image_Offset;
+            bool Image_Size_successful;
+            mutable mt::vec2f Image_Size;
+            mutable mt::vec4f Image_UVAlpha;
+            bool Image_UVAlphaRotate_successful;
+            mutable bool Image_UVAlphaRotate;
+            mutable mt::vec4f Image_UVRGB;
+            bool Image_UVRGBRotate_successful;
+            mutable bool Image_UVRGBRotate;
         };
         
         class Meta_ResourceInternalObject

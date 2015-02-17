@@ -5,8 +5,6 @@
 #	include "Config/Typedef.h"
 #	include "Core/ColourValue.h"
 
-#	include <stdex/stl_vector.h>
-
 namespace Menge
 {
 	class ResourceImageSolid
@@ -16,10 +14,6 @@ namespace Menge
 
 	public:
 		ResourceImageSolid();
-
-	public:
-		const FilePath & getFilePath() const;
-		const ConstString & getCodecType() const;
 
 	public:
 		const ColourValue & getColor() const;
@@ -35,8 +29,6 @@ namespace Menge
 
 	protected:
 		ColourValue m_color;
-		ConstString m_codecType; //empty
-		FilePath m_filePath; //empty
 	};
 	//////////////////////////////////////////////////////////////////////////
 }

@@ -48,7 +48,7 @@
 #	include "ResourceEmitterContainer.h"
 #	include "ResourceInternalObject.h"
 
-#   include "ResourceImageMultiplyRGBAndAlpha.h"
+#   include "ResourceImageSubstractRGBAndAlpha.h"
 #   include "ResourceImageSubstract.h"
 
 #	include "Player.h"
@@ -1664,7 +1664,7 @@ namespace Menge
 			ResourceImageDefault * resImage = RESOURCE_SERVICE(m_serviceProvider)
 				->createResourceT<ResourceImageDefault>( _pakName, ConstString::none(), _resourceName, CONST_STRING(m_serviceProvider, ResourceImageDefault) );
 
-            resImage->setImagePath( _fileName );
+			resImage->setup( _fileName, ConstString::none(), mt::vec4f(0.f, 0.f, 1.f, 1.f) );
 
 			return true;
         }
@@ -2037,21 +2037,6 @@ namespace Menge
 						->prefetchImageDecoder( m_category, fileName, codecType );
 				}
 
-				void visit( ResourceImageMultiplyRGBAndAlpha * _resource ) override
-				{
-					const FilePath & fileRGBName = _resource->getFilePathRGB();
-					const ConstString & codecRGBType = _resource->getCodecTypeRGB();
-
-					PREFETCHER_SERVICE(m_serviceProvider)
-						->prefetchImageDecoder( m_category, fileRGBName, codecRGBType );
-
-					const FilePath & fileAlphaName = _resource->getFilePathAlpha();
-					const ConstString & codecAlphaType = _resource->getCodecTypeAlpha();
-
-					PREFETCHER_SERVICE(m_serviceProvider)
-						->prefetchImageDecoder( m_category, fileAlphaName, codecAlphaType );
-				}
-
 				void visit( ResourceSound * _resource ) override
 				{
 					const FilePath & filePath = _resource->getFilePath();
@@ -2103,19 +2088,6 @@ namespace Menge
 
 					PREFETCHER_SERVICE(m_serviceProvider)
 						->unfetchImageDecoder( fileName );
-				}
-
-				void visit( ResourceImageMultiplyRGBAndAlpha * _resource ) override
-				{
-					const FilePath & fileRGBName = _resource->getFilePathRGB();
-
-					PREFETCHER_SERVICE(m_serviceProvider)
-						->unfetchImageDecoder( fileRGBName );
-
-					const FilePath & fileAlphaName = _resource->getFilePathAlpha();
-
-					PREFETCHER_SERVICE(m_serviceProvider)
-						->unfetchImageDecoder( fileAlphaName );
 				}
 
 				void visit( ResourceSound * _resource ) override
@@ -4600,7 +4572,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceShape );
         //SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceFont );       
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceWindow );
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageMultiplyRGBAndAlpha );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSubstractRGBAndAlpha );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSubstract );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceInternalObject );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceHIT );
@@ -4752,7 +4724,8 @@ namespace Menge
 			.def( "isAlpha", &ResourceImage::isAlpha )
 			.def( "isWrapU", &ResourceImage::isWrapU )
 			.def( "isWrapV", &ResourceImage::isWrapV )
-			.def( "isUVRotate", &ResourceImage::isUVRotate )
+			.def( "isUVRGBRotate", &ResourceImage::isUVRGBRotate )
+			.def( "isUVAlphaRotate", &ResourceImage::isUVAlphaRotate )
             ;
 
 		pybind::interface_<ResourceImageData, pybind::bases<ResourceReference> >("ResourceImageData", false)
@@ -4762,11 +4735,11 @@ namespace Menge
 			;
 
         pybind::interface_<ResourceImageDefault, pybind::bases<ResourceImage> >("ResourceImageDefault", false)
-			.def( "getImagePath", &ResourceImageDefault::getImagePath )
+			.def( "getFilePath", &ResourceImageDefault::getFilePath )
 			.def( "getCodecType", &ResourceImageDefault::getCodecType )
             ;
 
-		pybind::interface_<ResourceImageMultiplyRGBAndAlpha, pybind::bases<ResourceImage> >("ResourceImageMultiplyRGBAndAlpha", false)
+		pybind::interface_<ResourceImageSubstractRGBAndAlpha, pybind::bases<ResourceImage> >("ResourceImageSubstractRGBAndAlpha", false)
 			;
 
 		pybind::interface_<ResourceImageSubstract, pybind::bases<ResourceImage> >("ResourceImageSubstract", false)

@@ -116,6 +116,7 @@ namespace Menge
     {
         return m_isAlpha;
     }
+	//////////////////////////////////////////////////////////////////////////
     inline bool ResourceImage::isUVRotate() const
     {
         return m_isUVRotate;

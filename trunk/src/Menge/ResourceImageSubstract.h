@@ -4,8 +4,6 @@
 
 #	include "Config/Typedef.h"
 
-#	include <stdex/stl_vector.h>
-
 namespace Menge
 {	
 	class ResourceImageSubstract
@@ -24,7 +22,7 @@ namespace Menge
 		void _release() override;
 
     protected:
-		ResourceImage * m_resourceImage;
 		ConstString m_resourceImageName;
+		ResourceImage * m_resourceImage;		
 	};
 }

@@ -263,16 +263,16 @@ Resource\\\\Particle
 
 ADD_FILTER(
 Resource\\\\Image
-	ResourceImageDefault.cpp
-	ResourceImageDefault.h
-    ResourceImageRender.cpp
-    ResourceImageRender.h
-	ResourceImageSubstract.cpp
-	ResourceImageSubstract.h
-	ResourceImageMultiplyRGBAndAlpha.cpp
-	ResourceImageMultiplyRGBAndAlpha.h
 	ResourceImageSolid.h
     ResourceImageSolid.cpp
+	ResourceImageDefault.cpp
+	ResourceImageDefault.h
+	ResourceImageSubstract.cpp
+	ResourceImageSubstract.h
+	ResourceImageSubstractRGBAndAlpha.cpp
+	ResourceImageSubstractRGBAndAlpha.h
+    ResourceImageRender.cpp
+    ResourceImageRender.h    
 )
 
 ADD_FILTER(

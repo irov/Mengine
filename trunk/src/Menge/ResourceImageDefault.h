@@ -14,14 +14,13 @@ namespace Menge
 	public:
 		ResourceImageDefault();
         
+	public:
+		void setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::vec4f & _uv );
+
     public:
         const FilePath & getFilePath() const;
         const ConstString & getCodecType() const;
         
-    public:
-        void setImagePath( const FilePath & _imagePath );
-		const FilePath & getImagePath() const;
-
 	protected:
 		bool _isValid() const override;
 

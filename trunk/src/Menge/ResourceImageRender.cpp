@@ -79,8 +79,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		this->prepareImageFrame_( texture );
 		
 		return true;
 	}

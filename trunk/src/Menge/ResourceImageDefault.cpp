@@ -287,13 +287,12 @@ namespace Menge
 	{
         const Metacode::Meta_DataBlock::Meta_ResourceImageDefault * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageDefault *>(_meta);
-
-        m_uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_maxSize = mt::vec2f(0.f, 0.f);
-        m_size = mt::vec2f(0.f, 0.f);
-		m_offset = mt::vec2f(0.f, 0.f);
+		        
         m_isAlpha = true;
-		m_isUVRotate = false;
+
+		m_isUVRGBRotate = false;
+		m_isUVAlphaRotate = false;
+
         m_wrapU = false;
         m_wrapV = false;
         
@@ -307,6 +306,7 @@ namespace Menge
         }
 
         metadata->get_File_Alpha( m_isAlpha );
+
         metadata->get_File_WrapX( m_wrapU );
         metadata->get_File_WrapY( m_wrapV );
         		
@@ -323,34 +323,49 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_compile()
-	{	
+	{				
+		LOGGER_INFO(m_serviceProvider)("ResourceImageDefault::loadImageFrame_ %s load texture %s"
+			, this->getName().c_str()
+			, m_filePath.c_str()
+			);
+
 		const ConstString & category = this->getCategory();
-					
-		if( this->loadImageFrame_( category, m_filePath, m_codecType ) == false )
+
+		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
+			->loadTexture( category, m_filePath, m_codecType );
+
+		if( texture == nullptr )
 		{
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::loadImageFrame_: '%s' can't load image file '%s'"
+				, this->getName().c_str()
+				, m_filePath.c_str()
+				);
+
 			return false;
 		}
+
+		this->prepareImageFrame_( texture );
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::setImagePath( const FilePath& _imagePath )
+	void ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::vec4f & _uv )
 	{
         m_filePath = _imagePath;
 
-        m_codecType = CODEC_SERVICE(m_serviceProvider)
-            ->findCodecType( _imagePath );
+		if( _codecType.empty() == true )
+		{
+			m_codecType = CODEC_SERVICE(m_serviceProvider)
+				->findCodecType( m_filePath );
+		}
 
-        m_texture = nullptr;
-        m_uv = mt::vec4f(0.f,0.f,1.f,1.f);
+        m_uv = _uv;
+
+		m_texture = nullptr;
 		m_isAlpha = true;
-        m_isUVRotate = false;
+        m_isUVRGBRotate = false;
+		m_isUVAlphaRotate = false;
 		m_wrapU = false;
 		m_wrapV = false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const FilePath & ResourceImageDefault::getImagePath() const
-	{
-		return m_filePath;
 	}
 }

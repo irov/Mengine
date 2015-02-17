@@ -2,10 +2,6 @@
 #	include "Kernel/ResourceImplement.h"
 
 #	include "Interface/ResourceInterface.h"
-#	include "Interface/ImageCodecInterface.h"
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/CodecInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -24,19 +20,17 @@ namespace Menge
         const Metacode::Meta_DataBlock::Meta_ResourceImageSubstract * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSubstract *>(_meta);
         
-        m_uv = mt::vec4f(0.f, 0.f, 1.f, 1.f);
-        m_maxSize = mt::vec2f(0.f, 0.f);
-        m_size = mt::vec2f(0.f, 0.f);
-		m_offset = mt::vec2f(0.f, 0.f);
         m_isAlpha = true;
-        m_isUVRotate = false;
+        m_isUVRGBRotate = false;
+		m_isUVAlphaRotate = false;
+
         m_wrapU = false;
         m_wrapV = false;
 
         m_resourceImageName = metadata->get_Image_Name();
         m_uv = metadata->get_Image_UV();
         
-        metadata->get_Image_Rotate( m_isUVRotate );
+        metadata->get_Image_Rotate( m_isUVRGBRotate );
         metadata->get_Image_Alpha( m_isAlpha );
 
 		m_maxSize = metadata->get_Image_MaxSize();
@@ -74,8 +68,7 @@ namespace Menge
                        
         m_texture = m_resourceImage->getTexture();
         m_textureAlpha = m_resourceImage->getTextureAlpha();
-
-        //ToDo Fix Me isUVRotate
+		        
         mt::vec2f uv_size(m_uv.z - m_uv.x, m_uv.w - m_uv.y);
 
 		if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
@@ -84,7 +77,7 @@ namespace Menge
 			
 			m_maxSize = maxSize * uv_size;
 
-			if( m_isUVRotate == true )
+			if( m_isUVRGBRotate == true )
 			{
 				std::swap( m_maxSize.x, m_maxSize.y );
 			}
@@ -96,15 +89,14 @@ namespace Menge
 			
 			m_size = size * uv_size;
 
-			if( m_isUVRotate == true )
+			if( m_isUVRGBRotate == true )
 			{
 				std::swap( m_size.x, m_size.y );
 			}
 		}
 
-        m_uv_image = m_uv;
-
         m_uv_scale = m_resourceImage->getUVScale();
+		m_uv_image = m_uv;
         m_uv_alpha = m_uv;
         
         m_wrapU = false;

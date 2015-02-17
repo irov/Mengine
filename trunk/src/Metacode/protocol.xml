@@ -1,4 +1,4 @@
-<Protocol Version = "71">
+<Protocol Version = "72">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string_id"/>
@@ -31,7 +31,7 @@
       <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
       <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
 
-      <Member Node="File" Name="MaxSize" Type="mt::vec2f"/>      
+      <Member Node="File" Name="MaxSize" Type="mt::vec2f"/>
       <Member Node="File" Name="NoExist" Type="bool"/>
     </Node>
 
@@ -47,6 +47,31 @@
       <Member Node="File" Name="Offset" Type="mt::vec2f"/>
 
       <Member Node="File" Name="NoExist" Type="bool"/>
+    </Node>
+
+    <Node Name="ResourceImageSubstractRGBAndAlpha" Inheritance = "Resource">
+      <Member Node="Image" Name="NameRGB" Type="Menge::ConstString" Required="1"/>
+      <Member Node="Image" Name="UVRGB" Type="mt::vec4f" Required="1"/>
+      <Member Node="Image" Name="UVRGBRotate" Type="bool"/>      
+
+      <Member Node="Image" Name="NameAlpha" Type="Menge::ConstString" Required="1"/>      
+      <Member Node="Image" Name="UVAlpha" Type="mt::vec4f" Required="1"/>
+      <Member Node="Image" Name="UVAlphaRotate" Type="bool"/>
+
+      <Member Node="Image" Name="MaxSize" Type="mt::vec2f" Required="1"/>
+      <Member Node="Image" Name="Size" Type="mt::vec2f"/>
+      <Member Node="Image" Name="Offset" Type="mt::vec2f"/>
+    </Node>
+
+    <Node Name="ResourceImageSubstract" Inheritance = "Resource">
+      <Member Node="Image" Name="Name" Type="Menge::ConstString" Required="1"/>
+      <Member Node="Image" Name="UV" Type="mt::vec4f" Required="1"/>
+      <Member Node="Image" Name="Rotate" Type="bool"/>
+      <Member Node="Image" Name="Alpha" Type="bool"/>
+
+      <Member Node="Image" Name="MaxSize" Type="mt::vec2f" Required="1"/>
+      <Member Node="Image" Name="Size" Type="mt::vec2f"/>
+      <Member Node="Image" Name="Offset" Type="mt::vec2f"/>
     </Node>
 
     <Node Name="ResourceEmitterContainer" Inheritance = "Resource">
@@ -226,34 +251,6 @@
     <Node Name="ResourceInternalObject" Inheritance = "Resource">
       <Member Node="Internal" Name="Name" Type="Menge::ConstString" Required="1"/>
       <Member Node="Internal" Name="Group" Type="Menge::ConstString" Required="1"/>
-    </Node>
-
-    <Node Name="ResourceImageMultiplyRGBAndAlpha" Inheritance = "Resource">
-      <Member Node="File" Name="WrapX" Type="bool"/>
-      <Member Node="File" Name="WrapY" Type="bool"/>
-
-      <Member Node="File" Name="PathRGB" Type="Menge::ConstString" Required="1"/>
-      <Member Node="File" Name="CodecRGB" Type="Menge::ConstString"/>
-      <Member Node="File" Name="UVRGB" Type="mt::vec4f"/>
-
-      <Member Node="File" Name="PathAlpha" Type="Menge::ConstString" Required="1"/>
-      <Member Node="File" Name="CodecAlpha" Type="Menge::ConstString"/>
-      <Member Node="File" Name="UVAlpha" Type="mt::vec4f"/>
-
-      <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
-      <Member Node="File" Name="Size" Type="mt::vec2f"/>
-      <Member Node="File" Name="Offset" Type="mt::vec2f"/>
-    </Node>
-
-    <Node Name="ResourceImageSubstract" Inheritance = "Resource">
-      <Member Node="Image" Name="Name" Type="Menge::ConstString" Required="1"/>
-      <Member Node="Image" Name="UV" Type="mt::vec4f" Required="1"/>
-      <Member Node="Image" Name="Rotate" Type="bool"/>
-      <Member Node="Image" Name="Alpha" Type="bool"/>
-
-      <Member Node="Image" Name="MaxSize" Type="mt::vec2f" Required="1"/>
-      <Member Node="Image" Name="Size" Type="mt::vec2f"/>
-      <Member Node="Image" Name="Offset" Type="mt::vec2f"/>
     </Node>
 
     <Node Name="ResourceShape" Inheritance = "Resource">

@@ -138,6 +138,8 @@ namespace Menge
 
         m_textureAlpha = textureAlpha;
 
+		m_isAlpha = true;
+
 		return true;
 	}	
 	/////////////////////////////////////////////////////////////////////////

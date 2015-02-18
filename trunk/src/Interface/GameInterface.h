@@ -2,11 +2,23 @@
 
 #   include "Interface/ServiceInterface.h"
 #   include "Interface/PlayerInterface.h"
+#   include "Interface/CacheInterface.h"
 
 #	include "Core/Params.h"
 
+#	include "Core/Magic.h"
+
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	struct DataDesc
+	{
+		ConstString category;
+		FilePath path;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	DECLARE_MAGIC_NUMBER( MAGIC_GAME_DATA, 'G', 'M', 'D', '1', 1 );
+	//////////////////////////////////////////////////////////////////////////
 	struct ResourcePackDesc
 	{
 		ResourcePackDesc()
@@ -27,9 +39,7 @@ namespace Menge
 		bool dev;
 		bool preload;
 	};
-
-	typedef stdex::vector<ResourcePackDesc> TVectorResourcePackDesc;
-
+	//////////////////////////////////////////////////////////////////////////
 	class PakInterface
 		: public FactorablePtr
 	{
@@ -89,6 +99,13 @@ namespace Menge
     public:
         virtual const WString & getParam( const ConstString & _paramName ) const = 0;
         virtual bool hasParam( const ConstString & _paramName ) const = 0;
+
+	public:
+		virtual bool addData( const ConstString & _name, const DataDesc & _desc ) = 0;
+		virtual bool hasData( const ConstString & _name ) const = 0;
+
+		virtual CacheBufferID loadData( const ConstString & _name, const void ** _data, size_t & _size ) = 0;
+		virtual bool writeData( const ConstString & _name, const void * _data, size_t _size ) = 0;
 
     public:
 		virtual void createResourcePak( const ResourcePackDesc & _desc ) = 0;

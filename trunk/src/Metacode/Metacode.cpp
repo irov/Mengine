@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 72;
+        _needVersion = 74;
 
-        if( version != 72 )
+        if( version != 74 )
         {
             return false;
         }
@@ -5243,6 +5243,12 @@ namespace Metacode
     {
         switch( _includes )
         {
+        case 5:
+            {
+                includes_Meta_Datas.reserve( _count );
+                return true;
+                break;
+            }
         case 2:
             {
                 includes_Meta_Fonts.reserve( _count );
@@ -5276,6 +5282,18 @@ namespace Metacode
     {
         switch( _includes )
         {
+        case 5:
+            {
+                Meta_Pak::Meta_Datas & metadata = includes_Meta_Datas.emplace_back();
+    
+                if( metadata.parse( _buff, _size, _read, m_userData ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+                break;
+            }
         case 2:
             {
                 Meta_Pak::Meta_Fonts & metadata = includes_Meta_Fonts.emplace_back();
@@ -5330,6 +5348,142 @@ namespace Metacode
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_Pak::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
+    {
+        (void)_buff;
+        (void)_size;
+        (void)_read;
+        (void)_generators;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_Pak::Meta_Datas::Meta_Datas()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Meta_Pak::Meta_Datas::getId() const
+    {
+        return 5;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_Pak::Meta_Datas::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
+    {
+        (void)_buff;
+        (void)_size;
+        (void)_read;
+        (void)_id;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_Pak::Meta_Datas::_preparationIncludes( uint32_t _includes, uint32_t _count )
+    {
+        switch( _includes )
+        {
+        case 1:
+            {
+                includes_Meta_Data.reserve( _count );
+                return true;
+                break;
+            }
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_Pak::Meta_Datas::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
+    {
+        switch( _includes )
+        {
+        case 1:
+            {
+                Meta_Pak::Meta_Datas::Meta_Data & metadata = includes_Meta_Data.emplace_back();
+    
+                if( metadata.parse( _buff, _size, _read, m_userData ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+                break;
+            }
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_Pak::Meta_Datas::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
+    {
+        (void)_buff;
+        (void)_size;
+        (void)_read;
+        (void)_generators;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_Pak::Meta_Datas::Meta_Data::Meta_Data()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Meta_Pak::Meta_Datas::Meta_Data::getId() const
+    {
+        return 1;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_Pak::Meta_Datas::Meta_Data::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
+    {
+        switch( _id )
+        {
+        case 1:
+            {
+                if( this->read( _buff, _size, _read, this->Name ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        case 2:
+            {
+                if( this->read( _buff, _size, _read, this->Path ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_Pak::Meta_Datas::Meta_Data::_preparationIncludes( uint32_t _includes, uint32_t _count )
+    {
+        (void)_includes;
+        (void)_count;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_Pak::Meta_Datas::Meta_Data::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
+    {
+        (void)_buff;
+        (void)_size;
+        (void)_read;
+        (void)_includes;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_Pak::Meta_Datas::Meta_Data::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
     {
         (void)_buff;
         (void)_size;

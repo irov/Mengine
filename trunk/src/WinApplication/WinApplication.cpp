@@ -174,6 +174,7 @@ namespace Menge
 		, m_application(nullptr)
 		, m_fpsMonitor(nullptr)
 		, m_alreadyRunningMonitor(0)
+		, m_lastMouse(false)
 		, m_lastMouseX(0)
 		, m_lastMouseY(0)
 		, m_vsync(false)
@@ -2737,16 +2738,33 @@ namespace Menge
 
 				int x = (int)(short)LOWORD(lParam);
 				int y = (int)(short)HIWORD(lParam);
+
+				if( m_lastMouse == false )
+				{
+					POINT p;
+					GetCursorPos( &p );
+					ScreenToClient( hWnd, &p );
+
+					m_lastMouseX = p.x;
+					m_lastMouseY = p.y;
+
+					m_lastMouse = true;
+				}
+
 				int dx = x - m_lastMouseX;
-				int dy = y - m_lastMouseY;
+				int dy = y - m_lastMouseY;		
 
 				if( dx == 0 && dy == 0 )
 				{
 					break;
 				}
 
+				m_lastMouseX = x;
+				m_lastMouseY = y;
+
 				float fdx = (float)dx;
 				float fdy = (float)dy;
+
 
 				//const Resolution & contentResolution = m_application->getContentResolution();
 				//mt::vec2f resolutionScale = contentResolution.getScale( m_windowResolution );
@@ -2767,9 +2785,6 @@ namespace Menge
 				fdy /= height;
 
 				m_inputService->onMouseMove( 0, point, fdx, fdy );
-
-				m_lastMouseX = x;
-				m_lastMouseY = y;
 
 				handle = true;
 				_result = FALSE;

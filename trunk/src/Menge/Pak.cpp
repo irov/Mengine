@@ -240,6 +240,33 @@ namespace Menge
 			}
 		}
 
+		const Metacode::Meta_Pak::TVectorMeta_Datas & includes_datas = pak.get_IncludesDatas();
+
+		for( Metacode::Meta_Pak::TVectorMeta_Datas::const_iterator
+			it = includes_datas.begin(),
+			it_end = includes_datas.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_Pak::Meta_Datas & meta_datas = *it;
+
+			const Metacode::Meta_Pak::Meta_Datas::TVectorMeta_Data & includes_data = meta_datas.get_IncludesData();
+
+			for( Metacode::Meta_Pak::Meta_Datas::TVectorMeta_Data::const_iterator
+				it = includes_data.begin(),
+				it_end = includes_data.end();
+			it != it_end;
+			++it )
+			{
+				const Metacode::Meta_Pak::Meta_Datas::Meta_Data & meta_data = *it;
+
+				const ConstString & name = meta_data.get_Name();
+				const ConstString & path = meta_data.get_Path();
+
+				this->addData_( name, path );
+			}
+		}
+
 		SCRIPT_SERVICE(m_serviceProvider)
             ->addModulePath( m_name, m_scriptsPak );
 
@@ -302,6 +329,20 @@ namespace Menge
             }
 		}
 
+		for( TVectorPakDataDesc::iterator
+			it = m_datas.begin(),
+			it_end = m_datas.end();
+		it != it_end;
+		++it )
+		{
+			const PakDataDesc & desc = *it;
+
+			if( this->loadData_( m_name, desc.name, desc.path ) == false )
+			{
+				return false;
+			}
+		}
+
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -317,6 +358,18 @@ namespace Menge
 	{
 		bool result = TEXT_SERVICE(m_serviceProvider)
 			->loadFonts( m_locale, _pakName, _path );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Pak::loadData_( const ConstString & _pakName, const ConstString & _name, const FilePath & _path )
+	{
+		DataDesc data;
+		data.category = _pakName;
+		data.path = _path;
+
+		bool result = GAME_SERVICE(m_serviceProvider)
+			->addData( _name, data );
 
 		return result;
 	}
@@ -344,5 +397,14 @@ namespace Menge
 	void Pak::addFontPath_( const ConstString & _font )
 	{
 		m_pathFonts.push_back( _font );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Pak::addData_( const ConstString & _name, const ConstString & _path )
+	{
+		PakDataDesc desc;
+		desc.name = _name;
+		desc.path = _path;
+
+		m_datas.push_back( desc );
 	}
 }

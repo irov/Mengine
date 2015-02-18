@@ -146,7 +146,12 @@ namespace Menge
 		const WString & getParam( const ConstString & _paramName ) const override;
 		bool hasParam( const ConstString & _paramName ) const override;
 
-		bool getHasWindowPanel() const;
+	public:
+		bool addData( const ConstString & _name, const DataDesc & _desc ) override;
+		bool hasData( const ConstString & _name ) const override;
+
+		CacheBufferID loadData( const ConstString & _name, const void ** _data, size_t & _size ) override;
+		bool writeData( const ConstString & _name, const void * _data, size_t _size ) override;
 
 	public:
 		float getTimingFactor() const override;
@@ -158,7 +163,7 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		Player* m_player;
+		Player * m_player;
 
 		GameAccountProvider * m_accountProvider; 
 		GameSoundVolumeProvider * m_soundVolumeProvider;
@@ -172,7 +177,6 @@ namespace Menge
 		ConstString m_currentPakName;
 		String m_currentResourcePath;
 
-		bool m_hasWindowPanel;
 		float m_timingFactor;
 
 		FilePath m_iconPath;
@@ -185,6 +189,11 @@ namespace Menge
 		ConstString m_languagePak;
 				
 		TMapParams m_params;
+
+		ArchivatorInterfacePtr m_archivator;
+		
+		typedef stdex::binary_vector<ConstString, DataDesc> TMapDatas;
+		TMapDatas m_datas;
 
     protected:
         void setEmbed( PyObject * _embed );

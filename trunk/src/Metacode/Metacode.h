@@ -47,12 +47,12 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const Menge::ConstString & get_Path() const
+            const Menge::FilePath & get_Path() const
             {
                 return this->Path;
             }
             
-            void swap_Path( Menge::ConstString & _value ) const
+            void swap_Path( Menge::FilePath & _value ) const
             {
                 std::swap( _value, this->Path);
             }
@@ -65,7 +65,7 @@ namespace Metacode
         public:
         protected:
         protected:
-            mutable Menge::ConstString Path;
+            mutable Menge::FilePath Path;
         };
         
         class Meta_Resource
@@ -192,12 +192,12 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -210,7 +210,7 @@ namespace Metacode
         public:
         protected:
         protected:
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
         };
         
         class Meta_ResourceCal3dMesh
@@ -223,12 +223,12 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -241,7 +241,7 @@ namespace Metacode
         public:
         protected:
         protected:
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
         };
         
         class Meta_ResourceCal3dSkeleton
@@ -254,12 +254,12 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -272,7 +272,7 @@ namespace Metacode
         public:
         protected:
         protected:
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
         };
         
         class Meta_ResourceCursorICO
@@ -285,12 +285,12 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -303,7 +303,7 @@ namespace Metacode
         public:
         protected:
         protected:
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
         };
         
         class Meta_ResourceCursorSystem
@@ -316,12 +316,12 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -334,7 +334,7 @@ namespace Metacode
         public:
         protected:
         protected:
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
         };
         
         class Meta_ResourceEmitter
@@ -431,12 +431,12 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -459,7 +459,7 @@ namespace Metacode
         public:
         protected:
         protected:
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
             mutable Menge::ConstString Folder_Path;
         };
         
@@ -493,12 +493,12 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -511,7 +511,7 @@ namespace Metacode
         public:
         protected:
         protected:
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
         };
         
         class Meta_ResourceHIT
@@ -582,12 +582,12 @@ namespace Metacode
                 return true;
             }
             
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -604,7 +604,7 @@ namespace Metacode
             mutable Menge::ConstString File_Codec;
             bool File_Converter_successful;
             mutable Menge::ConstString File_Converter;
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
         };
         
         class Meta_ResourceImageData
@@ -704,12 +704,12 @@ namespace Metacode
                 return true;
             }
             
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -728,7 +728,7 @@ namespace Metacode
             mutable mt::vec2f File_MaxSize;
             bool File_NoExist_successful;
             mutable bool File_NoExist;
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
         };
         
         class Meta_ResourceImageDefault
@@ -886,12 +886,12 @@ namespace Metacode
                 return true;
             }
             
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -1001,7 +1001,7 @@ namespace Metacode
             mutable bool File_NoExist;
             bool File_Offset_successful;
             mutable mt::vec2f File_Offset;
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
             bool File_Size_successful;
             mutable mt::vec2f File_Size;
             bool File_WrapX_successful;
@@ -1538,12 +1538,12 @@ namespace Metacode
                 return true;
             }
             
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -1570,7 +1570,7 @@ namespace Metacode
             mutable Menge::ConstString File_Converter;
             bool File_Dataflow_successful;
             mutable Menge::ConstString File_Dataflow;
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
             mutable Menge::ConstString Image_Resource;
         };
         
@@ -2823,12 +2823,12 @@ namespace Metacode
                 return true;
             }
             
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -2886,7 +2886,7 @@ namespace Metacode
             mutable uint32_t AtlasCount_Value;
             bool File_Converter_successful;
             mutable Menge::ConstString File_Converter;
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
         public:
             typedef stdex::auto_array<Meta_Atlas> TVectorMeta_Atlas;
         
@@ -3028,12 +3028,12 @@ namespace Metacode
                         return true;
                     }
                     
-                    const Menge::ConstString & get_File() const
+                    const Menge::FilePath & get_File() const
                     {
                         return this->File;
                     }
                     
-                    void swap_File( Menge::ConstString & _value ) const
+                    void swap_File( Menge::FilePath & _value ) const
                     {
                         std::swap( _value, this->File);
                     }
@@ -3048,7 +3048,7 @@ namespace Metacode
                 protected:
                     bool Codec_successful;
                     mutable Menge::ConstString Codec;
-                    mutable Menge::ConstString File;
+                    mutable Menge::FilePath File;
                 };
                 
             protected:
@@ -3211,12 +3211,12 @@ namespace Metacode
                 return true;
             }
             
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -3264,7 +3264,7 @@ namespace Metacode
             mutable Menge::ConstString File_Codec;
             bool File_Converter_successful;
             mutable Menge::ConstString File_Converter;
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
             bool IsStreamable_Value_successful;
             mutable bool IsStreamable_Value;
         };
@@ -3453,12 +3453,12 @@ namespace Metacode
                 return true;
             }
             
-            const Menge::ConstString & get_File_Path() const
+            const Menge::FilePath & get_File_Path() const
             {
                 return this->File_Path;
             }
             
-            void swap_File_Path( Menge::ConstString & _value ) const
+            void swap_File_Path( Menge::FilePath & _value ) const
             {
                 std::swap(_value, this->File_Path);
             }
@@ -3483,7 +3483,7 @@ namespace Metacode
             mutable uint32_t File_FrameRate;
             bool File_NoSeek_successful;
             mutable bool File_NoSeek;
-            mutable Menge::ConstString File_Path;
+            mutable Menge::FilePath File_Path;
         };
         
         class Meta_ResourceWindow
@@ -4943,6 +4943,78 @@ namespace Metacode
         bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
         bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
     public:
+        class Meta_Datas
+            : public Metabuf::Metadata
+        { 
+        public:
+            Meta_Datas();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+            class Meta_Data
+                : public Metabuf::Metadata
+            { 
+            public:
+                Meta_Data();
+            
+            public:
+                uint32_t getId() const override;
+            
+            public:
+                const Menge::ConstString & get_Name() const
+                {
+                    return this->Name;
+                }
+                
+                void swap_Name( Menge::ConstString & _value ) const
+                {
+                    std::swap( _value, this->Name);
+                }
+                
+                const Menge::FilePath & get_Path() const
+                {
+                    return this->Path;
+                }
+                
+                void swap_Path( Menge::FilePath & _value ) const
+                {
+                    std::swap( _value, this->Path);
+                }
+                
+            protected:
+                bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+                bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+                bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+                bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+            public:
+            protected:
+            protected:
+                mutable Menge::ConstString Name;
+                mutable Menge::FilePath Path;
+            };
+            
+        protected:
+        protected:
+        public:
+            typedef stdex::auto_array<Meta_Data> TVectorMeta_Data;
+        
+            const TVectorMeta_Data & get_IncludesData() const
+            {
+                return this->includes_Meta_Data;
+            }
+        
+        protected:
+            TVectorMeta_Data includes_Meta_Data;
+        };
+        
         class Meta_Fonts
             : public Metabuf::Metadata
         { 
@@ -4953,12 +5025,12 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const Menge::ConstString & get_Path() const
+            const Menge::FilePath & get_Path() const
             {
                 return this->Path;
             }
             
-            void swap_Path( Menge::ConstString & _value ) const
+            void swap_Path( Menge::FilePath & _value ) const
             {
                 std::swap( _value, this->Path);
             }
@@ -4971,7 +5043,7 @@ namespace Metacode
         public:
         protected:
         protected:
-            mutable Menge::ConstString Path;
+            mutable Menge::FilePath Path;
         };
         
         class Meta_Resources
@@ -5000,12 +5072,12 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::ConstString & get_Path() const
+                const Menge::FilePath & get_Path() const
                 {
                     return this->Path;
                 }
                 
-                void swap_Path( Menge::ConstString & _value ) const
+                void swap_Path( Menge::FilePath & _value ) const
                 {
                     std::swap( _value, this->Path);
                 }
@@ -5018,7 +5090,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                mutable Menge::ConstString Path;
+                mutable Menge::FilePath Path;
             };
             
         protected:
@@ -5103,12 +5175,12 @@ namespace Metacode
                 return true;
             }
             
-            const Menge::ConstString & get_Path() const
+            const Menge::FilePath & get_Path() const
             {
                 return this->Path;
             }
             
-            void swap_Path( Menge::ConstString & _value ) const
+            void swap_Path( Menge::FilePath & _value ) const
             {
                 std::swap( _value, this->Path);
             }
@@ -5125,7 +5197,7 @@ namespace Metacode
             mutable Menge::ConstString Initializer;
             bool Module_successful;
             mutable Menge::ConstString Module;
-            mutable Menge::ConstString Path;
+            mutable Menge::FilePath Path;
         };
         
         class Meta_Texts
@@ -5154,12 +5226,12 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const Menge::ConstString & get_Path() const
+                const Menge::FilePath & get_Path() const
                 {
                     return this->Path;
                 }
                 
-                void swap_Path( Menge::ConstString & _value ) const
+                void swap_Path( Menge::FilePath & _value ) const
                 {
                     std::swap( _value, this->Path);
                 }
@@ -5172,7 +5244,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                mutable Menge::ConstString Path;
+                mutable Menge::FilePath Path;
             };
             
         protected:
@@ -5191,6 +5263,16 @@ namespace Metacode
         
     protected:
     protected:
+    public:
+        typedef stdex::auto_array<Meta_Datas> TVectorMeta_Datas;
+    
+        const TVectorMeta_Datas & get_IncludesDatas() const
+        {
+            return this->includes_Meta_Datas;
+        }
+    
+    protected:
+        TVectorMeta_Datas includes_Meta_Datas;
     public:
         typedef stdex::auto_array<Meta_Fonts> TVectorMeta_Fonts;
     

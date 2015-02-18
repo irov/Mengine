@@ -28,9 +28,11 @@
 #   define MENGINE_RENDER_PASS_MAX 200
 #   endif
 
-#   ifndef MENGINE_RENDER_INDICES_QUAD
-#   define MENGINE_RENDER_INDICES_QUAD 12000
+#   ifndef MENGINE_RENDER_QUAD
+#   define MENGINE_RENDER_QUAD 2000
 #   endif
+
+#   define MENGINE_RENDER_INDICES_QUAD (MENGINE_RENDER_QUAD * 6)
 
 #   ifndef MENGINE_RENDER_INDICES_LINE
 #   define MENGINE_RENDER_INDICES_LINE 4000
@@ -47,14 +49,13 @@
 
 namespace Menge
 {
-	//struct Material;
 	struct RenderVertex2D;
 
 	struct ImageCodecDataInfo;
 
 	struct RenderObject
     {
-		RenderMaterialPtr material;
+		RenderMaterial * material;
 				
 		const RenderVertex2D * vertexData;
 		uint32_t verticesNum;
@@ -293,7 +294,7 @@ namespace Menge
 
 		RenderDebugInfo m_debugInfo;	    // debug info
 
-		RenderIndices2D m_indicesQuad[MENGINE_RENDER_INDICES_QUAD];
+		RenderIndices2D m_indicesQuad[MENGINE_RENDER_INDICES_QUAD * 6];
         RenderIndices2D m_indicesLine[MENGINE_RENDER_INDICES_LINE];
 
 		Viewport m_renderViewport;

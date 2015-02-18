@@ -69,21 +69,11 @@ namespace Metabuf
 	void archive_read( stdex::memory_reader & ar, Menge::ConstString & _value, void * _userData )
 	{
 		Menge::LoaderEngine * loader = static_cast<Menge::LoaderEngine *>(_userData);
+		
+		uint32_t index;
+		ar.readSize( index );
 
-		uint32_t id;
-		ar.readPOD( id );
-
-		if( id == ((uint32_t)-1) )
-		{
-			uint32_t index;
-			ar.readSize( index );
-
-			_value = loader->getCacheConstString( index );
-		}
-		else
-		{
-			stdex::throw_memory_reader_exception();
-		}
+		_value = loader->getCacheConstString( index );
 	}
     //////////////////////////////////////////////////////////////////////////
     void archive_read( stdex::memory_reader & ar, Menge::WChar & _value, void * _userData )

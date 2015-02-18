@@ -119,6 +119,85 @@ namespace Menge
 			return gmu;
 		}
 
+		bool s_hasGameData( const ConstString & _name )
+		{
+			bool result = GAME_SERVICE(m_serviceProvider)
+				->hasData( _name );
+
+			return result;
+		}
+
+		bool s_loadGameData( const ConstString & _name )
+		{
+			bool result = GAME_SERVICE(m_serviceProvider)
+				->hasData( _name );
+
+			return result;
+		}
+
+		bool s_writeGameData( const ConstString & _name, PyObject * _data, PyObject * _pickleTypes )
+		{
+			size_t size;
+			pybind::pickle( _data, _pickleTypes, nullptr, 0, size );
+
+			CacheMemoryBuffer buffer(m_serviceProvider, size, "s_writeAccountBinaryFile");
+			void * memory_buffer = buffer.getMemory();
+			size_t memory_size = buffer.getSize();
+
+			if( pybind::pickle( _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_writeGameData: data %s invalid pickle"
+					, _name.c_str()
+					);
+
+				return false;
+			}
+
+			if( GAME_SERVICE(m_serviceProvider)->writeData( _name, memory_buffer, memory_size ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_writeGameData: data %s invalid write"
+					, _name.c_str()
+					);
+
+				return false;
+			}
+
+			return true;
+		}
+		
+		PyObject * s_readGameData( const ConstString & _name, PyObject * _pickleTypes )
+		{
+			const void * buffer_data;
+			size_t buffer_size;
+			CacheBufferID bufferId = GAME_SERVICE(m_serviceProvider)
+				->loadData( _name, &buffer_data, buffer_size );
+
+			if( bufferId == INVALID_CACHE_BUFFER_ID )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_readGameData: data %ls invalid load"
+					, _name.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_data = pybind::unpickle( buffer_data, buffer_size, _pickleTypes );
+
+			CACHE_SERVICE(m_serviceProvider)
+				->unlockBuffer( bufferId );
+
+			if( py_data == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_readGameData: data %s invalid unpickle"
+					, _name.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			return py_data;
+		}
+
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
@@ -1536,5 +1615,9 @@ namespace Menge
 		pybind::def_functor( "debug", helperScriptMethod, &HelperScriptMethod::s_debug );
 		pybind::def_functor( "globalmemoryuse", helperScriptMethod, &HelperScriptMethod::s_globalmemoryuse );
 		pybind::def_functor( "memoryuse", helperScriptMethod, &HelperScriptMethod::s_memoryuse );
+
+		pybind::def_functor( "hasGameData", helperScriptMethod, &HelperScriptMethod::s_hasGameData );
+		pybind::def_functor( "writeGameData", helperScriptMethod, &HelperScriptMethod::s_writeGameData );
+		pybind::def_functor( "readGameData", helperScriptMethod, &HelperScriptMethod::s_readGameData );
 	}
 }

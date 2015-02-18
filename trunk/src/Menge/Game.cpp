@@ -22,6 +22,7 @@
 #	include "Consts.h"
 
 #	include "Core/String.h"
+#	include "Core/Stream.h"
 
 #   include "pybind/pybind.hpp"
 
@@ -73,7 +74,6 @@ namespace Menge
 	Game::Game()
 		: m_serviceProvider(nullptr)
 		, m_developmentMode(false)
-		, m_hasWindowPanel(true)
 		, m_player(nullptr)
 		, m_accountProvider(nullptr)
 		, m_soundVolumeProvider(nullptr)
@@ -499,6 +499,14 @@ namespace Menge
 			return false;
 		}
 
+		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
+			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -595,11 +603,6 @@ namespace Menge
 		}				
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_FOCUS)( "(O)", pybind::get_bool(_focus) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::getHasWindowPanel() const
-	{
-		return m_hasWindowPanel;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFullscreen( const Resolution & _resolution, bool _fullscreen )
@@ -893,4 +896,118 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Game::addData( const ConstString & _name, const DataDesc & _desc )
+	{
+		if( m_datas.exist( _name ) == true )
+		{
+			return false;
+		}
+
+		m_datas.insert( _name, _desc );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::hasData( const ConstString & _name ) const
+	{
+		bool exist = m_datas.exist( _name );
+
+		return exist;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	CacheBufferID Game::loadData( const ConstString & _name, const void ** _data, size_t & _size )
+	{
+		DataDesc * desc;
+		if( m_datas.has( _name, &desc ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Game::loadData: data %s not found"
+				, _name.c_str()
+				);
+
+			return INVALID_CACHE_BUFFER_ID;
+		}
+
+		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+			->openInputFile( desc->category, desc->path, false );
+
+		if( stream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Game::loadData: data %s invalid open file %s"
+				, _name.c_str()
+				, desc->path.c_str()
+				);
+
+			return INVALID_CACHE_BUFFER_ID;
+		}  
+
+		CacheBufferID bufferId;
+		unsigned char * data_memory;
+		size_t data_size;
+
+		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_GAME_DATA), GET_MAGIC_VERSION(MAGIC_GAME_DATA), bufferId, &data_memory, data_size ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Game::loadData: data %s invalid load stream archive %s"
+				, _name.c_str()
+				, desc->path.c_str()
+				);
+
+			return false;
+		}
+
+		*_data = data_memory;
+		_size = data_size;
+
+		return bufferId;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Game::writeData( const ConstString & _name, const void * _data, size_t _size )
+	{
+		DataDesc * desc;
+		if( m_datas.has( _name, &desc ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Game::writeData: data %s not found"
+				, _name.c_str()
+				);
+
+			return INVALID_CACHE_BUFFER_ID;
+		}
+
+		if( _data == nullptr || _size == 0 )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Game::writeData: data %s write empty file %s"
+				, _name.c_str()
+				, desc->path.c_str()
+				);
+
+			return false;
+		}
+
+		OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+			->openOutputFile( desc->category, desc->path );
+
+		if( stream == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Game::writeData: data %s invalid open file %s"
+				, _name.c_str()
+				, desc->path.c_str()
+				);
+
+			return nullptr;
+		}
+
+		const void * data_memory = _data;
+		size_t data_size = _size;
+
+		if( Helper::writeStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_GAME_DATA), GET_MAGIC_VERSION(MAGIC_GAME_DATA), true, data_memory, data_size ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Game::writeData: data %s invalid write file %s"
+				, _name.c_str()
+				, desc->path.c_str()
+				);
+
+			return false;
+		}
+
+		return true;
+	}
 }

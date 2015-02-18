@@ -60,10 +60,12 @@ namespace Menge
         void addTextPath_( const ConstString & _path );
 		void addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer );
 		void addFontPath_( const ConstString & _font );
+		void addData_( const ConstString & _name, const ConstString & _path );
 
     protected:
         bool loadText_( const ConstString & _pakName, const ConstString & _path );
 		bool loadFont_( const ConstString & _pakName, const ConstString & _path );
+		bool loadData_( const ConstString & _pakName, const ConstString & _name, const FilePath & _path );
 				
 	protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -83,6 +85,15 @@ namespace Menge
 
 		TVectorConstString m_pathFonts;
 		TVectorConstString m_pathTexts;
+
+		struct PakDataDesc
+		{
+			ConstString name;
+			FilePath path;
+		};
+
+		typedef stdex::vector<PakDataDesc> TVectorPakDataDesc;
+		TVectorPakDataDesc m_datas;
 
         bool m_preload;
 	};

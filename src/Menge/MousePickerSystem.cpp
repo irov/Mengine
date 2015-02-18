@@ -506,8 +506,7 @@ namespace Menge
 
 			mt::vec2f deltha;
 			m_arrow->calcPointDeltha( camera, _point, mt::vec2f(_x, _y), deltha );
-
-
+			
 			if( trap->handleMouseMove( _touchId, wp, deltha.x, deltha.y ) == false )
 			{
 				continue;

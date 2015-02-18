@@ -1,7 +1,8 @@
-<Protocol Version = "72">
+<Protocol Version = "74">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
-  <Type Name="Menge::ConstString" Evict="string_id"/>
+  <Type Name="Menge::ConstString" Evict="string"/>
+  <Type Name="Menge::FilePath" Evict="string"/>
   <Type Name="bool" Evict="uint8_t"/>
   <Type Name="uint32_t" Evict="uint32_t"/>
   <Type Name="Menge::WChar" Evict="wchar_t"/>
@@ -19,7 +20,7 @@
     <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
 
     <Node Name="Include">
-      <Attribute Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
     </Node>
 
     <Node Name="Resource" Generator="Type">
@@ -28,7 +29,7 @@
     </Node>
 
     <Node Name="ResourceImageData" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
 
       <Member Node="File" Name="MaxSize" Type="mt::vec2f"/>
@@ -36,7 +37,7 @@
     </Node>
 
     <Node Name="ResourceImageDefault" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
       <Member Node="File" Name="Alpha" Type="bool"/>
       <Member Node="File" Name="WrapX" Type="bool"/>
@@ -54,7 +55,7 @@
       <Member Node="Image" Name="UVRGB" Type="mt::vec4f" Required="1"/>
       <Member Node="Image" Name="UVRGBRotate" Type="bool"/>      
 
-      <Member Node="Image" Name="NameAlpha" Type="Menge::ConstString" Required="1"/>      
+      <Member Node="Image" Name="NameAlpha" Type="Menge::ConstString" Required="1"/>
       <Member Node="Image" Name="UVAlpha" Type="mt::vec4f" Required="1"/>
       <Member Node="Image" Name="UVAlphaRotate" Type="bool"/>
 
@@ -75,7 +76,7 @@
     </Node>
 
     <Node Name="ResourceEmitterContainer" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="Folder" Name="Path" Type="Menge::ConstString" Required="1"/>
     </Node>
 
@@ -87,7 +88,7 @@
     </Node>
 
     <Node Name="ResourceParticle" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
 
       <Member Node="AtlasCount" Name="Value" Type="uint32_t" Required="1"/>
@@ -99,19 +100,19 @@
     </Node>
 
     <Node Name="ResourceCursorSystem" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
     </Node>
 
     <Node Name="ResourceCursorICO" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
     </Node>
     
     <Node Name="ResourceFile" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
     </Node>
     
     <Node Name="ResourceSound" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
       <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
       <Member Node="DefaultVolume" Name="Value" Type="float"/>
@@ -123,7 +124,7 @@
       <Member Node="Shuffle" Name="Value" Type="bool"/>
       <Node Name="Tracks">
         <Node Name="Track">
-          <Attribute Name="File" Type="Menge::ConstString" Required="1"/>
+          <Attribute Name="File" Type="Menge::FilePath" Required="1"/>
           <Attribute Name="Codec" Type="Menge::ConstString"/>
         </Node>
       </Node>
@@ -214,7 +215,7 @@
     </Node>
 
     <Node Name="ResourceVideo" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Alpha" Type="bool"/>
       <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
       <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
@@ -231,13 +232,13 @@
     </Node>
 
     <Node Name="ResourceHIT" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
       <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
     </Node>
 
     <Node Name="ResourceModel3D" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Dataflow" Type="Menge::ConstString"/>
       <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
       <Member Node="Image" Name="Resource" Type="Menge::ConstString" Required="1"/>
@@ -258,15 +259,15 @@
     </Node>
 
     <Node Name="ResourceCal3dSkeleton" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
     </Node>
 
     <Node Name="ResourceCal3dAnimation" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
     </Node>
 
     <Node Name="ResourceCal3dMesh" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
     </Node>
 
     <Node Name="ResourceExternal" Inheritance = "Resource" NoWrite = "1"/>
@@ -275,24 +276,31 @@
 
   <Node Name="Pak">
     <Node Name="Scripts">
-      <Attribute Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
       <Attribute Name="Module" Type="Menge::ConstString"/>
       <Attribute Name="Initializer" Type="Menge::ConstString"/>
     </Node>
 
     <Node Name="Fonts">
-      <Attribute Name="Path" Type="Menge::ConstString" Required="1"/>
+      <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
     </Node>
 
     <Node Name="Resources">
       <Node Name="Resource">
-        <Attribute Name="Path" Type="Menge::ConstString" Required="1"/>
+        <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
       </Node>
     </Node>
 
     <Node Name="Texts">
       <Node Name="Text">
-        <Attribute Name="Path" Type="Menge::ConstString" Required="1"/>
+        <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
+      </Node>
+    </Node>
+
+    <Node Name="Datas">
+      <Node Name="Data">
+        <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
+        <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
       </Node>
     </Node>
   </Node>

@@ -3,6 +3,7 @@
 #   include "stdex/memory_reader.h"
 
 #	include "Utils/Core/ConstString.h"
+#	include "Utils/Core/FilePath.h"
 #	include "Utils/Core/ColourValue.h"
 #	include "Utils/Core/GlyphChar.h"
 #	include "Utils/Core/Polygon.h"

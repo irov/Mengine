@@ -14,6 +14,7 @@
 #	include "Logger/Logger.h"
 
 #	include "stdex/memorycopy.h"
+#	include "stdex/intrusive_ptr_base.h"
 
 #   include <memory.h>
 
@@ -77,16 +78,18 @@ namespace Menge
 		m_maxVertexCount = _maxVertexCount;
 		m_maxIndexCount = _maxIndexCount;        
 
-		for( RenderIndices2D i = 0; i != MENGINE_RENDER_INDICES_QUAD; i += 6 )
+		for( RenderIndices2D i = 0; i != MENGINE_RENDER_QUAD; ++i )
 		{   
-			RenderIndices2D vertexOffset = i / 6 * 4;
+			size_t indexOffset = i * 6;
 
-			m_indicesQuad[i + 0] = vertexOffset + 0;
-			m_indicesQuad[i + 1] = vertexOffset + 3;
-			m_indicesQuad[i + 2] = vertexOffset + 1;
-			m_indicesQuad[i + 3] = vertexOffset + 1;
-			m_indicesQuad[i + 4] = vertexOffset + 3;
-			m_indicesQuad[i + 5] = vertexOffset + 2;
+			RenderIndices2D vertexOffset = i * 4;
+
+			m_indicesQuad[indexOffset + 0] = vertexOffset + 0;
+			m_indicesQuad[indexOffset + 1] = vertexOffset + 3;
+			m_indicesQuad[indexOffset + 2] = vertexOffset + 1;
+			m_indicesQuad[indexOffset + 3] = vertexOffset + 1;
+			m_indicesQuad[indexOffset + 4] = vertexOffset + 3;
+			m_indicesQuad[indexOffset + 5] = vertexOffset + 2;
 		}
 
 		for( RenderIndices2D i = 0; i != MENGINE_RENDER_INDICES_LINE; ++i )
@@ -725,7 +728,7 @@ namespace Menge
 			_renderObject->dipIndiciesNum 
 			);
 
-		_renderObject->material = nullptr;
+		stdex::intrusive_ptr_release( _renderObject->material );
 
 		++m_debugInfo.dips;
 	}
@@ -1163,7 +1166,7 @@ namespace Menge
 
 		RenderObject & ro = m_renderObjects.emplace();
 
-		ro.material = ro_material;
+		stdex::intrusive_ptr_setup( ro.material, ro_material );
 		
 		uint32_t materialId = ro.material->getId();
 		uint32_t materialId2 = materialId % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
@@ -1494,7 +1497,7 @@ namespace Menge
 		TArrayRenderObject::iterator it_batch_begin = _begin;
 		++it_batch_begin;
 
-		RenderMaterial * ro_material = _ro->material.get();
+		RenderMaterial * ro_material = _ro->material;
 
 		for( ; it_batch_begin != _end; ++it_batch_begin )
 		{
@@ -1505,7 +1508,7 @@ namespace Menge
 				continue;
 			}
 
-			RenderMaterial * batch_material = ro_bath_begin->material.get();
+			RenderMaterial * batch_material = ro_bath_begin->material;
 
 			if( ro_material != batch_material )
 			{
@@ -1523,7 +1526,8 @@ namespace Menge
 			_ro->dipVerticesNum += ro_bath_begin->verticesNum;
 			_ro->dipIndiciesNum += ro_bath_begin->indicesNum;
 
-			ro_bath_begin->material = nullptr;
+			stdex::intrusive_ptr_release( ro_bath_begin->material );
+
 			ro_bath_begin->dipVerticesNum = 0;
 			ro_bath_begin->dipIndiciesNum = 0;
 			ro_bath_begin->verticesNum = 0;
@@ -1561,7 +1565,7 @@ namespace Menge
 		uint32_t vbPos = _vbPos;
 		uint32_t ibPos = _ibPos;
 
-		const RenderMaterial * ro_material = _ro->material.get();
+		const RenderMaterial * ro_material = _ro->material;
 		
 		TArrayRenderObject::iterator it_batch_start_end = _begin;
 		++it_batch_start_end;
@@ -1586,7 +1590,7 @@ namespace Menge
 				continue;
 			}
 
-			const RenderMaterial * ro_bath_material = ro_bath->material.get();
+			const RenderMaterial * ro_bath_material = ro_bath->material;
 
 			if( ro_material != ro_bath_material )
 			{
@@ -1606,7 +1610,7 @@ namespace Menge
 			_ro->dipVerticesNum += ro_bath->verticesNum;
 			_ro->dipIndiciesNum += ro_bath->indicesNum;
 
-			ro_bath->material = nullptr;
+			stdex::intrusive_ptr_release( ro_bath->material );
 
 			ro_bath->dipVerticesNum = 0;
 			ro_bath->dipIndiciesNum = 0;

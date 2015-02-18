@@ -218,7 +218,7 @@ namespace Menge
 			return false;
 		}
 
-		if( dataInfo->channels == 4 )
+		if( CONFIG_SERVICE(m_serviceProvider)->getValue( "Check", "ImageTransparency", false ) == true && dataInfo->channels == 4 )
 		{
 			size_t texture_size = dataInfo->getSize();
 			CacheMemoryBuffer buffer(m_serviceProvider, texture_size, "ResourceImageDefault::_isValid" );

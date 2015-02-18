@@ -248,6 +248,7 @@ namespace Menge
 		MessageBoxLogger * m_loggerMessageBox;
 		String m_commandLine;
 
+		bool m_lastMouse;
 		int m_lastMouseX;
 		int m_lastMouseY;
 

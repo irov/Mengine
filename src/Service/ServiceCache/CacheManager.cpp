@@ -89,8 +89,10 @@ namespace Menge
 		size_t minSize = (size_t)(0);
 		size_t maxSize = (size_t)(-1);
 
-		CacheBufferID minIndex = INVALID_CACHE_BUFFER_ID;
-		CacheBufferID maxIndex = INVALID_CACHE_BUFFER_ID;
+		const TVectorCacheBufferMemory::size_type invalidIndex = (TVectorCacheBufferMemory::size_type)-1;
+		
+		TVectorCacheBufferMemory::size_type minIndex = invalidIndex;
+		TVectorCacheBufferMemory::size_type maxIndex = invalidIndex;
 
 		for( TVectorCacheBufferMemory::size_type
 			it = 0,
@@ -118,7 +120,7 @@ namespace Menge
 			}
 		}
 		
-		if( maxIndex != INVALID_CACHE_BUFFER_ID )
+		if( maxIndex != invalidIndex )
 		{
 			CacheBufferMemory & buffer = m_buffers[maxIndex];
 			
@@ -129,7 +131,7 @@ namespace Menge
 
 			return buffer.id;
 		}
-		else if( minIndex != INVALID_CACHE_BUFFER_ID )
+		else if( minIndex != invalidIndex )
 		{
 			CacheBufferMemory & buffer = m_buffers[minIndex];
 						

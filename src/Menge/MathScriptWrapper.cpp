@@ -74,7 +74,7 @@ namespace Menge
             return pybind::ptr(repr);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static float vec2_sequence( mt::vec2f * _vec, uint32_t _index )
+		static float vec2_sequence_get( mt::vec2f * _vec, uint32_t _index )
 		{
 			if( _index > 2 )
 			{
@@ -82,6 +82,16 @@ namespace Menge
 			}
 
 			return _vec->operator [] (_index);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void vec2_sequence_set( mt::vec2f * _vec, uint32_t _index, float _value )
+		{
+			if( _index > 2 )
+			{
+				pybind::throw_exception("vec2 index == 2");
+			}
+
+			_vec->operator [] (_index) = _value;
 		}
         //////////////////////////////////////////////////////////////////////////
         static PyObject * vec3f_repr( PyObject * _obj, mt::vec3f * _v )
@@ -96,7 +106,7 @@ namespace Menge
             return pybind::ptr(repr);
         }
 		//////////////////////////////////////////////////////////////////////////
-		static float vec3_sequence( mt::vec3f * _vec, uint32_t _index )
+		static float vec3_sequence_get( mt::vec3f * _vec, uint32_t _index )
 		{
 			if( _index > 3 )
 			{
@@ -104,6 +114,16 @@ namespace Menge
 			}
 
 			return _vec->operator [] (_index);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void vec3_sequence_set( mt::vec3f * _vec, uint32_t _index, float _value )
+		{
+			if( _index > 3 )
+			{
+				pybind::throw_exception("vec3 index == 3");
+			}
+
+			_vec->operator [] (_index) = _value;
 		}
         //////////////////////////////////////////////////////////////////////////
         static PyObject * vec4f_repr( PyObject * _obj, mt::vec4f * _v )
@@ -118,7 +138,7 @@ namespace Menge
             return pybind::ptr(repr);
         }
 		//////////////////////////////////////////////////////////////////////////
-		static float vec4_sequence( mt::vec4f * _vec, uint32_t _index )
+		static float vec4_sequence_get( mt::vec4f * _vec, uint32_t _index )
 		{
 			if( _index > 4 )
 			{
@@ -126,6 +146,16 @@ namespace Menge
 			}
 
 			return _vec->operator [] (_index);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void vec4_sequence_set( mt::vec4f * _vec, uint32_t _index, float _value )
+		{
+			if( _index > 4 )
+			{
+				pybind::throw_exception("vec4 index == 4");
+			}
+
+			_vec->operator [] (_index) = _value;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static bool vec2f_convert( PyObject * _obj, void * _place, void * _user )
@@ -636,7 +666,8 @@ namespace Menge
 		pybind::struct_<mt::vec2f>("vec2f")
 			.def_constructor( pybind::init<float,float>() )
 			.def_convert( &ScriptMethod::vec2f_convert, nullptr )
-			.def_static_sequence( &ScriptMethod::vec2_sequence )
+			.def_static_sequence_get( &ScriptMethod::vec2_sequence_get )
+			.def_static_sequence_set( &ScriptMethod::vec2_sequence_set )
 			.def_repr( &ScriptMethod::vec2f_repr )
 
 			.def_member( "x", &mt::vec2f::x )
@@ -657,7 +688,8 @@ namespace Menge
 		pybind::struct_<mt::vec3f>("vec3f")
 			.def_constructor( pybind::init<float,float,float>() )
 			.def_convert( &ScriptMethod::vec3f_convert, nullptr )
-			.def_static_sequence( &ScriptMethod::vec3_sequence )
+			.def_static_sequence_get( &ScriptMethod::vec3_sequence_get )
+			.def_static_sequence_set( &ScriptMethod::vec3_sequence_set )
             .def_repr( &ScriptMethod::vec3f_repr )
 			.def_member( "x", &mt::vec3f::x )
 			.def_member( "y", &mt::vec3f::y )
@@ -667,7 +699,8 @@ namespace Menge
 		pybind::struct_<mt::vec4f>("vec4f")
 			.def_constructor( pybind::init<float,float,float,float>() )
 			.def_convert( &ScriptMethod::vec4f_convert, nullptr )
-			.def_static_sequence( &ScriptMethod::vec4_sequence )
+			.def_static_sequence_get( &ScriptMethod::vec4_sequence_get )
+			.def_static_sequence_set( &ScriptMethod::vec4_sequence_set )
             .def_repr( &ScriptMethod::vec4f_repr )
 			.def_member( "x", &mt::vec4f::x )
 			.def_member( "y", &mt::vec4f::y )

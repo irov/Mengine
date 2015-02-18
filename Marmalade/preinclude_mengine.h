@@ -5,7 +5,6 @@
 #   define BOOST_NO_CXX11_NULLPTR
 #	define BOOST_NO_STD_WSTRING
 
-#   define PYBIND_MARMALADE
 #   define PYBIND_PYTHON_VERSION 277
 
 #	ifdef __APPLE__

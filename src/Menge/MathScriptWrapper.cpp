@@ -244,7 +244,7 @@ namespace Menge
 			}
 			else if( pybind::list_check( _obj ) == true )
 			{
-				if( pybind::tuple_size( _obj ) < 2 || pybind::tuple_size( _obj ) > 3 )
+				if( pybind::list_size( _obj ) < 2 || pybind::list_size( _obj ) > 3 )
 				{
 					return false;
 				}
@@ -257,9 +257,10 @@ namespace Menge
 				impl->x = pybind::extract<float>(i0);
 				impl->y = pybind::extract<float>(i1);
 
-				if( pybind::tuple_size( _obj ) == 3 )
+				if( pybind::list_size( _obj ) == 3 )
 				{
 					PyObject * i2 = pybind::list_getitem( _obj, 2 );
+
 					impl->z = pybind::extract<float>(i2);
 				}
 				else

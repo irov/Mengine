@@ -127,14 +127,6 @@ namespace Menge
 			return result;
 		}
 
-		bool s_loadGameData( const ConstString & _name )
-		{
-			bool result = GAME_SERVICE(m_serviceProvider)
-				->hasData( _name );
-
-			return result;
-		}
-
 		bool s_writeGameData( const ConstString & _name, PyObject * _data, PyObject * _pickleTypes )
 		{
 			size_t size;
@@ -165,7 +157,7 @@ namespace Menge
 			return true;
 		}
 		
-		PyObject * s_readGameData( const ConstString & _name, PyObject * _pickleTypes )
+		PyObject * s_loadGameData( const ConstString & _name, PyObject * _pickleTypes )
 		{
 			const void * buffer_data;
 			size_t buffer_size;
@@ -1618,6 +1610,6 @@ namespace Menge
 
 		pybind::def_functor( "hasGameData", helperScriptMethod, &HelperScriptMethod::s_hasGameData );
 		pybind::def_functor( "writeGameData", helperScriptMethod, &HelperScriptMethod::s_writeGameData );
-		pybind::def_functor( "readGameData", helperScriptMethod, &HelperScriptMethod::s_readGameData );
+		pybind::def_functor( "loadGameData", helperScriptMethod, &HelperScriptMethod::s_loadGameData );
 	}
 }

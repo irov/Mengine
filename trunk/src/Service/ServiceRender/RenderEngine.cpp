@@ -646,7 +646,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::updateMaterial_( const RenderMaterialPtr & _material )
+	void RenderEngine::updateMaterial_( RenderMaterial * _material )
 	{		
 		uint32_t materialId = _material->getId();
 
@@ -695,7 +695,7 @@ namespace Menge
 			return;
 		}
 
-		const RenderMaterialPtr & material = _renderObject->material;
+		RenderMaterial * material = _renderObject->material;
 
 		this->updateMaterial_( material );		
 

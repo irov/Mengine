@@ -235,7 +235,7 @@ namespace Menge
 
 	protected:
 		void updateTexture_( uint32_t _stageId, const RenderTextureInterfacePtr & _texture );
-		void updateMaterial_( const RenderMaterialPtr & _material );
+		void updateMaterial_( RenderMaterial * _material );
 		void updateStage_( const RenderStage * _stage );
 
 	protected:

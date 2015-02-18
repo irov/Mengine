@@ -233,6 +233,7 @@ namespace Menge
 				if( pybind::tuple_size( _obj ) == 3 )
 				{
 					PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
+
 					impl->z = pybind::extract<float>(i2);
 				}
 				else

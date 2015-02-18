@@ -5163,6 +5163,8 @@ namespace Menge
 					.def( "getFrom", &Line::getFrom )
 					.def( "setTo", &Line::setTo )
 					.def( "getTo", &Line::getTo )
+					.def( "setWidth", &Line::setWidth )
+					.def( "getWidth", &Line::getWidth )
 					;
 
                 pybind::interface_<Layer, pybind::bases<Node> >("Layer", false)

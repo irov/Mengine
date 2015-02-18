@@ -1,6 +1,7 @@
 #	include "Line.h"
 
 #   include "Interface/RenderSystemInterface.h"
+#   include "Interface/StringizeInterface.h"
 
 namespace Menge
 {
@@ -8,6 +9,7 @@ namespace Menge
 	Line::Line()
 		: m_from(0.f, 0.f, 0.f)
 		, m_to(0.f, 0.f, 0.f)
+		, m_width(0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -31,16 +33,19 @@ namespace Menge
 		return m_to;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Line::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
+	void Line::setWidth( float _width )
 	{
-		(void)_viewport;
-        (void)_camera;
-        (void)_debugMask;
-
-		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
-		{
-			return;
-		}
+		m_width = _width;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Line::getWidth() const
+	{
+		return m_width;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Line::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	{
+		Node::_render( _viewport, _camera );
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -50,32 +55,50 @@ namespace Menge
 		mt::vec3f toWM;
 		mt::mul_m4_v3( toWM, wm, m_to );
 
-		RenderVertex2D * vertexLine = RENDER_SERVICE(m_serviceProvider)
-			->getDebugRenderVertex2D( 1 * 2 );
+		mt::vec3f dir;
+		mt::sub_v3_v3( dir, toWM, fromWM );
 
-		vertexLine[0].pos.x = fromWM.x;
-		vertexLine[0].pos.y = fromWM.y;
-		vertexLine[0].pos.z = fromWM.z;
+		mt::vec3f dir_norm;
+		mt::norm_v3( dir_norm, dir );
 
-		vertexLine[1].pos.x = toWM.x;
-		vertexLine[1].pos.y = toWM.y;
-		vertexLine[1].pos.z = toWM.z;
+		mt::vec2f perp;
+		mt::perp_v2( perp, mt::vec2f(dir_norm.x, dir_norm.y) );
+				
+		m_vertices[0].pos.x = fromWM.x + perp.x * m_width;
+		m_vertices[0].pos.y = fromWM.y + perp.y * m_width;
+		m_vertices[0].pos.z = fromWM.z;
 
-	
-		for( uint32_t i = 0; i != 2; ++i )
+		m_vertices[1].pos.x = toWM.x + perp.x * m_width;
+		m_vertices[1].pos.y = toWM.y + perp.y * m_width;
+		m_vertices[1].pos.z = toWM.z;
+
+		m_vertices[2].pos.x = toWM.x - perp.x * m_width;
+		m_vertices[2].pos.y = toWM.y - perp.y * m_width;
+		m_vertices[2].pos.z = toWM.z;
+
+		m_vertices[3].pos.x = fromWM.x - perp.x * m_width;
+		m_vertices[3].pos.y = fromWM.y - perp.y * m_width;
+		m_vertices[3].pos.z = fromWM.z;
+		
+		ColourValue color;
+		this->calcTotalColor(color);
+
+		uint32_t argb = color.getAsARGB();
+
+		for( uint32_t i = 0; i != 4; ++i )
 		{
-			vertexLine[i].color = 0xFF00FF00;
-			vertexLine[i].uv.x = 0.f;
-			vertexLine[i].uv.y = 0.f;
-			vertexLine[i].uv2.x = 0.f;
-			vertexLine[i].uv2.y = 0.f;
+			m_vertices[i].color = argb;
+			m_vertices[i].uv.x = 0.f;
+			m_vertices[i].uv.y = 0.f;
+			m_vertices[i].uv2.x = 0.f;
+			m_vertices[i].uv2.y = 0.f;
 		}
 
-		const RenderMaterialInterfacePtr & debugMaterial = RENDER_SERVICE(m_serviceProvider)
-			->getDebugMaterial();
+		RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE(m_serviceProvider)
+			->getMaterial( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Debug"), false, false, PT_TRIANGLELIST, 0, nullptr );
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderLine( _viewport, _camera, debugMaterial, vertexLine, 2, nullptr );
+			->addRenderQuad( _viewport, _camera, material, m_vertices, 4, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 

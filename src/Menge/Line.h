@@ -17,11 +17,18 @@ namespace Menge
 		void setTo( const mt::vec3f & _value );
 		const mt::vec3f & getTo() const;
 
+		void setWidth( float _width );
+		float getWidth() const;
+
 	protected:
-		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
+		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
 
 	protected:
 		mt::vec3f m_from;
 		mt::vec3f m_to;
+
+		float m_width;
+
+		RenderVertex2D m_vertices[4];
 	};
 }

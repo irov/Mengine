@@ -910,9 +910,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::hasData( const ConstString & _name ) const
 	{
-		bool exist = m_datas.exist( _name );
+		DataDesc * desc;
+		if( m_datas.has( _name, &desc ) == false )
+		{
+			return false;
+		}
 
-		return exist;
+		if( FILE_SERVICE(m_serviceProvider)
+			->existFile( desc->category, desc->path, nullptr ) == false )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CacheBufferID Game::loadData( const ConstString & _name, const void ** _data, size_t & _size )

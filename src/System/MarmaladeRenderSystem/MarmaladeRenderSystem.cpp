@@ -1,14 +1,16 @@
 
 #	include "MarmaladeRenderSystem.h"
 
-#	include <cmath>
+#	include "MarmaladeRenderError.h"
 
 #	include "Interface/LogSystemInterface.h"
 //#	include "OGLWindowContext.h"
 
 #   include "Logger/Logger.h"
 
+#	include <cmath>
 
+//////////////////////////////////////////////////////////////////////////
 #	define GET_A_FLOAT_FROM_ARGB32( argb ) ( ((float)(argb >> 24)) / 255.0f )
 #	define GET_R_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 16) & 0xFF)) / 255.0f )
 #	define GET_G_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 8) & 0xFF)) / 255.0f )
@@ -18,44 +20,6 @@ SERVICE_FACTORY(RenderSystem, Menge::RenderSystemInterface, Menge::MarmaladeRend
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	static const char * get_gl_error_string( GLenum _err )
-	{
-		switch( _err )
-		{
-		case GL_NO_ERROR:
-			return "GL_NO_ERROR";
-		case GL_INVALID_ENUM:
-			return "GL_INVALID_ENUM";
-		case GL_INVALID_VALUE:
-			return "GL_INVALID_VALUE";
-		case GL_INVALID_OPERATION:
-			return "GL_INVALID_OPERATION";
-		case GL_OUT_OF_MEMORY:
-			return "GL_OUT_OF_MEMORY";
-		default:
-			break;
-		};
-
-		return "GL Invalid Error Code";
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void gl_check_error( ServiceProviderInterface * _serviceProvider )
-	{
-		GLenum err = glGetError(); // GL_INVALID_OPERATION
-		
-		if( err == GL_NO_ERROR )
-		{
-			return;
-		}
-
-		const char * err_message = get_gl_error_string( err );
-
-		LOGGER_ERROR(_serviceProvider)("MarmaladeRenderSystem GL Error: %s (%d)"
-			, err_message
-			, err			
-			);
-	}
     //////////////////////////////////////////////////////////////////////////
     static const GLenum s_toGLBlendFactor[] = 
     {
@@ -360,38 +324,38 @@ namespace Menge
 
 		for( uint32_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
-			glActiveTexture( GL_TEXTURE0 + i );
-			glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE );
-			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR );
-			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR );
-			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA );
-			glTexEnvi( GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA );			
-			glDisable( GL_TEXTURE_2D );
+			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA) );			
+			GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
 
 			m_textureStage[i] = TextureStage();
 		}
 
-		glFrontFace( GL_CW );
-		glDisable( GL_DEPTH_TEST );
-		glDisable( GL_STENCIL_TEST );
-		glDisable( GL_CULL_FACE );
-		glDisable( GL_LIGHTING );
-		glDisable( GL_BLEND );
-		glDisable( GL_ALPHA_TEST );
-		glDisable( GL_DITHER );
+		GLCALL( m_serviceProvider, glFrontFace, ( GL_CW ) );
+		GLCALL( m_serviceProvider, glDisable, ( GL_DEPTH_TEST ) );
+		GLCALL( m_serviceProvider, glDisable, ( GL_STENCIL_TEST ) );
+		GLCALL( m_serviceProvider, glDisable, ( GL_CULL_FACE ) );
+		GLCALL( m_serviceProvider, glDisable, ( GL_LIGHTING ) );
+		GLCALL( m_serviceProvider, glDisable, ( GL_BLEND ) );
+		GLCALL( m_serviceProvider, glDisable, ( GL_ALPHA_TEST ) );
+		GLCALL( m_serviceProvider, glDisable, ( GL_DITHER ) );
 
-		glDepthMask( GL_FALSE );
+		GLCALL( m_serviceProvider, glDepthMask, ( GL_FALSE ) );
 		//glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
-		glMatrixMode( GL_MODELVIEW );
-		glLoadIdentity();
+		GLCALL( m_serviceProvider, glMatrixMode, ( GL_MODELVIEW ) );
+		GLCALL( m_serviceProvider, glLoadIdentity, () );
 
-		glMatrixMode( GL_PROJECTION );
-		glLoadIdentity();
+		GLCALL( m_serviceProvider, glMatrixMode, ( GL_PROJECTION ) );
+		GLCALL( m_serviceProvider, glLoadIdentity, () );
 
-		glMatrixMode( GL_TEXTURE );
-		glLoadIdentity();
-		
+		GLCALL( m_serviceProvider, glMatrixMode, ( GL_TEXTURE ) );
+		GLCALL( m_serviceProvider, glLoadIdentity, () );
+				
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -434,23 +398,23 @@ namespace Menge
 
         size_t height = m_resolution.getHeight();
 
-        glViewport( (GLsizei)xb, height - (GLsizei)(yb), (GLsizei)w, (GLsizei)h );
+        GLCALL( m_serviceProvider, glViewport, ( (GLsizei)xb, height - (GLsizei)(yb), (GLsizei)w, (GLsizei)h ) );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
 	{
-        glMatrixMode( GL_PROJECTION );
+        GLCALL( m_serviceProvider, glMatrixMode, ( GL_PROJECTION ) );
 
         const float * matrix = _projection.buff();
-        glLoadMatrixf( matrix );
+        GLCALL( m_serviceProvider, glLoadMatrixf, ( matrix ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setModelViewMatrix( const mt::mat4f & _view )
 	{
-        glMatrixMode( GL_MODELVIEW );
+        GLCALL( m_serviceProvider, glMatrixMode, ( GL_MODELVIEW ) );
 
         const float * matrix = _view.buff();
-        glLoadMatrixf( matrix );
+        GLCALL( m_serviceProvider, glLoadMatrixf, ( matrix ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setTextureMatrix( uint32_t _stage, const float* _texture )
@@ -482,19 +446,17 @@ namespace Menge
         }
 
 		GLuint bufId = 0;
-		glGenBuffers( 1, &bufId );
+		GLCALL( m_serviceProvider, glGenBuffers, ( 1, &bufId ) );
 
-		glBindBuffer( GL_ARRAY_BUFFER, bufId );
-		glBufferData( GL_ARRAY_BUFFER, memRange.size, NULL, usage );
-		glBindBuffer( GL_ARRAY_BUFFER, 0 );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, bufId ) );
+		GLCALL( m_serviceProvider, glBufferData, ( GL_ARRAY_BUFFER, memRange.size, NULL, usage ) );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, 0 ) );
 
 		memRange.bufId = bufId;
 		
         VBHandle vbHandle = ++m_VBHandleGenerator;
 		m_vBuffersMemory.insert( vbHandle, memRange );
 
-		gl_check_error( m_serviceProvider );
-		
         return vbHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -510,12 +472,12 @@ namespace Menge
 
 		if( _vbHandle == m_currentVertexBuffer )
 		{
-			glBindBuffer( GL_ARRAY_BUFFER, 0 );
+			GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, 0 ) );
+			
 			m_currentVertexBuffer = 0;
 		}
 
-		glDeleteBuffers( 1, &range->bufId );
-		gl_check_error( m_serviceProvider );
+		GLCALL( m_serviceProvider, glDeleteBuffers, ( 1, &range->bufId ) );
 
 		m_vBuffersMemory.erase( _vbHandle );
 	}
@@ -550,11 +512,9 @@ namespace Menge
 			return false;
 		}
 	
-		glBindBuffer( GL_ARRAY_BUFFER, range->bufId );
-		glBufferSubData( GL_ARRAY_BUFFER, range->offset, range->size, range->pMem );        
-		glBindBuffer( GL_ARRAY_BUFFER, 0 );
-
-		gl_check_error( m_serviceProvider );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, range->bufId ) );
+		GLCALL( m_serviceProvider, glBufferSubData, ( GL_ARRAY_BUFFER, range->offset, range->size, range->pMem ) );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, 0 ) );
 
 		m_vBuffersLocks.erase( _vbHandle );		
 
@@ -587,14 +547,12 @@ namespace Menge
 		GLuint bufId = 0;
 
 #	ifndef __MACH__
-		glGenBuffers( 1, &bufId );
+		GLCALL( m_serviceProvider, glGenBuffers, ( 1, &bufId ) );
+				
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, bufId ) );
 
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
-
-		glBufferData( GL_ELEMENT_ARRAY_BUFFER, memRange.size, NULL, usage );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-
-		gl_check_error( m_serviceProvider );
+		GLCALL( m_serviceProvider, glBufferData, ( GL_ELEMENT_ARRAY_BUFFER, memRange.size, NULL, usage ) );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
 #	endif
 
 		memRange.bufId = bufId;
@@ -616,17 +574,16 @@ namespace Menge
 		if( _ibHandle == m_currentIndexBuffer )
 		{
 #	ifndef __MACH__
-			glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+			GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
 #	endif
-
+			
 			m_currentIndexBuffer = 0;
 		}
 
 		delete [] range->pMem;
 
 #	ifndef __MACH__
-		glDeleteBuffers( 1, &range->bufId );
-		gl_check_error( m_serviceProvider );
+		GLCALL( m_serviceProvider, glDeleteBuffers, ( 1, &range->bufId ) );
 #	endif
 
 		m_iBuffersMemory.erase( _ibHandle );		
@@ -663,10 +620,9 @@ namespace Menge
 		}
 		
 #	ifndef __MACH__
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, range->bufId );
-		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, range->offset, range->size, range->pMem );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-		gl_check_error( m_serviceProvider );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, range->bufId ) );
+		GLCALL( m_serviceProvider, glBufferSubData, ( GL_ELEMENT_ARRAY_BUFFER, range->offset, range->size, range->pMem ) );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
 #	endif		
 		
 		m_iBuffersLocks.erase( _ibHandle );		
@@ -694,36 +650,36 @@ namespace Menge
 
 			if( textureStage.texture == 0 )
 			{
-				glActiveTexture(GL_TEXTURE0 + i);
-				glDisable(GL_TEXTURE_2D);
+				GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
+				GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
 				break;
 			}
 
-			glActiveTexture(GL_TEXTURE0 + i);
+			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i));
 
-			glEnable(GL_TEXTURE_2D);
+			GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
 
-			glBindTexture( GL_TEXTURE_2D, textureStage.texture );
+			GLCALL( m_serviceProvider, glBindTexture, ( GL_TEXTURE_2D, textureStage.texture ) );
 			
 
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS );
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT );
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter );
-			glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter );
+			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS ) );
+			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT ) );
+			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter ) );
+			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter ) );
 			
-			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
 
-			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, textureStage.colorOp);
-			glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, textureStage.colorArg1);
-			glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, textureStage.colorArg2);
-			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
-			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_COMBINE_RGB, textureStage.colorOp) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC0_RGB, textureStage.colorArg1) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC1_RGB, textureStage.colorArg2) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR) );
 
-			glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, textureStage.alphaOp);
-			glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, textureStage.alphaArg1);
-			glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, textureStage.alphaArg2);
-			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-			glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_COMBINE_ALPHA, textureStage.alphaOp) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC0_ALPHA, textureStage.alphaArg1) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC1_ALPHA, textureStage.alphaArg2) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA) );
 		}
 
 		MemoryRange * vb_range;
@@ -740,30 +696,26 @@ namespace Menge
 				
 
 #	ifndef __MACH__
-		glBindBuffer( GL_ARRAY_BUFFER, vb_range->bufId );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ib_range->bufId );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, vb_range->bufId ) );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, ib_range->bufId ) );
 
-		gl_check_error( m_serviceProvider );
+		GLCALL( m_serviceProvider, glEnableClientState, ( GL_VERTEX_ARRAY ) );
+		GLCALL( m_serviceProvider, glVertexPointer, ( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) ) );
 
-		glEnableClientState( GL_VERTEX_ARRAY );
-		glVertexPointer( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) );
+		GLCALL( m_serviceProvider, glEnableClientState, ( GL_COLOR_ARRAY ) );
+		GLCALL( m_serviceProvider, glColorPointer, ( 4, GL_UNSIGNED_BYTE, 32, reinterpret_cast<const GLvoid *>( 12 ) ) );
 
-		glEnableClientState( GL_COLOR_ARRAY );
-		glColorPointer( 4, GL_UNSIGNED_BYTE, 32, reinterpret_cast<const GLvoid *>( 12 ) );
+		GLCALL( m_serviceProvider, glEnableClientState, ( GL_TEXTURE_COORD_ARRAY ) );
 
-		glEnableClientState( GL_TEXTURE_COORD_ARRAY );
+		GLCALL( m_serviceProvider, glClientActiveTexture, ( GL_TEXTURE0 ) );
+		GLCALL( m_serviceProvider, glTexCoordPointer, ( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 16 ) ) );
+		GLCALL( m_serviceProvider, glClientActiveTexture, ( GL_TEXTURE1 ) );
+		GLCALL( m_serviceProvider, glTexCoordPointer, ( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 24 ) ) );
 
-		glClientActiveTexture( GL_TEXTURE0 );
-		glTexCoordPointer( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 16 ) );
-		glClientActiveTexture( GL_TEXTURE1 );
-		glTexCoordPointer( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 24 ) );
-		
         GLenum mode = s_getGLPrimitiveMode( _type );
 		const uint16_t * baseIndex = nullptr;
 		const uint16_t * offsetIndex = baseIndex + _startIndex;
-		glDrawElements( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(offsetIndex) );
-		gl_check_error( m_serviceProvider );
-
+		GLCALL( m_serviceProvider, glDrawElements, ( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(offsetIndex) ) );
 #	else	
 		//////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////
@@ -771,54 +723,49 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////
 		GLuint bufId = 0;
-		glGenBuffers( 1, &bufId );
+		GLCALL( m_serviceProvider, glGenBuffers, ( 1, &bufId ) );
 
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, bufId ) );
 
-		glBufferData( GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(uint16_t), nullptr, GL_STATIC_DRAW );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+		GLCALL( m_serviceProvider, glBufferData, ( GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(uint16_t), nullptr, GL_STATIC_DRAW ) );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
 
 		const uint16_t * baseIndex = reinterpret_cast<const uint16_t *>(ib_range->pMem);
 		const uint16_t * offsetIndex = baseIndex + _startIndex;
 
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
-		glBufferSubData( GL_ELEMENT_ARRAY_BUFFER, 0, _indexCount * sizeof(uint16_t), offsetIndex );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, bufId ) );
+		GLCALL( m_serviceProvider, glBufferSubData, ( GL_ELEMENT_ARRAY_BUFFER, 0, _indexCount * sizeof(uint16_t), offsetIndex ) );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
 
-		glBindBuffer( GL_ARRAY_BUFFER, vb_range->bufId );
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, bufId );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, vb_range->bufId ) );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, bufId ) );
+				
+		GLCALL( m_serviceProvider, glEnableClientState, ( GL_VERTEX_ARRAY ) );
+		GLCALL( m_serviceProvider, glVertexPointer, ( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) ) );
 
-		gl_check_error( m_serviceProvider );
+		GLCALL( m_serviceProvider, glEnableClientState, ( GL_COLOR_ARRAY ) );
+		GLCALL( m_serviceProvider, glColorPointer, ( 4, GL_UNSIGNED_BYTE, 32, reinterpret_cast<const GLvoid *>( 12 ) ) );
 
-		glEnableClientState( GL_VERTEX_ARRAY );
-		glVertexPointer( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) );
+		GLCALL( m_serviceProvider, glEnableClientState, ( GL_TEXTURE_COORD_ARRAY ) );
 
-		glEnableClientState( GL_COLOR_ARRAY );
-		glColorPointer( 4, GL_UNSIGNED_BYTE, 32, reinterpret_cast<const GLvoid *>( 12 ) );
-
-		glEnableClientState( GL_TEXTURE_COORD_ARRAY );
-
-		glClientActiveTexture( GL_TEXTURE0 );
-		glTexCoordPointer( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 16 ) );
-		glClientActiveTexture( GL_TEXTURE1 );
-		glTexCoordPointer( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 24 ) );
+		GLCALL( m_serviceProvider, glClientActiveTexture, ( GL_TEXTURE0 ) );
+		GLCALL( m_serviceProvider, glTexCoordPointer, ( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 16 ) ) );
+		GLCALL( m_serviceProvider, glClientActiveTexture, ( GL_TEXTURE1 ) );
+		GLCALL( m_serviceProvider, glTexCoordPointer, ( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 24 ) ) );
 
 		GLenum mode = s_getGLPrimitiveMode( _type );
 
-		glDrawElements( mode, _indexCount, GL_UNSIGNED_SHORT, nullptr );
-		gl_check_error( m_serviceProvider );
-
-		glDeleteBuffers( 1, &bufId );	
+		GLCALL( m_serviceProvider, glTexEnvi, glDrawElements, ( mode, _indexCount, GL_UNSIGNED_SHORT, nullptr ) );
+		
+		GLCALL( m_serviceProvider, glTexEnvi, glDeleteBuffers, ( 1, &bufId ) );	
 #	endif
 
-		glDisableClientState( GL_VERTEX_ARRAY );
-		glDisableClientState( GL_COLOR_ARRAY );
-		glDisableClientState( GL_TEXTURE_COORD_ARRAY );
+		GLCALL( m_serviceProvider, glDisableClientState, ( GL_VERTEX_ARRAY ) );
+		GLCALL( m_serviceProvider, glDisableClientState, ( GL_COLOR_ARRAY ) );
+		GLCALL( m_serviceProvider, glDisableClientState, ( GL_TEXTURE_COORD_ARRAY ) );
 
-		glBindBuffer( GL_ARRAY_BUFFER, 0 );		
-		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0 );
-
-		gl_check_error( m_serviceProvider );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, 0 ) );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture )
@@ -845,6 +792,7 @@ namespace Menge
 	{
         GLenum modeUGL = s_getGLAddressMode( _modeU );
         GLenum modeVGL = s_getGLAddressMode( _modeV );
+
         m_textureStage[_stage].wrapS = modeUGL;
         m_textureStage[_stage].wrapT = modeVGL;
 	}
@@ -857,13 +805,15 @@ namespace Menge
 	void MarmaladeRenderSystem::setSrcBlendFactor( EBlendFactor _src )
 	{
 		m_srcBlendFactor = s_toGLBlendFactor[ _src ];
-		glBlendFunc( m_srcBlendFactor, m_dstBlendFactor );
+
+		GLCALL( m_serviceProvider, glBlendFunc, ( m_srcBlendFactor, m_dstBlendFactor ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setDstBlendFactor( EBlendFactor _dst )
 	{
 		m_dstBlendFactor = s_toGLBlendFactor[ _dst ];
-		glBlendFunc( m_srcBlendFactor, m_dstBlendFactor );
+
+		GLCALL( m_serviceProvider, glBlendFunc, ( m_srcBlendFactor, m_dstBlendFactor ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setCullMode( ECullMode _mode )
@@ -880,15 +830,15 @@ namespace Menge
 			enable = false;
 		}
 		
-        glCullFace( face );
+        GLCALL( m_serviceProvider, glCullFace, ( face ) );
 		
         if( enable == true )
         {
-            glEnable( GL_CULL_FACE );
+            GLCALL( m_serviceProvider, glEnable, ( GL_CULL_FACE ) );
         }
         else
         {
-            glDisable( GL_CULL_FACE );
+            GLCALL( m_serviceProvider, glDisable, ( GL_CULL_FACE ) );
         }
 	}
     /////////////////////////////////////////////////////////////////////////
@@ -901,24 +851,26 @@ namespace Menge
 	{
         if( _depthTest == true )
         {
-		    glEnable( GL_DEPTH_TEST );
+		    GLCALL( m_serviceProvider, glEnable, ( GL_DEPTH_TEST ) );
         }
         else
         {
-            glDisable( GL_DEPTH_TEST );
+            GLCALL( m_serviceProvider, glDisable, ( GL_DEPTH_TEST ) );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
 	{
 		m_depthMask = _depthWrite;
-		glDepthMask( m_depthMask ? GL_TRUE : GL_FALSE );
+
+		GLCALL( m_serviceProvider, glDepthMask, ( m_depthMask ? GL_TRUE : GL_FALSE ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
 	{
 		GLenum cmpFunc = s_toGLCmpFunc[ _depthFunction ];
-		glDepthFunc( cmpFunc );
+
+		GLCALL( m_serviceProvider, glDepthFunc, ( cmpFunc ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setFillMode( EFillMode _mode )
@@ -929,27 +881,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
 	{
-		glColorMask( _r ? GL_TRUE : GL_FALSE,
-			_g ? GL_TRUE : GL_FALSE,
-			_b ? GL_TRUE : GL_FALSE,
-			_a ? GL_TRUE : GL_FALSE );
+		GLCALL( m_serviceProvider, glColorMask, ( _r ? GL_TRUE : GL_FALSE, _g ? GL_TRUE : GL_FALSE, _b ? GL_TRUE : GL_FALSE, _a ? GL_TRUE : GL_FALSE ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setShadeType( EShadeType _sType )
 	{
 		GLenum model = s_toGLShadeMode[ _sType ];
-		glShadeModel( model );
+		GLCALL( m_serviceProvider, glShadeModel, ( model ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setAlphaTestEnable( bool _alphaTest )
 	{
         if( _alphaTest == true )
         {
-            glEnable( GL_ALPHA_TEST );
+            GLCALL( m_serviceProvider, glEnable, ( GL_ALPHA_TEST ) );
         }
         else
         {
-            glDisable( GL_ALPHA_TEST );
+            GLCALL( m_serviceProvider, glDisable, ( GL_ALPHA_TEST ) );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -957,11 +906,11 @@ namespace Menge
 	{
 		if( _alphaBlend == true )
         {
-            glEnable( GL_BLEND );
+            GLCALL( m_serviceProvider, glEnable, ( GL_BLEND ) );
         }
         else
         {
-            glDisable( GL_BLEND );
+            GLCALL( m_serviceProvider, glDisable, ( GL_BLEND ) );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -970,18 +919,18 @@ namespace Menge
 		GLenum cmpFunc = s_toGLCmpFunc[_alphaFunc];
 		GLclampf ref = (GLclampf)(static_cast<float>( _alpha ) / 255.0f);
 
-		glAlphaFunc( cmpFunc, ref );
+		GLCALL( m_serviceProvider, glAlphaFunc, ( cmpFunc, ref ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setLightingEnable( bool _light )
 	{
 		if( _light == true )
         {
-            glEnable( GL_LIGHTING );
+            GLCALL( m_serviceProvider, glEnable, ( GL_LIGHTING ) );
         }
         else
         {
-            glDisable( GL_LIGHTING );
+            GLCALL( m_serviceProvider, glDisable, ( GL_LIGHTING ) );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1010,6 +959,7 @@ namespace Menge
         m_textureStage[_stage].alphaArg1 = s_getGLTextureArg( _arg1 );
         m_textureStage[_stage].alphaArg2 = s_getGLTextureArg( _arg2 );
 	}
+	//////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index )
     {
         //m_textureStage[_stage].texCoordIndex = _index;
@@ -1106,11 +1056,11 @@ namespace Menge
 		GLint textureColorDataType = s_getGLColorDataType( hwFormat );
 
 		GLuint tuid = 0;
-		glGenTextures( 1, &tuid );
+		GLCALL( m_serviceProvider, glGenTextures, ( 1, &tuid ) );
 
         MarmaladeTexture * texture = m_factoryOGLTexture.createObjectT();
 
-		texture->initialize( 
+		texture->initialize(
 			m_serviceProvider
             , tuid
 			, ERIM_NORMAL
@@ -1172,10 +1122,12 @@ namespace Menge
 		{
 			frameBufferFlags |= GL_COLOR_BUFFER_BIT;
 
-			glClearColor( GET_R_FLOAT_FROM_ARGB32( _color ),
-				GET_G_FLOAT_FROM_ARGB32( _color ),
-				GET_B_FLOAT_FROM_ARGB32( _color ),
-				GET_A_FLOAT_FROM_ARGB32( _color ) );
+			GLCALL( m_serviceProvider, glClearColor, ( 
+				GET_R_FLOAT_FROM_ARGB32( _color ), 
+				GET_G_FLOAT_FROM_ARGB32( _color ), 
+				GET_B_FLOAT_FROM_ARGB32( _color ), 
+				GET_A_FLOAT_FROM_ARGB32( _color ) )
+				);
 		}
 
 		if( ( _frameBufferTypes & FBT_DEPTH ) != 0 )
@@ -1184,23 +1136,24 @@ namespace Menge
 
 			if( m_depthMask == false )
 			{
-				glDepthMask( GL_TRUE );
+				GLCALL( m_serviceProvider, glDepthMask, ( GL_TRUE ) );
 			}
 
-			glClearDepthf( _depth );
+			GLCALL( m_serviceProvider, glClearDepthf, ( _depth ) );
 		}
 
 		if( (_frameBufferTypes & FBT_STENCIL) != 0 )
 		{
 			frameBufferFlags |= GL_STENCIL_BUFFER_BIT;
-			glClearStencil( _stencil );
+
+			GLCALL( m_serviceProvider, glClearStencil, ( _stencil ) );
 		}
 
-		glClear( frameBufferFlags );
+		GLCALL( m_serviceProvider, glClear, ( frameBufferFlags ) );
 
 		if( m_depthMask == false )
 		{
-			glDepthMask( GL_FALSE );
+			GLCALL( m_serviceProvider, glDepthMask, ( GL_FALSE ) );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1279,7 +1232,7 @@ namespace Menge
 		GLint textureColorDataType = s_getGLColorDataType( hwFormat );
 
 		GLuint tuid = 0;
-		glGenTextures( 1, &tuid );
+		GLCALL( m_serviceProvider, glGenTextures, ( 1, &tuid ) );
 
 		MarmaladeTexture * texture = m_factoryOGLTexture.createObjectT();
 
@@ -1314,19 +1267,15 @@ namespace Menge
         mt::mat4f scale;
         mt::make_scale_m4( scale, 1.f, 1.f, 1.f );
 
-        //D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
         mt::mat4f translation;
         mt::make_translation_m4( translation, 0.f, 0.f, 0.f );
 
-        //D3DXMatrixMultiply(&matProj, &matProj, &tmp);
         mt::mat4f transform;
         mt::mul_m4_m4( transform, scale, translation );
 
-        //D3DXMatrixOrthoOffCenterLH(&tmp, (float)vp.X, (float)(vp.X+vp.Width), -((float)(vp.Y+vp.Height)), -((float)vp.Y), vp.MinZ, vp.MaxZ);
         mt::mat4f ortho;
         mt::make_projection_ortho_lh_m4(ortho, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
 
-        //D3DXMatrixMultiply(&matProj, &matProj, &tmp);
         mt::mul_m4_m4( _projectionMatrix, transform, ortho );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1349,23 +1298,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
 	{
-		//D3DXMatrixScaling(&matProj, 1.0f, -1.0f, 1.0f);
 		mt::mat4f scale;
 		mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
 
-		//D3DXMatrixTranslation(&tmp, -0.5f, +0.5f, 0.0f);
 		mt::mat4f translation;
 		mt::make_translation_m4( translation, -0.5f, -0.5f, 0.0f );
 
-		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
 		mt::mat4f transform;
 		mt::mul_m4_m4( transform, scale, translation );
 
-		//D3DXMatrixOrthoOffCenterLH(&tmp, (float)vp.X, (float)(vp.X+vp.Width), -((float)(vp.Y+vp.Height)), -((float)vp.Y), vp.MinZ, vp.MaxZ);
 		mt::mat4f frustum;
 		mt::make_projection_frustum_m4(frustum, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
 
-		//D3DXMatrixMultiply(&matProj, &matProj, &tmp);
 		mt::mul_m4_m4( _projectionMatrix, transform, frustum );
 	}
     //////////////////////////////////////////////////////////////////////////

@@ -14,7 +14,7 @@ namespace Menge
 		/// public fields
 		struct jpeg_destination_mgr pub;
 
-		OutputStreamInterfacePtr m_stream;
+		OutputStreamInterface * m_stream;
 		/// start of buffer
 		unsigned char * buffer;
 	};

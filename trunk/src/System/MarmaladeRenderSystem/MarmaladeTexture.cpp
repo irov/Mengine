@@ -147,7 +147,7 @@ namespace Menge
 			{				
 				IF_GLCALL( m_serviceProvider, glCompressedTexImage2D, ( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, m_lockMemory ) )
 				{
-					LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %s"
+					LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
 						, _level
 						, miplevel_width
 						, miplevel_height

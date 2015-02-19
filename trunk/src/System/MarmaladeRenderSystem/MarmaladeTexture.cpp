@@ -1,5 +1,7 @@
 #	include "MarmaladeTexture.h"
 
+#	include "MarmaladeRenderError.h"
+
 #	include "Logger/Logger.h"
 
 namespace Menge
@@ -46,14 +48,14 @@ namespace Menge
         m_format = _format;
         m_type = _type;		
 
-		glBindTexture( GL_TEXTURE_2D, m_uid );
+		GLCALL( m_serviceProvider, glBindTexture, ( GL_TEXTURE_2D, m_uid ) );
 
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_wrapS );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_minFilter );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_magFilter );
+        GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_wrapS ) );
+        GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT ) );
+        GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_minFilter ) );
+        GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_magFilter ) );
 
-        glTexParameteri( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE );
+        GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE ) );
     }
 	//////////////////////////////////////////////////////////////////////////
 	ERenderImageMode MarmaladeTexture::getMode() const
@@ -123,7 +125,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeTexture::unlock( uint32_t _level )
 	{		
-		glBindTexture( GL_TEXTURE_2D, m_uid );
+		GLCALL( m_serviceProvider, glBindTexture, ( GL_TEXTURE_2D, m_uid ) );
 
 		uint32_t miplevel_width = m_hwWidth >> _level;
 		uint32_t miplevel_height = m_hwHeight >> _level;
@@ -137,56 +139,18 @@ namespace Menge
 			, textureMemorySize
 			);
 
-		//if( m_mode == ERIM_NORMAL )
+		switch( m_internalFormat )
 		{
-			switch( m_internalFormat )
+		case GL_ETC1_RGB8_OES:
+		case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+		case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+			{				
+				GLCALL( m_serviceProvider, glCompressedTexImage2D, ( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, m_lockMemory ) );
+			}break;
+		default:
 			{
-			case GL_ETC1_RGB8_OES:
-			case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
-			case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-				{				
-					glCompressedTexImage2D( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, m_lockMemory );
-				}break;
-			default:
-				{
-					glTexImage2D( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, m_format, m_type, m_lockMemory );				
-				}break;
-			}
-		}
-		//else if( m_mode == ERIM_DYNAMIC )
-		//{
-		//	switch( m_internalFormat )
-		//	{
-		//	case GL_ETC1_RGB8_OES:
-		//	case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
-		//	case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
-		//		{			
-		//			glCompressedTexImage2D( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, m_lockMemory );
-		//			glCompressedTexSubImage2D( GL_TEXTURE_2D, m_lockLevel, 0, 0, miplevel_width, miplevel_height, m_internalFormat, textureMemorySize, m_lockMemory );
-		//		}break;
-		//	default:
-		//		{
-		//			glTexSubImage2D( GL_TEXTURE_2D, m_lockLevel, 0, 0, miplevel_width, miplevel_height, m_format, m_type, m_lockMemory );				
-		//		}break;
-		//	}
-		//}
-		//else
-		{
-			//Empty
-		}
-
-		GLenum gl_err = glGetError();
-
-		if( gl_err != GL_NO_ERROR )
-		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock gl error %d param l %d w %d h %d i %d p %d"
-				, gl_err
-				, _level
-				, miplevel_width
-				, miplevel_height
-				, m_internalFormat
-				, m_hwPixelFormat
-				);
+				GLCALL( m_serviceProvider, glTexImage2D, ( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, m_format, m_type, m_lockMemory ) );
+			}break;
 		}
 
 		CACHE_SERVICE(m_serviceProvider)
@@ -199,7 +163,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeTexture::_destroy()
 	{
-		glDeleteTextures( 1, &m_uid );
+		GLCALL( m_serviceProvider, glDeleteTextures, ( 1, &m_uid ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	GLuint MarmaladeTexture::getUId() const

@@ -10,8 +10,8 @@
 
 #   include "stdex/binary_vector.h"
 
-#   include "IwGL.h"
-#   include "s3e.h"
+#   include <IwGL.h>
+#   include <s3e.h>
 
 namespace Menge
 {

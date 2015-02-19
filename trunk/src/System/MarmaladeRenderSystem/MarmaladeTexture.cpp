@@ -145,11 +145,32 @@ namespace Menge
 		case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
 		case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
 			{				
-				GLCALL( m_serviceProvider, glCompressedTexImage2D, ( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, m_lockMemory ) );
+				IF_GLCALL( m_serviceProvider, glCompressedTexImage2D, ( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, m_lockMemory ) )
+				{
+					LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %s"
+						, _level
+						, miplevel_width
+						, miplevel_height
+						, m_internalFormat
+						, m_hwPixelFormat
+						, textureMemorySize
+						);
+				}
 			}break;
 		default:
 			{
-				GLCALL( m_serviceProvider, glTexImage2D, ( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, m_format, m_type, m_lockMemory ) );
+				IF_GLCALL( m_serviceProvider, glTexImage2D, ( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, m_format, m_type, m_lockMemory ) )
+				{
+					LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+						, _level
+						, miplevel_width
+						, miplevel_height
+						, m_internalFormat
+						, m_format
+						, m_type
+						, m_hwPixelFormat
+						);
+				}
 			}break;
 		}
 

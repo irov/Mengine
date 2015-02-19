@@ -23,7 +23,7 @@ namespace Menge
 		uint32 size;
 		int16 * memory;
 		uint32_t frequency;
-		uint32 sampleStep;
+		uint32 channels;
 
 		uint8 volume;
 		int32 count;

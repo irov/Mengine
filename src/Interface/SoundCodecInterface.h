@@ -16,7 +16,6 @@ namespace Menge
 			, channels(0)
 			, bits(0)
 			, length(0.f)
-			, stereo(false)
 		{
 		}
 
@@ -26,7 +25,6 @@ namespace Menge
 		uint32_t bits;
 
 		float length;
-		bool stereo;
 	};
 
 	struct SoundCodecOptions

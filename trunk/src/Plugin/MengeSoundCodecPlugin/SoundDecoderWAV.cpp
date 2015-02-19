@@ -116,7 +116,6 @@ namespace Menge
 		m_dataInfo.bits = header.BitsPerSample / 8;
 
 		m_dataInfo.length = (float)(m_dataInfo.size * 1000 / (m_dataInfo.frequency * m_dataInfo.channels * m_dataInfo.bits));
-		m_dataInfo.stereo = header.NumChannels == 2 ? true : false;
 
         return true;
     }

@@ -108,10 +108,8 @@ namespace Menge
 
 			desc.memory = (int16 *)memory_s3e;
 
-			desc.frequency = inputFrequency;
-
-			uint32_t sampleSize = (dataInfo->stereo == true ? 2 : 1);
-			desc.sampleStep = sampleSize;
+			desc.frequency = dataInfo->frequency;
+			desc.channels = dataInfo->channels;
 			
 			uint8 volume_s3e = (uint8)(_volume * (S3E_SOUND_MAX_VOLUME - 1));
 			desc.volume = volume_s3e;
@@ -289,6 +287,9 @@ namespace Menge
 		return availableCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
+#	define SOUND_GET_VALUE(Channel)\
+	s_clipToInt16( (desc->memory[outPosLeft + Channel] * volume) >> 8 )	
+	//////////////////////////////////////////////////////////////////////////
 	static int32 s_AudioCallbackMono( void * _sys, void * _user )
 	{
 		s3eSoundGenAudioInfo * info = (s3eSoundGenAudioInfo *)_sys;
@@ -321,15 +322,27 @@ namespace Menge
 			{
 				volatile MarmaladeSoundMemoryDesc * desc = availableDesc[index];
 
-				uint32 sampleStep = desc->sampleStep;
+				uint32 channels = desc->channels;
 
 				uint8 volume = desc->volume;
 
-				uint32 outPosLeft = desc->carriage * sampleStep;
+				uint32 outPosLeft = desc->carriage * channels;
 
-				int32 yMono = (desc->memory[outPosLeft + 0] * volume) >> 8;
+				if( channels == 1 )
+				{
+					int32 yMono = SOUND_GET_VALUE(0);
+					
+					origM = s_clipToInt16(origM + yMono);
+				}
+				else
+				{
+					int32 yLeft = SOUND_GET_VALUE(0);
+					int32 yRight = SOUND_GET_VALUE(1);
 
-				origM += yMono;
+					int32 yMono = s_clipToInt16(yLeft + yRight);
+
+					origM = s_clipToInt16(origM + yMono);
+				}
 
 				++desc->carriage;
 
@@ -356,7 +369,7 @@ namespace Menge
 				}
 			}
 
-			*target++ = s_clipToInt16(origM);
+			*target++ = origM;
 		}
 
 		return info->m_NumSamples;
@@ -395,17 +408,27 @@ namespace Menge
 			{
 				volatile MarmaladeSoundMemoryDesc * desc = availableDesc[index];
 
-				uint32 sampleStep = desc->sampleStep;
+				uint32 channels = desc->channels;
 
 				uint8 volume = desc->volume;
 
-				uint32 outPosLeft = desc->carriage * sampleStep;
+				uint32 outPosLeft = desc->carriage * channels;
 
-				int32 yLeft = (desc->memory[outPosLeft + 0] * volume) >> 8;
-				int32 yRight = (desc->memory[outPosLeft + 1] * volume) >> 8;
+				if( channels == 1 )
+				{
+					int32 yMono = SOUND_GET_VALUE(0);					
 
-				origL += yLeft;
-				origR += yRight;
+					origL = s_clipToInt16(origL + yMono);
+					origR = s_clipToInt16(origR + yMono);
+				}
+				else
+				{
+					int32 yLeft = SOUND_GET_VALUE(0);
+					int32 yRight = SOUND_GET_VALUE(1);
+
+					origL = s_clipToInt16(origL + yLeft);
+					origR = s_clipToInt16(origR + yRight);
+				}
 
 				++desc->carriage;
 
@@ -432,8 +455,8 @@ namespace Menge
 				}
 			}
 
-			*target++ = s_clipToInt16(origL);
-			*target++ = s_clipToInt16(origR);
+			*target++ = origL;
+			*target++ = origR;
 		}
 
 		return numSamples;
@@ -487,7 +510,7 @@ namespace Menge
 			desc.size = 0;
 			desc.memory = nullptr;
 			desc.frequency = 0;
-			desc.sampleStep = 0;
+			desc.channels = 0;
 			desc.volume = 0;
 			desc.count = 0;
 			desc.play = false;
@@ -574,7 +597,7 @@ namespace Menge
 			desc.carriage = 0;
 			desc.size = 0;
 			desc.frequency = 0;
-			desc.sampleStep = 0;
+			desc.channels = 0;
 			desc.volume = 0;
 			desc.count = 0;
 			desc.pause = false;

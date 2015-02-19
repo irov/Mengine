@@ -35,12 +35,18 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 		{
 			winApplication.loop();
 		}
+		else
+		{
+			MessageBoxA( NULL, "Mengine invalid initialization", "Mengine", MB_OK );
+		}
     
 		winApplication.finalize();
 	}
 	catch( const std::exception & se )
 	{		
-		MessageBoxA( NULL, se.what(), "Mengine exception", MB_OK );
+		const char * se_what = se.what();
+
+		MessageBoxA( NULL, se_what, "Mengine exception", MB_OK );
 	}
     
 	return 0;

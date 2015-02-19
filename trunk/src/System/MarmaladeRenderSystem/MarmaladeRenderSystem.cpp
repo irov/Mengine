@@ -307,10 +307,13 @@ namespace Menge
 	{
 		LOGGER_WARNING(m_serviceProvider)("Initializing OpenGL RenderSystem...");
 
-        if( IwGLInit() == false )
-        {
-            return false;
-        }
+		if ( IwGLIsInitialised() == false )
+		{
+			if( IwGLInit() == false )
+			{
+				return false;
+			}
+		}
 
 		LOGGER_WARNING(m_serviceProvider)("Vendor      : %s", (const char*)glGetString( GL_VENDOR ) );
 		LOGGER_WARNING(m_serviceProvider)("Renderer    : %s", (const char*)glGetString( GL_RENDERER ) );

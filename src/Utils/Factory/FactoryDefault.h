@@ -26,16 +26,5 @@ namespace Menge
 		{
 			delete static_cast<T *>(_obj);
 		}
-
-	public:
-		T * createObjectT()
-		{
-			Factorable * obj = this->createObject();
-
-			T * t = static_cast<T *>(obj);
-
-			return t;
-		}
-
 	};
 }

@@ -448,7 +448,6 @@ namespace Menge
 				return false;
 			}
 
-			s3eDeviceYield(); // W/o this, there is sound bugs during playback on iOS.
 			s3eResult result_play = s3eAudioPlay( fullPath.c_str(), 1 );
 
 			if( result_play == S3E_RESULT_ERROR )
@@ -471,6 +470,8 @@ namespace Menge
 
 		if( s3e_pos != 0 )
 		{
+			s3eDeviceYield(); // W/o this, there is sound bugs during playback on iOS.
+
 			s3eResult result_position = s3eAudioSetInt( S3E_AUDIO_POSITION, s3e_pos );
 
 			if( result_position == S3E_RESULT_ERROR )

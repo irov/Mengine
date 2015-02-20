@@ -11,6 +11,7 @@
 #   include "Logger/Logger.h"
 
 #	include <s3eAudio.h>
+#	include <s3eDevice.h>
 
 #	include <cmath>
 
@@ -447,6 +448,7 @@ namespace Menge
 				return false;
 			}
 
+			s3eDeviceYield(); // W/o this, there is sound bugs during playback on iOS.
 			s3eResult result_play = s3eAudioPlay( _filePath.c_str(), 1 );
 
 			if( result_play == S3E_RESULT_ERROR )

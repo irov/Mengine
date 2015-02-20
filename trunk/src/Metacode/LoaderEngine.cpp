@@ -388,8 +388,8 @@ namespace Menge
 
 		const FilePath & path = fileGroup->getPath();
 			
-        options.pathXml = concatenationFilePath( m_serviceProvider, path, _pathXml );
-		options.pathBin = concatenationFilePath( m_serviceProvider, path, _pathBin );
+		options.pathXml = Helper::concatenationFilePath( m_serviceProvider, path, _pathXml );
+		options.pathBin = Helper::concatenationFilePath( m_serviceProvider, path, _pathBin );
 
 		if( decoder->setOptions( &options ) == false )
         {

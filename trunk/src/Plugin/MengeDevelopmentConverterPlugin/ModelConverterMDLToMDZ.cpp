@@ -57,8 +57,8 @@ namespace Menge
 
         const ConstString & pakPath = fileGroup->getPath();            
 
-        ConstString full_input = concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
-        ConstString full_output = concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
+        ConstString full_input = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
+        ConstString full_output = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
 
         ConstString c_dev = STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" );
 

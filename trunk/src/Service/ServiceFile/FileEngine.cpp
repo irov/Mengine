@@ -84,7 +84,7 @@ namespace Menge
 
 		const FactoryPtr & factory = m_factoryFileGroups.get_value(it_found);
 
-		Factorable * fileGroup = factory->createObject();
+		FileGroupInterface * fileGroup = factory->createObjectT<FileGroupInterface>();
 
 		if( fileGroup == nullptr )
 		{
@@ -139,34 +139,6 @@ namespace Menge
 
 			return false;
 		}
-
-		//if( fs->existDirectory( _folder ) == false )
-		//{
-		//	if( _create == false )
-		//	{
-		//		LOGGER_WARNING(m_serviceProvider)("FileEngine::mountFileSystem failed to open directory %s:%s"
-		//			, _path.c_str()
-		//			, _folder.c_str() 
-		//			);
-
-		//		return false;
-		//	}
-		//	
-		//	LOGGER_WARNING(m_serviceProvider)("FileEngine::mountFileSystem create directory %s:%s"
-		//		, _path.c_str()
-		//		, _folder.c_str() 
-		//		);
-
-		//	if( fs->createDirectory( _folder ) == false )
-		//	{
-		//		LOGGER_ERROR(m_serviceProvider)("Win32FileGroupDirectory::initialize failed to create directory %s:%s"
-		//			, _path.c_str()
-		//			, _folder.c_str()
-		//			);
-
-		//		return false;
-		//	}
-		//}
 
 		m_fileSystemMap.insert( _fileGroupName, fs );
 
@@ -435,5 +407,4 @@ namespace Menge
 
         return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
 }

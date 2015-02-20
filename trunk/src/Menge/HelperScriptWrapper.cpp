@@ -190,6 +190,54 @@ namespace Menge
 			return py_data;
 		}
 
+		bool s_isAltDown() const
+		{
+			return INPUT_SERVICE(m_serviceProvider)
+				->isAltDown();
+		}
+
+		bool s_isShiftDown() const
+		{
+			return INPUT_SERVICE(m_serviceProvider)
+				->isShiftDown();
+		}
+
+		bool s_isCtrlDown() const
+		{
+			return INPUT_SERVICE(m_serviceProvider)
+				->isCtrlDown();
+		}
+
+		bool s_isKeyDown( uint32_t _keyCode ) const
+		{
+			return INPUT_SERVICE(m_serviceProvider)
+				->isKeyDown( _keyCode );
+		}
+
+		bool s_isExclusiveKeyDown( uint32_t _keyCode ) const
+		{
+			return INPUT_SERVICE(m_serviceProvider)
+				->isExclusiveKeyDown( _keyCode );
+		}
+
+		bool s_isAnyKeyDown() const
+		{
+			return INPUT_SERVICE(m_serviceProvider)
+				->isAnyKeyDown();
+		}
+
+		bool s_isAnyMouseButtonDown() const
+		{
+			return INPUT_SERVICE(m_serviceProvider)
+				->isAnyMouseButtonDown();
+		}
+
+		bool s_isMouseButtonDown( uint32_t _button ) const
+		{
+			return INPUT_SERVICE(m_serviceProvider)
+				->isMouseButtonDown( _button );
+		}
+
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
@@ -1611,5 +1659,17 @@ namespace Menge
 		pybind::def_functor( "hasGameData", helperScriptMethod, &HelperScriptMethod::s_hasGameData );
 		pybind::def_functor( "writeGameData", helperScriptMethod, &HelperScriptMethod::s_writeGameData );
 		pybind::def_functor( "loadGameData", helperScriptMethod, &HelperScriptMethod::s_loadGameData );
+
+
+		pybind::def_functor( "isAltDown", helperScriptMethod, &HelperScriptMethod::s_isAltDown );
+		pybind::def_functor( "isShiftDown", helperScriptMethod, &HelperScriptMethod::s_isShiftDown );
+		pybind::def_functor( "isCtrlDown", helperScriptMethod, &HelperScriptMethod::s_isCtrlDown );
+
+		pybind::def_functor( "isKeyDown", helperScriptMethod, &HelperScriptMethod::s_isKeyDown );
+		pybind::def_functor( "isExclusiveKeyDown", helperScriptMethod, &HelperScriptMethod::s_isExclusiveKeyDown );
+		pybind::def_functor( "isAnyKeyDown", helperScriptMethod, &HelperScriptMethod::s_isAnyKeyDown );
+		
+		pybind::def_functor( "isAnyMouseButtonDown", helperScriptMethod, &HelperScriptMethod::s_isAnyMouseButtonDown );
+		pybind::def_functor( "isMouseButtonDown", helperScriptMethod, &HelperScriptMethod::s_isMouseButtonDown );
 	}
 }

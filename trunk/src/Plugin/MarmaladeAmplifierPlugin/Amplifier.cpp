@@ -376,21 +376,21 @@ namespace Menge
 	{
 		this->stop();
 
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( _pakName, _filePath, false );
-		
-		if( stream == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: invalid open sound '%s:%s'"
-				, _pakName.c_str()
-				, _filePath.c_str()
-				);
-
-			return false;
-		}
-		
 		if( _external == false )
 		{
+			InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
+				->openInputFile( _pakName, _filePath, false );
+
+			if( stream == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: invalid open sound '%s:%s'"
+					, _pakName.c_str()
+					, _filePath.c_str()
+					);
+
+				return false;
+			}
+
 			m_audioMemory = CACHE_SERVICE(m_serviceProvider)
 				->createMemory();
 
@@ -436,6 +436,17 @@ namespace Menge
 		}
 		else
 		{
+			ConstString fullPath;
+			if( Helper::makeFullPath( m_serviceProvider, _pakName, _filePath, fullPath ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't make full path for external audio '%s:%s'"
+					, _pakName.c_str()
+					, _filePath.c_str()
+					);
+
+				return false;
+			}
+
 			s3eResult result_play = s3eAudioPlay( _filePath.c_str(), 1 );
 
 			if( result_play == S3E_RESULT_ERROR )

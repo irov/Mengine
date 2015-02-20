@@ -15,10 +15,11 @@ namespace Menge
 		void removeLinkedPoint();
 		Point * getLinkedPoint() const;
 
+	public:
 		void setWidth( float _width );
 		float getWidth() const;
 
-	public:
+	protected:
 		void _destroy() override;
 
 	protected:

@@ -5155,7 +5155,11 @@ namespace Menge
 					;
 
                 pybind::interface_<Point, pybind::bases<Node> >("Point", false)
-                    //.def( "testHotSpot", &Point::testHotSpot )
+					.def( "setLinkedPoint", &Point::setLinkedPoint )
+					.def( "removeLinkedPoint", &Point::removeLinkedPoint )
+					.def( "getLinkedPoint", &Point::getLinkedPoint )
+					.def( "setWidth", &Point::setWidth )
+					.def( "getWidth", &Point::getWidth )
                     ;
 
 				pybind::interface_<Line, pybind::bases<Node> >("Line", false)

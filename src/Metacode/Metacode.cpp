@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 74;
+        _needVersion = 75;
 
-        if( version != 74 )
+        if( version != 75 )
         {
             return false;
         }
@@ -3449,6 +3449,7 @@ namespace Metacode
     Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track::Meta_Track()
         : Metabuf::Metadata()
         , Codec_successful(false)
+        , External_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3469,6 +3470,17 @@ namespace Metacode
                 }
     
                 this->Codec_successful = true;
+    
+                return true;
+            }break;
+        case 3:
+            {
+                if( this->read( _buff, _size, _read, this->External ) == false )
+                {
+                    return false;
+                }
+    
+                this->External_successful = true;
     
                 return true;
             }break;

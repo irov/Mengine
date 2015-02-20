@@ -72,6 +72,9 @@ namespace Menge
                         ->findCodecType( desc.path );
                 }
 
+				desc.external = false;
+				meta_track.get_External( desc.external );
+
                 m_tracks.push_back( desc );
             }
         }

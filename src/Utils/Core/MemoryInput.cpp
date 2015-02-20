@@ -52,7 +52,9 @@ namespace Menge
 		if( m_data != nullptr )
 		{
 			Helper::freeMemory( m_data );
+
 			m_data = nullptr;
+			m_size = 0;
 		}
 
 		unsigned char * memory = Helper::allocateMemory<unsigned char>( _size );

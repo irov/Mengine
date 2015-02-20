@@ -16,7 +16,7 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual bool playTrack( const ConstString& _playlistResource, uint32_t _index, float _pos, bool _looped ) = 0;
+		virtual bool playTrack( const ConstString & _playlistResource, uint32_t _index, float _pos, bool _looped ) = 0;
 		
 		virtual const ConstString & getPlayTrack() const = 0;
 		virtual uint32_t getCurrentTrack() const = 0;

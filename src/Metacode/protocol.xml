@@ -1,4 +1,4 @@
-<Protocol Version = "74">
+<Protocol Version = "75">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -126,6 +126,7 @@
         <Node Name="Track">
           <Attribute Name="File" Type="Menge::FilePath" Required="1"/>
           <Attribute Name="Codec" Type="Menge::ConstString"/>
+          <Attribute Name="External" Type="bool"/>
         </Node>
       </Node>
     </Node>

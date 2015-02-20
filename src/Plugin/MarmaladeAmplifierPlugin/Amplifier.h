@@ -4,6 +4,7 @@
 #	include "Interface/SoundSystemInterface.h"
 
 #	include "Core/ConstString.h"
+#	include "Core/Memory.h"
 
 #	include "Config/Typedef.h"
 
@@ -68,11 +69,14 @@ namespace	Menge
 		bool m_needRefocus;
         bool m_turn;
 
+		MemoryPtr m_audioMemory;
+
 	public:		
 		void onSoundStop();
 
     protected:
-		bool play_( const ConstString& _pakName, const FilePath& _filePath, const ConstString& _codec, float _pos );
+		bool play_( const ConstString& _pakName, const FilePath& _filePath, const ConstString& _codec, bool _external, float _pos );
+
 		bool loadPlayList_( const ConstString& _playlistResource );
 		bool preparePlay_( float _pos );
 	};

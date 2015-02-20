@@ -236,4 +236,13 @@ namespace Menge
 
 		return memory;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	MemoryPtr CacheManager::createMemory()
+	{
+		Memory * memory = m_factoryPoolMemory.createObjectT();
+
+		memory->setServiceProvider( m_serviceProvider );
+
+		return memory;
+	}
 }

@@ -13,6 +13,7 @@ namespace Menge
 		FilePath path;
 		ConstString codec;
 		float volume;
+		bool external;
 	};
 
 	typedef std::vector<TrackDesc> TVectorTrackDesc;

@@ -3028,6 +3028,35 @@ namespace Metacode
                         return true;
                     }
                     
+                    bool has_External() const
+                    {
+                        return External_successful;
+                    }
+                    
+                    bool get_External( bool & _value ) const
+                    {
+                        if( External_successful == false )
+                        {
+                            return false;
+                        }
+                    
+                        _value = this->External;
+                    
+                        return true;
+                    }
+                    
+                    bool swap_External( bool & _value ) const
+                    {
+                        if( External_successful == false )
+                        {
+                            return false;
+                        }
+                    
+                        std::swap( _value, this->External);
+                    
+                        return true;
+                    }
+                    
                     const Menge::FilePath & get_File() const
                     {
                         return this->File;
@@ -3048,6 +3077,8 @@ namespace Metacode
                 protected:
                     bool Codec_successful;
                     mutable Menge::ConstString Codec;
+                    bool External_successful;
+                    mutable bool External;
                     mutable Menge::FilePath File;
                 };
                 

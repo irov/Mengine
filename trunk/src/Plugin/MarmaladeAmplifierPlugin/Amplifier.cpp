@@ -2,8 +2,7 @@
 
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/StringizeInterface.h"
-
-#	include "Core/CacheMemoryStream.h"
+#	include "Interface/CacheInterface.h"
 
 #	include "Playlist.h"
 
@@ -224,7 +223,8 @@ namespace Menge
 		}
 
 		const ConstString & category = m_currentPlayList->getCategory();
-		if( this->play_( category, track->path, track->codec, _pos ) == false )
+
+		if( this->play_( category, track->path, track->codec, track->external, _pos ) == false )
 		{
 			return false;
 		}
@@ -355,6 +355,8 @@ namespace Menge
 			return;
 		}
 
+		m_audioMemory = nullptr;
+
         m_currentPlayList->next();
 
 		const TrackDesc * track = m_currentPlayList->getTrack();
@@ -363,14 +365,14 @@ namespace Menge
         {
             const ConstString & category = m_currentPlayList->getCategory();
             
-			if( this->play_( category, track->path, track->codec, 0.f ) == false )
+			if( this->play_( category, track->path, track->codec, track->external, 0.f ) == false )
 			{
 				return;
 			}
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::play_( const ConstString& _pakName, const FilePath& _filePath, const ConstString& _codec, float _pos )
+	bool Amplifier::play_( const ConstString& _pakName, const FilePath& _filePath, const ConstString& _codec, bool _external, float _pos )
 	{
 		this->stop();
 
@@ -387,45 +389,92 @@ namespace Menge
 			return false;
 		}
 		
-		CacheMemoryStream buffer(m_serviceProvider, stream, "Amplifier::play");
-		const void * buffer_memory = buffer.getMemory();
-		size_t buffer_size = buffer.getSize();
-				
-		s3eResult result_play = s3eAudioPlayFromBuffer( const_cast<void *>(buffer_memory), buffer_size, 1 );
-				
-		if( result_play == S3E_RESULT_ERROR )
+		if( _external == false )
 		{
-			s3eAudioError s3eAudio_error = s3eAudioGetError();
-			const char * s3eAudio_string = s3eAudioGetErrorString();
+			m_audioMemory = CACHE_SERVICE(m_serviceProvider)
+				->createMemory();
 
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't play sound '%s:%s' error %d [%s]"
-				, _pakName.c_str()
-				, _filePath.c_str()
-				, s3eAudio_error
-				, s3eAudio_string
-				);
+			if( m_audioMemory == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: invalid create memory '%s:%s'"
+					, _pakName.c_str()
+					, _filePath.c_str()
+					);
 
-			return false;
-		}	
+				return false;
+			}
+
+			if( m_audioMemory->readStream( stream ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: invalid read stream '%s:%s'"
+					, _pakName.c_str()
+					, _filePath.c_str()
+					);
+
+				return false;
+			}
+
+			size_t buffer_size;
+			void * buffer_memory = m_audioMemory->getMemory( buffer_size );
+
+			s3eResult result_play = s3eAudioPlayFromBuffer( const_cast<void *>(buffer_memory), buffer_size, 1 );
+
+			if( result_play == S3E_RESULT_ERROR )
+			{
+				s3eAudioError s3eAudio_error = s3eAudioGetError();
+				const char * s3eAudio_string = s3eAudioGetErrorString();
+
+				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't play internal audio '%s:%s' error %d [%s]"
+					, _pakName.c_str()
+					, _filePath.c_str()
+					, s3eAudio_error
+					, s3eAudio_string
+					);
+
+				return false;
+			}	
+		}
+		else
+		{
+			s3eResult result_play = s3eAudioPlay( _filePath.c_str(), 1 );
+
+			if( result_play == S3E_RESULT_ERROR )
+			{
+				s3eAudioError s3eAudio_error = s3eAudioGetError();
+				const char * s3eAudio_string = s3eAudioGetErrorString();
+
+				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't play external audio '%s:%s' error %d [%s]"
+					, _pakName.c_str()
+					, _filePath.c_str()
+					, s3eAudio_error
+					, s3eAudio_string
+					);
+
+				return false;
+			}	
+		}
 
 		int32 s3e_pos = (int32)_pos;
 
-		s3eResult result_position = s3eAudioSetInt( S3E_AUDIO_POSITION, s3e_pos );
-
-		if( result_position == S3E_RESULT_ERROR )
+		if( s3e_pos != 0 )
 		{
-			s3eAudioError s3eAudio_error = s3eAudioGetError();
-			const char * s3eAudio_string = s3eAudioGetErrorString();
+			s3eResult result_position = s3eAudioSetInt( S3E_AUDIO_POSITION, s3e_pos );
 
-			LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't '%s:%s' set pos %d error %d [%s]"
-				, _pakName.c_str()
-				, _filePath.c_str()
-				, s3e_pos
-				, s3eAudio_error
-				, s3eAudio_string
-				);
+			if( result_position == S3E_RESULT_ERROR )
+			{
+				s3eAudioError s3eAudio_error = s3eAudioGetError();
+				const char * s3eAudio_string = s3eAudioGetErrorString();
 
-			return false;
+				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't '%s:%s' set pos %d error %d [%s]"
+					, _pakName.c_str()
+					, _filePath.c_str()
+					, s3e_pos
+					, s3eAudio_error
+					, s3eAudio_string
+					);
+
+				return false;
+			}
 		}
 
 		return true;

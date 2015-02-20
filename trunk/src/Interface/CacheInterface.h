@@ -9,6 +9,7 @@
 #	include "Core/MemoryCacheInput.h"
 #	include "Core/MemoryProxyInput.h"
 #	include "Core/MemoryInput.h"
+#	include "Core/Memory.h"
 
 #   include "stdex/intrusive_ptr.h"
 
@@ -35,6 +36,7 @@ namespace Menge
 		virtual MemoryCacheInputPtr createMemoryCacheInput() = 0;
 		virtual MemoryProxyInputPtr createMemoryProxyInput() = 0;
 		virtual MemoryInputPtr createMemoryInput() = 0;
+		virtual MemoryPtr createMemory() = 0;
 	};
 
 #   define CACHE_SERVICE( serviceProvider )\

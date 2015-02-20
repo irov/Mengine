@@ -32,6 +32,7 @@ namespace Menge
 		MemoryCacheInputPtr createMemoryCacheInput() override;
 		MemoryProxyInputPtr createMemoryProxyInput() override;
 		MemoryInputPtr createMemoryInput() override;
+		MemoryPtr createMemory() override;
 
 	protected:
 		CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc );
@@ -63,5 +64,9 @@ namespace Menge
 
 		typedef FactoryPoolStore<MemoryInput, 16> TFactoryPoolMemoryInput;
 		TFactoryPoolMemoryInput m_factoryPoolMemoryInput;
+
+		typedef FactoryPoolStore<Memory, 16> TFactoryPoolMemory;
+		TFactoryPoolMemory m_factoryPoolMemory;
+		
 	};
 }

@@ -35,6 +35,7 @@ src
     FileLogger.h
     
     Memory.h
+    Memory.cpp
 	
 	MemoryInput.h
 	MemoryInput.cpp

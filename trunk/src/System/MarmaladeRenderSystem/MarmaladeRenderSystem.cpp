@@ -669,6 +669,8 @@ namespace Menge
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT ) );
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter ) );
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter ) );
+
+			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE ) );
 			
 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
 

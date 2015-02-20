@@ -49,13 +49,6 @@ namespace Menge
         m_type = _type;		
 
 		GLCALL( m_serviceProvider, glBindTexture, ( GL_TEXTURE_2D, m_uid ) );
-
-        GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, m_wrapS ) );
-        GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, m_wrapT ) );
-        GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, m_minFilter ) );
-        GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, m_magFilter ) );
-
-        GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE ) );
     }
 	//////////////////////////////////////////////////////////////////////////
 	ERenderImageMode MarmaladeTexture::getMode() const

@@ -9,7 +9,7 @@ namespace Menge
 	Point::Point()
 		: m_linked(nullptr)
 		, m_owner(false)
-		, m_width(0.f)
+		, m_width(1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -79,10 +79,10 @@ namespace Menge
 		const mt::mat4f & wm2 = m_linked->getWorldMatrix();
 
 		mt::vec3f fromWM;
-		mt::mul_m4_v3( fromWM, wm1, mt::vec3f(0.f, 0.f, 0.f) );
+		mt::mul_v3_m4( fromWM, mt::vec3f(0.f, 0.f, 0.f), wm1 );
 
 		mt::vec3f toWM;
-		mt::mul_m4_v3( toWM, wm2, mt::vec3f(0.f, 0.f, 0.f) );
+		mt::mul_v3_m4( toWM, mt::vec3f(0.f, 0.f, 0.f), wm2 );
 
 		mt::vec3f dir;
 		mt::sub_v3_v3( dir, toWM, fromWM );

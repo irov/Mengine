@@ -50,10 +50,10 @@ namespace Menge
 		const mt::mat4f & wm = this->getWorldMatrix();
 
 		mt::vec3f fromWM;
-		mt::mul_m4_v3( fromWM, wm, m_from );
+		mt::mul_v3_m4( fromWM, m_from, wm );
 
 		mt::vec3f toWM;
-		mt::mul_m4_v3( toWM, wm, m_to );
+		mt::mul_v3_m4( toWM, m_to, wm );
 
 		mt::vec3f dir;
 		mt::sub_v3_v3( dir, toWM, fromWM );

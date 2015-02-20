@@ -25,5 +25,10 @@ namespace Menge
 
     typedef stdex::vector<FilePath> TVectorFilePath;
 
-    ConstString concatenationFilePath( ServiceProviderInterface * _serviceProvider, const ConstString & _left, const ConstString & _right );
+	namespace Helper
+	{
+		ConstString concatenationFilePath( ServiceProviderInterface * _serviceProvider, const ConstString & _left, const ConstString & _right );
+		
+		bool makeFullPath( ServiceProviderInterface * _serviceProvider, const ConstString & _fileGroupName, const ConstString & _fileName, ConstString & _fullPath );
+	}
 }  

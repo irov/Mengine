@@ -6,6 +6,8 @@
 #	include "MarmaladeSoundBufferStream.h"
 #	include "MarmaladeSoundSource.h"
 
+#	include "MarmaladeSoundFilter.h"
+
 #   include "Factory/FactoryStore.h"
 
 #	include <s3eSound.h>
@@ -19,11 +21,14 @@ namespace Menge
 	{
 		MarmaladeSoundSource * source;
 
-		uint32 carriage;
-		uint32 size;
+		uint32_t carriage;
+		uint32_t size;
 		int16 * memory;
 		uint32_t frequency;
-		uint32 channels;
+		uint32_t channels;
+
+		uint32_t W;
+		uint32_t L;
 
 		uint8 volume;
 		int32 count;
@@ -31,6 +36,50 @@ namespace Menge
 		bool pause;
 		bool stop;
 		bool end;
+
+	public:
+		inline int32 getSample( uint32_t _channel ) volatile const
+		{
+			uint32_t source_carriage = this->carriage * this->W / this->L;
+			
+			uint32_t position = source_carriage * this->channels;
+
+			int32 pure_value = (int32)this->memory[ position + _channel ];
+
+			int32 volume_value = (pure_value * this->volume) >> 8;
+
+			//uint16 clip_value = s_clipToInt16( volume_value );
+
+			return volume_value;
+		}
+
+		inline bool isDone() volatile const
+		{
+			uint32_t position = this->carriage * this->channels;
+
+			return position >= this->size;
+		}
+
+		inline void setCarriage( float _position ) volatile
+		{
+			uint32_t source_carriage = uint32_t(_position) * this->frequency * this->channels / 1000;
+
+			this->carriage = source_carriage * this->L / this->W;
+		}
+
+		inline void setSize( float _length ) volatile
+		{
+			uint32_t source_size = uint32_t(_length) * this->frequency * this->channels / 1000;
+
+			this->size = source_size * this->L / this->W;
+		}
+
+		inline void setVolume( float _volume ) volatile
+		{
+			uint8 volume_s3e = (uint8)(_volume * (S3E_SOUND_MAX_VOLUME - 1));
+
+			this->volume = volume_s3e;
+		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 #	ifndef MENGINE_MARMALADE_SOUND_MAX_COUNT
@@ -63,8 +112,8 @@ namespace Menge
 		bool getSoundDescPosition( uint32_t _id, float & _position );
 
 	protected:
-		float carriageToPosition_( uint32 _carriage, uint32_t _frequency ) const;
-		uint32 positionToCarriage_( float _position, uint32_t _frequency ) const;
+		float carriageToPosition_( uint32_t _carriage, uint32_t _frequency ) const;
+		uint32_t positionToCarriage_( float _position, uint32_t _frequency ) const;
 
 	public:
 		bool initialize() override;

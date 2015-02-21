@@ -38,7 +38,7 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	float MarmaladeSoundSystem::carriageToPosition_( uint32 _carriage, uint32_t _frequency ) const
+	float MarmaladeSoundSystem::carriageToPosition_( uint32_t _carriage, uint32_t _frequency ) const
 	{
 		uint32_t gcd = s_GCD( _frequency, m_soundOutputFrequence );
 		uint32_t W = _frequency / gcd;
@@ -49,13 +49,13 @@ namespace Menge
 		return posMs;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32 MarmaladeSoundSystem::positionToCarriage_( float _position, uint32_t _frequency ) const
+	uint32_t MarmaladeSoundSystem::positionToCarriage_( float _position, uint32_t _frequency ) const
 	{
 		uint32_t gcd = s_GCD( _frequency, m_soundOutputFrequence );
 		uint32_t W = _frequency / gcd;
 		uint32_t L = m_soundOutputFrequence / gcd;
 
-		uint32 carriage = uint32_t(_position * _frequency) * L / (W * 1000);
+		uint32_t carriage = uint32_t(_position * _frequency) * L / (W * 1000);
 
 		return carriage;
 	}
@@ -98,27 +98,28 @@ namespace Menge
 
 			desc.source = _source;
 
-			uint32_t inputFrequency = dataInfo->frequency;
-
-			uint32 carriage = this->positionToCarriage_( _position, inputFrequency );
-			desc.carriage = carriage;
-			
-			uint32 carriage_max = this->positionToCarriage_( dataInfo->length, inputFrequency );
-			desc.size = carriage_max;
-
 			desc.memory = (int16 *)memory_s3e;
 
 			desc.frequency = dataInfo->frequency;
 			desc.channels = dataInfo->channels;
-			
-			uint8 volume_s3e = (uint8)(_volume * (S3E_SOUND_MAX_VOLUME - 1));
-			desc.volume = volume_s3e;
+
+			uint32_t gcd = s_GCD( dataInfo->frequency, m_soundOutputFrequence );
+			uint32_t W = dataInfo->frequency / gcd;
+			uint32_t L = m_soundOutputFrequence / gcd;
+
+			desc.W = W;
+			desc.L = L;
+
+			desc.setVolume( _volume );
 
 			desc.pause = false;
 			desc.stop = false;
 			desc.end = false;
 
 			desc.count = _count;
+
+			desc.setCarriage( _position );
+			desc.setSize( dataInfo->length );
 
 			desc.play = true;
 			
@@ -204,7 +205,7 @@ namespace Menge
 
 		volatile MarmaladeSoundMemoryDesc & desc = m_soundMemoryDesc[_id];
 
-		uint32 carriage = this->positionToCarriage_( _position, desc.frequency );
+		uint32_t carriage = this->positionToCarriage_( _position, desc.frequency );
 
 		desc.carriage = carriage;
 		desc.pause = false;
@@ -226,9 +227,7 @@ namespace Menge
 
 		volatile MarmaladeSoundMemoryDesc & desc = m_soundMemoryDesc[_id];
 
-		uint8 volume_s3e = (uint8)(_volume * (S3E_SOUND_MAX_VOLUME - 1));
-
-		desc.volume = volume_s3e;
+		desc.setVolume( _volume );
 
 		return true;
 	}
@@ -287,9 +286,6 @@ namespace Menge
 		return availableCount;
 	}
 	//////////////////////////////////////////////////////////////////////////
-#	define SOUND_GET_VALUE(Channel)\
-	s_clipToInt16( (desc->memory[outPosLeft + Channel] * volume) >> 8 )	
-	//////////////////////////////////////////////////////////////////////////
 	static int32 s_AudioCallbackMono( void * _sys, void * _user )
 	{
 		s3eSoundGenAudioInfo * info = (s3eSoundGenAudioInfo *)_sys;
@@ -313,40 +309,45 @@ namespace Menge
 		{
 			return numSamples;
 		}
+
+		uint32_t playedSamples = numSamples;
 				
 		for( uint32_t sample = 0; sample != numSamples; ++sample )
-		{		
+		{	
+			if( availableCount == 0 )
+			{
+				playedSamples = sample;
+
+				break;
+			}
+
 			int32 origM = (int32)*(target + 0);
 
 			for( uint32_t index = 0; index != availableCount; )
 			{
 				volatile MarmaladeSoundMemoryDesc * desc = availableDesc[index];
 
-				uint32 channels = desc->channels;
-
-				uint8 volume = desc->volume;
-
-				uint32 outPosLeft = desc->carriage * channels;
+				uint32_t channels = desc->channels;
 
 				if( channels == 1 )
 				{
-					int32 yMono = SOUND_GET_VALUE(0);
+					int32 yMono = desc->getSample( 0 );
 					
-					origM = s_clipToInt16(origM + yMono);
+					origM += yMono;
 				}
 				else
 				{
-					int32 yLeft = SOUND_GET_VALUE(0);
-					int32 yRight = SOUND_GET_VALUE(1);
+					int32 yLeft = desc->getSample( 0 );
+					int32 yRight = desc->getSample( 1 );
 
-					int32 yMono = s_clipToInt16(yLeft + yRight);
+					int32 yMono = yLeft + yRight;
 
-					origM = s_clipToInt16(origM + yMono);
+					origM += yMono;
 				}
 
 				++desc->carriage;
 
-				if( desc->carriage == desc->size )
+				if( desc->isDone() == true )
 				{
 					if( desc->count == -1 || --desc->count > 0 )
 					{
@@ -369,10 +370,10 @@ namespace Menge
 				}
 			}
 
-			*target++ = origM;
+			*target++ = s_clipToInt16( origM );
 		}
 
-		return info->m_NumSamples;
+		return playedSamples;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static int32 s_AudioCallbackStereo( void * _sys, void * _user )
@@ -398,9 +399,18 @@ namespace Menge
 		{
 			return numSamples;
 		}
+
+		uint32_t playedSamples = numSamples;
 		
 		for( uint32_t sample = 0; sample != numSamples; ++sample )
 		{		
+			if( availableCount == 0 )
+			{
+				playedSamples = sample;
+
+				break;
+			}
+
 			int32 origL = (int32)*(target + 0);
 			int32 origR = (int32)*(target + 1);
 
@@ -410,29 +420,25 @@ namespace Menge
 
 				uint32 channels = desc->channels;
 
-				uint8 volume = desc->volume;
-
-				uint32 outPosLeft = desc->carriage * channels;
-
 				if( channels == 1 )
 				{
-					int32 yMono = SOUND_GET_VALUE(0);					
+					int32 yMono = desc->getSample( 0 );
 
-					origL = s_clipToInt16(origL + yMono);
-					origR = s_clipToInt16(origR + yMono);
+					origL += yMono;
+					origR += yMono;
 				}
 				else
 				{
-					int32 yLeft = SOUND_GET_VALUE(0);
-					int32 yRight = SOUND_GET_VALUE(1);
+					int32 yLeft = desc->getSample( 0 );
+					int32 yRight = desc->getSample( 1 );
 
-					origL = s_clipToInt16(origL + yLeft);
-					origR = s_clipToInt16(origR + yRight);
+					origL += yLeft;
+					origR += yRight;
 				}
 
 				++desc->carriage;
 
-				if( desc->carriage == desc->size )
+				if( desc->isDone() == true )
 				{
 					if( desc->count == -1 || (--desc->count) > 0 )
 					{
@@ -455,11 +461,11 @@ namespace Menge
 				}
 			}
 
-			*target++ = origL;
-			*target++ = origR;
+			*target++ = s_clipToInt16( origL );
+			*target++ = s_clipToInt16( origR );
 		}
 
-		return numSamples;
+		return playedSamples;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeSoundSystem::initialize()
@@ -511,6 +517,8 @@ namespace Menge
 			desc.memory = nullptr;
 			desc.frequency = 0;
 			desc.channels = 0;
+			desc.W = 0;
+			desc.L = 0;
 			desc.volume = 0;
 			desc.count = 0;
 			desc.play = false;
@@ -544,8 +552,8 @@ namespace Menge
 			}
 		}
 
-		int16 dummydata[16];
-		if( s3eSoundChannelPlay( soundChannel, dummydata, 8, 0, 0 ) == S3E_RESULT_ERROR )
+		int16 dummydata[32] = {0};
+		if( s3eSoundChannelPlay( soundChannel, dummydata, 8, 1, 0 ) == S3E_RESULT_ERROR )
 		{
 			MARMALADE_SOUND_CHECK_ERROR(m_serviceProvider);
 
@@ -598,7 +606,9 @@ namespace Menge
 			desc.size = 0;
 			desc.frequency = 0;
 			desc.channels = 0;
-			desc.volume = 0;
+			desc.W = 0;
+			desc.L = 0;
+			desc.volume = 0;			
 			desc.count = 0;
 			desc.pause = false;
 			desc.play = false;

@@ -107,6 +107,8 @@ namespace Menge
 		bool updateFrameNode_( const MovieLayer & layer, Node * _node, uint32_t _frameId, bool _interpolate, bool _start );
 
 	private:
+		bool setupSceneEffect_();
+
 		bool setupParent_();
 		void removeParent_();
 

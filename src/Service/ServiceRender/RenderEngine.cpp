@@ -107,8 +107,7 @@ namespace Menge
 
 		//m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
-		uint32_t batchMode = CONFIG_SERVICE(m_serviceProvider)
-			->getValue( "Engine", "RenderServiceBatchMode", 2 );
+		uint32_t batchMode = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderServiceBatchMode", 2 );
 
 		switch( batchMode )
 		{

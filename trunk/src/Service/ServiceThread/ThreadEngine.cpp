@@ -50,8 +50,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::initialize( uint32_t _threadCount )
 	{
-		bool avaliable = CONFIG_SERVICE(m_serviceProvider)
-			->getValue( "Engine", "ThreadServiceAvaliable", true );
+		bool avaliable = CONFIG_VALUE(m_serviceProvider, "Engine", "ThreadServiceAvaliable", true );
 
 		if( avaliable == false )
 		{

@@ -329,5 +329,31 @@ namespace Menge
 	{
 		return m_child;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	template<class T>
+	inline T * static_node_cast( Node * _node )
+	{
+#	ifdef _DEBUG
+		if( dynamic_cast<T *>(_node) == nullptr )
+		{
+			return nullptr;
+		}
+#	endif
+
+		return static_cast<T *>(_node);
+	}
+	//////////////////////////////////////////////////////////////////////////
+	template<class T>
+	inline const T * static_node_cast( const Node * _node )
+	{
+#	ifdef _DEBUG
+		if( dynamic_cast<const T *>(_node) == nullptr )
+		{
+			return nullptr;
+		}
+#	endif
+
+		return static_cast<const T *>(_node);
+	}
 }
 

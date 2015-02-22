@@ -430,7 +430,7 @@ namespace Menge
 				return false;
 			}
 
-			MovieEvent * ev = static_cast<MovieEvent *>(node);
+			MovieEvent * ev = static_node_cast<MovieEvent>(node);
 
 			ev->setEvent( _cb );
 
@@ -445,6 +445,56 @@ namespace Menge
 
 			return successful;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		class PythonVisitorMovieSlot
+			: public VisitorMovieNode
+		{
+		public:
+			PythonVisitorMovieSlot( PyObject * _list )
+				: m_list(_list)
+			{
+			}
+
+		protected:
+			void visitMovieNode( Movie * _movie, Node * _node ) override
+			{
+				MovieSlot * slot = static_node_cast<MovieSlot>(_node);
+
+				if( slot == nullptr )
+				{
+					return;
+				}
+
+				const ConstString & name = slot->getName();
+
+				PyObject * py_movie = pybind::ptr( _movie );
+				PyObject * py_name = pybind::ptr( name );
+				PyObject * py_slot = pybind::ptr( slot );
+
+				PyObject * py_tuple = pybind::tuple_new( 3 );
+
+				pybind::tuple_setitem( py_tuple, 0, py_movie );
+				pybind::tuple_setitem( py_tuple, 1, py_name );
+				pybind::tuple_setitem( py_tuple, 2, py_slot );
+
+				pybind::list_appenditem( m_list, py_tuple );
+
+				pybind::decref( py_tuple );
+			}
+
+		protected:
+			PyObject * m_list;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * movie_getSlots( Movie * _movie )
+		{
+			PyObject * py_list = pybind::list_new(0);
+
+			PythonVisitorMovieSlot visitor(py_list);
+			_movie->visitMovieNode( CONST_STRING(m_serviceProvider, MovieSlot), &visitor );
+
+			return py_list;
+		}
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovieSocket
             : public VisitorMovieNode
@@ -458,7 +508,12 @@ namespace Menge
         protected:
             void visitMovieNode( Movie * _movie, Node * _node ) override
             {
-				HotSpot * hotspot = static_cast<HotSpot *>(_node);
+				HotSpot * hotspot = static_node_cast<HotSpot>(_node);
+
+				if( hotspot == nullptr )
+				{
+					return;
+				}
 
 				const ConstString & name = hotspot->getName();
 
@@ -503,7 +558,13 @@ namespace Menge
 		protected:
 			void visitMovieNode( Movie * _movie, Node * _node ) override
 			{
-				Movie * subMovie = static_cast<Movie *>(_node);
+				Movie * subMovie = static_node_cast<Movie>(_node);
+
+				if( subMovie == nullptr )
+				{
+					return;
+				}
+
 				const ConstString & name = subMovie->getName();
 
 				PyObject * py_movie = pybind::ptr( _movie );
@@ -2834,6 +2895,28 @@ namespace Menge
 
             return newNode;
         }
+		//////////////////////////////////////////////////////////////////////////
+		PyObject * getAllChildren( Node * _node )
+		{
+			TListNodeChild & children = _node->getChildren();
+
+			size_t size = children.size();
+
+			PyObject * py_children = pybind::list_new( size );
+
+			size_t index = 0;
+
+			for( TSlugChild it(children); it.eof() == false; it.next_shuffle() )
+			{
+				Node * child = *it;
+
+				PyObject * py_child = pybind::ptr( child );
+
+				pybind::list_setitem( py_children, index++, py_child );
+			}
+
+			return py_children;
+		}
         //////////////////////////////////////////////////////////////////////////
         void moveStop( Node * _node )
         {
@@ -4873,6 +4956,7 @@ namespace Menge
 			.def( "getRenderCameraInheritance", &Node::getRenderCameraInheritance )
 
             .def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::createChildren )
+			.def_proxy_static( "getAllChildren", nodeScriptMethod, &NodeScriptMethod::getAllChildren )
 
             .def_proxy_static( "colorTo", nodeScriptMethod, &NodeScriptMethod::colorTo )
             .def_proxy_static( "alphaTo", nodeScriptMethod, &NodeScriptMethod::alphaTo )
@@ -4891,9 +4975,7 @@ namespace Menge
             .def_proxy_static( "scaleStop", nodeScriptMethod, &NodeScriptMethod::scaleStop )
 
             .def_proxy_static( "accMoveTo", nodeScriptMethod, &NodeScriptMethod::accMoveTo )
-            .def_proxy_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )
-
-            //.def_property_static( "child", &ScriptMethod::s_get_child, &ScriptMethod::s_set_child )
+            .def_proxy_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )			
             ;
 
         pybind::interface_<ThreadTask>("Task")
@@ -5369,6 +5451,7 @@ namespace Menge
 					.def_proxy_static( "setMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_setMovieEvent )
 					.def_proxy_static( "hasMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieEvent )
                     .def_proxy_static( "getSockets", nodeScriptMethod, &NodeScriptMethod::movie_getSockets )	
+					.def_proxy_static( "getSlots", nodeScriptMethod, &NodeScriptMethod::movie_getSlots )
 					.def_proxy_static( "getSubMovies", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovies )
 					.def_proxy_static( "getMovieNode", nodeScriptMethod, &NodeScriptMethod::movie_getMovieNode )
 					.def_proxy_static( "hasMovieNode", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieNode )

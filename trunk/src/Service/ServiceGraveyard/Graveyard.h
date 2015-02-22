@@ -31,6 +31,8 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
+		float m_graveyardTime;
+
 		struct RenderTextureGraveDesc
 		{
 			RenderImageInterfacePtr image;

@@ -1,5 +1,7 @@
 #	include "Graveyard.h"
 
+#	include "Interface/ConfigInterface.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Graveyard, Menge::GraveyardInterface, Menge::Graveyard );
 //////////////////////////////////////////////////////////////////////////
@@ -8,6 +10,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Graveyard::Graveyard()
 		: m_serviceProvider(nullptr)
+		, m_graveyardTime(1000.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////		
@@ -27,6 +30,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Graveyard::initialize()
 	{
+		m_graveyardTime = CONFIG_VALUE(m_serviceProvider, "Engine", "Gravey1ardTime", 1000.f);
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -74,6 +79,11 @@ namespace Menge
 			return;
 		}
 
+		if( mt::cmp_f_z( m_graveyardTime ) == true )
+		{
+			return;
+		}
+
 		RenderTextureGraveDesc desc;
 
 		desc.image = _texture->getImage();
@@ -81,7 +91,7 @@ namespace Menge
 		desc.width = _texture->getWidth();
 		desc.height = _texture->getHeight();
 		desc.channels = _texture->getChannels();
-		desc.timing = 1000.f;
+		desc.timing = m_graveyardTime;
 
 		m_textures.insert( _path, desc );
 	}
@@ -89,6 +99,11 @@ namespace Menge
 	RenderTextureInterfacePtr Graveyard::resurrectTexture( const FilePath & _path )
 	{
 		if( _path.empty() == true )
+		{
+			return nullptr;
+		}
+
+		if( mt::cmp_f_z( m_graveyardTime ) == true )
 		{
 			return nullptr;
 		}

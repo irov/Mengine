@@ -449,6 +449,20 @@ namespace Menge
 				continue;
 			}
 
+#   ifdef _DEBUG
+			if( dynamic_cast<Movie *>( node ) == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::visitMovieNode %s layer %s must be 'Movie' but node is %s type %s"
+					, this->getName().c_str()
+					, layer.name.c_str()
+					, node->getName().c_str()
+					, node->getType().c_str()
+					);
+
+				return false;
+			}
+#   endif
+
 			Movie * movie = static_cast<Movie *>(node);
 
 			if( movie->visitMovieNode( _type, _visitor ) == false )
@@ -515,6 +529,20 @@ namespace Menge
 			{
 				continue;
 			}
+
+#   ifdef _DEBUG
+			if( dynamic_cast<Movie *>( node ) == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode %s layer %s must be 'Movie' but node is %s type %s"
+					, this->getName().c_str()
+					, layer.name.c_str()
+					, node->getName().c_str()
+					, node->getType().c_str()
+					);
+
+				return false;
+			}
+#   endif
 
 			Movie * movie = static_cast<Movie *>(node);
 
@@ -589,6 +617,20 @@ namespace Menge
 				continue;
 			}
 
+#   ifdef _DEBUG
+			if( dynamic_cast<Movie *>( node ) == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::hasMovieNode %s layer %s must be 'Movie' but node is %s type %s"
+					, this->getName().c_str()
+					, layer.name.c_str()
+					, node->getName().c_str()
+					, node->getType().c_str()
+					);
+
+				return false;
+			}
+#   endif
+
 			Movie * movie = static_cast<Movie *>(node);
 
 			if( movie->hasMovieNode( _name, _type, _node, _movie ) == true )
@@ -639,6 +681,20 @@ namespace Menge
 			{
 				continue;
 			}
+
+#   ifdef _DEBUG
+			if( dynamic_cast<Movie *>( node ) == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::hasMovieLayer %s layer %s must be 'Movie' but node is %s type %s"
+					, this->getName().c_str()
+					, layer.name.c_str()
+					, node->getName().c_str()
+					, node->getType().c_str()
+					);
+
+				return false;
+			}
+#   endif
 
 			Movie * movie = static_cast<Movie *>(node);
 
@@ -695,6 +751,20 @@ namespace Menge
 			{
 				continue;
 			}
+
+#   ifdef _DEBUG
+			if( dynamic_cast<Movie *>( node ) == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::getMovieLayer %s layer %s must be 'Movie' but node is %s type %s"
+					, this->getName().c_str()
+					, layer.name.c_str()
+					, node->getName().c_str()
+					, node->getType().c_str()
+					);
+
+				return false;
+			}
+#   endif
 
 			Movie * movie = static_cast<Movie *>(node);
 
@@ -1613,6 +1683,20 @@ namespace Menge
 			return false;
 		}
 
+#   ifdef _DEBUG
+		if( dynamic_cast<TextField *>( node ) == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::compileMovieText_ %s layer %s must be 'TextField' but node is %s type %s"
+				, this->getName().c_str()
+				, _layer.name.c_str()
+				, node->getName().c_str()
+				, node->getType().c_str()
+				);
+
+			return false;
+		}
+#   endif
+
 		TextField * layer_text = static_cast<TextField *>(node);
 
 		const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
@@ -1757,28 +1841,13 @@ namespace Menge
 		bool reverse = this->getReverse();
 		this->updateReverse_( reverse );
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-
-		Layer * layer = this->getLayer();
-
-		for( TVectorMovieLayers::const_iterator
-			it = layers.begin(),
-			it_end = layers.end();
-		it != it_end;
-		++it )
+		if( this->setupSceneEffect_() == false )
 		{
-			const MovieLayer & l = *it;
+			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s' can't setup scene effect"
+				, m_name.c_str()
+				);
 
-			if( l.isSceneEffect() == false )
-			{
-				continue;
-			}
-
-			Node * node = this->getLayerNode_( l );
-
-			MovieSceneEffect * sceneEffect = static_cast<MovieSceneEffect *>(node);
-
-			sceneEffect->setPropagateNode( layer );
+			return false;
 		}
 
 		if( this->setupParent_() == false )
@@ -1838,6 +1907,49 @@ namespace Menge
 				node->setRenderViewport( m_renderViewport );
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::setupSceneEffect_()
+	{
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		Layer * layer = this->getLayer();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & l = *it;
+
+			if( l.isSceneEffect() == false )
+			{
+				continue;
+			}
+
+			Node * node = this->getLayerNode_( l );
+
+#   ifdef _DEBUG
+			if( dynamic_cast<MovieSceneEffect *>(node) == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::compileMovieText_ %s layer %s must be 'MovieSceneEffect' but node is %s type %s"
+					, this->getName().c_str()
+					, l.name.c_str()
+					, node->getName().c_str()
+					, node->getType().c_str()
+					);
+
+				return false;
+			}
+#   endif
+
+			MovieSceneEffect * sceneEffect = static_cast<MovieSceneEffect *>(node);
+
+			sceneEffect->setPropagateNode( layer );
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::setupParent_()
@@ -2242,6 +2354,20 @@ namespace Menge
 			}
 			else if( layer.isExtra() == true )
 			{
+#   ifdef _DEBUG
+				if( dynamic_cast<MovieNodeExtra *>(node) == nullptr )
+				{
+					LOGGER_ERROR(m_serviceProvider)("Movie::updateForwardFrame_ %s layer %s must be 'MovieNodeExtra' but node is %s type %s"
+						, this->getName().c_str()
+						, layer.name.c_str()
+						, node->getName().c_str()
+						, node->getType().c_str()
+						);
+
+					continue;
+				}
+#   endif
+
 				MovieNodeExtra * extra = static_cast<MovieNodeExtra *>(node);
 
 				extra->movieForwardUpdate( _time, _beginFrame, _endFrame, layer );

@@ -37,6 +37,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Graveyard::finalize()
 	{
+		this->clearTextures();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Graveyard::clearTextures()
+	{
 		for( TMapTextureGrave::iterator
 			it = m_textures.begin(),
 			it_end = m_textures.end();

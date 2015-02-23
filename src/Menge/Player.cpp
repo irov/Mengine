@@ -174,10 +174,13 @@ namespace Menge
 
 			m_globalHandleSystem->clear();
 
-            NODE_SERVICE(m_serviceProvider)
-                ->clearHomeless();
-
             m_scene->release();
+
+			NODE_SERVICE(m_serviceProvider)
+				->clearHomeless();
+
+			GRAVEYARD_SERVICE(m_serviceProvider)
+				->clearTextures();
 
 			for( TVectorJoins::iterator
 				it = m_joins.begin(),
@@ -303,20 +306,21 @@ namespace Menge
 		m_timingManager->removeAll();
 		m_affectorable->stopAllAffectors();
 
-		if( oldScene != nullptr && m_destroyOldScene == true && m_destroyAfterSwitch == false )
+		bool destroyOldScene = m_destroyOldScene;
+		//bool destroyAfterSwitch = m_destroyAfterSwitch;
+
+		if( oldScene != nullptr && destroyOldScene == true )
 		{
             oldScene->destroy();
-		}
 
-		NODE_SERVICE(m_serviceProvider)
-            ->clearHomeless();
+			NODE_SERVICE(m_serviceProvider)
+				->clearHomeless();
+
+			GRAVEYARD_SERVICE(m_serviceProvider)
+				->clearTextures();
+		}
 
 		//m_globalHandleSystem->clear();
-
-		if( oldScene != nullptr && m_destroyOldScene == true && m_destroyAfterSwitch == true )
-		{
-            oldScene->destroy();
-		}
 
 		for( TVectorJoins::iterator
 			it = m_joins.begin(),

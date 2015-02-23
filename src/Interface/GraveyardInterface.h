@@ -30,6 +30,9 @@ namespace Menge
 		virtual void update( float _timing ) = 0;
 
 	public:
+		virtual void clearTextures() = 0;
+
+	public:
 		virtual void buryTexture( const FilePath & _path, RenderTextureInterface * _texture ) = 0;
 		virtual RenderTextureInterfacePtr resurrectTexture( const FilePath & _path ) = 0;
 	};

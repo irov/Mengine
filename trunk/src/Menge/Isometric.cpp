@@ -30,7 +30,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Isometric::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
-		stdex::intrusive_sort_stable( m_child, FIsometricSortY() );
+		stdex::intrusive_sort_stable( m_children, FIsometricSortY() );
 
 		Node::render( _viewport, _camera, _debugMask );
 	}

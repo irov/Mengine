@@ -39,7 +39,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DIsometric::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
-		stdex::intrusive_sort_stable( m_child, FIsometricSortY() );
+		stdex::intrusive_sort_stable( m_children, FIsometricSortY() );
 
 		Layer::render( _viewport, _camera, _debugMask );
 	}

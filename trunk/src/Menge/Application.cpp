@@ -978,6 +978,36 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static void s_printChildren2( Node * _node, size_t _tab )
+	{
+		TListNodeChild & children = _node->getChildren();
+
+		for( TSlugChild it(children); it.eof() == false; it.next_shuffle() )
+		{
+			Node * child = *it;
+
+			printf( "%.*s%s%s [%s]\n"
+				, _tab
+				, "                                         "
+				, child->isEnable() ? "+" : "-"
+				, child->getName().c_str() 
+				, child->getType().c_str()
+				);
+
+			s_printChildren2( child, _tab + 1 );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_printChildren( Node * _node )
+	{
+		if( _node == nullptr )
+		{
+			return;
+		}
+
+		s_printChildren2( _node, 0 );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Application::keyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
 	{
 		if( m_console != nullptr )
@@ -1038,8 +1068,6 @@ namespace Menge
 			if( _key == KC_F5 && _isDown == true )
 			{
 				m_resourceService->dumpResources("Application");
-
-
 			}
 
 			if( _key == KC_OEM_MINUS && _isDown == true )
@@ -1184,6 +1212,14 @@ namespace Menge
 				printf("-------------------------------------\n");
 				printf("total %.3f:%.3f\n", total_now_mb, total_max_mb);
             }
+
+			if( _key == KC_F2 && _isDown == true )
+			{
+				Scene * scene = PLAYER_SERVICE(m_serviceProvider)
+					->getCurrentScene();
+
+				s_printChildren( scene );
+			}
 		}
 
 		bool handle = m_game->handleKeyEvent( _point, _key, _char, _isDown, _repeating );

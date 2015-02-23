@@ -122,7 +122,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 			{
 				Scene * subScene = dynamic_cast<Scene *>( *it );
 
@@ -147,7 +147,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 			{
 				Scene* subScene = dynamic_cast<Scene*>( *it );
 
@@ -172,7 +172,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 			{
 				Node * children = *it;
 

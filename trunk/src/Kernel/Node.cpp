@@ -120,7 +120,7 @@ namespace Menge
 
         this->updateRendering_();
 
-		Node * single = m_child.single();
+		Node * single = m_children.single();
 
 		if( single != nullptr )
 		{
@@ -128,7 +128,7 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 			{
 				Node * children = (*it);
 
@@ -183,7 +183,7 @@ namespace Menge
 
 		this->_deactivate();
 
-		Node * single = m_child.single();
+		Node * single = m_children.single();
 
 		if( single != nullptr )
 		{
@@ -191,7 +191,7 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 			{
 				Node * children = *it;
 
@@ -259,7 +259,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::destroyAllChild()
 	{
-		for( TSlugChild it(m_child); it.eof() == false; )
+		for( TSlugChild it(m_children); it.eof() == false; )
 		{
 			Node * node = (*it);
 
@@ -269,7 +269,7 @@ namespace Menge
 
 			it.next_shuffle();
 
-			m_child.erase( it_node );
+			m_children.erase( it_node );
 
             node->destroy();
 		}
@@ -277,7 +277,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeChildren()
 	{
-		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+		for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 		{
             Node * node = (*it);
 
@@ -296,7 +296,7 @@ namespace Menge
             node->setLayer( nullptr );
 		}
 
-		m_child.clear();
+		m_children.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::removeFromParent()
@@ -322,7 +322,7 @@ namespace Menge
 			return false;
 		}
 
-		bool result = this->addChild_( m_child.end(), _node );
+		bool result = this->addChild_( m_children.end(), _node );
 
         return result;
 	}
@@ -338,7 +338,7 @@ namespace Menge
 			return false;
 		}
 
-		bool result = this->addChild_( m_child.begin(), _node );
+		bool result = this->addChild_( m_children.begin(), _node );
 
         return result;
 	}
@@ -364,9 +364,9 @@ namespace Menge
 		}
 
 		TListNodeChild::iterator it_found = 
-			intrusive_find( m_child.begin(), m_child.end(), _after );
+			intrusive_find( m_children.begin(), m_children.end(), _after );
 
-		if( it_found == m_child.end() )
+		if( it_found == m_children.end() )
 		{
 			return false;
 		}
@@ -439,20 +439,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::insertChild_( TListNodeChild::iterator _insert, Node * _node )
 	{
-		m_child.insert( _insert, _node );
+		m_children.insert( _insert, _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::eraseChild_( Node * _node )
 	{
         TListNodeChild::iterator it_node(_node, true);
-		m_child.erase( it_node );
+		m_children.erase( it_node );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::visitChildren( Visitor * _visitor )
 	{
 		this->visit( _visitor );
 
-		Node * single_child = m_child.single();
+		Node * single_child = m_children.single();
 
 		if( single_child != nullptr )
 		{
@@ -460,7 +460,7 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 			{
 				Node * children = (*it);
 
@@ -472,7 +472,7 @@ namespace Menge
 	bool Node::removeChild( Node * _node )
 	{
 #	ifdef _DEBUG
-		if( stdex::intrusive_has( m_child.begin(), m_child.end(), _node ) == false )
+		if( stdex::intrusive_has( m_children.begin(), m_children.end(), _node ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Node::removeChild %s not found children %s"
                 , this->getName().c_str()
@@ -552,9 +552,9 @@ namespace Menge
 	Node * Node::findChild( const ConstString & _name, bool _recursion ) const
 	{
 		TListNodeChild::const_iterator it_found =
-			s_node_find_child( m_child, &Identity::getName, _name );
+			s_node_find_child( m_children, &Identity::getName, _name );
 
-		if( it_found != m_child.end() )
+		if( it_found != m_children.end() )
 		{
 			Node * children = *it_found;
 
@@ -564,8 +564,8 @@ namespace Menge
 		if( _recursion == true )
 		{
 			for( TListNodeChild::const_iterator 
-				it = m_child.begin(), 
-				it_end = m_child.end();
+				it = m_children.begin(), 
+				it_end = m_children.end();
 			it != it_end;
 			++it )
 			{
@@ -597,9 +597,9 @@ namespace Menge
 	bool Node::hasChild( const ConstString & _name, bool _recursive ) const
 	{
 		TListNodeChild::const_iterator it_found =
-			s_node_find_child( m_child, &Identity::getName, _name );
+			s_node_find_child( m_children, &Identity::getName, _name );
 
-		if( it_found != m_child.end() )
+		if( it_found != m_children.end() )
 		{
 			return true;
 		}
@@ -607,8 +607,8 @@ namespace Menge
 		if( _recursive == true )
 		{		
 			for( TListNodeChild::const_iterator 
-				it = m_child.begin(), 
-				it_end = m_child.end();
+				it = m_children.begin(), 
+				it_end = m_children.end();
 			it != it_end;
 			++it )
 			{
@@ -638,7 +638,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::emptyChildren() const
 	{
-		return m_child.empty();
+		return m_children.empty();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_changeParent( Node * _oldParent, Node * _newParent )
@@ -674,7 +674,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_freeze( bool _value )
 	{
-		for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+		for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 		{
 			Node * node = *it;
 
@@ -712,14 +712,14 @@ namespace Menge
 
 		Affectorable::updateAffectors( _current, total_timing );
 		
-		this->updateChild_( _current, total_timing );
+		this->updateChildren_( _current, total_timing );
 
 		this->removeShallowGrave();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::updateChild_( float _current, float _timing )
+	void Node::updateChildren_( float _current, float _timing )
 	{
-		Node * single = m_child.single();
+		Node * single = m_children.single();
 
 		if( single != nullptr )
 		{
@@ -727,7 +727,7 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 			{
 				Node * children = *it;
 			
@@ -804,7 +804,7 @@ namespace Menge
 			this->deactivate();
 		}
 
-		Node * single = m_child.single();
+		Node * single = m_children.single();
 
 		if( single != nullptr )
 		{
@@ -812,7 +812,7 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 			{
 				Node * node = (*it);
 
@@ -989,8 +989,8 @@ namespace Menge
 	void Node::renderChild_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
 	{
 		for( TListNodeChild::unslug_iterator
-			it = m_child.ubegin(),
-			it_end = m_child.uend();
+			it = m_children.ubegin(),
+			it_end = m_children.uend();
 		it != it_end;
 		++it )
 		{
@@ -1093,7 +1093,7 @@ namespace Menge
 	{
 		m_layer = _layer;
 
-		Node * single = m_child.single();
+		Node * single = m_children.single();
 
 		if( single != nullptr )
 		{
@@ -1101,7 +1101,7 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 			{
 				Node * node = (*it);
 
@@ -1159,7 +1159,7 @@ namespace Menge
 
 		//this->setFullBlend( fullBlend );
 
-		Node * single = m_child.single();
+		Node * single = m_children.single();
 
 		if( single != nullptr )
 		{
@@ -1167,7 +1167,7 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_child); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 			{
 				Node * node = (*it);
 

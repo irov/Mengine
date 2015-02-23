@@ -238,6 +238,31 @@ namespace Menge
 				->isMouseButtonDown( _button );
 		}
 
+		void s_printChildren2( Node * _node, size_t _tab )
+		{
+			TListNodeChild & children = _node->getChildren();
+
+			for( TSlugChild it(children); it.eof() == false; it.next_shuffle() )
+			{
+				Node * child = *it;
+
+				printf( "%.*s%s%s [%s]\n"
+					, _tab
+					, "                                         "
+					, child->isEnable() ? "+" : "-"
+					, child->getName().c_str() 
+					, child->getType().c_str()
+					);
+
+				s_printChildren2( child, _tab + 1 );
+			}
+		}
+
+		void s_printChildren( Node * _node )
+		{
+			s_printChildren2( _node, 0 );
+		}
+
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
@@ -1671,5 +1696,7 @@ namespace Menge
 		
 		pybind::def_functor( "isAnyMouseButtonDown", helperScriptMethod, &HelperScriptMethod::s_isAnyMouseButtonDown );
 		pybind::def_functor( "isMouseButtonDown", helperScriptMethod, &HelperScriptMethod::s_isMouseButtonDown );
+
+		pybind::def_functor( "printChildren", helperScriptMethod, &HelperScriptMethod::s_printChildren );
 	}
 }

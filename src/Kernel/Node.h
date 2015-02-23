@@ -165,7 +165,7 @@ namespace Menge
 	protected:
 		Node * m_parent;
 
-		TListNodeChild m_child;
+		TListNodeChild m_children;
 
 	private:
 		bool addChild_( TListNodeChild::iterator _insert, Node * _node );
@@ -234,7 +234,7 @@ namespace Menge
 		void _update( float _current, float _timing ) override;
 
 	protected:
-		void updateChild_( float _current, float _timing );
+		void updateChildren_( float _current, float _timing );
 		
 	protected:
 		PyObject * _embedded() override;
@@ -322,12 +322,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline TListNodeChild & Node::getChildren()
 	{
-		return m_child;
+		return m_children;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const TListNodeChild & Node::getChildren() const
 	{
-		return m_child;
+		return m_children;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>

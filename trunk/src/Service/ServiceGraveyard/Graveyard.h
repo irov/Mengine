@@ -25,6 +25,9 @@ namespace Menge
 		void update( float _timing ) override;
 
 	public:
+		void clearTextures() override;
+
+	public:
 		void buryTexture( const FilePath & _path, RenderTextureInterface * _texture ) override;
 		RenderTextureInterfacePtr resurrectTexture( const FilePath & _path ) override;
 

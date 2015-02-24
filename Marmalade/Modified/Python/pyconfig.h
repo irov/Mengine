@@ -224,9 +224,6 @@ void fprintf(FILE *, char *, ...);) *and* <stdarg.h> */
 /* The size of a `float', as computed by sizeof. */
 #define SIZEOF_FLOAT 4
 
-/* The size of a `fpos_t', as computed by sizeof. */
-#define SIZEOF_FPOS_T 16
-
 /* The size of a `int', as computed by sizeof. */
 #define SIZEOF_INT 4
 
@@ -236,29 +233,43 @@ void fprintf(FILE *, char *, ...);) *and* <stdarg.h> */
 /* The size of a `long long', as computed by sizeof. */
 #define SIZEOF_LONG_LONG 8
 
-/* The number of bytes in an off_t. */
-#define SIZEOF_OFF_T 8
-
-/* The number of bytes in a pthread_t. */
-#define SIZEOF_PTHREAD_T 4
-
 /* The size of a `short', as computed by sizeof. */
 #define SIZEOF_SHORT 2
 
-/* The size of a `size_t', as computed by sizeof. */
-#define SIZEOF_SIZE_T 4
-
-/* The number of bytes in a time_t. */
-#define SIZEOF_TIME_T 4
-
-/* The size of a `uintptr_t', as computed by sizeof. */
-#define SIZEOF_UINTPTR_T 4
-
-/* The size of a `void *', as computed by sizeof. */
-#define SIZEOF_VOID_P 4
-
 /* The size of a `wchar_t', as computed by sizeof. */
 #define SIZEOF_WCHAR_T 4
+
+#ifdef __aarch64__
+	/* The size of a `fpos_t', as computed by sizeof. */
+	#define SIZEOF_FPOS_T 8
+
+	/* The number of bytes in an off_t. */
+	#define SIZEOF_OFF_T 8
+
+	/* The size of a `size_t', as computed by sizeof. */
+	#define SIZEOF_SIZE_T 8
+
+	/* The number of bytes in a time_t. */
+	#define SIZEOF_TIME_T 8
+
+	/* The size of a `void *', as computed by sizeof. */
+	#define SIZEOF_VOID_P 8
+#else
+	/* The size of a `fpos_t', as computed by sizeof. */
+	#define SIZEOF_FPOS_T 8
+
+	/* The number of bytes in an off_t. */
+	#define SIZEOF_OFF_T 4
+
+	/* The size of a `size_t', as computed by sizeof. */
+	#define SIZEOF_SIZE_T 4
+
+	/* The number of bytes in a time_t. */
+	#define SIZEOF_TIME_T 4
+
+	/* The size of a `void *', as computed by sizeof. */
+	#define SIZEOF_VOID_P 4
+#endif
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1

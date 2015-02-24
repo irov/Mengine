@@ -48,8 +48,6 @@ namespace Menge
 
 			int32 volume_value = (pure_value * this->volume) >> 8;
 
-			//uint16 clip_value = s_clipToInt16( volume_value );
-
 			return volume_value;
 		}
 

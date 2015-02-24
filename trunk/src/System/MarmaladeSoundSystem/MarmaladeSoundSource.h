@@ -9,8 +9,6 @@ namespace Menge
 {
 	class MarmaladeSoundSystem;
 	
-	struct MarmaladeSoundMemoryDesc;
-
 	class MarmaladeSoundSource
 		: public SoundSourceInterface
 	{

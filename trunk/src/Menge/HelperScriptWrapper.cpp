@@ -246,12 +246,18 @@ namespace Menge
 			{
 				Node * child = *it;
 
-				printf( "%.*s%s%s [%s]\n"
+				ColourValue color;
+				child->calcTotalColor( color );
+
+				printf( "%.*s%s%s [%s] (%.0f, %.0f) %.2f\n"
 					, _tab
 					, "                                         "
-					, child->isEnable() ? "+" : "-"
-					, child->getName().c_str() 
+					, child->isActivate() ? child->isEnable() ? "+" : "-" : "#"
+					, child->getName().c_str()
 					, child->getType().c_str()
+					, child->getWorldPosition().x
+					, child->getWorldPosition().y
+					, color.getA()
 					);
 
 				s_printChildren2( child, _tab + 1 );

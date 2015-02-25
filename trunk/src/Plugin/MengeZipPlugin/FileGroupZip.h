@@ -18,7 +18,11 @@ namespace Menge
 		~FileGroupZip();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _path ) override;
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
+
+	public:
+		bool initialize( const ConstString & _path ) override;
 		void finalize() override;
 		
     public:

@@ -20,10 +20,18 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileGroupDirectory::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path )
+	void Win32FileGroupDirectory::setServiceProvider( ServiceProviderInterface * _serviceProvider )
 	{
-        m_serviceProvider = _serviceProvider;
-
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * Win32FileGroupDirectory::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Win32FileGroupDirectory::initialize( const FilePath & _path )
+	{
         m_path = _path;
 
         return true;

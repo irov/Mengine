@@ -4,8 +4,6 @@
 
 #	include "stdex/memorycopy.h"
 
-#	include "Core/Hash.h"
-
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -14,16 +12,14 @@ namespace Menge
     {    
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstStringHolderStringSTL::setValue( const char * _value, size_t _size )
+    void ConstStringHolderStringSTL::setValue( const char * _value, size_t _size, hash_type _hash )
     {
 		m_buff = Helper::allocateMemory<char>( _size + 1 );
 
 		stdex::memorycopy( m_buff, 0, _value, _size );
 		m_buff[_size] = '\0';
 
-		hash_type hash = Helper::makeHash( m_buff, _size );
-
-        this->setup( m_buff, _size, hash, true );
+        this->setup( m_buff, _size, _hash, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void ConstStringHolderStringSTL::_releaseString()

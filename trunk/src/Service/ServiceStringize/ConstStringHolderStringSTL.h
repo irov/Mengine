@@ -18,7 +18,7 @@ namespace Menge
         ConstStringHolderStringSTL();
 
     public:
-        void setValue( const char * _value, size_t _size );
+        void setValue( const char * _value, size_t _size, hash_type _hash );
 
     protected:
         void _releaseString() override;

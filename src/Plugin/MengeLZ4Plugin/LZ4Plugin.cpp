@@ -35,9 +35,13 @@ namespace Menge
 	bool LZ4Plugin::initialize( ServiceProviderInterface * _provider )
 	{
         m_serviceProvider = _provider;
+
+		ArchivatorInterface * archivator = new FactorableUnique<ArchivatorLZ4>();
+
+		archivator->setServiceProvider( m_serviceProvider );
 	
 		ARCHIVE_SERVICE(m_serviceProvider)
-			->registerArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4"), new FactorableUnique<ArchivatorLZ4>() );
+			->registerArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4"), archivator );
 
         return true;
 	}

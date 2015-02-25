@@ -61,10 +61,18 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _path )
+	void FileGroupZip::setServiceProvider( ServiceProviderInterface * _serviceProvider )
 	{
-        m_serviceProvider = _serviceProvider;
-
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * FileGroupZip::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool FileGroupZip::initialize( const ConstString & _path )
+	{
         m_path = _path;
 
 		if( this->loadHeader_() == false )

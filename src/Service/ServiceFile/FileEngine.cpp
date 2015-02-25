@@ -95,6 +95,8 @@ namespace Menge
 			return nullptr;
 		}
 
+		fileGroup->setServiceProvider( m_serviceProvider );
+
 		return fileGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -130,7 +132,7 @@ namespace Menge
 			return false;
 		}
 
-		if( fs->initialize( m_serviceProvider, _path ) == false )
+		if( fs->initialize( _path ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem can't initialize FileSystem '%s' for object '%s'"
 				, _fileGroupName.c_str()

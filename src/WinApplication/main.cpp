@@ -26,7 +26,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	//_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
 
 	Menge::WinApplication winApplication;
-	
+
 	try
 	{
 		bool initialize = winApplication.initialize( hInstance, lpCmdLine );

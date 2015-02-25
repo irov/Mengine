@@ -15,9 +15,13 @@ namespace Menge
 	public:
 		MarmaladeFileGroupDirectory();
 		~MarmaladeFileGroupDirectory();
+		
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path ) override;
+		bool initialize( const FilePath & _path ) override;
 		void finalize() override;
 
 	public:

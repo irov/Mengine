@@ -238,7 +238,7 @@ namespace Menge
 				->isMouseButtonDown( _button );
 		}
 
-		void s_printChildren2( Node * _node, size_t _tab )
+		void s_printChildren2( Node * _node, uint32_t _tab )
 		{
 			TListNodeChild & children = _node->getChildren();
 

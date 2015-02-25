@@ -978,7 +978,7 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_printChildren2( Node * _node, size_t _tab )
+	static void s_printChildren2( Node * _node, uint32_t _tab )
 	{
 		TListNodeChild & children = _node->getChildren();
 

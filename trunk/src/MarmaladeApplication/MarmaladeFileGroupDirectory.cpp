@@ -16,10 +16,18 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeFileGroupDirectory::initialize( ServiceProviderInterface * _serviceProvider, const FilePath & _path )
+	void MarmaladeFileGroupDirectory::setServiceProvider( ServiceProviderInterface * _serviceProvider )
 	{
 		m_serviceProvider = _serviceProvider;
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * MarmaladeFileGroupDirectory::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeFileGroupDirectory::initialize( const FilePath & _path )
+	{
 		m_path = _path;
 
 		return true;

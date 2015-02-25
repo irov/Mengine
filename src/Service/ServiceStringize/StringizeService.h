@@ -21,14 +21,14 @@ namespace Menge
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
-
+		
 	public:
 		bool stringize( const char * _str, size_t _size, bool _external, ConstString & _cstr ) override;
 		void stringizeLocal( const char * _str, size_t _size, ConstString & _cstr, ConstStringHolderLocal & _holder ) override;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
-
+		
         typedef StringSizeBuffer<256> StringSizeBuffer256;
         typedef FactoryPoolStore<StringSizeBuffer256, 128> FactoryPoolString256;
         FactoryPoolString256 m_poolString256;

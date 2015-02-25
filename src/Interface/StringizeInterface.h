@@ -8,13 +8,15 @@
 #	include "Config/Typedef.h"
 #	include "Config/String.h"
 
+#   include "Factory/FactorablePtr.h"
+
 namespace Menge
 {
 	class StringizeServiceInterface
 		: public ServiceInterface
 	{
         SERVICE_DECLARE("StringizeService")
-
+			
 	public:
 		virtual bool stringize( const char * _str, size_t _size, bool _external, ConstString & _cstr ) = 0;
 		virtual void stringizeLocal( const char * _str, size_t _size, ConstString & _cstr, ConstStringHolderLocal & _holder ) = 0;

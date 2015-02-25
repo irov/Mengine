@@ -6,8 +6,6 @@
 
 #	include "pybind/system.hpp"
 
-#	include "Core/Hash.h"
-
 namespace Menge
 {
 	class ConstStringHolderStringExternal
@@ -15,13 +13,9 @@ namespace Menge
 		, public Factorable
 	{
 	public:
-		void setValue( const char * _value, size_t _size )
+		void setValue( const char * _value, size_t _size, hash_type _hash )
 		{
-			m_value = _value;
-			
-			hash_type hash = Helper::makeHash( _value, _size );
-
-			this->setup( m_value, _size, hash, false );
+			this->setup( _value, _size, _hash, false );
 		}
 
 	protected:
@@ -35,8 +29,5 @@ namespace Menge
 		{
 			this->destroy();
 		}
-
-	protected:			
-		const char * m_value;
 	};
 }

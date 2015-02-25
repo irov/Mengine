@@ -4,14 +4,14 @@ namespace Menge
 {
 	namespace Helper
 	{
-		uint32_t makeHash( const void * _data, size_t _len )
+		long makeHash( const void * _data, size_t _len )
 		{
 			if( _len == 0 )
 			{
 				return 0;
 			}
 
-			unsigned char * p = (unsigned char *)_data;
+			const unsigned char * p = (const unsigned char *)_data;
 			long len = (long)_len;
 
 			long x = 0;
@@ -24,14 +24,13 @@ namespace Menge
 			}
 
 			x ^= len;
-			x ^= 0;
 
 			if( x == -1 )
 			{
 				x = -2;
 			}
 
-			return (uint32_t)x;
+			return x;
 		}
 	}
 }

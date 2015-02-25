@@ -1,7 +1,5 @@
 #   pragma once
 
-#	include "Core/Hash.h"
-
 #   include "stdex/const_string_holder.h"
 
 #	include "stdex/memorycopy.h"
@@ -45,13 +43,11 @@ namespace Menge
 		}
 
 	public:
-        void setValue( Factorable * _store, const char * _value, size_t _size )
+        void setValue( Factorable * _store, const char * _value, size_t _size, hash_type _hash )
         {			
 			m_store = _store;
 
-			hash_type hash = Helper::makeHash( _value, _size );
-
-            this->setup( _value, _size, hash, true );
+            this->setup( _value, _size, _hash, true );
         }
 
     protected:

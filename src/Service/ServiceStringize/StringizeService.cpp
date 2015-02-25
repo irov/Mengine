@@ -39,10 +39,13 @@ namespace Menge
 			_size = strlen(_str);
 		}
 
+		long hash = Helper::makeHash( _str, _size );
+
 		if( _external == true )
 		{
 			ConstStringHolderStringExternal * string = m_poolStringExternal.createObjectT();
-			string->setValue( _str, _size );
+
+			string->setValue( _str, _size, hash );
 
 			stringHolder = string;
 		}
@@ -51,7 +54,8 @@ namespace Menge
 			ConstStringHolderStringSize * string = m_poolStringSize.createObjectT();            
 			StringSizeBuffer16 * buffer = m_poolString16.createObjectT();
 			const char * store_value = buffer->initialize( _str, _size );
-			string->setValue( buffer, store_value, _size );
+			
+			string->setValue( buffer, store_value, _size, hash );
 
 			stringHolder = string;
 
@@ -62,7 +66,8 @@ namespace Menge
 			ConstStringHolderStringSize * string = m_poolStringSize.createObjectT();            
 			StringSizeBuffer32 * buffer = m_poolString32.createObjectT();
 			const char * store_value = buffer->initialize( _str, _size );
-			string->setValue( buffer, store_value, _size );
+			
+			string->setValue( buffer, store_value, _size, hash );
 
 			stringHolder = string;
 
@@ -73,7 +78,7 @@ namespace Menge
 			ConstStringHolderStringSize * string = m_poolStringSize.createObjectT();            
 			StringSizeBuffer64 * buffer = m_poolString64.createObjectT();
 			const char * store_value = buffer->initialize( _str, _size );
-			string->setValue( buffer, store_value, _size );
+			string->setValue( buffer, store_value, _size, hash );
 
 			stringHolder = string;
 
@@ -84,7 +89,7 @@ namespace Menge
 			ConstStringHolderStringSize * string = m_poolStringSize.createObjectT();            
 			StringSizeBuffer128 * buffer = m_poolString128.createObjectT();
 			const char * store_value = buffer->initialize( _str, _size );
-			string->setValue( buffer, store_value, _size );
+			string->setValue( buffer, store_value, _size, hash );
 
 			stringHolder = string;
 
@@ -95,7 +100,7 @@ namespace Menge
 			ConstStringHolderStringSize * string = m_poolStringSize.createObjectT();            
 			StringSizeBuffer256 * buffer = m_poolString256.createObjectT();
 			const char * store_value = buffer->initialize( _str, _size );
-			string->setValue( buffer, store_value, _size );
+			string->setValue( buffer, store_value, _size, hash );
 
 			stringHolder = string;
 
@@ -104,7 +109,7 @@ namespace Menge
         else
         {
             ConstStringHolderStringSTL * stringSTL = m_poolStringSTL.createObjectT();
-            stringSTL->setValue( _str, _size );
+            stringSTL->setValue( _str, _size, hash );
 
             stringHolder = stringSTL;
 
@@ -118,7 +123,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void StringizeService::stringizeLocal( const char * _str, size_t _size, ConstString & _cstr, ConstStringHolderLocal & _holder )
 	{
-		ConstString::hash_type hash = Helper::makeHash( _str, _size );
+		long hash = Helper::makeHash( _str, _size );
 
 		_holder.setup( _str, _size, hash );
 

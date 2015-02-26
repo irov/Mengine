@@ -35,7 +35,7 @@ namespace Menge
 
 		if( py_type == nullptr || pybind::is_none( py_type ) == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator prototype %s invalid type create"
+			LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator type %s prototype %s invalid type create"
 				, m_category.c_str()
 				, m_prototype.c_str()
 				);

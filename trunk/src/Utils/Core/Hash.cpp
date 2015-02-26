@@ -12,18 +12,15 @@ namespace Menge
 			}
 
 			const unsigned char * p = (const unsigned char *)_data;
-			long len = (long)_len;
 
-			long x = 0;
+			long x = *p << 7;
 
-			x ^= *p << 7;
-			long it = len;
-			while( --it >= 0 )
+			for( size_t i = 0; i != _len; ++i )
 			{
 				x = (1000003 * x) ^ *p++;
 			}
 
-			x ^= len;
+			x ^= (long)_len;
 
 			if( x == -1 )
 			{

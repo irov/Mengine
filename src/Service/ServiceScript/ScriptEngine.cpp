@@ -192,10 +192,10 @@ namespace Menge
 
 		pybind::set_observer_bind_call( new My_observer_bind_call(m_serviceProvider) );
 
-		bool gc_exist;
-		PyObject * gc = pybind::module_import( "gc", gc_exist );
+		//bool gc_exist;
+		//PyObject * gc = pybind::module_import( "gc", gc_exist );
 
-		pybind::call_method( gc, "disable", "()" );
+		//pybind::call_method( gc, "disable", "()" );
 
         return true;
 	}

@@ -1175,12 +1175,12 @@ namespace Menge
             if( _key == KC_F3 && _isDown == true )
             {
 				stdex_memory_info_t mi[25];
-                uint32_t count = stdex_allocator_memoryinfo( mi, 25 );
+                size_t count = stdex_allocator_memoryinfo( mi, 25 );
 
 				size_t pool_now = 0;
 				size_t pool_max = 0;
 
-				for( uint32_t i = 0; i != count; ++i )
+				for( size_t i = 0; i != count; ++i )
 				{
 					const stdex_memory_info_t & m = mi[i];
 

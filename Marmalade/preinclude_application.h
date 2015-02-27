@@ -11,6 +11,10 @@
 #	    define PYBIND_EXTRACT_SIZE_T
 #	endif
 
+#	ifdef __aarch64__
+#		define PYBIND_EXTRACT_SIZE_T
+#	endif
+
 #   define SIGBREAK        21
 
 #   define LIBPNG_NO_MMX

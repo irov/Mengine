@@ -24,6 +24,11 @@
 #	    define PYBIND_EXTRACT_SIZE_T
 #	endif
 
+#	ifdef __aarch64__
+#		define PYBIND_EXTRACT_SIZE_T
+#	endif
+
+
 #   define Py_BUILD_CORE
 
 #   define SIGBREAK        21
@@ -40,7 +45,7 @@
 #   define STDEX_UNSUPPOT_NULLPTR_T
 
 #	ifdef __aarch64__
-#	define STDEX_X64
+#		define STDEX_X64
 #	endif
 
 #   ifdef __APPLE__

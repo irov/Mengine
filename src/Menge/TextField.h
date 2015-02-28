@@ -43,6 +43,10 @@ namespace Menge
 		float getMaxLength() const;
 
 	public:
+		void setWrap( bool _wrap );
+		bool getWrap() const;
+
+	public:
 		void setTextID( const ConstString& _key );
 		void removeTextID();
 
@@ -206,9 +210,9 @@ namespace Menge
 		mutable uint32_t m_charCount;
 		mutable mt::vec2f m_textSize;
 
+		bool m_wrap;
 		bool m_outline;
-		bool m_pixelsnap;
-				
+		bool m_pixelsnap;				
 				
 		mutable TVectorTextLine m_lines;
 

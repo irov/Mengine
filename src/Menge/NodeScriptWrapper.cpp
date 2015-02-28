@@ -5165,6 +5165,9 @@ namespace Menge
 					.def( "setFontName", &TextField::setFontName )
 					.def( "getFontName", &TextField::getFontName )
 
+					.def( "setWrap", &TextField::setWrap )
+					.def( "getWrap", &TextField::getWrap )
+
 
 					.def( "enableOutline", &TextField::enableOutline )
 					.def( "isOutline", &TextField::isOutline )

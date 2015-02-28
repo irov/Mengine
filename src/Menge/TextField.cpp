@@ -35,6 +35,7 @@ namespace Menge
 		, m_charCount(0)
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)
+		, m_wrap(true)
 		, m_outline(false)
 		, m_pixelsnap(true)
 		, m_materialFont(nullptr)
@@ -273,6 +274,18 @@ namespace Menge
 		return m_maxLength;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TextField::setWrap( bool _wrap )
+	{
+		m_wrap = _wrap;
+
+		this->invalidateTextLines();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextField::getWrap() const
+	{
+		return m_wrap;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	float TextField::getFontHeight() const
 	{
 		const TextFontInterfacePtr & font = this->getFont();
@@ -451,37 +464,25 @@ namespace Menge
 					);
 			}
 
-			float textLength = textLine.getLength();
-			float maxLength = this->calcMaxLength();
-
-			if( textLength > maxLength )
+			if( m_wrap == true )
 			{
-				TVectorString words;
-				Utils::split( words, *it, false, " " );
+				float textLength = textLine.getLength();
+				float maxLength = this->calcMaxLength();
 
-				String newLine = words.front();
-				words.erase( words.begin() );	
-				while( words.empty() == false )
+				if( textLength > maxLength )
 				{
-					TextLine tl(m_serviceProvider,  charOffset);
+					TVectorString words;
+					Utils::split( words, *it, false, " " );
 
-					String tl_string( newLine + space_delim + words.front() );
-
-					if( tl.initialize( font, tl_string ) == false )
+					String newLine = words.front();
+					words.erase( words.begin() );	
+					while( words.empty() == false )
 					{
-						LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
-							, this->getName().c_str()
-							, m_textEntry->getKey().c_str()
-							);
-					}
+						TextLine tl(m_serviceProvider,  charOffset);
 
-					float length = tl.getLength();
+						String tl_string( newLine + space_delim + words.front() );
 
-					if( length > maxLength )
-					{
-						TextLine line(m_serviceProvider, charOffset);
-
-						if( line.initialize( font, newLine ) == false )
+						if( tl.initialize( font, tl_string ) == false )
 						{
 							LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
 								, this->getName().c_str()
@@ -489,30 +490,49 @@ namespace Menge
 								);
 						}
 
-						m_lines.push_back( line );
+						float length = tl.getLength();
 
-						newLine.clear();
-						newLine = words.front();
+						if( length > maxLength )
+						{
+							TextLine line(m_serviceProvider, charOffset);
 
-						words.erase( words.begin() );
+							if( line.initialize( font, newLine ) == false )
+							{
+								LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
+									, this->getName().c_str()
+									, m_textEntry->getKey().c_str()
+									);
+							}
+
+							m_lines.push_back( line );
+
+							newLine.clear();
+							newLine = words.front();
+
+							words.erase( words.begin() );
+						}
+						else
+						{
+							newLine += space_delim + words.front();
+							words.erase( words.begin() );
+						}
 					}
-					else
+
+					TextLine line(m_serviceProvider, charOffset);				
+					if( line.initialize( font, newLine ) == false )
 					{
-						newLine += space_delim + words.front();
-						words.erase( words.begin() );
+						LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
+							, this->getName().c_str()
+							, m_textEntry->getKey().c_str()
+							);
 					}
-				}
 
-				TextLine line(m_serviceProvider, charOffset);				
-				if( line.initialize( font, newLine ) == false )
+					m_lines.push_back( line );
+				}
+				else
 				{
-					LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
-						, this->getName().c_str()
-						, m_textEntry->getKey().c_str()
-						);
+					m_lines.push_back( textLine );
 				}
-
-				m_lines.push_back( line );
 			}
 			else
 			{

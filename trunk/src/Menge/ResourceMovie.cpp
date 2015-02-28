@@ -100,7 +100,7 @@ namespace Menge
 		return m_camera3D;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceShape * ResourceMovie::getSocketShape( const ConstString & _socketName ) const
+	ResourceShape * ResourceMovie::getSocketResourceShape( const ConstString & _socketName ) const
 	{
 		for( TVectorMovieLayers::const_iterator 
 			it = m_layers.begin(),

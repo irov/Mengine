@@ -1062,12 +1062,6 @@ namespace Menge
 		GlobalHandleAdapter::setEventListener( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_embedding( PyObject * _embed )
-	{
-        (void)_embed;
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Node::isEnableGlobalHandle() const
 	{
         bool active = this->isActivate();

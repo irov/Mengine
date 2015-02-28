@@ -211,7 +211,7 @@ namespace Menge
 		const MovieLayerCamera3D & getCamera3D() const;
 
 	public:
-		ResourceShape * getSocketShape( const ConstString & _socketName ) const;
+		ResourceShape * getSocketResourceShape( const ConstString & _socketName ) const;
 
 	public:
 		bool hasAnchorPoint() const;

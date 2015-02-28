@@ -78,7 +78,7 @@ namespace Menge
 		{
 			if( this->createLayers_() == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie.setResourceMovie: '%s' can't create layer '%s'"
+				LOGGER_ERROR(m_serviceProvider)("Movie.setResourceMovie: %s resource %s can't create layers"
 					, m_name.c_str()
 					, m_resourceMovie->getName().c_str()
 					);
@@ -94,6 +94,18 @@ namespace Menge
 	ResourceMovie * Movie::getResourceMovie() const
 	{
 		return m_resourceMovie;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & Movie::getResourceMovieName() const
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			return ConstString::none();
+		}
+
+		const ConstString & name = m_resourceMovie->getName();
+
+		return name;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setParentMovie( bool _value )
@@ -256,8 +268,9 @@ namespace Menge
 #   ifdef _DEBUG
 			if( dynamic_cast<Mesh2D *>( _node ) == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Mesh2D but node is not Mesh2D %s:%s"
+				LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s resource %s layer %s is Mesh2D but node is not Mesh2D %s:%s"
 					, this->getName().c_str()
+					, this->getResourceMovieName().c_str()
 					, _layer.name.c_str()
 					, _node->getName().c_str()
 					, _node->getType().c_str()
@@ -452,8 +465,9 @@ namespace Menge
 #   ifdef _DEBUG
 			if( dynamic_cast<Movie *>( node ) == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie::visitMovieNode %s layer %s must be 'Movie' but node is %s type %s"
+				LOGGER_ERROR(m_serviceProvider)("Movie::visitMovieNode %s resource %s layer %s must be 'Movie' but node is %s type %s"
 					, this->getName().c_str()
+					, this->getResourceMovieName().c_str()
 					, layer.name.c_str()
 					, node->getName().c_str()
 					, node->getType().c_str()
@@ -478,8 +492,9 @@ namespace Menge
 	{
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.getMovieNode %s invalid not compile %s:%s"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Movie.getMovieNode %s resource %s invalid not compile %s:%s"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _name.c_str()
 				, _type.c_str()
 				);
@@ -533,8 +548,9 @@ namespace Menge
 #   ifdef _DEBUG
 			if( dynamic_cast<Movie *>( node ) == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode %s layer %s must be 'Movie' but node is %s type %s"
+				LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode %s resource %s layer %s must be 'Movie' but node is %s type %s"
 					, this->getName().c_str()
+					, this->getResourceMovieName().c_str()
 					, layer.name.c_str()
 					, node->getName().c_str()
 					, node->getType().c_str()
@@ -552,8 +568,9 @@ namespace Menge
 			}
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode: %s not found node %s type %s"
-			, m_name.c_str()
+		LOGGER_ERROR(m_serviceProvider)("Movie::getMovieNode: %s resource %s not found node %s type %s"
+			, this->getName().c_str()
+			, this->getResourceMovieName().c_str()
 			, _name.c_str()
 			, _type.c_str()
 			);
@@ -565,8 +582,9 @@ namespace Menge
 	{
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.hasMovieNode %s invalid not compile (%s:%s)"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Movie.hasMovieNode %s resource %s invalid not compile (%s:%s)"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _name.c_str()
 				, _type.c_str()
 				);
@@ -620,8 +638,9 @@ namespace Menge
 #   ifdef _DEBUG
 			if( dynamic_cast<Movie *>( node ) == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie::hasMovieNode %s layer %s must be 'Movie' but node is %s type %s"
+				LOGGER_ERROR(m_serviceProvider)("Movie::hasMovieNode %s resource %s layer %s must be 'Movie' but node is %s type %s"
 					, this->getName().c_str()
+					, this->getResourceMovieName().c_str()
 					, layer.name.c_str()
 					, node->getName().c_str()
 					, node->getType().c_str()
@@ -646,8 +665,9 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::hasLayer %s invalid get layer %s not compile"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Movie::hasLayer %s resource %s invalid get layer %s not compile"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _name.c_str()
 				);
 
@@ -685,8 +705,9 @@ namespace Menge
 #   ifdef _DEBUG
 			if( dynamic_cast<Movie *>( node ) == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie::hasMovieLayer %s layer %s must be 'Movie' but node is %s type %s"
+				LOGGER_ERROR(m_serviceProvider)("Movie::hasMovieLayer %s resource %s layer %s must be 'Movie' but node is %s type %s"
 					, this->getName().c_str()
+					, this->getResourceMovieName().c_str()
 					, layer.name.c_str()
 					, node->getName().c_str()
 					, node->getType().c_str()
@@ -713,8 +734,9 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::getLayer %s invalid get layer %s not compile"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Movie::getLayer %s resource %s invalid get layer %s not compile"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _name.c_str()
 				);
 
@@ -755,8 +777,9 @@ namespace Menge
 #   ifdef _DEBUG
 			if( dynamic_cast<Movie *>( node ) == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie::getMovieLayer %s layer %s must be 'Movie' but node is %s type %s"
+				LOGGER_ERROR(m_serviceProvider)("Movie::getMovieLayer %s resource %s layer %s must be 'Movie' but node is %s type %s"
 					, this->getName().c_str()
+					, this->getResourceMovieName().c_str()
 					, layer.name.c_str()
 					, node->getName().c_str()
 					, node->getType().c_str()
@@ -776,8 +799,9 @@ namespace Menge
 			return true;
 		}
 
-		LOGGER_ERROR(m_serviceProvider)("Movie::getLayer %s not found layer %s"
-			, m_name.c_str()
+		LOGGER_ERROR(m_serviceProvider)("Movie::getLayer %s resource %s not found layer %s"
+			, this->getName().c_str()
+			, this->getResourceMovieName().c_str()
 			, _name.c_str()
 			);
 
@@ -830,7 +854,7 @@ namespace Menge
 			}
 			else if( layer.type == CONST_STRING(m_serviceProvider, MovieSprite) )
 			{
-				if( this->createMovieSprite_( layer ) == false )
+				if( this->createMovieExtraSprite_( layer ) == false )
 				{
 					return false;
 				}
@@ -952,8 +976,9 @@ namespace Menge
 			}
 			else
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't create layer_node '%s' type '%s'"
-					, m_name.c_str()
+				LOGGER_ERROR(m_serviceProvider)("Movie.createLayers_: %s resource %s can't create layer_node '%s' type '%s'"
+					, this->getName().c_str()
+					, this->getResourceMovieName().c_str()
 					, layer.source.c_str()
 					, layer.type.c_str()
 					);
@@ -1129,8 +1154,9 @@ namespace Menge
 		}
 		else
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieImage_: %s resource %s layer '%s' blending mode not supported '%s'"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
 				, _layer.blendingMode.c_str()
 				);
@@ -1177,8 +1203,9 @@ namespace Menge
 		}
 		else
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieMesh2D_: %s resource %s layer '%s' blending mode not supported '%s'"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
 				, _layer.blendingMode.c_str()
 				);
@@ -1198,8 +1225,9 @@ namespace Menge
 
 		if( resource == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' can't compile sprite '%s' imageSolid resource = NULL"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieImageSolid_: %s resource %s can't compile sprite '%s' imageSolid resource = NULL"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
 				);
 
@@ -1244,8 +1272,9 @@ namespace Menge
 		}
 		else
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieImageSolid_: %s resource %s layer '%s' blending mode not supported '%s'"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
 				, _layer.blendingMode.c_str()
 				);
@@ -1347,8 +1376,9 @@ namespace Menge
 		}
 		else
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieAnimation_: %s resource %s layer '%s' blending mode not supported '%s'"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
 				, _layer.blendingMode.c_str()
 				);
@@ -1492,8 +1522,9 @@ namespace Menge
 		}
 		else
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieVideo_: %s resource %s layer '%s' blending mode not supported '%s'"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
 				, _layer.blendingMode.c_str()
 				);
@@ -1612,14 +1643,16 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieSprite_( const MovieLayer & _layer )
+	bool Movie::createMovieExtraSprite_( const MovieLayer & _layer )
 	{
 		Sprite * layer_sprite = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<Sprite>( CONST_STRING(m_serviceProvider, Sprite) );
 
 		if( layer_sprite == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::createMovieSprite_ layer %s invalid create 'Sprite'"
+			LOGGER_ERROR(m_serviceProvider)("Movie::createMovieSprite_ %s resource %s layer %s invalid create 'Sprite'"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
 				);
 
@@ -1631,7 +1664,9 @@ namespace Menge
 
 		if( resourceImage == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::createMovieSprite_ layer %s invalid get resource for image %s"
+			LOGGER_ERROR(m_serviceProvider)("Movie::createMovieSprite_ %s resource %s layer %s invalid get resource for image %s"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
 				, _layer.name.c_str()
 				);
@@ -1655,8 +1690,9 @@ namespace Menge
 		}
 		else
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie: '%s' layer '%s' blending mode not supported '%s'"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieExtraSprite_: %s resource %s layer '%s' blending mode not supported '%s'"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
 				, _layer.blendingMode.c_str()
 				);
@@ -1686,8 +1722,9 @@ namespace Menge
 #   ifdef _DEBUG
 		if( dynamic_cast<TextField *>( node ) == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::compileMovieText_ %s layer %s must be 'TextField' but node is %s type %s"
+			LOGGER_ERROR(m_serviceProvider)("Movie::compileMovieText_ %s resource %s layer %s must be 'TextField' but node is %s type %s"
 				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
 				, node->getName().c_str()
 				, node->getType().c_str()
@@ -1830,7 +1867,7 @@ namespace Menge
 
 		if( m_resourceMovie.compile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::_compile '%s' movie resource %s not compile"
+			LOGGER_ERROR(m_serviceProvider)("Movie::_compile '%s' resource %s not compile"
 				, m_name.c_str() 
 				, m_resourceMovie->getName().c_str()
 				);
@@ -1843,8 +1880,9 @@ namespace Menge
 
 		if( this->setupSceneEffect_() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s' can't setup scene effect"
+			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: %s resource %s can't setup scene effect"
 				, m_name.c_str()
+				, m_resourceMovie->getName().c_str()
 				);
 
 			return false;
@@ -1852,8 +1890,9 @@ namespace Menge
 
 		if( this->setupParent_() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s' can't setup layer parents"
+			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: %s resource %s can't setup layer parents"
 				, m_name.c_str()
+				, m_resourceMovie->getName().c_str()
 				);
 
 			return false;
@@ -1861,7 +1900,7 @@ namespace Menge
 
 		if( this->compileLayers_() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: '%s''%s' can't compile layers"
+			LOGGER_ERROR(m_serviceProvider)("Movie::_compile: %s resource %s can't compile layers"
 				, m_name.c_str()
 				, m_resourceMovie->getName().c_str()
 				);
@@ -1933,8 +1972,9 @@ namespace Menge
 #   ifdef _DEBUG
 			if( dynamic_cast<MovieSceneEffect *>(node) == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie::compileMovieText_ %s layer %s must be 'MovieSceneEffect' but node is %s type %s"
+				LOGGER_ERROR(m_serviceProvider)("Movie::compileMovieText_ %s resource %s layer %s must be 'MovieSceneEffect' but node is %s type %s"
 					, this->getName().c_str()
+					, this->getResourceMovieName().c_str()
 					, l.name.c_str()
 					, node->getName().c_str()
 					, node->getType().c_str()
@@ -1981,8 +2021,9 @@ namespace Menge
 
 				if( node_parent == nullptr )
 				{
-					LOGGER_ERROR(m_serviceProvider)("Movie::updateParent_ %s invalid parent node %d"
+					LOGGER_ERROR(m_serviceProvider)("Movie::updateParent_ %s resource %s invalid parent node %d"						
 						, this->getName().c_str()
+						, this->getResourceMovieName().c_str()
 						, layer.parent
 						);
 
@@ -2894,7 +2935,7 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Warning: Movie::_setSpeedFactor not compile '%s'"
+			LOGGER_ERROR(m_serviceProvider)("Movie::_setSpeedFactor not compile '%s'"
 				, m_name.c_str() 
 				);	
 

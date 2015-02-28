@@ -394,8 +394,9 @@ namespace Menge
 				return py_node;
 			}
 
-			LOGGER_ERROR(m_serviceProvider)("Movie::getSocket: %s not found %s"
+			LOGGER_ERROR(m_serviceProvider)("Movie::getSocket: movie %s resource %s not found %s"
 				, _movie->getName().c_str()
+				, _movie->getResourceMovieName().c_str()
 				, _name.c_str()
 				);
 
@@ -1598,7 +1599,7 @@ namespace Menge
 			return true;
 		}
         //////////////////////////////////////////////////////////////////////////
-        ResourceReference * s_getResourceReference( const ConstString& _nameResource )
+        ResourceReference * s_getResourceReference( const ConstString & _nameResource )
         {
             ResourceReference * resource = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceReference( _nameResource );
@@ -4811,7 +4812,7 @@ namespace Menge
 			.def("getFrameCount", &ResourceMovie::getFrameCount)
 			.def("getFrameDuration", &ResourceMovie::getFrameDuration)
 			.def("getDuration", &ResourceMovie::getDuration)
-			.def("getSocketShape", &ResourceMovie::getSocketShape)
+			.def("getSocketResourceShape", &ResourceMovie::getSocketResourceShape)
 			.def("hasAnchorPoint", &ResourceMovie::hasAnchorPoint)
 			.def("getAnchorPoint", &ResourceMovie::getAnchorPoint)
 			.def("hasBoundBox", &ResourceMovie::hasBoundBox)
@@ -5180,7 +5181,9 @@ namespace Menge
                     
 					.def_depricated( "getLength", &TextField::getTextSize, "use getTextSize" )
                     .def( "getTextSize", &TextField::getTextSize )
-                    .def( "setMaxLen", &TextField::setMaxLength )                    
+                    .def_depricated( "setMaxLen", &TextField::setMaxLength, "use setMaxLength" )
+					.def( "setMaxLength", &TextField::setMaxLength )
+					.def( "getMaxLength", &TextField::getMaxLength )
 
                     .def( "setCenterAlign", &TextField::setHorizontalCenterAlign )
                     .def( "isCenterAlign", &TextField::isHorizontalCenterAlign )

@@ -238,7 +238,6 @@ namespace Menge
 		
 	protected:
 		PyObject * _embedded() override;
-		void _embedding( PyObject * _embed ) override;
 
 	public:
 		PyObject * setEventListener( PyObject * _args, PyObject * _kwds );

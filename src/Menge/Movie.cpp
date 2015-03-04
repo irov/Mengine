@@ -402,7 +402,12 @@ namespace Menge
 
 		Nodies ns;
 		ns.node = _node;
-		ns.animatable = dynamic_cast<Animatable *>(_node);
+
+		if( _layer.isAnimatable() == true )
+		{
+			ns.animatable = dynamic_cast<Animatable *>(_node);
+		}
+		
 		ns.child = (_layer.parent != movie_layer_parent_none);
 
 		_node->setName( _layer.name );

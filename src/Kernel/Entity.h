@@ -38,6 +38,9 @@ namespace Menge
 		void destroy() override;
 
 	protected:
+		void _unshallowGrave() override;
+
+	protected:
 		ConstString m_prototype;
 
 		Eventable * m_scriptEventable;

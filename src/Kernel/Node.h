@@ -280,8 +280,14 @@ namespace Menge
 
 		bool isShallowGrave() const;
 
+		void setShallowGravePropagate( bool _propagate );
+
+	protected:
+		virtual void _unshallowGrave();
+
 	protected:
 		int m_shallowGrave;
+		bool m_shallowGravePropagate;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isActivate() const

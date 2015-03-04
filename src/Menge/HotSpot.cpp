@@ -21,6 +21,7 @@ namespace Menge
 	HotSpot::HotSpot()
 		: m_debugColor(0x00000000)		
 		, m_outward(false)
+		, m_global(false)
 		, m_picker(nullptr)
 		, m_defaultHandle(true)		
 		, m_onMouseMoveEvent(false)
@@ -72,6 +73,16 @@ namespace Menge
 	bool HotSpot::getDefaultHandle() const
 	{
 		return m_defaultHandle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void HotSpot::setGlobal( bool _value )
+	{
+		m_global = _value;		
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::getGlobal() const
+	{
+		return m_global;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_setEventListener( PyObject * _listener )

@@ -41,6 +41,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotBubbles::testPoint( const mt::vec2f & _point ) const
 	{
+		if( m_global == true )
+		{
+			return !m_outward;
+		}
+
 		this->updateBubbleWM_();
 
 		for( TVectorBubbles::const_iterator
@@ -62,6 +67,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotBubbles::testRadius( const mt::vec2f & _point, float _radius ) const
 	{
+		if( m_global == true )
+		{
+			return !m_outward;
+		}
+
 		this->updateBubbleWM_();
 
 		for( TVectorBubbles::const_iterator
@@ -83,6 +93,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotBubbles::testPolygon( const mt::vec2f & _point, const Polygon & _polygon ) const
 	{
+		if( m_global == true )
+		{
+			return !m_outward;
+		}
+
 		//TODO:
 		(void)_polygon;
 

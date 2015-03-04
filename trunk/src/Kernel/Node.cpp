@@ -31,6 +31,7 @@ namespace Menge
 		, m_renderCamera(nullptr)
 		, m_renderViewport(nullptr)
 		, m_shallowGrave(0)
+		, m_shallowGravePropagate(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -56,12 +57,31 @@ namespace Menge
     void Node::removeShallowGrave()
     {
         --m_shallowGrave;
+
+		if( m_shallowGrave == 0 && m_shallowGravePropagate == true )
+		{
+			this->_unshallowGrave();
+		}
     }    
     //////////////////////////////////////////////////////////////////////////
     bool Node::isShallowGrave() const
     {
         return m_shallowGrave > 0;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Node::setShallowGravePropagate( bool _propagate )
+	{
+		m_shallowGravePropagate = _propagate;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::_unshallowGrave()
+	{
+		this->removeFromParent();
+
+		this->setShallowGravePropagate( false );
+
+		Factorable::destroy();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::destroy()
 	{
@@ -71,6 +91,8 @@ namespace Menge
 				->addHomeless( this );
 
 			this->release();
+
+			this->setShallowGravePropagate( true );
 
 			return;
 		}

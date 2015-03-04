@@ -92,11 +92,24 @@ namespace Menge
 
 			this->release();
 
+			this->setShallowGravePropagate( true );
+			
             return;
         }
 
         EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_DESTROY)("(O)", this->getEmbed());
 
         Factorable::destroy();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::_unshallowGrave()
+	{
+		this->setShallowGravePropagate( false );
+
+		this->removeFromParent();
+
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_DESTROY)("(O)", this->getEmbed());
+
+		Factorable::destroy();
 	}
 }

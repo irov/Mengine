@@ -55,7 +55,7 @@ namespace Menge
 
         if( it_found == m_plugins.end() )
         {
-            LOGGER_WARNING(m_serviceProvider)( "PluginService::loadPlugin load %ls"
+            LOGGER_WARNING(m_serviceProvider)( "Load plugin %ls"
                 , _name.c_str() 
                 );
 

@@ -524,7 +524,7 @@ namespace Menge
         }
         else
         {
-            LOGGER_WARNING(m_serviceProvider)("AccountManager::loadAccounts invalid set any accounts"
+            LOGGER_INFO(m_serviceProvider)("AccountManager::loadAccounts invalid set any accounts"
                 );
         }
 		

@@ -477,10 +477,16 @@ namespace Menge
 
 		bool isMaster = !m_developmentMode;
 
-		LOGGER_WARNING(m_serviceProvider)("Initialize params '%s' master = '%d'"
-			, _scriptInitParams.c_str()
-			, isMaster
+		LOGGER_WARNING(m_serviceProvider)("Game initialize [%s mode]"
+			, isMaster ? "MASTER" : "DEVELOPMENT"
 			);
+
+		if( _scriptInitParams.empty() == false )
+		{
+			LOGGER_WARNING(m_serviceProvider)("params: %s"
+				, _scriptInitParams.c_str()
+				);
+		}
 
 		const ConstString & platformName = PLATFORM_SERVICE(m_serviceProvider)
 			->getPlatformName();

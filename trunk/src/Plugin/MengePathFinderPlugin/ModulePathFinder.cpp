@@ -107,6 +107,7 @@ namespace Menge
 			;
 
 		pybind::def_functor( "createPathFinderGraph", this, &ModulePathFinder::createGraph );
+		pybind::def_functor( "destroyPathFinderGraph", this, &ModulePathFinder::destroyGraph );
 
 		pybind::interface_<PathFinderMap>("PathFinderMap")
 			.def( "setMap", &PathFinderMap::setMap )
@@ -124,6 +125,7 @@ namespace Menge
 
 
 		pybind::def_functor( "createPathFinderMap", this, &ModulePathFinder::createMap );		
+		pybind::def_functor( "destroyPathFinderMap", this, &ModulePathFinder::destroyMap );
 		pybind::def_functor( "setPathFinderMapWeight", this, &ModulePathFinder::setMapWeight );
 
 		pybind::def_functor( "createPathFinderWayAffertor", this, &ModulePathFinder::createPathFinderWayAffertor );
@@ -176,6 +178,11 @@ namespace Menge
 	fastpathfinder::graph * ModulePathFinder::createGraph()
 	{
 		return new fastpathfinder::graph;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModulePathFinder::destroyGraph( fastpathfinder::graph * _graph )
+	{
+		delete _graph;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t ModulePathFinder::createPathFinderWayAffertor( Node * _node, PyObject * _way, float _speed, PyObject * _cb )

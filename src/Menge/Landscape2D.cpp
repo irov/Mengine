@@ -189,6 +189,17 @@ namespace	Menge
 		{
 			ResourceImage * image = *it;
 
+			if( image == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Landscape2D::setBackParts %s invalid setup image for %d:%d"
+					, this->getName().c_str()
+					, i
+					, j
+					);
+
+				continue;
+			}
+
 			Landscape2DElement el;
 
 			el.resource = image;

@@ -33,6 +33,7 @@ namespace Menge
 		void destroyMap( PathFinderMap * _map );
 
 		fastpathfinder::graph * createGraph();
+		void destroyGraph( fastpathfinder::graph * _graph );
 
 	public:
 		bool setMapWeight( PathFinderMap * _map, const ConstString & _resourceName );

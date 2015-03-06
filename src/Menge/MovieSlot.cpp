@@ -12,6 +12,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_destroy()
     {
+#	ifdef _DEBUG
         TListNodeChild & child = this->getChildren();
 
         for( TListNodeChild::iterator
@@ -30,8 +31,7 @@ namespace Menge
                 , m_movieName.c_str()
                 );
         }
-
-        this->removeChildren();
+#	endif
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_localHide( bool _value )
@@ -63,7 +63,7 @@ namespace Menge
 			return;
 		}
 		
-		LOGGER_ERROR(m_serviceProvider)("MovieSlot::_changeParent slot %s:%s movie %s (please don't change parent it's dange)"
+		LOGGER_ERROR(m_serviceProvider)("MovieSlot::_changeParent slot %s:%s movie %s (please don't change parent it's danger)"
 			, this->getName().c_str()
 			, this->getType().c_str()
 			, m_movieName.c_str()

@@ -1,5 +1,0 @@
-LIBRARY	"xml2bin"
-
-EXPORTS
-	writeHeader @1
-	writeBinary @2

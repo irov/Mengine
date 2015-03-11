@@ -4,5 +4,5 @@
 
 namespace Menge
 {
-    PyObject * spreadingPngAlpha( PyObject * _self, PyObject * _args );
+    PyObject * spreadingPngAlpha( const wchar_t * pngPathIn, const wchar_t * pngPathOut );
 }  

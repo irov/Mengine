@@ -954,6 +954,10 @@ namespace Menge
 
 		this->invalidateFont();
 		this->invalidateTextLines();
+
+#	ifdef _DEBUG
+		this->updateTextCache_();
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::removeTextFormatArgs()

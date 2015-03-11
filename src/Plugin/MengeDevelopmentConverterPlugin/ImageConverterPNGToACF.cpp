@@ -137,6 +137,15 @@ namespace Menge
 		ImageEncoderInterfacePtr encoder = CODEC_SERVICE(m_serviceProvider)
 			->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "acfImage") );
 
+		if( encoder == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert: %s invalid create encoder"
+				, m_options.inputFileName.c_str()
+				);
+
+			return false;
+		}
+
 		if( encoder->initialize( stream_output ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ImageConverterPNGToACF::convert: %s invalid initialize encoder"

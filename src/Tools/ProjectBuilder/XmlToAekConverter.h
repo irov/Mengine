@@ -4,5 +4,5 @@
 
 namespace Menge
 {
-	PyObject * writeAek( PyObject* self, PyObject* args );
+	PyObject * writeAek( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * aekPath );
 }

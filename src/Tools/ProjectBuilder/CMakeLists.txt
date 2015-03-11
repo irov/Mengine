@@ -1,56 +1,34 @@
-set( MY_LIB_NAME ToolsBuilderPlugin )
+set( MY_LIB_NAME ProjectBuilder )
 
 ADD_FILTER(
 src
-    ToolsBuilderPlugin.cpp
+    ProjectBuilder.cpp
     
-	AlphaSpreadingPlugin.cpp
-    AlphaSpreadingPlugin.h
+	AlphaSpreading.cpp
+    AlphaSpreading.h
+    Image.cpp
+    Image.h
     XmlToBinDecoder.cpp
     XmlToBinDecoder.h
     XmlToAekConverter.cpp
     XmlToAekConverter.h
-    
-    ToolsBuilderPlugin.def
 )
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 			         ${THIRDPARTY_DIR}/pugixml/src
                      ${THIRDPARTY_DIR}/metabuf
                      ${THIRDPARTY_DIR}/pybind/include
-                     ${THIRDPARTY_DIR}/PythonDLL/include
+                     ${THIRDPARTY_DIR}/Python3/include
+                     ${THIRDPARTY_DIR}/Python3/PC
 )
  
-ADD_LIBRARY( ${MY_LIB_NAME} SHARED  ${SRC_FILES} )
+ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
 
-add_definitions(-DPy_ENABLE_SHARED)
-add_definitions(-DPYBIND_PYTHON_VERSION=320)
+add_definitions(-DUNICODE)
+add_definitions(-D_UNICODE)
 
-SET(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS}/EXPORT:dllCreatePlugin")
-
-SET( APPLICATION_DEPENDENCIES
- ${APPLICATION_DEPENDENCIES}
- ${MY_LIB_NAME}
-)
-
-SET( APPLICATION_DEPENDENCIES
- ${APPLICATION_DEPENDENCIES}
- PARENT_SCOPE
-)
-
-SET( APPLICATION_LIB_PATHS
- ${APPLICATION_LIB_PATHS}
-)
-
-SET( APPLICATION_LIB_PATHS
- ${APPLICATION_LIB_PATHS}
- PARENT_SCOPE
-)
-
-SET( APPLICATION_LIBS
- ${APPLICATION_LIBS}
- PARENT_SCOPE
-)    
+add_definitions(-DPy_BUILD_CORE)
+add_definitions(-DPYBIND_PYTHON_VERSION=342)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core)
@@ -78,11 +56,11 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeLZ4Plugin)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeWin32FileGroupPlugin)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} MengeDevelopmentConverterPlugin)
 
-TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
-    ${THIRDPARTY_DIR}/PythonDLL/libs/python34.lib
+TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}    
+    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}python3_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX}
-    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}pybind3dll_static${MENGINE_LIB_SUFFIX}
+    ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}pybind3_static${MENGINE_LIB_SUFFIX}
     )
     
 foreach(dependency ${APPLICATION_DEPENDENCIES})

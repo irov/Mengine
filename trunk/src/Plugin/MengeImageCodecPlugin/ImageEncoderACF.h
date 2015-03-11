@@ -2,12 +2,12 @@
 
 #   include "Interface/ArchiveInterface.h"
 
-#	include "Codec/PickEncoder.h"
+#	include "Codec/ImageEncoder.h"
 
 namespace Menge
 {
 	class ImageEncoderACF
-		: public PickEncoder
+		: public ImageEncoder
 	{
 	public:
 		ImageEncoderACF();

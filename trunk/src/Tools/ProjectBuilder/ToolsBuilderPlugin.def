@@ -1,2 +1,0 @@
-LIBRARY		"ToolsBuilderPlugin"
-EXPORTS 	PyInit_ToolsBuilderPlugin 	@2

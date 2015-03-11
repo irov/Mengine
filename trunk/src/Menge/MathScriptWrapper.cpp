@@ -440,49 +440,78 @@ namespace Menge
         {
             (void)_user;
 
+			ColourValue * impl = (ColourValue *)_place;
+
 			if( pybind::tuple_check( _obj ) == true )
 			{
-				if( pybind::tuple_size( _obj ) != 4 )
+				if( pybind::tuple_size( _obj ) == 4 )
+				{
+					PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+					PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+					PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
+					PyObject * i3 = pybind::tuple_getitem( _obj, 3 );
+
+					float r = pybind::extract<float>(i0);
+					float g = pybind::extract<float>(i1);
+					float b = pybind::extract<float>(i2);
+					float a = pybind::extract<float>(i3);
+
+					impl->setARGB( a, r, g, b );
+				}
+				else if( pybind::tuple_size( _obj ) == 3 )
+				{
+					PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+					PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+					PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
+
+					float r = pybind::extract<float>(i0);
+					float g = pybind::extract<float>(i1);
+					float b = pybind::extract<float>(i2);
+					float a = 1.f;
+
+					impl->setARGB( a, r, g, b );
+				}
+				else
 				{
 					return false;
 				}
-
-				ColourValue * impl = (ColourValue *)_place;
-
-				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
-				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
-				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
-				PyObject * i3 = pybind::tuple_getitem( _obj, 3 );
-
-				float r = pybind::extract<float>(i0);
-				float g = pybind::extract<float>(i1);
-				float b = pybind::extract<float>(i2);
-				float a = pybind::extract<float>(i3);
-
-				impl->setARGB( a, r, g, b );
 
 				return true;
 			}
 			else if( pybind::list_check( _obj ) == true )
 			{
-				if( pybind::list_size( _obj ) != 4 )
+				if( pybind::list_size( _obj ) == 4 )
+				{
+					PyObject * i0 = pybind::list_getitem( _obj, 0 );
+					PyObject * i1 = pybind::list_getitem( _obj, 1 );
+					PyObject * i2 = pybind::list_getitem( _obj, 2 );
+					PyObject * i3 = pybind::list_getitem( _obj, 3 );
+
+					float r = pybind::extract<float>(i0);
+					float g = pybind::extract<float>(i1);
+					float b = pybind::extract<float>(i2);
+					float a = pybind::extract<float>(i3);
+
+					impl->setARGB( a, r, g, b );
+				}				
+				else if( pybind::list_size( _obj ) == 3 )
+				{
+					PyObject * i0 = pybind::list_getitem( _obj, 0 );
+					PyObject * i1 = pybind::list_getitem( _obj, 1 );
+					PyObject * i2 = pybind::list_getitem( _obj, 2 );
+
+
+					float r = pybind::extract<float>(i0);
+					float g = pybind::extract<float>(i1);
+					float b = pybind::extract<float>(i2);
+					float a = 1.f;
+
+					impl->setARGB( a, r, g, b );
+				}
+				else
 				{
 					return false;
 				}
-
-				ColourValue * impl = (ColourValue *)_place;
-
-				PyObject * i0 = pybind::list_getitem( _obj, 0 );
-				PyObject * i1 = pybind::list_getitem( _obj, 1 );
-				PyObject * i2 = pybind::list_getitem( _obj, 2 );
-				PyObject * i3 = pybind::list_getitem( _obj, 3 );
-
-				float r = pybind::extract<float>(i0);
-				float g = pybind::extract<float>(i1);
-				float b = pybind::extract<float>(i2);
-				float a = pybind::extract<float>(i3);
-
-				impl->setARGB( a, r, g, b );
 
 				return true;
 			}

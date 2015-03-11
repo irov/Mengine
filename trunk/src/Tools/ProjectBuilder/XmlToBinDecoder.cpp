@@ -24,8 +24,6 @@
 
 #   include "Config/Typedef.h"
 
-extern PyObject * PyToolException;
-
 namespace Menge
 {
     extern ServiceProviderInterface * serviceProvider;
@@ -88,23 +86,9 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * writeBin( PyObject* self, PyObject* args )
+    PyObject * writeBin( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * binPath )
     {
-        (void)self;
-
-        const wchar_t * protocolPath;
-        const wchar_t * xmlPath;
-        const wchar_t * binPath;
-
-        if (!PyArg_ParseTuple(args, "uuu", &protocolPath, &xmlPath, &binPath ))
-        {
-            LOGGER_ERROR(serviceProvider)("writeBin: error parse args"
-                );
-
-            return nullptr;
-        }
-
-        if( s_writeBin( protocolPath, xmlPath, binPath ) == false )
+		if( s_writeBin( protocolPath, xmlPath, binPath ) == false )
         {
             LOGGER_ERROR(serviceProvider)("writeBin: error write bin"
                 );

@@ -87,7 +87,11 @@ namespace Menge
 		}
 
 		int color_type;
-		if( dataInfo->channels == 3 )
+		if( dataInfo->channels == 1 )
+		{
+			color_type = PNG_COLOR_TYPE_GRAY;
+		}
+		else if( dataInfo->channels == 3 )
 		{
 			color_type = PNG_COLOR_TYPE_RGB;
 		}

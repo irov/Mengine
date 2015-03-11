@@ -1,4 +1,4 @@
-#	include "AlphaSpreadingPlugin.h"
+#	include "AlphaSpreading.h"
 
 #   include "Interface/ServiceInterface.h"
 
@@ -19,29 +19,13 @@
 
 #   include <Python.h>
 
-extern PyObject * PyToolException;
-
 namespace Menge
 {
 	extern ServiceProviderInterface * serviceProvider;    
 
-    PyObject * spreadingPngAlpha( PyObject * _self, PyObject * _args )
+    PyObject * spreadingPngAlpha( const wchar_t * pngPathIn, const wchar_t * pngPathOut )
     {
         LOGGER_INFO(serviceProvider)("spreadingPngAlpha\n");
-
-        const wchar_t * pngPathIn;
-        const wchar_t * pngPathOut;
-
-        if( !PyArg_ParseTuple(_args, "uu", &pngPathIn, &pngPathOut) )
-        {
-            char error[512];
-            sprintf( error, "spreadingPngAlpha error parse args"
-                );
-
-            PyErr_SetString( PyToolException, error );
-
-            return NULL;
-        }
 
         String utf8_inputFileName;
         Helper::unicodeToUtf8(serviceProvider, pngPathIn, utf8_inputFileName);
@@ -57,12 +41,9 @@ namespace Menge
         
         if( input_stream == nullptr )
         {
-            char error[512];
-            sprintf( error, "spreadingPngAlpha invalid PNG file '%s' not found"
+            LOGGER_ERROR(serviceProvider)("spreadingPngAlpha invalid PNG file '%s' not found"
                 , inputFileName.c_str()
                 );
-
-            PyErr_SetString( PyToolException, error );
 
             return NULL;
         }
@@ -74,24 +55,18 @@ namespace Menge
 
         if( imageDecoder == nullptr )
         {
-            char error[512];
-            sprintf( error, "spreadingPngAlpha not found decoder for file '%s'"
+            LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not found decoder for file '%s'"
                 , inputFileName.c_str()
                 );
-
-            PyErr_SetString( PyToolException, error );
 
             return nullptr;
         }
 
 		if( imageDecoder->prepareData( input_stream ) == false )
 		{
-			char error[512];
-			sprintf( error, "spreadingPngAlpha not initialize decoder for file '%s'"
+			LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not initialize decoder for file '%s'"
 				, inputFileName.c_str()
 				);
-
-			PyErr_SetString( PyToolException, error );
 
 			return nullptr;
 		}
@@ -119,12 +94,9 @@ namespace Menge
 
         if( imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
         {
-            char error[512];
-            sprintf( error, "spreadingPngAlpha invalid decode file '%s'"
+            LOGGER_ERROR(serviceProvider)("spreadingPngAlpha invalid decode file '%s'"
                 , inputFileName.c_str()
                 );
-
-            PyErr_SetString( PyToolException, error );
 
             return nullptr;
         }
@@ -204,12 +176,9 @@ namespace Menge
         {
             delete [] textureBuffer;
 
-            char error[512];
-            sprintf( error, "spreadingPngAlpha invalid create PNG file '%s'"
+            LOGGER_ERROR(serviceProvider)("spreadingPngAlpha invalid create PNG file '%s'"
                 , outputFileName.c_str()
                 );
-
-            PyErr_SetString( PyToolException, error );
 
             return nullptr;
         }
@@ -221,12 +190,9 @@ namespace Menge
         {
             delete [] textureBuffer;
 
-            char error[512];
-            sprintf( error, "spreadingPngAlpha not found encoder for file '%s'"
+            LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not found encoder for file '%s'"
                 , outputFileName.c_str()
                 );
-
-            PyErr_SetString( PyToolException, error );
 
             return nullptr;
         }
@@ -235,12 +201,9 @@ namespace Menge
 		{
 			delete [] textureBuffer;
 
-			char error[512];
-			sprintf( error, "spreadingPngAlpha not found encoder for file '%s'"
+			LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not found encoder for file '%s'"
 				, outputFileName.c_str()
 				);
-
-			PyErr_SetString( PyToolException, error );
 
 			return nullptr;
 		}
@@ -266,14 +229,11 @@ namespace Menge
         {
             delete [] textureBuffer;
 
-            char error[512];
-            sprintf( error, "spreadingPngAlpha not found encoder for file '%s'"
+            LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not found encoder for file '%s'"
                 , outputFileName.c_str()
                 );
 
-            PyErr_SetString( PyToolException, error );
-
-            return nullptr;
+			return nullptr;
         }
 
         delete [] textureBuffer;

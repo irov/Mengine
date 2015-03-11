@@ -27,10 +27,9 @@
 
 #   include "Config/Typedef.h"
 
-extern PyObject * PyToolException;
-
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	extern ServiceProviderInterface * serviceProvider;
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_writeAek( const WString & _protocolPath, const WString & _xmlPath, const WString & _aekPath )
@@ -92,22 +91,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * writeAek( PyObject* self, PyObject* args )
+	PyObject * writeAek( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * aekPath )
 	{
-		(void)self;
-
-		const wchar_t * protocolPath;
-		const wchar_t * xmlPath;
-		const wchar_t * aekPath;
-
-		if( !PyArg_ParseTuple(args, "uuu", &protocolPath, &xmlPath, &aekPath ) )
-		{
-			LOGGER_ERROR(serviceProvider)("writeAek: error parse args"
-				);
-
-			return NULL;
-		}
-
 		if( s_writeAek( protocolPath, xmlPath, aekPath ) == false )
 		{
 			LOGGER_ERROR(serviceProvider)("writeAek: error write bin"

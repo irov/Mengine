@@ -280,7 +280,7 @@ namespace Menge
 			for( uint32_t i = 0; i != m_width; ++i )
 			{
 				uint32_t index = (i + (j * m_width)) * m_channels;
-				uint32_t rotate_index = (j + (i * m_height)) * m_channels;				
+				uint32_t rotate_index = ((m_width - j) + (i * m_height)) * m_channels;				
 
 				for( uint32_t k = 0; k != m_channels; ++k )
 				{

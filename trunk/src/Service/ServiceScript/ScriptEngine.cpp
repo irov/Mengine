@@ -130,7 +130,7 @@ namespace Menge
             Py_ErrFormatFlag = 0;
         }
 
-		if( pybind::initialize( false, false ) == false )
+		if( pybind::initialize( false, false, true ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initialize invalid initialize pybind"
 				);

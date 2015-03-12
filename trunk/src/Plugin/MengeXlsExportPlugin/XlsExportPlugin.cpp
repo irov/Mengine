@@ -83,7 +83,7 @@ namespace Menge
             pybind::set_path( unicode_shortpath );
         }        
 
-		pybind::initialize( false, false );
+		pybind::initialize( false, false, true );
 
         PyObject * xls_module = pybind::module_init( "Xls" );
 

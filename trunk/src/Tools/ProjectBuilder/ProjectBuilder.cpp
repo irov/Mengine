@@ -656,6 +656,35 @@ namespace Menge
 		return pybind::ret_bool( isAlpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	PyObject * isUselessAlphaInImageFile( const wchar_t * _path )
+	{
+		String utf8_path;
+		if( Helper::unicodeToUtf8( serviceProvider, _path, utf8_path ) == false )
+		{
+			return nullptr;
+		}
+
+		ConstString c_path = Helper::stringizeString(serviceProvider, utf8_path);
+
+		Image * image = new Image;
+
+		if( image->load( c_path ) == false )
+		{
+			return nullptr;
+		}
+
+		if( image->getChannels() != 4 )
+		{
+			return nullptr;
+		}
+
+		bool useless = image->uselessalpha();
+
+		delete image;
+
+		return pybind::ret_bool( useless );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	Image * loadImage( const wchar_t * _path )
 	{
 		String utf8_path;
@@ -955,6 +984,7 @@ bool run()
 	pybind::def_function( "convert", &Menge::convert, py_tools_module );	
 	pybind::def_function( "magicParticlesAtlasFiles", &Menge::magicParticlesAtlasFiles, py_tools_module );
 	pybind::def_function( "isAlphaInImageFile", &Menge::isAlphaInImageFile, py_tools_module );
+	pybind::def_function( "isUselessAlphaInImageFile", &Menge::isUselessAlphaInImageFile, py_tools_module );
 
 	Menge::Image::embedding( py_tools_module );
 

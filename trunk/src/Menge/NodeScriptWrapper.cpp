@@ -5477,7 +5477,7 @@ namespace Menge
                 pybind::interface_<MovieInternalObject, pybind::bases<Node> >("MovieInternalObject", false)
                     ;
 
-                pybind::interface_<Video, pybind::bases<Node , Animatable> >("Video", false)                    
+                pybind::interface_<Video, pybind::bases<Node, Animatable> >("Video", false)                    
                     .def( "setResourceVideo", &Video::setResourceVideo )
                     .def( "getResourceVideo", &Video::getResourceVideo )
                     .def( "pause", &Video::pause )

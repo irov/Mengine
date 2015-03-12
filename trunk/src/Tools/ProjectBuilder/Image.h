@@ -31,6 +31,7 @@ namespace Menge
 		Image * rotate( float _angle );
 
 		PyObject * getextrema() const;
+		bool uselessalpha() const;
 
 		PyObject * split() const;
 
@@ -51,6 +52,8 @@ namespace Menge
 
 		uint32_t m_width;
 		uint32_t m_height;
-		uint32_t m_channels;		
+		uint32_t m_channels;
+
+		PyObject * m_embed;
 	};
 }

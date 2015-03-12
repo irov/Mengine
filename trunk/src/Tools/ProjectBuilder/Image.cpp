@@ -13,12 +13,21 @@ namespace Menge
 		, m_width(0)
 		, m_height(0)
 		, m_channels(0)
+		, m_embed(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Image::~Image()
 	{
 		delete [] m_memory;
+
+		if( m_embed != nullptr )
+		{
+			pybind::unwrap( m_embed );
+			pybind::decref( m_embed );
+
+			m_embed = nullptr;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Image::load( const FilePath & _path )
@@ -280,7 +289,7 @@ namespace Menge
 			for( uint32_t i = 0; i != m_width; ++i )
 			{
 				uint32_t index = (i + (j * m_width)) * m_channels;
-				uint32_t rotate_index = ((m_width - j) + (i * m_height)) * m_channels;				
+				uint32_t rotate_index = ((m_height - j - 1) + (i * m_height)) * m_channels;				
 
 				for( uint32_t k = 0; k != m_channels; ++k )
 				{
@@ -311,7 +320,7 @@ namespace Menge
 
 				for( uint32_t k = 0; k != m_channels; ++k )
 				{
-					uint8_t color = m_memory[index + 0];
+					uint8_t color = m_memory[index + k];
 
 					if( min_color[k] > color )
 					{
@@ -342,6 +351,38 @@ namespace Menge
 		}
 
 		return py_extrema;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Image::uselessalpha() const
+	{
+		if( m_channels != 4 )
+		{
+			return true;
+		}
+
+		uint8_t min_alpha = 255;
+
+		for( uint32_t j = 0; j != m_height; ++j )
+		{
+			for( uint32_t i = 0; i != m_width; ++i )
+			{
+				uint32_t index = (i + (j * m_width)) * 4;
+
+				uint8_t color = m_memory[index + 3];
+
+				if( min_alpha > color )
+				{
+					min_alpha = color;
+				}
+			}
+		}
+
+		if( min_alpha != 255 )
+		{
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Image::split() const
@@ -384,7 +425,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Image::embedding( PyObject * _module )
 	{
-		pybind::class_<Menge::Image>("Image", true, _module)
+		pybind::class_<Image>("Image", true, _module)
 			.def( "getWidth", &Image::getWidth )
 			.def( "getHeight", &Image::getHeight )
 			.def( "getChannels", &Image::getChannels )
@@ -393,7 +434,8 @@ namespace Menge
 			.def( "putdata", &Image::putdata )
 			.def( "rotate", &Image::rotate )
 			.def( "getextrema", &Image::getextrema )
+			.def( "uselessalpha", &Image::uselessalpha )
 			.def( "split", &Image::split)
-			;
+			;		
 	}
 }

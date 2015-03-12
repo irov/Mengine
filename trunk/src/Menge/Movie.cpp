@@ -668,7 +668,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::hasMovieLayer( const ConstString & _name ) const
 	{
-		if( this->isCompile() == false )
+		if( m_resourceMovie == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Movie::hasLayer %s resource %s invalid get layer %s not compile"
 				, this->getName().c_str()
@@ -737,7 +737,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, Movie ** _movie )
 	{
-		if( this->isCompile() == false )
+		if( m_resourceMovie == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Movie::getLayer %s resource %s invalid get layer %s not compile"
 				, this->getName().c_str()

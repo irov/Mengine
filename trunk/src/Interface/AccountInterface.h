@@ -87,6 +87,7 @@ namespace Menge
     public:
         virtual void setDefaultAccount( const WString & _accountID ) = 0;
         virtual const WString & getDefaultAccount() const = 0;
+		virtual bool isCurrentDefaultAccount() const = 0;
 
         virtual bool hasDefaultAccount() const = 0;
 

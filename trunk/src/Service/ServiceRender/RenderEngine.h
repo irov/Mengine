@@ -21,7 +21,7 @@
 #	include "Core/ConstString.h"
 
 #   ifndef MENGINE_RENDER_OBJECTS_MAX
-#   define MENGINE_RENDER_OBJECTS_MAX 8000
+#   define MENGINE_RENDER_OBJECTS_MAX 16000
 #   endif
 
 #   ifndef MENGINE_RENDER_PASS_MAX

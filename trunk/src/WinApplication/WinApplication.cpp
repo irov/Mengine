@@ -992,7 +992,7 @@ namespace Menge
 
 		m_renderService = renderService;
 
-		if( m_renderService->initialize( 32000, 48000 ) == false )
+		if( m_renderService->initialize( 64000, 96000 ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeRenderEngine_ Failed to initialize Render Engine"
 				);

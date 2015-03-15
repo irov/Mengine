@@ -12,6 +12,7 @@ namespace mt
 		vec2f maximum;
 
 		MATH_METHOD_INLINE box2f();
+		MATH_METHOD_INLINE box2f( float _minx, float _miny, float _maxx, float _maxy );
 		MATH_METHOD_INLINE box2f( const box2f & _box );
 		MATH_METHOD_INLINE box2f( const vec2f & _vb, const vec2f & _ve );
 	};

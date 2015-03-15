@@ -42,6 +42,8 @@ namespace Menge
 		void setDefaultAccount( const WString & _accountID ) override;
 		const WString & getDefaultAccount() const override;
 
+		bool isCurrentDefaultAccount() const override;
+
 		bool hasDefaultAccount() const override;
 
 		bool selectDefaultAccount() override;

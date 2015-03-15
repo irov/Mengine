@@ -37,11 +37,11 @@ namespace	Menge
 {
     //////////////////////////////////////////////////////////////////////////
 #	ifndef MENGINE_PARTICLE_MAX_COUNT
-#	define MENGINE_PARTICLE_MAX_COUNT 2000
+#	define MENGINE_PARTICLE_MAX_COUNT 8000
 #	endif
 	//////////////////////////////////////////////////////////////////////////
 #	ifndef MENGINE_PARTICLE_MAX_MESH
-#	define MENGINE_PARTICLE_MAX_MESH 100
+#	define MENGINE_PARTICLE_MAX_MESH 1000
 #	endif
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter2::ParticleEmitter2()

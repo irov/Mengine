@@ -615,7 +615,7 @@ namespace Menge
 			mt::ident_m4( vm );
 		
 			mt::mat4f pm;
-			mt::make_projection_ortho_lh_m4( pm, 0.f, m_width, 0.f, m_height, -1000.f, 1000.f );
+			mt::make_projection_ortho_lh_m4( pm, m_width * -0.5f, m_width * 0.5f, m_height * -0.5f, m_height * 0.5f, -1000.f, 1000.f );
 
 			mt::mul_m4_m4( vpm, vm, pm );
 		}

@@ -1027,6 +1027,12 @@ namespace Menge
 				->hasDefaultAccount();
 		}
 
+		bool s_isCurrentDefaultAccount()
+		{
+			return ACCOUNT_SERVICE(m_serviceProvider)
+				->isCurrentDefaultAccount();
+		}
+
 		bool s_selectDefaultAccount()
 		{
 			return ACCOUNT_SERVICE(m_serviceProvider)
@@ -1613,8 +1619,9 @@ namespace Menge
 
 		pybind::def_functor( "setDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_setDefaultAccount );
 		pybind::def_functor( "getDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_getDefaultAccount );
-		pybind::def_functor( "hasDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_hasDefaultAccount );		
-		pybind::def_functor( "selectDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_selectDefaultAccount );		
+		pybind::def_functor( "hasDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_hasDefaultAccount );
+		pybind::def_functor( "isCurrentDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_isCurrentDefaultAccount );
+		pybind::def_functor( "selectDefaultAccount", helperScriptMethod, &HelperScriptMethod::s_selectDefaultAccount );
 
         pybind::def_functor( "writeAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_writeAccountPickleFile );
         pybind::def_functor( "loadAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_loadAccountPickleFile );

@@ -315,6 +315,23 @@ namespace Menge
 		return m_defaultAccountID;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool AccountManager::isCurrentDefaultAccount() const
+	{
+		if( m_defaultAccountID.empty() == true )
+		{
+			return false;
+		}
+
+		if( m_currentAccount == nullptr )
+		{
+			return false;
+		}
+
+		const WString & accountID = m_currentAccount->getName();
+
+		return m_defaultAccountID == accountID;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::hasDefaultAccount() const
 	{
 		if( m_defaultAccountID.empty() == true )

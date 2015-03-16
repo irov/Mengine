@@ -625,7 +625,7 @@ namespace Menge
 			if( _particlesLimit <= _flush.particleCount + rendering.count || 
 				_meshLimit <= _flush.meshCount )
 			{
-				return false;
+				return true;
 			}
 
 			ParticleMesh & mesh = _meshes[_flush.meshCount];

@@ -83,12 +83,16 @@ namespace Menge
 
 		uint32_t maxQuadBatch = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxQuadBatch", 2000U );
 		uint32_t maxLineBatch = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxLineBatch", 4000U );
+
+		uint32_t maxDebugVertex = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxDebugVertex", 2000U );
 				
 		m_renderObjects.reserve( maxObjects );
 		m_renderPasses.reserve( maxPasses );
 
 		m_indicesQuad.resize( maxQuadBatch * 6 );
 		m_indicesLine.resize( maxLineBatch * 1 );
+
+		m_debugRenderVertex2D.reserve( maxDebugVertex );
 
 		for( uint32_t i = 0; i != maxQuadBatch; ++i )
 		{   

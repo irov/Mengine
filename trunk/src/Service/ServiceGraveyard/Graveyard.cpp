@@ -30,7 +30,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Graveyard::initialize()
 	{
-		m_graveyardTime = CONFIG_VALUE(m_serviceProvider, "Engine", "Gravey1ardTime", 1000.f);
+		m_graveyardTime = CONFIG_VALUE(m_serviceProvider, "Engine", "GraveyardTime", 1000.f);
 
 		return true;
 	}

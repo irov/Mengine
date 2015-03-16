@@ -587,7 +587,7 @@ namespace Menge
         SERVICE_DECLARE("RenderService")
 
     public:
-        virtual bool initialize( uint32_t _maxVertexCount, uint32_t _maxIndexCount ) = 0;
+        virtual bool initialize() = 0;
         virtual void finalize() = 0;
 
     public:

@@ -611,8 +611,8 @@ namespace Menge
 						return false;
 					}
 
-					shape.vertexCount = shapeVertexCount;
-					shape.indexCount = shapeIndicesCount;
+					shape.vertexCount = (uint8_t)shapeVertexCount;
+					shape.indexCount = (uint8_t)shapeIndicesCount;
 
 					for( uint32_t i = 0; i != shapeVertexCount; ++i )
 					{

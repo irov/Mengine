@@ -73,16 +73,28 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::initialize( uint32_t _maxVertexCount, uint32_t _maxIndexCount )
+	bool RenderEngine::initialize()
 	{
-		m_maxVertexCount = _maxVertexCount;
-		m_maxIndexCount = _maxIndexCount;        
+		m_maxVertexCount = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxVertexCount", 32000U );
+		m_maxIndexCount = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxIndexCount", 48000U );
 
-		for( RenderIndices2D i = 0; i != MENGINE_RENDER_QUAD; ++i )
+		uint32_t maxObjects = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxObject", 8000U );
+		uint32_t maxPasses = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxPass", 200U );
+
+		uint32_t maxQuadBatch = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxQuadBatch", 2000U );
+		uint32_t maxLineBatch = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxLineBatch", 4000U );
+				
+		m_renderObjects.reserve( maxObjects );
+		m_renderPasses.reserve( maxPasses );
+
+		m_indicesQuad.resize( maxQuadBatch * 6 );
+		m_indicesLine.resize( maxLineBatch * 1 );
+
+		for( uint32_t i = 0; i != maxQuadBatch; ++i )
 		{   
-			size_t indexOffset = i * 6;
+			uint32_t indexOffset = i * 6;
 
-			RenderIndices2D vertexOffset = i * 4;
+			RenderIndices2D vertexOffset = (RenderIndices2D)i * 4;
 
 			m_indicesQuad[indexOffset + 0] = vertexOffset + 0;
 			m_indicesQuad[indexOffset + 1] = vertexOffset + 3;
@@ -92,9 +104,11 @@ namespace Menge
 			m_indicesQuad[indexOffset + 5] = vertexOffset + 2;
 		}
 
-		for( RenderIndices2D i = 0; i != MENGINE_RENDER_INDICES_LINE; ++i )
+		for( uint32_t i = 0; i != maxLineBatch; ++i )
 		{
-			m_indicesLine[i] = i;
+			RenderIndices2D vertexOffset = (RenderIndices2D)i;
+
+			m_indicesLine[i] = vertexOffset;
 		}
 
 		this->setRenderSystemDefaults_();
@@ -1065,7 +1079,7 @@ namespace Menge
 		if( m_renderObjects.full() == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D max render objects %d"
-				, MENGINE_RENDER_OBJECTS_MAX
+				, m_maxObjects
 				);
 
 			return;
@@ -1086,7 +1100,7 @@ namespace Menge
 			if( m_renderPasses.full() == true )
 			{
 				LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D max render passes %d"
-					, MENGINE_RENDER_PASS_MAX
+					, m_maxPasses
 					);
 
 				return;
@@ -1200,17 +1214,19 @@ namespace Menge
 	{
 		uint32_t indicesNum = (_verticesNum / 4) * 6;
 
-		if( indicesNum >= MENGINE_RENDER_INDICES_QUAD )
+		if( indicesNum >= m_indicesQuad.size() )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::addRenderQuad count %d > max count %d"
 				, indicesNum
-				, MENGINE_RENDER_INDICES_QUAD
+				, m_indicesQuad.size()
 				);
 
 			return;
 		}
 
-		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, m_indicesQuad, indicesNum, _bb );
+		RenderIndices2D * indices = m_indicesQuad.buff();
+
+		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
@@ -1219,17 +1235,19 @@ namespace Menge
 	{
 		uint32_t indicesNum = _verticesNum;
 
-		if( indicesNum >= MENGINE_RENDER_INDICES_LINE )
+		if( indicesNum >= m_indicesLine.size() )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::addRenderLine count %d > max count %d"
 				, indicesNum
-				, MENGINE_RENDER_INDICES_LINE
+				, m_indicesLine.size()
 				);
 
 			return;
 		}
 
-		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, m_indicesLine, indicesNum, _bb );
+		RenderIndices2D * indices = m_indicesLine.buff();
+
+		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial )

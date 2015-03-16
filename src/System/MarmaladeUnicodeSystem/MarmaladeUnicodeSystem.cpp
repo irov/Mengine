@@ -34,8 +34,7 @@ namespace Menge
 			_utf8Capacity += 1;
 		}
 
-        const ucs2char * ucs_unicode = reinterpret_cast<const ucs2char *>(_unicode);
-        int utf8_size = IwWideCharToUTF8( ucs_unicode, _unicodeSize, _utf8, _utf8Capacity );
+        int utf8_size = IwWideCharToUTF8( _unicode, _unicodeSize, _utf8, _utf8Capacity );
 
         if( utf8_size == iwutf8_invalid_cast )
         {
@@ -68,8 +67,7 @@ namespace Menge
 			_unicodeCapacity += 1;
 		}
 
-		ucs2char * uc_unicode = reinterpret_cast<ucs2char *>(_unicode);
-        int wc_size = IwUTF8ToWideChar( _utf8, _utf8Size, uc_unicode, _unicodeCapacity);
+        int wc_size = IwUTF8ToWideChar( _utf8, _utf8Size, _unicode, _unicodeCapacity);
 
         if( wc_size == iwutf8_invalid_cast )
         {

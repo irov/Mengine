@@ -10,6 +10,7 @@
 #	include "Core/ConstString.h"
 
 #   include "stdex/static_array.h"
+#	include "stdex/heap_array.h"
 
 #   include "Factory/FactoryPool.h"
 
@@ -20,28 +21,6 @@
 
 #	include "Core/ConstString.h"
 
-#   ifndef MENGINE_RENDER_OBJECTS_MAX
-#   define MENGINE_RENDER_OBJECTS_MAX 16000
-#   endif
-
-#   ifndef MENGINE_RENDER_PASS_MAX
-#   define MENGINE_RENDER_PASS_MAX 200
-#   endif
-
-#   ifndef MENGINE_RENDER_QUAD
-#   define MENGINE_RENDER_QUAD 2000
-#   endif
-
-#   define MENGINE_RENDER_INDICES_QUAD (MENGINE_RENDER_QUAD * 6)
-
-#   ifndef MENGINE_RENDER_INDICES_LINE
-#   define MENGINE_RENDER_INDICES_LINE 4000
-#   endif
-
-#	ifndef MENGINE_RENDER_DEBUG_VERTEX_MAX
-#   define MENGINE_RENDER_DEBUG_VERTEX_MAX 8192
-#   endif
-
 #	ifndef MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX
 #	define MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX 512
 #	endif
@@ -49,10 +28,7 @@
 
 namespace Menge
 {
-	struct RenderVertex2D;
-
-	struct ImageCodecDataInfo;
-
+	//////////////////////////////////////////////////////////////////////////
 	struct RenderObject
     {
 		RenderMaterial * material;
@@ -104,7 +80,7 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool initialize( uint32_t _maxVertexCount, uint32_t _maxIndexCount ) override;
+		bool initialize() override;
 		void finalize() override;
 
 	public:
@@ -271,6 +247,8 @@ namespace Menge
 
 		uint32_t m_maxVertexCount;
 		uint32_t m_maxIndexCount;
+		uint32_t m_maxObjects;
+		uint32_t m_maxPasses;
 						
 		VBHandle m_currentVBHandle;
 		VBHandle m_currentIBHandle;
@@ -294,20 +272,21 @@ namespace Menge
 
 		RenderDebugInfo m_debugInfo;	    // debug info
 
-		RenderIndices2D m_indicesQuad[MENGINE_RENDER_INDICES_QUAD * 6];
-        RenderIndices2D m_indicesLine[MENGINE_RENDER_INDICES_LINE];
+		typedef stdex::heap_array<RenderIndices2D> TArrayRenderIndices2D;
+		TArrayRenderIndices2D m_indicesQuad;
+        TArrayRenderIndices2D m_indicesLine;
 
 		Viewport m_renderViewport;
 
 		uint32_t m_currentVertexDeclaration;
         
-        typedef stdex::static_array<RenderObject, MENGINE_RENDER_OBJECTS_MAX> TArrayRenderObject;
+        typedef stdex::heap_array<RenderObject> TArrayRenderObject;
         TArrayRenderObject m_renderObjects;
 
-        typedef stdex::static_array<RenderPass, MENGINE_RENDER_PASS_MAX> TArrayRenderPass;
+        typedef stdex::heap_array<RenderPass> TArrayRenderPass;
         TArrayRenderPass m_renderPasses;
 
-		typedef stdex::static_array<RenderVertex2D, MENGINE_RENDER_DEBUG_VERTEX_MAX> TArrayRenderVertex2D;
+		typedef stdex::heap_array<RenderVertex2D> TArrayRenderVertex2D;
 		TArrayRenderVertex2D m_debugRenderVertex2D;
 
 		RenderMaterialInterfacePtr m_debugMaterial;

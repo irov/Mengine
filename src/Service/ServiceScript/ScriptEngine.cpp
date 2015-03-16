@@ -47,6 +47,11 @@ namespace Menge
 	public:
 		void begin_bind_call( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
 		{
+			(void)_kwds;
+			(void)_args;
+			(void)_functionName;
+			(void)_className;
+
 			size_t count = LOG_SERVICE(m_serviceProvider)
 				->getCountMessage( LM_ERROR );
 
@@ -55,6 +60,9 @@ namespace Menge
 
 		void end_bind_call( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
 		{
+			(void)_kwds;
+			(void)_args;
+
 			size_t count = LOG_SERVICE(m_serviceProvider)
 				->getCountMessage( LM_ERROR );
 

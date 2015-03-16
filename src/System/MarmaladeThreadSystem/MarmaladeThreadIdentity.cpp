@@ -112,6 +112,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeThreadIdentity::join()
 	{
+		if( m_exit == true )
+		{
+			return;
+		}
+
 		m_mutex->lock();
 		{
 			m_exit = true;
@@ -127,5 +132,7 @@ namespace Menge
 				, s3eThreadGetErrorString()
 				);						
 		}
+
+		m_thread = nullptr;
 	}
 }

@@ -172,6 +172,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadIdentity::join()
 	{
+		if( m_exit == true )
+		{
+			return;
+		}
+
 		m_mutex->lock();
 		{
 			m_exit = true;
@@ -180,5 +185,6 @@ namespace Menge
 
 		WaitForSingleObject( m_handle, INFINITE );
 		CloseHandle( m_handle );
+		m_handle = INVALID_HANDLE_VALUE;
 	}
 }

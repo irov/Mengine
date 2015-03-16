@@ -44,18 +44,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeThreadSystem::finalize()
 	{
-		for( TVectorPosixThreadIdentity::iterator
-			it = m_threadIdentities.begin(),
-			it_end = m_threadIdentities.end();
-		it != it_end;
-		++it )
-		{
-			const MarmaladeThreadIdentityPtr & thread = *it;
-
-			thread->join();
-		}
-		
-		m_threadIdentities.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeThreadSystem::avaliable() const
@@ -76,8 +64,6 @@ namespace Menge
 
 			return nullptr;
 		}
-
-		m_threadIdentities.push_back( identity );
 
 		return identity;
 	}

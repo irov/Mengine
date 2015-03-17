@@ -34,11 +34,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptModuleFinder::finalize()
 	{
+		if( m_embed != nullptr )
+		{
+			pybind::decref( m_embed );
+			m_embed = nullptr;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptModuleFinder::setEmbed( PyObject * _embed )
 	{
 		m_embed = _embed;
+		pybind::incref( m_embed );
 	}
     //////////////////////////////////////////////////////////////////////////
     void ScriptModuleFinder::addModulePath( const ConstString & _pak, const TVectorConstString & _pathes )

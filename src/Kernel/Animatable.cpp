@@ -124,10 +124,6 @@ namespace Menge
 			return 0;
 		}
 
-		m_interrupt = false;
-
-		m_playTime = _time;		
-
 		if( m_play == true )
 		{
 			if( this->_restart( _time, m_enumerator ) == false )
@@ -142,6 +138,10 @@ namespace Menge
 				return 0;
 			}
 		}
+
+		m_interrupt = false;
+
+		m_playTime = _time;
 
 		m_play = true;
 

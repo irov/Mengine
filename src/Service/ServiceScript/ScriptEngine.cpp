@@ -177,7 +177,7 @@ namespace Menge
 		pybind::decref( py_loggerError );
 
 
-        pybind::class_<ScriptModuleFinder>("ScriptModuleFinder", true)
+        pybind::interface_<ScriptModuleFinder>("ScriptModuleFinder", true)
             .def("find_module", &ScriptModuleFinder::find_module)   
 			.def("load_module", &ScriptModuleFinder::load_module)
             ;
@@ -210,6 +210,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::finalize()
 	{
+		pybind::_remove_module_finder();
+
         this->removeGlobalModule( "Menge" );
 		this->removeGlobalModule( "_PYTHON_VERSION" );
 

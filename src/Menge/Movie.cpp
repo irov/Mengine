@@ -2261,7 +2261,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_deactivate()
 	{
-		this->stop();
+		this->stopAnimation_();
 
 		Node::_deactivate();
 	}

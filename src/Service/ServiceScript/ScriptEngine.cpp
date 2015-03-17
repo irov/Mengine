@@ -80,7 +80,7 @@ namespace Menge
 			{
 				return;
 			}
-
+			
 			LOGGER_ERROR(m_serviceProvider)("script call %s::%s and get error!"
 				, _className
 				, _functionName

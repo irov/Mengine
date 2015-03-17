@@ -74,6 +74,8 @@ namespace Menge
 	protected:
 		bool _play( float _time ) override;
 		bool _restart( float _time, uint32_t _enumerator ) override;
+		void _pause( uint32_t _enumerator ) override;
+		void _resume( uint32_t _enumerator ) override;
 		void _stop( uint32_t _enumerator ) override;
 		void _end( uint32_t _enumerator ) override;
 		bool _interrupt( uint32_t _enumerator ) override;
@@ -106,17 +108,21 @@ namespace Menge
 	protected:
 		void _setEventListener( PyObject * _embed ) override;
 
-	private:
+	protected:
 		bool updateFrameNode_( const MovieLayer & layer, Node * _node, uint32_t _frameId, bool _interpolate, bool _start );
 
-	private:
+	protected:
 		bool setupSceneEffect_();
 
 		bool setupParent_();
 		void removeParent_();
 
 		void updateCamera_();
+
+	protected:
 		void stopAnimation_();
+		void pauseAnimation_();
+		void resumeAnimation_();
 
     protected:
         bool createLayers_();

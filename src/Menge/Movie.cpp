@@ -245,6 +245,16 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::_pause( uint32_t _enumerator )
+	{
+		this->pauseAnimation_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::_resume( uint32_t _enumerator )
+	{
+		this->resumeAnimation_();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie::_stop( uint32_t _enumerator )
 	{
 		this->stopAnimation_();
@@ -2119,6 +2129,90 @@ namespace Menge
 				{
 					animatable->stop();
 				}
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::pauseAnimation_()
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::pauseAnimation_ %s is not compile"
+				, m_name.c_str()
+				);
+
+			return;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			Node * node = this->getLayerNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			if( layer.isAnimatable() == false )
+			{
+				continue;
+			}
+
+			if( layer.timeRemap == false )
+			{
+				Animatable * animatable = this->getLayerAnimatable_( layer );
+
+				animatable->pause();
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::resumeAnimation_()
+	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Movie::resumeAnimation_ %s is not compile"
+				, m_name.c_str()
+				);
+
+			return;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			Node * node = this->getLayerNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+			if( layer.isAnimatable() == false )
+			{
+				continue;
+			}
+
+			if( layer.timeRemap == false )
+			{
+				Animatable * animatable = this->getLayerAnimatable_( layer );
+
+				animatable->resume();
 			}
 		}
 	}

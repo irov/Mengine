@@ -17,7 +17,10 @@ namespace Menge
 
 	public:
 		void reset() override;
+
+	public:
 		float getDeltaTime() const override;
+		uint64_t getUnixTime() const override;
 
 	public:
 		uint64_t getMilliseconds() override;

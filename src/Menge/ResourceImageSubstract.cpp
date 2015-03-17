@@ -28,7 +28,8 @@ namespace Menge
         m_wrapV = false;
 
         m_resourceImageName = metadata->get_Image_Name();
-        m_uv = metadata->get_Image_UV();
+        m_uv_image = metadata->get_Image_UV();
+		m_uv_alpha = m_uv_image;
         
         metadata->get_Image_Rotate( m_isUVRGBRotate );
         metadata->get_Image_Alpha( m_isAlpha );
@@ -69,7 +70,7 @@ namespace Menge
         m_texture = m_resourceImage->getTexture();
         m_textureAlpha = m_resourceImage->getTextureAlpha();
 		        
-        mt::vec2f uv_size(m_uv.z - m_uv.x, m_uv.w - m_uv.y);
+        mt::vec2f uv_size(m_uv_image.z - m_uv_image.x, m_uv_image.w - m_uv_image.y);
 
 		if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
 		{
@@ -94,11 +95,7 @@ namespace Menge
 				std::swap( m_size.x, m_size.y );
 			}
 		}
-
-        m_uv_scale = m_resourceImage->getUVScale();
-		m_uv_image = m_uv;
-        m_uv_alpha = m_uv;
-        
+       
         m_wrapU = false;
         m_wrapV = false;
 		        

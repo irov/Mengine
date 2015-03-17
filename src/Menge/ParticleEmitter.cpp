@@ -280,7 +280,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::pause()
+	void ParticleEmitter::_pause( uint32_t _enumerator )
 	{
 		if( this->isActivate() == false )
 		{
@@ -288,6 +288,16 @@ namespace	Menge
 		}
 
 		m_emitter->pause();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter::_resume( uint32_t _enumerator )
+	{
+		if( this->isActivate() == false )
+		{
+			return;
+		}
+
+		m_emitter->resume();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_stop( uint32_t _enumerator )
@@ -618,16 +628,6 @@ namespace	Menge
 			m_materials[i*2 + 0] = mg_intensive;
 			m_materials[i*2 + 1] = mg_nonintensive;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter::restart()
-	{
-		if( this->isActivate() == false )
-		{
-			return;
-		}
-
-		m_emitter->restart();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::setResourceEmitterContainer( ResourceEmitterContainer * _resourceEmitterContainer )

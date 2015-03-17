@@ -190,7 +190,29 @@ namespace Menge
         (void)_enumerator;
 		//ToDo
 
-		return false;
+		return false;	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_pause( uint32_t _enumerator )
+	{
+		if( m_sourceID == 0 )
+		{
+			return;
+		}
+		
+		SOUND_SERVICE(m_serviceProvider)
+			->pause( m_sourceID );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_resume( uint32_t _enumerator )
+	{
+		if( m_sourceID == 0 )
+		{
+			return;
+		}
+
+		SOUND_SERVICE(m_serviceProvider)
+			->resume( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_stop( uint32_t _enumerator )

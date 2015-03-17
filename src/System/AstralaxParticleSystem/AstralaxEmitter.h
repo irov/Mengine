@@ -37,6 +37,7 @@ namespace Menge
 		void play() override;
 		void stop() override;
 		void pause() override;
+		void resume() override;
 		void restart() override;
 		bool update( float _timing, bool & _stop ) override;
 		void setLeftBorder( float _leftBorder ) override;

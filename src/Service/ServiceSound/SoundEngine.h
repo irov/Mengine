@@ -100,30 +100,31 @@ namespace Menge
         float getVoiceVolume( const ConstString & _type ) const override;
 
 	public:
-		bool setSourceVolume( uint32_t _emitter, float _volume ) override;
-		float getSourceVolume( uint32_t _emitter ) const override;
+		bool setSourceVolume( uint32_t _emitterId, float _volume ) override;
+		float getSourceVolume( uint32_t _emitterId ) const override;
 
 		bool releaseSoundSource( uint32_t _sourceID ) override;
 
 		bool validSoundSource( uint32_t _sourceID ) const override;
 		
 	public:
-		bool play( uint32_t _emitter ) override;
-		bool pause( uint32_t _emitter ) override;
-		bool stop( uint32_t _emitter ) override;
+		bool play( uint32_t _emitterId ) override;
+		bool pause( uint32_t _emitterId ) override;
+		bool resume( uint32_t _emitterId ) override;
+		bool stop( uint32_t _emitterId ) override;
 
 	public:
-		void setLoop( uint32_t _emitter, bool _looped ) override;
-		bool getLoop( uint32_t _emitter ) const override;
+		void setLoop( uint32_t _emitterId, bool _looped ) override;
+		bool getLoop( uint32_t _emitterId ) const override;
 
 	public:
-		void setSourceListener( uint32_t _emitter, SoundListenerInterface* _listener ) override;
+		void setSourceListener( uint32_t _emitterId, SoundListenerInterface* _listener ) override;
 		
 	public:
-		float getLengthMs( uint32_t _emitter ) const override;
+		float getLengthMs( uint32_t _emitterId ) const override;
 		
-		bool setPosMs( uint32_t _emitter, float _pos ) override;
-		float getPosMs( uint32_t _emitter ) override;
+		bool setPosMs( uint32_t _emitterId, float _pos ) override;
+		float getPosMs( uint32_t _emitterId ) override;
 
 		void mute( bool _mute ) override;
 		bool isMute() const override;

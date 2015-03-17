@@ -359,7 +359,8 @@ namespace Menge
 				->findCodecType( m_filePath );
 		}
 
-        m_uv = _uv;
+        m_uv_image = _uv;
+		m_uv_alpha = _uv;
 
 		m_texture = nullptr;
 		m_isAlpha = true;

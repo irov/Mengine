@@ -130,7 +130,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::joinThread: invalid join thread error code - %s"
 				, s3eThreadGetErrorString()
-				);						
+				);
 		}
 
 		m_thread = nullptr;

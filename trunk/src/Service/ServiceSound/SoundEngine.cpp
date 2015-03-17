@@ -721,6 +721,53 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool SoundEngine::resume( uint32_t _emitterId )
+	{
+		SoundSourceDesc * source;
+		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("SoundEngine:pause not found emitter id %d"
+				, _emitterId
+				);
+
+			return false;
+		}
+
+		switch( source->state )
+		{
+		case ESS_PAUSE:
+			{
+				this->stopSoundBufferUpdate_( source );
+
+				float length_ms = source->source->getLengthMs();
+				float pos_ms = source->source->getPosMs();
+
+				source->timing = length_ms - pos_ms;
+
+				source->state = ESS_PLAY;
+
+				if( source->turn == true )
+				{
+					if( source->source->play() == false )
+					{
+						LOGGER_ERROR(m_serviceProvider)("SoundEngine::play invalid play %d"
+							, _emitterId
+							);
+
+						return false;
+					}
+
+					this->playSoundBufferUpdate_( source );
+				}
+			}
+		default:
+			{
+			}break;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::stop( uint32_t _emitterId )
 	{
         SoundSourceDesc * source;

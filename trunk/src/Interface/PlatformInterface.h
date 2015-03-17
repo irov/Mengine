@@ -23,7 +23,10 @@ namespace Menge
     public:
         virtual void initialize() = 0;
         virtual void reset() = 0;
+
+	public:
         virtual float getDeltaTime() const = 0;
+		virtual uint64_t getUnixTime() const = 0;
 
     public:
         virtual uint64_t getMilliseconds() = 0;

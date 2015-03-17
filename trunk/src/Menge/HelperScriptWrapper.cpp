@@ -606,6 +606,16 @@ namespace Menge
 			return ms;
 		}
 
+		uint64_t s_getUnixTime()
+		{
+			TimerInterface * timer = PLATFORM_SERVICE(m_serviceProvider)
+				->getTimer();
+
+			uint64_t ms = timer->getUnixTime();
+
+			return ms;
+		}
+
         uint64_t s_getTime()
         {
             uint64_t ms = s_getTimeMs();
@@ -1118,11 +1128,32 @@ namespace Menge
             ConstString filepath = Helper::stringizeString( m_serviceProvider, utf8_fileName );
 
 			size_t size;
-			pybind::pickle( _data, _pickleTypes, nullptr, 0, size );
+			if( pybind::pickle( _data, _pickleTypes, nullptr, 0, size ) == false )
+			{
+				const WString & accountName = currentAccount->getName();
+
+				LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account %ls invalid get pickle size"
+					, accountName.c_str()
+					);
+
+				return false;
+			}
 
 			CacheMemoryBuffer buffer(m_serviceProvider, size, "s_writeAccountBinaryFile");
 			void * memory_buffer = buffer.getMemory();
 			size_t memory_size = buffer.getSize();
+
+			if( memory_buffer == nullptr )
+			{
+				const WString & accountName = currentAccount->getName();
+
+				LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account %ls invalid get memory for %d size"
+					, accountName.c_str()
+					, memory_size
+					);
+
+				return false;
+			}
 
 			if( pybind::pickle( _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
 			{
@@ -1210,6 +1241,37 @@ namespace Menge
 			}
 
 			return py_data;
+		}
+
+		bool s_hasAccountPickleFile( const WString & _fileName )
+		{
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
+				->getCurrentAccount();
+
+			if( currentAccount == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid load file %ls (currentAccount is none)"
+					, _fileName.c_str()
+					);
+
+				return false;
+			}
+
+			String utf8_fileName;
+			if( Helper::unicodeToUtf8( m_serviceProvider, _fileName, utf8_fileName ) == false )
+			{
+				LOGGER_ERROR(m_serviceProvider)("s_loadAccountPickleFile: invalid convert filename %ls to utf8"
+					, _fileName.c_str()
+					);
+
+				return false;
+			}
+
+			ConstString filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
+
+			bool exist = currentAccount->hasBinaryFile( filename );
+
+			return exist;
 		}
 
 		bool s_writeAccountBinaryFile_deprecated( const WString & _fileName, const Blobject & _data )
@@ -1579,6 +1641,7 @@ namespace Menge
 
 		pybind::def_functor( "getTime", helperScriptMethod, &HelperScriptMethod::s_getTime );
         pybind::def_functor( "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );
+		pybind::def_functor( "getUnixTime", helperScriptMethod, &HelperScriptMethod::s_getUnixTime );
 
         pybind::def_functor( "getDate", helperScriptMethod, &HelperScriptMethod::s_getDate );
         
@@ -1625,6 +1688,7 @@ namespace Menge
 
         pybind::def_functor( "writeAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_writeAccountPickleFile );
         pybind::def_functor( "loadAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_loadAccountPickleFile );
+		pybind::def_functor( "hasAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_hasAccountPickleFile );
 
 		pybind::def_functor( "writeAccountBinaryFile_deprecated", helperScriptMethod, &HelperScriptMethod::s_writeAccountBinaryFile_deprecated );
 		pybind::def_functor( "loadAccountBinaryFile_deprecated", helperScriptMethod, &HelperScriptMethod::s_loadAccountBinaryFile_deprecated );

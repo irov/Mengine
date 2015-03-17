@@ -56,11 +56,14 @@ namespace Menge
 	public:
 		uint32_t play( float _time );
 		bool stop();
+		bool pause();
+		void resume();
 		bool interrupt();
 		void end();
 
 	public:
 		inline bool isPlay() const;
+		inline bool isPause() const;
 
 	public:
 		inline bool isInterrupt() const;
@@ -72,6 +75,8 @@ namespace Menge
 	protected:
 		virtual bool _play( float _time ) = 0;
 		virtual bool _restart( float _time, uint32_t _enumerator ) = 0;
+		virtual void _pause( uint32_t _enumerator ) = 0;
+		virtual void _resume( uint32_t _enumerator ) = 0;
 		virtual void _stop( uint32_t _enumerator ) = 0;
 		virtual void _end( uint32_t _enumerator ) = 0;
 		virtual bool _interrupt( uint32_t _enumerator ) = 0;		
@@ -91,6 +96,7 @@ namespace Menge
         float m_scretch;
 		
 		bool m_play;
+		bool m_pause;
 		bool m_interrupt;
 
 		bool m_loop;
@@ -99,7 +105,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Animatable::isPlay() const
 	{
-		return m_play;
+		return m_play == true && m_pause == false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Animatable::isPause() const
+	{
+		return m_pause;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Animatable::getLoop() const

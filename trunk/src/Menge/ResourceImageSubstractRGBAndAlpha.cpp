@@ -101,7 +101,7 @@ namespace Menge
 		m_texture = m_resourceImageRGB->getTexture();
 		m_textureAlpha = m_resourceImageAlpha->getTexture();
 
-		mt::vec2f uv_size(m_uv.z - m_uv.x, m_uv.w - m_uv.y);
+		mt::vec2f uv_size(m_uv_image.z - m_uv_image.x, m_uv_image.w - m_uv_image.y);
 
 		if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
 		{

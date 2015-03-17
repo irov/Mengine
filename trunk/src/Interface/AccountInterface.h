@@ -41,6 +41,7 @@ namespace Menge
     public:		
         virtual CacheBufferID loadBinaryFile( const ConstString & _filename, const void ** _data, size_t & _size ) = 0;        
 		virtual bool writeBinaryFile( const ConstString & _filename, const void * _data, size_t _size ) = 0;
+		virtual bool hasBinaryFile( const ConstString & _filename ) const = 0;
     };
 
 	typedef stdex::intrusive_ptr<AccountInterface> AccountInterfacePtr;

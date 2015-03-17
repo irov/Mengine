@@ -14,6 +14,7 @@ namespace Menge
 		, m_playIterator(0)
         , m_scretch(1.f)
 		, m_play(false)
+		, m_pause(false)
 		, m_interrupt(false)
 		, m_loop(false)
 		, m_reverse(false)
@@ -118,6 +119,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t Animatable::play( float _time )
 	{
+		if( m_pause == true )
+		{
+			return 0;
+		}
+
 		m_interrupt = false;
 
 		m_playTime = _time;		
@@ -153,11 +159,43 @@ namespace Menge
 
 		m_playTime = 0.f;
 		m_play = false;
+		m_pause = false;
 		m_interrupt = false;
 
 		this->_stop( m_enumerator );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Animatable::pause()
+	{
+		if( m_play == false )
+		{
+			return false;
+		}
+
+		m_pause = true;
+
+		this->_pause( m_enumerator );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Animatable::resume()
+	{
+		if( m_play == false )
+		{
+			return;
+		}
+
+		if( m_pause == false )
+		{
+			return;
+		}
+
+		m_pause = false;
+
+		this->_resume( m_enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animatable::interrupt()

@@ -68,6 +68,7 @@ namespace Menge
 		virtual void play() = 0;
 		virtual void stop() = 0;
 		virtual void pause() = 0;
+		virtual void resume() = 0;
 		virtual void restart() = 0;
 		virtual void seek( float _timming ) = 0;
 	public:

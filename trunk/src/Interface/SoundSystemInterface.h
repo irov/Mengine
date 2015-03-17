@@ -169,6 +169,7 @@ namespace Menge
 	public:
 		virtual bool play( uint32_t _emitter ) = 0;
 		virtual bool pause( uint32_t _emitter ) = 0;
+		virtual bool resume( uint32_t _emitter ) = 0;
 		virtual bool stop( uint32_t _emitter ) = 0;
 
 	public:

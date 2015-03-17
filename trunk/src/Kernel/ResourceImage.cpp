@@ -11,8 +11,6 @@ namespace Menge
         , m_maxSize(0.f, 0.f)
         , m_size(0.f, 0.f)
 		, m_offset(0.f, 0.f)        
-        , m_uv(0.f, 0.f, 1.f, 1.f)
-        , m_uv_scale(1.f, 1.f, 1.f, 1.f)
 		, m_uv_image(0.f, 0.f, 1.f, 1.f)
         , m_uv_alpha(0.f, 0.f, 1.f, 1.f)
         , m_isAlpha(false)
@@ -41,16 +39,19 @@ namespace Menge
 		float hwWidth = (float)image->getHWWidth();
 		float hwHeight = (float)image->getHWHeight();
 
-		m_uv_scale.x = float(rect.left) / hwWidth;
-		m_uv_scale.y = float(rect.top) / hwHeight;
-		m_uv_scale.z = float(rect.right) / hwWidth;
-		m_uv_scale.w = float(rect.bottom) / hwHeight;
+		mt::vec4f uv_scale;
+		uv_scale.x = float(rect.left) / hwWidth;
+		uv_scale.y = float(rect.top) / hwHeight;
+		uv_scale.z = float(rect.right) / hwWidth;
+		uv_scale.w = float(rect.bottom) / hwHeight;
 
 		if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
 		{
 			m_maxSize.x = width;
 			m_maxSize.y = height;
 		}
+
+		mt::vec4f m_uv(0.f, 0.f, 1.f, 1.f);
 
 		if( m_size.x < 1.f || m_size.y < 1.f )
 		{
@@ -80,10 +81,10 @@ namespace Menge
 			m_isAlpha = true;
 		}
 
-		m_uv_image.x = m_uv_scale.x + (m_uv_scale.z - m_uv_scale.x) * m_uv.x;
-		m_uv_image.y = m_uv_scale.y + (m_uv_scale.w - m_uv_scale.y) * m_uv.y;
-		m_uv_image.z = m_uv_scale.x + (m_uv_scale.z - m_uv_scale.x) * m_uv.z;
-		m_uv_image.w = m_uv_scale.y + (m_uv_scale.w - m_uv_scale.y) * m_uv.w;
+		m_uv_image.x = uv_scale.x + (uv_scale.z - uv_scale.x) * m_uv.x;
+		m_uv_image.y = uv_scale.y + (uv_scale.w - uv_scale.y) * m_uv.y;
+		m_uv_image.z = uv_scale.x + (uv_scale.z - uv_scale.x) * m_uv.z;
+		m_uv_image.w = uv_scale.y + (uv_scale.w - uv_scale.y) * m_uv.w;
 	}
 	//////////////////////////////////////////////////////////////////////////
     void ResourceImage::_release()

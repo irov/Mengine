@@ -273,7 +273,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::pause()
+	void ParticleEmitter2::_pause( uint32_t _enumerator )
 	{
 		if( this->isActivate() == false )
 		{
@@ -281,6 +281,16 @@ namespace	Menge
 		}
 
 		m_emitter->pause();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter2::_resume( uint32_t _enumerator )
+	{
+		if( this->isActivate() == false )
+		{
+			return;
+		}
+
+		m_emitter->resume();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_stop( uint32_t _enumerator )

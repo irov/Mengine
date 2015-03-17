@@ -429,4 +429,20 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool Account::hasBinaryFile( const ConstString & _fileName ) const
+	{
+		PathString path;
+
+		path += m_folder;
+		path += MENGE_FOLDER_DELIM;
+		path += _fileName;
+
+		ConstString fullpath = Helper::stringizeString( m_serviceProvider, path );
+
+		bool exist = FILE_SERVICE(m_serviceProvider)
+			->existFile( CONST_STRING(m_serviceProvider, user), fullpath, nullptr );
+
+		return exist;
+	}
 }

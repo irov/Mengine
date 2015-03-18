@@ -1,5 +1,7 @@
 #   include "MarmaladeTimer.h"
 
+#	include <ctime>
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -41,11 +43,18 @@ namespace Menge
 
         return static_cast<float>(delta);
     }
+	//////////////////////////////////////////////////////////////////////////
+	uint64_t MarmaladeTimer::getUnixTime() const
+	{
+		uint64_t t = std::time(nullptr);
+
+		return t;
+	}
     //////////////////////////////////////////////////////////////////////////
     uint64_t MarmaladeTimer::getMilliseconds()
     {
         uint64 ms = s3eTimerGetMs();
-        unsigned long ul_ms = static_cast<unsigned long>(ms);
+        uint64_t ul_ms = static_cast<uint64_t>(ms);
 
         return ul_ms;
     }

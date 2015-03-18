@@ -108,7 +108,7 @@ namespace Menge
         mt::vec2f m_textureUVOffset;
         mt::vec2f m_textureUVScale;
 
-        mutable mt::vec3f m_verticesLocal[4];        
+        mutable mt::vec3f m_verticesLocal[4];
         mutable RenderVertex2D m_verticesWM[4];
 
 		bool m_textureWrapX;

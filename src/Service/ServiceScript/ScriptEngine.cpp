@@ -294,6 +294,8 @@ namespace Menge
 
 				return false;
 			}
+
+			pybind::decref( module );
 		}
 
 		return true;
@@ -352,9 +354,9 @@ namespace Menge
 				return false;
 			}
 
-			PyObject * py_function = this->askFunction( module_function, "()" );
+			PyObject * py_result = this->askFunction( module_function, "()" );
 
-			if( py_function == nullptr )
+			if( py_result == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules module %s invalid call initializer %s"
 					, pak.module.c_str()
@@ -364,18 +366,22 @@ namespace Menge
 				return false;
 			}
 
-			if( pybind::bool_check( py_function ) == false )
+			if( pybind::bool_check( py_result ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules module %s invalid call initializer %s need return bool [True|False] but return is '%s'"
 					, pak.module.c_str()
 					, pak.initializer.c_str()
-					, pybind::object_repr( py_function )
+					, pybind::object_repr( py_result )
 					);
 
 				return false;
 			}
 
-			bool successful = pybind::extract<bool>( py_function );
+			bool successful = pybind::extract<bool>( py_result );
+
+			pybind::decref( module );
+			pybind::decref( module_function );
+			pybind::decref( py_result );
 
 			if( successful == false )
 			{

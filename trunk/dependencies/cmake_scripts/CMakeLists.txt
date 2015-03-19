@@ -5,12 +5,6 @@ PROJECT( MengeDependencies )
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-ADD_SUBDIRECTORY( lz4 )
-ADD_SUBDIRECTORY( libogg )
-ADD_SUBDIRECTORY( libvorbis )
-ADD_SUBDIRECTORY( libvorbisfile )
-ADD_SUBDIRECTORY( libtheora )
-
 #ADD_SUBDIRECTORY( cal3d )
 
 #ADD_SUBDIRECTORY( libvpx )
@@ -21,9 +15,9 @@ ADD_SUBDIRECTORY( libtheora )
 #ADD_SUBDIRECTORY( ois )
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 
-if(WIN32)
+if(WIN32)    
     set(CMAKE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../openal-soft)
-    set(DSOUND_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../DirectX/dx9/include)
+    #set(DSOUND_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../DirectX/dx9/include)
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/openal-soft )
 endif(WIN32)
 
@@ -38,6 +32,12 @@ endif(WIN32)
 #endif(WIN32)
 
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
+
+ADD_SUBDIRECTORY( lz4 )
+ADD_SUBDIRECTORY( libogg )
+ADD_SUBDIRECTORY( libvorbis )
+ADD_SUBDIRECTORY( libvorbisfile )
+ADD_SUBDIRECTORY( libtheora )
 
 #ADD_SUBDIRECTORY( AtlasAllocator )
 
@@ -63,7 +63,6 @@ ADD_SUBDIRECTORY( pugixml )
 if(MSVC)
     ADD_SUBDIRECTORY( Python3 )
     ADD_SUBDIRECTORY( pybind3 )
-    ADD_SUBDIRECTORY( pybind3dll )
 endif(MSVC)
 
 if(WIN32)

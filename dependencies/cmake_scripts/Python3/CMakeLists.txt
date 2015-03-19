@@ -306,7 +306,7 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/sha512module.c
                 ${SOURCE_DIR}/Modules/signalmodule.c
                 ${SOURCE_DIR}/Modules/symtablemodule.c
-                ${SOURCE_DIR}/Modules/_threadmodule.c
+                #${SOURCE_DIR}/Modules/_threadmodule.c
                 ${SOURCE_DIR}/Modules/timemodule.c
                 ${SOURCE_DIR}/Modules/xxsubtype.c
                 ${SOURCE_DIR}/Modules/zipimport.c
@@ -320,6 +320,23 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/expat/xmlparse.c
                 ${SOURCE_DIR}/Modules/expat/xmlrole.c
                 ${SOURCE_DIR}/Modules/expat/xmltok.c
+                
+                ${SOURCE_DIR}/Modules/zlib/adler32.c
+                ${SOURCE_DIR}/Modules/zlib/compress.c
+                ${SOURCE_DIR}/Modules/zlib/crc32.c
+                ${SOURCE_DIR}/Modules/zlib/deflate.c
+                ${SOURCE_DIR}/Modules/zlib/gzclose.c
+                ${SOURCE_DIR}/Modules/zlib/gzlib.c
+                ${SOURCE_DIR}/Modules/zlib/gzread.c
+                ${SOURCE_DIR}/Modules/zlib/gzwrite.c
+                ${SOURCE_DIR}/Modules/zlib/infback.c
+                ${SOURCE_DIR}/Modules/zlib/inffast.c
+                ${SOURCE_DIR}/Modules/zlib/inflate.c
+                ${SOURCE_DIR}/Modules/zlib/inftrees.c
+                ${SOURCE_DIR}/Modules/zlib/minigzip.c
+                ${SOURCE_DIR}/Modules/zlib/trees.c
+                ${SOURCE_DIR}/Modules/zlib/uncompr.c
+                ${SOURCE_DIR}/Modules/zlib/zutil.c
                 
                 ${SOURCE_DIR}/Modules/zlibmodule.c
                 
@@ -361,8 +378,9 @@ add_definitions(-DXML_CONTEXT_BYTES=1024)
 add_definitions(-DXML_STATIC)
 add_definitions(-DHAVE_MEMMOVE)
 
+add_definitions(-DMS_NO_COREDLL)
 add_definitions(-DPy_BUILD_CORE)
-add_definitions(-DPy_NO_ENABLE_SHARED )
+add_definitions(-DPy_ENABLE_SHARED )
 #if(NOT HAVE_HYPOT)
  # add_definitions(-DWITHOUT_COMPLEX)
 #endif(NOT HAVE_HYPOT)

@@ -7,15 +7,6 @@
 
 #   define PYBIND_PYTHON_VERSION 277
 
-#	ifdef __APPLE__
-#	    define PYBIND_EXTRACT_SIZE_T
-#	endif
-
-#	ifdef __aarch64__
-#		define PYBIND_EXTRACT_SIZE_T
-#	endif
-
-
 #   define TARGET_MARMALADE 1
 
 #   define SIGBREAK        21

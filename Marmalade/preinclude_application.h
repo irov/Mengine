@@ -7,15 +7,7 @@
 
 #   define PYBIND_PYTHON_VERSION 277
 
-#	ifdef __APPLE__
-#	    define PYBIND_EXTRACT_SIZE_T
-#	endif
-
-#	ifdef __aarch64__
-#		define PYBIND_EXTRACT_SIZE_T
-#	endif
-
-#   define SIGBREAK        21
+#   define SIGBREAK 21
 
 #   define LIBPNG_NO_MMX
 #   define PNG_NO_MMX_CODE

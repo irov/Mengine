@@ -20,15 +20,6 @@
 #	define STDEX_ALLOCATOR_REALLOC s3eReallocBase
 #	define STDEX_ALLOCATOR_FREE s3eFreeBase
 
-#	ifdef __APPLE__
-#	    define PYBIND_EXTRACT_SIZE_T
-#	endif
-
-#	ifdef __aarch64__
-#		define PYBIND_EXTRACT_SIZE_T
-#	endif
-
-
 #   define Py_BUILD_CORE
 
 #   define SIGBREAK        21

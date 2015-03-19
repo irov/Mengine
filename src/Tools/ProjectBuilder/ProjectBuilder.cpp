@@ -661,6 +661,10 @@ namespace Menge
 		String utf8_path;
 		if( Helper::unicodeToUtf8( serviceProvider, _path, utf8_path ) == false )
 		{
+			LOGGER_ERROR(serviceProvider)("isUselessAlphaInImageFile %ls invalid unicodeToUtf8"
+				, _path
+				);
+
 			return nullptr;
 		}
 
@@ -670,12 +674,16 @@ namespace Menge
 
 		if( image->load( c_path ) == false )
 		{
+			LOGGER_ERROR(serviceProvider)("isUselessAlphaInImageFile %ls invalid load"
+				, _path
+				);
+			
 			return nullptr;
 		}
 
 		if( image->getChannels() != 4 )
 		{
-			return nullptr;
+			return pybind::ret_true();
 		}
 
 		bool useless = image->uselessalpha();

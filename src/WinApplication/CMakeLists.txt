@@ -78,5 +78,5 @@ if(MSVC)
 endif(MSVC)
 
 if(MINGW)
-	set_target_properties( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS -Wl,-Map,${MENGINE_REPOSITORY}/bin/WinApplication.map )
+	set_target_properties( ${MY_LIB_NAME} PROPERTIES LINK_FLAGS -Wl,-Map,${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/WinApplication.map )
 endif(MINGW)

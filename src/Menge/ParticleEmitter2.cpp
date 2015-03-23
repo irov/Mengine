@@ -513,7 +513,7 @@ namespace	Menge
 
 		this->updateBB_();
 
-		PARTICLE_SERVICE(m_serviceProvider)
+		PARTICLE_SERVICE2(m_serviceProvider)
 			->renderParticlesCount( partCount );
 
         return true;

@@ -6,6 +6,12 @@ utils
 	utils.h
 )
 
+ADD_FILTER(
+uv4
+    uv4.cpp
+	uv4.h
+    uv4_inline.h
+)
 
 ADD_FILTER(
 angle
@@ -34,10 +40,10 @@ clamp
 )
 
 ADD_FILTER(
-line
-	line.cpp
-	line.h
-	line_inline.h
+line2
+	line2.cpp
+	line2.h
+	line2_inline.h
 )
 
 ADD_FILTER(

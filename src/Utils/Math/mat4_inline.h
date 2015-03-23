@@ -1,13 +1,15 @@
 #	include "angle.h"
 
+#	include <math.h>
+
 namespace mt
 {
 	//////////////////////////////////////////////////////////////////////////
-	MATH_METHOD_INLINE mat4f::mat4f()
+	MENGINE_MATH_METHOD_INLINE mat4f::mat4f()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_METHOD_INLINE mat4f::mat4f(const mat4f& _rhs)
+	MENGINE_MATH_METHOD_INLINE mat4f::mat4f(const mat4f& _rhs)
 		:v0(_rhs.v0)
 		,v1(_rhs.v1)
 		,v2(_rhs.v2)
@@ -15,17 +17,17 @@ namespace mt
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_METHOD_INLINE vec4f& mat4f::operator[](size_t i)
+	MENGINE_MATH_METHOD_INLINE vec4f& mat4f::operator[](size_t i)
 	{
 		return (&v0)[i];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_METHOD_INLINE const vec4f& mat4f::operator[](size_t i)const
+	MENGINE_MATH_METHOD_INLINE const vec4f& mat4f::operator[](size_t i)const
 	{
 		return (&v0)[i];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_METHOD_INLINE mat4f& mat4f::operator=(const mat4f& _rhs)
+	MENGINE_MATH_METHOD_INLINE mat4f& mat4f::operator=(const mat4f& _rhs)
 	{
 		v0 = _rhs.v0;
 		v1 = _rhs.v1;
@@ -34,17 +36,17 @@ namespace mt
 		return *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_METHOD_INLINE float * mat4f::buff()
+	MENGINE_MATH_METHOD_INLINE float * mat4f::buff()
 	{
 		return v0.buff();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_METHOD_INLINE const float * mat4f::buff() const
+	MENGINE_MATH_METHOD_INLINE const float * mat4f::buff() const
 	{
 		return v0.buff();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE bool cmp_m4_m4(const mat4f& _a, const mat4f& _b)
+	MENGINE_MATH_FUNCTION_INLINE bool cmp_m4_m4(const mat4f& _a, const mat4f& _b)
 	{ 
 		return	cmp_v4_v4(_a.v0,_b.v0) &&
 				cmp_v4_v4(_a.v1,_b.v1) &&
@@ -52,31 +54,31 @@ namespace mt
 				cmp_v4_v4(_a.v3,_b.v3);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE bool operator==(const mat4f& _a, const mat4f& _b)
+	MENGINE_MATH_FUNCTION_INLINE bool operator==(const mat4f& _a, const mat4f& _b)
 	{
 		return	cmp_m4_m4(_a, _b);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE bool operator!=(const mat4f& _a, const mat4f& _b)
+	MENGINE_MATH_FUNCTION_INLINE bool operator!=(const mat4f& _a, const mat4f& _b)
 	{
 		return !operator==(_a, _b);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_m4_v3(vec3f& _out, const mat4f& _m,const vec3f& _v)
+	MENGINE_MATH_FUNCTION_INLINE void mul_m4_v3(vec3f& _out, const mat4f& _m,const vec3f& _v)
 	{
 		_out.x = dot_v4_v3( _m.v0, _v );
 		_out.y = dot_v4_v3( _m.v1, _v );
 		_out.z = dot_v4_v3( _m.v2, _v );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE vec3f operator*(const mat4f& m, const vec3f& v)
+	MENGINE_MATH_FUNCTION_INLINE vec3f operator*(const mat4f& m, const vec3f& v)
 	{
 		vec3f out;
 		mul_m4_v3(out,m,v);
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_v3_m4(vec3f& _out, const vec3f& _v,const mat4f& _m)
+	MENGINE_MATH_FUNCTION_INLINE void mul_v3_m4(vec3f& _out, const vec3f& _v,const mat4f& _m)
 	{
 		mul_v3_m4_r( _out, _v, _m );
 
@@ -85,7 +87,7 @@ namespace mt
 		_out.z += _m.v3.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_v3_v2_m4(vec3f& _out, const vec2f& _v,const mat4f& _m)
+	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v2_m4(vec3f& _out, const vec2f& _v,const mat4f& _m)
 	{
 		mul_v3_v2_m4_r( _out, _v, _m );
 
@@ -94,14 +96,14 @@ namespace mt
 		_out.z += _m.v3.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_v3_m4_r(vec3f& _out, const vec3f& _v, const mat4f& _m)
+	MENGINE_MATH_FUNCTION_INLINE void mul_v3_m4_r(vec3f& _out, const vec3f& _v, const mat4f& _m)
 	{
 		_out.x = _m.v0.x * _v.x + _m.v1.x * _v.y + _m.v2.x * _v.z;
 		_out.y = _m.v0.y * _v.x + _m.v1.y * _v.y + _m.v2.y * _v.z;
 		_out.z = _m.v0.z * _v.x + _m.v1.z * _v.y + _m.v2.z * _v.z;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float mul_v3_m4_proj(vec3f& _out, const vec3f& _v,const mat4f& _m)
+	MENGINE_MATH_FUNCTION_INLINE float mul_v3_m4_proj(vec3f& _out, const vec3f& _v,const mat4f& _m)
 	{
 		mul_v3_m4( _out, _v, _m );
 
@@ -111,7 +113,7 @@ namespace mt
 		return w;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_v2_m4(vec2f& _out, const vec2f& _v,const mat4f& _m)
+	MENGINE_MATH_FUNCTION_INLINE void mul_v2_m4(vec2f& _out, const vec2f& _v,const mat4f& _m)
 	{
 		mul_v2_m4_r( _out, _v, _m );
 
@@ -119,27 +121,27 @@ namespace mt
 		_out.y += _m.v3[1];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_v2_m4_r(vec2f& _out, const vec2f& _v,const mat4f& _m)
+	MENGINE_MATH_FUNCTION_INLINE void mul_v2_m4_r(vec2f& _out, const vec2f& _v,const mat4f& _m)
 	{
 		_out.x = _m.v0.x * _v.x + _m.v1.x * _v.y;
 		_out.y = _m.v0.y * _v.x + _m.v1.y * _v.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_v3_v2_m4_r(vec3f & _out, const vec2f& _v,const mat4f& _m)
+	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v2_m4_r(vec3f & _out, const vec2f& _v,const mat4f& _m)
 	{
 		_out.x = _m.v0.x * _v.x + _m.v1.x * _v.y;
 		_out.y = _m.v0.y * _v.x + _m.v1.y * _v.y;
 		_out.z = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE vec3f operator*(const vec3f& v, const mat4f& m)
+	MENGINE_MATH_FUNCTION_INLINE vec3f operator*(const vec3f& v, const mat4f& m)
 	{
 		vec3f out;
 		mul_v3_m4(out,v,m);
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_m4_v4(vec4f& _out, const mat4f& _m,const vec4f& _v)
+	MENGINE_MATH_FUNCTION_INLINE void mul_m4_v4(vec4f& _out, const mat4f& _m,const vec4f& _v)
 	{
 		_out.x = dot_v4_v4( _m.v0, _v );
 		_out.y = dot_v4_v4( _m.v1, _v );
@@ -147,14 +149,14 @@ namespace mt
 		_out.w = dot_v4_v4( _m.v3, _v );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE vec4f operator*(const mat4f& m, const vec4f& v)
+	MENGINE_MATH_FUNCTION_INLINE vec4f operator*(const mat4f& m, const vec4f& v)
 	{
 		vec4f out;
 		mul_m4_v4(out,m,v);
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_v4_m4(vec4f & _out, const vec4f & _a, const mat4f & _b )
+	MENGINE_MATH_FUNCTION_INLINE void mul_v4_m4(vec4f & _out, const vec4f & _a, const mat4f & _b )
 	{
 		_out.x = _a.x * _b.v0.x + _a.y * _b.v1.x + _a.z * _b.v2.x + _a.w * _b.v3.x; 
 		_out.y = _a.x * _b.v0.y + _a.y * _b.v1.y + _a.z * _b.v2.y + _a.w * _b.v3.y;
@@ -162,7 +164,7 @@ namespace mt
 		_out.w = _a.x * _b.v0.w + _a.y * _b.v1.w + _a.z * _b.v2.w + _a.w * _b.v3.w;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_v4_v3_m4(vec4f & _out, const vec3f & _a, const mat4f & _b)
+	MENGINE_MATH_FUNCTION_INLINE void mul_v4_v3_m4(vec4f & _out, const vec3f & _a, const mat4f & _b)
 	{
 		_out.x = _a.x * _b.v0.x + _a.y * _b.v1.x + _a.z * _b.v2.x + _b.v3.x; 
 		_out.y = _a.x * _b.v0.y + _a.y * _b.v1.y + _a.z * _b.v2.y + _b.v3.y;
@@ -170,7 +172,7 @@ namespace mt
 		_out.w = _a.x * _b.v0.w + _a.y * _b.v1.w + _a.z * _b.v2.w + _b.v3.w;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_v3_v3_m4_homogenize(vec3f & _out, const vec3f & _a, const mat4f & _b)
+	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v3_m4_homogenize(vec3f & _out, const vec3f & _a, const mat4f & _b)
 	{
 		_out.x = _a.x * _b.v0.x + _a.y * _b.v1.x + _a.z * _b.v2.x + _b.v3.x; 
 		_out.y = _a.x * _b.v0.y + _a.y * _b.v1.y + _a.z * _b.v2.y + _b.v3.y;
@@ -184,14 +186,14 @@ namespace mt
 		_out.z *= w_inv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE vec4f operator* (const vec4f& v, const mat4f& m)
+	MENGINE_MATH_FUNCTION_INLINE vec4f operator* (const vec4f& v, const mat4f& m)
 	{
 		vec4f out;
 		mul_v4_m4(out,v,m);
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b)
+	MENGINE_MATH_FUNCTION_INLINE void mul_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b)
 	{
 		mul_v4_m4( _out.v0, _a.v0, _b );
 		mul_v4_m4( _out.v1, _a.v1, _b );
@@ -199,7 +201,7 @@ namespace mt
 		mul_v4_m4( _out.v3, _a.v3, _b );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_v4_m3_i(vec4f & _out, const vec4f & _a, const mat3f& _b)
+	MENGINE_MATH_FUNCTION_INLINE void mul_v4_m3_i(vec4f & _out, const vec4f & _a, const mat3f& _b)
 	{
 		_out.x = _a.x * _b.v0.x + _a.y * _b.v1.x+ _a.z * _b.v2.x;
 		_out.y = _a.x * _b.v0.y + _a.y * _b.v1.y+ _a.z * _b.v2.y;
@@ -207,7 +209,7 @@ namespace mt
 		_out.w = _a.w;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void mul_m4_m3(mat4f& _out, const mat4f& _a, const mat3f& _b)
+	MENGINE_MATH_FUNCTION_INLINE void mul_m4_m3(mat4f& _out, const mat4f& _a, const mat3f& _b)
 	{
 		mul_v4_m3_i( _out.v0, _a.v0, _b );
 		mul_v4_m3_i( _out.v1, _a.v1, _b );
@@ -215,21 +217,21 @@ namespace mt
 		mul_v4_m3_i( _out.v3, _a.v3, _b );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE mat4f operator* (const mat4f& _a, const mat4f& _b)
+	MENGINE_MATH_FUNCTION_INLINE mat4f operator* (const mat4f& _a, const mat4f& _b)
 	{
 		mat4f out;
 		mul_m4_m4(out,_a,_b);
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE mat4f operator* (const mat4f& _a, const mat3f& _b)
+	MENGINE_MATH_FUNCTION_INLINE mat4f operator* (const mat4f& _a, const mat3f& _b)
 	{
 		mat4f out;
 		mul_m4_m3(out,_a,_b);
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void add_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b)
+	MENGINE_MATH_FUNCTION_INLINE void add_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b)
 	{
 		add_v4_v4(_out.v0,_a.v0,_b.v0);
 		add_v4_v4(_out.v1,_a.v1,_b.v1);
@@ -237,14 +239,14 @@ namespace mt
 		add_v4_v4(_out.v3,_a.v3,_b.v3);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE mat4f operator+(const mat4f& _a, const mat4f& _b)
+	MENGINE_MATH_FUNCTION_INLINE mat4f operator+(const mat4f& _a, const mat4f& _b)
 	{
 		mat4f out;
 		add_m4_m4(out,_a,_b);
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void sub_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b)
+	MENGINE_MATH_FUNCTION_INLINE void sub_m4_m4(mat4f& _out, const mat4f& _a, const mat4f& _b)
 	{
 		sub_v4_v4(_out.v0,_a.v0,_b.v0);
 		sub_v4_v4(_out.v1,_a.v1,_b.v1);
@@ -252,14 +254,14 @@ namespace mt
 		sub_v4_v4(_out.v3,_a.v3,_b.v3);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE mat4f operator-(const mat4f& _a, const mat4f& _b)
+	MENGINE_MATH_FUNCTION_INLINE mat4f operator-(const mat4f& _a, const mat4f& _b)
 	{
 		mat4f out;
 		sub_m4_m4(out,_a,_b);
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void scale_m4_m4(mat4f& _out, const mat4f& _rhs, const mt::vec4f & _val)
+	MENGINE_MATH_FUNCTION_INLINE void scale_m4_m4(mat4f& _out, const mat4f& _rhs, const mt::vec4f & _val)
 	{
 		scale_v4_v4(_out.v0,_rhs.v0,_val.x);
 		scale_v4_v4(_out.v1,_rhs.v1,_val.y);
@@ -267,24 +269,24 @@ namespace mt
 		scale_v4_v4(_out.v3,_rhs.v3,_val.w);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void scale_m4(mat4f& _out, const mt::vec4f & _val)
+	MENGINE_MATH_FUNCTION_INLINE void scale_m4(mat4f& _out, const mt::vec4f & _val)
 	{
 		scale_m4_m4( _out, _out, _val );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void scale_rotate_m4_m4(mat4f& _out, const mat4f& _rhs, const mt::vec3f & _val)
+	MENGINE_MATH_FUNCTION_INLINE void scale_rotate_m4_m4(mat4f& _out, const mat4f& _rhs, const mt::vec3f & _val)
 	{
 		scale_v4_v4(_out.v0,_rhs.v0,_val.x);
 		scale_v4_v4(_out.v1,_rhs.v1,_val.y);
 		scale_v4_v4(_out.v2,_rhs.v2,_val.z);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void scale_rotate_m4(mat4f& _out, const mt::vec3f &_val)
+	MENGINE_MATH_FUNCTION_INLINE void scale_rotate_m4(mat4f& _out, const mt::vec3f &_val)
 	{
 		scale_rotate_m4_m4( _out, _out, _val );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void zero_m4(mat4f& _out)
+	MENGINE_MATH_FUNCTION_INLINE void zero_m4(mat4f& _out)
 	{
 		ident_v4( _out.v0 );
 		ident_v4( _out.v1 );
@@ -292,7 +294,7 @@ namespace mt
 		ident_v4( _out.v3 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void ident_m4(mat4f& _out)
+	MENGINE_MATH_FUNCTION_INLINE void ident_m4(mat4f& _out)
 	{		 
 		_out.v0.x = 1.f;
 		_out.v0.y = 0.f;
@@ -312,7 +314,7 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    MATH_FUNCTION_INLINE bool is_ident_m34(const mat4f& _out)
+    MENGINE_MATH_FUNCTION_INLINE bool is_ident_m34(const mat4f& _out)
     {
         if( _out.v0.x != 1.f || _out.v0.y != 0.f || _out.v0.z != 0.f )
         {
@@ -334,7 +336,7 @@ namespace mt
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void get_col_m4(vec4f& out, const mat4f& _rhs, int _index)
+	MENGINE_MATH_FUNCTION_INLINE void get_col_m4(vec4f& out, const mat4f& _rhs, int _index)
     {
         out.x = _rhs.v0[_index];
         out.y = _rhs.v1[_index];
@@ -342,14 +344,14 @@ namespace mt
 		out.w = _rhs.v3[_index];
     }
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE vec4f get_col_m4(const mat4f& _rhs, int _index)
+	MENGINE_MATH_FUNCTION_INLINE vec4f get_col_m4(const mat4f& _rhs, int _index)
 	{
 		vec4f ret;
 		get_col_m4(ret,_rhs,_index);
 		return ret;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void set_col_m4(mat4f& out, const vec4f& _rhs, int _index)
+	MENGINE_MATH_FUNCTION_INLINE void set_col_m4(mat4f& out, const vec4f& _rhs, int _index)
 	{
 		out.v0[_index] = _rhs.x;
 		out.v1[_index] = _rhs.y;	
@@ -357,7 +359,7 @@ namespace mt
 		out.v3[_index] = _rhs.w;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void transpose_m4(mat4f& _out, const mat4f& _rhs)
+	MENGINE_MATH_FUNCTION_INLINE void transpose_m4(mat4f& _out, const mat4f& _rhs)
 	{
 		_out[0][0] = _rhs[0][0];
 		_out[1][1] = _rhs[1][1];
@@ -379,21 +381,21 @@ namespace mt
 		_out[2][3] = _rhs[3][2];
 	} 
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE mat4f transpose_m4(const mat4f& _rhs)
+	MENGINE_MATH_FUNCTION_INLINE mat4f transpose_m4(const mat4f& _rhs)
 	{
 		mat4f out;
 		transpose_m4(out, _rhs);
 		return out;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void extract_m4_m3(mat3f& _out, const mat4f& _rhs)
+	MENGINE_MATH_FUNCTION_INLINE void extract_m4_m3(mat3f& _out, const mat4f& _rhs)
 	{
 		extract_v4_v3( _out.v0, _rhs.v0 );
 		extract_v4_v3( _out.v1, _rhs.v1 );
 		extract_v4_v3( _out.v2, _rhs.v2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void inv_m4( mat4f & _out, const mat4f & _in )
+	MENGINE_MATH_FUNCTION_INLINE void inv_m4( mat4f & _out, const mat4f & _in )
 	{
 		_out.v0.x = _in.v1.y  * _in.v2.z * _in.v3.w - 
 			_in.v1.y  * _in.v2.w * _in.v3.z - 
@@ -529,7 +531,7 @@ namespace mt
 		_out.v3.w = _out.v3.w * det_inv;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE mat4f inv_m4(const mat4f& _rhs)
+	MENGINE_MATH_FUNCTION_INLINE mat4f inv_m4(const mat4f& _rhs)
 	{
 		mat4f out;
 		inv_m4(out, _rhs);
@@ -537,7 +539,7 @@ namespace mt
 	}
 
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void rotate_axis_m4( mat4f &out, const vec3f &u, float degrees )
+	MENGINE_MATH_FUNCTION_INLINE void rotate_axis_m4( mat4f &out, const vec3f &u, float degrees )
 	{
 		float c = cosf_fast( degrees );
 		float s = sinf_fast( degrees );
@@ -561,7 +563,7 @@ namespace mt
 		out = out * m;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_projection_ortho_lh_m4( mat4f & _out, float _left, float _right, float _top, float _bottom, float _near, float _far )
+	MENGINE_MATH_FUNCTION_INLINE void make_projection_ortho_lh_m4( mat4f & _out, float _left, float _right, float _top, float _bottom, float _near, float _far )
 	{
 		// 2/(r-l)      0            0           0
 		_out.v0.x = 2.f / (_right - _left);
@@ -588,7 +590,7 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_projection_frustum_m4( mat4f & _out, float _left, float _right, float _top, float _bottom, float _near, float _far )
+	MENGINE_MATH_FUNCTION_INLINE void make_projection_frustum_m4( mat4f & _out, float _left, float _right, float _top, float _bottom, float _near, float _far )
 	{
 		//2*zn/(r-l)   0            0              0
 		//0            2*zn/(t-b)   0              0
@@ -616,7 +618,7 @@ namespace mt
 		_out.v3.w = 0.f;
 	}
 
-	MATH_FUNCTION_INLINE void make_projection_fov_m4( mat4f & _out, float fovy, float aspect, float zn, float zf )
+	MENGINE_MATH_FUNCTION_INLINE void make_projection_fov_m4( mat4f & _out, float fovy, float aspect, float zn, float zf )
 	{
 		float yscale = 1.f / tanf( fovy * 0.5f );
 		float xscale = yscale / aspect;
@@ -642,7 +644,7 @@ namespace mt
 		_out.v3.w = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_projection_fov2_m4( mat4f &_out , float _fov, float _aspect, float _zn, float _zf )
+	MENGINE_MATH_FUNCTION_INLINE void make_projection_fov2_m4( mat4f &_out , float _fov, float _aspect, float _zn, float _zf )
 	{
 		float yscale = 1.f / tanf( _fov * 0.5f );
 		float xscale = yscale / _aspect;
@@ -668,7 +670,7 @@ namespace mt
 		_out.v3.w = 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_rotate_m4_euler(mat4f & _out, float _x, float _y, float _z)
+	MENGINE_MATH_FUNCTION_INLINE void make_rotate_m4_euler(mat4f & _out, float _x, float _y, float _z)
 	{
 		float ca = cosf_fast( _x );
 		float cb = cosf_fast( _y );
@@ -699,7 +701,7 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_rotate_m4_direction( mat4f & _out, const vec3f & _direction, const vec3f & _up )
+	MENGINE_MATH_FUNCTION_INLINE void make_rotate_m4_direction( mat4f & _out, const vec3f & _direction, const vec3f & _up )
 	{
 		vec3f xaxis; 
 		mt::cross_v3_v3_norm( xaxis, _up, _direction );
@@ -746,7 +748,7 @@ namespace mt
 		_out.v3.w = 1.f;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_rotate_x_axis_m4(mat4f & _out, float _angle)
+	MENGINE_MATH_FUNCTION_INLINE void make_rotate_x_axis_m4(mat4f & _out, float _angle)
 	{
 		float cosa = cosf_fast(_angle);
 		float sina = sinf_fast(_angle);
@@ -772,7 +774,7 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_rotate_y_axis_m4(mat4f & _out, float _angle)
+	MENGINE_MATH_FUNCTION_INLINE void make_rotate_y_axis_m4(mat4f & _out, float _angle)
 	{
 		float cosa = cosf_fast(_angle);
 		float sina = sinf_fast(_angle);
@@ -798,7 +800,7 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_rotate_z_axis_m4(mat4f & _out, float _angle)
+	MENGINE_MATH_FUNCTION_INLINE void make_rotate_z_axis_m4(mat4f & _out, float _angle)
 	{
 		float cosa = cosf_fast(_angle);
 		float sina = sinf_fast(_angle);
@@ -824,7 +826,7 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_scale_m4( mat4f & _out, float _x, float _y, float _z )
+	MENGINE_MATH_FUNCTION_INLINE void make_scale_m4( mat4f & _out, float _x, float _y, float _z )
 	{
 		_out.v0.x = _x;
 		_out.v0.y = 0.f;
@@ -847,12 +849,12 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_translation_m4_v3( mat4f & _out, const mt::vec3f & _pos )
+	MENGINE_MATH_FUNCTION_INLINE void make_translation_m4_v3( mat4f & _out, const mt::vec3f & _pos )
 	{
 		make_translation_m4( _out, _pos.x, _pos.y, _pos.z );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_translation_m4( mat4f & _out, float _x, float _y, float _z )
+	MENGINE_MATH_FUNCTION_INLINE void make_translation_m4( mat4f & _out, float _x, float _y, float _z )
 	{
 		_out.v0.x = 1.f;
 		_out.v0.y = 0.f;
@@ -875,7 +877,7 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _dir, const vec3f & _up, float _sign )
+	MENGINE_MATH_FUNCTION_INLINE void make_lookat_m4( mat4f & _out, const vec3f & _eye, const vec3f & _dir, const vec3f & _up, float _sign )
 	{
 		vec3f zaxis;
 		norm_v3( zaxis, _dir );
@@ -917,7 +919,7 @@ namespace mt
 		_out.v3.w = 1.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void project_m4( vec3f & _out, const vec3f & _vertex, float _width, float _height, const mat4f & _projection, const mat4f & _view, const mat4f & _world )
+	MENGINE_MATH_FUNCTION_INLINE void project_m4( vec3f & _out, const vec3f & _vertex, float _width, float _height, const mat4f & _projection, const mat4f & _view, const mat4f & _world )
 	{
 		mat4f m1;
 		mat4f m2; 
@@ -934,7 +936,7 @@ namespace mt
 		_out.z = vec.z; 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void make_euler_angles( mt::vec3f & _euler, const mat4f & _rotate )
+	MENGINE_MATH_FUNCTION_INLINE void make_euler_angles( mt::vec3f & _euler, const mat4f & _rotate )
 	{
 		float sinY = _rotate.v2.x;
 

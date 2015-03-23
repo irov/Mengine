@@ -38,10 +38,7 @@ namespace Menge
 		m_resourceImageAlphaName = metadata->get_Image_NameAlpha();
 
 		m_uv_image = metadata->get_Image_UVRGB();
-		metadata->get_Image_UVRGBRotate( m_isUVRGBRotate );
-
 		m_uv_alpha = metadata->get_Image_UVAlpha();
-		metadata->get_Image_UVAlphaRotate( m_isUVAlphaRotate );
 
 		m_maxSize = metadata->get_Image_MaxSize();
 
@@ -101,34 +98,8 @@ namespace Menge
 		m_texture = m_resourceImageRGB->getTexture();
 		m_textureAlpha = m_resourceImageAlpha->getTexture();
 
-		mt::vec2f uv_size(m_uv_image.z - m_uv_image.x, m_uv_image.w - m_uv_image.y);
-
-		if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
-		{
-			const mt::vec2f & maxSize = m_resourceImageRGB->getMaxSize();
-
-			m_maxSize = maxSize * uv_size;
-
-			if( m_isUVRGBRotate == true )
-			{
-				std::swap( m_maxSize.x, m_maxSize.y );
-			}
-		}
-
-		if( m_size.x < 1.f || m_size.y < 1.f )
-		{
-			const mt::vec2f & size = m_resourceImageRGB->getSize();
-
-			m_size = size * uv_size;
-
-			if( m_isUVRGBRotate == true )
-			{
-				std::swap( m_size.x, m_size.y );
-			}
-		}
-		
 		return true;
-	}	
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageSubstractRGBAndAlpha::_release()
 	{

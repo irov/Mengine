@@ -247,11 +247,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_pause( uint32_t _enumerator )
 	{
+		(void)_enumerator;
+
 		this->pauseAnimation_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_resume( uint32_t _enumerator )
 	{
+		(void)_enumerator;
+
 		this->resumeAnimation_();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1257,21 +1261,7 @@ namespace Menge
 			return false;
 		}
 
-		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceImage>( CONST_STRING(m_serviceProvider, WhitePixel) );
-
-		if( resourceImage == nullptr )
-		{
-			return false;
-		}
-
-		layer_sprite->setResourceImage( resourceImage );
-
-		const ColourValue & color = resource->getColor();
-		layer_sprite->setLocalColor( color );
-
-		const mt::vec2f & size = resource->getSize();
-		layer_sprite->setCustomSize( size );
+		layer_sprite->setResourceImage( resource );
 
 		if( _layer.blendingMode.empty() == true )
 		{

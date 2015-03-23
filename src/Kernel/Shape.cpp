@@ -1,21 +1,15 @@
 #   include "Shape.h"
 
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     Shape::Shape()
-        : m_textureWrapX(false)
-        , m_textureWrapY(false)
-        , m_maxSize(0.f, 0.f)
-		, m_size(0.f, 0.f)
-		, m_offset(0.f, 0.f)
-        , m_uvRotate(false)
-        , m_uv(0.f, 0.f, 1.f, 1.f)
-        , m_uv2(0.f, 0.f, 1.f, 1.f)
-        , m_centerAlign(false)
+        : m_centerAlign(false)
         , m_flipX(false)
         , m_flipY(false)
-        , m_percentVisibility(0.f, 0.f, 0.f, 0.f)
+        , m_percentVisibility(0.f, 0.f, 1.f, 1.f)
         , m_textureUVOffset(0.f, 0.f)
         , m_textureUVScale(1.f, 1.f)
         , m_invalidateVerticesLocal(true)
@@ -25,13 +19,63 @@ namespace Menge
 		, m_solid(false)
 		, m_invalidateMaterial(true)
 		, m_disableTextureColor(false)
-
     {
     }
     //////////////////////////////////////////////////////////////////////////
     Shape::~Shape()
     {
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Shape::setResourceImage( ResourceImage * _resourceImage )
+	{
+		if( m_resourceImage == _resourceImage )
+		{
+			return;
+		}
+
+		m_resourceImage = _resourceImage;
+
+		this->recompile();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImage * Shape::getResourceImage() const
+	{
+		return m_resourceImage;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Shape::_compile()
+	{
+		if( m_resourceImage == nullptr )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Shape::compileResource_ '%s' image resource null"
+				, m_name.c_str()
+				);
+
+			return false;
+		}
+
+		if( m_resourceImage.compile() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("Shape::compileResource_ '%s' image resource %s not compile"
+				, m_name.c_str()
+				, m_resourceImage->getName().c_str()
+				);
+
+			return false;
+		}
+
+		this->invalidateMaterial();
+		this->invalidateVertices();
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Shape::_release()
+	{
+		Node::_release();
+
+		m_resourceImage.release();
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Shape::disableTextureColor( bool _disable )
 	{
@@ -61,142 +105,6 @@ namespace Menge
 	{
 		return m_blendAdd;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Shape::setTextureWrapX( bool _wrap )
-    {
-		if( m_textureWrapX == _wrap )
-		{
-			return;
-		}
-
-        m_textureWrapX = _wrap;
-
-        this->invalidateVertices();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Shape::getTextureWrapX() const
-    {
-        return m_textureWrapX;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Shape::setTextureWrapY( bool _wrap )
-    {
-		if( m_textureWrapY == _wrap )
-		{
-			return;
-		}
-
-        m_textureWrapY = _wrap;
-
-        this->invalidateVertices();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Shape::getTextureWrapY() const
-    {
-        return m_textureWrapY;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Shape::setMaxSize( const mt::vec2f & _size )
-    {
-		if( mt::cmp_v2_v2( m_maxSize, _size ) == true )
-		{
-			return;
-		}
-
-        m_maxSize = _size;
-
-        this->invalidateVertices();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const mt::vec2f & Shape::getMaxSize() const
-    {
-        return m_maxSize;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	void Shape::setSize( const mt::vec2f & _size )
-	{
-		if( mt::cmp_v2_v2( m_size, _size ) == true )
-		{
-			return;
-		}
-
-		m_size = _size;
-
-		this->invalidateVertices();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Shape::getSize() const
-	{
-		return m_size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Shape::setOffset( const mt::vec2f & _offset )
-	{
-		if( mt::cmp_v2_v2( m_offset, _offset ) == true )
-		{
-			return;
-		}
-
-		m_offset = _offset;
-
-		this->invalidateVertices();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & Shape::getOffset() const
-	{
-		return m_offset;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void Shape::setUVRotate( bool _rotate )
-    {
-		if( m_uvRotate == _rotate )
-		{
-			return;
-		}
-
-        m_uvRotate = _rotate;
-
-        this->invalidateVertices();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Shape::getUVRotate() const
-    {
-        return m_uvRotate;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Shape::setUV( const mt::vec4f & _uv )
-    {
-		if( mt::cmp_v4_v4( m_uv, _uv ) == true )
-		{
-			return;
-		}
-
-        m_uv = _uv;
-
-        this->invalidateVertices();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const mt::vec4f & Shape::getUV() const
-    {
-        return m_uv;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Shape::setUV2( const mt::vec4f & _uv )
-    {
-		if( mt::cmp_v4_v4( m_uv2, _uv ) == true )
-		{
-			return;
-		}
-
-        m_uv2 = _uv;
-
-        this->invalidateVertices();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const mt::vec4f & Shape::getUV2() const
-    {
-        return m_uv2;
-    }
     //////////////////////////////////////////////////////////////////////////
     void Shape::setCenterAlign( bool _centerAlign )
     {
@@ -295,236 +203,103 @@ namespace Menge
     {
         m_invalidateVerticesLocal = false;
 
-        mt::vec4f percentPx( m_percentVisibility.x * m_maxSize.x, m_percentVisibility.y * m_maxSize.y,
-            m_percentVisibility.z * m_maxSize.x, m_percentVisibility.w * m_maxSize.y );
-		
-		percentPx.x -= m_offset.x;
-		percentPx.y -= m_offset.y;
-        percentPx.z -= (m_maxSize.x - m_size.x - m_offset.x);
-        percentPx.w -= (m_maxSize.y - m_size.y - m_offset.y);
+		const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
+		const mt::vec2f & size = m_resourceImage->getSize();
+		const mt::vec2f & offset = m_resourceImage->getOffset();
 
-        if( m_textureWrapX == false && m_textureWrapY == false )
-        {
-            if( percentPx.x < 0.f )
-            {
-                percentPx.x = 0.f;
-            }
-            else if( percentPx.x > m_size.x )
-            {
-                percentPx.x = m_size.x;
-            }
+		//bool textureWrapU = m_resourceImage->isWrapU();
+		//bool textureWrapV = m_resourceImage->isWrapV();
 
-            if( percentPx.y < 0.f )
-            {
-                percentPx.y = 0.f;
-            }
-            else if( percentPx.y > m_size.y )
-            {
-                percentPx.y = m_size.y;
-            }
-
-            if( percentPx.z < 0.f )
-            {
-                percentPx.z = 0.f;
-            }
-            else if( percentPx.z > m_size.x )
-            {
-                percentPx.z = m_size.x;
-            }
-
-            if( percentPx.w < 0.f )
-            {
-                percentPx.w = 0.f;
-            }
-            else if( percentPx.w > m_size.y )
-            {
-                percentPx.w = m_size.y;
-            }
-        }
-
-        mt::vec4f percent( percentPx.x / m_size.x, percentPx.y / m_size.y,
-            percentPx.z / m_size.x, percentPx.w / m_size.y );
-
-        if( m_uvRotate == false )
-        {
-            // RGB(A)
-            {
-                mt::vec4f uv = m_uv;
-
-                float uvX = uv.z - uv.x;
-                float uvY = uv.w - uv.y;
-
-                uv.x += percent.x * uvX;
-                uv.y += percent.y * uvY;
-                uv.z -= percent.z * uvX;
-                uv.w -= percent.w * uvY;
-
-                if( m_flipX == true )
-                {
-                    std::swap( uv.x, uv.z );
-                }
-
-                if( m_flipY == true )
-                {
-                    std::swap( uv.y, uv.w );
-                }
-
-                m_verticesWM[0].uv.x = uv.x * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[0].uv.y = uv.y * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[1].uv.x = uv.z * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[1].uv.y = uv.y * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[2].uv.x = uv.z * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[2].uv.y = uv.w * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[3].uv.x = uv.x * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[3].uv.y = uv.w * m_textureUVScale.y + m_textureUVOffset.y;
-            }
-
-            // Alpha
-            //if( m_textures[1] != nullptr )
-            {
-                mt::vec4f uv = m_uv2;
-
-                float uvX = uv.z - uv.x;
-                float uvY = uv.w - uv.y;
-
-                uv.x += percent.x * uvX;
-                uv.y += percent.y * uvY;
-                uv.z -= percent.z * uvX;
-                uv.w -= percent.w * uvY;
-
-                if( m_flipX == true )
-                {
-                    std::swap( uv.x, uv.z );
-                }
-
-                if( m_flipY == true )
-                {
-                    std::swap( uv.y, uv.w );
-                }
-
-                m_verticesWM[0].uv2.x = uv.x * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[0].uv2.y = uv.y * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[1].uv2.x = uv.z * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[1].uv2.y = uv.y * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[2].uv2.x = uv.z * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[2].uv2.y = uv.w * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[3].uv2.x = uv.x * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[3].uv2.y = uv.w * m_textureUVScale.y + m_textureUVOffset.y;
-            }
-        }
-        else
-        {
-            // RGB(A)
-            {
-                mt::vec4f uv = m_uv;
-
-                float uvX = uv.z - uv.x;
-                float uvY = uv.w - uv.y;
-
-                uv.x += percent.x * uvX;
-                uv.y += percent.y * uvY;
-                uv.z -= percent.z * uvX;
-                uv.w -= percent.w * uvY;
-
-                if( m_flipX == true )
-                {
-                    std::swap( uv.x, uv.z );
-                }
-
-                if( m_flipY == true )
-                {
-                    std::swap( uv.y, uv.w );
-                }
-
-                m_verticesWM[0].uv.x = uv.z * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[0].uv.y = uv.y * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[1].uv.x = uv.z * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[1].uv.y = uv.w * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[2].uv.x = uv.x * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[2].uv.y = uv.w * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[3].uv.x = uv.x * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[3].uv.y = uv.y * m_textureUVScale.x + m_textureUVOffset.x;
-            }
-
-            // Alpha                    
-            {
-                mt::vec4f uv = m_uv2;
-
-                float uvX = uv.z - uv.x;
-                float uvY = uv.w - uv.y;
-
-                uv.x += percent.y * uvY;
-                uv.y += percent.x * uvX;
-                uv.z -= percent.w * uvY;
-                uv.w -= percent.z * uvX;                        
-
-                if( m_flipX == true )
-                {
-                    std::swap( uv.y, uv.w );
-                }
-
-                if( m_flipY == true )
-                {
-                    std::swap( uv.x, uv.z );
-                }
-
-                m_verticesWM[0].uv2.x = uv.z * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[0].uv2.y = uv.y * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[1].uv2.x = uv.z * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[1].uv2.y = uv.w * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[2].uv2.x = uv.x * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[2].uv2.y = uv.w * m_textureUVScale.x + m_textureUVOffset.x;
-                m_verticesWM[3].uv2.x = uv.x * m_textureUVScale.y + m_textureUVOffset.y;
-                m_verticesWM[3].uv2.y = uv.y * m_textureUVScale.x + m_textureUVOffset.x;
-            }
-        }
-
-        mt::vec2f visOffset( m_size.x * percent.x, m_size.y * percent.y );
-
-        mt::vec2f percent_size;
-        percent_size.x = m_size.x - m_size.x * ( percent.x + percent.z );
-        percent_size.y = m_size.y - m_size.y * ( percent.y + percent.w );
+		mt::vec4f percent_size = m_percentVisibility * size;
+				
+		mt::vec2f visOffset(percent_size.x, percent_size.y);
 
         if( m_centerAlign == true )
         {
-            mt::vec2f alignOffset = m_maxSize * -0.5f;
+            mt::vec2f alignOffset = - size * 0.5f;
 
             visOffset += alignOffset;
         }
 				
 		if( m_flipX == true )
 		{
-			visOffset.x += m_maxSize.x - ( percent_size.x + m_offset.x );			
+			visOffset.x += maxSize.x - (percent_size.z + offset.x);
 		}
 		else
 		{
-			visOffset.x += m_offset.x;
+			visOffset.x += offset.x;
 		}
 
 		if( m_flipY == true )
 		{
-			visOffset.y += m_maxSize.y - ( percent_size.y + m_offset.y );
+			visOffset.y += maxSize.y - (percent_size.w + offset.y);
 		}
 		else
 		{
-			visOffset.y += m_offset.y;
+			visOffset.y += offset.y;
 		}
 
         m_verticesLocal[0].x = visOffset.x + 0.f;
         m_verticesLocal[0].y = visOffset.y + 0.f;
         m_verticesLocal[0].z = 0.f;
 
-        m_verticesLocal[1].x = visOffset.x + percent_size.x;
+        m_verticesLocal[1].x = visOffset.x + percent_size.z;
         m_verticesLocal[1].y = visOffset.y + 0.f;
         m_verticesLocal[1].z = 0.f;
 
-        m_verticesLocal[2].x = visOffset.x + percent_size.x;
-        m_verticesLocal[2].y = visOffset.y + percent_size.y;
+        m_verticesLocal[2].x = visOffset.x + percent_size.z;
+        m_verticesLocal[2].y = visOffset.y + percent_size.w;
         m_verticesLocal[2].z = 0.f;
 
         m_verticesLocal[3].x = visOffset.x + 0.f;
-        m_verticesLocal[3].y = visOffset.y + percent_size.y;
+        m_verticesLocal[3].y = visOffset.y + percent_size.w;
         m_verticesLocal[3].z = 0.f;
+
+		const mt::uv4f & uv_image = m_resourceImage->getUVImage();
+		const mt::uv4f & uv_alpha = m_resourceImage->getUVAlpha();
+
+		// RGB(A)
+		{
+			mt::uv4f uv;
+			mt::multiply_tetragon_uv4_v4( uv, uv_image, m_percentVisibility );
+
+			if( m_flipX == true )
+			{
+				mt::uv4_swap_u( uv );
+			}
+
+			if( m_flipY == true )
+			{
+				mt::uv4_swap_v( uv );
+			}
+
+			for( size_t i = 0; i != 4; ++i )
+			{
+				m_verticesWM[i].uv = uv[i] * m_textureUVScale + m_textureUVOffset;
+			}
+		}
+
+		// Alpha
+		//if( m_textures[1] != nullptr )
+		{
+			mt::uv4f uv;
+			mt::multiply_tetragon_uv4_v4( uv, uv_alpha, m_percentVisibility );
+
+			if( m_flipX == true )
+			{
+				mt::uv4_swap_u( uv );
+			}
+
+			if( m_flipY == true )
+			{
+				mt::uv4_swap_v( uv );
+			}
+
+			for( size_t i = 0; i != 4; ++i )
+			{
+				m_verticesWM[i].uv2 = uv[i] * m_textureUVScale + m_textureUVOffset;
+			}
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     void Shape::invalidateVerticesColor()
@@ -539,9 +314,11 @@ namespace Menge
         ColourValue color;
         this->calcTotalColor(color);
 
+		const ColourValue & textureColour = m_resourceImage->getTextureColor();
+		color *= textureColour;
+
         uint32_t argb = color.getAsARGB();
-
-
+		
 		m_verticesWM[0].color = argb;
 		m_verticesWM[1].color = argb;
 		m_verticesWM[2].color = argb;

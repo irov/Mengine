@@ -21,17 +21,15 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSubstract *>(_meta);
         
         m_isAlpha = true;
-        m_isUVRGBRotate = false;
-		m_isUVAlphaRotate = false;
 
         m_wrapU = false;
         m_wrapV = false;
 
         m_resourceImageName = metadata->get_Image_Name();
-        m_uv_image = metadata->get_Image_UV();
+
+		m_uv_image = metadata->get_Image_UV();
 		m_uv_alpha = m_uv_image;
-        
-        metadata->get_Image_Rotate( m_isUVRGBRotate );
+
         metadata->get_Image_Alpha( m_isAlpha );
 
 		m_maxSize = metadata->get_Image_MaxSize();
@@ -69,33 +67,7 @@ namespace Menge
                        
         m_texture = m_resourceImage->getTexture();
         m_textureAlpha = m_resourceImage->getTextureAlpha();
-		        
-        mt::vec2f uv_size(m_uv_image.z - m_uv_image.x, m_uv_image.w - m_uv_image.y);
-
-		if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
-		{
-			const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
-			
-			m_maxSize = maxSize * uv_size;
-
-			if( m_isUVRGBRotate == true )
-			{
-				std::swap( m_maxSize.x, m_maxSize.y );
-			}
-		}
-
-		if( m_size.x < 1.f || m_size.y < 1.f )
-		{
-			const mt::vec2f & size = m_resourceImage->getSize();
-			
-			m_size = size * uv_size;
-
-			if( m_isUVRGBRotate == true )
-			{
-				std::swap( m_size.x, m_size.y );
-			}
-		}
-       
+      
         m_wrapU = false;
         m_wrapV = false;
 		        

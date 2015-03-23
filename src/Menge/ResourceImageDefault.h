@@ -15,7 +15,7 @@ namespace Menge
 		ResourceImageDefault();
         
 	public:
-		void setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::vec4f & _uv );
+		void setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, bool _wrapU, bool _wrapV );
 
     public:
         const FilePath & getFilePath() const;
@@ -29,6 +29,9 @@ namespace Menge
 
 	protected:
 		bool _compile() override;
+
+	protected:
+		void prepareImageFrame_();
 
 	protected:
         FilePath m_filePath;

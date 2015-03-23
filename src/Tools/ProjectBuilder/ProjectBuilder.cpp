@@ -59,6 +59,8 @@
 
 #	include <pybind/pybind.hpp>
 
+#	include <io.h>
+
 SERVICE_EXTERN(ServiceProvider, Menge::ServiceProviderInterface);
 
 SERVICE_EXTERN(ArchiveService, Menge::ArchiveServiceInterface);
@@ -590,10 +592,10 @@ namespace Menge
 		{
 			const ParticleEmitterAtlas & atlas = *it;
 			
-			PyObject * py_fileName = PyUnicode_FromString( atlas.filename.c_str() );
+			PyObject * py_fileName = pybind::string_from_char_size( atlas.filename.c_str(), atlas.filename.size() );
 
-			PyList_Append( _atlasFiles, py_fileName );
-			Py_DECREF( py_fileName );
+			pybind::list_appenditem( _atlasFiles, py_fileName );
+			pybind::decref( py_fileName );
 		}
 
 		return true;
@@ -609,7 +611,7 @@ namespace Menge
 				, _path
 				);
 
-			Py_RETURN_FALSE;
+			return pybind::ret_none();
 		}
 
 		return atlasFiles;
@@ -925,13 +927,32 @@ static bool getRegValue(const WCHAR * _path, WCHAR * _value )
 {
 	HKEY hKey;
 	LONG lRes = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _path, 0, KEY_READ, &hKey);
+
+	if( lRes != ERROR_SUCCESS )
+	{
+		LOGGER_ERROR(Menge::serviceProvider)("getRegValue %ls RegOpenKeyEx get Error %d"
+			, _path
+			, lRes
+			);
+
+		return false;
+	}
 		
 	DWORD dwBufferSize;
-
 	LONG nError = ::RegQueryValueEx( hKey, L"", 0, NULL, (LPBYTE)_value, &dwBufferSize );
 
 	RegCloseKey( hKey );
 
+	if( nError != ERROR_SUCCESS )
+	{
+		LOGGER_ERROR(Menge::serviceProvider)("getRegValue %ls RegQueryValueEx get Error %d"
+			, _path
+			, nError
+			);
+
+		return false;
+	}
+	
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -959,17 +980,34 @@ bool run()
 		return false;
 	}
 
+	LOGGER_ERROR(Menge::serviceProvider)("Menge::initialize complete");
+
 	{
 		WCHAR szPythonPath[512];
-		getRegValue( L"SOFTWARE\\Python\\PythonCore\\3.4\\PythonPath", szPythonPath );
+		if( getRegValue( L"SOFTWARE\\Python\\PythonCore\\3.4\\PythonPath", szPythonPath ) == false )
+		{
+			LOGGER_ERROR(Menge::serviceProvider)("invalid get reg value '%ls'"
+				, L"SOFTWARE\\Python\\PythonCore\\3.4\\PythonPath"
+				);
+		}
 
 		pybind::set_path( szPythonPath );
+
+		LOGGER_ERROR(Menge::serviceProvider)("set python path '%ls'"
+			, szPythonPath
+			);
+	}	
+
+	if( pybind::initialize( false, false, false ) == false )
+	{
+		return false;
 	}
 
-	pybind::initialize( false, false, false );
-
+	LOGGER_ERROR(Menge::serviceProvider)("pybind::initialize complete");
 
 	PyObject * py_tools_module = pybind::module_init( "ToolsBuilderPlugin" );
+
+	LOGGER_ERROR(Menge::serviceProvider)("1");
 
 	pybind::interface_<Menge::PythonLogger>("XlsScriptLogger", true, py_tools_module)
 		.def_native("write", &Menge::PythonLogger::py_write )
@@ -978,7 +1016,6 @@ bool run()
 		.def_property("errors", &Menge::PythonLogger::getErrors, &Menge::PythonLogger::setErrors )
 		.def_property("encoding", &Menge::PythonLogger::getEncoding, &Menge::PythonLogger::setEncoding )
 		;
-
 	Menge::PythonLogger * logger = new Menge::PythonLogger(Menge::serviceProvider);
 	PyObject * py_logger = pybind::ptr(logger);
 
@@ -1006,8 +1043,6 @@ bool run()
 
 	pybind::incref( py_tools_module );
 	pybind::module_addobject( module_builtins, "ToolsBuilderPlugin", py_tools_module );
-
-	
 
 	Menge::WChar currentDirectory[MAX_PATH];
 
@@ -1042,15 +1077,16 @@ bool run()
 
 	pybind::decref( py_syspath );
 
-	bool exist_run;
-	PyObject * py_run_module = pybind::module_import( "run", exist_run );
-
+	bool exist_run;	
+	PyObject * py_run_module = py_run_module = pybind::module_import( "run", exist_run );
+	
 	if( py_run_module == nullptr )
 	{
 		return false;
 	}
 
 	LPWSTR lpwCmdLine = GetCommandLineW();
+
 
 	int nArgs = 0;
 	LPWSTR * szArglist = CommandLineToArgvW( lpwCmdLine, &nArgs );

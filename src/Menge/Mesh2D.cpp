@@ -10,7 +10,7 @@
 #	include "Logger/Logger.h"
 
 #	include "math/box2.h"
-#	include "math/clamp.h"
+#	include "math/utils.h"
 
 namespace Menge
 {
@@ -131,7 +131,7 @@ namespace Menge
 		{
 			texturesNum = 1;
 
-			stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
+			stageName = CONST_STRING(m_serviceProvider, Add);
 		}
 		else
 		{
@@ -139,7 +139,7 @@ namespace Menge
 
 			if( m_resourceImage->isAlpha() == true || m_solid == false )
 			{
-				stageName = CONST_STRING(m_serviceProvider, BlendSprite);
+				stageName = CONST_STRING(m_serviceProvider, Blend);
 			}
 			else
 			{
@@ -214,71 +214,22 @@ namespace Menge
 	{
 		m_invalidateVerticesLocal = false;
 
-		const mt::vec4f & image_uv = m_resourceImage->getUVImage();
-		const mt::vec4f & image_uvAlpha = m_resourceImage->getUVAlpha();
-		bool uvRotate = m_resourceImage->isUVRGBRotate();
-
-		if( uvRotate == false )
+		const mt::uv4f & uv_image = m_resourceImage->getUVImage();
+		
+		for( uint32_t i = 0; i != m_vertexCount; ++i )
 		{
-			// RGB(A)
-			{
-				for( uint32_t i = 0; i != m_vertexCount; ++i )
-				{
-					const mt::vec2f & uv = m_shape->uv[i];
+			const mt::vec2f & uv = m_shape->uv[i];
 
-					float u = image_uv.x + (image_uv.z - image_uv.x) * uv.x;
-					float v = image_uv.y + (image_uv.w - image_uv.y) * uv.y;
-
-					m_verticesWM[i].uv.x = u;
-					m_verticesWM[i].uv.y = v;
-				}
-			}
-
-			// Alpha
-			//if( m_textures[1] != nullptr )
-			{
-				for( uint32_t i = 0; i != m_vertexCount; ++i )
-				{
-					const mt::vec2f & uv = m_shape->uv[i];
-
-					float u = image_uvAlpha.x + (image_uvAlpha.z - image_uvAlpha.x) * uv.x;
-					float v = image_uvAlpha.y + (image_uvAlpha.w - image_uvAlpha.y) * uv.y;
-
-					m_verticesWM[i].uv2.x = u;
-					m_verticesWM[i].uv2.y = v;
-				}
-			}
+			multiply_tetragon_uv4_v2( m_verticesWM[i].uv, uv_image, uv );
 		}
-		else
+
+		const mt::uv4f & uv_alpha = m_resourceImage->getUVAlpha();
+
+		for( uint32_t i = 0; i != m_vertexCount; ++i )
 		{
-			// RGB(A)
-			{
-				for( uint32_t i = 0; i != m_vertexCount; ++i )
-				{
-					const mt::vec2f & uv = m_shape->uv[i];
+			const mt::vec2f & uv = m_shape->uv[i];
 
-					float u = image_uv.z - (image_uv.z - image_uv.x) * uv.y;
-					float v = image_uv.y + (image_uv.w - image_uv.y) * uv.x;
-
-					m_verticesWM[i].uv.x = u;
-					m_verticesWM[i].uv.y = v;
-				}
-			}
-
-			// Alpha
-			//if( m_textures[1] != nullptr )
-			{
-				for( uint32_t i = 0; i != m_vertexCount; ++i )
-				{
-					const mt::vec2f & uv = m_shape->uv[i];
-
-					float u = image_uvAlpha.z - (image_uvAlpha.z - image_uvAlpha.x) * uv.y;
-					float v = image_uvAlpha.y + (image_uvAlpha.w - image_uvAlpha.y) * uv.x;
-
-					m_verticesWM[i].uv2.x = u;
-					m_verticesWM[i].uv2.y = v;
-				}
-			}
+			multiply_tetragon_uv4_v2( m_verticesWM[i].uv2, uv_alpha, uv );
 		}
 	}
     //////////////////////////////////////////////////////////////////////////

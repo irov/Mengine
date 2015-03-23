@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Kernel/Node.h"
-#	include "Kernel/Shape.h"
 
 #   include "Kernel/ResourceImage.h"
 
@@ -56,14 +55,11 @@ namespace Menge
 		void _invalidateWorldMatrix() override;
 		
 	protected:
-		void updateElementVertex_( const Landscape2DElement & _el, const mt::mat4f & _wm, RenderVertex2D * _vertices );
-
-	protected:
 		void updateVerticesWM_();
 		void updateElementWM_();
 
 	protected:
-		inline const RenderVertex2D * getVerticesWM();
+		inline const RenderVertex2D * getVerticesWM( size_t _offset );
 		inline TVectorLandscape2DElements & getElementWM();
 		       
 	protected:
@@ -86,14 +82,14 @@ namespace Menge
 		mutable bool m_invalidateElementWM;
     };
 	//////////////////////////////////////////////////////////////////////////
-	inline const RenderVertex2D * Landscape2D::getVerticesWM()
+	inline const RenderVertex2D * Landscape2D::getVerticesWM( size_t _offset )
 	{
 		if( m_invalidateVerticesWM == true )
 		{
 			this->updateVerticesWM_();
 		}
 
-		return &m_verticesWM[0];
+		return &m_verticesWM[_offset];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline TVectorLandscape2DElements & Landscape2D::getElementWM()

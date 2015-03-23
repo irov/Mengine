@@ -142,16 +142,6 @@ namespace Metabuf
         _value.setARGB( a, r, g, b );
     }
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( stdex::memory_reader & ar, Menge::GlyphCode & _value, void * _userData )
-    {
-        (void)_userData;
-
-        uint32_t code;
-        ar.readPOD( code );
-
-        _value.setCode( code );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void archive_read( stdex::memory_reader & ar, Menge::Polygon & _value, void * _userData )
     {
         (void)_userData;
@@ -229,5 +219,19 @@ namespace Metabuf
 		ar.readPOD( _value.minimum.y );
 		ar.readPOD( _value.maximum.x );
 		ar.readPOD( _value.maximum.y );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, mt::uv4f & _value, void * _userData )
+	{
+		(void)_userData;
+
+		ar.readPOD( _value.p0.x );
+		ar.readPOD( _value.p0.y );
+		ar.readPOD( _value.p1.x );
+		ar.readPOD( _value.p1.y );
+		ar.readPOD( _value.p2.x );
+		ar.readPOD( _value.p2.y );
+		ar.readPOD( _value.p3.x );
+		ar.readPOD( _value.p3.y );
 	}
 }

@@ -195,6 +195,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_pause( uint32_t _enumerator )
 	{
+		(void)_enumerator;
+
 		if( m_sourceID == 0 )
 		{
 			return;
@@ -206,6 +208,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_resume( uint32_t _enumerator )
 	{
+		(void)_enumerator;
+
 		if( m_sourceID == 0 )
 		{
 			return;

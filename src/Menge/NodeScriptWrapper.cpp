@@ -136,7 +136,7 @@
 #	include "Utils/Math/mat3.h"
 #	include "Utils/Math/mat4.h"
 #	include "Utils/Math/quat.h"
-#	include "Utils/Math/clamp.h"
+#	include "Utils/Math/utils.h"
 
 #	include "Utils/Core/Rect.h"
 #	include "Utils/Core/String.h"
@@ -1703,7 +1703,10 @@ namespace Menge
 			ResourceImageDefault * resImage = RESOURCE_SERVICE(m_serviceProvider)
 				->createResourceT<ResourceImageDefault>( _pakName, ConstString::none(), _resourceName, CONST_STRING(m_serviceProvider, ResourceImageDefault) );
 
-			resImage->setup( _fileName, ConstString::none(), mt::vec4f(0.f, 0.f, 1.f, 1.f) );
+			mt::uv4f uv_image;
+			mt::uv4f uv_alpha;
+			
+			resImage->setup( _fileName, ConstString::none(), uv_image, uv_alpha, false, false );
 
 			return true;
         }
@@ -4783,8 +4786,6 @@ namespace Menge
 			.def( "isAlpha", &ResourceImage::isAlpha )
 			.def( "isWrapU", &ResourceImage::isWrapU )
 			.def( "isWrapV", &ResourceImage::isWrapV )
-			.def( "isUVRGBRotate", &ResourceImage::isUVRGBRotate )
-			.def( "isUVAlphaRotate", &ResourceImage::isUVAlphaRotate )
             ;
 
 		pybind::interface_<ResourceImageData, pybind::bases<ResourceReference> >("ResourceImageData", false)
@@ -5355,9 +5356,6 @@ namespace Menge
                     .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldImageCenter )
 
                     .def( "disableTextureColor", &Sprite::disableTextureColor )
-
-                    .def_depricated( "setSpriteSize", &Sprite::setCustomSize, "use setCustomSize" )
-                    .def( "setCustomSize", &Sprite::setCustomSize )
                     ;
 
 				pybind::interface_<Gyroscope, pybind::bases<Node> >("Gyroscope", false)

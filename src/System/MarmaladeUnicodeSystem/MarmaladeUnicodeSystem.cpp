@@ -27,14 +27,14 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeUnicodeSystem::unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
+    bool MarmaladeUnicodeSystem::unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {
 		if( _unicodeSize == UNICODE_UNSIZE && _utf8Capacity != 0 )
 		{
 			_utf8Capacity += 1;
 		}
 
-        int utf8_size = IwWideCharToUTF8( _unicode, _unicodeSize, _utf8, _utf8Capacity );
+        int utf8_size = IwWideCharToUTF8( reinterpret_cast<const ucs2char *>(_unicode), _unicodeSize, _utf8, _utf8Capacity );
 
         if( utf8_size == iwutf8_invalid_cast )
         {
@@ -60,14 +60,14 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeUnicodeSystem::utf8ToUnicode( const char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
+	bool MarmaladeUnicodeSystem::utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
 	{		
 		if( _utf8Size == UNICODE_UNSIZE && _unicodeCapacity != 0 )
 		{
 			_unicodeCapacity += 1;
 		}
 
-        int wc_size = IwUTF8ToWideChar( _utf8, _utf8Size, _unicode, _unicodeCapacity);
+        int wc_size = IwUTF8ToWideChar( _utf8, _utf8Size, reinterpret_cast<ucs2char *>(_unicode), _unicodeCapacity);
 
         if( wc_size == iwutf8_invalid_cast )
         {

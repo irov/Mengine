@@ -21,6 +21,8 @@
 
 #	include <stdio.h>
 
+#	include <math.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -115,9 +117,15 @@ namespace Menge
 		}
 
 		float fontHeght = font->getFontHeight();
+
 		const RenderTextureInterfacePtr & textureFont = font->getTextureFont();
+
+		if( textureFont == nullptr )
+		{
+			return;
+		}
 		
-		const mt::vec4f & uv = textureFont->getUV();
+		const mt::uv4f & uv = textureFont->getUV();
 
 		float lineOffset = this->calcLineOffset();
 
@@ -617,14 +625,14 @@ namespace Menge
 		const RenderTextureInterfacePtr & textureFont = m_font->getTextureFont();
 
 		m_materialFont = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( CONST_STRING(m_serviceProvider, BlendSprite), false, false, PT_TRIANGLELIST, 1, &textureFont );
+			->getMaterial( CONST_STRING(m_serviceProvider, Blend), false, false, PT_TRIANGLELIST, 1, &textureFont );
 
 		const RenderTextureInterfacePtr & textureOutline = m_font->getTextureOutline();
 
 		if( textureOutline != nullptr )
 		{
 			m_materialOutline = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING(m_serviceProvider, BlendSprite), false, false, PT_TRIANGLELIST, 1, &textureOutline );
+				->getMaterial( CONST_STRING(m_serviceProvider, Blend), false, false, PT_TRIANGLELIST, 1, &textureOutline );
 		}
 		else
 		{
@@ -1189,8 +1197,8 @@ namespace Menge
 
 		if( m_pixelsnap == true )
 		{
-			wm.v3.x = floorf( wm.v3.x + 0.5f );
-			wm.v3.y = floorf( wm.v3.y + 0.5f );
+			wm.v3.x = ::floorf( wm.v3.x + 0.5f );
+			wm.v3.y = ::floorf( wm.v3.y + 0.5f );
 		}
 
         for( ; it != it_end; ++it, ++it_w )

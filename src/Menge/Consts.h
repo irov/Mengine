@@ -89,16 +89,16 @@ namespace Menge
 		DECL_CONST( RigidBody2D );
 		DECL_CONST( WorldPhysObject );
 		DECL_CONST( NullTexture );
-		DECL_CONST( BlendSprite );
+		DECL_CONST( Blend );
 		DECL_CONST( SolidSprite );
 		DECL_CONST( OnlyColor );
+		DECL_CONST( Intensive_OnlyColor );
 		DECL_CONST( ExternalAlpha );
         DECL_CONST( ExternalAlpha_OnlyColor );
 		DECL_CONST( ExternalAlphaIntensive );
         DECL_CONST( ExternalAlphaIntensive_OnlyColor );
 		DECL_CONST( Debug );
-		DECL_CONST( ParticleIntensive );
-		DECL_CONST( ParticleBlend );
+		DECL_CONST( Add );
 		DECL_CONST( Accumulator );
 
 		DECL_CONST( ParticleEmitter );

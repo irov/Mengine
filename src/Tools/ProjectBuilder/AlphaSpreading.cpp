@@ -17,8 +17,6 @@
 
 #   include "Logger\Logger.h"
 
-#   include <Python.h>
-
 namespace Menge
 {
 	extern ServiceProviderInterface * serviceProvider;    
@@ -75,7 +73,7 @@ namespace Menge
 
         if( decode_dataInfo->channels != 4 )
         {
-            Py_RETURN_NONE;
+			return pybind::ret_none();
         }
         
         ImageCodecOptions decode_options;
@@ -238,6 +236,6 @@ namespace Menge
 
         delete [] textureBuffer;
                 
-        Py_RETURN_NONE;
+        return pybind::ret_none();
     } 
 }

@@ -3,6 +3,8 @@
 
 #	include "Math/angle.h"
 
+#	include <math.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -58,11 +60,11 @@ namespace Menge
 
 		float step_angle = m_angularSpeed * _timing * 0.001f;
 
-		if( fabsf(diff_angle) > 0.0001f )
+		if( ::fabsf(diff_angle) > 0.0001f )
 		{
 			rotating = true;
 
-			if( step_angle >= fabsf(diff_angle) )
+			if( step_angle >= ::fabsf(diff_angle) )
 			{
 				obj_angle = dir_angle;
 			}

@@ -290,9 +290,6 @@ namespace Menge
 		        
         m_isAlpha = true;
 
-		m_isUVRGBRotate = false;
-		m_isUVAlphaRotate = false;
-
         m_wrapU = false;
         m_wrapV = false;
         
@@ -344,12 +341,14 @@ namespace Menge
 			return false;
 		}
 
-		this->prepareImageFrame_( texture );
+		m_texture = texture;
+
+		this->prepareImageFrame_();
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::vec4f & _uv )
+	void ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, bool _wrapU, bool _wrapV )
 	{
         m_filePath = _imagePath;
 
@@ -359,14 +358,57 @@ namespace Menge
 				->findCodecType( m_filePath );
 		}
 
-        m_uv_image = _uv;
-		m_uv_alpha = _uv;
+        m_uv_image = _uv_image;
+		m_uv_alpha = _uv_alpha;
+
+		m_wrapU = _wrapU;
+		m_wrapV = _wrapV;
 
 		m_texture = nullptr;
+		m_textureAlpha = nullptr;
+		
 		m_isAlpha = true;
-        m_isUVRGBRotate = false;
-		m_isUVAlphaRotate = false;
-		m_wrapU = false;
-		m_wrapV = false;
+
+		this->recompile();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageDefault::prepareImageFrame_()
+	{
+		float width = (float)m_texture->getWidth();
+		float height = (float)m_texture->getHeight();
+
+		const RenderImageInterfacePtr & image = m_texture->getImage();
+
+		float hwWidth = (float)image->getHWWidth();
+		float hwHeight = (float)image->getHWHeight();
+
+		mt::vec2f uv_scale;
+		uv_scale.x = width / hwWidth;
+		uv_scale.y = height / hwHeight;
+
+		for( size_t i = 0; i != 4; ++i )
+		{
+			m_uv_image[i] *= uv_scale;
+		}
+
+		if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
+		{
+			m_maxSize.x = width;
+			m_maxSize.y = height;
+
+			m_size.x = m_maxSize.x;
+			m_size.y = m_maxSize.y;
+		}
+
+		uint32_t channels = m_texture->getChannels();
+
+		if( channels == 3 )
+		{
+			m_isAlpha = false;
+		}
+		else
+		{
+			m_isAlpha = true;
+		}
 	}
 }

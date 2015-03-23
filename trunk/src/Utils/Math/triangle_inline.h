@@ -3,7 +3,7 @@
 namespace mt
 {	
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE bool triangle_intersect_v2( const mt::vec2f & _a, const mt::vec2f & _b, const mt::vec2f & _c, const mt::vec2f & _p )
+	MENGINE_MATH_FUNCTION_INLINE bool triangle_intersect_v2( const mt::vec2f & _a, const mt::vec2f & _b, const mt::vec2f & _c, const mt::vec2f & _p )
 	{
 		mt::vec2f v0 = _c - _a;
 		mt::vec2f v1 = _b - _a;

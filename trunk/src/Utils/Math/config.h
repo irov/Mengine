@@ -14,23 +14,27 @@ namespace mt
 	const float	m_deg2rad = m_pi / 180.f;
 	const float	m_rad2deg = 180.f / m_pi;
 	const float m_eps = 0.000001f;
-	const float m_eps2 = m_eps * 10.f;
+	const float m_eps2 = m_eps * 10.f;	
 	const float m_neps = -m_eps;
+	const float m_1_eps = 1.f + m_eps;
+	const float m_1_neps = 1.f - m_eps;
 }
 
-#	ifdef _DEBUG
-#	define MATH_FORCE_INLINE 0
-#	else
-#	define MATH_FORCE_INLINE 1
+#	ifndef MENGINE_MATH_FORCE_INLINE
+#		ifdef _DEBUG
+#			define MENGINE_MATH_FORCE_INLINE 0
+#		else
+#			define MENGINE_MATH_FORCE_INLINE 1
+#		endif
 #	endif
 
 
-#	define MATH_INLINE inline
+#	define MENGINE_MATH_INLINE inline
 
-#	if MATH_FORCE_INLINE == 1
-#	define MATH_FUNCTION_INLINE MATH_INLINE static
-#	define MATH_METHOD_INLINE MATH_INLINE
+#	if MENGINE_MATH_FORCE_INLINE == 1
+#		define MENGINE_MATH_FUNCTION_INLINE MENGINE_MATH_INLINE static
+#		define MENGINE_MATH_METHOD_INLINE MENGINE_MATH_INLINE
 #	else
-#	define MATH_FUNCTION_INLINE
-#	define MATH_METHOD_INLINE
+#		define MENGINE_MATH_FUNCTION_INLINE
+#		define MENGINE_MATH_METHOD_INLINE
 #	endif

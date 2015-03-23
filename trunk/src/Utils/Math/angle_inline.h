@@ -3,7 +3,7 @@
 namespace mt
 {
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float angle_norm(float _angle)
+	MENGINE_MATH_FUNCTION_INLINE float angle_norm(float _angle)
 	{
 		if( _angle < 0.f )
 		{
@@ -24,7 +24,7 @@ namespace mt
 		return _angle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float angle_norm2(float _angle)
+	MENGINE_MATH_FUNCTION_INLINE float angle_norm2(float _angle)
 	{
 		float angle2 = mt::angle_norm( _angle + mt::m_pi );
 		
@@ -33,7 +33,7 @@ namespace mt
 		return angle2;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE void angle_correct_interpolate_from_to(float _from, float _to, float & _correct_from, float & _correct_to)
+	MENGINE_MATH_FUNCTION_INLINE void angle_correct_interpolate_from_to(float _from, float _to, float & _correct_from, float & _correct_to)
 	{
 		float norm_angle_from = mt::angle_norm(_from);
 		float norm_angle_to = mt::angle_norm(_to);
@@ -63,7 +63,7 @@ namespace mt
 		_correct_to = correct_angle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float angle_length( float _angle1, float _angle2 )
+	MENGINE_MATH_FUNCTION_INLINE float angle_length( float _angle1, float _angle2 )
 	{
 		float correct_angle_from;
 		float correct_angle_to;
@@ -74,7 +74,7 @@ namespace mt
 		return length;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float angle_norm360(float _angle)
+	MENGINE_MATH_FUNCTION_INLINE float angle_norm360(float _angle)
 	{
 		if ((_angle >= 360.f) || (_angle < 0.f))
 		{
@@ -84,7 +84,7 @@ namespace mt
 		return _angle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float angle_norm180(float _angle)
+	MENGINE_MATH_FUNCTION_INLINE float angle_norm180(float _angle)
 	{
 		_angle = angle_norm360(_angle);
 
@@ -96,12 +96,12 @@ namespace mt
 		return _angle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float angle_delta_deg(float _angle1, float _angle2)
+	MENGINE_MATH_FUNCTION_INLINE float angle_delta_deg(float _angle1, float _angle2)
 	{
 		return angle_norm180(_angle1 - _angle2);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float acos32(float _x)
+	MENGINE_MATH_FUNCTION_INLINE float acos32(float _x)
 	{
 		if (_x <= -1.f) 
 		{
@@ -116,7 +116,7 @@ namespace mt
 		return ::acosf(_x);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float angle_in_interval_deg( float _angle, float _min, float _max )
+	MENGINE_MATH_FUNCTION_INLINE float angle_in_interval_deg( float _angle, float _min, float _max )
 	{
 		float delta = mt::angle_delta_deg(_max,_min);
 		float delta1 = mt::angle_delta_deg(_angle,_min);
@@ -158,7 +158,7 @@ namespace mt
 		return sin;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float cosf_fast( float x )
+	MENGINE_MATH_FUNCTION_INLINE float cosf_fast( float x )
 	{
 		x = mt::angle_norm2( x + mt::m_half_pi );
 
@@ -167,7 +167,7 @@ namespace mt
 		return cos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MATH_FUNCTION_INLINE float sinf_fast( float x )
+	MENGINE_MATH_FUNCTION_INLINE float sinf_fast( float x )
 	{
 		float x2 = mt::angle_norm2( x );
 

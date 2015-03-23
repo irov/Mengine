@@ -1,4 +1,4 @@
-<Protocol Version = "75">
+<Protocol Version = "77">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -11,8 +11,8 @@
   <Type Name="mt::vec3f" Evict="float3"/>
   <Type Name="mt::vec4f" Evict="float4"/>
   <Type Name="mt::box2f" Evict="float4"/>
+  <Type Name="mt::uv4f" Evict="float8"/>
   <Type Name="Menge::ColourValue" Evict="float4"/>
-  <Type Name="Menge::GlyphCode" Evict="utf8"/>
   <Type Name="Menge::Polygon" Evict="floats"/>
   <Type Name="Menge::Floats" Evict="floats"/>
 
@@ -52,12 +52,10 @@
 
     <Node Name="ResourceImageSubstractRGBAndAlpha" Inheritance = "Resource">
       <Member Node="Image" Name="NameRGB" Type="Menge::ConstString" Required="1"/>
-      <Member Node="Image" Name="UVRGB" Type="mt::vec4f" Required="1"/>
-      <Member Node="Image" Name="UVRGBRotate" Type="bool"/>      
+      <Member Node="Image" Name="UVRGB" Type="mt::uv4f" Required="1"/>
 
       <Member Node="Image" Name="NameAlpha" Type="Menge::ConstString" Required="1"/>
-      <Member Node="Image" Name="UVAlpha" Type="mt::vec4f" Required="1"/>
-      <Member Node="Image" Name="UVAlphaRotate" Type="bool"/>
+      <Member Node="Image" Name="UVAlpha" Type="mt::uv4f" Required="1"/>
 
       <Member Node="Image" Name="MaxSize" Type="mt::vec2f" Required="1"/>
       <Member Node="Image" Name="Size" Type="mt::vec2f"/>
@@ -66,8 +64,7 @@
 
     <Node Name="ResourceImageSubstract" Inheritance = "Resource">
       <Member Node="Image" Name="Name" Type="Menge::ConstString" Required="1"/>
-      <Member Node="Image" Name="UV" Type="mt::vec4f" Required="1"/>
-      <Member Node="Image" Name="Rotate" Type="bool"/>
+      <Member Node="Image" Name="UV" Type="mt::uv4f" Required="1"/>
       <Member Node="Image" Name="Alpha" Type="bool"/>
 
       <Member Node="Image" Name="MaxSize" Type="mt::vec2f" Required="1"/>
@@ -302,22 +299,6 @@
       <Node Name="Data">
         <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
         <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
-      </Node>
-    </Node>
-  </Node>
-
-  <Node Name="Font">
-    <Attribute Name="height" Type="float" Required="1"/>
-
-    <Node Name="Char">
-      <Attribute Name="width" Type="float" Required="1"/>
-      <Attribute Name="offset" Type="mt::vec2f" Required="1"/>
-      <Attribute Name="rect" Type="mt::vec4f" Required="1"/>
-      <Attribute Name="code" Type="Menge::GlyphCode" Required="1"/>
-
-      <Node Name="Kerning">
-        <Attribute Name="advance" Type="float" Required="1"/>
-        <Attribute Name="id" Type="Menge::GlyphCode" Required="1"/>
       </Node>
     </Node>
   </Node>

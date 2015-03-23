@@ -11,7 +11,6 @@ namespace Menge
 		, m_width(0)
 		, m_height(0)
         , m_channels(0)
-		, m_uv(0.f, 0.f, 1.f, 1.f)
         , m_id(0)
 	{
 	}
@@ -50,14 +49,10 @@ namespace Menge
         m_hwRect.right = m_image->getHWWidth();
         m_hwRect.bottom = m_image->getHWHeight();
 
-		m_uv.x = 0.f;
-		m_uv.y = 0.f;
-
 		float scaleU = float(m_rect.right) / float(m_hwRect.right);
 		float scaleV = float(m_rect.bottom) / float(m_hwRect.bottom);
 
-		m_uv.z = scaleU;
-		m_uv.w = scaleV;
+		mt::uv4_from_mask( m_uv, mt::vec4f(0.f, 0.f, scaleU, scaleV) );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void RenderTexture::release()
@@ -141,7 +136,7 @@ namespace Menge
 		return m_hwRect;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec4f & RenderTexture::getUV() const
+	const mt::uv4f & RenderTexture::getUV() const
 	{
 		return m_uv;
 	}

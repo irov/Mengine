@@ -7,6 +7,8 @@
 #	include "Interface/NotificationServiceInterface.h"
 #	include "Interface/NotificatorInterface.h"
 
+#	include <math.h>
+
 namespace Menge
 {
 	////////////////////////////////////////////////////////////////////////
@@ -145,7 +147,7 @@ namespace Menge
 
 		mt::inv_m4( m_viewMatrixInv, m_viewMatrix );
 
-		float tangent = tanf(m_cameraFov * 0.5f);
+		float tangent = ::tanf(m_cameraFov * 0.5f);
 		float height = 2.f * 1.f * tangent;
 		float width = height * m_cameraAspect;
 

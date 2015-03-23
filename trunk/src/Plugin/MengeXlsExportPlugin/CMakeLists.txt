@@ -15,6 +15,13 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 					 ${THIRDPARTY_DIR}/pybind/include
                      ${THIRDPARTY_DIR}/boost
 )
+
+add_definitions(-DUNICODE)
+add_definitions(-D_UNICODE)
+
+add_definitions(-DMS_NO_COREDLL)
+add_definitions(-DPy_NO_ENABLE_SHARED)
+add_definitions(-DPYBIND_PYTHON_VERSION=342)
 					 
 ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
 

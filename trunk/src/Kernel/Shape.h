@@ -1,8 +1,10 @@
 #   pragma once
 
+#   include "Interface/RenderSystemInterface.h"
+
 #   include "Kernel/Node.h"
 
-#   include "Interface/RenderSystemInterface.h"
+#	include "Kernel/ResourceImage.h"
 
 #   include "Core/Polygon.h"
 
@@ -20,37 +22,16 @@ namespace Menge
         ~Shape();
 
 	public:
+		void setResourceImage( ResourceImage * _resourceImage );
+		ResourceImage * getResourceImage() const;
+		
+	public:
 		void disableTextureColor( bool _disable );
 
 		void setBlendAdd( bool _value );
 		bool isBlendAdd() const;
 
-    public:
-        void setTextureWrapX( bool _wrap );
-        bool getTextureWrapX() const;
-
-        void setTextureWrapY( bool _wrap );
-        bool getTextureWrapY() const;
-
-        void setMaxSize( const mt::vec2f & _size );
-        const mt::vec2f & getMaxSize() const;
-
-		void setSize( const mt::vec2f & _size );
-		const mt::vec2f & getSize() const;
-
-		void setOffset( const mt::vec2f & _size );
-		const mt::vec2f & getOffset() const;
-
-        void setUVRotate( bool _rotate );
-        bool getUVRotate() const;
-
-        void setUV( const mt::vec4f & _uv );
-        const mt::vec4f & getUV() const;
-
-        void setUV2( const mt::vec4f & _uv );
-        const mt::vec4f & getUV2() const;
-
-    public:
+	public:
         void setCenterAlign( bool _centerAlign );
         bool getCenterAlign() const;
 
@@ -68,6 +49,10 @@ namespace Menge
 
         void setTextureUVScale( const mt::vec2f & _scale );
         const mt::vec2f & getTextureUVScale() const;
+
+	protected:
+		bool _compile() override;
+		void _release() override;
 
     protected:
         void _invalidateColor() override;
@@ -93,12 +78,7 @@ namespace Menge
 		inline bool isInvalidateMaterial() const;
 		
 	protected:
-        mt::vec2f m_maxSize;
-		mt::vec2f m_size;
-		mt::vec2f m_offset;
-
-        mt::vec4f m_uv;
-        mt::vec4f m_uv2;
+		ResourceHolder<ResourceImage> m_resourceImage;
 
         mt::vec4f m_percentVisibility;
 
@@ -110,11 +90,6 @@ namespace Menge
 
         mutable mt::vec3f m_verticesLocal[4];
         mutable RenderVertex2D m_verticesWM[4];
-
-		bool m_textureWrapX;
-		bool m_textureWrapY;
-
-		bool m_uvRotate;
 
 		bool m_centerAlign;
 

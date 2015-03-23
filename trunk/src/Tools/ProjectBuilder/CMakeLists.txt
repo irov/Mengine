@@ -18,8 +18,6 @@ INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 			         ${THIRDPARTY_DIR}/pugixml/src
                      ${THIRDPARTY_DIR}/metabuf
                      ${THIRDPARTY_DIR}/pybind/include
-                     ${THIRDPARTY_DIR}/Python3/include
-                     ${THIRDPARTY_DIR}/Python3/PC
 )
  
 ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
@@ -27,11 +25,13 @@ ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
 add_definitions(-DUNICODE)
 add_definitions(-D_UNICODE)
 
-add_definitions(-DPy_BUILD_CORE)
+add_definitions(-DMS_NO_COREDLL)
+add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPYBIND_PYTHON_VERSION=342)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Math)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceCodec)

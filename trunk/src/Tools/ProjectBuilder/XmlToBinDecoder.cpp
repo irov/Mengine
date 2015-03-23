@@ -17,8 +17,6 @@
 
 #   include "Logger/Logger.h"
 
-#   include <Python.h>
-
 #	include "xml2metabuf/Xml2Metabuf.hpp"
 #	include "xml2metabuf/Xml2Metacode.hpp"
 
@@ -96,7 +94,7 @@ namespace Menge
             return nullptr;
         }
 
-        Py_RETURN_NONE;
+        return pybind::ret_none();
     }
 }
 

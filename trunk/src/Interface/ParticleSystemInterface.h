@@ -16,6 +16,7 @@
 #	include "Math/box2.h"
 
 #   include "Math/mat4.h"
+#   include "Math/uv4.h"
 
 #	include <stdex/stl_vector.h>
 

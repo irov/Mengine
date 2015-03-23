@@ -15,9 +15,6 @@ namespace Menge
 	public:
 		ResourceImageSolid();
 
-	public:
-		const ColourValue & getColor() const;
-
 	protected:
 		bool _isValid() const override;
 
@@ -25,10 +22,7 @@ namespace Menge
 		bool _loader( const Metabuf::Metadata * _parser ) override;
 
 	protected:
-		bool _compile() override;
-
-	protected:
-		ColourValue m_color;
+		bool _compile() override;				
 	};
 	//////////////////////////////////////////////////////////////////////////
 }

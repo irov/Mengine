@@ -12,7 +12,8 @@
 #	include "Utils/Math/mat3.h"
 #	include "Utils/Math/mat4.h"
 #	include "Utils/Math/quat.h"
-#	include "Utils/Math/clamp.h"
+#	include "Utils/Math/uv4.h"
+#	include "Utils/Math/utils.h"
 
 #	include "Utils/Core/ColourValue.h"
 #	include "Utils/Core/Resolution.h"
@@ -149,6 +150,43 @@ namespace Menge
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static void vec4_sequence_set( mt::vec4f * _vec, uint32_t _index, float _value )
+		{
+			if( _index > 4 )
+			{
+				pybind::throw_exception("vec4 index == 4");
+			}
+
+			_vec->operator [] (_index) = _value;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static PyObject * uv4f_repr( PyObject * _obj, mt::uv4f * _v )
+		{
+			(void)_obj;
+
+			Stringstream ss;
+			ss << "<uv4f: " 
+				<< "(" << _v->p0.x << ", " << _v->p0.y << ")"
+				<< ", (" << _v->p1.x << ", " << _v->p1.y << ")"
+				<< ", (" << _v->p2.x << ", " << _v->p2.y << ")"
+				<< ", (" << _v->p3.x << ", " << _v->p3.y << ")"
+				<< ">";
+
+			String repr = ss.str();
+
+			return pybind::ptr(repr);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static const mt::vec2f & uv4f_sequence_get( mt::uv4f * _uv, uint32_t _index )
+		{
+			if( _index > 4 )
+			{
+				pybind::throw_exception("uv4f index == 4");
+			}
+
+			return _uv->operator [] (_index);
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static void uv4f_sequence_set( mt::uv4f * _vec, uint32_t _index, const mt::vec2f & _value )
 		{
 			if( _index > 4 )
 			{
@@ -330,6 +368,52 @@ namespace Menge
 				impl->y = pybind::extract<float>(i1);
 				impl->z = pybind::extract<float>(i2);
 				impl->w = pybind::extract<float>(i3);
+
+				return true;
+			}
+
+			return false;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static bool uv4f_convert( PyObject * _obj, mt::uv4f * _uv, void * _user )
+		{
+			(void)_user;
+
+			if( pybind::tuple_check( _obj ) == true )
+			{
+				if( pybind::tuple_size( _obj ) != 4 )
+				{
+					return false;
+				}
+
+				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
+				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
+				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
+				PyObject * i3 = pybind::tuple_getitem( _obj, 3 );
+
+				_uv->p0 = pybind::extract<mt::vec2f>(i0);
+				_uv->p1 = pybind::extract<mt::vec2f>(i1);
+				_uv->p2 = pybind::extract<mt::vec2f>(i2);
+				_uv->p3 = pybind::extract<mt::vec2f>(i3);
+
+				return true;
+			}
+			else if( pybind::list_check( _obj ) == true )
+			{
+				if( pybind::list_size( _obj ) != 4 )
+				{
+					return false;
+				}
+								
+				PyObject * i0 = pybind::list_getitem( _obj, 0 );
+				PyObject * i1 = pybind::list_getitem( _obj, 1 );
+				PyObject * i2 = pybind::list_getitem( _obj, 2 );
+				PyObject * i3 = pybind::list_getitem( _obj, 3 );
+
+				_uv->p0 = pybind::extract<mt::vec2f>(i0);
+				_uv->p1 = pybind::extract<mt::vec2f>(i1);
+				_uv->p2 = pybind::extract<mt::vec2f>(i2);
+				_uv->p3 = pybind::extract<mt::vec2f>(i3);
 
 				return true;
 			}
@@ -737,6 +821,18 @@ namespace Menge
 			.def_member( "y", &mt::vec4f::y )
 			.def_member( "z", &mt::vec4f::z )
 			.def_member( "w", &mt::vec4f::w )
+			;
+
+		pybind::struct_<mt::uv4f>("uv4f")
+			.def_constructor( pybind::init<mt::vec2f,mt::vec2f,mt::vec2f,mt::vec2f>() )
+			.def_convert( &ScriptMethod::uv4f_convert, nullptr )
+			.def_static_sequence_get( &ScriptMethod::uv4f_sequence_get )
+			.def_static_sequence_set( &ScriptMethod::uv4f_sequence_set )
+			.def_repr( &ScriptMethod::uv4f_repr )
+			.def_member( "p0", &mt::uv4f::p0 )
+			.def_member( "p1", &mt::uv4f::p1 )
+			.def_member( "p2", &mt::uv4f::p2 )
+			.def_member( "p3", &mt::uv4f::p3 )
 			;
 
 		pybind::struct_<mt::box2f>("box2f")

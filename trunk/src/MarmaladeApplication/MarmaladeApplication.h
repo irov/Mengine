@@ -11,6 +11,7 @@
 #	include "Interface/PhysicSystemInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
+#   include "Interface/ParticleSystemInterface2.h"
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/InputSystemInterface.h"
@@ -112,6 +113,7 @@ namespace Menge
         bool initializeMarmaladeLayerService_();
         bool initializeUnicodeEngine_();
         bool initializeParticleEngine_();
+		bool initializeParticleEngine2_();
         bool initializePhysicEngine2D_();
         bool initializeRenderEngine_();
         bool initializeSoundEngine_();
@@ -165,6 +167,7 @@ namespace Menge
 		ThreadSystemInterface * m_threadSystem;
         ThreadServiceInterface * m_threadService;
         ParticleServiceInterface * m_particleService;
+		ParticleServiceInterface2 * m_particleService2;
 		RenderSystemInterface * m_renderSystem;
         RenderServiceInterface * m_renderService;
 		RenderTextureServiceInterface * m_renderTextureManager;

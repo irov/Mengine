@@ -11,7 +11,7 @@
 #	include "Logger/Logger.h"
 
 #	include "math/box2.h"
-#	include "math/clamp.h"
+#	include "math/utils.h"
 
 namespace	Menge
 {
@@ -78,8 +78,6 @@ namespace	Menge
 	{
 		Node::_render( _viewport, _camera );
 		
-		const mt::mat4f & wm = this->getWorldMatrix();
-
 		const mt::box2f & cameraBBWM = _camera->getCameraBBoxWM();
 
 		TVectorLandscape2DElements & elementsWM = this->getElementWM();
@@ -154,9 +152,7 @@ namespace	Menge
 				continue;
 			}
 			
-			RenderVertex2D * v = &m_verticesWM[elementVertexOffset];
-			
-			this->updateElementVertex_( el, wm, v );
+			const RenderVertex2D * v = this->getVerticesWM( elementVertexOffset );
 
 			RENDER_SERVICE(m_serviceProvider)
 				->addRenderQuad( _viewport, _camera, el.material, v, 4, nullptr );
@@ -244,85 +240,15 @@ namespace	Menge
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::updateElementVertex_( const Landscape2DElement & _el, const mt::mat4f & _wm, RenderVertex2D * _vertices )
-	{
-		const mt::vec4f & uv = _el.resource->getUVImage();
-
-		// left-upper
-		RenderVertex2D v1;
-		v1.color = 0xffffffff;
-		v1.uv.x = uv.x;
-		v1.uv.y = uv.y;
-		v1.uv2.x = 0.f;
-		v1.uv2.y = 0.f;
-
-		mt::vec3f p1;
-		p1.x = _el.i * m_elementWidth;
-		p1.y = _el.j * m_elementHeight;
-		p1.z = 0.f;
-		mt::mul_v3_m4( v1.pos, p1, _wm );
-
-		_vertices[0] = v1;
-
-		// right-upper
-		RenderVertex2D v2;
-		v2.color = 0xffffffff;
-		v2.uv.x = uv.z;
-		v2.uv.y = uv.y;
-		v2.uv2.x = 0.f;
-		v2.uv2.y = 0.f;
-
-		mt::vec3f p2;
-		p2.x = _el.i * m_elementWidth + m_elementWidth;
-		p2.y = _el.j * m_elementHeight;
-		p2.z = 0.f;
-		mt::mul_v3_m4( v2.pos, p2, _wm );
-
-		_vertices[1] = v2;
-
-		// right-down
-		RenderVertex2D v3;
-		v3.color = 0xffffffff;
-		v3.uv.x = uv.z;
-		v3.uv.y = uv.w;
-		v3.uv2.x = 0.f;
-		v3.uv2.y = 0.f;
-
-		mt::vec3f p3;
-		p3.x = _el.i * m_elementWidth + m_elementWidth;
-		p3.y = _el.j * m_elementHeight + m_elementHeight;
-		p3.z = 0.f;
-		mt::mul_v3_m4( v3.pos, p3, _wm );
-
-		_vertices[2] = v3;
-
-		// left-down
-		RenderVertex2D v4;
-		v4.color = 0xffffffff;
-		v4.uv.x = uv.x;
-		v4.uv.y = uv.w;
-		v4.uv2.x = 0.f;
-		v4.uv2.y = 0.f;
-
-		mt::vec3f p4;
-		p4.x = _el.i * m_elementWidth;
-		p4.y = _el.j * m_elementHeight + m_elementHeight;
-		p4.z = 0.f;
-		mt::mul_v3_m4( v4.pos, p4, _wm );
-
-		_vertices[3] = v4;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Landscape2D::updateVerticesWM_()
 	{
 		m_invalidateVerticesWM = false;
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 		
-		float x_offset = 0.f;
-		float y_offset = 0.f;
+		const float coeff_x[4] = {0.f, 1.f, 1.f, 0.f};
+		const float coeff_y[4] = {0.f, 0.f, 1.f, 1.f};
 
-		uint32_t index_offset = 0;
 		uint32_t vertex_offset = 0;
 
 		for( TVectorLandscape2DElements::iterator
@@ -333,83 +259,29 @@ namespace	Menge
 		{
 			Landscape2DElement & el = *it;
 
-			const mt::vec4f & uv = el.resource->getUVImage();
-			const mt::vec2f & sz = el.resource->getMaxSize();
+			const mt::uv4f & uv = el.resource->getUVImage();
+			const mt::uv4f & uv2 = el.resource->getUVAlpha();
 
-			// left-upper
-			RenderVertex2D v1;
-			v1.color = 0xffffffff;
-			v1.uv.x = uv.x;
-			v1.uv.y = uv.y;
-			v1.uv2.x = 0.f;
-			v1.uv2.y = 0.f;
+			for( size_t i = 0; i != 4; ++i )
+			{
+				// left-upper
+				RenderVertex2D & v = m_verticesWM[vertex_offset + i];
+				
+				v.color = 0xffffffff;
+				v.uv = uv[i];
+				v.uv2 = uv2[i];
 
-			mt::vec3f p1;
-			p1.x = x_offset;
-			p1.y = y_offset;
-			p1.z = 0.f;
-			mt::mul_v3_m4( v1.pos, p1, wm );
+				mt::vec3f p;
+				p.x = el.i * m_elementWidth + m_elementWidth * coeff_x[i];
+				p.y = el.j * m_elementHeight + m_elementHeight * coeff_y[i];
+				p.z = 0.f;
 
-			m_verticesWM[vertex_offset + 0] = v1;
+				mt::mul_v3_m4( v.pos, p, wm );
 
-			// right-upper
-			RenderVertex2D v2;
-			v2.color = 0xffffffff;
-			v2.uv.x = uv.z;
-			v2.uv.y = uv.y;
-			v2.uv2.x = 0.f;
-			v2.uv2.y = 0.f;
-
-			mt::vec3f p2;
-			p2.x = x_offset + sz.x;
-			p2.y = y_offset;
-			p2.z = 0.f;
-			mt::mul_v3_m4( v2.pos, p2, wm );
-
-			m_verticesWM[vertex_offset + 1] = v2;
-
-			// right-down
-			RenderVertex2D v3;
-			v3.color = 0xffffffff;
-			v3.uv.x = uv.z;
-			v3.uv.y = uv.w;
-			v3.uv2.x = 0.f;
-			v3.uv2.y = 0.f;
-
-			mt::vec3f p3;
-			p3.x = x_offset + sz.x;
-			p3.y = y_offset + sz.y;
-			p3.z = 0.f;
-			mt::mul_v3_m4( v3.pos, p3, wm );
-
-			m_verticesWM[vertex_offset + 2] = v3;
-
-			// left-down
-			RenderVertex2D v4;
-			v4.color = 0xffffffff;
-			v4.uv.x = uv.x;
-			v4.uv.y = uv.w;
-			v4.uv2.x = 0.f;
-			v4.uv2.y = 0.f;
-
-			mt::vec3f p4;
-			p4.x = x_offset;
-			p4.y = y_offset + sz.y;
-			p4.z = 0.f;
-			mt::mul_v3_m4( v4.pos, p4, wm );
-
-			m_verticesWM[vertex_offset + 3] = v4;
+				m_verticesWM[vertex_offset + i] = v;
+			}
 			
 			vertex_offset += 4;
-
-			x_offset += sz.x;
-
-			++index_offset;
-			if( (index_offset % m_elementCountX) == 0 )
-			{
-				x_offset = 0.f;
-				y_offset += sz.y;
-			}
 		}	
 	}
 	//////////////////////////////////////////////////////////////////////////

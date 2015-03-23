@@ -283,12 +283,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_pause( uint32_t _enumerator )
 	{
-
+		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_resume( uint32_t _enumerator )
 	{
-
+		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
@@ -741,11 +741,11 @@ namespace Menge
 		ConstString stageName; 
 		if ( this->isBlendAdd() == true )
 		{
-			stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
+			stageName = CONST_STRING(m_serviceProvider, Add);
 		}
 		else
 		{
-			stageName = CONST_STRING(m_serviceProvider, BlendSprite);
+			stageName = CONST_STRING(m_serviceProvider, Blend);
 		}
 
 		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)

@@ -49,7 +49,7 @@ namespace Menge
             rs.textureStage[0].alphaOp = TOP_MODULATE;
             rs.textureStage[0].colorOp = TOP_MODULATE;
 
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "BlendSprite"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Blend"), rs );
 		}
 
         {
@@ -220,6 +220,22 @@ namespace Menge
             this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "OnlyColor"), rs );
         }
 
+		{
+			RenderStage rs;
+
+			rs.alphaBlendEnable = true;
+			rs.alphaTestEnable = false;
+			rs.depthBufferWriteEnable = false;
+
+			rs.blendSrc = BF_SOURCE_ALPHA;
+			rs.blendDst = BF_ONE;
+
+			rs.textureStage[0].alphaOp = TOP_MODULATE;
+			rs.textureStage[0].colorOp = TOP_SELECTARG2;
+
+			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Intensive_OnlyColor"), rs );
+		}
+
         {
             RenderStage rs;
 
@@ -249,23 +265,7 @@ namespace Menge
             rs.textureStage[0].colorOp = TOP_MODULATE;
             rs.textureStage[0].alphaOp = TOP_MODULATE;
 
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ParticleIntensive"), rs );
-        }
-
-        {
-            RenderStage rs;
-
-            rs.alphaBlendEnable = true;
-            rs.alphaTestEnable = false;
-            rs.depthBufferWriteEnable = false;
-
-            rs.blendSrc = BF_SOURCE_ALPHA;
-            rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            rs.textureStage[0].colorOp = TOP_MODULATE;
-            rs.textureStage[0].alphaOp = TOP_MODULATE;
-
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ParticleBlend"), rs );
+            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Add"), rs );
         }
 
         return true;
@@ -345,7 +345,24 @@ namespace Menge
 		const RenderStageGroup * stageGroup;
 		if( m_stages.has( _stageName, &stageGroup ) == false )
 		{
+			LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::getMaterial stage %s not found"
+				, _stageName.c_str()
+				);
+
 			return nullptr;
+		}
+
+		for( uint32_t i = 0; i != _textureCount; ++i )
+		{
+			if( _textures[i] == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::getMaterial stage %s invalid setup texture %d"
+					, _stageName.c_str()
+					, i
+					);
+
+				return nullptr;
+			}
 		}
 
 		uint32_t stageWrapId = (_wrapU ? 1 : 0) + (_wrapV ? 2 : 0);

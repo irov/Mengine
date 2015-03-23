@@ -16,6 +16,7 @@
 #	include "stdex/memorycopy.h"
 #	include "stdex/intrusive_ptr_base.h"
 
+#	include <math.h>
 #   include <memory.h>
 
 //////////////////////////////////////////////////////////////////////////

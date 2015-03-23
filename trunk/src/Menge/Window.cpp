@@ -105,7 +105,7 @@ namespace Menge
 
             if( textureAlpha == nullptr )
             {
-                stageName = CONST_STRING(m_serviceProvider, BlendSprite);
+                stageName = CONST_STRING(m_serviceProvider, Blend);
 				
                 textureCount = 1;
             }
@@ -339,61 +339,46 @@ namespace Menge
 
 		for( uint32_t i = 0; i != ResourceWindow_Count; ++i )
 		{   
-            mt::vec4f uv;
+            mt::uv4f uv1;
+			mt::uv4f uv2;
             
-            uv.x = 0.f;
-            uv.y = 0.f;
-            uv.z = 1.f;
-            uv.w = 1.f;
-
             ResourceImage * image = m_resourceWindow->getResource( i );
 
             if( image != nullptr )
             {
-                const mt::vec4f & texture_uv = image->getUVImage();
+                const mt::uv4f & uv_image = image->getUVImage();
+				const mt::uv4f & uv_alpha = image->getUVImage();
 
-                float w = texture_uv.z - texture_uv.x;
-                float h = texture_uv.w - texture_uv.y;
-
-                uv.x = texture_uv.x;
-                uv.y = texture_uv.y;
-                uv.z = texture_uv.x + uvs[i].x * w;
-                uv.w = texture_uv.y + uvs[i].y * h;
+				mt::uv4_scale( uv1, uv_image, uvs[i] );
+				mt::uv4_scale( uv2, uv_alpha, uvs[i] );
             }
 
             const TQuad & quad = quads[i];
 
             RenderVertex2D & v0 = _vertices[i * 4 + 0];
-            mt::mul_v3_m4( v0.pos, mt::vec3f( quad.a, 0.f), worldMatrix );
+            mt::mul_v3_m4( v0.pos, mt::vec3f(quad.a, 0.f), worldMatrix );
 			
-			v0.uv.x = uv.x;
-			v0.uv.y = uv.y;
-            v0.uv2.x = uv.x;
-            v0.uv2.y = uv.y;
+			v0.uv = uv1[0];
+			v0.uv2 = uv2[0];
 			
             RenderVertex2D & v1 = _vertices[i * 4 + 1];
             mt::mul_v3_m4( v1.pos, mt::vec3f(quad.b, 0.f), worldMatrix );
 
-			v1.uv.x = uv.z;
-			v1.uv.y = uv.y;
-            v1.uv2.x = uv.z;
-            v1.uv2.y = uv.y;
+			v1.uv = uv1[1];
+			v1.uv2 = uv2[1];
+
 
             RenderVertex2D & v2 = _vertices[i * 4 + 2];
             mt::mul_v3_m4( v2.pos, mt::vec3f(quad.c, 0.f), worldMatrix );
 
-			v2.uv.x = uv.z;
-			v2.uv.y = uv.w;
-            v2.uv2.x = uv.z;
-            v2.uv2.y = uv.w;
+			v2.uv = uv1[2];
+			v2.uv2 = uv2[2];
 			
             RenderVertex2D & v3 = _vertices[i * 4 + 3];
             mt::mul_v3_m4( v3.pos, mt::vec3f(quad.d, 0.f), worldMatrix );
 
-			v3.uv.x = uv.x;
-			v3.uv.y = uv.w;
-            v3.uv2.x = uv.x;
-            v3.uv2.y = uv.w;
+			v3.uv = uv1[3];
+			v3.uv2 = uv2[3];
 		}
 
 		ColourValue color;

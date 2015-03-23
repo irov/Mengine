@@ -7,6 +7,7 @@
 #	include "Kernel/ResourceReference.h"
 
 #	include "Math/vec4.h"
+#	include "Math/uv4.h"
 
 namespace Menge
 {
@@ -21,24 +22,21 @@ namespace Menge
 		inline const mt::vec2f & getMaxSize() const;
 		inline const mt::vec2f & getSize() const;
 		inline const mt::vec2f & getOffset() const;
-		inline const mt::vec4f & getUVImage() const;
-        inline const mt::vec4f & getUVAlpha() const;
+
+		inline const mt::uv4f & getUVImage() const;
+        inline const mt::uv4f & getUVAlpha() const;
 
 		inline bool isAlpha() const;
         inline bool isWrapU() const;
         inline bool isWrapV() const;
-        inline bool isUVRGBRotate() const;
-		inline bool isUVAlphaRotate() const;
     
     public:
 		inline const RenderTextureInterfacePtr & getTexture() const;
         inline const RenderTextureInterfacePtr & getTextureAlpha() const;
+		inline const ColourValue & getTextureColor() const;
         
     protected:
         void _release() override;
-
-	protected:
-		void prepareImageFrame_( const RenderTextureInterfacePtr & _texture );
 
 	protected:
 		size_t memoryUse() const override;
@@ -47,17 +45,16 @@ namespace Menge
         RenderTextureInterfacePtr m_texture;
         RenderTextureInterfacePtr m_textureAlpha;
 
+		ColourValue m_textureColor;
+
         mt::vec2f m_maxSize;
         mt::vec2f m_size;
 		mt::vec2f m_offset;
         
-		mt::vec4f m_uv_image;
-        mt::vec4f m_uv_alpha;
+		mt::uv4f m_uv_image;
+        mt::uv4f m_uv_alpha;
 
         bool m_isAlpha;
-        
-		bool m_isUVRGBRotate;
-		bool m_isUVAlphaRotate;
 
         bool m_wrapU;
         bool m_wrapV;        
@@ -78,12 +75,12 @@ namespace Menge
 		return m_offset;
 	}
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec4f & ResourceImage::getUVImage() const
+    inline const mt::uv4f & ResourceImage::getUVImage() const
     {
         return m_uv_image;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec4f & ResourceImage::getUVAlpha() const
+    inline const mt::uv4f & ResourceImage::getUVAlpha() const
     {
         return m_uv_alpha;
     }
@@ -97,21 +94,16 @@ namespace Menge
     {
         return m_textureAlpha;
     }
+	//////////////////////////////////////////////////////////////////////////
+	inline const ColourValue & ResourceImage::getTextureColor() const
+	{
+		return m_textureColor;
+	}
     //////////////////////////////////////////////////////////////////////////
     inline bool ResourceImage::isAlpha() const
     {
         return m_isAlpha;
     }
-	//////////////////////////////////////////////////////////////////////////
-    inline bool ResourceImage::isUVRGBRotate() const
-    {
-        return m_isUVRGBRotate;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	inline bool ResourceImage::isUVAlphaRotate() const
-	{
-		return m_isUVAlphaRotate;
-	}
     //////////////////////////////////////////////////////////////////////////
     inline bool ResourceImage::isWrapU() const
     {

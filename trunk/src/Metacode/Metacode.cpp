@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 75;
+        _needVersion = 77;
 
-        if( version != 75 )
+        if( version != 77 )
         {
             return false;
         }
@@ -1856,7 +1856,6 @@ namespace Metacode
         : Meta_Resource()
         , Image_Alpha_successful(false)
         , Image_Offset_successful(false)
-        , Image_Rotate_successful(false)
         , Image_Size_successful(false)
     {
     }
@@ -1875,7 +1874,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 6:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->Image_Alpha ) == false )
                 {
@@ -1886,7 +1885,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->Image_MaxSize ) == false )
                 {
@@ -1904,7 +1903,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 9:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->Image_Offset ) == false )
                 {
@@ -1915,18 +1914,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
-            {
-                if( this->read( _buff, _size, _read, this->Image_Rotate ) == false )
-                {
-                    return false;
-                }
-    
-                this->Image_Rotate_successful = true;
-    
-                return true;
-            }break;
-        case 8:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->Image_Size ) == false )
                 {
@@ -1985,8 +1973,6 @@ namespace Metacode
         : Meta_Resource()
         , Image_Offset_successful(false)
         , Image_Size_successful(false)
-        , Image_UVAlphaRotate_successful(false)
-        , Image_UVRGBRotate_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2004,7 +1990,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 9:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->Image_MaxSize ) == false )
                 {
@@ -2013,7 +1999,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->Image_NameAlpha ) == false )
                 {
@@ -2031,7 +2017,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 11:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->Image_Offset ) == false )
                 {
@@ -2042,7 +2028,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 10:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->Image_Size ) == false )
                 {
@@ -2053,23 +2039,12 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->Image_UVAlpha ) == false )
                 {
                     return false;
                 }
-    
-                return true;
-            }break;
-        case 8:
-            {
-                if( this->read( _buff, _size, _read, this->Image_UVAlphaRotate ) == false )
-                {
-                    return false;
-                }
-    
-                this->Image_UVAlphaRotate_successful = true;
     
                 return true;
             }break;
@@ -2079,17 +2054,6 @@ namespace Metacode
                 {
                     return false;
                 }
-    
-                return true;
-            }break;
-        case 5:
-            {
-                if( this->read( _buff, _size, _read, this->Image_UVRGBRotate ) == false )
-                {
-                    return false;
-                }
-    
-                this->Image_UVRGBRotate_successful = true;
     
                 return true;
             }break;
@@ -4048,251 +4012,6 @@ namespace Metacode
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    Meta_Font::Meta_Font()
-        : Metabuf::Metadata()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Meta_Font::getId() const
-    {
-        return 3;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
-    {
-        switch( _id )
-        {
-        case 1:
-            {
-                if( this->read( _buff, _size, _read, this->height ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-            }break;
-        }
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::_preparationIncludes( uint32_t _includes, uint32_t _count )
-    {
-        switch( _includes )
-        {
-        case 2:
-            {
-                includes_Meta_Char.reserve( _count );
-                return true;
-                break;
-            }
-        }
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
-    {
-        switch( _includes )
-        {
-        case 2:
-            {
-                Meta_Font::Meta_Char & metadata = includes_Meta_Char.emplace_back();
-    
-                if( metadata.parse( _buff, _size, _read, m_userData ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-                break;
-            }
-        }
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
-    {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_generators;
-    
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Meta_Font::Meta_Char::Meta_Char()
-        : Metabuf::Metadata()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Meta_Font::Meta_Char::getId() const
-    {
-        return 2;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
-    {
-        switch( _id )
-        {
-        case 4:
-            {
-                if( this->read( _buff, _size, _read, this->code ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-            }break;
-        case 2:
-            {
-                if( this->read( _buff, _size, _read, this->offset ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-            }break;
-        case 3:
-            {
-                if( this->read( _buff, _size, _read, this->rect ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-            }break;
-        case 1:
-            {
-                if( this->read( _buff, _size, _read, this->width ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-            }break;
-        }
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::_preparationIncludes( uint32_t _includes, uint32_t _count )
-    {
-        switch( _includes )
-        {
-        case 5:
-            {
-                includes_Meta_Kerning.reserve( _count );
-                return true;
-                break;
-            }
-        }
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
-    {
-        switch( _includes )
-        {
-        case 5:
-            {
-                Meta_Font::Meta_Char::Meta_Kerning & metadata = includes_Meta_Kerning.emplace_back();
-    
-                if( metadata.parse( _buff, _size, _read, m_userData ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-                break;
-            }
-        }
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
-    {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_generators;
-    
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Meta_Font::Meta_Char::Meta_Kerning::Meta_Kerning()
-        : Metabuf::Metadata()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t Meta_Font::Meta_Char::Meta_Kerning::getId() const
-    {
-        return 5;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::Meta_Kerning::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
-    {
-        switch( _id )
-        {
-        case 1:
-            {
-                if( this->read( _buff, _size, _read, this->advance ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-            }break;
-        case 2:
-            {
-                if( this->read( _buff, _size, _read, this->id ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-            }break;
-        }
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::Meta_Kerning::_preparationIncludes( uint32_t _includes, uint32_t _count )
-    {
-        (void)_includes;
-        (void)_count;
-    
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::Meta_Kerning::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
-    {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_includes;
-    
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Meta_Font::Meta_Char::Meta_Kerning::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
-    {
-        (void)_buff;
-        (void)_size;
-        (void)_read;
-        (void)_generators;
-    
-    
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     Meta_KeyFramesPack::Meta_KeyFramesPack()
         : Metabuf::Metadata()
     {
@@ -4300,7 +4019,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_KeyFramesPack::getId() const
     {
-        return 5;
+        return 4;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_KeyFramesPack::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -5909,7 +5628,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_Texts::getId() const
     {
-        return 4;
+        return 3;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_Texts::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )

@@ -6,6 +6,8 @@
 
 #   include <utf8.h>
 
+#	include <math.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -150,7 +152,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextLine::prepareRenderObject(	mt::vec2f & _offset		
-		, const mt::vec4f & _uv
+		, const mt::uv4f & _uv
 		, ARGB _argb	
         , bool _pixelsnap
 		, TVectorRenderVertex2D& _renderObject ) const
@@ -182,8 +184,8 @@ namespace Menge
 				
                 if( _pixelsnap == true )
                 {
-                    renderVertex.pos.x = floorf( charVertex.x + 0.5f );
-                    renderVertex.pos.y = floorf( charVertex.y + 0.5f );
+                    renderVertex.pos.x = ::floorf( charVertex.x + 0.5f );
+                    renderVertex.pos.y = ::floorf( charVertex.y + 0.5f );
                 }
                 else
                 {
@@ -201,20 +203,13 @@ namespace Menge
 
 			const mt::vec4f & char_uv = data.uv;
 
-			mt::vec4f total_uv;
-			total_uv.x = _uv.x + (_uv.z - _uv.x) * char_uv.x;
-			total_uv.y = _uv.y + (_uv.w - _uv.y) * char_uv.y;
-			total_uv.z = _uv.x + (_uv.z - _uv.x) * char_uv.z;
-			total_uv.w = _uv.y + (_uv.w - _uv.y) * char_uv.w;
+			mt::uv4f total_uv;
+			mt::multiply_tetragon_uv4_v4( total_uv, _uv, char_uv );
 
-			_renderObject[renderObjectNum + 0].uv.x = total_uv.x;
-			_renderObject[renderObjectNum + 0].uv.y = total_uv.y;
-			_renderObject[renderObjectNum + 1].uv.x = total_uv.z;
-			_renderObject[renderObjectNum + 1].uv.y = total_uv.y;
-			_renderObject[renderObjectNum + 2].uv.x = total_uv.z;
-			_renderObject[renderObjectNum + 2].uv.y = total_uv.w;
-			_renderObject[renderObjectNum + 3].uv.x = total_uv.x;
-			_renderObject[renderObjectNum + 3].uv.y = total_uv.w;
+			for( size_t i = 0; i != 4; ++i )
+			{
+				_renderObject[renderObjectNum + i].uv = total_uv[i];
+			}
 
 			renderObjectNum += 4;
 		}
@@ -224,7 +219,7 @@ namespace Menge
 		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::updateRenderLine_( mt::vec2f& _offset ) const
+	void TextLine::updateRenderLine_( mt::vec2f & _offset ) const
 	{
 		for( TVectorCharData::iterator
 			it_char = m_charsData.begin(), 

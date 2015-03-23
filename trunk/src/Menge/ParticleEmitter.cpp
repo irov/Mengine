@@ -282,6 +282,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_pause( uint32_t _enumerator )
 	{
+		(void)_enumerator;
+
 		if( this->isActivate() == false )
 		{
 			return;
@@ -292,6 +294,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter::_resume( uint32_t _enumerator )
 	{
+		(void)_enumerator;
+
 		if( this->isActivate() == false )
 		{
 			return;
@@ -431,7 +435,7 @@ namespace	Menge
 
 			const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( mesh.texture );
 
-			const mt::vec4f & texture_uv = texture->getUV();
+			const mt::uv4f & texture_uv = texture->getUV();
 
 			for( uint32_t
 				it = mesh.begin,
@@ -492,34 +496,15 @@ namespace	Menge
 
 				vertice[3].color = argb;
 				
-				mt::vec2f uv[4];
+				mt::uv4f uv;
 
-				uv[0].x = texture_uv.x + (texture_uv.z - texture_uv.x) * p.uv[0].x;
-				uv[0].y = texture_uv.y + (texture_uv.w - texture_uv.y) * p.uv[0].y;
-				uv[1].x = texture_uv.x + (texture_uv.z - texture_uv.x) * p.uv[1].x;
-				uv[1].y = texture_uv.y + (texture_uv.w - texture_uv.y) * p.uv[1].y;
-				uv[2].x = texture_uv.x + (texture_uv.z - texture_uv.x) * p.uv[2].x;
-				uv[2].y = texture_uv.y + (texture_uv.w - texture_uv.y) * p.uv[2].y;
-				uv[3].x = texture_uv.x + (texture_uv.z - texture_uv.x) * p.uv[3].x;
-				uv[3].y = texture_uv.y + (texture_uv.w - texture_uv.y) * p.uv[3].y;
+				mt::multiply_tetragon_uv4_vp( uv, texture_uv, p.uv );
 
-				vertice[0].uv.x = uv[0].x;
-				vertice[0].uv.y = uv[0].y;
-				vertice[1].uv.x = uv[1].x;
-				vertice[1].uv.y = uv[1].y;
-				vertice[2].uv.x = uv[2].x;
-				vertice[2].uv.y = uv[2].y;
-				vertice[3].uv.x = uv[3].x;
-				vertice[3].uv.y = uv[3].y;
-
-                vertice[0].uv2.x = 0.f;
-                vertice[0].uv2.y = 0.f;
-                vertice[1].uv2.x = 0.f;
-                vertice[1].uv2.y = 0.f;
-                vertice[2].uv2.x = 0.f;
-                vertice[2].uv2.y = 0.f;
-                vertice[3].uv2.x = 0.f;
-                vertice[3].uv2.y = 0.f;
+				for( size_t i = 0; i != 4; ++i )
+				{
+					vertice[i].uv = uv[i];
+					vertice[i].uv2 = uv[i];
+				}
 			}
 
 			++partCount;
@@ -620,10 +605,10 @@ namespace	Menge
 			const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( i );
 
 			const RenderMaterialInterfacePtr & mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING(m_serviceProvider, ParticleIntensive), false, false, PT_TRIANGLELIST, 1, &texture );
+				->getMaterial( CONST_STRING(m_serviceProvider, Add), false, false, PT_TRIANGLELIST, 1, &texture );
 
 			const RenderMaterialInterfacePtr & mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING(m_serviceProvider, ParticleBlend), false, false, PT_TRIANGLELIST, 1, &texture );
+				->getMaterial( CONST_STRING(m_serviceProvider, Blend), false, false, PT_TRIANGLELIST, 1, &texture );
 
 			m_materials[i*2 + 0] = mg_intensive;
 			m_materials[i*2 + 1] = mg_nonintensive;

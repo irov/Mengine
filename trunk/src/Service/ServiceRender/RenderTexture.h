@@ -38,7 +38,7 @@ namespace Menge
 		const Rect & getRect() const override;
 		const Rect & getHWRect() const override;
 
-		const mt::vec4f & getUV() const override;
+		const mt::uv4f & getUV() const override;
 
 		uint32_t getMipmaps() const override;
 
@@ -67,7 +67,7 @@ namespace Menge
 		
 		Rect m_rect;
         Rect m_hwRect;
-		mt::vec4f m_uv;
+		mt::uv4f m_uv;
 
 		uint32_t m_id;
 	};

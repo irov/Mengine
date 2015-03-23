@@ -62,7 +62,7 @@ namespace Menge
 		
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEngine %s can't open file %s"				
+			LOGGER_ERROR(m_serviceProvider)("ParticleEngine2::createEmitterContainerFromFile can't open file %s:%s"
 				, _fileGroupName.c_str()
 				, _fileName.c_str() 
 				);
@@ -75,7 +75,7 @@ namespace Menge
 
 		if( container == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEngine can't create emitter container '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ParticleEngine2::createEmitterContainerFromFile can't create emitter container '%s'"
 				, _fileName.c_str() 
 				);
 

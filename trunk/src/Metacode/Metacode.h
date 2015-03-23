@@ -1140,35 +1140,6 @@ namespace Metacode
                 return true;
             }
             
-            bool has_Image_Rotate() const
-            {
-                return Image_Rotate_successful;
-            }
-            
-            bool get_Image_Rotate( bool & _value ) const
-            {
-                if( Image_Rotate_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->Image_Rotate;
-            
-                return true;
-            }
-            
-            bool swap_Image_Rotate( bool & _value ) const
-            {
-                if( Image_Rotate_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->Image_Rotate);
-            
-                return true;
-            }
-            
             bool has_Image_Size() const
             {
                 return Image_Size_successful;
@@ -1198,12 +1169,12 @@ namespace Metacode
                 return true;
             }
             
-            const mt::vec4f & get_Image_UV() const
+            const mt::uv4f & get_Image_UV() const
             {
                 return this->Image_UV;
             }
             
-            void swap_Image_UV( mt::vec4f & _value ) const
+            void swap_Image_UV( mt::uv4f & _value ) const
             {
                 std::swap(_value, this->Image_UV);
             }
@@ -1222,11 +1193,9 @@ namespace Metacode
             mutable Menge::ConstString Image_Name;
             bool Image_Offset_successful;
             mutable mt::vec2f Image_Offset;
-            bool Image_Rotate_successful;
-            mutable bool Image_Rotate;
             bool Image_Size_successful;
             mutable mt::vec2f Image_Size;
-            mutable mt::vec4f Image_UV;
+            mutable mt::uv4f Image_UV;
         };
         
         class Meta_ResourceImageSubstractRGBAndAlpha
@@ -1327,82 +1296,24 @@ namespace Metacode
                 return true;
             }
             
-            const mt::vec4f & get_Image_UVAlpha() const
+            const mt::uv4f & get_Image_UVAlpha() const
             {
                 return this->Image_UVAlpha;
             }
             
-            void swap_Image_UVAlpha( mt::vec4f & _value ) const
+            void swap_Image_UVAlpha( mt::uv4f & _value ) const
             {
                 std::swap(_value, this->Image_UVAlpha);
             }
             
-            bool has_Image_UVAlphaRotate() const
-            {
-                return Image_UVAlphaRotate_successful;
-            }
-            
-            bool get_Image_UVAlphaRotate( bool & _value ) const
-            {
-                if( Image_UVAlphaRotate_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->Image_UVAlphaRotate;
-            
-                return true;
-            }
-            
-            bool swap_Image_UVAlphaRotate( bool & _value ) const
-            {
-                if( Image_UVAlphaRotate_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->Image_UVAlphaRotate);
-            
-                return true;
-            }
-            
-            const mt::vec4f & get_Image_UVRGB() const
+            const mt::uv4f & get_Image_UVRGB() const
             {
                 return this->Image_UVRGB;
             }
             
-            void swap_Image_UVRGB( mt::vec4f & _value ) const
+            void swap_Image_UVRGB( mt::uv4f & _value ) const
             {
                 std::swap(_value, this->Image_UVRGB);
-            }
-            
-            bool has_Image_UVRGBRotate() const
-            {
-                return Image_UVRGBRotate_successful;
-            }
-            
-            bool get_Image_UVRGBRotate( bool & _value ) const
-            {
-                if( Image_UVRGBRotate_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->Image_UVRGBRotate;
-            
-                return true;
-            }
-            
-            bool swap_Image_UVRGBRotate( bool & _value ) const
-            {
-                if( Image_UVRGBRotate_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->Image_UVRGBRotate);
-            
-                return true;
             }
             
         protected:
@@ -1420,12 +1331,8 @@ namespace Metacode
             mutable mt::vec2f Image_Offset;
             bool Image_Size_successful;
             mutable mt::vec2f Image_Size;
-            mutable mt::vec4f Image_UVAlpha;
-            bool Image_UVAlphaRotate_successful;
-            mutable bool Image_UVAlphaRotate;
-            mutable mt::vec4f Image_UVRGB;
-            bool Image_UVRGBRotate_successful;
-            mutable bool Image_UVRGBRotate;
+            mutable mt::uv4f Image_UVAlpha;
+            mutable mt::uv4f Image_UVRGB;
         };
         
         class Meta_ResourceInternalObject
@@ -3767,163 +3674,6 @@ namespace Metacode
     
     protected:
         TVectorMeta_Resource includes_Meta_Resource;
-    };
-    
-    class Meta_Font
-        : public Metabuf::Metadata
-    { 
-    public:
-        Meta_Font();
-    
-    public:
-        uint32_t getId() const override;
-    
-    public:
-        const float & get_height() const
-        {
-            return this->height;
-        }
-        
-        void swap_height( float & _value ) const
-        {
-            std::swap( _value, this->height);
-        }
-        
-    protected:
-        bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
-        bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
-        bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
-        bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
-    public:
-        class Meta_Char
-            : public Metabuf::Metadata
-        { 
-        public:
-            Meta_Char();
-        
-        public:
-            uint32_t getId() const override;
-        
-        public:
-            const Menge::GlyphCode & get_code() const
-            {
-                return this->code;
-            }
-            
-            void swap_code( Menge::GlyphCode & _value ) const
-            {
-                std::swap( _value, this->code);
-            }
-            
-            const mt::vec2f & get_offset() const
-            {
-                return this->offset;
-            }
-            
-            void swap_offset( mt::vec2f & _value ) const
-            {
-                std::swap( _value, this->offset);
-            }
-            
-            const mt::vec4f & get_rect() const
-            {
-                return this->rect;
-            }
-            
-            void swap_rect( mt::vec4f & _value ) const
-            {
-                std::swap( _value, this->rect);
-            }
-            
-            const float & get_width() const
-            {
-                return this->width;
-            }
-            
-            void swap_width( float & _value ) const
-            {
-                std::swap( _value, this->width);
-            }
-            
-        protected:
-            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
-            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
-            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
-            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
-        public:
-            class Meta_Kerning
-                : public Metabuf::Metadata
-            { 
-            public:
-                Meta_Kerning();
-            
-            public:
-                uint32_t getId() const override;
-            
-            public:
-                const float & get_advance() const
-                {
-                    return this->advance;
-                }
-                
-                void swap_advance( float & _value ) const
-                {
-                    std::swap( _value, this->advance);
-                }
-                
-                const Menge::GlyphCode & get_id() const
-                {
-                    return this->id;
-                }
-                
-                void swap_id( Menge::GlyphCode & _value ) const
-                {
-                    std::swap( _value, this->id);
-                }
-                
-            protected:
-                bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
-                bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
-                bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
-                bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
-            public:
-            protected:
-            protected:
-                mutable float advance;
-                mutable Menge::GlyphCode id;
-            };
-            
-        protected:
-        protected:
-            mutable Menge::GlyphCode code;
-            mutable mt::vec2f offset;
-            mutable mt::vec4f rect;
-            mutable float width;
-        public:
-            typedef stdex::auto_array<Meta_Kerning> TVectorMeta_Kerning;
-        
-            const TVectorMeta_Kerning & get_IncludesKerning() const
-            {
-                return this->includes_Meta_Kerning;
-            }
-        
-        protected:
-            TVectorMeta_Kerning includes_Meta_Kerning;
-        };
-        
-    protected:
-    protected:
-        mutable float height;
-    public:
-        typedef stdex::auto_array<Meta_Char> TVectorMeta_Char;
-    
-        const TVectorMeta_Char & get_IncludesChar() const
-        {
-            return this->includes_Meta_Char;
-        }
-    
-    protected:
-        TVectorMeta_Char includes_Meta_Char;
     };
     
     class Meta_KeyFramesPack

@@ -251,7 +251,7 @@ namespace	Menge
 		{
 			texturesNum = 1;
 
-			stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
+			stageName = CONST_STRING(m_serviceProvider, Add);
 		}
 		else
 		{
@@ -259,7 +259,7 @@ namespace	Menge
 
 			if( m_resourceImage->isAlpha() == true )
 			{
-				stageName = CONST_STRING(m_serviceProvider, BlendSprite);
+				stageName = CONST_STRING(m_serviceProvider, Blend);
 			}
 			else
 			{

@@ -275,6 +275,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_pause( uint32_t _enumerator )
 	{
+		(void)_enumerator;
+
 		if( this->isActivate() == false )
 		{
 			return;
@@ -285,6 +287,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_resume( uint32_t _enumerator )
 	{
+		(void)_enumerator;
+
 		if( this->isActivate() == false )
 		{
 			return;
@@ -422,10 +426,9 @@ namespace	Menge
 			const ParticleMesh & mesh = s_meshes[it_mesh];
 
 			ResourceImage * image = m_resourceParticle->getAtlasImageResource( mesh.texture );
-
-			const RenderTextureInterfacePtr & texture = image->getTexture();
-
-			const mt::vec4f & mesh_uv = texture->getUV();
+						
+			const mt::uv4f & mesh_uv_image = image->getUVImage();
+			const mt::uv4f & mesh_uv_alpha = image->getUVAlpha();
 
 			for( uint32_t
 				it = mesh.begin,
@@ -454,66 +457,40 @@ namespace	Menge
 
 				RenderVertex2D * vertice = &m_vertices[it * 4];
 
-                const mt::vec3f & wm_pos0 = p.v[0];
+				for( size_t i = 0; i != 4; ++i )
+				{
+					const mt::vec3f & wm_pos = p.v[i];
 
-                vertice[0].pos.x = wm_pos0.x;
-                vertice[0].pos.y = wm_pos0.y;
-				vertice[0].pos.z = wm_pos0.z;
+					vertice[i].pos.x = wm_pos.x;
+					vertice[i].pos.y = wm_pos.y;
+					vertice[i].pos.z = wm_pos.z;
 
-				vertice[0].color = argb;
-
-                const mt::vec3f & wm_pos1 = p.v[1];
-
-                vertice[1].pos.x = wm_pos1.x;
-                vertice[1].pos.y = wm_pos1.y;
-				vertice[1].pos.z = wm_pos1.z;
-
-                vertice[1].color = argb;
-		
-                const mt::vec3f & wm_pos2 = p.v[2];
-
-				vertice[2].pos.x = wm_pos2.x;
-				vertice[2].pos.y = wm_pos2.y;
-				vertice[2].pos.z = wm_pos2.z;
-
-				vertice[2].color = argb;
-
-                const mt::vec3f & wm_pos3 = p.v[3];
-
-                vertice[3].pos.x = wm_pos3.x;
-                vertice[3].pos.y = wm_pos3.y;
-				vertice[3].pos.z = wm_pos3.z;
-
-				vertice[3].color = argb;
+					vertice[i].color = argb;
+				}
 				
-				mt::vec2f uv[4];
+				mt::uv4f uv;
+				mt::uv4f uv2;
 
-				uv[0].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[0].x;
-				uv[0].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[0].y;
-				uv[1].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[1].x;
-				uv[1].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[1].y;
-				uv[2].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[2].x;
-				uv[2].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[2].y;
-				uv[3].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[3].x;
-				uv[3].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[3].y;
+				mt::multiply_tetragon_uv4_vp( uv, mesh_uv_image, p.uv );
+				mt::multiply_tetragon_uv4_vp( uv2, mesh_uv_alpha, p.uv );
+				//mt::multiply_tetragon_uv4_v2( uv[0], mesh_uv_image, p.uv[1] );
+				//mt::multiply_tetragon_uv4_v2( uv[0], mesh_uv_image, p.uv[2] );
+				//mt::multiply_tetragon_uv4_v2( uv[0], mesh_uv_image, p.uv[3] );
 
-				vertice[0].uv.x = uv[0].x;
-				vertice[0].uv.y = uv[0].y;
-				vertice[1].uv.x = uv[1].x;
-				vertice[1].uv.y = uv[1].y;
-				vertice[2].uv.x = uv[2].x;
-				vertice[2].uv.y = uv[2].y;
-				vertice[3].uv.x = uv[3].x;
-				vertice[3].uv.y = uv[3].y;
+				//uv[0].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[0].x;
+				//uv[0].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[0].y;
+				//uv[1].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[1].x;
+				//uv[1].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[1].y;
+				//uv[2].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[2].x;
+				//uv[2].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[2].y;
+				//uv[3].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[3].x;
+				//uv[3].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[3].y;
 
-                vertice[0].uv2.x = 0.f;
-                vertice[0].uv2.y = 0.f;
-                vertice[1].uv2.x = 0.f;
-                vertice[1].uv2.y = 0.f;
-                vertice[2].uv2.x = 0.f;
-                vertice[2].uv2.y = 0.f;
-                vertice[3].uv2.x = 0.f;
-                vertice[3].uv2.y = 0.f;
+				for( size_t i = 0; i != 4; ++i )
+				{
+					vertice[i].uv = uv[i];
+					vertice[i].uv2 = uv2[i];
+				}
 			}
 
 			++partCount;
@@ -615,13 +592,38 @@ namespace	Menge
 		{
 			ResourceImage * image = m_resourceParticle->getAtlasImageResource( i );
 
-			const RenderTextureInterfacePtr & texture = image->getTexture();
+			RenderTextureInterfacePtr textures[2];
 
-			const RenderMaterialInterfacePtr & mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING(m_serviceProvider, ParticleIntensive), false, false, PT_TRIANGLELIST, 1, &texture );
+			textures[0] = image->getTexture();
+			textures[1] = image->getTextureAlpha();
 
-			const RenderMaterialInterfacePtr & mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING(m_serviceProvider, ParticleBlend), false, false, PT_TRIANGLELIST, 1, &texture );
+			RenderMaterialInterfacePtr mg_intensive;
+			RenderMaterialInterfacePtr mg_nonintensive;
+
+			if( textures[1] != nullptr )
+			{
+				mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->getMaterial( CONST_STRING(m_serviceProvider, ExternalAlphaIntensive), false, false, PT_TRIANGLELIST, 2, textures );
+
+				mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->getMaterial( CONST_STRING(m_serviceProvider, ExternalAlpha), false, false, PT_TRIANGLELIST, 2, textures );
+			}
+			else if( textures[0] != nullptr )
+			{
+				mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->getMaterial( CONST_STRING(m_serviceProvider, Add), false, false, PT_TRIANGLELIST, 1, textures );
+
+				mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->getMaterial( CONST_STRING(m_serviceProvider, Blend), false, false, PT_TRIANGLELIST, 1, textures );
+			}
+			else
+			{
+				mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->getMaterial( CONST_STRING(m_serviceProvider, OnlyColor), false, false, PT_TRIANGLELIST, 0, nullptr );
+
+				mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
+					->getMaterial( CONST_STRING(m_serviceProvider, OnlyColor), false, false, PT_TRIANGLELIST, 0, nullptr );
+			}
 
 			m_materials[i*2 + 0] = mg_intensive;
 			m_materials[i*2 + 1] = mg_nonintensive;

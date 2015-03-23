@@ -17,6 +17,7 @@
 #   include "stdex/intrusive_ptr.h"
 
 #	include "Math/mat4.h"
+#	include "Math/uv4.h"
 
 #   ifndef MENGE_MAX_TEXTURE_STAGES
 #	define MENGE_MAX_TEXTURE_STAGES 2
@@ -212,7 +213,7 @@ namespace Menge
 		virtual const Rect & getRect() const = 0;
 		virtual const Rect & getHWRect() const = 0;
 
-		virtual const mt::vec4f & getUV() const = 0;
+		virtual const mt::uv4f & getUV() const = 0;
 
 		virtual void setFileName( const FilePath & _fileName ) = 0;
 		virtual const FilePath & getFileName() const = 0;

@@ -48,8 +48,11 @@ SERVICE_EXTERN(ArchiveService, Menge::ArchiveServiceInterface);
 SERVICE_EXTERN(ThreadSystem, Menge::ThreadSystemInterface);
 SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
 
-SERVICE_EXTERN(ParticleSystem, Menge::ParticleSystemInterface);
-SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
+//SERVICE_EXTERN(ParticleSystem, Menge::ParticleSystemInterface);
+//SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
+
+SERVICE_EXTERN(ParticleSystem2, Menge::ParticleSystemInterface2);
+SERVICE_EXTERN(ParticleService2, Menge::ParticleServiceInterface2);
 
 SERVICE_EXTERN(RenderSystem, Menge::RenderSystemInterface);
 SERVICE_EXTERN(RenderService, Menge::RenderServiceInterface);
@@ -171,6 +174,7 @@ namespace Menge
 		, m_threadSystem(nullptr)
 		, m_threadService(nullptr)
 		, m_particleService(nullptr)
+		, m_particleService2(nullptr)
 		, m_renderSystem(nullptr)
 		, m_renderService(nullptr)
 		, m_renderTextureManager(nullptr)
@@ -666,40 +670,99 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeParticleEngine_()
     {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service..." );
+        //LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service..." );
 
-        ParticleSystemInterface * particleSystem;
-        if( SERVICE_CREATE( ParticleSystem, &particleSystem ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleSystem"
-                );
+        //ParticleSystemInterface * particleSystem;
+        //if( SERVICE_CREATE( ParticleSystem, &particleSystem ) == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleSystem"
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
-        {
-            return false;
-        }
+        //if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
+        //{
+        //    return false;
+        //}
 
-        ParticleServiceInterface * particleService;
-        if( SERVICE_CREATE( ParticleService, &particleService ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleService"
-                );
+        //ParticleServiceInterface * particleService;
+        //if( SERVICE_CREATE( ParticleService, &particleService ) == false )
+        //{
+        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleService"
+        //        );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
-        {
-            return false;
-        }
+        //if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
+        //{
+        //    return false;
+        //}
 
-        m_particleService = particleService;
+        //m_particleService = particleService;
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeApplication::initializeParticleEngine2_()
+	{
+		LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service 2..." );
+
+		ParticleSystemInterface2 * particleSystem;
+		if( SERVICE_CREATE( ParticleSystem2, &particleSystem ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleSystem2"
+				);
+
+			return false;
+		}
+
+		if( particleSystem->initialize() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to initialize ParticleSystem2"
+				);
+
+			return false;
+		}
+
+		if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to registry ParticleSystem2"
+				);
+
+			return false;
+		}
+
+		ParticleServiceInterface2 * particleService;
+		if( SERVICE_CREATE( ParticleService2, &particleService ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleService2"
+				);
+
+			return false;
+		}
+
+		if( particleService->initialize() == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to initialize ParticleService2"
+				);
+
+			return false;
+		}
+
+		if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
+		{
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleService2"
+				);
+
+			return false;
+		}
+
+		m_particleService2 = particleService;
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializePhysicEngine2D_()
     {
@@ -792,7 +855,7 @@ namespace Menge
 
         m_renderService = renderService;
 
-        if( m_renderService->initialize( 32000, 48000 ) == false )
+        if( m_renderService->initialize() == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeRenderEngine_ Failed to initialize Render Engine"
                 );
@@ -1264,7 +1327,7 @@ namespace Menge
             return false;
         }
 
-        if( this->initializeParticleEngine_() == false )
+        if( this->initializeParticleEngine2_() == false )
         {
             return false;
         }
@@ -1822,10 +1885,16 @@ namespace Menge
 			m_codecService = nullptr;
 		}
 
-		if( m_particleService != nullptr )
+		//if( m_particleService != nullptr )
+		//{
+		//	SERVICE_DESTROY( ParticleService, m_particleService );
+		//	m_particleService = nullptr;
+		//}
+
+		if( m_particleService2 != nullptr )
 		{
-			SERVICE_DESTROY( ParticleService, m_particleService );
-			m_particleService = nullptr;
+			SERVICE_DESTROY( ParticleService2, m_particleService2 );
+			m_particleService2 = nullptr;
 		}
 
 		if( m_soundService != nullptr )

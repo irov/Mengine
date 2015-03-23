@@ -26,13 +26,6 @@ namespace Menge
 		Sprite();
 		~Sprite();
 
-    public:
-        void setResourceImage( ResourceImage * _resourceImage );
-        ResourceImage * getResourceImage() const;
-        
-    public:
-        void setCustomSize( const mt::vec2f & _size );
-
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -46,20 +39,8 @@ namespace Menge
         void updateMaterial();
         inline const RenderMaterialInterfacePtr & getMaterial();
 
-    protected:
-        void updateResource_();		
-        
 	protected:
-		bool compileResource_();
-
-	protected:
-		ResourceHolder<ResourceImage> m_resourceImage;
-
 		RenderMaterialInterfacePtr m_material;
-
-        mt::vec2f m_customSize;	
-	
-		bool m_isCustomSize;
     };
     //////////////////////////////////////////////////////////////////////////
     inline const RenderMaterialInterfacePtr & Sprite::getMaterial()

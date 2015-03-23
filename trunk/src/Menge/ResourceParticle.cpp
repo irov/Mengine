@@ -5,7 +5,6 @@
 #	include "ResourceImageDefault.h"
 
 #   include "Interface/ResourceInterface.h"
-#   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/NodeInterface.h"
 
@@ -148,6 +147,17 @@ namespace Menge
 
 			ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
 				->getResourceT<ResourceImage>( resourceName );
+
+			if( resourceImage == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_compile %s container %s can't get atlas image %s"
+					, this->getName().c_str()
+					, m_fileName.c_str()
+					, resourceName.c_str()
+					);
+
+				return false;
+			}
 
 			m_resourceImages.push_back( resourceImage );
 		}

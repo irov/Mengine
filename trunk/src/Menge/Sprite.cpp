@@ -11,14 +11,12 @@
 #	include "Logger/Logger.h"
 
 #	include "math/box2.h"
-#	include "math/clamp.h"
+#	include "math/utils.h"
 
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()
-		: m_customSize(0.f, 0.f)
-		, m_isCustomSize(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -28,100 +26,20 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_compile()
 	{
-		if( this->compileResource_() == false )
+		if( Shape::_compile() == false )
 		{
 			return false;
 		}
-
-        this->updateResource_();
-
-        this->invalidateMaterial();
 		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Sprite::compileResource_()
-	{
-		if( m_resourceImage == nullptr )
-		{
-            LOGGER_ERROR(m_serviceProvider)("Sprite::compileResource_ '%s' image resource null"
-                , m_name.c_str()
-                );
-
-            return false;
-        }
-
-        if( m_resourceImage.compile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Sprite::compileResource_ '%s' image resource %s not compile"
-                , m_name.c_str()
-                , m_resourceImage->getName().c_str()
-                );
-
-            return false;
-        }
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_release()
 	{
-        m_resourceImage.release();
+		Shape::_release();
 
 		m_material = nullptr;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Sprite::setResourceImage( ResourceImage * _resourceImage )
-    {
-        if( m_resourceImage == _resourceImage )
-        {
-            return;
-        }
-
-        m_resourceImage = _resourceImage;
-
-        this->recompile();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ResourceImage * Sprite::getResourceImage() const
-    {
-        return m_resourceImage;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Sprite::updateResource_()
-    {
-        bool wrapX = m_resourceImage->isWrapU();
-        this->setTextureWrapX( wrapX );
-
-        bool wrapY = m_resourceImage->isWrapV();
-        this->setTextureWrapY( wrapY );
-
-        if( m_isCustomSize == false )
-        {
-            const mt::vec2f & size = m_resourceImage->getSize();
-            this->setSize( size );
-
-            const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
-            this->setMaxSize( maxSize );
-
-			const mt::vec2f & offset = m_resourceImage->getOffset();
-			this->setOffset( offset );
-        }
-        else
-        {
-            this->setSize( m_customSize );
-            this->setMaxSize( m_customSize );
-        }
-
-        bool uvRotate = m_resourceImage->isUVRGBRotate();
-        this->setUVRotate( uvRotate );
-
-        const mt::vec4f & uv = m_resourceImage->getUVImage();
-        this->setUV( uv );
-
-        const mt::vec4f & uvAlpha = m_resourceImage->getUVAlpha();
-        this->setUV2( uvAlpha );
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::updateMaterial()
 	{
@@ -132,12 +50,10 @@ namespace	Menge
 
 		textures[0] = m_resourceImage->getTexture();
 		textures[1] = m_resourceImage->getTextureAlpha();
-
-        const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
-
+		        
 		ConstString stageName;
 
-        if( textureAlpha != nullptr )
+        if( textures[1] != nullptr )
         {
 			if( m_blendAdd == true )
             {
@@ -157,7 +73,7 @@ namespace	Menge
 				{
 					texturesNum = 1;
 
-					stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
+					stageName = CONST_STRING(m_serviceProvider, Add);
 				}
             }
 			else
@@ -178,7 +94,7 @@ namespace	Menge
 				{
 					texturesNum = 1;
 
-					stageName = CONST_STRING(m_serviceProvider, BlendSprite);
+					stageName = CONST_STRING(m_serviceProvider, Blend);
 				}
 				else
 				{
@@ -188,29 +104,45 @@ namespace	Menge
 				}
 			}
         }
-		else
+		else if( textures[0] != nullptr )
 		{
 			texturesNum = 1;
 
 			if( m_blendAdd == true )
 			{
-				stageName = CONST_STRING(m_serviceProvider, ParticleIntensive);
-			}
-			else if( m_disableTextureColor == true )
-			{
-				stageName = CONST_STRING(m_serviceProvider, OnlyColor);
-			}
-			else
-			{
-				if( m_resourceImage->isAlpha() == true || m_solid == false )
+				if( m_disableTextureColor == true )
 				{
-					stageName = CONST_STRING(m_serviceProvider, BlendSprite);
+					stageName = CONST_STRING(m_serviceProvider, Intensive_OnlyColor);
 				}
 				else
 				{
-					stageName = CONST_STRING(m_serviceProvider, SolidSprite);
+					stageName = CONST_STRING(m_serviceProvider, Add);
+				}				
+			}
+			else
+			{
+				if( m_disableTextureColor == true )
+				{
+					stageName = CONST_STRING(m_serviceProvider, OnlyColor);
+				}
+				else
+				{
+					if( m_resourceImage->isAlpha() == true || m_solid == false )
+					{
+						stageName = CONST_STRING(m_serviceProvider, Blend);
+					}
+					else
+					{
+						stageName = CONST_STRING(m_serviceProvider, SolidSprite);
+					}
 				}
 			}
+		}
+		else
+		{
+			texturesNum = 0;
+
+			stageName = CONST_STRING(m_serviceProvider, OnlyColor);
 		}
 
 		bool wrapU = m_resourceImage->isWrapU();
@@ -264,13 +196,5 @@ namespace	Menge
 
             this->invalidateMaterial();
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Sprite::setCustomSize( const mt::vec2f & _size )
-    {
-        m_customSize = _size;
-        m_isCustomSize = true;
-
-        this->recompile();
     }
 }

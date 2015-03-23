@@ -255,7 +255,9 @@ if(WIN32)
   endif(MSVC)
 endif(WIN32)
 
-add_definitions(-DPy_NO_ENABLE_SHARED -DPy_BUILD_CORE)
+add_definitions(-DMS_NO_COREDLL)
+add_definitions(-DPy_NO_ENABLE_SHARED)
+add_definitions(-DPy_BUILD_CORE)
 
 #if(NOT HAVE_HYPOT)
  # add_definitions(-DWITHOUT_COMPLEX)

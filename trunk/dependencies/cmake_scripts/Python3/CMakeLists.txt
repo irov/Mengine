@@ -379,8 +379,9 @@ add_definitions(-DXML_STATIC)
 add_definitions(-DHAVE_MEMMOVE)
 
 add_definitions(-DMS_NO_COREDLL)
+add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPy_BUILD_CORE)
-add_definitions(-DPy_ENABLE_SHARED )
+
 #if(NOT HAVE_HYPOT)
  # add_definitions(-DWITHOUT_COMPLEX)
 #endif(NOT HAVE_HYPOT)

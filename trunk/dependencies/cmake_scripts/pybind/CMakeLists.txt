@@ -27,9 +27,12 @@ ${SOURCE_DIR}/src/debug.cpp
 
 if(NOT MSVC)
 	ADD_DEFINITIONS(-D"override = /* */")
+    ADD_DEFINITIONS(-D"nullptr=0")
+    ADD_DEFINITIONS(-D"nullptr_t=void*")     
 endif(NOT MSVC)
 
-add_definitions(-DPy_BUILD_CORE)
+add_definitions(-DMS_NO_COREDLL)
+add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPYBIND_PYTHON_VERSION=278)
 
 include_directories(${SOURCE_DIR}/include)

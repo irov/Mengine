@@ -415,7 +415,7 @@ namespace	Menge
 		ColourValue color;
 		this->calcTotalColor(color);
 
-		ARGB color_argb = color.getAsARGB();
+		ColourValue_ARGB color_argb = color.getAsARGB();
 		
 		for( uint32_t
 			it_mesh = 0,
@@ -438,56 +438,48 @@ namespace	Menge
 			{
 				const ParticleVertices & p = s_particles[it];
 
-				uint32_t argb;
+				uint32_t argb = 0xFFFFFFFF;
+
+#	ifdef MENGE_RENDER_TEXTURE_RGBA
+				uint32_t a = (p.color >> 24) & 0xFF;
+				uint32_t b = (p.color >> 16) & 0xFF;
+				uint32_t g = (p.color >> 8) & 0xFF;
+				uint32_t r = (p.color >> 0) & 0xFF;
+
+				ColourValue_ARGB p_color = (a << 24) | (r << 16) | (g << 8) | (b << 0);
+#	else
+				ColourValue_ARGB p_color = p.color;
+#	endif
 
 				if( color.isIdentity() == true )
 				{
-					argb = p.color;
+					argb = p_color;
 				}
-				else if( p.color == 0xFFFFFFFF )
+				else if( p_color == 0xFFFFFFFF )
 				{
 					argb = color_argb;
 				}
 				else
 				{
-					ColourValue cv( ARGB(p.color) );
+					ColourValue cv(p_color);
 					cv *= color;
 					argb = cv.getAsARGB();
 				}
 
 				RenderVertex2D * vertice = &m_vertices[it * 4];
 
-				for( size_t i = 0; i != 4; ++i )
-				{
-					const mt::vec3f & wm_pos = p.v[i];
-
-					vertice[i].pos.x = wm_pos.x;
-					vertice[i].pos.y = wm_pos.y;
-					vertice[i].pos.z = wm_pos.z;
-
-					vertice[i].color = argb;
-				}
-				
 				mt::uv4f uv;
 				mt::uv4f uv2;
 
 				mt::multiply_tetragon_uv4_vp( uv, mesh_uv_image, p.uv );
 				mt::multiply_tetragon_uv4_vp( uv2, mesh_uv_alpha, p.uv );
-				//mt::multiply_tetragon_uv4_v2( uv[0], mesh_uv_image, p.uv[1] );
-				//mt::multiply_tetragon_uv4_v2( uv[0], mesh_uv_image, p.uv[2] );
-				//mt::multiply_tetragon_uv4_v2( uv[0], mesh_uv_image, p.uv[3] );
-
-				//uv[0].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[0].x;
-				//uv[0].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[0].y;
-				//uv[1].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[1].x;
-				//uv[1].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[1].y;
-				//uv[2].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[2].x;
-				//uv[2].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[2].y;
-				//uv[3].x = mesh_uv.x + (mesh_uv.z - mesh_uv.x) * p.uv[3].x;
-				//uv[3].y = mesh_uv.y + (mesh_uv.w - mesh_uv.y) * p.uv[3].y;
 
 				for( size_t i = 0; i != 4; ++i )
 				{
+					const mt::vec3f & wm_pos = p.v[i];
+
+					vertice[i].pos = wm_pos;
+					vertice[i].color = argb;
 					vertice[i].uv = uv[i];
 					vertice[i].uv2 = uv2[i];
 				}

@@ -8,6 +8,7 @@
 
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
+#   include "Core/ColourValue.h"
 
 #   include "Factory/Factorable.h"
 #   include "Factory/FactorablePtr.h"
@@ -27,7 +28,7 @@ namespace Menge
 		mt::vec3f v[4];
 		mt::vec2f uv[4];
 
-		uint32_t color;
+		ColourValue_ARGB color;
 	};
 
 	typedef stdex::vector<ParticleVertices> TVectorParticleVerices;

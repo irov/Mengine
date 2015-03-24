@@ -3,7 +3,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	void ColourValue::updateARGB() const
+	void ColourValue::updateARGB_() const
 	{
 		m_invalidateARGB = false;
 
@@ -21,7 +21,7 @@ namespace Menge
 		uint8_t b8 = static_cast<uint8_t>(m_b * rgba_255);
 #	endif // MENGE_RENDER_TEXTURE_RGBA
 
-		m_argb = (a8 << 24) + (r8 << 16) + (g8 << 8) + (b8 << 0);
+		m_argb = (a8 << 24) | (r8 << 16) | (g8 << 8) | (b8 << 0);
 
 		if( m_argb == 0xFFFFFFFF )
 		{
@@ -39,7 +39,7 @@ namespace Menge
 		this->invalidate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ColourValue::setAsARGB( const ARGB _val )
+	void ColourValue::setAsARGB( const ColourValue_ARGB _val )
 	{
 		m_invalidateARGB = false;
 		m_argb = _val;
@@ -56,21 +56,26 @@ namespace Menge
 			return;
 		}
 
-		const float rgba_1_div_255 = 1.f / 255.f;
+		m_identity = false;
 
 #   ifdef MENGE_RENDER_TEXTURE_RGBA
-		m_a = ((m_argb >> 24) & 0xFF) * rgba_1_div_255;
-		m_b = ((m_argb >> 16) & 0xFF) * rgba_1_div_255;
-		m_g = ((m_argb >> 8) & 0xFF) * rgba_1_div_255;
-		m_r = ((m_argb >> 0) & 0xFF) * rgba_1_div_255;
+		uint8_t a8 = (m_argb >> 24) & 0xFF;
+		uint8_t b8 = (m_argb >> 16) & 0xFF;
+		uint8_t g8 = (m_argb >> 8) & 0xFF;
+		uint8_t r8 = (m_argb >> 0) & 0xFF;
 #	else // MENGE_RENDER_TEXTURE_RGBA
-		m_a = ((m_argb >> 24) & 0xFF) * rgba_1_div_255;
-		m_r = ((m_argb >> 16) & 0xFF) * rgba_1_div_255;
-		m_g = ((m_argb >> 8) & 0xFF) * rgba_1_div_255;
-		m_b = ((m_argb >> 0) & 0xFF) * rgba_1_div_255;
+		uint8_t a8 = (m_argb >> 24) & 0xFF;
+		uint8_t r8 = (m_argb >> 16) & 0xFF;
+		uint8_t g8 = (m_argb >> 8) & 0xFF;
+		uint8_t b8 = (m_argb >> 0) & 0xFF;
 #	endif // MENGE_RENDER_TEXTURE_RGBA
 
-		m_identity = false;
+		const float rgba_1_div_255 = 1.f / 255.f;
+
+		m_a = (float)(a8) * rgba_1_div_255;
+		m_b = (float)(b8) * rgba_1_div_255;
+		m_g = (float)(g8) * rgba_1_div_255;
+		m_r = (float)(r8) * rgba_1_div_255;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setA( const float _a )

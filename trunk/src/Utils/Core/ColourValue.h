@@ -4,11 +4,8 @@
 
 namespace Menge
 {
-	typedef uint32_t RGBA;
-	typedef uint32_t ARGB;
-	typedef uint32_t ABGR;
-	typedef uint32_t BGRA;
-
+	typedef uint32_t ColourValue_ARGB;
+	
 	class ColourValue
 	{
 	public:
@@ -34,7 +31,7 @@ namespace Menge
 		{ 
 		}
 
-		explicit ColourValue( ARGB _argb )
+		explicit ColourValue( ColourValue_ARGB _argb )
 		{
 			this->setAsARGB( _argb );
 		}
@@ -68,14 +65,14 @@ namespace Menge
 		void setARGB( float _a, float _r, float _g, float _b );
 
 	public:
-		void setAsARGB( const ARGB _val );
-		inline ARGB getAsARGB() const;
+		void setAsARGB( const ColourValue_ARGB _val );
+		inline ColourValue_ARGB getAsARGB() const;
 
 	public:
 		bool operator == ( const ColourValue & _rhs ) const
 		{
-			ARGB self_argb = this->getAsARGB();
-			ARGB other_argb = _rhs.getAsARGB();
+			ColourValue_ARGB self_argb = this->getAsARGB();
+			ColourValue_ARGB other_argb = _rhs.getAsARGB();
 
 			return self_argb == other_argb;
 		}
@@ -163,7 +160,9 @@ namespace Menge
 
 	protected:		
 		inline void invalidate() const;
-		void updateARGB() const;
+
+	protected:
+		void updateARGB_() const;
 
 	protected:
 		float m_a;
@@ -171,7 +170,7 @@ namespace Menge
 		float m_g;
 		float m_b;
 
-		mutable ARGB m_argb;
+		mutable ColourValue_ARGB m_argb;
 
 		mutable bool m_invalidateARGB;
 		mutable bool m_identity;
@@ -208,11 +207,11 @@ namespace Menge
 		m_invalidateARGB = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline ARGB ColourValue::getAsARGB() const
+	inline ColourValue_ARGB ColourValue::getAsARGB() const
 	{
 		if( m_invalidateARGB == true )
 		{
-			this->updateARGB();
+			this->updateARGB_();
 		}
 
 		return m_argb;

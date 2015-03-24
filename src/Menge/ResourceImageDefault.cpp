@@ -348,6 +348,28 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageDefault::_release()
+	{
+		float width = (float)m_texture->getWidth();
+		float height = (float)m_texture->getHeight();
+
+		const RenderImageInterfacePtr & image = m_texture->getImage();
+
+		float hwWidth = (float)image->getHWWidth();
+		float hwHeight = (float)image->getHWHeight();
+
+		mt::vec2f uv_unscale;
+		uv_unscale.x = hwWidth / width;
+		uv_unscale.y = hwHeight / height;
+
+		for( size_t i = 0; i != 4; ++i )
+		{
+			m_uv_image[i] *= uv_unscale;
+		}
+
+		ResourceImage::_release();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, bool _wrapU, bool _wrapV )
 	{
         m_filePath = _imagePath;

@@ -39,7 +39,7 @@ namespace Menge
 	public:
 		void prepareRenderObject( mt::vec2f & offset
 			, const mt::uv4f & _uv
-			, ARGB _argb
+			, ColourValue_ARGB _argb
             , bool _pixelsnap
 			, TVectorRenderVertex2D & _renderObject ) const;
 

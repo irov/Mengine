@@ -97,7 +97,7 @@ namespace	Menge
 
 		uint32_t index = _i + _j * m_countX;
 
-		ARGB argb = _value.getAsARGB();
+		ColourValue_ARGB argb = _value.getAsARGB();
 
 		m_vertices[index].color = argb;
 

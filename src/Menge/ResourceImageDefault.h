@@ -29,6 +29,7 @@ namespace Menge
 
 	protected:
 		bool _compile() override;
+		void _release() override;
 
 	protected:
 		void prepareImageFrame_();

@@ -146,7 +146,7 @@ namespace Menge
 			}break;
 		}
 
-		ARGB argb = _color.getAsARGB();
+		ColourValue_ARGB argb = _color.getAsARGB();
 
 		for( TVectorTextLine::const_iterator
 			it_line = lines.begin(),

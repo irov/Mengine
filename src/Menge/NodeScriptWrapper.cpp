@@ -468,15 +468,7 @@ namespace Menge
 
 				const ConstString & name = slot->getName();
 
-				PyObject * py_movie = pybind::ptr( _movie );
-				PyObject * py_name = pybind::ptr( name );
-				PyObject * py_slot = pybind::ptr( slot );
-
-				PyObject * py_tuple = pybind::tuple_new( 3 );
-
-				pybind::tuple_setitem( py_tuple, 0, py_movie );
-				pybind::tuple_setitem( py_tuple, 1, py_name );
-				pybind::tuple_setitem( py_tuple, 2, py_slot );
+				PyObject * py_tuple = pybind::make_tuple_t( _movie, name, slot );
 
 				pybind::list_appenditem( m_list, py_tuple );
 
@@ -518,17 +510,10 @@ namespace Menge
 
 				const ConstString & name = hotspot->getName();
 
-				PyObject * py_movie = pybind::ptr( _movie );
-                PyObject * py_name = pybind::ptr( name );
-                PyObject * py_hotspot = pybind::ptr( hotspot );
+                PyObject * py_tuple = pybind::make_tuple_t( _movie, name, hotspot );
 
-                PyObject * py_tuple = pybind::tuple_new(3);
+				pybind::list_appenditem( m_list, py_tuple );
 
-                pybind::tuple_setitem( py_tuple, 0, py_movie );
-                pybind::tuple_setitem( py_tuple, 1, py_name );
-				pybind::tuple_setitem( py_tuple, 2, py_hotspot );
-
-                pybind::list_appenditem( m_list, py_tuple );
                 pybind::decref( py_tuple );
             }
 
@@ -568,17 +553,10 @@ namespace Menge
 
 				const ConstString & name = subMovie->getName();
 
-				PyObject * py_movie = pybind::ptr( _movie );
-				PyObject * py_name = pybind::ptr( name );
-				PyObject * py_subMovie = pybind::ptr( subMovie );
-
-				PyObject * py_tuple = pybind::tuple_new(3);
-
-				pybind::tuple_setitem( py_tuple, 0, py_movie );
-				pybind::tuple_setitem( py_tuple, 1, py_name );
-				pybind::tuple_setitem( py_tuple, 2, py_subMovie );
+				PyObject * py_tuple = pybind::make_tuple_t( _movie, name, subMovie );
 
 				pybind::list_appenditem( m_list, py_tuple );
+
 				pybind::decref( py_tuple );
 			}
 
@@ -611,11 +589,7 @@ namespace Menge
 				PyObject * py_movie = pybind::ptr( _movie );
 				PyObject * py_layer = pybind::ptr( _layer );
 
-				PyObject * py_tuple = pybind::tuple_new(2);
-
-				pybind::tuple_setitem( py_tuple, 0, py_movie );
-				pybind::tuple_setitem( py_tuple, 1, py_layer );
-
+				PyObject * py_tuple = pybind::make_tuple_t( _movie, _layer );
 				pybind::list_appenditem( m_list, py_tuple );
 				pybind::decref( py_tuple );
 			}
@@ -2603,14 +2577,8 @@ namespace Menge
 					continue;
 				}
 
-				PyObject * py_tuple = pybind::tuple_new( 2 );
+				PyObject * py_tuple = pybind::make_tuple_t( layer.name, layer.position );
 				
-				PyObject * py_name = pybind::ptr( layer.name );
-				PyObject * py_position = pybind::ptr( layer.position );
-
-				pybind::tuple_setitem( py_tuple, 0, py_name );
-				pybind::tuple_setitem( py_tuple, 1, py_position );
-
 				pybind::list_appenditem( py_list, py_tuple );
 
 				pybind::decref( py_tuple );
@@ -2926,10 +2894,8 @@ namespace Menge
 			for( TSlugChild it(children); it.eof() == false; it.next_shuffle() )
 			{
 				Node * child = *it;
-
-				PyObject * py_child = pybind::ptr( child );
-
-				pybind::list_setitem( py_children, index++, py_child );
+				
+				pybind::list_setitem_t( py_children, index++, child );
 			}
 
 			return py_children;

@@ -74,13 +74,8 @@ namespace Menge
         virtual void addGlobalModule( const String & _name, PyObject * _module ) = 0;
         virtual void removeGlobalModule( const String & _name ) = 0;
 
+		virtual bool hasModuleFunction( PyObject * _module, const char * _name ) = 0;
 		virtual PyObject * getModuleFunction( PyObject * _module, const char * _name ) = 0;
-
-        virtual void callFunctionVA( PyObject * _object, const char * _params, va_list ) = 0;
-        virtual PyObject * askFunctionVA( PyObject * _object, const char * _params, va_list ) = 0;
-
-		virtual void callFunction( PyObject * _object, const char * _params, ... ) = 0;
-        virtual PyObject * askFunction( PyObject * _object, const char * _params, ... ) = 0;
 
 	public:
 		virtual PrototypeGeneratorInterfacePtr createEntityGenerator( const ConstString & _category, const ConstString & _prototype, PyObject * _generator ) = 0;

@@ -189,7 +189,7 @@ namespace Menge
 	{
 		PathFinderWayAffector * affector = new PathFinderWayAffector();
 
-		if( affector->initialize( _node, _way, _speed, _cb ) == false )
+		if( affector->initialize( _node, _speed, _way, _cb ) == false )
 		{
 			return 0;
 		}

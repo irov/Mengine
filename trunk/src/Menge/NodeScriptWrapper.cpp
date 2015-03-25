@@ -1057,16 +1057,14 @@ namespace Menge
 		protected:
 			bool onTimingUpdate( uint32_t _id, float _timing ) override
 			{
-				SCRIPT_SERVICE(m_serviceProvider)
-					->callFunction( m_script, "(ifO)", _id, _timing, pybind::get_bool(false) );
+				pybind::call( m_script, "(ifO)", _id, _timing, pybind::get_bool(false) );
 
 				return false;
 			}
 
 			void onTimingStop( uint32_t _id ) override
 			{
-				SCRIPT_SERVICE(m_serviceProvider)
-					->callFunction( m_script, "(ifO)", _id, 0.f, pybind::get_bool(true) );
+				pybind::call( m_script, "(ifO)", _id, 0.f, pybind::get_bool(true) );
 			}
 
 		protected:
@@ -1152,16 +1150,14 @@ namespace Menge
         protected:
             void onScheduleComplete( uint32_t _id ) override
             {
-                SCRIPT_SERVICE(m_serviceProvider)
-                    ->callFunction( m_cb, "(iO)", _id, pybind::get_bool(false) );
+                pybind::call( m_cb, "(iO)", _id, pybind::get_bool(false) );
                 //EVENT_SERVICE(m_serviceProvider)
                 //    ->addEventFormat( EVENT_SCHEDULE, m_pyObject, "(iO)", _id, pybind::get_bool(false) );
             }
 
             void onScheduleStop( uint32_t _id ) override
             {
-                SCRIPT_SERVICE(m_serviceProvider)
-                    ->callFunction( m_cb, "(iO)", _id, pybind::get_bool(true) );
+                pybind::call( m_cb, "(iO)", _id, pybind::get_bool(true) );
                 //EVENT_SERVICE(m_serviceProvider)
                 //    ->addEventFormat( EVENT_SCHEDULE, m_pyObject, "(iO)", _id, pybind::get_bool(true) );
             }
@@ -1806,7 +1802,10 @@ namespace Menge
 		protected:
 			void onDownloadAssetComplete( uint32_t _id, bool _successful ) override
 			{
-				pybind::call( m_cb, "iO", _id, pybind::get_bool(_successful) );
+				pybind::call( m_cb, "iO"
+					, _id
+					, pybind::get_bool(_successful) 
+					);
 			}
 
 		protected:
@@ -1966,7 +1965,9 @@ namespace Menge
 				{
 					const ConstString & name = _font->getName();
 
-					pybind::call( m_cb, "(O)", pybind::ptr(name) );
+					pybind::call( m_cb, "(N)"
+						, pybind::ptr(name) 
+						);
 				}
 
 			protected:
@@ -2023,7 +2024,11 @@ namespace Menge
 				if( UNICODE_SERVICE(m_serviceProvider)
 					->unicodeToUtf8( ws_str.c_str(), ws_str.size(), text_utf8, 8, &text_utf8_len ) == false )
 				{
-					pybind::call( _cb, "(snO)", "invalid utf8 ", 0, pybind::ptr(ws_str) );
+					pybind::call( _cb, "(snN)"
+						, "invalid utf8 "
+						, 0
+						, pybind::ptr(ws_str) 
+						);
 					
 					continue;
 				}
@@ -2034,7 +2039,11 @@ namespace Menge
 				
 				if( err != utf8::internal::UTF8_OK )
 				{
-					pybind::call( _cb, "(snO)", "validate utf8 ", code, pybind::ptr(ws_str) );
+					pybind::call( _cb, "(snN)"
+						, "validate utf8 "
+						, code
+						, pybind::ptr(ws_str) 
+						);
 
 					continue;
 				}
@@ -2044,7 +2053,11 @@ namespace Menge
 
 				if( font->hasGlyph( glyphChar ) == false )
 				{					
-					pybind::call( _cb, "(snO)", "not found glyph ", code, pybind::ptr(ws_str) );
+					pybind::call( _cb, "(snN)"
+						, "not found glyph "
+						, code
+						, pybind::ptr(ws_str) 
+						);
 
 					continue;
 				}
@@ -2973,8 +2986,7 @@ namespace Menge
 
 				PyObject * embed = m_scriptable->getEmbed();
 
-				SCRIPT_SERVICE(m_serviceProvider)
-					->callFunction(m_cb, "(OiO)", embed, _id, pybind::get_bool(_isEnd) );
+				pybind::call(m_cb, "(OiO)", embed, _id, pybind::get_bool(_isEnd) );
 
 				this->destroy();
 			}
@@ -3483,8 +3495,7 @@ namespace Menge
 
                 pybind::incref( py_event );
 
-                PyObject * py_result = SCRIPT_SERVICE(m_serviceProvider)
-                    ->askFunction( py_event, "(Iffff)", _touchId, _point.x, _point.y, _x, _y );
+                PyObject * py_result = pybind::ask( py_event, "(Iffff)", _touchId, _point.x, _point.y, _x, _y );
 
                 if( pybind::is_none(py_result) == false )
                 {
@@ -3592,10 +3603,9 @@ namespace Menge
 
                 pybind::incref( py_handler );
 
-                PyObject * py_result = SCRIPT_SERVICE(m_serviceProvider)
-                    ->askFunction( py_handler, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+                PyObject * py_result = pybind::ask( py_handler, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 
-                if( pybind::is_none(py_result) == false )
+                if( pybind::is_none( py_result ) == false )
                 {
                     LOGGER_ERROR(m_serviceProvider)("handleMouseButtonEvent handlersMouseButton %s return value %s not None"
                         , pybind::object_repr( py_handler )                        
@@ -3747,8 +3757,7 @@ namespace Menge
 
                 pybind::incref( py_handler );
 
-                PyObject * py_result = SCRIPT_SERVICE(m_serviceProvider)
-                    ->askFunction( py_handler, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+                PyObject * py_result = pybind::ask( py_handler, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 
                 if( pybind::is_none(py_result) == false )
                 {
@@ -3877,8 +3886,7 @@ namespace Menge
 
 				pybind::incref( py_handler );
 
-				PyObject * py_result = SCRIPT_SERVICE(m_serviceProvider)
-					->askFunction( py_handler, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
+				PyObject * py_result = pybind::ask( py_handler, "(IIO)", _touchId, _button, pybind::get_bool(_isDown) );
 
 				if( pybind::is_none(py_result) == false )
 				{
@@ -3997,10 +4005,9 @@ namespace Menge
 
 				pybind::incref( py_handler );
 
-				PyObject * py_result = SCRIPT_SERVICE(m_serviceProvider)
-					->askFunction( py_handler, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
+				PyObject * py_result = pybind::ask( py_handler, "(IIO)", _key, _char, pybind::get_bool(_isDown) );
 
-				if( pybind::is_none(py_result) == false )
+				if( pybind::is_none( py_result ) == false )
 				{
 					LOGGER_ERROR(m_serviceProvider)("handleGlobalKeyEvent handlersMouseButton %s return value %s not None"
 						, pybind::object_repr( py_handler )                        
@@ -4430,11 +4437,10 @@ namespace Menge
             ++it )
             {
                 Node * children = *it;
-                PyObject * py_children = pybind::ptr( children);
-
-                pybind::call( _cb, "(O)", py_children );
-
-                pybind::decref( py_children );
+                
+                pybind::call( _cb, "(N)"
+					, pybind::ptr( children) 
+					);
             }
         }
         //////////////////////////////////////////////////////////////////////////
@@ -4463,11 +4469,9 @@ namespace Menge
                         return;
                     }
 
-                    PyObject * py_resource = pybind::ptr( _resource );
-
-                    pybind::call( m_cb, "(O)", py_resource );
-
-                    pybind::decref( py_resource );
+                    pybind::call( m_cb, "(N)"
+						, pybind::ptr( _resource ) 
+						);
                 }
 
             protected:
@@ -4498,16 +4502,9 @@ namespace Menge
             protected:
                 void visit( ResourceReference* _resource )
                 {
-                    PyObject * py_resource = pybind::ptr( _resource );
-
-                    if( py_resource == nullptr )
-                    {
-                        return;
-                    }
-
-                    pybind::call( m_cb, "(O)", py_resource );
-
-                    pybind::decref( py_resource );
+                    pybind::call( m_cb, "(N)"
+						, pybind::ptr( _resource ) 
+						);
                 }
 
             protected:

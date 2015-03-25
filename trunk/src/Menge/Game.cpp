@@ -492,7 +492,7 @@ namespace Menge
 			->getPlatformName();
 
 		bool result = false;
-		EVENTABLE_ASK(m_serviceProvider, this, EVENT_INITIALIZE)( result, true, "(sOO)", _scriptInitParams.c_str(), pybind::ptr(platformName), pybind::get_bool(isMaster) );
+		EVENTABLE_ASK(m_serviceProvider, this, EVENT_INITIALIZE)( result, true, "(sNO)", _scriptInitParams.c_str(), pybind::ptr(platformName), pybind::get_bool(isMaster) );
 
 		if( result == false )
 		{
@@ -627,12 +627,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Game::setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
     {
-        EVENTABLE_CALL(m_serviceProvider, this, EVENT_RENDER_VIEWPORT)( "(OO)", pybind::ptr(_viewport), pybind::ptr(_contentResolution) );
+        EVENTABLE_CALL(m_serviceProvider, this, EVENT_RENDER_VIEWPORT)( "(NN)", pybind::ptr(_viewport), pybind::ptr(_contentResolution) );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setGameViewport( const Viewport & _viewport, float _aspect )
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_GAME_VIEWPORT)( "(Of)", pybind::ptr(_viewport), _aspect );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_GAME_VIEWPORT)( "(Nf)", pybind::ptr(_viewport), _aspect );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::close()
@@ -646,7 +646,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Game::userEvent( const ConstString & _event, const TMapParams & _params )
     {
-        EVENTABLE_CALL(m_serviceProvider, this, EVENT_USER)( "(OO)", pybind::ptr(_event), pybind::ptr(_params) );
+        EVENTABLE_CALL(m_serviceProvider, this, EVENT_USER)( "(NN)", pybind::ptr(_event), pybind::ptr(_params) );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadLocalePaksByName_( TVectorResourcePak & _paks, const ConstString & _locale, const ConstString & _platform )

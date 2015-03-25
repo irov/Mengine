@@ -340,7 +340,10 @@ namespace Menge
         
         if( cb != nullptr )
         {
-            pybind::call( cb, "(OO)", pybind::get_none(), pybind::get_bool(false) );
+            pybind::call( cb, "(OO)"
+				, pybind::get_none()
+				, pybind::get_bool(false) 
+				);
         }
         
         m_scene = PROTOTYPE_SERVICE(m_serviceProvider)
@@ -354,7 +357,10 @@ namespace Menge
 
 			if( cb != nullptr )
 			{
-				pybind::call( cb, "(OO)", pybind::get_none(), pybind::get_bool(false) );
+				pybind::call( cb, "(OO)"
+					, pybind::get_none()
+					, pybind::get_bool(false) 
+					);
 
 				pybind::decref( cb );
 			}
@@ -369,7 +375,10 @@ namespace Menge
 
 		if( cb != nullptr )
 		{
-			pybind::call( cb, "(OO)", m_scene->getEmbed(), pybind::get_bool(false) );
+			pybind::call( cb, "(OO)"
+				, m_scene->getEmbed()
+				, pybind::get_bool(false) 
+				);
 		}
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );

@@ -354,7 +354,7 @@ namespace Menge
 				return false;
 			}
 
-			PyObject * py_result = this->askFunction( module_function, "()" );
+			PyObject * py_result = pybind::ask( module_function, "()" );
 
 			if( py_result == nullptr )
 			{
@@ -619,40 +619,6 @@ namespace Menge
 	{
 		return pybind::get_attr( _module, _name );
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callFunctionVA( PyObject * _object, const char * _params, va_list _valist )
-	{
-		pybind::call_va( _object, _params, _valist );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::askFunctionVA( PyObject * _object, const char * _params, va_list _valist )
-	{
-		PyObject * result = pybind::ask_va( _object, _params, _valist );
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::askFunction( PyObject * _object, const char * _params, ... )
-	{
-		va_list valist;
-		va_start(valist, _params);
-
-		PyObject * result = this->askFunctionVA( _object, _params, valist );
-
-		va_end( valist ); 
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::callFunction( PyObject * _object, const char * _params, ...  )
-	{
-		va_list valist;
-		va_start(valist, _params);
-
-		pybind::call_va( _object, _params, valist );
-
-		va_end( valist ); 
-	}	
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::handleException()
 	{

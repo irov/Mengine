@@ -469,9 +469,7 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				PyObject * py_point = pybind::ptr(*it);
-				pybind::list_appenditem( py_list, py_point );
-				pybind::decref( py_point );
+				pybind::list_appenditem_t( py_list, *it );
 			}
 
 			return py_list;
@@ -520,7 +518,7 @@ namespace Menge
 		protected:
 			void visit( PyObject * _obj ) override
 			{
-				pybind::list_appenditem(m_py_list, _obj);
+				pybind::list_appenditem( m_py_list, _obj );
 			}
 
 		protected:
@@ -554,10 +552,7 @@ namespace Menge
             {
                 const FilePath & filePath = _texture->getFileName();
 
-                PyObject * py_filePath = pybind::ptr( filePath );
-
-                pybind::list_appenditem( m_list, py_filePath );
-                pybind::decref( py_filePath );
+                pybind::list_appenditem_t( m_list, filePath );
             }
 
         protected:

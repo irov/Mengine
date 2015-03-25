@@ -53,11 +53,7 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				PyObject * py_vec2f = pybind::ptr(*it);
-
-				pybind::list_appenditem( py_list_vec2f, py_vec2f );
-
-				pybind::decref( py_vec2f );
+				pybind::list_appenditem_t( py_list_vec2f, *it );
 			}
 
 			return py_list_vec2f;

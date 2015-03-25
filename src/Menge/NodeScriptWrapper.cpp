@@ -467,12 +467,8 @@ namespace Menge
 				}
 
 				const ConstString & name = slot->getName();
-
-				PyObject * py_tuple = pybind::make_tuple_t( _movie, name, slot );
-
-				pybind::list_appenditem( m_list, py_tuple );
-
-				pybind::decref( py_tuple );
+								
+				pybind::list_appendtuple_t( m_list, _movie, name, slot );
 			}
 
 		protected:
@@ -510,11 +506,7 @@ namespace Menge
 
 				const ConstString & name = hotspot->getName();
 
-                PyObject * py_tuple = pybind::make_tuple_t( _movie, name, hotspot );
-
-				pybind::list_appenditem( m_list, py_tuple );
-
-                pybind::decref( py_tuple );
+				pybind::list_appendtuple_t( m_list, _movie, name, hotspot );
             }
 
         protected:
@@ -553,11 +545,7 @@ namespace Menge
 
 				const ConstString & name = subMovie->getName();
 
-				PyObject * py_tuple = pybind::make_tuple_t( _movie, name, subMovie );
-
-				pybind::list_appenditem( m_list, py_tuple );
-
-				pybind::decref( py_tuple );
+				pybind::list_appendtuple_t( m_list, _movie, name, subMovie );
 			}
 
 		protected:
@@ -586,12 +574,7 @@ namespace Menge
 		protected:
 			void visitMovieNode( Movie * _movie, Node * _layer ) override
 			{
-				PyObject * py_movie = pybind::ptr( _movie );
-				PyObject * py_layer = pybind::ptr( _layer );
-
-				PyObject * py_tuple = pybind::make_tuple_t( _movie, _layer );
-				pybind::list_appenditem( m_list, py_tuple );
-				pybind::decref( py_tuple );
+				pybind::list_appendtuple_t( m_list, _movie, _layer );
 			}
 
 		protected:
@@ -755,10 +738,7 @@ namespace Menge
 				MovieFrameSource frame;
 				framePack->getLayerFrame( layer->index, i, frame );
 
-				PyObject * py_pos = pybind::ptr( frame.position );
-
-				pybind::list_appenditem( py_path, py_pos );
-				pybind::decref( py_pos );
+				pybind::list_appenditem_t( py_path, frame.position );				
 			}
 
 			return py_path;
@@ -797,10 +777,8 @@ namespace Menge
 				mt::vec2f pos;
 				pos.x = frame.position.x;
 				pos.y = frame.position.y;
-				PyObject * py_pos = pybind::ptr( pos );
 				
-				pybind::list_appenditem( py_path, py_pos );
-				pybind::decref( py_pos );
+				pybind::list_appenditem_t( py_path, pos );				
 			}
 
 			return py_path;
@@ -2577,11 +2555,7 @@ namespace Menge
 					continue;
 				}
 
-				PyObject * py_tuple = pybind::make_tuple_t( layer.name, layer.position );
-				
-				pybind::list_appenditem( py_list, py_tuple );
-
-				pybind::decref( py_tuple );
+				pybind::list_appendtuple_t( py_list, layer.name, layer.position );
 			}
 
 			return py_list;
@@ -3353,11 +3327,7 @@ namespace Menge
             it != it_end;
             ++it )
             {
-                PyObject * py_node = pybind::ptr(*it);
-
-                pybind::list_appenditem( py_list, py_node );
-
-                pybind::decref( py_node );
+                pybind::list_appenditem_t( py_list, *it );
             }
 
             return py_list;
@@ -4361,9 +4331,7 @@ namespace Menge
             it != it_end;
             ++it )
             {
-                PyObject * py_node = pybind::ptr(*it);
-                pybind::list_appenditem( py_list_names, py_node );
-                pybind::decref( py_node );
+                pybind::list_appenditem_t( py_list_names, *it );
             }
 
             for( TVectorParticleEmitterAtlas::const_iterator

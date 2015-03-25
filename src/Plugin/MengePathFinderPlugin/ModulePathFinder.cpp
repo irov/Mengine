@@ -75,13 +75,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			PathGraphNode * node = (PathGraphNode *)*it;
+			PathGraphNode * node = static_cast<PathGraphNode *>(*it);
 			
-			PyObject * py_node = pybind::ptr(node);
-
-			pybind::list_appenditem( py_path, py_node );
-
-			pybind::decref( py_node );
+			pybind::list_appenditem_t( py_path, node );
 		}
 
 		return py_path;

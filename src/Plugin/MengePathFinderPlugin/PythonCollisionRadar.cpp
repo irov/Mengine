@@ -60,7 +60,9 @@ namespace Menge
 
 			PythonCollisionObject * obj = static_cast<PythonCollisionObject *>(desc.object);
 
-			PyObject * py_ask = pybind::ask( _filter, "(O)", pybind::ptr(obj) );
+			PyObject * py_ask = pybind::ask( _filter, "(N)"
+				, pybind::ptr(obj) 
+				);
 
 			if( pybind::is_true( py_ask ) == false )
 			{
@@ -88,7 +90,12 @@ namespace Menge
 	{
 		PythonCollisionObject * py_object = static_cast<PythonCollisionObject *>(_object);
 		PyObject * py_user = py_object->getPythonUser();
-		PyObject * py_ask = pybind::ask( m_pyFilter, "(OOO)", pybind::ptr(this), pybind::ptr(py_object), py_user );
+		
+		PyObject * py_ask = pybind::ask( m_pyFilter, "(NNO)"
+			, pybind::ptr(this)
+			, pybind::ptr(py_object)
+			, py_user 
+			);
 
 		bool result = pybind::is_true( py_ask );
 		
@@ -99,13 +106,23 @@ namespace Menge
 	{
 		PythonCollisionObject * py_object = static_cast<PythonCollisionObject *>(_object);
 		PyObject * py_user = py_object->getPythonUser();
-		pybind::call( m_pyEnter, "(OOO)", pybind::ptr(this), pybind::ptr(py_object), py_user );
+
+		pybind::call( m_pyEnter, "(NNO)"
+			, pybind::ptr(this)
+			, pybind::ptr(py_object)
+			, py_user 
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PythonCollisionRadar::onRadarObjectLeave( CollisionObject * _object )
 	{
 		PythonCollisionObject * py_object = static_cast<PythonCollisionObject *>(_object);
 		PyObject * py_user = py_object->getPythonUser();
-		pybind::call( m_pyLeave, "(OOO)", pybind::ptr(this), pybind::ptr(py_object), py_user );
+
+		pybind::call( m_pyLeave, "(NNO)"
+			, pybind::ptr(this)
+			, pybind::ptr(py_object)
+			, py_user 
+			);
 	}
 }

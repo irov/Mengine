@@ -63,8 +63,9 @@ namespace Menge
                 return;
             }
             
-            SCRIPT_SERVICE(m_serviceProvider)
-                ->callFunction( m_cb, "(O)", pybind::ptr(frame.position) );
+            pybind::call( m_cb, "(N)"
+				, pybind::ptr(frame.position) 
+				);
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( Node * _node, PyObject * _way, float _speed, PyObject * _cb );
+		bool initialize( Node * _node, float _speed, PyObject * _way, PyObject * _cb );
 		
 	public:
 		bool prepare() override;
@@ -31,6 +31,7 @@ namespace Menge
 		void stop() override;
 
 	protected:
+		bool stepNextPoint_( const mt::vec3f & _pos, float _step, mt::vec3f & _out, mt::vec3f & _dir );
 		bool invalidateTarget_();
 
 	protected:
@@ -46,7 +47,7 @@ namespace Menge
 		PyObject * m_cb;
 
 		uint32_t m_iterator;
-		uint32_t m_wayCount;	
+		uint32_t m_wayCount;
 	};
 }
 

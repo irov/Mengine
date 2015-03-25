@@ -131,6 +131,13 @@ namespace mt
 		return sqrlength;
 	}
 
+	MENGINE_MATH_FUNCTION_INLINE void dir_v3_v3(vec3f & _out, const vec3f& _a, const vec3f& _b)
+	{
+		vec3f dir = _a - _b;
+		
+		mt::norm_v3( _out, dir );
+	}
+
 	MENGINE_MATH_FUNCTION_INLINE float length_v3(const vec3f& _a)
 	{
         float len = _a.length();

@@ -74,14 +74,8 @@ namespace Menge
 		PyObject * wrap( const ConstString & _type, Scriptable * _node ) override;
 		
 	public:
-		bool hasModuleFunction( PyObject * _module, const char * _name );
+		bool hasModuleFunction( PyObject * _module, const char * _name ) override;
 		PyObject * getModuleFunction( PyObject * _module, const char * _name ) override;
-
-		void callFunctionVA( PyObject * _object, const char * _params, va_list ) override;
-		PyObject * askFunctionVA( PyObject * _object, const char * _params, va_list ) override;
-
-		void callFunction( PyObject * _object, const char * _params, ...  ) override;
-		PyObject * askFunction( PyObject * _object, const char * _params, ... ) override;
 
 	public:
 		static void handleException();

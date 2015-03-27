@@ -35,9 +35,6 @@ namespace Menge
 		bool invalidateTarget_();
 
 	protected:
-		void destroy() override;
-
-	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
 		Node * m_node;

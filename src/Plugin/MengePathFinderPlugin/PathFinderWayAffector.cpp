@@ -212,10 +212,5 @@ namespace Menge
 			, pybind::get_bool(false) 
 			);
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void PathFinderWayAffector::destroy()
-	{
-		delete this;
-	}
 }
 

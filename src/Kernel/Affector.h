@@ -13,13 +13,16 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	typedef uint32_t AFFECTOR_ID;
+	//////////////////////////////////////////////////////////////////////////
     class ServiceProviderInterface;
 	//////////////////////////////////////////////////////////////////////////
 	class AffectorCallback
 		: public Factorable
 	{
 	public:
-		virtual void onAffectorEnd( uint32_t _id, bool _isEnd ) = 0;
+		virtual void onAffectorEnd( AFFECTOR_ID _id, bool _isEnd ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class Affector
@@ -35,8 +38,8 @@ namespace Menge
 		void setAffectorType( EAffectorType _type );
 
 	public:
-		void setId( uint32_t _id );
-		uint32_t getId() const;
+		void setId( AFFECTOR_ID _id );
+		AFFECTOR_ID getId() const;
 
 	public:
 		EAffectorType getType() const;
@@ -53,7 +56,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		EAffectorType m_type;
-		uint32_t m_id;
+		AFFECTOR_ID m_id;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class CallbackAffector

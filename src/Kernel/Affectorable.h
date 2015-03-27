@@ -10,8 +10,6 @@
 
 namespace Menge
 {
-	typedef uint32_t AFFECTOR_ID;
-
 	class Affectorable
 	{
 	public:

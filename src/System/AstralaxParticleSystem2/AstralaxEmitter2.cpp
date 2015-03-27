@@ -65,15 +65,6 @@ namespace Menge
 			MAGIC_RECT rect;
 			float backgroundScale = Magic_GetBackgroundRect( m_emitterId, &rect );
 
-			if( mt::cmp_f_f( backgroundScale, 1.f ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("AstralaxEmitter::setupBasePosition_ background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
-					, backgroundScale
-					);
-
-				return false;
-			}
-
 			if( rect.left == rect.right || rect.bottom == rect.top )
 			{
 				MAGIC_POSITION pos;
@@ -94,6 +85,15 @@ namespace Menge
 			}
 			else
 			{
+				if( mt::cmp_f_f( backgroundScale, 1.f ) == false )
+				{
+					LOGGER_ERROR(m_serviceProvider)("AstralaxEmitter::setupBasePosition_ background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
+						, backgroundScale
+						);
+
+					return false;
+				}
+
 				MAGIC_POSITION pos;
 				Magic_GetEmitterPosition( m_emitterId, &pos );
 

@@ -54,6 +54,7 @@ namespace Menge
 	
 	public:
 		void remove();
+		bool isRemoved() const;
 		
 	protected:
 		AOIActorProviderInterface * m_provider;
@@ -64,6 +65,8 @@ namespace Menge
 				
 		TVectorAOIActors m_neighbours;
 		TVectorAOIActors m_connects;
+
+		bool m_remove;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<AOIActor> AOIActorPtr;

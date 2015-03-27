@@ -59,16 +59,14 @@ namespace Menge
 			return py_list_vec2f;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static PyObject * vec2f_repr( PyObject * _obj, mt::vec2f * _v )
+		static String vec2f_repr( mt::vec2f * _v )
 		{
-            (void)_obj;
-
 			Stringstream ss;
 			ss << "<vec2f: " << _v->x << ", " << _v->y << ">";
 			
             String repr = ss.str();
             
-            return pybind::ptr(repr);
+            return repr;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static float vec2_sequence_get( mt::vec2f * _vec, uint32_t _index )
@@ -91,16 +89,14 @@ namespace Menge
 			_vec->operator [] (_index) = _value;
 		}
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * vec3f_repr( PyObject * _obj, mt::vec3f * _v )
+        static String vec3f_repr( mt::vec3f * _v )
         {
-            (void)_obj;
-
             Stringstream ss;
             ss << "<vec3f: " << _v->x << ", " << _v->y << ", " << _v->z << ">";
             
             String repr = ss.str();
 
-            return pybind::ptr(repr);
+            return repr;
         }
 		//////////////////////////////////////////////////////////////////////////
 		static float vec3_sequence_get( mt::vec3f * _vec, uint32_t _index )
@@ -123,16 +119,14 @@ namespace Menge
 			_vec->operator [] (_index) = _value;
 		}
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * vec4f_repr( PyObject * _obj, mt::vec4f * _v )
+        static String vec4f_repr( mt::vec4f * _v )
         {
-            (void)_obj;
-
             Stringstream ss;
             ss << "<vec4f: " << _v->x << ", " << _v->y << ", " << _v->z << ", " << _v->w << ">";
 
             String repr = ss.str();
 
-            return pybind::ptr(repr);
+            return repr;
         }
 		//////////////////////////////////////////////////////////////////////////
 		static float vec4_sequence_get( mt::vec4f * _vec, uint32_t _index )
@@ -155,10 +149,8 @@ namespace Menge
 			_vec->operator [] (_index) = _value;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static PyObject * uv4f_repr( PyObject * _obj, mt::uv4f * _v )
+		static String uv4f_repr( mt::uv4f * _v )
 		{
-			(void)_obj;
-
 			Stringstream ss;
 			ss << "<uv4f: " 
 				<< "(" << _v->p0.x << ", " << _v->p0.y << ")"
@@ -169,7 +161,7 @@ namespace Menge
 
 			String repr = ss.str();
 
-			return pybind::ptr(repr);
+			return repr;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static const mt::vec2f & uv4f_sequence_get( mt::uv4f * _uv, uint32_t _index )
@@ -365,16 +357,14 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static PyObject * box2f_repr( PyObject * _obj, mt::box2f * _v )
+		static String box2f_repr( mt::box2f * _v )
 		{
-			(void)_obj;
-
 			Stringstream ss;
 			ss << "<box2f: " << _v->minimum.x << ", " << _v->minimum.y << ", " << _v->maximum.x << ", " << _v->maximum.y << ">";
 
 			String repr = ss.str();
 
-			return pybind::ptr(repr);
+			return repr;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static bool box2f_convert( PyObject * _obj, mt::box2f * _place, void * _user )
@@ -401,8 +391,6 @@ namespace Menge
 				{
 					return false;
 				}
-
-				mt::box2f * impl = (mt::box2f *)_place;
 
 				_place->minimum.x = pybind::list_getitem_t<float>( _obj, 0 );
 				_place->minimum.y = pybind::list_getitem_t<float>( _obj, 1 );
@@ -438,16 +426,14 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static PyObject * color_repr( PyObject * _obj, ColourValue * _v )
+		static String color_repr( ColourValue * _v )
         {
-            (void)_obj;
-
 			Stringstream ss;
 			ss << "<color: " << _v->getA() << ", " << _v->getR() << ", " << _v->getG() << ", " << _v->getB() << ">";
             
             String repr = ss.str();
 
-            return pybind::ptr(repr);
+            return repr;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static bool color_convert( PyObject * _obj, ColourValue * _place, void * _user )
@@ -550,16 +536,14 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static PyObject * Resolution_repr( PyObject * _obj, Resolution * _v )
+		static String Resolution_repr( Resolution * _v )
 		{
-			(void)_obj;
-
 			Stringstream ss;
 			ss << "<Resolution: " << _v->getWidth() << ", " << _v->getHeight() << ">";
 
 			String repr = ss.str();
 
-			return pybind::ptr(repr);
+			return repr;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static bool Viewport_convert( PyObject * _obj, Viewport * _place, void * _user )
@@ -598,16 +582,14 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static PyObject * Viewport_repr( PyObject * _obj, Viewport * _v )
+		static String Viewport_repr( Viewport * _v )
 		{
-			(void)_obj;
-
 			Stringstream ss;
 			ss << "<Viewport: " << _v->begin.x << ", " << _v->begin.y << ", " << _v->end.x << ", " << _v->end.y << ", " << ">";
 
 			String repr = ss.str();
 
-			return pybind::ptr(repr);
+			return repr;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static bool Rect_convert( PyObject * _obj, Rect * _place, void * _user )

@@ -116,7 +116,7 @@ namespace Menge
 
 		const mt::vec3f & lp = m_node->getLocalPosition();
 
-		mt::vec3f wp_current = pybind::list_getitem_t<mt::vec3f>( m_way, m_iterator );
+		mt::vec3f wp_current = pybind::list_getitem_t<mt::vec3f>( m_way, 1 );
 
 		mt::vec3f dir;
 		mt::dir_v3_v3( dir, wp_current, lp );
@@ -163,7 +163,12 @@ namespace Menge
 				);
 		}
 
-		return true;
+		if( m_iterator == m_wayCount )
+		{
+			return true;
+		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::complete()

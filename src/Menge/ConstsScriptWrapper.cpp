@@ -48,13 +48,11 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static PyObject * s_ConstString_repr( PyObject * _obj, ConstString * _cs )
+    static const char * s_ConstString_repr( ConstString * _cs )
     {
-        (void)_obj;
-
         const char * str_repr = _cs->c_str();
 
-        return pybind::ptr( str_repr );
+        return str_repr;
     }
     //////////////////////////////////////////////////////////////////////////
 	static ConstString::hash_type s_ConstString_hash( PyObject * _obj, ConstString * _cs )

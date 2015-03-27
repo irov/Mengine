@@ -45,8 +45,10 @@ namespace Menge
 		pybind::def_functor( "removeAOI", this, &ModuleAreaOfInterest::removeAOI );
 
 		pybind::interface_<Trigger, pybind::bases<Node> >("Trigger", false)
-			.def( "setRadius", &Trigger::setRadius )
-			.def( "getRadius", &Trigger::getRadius )
+			.def( "setTriggerRadius", &Trigger::setTriggerRadius )
+			.def( "getTriggerRadius", &Trigger::getTriggerRadius )
+			.def( "setTriggerIFF", &Trigger::setTriggerIFF )
+			.def( "getTriggerIFF", &Trigger::getTriggerIFF )
 			.def( "setAOI", &Trigger::setAOI )
 			.def( "getAOI", &Trigger::getAOI )
 			.def( "setUserData", &Trigger::setUserData )

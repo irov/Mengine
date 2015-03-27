@@ -221,6 +221,7 @@ namespace Menge
 		, m_cacheService(nullptr)
 		, m_httpSystem(nullptr)
 		, m_configService(nullptr)
+		, m_pauseUpdatingTime(-1.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2026,11 +2027,22 @@ namespace Menge
 
 				if( updating == true )
 				{
+					if( m_pauseUpdatingTime >= 0.f )
+					{
+						frameTime = m_pauseUpdatingTime;
+						m_pauseUpdatingTime = -1.f;
+					}
+
 					m_application->tick( frameTime );
 				}
 				else
 				{
-					Sleep(100);
+					if( m_pauseUpdatingTime < 0.f )
+					{
+						m_pauseUpdatingTime = frameTime;
+					}
+
+					Sleep( 100 );
 				}
 
 				if( m_vsync == false && m_maxfps == false )
@@ -2051,13 +2063,13 @@ namespace Menge
 		}
 		catch( const std::exception & ex )
 		{
-			LOGGER_CRITICAL(m_serviceProvider)("Win32ThreadIdentity std::exception '%s'"
+			LOGGER_CRITICAL(m_serviceProvider)("WinApplication std::exception '%s'"
 				, ex.what()
 				);
 		}
 		catch( ... )
 		{			
-			LOGGER_CRITICAL(m_serviceProvider)("Win32ThreadIdentity unknown exception"
+			LOGGER_CRITICAL(m_serviceProvider)("WinApplication unknown exception"
 				);
 		}
 	}
@@ -3115,7 +3127,7 @@ namespace Menge
 			::SetCursor( NULL );
 		}
 
-		if( m_fpsMonitor )
+		if( m_fpsMonitor != nullptr )
 		{
 			if( m_active == true )
 			{

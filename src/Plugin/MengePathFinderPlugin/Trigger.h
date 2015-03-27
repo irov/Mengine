@@ -17,8 +17,12 @@ namespace Menge
 		~Trigger();
 
 	public:
-		void setRadius( float _radius );
-		float getRadius() const;
+		void setTriggerRadius( float _radius );
+		float getTriggerRadius() const;
+		
+	public:
+		void setTriggerIFF( uint32_t _iff );
+		uint32_t getTriggerIFF() const;
 
 	public:
 		void setAOI( AreaOfInterest * _aoi );
@@ -50,5 +54,7 @@ namespace Menge
 		PyObject * m_data;
 		
 		float m_radius;
+		
+		uint32_t m_iff;
 	};
 }

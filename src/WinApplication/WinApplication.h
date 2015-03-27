@@ -169,6 +169,8 @@ namespace Menge
 
 		EWindowsType m_windowsType;
 
+		float m_pauseUpdatingTime;
+
 		bool m_running;
 		bool m_active;
 

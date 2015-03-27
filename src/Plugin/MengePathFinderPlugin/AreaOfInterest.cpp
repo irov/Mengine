@@ -47,7 +47,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////	
 	void AOIActor::addActorNeighbor( AOIActor * _actor )
 	{
-		TVectorAOIActors::iterator it_erase = std::find( m_neighbours.begin(), m_neighbours.end(), _actor );
+		TVectorAOIActors::iterator it_erase = 
+			std::find( m_neighbours.begin(), m_neighbours.end(), _actor );
 
 		if( it_erase != m_neighbours.end() )
 		{
@@ -61,7 +62,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AOIActor::removeActorNeighbor( AOIActor * _actor )
 	{
-		TVectorAOIActors::iterator it_erase = std::find( m_neighbours.begin(), m_neighbours.end(), _actor );
+		TVectorAOIActors::iterator it_erase = 
+			std::find( m_neighbours.begin(), m_neighbours.end(), _actor );
 
 		if( it_erase == m_neighbours.end() )
 		{
@@ -76,7 +78,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AOIActor::isActorNeighbor( AOIActor * _actor ) const
 	{
-		TVectorAOIActors::const_iterator it_erase = std::find( m_neighbours.begin(), m_neighbours.end(), _actor );
+		TVectorAOIActors::const_iterator it_erase = 
+			std::find( m_neighbours.begin(), m_neighbours.end(), _actor );
 
 		if( it_erase == m_neighbours.end() )
 		{
@@ -88,7 +91,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AOIActor::addActorConnect( AOIActor * _actor )
 	{
-		TVectorAOIActors::iterator it_erase = std::find( m_connects.begin(), m_connects.end(), _actor );
+		TVectorAOIActors::iterator it_erase = 
+			std::find( m_connects.begin(), m_connects.end(), _actor );
 
 		if( it_erase != m_connects.end() )
 		{
@@ -100,7 +104,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AOIActor::removeActorConnect( AOIActor * _actor )
 	{
-		TVectorAOIActors::iterator it_erase = std::find( m_connects.begin(), m_connects.end(), _actor );
+		TVectorAOIActors::iterator it_erase = 
+			std::find( m_connects.begin(), m_connects.end(), _actor );
 
 		if( it_erase == m_connects.end() )
 		{
@@ -135,7 +140,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_removeFromActors( TVectorAOIActors & _actors, AOIActor * _actor )
 	{
-		TVectorAOIActors::iterator it_erase = std::find( _actors.begin(), _actors.end(), _actor );
+		TVectorAOIActors::iterator it_erase = 
+			std::find( _actors.begin(), _actors.end(), _actor );
 
 		if( it_erase == _actors.end() )
 		{

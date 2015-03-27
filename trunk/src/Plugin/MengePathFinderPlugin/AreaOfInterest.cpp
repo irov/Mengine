@@ -10,6 +10,7 @@ namespace Menge
 		, m_position(0.f, 0.f)
 		, m_radius(0.f)
 		, m_userData(nullptr)
+		, m_remove(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -118,20 +119,42 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AOIActor::remove()
 	{
+		TVectorAOIActors remove_connects;
+		remove_connects.swap( m_connects );
+
+		TVectorAOIActors remove_neighbours;
+		remove_neighbours.swap( m_neighbours );
+
 		for( TVectorAOIActors::iterator
-			it = m_connects.begin(),
-			it_end = m_connects.end();
+			it = remove_connects.begin(),
+			it_end = remove_connects.end();
+		it != it_end; 
+		++it )
+		{
+			AOIActor * neignbour = *it;
+						
+			neignbour->removeActorNeighbor( this );
+		}
+
+		for( TVectorAOIActors::iterator
+			it = remove_neighbours.begin(),
+			it_end = remove_neighbours.end();
 		it != it_end; 
 		++it )
 		{
 			AOIActor * neignbour = *it;
 
-			neignbour->removeActorNeighbor( this );
 			neignbour->removeActorConnect( this );
+
+			m_provider->onAOIActorLeave( neignbour );
 		}
 
-		m_connects.clear();
-		m_neighbours.clear();
+		m_remove = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AOIActor::isRemoved() const
+	{
+		return m_remove;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	AreaOfInterest::AreaOfInterest()
@@ -180,7 +203,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			AOIActor * actor = *it;			
+			AOIActor * actor = *it;
 
 			s_removeFromActors( m_actors, actor );
 
@@ -199,6 +222,11 @@ namespace Menge
 		++it )
 		{
 			AOIActor * actor = *it;
+
+			if( actor->isRemoved() == true )
+			{
+				continue;
+			}
 
 			actor->update();
 
@@ -219,22 +247,30 @@ namespace Menge
 				{
 					continue;
 				}
+
+				if( actor->isRemoved() == true )
+				{
+					break;
+				}
+
+				if( actor2->isRemoved() == true )
+				{
+					continue;
+				}
 				
 				const mt::vec2f & position2 = actor2->getPosition();
 
-				if( mt::sqrlength_v2_v2( position, position2 ) < d_radius )
+				if( mt::sqrlength_v2_v2( position, position2 ) <= d_radius )
 				{
-					actor->addActorNeighbor( actor2 );
-
-					actor->addActorConnect( actor2 );
 					actor2->addActorConnect( actor );
+
+					actor->addActorNeighbor( actor2 );
 				}
 				else
 				{
-					actor->removeActorNeighbor( actor2 );
-
-					actor->removeActorConnect( actor2 );
 					actor2->removeActorConnect( actor );
+
+					actor->removeActorNeighbor( actor2 );
 				}				
 			}
 		}

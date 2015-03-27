@@ -4646,6 +4646,7 @@ namespace Menge
 
         pybind::interface_<Affector>("Affector", true)
             .def( "stop", &Affector::stop )
+			.def( "getId", &Affector::getId )
             ;
 
         pybind::interface_<Scriptable>("Scriptable")

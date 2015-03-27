@@ -3,6 +3,7 @@
 #	include "Interface/ModuleInterface.h"
 
 #	include "PathFinderMap.h"
+#	include "PathFinderWayAffector.h"
 
 #	include "Kernel/Node.h"
 
@@ -39,7 +40,7 @@ namespace Menge
 		bool setMapWeight( PathFinderMap * _map, const ConstString & _resourceName );
 
 	public:
-		uint32_t createPathFinderWayAffertor( Node * _node, PyObject * _way, float _speed, PyObject * _cb );
+		PathFinderWayAffector * createPathFinderWayAffertor( Node * _node, PyObject * _way, float _speed, PyObject * _cb );
 
 	public:
 		void update( float _time, float _timing ) override;
@@ -51,5 +52,8 @@ namespace Menge
 
 		typedef stdex::vector<PathFinderMap *> TPathFinderMaps;
 		TPathFinderMaps m_maps;
+
+		typedef FactoryPoolStore<PathFinderWayAffector, 16> TFactoryPoolPathFinderWayAffector;
+		TFactoryPoolPathFinderWayAffector m_factoryPathFinderWayAffector;
 	};
 }

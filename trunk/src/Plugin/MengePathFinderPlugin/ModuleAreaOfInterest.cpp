@@ -49,10 +49,10 @@ namespace Menge
 			.def( "getTriggerRadius", &Trigger::getTriggerRadius )
 			.def( "setTriggerIFF", &Trigger::setTriggerIFF )
 			.def( "getTriggerIFF", &Trigger::getTriggerIFF )
-			.def( "setAOI", &Trigger::setAOI )
-			.def( "getAOI", &Trigger::getAOI )
-			.def( "setUserData", &Trigger::setUserData )
-			.def( "getUserData", &Trigger::getUserData )			
+			.def( "setTriggerAOI", &Trigger::setTriggerAOI )
+			.def( "getTriggerAOI", &Trigger::getTriggerAOI )
+			.def( "setTriggerUserData", &Trigger::setTriggerUserData )
+			.def( "getTriggerUserData", &Trigger::getTriggerUserData )			
 			;
 
 		SCRIPT_SERVICE(m_serviceProvider)

@@ -37,24 +37,24 @@ namespace Menge
 		return m_iff;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trigger::setAOI( AreaOfInterest * _aoi )
+	void Trigger::setTriggerAOI( AreaOfInterest * _aoi )
 	{
 		m_aoi = _aoi;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AreaOfInterest * Trigger::getAOI() const
+	AreaOfInterest * Trigger::getTriggerAOI() const
 	{
 		return m_aoi;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trigger::setUserData( PyObject * _data )
+	void Trigger::setTriggerUserData( PyObject * _data )
 	{
 		pybind::decref( m_data );
 		m_data = _data;
 		pybind::incref( m_data );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Trigger::getUserData()
+	PyObject * Trigger::getTriggerUserData()
 	{
 		pybind::incref( m_data );
 

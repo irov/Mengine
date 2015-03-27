@@ -25,12 +25,12 @@ namespace Menge
 		uint32_t getTriggerIFF() const;
 
 	public:
-		void setAOI( AreaOfInterest * _aoi );
-		AreaOfInterest * getAOI() const;
+		void setTriggerAOI( AreaOfInterest * _aoi );
+		AreaOfInterest * getTriggerAOI() const;
 
 	public:
-		void setUserData( PyObject * _data );
-		PyObject * getUserData();
+		void setTriggerUserData( PyObject * _data );
+		PyObject * getTriggerUserData();
 
 	protected:
 		mt::vec2f getAOIActorPosition() const override;

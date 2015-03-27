@@ -6,7 +6,6 @@
 #	include "Interface/ResourceInterface.h"
 
 #	include "PathGraphNode.h"
-#	include "PathFinderWayAffector.h"
 
 #	include "Kernel/ResourceImageData.h"
 
@@ -124,6 +123,9 @@ namespace Menge
 		pybind::def_functor( "destroyPathFinderMap", this, &ModulePathFinder::destroyMap );
 		pybind::def_functor( "setPathFinderMapWeight", this, &ModulePathFinder::setMapWeight );
 
+		pybind::interface_<PathFinderWayAffector, pybind::bases<Affector> >("PathFinderWayAffector")
+			;
+
 		pybind::def_functor( "createPathFinderWayAffertor", this, &ModulePathFinder::createPathFinderWayAffertor );
 
 		SCRIPT_SERVICE(m_serviceProvider)
@@ -181,18 +183,23 @@ namespace Menge
 		delete _graph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t ModulePathFinder::createPathFinderWayAffertor( Node * _node, PyObject * _way, float _speed, PyObject * _cb )
+	PathFinderWayAffector * ModulePathFinder::createPathFinderWayAffertor( Node * _node, PyObject * _way, float _speed, PyObject * _cb )
 	{
-		PathFinderWayAffector * affector = new PathFinderWayAffector();
+		PathFinderWayAffector * affector = m_factoryPathFinderWayAffector.createObjectT();
 
 		if( affector->initialize( _node, _speed, _way, _cb ) == false )
 		{
-			return 0;
+			return nullptr;
 		}
 
-		uint32_t affectorId = _node->addAffector( affector );
+		if( _node->addAffector( affector ) == 0 )
+		{
+			m_factoryPathFinderWayAffector.destroyObject( affector );
 
-		return affectorId;
+			return nullptr;
+		}
+
+		return affector;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ModulePathFinder::setMapWeight( PathFinderMap * _map, const ConstString & _resourceName )

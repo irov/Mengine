@@ -11,15 +11,15 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t Affectorable::addAffector( Affector * _affector )
+	AFFECTOR_ID Affectorable::addAffector( Affector * _affector )
 	{
-		uint32_t id = ++m_enumerator;
+		AFFECTOR_ID id = ++m_enumerator;
 
 		_affector->setId( id );
 		
 		if( _affector->prepare() == false )
 		{
-			return false;
+			return 0;
 		}
 
 		m_affectors.push_back( _affector );

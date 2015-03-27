@@ -8,6 +8,7 @@ namespace Menge
 		, m_actor(nullptr)
 		, m_data(nullptr)
 		, m_radius(0.f)
+		, m_iff(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -16,14 +17,24 @@ namespace Menge
 		pybind::decref( m_data );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trigger::setRadius( float _radius )
+	void Trigger::setTriggerRadius( float _radius )
 	{
 		m_radius = _radius;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Trigger::getRadius() const
+	float Trigger::getTriggerRadius() const
 	{
 		return m_radius;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Trigger::setTriggerIFF( uint32_t _iff )
+	{
+		m_iff = _iff;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t Trigger::getTriggerIFF() const
+	{
+		return m_iff;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trigger::setAOI( AreaOfInterest * _aoi )
@@ -68,7 +79,14 @@ namespace Menge
 
 		Trigger * trigger = static_cast<Trigger *>(userData);
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_TRIGGER_ENTER)( "(OO)", this->getEmbed(), trigger->getEmbed() );
+		uint32_t enemu_iff = trigger->getTriggerIFF();
+
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_TRIGGER_ENTER)( "(OOii)"
+			, this->getEmbed()
+			, trigger->getEmbed()
+			, m_iff
+			, enemu_iff 
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trigger::onAOIActorLeave( AOIActor * _actor )
@@ -77,7 +95,14 @@ namespace Menge
 
 		Trigger * trigger = static_cast<Trigger *>(userData);
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_TRIGGER_LEAVE)( "(OO)", this->getEmbed(), trigger->getEmbed() );
+		uint32_t enemu_iff = trigger->getTriggerIFF();
+
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_TRIGGER_LEAVE)( "(OOii)"
+			, this->getEmbed()
+			, trigger->getEmbed()
+			, m_iff
+			, enemu_iff 
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Trigger::_activate()

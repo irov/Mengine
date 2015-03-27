@@ -176,7 +176,7 @@ namespace Menge
 		{
 			Observer0 * observer = dynamic_cast<Observer0 *>(_observer);
 
-			if( observer == 0 )
+			if( observer == nullptr )
 			{
 				return false;
 			}
@@ -202,7 +202,7 @@ namespace Menge
 		{
 			Observer1<P0> * observer = dynamic_cast<Observer1<P0> *>(_observer);
 
-			if( observer == 0 )
+			if( observer == nullptr )
 			{
 				return false;
 			}
@@ -232,7 +232,7 @@ namespace Menge
 		{
 			Observer2<P0, P1> * observer = dynamic_cast<Observer2<P0,P1> *>(_observer);
 
-			if( observer == 0 )
+			if( observer == nullptr )
 			{
 				return false;
 			}

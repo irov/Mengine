@@ -665,7 +665,7 @@ namespace Menge
             return size; 
         }
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_getLayerPathLength( Movie * _movie, const ConstString & _name )
+		float movie_getLayerPathLength( Movie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
 			Movie * sub_movie;						
@@ -676,7 +676,7 @@ namespace Menge
 					, _name.c_str()
 					);
 
-				return pybind::ret_none();
+				return 0.f;
 			}
 
 			ResourceMovie * resourceMovie = sub_movie->getResourceMovie();
@@ -703,9 +703,7 @@ namespace Menge
 				pos = frame.position;
 			}
 
-			PyObject * py_length = pybind::ptr( len );
-
-			return py_length;
+			return len;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		PyObject * movie_getLayerPath( Movie * _movie, const ConstString & _name )
@@ -729,16 +727,38 @@ namespace Menge
 			uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
 			uint32_t indexCount = indexOut - indexIn;
 
+			bool isCompile = resourceMovie->isCompile();
+
+			if( isCompile == false )
+			{
+				resourceMovie->compile();
+			}
+
 			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
-			PyObject * py_path = pybind::list_new( 0 );
+			if( framePack == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("Movie::getLayerPathLength: sub_movie '%s' not found layer '%s' frame pack is null"
+					, sub_movie->getName().c_str()
+					, _name.c_str()
+					);
+
+				return pybind::ret_none();
+			}
+
+			PyObject * py_path = pybind::list_new( indexCount );
 
 			for( uint32_t i = 0; i != indexCount; ++i )
 			{
 				MovieFrameSource frame;
 				framePack->getLayerFrame( layer->index, i, frame );
 
-				pybind::list_appenditem_t( py_path, frame.position );				
+				pybind::list_setitem_t( py_path, i, frame.position );				
+			}
+
+			if( isCompile == false )
+			{
+				resourceMovie->release();
 			}
 
 			return py_path;
@@ -767,7 +787,7 @@ namespace Menge
 
 			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
-			PyObject * py_path = pybind::list_new( 0 );
+			PyObject * py_path = pybind::list_new( indexCount );
 
 			for( uint32_t i = 0; i != indexCount; ++i )
 			{
@@ -778,7 +798,7 @@ namespace Menge
 				pos.x = frame.position.x;
 				pos.y = frame.position.y;
 				
-				pybind::list_appenditem_t( py_path, pos );				
+				pybind::list_setitem_t( py_path, i, pos );
 			}
 
 			return py_path;
@@ -805,19 +825,22 @@ namespace Menge
             _transformation->setScale( _scale );
         }
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * ResourceMovie_getLayerPosition( ResourceMovie * _movie, const ConstString & _name )
+		mt::vec3f ResourceMovie_getLayerPosition( ResourceMovie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
 			bool successful = _movie->hasMovieLayer( _name, &layer );
 
 			if( successful == false )
 			{
-				return pybind::ret_none();
+				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::getLayerPosition %s not found layer '%s'"
+					, _movie->getName().c_str()
+					, _name.c_str()
+					);
+
+				return mt::vec3f(0.f, 0.f, 0.f);
 			}
 
-			PyObject * py_position = pybind::ptr( layer->position );
-
-			return py_position;
+			return layer->position;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool ResourceMovie_hasLayer( ResourceMovie * _movie, const ConstString & _name )
@@ -4157,17 +4180,14 @@ namespace Menge
 
 						PyObject * py_dict_frame = pybind::dict_new();
 
-						PyObject * py_pos = pybind::ptr( frame_source.position );
-						pybind::dict_setstring( py_dict_frame, "position", py_pos );
-						pybind::decref( py_pos );
+						pybind::dict_setstring_t( py_dict_frame, "position", frame_source.position );
 
 						float frameTime = _layer.in + i * m_frameDuration;
 
-						PyObject * py_time = pybind::ptr( frameTime );
-						pybind::dict_setstring( py_dict_frame, "time", py_time );
-						pybind::decref( py_time );
+						pybind::dict_setstring_t( py_dict_frame, "time", frameTime );
 
 						pybind::list_appenditem( py_list_frames, py_dict_frame );
+						
 						pybind::decref( py_dict_frame );
 					}
 
@@ -4341,15 +4361,12 @@ namespace Menge
             ++it )
             {
                 PyObject * py_dict = pybind::dict_new();
-                PyObject * py_node_file = pybind::ptr( (*it).filename );
-                //PyObject * py_node_path = pybind::ptr((*it).path);
 
-                pybind::dict_setstring( py_dict, "file", py_node_file );
-                //pybind::dict_set(py_dict,"path",py_node_path);
+				pybind::dict_setstring_t( py_dict, "file", (*it).filename );
+				
+				pybind::list_appenditem( py_list_atlas, py_dict );
 
-                pybind::decref( py_node_file );
-                //pybind::decref( py_node_path );
-                pybind::list_appenditem( py_list_atlas, py_dict );
+				pybind::decref( py_dict );
             }
 
             pybind::dict_setstring( py_dict_result, "Emitters", py_list_names );

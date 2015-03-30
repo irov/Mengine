@@ -2114,26 +2114,29 @@ namespace Menge
 			protected:
 				void visit( ResourceImageDefault * _resource ) override
 				{
+					const ConstString & category = _resource->getCategory();
 					const FilePath & fileName = _resource->getFilePath();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
-						->unfetchImageDecoder( fileName );
+						->unfetchImageDecoder( category, fileName );
 				}
 
 				void visit( ResourceSound * _resource ) override
 				{
+					const ConstString & category = _resource->getCategory();
 					const FilePath & filePath = _resource->getFilePath();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
-						->unfetchSoundDecoder( filePath );
+						->unfetchSoundDecoder( category, filePath );
 				}
 
 				void visit( ResourceMovie * _resource ) override
 				{
+					const ConstString & category = _resource->getCategory();
 					const FilePath & fileName = _resource->getFilePath();
 
 					PREFETCHER_SERVICE(m_serviceProvider)
-						->unfetchData( fileName );
+						->unfetchData( category, fileName );
 				}
 				
 			protected:

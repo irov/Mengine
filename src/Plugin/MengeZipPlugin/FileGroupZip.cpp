@@ -217,7 +217,7 @@ namespace Menge
 			fi->unz_size = header.uncompressedSize;
 			fi->compr_method = header.compressionMethod;
 			
-			m_files.insert( fi );
+			m_files.insert( fi, nullptr );
 			
 			zipFile->skip( header.compressedSize );
 		}

@@ -8,15 +8,6 @@
 
 namespace Menge
 {	
-	//struct ZombieTextureDesc
-	//{
-	//	RenderImageInterfacePtr image;
-	//	size_t width;
-	//	size_t height;
-	//	size_t channels;
-	//	float timing;
-	//};
-
 	class GraveyardInterface
 		: public ServiceInterface
 	{
@@ -33,8 +24,8 @@ namespace Menge
 		virtual void clearTextures() = 0;
 
 	public:
-		virtual void buryTexture( const FilePath & _path, RenderTextureInterface * _texture ) = 0;
-		virtual RenderTextureInterfacePtr resurrectTexture( const FilePath & _path ) = 0;
+		virtual void buryTexture( RenderTextureInterface * _texture ) = 0;
+		virtual RenderTextureInterfacePtr resurrectTexture( const ConstString& _pakName, const FilePath & _path ) = 0;
 	};
 
 #   define GRAVEYARD_SERVICE(serviceProvider)\

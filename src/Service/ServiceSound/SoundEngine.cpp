@@ -378,7 +378,7 @@ namespace Menge
 		if( _streamable == false )
 		{		
 			if( PREFETCHER_SERVICE(m_serviceProvider)
-				->getSoundDecoder( _fileName, soundDecoder ) == false )
+				->getSoundDecoder( _pakName, _fileName, soundDecoder ) == false )
 			{
 				soundDecoder = this->createSoundDecoder_( _pakName, _fileName, _codecType, false );
 			}

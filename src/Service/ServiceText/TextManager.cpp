@@ -514,7 +514,7 @@ namespace Menge
 
 		textEntry->initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _params );
 
-        m_texts.insert( textEntry );
+        m_texts.insert( textEntry, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TextEntryInterface * TextManager::getTextEntry( const ConstString& _key ) const

@@ -5,13 +5,13 @@
 #	include "Core/ConstString.h"
 #	include "Core/ColourValue.h"
 
-#	include "stdex/intrusive_splay_tree.h"
+#	include "stdex/intrusive_tree.h"
 
 namespace Menge
 {
 	class TextEntry
 		: public TextEntryInterface
-		, public stdex::intrusive_splay_node<TextEntry>
+		, public stdex::intrusive_tree_node<TextEntry>
 	{
 	public:
 		typedef ConstString key_type;	

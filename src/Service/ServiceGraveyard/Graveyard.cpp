@@ -48,38 +48,39 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			RenderTextureGraveDesc & desc = m_textures.get_value( it );
+			RenderTextureGraveEntry * entry = *it;
 
-			desc.image = nullptr;
+			entry->image = nullptr;
 		}
-
+		
 		m_textures.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Graveyard::update( float _timing )
 	{
-		for( TMapTextureGrave::iterator it = m_textures.begin(); it != m_textures.end(); )
-		{
-			RenderTextureGraveDesc & desc = m_textures.get_value( it );
-
-			desc.timing -= _timing;
-
-			if( desc.timing > 0.f )
-			{
-				++it;
-
-				continue;
-			}
-
-			desc.image = nullptr;
-
-			it = m_textures.erase( it );
-		}
+		m_textures.foreach( this, &Graveyard::updateTexture_, _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Graveyard::buryTexture( const FilePath & _path, RenderTextureInterface * _texture )
+	void Graveyard::updateTexture_( RenderTextureGraveEntry * _entry, float _timing )
 	{
-		if( _path.empty() == true )
+		_entry->timing -= _timing;
+
+		if( _entry->timing > 0.f )
+		{
+			return;
+		}
+
+		_entry->image = nullptr;
+
+		m_textures.erase_node( _entry );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Graveyard::buryTexture( RenderTextureInterface * _texture )
+	{
+		const ConstString & category = _texture->getCategory();
+		const FilePath & filePath = _texture->getFileName();
+
+		if( filePath.empty() == true )
 		{
 			return;
 		}
@@ -89,21 +90,24 @@ namespace Menge
 			return;
 		}
 
-		RenderTextureGraveDesc desc;
+		RenderTextureGraveEntry * entry = m_textures.create();
 
-		desc.image = _texture->getImage();
-		desc.mipmaps = _texture->getMipmaps();
-		desc.width = _texture->getWidth();
-		desc.height = _texture->getHeight();
-		desc.channels = _texture->getChannels();
-		desc.timing = m_graveyardTime;
+		entry->category = category;
+		entry->filePath = filePath;
 
-		m_textures.insert( _path, desc );
+		entry->image = _texture->getImage();
+		entry->mipmaps = _texture->getMipmaps();
+		entry->width = _texture->getWidth();
+		entry->height = _texture->getHeight();
+		entry->channels = _texture->getChannels();
+		entry->timing = m_graveyardTime;
+
+		m_textures.insert( entry, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterfacePtr Graveyard::resurrectTexture( const FilePath & _path )
+	RenderTextureInterfacePtr Graveyard::resurrectTexture( const ConstString& _pakName, const FilePath & _filePath )
 	{
-		if( _path.empty() == true )
+		if( _filePath.empty() == true )
 		{
 			return nullptr;
 		}
@@ -113,19 +117,16 @@ namespace Menge
 			return nullptr;
 		}
 
-		TMapTextureGrave::iterator it_found = m_textures.find( _path );
-
-		if( it_found == m_textures.end() )
+		RenderTextureGraveEntry * entry;
+		if( m_textures.has( _pakName, _filePath, &entry ) == false )
 		{
 			return nullptr;
 		}
 		
-		RenderTextureGraveDesc & desc = m_textures.get_value( it_found );
-
 		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->createRenderTexture( desc.image, desc.mipmaps, desc.width, desc.height, desc.channels );
+			->createRenderTexture( entry->image, entry->mipmaps, entry->width, entry->height, entry->channels );
 
-		m_textures.erase( it_found );
+		m_textures.erase_node( entry );
 
 		return texture;
 	}

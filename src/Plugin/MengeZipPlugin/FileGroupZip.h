@@ -6,7 +6,7 @@
 #	include "Factory/FactoryStore.h"
 
 #	include "Core/MemoryInput.h"
-#   include "Core/IntrusiveSplayTree.h"
+#   include "Core/IntrusiveTree.h"
 
 namespace Menge
 {
@@ -64,7 +64,7 @@ namespace Menge
 	
 		struct FileInfo
 			: public Factorable
-			, public stdex::intrusive_splay_node<FileInfo>
+			, public stdex::intrusive_tree_node<FileInfo>
 		{
 			typedef FilePath key_type;
 			typedef FilePath::less_type less_type;
@@ -85,7 +85,7 @@ namespace Menge
 			uint32_t compr_method;
 		};
 
-		typedef IntrusiveSplayTree<FileInfo, 512> TMapFileInfo;
+		typedef IntrusiveTree<FileInfo, 512> TMapFileInfo;
 		TMapFileInfo m_files;
 	};
 }	// namespace Menge

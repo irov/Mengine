@@ -24,6 +24,9 @@ namespace Menge
 		void initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec );
 		
 	public:
+		inline const ConstString & getPakName() const;
+		inline const FilePath & getFilePath() const;
+
 		const SoundDecoderInterfacePtr & getDecoder() const;
 
 	protected:
@@ -44,6 +47,16 @@ namespace Menge
 		SoundDecoderInterfacePtr m_soundDecoder;
 		MemoryInputPtr m_memoryInput;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
+	inline const ConstString & ThreadTaskPrefetchSoundDecoder::getPakName() const
+	{
+		return m_pakName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const FilePath & ThreadTaskPrefetchSoundDecoder::getFilePath() const
+	{
+		return m_filePath;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ThreadTaskPrefetchSoundDecoder> ThreadTaskPrefetchSoundDecoderPtr;
 }

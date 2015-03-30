@@ -84,7 +84,9 @@ src
     
     OutputStreamWriter.h   
     
+    IntrusiveTree.h
     IntrusiveSplayTree.h
+    IntrusiveDuplexTree.h
    
     Magic.h
 )

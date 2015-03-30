@@ -4,7 +4,7 @@
 
 #	include "TextGlyphChar.h"
 
-#	include "Core/IntrusiveSplayTree.h"
+#	include "Core/IntrusiveTree.h"
 
 #	include "Factory/FactorablePtr.h"
 #	include "Factory/FactoryStore.h"
@@ -51,7 +51,7 @@ namespace Menge
 		float m_ascender;
 		float m_descender;
 
-		typedef IntrusiveSplayTree<TextGlyphChar, 256> TMapGlyphChar;
+		typedef IntrusiveTree<TextGlyphChar, 256> TMapGlyphChar;
 		TMapGlyphChar m_chars;
 	};
 	//////////////////////////////////////////////////////////////////////////

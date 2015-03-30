@@ -2,20 +2,20 @@
 
 #	include "Factory/FactoryStore.h"
 
-#	include <stdex/intrusive_splay_tree.h>
+#	include <stdex/intrusive_tree.h>
 
 namespace Menge
 {
 	template<class T, uint32_t Count>
-	class IntrusiveSplayTree
-		: public stdex::intrusive_splay_tree<T, false, false>
+	class IntrusiveTree
+		: public stdex::intrusive_tree<T>
 	{
 	public:
-		IntrusiveSplayTree()
+		IntrusiveTree()
 		{
 		}
 
-		~IntrusiveSplayTree()
+		~IntrusiveTree()
 		{
 			this->clear();
 		}
@@ -30,10 +30,10 @@ namespace Menge
 
 		void clear()
 		{
-			FIntrusiveSplayTreeForeachDestroy fistfd;
+			FIntrusiveTreeForeachDestroy fistfd;
 			this->foreach( fistfd );
 
-			stdex::intrusive_splay_tree<T, false, false>::clear();
+			stdex::intrusive_tree<T>::clear();
 		}
 		
 	public:
@@ -46,7 +46,7 @@ namespace Menge
 		}
 
 	protected:
-		class FIntrusiveSplayTreeForeachDestroy
+		class FIntrusiveTreeForeachDestroy
 		{
 		public:
 			void operator() ( T * _node )

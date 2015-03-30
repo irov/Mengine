@@ -42,34 +42,42 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		template<class T>
+		class FVisitorReceiverJoinTask
+		{
+		public:
+			FVisitorReceiverJoinTask( ThreadServiceInterface * _threadService )
+				: m_threadService(_threadService)
+			{
+			}
+
+		public:
+			void operator()( T * _receiver )
+			{
+				m_threadService->joinTask( _receiver->prefetcher );				
+			}
+
+		protected:
+			ThreadServiceInterface * m_threadService;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void PrefetcherManager::finalize()
 	{
-		for( TMapPrefetchImageDecoderReceiver::iterator
-			it = m_prefetchImageDecoderReceiver.begin(),
-			it_end = m_prefetchImageDecoderReceiver.end();
-		it != it_end;
-		++it )
-		{
-			PrefetchImageDecoderReceiver & receiver = m_prefetchImageDecoderReceiver.get_value( it );
+		ThreadServiceInterface * threadService = THREAD_SERVICE(m_serviceProvider);
 
-			THREAD_SERVICE(m_serviceProvider)
-				->joinTask( receiver.prefetcher );
-		}
-
+		FVisitorReceiverJoinTask<PrefetchImageDecoderReceiver> fvr_image(threadService);
+		m_prefetchImageDecoderReceiver.foreach( fvr_image );
 		m_prefetchImageDecoderReceiver.clear();
 
-		for( TMapPrefetchDataReceiver::iterator
-			it = m_prefetchDataReceiver.begin(),
-			it_end = m_prefetchDataReceiver.end();
-		it != it_end;
-		++it )
-		{
-			PrefetchDataReceiver & receiver = m_prefetchDataReceiver.get_value( it );
+		FVisitorReceiverJoinTask<PrefetchSoundDecoderReceiver> fvr_sound(threadService);
+		m_prefetchSoundDecoderReceiver.foreach( fvr_sound );
+		m_prefetchSoundDecoderReceiver.clear();
 
-			THREAD_SERVICE(m_serviceProvider)
-				->joinTask( receiver.prefetcher );
-		}
-
+		FVisitorReceiverJoinTask<PrefetchDataReceiver> fvr_data(threadService);
+		m_prefetchDataReceiver.foreach( fvr_data );
 		m_prefetchDataReceiver.clear();
 
 		if( m_threadQueue != nullptr )
@@ -86,76 +94,66 @@ namespace Menge
 			return false;
 		}
 
-		TMapPrefetchImageDecoderReceiver::iterator it_found = m_prefetchImageDecoderReceiver.find( _fileName );
-
-		if( it_found == m_prefetchImageDecoderReceiver.end() )
+		PrefetchImageDecoderReceiver * receiver;
+		if( m_prefetchImageDecoderReceiver.create_if( _pakName, _fileName, &receiver ) == true )
 		{
-			PrefetchImageDecoderReceiver receiver;
-			receiver.refcount = 1;
+			receiver->refcount = 1;
 						
 			ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder.createObjectT();
 			task->setServiceProvider( m_serviceProvider );
 			task->initialize( _pakName, _fileName, _codec );
 
-			receiver.prefetcher = task;
+			receiver->prefetcher = task;
 
-			m_prefetchImageDecoderReceiver.insert( _fileName, receiver );
+			m_prefetchImageDecoderReceiver.insert( receiver, nullptr );
 
 			m_threadQueue->addTask( task );
 
 			return true;
 		}
 
-		PrefetchImageDecoderReceiver & receiver = m_prefetchImageDecoderReceiver.get_value( it_found );
-
-		++receiver.refcount;
+		++receiver->refcount;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PrefetcherManager::unfetchImageDecoder( const FilePath& _fileName )
+	void PrefetcherManager::unfetchImageDecoder( const ConstString& _pakName, const FilePath& _fileName )
 	{
-		TMapPrefetchImageDecoderReceiver::iterator it_found = m_prefetchImageDecoderReceiver.find( _fileName );
-
-		if( it_found == m_prefetchImageDecoderReceiver.end() )
+		PrefetchImageDecoderReceiver * receiver;
+		if( m_prefetchImageDecoderReceiver.has( _pakName, _fileName, &receiver ) == false )
 		{
 			return;
 		}
 
-		PrefetchImageDecoderReceiver & receiver = m_prefetchImageDecoderReceiver.get_value( it_found );
-
-		if( --receiver.refcount > 0 )
+		if( --receiver->refcount > 0 )
 		{
 			return;
 		}
 
-		receiver.prefetcher->cancel();
+		receiver->prefetcher->cancel();
 
-		m_prefetchImageDecoderReceiver.erase( it_found );
+		m_prefetchImageDecoderReceiver.erase_node( receiver );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::getImageDecoder( const FilePath & _fileName, ImageDecoderInterfacePtr & _decoder ) const
+	bool PrefetcherManager::getImageDecoder( const ConstString & _pakName, const FilePath & _fileName, ImageDecoderInterfacePtr & _decoder ) const
 	{
-		TMapPrefetchImageDecoderReceiver::const_iterator it_found = m_prefetchImageDecoderReceiver.find( _fileName );
-
-		if( it_found == m_prefetchImageDecoderReceiver.end() )
+		const PrefetchImageDecoderReceiver * receiver;
+		if( m_prefetchImageDecoderReceiver.has( _pakName, _fileName, &receiver ) == false )
+		{
+			return false;
+		}
+				
+		if( receiver->prefetcher->isComplete() == false )
 		{
 			return false;
 		}
 
-		const PrefetchImageDecoderReceiver & receiver = m_prefetchImageDecoderReceiver.get_value( it_found );
-
-		if( receiver.prefetcher->isComplete() == false )
+		if( receiver->prefetcher->isSuccessful() == false )
 		{
 			return false;
 		}
 
-		if( receiver.prefetcher->isSuccessful() == false )
-		{
-			return false;
-		}
-
-		const ImageDecoderInterfacePtr & prefetch_decoder = receiver.prefetcher->getDecoder();
+		const ImageDecoderInterfacePtr & prefetch_decoder = receiver->prefetcher->getDecoder();
 
 		if( prefetch_decoder == nullptr )
 		{
@@ -174,76 +172,66 @@ namespace Menge
 			return false;
 		}
 
-		TMapPrefetchSoundDecoderReceiver::iterator it_found = m_prefetchSoundDecoderReceiver.find( _fileName );
-
-		if( it_found == m_prefetchSoundDecoderReceiver.end() )
+		PrefetchSoundDecoderReceiver * receiver;
+		if( m_prefetchSoundDecoderReceiver.create_if( _pakName, _fileName, &receiver ) == true )
 		{
-			PrefetchSoundDecoderReceiver receiver;
-			receiver.refcount = 1;
+			receiver->refcount = 1;
 
 			ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder.createObjectT();
 			task->setServiceProvider( m_serviceProvider );
 			task->initialize( _pakName, _fileName, _codec );
 
-			receiver.prefetcher = task;
+			receiver->prefetcher = task;
 
-			m_prefetchSoundDecoderReceiver.insert( _fileName, receiver );
+			m_prefetchSoundDecoderReceiver.insert( receiver, nullptr );
 
 			m_threadQueue->addTask( task );
 
 			return true;
 		}
-
-		PrefetchSoundDecoderReceiver & receiver = m_prefetchSoundDecoderReceiver.get_value( it_found );
-
-		++receiver.refcount;
+		
+		++receiver->refcount;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PrefetcherManager::unfetchSoundDecoder( const FilePath& _fileName )
+	void PrefetcherManager::unfetchSoundDecoder( const ConstString& _pakName, const FilePath& _fileName )
 	{
-		TMapPrefetchSoundDecoderReceiver::iterator it_found = m_prefetchSoundDecoderReceiver.find( _fileName );
-
-		if( it_found == m_prefetchSoundDecoderReceiver.end() )
+		PrefetchSoundDecoderReceiver * receiver;
+		if( m_prefetchSoundDecoderReceiver.has( _pakName, _fileName, &receiver ) == false )
 		{
 			return;
 		}
 
-		PrefetchSoundDecoderReceiver & receiver = m_prefetchSoundDecoderReceiver.get_value( it_found );
-
-		if( --receiver.refcount > 0 )
+		if( --receiver->refcount > 0 )
 		{
 			return;
 		}
 
-		receiver.prefetcher->cancel();
+		receiver->prefetcher->cancel();
 
-		m_prefetchSoundDecoderReceiver.erase( it_found );
+		m_prefetchSoundDecoderReceiver.erase_node( receiver );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::getSoundDecoder( const FilePath & _fileName, SoundDecoderInterfacePtr & _decoder ) const
+	bool PrefetcherManager::getSoundDecoder( const ConstString& _pakName, const FilePath & _fileName, SoundDecoderInterfacePtr & _decoder ) const
 	{
-		TMapPrefetchSoundDecoderReceiver::const_iterator it_found = m_prefetchSoundDecoderReceiver.find( _fileName );
-
-		if( it_found == m_prefetchSoundDecoderReceiver.end() )
+		const PrefetchSoundDecoderReceiver * receiver;
+		if( m_prefetchSoundDecoderReceiver.has( _pakName, _fileName, &receiver ) == false )
 		{
 			return false;
 		}
 
-		const PrefetchSoundDecoderReceiver & receiver = m_prefetchSoundDecoderReceiver.get_value( it_found );
-
-		if( receiver.prefetcher->isComplete() == false )
+		if( receiver->prefetcher->isComplete() == false )
 		{
 			return false;
 		}
 
-		if( receiver.prefetcher->isSuccessful() == false )
+		if( receiver->prefetcher->isSuccessful() == false )
 		{
 			return false;
 		}
 
-		const SoundDecoderInterfacePtr & prefetch_decoder = receiver.prefetcher->getDecoder();
+		const SoundDecoderInterfacePtr & prefetch_decoder = receiver->prefetcher->getDecoder();
 
 		if( prefetch_decoder == nullptr )
 		{
@@ -262,76 +250,66 @@ namespace Menge
 			return false;
 		}
 
-		TMapPrefetchDataReceiver::iterator it_found = m_prefetchDataReceiver.find( _fileName );
-
-		if( it_found == m_prefetchDataReceiver.end() )
+		PrefetchDataReceiver * receiver;
+		if( m_prefetchDataReceiver.create_if( _pakName, _fileName, &receiver ) == true )
 		{
-			PrefetchDataReceiver receiver;
-			receiver.refcount = 1;
+			receiver->refcount = 1;
 
 			ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow.createObjectT();
 			task->setServiceProvider( m_serviceProvider );
 			task->initialize( _pakName, _fileName, _dataflowType );
 
-			receiver.prefetcher = task;
+			receiver->prefetcher = task;
 
-			m_prefetchDataReceiver.insert( _fileName, receiver );
+			m_prefetchDataReceiver.insert( receiver, nullptr );
 
 			m_threadQueue->addTask( task );
 
 			return true;
 		}
 
-		PrefetchDataReceiver & receiver = m_prefetchDataReceiver.get_value( it_found );
-
-		++receiver.refcount;
+		++receiver->refcount;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PrefetcherManager::unfetchData( const FilePath& _fileName )
+	void PrefetcherManager::unfetchData( const ConstString& _pakName, const FilePath& _fileName )
 	{
-		TMapPrefetchDataReceiver::iterator it_found = m_prefetchDataReceiver.find( _fileName );
-
-		if( it_found == m_prefetchDataReceiver.end() )
+		PrefetchDataReceiver * receiver;
+		if( m_prefetchDataReceiver.has( _pakName, _fileName, &receiver ) == false )
 		{
 			return;
 		}
 
-		PrefetchDataReceiver & receiver = m_prefetchDataReceiver.get_value( it_found );
-
-		if( --receiver.refcount > 0 )
+		if( --receiver->refcount > 0 )
 		{
 			return;
 		}
 
-		receiver.prefetcher->cancel();
+		receiver->prefetcher->cancel();
 
-		m_prefetchDataReceiver.erase( it_found );
+		m_prefetchDataReceiver.erase_node( receiver );
 	}
 	//////////////////////////////////////////////////////////////////////////			
-	bool PrefetcherManager::getData( const FilePath & _fileName, DataInterfacePtr & _data ) const
+	bool PrefetcherManager::getData( const ConstString& _pakName, const FilePath & _fileName, DataInterfacePtr & _data ) const
 	{
-		TMapPrefetchDataReceiver::const_iterator it_found = m_prefetchDataReceiver.find( _fileName );
-
-		if( it_found == m_prefetchDataReceiver.end() )
+		const PrefetchDataReceiver * receiver;
+		if( m_prefetchDataReceiver.has( _pakName, _fileName, &receiver ) == false )
 		{
 			return false;
 		}
 
-		const PrefetchDataReceiver & receiver = m_prefetchDataReceiver.get_value( it_found );
-
-		if( receiver.prefetcher->isComplete() == false )
+		if( receiver->prefetcher->isComplete() == false )
 		{
 			return false;
 		}
 
-		if( receiver.prefetcher->isSuccessful() == false )
+		if( receiver->prefetcher->isSuccessful() == false )
 		{
 			return false;
 		}
 
-		const DataInterfacePtr & prefetch_data = receiver.prefetcher->getData();
+		const DataInterfacePtr & prefetch_data = receiver->prefetcher->getData();
 
 		if( prefetch_data == nullptr )
 		{
@@ -348,6 +326,7 @@ namespace Menge
 		PrefetcherDebugInfo info;
 
 		info.decoderCount = 0;
+		info.soundCount = 0;
 		info.dataCount = 0;
 
 		for( TMapPrefetchImageDecoderReceiver::const_iterator
@@ -356,14 +335,30 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const PrefetchImageDecoderReceiver & receiver = m_prefetchImageDecoderReceiver.get_value( it );
+			const PrefetchImageDecoderReceiver * receiver = *it;
 
-			if( receiver.prefetcher->isComplete() == false )
+			if( receiver->prefetcher->isComplete() == false )
 			{
 				continue;
 			}
 
 			++info.decoderCount;
+		}
+
+		for( TMapPrefetchSoundDecoderReceiver::const_iterator
+			it = m_prefetchSoundDecoderReceiver.begin(),
+			it_end = m_prefetchSoundDecoderReceiver.end();
+		it != it_end;
+		++it )
+		{
+			const PrefetchSoundDecoderReceiver * receiver = *it;
+
+			if( receiver->prefetcher->isComplete() == false )
+			{
+				continue;
+			}
+
+			++info.soundCount;
 		}
 
 		for( TMapPrefetchDataReceiver::const_iterator
@@ -372,9 +367,9 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const PrefetchDataReceiver & receiver = m_prefetchDataReceiver.get_value( it );
+			const PrefetchDataReceiver * receiver = *it;
 
-			if( receiver.prefetcher->isComplete() == false )
+			if( receiver->prefetcher->isComplete() == false )
 			{
 				continue;
 			}

@@ -6,17 +6,19 @@
 #	include "Factory/FactoryStore.h"
 
 #	include "Config/Typedef.h"
-#	include "Core/IntrusiveSplayTree.h"
+
+#	include "Core/IntrusiveTree.h"
+#	include "Core/IntrusiveDuplexTree.h"
 
 #   include "stdex/binary_vector.h"
 
 namespace Menge
 {
 	class ResourceVisitor;
-
+	//////////////////////////////////////////////////////////////////////////
 	struct ResourceEntry
 		: public Factorable
-		, public stdex::intrusive_splay_node<ResourceEntry>
+		, public stdex::intrusive_tree_node<ResourceEntry>
 	{
 		typedef ConstString key_type;
 		typedef ConstString::less_type less_type;
@@ -32,7 +34,41 @@ namespace Menge
 		ResourceReference * resource;
 		bool isLocked;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::vector<ResourceReference *> TVectorResources;
+	//////////////////////////////////////////////////////////////////////////
+	struct ResourceCacheEntry
+		: public Factorable
+		, public stdex::intrusive_duplex_tree_node<ResourceCacheEntry>
+	{
+		typedef ConstString key_first_type;
+		typedef ConstString::less_type less_first_type;
 
+		typedef ConstString key_second_type;
+		typedef ConstString::less_type less_second_type;
+
+		struct key_first_getter_type
+		{
+			const ConstString & operator()( const ResourceCacheEntry * _node ) const
+			{
+				return _node->category;
+			}
+		};
+
+		struct key_second_getter_type
+		{
+			const ConstString & operator()( const ResourceCacheEntry * _node ) const
+			{
+				return _node->group;
+			}
+		};
+
+		ConstString category;
+		ConstString group;
+				
+		TVectorResources resources;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class ResourceManager
 		: public ResourceServiceInterface
 	{
@@ -80,12 +116,10 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
                
-		typedef IntrusiveSplayTree<ResourceEntry, 512> TMapResource;
+		typedef IntrusiveTree<ResourceEntry, 512> TMapResource;
 		TMapResource m_resources;
 
-		typedef stdex::vector<ResourceReference *> TVectorResources;
-		typedef stdex::binary_vector<ConstString, TVectorResources> TMapGroupResourceCache;
-		typedef stdex::binary_vector<ConstString, TMapGroupResourceCache> TMapCategoryResourceCache;
-		TMapCategoryResourceCache m_resourcesCache;
+		typedef IntrusiveDuplexTree<ResourceCacheEntry, 32> TMapResourceCache;
+		TMapResourceCache m_resourcesCache;
 	};
 }

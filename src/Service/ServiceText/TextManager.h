@@ -69,7 +69,7 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 		
-		typedef IntrusiveSplayTree<TextEntry, 256> TMapTextEntry;
+		typedef IntrusiveTree<TextEntry, 256> TMapTextEntry;
 		TMapTextEntry m_texts;
 
 		typedef stdex::binary_vector<ConstString, TextFontPtr> TMapTextFont;

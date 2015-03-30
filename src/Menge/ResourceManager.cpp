@@ -320,29 +320,39 @@ namespace Menge
 		entry->resource = resource;
 		entry->isLocked = false;
 
-		m_resources.insert( entry );
+		ResourceEntry * insert_entry;
+		bool successful = m_resources.insert( entry, &insert_entry );
 
-		TMapGroupResourceCache * ptrGroupCache;
-		TVectorResources * ptrResources;
-		if( m_resourcesCache.has( _category, &ptrGroupCache ) == false )
+		ResourceCacheEntry * resourceCacheEntry;
+		if( m_resourcesCache.has( _category, _group, &resourceCacheEntry ) == false )
 		{
-			TMapGroupResourceCache groupCache;
-			TVectorResources resources;
-			resources.push_back( resource );
-			groupCache.insert( _category, resources );
+			ResourceCacheEntry * entry = m_resourcesCache.create();
 
-			m_resourcesCache.insert( _category, groupCache );
-		}
-		else if( ptrGroupCache->has( _group, &ptrResources ) == false )
-		{			
-			TVectorResources resources;
-			resources.push_back( resource );
+			entry->category = _category;
+			entry->group = _group;
 
-			ptrGroupCache->insert( _group, resources );
+			entry->resources.push_back( resource );
 		}
 		else
 		{
-			ptrResources->push_back( resource );
+			resourceCacheEntry->resources.push_back( resource );
+		}
+
+		if( successful == false )
+		{
+			ResourceCacheEntry * resourceCacheEntry = m_resourcesCache.find( _category, _group );
+
+			TVectorResources::iterator it_found = std::find( 
+				resourceCacheEntry->resources.begin(), 
+				resourceCacheEntry->resources.end(),
+				insert_entry->resource );
+
+			resourceCacheEntry->resources.erase( it_found );
+
+			insert_entry->resource = resource;
+			insert_entry->isLocked = false;
+
+			entry->destroy();
 		}
         
 		return resource;
@@ -566,21 +576,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::visitGroupResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const
 	{		
-		TMapGroupResourceCache * ptrGroupCache;
-		if( m_resourcesCache.has( _category, &ptrGroupCache ) == false )
+		const ResourceCacheEntry * resourceCacheEntry;
+		if( m_resourcesCache.has( _category, _group, &resourceCacheEntry ) == false )
 		{
 			return;
 		}
 
-		TVectorResources * ptrResources;
-		if( ptrGroupCache->has( _group, &ptrResources ) == false )
-		{
-			return;
-		}
+		const TVectorResources & resources = resourceCacheEntry->resources;
 
 		for( TVectorResources::const_iterator
-			it = ptrResources->begin(),
-			it_end = ptrResources->end();
+			it = resources.begin(),
+			it_end = resources.end();
 		it != it_end;
 		++it )
 		{

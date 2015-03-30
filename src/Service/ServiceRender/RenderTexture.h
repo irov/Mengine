@@ -5,11 +5,37 @@
 
 #	include "Core/ConstString.h"
 
+#	include "stdex/intrusive_duplex_tree.h"
+
 namespace Menge
 {
 	class RenderTexture
 		: public RenderTextureInterface
+		, public stdex::intrusive_duplex_tree_node<RenderTexture>
 	{
+	public:
+		typedef FilePath key_first_type;
+		typedef FilePath::less_type less_first_type;
+
+		typedef ConstString key_second_type;
+		typedef ConstString::less_type less_second_type;
+
+		struct key_first_getter_type
+		{
+			const ConstString & operator()( const RenderTexture * _node ) const
+			{
+				return _node->m_category;
+			}
+		};
+
+		struct key_second_getter_type
+		{
+			const FilePath & operator()( const RenderTexture * _node ) const
+			{
+				return _node->m_fileName;
+			}
+		};
+
 	public:
 		RenderTexture();
 		~RenderTexture();
@@ -31,6 +57,9 @@ namespace Menge
 		const RenderImageInterfacePtr & getImage() const override;
         
 		uint32_t getId() const override;
+
+		void setCategory( const ConstString & _category ) override;
+		const ConstString & getCategory() const override;
 
 		void setFileName( const FilePath & _fileName ) override;
 		const FilePath & getFileName() const override;
@@ -58,6 +87,7 @@ namespace Menge
 
 		RenderImageInterfacePtr m_image;
 
+		ConstString m_category;
 		FilePath m_fileName;
 		
 		uint32_t m_mipmaps;
@@ -71,4 +101,14 @@ namespace Menge
 
 		uint32_t m_id;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const ConstString & RenderTexture::getCategory() const
+	{
+		return m_category;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const FilePath & RenderTexture::getFileName() const
+	{
+		return m_fileName;
+	}
 }	// namespace Menge

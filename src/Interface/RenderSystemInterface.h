@@ -215,6 +215,9 @@ namespace Menge
 
 		virtual const mt::uv4f & getUV() const = 0;
 
+		virtual void setCategory( const ConstString & _category ) = 0;
+		virtual const ConstString & getCategory() const = 0;
+
 		virtual void setFileName( const FilePath & _fileName ) = 0;
 		virtual const FilePath & getFileName() const = 0;
 
@@ -380,9 +383,9 @@ namespace Menge
         virtual RenderTextureInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 
 	public:
-        virtual RenderTextureInterfacePtr getTexture( const FilePath & _fileName ) const = 0;
+        virtual RenderTextureInterfacePtr getTexture( const ConstString& _pakName, const FilePath & _fileName ) const = 0;
         
-        virtual bool hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const = 0;
+        virtual bool hasTexture( const ConstString& _pakName, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const = 0;
 
 	public:
 		virtual size_t getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const = 0;
@@ -391,7 +394,7 @@ namespace Menge
         //virtual void sweezleAlpha( RenderTextureInterface * _texture, unsigned char * _textureBuffer, size_t _texturePitch ) = 0;
         virtual void imageQuality( const RenderTextureInterfacePtr & _texture, void * _textureBuffer, size_t _texturePitch ) = 0;
 
-        virtual void cacheFileTexture( const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) = 0;
+        virtual void cacheFileTexture( const ConstString& _pakName, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) = 0;
 
     public:
         virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileGroupName, const ConstString & _codecName, const FilePath & _fileName ) = 0;

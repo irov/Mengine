@@ -5,13 +5,13 @@
 #	include "Factory/Factorable.h"
 
 #	include "stdex/binary_vector.h"
-#	include "stdex/intrusive_splay_tree.h"
+#	include "stdex/intrusive_tree.h"
 
 namespace Menge
 {
 	class TextGlyphChar
 		: public Factorable
-		, public stdex::intrusive_splay_node<TextGlyphChar>
+		, public stdex::intrusive_tree_node<TextGlyphChar>
 	{
 	public:
 		typedef GlyphCode key_type;	

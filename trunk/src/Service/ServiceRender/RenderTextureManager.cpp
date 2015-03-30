@@ -57,44 +57,50 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::finalize()
     {   
-		for( TMapTextures::iterator
+		for( TMapRenderTextureEntry::iterator
 			it = m_textures.begin(),
 			it_end = m_textures.end();
 		it != it_end;
 		++it )
 		{
-			RenderTextureInterface * texture = m_textures.get_value( it );
+			RenderTexture * texture = *it;
 
 			texture->release();
 		}
-
+		
 		m_textures.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureManager::hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const
+    bool RenderTextureManager::hasTexture( const ConstString& _pakName, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const
     {
-		RenderTextureInterface * texture = nullptr;
-		bool result = m_textures.has( _fileName, &texture );
+		const RenderTexture * texture;
+		if( m_textures.has( _fileName, _pakName, &texture ) == false )
+		{				
+			if( _texture != nullptr )
+			{
+				*_texture = nullptr;
+			}
+
+			return false;
+		}
 
 		if( _texture != nullptr )
 		{
 			*_texture = texture;
 		}
-		
-		return result;
+				
+		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::getTexture( const FilePath & _fileName ) const
+    RenderTextureInterfacePtr RenderTextureManager::getTexture( const ConstString & _pakName, const FilePath & _fileName ) const
     {
-        TMapTextures::const_iterator it_find = m_textures.find( _fileName );
+        const RenderTexture * texture = m_textures.find( _fileName, _pakName );
 
-        if( it_find == m_textures.end() )
+        if( texture == nullptr )
         {
             return nullptr;
         }
-
-		RenderTextureInterface * texture = m_textures.get_value( it_find );
-
+		
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -280,57 +286,59 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::visitTexture( VisitorRenderTextureInterface * _visitor ) const
     {
-        for( TMapTextures::const_iterator
-            it = m_textures.begin(),
-            it_end = m_textures.end();
-        it != it_end;
-        ++it )
-        {
-			const RenderTextureInterface * texture = m_textures.get_value( it );
+		for( TMapRenderTextureEntry::const_iterator
+			it = m_textures.begin(),
+			it_end = m_textures.end();
+		it != it_end;
+		++it )
+		{
+			const RenderTexture * texture = *it;
 
-            _visitor->visitRenderTexture( texture );
-        }
+			_visitor->visitRenderTexture( texture );
+		}
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureManager::cacheFileTexture( const FilePath& _fileName, const RenderTextureInterfacePtr & _texture )
+    void RenderTextureManager::cacheFileTexture( const ConstString& _pakName, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture )
     {
+		_texture->setCategory( _pakName );
         _texture->setFileName( _fileName );
 
-        RenderTextureInterface * texture_ptr = _texture.get();
+        RenderTexture * texture = _texture.getT<RenderTexture>();
+		
+        m_textures.insert( texture, nullptr );
 
-        m_textures.insert( _fileName, texture_ptr );
-
-        LOGGER_INFO(m_serviceProvider)( "RenderTextureManager::cacheFileTexture cache texture %s"
+        LOGGER_INFO(m_serviceProvider)( "RenderTextureManager::cacheFileTexture cache texture %s:%s"
+			, _pakName.c_str()
             , _fileName.c_str()
             );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTextureInterfacePtr RenderTextureManager::loadTexture( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
     {
-        TMapTextures::iterator it_found = m_textures.find( _fileName );
-
-        if( it_found != m_textures.end() )
+        RenderTexture * texture = nullptr;
+        if( m_textures.has( _fileName, _pakName, &texture ) == true )
         {
-			RenderTextureInterface * cache_texture = m_textures.get_value( it_found );
-
-            return cache_texture;
+            return texture;
         }
 
 		RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE(m_serviceProvider)
-			->resurrectTexture( _fileName );
+			->resurrectTexture( _pakName, _fileName );
 
 		if( resurrect_texture != nullptr )
 		{
+			resurrect_texture->setCategory( _pakName );
 			resurrect_texture->setFileName( _fileName );
 
-			m_textures.insert( _fileName, resurrect_texture.get() );
+			RenderTexture * resurrect_texture_t = resurrect_texture.getT<RenderTexture>();
+
+			m_textures.insert( resurrect_texture_t, nullptr );
 
 			return resurrect_texture;
 		}
 			
 		ImageDecoderInterfacePtr imageDecoder;
 		if( PREFETCHER_SERVICE(m_serviceProvider)
-			->getImageDecoder( _fileName, imageDecoder ) == false )
+			->getImageDecoder( _pakName, _fileName, imageDecoder ) == false )
 		{
 			imageDecoder = this->createImageDecoder_( _pakName, _fileName, _codec );
 
@@ -357,9 +365,9 @@ namespace Menge
 			}
 		}
 
-		RenderTextureInterfacePtr texture = this->createTextureFromDecoder_( imageDecoder );
+		RenderTextureInterfacePtr new_texture = this->createTextureFromDecoder_( imageDecoder );
 
-		if( texture == nullptr )
+		if( new_texture == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTexture invalid create texure '%s':'%s'"
 				, _pakName.c_str()
@@ -369,9 +377,9 @@ namespace Menge
 			return nullptr;
 		}
 
-        this->cacheFileTexture( _fileName, texture );
+        this->cacheFileTexture( _pakName, _fileName, new_texture );
 
-        return texture;
+        return new_texture;
     }
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderInterfacePtr RenderTextureManager::createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
@@ -521,12 +529,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::onRenderTextureDestroy_( RenderTextureInterface * _texture )
     {
-        const FilePath & filename = _texture->getFileName();
+        RenderTexture * texture_t = static_cast<RenderTexture *>(_texture);
 
-		m_textures.erase( filename );
+		m_textures.erase_node( texture_t );
 
 		GRAVEYARD_SERVICE(m_serviceProvider)
-			->buryTexture( filename, _texture );
+			->buryTexture( _texture );
 
 		this->releaseRenderTexture_( _texture );
 

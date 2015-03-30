@@ -137,18 +137,18 @@ namespace Menge
 		float getHorizontAlignOffset_( const TextLine & _line );
 
 	protected:
-		void updateVertices_();
+		void updateVertices_( const TextFontInterfacePtr & _font );
 		void invalidateVertices_() const;
 
-        void updateVerticesWM_();
+        void updateVerticesWM_( const TextFontInterfacePtr & _font );
         void updateVertexDataWM_( TVectorRenderVertex2D & _outVertex, const TVectorRenderVertex2D & _fromVertex );
 
         void invalidateVerticesWM_() const;
 
-		inline TVectorRenderVertex2D & getOutlineVertices();
-		inline TVectorRenderVertex2D & getTextVertices();
+		inline TVectorRenderVertex2D & getOutlineVertices( const TextFontInterfacePtr & _font );
+		inline TVectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font );
 
-		void updateVertexData_( const ColourValue & _color, TVectorRenderVertex2D& _vertexData );
+		void updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, TVectorRenderVertex2D& _vertexData );
 
 	protected:
 		const TVectorTextLine & getTextLines() const;
@@ -228,21 +228,21 @@ namespace Menge
 		mutable bool m_invalidateTextLines;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline TVectorRenderVertex2D & TextField::getOutlineVertices()
+	inline TVectorRenderVertex2D & TextField::getOutlineVertices( const TextFontInterfacePtr & _font )
 	{
 		if( m_invalidateVerticesWM == true )
 		{
-			this->updateVerticesWM_();
+			this->updateVerticesWM_( _font );
 		}
 
 		return m_vertexDataOutlineWM;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline TVectorRenderVertex2D & TextField::getTextVertices()
+	inline TVectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font )
 	{
 		if( m_invalidateVerticesWM == true )
 		{
-			this->updateVerticesWM_();
+			this->updateVerticesWM_( _font );
 		}
 
 		return m_vertexDataTextWM;

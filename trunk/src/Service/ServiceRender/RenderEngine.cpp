@@ -331,7 +331,7 @@ namespace Menge
 		texture->unlock( 0 );
 
 		RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->cacheFileTexture( STRINGIZE_STRING_LOCAL(m_serviceProvider, "__null__"), texture );
+			->cacheFileTexture( ConstString::none(), STRINGIZE_STRING_LOCAL(m_serviceProvider, "__null__"), texture );
 
 		m_nullTexture = texture;
 
@@ -401,7 +401,7 @@ namespace Menge
 		texture->unlock( 0 );
 
 		RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->cacheFileTexture( STRINGIZE_STRING_LOCAL(m_serviceProvider, "WhitePixel"), texture );
+			->cacheFileTexture( ConstString::none(), STRINGIZE_STRING_LOCAL(m_serviceProvider, "WhitePixel"), texture );
 
 		m_whitePixelTexture = texture;
 

@@ -415,7 +415,7 @@ namespace Menge
 
 		glyphChar->initialize( _code, _uv, _offset, _advance, _size );
 
-		m_chars.insert( glyphChar );
+		m_chars.insert( glyphChar, nullptr );
 
 		return glyphChar;
 	}

@@ -105,26 +105,14 @@ namespace Menge
 		this->invalidateVerticesWM_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateVertexData_( const ColourValue & _color, TVectorRenderVertex2D & _vertexData )
+	void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, TVectorRenderVertex2D & _vertexData )
 	{
 		_vertexData.clear();
 
-		const TextFontInterfacePtr & font = this->getFont();
+		float fontHeght = _font->getFontHeight();
 
-		if( font == nullptr )
-		{
-			return;
-		}
-
-		float fontHeght = font->getFontHeight();
-
-		const RenderTextureInterfacePtr & textureFont = font->getTextureFont();
-
-		if( textureFont == nullptr )
-		{
-			return;
-		}
-		
+		const RenderTextureInterfacePtr & textureFont = _font->getTextureFont();
+				
 		const mt::uv4f & uv = textureFont->getUV();
 
 		float lineOffset = this->calcLineOffset();
@@ -189,7 +177,14 @@ namespace Menge
 			return;
 		}
 
-		TVectorRenderVertex2D & textVertices = this->getTextVertices();
+		const TextFontInterfacePtr & font = this->getFont();
+
+		if( font == nullptr )
+		{
+			return;
+		}
+
+		TVectorRenderVertex2D & textVertices = this->getTextVertices( font );
 		
         if( textVertices.empty() == true )
         {
@@ -227,7 +222,14 @@ namespace Menge
 			return;
 		}
 
-		TVectorRenderVertex2D & outlineVertices = this->getOutlineVertices();
+		const TextFontInterfacePtr & font = this->getFont();
+
+		if( font == nullptr )
+		{
+			return;
+		}
+		
+		TVectorRenderVertex2D & outlineVertices = this->getOutlineVertices( font );
 
 		if( outlineVertices.empty() == true )
 		{
@@ -359,6 +361,7 @@ namespace Menge
 		m_outline = _value;
 
 		this->invalidateTextLines();
+		this->invalidateFont();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::isOutline() const
@@ -590,6 +593,29 @@ namespace Menge
 
 			if( fontName == currentFontName )
 			{
+				const RenderTextureInterfacePtr & textureOutline = m_font->getTextureOutline();
+
+				if( m_outline == true )
+				{
+					if( textureOutline == nullptr )
+					{
+						LOGGER_ERROR(m_serviceProvider)("TextField::updateFont_ '%s' font '%s' can't setup outline texture but textfield setup 'outline'"
+							, this->getName().c_str()
+							, fontName.c_str()
+							);
+
+						TEXT_SERVICE(m_serviceProvider)
+							->releaseFont( m_font );
+
+						m_font = nullptr;
+
+						m_materialFont = nullptr;
+						m_materialOutline = nullptr;
+
+						return;
+					}
+				}
+
 				return;
 			}
 			else
@@ -628,6 +654,19 @@ namespace Menge
 			->getMaterial( CONST_STRING(m_serviceProvider, Blend), false, false, PT_TRIANGLELIST, 1, &textureFont );
 
 		const RenderTextureInterfacePtr & textureOutline = m_font->getTextureOutline();
+
+		if( m_outline == true )
+		{
+			if( textureOutline == nullptr )
+			{
+				LOGGER_ERROR(m_serviceProvider)("TextField::updateFont_ '%s' font '%s' can't setup outline texture but textfield setup 'outline'"
+					, this->getName().c_str()
+					, fontName.c_str()
+					);
+
+				return;
+			}
+		}
 
 		if( textureOutline != nullptr )
 		{
@@ -962,10 +1001,6 @@ namespace Menge
 
 		this->invalidateFont();
 		this->invalidateTextLines();
-
-#	ifdef _DEBUG
-		this->updateTextCache_();
-#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::removeTextFormatArgs()
@@ -1171,17 +1206,21 @@ namespace Menge
 		this->invalidateVertices_();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVerticesWM_()
+    void TextField::updateVerticesWM_( const TextFontInterfacePtr & _font )
     {
         m_invalidateVerticesWM = false;
 
         if( m_invalidateVertices == true )
         {
-            this->updateVertices_();
+            this->updateVertices_( _font );
         }       
 
         this->updateVertexDataWM_( m_vertexDataTextWM, m_vertexDataText );
-        this->updateVertexDataWM_( m_vertexDataOutlineWM, m_vertexDataOutline );
+
+		if( m_outline == true )
+		{
+			this->updateVertexDataWM_( m_vertexDataOutlineWM, m_vertexDataOutline );
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateVertexDataWM_( TVectorRenderVertex2D & _outVertex, const TVectorRenderVertex2D & _fromVertex )
@@ -1211,7 +1250,7 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::updateVertices_()
+	void TextField::updateVertices_( const TextFontInterfacePtr & _font )
 	{
 		m_invalidateVertices = false;
 
@@ -1223,18 +1262,16 @@ namespace Menge
 		const ColourValue & paramsColorFont = this->calcColorFont(); 
 		colorFont = colorNode * paramsColorFont;
 		
-		this->updateVertexData_( colorFont, m_vertexDataText );
-
-		const TextFontInterfacePtr & font = this->getFont();
-
-		if( m_outline && font->getTextureOutline() != nullptr )
-		{			
+		this->updateVertexData_( _font, colorFont, m_vertexDataText );
+		
+		if( m_outline == true )
+		{
 			ColourValue colorOutline;
 
 			const ColourValue & paramsColorOutline = this->calcColorOutline();
 			colorOutline = colorNode * paramsColorOutline;
 			
-			this->updateVertexData_( colorOutline, m_vertexDataOutline );
-		}		
+			this->updateVertexData_( _font, colorOutline, m_vertexDataOutline );
+		}
 	}
 }

@@ -24,6 +24,9 @@ namespace Menge
 		void initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _dataflowType );
 
 	public:
+		inline const ConstString & getPakName() const;
+		inline const FilePath & getFilePath() const;
+
 		const DataInterfacePtr & getData() const;
 
 	protected:
@@ -34,7 +37,7 @@ namespace Menge
 
 	protected:
 		void _onComplete( bool _successful ) override;
-
+		
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
@@ -50,6 +53,16 @@ namespace Menge
 	protected:
 		DataInterfacePtr m_data;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
+	inline const ConstString & ThreadTaskPrefetchDataflow::getPakName() const
+	{
+		return m_pakName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const FilePath & ThreadTaskPrefetchDataflow::getFilePath() const
+	{
+		return m_filePath;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ThreadTaskPrefetchDataflow> ThreadTaskPrefetchDataflowPtr;
 }

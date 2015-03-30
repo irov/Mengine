@@ -713,7 +713,9 @@ namespace Menge
 			return false;
 		}
 
-		DataInterfacePtr data = this->compileData_( m_filePath );
+		const ConstString & category = this->getCategory();
+
+		DataInterfacePtr data = this->compileData_( category, m_filePath );
 
 		if( data == nullptr )
 		{
@@ -742,11 +744,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataInterfacePtr ResourceMovie::compileData_( const FilePath & _path )
+	DataInterfacePtr ResourceMovie::compileData_( const ConstString & _category, const FilePath & _path )
 	{
 		DataInterfacePtr prefetch_data;
 		if( PREFETCHER_SERVICE(m_serviceProvider)
-			->getData( _path, prefetch_data ) == true )
+			->getData( _category, _path, prefetch_data ) == true )
 		{
 			return prefetch_data;
 		}

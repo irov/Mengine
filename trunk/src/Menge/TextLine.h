@@ -48,7 +48,7 @@ namespace Menge
 		int getCharsDataSize() const;
 
 	private:
-		void updateRenderLine_( mt::vec2f& _offset ) const;
+		void updateRenderLine_( bool _pixelsnap, mt::vec2f & _offset ) const;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;

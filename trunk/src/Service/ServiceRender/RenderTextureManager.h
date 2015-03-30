@@ -7,13 +7,14 @@
 
 #	include "Core/ConstString.h"
 
-#   include "stdex/binary_vector.h"
+#	include "stdex/intrusive_duplex_tree.h"
 
 #   include "Factory/FactoryStore.h"
 #	include "Factory/FactoryDefault.h"
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
     class RenderTextureManager
         : public RenderTextureServiceInterface
     {
@@ -42,15 +43,15 @@ namespace Menge
         RenderTextureInterfacePtr createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
         RenderTextureInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 
-        RenderTextureInterfacePtr getTexture( const FilePath & _fileName ) const override;
+        RenderTextureInterfacePtr getTexture( const ConstString& _pakName, const FilePath & _fileName ) const override;
 
     public:
-        bool hasTexture( const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const override;
+        bool hasTexture( const ConstString& _pakName, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const override;
 
     public:
         void imageQuality( const RenderTextureInterfacePtr & _texture, void * _textureBuffer, size_t _texturePitch ) override;
 
-        void cacheFileTexture( const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) override;
+        void cacheFileTexture( const ConstString& _pakName, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) override;
 
     public:
         bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileGroupName, const ConstString & _codecName, const FilePath & _fileName ) override;
@@ -75,8 +76,8 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-        typedef stdex::binary_vector<FilePath, RenderTextureInterface *> TMapTextures;
-        TMapTextures m_textures;
+		typedef stdex::intrusive_duplex_tree<RenderTexture> TMapRenderTextureEntry;
+        TMapRenderTextureEntry m_textures;
 
         typedef FactoryPoolStore<RenderTexture, 128> TFactoryRenderTexture;
         TFactoryRenderTexture m_factoryRenderTexture;

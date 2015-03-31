@@ -256,7 +256,10 @@ namespace Menge
 		if( this->is3d() == true )
 		{
 			MAGIC_VIEW view;
-			Magic_GetView( m_emitterId, &view );
+			if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
+			{
+				return false;
+			}
 
 			MAGIC_CAMERA camera;
 			camera.pos = view.pos;

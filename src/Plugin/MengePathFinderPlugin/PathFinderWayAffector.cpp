@@ -112,21 +112,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderWayAffector::prepare()
 	{
+		mt::vec3f wp_current = pybind::list_getitem_t<mt::vec3f>( m_way, 0 );
+		mt::vec3f wp_target = pybind::list_getitem_t<mt::vec3f>( m_way, 1 );
+
 		m_iterator = 1;
-
-		const mt::vec3f & lp = m_node->getLocalPosition();
-
-		mt::vec3f wp_current = pybind::list_getitem_t<mt::vec3f>( m_way, 1 );
-
+		
 		mt::vec3f dir;
-		mt::dir_v3_v3( dir, wp_current, lp );
+		mt::dir_v3_v3( dir, wp_target, wp_current );
+
+		m_node->setLocalPosition( wp_current );
 		
 		uint32_t id = this->getId();
 
 		pybind::call( m_cb, "iONNOOO"
 			, id
 			, m_node->getEmbed()
-			, pybind::ptr(lp)
+			, pybind::ptr(wp_current)
 			, pybind::ptr(dir)
 			, pybind::get_bool(true)
 			, pybind::get_bool(false)
@@ -196,12 +197,14 @@ namespace Menge
 	{
 		const mt::vec3f & lp = m_node->getLocalPosition();
 
+		mt::vec3f wp_prev = pybind::list_getitem_t<mt::vec3f>( m_way, m_iterator - 1 );
 		mt::vec3f wp_current = pybind::list_getitem_t<mt::vec3f>( m_way, m_iterator );
 
 		mt::vec3f dir;
-		mt::dir_v3_v3( dir, wp_current, lp );
+		mt::dir_v3_v3( dir, wp_current, wp_prev );
 
 		uint32_t id = this->getId();
+
 		pybind::call( m_cb, "iONNOOO"
 			, id
 			, m_node->getEmbed()

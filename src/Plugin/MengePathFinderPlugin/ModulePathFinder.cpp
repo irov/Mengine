@@ -192,7 +192,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( _node->addAffector( affector ) == 0 )
+		if( _node->addAffector( affector ) == INVALID_AFFECTOR_ID )
 		{
 			m_factoryPathFinderWayAffector.destroyObject( affector );
 

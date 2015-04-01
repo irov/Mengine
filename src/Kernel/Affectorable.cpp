@@ -19,7 +19,7 @@ namespace Menge
 		
 		if( _affector->prepare() == false )
 		{
-			return 0;
+			return INVALID_AFFECTOR_ID;
 		}
 
 		m_affectors.push_back( _affector );

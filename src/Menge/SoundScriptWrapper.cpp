@@ -511,7 +511,7 @@ namespace	Menge
 			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
 				->getAffectorable();
 
-			uint32_t id = affectorable->addAffector( affector );
+			AFFECTOR_ID id = affectorable->addAffector( affector );
 
 			return id;
 		}
@@ -530,7 +530,7 @@ namespace	Menge
 			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
 				->getAffectorable();
 
-			uint32_t id = affectorable->addAffector( affector );
+			AFFECTOR_ID id = affectorable->addAffector( affector );
 
 			return id;
 		}

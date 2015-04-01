@@ -2995,7 +2995,7 @@ namespace Menge
             mt::vec3f linearSpeed = _dir * _speed;
             _node->setLinearSpeed( linearSpeed );
 
-            uint32_t id = _node->addAffector( affector );
+            AFFECTOR_ID id = _node->addAffector( affector );
 
             return id;
         }
@@ -3025,7 +3025,7 @@ namespace Menge
 
             _node->setLinearSpeed( linearSpeed );
 
-            uint32_t id = _node->addAffector( affector );
+            AFFECTOR_ID id = _node->addAffector( affector );
 
             return id;
         }
@@ -3051,7 +3051,7 @@ namespace Menge
                 , &mt::length_v3
                 );
 
-            uint32_t id = _node->addAffector( affector );
+            AFFECTOR_ID id = _node->addAffector( affector );
 
             return id;
         }
@@ -3079,7 +3079,7 @@ namespace Menge
                 , &mt::length_v3
                 );
 
-            uint32_t id = _node->addAffector( affector );
+            AFFECTOR_ID id = _node->addAffector( affector );
 
             return id;
         }
@@ -3109,7 +3109,7 @@ namespace Menge
                 , &mt::length_v3
                 );
 
-            uint32_t id = _node->addAffector( affector );
+            AFFECTOR_ID id = _node->addAffector( affector );
 
             return id;
         }
@@ -3149,7 +3149,7 @@ namespace Menge
             float angularSpeed = fabsf( correct_angle_from - correct_angle_to ) * invTime;
 
             _node->setAngularSpeed( angularSpeed );				
-            uint32_t id = _node->addAffector( affector );
+            AFFECTOR_ID id = _node->addAffector( affector );
 
             return id;
         }
@@ -3182,7 +3182,7 @@ namespace Menge
                 , &fabsf
                 );				
 
-            uint32_t id = _node->addAffector( affector );
+			AFFECTOR_ID id = _node->addAffector( affector );
 
             return id;
         }
@@ -3221,7 +3221,7 @@ namespace Menge
                 , &mt::length_v3
                 );
 
-            uint32_t id = _node->addAffector( affector );
+            AFFECTOR_ID id = _node->addAffector( affector );
 
             return id;
         }
@@ -3259,7 +3259,7 @@ namespace Menge
                 , &s_length_color
                 );
 
-			uint32_t id = _node->addAffector( affector );
+			AFFECTOR_ID id = _node->addAffector( affector );
 
             return id;
         }
@@ -3298,7 +3298,7 @@ namespace Menge
                 , &mt::length_v4 
                 );
 
-            uint32_t id = _shape->addAffector( affector );
+            AFFECTOR_ID id = _shape->addAffector( affector );
 
             return id;
         }

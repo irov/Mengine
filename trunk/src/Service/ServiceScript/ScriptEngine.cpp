@@ -153,14 +153,18 @@ namespace Menge
 #	endif
 
 		m_moduleMenge = this->initModule( "Menge" );
-        this->addGlobalModule( "Menge", m_moduleMenge );
-		//pybind::decref( m_moduleMenge );
+
+		pybind::incref( m_moduleMenge );
+
+        this->addGlobalModule( "Menge"
+			, m_moduleMenge 
+			);
 
         uint32_t python_version = pybind::get_python_version();
 
-		PyObject * py_python_version = pybind::ptr( python_version );
-        this->addGlobalModule( "_PYTHON_VERSION", py_python_version );
-		pybind::decref( py_python_version );
+		this->addGlobalModule( "_PYTHON_VERSION"
+			, pybind::ptr( python_version ) 
+			);
 		
 		pybind::set_currentmodule( m_moduleMenge );
 
@@ -464,7 +468,7 @@ namespace Menge
 
         PyObject * dir_bltin = pybind::module_dict( builtins );
 
-        pybind::dict_setstring( dir_bltin, _name.c_str(), _module );
+        pybind::dict_setstring_t( dir_bltin, _name.c_str(), _module );
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptEngine::removeGlobalModule( const String & _name )

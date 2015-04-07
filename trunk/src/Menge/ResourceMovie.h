@@ -229,6 +229,7 @@ namespace Menge
 
 	public:
 		bool hasMovieLayer( const ConstString & _name, const MovieLayer ** _layer ) const;
+		bool hasMovieLayerType( const ConstString & _name, const ConstString & _type, const MovieLayer ** _layer ) const;
 
     public:
 		void visitResourceMovie( VisitorResourceMovie * _visitor );

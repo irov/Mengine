@@ -41,6 +41,7 @@ namespace Menge
 
 	public:
 		PathFinderWayAffector * createPathFinderWayAffertor( Node * _node, PyObject * _way, float _speed, PyObject * _cb );
+		void destroyPathFinderWayAffertor( PathFinderWayAffector * _affector );
 
 	public:
 		void update( float _time, float _timing ) override;

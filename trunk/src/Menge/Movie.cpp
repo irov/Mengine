@@ -159,8 +159,7 @@ namespace Menge
 
 			return 0.f;
 		}
-
-
+		
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
 		float timing = m_currentFrame * frameDuration + m_frameTiming;

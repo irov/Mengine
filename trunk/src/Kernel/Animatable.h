@@ -59,7 +59,6 @@ namespace Menge
 		bool pause();
 		void resume();
 		bool interrupt();
-		void end();
 
 	public:
 		inline bool isPlay() const;
@@ -67,6 +66,9 @@ namespace Menge
 
 	public:
 		inline bool isInterrupt() const;
+
+	protected:
+		void end();
 
 	public:
 		inline uint32_t getPlayId() const;
@@ -79,7 +81,7 @@ namespace Menge
 		virtual void _resume( uint32_t _enumerator ) = 0;
 		virtual void _stop( uint32_t _enumerator ) = 0;
 		virtual void _end( uint32_t _enumerator ) = 0;
-		virtual bool _interrupt( uint32_t _enumerator ) = 0;		
+		virtual bool _interrupt( uint32_t _enumerator ) = 0;
 
 	protected:
 		uint32_t m_enumerator;

@@ -306,6 +306,12 @@ namespace	Menge
 
 		TVectorRenderVertex2D::iterator it_w = m_verticesWM.begin();
 
+		ColourValue color;
+		this->calcTotalColor(color);
+
+		const ColourValue & textureColour = m_resourceImage->getTextureColor();
+		color *= textureColour;
+
 		const mt::mat4f & wm = this->getWorldMatrix();
 		
 		for( ; it != it_end; ++it, ++it_w )
@@ -315,8 +321,13 @@ namespace	Menge
 			RenderVertex2D & vertex_w = *it_w;
 
 			mt::mul_v3_m4( vertex_w.pos, vertex.pos, wm );
+
+			ColourValue vertex_color(color);
+			vertex_color *= ColourValue(vertex.color);
+
+			uint32_t argb = vertex_color.getAsARGB();
 			
-			vertex_w.color = vertex.color;
+			vertex_w.color = argb;
 			vertex_w.uv = vertex.uv;
 			vertex_w.uv2 = vertex.uv2;
 		}

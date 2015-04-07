@@ -835,4 +835,33 @@ namespace Menge
 
 		return false;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceMovie::hasMovieLayerType( const ConstString & _name, const ConstString & _type, const MovieLayer ** _layer ) const
+	{
+		for( TVectorMovieLayers::const_iterator
+			it = m_layers.begin(),
+			it_end = m_layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.name != _name )
+			{
+				continue;
+			}
+
+			if( layer.type != _type )
+			{
+				continue;
+			}
+
+			*_layer = &layer;
+
+			return true;
+		}
+
+		return false;
+	}
+
 }

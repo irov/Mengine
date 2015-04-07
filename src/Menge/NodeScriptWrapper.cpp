@@ -850,6 +850,14 @@ namespace Menge
 
 			return successful;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		bool ResourceMovie_hasLayerType( ResourceMovie * _movie, const ConstString & _name, const ConstString & _type )
+		{
+			const MovieLayer * layer;
+			bool successful = _movie->hasMovieLayerType( _name, _type, &layer );
+
+			return successful;
+		}
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getLocalPolygonCenter( HotSpotPolygon * _hs )
         {
@@ -4194,8 +4202,7 @@ namespace Menge
 						pybind::decref( py_dict_frame );
 					}
 
-                    pybind::dict_setstring( m_dictResult, _layer.name.c_str(), py_list_frames );
-                    pybind::decref( py_list_frames );
+                    pybind::dict_setstring_t( m_dictResult, _layer.name.c_str(), py_list_frames );                    
                 }
 
             protected:
@@ -4372,8 +4379,8 @@ namespace Menge
 				pybind::decref( py_dict );
             }
 
-            pybind::dict_setstring( py_dict_result, "Emitters", py_list_names );
-            pybind::dict_setstring( py_dict_result, "Atlasses", py_list_atlas );
+            pybind::dict_setstring_t( py_dict_result, "Emitters", py_list_names );
+            pybind::dict_setstring_t( py_dict_result, "Atlasses", py_list_atlas );
 
             resource->decrementReference();
 
@@ -4769,6 +4776,7 @@ namespace Menge
 			.def("hasBoundBox", &ResourceMovie::hasBoundBox)
 			.def("getBoundBox", &ResourceMovie::getBoundBox)
 			.def_proxy_static("hasLayer", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_hasLayer)
+			.def_proxy_static("hasLayerType", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_hasLayerType)
 			.def_proxy_static("getLayerPosition", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_getLayerPosition)
             ;        
 
@@ -4832,6 +4840,8 @@ namespace Menge
             .def( "stop", &Animatable::stop )
 			.def( "pause", &Animatable::pause )
 			.def( "resume", &Animatable::resume )
+			.def( "interrupt", &ParticleEmitter::interrupt )
+			.def( "isInterrupt", &ParticleEmitter::isInterrupt )
             .def( "isPlay", &Animatable::isPlay )
             .def( "getPlayId", &Animatable::getPlayId )
             .def( "setAnimationSpeedFactor", &Animatable::setAnimationSpeedFactor )
@@ -4848,8 +4858,6 @@ namespace Menge
             .def( "setInterval", &Animatable::setInterval )
             .def( "getIntervalBegin", &Animatable::getIntervalBegin )
             .def( "getIntervalEnd", &Animatable::getIntervalEnd )
-            .def( "interrupt", &ParticleEmitter::interrupt )
-			.def( "isInterrupt", &ParticleEmitter::isInterrupt )
             ;
 
         pybind::interface_<GlobalHandleAdapter>("GlobalHandleAdapter")
@@ -5427,8 +5435,7 @@ namespace Menge
 
                 pybind::interface_<Video, pybind::bases<Node, Animatable> >("Video", false)                    
                     .def( "setResourceVideo", &Video::setResourceVideo )
-                    .def( "getResourceVideo", &Video::getResourceVideo )
-                    .def( "pause", &Video::pause )
+                    .def( "getResourceVideo", &Video::getResourceVideo )                    
                     ;
 
                 pybind::interface_<Window, pybind::bases<Node> >("Window", false)

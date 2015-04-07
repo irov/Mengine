@@ -34,6 +34,11 @@ namespace Menge
 			return false;
 		}
 
+		if( pybind::list_check( _way ) == false )
+		{
+			return false;
+		}
+
 		m_node = _node;
 		m_speed = _speed;
 

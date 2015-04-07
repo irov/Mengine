@@ -127,6 +127,7 @@ namespace Menge
 			;
 
 		pybind::def_functor( "createPathFinderWayAffertor", this, &ModulePathFinder::createPathFinderWayAffertor );
+		pybind::def_functor( "destroyPathFinderWayAffertor", this, &ModulePathFinder::destroyPathFinderWayAffertor );
 
 		SCRIPT_SERVICE(m_serviceProvider)
 			->addWrapping( Helper::stringizeString(m_serviceProvider, "PathGraphNode"), new ScriptClassWrapper<PathGraphNode>() );
@@ -189,17 +190,24 @@ namespace Menge
 
 		if( affector->initialize( _node, _speed, _way, _cb ) == false )
 		{
+			affector->destroy();
+
 			return nullptr;
 		}
 
 		if( _node->addAffector( affector ) == INVALID_AFFECTOR_ID )
 		{
-			m_factoryPathFinderWayAffector.destroyObject( affector );
+			affector->destroy();
 
 			return nullptr;
 		}
 
 		return affector;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ModulePathFinder::destroyPathFinderWayAffertor( PathFinderWayAffector * _affector )
+	{
+		_affector->destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ModulePathFinder::setMapWeight( PathFinderMap * _map, const ConstString & _resourceName )

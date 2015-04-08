@@ -132,6 +132,8 @@ namespace Menge
 			{
 				continue;
 			}
+
+			this->updateSourceVolume_( source, source->volume );
 									
 			if( source->source->play() == false )
 			{
@@ -141,9 +143,7 @@ namespace Menge
 				continue;
 			}
 			
-			this->playSoundBufferUpdate_( source );
-
-			this->updateSourceVolume_( source, source->volume );
+			this->playSoundBufferUpdate_( source );						
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -644,6 +644,8 @@ namespace Menge
 			return false;
 		}
 
+		this->updateSourceVolume_( source, source->volume );
+
 		switch( source->state )
 		{
 		case ESS_STOP:
@@ -675,9 +677,7 @@ namespace Menge
 		default:
 			{
 			}break;
-		}
-
-		this->updateSourceVolume_( source, source->volume );
+		}			
 
         return true;
 	}
@@ -1016,15 +1016,15 @@ namespace Menge
 
         if( playing == true && pausing == false )
         {
+			this->updateSourceVolume_( source, source->volume );
+
             if( source->source->play() == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("SoundEngine::setPosMs invalid play"
                     );
 
                 return false;
-            }
-
-			this->updateSourceVolume_( source, source->volume );
+			}			
         }
 
         if( hasBufferUpdate == true )				

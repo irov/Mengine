@@ -261,6 +261,7 @@ namespace Menge
 				affector->setCallback( _cb );
 
                 affector->initialize( _self, _method, _pos, _dir, _speed, _abs );
+				affector->update( _pos );
 
                 return affector;
             }
@@ -289,6 +290,7 @@ namespace Menge
 				affector->setCallback( _cb );
 
                 affector->initialize( _self, _method, _start, _end, _time, _abs );
+				affector->update( _start );
 
                 return affector;
             }
@@ -318,6 +320,7 @@ namespace Menge
 				affector->setCallback( _cb );
 
                 affector->initialize( _self, _method, _start, _end, _v0, _time, _abs );
+				affector->update( _start );
 
                 return affector;
 		    }
@@ -347,6 +350,7 @@ namespace Menge
 				affector->setCallback( _cb );
 
                 affector->initialize( _self, _method, _start, _end, _v0, _time, _abs );
+				affector->update( _start );
 
                 return affector;
 		    }
@@ -376,6 +380,7 @@ namespace Menge
 				affector->setCallback( _cb );
 
                 affector->initialize( _self, _method, _start, _end, _v0, _v1, _time, _abs );
+				affector->update( _start );
 
                 return affector;
             }

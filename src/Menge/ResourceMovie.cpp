@@ -235,24 +235,6 @@ namespace Menge
             return false;
         }
 
-		ConstString dataflowType = m_dataflowType;
-
-		if( dataflowType.empty() == true )
-		{
-			dataflowType = CODEC_SERVICE(m_serviceProvider)
-				->findCodecType( m_filePath );
-
-			if( dataflowType.empty() == true )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
-					, this->getName().c_str()
-					, m_filePath.c_str()
-					);
-
-				return false;
-			}
-		}
-		
 		const ConstString & category = this->getCategory();
 
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
@@ -266,6 +248,24 @@ namespace Menge
 				);
 
 			return false;
+		}
+
+		ConstString dataflowType = m_dataflowType;
+
+		if( dataflowType.empty() == true )
+		{
+			dataflowType = CODEC_SERVICE(m_serviceProvider)
+				->findCodecType( m_filePath );
+
+			if( dataflowType.empty() == true )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' you must determine codec for file '%s'"
+					, this->getName().c_str()
+					, m_filePath.c_str()
+					);
+
+				return false;
+			}
 		}
 
 		MovieFramePackInterfacePtr framePack = DATA_SERVICE(m_serviceProvider)

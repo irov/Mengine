@@ -109,7 +109,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	static const float s_activeFrameTime = 1000.f / 60.f;
-	static const float s_inactiveFrameTime = 100;
+	static const float s_inactiveFrameTime = 100.f;
 	//////////////////////////////////////////////////////////////////////////
 	namespace Helper
 	{
@@ -3115,7 +3115,7 @@ namespace Menge
 
 		if( m_active == true )
 		{
-			if (m_cursor == NULL)
+			if( m_cursor == NULL )
 			{
 				m_cursor = LoadCursor(NULL, IDC_ARROW);						
 			}

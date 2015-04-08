@@ -464,17 +464,13 @@ namespace	Menge
 		protected:
 			void onAffectorEnd( uint32_t _id, bool _isEnd ) override
 			{
-				if( m_cb == nullptr )
+				if( m_cb != nullptr && pybind::is_none( m_cb ) == false )
 				{
-					return;
+					pybind::call( m_cb, "(iO)"
+						, _id
+						, pybind::get_bool(_isEnd) 
+						);
 				}
-
-				if( pybind::is_none(m_cb) == true )
-				{
-					return;
-				}
-				
-				pybind::call(m_cb, "(iO)", _id, pybind::get_bool(_isEnd) );
 
 				this->destroy();
 			}
@@ -509,7 +505,7 @@ namespace	Menge
 				);
 
 			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
-				->getAffectorable();
+				->getAffectorableGlobal();
 
 			AFFECTOR_ID id = affectorable->addAffector( affector );
 
@@ -528,7 +524,7 @@ namespace	Menge
 				);
 
 			Affectorable * affectorable = PLAYER_SERVICE(m_serviceProvider)
-				->getAffectorable();
+				->getAffectorableGlobal();
 
 			AFFECTOR_ID id = affectorable->addAffector( affector );
 

@@ -468,6 +468,8 @@ namespace Menge
 
         PyObject * dir_bltin = pybind::module_dict( builtins );
 
+		pybind::incref( _module );
+
         pybind::dict_setstring_t( dir_bltin, _name.c_str(), _module );
     }
     //////////////////////////////////////////////////////////////////////////

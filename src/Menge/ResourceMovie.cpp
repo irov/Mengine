@@ -235,6 +235,24 @@ namespace Menge
             return false;
         }
 
+		ConstString dataflowType = m_dataflowType;
+
+		if( dataflowType.empty() == true )
+		{
+			dataflowType = CODEC_SERVICE(m_serviceProvider)
+				->findCodecType( m_filePath );
+
+			if( dataflowType.empty() == true )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
+					, this->getName().c_str()
+					, m_filePath.c_str()
+					);
+
+				return false;
+			}
+		}
+		
 		const ConstString & category = this->getCategory();
 
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
@@ -251,7 +269,7 @@ namespace Menge
 		}
 
 		MovieFramePackInterfacePtr framePack = DATA_SERVICE(m_serviceProvider)
-			->dataflowT<MovieFramePackInterfacePtr>( m_dataflowType, stream );
+			->dataflowT<MovieFramePackInterfacePtr>( dataflowType, stream );
 
 		if( framePack == nullptr )
 		{
@@ -309,7 +327,7 @@ namespace Menge
 			}
 
 			if( layer.type == CONST_STRING(m_serviceProvider, MovieText)
-				|| layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) 	
+				|| layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter)
 				)
 			{
 				const TextEntryInterface * entry;
@@ -682,16 +700,16 @@ namespace Menge
 		{
 			m_dataflowType = CODEC_SERVICE(m_serviceProvider)
 				->findCodecType( m_filePath );
-		}
 
-		if( m_dataflowType.empty() == true )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
-				, this->getName().c_str()
-				, m_filePath.c_str()
-				);
+			if( m_dataflowType.empty() == true )
+			{
+				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
+					, this->getName().c_str()
+					, m_filePath.c_str()
+					);
 
-			return false;
+				return false;
+			}
 		}
 
 		return true;

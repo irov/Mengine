@@ -5,6 +5,7 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/CodecInterface.h"
 #	include "Interface/PrefetcherInterface.h"
+#	include "Interface/ConfigInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -57,6 +58,22 @@ namespace Menge
 			THREAD_SERVICE(m_serviceProvider)
 				->addTask( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadSoundBufferUpdate"), m_threadSoundBufferUpdate );
 		}
+
+		float commonVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "CommonVolume", 1.f);
+
+		this->setCommonVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), commonVolume );
+
+		float soundVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "SoundVolume", 1.f);
+
+		this->setSoundVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), soundVolume );
+
+		float musicVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "MusicVolume", 1.f);
+
+		this->setMusicVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), musicVolume );
+
+		float voiceVolume = CONFIG_VALUE(m_serviceProvider, "Engine", "VoiceVolume", 1.f);
+
+		this->setVoiceVolume( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Generic"), voiceVolume );
 
 		return true;
 	}

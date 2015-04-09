@@ -24,5 +24,6 @@ namespace Menge
 		ModuleFactoryInterfacePtr m_factoryModulePathFinder;
 		ModuleFactoryInterfacePtr m_factoryModuleAreaOfInterest;
 		ModuleFactoryInterfacePtr m_factoryModuleCollisionGround;
+		ModuleFactoryInterfacePtr m_factoryModuleBurritoWorld;
 	};
 }

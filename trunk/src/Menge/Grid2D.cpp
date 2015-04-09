@@ -263,7 +263,7 @@ namespace	Menge
 			}
 			else
 			{
-				stageName = CONST_STRING(m_serviceProvider, SolidSprite);
+				stageName = CONST_STRING(m_serviceProvider, Blend);
 			}
 		}
 

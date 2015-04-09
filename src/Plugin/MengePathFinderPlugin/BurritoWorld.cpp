@@ -40,6 +40,8 @@ namespace Menge
 			pybind::decref( m_cb );
 			m_cb = nullptr;
 		}
+
+		delete m_bison;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoBison * BurritoWorld::createBison()
@@ -64,8 +66,13 @@ namespace Menge
 		m_layers.push_back( layer );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::addLayerNode( const ConstString & _name, Node * _node )
+	bool BurritoWorld::addLayerNode( const ConstString & _name, Node * _node )
 	{
+		if( _node == nullptr )
+		{
+			return false;
+		}
+
 		for( TVectorBurritoLayer::iterator
 			it = m_layers.begin(),
 			it_end = m_layers.end();
@@ -84,8 +91,10 @@ namespace Menge
 
 			layer.nodes.push_back( node );
 
-			break;
+			return true;
 		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoWorld::removeLayerNode( const ConstString & _name, Node * _node )

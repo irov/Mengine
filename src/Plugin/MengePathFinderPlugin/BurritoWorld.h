@@ -44,7 +44,7 @@ namespace Menge
 		void createLayer( const ConstString & _name, float _parallax, const mt::vec3f & _bounds, PyObject * _cb );
 
 	public:
-		void addLayerNode( const ConstString & _name, Node * _node );
+		bool addLayerNode( const ConstString & _name, Node * _node );
 		void removeLayerNode( const ConstString & _name, Node * _node );
 
 	public:

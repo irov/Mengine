@@ -42,17 +42,6 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BurritoWorld::initialize( const mt::vec3f & _bounds, PyObject * _cb )
-	{
-		m_bounds = _bounds;
-
-		pybind::decref( m_cb );
-		m_cb = _cb;
-		pybind::incref( m_cb );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	BurritoBison * BurritoWorld::createBison()
 	{
 		m_bison = new BurritoBison;
@@ -60,12 +49,16 @@ namespace Menge
 		return m_bison;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::createLayer( const ConstString & _name, Node * _node, float _parallax )
+	void BurritoWorld::createLayer( const ConstString & _name, float _parallax, const mt::vec3f & _bounds, PyObject * _cb )
 	{
 		BurritoLayer layer;
 		layer.name = _name;
-		layer.node = _node;
 		layer.parallax = _parallax;
+
+		layer.bounds = _bounds;
+
+		layer.cb = _cb;
+		pybind::incref( layer.cb );
 
 		m_layers.push_back( layer );
 	}
@@ -140,44 +133,44 @@ namespace Menge
 
 			layer.position += layer_translate_position;
 
-			while( layer.position.x > m_bounds.x )
+			while( layer.position.x > layer.bounds.x )
 			{
-				pybind::call( m_cb, "Ni"
+				pybind::call( layer.cb, "Ni"
 					, pybind::ptr(layer.name)
 					, 0
 					);
 
-				layer.position.x -= m_bounds.x;
+				layer.position.x -= layer.bounds.x;
 			}
 
-			while( layer.position.x < -m_bounds.x )
+			while( layer.position.x < -layer.bounds.x )
 			{
-				pybind::call( m_cb, "Ni"
+				pybind::call( layer.cb, "Ni"
 					, pybind::ptr(layer.name)
 					, 2
 					);
 
-				layer.position.x += m_bounds.x;
+				layer.position.x += layer.bounds.x;
 			}
 
-			while( layer.position.y > m_bounds.y )
+			while( layer.position.y > layer.bounds.y )
 			{
-				pybind::call( m_cb, "Ni"
+				pybind::call( layer.cb, "Ni"
 					, pybind::ptr(layer.name)
 					, 1
 					);
 
-				layer.position.y -= m_bounds.y;
+				layer.position.y -= layer.bounds.y;
 			}
 
-			while( layer.position.y < -m_bounds.y )
+			while( layer.position.y < -layer.bounds.y )
 			{
-				pybind::call( m_cb, "Ni"
+				pybind::call( layer.cb, "Ni"
 					, pybind::ptr(layer.name)
 					, 3
 					);
 
-				layer.position.y += m_bounds.y;
+				layer.position.y += layer.bounds.y;
 			}
 			
 			for( TVectorBurritoNode::iterator

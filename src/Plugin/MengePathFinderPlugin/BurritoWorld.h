@@ -21,12 +21,14 @@ namespace Menge
 	struct BurritoLayer
 	{
 		ConstString name;
-		Node * node;
 		float parallax;
 				
 		TVectorBurritoNode nodes;
 
 		mt::vec3f position;
+		mt::vec3f bounds;
+
+		PyObject * cb;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class BurritoWorld		
@@ -36,13 +38,10 @@ namespace Menge
 		~BurritoWorld();
 
 	public:
-		bool initialize( const mt::vec3f & _bounds, PyObject * _cb );
-
-	public:
 		BurritoBison * createBison();
 
 	public:
-		void createLayer( const ConstString & _name, Node * _node, float _parallax );
+		void createLayer( const ConstString & _name, float _parallax, const mt::vec3f & _bounds, PyObject * _cb );
 
 	public:
 		void addLayerNode( const ConstString & _name, Node * _node );

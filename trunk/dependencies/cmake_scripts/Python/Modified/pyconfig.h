@@ -555,8 +555,8 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #define Py_UNICODE_SIZE 2
 
 /* Use Python's own small-block memory-allocator. */
-#define WITH_PYMALLOC
-//#undef WITH_PYMALLOC
+//#define WITH_PYMALLOC
+#undef WITH_PYMALLOC
 
 /* Define if you have clock.  */
 /* #define HAVE_CLOCK */

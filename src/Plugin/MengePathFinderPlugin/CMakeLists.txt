@@ -23,6 +23,16 @@ ModulePathFinder
 )
 
 ADD_FILTER(
+ModuleBurritoWorld
+    ModuleBurritoWorld.cpp
+	ModuleBurritoWorld.h
+    BurritoWorld.h
+    BurritoWorld.cpp
+    BurritoBison.h
+    BurritoBison.cpp
+)
+
+ADD_FILTER(
 ModuleAreaOfInterest
     ModuleAreaOfInterest.cpp
 	ModuleAreaOfInterest.h

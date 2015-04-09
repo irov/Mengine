@@ -54,6 +54,7 @@ namespace Menge
 		BurritoLayer layer;
 		layer.name = _name;
 		layer.parallax = _parallax;
+		mt::ident_v3(layer.position);
 
 		layer.bounds = _bounds;
 

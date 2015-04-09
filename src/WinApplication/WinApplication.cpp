@@ -37,6 +37,7 @@
 
 #	include <ctime>
 #	include <algorithm>
+#	include <functional>
 
 #	include <sstream>
 #	include <iomanip>

@@ -135,7 +135,7 @@ namespace Menge
 
 			while( layer.position.x > layer.bounds.x )
 			{
-				pybind::call( layer.cb, "Ni"
+				pybind::call( layer.cb, "(Ni)"
 					, pybind::ptr(layer.name)
 					, 0
 					);
@@ -145,7 +145,7 @@ namespace Menge
 
 			while( layer.position.x < -layer.bounds.x )
 			{
-				pybind::call( layer.cb, "Ni"
+				pybind::call( layer.cb, "(Ni)"
 					, pybind::ptr(layer.name)
 					, 2
 					);
@@ -155,7 +155,7 @@ namespace Menge
 
 			while( layer.position.y > layer.bounds.y )
 			{
-				pybind::call( layer.cb, "Ni"
+				pybind::call( layer.cb, "(Ni)"
 					, pybind::ptr(layer.name)
 					, 1
 					);
@@ -165,7 +165,7 @@ namespace Menge
 
 			while( layer.position.y < -layer.bounds.y )
 			{
-				pybind::call( layer.cb, "Ni"
+				pybind::call( layer.cb, "(Ni)"
 					, pybind::ptr(layer.name)
 					, 3
 					);

@@ -120,7 +120,7 @@ namespace mt
 			mt::line_from_two_point_v2( uv_l2, AD, BC );
 
 			mt::vec2f new_uv;
-			mt::line_intersect_v2( uv_l1, uv_l2, new_uv );
+			mt::line_intersect_v2_np( uv_l1, uv_l2, new_uv );
 
 			_out[i] = new_uv;
 		}
@@ -150,7 +150,7 @@ namespace mt
 			mt::line_from_two_point_v2( uv_l2, AD, BC );
 
 			mt::vec2f new_uv;
-			mt::line_intersect_v2( uv_l1, uv_l2, new_uv );
+			mt::line_intersect_v2_np( uv_l1, uv_l2, new_uv );
 
 			_out[i] = new_uv;
 		}
@@ -176,7 +176,7 @@ namespace mt
 		mt::line_from_two_point_v2( uv_l2, AD, BC );
 
 		mt::vec2f new_uv;
-		mt::line_intersect_v2( uv_l1, uv_l2, new_uv );
+		mt::line_intersect_v2_np( uv_l1, uv_l2, new_uv );
 
 		_out = new_uv;
 	}

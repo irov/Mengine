@@ -32,6 +32,14 @@ namespace mt
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void line_intersect_v2_np( const mt::line & _l1, const mt::line & _l2, mt::vec2f & _p )
+	{
+		float zn = s_line_dot( _l1.a, _l1.b, _l2.a, _l2.b );
+
+		_p.x = -s_line_dot( _l1.c, _l1.b, _l2.c, _l2.b ) / zn;
+		_p.y = -s_line_dot( _l1.a, _l1.c, _l2.a, _l2.c ) / zn;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE bool line_segment_intersect_v2(
 		const mt::vec2f & _a0, 
 		const mt::vec2f & _a1,

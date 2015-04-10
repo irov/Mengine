@@ -1,3 +1,5 @@
+#	include "utils.h"
+
 namespace mt
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -33,25 +35,40 @@ namespace mt
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_FUNCTION_INLINE void set_plane_by_triangle( planef & _plane, const vec3f _v[3] )
+	MENGINE_MATH_FUNCTION_INLINE void set_plane_by_triangle( planef & _plane, const vec3f & _v0, const vec3f & _v1, const vec3f & _v2 )
 	{
-		vec3f edge0 = _v[2] - _v[0];
-		vec3f edge1 = _v[1] - _v[0];
+		vec3f edge0 = _v2 - _v0;
+		vec3f edge1 = _v1 - _v0;
 		vec3f norm;
+
 		cross_v3_v3_norm( norm, edge0, edge1 );
+
 		_plane.x = norm.x;
 		_plane.y = norm.y;
 		_plane.z = norm.z;
-		_plane.d = dot_v3_v3( _v[0], norm );
+		_plane.d = dot_v3_v3( _v0, norm );
 	}
-
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_FUNCTION_INLINE void projection_to_plane( vec3f & _out, const vec3f & _eye, const vec3f  & _dir, const planef & _plane )
+	MENGINE_MATH_FUNCTION_INLINE bool projection_to_plane( vec3f & _out, const vec3f & _eye, const vec3f  & _dir, const planef & _plane )
+	{
+		vec3f norm(_plane.x, _plane.y, _plane.z);
+
+		float dot_norm_eye = dot_v3_v3( norm, _eye );
+
+		if( mt::cmp_f_z( dot_norm_eye ) == true )
+		{
+			return false;
+		}
+
+		_out = _dir * (dot_norm_eye - _plane.d) / dot_v3_v3( norm, _dir ) + _eye;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void reflect_plane( vec3f & _out, const vec3f & _dir, const planef & _plane )
 	{
 		vec3f norm( _plane.x, _plane.y, _plane.z );
-		_out = _dir * ( 
-			dot_v3_v3( norm, _eye ) - _plane.d ) / 
-			dot_v3_v3( norm , _dir ) + _eye; 
 
+		mt::reflect_v3_v3( _out, norm, _dir );
 	}
 }

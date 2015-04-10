@@ -44,9 +44,11 @@ namespace Menge
 		delete m_bison;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	BurritoBison * BurritoWorld::createBison()
+	BurritoBison * BurritoWorld::createBison( Node * _node, float _radius )
 	{
 		m_bison = new BurritoBison;
+
+		m_bison->initialize( _node, _radius );
 
 		return m_bison;
 	}

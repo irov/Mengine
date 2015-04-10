@@ -38,7 +38,7 @@ namespace Menge
 		~BurritoWorld();
 
 	public:
-		BurritoBison * createBison();
+		BurritoBison * createBison( Node * _node, float _radius );
 
 	public:
 		void createLayer( const ConstString & _name, float _parallax, const mt::vec3f & _bounds, PyObject * _cb );

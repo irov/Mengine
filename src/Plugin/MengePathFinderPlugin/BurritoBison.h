@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Kernel/Node.h"
+
 #	include "Core/ConstString.h"
 
 #	include "Math/vec3.h"
@@ -32,6 +34,9 @@ namespace Menge
 		~BurritoBison();
 
 	public:
+		void initialize( Node * _node, float _radius );
+
+	public:
 		void addForce( const ConstString & _name, const mt::vec3f & _direction, float _value );
 		void removeForce( const ConstString & _name );
 
@@ -43,7 +48,10 @@ namespace Menge
 	public:
 		void update_velocity( float _time, float _timing, mt::vec3f & _velocity );
 
-	protected:
+	protected:		
+		Node * m_node;
+		float m_radius;
+
 		mt::vec3f m_velocity;
 
 		typedef stdex::vector<BurritoBisonForce> TVectorBurritoBisonForce;

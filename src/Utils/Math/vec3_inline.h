@@ -255,7 +255,7 @@ namespace mt
 	/*	Reflection Vector	*/
 	MENGINE_MATH_FUNCTION_INLINE void reflect_v3_v3(vec3f& _out, const vec3f& _a, const vec3f& _b)
 	{
-		_out = _a-_b*dot_v3_v3(_a,_b)*2.0f;
+		_out = _a - _b * dot_v3_v3( _a, _b ) * 2.0f;
 	}	
 
 	MENGINE_MATH_FUNCTION_INLINE vec3f reflect_v3_v3(const vec3f& _a, const vec3f& _b)
@@ -293,6 +293,15 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE void norm_v3(vec3f& _out, const vec3f& _rhs)
 	{
 		_out = _rhs / _rhs.length();
+	}
+
+	MENGINE_MATH_FUNCTION_INLINE float norm_v3_f( vec3f& _out, const vec3f & _rhs )
+	{
+		float l = _rhs.length();
+
+		_out = _rhs / l;
+
+		return l;
 	}
 
 	MENGINE_MATH_FUNCTION_INLINE vec3f norm_v3(const vec3f& _rhs)

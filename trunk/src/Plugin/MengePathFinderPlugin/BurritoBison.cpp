@@ -36,12 +36,20 @@ namespace Menge
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	BurritoBison::BurritoBison()
-		: m_velocity(0.f, 0.f, 0.f)
+		: m_node(nullptr)
+		, m_radius(0.f)
+		, m_velocity(0.f, 0.f, 0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoBison::~BurritoBison()
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::initialize( Node * _node, float _radius )
+	{
+		m_node = _node;
+		m_radius = _radius;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::addForce( const ConstString & _name, const mt::vec3f & _direction, float _value )
@@ -77,8 +85,13 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::update_velocity( float _time, float _timing, mt::vec3f & _velocity )
-	{
+	{		
 		(void)_time;
+
+		if( m_node == nullptr )
+		{
+			return;
+		}
 
 		mt::vec3f force_velocity(0.f, 0.f, 0.f);
 
@@ -101,7 +114,7 @@ namespace Menge
 		{
 			const BurritoBisonImpulse & impulse = *it;
 
-			if( impulse.timing > 0.f )
+			if( impulse.timing <= 0.f )
 			{
 				continue;
 			}
@@ -122,6 +135,8 @@ namespace Menge
 		m_impulses.erase( it_erase, m_impulses.end() );
 
 		m_velocity += force_velocity;
+
+		//m_node->translate( m_velocity );
 
 		_velocity = m_velocity;
 	}

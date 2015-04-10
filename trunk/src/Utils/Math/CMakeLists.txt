@@ -122,6 +122,13 @@ vec4
 )
 
 ADD_FILTER(
+ccd
+    ccd.cpp
+    ccd.h
+    ccd_inline.h
+)
+
+ADD_FILTER(
 config
 	config.h
 )

@@ -145,44 +145,73 @@ namespace Menge
 
 			layer.position += layer_translate_position;
 
-			while( layer.position.x > layer.bounds.x )
+			if( mt::cmp_f_z( layer.bounds.x ) == false )
 			{
-				pybind::call( layer.cb, "(Ni)"
-					, pybind::ptr(layer.name)
-					, 0
-					);
+				while( layer.position.x > layer.bounds.x )
+				{
+					pybind::call( layer.cb, "(Ni)"
+						, pybind::ptr( layer.name )
+						, 0
+						);
 
-				layer.position.x -= layer.bounds.x;
+					layer.position.x -= layer.bounds.x;
+				}
+
+				while( layer.position.x < -layer.bounds.x )
+				{
+					pybind::call( layer.cb, "(Ni)"
+						, pybind::ptr( layer.name )
+						, 2
+						);
+
+					layer.position.x += layer.bounds.x;
+				}
 			}
 
-			while( layer.position.x < -layer.bounds.x )
+			if( mt::cmp_f_z( layer.bounds.y ) == false )
 			{
-				pybind::call( layer.cb, "(Ni)"
-					, pybind::ptr(layer.name)
-					, 2
-					);
+				while( layer.position.y > layer.bounds.y )
+				{
+					pybind::call( layer.cb, "(Ni)"
+						, pybind::ptr( layer.name )
+						, 1
+						);
 
-				layer.position.x += layer.bounds.x;
+					layer.position.y -= layer.bounds.y;
+				}
+
+				while( layer.position.y < -layer.bounds.y )
+				{
+					pybind::call( layer.cb, "(Ni)"
+						, pybind::ptr( layer.name )
+						, 3
+						);
+
+					layer.position.y += layer.bounds.y;
+				}
 			}
 
-			while( layer.position.y > layer.bounds.y )
+			if( mt::cmp_f_z( layer.bounds.z ) == false )
 			{
-				pybind::call( layer.cb, "(Ni)"
-					, pybind::ptr(layer.name)
-					, 1
-					);
+				while( layer.position.z > layer.bounds.z )
+				{
+					pybind::call( layer.cb, "(Ni)"
+						, pybind::ptr( layer.name )
+						, 4
+						);
 
-				layer.position.y -= layer.bounds.y;
-			}
+					layer.position.z -= layer.bounds.z;
+				}
 
-			while( layer.position.y < -layer.bounds.y )
-			{
-				pybind::call( layer.cb, "(Ni)"
-					, pybind::ptr(layer.name)
-					, 3
-					);
+				while( layer.position.z < -layer.bounds.z )
+				{
+					pybind::call( layer.cb, "(Ni)"
+						, pybind::ptr( layer.name )
+						, 5
+						);
 
-				layer.position.y += layer.bounds.y;
+					layer.position.z += layer.bounds.z;
+				}
 			}
 			
 			for( TVectorBurritoNode::iterator

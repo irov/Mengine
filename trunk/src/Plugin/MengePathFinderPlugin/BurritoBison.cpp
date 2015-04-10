@@ -88,10 +88,10 @@ namespace Menge
 	{		
 		(void)_time;
 
-		if( m_node == nullptr )
-		{
-			return;
-		}
+		//if( m_node == nullptr )
+		//{
+		//	return;
+		//}
 
 		mt::vec3f force_velocity(0.f, 0.f, 0.f);
 
@@ -119,14 +119,18 @@ namespace Menge
 				continue;
 			}
 
+			mt::vec3f force_impulse;
+
 			if( impulse.timing - _timing > 0.f )
 			{
-				force_velocity += impulse.direction * impulse.value * impulse.time / impulse.timing * _timing;
+				force_impulse = impulse.direction * impulse.value * impulse.timing / impulse.time * _timing;
 			}
 			else
 			{
-				force_velocity += impulse.direction * impulse.value * impulse.time;
+				force_impulse = impulse.direction * impulse.value * impulse.timing / impulse.time * impulse.timing;
 			}
+
+			force_velocity += force_impulse;
 
 			impulse.timing -= _timing;
 		}

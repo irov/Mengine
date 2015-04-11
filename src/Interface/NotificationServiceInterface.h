@@ -4,13 +4,20 @@
 
 #	include "Interface/ServiceInterface.h"
 
+#	include "Core/Memory.h"
+
 namespace Menge
 {
 	class Observer
+		: public MemoryAllocator
 	{
 	public:
-		Observer(){};
-		virtual ~Observer(){};
+		Observer()
+		{
+		};
+		virtual ~Observer()
+		{
+		};
 
 	public:
 		virtual void destroy() = 0;
@@ -18,7 +25,7 @@ namespace Menge
 
 	template<class M>
 	class GeneratorObserverMethod
-        : public Observer
+		: public Observer
 	{
 	};
 
@@ -35,8 +42,8 @@ namespace Menge
 	{
 	public:
 		ObserverMethod0( C * _self, M _method )
-			: m_self(_self)
-			, m_method(_method)
+			: m_self( _self )
+			, m_method( _method )
 		{
 		}
 
@@ -53,11 +60,11 @@ namespace Menge
 
 	template<class C>
 	class GeneratorObserverMethod<void (C::*)()>
-		: public ObserverMethod0<C, void (C::*)()>
+		: public ObserverMethod0 < C, void (C::*)() >
 	{
 	public:
 		GeneratorObserverMethod( C * _self, void (C::*_method)() )
-			: ObserverMethod0<C, void (C::*)()>(_self, _method)
+			: ObserverMethod0<C, void (C::*)()>( _self, _method )
 		{
 		}
 
@@ -78,33 +85,33 @@ namespace Menge
 
 	template<class C, class M, class P0>
 	class ObserverMethod1
-		: public Observer1<P0>
+		: public Observer1 < P0 >
 	{
 	public:
 		ObserverMethod1( C * _self, M _method )
-			: m_self(_self)
-			, m_method(_method)
+			: m_self( _self )
+			, m_method( _method )
 		{
 		}
 
 	protected:
 		void notify( P0 _p0 ) override
 		{
-			(m_self->*m_method)( _p0 );
+			(m_self->*m_method)(_p0);
 		}
 
 	protected:
 		C * m_self;
 		M m_method;
 	};
-	
+
 	template<class C, class P0>
 	class GeneratorObserverMethod<void (C::*)(P0)>
-		: public ObserverMethod1<C, void (C::*)(P0), P0>
+		: public ObserverMethod1 < C, void (C::*)(P0), P0 >
 	{
 	public:
 		GeneratorObserverMethod( C * _self, void (C::*_method)(P0) )
-			: ObserverMethod1<C, void (C::*)(P0), P0>(_self, _method)
+			: ObserverMethod1<C, void (C::*)(P0), P0>( _self, _method )
 		{
 		}
 
@@ -125,19 +132,19 @@ namespace Menge
 
 	template<class C, class M, class P0, class P1>
 	class ObserverMethod2
-		: public Observer2<P0, P1>
+		: public Observer2 < P0, P1 >
 	{
 	public:
 		ObserverMethod2( C * _self, M _method )
-			: m_self(_self)
-			, m_method(_method)
+			: m_self( _self )
+			, m_method( _method )
 		{
 		}
 
 	protected:
 		void notify( P0 _p0, P1 _p1 ) override
 		{
-			(m_self->*m_method)( _p0, _p1 );
+			(m_self->*m_method)(_p0, _p1);
 		}
 
 	protected:
@@ -147,11 +154,11 @@ namespace Menge
 
 	template<class C, class P0, class P1>
 	class GeneratorObserverMethod<void (C::*)(P0, P1)>
-		: public ObserverMethod2<C, void (C::*)(P0, P1), P0, P1>
+		: public ObserverMethod2 < C, void (C::*)(P0, P1), P0, P1 >
 	{
 	public:
 		GeneratorObserverMethod( C * _self, void (C::*_method)(P0, P1) )
-			: ObserverMethod2<C, void (C::*)(P0, P1), P0, P1>(_self, _method)
+			: ObserverMethod2<C, void (C::*)(P0, P1), P0, P1>( _self, _method )
 		{
 		}
 
@@ -161,7 +168,7 @@ namespace Menge
 			delete this;
 		}
 	};
-	
+
 	class VisitorObserver
 	{
 	public:
@@ -193,7 +200,7 @@ namespace Menge
 	{
 	public:
 		VisitorObserverCall1( P0 _p0 )
-			: m_p0(_p0)
+			: m_p0( _p0 )
 		{
 		}
 
@@ -222,15 +229,15 @@ namespace Menge
 	{
 	public:
 		VisitorObserverCall2( P0 _p0, P1 _p1 )
-			: m_p0(_p0)
-			, m_p1(_p1)
+			: m_p0( _p0 )
+			, m_p1( _p1 )
 		{
 		}
 
 	public:
 		bool visit( Observer * _observer ) override
 		{
-			Observer2<P0, P1> * observer = dynamic_cast<Observer2<P0,P1> *>(_observer);
+			Observer2<P0, P1> * observer = dynamic_cast<Observer2<P0, P1> *>(_observer);
 
 			if( observer == nullptr )
 			{
@@ -246,27 +253,27 @@ namespace Menge
 		P0 m_p0;
 		P1 m_p1;
 	};
-	
+
 	class NotificationServiceInterface
 		: public ServiceInterface
 	{
-        SERVICE_DECLARE("NotificationService")
+		SERVICE_DECLARE( "NotificationService" )
 
 	public:
 		virtual void addObserver( uint32_t _id, Observer * _observer ) = 0;
 		virtual void removeObserver( uint32_t _id, Observer * _observer ) = 0;
 
-	protected:		
+	protected:
 		virtual void visitObservers( uint32_t _id, VisitorObserver * _visitor ) = 0;
-		
+
 	public:
 		template<class C, class M>
 		inline Observer * addObserverMethod( uint32_t _id, C * _self, M _method )
 		{
-			Observer * observer = 
-				new GeneratorObserverMethod<M>(_self, _method);
+			Observer * observer =
+				new GeneratorObserverMethod<M>( _self, _method );
 
-			this->addObserver(_id, observer);
+			this->addObserver( _id, observer );
 
 			return observer;
 		}
@@ -278,11 +285,11 @@ namespace Menge
 
 			this->visitObservers( _id, &caller );
 		}
-		
+
 		template<class P0>
 		inline void notify( uint32_t _id, P0 _p0 )
 		{
-			VisitorObserverCall1<P0> caller(_p0);
+			VisitorObserverCall1<P0> caller( _p0 );
 
 			this->visitObservers( _id, &caller );
 		}
@@ -290,11 +297,11 @@ namespace Menge
 		template<class P0, class P1>
 		inline void notify( uint32_t _id, P0 _p0, P1 _p1 )
 		{
-			VisitorObserverCall2<P0, P1> caller(_p0, _p1);
+			VisitorObserverCall2<P0, P1> caller( _p0, _p1 );
 
 			this->visitObservers( _id, &caller );
-		}	
-	};	
+		}
+	};
 
 #   define NOTIFICATION_SERVICE( serviceProvider )\
     SERVICE_GET(serviceProvider, Menge::NotificationServiceInterface)

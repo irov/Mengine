@@ -910,12 +910,12 @@ namespace Menge
 			return false;
 		}
 
-		if( particleService->initialize() == false )
+		if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
 		{
 			return false;
 		}
 
-		if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
+		if( particleService->initialize() == false )
 		{
 			return false;
 		}

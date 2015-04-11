@@ -52,11 +52,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine2::finalize()
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterContainerInterface2Ptr ParticleEngine2::createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName )
 	{
+		if( SERVICE_EXIST( m_serviceProvider, ParticleSystemInterface2 ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ParticleEngine2::createEmitterContainerFromFile can't initialize particle system 2"
+				);
+
+			return nullptr;
+		}
+		
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( _fileGroupName, _fileName, false );
 		
@@ -69,7 +76,7 @@ namespace Menge
 
 			return nullptr;
 		}
-		
+	
 		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SYSTEM2(m_serviceProvider)
             ->createEmitterContainerFromMemory( stream, m_archivator );
 

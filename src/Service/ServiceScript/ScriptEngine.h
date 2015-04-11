@@ -4,10 +4,11 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/PrototypeManagerInterface.h"
 
+#	include "EntityPrototypeGenerator.h"
+#   include "ConstStringHolderPythonString.h"
+
 #   include "Factory/FactoryStore.h"
 #   include "Factory/FactoryDefault.h"
-
-#   include "ConstStringHolderPythonString.h"
 
 #	include "pybind/pybind.hpp"
 
@@ -99,7 +100,10 @@ namespace Menge
 		typedef stdex::binary_vector<ConstString, ScriptClassInterface *> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;
 
-        typedef FactoryPoolStore<ConstStringHolderPythonString, 256> FactoryPoolPythonString;
-        FactoryPoolPythonString m_poolPythonString;				
+        typedef FactoryPoolStore<ConstStringHolderPythonString, 256> FactoryConstStringHolderPythonString;
+        FactoryConstStringHolderPythonString m_factoryPythonString;			
+
+		typedef FactoryPoolStore<EntityPrototypeGenerator, 64> FactoryEntityPrototypeGenerator;
+		FactoryEntityPrototypeGenerator m_factoryEntityPrototypeGenerator;
 	};
 }

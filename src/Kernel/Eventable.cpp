@@ -180,20 +180,7 @@ namespace Menge
 			return true;
 		}
 
-		TMapEvent::iterator it_find = m_mapEvent.find(_event);
-
-		if( it_find == m_mapEvent.end() )
-		{
-			m_mapEvent.insert( _event, ev );
-		}
-		else
-		{
-			PyObject * obj = m_mapEvent.get_value( it_find );
-
-			pybind::decref( obj );
-
-			m_mapEvent.set_value( it_find, ev );
-		}
+		this->insertEvent_( _event, ev );
 
 		if( _exist != nullptr )
 		{
@@ -224,20 +211,7 @@ namespace Menge
 			return false;
 		}
 
-		TMapEvent::iterator it_find = m_mapEvent.find(_event);
-
-		if( it_find == m_mapEvent.end() )
-		{
-			m_mapEvent.insert( _event, ev );
-		}
-		else
-		{
-			PyObject * obj = m_mapEvent.get_value( it_find );
-
-			pybind::decref( obj );
-
-			m_mapEvent.set_value( it_find, ev );
-		}
+		this->insertEvent_( _event, ev );
 
 		if( _exist != nullptr )
 		{
@@ -247,13 +221,32 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Eventable::insertEvent_( EEventName _event, PyObject * _cb )
+	{ 
+		TMapEvent::iterator it_find = m_mapEvent.find( _event );
+
+		if( it_find == m_mapEvent.end() )
+		{
+			m_mapEvent.insert( std::make_pair( _event, _cb ) );
+		}
+		else
+		{
+			PyObject * obj = it_find->second;
+
+			pybind::decref( obj );
+
+			it_find->second = _cb;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Eventable::removeEvent_( EEventName _event )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_event);
 
 		if( it_find != m_mapEvent.end() )
 		{
-			PyObject * py_event  = m_mapEvent.get_value( it_find );
+			PyObject * py_event = it_find->second;
+
 			pybind::decref( py_event );
 
 			m_mapEvent.erase( it_find );
@@ -307,11 +300,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Eventable::getEvent( EEventName _event ) const
 	{
-		PyObject * cb;
-		if( m_mapEvent.has( _event, &cb ) == false )
+		TMapEvent::const_iterator it_find = m_mapEvent.find( _event );
+
+		if( it_find == m_mapEvent.end() )
 		{
 			return nullptr;
 		}
+
+		PyObject * cb = it_find->second;
 
 		return cb;
 	}
@@ -324,7 +320,8 @@ namespace Menge
 		it != it_end;
 		++it)
 		{
-			PyObject * cb = m_mapEvent.get_value( it );
+			PyObject * cb = it->second;
+
 			pybind::decref( cb );
 		}
 

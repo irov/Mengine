@@ -14,8 +14,15 @@ namespace Menge
 		, public Eventable
 	{
 	public:
-		EntityPrototypeGenerator( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _prototype, PyObject * _module );
+		EntityPrototypeGenerator();
 		~EntityPrototypeGenerator();
+
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+		ServiceProviderInterface * getServiceProvider() const;
+
+	public:
+		bool initialize( const ConstString & _category, const ConstString & _prototype, PyObject * _generator );
 
 	public:
 		PyObject * preparePythonType();
@@ -25,9 +32,6 @@ namespace Menge
 
 	public:
 		PyObject * getGenerator() const;
-
-	public:
-		void destroy() override;
 
 	protected:
 		uint32_t count() const override;

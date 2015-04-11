@@ -6,12 +6,11 @@
 
 #   include "Core/ConstString.h"
 
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
     class PrototypeGeneratorInterface
-		: public FactorablePtr
+		: public FactorablePtr		
     {
     public:
         virtual Factorable * generate( const ConstString & _category, const ConstString & _prototype ) = 0;

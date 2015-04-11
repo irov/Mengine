@@ -2,9 +2,8 @@
 
 #	include "Interface/NotificationServiceInterface.h"
 
-#   include <stdex/binary_vector.h>
-
 #	include <stdex/stl_vector.h>
+#	include <stdex/stl_map.h>
 
 namespace Menge
 {
@@ -35,7 +34,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		typedef stdex::vector<Observer *> TVectorObservers;
-		typedef stdex::binary_vector<uint32_t, TVectorObservers> TMapObservers;
+		typedef stdex::map<uint32_t, TVectorObservers> TMapObservers;
 		TMapObservers m_mapObserves;
 	};
 }

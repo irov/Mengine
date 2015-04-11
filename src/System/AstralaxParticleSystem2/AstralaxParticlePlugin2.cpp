@@ -45,12 +45,12 @@ namespace Menge
 			return false;
 		}
 
-		if( particleSystem2->initialize() == false )
+		if( SERVICE_REGISTRY( m_serviceProvider, particleSystem2 ) == false )
 		{
 			return false;
 		}
 
-		if( SERVICE_REGISTRY( m_serviceProvider, particleSystem2 ) == false )
+		if( particleSystem2->initialize() == false )
 		{
 			return false;
 		}

@@ -3,8 +3,6 @@
 #   include "ScriptModuleFinder.h"
 #   include "ScriptModuleLoader.h"
 
-#	include "EntityPrototypeGenerator.h"
-
 #	include "ScriptLogger.h"
 
 #	include "Interface/ApplicationInterface.h"
@@ -493,7 +491,7 @@ namespace Menge
             return false;
         }
 
-        ConstStringHolderPythonString * stlString = m_poolPythonString.createObjectT();
+        ConstStringHolderPythonString * stlString = m_factoryPythonString.createObjectT();
 
         stlString->setPythonObject( _object );
 
@@ -504,8 +502,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PrototypeGeneratorInterfacePtr ScriptEngine::createEntityGenerator( const ConstString & _category, const ConstString & _prototype, PyObject * _generator )
 	{
-		PrototypeGeneratorInterfacePtr generator = 
-			new EntityPrototypeGenerator(m_serviceProvider, _category, _prototype, _generator);
+		EntityPrototypeGeneratorPtr generator =
+			m_factoryEntityPrototypeGenerator.createObjectT();
+
+		generator->setServiceProvider( m_serviceProvider );
+
+		if( generator->initialize( _category, _prototype, _generator ) == false )
+		{
+			return nullptr;
+		}
 
 		return generator;
 	}

@@ -130,6 +130,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Pak::loadPak_()
 	{
+		if( SERVICE_EXIST( m_serviceProvider, LoaderServiceInterface ) == false )
+		{
+			return false;
+		}
+
 		if( m_descriptionPath.empty() == true )
 		{
 			return true;

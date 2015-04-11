@@ -33,11 +33,11 @@ namespace Menge
         key.category = _category;
         key.prototype = _prototype;
 
-		TMapPrototypes::insert_type it_insert = m_prototypes.insert( key, _generator );
+		std::pair<TMapPrototypes::iterator, bool> it_insert = m_prototypes.insert( std::make_pair( key, _generator ) );
 
 		if( it_insert.second == false )
 		{
-			PrototypeGeneratorInterfacePtr conflict_generator = m_prototypes.get_value( it_insert.first );
+			PrototypeGeneratorInterfacePtr conflict_generator = it_insert.first->second;
 
 			if( conflict_generator->count() > 0 )
 			{
@@ -50,7 +50,7 @@ namespace Menge
 			}
 			else
 			{
-				m_prototypes.set_value( it_insert.first, _generator );
+				it_insert.first->second = _generator;
 			}
 		}
 
@@ -83,7 +83,7 @@ namespace Menge
             }
 		}
 
-        _generator = m_prototypes.get_value( it_found );
+		_generator = it_found->second;
 
 		return true;
 	}
@@ -118,8 +118,9 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            const CategoryKey & keys = m_prototypes.get_key( it );
-            const PrototypeGeneratorInterfacePtr & generator = m_prototypes.get_value( it );
+            const CategoryKey & keys = it->first;
+
+            const PrototypeGeneratorInterfacePtr & generator = it->second;
 
             _visitor->visit( keys.category, keys.prototype, generator );
         }

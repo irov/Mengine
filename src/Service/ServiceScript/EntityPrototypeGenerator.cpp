@@ -7,21 +7,44 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	EntityPrototypeGenerator::EntityPrototypeGenerator( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const ConstString & _prototype, PyObject * _module )
-		: m_serviceProvider(_serviceProvider)
-		, m_category(_category)
-		, m_prototype(_prototype)
-		, m_generator(_module)
+	EntityPrototypeGenerator::EntityPrototypeGenerator()
+		: m_serviceProvider(nullptr)
+		, m_generator(nullptr)
 		, m_type(nullptr)
 		, m_count(0)
-	{
-		pybind::incref( m_generator );
+	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EntityPrototypeGenerator::~EntityPrototypeGenerator()
 	{
 		pybind::decref( m_generator );
 		pybind::decref( m_type );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void EntityPrototypeGenerator::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * EntityPrototypeGenerator::getServiceProvider() const
+	{
+		return m_serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool EntityPrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype, PyObject * _generator )
+	{
+		if( pybind::is_callable(_generator) == false )
+		{
+			return false;
+		}
+
+		m_category = _category;
+		m_prototype = _prototype;
+
+		m_generator = _generator;
+		pybind::incref( m_generator );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * EntityPrototypeGenerator::preparePythonType()
@@ -31,11 +54,13 @@ namespace Menge
 			return m_type;
 		}
 
-		//PyObject * p = pybind::ptr(m_prototype);
+		PyObject * p = pybind::ptr(m_prototype);
 		
-		PyObject * py_type = pybind::ask( m_generator, "(N)"
-			, pybind::ptr(m_prototype)
+		PyObject * py_type = pybind::ask( m_generator, "(O)"
+			, p
 			);
+
+		//pybind::decref( p );
 
 		if( py_type == nullptr || pybind::is_none( py_type ) == true )
 		{
@@ -101,11 +126,6 @@ namespace Menge
 		++m_count;
 
 		return entity;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void EntityPrototypeGenerator::destroy()
-	{
-		delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t EntityPrototypeGenerator::count() const

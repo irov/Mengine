@@ -5,6 +5,8 @@
 #	include "Kernel/Node.h"
 
 #	include "Core/ConstString.h"
+#   include "Core/Memory.h"
+
 #	include "Factory/FactoryStore.h"
 
 #	include "Logger/Logger.h"
@@ -14,6 +16,7 @@ namespace Menge
 	template<class Type, uint32_t Count>
 	class NodePrototypeGenerator
 		: public PrototypeGeneratorInterface
+		, public MemoryAllocator
 	{
 	public:
 		NodePrototypeGenerator( ServiceProviderInterface * _serviceProvider )

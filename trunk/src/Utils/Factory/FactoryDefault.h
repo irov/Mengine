@@ -3,6 +3,8 @@
 #	include "Factory.h"
 #	include "FactorableUnique.h"
 
+#	include "Core/Memory.h"
+
 namespace Menge
 {
 	template<class T>
@@ -17,14 +19,14 @@ namespace Menge
     protected:
 		Factorable * _createObject() override
 		{
-			T * t = new T();
+			T * t = Helper::allocateT<T>();
 
 			return t;
 		}
 
         void _destroyObject( Factorable * _obj ) override
 		{
-			delete static_cast<T *>(_obj);
+			Helper::freeT( _obj );
 		}
 	};
 }

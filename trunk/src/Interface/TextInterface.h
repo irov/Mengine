@@ -105,6 +105,9 @@ namespace Menge
 		virtual bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
+		virtual void addTextEntry( const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) = 0;
+
+	public:
 		virtual bool existText( const ConstString& _key, const TextEntryInterface ** _entry ) const = 0;
 		virtual const TextEntryInterface * getTextEntry( const ConstString& _key ) const = 0;        
 

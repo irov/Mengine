@@ -8,7 +8,7 @@
 
 #	include "Kernel/EventEnum.h"
 
-#   include "stdex/binary_vector.h"
+#   include "stdex/stl_map.h"
 
 #	include "pybind/types.hpp"
 
@@ -38,10 +38,11 @@ namespace Menge
 	protected:
 		PyObject * getEvent_( const char * _method, PyObject * _dict ) const;
 		PyObject * getEventMethod_( const char * _method, PyObject * _module ) const;
+		void insertEvent_( EEventName _event, PyObject * _cb );
 		void removeEvent_( EEventName _event );
 
 	private:
-		typedef stdex::binary_vector<EEventName, PyObject *> TMapEvent;
+		typedef stdex::map<EEventName, PyObject *> TMapEvent;
 		TMapEvent m_mapEvent;
 	};
 	//////////////////////////////////////////////////////////////////////////

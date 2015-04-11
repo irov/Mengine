@@ -49,7 +49,7 @@ SERVICE_EXTERN(ThreadSystem, Menge::ThreadSystemInterface);
 SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
 
 //SERVICE_EXTERN(ParticleSystem, Menge::ParticleSystemInterface);
-//SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
+SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
 
 SERVICE_EXTERN(ParticleSystem2, Menge::ParticleSystemInterface2);
 SERVICE_EXTERN(ParticleService2, Menge::ParticleServiceInterface2);
@@ -712,7 +712,7 @@ namespace Menge
 		ParticleSystemInterface2 * particleSystem;
 		if( SERVICE_CREATE( ParticleSystem2, &particleSystem ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleSystem2"
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleSystem2"
 				);
 
 			return false;
@@ -720,7 +720,7 @@ namespace Menge
 
 		if( particleSystem->initialize() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to initialize ParticleSystem2"
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to initialize ParticleSystem2"
 				);
 
 			return false;
@@ -728,7 +728,7 @@ namespace Menge
 
 		if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to registry ParticleSystem2"
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to registry ParticleSystem2"
 				);
 
 			return false;
@@ -1668,21 +1668,48 @@ namespace Menge
 	{
 		m_active = true;
 
-		bool successful = true;
-
-		successful &= s3eDeviceRegister( S3E_DEVICE_UNPAUSE, &s3eCallback_UnPause, this ) == S3E_RESULT_SUCCESS;
-		successful &= s3eDeviceRegister( S3E_DEVICE_FOREGROUND, &s3eCallback_UnPause, this ) == S3E_RESULT_SUCCESS;
-		
-		successful &= s3eDeviceRegister( S3E_DEVICE_BACKGROUND, &s3eCallback_Pause, this ) == S3E_RESULT_SUCCESS;
-		successful &= s3eDeviceRegister( S3E_DEVICE_PAUSE, &s3eCallback_Pause, this ) == S3E_RESULT_SUCCESS;
-
-		if( successful == false )
+		if( s3eDeviceRegister( S3E_DEVICE_UNPAUSE, &s3eCallback_UnPause, m_application ) != S3E_RESULT_SUCCESS )
 		{
-			s3eDeviceUnRegister( S3E_DEVICE_UNPAUSE, &s3eCallback_UnPause );
-			s3eDeviceUnRegister( S3E_DEVICE_FOREGROUND, &s3eCallback_UnPause );
+			const char * err_str = s3eDeviceGetErrorString();
+			s3eDeviceError err = s3eDeviceGetError();
 
-			s3eDeviceUnRegister( S3E_DEVICE_BACKGROUND, &s3eCallback_Pause );
-			s3eDeviceUnRegister( S3E_DEVICE_PAUSE, &s3eCallback_Pause );						
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initialize S3E_DEVICE_UNPAUSE %s [%d]"
+				, err_str
+				, err
+				);
+		}
+
+		if( s3eDeviceRegister( S3E_DEVICE_PAUSE, &s3eCallback_Pause, m_application ) != S3E_RESULT_SUCCESS )
+		{
+			const char * err_str = s3eDeviceGetErrorString();
+			s3eDeviceError err = s3eDeviceGetError();
+
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initialize S3E_DEVICE_PAUSE %s [%d]"
+				, err_str
+				, err
+				);
+		}
+
+		if( s3eDeviceRegister( S3E_DEVICE_FOREGROUND, &s3eCallback_UnPause, m_application ) != S3E_RESULT_SUCCESS )
+		{
+			const char * err_str = s3eDeviceGetErrorString();
+			s3eDeviceError err = s3eDeviceGetError();
+
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initialize S3E_DEVICE_FOREGROUND %s [%d]"
+				, err_str
+				, err
+				);
+		}
+
+		if( s3eDeviceRegister( S3E_DEVICE_BACKGROUND, &s3eCallback_Pause, m_application ) != S3E_RESULT_SUCCESS )
+		{
+			const char * err_str = s3eDeviceGetErrorString();
+			s3eDeviceError err = s3eDeviceGetError();
+
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initialize S3E_DEVICE_BACKGROUND %s [%d]"
+				, err_str
+				, err
+				);
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -1710,50 +1737,6 @@ namespace Menge
 			s3eSurfaceError err = s3eSurfaceGetError();
 
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_SURFACE_SCREENSIZE %s [%d]"
-				, err_str
-				, err
-				);
-		}
-
-		if( s3eDeviceRegister( S3E_DEVICE_UNPAUSE, &s3eCallback_UnPause, m_application ) != S3E_RESULT_SUCCESS )
-		{
-			const char * err_str = s3eDeviceGetErrorString();
-			s3eDeviceError err = s3eDeviceGetError();
-
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_DEVICE_UNPAUSE %s [%d]"
-				, err_str
-				, err
-				);
-		}
-
-		if( s3eDeviceRegister( S3E_DEVICE_PAUSE, &s3eCallback_Pause, m_application ) != S3E_RESULT_SUCCESS )
-		{
-			const char * err_str = s3eDeviceGetErrorString();
-			s3eDeviceError err = s3eDeviceGetError();
-
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_DEVICE_PAUSE %s [%d]"
-				, err_str
-				, err
-				);
-		}
-
-		if( s3eDeviceRegister( S3E_DEVICE_FOREGROUND, &s3eCallback_UnPause, m_application ) != S3E_RESULT_SUCCESS )
-		{
-			const char * err_str = s3eDeviceGetErrorString();
-			s3eDeviceError err = s3eDeviceGetError();
-
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_DEVICE_FOREGROUND %s [%d]"
-				, err_str
-				, err
-				);
-		}
-
-		if( s3eDeviceRegister( S3E_DEVICE_BACKGROUND, &s3eCallback_Pause, m_application ) != S3E_RESULT_SUCCESS )
-		{
-			const char * err_str = s3eDeviceGetErrorString();
-			s3eDeviceError err = s3eDeviceGetError();
-
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_DEVICE_BACKGROUND %s [%d]"
 				, err_str
 				, err
 				);

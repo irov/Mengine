@@ -4,7 +4,7 @@
 
 #	include "Core/ConstString.h"
 
-#   include "stdex/binary_vector.h"
+#   include "stdex/stl_map.h"
 
 namespace Menge
 {
@@ -55,7 +55,7 @@ namespace Menge
             }
         };
 
-        typedef stdex::binary_vector<CategoryKey, PrototypeGeneratorInterfacePtr, CategoryKeyLess> TMapPrototypes;
+        typedef stdex::map<CategoryKey, PrototypeGeneratorInterfacePtr, CategoryKeyLess> TMapPrototypes;
 		TMapPrototypes m_prototypes;       
 	};
 }

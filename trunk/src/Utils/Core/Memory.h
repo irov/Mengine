@@ -59,8 +59,55 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<Memory> MemoryPtr;
 	//////////////////////////////////////////////////////////////////////////
+	class MemoryAllocator
+	{ 
+	public:
+		inline void * operator new (size_t _size)
+		{
+			return stdex_malloc( _size );
+		}
+
+			inline void operator delete (void * _ptr, size_t _size)
+		{
+			(void)_size;
+
+			stdex_free( _ptr );
+		}
+
+		inline void * operator new []( size_t _size )
+		{
+			return stdex_malloc( _size );
+		}
+
+			inline void operator delete []( void * _ptr, size_t _size )
+		{
+			(void)_size;
+
+			stdex_free( _ptr );
+		}
+	};
+	//////////////////////////////////////////////////////////////////////////
 	namespace Helper
 	{
+		template<class T>
+		T * allocateT()
+		{
+			size_t memory_size = sizeof( T );
+			void * memory_buffer = stdex_malloc( memory_size );
+
+			new (memory_buffer)T();
+
+			return reinterpret_cast<T *>(memory_buffer);
+		}
+
+		template<class T>
+		void freeT( T * _t )
+		{
+			_t->~T();
+			
+			stdex_free( _t );
+		}
+
 		template<class T>
 		T * allocateMemory( uint32_t _count )
 		{

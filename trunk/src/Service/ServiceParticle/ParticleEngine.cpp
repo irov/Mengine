@@ -38,6 +38,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterContainerInterfacePtr ParticleEngine::createParticleEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName )
 	{
+		if( SERVICE_EXIST( m_serviceProvider, ParticleSystemInterface ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ParticleEngine::createEmitterContainerFromFile can't initialize particle system 2"
+				);
+
+			return nullptr;
+		}
+
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( _fileGroupName, _fileName, false );
 		

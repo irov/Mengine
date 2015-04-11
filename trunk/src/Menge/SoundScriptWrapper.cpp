@@ -337,12 +337,22 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		void musicPlayTrack( const ConstString & _list, uint32_t _index, float _pos, bool _isLooped )
 		{
+			if( SERVICE_EXIST( m_serviceProvider, AmplifierInterface ) == false )
+			{
+				return;
+			}
+
 			AMPLIFIER_SERVICE(m_serviceProvider)
 				->playTrack( _list, _index, _pos, _isLooped );
 		}
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t musicGetNumTracks()
 		{
+			if( SERVICE_EXIST( m_serviceProvider, AmplifierInterface ) == false )
+			{
+				return 0;
+			}
+
 			return AMPLIFIER_SERVICE(m_serviceProvider)
 				->getNumTracks();
 		}

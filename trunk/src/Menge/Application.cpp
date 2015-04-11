@@ -2042,7 +2042,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Application::getProjectTitle() const
 	{
-		if( TEXT_SERVICE(m_serviceProvider) == nullptr )
+		if( SERVICE_EXIST(m_serviceProvider, TextServiceInterface) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application::getProjectTitle not initialize textManager"
 				);

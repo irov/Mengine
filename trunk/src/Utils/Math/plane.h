@@ -9,15 +9,15 @@ namespace mt
 	class planef
 	{
 	public:
-        float x;
-        float y;
-        float z;
-        float d;
+		float x;
+		float y;
+		float z;
+		float d;
 
 		MENGINE_MATH_METHOD_INLINE planef();
-		MENGINE_MATH_METHOD_INLINE planef(const planef& plane);
-		MENGINE_MATH_METHOD_INLINE planef(const vec3f &_norm, float _dist);
-		MENGINE_MATH_METHOD_INLINE planef(float _x, float _y, float _z, float _d);
+		MENGINE_MATH_METHOD_INLINE planef( const planef& plane );
+		MENGINE_MATH_METHOD_INLINE planef( const vec3f &_norm, float _dist );
+		MENGINE_MATH_METHOD_INLINE planef( float _x, float _y, float _z, float _d );
 	};
 
 	MENGINE_MATH_FUNCTION_INLINE void set_plane_by_triangle( planef & _plane, const vec3f & _v0, const vec3f & _v1, const vec3f & _v2 );

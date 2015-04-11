@@ -79,6 +79,11 @@ namespace Menge
 		m_impulses.push_back( impulse );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float BurritoBison::getRadius() const
+	{ 
+		return m_radius;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & BurritoBison::getVelocity() const
 	{
 		return m_velocity;
@@ -143,5 +148,10 @@ namespace Menge
 		//m_node->translate( m_velocity );
 
 		_velocity = m_velocity;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::reflect_velocity( float _factor )
+	{
+		m_velocity = -m_velocity * _factor;
 	}
 }

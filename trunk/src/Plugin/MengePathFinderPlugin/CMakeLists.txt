@@ -30,6 +30,10 @@ ModuleBurritoWorld
     BurritoWorld.cpp
     BurritoBison.h
     BurritoBison.cpp
+    BurritoGround.h
+    BurritoGround.cpp
+    BurritoUnit.h
+    BurritoUnit.cpp
 )
 
 ADD_FILTER(

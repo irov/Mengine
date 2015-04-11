@@ -45,6 +45,7 @@ namespace Menge
 
 		pybind::interface_<BurritoWorld>("BurritoWorld")
 			.def( "createBison", &BurritoWorld::createBison )
+			.def( "createGround", &BurritoWorld::createGround )
 			.def( "createLayer", &BurritoWorld::createLayer )
 			.def( "addLayerNode", &BurritoWorld::addLayerNode )
 			.def( "removeLayerNode", &BurritoWorld::removeLayerNode )

@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "BurritoBison.h"
+#	include "BurritoGround.h"
 
 #	include "Kernel/Node.h"
 
@@ -40,6 +41,8 @@ namespace Menge
 	public:
 		BurritoBison * createBison( Node * _node, float _radius );
 
+		void createGround( float _x, float _y, float _z, float _d, PyObject * _cb );
+
 	public:
 		void createLayer( const ConstString & _name, float _parallax, const mt::vec3f & _bounds, PyObject * _cb );
 
@@ -55,6 +58,8 @@ namespace Menge
 		PyObject * m_cb;
 
 		BurritoBison * m_bison;
+
+		BurritoGround * m_ground;
 
 		typedef stdex::vector<BurritoLayer> TVectorBurritoLayer;
 		TVectorBurritoLayer m_layers;

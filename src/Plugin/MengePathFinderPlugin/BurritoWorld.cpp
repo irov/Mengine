@@ -53,6 +53,15 @@ namespace Menge
 		return m_bison;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BurritoWorld::createGround( float _x, float _y, float _z, float _d, PyObject * _cb )
+	{
+		m_ground = new BurritoGround();
+
+		mt::planef p( _x, _y, _z, _d );
+		
+		m_ground->initialize( p, _cb );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void BurritoWorld::createLayer( const ConstString & _name, float _parallax, const mt::vec3f & _bounds, PyObject * _cb )
 	{
 		BurritoLayer layer;
@@ -131,7 +140,30 @@ namespace Menge
 		mt::vec3f velocity;
 		m_bison->update_velocity( _time, _timing, velocity );
 
-		mt::vec3f translate_position = velocity * _timing;
+		mt::vec3f translate_position;
+		if( m_ground != nullptr )
+		{
+			float bison_radius = m_bison->getRadius();
+
+			float collisionTiming;
+			float collisionFactor;
+			if( m_ground->check_collision( m_position, bison_radius, velocity, _timing, collisionTiming, collisionFactor ) == false )
+			{
+				translate_position = velocity * _timing;
+			}
+			else
+			{
+				m_bison->reflect_velocity( collisionFactor );
+
+				translate_position = -velocity * collisionTiming;
+			}
+		}
+		else
+		{
+			translate_position = velocity * _timing;
+		}
+
+		
 
 		for( TVectorBurritoLayer::iterator
 			it = m_layers.begin(),

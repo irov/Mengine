@@ -43,10 +43,12 @@ namespace Menge
 		void addImpulse( const mt::vec3f & _direction, float _value, float _time );
 
 	public:
+		float getRadius() const;
 		const mt::vec3f & getVelocity() const;
 
 	public:
 		void update_velocity( float _time, float _timing, mt::vec3f & _velocity );
+		void reflect_velocity( float _factor );
 
 	protected:		
 		Node * m_node;

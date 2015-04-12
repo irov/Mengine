@@ -304,7 +304,10 @@ namespace Menge
 
 		if( _value == true )
 		{
-			this->deactivatePicker_();
+			if( this->isAfterActive() == true && this->isFreeze() == false )
+			{
+				this->deactivatePicker_();
+			}
 		}
 		else
 		{
@@ -321,7 +324,10 @@ namespace Menge
 
 		if( _value == true )
 		{
-			this->deactivatePicker_();
+			if( this->isAfterActive() == true && this->isLocalHide() == false )
+			{
+				this->deactivatePicker_();
+			}
 		}
 		else
 		{

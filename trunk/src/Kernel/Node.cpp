@@ -418,6 +418,8 @@ namespace Menge
 		{
 			if( *_insert == _node )
 			{
+				_node->removeShallowGrave();
+
 				return true;
 			}
 			
@@ -440,6 +442,15 @@ namespace Menge
 
 		this->_addChild( _node );
 
+		if( this->isFreeze() == false && _node->isFreeze() == true )
+		{
+			_node->freeze( false );
+		}
+		else if( this->isFreeze() == true && _node->isFreeze() == false )
+		{
+			_node->freeze( true );
+		}
+
 		if( this->isActivate() == false && _node->isActivate() == true )
 		{            
 			_node->deactivate();
@@ -447,7 +458,7 @@ namespace Menge
 		else if( this->isActivate() == true && _node->isActivate() == false )
 		{
 			_node->activate();
-		}
+		}		
 
 		_node->invalidateWorldMatrix();
 		_node->invalidateColor();
@@ -700,7 +711,7 @@ namespace Menge
 		{
 			Node * node = *it;
 
-			node->_freeze( _value );
+			node->freeze( _value );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

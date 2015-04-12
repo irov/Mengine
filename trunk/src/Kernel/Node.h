@@ -48,7 +48,6 @@ namespace Menge
 		, public Factorable
 		, public Identity
 		, public Resource
-		, public GlobalHandleAdapter
 		, public Updatable
 		, public Renderable
 		, public BoundingBox
@@ -112,11 +111,6 @@ namespace Menge
 
 	protected:
 		void renderChild_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask );
-
-	protected:
-		bool isEnableGlobalHandle() const override;
-        Eventable * getGlobalHandleEventable() override;
-        Scriptable * getGlobalHandleScriptable() override;
 
 	public:
 		void getScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _position );

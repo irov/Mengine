@@ -202,7 +202,7 @@ namespace Menge
 
 		TVectorWString paths;
 
-		while( true, true )
+		for( ;; )
 		{
 			paths.push_back( pathCorrect );
 

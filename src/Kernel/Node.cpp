@@ -760,11 +760,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::_activate()
 	{
-		if( GlobalHandleAdapter::activateGlobalHandle() == false )
-		{
-			return false;
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -776,15 +771,6 @@ namespace Menge
 	void Node::_deactivate()
 	{
 		Affectorable::stopAllAffectors();
-		//Affectorable::clear();
-
-		if( GlobalHandleAdapter::deactivateGlobalHandle() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Node::_deactivate %s:%s invalid deactivate global handle"
-				, this->getType().c_str()
-				, this->getName().c_str()
-				);
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_afterDeactivate()
@@ -1081,29 +1067,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_setEventListener( PyObject * _listener )
 	{
-		GlobalHandleAdapter::setEventListener( _listener );
+		(void)_listener;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Node::isEnableGlobalHandle() const
-	{
-        bool active = this->isActivate();
-
-		return active;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    Eventable * Node::getGlobalHandleEventable()
-    {
-        Eventable * eventable = static_cast<Eventable *>(this);
-
-        return eventable;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Scriptable * Node::getGlobalHandleScriptable()
-    {
-        Scriptable * scriptable = static_cast<Scriptable *>(this);
-
-        return scriptable;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setLayer( Layer * _layer )
 	{

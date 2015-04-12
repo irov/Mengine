@@ -372,7 +372,7 @@ namespace Menge
 
 		/* Do not replace this by << 32, it gives a compiler warning and it does
 		not work. */
-		return ((((time_t) a2) << 16) << 16) + (a1 << 16) + a0;
+		return ((((time_t)a2) << 16) << 16) + ((time_t)a1 << 16) + a0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileInputStream::time( uint64_t & _time ) const

@@ -16,8 +16,8 @@ namespace Menge
 		, m_orientation(0.f, 0.f, 0.f)
 		, m_identityLocalMatrix(true)
 		, m_identityWorldMatrix(true)
-        , m_invalidateWorldMatrix(true)
-        , m_invalidateLocalMatrix(true)
+        , m_invalidateWorldMatrix(false)
+        , m_invalidateLocalMatrix(false)
 	{
 		mt::ident_m4( m_localMatrix );
 		mt::ident_m4( m_worldMatrix );
@@ -25,8 +25,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setRelationTransformation( Transformation3D * _relation )
 	{
+		bool identityPrevTransformation = true;
+
         if( m_relationTransformation != nullptr )
         {
+			identityPrevTransformation = m_relationTransformation->isIdentityWorldMatrix();
+
             m_relationTransformation->removeRelationChildren_( this );
         }
 
@@ -37,6 +41,21 @@ namespace Menge
             m_relationTransformation->addRelationChildren_( this );
         }
 
+		if( m_relationTransformation == nullptr )
+		{
+			if( identityPrevTransformation == true )
+			{
+				return;
+			}
+		}
+		else
+		{
+			if( m_relationTransformation->isIdentityWorldMatrix() == true && m_identityWorldMatrix == true )
+			{
+				return;
+			}
+		}
+				
 		this->invalidateWorldMatrix();
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -52,6 +71,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::invalidateWorldMatrix()
 	{
+		if( m_invalidateWorldMatrix == true )
+		{
+			return;
+		}
+
 		m_invalidateWorldMatrix = true;
 
 		Transformation3D * single = m_relationChild.single();
@@ -301,9 +325,12 @@ namespace Menge
 			}
 			else
 			{
-				m_worldMatrix = localMatrix;
+				if( m_identityWorldMatrix == false || m_identityLocalMatrix == false )
+				{
+					m_worldMatrix = localMatrix;
 
-				m_identityWorldMatrix = m_identityLocalMatrix;
+					m_identityWorldMatrix = m_identityLocalMatrix;
+				}				
 			}
 		}
 	}

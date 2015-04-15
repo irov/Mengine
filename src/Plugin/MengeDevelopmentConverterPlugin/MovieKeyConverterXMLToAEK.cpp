@@ -200,17 +200,17 @@ namespace Menge
 					frameLayer.source = frame;
 					frameLayer.count = count;
 
-					if( mt::cmp_f_z( frame.scale.x ) == true )
+					if( mt::equal_f_z( frame.scale.x ) == true )
 					{
 						frame.scale.x = mt::m_eps2;
 					}
 
-					if( mt::cmp_f_z( frame.scale.y ) == true )
+					if( mt::equal_f_z( frame.scale.y ) == true )
 					{
 						frame.scale.y = mt::m_eps2;
 					}
 
-					if( mt::cmp_f_z( frame.scale.z ) == true )
+					if( mt::equal_f_z( frame.scale.z ) == true )
 					{
 						frame.scale.z = mt::m_eps2;
 					}
@@ -285,17 +285,17 @@ namespace Menge
 					frame.rotation.y = 0.f;
 					frame.rotation.z = 0.f;
 
-					if( mt::cmp_f_z( frame.scale.x ) == true )
+					if( mt::equal_f_z( frame.scale.x ) == true )
 					{
 						frame.scale.x = mt::m_eps2;
 					}
 
-					if( mt::cmp_f_z( frame.scale.y ) == true )
+					if( mt::equal_f_z( frame.scale.y ) == true )
 					{
 						frame.scale.y = mt::m_eps2;
 					}
 
-					if( mt::cmp_f_z( frame.scale.z ) == true )
+					if( mt::equal_f_z( frame.scale.z ) == true )
 					{
 						frame.scale.z = mt::m_eps2;
 					}
@@ -377,17 +377,17 @@ namespace Menge
 
 				mt::quat_to_euler( qor, frame.rotation );
 
-				if( mt::cmp_f_z( frame.scale.x ) == true )
+				if( mt::equal_f_z( frame.scale.x ) == true )
 				{
 					frame.scale.x = mt::m_eps2;
 				}
 
-				if( mt::cmp_f_z( frame.scale.y ) == true )
+				if( mt::equal_f_z( frame.scale.y ) == true )
 				{
 					frame.scale.y = mt::m_eps2;
 				}
 
-				if( mt::cmp_f_z( frame.scale.z ) == true )
+				if( mt::equal_f_z( frame.scale.z ) == true )
 				{
 					frame.scale.z = mt::m_eps2;
 				}

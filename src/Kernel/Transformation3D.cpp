@@ -123,7 +123,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setOrientationX( float _angle )
 	{
-		if( mt::cmp_f_f( m_orientation.x, _angle ) == true )
+		if( mt::equal_f_f( m_orientation.x, _angle ) == true )
 		{
 			return;
 		}
@@ -135,7 +135,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setOrientationY( float _angle )
 	{
-		if( mt::cmp_f_f( m_orientation.y, _angle ) == true )
+		if( mt::equal_f_f( m_orientation.y, _angle ) == true )
 		{
 			return;
 		}
@@ -147,7 +147,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setOrientationZ( float _angle )
 	{
-		if( mt::cmp_f_f( m_orientation.z, _angle ) == true )
+		if( mt::equal_f_f( m_orientation.z, _angle ) == true )
 		{
 			return;
 		}
@@ -225,17 +225,17 @@ namespace Menge
 	{
 		float ident_e = _m.v0.x + _m.v1.y + _m.v2.z + _m.v3.x + _m.v3.y + _m.v3.z;
 
-		if( mt::cmp_f_f( ident_e, 3.f ) == false )
+		if( mt::equal_f_f( ident_e, 3.f ) == false )
 		{
 			return false;
 		}
 
-		return mt::cmp_f_f( _m.v0.x, 1.f ) == true &&
-			mt::cmp_f_f( _m.v1.y, 1.f ) == true &&
-			mt::cmp_f_f( _m.v2.z, 1.f ) == true &&
-			mt::cmp_f_z( _m.v3.x ) == true &&
-			mt::cmp_f_z( _m.v3.y ) == true &&
-			mt::cmp_f_z( _m.v3.z ) == true;
+		return mt::equal_f_f( _m.v0.x, 1.f ) == true &&
+			mt::equal_f_f( _m.v1.y, 1.f ) == true &&
+			mt::equal_f_f( _m.v2.z, 1.f ) == true &&
+			mt::equal_f_z( _m.v3.x ) == true &&
+			mt::equal_f_z( _m.v3.y ) == true &&
+			mt::equal_f_z( _m.v3.z ) == true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::updateLocalMatrix() const
@@ -243,7 +243,7 @@ namespace Menge
 		m_invalidateLocalMatrix = false;
 
 #	ifdef _DEBUG
-		if( mt::cmp_f_z( m_scale.x ) == true || mt::cmp_f_z( m_scale.y ) == true || mt::cmp_f_z( m_scale.z ) == true )
+		if( mt::equal_f_z( m_scale.x ) == true || mt::equal_f_z( m_scale.y ) == true || mt::equal_f_z( m_scale.z ) == true )
 		{
 			MENGINE_THROW_EXCEPTION("Transformation has zero scale [%f, %f, %f]"
 				, m_scale.x
@@ -262,10 +262,10 @@ namespace Menge
 		mat_scale.v1.y = m_scale.y;
 		mat_scale.v2.z = m_scale.z;
 				
-		if( mt::cmp_f_z( m_orientation.y ) == true &&
-			mt::cmp_f_z( m_orientation.z ) == true )
+		if( mt::equal_f_z( m_orientation.y ) == true &&
+			mt::equal_f_z( m_orientation.z ) == true )
 		{
-			if( mt::cmp_f_z( m_orientation.x ) == true )
+			if( mt::equal_f_z( m_orientation.x ) == true )
 			{
 				m_localMatrix = mat_scale;
 			}

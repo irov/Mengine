@@ -1,5 +1,7 @@
 #	include <math.h>
 
+#	include "utils.h"
+
 namespace mt
 {
 	MENGINE_MATH_FUNCTION_INLINE bool ccd_sphere_sphere( const mt::vec3f & _center1, float _radius1, const mt::vec3f & _velocity1, const mt::vec3f & _center2, float _radius2, const mt::vec3f & _velocity2, float & _time, mt::vec3f & _normal )
@@ -42,23 +44,36 @@ namespace mt
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MENGINE_MATH_FUNCTION_INLINE bool ccd_sphere_plane( const mt::vec3f & _center, float _radius, const mt::vec3f & _velocity, const mt::planef & _plane, float & _time, mt::vec3f & _normal )
+	MENGINE_MATH_FUNCTION_INLINE bool ccd_ray_plane( const mt::vec3f & _point, const mt::vec3f & _velocity, const mt::planef & _plane, float & _time )
 	{
-		mt::vec3f dir;
-		float speed = mt::norm_v3_f( dir, _velocity );
+		mt::vec3f pn;
+		mt::get_plane_normal( pn, _plane );
 
-		mt::vec3f plane_point;
-		if( mt::projection_to_plane( plane_point, _center, dir, _plane ) == false )
+		float denom = mt::dot_v3_v3( _velocity, pn );
+
+		if( mt::greatequal_f_z( denom ) == true )
 		{
 			return false;
 		}
+		
+		float orgon = mt::dot_v3_v3( _point, pn );
 
-		float dist = mt::length_v3_v3( _center, plane_point );
+		float numer = -(_plane.d + orgon);
 
-		_time = (dist - _radius) / speed;
-
-		mt::reflect_plane( _normal, dir, _plane );
+		_time = numer / denom;
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE bool ccd_sphere_plane( const mt::vec3f & _center, float _radius, const mt::vec3f & _velocity, const mt::planef & _plane, float & _time )
+	{
+		mt::vec3f pn;
+		mt::get_plane_normal( pn, _plane );
+
+		mt::vec3f pt = _center - pn * _radius;
+
+		bool successful = mt::ccd_ray_plane( pt, _velocity, _plane, _time );
+
+		return successful;
 	}
 }

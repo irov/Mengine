@@ -811,7 +811,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void Transformation3D_setScale( Transformation3D * _transformation, const mt::vec3f & _scale )
         {
-			if( mt::cmp_f_z( _scale.x ) == true || mt::cmp_f_z( _scale.y ) == true || mt::cmp_f_z( _scale.z ) == true )
+			if( mt::equal_f_z( _scale.x ) == true || mt::equal_f_z( _scale.y ) == true || mt::equal_f_z( _scale.z ) == true )
 			{
 				pybind::throw_exception("Transformation3D::setScale scale xyz not zero! (%f %f %f)"
 					, _scale.x
@@ -3207,7 +3207,7 @@ namespace Menge
                 return 0;
             }
 
-            if( mt::cmp_f_z( _scale.x ) == true || mt::cmp_f_z( _scale.y ) == true || mt::cmp_f_z( _scale.z ) == true )
+            if( mt::equal_f_z( _scale.x ) == true || mt::equal_f_z( _scale.y ) == true || mt::equal_f_z( _scale.z ) == true )
             {
                 LOGGER_ERROR(m_serviceProvider)("Node::scaleTo %s scale xyz not zero! (%f %f %f)"
                     , _node->getName().c_str()

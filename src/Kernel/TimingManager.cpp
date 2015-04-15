@@ -60,7 +60,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t TimingManager::timing( float _delay, const TimingListenerInterfacePtr & _listener )
 	{
-		if( _delay < 0.f || mt::cmp_f_z( _delay ) == true )
+		if( _delay < 0.f || mt::equal_f_z( _delay ) == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TimingManager::timing invalid delay %f"
 				, _delay

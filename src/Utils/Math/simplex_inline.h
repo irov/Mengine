@@ -106,7 +106,7 @@ namespace mt
 		{
 			float d = mt::dot_v3_v3(ABC,AO);
 
-			if( mt::cmp_f_z( d ) == false )
+			if( mt::equal_f_z( d ) == false )
 			{
 				V = ( d > 0) ? ABC : -ABC;
 

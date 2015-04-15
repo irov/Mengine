@@ -63,7 +63,5 @@ namespace Menge
 
 		typedef stdex::vector<BurritoLayer> TVectorBurritoLayer;
 		TVectorBurritoLayer m_layers;
-
-		mt::vec3f m_position;
 	};
 }

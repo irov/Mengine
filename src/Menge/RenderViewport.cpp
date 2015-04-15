@@ -3,8 +3,6 @@
 #	include "Interface/GameInterface.h"
 #	include "Interface/ApplicationInterface.h"
 
-#	include "Interface/NotificatorInterface.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

@@ -9,9 +9,9 @@ namespace mt
 	class planef
 	{
 	public:
-		float x;
-		float y;
-		float z;
+		float a;
+		float b;
+		float c;
 		float d;
 
 		MENGINE_MATH_METHOD_INLINE planef();
@@ -20,6 +20,7 @@ namespace mt
 		MENGINE_MATH_METHOD_INLINE planef( float _x, float _y, float _z, float _d );
 	};
 
+	MENGINE_MATH_FUNCTION_INLINE void get_plane_normal( vec3f & _out, const planef & _plane );
 	MENGINE_MATH_FUNCTION_INLINE void set_plane_by_triangle( planef & _plane, const vec3f & _v0, const vec3f & _v1, const vec3f & _v2 );
 	MENGINE_MATH_FUNCTION_INLINE bool projection_to_plane( vec3f & _out, const vec3f & _eye, const vec3f  & _dir, const planef & _plane );
 	MENGINE_MATH_FUNCTION_INLINE void reflect_plane( vec3f & _out, const vec3f  & _dir, const planef & _plane );

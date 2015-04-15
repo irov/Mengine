@@ -3,6 +3,7 @@
 #	include "Config/Typedef.h"
 
 #	include "Interface/ServiceInterface.h"
+#	include "Interface/NotificatorInterface.h"
 
 #	include "Core/Memory.h"
 

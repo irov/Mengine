@@ -163,10 +163,10 @@ namespace mt
 	/*	cmp	 */
 	MENGINE_MATH_FUNCTION_INLINE bool cmp_v4_v4(const vec4f& _a, const vec4f& _b )
 	{
-		return	mt::cmp_f_f( _a.x, _b.x ) == true &&
-			mt::cmp_f_f( _a.y, _b.y ) == true && 
-			mt::cmp_f_f( _a.z, _b.z ) == true && 
-			mt::cmp_f_f( _a.w, _b.w ) == true;
+		return	mt::equal_f_f( _a.x, _b.x ) == true &&
+			mt::equal_f_f( _a.y, _b.y ) == true && 
+			mt::equal_f_f( _a.z, _b.z ) == true && 
+			mt::equal_f_f( _a.w, _b.w ) == true;
 	}
 
 	MENGINE_MATH_FUNCTION_INLINE bool operator==(const vec4f& _a, const vec4f& _b) 

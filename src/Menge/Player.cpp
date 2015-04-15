@@ -9,7 +9,6 @@
 #	include "Interface/UnicodeInterface.h"
 
 #	include "Interface/NotificationServiceInterface.h"
-#	include "Interface/NotificatorInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/PrefetcherInterface.h"
 

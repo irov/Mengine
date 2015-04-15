@@ -130,10 +130,10 @@ namespace mt
 
 	MENGINE_MATH_FUNCTION_INLINE bool cmp_q_q( const quatf& _a, const quatf& _b )
 	{
-		return	mt::cmp_f_f( _a.w, _b.w ) == true && 
-			mt::cmp_f_f( _a.x, _b.x ) == true && 
-			mt::cmp_f_f( _a.y, _b.y ) == true && 
-			mt::cmp_f_f( _a.z, _b.z ) == true;
+		return	mt::equal_f_f( _a.w, _b.w ) == true && 
+			mt::equal_f_f( _a.x, _b.x ) == true && 
+			mt::equal_f_f( _a.y, _b.y ) == true && 
+			mt::equal_f_f( _a.z, _b.z ) == true;
 	}
 
 	MENGINE_MATH_FUNCTION_INLINE bool operator==(const quatf& _a, const quatf& _b) 
@@ -256,7 +256,7 @@ namespace mt
 	{
 		float len = _rhs.norm();
 
-		if( mt::cmp_f_z( len ) == false )
+		if( mt::equal_f_z( len ) == false )
         {
 			out = _rhs / len;
 		}
@@ -332,7 +332,7 @@ namespace mt
 
 		_out.w = cosf_fast(angle);
 
-		if( mt::cmp_f_z( fsin ) == false )
+		if( mt::equal_f_z( fsin ) == false )
 		{
 			float coef = fsin/angle;
 			_out.x = coef * _rhs.x;
@@ -369,7 +369,7 @@ namespace mt
 			float angle = cosf_fast(_rhs.w);
 			float fsin = sinf_fast(angle);
 
-			if( mt::cmp_f_z( fsin ) == false )
+			if( mt::equal_f_z( fsin ) == false )
 			{
 				float coef = angle/fsin;
 				_out.x = coef * _rhs.x;

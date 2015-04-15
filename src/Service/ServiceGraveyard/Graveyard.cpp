@@ -85,7 +85,7 @@ namespace Menge
 			return;
 		}
 
-		if( mt::cmp_f_z( m_graveyardTime ) == true )
+		if( mt::equal_f_z( m_graveyardTime ) == true )
 		{
 			return;
 		}
@@ -112,7 +112,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		if( mt::cmp_f_z( m_graveyardTime ) == true )
+		if( mt::equal_f_z( m_graveyardTime ) == true )
 		{
 			return nullptr;
 		}

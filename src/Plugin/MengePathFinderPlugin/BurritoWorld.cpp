@@ -119,6 +119,7 @@ namespace Menge
 		m_bounds_max = _max;
 
 		m_bounds_cb = _cb;
+		pybind::incref( m_bounds_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoWorld::createLayer( const ConstString & _layerName, float _parallax, const mt::vec3f & _bounds, PyObject * _cb )

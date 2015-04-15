@@ -13,6 +13,7 @@ namespace Menge
 		, m_velocity( 0.f, 0.f, 0.f )
 		, m_radius(0.f)
 		, m_cb(nullptr)
+		, m_dead(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -29,6 +30,11 @@ namespace Menge
 	const mt::vec3f & BurritoUnit::getPosition() const
 	{
 		return m_position;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoUnit::isDead() const
+	{
+		return m_dead;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoUnit::initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, PyObject * _cb )
@@ -70,16 +76,30 @@ namespace Menge
 
 		_collisionTiming = _timing - ccd_timing;
 		
-		PyObject * py_factor = pybind::ask( m_cb, "()"
+		PyObject * py_result = pybind::ask( m_cb, "()"
 			);
 
+		PyObject * py_factor = pybind::tuple_getitem( py_result, 0 );
+
 		_factor = pybind::extract<mt::vec2f>( py_factor );
+
+		uint32_t flag = pybind::tuple_getitem_t<uint32_t>( py_result, 1 );
+
+		if( flag == 1 )
+		{			
+			m_dead = true;
+		}
 
 		return true;			 
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoUnit::update( float _timing, const mt::vec3f & _translate )
 	{
+		if( m_dead == true )
+		{
+			return;
+		}
+
 		m_position += m_velocity * _timing + _translate;
 		
 		m_node->setLocalPosition( m_position );

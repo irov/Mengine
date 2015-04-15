@@ -262,53 +262,143 @@ namespace Menge
 		mt::vec3f velocity;
 		m_bison->update( _time, _timing, position, velocity );
 
+		mt::vec3f translate_position(0.f, 0.f, 0.f);
+
 		float sq_speed = velocity.sqrlength();
 
-		if( mt::equal_f_z( sq_speed ) == true )
+		if( mt::equal_f_z( sq_speed ) == false )
 		{
-			return;
-		}
+			bool collision = false;
+			float collisionTiming = 0.f;
+			mt::vec2f collisionFactor;
 
-		mt::vec3f translate_position;
-
-
-		bool collision = false;
-		float collisionTiming = 0.f;
-		mt::vec2f collisionFactor;
-
-		for( TVectorBurritoUnit::iterator
-			it = m_units.begin(),
-			it_end = m_units.end();
-		it != it_end;
-		++it )
-		{
-			const BurritoUnit * unit = *it;
-
-			if( unit->check_collision( _timing, position, bison_radius, velocity, collisionTiming, collisionFactor ) == true )
+			for( TVectorBurritoUnit::iterator
+				it = m_units.begin(),
+				it_end = m_units.end();
+			it != it_end;
+			++it )
 			{
-				collision = true;
+				const BurritoUnit * unit = *it;
 
-				break;
+				if( unit->check_collision( _timing, position, bison_radius, velocity, collisionTiming, collisionFactor ) == true )
+				{
+					collision = true;
+
+					break;
+				}
+			}
+
+			if( m_ground != nullptr && collision == false )
+			{
+				collision = m_ground->check_collision( _timing, position, bison_radius, velocity, collisionTiming, collisionFactor );
+			}
+
+			if( collision == true )
+			{
+				mt::vec3f reflect_position;
+				m_bison->reflect( collisionFactor, collisionTiming, reflect_position, velocity );
+
+				translate_position = reflect_position - position;
+			}
+			else
+			{
+				translate_position = velocity * _timing;
+			}
+
+			for( TVectorBurritoLayer::iterator
+				it = m_layers.begin(),
+				it_end = m_layers.end();
+			it != it_end;
+			++it )
+			{
+				BurritoLayer & layer = *it;
+
+				mt::vec3f layer_translate_position = -translate_position * layer.parallax;
+
+				layer.position += layer_translate_position;
+
+				if( mt::equal_f_z( layer.bounds.x ) == false )
+				{
+					while( layer.position.x > layer.bounds.x )
+					{
+						pybind::call( layer.cb, "(Ni)"
+							, pybind::ptr( layer.name )
+							, 0
+							);
+
+						layer.position.x -= layer.bounds.x;
+					}
+
+					while( layer.position.x < -layer.bounds.x )
+					{
+						pybind::call( layer.cb, "(Ni)"
+							, pybind::ptr( layer.name )
+							, 2
+							);
+
+						layer.position.x += layer.bounds.x;
+					}
+				}
+
+				if( mt::equal_f_z( layer.bounds.y ) == false )
+				{
+					while( layer.position.y > layer.bounds.y )
+					{
+						pybind::call( layer.cb, "(Ni)"
+							, pybind::ptr( layer.name )
+							, 1
+							);
+
+						layer.position.y -= layer.bounds.y;
+					}
+
+					while( layer.position.y < -layer.bounds.y )
+					{
+						pybind::call( layer.cb, "(Ni)"
+							, pybind::ptr( layer.name )
+							, 3
+							);
+
+						layer.position.y += layer.bounds.y;
+					}
+				}
+
+				if( mt::equal_f_z( layer.bounds.z ) == false )
+				{
+					while( layer.position.z > layer.bounds.z )
+					{
+						pybind::call( layer.cb, "(Ni)"
+							, pybind::ptr( layer.name )
+							, 4
+							);
+
+						layer.position.z -= layer.bounds.z;
+					}
+
+					while( layer.position.z < -layer.bounds.z )
+					{
+						pybind::call( layer.cb, "(Ni)"
+							, pybind::ptr( layer.name )
+							, 5
+							);
+
+						layer.position.z += layer.bounds.z;
+					}
+				}
+
+				for( TVectorBurritoNode::iterator
+					it_node = layer.nodes.begin(),
+					it_node_end = layer.nodes.end();
+				it_node != it_node_end;
+				++it_node )
+				{
+					BurritoNode * node = *it_node;
+
+					node->node->translate( layer_translate_position );
+				}
 			}
 		}
 
-		if( m_ground != nullptr && collision == false )
-		{
-			collision = m_ground->check_collision( _timing, position, bison_radius, velocity, collisionTiming, collisionFactor );
-		}
-
-		if( collision == true )
-		{
-			mt::vec3f reflect_position;
-			m_bison->reflect( collisionFactor, collisionTiming, reflect_position, velocity );
-
-			translate_position = reflect_position - position;
-		}
-		else
-		{
-			translate_position = velocity * _timing;
-		}
-		
 		for( TVectorBurritoLayer::iterator
 			it = m_layers.begin(),
 			it_end = m_layers.end();
@@ -317,89 +407,7 @@ namespace Menge
 		{
 			BurritoLayer & layer = *it;
 
-			mt::vec3f layer_translate_position = - translate_position * layer.parallax;
-
-			layer.position += layer_translate_position;
-
-			if( mt::equal_f_z( layer.bounds.x ) == false )
-			{
-				while( layer.position.x > layer.bounds.x )
-				{
-					pybind::call( layer.cb, "(Ni)"
-						, pybind::ptr( layer.name )
-						, 0
-						);
-
-					layer.position.x -= layer.bounds.x;
-				}
-
-				while( layer.position.x < -layer.bounds.x )
-				{
-					pybind::call( layer.cb, "(Ni)"
-						, pybind::ptr( layer.name )
-						, 2
-						);
-
-					layer.position.x += layer.bounds.x;
-				}
-			}
-
-			if( mt::equal_f_z( layer.bounds.y ) == false )
-			{
-				while( layer.position.y > layer.bounds.y )
-				{
-					pybind::call( layer.cb, "(Ni)"
-						, pybind::ptr( layer.name )
-						, 1
-						);
-
-					layer.position.y -= layer.bounds.y;
-				}
-
-				while( layer.position.y < -layer.bounds.y )
-				{
-					pybind::call( layer.cb, "(Ni)"
-						, pybind::ptr( layer.name )
-						, 3
-						);
-
-					layer.position.y += layer.bounds.y;
-				}
-			}
-
-			if( mt::equal_f_z( layer.bounds.z ) == false )
-			{
-				while( layer.position.z > layer.bounds.z )
-				{
-					pybind::call( layer.cb, "(Ni)"
-						, pybind::ptr( layer.name )
-						, 4
-						);
-
-					layer.position.z -= layer.bounds.z;
-				}
-
-				while( layer.position.z < -layer.bounds.z )
-				{
-					pybind::call( layer.cb, "(Ni)"
-						, pybind::ptr( layer.name )
-						, 5
-						);
-
-					layer.position.z += layer.bounds.z;
-				}
-			}
-			
-			for( TVectorBurritoNode::iterator
-				it_node = layer.nodes.begin(),
-				it_node_end = layer.nodes.end();
-			it_node != it_node_end;
-			++it_node )
-			{
-				BurritoNode * node = *it_node;
-
-				node->node->translate( layer_translate_position );
-			}
+			mt::vec3f layer_translate_position = -translate_position * layer.parallax;
 
 			for( TVectorBurritoUnit::iterator
 				it_unit = layer.units.begin(),

@@ -79,5 +79,7 @@ namespace Menge
 	void BurritoUnit::update( float _timing, const mt::vec3f & _translate )
 	{
 		m_position += m_velocity * _timing + _translate;
+
+		m_node->setLocalPosition( m_position );
 	}	
 }

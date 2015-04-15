@@ -272,19 +272,28 @@ namespace Menge
 			float collisionTiming = 0.f;
 			mt::vec2f collisionFactor;
 
-			for( TVectorBurritoUnit::iterator
-				it = m_units.begin(),
-				it_end = m_units.end();
+			for( TVectorBurritoLayer::const_iterator
+				it = m_layers.begin(),
+				it_end = m_layers.end();
 			it != it_end;
 			++it )
 			{
-				const BurritoUnit * unit = *it;
+				const BurritoLayer & layer = *it;
 
-				if( unit->check_collision( _timing, position, bison_radius, velocity, collisionTiming, collisionFactor ) == true )
+				for( TVectorBurritoUnit::const_iterator
+					it_unit = layer.units.begin(),
+					it_unit_end = layer.units.end();
+				it_unit != it_unit_end;
+				++it_unit )
 				{
-					collision = true;
+					const BurritoUnit * unit = *it_unit;
 
-					break;
+					if( unit->check_collision( _timing, position, bison_radius, velocity, collisionTiming, collisionFactor ) == true )
+					{
+						collision = true;
+
+						break;
+					}
 				}
 			}
 

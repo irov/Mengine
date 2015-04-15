@@ -21,7 +21,7 @@ namespace mt
 	{
 		float zn = s_line_dot( _l1.a, _l1.b, _l2.a, _l2.b );
 
-		if( mt::cmp_f_z( zn ) == true )
+		if( mt::equal_f_z( zn ) == true )
 		{
 			return false;
 		}

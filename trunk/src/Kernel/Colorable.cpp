@@ -31,7 +31,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setPersonalAlpha( float _alpha )
 	{
-		if( mt::cmp_f_f( m_colorPersonal.getA(), _alpha) == true )
+		if( mt::equal_f_f( m_colorPersonal.getA(), _alpha) == true )
 		{ 
 			return;
 		}
@@ -57,7 +57,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setLocalColorR( float _value )
 	{
-		if( mt::cmp_f_f( m_colorLocal.getR(), _value ) == true )
+		if( mt::equal_f_f( m_colorLocal.getR(), _value ) == true )
 		{
 			return;
 		}
@@ -69,7 +69,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setLocalColorG( float _value )
 	{
-		if( mt::cmp_f_f( m_colorLocal.getG(), _value ) == true )
+		if( mt::equal_f_f( m_colorLocal.getG(), _value ) == true )
 		{
 			return;
 		}
@@ -81,7 +81,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setLocalColorB( float _value )
 	{
-		if( mt::cmp_f_f( m_colorLocal.getB(), _value ) == true )
+		if( mt::equal_f_f( m_colorLocal.getB(), _value ) == true )
 		{
 			return;
 		}
@@ -93,7 +93,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::setLocalColorAlpha( float _value )
 	{
-		if( mt::cmp_f_f( m_colorLocal.getA(), _value ) == true )
+		if( mt::equal_f_f( m_colorLocal.getA(), _value ) == true )
 		{
 			return;
 		}
@@ -115,6 +115,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::invalidateColor()
 	{
+		if( m_invalidateColor == true )
+		{
+			return;
+		}
+
 		m_invalidateColor = true;
 
 		m_localTransparent = m_colorLocal.getA() < 0.0001f;

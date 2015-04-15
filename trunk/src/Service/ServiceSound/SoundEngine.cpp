@@ -1008,7 +1008,7 @@ namespace Menge
 
 		float current_pos = source->source->getPosMs();
 
-		if( mt::cmp_f_f( current_pos, _pos ) == true )
+		if( mt::equal_f_f( current_pos, _pos ) == true )
 		{
 			if( hasBufferUpdate == true )				
 			{

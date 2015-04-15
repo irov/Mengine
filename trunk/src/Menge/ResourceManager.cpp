@@ -332,6 +332,8 @@ namespace Menge
 			entry->group = _group;
 
 			entry->resources.push_back( resource );
+
+			m_resourcesCache.insert( entry, nullptr );
 		}
 		else
 		{

@@ -47,13 +47,16 @@ namespace Menge
 		const mt::vec3f & getVelocity() const;
 
 	public:
-		void update_velocity( float _time, float _timing, mt::vec3f & _velocity );
-		void reflect_velocity( float _factor );
+		void update( float _time, float _timing, mt::vec3f & _position, mt::vec3f & _velocity );
+
+	public:
+		void reflect( const mt::vec2f & _factor, float _timing, mt::vec3f & _position, mt::vec3f & _velocity );
 
 	protected:		
 		Node * m_node;
 		float m_radius;
 
+		mt::vec3f m_position;
 		mt::vec3f m_velocity;
 
 		typedef stdex::vector<BurritoBisonForce> TVectorBurritoBisonForce;

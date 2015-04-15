@@ -177,6 +177,8 @@ namespace Menge
 		, m_graveyard(nullptr)
 		, m_projectVersion(0)
 		, m_debugPause(false)
+		, m_debugFileOpen(false)
+		, m_notifyDebugOpenFile(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1097,31 +1099,21 @@ namespace Menge
 			}
 
 
-			//if( _key == KC_F4 && _isDown && m_enableDebug )
-			//{
-			//	m_debugCRT = !m_debugCRT;
+			if( _key == KC_F4 && _isDown )
+			{
+				m_debugFileOpen = !m_debugFileOpen;
 
-			//	if( m_debugCRT == true )
-			//	{
-			//		int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
-
-			//		// Turn on leak-checking bit.
-			//		tmpFlag |= _CRTDBG_LEAK_CHECK_DF;
-
-			//		// Set flag to the new value.
-			//		_CrtSetDbgFlag( tmpFlag );
-			//	}
-			//	else
-			//	{
-			//		int tmpFlag = _CrtSetDbgFlag( _CRTDBG_REPORT_FLAG );
-
-			//		// Turn off CRT block checking bit.
-			//		tmpFlag &= ~_CRTDBG_CHECK_CRT_DF;
-
-			//		// Set flag to the new value.
-			//		_CrtSetDbgFlag( tmpFlag );
-			//	}
-			//}
+				if( m_debugFileOpen == true )
+				{
+					m_notifyDebugOpenFile = NOTIFICATION_SERVICE( m_serviceProvider )
+						->addObserverMethod( NOTIFICATOR_DEBUG_OPEN_FILE, this, &Application::notifyDebugOpenFile_ );
+				}
+				else
+				{
+					NOTIFICATION_SERVICE( m_serviceProvider )
+						->removeObserver( NOTIFICATOR_DEBUG_OPEN_FILE, m_notifyDebugOpenFile );
+				}
+			}
 
 			if( _key == KC_F11 && _isDown == true )
 			{
@@ -1259,6 +1251,14 @@ namespace Menge
 		bool handle = m_game->handleMouseMove( _touchId, _point, _dx, _dy );
 
 		return handle;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::notifyDebugOpenFile_( const FilePath & _folder, const FilePath & _fileName )
+	{ 
+		LOGGER_WARNING( m_serviceProvider )("open %s:%s"
+			, _folder.c_str()
+			, _fileName.c_str()
+			);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::mouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )

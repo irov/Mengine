@@ -172,7 +172,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie::_isValid() const
     {
-		if( mt::cmp_f_z( m_frameDuration ) == true )
+		if( mt::equal_f_z( m_frameDuration ) == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_isValid: '%s'm_frameDuration == 0.f"
 				, this->getName().c_str()

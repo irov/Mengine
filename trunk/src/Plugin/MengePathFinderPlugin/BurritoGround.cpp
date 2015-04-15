@@ -23,25 +23,24 @@ namespace Menge
 		pybind::incref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BurritoGround::check_collision( const mt::vec3f & _position, float _radius, const mt::vec3f & _velocity, float _timing, float & _collisionTiming, float & _factor ) const
+	bool BurritoGround::check_collision( const mt::vec3f & _position, float _radius, const mt::vec3f & _velocity, float _timing, float & _collisionTiming, mt::vec2f & _factor ) const
 	{
 		float potential_collisionTiming;
-		mt::vec3f normal_collision;
-		if( mt::ccd_sphere_plane( _position, _radius, _velocity, m_plane, potential_collisionTiming, normal_collision ) == false )
+		if( mt::ccd_sphere_plane( _position, _radius, _velocity, m_plane, potential_collisionTiming ) == false )
 		{ 
 			return false;
 		}
 
-		if( _timing > potential_collisionTiming )
+		if( potential_collisionTiming > _timing )
 		{
 			return false;
 		}
 
-		_collisionTiming = potential_collisionTiming - _timing;
+		_collisionTiming = _timing - potential_collisionTiming;
 
 		PyObject * py_factor = pybind::ask( m_cb, "()" );
 
-		_factor = pybind::extract<float>( py_factor );
+		_factor = pybind::extract<mt::vec2f>( py_factor );
 
 		return true;
 	}

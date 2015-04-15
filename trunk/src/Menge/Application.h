@@ -18,7 +18,6 @@
 #   include "Interface/StringizeInterface.h"
 
 #	include "Interface/NotificationServiceInterface.h"
-#	include "Interface/NotificatorInterface.h"
 
 #   include "Interface/MousePickerSystemInterface.h"
 
@@ -210,6 +209,9 @@ namespace Menge
 		void invalidateWindow_();
 
 	protected:
+		void notifyDebugOpenFile_( const FilePath & _folder, const FilePath & _fileName );
+
+	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
 		ConsoleInterface * m_console;
@@ -297,5 +299,8 @@ namespace Menge
 		bool m_resourceCheckCritical;
 
 		bool m_debugPause;
+
+		bool m_debugFileOpen;
+		Observer * m_notifyDebugOpenFile;
 	};
 }

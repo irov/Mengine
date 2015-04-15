@@ -2,6 +2,7 @@
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
+#	include "Interface/NotificationServiceInterface.h"
 
 #   include "Utils/Logger/Logger.h"
 
@@ -121,6 +122,11 @@ namespace Menge
 
 			return false;
 		}
+
+#	ifdef _DEBUG
+		NOTIFICATION_SERVICE( m_serviceProvider )
+			->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folder, _fileName );
+#	endif
 
 		return true;
 	}

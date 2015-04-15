@@ -29,7 +29,6 @@ namespace Menge
 		: m_bison(nullptr)
 		, m_bounds(0.f, 0.f, 0.f)
 		, m_cb(nullptr)
-		, m_position(0.f, 0.f, 0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -137,8 +136,16 @@ namespace Menge
 			return;
 		}
 
+		mt::vec3f position;
 		mt::vec3f velocity;
-		m_bison->update_velocity( _time, _timing, velocity );
+		m_bison->update( _time, _timing, position, velocity );
+
+		float sq_speed = velocity.sqrlength();
+
+		if( mt::equal_f_z( sq_speed ) == true )
+		{
+			return;
+		}
 
 		mt::vec3f translate_position;
 		if( m_ground != nullptr )
@@ -146,25 +153,24 @@ namespace Menge
 			float bison_radius = m_bison->getRadius();
 
 			float collisionTiming;
-			float collisionFactor;
-			if( m_ground->check_collision( m_position, bison_radius, velocity, _timing, collisionTiming, collisionFactor ) == false )
+			mt::vec2f collisionFactor;
+			if( m_ground->check_collision( position, bison_radius, velocity, _timing, collisionTiming, collisionFactor ) == false )
 			{
 				translate_position = velocity * _timing;
 			}
 			else
 			{
-				m_bison->reflect_velocity( collisionFactor );
+				mt::vec3f reflect_position;
+				m_bison->reflect( collisionFactor, collisionTiming, reflect_position, velocity );
 
-				translate_position = -velocity * collisionTiming;
+				translate_position = reflect_position - position;
 			}
 		}
 		else
 		{
 			translate_position = velocity * _timing;
 		}
-
 		
-
 		for( TVectorBurritoLayer::iterator
 			it = m_layers.begin(),
 			it_end = m_layers.end();
@@ -177,7 +183,7 @@ namespace Menge
 
 			layer.position += layer_translate_position;
 
-			if( mt::cmp_f_z( layer.bounds.x ) == false )
+			if( mt::equal_f_z( layer.bounds.x ) == false )
 			{
 				while( layer.position.x > layer.bounds.x )
 				{
@@ -200,7 +206,7 @@ namespace Menge
 				}
 			}
 
-			if( mt::cmp_f_z( layer.bounds.y ) == false )
+			if( mt::equal_f_z( layer.bounds.y ) == false )
 			{
 				while( layer.position.y > layer.bounds.y )
 				{
@@ -223,7 +229,7 @@ namespace Menge
 				}
 			}
 
-			if( mt::cmp_f_z( layer.bounds.z ) == false )
+			if( mt::equal_f_z( layer.bounds.z ) == false )
 			{
 				while( layer.position.z > layer.bounds.z )
 				{

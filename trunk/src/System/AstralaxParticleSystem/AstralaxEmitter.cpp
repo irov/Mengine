@@ -100,7 +100,7 @@ namespace Menge
         }
         else
         {
-			if( mt::cmp_f_f( backgroundScale, 1.f ) == false )
+			if( mt::equal_f_f( backgroundScale, 1.f ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("AstralaxEmitter::setupBasePosition_ %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
 					, m_emitterName

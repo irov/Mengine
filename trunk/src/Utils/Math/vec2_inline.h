@@ -137,8 +137,8 @@ namespace mt
 
 	MENGINE_MATH_FUNCTION_INLINE bool cmp_v2_v2(const vec2f& _a, const vec2f& _b )
 	{
-		return mt::cmp_f_f( _a.x, _b.x ) == true &&
-			mt::cmp_f_f( _a.y, _b.y ) == true;
+		return mt::equal_f_f( _a.x, _b.x ) == true &&
+			mt::equal_f_f( _a.y, _b.y ) == true;
 	}
 
 	MENGINE_MATH_FUNCTION_INLINE bool operator==(const vec2f& _a, const vec2f& _b)

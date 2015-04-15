@@ -944,11 +944,11 @@ namespace mt
 		float y;
 		float z;
 
-		if( mt::cmp_f_f( fabsf( sinY ), 1.f ) == true )
+		if( mt::equal_f_f( fabsf( sinY ), 1.f ) == true )
 		{
 			x = 0.f;
 
-			if( mt::cmp_f_f( sinY, -1.f ) == true )
+			if( mt::equal_f_f( sinY, -1.f ) == true )
 			{
 				y = m_half_pi;
 				z = x + atan2f( _rotate.v0.y, _rotate.v0.z );

@@ -5,7 +5,6 @@
 
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/NotificationServiceInterface.h"
-#	include "Interface/NotificatorInterface.h"
 
 #	include <math.h>
 

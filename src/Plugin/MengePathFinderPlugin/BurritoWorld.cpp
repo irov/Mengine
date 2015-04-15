@@ -13,9 +13,9 @@ namespace Menge
 			{
 			}
 
-			bool operator()( const BurritoNode & _node ) const
+			bool operator()( BurritoNode * _node ) const
 			{
-				return _node.node == node;
+				return _node->node == node;
 			}
 
 			Node * node;
@@ -23,24 +23,76 @@ namespace Menge
 		private:
 			FBurritoNodeRemove & operator = ( const FBurritoNodeRemove & _name );
 		};
+		//////////////////////////////////////////////////////////////////////////
+		struct FBurritoUnitRemove
+		{
+			FBurritoUnitRemove( Node * _node )
+				: node( _node )
+			{
+			}
+
+			bool operator()( BurritoUnit * _unit ) const
+			{
+				Node * unit_node = _unit->getNode();
+
+				return unit_node == node;
+			}
+
+			Node * node;
+
+		private:
+			FBurritoUnitRemove & operator = (const FBurritoUnitRemove & _name);
+		};
+		//////////////////////////////////////////////////////////////////////////
+		struct FBurritoUnitBounds
+		{
+			FBurritoUnitBounds( const mt::vec3f & _bounds_min, const mt::vec3f & _bounds_max, PyObject * _cb )
+				: bounds_min( _bounds_min )
+				, bounds_max( _bounds_max )
+				, cb(_cb)
+			{
+			}
+
+			bool operator()( BurritoUnit * _unit ) const
+			{				
+				const mt::vec3f & unit_pos = _unit->getPosition();
+
+				if( bounds_min.x < unit_pos.x && bounds_min.y < unit_pos.y && bounds_max.x > unit_pos.x && bounds_max.y > unit_pos.y )
+				{
+					return false;
+				}
+
+				Node * unit_node = _unit->getNode();
+
+				pybind::call( cb, "(N)"
+					, pybind::ptr( unit_node )
+					);
+
+				return true;
+			}
+
+			mt::vec3f bounds_min;
+			mt::vec3f bounds_max;
+			PyObject * cb;
+
+		private:
+			FBurritoUnitBounds & operator = (const FBurritoUnitBounds & _name);
+		};
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld::BurritoWorld()
 		: m_bison(nullptr)
-		, m_bounds(0.f, 0.f, 0.f)
-		, m_cb(nullptr)
+		, m_bounds_min( 0.f, 0.f, 0.f )
+		, m_bounds_max( 0.f, 0.f, 0.f )
+		, m_bounds_cb( nullptr )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld::~BurritoWorld()
 	{
-		if( m_cb != nullptr )
-		{
-			pybind::decref( m_cb );
-			m_cb = nullptr;
-		}
-
 		delete m_bison;
+
+		pybind::decref( m_bounds_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoBison * BurritoWorld::createBison( Node * _node, float _radius )
@@ -61,10 +113,18 @@ namespace Menge
 		m_ground->initialize( p, _cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::createLayer( const ConstString & _name, float _parallax, const mt::vec3f & _bounds, PyObject * _cb )
+	void BurritoWorld::addUnitBounds( const mt::vec3f & _min, const mt::vec3f & _max, PyObject * _cb )
+	{
+		m_bounds_min = _min;
+		m_bounds_max = _max;
+
+		m_bounds_cb = _cb;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoWorld::createLayer( const ConstString & _layerName, float _parallax, const mt::vec3f & _bounds, PyObject * _cb )
 	{
 		BurritoLayer layer;
-		layer.name = _name;
+		layer.name = _layerName;
 		layer.parallax = _parallax;
 		mt::ident_v3(layer.position);
 
@@ -76,7 +136,7 @@ namespace Menge
 		m_layers.push_back( layer );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BurritoWorld::addLayerNode( const ConstString & _name, Node * _node )
+	bool BurritoWorld::addLayerNode( const ConstString & _layerName, Node * _node )
 	{
 		if( _node == nullptr )
 		{
@@ -91,13 +151,14 @@ namespace Menge
 		{
 			BurritoLayer & layer = *it;
 
-			if( layer.name != _name )
+			if( layer.name != _layerName )
 			{
 				continue;
 			}
 
-			BurritoNode node;
-			node.node = _node;
+			BurritoNode * node = new BurritoNode;
+
+			node->node = _node;
 
 			layer.nodes.push_back( node );
 
@@ -107,7 +168,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::removeLayerNode( const ConstString & _name, Node * _node )
+	void BurritoWorld::removeLayerNode( const ConstString & _layerName, Node * _node )
 	{
 		for( TVectorBurritoLayer::iterator
 			it = m_layers.begin(),
@@ -117,13 +178,72 @@ namespace Menge
 		{
 			BurritoLayer & layer = *it;
 
-			if( layer.name != _name )
+			if( layer.name != _layerName )
 			{
 				continue;
 			}
 			
 			TVectorBurritoNode::iterator it_erase = std::find_if( layer.nodes.begin(), layer.nodes.end(), FBurritoNodeRemove(_node) );
+
+			delete *it_erase;
+
 			layer.nodes.erase( it_erase );
+
+			break;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoWorld::addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, PyObject * _cb )
+	{
+		if( _node == nullptr )
+		{
+			return false;
+		}
+
+		for( TVectorBurritoLayer::iterator
+			it = m_layers.begin(),
+			it_end = m_layers.end();
+		it != it_end;
+		++it )
+		{
+			BurritoLayer & layer = *it;
+
+			if( layer.name != _layerName )
+			{
+				continue;
+			}
+
+			BurritoUnit * unit = new BurritoUnit;
+			unit->initialize( _node, _position, _velocity, _radius, _cb );
+			
+			layer.units.push_back( unit );
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoWorld::removeLayerUnit( const ConstString & _layerName, Node * _node )
+	{
+		for( TVectorBurritoLayer::iterator
+			it = m_layers.begin(),
+			it_end = m_layers.end();
+		it != it_end;
+		++it )
+		{
+			BurritoLayer & layer = *it;
+
+			if( layer.name != _layerName )
+			{
+				continue;
+			}
+
+			TVectorBurritoUnit::iterator it_erase = std::find_if( layer.units.begin(), layer.units.end(), FBurritoUnitRemove( _node ) );
+
+			delete *it_erase;
+
+			layer.units.erase( it_erase );
 
 			break;
 		}
@@ -135,6 +255,8 @@ namespace Menge
 		{
 			return;
 		}
+
+		float bison_radius = m_bison->getRadius();
 
 		mt::vec3f position;
 		mt::vec3f velocity;
@@ -148,23 +270,39 @@ namespace Menge
 		}
 
 		mt::vec3f translate_position;
-		if( m_ground != nullptr )
+
+
+		bool collision = false;
+		float collisionTiming = 0.f;
+		mt::vec2f collisionFactor;
+
+		for( TVectorBurritoUnit::iterator
+			it = m_units.begin(),
+			it_end = m_units.end();
+		it != it_end;
+		++it )
 		{
-			float bison_radius = m_bison->getRadius();
+			const BurritoUnit * unit = *it;
 
-			float collisionTiming;
-			mt::vec2f collisionFactor;
-			if( m_ground->check_collision( position, bison_radius, velocity, _timing, collisionTiming, collisionFactor ) == false )
+			if( unit->check_collision( _timing, position, bison_radius, velocity, collisionTiming, collisionFactor ) == true )
 			{
-				translate_position = velocity * _timing;
-			}
-			else
-			{
-				mt::vec3f reflect_position;
-				m_bison->reflect( collisionFactor, collisionTiming, reflect_position, velocity );
+				collision = true;
 
-				translate_position = reflect_position - position;
+				break;
 			}
+		}
+
+		if( m_ground != nullptr && collision == false )
+		{
+			collision = m_ground->check_collision( _timing, position, bison_radius, velocity, collisionTiming, collisionFactor );
+		}
+
+		if( collision == true )
+		{
+			mt::vec3f reflect_position;
+			m_bison->reflect( collisionFactor, collisionTiming, reflect_position, velocity );
+
+			translate_position = reflect_position - position;
 		}
 		else
 		{
@@ -258,10 +396,27 @@ namespace Menge
 			it_node != it_node_end;
 			++it_node )
 			{
-				BurritoNode & node = *it_node;
+				BurritoNode * node = *it_node;
 
-				node.node->translate( layer_translate_position );
-			}			
+				node->node->translate( layer_translate_position );
+			}
+
+			for( TVectorBurritoUnit::iterator
+				it_unit = layer.units.begin(),
+				it_unit_end = layer.units.end();
+			it_unit != it_unit_end;
+			++it_unit )
+			{
+				BurritoUnit * unit = *it_unit;
+
+				unit->update( _timing, layer_translate_position );
+			}
+
+			if( m_bounds_cb != nullptr )
+			{
+				TVectorBurritoUnit::iterator it_erase = std::remove_if( layer.units.begin(), layer.units.end(), FBurritoUnitBounds( m_bounds_min, m_bounds_max, m_bounds_cb ) );
+				layer.units.erase( it_erase, layer.units.end() );
+			}
 		}
 	}
 }

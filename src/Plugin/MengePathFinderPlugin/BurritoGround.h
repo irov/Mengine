@@ -17,7 +17,7 @@ namespace Menge
 		void initialize( const mt::planef & _plane, PyObject * _cb );
 
 	public:
-		bool check_collision( const mt::vec3f & _position, float _radius, const mt::vec3f & _velocity, float _timing, float & _collisionTiming, mt::vec2f & _factor ) const;
+		bool check_collision( float _timing, const mt::vec3f & _position, float _radius, const mt::vec3f & _velocity, float & _collisionTiming, mt::vec2f & _factor ) const;
 
 	protected:		
 		mt::planef m_plane;

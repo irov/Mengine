@@ -76,7 +76,8 @@ namespace Menge
 
 		_collisionTiming = _timing - ccd_timing;
 		
-		PyObject * py_result = pybind::ask( m_cb, "()"
+		PyObject * py_result = pybind::ask( m_cb, "(N)"
+			, pybind::ptr(m_node)
 			);
 
 		PyObject * py_factor = pybind::tuple_getitem( py_result, 0 );

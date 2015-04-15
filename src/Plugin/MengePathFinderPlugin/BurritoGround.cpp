@@ -38,7 +38,8 @@ namespace Menge
 
 		_collisionTiming = _timing - ccd_timing;
 
-		PyObject * py_factor = pybind::ask( m_cb, "()" );
+		PyObject * py_factor = pybind::ask( m_cb, "()"
+			);
 
 		_factor = pybind::extract<mt::vec2f>( py_factor );
 

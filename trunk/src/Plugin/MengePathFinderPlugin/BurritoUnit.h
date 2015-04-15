@@ -17,6 +17,8 @@ namespace Menge
 		Node * getNode() const;
 		const mt::vec3f & getPosition() const;
 
+		bool isDead() const;
+
 	public:
 		void initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, PyObject * _cb );
 
@@ -38,5 +40,7 @@ namespace Menge
 		float m_radius;
 
 		PyObject * m_cb;
+
+		mutable bool m_dead;
 	};
 }

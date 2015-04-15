@@ -55,6 +55,11 @@ namespace Menge
 
 			bool operator()( BurritoUnit * _unit ) const
 			{				
+				if( _unit->isDead() == true )
+				{
+					return true;
+				}
+
 				const mt::vec3f & unit_pos = _unit->getPosition();
 
 				if( bounds_min.x < unit_pos.x && bounds_min.y < unit_pos.y && bounds_max.x > unit_pos.x && bounds_max.y > unit_pos.y )

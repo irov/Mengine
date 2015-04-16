@@ -1975,12 +1975,6 @@ namespace Menge
 			m_threadSystem = nullptr;
 		}
 
-		if( m_notificationService != nullptr )
-		{
-			SERVICE_DESTROY(NotificationService, m_notificationService);
-			m_notificationService = nullptr;
-		}
-
 		if( m_scriptService != nullptr )
 		{
 			SERVICE_DESTROY( ScriptService, m_scriptService );
@@ -2046,6 +2040,12 @@ namespace Menge
 
 			delete m_loggerConsole;
 			m_loggerConsole = nullptr;
+		}
+
+		if( m_notificationService != nullptr )
+		{
+			SERVICE_DESTROY( NotificationService, m_notificationService );
+			m_notificationService = nullptr;
 		}
 
 		SERVICE_DESTROY( LogService, m_logService );

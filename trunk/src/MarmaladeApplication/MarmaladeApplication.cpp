@@ -1233,8 +1233,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initialize( const String & _commandLine )
     {
-		this->initializeMarmaladePauseCallback_();
-
         m_commandLine = " " + _commandLine + " ";
 
         setlocale( LC_CTYPE, "" );
@@ -1608,6 +1606,8 @@ namespace Menge
 		m_timer->reset();
 
 		m_application->turnSound( true );
+
+		this->initializeMarmaladePauseCallback_();
 
         return true;
     }

@@ -2,17 +2,15 @@
 
 options
 {
-	arm-arch=armv6
-	arm-fpu=vfp
+	#arm-arch=armv6
+	#arm-fpu=vfp
 	#strict-mkb
-    strict-compile
-	enable-exceptions    
+    #strict-compile
+	enable-exceptions
 	preinclude=preinclude_application.h
     
-    module_path="./dependencies/marmalade-astralax"
-    
     app-icf="app.icf"
-    s3e-data-dir="d:/Projects/DynastyBuild_Marmalade/data"
+    s3e-data-dir="d:/Projects/ZombielandBuild_ETC1"
 }
 
 library
@@ -23,9 +21,10 @@ library
     
     "./dependencies/marm_libogg,libogg"
     "./dependencies/marm_libvorbis,libvorbis"
-    "./dependencies/marm_libvorbis,libvorbisfile"    
-}
+    "./dependencies/marm_libvorbis,libvorbisfile"
 
+    "./dependencies/marmalade-astralax,mmagic3d"
+}
 
 defines
 {
@@ -35,7 +34,6 @@ subprojects
 {
     iwutil
     iwgl
-    mmagic
 }
 
 includepaths
@@ -56,7 +54,7 @@ includepaths
     "../dependencies/libjpeg"
     "../dependencies/stdex/include"    
     
-    "./dependencies/marmalade-astralax/lib"
+    "./dependencies/marmalade-astralax"
 }
 
 files
@@ -103,9 +101,9 @@ files
     ("../src/System/MarmaladeSoundSystem")
 	"*.h"
 	"*.cpp"    
-    
-    [System/AstralaxParticleSystem]
-    ("../src/System/AstralaxParticleSystem")	
+   
+    [System/AstralaxParticleSystem2]
+    ("../src/System/AstralaxParticleSystem2")	
 	"*.h"
 	"*.cpp"    
 }
@@ -115,6 +113,11 @@ subproject assets.mkf
 #### AUTO GENERATED deployment settings from DeployTool.exe. Do not edit below this line ####
 deployments
 {
+	["Burritos_Android"]
+	app-icf='d:/Projects/BurritosBuild_ETC1/app.icf'
+	assets='Burritos_Android'
+	caption='Burritos'
+	name='Burritos'
 	["Default"]
 	["HolidayFun_Android"]
 	app-icf='d:/Projects/HolidayFunBuild_ETC1/app.icf'

@@ -10,7 +10,8 @@ options
 	preinclude=preinclude_application.h
     
     app-icf="app.icf"
-    s3e-data-dir="d:/Projects/ZombielandBuild_ETC1"
+    #s3e-data-dir="d:/Projects/ZombielandBuild_ETC1"
+    s3e-data-dir="/Users/admin/Desktop/ZombielandBuild_PVRTC"
 }
 
 library

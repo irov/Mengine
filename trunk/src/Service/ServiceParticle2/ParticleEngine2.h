@@ -46,5 +46,7 @@ namespace Menge
 
 		uint32_t m_maxParticlesNum;
 		uint32_t m_renderParticleNum;
+
+		bool m_available;
 	};
 };

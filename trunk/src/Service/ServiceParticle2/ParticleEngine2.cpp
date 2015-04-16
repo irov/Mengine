@@ -21,6 +21,7 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_maxParticlesNum(2000)
 		, m_renderParticleNum(0)
+		, m_available(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,9 +41,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEngine2::initialize()
 	{
-		bool avaliable = CONFIG_VALUE( m_serviceProvider, "Engine", "ParticleService2Avaliable", false );
+		m_available = CONFIG_VALUE( m_serviceProvider, "Engine", "ParticleService2Avaliable", true );
 
-		if( avaliable == false )
+		if( m_available == false )
 		{
 			return true;
 		}
@@ -64,11 +65,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterContainerInterface2Ptr ParticleEngine2::createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName )
 	{
-		if( SERVICE_EXIST( m_serviceProvider, ParticleSystemInterface2 ) == false )
+		if( m_available == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ParticleEngine2::createEmitterContainerFromFile can't initialize particle system 2"
-				);
-
 			return nullptr;
 		}
 		

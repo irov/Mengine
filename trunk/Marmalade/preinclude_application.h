@@ -23,6 +23,8 @@
 #   define MENGINE_MARMALADE
 #	define MENGINE_MAX_PATH 128
 
+#	define MAGIC_3D
+
 #   define nullptr 0
 #   define STDEX_UNSUPPOT_NULLPTR_T
     

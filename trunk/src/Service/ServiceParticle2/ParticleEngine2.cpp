@@ -2,6 +2,7 @@
 
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
+#   include "Interface/ConfigInterface.h"
 
 #   include "Config/Blobject.h"
 
@@ -39,6 +40,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEngine2::initialize()
 	{
+		bool avaliable = CONFIG_VALUE( m_serviceProvider, "Engine", "ParticleService2Avaliable", false );
+
+		if( avaliable == false )
+		{
+			return true;
+		}
+
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
 			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
 

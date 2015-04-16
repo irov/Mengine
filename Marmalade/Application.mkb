@@ -2,11 +2,11 @@
 
 options
 {
-	#arm-arch=armv6
-	#arm-fpu=vfp
+	arm-arch=armv6
+	arm-fpu=vfp
 	#strict-mkb
     #strict-compile
-	enable-exceptions
+	enable-exceptions    
 	preinclude=preinclude_application.h
     
     app-icf="app.icf"
@@ -39,6 +39,9 @@ subprojects
 includepaths
 {
     "."
+    
+    "./Modified/boost"
+    
 	"../src"
 	"../src/Utils"
 	"../src/MarmaladeApplication"

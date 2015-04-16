@@ -743,17 +743,20 @@ namespace Menge
 			return false;
 		}
 
-		if( particleService->initialize() == false )
+		if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to initialize ParticleService2"
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleService2"
 				);
 
 			return false;
 		}
 
-		if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
+		if( particleService->initialize() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleService2"
+			SERVICE_UNREGISTRY( m_serviceProvider, particleService );
+			SERVICE_UNREGISTRY( m_serviceProvider, particleSystem );
+
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to initialize ParticleService2"
 				);
 
 			return false;

@@ -917,6 +917,8 @@ namespace Menge
 
 		if( particleService->initialize() == false )
 		{
+			SERVICE_UNREGISTRY( m_serviceProvider, particleService );
+
 			return false;
 		}
 

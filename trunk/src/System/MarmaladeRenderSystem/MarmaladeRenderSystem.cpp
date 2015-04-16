@@ -1060,6 +1060,15 @@ namespace Menge
 
 		GLint textureColorDataType = s_getGLColorDataType( hwFormat );
 
+		if( textureColorDataType == 0 )
+		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createImage invalid get GL Color Data Type for PF %d"
+				, hwFormat
+				);
+
+			return nullptr;
+		}
+
 		GLuint tuid = 0;
 		GLCALL( m_serviceProvider, glGenTextures, ( 1, &tuid ) );
 

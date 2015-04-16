@@ -319,10 +319,14 @@ namespace Menge
 			}
 		}
 
+		MARMALADE_RENDER_CHECK_ERROR( m_serviceProvider );
+
 		LOGGER_WARNING(m_serviceProvider)("Vendor      : %s", (const char*)glGetString( GL_VENDOR ) );
 		LOGGER_WARNING(m_serviceProvider)("Renderer    : %s", (const char*)glGetString( GL_RENDERER ) );
 		LOGGER_WARNING(m_serviceProvider)("Version     : %s", (const char*)glGetString( GL_VERSION ) );
 		LOGGER_WARNING(m_serviceProvider)("Extensions  : %s", (const char*)glGetString( GL_EXTENSIONS ) );
+
+		MARMALADE_RENDER_CHECK_ERROR( m_serviceProvider );
 
 		if( sizeof(RenderVertex2D) != 32 )
 		{
@@ -362,13 +366,13 @@ namespace Menge
 
 		GLCALL( m_serviceProvider, glMatrixMode, ( GL_TEXTURE ) );
 		GLCALL( m_serviceProvider, glLoadIdentity, () );
-				
+						
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::finalize()
     {
-		IwGLTerminate();
+		GLCALL( m_serviceProvider, IwGLTerminate, () );		
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::setRenderListener( RenderSystemListener * _listener )
@@ -1074,7 +1078,21 @@ namespace Menge
 		}
 
 		GLuint tuid = 0;
-		GLCALL( m_serviceProvider, glGenTextures, ( 1, &tuid ) );
+		GLCALL( m_serviceProvider, glGenTextures, (1, &tuid) );
+
+		if( tuid == 0 )
+		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createImage invalid gen texture for mipmap %d size %d:%d channel %d depth %d PF %d"
+				, _mipmaps
+				, _width
+				, _height
+				, hwChannels
+				, _depth
+				, hwFormat
+				);
+
+			return nullptr;
+		}
 
         MarmaladeTexture * texture = m_factoryOGLTexture.createObjectT();
 
@@ -1129,7 +1147,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::swapBuffers()
 	{
-        IwGLSwapBuffers();
+        GLCALL( m_serviceProvider, IwGLSwapBuffers, () );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil )
@@ -1229,7 +1247,7 @@ namespace Menge
 
 		if( textureInternalFormat == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createImage invalid get GL Texture Internal format for PF %d"
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createDynamicImage invalid get GL Texture Internal format for PF %d"
 				, hwFormat
 				);
 
@@ -1240,7 +1258,7 @@ namespace Menge
 
 		if( textureColorFormat == 0 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createImage invalid get GL Texture Color format for PF %d"
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeRenderSystem::createDynamicImage invalid get GL Texture Color format for PF %d"
 				, hwFormat
 				);
 
@@ -1249,8 +1267,30 @@ namespace Menge
 
 		GLint textureColorDataType = s_getGLColorDataType( hwFormat );
 
+		if( textureColorDataType == 0 )
+		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createDynamicImage invalid get GL Color Data Type for PF %d"
+				, hwFormat
+				);
+
+			return nullptr;
+		}
+
 		GLuint tuid = 0;
-		GLCALL( m_serviceProvider, glGenTextures, ( 1, &tuid ) );
+		GLCALL( m_serviceProvider, glGenTextures, (1, &tuid) );
+
+		if( tuid == 0 )
+		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createDynamicImage invalid gen texture for size %d:%d channel %d depth %d PF %d"
+				, _width
+				, _height
+				, hwChannels
+				, _depth
+				, hwFormat
+				);
+
+			return nullptr;
+		}
 
 		MarmaladeTexture * texture = m_factoryOGLTexture.createObjectT();
 

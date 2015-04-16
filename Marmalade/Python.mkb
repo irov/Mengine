@@ -23,6 +23,7 @@ files
     mockup.c
     config.c
     errors.c
+    getpath.c
     pyconfig.h
     pymem.h
     
@@ -69,7 +70,6 @@ files
     
     ("../dependencies/Python/Modules")
     gcmodule.c
-    getpath.c
     operator.c
     getbuildinfo.c
     timemodule.c

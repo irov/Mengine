@@ -2,14 +2,10 @@ options
 {
 	lib
     
-    arm-arch=armv6
-	arm-fpu=vfp
     strict-mkb
-    strict-compile
+    #strict-compile
     enable-exceptions
-	preinclude=preinclude_python.h
-    
-    cflags="-Wno-error=unused-value -Wno-error=strict-overflow -Wno-error=unused-but-set-variable"
+	preinclude=preinclude_python.h    
 }
 
 includepaths

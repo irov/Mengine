@@ -3,14 +3,10 @@ options
 {
 	lib
     
-	arm-arch=armv6
-	arm-fpu=vfp    
     strict-mkb
-    strict-compile
+    #strict-compile
     enable-exceptions
-	preinclude=preinclude_mengine.h
-    
-    cflags="-Wno-error=unused-local-typedefs -Wno-error=maybe-uninitialized"
+	preinclude=preinclude_mengine.h        
 }
 
 
@@ -26,7 +22,7 @@ subprojects
 includepaths
 {
     "."
-    "./Modified/boost"
+    "./Modified/boost"    
     
 	"../src"
 	"../src/Utils"

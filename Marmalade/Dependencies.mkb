@@ -4,15 +4,10 @@ options
 {
 	lib
     
-    arm-arch=armv6
-	arm-fpu=vfp
     strict-mkb
-    strict-compile
+    #strict-compile
     enable-exceptions
 	preinclude=preinclude_dependencies.h
-    
-    cflags="-Wno-error=parentheses -Wno-error=unused-but-set-variable -Wno-error=unused-function -Wno-error=aggressive-loop-optimizations"
-    
 }
 
 defines

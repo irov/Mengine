@@ -51,8 +51,6 @@ namespace Menge
 			, err 
 			);
 
-		glErr
-
         return true;
 	}
 }

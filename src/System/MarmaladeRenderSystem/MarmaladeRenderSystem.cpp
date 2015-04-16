@@ -760,9 +760,9 @@ namespace Menge
 
 		GLenum mode = s_getGLPrimitiveMode( _type );
 
-		GLCALL( m_serviceProvider, glTexEnvi, glDrawElements, ( mode, _indexCount, GL_UNSIGNED_SHORT, nullptr ) );
+		GLCALL( m_serviceProvider, glDrawElements, ( mode, _indexCount, GL_UNSIGNED_SHORT, nullptr ) );
 		
-		GLCALL( m_serviceProvider, glTexEnvi, glDeleteBuffers, ( 1, &bufId ) );	
+		GLCALL( m_serviceProvider, glDeleteBuffers, ( 1, &bufId ) );
 #	endif
 
 		GLCALL( m_serviceProvider, glDisableClientState, ( GL_VERTEX_ARRAY ) );

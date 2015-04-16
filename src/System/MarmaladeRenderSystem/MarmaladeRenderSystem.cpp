@@ -190,6 +190,10 @@ namespace Menge
 		    return GL_UNSIGNED_BYTE;
 	    case Menge::PF_A8:
 		    return GL_UNSIGNED_BYTE;
+		case GL_ETC1_RGB8_OES:
+		case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+		case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+			return GL_UNSIGNED_BYTE;
 	    default:;
 	    }
 

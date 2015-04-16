@@ -46,9 +46,7 @@ namespace Menge
         m_hwPixelFormat = _pixelFormat;
         m_internalFormat = _internalFormat;
         m_format = _format;
-        m_type = _type;		
-
-		GLCALL( m_serviceProvider, glBindTexture, ( GL_TEXTURE_2D, m_uid ) );
+        m_type = _type;
     }
 	//////////////////////////////////////////////////////////////////////////
 	ERenderImageMode MarmaladeTexture::getMode() const

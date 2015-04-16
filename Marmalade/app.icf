@@ -26,6 +26,9 @@ SysStackSize=35000000 # TODO: fix, should be ~500K
 
 IOSDispScaleFactor=200
 
+WinWidth=1424
+WinHeight=768
+
 [GL]
 AllowNoDepthBufferClear=1
 

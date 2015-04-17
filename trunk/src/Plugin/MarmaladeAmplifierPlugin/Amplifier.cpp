@@ -254,6 +254,11 @@ namespace Menge
 	{
 		m_play = false;
 
+		if( s3eAudioIsPlaying() == S3E_FALSE )
+		{
+			return;
+		}
+
 		s3eAudioStop();				
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -370,7 +375,9 @@ namespace Menge
 			{
 				return;
 			}
-        }
+
+			m_play = true;
+        }		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::play_( const ConstString& _pakName, const FilePath& _filePath, const ConstString& _codec, bool _external, float _pos )
@@ -487,8 +494,6 @@ namespace Menge
 					, s3eAudio_error
 					, s3eAudio_string
 					);
-
-				return false;
 			}
 		}
 

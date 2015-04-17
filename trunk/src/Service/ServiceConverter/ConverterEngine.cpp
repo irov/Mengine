@@ -150,7 +150,8 @@ namespace Menge
         if( FILE_SERVICE(m_serviceProvider)
             ->existFile( options.pakName, options.inputFileName, nullptr ) == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert: input file '%s' not found"
+            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert: input file '%s:%s' not found"
+				, options.pakName.c_str()
                 , options.inputFileName.c_str()
                 );
 
@@ -165,8 +166,9 @@ namespace Menge
 
             if( oldFile == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert '%s' can't open input file '%s' (time)"
+                LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert '%s' can't open input file '%s:%s' (time)"
                     , _converter.c_str()
+					, options.pakName.c_str()
                     , options.inputFileName.c_str()
                     );
 
@@ -183,8 +185,9 @@ namespace Menge
 
             if( newFile == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert '%s' can't open output file '%s' (time)"
+                LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert '%s' can't open output file '%s:%s' (time)"
                     , _converter.c_str()
+					, options.pakName.c_str()
                     , options.outputFileName.c_str()
                     );
 
@@ -203,23 +206,28 @@ namespace Menge
 	                return true;
 				}
 
-				LOGGER_WARNING(m_serviceProvider)("ConverterEngine::convert invalid version '%s'"
+				LOGGER_WARNING(m_serviceProvider)("ConverterEngine::convert invalid version '%s:%s'"
+					, options.pakName.c_str()
 					, options.outputFileName.c_str()
 					);
             }
         }
 
-		LOGGER_WARNING(m_serviceProvider)("ConverterEngine::convert '%s'\nfrom: %s\nto: %s\n"
+		LOGGER_WARNING(m_serviceProvider)("ConverterEngine::convert '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
 			, _converter.c_str()
+			, options.pakName.c_str()
 			, options.inputFileName.c_str()
+			, options.pakName.c_str()
 			, options.outputFileName.c_str()
 			);
 
         if( converter->convert() == false )
         {
-            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert can't convert '%s'\nfrom: %s\nto: %s\n"
+            LOGGER_ERROR(m_serviceProvider)("ConverterEngine::convert can't convert '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
                 , _converter.c_str()
+				, options.pakName.c_str()
                 , options.inputFileName.c_str()
+				, options.pakName.c_str()
                 , options.outputFileName.c_str()
                 );
 

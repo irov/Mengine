@@ -52,28 +52,31 @@ namespace Menge
                 desc.volume = 1.f;
 
                 meta_track.swap_File( desc.path );
+
+				desc.external = false;
+				meta_track.get_External( desc.external );
                 
-                const ConstString & category = this->getCategory();
+				if( desc.external == false )
+				{
+					const ConstString & category = this->getCategory();
 
-                if( FILE_SERVICE(m_serviceProvider)
-                    ->existFile( category, desc.path, nullptr ) == false )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("ResourcePlaylist::loaderTrack_: '%s' sound '%s' not exist"
-                        , this->getName().c_str()
-                        , desc.path.c_str() 
-                        );
+					if( FILE_SERVICE( m_serviceProvider )
+						->existFile( category, desc.path, nullptr ) == false )
+					{
+						LOGGER_ERROR( m_serviceProvider )("ResourcePlaylist::loaderTrack_: '%s' sound '%s' not exist"
+							, this->getName().c_str()
+							, desc.path.c_str()
+							);
 
-                    continue;
-                }
+						continue;
+					}
+				}
 
                 if( meta_track.swap_Codec( desc.codec ) == false )
                 {
                     desc.codec = CODEC_SERVICE(m_serviceProvider)
                         ->findCodecType( desc.path );
                 }
-
-				desc.external = false;
-				meta_track.get_External( desc.external );
 
                 m_tracks.push_back( desc );
             }

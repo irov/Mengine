@@ -444,18 +444,18 @@ namespace Menge
 		}
 		else
 		{
-			ConstString fullPath;
-			if( Helper::makeFullPath( m_serviceProvider, _pakName, _filePath, fullPath ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't make full path for external audio '%s:%s'"
-					, _pakName.c_str()
-					, _filePath.c_str()
-					);
+			//ConstString fullPath;
+			//if( Helper::makeFullPath( m_serviceProvider, _pakName, _filePath, fullPath ) == false )
+			//{
+			//	LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: can't make full path for external audio '%s:%s'"
+			//		, _pakName.c_str()
+			//		, _filePath.c_str()
+			//		);
 
-				return false;
-			}
+			//	return false;
+			//}
 						
-			s3eResult result_play = s3eAudioPlay( fullPath.c_str(), 1 );
+			s3eResult result_play = s3eAudioPlay( _filePath.c_str(), 1 );
 
 			if( result_play == S3E_RESULT_ERROR )
 			{

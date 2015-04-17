@@ -209,7 +209,7 @@ namespace Menge
 
 		const ConstString & category = m_currentPlayList->getCategory();
 
-		if( this->prepareSound_( category, track->path, track->codec, _pos ) == false )
+		if( this->prepareSound_( category, track->path, track->codec, track->external, _pos ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Amplifier::preparePlay_ invalid prepare sound"
 				);
@@ -343,7 +343,7 @@ namespace Menge
         {
             const ConstString & category = m_currentPlayList->getCategory();
             
-			if( this->prepareSound_( category, track->path, track->codec, 0.f ) == false )
+			if( this->prepareSound_( category, track->path, track->codec, track->external, 0.f ) == false )
 			{
 				return;
 			}
@@ -363,13 +363,24 @@ namespace Menge
 		(void)_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codec, float _pos )
+	bool Amplifier::prepareSound_( const ConstString& _pakName, const FilePath& _file, const ConstString& _codec, bool _external, float _pos )
 	{
 		this->stop();
 		//_release();
 
-		m_buffer = SOUND_SERVICE(m_serviceProvider)
-            ->createSoundBufferFromFile( _pakName, _file, _codec, true );
+		FileGroupInterfacePtr fileGroup = FILE_SERVICE( m_serviceProvider )
+			->getFileGroup( _pakName );
+
+		if( fileGroup->isPacked() == false || _external == false )
+		{
+			m_buffer = SOUND_SERVICE( m_serviceProvider )
+				->createSoundBufferFromFile( _pakName, _file, _codec, true );
+		}
+		else
+		{ 
+			m_buffer = SOUND_SERVICE( m_serviceProvider )
+				->createSoundBufferFromFile( ConstString::none(), _file, _codec, true );
+		}
 
 		if( m_buffer == nullptr )
 		{

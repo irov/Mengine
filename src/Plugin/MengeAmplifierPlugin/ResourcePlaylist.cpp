@@ -45,34 +45,40 @@ namespace Menge
             it != it_end;
             ++it )
             {
-                const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track & meta_track = *it;
+				const Metacode::Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::Meta_Track & meta_track = *it;
 
-                TrackDesc desc;
+				TrackDesc desc;
 
-                desc.volume = 1.f;
+				desc.volume = 1.f;
 
-                meta_track.swap_File( desc.path );
-                
-                const ConstString & category = this->getCategory();
+				meta_track.swap_File( desc.path );
 
-                if( FILE_SERVICE(m_serviceProvider)
-                    ->existFile( category, desc.path, nullptr ) == false )
-                {
-                    LOGGER_ERROR(m_serviceProvider)("ResourcePlaylist::loaderTrack_: '%s' sound '%s' not exist"
-                        , this->getName().c_str()
-                        , desc.path.c_str() 
-                        );
+				desc.external = false;
+				meta_track.get_External( desc.external );
 
-                    continue;
-                }
+				if( desc.external == false )
+				{
+					const ConstString & category = this->getCategory();
 
-                if( meta_track.swap_Codec( desc.codec ) == false )
-                {
-                    desc.codec = CODEC_SERVICE(m_serviceProvider)
-                        ->findCodecType( desc.path );
-                }
+					if( FILE_SERVICE( m_serviceProvider )
+						->existFile( category, desc.path, nullptr ) == false )
+					{
+						LOGGER_ERROR( m_serviceProvider )("ResourcePlaylist::loaderTrack_: '%s' sound '%s' not exist"
+							, this->getName().c_str()
+							, desc.path.c_str()
+							);
 
-                m_tracks.push_back( desc );
+						continue;
+					}
+				}
+
+				if( meta_track.swap_Codec( desc.codec ) == false )
+				{
+					desc.codec = CODEC_SERVICE( m_serviceProvider )
+						->findCodecType( desc.path );
+				}
+
+				m_tracks.push_back( desc );
             }
         }
 

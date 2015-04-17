@@ -60,6 +60,9 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
+		virtual bool isPacked() const = 0;
+
+	public:
         virtual const ConstString & getPath() const = 0;
 
     public:

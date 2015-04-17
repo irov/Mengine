@@ -23,6 +23,9 @@ namespace Menge
 		bool initialize( const FilePath & _path ) override;
         void finalize() override;
 
+	public:
+		bool isPacked() const override;
+
     public:
 		const FilePath & getPath() const override;
 

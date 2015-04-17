@@ -100,11 +100,11 @@ namespace Menge
 		pybind::decref( m_bounds_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	BurritoBison * BurritoWorld::createBison( Node * _node, float _radius )
+	BurritoBison * BurritoWorld::createBison( Node * _node, const mt::vec3f & _offset, float _radius )
 	{
 		m_bison = new BurritoBison;
 
-		m_bison->initialize( _node, _radius );
+		m_bison->initialize( _node, _offset, _radius );
 
 		return m_bison;
 	}
@@ -294,7 +294,10 @@ namespace Menge
 				{
 					const BurritoUnit * unit = *it_unit;
 
-					if( unit->check_collision( _timing, position, bison_radius, velocity, collisionTiming, collisionFactor ) == true )
+					mt::vec3f collision_position(1024.f, 768.f, 0.f);
+					mt::vec3f collision_velocity = velocity * layer.parallax;
+
+					if( unit->check_collision( _timing, collision_position, bison_radius, collision_velocity, collisionTiming, collisionFactor ) == true )
 					{
 						collision = true;
 

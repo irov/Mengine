@@ -42,7 +42,7 @@ namespace Menge
 		~BurritoWorld();
 
 	public:
-		BurritoBison * createBison( Node * _node, float _radius );
+		BurritoBison * createBison( Node * _node, const mt::vec3f & _offset, float _radius );
 
 	public:
 		void createGround( float _x, float _y, float _z, float _d, PyObject * _cb );

@@ -25,6 +25,9 @@ namespace Menge
 		void finalize() override;
 
 	public:
+		bool isPacked() const override;
+
+	public:
 		const FilePath & getPath() const override;
 
 	public:

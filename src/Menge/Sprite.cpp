@@ -142,7 +142,14 @@ namespace	Menge
 		{
 			texturesNum = 0;
 
-			stageName = CONST_STRING(m_serviceProvider, OnlyColor);
+			if( m_solid == false )
+			{
+				stageName = CONST_STRING( m_serviceProvider, Blend );
+			}
+			else
+			{
+				stageName = CONST_STRING( m_serviceProvider, SolidSprite );
+			}
 		}
 
 		bool wrapU = m_resourceImage->isWrapU();
@@ -164,8 +171,8 @@ namespace	Menge
 	{
 		Node::_render( _viewport, _camera );
 
-		const RenderVertex2D * vertices = this->getVerticesWM();
-        const RenderMaterialInterfacePtr & material = this->getMaterial();
+		const RenderMaterialInterfacePtr & material = this->getMaterial();
+		const RenderVertex2D * vertices = this->getVerticesWM();        
 
 		const mt::box2f & bb = this->getBoundingBox();
 

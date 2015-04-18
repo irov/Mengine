@@ -87,6 +87,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld::BurritoWorld()
 		: m_bison(nullptr)
+		, m_position( 0.f, 0.f, 0.f )
 		, m_bounds_min( 0.f, 0.f, 0.f )
 		, m_bounds_max( 0.f, 0.f, 0.f )
 		, m_bounds_cb( nullptr )
@@ -264,9 +265,13 @@ namespace Menge
 
 		float bison_radius = m_bison->getRadius();
 
-		mt::vec3f position;
+		
 		mt::vec3f velocity;
-		m_bison->update( _time, _timing, position, velocity );
+		mt::vec3f offset;
+		m_bison->update( _time, _timing, velocity, offset );
+
+		//position = mt::vec3f(0, 0, 0);
+		//velocity = mt::vec3f( 0, 0, 0 );
 
 		mt::vec3f translate_position(0.f, 0.f, 0.f);
 
@@ -293,11 +298,10 @@ namespace Menge
 				++it_unit )
 				{
 					const BurritoUnit * unit = *it_unit;
-
-					mt::vec3f collision_position(1024.f, 768.f, 0.f);
+										
 					mt::vec3f collision_velocity = velocity * layer.parallax;
 
-					if( unit->check_collision( _timing, collision_position, bison_radius, collision_velocity, collisionTiming, collisionFactor ) == true )
+					if( unit->check_collision( _timing, offset, bison_radius, collision_velocity, collisionTiming, collisionFactor ) == true )
 					{
 						collision = true;
 
@@ -308,20 +312,28 @@ namespace Menge
 
 			if( m_ground != nullptr && collision == false )
 			{
-				collision = m_ground->check_collision( _timing, position, bison_radius, velocity, collisionTiming, collisionFactor );
+				mt::vec3f collision_position = m_position + offset;
+
+				//printf( "%f %f\n", collision_position.y, m_position.y );
+
+				collision = m_ground->check_collision( _timing, collision_position, bison_radius, velocity, collisionTiming, collisionFactor );
 			}
 
 			if( collision == true )
 			{
-				mt::vec3f reflect_position;
-				m_bison->reflect( collisionFactor, collisionTiming, reflect_position, velocity );
+				mt::vec3f reflect_velocity;
+				m_bison->reflect( collisionFactor, reflect_velocity );
 
-				translate_position = reflect_position - position;
+				float reflectTiming = _timing - collisionTiming;
+
+				translate_position = velocity * collisionTiming + reflect_velocity * reflectTiming;
 			}
 			else
 			{
 				translate_position = velocity * _timing;
 			}
+
+			m_position += translate_position;
 
 			for( TVectorBurritoLayer::iterator
 				it = m_layers.begin(),

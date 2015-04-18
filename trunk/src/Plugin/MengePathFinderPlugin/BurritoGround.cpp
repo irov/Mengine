@@ -31,12 +31,17 @@ namespace Menge
 			return false;
 		}
 
+		printf( "%f %f\n"
+			, _timing
+			, ccd_timing
+			);
+
 		if( ccd_timing > _timing )
 		{
 			return false;
 		}
 
-		_collisionTiming = _timing - ccd_timing;
+		_collisionTiming = ccd_timing;
 
 		PyObject * py_factor = pybind::ask( m_cb, "()"
 			);

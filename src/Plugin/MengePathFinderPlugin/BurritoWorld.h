@@ -69,6 +69,8 @@ namespace Menge
 
 		BurritoGround * m_ground;
 
+		mt::vec3f m_position;
+
 		typedef stdex::vector<BurritoLayer> TVectorBurritoLayer;
 		TVectorBurritoLayer m_layers;
 

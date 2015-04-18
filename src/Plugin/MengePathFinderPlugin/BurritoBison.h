@@ -43,14 +43,16 @@ namespace Menge
 		void addImpulse( const mt::vec3f & _direction, float _value, float _time );
 
 	public:
+		const mt::vec3f & getOffset() const;
 		float getRadius() const;
+		
 		const mt::vec3f & getVelocity() const;
 
 	public:
-		void update( float _time, float _timing, mt::vec3f & _position, mt::vec3f & _velocity );
+		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset );
 
 	public:
-		void reflect( const mt::vec2f & _factor, float _timing, mt::vec3f & _position, mt::vec3f & _velocity );
+		void reflect( const mt::vec2f & _factor, mt::vec3f & _velocity );
 
 	protected:		
 		Node * m_node;
@@ -58,7 +60,6 @@ namespace Menge
 		mt::vec3f m_offset;
 		float m_radius;
 
-		mt::vec3f m_position;
 		mt::vec3f m_velocity;
 
 		typedef stdex::vector<BurritoBisonForce> TVectorBurritoBisonForce;

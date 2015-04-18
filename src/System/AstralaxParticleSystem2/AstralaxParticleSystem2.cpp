@@ -48,6 +48,14 @@ namespace Menge
 	{
 		AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer.createObjectT();
 
+		if( container == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("AstralaxParticleSystem::createEmitterContainerFromMemory invalid create container"
+				);
+
+			return nullptr;
+		}
+
 		container->setServiceProvider( m_serviceProvider );
 
 		if( container->initialize( _stream, _archivator ) == false )

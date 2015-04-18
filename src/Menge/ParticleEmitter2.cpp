@@ -44,6 +44,10 @@ namespace	Menge
 #	define MENGINE_PARTICLE_MAX_MESH 1000
 #	endif
 	//////////////////////////////////////////////////////////////////////////
+	static ParticleVertices s_particles[MENGINE_PARTICLE_MAX_COUNT];
+	//////////////////////////////////////////////////////////////////////////
+	static ParticleMesh s_meshes[MENGINE_PARTICLE_MAX_MESH];
+	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter2::ParticleEmitter2()
 		: m_emitter(nullptr)
 		, m_startPosition(0.f)
@@ -393,9 +397,6 @@ namespace	Menge
 	bool ParticleEmitter2::updateParticleVertex_()
 	{
 		uint32_t partCount = 0;
-				
-        ParticleVertices s_particles[MENGINE_PARTICLE_MAX_COUNT];
-		ParticleMesh s_meshes[MENGINE_PARTICLE_MAX_MESH];
 
 		m_batchs.clear();
 		        

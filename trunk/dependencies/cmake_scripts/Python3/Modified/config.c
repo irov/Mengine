@@ -24,11 +24,7 @@ extern PyObject* PyInit__sha1(void);
 extern PyObject* PyInit__sha256(void);
 extern PyObject* PyInit__sha512(void);
 extern PyObject* PyInit_time(void);
-
-#ifdef WITH_THREAD
 extern PyObject* PyInit__thread(void);
-#endif
-
 #ifdef WIN32
 extern PyObject* PyInit_msvcrt(void);
 extern PyObject* PyInit__locale(void);
@@ -54,6 +50,9 @@ extern PyObject* PyInit__functools(void);
 extern PyObject* PyInit__json(void);
 extern PyObject* PyInit_zlib(void);
 extern PyObject* PyInit_pyexpat(void);
+extern PyObject* PyInit__socket( void );
+extern PyObject* PyInit__ssl( void );
+extern PyObject* PyInit_unicodedata( void );
 
 extern PyObject* PyInit__multibytecodec(void);
 extern PyObject* PyInit__codecs_cn(void);
@@ -136,6 +135,9 @@ struct _inittab _PyImport_Inittab[] = {
     {"zipimport", PyInit_zipimport},
     {"zlib", PyInit_zlib},
 	{"pyexpat", PyInit_pyexpat},
+	{"_socket", PyInit__socket},
+	{"_ssl", PyInit__ssl},
+	{"unicodedata", PyInit_unicodedata},
 
     /* CJK codecs */
     {"_multibytecodec", PyInit__multibytecodec},

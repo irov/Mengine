@@ -306,16 +306,21 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/sha512module.c
                 ${SOURCE_DIR}/Modules/signalmodule.c
                 ${SOURCE_DIR}/Modules/symtablemodule.c
-                #${SOURCE_DIR}/Modules/_threadmodule.c
+                ${SOURCE_DIR}/Modules/_threadmodule.c
                 ${SOURCE_DIR}/Modules/timemodule.c
                 ${SOURCE_DIR}/Modules/xxsubtype.c
                 ${SOURCE_DIR}/Modules/zipimport.c
+                ${SOURCE_DIR}/Modules/unicodedata.c
                 
                 ${SOURCE_DIR}/Modules/faulthandler.c
                 ${SOURCE_DIR}/Modules/hashtable.c
                 
                 
                 ${SOURCE_DIR}/Modules/pyexpat.c
+                
+                ${SOURCE_DIR}/Modules/socketmodule.c
+                
+                ${SOURCE_DIR}/Modules/_ssl.c
                 
                 ${SOURCE_DIR}/Modules/expat/xmlparse.c
                 ${SOURCE_DIR}/Modules/expat/xmlrole.c
@@ -361,6 +366,7 @@ include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 if(WIN32)
   include_directories(${SOURCE_DIR}/PC ${SOURCE_DIR}/Python ${SOURCE_DIR}/Modules/expat)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../zlib)
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../openssl/include)
   if(MSVC)
 	  add_definitions(-DWIN32 -D_WINDOWS -D_MSC_VER=1400)
   else(MSVC)

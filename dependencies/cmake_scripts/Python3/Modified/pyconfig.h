@@ -553,7 +553,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #define WITH_DOC_STRINGS 1
 
 /* Define if you want to compile in rudimentary thread support */
-#undef WITH_THREAD
+/* #undef WITH_THREAD */
 
 /* Define if you want to use the GNU readline library */
 /* #define WITH_READLINE 1 */
@@ -565,7 +565,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* #define HAVE_CLOCK */
 
 /* Define when any dynamic module loading is enabled */
-#undef HAVE_DYNAMIC_LOADING
+#define HAVE_DYNAMIC_LOADING
 
 /* Define if you have ftime.  */
 #ifndef MS_WINCE
@@ -767,5 +767,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 /* Define if C doubles are 64-bit IEEE 754 binary format, stored with the
    least significant byte first */
 #define DOUBLE_IS_LITTLE_ENDIAN_IEEE754 1
+
+#define HAVE_RAND_EGD
 
 #endif /* !Py_CONFIG_H */

@@ -49,15 +49,18 @@ namespace Menge
 		const mt::vec3f & getVelocity() const;
 
 	public:
-		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset );
+		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, mt::vec3f & _offset );
 
 	public:
+		void translate( const mt::vec3f & _offset );
 		void reflect( const mt::vec2f & _factor, mt::vec3f & _velocity );
 
 	protected:		
 		Node * m_node;
 
 		mt::vec3f m_offset;
+		mt::vec3f m_position;
+
 		float m_radius;
 
 		mt::vec3f m_velocity;

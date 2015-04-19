@@ -31,11 +31,6 @@ namespace Menge
 			return false;
 		}
 
-		printf( "%f %f\n"
-			, _timing
-			, ccd_timing
-			);
-
 		if( ccd_timing > _timing )
 		{
 			return false;

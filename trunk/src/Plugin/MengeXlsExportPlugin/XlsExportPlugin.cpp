@@ -12,6 +12,9 @@
 
 #	include <pybind\pybind.hpp>
 
+#pragma comment ( lib, "Ws2_32.lib" )
+#pragma comment ( lib, "Crypt32.lib" )
+
 //////////////////////////////////////////////////////////////////////////
 bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
 {
@@ -19,16 +22,6 @@ bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
 	return true;
 }
 
-//PyAPI_DATA(int) Py_OptimizeFlag;
-//extern int Py_NoSiteFlag;
-//extern int Py_IgnoreEnvironmentFlag;
-//extern int Py_VerboseFlag;
-//extern int Py_NoUserSiteDirectory;
-
-extern "C"
-{
-	extern PyObject* PyInit_pyexpat(void);
-}
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {

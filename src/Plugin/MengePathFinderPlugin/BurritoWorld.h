@@ -69,13 +69,14 @@ namespace Menge
 
 		BurritoGround * m_ground;
 
-		mt::vec3f m_position;
-
 		typedef stdex::vector<BurritoLayer> TVectorBurritoLayer;
 		TVectorBurritoLayer m_layers;
 
 		mt::vec3f m_bounds_min;
 		mt::vec3f m_bounds_max;
+
+		mt::planef m_fixed_plane_up;
+		mt::planef m_fixed_plane_down;
 
 		PyObject * m_bounds_cb;
 

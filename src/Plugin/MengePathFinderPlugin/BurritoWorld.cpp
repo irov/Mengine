@@ -1,5 +1,7 @@
 #	include "BurritoWorld.h"
 
+#	include "Math/ccd.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -86,11 +88,12 @@ namespace Menge
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld::BurritoWorld()
-		: m_bison(nullptr)
-		, m_position( 0.f, 0.f, 0.f )
+		: m_bison(nullptr)		
 		, m_bounds_min( 0.f, 0.f, 0.f )
 		, m_bounds_max( 0.f, 0.f, 0.f )
 		, m_bounds_cb( nullptr )
+		, m_fixed_plane_up( 0.f, -1.f, 0.f, 0.f )
+		, m_fixed_plane_down( 0.f, 1.f, 0.f, 0.f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -264,21 +267,34 @@ namespace Menge
 		}
 
 		float bison_radius = m_bison->getRadius();
-
-		
+				
 		mt::vec3f velocity;
+		mt::vec3f position;
 		mt::vec3f offset;
-		m_bison->update( _time, _timing, velocity, offset );
-
-		//position = mt::vec3f(0, 0, 0);
-		//velocity = mt::vec3f( 0, 0, 0 );
+		m_bison->update( _time, _timing, velocity, position, offset );
 
 		mt::vec3f translate_position(0.f, 0.f, 0.f);
 
 		float sq_speed = velocity.sqrlength();
 
 		if( mt::equal_f_z( sq_speed ) == false )
-		{
+		{			
+			{
+				float ccd_up_timing;
+				if( mt::ccd_sphere_plane( position, bison_radius, velocity, m_fixed_plane_up, ccd_up_timing ) == true )
+				{
+					printf( "up %f\n", ccd_up_timing );
+				}
+
+				float ccd_down_timing;
+				if( mt::ccd_sphere_plane( position, bison_radius, velocity, m_fixed_plane_down, ccd_down_timing ) == true )
+				{
+					printf( "down %f\n", ccd_down_timing );
+				}				
+			}
+
+			
+
 			bool collision = false;
 			float collisionTiming = 0.f;
 			mt::vec2f collisionFactor;
@@ -312,9 +328,7 @@ namespace Menge
 
 			if( m_ground != nullptr && collision == false )
 			{
-				mt::vec3f collision_position = m_position + offset;
-
-				//printf( "%f %f\n", collision_position.y, m_position.y );
+				mt::vec3f collision_position = position + offset;
 
 				collision = m_ground->check_collision( _timing, collision_position, bison_radius, velocity, collisionTiming, collisionFactor );
 			}
@@ -333,7 +347,7 @@ namespace Menge
 				translate_position = velocity * _timing;
 			}
 
-			m_position += translate_position;
+			m_bison->translate( translate_position );
 
 			for( TVectorBurritoLayer::iterator
 				it = m_layers.begin(),

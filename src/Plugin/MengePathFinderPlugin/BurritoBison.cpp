@@ -100,7 +100,7 @@ namespace Menge
 		return m_velocity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, mt::vec3f & _offset )
+	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, mt::vec3f & _offset, mt::vec3f & _offsetH )
 	{		
 		(void)_time;
 
@@ -154,6 +154,7 @@ namespace Menge
 		_velocity = m_velocity;
 		_position = m_position;		
 		_offset = m_offset;
+		_offsetH = m_offset + mt::vec3f( 0.f, m_bison_y, 0.f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::translate( const mt::vec3f & _translate, mt::vec3f & _position )

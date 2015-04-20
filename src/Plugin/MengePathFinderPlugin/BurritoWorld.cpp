@@ -271,7 +271,8 @@ namespace Menge
 		mt::vec3f velocity;
 		mt::vec3f position;
 		mt::vec3f offset;
-		m_bison->update( _time, _timing, velocity, position, offset );
+		mt::vec3f offsetH;
+		m_bison->update( _time, _timing, velocity, position, offset, offsetH );
 
 		mt::vec3f translate_position(0.f, 0.f, 0.f);
 
@@ -301,7 +302,7 @@ namespace Menge
 										
 					mt::vec3f collision_velocity = velocity * layer.parallax;
 
-					if( unit->check_collision( _timing, offset, bison_radius, collision_velocity, collisionTiming, collisionFactor ) == true )
+					if( unit->check_collision( _timing, offsetH, bison_radius, collision_velocity, collisionTiming, collisionFactor ) == true )
 					{
 						collision = true;
 

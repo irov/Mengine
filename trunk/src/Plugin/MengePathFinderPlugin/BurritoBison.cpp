@@ -39,6 +39,7 @@ namespace Menge
 		: m_node(nullptr)
 		, m_position( 0.f, 0.f, 0.f )
 		, m_offset( 0.f, 0.f, 0.f )
+		, m_bison_y( 0.f )
 		, m_radius( 0.f )		
 		, m_velocity( 0.f, 0.f, 0.f )
 	{
@@ -155,9 +156,24 @@ namespace Menge
 		_offset = m_offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::translate( const mt::vec3f & _offset )
+	void BurritoBison::translate( const mt::vec3f & _translate, mt::vec3f & _position )
 	{ 
-		m_position += _offset;
+		m_position += _translate;
+
+		if( m_position.y > 0.f )
+		{
+			m_bison_y = m_position.y;
+
+			_position = mt::vec3f( _translate.x, 0.f, _translate.z );
+		}
+		else
+		{
+			m_bison_y = 0.f;
+
+			_position = _translate;
+		}
+
+		m_node->setLocalPosition( m_offset + mt::vec3f( 0.f, m_bison_y, 0.f ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::reflect( const mt::vec2f & _factor, mt::vec3f & _velocity )

@@ -52,7 +52,7 @@ namespace Menge
 		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, mt::vec3f & _offset );
 
 	public:
-		void translate( const mt::vec3f & _offset );
+		void translate( const mt::vec3f & _translate, mt::vec3f & _position );
 		void reflect( const mt::vec2f & _factor, mt::vec3f & _velocity );
 
 	protected:		
@@ -60,6 +60,8 @@ namespace Menge
 
 		mt::vec3f m_offset;
 		mt::vec3f m_position;
+
+		float m_bison_y;
 
 		float m_radius;
 

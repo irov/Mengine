@@ -279,22 +279,6 @@ namespace Menge
 
 		if( mt::equal_f_z( sq_speed ) == false )
 		{			
-			{
-				float ccd_up_timing;
-				if( mt::ccd_sphere_plane( position, bison_radius, velocity, m_fixed_plane_up, ccd_up_timing ) == true )
-				{
-					printf( "up %f\n", ccd_up_timing );
-				}
-
-				float ccd_down_timing;
-				if( mt::ccd_sphere_plane( position, bison_radius, velocity, m_fixed_plane_down, ccd_down_timing ) == true )
-				{
-					printf( "down %f\n", ccd_down_timing );
-				}				
-			}
-
-			
-
 			bool collision = false;
 			float collisionTiming = 0.f;
 			mt::vec2f collisionFactor;
@@ -333,6 +317,9 @@ namespace Menge
 				collision = m_ground->check_collision( _timing, collision_position, bison_radius, velocity, collisionTiming, collisionFactor );
 			}
 
+
+			mt::vec3f bison_translate;
+
 			if( collision == true )
 			{
 				mt::vec3f reflect_velocity;
@@ -340,14 +327,14 @@ namespace Menge
 
 				float reflectTiming = _timing - collisionTiming;
 
-				translate_position = velocity * collisionTiming + reflect_velocity * reflectTiming;
+				bison_translate = velocity * collisionTiming + reflect_velocity * reflectTiming;
 			}
 			else
 			{
-				translate_position = velocity * _timing;
+				bison_translate = velocity * _timing;
 			}
-
-			m_bison->translate( translate_position );
+			
+			m_bison->translate( bison_translate, translate_position );
 
 			for( TVectorBurritoLayer::iterator
 				it = m_layers.begin(),

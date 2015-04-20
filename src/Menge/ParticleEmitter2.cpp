@@ -44,9 +44,9 @@ namespace	Menge
 #	define MENGINE_PARTICLE_MAX_MESH 1000
 #	endif
 	//////////////////////////////////////////////////////////////////////////
-	static ParticleVertices s_particles[MENGINE_PARTICLE_MAX_COUNT];
+	static ParticleVertices * s_particles = nullptr;
 	//////////////////////////////////////////////////////////////////////////
-	static ParticleMesh s_meshes[MENGINE_PARTICLE_MAX_MESH];
+	static ParticleMesh * s_meshes = nullptr;
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter2::ParticleEmitter2()
 		: m_emitter(nullptr)
@@ -130,9 +130,9 @@ namespace	Menge
 			return false;
 		}
 
-		m_emitter = container->createEmitter();
+		ParticleEmitterInterfacePtr emitter = container->createEmitter();
 
-		if( m_emitter == nullptr )
+		if( emitter == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter2::_compile '%s' can't create emitter source '%s'"
 				, m_name.c_str()
@@ -142,35 +142,37 @@ namespace	Menge
 			return false;
 		}
 
-		m_emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
+		emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
 
 		if( m_emitterImageName.empty() == false )
 		{
-			if( this->compileEmitterImage_() == false )
+			if( this->compileEmitterImage_( emitter ) == false )
 			{
 				return false;
 			}
 		}
 
-        m_emitter->setRandomMode( m_randomMode );
+		emitter->setRandomMode( m_randomMode );
 
         bool loop = this->getLoop();
-        m_emitter->setLoop( loop );
+		emitter->setLoop( loop );
 
         uint32_t polygon_count = boost::geometry::num_points( m_polygon );
 
         if( polygon_count != 0 )
         {
-            if( this->compilePolygon_() == false )
+			if( this->compilePolygon_( emitter ) == false )
             {
                 return false;
             }
         }
 
-		if( m_emitter->isBackground() == false )
+		if( emitter->isBackground() == false )
 		{
-			m_emitter->setPosition( m_emitterPosition );
+			emitter->setPosition( m_emitterPosition );
 		}
+
+		m_emitter = emitter;
 
 		this->invalidateMaterial_();
 
@@ -399,6 +401,16 @@ namespace	Menge
 		uint32_t partCount = 0;
 
 		m_batchs.clear();
+
+		if( s_meshes == nullptr )
+		{
+			s_meshes = Helper::allocateMemory<ParticleMesh>( MENGINE_PARTICLE_MAX_MESH );
+		}
+
+		if( s_particles == nullptr )
+		{
+			s_particles = Helper::allocateMemory<ParticleVertices>( MENGINE_PARTICLE_MAX_COUNT );
+		}
 		        
 		ParticleEmitterRenderFlush flush;
 		if( m_emitter->flushParticles( s_meshes, MENGINE_PARTICLE_MAX_MESH, s_particles, MENGINE_PARTICLE_MAX_COUNT, flush ) == false )
@@ -714,7 +726,7 @@ namespace	Menge
 			return;
 		}
 
-		this->compileEmitterImage_();
+		this->compileEmitterImage_( m_emitter );
 	}
     //////////////////////////////////////////////////////////////////////////
     void ParticleEmitter2::removeEmitterImage()
@@ -729,7 +741,7 @@ namespace	Menge
         m_emitter->changeEmitterImage( 0, 0, 0, 1 );
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter2::compileEmitterImage_()
+	bool ParticleEmitter2::compileEmitterImage_( const ParticleEmitterInterfacePtr & _emitter )
 	{
 		ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceT<ResourceHIT>(m_emitterImageName);
@@ -749,7 +761,7 @@ namespace	Menge
 
         unsigned char * alphaBuffer = resourceHIT->getBuffer();
         
-		if( m_emitter->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false)
+		if( _emitter->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::setEmitterImage %s changeEmitterImage Error image %s"
                 , m_name.c_str()
@@ -777,7 +789,7 @@ namespace	Menge
 			return true;
 		}
 
-        if( this->compilePolygon_() == false )
+        if( this->compilePolygon_( m_emitter ) == false )
         {
             return false;
         }
@@ -785,7 +797,7 @@ namespace	Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleEmitter2::compilePolygon_()
+	bool ParticleEmitter2::compilePolygon_( const ParticleEmitterInterfacePtr & _emitter )
     {
         uint32_t n = boost::geometry::num_points( m_polygon );
 
@@ -816,7 +828,7 @@ namespace	Menge
         float * triangles_ptr = points.front().buff();
         uint32_t triangles_size = points.size() / 3;
 
-        if( m_emitter->changeEmitterModel( triangles_ptr, triangles_size ) == false)
+		if( _emitter->changeEmitterModel( triangles_ptr, triangles_size ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::changeEmitterPolygon '%s' changeEmitterModel Error polygon"
 				, m_name.c_str()

@@ -94,8 +94,8 @@ namespace Menge
 		void _invalidateWorldMatrix() override;
 
 	private:
-		bool compileEmitterImage_();
-        bool compilePolygon_();
+		bool compileEmitterImage_( const ParticleEmitterInterfacePtr & _emitter );
+		bool compilePolygon_( const ParticleEmitterInterfacePtr & _emitter );
 
     protected:
 		bool updateParticleVertex_();

@@ -14,6 +14,7 @@ assets
 
 	[Zombieland_Android]
 	("d:/Projects/ZombielandBuild_ETC1")
+    External
     Locale_RU    
     app.config.txt
     application.ini    
@@ -26,6 +27,7 @@ assets
     
     [Zombieland_IOS]
 	("d:/Projects/ZombielandBuild_PVRTC")
+    External
     Locale_RU
     app.config.txt
     application.ini    

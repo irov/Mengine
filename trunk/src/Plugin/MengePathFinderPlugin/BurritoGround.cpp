@@ -23,6 +23,11 @@ namespace Menge
 		pybind::incref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BurritoGround::translate( const mt::vec3f & _translate )
+	{ 
+		m_plane.d += _translate.y;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool BurritoGround::check_collision( float _timing, const mt::vec3f & _position, float _radius, const mt::vec3f & _velocity, float & _collisionTiming, mt::vec2f & _factor ) const
 	{
 		float ccd_timing;

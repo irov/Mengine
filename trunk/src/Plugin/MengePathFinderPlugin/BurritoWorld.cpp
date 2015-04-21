@@ -203,7 +203,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BurritoWorld::addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, PyObject * _cb )
+	bool BurritoWorld::addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, PyObject * _cb )
 	{
 		if( _node == nullptr )
 		{
@@ -224,7 +224,7 @@ namespace Menge
 			}
 
 			BurritoUnit * unit = new BurritoUnit;
-			unit->initialize( _node, _position, _velocity, _radius, _cb );
+			unit->initialize( _node, _position, _velocity, _radius, _collide, _cb );
 			
 			layer.units.push_back( unit );
 
@@ -269,10 +269,9 @@ namespace Menge
 		float bison_radius = m_bison->getRadius();
 				
 		mt::vec3f velocity;
-		mt::vec3f position;
 		mt::vec3f offset;
 		mt::vec3f offsetH;
-		m_bison->update( _time, _timing, velocity, position, offset, offsetH );
+		m_bison->update( _time, _timing, velocity, offset, offsetH );
 
 		mt::vec3f translate_position(0.f, 0.f, 0.f);
 
@@ -313,9 +312,7 @@ namespace Menge
 
 			if( m_ground != nullptr && collision == false )
 			{
-				mt::vec3f collision_position = position + offset;
-
-				collision = m_ground->check_collision( _timing, collision_position, bison_radius, velocity, collisionTiming, collisionFactor );
+				collision = m_ground->check_collision( _timing, offsetH, bison_radius, velocity, collisionTiming, collisionFactor );
 			}
 
 
@@ -337,6 +334,8 @@ namespace Menge
 			
 			m_bison->translate( bison_translate, translate_position );
 
+			m_ground->translate( translate_position );
+
 			for( TVectorBurritoLayer::iterator
 				it = m_layers.begin(),
 				it_end = m_layers.end();
@@ -345,7 +344,7 @@ namespace Menge
 			{
 				BurritoLayer & layer = *it;
 
-				mt::vec3f layer_translate_position = -translate_position * layer.parallax;
+				mt::vec3f layer_translate_position = translate_position * layer.parallax;
 
 				layer.position += layer_translate_position;
 
@@ -439,7 +438,7 @@ namespace Menge
 		{
 			BurritoLayer & layer = *it;
 
-			mt::vec3f layer_translate_position = -translate_position * layer.parallax;
+			mt::vec3f layer_translate_position = translate_position * layer.parallax;
 
 			for( TVectorBurritoUnit::iterator
 				it_unit = layer.units.begin(),

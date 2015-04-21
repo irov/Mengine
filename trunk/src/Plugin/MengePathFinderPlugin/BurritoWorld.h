@@ -58,7 +58,7 @@ namespace Menge
 		void removeLayerNode( const ConstString & _layerName, Node * _node );
 
 	public:
-		bool addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, PyObject * _cb );
+		bool addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, PyObject * _cb );
 		void removeLayerUnit( const ConstString & _layerName, Node * _node );
 
 	public:

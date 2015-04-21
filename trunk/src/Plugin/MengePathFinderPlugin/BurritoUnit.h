@@ -20,7 +20,7 @@ namespace Menge
 		bool isDead() const;
 
 	public:
-		void initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, PyObject * _cb );
+		void initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, PyObject * _cb );
 
 	public:
 		void setVelocity( const mt::vec3f & _velocity );
@@ -42,5 +42,6 @@ namespace Menge
 		PyObject * m_cb;
 
 		mutable bool m_dead;
+		mutable bool m_collide;
 	};
 }

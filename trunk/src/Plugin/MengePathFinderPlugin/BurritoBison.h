@@ -34,7 +34,7 @@ namespace Menge
 		~BurritoBison();
 
 	public:
-		void initialize( Node * _node, const mt::vec3f & _offset, float _radius );
+		void initialize( Node * _node, const mt::vec3f & _offset, float _bisonY, float _radius );
 
 	public:
 		void addForce( const ConstString & _name, const mt::vec3f & _direction, float _value );
@@ -61,7 +61,7 @@ namespace Menge
 		mt::vec3f m_offset;
 		mt::vec3f m_position;
 
-		float m_bison_y;
+		float m_bisonY;
 
 		float m_radius;
 

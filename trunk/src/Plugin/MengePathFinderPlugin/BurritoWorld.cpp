@@ -104,11 +104,11 @@ namespace Menge
 		pybind::decref( m_bounds_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	BurritoBison * BurritoWorld::createBison( Node * _node, const mt::vec3f & _offset, float _radius )
+	BurritoBison * BurritoWorld::createBison( Node * _node, const mt::vec3f & _offset, float _bisonY, float _radius )
 	{
 		m_bison = new BurritoBison;
 
-		m_bison->initialize( _node, _offset, _radius );
+		m_bison->initialize( _node, _offset, _bisonY, _radius );
 
 		return m_bison;
 	}

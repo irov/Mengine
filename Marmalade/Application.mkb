@@ -2,16 +2,15 @@
 
 options
 {
-	arm-arch=armv6
-	arm-fpu=vfp
 	#strict-mkb
     #strict-compile
 	enable-exceptions    
 	preinclude=preinclude_application.h
     
     app-icf="app.icf"
+    s3e-data-dir="d:/Projects/ZombielandBuild_PVRTC"
     #s3e-data-dir="d:/Projects/ZombielandBuild_ETC1"
-    s3e-data-dir="/Users/admin/Desktop/ZombielandBuild_PVRTC"
+    #s3e-data-dir="/Users/admin/Desktop/ZombielandBuild_PVRTC"
 }
 
 library
@@ -150,9 +149,10 @@ deployments
 	app-icf='d:/Projects/ZombielandBuild_PVRTC/app.icf'
 	assets='Zombieland_IOS'
 	caption='Zombieland'
-	iphone-appid='com.Argali.boo'
-	iphone-provisioning-profile='Argali.mobileprovision'
+	iphone-appid='com.Zombieland.Zombieland'
+	iphone-provisioning-profile='Zombieland.mobileprovision'
 	iphone-sign-for-distribution=1
 	iphone-signing-identity='iPhone Distribution'
+	iphone-testflight=1
 	name='Zombieland'
 }

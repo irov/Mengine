@@ -1,15 +1,20 @@
 #   include "MarmaladeInput.h"
 
+#	include "Logger/Logger.h"
+
 #	include "Config/String.h"
 
 #	include <s3eSurface.h>
 #	include <s3eDevice.h>
 
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     MarmaladeInput::MarmaladeInput()
-        : m_serviceProvider(nullptr)        
+        : m_serviceProvider(nullptr)
+		, m_keysIterator(0)
+		, m_lastKey( s3eKeyFirst )
 		, m_width(1024.f)
 		, m_height(768.f)
 		, m_showKeyboard(false)
@@ -44,16 +49,74 @@ namespace Menge
 
 		if( multiTouch == S3E_TRUE )
         {
-            s3ePointerRegister( S3E_POINTER_TOUCH_EVENT, (s3eCallback)&MarmaladeInput::s_pointerTouchEvent, this );
-            s3ePointerRegister(S3E_POINTER_TOUCH_MOTION_EVENT, (s3eCallback)&MarmaladeInput::s_pointerTouchMotionEvent, this );
+			if( s3ePointerRegister( S3E_POINTER_TOUCH_EVENT, (s3eCallback)&MarmaladeInput::s_pointerTouchEvent, this ) == S3E_RESULT_ERROR )
+			{
+				s3ePointerError p_err = s3ePointerGetError();
+				const char * p_str = s3ePointerGetErrorString();
+
+				LOGGER_ERROR( m_serviceProvider )("MarmaladeInput::initialize invalid regist S3E_POINTER_TOUCH_EVENT err %d:%s"
+					, p_err
+					, p_str
+					);
+			}
+
+			if( s3ePointerRegister(S3E_POINTER_TOUCH_MOTION_EVENT, (s3eCallback)&MarmaladeInput::s_pointerTouchMotionEvent, this ) == S3E_RESULT_ERROR )
+			{
+				s3ePointerError p_err = s3ePointerGetError();
+				const char * p_str = s3ePointerGetErrorString();
+
+				LOGGER_ERROR( m_serviceProvider )("MarmaladeInput::initialize invalid regist S3E_POINTER_TOUCH_MOTION_EVENT err %d:%s"
+					, p_err
+					, p_str
+					);
+			}
         }
 		else
 		{
-			s3ePointerRegister(S3E_POINTER_BUTTON_EVENT, (s3eCallback)&MarmaladeInput::s_pointerButtonEvent, this );
-			s3ePointerRegister(S3E_POINTER_MOTION_EVENT, (s3eCallback)&MarmaladeInput::s_pointerMotionEvent, this );
+			if( s3ePointerRegister( S3E_POINTER_BUTTON_EVENT, (s3eCallback)&MarmaladeInput::s_pointerButtonEvent, this ) == S3E_RESULT_ERROR )
+			{
+				s3ePointerError p_err = s3ePointerGetError();
+				const char * p_str = s3ePointerGetErrorString();
+
+				LOGGER_ERROR( m_serviceProvider )("MarmaladeInput::initialize invalid regist S3E_POINTER_BUTTON_EVENT err %d:%s"
+					, p_err
+					, p_str
+					);
+			}
+
+			if( s3ePointerRegister(S3E_POINTER_MOTION_EVENT, (s3eCallback)&MarmaladeInput::s_pointerMotionEvent, this ) == S3E_RESULT_ERROR )
+			{
+				s3ePointerError p_err = s3ePointerGetError();
+				const char * p_str = s3ePointerGetErrorString();
+
+				LOGGER_ERROR( m_serviceProvider )("MarmaladeInput::initialize invalid regist S3E_POINTER_MOTION_EVENT err %d:%s"
+					, p_err
+					, p_str
+					);
+			}
 		}
         
-        s3eKeyboardRegister( S3E_KEYBOARD_KEY_EVENT, (s3eCallback)&MarmaladeInput::s_keyboardKeyEvent, this );
+		if( s3eKeyboardRegister( S3E_KEYBOARD_KEY_EVENT, &MarmaladeInput::s_keyboardKeyEvent, this ) == S3E_RESULT_ERROR )
+		{
+			s3eKeyboardError p_err = s3eKeyboardGetError();
+			const char * p_str = s3eKeyboardGetErrorString();
+
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeInput::initialize invalid regist S3E_KEYBOARD_KEY_EVENT err %d:%s"
+				, p_err
+				, p_str
+				);
+		}
+		
+		if( s3eKeyboardRegister( S3E_KEYBOARD_CHAR_EVENT, &MarmaladeInput::s_keyboardCharEvent, this ) == S3E_RESULT_ERROR )
+		{
+			s3eKeyboardError p_err = s3eKeyboardGetError();
+			const char * p_str = s3eKeyboardGetErrorString();
+
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeInput::initialize invalid regist S3E_KEYBOARD_CHAR_EVENT err %d:%s"
+				, p_err
+				, p_str
+				);
+		}
         
         this->fillKeys_();
 
@@ -110,6 +173,7 @@ namespace Menge
 		}
 
 		s3eKeyboardUnRegister( S3E_KEYBOARD_KEY_EVENT, (s3eCallback)&MarmaladeInput::s_keyboardKeyEvent );
+		s3eKeyboardUnRegister( S3E_KEYBOARD_CHAR_EVENT, (s3eCallback)&MarmaladeInput::s_keyboardCharEvent );
 	}
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeInput::update()
@@ -134,6 +198,59 @@ namespace Menge
         {
             return false;
         }
+
+		int32 cursorX = s3ePointerGetTouchX( 0 );
+		int32 cursorY = s3ePointerGetTouchY( 0 );
+
+		mt::vec2f point;
+		this->correctPoint_( cursorX, cursorY, point );
+
+		for( uint32_t i = 0; i != m_keysIterator; ++i )
+		{
+			const KeyEventDesc & desc = m_keyEvents[i];
+
+			s3eKey key = desc.key;
+
+			if( key == s3eKeyFirst )
+			{
+				TMapWCharCode::const_iterator it_found = m_wcharCodes.find( desc.ch );
+
+				KeyCode code = KC_UNASSIGNED;
+
+				if( it_found != m_wcharCodes.end() )
+				{
+					code = it_found->second;
+				}
+
+				printf( "- %d %d %d\n"
+					, desc.key
+					, desc.ch
+					, desc.pressed
+					);
+				
+				INPUT_SERVICE( m_serviceProvider )
+					->onKeyEvent( point, code, desc.ch, true );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->onKeyEvent( point, code, desc.ch, false );
+			}
+			else
+			{
+				printf( "+ %d %d %d\n"
+					, desc.key
+					, desc.ch
+					, desc.pressed
+					);
+
+				KeyCode code = this->getKeyCode_( key );
+				bool isDown = desc.pressed != 0;
+
+				INPUT_SERVICE( m_serviceProvider )
+					->onKeyEvent( point, code, desc.ch, isDown );
+			}
+		}
+
+		m_keysIterator = 0;
 
         return true;
     }
@@ -183,35 +300,96 @@ namespace Menge
 		_point.y = y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    int32 MarmaladeInput::s_keyboardKeyEvent( s3eKeyboardEvent * _event, MarmaladeInput * _input )
-    {
-        int32 cursorX = s3ePointerGetTouchX( 0 );
-        int32 cursorY = s3ePointerGetTouchY( 0 );
-        
-		mt::vec2f point;
-		_input->correctPoint_( cursorX, cursorY, point );
+	int32 MarmaladeInput::s_keyboardCharEvent( void * _systemData, void * _userData )
+	{
+		s3eKeyboardCharEvent * event = (s3eKeyboardCharEvent *)_systemData;
+		MarmaladeInput * input = (MarmaladeInput *)_userData;
 
-		uint32_t ch = 0;
-
-		int newCharState = s3eKeyboardGetInt( S3E_KEYBOARD_GET_CHAR );
-
-		if( newCharState == 1 )
+		if( input->m_keysIterator == MENGINE_MAX_KEYS )
 		{
-			s3eWChar s3e_ch = s3eKeyboardGetChar();
-
-			if( s3e_ch != S3E_WEOF )
-			{
-				ch = s3e_ch;
-			}
+			return 0;
 		}
 
-        KeyCode code = _input->getKeyCode_( _event->m_Key );
-        bool isDown = _event->m_Pressed != 0;
-                
-        ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
+		if( input->m_keysIterator == 0 )
+		{
+			input->m_keyEvents[input->m_keysIterator].key = input->m_lastKey;
+			input->m_keyEvents[input->m_keysIterator].pressed = 1;
+			input->m_keyEvents[input->m_keysIterator].ch = event->m_Char;
+			
+			++input->m_keysIterator;
 
-        INPUT_SERVICE(serviceProvider)
-            ->onKeyEvent( point, code, ch, isDown );
+			return 0;
+		}
+
+		if( input->m_keyEvents[input->m_keysIterator - 1].ch == 0 )
+		{
+			input->m_keyEvents[input->m_keysIterator - 1].ch = event->m_Char;
+		}
+		else
+		{
+			input->m_keyEvents[input->m_keysIterator].key = input->m_keyEvents[input->m_keysIterator - 1].key;
+			input->m_keyEvents[input->m_keysIterator].pressed = 1;
+			input->m_keyEvents[input->m_keysIterator].ch = event->m_Char;
+
+			++input->m_keysIterator;
+		}				
+
+		return 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int32 MarmaladeInput::s_keyboardKeyEvent( void * _systemData, void * _userData )
+    {
+		s3eKeyboardEvent * event = (s3eKeyboardEvent *)_systemData;
+		MarmaladeInput * input = (MarmaladeInput *)_userData;
+
+		if( input->m_keysIterator == MENGINE_MAX_KEYS )
+		{
+			return 0;
+		}
+  //      int32 cursorX = s3ePointerGetTouchX( 0 );
+  //      int32 cursorY = s3ePointerGetTouchY( 0 );
+  //      
+		//mt::vec2f point;
+		//_input->correctPoint_( cursorX, cursorY, point );
+
+		if( event->m_Pressed == 1 )
+		{
+			input->m_lastKey = event->m_Key;
+		}
+
+		s3eWChar ch = 0;
+		if( input->m_keysIterator > 0 && event->m_Pressed == 0 )
+		{
+			ch = input->m_keyEvents[input->m_keysIterator - 1].ch;
+		}
+
+		input->m_keyEvents[input->m_keysIterator].key = event->m_Key;
+		input->m_keyEvents[input->m_keysIterator].pressed = event->m_Pressed;
+		input->m_keyEvents[input->m_keysIterator].ch = ch;
+
+		++input->m_keysIterator;
+
+		//uint32_t ch = 0;
+
+		//int newCharState = s3eKeyboardGetInt( S3E_KEYBOARD_GET_CHAR );
+
+		//if( newCharState == 1 )
+		//{
+		//	s3eWChar s3e_ch = s3eKeyboardGetChar();
+
+		//	if( s3e_ch != S3E_WEOF )
+		//	{
+		//		ch = s3e_ch;
+		//	}
+		//}
+
+  //      KeyCode code = _input->getKeyCode_( _event->m_Key );
+  //      bool isDown = _event->m_Pressed != 0;
+  //              
+  //      ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
+
+  //      INPUT_SERVICE(serviceProvider)
+  //          ->onKeyEvent( point, code, ch, isDown );
 
 		return 0;
     }
@@ -448,6 +626,9 @@ namespace Menge
 
             m_codes[code] = (s3eKey)i;
         }
+
+		s3eWChar wc_return = (s3eWChar)10;
+		m_wcharCodes[wc_return] = Menge::KC_RETURN;
     }
     //////////////////////////////////////////////////////////////////////////
     KeyCode MarmaladeInput::getKeyCode_( s3eKey _key ) const

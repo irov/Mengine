@@ -61,6 +61,8 @@ namespace Menge
 					);
 
 				successful = false;
+
+				continue;
 			}
 
             if( code == 0 )
@@ -84,6 +86,8 @@ namespace Menge
 					);
 
 				successful = false;
+
+				continue;
 			}
 
             GlyphCode glyphCharNext;
@@ -105,6 +109,8 @@ namespace Menge
 				glyph.kerning = 0.f;
 
 				successful = false;
+
+				continue;
 			}			
 					
 			CharData charData;

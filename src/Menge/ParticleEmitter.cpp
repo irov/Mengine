@@ -36,8 +36,8 @@
 namespace	Menge
 {
     //////////////////////////////////////////////////////////////////////////
-#	ifndef MENGINE_PARTICLE_MAX_COUNT
-#	define MENGINE_PARTICLE_MAX_COUNT 2000
+#	ifndef MENGINE_PARTICLE_MAX_VERTICES
+#	define MENGINE_PARTICLE_MAX_VERTICES 2000
 #	endif
 	//////////////////////////////////////////////////////////////////////////
 #	ifndef MENGINE_PARTICLE_MAX_MESH
@@ -401,14 +401,14 @@ namespace	Menge
 	{
 		uint32_t partCount = 0;
 				
-        static ParticleVertices s_particles[MENGINE_PARTICLE_MAX_COUNT];
+        static ParticleVertices s_particles[MENGINE_PARTICLE_MAX_VERTICES];
 		static ParticleMesh s_meshes[MENGINE_PARTICLE_MAX_MESH];
 				
 		m_batchs.clear();
    
 		ParticleEmitterRenderFlush flush;
 
-		if( m_emitter->flushParticles( s_meshes, MENGINE_PARTICLE_MAX_MESH, s_particles, MENGINE_PARTICLE_MAX_COUNT, flush ) == false )
+		if( m_emitter->flushParticles( s_meshes, MENGINE_PARTICLE_MAX_MESH, s_particles, MENGINE_PARTICLE_MAX_VERTICES, flush ) == false )
 		{
 			return false;
 		}

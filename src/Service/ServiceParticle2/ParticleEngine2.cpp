@@ -98,6 +98,20 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ParticleMesh * ParticleEngine2::getParticleMeshesCache( uint32_t & _limit )
+	{
+		_limit = MENGINE_PARTICLE_MAX_MESH;
+
+		return m_particleMesh;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ParticleVertices * ParticleEngine2::getParticleVerticesCache( uint32_t & _limit )
+	{ 
+		_limit = MENGINE_PARTICLE_MAX_VERTICES;
+
+		return m_particleVertices;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	uint32_t ParticleEngine2::getMaxParticlesCount() const
 	{
 		return m_maxParticlesNum;

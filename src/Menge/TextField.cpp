@@ -473,6 +473,8 @@ namespace Menge
 					, this->getName().c_str()
 					, m_textEntry->getKey().c_str()
 					);
+
+				continue;
 			}
 
 			if( m_wrap == true )

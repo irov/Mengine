@@ -35,18 +35,6 @@
 
 namespace	Menge
 {
-    //////////////////////////////////////////////////////////////////////////
-#	ifndef MENGINE_PARTICLE_MAX_COUNT
-#	define MENGINE_PARTICLE_MAX_COUNT 8000
-#	endif
-	//////////////////////////////////////////////////////////////////////////
-#	ifndef MENGINE_PARTICLE_MAX_MESH
-#	define MENGINE_PARTICLE_MAX_MESH 1000
-#	endif
-	//////////////////////////////////////////////////////////////////////////
-	static ParticleVertices * s_particles = nullptr;
-	//////////////////////////////////////////////////////////////////////////
-	static ParticleMesh * s_meshes = nullptr;
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter2::ParticleEmitter2()
 		: m_emitter(nullptr)
@@ -402,18 +390,16 @@ namespace	Menge
 
 		m_batchs.clear();
 
-		if( s_meshes == nullptr )
-		{
-			s_meshes = Helper::allocateMemory<ParticleMesh>( MENGINE_PARTICLE_MAX_MESH );
-		}
+		uint32_t meshes_limit;
+		ParticleMesh * meshes_cache = PARTICLE_SERVICE2( m_serviceProvider )
+			->getParticleMeshesCache( meshes_limit );
 
-		if( s_particles == nullptr )
-		{
-			s_particles = Helper::allocateMemory<ParticleVertices>( MENGINE_PARTICLE_MAX_COUNT );
-		}
-		        
+		uint32_t vertices_limit;
+		ParticleVertices * vertices_cache = PARTICLE_SERVICE2( m_serviceProvider )
+			->getParticleVerticesCache( vertices_limit );
+
 		ParticleEmitterRenderFlush flush;
-		if( m_emitter->flushParticles( s_meshes, MENGINE_PARTICLE_MAX_MESH, s_particles, MENGINE_PARTICLE_MAX_COUNT, flush ) == false )
+		if( m_emitter->flushParticles( meshes_cache, meshes_limit, vertices_cache, vertices_limit, flush ) == false )
 		{
 			return false;
 		}
@@ -436,7 +422,7 @@ namespace	Menge
 		it_mesh != it_mesh_end;
 		++it_mesh )
 		{
-			const ParticleMesh & mesh = s_meshes[it_mesh];
+			const ParticleMesh & mesh = meshes_cache[it_mesh];
 
 			ResourceImage * image = m_resourceParticle->getAtlasImageResource( mesh.texture );
 						
@@ -449,7 +435,7 @@ namespace	Menge
 			it != it_end;
 			++it )
 			{
-				const ParticleVertices & p = s_particles[it];
+				const ParticleVertices & p = vertices_cache[it];
 
 				uint32_t argb = 0xFFFFFFFF;
 

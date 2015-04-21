@@ -61,6 +61,10 @@ namespace Menge
 		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) = 0;
 
 	public:
+		virtual ParticleMesh * getParticleMeshesCache( uint32_t & _limit ) = 0;
+		virtual ParticleVertices * getParticleVerticesCache( uint32_t & _limit ) = 0;
+
+	public:
 		virtual uint32_t getMaxParticlesCount() const = 0;
 
 	public:

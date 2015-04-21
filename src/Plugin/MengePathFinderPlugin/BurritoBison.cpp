@@ -1,5 +1,7 @@
 #	include "BurritoBison.h"
 
+#	include "pybind/pybind.hpp"
+
 #	include <algorithm>
 
 namespace Menge
@@ -101,7 +103,7 @@ namespace Menge
 		return m_velocity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, mt::vec3f & _offset, mt::vec3f & _offsetH )
+	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset, mt::vec3f & _offsetH )
 	{		
 		(void)_time;
 
@@ -152,8 +154,27 @@ namespace Menge
 
 		m_velocity += force_velocity;
 
+		for( TVectorVelocityEventDesc::iterator
+			it = m_velocityEvents.begin(),
+			it_end = m_velocityEvents.end();
+		it != it_end;
+		++it )
+		{
+			VelocityEventDesc & desc = *it;
+
+			bool test = desc.test;
+
+			desc.test = this->testVelocityEvent_( desc );
+
+			if( test == false && desc.test == true )
+			{
+				pybind::call( desc.cb, "()"
+					);
+			}
+		}
+
 		_velocity = m_velocity;
-		_position = m_position;		
+	
 		_offset = m_offset;
 		_offsetH = m_offset + mt::vec3f( 0.f, m_bisonY, 0.f );
 	}
@@ -166,13 +187,13 @@ namespace Menge
 		{
 			m_bisonY = m_position.y;
 
-			_position = mt::vec3f( _translate.x, 0.f, _translate.z );
+			_position = - mt::vec3f( _translate.x, 0.f, _translate.z );
 		}
 		else
 		{
 			m_bisonY = 0.f;
 
-			_position = _translate;
+			_position = - _translate;
 		}
 
 		m_node->setLocalPosition( m_offset + mt::vec3f( 0.f, m_bisonY, 0.f ) );
@@ -184,5 +205,29 @@ namespace Menge
 		m_velocity.y *= _factor.y;
 
 		_velocity = m_velocity;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::addVelocityEvent( bool _less, const mt::vec3f & _velocity, PyObject * _cb )
+	{ 
+		VelocityEventDesc desc;
+		desc.less = _less;
+		desc.velocity = _velocity;
+		desc.velocity_sqrlength = _velocity.sqrlength();
+		
+		desc.cb = _cb;
+		pybind::incref( desc.cb );
+		
+		desc.test = this->testVelocityEvent_( desc );
+		desc.dead = false;
+			
+		m_velocityEvents.push_back( desc );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoBison::testVelocityEvent_( const VelocityEventDesc & _desc ) const
+	{
+		float d = mt::dot_v3_v3( _desc.velocity, m_velocity );
+		float l = _desc.velocity_sqrlength;
+
+		return _desc.less ? d <= l : d >= l;		
 	}
 }

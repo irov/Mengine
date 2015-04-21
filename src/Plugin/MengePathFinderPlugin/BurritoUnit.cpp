@@ -14,6 +14,7 @@ namespace Menge
 		, m_radius(0.f)
 		, m_cb(nullptr)
 		, m_dead(false)
+		, m_collide(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -37,12 +38,13 @@ namespace Menge
 		return m_dead;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoUnit::initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, PyObject * _cb )
+	void BurritoUnit::initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, PyObject * _cb )
 	{
 		m_node = _node;
 		m_position = _position;
 		m_velocity = _velocity;
 		m_radius = _radius;
+		m_collide = _collide;
 
 		m_cb = _cb;
 		pybind::incref( m_cb );
@@ -62,6 +64,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool BurritoUnit::check_collision( float _timing, const mt::vec3f & _burritoPosition, float _burritoRadius, const mt::vec3f & _burritoVelocity, float & _collisionTiming, mt::vec2f & _factor ) const
 	{ 
+		if( m_collide == false )
+		{
+			return false;
+		}
+
 		float ccd_timing;
 		mt::vec3f n;
 		if( mt::ccd_sphere_sphere( _burritoPosition, _burritoRadius, _burritoVelocity, m_position, m_radius, m_velocity, ccd_timing, n ) == false )
@@ -89,6 +96,10 @@ namespace Menge
 		if( flag == 1 )
 		{			
 			m_dead = true;
+		}
+		else if( flag == 2 )
+		{
+			m_collide = false;
 		}
 
 		return true;			 

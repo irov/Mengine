@@ -43,13 +43,16 @@ namespace Menge
 		void addImpulse( const mt::vec3f & _direction, float _value, float _time );
 
 	public:
+		void addVelocityEvent( bool _less, const mt::vec3f & _velocity, PyObject * _cb );
+
+	public:
 		const mt::vec3f & getOffset() const;
 		float getRadius() const;
 		
 		const mt::vec3f & getVelocity() const;
 
 	public:
-		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, mt::vec3f & _offset, mt::vec3f & _offsetH );
+		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset, mt::vec3f & _offsetH );
 
 	public:
 		void translate( const mt::vec3f & _translate, mt::vec3f & _position );
@@ -72,5 +75,22 @@ namespace Menge
 
 		typedef stdex::vector<BurritoBisonImpulse> TVectorBurritoBisonImpulse;
 		TVectorBurritoBisonImpulse m_impulses;
+
+		struct VelocityEventDesc
+		{
+			bool less;
+			mt::vec3f velocity;
+			float velocity_sqrlength;
+			PyObject * cb;
+
+			bool test;
+			bool dead;
+		};
+
+		typedef stdex::vector<VelocityEventDesc> TVectorVelocityEventDesc;
+		TVectorVelocityEventDesc m_velocityEvents;
+
+	protected:
+		bool testVelocityEvent_( const VelocityEventDesc & _desc ) const;
 	};
 }

@@ -1236,7 +1236,6 @@ namespace Menge
         m_commandLine = " " + _commandLine + " ";
 
         setlocale( LC_CTYPE, "" );
-        //::timeBeginPeriod( 1 );
 
         String scriptInit;
         Helper::s_getOption( " -s:", m_commandLine, &scriptInit );

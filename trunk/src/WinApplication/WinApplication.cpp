@@ -2913,7 +2913,7 @@ namespace Menge
 
 				UINT tvk = this->translateVirtualKey_( vkc, vk );
 
-				m_inputService->onKeyEvent( point, vkc, tvk, true );				
+				m_inputService->onKeyEvent( point, vkc, tvk, true );
 
 				handle = true;
 				_result = FALSE;

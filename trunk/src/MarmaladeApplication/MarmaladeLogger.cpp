@@ -22,7 +22,7 @@ namespace Menge
 		(void)_flag;
 		
 		printf( "%s", _data );
-
+		
 		if( _level == LM_CRITICAL )
 		{
 			s3eDebugErrorShow( S3E_MESSAGE_CONTINUE_STOP, _data );

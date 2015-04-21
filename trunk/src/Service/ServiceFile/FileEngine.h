@@ -2,7 +2,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#   include "stdex/binary_vector.h"
+#   include "stdex/stl_map.h"
 
 namespace Menge
 {
@@ -55,10 +55,10 @@ namespace Menge
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef stdex::binary_vector<ConstString, FactoryPtr> TFactoryFileGroups;
+		typedef stdex::map<ConstString, FactoryPtr> TFactoryFileGroups;
 		TFactoryFileGroups m_factoryFileGroups;
 
-		typedef stdex::binary_vector<ConstString, FileGroupInterfacePtr> TMapFileSystem;
+		typedef stdex::map<ConstString, FileGroupInterfacePtr> TMapFileSystem;
 		TMapFileSystem m_fileSystemMap;
 	};
 }

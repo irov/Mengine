@@ -50,7 +50,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory )
 	{
-		m_factoryFileGroups.insert( _type, _factory );
+		m_factoryFileGroups.insert( std::make_pair(_type, _factory) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::unregisterFileGroupFactory( const ConstString & _type )
@@ -82,7 +82,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		const FactoryPtr & factory = m_factoryFileGroups.get_value(it_found);
+		const FactoryPtr & factory = it_found->second;
 
 		FileGroupInterface * fileGroup = factory->createObjectT<FileGroupInterface>();
 
@@ -142,7 +142,7 @@ namespace Menge
 			return false;
 		}
 
-		m_fileSystemMap.insert( _fileGroupName, fs );
+		m_fileSystemMap.insert( std::make_pair(_fileGroupName, fs) );
 
 		return true;
 	}
@@ -159,7 +159,7 @@ namespace Menge
 			return;
 		}
 
-        const FileGroupInterfacePtr & groupInterface = m_fileSystemMap.get_value( it_find );
+        const FileGroupInterfacePtr & groupInterface = it_find->second;
 
         groupInterface->finalize();
 
@@ -176,7 +176,7 @@ namespace Menge
 			return false;
 		}
 		
-		const FileGroupInterfacePtr & fileGroup = m_fileSystemMap.get_value( it_find );
+		const FileGroupInterfacePtr & fileGroup = it_find->second;
 
 		if( fileGroup->existFile( _fileName ) == false )
         {
@@ -193,28 +193,35 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool FileEngine::hasFileGroup( const ConstString& _fileGroupName, FileGroupInterfacePtr * _fileGroup ) const
     {
-		FileGroupInterfacePtr fileGroup;
-		bool result = m_fileSystemMap.has_copy( _fileGroupName, fileGroup );
+		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileGroupName );
+
+		if( it_find == m_fileSystemMap.end() )
+		{
+			return false;
+		}
 
 		if( _fileGroup != nullptr )
 		{
-			*_fileGroup = fileGroup;
+			*_fileGroup = it_find->second;
 		}
 
-		return result;
+		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	FileGroupInterfacePtr FileEngine::getFileGroup( const ConstString & _fileGroupName ) const
 	{
-		FileGroupInterfacePtr fileGroup;
-		if( m_fileSystemMap.has_copy( _fileGroupName, fileGroup ) == false )
+		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _fileGroupName );
+
+		if( it_find == m_fileSystemMap.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("FileEngine::getFileGroup '%s' not mount"
+			LOGGER_ERROR( m_serviceProvider )("FileEngine::getFileGroup '%s' not mount"
 				, _fileGroupName.c_str()
 				);
 
 			return nullptr;
 		}
+
+		const FileGroupInterfacePtr & fileGroup = it_find->second;
 
 		return fileGroup;
 	}
@@ -337,7 +344,7 @@ namespace Menge
             return false;
         }
 
-        const FileGroupInterfacePtr & fileGroup = m_fileSystemMap.get_value( it_find );
+		const FileGroupInterfacePtr & fileGroup = it_find->second;
 
         if( fileGroup->existDirectory( _path ) == false )
         {

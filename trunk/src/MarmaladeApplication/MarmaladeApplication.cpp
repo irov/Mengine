@@ -1444,7 +1444,11 @@ namespace Menge
 
 		m_marmaladeInput = new MarmaladeInput;
 		m_marmaladeInput->setServiceProvider( m_serviceProvider );
-		m_marmaladeInput->initialize();
+		
+		if( m_marmaladeInput->initialize() == false )
+		{
+			return false;
+		}
 		
         {
             LOGGER_INFO(m_serviceProvider)( "initialize Image Codec..." );

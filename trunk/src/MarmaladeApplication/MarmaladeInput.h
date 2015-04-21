@@ -8,7 +8,10 @@
 
 #   include "math/vec2.h"
 
+#	include "stdex/stl_map.h"
+
 #   define MENGINE_MAX_TOUCHES 2
+#   define MENGINE_MAX_KEYS 64
 
 namespace Menge
 {
@@ -45,8 +48,8 @@ namespace Menge
         s3eKey gets3eKey_( KeyCode _code ) const;
 
     protected:
-        static int32 s_keyboardKeyEvent( s3eKeyboardEvent * _event, MarmaladeInput * _input );
-        //static int32 s_keyboardCharEvent( s3eKeyboardCharEvent * _event, MarmaladeInput * _input );
+		static int32 s_keyboardKeyEvent( void * _event, void * _input );
+		static int32 s_keyboardCharEvent( void * _event, void * _input );
         static int32 s_pointerTouchEvent( s3ePointerTouchEvent * _event, MarmaladeInput * _input );
         static int32 s_pointerTouchMotionEvent( s3ePointerTouchMotionEvent * _event, MarmaladeInput * _input );
         static int32 s_pointerButtonEvent( s3ePointerEvent * _event, MarmaladeInput * _input );
@@ -58,6 +61,17 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
+		struct KeyEventDesc
+		{
+			s3eKey key;
+			uint32 pressed;
+			s3eWChar ch;
+		};
+
+		KeyEventDesc m_keyEvents[MENGINE_MAX_KEYS];
+		uint32_t m_keysIterator;
+		s3eKey m_lastKey;
+
         struct TouchDesc
         {
             mt::vec2f point;
@@ -68,6 +82,9 @@ namespace Menge
         
         KeyCode m_keys[255];
         s3eKey m_codes[255];
+
+		typedef stdex::map<s3eWChar, KeyCode> TMapWCharCode;
+		TMapWCharCode m_wcharCodes;
 		
 		float m_width;
 		float m_height;

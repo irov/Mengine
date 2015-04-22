@@ -1253,7 +1253,7 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::notifyDebugOpenFile_( const FilePath & _folder, const FilePath & _fileName )
+	void Application::notifyDebugOpenFile_( FilePath _folder, FilePath _fileName )
 	{ 
 		LOGGER_WARNING( m_serviceProvider )("open %s:%s"
 			, _folder.c_str()

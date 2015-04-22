@@ -209,7 +209,7 @@ namespace Menge
 		void invalidateWindow_();
 
 	protected:
-		void notifyDebugOpenFile_( const FilePath & _folder, const FilePath & _fileName );
+		void notifyDebugOpenFile_( FilePath _folder, FilePath _fileName );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

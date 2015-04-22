@@ -247,6 +247,20 @@ namespace Menge
 		m_velocityEventsAdd.push_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::removeAllVelocityEvents()
+	{ 
+		for( TVectorVelocityEventDesc::iterator
+			it = m_velocityEvents.begin(),
+			it_end = m_velocityEvents.end();
+		it != it_end;
+		++it )
+		{
+			VelocityEventDesc & desc = *it;
+
+			desc.dead = true;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool BurritoBison::testVelocityEvent_( const VelocityEventDesc & _desc ) const
 	{
 		float d = mt::dot_v3_v3( _desc.velocity, m_velocity );

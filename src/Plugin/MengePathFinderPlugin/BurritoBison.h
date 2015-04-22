@@ -55,6 +55,7 @@ namespace Menge
 
 	public:
 		void addVelocityEvent( bool _less, const mt::vec3f & _velocity, PyObject * _cb );
+		void removeAllVelocityEvents();
 
 	public:
 		const mt::vec3f & getOffset() const;

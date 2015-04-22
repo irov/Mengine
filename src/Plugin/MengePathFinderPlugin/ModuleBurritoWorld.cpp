@@ -43,6 +43,7 @@ namespace Menge
 			.def( "setVelocity", &BurritoBison::setVelocity )
 			.def( "getVelocity", &BurritoBison::getVelocity )
 			.def( "addVelocityEvent", &BurritoBison::addVelocityEvent )
+			.def( "removeAllVelocityEvents", &BurritoBison::removeAllVelocityEvents )
 			;
 			
 		pybind::interface_<BurritoWorld>("BurritoWorld")

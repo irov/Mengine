@@ -35,6 +35,14 @@ namespace Menge
 		private:
 			FBurritoBisonForceRemove & operator = ( const FBurritoBisonForceRemove & _name );
 		};
+		//////////////////////////////////////////////////////////////////////////
+		struct FBurritoBisonVelocityEventDead
+		{
+			bool operator()( const VelocityEventDesc & _event ) const
+			{
+				return _event.dead == true;
+			}
+		};
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	BurritoBison::BurritoBison()
@@ -154,6 +162,9 @@ namespace Menge
 
 		m_velocity += force_velocity;
 
+		m_velocityEvents.insert( m_velocityEvents.end(), m_velocityEventsAdd.begin(), m_velocityEventsAdd.end() );
+		m_velocityEventsAdd.clear();
+
 		for( TVectorVelocityEventDesc::iterator
 			it = m_velocityEvents.begin(),
 			it_end = m_velocityEvents.end();
@@ -162,16 +173,25 @@ namespace Menge
 		{
 			VelocityEventDesc & desc = *it;
 
+			if( desc.dead == true )
+			{
+				continue;
+			}
+
 			bool test = desc.test;
 
 			desc.test = this->testVelocityEvent_( desc );
 
 			if( test == false && desc.test == true )
 			{
-				pybind::call( desc.cb, "()"
-					);
+				bool result = pybind::ask_t( desc.cb );
+
+				desc.dead = result;
 			}
 		}
+
+		TVectorVelocityEventDesc::iterator it_event_erase = std::remove_if( m_velocityEvents.begin(), m_velocityEvents.end(), FBurritoBisonVelocityEventDead() );
+		m_velocityEvents.erase( it_event_erase, m_velocityEvents.end() );
 
 		_velocity = m_velocity;
 	
@@ -220,7 +240,7 @@ namespace Menge
 		desc.test = this->testVelocityEvent_( desc );
 		desc.dead = false;
 			
-		m_velocityEvents.push_back( desc );
+		m_velocityEventsAdd.push_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool BurritoBison::testVelocityEvent_( const VelocityEventDesc & _desc ) const

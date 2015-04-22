@@ -27,6 +27,17 @@ namespace Menge
 		mutable float timing;
 	};
 	//////////////////////////////////////////////////////////////////////////
+	struct VelocityEventDesc
+	{
+		bool less;
+		mt::vec3f velocity;
+		float velocity_sqrlength;
+		PyObject * cb;
+
+		bool test;
+		bool dead;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class BurritoBison
 	{
 	public:
@@ -58,6 +69,9 @@ namespace Menge
 		void translate( const mt::vec3f & _translate, mt::vec3f & _position );
 		void reflect( const mt::vec2f & _factor, mt::vec3f & _velocity );
 
+	protected:
+		bool testVelocityEvent_( const VelocityEventDesc & _desc ) const;
+
 	protected:		
 		Node * m_node;
 
@@ -76,21 +90,8 @@ namespace Menge
 		typedef stdex::vector<BurritoBisonImpulse> TVectorBurritoBisonImpulse;
 		TVectorBurritoBisonImpulse m_impulses;
 
-		struct VelocityEventDesc
-		{
-			bool less;
-			mt::vec3f velocity;
-			float velocity_sqrlength;
-			PyObject * cb;
-
-			bool test;
-			bool dead;
-		};
-
 		typedef stdex::vector<VelocityEventDesc> TVectorVelocityEventDesc;
 		TVectorVelocityEventDesc m_velocityEvents;
-
-	protected:
-		bool testVelocityEvent_( const VelocityEventDesc & _desc ) const;
+		TVectorVelocityEventDesc m_velocityEventsAdd;
 	};
 }

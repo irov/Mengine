@@ -356,7 +356,7 @@ namespace Menge
 				return false;
 			}
 
-			PyObject * py_result = pybind::ask( module_function, "()" );
+			PyObject * py_result = pybind::ask_t( module_function );
 
 			if( py_result == nullptr )
 			{
@@ -560,7 +560,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		PyObject * py_entity = pybind::ask( _generator, "()" );
+		PyObject * py_entity = pybind::ask_t( _generator );
 
 		if( py_entity == nullptr )
 		{

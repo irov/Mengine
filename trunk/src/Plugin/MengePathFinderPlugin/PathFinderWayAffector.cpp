@@ -131,15 +131,7 @@ namespace Menge
 		
 		uint32_t id = this->getId();
 
-		pybind::call( m_cb, "iONNOOO"
-			, id
-			, m_node->getEmbed()
-			, pybind::ptr(wp_current)
-			, pybind::ptr(dir)
-			, pybind::get_bool(true)
-			, pybind::get_bool(false)
-			, pybind::get_bool(false) 
-			);
+		pybind::call_t( m_cb, id, m_node, wp_current, dir, true, false, false );
 
 		return true;
 	}
@@ -160,15 +152,7 @@ namespace Menge
 		{
 			uint32_t id = this->getId();
 
-			pybind::call( m_cb, "iONNOOO"
-				, id
-				, m_node->getEmbed()
-				, pybind::ptr(new_pos)
-				, pybind::ptr(new_dir)
-				, pybind::get_bool(false)
-				, pybind::get_bool(false)
-				, pybind::get_bool(false) 
-				);
+			pybind::call_t( m_cb, id, m_node, new_pos, new_dir, false, false, false );
 		}
 
 		if( m_iterator == m_wayCount )
@@ -189,15 +173,7 @@ namespace Menge
 
 		uint32_t id = this->getId();
 
-		pybind::call( m_cb, "iONNOOO"
-			, id
-			, m_node->getEmbed()
-			, pybind::ptr(wp_current)
-			, pybind::ptr(dir)
-			, pybind::get_bool(false)
-			, pybind::get_bool(false)
-			, pybind::get_bool(true) 
-			);
+		pybind::call_t( m_cb, id, m_node, wp_current, dir, false, false, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::stop()
@@ -212,15 +188,7 @@ namespace Menge
 
 		uint32_t id = this->getId();
 
-		pybind::call( m_cb, "iONNOOO"
-			, id
-			, m_node->getEmbed()
-			, pybind::ptr(lp)
-			, pybind::ptr(dir)
-			, pybind::get_bool(false)
-			, pybind::get_bool(true)
-			, pybind::get_bool(false) 
-			);
+		pybind::call_t( m_cb, id, m_node, lp, dir, false, true, false );
 	}
 }
 

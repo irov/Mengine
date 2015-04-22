@@ -629,21 +629,13 @@ namespace Menge
 
 			if( desc.finder->isSuccessful() == false )
 			{
-				pybind::call( desc.cb, "(IOO)"
-					, desc.id
-					, pybind::get_bool(false)					
-					, pybind::get_none() 
-					);
+				pybind::call_t( desc.cb, desc.id, false, pybind::ret_none() );
 			}
 			else
 			{
 				PyObject * way = desc.finder->getWay();
 
-				pybind::call( desc.cb, "(IOO)"
-					, desc.id
-					, pybind::get_bool(true)
-					, way
-					);
+				pybind::call_t( desc.cb, desc.id, true, way );
 			}
 
 			pybind::decref( desc.cb );

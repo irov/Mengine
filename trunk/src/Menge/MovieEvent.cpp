@@ -63,9 +63,7 @@ namespace Menge
                 return;
             }
             
-            pybind::call( m_cb, "(N)"
-				, pybind::ptr(frame.position) 
-				);
+            pybind::call_t( m_cb, frame.position );
         }
     }
 }

@@ -24,6 +24,9 @@
 #	include <fcntl.h>
 #pragma warning(pop) 
 
+#pragma comment ( lib, "Ws2_32.lib" )
+#pragma comment ( lib, "Crypt32.lib" )
+
 #   include <iostream>
 
 #	include "Interface/ServiceInterface.h"

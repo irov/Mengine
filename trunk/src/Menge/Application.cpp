@@ -949,32 +949,32 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::parseArguments_( const String& _arguments )
 	{
-		String::size_type idx_particles = _arguments.find( " -particles " );
-		if( idx_particles != String::npos )
+		if( _arguments.find( " -author " ) != String::npos )
+		{
+			LOGGER_CRITICAL( m_serviceProvider )("Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru");
+		}
+
+		if( _arguments.find( " -particles " ) != String::npos )
 		{
 			m_particles = false;
 		}
 
-        String::size_type idx_dev = _arguments.find( " -dev " );
-        if( idx_dev != String::npos )
+		if( _arguments.find( " -dev " ) != String::npos )
         {
             m_developmentMode = true;
         }
 
-        String::size_type idx_noresourcecheck = _arguments.find( " -noresourcecheck " );
-        if( idx_noresourcecheck != String::npos )
+		if( _arguments.find( " -noresourcecheck " ) != String::npos )
         {
             m_resourceCheck = false;
         }
 
-		String::size_type idx_noresourcecheckcritical = _arguments.find( " -noresourcecheckcritical " );
-		if( idx_noresourcecheckcritical != String::npos )
+		if( _arguments.find( " -noresourcecheckcritical " ) != String::npos )
 		{
 			m_resourceCheckCritical = false;
 		}
 
-        String::size_type idx_nofullscreen = _arguments.find( " -nofullscreen " );
-        if( idx_nofullscreen != String::npos )
+		if( _arguments.find( " -nofullscreen " ) != String::npos )
         {
             m_nofullscreenMode = true;
         }

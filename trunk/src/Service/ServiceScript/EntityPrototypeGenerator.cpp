@@ -53,14 +53,8 @@ namespace Menge
 		{
 			return m_type;
 		}
-
-		PyObject * p = pybind::ptr(m_prototype);
-		
-		PyObject * py_type = pybind::ask( m_generator, "(O)"
-			, p
-			);
-
-		//pybind::decref( p );
+				
+		PyObject * py_type = pybind::ask_t( m_generator, m_prototype );
 
 		if( py_type == nullptr || pybind::is_none( py_type ) == true )
 		{

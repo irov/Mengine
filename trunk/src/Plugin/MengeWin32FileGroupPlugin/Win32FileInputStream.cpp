@@ -124,8 +124,11 @@ namespace Menge
 		}
 
 #	ifdef _DEBUG
-		NOTIFICATION_SERVICE( m_serviceProvider )
-			->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folder, _fileName );
+		if( SERVICE_EXIST( m_serviceProvider, NotificationServiceInterface ) == true )
+		{
+			NOTIFICATION_SERVICE( m_serviceProvider )
+				->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folder, _fileName );
+		}
 #	endif
 
 		return true;

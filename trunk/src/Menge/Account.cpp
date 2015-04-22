@@ -118,9 +118,7 @@ namespace Menge
 
 		if( pybind::is_none( st->cb ) == false )
 		{
-			pybind::call( st->cb, "(N)"
-                , pybind::ptr(_value)
-                );
+			pybind::call_t( st->cb, _value );
 		}
 
 		return true;
@@ -298,9 +296,7 @@ namespace Menge
 				continue;
 			}
 
-			pybind::call( st.cb, "(N)"
-                , pybind::ptr(st.value)
-                );
+			pybind::call_t( st.cb, st.value );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

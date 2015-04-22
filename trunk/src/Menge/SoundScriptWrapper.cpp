@@ -62,9 +62,7 @@ namespace	Menge
 			{	
 				if( pybind::is_callable( m_cb ) == true )
 				{
-					pybind::call( m_cb, "(i)"
-						, _id 
-						);
+					pybind::call_t( m_cb, _id );
 				}				
 
 				if( SOUND_SERVICE(m_serviceProvider)
@@ -476,10 +474,7 @@ namespace	Menge
 			{
 				if( m_cb != nullptr && pybind::is_none( m_cb ) == false )
 				{
-					pybind::call( m_cb, "(iO)"
-						, _id
-						, pybind::get_bool(_isEnd) 
-						);
+					pybind::call_t( m_cb, _id, _isEnd );
 				}
 
 				this->destroy();

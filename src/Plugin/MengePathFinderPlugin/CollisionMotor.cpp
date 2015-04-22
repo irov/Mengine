@@ -141,12 +141,6 @@ namespace Menge
 		float angle = _object->getOrientationX();
 		uint32_t rotateState = s_rotateToState( angle );
 
-		pybind::call( m_cb, "(NiOOO)"
-			, pybind::ptr(_object)
-			, rotateState
-			, pybind::get_bool(m_rotating)
-			, pybind::get_bool(m_transiting)
-			, pybind::get_bool(m_finish)
-			);
+		pybind::call_t( m_cb, _object, rotateState, m_rotating, m_transiting, m_finish );
 	}
 }

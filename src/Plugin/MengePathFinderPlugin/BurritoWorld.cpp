@@ -71,9 +71,7 @@ namespace Menge
 
 				Node * unit_node = _unit->getNode();
 
-				pybind::call( cb, "(N)"
-					, pybind::ptr( unit_node )
-					);
+				pybind::call_t( cb, unit_node );
 
 				return true;
 			}
@@ -352,20 +350,14 @@ namespace Menge
 				{
 					while( layer.position.x > layer.bounds.x )
 					{
-						pybind::call( layer.cb, "(Ni)"
-							, pybind::ptr( layer.name )
-							, 0
-							);
+						pybind::call_t( layer.cb, layer.name, 0 );
 
 						layer.position.x -= layer.bounds.x;
 					}
 
 					while( layer.position.x < -layer.bounds.x )
 					{
-						pybind::call( layer.cb, "(Ni)"
-							, pybind::ptr( layer.name )
-							, 2
-							);
+						pybind::call_t( layer.cb, layer.name, 2 );
 
 						layer.position.x += layer.bounds.x;
 					}
@@ -375,20 +367,14 @@ namespace Menge
 				{
 					while( layer.position.y > layer.bounds.y )
 					{
-						pybind::call( layer.cb, "(Ni)"
-							, pybind::ptr( layer.name )
-							, 1
-							);
+						pybind::call_t( layer.cb, layer.name, 1	);
 
 						layer.position.y -= layer.bounds.y;
 					}
 
 					while( layer.position.y < -layer.bounds.y )
 					{
-						pybind::call( layer.cb, "(Ni)"
-							, pybind::ptr( layer.name )
-							, 3
-							);
+						pybind::call_t( layer.cb, layer.name, 3	);
 
 						layer.position.y += layer.bounds.y;
 					}
@@ -398,20 +384,14 @@ namespace Menge
 				{
 					while( layer.position.z > layer.bounds.z )
 					{
-						pybind::call( layer.cb, "(Ni)"
-							, pybind::ptr( layer.name )
-							, 4
-							);
+						pybind::call_t( layer.cb, layer.name, 4	);
 
 						layer.position.z -= layer.bounds.z;
 					}
 
 					while( layer.position.z < -layer.bounds.z )
 					{
-						pybind::call( layer.cb, "(Ni)"
-							, pybind::ptr( layer.name )
-							, 5
-							);
+						pybind::call_t( layer.cb, layer.name, 5	);
 
 						layer.position.z += layer.bounds.z;
 					}

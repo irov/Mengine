@@ -42,11 +42,8 @@ namespace Menge
 		}
 
 		_collisionTiming = ccd_timing;
-
-		PyObject * py_factor = pybind::ask( m_cb, "()"
-			);
-
-		_factor = pybind::extract<mt::vec2f>( py_factor );
+		
+		_factor = pybind::ask_t( m_cb );
 
 		return true;
 	}

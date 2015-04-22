@@ -60,7 +60,7 @@ namespace Menge
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-		PyObject * s_createEntity( const ConstString & _prototype )
+		Entity * s_createEntity( const ConstString & _prototype )
 		{
 			Entity * entity = PROTOTYPE_SERVICE(m_serviceProvider)
 				->generatePrototypeT<Entity>( CONST_STRING(m_serviceProvider, Entity), _prototype );
@@ -77,11 +77,7 @@ namespace Menge
 			NODE_SERVICE(m_serviceProvider)
 				->addHomeless( entity );
 
-			PyObject * py_embedding = entity->getEmbed();
-
-			pybind::incref( py_embedding );
-
-			return py_embedding;
+			return entity;
 		}
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_importEntity( const ConstString & _prototype )

@@ -60,6 +60,7 @@ namespace Menge
 		const mt::vec3f & getOffset() const;
 		float getRadius() const;
 		
+		void setVelocity( const mt::vec3f & _velocity );
 		const mt::vec3f & getVelocity() const;
 
 	public:

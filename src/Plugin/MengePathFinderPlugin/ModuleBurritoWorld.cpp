@@ -39,7 +39,8 @@ namespace Menge
 		pybind::interface_<BurritoBison>("BurritoBison")
 			.def( "addForce", &BurritoBison::addForce )
 			.def( "removeForce", &BurritoBison::removeForce )
-			.def( "addImpulse", &BurritoBison::addImpulse )
+			.def( "addImpulse", &BurritoBison::addImpulse )			
+			.def( "setVelocity", &BurritoBison::setVelocity )
 			.def( "getVelocity", &BurritoBison::getVelocity )
 			.def( "addVelocityEvent", &BurritoBison::addVelocityEvent )
 			;

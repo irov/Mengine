@@ -106,6 +106,11 @@ namespace Menge
 		return m_radius;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::setVelocity( const mt::vec3f & _velocity )
+	{ 
+		m_velocity = _velocity;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & BurritoBison::getVelocity() const
 	{
 		return m_velocity;
@@ -231,8 +236,7 @@ namespace Menge
 	{ 
 		VelocityEventDesc desc;
 		desc.less = _less;
-		desc.velocity = _velocity;
-		desc.velocity_sqrlength = _velocity.sqrlength();
+		desc.velocity_sqrlength = mt::norm_v3_f( desc.velocity, _velocity );
 		
 		desc.cb = _cb;
 		pybind::incref( desc.cb );

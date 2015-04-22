@@ -366,7 +366,7 @@ namespace Menge
 
 		if( cb != nullptr )
 		{
-			pybind::call_t( cb, m_scene->getEmbed(), false );
+			pybind::call_t( cb, m_scene, false );
 		}
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
@@ -391,7 +391,7 @@ namespace Menge
 
 		if( cb != nullptr )
 		{
-			pybind::call_t( cb, m_scene->getEmbed(), true );
+			pybind::call_t( cb, m_scene, true );
 			pybind::decref( cb );
 		}
 

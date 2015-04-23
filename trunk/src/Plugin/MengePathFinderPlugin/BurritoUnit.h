@@ -30,7 +30,7 @@ namespace Menge
 		void update( float _timing, const mt::vec3f & _translate );
 
 	public:
-		bool check_collision( float _timing, const mt::vec3f & _burritoPosition, float _burritoRadius, const mt::vec3f & _burritoVelocity, float & _collisionTiming, mt::vec2f & _factor ) const;
+		bool check_collision( float _timing, const mt::vec3f & _burritoPosition, float _burritoRadius, const mt::vec3f & _burritoVelocity, float & _collisionTiming, mt::vec3f & _newVelocity ) const;
 
 	protected:		
 		Node * m_node;

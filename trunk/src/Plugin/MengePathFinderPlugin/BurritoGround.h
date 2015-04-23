@@ -20,7 +20,7 @@ namespace Menge
 		void translate( const mt::vec3f & _translate );
 
 	public:
-		bool check_collision( float _timing, const mt::vec3f & _position, float _radius, const mt::vec3f & _velocity, float & _collisionTiming, mt::vec2f & _factor ) const;
+		bool check_collision( float _timing, const mt::vec3f & _position, float _radius, const mt::vec3f & _velocity, float & _collisionTiming, mt::vec3f & _newVelocity ) const;
 
 	protected:		
 		mt::planef m_plane;

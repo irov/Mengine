@@ -69,7 +69,6 @@ namespace Menge
 
 	public:
 		void translate( const mt::vec3f & _translate, mt::vec3f & _position );
-		void reflect( const mt::vec2f & _factor, mt::vec3f & _velocity );
 
 	protected:
 		bool testVelocityEvent_( const VelocityEventDesc & _desc ) const;

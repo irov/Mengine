@@ -88,7 +88,10 @@ namespace Menge
 	void BurritoBison::addImpulse( const mt::vec3f & _direction, float _value, float _time )
 	{
 		BurritoBisonImpulse impulse;
-		impulse.direction = _direction;
+		
+		impulse.direction;
+		mt::norm_v3( impulse.direction, _direction );
+
 		impulse.value = _value;
 		impulse.time = _time;
 		impulse.timing = _time;
@@ -206,30 +209,38 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::translate( const mt::vec3f & _translate, mt::vec3f & _position )
 	{ 
-		m_position += _translate;
-
-		if( m_position.y > 0.f )
-		{
-			m_bisonY = m_position.y;
-
-			_position = - mt::vec3f( _translate.x, 0.f, _translate.z );
-		}
-		else
+		if( m_position.y <= 0.f && m_position.y + _translate.y <= 0.f )
 		{
 			m_bisonY = 0.f;
 
-			_position = - _translate;
+			_position = -_translate;
+		}
+		else if( m_position.y <= 0.f && m_position.y + _translate.y >= 0.f )
+		{
+			m_bisonY = m_position.y + _translate.y;
+
+			_position = -mt::vec3f( _translate.x, -m_position.y, _translate.z );
+		}
+		else if( m_position.y >= 0.f && m_position.y + _translate.y >= 0.f )
+		{
+			m_bisonY = m_position.y;
+
+			_position = -mt::vec3f( _translate.x, 0.f, _translate.z );
+		}
+		else if( m_position.y >= 0.f && m_position.y + _translate.y <= 0.f )
+		{
+			m_bisonY = 0.f;
+
+			_position = -mt::vec3f( _translate.x, m_position.y + _translate.y, _translate.z );
+		}
+		else
+		{
+			printf( "AAAAAAAAAAAAHHHTUNG!!!!" );
 		}
 
-		m_node->setLocalPosition( m_offset + mt::vec3f( 0.f, m_bisonY, 0.f ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::reflect( const mt::vec2f & _factor, mt::vec3f & _velocity )
-	{
-		m_velocity.x *= _factor.x;
-		m_velocity.y *= _factor.y;
+		m_node->setLocalPosition( m_offset + mt::vec3f( 0.f, m_bisonY, 0.f ) );		
 
-		_velocity = m_velocity;
+		m_position += _translate;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::addVelocityEvent( bool _less, const mt::vec3f & _velocity, PyObject * _cb )

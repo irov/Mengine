@@ -264,75 +264,156 @@ namespace Menge
 			return;
 		}
 
-		float bison_radius = m_bison->getRadius();
-				
-		mt::vec3f velocity;
-		mt::vec3f offset;
-		mt::vec3f offsetH;
-		m_bison->update( _time, _timing, velocity, offset, offsetH );
+		uint32_t iterate = 1;
+		float next_timing = _timing;
+		
+		while( iterate-- != 0 )
+		{
+			float iterate_timing = next_timing;
 
-		mt::vec3f translate_position(0.f, 0.f, 0.f);
+			float bison_radius = m_bison->getRadius();
 
-		float sq_speed = velocity.sqrlength();
+			mt::vec3f velocity;
+			mt::vec3f offset;
+			mt::vec3f offsetH;
+			m_bison->update( _time, iterate_timing, velocity, offset, offsetH );
 
-		if( mt::equal_f_z( sq_speed ) == false )
-		{			
-			bool collision = false;
-			float collisionTiming = 0.f;
-			mt::vec2f collisionFactor;
+			mt::vec3f translate_position( 0.f, 0.f, 0.f );
 
-			for( TVectorBurritoLayer::const_iterator
-				it = m_layers.begin(),
-				it_end = m_layers.end();
-			it != it_end;
-			++it )
+			float sq_speed = velocity.sqrlength();
+
+			if( mt::equal_f_z( sq_speed ) == false )
 			{
-				const BurritoLayer & layer = *it;
+				bool collision = false;
+				float collisionTiming = 0.f;
+				mt::vec3f newVelocity = velocity;
 
-				for( TVectorBurritoUnit::const_iterator
-					it_unit = layer.units.begin(),
-					it_unit_end = layer.units.end();
-				it_unit != it_unit_end;
-				++it_unit )
+				for( TVectorBurritoLayer::const_iterator
+					it = m_layers.begin(),
+					it_end = m_layers.end();
+				it != it_end;
+				++it )
 				{
-					const BurritoUnit * unit = *it_unit;
-										
-					mt::vec3f collision_velocity = velocity * layer.parallax;
+					const BurritoLayer & layer = *it;
 
-					if( unit->check_collision( _timing, offsetH, bison_radius, collision_velocity, collisionTiming, collisionFactor ) == true )
+					for( TVectorBurritoUnit::const_iterator
+						it_unit = layer.units.begin(),
+						it_unit_end = layer.units.end();
+					it_unit != it_unit_end;
+					++it_unit )
 					{
-						collision = true;
+						const BurritoUnit * unit = *it_unit;
 
-						break;
+						mt::vec3f collision_velocity = velocity * layer.parallax;
+
+						if( unit->check_collision( iterate_timing, offsetH, bison_radius, collision_velocity, collisionTiming, newVelocity ) == true )
+						{
+							collision = true;
+
+							break;
+						}
+					}
+				}
+
+				if( m_ground != nullptr && collision == false )
+				{
+					if( m_ground->check_collision( iterate_timing, offsetH, bison_radius, velocity, collisionTiming, newVelocity ) == true )
+					{
+						collision = true;												
+					}
+				}
+
+				if( collision == true )
+				{
+					m_bison->setVelocity( newVelocity );
+
+					next_timing = iterate_timing - collisionTiming;
+					iterate_timing = collisionTiming;
+					
+					++iterate;					
+				}
+				
+				mt::vec3f bison_translate = velocity * iterate_timing;
+				
+				m_bison->translate( bison_translate, translate_position );
+
+				m_ground->translate( translate_position );
+
+				for( TVectorBurritoLayer::iterator
+					it = m_layers.begin(),
+					it_end = m_layers.end();
+				it != it_end;
+				++it )
+				{
+					BurritoLayer & layer = *it;
+
+					mt::vec3f layer_translate_position = translate_position * layer.parallax;
+
+					layer.position += layer_translate_position;
+
+					if( mt::equal_f_z( layer.bounds.x ) == false )
+					{
+						while( layer.position.x > layer.bounds.x )
+						{
+							pybind::call_t( layer.cb, layer.name, 0 );
+
+							layer.position.x -= layer.bounds.x;
+						}
+
+						while( layer.position.x < -layer.bounds.x )
+						{
+							pybind::call_t( layer.cb, layer.name, 2 );
+
+							layer.position.x += layer.bounds.x;
+						}
+					}
+
+					if( mt::equal_f_z( layer.bounds.y ) == false )
+					{
+						while( layer.position.y > layer.bounds.y )
+						{
+							pybind::call_t( layer.cb, layer.name, 1 );
+
+							layer.position.y -= layer.bounds.y;
+						}
+
+						while( layer.position.y < -layer.bounds.y )
+						{
+							pybind::call_t( layer.cb, layer.name, 3 );
+
+							layer.position.y += layer.bounds.y;
+						}
+					}
+
+					if( mt::equal_f_z( layer.bounds.z ) == false )
+					{
+						while( layer.position.z > layer.bounds.z )
+						{
+							pybind::call_t( layer.cb, layer.name, 4 );
+
+							layer.position.z -= layer.bounds.z;
+						}
+
+						while( layer.position.z < -layer.bounds.z )
+						{
+							pybind::call_t( layer.cb, layer.name, 5 );
+
+							layer.position.z += layer.bounds.z;
+						}
+					}
+
+					for( TVectorBurritoNode::iterator
+						it_node = layer.nodes.begin(),
+						it_node_end = layer.nodes.end();
+					it_node != it_node_end;
+					++it_node )
+					{
+						BurritoNode * node = *it_node;
+
+						node->node->translate( layer_translate_position );
 					}
 				}
 			}
-
-			if( m_ground != nullptr && collision == false )
-			{
-				collision = m_ground->check_collision( _timing, offsetH, bison_radius, velocity, collisionTiming, collisionFactor );
-			}
-
-
-			mt::vec3f bison_translate;
-
-			if( collision == true )
-			{
-				mt::vec3f reflect_velocity;
-				m_bison->reflect( collisionFactor, reflect_velocity );
-
-				float reflectTiming = _timing - collisionTiming;
-
-				bison_translate = velocity * collisionTiming + reflect_velocity * reflectTiming;
-			}
-			else
-			{
-				bison_translate = velocity * _timing;
-			}
-			
-			m_bison->translate( bison_translate, translate_position );
-
-			m_ground->translate( translate_position );
 
 			for( TVectorBurritoLayer::iterator
 				it = m_layers.begin(),
@@ -344,97 +425,22 @@ namespace Menge
 
 				mt::vec3f layer_translate_position = translate_position * layer.parallax;
 
-				layer.position += layer_translate_position;
-
-				if( mt::equal_f_z( layer.bounds.x ) == false )
+				for( TVectorBurritoUnit::iterator
+					it_unit = layer.units.begin(),
+					it_unit_end = layer.units.end();
+				it_unit != it_unit_end;
+				++it_unit )
 				{
-					while( layer.position.x > layer.bounds.x )
-					{
-						pybind::call_t( layer.cb, layer.name, 0 );
+					BurritoUnit * unit = *it_unit;
 
-						layer.position.x -= layer.bounds.x;
-					}
-
-					while( layer.position.x < -layer.bounds.x )
-					{
-						pybind::call_t( layer.cb, layer.name, 2 );
-
-						layer.position.x += layer.bounds.x;
-					}
+					unit->update( iterate_timing, layer_translate_position );
 				}
 
-				if( mt::equal_f_z( layer.bounds.y ) == false )
+				if( m_bounds_cb != nullptr )
 				{
-					while( layer.position.y > layer.bounds.y )
-					{
-						pybind::call_t( layer.cb, layer.name, 1	);
-
-						layer.position.y -= layer.bounds.y;
-					}
-
-					while( layer.position.y < -layer.bounds.y )
-					{
-						pybind::call_t( layer.cb, layer.name, 3	);
-
-						layer.position.y += layer.bounds.y;
-					}
+					TVectorBurritoUnit::iterator it_erase = std::remove_if( layer.units.begin(), layer.units.end(), FBurritoUnitBounds( m_bounds_min, m_bounds_max, m_bounds_cb ) );
+					layer.units.erase( it_erase, layer.units.end() );
 				}
-
-				if( mt::equal_f_z( layer.bounds.z ) == false )
-				{
-					while( layer.position.z > layer.bounds.z )
-					{
-						pybind::call_t( layer.cb, layer.name, 4	);
-
-						layer.position.z -= layer.bounds.z;
-					}
-
-					while( layer.position.z < -layer.bounds.z )
-					{
-						pybind::call_t( layer.cb, layer.name, 5	);
-
-						layer.position.z += layer.bounds.z;
-					}
-				}
-
-				for( TVectorBurritoNode::iterator
-					it_node = layer.nodes.begin(),
-					it_node_end = layer.nodes.end();
-				it_node != it_node_end;
-				++it_node )
-				{
-					BurritoNode * node = *it_node;
-
-					node->node->translate( layer_translate_position );
-				}
-			}
-		}
-
-		for( TVectorBurritoLayer::iterator
-			it = m_layers.begin(),
-			it_end = m_layers.end();
-		it != it_end;
-		++it )
-		{
-			BurritoLayer & layer = *it;
-
-			mt::vec3f layer_translate_position = translate_position * layer.parallax;
-
-			for( TVectorBurritoUnit::iterator
-				it_unit = layer.units.begin(),
-				it_unit_end = layer.units.end();
-			it_unit != it_unit_end;
-			++it_unit )
-			{
-				BurritoUnit * unit = *it_unit;
-
-				unit->update( _timing, layer_translate_position );
-			}
-
-			if( m_bounds_cb != nullptr )
-			{
-				TVectorBurritoUnit::iterator it_erase = std::remove_if( layer.units.begin(), layer.units.end(), FBurritoUnitBounds( m_bounds_min, m_bounds_max, m_bounds_cb ) );
-				layer.units.erase( it_erase, layer.units.end() );
 			}
 		}
 	}

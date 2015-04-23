@@ -62,7 +62,7 @@ namespace Menge
 		return m_velocity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BurritoUnit::check_collision( float _timing, const mt::vec3f & _burritoPosition, float _burritoRadius, const mt::vec3f & _burritoVelocity, float & _collisionTiming, mt::vec2f & _factor ) const
+	bool BurritoUnit::check_collision( float _timing, const mt::vec3f & _burritoPosition, float _burritoRadius, const mt::vec3f & _burritoVelocity, float & _collisionTiming, mt::vec3f & _newVelocity ) const
 	{ 
 		if( m_collide == false )
 		{
@@ -85,9 +85,9 @@ namespace Menge
 		
 		PyObject * py_result = pybind::ask_t(m_cb, m_node, _burritoVelocity);
 
-		PyObject * py_factor = pybind::tuple_getitem( py_result, 0 );
+		PyObject * py_velocity = pybind::tuple_getitem( py_result, 0 );
 
-		_factor = pybind::extract<mt::vec2f>( py_factor );
+		_newVelocity = pybind::extract_t( py_velocity );
 
 		uint32_t flag = pybind::tuple_getitem_t<uint32_t>( py_result, 1 );
 

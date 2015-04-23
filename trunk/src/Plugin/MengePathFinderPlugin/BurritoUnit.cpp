@@ -12,7 +12,6 @@ namespace Menge
 		, m_position(0.f, 0.f, 0.f)
 		, m_velocity( 0.f, 0.f, 0.f )
 		, m_radius(0.f)
-		, m_cb(nullptr)
 		, m_dead(false)
 		, m_collide(true)
 	{
@@ -20,7 +19,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BurritoUnit::~BurritoUnit()
 	{
-		pybind::decref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node * BurritoUnit::getNode() const
@@ -38,7 +36,7 @@ namespace Menge
 		return m_dead;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoUnit::initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, PyObject * _cb )
+	void BurritoUnit::initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb )
 	{
 		m_node = _node;
 		m_position = _position;
@@ -47,7 +45,6 @@ namespace Menge
 		m_collide = _collide;
 
 		m_cb = _cb;
-		pybind::incref( m_cb );
 
 		m_node->setLocalPosition( m_position );
 	}
@@ -83,13 +80,10 @@ namespace Menge
 
 		_collisionTiming = _timing - ccd_timing;
 		
-		PyObject * py_result = pybind::ask_t(m_cb, m_node, _burritoVelocity);
+		pybind::tuple py_result = m_cb( m_node, _burritoVelocity );
 
-		PyObject * py_velocity = pybind::tuple_getitem( py_result, 0 );
-
-		_newVelocity = pybind::extract_t( py_velocity );
-
-		uint32_t flag = pybind::tuple_getitem_t<uint32_t>( py_result, 1 );
+		_newVelocity = py_result[0];
+		uint32_t flag = py_result[1];
 
 		if( flag == 1 )
 		{			

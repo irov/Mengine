@@ -32,7 +32,7 @@ namespace Menge
 		mt::vec3f position;
 		mt::vec3f bounds;
 
-		PyObject * cb;
+		pybind::object cb;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class BurritoWorld		
@@ -45,13 +45,13 @@ namespace Menge
 		BurritoBison * createBison( Node * _node, const mt::vec3f & _offset, float _bisonY, float _radius );
 
 	public:
-		void createGround( float _x, float _y, float _z, float _d, PyObject * _cb );
+		void createGround( float _x, float _y, float _z, float _d, const pybind::object & _cb );
 
 	public:
-		void addUnitBounds( const mt::vec3f & _min, const mt::vec3f & _max, PyObject * _cb );
+		void addUnitBounds( const mt::vec3f & _min, const mt::vec3f & _max, const pybind::object & _cb );
 
 	public:
-		void createLayer( const ConstString & _layerName, float _parallax, const mt::vec3f & _bounds, PyObject * _cb );
+		void createLayer( const ConstString & _layerName, float _parallax, const mt::vec3f & _bounds, const pybind::object & _cb );
 
 	public:
 		bool addLayerNode( const ConstString & _layerName, Node * _node );
@@ -78,7 +78,7 @@ namespace Menge
 		mt::planef m_fixed_plane_up;
 		mt::planef m_fixed_plane_down;
 
-		PyObject * m_bounds_cb;
+		pybind::object m_bounds_cb;
 
 		TVectorBurritoUnit m_units;
 	};

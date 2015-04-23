@@ -8,31 +8,36 @@ namespace Menge
 	namespace
 	{
 		//////////////////////////////////////////////////////////////////////////
-		struct FBurritoNodeRemove
+		class FBurritoNodeRemove
 		{
+		public:
 			FBurritoNodeRemove( Node * _node )
 				: node(_node)
 			{
 			}
 
+		public:
 			bool operator()( BurritoNode * _node ) const
 			{
 				return _node->node == node;
 			}
 
+		protected:
 			Node * node;
 
 		private:
 			FBurritoNodeRemove & operator = ( const FBurritoNodeRemove & _name );
 		};
 		//////////////////////////////////////////////////////////////////////////
-		struct FBurritoUnitRemove
+		class FBurritoUnitRemove
 		{
+		public:
 			FBurritoUnitRemove( Node * _node )
 				: node( _node )
 			{
 			}
 
+		public:
 			bool operator()( BurritoUnit * _unit ) const
 			{
 				Node * unit_node = _unit->getNode();
@@ -40,21 +45,24 @@ namespace Menge
 				return unit_node == node;
 			}
 
+		protected:
 			Node * node;
 
 		private:
 			FBurritoUnitRemove & operator = (const FBurritoUnitRemove & _name);
 		};
 		//////////////////////////////////////////////////////////////////////////
-		struct FBurritoUnitBounds
+		class FBurritoUnitBounds
 		{
-			FBurritoUnitBounds( const mt::vec3f & _bounds_min, const mt::vec3f & _bounds_max, PyObject * _cb )
+		public:
+			FBurritoUnitBounds( const mt::vec3f & _bounds_min, const mt::vec3f & _bounds_max, const pybind::object & _cb )
 				: bounds_min( _bounds_min )
 				, bounds_max( _bounds_max )
-				, cb(_cb)
+				, cb( _cb )
 			{
 			}
 
+		public:
 			bool operator()( BurritoUnit * _unit ) const
 			{				
 				if( _unit->isDead() == true )
@@ -71,14 +79,15 @@ namespace Menge
 
 				Node * unit_node = _unit->getNode();
 
-				pybind::call_t( cb, unit_node );
+				cb( unit_node );
 
 				return true;
 			}
 
+		protected:
 			mt::vec3f bounds_min;
 			mt::vec3f bounds_max;
-			PyObject * cb;
+			const pybind::object & cb;
 
 		private:
 			FBurritoUnitBounds & operator = (const FBurritoUnitBounds & _name);
@@ -89,7 +98,6 @@ namespace Menge
 		: m_bison(nullptr)		
 		, m_bounds_min( 0.f, 0.f, 0.f )
 		, m_bounds_max( 0.f, 0.f, 0.f )
-		, m_bounds_cb( nullptr )
 		, m_fixed_plane_up( 0.f, -1.f, 0.f, 0.f )
 		, m_fixed_plane_down( 0.f, 1.f, 0.f, 0.f )
 	{
@@ -98,8 +106,6 @@ namespace Menge
 	BurritoWorld::~BurritoWorld()
 	{
 		delete m_bison;
-
-		pybind::decref( m_bounds_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoBison * BurritoWorld::createBison( Node * _node, const mt::vec3f & _offset, float _bisonY, float _radius )
@@ -111,7 +117,7 @@ namespace Menge
 		return m_bison;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::createGround( float _x, float _y, float _z, float _d, PyObject * _cb )
+	void BurritoWorld::createGround( float _x, float _y, float _z, float _d, const pybind::object & _cb )
 	{
 		m_ground = new BurritoGround();
 
@@ -120,16 +126,15 @@ namespace Menge
 		m_ground->initialize( p, _cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::addUnitBounds( const mt::vec3f & _min, const mt::vec3f & _max, PyObject * _cb )
+	void BurritoWorld::addUnitBounds( const mt::vec3f & _min, const mt::vec3f & _max, const pybind::object & _cb )
 	{
 		m_bounds_min = _min;
 		m_bounds_max = _max;
 
 		m_bounds_cb = _cb;
-		pybind::incref( m_bounds_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::createLayer( const ConstString & _layerName, float _parallax, const mt::vec3f & _bounds, PyObject * _cb )
+	void BurritoWorld::createLayer( const ConstString & _layerName, float _parallax, const mt::vec3f & _bounds, const pybind::object & _cb )
 	{
 		BurritoLayer layer;
 		layer.name = _layerName;
@@ -139,7 +144,6 @@ namespace Menge
 		layer.bounds = _bounds;
 
 		layer.cb = _cb;
-		pybind::incref( layer.cb );
 
 		m_layers.push_back( layer );
 	}
@@ -330,7 +334,7 @@ namespace Menge
 					next_timing = iterate_timing - collisionTiming;
 					iterate_timing = collisionTiming;
 					
-					++iterate;					
+					++iterate;
 				}
 				
 				mt::vec3f bison_translate = velocity * iterate_timing;
@@ -355,14 +359,14 @@ namespace Menge
 					{
 						while( layer.position.x > layer.bounds.x )
 						{
-							pybind::call_t( layer.cb, layer.name, 0 );
+							layer.cb( layer.name, 0 );
 
 							layer.position.x -= layer.bounds.x;
 						}
 
 						while( layer.position.x < -layer.bounds.x )
 						{
-							pybind::call_t( layer.cb, layer.name, 2 );
+							layer.cb( layer.name, 2 );
 
 							layer.position.x += layer.bounds.x;
 						}
@@ -372,14 +376,14 @@ namespace Menge
 					{
 						while( layer.position.y > layer.bounds.y )
 						{
-							pybind::call_t( layer.cb, layer.name, 1 );
+							layer.cb( layer.name, 1 );
 
 							layer.position.y -= layer.bounds.y;
 						}
 
 						while( layer.position.y < -layer.bounds.y )
 						{
-							pybind::call_t( layer.cb, layer.name, 3 );
+							layer.cb( layer.name, 3 );
 
 							layer.position.y += layer.bounds.y;
 						}
@@ -389,14 +393,14 @@ namespace Menge
 					{
 						while( layer.position.z > layer.bounds.z )
 						{
-							pybind::call_t( layer.cb, layer.name, 4 );
+							layer.cb( layer.name, 4 );
 
 							layer.position.z -= layer.bounds.z;
 						}
 
 						while( layer.position.z < -layer.bounds.z )
 						{
-							pybind::call_t( layer.cb, layer.name, 5 );
+							layer.cb( layer.name, 5 );
 
 							layer.position.z += layer.bounds.z;
 						}
@@ -436,7 +440,7 @@ namespace Menge
 					unit->update( iterate_timing, layer_translate_position );
 				}
 
-				if( m_bounds_cb != nullptr )
+				if( m_bounds_cb.valid() == false )
 				{
 					TVectorBurritoUnit::iterator it_erase = std::remove_if( layer.units.begin(), layer.units.end(), FBurritoUnitBounds( m_bounds_min, m_bounds_max, m_bounds_cb ) );
 					layer.units.erase( it_erase, layer.units.end() );

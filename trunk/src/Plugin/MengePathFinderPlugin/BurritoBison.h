@@ -6,6 +6,8 @@
 
 #	include "Math/vec3.h"
 
+#	include "pybind/object.hpp"
+
 #	include "stdex/stl_vector.h"
 
 namespace Menge
@@ -32,7 +34,7 @@ namespace Menge
 		bool less;
 		mt::vec3f velocity;
 		float velocity_sqrlength;
-		PyObject * cb;
+		pybind::object cb;
 
 		bool test;
 		bool dead;
@@ -54,7 +56,7 @@ namespace Menge
 		void addImpulse( const mt::vec3f & _direction, float _value, float _time );
 
 	public:
-		void addVelocityEvent( bool _less, const mt::vec3f & _velocity, PyObject * _cb );
+		void addVelocityEvent( bool _less, const mt::vec3f & _velocity, const pybind::object & _cb );
 		void removeAllVelocityEvents();
 
 	public:

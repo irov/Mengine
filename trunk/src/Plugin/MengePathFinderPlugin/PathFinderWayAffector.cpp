@@ -63,7 +63,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderWayAffector::stepNextPoint_( const mt::vec3f & _pos, float _step, mt::vec3f & _out, mt::vec3f & _dir )
 	{
-		mt::vec3f wp = pybind::list_getitem_t<mt::vec3f>( m_way, m_iterator );
+		mt::vec3f wp = pybind::list_getitem_t( m_way, m_iterator );
 
 		float ll = mt::sqrlength_v3_v3( _pos, wp );
 
@@ -84,8 +84,8 @@ namespace Menge
 
 		while( ++m_iterator != m_wayCount )
 		{
-			mt::vec3f wp_prev = pybind::list_getitem_t<mt::vec3f>( m_way, m_iterator - 1 );
-			mt::vec3f wp_current = pybind::list_getitem_t<mt::vec3f>( m_way, m_iterator );
+			mt::vec3f wp_prev = pybind::list_getitem_t( m_way, m_iterator - 1 );
+			mt::vec3f wp_current = pybind::list_getitem_t( m_way, m_iterator );
 
 			float ll = mt::sqrlength_v3_v3( wp_prev, wp_current );
 
@@ -105,8 +105,8 @@ namespace Menge
 			_step -= l;
 		}
 
-		mt::vec3f wp_prev = pybind::list_getitem_t<mt::vec3f>( m_way, m_wayCount - 2 );
-		mt::vec3f wp_current = pybind::list_getitem_t<mt::vec3f>( m_way, m_wayCount - 1 );
+		mt::vec3f wp_prev = pybind::list_getitem_t( m_way, m_wayCount - 2 );
+		mt::vec3f wp_current = pybind::list_getitem_t( m_way, m_wayCount - 1 );
 
 		mt::vec3f dir;
 		mt::dir_v3_v3( dir, wp_current, wp_prev );
@@ -119,8 +119,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderWayAffector::prepare()
 	{
-		mt::vec3f wp_current = pybind::list_getitem_t<mt::vec3f>( m_way, 0 );
-		mt::vec3f wp_target = pybind::list_getitem_t<mt::vec3f>( m_way, 1 );
+		mt::vec3f wp_current = pybind::list_getitem_t( m_way, 0 );
+		mt::vec3f wp_target = pybind::list_getitem_t( m_way, 1 );
 
 		m_iterator = 1;
 		
@@ -165,8 +165,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::complete()
 	{
-		mt::vec3f wp_prev = pybind::list_getitem_t<mt::vec3f>( m_way, m_wayCount - 2 );
-		mt::vec3f wp_current = pybind::list_getitem_t<mt::vec3f>( m_way, m_wayCount - 1 );
+		mt::vec3f wp_prev = pybind::list_getitem_t( m_way, m_wayCount - 2 );
+		mt::vec3f wp_current = pybind::list_getitem_t( m_way, m_wayCount - 1 );
 
 		mt::vec3f dir;
 		mt::dir_v3_v3( dir, wp_current, wp_prev );
@@ -180,8 +180,8 @@ namespace Menge
 	{
 		const mt::vec3f & lp = m_node->getLocalPosition();
 
-		mt::vec3f wp_prev = pybind::list_getitem_t<mt::vec3f>( m_way, m_iterator - 1 );
-		mt::vec3f wp_current = pybind::list_getitem_t<mt::vec3f>( m_way, m_iterator );
+		mt::vec3f wp_prev = pybind::list_getitem_t( m_way, m_iterator - 1 );
+		mt::vec3f wp_current = pybind::list_getitem_t( m_way, m_iterator );
 
 		mt::vec3f dir;
 		mt::dir_v3_v3( dir, wp_current, wp_prev );

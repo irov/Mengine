@@ -2,6 +2,8 @@
 
 #	include "Kernel/Node.h"
 
+#	include "pybind/object.hpp"
+
 #	include "Math/vec3.h"
 
 namespace Menge
@@ -20,7 +22,7 @@ namespace Menge
 		bool isDead() const;
 
 	public:
-		void initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, PyObject * _cb );
+		void initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb );
 
 	public:
 		void setVelocity( const mt::vec3f & _velocity );
@@ -39,7 +41,7 @@ namespace Menge
 		mt::vec3f m_velocity;
 		float m_radius;
 
-		PyObject * m_cb;
+		pybind::object m_cb;
 
 		mutable bool m_dead;
 		mutable bool m_collide;

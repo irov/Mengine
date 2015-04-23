@@ -2,7 +2,7 @@
 
 #	include "Math/plane.h"
 
-#	include "pybind/pybind.hpp"
+#	include "pybind/object.hpp"
 
 namespace Menge
 {
@@ -14,7 +14,7 @@ namespace Menge
 		~BurritoGround();
 
 	public:
-		void initialize( const mt::planef & _plane, PyObject * _cb );
+		void initialize( const mt::planef & _plane, const pybind::object & _cb );
 
 	public:
 		void translate( const mt::vec3f & _translate );
@@ -25,6 +25,6 @@ namespace Menge
 	protected:		
 		mt::planef m_plane;
 
-		PyObject * m_cb;
+		pybind::object m_cb;
 	};
 }

@@ -11,6 +11,28 @@ namespace mt
 	}
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>
+	MENGINE_MATH_INLINE T ltrim_f( T _value, T _trim )
+	{
+		if( _value < _trim )
+		{
+			return _trim;
+		}
+
+		return _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	template<class T>
+	MENGINE_MATH_INLINE T rtrim_f( T _value, T _trim )
+	{
+		if( _value > _trim )
+		{
+			return _trim;
+		}
+
+		return _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	template<class T>
 	MENGINE_MATH_INLINE T crop( T _value, T _min, T _max )
 	{
 		if( _value < _min )
@@ -25,6 +47,7 @@ namespace mt
 
 		return _value;
 	}
+	//////////////////////////////////////////////////////////////////////////
 	template< typename T >
 	MENGINE_MATH_FUNCTION_INLINE T clamp( const T & _leftBound, const T & _value, const T & _rightBound )
 	{

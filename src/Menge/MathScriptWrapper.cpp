@@ -195,8 +195,8 @@ namespace Menge
 					return false;
 				}
 								
-				_place->x = pybind::tuple_getitem_t<float>( _obj, 0 );
-				_place->y = pybind::tuple_getitem_t<float>( _obj, 1 );
+				_place->x = pybind::tuple_getitem_t( _obj, 0 );
+				_place->y = pybind::tuple_getitem_t( _obj, 1 );
 
 				return true;
 			}
@@ -207,8 +207,8 @@ namespace Menge
 					return false;
 				}
 
-				_place->x = pybind::list_getitem_t<float>( _obj, 0 );
-				_place->y = pybind::list_getitem_t<float>( _obj, 1 );
+				_place->x = pybind::list_getitem_t( _obj, 0 );
+				_place->y = pybind::list_getitem_t( _obj, 1 );
 
 				return true;
 			}
@@ -236,12 +236,12 @@ namespace Menge
 					return false;
 				}
 
-				_place->x = pybind::tuple_getitem_t<float>( _obj, 0 );
-				_place->y = pybind::tuple_getitem_t<float>( _obj, 1 );
+				_place->x = pybind::tuple_getitem_t( _obj, 0 );
+				_place->y = pybind::tuple_getitem_t( _obj, 1 );
 
 				if( pybind::tuple_size( _obj ) == 3 )
 				{					
-					_place->z = pybind::tuple_getitem_t<float>( _obj, 2 );
+					_place->z = pybind::tuple_getitem_t( _obj, 2 );
 				}
 				else
 				{
@@ -257,12 +257,12 @@ namespace Menge
 					return false;
 				}
 
-				_place->x = pybind::list_getitem_t<float>( _obj, 0 );
-				_place->y = pybind::list_getitem_t<float>( _obj, 1 );
+				_place->x = pybind::list_getitem_t( _obj, 0 );
+				_place->y = pybind::list_getitem_t( _obj, 1 );
 
 				if( pybind::list_size( _obj ) == 3 )
 				{					
-					_place->z = pybind::list_getitem_t<float>( _obj, 2 );
+					_place->z = pybind::list_getitem_t( _obj, 2 );
 				}
 				else
 				{
@@ -273,7 +273,7 @@ namespace Menge
 			}
 			else if( pybind::instance_of<mt::vec2f>( _obj ) == true )
 			{
-				mt::vec2f v2 = pybind::extract<mt::vec2f>( _obj );
+				mt::vec2f v2 = pybind::extract_t( _obj );
 
 				_place->x = v2.x;
 				_place->y = v2.y;
@@ -296,10 +296,10 @@ namespace Menge
 					return false;
 				}
 
-				_place->x = pybind::tuple_getitem_t<float>( _obj, 0 );
-				_place->y = pybind::tuple_getitem_t<float>( _obj, 1 );
-				_place->z = pybind::tuple_getitem_t<float>( _obj, 2 );
-				_place->w = pybind::tuple_getitem_t<float>( _obj, 3 );
+				_place->x = pybind::tuple_getitem_t( _obj, 0 );
+				_place->y = pybind::tuple_getitem_t( _obj, 1 );
+				_place->z = pybind::tuple_getitem_t( _obj, 2 );
+				_place->w = pybind::tuple_getitem_t( _obj, 3 );
 
 				return true;
 			}
@@ -310,10 +310,10 @@ namespace Menge
 					return false;
 				}
 
-				_place->x = pybind::list_getitem_t<float>( _obj, 0 );
-				_place->y = pybind::list_getitem_t<float>( _obj, 1 );
-				_place->z = pybind::list_getitem_t<float>( _obj, 2 );
-				_place->w = pybind::list_getitem_t<float>( _obj, 3 );
+				_place->x = pybind::list_getitem_t( _obj, 0 );
+				_place->y = pybind::list_getitem_t( _obj, 1 );
+				_place->z = pybind::list_getitem_t( _obj, 2 );
+				_place->w = pybind::list_getitem_t( _obj, 3 );
 				
 				return true;
 			}
@@ -332,10 +332,10 @@ namespace Menge
 					return false;
 				}
 
-				_uv->p0 = pybind::tuple_getitem_t<mt::vec2f>( _obj, 0 );
-				_uv->p1 = pybind::tuple_getitem_t<mt::vec2f>( _obj, 1 );
-				_uv->p2 = pybind::tuple_getitem_t<mt::vec2f>( _obj, 2 );
-				_uv->p3 = pybind::tuple_getitem_t<mt::vec2f>( _obj, 3 );
+				_uv->p0 = pybind::tuple_getitem_t( _obj, 0 );
+				_uv->p1 = pybind::tuple_getitem_t( _obj, 1 );
+				_uv->p2 = pybind::tuple_getitem_t( _obj, 2 );
+				_uv->p3 = pybind::tuple_getitem_t( _obj, 3 );
 
 				return true;
 			}
@@ -346,10 +346,10 @@ namespace Menge
 					return false;
 				}
 								
-				_uv->p0 = pybind::list_getitem_t<mt::vec2f>( _obj, 0 );
-				_uv->p1 = pybind::list_getitem_t<mt::vec2f>( _obj, 1 );
-				_uv->p2 = pybind::list_getitem_t<mt::vec2f>( _obj, 2 );
-				_uv->p3 = pybind::list_getitem_t<mt::vec2f>( _obj, 3 );
+				_uv->p0 = pybind::list_getitem_t( _obj, 0 );
+				_uv->p1 = pybind::list_getitem_t( _obj, 1 );
+				_uv->p2 = pybind::list_getitem_t( _obj, 2 );
+				_uv->p3 = pybind::list_getitem_t( _obj, 3 );
 
 				return true;
 			}
@@ -378,10 +378,10 @@ namespace Menge
 					return false;
 				}
 
-				_place->minimum.x = pybind::tuple_getitem_t<float>( _obj, 0 );
-				_place->minimum.y = pybind::tuple_getitem_t<float>( _obj, 1 );
-				_place->maximum.x = pybind::tuple_getitem_t<float>( _obj, 2 );
-				_place->maximum.y = pybind::tuple_getitem_t<float>( _obj, 3 );
+				_place->minimum.x = pybind::tuple_getitem_t( _obj, 0 );
+				_place->minimum.y = pybind::tuple_getitem_t( _obj, 1 );
+				_place->maximum.x = pybind::tuple_getitem_t( _obj, 2 );
+				_place->maximum.y = pybind::tuple_getitem_t( _obj, 3 );
 
 				return true;
 			}
@@ -392,10 +392,10 @@ namespace Menge
 					return false;
 				}
 
-				_place->minimum.x = pybind::list_getitem_t<float>( _obj, 0 );
-				_place->minimum.y = pybind::list_getitem_t<float>( _obj, 1 );
-				_place->maximum.x = pybind::list_getitem_t<float>( _obj, 2 );
-				_place->maximum.y = pybind::list_getitem_t<float>( _obj, 3 );
+				_place->minimum.x = pybind::list_getitem_t( _obj, 0 );
+				_place->minimum.y = pybind::list_getitem_t( _obj, 1 );
+				_place->maximum.x = pybind::list_getitem_t( _obj, 2 );
+				_place->maximum.y = pybind::list_getitem_t( _obj, 3 );
 
 				return true;
 			}
@@ -418,7 +418,7 @@ namespace Menge
 
 			for( uint32_t i = 0; i != size; ++i )
 			{
-				mt::vec2f point = pybind::list_getitem_t<mt::vec2f>( _obj, i );
+				mt::vec2f point = pybind::list_getitem_t( _obj, i );
 
 				boost::geometry::append(*polygon, point);
 			}
@@ -444,18 +444,18 @@ namespace Menge
 			{
 				if( pybind::tuple_size( _obj ) == 4 )
 				{
-					float r = pybind::tuple_getitem_t<float>( _obj, 0 );
-					float g = pybind::tuple_getitem_t<float>( _obj, 1 );
-					float b = pybind::tuple_getitem_t<float>( _obj, 2 );
-					float a = pybind::tuple_getitem_t<float>( _obj, 3 );
+					float r = pybind::tuple_getitem_t( _obj, 0 );
+					float g = pybind::tuple_getitem_t( _obj, 1 );
+					float b = pybind::tuple_getitem_t( _obj, 2 );
+					float a = pybind::tuple_getitem_t( _obj, 3 );
 
 					_place->setARGB( a, r, g, b );
 				}
 				else if( pybind::tuple_size( _obj ) == 3 )
 				{
-					float r = pybind::tuple_getitem_t<float>( _obj, 0 );
-					float g = pybind::tuple_getitem_t<float>( _obj, 1 );
-					float b = pybind::tuple_getitem_t<float>( _obj, 2 );
+					float r = pybind::tuple_getitem_t( _obj, 0 );
+					float g = pybind::tuple_getitem_t( _obj, 1 );
+					float b = pybind::tuple_getitem_t( _obj, 2 );
 					float a = 1.f;
 
 					_place->setARGB( a, r, g, b );
@@ -471,18 +471,18 @@ namespace Menge
 			{
 				if( pybind::list_size( _obj ) == 4 )
 				{
-					float r = pybind::list_getitem_t<float>( _obj, 0 );
-					float g = pybind::list_getitem_t<float>( _obj, 1 );
-					float b = pybind::list_getitem_t<float>( _obj, 2 );
-					float a = pybind::list_getitem_t<float>( _obj, 3 );
+					float r = pybind::list_getitem_t( _obj, 0 );
+					float g = pybind::list_getitem_t( _obj, 1 );
+					float b = pybind::list_getitem_t( _obj, 2 );
+					float a = pybind::list_getitem_t( _obj, 3 );
 
 					_place->setARGB( a, r, g, b );
 				}				
 				else if( pybind::list_size( _obj ) == 3 )
 				{
-					float r = pybind::list_getitem_t<float>( _obj, 0 );
-					float g = pybind::list_getitem_t<float>( _obj, 1 );
-					float b = pybind::list_getitem_t<float>( _obj, 2 );
+					float r = pybind::list_getitem_t( _obj, 0 );
+					float g = pybind::list_getitem_t( _obj, 1 );
+					float b = pybind::list_getitem_t( _obj, 2 );
 					float a = 1.f;
 
 					_place->setARGB( a, r, g, b );
@@ -509,8 +509,8 @@ namespace Menge
 					return false;
 				}
 
-				uint32_t width = pybind::tuple_getitem_t<uint32_t>( _obj, 0 );
-				uint32_t height = pybind::tuple_getitem_t<uint32_t>( _obj, 1 );
+				uint32_t width = pybind::tuple_getitem_t( _obj, 0 );
+				uint32_t height = pybind::tuple_getitem_t( _obj, 1 );
 
 				_place->setWidth( width );
 				_place->setHeight( height );
@@ -524,8 +524,8 @@ namespace Menge
 					return false;
 				}
 
-				uint32_t width = pybind::list_getitem_t<uint32_t>( _obj, 0 );
-				uint32_t height = pybind::list_getitem_t<uint32_t>( _obj, 1 );
+				uint32_t width = pybind::list_getitem_t( _obj, 0 );
+				uint32_t height = pybind::list_getitem_t( _obj, 1 );
 
 				_place->setWidth( width );
 				_place->setHeight( height );
@@ -557,8 +557,8 @@ namespace Menge
 					return false;
 				}
 
-				mt::vec2f begin = pybind::tuple_getitem_t<mt::vec2f>( _obj, 0 );
-				mt::vec2f end = pybind::tuple_getitem_t<mt::vec2f>( _obj, 1 );
+				mt::vec2f begin = pybind::tuple_getitem_t( _obj, 0 );
+				mt::vec2f end = pybind::tuple_getitem_t( _obj, 1 );
 
 				_place->initialize( begin, end );
 
@@ -571,8 +571,8 @@ namespace Menge
 					return false;
 				}
 
-				mt::vec2f begin = pybind::list_getitem_t<mt::vec2f>( _obj, 0 );
-				mt::vec2f end = pybind::list_getitem_t<mt::vec2f>( _obj, 1 );
+				mt::vec2f begin = pybind::list_getitem_t( _obj, 0 );
+				mt::vec2f end = pybind::list_getitem_t( _obj, 1 );
 
 				_place->initialize( begin, end );
 
@@ -603,10 +603,10 @@ namespace Menge
 					return false;
 				}
 
-				_place->left = pybind::tuple_getitem_t<int>( _obj, 0 );
-				_place->top = pybind::tuple_getitem_t<int>( _obj, 1 );
-				_place->right = pybind::tuple_getitem_t<int>( _obj, 2 );
-				_place->bottom = pybind::tuple_getitem_t<int>( _obj, 3 );
+				_place->left = pybind::tuple_getitem_t( _obj, 0 );
+				_place->top = pybind::tuple_getitem_t( _obj, 1 );
+				_place->right = pybind::tuple_getitem_t( _obj, 2 );
+				_place->bottom = pybind::tuple_getitem_t( _obj, 3 );
 
 				return true;
 			}
@@ -617,10 +617,10 @@ namespace Menge
 					return false;
 				}
 
-				_place->left = pybind::list_getitem_t<int>( _obj, 0 );
-				_place->top = pybind::list_getitem_t<int>( _obj, 1 );
-				_place->right = pybind::list_getitem_t<int>( _obj, 2 );
-				_place->bottom = pybind::list_getitem_t<int>( _obj, 3 );
+				_place->left = pybind::list_getitem_t( _obj, 0 );
+				_place->top = pybind::list_getitem_t( _obj, 1 );
+				_place->right = pybind::list_getitem_t( _obj, 2 );
+				_place->bottom = pybind::list_getitem_t( _obj, 3 );
 
 				return true;
 			}

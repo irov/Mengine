@@ -151,18 +151,11 @@ namespace Menge
 
 			mt::vec3f force_impulse;
 
-			if( impulse.timing - _timing > 0.f )
-			{
-				force_impulse = impulse.direction * impulse.value * impulse.timing / impulse.time * _timing;
-			}
-			else
-			{
-				force_impulse = impulse.direction * impulse.value * impulse.timing / impulse.time * impulse.timing;
-			}
+			force_impulse = impulse.direction * impulse.value * mt::ltrim_f( _timing, 0.f );
+				
+			impulse.timing -= _timing;
 
 			force_velocity += force_impulse;
-
-			impulse.timing -= _timing;
 		}
 
 		TVectorBurritoBisonImpulse::iterator it_erase = std::remove_if( m_impulses.begin(), m_impulses.end(), FBurritoBisonImpulseDead() );
@@ -192,7 +185,7 @@ namespace Menge
 
 			if( test == false && desc.test == true )
 			{
-				bool result = pybind::ask_t( desc.cb );
+				bool result = desc.cb();
 
 				desc.dead = result;
 			}
@@ -243,14 +236,13 @@ namespace Menge
 		m_position += _translate;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::addVelocityEvent( bool _less, const mt::vec3f & _velocity, PyObject * _cb )
+	void BurritoBison::addVelocityEvent( bool _less, const mt::vec3f & _velocity, const pybind::object & _cb )
 	{ 
 		VelocityEventDesc desc;
 		desc.less = _less;
 		desc.velocity_sqrlength = mt::norm_v3_f( desc.velocity, _velocity );
 		
 		desc.cb = _cb;
-		pybind::incref( desc.cb );
 		
 		desc.test = this->testVelocityEvent_( desc );
 		desc.dead = false;

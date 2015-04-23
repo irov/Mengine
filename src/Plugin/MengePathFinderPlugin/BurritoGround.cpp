@@ -6,21 +6,17 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	BurritoGround::BurritoGround()
-		: m_cb(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoGround::~BurritoGround()
 	{
-		pybind::decref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoGround::initialize( const mt::planef & _plane, PyObject * _cb )
+	void BurritoGround::initialize( const mt::planef & _plane, const pybind::object & _cb )
 	{
 		m_plane = _plane;
 		m_cb = _cb;
-
-		pybind::incref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoGround::translate( const mt::vec3f & _translate )
@@ -43,7 +39,7 @@ namespace Menge
 
 		_collisionTiming = ccd_timing;
 		
-		_newVelocity = pybind::ask_t( m_cb, _velocity );
+		_newVelocity = m_cb( _velocity );
 
 		return true;
 	}

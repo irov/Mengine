@@ -25,8 +25,10 @@ namespace Menge
 	{
 		ConstString name;
 		float parallax;
-				
+		
+		TVectorBurritoNode nodesAdd;
 		TVectorBurritoNode nodes;
+		TVectorBurritoUnit unitsAdd;
 		TVectorBurritoUnit units;
 
 		mt::vec3f position;
@@ -58,7 +60,7 @@ namespace Menge
 		void removeLayerNode( const ConstString & _layerName, Node * _node );
 
 	public:
-		bool addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, PyObject * _cb );
+		bool addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb );
 		void removeLayerUnit( const ConstString & _layerName, Node * _node );
 
 	public:

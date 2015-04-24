@@ -451,7 +451,7 @@ namespace Menge
 			: public VisitorMovieNode
 		{
 		public:
-			PythonVisitorMovieSlot( PyObject * _list )
+			PythonVisitorMovieSlot( pybind::list & _list )
 				: m_list(_list)
 			{
 			}
@@ -467,19 +467,25 @@ namespace Menge
 				}
 
 				const ConstString & name = slot->getName();
+
+				pybind::tuple py_value = pybind::make_tuple_t( _movie, name, slot );
+				m_list.append( py_value );
 								
-				pybind::list_appendtuple_t( m_list, _movie, name, slot );
+				//pybind::list_appendtuple_t( m_list, _movie, name, slot );
 			}
 
 		protected:
-			PyObject * m_list;
+			pybind::list & m_list;
+
+		private:
+			void operator = (const PythonVisitorMovieSlot &);
 		};
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_getSlots( Movie * _movie )
+		pybind::list movie_getSlots( Movie * _movie )
 		{
-			PyObject * py_list = pybind::list_new(0);
-
-			PythonVisitorMovieSlot visitor(py_list);
+			pybind::list py_list;
+			
+			PythonVisitorMovieSlot visitor( py_list );
 			_movie->visitMovieNode( CONST_STRING(m_serviceProvider, MovieSlot), &visitor );
 
 			return py_list;
@@ -489,7 +495,7 @@ namespace Menge
             : public VisitorMovieNode
         {
         public:
-            PythonVisitorMovieSocket( PyObject * _list )
+			PythonVisitorMovieSocket( const pybind::list & _list )
                 : m_list(_list)
             {
             }
@@ -506,16 +512,16 @@ namespace Menge
 
 				const ConstString & name = hotspot->getName();
 
-				pybind::list_appendtuple_t( m_list, _movie, name, hotspot );
+				m_list.append( pybind::make_tuple_t( _movie, name, hotspot ) );
             }
 
         protected:
-            PyObject * m_list;
+            pybind::list m_list;
         };
         //////////////////////////////////////////////////////////////////////////
-        PyObject * movie_getSockets( Movie * _movie )
+		pybind::list movie_getSockets( Movie * _movie )
         {
-            PyObject * py_list = pybind::list_new(0);
+			pybind::list py_list;
 
 			PythonVisitorMovieSocket visitor(py_list);
 			_movie->visitMovieNode( CONST_STRING(m_serviceProvider, MovieSocketImage), &visitor );
@@ -528,7 +534,7 @@ namespace Menge
 			: public VisitorMovieNode
 		{
 		public:
-			PythonVisitorMovieSubMovie( PyObject * _list )
+			PythonVisitorMovieSubMovie( const pybind::list & _list )
 				: m_list(_list)
 			{
 			}
@@ -545,16 +551,16 @@ namespace Menge
 
 				const ConstString & name = subMovie->getName();
 
-				pybind::list_appendtuple_t( m_list, _movie, name, subMovie );
+				m_list.append( pybind::make_tuple_t( _movie, name, subMovie ) );
 			}
 
 		protected:
-			PyObject * m_list;
+			pybind::list m_list;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_getSubMovies( Movie * _movie )
+		pybind::list movie_getSubMovies( Movie * _movie )
 		{
-			PyObject * py_list = pybind::list_new(0);
+			pybind::list py_list;
 
 			PythonVisitorMovieSubMovie visitor(py_list);
 			_movie->visitMovieNode( CONST_STRING(m_serviceProvider, SubMovie), &visitor );
@@ -566,7 +572,7 @@ namespace Menge
 			: public VisitorMovieNode
 		{
 		public:
-			PythonVisitorMovieLayer( PyObject * _list )
+			PythonVisitorMovieLayer( const pybind::list & _list )
 				: m_list(_list)
 			{
 			}
@@ -574,16 +580,16 @@ namespace Menge
 		protected:
 			void visitMovieNode( Movie * _movie, Node * _layer ) override
 			{
-				pybind::list_appendtuple_t( m_list, _movie, _layer );
+				m_list.append( pybind::make_tuple_t( _movie, _layer ) );
 			}
 
 		protected:
-			PyObject * m_list;
+			pybind::list m_list;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_filterNodies( Movie * _movie, const ConstString & _type )
+		pybind::list movie_filterNodies( Movie * _movie, const ConstString & _type )
 		{
-			PyObject * py_list = pybind::list_new(0);
+			pybind::list py_list;
 
 			PythonVisitorMovieLayer visitor(py_list);
 			_movie->visitMovieNode( _type, &visitor );
@@ -2529,7 +2535,7 @@ namespace Menge
 			return wp;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * s_getMovieSlotsPosition( const ConstString & _groupName, const ConstString & _movieName )
+		pybind::object s_getMovieSlotsPosition( const ConstString & _groupName, const ConstString & _movieName )
 		{
 			stdex::array_string<128> buffer;
 			buffer.append( "Movie" );			
@@ -2548,10 +2554,10 @@ namespace Menge
 					, resourceMovieName.c_str()
 					);
 
-				return pybind::ret_none();
+				return pybind::ret_none_t();
 			}
 
-			PyObject * py_list = pybind::list_new( 0 );
+			pybind::list py_list;
 
 			const TVectorMovieLayers & layers = resourceMovie->getLayers();
 
@@ -2568,7 +2574,7 @@ namespace Menge
 					continue;
 				}
 
-				pybind::list_appendtuple_t( py_list, layer.name, layer.position );
+				py_list.append( pybind::make_tuple_t( layer.name, layer.position ) );
 			}
 
 			return py_list;

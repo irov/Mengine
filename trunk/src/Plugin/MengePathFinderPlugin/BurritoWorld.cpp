@@ -172,7 +172,8 @@ namespace Menge
 
 			node->node = _node;
 
-			layer.nodes.push_back( node );
+			layer.nodesAdd.push_back( node );
+			//layer.nodes.push_back( node );
 
 			return true;
 		}
@@ -205,7 +206,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BurritoWorld::addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, PyObject * _cb )
+	bool BurritoWorld::addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb )
 	{
 		if( _node == nullptr )
 		{
@@ -228,7 +229,7 @@ namespace Menge
 			BurritoUnit * unit = new BurritoUnit;
 			unit->initialize( _node, _position, _velocity, _radius, _collide, _cb );
 			
-			layer.units.push_back( unit );
+			layer.unitsAdd.push_back( unit );
 
 			return true;
 		}
@@ -266,6 +267,21 @@ namespace Menge
 		if( m_bison == nullptr )
 		{
 			return;
+		}
+
+		for( TVectorBurritoLayer::iterator
+			it = m_layers.begin(),
+			it_end = m_layers.end();
+		it != it_end;
+		++it )
+		{
+			BurritoLayer & layer = *it;
+
+			layer.nodes.insert( layer.nodes.end(), layer.nodesAdd.begin(), layer.nodesAdd.end() );
+			layer.nodesAdd.clear();
+
+			layer.units.insert( layer.units.end(), layer.unitsAdd.begin(), layer.unitsAdd.end() );
+			layer.unitsAdd.clear();
 		}
 
 		uint32_t iterate = 1;

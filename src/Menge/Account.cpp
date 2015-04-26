@@ -28,16 +28,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Account::~Account()
 	{
-		for( TMapSettings::iterator
-			it = m_settings.begin(),
-			it_end = m_settings.end();
-		it != it_end;
-		++it )
-		{
-            Setting & st = m_settings.get_value( it );
-
-			pybind::decref( st.cb );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Account::initialize( ServiceProviderInterface * _serviceProvider, const WString & _name, const ConstString & _folder, uint32_t _projectVersion )
@@ -94,17 +84,18 @@ namespace Menge
 
         Setting st;
         st.value = _defaultValue;
-        st.cb = _applyFunc;
+        st.cb = pybind::object(_applyFunc);
         
-        m_settings.insert( _setting, st );
+        m_settings.insert( std::make_pair(_setting, st) );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Account::changeSetting( const ConstString & _setting, const WString& _value )
 	{
-		Setting * st = nullptr;		
-		if( m_settings.has( _setting, &st ) == false )
+		TMapSettings::iterator it_found = m_settings.find( _setting );
+
+		if( it_found == m_settings.end() )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::changeSetting account %ls setting '%s' does not exist. Can't change"
                 , m_name.c_str()
@@ -114,11 +105,13 @@ namespace Menge
 			return false;
 		}
 
-		st->value = _value;
+		Setting & st = it_found->second;
 
-		if( pybind::is_none( st->cb ) == false )
+		st.value = _value;
+
+		if( st.cb.is_none() == false )
 		{
-			pybind::call_t( st->cb, _value );
+			st.cb( _value );
 		}
 
 		return true;
@@ -126,8 +119,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Account::getSetting( const ConstString & _setting ) const
 	{
-		const Setting * st;
-		if( m_settings.has( _setting, &st ) == false )
+		TMapSettings::const_iterator it_found = m_settings.find( _setting );
+
+		if( it_found == m_settings.end() )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::getSetting account '%ls' setting '%s' does not exist. Can't get"
                 , m_name.c_str()
@@ -137,14 +131,21 @@ namespace Menge
 			return Utils::emptyWString();
 		}
 
-		return st->value;
+		const Setting & st = it_found->second;
+
+		return st.value;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool Account::hasSetting( const ConstString & _setting ) const
     {
-		bool result = m_settings.exist( _setting );
+		TMapSettings::const_iterator it_found = m_settings.find( _setting );
 
-        return result;
+		if( it_found == m_settings.end() )
+		{
+			return false;
+		}
+
+        return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Account::load()
@@ -224,8 +225,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            const ConstString & key = m_settings.get_key(it);
-            Setting & st = m_settings.get_value(it);
+            const ConstString & key = it->first;
+            Setting & st = it->second;
 
             if( IniUtil::getIniValue( ini, "SETTINGS", key.c_str(), st.value, m_serviceProvider ) == false )
             {
@@ -272,8 +273,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            const ConstString & key = m_settings.get_key(it);
-            const Setting & st = m_settings.get_value(it);
+			const ConstString & key = it->first;
+			const Setting & st = it->second;
 
             IniUtil::writeIniSetting( m_serviceProvider, file, key.c_str(), st.value );
 		}
@@ -289,14 +290,14 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            Setting & st = m_settings.get_value(it);
+            Setting & st = it->second;
            
-			if( pybind::is_none(st.cb) == true )
+			if( st.cb.is_none() == true )
 			{
 				continue;
 			}
 
-			pybind::call_t( st.cb, st.value );
+			st.cb( st.value );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

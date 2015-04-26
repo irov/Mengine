@@ -150,8 +150,8 @@ namespace Menge
 		bool addData( const ConstString & _name, const DataDesc & _desc ) override;
 		bool hasData( const ConstString & _name ) const override;
 
-		CacheBufferID loadData( const ConstString & _name, const void ** _data, size_t & _size ) override;
-		bool writeData( const ConstString & _name, const void * _data, size_t _size ) override;
+		CacheBufferID loadData( const ConstString & _name, const void ** _data, size_t & _size ) const override;
+		bool writeData( const ConstString & _name, const void * _data, size_t _size ) const override;
 
 	public:
 		float getTimingFactor() const override;
@@ -192,7 +192,7 @@ namespace Menge
 
 		ArchivatorInterfacePtr m_archivator;
 		
-		typedef stdex::binary_vector<ConstString, DataDesc> TMapDatas;
+		typedef stdex::map<ConstString, DataDesc> TMapDatas;
 		TMapDatas m_datas;
 
     protected:

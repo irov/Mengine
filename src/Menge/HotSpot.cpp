@@ -137,7 +137,7 @@ namespace Menge
 
 		mousePickerSystem->updateTrap();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)( "()" );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACTIVATE)();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::deactivatePicker_()
@@ -170,7 +170,7 @@ namespace Menge
 
 		m_debugColor = 0x00000000;
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DEACTIVATE)( "()" );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_DEACTIVATE )();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onMouseLeave()
@@ -179,9 +179,7 @@ namespace Menge
 
 		if( m_onMouseLeaveEvent == true )
 		{
-			EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOUSE_LEAVE)( "(O)"
-				, this->getEmbed() 
-				);
+			EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_LEAVE )(this);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -193,11 +191,7 @@ namespace Menge
 
 		if( m_onMouseEnterEvent == true )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_ENTER)( handle, m_defaultHandle, "(Off)"
-				, this->getEmbed() 
-				, _point.x
-				, _point.y
-				);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_ENTER, handle )( this, _point.x, _point.y );
 		}		
 
 		return handle;
@@ -207,59 +201,30 @@ namespace Menge
 	{
 		bool handle = false;
 				
-		EVENTABLE_ASK(m_serviceProvider, this, EVENT_KEY)( handle, m_defaultHandle, "(OIffIOO)"
-			, this->getEmbed()
-			, _key
-			, _point.x
-			, _point.y
-			, _char
-			, pybind::get_bool(_isDown)
-			, pybind::get_bool(_repeating)
-			);
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )(this, _key, _point.x, _point.y, _char, _isDown, _repeating);
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		bool handle = false;
+		bool handle = m_defaultHandle;
 
-		EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON)( handle, m_defaultHandle, "(OIffIO)"
-			, this->getEmbed()
-			, _touchId
-			, _point.x
-			, _point.y
-			, _button
-			, pybind::get_bool(_isDown) 
-			);
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )(this, _touchId, _point.x, _point.y, _button, _isDown);
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////	
 	bool HotSpot::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN)( "(OIffIO)"
-			, this->getEmbed()
-			, _touchId
-			, _point.x
-			, _point.y
-			, _button
-			, pybind::get_bool(_isDown) 
-			);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN )(this, _touchId, _point.x, _point.y, _button, _isDown);
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
 	{		
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOUSE_BUTTON_END)( "(OIffIO)"
-			, this->getEmbed()
-			, _touchId
-			, _point.x
-			, _point.y
-			, _button
-			, pybind::get_bool(_isDown) 
-			);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END )(this, _touchId, _point.x, _point.y, _button, _isDown);
 
 		return false;
 	}
@@ -270,14 +235,7 @@ namespace Menge
 
 		if( m_onMouseMoveEvent == true )
 		{			
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_MOVE)( handle, m_defaultHandle, "(OIffff)"
-				, this->getEmbed()
-				, _touchId
-				, _point.x
-				, _point.y
-				, _x
-				, _y
-				);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )(this, _touchId, _point.x, _point.y, _x, _y);
 		}
 
 		return handle;
@@ -287,13 +245,7 @@ namespace Menge
 	{
 		bool handle = false;
 				
-		EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_WHEEL)( handle, m_defaultHandle, "(OIffi)"
-			, this->getEmbed()
-			, _touchId
-			, _point.x
-			, _point.y
-			, _wheel 
-			);
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )(this, _touchId, _point.x, _point.y, _wheel);
 
 		return handle;
 	}

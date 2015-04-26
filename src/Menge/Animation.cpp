@@ -76,12 +76,12 @@ namespace	Menge
 
                 if( m_onFrameEndEvent == true )
                 {
-                    EVENTABLE_CALL(m_serviceProvider, this, EVENT_FRAME_END)( "(OI)", this->getEmbed(), m_currentFrame );
+					EVENTABLE_CALL( m_serviceProvider, this, EVENT_FRAME_END )(this, m_currentFrame);
                 }
 
                 if( m_onFrameEndTick == true )
                 {
-                    EVENTABLE_CALL(m_serviceProvider, this, EVENT_FRAME_TICK)( "(OII)", this->getEmbed(), m_currentFrame, frameCount );
+					EVENTABLE_CALL( m_serviceProvider, this, EVENT_FRAME_TICK )(this, m_currentFrame, frameCount);
                 }
                 else
                 {
@@ -241,7 +241,7 @@ namespace	Menge
         
 		if( m_onAnimationEndEvent == true )
 		{
-			EVENTABLE_CALL(m_serviceProvider, this, EVENT_ANIMATION_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
+			EVENTABLE_CALL(m_serviceProvider, this, EVENT_ANIMATION_END)( this, _enumerator, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -258,7 +258,7 @@ namespace	Menge
         
 		if( m_onAnimationEndEvent == true )
 		{
-			EVENTABLE_CALL(m_serviceProvider, this, EVENT_ANIMATION_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
+			EVENTABLE_CALL(m_serviceProvider, this, EVENT_ANIMATION_END)( this, _enumerator, true );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -262,14 +262,14 @@ namespace Menge
 	{
 		this->stopAnimation_();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOVIE_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOVIE_END)( this, _enumerator, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_end( uint32_t _enumerator )
 	{
 		this->stopAnimation_();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOVIE_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOVIE_END)( this, _enumerator, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, uint32_t _frameId, bool _interpolate, bool _first )

@@ -144,7 +144,7 @@ namespace Menge
 
 		if( m_onSoundPauseEvent == true )
 		{
-            EVENTABLE_CALL(m_serviceProvider, this, EVENT_SOUND_PAUSE )( "(O)", this->getEmbed() );
+            EVENTABLE_CALL(m_serviceProvider, this, EVENT_SOUND_PAUSE )( this );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -227,7 +227,7 @@ namespace Menge
 				->stop( m_sourceID );
 		}
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_SOUND_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );		
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_SOUND_END)( this, _enumerator, false );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_end( uint32_t _enumerator )
@@ -238,7 +238,7 @@ namespace Menge
 				->stop( m_sourceID );
 		}
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_SOUND_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(true) );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_SOUND_END)( this, _enumerator, true );
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_setVolume( float _volume )

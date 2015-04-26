@@ -179,14 +179,14 @@ namespace Menge
         Eventable * eventable = this->getGlobalHandleEventable();
         Scriptable * scriptable = this->getGlobalHandleScriptable();
 		
-        EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_BUTTON)( "(OIIO)", scriptable->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
+        EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_BUTTON)( scriptable, _touchId, _button, _isDown );
 
 		if( m_globalMouseEvent == false )
 		{
 			return;
 		}
 
-		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_BUTTON2)( "(OIffIO)", scriptable->getEmbed(), _touchId, _point.x, _point.y, _button, pybind::get_bool(_isDown) );
+		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_BUTTON2)( scriptable, _touchId, _point.x, _point.y, _button, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleAdapter::handleGlobalMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
@@ -196,7 +196,7 @@ namespace Menge
         Eventable * eventable = this->getGlobalHandleEventable();
         Scriptable * scriptable = this->getGlobalHandleScriptable();
 
-		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_BUTTON_BEGIN)( "(OIIO)", scriptable->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
+		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_BUTTON_BEGIN)( scriptable, _touchId, _button, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleAdapter::handleGlobalMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
@@ -206,7 +206,7 @@ namespace Menge
         Eventable * eventable = this->getGlobalHandleEventable();
         Scriptable * scriptable = this->getGlobalHandleScriptable();
 
-		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_BUTTON_END)( "(OIIO)", scriptable->getEmbed(), _touchId, _button, pybind::get_bool(_isDown) );
+		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_BUTTON_END)( scriptable, _touchId, _button, _isDown );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleAdapter::handleGlobalMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y )
@@ -216,7 +216,7 @@ namespace Menge
         Eventable * eventable = this->getGlobalHandleEventable();
         Scriptable * scriptable = this->getGlobalHandleScriptable();
 
-		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_MOVE)( "(OIffff)", scriptable->getEmbed(), _touchId, _point.x, _point.y, _x, _y );
+		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_MOVE)( scriptable, _touchId, _point.x, _point.y, _x, _y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleAdapter::handleGlobalMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
@@ -224,7 +224,7 @@ namespace Menge
 		Eventable * eventable = this->getGlobalHandleEventable();
 		Scriptable * scriptable = this->getGlobalHandleScriptable();
 
-		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_WHEEL)( "(OIffi)", scriptable->getEmbed(), _touchId, _point.x, _point.y, _wheel );
+		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_MOUSE_WHEEL)( scriptable, _touchId, _point.x, _point.y, _wheel );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleAdapter::handleGlobalKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
@@ -234,14 +234,14 @@ namespace Menge
         Eventable * eventable = this->getGlobalHandleEventable();
         Scriptable * scriptable = this->getGlobalHandleScriptable();
 
-        EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_KEY)( "(OIIO)", scriptable->getEmbed(), _key, _char, pybind::get_bool(_isDown) );
+        EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_KEY)( scriptable, _key, _char, _isDown );
 
 		if( m_globalKeyEvent == false )
 		{
 			return;
 		}
 
-		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_KEY2)( "(OIIOO)", scriptable->getEmbed(), _key, _char, pybind::get_bool(_isDown), pybind::get_bool(_repeating) );
+		EVENTABLE_CALL(m_serviceProvider, eventable, EVENT_GLOBAL_KEY2)( scriptable, _key, _char, _isDown, _repeating );
 	}
     //////////////////////////////////////////////////////////////////////////
     GlobalHandleSystemInterface * GlobalHandleAdapter::getGlobalHandleSystem() const

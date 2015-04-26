@@ -430,14 +430,14 @@ namespace Menge
 			return line_point;
 		}
 
-		PyObject * s_angle_correct_interpolate_from_to( float _from, float _to )
+		pybind::tuple s_angle_correct_interpolate_from_to( float _from, float _to )
 		{
 			float correct_angle_from;
 			float correct_angle_to;
 
 			mt::angle_correct_interpolate_from_to( _from, _to, correct_angle_from, correct_angle_to );
 
-			PyObject * py_result = pybind::build_value("(ff)", correct_angle_from, correct_angle_to);
+			pybind::tuple py_result = pybind::make_tuple_t( correct_angle_from, correct_angle_to );
 
 			return py_result;
 		}

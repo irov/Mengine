@@ -42,22 +42,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void GameAccountProvider::onCreateAccount( const WString & _accountID )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_CREATE_ACCOUNT)( "(u)", _accountID.c_str() );
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_CREATE_ACCOUNT)( _accountID.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GameAccountProvider::onDeleteAccount( const WString & _accountID )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_DELETE_ACCOUNT)( "(u)", _accountID.c_str() );
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_DELETE_ACCOUNT)( _accountID.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GameAccountProvider::onSelectAccount( const WString & _accountID )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_SELECT_ACCOUNT)( "(u)", _accountID.c_str() );
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_SELECT_ACCOUNT)( _accountID.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GameAccountProvider::onUnselectAccount( const WString & _accountID )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_UNSELECT_ACCOUNT)( "(u)", _accountID.c_str() );
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_UNSELECT_ACCOUNT)( _accountID.c_str() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	GameSoundVolumeProvider::GameSoundVolumeProvider( ServiceProviderInterface * _serviceProvider, Game * _game )
@@ -68,7 +68,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void GameSoundVolumeProvider::onSoundChangeVolume( float _sound, float _music, float _voice )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_CHANGE_SOUND_VOLUME)( "(fff)", _sound, _music, _voice );
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_CHANGE_SOUND_VOLUME)( _sound, _music, _voice );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
@@ -116,14 +116,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_KEY)( handle, false, "(IffIOO)"
-				, _key
-				, _point.x
-				, _point.y
-				, _char
-				, pybind::get_bool(_isDown)
-				, pybind::get_bool(_repeating) 
-				);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )( _key, _point.x, _point.y, _char, _isDown, _repeating );
 		}
 
 		if( handle == false )
@@ -140,13 +133,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON)( handle, false, "(IffIO)"
-				, _touchId
-				, _point.x
-				, _point.y
-				, _button
-				, pybind::get_bool(_isDown) 
-				);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )( _touchId, _point.x, _point.y, _button, pybind::get_bool(_isDown) );
 		}
 
 		if( handle == false )
@@ -163,13 +150,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN)( handle, false, "(IffIO)"
-				, _touchId
-				, _point.x
-				, _point.y
-				, _button
-				, pybind::get_bool(_isDown) 
-				);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN, handle )( _touchId, _point.x, _point.y, _button, _isDown );
 		}
 
 		if( handle == false )
@@ -186,13 +167,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_BUTTON_END)( handle, false, "(IffIO)"
-				, _touchId
-				, _point.x
-				, _point.y
-				, _button
-				, pybind::get_bool(_isDown) 
-				);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END, handle )( _touchId, _point.x, _point.y, _button, _isDown );
 		}
 
 		if( handle == false )
@@ -209,13 +184,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_MOVE)( handle, false, "(Iffff)"
-				, _touchId
-				, _point.x
-				, _point.y
-				, _x
-				, _y 
-				);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )( _touchId, _point.x, _point.y, _x, _y );
 		}
 
 		if( handle == false )
@@ -232,12 +201,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK(m_serviceProvider, this, EVENT_MOUSE_WHEEL)( handle, false, "(Iffi)"
-				, _touchId
-				, _point.x
-				, _point.y
-				, _wheel 
-				);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )( _touchId, _point.x, _point.y, _wheel );
 		}
 
 		if( handle == false )
@@ -250,17 +214,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::mouseLeave()
 	{		
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_LEAVE)( "()" );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_LEAVE)();
 
 		m_player->onAppMouseLeave();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::mouseEnter( const mt::vec2f & _point )
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_ENTER)( "(ff)"
-			, _point.x
-			, _point.y 
-			);
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_ENTER)( _point.x, _point.y );
 
 		m_player->onAppMouseEnter();
 	}
@@ -397,7 +358,7 @@ namespace Menge
             );
 
 		bool result = true;
-		EVENTABLE_ASK(m_serviceProvider, this, EVENT_PREPARATION)( result, false, "(O)", pybind::get_bool(is_debug) );
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_PREPARATION, result )( is_debug );
 
 		return result;
 	}
@@ -494,11 +455,7 @@ namespace Menge
 			->getPlatformName();
 
 		bool result = false;
-		EVENTABLE_ASK(m_serviceProvider, this, EVENT_INITIALIZE)( result, true, "(sNO)"
-			, _scriptInitParams.c_str()
-			, pybind::ptr(platformName)
-			, pybind::get_bool(isMaster) 
-			);
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_INITIALIZE, result )( _scriptInitParams.c_str(), platformName, isMaster );
 
 		if( result == false )
 		{
@@ -527,7 +484,7 @@ namespace Menge
 		LOGGER_WARNING(m_serviceProvider)("Run game"
 			);
 				
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_RUN)( "()" );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_RUN )();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::destroyArrow()
@@ -541,14 +498,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalize()
 	{	
-        EVENTABLE_CALL(m_serviceProvider, this, EVENT_ACCOUNT_FINALIZE)( "()" );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ACCOUNT_FINALIZE )();
 
         if( m_accountService != nullptr )
         {
             m_accountService->finalize();
         }
 
-        EVENTABLE_CALL(m_serviceProvider, this, EVENT_FINALIZE)( "()" );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_FINALIZE )();
 
         if( m_accountService != nullptr )
         {
@@ -580,14 +537,14 @@ namespace Menge
 		      
 		m_resourcePaks.clear();
 				
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_DESTROY)( "()" );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_DESTROY )();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initializeRenderResources()
 	{
 		m_player->initializeRenderResources();
 
-        EVENTABLE_CALL(m_serviceProvider, this, EVENT_INITIALIZE_RENDER_RESOURCES)( "()" );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_INITIALIZE_RENDER_RESOURCES )();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalizeRenderResources()
@@ -614,54 +571,45 @@ namespace Menge
 			m_player->onFocus( _focus );
 		}				
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_FOCUS)( "(O)", pybind::get_bool(_focus) );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_FOCUS)( _focus );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFullscreen( const Resolution & _resolution, bool _fullscreen )
 	{
 		m_player->onFullscreen( _resolution, _fullscreen );
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_FULLSCREEN)( "(O)", pybind::get_bool(_fullscreen) );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_FULLSCREEN)( _fullscreen );
 	}
     //////////////////////////////////////////////////////////////////////////
     void Game::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
     {
         m_player->onFixedContentResolution( _resolution, _fixed );
 
-        EVENTABLE_CALL(m_serviceProvider, this, EVENT_FIXED_CONTENT_RESOLUTION)( "(O)", pybind::get_bool(_fixed) );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_FIXED_CONTENT_RESOLUTION )(_fixed);
     }
     //////////////////////////////////////////////////////////////////////////
     void Game::setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
     {
-        EVENTABLE_CALL(m_serviceProvider, this, EVENT_RENDER_VIEWPORT)( "(NN)"
-			, pybind::ptr(_viewport)
-			, pybind::ptr(_contentResolution) 
-			);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_RENDER_VIEWPORT )(_viewport, _contentResolution);
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setGameViewport( const Viewport & _viewport, float _aspect )
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_GAME_VIEWPORT)( "(Nf)"
-			, pybind::ptr(_viewport)
-			, _aspect 
-			);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_GAME_VIEWPORT )(_viewport, _aspect);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::close()
 	{
 		bool needQuit = true;
 
-        EVENTABLE_ASK(m_serviceProvider, this, EVENT_CLOSE)( needQuit, true, "()" );
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_CLOSE, needQuit )();
 	
 		return needQuit;
 	}
     //////////////////////////////////////////////////////////////////////////
     void Game::userEvent( const ConstString & _event, const TMapParams & _params )
     {
-        EVENTABLE_CALL(m_serviceProvider, this, EVENT_USER)( "(NN)"
-			, pybind::ptr(_event)
-			, pybind::ptr(_params) 
-			);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_USER )(_event, _params);
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadLocalePaksByName_( TVectorResourcePak & _paks, const ConstString & _locale, const ConstString & _platform )
@@ -872,7 +820,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_CURSOR_MODE)( "(O)", pybind::get_bool(_mode) );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_CURSOR_MODE )(_mode);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Game::getTimingFactor() const
@@ -884,7 +832,7 @@ namespace Menge
 	{
 		m_timingFactor = _timingFactor;
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_ON_TIMING_FACTOR)( "(f)", m_timingFactor );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ON_TIMING_FACTOR )(m_timingFactor);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const WString & Game::getParam( const ConstString & _paramName ) const

@@ -233,12 +233,12 @@ namespace Menge
 	{
 		m_needUpdate = false;
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false) );
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( this, _enumerator, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_end( uint32_t _enumerator )
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( "(OiO)", this->getEmbed(), _enumerator, pybind::get_bool(false));	
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( this, _enumerator, false);	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::pause()

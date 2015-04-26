@@ -75,10 +75,7 @@ namespace Menge
 
         PyObject * py_object = nullptr;
 
-        EVENTABLE_ASK(m_serviceProvider, m_movie, EVENT_MOVIE_GET_INTERNAL)( py_object, (PyObject*)nullptr, "(NN)"
-			, pybind::ptr( internalGroup )
-			, pybind::ptr( internalName )
-			);
+		EVENTABLE_ASK( m_serviceProvider, m_movie, EVENT_MOVIE_GET_INTERNAL, py_object )(internalGroup, internalName);
 
         if( py_object == nullptr )
         {
@@ -114,7 +111,7 @@ namespace Menge
 		}
 
 		PyObject * py_node = nullptr;
-		EVENTABLE_ASK(m_serviceProvider, m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL)( py_node, (PyObject*)nullptr, "(O)", m_internalObject );
+		EVENTABLE_ASK( m_serviceProvider, m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, py_node )(m_internalObject);
 
 		if( py_node == nullptr )
 		{
@@ -167,8 +164,6 @@ namespace Menge
 
 		bool localHide = this->isLocalHide();
 		this->updateHide_( localHide );
-		//bool localHide = this->isLocalHide();
-		//EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_HIDE_INTERNAL)( "(OO)", m_internalObject, pybind::get_bool(localHide) );
 
 		return true;
 	}
@@ -183,7 +178,7 @@ namespace Menge
 		m_internalNode->removeFromParent();
 		m_internalNode = nullptr;
 				
-		EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL)( "(O)", m_internalObject );
+		EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL)( m_internalObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_localHide( bool _hide )
@@ -194,7 +189,6 @@ namespace Menge
 		}
 
 		this->updateHide_( _hide );
-		//EVENTABLE_CALL(m_serviceProvider, m_movie, EVENT_MOVIE_HIDE_INTERNAL)( "(OO)", m_internalObject, pybind::get_bool(_hide) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::updateHide_( bool _hide )

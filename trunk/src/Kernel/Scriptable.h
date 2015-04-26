@@ -1,32 +1,12 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
-#	include "pybind/types.hpp"
+#	include "pybind/bindable.hpp"
 
 namespace Menge
 {
 	class Scriptable
+		: public pybind::bindable
 	{
-	public:
-		Scriptable();
-		~Scriptable();
-
-	public:
-		void setEmbed( PyObject * _embed );
-		PyObject * getEmbed();
-
-		bool isEmbed() const;
-        
-	public:
-		void unwrap();
-
-	protected:
-		virtual PyObject * _embedded() = 0;
-
-	protected:
-		virtual void _embedding( PyObject * );
-
-	protected:
-		PyObject * m_embed;
 	};
 }

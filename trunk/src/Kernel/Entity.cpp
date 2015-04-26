@@ -38,7 +38,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_PREPARATION)("(O)", this->getEmbed());
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_PREPARATION)( this );
 
 		bool successful = Node::_activate();
 
@@ -49,38 +49,38 @@ namespace Menge
 	{
 		Node::_afterActivate();
 
-		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_ACTIVATE)("(O)", this->getEmbed());
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_ACTIVATE)( this );
 	}
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
         Node::_deactivate();
 
-        EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_PREPARATION_DEACTIVATE)("(O)", this->getEmbed());
+        EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_PREPARATION_DEACTIVATE)( this );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_afterDeactivate()
 	{
 		Node::_afterDeactivate();
 
-		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_DEACTIVATE)("(O)", this->getEmbed());
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_DEACTIVATE)( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_COMPILE)("(O)", this->getEmbed());
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_COMPILE)( this );
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_release()
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_RELEASE)("(O)", this->getEmbed());
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_RELEASE)( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCreate()
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_CREATE)("(O)", this->getEmbed());
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_CREATE)( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::destroy()
@@ -97,7 +97,7 @@ namespace Menge
             return;
         }
 
-        EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_DESTROY)("(O)", this->getEmbed());
+        EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_DESTROY)( this );
 
         Factorable::destroy();
 	}
@@ -108,7 +108,7 @@ namespace Menge
 
 		this->removeFromParent();
 
-		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_DESTROY)("(O)", this->getEmbed());
+		EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_DESTROY)( this );
 
 		Factorable::destroy();
 	}

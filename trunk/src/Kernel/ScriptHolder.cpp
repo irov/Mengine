@@ -25,7 +25,7 @@ namespace Menge
 			return false;
 		}
 
-		EVENTABLE_ASK(m_serviceProvider, this, EVENT_KEEP_SCRIPT)( m_script, nullptr, "()" );
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEEP_SCRIPT, m_script )();
 
 		if( m_script == nullptr )
 		{
@@ -43,9 +43,7 @@ namespace Menge
 
 		if( m_script != nullptr )
 		{
-			EVENTABLE_CALL(m_serviceProvider, this, EVENT_RELEASE_SCRIPT)( "(O)"
-				, m_script
-				);
+			EVENTABLE_CALL(m_serviceProvider, this, EVENT_RELEASE_SCRIPT)( m_script	);
 
 			pybind::decref( m_script );
 			m_script = nullptr;

@@ -81,12 +81,7 @@ namespace Menge
 
 		uint32_t enemu_iff = trigger->getTriggerIFF();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_TRIGGER_ENTER)( "(OOii)"
-			, this->getEmbed()
-			, trigger->getEmbed()
-			, m_iff
-			, enemu_iff 
-			);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_TRIGGER_ENTER )(this, trigger, m_iff, enemu_iff);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trigger::onAOIActorLeave( AOIActor * _actor )
@@ -97,12 +92,7 @@ namespace Menge
 
 		uint32_t enemu_iff = trigger->getTriggerIFF();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_TRIGGER_LEAVE)( "(OOii)"
-			, this->getEmbed()
-			, trigger->getEmbed()
-			, m_iff
-			, enemu_iff 
-			);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_TRIGGER_LEAVE )(this, trigger, m_iff, enemu_iff);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Trigger::_activate()

@@ -867,26 +867,31 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::addData( const ConstString & _name, const DataDesc & _desc )
 	{
-		if( m_datas.exist( _name ) == true )
+		TMapDatas::const_iterator it_found = m_datas.find( _name );
+		
+		if( it_found == m_datas.end() )
 		{
 			return false;
 		}
 
-		m_datas.insert( _name, _desc );
+		m_datas.insert( std::make_pair(_name, _desc) );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::hasData( const ConstString & _name ) const
 	{
-		DataDesc * desc;
-		if( m_datas.has( _name, &desc ) == false )
+		TMapDatas::const_iterator it_found = m_datas.find( _name );
+
+		if( it_found == m_datas.end() )
 		{
 			return false;
 		}
 
+		const DataDesc & desc = it_found->second;
+
 		if( FILE_SERVICE(m_serviceProvider)
-			->existFile( desc->category, desc->path, nullptr ) == false )
+			->existFile( desc.category, desc.path, nullptr ) == false )
 		{
 			return false;
 		}
@@ -894,10 +899,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CacheBufferID Game::loadData( const ConstString & _name, const void ** _data, size_t & _size )
+	CacheBufferID Game::loadData( const ConstString & _name, const void ** _data, size_t & _size ) const
 	{
-		DataDesc * desc;
-		if( m_datas.has( _name, &desc ) == false )
+		TMapDatas::const_iterator it_found = m_datas.find( _name );
+
+		if( it_found == m_datas.end() )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Game::loadData: data %s not found"
 				, _name.c_str()
@@ -906,14 +912,16 @@ namespace Menge
 			return INVALID_CACHE_BUFFER_ID;
 		}
 
+		const DataDesc & desc = it_found->second;
+
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( desc->category, desc->path, false );
+			->openInputFile( desc.category, desc.path, false );
 
 		if( stream == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Game::loadData: data %s invalid open file %s"
 				, _name.c_str()
-				, desc->path.c_str()
+				, desc.path.c_str()
 				);
 
 			return INVALID_CACHE_BUFFER_ID;
@@ -927,7 +935,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("Game::loadData: data %s invalid load stream archive %s"
 				, _name.c_str()
-				, desc->path.c_str()
+				, desc.path.c_str()
 				);
 
 			return false;
@@ -939,36 +947,39 @@ namespace Menge
 		return bufferId;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::writeData( const ConstString & _name, const void * _data, size_t _size )
+	bool Game::writeData( const ConstString & _name, const void * _data, size_t _size ) const
 	{
-		DataDesc * desc;
-		if( m_datas.has( _name, &desc ) == false )
+		TMapDatas::const_iterator it_found = m_datas.find( _name );
+
+		if( it_found == m_datas.end() )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Game::writeData: data %s not found"
 				, _name.c_str()
 				);
 
-			return INVALID_CACHE_BUFFER_ID;
+			return false;
 		}
+
+		const DataDesc & desc = it_found->second;
 
 		if( _data == nullptr || _size == 0 )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Game::writeData: data %s write empty file %s"
 				, _name.c_str()
-				, desc->path.c_str()
+				, desc.path.c_str()
 				);
 
 			return false;
-		}
+		}	
 
 		OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openOutputFile( desc->category, desc->path );
+			->openOutputFile( desc.category, desc.path );
 
 		if( stream == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Game::writeData: data %s invalid open file %s"
 				, _name.c_str()
-				, desc->path.c_str()
+				, desc.path.c_str()
 				);
 
 			return nullptr;
@@ -981,7 +992,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("Game::writeData: data %s invalid write file %s"
 				, _name.c_str()
-				, desc->path.c_str()
+				, desc.path.c_str()
 				);
 
 			return false;

@@ -104,8 +104,8 @@ namespace Menge
 		virtual bool addData( const ConstString & _name, const DataDesc & _desc ) = 0;
 		virtual bool hasData( const ConstString & _name ) const = 0;
 
-		virtual CacheBufferID loadData( const ConstString & _name, const void ** _data, size_t & _size ) = 0;
-		virtual bool writeData( const ConstString & _name, const void * _data, size_t _size ) = 0;
+		virtual CacheBufferID loadData( const ConstString & _name, const void ** _data, size_t & _size ) const = 0;
+		virtual bool writeData( const ConstString & _name, const void * _data, size_t _size ) const = 0;
 
     public:
 		virtual void createResourcePak( const ResourcePackDesc & _desc ) = 0;

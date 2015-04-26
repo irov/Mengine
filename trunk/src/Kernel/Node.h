@@ -4,7 +4,7 @@
 #	include "Kernel/Scriptable.h"
 #	include "Kernel/Eventable.h"
 #	include "Kernel/Resource.h"
-#	include "Kernel/GlobalHandleAdapter.h"
+//#	include "Kernel/GlobalHandleAdapter.h"
 #	include "Kernel/Updatable.h"
 #	include "Kernel/Renderable.h"
 #	include "Kernel/BoundingBox.h"

@@ -7,9 +7,9 @@
 
 #	include "Core/ConstString.h"
 
-#   include "stdex/binary_vector.h"
+#   include "stdex/stl_map.h"
 
-#	include "pybind/types.hpp"
+#	include "pybind/object.hpp"
 
 namespace Menge
 {
@@ -67,10 +67,10 @@ namespace Menge
         struct Setting
         {
             WString value;
-            PyObject * cb;
+            pybind::object cb;
         };
 
-		typedef stdex::binary_vector<ConstString, Setting> TMapSettings;
+		typedef stdex::map<ConstString, Setting> TMapSettings;
 		TMapSettings m_settings;
 	};
 

@@ -19,6 +19,7 @@ namespace Menge
 		Node * getNode() const;
 		const mt::vec3f & getPosition() const;
 
+		void setDead();
 		bool isDead() const;
 
 	public:

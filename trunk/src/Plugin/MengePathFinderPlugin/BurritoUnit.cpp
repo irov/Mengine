@@ -31,6 +31,11 @@ namespace Menge
 		return m_position;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BurritoUnit::setDead()
+	{
+		m_dead = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool BurritoUnit::isDead() const
 	{
 		return m_dead;
@@ -61,6 +66,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool BurritoUnit::check_collision( float _timing, const mt::vec3f & _burritoPosition, float _burritoRadius, const mt::vec3f & _burritoVelocity, float & _collisionTiming, mt::vec3f & _newVelocity ) const
 	{ 
+		if( m_dead == true )
+		{
+			return false;
+		}
+
 		if( m_collide == false )
 		{
 			return false;

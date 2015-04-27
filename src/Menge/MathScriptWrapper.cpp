@@ -214,7 +214,7 @@ namespace Menge
 			}
 			else if( pybind::instance_of<mt::vec3f>( _obj ) == true )
 			{
-				mt::vec3f v3 = pybind::extract<mt::vec3f>( _obj );
+				mt::vec3f v3 = pybind::extract_t( _obj );
 								
 				_place->x = v3.x;
 				_place->y = v3.y;

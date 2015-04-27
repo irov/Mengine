@@ -254,10 +254,13 @@ namespace Menge
 
 			TVectorBurritoUnit::iterator it_erase = std::find_if( layer.units.begin(), layer.units.end(), FBurritoUnitRemove( _node ) );
 
-			delete *it_erase;
+			if( it_erase == layer.units.end() )
+			{
+				continue;
+			}
 
-			layer.units.erase( it_erase );
-
+			(*it_erase)->setDead();
+			
 			break;
 		}
 	}

@@ -124,6 +124,13 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
+	static void s_pybind_logger( ServiceProviderInterface * _serviceProvider, const char * _msg )
+	{
+		LOGGER_ERROR( _serviceProvider )("%s"
+			, _msg
+			);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::initialize()
 	{
         if( PLATFORM_SERVICE(m_serviceProvider)
@@ -143,6 +150,8 @@ namespace Menge
 
 			return false;
 		}
+
+		pybind::set_logger( (pybind::pybind_logger_t)s_pybind_logger, m_serviceProvider);
 
 #   if defined(WIN32) && defined(_DEBUG)
 		_CrtSetReportMode( _CRT_WARN, _CRTDBG_MODE_WNDW );

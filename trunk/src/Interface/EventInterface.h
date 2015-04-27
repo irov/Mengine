@@ -1,7 +1,6 @@
 #   pragma once
 
 #   include "Interface/ServiceInterface.h"
-#   include "Interface/ScriptSystemInterface.h"
 
 namespace Menge
 {

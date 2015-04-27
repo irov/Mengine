@@ -12,6 +12,7 @@
 
 #	include "pybind/types.hpp"
 #	include "pybind/object.hpp"
+#	include "pybind/dict.hpp"
 
 #	include <string>
 #	include <stdarg.h>
@@ -27,30 +28,35 @@ namespace Menge
 		~Eventable();
 
 	public:
-		bool registerEvent( EEventName _event, const char * _method, PyObject * _dict, bool * _exist = nullptr );
-		bool registerEventMethod( EEventName _event, const char * _method, PyObject * _module, bool * _exist = nullptr );
+		bool registerEvent( EEventName _event, const char * _method, const pybind::dict & _dict, bool * _exist = nullptr );
+		bool registerEventMethod( EEventName _event, const char * _method, const pybind::object & _module, bool * _exist = nullptr );
 
-		PyObject * getEvent( EEventName _event ) const;
+		const pybind::object & getEvent( EEventName _event ) const;
 		bool hasEvent( EEventName _event ) const;
 
 	protected:
 		void unregisterEvents_();
 
 	protected:
-		PyObject * getEvent_( const char * _method, PyObject * _dict ) const;
-		PyObject * getEventMethod_( const char * _method, PyObject * _module ) const;
-		void insertEvent_( EEventName _event, PyObject * _cb );
+		pybind::object getEvent_( const pybind::dict & _dict, const char * _method ) const;
+		pybind::object getEventMethod_( const pybind::object & _module, const char * _method ) const;
+		void insertEvent_( EEventName _event, const pybind::object & _cb );
 		void removeEvent_( EEventName _event );
 
 	private:
-		typedef stdex::map<EEventName, PyObject *> TMapEvent;
+		typedef stdex::map<EEventName, pybind::object> TMapEvent;
 		TMapEvent m_mapEvent;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class EventableCallOperator
 	{
 	public:
-		EventableCallOperator( ServiceProviderInterface * _serviceProvider, EEventName _event, PyObject * _pyevent );
+		EventableCallOperator::EventableCallOperator( ServiceProviderInterface * _serviceProvider, EEventName _event, const pybind::object & _pyevent )
+			: m_serviceProvider( _serviceProvider )
+			, m_event( _event )
+			, m_pyevent( _pyevent )
+		{
+		}
 
 	public:
 		const pybind::object & getEvent() const
@@ -64,33 +70,15 @@ namespace Menge
 		EEventName m_event;
 		pybind::object m_pyevent;		
 	};
-	//////////////////////////////////////////////////////////////////////////
-	class EventableAskOperator
-	{
-	public:
-		EventableAskOperator( ServiceProviderInterface * _serviceProvider, EEventName _event, PyObject * _pyevent );
-
-	public:
-		const pybind::object & getEvent() const
-		{
-			return m_pyevent;
-		}
-
-	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
-		EEventName m_event;
-		pybind::object m_pyevent;
-	};
 }
 
 #	define EVENTABLE_CALL(serviceProvider, Self, Event)\
 	for( bool EVENTABLE_CALL_self = false; Self != nullptr && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
-	for( PyObject * EVENT_CALL_pyevent = Self->getEvent(Event); EVENT_CALL_pyevent != nullptr; EVENT_CALL_pyevent = nullptr )\
-	EventableCallOperator(serviceProvider, Event, EVENT_CALL_pyevent).getEvent()
+	for( const pybind::object & EVENTABLE_CALL_pyevent = Self->getEvent(Event); EVENTABLE_CALL_pyevent.is_invalid() == false && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
+	EventableCallOperator(serviceProvider, Event, EVENTABLE_CALL_pyevent ).getEvent()
 
 #	define EVENTABLE_ASK(serviceProvider, Self, Event, Value)\
-	for( bool EVENTABLE_ASK_self = false; Self != nullptr && EVENTABLE_ASK_self == false; EVENTABLE_ASK_self = true )\
-	for( PyObject * EVENTABLE_ASK_pyevent = Self->getEvent(Event); EVENTABLE_ASK_pyevent != nullptr; EVENTABLE_ASK_pyevent = nullptr )\
-	Value = EventableAskOperator(serviceProvider, Event, EVENTABLE_ASK_pyevent).getEvent()
+	for( bool EVENTABLE_CALL_self = false; Self != nullptr && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
+	for( const pybind::object & EVENTABLE_CALL_pyevent = Self->getEvent(Event); EVENTABLE_CALL_pyevent.is_invalid() == false && EVENTABLE_CALL_self == false; EVENTABLE_CALL_self = true )\
+	Value = EventableCallOperator(serviceProvider, Event, EVENTABLE_CALL_pyevent).getEvent()
 

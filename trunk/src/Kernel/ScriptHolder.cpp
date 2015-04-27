@@ -10,7 +10,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptHolder::_setEventListener( PyObject * _listener )
+	void ScriptHolder::_setEventListener( const pybind::dict & _listener )
 	{
 		Node::_setEventListener( _listener );
 

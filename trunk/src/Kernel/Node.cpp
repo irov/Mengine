@@ -1048,7 +1048,8 @@ namespace Menge
 			return pybind::ret_none();
 		}
 		
-		this->_setEventListener( _kwds );
+		pybind::dict py_kwds( _kwds );
+		this->_setEventListener( py_kwds );
 
 #	ifdef _DEBUG
 		size_t pos = 0;
@@ -1073,10 +1074,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeEventListener()
 	{
-		this->_setEventListener( nullptr );		
+		pybind::dict py_invalid;
+		this->_setEventListener( py_invalid );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_setEventListener( PyObject * _listener )
+	void Node::_setEventListener( const pybind::dict & _listener )
 	{
 		(void)_listener;
 	}

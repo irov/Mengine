@@ -25,7 +25,7 @@ namespace Menge
 		bool initialize( const ConstString & _category, const ConstString & _prototype, PyObject * _generator );
 
 	public:
-		PyObject * preparePythonType();
+		const pybind::object & preparePythonType();
 
 	protected:
 		Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override;
@@ -41,7 +41,7 @@ namespace Menge
 		ConstString m_category;
 		ConstString m_prototype;
 		PyObject * m_generator;
-		PyObject * m_type;
+		pybind::object m_type;
 
 		uint32_t m_count;
 	};

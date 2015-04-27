@@ -9,15 +9,11 @@
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 
+#	include "pybind/object.hpp"
+
 #	include <stdex/stl_vector.h>
 
 #	include <stdarg.h>
-
-extern "C" 
-{ 
-	struct _object;
-	typedef _object PyObject;
-}
 
 namespace Menge
 {	    
@@ -68,24 +64,24 @@ namespace Menge
 	public:
 		virtual void addModulePath( const ConstString & _pak, const TVectorScriptModulePak & _modules ) = 0;
 
-		virtual PyObject * importModule( const ConstString& _name ) = 0;
+		virtual pybind::object importModule( const ConstString& _name ) = 0;
 
 		virtual void setCurrentModule( PyObject * _module ) = 0;
         virtual void addGlobalModule( const String & _name, PyObject * _module ) = 0;
         virtual void removeGlobalModule( const String & _name ) = 0;
 
-		virtual bool hasModuleFunction( PyObject * _module, const char * _name ) = 0;
-		virtual PyObject * getModuleFunction( PyObject * _module, const char * _name ) = 0;
+		virtual bool hasModuleFunction( const pybind::object & _module, const char * _name ) = 0;
+		virtual pybind::object getModuleFunction( const pybind::object & _module, const char * _name ) = 0;
 
 	public:
 		virtual PrototypeGeneratorInterfacePtr createEntityGenerator( const ConstString & _category, const ConstString & _prototype, PyObject * _generator ) = 0;
-		virtual PyObject * importEntity( const ConstString & _category, const ConstString & _prototype ) = 0;
+		virtual const pybind::object & importEntity( const ConstString & _category, const ConstString & _prototype ) = 0;
 
 	public:
-        virtual Entity * createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator, Eventable * _eventable ) = 0;
+		virtual Entity * createEntity( const ConstString& _type, const ConstString & _prototype, const pybind::object & _generator, Eventable * _eventable ) = 0;
 
         template<class T>
-        T * createEntityT( const ConstString& _type, const ConstString & _prototype, PyObject * _generator, Eventable * _eventable )
+		T * createEntityT( const ConstString& _type, const ConstString & _prototype, const pybind::object & _generator, Eventable * _eventable )
         {
             Entity * entity = this->createEntity( _type, _prototype, _generator, _eventable );
 

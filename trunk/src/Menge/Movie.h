@@ -106,7 +106,7 @@ namespace Menge
         void updateForwardFrameNode_( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer &, Node * _node );
 
 	protected:
-		void _setEventListener( PyObject * _embed ) override;
+		void _setEventListener( const pybind::dict & _embed ) override;
 
 	protected:
 		bool updateFrameNode_( const MovieLayer & layer, Node * _node, uint32_t _frameId, bool _interpolate, bool _start );

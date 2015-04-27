@@ -2255,7 +2255,7 @@ namespace Menge
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_setEventListener( PyObject * _embed )
+	void Movie::_setEventListener( const pybind::dict & _embed )
 	{
 		Node::_setEventListener(_embed);
 

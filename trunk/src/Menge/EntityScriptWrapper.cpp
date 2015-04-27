@@ -80,19 +80,17 @@ namespace Menge
 			return entity;
 		}
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_importEntity( const ConstString & _prototype )
+		const pybind::object & s_importEntity( const ConstString & _prototype )
         {
-            PyObject * py_type = SCRIPT_SERVICE(m_serviceProvider)
+			const pybind::object & py_type = SCRIPT_SERVICE( m_serviceProvider )
 				->importEntity( CONST_STRING(m_serviceProvider, Entity), _prototype );
 			
-			if( py_type == nullptr )
+			if( py_type.is_invalid() == true )
 			{
-				return pybind::ret_none();
+				return pybind::ret_none_t();
 			}
-
-            pybind::incref( py_type );
-
-            return py_type;
+			
+			return py_type;
         }
 
     protected:

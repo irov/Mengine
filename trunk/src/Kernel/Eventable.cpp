@@ -20,9 +20,9 @@ namespace Menge
 		this->unregisterEvents_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( EEventName _event, const char * _method, PyObject * _dict, bool * _exist )
+	bool Eventable::registerEvent( EEventName _event, const char * _method, const pybind::dict & _dict, bool * _exist )
 	{
-		if( _dict == nullptr )
+		if( _dict.empty() == true )
 		{
 			this->removeEvent_( _event );
 
@@ -34,17 +34,15 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * ev = this->getEvent_( _method, _dict );
+		pybind::object ev = this->getEvent_( _dict, _method );
 
-		if( ev == nullptr )
+		if( ev.is_invalid() == true )
 		{
 			return false;
 		}
 
-		if( pybind::is_none(ev) == true )
-		{
-			pybind::decref( ev );
-
+		if( ev.is_none() == true )
+		{			
 			this->removeEvent_( _event );
 
 			if( _exist != nullptr )
@@ -65,9 +63,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEventMethod( EEventName _event, const char * _method, PyObject * _module, bool * _exist )
+	bool Eventable::registerEventMethod( EEventName _event, const char * _method, const pybind::object & _module, bool * _exist )
 	{
-		if( _module == nullptr )
+		if( _module.is_invalid() == true )
 		{
 			this->removeEvent_( _event );
 
@@ -79,9 +77,9 @@ namespace Menge
 			return true;
 		}
 
-		PyObject * ev = this->getEventMethod_( _method, _module );
+		const pybind::object & ev = this->getEventMethod_( _module, _method );
 
-		if( ev == nullptr )
+		if( ev.is_invalid() == true )
 		{
 			return false;
 		}
@@ -96,7 +94,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::insertEvent_( EEventName _event, PyObject * _cb )
+	void Eventable::insertEvent_( EEventName _event, const pybind::object & _cb )
 	{ 
 		TMapEvent::iterator it_find = m_mapEvent.find( _event );
 
@@ -106,10 +104,6 @@ namespace Menge
 		}
 		else
 		{
-			PyObject * obj = it_find->second;
-
-			pybind::decref( obj );
-
 			it_find->second = _cb;
 		}
 	}
@@ -120,50 +114,41 @@ namespace Menge
 
 		if( it_find != m_mapEvent.end() )
 		{
-			PyObject * py_event = it_find->second;
-
-			pybind::decref( py_event );
-
 			m_mapEvent.erase( it_find );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEvent_( const char * _method, PyObject * _dict ) const
-	{
-		if( pybind::dict_check( _dict ) == false )
+	pybind::object Eventable::getEvent_( const pybind::dict & _dict, const char * _method ) const
+	{		
+		if( _dict.contains( _method ) == false )
 		{
-			return nullptr;
-		}
-		
-		if( pybind::dict_contains( _dict, _method ) == false )
-		{
-			return nullptr;
+			return pybind::ret_invalid_t();
 		}
 
-		PyObject * py_event = pybind::dict_get( _dict, _method );
-		
-		pybind::incref( py_event );
+		pybind::object py_event = _dict[_method];
 
-		pybind::dict_remove( _dict, _method );
+#	ifdef _DEBUG
+		_dict.remove( _method );
+#	endif
 
 		return py_event;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEventMethod_( const char * _method, PyObject * _module ) const
+	pybind::object Eventable::getEventMethod_( const pybind::object & _module, const char * _method ) const
 	{
-		if( pybind::has_attr( _module, _method ) == false )
+		if( _module.has_attr( _method ) == false )
 		{
-			return nullptr;
+			return pybind::ret_invalid_t();
 		}
 
-		PyObject * py_event = pybind::get_attr( _module, _method );
+		pybind::object py_event = _module.get_attr( _method );
 
 		return py_event;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::hasEvent( EEventName _event ) const
 	{
-		TMapEvent::const_iterator it_find = m_mapEvent.find(_event);
+		TMapEvent::const_iterator it_find = m_mapEvent.find( _event );
 
 		if( it_find == m_mapEvent.end() )
 		{
@@ -173,47 +158,24 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Eventable::getEvent( EEventName _event ) const
+	const pybind::object & Eventable::getEvent( EEventName _event ) const
 	{
 		TMapEvent::const_iterator it_find = m_mapEvent.find( _event );
 
 		if( it_find == m_mapEvent.end() )
 		{
-			return nullptr;
+			return pybind::ret_invalid_t();
 		}
 
-		PyObject * cb = it_find->second;
+		const pybind::object & cb = it_find->second;
 
 		return cb;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Eventable::unregisterEvents_()
 	{
-		for( TMapEvent::iterator
-			it = m_mapEvent.begin(),
-			it_end = m_mapEvent.end();
-		it != it_end;
-		++it)
-		{
-			PyObject * cb = it->second;
-
-			pybind::decref( cb );
-		}
-
 		m_mapEvent.clear();
 	}
+
     //////////////////////////////////////////////////////////////////////////
-    EventableCallOperator::EventableCallOperator( ServiceProviderInterface * _serviceProvider, EEventName _event, PyObject * _pyevent )
-        : m_serviceProvider(_serviceProvider)
-        , m_event(_event)
-        , m_pyevent(_pyevent)
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    EventableAskOperator::EventableAskOperator( ServiceProviderInterface * _serviceProvider, EEventName _event, PyObject * _pyevent )
-        : m_serviceProvider(_serviceProvider)
-        , m_event(_event)
-        , m_pyevent(_pyevent)
-    {
-    }
 }

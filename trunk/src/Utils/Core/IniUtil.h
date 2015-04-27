@@ -2,10 +2,11 @@
 
 #   include "stdex/ini.h"
 
-#   include "Interface/ApplicationInterface.h"
 #   include "Interface/ServiceInterface.h"
 #   include "Interface/StreamInterface.h"
 
+#	include "Core/Params.h"
+#	include "Core/String.h"
 #	include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 #	include "Core/Resolution.h"

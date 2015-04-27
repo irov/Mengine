@@ -297,7 +297,7 @@ namespace Menge
 		return lengthMs;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_setEventListener( PyObject * _listener )
+	void SoundEmitter::_setEventListener( const pybind::dict & _listener )
 	{
 		Node::_setEventListener( _listener );
 

@@ -1776,7 +1776,7 @@ namespace Menge
 
 		if( m_application->loadResourcePacks( ConstString::none(), resourceIniPath ) == false )
 		{
-			LOGGER_CRITICAL(m_serviceProvider)("Application invalid initialize game"
+			LOGGER_CRITICAL(m_serviceProvider)("Application invalid load resource packs"
 				);
 
 			return false;

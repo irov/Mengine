@@ -54,7 +54,7 @@ namespace Menge
 
 		bool _compile() override;
 		void _release() override;
-		void _setEventListener( PyObject * _listener ) override;
+		void _setEventListener( const pybind::dict & _listener ) override;
 
 		void _setLoop( bool _value ) override;
 

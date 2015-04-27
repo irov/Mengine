@@ -11,6 +11,7 @@ ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 INCLUDE_DIRECTORIES( 
     ${Mengine_SOURCE_DIR} 
     ${Mengine_SOURCE_DIR}/Utils 
+    ${THIRDPARTY_DIR}/pybind/include 
     ) 
 
 SET( MENGE_DEPENDENCIES

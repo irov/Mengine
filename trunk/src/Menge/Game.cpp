@@ -80,14 +80,11 @@ namespace Menge
 		, m_accountService(nullptr)
 		, m_defaultArrow(nullptr)
 		, m_timingFactor(1.f)
-        , m_embed(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::~Game()
 	{
-		pybind::decref( m_embed );
-		m_embed = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     void Game::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -260,12 +257,10 @@ namespace Menge
 		m_player->render();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Game::setEmbed( PyObject * _embed )
+    void Game::setEmbed( const pybind::object & _embed )
     {
         m_embed = _embed;
-
-        pybind::incref( m_embed );
-
+		
         this->registerEventMethod( EVENT_FULLSCREEN, "onFullscreen", _embed );
         this->registerEventMethod( EVENT_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution", _embed );
         this->registerEventMethod( EVENT_RENDER_VIEWPORT, "onRenderViewport", _embed );
@@ -306,10 +301,8 @@ namespace Menge
         this->registerEventMethod( EVENT_CLOSE, "onCloseWindow", _embed );
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * Game::getEmbed() const
+	const pybind::object & Game::getEmbed() const
     {
-		pybind::incref( m_embed );
-
         return m_embed;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -335,15 +328,17 @@ namespace Menge
 			return false;
 		}
 
-		PyObject * personality = SCRIPT_SERVICE(m_serviceProvider)
+		pybind::object personality = SCRIPT_SERVICE( m_serviceProvider )
 			->importModule( _module );
 
-		if( personality == nullptr )
+		if( personality.is_invalid() == true )
 		{
+			LOGGER_ERROR( m_serviceProvider )("Game::loadPersonality invalid import module '%s'"
+				, _module.c_str()
+				);
+
 			return false;
 		}
-
-        pybind::incref( personality );
 
 		this->setEmbed( personality );
 
@@ -869,7 +864,7 @@ namespace Menge
 	{
 		TMapDatas::const_iterator it_found = m_datas.find( _name );
 		
-		if( it_found == m_datas.end() )
+		if( it_found != m_datas.end() )
 		{
 			return false;
 		}

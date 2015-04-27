@@ -238,7 +238,7 @@ namespace Menge
 		void removeEventListener();
 
 	protected:
-		virtual void _setEventListener( PyObject * _listener );
+		virtual void _setEventListener( const pybind::dict & _listener );
 
 	public:
 		virtual void visitResource( VisitorResource * _visitor );

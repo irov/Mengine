@@ -98,7 +98,7 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Scene::_setEventListener( PyObject * _embed )
+	void Scene::_setEventListener( const pybind::dict & _embed )
 	{
 		Entity::_setEventListener( _embed );
 

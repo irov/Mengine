@@ -45,7 +45,7 @@ namespace Menge
 		void _deactivate() override;
 
 	protected:
-		void _setEventListener( PyObject * _listener ) override;
+		void _setEventListener( const pybind::dict & _listener ) override;
 
 	protected:
 		AreaOfInterest * m_aoi;

@@ -322,7 +322,7 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_setEventListener( PyObject * _listener )
+	void Animation::_setEventListener( const pybind::dict & _listener )
 	{
 		Sprite::_setEventListener( _listener );
 

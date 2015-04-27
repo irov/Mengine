@@ -10,7 +10,6 @@ namespace Menge
 	EntityPrototypeGenerator::EntityPrototypeGenerator()
 		: m_serviceProvider(nullptr)
 		, m_generator(nullptr)
-		, m_type(nullptr)
 		, m_count(0)
 	{		
 	}
@@ -18,7 +17,6 @@ namespace Menge
 	EntityPrototypeGenerator::~EntityPrototypeGenerator()
 	{
 		pybind::decref( m_generator );
-		pybind::decref( m_type );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void EntityPrototypeGenerator::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -47,33 +45,34 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * EntityPrototypeGenerator::preparePythonType()
+	const pybind::object & EntityPrototypeGenerator::preparePythonType()
 	{
-		if( m_type != nullptr )
+		if( m_type.is_invalid() == false )
 		{
 			return m_type;
 		}
 				
-		PyObject * py_type = pybind::ask_t( m_generator, m_prototype );
+		pybind::object py_type = pybind::ask_t( m_generator, m_prototype );
 
-		if( py_type == nullptr || pybind::is_none( py_type ) == true )
+		if( py_type.is_invalid() == true || py_type.is_none() == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator type %s prototype %s invalid type create"
 				, m_category.c_str()
 				, m_prototype.c_str()
 				);
 
-			return nullptr;
+			return pybind::ret_invalid_t();
 		}
 
-		if( pybind::type_initialize( py_type ) == false )
+		PyObject * py_type_ptr = py_type.ptr();
+		if( pybind::type_initialize( py_type_ptr ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator prototype %s invalid type initialize"
 				, m_category.c_str()
 				, m_prototype.c_str()
 				);
 
-			return nullptr;
+			return pybind::ret_invalid_t();
 		}
 
 		this->registerEventMethod( EVENT_CREATE, "onCreate", py_type );
@@ -87,9 +86,8 @@ namespace Menge
 		this->registerEventMethod( EVENT_RELEASE, "onRelease", py_type );
 
 		m_type = py_type;
-		pybind::incref( m_type );
 
-		return py_type;
+		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Factorable * EntityPrototypeGenerator::generate( const ConstString & _category, const ConstString & _prototype )
@@ -97,9 +95,9 @@ namespace Menge
 		(void)_category;
 		(void)_prototype;
 
-		PyObject * py_type = this->preparePythonType();
+		const pybind::object & py_type = this->preparePythonType();
 
-		if( py_type == nullptr )
+		if( py_type.is_invalid() == true )
 		{
 			return nullptr;
 		}

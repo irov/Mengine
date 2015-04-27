@@ -257,10 +257,8 @@ namespace Menge
 		m_player->render();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Game::setEmbed( const pybind::object & _embed )
-    {
-        m_embed = _embed;
-		
+	void Game::registerEventMethods_( const pybind::object & _embed )
+    {	
         this->registerEventMethod( EVENT_FULLSCREEN, "onFullscreen", _embed );
         this->registerEventMethod( EVENT_FIXED_CONTENT_RESOLUTION, "onFixedContentResolution", _embed );
         this->registerEventMethod( EVENT_RENDER_VIEWPORT, "onRenderViewport", _embed );
@@ -300,11 +298,6 @@ namespace Menge
         this->registerEventMethod( EVENT_USER, "onUserEvent", _embed );
         this->registerEventMethod( EVENT_CLOSE, "onCloseWindow", _embed );
     }
-    //////////////////////////////////////////////////////////////////////////
-	const pybind::object & Game::getEmbed() const
-    {
-        return m_embed;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality( const ConstString & _module )
 	{
@@ -340,7 +333,7 @@ namespace Menge
 			return false;
 		}
 
-		this->setEmbed( personality );
+		this->registerEventMethods_( personality );
 
 #	ifdef _DEBUG
 		bool is_debug = true;

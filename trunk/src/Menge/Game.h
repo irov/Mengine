@@ -196,10 +196,6 @@ namespace Menge
 		TMapDatas m_datas;
 
     protected:
-		void setEmbed( const pybind::object & _embed );
-		const pybind::object & getEmbed() const;
-
-    protected:
-		pybind::object m_embed;
+		void registerEventMethods_( const pybind::object & _embed );
 	};	
 }

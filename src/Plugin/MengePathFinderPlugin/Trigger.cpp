@@ -113,7 +113,7 @@ namespace Menge
 		m_actor = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trigger::_setEventListener( PyObject * _listener )
+	void Trigger::_setEventListener( const pybind::dict & _listener )
 	{
 		Node::_setEventListener( _listener );
 

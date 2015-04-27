@@ -55,7 +55,7 @@ namespace Menge
 		void _deactivate() override;
 		bool _compile() override;
 		void _release() override;
-		void _setEventListener( PyObject * _listener ) override;
+		void _setEventListener( const pybind::dict & _listener ) override;
 		void _invalidateWorldMatrix() override;
 		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 		void _invalidateColor() override;

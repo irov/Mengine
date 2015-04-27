@@ -51,7 +51,7 @@ namespace Menge
 		void _afterActivate() override;
 		void _deactivate() override;
 
-		void _setEventListener( PyObject * _listener ) override;
+		void _setEventListener( const pybind::dict & _listener ) override;
 
 	protected:
 		void _localHide( bool _value ) override;

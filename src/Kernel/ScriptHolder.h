@@ -11,7 +11,7 @@ namespace Menge
 		ScriptHolder();
 
 	protected:
-		void _setEventListener( PyObject * _listener ) override;
+		void _setEventListener( const pybind::dict & _listener ) override;
 
 	protected:
 		bool _activate() override;

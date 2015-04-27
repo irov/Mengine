@@ -44,10 +44,7 @@ namespace Menge
 	public:
 		PyObject * initModule( const char * _name );
 
-		PyObject * importModule( const ConstString& _name ) override;
-
-		//PyObject * importPrototypeModule( const ResourceDesc & _resource ) override;
-		PyObject * importPrototype( const ConstString& _name, bool & _exist );
+		pybind::object importModule( const ConstString& _name ) override;
 
 		void setCurrentModule( PyObject * _module ) override;
         
@@ -62,10 +59,10 @@ namespace Menge
 
 	public:
 		PrototypeGeneratorInterfacePtr createEntityGenerator( const ConstString & _category, const ConstString & _prototype, PyObject * _generator ) override;
-		PyObject * importEntity( const ConstString & _category, const ConstString & _prototype ) override;
+		const pybind::object & importEntity( const ConstString & _category, const ConstString & _prototype ) override;
 
 	public:
-		Entity * createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator, Eventable * _eventable ) override;
+		Entity * createEntity( const ConstString& _type, const ConstString & _prototype, const pybind::object & _generator, Eventable * _eventable ) override;
 
     public:
         bool stringize( PyObject * _object, ConstString & _str ) override;
@@ -75,8 +72,8 @@ namespace Menge
 		PyObject * wrap( const ConstString & _type, Scriptable * _node ) override;
 		
 	public:
-		bool hasModuleFunction( PyObject * _module, const char * _name ) override;
-		PyObject * getModuleFunction( PyObject * _module, const char * _name ) override;
+		bool hasModuleFunction( const pybind::object & _module, const char * _name ) override;
+		pybind::object getModuleFunction( const pybind::object & _module, const char * _name ) override;
 
 	public:
 		static void handleException();

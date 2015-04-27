@@ -47,7 +47,7 @@ namespace Menge
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;        
 
 	protected:
-		void _setEventListener( PyObject * _embed ) override;
+		void _setEventListener( const pybind::dict & _embed ) override;
 
 	protected:
 		Scene * m_parentScene;

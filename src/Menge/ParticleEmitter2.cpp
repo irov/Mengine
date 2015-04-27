@@ -58,7 +58,7 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_setEventListener( PyObject * _listener )
+	void ParticleEmitter2::_setEventListener( const pybind::dict & _listener )
 	{
 		Node::_setEventListener( _listener );
 

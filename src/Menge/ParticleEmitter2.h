@@ -76,10 +76,10 @@ namespace Menge
         void getRelativePosition( mt::vec3f & _pos );
 
     protected:
-        void _setLoop( bool _value );
+        void _setLoop( bool _value ) override;
 
 	protected:
-		void _setEventListener( PyObject * _listener );
+		void _setEventListener( const pybind::dict & _listener ) override;
 
 		bool _activate() override;
 		void _deactivate() override;

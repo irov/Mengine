@@ -85,7 +85,7 @@ namespace Menge
 		return m_global;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::_setEventListener( PyObject * _listener )
+	void HotSpot::_setEventListener( const pybind::dict & _listener )
 	{
 		Node::_setEventListener( _listener );
 

@@ -196,10 +196,10 @@ namespace Menge
 		TMapDatas m_datas;
 
     protected:
-        void setEmbed( PyObject * _embed );
-        PyObject * getEmbed() const;
+		void setEmbed( const pybind::object & _embed );
+		const pybind::object & getEmbed() const;
 
     protected:
-        PyObject * m_embed;
+		pybind::object m_embed;
 	};	
 }

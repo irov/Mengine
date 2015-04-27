@@ -286,9 +286,9 @@ namespace Menge
 				continue;
 			}
 
-			PyObject * module = this->importModule( pak.module );
+			pybind::object module = this->importModule( pak.module );
 
-			if( module == nullptr )
+			if( module.is_invalid() == true )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::bootstrapModules invalid import module %s"
 					, pak.module.c_str()
@@ -296,8 +296,6 @@ namespace Menge
 
 				return false;
 			}
-
-			pybind::decref( module );
 		}
 
 		return true;
@@ -323,9 +321,9 @@ namespace Menge
 				continue;
 			}
 
-			PyObject * module = this->importModule( pak.module );
+			pybind::object module = this->importModule( pak.module );
 
-			if( module == nullptr )
+			if( module.is_invalid() == true )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules invalid import module %s"
 					, pak.module.c_str()
@@ -344,9 +342,9 @@ namespace Menge
 				return false;
 			}
 
-			PyObject * module_function = this->getModuleFunction( module, pak.initializer.c_str() );
+			pybind::object module_function = this->getModuleFunction( module, pak.initializer.c_str() );
 
-			if( module_function == nullptr )
+			if( module_function.is_invalid() == true )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules module %s invalid get initializer %s"
 					, pak.module.c_str()
@@ -356,9 +354,9 @@ namespace Menge
 				return false;
 			}
 
-			PyObject * py_result = pybind::ask_t( module_function );
+			pybind::object py_result = module_function();
 
-			if( py_result == nullptr )
+			if( py_result.is_invalid() == true )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules module %s invalid call initializer %s"
 					, pak.module.c_str()
@@ -368,22 +366,18 @@ namespace Menge
 				return false;
 			}
 
-			if( pybind::bool_check( py_result ) == false )
+			if( py_result.is_bool() == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules module %s invalid call initializer %s need return bool [True|False] but return is '%s'"
 					, pak.module.c_str()
 					, pak.initializer.c_str()
-					, pybind::object_repr( py_result )
+					, py_result.repr()
 					);
 
 				return false;
 			}
 
-			bool successful = pybind::extract<bool>( py_result );
-
-			pybind::decref( module );
-			pybind::decref( module_function );
-			pybind::decref( py_result );
+			bool successful = py_result.extract();
 
 			if( successful == false )
 			{
@@ -414,7 +408,7 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::importModule( const ConstString & _name )
+	pybind::object ScriptEngine::importModule( const ConstString & _name )
 	{
 		PyObject * module = nullptr;
 		bool exist = false;
@@ -431,7 +425,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return nullptr;
+			return pybind::ret_invalid_t();
 		}
 
 		if( exist == false )
@@ -440,7 +434,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return nullptr;
+			return pybind::ret_invalid_t();
 		}
 
 		if( module == nullptr )
@@ -449,10 +443,10 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return nullptr;
+			return pybind::ret_invalid_t();
 		}
 
-		return module;
+		return pybind::object(module);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::setCurrentModule( PyObject * _module )
@@ -515,7 +509,7 @@ namespace Menge
 		return generator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::importEntity( const ConstString & _category, const ConstString & _prototype )
+	const pybind::object & ScriptEngine::importEntity( const ConstString & _category, const ConstString & _prototype )
 	{
 		PrototypeGeneratorInterfacePtr generator;
 		if( PROTOTYPE_SERVICE(m_serviceProvider)
@@ -526,7 +520,7 @@ namespace Menge
 				, _prototype.c_str()
 				);
 
-			return pybind::ret_none();
+			return pybind::ret_none_t();
 		}
 
 #	ifdef _DEBUG
@@ -537,21 +531,21 @@ namespace Menge
 				, _prototype.c_str()
 				);
 
-			return pybind::ret_none();
+			return pybind::ret_none_t();
 		}
 #	endif
 
 		EntityPrototypeGeneratorPtr entityGenerator = 
 			stdex::intrusive_static_cast<EntityPrototypeGeneratorPtr>(generator);
 
-		PyObject * py_type = entityGenerator->preparePythonType();
+		const pybind::object & py_type = entityGenerator->preparePythonType();
 
 		return py_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Entity * ScriptEngine::createEntity( const ConstString& _type, const ConstString & _prototype, PyObject * _generator, Eventable * _eventable )
+	Entity * ScriptEngine::createEntity( const ConstString& _type, const ConstString & _prototype, const pybind::object & _generator, Eventable * _eventable )
 	{
-		if( _generator == nullptr )
+		if( _generator.is_invalid() == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ScriptEngine.createEntity: can't create object '%s' (_generator == 0)"
 				, _type.c_str()
@@ -560,9 +554,9 @@ namespace Menge
 			return nullptr;
 		}
 
-		PyObject * py_entity = pybind::ask_t( _generator );
+		pybind::object py_entity = _generator();
 
-		if( py_entity == nullptr )
+		if( py_entity.is_invalid() == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ScriptEngine.createEntity: can't create object '%s' (invalid create)"
 				, _type.c_str()
@@ -570,10 +564,8 @@ namespace Menge
 
 			return nullptr;
 		}
-
-		//pybind::decref( py_entity );
         
-		Entity * entity = pybind::extract<Entity *>( py_entity );
+		Entity * entity = py_entity.extract();
 
         if( entity == nullptr )
         {
@@ -621,14 +613,14 @@ namespace Menge
 		return embedded;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::hasModuleFunction( PyObject * _module, const char * _name )
+	bool ScriptEngine::hasModuleFunction( const pybind::object & _module, const char * _name )
 	{
-		return pybind::has_attr( _module, _name );
+		return _module.has_attr( _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptEngine::getModuleFunction( PyObject * _module, const char * _name )
+	pybind::object ScriptEngine::getModuleFunction( const pybind::object & _module, const char * _name )
 	{
-		return pybind::get_attr( _module, _name );
+		return _module.get_attr( _name );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::handleException()

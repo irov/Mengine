@@ -456,7 +456,7 @@ namespace Menge
 					unit->update( iterate_timing, layer_translate_position );
 				}
 
-				if( m_bounds_cb.valid() == false )
+				if( m_bounds_cb.is_invalid() == false )
 				{
 					TVectorBurritoUnit::iterator it_erase = std::remove_if( layer.units.begin(), layer.units.end(), FBurritoUnitBounds( m_bounds_min, m_bounds_max, m_bounds_cb ) );
 					layer.units.erase( it_erase, layer.units.end() );

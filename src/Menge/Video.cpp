@@ -35,7 +35,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_setEventListener( PyObject * _listener )
+	void Video::_setEventListener( const pybind::dict & _listener )
 	{
 		Node::_setEventListener( _listener );
 

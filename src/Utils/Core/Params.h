@@ -1,5 +1,6 @@
 #	pragma once
 
+#	include "Core/String.h"
 #	include "Core/ConstString.h"
 
 #	include <stdex/stl_map.h>

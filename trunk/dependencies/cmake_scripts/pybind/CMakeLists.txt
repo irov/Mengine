@@ -23,6 +23,7 @@ ${SOURCE_DIR}/src/type_cast.cpp
 ${SOURCE_DIR}/src/stl_type_cast.cpp
 ${SOURCE_DIR}/src/pickle.cpp
 ${SOURCE_DIR}/src/debug.cpp
+${SOURCE_DIR}/src/logger.cpp
 )
 
 if(NOT MSVC)

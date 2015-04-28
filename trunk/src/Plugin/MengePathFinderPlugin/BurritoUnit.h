@@ -33,7 +33,8 @@ namespace Menge
 		const mt::vec3f & getVelocity() const;
 
 	public:
-		void update( float _timing, const mt::vec3f & _translate );
+		void update( float _timing, mt::vec3f & _translate );
+		void translate( const mt::vec3f & _translate );
 
 	public:
 		bool check_collision( float _timing, const mt::vec3f & _burritoPosition, float _burritoRadius, const mt::vec3f & _burritoVelocity, float & _collisionTiming ) const;

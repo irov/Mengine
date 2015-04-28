@@ -39,8 +39,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	struct BurritoUnitBound
 	{
-		mt::vec3f min;
-		mt::vec3f max;
+		float value;
+		bool less;
 
 		pybind::object cb;
 	};
@@ -58,7 +58,7 @@ namespace Menge
 		void createGround( float _x, float _y, float _z, float _d, const pybind::object & _cb );
 
 	public:
-		void addUnitBounds( const mt::vec3f & _min, const mt::vec3f & _max, const pybind::object & _cb );
+		void addUnitBounds( float _value, bool _less, const pybind::object & _cb );
 
 	public:
 		void createLayer( const ConstString & _layerName, float _parallax, const mt::vec3f & _bounds, const pybind::object & _cb );

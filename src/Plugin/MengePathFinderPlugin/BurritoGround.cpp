@@ -24,7 +24,7 @@ namespace Menge
 		m_plane.d += _translate.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BurritoGround::check_collision( float _timing, const mt::vec3f & _position, float _radius, const mt::vec3f & _velocity, float & _collisionTiming, mt::vec3f & _newVelocity ) const
+	bool BurritoGround::check_collision( float _timing, const mt::vec3f & _position, float _radius, const mt::vec3f & _velocity, float & _collisionTiming ) const
 	{
 		float ccd_timing;
 		if( mt::ccd_sphere_plane( _position, _radius, _velocity, m_plane, ccd_timing ) == false )
@@ -39,7 +39,7 @@ namespace Menge
 
 		_collisionTiming = ccd_timing;
 		
-		_newVelocity = m_cb( _velocity );
+		m_cb( _velocity );
 
 		return true;
 	}

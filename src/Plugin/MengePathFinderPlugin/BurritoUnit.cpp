@@ -74,7 +74,7 @@ namespace Menge
 		return m_velocity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BurritoUnit::check_collision( float _timing, const mt::vec3f & _burritoPosition, float _burritoRadius, const mt::vec3f & _burritoVelocity, float & _collisionTiming, mt::vec3f & _newVelocity ) const
+	bool BurritoUnit::check_collision( float _timing, const mt::vec3f & _burritoPosition, float _burritoRadius, const mt::vec3f & _burritoVelocity, float & _collisionTiming ) const
 	{ 
 		if( m_dead == true )
 		{
@@ -100,19 +100,7 @@ namespace Menge
 
 		_collisionTiming = _timing - ccd_timing;
 		
-		pybind::tuple py_result = m_cb( m_node, _burritoVelocity );
-
-		_newVelocity = py_result[0];
-		uint32_t flag = py_result[1];
-
-		if( flag == 1 )
-		{			
-			m_dead = true;
-		}
-		else if( flag == 2 )
-		{
-			m_collide = false;
-		}
+		m_cb();
 
 		return true;			 
 	}

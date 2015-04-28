@@ -60,6 +60,7 @@ namespace Menge
 		void removeAllVelocityEvents();
 
 	public:
+		Node * getNode() const;
 		const mt::vec3f & getPosition() const;
 		const mt::vec3f & getOffset() const;
 		float getRadius() const;

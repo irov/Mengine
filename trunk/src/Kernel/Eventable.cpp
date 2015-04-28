@@ -22,7 +22,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Eventable::registerEvent( EEventName _event, const char * _method, const pybind::dict & _dict, bool * _exist )
 	{
-		if( _dict.empty() == true )
+		if( _dict.is_invalid() == true )
 		{
 			this->removeEvent_( _event );
 

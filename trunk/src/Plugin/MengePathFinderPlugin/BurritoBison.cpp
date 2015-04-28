@@ -99,6 +99,11 @@ namespace Menge
 		m_impulses.push_back( impulse );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Node * BurritoBison::getNode() const
+	{ 
+		return m_node;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const mt::vec3f & BurritoBison::getPosition() const
 	{
 		return m_position;

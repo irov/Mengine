@@ -40,6 +40,7 @@ namespace Menge
 			.def( "addForce", &BurritoBison::addForce )
 			.def( "removeForce", &BurritoBison::removeForce )
 			.def( "addImpulse", &BurritoBison::addImpulse )			
+			.def( "getNode", &BurritoBison::getNode )
 			.def( "getPosition", &BurritoBison::getPosition )
 			.def( "getOffset", &BurritoBison::getOffset )
 			.def( "getRadius", &BurritoBison::getRadius )
@@ -50,6 +51,7 @@ namespace Menge
 			;
 
 		pybind::interface_<BurritoUnit>( "BurritoUnit" )
+			.def( "getNode", &BurritoUnit::getNode )
 			.def( "getPosition", &BurritoUnit::getPosition )
 			.def( "setVelocity", &BurritoUnit::setVelocity )
 			.def( "getVelocity", &BurritoUnit::getVelocity )

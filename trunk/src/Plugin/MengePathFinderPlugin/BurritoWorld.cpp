@@ -52,6 +52,18 @@ namespace Menge
 			FBurritoUnitRemove & operator = (const FBurritoUnitRemove & _name);
 		};
 		//////////////////////////////////////////////////////////////////////////
+		class FBurritoUnitDead
+		{
+		public:
+			bool operator()( BurritoUnit * _unit ) const
+			{
+				return _unit->isDead();
+			}
+
+		private:
+			FBurritoUnitDead & operator = (const FBurritoUnitRemove & _name);
+		};
+		//////////////////////////////////////////////////////////////////////////
 		class FBurritoUnitBounds
 		{
 		public:
@@ -61,25 +73,23 @@ namespace Menge
 			}
 
 		public:
-			bool operator()( BurritoUnit * _unit ) const
+			void operator()( BurritoUnit * _unit ) const
 			{				
 				if( _unit->isDead() == true )
 				{
-					return true;
+					return;
 				}
 
 				const mt::vec3f & unit_pos = _unit->getPosition();
 
 				if( bound.min.x < unit_pos.x && bound.min.y < unit_pos.y && bound.max.x > unit_pos.x && bound.max.y > unit_pos.y )
 				{
-					return false;
+					return;
 				}
 
 				Node * unit_node = _unit->getNode();
 
 				bound.cb( unit_node );
-
-				return true;
 			}
 
 		protected:
@@ -323,7 +333,7 @@ namespace Menge
 
 						mt::vec3f collision_velocity = velocity * layer.parallax;
 
-						if( unit->check_collision( iterate_timing, offsetH, bison_radius, collision_velocity, collisionTiming, newVelocity ) == true )
+						if( unit->check_collision( iterate_timing, offsetH, bison_radius, collision_velocity, collisionTiming ) == true )
 						{
 							collision = true;
 
@@ -334,7 +344,7 @@ namespace Menge
 
 				if( m_ground != nullptr && collision == false )
 				{
-					if( m_ground->check_collision( iterate_timing, offsetH, bison_radius, velocity, collisionTiming, newVelocity ) == true )
+					if( m_ground->check_collision( iterate_timing, offsetH, bison_radius, velocity, collisionTiming ) == true )
 					{
 						collision = true;												
 					}
@@ -342,8 +352,6 @@ namespace Menge
 
 				if( collision == true )
 				{
-					m_bison->setVelocity( newVelocity );
-
 					next_timing = iterate_timing - collisionTiming;
 					iterate_timing = collisionTiming;
 					
@@ -461,9 +469,11 @@ namespace Menge
 				{
 					const BurritoUnitBound & bound = *it_bound;
 
-					TVectorBurritoUnit::iterator it_erase = std::remove_if( layer.units.begin(), layer.units.end(), FBurritoUnitBounds( bound ) );
-					layer.units.erase( it_erase, layer.units.end() );
+					std::for_each( layer.units.begin(), layer.units.end(), FBurritoUnitBounds( bound ) );
 				}
+				
+				TVectorBurritoUnit::iterator it_erase = std::remove_if( layer.units.begin(), layer.units.end(), FBurritoUnitDead() );
+				layer.units.erase( it_erase, layer.units.end() );
 			}
 		}
 	}

@@ -48,6 +48,14 @@ namespace Menge
 			.def( "addVelocityEvent", &BurritoBison::addVelocityEvent )
 			.def( "removeAllVelocityEvents", &BurritoBison::removeAllVelocityEvents )
 			;
+
+		pybind::interface_<BurritoUnit>( "BurritoUnit" )
+			.def( "getPosition", &BurritoUnit::getPosition )
+			.def( "setVelocity", &BurritoUnit::setVelocity )
+			.def( "getVelocity", &BurritoUnit::getVelocity )
+			.def( "setDead", &BurritoUnit::setDead )
+			.def( "isDead", &BurritoUnit::isDead )
+			;
 			
 		pybind::interface_<BurritoWorld>("BurritoWorld")
 			.def( "createBison", &BurritoWorld::createBison )

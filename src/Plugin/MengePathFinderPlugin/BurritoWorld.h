@@ -37,6 +37,14 @@ namespace Menge
 		pybind::object cb;
 	};
 	//////////////////////////////////////////////////////////////////////////
+	struct BurritoUnitBound
+	{
+		mt::vec3f min;
+		mt::vec3f max;
+
+		pybind::object cb;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class BurritoWorld		
 	{
 	public:
@@ -60,7 +68,7 @@ namespace Menge
 		void removeLayerNode( const ConstString & _layerName, Node * _node );
 
 	public:
-		bool addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb );
+		BurritoUnit * addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb );
 		void removeLayerUnit( const ConstString & _layerName, Node * _node );
 
 	public:
@@ -71,16 +79,11 @@ namespace Menge
 
 		BurritoGround * m_ground;
 
+		typedef stdex::vector<BurritoUnitBound> TVectorBurritoUnitBounds;
+		TVectorBurritoUnitBounds m_unitBounds;
+
 		typedef stdex::vector<BurritoLayer> TVectorBurritoLayer;
-		TVectorBurritoLayer m_layers;
-
-		mt::vec3f m_bounds_min;
-		mt::vec3f m_bounds_max;
-
-		mt::planef m_fixed_plane_up;
-		mt::planef m_fixed_plane_down;
-
-		pybind::object m_bounds_cb;
+		TVectorBurritoLayer m_layers;				
 
 		TVectorBurritoUnit m_units;
 	};

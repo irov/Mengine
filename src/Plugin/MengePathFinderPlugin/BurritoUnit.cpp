@@ -105,15 +105,15 @@ namespace Menge
 		return true;			 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoUnit::update( float _timing, const mt::vec3f & _translate )
+	void BurritoUnit::update( float _timing, mt::vec3f & _translate )
 	{
-		if( m_dead == true )
-		{
-			return;
-		}
-
-		m_position += m_velocity * _timing + _translate;
-				
-		m_node->setLocalPosition( m_position );
+		_translate = m_velocity * _timing;
 	}	
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoUnit::translate( const mt::vec3f & _translate )
+	{ 
+		m_position += _translate;
+
+		m_node->setLocalPosition( m_position );
+	}
 }

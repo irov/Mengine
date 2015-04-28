@@ -64,40 +64,39 @@ namespace Menge
 			FBurritoUnitDead & operator = (const FBurritoUnitRemove & _name);
 		};
 		//////////////////////////////////////////////////////////////////////////
-		class FBurritoUnitBounds
+		static void s_burritoUnitBounds( const BurritoUnitBound & _bound, BurritoUnit * _unit, const mt::vec3f & _translate )
 		{
-		public:
-			FBurritoUnitBounds( const BurritoUnitBound & _bound )
-				: bound( _bound )
+			const mt::vec3f & unit_pos = _unit->getPosition();
+
+			if( _bound.less == true )
 			{
-			}
-
-		public:
-			void operator()( BurritoUnit * _unit ) const
-			{				
-				if( _unit->isDead() == true )
+				if( unit_pos.x < _bound.value )
 				{
 					return;
 				}
 
-				const mt::vec3f & unit_pos = _unit->getPosition();
-
-				if( bound.min.x < unit_pos.x && bound.min.y < unit_pos.y && bound.max.x > unit_pos.x && bound.max.y > unit_pos.y )
+				if( unit_pos.x > _bound.value && unit_pos.x + _translate.x > _bound.value )
+				{
+					return;
+				}
+			}
+			else
+			{
+				if( unit_pos.x > _bound.value )
 				{
 					return;
 				}
 
-				Node * unit_node = _unit->getNode();
-
-				bound.cb( unit_node );
+				if( unit_pos.x < _bound.value && unit_pos.x + _translate.x < _bound.value )
+				{
+					return;
+				}
 			}
 
-		protected:
-			const BurritoUnitBound & bound;
+			Node * unit_node = _unit->getNode();
 
-		private:
-			FBurritoUnitBounds & operator = (const FBurritoUnitBounds & _name);
-		};
+			_bound.cb( unit_node );
+		}
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld::BurritoWorld()
@@ -128,11 +127,11 @@ namespace Menge
 		m_ground->initialize( p, _cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::addUnitBounds( const mt::vec3f & _min, const mt::vec3f & _max, const pybind::object & _cb )
+	void BurritoWorld::addUnitBounds( float _value, bool _less, const pybind::object & _cb )
 	{
 		BurritoUnitBound bound;
-		bound.min = _min;
-		bound.max = _max;
+		bound.value = _value;
+		bound.less = _less;
 		bound.cb = _cb;
 
 		m_unitBounds.push_back( bound );
@@ -458,18 +457,28 @@ namespace Menge
 				{
 					BurritoUnit * unit = *it_unit;
 
-					unit->update( iterate_timing, layer_translate_position );
-				}
+					if( unit->isDead() == true )
+					{
+						return;
+					}
 
-				for( TVectorBurritoUnitBounds::const_iterator
-					it_bound = m_unitBounds.begin(),
-					it_bound_end = m_unitBounds.end();
-				it_bound != it_bound_end;
-				++it_bound )
-				{
-					const BurritoUnitBound & bound = *it_bound;
+					mt::vec3f unit_translate;
+					unit->update( iterate_timing, unit_translate );
 
-					std::for_each( layer.units.begin(), layer.units.end(), FBurritoUnitBounds( bound ) );
+					unit_translate += layer_translate_position;
+
+					for( TVectorBurritoUnitBounds::const_iterator
+						it_bound = m_unitBounds.begin(),
+						it_bound_end = m_unitBounds.end();
+					it_bound != it_bound_end;
+					++it_bound )
+					{
+						const BurritoUnitBound & bound = *it_bound;
+
+						s_burritoUnitBounds( bound, unit, unit_translate );
+					}
+
+					unit->translate( unit_translate );
 				}
 				
 				TVectorBurritoUnit::iterator it_erase = std::remove_if( layer.units.begin(), layer.units.end(), FBurritoUnitDead() );

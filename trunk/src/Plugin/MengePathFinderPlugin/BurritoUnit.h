@@ -22,6 +22,9 @@ namespace Menge
 		void setDead();
 		bool isDead() const;
 
+		void setCollide( bool _value );
+		bool isCollide() const;
+
 	public:
 		void initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb );
 

@@ -41,6 +41,16 @@ namespace Menge
 		return m_dead;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BurritoUnit::setCollide( bool _value )
+	{
+		m_collide = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoUnit::isCollide() const
+	{
+		return m_collide;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void BurritoUnit::initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb )
 	{
 		m_node = _node;

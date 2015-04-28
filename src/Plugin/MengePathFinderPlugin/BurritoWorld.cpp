@@ -61,7 +61,7 @@ namespace Menge
 			}
 
 		private:
-			FBurritoUnitDead & operator = (const FBurritoUnitRemove & _name);
+			FBurritoUnitDead & operator = (const FBurritoUnitDead & _name);
 		};
 		//////////////////////////////////////////////////////////////////////////
 		static void s_burritoUnitBounds( const BurritoUnitBound & _bound, BurritoUnit * _unit, const mt::vec3f & _translate )
@@ -459,7 +459,7 @@ namespace Menge
 
 					if( unit->isDead() == true )
 					{
-						return;
+						continue;
 					}
 
 					mt::vec3f unit_translate;

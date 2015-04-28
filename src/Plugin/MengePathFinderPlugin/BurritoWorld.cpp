@@ -473,6 +473,11 @@ namespace Menge
 					it_bound != it_bound_end;
 					++it_bound )
 					{
+						if( unit->isBound() == true )
+						{
+							break;
+						}
+
 						const BurritoUnitBound & bound = *it_bound;
 
 						s_burritoUnitBounds( bound, unit, unit_translate );

@@ -25,6 +25,9 @@ namespace Menge
 		void setCollide( bool _value );
 		bool isCollide() const;
 
+		void setBound( bool _value );
+		bool isBound() const;
+
 	public:
 		void initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb );
 
@@ -50,5 +53,6 @@ namespace Menge
 
 		mutable bool m_dead;
 		mutable bool m_collide;
+		mutable bool m_bound;
 	};
 }

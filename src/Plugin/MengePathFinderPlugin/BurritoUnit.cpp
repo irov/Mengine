@@ -14,6 +14,7 @@ namespace Menge
 		, m_radius(0.f)
 		, m_dead(false)
 		, m_collide(true)
+		, m_bound(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -49,6 +50,16 @@ namespace Menge
 	bool BurritoUnit::isCollide() const
 	{
 		return m_collide;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoUnit::setBound( bool _value )
+	{
+		m_bound = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoUnit::isBound() const
+	{
+		return m_bound;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoUnit::initialize( Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb )

@@ -59,6 +59,8 @@ namespace Menge
 			.def( "isDead", &BurritoUnit::isDead )
 			.def( "setCollide", &BurritoUnit::setCollide )
 			.def( "isCollide", &BurritoUnit::isCollide )
+			.def( "setDead", &BurritoUnit::setDead )
+			.def( "isDead", &BurritoUnit::isDead )
 			;
 			
 		pybind::interface_<BurritoWorld>("BurritoWorld")

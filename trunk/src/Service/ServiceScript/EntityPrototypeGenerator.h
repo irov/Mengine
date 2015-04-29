@@ -22,10 +22,10 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const;
 
 	public:
-		bool initialize( const ConstString & _category, const ConstString & _prototype, PyObject * _generator );
+		bool initialize( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator );
 
 	public:
-		const pybind::object & preparePythonType();
+		pybind::object preparePythonType();
 
 	protected:
 		Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override;
@@ -40,7 +40,7 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 		ConstString m_category;
 		ConstString m_prototype;
-		PyObject * m_generator;
+		pybind::object m_generator;
 		pybind::object m_type;
 
 		uint32_t m_count;

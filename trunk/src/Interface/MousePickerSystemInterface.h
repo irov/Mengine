@@ -10,7 +10,7 @@ namespace Menge
 {
     class Arrow;
 	class Scene;
-    class Eventable;
+	class Scriptable;
 
 	struct PickerTrapState
 	{
@@ -33,8 +33,8 @@ namespace Menge
         virtual void onMouseLeave() = 0;
 
     public:
-		virtual PickerTrapState * getPicker() const = 0;
-        virtual PyObject * getPickerEmbed() = 0;
+		virtual PickerTrapState * propagatePickerTrapState() const = 0;
+		virtual Scriptable * propagatePickerScriptable() = 0;
     };
 
     typedef stdex::vector<MousePickerTrapInterface *> TVectorPickerTraps;

@@ -18,11 +18,13 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            PyObject * pyObj = _node->getEmbed();
+            pybind::object py_obj = _node->getEmbed();
 
-			pybind::incref( pyObj );
+			PyObject * py_obj_ptr = py_obj.ptr();
 
-            return pyObj;
+			pybind::incref( py_obj_ptr );
+
+			return py_obj_ptr;
         }
     };
 
@@ -37,12 +39,12 @@ namespace Menge
 		}
 
 	protected:
-		PyObject * wrap( Scriptable * _node ) override
+		pybind::object wrap( Scriptable * _node ) override
 		{
 #   ifdef _DEBUG
 			if( dynamic_cast<T *>( _node ) == nullptr )
             {
-                return nullptr;
+                return pybind::make_invalid_object_t();
             }
 #   endif
 
@@ -54,7 +56,7 @@ namespace Menge
 			//pybind::set_attr( py_embedded, "Menge_type", pybind::ptr(_node->getType()) );
 			//pybind::set_attr( py_embedded, "Menge_tag", pybind::ptr(_node->getTag()) );
 
-			return py_embedded;
+			return pybind::object( py_embedded );
 		}
 
 	protected:

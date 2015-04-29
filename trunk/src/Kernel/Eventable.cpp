@@ -122,7 +122,7 @@ namespace Menge
 	{		
 		if( _dict.contains( _method ) == false )
 		{
-			return pybind::ret_invalid_t();
+			return pybind::make_invalid_object_t();
 		}
 
 		pybind::object py_event = _dict[_method];
@@ -138,7 +138,7 @@ namespace Menge
 	{
 		if( _module.has_attr( _method ) == false )
 		{
-			return pybind::ret_invalid_t();
+			return pybind::make_invalid_object_t();
 		}
 
 		pybind::object py_event = _module.get_attr( _method );
@@ -158,13 +158,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const pybind::object & Eventable::getEvent( EEventName _event ) const
+	pybind::object Eventable::getEvent( EEventName _event ) const
 	{
 		TMapEvent::const_iterator it_find = m_mapEvent.find( _event );
 
 		if( it_find == m_mapEvent.end() )
 		{
-			return pybind::ret_invalid_t();
+			return pybind::make_invalid_object_t();
 		}
 
 		const pybind::object & cb = it_find->second;

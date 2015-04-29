@@ -103,7 +103,7 @@ namespace Menge
 		this->registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PickerTrapState * HotSpot::getPicker() const
+	PickerTrapState * HotSpot::propagatePickerTrapState() const
 	{
 		return m_picker;
 	}
@@ -338,10 +338,8 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * HotSpot::getPickerEmbed()
+	Scriptable * HotSpot::propagatePickerScriptable()
 	{
-		PyObject * embed = this->getEmbed();
-
-		return embed;
+		return this;
 	}
 }

@@ -231,7 +231,7 @@ namespace Menge
 		void updateChildren_( float _current, float _timing );
 		
 	protected:
-		PyObject * _embedded() override;
+		pybind::object _embedded() override;
 
 	public:
 		PyObject * setEventListener( PyObject * _args, PyObject * _kwds );

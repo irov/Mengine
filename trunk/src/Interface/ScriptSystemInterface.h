@@ -29,7 +29,7 @@ namespace Menge
 		virtual ~ScriptClassInterface(){};
 
     public:
-        virtual PyObject * wrap( Scriptable * _node ) = 0;
+		virtual pybind::object wrap( Scriptable * _node ) = 0;
 
     public:
         virtual void destroy() = 0;
@@ -55,7 +55,7 @@ namespace Menge
 
 	public:
         virtual void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper ) = 0;
-        virtual PyObject * wrap( const ConstString & _type, Scriptable * _node ) = 0;
+		virtual pybind::object wrap( const ConstString & _type, Scriptable * _node ) = 0;
 
 	public:
 		virtual bool bootstrapModules() = 0;
@@ -74,8 +74,8 @@ namespace Menge
 		virtual pybind::object getModuleFunction( const pybind::object & _module, const char * _name ) = 0;
 
 	public:
-		virtual PrototypeGeneratorInterfacePtr createEntityGenerator( const ConstString & _category, const ConstString & _prototype, PyObject * _generator ) = 0;
-		virtual const pybind::object & importEntity( const ConstString & _category, const ConstString & _prototype ) = 0;
+		virtual PrototypeGeneratorInterfacePtr createEntityGenerator( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator ) = 0;
+		virtual pybind::object importEntity( const ConstString & _category, const ConstString & _prototype ) = 0;
 
 	public:
 		virtual Entity * createEntity( const ConstString& _type, const ConstString & _prototype, const pybind::object & _generator, Eventable * _eventable ) = 0;

@@ -8,13 +8,13 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	BurritoUnit::BurritoUnit()
-		: m_node(nullptr)
-		, m_position(0.f, 0.f, 0.f)
+		: m_node( nullptr )
+		, m_position( 0.f, 0.f, 0.f )
 		, m_velocity( 0.f, 0.f, 0.f )
-		, m_radius(0.f)
-		, m_dead(false)
-		, m_collide(true)
-		, m_bound(true)
+		, m_radius( 0.f )
+		, m_dead( false )
+		, m_collide( true )
+		, m_bound( true )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

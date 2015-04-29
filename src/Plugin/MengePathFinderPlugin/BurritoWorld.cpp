@@ -473,7 +473,7 @@ namespace Menge
 					it_bound != it_bound_end;
 					++it_bound )
 					{
-						if( unit->isBound() == true )
+						if( unit->isBound() == false )
 						{
 							break;
 						}

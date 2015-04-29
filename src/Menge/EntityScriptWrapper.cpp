@@ -28,7 +28,7 @@ namespace Menge
 
     public:
         //////////////////////////////////////////////////////////////////////////
-        bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, PyObject * _module )
+        bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _module )
         {
             PrototypeGeneratorInterfacePtr generator = SCRIPT_SERVICE(m_serviceProvider)
 				->createEntityGenerator(_category, _prototype, _module);
@@ -39,21 +39,21 @@ namespace Menge
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_addEntityPrototypeFinder( const ConstString & _prototype, PyObject * _module )
+		bool s_addEntityPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
         {
             bool result = s_addPrototypeFinder( CONST_STRING(m_serviceProvider, Entity), _prototype, _module );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_addScenePrototypeFinder( const ConstString & _prototype, PyObject * _module )
+		bool s_addScenePrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
         {
             bool result = s_addPrototypeFinder( CONST_STRING(m_serviceProvider, Scene), _prototype, _module );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_addArrowPrototypeFinder( const ConstString & _prototype, PyObject * _module )
+		bool s_addArrowPrototypeFinder( const ConstString & _prototype, const pybind::object & _module )
         {
             bool result = s_addPrototypeFinder( CONST_STRING(m_serviceProvider, Arrow), _prototype, _module );
 
@@ -80,14 +80,14 @@ namespace Menge
 			return entity;
 		}
         //////////////////////////////////////////////////////////////////////////
-		const pybind::object & s_importEntity( const ConstString & _prototype )
+		pybind::object s_importEntity( const ConstString & _prototype )
         {
-			const pybind::object & py_type = SCRIPT_SERVICE( m_serviceProvider )
+			pybind::object py_type = SCRIPT_SERVICE( m_serviceProvider )
 				->importEntity( CONST_STRING(m_serviceProvider, Entity), _prototype );
 			
 			if( py_type.is_invalid() == true )
 			{
-				return pybind::ret_none_t();
+				return pybind::make_none_t();
 			}
 			
 			return py_type;
@@ -115,7 +115,7 @@ namespace Menge
         Entity * entity = NODE_SERVICE(serviceProvider)
             ->createNodeT<Entity>( CONST_STRING(serviceProvider, Entity) );
 
-		entity->setEmbed( _obj );
+		entity->setEmbed( pybind::object(_obj) );
 		//pybind::incref( _obj );
 
         return entity;
@@ -133,8 +133,7 @@ namespace Menge
         Arrow * arrow = NODE_SERVICE(serviceProvider)
             ->createNodeT<Arrow>( CONST_STRING(serviceProvider, Arrow) );
 
-		arrow->setEmbed( _obj );
-		//pybind::incref( _obj );
+		arrow->setEmbed( pybind::object(_obj) );
 
         return arrow;
     }
@@ -151,8 +150,7 @@ namespace Menge
         Scene * scene = NODE_SERVICE(serviceProvider)
             ->createNodeT<Scene>( CONST_STRING(serviceProvider, Scene) );
 
-		scene->setEmbed( _obj );
-		//pybind::incref( _obj );
+		scene->setEmbed( pybind::object( _obj ) );
 
         return scene;
     }

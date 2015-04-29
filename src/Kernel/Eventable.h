@@ -31,7 +31,7 @@ namespace Menge
 		bool registerEvent( EEventName _event, const char * _method, const pybind::dict & _dict, bool * _exist = nullptr );
 		bool registerEventMethod( EEventName _event, const char * _method, const pybind::object & _module, bool * _exist = nullptr );
 
-		const pybind::object & getEvent( EEventName _event ) const;
+		pybind::object getEvent( EEventName _event ) const;
 		bool hasEvent( EEventName _event ) const;
 
 	protected:

@@ -93,7 +93,7 @@ namespace Menge
 					return;
 				}
 
-				PickerTrapState * trapState = trap->getPicker();
+				PickerTrapState * trapState = trap->propagatePickerTrapState();
 
 				if( trapState == nullptr )
 				{

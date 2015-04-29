@@ -434,7 +434,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return pybind::ret_invalid_t();
+			return pybind::make_invalid_object_t();
 		}
 
 		if( exist == false )
@@ -443,7 +443,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return pybind::ret_invalid_t();
+			return pybind::make_invalid_object_t();
 		}
 
 		if( module == nullptr )
@@ -452,7 +452,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return pybind::ret_invalid_t();
+			return pybind::make_invalid_object_t();
 		}
 
 		return pybind::object(module);
@@ -503,7 +503,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	PrototypeGeneratorInterfacePtr ScriptEngine::createEntityGenerator( const ConstString & _category, const ConstString & _prototype, PyObject * _generator )
+	PrototypeGeneratorInterfacePtr ScriptEngine::createEntityGenerator( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
 	{
 		EntityPrototypeGeneratorPtr generator =
 			m_factoryEntityPrototypeGenerator.createObjectT();
@@ -518,7 +518,7 @@ namespace Menge
 		return generator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const pybind::object & ScriptEngine::importEntity( const ConstString & _category, const ConstString & _prototype )
+	pybind::object ScriptEngine::importEntity( const ConstString & _category, const ConstString & _prototype )
 	{
 		PrototypeGeneratorInterfacePtr generator;
 		if( PROTOTYPE_SERVICE(m_serviceProvider)
@@ -529,7 +529,7 @@ namespace Menge
 				, _prototype.c_str()
 				);
 
-			return pybind::ret_none_t();
+			return pybind::make_none_t();
 		}
 
 #	ifdef _DEBUG
@@ -540,14 +540,14 @@ namespace Menge
 				, _prototype.c_str()
 				);
 
-			return pybind::ret_none_t();
+			return pybind::make_none_t();
 		}
 #	endif
 
 		EntityPrototypeGeneratorPtr entityGenerator = 
 			stdex::intrusive_static_cast<EntityPrototypeGeneratorPtr>(generator);
 
-		const pybind::object & py_type = entityGenerator->preparePythonType();
+		pybind::object py_type = entityGenerator->preparePythonType();
 
 		return py_type;
 	}
@@ -605,7 +605,7 @@ namespace Menge
 		m_scriptWrapper.insert( _type, _wrapper );
 	}
 	//////////////////////////////////////////////////////////////////////////|
-	PyObject * ScriptEngine::wrap( const ConstString & _type, Scriptable * _scriptable )
+	pybind::object ScriptEngine::wrap( const ConstString & _type, Scriptable * _scriptable )
 	{
 		ScriptClassInterface * scriptClass = nullptr;
 		if( m_scriptWrapper.has( _type, &scriptClass ) == false )
@@ -614,12 +614,12 @@ namespace Menge
                 , _type.c_str()
                 );
 
-			return nullptr;
+			return pybind::make_invalid_object_t();
 		}        
 
-		PyObject * embedded = scriptClass->wrap( _scriptable );
+		pybind::object py_embedded = scriptClass->wrap( _scriptable );
 
-		return embedded;
+		return py_embedded;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::hasModuleFunction( const pybind::object & _module, const char * _name )

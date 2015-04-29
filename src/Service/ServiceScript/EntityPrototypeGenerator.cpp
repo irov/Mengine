@@ -9,14 +9,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EntityPrototypeGenerator::EntityPrototypeGenerator()
 		: m_serviceProvider(nullptr)
-		, m_generator(nullptr)
 		, m_count(0)
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	EntityPrototypeGenerator::~EntityPrototypeGenerator()
 	{
-		pybind::decref( m_generator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void EntityPrototypeGenerator::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -29,9 +27,9 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool EntityPrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype, PyObject * _generator )
+	bool EntityPrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
 	{
-		if( pybind::is_callable(_generator) == false )
+		if( _generator.is_callable() == false )
 		{
 			return false;
 		}
@@ -40,19 +38,18 @@ namespace Menge
 		m_prototype = _prototype;
 
 		m_generator = _generator;
-		pybind::incref( m_generator );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const pybind::object & EntityPrototypeGenerator::preparePythonType()
+	pybind::object EntityPrototypeGenerator::preparePythonType()
 	{
 		if( m_type.is_invalid() == false )
 		{
 			return m_type;
 		}
 				
-		pybind::object py_type = pybind::ask_t( m_generator, m_prototype );
+		pybind::object py_type = m_generator( m_prototype );
 
 		if( py_type.is_invalid() == true || py_type.is_none() == true )
 		{
@@ -61,7 +58,7 @@ namespace Menge
 				, m_prototype.c_str()
 				);
 
-			return pybind::ret_invalid_t();
+			return pybind::make_invalid_object_t();
 		}
 
 		PyObject * py_type_ptr = py_type.ptr();
@@ -72,7 +69,7 @@ namespace Menge
 				, m_prototype.c_str()
 				);
 
-			return pybind::ret_invalid_t();
+			return pybind::make_invalid_object_t();
 		}
 
 		this->registerEventMethod( EVENT_CREATE, "onCreate", py_type );

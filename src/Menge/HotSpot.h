@@ -37,9 +37,6 @@ namespace Menge
 	public:
 		void setDefaultHandle( bool _handle );
 		bool getDefaultHandle() const;
-
-	public:
-		PickerTrapState * getPicker() const override;
 		    
 	public:
 		virtual bool testPoint( const mt::vec2f & _point ) const = 0;
@@ -65,7 +62,8 @@ namespace Menge
 		bool pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, Arrow * _arrow ) override;
 		
 	protected:
-		PyObject * getPickerEmbed() override;
+		PickerTrapState * propagatePickerTrapState() const override;
+		Scriptable * propagatePickerScriptable() override;
 
 	protected:
 		bool onMouseEnter( const mt::vec2f & _point ) override;

@@ -1019,11 +1019,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Node::_embedded()
+	pybind::object Node::_embedded()
 	{ 
         const ConstString & type = this->getType();
 
-		PyObject * embedding = SCRIPT_SERVICE(m_serviceProvider)
+		pybind::object embedding = SCRIPT_SERVICE(m_serviceProvider)
 			->wrap( type, this );
 
 		return embedding;

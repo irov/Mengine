@@ -2554,7 +2554,7 @@ namespace Menge
 					, resourceMovieName.c_str()
 					);
 
-				return pybind::ret_none_t();
+				return pybind::make_none_t();
 			}
 
 			pybind::list py_list;
@@ -2770,7 +2770,7 @@ namespace Menge
             return exist;
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_pickHotspot( const mt::vec2f & _point )
+		pybind::list s_pickHotspot( const mt::vec2f & _point )
         {           
             MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getMousePickerSystem();
@@ -2778,7 +2778,7 @@ namespace Menge
             TVectorPickerTraps traps;
             mousePickerSystem->pickTrap( _point, traps );
 
-            PyObject * pyret = pybind::list_new( 0 );
+            pybind::list pyret;
 
             bool onFocus = APPLICATION_SERVICE(m_serviceProvider)
                 ->isFocus();
@@ -2796,9 +2796,9 @@ namespace Menge
             {
                 MousePickerTrapInterface * mousePickerTrap = (*it);
 
-                PyObject * py_embedding = mousePickerTrap->getPickerEmbed();
+				Scriptable * scriptable = mousePickerTrap->propagatePickerScriptable();
 
-                pybind::list_appenditem( pyret, py_embedding );
+				pyret.append( scriptable );
             }
 
             return pyret;

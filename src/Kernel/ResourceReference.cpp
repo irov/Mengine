@@ -156,11 +156,11 @@ namespace Menge
 #	endif
 	}
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ResourceReference::_embedded()
+	pybind::object ResourceReference::_embedded()
     { 
         const ConstString & type = this->getType();
 
-        PyObject * embedding = SCRIPT_SERVICE(m_serviceProvider)
+		pybind::object embedding = SCRIPT_SERVICE( m_serviceProvider )
             ->wrap( type, this );
 
         return embedding;

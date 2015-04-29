@@ -58,8 +58,8 @@ namespace Menge
 		bool initializeModules() override;
 
 	public:
-		PrototypeGeneratorInterfacePtr createEntityGenerator( const ConstString & _category, const ConstString & _prototype, PyObject * _generator ) override;
-		const pybind::object & importEntity( const ConstString & _category, const ConstString & _prototype ) override;
+		PrototypeGeneratorInterfacePtr createEntityGenerator( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator ) override;
+		pybind::object importEntity( const ConstString & _category, const ConstString & _prototype ) override;
 
 	public:
 		Entity * createEntity( const ConstString& _type, const ConstString & _prototype, const pybind::object & _generator, Eventable * _eventable ) override;
@@ -69,7 +69,7 @@ namespace Menge
 
 	public:
 		void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper ) override;
-		PyObject * wrap( const ConstString & _type, Scriptable * _node ) override;
+		pybind::object wrap( const ConstString & _type, Scriptable * _node ) override;
 		
 	public:
 		bool hasModuleFunction( const pybind::object & _module, const char * _name ) override;

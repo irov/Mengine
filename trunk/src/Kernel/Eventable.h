@@ -51,7 +51,7 @@ namespace Menge
 	class EventableCallOperator
 	{
 	public:
-		EventableCallOperator::EventableCallOperator( ServiceProviderInterface * _serviceProvider, EEventName _event, const pybind::object & _pyevent )
+		EventableCallOperator( ServiceProviderInterface * _serviceProvider, EEventName _event, const pybind::object & _pyevent )
 			: m_serviceProvider( _serviceProvider )
 			, m_event( _event )
 			, m_pyevent( _pyevent )

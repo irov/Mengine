@@ -6,6 +6,7 @@ SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../stdex )
 
 # OUR SOURCES
 set( sources
+${SOURCE_DIR}/src/memorycopy.cpp
 ${SOURCE_DIR}/src/allocator.cpp
 ${SOURCE_DIR}/src/exception.cpp
 ${SOURCE_DIR}/src/memory_cache.cpp

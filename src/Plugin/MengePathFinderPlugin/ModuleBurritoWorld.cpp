@@ -15,6 +15,29 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		//////////////////////////////////////////////////////////////////////////
+		class FBurritoWorldDead
+		{
+		public:
+			bool operator()( BurritoWorld * _world ) const
+			{
+				if( _world->isDead() == false )
+				{
+					return false;
+				}
+
+				delete _world;
+
+				return true;
+			}
+
+		private:
+			FBurritoWorldDead & operator = (const FBurritoWorldDead & _name);
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
 	ModuleBurritoWorld::ModuleBurritoWorld()
 		: m_serviceProvider(nullptr)
 	{
@@ -98,28 +121,21 @@ namespace Menge
 	{
 		BurritoWorld * world = new BurritoWorld;
 
-		m_worlds.push_back( world );
+		m_worldsAdd.push_back( world );
 
 		return world;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleBurritoWorld::removeBurritoWorld( BurritoWorld * _world )
 	{
-		TVectorBurritoWorld::iterator it_erase = std::find( m_worlds.begin(), m_worlds.end(), _world );
-
-		if( it_erase == m_worlds.end() )
-		{
-			return;
-		}
-
-		*it_erase = m_worlds.back();
-		m_worlds.pop_back();
-
-		delete _world;
+		_world->setDead();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleBurritoWorld::update( float _time, float _timing )
 	{
+		m_worlds.insert( m_worlds.end(), m_worldsAdd.begin(), m_worldsAdd.end() );
+		m_worldsAdd.clear();
+
 		for( TVectorBurritoWorld::iterator 
 			it = m_worlds.begin(),
 			it_end = m_worlds.end();
@@ -130,6 +146,9 @@ namespace Menge
 
 			world->update( _time, _timing );
 		}
+
+		TVectorBurritoWorld::iterator it_erase = std::remove_if( m_worlds.begin(), m_worlds.end(), FBurritoWorldDead() );
+		m_worlds.erase( it_erase, m_worlds.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleBurritoWorld::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )

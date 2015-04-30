@@ -57,7 +57,14 @@ namespace Menge
 		public:
 			bool operator()( BurritoUnit * _unit ) const
 			{
-				return _unit->isDead();
+				if( _unit->isDead() == false )
+				{
+					return false;
+				}
+
+				delete _unit;
+
+				return true;
 			}
 
 		private:
@@ -100,13 +107,24 @@ namespace Menge
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld::BurritoWorld()
-		: m_bison(nullptr)		
+		: m_bison(nullptr)
+		, m_dead(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld::~BurritoWorld()
 	{
 		delete m_bison;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoWorld::setDead()
+	{
+		m_dead = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoWorld::isDead() const
+	{ 
+		return m_dead;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoBison * BurritoWorld::createBison( Node * _node, const mt::vec3f & _offset, float _bisonY, float _radius )
@@ -174,6 +192,7 @@ namespace Menge
 			BurritoNode * node = new BurritoNode;
 
 			node->node = _node;
+			node->dead = false;
 
 			layer.nodesAdd.push_back( node );
 			//layer.nodes.push_back( node );
@@ -198,12 +217,28 @@ namespace Menge
 			{
 				continue;
 			}
+
+			TVectorBurritoNode::iterator it_add_erase = std::find_if( layer.nodesAdd.begin(), layer.nodesAdd.end(), FBurritoNodeRemove( _node ) );
+
+			if( it_add_erase != layer.nodesAdd.end() )
+			{
+				delete *it_add_erase;
+
+				layer.nodesAdd.erase( it_add_erase );
+
+				break;
+			}
 			
 			TVectorBurritoNode::iterator it_erase = std::find_if( layer.nodes.begin(), layer.nodes.end(), FBurritoNodeRemove(_node) );
 
-			delete *it_erase;
+			if( it_erase == layer.nodes.end() )
+			{
+				printf( "BUG!\n" );
 
-			layer.nodes.erase( it_erase );
+				break;
+			}
+
+			(*it_erase)->dead = true;
 
 			break;
 		}
@@ -255,13 +290,19 @@ namespace Menge
 				continue;
 			}
 
-			TVectorBurritoUnit::iterator it_erase = std::find_if( layer.units.begin(), layer.units.end(), FBurritoUnitRemove( _node ) );
+			TVectorBurritoUnit::iterator it_add_erase = std::find_if( layer.unitsAdd.begin(), layer.unitsAdd.end(), FBurritoUnitRemove( _node ) );
 
-			if( it_erase == layer.units.end() )
+			if( it_add_erase != layer.unitsAdd.end() )
 			{
-				continue;
+				(*it_add_erase)->setDead();
+
+				layer.unitsAdd.erase( it_add_erase );
+
+				break;
 			}
 
+			TVectorBurritoUnit::iterator it_erase = std::find_if( layer.units.begin(), layer.units.end(), FBurritoUnitRemove( _node ) );
+			
 			(*it_erase)->setDead();
 			
 			break;

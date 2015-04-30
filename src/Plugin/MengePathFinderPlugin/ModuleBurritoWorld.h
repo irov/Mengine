@@ -38,5 +38,6 @@ namespace Menge
 
 		typedef stdex::vector<BurritoWorld *> TVectorBurritoWorld;
 		TVectorBurritoWorld m_worlds;
+		TVectorBurritoWorld m_worldsAdd;
 	};
 }

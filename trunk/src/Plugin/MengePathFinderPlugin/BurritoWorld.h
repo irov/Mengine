@@ -16,6 +16,8 @@ namespace Menge
 	struct BurritoNode
 	{
 		Node * node;
+
+		bool dead;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<BurritoNode *> TVectorBurritoNode;
@@ -52,6 +54,10 @@ namespace Menge
 		~BurritoWorld();
 
 	public:
+		void setDead();
+		bool isDead() const;
+
+	public:
 		BurritoBison * createBison( Node * _node, const mt::vec3f & _offset, float _bisonY, float _radius );
 
 	public:
@@ -86,5 +92,7 @@ namespace Menge
 		TVectorBurritoLayer m_layers;				
 
 		TVectorBurritoUnit m_units;
+
+		bool m_dead;
 	};
 }

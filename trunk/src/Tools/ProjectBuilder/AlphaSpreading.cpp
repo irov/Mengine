@@ -71,101 +71,100 @@ namespace Menge
 
         const ImageCodecDataInfo* decode_dataInfo = imageDecoder->getCodecDataInfo();
 
-        if( decode_dataInfo->channels != 4 )
-        {
-			return pybind::ret_none();
-        }
-        
-        ImageCodecOptions decode_options;
+		ImageCodecOptions decode_options;
 
-        decode_options.channels = decode_dataInfo->channels;
-        decode_options.pitch = decode_dataInfo->width * 4;
+		decode_options.channels = decode_dataInfo->channels;
+		decode_options.pitch = decode_dataInfo->width * decode_dataInfo->channels;
 
-        imageDecoder->setOptions( &decode_options );
+		imageDecoder->setOptions( &decode_options );
 
-        size_t width = decode_dataInfo->width;
-        size_t height = decode_dataInfo->height;
+		uint32_t width = decode_dataInfo->width;
+		uint32_t height = decode_dataInfo->height;
+		uint32_t channels = decode_dataInfo->channels;
 
-        unsigned int bufferSize = width * height * 4;
+		unsigned int bufferSize = width * height * channels;
 
-        unsigned char * textureBuffer = new unsigned char [bufferSize];
+		unsigned char * textureBuffer = new unsigned char[bufferSize];
 
-        if( imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
-        {
-            LOGGER_ERROR(serviceProvider)("spreadingPngAlpha invalid decode file '%s'"
-                , inputFileName.c_str()
-                );
+		if( imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
+		{
+			LOGGER_ERROR( serviceProvider )("spreadingPngAlpha invalid decode file '%s'"
+				, inputFileName.c_str()
+				);
 
-            return nullptr;
-        }
+			return nullptr;
+		}
 
-        for( int i = 0; i != height; ++i)
-        {
-            for( int j = 0; j != width; ++j )
-            {
-                size_t index =  j + i * width;
-                unsigned char alpha = textureBuffer[ index * 4 + 3 ];
+		if( channels == 4 )
+		{
+			for( int i = 0; i != height; ++i )
+			{
+				for( int j = 0; j != width; ++j )
+				{
+					size_t index = j + i * width;
+					unsigned char alpha = textureBuffer[index * 4 + 3];
 
-                if( alpha != 0 )
-                {
-                    continue;
-                }
+					if( alpha != 0 )
+					{
+						continue;
+					}
 
-                size_t count = 0;
+					size_t count = 0;
 
-                float r = 0;
-                float g = 0;
-                float b = 0;
+					float r = 0;
+					float g = 0;
+					float b = 0;
 
-                int di [] = {-1, 0, 1, 1, 1, 0, -1, -1};
-                int dj [] = {1, 1, 1, 0, -1, -1, -1, 0};
+					int di[] = {-1, 0, 1, 1, 1, 0, -1, -1};
+					int dj[] = {1, 1, 1, 0, -1, -1, -1, 0};
 
-                for( int d = 0; d != 8; ++d )
-                {
-                    int ni = i + di[d];
-                    int nj = j + dj[d];
+					for( int d = 0; d != 8; ++d )
+					{
+						int ni = i + di[d];
+						int nj = j + dj[d];
 
-                    if( ni < 0 )
-                    {
-                        continue;
-                    }
+						if( ni < 0 )
+						{
+							continue;
+						}
 
-                    if( ni >= height )
-                    {
-                        continue;
-                    }
+						if( ni >= height )
+						{
+							continue;
+						}
 
-                    if( nj < 0 )
-                    {
-                        continue;
-                    }
+						if( nj < 0 )
+						{
+							continue;
+						}
 
-                    if( nj >= width )
-                    {
-                        continue;
-                    }
+						if( nj >= width )
+						{
+							continue;
+						}
 
-                    size_t index_kl =  nj + ni * width;
-                    unsigned char alpha_kl = textureBuffer[ index_kl * 4 + 3 ];
-                    
-                    if( alpha_kl != 0 )
-                    {
-                        r += textureBuffer[ index_kl * 4 + 0 ];
-                        g += textureBuffer[ index_kl * 4 + 1 ];
-                        b += textureBuffer[ index_kl * 4 + 2 ];
+						size_t index_kl = nj + ni * width;
+						unsigned char alpha_kl = textureBuffer[index_kl * 4 + 3];
 
-                        ++count;
-                    }
-                }
+						if( alpha_kl != 0 )
+						{
+							r += textureBuffer[index_kl * 4 + 0];
+							g += textureBuffer[index_kl * 4 + 1];
+							b += textureBuffer[index_kl * 4 + 2];
 
-                if( count != 0 )
-                {
-                    textureBuffer[index * 4 + 0] = unsigned char(r / count);
-                    textureBuffer[index * 4 + 1] = unsigned char(g / count);
-                    textureBuffer[index * 4 + 2] = unsigned char(b / count);
-                }
-            }
-        }
+							++count;
+						}
+					}
+
+					if( count != 0 )
+					{
+						textureBuffer[index * 4 + 0] = unsigned char( r / count );
+						textureBuffer[index * 4 + 1] = unsigned char( g / count );
+						textureBuffer[index * 4 + 2] = unsigned char( b / count );
+					}
+				}
+			}
+		}
 
         OutputStreamInterfacePtr output_stream = FILE_SERVICE(serviceProvider)
 			->openOutputFile( ConstString::none(), outputFileName );
@@ -208,16 +207,16 @@ namespace Menge
 
         ImageCodecOptions encode_options;		
 
-        encode_options.pitch = width * 4;
-        encode_options.channels = 4;
+		encode_options.pitch = width * channels;
+		encode_options.channels = channels;
 
         imageEncoder->setOptions( &encode_options );
 
         ImageCodecDataInfo encode_dataInfo;
-        //dataInfo.format = _image->getHWPixelFormat();
-        encode_dataInfo.width = width;
+
+		encode_dataInfo.width = width;
         encode_dataInfo.height = height;
-        encode_dataInfo.channels = 4;
+		encode_dataInfo.channels = channels;
         encode_dataInfo.depth = 1;
         encode_dataInfo.mipmaps = 1;
 

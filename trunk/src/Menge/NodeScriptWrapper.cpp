@@ -3448,7 +3448,7 @@ namespace Menge
 
                 pybind::incref( py_event );
 
-                PyObject * py_result = pybind::ask_t( py_event, _touchId, _point.x, _point.y, _x, _y );
+				PyObject * py_result = pybind::call_t( py_event, _touchId, _point.x, _point.y, _x, _y );
 
                 if( pybind::is_none(py_result) == false )
                 {
@@ -3556,7 +3556,7 @@ namespace Menge
 
                 pybind::incref( py_handler );
 
-				PyObject * py_result = pybind::ask_t( py_handler, _touchId, _button, _isDown );
+				PyObject * py_result = pybind::call_t( py_handler, _touchId, _button, _isDown );
 
                 if( pybind::is_none( py_result ) == false )
                 {
@@ -3710,7 +3710,7 @@ namespace Menge
 
                 pybind::incref( py_handler );
 
-				PyObject * py_result = pybind::ask_t( py_handler, _touchId, _button, _isDown );
+				PyObject * py_result = pybind::call_t( py_handler, _touchId, _button, _isDown );
 
                 if( pybind::is_none(py_result) == false )
                 {
@@ -3839,7 +3839,7 @@ namespace Menge
 
 				pybind::incref( py_handler );
 
-				PyObject * py_result = pybind::ask_t( py_handler, _touchId, _button, _isDown );
+				PyObject * py_result = pybind::call_t( py_handler, _touchId, _button, _isDown );
 
 				if( pybind::is_none(py_result) == false )
 				{
@@ -3935,17 +3935,14 @@ namespace Menge
 			: public GlobalKeyHandler
 		{
 		public:
-			PyGlobalKeyHandler( ServiceProviderInterface * _serviceProvider, PyObject * _cb )
+			PyGlobalKeyHandler( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb )
 				: m_serviceProvider(_serviceProvider)
 				, m_cb(_cb)
 			{
-				pybind::incref( m_cb );
 			}
 
 			~PyGlobalKeyHandler()
 			{
-				pybind::decref( m_cb );
-				m_cb = nullptr;
 			}
 
 		protected:
@@ -3954,31 +3951,24 @@ namespace Menge
 				(void)_point;
 				(void)_repeating;
 
-				PyObject * py_handler = m_cb;
+				pybind::object py_result = m_cb( _key, _char, _isDown );
 
-				pybind::incref( py_handler );
-
-				PyObject * py_result = pybind::ask_t( py_handler, _key, _char, _isDown );
-
-				if( pybind::is_none( py_result ) == false )
+				if( py_result.is_none() == false )
 				{
 					LOGGER_ERROR(m_serviceProvider)("handleGlobalKeyEvent handlersMouseButton %s return value %s not None"
-						, pybind::object_repr( py_handler )                        
-						, pybind::object_repr( py_result )
+						, m_cb.repr()
+						, py_result.repr()
 						);
 				}
-
-				pybind::decref( py_result );
-				pybind::decref( py_handler );
-				//Empty
 			}
 
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
-			PyObject * m_cb;
+
+			pybind::object m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_addKeyHandler( PyObject * _cb )
+		uint32_t s_addKeyHandler( const pybind::object & _cb )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();

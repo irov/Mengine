@@ -62,8 +62,6 @@ namespace Menge
 					return false;
 				}
 
-				delete _unit;
-
 				return true;
 			}
 
@@ -114,7 +112,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld::~BurritoWorld()
 	{
-		delete m_bison;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoWorld::setDead()
@@ -222,8 +219,6 @@ namespace Menge
 
 			if( it_add_erase != layer.nodesAdd.end() )
 			{
-				delete *it_add_erase;
-
 				layer.nodesAdd.erase( it_add_erase );
 
 				break;

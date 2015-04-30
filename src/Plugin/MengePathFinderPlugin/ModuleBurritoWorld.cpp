@@ -28,8 +28,6 @@ namespace Menge
 					return false;
 				}
 
-				delete _world;
-
 				return true;
 			}
 

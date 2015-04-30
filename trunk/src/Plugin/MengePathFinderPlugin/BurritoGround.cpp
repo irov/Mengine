@@ -32,6 +32,11 @@ namespace Menge
 			return false;
 		}
 
+		if( ccd_timing < 0.f )
+		{
+			return false;
+		}
+
 		if( ccd_timing > _timing )
 		{
 			return false;

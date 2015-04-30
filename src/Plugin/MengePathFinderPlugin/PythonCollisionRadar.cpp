@@ -61,7 +61,7 @@ namespace Menge
 			PythonCollisionObject * obj = static_cast<PythonCollisionObject *>(desc.object);
 
 			
-			if( pybind::ask_t( _filter, obj ) == false )
+			if( pybind::call_t( _filter, obj ) == false )
 			{
 				continue;
 			}
@@ -88,7 +88,7 @@ namespace Menge
 		PythonCollisionObject * py_object = static_cast<PythonCollisionObject *>(_object);
 		PyObject * py_user = py_object->getPythonUser();
 		
-		bool result = pybind::ask_t( m_pyFilter, this, py_object, py_user );
+		bool result = pybind::call_t( m_pyFilter, this, py_object, py_user );
 				
 		return result;
 	}

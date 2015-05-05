@@ -304,6 +304,34 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool BurritoWorld::addLayerBounds( const ConstString & _layerName, float _value, bool _less, const pybind::object & _cb )
+	{ 
+		for( TVectorBurritoLayer::iterator
+			it = m_layers.begin(),
+			it_end = m_layers.end();
+		it != it_end;
+		++it )
+		{
+			BurritoLayer & layer = *it;
+
+			if( layer.name != _layerName )
+			{
+				continue;
+			}
+
+			BurritoUnitBound bound;
+			bound.value = _value;
+			bound.less = _less;
+			bound.cb = _cb;
+
+			layer.unitBounds.push_back( bound );
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void BurritoWorld::update( float _time, float _timing )
 	{
 		if( m_bison == nullptr )
@@ -502,6 +530,22 @@ namespace Menge
 					unit->update( iterate_timing, unit_translate );
 
 					unit_translate += layer_translate_position;
+
+					for( TVectorBurritoUnitBounds::const_iterator
+						it_bound = layer.unitBounds.begin(),
+						it_bound_end = layer.unitBounds.end();
+					it_bound != it_bound_end;
+					++it_bound )
+					{
+						if( unit->isBound() == false )
+						{
+							break;
+						}
+
+						const BurritoUnitBound & bound = *it_bound;
+
+						s_burritoUnitBounds( bound, unit, unit_translate );
+					}
 
 					for( TVectorBurritoUnitBounds::const_iterator
 						it_bound = m_unitBounds.begin(),

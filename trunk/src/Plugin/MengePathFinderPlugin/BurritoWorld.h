@@ -22,6 +22,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<BurritoNode *> TVectorBurritoNode;
 	typedef stdex::vector<BurritoUnit *> TVectorBurritoUnit;
+	//////////////////////////////////////////////////////////////////////////
+	struct BurritoUnitBound
+	{
+		float value;
+		bool less;
+
+		pybind::object cb;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::vector<BurritoUnitBound> TVectorBurritoUnitBounds;	
 	//////////////////////////////////////////////////////////////////////////	
 	struct BurritoLayer
 	{
@@ -37,14 +47,8 @@ namespace Menge
 		mt::vec3f bounds;
 
 		pybind::object cb;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	struct BurritoUnitBound
-	{
-		float value;
-		bool less;
 
-		pybind::object cb;
+		TVectorBurritoUnitBounds unitBounds;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class BurritoWorld		
@@ -78,6 +82,9 @@ namespace Menge
 		void removeLayerUnit( const ConstString & _layerName, Node * _node );
 
 	public:
+		bool addLayerBounds( const ConstString & _layerName, float _value, bool _less, const pybind::object & _cb );
+
+	public:
 		void update( float _time, float _timing );
 
 	protected:
@@ -85,7 +92,6 @@ namespace Menge
 
 		BurritoGround * m_ground;
 
-		typedef stdex::vector<BurritoUnitBound> TVectorBurritoUnitBounds;
 		TVectorBurritoUnitBounds m_unitBounds;
 
 		typedef stdex::vector<BurritoLayer> TVectorBurritoLayer;

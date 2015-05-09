@@ -27,9 +27,11 @@ ${SOURCE_DIR}/src/logger.cpp
 )
 
 if(NOT MSVC)
-	ADD_DEFINITIONS(-D"override = /* */")
-    ADD_DEFINITIONS(-D"nullptr=0")
-    ADD_DEFINITIONS(-D"nullptr_t=void*")     
+    if(NOT EMSCRIPTEN)
+        ADD_DEFINITIONS(-D"override = /* */")
+        ADD_DEFINITIONS(-D"nullptr=0")
+        ADD_DEFINITIONS(-D"nullptr_t=void*")     
+    endif(EMSCRIPTEN)
 endif(NOT MSVC)
 
 add_definitions(-DMS_NO_COREDLL)
@@ -40,9 +42,7 @@ include_directories(${SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Python)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)
 
-IF(WIN32)
-    include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python/PC)
-ENDIF(WIN32)
+include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python/PC)
 
 add_library( ${PROJECT_NAME}_static STATIC ${sources} )
 

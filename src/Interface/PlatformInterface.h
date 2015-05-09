@@ -11,6 +11,7 @@
 #	include "Core/Params.h"
 
 #	include "Interface/ServiceInterface.h"
+#	include "Interface/InputSystemInterface.h"
 
 namespace Menge
 {
@@ -31,15 +32,13 @@ namespace Menge
     public:
         virtual uint64_t getMilliseconds() = 0;
         virtual uint64_t getMicroseconds() = 0;
-        virtual uint64_t getMillisecondsCPU() = 0;
-        virtual uint64_t getMicrosecondsCPU() = 0;
     };
 
     class ConsoleInterface 
     {
     public:
         virtual void render() = 0;
-        virtual void proccessInput( unsigned int _key, unsigned int _char, bool _isDown ) = 0;
+        virtual void proccessInput( KeyCode _key, unsigned int _char, bool _isDown ) = 0;
     };
 
     class DynamicLibraryInterface;    

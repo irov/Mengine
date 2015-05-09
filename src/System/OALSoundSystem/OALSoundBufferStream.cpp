@@ -1,11 +1,10 @@
 #	include "OALSoundBufferStream.h"
 #	include "OALSoundSystem.h"
+#	include "OALSoundError.h"
 
 #	include "Interface/SoundCodecInterface.h"
 
 #	include "Logger/Logger.h"
-
-#	include "OALError.h"
 
 #   include <malloc.h>
 

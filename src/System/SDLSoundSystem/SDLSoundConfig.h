@@ -1,0 +1,3 @@
+#	pragma once
+
+#	define MENGINE_MARMALADE_SOUND_INPUT_FREQUENCE 44100

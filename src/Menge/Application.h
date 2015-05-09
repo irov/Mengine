@@ -138,16 +138,17 @@ namespace Menge
 
 		void turnSound( bool _turn ) override;
 
-		void mouseEnter( const mt::vec2f & _point ) override;
-		void mouseLeave() override;		
+	public:
+		bool keyEvent( const InputKeyEvent & _event ) override;
 
-		bool keyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) override;
-		bool mouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) override;		
-		bool mouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
-		bool mouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
-		void mousePosition( unsigned int _touchId, const mt::vec2f & _point ) override;
+		bool mouseButtonEvent( const InputMouseButtonEvent& _event ) override;
+		bool mouseMove( const InputMouseMoveEvent& _event ) override;
+		bool mouseWheel( const InputMouseWheelEvent & _event ) override;
+		void mousePosition( const InputMousePositionEvent & _event ) override;
+		void mouseEnter( const InputMousePositionEvent & _event ) override;
+		void mouseLeave( const InputMousePositionEvent & _event ) override;
 
-
+	public:
 		void paint() override;
 
 		bool userEvent( const ConstString & _event, const TMapParams & _params ) override;

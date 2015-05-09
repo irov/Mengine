@@ -164,7 +164,7 @@ namespace Menge
 		TVectorPickerTrapStates states;
 		states.reserve(m_pickerTrapCount);
 
-		if( this->proccesTraps_( _point, states ) == false )
+		if( this->proccesTraps_( _point.x, _point.y, states ) == false )
 		{
 			return false;
 		}
@@ -238,7 +238,7 @@ namespace Menge
 		TVectorPickerTrapStates states;
 		states.reserve(m_pickerTrapCount);
 
-		this->proccesTraps_( pos, states );
+		this->proccesTraps_( pos.x, pos.y, states );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::unregTrap( PickerTrapState * _ref )
@@ -267,10 +267,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
+	bool MousePickerSystem::handleKeyEvent( const InputKeyEvent & _event )
 	{
 		m_states.clear();
-		if( this->proccesTraps_( _point, m_states ) == false )
+		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
 		{
 			return false;
 		}
@@ -290,7 +290,7 @@ namespace Menge
 				
 			MousePickerTrapInterface * trap = state->trap;
 
-			if( trap->handleKeyEvent( _point, _key, _char, _isDown, _repeating ) == false )
+			if( trap->handleKeyEvent( _event ) == false )
 			{
 				continue;
 			}
@@ -301,10 +301,10 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool MousePickerSystem::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
 	{
 		m_states.clear();
-		if( this->proccesTraps_( _point, m_states ) == false )
+		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
 		{
 			return false;
 		}
@@ -329,7 +329,7 @@ namespace Menge
 				continue;
 			}
 
-			if( _isDown == false && state->down == false )
+			if( _event.isDown == false && state->down == false )
 			{
 				continue;
 			}
@@ -340,9 +340,13 @@ namespace Menge
 			const RenderCameraInterface * camera = desc.camera;
 
 			mt::vec2f wp;
-			m_arrow->calcPointClick( camera, viewport, _point, wp );
+			m_arrow->calcPointClick( camera, viewport, mt::vec2f(_event.x, _event.y), wp );
 
-			if( trap->handleMouseButtonEvent( _touchId, wp, _button, _isDown ) == false )
+			InputMouseButtonEvent ne = _event;
+			ne.x = wp.x;
+			ne.y = wp.y;
+
+			if( trap->handleMouseButtonEvent( ne ) == false )
 			{
 				continue;
 			}
@@ -353,10 +357,10 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool MousePickerSystem::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
 	{
 		m_states.clear();
-		if( this->proccesTraps_( _point, m_states ) == false )
+		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
 		{
 			return false;
 		}
@@ -381,7 +385,7 @@ namespace Menge
 				continue;
 			}
 
-			if( _isDown == true )
+			if( _event.isDown == true )
 			{
 				state->down = true;
 			}
@@ -396,9 +400,13 @@ namespace Menge
 			const RenderCameraInterface * camera = desc.camera;
 
 			mt::vec2f wp;
-			m_arrow->calcPointClick( camera, viewport, _point, wp );
+			m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), wp );
+
+			InputMouseButtonEvent ne = _event;
+			ne.x = wp.x;
+			ne.y = wp.y;
 			
-			if( trap->handleMouseButtonEventBegin( _touchId, wp, _button, _isDown ) == false )			
+			if( trap->handleMouseButtonEventBegin( ne ) == false )
 			{
 				continue;
 			}
@@ -409,10 +417,10 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool MousePickerSystem::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
 	{
 		m_states.clear();
-		if( this->proccesTraps_( _point, m_states ) == false )
+		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
 		{
 			return false;
 		}
@@ -437,7 +445,7 @@ namespace Menge
 				continue;
 			}
 
-			if( _isDown == false )
+			if( _event.isDown == false )
 			{					
 				if( state->down == false )
 				{
@@ -455,9 +463,13 @@ namespace Menge
 			const RenderCameraInterface * camera = desc.camera;
 
 			mt::vec2f wp;
-			m_arrow->calcPointClick( camera, viewport, _point, wp );
+			m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), wp );
 
-			if( trap->handleMouseButtonEventEnd( _touchId, wp, _button, _isDown ) == false )
+			InputMouseButtonEvent ne = _event;
+			ne.x = wp.x;
+			ne.y = wp.y;
+
+			if( trap->handleMouseButtonEventEnd( ne ) == false )
 			{
 				continue;
 			}
@@ -468,10 +480,10 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y )
+	bool MousePickerSystem::handleMouseMove( const InputMouseMoveEvent & _event )
 	{
 		m_states.clear();
-		if( this->proccesTraps_( _point, m_states ) == false )
+		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
 		{
 			return false;
 		}
@@ -502,12 +514,18 @@ namespace Menge
 			const RenderCameraInterface * camera = desc.camera;
 
 			mt::vec2f wp;
-			m_arrow->calcPointClick( camera, viewport, _point, wp );
+			m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y), wp );
 
-			mt::vec2f deltha;
-			m_arrow->calcPointDeltha( camera, _point, mt::vec2f(_x, _y), deltha );
+			mt::vec2f dp;
+			m_arrow->calcPointDeltha( camera, mt::vec2f( _event.x, _event.y ), mt::vec2f( _event.dx, _event.dy ), dp );
+
+			InputMouseMoveEvent ne = _event;
+			ne.x = wp.x;
+			ne.y = wp.y;
+			ne.dx = dp.x;
+			ne.dy = dp.y;
 			
-			if( trap->handleMouseMove( _touchId, wp, deltha.x, deltha.y ) == false )
+			if( trap->handleMouseMove( ne ) == false )
 			{
 				continue;
 			}
@@ -518,10 +536,10 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
+	bool MousePickerSystem::handleMouseWheel( const InputMouseWheelEvent & _event )
 	{
 		m_states.clear();
-		if( this->proccesTraps_( _point, m_states ) == false )
+		if( this->proccesTraps_( _event.x, _event.y, m_states ) == false )
 		{
 			return false;
 		}
@@ -552,9 +570,13 @@ namespace Menge
 			const RenderCameraInterface * camera = desc.camera;
 
 			mt::vec2f wp;
-			m_arrow->calcPointClick( camera, viewport, _point, wp );
+			m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), wp );
 
-			if( trap->handleMouseWheel( _touchId, wp, _wheel ) == false )
+			InputMouseWheelEvent ne = _event;
+			ne.x = wp.x;
+			ne.y = wp.y;
+
+			if( trap->handleMouseWheel( ne ) == false )
 			{
 				continue;
 			}
@@ -565,13 +587,13 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::handleMouseEnter( const mt::vec2f & _point )
+	void MousePickerSystem::handleMouseEnter( const InputMousePositionEvent & _event )
 	{
 		m_states.clear();
-		this->proccesTraps_( _point, m_states );
+		this->proccesTraps_( _event.x, _event.y, m_states );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::handleMouseLeave()
+	void MousePickerSystem::handleMouseLeave( const InputMousePositionEvent & _event )
 	{
 		if( m_arrow == nullptr )
 		{
@@ -612,7 +634,7 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::proccesTraps_( const mt::vec2f& _point, TVectorPickerTrapStates & _states )
+	bool MousePickerSystem::proccesTraps_( float _x, float _y, TVectorPickerTrapStates & _states )
 	{
 		if( m_arrow == nullptr )
 		{
@@ -630,7 +652,7 @@ namespace Menge
 		}
 
         if( INPUT_SERVICE(m_serviceProvider)
-            ->validCursorPosition( _point ) == false )
+            ->validCursorPosition( _x, _y ) == false )
         {		
             return false;
         }
@@ -657,7 +679,7 @@ namespace Menge
 
 			const RenderViewportInterface * viewport = it->viewport;
 			const RenderCameraInterface * camera = it->camera;
-			bool picked = trap->pick( _point, viewport, camera, m_arrow );
+			bool picked = trap->pick( mt::vec2f( _x, _y ), viewport, camera, m_arrow );
 
 			if( ( handle == false || m_handleValue == false ) && m_block == false && picked == true )
 			{
@@ -665,7 +687,7 @@ namespace Menge
 				{
 					state->picked = true;
 
-					handle = trap->onMouseEnter( _point );
+					handle = trap->onMouseEnter( _x, _y );
 									
 					state->handle = handle;
 				}

@@ -183,7 +183,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::onMouseEnter( const mt::vec2f & _point )
+	bool HotSpot::onMouseEnter( float _x, float _y )
 	{
 		m_debugColor = 0xFFFF0000;
 
@@ -191,61 +191,61 @@ namespace Menge
 
 		if( m_onMouseEnterEvent == true )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_ENTER, handle )( this, _point.x, _point.y );
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_ENTER, handle )(this, _x, _y);
 		}		
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
+	bool HotSpot::handleKeyEvent( const InputKeyEvent & _event )
 	{
 		bool handle = false;
 				
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )(this, _key, _point.x, _point.y, _char, _isDown, _repeating);
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )(this, (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool HotSpot::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
 	{
 		bool handle = m_defaultHandle;
 
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )(this, _touchId, _point.x, _point.y, _button, _isDown);
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown);
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool HotSpot::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool HotSpot::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
 	{
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN )(this, _touchId, _point.x, _point.y, _button, _isDown);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown);
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool HotSpot::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
 	{		
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END )(this, _touchId, _point.x, _point.y, _button, _isDown);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown);
 
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y )
+	bool HotSpot::handleMouseMove( const InputMouseMoveEvent & _event )
 	{
 		bool handle = m_defaultHandle;
 
 		if( m_onMouseMoveEvent == true )
 		{			
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )(this, _touchId, _point.x, _point.y, _x, _y);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )(this, _event.touchId, _event.x, _event.y, _event.dx, _event.dy);
 		}
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
+	bool HotSpot::handleMouseWheel( const InputMouseWheelEvent & _event )
 	{
 		bool handle = false;
 				
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )(this, _touchId, _point.x, _point.y, _wheel);
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )(this, _event.x, _event.y, _event.wheel);
 
 		return handle;
 	}

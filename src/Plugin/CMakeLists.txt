@@ -7,29 +7,35 @@ ADD_SUBDIRECTORY( MengeOggVorbisPlugin )
 ADD_SUBDIRECTORY( MengePathFinderPlugin )
 #ADD_SUBDIRECTORY( MengeCal3dPlugin )
 
-if(WIN32)    
+if( DEFINED MENGINE_TARGET_MSVC )    
 	ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
     ADD_SUBDIRECTORY( MengeWin32FileGroupPlugin )
     #ADD_SUBDIRECTORY( FFMPEGVideoCodecPlugin )
     
-    if(MSVC)        
-        ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )        
-        #ADD_SUBDIRECTORY( MengeVideoConverterPlugin )
-        #ADD_SUBDIRECTORY( MengeSoundConverterPlugin )        
-        #ADD_SUBDIRECTORY( MengeHotspotImageConverterPlugin )
-        #ADD_SUBDIRECTORY( MengeParticleConverterPlugin )
-        #ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
-        
-        #ADD_SUBDIRECTORY( CURLHTTPSystem )
-        #ADD_SUBDIRECTORY( MengeHTTPLoggerPlugin )
-        
-        ADD_SUBDIRECTORY( MengeXlsExportPlugin )
-        ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
-        
-#        ADD_SUBDIRECTORY( ToolsHotspotImageConverterPlugin )
-#        ADD_SUBDIRECTORY( ToolsXmlCodecPlugin )
-    endif(MSVC)    
-endif(WIN32)
+    
+    ADD_SUBDIRECTORY( MengeDevelopmentConverterPlugin )        
+    #ADD_SUBDIRECTORY( MengeVideoConverterPlugin )
+    #ADD_SUBDIRECTORY( MengeSoundConverterPlugin )        
+    #ADD_SUBDIRECTORY( MengeHotspotImageConverterPlugin )
+    #ADD_SUBDIRECTORY( MengeParticleConverterPlugin )
+    #ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
+    
+    #ADD_SUBDIRECTORY( CURLHTTPSystem )
+    #ADD_SUBDIRECTORY( MengeHTTPLoggerPlugin )
+    
+    ADD_SUBDIRECTORY( MengeXlsExportPlugin )
+    ADD_SUBDIRECTORY( MengeXmlCodecPlugin )
+endif()
+
+if( DEFINED MENGINE_TARGET_MINGW )
+	ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
+    ADD_SUBDIRECTORY( MengeWin32FileGroupPlugin )
+endif()
+
+if( DEFINED MENGINE_TARGET_SDL )
+	ADD_SUBDIRECTORY( MengeVideoCodecPlugin )
+    ADD_SUBDIRECTORY( MengePosixFileGroupPlugin )    
+endif()
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

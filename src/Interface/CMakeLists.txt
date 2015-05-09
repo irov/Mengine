@@ -53,6 +53,8 @@ src
     GraveyardInterface.h
     GlobalHandleSystemInterface.h
     NotificationServiceInterface.h
+    MarmaladeLayerInterface.h
+    SDLLayerInterface.h
     
 	dummy.cpp
 )

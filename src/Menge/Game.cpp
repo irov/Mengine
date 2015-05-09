@@ -107,125 +107,125 @@ namespace Menge
         return m_player;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
+	bool Game::handleKeyEvent( const InputKeyEvent & _event )
 	{
 		bool handle = false;
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )( _key, _point.x, _point.y, _char, _isDown, _repeating );
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEY, handle )((uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
 		}
 
 		if( handle == false )
 		{
-			handle = m_player->handleKeyEvent( _point, _key, _char, _isDown, _repeating );
+			handle = m_player->handleKeyEvent( _event );
 		}	
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool Game::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
 	{
 		bool handle = false;
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )( _touchId, _point.x, _point.y, _button, pybind::get_bool(_isDown) );
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )(_event.touchId, _event.x, _event.y, _event.button, _event.isDown );
 		}
 
 		if( handle == false )
 		{
-			handle = m_player->handleMouseButtonEvent( _touchId, _point, _button, _isDown );
+			handle = m_player->handleMouseButtonEvent( _event );
 		}
                     
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool Game::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
 	{
 		bool handle = false;
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN, handle )( _touchId, _point.x, _point.y, _button, _isDown );
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN, handle )(_event.touchId, _event.x, _event.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
 		{
-			handle = m_player->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
+			handle = m_player->handleMouseButtonEventBegin( _event );
 		}	
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	bool Game::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
 	{
 		bool handle = false;
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END, handle )( _touchId, _point.x, _point.y, _button, _isDown );
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END, handle )(_event.touchId, _event.x, _event.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
 		{
-			handle = m_player->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown );
+			handle = m_player->handleMouseButtonEventEnd( _event );
 		}	
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y )
+	bool Game::handleMouseMove( const InputMouseMoveEvent & _event )
 	{
 		bool handle = false;
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )( _touchId, _point.x, _point.y, _x, _y );
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )(_event.touchId, _event.x, _event.y, _event.dx, _event.dy);
 		}
 
 		if( handle == false )
 		{
-			handle = m_player->handleMouseMove( _touchId, _point, _x, _y );
+			handle = m_player->handleMouseMove( _event );
 		}
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
+	bool Game::handleMouseWheel( const InputMouseWheelEvent & _event )
 	{
 		bool handle = false;
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )( _touchId, _point.x, _point.y, _wheel );
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )(_event.x, _event.y, _event.wheel);
 		}
 
 		if( handle == false )
 		{
-			handle = m_player->handleMouseWheel( _touchId, _point, _wheel );
+			handle = m_player->handleMouseWheel( _event );
 		}
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::mouseLeave()
+	void Game::mouseLeave( const InputMousePositionEvent & _event )
 	{		
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_LEAVE)();
 
-		m_player->onAppMouseLeave();
+		m_player->onAppMouseLeave( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::mouseEnter( const mt::vec2f & _point )
+	void Game::mouseEnter( const InputMousePositionEvent & _event )
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_ENTER)( _point.x, _point.y );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_APP_MOUSE_ENTER )(_event.x, _event.y);
 
-		m_player->onAppMouseEnter();
+		m_player->onAppMouseEnter( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::mousePosition( const mt::vec2f & _point )
+	void Game::mousePosition( const InputMousePositionEvent & _event )
 	{
-		m_player->onAppMousePosition( _point );
+		m_player->onAppMousePosition( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::beginUpdate()

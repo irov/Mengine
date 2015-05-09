@@ -1,13 +1,12 @@
 #	include "OALSoundBufferMemory.h"
 #	include "OALSoundSystem.h"
+#	include "OALSoundError.h"
 
 #	include "Interface/SoundCodecInterface.h"
 
 #	include "Core/CacheMemoryBuffer.h"
 
 #	include "Logger/Logger.h"
-
-#	include "OALError.h"
 
 namespace Menge
 {

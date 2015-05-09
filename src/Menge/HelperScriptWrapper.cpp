@@ -16,6 +16,9 @@
 #	include "Game.h"
 #	include "Application.h"
 
+#	include "Movie.h"
+#	include "HotSpotShape.h"
+
 #	include "Logger/Logger.h"
 
 #	include "Interface/ThreadSystemInterface.h"
@@ -503,6 +506,133 @@ namespace Menge
 			bool intersect = boost::geometry::intersects( _p1, _p2 );
 
 			return intersect;
+		}
+
+		bool s_intersectsPolygonsWM( const mt::mat4f & _wm1, Polygon _p1, const mt::mat4f & _wm2, Polygon _p2 )
+		{
+			boost::geometry::correct( _p1 );
+			boost::geometry::correct( _p2 );
+
+			Polygon p1wm;
+			polygon_wm( p1wm, _p1, _wm1 );
+
+			Polygon p2wm;
+			polygon_wm( p2wm, _p2, _wm2 );
+						
+			bool intersect = boost::geometry::intersects( p1wm, p2wm );
+
+			return intersect;
+		}
+
+		bool s_intersectsPolygonsWMP( const mt::vec3f & _wm1, Polygon _p1, const mt::vec3f & _wm2, Polygon _p2 )
+		{
+			boost::geometry::correct( _p1 );
+			boost::geometry::correct( _p2 );
+
+			Polygon p1wm;
+			polygon_transpose( p1wm, _p1, _wm1.to_vec2f() );
+
+			Polygon p2wm;
+			polygon_transpose( p2wm, _p2, _wm2.to_vec2f() );
+						
+			std::deque<Menge::Polygon> output;
+			boost::geometry::intersection( p1wm, p2wm, output );
+
+			bool intersect = boost::geometry::intersects( p1wm, p2wm );
+
+			return intersect;
+		}
+
+		bool s_intersectsMoviesHotspot( Movie * _movie1, const ConstString & _socket1, Movie * _movie2, const ConstString & _socket2 )
+		{
+			if( _movie1 == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_intersectsMoviesHotspot movie1 is NULL"
+					);
+
+				return false;
+			}
+
+			if( _movie2 == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_intersectsMoviesHotspot movie2 is NULL"
+					);
+
+				return false;
+			}
+
+			if( _movie1->compile() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_intersectsMoviesHotspot movie1 invalid compile"
+					);
+
+				return false;
+			}
+
+			if( _movie2->compile() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_intersectsMoviesHotspot movie2 invalid compile"
+					);
+
+				return false;
+			}
+
+			Node * node1;
+			Movie * submovie1;
+
+			if( _movie1->hasMovieNode( _socket1, CONST_STRING( m_serviceProvider, MovieSocketShape ), &node1, &submovie1 ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_intersectsMoviesHotspot movie1 %s not found socket shape %s"
+					, _movie1->getName().c_str()
+					, _socket1.c_str()
+					);
+
+				return false;
+			}
+
+			Node * node2;
+			Movie * submovie2;
+
+			if( _movie2->hasMovieNode( _socket2, CONST_STRING( m_serviceProvider, MovieSocketShape ), &node2, &submovie2 ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_intersectsMoviesHotspot movie2 %s not found socket shape %s"
+					, _movie2->getName().c_str()
+					, _socket2.c_str()
+					);
+
+				return false;
+			}
+
+			HotSpotShape * shape1 = static_cast<HotSpotShape *>(node1);
+
+			if( shape1->compile() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_intersectsMoviesHotspot movie1 %s socket shape %s invalid compile"
+					, _movie1->getName().c_str()
+					, _socket1.c_str()
+					);
+
+				return false;
+			}
+
+			HotSpotShape * shape2 = static_cast<HotSpotShape *>(node2);
+
+			if( shape2->compile() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_intersectsMoviesHotspot movie2 %s socket shape %s invalid compile"
+					, _movie2->getName().c_str()
+					, _socket2.c_str()
+					);
+
+				return false;
+			}
+
+			const Polygon & p1 = shape1->getPolygonWM();
+			const Polygon & p2 = shape2->getPolygonWM();
+
+			bool result = s_intersectsPolygons( p1, p2 );
+
+			return result;
 		}
 
 #	ifdef PYBIND_VISIT_OBJECTS
@@ -1715,6 +1845,9 @@ namespace Menge
 		pybind::def_functor( "getPolygonPoints", helperScriptMethod, &HelperScriptMethod::s_getPolygonPoints );
 		pybind::def_functor( "intersectionPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectionPolygons );
 		pybind::def_functor( "intersectsPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygons );
+		pybind::def_functor( "intersectsPolygonsWM", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWM );
+		pybind::def_functor( "intersectsPolygonsWMP", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWMP );
+		pybind::def_functor( "intersectsMoviesHotspot", helperScriptMethod, &HelperScriptMethod::s_intersectsMoviesHotspot );
 
 		pybind::def_functor( "objects", helperScriptMethod, &HelperScriptMethod::s_objects );
         pybind::def_functor( "textures", helperScriptMethod, &HelperScriptMethod::s_textures );

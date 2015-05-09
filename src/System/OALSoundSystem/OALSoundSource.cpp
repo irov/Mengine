@@ -1,8 +1,8 @@
 #	include "OALSoundSource.h"
 
-#	include "OALError.h"
 #	include "OALSoundSystem.h"
 #	include "OALSoundBufferBase.h"
+#	include "OALSoundError.h"
 
 #	include "Logger/Logger.h"
 

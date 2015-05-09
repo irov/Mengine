@@ -526,14 +526,14 @@ namespace Menge
 
 		RENDER_SYSTEM(m_serviceProvider)
 			->endScene();
+
+		m_debugInfo.frameCount += 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::swapBuffers()
 	{
 		RENDER_SYSTEM(m_serviceProvider)
 			->swapBuffers();
-
-		m_debugInfo.frameCount += 1;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::isWindowCreated() const

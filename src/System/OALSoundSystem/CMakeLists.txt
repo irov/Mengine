@@ -12,8 +12,8 @@ src
 	OALSoundSource.h
 	OALSoundSystem.cpp
 	OALSoundSystem.h
-	OALError.cpp
-	OALError.h	
+	OALSoundError.cpp
+	OALSoundError.h	
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/openal-soft/include/AL )

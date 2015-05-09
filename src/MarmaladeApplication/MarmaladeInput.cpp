@@ -221,12 +221,6 @@ namespace Menge
 				{
 					code = it_found->second;
 				}
-
-				printf( "- %d %d %d\n"
-					, desc.key
-					, desc.ch
-					, desc.pressed
-					);
 				
 				INPUT_SERVICE( m_serviceProvider )
 					->onKeyEvent( point, code, desc.ch, true );
@@ -236,12 +230,6 @@ namespace Menge
 			}
 			else
 			{
-				printf( "+ %d %d %d\n"
-					, desc.key
-					, desc.ch
-					, desc.pressed
-					);
-
 				KeyCode code = this->getKeyCode_( key );
 				bool isDown = desc.pressed != 0;
 

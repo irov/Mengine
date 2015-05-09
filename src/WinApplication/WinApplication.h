@@ -149,7 +149,7 @@ namespace Menge
 		DWORD getWindowStyle( bool _fullsreen ) const;
 		RECT getWindowsRect( const Resolution & _resolution, bool _fullsreen ) const;
 		void setActive( bool _active );
-		unsigned int translateVirtualKey_( unsigned int _vkc, unsigned int _vk );
+		WChar translateVirtualKey_( unsigned int _vkc, unsigned int _vk );
 
 	protected:
 		bool calcCursorPosition( mt::vec2f & _point ) const;

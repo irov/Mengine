@@ -342,7 +342,10 @@ namespace Menge
 
 		if( successful == false )
 		{
-			ResourceCacheEntry * resourceCacheEntry = m_resourcesCache.find( _category, _group );
+			const ConstString & insert_category = insert_entry->resource->getCategory();
+			const ConstString & insert_group = insert_entry->resource->getGroup();
+
+			ResourceCacheEntry * resourceCacheEntry = m_resourcesCache.find( insert_category, insert_group );
 
 			TVectorResources::iterator it_found = std::find( 
 				resourceCacheEntry->resources.begin(), 

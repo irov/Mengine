@@ -75,7 +75,7 @@ namespace Menge
 
 	public:
 		void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) override;
-		void calcGlobalMouseWorldDeltha( const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) override;
+		void calcGlobalMouseWorldDelta( const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) override;
 
 	public:
 		ScheduleManagerInterface * createSchedulerManager() override;
@@ -125,21 +125,21 @@ namespace Menge
 		void render();
 		
 	public:
-		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) override;
+		bool handleKeyEvent( const InputKeyEvent & _event ) override;
 
 	public:
-		bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
-		bool handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
+		bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;
+		bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override;
+		bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;
+		bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
+		bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
-
+	public:
 		void onFocus( bool _focus );
 
-		void onAppMouseLeave();
-		void onAppMouseEnter();
-		void onAppMousePosition( const mt::vec2f & _point );
+		void onAppMouseLeave( const InputMousePositionEvent & _event );
+		void onAppMouseEnter( const InputMousePositionEvent & _event );
+		void onAppMousePosition( const InputMousePositionEvent & _event );
 
 		void onFullscreen( const Resolution & _resolution, bool _fullscreen );
         void onFixedContentResolution( const Resolution & _resolution, bool _fixed );

@@ -66,17 +66,18 @@ namespace Menge
 		Scriptable * propagatePickerScriptable() override;
 
 	protected:
-		bool onMouseEnter( const mt::vec2f & _point ) override;
+		bool onMouseEnter( float _x, float _y ) override;
 		void onMouseLeave() override;
 
-	protected:
-		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) override;
+	public:
+		bool handleKeyEvent( const InputKeyEvent & _event ) override;
 
-		bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;		
-		bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
-		bool handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
+	public:
+		bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;
+		bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override;
+		bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;
+		bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
+		bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
 	protected:        
 		uint32_t m_debugColor;

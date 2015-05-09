@@ -92,7 +92,7 @@ namespace Menge
 			.def( "addLayerNode", &BurritoWorld::addLayerNode )
 			.def( "removeLayerNode", &BurritoWorld::removeLayerNode )
 			.def( "addLayerUnit", &BurritoWorld::addLayerUnit )
-			.def( "removeLayerUnit", &BurritoWorld::removeLayerUnit )			
+			.def( "removeLayerUnit", &BurritoWorld::removeLayerUnit )
 			;
 
 		pybind::def_functor( "createBurritoWorld", this, &ModuleBurritoWorld::createBurritoWorld );

@@ -355,6 +355,7 @@ namespace Menge
 		}
 
 		uint32_t iterate = 1;
+		uint32_t total_iterate = 0;
 		float next_timing = _timing;
 		
 		while( iterate-- != 0 )
@@ -366,7 +367,7 @@ namespace Menge
 			mt::vec3f velocity;
 			mt::vec3f offset;
 			mt::vec3f offsetH;
-			m_bison->update( _time, iterate_timing, velocity, offset, offsetH );
+			m_bison->update( _time, iterate_timing, velocity, offset, offsetH, total_iterate );
 
 			mt::vec3f translate_position( 0.f, 0.f, 0.f );
 
@@ -409,25 +410,19 @@ namespace Menge
 				{
 					if( m_ground->check_collision( iterate_timing, offsetH, bison_radius, velocity, collisionTiming ) == true )
 					{
-						collision = true;												
+						collision = true;
 					}
 				}
 
 				if( collision == true )
 				{
-					if( collisionTiming > 0.f )
-					{
-						next_timing = iterate_timing - collisionTiming;
-						iterate_timing = collisionTiming;
+					next_timing = iterate_timing - collisionTiming;
+					iterate_timing = collisionTiming;
 
-						++iterate;
-					}
-					else
-					{
-						iterate_timing = collisionTiming;
-					}
+					++iterate;
+					++total_iterate;
 				}
-				
+								
 				mt::vec3f bison_translate = velocity * iterate_timing;
 				
 				m_bison->translate( bison_translate, translate_position );

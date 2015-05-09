@@ -129,80 +129,83 @@ namespace Menge
 		return m_velocity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset, mt::vec3f & _offsetH )
+	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset, mt::vec3f & _offsetH, uint32_t _iterate )
 	{		
 		(void)_time;
 
-		mt::vec3f force_velocity(0.f, 0.f, 0.f);
-
-		for( TVectorBurritoBisonForce::const_iterator
-			it = m_forces.begin(),
-			it_end = m_forces.end();
-		it != it_end;
-		++it )
+		if( _iterate == 0 )
 		{
-			const BurritoBisonForce & force = *it;
+			mt::vec3f force_velocity( 0.f, 0.f, 0.f );
 
-			force_velocity += force.direction * force.value * _timing;
-		}
-
-		for( TVectorBurritoBisonImpulse::const_iterator
-			it = m_impulses.begin(),
-			it_end = m_impulses.end();
-		it != it_end;
-		++it )
-		{
-			const BurritoBisonImpulse & impulse = *it;
-
-			if( impulse.timing <= 0.f )
+			for( TVectorBurritoBisonForce::const_iterator
+				it = m_forces.begin(),
+				it_end = m_forces.end();
+			it != it_end;
+			++it )
 			{
-				continue;
+				const BurritoBisonForce & force = *it;
+
+				force_velocity += force.direction * force.value * _timing;
 			}
 
-			mt::vec3f force_impulse;
-
-			force_impulse = impulse.direction * impulse.value * mt::ltrim_f( _timing, 0.f );
-				
-			impulse.timing -= _timing;
-
-			force_velocity += force_impulse;
-		}
-
-		TVectorBurritoBisonImpulse::iterator it_erase = std::remove_if( m_impulses.begin(), m_impulses.end(), FBurritoBisonImpulseDead() );
-		m_impulses.erase( it_erase, m_impulses.end() );
-
-		m_velocity += force_velocity;
-
-		m_velocityEvents.insert( m_velocityEvents.end(), m_velocityEventsAdd.begin(), m_velocityEventsAdd.end() );
-		m_velocityEventsAdd.clear();
-
-		for( TVectorVelocityEventDesc::iterator
-			it = m_velocityEvents.begin(),
-			it_end = m_velocityEvents.end();
-		it != it_end;
-		++it )
-		{
-			VelocityEventDesc & desc = *it;
-
-			if( desc.dead == true )
+			for( TVectorBurritoBisonImpulse::const_iterator
+				it = m_impulses.begin(),
+				it_end = m_impulses.end();
+			it != it_end;
+			++it )
 			{
-				continue;
+				const BurritoBisonImpulse & impulse = *it;
+
+				if( impulse.timing <= 0.f )
+				{
+					continue;
+				}
+
+				mt::vec3f force_impulse;
+
+				force_impulse = impulse.direction * impulse.value * mt::ltrim_f( _timing, 0.f );
+
+				impulse.timing -= _timing;
+
+				force_velocity += force_impulse;
 			}
 
-			bool test = desc.test;
+			TVectorBurritoBisonImpulse::iterator it_erase = std::remove_if( m_impulses.begin(), m_impulses.end(), FBurritoBisonImpulseDead() );
+			m_impulses.erase( it_erase, m_impulses.end() );
 
-			desc.test = this->testVelocityEvent_( desc );
+			m_velocity += force_velocity;
 
-			if( test == false && desc.test == true )
+			m_velocityEvents.insert( m_velocityEvents.end(), m_velocityEventsAdd.begin(), m_velocityEventsAdd.end() );
+			m_velocityEventsAdd.clear();
+
+			for( TVectorVelocityEventDesc::iterator
+				it = m_velocityEvents.begin(),
+				it_end = m_velocityEvents.end();
+			it != it_end;
+			++it )
 			{
-				bool result = desc.cb();
+				VelocityEventDesc & desc = *it;
 
-				desc.dead = result;
+				if( desc.dead == true )
+				{
+					continue;
+				}
+
+				bool test = desc.test;
+
+				desc.test = this->testVelocityEvent_( desc );
+
+				if( test == false && desc.test == true )
+				{
+					bool result = desc.cb();
+
+					desc.dead = result;
+				}
 			}
-		}
 
-		TVectorVelocityEventDesc::iterator it_event_erase = std::remove_if( m_velocityEvents.begin(), m_velocityEvents.end(), FBurritoBisonVelocityEventDead() );
-		m_velocityEvents.erase( it_event_erase, m_velocityEvents.end() );
+			TVectorVelocityEventDesc::iterator it_event_erase = std::remove_if( m_velocityEvents.begin(), m_velocityEvents.end(), FBurritoBisonVelocityEventDead() );
+			m_velocityEvents.erase( it_event_erase, m_velocityEvents.end() );
+		}
 
 		_velocity = m_velocity;
 	

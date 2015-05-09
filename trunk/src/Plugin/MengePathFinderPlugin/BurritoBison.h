@@ -69,7 +69,7 @@ namespace Menge
 		const mt::vec3f & getVelocity() const;
 
 	public:
-		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset, mt::vec3f & _offsetH );
+		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset, mt::vec3f & _offsetH, uint32_t _iterate );
 
 	public:
 		void translate( const mt::vec3f & _translate, mt::vec3f & _position );

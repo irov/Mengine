@@ -55,7 +55,9 @@ WIN32 is still required for the locale module.
 
 /* Windows CE does not have these */
 #ifndef MS_WINCE
+#ifndef EMSCRIPTEN
 #define HAVE_IO_H
+#endif
 #define HAVE_SYS_UTIME_H
 #define HAVE_TEMPNAM
 #define HAVE_TMPFILE
@@ -66,6 +68,8 @@ WIN32 is still required for the locale module.
 
 #ifdef HAVE_IO_H
 #include <io.h>
+#else
+#include <unistd.h>
 #endif
 
 #define HAVE_HYPOT
@@ -77,13 +81,18 @@ WIN32 is still required for the locale module.
 #define PREFIX ""
 #define EXEC_PREFIX ""
 
+#	ifdef WIN32
 #define MS_WIN32 /* only support win32 and greater. */
 #define MS_WINDOWS
+#	endif
+
 #ifndef PYTHONPATH
 #	define PYTHONPATH ".\\DLLs;.\\lib;.\\lib\\plat-win;.\\lib\\lib-tk"
 #endif
-#define NT_THREADS
-#define WITH_THREAD
+
+//#define NT_THREADS
+//#define WITH_THREAD
+
 #ifndef NETSCAPE_PI
 #define USE_SOCKET
 #endif
@@ -299,11 +308,13 @@ typedef int pid_t;
 //#undef HAVE_LONG_LONG
 
 #ifndef PY_LONG_LONG
-#	define PY_LONG_LONG __int64
-#	define PY_LLONG_MAX _I64_MAX
-#	define PY_LLONG_MIN _I64_MIN
-#	define PY_ULLONG_MAX _UI64_MAX
+#	define PY_LONG_LONG long long
+#	define PY_LLONG_MAX INT64_MAX 
+#	define PY_LLONG_MIN INT64_MIN
+#	define PY_ULLONG_MAX UINT64_MAX
 #endif
+
+#	define PY_FORMAT_LONG_LONG "llx"
 
 /* For Windows the Python core is in a DLL by default.  Test
 Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
@@ -387,6 +398,29 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #endif  /* _MSC_VER > 1200  */
 #endif  /* _MSC_VER */
 
+#endif
+
+#ifdef EMSCRIPTEN
+#define SIZEOF_SHORT 2
+#define SIZEOF_INT 4
+#define SIZEOF_LONG 4
+#define SIZEOF_LONG_LONG 8
+#define SIZEOF_DOUBLE 8
+#define SIZEOF_FLOAT 4
+
+#   undef HAVE_LARGEFILE_SUPPORT
+#	define SIZEOF_VOID_P 4
+#	define SIZEOF_OFF_T 4
+#	define SIZEOF_FPOS_T 8
+#	define SIZEOF_HKEY 4
+#	define SIZEOF_SIZE_T 4
+#	define SIZEOF_TIME_T 8
+
+#	define HAVE_USABLE_WCHAR_T
+#	define PY_UNICODE_TYPE wchar_t
+#	define Py_UNICODE_SIZE 2
+
+#	define PY_FORMAT_SIZE_T ""
 #endif
 
 /* define signed and unsigned exact-width 32-bit and 64-bit types, used in the

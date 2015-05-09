@@ -91,17 +91,12 @@ configure_file(Modified/wininit.c ${SOURCE_DIR}/Modules/wininit.c COPYONLY)
 configure_file(Modified/pymem.h ${SOURCE_DIR}/Include/pymem.h COPYONLY)
 configure_file(Modified/errors.c ${SOURCE_DIR}/Python/errors.c COPYONLY)
 
-if( WIN32 )
-    configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
-	configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
-else( WIN32 )
-    configure_file(Modified/config.c ${SOURCE_DIR}/NOPC/config.c COPYONLY)
-	configure_file(Modified/pyconfig.h ${SOURCE_DIR}/NOPC/pyconfig.h COPYONLY)
-endif( WIN32 )
+configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
+configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
 
 ############################## 
 
-set(P_SRCS      ${SOURCE_DIR}/Parser/acceler.c
+set(PARSER_SRCS      ${SOURCE_DIR}/Parser/acceler.c
                 ${SOURCE_DIR}/Parser/grammar1.c
                 ${SOURCE_DIR}/Parser/listnode.c
                 ${SOURCE_DIR}/Parser/node.c
@@ -111,9 +106,10 @@ set(P_SRCS      ${SOURCE_DIR}/Parser/acceler.c
                 ${SOURCE_DIR}/Parser/metagrammar.c
                 ${SOURCE_DIR}/Parser/firstsets.c
                 ${SOURCE_DIR}/Parser/grammar.c
-                ${SOURCE_DIR}/Parser/pgen.c )
-
-set(PARSER_SRCS ${P_SRCS} ${SOURCE_DIR}/Parser/myreadline.c ${SOURCE_DIR}/Parser/tokenizer.c )
+                ${SOURCE_DIR}/Parser/pgen.c
+                ${SOURCE_DIR}/Parser/myreadline.c
+                ${SOURCE_DIR}/Parser/tokenizer.c 
+                )
 
 
 set(OBJECT_SRCS ${SOURCE_DIR}/Objects/abstract.c
@@ -211,9 +207,7 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
                 ${DYNLOAD_SRC}
                 )
 
-set(MODULE_SRCS ${SOURCE_DIR}/PC/config.c
-                #${SOURCE_DIR}/Modules/getpath.c 
-                ${SOURCE_DIR}/Modules/main.c 
+set(MODULE_SRCS ${SOURCE_DIR}/Modules/main.c 
                 ${SOURCE_DIR}/Modules/gcmodule.c
                 ${SOURCE_DIR}/Modules/mathmodule.c
                 #${SOURCE_DIR}/Modules/posixmodule.c
@@ -223,15 +217,14 @@ set(MODULE_SRCS ${SOURCE_DIR}/PC/config.c
 				#${SOURCE_DIR}/Modules/cStringIO.c
 				#${SOURCE_DIR}/Modules/arraymodule.c
 				#${SOURCE_DIR}/Modules/datetimemodule.c		
-
-				
 				
                 ${MOD_SRCS} )
-                
+
+set( MODULE_SRCS ${MODULE_SRCS} Modified/config.c )
 set( MODULE_SRCS ${MODULE_SRCS} Modified/mockup.c )                
 				
 if( NOT WIN32 )
-	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )    
+	#set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )    
 else( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} 
 	${SOURCE_DIR}/Modules/wininit.c
@@ -246,8 +239,9 @@ include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Python)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)
 
-if(WIN32)
-  include_directories(${SOURCE_DIR}/PC)
+include_directories(${SOURCE_DIR}/PC)
+
+if(WIN32)  
   if(MSVC)
 	  add_definitions(-DWIN32 -D_WINDOWS -D_MSC_VER=1400)
   else(MSVC)

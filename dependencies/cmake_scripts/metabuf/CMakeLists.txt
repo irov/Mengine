@@ -7,9 +7,11 @@ SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../metabuf )
 configure_file(Metaconfig.hpp ${SOURCE_DIR}/metabuf/Metaconfig.hpp COPYONLY)
 
 if(NOT MSVC)
-	ADD_DEFINITIONS(-D"override = /* */")
-    ADD_DEFINITIONS(-D"nullptr=0")
-    ADD_DEFINITIONS(-D"nullptr_t=void*")    
+    if(NOT EMSCRIPTEN)
+        ADD_DEFINITIONS(-D"override = /* */")
+        ADD_DEFINITIONS(-D"nullptr=0")
+        ADD_DEFINITIONS(-D"nullptr_t=void*")    
+    endif(NOT EMSCRIPTEN)
 endif(NOT MSVC)
 
 set( metabuf_sources

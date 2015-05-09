@@ -34,4 +34,31 @@ namespace Menge
 
 #   define PLUGIN_SERVICE( serviceProvider )\
     SERVICE_GET(serviceProvider, Menge::PluginServiceInterface)
+
+
+#   ifdef MENGE_PLUGIN_DLL
+#	define PLUGIN_DECLARE(Name, Type)\
+	extern "C"\
+	{\
+		bool initPlugin##Name( Menge::PluginInterface ** _plugin )\
+		{\
+			*_plugin = new Type();\
+			return true;\
+		}\
+		__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )\
+		{\
+			return initPlugin##Name( _plugin );\
+		}\
+	}
+#	else
+#	define PLUGIN_DECLARE(Name, Type)\
+	extern "C"\
+			{\
+	bool initPlugin##Name( Menge::PluginInterface ** _plugin )\
+			{\
+			*_plugin = new Type();\
+	return true;\
+		}\
+	}
+#	endif
 }

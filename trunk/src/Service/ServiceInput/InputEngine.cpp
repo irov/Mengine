@@ -36,103 +36,67 @@ namespace Menge
 	bool InputEngine::initialize()
 	{
 		std::fill( m_keyBuffer, m_keyBuffer + sizeof(m_keyBuffer), false );
+		std::fill( m_mouseBuffer, m_mouseBuffer + sizeof( m_mouseBuffer ), false );
 
-		m_mouseBuffer[0] = false;
-		m_mouseBuffer[1] = false;
-		m_mouseBuffer[2] = false;
-
-        m_eventsAdd.reserve(16);
-        m_events.reserve(16);
-        m_keyEventParams.reserve(16);
-        m_mouseButtonEventParams.reserve(16);
-        m_mouseMoveEventParams.reserve(16);
-        m_mousePositionEventParams.reserve(16);
+		m_eventsAdd.reserve( 16 );
+		m_events.reserve( 16 );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::finalize()
 	{
-        m_events.clear();
+		m_events.clear();
         m_eventsAdd.clear();
-
-		m_keyEventParams.clear();
-		m_mouseButtonEventParams.clear();
-		m_mouseMoveEventParams.clear();
-		m_mousePositionEventParams.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::update()
 	{
-		TVectorKeyEventParams::iterator it_keyParams = m_keyEventParams.begin();
-		TVectorMouseButtonParams::iterator it_mouseButtonParams = m_mouseButtonEventParams.begin();
-		TVectorMouseMoveParams::iterator it_mouseMoveParams = m_mouseMoveEventParams.begin();
-		TVectorMousePositionParams::iterator it_mousePositionParams = m_mousePositionEventParams.begin();
-
-        m_events = m_eventsAdd;
+		m_events = m_eventsAdd;
+		m_eventsAdd.clear();
         
-		for( TVectorEventType::const_iterator 
-			it = m_events.begin(), 
+		for( TVectorInputEvent::const_iterator
+			it = m_events.begin(),
 			it_end = m_events.end();
 		it != it_end;
 		++it )
 		{
-			const EventType & eventType = (*it);
+			const InputUnionEvent & event = (*it);
 
-            switch( eventType )
-            {
-            case ET_KEY:
-                {
-                    const KeyEventParams& params = (*it_keyParams);
-                    this->keyEvent_( params );
-                    ++it_keyParams;
-                }break;
-            case ET_MOUSEBUTTON:
-                {
-                    const MouseButtonParams& params = (*it_mouseButtonParams);
-                    this->mouseButtonEvent_( params );
-                    ++it_mouseButtonParams;
-                }break;
-            case ET_MOUSEMOVE:
-                {
-                    const MouseMoveParams& params = (*it_mouseMoveParams);
-                    this->mouseMoveEvent_( params );
-                    ++it_mouseMoveParams;
-                }break;
-			case ET_MOUSEWHEEL:
+			switch( event.type )
+			{
+			case IET_KEY:
 				{
-					const MouseMoveParams& params = (*it_mouseMoveParams);
-					this->mouseWheelEvent_( params );
-					++it_mouseMoveParams;
-				}break;				
-            case ET_MOUSEPOSITION:
-                {
-                    const MousePositionParams & params = (*it_mousePositionParams);
-                    this->mousePositionEvent_( params );
-                    ++it_mousePositionParams;
-                }break;
-            case ET_MOUSEENTER:
-                {
-                    const MousePositionParams & params = (*it_mousePositionParams);
-                    this->mouseEnterEvent_(params);
-                    ++it_mousePositionParams;
-                }break;
-            case ET_MOUSELEAVE:
-                {
-                    const MousePositionParams & params = (*it_mousePositionParams);
-                    this->mouseLeaveEvent_(params);
-                    ++it_mousePositionParams;
-                }
-            }
+					this->keyEvent_( event.key );
+				}break;
+			case IET_MOUSE_BUTTON:
+				{
+					this->mouseButtonEvent_( event.button );
+				}break;
+			case IET_MOUSE_WHELL:
+				{
+					this->mouseWheelEvent_( event.wheel );
+				}break;
+			case IET_MOUSE_MOVE:
+				{
+					this->mouseMoveEvent_( event.move );
+				}break;
+			case IET_MOUSE_POSITION:
+				{
+					this->mousePositionEvent_( event.position );
+				}break;
+			case IET_MOUSE_ENTER:
+				{
+					this->mouseEnterEvent_( event.position );
+				}break;
+			case IET_MOUSE_LEAVE:
+				{
+					this->mouseLeaveEvent_( event.position );
+				}
+			}
 		}
 
 		m_events.clear();
-        m_eventsAdd.clear();
-
-		m_keyEventParams.clear();
-		m_mouseButtonEventParams.clear();
-		m_mouseMoveEventParams.clear();
-        m_mousePositionEventParams.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::isAltDown() const
@@ -238,14 +202,14 @@ namespace Menge
 		return m_mouseBuffer[_button];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputEngine::validCursorPosition( const mt::vec2f & _point ) const
+	bool InputEngine::validCursorPosition( float _x, float _y ) const
 	{
-		if( _point.x < 0.f || _point.x > 1.f )
+		if( _x < 0.f || _x > 1.f )
 		{
 			return false;
 		}
 
-		if( _point.y < 0.f || _point.y > 1.f )
+		if( _y < 0.f || _y > 1.f )
 		{
 			return false;
 		}
@@ -253,15 +217,17 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::applyCursorPosition_( const mt::vec2f & _point )
+	void InputEngine::applyCursorPosition_( float _x, float _y )
 	{		       
+		mt::vec2f point( _x, _y );
+
 		bool change = false;
-		if( mt::cmp_v2_v2( m_cursorPosition, _point ) == false )
+		if( mt::cmp_v2_v2( m_cursorPosition, point ) == false )
 		{
 			change = true;
 		}
 
-		m_cursorPosition = _point;
+		m_cursorPosition = point;
 		
 		if( change == true )
 		{
@@ -278,7 +244,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void InputEngine::setCursorPosition( const mt::vec2f & _point )
     {
-        this->applyCursorPosition_( _point );
+        this->applyCursorPosition_( _point.x, _point.y );
     }
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & InputEngine::getCursorPosition() const
@@ -314,114 +280,79 @@ namespace Menge
 		std::fill( m_keyBuffer, m_keyBuffer + sizeof(m_keyBuffer), false );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::onKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown )
+	void InputEngine::pushEvent( const InputUnionEvent & _event )
 	{
-		m_eventsAdd.push_back( ET_KEY );
-		KeyEventParams params = { _point, _key, _char, _isDown };
-		m_keyEventParams.push_back( params );
+		m_eventsAdd.push_back( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::onMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown )
+	void InputEngine::keyEvent_( const InputKeyEvent & _params )
 	{
-		m_eventsAdd.push_back( ET_MOUSEBUTTON );
-		MouseButtonParams params = { _touchId, _point, _button, _isDown };
-		m_mouseButtonEventParams.push_back( params );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::onMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y )
-	{
-		m_eventsAdd.push_back( ET_MOUSEMOVE );
-		MouseMoveParams params = { _touchId, _point, _x, _y, 0 };
-		m_mouseMoveEventParams.push_back( params );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::onMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
-	{
-		m_eventsAdd.push_back( ET_MOUSEWHEEL );
-		MouseMoveParams params = { _touchId, _point, 0.f, 0.f, _wheel };
-		m_mouseMoveEventParams.push_back( params );
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::onMousePosition( unsigned int _touchId, const mt::vec2f & _point )
-	{
-		m_eventsAdd.push_back( ET_MOUSEPOSITION );
-		MousePositionParams params = { _touchId, _point };
-		m_mousePositionEventParams.push_back( params );
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void InputEngine::onMouseEnter( unsigned int _touchId, const mt::vec2f & _point )
-    {
-        m_eventsAdd.push_back( ET_MOUSEENTER );
-        MousePositionParams params = { _touchId, _point };
-        m_mousePositionEventParams.push_back( params );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void InputEngine::onMouseLeave( unsigned int _touchId, const mt::vec2f & _point )
-    {
-        m_eventsAdd.push_back( ET_MOUSELEAVE );
-        MousePositionParams params = { _touchId, _point };
-        m_mousePositionEventParams.push_back( params );
-    }
-	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::keyEvent_( const KeyEventParams& _params )
-	{
-		bool repeating = ( m_keyBuffer[_params.key] == true && _params.isDown == true );
+		bool isRepeat = (m_keyBuffer[_params.key] == true && _params.isDown == true);
 		
 		m_keyBuffer[_params.key] = _params.isDown;
 
-		this->applyCursorPosition_( _params.point );
+		this->applyCursorPosition_( _params.x, _params.y );
+
+		InputKeyEvent event;
+		event.type = _params.type;
+		event.x = _params.x;
+		event.y = _params.y;
+		event.key = _params.key;
+		event.code = _params.code;
+		event.isDown = _params.isDown;
+		event.isRepeat = isRepeat;
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->keyEvent( _params.point, _params.key, _params.character, _params.isDown, repeating );
+			->keyEvent( event );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::mouseButtonEvent_( const MouseButtonParams & _params )
+	void InputEngine::mouseButtonEvent_( const InputMouseButtonEvent & _params )
 	{
 		m_mouseBuffer[ _params.button ] = _params.isDown;
 
-		this->applyCursorPosition_( _params.point );
+		this->applyCursorPosition_( _params.x, _params.y );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->mouseButtonEvent( _params.touchId, _params.point, _params.button, _params.isDown );
+			->mouseButtonEvent( _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::mouseMoveEvent_( const MouseMoveParams& _params )
+	void InputEngine::mouseMoveEvent_( const InputMouseMoveEvent & _params )
 	{
-		this->applyCursorPosition_( _params.point );
+		this->applyCursorPosition_( _params.x, _params.y );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->mouseMove( _params.touchId, _params.point, _params.x, _params.y );
+			->mouseMove( _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::mouseWheelEvent_( const MouseMoveParams& _params )
+	void InputEngine::mouseWheelEvent_( const InputMouseWheelEvent& _params )
 	{
-		this->applyCursorPosition_( _params.point );
+		this->applyCursorPosition_( _params.x, _params.y );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->mouseWheel( _params.touchId, _params.point, _params.wheel );
+			->mouseWheel( _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::mousePositionEvent_( const MousePositionParams& _params )
+	void InputEngine::mousePositionEvent_( const InputMousePositionEvent& _params )
 	{
-		this->applyCursorPosition_( _params.point );
+		this->applyCursorPosition_( _params.x, _params.y );
 
 		APPLICATION_SERVICE(m_serviceProvider)
-			->mousePosition( _params.touchId, _params.point );
+			->mousePosition( _params );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void InputEngine::mouseEnterEvent_( const MousePositionParams& _params )
+	void InputEngine::mouseEnterEvent_( const InputMousePositionEvent& _params )
     {
-        this->applyCursorPosition_( _params.point );
+		this->applyCursorPosition_( _params.x, _params.y );
 
         APPLICATION_SERVICE(m_serviceProvider)
-            ->mouseEnter( _params.point );
+			->mouseEnter( _params );
     }
     //////////////////////////////////////////////////////////////////////////
-    void InputEngine::mouseLeaveEvent_( const MousePositionParams& _params )
+	void InputEngine::mouseLeaveEvent_( const InputMousePositionEvent& _params )
     {
-        this->applyCursorPosition_( _params.point );
+		this->applyCursorPosition_( _params.x, _params.y );
 
         APPLICATION_SERVICE(m_serviceProvider)
-            ->mouseLeave();
+            ->mouseLeave( _params );
     }
 }

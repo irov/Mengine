@@ -415,10 +415,17 @@ namespace Menge
 
 				if( collision == true )
 				{
-					next_timing = iterate_timing - collisionTiming;
-					iterate_timing = collisionTiming;
-					
-					++iterate;
+					if( collisionTiming > 0.f )
+					{
+						next_timing = iterate_timing - collisionTiming;
+						iterate_timing = collisionTiming;
+
+						++iterate;
+					}
+					else
+					{
+						iterate_timing = collisionTiming;
+					}
 				}
 				
 				mt::vec3f bison_translate = velocity * iterate_timing;

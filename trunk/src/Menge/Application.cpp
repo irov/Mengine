@@ -1010,16 +1010,16 @@ namespace Menge
 		s_printChildren2( _node, 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::keyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating )
+	bool Application::keyEvent( const InputKeyEvent & _event )
 	{
 		if( m_console != nullptr )
 		{
-			m_console->proccessInput( _key, _char, _isDown );
+			m_console->proccessInput( _event.key, _event.code, _event.isDown );
 		}
 
 		if( m_developmentMode == true )
 		{
-			if( _key == KC_F6 && _isDown )
+			if( _event.key == KC_F6 && _event.isDown )
 			{
 				if( ( m_debugMask & MENGE_DEBUG_HOTSPOTS ) != 0 )
 				{
@@ -1031,7 +1031,7 @@ namespace Menge
 				}
 			}
 
-			if( _key == KC_F10 && _isDown )
+			if( _event.key == KC_F10 && _event.isDown )
 			{
 				if( ( m_debugMask & MENGE_DEBUG_NODES ) != 0 )
 				{
@@ -1043,7 +1043,7 @@ namespace Menge
 				}
 			}
 
-			if( _key == KC_F9 && _isDown )
+			if( _event.key == KC_F9 && _event.isDown )
 			{
 				if( ( m_debugMask & MENGE_DEBUG_PHYSICS ) != 0 )
 				{
@@ -1055,7 +1055,7 @@ namespace Menge
 				}
 			}
 
-			if( _key == KC_F8 && _isDown )
+			if( _event.key == KC_F8 && _event.isDown )
 			{
 				if( ( m_debugMask & MENGE_DEBUG_TILEPOLYGON ) != 0 )
 				{
@@ -1067,12 +1067,12 @@ namespace Menge
 				}
 			}
 
-			if( _key == KC_F5 && _isDown == true )
+			if( _event.key == KC_F5 && _event.isDown == true )
 			{
 				m_resourceService->dumpResources("Application");
 			}
 
-			if( _key == KC_OEM_MINUS && _isDown == true )
+			if( _event.key == KC_OEM_MINUS && _event.isDown == true )
 			{
 				if( RENDER_SERVICE(m_serviceProvider)
 					->decrefLimitRenderObjects() == false )
@@ -1084,7 +1084,7 @@ namespace Menge
 				}				
 			}
 
-			if( _key == KC_OEM_PLUS && _isDown == true )
+			if( _event.key == KC_OEM_PLUS && _event.isDown == true )
 			{
 				RENDER_SERVICE(m_serviceProvider)
 					->increfLimitRenderObjects();
@@ -1099,7 +1099,7 @@ namespace Menge
 			}
 
 
-			if( _key == KC_F4 && _isDown )
+			if( _event.key == KC_F4 && _event.isDown )
 			{
 				m_debugFileOpen = !m_debugFileOpen;
 
@@ -1115,13 +1115,13 @@ namespace Menge
 				}
 			}
 
-			if( _key == KC_F11 && _isDown == true )
+			if( _event.key == KC_F11 && _event.isDown == true )
 			{
                 PLAYER_SERVICE(m_serviceProvider)
 					->toggleDebugText();
 			}
 
-			if( _key == KC_P && _isDown == true && INPUT_SERVICE(m_serviceProvider)->isCtrlDown() == true )
+			if( _event.key == KC_P && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
 			{
 				static bool s_particle_enable = true;
 
@@ -1130,7 +1130,7 @@ namespace Menge
 				this->setParticlesEnabled( s_particle_enable );
 			}
 
-			if( _key == KC_T && _isDown == true && INPUT_SERVICE(m_serviceProvider)->isCtrlDown() == true )
+			if( _event.key == KC_T && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
 			{
 				static bool s_text_enable = true;
 
@@ -1139,7 +1139,7 @@ namespace Menge
 				TEXT_SERVICE(m_serviceProvider)->setEnableText( s_text_enable );
 			}
 
-			if( _key == KC_0 && _isDown == true )
+			if( _event.key == KC_0 && _event.isDown == true )
 			{
 				static uint32_t batchMode = RENDER_SERVICE(m_serviceProvider)
 					->getBatchMode();
@@ -1164,7 +1164,7 @@ namespace Menge
 					->setBatchMode( mode );
 			}
 
-            if( _key == KC_F3 && _isDown == true )
+			if( _event.key == KC_F3 && _event.isDown == true )
             {
 				stdex_memory_info_t mi[25];
                 size_t count = stdex_allocator_memoryinfo( mi, 25 );
@@ -1205,7 +1205,7 @@ namespace Menge
 				printf("total %.3f:%.3f\n", total_now_mb, total_max_mb);
             }
 
-			if( _key == KC_F2 && _isDown == true )
+			if( _event.key == KC_F2 && _event.isDown == true )
 			{
 				Scene * scene = PLAYER_SERVICE(m_serviceProvider)
 					->getCurrentScene();
@@ -1214,29 +1214,29 @@ namespace Menge
 			}
 		}
 
-		bool handle = m_game->handleKeyEvent( _point, _key, _char, _isDown, _repeating );
+		bool handle = m_game->handleKeyEvent( _event );
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::mouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown )
+	bool Application::mouseButtonEvent( const InputMouseButtonEvent& _event )
 	{
 		if( m_inputMouseButtonEventBlock == true )
 		{
 			return false;
 		}
 
-		m_game->handleMouseButtonEventBegin( _touchId, _point, _button, _isDown );
-		bool handle = m_game->handleMouseButtonEvent( _touchId, _point, _button, _isDown );
-		m_game->handleMouseButtonEventEnd( _touchId, _point, _button, _isDown );
+		m_game->handleMouseButtonEventBegin( _event );
+		bool handle = m_game->handleMouseButtonEvent( _event );
+		m_game->handleMouseButtonEventEnd( _event );
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::mouseMove( unsigned int _touchId, const mt::vec2f & _point, float _dx, float _dy )
+	bool Application::mouseMove( const InputMouseMoveEvent& _event )
 	{
 		if( INPUT_SERVICE(m_serviceProvider)
-			->validCursorPosition( _point ) == false )
+			->validCursorPosition( _event.x, _event.y ) == false )
 		{
 			m_mouseEnter = false;
 
@@ -1245,10 +1245,17 @@ namespace Menge
 
 		if( m_mouseEnter == false )
 		{
-			this->mouseEnter( _point );
+			InputMousePositionEvent ne;
+			ne.type = IET_MOUSE_ENTER;
+			ne.touchId = _event.touchId;
+			ne.x = _event.x;
+			ne.y = _event.y;
+			ne.pressure = _event.pressure;
+
+			this->mouseEnter( ne );
 		}
 
-		bool handle = m_game->handleMouseMove( _touchId, _point, _dx, _dy );
+		bool handle = m_game->handleMouseMove( _event );
 
 		return handle;
 	}
@@ -1261,19 +1268,17 @@ namespace Menge
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::mouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel )
+	bool Application::mouseWheel( const InputMouseWheelEvent & _event )
 	{
-		bool handle = m_game->handleMouseWheel( _touchId, _point, _wheel );
+		bool handle = m_game->handleMouseWheel( _event );
 
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::mousePosition( unsigned int _touchId, const mt::vec2f & _point )
+	void Application::mousePosition( const InputMousePositionEvent & _event )
 	{
-		(void)_touchId;
-
 		if( INPUT_SERVICE(m_serviceProvider)
-			->validCursorPosition( _point ) == false )
+			->validCursorPosition( _event.x, _event.y ) == false )
 		{
 			m_mouseEnter = false;
 
@@ -1282,30 +1287,37 @@ namespace Menge
 
 		if( m_mouseEnter == false )
 		{
-			this->mouseEnter( _point );
+			InputMousePositionEvent ne;
+			ne.type = IET_MOUSE_ENTER;
+			ne.touchId = _event.touchId;
+			ne.x = _event.x;
+			ne.y = _event.y;
+			ne.pressure = _event.pressure;
+
+			this->mouseEnter( ne );
 		}
 
-		m_game->mouseEnter( _point );
+		m_game->mousePosition( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::mouseLeave()
+	void Application::mouseEnter( const InputMousePositionEvent & _event )
 	{
-		m_mouseEnter = false;
-
-		m_game->mouseLeave();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::mouseEnter( const mt::vec2f & _point )
-	{
-		if( INPUT_SERVICE(m_serviceProvider)
-			->validCursorPosition( _point ) == false )
+		if( INPUT_SERVICE( m_serviceProvider )
+			->validCursorPosition( _event.x, _event.y ) == false )
 		{
 			return;
 		}
 
 		m_mouseEnter = true;
 
-		m_game->mouseEnter( _point );
+		m_game->mouseEnter( _event );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::mouseLeave( const InputMousePositionEvent & _event )
+	{
+		m_mouseEnter = false;
+
+		m_game->mouseLeave( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
@@ -1365,11 +1377,25 @@ namespace Menge
 			{
 				if( m_focus == false )
 				{
-					this->mouseLeave();
+					InputMousePositionEvent ev;
+					ev.type = IET_MOUSE_LEAVE;
+					ev.touchId = 0;
+					ev.x = _point.x;
+					ev.y = _point.y;
+					ev.pressure = 0.f;
+
+					this->mouseLeave( ev );
 				}
 				else
 				{
-					this->mouseEnter( _point );
+					InputMousePositionEvent ev;
+					ev.type = IET_MOUSE_ENTER;
+					ev.touchId = 0;
+					ev.x = _point.x;
+					ev.y = _point.y;
+					ev.pressure = 0.f;
+
+					this->mouseEnter( ev );
 				}
 			}
 		}

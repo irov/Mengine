@@ -1,18 +1,31 @@
 ADD_SUBDIRECTORY( AstralaxParticleSystem )
 ADD_SUBDIRECTORY( AstralaxParticleSystem2 )
 
-ADD_SUBDIRECTORY( OALSoundSystem )
 ADD_SUBDIRECTORY( SilentSoundSystem )
 
-if( WIN32 )
+if( DEFINED MENGINE_TARGET_MSVC )
+    ADD_SUBDIRECTORY( OALSoundSystem )
     ADD_SUBDIRECTORY( Win32UnicodeSystem )
     ADD_SUBDIRECTORY( Win32ThreadSystem )
     #ADD_SUBDIRECTORY( CurlHttpSystem )
-endif( WIN32 )
-
-if( WIN32 )
     ADD_SUBDIRECTORY( DX9RenderSystem )
-endif( WIN32 )
+endif()
+
+if( DEFINED MENGINE_TARGET_MINGW )
+    ADD_SUBDIRECTORY( OALSoundSystem )
+    ADD_SUBDIRECTORY( Win32UnicodeSystem )
+    ADD_SUBDIRECTORY( Win32ThreadSystem )
+    #ADD_SUBDIRECTORY( CurlHttpSystem )
+    ADD_SUBDIRECTORY( DX9RenderSystem )
+endif()
+
+if( DEFINED MENGINE_TARGET_SDL )
+    ADD_SUBDIRECTORY( OALSoundSystem )
+    ADD_SUBDIRECTORY( PosixUnicodeSystem )
+    ADD_SUBDIRECTORY( SDLThreadSystem )
+    
+    ADD_SUBDIRECTORY( OpenGLRenderSystem )
+endif()
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

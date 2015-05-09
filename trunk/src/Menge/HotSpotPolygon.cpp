@@ -71,6 +71,15 @@ namespace Menge
 	{
 		m_invalidatePolygonWM = false;
 
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("HotSpotPolygon::updatePolygonWM_ %s not compile"
+				, this->getName().c_str()
+				);
+
+			return;
+		}
+
 		const mt::mat4f & wm = this->getWorldMatrix();
 
 		polygon_wm( m_polygonWM, m_polygon, wm );

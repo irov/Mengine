@@ -3,8 +3,6 @@
 
 #	include "WinApplication.h"
 
-//#	include "Menge/Application.h"
-
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
@@ -1927,7 +1925,9 @@ namespace Menge
 
 		mt::vec2f point;
 		this->calcCursorPosition( point );
-		m_inputService->setCursorPosition( point );
+
+		INPUT_SERVICE( m_serviceProvider )
+			->setCursorPosition( point );
 
 		if( m_application->createRenderWindow( m_hWnd ) == false )
 		{
@@ -2595,9 +2595,14 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition(point);
 
-				unsigned int tvk = translateVirtualKey_( vkc, vk );
+				WChar tvk = translateVirtualKey_( vkc, vk );
 
-				m_inputService->onKeyEvent( point, vkc, tvk, true );             
+				KeyCode code = (KeyCode)vkc;
+
+				InputUnionEvent event = Helper::makeKeyEvent( point.x, point.y, code, tvk, true, false );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->pushEvent( event );
 			}break;
 		case WM_SYSKEYUP:
 			{
@@ -2608,9 +2613,14 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition(point);
 
-				unsigned int tvk = translateVirtualKey_( vkc, vk );
+				WChar tvk = translateVirtualKey_( vkc, vk );
 
-				m_inputService->onKeyEvent( point, vkc, tvk, false );
+				KeyCode code = (KeyCode)vkc;
+
+				InputUnionEvent event = Helper::makeKeyEvent( point.x, point.y, code, tvk, false, false );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->pushEvent( event );
 			}break;
 		case WM_SYSCOMMAND:
 			{
@@ -2711,7 +2721,10 @@ namespace Menge
 					mt::vec2f point;
 					this->calcCursorPosition( point );
 
-					m_inputService->onMouseLeave( 0, point );
+					InputUnionEvent event = Helper::makeMouseLeaveEvent( 0, point.x, point.y, 0.f );
+
+					INPUT_SERVICE( m_serviceProvider )
+						->pushEvent( event );
 
 					if( (GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
 					{
@@ -2738,7 +2751,10 @@ namespace Menge
 					InvalidateRect(hWnd, NULL, FALSE);
 					UpdateWindow(hWnd);
 
-					m_inputService->onMouseEnter( 0, point );
+					InputUnionEvent event = Helper::makeMouseEnterEvent( 0, point.x, point.y, 0.f );
+
+					INPUT_SERVICE( m_serviceProvider )
+						->pushEvent( event );
 				}
 
 				if( m_clickOutArea == true ) 
@@ -2747,7 +2763,10 @@ namespace Menge
 
 					if( (GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
 					{
-						m_inputService->onMouseButtonEvent( 0, point, 0, false );
+						InputUnionEvent event = Helper::makeMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false );
+
+						INPUT_SERVICE( m_serviceProvider )
+							->pushEvent( event );
 					}                    
 				}
 
@@ -2799,7 +2818,10 @@ namespace Menge
 				fdx /= width;
 				fdy /= height;
 
-				m_inputService->onMouseMove( 0, point, fdx, fdy );
+				InputUnionEvent event = Helper::makeMouseMoveEvent( 0, point.x, point.y, fdx, fdy, 0.f );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->pushEvent( event );
 
 				handle = true;
 				_result = FALSE;
@@ -2813,7 +2835,10 @@ namespace Menge
 
 				int wheel = zDelta / WHEEL_DELTA;
 
-				m_inputService->onMouseWheel( 0, point, wheel );
+				InputUnionEvent event = Helper::makeMouseWheelEvent( point.x, point.y, 0, wheel );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->pushEvent( event );
 
 				handle = true;
 				_result = FALSE;
@@ -2832,7 +2857,10 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition( point );
 
-				m_inputService->onMouseButtonEvent( 0, point, 0, true );				
+				InputUnionEvent event = Helper::makeMouseButtonEvent( 0, point.x, point.y, 0, 0.f, true );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->pushEvent( event );
 
 				handle = true;
 				_result = FALSE;
@@ -2845,7 +2873,10 @@ namespace Menge
 					mt::vec2f point;
 					this->calcCursorPosition(point);
 
-					m_inputService->onMouseButtonEvent( 0, point, 0, false );					
+					InputUnionEvent event = Helper::makeMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false );
+
+					INPUT_SERVICE( m_serviceProvider )
+						->pushEvent( event );
 				}
 
 				m_isDoubleClick = false;
@@ -2860,7 +2891,10 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition(point);
 
-				m_inputService->onMouseButtonEvent( 0, point, 1, true );				
+				InputUnionEvent event = Helper::makeMouseButtonEvent( 0, point.x, point.y, 1, 0.f, true );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->pushEvent( event );
 
 				handle = true;
 				_result = FALSE;
@@ -2872,7 +2906,10 @@ namespace Menge
 					mt::vec2f point;
 					this->calcCursorPosition(point);
 
-					m_inputService->onMouseButtonEvent( 0, point, 1, false );
+					InputUnionEvent event = Helper::makeMouseButtonEvent( 0, point.x, point.y, 1, 0.f, false );
+
+					INPUT_SERVICE( m_serviceProvider )
+						->pushEvent( event );
 				}
 
 				m_isDoubleClick = false;
@@ -2887,7 +2924,10 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition(point);
 
-				m_inputService->onMouseButtonEvent( 0, point, 2, true );	
+				InputUnionEvent event = Helper::makeMouseButtonEvent( 0, point.x, point.y, 2, 0.f, true );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->pushEvent( event );
 
 				handle = true;
 				_result = FALSE;
@@ -2897,7 +2937,10 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition(point);
 
-				m_inputService->onMouseButtonEvent( 0, point, 2, false );	
+				InputUnionEvent event = Helper::makeMouseButtonEvent( 0, point.x, point.y, 2, 0.f, false );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->pushEvent( event );
 
 				handle = true;
 				_result = FALSE;
@@ -2911,9 +2954,14 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition(point);
 
-				UINT tvk = this->translateVirtualKey_( vkc, vk );
+				WChar tvk = this->translateVirtualKey_( vkc, vk );
 
-				m_inputService->onKeyEvent( point, vkc, tvk, true );
+				KeyCode code = (KeyCode)vkc;
+
+				InputUnionEvent event = Helper::makeKeyEvent( point.x, point.y, code, tvk, true, false );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->pushEvent( event );
 
 				handle = true;
 				_result = FALSE;
@@ -2927,9 +2975,14 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition(point);
 
-				UINT tvk = this->translateVirtualKey_( vkc, vk );
+				WChar tvk = this->translateVirtualKey_( vkc, vk );
 
-				m_inputService->onKeyEvent( point, vkc, tvk, false );		
+				KeyCode code = (KeyCode)vkc;
+
+				InputUnionEvent event = Helper::makeKeyEvent( point.x, point.y, code, tvk, false, false );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->pushEvent( event );
 
 				handle = true;
 				_result = FALSE;
@@ -3145,12 +3198,16 @@ namespace Menge
 		mt::vec2f point;
 		this->calcCursorPosition(point);
 
-		m_inputService->onMousePosition( 0, point );
+		InputUnionEvent event = Helper::makeMousePositionEvent( 0, point.x, point.y, 0.f );
+
+		INPUT_SERVICE( m_serviceProvider )
+			->pushEvent( event );
 
 		if( m_nopause == false )
 		{
 			m_application->setFocus( m_active, true, point );
-			m_inputService->onFocus( m_active );
+			INPUT_SERVICE( m_serviceProvider )
+				->onFocus( m_active );
 
 			bool turnSound = m_active;
 			m_application->turnSound( turnSound );
@@ -3158,7 +3215,8 @@ namespace Menge
 		else
 		{
 			m_application->setFocus( true, true, point );
-			m_inputService->onFocus( true );
+			INPUT_SERVICE( m_serviceProvider )
+				->onFocus( true );
 
 			m_application->turnSound( true );
 		}
@@ -3427,7 +3485,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	unsigned int WinApplication::translateVirtualKey_( unsigned int _vkc, unsigned int _vk )
+	WChar WinApplication::translateVirtualKey_( unsigned int _vkc, unsigned int _vk )
 	{
 		if( _vk == 0 )
 		{

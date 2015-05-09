@@ -3,9 +3,9 @@
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/ThreadSystemInterface.h"
 
-#	include "Logger/Logger.h"
+#	include "OALSoundError.h"
 
-#	include "OALError.h"
+#	include "Logger/Logger.h"
 
 #	include <algorithm>
 #	include <stdio.h>

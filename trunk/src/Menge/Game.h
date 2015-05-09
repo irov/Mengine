@@ -119,17 +119,21 @@ namespace Menge
 		void setCursorMode( bool _mode ) override;
 
 	public:
-		bool handleKeyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) override;
-		bool handleMouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;		
-		bool handleMouseButtonEventBegin( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseButtonEventEnd( unsigned int _touchId, const mt::vec2f & _point, unsigned int _button, bool _isDown ) override;
-		bool handleMouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) override;
-		bool handleMouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _wheel ) override;
-		
-		void mouseLeave() override;
-		void mouseEnter( const mt::vec2f & _point ) override;
-		void mousePosition( const mt::vec2f & _point ) override;
+		bool handleKeyEvent( const InputKeyEvent & _event ) override;
 
+	public:
+		bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;
+		bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override;
+		bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;
+		bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
+		bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
+		
+	public:
+		void mousePosition( const InputMousePositionEvent & _event ) override;
+		void mouseEnter( const InputMousePositionEvent & _event ) override;
+		void mouseLeave( const InputMousePositionEvent & _event ) override;
+
+	public:
 		void setFocus( bool _focus ) override;
 		void setFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
         void setFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;

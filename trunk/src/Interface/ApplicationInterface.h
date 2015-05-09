@@ -39,15 +39,18 @@ namespace Menge
 
 		virtual void turnSound( bool _turn ) = 0;
 
-		virtual void mouseEnter( const mt::vec2f & _point ) = 0;
-		virtual void mouseLeave() = 0;
 
-        virtual bool keyEvent( const mt::vec2f & _point, unsigned int _key, unsigned int _char, bool _isDown, bool _repeating ) = 0;
-        virtual bool mouseButtonEvent( unsigned int _touchId, const mt::vec2f & _point, int _button, bool _isDown ) = 0;
-        virtual bool mouseMove( unsigned int _touchId, const mt::vec2f & _point, float _x, float _y ) = 0;
-		virtual bool mouseWheel( unsigned int _touchId, const mt::vec2f & _point, int _whell ) = 0;
-		virtual void mousePosition( unsigned int _touchId, const mt::vec2f & _point ) = 0;
+	public:
+		virtual bool keyEvent( const InputKeyEvent & _event ) = 0;
+
+		virtual bool mouseButtonEvent( const InputMouseButtonEvent& _event ) = 0;
+		virtual bool mouseMove( const InputMouseMoveEvent& _event ) = 0;
+		virtual bool mouseWheel( const InputMouseWheelEvent & _event ) = 0;
+		virtual void mousePosition( const InputMousePositionEvent & _event ) = 0;
+		virtual void mouseEnter( const InputMousePositionEvent & _event ) = 0;
+		virtual void mouseLeave( const InputMousePositionEvent & _event ) = 0;
         
+	public:
 		virtual void paint() = 0;
         virtual bool userEvent( const ConstString & _event, const TMapParams & _params ) = 0;
 

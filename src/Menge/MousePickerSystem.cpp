@@ -595,6 +595,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::handleMouseLeave( const InputMousePositionEvent & _event )
 	{
+		(void)_event;
+
 		if( m_arrow == nullptr )
 		{
 			return;

@@ -3405,6 +3405,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		class PyGlobalBaseHandler
 			: public InputSystemHandler
+			, public Factorable
 		{ 
 		public:
 			PyGlobalBaseHandler()
@@ -3496,7 +3497,7 @@ namespace Menge
             }
         };
 		//////////////////////////////////////////////////////////////////////////
-		typedef stdex::template_pool<PyGlobalMouseMoveHandler, 32> TPoolPyGlobalMouseMoveHandlers;
+		typedef FactoryPoolStore<PyGlobalMouseMoveHandler, 32> TPoolPyGlobalMouseMoveHandlers;
 		TPoolPyGlobalMouseMoveHandlers m_poolPyGlobalMouseMoveHandlers;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_addMouseMoveHandler( const pybind::object & _cb )
@@ -3504,38 +3505,13 @@ namespace Menge
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
-			PyGlobalMouseMoveHandler * handler = m_poolPyGlobalMouseMoveHandlers.createT();
+			PyGlobalMouseMoveHandler * handler = m_poolPyGlobalMouseMoveHandlers.createObjectT();
 
 			handler->initialize( m_serviceProvider, _cb );
             
             uint32_t id = globalHandleSystem->addGlobalHandler( handler );
 
             return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_removeMouseMoveHandler( uint32_t _id )
-        {
-            GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
-                ->getGlobalHandleSystem();
-
-			InputSystemHandler * handler = globalHandleSystem->removeGlobalHandler( _id );
-
-            PyGlobalMouseMoveHandler * py_handler = dynamic_cast<PyGlobalMouseMoveHandler *>(handler);
-
-            if( py_handler == nullptr )
-            {
-                LOGGER_ERROR(m_serviceProvider)("s_removeMouseMoveHandler %d handler invalid PyGlobalMouseMoveHandler"
-                    , _id
-                    );
-
-                return false;
-            }
-
-			py_handler->finalize();
-
-			m_poolPyGlobalMouseMoveHandlers.destroyT( py_handler );
-			            
-            return true;
         }
         //////////////////////////////////////////////////////////////////////////
         class PyGlobalMouseHandlerButton
@@ -3558,7 +3534,7 @@ namespace Menge
             }
         };
 		//////////////////////////////////////////////////////////////////////////
-		typedef stdex::template_pool<PyGlobalMouseHandlerButton, 32> TPoolPyGlobalMouseHandlerButtons;
+		typedef FactoryPoolStore<PyGlobalMouseHandlerButton, 32> TPoolPyGlobalMouseHandlerButtons;
 		TPoolPyGlobalMouseHandlerButtons m_poolPyGlobalMouseHandlerButtons;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_addMouseButtonHandler( const pybind::object & _cb )
@@ -3566,7 +3542,7 @@ namespace Menge
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
-            PyGlobalMouseHandlerButton * handler = m_poolPyGlobalMouseHandlerButtons.createT();
+            PyGlobalMouseHandlerButton * handler = m_poolPyGlobalMouseHandlerButtons.createObjectT();
 			
 			handler->initialize( m_serviceProvider, _cb );
 
@@ -3574,31 +3550,6 @@ namespace Menge
 
             return id;
         }
-		//////////////////////////////////////////////////////////////////////////
-		bool s_removeMouseButtonHandler( uint32_t _id )
-		{
-			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
-				->getGlobalHandleSystem();
-
-			InputSystemHandler * handler = globalHandleSystem->removeGlobalHandler( _id );
-
-			PyGlobalMouseHandlerButton * py_handler = dynamic_cast<PyGlobalMouseHandlerButton *>(handler);
-
-			if( py_handler == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_removeMouseButtonHandler %d handler invalid PyGlobalMouseHandlerButton"
-					, _id
-					);
-
-				return false;
-			}
-
-			py_handler->finalize();
-
-			m_poolPyGlobalMouseHandlerButtons.destroyT( py_handler );
-
-			return true;
-		}
         //////////////////////////////////////////////////////////////////////////
         class PyGlobalMouseHandlerButtonEnd
 			: public PyGlobalBaseHandler
@@ -3621,7 +3572,7 @@ namespace Menge
             }
         };
 		//////////////////////////////////////////////////////////////////////////
-		typedef stdex::template_pool<PyGlobalMouseHandlerButtonEnd, 32> TPoolPyGlobalMouseHandlerButtonEnds;
+		typedef FactoryPoolStore<PyGlobalMouseHandlerButtonEnd, 32> TPoolPyGlobalMouseHandlerButtonEnds;
 		TPoolPyGlobalMouseHandlerButtonEnds m_poolPyGlobalMouseHandlerButtonEnds;
         //////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseButtonHandlerEnd( const pybind::object & _cb )
@@ -3629,7 +3580,7 @@ namespace Menge
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
-            PyGlobalMouseHandlerButtonEnd * handler = m_poolPyGlobalMouseHandlerButtonEnds.createT();
+            PyGlobalMouseHandlerButtonEnd * handler = m_poolPyGlobalMouseHandlerButtonEnds.createObjectT();
 
 			handler->initialize( m_serviceProvider, _cb );
 
@@ -3637,31 +3588,6 @@ namespace Menge
 
             return id;
         }
-		//////////////////////////////////////////////////////////////////////////
-		bool s_removeMouseButtonHandlerEnd( uint32_t _id )
-		{
-			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
-				->getGlobalHandleSystem();
-
-			InputSystemHandler * handler = globalHandleSystem->removeGlobalHandler( _id );
-
-			PyGlobalMouseHandlerButtonEnd * py_handler = dynamic_cast<PyGlobalMouseHandlerButtonEnd *>(handler);
-
-			if( py_handler == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("s_removeMouseButtonHandlerEnd %d handler invalid PyGlobalMouseHandlerButtonEnd"
-					, _id
-					);
-
-				return false;
-			}
-
-			py_handler->finalize();
-
-			m_poolPyGlobalMouseHandlerButtonEnds.destroyT( py_handler );
-
-			return true;
-		}
 		//////////////////////////////////////////////////////////////////////////
 		class PyGlobalMouseHandlerButtonBegin
 			: public PyGlobalBaseHandler
@@ -3684,7 +3610,7 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef stdex::template_pool<PyGlobalMouseHandlerButtonBegin, 32> TPoolPyGlobalMouseHandlerButtonBegins;
+		typedef FactoryPoolStore<PyGlobalMouseHandlerButtonBegin, 32> TPoolPyGlobalMouseHandlerButtonBegins;
 		TPoolPyGlobalMouseHandlerButtonBegins m_poolPyGlobalMouseHandlerButtonBegins;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseButtonHandlerBegin( const pybind::object & _cb )
@@ -3692,7 +3618,7 @@ namespace Menge
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
 
-			PyGlobalMouseHandlerButtonBegin * handler = m_poolPyGlobalMouseHandlerButtonBegins.createT();
+			PyGlobalMouseHandlerButtonBegin * handler = m_poolPyGlobalMouseHandlerButtonBegins.createObjectT();
 			
 			handler->initialize( m_serviceProvider, _cb );
 			
@@ -3700,31 +3626,6 @@ namespace Menge
 
 			return id;
 		}
-        //////////////////////////////////////////////////////////////////////////
-        bool s_removeMouseButtonHandlerBegin( uint32_t _id )
-        {
-            GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
-                ->getGlobalHandleSystem();
-
-            InputSystemHandler * handler = globalHandleSystem->removeGlobalHandler( _id );
-
-            PyGlobalMouseHandlerButtonBegin * py_handler = dynamic_cast<PyGlobalMouseHandlerButtonBegin *>(handler);
-
-            if( py_handler == nullptr )
-            {
-                LOGGER_ERROR(m_serviceProvider)("s_removeMouseButtonHandlerBegin %d handler invalid PyGlobalMouseHandlerButtonBegin"
-                    , _id
-                    );
-
-                return false;
-            }
-
-			py_handler->finalize();
-
-            m_poolPyGlobalMouseHandlerButtonBegins.destroyT( py_handler );
-
-            return true;
-        }
 		//////////////////////////////////////////////////////////////////////////
 		class PyGlobalKeyHandler
 			: public PyGlobalBaseHandler
@@ -3746,7 +3647,7 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef stdex::template_pool<PyGlobalKeyHandler, 32> TPoolPyGlobalKeyHandler;
+		typedef FactoryPoolStore<PyGlobalKeyHandler, 32> TPoolPyGlobalKeyHandler;
 		TPoolPyGlobalKeyHandler m_poolPyGlobalKeyHandler;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addKeyHandler( const pybind::object & _cb )
@@ -3754,7 +3655,7 @@ namespace Menge
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
 
-			PyGlobalKeyHandler * handler = m_poolPyGlobalKeyHandler.createT();
+			PyGlobalKeyHandler * handler = m_poolPyGlobalKeyHandler.createObjectT();
 
 			handler->initialize( m_serviceProvider, _cb );
 
@@ -3763,14 +3664,14 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool s_removeKeyHandler( uint32_t _id )
+		bool s_removeGlobalHandler( uint32_t _id )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
 
 			InputSystemHandler * handler = globalHandleSystem->removeGlobalHandler( _id );
 
-			PyGlobalKeyHandler * py_handler = dynamic_cast<PyGlobalKeyHandler *>(handler);
+			PyGlobalBaseHandler * py_handler = dynamic_cast<PyGlobalBaseHandler *>(handler);
 
 			if( py_handler == nullptr )
 			{
@@ -3781,9 +3682,21 @@ namespace Menge
 				return false;
 			}
 
-			m_poolPyGlobalKeyHandler.destroyT( py_handler );
+			py_handler->finalize();
+
+			py_handler->destroy();
 
 			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_enableGlobalHandler( uint32_t _id, bool _value )
+		{
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+				->getGlobalHandleSystem();
+
+			bool successful = globalHandleSystem->enableGlobalHandler( _id, _value );
+
+			return successful;
 		}
         //////////////////////////////////////////////////////////////////////////
         float s_getMovieDuration( const ConstString & _resourceName )
@@ -5346,19 +5259,13 @@ namespace Menge
             pybind::def_functor( "removeCurrentScene", nodeScriptMethod, &NodeScriptMethod::removeCurrentScene );
 
             pybind::def_functor( "addMouseMoveHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseMoveHandler );
-            pybind::def_functor( "removeMouseMoveHandler", nodeScriptMethod, &NodeScriptMethod::s_removeMouseMoveHandler );
-
             pybind::def_functor( "addMouseButtonHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandler );
-			pybind::def_functor( "removeMouseButtonHandler", nodeScriptMethod, &NodeScriptMethod::s_removeMouseButtonHandler );
-
 			pybind::def_functor( "addMouseButtonHandlerBegin", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerBegin );
-			pybind::def_functor( "removeMouseButtonHandlerBegin", nodeScriptMethod, &NodeScriptMethod::s_removeMouseButtonHandlerBegin );
-
 			pybind::def_functor( "addMouseButtonHandlerEnd", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerEnd );
-			pybind::def_functor( "removeMouseButtonHandlerEnd", nodeScriptMethod, &NodeScriptMethod::s_removeMouseButtonHandlerEnd );
-
 			pybind::def_functor( "addKeyHandler", nodeScriptMethod, &NodeScriptMethod::s_addKeyHandler );
-			pybind::def_functor( "removeKeyHandler", nodeScriptMethod, &NodeScriptMethod::s_removeKeyHandler );
+			
+			pybind::def_functor( "removeGlobalHandler", nodeScriptMethod, &NodeScriptMethod::s_removeGlobalHandler );
+			pybind::def_functor( "enableGlobalHandler", nodeScriptMethod, &NodeScriptMethod::s_enableGlobalHandler );
 
             pybind::def_functor( "visitChild", nodeScriptMethod, &NodeScriptMethod::s_visitChild );
 

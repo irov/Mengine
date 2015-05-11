@@ -54,6 +54,11 @@ namespace Menge
                 continue;
             }
 
+			if( desc.enable == false )
+			{
+				continue;
+			}
+
 			desc.handler->handleKeyEvent( _event );
         }
 
@@ -75,6 +80,11 @@ namespace Menge
                 continue;
             }
 
+			if( desc.enable == false )
+			{
+				continue;
+			}
+
 			desc.handler->handleMouseButtonEvent( _event );
         }
 
@@ -92,6 +102,11 @@ namespace Menge
 			const GlobalHandlerDesc & desc = *it;
 
 			if( desc.dead == true )
+			{
+				continue;
+			}
+
+			if( desc.enable == false )
 			{
 				continue;
 			}
@@ -117,6 +132,11 @@ namespace Menge
 				continue;
 			}
 
+			if( desc.enable == false )
+			{
+				continue;
+			}
+
 			desc.handler->handleMouseButtonEventEnd( _event );
         }
 
@@ -137,6 +157,11 @@ namespace Menge
             {
                 continue;
             }
+
+			if( desc.enable == false )
+			{
+				continue;
+			}
 
 			desc.handler->handleMouseMove( _event );
         }
@@ -159,6 +184,11 @@ namespace Menge
 				continue;
 			}
 
+			if( desc.enable == false )
+			{
+				continue;
+			}
+
 			desc.handler->handleMouseWheel( _event );
 		}
 
@@ -173,6 +203,7 @@ namespace Menge
         desc.id = new_id;
 
 		desc.handler = _handler;
+		desc.enable = true;
 		desc.dead = false;
 
 		m_handlersAdd.push_back( desc );
@@ -209,6 +240,33 @@ namespace Menge
 		InputSystemHandler * handler = it_found->handler;
 
         return handler;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool GlobalHandleSystem::enableGlobalHandler( uint32_t _id, bool _value )
+	{
+		TVectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), FFindHandler( _id ) );
+
+		if( it_found_add != m_handlersAdd.end() )
+		{
+			it_found_add->enable = _value;
+
+			return true;
+		}
+
+		TVectorGlobalHandler::iterator it_found = std::find_if( m_handlers.begin(), m_handlers.end(), FFindHandler( _id ) );
+
+		if( it_found == m_handlers.end() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("GlobalHandleSystem::enableGlobalHandler not found %d"
+				, _id
+				);
+
+			return false;
+		}
+
+		it_found->enable = _value;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleSystem::update()

@@ -78,7 +78,7 @@ namespace Menge
 		
         m_dataInfo.format = s_convertFormat( format );
 		m_dataInfo.mipmaps = mipmaps;
-				
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

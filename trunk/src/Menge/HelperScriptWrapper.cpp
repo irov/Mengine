@@ -635,6 +635,58 @@ namespace Menge
 			return result;
 		}
 
+		bool s_intersectMoviesHotspotVsPolygon( Movie * _movie, const ConstString & _socket, Polygon _polygon )
+		{
+			boost::geometry::correct( _polygon );
+
+			if( _movie == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_intersectMoviesHotspotVsPolygon movie is NULL"
+					);
+
+				return false;
+			}
+
+			if( _movie->compile() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_intersectMoviesHotspotVsPolygon movie invalid compile"
+					);
+
+				return false;
+			}
+
+			Node * node;
+			Movie * submovie;
+
+			if( _movie->hasMovieNode( _socket, CONST_STRING( m_serviceProvider, MovieSocketShape ), &node, &submovie ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_intersectMoviesHotspotVsPolygon movie %s not found socket shape %s"
+					, _movie->getName().c_str()
+					, _socket.c_str()
+					);
+
+				return false;
+			}
+
+			HotSpotShape * shape = static_cast<HotSpotShape *>(node);
+
+			if( shape->compile() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("s_intersectMoviesHotspotVsPolygon movie %s socket shape %s invalid compile"
+					, _movie->getName().c_str()
+					, _socket.c_str()
+					);
+
+				return false;
+			}
+
+			const Polygon & p1 = shape->getPolygonWM();
+
+			bool result = s_intersectsPolygons( p1, _polygon );
+
+			return result;
+		}
+
 #	ifdef PYBIND_VISIT_OBJECTS
 		class MyObjectVisits
 			: public pybind::pybind_visit_objects
@@ -1848,6 +1900,8 @@ namespace Menge
 		pybind::def_functor( "intersectsPolygonsWM", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWM );
 		pybind::def_functor( "intersectsPolygonsWMP", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWMP );
 		pybind::def_functor( "intersectsMoviesHotspot", helperScriptMethod, &HelperScriptMethod::s_intersectsMoviesHotspot );
+		pybind::def_functor( "intersectMoviesHotspotVsPolygon", helperScriptMethod, &HelperScriptMethod::s_intersectMoviesHotspotVsPolygon );
+		
 
 		pybind::def_functor( "objects", helperScriptMethod, &HelperScriptMethod::s_objects );
         pybind::def_functor( "textures", helperScriptMethod, &HelperScriptMethod::s_textures );

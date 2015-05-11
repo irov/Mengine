@@ -21,6 +21,12 @@
 
 #	include "SDL.h"
 
+#	ifdef _WIN32
+#	pragma comment(lib, "Winmm.lib")
+#	pragma comment(lib, "Version.lib")
+#	pragma comment(lib, "Imm32.lib")
+#	endif
+
 SERVICE_EXTERN(ServiceProvider, Menge::ServiceProviderInterface);
 SERVICE_EXTERN(Application, Menge::ApplicationInterface);
 SERVICE_EXTERN(StringizeService, Menge::StringizeServiceInterface);
@@ -68,21 +74,18 @@ SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
 SERVICE_EXTERN(PrefetcherService, Menge::PrefetcherServiceInterface);
 
 
-extern "C" // only required if using g++
-{
-    //////////////////////////////////////////////////////////////////////////
-    extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
-    extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeAmplifier( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );
+PLUGIN_EXPORT( MengeImageCodec );
+PLUGIN_EXPORT( MengeSoundCodec );
+PLUGIN_EXPORT( MengeVideoCodec );
+PLUGIN_EXPORT( MengeAmplifier );
+PLUGIN_EXPORT( MengeZip );
+PLUGIN_EXPORT( MengeLZ4 );
 
-	extern bool initPluginMengeOggVorbis( Menge::PluginInterface ** _plugin );
+PLUGIN_EXPORT( MengeOggVorbis );
 
-	extern bool initPluginPathFinder( Menge::PluginInterface ** _plugin );
-	
-}
+PLUGIN_EXPORT( PathFinder );
+
+PLUGIN_EXPORT( MengePosixFileGroup );
 
 namespace Menge
 {
@@ -146,7 +149,7 @@ namespace Menge
         , m_fileLog(nullptr)
         , m_timer(nullptr)
 		, m_input( nullptr )
-		, m_running(false)
+		, m_running(true)
 		, m_active(false)
 		, m_inputService(nullptr)
 		, m_unicodeSystem(nullptr)
@@ -331,9 +334,8 @@ namespace Menge
         }
 				
 		LOGGER_INFO( m_serviceProvider )("Initialize Win32 file group...");
-		PluginInterface * plugin;
-		extern bool initPluginMengeWin32FileGroup( Menge::PluginInterface ** _plugin );
-		initPluginMengeWin32FileGroup( &plugin );
+		PluginInterface * plugin;		
+		initPluginMengePosixFileGroup( &plugin );
 		plugin->initialize( m_serviceProvider );
 		m_plugins.push_back( plugin );
 
@@ -1192,12 +1194,12 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	bool SDLApplication::initialize( int argc, char * argv[] )
     {
-		m_commandLine = " ";
 		for( int i = 1; i != argc; ++i )
 		{
+			m_commandLine += " ";
 			m_commandLine += argv[i];
+			m_commandLine += " ";
 		}		
-		m_commandLine += " ";
 
         setlocale( LC_CTYPE, "" );
 
@@ -1207,6 +1209,37 @@ namespace Menge
 		if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )
 		{
 			m_developmentMode = true;
+		}
+
+		SDL_SetHint( SDL_HINT_VIDEO_ALLOW_SCREENSAVER, "1" );
+
+		SDL_Init( SDL_INIT_VIDEO );
+		
+		SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
+		SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 6 );
+		SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
+		SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 0 );
+		SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 0 );
+		SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
+		SDL_GL_SetAttribute( SDL_GL_RETAINED_BACKING, 0 );
+		SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+		
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
+		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 0 );
+		SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
+
+		//SDL_GL_SetAttribute( SDL_GL_MULTISAMPLESAMPLES, 4 );
+		//SDL_GL_SetAttribute( SDL_GL_MULTISAMPLEBUFFERS, 1 );
+
+		{
+			int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
+
+			SDL_DisplayMode mode;
+			SDL_GetCurrentDisplayMode( 0, &mode );
+
+			m_window = SDL_CreateWindow( "Mengine", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 640, 480, flags );
+
+			m_context = SDL_GL_CreateContext( m_window );
 		}
 
         ServiceProviderInterface * serviceProvider;
@@ -1488,34 +1521,19 @@ namespace Menge
             return false;
         }
 
-		SDL_SetHint( SDL_HINT_VIDEO_ALLOW_SCREENSAVER, "1" );
+		//int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
 
-		SDL_Init( SDL_INIT_VIDEO );
-
-		SDL_GL_SetAttribute( SDL_GL_RED_SIZE, 5 );
-		SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, 6 );
-		SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE, 5 );
-		SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, 0 );
-		SDL_GL_SetAttribute( SDL_GL_DEPTH_SIZE, 0 );
-		SDL_GL_SetAttribute( SDL_GL_RETAINED_BACKING, 0 );
-		//SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MAJOR_VERSION, 2 );
-		SDL_GL_SetAttribute( SDL_GL_CONTEXT_MINOR_VERSION, 0 );
-		SDL_GL_SetAttribute( SDL_GL_SHARE_WITH_CURRENT_CONTEXT, 1 );
-
-		int flags = SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN;
-
-		SDL_DisplayMode mode;
-		SDL_GetCurrentDisplayMode( 0, &mode );
+		//SDL_DisplayMode mode;
+		//SDL_GetCurrentDisplayMode( 0, &mode );
 
 		Resolution windowResolution;
 		m_application->calcWindowResolution( windowResolution );
 
-		m_window = SDL_CreateWindow( "Mengine", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowResolution.getWidth(), windowResolution.getHeight(), flags );
+		//m_window = SDL_CreateWindow( "Mengine", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, windowResolution.getWidth(), windowResolution.getHeight(), flags );
 
         LOGGER_INFO(m_serviceProvider)( "Creating Render Window..." );
 
-        if( m_application->createRenderWindow( nullptr ) == false )
+		if( m_application->createRenderWindow( m_window ) == false )
         {
             return false;
         }
@@ -1552,6 +1570,16 @@ namespace Menge
 				if( _event.window.event == SDL_WINDOWEVENT_RESTORED )
 				{
 					m_active = true;
+				}
+
+				if( _event.window.event == SDL_WINDOWEVENT_SHOWN )
+				{
+					m_active = true;
+				}
+
+				if( _event.window.event == SDL_WINDOWEVENT_HIDDEN )
+				{
+					m_active = false;
 				}
 
 				bool newFocus = m_focus;
@@ -1594,16 +1622,16 @@ namespace Menge
             return;
         }
 
-		bool done = false;
-		SDL_Event event;
-		while( SDL_PollEvent( &event ) )
-		{
-			this->handleEvent( event );
-		}
-
 		while( m_running == true )
         {
 			float frameTime = m_timer->getDeltaTime();
+
+			bool done = false;
+			SDL_Event event;
+			while( SDL_PollEvent( &event ) )
+			{
+				this->handleEvent( event );
+			}
 
 			if( m_active == false )
 			{

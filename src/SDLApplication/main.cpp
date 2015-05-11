@@ -11,7 +11,6 @@
 //////////////////////////////////////////////////////////////////////////
 int main( int argc, char * argv[] )
 {
-	// keep compiler happy
 	Menge::SDLApplication application;
 	
 	try

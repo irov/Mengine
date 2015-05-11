@@ -139,6 +139,7 @@ namespace Menge
 		ApplicationInterface * m_application;
 
 		SDL_Window * m_window;
+		SDL_GLContext m_context;
 		
 		SDLLayerInterface * m_layer;
 

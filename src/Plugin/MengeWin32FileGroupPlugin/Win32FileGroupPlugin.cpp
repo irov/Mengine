@@ -5,23 +5,8 @@
 
 #	include "Win32FileGroupDirectory.h"
 
-extern "C" // only required if using g++
-{
-    //////////////////////////////////////////////////////////////////////////
-    bool initPluginMengeWin32FileGroup( Menge::PluginInterface ** _plugin )
-    {
-        *_plugin = new Menge::Win32FileGroupPlugin();
-
-        return true;
-    }
-#   ifdef MENGE_PLUGIN_DLL
-    ////////////////////////////////////////////////////////////////////////////
-    __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-    {
-        return initPluginMengeWin32FileGroup( _plugin );
-    }
-#   endif
-}
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_DECLARE( MengeWin32FileGroup, Menge::Win32FileGroupPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {

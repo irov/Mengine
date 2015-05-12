@@ -53,7 +53,7 @@ namespace	Menge
 			->addMousePositionProvider(this);
 
 		const mt::vec2f & cursor_pos = INPUT_SERVICE(m_serviceProvider)
-			->getCursorPosition();
+			->getCursorPosition( 0 );
 
 		mt::vec2f wp;
 		this->calcMouseWorldPosition( m_renderCamera, m_renderViewport, cursor_pos, wp );
@@ -76,8 +76,13 @@ namespace	Menge
 		Entity::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::onMousePositionChange( const mt::vec2f & _screenPosition )
+	void Arrow::onMousePositionChange( uint32_t _touchId, const mt::vec2f & _screenPosition )
 	{
+		if( _touchId != 0 )
+		{
+			return;
+		}
+
 		mt::vec2f wp;
 		this->calcMouseWorldPosition( m_renderCamera, m_renderViewport, _screenPosition, wp );
 

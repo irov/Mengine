@@ -13,6 +13,8 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+#	define MENGINE_INPUT_MAX_TOUCH 16
+	//////////////////////////////////////////////////////////////////////////
 	enum KeyCode
 	{
 		KC_UNASSIGNED = 0x00,
@@ -443,7 +445,7 @@ namespace Menge
 		virtual ~InputMousePositionProvider(){};
 
 	public:
-		virtual void onMousePositionChange( const mt::vec2f & _position ) = 0;
+		virtual void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class InputServiceInterface
@@ -472,8 +474,8 @@ namespace Menge
 		virtual bool isAnyMouseButtonDown() const = 0;
 		virtual bool isMouseButtonDown( uint32_t _buttonId ) const = 0;
 
-        virtual void setCursorPosition( const mt::vec2f & _point ) = 0;
-		virtual const mt::vec2f & getCursorPosition() const = 0;
+		virtual void setCursorPosition( uint32_t _touchId, const mt::vec2f & _point ) = 0;
+		virtual const mt::vec2f & getCursorPosition( uint32_t _touchId ) const = 0;
 		virtual bool validCursorPosition( float _x, float _y ) const = 0;
 
 		virtual void addMousePositionProvider( InputMousePositionProvider * _provider ) = 0;

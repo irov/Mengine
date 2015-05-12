@@ -14,9 +14,12 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	InputEngine::InputEngine()
-		: m_serviceProvider(nullptr)
-		, m_cursorPosition(0.f, 0.f)
+		: m_serviceProvider(nullptr)		
 	{
+		for( uint32_t i = 0; i != 0; ++i )
+		{
+			m_cursorPosition[i] = mt::vec2f( 0.f, 0.f );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	InputEngine::~InputEngine()
@@ -217,17 +220,22 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::applyCursorPosition_( float _x, float _y )
+	void InputEngine::applyCursorPosition_( uint32_t _touchId, float _x, float _y )
 	{		       
+		if( _touchId >= MENGINE_INPUT_MAX_TOUCH )
+		{
+			return;
+		}
+
 		mt::vec2f point( _x, _y );
 
 		bool change = false;
-		if( mt::cmp_v2_v2( m_cursorPosition, point ) == false )
+		if( mt::cmp_v2_v2( m_cursorPosition[_touchId], point ) == false )
 		{
 			change = true;
 		}
 
-		m_cursorPosition = point;
+		m_cursorPosition[_touchId] = point;
 		
 		if( change == true )
 		{
@@ -237,19 +245,19 @@ namespace Menge
 			it != it_end;
 			++it )
 			{
-				(*it)->onMousePositionChange( m_cursorPosition );
+				(*it)->onMousePositionChange( _touchId, m_cursorPosition[_touchId] );
 			}
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void InputEngine::setCursorPosition( const mt::vec2f & _point )
+	void InputEngine::setCursorPosition( uint32_t _touchId, const mt::vec2f & _point )
     {
-        this->applyCursorPosition_( _point.x, _point.y );
+		this->applyCursorPosition_( _touchId, _point.x, _point.y );
     }
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & InputEngine::getCursorPosition() const
+	const mt::vec2f & InputEngine::getCursorPosition( uint32_t _touchId ) const
 	{
-		return m_cursorPosition;
+		return m_cursorPosition[_touchId];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::addMousePositionProvider( InputMousePositionProvider * _provider )
@@ -291,8 +299,6 @@ namespace Menge
 		
 		m_keyBuffer[_params.key] = _params.isDown;
 
-		this->applyCursorPosition_( _params.x, _params.y );
-
 		InputKeyEvent event;
 		event.type = _params.type;
 		event.x = _params.x;
@@ -310,7 +316,7 @@ namespace Menge
 	{
 		m_mouseBuffer[ _params.button ] = _params.isDown;
 
-		this->applyCursorPosition_( _params.x, _params.y );
+		this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 
 		APPLICATION_SERVICE(m_serviceProvider)
 			->mouseButtonEvent( _params );
@@ -318,7 +324,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseMoveEvent_( const InputMouseMoveEvent & _params )
 	{
-		this->applyCursorPosition_( _params.x, _params.y );
+		this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 
 		APPLICATION_SERVICE(m_serviceProvider)
 			->mouseMove( _params );
@@ -326,15 +332,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseWheelEvent_( const InputMouseWheelEvent& _params )
 	{
-		this->applyCursorPosition_( _params.x, _params.y );
-
 		APPLICATION_SERVICE(m_serviceProvider)
 			->mouseWheel( _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::mousePositionEvent_( const InputMousePositionEvent& _params )
 	{
-		this->applyCursorPosition_( _params.x, _params.y );
+		this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 
 		APPLICATION_SERVICE(m_serviceProvider)
 			->mousePosition( _params );
@@ -342,7 +346,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseEnterEvent_( const InputMousePositionEvent& _params )
     {
-		this->applyCursorPosition_( _params.x, _params.y );
+		this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 
         APPLICATION_SERVICE(m_serviceProvider)
 			->mouseEnter( _params );
@@ -350,7 +354,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	void InputEngine::mouseLeaveEvent_( const InputMousePositionEvent& _params )
     {
-		this->applyCursorPosition_( _params.x, _params.y );
+		this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 
         APPLICATION_SERVICE(m_serviceProvider)
             ->mouseLeave( _params );

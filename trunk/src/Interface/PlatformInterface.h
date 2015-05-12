@@ -61,7 +61,7 @@ namespace Menge
         virtual void minimizeWindow() = 0;
 
         virtual void setHandleMouse( bool _handle ) = 0;
-        virtual void setCursorPosition( const mt::vec2f & _pos ) = 0;
+		virtual void setCursorPosition( const mt::vec2f & _pos ) = 0;
 
         virtual TimerInterface * getTimer() const = 0;
 

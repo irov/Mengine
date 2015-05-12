@@ -42,8 +42,8 @@ namespace Menge
 		bool isAnyMouseButtonDown() const override;
 		bool isMouseButtonDown( uint32_t _button ) const override;
 
-        void setCursorPosition( const mt::vec2f & _point ) override;
-		const mt::vec2f & getCursorPosition() const override;
+		void setCursorPosition( uint32_t _touchId, const mt::vec2f & _point ) override;
+		const mt::vec2f & getCursorPosition( uint32_t _touchId ) const override;
 		bool validCursorPosition( float _x, float _y ) const override;
 
 		void addMousePositionProvider( InputMousePositionProvider * _provider ) override;
@@ -68,10 +68,10 @@ namespace Menge
 		void mouseLeaveEvent_( const InputMousePositionEvent & _params );
 
 	protected:		
-		void applyCursorPosition_( float _x, float _y );
+		void applyCursorPosition_( uint32_t _touchId, float _x, float _y );
 
 	private:
-		mt::vec2f m_cursorPosition;
+		mt::vec2f m_cursorPosition[MENGINE_INPUT_MAX_TOUCH];
 
 		typedef stdex::vector<InputMousePositionProvider *> TVectorMousePositionProviders;
 		TVectorMousePositionProviders m_mousePositionProviders;

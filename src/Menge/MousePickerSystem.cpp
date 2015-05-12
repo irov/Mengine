@@ -196,11 +196,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::update()
 	{
-		//const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
-		//	->getCursorPosition();
-
-		//this->proccesTraps_( pos );
-
 		this->updateDead_();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -233,7 +228,7 @@ namespace Menge
 	void MousePickerSystem::updateTrap()
 	{
 		const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
-			->getCursorPosition();
+			->getCursorPosition( 0 );
 
 		TVectorPickerTrapStates states;
 		states.reserve(m_pickerTrapCount);

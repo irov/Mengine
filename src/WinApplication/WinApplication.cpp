@@ -1927,7 +1927,7 @@ namespace Menge
 		this->calcCursorPosition( point );
 
 		INPUT_SERVICE( m_serviceProvider )
-			->setCursorPosition( point );
+			->setCursorPosition( 0, point );
 
 		if( m_application->createRenderWindow( m_hWnd ) == false )
 		{

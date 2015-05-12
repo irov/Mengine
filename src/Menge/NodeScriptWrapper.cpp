@@ -1734,7 +1734,7 @@ namespace Menge
         void s_pushMouseMove( uint32_t _touchId, const mt::vec2f & _pos )
         {
             const mt::vec2f & cp = INPUT_SERVICE(m_serviceProvider)
-                ->getCursorPosition();
+				->getCursorPosition( _touchId );
 
 			mt::vec2f pos_screen;
 			this->s_calcMouseScreenPosition( _pos, pos_screen );
@@ -2752,7 +2752,7 @@ namespace Menge
         mt::vec2f s_getCursorPosition()
         {
             const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
-                ->getCursorPosition();
+                ->getCursorPosition( 0 );
 
 			mt::vec2f wp;
 			PLAYER_SERVICE(m_serviceProvider)

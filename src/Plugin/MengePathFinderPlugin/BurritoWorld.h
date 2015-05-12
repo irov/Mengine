@@ -62,6 +62,10 @@ namespace Menge
 		bool isDead() const;
 
 	public:
+		void setFreeze( bool _value );
+		bool getFreeze() const;
+
+	public:
 		BurritoBison * createBison( Node * _node, const mt::vec3f & _offset, float _bisonY, float _radius );
 
 	public:
@@ -100,5 +104,6 @@ namespace Menge
 		TVectorBurritoUnit m_units;
 
 		bool m_dead;
+		bool m_freeze;
 	};
 }

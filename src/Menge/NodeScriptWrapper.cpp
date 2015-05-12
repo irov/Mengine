@@ -2751,15 +2751,22 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getCursorPosition()
         {
-            const mt::vec2f & pos = INPUT_SERVICE(m_serviceProvider)
-                ->getCursorPosition( 0 );
-
-			mt::vec2f wp;
-			PLAYER_SERVICE(m_serviceProvider)
-				->calcGlobalMouseWorldPosition( pos, wp );
+			mt::vec2f wp = this->s_getTouchPosition( 0 );
 
             return wp;
         }
+		//////////////////////////////////////////////////////////////////////////
+		mt::vec2f s_getTouchPosition( uint32_t _touchId )
+		{
+			const mt::vec2f & pos = INPUT_SERVICE( m_serviceProvider )
+				->getCursorPosition( _touchId );
+
+			mt::vec2f wp;
+			PLAYER_SERVICE( m_serviceProvider )
+				->calcGlobalMouseWorldPosition( pos, wp );
+
+			return wp;
+		}
         //////////////////////////////////////////////////////////////////////////
         bool s_isInViewport( const mt::vec2f & _pos )
         {
@@ -5178,6 +5185,7 @@ namespace Menge
             pybind::def_functor( "getMouseY", nodeScriptMethod, &NodeScriptMethod::getMouseY ); //deprecated
 
             pybind::def_functor( "getCursorPosition", nodeScriptMethod, &NodeScriptMethod::s_getCursorPosition );
+			pybind::def_functor( "getTouchPosition", nodeScriptMethod, &NodeScriptMethod::s_getTouchPosition );
 
             pybind::def_functor( "setArrow", nodeScriptMethod, &NodeScriptMethod::s_setArrow );
             pybind::def_functor( "getArrow", nodeScriptMethod, &NodeScriptMethod::s_getArrow );

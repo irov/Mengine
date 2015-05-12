@@ -85,6 +85,8 @@ namespace Menge
 			;
 			
 		pybind::interface_<BurritoWorld>("BurritoWorld")
+			.def( "setFreeze", &BurritoWorld::setFreeze )
+			.def( "getFreeze", &BurritoWorld::getFreeze )
 			.def( "createBison", &BurritoWorld::createBison )
 			.def( "createGround", &BurritoWorld::createGround )
 			.def( "addUnitBounds", &BurritoWorld::addUnitBounds )

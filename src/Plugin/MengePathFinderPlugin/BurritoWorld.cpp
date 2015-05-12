@@ -107,6 +107,7 @@ namespace Menge
 	BurritoWorld::BurritoWorld()
 		: m_bison(nullptr)
 		, m_dead(false)
+		, m_freeze(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -122,6 +123,16 @@ namespace Menge
 	bool BurritoWorld::isDead() const
 	{ 
 		return m_dead;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoWorld::setFreeze( bool _value )
+	{
+		m_freeze = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoWorld::getFreeze() const
+	{
+		return m_freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoBison * BurritoWorld::createBison( Node * _node, const mt::vec3f & _offset, float _bisonY, float _radius )
@@ -335,6 +346,11 @@ namespace Menge
 	void BurritoWorld::update( float _time, float _timing )
 	{
 		if( m_bison == nullptr )
+		{
+			return;
+		}
+
+		if( m_freeze == true )
 		{
 			return;
 		}

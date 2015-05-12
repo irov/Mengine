@@ -52,6 +52,7 @@ namespace Menge
 		, m_bisonY( 0.f )
 		, m_radius( 0.f )		
 		, m_velocity( 0.f, 0.f, 0.f )
+		, m_neutron( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -129,9 +130,28 @@ namespace Menge
 		return m_velocity;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::setNeutron( bool _value )
+	{
+		m_neutron = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoBison::getNeutron() const
+	{
+		return m_neutron;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset, mt::vec3f & _offsetH, uint32_t _iterate )
 	{		
 		(void)_time;
+
+		if( m_neutron == true )
+		{
+			_velocity = mt::vec3f( m_velocity.x, 0.f, m_velocity.z );
+			_offset = m_offset;
+			_offsetH = m_offset + mt::vec3f( 0.f, m_bisonY, 0.f );
+
+			return;
+		}
 
 		if( _iterate == 0 )
 		{

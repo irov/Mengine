@@ -67,6 +67,8 @@ namespace Menge
 			.def( "getRadius", &BurritoBison::getRadius )
 			.def( "setVelocity", &BurritoBison::setVelocity )
 			.def( "getVelocity", &BurritoBison::getVelocity )
+			.def( "setNeutron", &BurritoBison::setNeutron )
+			.def( "getNeutron", &BurritoBison::getNeutron )
 			.def( "addVelocityEvent", &BurritoBison::addVelocityEvent )
 			.def( "removeAllVelocityEvents", &BurritoBison::removeAllVelocityEvents )
 			;

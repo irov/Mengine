@@ -68,6 +68,9 @@ namespace Menge
 		void setVelocity( const mt::vec3f & _velocity );
 		const mt::vec3f & getVelocity() const;
 
+		void setNeutron( bool _value );
+		bool getNeutron() const;
+
 	public:
 		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset, mt::vec3f & _offsetH, uint32_t _iterate );
 
@@ -98,5 +101,7 @@ namespace Menge
 		typedef stdex::vector<VelocityEventDesc> TVectorVelocityEventDesc;
 		TVectorVelocityEventDesc m_velocityEvents;
 		TVectorVelocityEventDesc m_velocityEventsAdd;
+
+		bool m_neutron;
 	};
 }

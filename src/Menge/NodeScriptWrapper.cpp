@@ -4338,6 +4338,10 @@ namespace Menge
             .def( "getType", &Identity::getType )
             ;
 
+		pybind::interface_<BoundingBox>( "BoundingBox" )
+			.def( "getBoundingBox", &BoundingBox::getBoundingBox )
+			;
+
         pybind::interface_<Transformation3D>("Transformation3D")
             .def( "setLocalPosition", &Transformation3D::setLocalPosition )
             .def( "getLocalPosition", &Transformation3D::getLocalPosition )
@@ -4536,7 +4540,7 @@ namespace Menge
 			.def( "stopAllAffectors", &Affectorable::stopAllAffectors )
             ;
 
-        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, Colorable, Resource, Renderable, Affectorable> >("Node", false)
+		pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, BoundingBox, Colorable, Resource, Renderable, Affectorable> >( "Node", false )
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )

@@ -141,7 +141,7 @@ namespace Menge
 		return m_neutron;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void setCollide( bool _value )
+	void BurritoBison::setCollide( bool _value )
 	{
 		m_collide = _value;
 	}

@@ -71,6 +71,9 @@ namespace Menge
 		void setNeutron( bool _value );
 		bool getNeutron() const;
 
+		void setCollide( bool _value );
+		bool getCollide() const;
+
 	public:
 		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset, mt::vec3f & _offsetH, uint32_t _iterate );
 
@@ -103,5 +106,6 @@ namespace Menge
 		TVectorVelocityEventDesc m_velocityEventsAdd;
 
 		bool m_neutron;
+		bool m_collide;
 	};
 }

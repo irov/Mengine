@@ -391,52 +391,54 @@ namespace Menge
 
 			if( mt::equal_f_z( sq_speed ) == false )
 			{
-				bool collision = false;
-				float collisionTiming = 0.f;
-				mt::vec3f newVelocity = velocity;
-
-				for( TVectorBurritoLayer::const_iterator
-					it = m_layers.begin(),
-					it_end = m_layers.end();
-				it != it_end;
-				++it )
+				if( m_bison->getCollide() == true )
 				{
-					const BurritoLayer & layer = *it;
+					bool collision = false;
+					float collisionTiming = 0.f;
 
-					for( TVectorBurritoUnit::const_iterator
-						it_unit = layer.units.begin(),
-						it_unit_end = layer.units.end();
-					it_unit != it_unit_end;
-					++it_unit )
+					for( TVectorBurritoLayer::const_iterator
+						it = m_layers.begin(),
+						it_end = m_layers.end();
+					it != it_end;
+					++it )
 					{
-						const BurritoUnit * unit = *it_unit;
+						const BurritoLayer & layer = *it;
 
-						mt::vec3f collision_velocity = velocity * layer.parallax;
-
-						if( unit->check_collision( iterate_timing, offsetH, bison_radius, collision_velocity, collisionTiming ) == true )
+						for( TVectorBurritoUnit::const_iterator
+							it_unit = layer.units.begin(),
+							it_unit_end = layer.units.end();
+						it_unit != it_unit_end;
+						++it_unit )
 						{
-							collision = true;
+							const BurritoUnit * unit = *it_unit;
 
-							break;
+							mt::vec3f collision_velocity = velocity * layer.parallax;
+
+							if( unit->check_collision( iterate_timing, offsetH, bison_radius, collision_velocity, collisionTiming ) == true )
+							{
+								collision = true;
+
+								break;
+							}
 						}
 					}
-				}
 
-				if( m_ground != nullptr && collision == false )
-				{
-					if( m_ground->check_collision( iterate_timing, offsetH, bison_radius, velocity, collisionTiming ) == true )
+					if( m_ground != nullptr && collision == false )
 					{
-						collision = true;
+						if( m_ground->check_collision( iterate_timing, offsetH, bison_radius, velocity, collisionTiming ) == true )
+						{
+							collision = true;
+						}
 					}
-				}
 
-				if( collision == true )
-				{
-					next_timing = iterate_timing - collisionTiming;
-					iterate_timing = collisionTiming;
+					if( collision == true )
+					{
+						next_timing = iterate_timing - collisionTiming;
+						iterate_timing = collisionTiming;
 
-					++iterate;
-					++total_iterate;
+						++iterate;
+						++total_iterate;
+					}
 				}
 								
 				mt::vec3f bison_translate = velocity * iterate_timing;

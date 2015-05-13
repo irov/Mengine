@@ -53,6 +53,7 @@ namespace Menge
 		, m_radius( 0.f )		
 		, m_velocity( 0.f, 0.f, 0.f )
 		, m_neutron( false )
+		, m_collide( true )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -138,6 +139,16 @@ namespace Menge
 	bool BurritoBison::getNeutron() const
 	{
 		return m_neutron;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void setCollide( bool _value )
+	{
+		m_collide = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoBison::getCollide() const
+	{
+		return m_collide;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset, mt::vec3f & _offsetH, uint32_t _iterate )

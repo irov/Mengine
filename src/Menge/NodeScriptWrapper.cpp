@@ -817,16 +817,16 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void Transformation3D_setScale( Transformation3D * _transformation, const mt::vec3f & _scale )
         {
-			if( mt::equal_f_z( _scale.x ) == true || mt::equal_f_z( _scale.y ) == true || mt::equal_f_z( _scale.z ) == true )
-			{
-				pybind::throw_exception("Transformation3D::setScale scale xyz not zero! (%f %f %f)"
-					, _scale.x
-					, _scale.y
-					, _scale.z
-					);
+			//if( mt::equal_f_z( _scale.x ) == true || mt::equal_f_z( _scale.y ) == true || mt::equal_f_z( _scale.z ) == true )
+			//{
+			//	pybind::throw_exception("Transformation3D::setScale scale xyz not zero! (%f %f %f)"
+			//		, _scale.x
+			//		, _scale.y
+			//		, _scale.z
+			//		);
 
-				return;
-			}
+			//	return;
+			//}
             
             _transformation->setScale( _scale );
         }
@@ -3218,17 +3218,17 @@ namespace Menge
                 return 0;
             }
 
-            if( mt::equal_f_z( _scale.x ) == true || mt::equal_f_z( _scale.y ) == true || mt::equal_f_z( _scale.z ) == true )
-            {
-                LOGGER_ERROR(m_serviceProvider)("Node::scaleTo %s scale xyz not zero! (%f %f %f)"
-                    , _node->getName().c_str()
-                    , _scale.x
-                    , _scale.y
-                    , _scale.z
-                    );
+            //if( mt::equal_f_z( _scale.x ) == true || mt::equal_f_z( _scale.y ) == true || mt::equal_f_z( _scale.z ) == true )
+            //{
+            //    LOGGER_ERROR(m_serviceProvider)("Node::scaleTo %s scale xyz not zero! (%f %f %f)"
+            //        , _node->getName().c_str()
+            //        , _scale.x
+            //        , _scale.y
+            //        , _scale.z
+            //        );
 
-                return 0;
-            }
+            //    return 0;
+            //}
 
             scaleStop( _node );
 
@@ -4351,7 +4351,7 @@ namespace Menge
             .def( "getCoordinate", &Transformation3D::getCoordinate )
             .def( "setOrigin", &Transformation3D::setOrigin )
             .def( "getOrigin", &Transformation3D::getOrigin )
-            .def_proxy_static( "setScale", nodeScriptMethod, &NodeScriptMethod::Transformation3D_setScale )
+			.def( "setScale", &Transformation3D::setScale )
             .def( "getScale", &Transformation3D::getScale )
             .def( "setOrientationX", &Transformation3D::setOrientationX )
             .def( "getOrientationX", &Transformation3D::getOrientationX )

@@ -58,7 +58,7 @@ namespace Menge
 			const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
             MovieFrameSource frame;
-            if( framePack->getLayerFrame( _layer.index, indexIn, frame ) == false )
+			if( framePack->getLayerFrame( _layer.index, 0, frame ) == false )
             {
                 return;
             }

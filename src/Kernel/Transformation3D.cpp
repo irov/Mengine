@@ -242,17 +242,6 @@ namespace Menge
 	{
 		m_invalidateLocalMatrix = false;
 
-#	ifdef _DEBUG
-		if( mt::equal_f_z( m_scale.x ) == true || mt::equal_f_z( m_scale.y ) == true || mt::equal_f_z( m_scale.z ) == true )
-		{
-			MENGINE_THROW_EXCEPTION("Transformation has zero scale [%f, %f, %f]"
-				, m_scale.x
-				, m_scale.y
-				, m_scale.z
-				);
-		}
-#	endif
-
 		mt::mat4f mat_scale;
 		mt::ident_m4( mat_scale );
 		mat_scale.v3.x = -(m_origin.x + m_coordinate.x) * m_scale.x;

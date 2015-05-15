@@ -24,8 +24,6 @@ namespace Menge
     public:
         uint64_t getMilliseconds() override;
         uint64_t getMicroseconds() override;
-        uint64_t getMillisecondsCPU() override;
-        uint64_t getMicrosecondsCPU() override;
 
     protected:
         mutable uint64 m_time;

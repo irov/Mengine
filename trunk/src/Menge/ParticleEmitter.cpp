@@ -384,8 +384,15 @@ namespace	Menge
 			_timing -= deltha;
 		}
 
+		float speedFactor = this->getAnimationSpeedFactor();
+		float timing = _timing * speedFactor;
+
+		float scretch = this->getScretch();
+
+		float totalTiming = timing / scretch;
+
 		bool stop;
-		m_emitter->update( _timing, stop );
+		m_emitter->update( totalTiming, stop );
 		
 		this->updateParticleVertex_();
 

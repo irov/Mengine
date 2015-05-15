@@ -200,20 +200,20 @@ namespace Menge
 					frameLayer.source = frame;
 					frameLayer.count = count;
 
-					if( mt::equal_f_z( frame.scale.x ) == true )
-					{
-						frame.scale.x = mt::m_eps2;
-					}
+					//if( mt::equal_f_z( frame.scale.x ) == true )
+					//{
+					//	frame.scale.x = mt::m_eps2;
+					//}
 
-					if( mt::equal_f_z( frame.scale.y ) == true )
-					{
-						frame.scale.y = mt::m_eps2;
-					}
+					//if( mt::equal_f_z( frame.scale.y ) == true )
+					//{
+					//	frame.scale.y = mt::m_eps2;
+					//}
 
-					if( mt::equal_f_z( frame.scale.z ) == true )
-					{
-						frame.scale.z = mt::m_eps2;
-					}
+					//if( mt::equal_f_z( frame.scale.z ) == true )
+					//{
+					//	frame.scale.z = mt::m_eps2;
+					//}
 				}
 			}
 			else
@@ -285,20 +285,20 @@ namespace Menge
 					frame.rotation.y = 0.f;
 					frame.rotation.z = 0.f;
 
-					if( mt::equal_f_z( frame.scale.x ) == true )
-					{
-						frame.scale.x = mt::m_eps2;
-					}
+					//if( mt::equal_f_z( frame.scale.x ) == true )
+					//{
+					//	frame.scale.x = mt::m_eps2;
+					//}
 
-					if( mt::equal_f_z( frame.scale.y ) == true )
-					{
-						frame.scale.y = mt::m_eps2;
-					}
+					//if( mt::equal_f_z( frame.scale.y ) == true )
+					//{
+					//	frame.scale.y = mt::m_eps2;
+					//}
 
-					if( mt::equal_f_z( frame.scale.z ) == true )
-					{
-						frame.scale.z = mt::m_eps2;
-					}
+					//if( mt::equal_f_z( frame.scale.z ) == true )
+					//{
+					//	frame.scale.z = mt::m_eps2;
+					//}
 
 					for( uint32_t i = 0; i != count; ++i )
 					{
@@ -377,20 +377,20 @@ namespace Menge
 
 				mt::quat_to_euler( qor, frame.rotation );
 
-				if( mt::equal_f_z( frame.scale.x ) == true )
-				{
-					frame.scale.x = mt::m_eps2;
-				}
+				//if( mt::equal_f_z( frame.scale.x ) == true )
+				//{
+				//	frame.scale.x = mt::m_eps2;
+				//}
 
-				if( mt::equal_f_z( frame.scale.y ) == true )
-				{
-					frame.scale.y = mt::m_eps2;
-				}
+				//if( mt::equal_f_z( frame.scale.y ) == true )
+				//{
+				//	frame.scale.y = mt::m_eps2;
+				//}
 
-				if( mt::equal_f_z( frame.scale.z ) == true )
-				{
-					frame.scale.z = mt::m_eps2;
-				}
+				//if( mt::equal_f_z( frame.scale.z ) == true )
+				//{
+				//	frame.scale.z = mt::m_eps2;
+				//}
 				
 				if( frameLayer.immutable == 0 )
 				{

@@ -53,7 +53,7 @@ namespace Menge
             return;
         }
 
-        if( _beginFrame <= indexIn && _endFrame >= indexIn )
+        if( _beginFrame < indexIn && _endFrame >= indexIn )
         {
 			const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 

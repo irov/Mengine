@@ -1740,17 +1740,9 @@ namespace Menge
 			this->s_calcMouseScreenPosition( _pos, pos_screen );
 
             mt::vec2f mp = pos_screen - cp;
-
-			InputUnionEvent event;
-			event.move.type = IET_MOUSE_MOVE;
-			event.move.touchId = _touchId;
-			event.move.x = cp.x;
-			event.move.y = cp.y;
-			event.move.dx = mp.x;
-			event.move.dy = mp.y;
-
+			
             INPUT_SERVICE(m_serviceProvider)
-                ->pushEvent( event );
+				->pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, unsigned int _button, bool _isDown )
@@ -1758,16 +1750,8 @@ namespace Menge
 			mt::vec2f pos_screen;
 			this->s_calcMouseScreenPosition( _pos, pos_screen );
 
-			InputUnionEvent event;
-			event.button.type = IET_MOUSE_BUTTON;
-			event.button.touchId = _touchId;
-			event.button.x = pos_screen.x;
-			event.button.y = pos_screen.y;
-			event.button.button = _button;
-			event.button.isDown = _isDown;
-
             INPUT_SERVICE(m_serviceProvider)
-				->pushEvent( event );
+				->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_platformEvent( const ConstString & _event, const TMapParams & _params )

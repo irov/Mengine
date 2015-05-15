@@ -76,14 +76,4 @@ namespace Menge
         
         return ul_ms;
     }
-    //////////////////////////////////////////////////////////////////////////
-    uint64_t MarmaladeTimer::getMillisecondsCPU()
-    {
-        return 0;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint64_t MarmaladeTimer::getMicrosecondsCPU()
-    {
-        return 0;
-    }
 }

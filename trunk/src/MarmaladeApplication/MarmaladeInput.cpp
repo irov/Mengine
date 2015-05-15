@@ -221,12 +221,12 @@ namespace Menge
 				{
 					code = it_found->second;
 				}
-				
-				INPUT_SERVICE( m_serviceProvider )
-					->onKeyEvent( point, code, desc.ch, true );
 
 				INPUT_SERVICE( m_serviceProvider )
-					->onKeyEvent( point, code, desc.ch, false );
+					->pushKeyEvent( point.x, point.y, code, desc.ch, true, false );
+
+				INPUT_SERVICE( m_serviceProvider )
+					->pushKeyEvent( point.x, point.y, code, desc.ch, false, false );
 			}
 			else
 			{
@@ -234,7 +234,7 @@ namespace Menge
 				bool isDown = desc.pressed != 0;
 
 				INPUT_SERVICE( m_serviceProvider )
-					->onKeyEvent( point, code, desc.ch, isDown );
+					->pushKeyEvent( point.x, point.y, code, desc.ch, isDown, false );
 			}
 		}
 
@@ -398,8 +398,8 @@ namespace Menge
         
         ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
 
-        INPUT_SERVICE(serviceProvider)
-            ->onMouseButtonEvent( touchId, point, 0, isDown );
+		INPUT_SERVICE( serviceProvider )
+			->pushMouseButtonEvent( touchId, point.x, point.y, 0, 0.f, isDown );
 
 		return 0;
     }
@@ -423,8 +423,8 @@ namespace Menge
 
         ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
 
-        INPUT_SERVICE(serviceProvider)
-            ->onMouseMove( touchId, point, diff.x, diff.y );
+		INPUT_SERVICE( serviceProvider )
+			->pushMouseMoveEvent( touchId, point.x, point.y, diff.x, diff.y, 0.f );
 
 		return 0;
     }
@@ -440,8 +440,8 @@ namespace Menge
 
         ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
 
-        INPUT_SERVICE(serviceProvider)
-            ->onMouseButtonEvent( 0, point, 0, isDown );
+		INPUT_SERVICE( serviceProvider )
+			->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, isDown );
 
 		return 0;
     }
@@ -463,8 +463,8 @@ namespace Menge
 
         ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
 
-        INPUT_SERVICE(serviceProvider)
-            ->onMouseMove( 0, point, diff.x, diff.y );
+		INPUT_SERVICE( serviceProvider )
+			->pushMouseMoveEvent( 0, point.x, point.y, diff.x, diff.y, 0.f );
 
 		return 0;
     }

@@ -320,107 +320,6 @@ namespace Menge
 		InputMousePositionEvent position;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	namespace Helper
-	{
-		//////////////////////////////////////////////////////////////////////////
-		inline InputUnionEvent makeKeyEvent( float _x, float _y, KeyCode _key, WChar _code, bool _isDown, bool _repeating )
-		{
-			InputUnionEvent event;
-			event.key.type = IET_KEY;
-
-			event.key.x = _x;
-			event.key.y = _y;
-			event.key.key = _key;
-			event.key.code = _code;
-			event.key.isDown = _isDown;
-			event.key.isRepeat = _repeating;
-
-			return event;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		inline InputUnionEvent makeMouseButtonEvent( unsigned int _touchId, float _x, float _y, unsigned int _button, float _pressure, bool _isDown )
-		{
-			InputUnionEvent event;
-			event.button.type = IET_MOUSE_BUTTON;
-
-			event.button.touchId = _touchId;
-			event.button.x = _x;
-			event.button.y = _y;
-			event.button.button = _button;
-			event.button.pressure = _pressure;
-			event.button.isDown = _isDown;
-
-			return event;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		inline InputUnionEvent makeMouseWheelEvent( float _x, float _y, unsigned int _button, int _whell )
-		{
-			InputUnionEvent event;
-			event.wheel.type = IET_MOUSE_WHELL;
-
-			event.wheel.x = _x;
-			event.wheel.y = _y;
-			event.wheel.button = _button;
-			event.wheel.wheel = _whell;
-
-			return event;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		inline InputUnionEvent makeMouseMoveEvent( unsigned int _touchId, float _x, float _y, float _dx, float _dy, float _pressure )
-		{
-			InputUnionEvent event;
-			event.move.type = IET_MOUSE_MOVE;
-
-			event.move.touchId = _touchId;
-			event.move.x = _x;
-			event.move.y = _y;
-			event.move.dx = _dx;
-			event.move.dy = _dy;
-			event.move.pressure = _pressure;
-
-			return event;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		inline InputUnionEvent makeMousePositionEvent( unsigned int _touchId, float _x, float _y, float _pressure )
-		{
-			InputUnionEvent event;
-			event.position.type = IET_MOUSE_POSITION;
-
-			event.position.touchId = _touchId;
-			event.position.x = _x;
-			event.position.y = _y;
-			event.position.pressure = _pressure;
-
-			return event;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		inline InputUnionEvent makeMouseEnterEvent( unsigned int _touchId, float _x, float _y, float _pressure )
-		{
-			InputUnionEvent event;
-			event.position.type = IET_MOUSE_ENTER;
-
-			event.position.touchId = _touchId;
-			event.position.x = _x;
-			event.position.y = _y;
-			event.position.pressure = _pressure;
-
-			return event;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		inline InputUnionEvent makeMouseLeaveEvent( unsigned int _touchId, float _x, float _y, float _pressure )
-		{
-			InputUnionEvent event;
-			event.position.type = IET_MOUSE_LEAVE;
-
-			event.position.touchId = _touchId;
-			event.position.x = _x;
-			event.position.y = _y;
-			event.position.pressure = _pressure;
-
-			return event;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	class InputSystemHandler
 	{
 	public:
@@ -486,6 +385,105 @@ namespace Menge
 
 	public:
 		virtual void pushEvent( const InputUnionEvent & _event ) = 0;
+
+	public:
+		inline void pushMouseMoveEvent( unsigned int _touchId, float _x, float _y, float _dx, float _dy, float _pressure )
+		{
+			InputUnionEvent event;
+			event.move.type = IET_MOUSE_MOVE;
+
+			event.move.touchId = _touchId;
+			event.move.x = _x;
+			event.move.y = _y;
+			event.move.dx = _dx;
+			event.move.dy = _dy;
+			event.move.pressure = _pressure;
+
+			this->pushEvent( event );
+		}
+
+		inline void pushMouseButtonEvent( unsigned int _touchId, float _x, float _y, unsigned int _button, float _pressure, bool _isDown )
+		{
+			InputUnionEvent event;
+			event.button.type = IET_MOUSE_BUTTON;
+
+			event.button.touchId = _touchId;
+			event.button.x = _x;
+			event.button.y = _y;
+			event.button.button = _button;
+			event.button.pressure = _pressure;
+			event.button.isDown = _isDown;
+
+			this->pushEvent( event );
+		}
+
+		inline void pushKeyEvent( float _x, float _y, KeyCode _key, WChar _code, bool _isDown, bool _repeating )
+		{
+			InputUnionEvent event;
+			event.key.type = IET_KEY;
+
+			event.key.x = _x;
+			event.key.y = _y;
+			event.key.key = _key;
+			event.key.code = _code;
+			event.key.isDown = _isDown;
+			event.key.isRepeat = _repeating;
+
+			this->pushEvent( event );
+		}
+				
+		inline void pushMouseLeaveEvent( unsigned int _touchId, float _x, float _y, float _pressure )
+		{
+			InputUnionEvent event;
+			event.position.type = IET_MOUSE_LEAVE;
+
+			event.position.touchId = _touchId;
+			event.position.x = _x;
+			event.position.y = _y;
+			event.position.pressure = _pressure;
+
+			this->pushEvent( event );
+		}
+
+		//////////////////////////////////////////////////////////////////////////
+		inline void pushMouseEnterEvent( unsigned int _touchId, float _x, float _y, float _pressure )
+		{
+			InputUnionEvent event;
+			event.position.type = IET_MOUSE_ENTER;
+
+			event.position.touchId = _touchId;
+			event.position.x = _x;
+			event.position.y = _y;
+			event.position.pressure = _pressure;
+
+			this->pushEvent( event );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		inline void pushMouseWheelEvent( float _x, float _y, unsigned int _button, int _whell )
+		{
+			InputUnionEvent event;
+			event.wheel.type = IET_MOUSE_WHELL;
+
+			event.wheel.x = _x;
+			event.wheel.y = _y;
+			event.wheel.button = _button;
+			event.wheel.wheel = _whell;
+
+			this->pushEvent( event );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		inline void pushMousePositionEvent( unsigned int _touchId, float _x, float _y, float _pressure )
+		{
+			InputUnionEvent event;
+			event.position.type = IET_MOUSE_POSITION;
+
+			event.position.touchId = _touchId;
+			event.position.x = _x;
+			event.position.y = _y;
+			event.position.pressure = _pressure;
+
+			this->pushEvent( event );
+		}
 	};
 
 #   define INPUT_SERVICE( serviceProvider )\

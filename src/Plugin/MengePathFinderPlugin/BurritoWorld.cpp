@@ -179,12 +179,9 @@ namespace Menge
 		layer.name = _layerName;
 		layer.parallax = _parallax;
 
-		layer.endless = NODE_SERVICE( m_serviceProvider)
-			->createNodeT<Endless>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Endless") );
+		layer.endless = new Endless;
 
-		layer.endless->setElementCount( _countX, _countY );
-		layer.endless->setElementSize( _width, _height );
-		layer.endless->setElementCb( _cb );
+		layer.endless->initialize( _countX, _countY, _width, _height, _cb );
 
 		m_layers.push_back( layer );
 	}

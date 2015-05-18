@@ -34,6 +34,8 @@ ModuleBurritoWorld
     BurritoGround.cpp
     BurritoUnit.h
     BurritoUnit.cpp
+	Endless.cpp
+	Endless.h    
 )
 
 ADD_FILTER(

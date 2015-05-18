@@ -5,7 +5,7 @@
 #	include "BurritoUnit.h"
 
 #	include "Kernel/Node.h"
-#	include "Menge/Endless.h"
+#	include "Endless.h"
 
 #	include "Core/ConstString.h"
 

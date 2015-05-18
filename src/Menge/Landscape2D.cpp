@@ -19,6 +19,8 @@ namespace	Menge
 	Landscape2D::Landscape2D()
 		: m_elementCountX(0)
 		, m_elementCountY(0)
+		, m_elementWidth( 0.f )
+		, m_elementHeight( 0.f )
 		, m_invalidateVerticesWM(true)
 		, m_invalidateElementWM(true)
 	{ 

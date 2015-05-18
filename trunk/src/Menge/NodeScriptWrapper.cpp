@@ -68,7 +68,6 @@
 #	include "HotSpotImage.h"
 #   include "HotSpotShape.h"
 #	include "Landscape2D.h"
-#	include "Endless.h"
 #	include "Grid2D.h"
 //#	include "Light2D.h"
 #	include "ShadowCaster2D.h"
@@ -4214,7 +4213,6 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Point );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Line );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Landscape2D );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, Endless );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Grid2D );
         //SCRIPT_CLASS_WRAPPING( TilePolygon );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Video );
@@ -4944,9 +4942,6 @@ namespace Menge
 
 				pybind::interface_<Landscape2D, pybind::bases<Node> >("Landscape2D", false)
 					.def( "setBackParts", &Landscape2D::setBackParts )
-					;
-
-				pybind::interface_<Endless, pybind::bases<Node> >( "Endless", false )
 					;
 
 				pybind::interface_<Grid2D, pybind::bases<Node> >("Grid2D", false)

@@ -7,20 +7,17 @@
 namespace Menge
 {
 	class Endless
-		: public Node
 	{
 	public:
 		Endless();
 		~Endless();
 
 	public:
-		void setElementCount( uint32_t _countX, uint32_t _countY );
-		void setElementSize( float _width, float _height );
-		void setElementCb( const pybind::object & _cb );
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool _activate() override;
-		void _deactivate() override;
+		bool initialize( uint32_t _countX, uint32_t _countY, float _width, float _height, const pybind::object & _cb );
+		void finalize();
  
 	public:
 		void slide( const mt::vec3f & _offset );
@@ -32,6 +29,8 @@ namespace Menge
 		void slideDown_( uint32_t _begin, uint32_t _end );
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
 		uint32_t m_elementCountX;
 		uint32_t m_elementCountY;
 		float m_elementWidth;

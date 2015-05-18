@@ -1,8 +1,9 @@
 #	include "Endless.h" 
 
 #	include "Interface/NodeInterface.h"
+#	include "Interface/StringizeInterface.h"
 
-#	include "Consts.h"
+#	include "Kernel/Node.h"
 
 #	include "Logger/Logger.h"
 
@@ -19,7 +20,8 @@ namespace	Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	Endless::Endless()
-		: m_elementCountX(0)
+		: m_serviceProvider(nullptr)
+		, m_elementCountX(0)
 		, m_elementCountY(0)
 		, m_elementWidth(0.f)
 		, m_elementHeight(0.f)
@@ -31,38 +33,27 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Endless::setElementCount( uint32_t _countX, uint32_t _countY )
+	bool Endless::initialize( uint32_t _countX, uint32_t _countY, float _width, float _height, const pybind::object & _cb )
 	{
 		m_elementCountX = _countX;
 		m_elementCountY = _countY;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Endless::setElementSize( float _width, float _height )
-	{
+
 		m_elementWidth = _width;
 		m_elementHeight = _height;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Endless::setElementCb( const pybind::object & _cb )
-	{
+
 		m_elementCb = _cb;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Endless::_activate()
-	{
+
 		for( uint32_t i = 0; i != m_elementCountX; ++i )
 		{
 			for( uint32_t j = 0; j != m_elementCountY; ++j )
 			{
 				Node * element = NODE_SERVICE( m_serviceProvider )
-					->createNode( CONST_STRING( m_serviceProvider, Node ) );
+					->createNode( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ) );
 
 				float x = float( i ) * m_elementWidth;
 				float y = float( j ) * m_elementHeight;
 
 				element->setLocalPosition( mt::vec3f( x, y, 0.f ) );
-
-				this->addChild( element );
 
 				m_nodes.push_back( element );
 
@@ -73,7 +64,7 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Endless::_deactivate()
+	void Endless::finalize()
 	{
 		for( uint32_t i = 0; i != m_elementCountX; ++i )
 		{
@@ -84,6 +75,8 @@ namespace	Menge
 				Node * node = m_nodes[index];
 
 				m_elementCb( false, ED_CLEAR, i, j, node );
+
+				node->destroy();
 			}
 		}
 
@@ -92,11 +85,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Endless::slide( const mt::vec3f & _offset )
 	{
-		if( this->isActivate() == false )
-		{
-			return;
-		}
-
 		m_offset += _offset;
 
 		int32_t x_offset = 0;

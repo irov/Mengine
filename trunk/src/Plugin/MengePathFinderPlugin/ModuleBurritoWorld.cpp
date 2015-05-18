@@ -95,8 +95,6 @@ namespace Menge
 			.def( "createGround", &BurritoWorld::createGround )
 			.def( "addUnitBounds", &BurritoWorld::addUnitBounds )
 			.def( "createLayer", &BurritoWorld::createLayer )
-			.def( "addLayerNode", &BurritoWorld::addLayerNode )
-			.def( "removeLayerNode", &BurritoWorld::removeLayerNode )
 			.def( "addLayerUnit", &BurritoWorld::addLayerUnit )
 			.def( "removeLayerUnit", &BurritoWorld::removeLayerUnit )
 			;

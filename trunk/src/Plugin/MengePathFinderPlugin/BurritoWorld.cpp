@@ -1,5 +1,8 @@
 #	include "BurritoWorld.h"
 
+#	include "Interface/NodeInterface.h"
+#	include "Interface/StringizeInterface.h"
+
 #	include "Math/ccd.h"
 
 namespace Menge
@@ -105,7 +108,9 @@ namespace Menge
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld::BurritoWorld()
-		: m_bison(nullptr)
+		: m_serviceProvider(nullptr)
+		, m_bison(nullptr)
+		, m_ground(nullptr)
 		, m_dead(false)
 		, m_freeze(false)
 	{
@@ -113,6 +118,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	BurritoWorld::~BurritoWorld()
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoWorld::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{ 
+		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoWorld::setDead()
@@ -163,91 +173,20 @@ namespace Menge
 		m_unitBounds.push_back( bound );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::createLayer( const ConstString & _layerName, float _parallax, const mt::vec3f & _bounds, const pybind::object & _cb )
+	void BurritoWorld::createLayer( const ConstString & _layerName, float _parallax, uint32_t _countX, uint32_t _countY, float _width, float _height, const pybind::object & _cb )
 	{
 		BurritoLayer layer;
 		layer.name = _layerName;
 		layer.parallax = _parallax;
-		mt::ident_v3(layer.position);
 
-		layer.bounds = _bounds;
+		layer.endless = NODE_SERVICE( m_serviceProvider)
+			->createNodeT<Endless>( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Endless") );
 
-		layer.cb = _cb;
+		layer.endless->setElementCount( _countX, _countY );
+		layer.endless->setElementSize( _width, _height );
+		layer.endless->setElementCb( _cb );
 
 		m_layers.push_back( layer );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool BurritoWorld::addLayerNode( const ConstString & _layerName, Node * _node )
-	{
-		if( _node == nullptr )
-		{
-			return false;
-		}
-
-		for( TVectorBurritoLayer::iterator
-			it = m_layers.begin(),
-			it_end = m_layers.end();
-		it != it_end;
-		++it )
-		{
-			BurritoLayer & layer = *it;
-
-			if( layer.name != _layerName )
-			{
-				continue;
-			}
-
-			BurritoNode * node = new BurritoNode;
-
-			node->node = _node;
-			node->dead = false;
-
-			layer.nodesAdd.push_back( node );
-			//layer.nodes.push_back( node );
-
-			return true;
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::removeLayerNode( const ConstString & _layerName, Node * _node )
-	{
-		for( TVectorBurritoLayer::iterator
-			it = m_layers.begin(),
-			it_end = m_layers.end();
-		it != it_end;
-		++it )
-		{
-			BurritoLayer & layer = *it;
-
-			if( layer.name != _layerName )
-			{
-				continue;
-			}
-
-			TVectorBurritoNode::iterator it_add_erase = std::find_if( layer.nodesAdd.begin(), layer.nodesAdd.end(), FBurritoNodeRemove( _node ) );
-
-			if( it_add_erase != layer.nodesAdd.end() )
-			{
-				layer.nodesAdd.erase( it_add_erase );
-
-				break;
-			}
-			
-			TVectorBurritoNode::iterator it_erase = std::find_if( layer.nodes.begin(), layer.nodes.end(), FBurritoNodeRemove(_node) );
-
-			if( it_erase == layer.nodes.end() )
-			{
-				printf( "BUG!\n" );
-
-				break;
-			}
-
-			(*it_erase)->dead = true;
-
-			break;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoUnit * BurritoWorld::addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb )
@@ -354,22 +293,7 @@ namespace Menge
 		{
 			return;
 		}
-
-		for( TVectorBurritoLayer::iterator
-			it = m_layers.begin(),
-			it_end = m_layers.end();
-		it != it_end;
-		++it )
-		{
-			BurritoLayer & layer = *it;
-
-			layer.nodes.insert( layer.nodes.end(), layer.nodesAdd.begin(), layer.nodesAdd.end() );
-			layer.nodesAdd.clear();
-
-			layer.units.insert( layer.units.end(), layer.unitsAdd.begin(), layer.unitsAdd.end() );
-			layer.unitsAdd.clear();
-		}
-
+		
 		uint32_t iterate = 1;
 		uint32_t total_iterate = 0;
 		float next_timing = _timing;
@@ -457,69 +381,7 @@ namespace Menge
 
 					mt::vec3f layer_translate_position = translate_position * layer.parallax;
 
-					layer.position += layer_translate_position;
-
-					if( mt::equal_f_z( layer.bounds.x ) == false )
-					{
-						while( layer.position.x > layer.bounds.x )
-						{
-							layer.cb( layer.name, 0 );
-
-							layer.position.x -= layer.bounds.x;
-						}
-
-						while( layer.position.x < -layer.bounds.x )
-						{
-							layer.cb( layer.name, 2 );
-
-							layer.position.x += layer.bounds.x;
-						}
-					}
-
-					if( mt::equal_f_z( layer.bounds.y ) == false )
-					{
-						while( layer.position.y > layer.bounds.y )
-						{
-							layer.cb( layer.name, 1 );
-
-							layer.position.y -= layer.bounds.y;
-						}
-
-						while( layer.position.y < -layer.bounds.y )
-						{
-							layer.cb( layer.name, 3 );
-
-							layer.position.y += layer.bounds.y;
-						}
-					}
-
-					if( mt::equal_f_z( layer.bounds.z ) == false )
-					{
-						while( layer.position.z > layer.bounds.z )
-						{
-							layer.cb( layer.name, 4 );
-
-							layer.position.z -= layer.bounds.z;
-						}
-
-						while( layer.position.z < -layer.bounds.z )
-						{
-							layer.cb( layer.name, 5 );
-
-							layer.position.z += layer.bounds.z;
-						}
-					}
-
-					for( TVectorBurritoNode::iterator
-						it_node = layer.nodes.begin(),
-						it_node_end = layer.nodes.end();
-					it_node != it_node_end;
-					++it_node )
-					{
-						BurritoNode * node = *it_node;
-
-						node->node->translate( layer_translate_position );
-					}
+					layer.endless->slide( layer_translate_position );
 				}
 			}
 
@@ -588,6 +450,18 @@ namespace Menge
 				
 				TVectorBurritoUnit::iterator it_erase = std::remove_if( layer.units.begin(), layer.units.end(), FBurritoUnitDead() );
 				layer.units.erase( it_erase, layer.units.end() );
+			}
+
+			for( TVectorBurritoLayer::iterator
+				it = m_layers.begin(),
+				it_end = m_layers.end();
+			it != it_end;
+			++it )
+			{
+				BurritoLayer & layer = *it;
+
+				layer.units.insert( layer.units.end(), layer.unitsAdd.begin(), layer.unitsAdd.end() );
+				layer.unitsAdd.clear();
 			}
 		}
 	}

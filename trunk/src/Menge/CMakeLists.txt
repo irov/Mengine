@@ -141,6 +141,12 @@ Object2D\\\\Landscape2D
 )
 
 ADD_FILTER(
+Object2D\\\\Endless
+	Endless.cpp
+	Endless.h
+)
+
+ADD_FILTER(
 Object2D\\\\Grid2D
 	Grid2D.cpp
 	Grid2D.h

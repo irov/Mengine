@@ -5,6 +5,7 @@
 #	include "BurritoUnit.h"
 
 #	include "Kernel/Node.h"
+#	include "Menge/Endless.h"
 
 #	include "Core/ConstString.h"
 
@@ -38,15 +39,10 @@ namespace Menge
 		ConstString name;
 		float parallax;
 		
-		TVectorBurritoNode nodesAdd;
-		TVectorBurritoNode nodes;
 		TVectorBurritoUnit unitsAdd;
 		TVectorBurritoUnit units;
 
-		mt::vec3f position;
-		mt::vec3f bounds;
-
-		pybind::object cb;
+		Endless * endless;
 
 		TVectorBurritoUnitBounds unitBounds;
 	};
@@ -56,6 +52,9 @@ namespace Menge
 	public:
 		BurritoWorld();
 		~BurritoWorld();
+
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
 		void setDead();
@@ -75,12 +74,8 @@ namespace Menge
 		void addUnitBounds( float _value, bool _less, const pybind::object & _cb );
 
 	public:
-		void createLayer( const ConstString & _layerName, float _parallax, const mt::vec3f & _bounds, const pybind::object & _cb );
-
-	public:
-		bool addLayerNode( const ConstString & _layerName, Node * _node );
-		void removeLayerNode( const ConstString & _layerName, Node * _node );
-
+		void createLayer( const ConstString & _layerName, float _parallax, uint32_t _countX, uint32_t _countY, float _width, float _height, const pybind::object & _cb );
+	
 	public:
 		BurritoUnit * addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb );
 		void removeLayerUnit( const ConstString & _layerName, Node * _node );
@@ -92,6 +87,8 @@ namespace Menge
 		void update( float _time, float _timing );
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+			
 		BurritoBison * m_bison;
 
 		BurritoGround * m_ground;

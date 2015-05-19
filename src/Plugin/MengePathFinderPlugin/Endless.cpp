@@ -21,6 +21,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Endless::Endless()
 		: m_serviceProvider(nullptr)
+		, m_horizontMode(true)
+		, m_verticalMode(true)
 		, m_elementCountX(0)
 		, m_elementCountY(0)
 		, m_elementWidth(0.f)
@@ -83,6 +85,16 @@ namespace	Menge
 		m_nodes.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Endless::setHorizontMode( bool _value )
+	{
+		m_horizontMode = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Endless::setVerticalMode( bool _value )
+	{ 
+		m_verticalMode = _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Endless::slide( const mt::vec3f & _offset )
 	{
 		m_offset += _offset;
@@ -90,32 +102,38 @@ namespace	Menge
 		int32_t x_offset = 0;
 		int32_t y_offset = 0;
 
-		while( m_offset.x > m_elementWidth )
+		if( m_horizontMode == true )
 		{
-			m_offset.x -= m_elementWidth;
+			while( m_offset.x > m_elementWidth )
+			{
+				m_offset.x -= m_elementWidth;
 
-			x_offset += 1;
+				x_offset += 1;
+			}
+
+			while( m_offset.x < -m_elementWidth )
+			{
+				m_offset.x += m_elementWidth;
+
+				x_offset -= 1;
+			}
 		}
 
-		while( m_offset.x < -m_elementWidth )
+		if( m_verticalMode == true )
 		{
-			m_offset.x += m_elementWidth;
+			while( m_offset.y > m_elementHeight )
+			{
+				m_offset.y -= m_elementHeight;
 
-			x_offset -= 1;
-		}
+				y_offset += 1;
+			}
 
-		while( m_offset.y > m_elementHeight )
-		{
-			m_offset.y -= m_elementHeight;
+			while( m_offset.y < -m_elementHeight )
+			{
+				m_offset.y += m_elementHeight;
 
-			y_offset += 1;
-		}
-
-		while( m_offset.y < -m_elementHeight )
-		{
-			m_offset.y += m_elementHeight;
-
-			y_offset -= 1;
+				y_offset -= 1;
+			}
 		}
 
 		uint32_t x_offset_abs = x_offset > 0 ? x_offset : -x_offset;
@@ -259,7 +277,7 @@ namespace	Menge
 
 			Node * nodePop = m_nodes[indexPop];
 
-			m_elementCb( false, ED_RIGHT, j, 0, nodePop );
+			m_elementCb( false, ED_UP, j, 0, nodePop );
 
 			for( uint32_t i = 0; i != m_elementCountY - 1; ++i )
 			{

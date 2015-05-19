@@ -44,6 +44,7 @@ namespace Menge
 			, out(0.f)
 			, startInterval(0.f)
             , state(0)
+			, position(0.f, 0.f, 0.f)
 			, params(0)
 			, immutable(false)
 			, switcher(false)

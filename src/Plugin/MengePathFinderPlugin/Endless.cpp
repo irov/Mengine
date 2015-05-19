@@ -1,8 +1,5 @@
 #	include "Endless.h" 
 
-#	include "Interface/NodeInterface.h"
-#	include "Interface/StringizeInterface.h"
-
 #	include "Kernel/Node.h"
 
 #	include "Logger/Logger.h"
@@ -15,6 +12,7 @@ namespace	Menge
 	static const uint32_t ED_LEFT = 2;
 	static const uint32_t ED_UP = 3;
 	static const uint32_t ED_CLEAR = 16;
+	static const uint32_t ED_CREATE = 17;
 	//////////////////////////////////////////////////////////////////////////
 	Endless::Endless()
 		: m_serviceProvider(nullptr)
@@ -48,9 +46,8 @@ namespace	Menge
 		for( uint32_t i = 0; i != m_elementCountX; ++i )
 		{
 			for( uint32_t j = 0; j != m_elementCountY; ++j )
-			{
-				Node * element = NODE_SERVICE( m_serviceProvider )
-					->createNode( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ) );
+			{				
+				Node * element = m_elementCb( true, ED_CREATE, i, j, nullptr );
 
 				float x = float( i ) * m_elementWidth;
 				float y = float( j ) * m_elementHeight;
@@ -58,8 +55,6 @@ namespace	Menge
 				element->setLocalPosition( mt::vec3f( x, y, 0.f ) );
 
 				m_nodes.push_back( element );
-
-				m_elementCb( true, ED_CLEAR, i, j, element );
 			}
 		}
 

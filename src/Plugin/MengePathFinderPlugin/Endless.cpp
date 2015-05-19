@@ -18,8 +18,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Endless::Endless()
 		: m_serviceProvider(nullptr)
-		, m_horizontMode(true)
-		, m_verticalMode(true)
+		, m_horizontSlide(true)
+		, m_verticalSlide(true)
 		, m_elementCountX(0)
 		, m_elementCountY(0)
 		, m_elementWidth(0.f)
@@ -32,13 +32,16 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Endless::initialize( uint32_t _countX, uint32_t _countY, float _width, float _height, const pybind::object & _cb )
+	bool Endless::initialize( uint32_t _countX, uint32_t _countY, float _width, float _height, bool _horizontalSlide, bool _verticalSlide, const pybind::object & _cb )
 	{
 		m_elementCountX = _countX;
 		m_elementCountY = _countY;
 
 		m_elementWidth = _width;
 		m_elementHeight = _height;
+
+		m_horizontSlide = _horizontalSlide;
+		m_verticalSlide = _verticalSlide;
 
 		m_elementCb = _cb;
 
@@ -82,16 +85,6 @@ namespace	Menge
 		m_nodes.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Endless::setHorizontMode( bool _value )
-	{
-		m_horizontMode = _value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Endless::setVerticalMode( bool _value )
-	{ 
-		m_verticalMode = _value;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Endless::slide( const mt::vec3f & _offset )
 	{
 		m_offset -= _offset;
@@ -99,7 +92,7 @@ namespace	Menge
 		int32_t x_offset = 0;
 		int32_t y_offset = 0;
 
-		if( m_horizontMode == true )
+		if( m_horizontSlide == true )
 		{
 			while( m_offset.x > m_elementWidth )
 			{
@@ -116,7 +109,7 @@ namespace	Menge
 			}
 		}
 
-		if( m_verticalMode == true )
+		if( m_verticalSlide == true )
 		{
 			while( m_offset.y > m_elementHeight )
 			{

@@ -173,7 +173,7 @@ namespace Menge
 		m_unitBounds.push_back( bound );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::createLayer( const ConstString & _layerName, float _parallax, uint32_t _countX, uint32_t _countY, float _width, float _height, const pybind::object & _cb )
+	void BurritoWorld::createLayer( const ConstString & _layerName, float _parallax, uint32_t _countX, uint32_t _countY, float _width, float _height, bool _horizontalSlide, bool _verticalSlide, const pybind::object & _cb )
 	{
 		BurritoLayer layer;
 		layer.name = _layerName;
@@ -181,7 +181,7 @@ namespace Menge
 
 		layer.endless = new Endless;
 
-		layer.endless->initialize( _countX, _countY, _width, _height, _cb );
+		layer.endless->initialize( _countX, _countY, _width, _height, _horizontalSlide, _verticalSlide, _cb );
 
 		m_layers.push_back( layer );
 	}

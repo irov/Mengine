@@ -3,6 +3,8 @@
 #	include "Interface/NodeInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Logger/Logger.h"
+
 #	include "Math/ccd.h"
 
 namespace Menge
@@ -213,6 +215,10 @@ namespace Menge
 
 			return unit;
 		}
+
+		LOGGER_ERROR( m_serviceProvider )("BurritoWorld::addLayerUnit not found layer %s"
+			, _layerName.c_str()
+			);
 
 		return nullptr;
 	}

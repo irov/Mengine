@@ -1,5 +1,8 @@
 #	include "Endless.h" 
 
+#	include "Interface/NodeInterface.h"
+#	include "Interface/StringizeInterface.h"
+
 #	include "Kernel/Node.h"
 
 #	include "Logger/Logger.h"
@@ -11,8 +14,7 @@ namespace	Menge
 	static const uint32_t ED_DOWN = 1;
 	static const uint32_t ED_LEFT = 2;
 	static const uint32_t ED_UP = 3;
-	static const uint32_t ED_CLEAR = 16;
-	static const uint32_t ED_CREATE = 17;
+	static const uint32_t ED_ALL = 16;
 	//////////////////////////////////////////////////////////////////////////
 	Endless::Endless()
 		: m_serviceProvider(nullptr)
@@ -46,8 +48,9 @@ namespace	Menge
 		for( uint32_t i = 0; i != m_elementCountX; ++i )
 		{
 			for( uint32_t j = 0; j != m_elementCountY; ++j )
-			{				
-				Node * element = m_elementCb( true, ED_CREATE, i, j, nullptr );
+			{
+				Node * element = NODE_SERVICE( m_serviceProvider )
+					->createNode( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ) );
 
 				float x = float( i ) * m_elementWidth;
 				float y = float( j ) * m_elementHeight;
@@ -55,6 +58,8 @@ namespace	Menge
 				element->setLocalPosition( mt::vec3f( x, y, 0.f ) );
 
 				m_nodes.push_back( element );
+
+				m_elementCb( true, ED_ALL, i, j, element );
 			}
 		}
 
@@ -71,7 +76,7 @@ namespace	Menge
 
 				Node * node = m_nodes[index];
 
-				m_elementCb( false, ED_CLEAR, i, j, node );
+				m_elementCb( false, ED_ALL, i, j, node );
 
 				node->destroy();
 			}
@@ -124,76 +129,47 @@ namespace	Menge
 		uint32_t x_offset_abs = x_offset > 0 ? x_offset : -x_offset;
 		uint32_t y_offset_abs = y_offset > 0 ? y_offset : -y_offset;
 
-		if( x_offset_abs >= m_elementCountX || y_offset_abs >= m_elementCountY )
+		uint32_t y_from;
+		uint32_t y_to;
+
+		if( y_offset >= 0 )
 		{
-			for( uint32_t i = 0; i != m_elementCountX; ++i )
-			{
-				for( uint32_t j = 0; j != m_elementCountY; ++j )
-				{
-					uint32_t index = i + j * m_elementCountX;
-
-					Node * node = m_nodes[index];
-
-					m_elementCb( false, ED_CLEAR, i, j, node );
-				}
-			}
-
-			for( uint32_t i = 0; i != m_elementCountX; ++i )
-			{
-				for( uint32_t j = 0; j != m_elementCountY; ++j )
-				{
-					uint32_t index = i + j * m_elementCountX;
-
-					Node * node = m_nodes[index];
-
-					m_elementCb( true, ED_CLEAR, i, j, node );
-				}
-			}
+			y_from = 0;
+			y_to = y_offset;
 		}
 		else
 		{
-			uint32_t y_from;
-			uint32_t y_to;
-			
-			if( y_offset >= 0 )
-			{
-				y_from = 0;
-				y_to = y_offset;
-			}
-			else
-			{
-				y_from = m_elementCountY - y_offset_abs;
-				y_to = m_elementCountY;
-			}
+			y_from = m_elementCountY - y_offset_abs;
+			y_to = m_elementCountY;
+		}
 
-			if( x_offset > 0 )
+		if( x_offset > 0 )
+		{
+			for( uint32_t i = 0; i != x_offset_abs; ++i )
 			{
-				for( uint32_t i = 0; i != x_offset_abs; ++i )
-				{
-					this->slideRight_( y_from, y_to );
-				}
+				this->slideRight_( y_from, y_to );
 			}
-			else if( x_offset < 0 )
+		}
+		else if( x_offset < 0 )
+		{
+			for( uint32_t i = 0; i != x_offset_abs; ++i )
 			{
-				for( uint32_t i = 0; i != x_offset_abs; ++i )
-				{
-					this->slideLeft_( y_from, y_to );
-				}
+				this->slideLeft_( y_from, y_to );
 			}
+		}
 
-			if( y_offset > 0 )
+		if( y_offset > 0 )
+		{
+			for( uint32_t i = 0; i != y_offset_abs; ++i )
 			{
-				for( uint32_t i = 0; i != y_offset_abs; ++i )
-				{
-					this->slideUp_( 0, m_elementCountX );
-				}
+				this->slideUp_( 0, m_elementCountX );
 			}
-			else if( y_offset < 0 )
+		}
+		else if( y_offset < 0 )
+		{
+			for( uint32_t i = 0; i != y_offset_abs; ++i )
 			{
-				for( uint32_t i = 0; i != y_offset_abs; ++i )
-				{
-					this->slideDown_( 0, m_elementCountX );
-				}
+				this->slideDown_( 0, m_elementCountX );
 			}
 		}
 

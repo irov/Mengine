@@ -157,8 +157,19 @@ namespace	Menge
 		}
 		else
 		{
-			uint32_t y_from = y_offset >= 0 ? 0 : m_elementCountY - y_offset;
-			uint32_t y_to = y_offset >= 0 ? y_offset : m_elementCountY;
+			uint32_t y_from;
+			uint32_t y_to;
+			
+			if( y_offset >= 0 )
+			{
+				y_from = 0;
+				y_to = y_offset;
+			}
+			else
+			{
+				y_from = m_elementCountY - y_offset_abs;
+				y_to = m_elementCountY;
+			}
 
 			if( x_offset > 0 )
 			{
@@ -293,7 +304,7 @@ namespace	Menge
 
 			Node * nodePop = m_nodes[indexPop];
 
-			m_elementCb( false, ED_DOWN, m_elementCountY - 1, j, nodePop );
+			m_elementCb( false, ED_DOWN, j, m_elementCountY - 1, nodePop );
 
 			for( uint32_t i = m_elementCountY - 1; i != 0; --i )
 			{
@@ -307,7 +318,7 @@ namespace	Menge
 
 			m_nodes[indexPush] = nodePop;
 
-			m_elementCb( true, ED_DOWN, 0, j, nodePop );
+			m_elementCb( true, ED_DOWN, j, 0, nodePop );
 		}
 	}
 }

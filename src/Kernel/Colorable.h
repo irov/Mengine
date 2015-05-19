@@ -57,19 +57,16 @@ namespace Menge
 
 		mutable ColourValue m_colorRelation;
 		mutable bool m_invalidateColor;
-
-		bool m_localTransparent;
-		bool m_personalTransparent;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Colorable::isLocalTransparent() const
 	{
-		return m_localTransparent;
+		return m_colorLocal.getA() < 0.0001f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Colorable::isPersonalTransparent() const
 	{
-		return m_personalTransparent;
+		return m_colorPersonal.getA() < 0.0001f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & Colorable::getRelationColor() const

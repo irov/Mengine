@@ -7,8 +7,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Colorable::Colorable()
 		: m_invalidateColor(false)
-		, m_localTransparent(false)
-		, m_personalTransparent(false)
 		, m_colorPersonal(1.0f, 1.0f, 1.0f, 1.0f)
 		, m_colorLocal(1.0f, 1.0f, 1.0f, 1.0f)
 		, m_colorRelation(1.0f, 1.0f, 1.0f, 1.0f)
@@ -115,15 +113,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Colorable::invalidateColor()
 	{
-		if( m_invalidateColor == true )
-		{
-			return;
-		}
-
 		m_invalidateColor = true;
-
-		m_localTransparent = m_colorLocal.getA() < 0.0001f;
-		m_personalTransparent = m_colorPersonal.getA() < 0.0001f;
 
 		this->_invalidateColor();
 	}

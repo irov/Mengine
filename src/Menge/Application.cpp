@@ -988,12 +988,15 @@ namespace Menge
 		{
 			Node * child = *it;
 
-			printf( "%.*s%s%s [%s]\n"
+			printf( "%.*s%s%s [%s] (%.2f, %.2f) %d\n"
 				, _tab
 				, "                                         "
 				, child->isEnable() ? "+" : "-"
 				, child->getName().c_str() 
 				, child->getType().c_str()
+				, child->getWorldPosition().x
+				, child->getWorldPosition().y
+				, child->isRenderable()
 				);
 
 			s_printChildren2( child, _tab + 1 );

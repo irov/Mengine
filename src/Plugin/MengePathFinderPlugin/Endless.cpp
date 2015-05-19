@@ -94,7 +94,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Endless::slide( const mt::vec3f & _offset )
 	{
-		m_offset += _offset;
+		m_offset -= _offset;
 
 		int32_t x_offset = 0;
 		int32_t y_offset = 0;

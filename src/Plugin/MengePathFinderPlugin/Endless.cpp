@@ -10,14 +10,11 @@
 namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	enum Endless_Direction
-	{		
-		ED_RIGHT = 0,
-		ED_DOWN = 1,
-		ED_LEFT = 2,
-		ED_UP = 3,
-		ED_CLEAR = 16,
-	};
+	static const uint32_t ED_RIGHT = 0;
+	static const uint32_t ED_DOWN = 1;
+	static const uint32_t ED_LEFT = 2;
+	static const uint32_t ED_UP = 3;
+	static const uint32_t ED_CLEAR = 16;
 	//////////////////////////////////////////////////////////////////////////
 	Endless::Endless()
 		: m_serviceProvider(nullptr)

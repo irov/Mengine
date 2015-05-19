@@ -135,11 +135,11 @@ namespace	Menge
 		if( y_offset >= 0 )
 		{
 			y_from = 0;
-			y_to = y_offset;
+			y_to = m_elementCountY - y_offset;
 		}
 		else
 		{
-			y_from = m_elementCountY - y_offset_abs;
+			y_from = -y_offset;
 			y_to = m_elementCountY;
 		}
 

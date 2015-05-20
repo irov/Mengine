@@ -2828,27 +2828,18 @@ namespace Menge
         {
             ResourceImage * resourceImage = _sprite->getResourceImage();
 
-            mt::vec2f size;
-
             if( resourceImage == nullptr )
             {
                 LOGGER_ERROR(m_serviceProvider)("s_getImageSize sprite %s not setup resource"
                     , _sprite->getName().c_str()
                     );
-
-                size.x = 0.f;
-                size.y = 0.f;
-
-                return size;
+				
+				return  mt::vec2f(0.f, 0.f);
             }
             
-            resourceImage->incrementReference();
+			mt::vec2f size = resourceImage->getSize();
 
-            size = resourceImage->getSize();
-
-            resourceImage->decrementReference();
-            
-            return size;
+			return size;
         }
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getLocalImageCenter( Sprite * _sprite )

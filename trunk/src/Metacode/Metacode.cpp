@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 77;
+        _needVersion = 78;
 
-        if( version != 77 )
+        if( version != 78 )
         {
             return false;
         }
@@ -1625,7 +1625,6 @@ namespace Metacode
         : Meta_Resource()
         , File_Alpha_successful(false)
         , File_Codec_successful(false)
-        , File_MaxSize_successful(false)
         , File_NoExist_successful(false)
         , File_Offset_successful(false)
         , File_Size_successful(false)
@@ -1676,8 +1675,6 @@ namespace Metacode
                 {
                     return false;
                 }
-    
-                this->File_MaxSize_successful = true;
     
                 return true;
             }break;

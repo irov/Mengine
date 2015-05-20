@@ -1,4 +1,4 @@
-<Protocol Version = "77">
+<Protocol Version = "78">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -43,7 +43,7 @@
       <Member Node="File" Name="WrapX" Type="bool"/>
       <Member Node="File" Name="WrapY" Type="bool"/>
       
-      <Member Node="File" Name="MaxSize" Type="mt::vec2f"/>
+      <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
       <Member Node="File" Name="Size" Type="mt::vec2f"/>
       <Member Node="File" Name="Offset" Type="mt::vec2f"/>
 

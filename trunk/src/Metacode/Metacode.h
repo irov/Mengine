@@ -799,33 +799,14 @@ namespace Metacode
                 return true;
             }
             
-            bool has_File_MaxSize() const
+            const mt::vec2f & get_File_MaxSize() const
             {
-                return File_MaxSize_successful;
+                return this->File_MaxSize;
             }
             
-            bool get_File_MaxSize( mt::vec2f & _value ) const
+            void swap_File_MaxSize( mt::vec2f & _value ) const
             {
-                if( File_MaxSize_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_MaxSize;
-            
-                return true;
-            }
-            
-            bool swap_File_MaxSize( mt::vec2f & _value ) const
-            {
-                if( File_MaxSize_successful == false )
-                {
-                    return false;
-                }
-            
                 std::swap(_value, this->File_MaxSize);
-            
-                return true;
             }
             
             bool has_File_NoExist() const
@@ -995,7 +976,6 @@ namespace Metacode
             mutable bool File_Alpha;
             bool File_Codec_successful;
             mutable Menge::ConstString File_Codec;
-            bool File_MaxSize_successful;
             mutable mt::vec2f File_MaxSize;
             bool File_NoExist_successful;
             mutable bool File_NoExist;

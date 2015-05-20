@@ -43,7 +43,15 @@ namespace Menge
 
 		mt::vec3f m_offset;
 
-		typedef stdex::vector<Node *> TVectorNode;
-		TVectorNode m_nodes;
+		struct Element
+		{
+			Node * node;
+			uint32_t id;
+		};
+
+		typedef stdex::vector<Element> TVectorElement;
+		TVectorElement m_elements;
+
+		uint32_t m_enumeratorElementId;
     };
 }

@@ -25,6 +25,7 @@ namespace	Menge
 		, m_elementWidth(0.f)
 		, m_elementHeight(0.f)
 		, m_offset(0.f, 0.f, 0.f)
+		, m_enumeratorElementId(0)
 	{ 
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -49,17 +50,21 @@ namespace	Menge
 		{
 			for( uint32_t j = 0; j != m_elementCountY; ++j )
 			{
-				Node * element = NODE_SERVICE( m_serviceProvider )
+				Node * node = NODE_SERVICE( m_serviceProvider )
 					->createNode( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ) );
 
 				float x = float( i ) * m_elementWidth;
 				float y = float( j ) * m_elementHeight;
 
-				element->setLocalPosition( mt::vec3f( x, y, 0.f ) );
+				node->setLocalPosition( mt::vec3f( x, y, 0.f ) );
 
-				m_nodes.push_back( element );
+				Element el;
+				el.node = node;
+				el.id = ++m_enumeratorElementId;
 
-				m_elementCb( true, ED_ALL, i, j, element );
+				m_elements.push_back( el );
+
+				m_elementCb( true, ED_ALL, i, j, el.node, el.id );
 			}
 		}
 
@@ -74,15 +79,15 @@ namespace	Menge
 			{
 				uint32_t index = i + j * m_elementCountX;
 
-				Node * node = m_nodes[index];
+				Element & el = m_elements[index];
 
-				m_elementCb( false, ED_ALL, i, j, node );
+				m_elementCb( false, ED_ALL, i, j, el.node, el.id );
 
-				node->destroy();
+				el.node->destroy();
 			}
 		}
 
-		m_nodes.clear();
+		m_elements.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Endless::slide( const mt::vec3f & _offset )
@@ -179,12 +184,12 @@ namespace	Menge
 			{
 				uint32_t index = i + j * m_elementCountX;
 
-				Node * node = m_nodes[index];
+				Element & el = m_elements[index];
 
 				float x = float( i ) * m_elementWidth - m_offset.x;
 				float y = float( j ) * m_elementHeight - m_offset.y;
 
-				node->setLocalPosition( mt::vec3f( x, y, 0.f ) );
+				el.node->setLocalPosition( mt::vec3f( x, y, 0.f ) );
 			}
 		}
 	}
@@ -195,23 +200,23 @@ namespace	Menge
 		{
 			uint32_t indexPop = 0 + j * m_elementCountX;
 
-			Node * nodePop = m_nodes[indexPop];
+			Element & elPop = m_elements[indexPop];
 
-			m_elementCb( false, ED_RIGHT, 0, j, nodePop );
+			m_elementCb( false, ED_RIGHT, 0, j, elPop.node, elPop.id );
 
 			for( uint32_t i = 0; i != m_elementCountX - 1; ++i )
 			{
 				uint32_t index1 = (i + 0) + j * m_elementCountX;
 				uint32_t index2 = (i + 1) + j * m_elementCountX;
 
-				m_nodes[index1] = m_nodes[index2];
+				m_elements[index1] = m_elements[index2];
 			}
 
 			uint32_t indexPush = (m_elementCountX - 1) + j * m_elementCountX;
 
-			m_nodes[indexPush] = nodePop;
+			m_elements[indexPush] = elPop;
 
-			m_elementCb( true, ED_RIGHT, m_elementCountX - 1, j, nodePop );
+			m_elementCb( true, ED_RIGHT, m_elementCountX - 1, j, elPop.node, elPop.id );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -221,23 +226,23 @@ namespace	Menge
 		{
 			uint32_t indexPop = (m_elementCountX - 1) + j * m_elementCountX;
 
-			Node * nodePop = m_nodes[indexPop];
+			Element & elPop = m_elements[indexPop];
 
-			m_elementCb( false, ED_LEFT, m_elementCountX - 1, j, nodePop );
+			m_elementCb( false, ED_LEFT, m_elementCountX - 1, j, elPop.node, elPop.id );
 
 			for( uint32_t i = m_elementCountX - 1; i != 0; --i )
 			{
 				uint32_t index1 = (i + 0) + j * m_elementCountX;
 				uint32_t index2 = (i - 1) + j * m_elementCountX;
 
-				m_nodes[index1] = m_nodes[index2];
+				m_elements[index1] = m_elements[index2];
 			}
 
 			uint32_t indexPush = 0 + j * m_elementCountX;
 
-			m_nodes[indexPush] = nodePop;
+			m_elements[indexPush] = elPop;
 
-			m_elementCb( true, ED_LEFT, 0, j, nodePop );
+			m_elementCb( true, ED_LEFT, 0, j, elPop.node, elPop.id );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -247,23 +252,23 @@ namespace	Menge
 		{
 			uint32_t indexPop = j + (0) * m_elementCountX;
 
-			Node * nodePop = m_nodes[indexPop];
+			Element & elPop = m_elements[indexPop];
 
-			m_elementCb( false, ED_UP, j, 0, nodePop );
+			m_elementCb( false, ED_UP, j, 0, elPop.node, elPop.id );
 
 			for( uint32_t i = 0; i != m_elementCountY - 1; ++i )
 			{
 				uint32_t index1 = j + (i + 0) * m_elementCountX;
 				uint32_t index2 = j + (i + 1) * m_elementCountX;
 
-				m_nodes[index1] = m_nodes[index2];
+				m_elements[index1] = m_elements[index2];
 			}
 
 			uint32_t indexPush = j + (m_elementCountY - 1) * m_elementCountX;
 
-			m_nodes[indexPush] = nodePop;
+			m_elements[indexPush] = elPop;
 
-			m_elementCb( true, ED_UP, j, m_elementCountY - 1, nodePop );
+			m_elementCb( true, ED_UP, j, m_elementCountY - 1, elPop.node, elPop.id );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -273,23 +278,23 @@ namespace	Menge
 		{
 			uint32_t indexPop = j + (m_elementCountY - 1) * m_elementCountX;
 
-			Node * nodePop = m_nodes[indexPop];
+			Element & elPop = m_elements[indexPop];
 
-			m_elementCb( false, ED_DOWN, j, m_elementCountY - 1, nodePop );
+			m_elementCb( false, ED_DOWN, j, m_elementCountY - 1, elPop.node, elPop.id );
 
 			for( uint32_t i = m_elementCountY - 1; i != 0; --i )
 			{
 				uint32_t index1 = j + (i + 0) * m_elementCountX;
 				uint32_t index2 = j + (i - 1) * m_elementCountX;
 
-				m_nodes[index1] = m_nodes[index2];
+				m_elements[index1] = m_elements[index2];
 			}
 
 			uint32_t indexPush = j + (0) * m_elementCountX;
 
-			m_nodes[indexPush] = nodePop;
+			m_elements[indexPush] = elPop;
 
-			m_elementCb( true, ED_DOWN, j, 0, nodePop );
+			m_elementCb( true, ED_DOWN, j, 0, elPop.node, elPop.id );
 		}
 	}
 }

@@ -307,7 +307,7 @@ namespace Menge
         metadata->get_File_WrapX( m_wrapU );
         metadata->get_File_WrapY( m_wrapV );
         		
-		metadata->get_File_MaxSize( m_maxSize );
+		m_maxSize = metadata->get_File_MaxSize();
 
 		m_size = m_maxSize;
 		metadata->get_File_Size( m_size );
@@ -411,15 +411,6 @@ namespace Menge
 		for( size_t i = 0; i != 4; ++i )
 		{
 			m_uv_image[i] *= uv_scale;
-		}
-
-		if( m_maxSize.x < 1.f || m_maxSize.y < 1.f )
-		{
-			m_maxSize.x = width;
-			m_maxSize.y = height;
-
-			m_size.x = m_maxSize.x;
-			m_size.y = m_maxSize.y;
 		}
 
 		uint32_t channels = m_texture->getChannels();

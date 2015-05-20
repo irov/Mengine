@@ -200,7 +200,7 @@ namespace	Menge
 		{
 			uint32_t indexPop = 0 + j * m_elementCountX;
 
-			Element & elPop = m_elements[indexPop];
+			Element elPop = m_elements[indexPop];
 
 			m_elementCb( false, ED_RIGHT, 0, j, elPop.node, elPop.id );
 
@@ -226,7 +226,7 @@ namespace	Menge
 		{
 			uint32_t indexPop = (m_elementCountX - 1) + j * m_elementCountX;
 
-			Element & elPop = m_elements[indexPop];
+			Element elPop = m_elements[indexPop];
 
 			m_elementCb( false, ED_LEFT, m_elementCountX - 1, j, elPop.node, elPop.id );
 
@@ -252,7 +252,7 @@ namespace	Menge
 		{
 			uint32_t indexPop = j + (0) * m_elementCountX;
 
-			Element & elPop = m_elements[indexPop];
+			Element elPop = m_elements[indexPop];
 
 			m_elementCb( false, ED_UP, j, 0, elPop.node, elPop.id );
 
@@ -278,7 +278,7 @@ namespace	Menge
 		{
 			uint32_t indexPop = j + (m_elementCountY - 1) * m_elementCountX;
 
-			Element & elPop = m_elements[indexPop];
+			Element elPop = m_elements[indexPop];
 
 			m_elementCb( false, ED_DOWN, j, m_elementCountY - 1, elPop.node, elPop.id );
 

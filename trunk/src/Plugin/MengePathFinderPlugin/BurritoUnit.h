@@ -36,7 +36,6 @@ namespace Menge
 		const mt::vec3f & getVelocity() const;
 
 	public:
-		void update( float _timing, mt::vec3f & _translate );
 		void translate( const mt::vec3f & _translate );
 
 	public:

@@ -116,11 +116,6 @@ namespace Menge
 		return true;			 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoUnit::update( float _timing, mt::vec3f & _translate )
-	{
-		_translate = m_velocity * _timing;
-	}	
-	//////////////////////////////////////////////////////////////////////////
 	void BurritoUnit::translate( const mt::vec3f & _translate )
 	{ 
 		m_position += _translate;

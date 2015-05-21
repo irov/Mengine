@@ -411,8 +411,9 @@ namespace Menge
 						continue;
 					}
 
-					mt::vec3f unit_translate;
-					unit->update( iterate_timing, unit_translate );
+					const mt::vec3f & velocity = unit->getVelocity();
+
+					mt::vec3f unit_translate = velocity * iterate_timing;
 
 					unit_translate += layer_translate_position;
 
@@ -448,7 +449,7 @@ namespace Menge
 						s_burritoUnitBounds( bound, unit, unit_translate );
 					}
 
-					unit->translate( unit_translate );
+					//unit->translate( unit_translate );
 				}
 				
 				TVectorBurritoUnit::iterator it_erase = std::remove_if( layer.units.begin(), layer.units.end(), FBurritoUnitDead() );
@@ -465,6 +466,42 @@ namespace Menge
 
 				layer.units.insert( layer.units.end(), layer.unitsAdd.begin(), layer.unitsAdd.end() );
 				layer.unitsAdd.clear();
+			}
+
+			for( TVectorBurritoLayer::iterator
+				it = m_layers.begin(),
+				it_end = m_layers.end();
+			it != it_end;
+			++it )
+			{
+				BurritoLayer & layer = *it;
+
+				mt::vec3f layer_translate_position = translate_position * layer.parallax;
+
+				for( TVectorBurritoUnit::iterator
+					it_unit = layer.units.begin(),
+					it_unit_end = layer.units.end();
+				it_unit != it_unit_end;
+				++it_unit )
+				{
+					BurritoUnit * unit = *it_unit;
+
+					if( unit->isDead() == true )
+					{
+						continue;
+					}
+
+					const mt::vec3f & velocity = unit->getVelocity();
+
+					mt::vec3f unit_translate = velocity * iterate_timing;
+
+					unit_translate += layer_translate_position;
+
+					unit->translate( unit_translate );
+				}
+
+				TVectorBurritoUnit::iterator it_erase = std::remove_if( layer.units.begin(), layer.units.end(), FBurritoUnitDead() );
+				layer.units.erase( it_erase, layer.units.end() );
 			}
 		}
 	}

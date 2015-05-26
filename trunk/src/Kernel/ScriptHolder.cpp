@@ -6,7 +6,6 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ScriptHolder::ScriptHolder()
-		: m_script(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -27,25 +26,18 @@ namespace Menge
 
 		EVENTABLE_ASK( m_serviceProvider, this, EVENT_KEEP_SCRIPT, m_script )();
 
-		if( m_script == nullptr )
-		{
-			return false;
-		}
-
-		return true;
+		bool successful = m_script.is_valid();
+		
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptHolder::_deactivate()
 	{
 		Node::_deactivate();
 
-		if( m_script != nullptr )
-		{
-			EVENTABLE_CALL(m_serviceProvider, this, EVENT_RELEASE_SCRIPT)( m_script	);
+		EVENTABLE_CALL(m_serviceProvider, this, EVENT_RELEASE_SCRIPT)( m_script	);
 
-			pybind::decref( m_script );
-			m_script = nullptr;
-		}
+		m_script.reset();
 	}
 
 }

@@ -11,7 +11,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MovieInternalObject::MovieInternalObject()
 		: m_movie(nullptr)
-		, m_internalObject(nullptr)
 		, m_internalNode(nullptr)
 	{
 	}
@@ -73,11 +72,10 @@ namespace Menge
         const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
         const ConstString & internalName = m_resourceInternalObject->getInternalName();		
 
-        PyObject * py_object = nullptr;
-
+		pybind::object py_object;
 		EVENTABLE_ASK( m_serviceProvider, m_movie, EVENT_MOVIE_GET_INTERNAL, py_object )(internalGroup, internalName);
 
-        if( py_object == nullptr )
+		if( py_object.is_invalid() == true )
         {
             LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_compile '%s' resource '%s' can't find internal object '%s:%s'"
                 , m_name.c_str()
@@ -98,8 +96,7 @@ namespace Menge
     {
         m_resourceInternalObject.release();
 
-		pybind::decref( m_internalObject );
-		m_internalObject = nullptr;				
+		m_internalObject.reset();				
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieInternalObject::_activate()

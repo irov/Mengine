@@ -18,6 +18,6 @@ namespace Menge
 		void _deactivate() override;
 
 	protected:
-		PyObject * m_script;
+		pybind::object m_script;
 	};
 }

@@ -39,7 +39,7 @@ namespace Menge
         ResourceHolder<ResourceInternalObject> m_resourceInternalObject;
         Movie * m_movie;
 
-		PyObject * m_internalObject;
+		pybind::object m_internalObject;
 		Node * m_internalNode;
 	};
 }

@@ -32,8 +32,6 @@ namespace Menge
 			return false;
 		}
 
-		pybind::incref( m_script );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

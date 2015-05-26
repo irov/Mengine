@@ -89,8 +89,7 @@ namespace Menge
             return false;
         }
 
-        m_internalObject = py_object;
-        pybind::incref( m_internalObject );
+        m_internalObject = py_object;        
 
         return true;
     }
@@ -110,36 +109,19 @@ namespace Menge
 			return false;
 		}
 
-		PyObject * py_node = nullptr;
-		EVENTABLE_ASK( m_serviceProvider, m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, py_node )(m_internalObject);
+		Node * node = nullptr;
+		EVENTABLE_ASK( m_serviceProvider, m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, node )(m_internalObject);
 
-		if( py_node == nullptr )
+		if( node == nullptr )
 		{
 			const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
 			const ConstString & internalName = m_resourceInternalObject->getInternalName();		
 
-			LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_activate '%s' resource '%s' can't get internal node '%s:%s'"
-				, m_name.c_str()
-				, m_resourceInternalObject->getName().c_str()
-				, internalGroup.c_str()
-				, internalName.c_str()				
-				);
-
-			return false;
-		}
-
-		Node * node; 
-		if( pybind::extract_value( py_node, node ) == false )
-		{
-			const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
-			const ConstString & internalName = m_resourceInternalObject->getInternalName();		
-
-			LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_activate '%s' resource '%s' get internal node '%s:%s' invalid type %s"
+			LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_activate '%s' resource '%s' invalid get internal node '%s:%s'"
 				, m_name.c_str()
 				, m_resourceInternalObject->getName().c_str()
 				, internalGroup.c_str()
 				, internalName.c_str()
-				, pybind::object_str( py_node )
 				);
 
 			return false;
@@ -194,6 +176,16 @@ namespace Menge
 	void MovieInternalObject::updateHide_( bool _hide )
 	{
 		bool hide = this->isHide();
+
+		if( m_internalNode == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("MovieInternalObject::updateHide_ %s internal Node is nullptr"
+				, this->getName().c_str()
+				);
+
+			return;
+		}
+
 		m_internalNode->hide( hide | _hide );
 	}
 }

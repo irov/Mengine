@@ -13,7 +13,7 @@
 #	include "math/box2.h"
 #	include "math/utils.h"
 
-namespace	Menge
+namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Sprite::Sprite()

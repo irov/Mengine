@@ -107,10 +107,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Pak::mountFileGroup_()
 	{
-		if( m_path.empty() == true )
-		{
-			return true;
-		}
+		//if( m_path.empty() == true )
+		//{
+		//	return true;
+		//}
 
 		//FilePath fullPath = concatenationFilePath(m_serviceProvider, m_baseDir, m_path);
 		

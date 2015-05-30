@@ -1339,30 +1339,6 @@ namespace Menge
             return time;
         }
         //////////////////////////////////////////////////////////////////////////
-        float getMouseX()
-        {
-            const Resolution& contRes = APPLICATION_SERVICE(m_serviceProvider)
-                ->getContentResolution();
-
-            float mx = PLAYER_SERVICE(m_serviceProvider)->getArrow()->getLocalPosition().x;
-
-            mx = mt::clamp( 0.0f, mx, static_cast<float>( contRes.getWidth() ) );
-
-            return mx;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float getMouseY()
-        {
-            const Resolution& contRes = APPLICATION_SERVICE(m_serviceProvider)
-                ->getContentResolution();
-
-            float my = PLAYER_SERVICE(m_serviceProvider)->getArrow()->getLocalPosition().y;
-
-            my = mt::clamp( 0.0f, my, static_cast<float>( contRes.getHeight() ) );
-
-            return my;
-        }
-        //////////////////////////////////////////////////////////////////////////
         void s_setTimingFactor( float _factor )
         {
             GAME_SERVICE(m_serviceProvider)->setTimingFactor( _factor );
@@ -1456,12 +1432,24 @@ namespace Menge
                 ->getContentResolution();
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_setArrowLayer( Layer * _layer )
+        bool s_setArrowLayer( Layer * _layer )
         {
+			if( _layer == nullptr )
+			{
+				return false;
+			}
+
             Arrow * arrow = PLAYER_SERVICE(m_serviceProvider)
                 ->getArrow();
 
+			if( arrow == nullptr )
+			{
+				return false;
+			}
+
             _layer->addChild( arrow );
+
+			return true;
         }
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getHotSpotImageSize( HotSpotImage * _hotspotImage )
@@ -1678,12 +1666,12 @@ namespace Menge
                 ->setParticlesEnabled( _enabled );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_createImageResource( const ConstString& _resourceName, const ConstString& _pakName, const FilePath& _fileName )
+		ResourceImageDefault * s_createImageResource( const ConstString& _resourceName, const ConstString& _pakName, const FilePath& _fileName, const mt::vec2f & _maxSize )
         {
             if( RESOURCE_SERVICE(m_serviceProvider)
                 ->hasResource( _resourceName, nullptr ) == true )
 			{
-				return false;
+				return nullptr;
 			}
 
 			ResourceImageDefault * resImage = RESOURCE_SERVICE(m_serviceProvider)
@@ -1692,9 +1680,9 @@ namespace Menge
 			mt::uv4f uv_image;
 			mt::uv4f uv_alpha;
 			
-			resImage->setup( _fileName, ConstString::none(), uv_image, uv_alpha, false, false );
+			resImage->setup( _fileName, ConstString::none(), uv_image, uv_alpha, false, false, _maxSize );
 
-			return true;
+			return resImage;
         }
         //////////////////////////////////////////////////////////////////////////
         void minimizeWindow()
@@ -1720,15 +1708,22 @@ namespace Menge
                 ->getMouseBounded();
         }
 		//////////////////////////////////////////////////////////////////////////
-		void s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f & _screen )
+		bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f & _screen )
 		{
 			Arrow * arrow = PLAYER_SERVICE(m_serviceProvider)
 				->getArrow();
+
+			if( arrow == nullptr )
+			{
+				return false;
+			}
 
 			const RenderCameraInterface * renderCamera = arrow->getRenderCamera();
 			const RenderViewportInterface * renderViewport = arrow->getRenderViewport();
 
 			arrow->calcMouseScreenPosition( renderCamera, renderViewport, _pos, _screen );
+
+			return true;
 		}
         //////////////////////////////////////////////////////////////////////////
         void s_pushMouseMove( uint32_t _touchId, const mt::vec2f & _pos )
@@ -2494,6 +2489,11 @@ namespace Menge
 			{
 				_arrow = PLAYER_SERVICE(m_serviceProvider)
 					->getArrow();
+
+				if( _arrow == nullptr )
+				{
+					return mt::vec2f( 0.f, 0.f );
+				}
 			}
 
 			if( _camera == nullptr )
@@ -2520,6 +2520,11 @@ namespace Menge
 			{
 				_arrow = PLAYER_SERVICE(m_serviceProvider)
 					->getArrow();
+
+				if( _arrow == nullptr )
+				{
+					return mt::vec2f( 0.f, 0.f );
+				}
 			}
 
 			if( _camera == nullptr )
@@ -4413,6 +4418,9 @@ namespace Menge
 		pybind::interface_<ResourceImageSubstract, pybind::bases<ResourceImage> >("ResourceImageSubstract", false)
 			;
 
+		pybind::interface_<ResourceImageSolid, pybind::bases<ResourceImage> >( "ResourceImageSolid", false )
+			;
+
         pybind::interface_<ResourceMovie, pybind::bases<ResourceReference> >("ResourceMovie", false)
 			.def("getSize", &ResourceMovie::getSize)
 			.def("getLoopSegment", &ResourceMovie::getLoopSegment)
@@ -4440,10 +4448,7 @@ namespace Menge
         
         pybind::interface_<ResourceSound, pybind::bases<ResourceReference> >("ResourceSound", false)
             ;            
-
-        pybind::interface_<ResourceImageSolid, pybind::bases<ResourceReference> >("ResourceImageSolid", false)
-            ;            
-        
+       
         pybind::interface_<ResourceEmitterContainer, pybind::bases<ResourceReference> >("ResourceEmitterContainer", false)
             ;           
 
@@ -4915,11 +4920,13 @@ namespace Menge
 					;
 
 				pybind::interface_<Shape, pybind::bases<Node> >("Shape", false)
+					.def( "setBlendAdd", &Shape::setBlendAdd )
+					.def( "isBlendAdd", &Shape::isBlendAdd )
 					.def( "setCenterAlign", &Shape::setCenterAlign )
 					.def( "getCenterAlign", &Shape::getCenterAlign )
 					.def( "setFlipX", &Shape::setFlipX )
 					.def( "getFlipX", &Shape::getFlipX )
-					.def( "setFlipY", &Shape::setFlipX )
+					.def( "setFlipY", &Shape::setFlipY )
 					.def( "getFlipY", &Shape::getFlipY )
 					.def( "setPercentVisibility", &Shape::setPercentVisibility )
 					.def( "getPercentVisibility", &Shape::getPercentVisibility )
@@ -5159,9 +5166,6 @@ namespace Menge
             pybind::def_functor( "scheduleGlobalIsFreeze", nodeScriptMethod, &NodeScriptMethod::s_scheduleGlobalIsFreeze );
             pybind::def_functor( "scheduleGlobalTime", nodeScriptMethod, &NodeScriptMethod::s_scheduleGlobalTime );
 
-
-            pybind::def_functor( "getMouseX", nodeScriptMethod, &NodeScriptMethod::getMouseX ); //deprecated
-            pybind::def_functor( "getMouseY", nodeScriptMethod, &NodeScriptMethod::getMouseY ); //deprecated
 
             pybind::def_functor( "getCursorPosition", nodeScriptMethod, &NodeScriptMethod::s_getCursorPosition );
 			pybind::def_functor( "getTouchPosition", nodeScriptMethod, &NodeScriptMethod::s_getTouchPosition );

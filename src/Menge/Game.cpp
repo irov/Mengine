@@ -411,15 +411,15 @@ namespace Menge
 
 		if( m_defaultArrow == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Game::initialize failed create defaultArrow 'Default'"
+			LOGGER_WARNING(m_serviceProvider)("Game::initialize failed create defaultArrow 'Default'"
 				);
-
-			return false;
 		}
+		else
+		{
+			m_defaultArrow->setName( CONST_STRING( m_serviceProvider, Default ) );
 
-		m_defaultArrow->setName( CONST_STRING(m_serviceProvider, Default) );
-
-		m_player->setArrow( m_defaultArrow );
+			m_player->setArrow( m_defaultArrow );
+		}
 
 		m_soundVolumeProvider = new GameSoundVolumeProvider(m_serviceProvider, this);
 
@@ -442,7 +442,7 @@ namespace Menge
 		const ConstString & platformName = PLATFORM_SERVICE(m_serviceProvider)
 			->getPlatformName();
 
-		bool result = false;
+		bool result = true;
 		EVENTABLE_ASK( m_serviceProvider, this, EVENT_INITIALIZE, result )( _scriptInitParams.c_str(), platformName, isMaster );
 
 		if( result == false )

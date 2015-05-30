@@ -370,7 +370,7 @@ namespace Menge
 		ResourceImage::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, bool _wrapU, bool _wrapV )
+	void ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, bool _wrapU, bool _wrapV, const mt::vec2f & _maxSize )
 	{
         m_filePath = _imagePath;
 
@@ -386,11 +386,14 @@ namespace Menge
 		m_wrapU = _wrapU;
 		m_wrapV = _wrapV;
 
+		m_maxSize = _maxSize;
+		m_size = m_maxSize;
+
 		m_texture = nullptr;
 		m_textureAlpha = nullptr;
 		
 		m_isAlpha = true;
-
+		
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////

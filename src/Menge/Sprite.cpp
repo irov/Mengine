@@ -142,13 +142,20 @@ namespace Menge
 		{
 			texturesNum = 0;
 
-			if( m_solid == false )
+			if( m_blendAdd == true )
 			{
-				stageName = CONST_STRING( m_serviceProvider, Blend );
+				stageName = CONST_STRING( m_serviceProvider, Add );
 			}
 			else
 			{
-				stageName = CONST_STRING( m_serviceProvider, SolidSprite );
+				if( m_solid == false )
+				{
+					stageName = CONST_STRING( m_serviceProvider, Blend );
+				}
+				else
+				{
+					stageName = CONST_STRING( m_serviceProvider, SolidSprite );
+				}
 			}
 		}
 

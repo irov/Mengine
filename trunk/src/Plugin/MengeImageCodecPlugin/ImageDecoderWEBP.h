@@ -1,7 +1,5 @@
 #	pragma once
 
-#	ifdef MENGINE_SUPPORT_DECODER_WEBP
-
 #	include "Codec/ImageDecoder.h"
 
 #	include "webp/decode.h"
@@ -30,6 +28,3 @@ namespace Menge
 		bool decodeWEBP_( const uint8_t * _source, size_t _sourceSize, uint8_t * _buffer, size_t _bufferSize );
 	};
 }
-
-#	endif
-

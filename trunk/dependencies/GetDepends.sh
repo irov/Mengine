@@ -6,7 +6,7 @@ getdepend()
 	fi
 
 	rm -rf $4
-	unzip -o -q $2
+	7z x -y $2
 	mv $3 $4
 }
 
@@ -22,53 +22,27 @@ getdepend_tgz()
 	mv $3 $4
 }
 
-###################	GLee
-if test -s GLee-5.4.0-src.tar
-then echo "already download" GLee-5.4.0-src.tar
-else 
-	ftp http://elf-stone.com/downloads/GLee/GLee-5.4.0-src.tar.gz	
-	gzip -d -f GLee-5.4.0-src.tar.gz
-fi
+svndepend()
+{
+    svn checkout -q $1 $2
+}
 
-rm -rf Glee
+getdepend http://zlib.net/zlib128.zip zlib128.zip zlib-1.2.8 zlib
+getdepend http://download.sourceforge.net/libpng/lpng1616.zip lpng1616.zip lpng1616 libpng
+getdepend http://www.ijg.org/files/jpegsr9a.zip jpegsr9a.zip jpeg-9a libjpeg
+getdepend http://zlib.net/zlib128.zip zlib128.zip zlib-1.2.8 zlib
+getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.2.zip libogg-1.3.2.zip libogg-1.3.2 libogg
+getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.4.zip libvorbis-1.3.4.zip libvorbis-1.3.4 libvorbis
+getdepend http://downloads.xiph.org/releases/theora/libtheora-1.1.1.zip libtheora-1.1.1.zip libtheora-1.1.1 libtheora
+getdepend2 http://kcat.strangesoft.net/openal-releases/openal-soft-1.16.0.tar.bz2 openal-soft-1.16.0.tar.bz2 openal-soft-1.16.0.tar openal-soft-1.16.0 openal-soft
 
-mkdir GLee
-mv GLee-5.4.0-src.tar GLee/GLee-5.4.0-src.tar
+getdepend_tgz https://www.python.org/ftp/python/2.7.10/Python-2.7.10.tgz Python-2.7.10.tgz Python-2.7.10.tar Python-2.7.10 Python
+getdepend_tgz https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tgz Python-3.4.3.tgz Python-3.4.3.tar Python-3.4.3 Python3
 
-cd GLee
-tar -xf GLee-5.4.0-src.tar
-mv GLee-5.4.0-src.tar ../GLee-5.4.0-src.tar
-cd ..
-
-###################	BOX2D
-#if test -s Box2D_v2.2.1.zip
-#then echo "already download" Box2D_v2.2.1.zip
-#else 
-#	ftp http://box2d.googlecode.com/files/Box2D_v2.2.1.zip	
-#fi
-
-#rm -rf box2d
-
-#mkdir box2d
-#mv Box2D_v2.2.1.zip box2d/Box2D_v2.2.1.zip
-
-#cd box2d
-#unzip -o -q Box2D_v2.2.1.zip
-#mv Box2D_v2.2.1.zip ../Box2D_v2.2.1.zip
-#cd ..
-
-
-
-getdepend http://www.ijg.org/files/jpegsr8d.zip jpegsr8d.zip jpeg-8d libjpeg
-getdepend http://prdownloads.sourceforge.net/libpng/lpng1510.zip lpng1510.zip lpng1510 libpng
-getdepend http://box2d.googlecode.com/files/Box2D_v2.2.1.zip Box2D_v2.2.1.zip Box2D_v2.2.1 box2d
-getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.0.zip libogg-1.3.0.zip libogg-1.3.0 ogg
-#getdepend http://netcologne.dl.sourceforge.net/project/pybind/pybind-1.3.zip pybind-1.3.zip pybind-1.3 pybind
-getdepend_tgz http://www.python.org/ftp/python/2.7.2/Python-2.7.2.tgz Python-2.7.2.tgz Python-2.7.2 Python
-getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.2.zip libvorbis-1.3.2.zip libvorbis-1.3.2 vorbis
-getdepend http://zlib.net/zlib126.zip zlib126.zip zlib-1.2.6 zlib
-getdepend_tgz http://freefr.dl.sourceforge.net/project/boost/boost/1.49.0/boost_1_49_0.tar.gz boost_1_49_0.tar.gz boost_1_49_0 boost 
-getdepend http://code.jellycan.com/files/simpleini-4.15.zip simpleini-4.15.zip simpleini simpleini
-
-svn checkout https://pybind.svn.sourceforge.net/svnroot/pybind pybind
-svn checkout https://svn.code.sf.net/p/atlasallocator/code/trunk AtlasAllocator
+svndepend http://pugixml.googlecode.com/svn/trunk pugixml
+svndepend https://svn.code.sf.net/p/pybind/code/trunk pybind
+svndepend https://svn.code.sf.net/p/metabuf/code/trunk metabuf
+svndepend https://svn.code.sf.net/p/stdex2/code/trunk stdex
+svndepend http://svn.code.sf.net/p/utfcpp/code/v2_0 utf8
+svndepend http://lz4.googlecode.com/svn/trunk lz4
+svndepend https://svn.code.sf.net/p/fastpathfinder/code fastpathfinder

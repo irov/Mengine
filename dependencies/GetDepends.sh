@@ -1,6 +1,6 @@
 getdepend()
 {
-	if [ test -s $2 ] 
+	if [ -f $2 ] 
     then
         echo "already download" $2 
     else 
@@ -14,7 +14,7 @@ getdepend()
 
 getdepend_tgz()
 {
-	if [ test -s $2 ]
+	if [ -f $2 ]
     then 
         echo "already download" $2 
     else 

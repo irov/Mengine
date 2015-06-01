@@ -14,7 +14,7 @@ SET(MENGINE_TARGET "WIN32")
 
 SET(MENGINE_TARGET_SDL ON)
 
-INCLUDE( ../win32_template.cmake )
+INCLUDE( ../sdl_template.cmake )
 
 SET( MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../.. )
 

@@ -219,6 +219,10 @@ namespace Menge
 		const mt::vec3f & getAnchorPoint() const;
 
 	public:
+		bool hasOffsetPoint() const;
+		const mt::vec3f & getOffsetPoint() const;
+
+	public:
 		bool hasBoundBox() const;
 		const mt::box2f & getBoundBox() const;
 
@@ -263,6 +267,9 @@ namespace Menge
 
 		bool m_hasAnchorPoint;
 		mt::vec3f m_anchorPoint;
+
+		bool m_hasOffsetPoint;
+		mt::vec3f m_offsetPoint;
 		
         FilePath m_filePath;
 		ConstString m_dataflowType;

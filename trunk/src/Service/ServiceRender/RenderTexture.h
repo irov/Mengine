@@ -55,7 +55,16 @@ namespace Menge
 
 	public:
 		const RenderImageInterfacePtr & getImage() const override;
-        
+
+	public:
+		ETextureFilter getMipmapFilter() const override;
+		ETextureFilter getMagnificationFilter() const override;
+		ETextureFilter getMinificationFilter() const override;
+
+		ETextureAddressMode getAddressU() const override;
+		ETextureAddressMode getAddressV() const override;
+    
+	public:
 		uint32_t getId() const override;
 
 		void setCategory( const ConstString & _category ) override;
@@ -86,6 +95,13 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		RenderImageInterfacePtr m_image;
+
+		ETextureFilter m_mipmapFilter;
+		ETextureFilter m_magnificationFilter;
+		ETextureFilter m_minificationFilter;
+
+		ETextureAddressMode m_addressU;
+		ETextureAddressMode m_addressV;
 
 		ConstString m_category;
 		FilePath m_fileName;

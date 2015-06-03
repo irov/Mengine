@@ -65,8 +65,8 @@ namespace	Menge
 		{
 			Landscape2DElement & el = *it;
 			
-			el.resource->decrementReference();
-			el.resource = nullptr;
+			el.image->decrementReference();
+			el.image = nullptr;
 
 			el.material = nullptr;
 		}
@@ -94,35 +94,28 @@ namespace	Menge
 
 			if( mt::is_intersect( el.bb_wm, cameraBBWM ) == false )
 			{
-				if( el.refcount == 0 )
+				if( el.material != nullptr )
 				{
-					continue;
-				}
+					el.image->decrementReference();
 
-				--el.refcount;
-
-				if( el.refcount == 0 )
-				{
 					el.material = nullptr;
 				}
 			}
 			else
 			{
-				++el.refcount;
-
-				if( el.refcount == 1 )
+				if( el.material == nullptr )
 				{
-					if( el.resource->incrementReference() == false )
+					if( el.image->incrementReference() == false )
 					{
 						LOGGER_ERROR(m_serviceProvider)("Landscape2D::_render '%s' image resource %s not compile"
 							, m_name.c_str() 
-							, el.resource->getName().c_str()
+							, el.image->getName().c_str()
 							);
 
 						return;
 					}
 
-					const RenderTextureInterfacePtr & texture = el.resource->getTexture();
+					const RenderTextureInterfacePtr & texture = el.image->getTexture();
 
 					el.material = RENDERMATERIAL_SERVICE(m_serviceProvider)
 						->getMaterial( CONST_STRING(m_serviceProvider, SolidSprite), false, false, PT_TRIANGLELIST, 1, &texture );
@@ -149,15 +142,13 @@ namespace	Menge
 		{
 			const Landscape2DElement & el = *it;
 
-			if( el.refcount == 0 )
+			if( el.material != nullptr )
 			{
-				continue;
-			}
-			
-			const RenderVertex2D * v = this->getVerticesWM( elementVertexOffset );
+				const RenderVertex2D * vertices = this->getVerticesWM( elementVertexOffset );
 
-			RENDER_SERVICE(m_serviceProvider)
-				->addRenderQuad( _viewport, _camera, el.material, v, 4, nullptr );
+				RENDER_SERVICE( m_serviceProvider )
+					->addRenderQuad( _viewport, _camera, el.material, vertices, 4, nullptr );
+			}
 
 			elementVertexOffset += 4;
 		}
@@ -200,25 +191,24 @@ namespace	Menge
 
 			Landscape2DElement el;
 
-			el.resource = image;
-			el.refcount = 0;
+			el.image = image;
 
 			// left-upper
 			mt::vec2f p1;
-			p1.x = i * m_elementWidth;
-			p1.y = j * m_elementHeight;
+			p1.x = (i + 0) * m_elementWidth;
+			p1.y = (j + 0) * m_elementHeight;
 
 			mt::vec2f p2;
-			p2.x = i * m_elementWidth + m_elementWidth;
-			p2.y = j * m_elementHeight;
+			p2.x = (i + 1) * m_elementWidth;
+			p2.y = (j + 0) * m_elementHeight;
 
 			mt::vec2f p3;
-			p3.x = i * m_elementWidth + m_elementWidth;
-			p3.y = j * m_elementHeight + m_elementHeight;
+			p3.x = (i + 1) * m_elementWidth;
+			p3.y = (j + 1) * m_elementHeight;
 
 			mt::vec2f p4;
-			p4.x = i * m_elementWidth;
-			p4.y = j * m_elementHeight + m_elementHeight;
+			p4.x = (i + 0) * m_elementWidth;
+			p4.y = (j + 1) * m_elementHeight;
 
 			mt::reset( el.bb, p1 );
 			mt::add_internal_point( el.bb, p2 );
@@ -248,8 +238,8 @@ namespace	Menge
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 		
-		const float coeff_x[4] = {0.f, 1.f, 1.f, 0.f};
-		const float coeff_y[4] = {0.f, 0.f, 1.f, 1.f};
+		const uint32_t coeff_x[4] = {0, 1, 1, 0};
+		const uint32_t coeff_y[4] = {0, 0, 1, 1};
 
 		uint32_t vertex_offset = 0;
 
@@ -261,8 +251,8 @@ namespace	Menge
 		{
 			Landscape2DElement & el = *it;
 
-			const mt::uv4f & uv = el.resource->getUVImage();
-			const mt::uv4f & uv2 = el.resource->getUVAlpha();
+			const mt::uv4f & uv = el.image->getUVImage();
+			const mt::uv4f & uv2 = el.image->getUVAlpha();
 
 			for( size_t i = 0; i != 4; ++i )
 			{
@@ -274,13 +264,11 @@ namespace	Menge
 				v.uv2 = uv2[i];
 
 				mt::vec3f p;
-				p.x = el.i * m_elementWidth + m_elementWidth * coeff_x[i];
-				p.y = el.j * m_elementHeight + m_elementHeight * coeff_y[i];
+				p.x = (el.i + coeff_x[i]) * m_elementWidth;
+				p.y = (el.j + coeff_y[i]) * m_elementHeight;
 				p.z = 0.f;
 
 				mt::mul_v3_m4( v.pos, p, wm );
-
-				m_verticesWM[vertex_offset + i] = v;
 			}
 			
 			vertex_offset += 4;

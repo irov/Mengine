@@ -1656,6 +1656,35 @@ namespace Metacode
                 return true;
             }
             
+            bool has_Offset_Point() const
+            {
+                return Offset_Point_successful;
+            }
+            
+            bool get_Offset_Point( mt::vec3f & _value ) const
+            {
+                if( Offset_Point_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Offset_Point;
+            
+                return true;
+            }
+            
+            bool swap_Offset_Point( mt::vec3f & _value ) const
+            {
+                if( Offset_Point_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Offset_Point);
+            
+                return true;
+            }
+            
             const float & get_Width_Value() const
             {
                 return this->Width_Value;
@@ -2628,6 +2657,8 @@ namespace Metacode
             mutable Menge::ConstString KeyFramesPackPath_Path;
             bool Loop_Segment_successful;
             mutable mt::vec2f Loop_Segment;
+            bool Offset_Point_successful;
+            mutable mt::vec3f Offset_Point;
             mutable float Width_Value;
         public:
             typedef stdex::auto_array<Meta_MovieCamera3D> TVectorMeta_MovieCamera3D;

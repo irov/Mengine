@@ -183,7 +183,7 @@ namespace Menge
 	{
 	public:
 		virtual ERenderImageMode getMode() const = 0;
-
+		
 	public:
 		virtual uint32_t getHWWidth() const = 0;
 		virtual uint32_t getHWHeight() const = 0;
@@ -208,6 +208,15 @@ namespace Menge
 	public:
 		virtual const RenderImageInterfacePtr & getImage() const = 0;
 
+	public:
+		virtual ETextureFilter getMipmapFilter() const = 0;
+		virtual ETextureFilter getMagnificationFilter() const = 0;
+		virtual ETextureFilter getMinificationFilter() const = 0;
+
+		virtual ETextureAddressMode getAddressU() const = 0;
+		virtual ETextureAddressMode getAddressV() const = 0;
+
+	public:
 		virtual uint32_t getId() const = 0;
 
 		virtual const Rect & getRect() const = 0;
@@ -238,9 +247,9 @@ namespace Menge
     struct RenderTextureStage
     {
         RenderTextureStage()
-			: mipmap(TF_NONE)
-			, magnification(TF_LINEAR)
-			, minification(TF_LINEAR)
+			: mipmap( TF_NONE )
+			, magnification( TF_LINEAR )
+			, minification( TF_LINEAR )
 			, addressU(TAM_CLAMP)
 			, addressV(TAM_CLAMP)
             , colorOp(TOP_DISABLE)

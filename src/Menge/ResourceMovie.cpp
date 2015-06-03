@@ -29,15 +29,17 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceMovie );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceMovie::ResourceMovie()
-		: m_frameDuration(0.f)
-		, m_duration(0.f)
-        , m_loopSegment(0.f, 0.f)
-		, m_size(0.f, 0.f)
-		, m_maxLayerIndex(0)
-		, m_hasCamera3D(false)
-		, m_hasBoundBox(false)
-		, m_hasAnchorPoint(false)
-		, m_anchorPoint(0.f, 0.f, 0.f)
+		: m_frameDuration( 0.f )
+		, m_duration( 0.f )
+		, m_loopSegment( 0.f, 0.f )
+		, m_size( 0.f, 0.f )
+		, m_maxLayerIndex( 0 )
+		, m_hasCamera3D( false )
+		, m_hasBoundBox( false )
+		, m_hasAnchorPoint( false )
+		, m_anchorPoint( 0.f, 0.f, 0.f )
+		, m_hasOffsetPoint( false )
+		, m_offsetPoint( 0.f, 0.f, 0.f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -132,6 +134,16 @@ namespace Menge
 	const mt::vec3f & ResourceMovie::getAnchorPoint() const
 	{
 		return m_anchorPoint;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceMovie::hasOffsetPoint() const
+	{
+		return m_hasOffsetPoint;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & ResourceMovie::getOffsetPoint() const
+	{
+		return m_offsetPoint;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie::hasBoundBox() const
@@ -370,6 +382,7 @@ namespace Menge
 		
 		m_hasBoundBox = metadata->get_Bounds_Box( m_boundbox );
 		m_hasAnchorPoint = metadata->get_Anchor_Point( m_anchorPoint );
+		m_hasOffsetPoint = metadata->get_Offset_Point( m_offsetPoint );
                 
         metadata->swap_KeyFramesPackPath_Path( m_filePath );
 		metadata->swap_KeyFramesPackPath_Codec( m_dataflowType );

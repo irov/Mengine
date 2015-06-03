@@ -555,18 +555,6 @@ namespace Menge
 			RenderTextureStage & current_texture_stage = m_currentTextureStage[stageId];
 			const RenderTextureStage & texture_stage = m_currentStage->textureStage[stageId];
 
-			if( current_texture_stage.addressU != texture_stage.addressU
-				|| current_texture_stage.addressV != texture_stage.addressV )
-			{
-				current_texture_stage.addressU = texture_stage.addressU;
-				current_texture_stage.addressV = texture_stage.addressV;
-
-				RENDER_SYSTEM(m_serviceProvider)->setTextureAddressing( stageId
-					, current_texture_stage.addressU
-					, current_texture_stage.addressV 
-					);
-			}
-
 			if( current_texture_stage.colorOp != texture_stage.colorOp
 				|| current_texture_stage.colorArg1 != texture_stage.colorArg1
 				|| current_texture_stage.colorArg2 != texture_stage.colorArg2 )
@@ -661,6 +649,53 @@ namespace Menge
 
 			RENDER_SYSTEM(m_serviceProvider)
 				->setTexture( _stageId, image );
+			
+			RenderTextureStage & current_texture_stage = m_currentTextureStage[_stageId];
+
+			ETextureAddressMode addressU = _texture->getAddressU();
+			ETextureAddressMode addressV = _texture->getAddressV();
+
+			if( current_texture_stage.addressU != addressU
+				|| current_texture_stage.addressV != addressV )
+			{
+				current_texture_stage.addressU = addressU;
+				current_texture_stage.addressV = addressV;
+
+				RENDER_SYSTEM( m_serviceProvider )->setTextureAddressing( _stageId
+					, current_texture_stage.addressU
+					, current_texture_stage.addressV
+					);
+			}
+
+			ETextureFilter mipmap = _texture->getMipmapFilter();
+			
+			if( current_texture_stage.mipmap != mipmap )
+			{ 
+				current_texture_stage.mipmap = mipmap;
+
+				RENDER_SYSTEM( m_serviceProvider )
+					->setTextureStageFilter( _stageId, TFT_MIPMAP, current_texture_stage.mipmap );
+			}
+
+			ETextureFilter magnification = _texture->getMagnificationFilter();
+
+			if( current_texture_stage.magnification != magnification )
+			{
+				current_texture_stage.magnification = magnification;
+
+				RENDER_SYSTEM( m_serviceProvider )
+					->setTextureStageFilter( _stageId, TFT_MAGNIFICATION, current_texture_stage.magnification );
+			}
+			
+			ETextureFilter minification = _texture->getMinificationFilter();
+
+			if( current_texture_stage.minification != minification )
+			{
+				current_texture_stage.minification = minification;
+
+				RENDER_SYSTEM( m_serviceProvider )
+					->setTextureStageFilter( _stageId, TFT_MINIFICATION, current_texture_stage.minification );
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

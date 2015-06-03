@@ -1,4 +1,4 @@
-<Protocol Version = "78">
+<Protocol Version = "79">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -160,6 +160,7 @@
       <Member Node="KeyFramesPackPath" Name="Converter" Type="Menge::ConstString"/>
       <Member Node="Loop" Name="Segment" Type="mt::vec2f"/>      
       <Member Node="Anchor" Name="Point" Type="mt::vec3f"/>
+      <Member Node="Offset" Name="Point" Type="mt::vec3f"/>
       <Member Node="Bounds" Name="Box" Type="mt::box2f"/>
 
       <Node Name="MovieLayer2D">

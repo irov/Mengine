@@ -22,14 +22,12 @@ namespace Menge
 
 	struct Landscape2DElement
 	{
-		ResourceImage * resource;
+		ResourceImage * image;
 		RenderMaterialInterfacePtr material;
 		uint32_t i;
 		uint32_t j;
 		mt::box2f bb;
 		mt::box2f bb_wm;
-
-		uint32_t refcount;
 	};
 
 	typedef stdex::vector<Landscape2DElement> TVectorLandscape2DElements;

@@ -1028,10 +1028,35 @@ namespace Menge
 
 		this->createCamera3D_();
 
-		if( m_resourceMovie->hasAnchorPoint() == true )
+		if( m_resourceMovie->hasOffsetPoint() == false )
 		{
-			const mt::vec3f & anchorPoint = m_resourceMovie->getAnchorPoint();
-			this->setOrigin( anchorPoint );
+			if( m_resourceMovie->hasAnchorPoint() == true )
+			{
+				const mt::vec3f & anchorPoint = m_resourceMovie->getAnchorPoint();
+
+				this->setOrigin( anchorPoint );
+			}
+		}
+		else
+		{
+			if( m_resourceMovie->hasAnchorPoint() == true )
+			{
+				const mt::vec3f & offsetPoint = m_resourceMovie->getOffsetPoint();
+
+				const mt::vec3f & anchorPoint = m_resourceMovie->getAnchorPoint();
+
+				this->setOrigin( offsetPoint );
+							
+				mt::vec3f offset = offsetPoint - anchorPoint;
+
+				this->setLocalPosition( offset );
+			}
+			else
+			{
+				const mt::vec3f & offsetPoint = m_resourceMovie->getOffsetPoint();
+
+				this->setLocalPosition( offsetPoint );
+			}			
 		}
 
 		return true;

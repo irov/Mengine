@@ -229,6 +229,13 @@ namespace Menge
 
 	protected:
 		void updateChildren_( float _current, float _timing );
+
+	public:
+		void setIsometricOffset( const mt::vec3f & _isometricOffset );
+		const mt::vec3f & getIsometricOffset() const;
+
+	protected:
+		mt::vec3f m_isometricOffset;
 		
 	protected:
 		pybind::object _embedded() override;

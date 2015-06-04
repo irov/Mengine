@@ -32,6 +32,7 @@ namespace Menge
 		, m_renderViewport(nullptr)
 		, m_shallowGrave(0)
 		, m_shallowGravePropagate(false)
+		, m_isometricOffset(0.f, 0.f, 0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1017,6 +1018,16 @@ namespace Menge
 
 			node->render( _viewport, _camera, _debugMask );
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Node::setIsometricOffset( const mt::vec3f & _isometricOffset )
+	{
+		m_isometricOffset = _isometricOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & Node::getIsometricOffset() const
+	{
+		return m_isometricOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	pybind::object Node::_embedded()

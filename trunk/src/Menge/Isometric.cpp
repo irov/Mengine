@@ -17,13 +17,22 @@ namespace	Menge
 				const mt::vec3f & l = _left->getLocalPosition();
 				const mt::vec3f & r = _right->getLocalPosition();
 
-				float less_y =  l.y - r.y;
+				const mt::vec3f & l_offset = _left->getIsometricOffset();
+				const mt::vec3f & r_offset = _right->getIsometricOffset();
+
+				float l_y = l.y + l_offset.y;
+				float r_y = r.y + r_offset.y;
+
+				float less_y =  l_y - r_y;
 				if( less_y < 0.1f && less_y > -0.1f )
 				{
-					return l.x < r.x;
+					float l_x = l.x + l_offset.x;
+					float r_x = r.x + r_offset.x;
+
+					return l_x < r_x;
 				}
 
-				return l.y < r.y;
+				return l_y < r_y;
 			}
 		};		
 	}

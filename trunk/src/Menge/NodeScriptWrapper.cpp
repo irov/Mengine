@@ -4558,6 +4558,9 @@ namespace Menge
 
             .def( "getWorldColor", &Node::getWorldColor )
 
+			.def( "setIsometricOffset", &Node::setIsometricOffset )
+			.def( "getIsometricOffset", &Node::getIsometricOffset )
+
 			.def( "setRenderViewport", &Node::setRenderViewport ) 
 			.def( "getRenderViewport", &Node::getRenderViewport )
 			.def( "getRenderViewportInheritance", &Node::getRenderViewportInheritance )

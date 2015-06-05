@@ -130,7 +130,7 @@ namespace Menge
 		}
 
 		float frameDuration = m_resourceMovie->getFrameDuration();
-		m_currentFrame = (uint32_t)(_timing / frameDuration + 0.5f);
+		m_currentFrame = _timing > 0.f ? ( uint32_t )(_timing / frameDuration + 0.5f) : 0U;
 
 		uint32_t frameCount = m_resourceMovie->getFrameCount();
 		if( m_currentFrame > frameCount )

@@ -9,7 +9,7 @@
 
 #	include "Consts.h"
 
-namespace	Menge
+namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Layer2DIsometric::Layer2DIsometric()
@@ -23,8 +23,8 @@ namespace	Menge
 		public:
 			bool operator() ( Node * _left, Node * _right ) const
 			{
-				const mt::vec3f & l = _left->getLocalPosition();
-				const mt::vec3f & r = _right->getLocalPosition();
+				const mt::vec3f & l = _left->getWorldPosition();
+				const mt::vec3f & r = _right->getWorldPosition();
 
 				const mt::vec3f & l_offset = _left->getIsometricOffset();
 				const mt::vec3f & r_offset = _right->getIsometricOffset();

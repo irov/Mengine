@@ -695,7 +695,16 @@ namespace Menge
 			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
 			MovieFrameSource start_frame;
-			framePack->getLayerFrame( layer->index, 0, start_frame );
+			if( framePack->getLayerFrame( layer->index, 0, start_frame ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' invalid get layer '%s' frame %d"
+					, _movie->getName().c_str()
+					, _name.c_str()
+					, layer->index
+					);
+
+				return 0.f;
+			}
 
 			mt::vec3f pos = start_frame.position;
 			float len = 0.f;

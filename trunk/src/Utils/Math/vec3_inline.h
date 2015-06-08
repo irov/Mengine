@@ -192,12 +192,26 @@ namespace mt
 		return out;
 	}
 
+	MENGINE_MATH_FUNCTION_INLINE vec3f operator*(const vec3f& _a, const vec3f & _b)
+	{
+		vec3f out;
+		mul_v3_v3( out, _a, _b );
+		return out;
+	}
+
 	/*	Scale of vecs  */
 	MENGINE_MATH_FUNCTION_INLINE void scale_v3_v3(vec3f& _out, const vec3f& _a, float _val)
 	{
 		_out.x = _a.x * _val;
 		_out.y = _a.y * _val;
 		_out.z = _a.z * _val;
+	}
+
+	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b )
+	{
+		_out.x = _a.x * _b.x;
+		_out.y = _a.y * _b.y;
+		_out.z = _a.z * _b.z;
 	}
 
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator*(const vec3f& _rhs, const float _val) 

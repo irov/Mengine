@@ -4,8 +4,8 @@
 
 namespace Menge
 {
-	bool marmaladeSoundErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _file, int _line );
+	bool SDLSoundErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _file, int _line );
 }
 
-#	define MARMALADE_SOUND_CHECK_ERROR(serviceProvider) Menge::marmaladeSoundErrorCheck( serviceProvider, __FILE__, __LINE__ )
+#	define SDL_SOUND_CHECK_ERROR(serviceProvider) Menge::SDLSoundErrorCheck( serviceProvider, __FILE__, __LINE__ )
 

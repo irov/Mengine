@@ -1,21 +1,21 @@
-#	include "MarmaladeSoundBufferStream.h"
+#	include "SDLSoundBufferStream.h"
 
-#	include "MarmaladeSoundError.h"
+#	include "SDLSoundError.h"
 
 #	include "Logger/Logger.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeSoundBufferStream::MarmaladeSoundBufferStream()
+	SDLSoundBufferStream::SDLSoundBufferStream()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeSoundBufferStream::~MarmaladeSoundBufferStream()
+	SDLSoundBufferStream::~SDLSoundBufferStream()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundBufferStream::update()
+	bool SDLSoundBufferStream::update()
 	{
 		return true;
 	}

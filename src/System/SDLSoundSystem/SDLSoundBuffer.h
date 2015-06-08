@@ -3,16 +3,16 @@
 #	include "Interface/SoundSystemInterface.h"
 #	include "Interface/SoundCodecInterface.h"
 
-#	include <s3eSound.h>
+#	include "SDL.h"
 
 namespace Menge
 {
-	class MarmaladeSoundBuffer
+	class SDLSoundBuffer
 		: public SoundBufferInterface
 	{
 	public:
-		MarmaladeSoundBuffer();
-		virtual ~MarmaladeSoundBuffer();
+		SDLSoundBuffer();
+		virtual ~SDLSoundBuffer();
 
 	public:
 		void setServiceProvider( ServiceProviderInterface * m_serviceProvider );
@@ -31,5 +31,5 @@ namespace Menge
 		SoundDecoderInterfacePtr m_soundDecoder;
 	};
 
-	typedef stdex::intrusive_ptr<MarmaladeSoundBuffer> MarmaladeSoundBufferPtr;
+	typedef stdex::intrusive_ptr<SDLSoundBuffer> SDLSoundBufferPtr;
 }	// namespace Menge

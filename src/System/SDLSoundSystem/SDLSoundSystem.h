@@ -2,101 +2,34 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
-#	include "MarmaladeSoundBufferMemory.h"
-#	include "MarmaladeSoundBufferStream.h"
-#	include "MarmaladeSoundSource.h"
+#	include "SDLSoundBufferMemory.h"
+#	include "SDLSoundBufferStream.h"
+#	include "SDLSoundSource.h"
 
-#	include "MarmaladeSoundFilter.h"
+#	include "SDLSoundFilter.h"
 
 #   include "Factory/FactoryStore.h"
 
-#	include <s3eSound.h>
+#	include "SDL.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	struct SDLSoundMemoryDesc
-	{
-		SDLSoundSource * source;
-
-		uint32_t carriage;
-		uint32_t size;
-		int16 * memory;
-		uint32_t frequency;
-		uint32_t channels;
-
-		uint32_t W;
-		uint32_t L;
-
-		uint8 volume;
-		int32 count;
-		bool play;
-		bool pause;
-		bool stop;
-		bool end;
-
-	public:
-		inline int32 getSample( uint32_t _channel ) volatile const
-		{
-			uint32_t source_carriage = this->carriage * this->W / this->L;
-			
-			uint32_t position = source_carriage * this->channels;
-
-			int32 pure_value = (int32)this->memory[ position + _channel ];
-
-			int32 volume_value = (pure_value * this->volume) >> 8;
-
-			return volume_value;
-		}
-
-		inline bool isDone() volatile const
-		{
-			uint32_t position = this->carriage * this->channels;
-
-			return position >= this->size;
-		}
-
-		inline void setCarriage( float _position ) volatile
-		{
-			uint32_t source_carriage = uint32_t(_position) * this->frequency * this->channels / 1000;
-
-			this->carriage = source_carriage * this->L / this->W;
-		}
-
-		inline void setSize( float _length ) volatile
-		{
-			uint32_t source_size = uint32_t(_length) * this->frequency * this->channels / 1000;
-
-			this->size = source_size * this->L / this->W;
-		}
-
-		inline void setVolume( float _volume ) volatile
-		{
-			uint8 volume_s3e = (uint8)(_volume * (S3E_SOUND_MAX_VOLUME - 1));
-
-			this->volume = volume_s3e;
-		}
-	};
-	//////////////////////////////////////////////////////////////////////////
-#	ifndef MENGINE_MARMALADE_SOUND_MAX_COUNT
-#	define MENGINE_MARMALADE_SOUND_MAX_COUNT 16
-#	endif
-	//////////////////////////////////////////////////////////////////////////
 	static const uint32_t INVALID_SOUND_ID = (uint32_t)-1;
 	//////////////////////////////////////////////////////////////////////////
-	class MarmaladeSoundSystem
+	class SDLSoundSystem
 		: public SoundSystemInterface
 	{
 	public:
-		MarmaladeSoundSystem();
-		~MarmaladeSoundSystem();
+		SDLSoundSystem();
+		~SDLSoundSystem();
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		uint32_t playSoundDesc( MarmaladeSoundSource * _source, float _position, float _volume, int32 _count );
+		uint32_t playSoundDesc( SDLSoundSource * _source, float _position, float _volume, int32_t _count );
 		void removeSoundDesc( uint32_t _id );
 		bool stopSoundDesc( uint32_t _id );
 		
@@ -128,31 +61,18 @@ namespace Menge
 
 	protected:
 		void formActiveChannelsAndDecode_( uint32_t & _samplesAvailable );
-		int32 mixSources_( int numSamples, int hasSamples, int16* target );
-
-	protected:
-		void setupFilter_();
-
-	public:
-		bool isDeviceStereo() const { return m_isDeviceStereo; }
+		int32_t mixSources_( int numSamples, int hasSamples, int16_t * target );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-        typedef FactoryPoolStore<MarmaladeSoundBufferMemory, 32> TPoolOALSoundBuffer;
+        typedef FactoryPoolStore<SDLSoundBufferMemory, 32> TPoolOALSoundBuffer;
         TPoolOALSoundBuffer m_poolOALSoundBuffer;
 
-        typedef FactoryPoolStore<MarmaladeSoundBufferStream, 32> TPoolOALSoundBufferStream;
+		typedef FactoryPoolStore<SDLSoundBufferStream, 32> TPoolOALSoundBufferStream;
         TPoolOALSoundBufferStream m_poolOALSoundBufferStream;
 
-        typedef FactoryPoolStore<MarmaladeSoundSource, 32> TPoolOALSoundSource;
+		typedef FactoryPoolStore<SDLSoundSource, 32> TPoolOALSoundSource;
         TPoolOALSoundSource m_poolOALSoundSource;
-
-		bool m_isDeviceStereo;
-		int32 m_soundOutputFrequence;
-
-		volatile MarmaladeSoundMemoryDesc m_soundMemoryDesc[MENGINE_MARMALADE_SOUND_MAX_COUNT];
-
-		int m_soundChannel;
     };
 }	// namespace Menge

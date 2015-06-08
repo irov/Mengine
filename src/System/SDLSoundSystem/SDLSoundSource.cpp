@@ -1,8 +1,8 @@
-#	include "MarmaladeSoundSource.h"
+#	include "SDLSoundSource.h"
 
-#	include "MarmaladeSoundSystem.h"
+#	include "SDLSoundSystem.h"
 
-#	include "MarmaladeSoundError.h"
+#	include "SDLSoundError.h"
 
 #	include "Logger/Logger.h"
 
@@ -11,7 +11,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeSoundSource::MarmaladeSoundSource()
+	SDLSoundSource::SDLSoundSource()
 		: m_serviceProvider(nullptr)
 		, m_soundSystem(nullptr)
 		, m_volume(1.f)
@@ -23,20 +23,20 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeSoundSource::~MarmaladeSoundSource()
+	SDLSoundSource::~SDLSoundSource()
 	{
 		m_soundSystem->removeSoundDesc( m_soundId );
 
 		m_soundId = INVALID_SOUND_ID;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeSoundSource::initialize( ServiceProviderInterface * _serviceProvider, MarmaladeSoundSystem * _soundSystem )
+	void SDLSoundSource::initialize( ServiceProviderInterface * _serviceProvider, SDLSoundSystem * _soundSystem )
     {
         m_serviceProvider = _serviceProvider;
 		m_soundSystem = _soundSystem;				
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSource::play()
+	bool SDLSoundSource::play()
 	{
 		if( m_playing == true )
 		{
@@ -71,7 +71,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::pause()
+	void SDLSoundSource::pause()
 	{
 		if( m_playing == false )
 		{
@@ -98,7 +98,7 @@ namespace Menge
 		m_pausing = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::stop()
+	void SDLSoundSource::stop()
 	{
 		if( m_playing == false && m_pausing == false )
 		{
@@ -116,7 +116,7 @@ namespace Menge
 		m_pausing = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::complete()
+	void SDLSoundSource::complete()
 	{
 		m_soundId = INVALID_SOUND_ID;
 		m_position = 0.f;
@@ -125,17 +125,17 @@ namespace Menge
 		m_pausing = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSource::isPlay() const 
+	bool SDLSoundSource::isPlay() const
 	{
 		return m_playing;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSource::isPause() const
+	bool SDLSoundSource::isPause() const
 	{
 		return m_pausing;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::setVolume( float _volume )
+	void SDLSoundSource::setVolume( float _volume )
 	{
 		m_volume = _volume;
 		
@@ -147,22 +147,22 @@ namespace Menge
 		m_soundSystem->setSoundDescVolume( m_soundId, _volume );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float MarmaladeSoundSource::getVolume() const 
+	float SDLSoundSource::getVolume() const
 	{
 		return m_volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::setLoop( bool _loop )
+	void SDLSoundSource::setLoop( bool _loop )
 	{
 		m_loop = _loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSource::getLoop() const 
+	bool SDLSoundSource::getLoop() const
 	{
 		return m_loop;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float MarmaladeSoundSource::getLengthMs() const
+	float SDLSoundSource::getLengthMs() const
 	{
 		if( m_soundBuffer == nullptr )
 		{
@@ -186,7 +186,7 @@ namespace Menge
 		return time_sound;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float MarmaladeSoundSource::getPosMs() const
+	float SDLSoundSource::getPosMs() const
 	{
 		if( m_playing == false )
 		{
@@ -208,7 +208,7 @@ namespace Menge
 		return posMs;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSource::setPosMs( float _posMs )
+	bool SDLSoundSource::setPosMs( float _posMs )
 	{
 		if( m_playing == true )
 		{
@@ -224,12 +224,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSource::setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer )
+	void SDLSoundSource::setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer )
 	{
 		m_soundBuffer = _soundBuffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterfacePtr MarmaladeSoundSource::getSoundBuffer() const
+	SoundBufferInterfacePtr SDLSoundSource::getSoundBuffer() const
 	{
 		return m_soundBuffer;
 	}

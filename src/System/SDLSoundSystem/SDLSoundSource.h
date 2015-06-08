@@ -2,22 +2,22 @@
 
 #	include "Interface/SoundSystemInterface.h"
 
-#	include "MarmaladeSoundBuffer.h"
-#	include "MarmaladeSoundFilter.h"
+#	include "SDLSoundBuffer.h"
+#	include "SDLSoundFilter.h"
 
 namespace Menge
 {
-	class MarmaladeSoundSystem;
+	class SDLSoundSystem;
 	
-	class MarmaladeSoundSource
+	class SDLSoundSource
 		: public SoundSourceInterface
 	{
 	public:
-		MarmaladeSoundSource();
-		~MarmaladeSoundSource();
+		SDLSoundSource();
+		~SDLSoundSource();
         
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider, MarmaladeSoundSystem * _soundSystem );
+		void initialize( ServiceProviderInterface * _serviceProvider, SDLSoundSystem * _soundSystem );
 
 	public:
 		bool play() override;
@@ -47,7 +47,7 @@ namespace Menge
 
     private:
         ServiceProviderInterface * m_serviceProvider;
-		MarmaladeSoundSystem * m_soundSystem;
+		SDLSoundSystem * m_soundSystem;
 
 		SoundBufferInterfacePtr m_soundBuffer;
 
@@ -59,12 +59,7 @@ namespace Menge
 		float m_position;
 
 		uint32_t m_soundId;
-				
-		//int32 m_filterBufferPos;
-		//int16 m_filterBufferL[MARMALADE_SOUND_NUM_COEFFICIENTS];
-		//int16 m_filterBufferR[MARMALADE_SOUND_NUM_COEFFICIENTS];
-		//double m_filterCoefficients[MARMALADE_SOUND_NUM_COEFFICIENTS];
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MarmaladeSoundSource> MarmaladeSoundSourcePtr;
+	typedef stdex::intrusive_ptr<SDLSoundSource> SDLSoundSourcePtr;
 }	// namespace Menge

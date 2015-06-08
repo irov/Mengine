@@ -1,25 +1,25 @@
-#	include "MarmaladeSoundBuffer.h"
+#	include "SDLSoundBuffer.h"
 
-#	include "MarmaladeSoundError.h"
+#	include "SDLSoundError.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeSoundBuffer::MarmaladeSoundBuffer()
+	SDLSoundBuffer::SDLSoundBuffer()
 		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeSoundBuffer::~MarmaladeSoundBuffer()
+	SDLSoundBuffer::~SDLSoundBuffer()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundBuffer::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	void SDLSoundBuffer::setServiceProvider( ServiceProviderInterface * _serviceProvider )
 	{
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
+	bool SDLSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
 	{
 		//const SoundCodecDataInfo * dataInfo = _soundDecoder->getCodecDataInfo();
 
@@ -35,12 +35,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const SoundDecoderInterfacePtr & MarmaladeSoundBuffer::getDecoder() const
+	const SoundDecoderInterfacePtr & SDLSoundBuffer::getDecoder() const
 	{
 		return m_soundDecoder;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundBuffer::update()
+	bool SDLSoundBuffer::update()
 	{
 		// do nothing
 		return true;

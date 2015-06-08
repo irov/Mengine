@@ -25,7 +25,7 @@ endif()
 if( DEFINED MENGINE_TARGET_SDL )
     ADD_SUBDIRECTORY( AstralaxParticleSystem2 )
     
-    ADD_SUBDIRECTORY( OALSoundSystem )
+    ADD_SUBDIRECTORY( SDLSoundSystem )
     ADD_SUBDIRECTORY( PosixUnicodeSystem )
     ADD_SUBDIRECTORY( SDLThreadSystem )
     

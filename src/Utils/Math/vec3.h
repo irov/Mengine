@@ -48,6 +48,7 @@ namespace mt
 
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator+(const vec3f& _a, const vec3f& _b);
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator-(const vec3f& _a, const vec3f& _b);
+	MENGINE_MATH_FUNCTION_INLINE vec3f operator*(const vec3f& _a, const vec3f & _b);
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator*(const vec3f& _rhs, const float _val);
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator*(const float _val, const vec3f& _rhs);
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator/(const vec3f& _rhs, const float _val);
@@ -65,6 +66,7 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE void add_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b );
 	MENGINE_MATH_FUNCTION_INLINE void sub_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b );
 	MENGINE_MATH_FUNCTION_INLINE void scale_v3_v3( vec3f& _out, const vec3f& _a, float _val );
+	MENGINE_MATH_FUNCTION_INLINE void mul_v3_v3( vec3f& _out, const vec3f& _a, const vec3f& _b );
 	MENGINE_MATH_FUNCTION_INLINE void neg_v3( vec3f& _out );
 
 	MENGINE_MATH_FUNCTION_INLINE float dot_v3_v3( const vec3f &a, const vec3f &b );

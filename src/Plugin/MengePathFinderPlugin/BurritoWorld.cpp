@@ -175,7 +175,7 @@ namespace Menge
 		m_unitBounds.push_back( bound );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::createLayer( const ConstString & _layerName, float _parallax, uint32_t _countX, uint32_t _countY, float _width, float _height, bool _horizontalSlide, bool _verticalSlide, const pybind::object & _cb )
+	void BurritoWorld::createLayer( const ConstString & _layerName, const mt::vec3f & _parallax, uint32_t _countX, uint32_t _countY, float _width, float _height, bool _horizontalSlide, bool _verticalSlide, const pybind::object & _cb )
 	{
 		BurritoLayer layer;
 		layer.name = _layerName;

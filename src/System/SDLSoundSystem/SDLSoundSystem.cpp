@@ -1,14 +1,14 @@
-#	include "MarmaladeSoundSystem.h"
+#	include "SDLSoundSystem.h"
 
-#	include "MarmaladeSoundConfig.h"
-#	include "MarmaladeSoundError.h"
-#	include "MarmaladeSoundSource.h"
+#	include "SDLSoundConfig.h"
+#	include "SDLSoundError.h"
+#	include "SDLSoundSource.h"
 
 #	include "Logger/Logger.h"
 
 #	include <math.h>
 
-#	include <s3eDevice.h>
+#	include "SDL.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SoundSystem, Menge::SoundSystemInterface, Menge::MarmaladeSoundSystem );
@@ -16,29 +16,29 @@ SERVICE_FACTORY( SoundSystem, Menge::SoundSystemInterface, Menge::MarmaladeSound
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeSoundSystem::MarmaladeSoundSystem()
+	SDLSoundSystem::SDLSoundSystem()
 		: m_serviceProvider(nullptr)
 		, m_isDeviceStereo(true)
 		, m_soundOutputFrequence(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeSoundSystem::~MarmaladeSoundSystem()
+	SDLSoundSystem::~SDLSoundSystem()
 	{     
 
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeSoundSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	void SDLSoundSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * MarmaladeSoundSystem::getServiceProvider() const
+	ServiceProviderInterface * SDLSoundSystem::getServiceProvider() const
     {
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	float MarmaladeSoundSystem::carriageToPosition_( uint32_t _carriage, uint32_t _frequency ) const
+	float SDLSoundSystem::carriageToPosition_( uint32_t _carriage, uint32_t _frequency ) const
 	{
 		uint32_t gcd = s_GCD( _frequency, m_soundOutputFrequence );
 		uint32_t W = _frequency / gcd;
@@ -49,7 +49,7 @@ namespace Menge
 		return posMs;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t MarmaladeSoundSystem::positionToCarriage_( float _position, uint32_t _frequency ) const
+	uint32_t SDLSoundSystem::positionToCarriage_( float _position, uint32_t _frequency ) const
 	{
 		uint32_t gcd = s_GCD( _frequency, m_soundOutputFrequence );
 		uint32_t W = _frequency / gcd;
@@ -60,7 +60,7 @@ namespace Menge
 		return carriage;
 	}
 	//////////////////////////////////////////////////////////////////////////	
-	uint32_t MarmaladeSoundSystem::playSoundDesc( MarmaladeSoundSource * _source, float _position, float _volume, int32 _count )
+	uint32_t SDLSoundSystem::playSoundDesc( MarmaladeSoundSource * _source, float _position, float _volume, int32 _count )
 	{
 		for( uint32_t i = 0; i != MENGINE_MARMALADE_SOUND_MAX_COUNT; ++i )
 		{
@@ -129,7 +129,7 @@ namespace Menge
 		return INVALID_SOUND_ID;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSystem::removeSoundDesc( uint32_t _id )
+	void SDLSoundSystem::removeSoundDesc( uint32_t _id )
 	{
 		if( _id == INVALID_SOUND_ID )
 		{
@@ -148,7 +148,7 @@ namespace Menge
 		desc.pause = false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSystem::stopSoundDesc( uint32_t _id )
+	bool SDLSoundSystem::stopSoundDesc( uint32_t _id )
 	{
 		if( _id == INVALID_SOUND_ID )
 		{
@@ -168,7 +168,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSystem::pauseSoundDesc( uint32_t _id, float & _position )
+	bool SDLSoundSystem::pauseSoundDesc( uint32_t _id, float & _position )
 	{
 		if( _id == INVALID_SOUND_ID )
 		{
@@ -191,7 +191,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSystem::resumeSoundDesc( uint32_t _id, float _position )
+	bool SDLSoundSystem::resumeSoundDesc( uint32_t _id, float _position )
 	{
 		if( _id == INVALID_SOUND_ID )
 		{
@@ -213,7 +213,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSystem::setSoundDescVolume( uint32_t _id, float _volume )
+	bool SDLSoundSystem::setSoundDescVolume( uint32_t _id, float _volume )
 	{
 		if( _id == INVALID_SOUND_ID )
 		{
@@ -232,7 +232,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSystem::getSoundDescPosition( uint32_t _id, float & _position )
+	bool SDLSoundSystem::getSoundDescPosition( uint32_t _id, float & _position )
 	{
 		if( _id == INVALID_SOUND_ID )
 		{
@@ -468,7 +468,7 @@ namespace Menge
 		return playedSamples;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSystem::initialize()
+	bool SDLSoundSystem::initialize()
 	{
 		LOGGER_INFO(m_serviceProvider)( "Starting Marmalade Sound System..." );
 
@@ -565,7 +565,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSystem::finalize()
+	void SDLSoundSystem::finalize()
 	{
 		if( s3eSoundChannelStop( m_soundChannel ) == S3E_RESULT_ERROR )
 		{
@@ -588,7 +588,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSystem::update()
+	void SDLSoundSystem::update()
 	{
 		for( uint32 index_desc = 0; index_desc != MENGINE_MARMALADE_SOUND_MAX_COUNT; ++index_desc )
 		{
@@ -626,22 +626,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSystem::setupFilter_()
-	{
-		//int minimumFrequence = MENGINE_MARMALADE_SOUND_INPUT_FREQUENCE < m_soundOutputFrequence ? MENGINE_MARMALADE_SOUND_INPUT_FREQUENCE : m_soundOutputFrequence;
-		//double fc = ((double)minimumFrequence / 2.0) / (double)m_soundOutputFrequence; // half the input sample rate (eg nyquist limit of input)
-
-		//// Generate filter coefficients
-		//s_wsfirLP( m_filterCoefficients, ESWC_BLACKMAN, fc );
-
-		// Sample rate conversion parameters
-		//int gcd = s_GCD( MENGINE_MARMALADE_SOUND_INPUT_FREQUENCE, m_soundOutputFrequence );
-		
-		//m_W = MENGINE_MARMALADE_SOUND_INPUT_FREQUENCE / gcd;
-		//m_L = m_soundOutputFrequence / gcd;		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSystem::onTurnSound( bool _turn )
+	void SDLSoundSystem::onTurnSound( bool _turn )
 	{
 		if( _turn == false )
 		{
@@ -653,7 +638,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterfacePtr MarmaladeSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
+	SoundBufferInterfacePtr SDLSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
 	{
 		_isStream = false;
 
@@ -687,7 +672,7 @@ namespace Menge
 		return base;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundSourceInterfacePtr MarmaladeSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
+	SoundSourceInterfacePtr SDLSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
 	{
 		//OALSoundSource* soundSource = m_soundSources.get();
 		MarmaladeSoundSource * soundSource = m_poolOALSoundSource.createObjectT();

@@ -1,17 +1,15 @@
-#	include "MarmaladeSoundBufferMemory.h"
+#	include "SDLSoundBufferMemory.h"
 
-#	include "MarmaladeSoundError.h"
+#	include "SDLSoundError.h"
 
 namespace Menge
 {
-
-
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeSoundBufferMemory::MarmaladeSoundBufferMemory()
+	SDLSoundBufferMemory::SDLSoundBufferMemory()
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeSoundBufferMemory::~MarmaladeSoundBufferMemory()
+	SDLSoundBufferMemory::~SDLSoundBufferMemory()
 	{
 	}
 }	// namespace Menge

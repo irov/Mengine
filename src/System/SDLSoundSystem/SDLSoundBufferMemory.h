@@ -1,14 +1,14 @@
 #	pragma once
 
-#	include "MarmaladeSoundBuffer.h"
+#	include "SDLSoundBuffer.h"
 
 namespace Menge
 {
-	class MarmaladeSoundBufferMemory
-		: public MarmaladeSoundBuffer
+	class SDLSoundBufferMemory
+		: public SDLSoundBuffer
 	{
 	public:
-		MarmaladeSoundBufferMemory();
-		~MarmaladeSoundBufferMemory();
+		SDLSoundBufferMemory();
+		~SDLSoundBufferMemory();
 	};
 }	// namespace Menge

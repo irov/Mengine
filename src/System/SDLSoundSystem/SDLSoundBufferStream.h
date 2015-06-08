@@ -1,15 +1,15 @@
 #	pragma once
 
-#	include "MarmaladeSoundBuffer.h"
+#	include "SDLSoundBuffer.h"
 
 namespace Menge
 {
-	class MarmaladeSoundBufferStream
-		: public MarmaladeSoundBuffer
+	class SDLSoundBufferStream
+		: public SDLSoundBuffer
 	{
 	public:
-		MarmaladeSoundBufferStream();
-		~MarmaladeSoundBufferStream();
+		SDLSoundBufferStream();
+		~SDLSoundBufferStream();
 
 	public:
 		bool update() override;

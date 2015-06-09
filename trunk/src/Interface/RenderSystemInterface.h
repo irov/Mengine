@@ -23,6 +23,8 @@
 #	define MENGE_MAX_TEXTURE_STAGES 2
 #   endif
 
+#include "IwGL.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -298,6 +300,8 @@ namespace Menge
 		bool depthBufferWriteEnable;
 		bool alphaTestEnable;
 		bool alphaBlendEnable;
+		GLuint shaderProgram;
+		int transformLocation;
 	};
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialInterface

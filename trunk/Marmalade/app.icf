@@ -43,6 +43,3 @@ MENGINE = 1
 
 [Util]
 MemMgrMaxAllocWarning=0
-
-[MENGINE]
-CommandLine = -dev -noresourcecheck

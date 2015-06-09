@@ -8,8 +8,10 @@ options
 	preinclude=preinclude_application.h
     
     app-icf="app.icf"
-    s3e-data-dir="d:/Projects/ZombielandBuild_PVRTC"
+    #s3e-data-dir="d:/Projects/ZombielandBuild_PVRTC"
     #s3e-data-dir="d:/Projects/ZombielandBuild_ETC1"
+    #s3e-data-dir="d:/Projects/BurritosBuild_ETC1"
+    s3e-data-dir="d:/Projects/MarshmallowBuild_PVRTC"
     #s3e-data-dir="/Users/admin/Desktop/ZombielandBuild_PVRTC"
 }
 
@@ -100,6 +102,10 @@ files
 	"*.h"
 	"*.cpp"
     
+    [System/MarmaladeRenderSystem/Shaders]
+    ("../src/System/MarmaladeRenderSystem/Shaders")
+    "*.h"
+    
     [System/MarmaladeSoundSystem]
     ("../src/System/MarmaladeSoundSystem")
 	"*.h"
@@ -120,6 +126,16 @@ deployments
 	app-icf='d:/Projects/BurritosBuild_ETC1/app.icf'
 	assets='Burritos_Android'
 	caption='Burritos'
+	name='Burritos'
+	["Burritos_IOS"]
+	app-icf='d:/Projects/BurritosBuild_PVRTC/app.icf'
+	assets='Burritos_IOS'
+	caption='Burritos'
+	iphone-appid='com.IROV.IROV'
+	iphone-provisioning-profile='IROV.mobileprovision'
+	iphone-sign-for-distribution=1
+	iphone-signing-identity='iPhone Distribution'
+	iphone-testflight=0
 	name='Burritos'
 	["Default"]
 	["HolidayFun_Android"]
@@ -149,8 +165,8 @@ deployments
 	app-icf='d:/Projects/ZombielandBuild_PVRTC/app.icf'
 	assets='Zombieland_IOS'
 	caption='Zombieland'
-	iphone-appid='com.Zombieland.Zombieland'
-	iphone-provisioning-profile='Zombieland.mobileprovision'
+	iphone-appid='com.IROV.IROV'
+	iphone-provisioning-profile='IROV.mobileprovision'
 	iphone-sign-for-distribution=1
 	iphone-signing-identity='iPhone Distribution'
 	iphone-testflight=1

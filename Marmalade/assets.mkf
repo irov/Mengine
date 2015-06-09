@@ -11,6 +11,18 @@ assets
     Game.pak
     ResourcePack.ini
     Resources.pak 
+    
+	[Burritos_IOS]
+	("d:/Projects/BurritosBuild_PVRTC")
+    Locale_RU    
+    app.config.txt
+    application.ini    
+	Framework2.pak
+    Framework3.pak    
+    Game.ini
+    Game.pak
+    ResourcePack.ini
+    Resources.pak     
 
 	[Zombieland_Android]
 	("d:/Projects/ZombielandBuild_ETC1")

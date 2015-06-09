@@ -1,0 +1,15 @@
+const char* externalAlphaFS =
+	"uniform sampler2D inSampler0;						"
+	"uniform sampler2D inSampler1;						"
+	"varying mediump vec2 v_UV0;						"
+	"varying mediump vec2 v_UV1;						"
+	"varying lowp vec4 v_Col;							"
+	"													"
+	"void main(void)									"
+	"{													"
+	"	mediump vec4 c0 = texture2D(inSampler0, v_UV0);	"
+	"	c0.w = texture2D(inSampler1, v_UV1).w;			"
+	"	mediump vec4 c = v_Col * c0;					"
+	"	gl_FragColor = c;								"
+//	"	if(c0.w <= 0.1) gl_FragColor = vec4(1,0,0,0.5); else gl_FragColor = vec4(1,1,0,0.5);						"
+	"}													";

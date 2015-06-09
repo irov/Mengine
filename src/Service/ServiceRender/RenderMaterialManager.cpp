@@ -6,11 +6,33 @@
 
 #	include "stdex/hash.h"
 
+#	include "s3e.h"
+
+#	include "Shaders/DefaultVS.h"
+
+#	include "Shaders/ExternalAlphaFS.h"
+
+#	include "Shaders/ExternalAlphaOnlyColorFS.h"
+
+#	include "Shaders/BlendFS.h"
+
+#	include "Shaders/AccumulatorFS.h"
+
+#	include "Shaders/DebugFS.h"
+
+#	include "Shaders/OnlyColorFS.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderMaterialManager, Menge::RenderMaterialServiceInterface, Menge::RenderMaterialManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	#define VERTEX_ARRAY			0
+	#define COLOR_ARRAY				1
+	#define UV0_ARRAY				2
+	#define UV1_ARRAY				3
+
     //////////////////////////////////////////////////////////////////////////    
     RenderMaterialManager::RenderMaterialManager()
         : m_serviceProvider(nullptr)
@@ -32,6 +54,72 @@ namespace Menge
         return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
+	GLuint createShader(GLenum type, const char* pSource)
+	{
+		GLuint shader = glCreateShader(type);
+		glShaderSource(shader, 1, &pSource, NULL);
+		glCompileShader(shader);
+		return shader;
+	}
+
+	GLuint RenderMaterialManager::shaderProgram(const char * _vsSrc, const char * _fsSrc, int & transformLocation)
+	{
+		const char* vertexSrc = "attribute vec4 position; uniform highp mat4 mat; varying mediump vec2 pos; void main() { gl_Position = position * mat; pos = position.xy; }";
+		const char* fragmentSrc = "void main() { gl_FragColor = vec4(1, 0, 0, 0.5); }";
+		//const char* fragmentSrc = "varying mediump vec2 pos; uniform mediump float phase; void main() { gl_FragColor = vec4(1, 1, 1, 1) * sin((pos.x * pos.x + pos.y * pos.y) * 40.0 + phase); }";
+		//_vsSrc = vertexSrc;
+		_fsSrc = externalAlphaFS;
+
+		GLuint program = glCreateProgram();
+		GLuint vertexShader = 0;
+		GLuint fragmentShader = 0;
+		if ((s3eDeviceGetInt(S3E_DEVICE_OS) != S3E_OS_ID_WS8 &&
+			s3eDeviceGetInt(S3E_DEVICE_OS) != S3E_OS_ID_WS81 &&
+			s3eDeviceGetInt(S3E_DEVICE_OS) != S3E_OS_ID_WP81
+			) ||
+			s3eDeviceGetInt(S3E_DEVICE_DX_FEATURE_LEVEL) < 93
+			)
+		{
+			vertexShader = createShader(GL_VERTEX_SHADER, _vsSrc);
+			fragmentShader = createShader(GL_FRAGMENT_SHADER, _fsSrc);
+			// This is needed to compile shaders for Windows Store 8/8.1 and Windows Phone 8.1 using the Win32 Marmalade Simulator.
+			// For more information look at README.IwGLES2.txt.
+			if (IwGetCompileShadersPlatformType() == IW_CS_OS_ID_WS8 ||
+				IwGetCompileShadersPlatformType() == IW_CS_OS_ID_WS81 ||
+				IwGetCompileShadersPlatformType() == IW_CS_OS_ID_WP81
+				)
+			{
+				s3eRegisterShader(_vsSrc, IW_GL_ST_VERTEX, IW_DX_FL_9_3);
+				s3eRegisterShader(_fsSrc, IW_GL_ST_PIXEL, IW_DX_FL_9_3);
+			}
+		}
+		else
+		{
+			vertexShader = createShader(GL_VERTEX_SHADER, _vsSrc);
+			fragmentShader = createShader(GL_FRAGMENT_SHADER, _fsSrc);
+		}
+		glAttachShader(program, vertexShader);
+		glAttachShader(program, fragmentShader);
+		glBindAttribLocation(program, VERTEX_ARRAY, "inVert");
+		glBindAttribLocation(program, COLOR_ARRAY, "inCol");
+		glBindAttribLocation(program, UV0_ARRAY, "inUV0");
+		glBindAttribLocation(program, UV1_ARRAY, "inUV1");
+
+		glLinkProgram(program);
+
+		GLint linked;
+		glGetProgramiv(program, GL_LINK_STATUS, &linked);
+		if (linked == GL_FALSE)
+		{
+			LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::shaderProgram - shader linking error");
+		}
+		glUseProgram(program);
+		transformLocation = glGetUniformLocation(program, "mvpMat");
+
+		return program;
+	}
+
+	//////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::initialize()
     {
 		m_factoryMaterial.setMethodListener( this, &RenderMaterialManager::onRenderMaterialDestroy_ );
@@ -42,6 +130,8 @@ namespace Menge
             rs.alphaBlendEnable = true;
             rs.alphaTestEnable = false;
             rs.depthBufferWriteEnable = false;
+
+			rs.shaderProgram = shaderProgram(defaultVS, blendFS, rs.transformLocation);
 
             rs.blendSrc = BF_SOURCE_ALPHA;
             rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
@@ -59,6 +149,8 @@ namespace Menge
             rs.alphaTestEnable = false;
             rs.depthBufferWriteEnable = false;
 
+			rs.shaderProgram = shaderProgram(defaultVS, blendFS, rs.transformLocation);
+
             rs.blendSrc = BF_SOURCE_ALPHA;
             rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 
@@ -74,6 +166,8 @@ namespace Menge
             rs.alphaBlendEnable = true;
             rs.alphaTestEnable = false;
             rs.depthBufferWriteEnable = false;
+
+			rs.shaderProgram = shaderProgram(defaultVS, accumulatorFS, rs.transformLocation);
 
             rs.blendSrc = BF_SOURCE_ALPHA;
             rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
@@ -93,6 +187,8 @@ namespace Menge
 
             rs.blendSrc = BF_SOURCE_ALPHA;
             rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+			
+			rs.shaderProgram = shaderProgram(defaultVS, externalAlphaFS, rs.transformLocation);
 
             RenderTextureStage & ts0 = rs.textureStage[0];
 
@@ -110,7 +206,7 @@ namespace Menge
             ts1.alphaArg1 = TARG_TEXTURE;
             ts1.alphaArg2 = TARG_CURRENT;
             ts1.texCoordIndex = 1;
-
+			
             this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ExternalAlpha"), rs );
         }
 
@@ -123,6 +219,8 @@ namespace Menge
 
             rs.blendSrc = BF_SOURCE_ALPHA;
             rs.blendDst = BF_ONE;
+
+			rs.shaderProgram = shaderProgram(defaultVS, externalAlphaFS, rs.transformLocation);
 
             RenderTextureStage & ts0 = rs.textureStage[0];
 
@@ -154,6 +252,8 @@ namespace Menge
             rs.blendSrc = BF_SOURCE_ALPHA;
             rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 
+			rs.shaderProgram = shaderProgram(defaultVS, externalAlphaOnlyColorFS, rs.transformLocation);
+
             RenderTextureStage & ts0 = rs.textureStage[0];
 
             ts0.colorOp = TOP_SELECTARG1;
@@ -184,6 +284,8 @@ namespace Menge
             rs.blendSrc = BF_SOURCE_ALPHA;
             rs.blendDst = BF_ONE;
 
+			rs.shaderProgram = shaderProgram(defaultVS, externalAlphaOnlyColorFS, rs.transformLocation);
+
             RenderTextureStage & ts0 = rs.textureStage[0];
 
             ts0.colorOp = TOP_SELECTARG1;
@@ -211,6 +313,8 @@ namespace Menge
             rs.alphaTestEnable = false;
             rs.depthBufferWriteEnable = false;
 
+			rs.shaderProgram = shaderProgram(defaultVS, onlyColorFS, rs.transformLocation);
+
             rs.blendSrc = BF_SOURCE_ALPHA;
             rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 
@@ -226,6 +330,8 @@ namespace Menge
 			rs.alphaBlendEnable = true;
 			rs.alphaTestEnable = false;
 			rs.depthBufferWriteEnable = false;
+
+			rs.shaderProgram = shaderProgram(defaultVS, onlyColorFS, rs.transformLocation);
 
 			rs.blendSrc = BF_SOURCE_ALPHA;
 			rs.blendDst = BF_ONE;
@@ -243,6 +349,8 @@ namespace Menge
             rs.alphaTestEnable = false;
             rs.depthBufferWriteEnable = false;
 
+			rs.shaderProgram = shaderProgram(defaultVS, debugFS, rs.transformLocation);
+
             rs.blendSrc = BF_SOURCE_ALPHA;
             rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
 
@@ -258,6 +366,8 @@ namespace Menge
             rs.alphaBlendEnable = true;
             rs.alphaTestEnable = false;
             rs.depthBufferWriteEnable = false;
+
+			rs.shaderProgram = shaderProgram(defaultVS, blendFS, rs.transformLocation);
 
             rs.blendSrc = BF_SOURCE_ALPHA;
             rs.blendDst = BF_ONE;

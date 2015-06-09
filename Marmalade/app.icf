@@ -17,7 +17,8 @@
 # S3E documentation for details.
 
 [S3E]
-SysGlesVersion=1
+SysGlesVersion=2
+SysGlesDirectory=pvr
 SoundStereo=1
 DispFixRot=Landscape
 MemSize=100000000
@@ -31,6 +32,7 @@ WinHeight=768
 
 [GL]
 AllowNoDepthBufferClear=1
+PreCompileShaderBinaries=0
 
 [Trace]
 MENGINE = 1

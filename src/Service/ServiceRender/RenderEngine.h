@@ -260,6 +260,7 @@ namespace Menge
 		
 		uint32_t m_currentMaterialId;
 		const RenderStage * m_currentStage;
+		mt::mat4f m_mvpMat;
 		
 
 		uint32_t m_currentTexturesID[MENGE_MAX_TEXTURE_STAGES];

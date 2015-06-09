@@ -269,4 +269,8 @@ files
     ("../src/Metacode")
     "*.h"
 	"*.cpp"
+	[Shaders]
+    ("../src/Shaders")
+    "*.h"
 }
+

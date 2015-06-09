@@ -549,6 +549,7 @@ namespace Menge
 		}
 		
 		m_currentStage = _stage;
+		glUseProgram(m_currentStage->shaderProgram);
 
 		for( uint32_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 		{
@@ -772,6 +773,10 @@ namespace Menge
 
 		EPrimitiveType primitiveType = material->getPrimitiveType();
 
+		glUniformMatrix4fv(m_currentStage->transformLocation, 1, GL_FALSE, m_mvpMat.buff());
+// 		glEnable(GL_BLEND);
+// 		glDisable(GL_ALPHA_TEST);
+// 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		RENDER_SYSTEM(m_serviceProvider)->drawIndexedPrimitive( 
 			primitiveType,
 			_renderObject->baseVertexIndex, 
@@ -858,28 +863,28 @@ namespace Menge
 
 			RENDER_SYSTEM(m_serviceProvider)->setTextureAddressing( i, stage.addressU, stage.addressV );
 
-			RENDER_SYSTEM(m_serviceProvider)->setTextureStageColorOp( i
-				, stage.colorOp
-				, stage.colorArg1
-				, stage.colorArg2 
-				);
-
-			RENDER_SYSTEM(m_serviceProvider)->setTextureStageAlphaOp( i
-				, stage.alphaOp
-				, stage.alphaArg1
-				, stage.alphaArg2 
-				);
-
-			RENDER_SYSTEM(m_serviceProvider)->setTextureStageTexCoordIndex( i
-				, stage.texCoordIndex
-				);
+// 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageColorOp( i
+// 				, stage.colorOp
+// 				, stage.colorArg1
+// 				, stage.colorArg2 
+// 				);
+// 
+// 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageAlphaOp( i
+// 				, stage.alphaOp
+// 				, stage.alphaArg1
+// 				, stage.alphaArg2 
+// 				);
+ 
+ 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageTexCoordIndex( i
+ 				, stage.texCoordIndex
+ 				);
 
 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MAGNIFICATION, TF_LINEAR );
 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MINIFICATION, TF_LINEAR );
 
 			// skip texture matrix
-			RENDER_SYSTEM(m_serviceProvider)->setTextureMatrix( i, NULL );
+			//RENDER_SYSTEM(m_serviceProvider)->setTextureMatrix( i, NULL );
 		}
 
 		RENDER_SYSTEM(m_serviceProvider)->setSrcBlendFactor( m_currentBlendSrc );
@@ -1041,19 +1046,21 @@ namespace Menge
 
 		const mt::mat4f & worldMatrix = camera->getCameraWorldMatrix();
 
-		RENDER_SYSTEM(m_serviceProvider)
-			->setWorldMatrix( worldMatrix );
+// 		RENDER_SYSTEM(m_serviceProvider)
+// 			->setWorldMatrix( worldMatrix );
 
 		const mt::mat4f & viewMatrix = camera->getCameraViewMatrix();
 
-		RENDER_SYSTEM(m_serviceProvider)
-			->setModelViewMatrix( viewMatrix );
+// 		RENDER_SYSTEM(m_serviceProvider)
+// 			->setModelViewMatrix( viewMatrix );
 
 		const mt::mat4f & projectionMatrix = camera->getCameraProjectionMatrix();
 
-		RENDER_SYSTEM(m_serviceProvider)
-			->setProjectionMatrix( projectionMatrix );
+// 		RENDER_SYSTEM(m_serviceProvider)
+// 			->setProjectionMatrix( projectionMatrix );
 
+		m_mvpMat = worldMatrix * viewMatrix * projectionMatrix;
+		
 		this->renderObjects_( _renderPass );
 	}
 	//////////////////////////////////////////////////////////////////////////

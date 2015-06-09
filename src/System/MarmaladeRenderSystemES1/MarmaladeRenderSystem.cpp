@@ -1,38 +1,20 @@
 
 #	include "MarmaladeRenderSystem.h"
 
-#	include "Interface/StringizeInterface.h"
-
 #	include "MarmaladeRenderError.h"
+
+#	include "Interface/LogSystemInterface.h"
+//#	include "OGLWindowContext.h"
 
 #   include "Logger/Logger.h"
 
 #	include <cmath>
-
-#	include "Shaders/DefaultVS.h"
-
-#	include "Shaders/ExternalAlphaFS.h"
-
-#	include "Shaders/ExternalAlphaOnlyColorFS.h"
-
-#	include "Shaders/BlendFS.h"
-
-#	include "Shaders/AccumulatorFS.h"
-
-#	include "Shaders/DebugFS.h"
-
-#	include "Shaders/OnlyColorFS.h"
 
 //////////////////////////////////////////////////////////////////////////
 #	define GET_A_FLOAT_FROM_ARGB32( argb ) ( ((float)(argb >> 24)) / 255.0f )
 #	define GET_R_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 16) & 0xFF)) / 255.0f )
 #	define GET_G_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 8) & 0xFF)) / 255.0f )
 #	define GET_B_FLOAT_FROM_ARGB32( argb ) ( (float)(argb & 0xFF) / 255.0f )
-//////////////////////////////////////////////////////////////////////////
-#define VERTEX_ARRAY			0
-#define COLOR_ARRAY				1
-#define UV0_ARRAY				2
-#define UV1_ARRAY				3
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY(RenderSystem, Menge::RenderSystemInterface, Menge::MarmaladeRenderSystem);
 //////////////////////////////////////////////////////////////////////////
@@ -298,7 +280,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderSystem::MarmaladeRenderSystem()
 		: m_serviceProvider(nullptr)
-		, m_currentShader(nullptr)
 		, m_supportNPOT(false)
 		, m_currentVertexBuffer(0)
 		, m_currentIndexBuffer(0)
@@ -310,9 +291,6 @@ namespace Menge
 		, m_IBHandleGenerator(0)
 		, m_depthMask(false)
 	{
-		mt::ident_m4( m_worldMatrix );
-		mt::ident_m4( m_viewMatrix );
-		mt::ident_m4( m_projectionMatrix );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderSystem::~MarmaladeRenderSystem()
@@ -360,12 +338,12 @@ namespace Menge
 		for( uint32_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
 			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA) );
-			//GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA) );
+			GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
 
 			m_textureStage[i] = TextureStage();
 		}
@@ -382,42 +360,16 @@ namespace Menge
 		GLCALL( m_serviceProvider, glDepthMask, ( GL_FALSE ) );
 		//glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
-		//GLCALL( m_serviceProvider, glMatrixMode, ( GL_MODELVIEW ) );
-		//GLCALL( m_serviceProvider, glLoadIdentity, () );
+		GLCALL( m_serviceProvider, glMatrixMode, ( GL_MODELVIEW ) );
+		GLCALL( m_serviceProvider, glLoadIdentity, () );
 
-		//GLCALL( m_serviceProvider, glMatrixMode, ( GL_PROJECTION ) );
-		//GLCALL( m_serviceProvider, glLoadIdentity, () );
+		GLCALL( m_serviceProvider, glMatrixMode, ( GL_PROJECTION ) );
+		GLCALL( m_serviceProvider, glLoadIdentity, () );
 
-		//GLCALL( m_serviceProvider, glMatrixMode, ( GL_TEXTURE ) );
-		//GLCALL( m_serviceProvider, glLoadIdentity, () );
-
-		this->initializeShaders_();
+		GLCALL( m_serviceProvider, glMatrixMode, ( GL_TEXTURE ) );
+		GLCALL( m_serviceProvider, glLoadIdentity, () );
 						
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::initializeShaders_()
-	{
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Blend" ), defaultVS, blendFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "SolidSprite" ), defaultVS, blendFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Accumulator" ), defaultVS, accumulatorFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ExternalAlpha" ), defaultVS, externalAlphaFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ExternalAlphaIntensive" ), defaultVS, externalAlphaFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ExternalAlpha_OnlyColor" ), defaultVS, externalAlphaOnlyColorFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ExternalAlphaIntensive_OnlyColor" ), defaultVS, externalAlphaOnlyColorFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "OnlyColor" ), defaultVS, onlyColorFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Intensive_OnlyColor" ), defaultVS, onlyColorFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" ), defaultVS, debugFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Add" ), defaultVS, blendFS );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::initializeShader_( const ConstString & _name, const char * _vsSrc, const char * _fsSrc )
-	{
-		MarmaladeShader * shader = m_factoryShader.createObjectT();
-
-		shader->initialize( m_serviceProvider, _vsSrc, _fsSrc );
-
-		m_shaders.insert( std::make_pair( _name, shader ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::finalize()
@@ -464,18 +416,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
 	{
-        //GLCALL( m_serviceProvider, glMatrixMode, ( GL_PROJECTION ) );
-		
+        GLCALL( m_serviceProvider, glMatrixMode, ( GL_PROJECTION ) );
+
         const float * matrix = _projection.buff();
-//         GLCALL( m_serviceProvider, glLoadMatrixf, ( matrix ) );
+        GLCALL( m_serviceProvider, glLoadMatrixf, ( matrix ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setModelViewMatrix( const mt::mat4f & _view )
 	{
-        //GLCALL( m_serviceProvider, glMatrixMode, ( GL_MODELVIEW ) );
+        GLCALL( m_serviceProvider, glMatrixMode, ( GL_MODELVIEW ) );
 
         const float * matrix = _view.buff();
-//         GLCALL( m_serviceProvider, glLoadMatrixf, ( matrix ) );
+        GLCALL( m_serviceProvider, glLoadMatrixf, ( matrix ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setTextureMatrix( uint32_t _stage, const float* _texture )
@@ -705,13 +657,6 @@ namespace Menge
 		uint32_t _baseVertexIndex,  uint32_t _minIndex, 
 		uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount )
 	{
-		if( m_currentShader != nullptr )
-		{
-			const MarmaladeShader * shader = static_cast<const MarmaladeShader *>(m_currentShader);
-
-			shader->use( m_worldMatrix, m_viewMatrix, m_projectionMatrix );						
-		}
-
 		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
 			const TextureStage & textureStage = m_textureStage[i];
@@ -719,13 +664,13 @@ namespace Menge
 			if( textureStage.texture == 0 )
 			{
 				GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
-				//GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
+				GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
 				break;
 			}
 
 			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i));
 
-			//GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
+			GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
 
 			GLCALL( m_serviceProvider, glBindTexture, ( GL_TEXTURE_2D, textureStage.texture ) );
 			
@@ -735,21 +680,21 @@ namespace Menge
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter ) );
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter ) );
 
-			//GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE ) );
+			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE ) );
 			
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
-// 
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_COMBINE_RGB, textureStage.colorOp) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC0_RGB, textureStage.colorArg1) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC1_RGB, textureStage.colorArg2) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR) );
-// 
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_COMBINE_ALPHA, textureStage.alphaOp) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC0_ALPHA, textureStage.alphaArg1) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC1_ALPHA, textureStage.alphaArg2) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
+
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_COMBINE_RGB, textureStage.colorOp) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC0_RGB, textureStage.colorArg1) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC1_RGB, textureStage.colorArg2) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR) );
+
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_COMBINE_ALPHA, textureStage.alphaOp) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC0_ALPHA, textureStage.alphaArg1) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC1_ALPHA, textureStage.alphaArg2) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA) );
+			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA) );
 		}
 
 		MemoryRange * vb_range;
@@ -769,28 +714,18 @@ namespace Menge
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, vb_range->bufId ) );
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, ib_range->bufId ) );
 
-		//glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(0));
-		glEnableVertexAttribArray(VERTEX_ARRAY);
-		glEnableVertexAttribArray(COLOR_ARRAY);
-		glEnableVertexAttribArray(UV0_ARRAY);
-		glEnableVertexAttribArray(UV1_ARRAY);
-		glVertexAttribPointer(VERTEX_ARRAY, 3, GL_FLOAT, GL_FALSE, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(0));
-		glVertexAttribPointer(COLOR_ARRAY, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(12));
-		glVertexAttribPointer(UV0_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(16));
-		glVertexAttribPointer(UV1_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(24));
+		GLCALL( m_serviceProvider, glEnableClientState, ( GL_VERTEX_ARRAY ) );
+		GLCALL( m_serviceProvider, glVertexPointer, ( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) ) );
 
-		//GLCALL( m_serviceProvider, glEnableClientState, ( GL_VERTEX_ARRAY ) );
-		//GLCALL( m_serviceProvider, glVertexPointer, ( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) ) );
+		GLCALL( m_serviceProvider, glEnableClientState, ( GL_COLOR_ARRAY ) );
+		GLCALL( m_serviceProvider, glColorPointer, ( 4, GL_UNSIGNED_BYTE, 32, reinterpret_cast<const GLvoid *>( 12 ) ) );
 
-		//GLCALL( m_serviceProvider, glEnableClientState, ( GL_COLOR_ARRAY ) );
-		//GLCALL( m_serviceProvider, glColorPointer, ( 4, GL_UNSIGNED_BYTE, 32, reinterpret_cast<const GLvoid *>( 12 ) ) );
+		GLCALL( m_serviceProvider, glEnableClientState, ( GL_TEXTURE_COORD_ARRAY ) );
 
-		//GLCALL( m_serviceProvider, glEnableClientState, ( GL_TEXTURE_COORD_ARRAY ) );
-
-		//GLCALL( m_serviceProvider, glClientActiveTexture, ( GL_TEXTURE0 ) );
-		//GLCALL( m_serviceProvider, glTexCoordPointer, ( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 16 ) ) );
-		//GLCALL( m_serviceProvider, glClientActiveTexture, ( GL_TEXTURE1 ) );
-		//GLCALL( m_serviceProvider, glTexCoordPointer, ( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 24 ) ) );
+		GLCALL( m_serviceProvider, glClientActiveTexture, ( GL_TEXTURE0 ) );
+		GLCALL( m_serviceProvider, glTexCoordPointer, ( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 16 ) ) );
+		GLCALL( m_serviceProvider, glClientActiveTexture, ( GL_TEXTURE1 ) );
+		GLCALL( m_serviceProvider, glTexCoordPointer, ( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 24 ) ) );
 
         GLenum mode = s_getGLPrimitiveMode( _type );
 		const uint16_t * baseIndex = nullptr;
@@ -840,9 +775,9 @@ namespace Menge
 		GLCALL( m_serviceProvider, glDeleteBuffers, ( 1, &bufId ) );
 #	endif
 
-// 		GLCALL( m_serviceProvider, glDisableClientState, ( GL_VERTEX_ARRAY ) );
-// 		GLCALL( m_serviceProvider, glDisableClientState, ( GL_COLOR_ARRAY ) );
-// 		GLCALL( m_serviceProvider, glDisableClientState, ( GL_TEXTURE_COORD_ARRAY ) );
+		GLCALL( m_serviceProvider, glDisableClientState, ( GL_VERTEX_ARRAY ) );
+		GLCALL( m_serviceProvider, glDisableClientState, ( GL_COLOR_ARRAY ) );
+		GLCALL( m_serviceProvider, glDisableClientState, ( GL_TEXTURE_COORD_ARRAY ) );
 
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, 0 ) );
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
@@ -999,7 +934,7 @@ namespace Menge
 		GLenum cmpFunc = s_toGLCmpFunc[_alphaFunc];
 		GLclampf ref = (GLclampf)(static_cast<float>( _alpha ) / 255.0f);
 
-		//GLCALL( m_serviceProvider, glAlphaFunc, ( cmpFunc, ref ) );
+		GLCALL( m_serviceProvider, glAlphaFunc, ( cmpFunc, ref ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setLightingEnable( bool _light )
@@ -1064,30 +999,15 @@ namespace Menge
             tStage.magFilter = s_toMagFilter( _filter );
         }
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//RenderShaderInterface * MarmaladeRenderSystem::createShader( const void * _buffer, size_t _size )
-	//{
-	//    return nullptr;
-	//}
-
-	//////////////////////////////////////////////////////////////////////////
-	const RenderShaderInterface * MarmaladeRenderSystem::getShader( const ConstString & _name )
-	{
-		TMapRenderShaders::iterator it_found = m_shaders.find( _name );
-
-		if( it_found == m_shaders.end() )
-		{
-			return nullptr;
-		}
-
-		RenderShaderInterface * shader = it_found->second;
-
-		return shader;
-	}
     //////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setShader( const RenderShaderInterface * _shader )
+    RenderShaderInterface * MarmaladeRenderSystem::createShader( const void * _buffer, size_t _size )
     {
-		m_currentShader = _shader;
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MarmaladeRenderSystem::setShader( RenderShaderInterface * _shader )
+    {
+
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const
@@ -1176,7 +1096,7 @@ namespace Menge
 			return nullptr;
 		}
 
-        MarmaladeTexture * texture = m_factoryTexture.createObjectT();
+        MarmaladeTexture * texture = m_factoryOGLTexture.createObjectT();
 
 		texture->initialize(
 			m_serviceProvider
@@ -1374,7 +1294,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		MarmaladeTexture * texture = m_factoryTexture.createObjectT();
+		MarmaladeTexture * texture = m_factoryOGLTexture.createObjectT();
 
 		texture->initialize( 
 			m_serviceProvider

@@ -2,52 +2,70 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-#   include "DX9Texture.h"
+#   include "Config/String.h"
+
+#   include "MarmaladeTexture.h"
 
 #   include "Factory/FactoryStore.h"
 
 #   include "stdex/binary_vector.h"
 
-#	include <d3d9.h>
-#	include <d3dx9math.h>
-#   include <D3DX9Shader.h>
+#   include <IwGL.h>
+#   include <s3e.h>
 
 namespace Menge
 {
-	struct VBInfo
-	{
-		uint32_t length;
-		uint32_t vertexSize;
-		DWORD usage;
-		DWORD fvf;
-		D3DPOOL pool;
-		IDirect3DVertexBuffer9* pVB;
-		bool dynamic;
-	};
+    class ServiceProviderInterface;
+    class LogServiceInterface;
+    
+	class OGLWindowContext;
+	class MarmaladeTexture;
 
-	struct IBInfo
-	{
-		uint32_t length;
-		DWORD usage;
-		D3DFORMAT format;
-		D3DPOOL pool;
-		IDirect3DIndexBuffer9* pIB;
-		bool dynamic;
-	};
+    struct TextureStage
+    {
+        TextureStage()
+            : minFilter(0)
+            , magFilter(0)
+            , wrapS(0)
+            , wrapT(0)
+			, mengeMinFilter(TF_NONE)
+            , mengeMipFilter(TF_NONE)
+            , texture(0)
+            , colorOp(0)
+            , colorArg1(0)
+            , colorArg2(0)
+            , alphaOp(0)
+            , alphaArg1(0)
+            , alphaArg2(0)
+        {
 
-	class DX9RenderSystem
+        }
+		        
+        GLenum minFilter;
+        GLenum magFilter;
+        GLenum wrapS;
+        GLenum wrapT;
+        ETextureFilter mengeMinFilter;
+        ETextureFilter mengeMipFilter;
+        GLuint texture;
+        GLenum colorOp;
+        GLenum colorArg1;
+        GLenum colorArg2;
+        GLenum alphaOp;
+        GLenum alphaArg1;
+        GLenum alphaArg2;
+    };
+    
+	class MarmaladeRenderSystem 
 		: public RenderSystemInterface
 	{
 	public:
-		DX9RenderSystem();
-		~DX9RenderSystem();
-        
+		MarmaladeRenderSystem();
+		~MarmaladeRenderSystem();
+
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
-
-    protected:
-		void clear_( DWORD _color );
 
 	public:
 		bool initialize() override;
@@ -55,30 +73,28 @@ namespace Menge
 
     public:
         void setRenderListener( RenderSystemListener * _listener ) override;
-		
+
 	public:
 		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
-		
+
+
         void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
         void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
         void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) override;
         void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) override;
         void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign ) override;
 
-		void clear( uint32_t _color ) override;
-		// Render frame into _image
-		// int rect[4] - rectangle represents desired frame area in pixels
 		bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
-		// входные данные: матрица 4 на 4
+
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
-		void setModelViewMatrix( const mt::mat4f & _modelview ) override;
+		void setModelViewMatrix( const mt::mat4f & _view ) override;
 		void setTextureMatrix( uint32_t _stage, const float* _texture ) override;
-		void setWorldMatrix( const mt::mat4f & _world ) override;
+        void setWorldMatrix( const mt::mat4f & _view ) override;
 
 		VBHandle createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic ) override;
 		void releaseVertexBuffer( VBHandle _vbHandle ) override;
-		void * lockVertexBuffer(  VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
+		void* lockVertexBuffer(  VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
 		void setVertexBuffer( VBHandle _vbHandle ) override;
 
@@ -90,30 +106,18 @@ namespace Menge
 
 		void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) override;
 
-        //RenderShaderInterface * createShader( const void * _code, size_t _len ) override;
-        void setShader( const RenderShaderInterface * _shader ) override;
-		const RenderShaderInterface * getShader( const ConstString & _name ) override;
-
-		void drawIndexedPrimitive( EPrimitiveType _type
-			, uint32_t _baseVertexIndex
-			, uint32_t _minIndex
-			, uint32_t _verticesNum
-			, uint32_t _startIndex
-			, uint32_t _indexCount ) override;
+		void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
+			uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount ) override;
 
 		void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
 		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32_t _color ) override;
-
 		void setSrcBlendFactor( EBlendFactor _src ) override;
 		void setDstBlendFactor( EBlendFactor _dst ) override;
-
 		void setCullMode( ECullMode _mode ) override;
-
 		void setDepthBufferTestEnable( bool _depthTest ) override;
 		void setDepthBufferWriteEnable( bool _depthWrite ) override;
 		void setDepthBufferCmpFunc( ECompareFunction _depthFunction ) override;
-
 		void setFillMode( EFillMode _mode ) override;
 		void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) override;
 		void setShadeType( EShadeType _sType ) override;
@@ -121,24 +125,36 @@ namespace Menge
 		void setAlphaBlendEnable( bool _alphaBlend ) override;
 		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha ) override;
 		void setLightingEnable( bool _light ) override;
-
 		void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,
-										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
+			ETextureArgument _arg1, ETextureArgument _arg2 ) override;
 		void setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,
-										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
-
+			ETextureArgument _arg1, ETextureArgument _arg2 ) override;
         void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
-
 		void setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 		
-		// create empty render image
+        RenderShaderInterface * createShader( const void * _buffer, size_t _size ) override;
+        void setShader( RenderShaderInterface * _shader ) override;
+        
+        
+        // create texture
+		// [in/out] _width ( desired texture width, returns actual texture width )
+		// [in/out] _height ( desired texture height, returns actual texture height )
+		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
+		// returns Texture interface handle or NULL if fails
 		RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
-		RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
-		
-		
 		// create render target image
-		RenderImageInterfacePtr createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
-		// отрисовка изображения
+		// [in/out] _width ( desired texture width, returns actual texture width )
+		// [in/out] _height ( desired texture height, returns actual texture height )
+		// returns Texture interface handle or NULL if fails
+		// RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height ) override;
+		// удаления изображения
+        
+        RenderImageInterfacePtr createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
+
+		RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
+
+		bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) override;
+		bool unlockRenderTarget() override;
 
 		bool beginScene() override;
 		void endScene() override;
@@ -148,106 +164,78 @@ namespace Menge
 		void setViewport( const Viewport & _viewport ) override;
 
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
-		
+
 		bool supportTextureFormat( PixelFormat _format ) const override;
 
 		void onWindowMovedOrResized() override;
 		void onWindowClose() override;
 
 		void setVSync( bool _vSync ) override;
-		void setSeparateAlphaBlendMode() override;
 
-	public:
-		bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) override;
-		bool unlockRenderTarget() override;
-
-	protected:
-		LPDIRECT3DSURFACE9 m_oldRenderTarget;
+        void clear( uint32_t _color ) override;
+        
+        void setSeparateAlphaBlendMode() override;
 
     protected:
-        void updateVSyncDPP_();
-        bool resetDevice_();
-
-	protected:
-		void updateViewport_( const Viewport & _viewport );
-
-    protected:        
-        void fixNPOTSupport_( uint32_t & _width, uint32_t & _height ) const;
+        void findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const;
 
 	private:
-		ServiceProviderInterface * m_serviceProvider;
+        ServiceProviderInterface * m_serviceProvider;
 
         RenderSystemListener * m_listener;
-
-		HMODULE m_hd3d9;
-
-		Resolution m_windowResolution;
-		int m_screenBits;
-		bool m_fullscreen;
-
-        IDirect3D9 * m_pD3D;
-		IDirect3DDevice9 * m_pD3DDevice;
-
-        D3DCAPS9 m_caps;
-
-		D3DPRESENT_PARAMETERS m_d3dppW;
-		D3DPRESENT_PARAMETERS m_d3dppFS;
-
-		D3DPRESENT_PARAMETERS * m_d3dpp;
-
-		D3DMATRIX m_matTexture;
-
-		// sync routines
-		//IDirect3DSurface9 * m_syncTargets[2];
-		//IDirect3DTexture9 *	m_syncTempTex;
-		//IDirect3DSurface9 * m_syncTemp;
-		unsigned int m_frames;
-
-    protected:
-		void syncCPU_();
-
-		bool initLost_();
 		
-        bool releaseResources_();
-		void release_();
-		bool restore_();
+		OGLWindowContext* m_windowContext;
 
-		//void createSyncTargets_();
+        Resolution m_resolution;
 
-		bool d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels,
-			DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture );
+		bool m_supportNPOT;
 
-		void refreshRenderStates_();
+		GLuint m_currentVertexBuffer;
+		GLuint m_currentIndexBuffer;
+		//GLuint m_baseVertexIndex;
 
-	protected:
-		DWORD m_renderStates[256];
-		DWORD m_textureStageStates[MENGE_MAX_TEXTURE_STAGES][64];
-		DWORD m_samplerStates[MENGE_MAX_TEXTURE_STAGES][16];
+		GLenum m_srcBlendFactor;
+		GLenum m_dstBlendFactor;
 
-        UINT m_adapterToUse;
-        D3DDEVTYPE m_deviceType;
+		struct MemoryRange
+		{
+			MemoryRange()
+				: pMem(nullptr)
+				, size(0)
+				, offset(0)
+				, flags(BLF_LOCK_NONE)
+				, bufId(0)
+			{
+			}
 
-        Viewport m_viewport;
+			unsigned char * pMem;
+			size_t size;
+			size_t offset;
+            EBufferLockFlag flags;
 
-		VBHandle m_vbHandleCounter;
-		IBHandle m_ibHandleCounter;
+			GLuint bufId;
+		};
 
-		typedef stdex::binary_vector<VBHandle, VBInfo> TMapVBInfo;
-		TMapVBInfo m_vertexBuffers;
+		VBHandle m_VBHandleGenerator;
+		IBHandle m_IBHandleGenerator;
 
-        VBHandle m_currentVB;
-
-		typedef stdex::binary_vector<VBHandle, IBInfo> TMapIBInfo;
-		TMapIBInfo m_indexBuffers;
-
-        IBHandle m_currentIB;
-
-        IDirect3DTexture9 * m_currentTexture[MENGE_MAX_TEXTURE_STAGES];
-
-        typedef FactoryPoolStore<DX9Texture, 128> TFactoryDX9Texture;
-        TFactoryDX9Texture m_factoryDX9Texture;
+        typedef stdex::binary_vector<VBHandle, MemoryRange> TMapVBufferMemory;
+		TMapVBufferMemory m_vBuffersMemory;
+		TMapVBufferMemory m_vBuffersLocks;
 		
-		bool m_syncReady;
-        bool m_waitForVSync;
+		typedef stdex::binary_vector<IBHandle, MemoryRange> TMapIBufferMemory;
+		TMapIBufferMemory m_iBuffersMemory;
+		TMapIBufferMemory m_iBuffersLocks;
+
+		uint32_t m_activeTextureStage;
+		GLuint m_activeTexture;
+
+        typedef FactoryPoolStore<MarmaladeTexture, 128> TFactoryOGLTexture;
+        TFactoryOGLTexture m_factoryOGLTexture;
+
+		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
+
+		bool m_depthMask;
 	};
+
 }	// namespace Menge

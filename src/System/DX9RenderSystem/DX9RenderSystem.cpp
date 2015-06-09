@@ -2529,31 +2529,36 @@ namespace Menge
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, ( _declaration ) );
 	}
+  //  //////////////////////////////////////////////////////////////////////////
+  //  RenderShaderInterface * DX9RenderSystem::createShader( const void * _code, size_t _len )
+  //  {
+  //      (void)_len;
+
+  //      LPDIRECT3DPIXELSHADER9 pixelShader;
+  //      
+  //      IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreatePixelShader, ( (DWORD *)_code, &pixelShader ) )
+		//{
+		//	return nullptr;
+		//}
+
+  //      DX9RenderShader * dx9_shader = new DX9RenderShader(pixelShader);
+
+  //      return dx9_shader;
+  //  }
     //////////////////////////////////////////////////////////////////////////
-    RenderShaderInterface * DX9RenderSystem::createShader( const void * _code, size_t _len )
+	void DX9RenderSystem::setShader( const RenderShaderInterface * _shader )
     {
-        (void)_len;
-
-        LPDIRECT3DPIXELSHADER9 pixelShader;
-        
-        IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreatePixelShader, ( (DWORD *)_code, &pixelShader ) )
-		{
-			return nullptr;
-		}
-
-        DX9RenderShader * dx9_shader = new DX9RenderShader(pixelShader);
-
-        return dx9_shader;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setShader( RenderShaderInterface * _shader )
-    {
-        DX9RenderShader * dx9_shader = static_cast<DX9RenderShader *>(_shader);
+		const DX9RenderShader * dx9_shader = static_cast<const DX9RenderShader *>(_shader);
 
         LPDIRECT3DPIXELSHADER9 pixelShader = dx9_shader->getPixelShader();
 
         DXCALL( m_serviceProvider, m_pD3DDevice, SetPixelShader, ( pixelShader ) );
     }
+	//////////////////////////////////////////////////////////////////////////
+	const RenderShaderInterface * DX9RenderSystem::getShader( const ConstString & _name )
+	{
+		return nullptr;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setVSync( bool _vSync )
 	{

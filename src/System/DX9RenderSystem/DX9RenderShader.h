@@ -13,7 +13,7 @@ namespace Menge
         DX9RenderShader( LPDIRECT3DPIXELSHADER9 _pixelShader );
 
     public:
-        LPDIRECT3DPIXELSHADER9 getPixelShader();
+        LPDIRECT3DPIXELSHADER9 getPixelShader() const;
 
     protected:
         LPDIRECT3DPIXELSHADER9 m_pixelShader;

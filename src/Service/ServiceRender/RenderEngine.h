@@ -229,8 +229,6 @@ namespace Menge
         RenderTextureInterfacePtr m_nullTexture;	// dummy white pixel
 		RenderTextureInterfacePtr m_whitePixelTexture;
 
-        RenderShaderInterface * m_shader;
-
 		VBHandle m_vbHandle2D;
 		IBHandle m_ibHandle2D;
 
@@ -269,7 +267,9 @@ namespace Menge
 		EBlendFactor m_currentBlendDst;
 
 		const RenderViewportInterface * m_currentRenderViewport;
-		const RenderCameraInterface * m_currentRenderCamera;		
+		const RenderCameraInterface * m_currentRenderCamera;
+
+		const RenderShaderInterface * m_currentShader;
 
 		RenderDebugInfo m_debugInfo;	    // debug info
 

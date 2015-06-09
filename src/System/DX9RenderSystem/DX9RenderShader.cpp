@@ -8,7 +8,7 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DPIXELSHADER9 DX9RenderShader::getPixelShader()
+    LPDIRECT3DPIXELSHADER9 DX9RenderShader::getPixelShader() const
     {
         return m_pixelShader;
     }

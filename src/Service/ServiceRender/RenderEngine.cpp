@@ -26,18 +26,19 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine()
-		: m_serviceProvider(nullptr)
-		, m_windowCreated(false)
-		, m_vsync(false)
-		, m_vbHandle2D(0)
-		, m_ibHandle2D(0)
-		, m_currentVBHandle(0)
-		, m_currentIBHandle(0)
-		, m_currentBaseVertexIndex(0)
-		, m_currentTextureStages(0)
-		, m_currentRenderCamera(nullptr)        
-		, m_currentRenderViewport(nullptr)
-		, m_currentVertexDeclaration(0)
+		: m_serviceProvider( nullptr )
+		, m_windowCreated( false )
+		, m_vsync( false )
+		, m_vbHandle2D( 0 )
+		, m_ibHandle2D( 0 )
+		, m_currentVBHandle( 0 )
+		, m_currentIBHandle( 0 )
+		, m_currentBaseVertexIndex( 0 )
+		, m_currentTextureStages( 0 )
+		, m_currentRenderCamera( nullptr )
+		, m_currentRenderViewport( nullptr )
+		, m_currentVertexDeclaration( 0 )
+		, m_currentShader( nullptr )
 		, m_maxVertexCount(0)
 		, m_maxIndexCount(0)
 		, m_depthBufferWriteEnable(false)
@@ -504,6 +505,7 @@ namespace Menge
 		
 		m_currentMaterialId = 0;
 		m_currentStage = nullptr;
+		m_currentShader = nullptr;
 
 		m_renderVertexCount = 0;
 		m_renderIndicesCount = 0;
@@ -549,7 +551,14 @@ namespace Menge
 		}
 		
 		m_currentStage = _stage;
-		glUseProgram(m_currentStage->shaderProgram);
+		
+		if( m_currentShader != m_currentStage->shader )
+		{
+			m_currentShader = m_currentStage->shader;
+			
+			RENDER_SYSTEM( m_serviceProvider )
+				->setShader( m_currentShader );
+		}
 
 		for( uint32_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
 		{
@@ -773,7 +782,6 @@ namespace Menge
 
 		EPrimitiveType primitiveType = material->getPrimitiveType();
 
-		glUniformMatrix4fv(m_currentStage->transformLocation, 1, GL_FALSE, m_mvpMat.buff());
 // 		glEnable(GL_BLEND);
 // 		glDisable(GL_ALPHA_TEST);
 // 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -1046,21 +1054,19 @@ namespace Menge
 
 		const mt::mat4f & worldMatrix = camera->getCameraWorldMatrix();
 
-// 		RENDER_SYSTEM(m_serviceProvider)
-// 			->setWorldMatrix( worldMatrix );
+		RENDER_SYSTEM( m_serviceProvider )
+			->setWorldMatrix( worldMatrix );
 
 		const mt::mat4f & viewMatrix = camera->getCameraViewMatrix();
 
-// 		RENDER_SYSTEM(m_serviceProvider)
-// 			->setModelViewMatrix( viewMatrix );
+		RENDER_SYSTEM( m_serviceProvider )
+			->setModelViewMatrix( viewMatrix );
 
 		const mt::mat4f & projectionMatrix = camera->getCameraProjectionMatrix();
 
-// 		RENDER_SYSTEM(m_serviceProvider)
-// 			->setProjectionMatrix( projectionMatrix );
+		RENDER_SYSTEM( m_serviceProvider )
+			->setProjectionMatrix( projectionMatrix );
 
-		m_mvpMat = worldMatrix * viewMatrix * projectionMatrix;
-		
 		this->renderObjects_( _renderPass );
 	}
 	//////////////////////////////////////////////////////////////////////////

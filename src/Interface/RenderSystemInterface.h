@@ -23,8 +23,6 @@
 #	define MENGE_MAX_TEXTURE_STAGES 2
 #   endif
 
-#include "IwGL.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -281,6 +279,11 @@ namespace Menge
         uint32_t texCoordIndex;
     };
 	//////////////////////////////////////////////////////////////////////////
+	class RenderShaderInterface
+		: public Factorable
+	{
+	};
+	//////////////////////////////////////////////////////////////////////////
 	struct RenderStage
 	{	
 		RenderStage()
@@ -289,6 +292,7 @@ namespace Menge
 			, depthBufferWriteEnable(false)
 			, alphaTestEnable(false)
 			, alphaBlendEnable(false)
+			, shader(nullptr)
 		{
 		}
 
@@ -300,8 +304,10 @@ namespace Menge
 		bool depthBufferWriteEnable;
 		bool alphaTestEnable;
 		bool alphaBlendEnable;
-		GLuint shaderProgram;
-		int transformLocation;
+
+		const RenderShaderInterface * shader;
+		//GLuint shaderProgram;
+		//int transformLocation;
 	};
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialInterface
@@ -312,10 +318,6 @@ namespace Menge
     };
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderMaterialInterface> RenderMaterialInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class RenderShaderInterface
-    {
-    };
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialServiceInterface
         : public ServiceInterface
@@ -504,9 +506,10 @@ namespace Menge
 
 		virtual void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) = 0;
 
-        virtual RenderShaderInterface * createShader( const void * _code, size_t _len ) = 0;
-        virtual void setShader( RenderShaderInterface * _shader ) = 0;
-
+        //virtual RenderShaderInterface * createShader( const void * _code, size_t _len ) = 0;		
+		virtual void setShader( const RenderShaderInterface * _shader ) = 0;
+		virtual const RenderShaderInterface * getShader( const ConstString & _name ) = 0;
+        
 		virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
 			uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount ) = 0;
 

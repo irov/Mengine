@@ -464,18 +464,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
 	{
-        //GLCALL( m_serviceProvider, glMatrixMode, ( GL_PROJECTION ) );
-		
-        const float * matrix = _projection.buff();
-//         GLCALL( m_serviceProvider, glLoadMatrixf, ( matrix ) );
+		m_projectionMatrix = _projection;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setModelViewMatrix( const mt::mat4f & _view )
 	{
-        //GLCALL( m_serviceProvider, glMatrixMode, ( GL_MODELVIEW ) );
-
-        const float * matrix = _view.buff();
-//         GLCALL( m_serviceProvider, glLoadMatrixf, ( matrix ) );
+		m_viewMatrix = _view;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setTextureMatrix( uint32_t _stage, const float* _texture )
@@ -485,7 +479,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::setWorldMatrix( const mt::mat4f & _world )
     {
-        // To Do
+		m_worldMatrix = _world;
     }
 	//////////////////////////////////////////////////////////////////////////
 	VBHandle MarmaladeRenderSystem::createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic )

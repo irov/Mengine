@@ -5,10 +5,12 @@
 #   include "Config/String.h"
 
 #   include "MarmaladeTexture.h"
+#   include "MarmaladeShader.h"
 
 #   include "Factory/FactoryStore.h"
 
 #   include "stdex/binary_vector.h"
+#   include "stdex/stl_map.h"
 
 #   include <IwGL.h>
 #   include <s3e.h>
@@ -132,8 +134,10 @@ namespace Menge
         void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
 		void setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 		
-        RenderShaderInterface * createShader( const void * _buffer, size_t _size ) override;
-        void setShader( RenderShaderInterface * _shader ) override;
+		
+        //RenderShaderInterface * createShader( const void * _buffer, size_t _size ) override;
+		const RenderShaderInterface * getShader( const ConstString & _name ) override;
+        void setShader( const RenderShaderInterface * _shader ) override;
         
         
         // create texture
@@ -177,6 +181,8 @@ namespace Menge
         void setSeparateAlphaBlendMode() override;
 
     protected:
+		void initializeShaders_();
+		void initializeShader_( const ConstString & _name, const char * _vsSrc, const char * _fsSrc );
         void findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const;
 
 	private:
@@ -184,8 +190,14 @@ namespace Menge
 
         RenderSystemListener * m_listener;
 		
-		OGLWindowContext* m_windowContext;
+		OGLWindowContext * m_windowContext;
 
+		const RenderShaderInterface * m_currentShader;
+
+		mt::mat4f m_worldMatrix;
+		mt::mat4f m_viewMatrix;
+		mt::mat4f m_projectionMatrix;
+		
         Resolution m_resolution;
 
 		bool m_supportNPOT;
@@ -227,11 +239,17 @@ namespace Menge
 		TMapIBufferMemory m_iBuffersMemory;
 		TMapIBufferMemory m_iBuffersLocks;
 
+		typedef stdex::map<ConstString, RenderShaderInterface *> TMapRenderShaders;
+		TMapRenderShaders m_shaders;
+
 		uint32_t m_activeTextureStage;
 		GLuint m_activeTexture;
 
-        typedef FactoryPoolStore<MarmaladeTexture, 128> TFactoryOGLTexture;
-        TFactoryOGLTexture m_factoryOGLTexture;
+        typedef FactoryPoolStore<MarmaladeTexture, 128> TFactoryTexture;
+        TFactoryTexture m_factoryTexture;
+
+		typedef FactoryPoolStore<MarmaladeShader, 16> TFactoryShader;
+		TFactoryShader m_factoryShader;
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
 

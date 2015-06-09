@@ -8,7 +8,6 @@
 
 #   include "stdex/binary_vector.h"
 
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -56,10 +55,7 @@ namespace Menge
 
 	protected:
 		uint32_t makeMaterialIndex_();
-
-	protected:
-		GLuint shaderProgram(const char * _vs, const char * _fs, int & transformLocation);
-
+			
     protected:
         ServiceProviderInterface * m_serviceProvider;
 

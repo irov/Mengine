@@ -19,7 +19,8 @@ namespace Menge
 		void finalize();
 
 	public:
-		void use( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix ) const;
+		void use(const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix) const;
+		void bindTexture(unsigned int _textureInd, int _texture) const;
 
 	protected:
 		GLuint createShader_( GLenum type, const char * _source );
@@ -35,5 +36,6 @@ namespace Menge
 		mutable mt::mat4f m_mvpMat;
 
 		int m_transformLocation;
+		int m_samplerLocation[2];
 	};
 }	// namespace Menge

@@ -706,23 +706,29 @@ namespace Menge
 			shader->use( m_worldMatrix, m_viewMatrix, m_projectionMatrix );						
 		}
 
-		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		for (uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i)
 		{
 			const TextureStage & textureStage = m_textureStage[i];
 
-			if( textureStage.texture == 0 )
+			if (textureStage.texture == 0)
 			{
-				GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
+				GLCALL(m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i));
 				//GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
 				break;
 			}
 
-			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i));
 
-			//GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
-
-			GLCALL( m_serviceProvider, glBindTexture, ( GL_TEXTURE_2D, textureStage.texture ) );
-			
+			if (m_currentShader != nullptr)
+			{
+				const MarmaladeShader * shader = static_cast<const MarmaladeShader *>(m_currentShader);
+				shader->bindTexture(i, textureStage.texture);
+			}
+			else
+			{
+				GLCALL(m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i));
+				//GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
+				GLCALL(m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, textureStage.texture));
+			}
 
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS ) );
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT ) );

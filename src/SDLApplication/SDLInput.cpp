@@ -57,10 +57,8 @@ namespace Menge
 				mt::vec2f point;
 				this->calcCursorPosition_( _event.wheel.x, _event.wheel.y, point );
 
-				InputUnionEvent event = Helper::makeMouseWheelEvent( point.x, point.y, 0, _event.wheel.y );
-
 				INPUT_SERVICE( m_serviceProvider )
-					->pushEvent( event );
+					->pushMouseWheelEvent( point.x, point.y, 0, _event.wheel.y );
 			}break;
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
@@ -78,10 +76,8 @@ namespace Menge
 
 				m_keyDown[code] = isDown;
 
-				InputUnionEvent event = Helper::makeKeyEvent( point.x, point.y, code, (wchar_t)_event.key.keysym.sym, isDown, false );
-				
 				INPUT_SERVICE( m_serviceProvider )
-					->pushEvent( event );
+					->pushKeyEvent( point.x, point.y, code, (wchar_t)_event.key.keysym.sym, isDown, false );
 			} break;
 		case SDL_MOUSEMOTION:
 			{
@@ -91,10 +87,8 @@ namespace Menge
 				mt::vec2f delta;
 				this->calcCursorPosition_( _event.motion.xrel, _event.motion.yrel, delta );
 
-				InputUnionEvent event = Helper::makeMouseMoveEvent( 0, point.x, point.y, delta.x, delta.y, 0.f );
-
 				INPUT_SERVICE( m_serviceProvider )
-					->pushEvent( event );
+					->pushMouseMoveEvent( 0, point.x, point.y, delta.x, delta.y, 0.f );
 			}break;
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP:
@@ -120,20 +114,16 @@ namespace Menge
 					break;
 				};
 
-				InputUnionEvent event = Helper::makeMouseButtonEvent( 0, point.x, point.y, button, 0.f, _event.button.type == SDL_MOUSEBUTTONDOWN );
-				
 				INPUT_SERVICE( m_serviceProvider )
-					->pushEvent( event );
+					->pushMouseButtonEvent( 0, point.x, point.y, button, 0.f, _event.button.type == SDL_MOUSEBUTTONDOWN );
 			}
 			break;
 		case SDL_FINGERMOTION:
 			{
 				uint32_t touchId = (uint32_t)_event.tfinger.fingerId;
 
-				InputUnionEvent event = Helper::makeMouseMoveEvent( touchId, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dx, _event.tfinger.pressure );
-
 				INPUT_SERVICE( m_serviceProvider )
-					->pushEvent( event );
+					->pushMouseMoveEvent( touchId, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dx, _event.tfinger.pressure );
 			}break;
 		case SDL_FINGERDOWN:
 		case SDL_FINGERUP:
@@ -159,10 +149,8 @@ namespace Menge
 					break;
 				};
 
-				InputUnionEvent event = Helper::makeMouseButtonEvent( 0, _event.tfinger.x, _event.tfinger.y, 0, _event.tfinger.pressure, _event.tfinger.type == SDL_FINGERDOWN );
-
 				INPUT_SERVICE( m_serviceProvider )
-					->pushEvent( event );
+					->pushMouseButtonEvent( 0, _event.tfinger.x, _event.tfinger.y, 0, _event.tfinger.pressure, _event.tfinger.type == SDL_FINGERDOWN );
 			}
 			break;
 		}

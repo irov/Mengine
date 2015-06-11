@@ -19,9 +19,8 @@
 
 #	ifndef IW_DEBUG
 #		undef _DEBUG // In Marmalade _DEBUG is wrongly defined in x86 Release.
+#		define MENGINE_MASTER_RELEASE
 #	endif
-
-#	define MENGINE_MASTER_RELEASE
 
 #   define MENGINE_MARMALADE
 #	define MENGINE_MAX_PATH 128

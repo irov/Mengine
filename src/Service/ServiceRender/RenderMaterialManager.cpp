@@ -321,7 +321,7 @@ namespace Menge
 			rs.depthBufferWriteEnable = false;
 
 			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Add" ) );
+				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ColorAdd" ) );
 			//rs.shaderProgram = shaderProgram(defaultVS, blendFS, rs.transformLocation);
 
 			rs.blendSrc = BF_SOURCE_ALPHA;
@@ -330,7 +330,7 @@ namespace Menge
 			rs.textureStage[0].colorOp = TOP_MODULATE;
 			rs.textureStage[0].alphaOp = TOP_MODULATE;
 
-			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Add" ), rs );
+			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ColorAdd" ), rs );
 		}
 
 		{
@@ -341,7 +341,7 @@ namespace Menge
 			rs.depthBufferWriteEnable = false;
 
 			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Blend" ) );
+				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ColorBlend" ) );
 
 			//shaderProgram(defaultVS, blendFS, rs.transformLocation);
 
@@ -351,7 +351,7 @@ namespace Menge
 			rs.textureStage[0].alphaOp = TOP_MODULATE;
 			rs.textureStage[0].colorOp = TOP_MODULATE;
 
-			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Blend" ), rs );
+			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ColorBlend" ), rs );
 		}
 
 		{
@@ -362,7 +362,7 @@ namespace Menge
 			rs.depthBufferWriteEnable = false;
 
 			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Solid" ) );
+				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ColorSolid" ) );
 			//rs.shaderProgram = shaderProgram(defaultVS, blendFS, rs.transformLocation);
 
 			rs.blendSrc = BF_SOURCE_ALPHA;
@@ -371,7 +371,7 @@ namespace Menge
 			rs.textureStage[0].alphaOp = TOP_MODULATE;
 			rs.textureStage[0].colorOp = TOP_MODULATE;
 
-			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Solid" ), rs );
+			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ColorSolid" ), rs );
 		}
 
         return true;

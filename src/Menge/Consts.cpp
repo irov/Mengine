@@ -103,9 +103,9 @@ namespace Menge
         INIT_CONST( Debug );
         INIT_CONST( Add );
 		INIT_CONST( Accumulator );
-		INIT_CONST( Color_Add );
-		INIT_CONST( Color_Blend );
-		INIT_CONST( Color_Solid );
+		INIT_CONST( ColorAdd );
+		INIT_CONST( ColorBlend );
+		INIT_CONST( ColorSolid );
 
         INIT_CONST( ParticleEmitter );
 		INIT_CONST( ParticleEmitter2 );

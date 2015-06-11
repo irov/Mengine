@@ -313,6 +313,67 @@ namespace Menge
             this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Add"), rs );
         }
 
+		{
+			RenderStage rs;
+
+			rs.alphaBlendEnable = true;
+			rs.alphaTestEnable = false;
+			rs.depthBufferWriteEnable = false;
+
+			rs.shader = RENDER_SYSTEM( m_serviceProvider )
+				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Add" ) );
+			//rs.shaderProgram = shaderProgram(defaultVS, blendFS, rs.transformLocation);
+
+			rs.blendSrc = BF_SOURCE_ALPHA;
+			rs.blendDst = BF_ONE;
+
+			rs.textureStage[0].colorOp = TOP_MODULATE;
+			rs.textureStage[0].alphaOp = TOP_MODULATE;
+
+			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Add" ), rs );
+		}
+
+		{
+			RenderStage rs;
+
+			rs.alphaBlendEnable = true;
+			rs.alphaTestEnable = false;
+			rs.depthBufferWriteEnable = false;
+
+			rs.shader = RENDER_SYSTEM( m_serviceProvider )
+				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Blend" ) );
+
+			//shaderProgram(defaultVS, blendFS, rs.transformLocation);
+
+			rs.blendSrc = BF_SOURCE_ALPHA;
+			rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+
+			rs.textureStage[0].alphaOp = TOP_MODULATE;
+			rs.textureStage[0].colorOp = TOP_MODULATE;
+
+			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Blend" ), rs );
+		}
+
+		{
+			RenderStage rs;
+
+			rs.alphaBlendEnable = false;
+			rs.alphaTestEnable = false;
+			rs.depthBufferWriteEnable = false;
+
+			rs.shader = RENDER_SYSTEM( m_serviceProvider )
+				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Solid" ) );
+			//rs.shaderProgram = shaderProgram(defaultVS, blendFS, rs.transformLocation);
+
+			rs.blendSrc = BF_SOURCE_ALPHA;
+			rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+
+			rs.textureStage[0].alphaOp = TOP_MODULATE;
+			rs.textureStage[0].colorOp = TOP_MODULATE;
+
+			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Solid" ), rs );
+		}
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

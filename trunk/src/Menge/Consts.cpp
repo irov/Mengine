@@ -102,7 +102,11 @@ namespace Menge
         INIT_CONST( ExternalAlphaIntensive_OnlyColor );
         INIT_CONST( Debug );
         INIT_CONST( Add );
-        INIT_CONST( Accumulator );
+		INIT_CONST( Accumulator );
+		INIT_CONST( Color_Add );
+		INIT_CONST( Color_Blend );
+		INIT_CONST( Color_Solid );
+
         INIT_CONST( ParticleEmitter );
 		INIT_CONST( ParticleEmitter2 );
         INIT_CONST( LayerCamera2D );

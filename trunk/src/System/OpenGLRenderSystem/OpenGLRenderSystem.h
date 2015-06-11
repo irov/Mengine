@@ -127,8 +127,9 @@ namespace Menge
         void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
 		void setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
 		
-        RenderShaderInterface * createShader( const void * _buffer, size_t _size ) override;
-        void setShader( RenderShaderInterface * _shader ) override;
+        //const RenderShaderInterface * createShader( const void * _buffer, size_t _size ) override;
+		void setShader( const RenderShaderInterface * _shader ) override;
+		const RenderShaderInterface * getShader( const ConstString & _name ) override;
         
         
         // create texture

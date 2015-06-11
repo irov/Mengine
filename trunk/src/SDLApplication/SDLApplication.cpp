@@ -664,7 +664,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SDLApplication::initializeParticleEngine2_()
 	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service 2..." );
+		LOGGER_INFO( m_serviceProvider )("Initializing Particle Service 2...");
 
 		ParticleSystemInterface2 * particleSystem;
 		if( SERVICE_CREATE( ParticleSystem2, &particleSystem ) == false )
@@ -694,7 +694,7 @@ namespace Menge
 		ParticleServiceInterface2 * particleService;
 		if( SERVICE_CREATE( ParticleService2, &particleService ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleService2"
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleService2"
 				);
 
 			return false;
@@ -702,7 +702,7 @@ namespace Menge
 
 		if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleService2"
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleService2"
 				);
 
 			return false;

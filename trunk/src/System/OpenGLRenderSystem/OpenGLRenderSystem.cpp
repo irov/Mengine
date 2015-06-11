@@ -933,16 +933,20 @@ namespace Menge
             tStage.magFilter = s_toMagFilter( _filter );
         }
 	}
+ //   //////////////////////////////////////////////////////////////////////////
+	//const RenderShaderInterface * OpenGLRenderSystem::createShader( const void * _buffer, size_t _size )
+ //   {
+ //       return nullptr;
+ //   }
     //////////////////////////////////////////////////////////////////////////
-	RenderShaderInterface * OpenGLRenderSystem::createShader( const void * _buffer, size_t _size )
-    {
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-	void OpenGLRenderSystem::setShader( RenderShaderInterface * _shader )
+	void OpenGLRenderSystem::setShader( const RenderShaderInterface * _shader )
     {
 
     }
+	const RenderShaderInterface * OpenGLRenderSystem::getShader( const ConstString & _name )
+	{ 
+		return nullptr;
+	}
     //////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderSystem::findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const
     {

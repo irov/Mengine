@@ -19,7 +19,7 @@ namespace Menge
 {
 	void initialize_GLEXT()
 	{
-		bool result = SDL_GL_ExtensionSupported( "glActiveTexture" );
+		SDL_bool result = SDL_GL_ExtensionSupported( "glActiveTexture" );
 
 		glActiveTexture = (PFNGLACTIVETEXTUREARBPROC)SDL_GL_GetProcAddress( "glActiveTexture" );
 		glCompressedTexImage2D = (PFNGLCOMPRESSEDTEXIMAGE2DPROC)SDL_GL_GetProcAddress( "glCompressedTexImage2D" );

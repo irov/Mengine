@@ -409,6 +409,10 @@ namespace Menge
 		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Intensive_OnlyColor" ), defaultVS, onlyColorFS );
 		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" ), defaultVS, debugFS );
 		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Add" ), defaultVS, blendFS );
+
+		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Add" ), defaultVS, blendFS );
+		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Blend" ), defaultVS, blendFS );
+		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Solid" ), defaultVS, blendFS );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::initializeShader_( const ConstString & _name, const char * _vsSrc, const char * _fsSrc )

@@ -100,9 +100,9 @@ namespace Menge
 		DECL_CONST( Debug );
 		DECL_CONST( Add );
 		DECL_CONST( Accumulator );
-		DECL_CONST( Color_Add );
-		DECL_CONST( Color_Blend );
-		DECL_CONST( Color_Solid );
+		DECL_CONST( ColorAdd );
+		DECL_CONST( ColorBlend );
+		DECL_CONST( ColorSolid );
 
 		DECL_CONST( ParticleEmitter );
 		DECL_CONST( ParticleEmitter2 );

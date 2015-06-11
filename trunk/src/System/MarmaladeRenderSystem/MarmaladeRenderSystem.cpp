@@ -23,6 +23,8 @@
 
 #	include "Shaders/OnlyColorFS.h"
 
+#	include "Shaders/VertexColorFS.h"
+
 //////////////////////////////////////////////////////////////////////////
 #	define GET_A_FLOAT_FROM_ARGB32( argb ) ( ((float)(argb >> 24)) / 255.0f )
 #	define GET_R_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 16) & 0xFF)) / 255.0f )
@@ -410,9 +412,9 @@ namespace Menge
 		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" ), defaultVS, debugFS );
 		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Add" ), defaultVS, blendFS );
 
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Add" ), defaultVS, blendFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Blend" ), defaultVS, blendFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Solid" ), defaultVS, blendFS );
+		this->initializeShader_(STRINGIZE_STRING_LOCAL(m_serviceProvider, "ColorAdd"), defaultVS, vertexColorFS);
+		this->initializeShader_(STRINGIZE_STRING_LOCAL(m_serviceProvider, "ColorBlend"), defaultVS, vertexColorFS);
+		this->initializeShader_(STRINGIZE_STRING_LOCAL(m_serviceProvider, "ColorSolid"), defaultVS, vertexColorFS);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::initializeShader_( const ConstString & _name, const char * _vsSrc, const char * _fsSrc )

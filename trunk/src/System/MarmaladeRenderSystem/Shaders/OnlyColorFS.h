@@ -8,7 +8,7 @@ const char* onlyColorFS =
 	"void main(void)									"
 	"{													"
 	"	mediump vec4 c0 = texture2D(inSampler0, v_UV0);	"
-	"	c0.w = 1.0;										"
-	"	mediump vec4 c = v_Col * c0;					"
+	"	mediump vec4 c = v_Col;							"
+	"	c.w = c.w * c0.w;								"
 	"	gl_FragColor = c;								"
 	"}													";

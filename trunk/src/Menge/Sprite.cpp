@@ -144,17 +144,17 @@ namespace Menge
 
 			if( m_blendAdd == true )
 			{
-				stageName = CONST_STRING( m_serviceProvider, Color_Add );
+				stageName = CONST_STRING( m_serviceProvider, ColorAdd );
 			}
 			else
 			{
 				if( m_solid == false )
 				{
-					stageName = CONST_STRING( m_serviceProvider, Color_Blend );
+					stageName = CONST_STRING( m_serviceProvider, ColorBlend );
 				}
 				else
 				{
-					stageName = CONST_STRING( m_serviceProvider, Color_Solid );
+					stageName = CONST_STRING( m_serviceProvider, ColorSolid );
 				}
 			}
 		}

@@ -594,11 +594,14 @@ namespace Menge
 		++it )
 		{
 			const ParticleEmitterAtlas & atlas = *it;
-			
-			PyObject * py_fileName = pybind::string_from_char_size( atlas.filename.c_str(), atlas.filename.size() );
 
-			pybind::list_appenditem( _atlasFiles, py_fileName );
-			pybind::decref( py_fileName );
+			WString unicode_filename;
+			if( Helper::utf8ToUnicode( serviceProvider, atlas.filename, unicode_filename ) == false )
+			{
+				return false;
+			}
+			
+			pybind::list_appenditem_t( _atlasFiles, unicode_filename );
 		}
 
 		return true;

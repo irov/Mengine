@@ -1,5 +1,7 @@
 #   pragma once
 
+#	include "Interface/RenderSystemInterface.h"
+
 #   include "stdex/memory_reader.h"
 
 #	include "Utils/Core/ConstString.h"
@@ -33,10 +35,14 @@ namespace Metabuf
     void archive_read( stdex::memory_reader & ar, Menge::WString & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, Menge::ColourValue & _value, void * _userData );    
     void archive_read( stdex::memory_reader & ar, Menge::Polygon & _value, void * _userData );
-    void archive_read( stdex::memory_reader & ar, Menge::Floats & _value, void * _userData );	
+    void archive_read( stdex::memory_reader & ar, Menge::Floats & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, mt::vec2f & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, mt::vec3f & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, mt::vec4f & _value, void * _userData );
 	void archive_read( stdex::memory_reader & ar, mt::box2f & _value, void * _userData );
 	void archive_read( stdex::memory_reader & ar, mt::uv4f & _value, void * _userData );
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::EBlendFactor & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, Menge::ETextureOp & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, Menge::ETextureArgument & _value, void * _userData );
 }

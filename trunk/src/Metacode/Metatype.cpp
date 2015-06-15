@@ -234,4 +234,34 @@ namespace Metabuf
 		ar.readPOD( _value.p3.x );
 		ar.readPOD( _value.p3.y );
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::EBlendFactor & _value, void * _userData )
+	{
+		(void)_userData;
+
+		uint32_t tmp_value;
+		ar.readPOD( tmp_value );
+
+		_value = (Menge::EBlendFactor)tmp_value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::ETextureOp & _value, void * _userData )
+	{
+		(void)_userData;
+
+		uint32_t tmp_value;
+		ar.readPOD( tmp_value );
+
+		_value = (Menge::ETextureOp)tmp_value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::ETextureArgument & _value, void * _userData )
+	{
+		(void)_userData;
+
+		uint32_t tmp_value;
+		ar.readPOD( tmp_value );
+
+		_value = (Menge::ETextureArgument)tmp_value;
+	}
 }

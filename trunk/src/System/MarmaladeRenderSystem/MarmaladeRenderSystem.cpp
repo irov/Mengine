@@ -9,22 +9,6 @@
 
 #	include <cmath>
 
-#	include "Shaders/DefaultVS.h"
-
-#	include "Shaders/ExternalAlphaFS.h"
-
-#	include "Shaders/ExternalAlphaOnlyColorFS.h"
-
-#	include "Shaders/BlendFS.h"
-
-#	include "Shaders/AccumulatorFS.h"
-
-#	include "Shaders/DebugFS.h"
-
-#	include "Shaders/OnlyColorFS.h"
-
-#	include "Shaders/VertexColorFS.h"
-
 //////////////////////////////////////////////////////////////////////////
 #	define GET_A_FLOAT_FROM_ARGB32( argb ) ( ((float)(argb >> 24)) / 255.0f )
 #	define GET_R_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 16) & 0xFF)) / 255.0f )
@@ -300,7 +284,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderSystem::MarmaladeRenderSystem()
 		: m_serviceProvider(nullptr)
-		, m_currentShader(nullptr)
 		, m_supportNPOT(false)
 		, m_currentVertexBuffer(0)
 		, m_currentIndexBuffer(0)
@@ -382,54 +365,21 @@ namespace Menge
 		GLCALL( m_serviceProvider, glDisable, ( GL_DITHER ) );
 
 		GLCALL( m_serviceProvider, glDepthMask, ( GL_FALSE ) );
-		//glPixelStorei( GL_UNPACK_ALIGNMENT, 1 );
 
-		//GLCALL( m_serviceProvider, glMatrixMode, ( GL_MODELVIEW ) );
-		//GLCALL( m_serviceProvider, glLoadIdentity, () );
-
-		//GLCALL( m_serviceProvider, glMatrixMode, ( GL_PROJECTION ) );
-		//GLCALL( m_serviceProvider, glLoadIdentity, () );
-
-		//GLCALL( m_serviceProvider, glMatrixMode, ( GL_TEXTURE ) );
-		//GLCALL( m_serviceProvider, glLoadIdentity, () );
-
-		this->initializeShaders_();
+		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Marmalade" );
 						
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::initializeShaders_()
-	{
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Blend" ), defaultVS, blendFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "SolidSprite" ), defaultVS, blendFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Accumulator" ), defaultVS, accumulatorFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ExternalAlpha" ), defaultVS, externalAlphaFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ExternalAlphaIntensive" ), defaultVS, externalAlphaFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ExternalAlpha_OnlyColor" ), defaultVS, externalAlphaOnlyColorFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ExternalAlphaIntensive_OnlyColor" ), defaultVS, externalAlphaOnlyColorFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "OnlyColor" ), defaultVS, onlyColorFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Intensive_OnlyColor" ), defaultVS, onlyColorFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" ), defaultVS, debugFS );
-		this->initializeShader_( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Add" ), defaultVS, blendFS );
-
-		this->initializeShader_(STRINGIZE_STRING_LOCAL(m_serviceProvider, "ColorAdd"), defaultVS, vertexColorFS);
-		this->initializeShader_(STRINGIZE_STRING_LOCAL(m_serviceProvider, "ColorBlend"), defaultVS, vertexColorFS);
-		this->initializeShader_(STRINGIZE_STRING_LOCAL(m_serviceProvider, "ColorSolid"), defaultVS, vertexColorFS);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::initializeShader_( const ConstString & _name, const char * _vsSrc, const char * _fsSrc )
-	{
-		MarmaladeShader * shader = m_factoryShader.createObjectT();
-
-		shader->initialize( m_serviceProvider, _vsSrc, _fsSrc );
-
-		m_shaders.insert( std::make_pair( _name, shader ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::finalize()
     {
 		GLCALL( m_serviceProvider, IwGLTerminate, () );		
     }
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & MarmaladeRenderSystem::getRenderPlatformName() const
+	{
+		return m_renderPlatform;
+	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::setRenderListener( RenderSystemListener * _listener )
     {
@@ -701,15 +651,49 @@ namespace Menge
         // To Do
 	}
 	//////////////////////////////////////////////////////////////////////////
+	RenderShaderInterfacePtr MarmaladeRenderSystem::createFragmentShader( const void * _buffer, size_t _size, bool _isCompile )
+	{
+		MarmaladeShaderPtr shader = m_factoryShader.createObjectT();
+
+		shader->initialize( GL_FRAGMENT_SHADER, _buffer, _size, _isCompile );
+
+		return shader;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderShaderInterfacePtr MarmaladeRenderSystem::createVertexShader( const void * _buffer, size_t _size, bool _isCompile )
+	{
+		MarmaladeShaderPtr shader = m_factoryShader.createObjectT();
+
+		shader->setServiceProvider( m_serviceProvider );
+		shader->initialize( GL_VERTEX_SHADER, _buffer, _size, _isCompile );
+
+		return shader;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderProgramInterfacePtr MarmaladeRenderSystem::createProgram( const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex )
+	{
+		MarmaladeProgramPtr program = m_factoryProgram.createObjectT();
+
+		program->setServiceProvider( m_serviceProvider );
+		program->initialize( _fragment, _vertex );
+
+		return program;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeRenderSystem::setProgram( const RenderProgramInterfacePtr & _program )
+	{
+		m_currentProgram = stdex::intrusive_static_cast<MarmaladeProgramPtr>(_program);
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::drawIndexedPrimitive( EPrimitiveType _type, 
 		uint32_t _baseVertexIndex,  uint32_t _minIndex, 
 		uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount )
 	{
-		if( m_currentShader != nullptr )
-		{
-			const MarmaladeShader * shader = static_cast<const MarmaladeShader *>(m_currentShader);
-
-			shader->use( m_worldMatrix, m_viewMatrix, m_projectionMatrix );						
+		if( m_currentProgram != nullptr )
+		{			
+			m_currentProgram->use();
+			
+			m_currentProgram->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix );
 		}
 
 		for (uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i)
@@ -724,16 +708,14 @@ namespace Menge
 			}
 
 
-			if (m_currentShader != nullptr)
+			if( m_currentProgram != nullptr )
 			{
-				const MarmaladeShader * shader = static_cast<const MarmaladeShader *>(m_currentShader);
-				shader->bindTexture(i, textureStage.texture);
+				m_currentProgram->bindTexture( i, textureStage.texture );
 			}
 			else
 			{
-				GLCALL(m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i));
-				//GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
-				GLCALL(m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, textureStage.texture));
+				GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
+				GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, textureStage.texture) );
 			}
 
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS ) );
@@ -1070,31 +1052,6 @@ namespace Menge
             tStage.magFilter = s_toMagFilter( _filter );
         }
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//RenderShaderInterface * MarmaladeRenderSystem::createShader( const void * _buffer, size_t _size )
-	//{
-	//    return nullptr;
-	//}
-
-	//////////////////////////////////////////////////////////////////////////
-	const RenderShaderInterface * MarmaladeRenderSystem::getShader( const ConstString & _name )
-	{
-		TMapRenderShaders::iterator it_found = m_shaders.find( _name );
-
-		if( it_found == m_shaders.end() )
-		{
-			return nullptr;
-		}
-
-		RenderShaderInterface * shader = it_found->second;
-
-		return shader;
-	}
-    //////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setShader( const RenderShaderInterface * _shader )
-    {
-		m_currentShader = _shader;
-    }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const
     {

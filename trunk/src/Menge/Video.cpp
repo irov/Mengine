@@ -741,11 +741,11 @@ namespace Menge
 		ConstString stageName; 
 		if ( this->isBlendAdd() == true )
 		{
-			stageName = CONST_STRING(m_serviceProvider, Add);
+			stageName = CONST_STRING( m_serviceProvider, Texture_Intensive );
 		}
 		else
 		{
-			stageName = CONST_STRING(m_serviceProvider, Blend);
+			stageName = CONST_STRING( m_serviceProvider, Texture_Blend );
 		}
 
 		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)

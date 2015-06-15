@@ -599,26 +599,26 @@ namespace	Menge
 			if( textures[1] != nullptr )
 			{
 				mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING(m_serviceProvider, ExternalAlphaIntensive), false, false, PT_TRIANGLELIST, 2, textures );
+					->getMaterial( CONST_STRING( m_serviceProvider, Texture_Intensive_ExternalAlpha ), false, false, PT_TRIANGLELIST, 2, textures );
 
 				mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING(m_serviceProvider, ExternalAlpha), false, false, PT_TRIANGLELIST, 2, textures );
+					->getMaterial( CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha ), false, false, PT_TRIANGLELIST, 2, textures );
 			}
 			else if( textures[0] != nullptr )
 			{
 				mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING(m_serviceProvider, Add), false, false, PT_TRIANGLELIST, 1, textures );
+					->getMaterial( CONST_STRING( m_serviceProvider, Texture_Intensive ), false, false, PT_TRIANGLELIST, 1, textures );
 
 				mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING(m_serviceProvider, Blend), false, false, PT_TRIANGLELIST, 1, textures );
+					->getMaterial( CONST_STRING( m_serviceProvider, Texture_Blend ), false, false, PT_TRIANGLELIST, 1, textures );
 			}
 			else
 			{
 				mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING(m_serviceProvider, OnlyColor), false, false, PT_TRIANGLELIST, 0, nullptr );
+					->getMaterial( CONST_STRING( m_serviceProvider, Color_Intensive ), false, false, PT_TRIANGLELIST, 0, nullptr );
 
 				mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING(m_serviceProvider, OnlyColor), false, false, PT_TRIANGLELIST, 0, nullptr );
+					->getMaterial( CONST_STRING( m_serviceProvider, Color_Blend ), false, false, PT_TRIANGLELIST, 0, nullptr );
 			}
 
 			m_materials[i*2 + 0] = mg_intensive;

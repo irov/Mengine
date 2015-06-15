@@ -92,20 +92,23 @@ namespace Menge
         INIT_CONST( RigidBody2D );
         INIT_CONST( WorldPhysObject );
         INIT_CONST( NullTexture );
-        INIT_CONST( Blend );
-        INIT_CONST( SolidSprite );
-        INIT_CONST( OnlyColor );
-		INIT_CONST( Intensive_OnlyColor );
-        INIT_CONST( ExternalAlpha );
-        INIT_CONST( ExternalAlpha_OnlyColor );
-        INIT_CONST( ExternalAlphaIntensive );
-        INIT_CONST( ExternalAlphaIntensive_OnlyColor );
-        INIT_CONST( Debug );
-        INIT_CONST( Add );
-		INIT_CONST( Accumulator );
-		INIT_CONST( ColorAdd );
-		INIT_CONST( ColorBlend );
-		INIT_CONST( ColorSolid );
+
+
+		INIT_CONST( Texture_Solid );
+		INIT_CONST( Texture_Blend );
+		INIT_CONST( Texture_Intensive );
+		INIT_CONST( Texture_Accumulator );
+		INIT_CONST( Texture_Blend_ExternalAlpha );
+		INIT_CONST( Texture_Intensive_ExternalAlpha );
+		INIT_CONST( Texture_Blend_ExternalAlpha_OnlyColor );
+		INIT_CONST( Texture_Intensive_ExternalAlpha_OnlyColor );
+		INIT_CONST( Texture_Blend_OnlyColor );
+		INIT_CONST( Texture_Intensive_OnlyColor );
+		INIT_CONST( Color_Intensive );
+		INIT_CONST( Color_Blend );
+		INIT_CONST( Color_Solid );
+
+		INIT_CONST( Debug );
 
         INIT_CONST( ParticleEmitter );
 		INIT_CONST( ParticleEmitter2 );
@@ -119,6 +122,7 @@ namespace Menge
         INIT_CONST( MovieSceneEffect );
         INIT_CONST( MovieNullObject );
         INIT_CONST( MovieEvent );
+		INIT_CONST( SolidSprite );
 		INIT_CONST( SoundId );
 
         INIT_CONST( BlendingModeAdd );

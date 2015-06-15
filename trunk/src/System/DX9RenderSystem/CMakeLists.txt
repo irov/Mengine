@@ -10,6 +10,8 @@ src
 	DX9RenderTexture.cpp
     DX9RenderShader.h
     DX9RenderShader.cpp
+    DX9RenderProgram.h
+    DX9RenderProgram.cpp
     DX9ErrorHelper.h
     DX9ErrorHelper.cpp
 )

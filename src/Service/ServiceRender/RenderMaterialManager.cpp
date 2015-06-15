@@ -1,8 +1,13 @@
 #   include "RenderMaterialManager.h"
 
 #   include "Interface/StringizeInterface.h"
+#   include "Interface/LoaderInterface.h"
 
 #   include "Logger/Logger.h"
+
+#	include "Core/CacheMemoryStream.h"
+
+#	include <Metacode/Metacode.h>
 
 #	include "stdex/hash.h"
 
@@ -36,345 +41,7 @@ namespace Menge
     {
 		m_factoryMaterial.setMethodListener( this, &RenderMaterialManager::onRenderMaterialDestroy_ );
 
-        {
-            RenderStage rs;
-
-            rs.alphaBlendEnable = true;
-            rs.alphaTestEnable = false;
-            rs.depthBufferWriteEnable = false;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Blend" ) );
-				
-				//shaderProgram(defaultVS, blendFS, rs.transformLocation);
-
-            rs.blendSrc = BF_SOURCE_ALPHA;
-            rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            rs.textureStage[0].alphaOp = TOP_MODULATE;
-            rs.textureStage[0].colorOp = TOP_MODULATE;
-
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Blend"), rs );
-		}
-
-        {
-            RenderStage rs;
-
-            rs.alphaBlendEnable = false;
-            rs.alphaTestEnable = false;
-            rs.depthBufferWriteEnable = false;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "SolidSprite" ) );
-			//rs.shaderProgram = shaderProgram(defaultVS, blendFS, rs.transformLocation);
-
-            rs.blendSrc = BF_SOURCE_ALPHA;
-            rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            rs.textureStage[0].alphaOp = TOP_MODULATE;
-            rs.textureStage[0].colorOp = TOP_MODULATE;
-
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "SolidSprite"), rs );
-        }
-
-        {
-            RenderStage rs;
-
-            rs.alphaBlendEnable = true;
-            rs.alphaTestEnable = false;
-            rs.depthBufferWriteEnable = false;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Accumulator" ) );
-			//rs.shaderProgram = shaderProgram(defaultVS, accumulatorFS, rs.transformLocation);
-
-            rs.blendSrc = BF_SOURCE_ALPHA;
-            rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            rs.textureStage[0].alphaOp = TOP_MODULATE;
-            rs.textureStage[0].colorOp = TOP_SELECTARG1;
-
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Accumulator"), rs );
-        }
-
-        {
-            RenderStage rs;
-
-            rs.alphaBlendEnable = true;
-            rs.alphaTestEnable = false;
-            rs.depthBufferWriteEnable = false;
-
-            rs.blendSrc = BF_SOURCE_ALPHA;
-            rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-			
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ExternalAlpha" ) );
-			//rs.shaderProgram = shaderProgram(defaultVS, externalAlphaFS, rs.transformLocation);
-
-            RenderTextureStage & ts0 = rs.textureStage[0];
-
-            ts0.colorOp = TOP_MODULATE;
-            ts0.colorArg1 = TARG_TEXTURE;
-            ts0.colorArg2 = TARG_DIFFUSE;
-            ts0.alphaOp = TOP_SELECTARG1;
-            ts0.alphaArg1 = TARG_DIFFUSE;
-
-            RenderTextureStage & ts1 = rs.textureStage[1];
-
-            ts1.colorOp = TOP_SELECTARG1;
-            ts1.colorArg1 = TARG_CURRENT;
-            ts1.alphaOp = TOP_MODULATE;
-            ts1.alphaArg1 = TARG_TEXTURE;
-            ts1.alphaArg2 = TARG_CURRENT;
-            ts1.texCoordIndex = 1;
-			
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ExternalAlpha"), rs );
-        }
-
-        {
-            RenderStage rs;
-
-            rs.alphaBlendEnable = true;
-            rs.alphaTestEnable = false;
-            rs.depthBufferWriteEnable = false;
-
-            rs.blendSrc = BF_SOURCE_ALPHA;
-            rs.blendDst = BF_ONE;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ExternalAlphaIntensive" ) );
-			//rs.shaderProgram = shaderProgram(defaultVS, externalAlphaFS, rs.transformLocation);
-
-            RenderTextureStage & ts0 = rs.textureStage[0];
-
-            ts0.colorOp = TOP_MODULATE;
-            ts0.colorArg1 = TARG_TEXTURE;
-            ts0.colorArg2 = TARG_DIFFUSE;
-            ts0.alphaOp = TOP_SELECTARG1;
-            ts0.alphaArg1 = TARG_DIFFUSE;
-
-            RenderTextureStage & ts1 = rs.textureStage[1];
-
-            ts1.colorOp = TOP_SELECTARG1;
-            ts1.colorArg1 = TARG_CURRENT;
-            ts1.alphaOp = TOP_MODULATE;
-            ts1.alphaArg1 = TARG_TEXTURE;
-            ts1.alphaArg2 = TARG_CURRENT;
-            ts1.texCoordIndex = 1;
-
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ExternalAlphaIntensive"), rs );
-        }
-
-        {
-            RenderStage rs;
-
-            rs.alphaBlendEnable = true;
-            rs.alphaTestEnable = false;
-            rs.depthBufferWriteEnable = false;
-
-            rs.blendSrc = BF_SOURCE_ALPHA;
-            rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ExternalAlpha_OnlyColor" ) );
-			//rs.shaderProgram = shaderProgram(defaultVS, externalAlphaOnlyColorFS, rs.transformLocation);
-
-            RenderTextureStage & ts0 = rs.textureStage[0];
-
-            ts0.colorOp = TOP_SELECTARG1;
-            ts0.colorArg1 = TARG_DIFFUSE;
-            //ts0.colorArg2 = TARG_DIFFUSE;
-            ts0.alphaOp = TOP_SELECTARG1;
-            ts0.alphaArg1 = TARG_DIFFUSE;
-
-            RenderTextureStage & ts1 = rs.textureStage[1];
-
-            ts1.colorOp = TOP_SELECTARG1;
-            ts1.colorArg1 = TARG_CURRENT;
-            ts1.alphaOp = TOP_MODULATE;
-            ts1.alphaArg1 = TARG_TEXTURE;
-            ts1.alphaArg2 = TARG_CURRENT;
-            ts1.texCoordIndex = 1;
-
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ExternalAlpha_OnlyColor"), rs );
-        }
-
-        {
-            RenderStage rs;
-
-            rs.alphaBlendEnable = true;
-            rs.alphaTestEnable = false;
-            rs.depthBufferWriteEnable = false;
-
-            rs.blendSrc = BF_SOURCE_ALPHA;
-            rs.blendDst = BF_ONE;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ExternalAlphaIntensive_OnlyColor" ) );
-			//rs.shaderProgram = shaderProgram(defaultVS, externalAlphaOnlyColorFS, rs.transformLocation);
-
-            RenderTextureStage & ts0 = rs.textureStage[0];
-
-            ts0.colorOp = TOP_SELECTARG1;
-            ts0.colorArg1 = TARG_DIFFUSE;
-            //ts0.colorArg2 = TARG_DIFFUSE;
-            ts0.alphaOp = TOP_SELECTARG1;
-            ts0.alphaArg1 = TARG_DIFFUSE;
-
-            RenderTextureStage & ts1 = rs.textureStage[1];
-
-            ts1.colorOp = TOP_SELECTARG1;
-            ts1.colorArg1 = TARG_CURRENT;
-            ts1.alphaOp = TOP_MODULATE;
-            ts1.alphaArg1 = TARG_TEXTURE;
-            ts1.alphaArg2 = TARG_CURRENT;
-            ts1.texCoordIndex = 1;
-
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ExternalAlphaIntensive_OnlyColor"), rs );
-        }
-
-        {
-            RenderStage rs;
-
-            rs.alphaBlendEnable = true;
-            rs.alphaTestEnable = false;
-            rs.depthBufferWriteEnable = false;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "OnlyColor" ) );
-			//rs.shaderProgram = shaderProgram(defaultVS, onlyColorFS, rs.transformLocation);
-
-            rs.blendSrc = BF_SOURCE_ALPHA;
-            rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            rs.textureStage[0].alphaOp = TOP_MODULATE;
-            rs.textureStage[0].colorOp = TOP_SELECTARG2;
-
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "OnlyColor"), rs );
-        }
-
-		{
-			RenderStage rs;
-
-			rs.alphaBlendEnable = true;
-			rs.alphaTestEnable = false;
-			rs.depthBufferWriteEnable = false;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Intensive_OnlyColor" ) );
-			//rs.shaderProgram = shaderProgram(defaultVS, onlyColorFS, rs.transformLocation);
-
-			rs.blendSrc = BF_SOURCE_ALPHA;
-			rs.blendDst = BF_ONE;
-
-			rs.textureStage[0].alphaOp = TOP_MODULATE;
-			rs.textureStage[0].colorOp = TOP_SELECTARG2;
-
-			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Intensive_OnlyColor"), rs );
-		}
-
-        {
-            RenderStage rs;
-
-            rs.alphaBlendEnable = false;
-            rs.alphaTestEnable = false;
-            rs.depthBufferWriteEnable = false;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" ) );
-			//rs.shaderProgram = shaderProgram(defaultVS, debugFS, rs.transformLocation);
-
-            rs.blendSrc = BF_SOURCE_ALPHA;
-            rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-            rs.textureStage[0].colorOp = TOP_SELECTARG2;
-            rs.textureStage[0].alphaOp = TOP_SELECTARG2;
-
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Debug"), rs );
-        }
-
-        {
-            RenderStage rs;
-
-            rs.alphaBlendEnable = true;
-            rs.alphaTestEnable = false;
-            rs.depthBufferWriteEnable = false;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Add" ) );
-			//rs.shaderProgram = shaderProgram(defaultVS, blendFS, rs.transformLocation);
-
-            rs.blendSrc = BF_SOURCE_ALPHA;
-            rs.blendDst = BF_ONE;
-
-            rs.textureStage[0].colorOp = TOP_MODULATE;
-            rs.textureStage[0].alphaOp = TOP_MODULATE;
-
-            this->createRenderStageGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Add"), rs );
-        }
-
-		{
-			RenderStage rs;
-
-			rs.alphaBlendEnable = true;
-			rs.alphaTestEnable = false;
-			rs.depthBufferWriteEnable = false;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ColorAdd" ) );
-			//rs.shaderProgram = shaderProgram(defaultVS, blendFS, rs.transformLocation);
-
-			rs.blendSrc = BF_SOURCE_ALPHA;
-			rs.blendDst = BF_ONE;
-
-			rs.textureStage[0].colorOp = TOP_MODULATE;
-			rs.textureStage[0].alphaOp = TOP_MODULATE;
-
-			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ColorAdd" ), rs );
-		}
-
-		{
-			RenderStage rs;
-
-			rs.alphaBlendEnable = true;
-			rs.alphaTestEnable = false;
-			rs.depthBufferWriteEnable = false;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ColorBlend" ) );
-
-			//shaderProgram(defaultVS, blendFS, rs.transformLocation);
-
-			rs.blendSrc = BF_SOURCE_ALPHA;
-			rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-			rs.textureStage[0].alphaOp = TOP_MODULATE;
-			rs.textureStage[0].colorOp = TOP_MODULATE;
-
-			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ColorBlend" ), rs );
-		}
-
-		{
-			RenderStage rs;
-
-			rs.alphaBlendEnable = false;
-			rs.alphaTestEnable = false;
-			rs.depthBufferWriteEnable = false;
-
-			rs.shader = RENDER_SYSTEM( m_serviceProvider )
-				->getShader( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ColorSolid" ) );
-			//rs.shaderProgram = shaderProgram(defaultVS, blendFS, rs.transformLocation);
-
-			rs.blendSrc = BF_SOURCE_ALPHA;
-			rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-
-			rs.textureStage[0].alphaOp = TOP_MODULATE;
-			rs.textureStage[0].colorOp = TOP_MODULATE;
-
-			this->createRenderStageGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ColorSolid" ), rs );
-		}
-
-        return true;
+		return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialManager::finalize()
@@ -402,10 +69,153 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::loadMaterials( const ConstString& _pakName, const FilePath& _fileName )
     {
-        (void)_pakName;
-        (void)_fileName;
+		Metacode::Meta_DataBlock datablock;
 
-        return false;
+		bool exist = false;
+		if( LOADER_SERVICE( m_serviceProvider )
+			->load( _pakName, _fileName, &datablock, exist ) == false )
+		{
+			if( exist == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials: materials '%s:%s' not found"
+					, _pakName.c_str()
+					, _fileName.c_str()
+					);
+			}
+			else
+			{
+				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials: Invalid parse materials '%s:%s'"
+					, _pakName.c_str()
+					, _fileName.c_str()
+					);
+			}
+
+			return false;
+		}
+
+		const ConstString & renderPlatformName = RENDER_SYSTEM( m_serviceProvider )
+			->getRenderPlatformName();
+
+		const Metacode::Meta_DataBlock::TVectorMeta_FragmentShader & includes_FragmentShader = datablock.get_IncludesFragmentShader();
+
+		for( Metacode::Meta_DataBlock::TVectorMeta_FragmentShader::const_iterator
+			it = includes_FragmentShader.begin(),
+			it_end = includes_FragmentShader.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader = *it;
+
+			const ConstString & name = meta_FragmentShader.get_Name();
+			const ConstString & platform = meta_FragmentShader.get_Platform();
+
+			if( platform != renderPlatformName )
+			{
+				continue;
+			}
+
+			const ConstString & filePath = meta_FragmentShader.get_File_Path();
+
+			bool isCompile = false;
+			meta_FragmentShader.get_File_Compile( isCompile );
+
+			if( this->loadFragmentShader_( name, _pakName, filePath, isCompile ) == false )
+			{
+				return false;
+			}
+		}
+
+		const Metacode::Meta_DataBlock::TVectorMeta_VertexShader & includes_VertexShader = datablock.get_IncludesVertexShader();
+
+		for( Metacode::Meta_DataBlock::TVectorMeta_VertexShader::const_iterator
+			it = includes_VertexShader.begin(),
+			it_end = includes_VertexShader.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_VertexShader & meta_VertexShader = *it;
+
+			const ConstString & name = meta_VertexShader.get_Name();
+			const ConstString & platform = meta_VertexShader.get_Platform();
+
+			if( platform != renderPlatformName )
+			{
+				continue;
+			}
+
+			const ConstString & filePath = meta_VertexShader.get_File_Path();
+
+			bool isCompile = false;
+			meta_VertexShader.get_File_Compile( isCompile );
+
+			if( this->loadVertexShader_( name, _pakName, filePath, isCompile ) == false )
+			{
+				return false;
+			}
+		}
+
+		const Metacode::Meta_DataBlock::TVectorMeta_Material & includes_Material = datablock.get_IncludesMaterial();
+
+		for( Metacode::Meta_DataBlock::TVectorMeta_Material::const_iterator
+			it = includes_Material.begin(),
+			it_end = includes_Material.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_Material & meta_Material = *it;
+
+			const Menge::ConstString & name = meta_Material.get_Name();
+
+			RenderStage stage;
+			meta_Material.get_AlphaBlend_Enable( stage.alphaBlendEnable );
+			meta_Material.get_DepthBufferWrite_Enable( stage.depthBufferWriteEnable );
+			meta_Material.get_BlendFactor_Source( stage.blendSrc );
+			meta_Material.get_BlendFactor_Dest( stage.blendDst );
+
+			ConstString vertexShaderName;
+			meta_Material.get_Program_VertexShader( vertexShaderName );
+
+			ConstString fragmentShaderName;
+			meta_Material.get_Program_FragmentShader( fragmentShaderName );
+
+			const RenderShaderInterfacePtr & vertexShader = this->getVertexShader_( vertexShaderName );
+			const RenderShaderInterfacePtr & fragmentShader = this->getFragmentShader_( fragmentShaderName );
+
+			stage.program = RENDER_SYSTEM( m_serviceProvider )
+				->createProgram( vertexShader, fragmentShader );
+
+			const Metacode::Meta_DataBlock::Meta_Material::TVectorMeta_TextureStages & include_TextureStages = meta_Material.get_IncludesTextureStages();
+
+			for( Metacode::Meta_DataBlock::Meta_Material::TVectorMeta_TextureStages::const_iterator
+				it = include_TextureStages.begin(),
+				it_end = include_TextureStages.end();
+			it != it_end;
+			++it )
+			{
+				const Metacode::Meta_DataBlock::Meta_Material::Meta_TextureStages & meta_TextureStages = *it;
+
+				uint32_t index = meta_TextureStages.get_Stage();
+
+				RenderTextureStage & textureStage = stage.textureStage[index];
+
+				textureStage.colorOp = meta_TextureStages.get_Color_Operator();
+				meta_TextureStages.get_Color_Arg1( textureStage.colorArg1 );
+				meta_TextureStages.get_Color_Arg2( textureStage.colorArg2 );
+
+				textureStage.alphaOp = meta_TextureStages.get_Alpha_Operator();
+				meta_TextureStages.get_Alpha_Arg1( textureStage.alphaArg1 );
+				meta_TextureStages.get_Alpha_Arg2( textureStage.alphaArg2 );
+
+				meta_TextureStages.get_TextureCoord_Index( textureStage.texCoordIndex );
+			}
+
+			if( this->createRenderStageGroup( name, stage ) == false )
+			{
+				return false;
+			}
+		}
+
+        return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_equalMaterial( const RenderMaterial * _material
@@ -475,7 +285,11 @@ namespace Menge
 
 		const RenderStage * stage = &stageGroup->stage[stageWrapId];
 
-		uint32_t material_hash = _textureCount ? _textures[0]->getId() : 0U;
+		uint32_t material_hash = 0U;
+		for( uint32_t i = 0; i != _textureCount; ++i )
+		{
+			material_hash += _textures[i]->getId();
+		}
 
 		uint32_t material_table_index = material_hash % MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
@@ -610,5 +424,89 @@ namespace Menge
 		}
 
 		return ++m_materialEnumerator;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderMaterialManager::loadFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
+	{ 
+		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+			->openInputFile( _pakName, _filePath, false );
+
+		if( stream == nullptr )
+		{
+			return false;
+		}
+
+		CacheMemoryStream memory( m_serviceProvider, stream, "loadFragmentShader" );
+
+		const void * buffer = memory.getMemory();
+		size_t size = memory.getSize();
+
+		RenderShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
+			->createFragmentShader( buffer, size, isCompile );
+
+		if( shader == nullptr )
+		{
+			return false;
+		}
+
+		m_fragmentShaders.insert( std::make_pair( _name, shader ) );
+		
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderMaterialManager::loadVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
+	{ 
+		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+			->openInputFile( _pakName, _filePath, false );
+
+		if( stream == nullptr )
+		{
+			return false;
+		}
+
+		CacheMemoryStream memory( m_serviceProvider, stream, "loadVertexShader" );
+
+		const void * buffer = memory.getMemory();
+		size_t size = memory.getSize();
+
+		RenderShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
+			->createVertexShader( buffer, size, isCompile );
+
+		if( shader == nullptr )
+		{
+			return false;
+		}
+
+		m_vertexShaders.insert( std::make_pair( _name, shader ) );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderShaderInterfacePtr & RenderMaterialManager::getVertexShader_( const ConstString & _name ) const
+	{
+		TMapRenderShaders::const_iterator it_found = m_vertexShaders.find( _name );
+
+		if( it_found == m_vertexShaders.end() )
+		{
+			return RenderShaderInterfacePtr::none();
+		}
+
+		const RenderShaderInterfacePtr & shader = it_found->second;
+
+		return shader;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderShaderInterfacePtr & RenderMaterialManager::getFragmentShader_( const ConstString & _name ) const
+	{
+		TMapRenderShaders::const_iterator it_found = m_fragmentShaders.find( _name );
+
+		if( it_found == m_fragmentShaders.end() )
+		{
+			return RenderShaderInterfacePtr::none();
+		}
+
+		const RenderShaderInterfacePtr & shader = it_found->second;
+
+		return shader;
 	}
 }

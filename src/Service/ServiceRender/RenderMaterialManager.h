@@ -7,6 +7,7 @@
 #	include "Factory/FactoryStore.h"
 
 #   include "stdex/binary_vector.h"
+#   include "stdex/stl_map.h"
 
 namespace Menge
 {
@@ -55,7 +56,15 @@ namespace Menge
 
 	protected:
 		uint32_t makeMaterialIndex_();
+
+	protected:
+		bool loadFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile );
+		bool loadVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile );
 			
+	protected:
+		const RenderShaderInterfacePtr & getVertexShader_( const ConstString & _name ) const;
+		const RenderShaderInterfacePtr & getFragmentShader_( const ConstString & _name ) const;
+
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
@@ -75,5 +84,9 @@ namespace Menge
 
 		typedef stdex::vector<uint32_t> TVectorMaterialIndexer;
 		TVectorMaterialIndexer m_materialIndexer;
+
+		typedef stdex::map<ConstString, RenderShaderInterfacePtr> TMapRenderShaders;
+		TMapRenderShaders m_vertexShaders;
+		TMapRenderShaders m_fragmentShaders;
     };
 }

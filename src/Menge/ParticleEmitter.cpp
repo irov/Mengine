@@ -581,10 +581,10 @@ namespace	Menge
 			const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( i );
 
 			const RenderMaterialInterfacePtr & mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING(m_serviceProvider, Add), false, false, PT_TRIANGLELIST, 1, &texture );
+				->getMaterial( CONST_STRING( m_serviceProvider, Texture_Intensive ), false, false, PT_TRIANGLELIST, 1, &texture );
 
 			const RenderMaterialInterfacePtr & mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING(m_serviceProvider, Blend), false, false, PT_TRIANGLELIST, 1, &texture );
+				->getMaterial( CONST_STRING( m_serviceProvider, Texture_Blend ), false, false, PT_TRIANGLELIST, 1, &texture );
 
 			m_materials[i*2 + 0] = mg_intensive;
 			m_materials[i*2 + 1] = mg_nonintensive;

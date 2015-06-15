@@ -117,8 +117,16 @@ namespace	Menge
 
 					const RenderTextureInterfacePtr & texture = el.image->getTexture();
 
-					el.material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-						->getMaterial( CONST_STRING(m_serviceProvider, SolidSprite), false, false, PT_TRIANGLELIST, 1, &texture );
+					if( el.image->isAlpha() == true )
+					{
+						el.material = RENDERMATERIAL_SERVICE( m_serviceProvider )
+							->getMaterial( CONST_STRING( m_serviceProvider, Texture_Blend ), false, false, PT_TRIANGLELIST, 1, &texture );
+					}
+					else
+					{
+						el.material = RENDERMATERIAL_SERVICE( m_serviceProvider )
+							->getMaterial( CONST_STRING( m_serviceProvider, Texture_Solid ), false, false, PT_TRIANGLELIST, 1, &texture );
+					}
 
 					if( el.material == nullptr )
 					{

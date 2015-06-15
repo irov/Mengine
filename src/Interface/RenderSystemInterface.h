@@ -280,9 +280,27 @@ namespace Menge
     };
 	//////////////////////////////////////////////////////////////////////////
 	class RenderShaderInterface
-		: public Factorable
+		: public FactorablePtr
 	{
+	public:
+		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() = 0;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<RenderShaderInterface> RenderShaderInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
+	class RenderProgramInterface
+		: public FactorablePtr
+	{
+	public:
+		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() = 0;
+	
+	public:
+		virtual bool initialize( const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader ) = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<RenderProgramInterface> RenderProgramInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderStage
 	{	
@@ -292,7 +310,6 @@ namespace Menge
 			, depthBufferWriteEnable(false)
 			, alphaTestEnable(false)
 			, alphaBlendEnable(false)
-			, shader(nullptr)
 		{
 		}
 
@@ -305,9 +322,7 @@ namespace Menge
 		bool alphaTestEnable;
 		bool alphaBlendEnable;
 
-		const RenderShaderInterface * shader;
-		//GLuint shaderProgram;
-		//int transformLocation;
+		RenderProgramInterfacePtr program;
 	};
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialInterface
@@ -468,6 +483,9 @@ namespace Menge
 		virtual bool initialize() = 0;
         virtual void finalize() = 0;
 
+	public:
+		virtual const ConstString & getRenderPlatformName() const = 0;
+
     public:
         virtual void setRenderListener( RenderSystemListener * _listener ) = 0;
 
@@ -505,11 +523,15 @@ namespace Menge
 		virtual void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) = 0;
 
 		virtual void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) = 0;
-
-        //virtual RenderShaderInterface * createShader( const void * _code, size_t _len ) = 0;		
-		virtual void setShader( const RenderShaderInterface * _shader ) = 0;
-		virtual const RenderShaderInterface * getShader( const ConstString & _name ) = 0;
+		
+	public:
+		virtual RenderShaderInterfacePtr createFragmentShader( const void * _buffer, size_t _size, bool _isCompile ) = 0;		
+		virtual RenderShaderInterfacePtr createVertexShader( const void * _buffer, size_t _size, bool _isCompile ) = 0;
+						
+		virtual RenderProgramInterfacePtr createProgram( const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex ) = 0;
+		virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;
         
+	public:
 		virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
 			uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount ) = 0;
 

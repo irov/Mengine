@@ -4,6 +4,8 @@
 
 #	include "DX9ErrorHelper.h"
 
+#	include "Interface/StringizeInterface.h"
+
 #	include <algorithm>
 #	include <cmath>
 #	include <stdio.h>
@@ -366,6 +368,11 @@ namespace Menge
     {
         return m_serviceProvider;
     }
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & DX9RenderSystem::getRenderPlatformName() const
+	{
+		return m_renderPlatform;
+	}
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setRenderListener( RenderSystemListener * _listener )
     {
@@ -544,6 +551,8 @@ namespace Menge
 
 			return false;
 		}
+
+		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "DX9" );
 			
 		return true;
 	}
@@ -2529,35 +2538,25 @@ namespace Menge
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, ( _declaration ) );
 	}
-  //  //////////////////////////////////////////////////////////////////////////
-  //  RenderShaderInterface * DX9RenderSystem::createShader( const void * _code, size_t _len )
-  //  {
-  //      (void)_len;
-
-  //      LPDIRECT3DPIXELSHADER9 pixelShader;
-  //      
-  //      IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreatePixelShader, ( (DWORD *)_code, &pixelShader ) )
-		//{
-		//	return nullptr;
-		//}
-
-  //      DX9RenderShader * dx9_shader = new DX9RenderShader(pixelShader);
-
-  //      return dx9_shader;
-  //  }
-    //////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setShader( const RenderShaderInterface * _shader )
-    {
-		const DX9RenderShader * dx9_shader = static_cast<const DX9RenderShader *>(_shader);
-
-        LPDIRECT3DPIXELSHADER9 pixelShader = dx9_shader->getPixelShader();
-
-        DXCALL( m_serviceProvider, m_pD3DDevice, SetPixelShader, ( pixelShader ) );
-    }
 	//////////////////////////////////////////////////////////////////////////
-	const RenderShaderInterface * DX9RenderSystem::getShader( const ConstString & _name )
+	RenderShaderInterfacePtr DX9RenderSystem::createFragmentShader( const void * _buffer, size_t _size, bool _isCompile )
 	{
 		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderShaderInterfacePtr DX9RenderSystem::createVertexShader( const void * _buffer, size_t _size, bool _isCompile )
+	{
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderProgramInterfacePtr DX9RenderSystem::createProgram( const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex )
+	{
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::setProgram( const RenderProgramInterfacePtr & _program )
+	{
+		//None
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setVSync( bool _vSync )

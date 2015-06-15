@@ -38,7 +38,6 @@ namespace Menge
 		, m_currentRenderCamera( nullptr )
 		, m_currentRenderViewport( nullptr )
 		, m_currentVertexDeclaration( 0 )
-		, m_currentShader( nullptr )
 		, m_maxVertexCount(0)
 		, m_maxIndexCount(0)
 		, m_depthBufferWriteEnable(false)
@@ -505,7 +504,7 @@ namespace Menge
 		
 		m_currentMaterialId = 0;
 		m_currentStage = nullptr;
-		m_currentShader = nullptr;
+		m_currentProgram = nullptr;
 
 		m_renderVertexCount = 0;
 		m_renderIndicesCount = 0;
@@ -552,12 +551,12 @@ namespace Menge
 		
 		m_currentStage = _stage;
 		
-		if( m_currentShader != m_currentStage->shader )
+		if( m_currentProgram != m_currentStage->program )
 		{
-			m_currentShader = m_currentStage->shader;
+			m_currentProgram = m_currentStage->program;
 			
 			RENDER_SYSTEM( m_serviceProvider )
-				->setShader( m_currentShader );
+				->setProgram( m_currentProgram );
 		}
 
 		for( uint32_t stageId = 0; stageId != m_currentTextureStages; ++stageId )
@@ -1234,10 +1233,10 @@ namespace Menge
 
 		stdex::intrusive_ptr_setup( ro.material, ro_material );
 		
-		uint32_t materialId = ro.material->getId();
-		uint32_t materialId2 = materialId % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
+		uint32_t materialHash = ro.material->getId();
+		ro.materialId = materialHash % MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX;
 
-		rp.materialEnd[materialId2] = &ro;
+		rp.materialEnd[ro.materialId] = &ro;
 
 		ro.ibHandle = m_ibHandle2D;
 		ro.vbHandle = m_vbHandle2D;
@@ -1643,7 +1642,7 @@ namespace Menge
 		TArrayRenderObject::iterator it_batch = _begin;
 		++it_batch;	
 
-		uint32_t materialId = ro_material->getId();
+		uint32_t materialId = _ro->materialId;		
 		TArrayRenderObject::const_iterator it_end = _renderPass->materialEnd[materialId];
 
 		if( _begin == it_end )

@@ -14,13 +14,16 @@ namespace Menge
 		MarmaladeShader();
 		~MarmaladeShader();
 
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() override;
+
     public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const char * _vsSrc, const char * _fsSrc );
+		bool initialize( GLenum type, const void * _source, size_t _size, bool _isCompile );
 		void finalize();
 
 	public:
-		void use(const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix) const;
-		void bindTexture(unsigned int _textureInd, int _texture) const;
+		void attach( GLuint _program );
 
 	protected:
 		GLuint createShader_( GLenum type, const char * _source );
@@ -28,14 +31,8 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		GLuint m_program;
-
-		GLuint m_vertexShader;
-		GLuint m_fragmentShader;
-		
-		mutable mt::mat4f m_mvpMat;
-
-		int m_transformLocation;
-		int m_samplerLocation[2];
+		GLuint m_shaderId;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<MarmaladeShader> MarmaladeShaderPtr;
 }	// namespace Menge

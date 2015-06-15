@@ -37,6 +37,90 @@ namespace Metacode
         bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
         bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
     public:
+        class Meta_FragmentShader
+            : public Metabuf::Metadata
+        { 
+        public:
+            Meta_FragmentShader();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const Menge::ConstString & get_Name() const
+            {
+                return this->Name;
+            }
+            
+            void swap_Name( Menge::ConstString & _value ) const
+            {
+                std::swap( _value, this->Name);
+            }
+            
+            const Menge::ConstString & get_Platform() const
+            {
+                return this->Platform;
+            }
+            
+            void swap_Platform( Menge::ConstString & _value ) const
+            {
+                std::swap( _value, this->Platform);
+            }
+            
+            bool has_File_Compile() const
+            {
+                return File_Compile_successful;
+            }
+            
+            bool get_File_Compile( bool & _value ) const
+            {
+                if( File_Compile_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Compile;
+            
+                return true;
+            }
+            
+            bool swap_File_Compile( bool & _value ) const
+            {
+                if( File_Compile_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Compile);
+            
+                return true;
+            }
+            
+            const Menge::FilePath & get_File_Path() const
+            {
+                return this->File_Path;
+            }
+            
+            void swap_File_Path( Menge::FilePath & _value ) const
+            {
+                std::swap(_value, this->File_Path);
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::ConstString Name;
+            mutable Menge::ConstString Platform;
+            bool File_Compile_successful;
+            mutable bool File_Compile;
+            mutable Menge::FilePath File_Path;
+        };
+        
         class Meta_Include
             : public Metabuf::Metadata
         { 
@@ -66,6 +150,556 @@ namespace Metacode
         protected:
         protected:
             mutable Menge::FilePath Path;
+        };
+        
+        class Meta_Material
+            : public Metabuf::Metadata
+        { 
+        public:
+            Meta_Material();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const Menge::ConstString & get_Name() const
+            {
+                return this->Name;
+            }
+            
+            void swap_Name( Menge::ConstString & _value ) const
+            {
+                std::swap( _value, this->Name);
+            }
+            
+            bool has_AlphaBlend_Enable() const
+            {
+                return AlphaBlend_Enable_successful;
+            }
+            
+            bool get_AlphaBlend_Enable( bool & _value ) const
+            {
+                if( AlphaBlend_Enable_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->AlphaBlend_Enable;
+            
+                return true;
+            }
+            
+            bool swap_AlphaBlend_Enable( bool & _value ) const
+            {
+                if( AlphaBlend_Enable_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->AlphaBlend_Enable);
+            
+                return true;
+            }
+            
+            bool has_AlphaTest_Enable() const
+            {
+                return AlphaTest_Enable_successful;
+            }
+            
+            bool get_AlphaTest_Enable( bool & _value ) const
+            {
+                if( AlphaTest_Enable_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->AlphaTest_Enable;
+            
+                return true;
+            }
+            
+            bool swap_AlphaTest_Enable( bool & _value ) const
+            {
+                if( AlphaTest_Enable_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->AlphaTest_Enable);
+            
+                return true;
+            }
+            
+            bool has_BlendFactor_Dest() const
+            {
+                return BlendFactor_Dest_successful;
+            }
+            
+            bool get_BlendFactor_Dest( Menge::EBlendFactor & _value ) const
+            {
+                if( BlendFactor_Dest_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->BlendFactor_Dest;
+            
+                return true;
+            }
+            
+            bool swap_BlendFactor_Dest( Menge::EBlendFactor & _value ) const
+            {
+                if( BlendFactor_Dest_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->BlendFactor_Dest);
+            
+                return true;
+            }
+            
+            bool has_BlendFactor_Source() const
+            {
+                return BlendFactor_Source_successful;
+            }
+            
+            bool get_BlendFactor_Source( Menge::EBlendFactor & _value ) const
+            {
+                if( BlendFactor_Source_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->BlendFactor_Source;
+            
+                return true;
+            }
+            
+            bool swap_BlendFactor_Source( Menge::EBlendFactor & _value ) const
+            {
+                if( BlendFactor_Source_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->BlendFactor_Source);
+            
+                return true;
+            }
+            
+            bool has_DepthBufferWrite_Enable() const
+            {
+                return DepthBufferWrite_Enable_successful;
+            }
+            
+            bool get_DepthBufferWrite_Enable( bool & _value ) const
+            {
+                if( DepthBufferWrite_Enable_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->DepthBufferWrite_Enable;
+            
+                return true;
+            }
+            
+            bool swap_DepthBufferWrite_Enable( bool & _value ) const
+            {
+                if( DepthBufferWrite_Enable_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->DepthBufferWrite_Enable);
+            
+                return true;
+            }
+            
+            bool has_Program_FragmentShader() const
+            {
+                return Program_FragmentShader_successful;
+            }
+            
+            bool get_Program_FragmentShader( Menge::ConstString & _value ) const
+            {
+                if( Program_FragmentShader_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Program_FragmentShader;
+            
+                return true;
+            }
+            
+            bool swap_Program_FragmentShader( Menge::ConstString & _value ) const
+            {
+                if( Program_FragmentShader_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Program_FragmentShader);
+            
+                return true;
+            }
+            
+            bool has_Program_VertexShader() const
+            {
+                return Program_VertexShader_successful;
+            }
+            
+            bool get_Program_VertexShader( Menge::ConstString & _value ) const
+            {
+                if( Program_VertexShader_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Program_VertexShader;
+            
+                return true;
+            }
+            
+            bool swap_Program_VertexShader( Menge::ConstString & _value ) const
+            {
+                if( Program_VertexShader_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->Program_VertexShader);
+            
+                return true;
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+            class Meta_TextureStages
+                : public Metabuf::Metadata
+            { 
+            public:
+                Meta_TextureStages();
+            
+            public:
+                uint32_t getId() const override;
+            
+            public:
+                uint32_t get_Stage() const
+                {
+                    return this->Stage;
+                }
+                
+                void swap_Stage( uint32_t & _value ) const
+                {
+                    std::swap( _value, this->Stage);
+                }
+                
+                bool has_Alpha_Arg1() const
+                {
+                    return Alpha_Arg1_successful;
+                }
+                
+                bool get_Alpha_Arg1( Menge::ETextureArgument & _value ) const
+                {
+                    if( Alpha_Arg1_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Alpha_Arg1;
+                
+                    return true;
+                }
+                
+                bool swap_Alpha_Arg1( Menge::ETextureArgument & _value ) const
+                {
+                    if( Alpha_Arg1_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap(_value, this->Alpha_Arg1);
+                
+                    return true;
+                }
+                
+                bool has_Alpha_Arg2() const
+                {
+                    return Alpha_Arg2_successful;
+                }
+                
+                bool get_Alpha_Arg2( Menge::ETextureArgument & _value ) const
+                {
+                    if( Alpha_Arg2_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Alpha_Arg2;
+                
+                    return true;
+                }
+                
+                bool swap_Alpha_Arg2( Menge::ETextureArgument & _value ) const
+                {
+                    if( Alpha_Arg2_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap(_value, this->Alpha_Arg2);
+                
+                    return true;
+                }
+                
+                Menge::ETextureOp get_Alpha_Operator() const
+                {
+                    return this->Alpha_Operator;
+                }
+                
+                void swap_Alpha_Operator( Menge::ETextureOp & _value ) const
+                {
+                    std::swap(_value, this->Alpha_Operator);
+                }
+                
+                bool has_Color_Arg1() const
+                {
+                    return Color_Arg1_successful;
+                }
+                
+                bool get_Color_Arg1( Menge::ETextureArgument & _value ) const
+                {
+                    if( Color_Arg1_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Color_Arg1;
+                
+                    return true;
+                }
+                
+                bool swap_Color_Arg1( Menge::ETextureArgument & _value ) const
+                {
+                    if( Color_Arg1_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap(_value, this->Color_Arg1);
+                
+                    return true;
+                }
+                
+                bool has_Color_Arg2() const
+                {
+                    return Color_Arg2_successful;
+                }
+                
+                bool get_Color_Arg2( Menge::ETextureArgument & _value ) const
+                {
+                    if( Color_Arg2_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Color_Arg2;
+                
+                    return true;
+                }
+                
+                bool swap_Color_Arg2( Menge::ETextureArgument & _value ) const
+                {
+                    if( Color_Arg2_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap(_value, this->Color_Arg2);
+                
+                    return true;
+                }
+                
+                Menge::ETextureOp get_Color_Operator() const
+                {
+                    return this->Color_Operator;
+                }
+                
+                void swap_Color_Operator( Menge::ETextureOp & _value ) const
+                {
+                    std::swap(_value, this->Color_Operator);
+                }
+                
+                bool has_TextureCoord_Index() const
+                {
+                    return TextureCoord_Index_successful;
+                }
+                
+                bool get_TextureCoord_Index( uint32_t & _value ) const
+                {
+                    if( TextureCoord_Index_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->TextureCoord_Index;
+                
+                    return true;
+                }
+                
+                bool swap_TextureCoord_Index( uint32_t & _value ) const
+                {
+                    if( TextureCoord_Index_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap(_value, this->TextureCoord_Index);
+                
+                    return true;
+                }
+                
+            protected:
+                bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+                bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+                bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+                bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+            public:
+            protected:
+            protected:
+                mutable uint32_t Stage;
+                bool Alpha_Arg1_successful;
+                mutable Menge::ETextureArgument Alpha_Arg1;
+                bool Alpha_Arg2_successful;
+                mutable Menge::ETextureArgument Alpha_Arg2;
+                mutable Menge::ETextureOp Alpha_Operator;
+                bool Color_Arg1_successful;
+                mutable Menge::ETextureArgument Color_Arg1;
+                bool Color_Arg2_successful;
+                mutable Menge::ETextureArgument Color_Arg2;
+                mutable Menge::ETextureOp Color_Operator;
+                bool TextureCoord_Index_successful;
+                mutable uint32_t TextureCoord_Index;
+            };
+            
+        protected:
+        protected:
+            mutable Menge::ConstString Name;
+            bool AlphaBlend_Enable_successful;
+            mutable bool AlphaBlend_Enable;
+            bool AlphaTest_Enable_successful;
+            mutable bool AlphaTest_Enable;
+            bool BlendFactor_Dest_successful;
+            mutable Menge::EBlendFactor BlendFactor_Dest;
+            bool BlendFactor_Source_successful;
+            mutable Menge::EBlendFactor BlendFactor_Source;
+            bool DepthBufferWrite_Enable_successful;
+            mutable bool DepthBufferWrite_Enable;
+            bool Program_FragmentShader_successful;
+            mutable Menge::ConstString Program_FragmentShader;
+            bool Program_VertexShader_successful;
+            mutable Menge::ConstString Program_VertexShader;
+        public:
+            typedef stdex::auto_array<Meta_TextureStages> TVectorMeta_TextureStages;
+        
+            const TVectorMeta_TextureStages & get_IncludesTextureStages() const
+            {
+                return this->includes_Meta_TextureStages;
+            }
+        
+        protected:
+            TVectorMeta_TextureStages includes_Meta_TextureStages;
+        };
+        
+        class Meta_VertexShader
+            : public Metabuf::Metadata
+        { 
+        public:
+            Meta_VertexShader();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const Menge::ConstString & get_Name() const
+            {
+                return this->Name;
+            }
+            
+            void swap_Name( Menge::ConstString & _value ) const
+            {
+                std::swap( _value, this->Name);
+            }
+            
+            const Menge::ConstString & get_Platform() const
+            {
+                return this->Platform;
+            }
+            
+            void swap_Platform( Menge::ConstString & _value ) const
+            {
+                std::swap( _value, this->Platform);
+            }
+            
+            bool has_File_Compile() const
+            {
+                return File_Compile_successful;
+            }
+            
+            bool get_File_Compile( bool & _value ) const
+            {
+                if( File_Compile_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Compile;
+            
+                return true;
+            }
+            
+            bool swap_File_Compile( bool & _value ) const
+            {
+                if( File_Compile_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Compile);
+            
+                return true;
+            }
+            
+            const Menge::FilePath & get_File_Path() const
+            {
+                return this->File_Path;
+            }
+            
+            void swap_File_Path( Menge::FilePath & _value ) const
+            {
+                std::swap(_value, this->File_Path);
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::ConstString Name;
+            mutable Menge::ConstString Platform;
+            bool File_Compile_successful;
+            mutable bool File_Compile;
+            mutable Menge::FilePath File_Path;
         };
         
         class Meta_Resource
@@ -136,7 +770,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const float & get_Delay() const
+                float get_Delay() const
                 {
                     return this->Delay;
                 }
@@ -367,7 +1001,7 @@ namespace Metacode
                 std::swap(_value, this->Emitter_Name);
             }
             
-            const bool & get_EmitterRelative_Value() const
+            bool get_EmitterRelative_Value() const
             {
                 return this->EmitterRelative_Value;
             }
@@ -1529,7 +2163,7 @@ namespace Metacode
                 return true;
             }
             
-            const float & get_Duration_Value() const
+            float get_Duration_Value() const
             {
                 return this->Duration_Value;
             }
@@ -1539,7 +2173,7 @@ namespace Metacode
                 std::swap(_value, this->Duration_Value);
             }
             
-            const float & get_FrameDuration_Value() const
+            float get_FrameDuration_Value() const
             {
                 return this->FrameDuration_Value;
             }
@@ -1549,7 +2183,7 @@ namespace Metacode
                 std::swap(_value, this->FrameDuration_Value);
             }
             
-            const float & get_Height_Value() const
+            float get_Height_Value() const
             {
                 return this->Height_Value;
             }
@@ -1685,7 +2319,7 @@ namespace Metacode
                 return true;
             }
             
-            const float & get_Width_Value() const
+            float get_Width_Value() const
             {
                 return this->Width_Value;
             }
@@ -1711,7 +2345,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const float & get_CameraAspect() const
+                float get_CameraAspect() const
                 {
                     return this->CameraAspect;
                 }
@@ -1721,7 +2355,7 @@ namespace Metacode
                     std::swap( _value, this->CameraAspect);
                 }
                 
-                const float & get_CameraFOV() const
+                float get_CameraFOV() const
                 {
                     return this->CameraFOV;
                 }
@@ -1751,7 +2385,7 @@ namespace Metacode
                     std::swap( _value, this->CameraPosition);
                 }
                 
-                const float & get_Height() const
+                float get_Height() const
                 {
                     return this->Height;
                 }
@@ -1761,7 +2395,7 @@ namespace Metacode
                     std::swap( _value, this->Height);
                 }
                 
-                const float & get_Width() const
+                float get_Width() const
                 {
                     return this->Width;
                 }
@@ -1826,7 +2460,7 @@ namespace Metacode
                     return true;
                 }
                 
-                const float & get_In() const
+                float get_In() const
                 {
                     return this->In;
                 }
@@ -1836,7 +2470,7 @@ namespace Metacode
                     std::swap( _value, this->In);
                 }
                 
-                const uint32_t & get_Index() const
+                uint32_t get_Index() const
                 {
                     return this->Index;
                 }
@@ -1856,7 +2490,7 @@ namespace Metacode
                     std::swap( _value, this->Name);
                 }
                 
-                const float & get_Out() const
+                float get_Out() const
                 {
                     return this->Out;
                 }
@@ -2253,7 +2887,7 @@ namespace Metacode
                     return true;
                 }
                 
-                const float & get_In() const
+                float get_In() const
                 {
                     return this->In;
                 }
@@ -2263,7 +2897,7 @@ namespace Metacode
                     std::swap( _value, this->In);
                 }
                 
-                const uint32_t & get_Index() const
+                uint32_t get_Index() const
                 {
                     return this->Index;
                 }
@@ -2283,7 +2917,7 @@ namespace Metacode
                     std::swap( _value, this->Name);
                 }
                 
-                const float & get_Out() const
+                float get_Out() const
                 {
                     return this->Out;
                 }
@@ -2702,7 +3336,7 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const uint32_t & get_AtlasCount_Value() const
+            uint32_t get_AtlasCount_Value() const
             {
                 return this->AtlasCount_Value;
             }
@@ -2767,7 +3401,7 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
-                const uint32_t & get_Index() const
+                uint32_t get_Index() const
                 {
                     return this->Index;
                 }
@@ -3666,6 +4300,16 @@ namespace Metacode
     protected:
         mutable Menge::ConstString Name;
     public:
+        typedef stdex::auto_array<Meta_FragmentShader> TVectorMeta_FragmentShader;
+    
+        const TVectorMeta_FragmentShader & get_IncludesFragmentShader() const
+        {
+            return this->includes_Meta_FragmentShader;
+        }
+    
+    protected:
+        TVectorMeta_FragmentShader includes_Meta_FragmentShader;
+    public:
         typedef stdex::auto_array<Meta_Include> TVectorMeta_Include;
     
         const TVectorMeta_Include & get_IncludesInclude() const
@@ -3675,6 +4319,26 @@ namespace Metacode
     
     protected:
         TVectorMeta_Include includes_Meta_Include;
+    public:
+        typedef stdex::auto_array<Meta_Material> TVectorMeta_Material;
+    
+        const TVectorMeta_Material & get_IncludesMaterial() const
+        {
+            return this->includes_Meta_Material;
+        }
+    
+    protected:
+        TVectorMeta_Material includes_Meta_Material;
+    public:
+        typedef stdex::auto_array<Meta_VertexShader> TVectorMeta_VertexShader;
+    
+        const TVectorMeta_VertexShader & get_IncludesVertexShader() const
+        {
+            return this->includes_Meta_VertexShader;
+        }
+    
+    protected:
+        TVectorMeta_VertexShader includes_Meta_VertexShader;
     public:
         typedef stdex::auto_array<Meta_Resource *> TVectorMeta_Resource;
     
@@ -3697,7 +4361,7 @@ namespace Metacode
         uint32_t getId() const override;
     
     public:
-        const uint32_t & get_MaxIndex() const
+        uint32_t get_MaxIndex() const
         {
             return this->MaxIndex;
         }
@@ -3752,7 +4416,7 @@ namespace Metacode
                 return true;
             }
             
-            const float & get_Height() const
+            float get_Height() const
             {
                 return this->Height;
             }
@@ -3791,7 +4455,7 @@ namespace Metacode
                 return true;
             }
             
-            const uint32_t & get_LayerIndex() const
+            uint32_t get_LayerIndex() const
             {
                 return this->LayerIndex;
             }
@@ -3801,7 +4465,7 @@ namespace Metacode
                 std::swap( _value, this->LayerIndex);
             }
             
-            const float & get_Width() const
+            float get_Width() const
             {
                 return this->Width;
             }
@@ -3937,7 +4601,7 @@ namespace Metacode
                 return true;
             }
             
-            const uint32_t & get_LayerIndex() const
+            uint32_t get_LayerIndex() const
             {
                 return this->LayerIndex;
             }
@@ -4277,7 +4941,7 @@ namespace Metacode
                 return true;
             }
             
-            const uint32_t & get_LayerIndex() const
+            uint32_t get_LayerIndex() const
             {
                 return this->LayerIndex;
             }
@@ -4590,7 +5254,7 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const uint32_t & get_LayerIndex() const
+            uint32_t get_LayerIndex() const
             {
                 return this->LayerIndex;
             }
@@ -4632,7 +5296,7 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
-            const uint32_t & get_LayerIndex() const
+            uint32_t get_LayerIndex() const
             {
                 return this->LayerIndex;
             }
@@ -4836,6 +5500,67 @@ namespace Metacode
         protected:
         protected:
             mutable Menge::FilePath Path;
+        };
+        
+        class Meta_Materials
+            : public Metabuf::Metadata
+        { 
+        public:
+            Meta_Materials();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+            class Meta_Material
+                : public Metabuf::Metadata
+            { 
+            public:
+                Meta_Material();
+            
+            public:
+                uint32_t getId() const override;
+            
+            public:
+                const Menge::FilePath & get_Path() const
+                {
+                    return this->Path;
+                }
+                
+                void swap_Path( Menge::FilePath & _value ) const
+                {
+                    std::swap( _value, this->Path);
+                }
+                
+            protected:
+                bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+                bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+                bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+                bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+            public:
+            protected:
+            protected:
+                mutable Menge::FilePath Path;
+            };
+            
+        protected:
+        protected:
+        public:
+            typedef stdex::auto_array<Meta_Material> TVectorMeta_Material;
+        
+            const TVectorMeta_Material & get_IncludesMaterial() const
+            {
+                return this->includes_Meta_Material;
+            }
+        
+        protected:
+            TVectorMeta_Material includes_Meta_Material;
         };
         
         class Meta_Resources
@@ -5075,6 +5800,16 @@ namespace Metacode
     
     protected:
         TVectorMeta_Fonts includes_Meta_Fonts;
+    public:
+        typedef stdex::auto_array<Meta_Materials> TVectorMeta_Materials;
+    
+        const TVectorMeta_Materials & get_IncludesMaterials() const
+        {
+            return this->includes_Meta_Materials;
+        }
+    
+    protected:
+        TVectorMeta_Materials includes_Meta_Materials;
     public:
         typedef stdex::auto_array<Meta_Resources> TVectorMeta_Resources;
     

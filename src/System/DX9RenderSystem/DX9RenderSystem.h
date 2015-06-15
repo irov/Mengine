@@ -41,7 +41,7 @@ namespace Menge
 	public:
 		DX9RenderSystem();
 		~DX9RenderSystem();
-        
+
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
         ServiceProviderInterface * getServiceProvider() const override;
@@ -52,6 +52,9 @@ namespace Menge
 	public:
 		bool initialize() override;
         void finalize() override;
+
+	public:
+		const ConstString & getRenderPlatformName() const override;
 
     public:
         void setRenderListener( RenderSystemListener * _listener ) override;
@@ -90,10 +93,14 @@ namespace Menge
 
 		void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) override;
 
-        //RenderShaderInterface * createShader( const void * _code, size_t _len ) override;
-        void setShader( const RenderShaderInterface * _shader ) override;
-		const RenderShaderInterface * getShader( const ConstString & _name ) override;
+	public:
+		RenderShaderInterfacePtr createFragmentShader( const void * _buffer, size_t _size, bool _isCompile ) override;
+		RenderShaderInterfacePtr createVertexShader( const void * _buffer, size_t _size, bool _isCompile ) override;
+		
+		RenderProgramInterfacePtr createProgram( const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex ) override;
+		void setProgram( const RenderProgramInterfacePtr & _program ) override;
 
+	public:
 		void drawIndexedPrimitive( EPrimitiveType _type
 			, uint32_t _baseVertexIndex
 			, uint32_t _minIndex
@@ -176,6 +183,8 @@ namespace Menge
 
 	private:
 		ServiceProviderInterface * m_serviceProvider;
+
+		ConstString m_renderPlatform;
 
         RenderSystemListener * m_listener;
 

@@ -61,11 +61,13 @@ namespace Menge
 		void addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer );
 		void addFontPath_( const ConstString & _font );
 		void addData_( const ConstString & _name, const ConstString & _path );
+		void addMaterial_( const ConstString & _path );
 
     protected:
         bool loadText_( const ConstString & _pakName, const ConstString & _path );
 		bool loadFont_( const ConstString & _pakName, const ConstString & _path );
 		bool loadData_( const ConstString & _pakName, const ConstString & _name, const FilePath & _path );
+		bool loadMaterials_( const ConstString & _pakName, const FilePath & _path );
 				
 	protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -94,6 +96,8 @@ namespace Menge
 
 		typedef stdex::vector<PakDataDesc> TVectorPakDataDesc;
 		TVectorPakDataDesc m_datas;
+
+		TVectorConstString m_materials;
 
         bool m_preload;
 	};

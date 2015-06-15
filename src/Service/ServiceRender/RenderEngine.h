@@ -32,6 +32,7 @@ namespace Menge
 	struct RenderObject
     {
 		RenderMaterial * material;
+		uint32_t materialId;
 				
 		const RenderVertex2D * vertexData;
 		uint32_t verticesNum;
@@ -269,7 +270,7 @@ namespace Menge
 		const RenderViewportInterface * m_currentRenderViewport;
 		const RenderCameraInterface * m_currentRenderCamera;
 
-		const RenderShaderInterface * m_currentShader;
+		RenderProgramInterfacePtr m_currentProgram;
 
 		RenderDebugInfo m_debugInfo;	    // debug info
 

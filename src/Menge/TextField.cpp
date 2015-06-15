@@ -653,7 +653,7 @@ namespace Menge
 		const RenderTextureInterfacePtr & textureFont = m_font->getTextureFont();
 
 		m_materialFont = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( CONST_STRING(m_serviceProvider, Blend), false, false, PT_TRIANGLELIST, 1, &textureFont );
+			->getMaterial( CONST_STRING( m_serviceProvider, Texture_Blend ), false, false, PT_TRIANGLELIST, 1, &textureFont );
 
 		const RenderTextureInterfacePtr & textureOutline = m_font->getTextureOutline();
 
@@ -673,7 +673,7 @@ namespace Menge
 		if( textureOutline != nullptr )
 		{
 			m_materialOutline = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING(m_serviceProvider, Blend), false, false, PT_TRIANGLELIST, 1, &textureOutline );
+				->getMaterial( CONST_STRING( m_serviceProvider, Texture_Blend ), false, false, PT_TRIANGLELIST, 1, &textureOutline );
 		}
 		else
 		{

@@ -89,20 +89,37 @@ namespace Menge
 		DECL_CONST( RigidBody2D );
 		DECL_CONST( WorldPhysObject );
 		DECL_CONST( NullTexture );
-		DECL_CONST( Blend );
-		DECL_CONST( SolidSprite );
-		DECL_CONST( OnlyColor );
-		DECL_CONST( Intensive_OnlyColor );
-		DECL_CONST( ExternalAlpha );
-        DECL_CONST( ExternalAlpha_OnlyColor );
-		DECL_CONST( ExternalAlphaIntensive );
-        DECL_CONST( ExternalAlphaIntensive_OnlyColor );
+
+		DECL_CONST( Texture_Solid );
+		DECL_CONST( Texture_Blend );
+		DECL_CONST( Texture_Intensive );
+		DECL_CONST( Texture_Accumulator );
+		DECL_CONST( Texture_Blend_ExternalAlpha );
+		DECL_CONST( Texture_Intensive_ExternalAlpha );
+		DECL_CONST( Texture_Blend_ExternalAlpha_OnlyColor );
+		DECL_CONST( Texture_Intensive_ExternalAlpha_OnlyColor );
+		DECL_CONST( Texture_Blend_OnlyColor );
+		DECL_CONST( Texture_Intensive_OnlyColor );
+		DECL_CONST( Color_Intensive );
+		DECL_CONST( Color_Blend );
+		DECL_CONST( Color_Solid );
+
 		DECL_CONST( Debug );
-		DECL_CONST( Add );
-		DECL_CONST( Accumulator );
-		DECL_CONST( ColorAdd );
-		DECL_CONST( ColorBlend );
-		DECL_CONST( ColorSolid );
+
+		//DECL_CONST( Blend );
+		//DECL_CONST( SolidSprite );
+		//DECL_CONST( OnlyColor );
+		//DECL_CONST( Intensive_OnlyColor );
+		//DECL_CONST( ExternalAlpha );
+  //      DECL_CONST( ExternalAlpha_OnlyColor );
+		//DECL_CONST( ExternalAlphaIntensive );
+  //      DECL_CONST( ExternalAlphaIntensive_OnlyColor );
+		//DECL_CONST( Debug );
+		//DECL_CONST( Add );
+		//DECL_CONST( Accumulator );
+		//DECL_CONST( ColorAdd );
+		//DECL_CONST( ColorBlend );
+		//DECL_CONST( ColorSolid );
 
 		DECL_CONST( ParticleEmitter );
 		DECL_CONST( ParticleEmitter2 );
@@ -116,8 +133,9 @@ namespace Menge
         DECL_CONST( MovieText );
 		DECL_CONST( MovieTextCenter );
 		DECL_CONST( MovieSprite );
-		DECL_CONST( MovieNullObject );
+		DECL_CONST( MovieNullObject );		
         DECL_CONST( MovieEvent );
+		DECL_CONST( SolidSprite );
 		DECL_CONST( SoundId );
 
 		DECL_CONST( BlendingModeAdd );

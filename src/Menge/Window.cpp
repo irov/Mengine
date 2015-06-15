@@ -105,13 +105,13 @@ namespace Menge
 
             if( textureAlpha == nullptr )
             {
-                stageName = CONST_STRING(m_serviceProvider, Blend);
+				stageName = CONST_STRING( m_serviceProvider, Texture_Blend );
 				
                 textureCount = 1;
             }
             else
             {
-                stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
+				stageName = CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha );
 
                 textureCount = 2;
             }            

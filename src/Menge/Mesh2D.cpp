@@ -118,20 +118,20 @@ namespace Menge
             {
                 texturesNum = 2;
 
-				stageName = CONST_STRING(m_serviceProvider, ExternalAlpha);
+				stageName = CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha );
             }
             else
             {
                 texturesNum = 1;
 				
-				stageName = CONST_STRING(m_serviceProvider, SolidSprite);
+				stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
             }
         }
 		else if( m_blendAdd == true )
 		{
 			texturesNum = 1;
 
-			stageName = CONST_STRING(m_serviceProvider, Add);
+			stageName = CONST_STRING( m_serviceProvider, Texture_Intensive );
 		}
 		else
 		{
@@ -139,11 +139,11 @@ namespace Menge
 
 			if( m_resourceImage->isAlpha() == true || m_solid == false )
 			{
-				stageName = CONST_STRING(m_serviceProvider, Blend);
+				stageName = CONST_STRING( m_serviceProvider, Texture_Blend );
 			}
 			else
 			{
-				stageName = CONST_STRING(m_serviceProvider, SolidSprite);
+				stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
 			}
 		}
 

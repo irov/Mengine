@@ -6,6 +6,7 @@
 
 #   include "MarmaladeTexture.h"
 #   include "MarmaladeShader.h"
+#   include "MarmaladeProgram.h"
 
 #   include "Factory/FactoryStore.h"
 
@@ -77,6 +78,9 @@ namespace Menge
         void setRenderListener( RenderSystemListener * _listener ) override;
 
 	public:
+		const ConstString & getRenderPlatformName() const override;
+
+	public:
 		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, WindowHandle _winHandle,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 		
@@ -132,28 +136,17 @@ namespace Menge
 			ETextureArgument _arg1, ETextureArgument _arg2 ) override;
         void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
 		void setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
-		
-		
-        //RenderShaderInterface * createShader( const void * _buffer, size_t _size ) override;
-		const RenderShaderInterface * getShader( const ConstString & _name ) override;
-        void setShader( const RenderShaderInterface * _shader ) override;
-        
-        
-        // create texture
-		// [in/out] _width ( desired texture width, returns actual texture width )
-		// [in/out] _height ( desired texture height, returns actual texture height )
-		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
-		// returns Texture interface handle or NULL if fails
-		RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
-		// create render target image
-		// [in/out] _width ( desired texture width, returns actual texture width )
-		// [in/out] _height ( desired texture height, returns actual texture height )
-		// returns Texture interface handle or NULL if fails
-		// RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height ) override;
-		// удаления изображения
-        
-        RenderImageInterfacePtr createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 
+	public:
+		RenderShaderInterfacePtr createFragmentShader( const void * _buffer, size_t _size, bool _isCompile ) override;
+		RenderShaderInterfacePtr createVertexShader( const void * _buffer, size_t _size, bool _isCompile ) override;
+
+		RenderProgramInterfacePtr createProgram( const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex ) override;
+		void setProgram( const RenderProgramInterfacePtr & _program ) override;
+
+	public:
+		RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
+        RenderImageInterfacePtr createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 		RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 
 		bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) override;
@@ -180,18 +173,18 @@ namespace Menge
         void setSeparateAlphaBlendMode() override;
 
     protected:
-		void initializeShaders_();
-		void initializeShader_( const ConstString & _name, const char * _vsSrc, const char * _fsSrc );
         void findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
 
+		ConstString m_renderPlatform;
+
         RenderSystemListener * m_listener;
 		
 		OGLWindowContext * m_windowContext;
 
-		const RenderShaderInterface * m_currentShader;
+		MarmaladeProgramPtr m_currentProgram;
 
 		mt::mat4f m_worldMatrix;
 		mt::mat4f m_viewMatrix;
@@ -249,6 +242,9 @@ namespace Menge
 
 		typedef FactoryPoolStore<MarmaladeShader, 16> TFactoryShader;
 		TFactoryShader m_factoryShader;
+
+		typedef FactoryPoolStore<MarmaladeProgram, 16> TFactoryProgram;
+		TFactoryProgram m_factoryProgram;
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
 

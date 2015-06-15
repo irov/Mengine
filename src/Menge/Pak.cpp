@@ -272,6 +272,32 @@ namespace Menge
 			}
 		}
 
+		const Metacode::Meta_Pak::TVectorMeta_Materials & includes_materials = pak.get_IncludesMaterials();
+
+		for( Metacode::Meta_Pak::TVectorMeta_Materials::const_iterator
+			it = includes_materials.begin(),
+			it_end = includes_materials.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_Pak::Meta_Materials & meta_materials = *it;
+
+			const Metacode::Meta_Pak::Meta_Materials::TVectorMeta_Material & includes_material = meta_materials.get_IncludesMaterial();
+
+			for( Metacode::Meta_Pak::Meta_Materials::TVectorMeta_Material::const_iterator
+				it = includes_material.begin(),
+				it_end = includes_material.end();
+			it != it_end;
+			++it )
+			{
+				const Metacode::Meta_Pak::Meta_Materials::Meta_Material & meta_material = *it;
+
+				const ConstString & path = meta_material.get_Path();
+
+				this->addMaterial_( path );
+			}
+		}
+
 		SCRIPT_SERVICE(m_serviceProvider)
             ->addModulePath( m_name, m_scriptsPak );
 
@@ -348,6 +374,20 @@ namespace Menge
 			}
 		}
 
+		for( TVectorConstString::iterator
+			it = m_materials.begin(),
+			it_end = m_materials.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & path = *it;
+
+			if( this->loadMaterials_( m_name, path ) == false )
+			{
+				return false;
+			}
+		}
+
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -363,6 +403,14 @@ namespace Menge
 	{
 		bool result = TEXT_SERVICE(m_serviceProvider)
 			->loadFonts( m_locale, _pakName, _path );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Pak::loadMaterials_( const ConstString & _pakName, const FilePath & _path )
+	{
+		bool result = RENDERMATERIAL_SERVICE( m_serviceProvider )
+			->loadMaterials( _pakName, _path );
 
 		return result;
 	}
@@ -411,5 +459,10 @@ namespace Menge
 		desc.path = _path;
 
 		m_datas.push_back( desc );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Pak::addMaterial_( const ConstString & _path )
+	{ 
+		m_materials.push_back( _path );
 	}
 }

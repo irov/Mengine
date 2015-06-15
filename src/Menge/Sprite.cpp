@@ -24,6 +24,18 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Sprite::setMaterialName( const ConstString & _materialName )
+	{
+		m_materialName = _materialName;
+
+		this->invalidateMaterial();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & Sprite::getMaterialName() const
+	{
+		return m_materialName;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_compile()
 	{
 		if( Shape::_compile() == false )
@@ -50,113 +62,120 @@ namespace Menge
 
 		textures[0] = m_resourceImage->getTexture();
 		textures[1] = m_resourceImage->getTextureAlpha();
-		        
+
 		ConstString stageName;
 
-        if( textures[1] != nullptr )
-        {
-			if( m_blendAdd == true )
-            {
-				if( m_disableTextureColor == true )
-				{
-					texturesNum = 2;
-
-					stageName = CONST_STRING( m_serviceProvider, Texture_Intensive_ExternalAlpha_OnlyColor );
-				}
-				else if( m_resourceImage->isAlpha() == true )
-				{
-					texturesNum = 2;
-
-					stageName = CONST_STRING( m_serviceProvider, Texture_Intensive_ExternalAlpha );
-				}
-				else
-				{
-					texturesNum = 1;
-
-					stageName = CONST_STRING( m_serviceProvider, Texture_Intensive );
-				}
-            }
-			else
-			{
-				if( m_disableTextureColor == true )
-				{
-					texturesNum = 2;
-
-					stageName = CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha_OnlyColor );
-				}
-				else if( m_resourceImage->isAlpha() == true )
-				{
-					texturesNum = 2;
-
-					stageName = CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha );
-				}
-				else if( m_solid == false )
-				{
-					texturesNum = 1;
-
-					stageName = CONST_STRING( m_serviceProvider, Texture_Blend );
-				}
-				else
-				{
-					texturesNum = 1;
-
-					stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
-				}
-			}
-        }
-		else if( textures[0] != nullptr )
+		if( m_materialName.empty() == true )
 		{
-			texturesNum = 1;
-
-			if( m_blendAdd == true )
+			if( textures[1] != nullptr )
 			{
-				if( m_disableTextureColor == true )
+				if( m_blendAdd == true )
 				{
-					stageName = CONST_STRING( m_serviceProvider, Texture_Intensive_OnlyColor );
-				}
-				else
-				{
-					stageName = CONST_STRING( m_serviceProvider, Texture_Intensive );
-				}				
-			}
-			else
-			{
-				if( m_disableTextureColor == true )
-				{
-					stageName = CONST_STRING( m_serviceProvider, Texture_Blend_OnlyColor );
-				}
-				else
-				{
-					if( m_resourceImage->isAlpha() == true || m_solid == false )
+					if( m_disableTextureColor == true )
 					{
+						texturesNum = 2;
+
+						stageName = CONST_STRING( m_serviceProvider, Texture_Intensive_ExternalAlpha_OnlyColor );
+					}
+					else if( m_resourceImage->isAlpha() == true )
+					{
+						texturesNum = 2;
+
+						stageName = CONST_STRING( m_serviceProvider, Texture_Intensive_ExternalAlpha );
+					}
+					else
+					{
+						texturesNum = 1;
+
+						stageName = CONST_STRING( m_serviceProvider, Texture_Intensive );
+					}
+				}
+				else
+				{
+					if( m_disableTextureColor == true )
+					{
+						texturesNum = 2;
+
+						stageName = CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha_OnlyColor );
+					}
+					else if( m_resourceImage->isAlpha() == true )
+					{
+						texturesNum = 2;
+
+						stageName = CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha );
+					}
+					else if( m_solid == false )
+					{
+						texturesNum = 1;
+
 						stageName = CONST_STRING( m_serviceProvider, Texture_Blend );
 					}
 					else
 					{
+						texturesNum = 1;
+
 						stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
+					}
+				}
+			}
+			else if( textures[0] != nullptr )
+			{
+				texturesNum = 1;
+
+				if( m_blendAdd == true )
+				{
+					if( m_disableTextureColor == true )
+					{
+						stageName = CONST_STRING( m_serviceProvider, Texture_Intensive_OnlyColor );
+					}
+					else
+					{
+						stageName = CONST_STRING( m_serviceProvider, Texture_Intensive );
+					}
+				}
+				else
+				{
+					if( m_disableTextureColor == true )
+					{
+						stageName = CONST_STRING( m_serviceProvider, Texture_Blend_OnlyColor );
+					}
+					else
+					{
+						if( m_resourceImage->isAlpha() == true || m_solid == false )
+						{
+							stageName = CONST_STRING( m_serviceProvider, Texture_Blend );
+						}
+						else
+						{
+							stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
+						}
+					}
+				}
+			}
+			else
+			{
+				texturesNum = 0;
+
+				if( m_blendAdd == true )
+				{
+					stageName = CONST_STRING( m_serviceProvider, Color_Intensive );
+				}
+				else
+				{
+					if( m_solid == false )
+					{
+						stageName = CONST_STRING( m_serviceProvider, Color_Blend );
+					}
+					else
+					{
+						stageName = CONST_STRING( m_serviceProvider, Color_Solid );
 					}
 				}
 			}
 		}
 		else
 		{
-			texturesNum = 0;
-
-			if( m_blendAdd == true )
-			{
-				stageName = CONST_STRING( m_serviceProvider, Color_Intensive );
-			}
-			else
-			{
-				if( m_solid == false )
-				{
-					stageName = CONST_STRING( m_serviceProvider, Color_Blend );
-				}
-				else
-				{
-					stageName = CONST_STRING( m_serviceProvider, Color_Solid );
-				}
-			}
+			stageName = m_materialName;
 		}
 
 		bool wrapU = m_resourceImage->isWrapU();

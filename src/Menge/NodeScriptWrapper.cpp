@@ -4967,11 +4967,14 @@ namespace Menge
 					.def( "getCountY", &Grid2D::getCountY )
 					;
 
-                pybind::interface_<Sprite, pybind::bases<Shape> >("Sprite", false)
-                    .def_depricated( "setImageResource", &Sprite::setResourceImage, "Use setResourceImage" )
-                    .def_depricated( "getImageResource", &Sprite::getResourceImage, "Use getResourceImage" )
+				pybind::interface_<Sprite, pybind::bases<Shape> >( "Sprite", false )
+					.def_depricated( "setImageResource", &Sprite::setResourceImage, "Use setResourceImage" )
+					.def_depricated( "getImageResource", &Sprite::getResourceImage, "Use getResourceImage" )
 					.def( "setResourceImage", &Sprite::setResourceImage )
 					.def( "getResourceImage", &Sprite::getResourceImage )
+
+					.def( "setMaterialName", &Sprite::setMaterialName )
+					.def( "getMaterialName", &Sprite::getMaterialName )
 
                     .def_proxy_static( "getImageSize", nodeScriptMethod, &NodeScriptMethod::s_getImageSize )
                     

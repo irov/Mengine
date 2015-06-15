@@ -26,6 +26,10 @@ namespace Menge
 		Sprite();
 		~Sprite();
 
+	public:
+		void setMaterialName( const ConstString & _materialName );
+		const ConstString & getMaterialName() const;
+
 	protected:
 		bool _compile() override;
 		void _release() override;
@@ -41,6 +45,8 @@ namespace Menge
 
 	protected:
 		RenderMaterialInterfacePtr m_material;
+
+		ConstString m_materialName;
     };
     //////////////////////////////////////////////////////////////////////////
     inline const RenderMaterialInterfacePtr & Sprite::getMaterial()

@@ -184,7 +184,7 @@ namespace Menge
 			vertexPointBox[i].uv2.y = 0.f;
 		}
 
-		const RenderMaterialInterfacePtr & debugMaterial = RENDER_SERVICE(m_serviceProvider)
+		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
 			->getDebugMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)

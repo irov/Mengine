@@ -353,6 +353,10 @@ namespace Menge
 			, EPrimitiveType _primitiveType
 			, uint32_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) = 0;
+
+	public:
+		virtual void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) = 0;
+		virtual const RenderMaterialInterfacePtr & getDebugMaterial() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERMATERIAL_SERVICE( serviceProvider )\
@@ -647,8 +651,6 @@ namespace Menge
 			, const mt::box2f * _bb ) = 0;
 
 	public:
-		virtual void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) = 0;
-		virtual const RenderMaterialInterfacePtr & getDebugMaterial() const = 0;
 		virtual RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) = 0;
 
 	public:

@@ -162,6 +162,35 @@ namespace Metacode
             uint32_t getId() const override;
         
         public:
+            bool has_Debug() const
+            {
+                return Debug_successful;
+            }
+            
+            bool get_Debug( bool & _value ) const
+            {
+                if( Debug_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Debug;
+            
+                return true;
+            }
+            
+            bool swap_Debug( bool & _value ) const
+            {
+                if( Debug_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Debug);
+            
+                return true;
+            }
+            
             const Menge::ConstString & get_Name() const
             {
                 return this->Name;
@@ -591,6 +620,8 @@ namespace Metacode
             
         protected:
         protected:
+            bool Debug_successful;
+            mutable bool Debug;
             mutable Menge::ConstString Name;
             bool AlphaBlend_Enable_successful;
             mutable bool AlphaBlend_Enable;

@@ -109,10 +109,6 @@ namespace Menge
 		void createRenderPass_();
 
 	public:
-		void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) override;
-		const RenderMaterialInterfacePtr & getDebugMaterial() const override;
-
-	public:
 		RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) override;
 
 	public:
@@ -290,9 +286,7 @@ namespace Menge
 
 		typedef stdex::heap_array<RenderVertex2D> TArrayRenderVertex2D;
 		TArrayRenderVertex2D m_debugRenderVertex2D;
-
-		RenderMaterialInterfacePtr m_debugMaterial;
-                      
+              
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;
 		bool m_alphaTestEnable;

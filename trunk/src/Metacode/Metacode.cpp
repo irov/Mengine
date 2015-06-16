@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 81;
+        _needVersion = 82;
 
-        if( version != 81 )
+        if( version != 82 )
         {
             return false;
         }
@@ -772,6 +772,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_Material::Meta_Material()
         : Metabuf::Metadata()
+        , Debug_successful(false)
         , AlphaBlend_Enable_successful(false)
         , AlphaTest_Enable_successful(false)
         , BlendFactor_Dest_successful(false)
@@ -791,6 +792,17 @@ namespace Metacode
     {
         switch( _id )
         {
+        case 2:
+            {
+                if( this->read( _buff, _size, _read, this->Debug ) == false )
+                {
+                    return false;
+                }
+    
+                this->Debug_successful = true;
+    
+                return true;
+            }break;
         case 1:
             {
                 if( this->read( _buff, _size, _read, this->Name ) == false )
@@ -800,7 +812,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->AlphaBlend_Enable ) == false )
                 {
@@ -811,7 +823,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->AlphaTest_Enable ) == false )
                 {
@@ -822,7 +834,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->BlendFactor_Dest ) == false )
                 {
@@ -833,7 +845,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 2:
+        case 3:
             {
                 if( this->read( _buff, _size, _read, this->BlendFactor_Source ) == false )
                 {
@@ -844,7 +856,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->DepthBufferWrite_Enable ) == false )
                 {
@@ -855,7 +867,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 9:
+        case 10:
             {
                 if( this->read( _buff, _size, _read, this->Program_FragmentShader ) == false )
                 {
@@ -866,7 +878,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->Program_VertexShader ) == false )
                 {
@@ -886,7 +898,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 7:
+        case 8:
             {
                 includes_Meta_TextureStages.reserve( _count );
                 return true;
@@ -901,7 +913,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 7:
+        case 8:
             {
                 Meta_DataBlock::Meta_Material::Meta_TextureStages & metadata = includes_Meta_TextureStages.emplace_back();
     
@@ -941,7 +953,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_Material::Meta_TextureStages::getId() const
     {
-        return 7;
+        return 8;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_Material::Meta_TextureStages::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )

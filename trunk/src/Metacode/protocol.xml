@@ -1,4 +1,4 @@
-<Protocol Version = "81">
+<Protocol Version = "82">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -71,6 +71,7 @@
 
     <Node Name="Material">
       <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
+      <Attribute Name="Debug" Type="bool"/>
 
       <Member Node="BlendFactor" Name="Source" Type="Menge::EBlendFactor"/>
       <Member Node="BlendFactor" Name="Dest" Type="Menge::EBlendFactor"/>

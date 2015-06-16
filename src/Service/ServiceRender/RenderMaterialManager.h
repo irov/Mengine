@@ -47,6 +47,10 @@ namespace Menge
 			, EPrimitiveType _primitiveType
 			, uint32_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) override;        
+
+	public:
+		void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) override;
+		const RenderMaterialInterfacePtr & getDebugMaterial() const override;
 		
 	protected:
 		void onRenderMaterialDestroy_( RenderMaterial * _material );
@@ -84,6 +88,8 @@ namespace Menge
 
 		typedef stdex::vector<uint32_t> TVectorMaterialIndexer;
 		TVectorMaterialIndexer m_materialIndexer;
+
+		RenderMaterialInterfacePtr m_debugMaterial;
 
 		typedef stdex::map<ConstString, RenderShaderInterfacePtr> TMapRenderShaders;
 		TMapRenderShaders m_vertexShaders;

@@ -46,7 +46,6 @@ namespace Menge
 		, m_debugMode(0)
 		, m_currentStage(nullptr)
 		, m_nullTexture(nullptr)
-		, m_debugMaterial(nullptr)
 		, m_renderVertexCount(0)
 		, m_renderIndicesCount(0)
 		, m_batchMode(ERBM_SMART)
@@ -1300,16 +1299,6 @@ namespace Menge
 		RenderIndices2D * indices = m_indicesLine.buff();
 
 		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial )
-	{
-		m_debugMaterial = _debugMaterial;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const RenderMaterialInterfacePtr & RenderEngine::getDebugMaterial() const
-	{
-		return m_debugMaterial;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertex2D * RenderEngine::getDebugRenderVertex2D( uint32_t _count )

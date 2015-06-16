@@ -166,6 +166,9 @@ namespace Menge
 
 			const Menge::ConstString & name = meta_Material.get_Name();
 
+			bool is_debug = false;
+			meta_Material.get_Debug( is_debug );
+
 			RenderStage stage;
 			meta_Material.get_AlphaBlend_Enable( stage.alphaBlendEnable );
 			meta_Material.get_DepthBufferWrite_Enable( stage.depthBufferWriteEnable );
@@ -212,6 +215,14 @@ namespace Menge
 			if( this->createRenderStageGroup( name, stage ) == false )
 			{
 				return false;
+			}
+
+			if( is_debug == true )
+			{
+				RenderMaterialInterfacePtr debugMaterial = 
+					this->getMaterial( name, false, false, PT_LINELIST, 0, nullptr );
+
+				this->setDebugMaterial( debugMaterial );
 			}
 		}
 
@@ -324,6 +335,16 @@ namespace Menge
 		materials.push_back( material );
 
 		return material;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderMaterialManager::setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial )
+	{
+		m_debugMaterial = _debugMaterial;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderMaterialInterfacePtr & RenderMaterialManager::getDebugMaterial() const
+	{
+		return m_debugMaterial;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderMaterialManager::onRenderMaterialDestroy_( RenderMaterial * _material )

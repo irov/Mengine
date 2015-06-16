@@ -1044,11 +1044,6 @@ namespace Menge
 			return false;
 		}
 
-		RenderMaterialInterfacePtr debugMaterial = m_renderMaterialManager
-			->getMaterial( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Debug"), false, false, PT_LINELIST, 0, nullptr );
-
-		m_renderService->setDebugMaterial( debugMaterial );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

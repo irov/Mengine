@@ -10,8 +10,9 @@ options
     app-icf="app.icf"
     #s3e-data-dir="d:/Projects/ZombielandBuild_PVRTC"
     #s3e-data-dir="d:/Projects/ZombielandBuild_ETC1"
+    s3e-data-dir="d:/Projects/BurritosBuild_ETC1"
     #s3e-data-dir="d:/Projects/BurritosBuild_ETC1"
-    s3e-data-dir="d:/Projects/MarshmallowBuild_PVRTC"
+    #s3e-data-dir="d:/Projects/MarshmallowBuild_PVRTC"
     #s3e-data-dir="/Users/admin/Desktop/ZombielandBuild_PVRTC"
 }
 
@@ -100,12 +101,8 @@ files
     [System/MarmaladeRenderSystem]
     ("../src/System/MarmaladeRenderSystem")	
 	"*.h"
-	"*.cpp"
-    
-    [System/MarmaladeRenderSystem/Shaders]
-    ("../src/System/MarmaladeRenderSystem/Shaders")
-    "*.h"
-    
+	"*.cpp"    
+   
     [System/MarmaladeSoundSystem]
     ("../src/System/MarmaladeSoundSystem")
 	"*.h"

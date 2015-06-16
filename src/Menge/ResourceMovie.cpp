@@ -202,7 +202,7 @@ namespace Menge
 		uint32_t width = (uint32_t)(m_size.x + 0.5f);
 		uint32_t height = (uint32_t)(m_size.y + 0.5f);
 
-		if( width > limitMovieWidth || height > limitMovieHeight )
+		if( (width > limitMovieWidth && limitMovieWidth != 0U) || (height > limitMovieHeight && limitMovieHeight != 0U) )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid %s invalid limit %d:%d size %d:%d"
 				, this->getName().c_str()

@@ -58,7 +58,7 @@ static void message_error( const char * _format, ... )
 
 	va_end(argList);
 
-	MessageBoxA( NULL, str, "AstralaxCompiler", MB_OK );
+	MessageBoxA( NULL, str, "ImageTrimmer", MB_OK );
 }
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN(ServiceProvider, Menge::ServiceProviderInterface);
@@ -815,7 +815,15 @@ static Menge::WString s_correct_path( const Menge::WString & _path )
 {
 	Menge::WString true_path = _path;
 
-	if( _path[0] == L'/' )
+	if( _path.size() <= 2 )
+	{
+
+	}
+	else if( _path[0] == L'/' && _path[1] == L'/' )
+	{
+
+	}
+	else if( _path[0] == L'/' )
 	{
 		true_path[0] = _path[1];
 		true_path[1] = L':';

@@ -116,7 +116,7 @@ static void message_error( const char * _format, ... )
 
 	va_end(argList);
 
-	MessageBoxA( NULL, str, "AstralaxCompiler", MB_OK );
+	MessageBoxA( NULL, str, "ExtractorDXT1", MB_OK );
 }
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )

@@ -215,7 +215,7 @@ namespace Menge
 
 		uint32_t animationMemoryLimit = CONFIG_VALUE(m_serviceProvider, "Limit", "AnimationMemoryLimit", 4194304U ); //4kb
 		
-		if( total_memory > animationMemoryLimit && animationMemoryLimit != 0 )
+		if( total_memory > animationMemoryLimit && animationMemoryLimit != 0U )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceAnimation::_isValid: '%s' overflow %.2fmb max video memory %.2fmb (coeff %f)"
 				, this->getName().c_str()

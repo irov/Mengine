@@ -81,10 +81,10 @@ namespace Menge
         }
 
 		const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
-
-		
+				
 		uint32_t Limit_VideoFrameRate = CONFIG_VALUE(m_serviceProvider, "Limit", "VideoFrameRate", 30U);
-		if( dataInfo->fps > Limit_VideoFrameRate )
+
+		if( dataInfo->fps > Limit_VideoFrameRate && Limit_VideoFrameRate != 0U )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceVideo.isValid: '%s' path '%s' invalid Frame rate %u more that %u"
 				, this->getName().c_str()

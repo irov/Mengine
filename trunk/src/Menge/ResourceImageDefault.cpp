@@ -176,7 +176,7 @@ namespace Menge
 		float width = (float)dataInfo->width;
 		float height = (float)dataInfo->height;
 		
-		if( width > limitTextureWidth || height > limitTextureHeight )
+		if( (width > limitTextureWidth && limitTextureWidth != 0U) || (height > limitTextureHeight && limitTextureHeight != 0U) )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceImageDefault::_isValid %s file %s:%s invalid limit %d:%d texture size %d:%d "
 				, m_name.c_str()

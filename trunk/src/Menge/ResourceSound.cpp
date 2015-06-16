@@ -126,7 +126,7 @@ namespace Menge
 
 		float limitNoStreamSoundDuration = CONFIG_VALUE(m_serviceProvider, "Limit", "NoStreamSoundDuration", 2000.f ); //4kb
 
-        if( dataInfo->length > limitNoStreamSoundDuration && m_isStreamable == false )
+		if( (dataInfo->length > limitNoStreamSoundDuration && limitNoStreamSoundDuration != 0.f) && m_isStreamable == false )
         {
             LOGGER_WARNING(m_serviceProvider)("SoundEngine::_isValid: %s setup to stream (time %.4f > %.4f ms)\nfile - %s:%s"
                 , m_name.c_str()

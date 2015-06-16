@@ -1269,10 +1269,10 @@ namespace Menge
 			return;
 		}
 
-		RenderVertex2D * vertexDebugBox = RENDER_SERVICE(m_serviceProvider)
+		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
 			->getDebugRenderVertex2D( 4 * 2 );
 
-		if( vertexDebugBox == nullptr )
+		if( vertices == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Node::_debugRender %s debug vertex overflow"
 				, this->getName().c_str()
@@ -1283,47 +1283,47 @@ namespace Menge
 
 		const mt::box2f & bbox = this->getBoundingBox();
 			
-		vertexDebugBox[0].pos.x = bbox.minimum.x;
-		vertexDebugBox[0].pos.y = bbox.minimum.y;
+		vertices[0].pos.x = bbox.minimum.x;
+		vertices[0].pos.y = bbox.minimum.y;
 
-		vertexDebugBox[1].pos.x = bbox.maximum.x;
-		vertexDebugBox[1].pos.y = bbox.minimum.y;
+		vertices[1].pos.x = bbox.maximum.x;
+		vertices[1].pos.y = bbox.minimum.y;
 
-		vertexDebugBox[2].pos.x = bbox.maximum.x;
-		vertexDebugBox[2].pos.y = bbox.minimum.y;
+		vertices[2].pos.x = bbox.maximum.x;
+		vertices[2].pos.y = bbox.minimum.y;
 
-		vertexDebugBox[3].pos.x = bbox.maximum.x;
-		vertexDebugBox[3].pos.y = bbox.maximum.y;
+		vertices[3].pos.x = bbox.maximum.x;
+		vertices[3].pos.y = bbox.maximum.y;
 
-		vertexDebugBox[4].pos.x = bbox.maximum.x;
-		vertexDebugBox[4].pos.y = bbox.maximum.y;
+		vertices[4].pos.x = bbox.maximum.x;
+		vertices[4].pos.y = bbox.maximum.y;
 
-		vertexDebugBox[5].pos.x = bbox.minimum.x;
-		vertexDebugBox[5].pos.y = bbox.maximum.y;
+		vertices[5].pos.x = bbox.minimum.x;
+		vertices[5].pos.y = bbox.maximum.y;
 
-		vertexDebugBox[6].pos.x = bbox.minimum.x;
-		vertexDebugBox[6].pos.y = bbox.maximum.y;
+		vertices[6].pos.x = bbox.minimum.x;
+		vertices[6].pos.y = bbox.maximum.y;
 
-		vertexDebugBox[7].pos.x = bbox.minimum.x;
-		vertexDebugBox[7].pos.y = bbox.minimum.y;
+		vertices[7].pos.x = bbox.minimum.x;
+		vertices[7].pos.y = bbox.minimum.y;
 
 
 		for( uint32_t i = 0; i != 8; ++i )
 		{
-			vertexDebugBox[i].pos.z = 0.f;
+			vertices[i].pos.z = 0.f;
 
-			vertexDebugBox[i].color = 0xFF00FF00;
-			vertexDebugBox[i].uv.x = 0.f;
-			vertexDebugBox[i].uv.y = 0.f;
-			vertexDebugBox[i].uv2.x = 0.f;
-			vertexDebugBox[i].uv2.y = 0.f;
+			vertices[i].color = 0xFF00FF00;
+			vertices[i].uv.x = 0.f;
+			vertices[i].uv.y = 0.f;
+			vertices[i].uv2.x = 0.f;
+			vertices[i].uv2.y = 0.f;
 		}
 
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getDebugMaterial();
 		
 		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
-			, vertexDebugBox
+			, vertices
 			, 8
 			, nullptr
 			);

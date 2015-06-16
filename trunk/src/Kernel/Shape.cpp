@@ -207,9 +207,6 @@ namespace Menge
 		const mt::vec2f & size = m_resourceImage->getSize();
 		const mt::vec2f & offset = m_resourceImage->getOffset();
 
-		//bool textureWrapU = m_resourceImage->isWrapU();
-		//bool textureWrapV = m_resourceImage->isWrapV();
-
 		mt::vec4f percent_size = m_percentVisibility * size;
 				
 		mt::vec2f visOffset(percent_size.x, percent_size.y);

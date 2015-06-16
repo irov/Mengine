@@ -1,12 +1,12 @@
-<Protocol Version = "80">
+<Protocol Version = "81">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
   <Type Name="Menge::FilePath" Evict="string"/>
-  <Type Name="bool" Evict="uint8_t"/>
-  <Type Name="uint32_t" Evict="uint32_t"/>
-  <Type Name="Menge::WChar" Evict="wchar_t"/>
-  <Type Name="float" Evict="float"/>
+  <Type Name="bool" Evict="uint8_t" NCR="1"/>
+  <Type Name="uint32_t" Evict="uint32_t" NCR="1"/>
+  <Type Name="Menge::WChar" Evict="wchar_t" NCR="1"/>
+  <Type Name="float" Evict="float" NCR="1"/>
   <Type Name="mt::vec2f" Evict="float2"/>
   <Type Name="mt::vec3f" Evict="float3"/>
   <Type Name="mt::vec4f" Evict="float4"/>
@@ -46,16 +46,24 @@
     <TFACTOR/>
   </Enum>
 
-  <Node Name="Materials">
+  <Node Name="DataBlock">    
+    <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
+
+    <Node Name="Include">
+      <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
+    </Node>
+
     <Node Name="VertexShader">
       <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
-      
+      <Attribute Name="Platform" Type="Menge::ConstString" Required="1"/>
+
       <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Compile" Type="bool"/>
     </Node>
 
     <Node Name="FragmentShader">
       <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
+      <Attribute Name="Platform" Type="Menge::ConstString" Required="1"/>
 
       <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Compile" Type="bool"/>
@@ -71,22 +79,21 @@
       <Member Node="AlphaBlend" Name="Enable" Type="bool"/>
 
       <Node Name="TextureStages">
-        <Member Node="Color" Name="Stage" Type="uint32_t" Required="1"/>
+        <Attribute Name="Stage" Type="uint32_t" Required="1"/>
+
         <Member Node="Color" Name="Operator" Type="Menge::ETextureOp" Required="1"/>
         <Member Node="Color" Name="Arg1" Type="Menge::ETextureArgument"/>
-        <Member Node="Color" Name="Arg2" Type="Menge::ETextureArgument"/>        
+        <Member Node="Color" Name="Arg2" Type="Menge::ETextureArgument"/>
+
+        <Member Node="Alpha" Name="Operator" Type="Menge::ETextureOp" Required="1"/>
+        <Member Node="Alpha" Name="Arg1" Type="Menge::ETextureArgument"/>
+        <Member Node="Alpha" Name="Arg2" Type="Menge::ETextureArgument"/>
+
+        <Member Node="TextureCoord" Name="Index" Type="uint32_t"/>
       </Node>
 
       <Member Node="Program" Name="VertexShader" Type="Menge::ConstString"/>
       <Member Node="Program" Name="FragmentShader" Type="Menge::ConstString"/>
-    </Node>
-  </Node>
-
-  <Node Name="DataBlock">
-    <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
-
-    <Node Name="Include">
-      <Attribute Name="Path" Type="Menge::FilePath" Required="1"/>
     </Node>
 
     <Node Name="Resource" Generator="Type">

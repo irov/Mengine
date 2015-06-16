@@ -3585,6 +3585,44 @@ namespace Menge
             return id;
         }
 		//////////////////////////////////////////////////////////////////////////
+		class PyGlobalMouseHandlerWheel
+			: public PyGlobalBaseHandler
+		{
+		protected:
+			//////////////////////////////////////////////////////////////////////////
+			bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
+			{
+				pybind::object py_result = m_cb( _event.x, _event.y, _event.wheel );
+
+				if( py_result.is_none() == false )
+				{
+					LOGGER_ERROR( m_serviceProvider )("PyGlobalMouseHandlerWheel %s return value %s not None"
+						, m_cb.repr()
+						, py_result.repr()
+						);
+				}
+
+				return false;
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		typedef FactoryPoolStore<PyGlobalMouseHandlerWheel, 32> TPoolPyGlobalMouseHandlerWheels;
+		TPoolPyGlobalMouseHandlerWheels m_poolPyGlobalMouseHandlerWheels;
+		//////////////////////////////////////////////////////////////////////////
+		uint32_t s_addMouseWheelHandler( const pybind::object & _cb )
+		{
+			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
+				->getGlobalHandleSystem();
+
+			PyGlobalMouseHandlerWheel * handler = m_poolPyGlobalMouseHandlerWheels.createObjectT();
+
+			handler->initialize( m_serviceProvider, _cb );
+
+			uint32_t id = globalHandleSystem->addGlobalHandler( handler );
+
+			return id;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		class PyGlobalMouseHandlerButtonBegin
 			: public PyGlobalBaseHandler
 		{
@@ -5268,6 +5306,7 @@ namespace Menge
             pybind::def_functor( "addMouseButtonHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandler );
 			pybind::def_functor( "addMouseButtonHandlerBegin", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerBegin );
 			pybind::def_functor( "addMouseButtonHandlerEnd", nodeScriptMethod, &NodeScriptMethod::s_addMouseButtonHandlerEnd );
+			pybind::def_functor( "addMouseWheelHandler", nodeScriptMethod, &NodeScriptMethod::s_addMouseWheelHandler );
 			pybind::def_functor( "addKeyHandler", nodeScriptMethod, &NodeScriptMethod::s_addKeyHandler );
 			
 			pybind::def_functor( "removeGlobalHandler", nodeScriptMethod, &NodeScriptMethod::s_removeGlobalHandler );

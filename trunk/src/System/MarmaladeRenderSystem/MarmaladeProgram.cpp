@@ -29,6 +29,7 @@ namespace Menge
 	{
 		m_serviceProvider = _serviceProvider;
 	}
+	//////////////////////////////////////////////////////////////////////////
 	ServiceProviderInterface * MarmaladeProgram::getServiceProvider()
 	{ 
 		return m_serviceProvider;
@@ -43,7 +44,7 @@ namespace Menge
 			return false;
 		}
 
-		if( _vertexShader == nullptr )
+		if( _vertexShader != nullptr )
 		{
 			m_vertexShader = stdex::intrusive_static_cast<MarmaladeShaderPtr>(_vertexShader);
 

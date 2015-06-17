@@ -84,17 +84,12 @@ namespace Menge
 
 		if( status == GL_FALSE )
 		{
-			GLint infoLogLength;
-			glGetShaderiv( shaderId, GL_INFO_LOG_LENGTH, &infoLogLength );
-
-			GLchar* strInfoLog = new GLchar[infoLogLength + 1];
-			glGetShaderInfoLog( shaderId, infoLogLength, NULL, strInfoLog );
+			GLchar errorLog[1024];
+			glGetShaderInfoLog( shaderId, 1023, NULL, errorLog );
 
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeShader::initialize compilation shader error '%s'"
-				, strInfoLog 
-				);
-			
-			delete[] strInfoLog;
+				, errorLog
+				);			
 
 			return false;
 		}

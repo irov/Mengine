@@ -2876,28 +2876,6 @@ namespace Menge
 
             return imageCenter_wm;
         }
-		//////////////////////////////////////////////////////////////////////////
-		bool s_setCustomSize( Sprite * _sprite, const mt::vec2f & _size )
-		{
-			ResourceImage * resourceImage = _sprite->getResourceImage();
-
-			if( resourceImage == nullptr )
-			{
-				LOGGER_ERROR( m_serviceProvider )("s_setCustomSize sprite %s not setup resource"
-					, _sprite->getName().c_str()
-					);
-
-				return false;
-			}
-
-			mt::vec2f size = resourceImage->getSize();
-
-			mt::vec2f scale = _size / size;
-
-			_sprite->setScale( mt::vec3f( scale.x, scale.y, 1.f ) );
-
-			return true;
-		}
         //////////////////////////////////////////////////////////////////////////
         Node * createChildren( Node * _node, const ConstString & _type )
         {
@@ -5002,6 +4980,10 @@ namespace Menge
 					.def( "getFlipY", &Shape::getFlipY )
 					.def( "setPercentVisibility", &Shape::setPercentVisibility )
 					.def( "getPercentVisibility", &Shape::getPercentVisibility )
+					.def( "setCustomSize", &Shape::setCustomSize )
+					.def( "getCustomSize", &Shape::getCustomSize )
+					.def( "removeCustomSize", &Shape::removeCustomSize )
+					.def( "hasCustomSize", &Shape::hasCustomSize )
 					.def_proxy_static( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityTo )
 					.def_proxy_static( "setPercentVisibilityStop", nodeScriptMethod, &NodeScriptMethod::setPercentVisibilityStop )
 					.def( "setTextureUVOffset", &Shape::setTextureUVOffset )
@@ -5041,8 +5023,7 @@ namespace Menge
                     .def_proxy_static( "getLocalImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalImageCenter )
                     .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldImageCenter )
 
-                    .def( "disableTextureColor", &Sprite::disableTextureColor )
-					.def_proxy_static( "setCustomSize", nodeScriptMethod, &NodeScriptMethod::s_setCustomSize )
+                    .def( "disableTextureColor", &Sprite::disableTextureColor )					
                     ;
 
 				pybind::interface_<Gyroscope, pybind::bases<Node> >("Gyroscope", false)

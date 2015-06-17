@@ -6,19 +6,21 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     Shape::Shape()
-        : m_centerAlign(false)
-        , m_flipX(false)
-        , m_flipY(false)
-        , m_percentVisibility(0.f, 0.f, 1.f, 1.f)
-        , m_textureUVOffset(0.f, 0.f)
-        , m_textureUVScale(1.f, 1.f)
-        , m_invalidateVerticesLocal(true)
-        , m_invalidateVerticesWM(true)
-        , m_invalidateVerticesColor(true)
-		, m_blendAdd(false)
-		, m_solid(false)
-		, m_invalidateMaterial(true)
-		, m_disableTextureColor(false)
+		: m_customSize( 0.f, 0.f )
+		, m_percentVisibility( 0.f, 0.f, 1.f, 1.f )
+		, m_textureUVOffset( 0.f, 0.f )
+		, m_textureUVScale( 1.f, 1.f )
+		, m_hasCustomSize( false )
+		, m_centerAlign( false )
+		, m_flipX( false )
+		, m_flipY( false )
+		, m_invalidateVerticesLocal( true )
+		, m_invalidateVerticesWM( true )
+		, m_invalidateVerticesColor( true )
+		, m_blendAdd( false )
+		, m_solid( false )
+		, m_invalidateMaterial( true )
+		, m_disableTextureColor( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -104,6 +106,31 @@ namespace Menge
 	bool Shape::isBlendAdd() const
 	{
 		return m_blendAdd;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Shape::setCustomSize( const mt::vec2f & _customSize )
+	{
+		m_customSize = _customSize;
+		m_hasCustomSize = true;
+
+		this->invalidateVertices();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Shape::removeCustomSize()
+	{ 
+		m_hasCustomSize = false;
+
+		this->invalidateVertices();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Shape::hasCustomSize() const
+	{
+		return m_hasCustomSize;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec2f & Shape::getCustomSize() const
+	{
+		return m_customSize;
 	}
     //////////////////////////////////////////////////////////////////////////
     void Shape::setCenterAlign( bool _centerAlign )
@@ -203,9 +230,26 @@ namespace Menge
     {
         m_invalidateVerticesLocal = false;
 
-		const mt::vec2f & maxSize = m_resourceImage->getMaxSize();
-		const mt::vec2f & size = m_resourceImage->getSize();
-		const mt::vec2f & offset = m_resourceImage->getOffset();
+		mt::vec2f maxSize;
+		mt::vec2f size;
+		mt::vec2f offset;
+
+		if( m_hasCustomSize == false )
+		{
+			const mt::vec2f & image_maxSize = m_resourceImage->getMaxSize();
+			const mt::vec2f & image_size = m_resourceImage->getSize();
+			const mt::vec2f & image_offset = m_resourceImage->getOffset();
+
+			maxSize = image_maxSize;
+			size = image_size;
+			offset = image_offset;
+		}
+		else
+		{
+			maxSize = m_customSize;
+			size = m_customSize;
+			offset = mt::vec2f(0.f, 0.f);
+		}
 
 		mt::vec4f percent_size = m_percentVisibility * size;
 				

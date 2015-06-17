@@ -93,7 +93,7 @@ namespace Menge
 		m_indicesLine.resize( maxLineBatch * 1 );
 
 		m_debugRenderVertex2D.reserve( maxDebugVertex );
-
+		 
 		for( uint32_t i = 0; i != maxQuadBatch; ++i )
 		{   
 			uint32_t indexOffset = i * 6;

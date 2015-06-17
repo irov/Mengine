@@ -32,6 +32,11 @@ namespace Menge
 		bool isBlendAdd() const;
 
 	public:
+		void setCustomSize( const mt::vec2f & _customSize );
+		void removeCustomSize();
+		bool hasCustomSize() const;
+		const mt::vec2f & getCustomSize() const;
+
         void setCenterAlign( bool _centerAlign );
         bool getCenterAlign() const;
 
@@ -80,6 +85,8 @@ namespace Menge
 	protected:
 		ResourceHolder<ResourceImage> m_resourceImage;
 
+		mt::vec2f m_customSize;
+
         mt::vec4f m_percentVisibility;
 
         TVectorRenderVertex2D m_maskPolygonVertex;
@@ -92,6 +99,7 @@ namespace Menge
         mutable RenderVertex2D m_verticesWM[4];
 
 		bool m_centerAlign;
+		bool m_hasCustomSize;
 
 		bool m_flipX;
 		bool m_flipY;

@@ -659,6 +659,9 @@ namespace Menge
 
 		if( shader->initialize( GL_FRAGMENT_SHADER, _buffer, _size, _isCompile ) == false )
 		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createFragmentShader invalid initialize shader"
+				);
+
 			return nullptr;
 		}
 
@@ -673,6 +676,9 @@ namespace Menge
 
 		if( shader->initialize( GL_VERTEX_SHADER, _buffer, _size, _isCompile ) == false )
 		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createVertexShader invalid initialize shader"
+				);
+
 			return nullptr;
 		}
 
@@ -687,6 +693,9 @@ namespace Menge
 		
 		if( program->initialize( _fragment, _vertex ) == false )
 		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createProgram invalid initialize program"
+				);
+
 			return nullptr;
 		}
 

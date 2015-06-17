@@ -656,7 +656,11 @@ namespace Menge
 		MarmaladeShaderPtr shader = m_factoryShader.createObjectT();
 
 		shader->setServiceProvider( m_serviceProvider );
-		shader->initialize( GL_FRAGMENT_SHADER, _buffer, _size, _isCompile );
+
+		if( shader->initialize( GL_FRAGMENT_SHADER, _buffer, _size, _isCompile ) == false )
+		{
+			return nullptr;
+		}
 
 		return shader;
 	}
@@ -666,7 +670,11 @@ namespace Menge
 		MarmaladeShaderPtr shader = m_factoryShader.createObjectT();
 
 		shader->setServiceProvider( m_serviceProvider );
-		shader->initialize( GL_VERTEX_SHADER, _buffer, _size, _isCompile );
+
+		if( shader->initialize( GL_VERTEX_SHADER, _buffer, _size, _isCompile ) == false )
+		{
+			return nullptr;
+		}
 
 		return shader;
 	}
@@ -676,7 +684,11 @@ namespace Menge
 		MarmaladeProgramPtr program = m_factoryProgram.createObjectT();
 
 		program->setServiceProvider( m_serviceProvider );
-		program->initialize( _fragment, _vertex );
+		
+		if( program->initialize( _fragment, _vertex ) == false )
+		{
+			return nullptr;
+		}
 
 		return program;
 	}

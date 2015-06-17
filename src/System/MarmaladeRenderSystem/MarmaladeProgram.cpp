@@ -70,7 +70,17 @@ namespace Menge
 
 		if (linked == GL_FALSE)
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::shaderProgram - shader linking error");
+			GLint infoLogLength;
+			glGetProgramiv( program, GL_INFO_LOG_LENGTH, &infoLogLength );
+
+			GLchar* strInfoLog = new GLchar[infoLogLength + 1];
+			glGetProgramInfoLog( program, infoLogLength, NULL, strInfoLog );
+
+			LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::shaderProgram - shader linking error '%s'"
+				, strInfoLog
+				);
+
+			delete[] strInfoLog;
 
 			return false;
 		}

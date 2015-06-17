@@ -655,6 +655,7 @@ namespace Menge
 	{
 		MarmaladeShaderPtr shader = m_factoryShader.createObjectT();
 
+		shader->setServiceProvider( m_serviceProvider );
 		shader->initialize( GL_FRAGMENT_SHADER, _buffer, _size, _isCompile );
 
 		return shader;

@@ -44,7 +44,9 @@ namespace Menge
 		if( _isCompile == false )
 		{
 			const char * str_source = static_cast<const char *>(_source);
-			glShaderSource( shaderId, 1, &str_source, NULL );
+			GLint str_size = (GLint)_size;
+
+			glShaderSource( shaderId, 1, &str_source, &str_size );
 			glCompileShader( shaderId );
 
 			if( (s3eDeviceGetInt( S3E_DEVICE_OS ) != S3E_OS_ID_WS8 &&
@@ -67,7 +69,7 @@ namespace Menge
 					}
 					else if( _type == GL_FRAGMENT_SHADER )
 					{
-						s3eRegisterShader( str_source, IW_GL_ST_PIXEL, IW_DX_FL_9_3 );						
+						s3eRegisterShader( str_source, IW_GL_ST_PIXEL, IW_DX_FL_9_3 );
 					}
 				}
 			}

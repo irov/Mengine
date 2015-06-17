@@ -79,6 +79,26 @@ namespace Menge
 			glShaderBinary( 1, &shaderId, 0x93B0, _source, _size );
 		}
 
+		GLint status;
+		glGetShaderiv( shaderId, GL_COMPILE_STATUS, &status );
+
+		if( status == GL_FALSE )
+		{
+			GLint infoLogLength;
+			glGetShaderiv( shaderId, GL_INFO_LOG_LENGTH, &infoLogLength );
+
+			GLchar* strInfoLog = new GLchar[infoLogLength + 1];
+			glGetShaderInfoLog( shaderId, infoLogLength, NULL, strInfoLog );
+
+			LOGGER_ERROR(m_serviceProvider)("MarmaladeShader::initialize compilation shader error '%s'"
+				, strInfoLog 
+				);
+			
+			delete[] strInfoLog;
+
+			return false;
+		}
+
 		m_shaderId = shaderId;
 
 		return true;

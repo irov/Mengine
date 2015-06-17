@@ -26,12 +26,10 @@ int main()
 
     Menge::MarmaladeApplication marApplication;
 
-    if( marApplication.initialize( commandLine ) == false )
+    if( marApplication.initialize( commandLine ) == true )
     {
-        return 0;
-    }
-
-    marApplication.loop();
+		marApplication.loop();
+    }   
 
     marApplication.finalize();
 

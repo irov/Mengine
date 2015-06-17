@@ -12,7 +12,13 @@ namespace Menge
 		, m_thread(nullptr)
 		, m_task(nullptr)
 		, m_complete(true)
+		, m_exit(false)
 	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MarmaladeThreadIdentity::~MarmaladeThreadIdentity()
+	{
+		this->join();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void * s_tread_job( void * _userData )

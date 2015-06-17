@@ -11,6 +11,7 @@ namespace Menge
 	{
 	public:
 		MarmaladeThreadIdentity();
+		~MarmaladeThreadIdentity();
 
     public:
         bool initialize( ServiceProviderInterface * _serviceProvider, const ThreadMutexInterfacePtr & _mutex, int _priority );

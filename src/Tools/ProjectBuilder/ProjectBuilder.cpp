@@ -1139,9 +1139,6 @@ int CALLBACK WinMain( _In_  HINSTANCE hInstance, _In_  HINSTANCE hPrevInstance, 
 	Menge::createConsole();
 
 	run();
-
-	std::cout << "Press ENTER to continue... " << std::flush;
-	std::cin.ignore( std::numeric_limits <std::streamsize> ::max(), '\n' );
 	
 	return 0;
 }

@@ -15,8 +15,6 @@ namespace Menge
 	MarmaladeProgram::MarmaladeProgram()
 		: m_serviceProvider( nullptr )
 		, m_program( 0 )
-		, m_vertexShader( 0 )
-		, m_fragmentShader( 0 )
 		, m_transformLocation( 0 )
 	{
 	}

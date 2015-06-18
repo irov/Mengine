@@ -34,7 +34,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	bool MarmaladeShader::initialize( GLenum _type, const void * _source, size_t _size, bool _isCompile )
 	{
-		GLuint shaderId = glCreateShader( _type );
+		GLuint shaderId;
+		
+		GLCALLR( m_serviceProvider, shaderId, glCreateShader, ( _type ) );
 
 		if( shaderId == 0 )
 		{
@@ -46,22 +48,21 @@ namespace Menge
 			const char * str_source = static_cast<const char *>(_source);
 			GLint str_size = (GLint)_size;
 
-			glShaderSource( shaderId, 1, &str_source, &str_size );
-			glCompileShader( shaderId );
+			GLCALL( m_serviceProvider, glShaderSource, ( shaderId, 1, &str_source, &str_size ) );
+			GLCALL( m_serviceProvider, glCompileShader, ( shaderId ) );
 
-			if( (s3eDeviceGetInt( S3E_DEVICE_OS ) != S3E_OS_ID_WS8 &&
-				s3eDeviceGetInt( S3E_DEVICE_OS ) != S3E_OS_ID_WS81 &&
-				s3eDeviceGetInt( S3E_DEVICE_OS ) != S3E_OS_ID_WP81
-				) ||
-				s3eDeviceGetInt( S3E_DEVICE_DX_FEATURE_LEVEL ) < 93
-				)
+			int32 device = s3eDeviceGetInt( S3E_DEVICE_OS );
+			int32 deviceFeatureLevel = s3eDeviceGetInt( S3E_DEVICE_DX_FEATURE_LEVEL );
+
+			if( (device != S3E_OS_ID_WS8 && device != S3E_OS_ID_WS81 && device != S3E_OS_ID_WP81) ||
+				deviceFeatureLevel < 93 )
 			{
+				IwCompileShadersPlatformType shadersPlatformType = IwGetCompileShadersPlatformType();
 				// This is needed to compile shaders for Windows Store 8/8.1 and Windows Phone 8.1 using the Win32 Marmalade Simulator.
 				// For more information look at README.IwGLES2.txt.
-				if( IwGetCompileShadersPlatformType() == IW_CS_OS_ID_WS8 ||
-					IwGetCompileShadersPlatformType() == IW_CS_OS_ID_WS81 ||
-					IwGetCompileShadersPlatformType() == IW_CS_OS_ID_WP81
-					)
+				if( shadersPlatformType == IW_CS_OS_ID_WS8 ||
+					shadersPlatformType == IW_CS_OS_ID_WS81 ||
+					shadersPlatformType == IW_CS_OS_ID_WP81 )
 				{
 					if( _type == GL_VERTEX_SHADER )
 					{
@@ -76,16 +77,16 @@ namespace Menge
 		}
 		else
 		{
-			glShaderBinary( 1, &shaderId, 0x93B0, _source, _size );
+			GLCALL( m_serviceProvider, glShaderBinary, ( 1, &shaderId, 0x93B0, _source, _size ) );
 		}
 
 		GLint status;
-		glGetShaderiv( shaderId, GL_COMPILE_STATUS, &status );
+		GLCALL( m_serviceProvider, glGetShaderiv, ( shaderId, GL_COMPILE_STATUS, &status ) );
 
 		if( status == GL_FALSE )
 		{
 			GLchar errorLog[1024];
-			glGetShaderInfoLog( shaderId, 1023, NULL, errorLog );
+			GLCALL( m_serviceProvider, glGetShaderInfoLog, ( shaderId, 1023, NULL, errorLog ) );
 
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeShader::initialize compilation shader error '%s'"
 				, errorLog
@@ -101,11 +102,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeShader::finalize()
 	{ 
-		glDeleteShader( m_shaderId );
+		GLCALL( m_serviceProvider, glDeleteShader, ( m_shaderId ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeShader::attach( GLuint _program )
 	{ 
-		glAttachShader( _program, m_shaderId );
+		GLCALL( m_serviceProvider, glAttachShader, ( _program, m_shaderId ) );
 	}
 }	// namespace Menge

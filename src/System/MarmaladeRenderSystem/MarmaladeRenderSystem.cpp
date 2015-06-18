@@ -9,6 +9,8 @@
 
 #	include <cmath>
 
+#	include <stdex/allocator.h>
+
 //////////////////////////////////////////////////////////////////////////
 #	define GET_A_FLOAT_FROM_ARGB32( argb ) ( ((float)(argb >> 24)) / 255.0f )
 #	define GET_R_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 16) & 0xFF)) / 255.0f )
@@ -441,7 +443,7 @@ namespace Menge
 	VBHandle MarmaladeRenderSystem::createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic )
 	{
 		size_t size = _verticesNum * _vertexSize;
-		unsigned char * memory = new unsigned char[size];
+		unsigned char * memory = (unsigned char *)stdex_malloc( size );
 
 		MemoryRange memRange;
 		memRange.pMem = memory;
@@ -479,7 +481,7 @@ namespace Menge
 			return;
 		}
 		
-		delete [] range->pMem;
+		stdex_free( range->pMem );
 
 		if( _vbHandle == m_currentVertexBuffer )
 		{
@@ -540,7 +542,7 @@ namespace Menge
 	IBHandle MarmaladeRenderSystem::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
 	{
 		size_t size = _indiciesNum * sizeof( uint16 );
-		unsigned char * memory = new unsigned char[size];
+		unsigned char * memory = (unsigned char *)stdex_malloc( size );
 
         MemoryRange memRange;
 		memRange.pMem = memory;
@@ -591,7 +593,7 @@ namespace Menge
 			m_currentIndexBuffer = 0;
 		}
 
-		delete [] range->pMem;
+		stdex_free( range->pMem );
 
 #	ifndef __MACH__
 		GLCALL( m_serviceProvider, glDeleteBuffers, ( 1, &range->bufId ) );
@@ -725,7 +727,6 @@ namespace Menge
 			if (textureStage.texture == 0)
 			{
 				GLCALL(m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i));
-				//GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
 				break;
 			}
 
@@ -744,22 +745,6 @@ namespace Menge
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT ) );
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter ) );
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter ) );
-
-			//GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE ) );
-			
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
-// 
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_COMBINE_RGB, textureStage.colorOp) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC0_RGB, textureStage.colorArg1) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC1_RGB, textureStage.colorArg2) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR) );
-// 
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_COMBINE_ALPHA, textureStage.alphaOp) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC0_ALPHA, textureStage.alphaArg1) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_SRC1_ALPHA, textureStage.alphaArg2) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA) );
 		}
 
 		MemoryRange * vb_range;
@@ -780,14 +765,14 @@ namespace Menge
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, ib_range->bufId ) );
 
 		//glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(0));
-		glEnableVertexAttribArray(VERTEX_ARRAY);
-		glEnableVertexAttribArray(COLOR_ARRAY);
-		glEnableVertexAttribArray(UV0_ARRAY);
-		glEnableVertexAttribArray(UV1_ARRAY);
-		glVertexAttribPointer(VERTEX_ARRAY, 3, GL_FLOAT, GL_FALSE, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(0));
-		glVertexAttribPointer(COLOR_ARRAY, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(12));
-		glVertexAttribPointer(UV0_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(16));
-		glVertexAttribPointer(UV1_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(24));
+		GLCALL( m_serviceProvider, glEnableVertexAttribArray, ( VERTEX_ARRAY ) );
+		GLCALL( m_serviceProvider, glEnableVertexAttribArray, ( COLOR_ARRAY ) );
+		GLCALL( m_serviceProvider, glEnableVertexAttribArray, ( UV0_ARRAY ) );
+		GLCALL( m_serviceProvider, glEnableVertexAttribArray, ( UV1_ARRAY ) );
+		GLCALL( m_serviceProvider, glVertexAttribPointer, ( VERTEX_ARRAY, 3, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(0) ) );
+		GLCALL( m_serviceProvider, glVertexAttribPointer, ( COLOR_ARRAY, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(12) ) );
+		GLCALL( m_serviceProvider, glVertexAttribPointer, ( UV0_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(16) ) );
+		GLCALL( m_serviceProvider, glVertexAttribPointer, ( UV1_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(24) ) );
 
 		//GLCALL( m_serviceProvider, glEnableClientState, ( GL_VERTEX_ARRAY ) );
 		//GLCALL( m_serviceProvider, glVertexPointer, ( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) ) );
@@ -1006,8 +991,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha )
 	{
-		GLenum cmpFunc = s_toGLCmpFunc[_alphaFunc];
-		GLclampf ref = (GLclampf)(static_cast<float>( _alpha ) / 255.0f);
+		//GLenum cmpFunc = s_toGLCmpFunc[_alphaFunc];
+		//GLclampf ref = (GLclampf)(static_cast<float>( _alpha ) / 255.0f);
 
 		//GLCALL( m_serviceProvider, glAlphaFunc, ( cmpFunc, ref ) );
 	}

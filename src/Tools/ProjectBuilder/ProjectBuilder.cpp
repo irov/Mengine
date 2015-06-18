@@ -36,6 +36,7 @@
 #	include "XmlToAekConverter.h"
 
 #	include "Interface/StringizeInterface.h"
+#	include "Interface/UnicodeInterface.h"
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/CodecInterface.h"
@@ -1013,8 +1014,6 @@ bool run()
 
 	PyObject * py_tools_module = pybind::module_init( "ToolsBuilderPlugin" );
 
-	LOGGER_ERROR(Menge::serviceProvider)("1");
-
 	pybind::interface_<Menge::PythonLogger>("XlsScriptLogger", true, py_tools_module)
 		.def_native("write", &Menge::PythonLogger::py_write )
 		.def_native("flush", &Menge::PythonLogger::py_flush )
@@ -1083,37 +1082,52 @@ bool run()
 
 	pybind::decref( py_syspath );
 
-	bool exist_run;	
-	PyObject * py_run_module = py_run_module = pybind::module_import( "run", exist_run );
-	
-	if( py_run_module == nullptr )
-	{
-		return false;
-	}
-
 	LPWSTR lpwCmdLine = GetCommandLineW();
 
 
 	int nArgs = 0;
 	LPWSTR * szArglist = CommandLineToArgvW( lpwCmdLine, &nArgs );
 
-	if( nArgs < 1 )
+	if( nArgs < 3 )
 	{
 		return false;
 	}
 
-	PyObject * py_args = pybind::tuple_new( nArgs - 1 );
+	PWSTR szModuleName = szArglist[1];
 
-	for( int i = 1; i != nArgs; ++i )
+	Menge::String utf8_ModuleName;
+	Menge::Helper::unicodeToUtf8( Menge::serviceProvider, szModuleName, utf8_ModuleName );
+
+	PWSTR szFunctionName = szArglist[2];
+
+	Menge::String utf8_FunctionName;
+	Menge::Helper::unicodeToUtf8( Menge::serviceProvider, szFunctionName, utf8_FunctionName );
+
+	LOGGER_ERROR( Menge::serviceProvider )("Module '%s' Function '%s'"
+		, utf8_ModuleName.c_str()
+		, utf8_FunctionName.c_str()
+		);
+
+	bool exist_run;
+	PyObject * py_run_module = py_run_module = pybind::module_import( utf8_ModuleName.c_str(), exist_run );
+
+	if( py_run_module == nullptr )
+	{
+		return false;
+	}
+
+	PyObject * py_args = pybind::tuple_new( nArgs - 3 );
+
+	for( int i = 3; i != nArgs; ++i )
 	{
 		LPWSTR arg = szArglist[i];
 
 		PyObject * py_arg = pybind::ptr( arg );
 
-		pybind::tuple_setitem( py_args, i - 1, py_arg );
+		pybind::tuple_setitem( py_args, i - 3, py_arg );
 	}
 
-	pybind::call_method_native( py_run_module, "run", py_args );
+	pybind::call_method_native( py_run_module, utf8_FunctionName.c_str(), py_args );
 
 	pybind::decref( py_args );
 

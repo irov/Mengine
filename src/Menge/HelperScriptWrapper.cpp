@@ -103,7 +103,7 @@ namespace Menge
 		{
 			printf("debug!\n");
 
-#	ifdef _MSC_VER
+#	if defined(_MSC_VER) && !defined(I3D_ARCH_ARM)
 			_asm int 3;
 #	endif			
 		}

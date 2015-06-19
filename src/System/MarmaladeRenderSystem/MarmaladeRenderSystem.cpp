@@ -201,6 +201,7 @@ namespace Menge
 		    return GL_UNSIGNED_BYTE;
 	    case Menge::PF_A8:
 		    return GL_UNSIGNED_BYTE;
+		case PF_DXT1:
 		case PF_ETC1:
 		case PF_PVRTC4_RGB:
 		case PF_PVRTC4_RGBA:

@@ -92,6 +92,10 @@ bool ImageDecoderPVRTC::_prepareData()
 			{
 				m_dataInfo.format = Menge::PF_ETC1;
 			}break;
+		case DXT1:
+			{
+				m_dataInfo.format = Menge::PF_DXT1;
+			}break;
 		default:
 			{
 				return false; // not supported format

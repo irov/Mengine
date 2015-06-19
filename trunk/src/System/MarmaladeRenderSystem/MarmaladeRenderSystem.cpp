@@ -156,6 +156,8 @@ namespace Menge
 			return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
 		case Menge::PF_PVRTC4_RGBA:
 			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
+		case Menge::PF_DXT1:
+			return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;			
 	    default:;
 	    }
 
@@ -173,12 +175,15 @@ namespace Menge
 		    return GL_RGBA;
 	    case Menge::PF_A8:
 		    return GL_ALPHA;
+
 		case Menge::PF_ETC1:
 			return GL_ETC1_RGB8_OES;
 		case Menge::PF_PVRTC4_RGB:
 			return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
 		case Menge::PF_PVRTC4_RGBA:
 			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
+		case Menge::PF_DXT1:
+			return GL_COMPRESSED_RGB_S3TC_DXT1_EXT;
 	    default:;
 	    }
 

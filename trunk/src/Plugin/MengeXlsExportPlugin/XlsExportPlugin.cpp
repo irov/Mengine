@@ -79,7 +79,7 @@ namespace Menge
 		pybind::initialize( false, false, true );
 
         PyObject * xls_module = pybind::module_init( "Xls" );
-
+		
         pybind::set_currentmodule( xls_module );
 
         XlsScriptLogger * logger = new XlsScriptLogger(m_serviceProvider);
@@ -152,8 +152,8 @@ namespace Menge
 
 		pybind::set_syspath( py_syspath );
 
-		pybind::decref( py_syspath );		
-
+		pybind::decref( py_syspath );
+		
 		this->proccess_( projectCodename.c_str() );
 
 		pybind::finalize();
@@ -176,6 +176,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool XlsExportPlugin::proccess_( const char * _projectName )
 	{
+		PyObject * module_builtins = pybind::get_builtins();
+
+		pybind::def_functor( "Error", this, &XlsExportPlugin::error_, module_builtins );
+
 		bool exist = false;
 		PyObject * py_xlsxExporter = pybind::module_import( "xlsxExporter", exist );
 
@@ -183,10 +187,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		PyObject * module_builtins = pybind::get_builtins();
-
-		pybind::def_functor( "Error", this, &XlsExportPlugin::error_, module_builtins );
 
 		pybind::call_method( py_xlsxExporter, "export", "(s)"
 			, _projectName

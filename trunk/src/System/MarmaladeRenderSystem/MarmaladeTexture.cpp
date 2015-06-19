@@ -135,6 +135,7 @@ namespace Menge
 		case GL_ETC1_RGB8_OES:
 		case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
 		case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
 			{				
 				IF_GLCALL( m_serviceProvider, glCompressedTexImage2D, ( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, m_lockMemory ) )
 				{

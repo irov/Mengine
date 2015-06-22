@@ -103,9 +103,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeProgram::bindTexture( unsigned int _textureInd, int _texture ) const
 	{
-		GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + _textureInd) );
-		GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, _texture) );
-		
+	
 		if( _textureInd > 1 || m_samplerLocation[_textureInd] < 0 )
 		{
 			return;

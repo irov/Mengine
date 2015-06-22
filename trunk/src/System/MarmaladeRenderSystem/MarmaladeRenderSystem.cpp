@@ -1137,32 +1137,28 @@ namespace Menge
 
 		if( tuid == 0 )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createImage invalid gen texture for mipmap %d size %d:%d channel %d depth %d PF %d"
-				, _mipmaps
-				, _width
-				, _height
-				, hwChannels
-				, _depth
-				, hwFormat
+
+		}
+
+		MarmaladeTexturePtr texture = m_factoryTexture.createObjectT();
+
+		if( texture->initialize(
+			m_serviceProvider
+			, ERIM_NORMAL
+			, _mipmaps
+			, _width
+			, _height
+			, hwChannels
+			, hwFormat
+			, textureInternalFormat
+			, textureColorFormat
+			, textureColorDataType ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createImage invalid initialize"
 				);
 
 			return nullptr;
 		}
-
-        MarmaladeTexture * texture = m_factoryTexture.createObjectT();
-
-		texture->initialize(
-			m_serviceProvider
-            , tuid
-			, ERIM_NORMAL
-			, _mipmaps
-            , _width
-            , _height
-            , hwChannels
-            , hwFormat
-            , textureInternalFormat
-            , textureColorFormat
-            , textureColorDataType );
 
 		GLenum wrapS = GL_CLAMP_TO_EDGE;
 		GLenum wrapT = GL_CLAMP_TO_EDGE;
@@ -1331,27 +1327,10 @@ namespace Menge
 			return nullptr;
 		}
 
-		GLuint tuid = 0;
-		GLCALL( m_serviceProvider, glGenTextures, (1, &tuid) );
+		MarmaladeTexturePtr texture = m_factoryTexture.createObjectT();
 
-		if( tuid == 0 )
-		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createDynamicImage invalid gen texture for size %d:%d channel %d depth %d PF %d"
-				, _width
-				, _height
-				, hwChannels
-				, _depth
-				, hwFormat
-				);
-
-			return nullptr;
-		}
-
-		MarmaladeTexture * texture = m_factoryTexture.createObjectT();
-
-		texture->initialize( 
+		if( texture->initialize(
 			m_serviceProvider
-			, tuid
 			, ERIM_DYNAMIC
 			, 1
 			, _width
@@ -1360,7 +1339,13 @@ namespace Menge
 			, hwFormat
 			, textureInternalFormat
 			, textureColorFormat
-			, textureColorDataType );
+			, textureColorDataType ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createDynamicImage invalid initialize"
+				);
+
+			return nullptr;
+		}
 
 		GLenum wrapS = GL_CLAMP_TO_EDGE;
 		GLenum wrapT = GL_CLAMP_TO_EDGE;

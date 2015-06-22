@@ -43,6 +43,14 @@ namespace Menge
 				return _event.dead == true;
 			}
 		};
+		//////////////////////////////////////////////////////////////////////////
+		struct FBurritoBisonDistanceEventDead
+		{
+			bool operator()( const DistanceEventDesc & _event ) const
+			{
+				return _event.dead == true;
+			}
+		};
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	BurritoBison::BurritoBison()
@@ -236,6 +244,54 @@ namespace Menge
 
 			TVectorVelocityEventDesc::iterator it_event_erase = std::remove_if( m_velocityEvents.begin(), m_velocityEvents.end(), FBurritoBisonVelocityEventDead() );
 			m_velocityEvents.erase( it_event_erase, m_velocityEvents.end() );
+
+			m_distanceEvents.insert( m_distanceEvents.end(), m_distanceEventsAdd.begin(), m_distanceEventsAdd.end() );
+			m_distanceEventsAdd.clear();
+
+			for( TVectorDistanceEventDesc::iterator
+				it = m_distanceEvents.begin(),
+				it_end = m_distanceEvents.end();
+			it != it_end;
+			++it )
+			{
+				DistanceEventDesc & desc = *it;
+
+				if( desc.dead == true )
+				{
+					continue;
+				}
+
+				bool repeat = false;
+
+				do
+				{
+					repeat = false;
+
+					desc.distance -= m_velocity.x * _timing;
+
+					if( desc.distance > 0.f )
+					{
+						continue;
+					}
+
+					bool result = desc.cb();
+
+					if( result == true )
+					{
+						repeat = true;
+
+						desc.distance += desc.init_distance;
+					}
+					else
+					{
+						desc.dead = true;
+					}
+				}
+				while( repeat == true );
+			}
+
+			TVectorDistanceEventDesc::iterator it_distance_event_erase = std::remove_if( m_distanceEvents.begin(), m_distanceEvents.end(), FBurritoBisonDistanceEventDead() );
+			m_distanceEvents.erase( it_distance_event_erase, m_distanceEvents.end() );
 		}
 
 		_velocity = m_velocity;
@@ -306,6 +362,35 @@ namespace Menge
 
 			desc.dead = true;
 		}
+
+		m_velocityEventsAdd.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::addDistanceEvent( float _distance, const pybind::object & _cb )
+	{
+		DistanceEventDesc desc;
+		desc.init_distance = _distance;
+		desc.distance = _distance;
+		desc.cb = _cb;
+		desc.dead = false;
+
+		m_distanceEventsAdd.push_back( desc );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::removeAllDistanceEvents()
+	{
+		for( TVectorDistanceEventDesc::iterator
+			it = m_distanceEvents.begin(),
+			it_end = m_distanceEvents.end();
+		it != it_end;
+		++it )
+		{
+			DistanceEventDesc & desc = *it;
+
+			desc.dead = true;
+		}
+
+		m_distanceEventsAdd.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool BurritoBison::testVelocityEvent_( const VelocityEventDesc & _desc ) const

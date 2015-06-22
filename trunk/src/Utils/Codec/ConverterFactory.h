@@ -19,7 +19,7 @@ namespace Menge
         {
         }
 
-        virtual ~ConverterFactory()
+        ~ConverterFactory()
         {
         }
 

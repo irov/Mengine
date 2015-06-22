@@ -33,11 +33,26 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeTexture::initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
+    bool MarmaladeTexture::initialize( ServiceProviderInterface * _serviceProvider, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
     {
 		m_serviceProvider = _serviceProvider;
+
+		GLuint tuid = 0;
+		GLCALL( m_serviceProvider, glGenTextures, (1, &tuid) );
+
+		if( tuid == 0 )
+		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeTexture::initialize invalid gen texture for size %d:%d channel %d PF %d"
+				, _width
+				, _height
+				, _channels
+				, _format
+				);
+
+			return false;
+		}
 		        
-		m_uid = _uid;
+		m_uid = tuid;
 		m_mode = _mode;
 		m_hwMipmaps = _mipmaps;
         m_hwWidth = _width;
@@ -47,6 +62,8 @@ namespace Menge
         m_internalFormat = _internalFormat;
         m_format = _format;
         m_type = _type;
+
+		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	ERenderImageMode MarmaladeTexture::getMode() const

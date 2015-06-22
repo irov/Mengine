@@ -50,6 +50,15 @@ namespace Menge
 	class ConverterFactoryInterface
 	{
 	public:
+		ConverterFactoryInterface()
+		{
+		};
+
+		virtual ~ConverterFactoryInterface()
+		{
+		};
+
+	public:
 		virtual ConverterInterfacePtr createConverter() = 0;
         virtual const ConstString & getName() const = 0;
 

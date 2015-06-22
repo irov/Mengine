@@ -73,6 +73,8 @@ namespace Menge
 			.def( "getCollide", &BurritoBison::getCollide )
 			.def( "addVelocityEvent", &BurritoBison::addVelocityEvent )
 			.def( "removeAllVelocityEvents", &BurritoBison::removeAllVelocityEvents )
+			.def( "addDistanceEvent", &BurritoBison::addDistanceEvent )
+			.def( "removeAllDistanceEvents", &BurritoBison::removeAllDistanceEvents )
 			;
 
 		pybind::interface_<BurritoUnit>( "BurritoUnit" )

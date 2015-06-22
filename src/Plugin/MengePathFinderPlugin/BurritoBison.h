@@ -40,6 +40,15 @@ namespace Menge
 		bool dead;
 	};
 	//////////////////////////////////////////////////////////////////////////
+	struct DistanceEventDesc
+	{
+		float init_distance;
+		float distance;
+		pybind::object cb;
+
+		bool dead;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class BurritoBison
 	{
 	public:
@@ -58,6 +67,9 @@ namespace Menge
 	public:
 		void addVelocityEvent( bool _less, const mt::vec3f & _velocity, const pybind::object & _cb );
 		void removeAllVelocityEvents();
+
+		void addDistanceEvent( float _distance, const pybind::object & _cb );
+		void removeAllDistanceEvents();
 
 	public:
 		Node * getNode() const;
@@ -104,6 +116,10 @@ namespace Menge
 		typedef stdex::vector<VelocityEventDesc> TVectorVelocityEventDesc;
 		TVectorVelocityEventDesc m_velocityEvents;
 		TVectorVelocityEventDesc m_velocityEventsAdd;
+
+		typedef stdex::vector<DistanceEventDesc> TVectorDistanceEventDesc;
+		TVectorDistanceEventDesc m_distanceEvents;
+		TVectorDistanceEventDesc m_distanceEventsAdd;
 
 		bool m_neutron;
 		bool m_collide;

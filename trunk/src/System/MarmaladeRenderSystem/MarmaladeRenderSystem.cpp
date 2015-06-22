@@ -730,21 +730,18 @@ namespace Menge
 		{
 			const TextureStage & textureStage = m_textureStage[i];
 
-			if (textureStage.texture == 0)
-			{
-				GLCALL(m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i));
+			GLCALL(m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i));
+
+			if( textureStage.texture == 0 )
+			{				
 				break;
 			}
-
+						
+			GLCALL(m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, textureStage.texture));
 
 			if( m_currentProgram != nullptr )
 			{
 				m_currentProgram->bindTexture( i, textureStage.texture );
-			}
-			else
-			{
-				GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
-				GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, textureStage.texture) );
 			}
 
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS ) );
@@ -795,7 +792,7 @@ namespace Menge
 
         GLenum mode = s_getGLPrimitiveMode( _type );
 		const uint16_t * baseIndex = nullptr;
-		const uint16_t * offsetIndex = baseIndex + _startIndex;
+		const uint16_t * offsetIndex = baseIndex + _startIndex;		
 		GLCALL( m_serviceProvider, glDrawElements, ( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(offsetIndex) ) );
 #	else	
 		//////////////////////////////////////////////////////////////////////////

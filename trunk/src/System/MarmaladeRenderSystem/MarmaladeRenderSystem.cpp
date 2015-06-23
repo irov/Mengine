@@ -1132,14 +1132,6 @@ namespace Menge
 			return nullptr;
 		}
 
-		GLuint tuid = 0;
-		GLCALL( m_serviceProvider, glGenTextures, (1, &tuid) );
-
-		if( tuid == 0 )
-		{
-
-		}
-
 		MarmaladeTexturePtr texture = m_factoryTexture.createObjectT();
 
 		if( texture->initialize(

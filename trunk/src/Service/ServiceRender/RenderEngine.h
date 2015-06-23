@@ -220,9 +220,7 @@ namespace Menge
 		bool m_fullscreen;
 		
 		Resolution m_contentResolution;
-		
-		mt::mat4f m_renderAreaProj;
-        
+		       
         RenderTextureInterfacePtr m_nullTexture;	// dummy white pixel
 		RenderTextureInterfacePtr m_whitePixelTexture;
 

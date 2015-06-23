@@ -454,7 +454,19 @@ namespace Menge
 		m_currentVBHandle = 0;
 		m_currentIBHandle = 0;
 
-		std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
+		m_currentTextureStages = 0;
+		m_currentBaseVertexIndex = 0;
+
+		m_currentMaterialId = 0;
+
+		m_currentStage = nullptr;
+
+		m_currentRenderViewport = nullptr;
+		m_currentRenderCamera = nullptr;
+
+		m_currentProgram = nullptr;
+
+		this->setRenderSystemDefaults_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::onRenderSystemDeviceRestored()
@@ -780,9 +792,6 @@ namespace Menge
 
 		EPrimitiveType primitiveType = material->getPrimitiveType();
 
-// 		glEnable(GL_BLEND);
-// 		glDisable(GL_ALPHA_TEST);
-// 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		RENDER_SYSTEM(m_serviceProvider)->drawIndexedPrimitive( 
 			primitiveType,
 			_renderObject->baseVertexIndex, 
@@ -1215,12 +1224,17 @@ namespace Menge
 			if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
 			{				
 				RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( STRINGIZE_STRING_LOCAL(m_serviceProvider, "OnlyColor")
+					->getMaterial( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Color_Blend")
 					, false, false
 					, ro_material->getPrimitiveType()
 					, 0
 					, nullptr
 					);
+
+				if( new_material == nullptr )
+				{
+					return;
+				}
 
 				ro_material = new_material;
 			}

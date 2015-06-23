@@ -2637,47 +2637,123 @@ namespace Menge
 			return py_position;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_gridBurnTransparency( Grid2D * _grid, const mt::vec2f & _pos, float _radius, float _ellipse, float _penumbra )
+		class AffectorGridBurnTransparency
+			: public Affector
 		{
-			float width = _grid->getWidth();
-			float height = _grid->getHeight();
-
-			uint32_t countX = _grid->getCountX();
-			uint32_t countY = _grid->getCountY();
-
-			float pos_step_x = width / float( countX - 1 );
-			float pos_step_y = height / float( countY - 1 );
-
-			for( uint32_t j = 0; j != countY; ++j )
+		public:
+			AffectorGridBurnTransparency()
+				: m_grid( nullptr )
+				, m_pos( 0.f, 0.f )
+				, m_time( 0.f )
+				, m_radius( 0.f )
+				, m_ellipse( 0.f )
+				, m_penumbra( 0.f )
+				, m_timing( 0.f )
 			{
-				for( uint32_t i = 0; i != countX; ++i )
+			}
+
+		public:
+			void initialize( Grid2D * _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra )
+			{
+				m_grid = _grid;
+				m_pos = _pos;
+				m_time = _time;
+				m_radius = _radius;
+				m_ellipse = _ellipse;
+				m_penumbra = _penumbra;
+			}
+
+		protected:
+			bool affect( float _timing ) override
+			{
+				m_timing += _timing;
+
+				bool complete = false;
+				if( m_timing + _timing > m_time )
 				{
-					mt::vec2f grid_pos( pos_step_x * i, pos_step_y * j );
+					m_timing = m_time;
+					complete = true;
+				}
 
-					mt::vec2f v = _pos - grid_pos;
-					v.y /= _ellipse;
+				float a1 = m_timing / m_time;
 
-					float pos_distance = v.length();
+				float radius = m_radius * a1;
+				float penumbra = m_penumbra * a1;
 
-					if( pos_distance < _radius )
+				float width = m_grid->getWidth();
+				float height = m_grid->getHeight();
+
+				uint32_t countX = m_grid->getCountX();
+				uint32_t countY = m_grid->getCountY();
+
+				float pos_step_x = width / float( countX - 1 );
+				float pos_step_y = height / float( countY - 1 );
+
+				for( uint32_t j = 0; j != countY; ++j )
+				{
+					for( uint32_t i = 0; i != countX; ++i )
 					{
-						_grid->setGridColor( i, j, ColourValue( 0x00FFFFFF ) );
-					}
-					else if( pos_distance < _radius + _penumbra )
-					{
-						ColourValue cv;
-						_grid->getGridColor( i, j, cv );
+						mt::vec2f grid_pos( pos_step_x * i, pos_step_y * j );
 
-						float cv_a = cv.getA();
+						float pos_distance = mt::length_v2_v2( m_pos, grid_pos );
 
-						float a0 = (pos_distance - _radius) / _penumbra;
+						if( pos_distance < radius )
+						{
+							m_grid->setGridColor( i, j, ColourValue( 0x00FFFFFF ) );
+						}
+						else if( pos_distance < radius + penumbra )
+						{
+							ColourValue cv;
+							m_grid->getGridColor( i, j, cv );
 
-						float total_a = cv_a * a0;
+							float cv_a = cv.getA();
 
-						_grid->setGridColor( i, j, ColourValue( total_a, 1.f, 1.f, 1.f ) );
+							float a0 = (pos_distance - radius) / penumbra;
+
+							float total_a = cv_a * a0;
+
+							m_grid->setGridColor( i, j, ColourValue( total_a, 1.f, 1.f, 1.f ) );
+						}
 					}
 				}
+
+				return complete;
 			}
+
+			void complete() override
+			{
+			}
+
+			void stop() override
+			{
+			}
+
+		protected:
+			Grid2D * m_grid;
+
+			mt::vec2f m_pos;
+			float m_time;
+			float m_radius;
+			float m_ellipse;
+			float m_penumbra;
+
+			float m_timing;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		FactoryPoolStore<AffectorGridBurnTransparency, 4> m_factoryAffectorGridBurnTransparency;
+		//////////////////////////////////////////////////////////////////////////
+		uint32_t s_gridBurnTransparency( Grid2D * _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra )
+		{
+			AffectorGridBurnTransparency * affector = m_factoryAffectorGridBurnTransparency.createObjectT();
+
+			affector->setServiceProvider( m_serviceProvider );
+			affector->setAffectorType( ETA_USER );
+
+			affector->initialize( _grid, _pos, _time, _radius, _ellipse, _penumbra );
+
+			uint32_t id = _grid->addAffector( affector );
+
+			return id;
 		}
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getCursorPosition()

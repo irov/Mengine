@@ -292,9 +292,11 @@ namespace	Menge
 		const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		size_t verticesCount = m_verticesWM.size();
+
+		const mt::box2f & bb = this->getBoundingBox();
 		
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, vertices, verticesCount, indices, indicesCount, nullptr );
+			->addRenderObject( _viewport, _camera, material, vertices, verticesCount, indices, indicesCount, &bb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Grid2D::updateVerticesWM_()
@@ -338,5 +340,21 @@ namespace	Menge
 		Node::_invalidateWorldMatrix();
 
 		m_invalidateVerticesWM = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Grid2D::_updateBoundingBox( mt::box2f & _boundingBox ) const
+	{
+		const mt::mat4f & wm = this->getWorldMatrix();
+
+		mt::vec2f minimal( 0.f, 0.f );
+		mt::vec2f maximal( m_width, m_height );
+
+		mt::vec2f minimal_wm;
+		mt::mul_v2_m4( minimal_wm, minimal, wm );
+
+		mt::vec2f maximal_wm;
+		mt::mul_v2_m4( maximal_wm, maximal, wm );
+
+		mt::set_box_from_min_max( _boundingBox, minimal_wm, maximal_wm );
 	}
 }

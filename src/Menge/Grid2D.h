@@ -52,6 +52,8 @@ namespace Menge
 
     protected:
 		void _invalidateWorldMatrix() override;
+
+		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 		
 	protected:
 		void updateVerticesWM_();

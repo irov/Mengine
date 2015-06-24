@@ -726,7 +726,7 @@ namespace Menge
 			m_currentProgram->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix );
 		}
 
-		for (uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i)
+		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
 			const TextureStage & textureStage = m_textureStage[i];
 
@@ -741,7 +741,7 @@ namespace Menge
 
 			if( m_currentProgram != nullptr )
 			{
-				m_currentProgram->bindTexture( i, textureStage.texture );
+				m_currentProgram->bindTexture( i );
 			}
 
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, textureStage.wrapS ) );
@@ -761,7 +761,6 @@ namespace Menge
 		{
 			return;
 		}
-				
 
 #	ifndef __MACH__
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, vb_range->bufId ) );
@@ -776,19 +775,6 @@ namespace Menge
 		GLCALL( m_serviceProvider, glVertexAttribPointer, ( COLOR_ARRAY, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(12) ) );
 		GLCALL( m_serviceProvider, glVertexAttribPointer, ( UV0_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(16) ) );
 		GLCALL( m_serviceProvider, glVertexAttribPointer, ( UV1_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(24) ) );
-
-		//GLCALL( m_serviceProvider, glEnableClientState, ( GL_VERTEX_ARRAY ) );
-		//GLCALL( m_serviceProvider, glVertexPointer, ( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) ) );
-
-		//GLCALL( m_serviceProvider, glEnableClientState, ( GL_COLOR_ARRAY ) );
-		//GLCALL( m_serviceProvider, glColorPointer, ( 4, GL_UNSIGNED_BYTE, 32, reinterpret_cast<const GLvoid *>( 12 ) ) );
-
-		//GLCALL( m_serviceProvider, glEnableClientState, ( GL_TEXTURE_COORD_ARRAY ) );
-
-		//GLCALL( m_serviceProvider, glClientActiveTexture, ( GL_TEXTURE0 ) );
-		//GLCALL( m_serviceProvider, glTexCoordPointer, ( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 16 ) ) );
-		//GLCALL( m_serviceProvider, glClientActiveTexture, ( GL_TEXTURE1 ) );
-		//GLCALL( m_serviceProvider, glTexCoordPointer, ( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 24 ) ) );
 
         GLenum mode = s_getGLPrimitiveMode( _type );
 		const uint16_t * baseIndex = nullptr;

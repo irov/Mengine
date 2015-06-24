@@ -101,15 +101,16 @@ namespace Menge
 		GLCALL( m_serviceProvider, glUniformMatrix4fv, (m_transformLocation, 1, GL_FALSE, m_mvpMat.buff()) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeProgram::bindTexture( unsigned int _textureInd, int _texture ) const
-	{
-	
+	void MarmaladeProgram::bindTexture( unsigned int _textureInd ) const
+	{	
 		if( _textureInd > 1 || m_samplerLocation[_textureInd] < 0 )
 		{
 			return;
 		}
 
-		GLCALL( m_serviceProvider, glUniform1i, (m_samplerLocation[_textureInd], _textureInd) );
+		int sampler = m_samplerLocation[_textureInd];
+
+		GLCALL( m_serviceProvider, glUniform1i, (sampler, _textureInd) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeProgram::finalize()

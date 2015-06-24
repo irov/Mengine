@@ -42,7 +42,7 @@ include_directories(${SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Python)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)
 
-include_directories(${SOURCE_DIR}/include ${CMAKE_CURRENT_SOURCE_DIR}/../../Python/PC)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Python/PC)
 
 add_library( ${PROJECT_NAME}_static STATIC ${sources} )
 

@@ -136,7 +136,6 @@ struct _inittab _PyImport_Inittab[] = {
     {"zlib", PyInit_zlib},
 	{"pyexpat", PyInit_pyexpat},
 	{"_socket", PyInit__socket},
-	{"_ssl", PyInit__ssl},
 	{"unicodedata", PyInit_unicodedata},
 
     /* CJK codecs */

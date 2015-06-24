@@ -121,6 +121,13 @@ namespace Menge
 
 			if( this->loadFragmentShader_( name, _pakName, filePath, isCompile ) == false )
 			{
+				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid load fragment shader %s compile %d"
+					, _pakName.c_str()
+					, _fileName.c_str()
+					, filePath.c_str()
+					, isCompile
+					);
+
 				return false;
 			}
 		}
@@ -150,6 +157,13 @@ namespace Menge
 
 			if( this->loadVertexShader_( name, _pakName, filePath, isCompile ) == false )
 			{
+				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid load vertex shader %s compile %d"
+					, _pakName.c_str()
+					, _fileName.c_str()
+					, filePath.c_str()
+					, isCompile
+					);
+
 				return false;
 			}
 		}
@@ -184,8 +198,25 @@ namespace Menge
 			const RenderShaderInterfacePtr & vertexShader = this->getVertexShader_( vertexShaderName );
 			const RenderShaderInterfacePtr & fragmentShader = this->getFragmentShader_( fragmentShaderName );
 
-			stage.program = RENDER_SYSTEM( m_serviceProvider )
-				->createProgram( vertexShader, fragmentShader );
+			if( vertexShader != nullptr && fragmentShader != nullptr )
+			{
+				RenderProgramInterfacePtr program = RENDER_SYSTEM( m_serviceProvider )
+					->createProgram( vertexShader, fragmentShader );
+
+				if( program == nullptr )
+				{
+					LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid create program vertex %s fragment %s"
+						, _pakName.c_str()
+						, _fileName.c_str()
+						, vertexShaderName.c_str()
+						, fragmentShaderName.c_str()
+						);
+
+					return false;
+				}
+
+				stage.program = program;
+			}
 
 			const Metacode::Meta_DataBlock::Meta_Material::TVectorMeta_TextureStages & include_TextureStages = meta_Material.get_IncludesTextureStages();
 
@@ -214,6 +245,12 @@ namespace Menge
 
 			if( this->createRenderStageGroup( name, stage ) == false )
 			{
+				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid create stage group %s"
+					, _pakName.c_str()
+					, _fileName.c_str()
+					, name.c_str()
+					);
+
 				return false;
 			}
 

@@ -2710,7 +2710,12 @@ namespace Menge
 
 							float a0 = (pos_distance - radius) / penumbra;
 
-							float total_a = cv_a * a0;
+							float total_a = a0;
+							
+							if( mt::equal_f_z( cv_a ) == true )
+							{
+								total_a = 0.f;
+							}
 
 							m_grid->setGridColor( i, j, ColourValue( total_a, 1.f, 1.f, 1.f ) );
 						}

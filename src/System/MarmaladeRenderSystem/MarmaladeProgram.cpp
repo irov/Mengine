@@ -71,7 +71,7 @@ namespace Menge
 			GLchar errorLog[1024] = {0};
 			GLCALL( m_serviceProvider, glGetProgramInfoLog, ( program, 1023, NULL, errorLog ) );
 
-			LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::shaderProgram - shader linking error '%s'"
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeProgram::shaderProgram - shader linking error '%s'"
 				, errorLog
 				);
 

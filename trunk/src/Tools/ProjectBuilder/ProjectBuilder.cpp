@@ -933,7 +933,11 @@ static void s_error( const wchar_t * _msg )
 static bool getRegValue(const WCHAR * _path, WCHAR * _value )
 {
 	HKEY hKey;
-	LONG lRes = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _path, 0, KEY_READ, &hKey);
+	LONG lRes = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _path, 0, KEY_READ, &hKey);  // Check Python x32
+	if( lRes == ERROR_FILE_NOT_FOUND )
+	{
+		lRes = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey);  // Check Python x64
+	}
 
 	if( lRes != ERROR_SUCCESS )
 	{

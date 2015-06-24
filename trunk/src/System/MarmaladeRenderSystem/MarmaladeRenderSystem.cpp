@@ -767,19 +767,25 @@ namespace Menge
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, ib_range->bufId ) );
 
 		//glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(0));
-		GLCALL( m_serviceProvider, glEnableVertexAttribArray, ( VERTEX_ARRAY ) );
-		GLCALL( m_serviceProvider, glEnableVertexAttribArray, ( COLOR_ARRAY ) );
-		GLCALL( m_serviceProvider, glEnableVertexAttribArray, ( UV0_ARRAY ) );
-		GLCALL( m_serviceProvider, glEnableVertexAttribArray, ( UV1_ARRAY ) );
-		GLCALL( m_serviceProvider, glVertexAttribPointer, ( VERTEX_ARRAY, 3, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(0) ) );
-		GLCALL( m_serviceProvider, glVertexAttribPointer, ( COLOR_ARRAY, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(12) ) );
-		GLCALL( m_serviceProvider, glVertexAttribPointer, ( UV0_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(16) ) );
-		GLCALL( m_serviceProvider, glVertexAttribPointer, ( UV1_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(24) ) );
+		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (VERTEX_ARRAY) );
+		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (COLOR_ARRAY) );
+		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (UV0_ARRAY) );
+		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (UV1_ARRAY) );
+
+		GLCALL( m_serviceProvider, glVertexAttribPointer, (VERTEX_ARRAY, 3, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(0)) );
+		GLCALL( m_serviceProvider, glVertexAttribPointer, (COLOR_ARRAY, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(12)) );
+		GLCALL( m_serviceProvider, glVertexAttribPointer, (UV0_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(16)) );
+		GLCALL( m_serviceProvider, glVertexAttribPointer, (UV1_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(24)) );
 
         GLenum mode = s_getGLPrimitiveMode( _type );
 		const uint16_t * baseIndex = nullptr;
 		const uint16_t * offsetIndex = baseIndex + _startIndex;		
 		GLCALL( m_serviceProvider, glDrawElements, ( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(offsetIndex) ) );
+
+		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (VERTEX_ARRAY) );
+		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (COLOR_ARRAY) );
+		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (UV0_ARRAY) );
+		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (UV1_ARRAY) );
 #	else	
 		//////////////////////////////////////////////////////////////////////////
 		//////////////////////////////////////////////////////////////////////////

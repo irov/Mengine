@@ -28,7 +28,7 @@ namespace Menge
 		void use() const;
 
 		void bindMatrix( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix ) const;
-		void bindTexture(unsigned int _textureInd, int _texture) const;
+		void bindTexture( unsigned int _textureInd ) const;
 
 	protected:
 		GLuint createShader_( GLenum type, const char * _source );

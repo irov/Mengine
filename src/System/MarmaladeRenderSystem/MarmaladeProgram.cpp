@@ -32,9 +32,16 @@ namespace Menge
 	{ 
 		return m_serviceProvider;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & MarmaladeProgram::getName() const
+	{ 
+		return m_name;
+	}
     //////////////////////////////////////////////////////////////////////////
-	bool MarmaladeProgram::initialize( const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader )
+	bool MarmaladeProgram::initialize( const ConstString & _name, const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader )
 	{
+		m_name = _name;
+
 		GLuint program = glCreateProgram();
 
 		if( program == 0 )

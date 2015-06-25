@@ -17,9 +17,12 @@ namespace Menge
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
 		ServiceProviderInterface * getServiceProvider() override;
+	
+	public:
+		const ConstString & getName() const override;
 
     public:
-		bool initialize( GLenum type, const void * _source, size_t _size, bool _isCompile );
+		bool initialize( const ConstString & _name, GLenum type, const void * _source, size_t _size, bool _isCompile );
 		void finalize();
 
 	public:
@@ -30,6 +33,8 @@ namespace Menge
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
+
+		ConstString m_name;
 
 		GLuint m_shaderId;
 	};

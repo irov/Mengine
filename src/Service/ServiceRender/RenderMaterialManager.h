@@ -69,6 +69,8 @@ namespace Menge
 		const RenderShaderInterfacePtr & getVertexShader_( const ConstString & _name ) const;
 		const RenderShaderInterfacePtr & getFragmentShader_( const ConstString & _name ) const;
 
+		const RenderProgramInterfacePtr & getProgram_( const ConstString & _name ) const;
+
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
@@ -94,5 +96,8 @@ namespace Menge
 		typedef stdex::map<ConstString, RenderShaderInterfacePtr> TMapRenderShaders;
 		TMapRenderShaders m_vertexShaders;
 		TMapRenderShaders m_fragmentShaders;
+
+		typedef stdex::map<ConstString, RenderProgramInterfacePtr> TMapRenderPrograms;
+		TMapRenderPrograms m_programs;
     };
 }

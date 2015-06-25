@@ -779,7 +779,7 @@ namespace Menge
 
         GLenum mode = s_getGLPrimitiveMode( _type );
 		const uint16_t * baseIndex = nullptr;
-		const uint16_t * offsetIndex = baseIndex + _startIndex;		
+		const uint16_t * offsetIndex = baseIndex + _startIndex;
 		GLCALL( m_serviceProvider, glDrawElements, ( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(offsetIndex) ) );
 
 		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (VERTEX_ARRAY) );

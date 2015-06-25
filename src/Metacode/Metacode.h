@@ -346,60 +346,31 @@ namespace Metacode
                 return true;
             }
             
-            bool has_Program_FragmentShader() const
+            bool has_Program_Name() const
             {
-                return Program_FragmentShader_successful;
+                return Program_Name_successful;
             }
             
-            bool get_Program_FragmentShader( Menge::ConstString & _value ) const
+            bool get_Program_Name( Menge::ConstString & _value ) const
             {
-                if( Program_FragmentShader_successful == false )
+                if( Program_Name_successful == false )
                 {
                     return false;
                 }
             
-                _value = this->Program_FragmentShader;
+                _value = this->Program_Name;
             
                 return true;
             }
             
-            bool swap_Program_FragmentShader( Menge::ConstString & _value ) const
+            bool swap_Program_Name( Menge::ConstString & _value ) const
             {
-                if( Program_FragmentShader_successful == false )
+                if( Program_Name_successful == false )
                 {
                     return false;
                 }
             
-                std::swap(_value, this->Program_FragmentShader);
-            
-                return true;
-            }
-            
-            bool has_Program_VertexShader() const
-            {
-                return Program_VertexShader_successful;
-            }
-            
-            bool get_Program_VertexShader( Menge::ConstString & _value ) const
-            {
-                if( Program_VertexShader_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->Program_VertexShader;
-            
-                return true;
-            }
-            
-            bool swap_Program_VertexShader( Menge::ConstString & _value ) const
-            {
-                if( Program_VertexShader_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->Program_VertexShader);
+                std::swap(_value, this->Program_Name);
             
                 return true;
             }
@@ -633,10 +604,8 @@ namespace Metacode
             mutable Menge::EBlendFactor BlendFactor_Source;
             bool DepthBufferWrite_Enable_successful;
             mutable bool DepthBufferWrite_Enable;
-            bool Program_FragmentShader_successful;
-            mutable Menge::ConstString Program_FragmentShader;
-            bool Program_VertexShader_successful;
-            mutable Menge::ConstString Program_VertexShader;
+            bool Program_Name_successful;
+            mutable Menge::ConstString Program_Name;
         public:
             typedef stdex::auto_array<Meta_TextureStages> TVectorMeta_TextureStages;
         
@@ -647,6 +616,70 @@ namespace Metacode
         
         protected:
             TVectorMeta_TextureStages includes_Meta_TextureStages;
+        };
+        
+        class Meta_Program
+            : public Metabuf::Metadata
+        { 
+        public:
+            Meta_Program();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const Menge::ConstString & get_Name() const
+            {
+                return this->Name;
+            }
+            
+            void swap_Name( Menge::ConstString & _value ) const
+            {
+                std::swap( _value, this->Name);
+            }
+            
+            const Menge::ConstString & get_Platform() const
+            {
+                return this->Platform;
+            }
+            
+            void swap_Platform( Menge::ConstString & _value ) const
+            {
+                std::swap( _value, this->Platform);
+            }
+            
+            const Menge::ConstString & get_FragmentShader_Name() const
+            {
+                return this->FragmentShader_Name;
+            }
+            
+            void swap_FragmentShader_Name( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->FragmentShader_Name);
+            }
+            
+            const Menge::ConstString & get_VertexShader_Name() const
+            {
+                return this->VertexShader_Name;
+            }
+            
+            void swap_VertexShader_Name( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->VertexShader_Name);
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::ConstString Name;
+            mutable Menge::ConstString Platform;
+            mutable Menge::ConstString FragmentShader_Name;
+            mutable Menge::ConstString VertexShader_Name;
         };
         
         class Meta_VertexShader
@@ -4360,6 +4393,16 @@ namespace Metacode
     
     protected:
         TVectorMeta_Material includes_Meta_Material;
+    public:
+        typedef stdex::auto_array<Meta_Program> TVectorMeta_Program;
+    
+        const TVectorMeta_Program & get_IncludesProgram() const
+        {
+            return this->includes_Meta_Program;
+        }
+    
+    protected:
+        TVectorMeta_Program includes_Meta_Program;
     public:
         typedef stdex::auto_array<Meta_VertexShader> TVectorMeta_VertexShader;
     

@@ -168,6 +168,73 @@ namespace Menge
 			}
 		}
 
+		const Metacode::Meta_DataBlock::TVectorMeta_Program & includes_Program = datablock.get_IncludesProgram();
+
+		for( Metacode::Meta_DataBlock::TVectorMeta_Program::const_iterator
+			it = includes_Program.begin(),
+			it_end = includes_Program.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_Program & meta_Program = *it;
+
+			const ConstString & name = meta_Program.get_Name();
+			const ConstString & platform = meta_Program.get_Platform();
+
+			if( platform != renderPlatformName )
+			{
+				continue;
+			}
+
+			const ConstString & vertexShaderName = meta_Program.get_VertexShader_Name();
+			const ConstString & fragmentShaderName = meta_Program.get_FragmentShader_Name();
+
+			const RenderShaderInterfacePtr & vertexShader = this->getVertexShader_( vertexShaderName );
+			
+			if( vertexShader == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s program %s not found vertex shader %s"
+					, _pakName.c_str()
+					, _fileName.c_str()
+					, name.c_str()
+					, vertexShaderName.c_str()
+					);
+
+				return false;
+			}
+
+			const RenderShaderInterfacePtr & fragmentShader = this->getFragmentShader_( fragmentShaderName );
+				
+			if( fragmentShader == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s program %s not found fragment shader %s"
+					, _pakName.c_str()
+					, _fileName.c_str()
+					, name.c_str()
+					, fragmentShaderName.c_str()
+					);
+
+				return false;
+			}
+
+			RenderProgramInterfacePtr program = RENDER_SYSTEM( m_serviceProvider )
+				->createProgram( vertexShader, fragmentShader );
+
+			if( program == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid create program vertex %s fragment %s"
+					, _pakName.c_str()
+					, _fileName.c_str()
+					, vertexShaderName.c_str()
+					, fragmentShaderName.c_str()
+					);
+
+				return false;
+			}
+
+			m_programs.insert( std::make_pair( name, program ) );
+		}
+
 		const Metacode::Meta_DataBlock::TVectorMeta_Material & includes_Material = datablock.get_IncludesMaterial();
 
 		for( Metacode::Meta_DataBlock::TVectorMeta_Material::const_iterator
@@ -189,27 +256,17 @@ namespace Menge
 			meta_Material.get_BlendFactor_Source( stage.blendSrc );
 			meta_Material.get_BlendFactor_Dest( stage.blendDst );
 
-			ConstString vertexShaderName;
-			meta_Material.get_Program_VertexShader( vertexShaderName );
-
-			ConstString fragmentShaderName;
-			meta_Material.get_Program_FragmentShader( fragmentShaderName );
-
-			const RenderShaderInterfacePtr & vertexShader = this->getVertexShader_( vertexShaderName );
-			const RenderShaderInterfacePtr & fragmentShader = this->getFragmentShader_( fragmentShaderName );
-
-			if( vertexShader != nullptr && fragmentShader != nullptr )
+			ConstString programName;
+			if( meta_Material.get_Program_Name( programName ) == true )
 			{
-				RenderProgramInterfacePtr program = RENDER_SYSTEM( m_serviceProvider )
-					->createProgram( vertexShader, fragmentShader );
+				const RenderProgramInterfacePtr & program = this->getProgram_( programName );
 
 				if( program == nullptr )
 				{
-					LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid create program vertex %s fragment %s"
+					LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid get program %s"
 						, _pakName.c_str()
 						, _fileName.c_str()
-						, vertexShaderName.c_str()
-						, fragmentShaderName.c_str()
+						, programName.c_str()
 						);
 
 					return false;
@@ -566,5 +623,19 @@ namespace Menge
 		const RenderShaderInterfacePtr & shader = it_found->second;
 
 		return shader;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderProgramInterfacePtr & RenderMaterialManager::getProgram_( const ConstString & _name ) const
+	{
+		TMapRenderPrograms::const_iterator it_found = m_programs.find( _name );
+
+		if( it_found == m_programs.end() )
+		{
+			return RenderProgramInterfacePtr::none();
+		}
+
+		const RenderProgramInterfacePtr & program = it_found->second;
+
+		return program;
 	}
 }

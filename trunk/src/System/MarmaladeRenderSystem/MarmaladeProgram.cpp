@@ -66,7 +66,7 @@ namespace Menge
 		GLint linked;
 		GLCALL( m_serviceProvider, glGetProgramiv, ( program, GL_LINK_STATUS, &linked ) );
 
-		if (linked == GL_FALSE)
+		if( linked == GL_FALSE )
 		{
 			GLchar errorLog[1024] = {0};
 			GLCALL( m_serviceProvider, glGetProgramInfoLog, ( program, 1023, NULL, errorLog ) );

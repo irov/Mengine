@@ -285,6 +285,9 @@ namespace Menge
 	public:
 		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
 		virtual ServiceProviderInterface * getServiceProvider() = 0;
+
+	public:
+		virtual const ConstString & getName() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderShaderInterface> RenderShaderInterfacePtr;
@@ -297,7 +300,7 @@ namespace Menge
 		virtual ServiceProviderInterface * getServiceProvider() = 0;
 	
 	public:
-		virtual bool initialize( const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader ) = 0;
+		virtual const ConstString & getName() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderProgramInterface> RenderProgramInterfacePtr;
@@ -529,10 +532,10 @@ namespace Menge
 		virtual void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) = 0;
 		
 	public:
-		virtual RenderShaderInterfacePtr createFragmentShader( const void * _buffer, size_t _size, bool _isCompile ) = 0;		
-		virtual RenderShaderInterfacePtr createVertexShader( const void * _buffer, size_t _size, bool _isCompile ) = 0;
+		virtual RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) = 0;
+		virtual RenderShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) = 0;
 						
-		virtual RenderProgramInterfacePtr createProgram( const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex ) = 0;
+		virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex ) = 0;
 		virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;
         
 	public:

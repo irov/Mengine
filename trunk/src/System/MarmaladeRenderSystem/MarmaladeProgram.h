@@ -20,8 +20,11 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
 		ServiceProviderInterface * getServiceProvider() override;
 
+	public:
+		const ConstString & getName() const override;
+
     public:
-		bool initialize( const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader );
+		bool initialize( const ConstString & _name, const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader );
 		void finalize();
 
 	public:
@@ -35,6 +38,8 @@ namespace Menge
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
+
+		ConstString m_name;
 
 		GLuint m_program;
 

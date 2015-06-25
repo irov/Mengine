@@ -2103,7 +2103,7 @@ namespace Menge
 
 		D3DTEXTUREADDRESS adrU = s_toD3DTextureAddress( _modeU );	
 
-		if( m_samplerStates[_stage][D3DSAMP_ADDRESSU] != adrU )
+		if( m_samplerStates[_stage][D3DSAMP_ADDRESSU] != (DWORD)adrU)
 		{
 			m_samplerStates[_stage][D3DSAMP_ADDRESSU] = adrU;
 
@@ -2112,7 +2112,7 @@ namespace Menge
 
         D3DTEXTUREADDRESS adrV = s_toD3DTextureAddress( _modeV );
 
-		if( m_samplerStates[_stage][D3DSAMP_ADDRESSV] != adrV )
+		if( m_samplerStates[_stage][D3DSAMP_ADDRESSV] != (DWORD)adrV )
 		{
 			m_samplerStates[_stage][D3DSAMP_ADDRESSV] = adrV;
 
@@ -2154,7 +2154,7 @@ namespace Menge
 
 		D3DCULL mode = s_toD3DCullMode( _mode );
 
-		if( m_renderStates[D3DRS_CULLMODE] == mode )
+		if( m_renderStates[D3DRS_CULLMODE] == (DWORD)mode )
 		{
 			return;
 		}
@@ -2176,7 +2176,7 @@ namespace Menge
 
 		D3DZBUFFERTYPE test = _depthTest ? D3DZB_TRUE : D3DZB_FALSE;
 
-		if( m_renderStates[D3DRS_ZENABLE] == test )
+		if( m_renderStates[D3DRS_ZENABLE] == (DWORD)test )
 		{
 			return;
 		}
@@ -2220,7 +2220,7 @@ namespace Menge
 
 		D3DCMPFUNC func = s_toD3DCmpFunc( _depthFunction );
 
-		if( m_renderStates[D3DRS_ZFUNC] == func )
+		if( m_renderStates[D3DRS_ZFUNC] == (DWORD)func )
 		{
 			return;
 		}
@@ -2242,7 +2242,7 @@ namespace Menge
 
 		D3DFILLMODE mode = s_toD3DFillMode( _mode );
 
-		if( m_renderStates[D3DRS_FILLMODE] == mode )
+		if( m_renderStates[D3DRS_FILLMODE] == (DWORD)mode )
 		{
 			return;
 		}
@@ -2306,7 +2306,7 @@ namespace Menge
 
 		D3DSHADEMODE mode = s_toD3DShadeMode( _sType );
 
-		if( m_renderStates[D3DRS_SHADEMODE] == mode )
+		if( m_renderStates[D3DRS_SHADEMODE] == (DWORD)mode )
 		{
 			return;
 		}
@@ -2372,7 +2372,7 @@ namespace Menge
 
 		D3DCMPFUNC func = s_toD3DCmpFunc( _alphaFunc );
 
-		if( m_renderStates[D3DRS_ALPHAFUNC] != func )
+		if( m_renderStates[D3DRS_ALPHAFUNC] != (DWORD)func )
 		{
 			m_renderStates[D3DRS_ALPHAFUNC] = func;
 
@@ -2422,7 +2422,8 @@ namespace Menge
         }
 				
 		D3DTEXTUREOP colorOp = s_toD3DTextureOp( _textrueOp );
-		if( m_textureStageStates[_stage][D3DTSS_COLOROP] != colorOp )
+
+		if( m_textureStageStates[_stage][D3DTSS_COLOROP] != (DWORD)colorOp )
 		{
 			m_textureStageStates[_stage][D3DTSS_COLOROP] = colorOp;
 
@@ -2430,7 +2431,8 @@ namespace Menge
 		}
 
 		DWORD arg1 = s_toD3DTextureArg( _arg1 );
-		if( m_textureStageStates[_stage][D3DTSS_COLORARG1] != arg1 )
+
+		if( m_textureStageStates[_stage][D3DTSS_COLORARG1] != (DWORD)arg1 )
 		{
 			m_textureStageStates[_stage][D3DTSS_COLORARG1] = arg1;
 
@@ -2457,7 +2459,7 @@ namespace Menge
         }
 
 		D3DTEXTUREOP alphaOp = s_toD3DTextureOp( _textrueOp );
-		if( m_textureStageStates[_stage][D3DTSS_ALPHAOP] != alphaOp )
+		if( m_textureStageStates[_stage][D3DTSS_ALPHAOP] != (DWORD)alphaOp )
 		{
 			m_textureStageStates[_stage][D3DTSS_ALPHAOP] = alphaOp;
 
@@ -2516,7 +2518,7 @@ namespace Menge
 		D3DSAMPLERSTATETYPE textureFilterType = s_toD3DTextureFilterType( _filterType );
 		D3DTEXTUREFILTERTYPE textureFilter = s_toD3DTextureFilter( _filter );
 
-		if( m_samplerStates[_stage][textureFilterType] != textureFilter )
+		if( m_samplerStates[_stage][textureFilterType] != (DWORD)textureFilter )
 		{
 			m_samplerStates[_stage][textureFilterType] = textureFilter;
 
@@ -2539,23 +2541,38 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, ( _declaration ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderShaderInterfacePtr DX9RenderSystem::createFragmentShader( const void * _buffer, size_t _size, bool _isCompile )
+	RenderShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
+		(void)_name;
+		(void)_buffer;
+		(void)_size;
+		(void)_isCompile;
+
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderShaderInterfacePtr DX9RenderSystem::createVertexShader( const void * _buffer, size_t _size, bool _isCompile )
+	RenderShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
 	{
+		(void)_name;
+		(void)_buffer;
+		(void)_size;
+		(void)_isCompile;
+
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderProgramInterfacePtr DX9RenderSystem::createProgram( const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex )
+	RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex )
 	{
+		(void)_name;
+		(void)_fragment;
+		(void)_vertex;
+
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setProgram( const RenderProgramInterfacePtr & _program )
 	{
+		(void)_program;
 		//None
 	}
 	//////////////////////////////////////////////////////////////////////////

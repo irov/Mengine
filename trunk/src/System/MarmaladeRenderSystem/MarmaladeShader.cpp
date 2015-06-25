@@ -31,9 +31,16 @@ namespace Menge
 	{
 		return m_serviceProvider;
 	}
-    //////////////////////////////////////////////////////////////////////////
-	bool MarmaladeShader::initialize( GLenum _type, const void * _source, size_t _size, bool _isCompile )
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & MarmaladeShader::getName() const
 	{
+		return m_name;
+	}
+    //////////////////////////////////////////////////////////////////////////
+	bool MarmaladeShader::initialize( const ConstString & _name, GLenum _type, const void * _source, size_t _size, bool _isCompile )
+	{
+		m_name = _name;
+
 		GLuint shaderId;
 		
 		GLCALLR( m_serviceProvider, shaderId, glCreateShader, ( _type ) );

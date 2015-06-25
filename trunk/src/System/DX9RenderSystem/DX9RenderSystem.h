@@ -94,10 +94,10 @@ namespace Menge
 		void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) override;
 
 	public:
-		RenderShaderInterfacePtr createFragmentShader( const void * _buffer, size_t _size, bool _isCompile ) override;
-		RenderShaderInterfacePtr createVertexShader( const void * _buffer, size_t _size, bool _isCompile ) override;
+		RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
+		RenderShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
 		
-		RenderProgramInterfacePtr createProgram( const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex ) override;
+		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex ) override;
 		void setProgram( const RenderProgramInterfacePtr & _program ) override;
 
 	public:

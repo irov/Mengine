@@ -218,7 +218,7 @@ namespace Menge
 			}
 
 			RenderProgramInterfacePtr program = RENDER_SYSTEM( m_serviceProvider )
-				->createProgram( vertexShader, fragmentShader );
+				->createProgram( name, vertexShader, fragmentShader );
 
 			if( program == nullptr )
 			{
@@ -557,7 +557,7 @@ namespace Menge
 		size_t size = memory.getSize();
 
 		RenderShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
-			->createFragmentShader( buffer, size, isCompile );
+			->createFragmentShader( _name, buffer, size, isCompile );
 
 		if( shader == nullptr )
 		{
@@ -585,7 +585,7 @@ namespace Menge
 		size_t size = memory.getSize();
 
 		RenderShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
-			->createVertexShader( buffer, size, isCompile );
+			->createVertexShader( _name, buffer, size, isCompile );
 
 		if( shader == nullptr )
 		{

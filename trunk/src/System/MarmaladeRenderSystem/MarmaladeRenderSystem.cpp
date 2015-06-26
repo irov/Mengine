@@ -350,19 +350,6 @@ namespace Menge
 			return false;
 		}
 
-		for( uint32_t i = 0; i < MENGE_MAX_TEXTURE_STAGES; ++i )
-		{
-			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA) );
-// 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA) );
-			//GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
-
-			m_textureStage[i] = TextureStage();
-		}
-
 		GLCALL( m_serviceProvider, glFrontFace, ( GL_CW ) );
 		GLCALL( m_serviceProvider, glDisable, ( GL_DEPTH_TEST ) );
 		GLCALL( m_serviceProvider, glDisable, ( GL_STENCIL_TEST ) );
@@ -724,7 +711,7 @@ namespace Menge
 	{
 		if( m_currentProgram != nullptr )
 		{			
-			m_currentProgram->use();
+			m_currentProgram->enable();
 			
 			m_currentProgram->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix );
 		}
@@ -733,14 +720,14 @@ namespace Menge
 		{
 			const TextureStage & textureStage = m_textureStage[i];
 
-			GLCALL(m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i));
-
 			if( textureStage.texture == 0 )
 			{				
 				break;
 			}
-						
-			GLCALL(m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, textureStage.texture));
+
+			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
+
+			GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, textureStage.texture) );
 
 			if( m_currentProgram != nullptr )
 			{
@@ -832,10 +819,25 @@ namespace Menge
 		
 		GLCALL( m_serviceProvider, glDeleteBuffers, ( 1, &bufId ) );
 #	endif
+		
+		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			const TextureStage & textureStage = m_textureStage[i];
 
-// 		GLCALL( m_serviceProvider, glDisableClientState, ( GL_VERTEX_ARRAY ) );
-// 		GLCALL( m_serviceProvider, glDisableClientState, ( GL_COLOR_ARRAY ) );
-// 		GLCALL( m_serviceProvider, glDisableClientState, ( GL_TEXTURE_COORD_ARRAY ) );
+			if( textureStage.texture == 0 )
+			{
+				break;
+			}
+
+			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
+
+			GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, 0) );
+		}
+
+		if( m_currentProgram != nullptr )
+		{
+			m_currentProgram->disable();
+		}
 
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, 0 ) );
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );

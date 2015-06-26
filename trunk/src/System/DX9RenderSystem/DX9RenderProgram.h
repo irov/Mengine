@@ -18,7 +18,7 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() override;
 
 	public:
-		bool initialize( const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader ) override;
+		bool initialize( const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

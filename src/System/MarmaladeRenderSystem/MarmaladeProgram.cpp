@@ -48,7 +48,7 @@ namespace Menge
 		m_name = _name;
 		m_samplerCount = _samplerCount;
 
-		if( m_samplerCount == MENGE_MAX_TEXTURE_STAGES )
+		if( m_samplerCount > MENGE_MAX_TEXTURE_STAGES )
 		{
 			LOGGER_ERROR( m_serviceProvider )("MarmaladeProgram::initialize %s don't support sampler count %d max %d"
 				, _name.c_str()

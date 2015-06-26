@@ -658,6 +658,16 @@ namespace Metacode
                 std::swap(_value, this->FragmentShader_Name);
             }
             
+            uint32_t get_Sampler_Count() const
+            {
+                return this->Sampler_Count;
+            }
+            
+            void swap_Sampler_Count( uint32_t & _value ) const
+            {
+                std::swap(_value, this->Sampler_Count);
+            }
+            
             const Menge::ConstString & get_VertexShader_Name() const
             {
                 return this->VertexShader_Name;
@@ -679,6 +689,7 @@ namespace Metacode
             mutable Menge::ConstString Name;
             mutable Menge::ConstString Platform;
             mutable Menge::ConstString FragmentShader_Name;
+            mutable uint32_t Sampler_Count;
             mutable Menge::ConstString VertexShader_Name;
         };
         

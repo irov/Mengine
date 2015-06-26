@@ -41,12 +41,15 @@ namespace Menge
 	{
 		m_name = _name;
 
-		GLuint shaderId;
-		
+		GLuint shaderId;		
 		GLCALLR( m_serviceProvider, shaderId, glCreateShader, ( _type ) );
 
 		if( shaderId == 0 )
 		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeShader::initialize %s invalid create shader"
+				, _name.c_str()
+				);
+
 			return false;
 		}
 
@@ -84,7 +87,7 @@ namespace Menge
 		}
 		else
 		{
-			GLCALL( m_serviceProvider, glShaderBinary, ( 1, &shaderId, 0x93B0, _source, _size ) );
+			GLCALL( m_serviceProvider, glShaderBinary, (1, &shaderId, GL_PROGRAM_BINARY_ANGLE_DX11, _source, _size) );
 		}
 
 		GLint status;

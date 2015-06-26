@@ -188,6 +188,7 @@ namespace Menge
 
 			const ConstString & vertexShaderName = meta_Program.get_VertexShader_Name();
 			const ConstString & fragmentShaderName = meta_Program.get_FragmentShader_Name();
+			uint32_t samplerCount = meta_Program.get_Sampler_Count();
 
 			const RenderShaderInterfacePtr & vertexShader = this->getVertexShader_( vertexShaderName );
 			
@@ -218,7 +219,7 @@ namespace Menge
 			}
 
 			RenderProgramInterfacePtr program = RENDER_SYSTEM( m_serviceProvider )
-				->createProgram( name, vertexShader, fragmentShader );
+				->createProgram( name, vertexShader, fragmentShader, samplerCount );
 
 			if( program == nullptr )
 			{

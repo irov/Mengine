@@ -24,7 +24,7 @@ namespace Menge
 		const ConstString & getName() const override;
 
     public:
-		bool initialize( const ConstString & _name, const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader );
+		bool initialize( const ConstString & _name, const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader, uint32_t _samplerCount );
 		void finalize();
 
 	public:
@@ -46,11 +46,13 @@ namespace Menge
 
 		MarmaladeShaderPtr m_vertexShader;
 		MarmaladeShaderPtr m_fragmentShader;
+
+		uint32_t m_samplerCount;
 		
 		mutable mt::mat4f m_mvpMat;
 
 		int m_transformLocation;
-		int m_samplerLocation[2];
+		int m_samplerLocation[MENGE_MAX_TEXTURE_STAGES];
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MarmaladeProgram> MarmaladeProgramPtr;

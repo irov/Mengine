@@ -15,8 +15,13 @@ namespace Menge
 	MarmaladeProgram::MarmaladeProgram()
 		: m_serviceProvider( nullptr )
 		, m_program( 0 )
-		, m_transformLocation( 0 )
+		, m_samplerCount( 0 )
+		, m_transformLocation( -1 )		
 	{
+		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			m_samplerLocation[i] = -1;
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeProgram::~MarmaladeProgram()
@@ -38,14 +43,31 @@ namespace Menge
 		return m_name;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool MarmaladeProgram::initialize( const ConstString & _name, const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader )
+	bool MarmaladeProgram::initialize( const ConstString & _name, const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader, uint32_t _samplerCount )
 	{
 		m_name = _name;
+		m_samplerCount = _samplerCount;
 
-		GLuint program = glCreateProgram();
+		if( m_samplerCount == MENGE_MAX_TEXTURE_STAGES )
+		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeProgram::initialize %s don't support sampler count %d max %d"
+				, _name.c_str()
+				, m_samplerCount
+				, MENGE_MAX_TEXTURE_STAGES
+				);
+
+			return false;
+		}
+
+		GLuint program;
+		GLCALLR( m_serviceProvider, program, glCreateProgram, () );
 
 		if( program == 0 )
 		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeProgram::initialize %s invalid create program"
+				, _name.c_str()
+				);
+
 			return false;
 		}
 
@@ -87,8 +109,16 @@ namespace Menge
 				
 		GLCALLR( m_serviceProvider, m_transformLocation, glGetUniformLocation, (program, "mvpMat") );
 
-		GLCALLR( m_serviceProvider, m_samplerLocation[0], glGetUniformLocation, ( program, "inSampler0" ) );
-		GLCALLR( m_serviceProvider, m_samplerLocation[1], glGetUniformLocation, ( program, "inSampler1" ) );
+		for( uint32_t index = 0; index != m_samplerCount; ++index )
+		{
+			char samplerVar[16];
+			sprintf( samplerVar, "inSampler%d", index );
+
+			int location;
+			GLCALLR( m_serviceProvider, location, glGetUniformLocation, (program, samplerVar) );
+
+			m_samplerLocation[index] = location;
+		}
 
 		m_program = program;
 
@@ -114,24 +144,20 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeProgram::bindTexture( uint32_t _index ) const
 	{	
-		int sampler = m_samplerLocation[_index];
-
-		if( _index == 0 )
+		if( _index >= m_samplerCount )
 		{
-			int samplerLocation;
-			GLCALLR( m_serviceProvider, samplerLocation, glGetUniformLocation, (m_program, "inSampler0") );
-			GLCALL( m_serviceProvider, glUniform1i, (samplerLocation, 0) );
-		}
-		else if( _index == 1 )
-		{
-			int samplerLocation;
-			GLCALLR( m_serviceProvider, samplerLocation, glGetUniformLocation, (m_program, "inSampler1") );
-			GLCALL( m_serviceProvider, glUniform1i, (samplerLocation, 1) );
-		}
-		
-		//GLCALLR( m_serviceProvider, m_samplerLocation[1], glGetUniformLocation, (m_program, "inSampler1") );
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeProgram::bindTexture %s invalid support sampler count %d max %d"
+				, m_name.c_str()
+				, _index
+				, m_samplerCount
+				);
 
-		//GLCALL( m_serviceProvider, glUniform1i, (sampler, _index) );
+			return;
+		}
+
+		int location = m_samplerLocation[_index];
+
+		GLCALL( m_serviceProvider, glUniform1i, (location, _index) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeProgram::finalize()

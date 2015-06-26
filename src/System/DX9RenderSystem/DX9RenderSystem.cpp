@@ -2561,11 +2561,12 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex )
+	RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex, uint32_t _samplerCount )
 	{
 		(void)_name;
 		(void)_fragment;
 		(void)_vertex;
+		(void)_samplerCount;
 
 		return nullptr;
 	}

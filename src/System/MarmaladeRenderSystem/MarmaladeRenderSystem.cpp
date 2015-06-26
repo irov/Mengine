@@ -682,13 +682,13 @@ namespace Menge
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderProgramInterfacePtr MarmaladeRenderSystem::createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex )
+	RenderProgramInterfacePtr MarmaladeRenderSystem::createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex, uint32_t _samplerCount )
 	{
 		MarmaladeProgramPtr program = m_factoryProgram.createObjectT();
 
 		program->setServiceProvider( m_serviceProvider );
 		
-		if( program->initialize( _name, _fragment, _vertex ) == false )
+		if( program->initialize( _name, _fragment, _vertex, _samplerCount ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderSystem::createProgram invalid initialize program %s"
 				, _name.c_str()

@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 84;
+        _needVersion = 85;
 
-        if( version != 84 )
+        if( version != 85 )
         {
             return false;
         }
@@ -1119,6 +1119,15 @@ namespace Metacode
         case 4:
             {
                 if( this->read( _buff, _size, _read, this->FragmentShader_Name ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        case 5:
+            {
+                if( this->read( _buff, _size, _read, this->Sampler_Count ) == false )
                 {
                     return false;
                 }

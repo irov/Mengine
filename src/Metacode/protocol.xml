@@ -1,4 +1,4 @@
-<Protocol Version = "84">
+<Protocol Version = "85">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -75,6 +75,8 @@
 
       <Member Node="VertexShader" Name="Name" Type="Menge::ConstString" Required="1"/>
       <Member Node="FragmentShader" Name="Name" Type="Menge::ConstString" Required="1"/>
+      
+      <Member Node="Sampler" Name="Count" Type="uint32_t" Required="1"/>
     </Node>
 
     <Node Name="Material">

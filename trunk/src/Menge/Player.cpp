@@ -1037,9 +1037,6 @@ namespace Menge
 			m_globalHandleSystem->update();
 		}
 
-		NODE_SERVICE( m_serviceProvider )
-			->clearHomeless();
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

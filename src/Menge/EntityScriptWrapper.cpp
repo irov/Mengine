@@ -74,7 +74,7 @@ namespace Menge
 				return nullptr;
 			}
 
-			NODE_SERVICE(m_serviceProvider)
+			NODE_SERVICE( m_serviceProvider )
 				->addHomeless( entity );
 
 			return entity;

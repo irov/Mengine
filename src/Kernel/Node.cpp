@@ -304,8 +304,6 @@ namespace Menge
 		{
             Node * node = (*it);
 
-            //NODE_SERVICE(m_serviceProvider)
-            //    ->addHomeless( node );
             node->deactivate();
 
             Node * parent = node->getParent();
@@ -387,7 +385,7 @@ namespace Menge
 		}
 
 		TListNodeChild::iterator it_found = 
-			intrusive_find( m_children.begin(), m_children.end(), _after );
+			stdex::intrusive_find( m_children.begin(), m_children.end(), _after );
 
 		if( it_found == m_children.end() )
 		{
@@ -413,12 +411,14 @@ namespace Menge
 
 		Node * parent = _node->getParent();
 
+		this->setShallowGrave();
         _node->setShallowGrave();
 
 		if( parent == this )
 		{
 			if( *_insert == _node )
 			{
+				this->removeShallowGrave();
 				_node->removeShallowGrave();
 
 				return true;
@@ -464,6 +464,7 @@ namespace Menge
 		_node->invalidateWorldMatrix();
 		_node->invalidateColor();
 
+		this->removeShallowGrave();
         _node->removeShallowGrave();
 
 		//this->invalidateBoundingBox();
@@ -486,6 +487,8 @@ namespace Menge
 	{
 		this->visit( _visitor );
 
+		this->setShallowGrave();
+
 		Node * single_child = m_children.single();
 
 		if( single_child != nullptr )
@@ -501,6 +504,8 @@ namespace Menge
 				children->visitChildren( _visitor );
 			}
 		}
+
+		this->removeShallowGrave();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::removeChild( Node * _node )
@@ -538,9 +543,9 @@ namespace Menge
     void Node::removeChild_( Node * _node )
     {
         this->_removeChild( _node );
-
-        _node->setParent_( nullptr );
-        _node->setLayer( nullptr );
+		
+		_node->setParent_( nullptr );
+		_node->setLayer( nullptr );
 
         this->eraseChild_( _node );
     }
@@ -605,16 +610,24 @@ namespace Menge
 			{
 				Node * children = (*it);
 
-				if( Node * node = children->findChild( _name, true ) )
+				Node * node = children->findChild( _name, true );
+
+				if( node == nullptr )
 				{
-					return node;
+					continue;
 				}
+
+				return node;
 			}
 		}
-
-		if( Node * node = this->_findChild( _name, _recursion ) )
+		else
 		{
-			return node;
+			Node * node = this->_findChild( _name, _recursion );
+
+			if( node != nullptr )
+			{
+				return node;
+			}
 		}
 
 		return nullptr;
@@ -647,6 +660,7 @@ namespace Menge
 			++it )
 			{
 				Node * children = (*it);
+				
 				if( children->hasChild( _name, true ) == true )
 				{
 					return true;
@@ -708,12 +722,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_freeze( bool _value )
 	{
+		this->setShallowGrave();
+
 		for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
 		{
 			Node * node = *it;
 
 			node->freeze( _value );
 		}
+
+		this->removeShallowGrave();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setSpeedFactor( float _speedFactor )
@@ -1096,6 +1114,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setLayer( Layer * _layer )
 	{
+		if( m_layer == _layer )
+		{
+			return;
+		}
+
 		m_layer = _layer;
 
 		Node * single = m_children.single();
@@ -1157,13 +1180,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateColor()
 	{
-		//ColourValue colour;
-		//this->calcTotalColor(colour);
-
-		//bool fullBlend = (colour.getA() < 0.001f);
-
-		//this->setFullBlend( fullBlend );
-
 		Node * single = m_children.single();
 
 		if( single != nullptr )

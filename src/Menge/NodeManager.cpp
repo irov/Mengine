@@ -65,11 +65,7 @@ namespace Menge
 
 			return nullptr;
 		}
-
-		node->setType( _type );
-
-        node->setServiceProvider( m_serviceProvider );
-		
+				
 		return node;
 	}
     //////////////////////////////////////////////////////////////////////////

@@ -59,6 +59,8 @@ namespace Menge
 	void Point::_destroy()
 	{
 		this->removeLinkedPoint();
+
+		Node::_destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Point::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )

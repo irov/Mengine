@@ -27,7 +27,7 @@ namespace Menge
         void finalize() override;
 
     public:
-        Node * createNode( const ConstString& _type ) override;
+		Node * createNode( const ConstString& _type ) override;
 
     public:
         void addHomeless( Node * _homeless ) override;

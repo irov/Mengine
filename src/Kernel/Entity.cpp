@@ -97,7 +97,21 @@ namespace Menge
             return;
         }
 
+		Node * old_parent = this->getParent();
+		
         EVENTABLE_CALL(m_serviceProvider, m_scriptEventable, EVENT_DESTROY)( this );
+
+		Node * new_parent = this->getParent();
+
+		if( old_parent != new_parent )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Entity::destroy %s:%s script event EVENT_DESTROY replace node to other hierarchy"
+				, this->getType().c_str()
+				, this->getName().c_str()
+				);
+
+			return;
+		}
 
         Factorable::destroy();
 	}

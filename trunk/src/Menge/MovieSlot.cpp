@@ -32,6 +32,8 @@ namespace Menge
                 );
         }
 #	endif
+
+		Node::_destroy();
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_localHide( bool _value )

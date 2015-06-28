@@ -376,7 +376,7 @@ namespace Menge
         unlessCompile.begin();
 #   endif
 
-        m_scene->enable();
+		m_scene->enable();
 
 #   ifndef MENGINE_MASTER_RELEASE
         unlessCompile.end();
@@ -384,7 +384,7 @@ namespace Menge
 
         if( m_arrow != nullptr )
         {
-            m_arrow->enable();
+			m_arrow->enable();
         }
 
 		//Holder<ResourceManager>::get()->_dumpResources( "after compile next scene " + m_scene->getName() );
@@ -1037,6 +1037,9 @@ namespace Menge
 			m_globalHandleSystem->update();
 		}
 
+		NODE_SERVICE( m_serviceProvider )
+			->clearHomeless();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1326,7 +1329,7 @@ namespace Menge
 		RENDER_SERVICE(m_serviceProvider)
 			->endLimitRenderObjects();
 
-		if( m_arrow && m_arrow->hasParent() == false )
+		if( m_arrow != nullptr )
 		{
 			m_arrow->render( m_renderViewport, m_arrowCamera2D, debugMask );
 		}

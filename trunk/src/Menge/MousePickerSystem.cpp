@@ -254,7 +254,7 @@ namespace Menge
 				if( state.picked == true )
 				{
 					state.picked = false;
-					state.trap->onMouseLeave();
+					//state.trap->onMouseLeave();
 				}
 
 				break;

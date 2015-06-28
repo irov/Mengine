@@ -40,7 +40,7 @@ namespace Menge
 			}
 
 			node->setServiceProvider( m_serviceProvider );
-			node->setType( _prototype );                
+			node->setType( _prototype );
 
 			return node;
 		}

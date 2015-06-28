@@ -1513,8 +1513,8 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         Node * createNode( const ConstString & _type )
         {
-            Node * node = NODE_SERVICE(m_serviceProvider)
-                ->createNode( _type );
+			Node * node = NODE_SERVICE( m_serviceProvider )
+				->createNode( _type );
 
             if( node == nullptr )
             {
@@ -2893,12 +2893,18 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         Node * createChildren( Node * _node, const ConstString & _type )
         {
-            Node * newNode = this->createNode(_type );
+			if( _node == nullptr )
+			{
+				return nullptr;
+			}
 
-            if( newNode == NULL )
-            {
-                return NULL;
-            }
+			Node * newNode = NODE_SERVICE( m_serviceProvider )
+				->createNode( _type );
+
+			if( newNode == nullptr )
+			{
+				return nullptr;
+			}
 
             _node->addChild( newNode );
 

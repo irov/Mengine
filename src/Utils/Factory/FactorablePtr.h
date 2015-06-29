@@ -2,7 +2,7 @@
 
 #   include "Factory/Factorable.h"
 
-#   include "stdex/intrusive_ptr.h"
+#   include "stdex/intrusive_ptr_base.h"
 
 #   include <stddef.h>
 #   include <stdint.h>
@@ -13,6 +13,7 @@ namespace Menge
 {
 	class FactorablePtr
         : public Factorable
+		, public stdex::intrusive_ptr_base<FactorablePtr>
 	{
 	public:
 		FactorablePtr();
@@ -25,8 +26,7 @@ namespace Menge
         uint32_t getReference() const;
 
 	public:
-        inline static void intrusive_ptr_add_ref( FactorablePtr * _ptr );
-        inline static void intrusive_ptr_dec_ref( FactorablePtr * _ptr );
+		inline static void intrusive_ptr_destroy( FactorablePtr * _ptr );
 
 #	ifdef STDEX_INTRUSIVE_PTR_DEBUG
 	public:
@@ -37,23 +37,12 @@ namespace Menge
 	protected:
         void _checkDestroy() override;
 #   endif
-
-    protected:
-        uint32_t m_reference;
 	};
-    //////////////////////////////////////////////////////////////////////////
-	inline void FactorablePtr::intrusive_ptr_add_ref( FactorablePtr * _ptr )
-    {
-        ++_ptr->m_reference;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    inline void FactorablePtr::intrusive_ptr_dec_ref( FactorablePtr * _ptr )
-    {
-        if( --_ptr->m_reference == 0 )
-        {
-            _ptr->destroy();
-        }
-    }
+	//////////////////////////////////////////////////////////////////////////
+	inline void FactorablePtr::intrusive_ptr_destroy( FactorablePtr * _ptr )
+	{
+		_ptr->destroy();
+	}
 	//////////////////////////////////////////////////////////////////////////
 #	ifdef STDEX_INTRUSIVE_PTR_DEBUG
 	inline bool FactorablePtr::intrusive_ptr_check_ref( FactorablePtr * _ptr )

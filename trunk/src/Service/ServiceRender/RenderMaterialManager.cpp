@@ -391,11 +391,7 @@ namespace Menge
 
 		const RenderStage * stage = &stageGroup->stage[stageWrapId];
 
-		uint32_t material_hash = 0U;
-		for( uint32_t i = 0; i != _textureCount; ++i )
-		{
-			material_hash += _textures[i]->getId();
-		}
+		uint32_t material_hash = this->makeMaterialHash( _textureCount, _textures );
 
 		uint32_t material_table_index = material_hash % MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
@@ -540,6 +536,19 @@ namespace Menge
 		}
 
 		return ++m_materialEnumerator;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t RenderMaterialManager::makeMaterialHash( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const
+	{
+		uint32_t material_hash = 0U;
+		for( uint32_t i = 0; i != _textureCount; ++i )
+		{
+			uint32_t texture_id = _textures[i]->getId();
+
+			material_hash += texture_id;
+		}
+
+		return material_hash;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMaterialManager::loadFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )

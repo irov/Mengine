@@ -60,6 +60,7 @@ namespace Menge
 
 	protected:
 		uint32_t makeMaterialIndex_();
+		uint32_t makeMaterialHash( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const;
 
 	protected:
 		bool loadFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile );

@@ -264,10 +264,11 @@ namespace Menge
 		bool m_freeze;
 
 	protected:
-		bool m_rendering;
+		mutable bool m_invalidateRendering;
+		mutable bool m_rendering;
 
 	protected:
-		void updateRendering_();
+		void updateRendering_() const;
 
 	protected:
 		void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
@@ -323,6 +324,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isRenderable() const
 	{
+		if( m_invalidateRendering == true )
+		{
+			this->updateRendering_();
+		}
+
 		return m_rendering;
 	}
 	//////////////////////////////////////////////////////////////////////////

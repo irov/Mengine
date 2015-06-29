@@ -2314,7 +2314,7 @@ namespace Menge
 			return;
 		}
 
-		//if( this->getName() == "Movie_OpenNewspaper"
+		//if( this->getName() == "Movie_Effect"
 		//    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
 		//    //&& m_resourceMovieName != "Movie401_StreetToChurch_WallZOOM_otv"
 		//    )

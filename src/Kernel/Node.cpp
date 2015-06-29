@@ -25,6 +25,7 @@ namespace Menge
 		, m_freeze(false)
 		, m_speedFactor(1.f)
 		, m_rendering(false)
+		, m_invalidateRendering(true)
 		, m_parent(nullptr)
 		, m_layer(nullptr)
 		, m_cameraRevision(0)
@@ -141,7 +142,7 @@ namespace Menge
 
 		m_active = true;
 
-        this->updateRendering_();
+		m_invalidateRendering = true;
 
 		Node * single = m_children.single();
 
@@ -227,7 +228,7 @@ namespace Menge
 				
 		this->_afterDeactivate();		
 
-		this->updateRendering_();
+		m_invalidateRendering = true;
 
 		this->removeShallowGrave();
 	}
@@ -819,18 +820,9 @@ namespace Menge
 	{
 		bool result = Resource::compile();
 
-		this->updateRendering_();
+		m_invalidateRendering = true;
 
-		if( result == false )
-		{
-			/*MENGE_LOG_INFO( MENGE_TEXT("Error: compiled Node '%s' is failed\n")
-				, getName().c_str() 
-				);*/
-
-			return false;
-		}
-
-		return true;
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::release()
@@ -867,7 +859,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_recompile()
 	{
-        this->updateRendering_();
+		m_invalidateRendering = true;
 
 		if( m_enable == false )
 		{
@@ -884,7 +876,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void Node::_uncompile()
     {
-        this->updateRendering_();
+		m_invalidateRendering = true;
 
         if( m_enable == false )
         {
@@ -1021,7 +1013,7 @@ namespace Menge
 	{
         (void)_value;
 
-		this->updateRendering_();
+		m_invalidateRendering = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::renderChild_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
@@ -1196,7 +1188,7 @@ namespace Menge
 			}
 		}
 
-		this->updateRendering_();
+		m_invalidateRendering = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & Node::getWorldColor() const
@@ -1254,8 +1246,10 @@ namespace Menge
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::updateRendering_()
+	void Node::updateRendering_() const
 	{
+		m_invalidateRendering = false;
+
 		if( this->isCompile() == false )
 		{
 			m_rendering = false;

@@ -53,13 +53,12 @@ namespace Menge
 		, m_scheduleManagerGlobal(nullptr)
 		, m_renderCamera(nullptr)
 		, m_renderViewport(nullptr)
+		, m_switchSceneTo(nullptr)
 		, m_switchScene(false)
 		, m_removeScene(false)
 		, m_destroyOldScene(false)
 		, m_restartScene(false)
 		, m_arrowHided(false)
-		, m_changeSceneCb(nullptr)
-		, m_removeSceneCb(nullptr)
 		, m_time(0.f)
 		, m_fps(0)	
 		, m_affectorable(nullptr)
@@ -86,18 +85,27 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::setCurrentScene( const ConstString& _name, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb )
+	bool Player::setCurrentScene( Scene * _scene, bool _destroyOld, bool _destroyAfterSwitch, const pybind::object & _cb )
 	{
+		if( _scene == nullptr )
+		{
+			return false;
+		}
+
 		if( m_switchScene == true )
 		{
 			return false;
 		}
 
-		m_switchSceneName = _name;
+		m_switchSceneTo = _scene;
 		
-		if( m_scene != nullptr && m_switchSceneName == m_scene->getName() )
+		if( m_scene != nullptr && m_switchSceneTo == m_scene )
 		{
 			m_restartScene = true;
+		}
+		else
+		{
+			m_restartScene = false;
 		}
 
 		m_switchScene = true;
@@ -106,31 +114,28 @@ namespace Menge
 		m_destroyOldScene = _destroyOld;
 		m_destroyAfterSwitch = _destroyAfterSwitch;
 
-		if( _cb != nullptr && pybind::is_none(_cb) == false )
+		if( _cb.is_valid() == true && _cb.is_none() == false )
 		{
 			m_changeSceneCb = _cb;
-
-			pybind::incref( m_changeSceneCb );
 		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::removeCurrentScene( PyObject * _cb )
+	bool Player::removeCurrentScene( const pybind::object & _cb )
 	{
 		if( m_removeScene == true )
 		{
 			return false;
 		}
 
+		m_restartScene = false;
         m_switchScene = false;
 		m_removeScene = true;
-
-		if( _cb != nullptr && pybind::is_none(_cb) == false )
+		
+		if( _cb.is_valid() == true && _cb.is_none() == false )
 		{
 			m_removeSceneCb = _cb;
-
-			pybind::incref( m_removeSceneCb );
 		}
 
 		return true;
@@ -200,13 +205,12 @@ namespace Menge
 			m_mousePickerSystem->setScene( nullptr );
 		}
 
-		if( m_removeSceneCb != nullptr )
+		if( m_removeSceneCb.is_valid() == true )
 		{
-			PyObject * cb = m_removeSceneCb;
-			m_removeSceneCb = nullptr;
+			pybind::object cb = m_removeSceneCb;
+			m_removeSceneCb.reset();
 
-			pybind::call_t( cb );
-			pybind::decref( cb );
+			cb();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -286,13 +290,6 @@ namespace Menge
 		Scene * oldScene = m_scene;
 		m_scene = nullptr;
 
-		if( m_restartScene && oldScene != nullptr )		// just restart scene
-		{		
-			m_restartScene = false;
-
-			m_switchSceneName = oldScene->getName();
-		}
-
 		if( m_arrow != nullptr )
 		{
 			m_arrow->removeFromParent();
@@ -306,17 +303,30 @@ namespace Menge
 		bool destroyOldScene = m_destroyOldScene;
 		//bool destroyAfterSwitch = m_destroyAfterSwitch;
 
-		if( oldScene != nullptr && destroyOldScene == true )
+		if( m_restartScene == false )
 		{
-            oldScene->destroy();
+			if( oldScene != nullptr && destroyOldScene == true )
+			{
+				oldScene->destroy();
 
-			NODE_SERVICE(m_serviceProvider)
+				NODE_SERVICE( m_serviceProvider )
+					->clearHomeless();
+
+				GRAVEYARD_SERVICE( m_serviceProvider )
+					->clearTextures();
+			}
+		}
+		else
+		{
+			oldScene->disable();
+
+			NODE_SERVICE( m_serviceProvider )
 				->clearHomeless();
 
-			GRAVEYARD_SERVICE(m_serviceProvider)
+			GRAVEYARD_SERVICE( m_serviceProvider )
 				->clearTextures();
 		}
-
+		
 		//m_globalHandleSystem->clear();
 
 		for( TVectorJoins::iterator
@@ -332,41 +342,24 @@ namespace Menge
 
 		m_joins.clear();
 
-        PyObject * cb = m_changeSceneCb;
-        m_changeSceneCb = nullptr;
+		pybind::object cb = m_changeSceneCb;
+		m_changeSceneCb.reset();
         
-        if( cb != nullptr )
+        if( cb.is_valid() == true )
         {
-			pybind::call_t( cb, pybind::ret_none(), false );
+			cb( pybind::ret_none(), false );
         }
         
-        m_scene = PROTOTYPE_SERVICE(m_serviceProvider)
-			->generatePrototypeT<Scene>( CONST_STRING(m_serviceProvider, Scene), m_switchSceneName );
-
-		if( m_scene == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Player::updateChangeScene scene not found %s"
-				, m_switchSceneName.c_str() 
-				);
-
-			if( cb != nullptr )
-			{
-				pybind::call_t( cb, pybind::ret_none(), false	);
-
-				pybind::decref( cb );
-			}
-
-			return;
-		}
+		m_scene = m_switchSceneTo;
 
 		if( m_mousePickerSystem != nullptr )
 		{
 			m_mousePickerSystem->setScene( m_scene );
 		}
 
-		if( cb != nullptr )
+		if( cb.is_valid() == true )
 		{
-			pybind::call_t( cb, m_scene, false );
+			cb( m_scene, false );
 		}
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
@@ -389,10 +382,9 @@ namespace Menge
 
 		//Holder<ResourceManager>::get()->_dumpResources( "after compile next scene " + m_scene->getName() );
 
-		if( cb != nullptr )
+		if( cb.is_valid() == true )
 		{
-			pybind::call_t( cb, m_scene, true );
-			pybind::decref( cb );
+			cb( m_scene, true );
 		}
 
 		return;
@@ -655,11 +647,8 @@ namespace Menge
             m_scene = nullptr;
         }
 
-		pybind::decref(m_removeSceneCb);
-		m_removeSceneCb = nullptr;
-        
-		pybind::decref(m_changeSceneCb);
-		m_changeSceneCb = nullptr;
+		m_removeSceneCb.reset();
+		m_changeSceneCb.reset();
         
         if( m_camera2D != nullptr )
         {

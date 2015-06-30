@@ -55,8 +55,8 @@ namespace Menge
         void finalize();
 
 	public:
-		bool setCurrentScene( const ConstString& _scene, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb );
-		bool removeCurrentScene( PyObject * _cb );
+		bool setCurrentScene( Scene * _scene, bool _destroyOld, bool _destroyAfterSwitch, const pybind::object & _cb );
+		bool removeCurrentScene( const pybind::object & _cb );
 
 		Scene * getCurrentScene() override;
 
@@ -204,7 +204,7 @@ namespace Menge
 
 		bool m_arrowHided;
 		
-		ConstString m_switchSceneName;
+		Scene * m_switchSceneTo;
 
 		bool m_switchScene;
 		bool m_destroyOldScene;
@@ -216,8 +216,8 @@ namespace Menge
 		Resolution m_contentResolution;
 		Resolution m_currentResolution;
 		
-		PyObject* m_changeSceneCb;
-		PyObject* m_removeSceneCb;
+		pybind::object m_changeSceneCb;
+		pybind::object m_removeSceneCb;
 
 		float m_time;
 

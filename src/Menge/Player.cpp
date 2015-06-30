@@ -85,34 +85,25 @@ namespace Menge
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::setCurrentScene( Scene * _scene, bool _destroyOld, bool _destroyAfterSwitch, const pybind::object & _cb )
+	bool Player::setCurrentScene( Scene * _scene, bool _destroyOld, const pybind::object & _cb )
 	{
 		if( _scene == nullptr )
 		{
 			return false;
 		}
 
-		if( m_switchScene == true )
+		if( m_switchScene == true || m_removeScene == true || m_restartScene == true )
 		{
 			return false;
 		}
 
 		m_switchSceneTo = _scene;
 		
-		if( m_scene != nullptr && m_switchSceneTo == m_scene )
-		{
-			m_restartScene = true;
-		}
-		else
-		{
-			m_restartScene = false;
-		}
-
+		m_restartScene = false;
 		m_switchScene = true;
         m_removeScene = false;
 
 		m_destroyOldScene = _destroyOld;
-		m_destroyAfterSwitch = _destroyAfterSwitch;
 
 		if( _cb.is_valid() == true && _cb.is_none() == false )
 		{
@@ -122,9 +113,30 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Player::restartCurrentScene( const pybind::object & _cb )
+	{
+		if( m_switchScene == true || m_removeScene == true || m_restartScene == true )
+		{
+			return false;
+		}
+
+		m_restartScene = true;
+		m_switchScene = false;
+		m_removeScene = true;
+
+		m_destroyOldScene = false;
+
+		if( _cb.is_valid() == true && _cb.is_none() == false )
+		{
+			m_removeSceneCb = _cb;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Player::removeCurrentScene( const pybind::object & _cb )
 	{
-		if( m_removeScene == true )
+		if( m_switchScene == true || m_removeScene == true || m_restartScene == true )
 		{
 			return false;
 		}
@@ -301,7 +313,6 @@ namespace Menge
 		m_affectorable->stopAllAffectors();
 
 		bool destroyOldScene = m_destroyOldScene;
-		//bool destroyAfterSwitch = m_destroyAfterSwitch;
 
 		if( m_restartScene == false )
 		{

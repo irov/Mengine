@@ -25,10 +25,15 @@ namespace Menge
         SERVICE_DECLARE("PlayerService")
 
     public:
-		virtual bool setCurrentScene( Scene * _scene, bool _destroyOld, bool _destroyAfterSwitch, const pybind::object & _cb ) = 0;
+		virtual bool setCurrentScene( Scene * _scene, bool _destroyOld, const pybind::object & _cb ) = 0;
+		virtual bool restartCurrentScene( const pybind::object & _cb ) = 0;
 		virtual bool removeCurrentScene( const pybind::object & _cb ) = 0;
-        virtual Scene * getCurrentScene() = 0;
+        
+		virtual Scene * getCurrentScene() = 0;
 
+		virtual bool isChangedScene() const = 0;
+
+	public:
         virtual float getTime() const = 0;
 
     public:

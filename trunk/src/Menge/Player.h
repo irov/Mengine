@@ -55,12 +55,13 @@ namespace Menge
         void finalize();
 
 	public:
-		bool setCurrentScene( Scene * _scene, bool _destroyOld, bool _destroyAfterSwitch, const pybind::object & _cb );
-		bool removeCurrentScene( const pybind::object & _cb );
+		bool setCurrentScene( Scene * _scene, bool _destroyOld, const pybind::object & _cb ) override;
+		bool restartCurrentScene( const pybind::object & _cb ) override;
+		bool removeCurrentScene( const pybind::object & _cb ) override;
 
 		Scene * getCurrentScene() override;
 
-		bool isChangedScene() const;
+		bool isChangedScene() const override;
 
 	public:
 		void updateChangeScene();
@@ -208,7 +209,6 @@ namespace Menge
 
 		bool m_switchScene;
 		bool m_destroyOldScene;
-		bool m_destroyAfterSwitch;
 		bool m_restartScene;
 
 		bool m_removeScene;

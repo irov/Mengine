@@ -1377,17 +1377,36 @@ namespace Menge
             return factor;
         }
         //////////////////////////////////////////////////////////////////////////
-        void setCurrentScene( const ConstString& _name, bool _destroyOld, bool _destroyAfterSwitch, const pybind::object & _cb )
+        bool setCurrentScene( const ConstString& _name, bool _destroyOld, const pybind::object & _cb )
         {
             LOGGER_INFO(m_serviceProvider)( "set current scene '%s'"
                 , _name.c_str()
                 );
 
-			Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
-				->generatePrototypeT<Scene>( CONST_STRING( m_serviceProvider, Scene ), _name );
+			if( PLAYER_SERVICE( m_serviceProvider )
+				->isChangedScene() == true )
+			{
+				return false;
+			}
 
-            PLAYER_SERVICE(m_serviceProvider)
-				->setCurrentScene( scene, _destroyOld, _destroyAfterSwitch, _cb );
+			Scene * scene = PLAYER_SERVICE( m_serviceProvider )
+				->getCurrentScene();
+
+			if( scene != nullptr && scene->getName() == _name )
+			{
+				PLAYER_SERVICE( m_serviceProvider )
+					->restartCurrentScene( _cb );
+			}
+			else
+			{
+				Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
+					->generatePrototypeT<Scene>( CONST_STRING( m_serviceProvider, Scene ), _name );
+
+				PLAYER_SERVICE( m_serviceProvider )
+					->setCurrentScene( scene, _destroyOld, _cb );
+			}
+
+			return true;
         }
         //////////////////////////////////////////////////////////////////////////
         Scene * getCurrentScene()

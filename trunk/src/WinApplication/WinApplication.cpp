@@ -1744,16 +1744,6 @@ namespace Menge
 		LOGGER_INFO(m_serviceProvider)( "Application Create..."
 			);
 
-		GameServiceInterface * game = m_application->createGame();
-
-		if( game == nullptr )
-		{
-			LOGGER_CRITICAL(m_serviceProvider)("Application create game failed"
-				);
-
-			return false;
-		}
-
 		ConstString resourceIniPath;
 		if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
 		{
@@ -2093,11 +2083,6 @@ namespace Menge
 
 			delete m_fpsMonitor;
 			m_fpsMonitor = nullptr;
-		}
-
-		if( m_application != nullptr )
-		{
-			m_application->finalizeGame();
 		}
 
 		for( TVectorPlugins::iterator

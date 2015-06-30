@@ -79,15 +79,10 @@ namespace Menge
         virtual void setDevelopmentMode( bool _developmentMode ) = 0;
 
     public:
-        virtual bool beginUpdate() = 0;
         virtual void tick( float _timing ) = 0;
-		virtual void endUpdate() = 0;
 
 	public:
         virtual void render() = 0;
-
-    public:
-        virtual PlayerServiceInterface * getPlayer() const = 0;
 
     public:
         virtual void setCursorMode( bool _mode ) = 0;

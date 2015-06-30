@@ -1377,14 +1377,17 @@ namespace Menge
             return factor;
         }
         //////////////////////////////////////////////////////////////////////////
-        void setCurrentScene( const ConstString& _name, bool _destroyOld, bool _destroyAfterSwitch, PyObject* _cb )
+        void setCurrentScene( const ConstString& _name, bool _destroyOld, bool _destroyAfterSwitch, const pybind::object & _cb )
         {
             LOGGER_INFO(m_serviceProvider)( "set current scene '%s'"
                 , _name.c_str()
                 );
 
+			Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
+				->generatePrototypeT<Scene>( CONST_STRING( m_serviceProvider, Scene ), _name );
+
             PLAYER_SERVICE(m_serviceProvider)
-                ->setCurrentScene( _name, _destroyOld, _destroyAfterSwitch, _cb );
+				->setCurrentScene( scene, _destroyOld, _destroyAfterSwitch, _cb );
         }
         //////////////////////////////////////////////////////////////////////////
         Scene * getCurrentScene()
@@ -1683,15 +1686,58 @@ namespace Menge
 				return nullptr;
 			}
 
-			ResourceImageDefault * resImage = RESOURCE_SERVICE(m_serviceProvider)
+			mt::vec2f maxSize;
+
+			if( _maxSize.x < 0.f || _maxSize.y < 0.f )
+			{
+				InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
+					->openInputFile( _pakName, _fileName, false );
+
+				if( stream == nullptr )
+				{
+					return nullptr;
+				}
+
+				ConstString codecType = CODEC_SERVICE( m_serviceProvider )
+					->findCodecType( _fileName );
+
+				ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE( m_serviceProvider )
+					->createDecoderT<ImageDecoderInterfacePtr>( codecType );
+
+				if( imageDecoder == nullptr )
+				{
+					return nullptr;
+				}
+
+				if( imageDecoder->prepareData( stream ) == false )
+				{
+					return nullptr;
+				}
+
+				const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
+
+				maxSize.x = (float)dataInfo->width;
+				maxSize.y = (float)dataInfo->height;
+			}
+			else
+			{
+				maxSize = _maxSize;
+			}
+
+			ResourceImageDefault * resource = RESOURCE_SERVICE( m_serviceProvider )
 				->createResourceT<ResourceImageDefault>( _pakName, ConstString::none(), _resourceName, CONST_STRING(m_serviceProvider, ResourceImageDefault) );
+
+			if( resource == nullptr )
+			{
+				return nullptr;
+			}
 
 			mt::uv4f uv_image;
 			mt::uv4f uv_alpha;
 			
-			resImage->setup( _fileName, ConstString::none(), uv_image, uv_alpha, false, false, _maxSize );
+			resource->setup( _fileName, ConstString::none(), uv_image, uv_alpha, false, false, maxSize );
 
-			return resImage;
+			return resource;
         }
         //////////////////////////////////////////////////////////////////////////
         void minimizeWindow()
@@ -3413,7 +3459,7 @@ namespace Menge
                 ->hasResource( _name, nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
-        void removeCurrentScene( PyObject * _cb )
+        void removeCurrentScene( const pybind::object & _cb )
         {
             PLAYER_SERVICE(m_serviceProvider)
                 ->removeCurrentScene( _cb );

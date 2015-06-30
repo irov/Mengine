@@ -14,6 +14,8 @@
 #   include "Interface/EventInterface.h"
 #   include "Interface/PhysicSystemInterface.h"
 #   include "Interface/ConfigInterface.h"
+#   include "Interface/GameInterface.h"
+#   include "Interface/PlayerInterface.h"
 
 #   include "Interface/StringizeInterface.h"
 
@@ -78,10 +80,8 @@ namespace Menge
 		void setDefaultWindowDescription( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _vsync ) override;
 
 	public:
-		GameServiceInterface * createGame() override;
 		bool loadResourcePacks( const ConstString & _fileGroup, const FilePath & _resourceIni ) override;
 		bool initializeGame( const ConstString & _personalityModule, const ConstString & _language, const FilePath & _accountPath, const String & _scriptInitParams ) override;
-		void finalizeGame() override;
 
 	public:
 		void changeWindowResolution( const Resolution & _resolution ) override;
@@ -109,6 +109,8 @@ namespace Menge
 		bool initializeWatchdog_();
 		bool initializeProfiler_();
 		bool initializeGraveyard_();
+		bool initializePlayer_();
+		bool initializeGame_();
 
 	public:
 		bool createRenderWindow( WindowHandle _renderWindowHandle ) override;
@@ -219,9 +221,7 @@ namespace Menge
 
 		typedef stdex::map<String, DynamicLibraryInterface *> TDynamicLibraries;
 		TDynamicLibraries m_dynamicLibraries;
-
-		GameServiceInterface * m_game;
-
+		
 		Resolution m_currentResolution;
 
 		Viewport m_renderViewport;
@@ -267,6 +267,8 @@ namespace Menge
 		NodeServiceInterface * m_nodeService;		
 		PrototypeServiceInterface * m_prototypeService;
 		GraveyardInterface * m_graveyard;
+		GameServiceInterface * m_gameService;
+		PlayerServiceInterface * m_playerService;
 		Consts * m_consts;
 
 		WatchdogInterface * m_watchdog;

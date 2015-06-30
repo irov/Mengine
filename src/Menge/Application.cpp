@@ -126,6 +126,7 @@ SERVICE_EXTERN(LoaderService, Menge::LoaderServiceInterface);
 SERVICE_EXTERN(ResourceService, Menge::ResourceServiceInterface);
 SERVICE_EXTERN(Watchdog, Menge::WatchdogInterface);
 SERVICE_EXTERN(GameService, Menge::GameServiceInterface);
+SERVICE_EXTERN(PlayerService, Menge::PlayerServiceInterface );
 SERVICE_EXTERN(PrototypeService, Menge::PrototypeServiceInterface);
 SERVICE_EXTERN(Graveyard, Menge::GraveyardInterface);
 //////////////////////////////////////////////////////////////////////////
@@ -142,7 +143,6 @@ namespace Menge
 		, m_maxTiming(100.f)
         , m_mouseBounded(false)
         , m_allowFullscreenSwitchShortcut(false)
-        , m_game(nullptr)
         , m_focus(true)
         , m_update(true)				
         , m_console(nullptr)
@@ -150,7 +150,9 @@ namespace Menge
 		, m_resourceService(nullptr)
 		, m_textService(nullptr)
         , m_nodeService(nullptr)
-		, m_prototypeService(nullptr)		
+		, m_prototypeService(nullptr)
+		, m_gameService(nullptr)
+		, m_playerService(nullptr)
 		, m_createRenderWindow(false)
 		, m_cursorMode(false)
 		, m_invalidateVsync(false)
@@ -258,6 +260,8 @@ namespace Menge
         exinit.add( &Application::initializeWatchdog_ );
         exinit.add( &Application::initializeProfiler_ );
 		exinit.add( &Application::initializeGraveyard_ );
+		exinit.add( &Application::initializePlayer_ );
+		exinit.add( &Application::initializeGame_ );
 
         if( exinit.run() == false )
         {
@@ -314,7 +318,7 @@ namespace Menge
 	/////////////////////////////////////////////////////
 	bool Application::loadResourcePacks( const ConstString & _fileGroup, const FilePath & _resourceIni )
 	{
-		if( m_game == nullptr )
+		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == false )
 		{
 			return false;
 		}
@@ -381,7 +385,8 @@ namespace Menge
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );			
 
-			m_game->createResourcePak( pack );
+			GAME_SERVICE(m_serviceProvider)
+				->createResourcePak( pack );
 		}
 
 		TVectorString languagePackSettings;
@@ -420,7 +425,8 @@ namespace Menge
 			IniUtil::getIniValue( ini, languagePack.c_str(), "Dev", pack.dev, m_serviceProvider );
 			IniUtil::getIniValue( ini, languagePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );	
 
-			m_game->createResourcePak( pack );
+			GAME_SERVICE(m_serviceProvider)
+				->createResourcePak( pack );
 		}
 
 		return true;
@@ -616,6 +622,43 @@ namespace Menge
 
 		return true;    
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializePlayer_()
+	{ 
+		PlayerServiceInterface * playerService;
+		SERVICE_CREATE( PlayerService, &playerService );
+
+		if( SERVICE_REGISTRY( m_serviceProvider, playerService ) == false )
+		{
+			return false;
+		}
+
+		if( playerService->initialize() == false )
+		{
+			return false;
+		}
+
+		m_playerService = playerService;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeGame_()
+	{
+		GameServiceInterface * gameService;
+		SERVICE_CREATE( GameService, &gameService );
+
+		if( SERVICE_REGISTRY( m_serviceProvider, gameService ) == false )
+		{
+			return false;
+		}
+
+		gameService->setDevelopmentMode( m_developmentMode );
+
+		m_gameService = gameService;
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
@@ -770,23 +813,6 @@ namespace Menge
 		m_vsync = _vsync;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	GameServiceInterface * Application::createGame()
-	{
-        SERVICE_CREATE(GameService, &m_game);
-
-        if( SERVICE_REGISTRY( m_serviceProvider, m_game ) == false )
-        {
-            LOGGER_INFO(m_serviceProvider)( "Application:createGame invalid register game service"
-                );
-
-            return nullptr;
-        }
-		
-        m_game->setDevelopmentMode( m_developmentMode );
-        
-		return m_game;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Application::createRenderWindow( WindowHandle _renderWindowHandle )
 	{
         //if( this->isValidWindowMode() == false )
@@ -857,26 +883,32 @@ namespace Menge
             }
         }
 
-        m_game->initializeRenderResources();
+        GAME_SERVICE(m_serviceProvider)
+			->initializeRenderResources();
+
+		PLAYER_SERVICE( m_serviceProvider )
+			->initializeRenderResources();
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
             ->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 		
-		m_game->setRenderViewport( m_renderViewport, m_contentResolution );
+		GAME_SERVICE( m_serviceProvider )
+			->setRenderViewport( m_renderViewport, m_contentResolution );
 
 		float gameViewportAspect;
 		Viewport gameViewport;
 
 		this->getGameViewport( gameViewportAspect, gameViewport );
 
-		m_game->setGameViewport( gameViewport, gameViewportAspect );
+		GAME_SERVICE( m_serviceProvider )
+			->setGameViewport( gameViewport, gameViewportAspect );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::initializeGame( const ConstString & _personalityModule, const ConstString & _language, const FilePath & _accountPath, const String & _scriptInitParams )
 	{
-		if( m_game == nullptr )
+		if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == false )
 		{
 			return false;
 		}
@@ -884,9 +916,11 @@ namespace Menge
 		LOGGER_INFO(m_serviceProvider)( "Application:initializeGame load game resource"
 			);
 
-		m_game->setLanguagePack( _language );
+		GAME_SERVICE( m_serviceProvider )
+			->setLanguagePack( _language );
 
-		if( m_game->applyConfigPaks() == false )
+		if( GAME_SERVICE( m_serviceProvider )
+			->applyConfigPaks() == false )
 		{
 			return false;
 		}
@@ -916,7 +950,8 @@ namespace Menge
 			}
 		}
 
-		if( m_game->loadPersonality( _personalityModule ) == false )
+		if( GAME_SERVICE( m_serviceProvider )
+			->loadPersonality( _personalityModule ) == false )
 		{
 			return false;
 		}
@@ -924,7 +959,8 @@ namespace Menge
 		TMapParams params;		
 		CONFIG_SECTION(m_serviceProvider, "Params", params);
 
-		if( m_game->initialize( _accountPath, m_projectVersion, params, _scriptInitParams ) == false )
+		if( GAME_SERVICE( m_serviceProvider )
+			->initialize( _accountPath, m_projectVersion, params, _scriptInitParams ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application::initGame invalid initialize"
 				);
@@ -932,19 +968,13 @@ namespace Menge
 			return false;
 		}
 
-        m_game->setCursorMode( m_cursorMode );
+		GAME_SERVICE( m_serviceProvider )
+			->setCursorMode( m_cursorMode );
 
-		m_game->run();
+		GAME_SERVICE( m_serviceProvider )
+			->run();
 		        
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::finalizeGame()
-	{
-		if( m_game != nullptr )
-		{
-			m_game->finalize();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::parseArguments_( const String& _arguments )
@@ -1217,7 +1247,7 @@ namespace Menge
 			}
 		}
 
-		bool handle = m_game->handleKeyEvent( _event );
+		bool handle = GAME_SERVICE( m_serviceProvider )->handleKeyEvent( _event );
 
 		return handle;
 	}
@@ -1229,9 +1259,14 @@ namespace Menge
 			return false;
 		}
 
-		m_game->handleMouseButtonEventBegin( _event );
-		bool handle = m_game->handleMouseButtonEvent( _event );
-		m_game->handleMouseButtonEventEnd( _event );
+		GAME_SERVICE( m_serviceProvider )
+			->handleMouseButtonEventBegin( _event );
+
+		bool handle = GAME_SERVICE( m_serviceProvider )
+			->handleMouseButtonEvent( _event );
+
+		GAME_SERVICE( m_serviceProvider )
+			->handleMouseButtonEventEnd( _event );
 
 		return handle;
 	}
@@ -1258,7 +1293,8 @@ namespace Menge
 			this->mouseEnter( ne );
 		}
 
-		bool handle = m_game->handleMouseMove( _event );
+		bool handle = GAME_SERVICE( m_serviceProvider )
+			->handleMouseMove( _event );
 
 		return handle;
 	}
@@ -1273,7 +1309,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::mouseWheel( const InputMouseWheelEvent & _event )
 	{
-		bool handle = m_game->handleMouseWheel( _event );
+		bool handle = GAME_SERVICE( m_serviceProvider )
+			->handleMouseWheel( _event );
 
 		return handle;
 	}
@@ -1300,7 +1337,8 @@ namespace Menge
 			this->mouseEnter( ne );
 		}
 
-		m_game->mousePosition( _event );
+		GAME_SERVICE( m_serviceProvider )
+			->mousePosition( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::mouseEnter( const InputMousePositionEvent & _event )
@@ -1313,14 +1351,16 @@ namespace Menge
 
 		m_mouseEnter = true;
 
-		m_game->mouseEnter( _event );
+		GAME_SERVICE( m_serviceProvider )
+			->mouseEnter( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::mouseLeave( const InputMousePositionEvent & _event )
 	{
 		m_mouseEnter = false;
 
-		m_game->mouseLeave( _event );
+		GAME_SERVICE( m_serviceProvider )
+			->mouseLeave( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::quit()	
@@ -1372,9 +1412,10 @@ namespace Menge
 			, _focus
 			);
 
-		if( m_game != nullptr )
+		if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == true )
 		{
-			m_game->setFocus( m_focus );
+			GAME_SERVICE( m_serviceProvider )
+				->setFocus( m_focus );
 
 			if( _mouse == true )
 			{
@@ -1441,7 +1482,7 @@ namespace Menge
 				->update();
 		}
 
-		if( m_game->beginUpdate() == false )
+		if( PLAYER_SERVICE( m_serviceProvider )->update() == false )
 		{
 			this->quit();
 
@@ -1478,7 +1519,8 @@ namespace Menge
 			timing = m_maxTiming;
 		}
 
-		m_game->tick( timing );
+		GAME_SERVICE( m_serviceProvider )
+			->tick( timing );
 
 		if( SERVICE_EXIST(m_serviceProvider, Menge::SoundServiceInterface) == true )
 		{
@@ -1505,7 +1547,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::endUpdate()
 	{
-		m_game->endUpdate();
+		PLAYER_SERVICE( m_serviceProvider )
+			->updateChangeScene();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::render()
@@ -1515,7 +1558,8 @@ namespace Menge
 			return false;
 		}
 
-		m_game->render();
+		GAME_SERVICE( m_serviceProvider )
+			->render();
 
 		if( m_console != nullptr )
 		{
@@ -1537,9 +1581,10 @@ namespace Menge
 	{
 		bool needQuit = true;
 
-		if( m_game != nullptr )
+		if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == true )
 		{
-			needQuit = m_game->close();
+			needQuit = GAME_SERVICE( m_serviceProvider )
+				->close();
 		}
 
 		if( needQuit == true )
@@ -1557,9 +1602,10 @@ namespace Menge
 				SOUND_SERVICE(m_serviceProvider)->onTurnStream( false );
 			}
 
-			if( m_game != nullptr )
+			if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
 			{
-				m_game->turnSound( false );
+				GAME_SERVICE( m_serviceProvider )
+					->turnSound( false );
 			}
 
 			if( SERVICE_EXIST(m_serviceProvider, SoundServiceInterface) == true )
@@ -1574,9 +1620,10 @@ namespace Menge
 				SOUND_SERVICE(m_serviceProvider)->onTurnSound( true );
 			}
 
-			if( m_game != nullptr )
+			if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
 			{
-				m_game->turnSound( true );
+				GAME_SERVICE( m_serviceProvider )
+					->turnSound( true );
 			}
 
 			if( SERVICE_EXIST(m_serviceProvider, SoundServiceInterface) == true )
@@ -1593,9 +1640,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{		
-		if( m_game != nullptr )
-		{			
-			m_game->finalizeRenderResources();
+		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
+		{
+			GAME_SERVICE( m_serviceProvider )
+				->finalizeRenderResources();
+		}
+
+		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
+		{
+			PLAYER_SERVICE( m_serviceProvider )
+				->finalizeRenderResources();
 		}
 
 		CODEC_SERVICE(m_serviceProvider)
@@ -1614,7 +1668,19 @@ namespace Menge
             ScriptWrapper::constsUnwrap( m_serviceProvider );            			
 		}
 
-        SERVICE_DESTROY( GameService, m_game );
+		if( m_gameService != nullptr )
+		{
+			m_gameService->finalize();
+		}
+
+        SERVICE_DESTROY( GameService, m_gameService );
+
+		if( m_playerService != nullptr )
+		{
+			m_playerService->finalize();
+		}
+
+		SERVICE_DESTROY( PlayerService, m_playerService );
 
 		if( m_resourceService != nullptr )
 		{
@@ -1899,7 +1965,9 @@ namespace Menge
         this->invalidateWindow_();
 
         bool fullscreen = this->getFullscreenMode();        
-        m_game->setFullscreen( m_currentResolution, fullscreen );
+		
+		GAME_SERVICE(m_serviceProvider)
+			->setFullscreen( m_currentResolution, fullscreen );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::invalidateWindow_()
@@ -1972,9 +2040,10 @@ namespace Menge
 		NOTIFICATION_SERVICE(m_serviceProvider)
 			->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 
-        if( m_game != nullptr )
+        if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == true )
         {
-            m_game->setRenderViewport( m_renderViewport, m_contentResolution );
+			GAME_SERVICE( m_serviceProvider )
+				->setRenderViewport( m_renderViewport, m_contentResolution );
 
 			float gameViewportAspect;
 			Viewport gameViewport;
@@ -1982,7 +2051,8 @@ namespace Menge
 			APPLICATION_SERVICE(m_serviceProvider)
 				->getGameViewport( gameViewportAspect, gameViewport );
 
-			m_game->setGameViewport( gameViewport, gameViewportAspect );
+			GAME_SERVICE( m_serviceProvider )
+				->setGameViewport( gameViewport, gameViewportAspect );
 
 			LOGGER_WARNING(m_serviceProvider)("Application::invalidateWindow_ Game Viewport %f %f - %f %f Aspect %f"
 				, gameViewport.begin.x
@@ -2031,21 +2101,42 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::paint()
 	{
-		if( m_focus == false && RENDER_SERVICE(m_serviceProvider) && m_game && m_createRenderWindow == true )
+		if( m_createRenderWindow == false )
 		{
-			if( RENDER_SERVICE(m_serviceProvider)->beginScene() == true )
-			{
-				m_game->render();
+			return;
+		}
 
-				RENDER_SERVICE(m_serviceProvider)->endScene();
-				RENDER_SERVICE(m_serviceProvider)->swapBuffers();
-			}
+		if( m_focus == true )
+		{
+			return;
+		}
+
+		if( SERVICE_EXIST( m_serviceProvider, Menge::RenderServiceInterface ) == false )
+		{
+			return;
+		}
+
+		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == false )
+		{
+			return;
+		}
+
+		if( RENDER_SERVICE( m_serviceProvider )->beginScene() == true )
+		{
+			GAME_SERVICE( m_serviceProvider )
+				->render();
+
+			RENDER_SERVICE( m_serviceProvider )
+				->endScene();
+
+			RENDER_SERVICE( m_serviceProvider )
+				->swapBuffers();
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
     bool Application::userEvent( const ConstString & _event, const TMapParams & _params )
     {
-        if( m_game == nullptr )
+        if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("Application::onUserEvent %s game not create"
                 , _event.c_str()
@@ -2054,7 +2145,8 @@ namespace Menge
             return false;
         }
 
-        m_game->userEvent( _event, _params );
+		GAME_SERVICE( m_serviceProvider )
+			->userEvent( _event, _params );
 
         return true;
     }
@@ -2116,7 +2208,8 @@ namespace Menge
 
         this->invalidateWindow_();
 
-        m_game->setFixedContentResolution( m_currentResolution, m_fixedContentResolution );
+		GAME_SERVICE( m_serviceProvider )
+			->setFixedContentResolution( m_currentResolution, m_fixedContentResolution );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFixedContentResolution() const
@@ -2218,9 +2311,10 @@ namespace Menge
 	{
 		m_cursorMode = _mode;
 
-		if( m_game != nullptr )
+		if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == true )
 		{
-			m_game->setCursorMode( m_cursorMode );
+			GAME_SERVICE( m_serviceProvider )
+				->setCursorMode( m_cursorMode );
 		}
 
 		if( m_cursorMode == true && m_cursorResource != nullptr )

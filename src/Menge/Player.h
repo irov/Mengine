@@ -39,11 +39,10 @@ namespace Menge
 	class EventManager;
 
 	class Player
-        : public PlayerServiceInterface
-		, public InputSystemHandler
+        : public PlayerServiceInterface		
 	{
 	public:
-		Player( Game * _game );
+		Player();
 		~Player();
 
     public:
@@ -51,8 +50,8 @@ namespace Menge
         ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-        bool initialize( const Resolution & _contentResolution, const Resolution & _currentResolution );
-        void finalize();
+        bool initialize() override;
+		void finalize() override;
 
 	public:
 		bool setCurrentScene( Scene * _scene, bool _destroyOld, const pybind::object & _cb ) override;
@@ -64,11 +63,12 @@ namespace Menge
 		bool isChangedScene() const override;
 
 	public:
-		void updateChangeScene();
+		void updateChangeScene() override;
 
     protected:        
 		void updateSwitchScene_();
 		void updateRemoveScene_();
+		void updateRestartScene_();
 
 	public:
 		void setArrow( Arrow * _arrow ) override;
@@ -111,19 +111,19 @@ namespace Menge
 		const RenderViewportInterface * getRenderViewport() const override;
 
     public:
-		void initializeRenderResources();
-		void finalizeRenderResources();
+		void initializeRenderResources() override;
+		void finalizeRenderResources() override;
 
     public:
 		void tick( float _timing );
-		bool update();
+		bool update() override;
 
 
 	public:
 		float getTime() const override;
 
 	public:
-		void render();
+		void render() override;
 		
 	public:
 		bool handleKeyEvent( const InputKeyEvent & _event ) override;
@@ -136,18 +136,15 @@ namespace Menge
 		bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
 	public:
-		void onFocus( bool _focus );
+		void onFocus( bool _focus ) override;
 
-		void onAppMouseLeave( const InputMousePositionEvent & _event );
-		void onAppMouseEnter( const InputMousePositionEvent & _event );
-		void onAppMousePosition( const InputMousePositionEvent & _event );
+		void onAppMouseLeave( const InputMousePositionEvent & _event ) override;
+		void onAppMouseEnter( const InputMousePositionEvent & _event ) override;
+		void onAppMousePosition( const InputMousePositionEvent & _event ) override;
 
-		void onFullscreen( const Resolution & _resolution, bool _fullscreen );
-        void onFixedContentResolution( const Resolution & _resolution, bool _fixed );
-
-    protected:
-        void invalidateResolution_( const Resolution & _resolution );
-		
+		void onFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
+		void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
+	
 	public:
 		Join * addJoin( Node * _left, Node * _right, const mt::vec2f & _offset ) override;
 		void removeJoin( Join * _join ) override;
@@ -166,8 +163,6 @@ namespace Menge
 		void renderArrow_( unsigned int _debugMask );
 
 	private:
-        Game * m_game;
-
         ServiceProviderInterface * m_serviceProvider;
 
 		Scene * m_scene;
@@ -207,15 +202,12 @@ namespace Menge
 		
 		Scene * m_switchSceneTo;
 
-		bool m_switchScene;
-		bool m_destroyOldScene;
+		bool m_switchScene;		
 		bool m_restartScene;
-
 		bool m_removeScene;
 
-		Resolution m_contentResolution;
-		Resolution m_currentResolution;
-		
+		bool m_destroyOldScene;
+				
 		pybind::object m_changeSceneCb;
 		pybind::object m_removeSceneCb;
 

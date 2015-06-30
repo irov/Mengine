@@ -21,8 +21,13 @@ namespace Menge
     
     class PlayerServiceInterface
         : public ServiceInterface
+		, public InputSystemHandler
     {
         SERVICE_DECLARE("PlayerService")
+
+	public:
+		virtual bool initialize() = 0;
+		virtual void finalize() = 0;
 
     public:
 		virtual bool setCurrentScene( Scene * _scene, bool _destroyOld, const pybind::object & _cb ) = 0;
@@ -34,7 +39,30 @@ namespace Menge
 		virtual bool isChangedScene() const = 0;
 
 	public:
+		virtual void onFocus( bool _focus ) = 0;
+
+		virtual void onAppMouseLeave( const InputMousePositionEvent & _event ) = 0;
+		virtual void onAppMouseEnter( const InputMousePositionEvent & _event ) = 0;
+		virtual void onAppMousePosition( const InputMousePositionEvent & _event ) = 0;
+
+		virtual void onFullscreen( const Resolution & _resolution, bool _fullscreen ) = 0;
+		virtual void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) = 0;
+
+	public:
         virtual float getTime() const = 0;
+
+	public:
+		virtual void tick( float _timing ) = 0;
+		virtual bool update() = 0;
+		virtual void render() = 0;
+
+	public:
+		virtual void updateChangeScene() = 0;
+
+	public:
+		virtual void initializeRenderResources() = 0;
+		virtual void finalizeRenderResources() = 0;
+
 
     public:
         virtual void setArrow( Arrow * _arrow ) = 0;

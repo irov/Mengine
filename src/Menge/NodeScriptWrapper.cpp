@@ -1213,6 +1213,11 @@ namespace Menge
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
 
+			if( sm == nullptr )
+			{
+				return false;
+			}
+
             bool successful = sm->remove( _id );
 
 			return successful;
@@ -1223,6 +1228,11 @@ namespace Menge
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
 
+			if( sm == nullptr )
+			{
+				return;
+			}
+
             sm->removeAll();
         }	
         //////////////////////////////////////////////////////////////////////////
@@ -1230,6 +1240,11 @@ namespace Menge
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
+
+			if( sm == nullptr )
+			{
+				return false;
+			}
 
             bool successful = sm->freeze( _id, _freeze );
 
@@ -1241,6 +1256,11 @@ namespace Menge
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
 
+			if( sm == nullptr )
+			{
+				return;
+			}
+
             sm->freezeAll( true );
         }
 		//////////////////////////////////////////////////////////////////////////
@@ -1248,6 +1268,11 @@ namespace Menge
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
+
+			if( sm == nullptr )
+			{
+				return;
+			}
 
             sm->freezeAll( false );
         }
@@ -1257,6 +1282,11 @@ namespace Menge
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
 
+			if( sm == nullptr )
+			{
+				return false;
+			}
+
             return sm->isFreeze( _id );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1264,6 +1294,11 @@ namespace Menge
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
+
+			if( sm == nullptr )
+			{
+				return 0.f;
+			}
 
             float time = sm->time( _id );
 
@@ -1274,6 +1309,11 @@ namespace Menge
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
+
+			if( sm == nullptr )
+			{
+				return 0;
+			}
 
 			PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObjectT();
 
@@ -1289,6 +1329,11 @@ namespace Menge
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
 
+			if( sm == nullptr )
+			{
+				return false;
+			}
+
             bool successful = sm->remove( _id );
 
 			return successful;
@@ -1299,6 +1344,11 @@ namespace Menge
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
 
+			if( sm == nullptr )
+			{
+				return;
+			}
+
             sm->removeAll();
         }	
         //////////////////////////////////////////////////////////////////////////
@@ -1306,6 +1356,11 @@ namespace Menge
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
+
+			if( sm == nullptr )
+			{
+				return false;
+			}
 
 			bool successful = sm->freeze( _id, _freeze );
 
@@ -1317,6 +1372,11 @@ namespace Menge
             ScheduleManagerInterface* sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
 
+			if( sm == nullptr )
+			{
+				return;
+			}
+
             sm->freezeAll( true );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1325,6 +1385,11 @@ namespace Menge
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
 
+			if( sm == nullptr )
+			{
+				return;
+			}
+
             sm->freezeAll( false );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -1332,6 +1397,11 @@ namespace Menge
         {
             ScheduleManagerInterface* sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
+
+			if( sm == nullptr )
+			{
+				return false;
+			}
 
             bool freeze = sm->isFreeze( _id );
 
@@ -1343,6 +1413,11 @@ namespace Menge
             ScheduleManagerInterface* sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
 
+			if( sm == nullptr )
+			{
+				return 0.f;
+			}
+
             float time = sm->time( _id );
 
             return time;
@@ -1350,7 +1425,8 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void s_setTimingFactor( float _factor )
         {
-            GAME_SERVICE(m_serviceProvider)->setTimingFactor( _factor );
+            GAME_SERVICE(m_serviceProvider)
+				->setTimingFactor( _factor );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_addHomeless( Node * _node )

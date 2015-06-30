@@ -41,19 +41,23 @@
 
 #   include <iomanip>
 
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( PlayerService, Menge::PlayerServiceInterface, Menge::Player );
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Player::Player( Game * _game )
-        : m_game(_game)
-        , m_serviceProvider(nullptr)
+	Player::Player()
+        : m_serviceProvider(nullptr)
 		, m_scene(nullptr)
 		, m_arrow(nullptr)
 		, m_scheduleManager(nullptr)
 		, m_scheduleManagerGlobal(nullptr)
+		, m_arrowCamera2D(nullptr)
 		, m_renderCamera(nullptr)
 		, m_renderViewport(nullptr)
 		, m_switchSceneTo(nullptr)
+		, m_mousePickerSystem(nullptr)
 		, m_switchScene(false)
 		, m_removeScene(false)
 		, m_destroyOldScene(false)
@@ -92,7 +96,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_switchScene == true || m_removeScene == true || m_restartScene == true )
+		if( this->isChangedScene() == true )
 		{
 			return false;
 		}
@@ -115,7 +119,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::restartCurrentScene( const pybind::object & _cb )
 	{
-		if( m_switchScene == true || m_removeScene == true || m_restartScene == true )
+		if( this->isChangedScene() == true )
 		{
 			return false;
 		}
@@ -136,7 +140,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::removeCurrentScene( const pybind::object & _cb )
 	{
-		if( m_switchScene == true || m_removeScene == true || m_restartScene == true )
+		if( this->isChangedScene() == true )
 		{
 			return false;
 		}
@@ -167,6 +171,10 @@ namespace Menge
 		else if( m_removeScene == true )
 		{
 			this->updateRemoveScene_();
+		}
+		else if( m_restartScene == true )
+		{
+			this->updateRestartScene_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -302,6 +310,12 @@ namespace Menge
 		Scene * oldScene = m_scene;
 		m_scene = nullptr;
 
+		bool destroyOldScene = m_destroyOldScene;
+		m_destroyOldScene = false;
+
+		pybind::object cb = m_changeSceneCb;
+		m_changeSceneCb.reset();
+
 		if( m_arrow != nullptr )
 		{
 			m_arrow->removeFromParent();
@@ -312,24 +326,10 @@ namespace Menge
 		m_timingManager->removeAll();
 		m_affectorable->stopAllAffectors();
 
-		bool destroyOldScene = m_destroyOldScene;
 
-		if( m_restartScene == false )
+		if( oldScene != nullptr && destroyOldScene == true )
 		{
-			if( oldScene != nullptr && destroyOldScene == true )
-			{
-				oldScene->destroy();
-
-				NODE_SERVICE( m_serviceProvider )
-					->clearHomeless();
-
-				GRAVEYARD_SERVICE( m_serviceProvider )
-					->clearTextures();
-			}
-		}
-		else
-		{
-			oldScene->disable();
+			oldScene->destroy();
 
 			NODE_SERVICE( m_serviceProvider )
 				->clearHomeless();
@@ -352,9 +352,6 @@ namespace Menge
 		}
 
 		m_joins.clear();
-
-		pybind::object cb = m_changeSceneCb;
-		m_changeSceneCb.reset();
         
         if( cb.is_valid() == true )
         {
@@ -391,7 +388,79 @@ namespace Menge
 			m_arrow->enable();
         }
 
-		//Holder<ResourceManager>::get()->_dumpResources( "after compile next scene " + m_scene->getName() );
+		if( cb.is_valid() == true )
+		{
+			cb( m_scene, true );
+		}
+
+		return;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::updateRestartScene_()
+	{
+		m_restartScene = false;
+
+		if( m_arrow != nullptr )
+		{
+			m_arrow->removeFromParent();
+			m_arrow->disable();
+		}
+
+		m_scheduleManager->removeAll();
+		m_timingManager->removeAll();
+		m_affectorable->stopAllAffectors();
+
+		m_scene->disable();
+
+		NODE_SERVICE( m_serviceProvider )
+			->clearHomeless();
+
+		GRAVEYARD_SERVICE( m_serviceProvider )
+			->clearTextures();
+
+		for( TVectorJoins::iterator
+			it = m_joins.begin(),
+			it_end = m_joins.end();
+		it != it_end;
+		++it )
+		{
+			Join * join = *it;
+
+			delete join;
+		}
+
+		m_joins.clear();
+
+		pybind::object cb = m_changeSceneCb;
+		m_changeSceneCb.reset();
+
+		if( cb.is_valid() == true )
+		{
+			cb( pybind::ret_none(), false );
+		}
+
+		if( cb.is_valid() == true )
+		{
+			cb( m_scene, false );
+		}
+
+		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
+
+#   ifndef MENGINE_MASTER_RELEASE
+		PlayerResourceUselessCompile unlessCompile( m_serviceProvider );
+		unlessCompile.begin();
+#   endif
+
+		m_scene->enable();
+
+#   ifndef MENGINE_MASTER_RELEASE
+		unlessCompile.end();
+#   endif
+
+		if( m_arrow != nullptr )
+		{
+			m_arrow->enable();
+		}
 
 		if( cb.is_valid() == true )
 		{
@@ -403,7 +472,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::isChangedScene() const
 	{
-		return m_switchScene;	
+		return m_switchScene == true || m_restartScene == true || m_removeScene == true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setArrow(Arrow * _arrow)
@@ -587,7 +656,7 @@ namespace Menge
 		return m_affectorableGlobal;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::initialize( const Resolution & _contentResolution, const Resolution & _currentResolution )
+	bool Player::initialize()
 	{
 		m_mousePickerSystem = new MousePickerSystem(m_serviceProvider);
 		m_globalHandleSystem = new GlobalHandleSystem(m_serviceProvider);
@@ -606,46 +675,6 @@ namespace Menge
 
 		m_affectorable = new Affectorable;
 		m_affectorableGlobal = new Affectorable;
-
-		m_contentResolution = _contentResolution;
-		m_currentResolution = _currentResolution;
-
-		mt::vec2f cr;
-		m_contentResolution.calcSize(cr);
-		Viewport vp(0.f, 0.f, cr.x, cr.y);
-
-		m_camera2D = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
-
-		m_camera2D->setRenderport( vp );
-
-		//mt::vec2f vp_pos(crx * 0.5f, cry * 0.5f);
-		//camera->setLocalPosition(vp_pos);
-
-		m_camera2D->enable();
-		this->setRenderCamera( m_camera2D );
-
-
-		m_viewport2D = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<RenderViewport>( CONST_STRING(m_serviceProvider, RenderViewport) );
-		
-		m_viewport2D->setViewport( vp );
-		m_viewport2D->enable();
-
-		this->setRenderViewport( m_viewport2D );
-
-		m_arrowCamera2D = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
-
-		m_arrowCamera2D->setRenderport( vp );
-		m_arrowCamera2D->enable();
-				
-		m_debugCamera2D = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Camera2D>( CONST_STRING(m_serviceProvider, Camera2D) );
-
-		m_debugCamera2D->setRenderport( vp );
-
-		m_debugCamera2D->enable();
 
 		return true;
 	}
@@ -778,6 +807,53 @@ namespace Menge
 		m_debugText->setFontName( STRINGIZE_STRING_LOCAL(m_serviceProvider, "__CONSOLE_FONT__") );
 		m_debugText->setTextID( STRINGIZE_STRING_LOCAL(m_serviceProvider, "__ID_TEXT_CONSOLE") );
 		m_debugText->enable();
+
+		const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+			->getContentResolution();
+
+		mt::vec2f cr;
+		contentResolution.calcSize( cr );
+		Viewport vp( 0.f, 0.f, cr.x, cr.y );
+
+		m_camera2D = NODE_SERVICE( m_serviceProvider )
+			->createNodeT<Camera2D>( CONST_STRING( m_serviceProvider, Camera2D ) );
+
+		m_camera2D->setRenderport( vp );
+
+		//mt::vec2f vp_pos(crx * 0.5f, cry * 0.5f);
+		//camera->setLocalPosition(vp_pos);
+
+		m_camera2D->enable();
+		this->setRenderCamera( m_camera2D );
+
+
+		m_viewport2D = NODE_SERVICE( m_serviceProvider )
+			->createNodeT<RenderViewport>( CONST_STRING( m_serviceProvider, RenderViewport ) );
+
+		m_viewport2D->setViewport( vp );
+		m_viewport2D->enable();
+
+		this->setRenderViewport( m_viewport2D );
+
+		m_arrowCamera2D = NODE_SERVICE( m_serviceProvider )
+			->createNodeT<Camera2D>( CONST_STRING( m_serviceProvider, Camera2D ) );
+
+		m_arrowCamera2D->setRenderport( vp );
+		m_arrowCamera2D->enable();
+
+		if( m_arrow != nullptr )
+		{
+			m_arrow->setRenderCamera( m_arrowCamera2D );
+			m_arrow->setRenderViewport( m_renderViewport );
+		}
+
+
+		m_debugCamera2D = NODE_SERVICE( m_serviceProvider )
+			->createNodeT<Camera2D>( CONST_STRING( m_serviceProvider, Camera2D ) );
+
+		m_debugCamera2D->setRenderport( vp );
+
+		m_debugCamera2D->enable();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::finalizeRenderResources()
@@ -1279,7 +1355,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::render()
 	{
-		if( m_switchScene == true )
+		if( this->isChangedScene() == true )
 		{
 			return;
 		}
@@ -1352,7 +1428,10 @@ namespace Menge
 
 			if( m_showDebugText > 1 )
 			{
-				double sreenfillrate = rdi.fillrate / double(m_contentResolution.getWidth() * m_contentResolution.getHeight());
+				const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
+					->getContentResolution();
+
+				double sreenfillrate = rdi.fillrate / double( contentResolution.getWidth() * contentResolution.getHeight() );
 
 				ss << "Fillrate " << std::setiosflags(std::ios::fixed) << std::setprecision(2) << sreenfillrate << " (Object " << rdi.object << " Triangle " << rdi.triangle << ")" << std::endl;
 				ss << "DIP: " << rdi.dips << std::endl;
@@ -1550,21 +1629,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onFullscreen( const Resolution & _resolution, bool _fullscreen )
 	{
+		(void)_resolution;
         (void)_fullscreen;
-
-		this->invalidateResolution_( _resolution );
 	}
     //////////////////////////////////////////////////////////////////////////
     void Player::onFixedContentResolution( const Resolution & _resolution, bool _fixed )
     {
+		(void)_resolution;
         (void)_fixed;
-
-        this->invalidateResolution_( _resolution );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Player::invalidateResolution_( const Resolution & _resolution )
-    {
-        m_currentResolution = _resolution;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Player::onFocus( bool _focus )

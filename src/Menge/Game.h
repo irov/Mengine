@@ -82,14 +82,9 @@ namespace Menge
 
     public:
         void setDevelopmentMode( bool _developmentMode ) override;
-
-    public:
-        PlayerServiceInterface * getPlayer() const override;
-
+		
 	public:
-		bool beginUpdate() override;
 		void tick( float _timing ) override;
-		void endUpdate() override;
 
     public:
 		void render() override;

@@ -74,7 +74,6 @@ namespace Menge
 	Game::Game()
 		: m_serviceProvider(nullptr)
 		, m_developmentMode(false)
-		, m_player(nullptr)
 		, m_accountProvider(nullptr)
 		, m_soundVolumeProvider(nullptr)
 		, m_accountService(nullptr)
@@ -101,11 +100,6 @@ namespace Menge
     {
         m_developmentMode = _developmentMode;
     }
-    //////////////////////////////////////////////////////////////////////////
-    PlayerServiceInterface * Game::getPlayer() const
-    {
-        return m_player;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleKeyEvent( const InputKeyEvent & _event )
 	{
@@ -118,7 +112,8 @@ namespace Menge
 
 		if( handle == false )
 		{
-			handle = m_player->handleKeyEvent( _event );
+			handle = PLAYER_SERVICE(m_serviceProvider)
+				->handleKeyEvent( _event );
 		}	
 
 		return handle;
@@ -135,7 +130,8 @@ namespace Menge
 
 		if( handle == false )
 		{
-			handle = m_player->handleMouseButtonEvent( _event );
+			handle = PLAYER_SERVICE( m_serviceProvider )
+				->handleMouseButtonEvent( _event );
 		}
                     
 		return handle;
@@ -152,7 +148,8 @@ namespace Menge
 
 		if( handle == false )
 		{
-			handle = m_player->handleMouseButtonEventBegin( _event );
+			handle = PLAYER_SERVICE( m_serviceProvider )
+				->handleMouseButtonEventBegin( _event );
 		}	
 
 		return handle;
@@ -169,7 +166,8 @@ namespace Menge
 
 		if( handle == false )
 		{
-			handle = m_player->handleMouseButtonEventEnd( _event );
+			handle = PLAYER_SERVICE( m_serviceProvider )
+				->handleMouseButtonEventEnd( _event );
 		}	
 
 		return handle;
@@ -186,7 +184,8 @@ namespace Menge
 
 		if( handle == false )
 		{
-			handle = m_player->handleMouseMove( _event );
+			handle = PLAYER_SERVICE( m_serviceProvider )
+				->handleMouseMove( _event );
 		}
 
 		return handle;
@@ -203,7 +202,8 @@ namespace Menge
 
 		if( handle == false )
 		{
-			handle = m_player->handleMouseWheel( _event );
+			handle = PLAYER_SERVICE( m_serviceProvider )
+				->handleMouseWheel( _event );
 		}
 
 		return handle;
@@ -213,48 +213,36 @@ namespace Menge
 	{		
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_APP_MOUSE_LEAVE)();
 
-		m_player->onAppMouseLeave( _event );
+		PLAYER_SERVICE( m_serviceProvider )
+			->onAppMouseLeave( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::mouseEnter( const InputMousePositionEvent & _event )
 	{
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_APP_MOUSE_ENTER )(_event.x, _event.y);
 
-		m_player->onAppMouseEnter( _event );
+		PLAYER_SERVICE( m_serviceProvider )
+			->onAppMouseEnter( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::mousePosition( const InputMousePositionEvent & _event )
 	{
-		m_player->onAppMousePosition( _event );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::beginUpdate()
-	{
-		if( m_player->update() == false )
-		{
-			return false;
-		}
-
-		return true;
+		PLAYER_SERVICE( m_serviceProvider )
+			->onAppMousePosition( _event );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::tick( float _timing )
 	{
 		float timing = _timing * m_timingFactor;
 		
-		//m_amplifierService->update( timing );
-
-		m_player->tick( timing );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::endUpdate()
-	{
-		m_player->updateChangeScene();
+		PLAYER_SERVICE( m_serviceProvider )
+			->tick( timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::render()
 	{
-		m_player->render();
+		PLAYER_SERVICE( m_serviceProvider )
+			->render();
 	}
     //////////////////////////////////////////////////////////////////////////
 	void Game::registerEventMethods_( const pybind::object & _embed )
@@ -355,13 +343,6 @@ namespace Menge
 	{
 		m_params = _params;
 
-		m_player = new Player(this);
-
-        if( SERVICE_REGISTRY( m_serviceProvider, m_player ) == false )
-        {
-            return false;
-        }
-
 		AccountServiceInterface * accountService;
 		if( SERVICE_CREATE( AccountService, &accountService ) == false )
         {
@@ -387,23 +368,7 @@ namespace Menge
 		    {
 			    LOGGER_ERROR(m_serviceProvider)("Game::initialize failed load accounts"
 				    );
-
-				//return false;
 			}
-		}
-		
-		const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
-            ->getContentResolution();
-
-		const Resolution & currentResolution = APPLICATION_SERVICE(m_serviceProvider)
-            ->getCurrentResolution();
-
-		if( m_player->initialize( contentResolution, currentResolution ) == false )
-		{
-            LOGGER_ERROR(m_serviceProvider)("Game::initialize failed initialize player"
-                );
-
-			return false;
 		}
 
 		m_defaultArrow = PROTOTYPE_SERVICE(m_serviceProvider)
@@ -418,7 +383,8 @@ namespace Menge
 		{
 			m_defaultArrow->setName( CONST_STRING( m_serviceProvider, Default ) );
 
-			m_player->setArrow( m_defaultArrow );
+			PLAYER_SERVICE( m_serviceProvider )
+				->setArrow( m_defaultArrow );
 		}
 
 		m_soundVolumeProvider = new GameSoundVolumeProvider(m_serviceProvider, this);
@@ -513,14 +479,6 @@ namespace Menge
 			m_soundVolumeProvider = nullptr;
 		}
 
-		if( m_player != nullptr )
-		{
-			m_player->finalize();
-
-			delete m_player;
-			m_player = nullptr;
-		}
-
 		this->destroyArrow();
 		      
 		m_resourcePaks.clear();
@@ -530,17 +488,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initializeRenderResources()
 	{
-		m_player->initializeRenderResources();
-
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_INITIALIZE_RENDER_RESOURCES )();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::finalizeRenderResources()
 	{
-		if( m_player != nullptr )
-		{
-			m_player->finalizeRenderResources();
-		}
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_FINALIZE_RENDER_RESOURCES )();
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void Game::turnSound( bool _turn )
@@ -554,9 +507,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFocus( bool _focus )
 	{
-		if( m_player != nullptr )
+		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
 		{
-			m_player->onFocus( _focus );
+			PLAYER_SERVICE( m_serviceProvider )
+				->onFocus( _focus );
 		}				
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_FOCUS)( _focus );
@@ -564,14 +518,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setFullscreen( const Resolution & _resolution, bool _fullscreen )
 	{
-		m_player->onFullscreen( _resolution, _fullscreen );
+		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
+		{
+			PLAYER_SERVICE( m_serviceProvider )
+				->onFullscreen( _resolution, _fullscreen );
+		}
 
 		EVENTABLE_CALL(m_serviceProvider, this, EVENT_FULLSCREEN)( _fullscreen );
 	}
     //////////////////////////////////////////////////////////////////////////
     void Game::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
     {
-        m_player->onFixedContentResolution( _resolution, _fixed );
+		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
+		{
+			PLAYER_SERVICE( m_serviceProvider )
+				->onFixedContentResolution( _resolution, _fixed );
+		}
 
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_FIXED_CONTENT_RESOLUTION )(_fixed);
     }

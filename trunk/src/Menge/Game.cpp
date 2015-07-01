@@ -289,8 +289,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality( const ConstString & _module )
 	{
+		bool developmentMode = APPLICATION_SERVICE( m_serviceProvider )
+			->isDevelopmentMode();
+
         SCRIPT_SERVICE(m_serviceProvider)
-            ->addGlobalModule( "_DEVELOPMENT", pybind::get_bool(m_developmentMode) );
+			->addGlobalModule( "_DEVELOPMENT", pybind::get_bool( developmentMode ) );
 
 #   ifdef MENGINE_MASTER_RELEASE
         SCRIPT_SERVICE(m_serviceProvider)

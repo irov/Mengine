@@ -27,7 +27,7 @@ namespace Menge
 		, m_onMouseMoveEvent(false)
 		, m_onMouseEnterEvent(false)
 		, m_onMouseLeaveEvent(false)
-		, m_onMouseDestroyEvent(false)
+		, m_onMouseOverDestroyEvent( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -99,7 +99,7 @@ namespace Menge
 		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener, &m_onMouseMoveEvent );
 		this->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener, &m_onMouseEnterEvent );
 		this->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener, &m_onMouseLeaveEvent );		
-		this->registerEvent( EVENT_MOUSE_DESTROY, ("onHandleMouseDestroy"), _listener, &m_onMouseDestroyEvent );
+		this->registerEvent( EVENT_MOUSE_OVER_DESTROY, ("onHandleMouseOverDestroy"), _listener, &m_onMouseOverDestroyEvent );
 
 		this->registerEvent( EVENT_ACTIVATE, ("onActivate"), _listener );
 		this->registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _listener );
@@ -185,11 +185,11 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::onHandleMouseDestroy()
+	void HotSpot::onHandleMouseOverDestroy()
 	{
-		if( m_onMouseDestroyEvent == true )
+		if( m_onMouseOverDestroyEvent == true )
 		{
-			EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_DESTROY )(this);
+			EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_OVER_DESTROY )(this);
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

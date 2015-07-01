@@ -68,7 +68,7 @@ namespace Menge
 	protected:
 		bool onHandleMouseEnter( float _x, float _y ) override;
 		void onHandleMouseLeave() override;
-		void onHandleMouseDestroy() override;
+		void onHandleMouseOverDestroy() override;
 
 	public:
 		bool handleKeyEvent( const InputKeyEvent & _event ) override;
@@ -95,6 +95,6 @@ namespace Menge
 		bool m_onMouseEnterEvent;
 		bool m_onMouseLeaveEvent;
 		bool m_onMouseMoveEvent;
-		bool m_onMouseDestroyEvent;
+		bool m_onMouseOverDestroyEvent;
 	};
 }

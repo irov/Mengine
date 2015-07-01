@@ -80,9 +80,6 @@ namespace Menge
 	public:
 		void run() override;
 
-    public:
-        void setDevelopmentMode( bool _developmentMode ) override;
-		
 	public:
 		void tick( float _timing ) override;
 
@@ -169,8 +166,6 @@ namespace Menge
 
 		AccountServiceInterface * m_accountService;
 
-		bool m_developmentMode;
-        
 		Arrow * m_defaultArrow;
 		
 		ConstString m_currentPakName;

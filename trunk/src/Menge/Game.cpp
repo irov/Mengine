@@ -73,7 +73,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
 		: m_serviceProvider(nullptr)
-		, m_developmentMode(false)
 		, m_accountProvider(nullptr)
 		, m_soundVolumeProvider(nullptr)
 		, m_accountService(nullptr)
@@ -94,11 +93,6 @@ namespace Menge
     ServiceProviderInterface * Game::getServiceProvider() const
     {
         return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Game::setDevelopmentMode( bool _developmentMode )
-    {
-        m_developmentMode = _developmentMode;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleKeyEvent( const InputKeyEvent & _event )
@@ -395,7 +389,10 @@ namespace Menge
 		SOUND_SERVICE(m_serviceProvider)
 			->addSoundVolumeProvider( m_soundVolumeProvider );
 
-		bool isMaster = !m_developmentMode;
+		bool developmentMode = APPLICATION_SERVICE( m_serviceProvider )
+			->isDevelopmentMode();
+
+		bool isMaster = !developmentMode;
 
 		LOGGER_WARNING(m_serviceProvider)("Game initialize [%s mode]"
 			, isMaster ? "MASTER" : "DEVELOPMENT"

@@ -76,9 +76,6 @@ namespace Menge
 		virtual void run() = 0;
 
     public:
-        virtual void setDevelopmentMode( bool _developmentMode ) = 0;
-
-    public:
         virtual void tick( float _timing ) = 0;
 
 	public:

@@ -2736,7 +2736,7 @@ namespace Menge
 					if( (GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
 					{
 						INPUT_SERVICE( m_serviceProvider )
-							->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false );
+							->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false, true );
 					}                    
 				}
 
@@ -2824,7 +2824,7 @@ namespace Menge
 				this->calcCursorPosition( point );
 
 				INPUT_SERVICE( m_serviceProvider )
-					->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, true );
+					->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, true, true );
 
 				handle = true;
 				_result = FALSE;
@@ -2838,7 +2838,7 @@ namespace Menge
 					this->calcCursorPosition(point);
 
 					INPUT_SERVICE( m_serviceProvider )
-						->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false );
+						->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false, true );
 				}
 
 				m_isDoubleClick = false;
@@ -2854,7 +2854,7 @@ namespace Menge
 				this->calcCursorPosition(point);
 
 				INPUT_SERVICE( m_serviceProvider )
-					->pushMouseButtonEvent( 0, point.x, point.y, 1, 0.f, true );
+					->pushMouseButtonEvent( 0, point.x, point.y, 1, 0.f, true, true );
 
 				handle = true;
 				_result = FALSE;
@@ -2867,7 +2867,7 @@ namespace Menge
 					this->calcCursorPosition(point);
 
 					INPUT_SERVICE( m_serviceProvider )
-						->pushMouseButtonEvent( 0, point.x, point.y, 1, 0.f, false );
+						->pushMouseButtonEvent( 0, point.x, point.y, 1, 0.f, false, true );
 				}
 
 				m_isDoubleClick = false;
@@ -2883,7 +2883,7 @@ namespace Menge
 				this->calcCursorPosition(point);
 
 				INPUT_SERVICE( m_serviceProvider )
-					->pushMouseButtonEvent( 0, point.x, point.y, 2, 0.f, true );
+					->pushMouseButtonEvent( 0, point.x, point.y, 2, 0.f, true, true );
 
 				handle = true;
 				_result = FALSE;
@@ -2894,7 +2894,7 @@ namespace Menge
 				this->calcCursorPosition(point);
 
 				INPUT_SERVICE( m_serviceProvider )
-					->pushMouseButtonEvent( 0, point.x, point.y, 2, 0.f, false );
+					->pushMouseButtonEvent( 0, point.x, point.y, 2, 0.f, false, true );
 
 				handle = true;
 				_result = FALSE;

@@ -206,14 +206,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PickerTrapState * MousePickerSystem::regTrap( MousePickerTrapInterface * _trap )
 	{
-		uint32_t id = ++m_enumerator;
-
 		PickerTrapState state;
 
 		state.trap = _trap;
+
+		uint32_t id = ++m_enumerator;
 		state.id = id;
 		state.picked = false;
-		state.down = false;
+		state.pressed = false;
 		state.handle = false;
 		state.dead = false;
 
@@ -324,10 +324,10 @@ namespace Menge
 				continue;
 			}
 
-			if( _event.isDown == false && state->down == false )
-			{
-				continue;
-			}
+			//if( _event.isDown == false && state->pressed == false )
+			//{
+			//	continue;
+			//}
 			
 			MousePickerTrapInterface * trap = state->trap;
 
@@ -340,6 +340,7 @@ namespace Menge
 			InputMouseButtonEvent ne = _event;
 			ne.x = wp.x;
 			ne.y = wp.y;
+			ne.isPressed = state->pressed;
 
 			if( trap->handleMouseButtonEvent( ne ) == false )
 			{
@@ -382,12 +383,12 @@ namespace Menge
 
 			if( _event.isDown == true )
 			{
-				state->down = true;
+				state->pressed = true;
 			}
-			else if( state->down == false )
-			{
-				continue;
-			}
+			//else if( state->pressed == false )
+			//{
+			//	continue;
+			//}
 			
 			MousePickerTrapInterface * trap = state->trap;
 
@@ -400,6 +401,7 @@ namespace Menge
 			InputMouseButtonEvent ne = _event;
 			ne.x = wp.x;
 			ne.y = wp.y;
+			ne.isPressed = state->pressed;
 			
 			if( trap->handleMouseButtonEventBegin( ne ) == false )
 			{
@@ -442,13 +444,13 @@ namespace Menge
 
 			if( _event.isDown == false )
 			{					
-				if( state->down == false )
+				if( state->pressed == false )
 				{
-					continue;
+					//continue;
 				}
 				else
 				{
-					state->down = false;
+					state->pressed = false;
 				}
 			}
 			
@@ -463,6 +465,7 @@ namespace Menge
 			InputMouseButtonEvent ne = _event;
 			ne.x = wp.x;
 			ne.y = wp.y;
+			ne.isPressed = state->pressed;
 
 			if( trap->handleMouseButtonEventEnd( ne ) == false )
 			{

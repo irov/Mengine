@@ -15,9 +15,10 @@ namespace Menge
 	struct PickerTrapState
 	{
 		class MousePickerTrapInterface * trap;
+
 		uint32_t id;
 		bool picked;
-		bool down;
+		bool pressed;
 		bool handle;
 		bool dead;
 	};

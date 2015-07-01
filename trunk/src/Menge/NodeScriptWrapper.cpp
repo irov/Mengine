@@ -1890,13 +1890,13 @@ namespace Menge
 				->pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, unsigned int _button, bool _isDown )
+        void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, unsigned int _button, bool _isDown, bool _isPressed )
         {
 			mt::vec2f pos_screen;
 			this->s_calcMouseScreenPosition( _pos, pos_screen );
 
             INPUT_SERVICE(m_serviceProvider)
-				->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
+				->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown, _isPressed );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_platformEvent( const ConstString & _event, const TMapParams & _params )
@@ -3677,7 +3677,7 @@ namespace Menge
         protected:
 			bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
             {
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown );
+				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed );
 
 				if( py_result.is_none() == false )
                 {
@@ -3715,7 +3715,7 @@ namespace Menge
             //////////////////////////////////////////////////////////////////////////
 			bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override
             {
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown );
+				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed );
 
 				if( py_result.is_none() == false )
 				{
@@ -3791,7 +3791,7 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
 			{
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown );
+				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed );
 
 				if( py_result.is_none() == false )
 				{

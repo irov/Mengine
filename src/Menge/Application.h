@@ -70,6 +70,9 @@ namespace Menge
 		bool initialize( const String & _args ) override;
 		void finalize() override;
 
+	public:
+		void finalizeGame() override;
+
 	protected:
 		bool loadResourcePacks_( const ConstString & _fileGroup, const FilePath & _resourceIni );
 

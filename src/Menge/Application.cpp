@@ -1638,6 +1638,23 @@ namespace Menge
 		}
     }
 	//////////////////////////////////////////////////////////////////////////
+	void Application::finalizeGame()
+	{
+		if( m_gameService != nullptr )
+		{
+			m_gameService->finalize();
+		}
+
+		SERVICE_DESTROY( GameService, m_gameService );
+
+		if( m_playerService != nullptr )
+		{
+			m_playerService->finalize();
+		}
+
+		SERVICE_DESTROY( PlayerService, m_playerService );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{		
 		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
@@ -1667,20 +1684,6 @@ namespace Menge
 		{
             ScriptWrapper::constsUnwrap( m_serviceProvider );            			
 		}
-
-		if( m_gameService != nullptr )
-		{
-			m_gameService->finalize();
-		}
-
-        SERVICE_DESTROY( GameService, m_gameService );
-
-		if( m_playerService != nullptr )
-		{
-			m_playerService->finalize();
-		}
-
-		SERVICE_DESTROY( PlayerService, m_playerService );
 
 		if( m_resourceService != nullptr )
 		{

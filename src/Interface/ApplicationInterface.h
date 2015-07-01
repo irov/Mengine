@@ -24,6 +24,9 @@ namespace Menge
 	public:
 		virtual bool initialize( const String & _args ) = 0;
         virtual void finalize() = 0;
+		
+	public:
+		virtual void finalizeGame() = 0;
 			
 	public:
 		virtual bool getAllowFullscreenSwitchShortcut() const = 0;

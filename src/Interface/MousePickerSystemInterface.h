@@ -30,8 +30,9 @@ namespace Menge
         virtual bool pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, Arrow * _arrow ) = 0;
 
     public:
-		virtual bool onMouseEnter( float _x, float _y ) = 0;
-        virtual void onMouseLeave() = 0;
+		virtual bool onHandleMouseEnter( float _x, float _y ) = 0;
+        virtual void onHandleMouseLeave() = 0;
+		virtual void onHandleMouseDestroy() = 0;
 
     public:
 		virtual PickerTrapState * propagatePickerTrapState() const = 0;

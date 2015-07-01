@@ -1641,6 +1641,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalizeGame()
 	{
+		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
+		{
+			GAME_SERVICE( m_serviceProvider )
+				->finalizeRenderResources();
+		}
+
+		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
+		{
+			PLAYER_SERVICE( m_serviceProvider )
+				->finalizeRenderResources();
+		}
+		
 		if( m_gameService != nullptr )
 		{
 			m_gameService->finalize();
@@ -1658,18 +1670,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Application::finalize()
 	{		
-		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
-		{
-			GAME_SERVICE( m_serviceProvider )
-				->finalizeRenderResources();
-		}
-
-		if( SERVICE_EXIST( m_serviceProvider, Menge::PlayerServiceInterface ) == true )
-		{
-			PLAYER_SERVICE( m_serviceProvider )
-				->finalizeRenderResources();
-		}
-
 		CODEC_SERVICE(m_serviceProvider)
 			->unregisterDecoder( CONST_STRING(m_serviceProvider, memoryImage) );
 
@@ -1949,6 +1949,11 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::isDevelopmentMode() const
+	{ 
+		return m_developmentMode;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::changeWindowResolution( const Resolution & _resolution )
 	{

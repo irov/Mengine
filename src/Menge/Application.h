@@ -95,6 +95,7 @@ namespace Menge
 
 	public:
 		bool isValidWindowMode() const override;
+		bool isDevelopmentMode() const override;
 
 	public:
 		bool getVSync() const override;

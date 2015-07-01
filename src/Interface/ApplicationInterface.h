@@ -86,6 +86,7 @@ namespace Menge
 
     public:
         virtual bool isValidWindowMode() const = 0;
+		virtual bool isDevelopmentMode() const = 0;
 
 	public:
 		virtual void calcWindowResolution( Resolution & _windowResolution ) const = 0;

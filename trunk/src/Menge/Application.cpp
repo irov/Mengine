@@ -313,6 +313,9 @@ namespace Menge
            m_aspectRatioViewports[aspect] = it->viewport;
         }
 
+		GAME_SERVICE(m_serviceProvider)
+			->setDevelopmentMode( m_developmentMode );
+
         return true;
     }
 	/////////////////////////////////////////////////////
@@ -652,8 +655,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		gameService->setDevelopmentMode( m_developmentMode );
 
 		m_gameService = gameService;
 

@@ -3677,7 +3677,7 @@ namespace Menge
         protected:
 			bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override
             {
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed );
+				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown );
 
 				if( py_result.is_none() == false )
                 {
@@ -3715,7 +3715,7 @@ namespace Menge
             //////////////////////////////////////////////////////////////////////////
 			bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override
             {
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed );
+				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown );
 
 				if( py_result.is_none() == false )
 				{
@@ -3791,7 +3791,7 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override
 			{
-				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed );
+				pybind::object py_result = m_cb( _event.touchId, _event.x, _event.y, _event.button, _event.isDown );
 
 				if( py_result.is_none() == false )
 				{

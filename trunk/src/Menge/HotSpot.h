@@ -66,8 +66,9 @@ namespace Menge
 		Scriptable * propagatePickerScriptable() override;
 
 	protected:
-		bool onMouseEnter( float _x, float _y ) override;
-		void onMouseLeave() override;
+		bool onHandleMouseEnter( float _x, float _y ) override;
+		void onHandleMouseLeave() override;
+		void onHandleMouseDestroy() override;
 
 	public:
 		bool handleKeyEvent( const InputKeyEvent & _event ) override;
@@ -94,5 +95,6 @@ namespace Menge
 		bool m_onMouseEnterEvent;
 		bool m_onMouseLeaveEvent;
 		bool m_onMouseMoveEvent;
+		bool m_onMouseDestroyEvent;
 	};
 }

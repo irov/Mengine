@@ -27,6 +27,7 @@ namespace Menge
 		, m_onMouseMoveEvent(false)
 		, m_onMouseEnterEvent(false)
 		, m_onMouseLeaveEvent(false)
+		, m_onMouseDestroyEvent(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -96,8 +97,9 @@ namespace Menge
 		this->registerEvent( EVENT_MOUSE_WHEEL, ("onHandleMouseWheel"), _listener );
 
 		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener, &m_onMouseMoveEvent );
-		this->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener, &m_onMouseLeaveEvent );
 		this->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener, &m_onMouseEnterEvent );
+		this->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener, &m_onMouseLeaveEvent );		
+		this->registerEvent( EVENT_MOUSE_DESTROY, ("onHandleMouseDestroy"), _listener, &m_onMouseDestroyEvent );
 
 		this->registerEvent( EVENT_ACTIVATE, ("onActivate"), _listener );
 		this->registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _listener );
@@ -173,7 +175,7 @@ namespace Menge
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_DEACTIVATE )();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpot::onMouseLeave()
+	void HotSpot::onHandleMouseLeave()
 	{
 		m_debugColor = 0xFFFFFFFF;
 
@@ -183,7 +185,15 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::onMouseEnter( float _x, float _y )
+	void HotSpot::onHandleMouseDestroy()
+	{
+		if( m_onMouseDestroyEvent == true )
+		{
+			EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_DESTROY )(this);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpot::onHandleMouseEnter( float _x, float _y )
 	{
 		m_debugColor = 0xFFFF0000;
 

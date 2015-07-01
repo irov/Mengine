@@ -32,7 +32,7 @@ namespace Menge
     public:
 		virtual bool onHandleMouseEnter( float _x, float _y ) = 0;
         virtual void onHandleMouseLeave() = 0;
-		virtual void onHandleMouseDestroy() = 0;
+		virtual void onHandleMouseOverDestroy() = 0;
 
     public:
 		virtual PickerTrapState * propagatePickerTrapState() const = 0;

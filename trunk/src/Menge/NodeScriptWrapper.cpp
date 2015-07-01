@@ -1453,7 +1453,7 @@ namespace Menge
             return factor;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool setCurrentScene( const ConstString& _name, bool _destroyOld, const pybind::object & _cb )
+        bool setCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _destroyOld, const pybind::object & _cb )
         {
             LOGGER_INFO(m_serviceProvider)( "set current scene '%s'"
                 , _name.c_str()
@@ -1470,16 +1470,31 @@ namespace Menge
 
 			if( scene != nullptr && scene->getName() == _name )
 			{
-				PLAYER_SERVICE( m_serviceProvider )
-					->restartCurrentScene( _cb );
+				if( PLAYER_SERVICE( m_serviceProvider )
+					->restartCurrentScene( _cb ) == false )
+				{
+					return false;
+				}
 			}
 			else
 			{
 				Scene * scene = PROTOTYPE_SERVICE( m_serviceProvider )
-					->generatePrototypeT<Scene>( CONST_STRING( m_serviceProvider, Scene ), _name );
+					->generatePrototypeT<Scene>( CONST_STRING( m_serviceProvider, Scene ), _prototype );
 
-				PLAYER_SERVICE( m_serviceProvider )
-					->setCurrentScene( scene, _destroyOld, _cb );
+				if( scene == nullptr )
+				{
+					return false;
+				}
+
+				scene->setName( _name );
+
+				if( PLAYER_SERVICE( m_serviceProvider )
+					->setCurrentScene( scene, _destroyOld, _cb ) == false )
+				{
+					scene->destroy();
+
+					return false;
+				}
 			}
 
 			return true;
@@ -1493,10 +1508,12 @@ namespace Menge
             return scene;
         }
         //////////////////////////////////////////////////////////////////////////
-        Scene * s_createScene( const ConstString & _name )
+        Scene * s_createScene( const ConstString & _prototype, const ConstString & _name )
         {
             Scene * scene = PROTOTYPE_SERVICE(m_serviceProvider)
-                ->generatePrototypeT<Scene>( CONST_STRING(m_serviceProvider, Scene), _name );
+				->generatePrototypeT<Scene>( CONST_STRING( m_serviceProvider, Scene ), _prototype );
+
+			scene->setName( _name );
 
             return scene;
         }

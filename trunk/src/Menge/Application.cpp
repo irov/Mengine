@@ -685,8 +685,6 @@ namespace Menge
                     return nullptr;
                 }
 
-                scene->setName( _prototype );
-
                 return scene;
             }
 

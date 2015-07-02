@@ -119,7 +119,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )(_event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON, handle )(_event.touchId, _event.x, _event.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
@@ -137,7 +137,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN, handle )(_event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_BEGIN, handle )(_event.touchId, _event.x, _event.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
@@ -155,7 +155,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END, handle )(_event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_BUTTON_END, handle )(_event.touchId, _event.x, _event.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )

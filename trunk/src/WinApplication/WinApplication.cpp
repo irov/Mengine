@@ -1878,7 +1878,7 @@ namespace Menge
 		if( alreadyRunning == true && dublicate == false )
 		{	
 			m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_serviceProvider);
-
+			
 			if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, wprojectTitle ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Application invalid running monitor"
@@ -1891,7 +1891,7 @@ namespace Menge
 		LOGGER_INFO(m_serviceProvider)( "Creating Render Window..." );
 
 		bool fullscreen = m_application->getFullscreenMode();
-
+		
 		//if( m_application->isValidWindowMode() == false )
 		//{
 		//    fullscreen = true;

@@ -9,13 +9,17 @@ namespace Menge
 		: m_serviceProvider(_serviceProvider)
 		, m_mutex(INVALID_HANDLE_VALUE)
 	{
-
+	}
+	//////////////////////////////////////////////////////////////////////////
+	AlreadyRunningMonitor::~AlreadyRunningMonitor()
+	{
+		this->stop();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AlreadyRunningMonitor::run( int _policy, const WString & _windowClassName, const WString & _title )
 	{
 		// try to create mutex to sure that we are not running already
-		WString mutexName = WString(L"MengineMutex_") + _title;
+		WString mutexName = WString( L"MengineAlreadyRunningMonitorMutex_" ) + _title;
 		m_mutex = ::CreateMutex( NULL, FALSE, mutexName.c_str() );
 		
 		DWORD error = ::GetLastError();

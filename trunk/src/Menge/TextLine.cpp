@@ -70,6 +70,7 @@ namespace Menge
                 continue;
             }
 
+			//'nbsp' replace to space :)
 			if( code == 160 )
 			{
 				code = 32;

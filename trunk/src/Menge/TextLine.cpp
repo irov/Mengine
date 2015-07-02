@@ -70,6 +70,11 @@ namespace Menge
                 continue;
             }
 
+			if( code == 160 )
+			{
+				code = 32;
+			}
+
 			GlyphCode glyphChar;
 			glyphChar.setCode( code );
 

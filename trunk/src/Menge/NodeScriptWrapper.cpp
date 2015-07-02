@@ -1907,13 +1907,13 @@ namespace Menge
 				->pushMouseMoveEvent( _touchId, cp.x, cp.y, mp.x, mp.y, 0.f );
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, unsigned int _button, bool _isDown, bool _isPressed )
+        void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, unsigned int _button, bool _isDown )
         {
 			mt::vec2f pos_screen;
 			this->s_calcMouseScreenPosition( _pos, pos_screen );
 
             INPUT_SERVICE(m_serviceProvider)
-				->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown, _isPressed );
+				->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_platformEvent( const ConstString & _event, const TMapParams & _params )

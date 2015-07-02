@@ -403,7 +403,7 @@ namespace Menge
 			this->pushEvent( event );
 		}
 
-		inline void pushMouseButtonEvent( unsigned int _touchId, float _x, float _y, unsigned int _button, float _pressure, bool _isDown, bool _isPressed )
+		inline void pushMouseButtonEvent( unsigned int _touchId, float _x, float _y, unsigned int _button, float _pressure, bool _isDown )
 		{
 			InputUnionEvent event;
 			event.button.type = IET_MOUSE_BUTTON;
@@ -414,7 +414,7 @@ namespace Menge
 			event.button.button = _button;
 			event.button.pressure = _pressure;
 			event.button.isDown = _isDown;
-			event.button.isPressed = _isPressed;
+			event.button.isPressed = true;
 
 			this->pushEvent( event );
 		}

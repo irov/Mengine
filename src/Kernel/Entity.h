@@ -21,6 +21,10 @@ namespace Menge
 		void setScriptEventable( Eventable * _eventable );
 		Eventable * getScriptEventable() const;
 
+	public:
+		void setScriptObject( const pybind::object & _object );
+		const pybind::object & getScriptObject() const;
+		
     public:
         void onCreate();
 
@@ -44,5 +48,6 @@ namespace Menge
 		ConstString m_prototype;
 
 		Eventable * m_scriptEventable;
+		pybind::object m_object;
 	};
 }

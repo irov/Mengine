@@ -61,15 +61,19 @@ namespace Menge
 			return pybind::make_invalid_object_t();
 		}
 
-		PyObject * py_type_ptr = py_type.ptr();
-		if( pybind::type_initialize( py_type_ptr ) == false )
+		if( py_type.is_type_class() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("PythonPrototypeGenerator prototype %s invalid type initialize"
-				, m_category.c_str()
-				, m_prototype.c_str()
-				);
+			PyObject * py_type_ptr = py_type.ptr();
 
-			return pybind::make_invalid_object_t();
+			if( pybind::type_initialize( py_type_ptr ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("PythonPrototypeGenerator prototype %s invalid type initialize"
+					, m_category.c_str()
+					, m_prototype.c_str()
+					);
+
+				return pybind::make_invalid_object_t();
+			}
 		}
 
 		this->registerEventMethod( EVENT_CREATE, "onCreate", py_type );

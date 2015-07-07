@@ -28,6 +28,10 @@ namespace Menge
 		ScriptClassInterface(){};
 		virtual ~ScriptClassInterface(){};
 
+	public:
+		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() = 0;
+
     public:
 		virtual pybind::object wrap( Scriptable * _node ) = 0;
 

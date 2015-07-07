@@ -3,6 +3,8 @@
 #	include "Interface/ScriptSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#   include "Logger/Logger.h"
+
 #   include "pybind/pybind.hpp"
 
 namespace Menge
@@ -34,8 +36,20 @@ namespace Menge
 	{
 	public:
 		ScriptClassWrapper()
+			: m_serviceProvider( nullptr )
 		{
 			pybind::registration_type_cast<T>( new ScriptClassExtract<T>() );
+		}
+
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override
+		{
+			m_serviceProvider = _serviceProvider;
+		}
+
+		ServiceProviderInterface * getServiceProvider() override
+		{
+			return m_serviceProvider;
 		}
 
 	protected:
@@ -44,6 +58,9 @@ namespace Menge
 #   ifdef _DEBUG
 			if( dynamic_cast<T *>( _node ) == nullptr )
             {
+				LOGGER_ERROR( m_serviceProvider )("ScriptClassWrapper::wrap invalid type"
+					);
+
                 return pybind::make_invalid_object_t();
             }
 #   endif
@@ -64,6 +81,9 @@ namespace Menge
 		{
 			delete this;
 		}
+
+	protected:
+		ServiceProviderInterface * m_serviceProvider;
 	};
 }
 

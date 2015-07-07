@@ -367,7 +367,9 @@ namespace Menge
 
 		if( cb.is_valid() == true )
 		{
-			cb( m_scene, false );
+			const pybind::object & py_scene = m_scene->getScriptObject();
+
+			cb( py_scene, false );
 		}
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
@@ -390,7 +392,9 @@ namespace Menge
 
 		if( cb.is_valid() == true )
 		{
-			cb( m_scene, true );
+			const pybind::object & py_scene = m_scene->getScriptObject();
+
+			cb( py_scene, true );
 		}
 
 		return;
@@ -441,7 +445,9 @@ namespace Menge
 
 		if( cb.is_valid() == true )
 		{
-			cb( m_scene, false );
+			const pybind::object & py_scene = m_scene->getScriptObject();
+
+			cb( py_scene, false );
 		}
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
@@ -464,7 +470,9 @@ namespace Menge
 
 		if( cb.is_valid() == true )
 		{
-			cb( m_scene, true );
+			const pybind::object & py_scene = m_scene->getScriptObject();
+
+			cb( py_scene, true );
 		}
 
 		return;

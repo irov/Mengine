@@ -2038,7 +2038,7 @@ namespace Menge
 					m_fpsMonitor->monitor();
 				}
 
-				if( m_application->isFocus() == true && m_active == true )
+				if( m_application->isFocus() == true && m_active == true || m_nopause == true )
 				{
 					if( m_application->render() == true )
 					{

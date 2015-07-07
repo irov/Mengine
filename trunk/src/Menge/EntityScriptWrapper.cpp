@@ -60,7 +60,7 @@ namespace Menge
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-		Entity * s_createEntity( const ConstString & _prototype )
+		const pybind::object & s_createEntity( const ConstString & _prototype )
 		{
 			Entity * entity = PROTOTYPE_SERVICE(m_serviceProvider)
 				->generatePrototypeT<Entity>( CONST_STRING(m_serviceProvider, Entity), _prototype );
@@ -71,13 +71,15 @@ namespace Menge
 					, _prototype.c_str()
 					);
 
-				return nullptr;
+				return pybind::object::get_invalid();
 			}
 
 			NODE_SERVICE( m_serviceProvider )
 				->addHomeless( entity );
 
-			return entity;
+			const pybind::object & py_entity = entity->getScriptObject();
+
+			return py_entity;
 		}
         //////////////////////////////////////////////////////////////////////////
 		pybind::object s_importEntity( const ConstString & _prototype )
@@ -109,8 +111,7 @@ namespace Menge
         (void)_args;
         (void)_kwds;
 
-        void * user = _scope->get_user();
-        ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(user);
+		ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
 
         Entity * entity = NODE_SERVICE(serviceProvider)
             ->createNodeT<Entity>( CONST_STRING(serviceProvider, Entity) );
@@ -127,8 +128,7 @@ namespace Menge
         (void)_args;
         (void)_kwds;
 
-        void * user = _scope->get_user();
-        ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(user);
+		ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
 
         Arrow * arrow = NODE_SERVICE(serviceProvider)
             ->createNodeT<Arrow>( CONST_STRING(serviceProvider, Arrow) );
@@ -144,8 +144,7 @@ namespace Menge
         (void)_args;
         (void)_kwds;
 
-        void * user = _scope->get_user();
-        ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(user);
+		ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
 
         Scene * scene = NODE_SERVICE(serviceProvider)
             ->createNodeT<Scene>( CONST_STRING(serviceProvider, Scene) );

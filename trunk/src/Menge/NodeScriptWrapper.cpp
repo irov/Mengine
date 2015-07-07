@@ -1536,12 +1536,19 @@ namespace Menge
                 ->setArrow( arrow );
         }
         //////////////////////////////////////////////////////////////////////////
-        Arrow * s_getArrow()
+        const pybind::object & s_getArrow()
         {
             Arrow * arrow = PLAYER_SERVICE(m_serviceProvider)
                 ->getArrow();
 
-            return arrow;
+			if( arrow == nullptr )
+			{
+				return pybind::object::get_invalid();
+			}
+
+			const pybind::object & py_arrow = arrow->getScriptObject();
+
+			return py_arrow;
         }
         //////////////////////////////////////////////////////////////////////////
         const Resolution & s_getCurrentResolution()
@@ -4708,6 +4715,7 @@ namespace Menge
 			.def( "getLocalColorB", &Colorable::getLocalColorB )
             .def( "setLocalAlpha", &Colorable::setLocalColorAlpha )
             .def( "getLocalAlpha", &Colorable::getLocalColorAlpha )
+			.def( "setLocalColorRGB", &Colorable::setLocalColorRGB )
             .def( "setPersonalColor", &Colorable::setPersonalColor )
             .def( "getPersonalColor", &Colorable::getPersonalColor )
             .def( "setPersonalAlpha", &Colorable::setPersonalAlpha )

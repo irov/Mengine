@@ -9,6 +9,8 @@
 #	include "Interface/NodeInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
+#	include "Interface/PrototypeManagerInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -573,8 +575,18 @@ namespace Menge
 
 			return nullptr;
 		}
+
+		Entity * entity = nullptr;
         
-		Entity * entity = py_entity.extract();
+		if( py_entity.is_class() == true )
+		{
+			entity = py_entity.extract();
+		}
+		else
+		{
+			entity = PROTOTYPE_SERVICE( m_serviceProvider )
+				->generatePrototypeT<Entity>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), _type );
+		}
 
         if( entity == nullptr )
         {
@@ -590,6 +602,7 @@ namespace Menge
         entity->setPrototype( _prototype );
 
 		entity->setScriptEventable( _eventable );
+		entity->setScriptObject( py_entity );
 
 		entity->onCreate();
 
@@ -602,6 +615,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper )
 	{
+		_wrapper->setServiceProvider( m_serviceProvider );
+
 		m_scriptWrapper.insert( _type, _wrapper );
 	}
 	//////////////////////////////////////////////////////////////////////////|

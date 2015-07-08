@@ -1927,6 +1927,7 @@ namespace Menge
 
         pybind::def_function( "getrefcount", &pybind::refcount );
 		pybind::def_function( "is_class", &pybind::is_class );
+		pybind::def_function( "is_type_class", &pybind::is_type_class );
         pybind::def_function( "is_wrap", &pybind::is_wrap );
 
         pybind::def_functor( "getLanguagePack", helperScriptMethod, &HelperScriptMethod::s_getLanguagePack );

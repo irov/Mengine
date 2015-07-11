@@ -4,6 +4,7 @@
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
+#   include "Interface/ConfigInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -14,6 +15,7 @@
 #	include "Core/String.h"
 
 #	include "Config/Typedef.h"
+#	include "Config/Stringstream.h"
 
 #	include <stdio.h>
 #	include <wchar.h>
@@ -76,10 +78,12 @@ namespace Menge
 	{
         uint32_t new_playerID = ++m_playerEnumerator;
 
-		wchar_t bufferAccountID[128];
-		swprintf( bufferAccountID, 128, L"Player_%d", new_playerID );
+		//wchar_t bufferAccountID[128];
+		//swprintf( bufferAccountID, 128, L"Player_%d", new_playerID );
+		WStringstream streamAccountID;
+		streamAccountID << L"Player_" << new_playerID;
 
-		WString accountID = bufferAccountID;
+		WString accountID = streamAccountID.str();
         
 		AccountInterfacePtr account = this->createAccount_( accountID );
 
@@ -119,7 +123,7 @@ namespace Menge
         
 		m_currentAccount = newAccount;
 
-        if( m_accountListener )
+        if( m_accountListener != nullptr )
         {
 		    m_accountListener->onCreateAccount( _accountID );
         }
@@ -395,6 +399,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::loadAccounts()
 	{        
+		bool noLoadAccount = CONFIG_VALUE( m_serviceProvider, "Development", "NoAccount", false );
+
+		if( noLoadAccount == true )
+		{
+			return true;
+		}
+
 		bool accountsExist = FILE_SERVICE(m_serviceProvider)
             ->existFile( CONST_STRING(m_serviceProvider, user), m_accountsPath, nullptr );
 

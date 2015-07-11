@@ -268,6 +268,9 @@ namespace Menge
 
         this->registerEventMethod( EVENT_FOCUS, "onFocus", _embed );
 
+		this->registerEventMethod( EVENT_CREATE_DEFAULT_ACCOUNT, "onCreateDefaultAccount", _embed );
+		this->registerEventMethod( EVENT_LOAD_ACCOUNTS, "onLoadAccounts", _embed );		
+
         this->registerEventMethod( EVENT_CREATE_ACCOUNT, "onCreateAccount", _embed );
         this->registerEventMethod( EVENT_DELETE_ACCOUNT, "onDeleteAccount", _embed );
         this->registerEventMethod( EVENT_SELECT_ACCOUNT, "onSelectAccount", _embed );
@@ -355,17 +358,33 @@ namespace Menge
 
         m_accountProvider = new GameAccountProvider(m_serviceProvider, this);
 		
-        m_accountService->initialize( _accountPath, _projectVersion, m_accountProvider );
-
-		bool noLoadAccount = CONFIG_VALUE(m_serviceProvider, "Development", "NoAccount", false);
-		
-		if( noLoadAccount == false )
+		if( m_accountService->initialize( _accountPath, _projectVersion, m_accountProvider ) == false )
 		{
-			if( m_accountService->loadAccounts() == false )
-		    {
-			    LOGGER_ERROR(m_serviceProvider)("Game::initialize failed load accounts"
-				    );
-			}
+			LOGGER_ERROR( m_serviceProvider )("Game::initialize invalid initialize account service"
+				);
+
+			return false;
+		}
+
+		if( m_accountService->loadAccounts() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Game::initialize failed load accounts"
+				);
+		}
+				
+		bool hasCurrentAccount = m_accountService->hasCurrentAccount();
+
+		if( hasCurrentAccount == false )
+		{
+			EVENTABLE_CALL( m_serviceProvider, this, EVENT_CREATE_DEFAULT_ACCOUNT)();
+		}
+
+		bool EVENT_LOAD_ACCOUNTS_result = true;
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_LOAD_ACCOUNTS, EVENT_LOAD_ACCOUNTS_result )();
+
+		if( EVENT_LOAD_ACCOUNTS_result == false )
+		{
+			return false;
 		}
 
 		m_defaultArrow = PROTOTYPE_SERVICE(m_serviceProvider)
@@ -408,10 +427,10 @@ namespace Menge
 		const ConstString & platformName = PLATFORM_SERVICE(m_serviceProvider)
 			->getPlatformName();
 
-		bool result = true;
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_INITIALIZE, result )( _scriptInitParams.c_str(), platformName, isMaster );
+		bool EVENT_INITIALIZE_result = true;
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_INITIALIZE, EVENT_INITIALIZE_result )(_scriptInitParams.c_str(), platformName, isMaster);
 
-		if( result == false )
+		if( EVENT_INITIALIZE_result == false )
 		{
 			return false;
 		}

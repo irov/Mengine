@@ -205,16 +205,18 @@ namespace Menge
 	{
 		AstralaxEmitterContainerPtr astralax_container = stdex::intrusive_static_cast<AstralaxEmitterContainerPtr>(_container);
 
-		CacheMemoryStream container_buffer(m_serviceProvider, _stream, "AstralaxEmitterContainer2");
-		const void * container_memory = container_buffer.getMemory();
-
-		if( container_memory == nullptr )
+		MemoryCacheInputPtr data_cache = Helper::createMemoryStream( m_serviceProvider, _stream, UNKNOWN_SIZE, "AstralaxEmitterContainer2" );
+		
+		if( data_cache == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize invalid get memory"				
 				);
 
 			return false;
 		}
+
+		size_t container_size;
+		const void * container_memory = data_cache->getMemory( container_size );
 
 		HM_FILE file = Magic_OpenFileInMemory( static_cast<const char*>(container_memory) );
 

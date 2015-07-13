@@ -73,8 +73,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
 	{
-		CacheMemoryStream compress_buffer(m_serviceProvider, _stream, _size, "ArchiveService::decompressStream");
-		const void * compress_memory = compress_buffer.getMemory();
+		MemoryCacheInputPtr compress_buffer = Helper::createMemoryStream( m_serviceProvider, _stream, _size, "ArchiveService::decompressStream" );
+
+		size_t compress_size;
+		const void * compress_memory = compress_buffer->getMemory( compress_size );
 				
 		if( compress_memory == nullptr )
 		{
@@ -101,11 +103,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInputPtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream )
 	{
-		CacheMemoryStream binary_buffer(m_serviceProvider, _stream, "ArchiveService::compressStream");
-		const void * binary_memory = binary_buffer.getMemory();
-		size_t binary_size = binary_buffer.getSize();
+		MemoryCacheInputPtr uncompress_buffer = Helper::createMemoryStream( m_serviceProvider, _stream, UNKNOWN_SIZE, "ArchiveService::compressStream" );
 
-		if( binary_memory == nullptr )
+		size_t uncompress_size;
+		const void * uncompress_memory = uncompress_buffer->getMemory( uncompress_size );
+		
+		if( uncompress_memory == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ArchiveService::compressStream: invalid cache buffer"
 				);
@@ -113,7 +116,7 @@ namespace Menge
 			return nullptr;
 		}
 				
-		MemoryInputPtr compress_memory = this->compressBuffer( _archivator, binary_memory, binary_size );
+		MemoryInputPtr compress_memory = this->compressBuffer( _archivator, uncompress_memory, uncompress_size );
 
 		return compress_memory;
 	}

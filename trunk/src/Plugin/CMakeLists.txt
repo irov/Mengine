@@ -5,6 +5,7 @@ ADD_SUBDIRECTORY( MengeZipPlugin )
 ADD_SUBDIRECTORY( MengeLZ4Plugin )
 ADD_SUBDIRECTORY( MengeOggVorbisPlugin )
 ADD_SUBDIRECTORY( MengePathFinderPlugin )
+ADD_SUBDIRECTORY( MengeSpinePlugin )
 #ADD_SUBDIRECTORY( MengeCal3dPlugin )
 
 if( DEFINED MENGINE_TARGET_MSVC )    

@@ -62,6 +62,13 @@ namespace Menge
         return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void * MemoryCacheInput::getMemory( size_t & _size ) const
+	{
+		_size = m_size;
+
+		return m_data;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryCacheInput::read( void * _buf, size_t _size )
 	{
 		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryCacheInput::read");

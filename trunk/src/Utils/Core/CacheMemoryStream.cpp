@@ -1,78 +1,62 @@
 #	include "CacheMemoryStream.h"
 
+#	include "Interface/CacheInterface.h"
+#	include "Interface/FileSystemInterface.h"
+
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	CacheMemoryStream::CacheMemoryStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const char * _doc )
-		: m_serviceProvider(_serviceProvider)
-		, m_bufferId(INVALID_CACHE_BUFFER_ID)
-		, m_memory(nullptr)
+	namespace Helper
 	{
-		size_t size = _stream->size();
-
-		void * memory = nullptr;
-		CacheBufferID bufferId = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( size, &memory, _doc );
-
-		if( bufferId == INVALID_CACHE_BUFFER_ID )
+		MemoryCacheInputPtr createMemoryStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size, const char * _doc )
 		{
-			return;
+			MemoryCacheInputPtr cache = CACHE_SERVICE( _serviceProvider )
+				->createMemoryCacheInput();
+
+			if( cache == nullptr )
+			{
+				return nullptr;
+			}
+
+			if( _size == UNKNOWN_SIZE )
+			{
+				_size = _stream->size();
+			}
+
+			void * memory = cache->cacheMemory( _size, _doc );
+
+			if( memory == nullptr )
+			{
+				return nullptr;
+			}
+
+			size_t read_byte = _stream->read( memory, _size );
+
+			if( read_byte != _size )
+			{
+				return nullptr;
+			}
+
+			return cache;
 		}
-		
-		m_bufferId = bufferId;
-		m_memory = static_cast<unsigned char *>(memory);
-		m_size = size;
-
-		size_t read_byte = _stream->read( m_memory, m_size );
-
-		if( read_byte != m_size )
+		//////////////////////////////////////////////////////////////////////////
+		MemoryCacheInputPtr createMemoryFile( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc )
 		{
-			CACHE_SERVICE(m_serviceProvider)
-				->unlockBuffer( m_bufferId );
+			InputStreamInterfacePtr stream = FILE_SERVICE( _serviceProvider )
+				->openInputFile( _category, _filePath, _stream );
+
+			if( stream == nullptr )
+			{
+				return nullptr;
+			}
 			
-			m_bufferId = INVALID_CACHE_BUFFER_ID;
-			m_memory = nullptr;
-			m_size = 0;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	CacheMemoryStream::CacheMemoryStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size, const char * _doc )
-		: m_serviceProvider(_serviceProvider)
-		, m_bufferId(INVALID_CACHE_BUFFER_ID)
-		, m_memory(nullptr)
-	{
-		void * memory = nullptr;
-		CacheBufferID bufferId = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( _size, &memory, _doc );
+			MemoryCacheInputPtr cache = createMemoryStream( _serviceProvider, stream, UNKNOWN_SIZE, _doc );
 
-		if( bufferId == INVALID_CACHE_BUFFER_ID )
-		{
-			return;
-		}
-				
-		m_bufferId = bufferId;
-		m_memory = static_cast<unsigned char *>(memory);
-		m_size = _size;
+			if( cache == nullptr )
+			{
+				return nullptr;
+			}
 
-		size_t read_byte = _stream->read( m_memory, m_size );
-
-		if( read_byte != m_size )
-		{
-			CACHE_SERVICE(m_serviceProvider)
-				->unlockBuffer( m_bufferId );
-
-			m_bufferId = INVALID_CACHE_BUFFER_ID;
-			m_memory = nullptr;
-			m_size = 0;
-		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	CacheMemoryStream::~CacheMemoryStream()
-	{
-		if( m_bufferId != INVALID_CACHE_BUFFER_ID )
-		{
-			CACHE_SERVICE(m_serviceProvider)
-				->unlockBuffer( m_bufferId );
+			return cache;
 		}
 	}
 }

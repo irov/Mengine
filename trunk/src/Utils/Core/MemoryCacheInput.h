@@ -19,6 +19,16 @@ namespace Menge
 
     public:
         void * cacheMemory( size_t _size, const char * _doc );
+		void * getMemory( size_t & _size ) const;
+
+		template<class T>
+		T * getMemoryT( size_t & _size ) const
+		{
+			void * memory = this->getMemory( _size );
+
+			return static_cast<T *>(memory);
+		}
+
 
 	public:
 		size_t read( void * _buf, size_t _size ) override;

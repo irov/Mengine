@@ -6,6 +6,10 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	static const size_t INVALID_SIZE = (size_t)-1;
+	static const size_t UNKNOWN_SIZE = (size_t)-1;
+	//////////////////////////////////////////////////////////////////////////
 	class InputStreamInterface        
         : public FactorablePtr
 	{
@@ -23,9 +27,9 @@ namespace Menge
 	public:
 		virtual bool memory( void ** _memory, size_t * _size ) = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<InputStreamInterface> InputStreamInterfacePtr;
-
+	//////////////////////////////////////////////////////////////////////////
 	class OutputStreamInterface
         : public FactorablePtr
 	{
@@ -33,6 +37,6 @@ namespace Menge
 		virtual bool write( const void * _data, size_t _count ) = 0;
 		virtual bool flush() = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<OutputStreamInterface> OutputStreamInterfacePtr;
 }

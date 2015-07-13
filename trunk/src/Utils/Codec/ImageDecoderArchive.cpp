@@ -78,9 +78,15 @@ namespace Menge
 		void * stream_memory;
 		if( m_stream->memory( &stream_memory, &stream_size ) == false )
 		{
-			CacheMemoryStream buffer(m_serviceProvider, m_stream, "ImageDecoderArchive::decodeData_");
-			const void * cache_buffer = buffer.getMemory();
-			size_t cache_size = buffer.getSize();
+			MemoryCacheInputPtr buffer = Helper::createMemoryStream( m_serviceProvider, m_stream, (size_t)-1, "ImageDecoderArchive::decodeData_" );
+
+			if( buffer == nullptr )
+			{
+				return 0;
+			}
+
+			size_t cache_size;
+			const void * cache_buffer = buffer->getMemory( cache_size );
 
 			decodyByte = this->decompressData_( cache_buffer, cache_size, _buffer, m_uncompressSize );
 		}

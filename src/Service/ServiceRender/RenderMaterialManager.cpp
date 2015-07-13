@@ -553,18 +553,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMaterialManager::loadFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
 	{ 
-		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
-			->openInputFile( _pakName, _filePath, false );
-
-		if( stream == nullptr )
+		MemoryCacheInputPtr data_cache = Helper::createMemoryFile( m_serviceProvider, _pakName, _filePath, false, "loadFragmentShader" );
+		
+		if( data_cache == nullptr )
 		{
 			return false;
 		}
 
-		CacheMemoryStream memory( m_serviceProvider, stream, "loadFragmentShader" );
-
-		const void * buffer = memory.getMemory();
-		size_t size = memory.getSize();
+		size_t size;
+		const void * buffer = data_cache->getMemory( size );
 
 		RenderShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
 			->createFragmentShader( _name, buffer, size, isCompile );
@@ -581,18 +578,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMaterialManager::loadVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
 	{ 
-		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
-			->openInputFile( _pakName, _filePath, false );
+		MemoryCacheInputPtr data_cache = Helper::createMemoryFile( m_serviceProvider, _pakName, _filePath, false, "loadVertexShader" );
 
-		if( stream == nullptr )
+		if( data_cache == nullptr )
 		{
 			return false;
 		}
 
-		CacheMemoryStream memory( m_serviceProvider, stream, "loadVertexShader" );
-
-		const void * buffer = memory.getMemory();
-		size_t size = memory.getSize();
+		size_t size;
+		const void * buffer = data_cache->getMemory( size );
 
 		RenderShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
 			->createVertexShader( _name, buffer, size, isCompile );

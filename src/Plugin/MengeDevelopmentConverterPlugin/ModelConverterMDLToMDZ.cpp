@@ -62,14 +62,20 @@ namespace Menge
 
         ConstString c_dev = STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" );
 
-        InputStreamInterfacePtr input = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( c_dev, full_input, false );
+		MemoryCacheInputPtr cache = Helper::createMemoryFile( m_serviceProvider, c_dev, full_input, false, "ModelConverterMDLToMDZ_data" );
 
-        size_t uncompressSize = input->size();
+		if( cache == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ModelConverterMDLToMDZ::convert_: invalid create memory file '%s'"
+				, full_input.c_str()
+				);
 
-		CacheMemoryStream data_buffer(m_serviceProvider, input, "ModelConverterMDLToMDZ_data");
-		const Blobject::value_type * data_memory = data_buffer.getMemoryT<Blobject::value_type>();
-		
+			return false;
+		}
+
+		size_t uncompressSize;
+		void * data_memory = cache->getMemory( uncompressSize );
+
 		OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
 			->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );
 

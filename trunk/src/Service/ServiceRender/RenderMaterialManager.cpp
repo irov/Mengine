@@ -5,7 +5,7 @@
 
 #   include "Logger/Logger.h"
 
-#	include "Core/CacheMemoryStream.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 #	include <Metacode/Metacode.h>
 
@@ -553,15 +553,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMaterialManager::loadFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
 	{ 
-		MemoryCacheInputPtr data_cache = Helper::createMemoryFile( m_serviceProvider, _pakName, _filePath, false, "loadFragmentShader" );
+		MemoryCacheBufferPtr data_cache = Helper::createMemoryFile( m_serviceProvider, _pakName, _filePath, false, "loadFragmentShader" );
 		
 		if( data_cache == nullptr )
 		{
 			return false;
 		}
-
-		size_t size;
-		const void * buffer = data_cache->getMemory( size );
+				
+		const void * buffer = data_cache->getMemory();
+		size_t size = data_cache->getSize();
 
 		RenderShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
 			->createFragmentShader( _name, buffer, size, isCompile );
@@ -578,15 +578,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderMaterialManager::loadVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
 	{ 
-		MemoryCacheInputPtr data_cache = Helper::createMemoryFile( m_serviceProvider, _pakName, _filePath, false, "loadVertexShader" );
+		MemoryCacheBufferPtr data_cache = Helper::createMemoryFile( m_serviceProvider, _pakName, _filePath, false, "loadVertexShader" );
 
 		if( data_cache == nullptr )
 		{
 			return false;
 		}
 
-		size_t size;
-		const void * buffer = data_cache->getMemory( size );
+		const void * buffer = data_cache->getMemory();
+		size_t size = data_cache->getSize();
 
 		RenderShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
 			->createVertexShader( _name, buffer, size, isCompile );

@@ -4,7 +4,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 namespace Menge
 {
@@ -32,15 +32,15 @@ namespace Menge
 	bool ResourceSpine::_compile()
 	{
 		const ConstString & category = this->getCategory();
+		
+		MemoryCacheBufferPtr buffer = Helper::createMemoryFile( m_serviceProvider, category, m_filePath, false, "ResourceSpine::_compile" );
 
-		InputStreamInterfacePtr stream = FILE_SERVICE( m_serviceProvider )
-			->openInputFile( category, m_filePath, false );
-
-		size_t size = stream->size();
-		CacheMemoryBuffer buffer( m_serviceProvider, size, "ResourceCal3dAnimation::_compile" );
-		void * memory_buffer = buffer.getMemory();
-
-		stream->read( memory_buffer, size );
+		if( buffer == nullptr )
+		{
+			return false;
+		}
+		
+		void * memory_buffer = buffer->getMemory();
 
 		return true;
 	}

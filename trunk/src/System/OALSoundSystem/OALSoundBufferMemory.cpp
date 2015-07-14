@@ -4,7 +4,7 @@
 
 #	include "Interface/SoundCodecInterface.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 #	include "Logger/Logger.h"
 
@@ -52,18 +52,19 @@ namespace Menge
 		m_length = dataInfo->length;
 		size_t size = dataInfo->size;
 		
-		CacheMemoryBuffer binary_buffer(m_serviceProvider, size, "OALSoundBuffer");
-		void * binary_memory = binary_buffer.getMemory();
+		MemoryCacheBufferPtr binary_buffer = Helper::createMemoryBuffer( m_serviceProvider, size, "OALSoundBuffer" );
 
-		if( binary_memory == nullptr )
+		if( binary_buffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("OALSoundBuffer::load invalid sound %d memory %d"
+			LOGGER_ERROR( m_serviceProvider )("OALSoundBuffer::load invalid sound %d memory %d"
 				, size
 				);
 
 			return false;
 		}
 
+		void * binary_memory = binary_buffer->getMemory();
+		
 		size_t decode_size = m_soundDecoder->decode( binary_memory, size );
         
 		if( decode_size == 0 )

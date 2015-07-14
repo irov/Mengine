@@ -29,6 +29,7 @@ namespace Menge
 		void unlockBuffer( CacheBufferID _bufferId ) override;
 
 	public:
+		MemoryCacheBufferPtr createMemoryCacheBuffer() override;
 		MemoryCacheInputPtr createMemoryCacheInput() override;
 		MemoryProxyInputPtr createMemoryProxyInput() override;
 		MemoryInputPtr createMemoryInput() override;
@@ -55,6 +56,9 @@ namespace Menge
 		CacheBufferID m_enumeratorId;
 			
 		ThreadMutexInterfacePtr m_memoryMutex;
+
+		typedef FactoryPoolStore<MemoryCacheBuffer, 16> TFactoryPoolMemoryCacheBuffer;
+		TFactoryPoolMemoryCacheBuffer m_factoryPoolMemoryCacheBuffer;
 
 		typedef FactoryPoolStore<MemoryCacheInput, 16> TFactoryPoolMemoryCacheInput;
 		TFactoryPoolMemoryCacheInput m_factoryPoolMemoryCacheInput;

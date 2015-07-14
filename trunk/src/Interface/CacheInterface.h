@@ -6,6 +6,7 @@
 
 #	include "Factory/FactorablePtr.h"
 
+#	include "Core/MemoryCacheBuffer.h"
 #	include "Core/MemoryCacheInput.h"
 #	include "Core/MemoryProxyInput.h"
 #	include "Core/MemoryInput.h"
@@ -33,6 +34,7 @@ namespace Menge
 		virtual void unlockBuffer( CacheBufferID _bufferId ) = 0;
 
 	public:
+		virtual MemoryCacheBufferPtr createMemoryCacheBuffer() = 0;
 		virtual MemoryCacheInputPtr createMemoryCacheInput() = 0;
 		virtual MemoryProxyInputPtr createMemoryProxyInput() = 0;
 		virtual MemoryInputPtr createMemoryInput() = 0;

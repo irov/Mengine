@@ -49,11 +49,8 @@ src
     MemoryCacheInput.h
     MemoryCacheInput.cpp
     
-    CacheMemoryBuffer.h
-    CacheMemoryBuffer.cpp
-    
-    CacheMemoryStream.h
-    CacheMemoryStream.cpp
+    MemoryCacheBuffer.h
+    MemoryCacheBuffer.cpp
 	
     ValueInterpolator.h
     

@@ -4,7 +4,7 @@
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/CacheInterface.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 #   include "Config/Blobject.h"
 
@@ -101,8 +101,14 @@ namespace Menge
         uint32_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 		
-		CacheMemoryBuffer code_buffer(m_serviceProvider, code_size, "unmarshal_code_buffer");
-		Blobject::value_type * code_memory = code_buffer.getMemoryT<Blobject::value_type>();
+		MemoryCacheBufferPtr code_buffer = Helper::createMemoryBuffer( m_serviceProvider, code_size, "unmarshal_code_buffer" );
+
+		if( code_buffer == nullptr )
+		{
+			return nullptr;
+		}
+
+		Blobject::value_type * code_memory = code_buffer->getMemoryT<Blobject::value_type>();
 
         size_t uncompress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)

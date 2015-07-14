@@ -1,6 +1,5 @@
 #	include "Stream.h"
 
-#	include "Core/CacheMemoryBuffer.h"
 #	include "Core/CRC32.h"
 
 #	include "Logger/Logger.h"
@@ -76,17 +75,18 @@ namespace Menge
 			size_t binary_size = (size_t)load_binary_size;
 			size_t compress_size = (size_t)load_compress_size;
 
-			CacheMemoryBuffer compress_buffer(_serviceProvider, compress_size, "ArchiveService::getData compress_memory");
-			void * compress_memory = compress_buffer.getMemory();
+			MemoryCacheBufferPtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "ArchiveService::getData compress_memory" );
 
-			if( compress_memory == nullptr )
+			if( compress_buffer == nullptr )
 			{
-				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveBuffer: invalid get memory %d (compress)"
+				LOGGER_ERROR( _serviceProvider )("loadStreamArchiveBuffer: invalid get memory %d (compress)"
 					, compress_size
 					);
 
 				return false;
 			}
+
+			void * compress_memory = compress_buffer->getMemory();
 
 			size_t read_data = _stream->read( compress_memory, compress_size );
 
@@ -184,17 +184,18 @@ namespace Menge
 				return false;
 			}
 
-			CacheMemoryBuffer compress_buffer(_serviceProvider, compress_size, "ArchiveService::getData compress_memory");
-			void * compress_memory = compress_buffer.getMemory();
+			MemoryCacheBufferPtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "ArchiveService::getData compress_memory" );
 
-			if( compress_memory == nullptr )
+			if( compress_buffer == nullptr )
 			{
-				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveInplace: invalid get memory %d (compress)"
+				LOGGER_ERROR( _serviceProvider )("loadStreamArchiveInplace: invalid get memory %d (compress)"
 					, compress_size
 					);
 
 				return false;
 			}
+
+			void * compress_memory = compress_buffer->getMemory();
 
 			size_t read_data = _stream->read( compress_memory, compress_size );
 

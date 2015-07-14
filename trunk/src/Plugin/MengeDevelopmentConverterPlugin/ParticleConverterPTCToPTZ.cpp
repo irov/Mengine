@@ -10,7 +10,7 @@
 
 #   include "Core/Magic.h"
 #   include "Core/FilePath.h"
-#	include "Core/CacheMemoryStream.h"
+#	include "Core/MemoryCacheBuffer.h"
 #	include "Core/Stream.h"
 
 #   include "Config/Blobject.h"
@@ -60,10 +60,15 @@ namespace Menge
         ConstString full_input = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
         ConstString full_output = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
 		        
-		MemoryCacheInputPtr data_cache = Helper::createMemoryFile( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false, "ParticleConverterPTCToPTZ_data" );
-	
-		size_t data_size;
-		const Blobject::value_type * data_memory = data_cache->getMemoryT<Blobject::value_type>( data_size );
+		MemoryCacheBufferPtr data_cache = Helper::createMemoryFile( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false, "ParticleConverterPTCToPTZ_data" );
+
+		if( data_cache == nullptr )
+		{
+			return false;
+		}
+			
+		const Blobject::value_type * data_memory = data_cache->getMemoryT<Blobject::value_type>();
+		size_t data_size = data_cache->getSize();
 
 		if( data_memory == nullptr )
 		{

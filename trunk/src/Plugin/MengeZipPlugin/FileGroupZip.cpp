@@ -7,7 +7,7 @@
 
 #	include "Logger/Logger.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 #	include "Core/FilePath.h"
 #	include "Core/String.h"
 
@@ -431,12 +431,11 @@ namespace Menge
 				return false;
 			}
 
-			CacheMemoryBuffer compress_buffer(m_serviceProvider, info->file_size, "FileGroupZip_createInputFile");
-			void * compress_memory = compress_buffer.getMemory();
-
-			if( compress_memory == nullptr )
+			MemoryCacheBufferPtr compress_buffer = Helper::createMemoryBuffer( m_serviceProvider, info->file_size, "FileGroupZip_createInputFile" );
+			
+			if( compress_buffer == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("FileGroupZip::createInputFile: pak %s file %s failed cache memory %d"
+				LOGGER_ERROR( m_serviceProvider )("FileGroupZip::createInputFile: pak %s file %s failed cache memory %d"
 					, m_path.c_str()
 					, _fileName.c_str()
 					, info->file_size
@@ -444,6 +443,8 @@ namespace Menge
 
 				return false;
 			}
+
+			void * compress_memory = compress_buffer->getMemory();
 
 			m_mutex->lock();
 			m_zipFile->seek( file_offset );

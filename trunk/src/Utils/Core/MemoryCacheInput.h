@@ -18,7 +18,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     public:
-        void * cacheMemory( size_t _size, const char * _doc );
+        bool cacheMemory( size_t _size, const char * _doc );
 		void * getMemory( size_t & _size ) const;
 
 		template<class T>

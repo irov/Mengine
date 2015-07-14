@@ -11,7 +11,7 @@
 
 #   include "Core/Magic.h"
 #   include "Core/FilePath.h"
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 #   include "Config/Blobject.h"
 
@@ -109,8 +109,15 @@ namespace Menge
 		}	
 		
 		size_t data_size = dataInfo->getSize();
-		CacheMemoryBuffer data_buffer(m_serviceProvider, data_size, "ImageConverterPNGToACF_data");
-		void * data_memory = data_buffer.getMemory();
+
+		MemoryCacheBufferPtr data_buffer = Helper::createMemoryBuffer( m_serviceProvider, data_size, "ImageConverterPNGToACF_data" );
+
+		if( data_buffer == nullptr )
+		{
+			return false;
+		}
+
+		void * data_memory = data_buffer->getMemory();
 
 		if( decoder->decode( data_memory, data_size ) == 0 )
 		{

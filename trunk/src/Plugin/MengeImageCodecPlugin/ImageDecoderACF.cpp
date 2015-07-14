@@ -5,7 +5,7 @@
 #	include "Interface/FileSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 #	include "Core/Stream.h"
 
 #   include "Config/Blobject.h"
@@ -101,8 +101,14 @@ namespace Menge
 		}
 		else
 		{
-			CacheMemoryBuffer buffer(m_serviceProvider, dataSize, "ImageDecoderACF::decode");
-			void * memory = buffer.getMemory();
+			MemoryCacheBufferPtr buffer = Helper::createMemoryBuffer( m_serviceProvider, dataSize, "ImageDecoderACF::decode" );
+
+			if( buffer == nullptr )
+			{
+				return 0;
+			}
+
+			void * memory = buffer->getMemory();
 
 			if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, memory, dataSize ) == false )
 			{

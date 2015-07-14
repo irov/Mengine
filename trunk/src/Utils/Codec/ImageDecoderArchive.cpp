@@ -1,7 +1,6 @@
 #	include "ImageDecoderArchive.h"
 
-#	include "Core/CacheMemoryBuffer.h"
-#	include "Core/CacheMemoryStream.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 #   include "Logger/Logger.h"
 
@@ -78,15 +77,15 @@ namespace Menge
 		void * stream_memory;
 		if( m_stream->memory( &stream_memory, &stream_size ) == false )
 		{
-			MemoryCacheInputPtr buffer = Helper::createMemoryStream( m_serviceProvider, m_stream, (size_t)-1, "ImageDecoderArchive::decodeData_" );
+			MemoryCacheBufferPtr buffer = Helper::createMemoryStream( m_serviceProvider, m_stream, "ImageDecoderArchive::decodeData_" );
 
 			if( buffer == nullptr )
 			{
 				return 0;
 			}
-
-			size_t cache_size;
-			const void * cache_buffer = buffer->getMemory( cache_size );
+						
+			const void * cache_buffer = buffer->getMemory();
+			size_t cache_size = buffer->getSize();
 
 			decodyByte = this->decompressData_( cache_buffer, cache_size, _buffer, m_uncompressSize );
 		}
@@ -114,8 +113,14 @@ namespace Menge
 		}
 		else
 		{
-			CacheMemoryBuffer buffer(m_serviceProvider, _capacityDest, "ImageDecoderArchive::decompressData_");
-			void * cache_buffer = buffer.getMemory();
+			MemoryCacheBufferPtr buffer = Helper::createMemoryBuffer( m_serviceProvider, _capacityDest, "ImageDecoderArchive::decompressData_" );
+
+			if( buffer == nullptr )
+			{
+				return 0;
+			}
+			
+			void * cache_buffer = buffer->getMemory();
 
 			size_t decompressSize;
 			if( m_archivator->decompress( cache_buffer, _capacityDest, _source, _sourceSize, decompressSize ) == false )

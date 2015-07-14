@@ -84,6 +84,7 @@ namespace Menge
 		uint32_t maxQuadBatch = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxQuadBatch", 2000U );
 		uint32_t maxLineBatch = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxLineBatch", 4000U );
 
+		uint32_t maxMutableVertex = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaxMutableVertex", 2000U );
 		uint32_t maxDebugVertex = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxDebugVertex", 2000U );
 				
 		m_renderObjects.reserve( maxObjects );
@@ -92,8 +93,9 @@ namespace Menge
 		m_indicesQuad.resize( maxQuadBatch * 6 );
 		m_indicesLine.resize( maxLineBatch * 1 );
 
+		m_mutableRenderVertex2D.reserve( maxMutableVertex );
 		m_debugRenderVertex2D.reserve( maxDebugVertex );
-		 
+				 
 		for( uint32_t i = 0; i != maxQuadBatch; ++i )
 		{   
 			uint32_t indexOffset = i * 6;
@@ -501,7 +503,9 @@ namespace Menge
 	{		
 		m_renderPasses.clear();
 		m_renderObjects.clear();
-		m_debugRenderVertex2D.clear();
+
+		m_mutableRenderVertex2D.clear();
+		m_debugRenderVertex2D.clear();		
 
 		m_debugInfo.fillrate = 0.f;
 		m_debugInfo.object = 0;
@@ -1326,6 +1330,21 @@ namespace Menge
 		}
 
 		RenderVertex2D * vertices = m_debugRenderVertex2D.emplace_count( _count );
+
+		return vertices;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderVertex2D * RenderEngine::getMutableRenderVertex2D( uint32_t _count )
+	{
+		uint32_t renderVertex2DSize = m_mutableRenderVertex2D.size();
+		uint32_t renderVertex2DCapacity = m_mutableRenderVertex2D.capacity();
+
+		if( renderVertex2DSize + _count > renderVertex2DCapacity )
+		{
+			return nullptr;
+		}
+
+		RenderVertex2D * vertices = m_mutableRenderVertex2D.emplace_count( _count );
 
 		return vertices;
 	}

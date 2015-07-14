@@ -109,6 +109,7 @@ namespace Menge
 		void createRenderPass_();
 
 	public:
+		RenderVertex2D * getMutableRenderVertex2D( uint32_t _count ) override;
 		RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) override;
 
 	public:
@@ -281,6 +282,9 @@ namespace Menge
 
         typedef stdex::heap_array<RenderPass> TArrayRenderPass;
         TArrayRenderPass m_renderPasses;
+
+		typedef stdex::heap_array<RenderVertex2D> TArrayRenderVertex2D;
+		TArrayRenderVertex2D m_mutableRenderVertex2D;
 
 		typedef stdex::heap_array<RenderVertex2D> TArrayRenderVertex2D;
 		TArrayRenderVertex2D m_debugRenderVertex2D;

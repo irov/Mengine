@@ -370,7 +370,7 @@ namespace Menge
 			return false;
 		}
 
-		char * memory = buffer->getMemoryT<char>();
+		char * memory = buffer->getMemoryT<char *>();
 
 		stream->read( memory, xml_buffer_size );
 		memory[xml_buffer_size] = '\0';

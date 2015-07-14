@@ -82,7 +82,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		char * source_memory = source_buffer->getMemoryT<char>();
+		char * source_memory = source_buffer->getMemoryT<char *>();
 
         if( file_size > 0 )
         {

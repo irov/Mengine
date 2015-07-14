@@ -26,11 +26,11 @@ namespace Menge
 		inline void * getMemory() const;
 
 		template<class T>
-		inline T * getMemoryT() const
+		inline T getMemoryT() const
 		{
 			void * memory = this->getMemory();
 
-			return static_cast<T *>(memory);
+			return static_cast<T>(memory);
 		}
 
 		inline size_t getSize() const;

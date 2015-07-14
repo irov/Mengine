@@ -148,7 +148,7 @@ namespace Menge
 				return nullptr;
 			}
 
-			unsigned char * memory = cache->getMemoryT<unsigned char>();
+			unsigned char * memory = cache->getMemoryT<unsigned char *>();
 
 			size_t read_byte = stream->read( memory, size );
 

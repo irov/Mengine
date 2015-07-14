@@ -9,7 +9,7 @@
 
 #   include "Logger/Logger.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 #	include "Core/ConstString.h"
 #	include "Core/String.h"
 
@@ -221,8 +221,15 @@ namespace Menge
 		if( CONFIG_SERVICE(m_serviceProvider)->getValue( "Check", "ImageTransparency", false ) == true && dataInfo->channels == 4 )
 		{
 			size_t texture_size = dataInfo->getSize();
-			CacheMemoryBuffer buffer(m_serviceProvider, texture_size, "ResourceImageDefault::_isValid" );
-			void * buffer_memory = buffer.getMemory();
+
+			MemoryCacheBufferPtr buffer = Helper::createMemoryBuffer( m_serviceProvider, texture_size, "ResourceImageDefault::_isValid" );
+
+			if( buffer == nullptr )
+			{
+				return false;
+			}
+
+			void * buffer_memory = buffer->getMemory();
 
 			ImageCodecOptions options;
 			options.channels = 4;

@@ -3,7 +3,7 @@
 #	include "Interface/CacheInterface.h"
 
 #   include "Config/Blobject.h"
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 #	include "Logger/Logger.h"
 
@@ -267,8 +267,14 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 1 )
 			{
-				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes, "ImageDecoderPNG_4_1");
-				png_byte * row_memory = row_buffer.getMemoryT<png_byte>();
+				MemoryCacheBufferPtr row_buffer = Helper::createMemoryBuffer( m_serviceProvider, m_row_bytes, "ImageDecoderPNG_4_1" );
+
+				if( row_buffer == nullptr )
+				{
+					return 0;
+				}
+				
+				png_byte * row_memory = row_buffer->getMemoryT<png_byte>();
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
@@ -299,8 +305,14 @@ namespace Menge
 		{				
 			if( m_dataInfo.channels == 1 && m_options.channels == 4 )
 			{
-				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes, "ImageDecoderPNG_1_4");
-				png_byte * row_memory = row_buffer.getMemoryT<png_byte>();
+				MemoryCacheBufferPtr row_buffer = Helper::createMemoryBuffer( m_serviceProvider, m_row_bytes, "ImageDecoderPNG_1_4" );
+
+				if( row_buffer == nullptr )
+				{
+					return 0;
+				}
+				
+				png_byte * row_memory = row_buffer->getMemoryT<png_byte>();
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
@@ -318,8 +330,14 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
 			{
-				CacheMemoryBuffer row_buffer(m_serviceProvider, m_row_bytes, "ImageDecoderPNG_4_4");
-				png_byte * row_memory = row_buffer.getMemoryT<png_byte>();
+				MemoryCacheBufferPtr row_buffer = Helper::createMemoryBuffer( m_serviceProvider, m_row_bytes, "ImageDecoderPNG_4_4" );
+
+				if( row_buffer == nullptr )
+				{
+					return 0;
+				}
+
+				png_byte * row_memory = row_buffer->getMemoryT<png_byte>();
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 

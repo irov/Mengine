@@ -10,7 +10,7 @@
 #	include "Logger/Logger.h"
 
 #   include "Core/FilePath.h"
-#	include "Core/CacheMemoryStream.h"
+#	include "Core/MemoryCacheBuffer.h"
 #	include "Core/Stream.h"
 
 #   include "Config/Blobject.h"
@@ -62,7 +62,7 @@ namespace Menge
 
         ConstString c_dev = STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" );
 
-		MemoryCacheInputPtr cache = Helper::createMemoryFile( m_serviceProvider, c_dev, full_input, false, "ModelConverterMDLToMDZ_data" );
+		MemoryCacheBufferPtr cache = Helper::createMemoryFile( m_serviceProvider, c_dev, full_input, false, "ModelConverterMDLToMDZ_data" );
 
 		if( cache == nullptr )
 		{
@@ -72,9 +72,9 @@ namespace Menge
 
 			return false;
 		}
-
-		size_t uncompressSize;
-		void * data_memory = cache->getMemory( uncompressSize );
+				
+		void * data_memory = cache->getMemory();
+		size_t uncompressSize = cache->getSize();
 
 		OutputStreamInterfacePtr output = FILE_SERVICE(m_serviceProvider)
 			->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_output );

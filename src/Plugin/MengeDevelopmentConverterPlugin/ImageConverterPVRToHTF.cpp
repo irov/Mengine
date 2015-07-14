@@ -11,7 +11,7 @@
 
 #   include "Core/Magic.h"
 #   include "Core/FilePath.h"
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 #   include "Config/Blobject.h"
 
@@ -89,18 +89,19 @@ namespace Menge
 
 		size_t data_full_size = dataInfo->getFullSize();
 
-		CacheMemoryBuffer data_buffer(m_serviceProvider, data_full_size, "ImageConverterPVRToHTF_data");
-		void * data_memory = data_buffer.getMemory();
-
-		if( data_memory == nullptr )
+		MemoryCacheBufferPtr data_buffer = Helper::createMemoryBuffer( m_serviceProvider, data_full_size, "ImageConverterPVRToHTF_data" );
+		
+		if( data_buffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageConverterPVRToHTF::convert: %s invalid cache memory %d"
+			LOGGER_ERROR( m_serviceProvider )("ImageConverterPVRToHTF::convert: %s invalid cache memory %d"
 				, m_options.inputFileName.c_str()
 				, data_full_size
 				);
 
 			return false;
 		}
+
+		void * data_memory = data_buffer->getMemory();
 
 		unsigned char * miplevel_data_memory = reinterpret_cast<unsigned char *>(data_memory);
 

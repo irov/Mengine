@@ -210,6 +210,15 @@ namespace Menge
 		m_memoryMutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MemoryCacheBufferPtr CacheManager::createMemoryCacheBuffer()
+	{
+		MemoryCacheBuffer * memoryBuffer = m_factoryPoolMemoryCacheBuffer.createObjectT();
+
+		memoryBuffer->setServiceProvider( m_serviceProvider );
+
+		return memoryBuffer;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheInputPtr CacheManager::createMemoryCacheInput()
 	{
 		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput.createObjectT();

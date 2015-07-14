@@ -42,7 +42,7 @@
 #	include "Kernel/ResourceImage.h"
 #	include "ResourceCursorICO.h"
 #	include "AccountManager.h"
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 #	include "Kernel/Affector.h"
 
@@ -135,9 +135,15 @@ namespace Menge
 			size_t size;
 			pybind::pickle( _data, _pickleTypes, nullptr, 0, size );
 
-			CacheMemoryBuffer buffer(m_serviceProvider, size, "s_writeAccountBinaryFile");
-			void * memory_buffer = buffer.getMemory();
-			size_t memory_size = buffer.getSize();
+			MemoryCacheBufferPtr buffer = Helper::createMemoryBuffer( m_serviceProvider, size, "s_writeAccountBinaryFile" );
+
+			if( buffer == nullptr )
+			{
+				return false;
+			}
+
+			void * memory_buffer = buffer->getMemory();
+			size_t memory_size = buffer->getSize();
 
 			if( pybind::pickle( _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
 			{
@@ -1316,22 +1322,23 @@ namespace Menge
 				return false;
 			}
 
-			CacheMemoryBuffer buffer(m_serviceProvider, size, "s_writeAccountBinaryFile");
-			void * memory_buffer = buffer.getMemory();
-			size_t memory_size = buffer.getSize();
+			MemoryCacheBufferPtr buffer = Helper::createMemoryBuffer( m_serviceProvider, size, "s_writeAccountBinaryFile" );
 
-			if( memory_buffer == nullptr )
+			if( buffer == nullptr )
 			{
 				const WString & accountName = currentAccount->getName();
 
-				LOGGER_ERROR(m_serviceProvider)("writeAccountPickleFile: account %ls invalid get memory for %d size"
+				LOGGER_ERROR( m_serviceProvider )("writeAccountPickleFile: account %ls invalid get memory for %d size"
 					, accountName.c_str()
-					, memory_size
+					, size
 					);
 
 				return false;
 			}
 
+			void * memory_buffer = buffer->getMemory();
+			size_t memory_size = buffer->getSize();
+			
 			if( pybind::pickle( _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
 			{
 				const WString & accountName = currentAccount->getName();

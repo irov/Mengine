@@ -2,7 +2,7 @@
 
 #   include "Interface/StringizeInterface.h"
 
-#	include "Core/CacheMemoryStream.h"
+#	include "Core/MemoryCacheBuffer.h"
 #   include "Core/String.h"
 
 #   include "Logger/Logger.h"
@@ -205,7 +205,7 @@ namespace Menge
 	{
 		AstralaxEmitterContainerPtr astralax_container = stdex::intrusive_static_cast<AstralaxEmitterContainerPtr>(_container);
 
-		MemoryCacheInputPtr data_cache = Helper::createMemoryStream( m_serviceProvider, _stream, UNKNOWN_SIZE, "AstralaxEmitterContainer2" );
+		MemoryCacheBufferPtr data_cache = Helper::createMemoryStream( m_serviceProvider, _stream, "AstralaxEmitterContainer2" );
 		
 		if( data_cache == nullptr )
 		{
@@ -214,10 +214,9 @@ namespace Menge
 
 			return false;
 		}
-
-		size_t container_size;
-		const void * container_memory = data_cache->getMemory( container_size );
-
+				
+		const void * container_memory = data_cache->getMemory();
+		
 		HM_FILE file = Magic_OpenFileInMemory( static_cast<const char*>(container_memory) );
 
 		if( file == MAGIC_ERROR )

@@ -9,7 +9,7 @@
 
 #	include "Logger/Logger.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 #   include <math.h>
 
@@ -50,8 +50,14 @@ namespace Menge
 
 		size_t bufferSize = dataInfo->mipmapsize;
 
-		CacheMemoryBuffer memory(m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::validateVersion");
-		unsigned char * buffer = memory.getMemoryT<unsigned char>();
+		MemoryCacheBufferPtr memory = Helper::createMemoryBuffer( m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::validateVersion" );
+
+		if( memory == nullptr )
+		{
+			return false;
+		}
+
+		unsigned char * buffer = memory->getMemoryT<unsigned char>();
 
 		size_t decode_mipmapsize = decoder->decode( buffer, bufferSize );
 				
@@ -117,8 +123,14 @@ namespace Menge
 
         size_t bufferSize = width * height + mimmap_size;
 		
-		CacheMemoryBuffer memory(m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::convert");
-		unsigned char * buffer = memory.getMemoryT<unsigned char>();
+		MemoryCacheBufferPtr memory = Helper::createMemoryBuffer( m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::convert" );
+
+		if( memory == nullptr )
+		{
+			return false;
+		}
+
+		unsigned char * buffer = memory->getMemoryT<unsigned char>();
 
         if( imageDecoder->decode( buffer, bufferSize ) == 0 )
         {

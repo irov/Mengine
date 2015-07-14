@@ -10,7 +10,7 @@
 
 #   include "Logger/Logger.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 #	include "Core/IniUtil.h"
 #	include "Core/String.h"
 #	include "Core/Stream.h"

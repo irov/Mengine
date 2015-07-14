@@ -140,7 +140,7 @@
 
 #	include "Utils/Core/Rect.h"
 #	include "Utils/Core/String.h"
-#	include "Utils/Core/CacheMemoryBuffer.h"
+#	include "Utils/Core/MemoryCacheBuffer.h"
 
 #	include "pybind/stl_type_cast.hpp"
 
@@ -2080,24 +2080,17 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_parseXml( const ConstString & _fileGroup, const FilePath & _path, PyObject * _cb )
 		{
-			InputStreamInterfacePtr stream = 
-				FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _path, false );
+			MemoryCacheBufferPtr binary_buffer = Helper::createMemoryFileString( m_serviceProvider, _fileGroup, _path, false, "parseXml" );
 
-			if( stream == nullptr )
+			if( binary_buffer == nullptr )
 			{
 				return false;
 			}
 
-			size_t size = stream->size();
+			char * memory = binary_buffer->getMemoryT<char>();
 
-			CacheMemoryBuffer binary_buffer(m_serviceProvider, size + 1, "parseXml");
-			Blobject::value_type * memory = binary_buffer.getMemoryT<Blobject::value_type>();
-
-			stream->read( memory, size );
-			memory[size] = 0;
-			
 			PythonSaxCallback pysc(m_serviceProvider, _cb);
-			if( stdex::xml_sax_parse( (char *)memory, pysc ) == false )
+			if( stdex::xml_sax_parse( memory, pysc ) == false )
 			{
 				return false;
 			}

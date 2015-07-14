@@ -4,7 +4,7 @@
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/CacheInterface.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 #   include "Config/Blobject.h"
 
@@ -75,8 +75,14 @@ namespace Menge
     {
         size_t file_size = _stream->size();
 
-		CacheMemoryBuffer source_buffer(m_serviceProvider, file_size + 2, "unmarshal_source_");
-		char * source_memory = source_buffer.getMemoryT<char>();
+		MemoryCacheBufferPtr source_buffer = Helper::createMemoryBuffer( m_serviceProvider, file_size + 2, "unmarshal_source_" );
+
+		if( source_buffer == nullptr )
+		{
+			return nullptr;
+		}
+
+		char * source_memory = source_buffer->getMemoryT<char>();
 
         if( file_size > 0 )
         {

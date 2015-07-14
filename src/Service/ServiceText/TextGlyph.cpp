@@ -6,7 +6,7 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/CacheInterface.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 #	include "Logger/Logger.h"
 
@@ -363,8 +363,14 @@ namespace Menge
 
 		size_t xml_buffer_size = stream->size();
 		
-		CacheMemoryBuffer buffer(m_serviceProvider, xml_buffer_size + 1, "TextGlyph");
-		char * memory = buffer.getMemoryT<char>();
+		MemoryCacheBufferPtr buffer = Helper::createMemoryBuffer( m_serviceProvider, xml_buffer_size + 1, "TextGlyph" );
+
+		if( buffer == nullptr )
+		{
+			return false;
+		}
+
+		char * memory = buffer->getMemoryT<char>();
 
 		stream->read( memory, xml_buffer_size );
 		memory[xml_buffer_size] = '\0';

@@ -9,7 +9,7 @@
 #	include "metabuf/Metabuf.hpp"
 #   include "Metacode.h"
 
-#	include "Core/CacheMemoryBuffer.h"
+#	include "Core/MemoryCacheBuffer.h"
 
 #   include "Logger/Logger.h"
 
@@ -182,8 +182,14 @@ namespace Menge
         uint32_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 
-		CacheMemoryBuffer binary_buffer(m_serviceProvider, bin_size, "importBin_binary");
-		Blobject::value_type * binary_memory = binary_buffer.getMemoryT<Blobject::value_type>();
+		MemoryCacheBufferPtr binary_buffer = Helper::createMemoryBuffer( m_serviceProvider, bin_size, "importBin_binary" );
+
+		if( binary_buffer == nullptr )
+		{
+			return false;
+		}
+
+		Blobject::value_type * binary_memory = binary_buffer->getMemoryT<Blobject::value_type>();
 		
         size_t uncompress_size = 0;
         if( ARCHIVE_SERVICE(m_serviceProvider)

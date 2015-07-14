@@ -108,7 +108,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		Blobject::value_type * code_memory = code_buffer->getMemoryT<Blobject::value_type>();
+		Blobject::value_type * code_memory = code_buffer->getMemoryT<Blobject::value_type *>();
 
         size_t uncompress_size;
         if( ARCHIVE_SERVICE(m_serviceProvider)

@@ -654,6 +654,7 @@ namespace Menge
 			, const mt::box2f * _bb ) = 0;
 
 	public:
+		virtual RenderVertex2D * getMutableRenderVertex2D( uint32_t _count ) = 0;
 		virtual RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) = 0;
 
 	public:

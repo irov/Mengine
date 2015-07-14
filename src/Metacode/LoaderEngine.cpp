@@ -189,7 +189,7 @@ namespace Menge
 			return false;
 		}
 
-		Blobject::value_type * binary_memory = binary_buffer->getMemoryT<Blobject::value_type>();
+		Blobject::value_type * binary_memory = binary_buffer->getMemoryT<Blobject::value_type *>();
 		
         size_t uncompress_size = 0;
         if( ARCHIVE_SERVICE(m_serviceProvider)

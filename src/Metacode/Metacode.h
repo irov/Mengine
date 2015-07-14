@@ -3927,6 +3927,70 @@ namespace Metacode
             mutable bool IsStreamable_Value;
         };
         
+        class Meta_ResourceSpine
+            : public Meta_Resource
+        { 
+        public:
+            Meta_ResourceSpine();
+        
+        public:
+            uint32_t getId() const override;
+        
+        public:
+            const Menge::FilePath & get_Atlas_Path() const
+            {
+                return this->Atlas_Path;
+            }
+            
+            void swap_Atlas_Path( Menge::FilePath & _value ) const
+            {
+                std::swap(_value, this->Atlas_Path);
+            }
+            
+            const Menge::FilePath & get_Skeleton_Path() const
+            {
+                return this->Skeleton_Path;
+            }
+            
+            void swap_Skeleton_Path( Menge::FilePath & _value ) const
+            {
+                std::swap(_value, this->Skeleton_Path);
+            }
+            
+            const Menge::ConstString & get_Texture_Codec() const
+            {
+                return this->Texture_Codec;
+            }
+            
+            void swap_Texture_Codec( Menge::ConstString & _value ) const
+            {
+                std::swap(_value, this->Texture_Codec);
+            }
+            
+            const Menge::FilePath & get_Texture_Path() const
+            {
+                return this->Texture_Path;
+            }
+            
+            void swap_Texture_Path( Menge::FilePath & _value ) const
+            {
+                std::swap(_value, this->Texture_Path);
+            }
+            
+        protected:
+            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
+            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
+            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
+        public:
+        protected:
+        protected:
+            mutable Menge::FilePath Atlas_Path;
+            mutable Menge::FilePath Skeleton_Path;
+            mutable Menge::ConstString Texture_Codec;
+            mutable Menge::FilePath Texture_Path;
+        };
+        
         class Meta_ResourceVideo
             : public Meta_Resource
         { 

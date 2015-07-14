@@ -16,6 +16,13 @@ namespace Menge
 		~ResourceSpine();
 
 	public:
+		const RenderTextureInterfacePtr & getAtlasTexture() const;
+
+	public:
+		spAtlas * getAtlas();
+		spSkeletonData * getSkeletonData();
+
+	public:
 		bool _loader( const Metabuf::Metadata * _meta ) override;
 
 	protected:
@@ -26,6 +33,14 @@ namespace Menge
 		bool _isValid() const override;
 
 	public:
-		FilePath m_filePath;
+		FilePath m_skeletonPath;
+		FilePath m_atlasPath;
+		FilePath m_texturePath;
+		ConstString m_textureCodecName;
+
+		RenderTextureInterfacePtr m_texture;
+
+		spAtlas * m_atlas;
+		spSkeletonData * m_skeletonData;
 	};
 }

@@ -57,7 +57,7 @@ namespace Menge
 			return false;
 		}
 
-		unsigned char * buffer = memory->getMemoryT<unsigned char>();
+		unsigned char * buffer = memory->getMemoryT<unsigned char *>();
 
 		size_t decode_mipmapsize = decoder->decode( buffer, bufferSize );
 				
@@ -130,7 +130,7 @@ namespace Menge
 			return false;
 		}
 
-		unsigned char * buffer = memory->getMemoryT<unsigned char>();
+		unsigned char * buffer = memory->getMemoryT<unsigned char *>();
 
         if( imageDecoder->decode( buffer, bufferSize ) == 0 )
         {

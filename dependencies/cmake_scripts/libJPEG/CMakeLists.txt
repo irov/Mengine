@@ -66,11 +66,12 @@ ${SOURCE_DIR}/jmemmgr.c
 )
 
 #choose memory manager
-if(WIN32)
-	set(jpeg_sources ${jpeg_sources} ${SOURCE_DIR}/jmemnobs.c)
-else(WIN32)
-	set(jpeg_sources ${jpeg_sources} ${SOURCE_DIR}/jmemnobs.c)
-endif(WIN32)
+set(jpeg_sources ${jpeg_sources} ${CMAKE_CURRENT_SOURCE_DIR}/jmemstdex.c)
 
 include_directories(${SOURCE_DIR})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include)
+
+include_directories(${SOURCE_DIR})
+
+
 add_library( ${PROJECT_NAME}_static STATIC ${jpeg_sources} )

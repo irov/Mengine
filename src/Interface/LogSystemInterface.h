@@ -23,6 +23,14 @@ namespace Menge
 	class LoggerInterface
 	{
 	public:
+		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() const = 0;
+
+	public:
+		virtual bool initialize() = 0;
+		virtual void finalize() = 0;
+
+	public:
 		virtual void setVerboseLevel( EMessageLevel _level ) = 0;
         virtual void setVerboseFlag( uint32_t _flag ) = 0;
 

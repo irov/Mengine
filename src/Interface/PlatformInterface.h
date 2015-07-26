@@ -56,7 +56,7 @@ namespace Menge
 
         virtual void getDesktopResolution( Resolution & _resolution ) const = 0;
 
-        virtual const String & getCurrentPath() const = 0;
+		virtual size_t getCurrentPath( WChar * _path, size_t _len ) const = 0;
 
         virtual void minimizeWindow() = 0;
 
@@ -80,16 +80,14 @@ namespace Menge
         virtual void onEvent( const ConstString & _event, const TMapParams & _params ) = 0;
 
     public:
-        virtual size_t getShortPathName( const String & _name, char * _shortpath, size_t _shortpathlen ) = 0;
+		virtual size_t getShortPathName( const WString & _path, WChar * _short, size_t _len ) const = 0;
 
     public:
         virtual void getMaxClientResolution( Resolution & _resolution ) const = 0;
 
     public:
         virtual bool isDevelopmentMode() const = 0;
-        //virtual void notifySoundInitialize() = 0;
-
-        //virtual void setAsScreensaver( bool _set ) = 0;
+		virtual bool isRoamingMode() const = 0;
 
 		virtual uint32_t getProcessHandleCount() const = 0;
 

@@ -75,7 +75,7 @@ namespace Menge
         virtual LONG_PTR setWindowLongPtr( HWND _hWnd, int _index, LONG_PTR _newLong ) = 0;
         virtual LONG_PTR getWindowLongPtr( HWND _hWnd, int _index ) = 0;
         virtual LRESULT defWindowProc( HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam ) = 0;
-        virtual bool getCurrentDirectory( WString & _path ) = 0;
+		virtual size_t getCurrentDirectory( WChar * _path, size_t _len ) = 0;
         virtual bool peekMessage( LPMSG _msg, HWND _hWnd, UINT _msgFilterMin, UINT _msgFilterMax, UINT _removeMsg ) = 0;
         virtual LRESULT dispatchMessage( const MSG* _msg ) = 0;
 

@@ -51,7 +51,6 @@ extern PyObject* PyInit__json(void);
 extern PyObject* PyInit_zlib(void);
 extern PyObject* PyInit_pyexpat(void);
 extern PyObject* PyInit__socket( void );
-extern PyObject* PyInit__ssl( void );
 extern PyObject* PyInit_unicodedata( void );
 
 extern PyObject* PyInit__multibytecodec(void);

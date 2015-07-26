@@ -23,6 +23,7 @@ namespace Menge
 	{
 		ResourcePackDesc()
 			: dev(false)
+			, immediately(false)
 			, preload(true)
 		{
 		}
@@ -37,15 +38,16 @@ namespace Menge
 		ConstString descriptionPath;
 
 		bool dev;
+		bool immediately;
 		bool preload;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	class PakInterface
+	class PackInterface
 		: public FactorablePtr
 	{
 	public:
 		virtual const ConstString & getName() const = 0;
-
+			
 	public:
 		virtual void setPreload( bool _value ) = 0;
 		virtual bool isPreload() const = 0;
@@ -58,9 +60,13 @@ namespace Menge
 
 		virtual void setPath( const ConstString & _path ) = 0;
 		virtual const ConstString & getPath() const = 0;
+
+	public:
+		virtual bool load() = 0;
+		virtual bool apply() = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<PakInterface> PakInterfacePtr;
+	typedef stdex::intrusive_ptr<PackInterface> PackInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class GameServiceInterface
         : public ServiceInterface
@@ -100,18 +106,14 @@ namespace Menge
 		virtual bool writeData( const ConstString & _name, const void * _data, size_t _size ) const = 0;
 
     public:
-		virtual void createResourcePak( const ResourcePackDesc & _desc ) = 0;
-		virtual PakInterfacePtr getResourcePak( const ConstString & _name ) const = 0;
-
-	public:
-		virtual bool loadResourcePak( const ResourcePackDesc & _desc ) = 0;
+		virtual bool addResourcePack( const ResourcePackDesc & _desc ) = 0;
 
 	public:
         virtual void setLanguagePack( const ConstString& _packName ) = 0;
         virtual const ConstString & getLanguagePack() const = 0;
 
     public:
-        virtual bool applyConfigPaks() = 0;
+        virtual bool applyConfigPacks() = 0;
 
     public:
         virtual bool loadPersonality( const ConstString & _module ) = 0;

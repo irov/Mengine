@@ -30,7 +30,7 @@ namespace Menge
 
 		mt::vec3f pos[MENGINE_MODEL_MAX_VERTEX];
 		mt::vec2f uv[MENGINE_MODEL_MAX_VERTEX];
-		RenderIndices2D indecies[MENGINE_MODEL_MAX_INDICES];
+		RenderIndices indecies[MENGINE_MODEL_MAX_INDICES];
 	};
 
 	typedef stdex::vector<Model3DFrame> TVectorModel3DFrames;

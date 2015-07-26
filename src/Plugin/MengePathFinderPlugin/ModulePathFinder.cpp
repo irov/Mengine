@@ -36,29 +36,27 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void * superclass_new_PathGraphNode( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds )
+	class superclass_new_PathGraphNode
+		: public pybind::class_new_interface
 	{
-		(void)_scope;
-		(void)_obj;
-		(void)_args;
-		(void)_kwds;		
+	public:
+		void * call( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
+		{
+			(void)_scope;
+			(void)_obj;
+			(void)_args;
+			(void)_kwds;
 
-		//void * user = _scope->get_user();
-		//ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(user);
+			//void * user = _scope->get_user();
+			//ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(user);
 
-		PathGraphNode * node = new PathGraphNode;
+			PathGraphNode * node = new PathGraphNode;
 
-		node->setEmbed( pybind::object(_obj) );
+			node->setEmbed( pybind::object( _obj ) );
 
-		return node;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void superclass_dealloc_only_python( const pybind::class_type_scope_ptr & _scope, void * _impl )
-	{
-		(void)_scope;
-		(void)_impl;
-		//Empty
-	}
+			return node;
+		}
+	};
 	//////////////////////////////////////////////////////////////////////////
 	static PyObject * s_fastpathfinder_graph_getPath( fastpathfinder::graph * _graph, fastpathfinder::graph_node * _from, fastpathfinder::graph_node * _to )
 	{
@@ -87,7 +85,7 @@ namespace Menge
 		pybind::interface_<fastpathfinder::graph_node>("fastpathfinder::graph_node", true)
 			;
 
-		pybind::superclass_<PathGraphNode, pybind::bases<fastpathfinder::graph_node> >("PathGraphNode", (void *)m_serviceProvider, &superclass_new_PathGraphNode, &superclass_dealloc_only_python, false)
+		pybind::superclass_<PathGraphNode, pybind::bases<fastpathfinder::graph_node> >("PathGraphNode", (void *)m_serviceProvider, new superclass_new_PathGraphNode, nullptr, false)
 			.def_constructor( pybind::init<>() )
 			.def( "getWeight", &PathGraphNode::getWeight )
 			;

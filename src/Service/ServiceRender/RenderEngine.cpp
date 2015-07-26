@@ -84,7 +84,6 @@ namespace Menge
 		uint32_t maxQuadBatch = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxQuadBatch", 2000U );
 		uint32_t maxLineBatch = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxLineBatch", 4000U );
 
-		uint32_t maxMutableVertex = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaxMutableVertex", 2000U );
 		uint32_t maxDebugVertex = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxDebugVertex", 2000U );
 				
 		m_renderObjects.reserve( maxObjects );
@@ -93,14 +92,13 @@ namespace Menge
 		m_indicesQuad.resize( maxQuadBatch * 6 );
 		m_indicesLine.resize( maxLineBatch * 1 );
 
-		m_mutableRenderVertex2D.reserve( maxMutableVertex );
 		m_debugRenderVertex2D.reserve( maxDebugVertex );
 				 
 		for( uint32_t i = 0; i != maxQuadBatch; ++i )
 		{   
 			uint32_t indexOffset = i * 6;
 
-			RenderIndices2D vertexOffset = (RenderIndices2D)i * 4;
+			RenderIndices vertexOffset = (RenderIndices)i * 4;
 
 			m_indicesQuad[indexOffset + 0] = vertexOffset + 0;
 			m_indicesQuad[indexOffset + 1] = vertexOffset + 3;
@@ -112,12 +110,10 @@ namespace Menge
 
 		for( uint32_t i = 0; i != maxLineBatch; ++i )
 		{
-			RenderIndices2D vertexOffset = (RenderIndices2D)i;
+			RenderIndices vertexOffset = (RenderIndices)i;
 
 			m_indicesLine[i] = vertexOffset;
 		}
-
-		this->setRenderSystemDefaults_();
 
 		m_debugInfo.dips = 0;
 		m_debugInfo.frameCount = 0;
@@ -467,8 +463,6 @@ namespace Menge
 		m_currentRenderCamera = nullptr;
 
 		m_currentProgram = nullptr;
-
-		this->setRenderSystemDefaults_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::onRenderSystemDeviceRestored()
@@ -504,7 +498,6 @@ namespace Menge
 		m_renderPasses.clear();
 		m_renderObjects.clear();
 
-		m_mutableRenderVertex2D.clear();
 		m_debugRenderVertex2D.clear();		
 
 		m_debugInfo.fillrate = 0.f;
@@ -578,6 +571,42 @@ namespace Menge
 		{
 			RenderTextureStage & current_texture_stage = m_currentTextureStage[stageId];
 			const RenderTextureStage & texture_stage = m_currentStage->textureStage[stageId];
+
+			if( current_texture_stage.addressU != texture_stage.addressU
+				|| current_texture_stage.addressV != texture_stage.addressV )
+			{
+				current_texture_stage.addressU = texture_stage.addressU;
+				current_texture_stage.addressV = texture_stage.addressV;
+
+				RENDER_SYSTEM( m_serviceProvider )->setTextureAddressing( stageId
+					, current_texture_stage.addressU
+					, current_texture_stage.addressV
+					);
+			}
+
+			if( current_texture_stage.mipmap != texture_stage.mipmap )
+			{
+				current_texture_stage.mipmap = texture_stage.mipmap;
+
+				RENDER_SYSTEM( m_serviceProvider )
+					->setTextureStageFilter( stageId, TFT_MIPMAP, current_texture_stage.mipmap );
+			}
+
+			if( current_texture_stage.magnification != texture_stage.magnification )
+			{
+				current_texture_stage.magnification = texture_stage.magnification;
+
+				RENDER_SYSTEM( m_serviceProvider )
+					->setTextureStageFilter( stageId, TFT_MAGNIFICATION, current_texture_stage.magnification );
+			}
+
+			if( current_texture_stage.minification != texture_stage.minification )
+			{
+				current_texture_stage.minification = texture_stage.minification;
+
+				RENDER_SYSTEM( m_serviceProvider )
+					->setTextureStageFilter( stageId, TFT_MINIFICATION, current_texture_stage.minification );
+			}
 
 			if( current_texture_stage.colorOp != texture_stage.colorOp
 				|| current_texture_stage.colorArg1 != texture_stage.colorArg1
@@ -673,53 +702,6 @@ namespace Menge
 
 			RENDER_SYSTEM(m_serviceProvider)
 				->setTexture( _stageId, image );
-			
-			RenderTextureStage & current_texture_stage = m_currentTextureStage[_stageId];
-
-			ETextureAddressMode addressU = _texture->getAddressU();
-			ETextureAddressMode addressV = _texture->getAddressV();
-
-			if( current_texture_stage.addressU != addressU
-				|| current_texture_stage.addressV != addressV )
-			{
-				current_texture_stage.addressU = addressU;
-				current_texture_stage.addressV = addressV;
-
-				RENDER_SYSTEM( m_serviceProvider )->setTextureAddressing( _stageId
-					, current_texture_stage.addressU
-					, current_texture_stage.addressV
-					);
-			}
-
-			ETextureFilter mipmap = _texture->getMipmapFilter();
-			
-			if( current_texture_stage.mipmap != mipmap )
-			{ 
-				current_texture_stage.mipmap = mipmap;
-
-				RENDER_SYSTEM( m_serviceProvider )
-					->setTextureStageFilter( _stageId, TFT_MIPMAP, current_texture_stage.mipmap );
-			}
-
-			ETextureFilter magnification = _texture->getMagnificationFilter();
-
-			if( current_texture_stage.magnification != magnification )
-			{
-				current_texture_stage.magnification = magnification;
-
-				RENDER_SYSTEM( m_serviceProvider )
-					->setTextureStageFilter( _stageId, TFT_MAGNIFICATION, current_texture_stage.magnification );
-			}
-			
-			ETextureFilter minification = _texture->getMinificationFilter();
-
-			if( current_texture_stage.minification != minification )
-			{
-				current_texture_stage.minification = minification;
-
-				RENDER_SYSTEM( m_serviceProvider )
-					->setTextureStageFilter( _stageId, TFT_MINIFICATION, current_texture_stage.minification );
-			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -820,34 +802,88 @@ namespace Menge
 
 		RENDER_SYSTEM(m_serviceProvider)
 			->setTexture( _stage, nullptr );
-
-		RENDER_SYSTEM(m_serviceProvider)->setTextureAddressing( _stage
-			, stage.addressU
-			, stage.addressV 
+		
+		RENDER_SYSTEM( m_serviceProvider )->setTextureStageColorOp( _stage
+			, TOP_DISABLE
+			, TARG_CURRENT
+			, TARG_CURRENT
 			);
 
-		RENDER_SYSTEM(m_serviceProvider)->setTextureStageColorOp( _stage
-			, stage.colorOp
-			, stage.colorArg1
-			, stage.colorArg2
+		RENDER_SYSTEM( m_serviceProvider )->setTextureStageAlphaOp( _stage
+			, TOP_DISABLE
+			, TARG_CURRENT
+			, TARG_CURRENT
 			);
-
-		RENDER_SYSTEM(m_serviceProvider)->setTextureStageAlphaOp( _stage
-			, stage.alphaOp
-			, stage.alphaArg1
-			, stage.alphaArg2
-			);
-
-		RENDER_SYSTEM(m_serviceProvider)->setTextureStageTexCoordIndex( _stage
-			, 0 
-			);
-
-		RENDER_SYSTEM(m_serviceProvider)
-			->setTextureMatrix( _stage, nullptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::restoreRenderSystemStates_()
 	{
+		m_currentStage = nullptr;
+
+		m_currentBlendSrc = BF_ONE;
+		m_currentBlendDst = BF_ZERO;
+		m_depthBufferWriteEnable = false;
+		m_alphaBlendEnable = false;
+		m_alphaTestEnable = false;
+
+		for( int i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			RenderTextureStage & stage = m_currentTextureStage[i];
+
+			stage.mipmap = TF_LINEAR;
+			stage.magnification = TF_LINEAR;
+			stage.minification = TF_LINEAR;
+
+			stage.addressU = TAM_CLAMP;
+			stage.addressV = TAM_CLAMP;
+
+			stage.colorOp = TOP_DISABLE;
+			stage.colorArg1 = TARG_TEXTURE;
+			stage.colorArg2 = TARG_DIFFUSE;
+
+			stage.alphaOp = TOP_DISABLE;
+			stage.colorArg1 = TARG_TEXTURE;
+			stage.colorArg2 = TARG_DIFFUSE;
+
+			RENDER_SYSTEM( m_serviceProvider )->setTextureStageFilter( i
+				, TFT_MIPMAP
+				, stage.mipmap
+				);
+
+			RENDER_SYSTEM( m_serviceProvider )->setTextureStageFilter( i
+				, TFT_MAGNIFICATION
+				, stage.magnification 
+				);
+
+			RENDER_SYSTEM( m_serviceProvider )->setTextureStageFilter( i
+				, TFT_MINIFICATION
+				, stage.minification 
+				);
+
+			RENDER_SYSTEM( m_serviceProvider )->setTextureAddressing( i
+				, stage.addressU
+				, stage.addressV 				
+				);
+
+			RENDER_SYSTEM( m_serviceProvider )->setTextureStageColorOp( i
+				, stage.colorOp
+				, stage.colorArg1
+				, stage.colorArg2
+				);
+
+			RENDER_SYSTEM( m_serviceProvider )->setTextureStageAlphaOp( i
+				, stage.alphaOp
+				, stage.alphaArg1
+				, stage.alphaArg2
+				);
+
+			RENDER_SYSTEM( m_serviceProvider )->setTextureStageTexCoordIndex( i
+				, stage.texCoordIndex
+				);
+		}
+
+		std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
+
 		mt::mat4f viewTransform;
 		mt::mat4f projTransform;
 		mt::mat4f worldTransform;
@@ -876,52 +912,8 @@ namespace Menge
 			, MENGE_MAX_TEXTURE_STAGES
 			);
 
-		for( int i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
-		{
-			RenderTextureStage & stage = m_currentTextureStage[i];
-
-			RENDER_SYSTEM(m_serviceProvider)->setTextureAddressing( i, stage.addressU, stage.addressV );
-
-// 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageColorOp( i
-// 				, stage.colorOp
-// 				, stage.colorArg1
-// 				, stage.colorArg2 
-// 				);
-// 
-// 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageAlphaOp( i
-// 				, stage.alphaOp
-// 				, stage.alphaArg1
-// 				, stage.alphaArg2 
-// 				);
- 
- 			RENDER_SYSTEM(m_serviceProvider)->setTextureStageTexCoordIndex( i
- 				, stage.texCoordIndex
- 				);
-
-			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MIPMAP, TF_NONE );
-			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MAGNIFICATION, TF_LINEAR );
-			RENDER_SYSTEM(m_serviceProvider)->setTextureStageFilter( i, TFT_MINIFICATION, TF_LINEAR );
-
-			// skip texture matrix
-			//RENDER_SYSTEM(m_serviceProvider)->setTextureMatrix( i, NULL );
-		}
-
 		RENDER_SYSTEM(m_serviceProvider)->setSrcBlendFactor( m_currentBlendSrc );
 		RENDER_SYSTEM(m_serviceProvider)->setDstBlendFactor( m_currentBlendDst );
-
-		//InputStreamInterfacePtr shaderStream = FILE_SERVICE(m_serviceProvider)
-		//    ->openInputFile( ConstString::none(), Helper::stringizeString( m_serviceProvider, "shader.bin" ) );
-
-		//size_t shaderSize = shaderStream->size();
-
-		//char * shaderBuff = new char [shaderSize];
-
-		//shaderStream->read( shaderBuff, shaderSize );
-
-		//RenderShaderInterface * shader = RENDER_SYSTEM(m_serviceProvider)
-		//    ->createShader( shaderBuff, shaderSize );
-
-		//m_shader = shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float zn, float zf )
@@ -1113,8 +1105,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material        
 		, const RenderVertex2D * _vertices, uint32_t _verticesNum
-		, const RenderIndices2D * _indices, uint32_t _indicesNum
-		, const mt::box2f * _bb )
+		, const RenderIndices * _indices, uint32_t _indicesNum
+		, const mt::box2f * _bb, bool _debug )
 	{
 		if( _viewport == nullptr )
 		{
@@ -1205,7 +1197,7 @@ namespace Menge
 
 		RenderMaterialPtr ro_material = _material;
 
-		if( m_debugMode > 0 )
+		if( m_debugMode > 0 && _debug == false )
 		{
 			if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
 			{
@@ -1279,7 +1271,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
 		, const RenderVertex2D * _vertices, uint32_t _verticesNum
-		, const mt::box2f * _bb )
+		, const mt::box2f * _bb, bool _debug )
 	{
 		uint32_t indicesNum = (_verticesNum / 4) * 6;
 
@@ -1293,14 +1285,14 @@ namespace Menge
 			return;
 		}
 
-		RenderIndices2D * indices = m_indicesQuad.buff();
+		RenderIndices * indices = m_indicesQuad.buff();
 
-		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb );
+		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
 		, const RenderVertex2D * _vertices, uint32_t _verticesNum
-		, const mt::box2f * _bb )
+		, const mt::box2f * _bb, bool _debug )
 	{
 		uint32_t indicesNum = _verticesNum;
 
@@ -1314,15 +1306,15 @@ namespace Menge
 			return;
 		}
 
-		RenderIndices2D * indices = m_indicesLine.buff();
+		RenderIndices * indices = m_indicesLine.buff();
 
-		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb );
+		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderVertex2D * RenderEngine::getDebugRenderVertex2D( uint32_t _count )
+	RenderVertex2D * RenderEngine::getDebugRenderVertex2D( size_t _count )
 	{
-		uint32_t renderVertex2DSize = m_debugRenderVertex2D.size();
-		uint32_t renderVertex2DCapacity = m_debugRenderVertex2D.capacity();
+		size_t renderVertex2DSize = m_debugRenderVertex2D.size();
+		size_t renderVertex2DCapacity = m_debugRenderVertex2D.capacity();
 
 		if( renderVertex2DSize + _count > renderVertex2DCapacity )
 		{
@@ -1330,21 +1322,6 @@ namespace Menge
 		}
 
 		RenderVertex2D * vertices = m_debugRenderVertex2D.emplace_count( _count );
-
-		return vertices;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderVertex2D * RenderEngine::getMutableRenderVertex2D( uint32_t _count )
-	{
-		uint32_t renderVertex2DSize = m_mutableRenderVertex2D.size();
-		uint32_t renderVertex2DCapacity = m_mutableRenderVertex2D.capacity();
-
-		if( renderVertex2DSize + _count > renderVertex2DCapacity )
-		{
-			return nullptr;
-		}
-
-		RenderVertex2D * vertices = m_mutableRenderVertex2D.emplace_count( _count );
 
 		return vertices;
 	}
@@ -1376,7 +1353,7 @@ namespace Menge
 		return vbHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IBHandle RenderEngine::createIndicesBuffer( const RenderIndices2D * _buffer, uint32_t _count )
+	IBHandle RenderEngine::createIndicesBuffer( const RenderIndices * _buffer, uint32_t _count )
 	{
 		IBHandle ibHandle = RENDER_SYSTEM(m_serviceProvider)
 			->createIndexBuffer( _count, false );
@@ -1460,9 +1437,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::updateIndicesBuffer( IBHandle _handle, const RenderIndices2D * _buffer, uint32_t _count )
+	bool RenderEngine::updateIndicesBuffer( IBHandle _handle, const RenderIndices * _buffer, uint32_t _count )
 	{
-		RenderIndices2D * ibuffer = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
+		RenderIndices * ibuffer = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
 			_handle
 			, 0
 			, _count
@@ -1525,10 +1502,10 @@ namespace Menge
 
 		RenderVertex2D * vertexBuffer = static_cast<RenderVertex2D *>(vbData);
 
-		RenderIndices2D * ibData = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
+		RenderIndices * ibData = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
 			m_ibHandle2D
 			, 0
-			, m_renderIndicesCount * sizeof(RenderIndices2D)
+			, m_renderIndicesCount * sizeof(RenderIndices)
 			, BLF_LOCK_NONE 
 			);
 
@@ -1540,7 +1517,7 @@ namespace Menge
 			return false;
 		}
 
-		RenderIndices2D * indicesBuffer = static_cast<RenderIndices2D *>(ibData);
+		RenderIndices * indicesBuffer = static_cast<RenderIndices *>(ibData);
 
 		this->insertRenderPasses_( vertexBuffer, indicesBuffer, m_renderVertexCount, m_renderIndicesCount );
 
@@ -1563,7 +1540,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize )
+	void RenderEngine::insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize )
 	{
 		uint32_t vbPos = 0;
 		uint32_t ibPos = 0;
@@ -1580,7 +1557,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
+	void RenderEngine::batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
 	{
 		uint32_t vbPos = _vbPos;
 		uint32_t ibPos = _ibPos;
@@ -1651,7 +1628,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::batchRenderObjectSmart_( RenderPass * _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
+	void RenderEngine::batchRenderObjectSmart_( RenderPass * _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
 	{
 		uint32_t vbPos = _vbPos;
 		uint32_t ibPos = _ibPos;
@@ -1719,7 +1696,7 @@ namespace Menge
 		_ibPos = ibPos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
+	void RenderEngine::insertRenderObjects_( RenderPass * _renderPass, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos )
 	{
 		uint32_t vbPos = _vbPos;
 		uint32_t ibPos = _ibPos;
@@ -1778,7 +1755,7 @@ namespace Menge
 		_ibPos = ibPos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t _vbPos, uint32_t _ibPos ) const
+	bool RenderEngine::insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t _vbPos, uint32_t _ibPos ) const
 	{   
 		if( stdex::memorycopy_safe_pod( _vertexBuffer, _vbPos, _vbSize, _renderObject->vertexData, _renderObject->verticesNum ) == false )
 		{
@@ -1796,13 +1773,13 @@ namespace Menge
 			return false;
 		}
 
-		RenderIndices2D * offsetIndicesBuffer = _indicesBuffer + _ibPos;
+		RenderIndices * offsetIndicesBuffer = _indicesBuffer + _ibPos;
 
-		RenderIndices2D * src = offsetIndicesBuffer;
-		RenderIndices2D * src_end = offsetIndicesBuffer + _renderObject->indicesNum;
-		const RenderIndices2D * dst = _renderObject->indicesData;
+		RenderIndices * src = offsetIndicesBuffer;
+		RenderIndices * src_end = offsetIndicesBuffer + _renderObject->indicesNum;
+		const RenderIndices * dst = _renderObject->indicesData;
 
-		RenderIndices2D indices_offset = (RenderIndices2D)_vbPos;
+		RenderIndices indices_offset = (RenderIndices)_vbPos;
 		while( src != src_end )
 		{
 			*src = *dst + indices_offset;
@@ -1898,33 +1875,6 @@ namespace Menge
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setRenderSystemDefaults_()
-	{
-		m_currentBlendSrc = BF_ONE;
-		m_currentBlendDst = BF_ZERO;
-		m_depthBufferWriteEnable = false;
-		m_alphaBlendEnable = false;
-		m_alphaTestEnable = false;
-
-		for( int i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
-		{
-			RenderTextureStage & stage = m_currentTextureStage[i];
-
-			stage.addressU = TAM_CLAMP;
-			stage.addressV = TAM_CLAMP;
-
-			stage.colorOp = TOP_DISABLE;
-			stage.colorArg1 = TARG_TEXTURE;
-			stage.colorArg2 = TARG_DIFFUSE;
-
-			stage.alphaOp = TOP_DISABLE;
-			stage.colorArg1 = TARG_TEXTURE;
-			stage.colorArg2 = TARG_DIFFUSE;
-		}
-
-		std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::setVSync( bool _vSync )
@@ -2037,15 +1987,15 @@ namespace Menge
 		m_debugInfo.object += 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _verteNum, const RenderIndices2D * _indices, uint32_t _indicesNum )
+	void RenderEngine::calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _verteNum, const RenderIndices * _indices, uint32_t _indicesNum )
 	{
 		(void)_verteNum;
 
 		for( uint32_t i = 0; i != (_indicesNum / 3); ++i )
 		{
-			RenderIndices2D i0 = _indices[i + 0];
-			RenderIndices2D i1 = _indices[i + 1];
-			RenderIndices2D i2 = _indices[i + 2];
+			RenderIndices i0 = _indices[i + 0];
+			RenderIndices i1 = _indices[i + 1];
+			RenderIndices i2 = _indices[i + 2];
 
 			m_debugInfo.fillrate += s_calcTriangleSquare( _vertex[i0], _vertex[i1], _vertex[i2] );
 

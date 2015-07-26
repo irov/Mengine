@@ -398,6 +398,22 @@ namespace Menge
 			return v_n;
 		}
 
+		bool s_intersectsEllipseVsPoint( const mt::vec2f & _pos, float _radius, float _ellipse, const mt::vec2f & _point )
+		{
+			mt::vec2f v = _point - _pos;
+			
+			v.y /= _ellipse;
+
+			float v_sqrdist = v.sqrlength();
+
+			if( v_sqrdist > _radius * _radius )
+			{
+				return false;
+			}
+
+			return true;
+		}
+
 		bool s_intersectsBoxes( const mt::vec2f & _minFirst, const mt::vec2f & _maxFirst, const mt::vec2f & _minSecond, const mt::vec2f & _maxSecond )
 		{
 			typedef boost::geometry::model::box<mt::vec2f> Box;
@@ -1899,6 +1915,7 @@ namespace Menge
         
 		//pybind::def_function( "createAnimationSequence", &ScriptHelper::s_createAnimationSequence );
 
+		pybind::def_functor( "intersectsEllipseVsPoint", helperScriptMethod, &HelperScriptMethod::s_intersectsEllipseVsPoint );
 		pybind::def_functor( "intersectsBoxes", helperScriptMethod, &HelperScriptMethod::s_intersectsBoxes );
 
 		pybind::def_functor( "getPolygonPoints", helperScriptMethod, &HelperScriptMethod::s_getPolygonPoints );

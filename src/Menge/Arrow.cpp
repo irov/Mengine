@@ -454,6 +454,7 @@ namespace	Menge
 					, vertices
 					, vertexCount
 					, nullptr
+					, true
 					);
 			}break;
 		case EAT_POLYGON:
@@ -521,6 +522,7 @@ namespace	Menge
 					, vertices
 					, vertexCount
 					, nullptr
+					, true
 					);
 			}break;
 		}

@@ -2,6 +2,7 @@
 
 #	include "Kernel/Node.h"
 #	include "Kernel/Shape.h"
+#	include "Kernel/Materialable.h"
 
 #   include "Kernel/ResourceImage.h"
 
@@ -18,6 +19,7 @@ namespace Menge
 {
 	class Grid2D
 		: public Node
+		, public Materialable
 	{
 	public:
 		Grid2D();
@@ -26,6 +28,9 @@ namespace Menge
 	public:
 		void setResourceImage( ResourceImage * _resourceImage );
 		ResourceImage * getResourceImage() const;
+
+	public:
+		void setAngle( const mt::vec2f & _offset, float _angle );
 
 	public:
 		void setWidth( float _width );
@@ -48,6 +53,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
+		void _update( float _current, float _timing ) override;
 		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
 
     protected:
@@ -57,21 +63,21 @@ namespace Menge
 		
 	protected:
 		void updateVerticesWM_();
-		void updateMaterial_();
+
+	protected:
+		RenderMaterialInterfacePtr _updateMaterial() const override;
 
 	protected:
 		inline const RenderVertex2D * getVerticesWM();
-		inline const RenderMaterialInterfacePtr & getMaterial();
-		       
+
 	protected:
 		ResourceHolder<ResourceImage> m_resourceImage;
 
-		RenderMaterialInterfacePtr m_material;
-
-		bool m_blendAdd;
-
 		float m_width;
 		float m_height;
+
+		float m_angle;
+		mt::vec2f m_offset;
 
 		uint32_t m_countX;
 		uint32_t m_countY;
@@ -79,21 +85,10 @@ namespace Menge
 		TVectorRenderVertex2D m_vertices;
 		TVectorRenderVertex2D m_verticesWM;
 
-		TVectorRenderIndices2D m_indices;
-
-		mutable bool m_invalidateMaterial;
+		TVectorRenderIndices m_indices;
+				
 		mutable bool m_invalidateVerticesWM;
     };
-	//////////////////////////////////////////////////////////////////////////
-	inline const RenderMaterialInterfacePtr & Grid2D::getMaterial()
-	{
-		if( m_invalidateMaterial == true )
-		{
-			this->updateMaterial_();
-		}
-
-		return m_material;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const RenderVertex2D * Grid2D::getVerticesWM()
 	{

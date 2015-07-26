@@ -1336,6 +1336,7 @@ namespace Menge
 			, vertices
 			, 8
 			, nullptr
+			, true
 			);
 	}
 }

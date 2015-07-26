@@ -81,7 +81,7 @@ namespace Menge
 			stdex::array_string<64> platform_section;
 			platform_section.append( _section );
 			platform_section.append( '-' );
-			platform_section.append( _platform.c_str() );
+			platform_section.append( _platform );
 
 			T value;
 			if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, value, _serviceProvider ) == true )

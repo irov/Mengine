@@ -41,7 +41,10 @@ namespace Menge
         bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) override;
 
 	public:
-		RenderMaterialInterfacePtr getMaterial( const ConstString & _stageName
+		const ConstString & getMaterialName( EMaterial _materialId ) const override;
+
+	public:
+		RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
 			, bool _wrapU
 			, bool _wrapV
 			, EPrimitiveType _primitiveType
@@ -100,5 +103,7 @@ namespace Menge
 
 		typedef stdex::map<ConstString, RenderProgramInterfacePtr> TMapRenderPrograms;
 		TMapRenderPrograms m_programs;
+
+		ConstString m_defaultStages[EM_MATERIAL_COUNT];
     };
 }

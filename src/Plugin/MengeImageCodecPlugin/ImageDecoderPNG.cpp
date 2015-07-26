@@ -48,6 +48,16 @@ namespace Menge
 		stream->read( _data, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	static png_voidp PNGAPI s_png_malloc_ptr( png_structp _png, png_alloc_size_t _size )
+	{
+		return stdex_malloc_threadsafe( _size );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void PNGAPI s_png_free_ptr( png_structp _png, png_voidp _ptr )
+	{
+		stdex_free_threadsafe( _ptr );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::ImageDecoderPNG()
 		: m_png_ptr(nullptr)
 		, m_info_ptr(nullptr)
@@ -63,7 +73,7 @@ namespace Menge
 	{
 		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
 
-		m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
+		m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
 
 		if( m_png_ptr == nullptr )
 		{
@@ -72,8 +82,8 @@ namespace Menge
 
 			return false;
 		}
-
-		m_info_ptr = png_create_info_struct( m_png_ptr );
+		
+		m_info_ptr = png_create_info_struct( m_png_ptr );			
 
 		if( m_info_ptr == nullptr ) 
 		{

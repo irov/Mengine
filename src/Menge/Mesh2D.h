@@ -4,6 +4,7 @@
 #	include "Interface/MovieKeyFrameInterface.h"
 
 #	include "Kernel/Node.h"
+#	include "Kernel/Materialable.h"
 
 #   include "Kernel/ResourceImage.h"
 
@@ -17,11 +18,9 @@
 
 namespace Menge
 {
-	struct RenderMaterial;
-	struct RenderMaterialGroup;
-	
 	class Mesh2D
 		: public Node
+		, public Materialable
 	{
 	public:
 		Mesh2D();
@@ -31,10 +30,6 @@ namespace Menge
         void setResourceImage( ResourceImage * _resourceImage );
         ResourceImage * getResourceImage() const;
         
-    public:
-		void setBlendAdd( bool _value );
-		bool isBlendAdd() const;
-
 	public:
 		void setFrameShape( const MovieFrameShape * _shape );
 
@@ -47,12 +42,6 @@ namespace Menge
 		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
         void _invalidateColor() override;
 		void _invalidateWorldMatrix() override;
-
-    protected:
-        void invalidateMaterial();
-        void updateMaterial();
-        inline const RenderMaterialInterfacePtr & getMaterial();
-
 		        
 	protected:
 		bool compileResource_();
@@ -73,9 +62,10 @@ namespace Menge
 		inline const RenderVertex2D * getVerticesWM() const;
 
 	protected:
-		ResourceHolder<ResourceImage> m_resourceImage;
+		RenderMaterialInterfacePtr _updateMaterial() const override;
 
-		RenderMaterialInterfacePtr m_material;
+	protected:
+		ResourceHolder<ResourceImage> m_resourceImage;
 
 		const MovieFrameShape * m_shape;
 
@@ -84,24 +74,12 @@ namespace Menge
 		uint32_t m_vertexCount;
 		uint32_t m_indicesCount;
 
-		bool m_blendAdd;
 		bool m_solid;
 
-		bool m_invalidateMaterial;
 		mutable bool m_invalidateVerticesLocal;
 		mutable bool m_invalidateVerticesWM;
 		mutable bool m_invalidateVerticesColor;
     };
-    //////////////////////////////////////////////////////////////////////////
-    inline const RenderMaterialInterfacePtr & Mesh2D::getMaterial()
-    {
-        if( m_invalidateMaterial == true )
-        {
-            this->updateMaterial();
-        }
-
-        return m_material;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	inline const RenderVertex2D * Mesh2D::getVerticesWM() const
 	{

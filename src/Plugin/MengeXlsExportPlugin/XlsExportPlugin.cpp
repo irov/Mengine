@@ -48,32 +48,20 @@ namespace Menge
 		//Py_NoUserSiteDirectory = 1;
 		//Py_NoSiteFlag = 1;
 
-        String currentPath = PLATFORM_SERVICE(m_serviceProvider)
-			->getCurrentPath();
+		WChar currentPath[MENGINE_MAX_PATH];
+		PLATFORM_SERVICE( m_serviceProvider )
+			->getCurrentPath( currentPath, MENGINE_MAX_PATH );
 
         {
-            String exportPath = currentPath + "Python3Lib\\";
+			WString exportPath;
+			exportPath += currentPath;
+			exportPath += L"Python3Lib\\";
 
-            char utf8_shortpath[MENGINE_MAX_PATH * 2];
-
-            size_t utf8_shortpath_len = PLATFORM_SERVICE(m_serviceProvider)
-				->getShortPathName( exportPath, utf8_shortpath, MENGINE_MAX_PATH * 2 );
-
-            wchar_t unicode_shortpath[MENGINE_MAX_PATH];
-
-            size_t unicode_shortpath_len;
-
-            if( UNICODE_SERVICE(m_serviceProvider)
-                ->utf8ToUnicode( utf8_shortpath, utf8_shortpath_len, unicode_shortpath, MAX_PATH, &unicode_shortpath_len ) == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("ScriptEngine.updateModulePath_: invalid filepath '%s'"
-                    , exportPath.c_str()
-                    );
-
-                return false;
-            }
-
-            pybind::set_path( unicode_shortpath );
+			WChar shortpath[MENGINE_MAX_PATH];
+			PLATFORM_SERVICE( m_serviceProvider )
+				->getShortPathName( exportPath, shortpath, MENGINE_MAX_PATH );
+			
+			pybind::set_path( shortpath );
         }        
 
 		pybind::initialize( false, false, true );
@@ -95,59 +83,27 @@ namespace Menge
         PyObject * py_syspath = pybind::list_new(0);
 
 		{
-			String stdPath = currentPath + "Python3Lib\\";
+			WString stdPath;
+			stdPath += currentPath;
+			stdPath += L"Python3Lib\\";
 
-			char utf8_shortpath[MENGINE_MAX_PATH * 2];
-			size_t utf8_shortpath_len = PLATFORM_SERVICE(m_serviceProvider)
-				->getShortPathName( stdPath, utf8_shortpath, MENGINE_MAX_PATH * 2 );
+			WChar shortpath[MENGINE_MAX_PATH];
+			PLATFORM_SERVICE( m_serviceProvider )
+				->getShortPathName( stdPath, shortpath, MENGINE_MAX_PATH );
 
-			wchar_t unicode_shortpath[MENGINE_MAX_PATH];
-
-			size_t unicode_shortpath_len;
-
-			if( UNICODE_SERVICE(m_serviceProvider)
-				->utf8ToUnicode( utf8_shortpath, utf8_shortpath_len, unicode_shortpath, MENGINE_MAX_PATH, &unicode_shortpath_len ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ScriptEngine.updateModulePath_: invalid filepath '%s'"
-					, stdPath.c_str()
-					);
-
-				return false;
-			}
-
-			PyObject * py_stdPath = pybind::unicode_from_wchar_size( unicode_shortpath, unicode_shortpath_len );
-
-			pybind::list_appenditem( py_syspath, py_stdPath );
-
-			pybind::decref( py_stdPath );
+			pybind::list_appenditem_t( py_syspath, shortpath );			
 		}
 
 		{
-			String stdPath = currentPath + "XlsxExport\\";
+			WString stdPath;
+			stdPath += currentPath;
+			stdPath += L"XlsxExport\\";
 
-			char utf8_shortpath[MENGINE_MAX_PATH * 2];
-			size_t utf8_shortpath_len = PLATFORM_SERVICE(m_serviceProvider)
-				->getShortPathName( stdPath, utf8_shortpath, MENGINE_MAX_PATH * 2 );
+			WChar shortpath[MENGINE_MAX_PATH];
+			PLATFORM_SERVICE( m_serviceProvider )
+				->getShortPathName( stdPath, shortpath, MENGINE_MAX_PATH );
 
-			wchar_t unicode_shortpath[MENGINE_MAX_PATH];
-
-			size_t unicode_shortpath_len;
-
-			if( UNICODE_SERVICE(m_serviceProvider)
-				->utf8ToUnicode( utf8_shortpath, utf8_shortpath_len, unicode_shortpath, MENGINE_MAX_PATH, &unicode_shortpath_len ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("ScriptEngine.updateModulePath_: invalid filepath '%s'"
-					, stdPath.c_str()
-					);
-
-				return false;
-			}
-
-			PyObject * py_stdPath = pybind::unicode_from_wchar_size( unicode_shortpath, unicode_shortpath_len );
-
-			pybind::list_appenditem( py_syspath, py_stdPath );
-
-			pybind::decref( py_stdPath );
+			pybind::list_appenditem_t( py_syspath, shortpath );
 		}
 
 		pybind::set_syspath( py_syspath );

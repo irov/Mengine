@@ -630,7 +630,7 @@ namespace Menge
 
 					for( uint32_t i = 0; i != shapeIndicesCount; ++i )
 					{
-						RenderIndices2D & indices = shape.indices[i];
+						RenderIndices & indices = shape.indices[i];
 
 						indices = shape_indices[i];
 					}

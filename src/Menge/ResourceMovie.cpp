@@ -118,7 +118,7 @@ namespace Menge
 			}
 			
 			ResourceShape * resourceShape = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceReferenceT<ResourceShape>( layer.source );
+				->getResourceReferenceT<ResourceShape *>( layer.source );
 				
 			return resourceShape;
 		}

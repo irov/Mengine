@@ -28,6 +28,10 @@ namespace Menge
 					return false;
 				}
 
+				_world->finalize();
+
+				delete _world;
+
 				return true;
 			}
 
@@ -89,6 +93,9 @@ namespace Menge
 			.def( "setBound", &BurritoUnit::setBound )
 			.def( "isBound", &BurritoUnit::isBound )
 			;
+
+		pybind::interface_<BurritoGround>( "BurritoGround" )
+			;
 			
 		pybind::interface_<BurritoWorld>("BurritoWorld")
 			.def( "setFreeze", &BurritoWorld::setFreeze )
@@ -124,6 +131,11 @@ namespace Menge
 	BurritoWorld * ModuleBurritoWorld::createBurritoWorld()
 	{
 		BurritoWorld * world = new BurritoWorld;
+
+		if( world->initialize() == false )
+		{
+			return nullptr;
+		}
 
 		m_worldsAdd.push_back( world );
 

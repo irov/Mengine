@@ -205,7 +205,7 @@ namespace Menge
 		const TVectorRenderVertex2D::value_type * vertices = &(textVertices[0]);
 
         RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _viewport, _camera, material, vertices, countVertex, nullptr );
+			->addRenderQuad( _viewport, _camera, material, vertices, countVertex, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::renderOutline_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
@@ -250,7 +250,7 @@ namespace Menge
 		TVectorRenderVertex2D::value_type * vertices = &(outlineVertices[0]);
 
         RENDER_SERVICE(m_serviceProvider)
-            ->addRenderQuad( _viewport, _camera, material, vertices, countVertex, nullptr );
+			->addRenderQuad( _viewport, _camera, material, vertices, countVertex, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t TextField::getCharCount() const
@@ -652,8 +652,11 @@ namespace Menge
 		
 		const RenderTextureInterfacePtr & textureFont = m_font->getTextureFont();
 
+		const ConstString & textureBlend = RENDERMATERIAL_SERVICE( m_serviceProvider )
+			->getMaterialName( EM_TEXTURE_BLEND );
+
 		m_materialFont = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( CONST_STRING( m_serviceProvider, Texture_Blend ), false, false, PT_TRIANGLELIST, 1, &textureFont );
+			->getMaterial( textureBlend, false, false, PT_TRIANGLELIST, 1, &textureFont );
 
 		const RenderTextureInterfacePtr & textureOutline = m_font->getTextureOutline();
 
@@ -673,7 +676,7 @@ namespace Menge
 		if( textureOutline != nullptr )
 		{
 			m_materialOutline = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING( m_serviceProvider, Texture_Blend ), false, false, PT_TRIANGLELIST, 1, &textureOutline );
+				->getMaterial( textureBlend, false, false, PT_TRIANGLELIST, 1, &textureOutline );
 		}
 		else
 		{

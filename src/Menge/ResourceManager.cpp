@@ -310,7 +310,7 @@ namespace Menge
             , _name.c_str()
             , _type.c_str()
             );
-
+		
 		resource->setCategory( _category );
 		resource->setGroup( _group );
 		resource->setName( _name );		

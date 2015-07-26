@@ -63,7 +63,7 @@ namespace Menge
         ScheduleEvent event;
 
         event.dead = false;
-        event.timing = _timing * 1000.f;
+        event.timing = _timing;
         event.listener = _listener;
         event.id = ++m_enumeratorSchedule;
         event.freeze = false;

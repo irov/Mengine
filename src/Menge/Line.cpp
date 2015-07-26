@@ -98,7 +98,7 @@ namespace Menge
 			->getMaterial( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Debug"), false, false, PT_TRIANGLELIST, 0, nullptr );
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _viewport, _camera, material, m_vertices, 4, nullptr );
+			->addRenderQuad( _viewport, _camera, material, m_vertices, 4, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 

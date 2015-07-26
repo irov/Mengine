@@ -79,6 +79,11 @@ namespace Menge
 		m_node->setLocalPosition( m_offset + mt::vec3f( 0.f, m_bisonY, 0.f ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::finalize()
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::addForce( const ConstString & _name, const mt::vec3f & _direction, float _value )
 	{
 		BurritoBisonForce force;

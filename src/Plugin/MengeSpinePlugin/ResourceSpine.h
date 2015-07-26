@@ -1,11 +1,19 @@
 #	pragma once
 
 #	include "Kernel/ResourceReference.h"
+#	include "Kernel/ResourceImage.h"
+
+#	include "stdex/stl_map.h"
+
+#	pragma warning (disable:4510)
+#	pragma warning (disable:4512)
+#	pragma warning (disable:4610)
 
 #	include "spine/spine.h"
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	class ResourceSpine
 		: public ResourceReference
 	{
@@ -16,11 +24,11 @@ namespace Menge
 		~ResourceSpine();
 
 	public:
-		const RenderTextureInterfacePtr & getAtlasTexture() const;
+		spAtlas * getAtlas() const;
+		spSkeletonData * getSkeletonData() const;
 
 	public:
-		spAtlas * getAtlas();
-		spSkeletonData * getSkeletonData();
+		spAnimation * findSkeletonAnimation( const ConstString & _name ) const;
 
 	public:
 		bool _loader( const Metabuf::Metadata * _meta ) override;
@@ -33,13 +41,22 @@ namespace Menge
 		bool _isValid() const override;
 
 	public:
+		ResourceImage * getResourceImage_( const char * _name ) const;
+
+	public:
 		FilePath m_skeletonPath;
 		FilePath m_atlasPath;
-		FilePath m_texturePath;
-		ConstString m_textureCodecName;
 
-		RenderTextureInterfacePtr m_texture;
+		struct ImageDesc
+		{
+			ConstString name;
+			ResourceImage * image;
+		};
 
+		typedef stdex::vector<ImageDesc> TVectorImageDesc;
+
+		TVectorImageDesc m_images;
+		
 		spAtlas * m_atlas;
 		spSkeletonData * m_skeletonData;
 	};

@@ -109,6 +109,13 @@ namespace Menge
 			return false;
 		}
 
+		_logger->setServiceProvider( m_serviceProvider );
+
+		if( _logger->initialize() == false )
+		{
+			return false;
+		}
+
 		m_loggers.push_back( _logger );
 
 		return true;
@@ -125,6 +132,8 @@ namespace Menge
 		}
 
 		_logger->flush();
+
+		_logger->finalize();
 
 		m_loggers.erase( it_find );
 	}

@@ -126,6 +126,12 @@ Node\\\\Affectorable
 )
 
 ADD_FILTER(
+Node\\\\Materialable
+	Materialable.cpp
+	Materialable.h
+)
+
+ADD_FILTER(
 Reference
 	Reference.cpp
 	Reference.h

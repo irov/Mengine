@@ -106,6 +106,7 @@ namespace Menge
 	protected:
 		bool initializeNodeManager_();
 		bool initializeLoaderEngine_();
+		bool initializeRenderEngine_();
 		bool initializeResourceManager_();
 		bool initializeSceneManager_();
 		bool initializeTextManager_();
@@ -273,6 +274,9 @@ namespace Menge
 		GraveyardInterface * m_graveyard;
 		GameServiceInterface * m_gameService;
 		PlayerServiceInterface * m_playerService;
+		RenderServiceInterface * m_renderService;
+		RenderTextureServiceInterface * m_renderTextureManager;
+		RenderMaterialServiceInterface * m_renderMaterialManager;
 		Consts * m_consts;
 
 		WatchdogInterface * m_watchdog;

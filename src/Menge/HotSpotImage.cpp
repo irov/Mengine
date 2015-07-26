@@ -284,6 +284,6 @@ namespace Menge
 			->getDebugMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderLine( _viewport, _camera, debugMaterial, vertices, 8, nullptr );
+			->addRenderLine( _viewport, _camera, debugMaterial, vertices, 8, nullptr, true );
 	}
 }	// namespace Menge

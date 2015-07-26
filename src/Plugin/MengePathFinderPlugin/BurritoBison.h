@@ -57,6 +57,7 @@ namespace Menge
 
 	public:
 		void initialize( Node * _node, const mt::vec3f & _offset, float _bisonY, float _radius );
+		void finalize();
 
 	public:
 		void addForce( const ConstString & _name, const mt::vec3f & _direction, float _value );

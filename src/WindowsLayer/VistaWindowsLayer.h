@@ -57,7 +57,7 @@ namespace Menge
         LONG_PTR setWindowLongPtr( HWND _hWnd, int _index, LONG_PTR _newLong ) override;
         LONG_PTR getWindowLongPtr( HWND _hWnd, int _index ) override;
         LRESULT defWindowProc( HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam ) override;
-        bool getCurrentDirectory( WString & _path ) override;
+        size_t getCurrentDirectory( WChar * _path, size_t _len ) override;
         bool peekMessage( LPMSG _msg, HWND _hWnd, UINT _msgFilterMin, UINT _msgFilterMax, UINT _removeMsg ) override;
         LRESULT dispatchMessage( const MSG* _msg ) override;
 

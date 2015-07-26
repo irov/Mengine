@@ -33,7 +33,7 @@ namespace Menge
     public:
 		inline const RenderTextureInterfacePtr & getTexture() const;
         inline const RenderTextureInterfacePtr & getTextureAlpha() const;
-		inline const ColourValue & getTextureColor() const;
+		inline const ColourValue & getColor() const;
         
     protected:
         void _release() override;
@@ -95,7 +95,7 @@ namespace Menge
         return m_textureAlpha;
     }
 	//////////////////////////////////////////////////////////////////////////
-	inline const ColourValue & ResourceImage::getTextureColor() const
+	inline const ColourValue & ResourceImage::getColor() const
 	{
 		return m_textureColor;
 	}

@@ -3,7 +3,7 @@
 #   include "Interface/RenderSystemInterface.h"
 
 #   include "Kernel/Node.h"
-
+#	include "Kernel/Materialable.h"
 #	include "Kernel/ResourceImage.h"
 
 #   include "Core/Polygon.h"
@@ -16,6 +16,7 @@ namespace Menge
 {
     class Shape
         : public Node
+		, public Materialable
     {
     public:
         Shape();
@@ -25,12 +26,6 @@ namespace Menge
 		void setResourceImage( ResourceImage * _resourceImage );
 		ResourceImage * getResourceImage() const;
 		
-	public:
-		void disableTextureColor( bool _disable );
-
-		void setBlendAdd( bool _value );
-		bool isBlendAdd() const;
-
 	public:
 		void setCustomSize( const mt::vec2f & _customSize );
 		void removeCustomSize();
@@ -79,10 +74,6 @@ namespace Menge
         inline const RenderVertex2D * getVerticesWM() const;
 
 	protected:
-		inline void invalidateMaterial();
-		inline bool isInvalidateMaterial() const;
-		
-	protected:
 		ResourceHolder<ResourceImage> m_resourceImage;
 
 		mt::vec2f m_customSize;
@@ -104,25 +95,12 @@ namespace Menge
 		bool m_flipX;
 		bool m_flipY;
 
-		bool m_blendAdd;
 		bool m_solid;
-		bool m_disableTextureColor;
 
 		mutable bool m_invalidateVerticesLocal;
 		mutable bool m_invalidateVerticesWM;
 		mutable bool m_invalidateVerticesColor;
-		mutable bool m_invalidateMaterial;
     };
-	//////////////////////////////////////////////////////////////////////////
-	inline void Shape::invalidateMaterial()
-	{
-		m_invalidateMaterial = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline bool Shape::isInvalidateMaterial() const
-	{
-		return m_invalidateMaterial;
-	}
     //////////////////////////////////////////////////////////////////////////
     inline const RenderVertex2D * Shape::getVerticesWM() const
     {

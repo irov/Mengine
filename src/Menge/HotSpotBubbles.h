@@ -14,7 +14,7 @@ namespace Menge
 		~HotSpotBubbles();
 
 	public:
-		uint32_t addBubble( const mt::vec2f & _pos, float _radius, bool _outward );
+		uint32_t addBubble( const mt::vec2f & _pos, float _radius, float _ellipse, bool _outward );
 
 	protected:
 		bool testPoint( const mt::vec2f & _point ) const override;
@@ -35,6 +35,7 @@ namespace Menge
 			mt::vec2f pos;
 			mutable mt::vec2f pos_wm;
 			float radius;
+			float ellipse;
 			bool outward;
 		};
 

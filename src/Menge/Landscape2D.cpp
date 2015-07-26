@@ -115,20 +115,9 @@ namespace	Menge
 						return;
 					}
 
-					const RenderTextureInterfacePtr & texture = el.image->getTexture();
+					RenderMaterialInterfacePtr material = this->makeImageMaterial( m_serviceProvider, el.image, false );
 
-					if( el.image->isAlpha() == true )
-					{
-						el.material = RENDERMATERIAL_SERVICE( m_serviceProvider )
-							->getMaterial( CONST_STRING( m_serviceProvider, Texture_Blend ), false, false, PT_TRIANGLELIST, 1, &texture );
-					}
-					else
-					{
-						el.material = RENDERMATERIAL_SERVICE( m_serviceProvider )
-							->getMaterial( CONST_STRING( m_serviceProvider, Texture_Solid ), false, false, PT_TRIANGLELIST, 1, &texture );
-					}
-
-					if( el.material == nullptr )
+					if( material == nullptr )
 					{
 						LOGGER_ERROR(m_serviceProvider)("Landscape2D::_render '%s' invalid get material"
 							, m_name.c_str() 
@@ -136,6 +125,8 @@ namespace	Menge
 
 						return;
 					}
+
+					el.material = material;
 				}
 			}
 		}
@@ -155,7 +146,7 @@ namespace	Menge
 				const RenderVertex2D * vertices = this->getVerticesWM( elementVertexOffset );
 
 				RENDER_SERVICE( m_serviceProvider )
-					->addRenderQuad( _viewport, _camera, el.material, vertices, 4, nullptr );
+					->addRenderQuad( _viewport, _camera, el.material, vertices, 4, nullptr, false );
 			}
 
 			elementVertexOffset += 4;
@@ -285,7 +276,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Landscape2D::updateElementWM_()
 	{
-		m_invalidateElementWM = true;
+		m_invalidateElementWM = false;
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -308,5 +299,10 @@ namespace	Menge
 
 		m_invalidateVerticesWM = true;
 		m_invalidateElementWM = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderMaterialInterfacePtr Landscape2D::_updateMaterial() const
+	{
+		return nullptr;
 	}
 }

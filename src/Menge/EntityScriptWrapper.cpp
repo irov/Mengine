@@ -105,72 +105,80 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, Scene );
 	}
     //////////////////////////////////////////////////////////////////////////
-    static void * superclass_new_Entity( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds )
-    {
-        (void)_obj;
-        (void)_args;
-        (void)_kwds;
+	class superclass_new_Entity
+		: public pybind::class_new_interface
+	{
+	public:
+		void * call( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
+		{
+			(void)_obj;
+			(void)_args;
+			(void)_kwds;
 
-		ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
+			ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
 
-        Entity * entity = NODE_SERVICE(serviceProvider)
-            ->createNodeT<Entity>( CONST_STRING(serviceProvider, Entity) );
+			Entity * entity = NODE_SERVICE( serviceProvider )
+				->createNodeT<Entity>( CONST_STRING( serviceProvider, Entity ) );
 
-		entity->setEmbed( pybind::object(_obj) );
-		//pybind::incref( _obj );
+			entity->setEmbed( pybind::object( _obj ) );
+			//pybind::incref( _obj );
 
-        return entity;
-    }
+			return entity;
+		}
+	};
     //////////////////////////////////////////////////////////////////////////
-    static void * superclass_new_Arrow( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds )
-    {
-        (void)_obj;
-        (void)_args;
-        (void)_kwds;
+	class superclass_new_Arrow
+		: public pybind::class_new_interface
+	{
+	public:
+		void * call( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
+		{
+			(void)_obj;
+			(void)_args;
+			(void)_kwds;
 
-		ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
+			ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
 
-        Arrow * arrow = NODE_SERVICE(serviceProvider)
-            ->createNodeT<Arrow>( CONST_STRING(serviceProvider, Arrow) );
+			Arrow * arrow = NODE_SERVICE( serviceProvider )
+				->createNodeT<Arrow>( CONST_STRING( serviceProvider, Arrow ) );
 
-		arrow->setEmbed( pybind::object(_obj) );
+			arrow->setEmbed( pybind::object( _obj ) );
 
-        return arrow;
-    }
+			return arrow;
+		}
+	};
     //////////////////////////////////////////////////////////////////////////
-    static void * superclass_new_Scene( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds )
-    {
-        (void)_obj;
-        (void)_args;
-        (void)_kwds;
+	class superclass_new_Scene
+		: public pybind::class_new_interface
+	{
+	public:
+		void * call( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
+		{
+			(void)_obj;
+			(void)_args;
+			(void)_kwds;
 
-		ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
+			ServiceProviderInterface * serviceProvider = _scope->get_user_t<ServiceProviderInterface>();
 
-        Scene * scene = NODE_SERVICE(serviceProvider)
-            ->createNodeT<Scene>( CONST_STRING(serviceProvider, Scene) );
+			Scene * scene = NODE_SERVICE( serviceProvider )
+				->createNodeT<Scene>( CONST_STRING( serviceProvider, Scene ) );
 
-		scene->setEmbed( pybind::object( _obj ) );
+			scene->setEmbed( pybind::object( _obj ) );
 
-        return scene;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void superclass_dealloc_only_python( const pybind::class_type_scope_ptr & _scope, void * _impl )
-    {
-        (void)_scope;
-        (void)_impl;
-        //Empty
-    }
+			return scene;
+		}
+	};
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptWrapper::entityWrap( ServiceProviderInterface * _serviceProvider )
 	{
 		classWrapping( _serviceProvider );
 
-		pybind::superclass_<Entity, pybind::bases<Node> >("Entity", (void *)_serviceProvider, &superclass_new_Entity, &superclass_dealloc_only_python, false)
+		pybind::superclass_<Entity, pybind::bases<Node> >("Entity", (void *)_serviceProvider, new superclass_new_Entity, nullptr, false)
             .def_constructor( pybind::init<>() )
 			.def( "getPrototype", &Entity::getPrototype )
 			;
 
-		pybind::superclass_<Arrow, pybind::bases<Entity> >("Arrow", (void *)_serviceProvider, &superclass_new_Arrow, &superclass_dealloc_only_python, false)
+		pybind::superclass_<Arrow, pybind::bases<Entity> >( "Arrow", (void *)_serviceProvider, new superclass_new_Arrow, nullptr, false )
             .def_constructor( pybind::init<>() )
 			.def( "setOffsetClick", &Arrow::setOffsetClick )
 			.def( "getOffsetClick", &Arrow::getOffsetClick )
@@ -180,7 +188,7 @@ namespace Menge
 			.def( "getRadius", &Arrow::getRadius )
 			;
 
-		pybind::superclass_<Scene, pybind::bases<Entity> >("Scene", (void *)_serviceProvider, &superclass_new_Scene, &superclass_dealloc_only_python, false)
+		pybind::superclass_<Scene, pybind::bases<Entity> >("Scene", (void *)_serviceProvider, new superclass_new_Scene, nullptr, false)
             .def_constructor( pybind::init<>() )
 			.def( "isSubScene", &Scene::isSubScene )
 			.def( "getParentScene", &Scene::getParentScene )

@@ -143,6 +143,7 @@ namespace Menge
 			, vertices
 			, vertexCount
 			, nullptr
+			, true
 			);
 	}
 }

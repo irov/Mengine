@@ -2,8 +2,6 @@
 
 #   include "Factory/FactorablePtr.h"
 
-#	include "Core/ThreadGuard.h"
-
 #   include <stddef.h>
 
 namespace Menge
@@ -62,8 +60,6 @@ namespace Menge
 		FactoryListenerInterfacePtr m_listener;
 
 		uint32_t m_count;
-
-		THREAD_GUARD_INIT
 	};
 
 	typedef stdex::intrusive_ptr<Factory> FactoryPtr;

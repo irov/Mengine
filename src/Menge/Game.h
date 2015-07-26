@@ -10,7 +10,7 @@
 #	include "Interface/SoundSystemInterface.h"
 
 #	include "Account.h"
-#	include "Pak.h"
+#	include "Pack.h"
 
 #	include "Core/Resolution.h"
 
@@ -20,7 +20,7 @@ namespace Menge
 {
 	class Game;
 
-	typedef stdex::vector<PakPtr> TVectorResourcePak;
+	typedef stdex::vector<PackPtr> TVectorResourcePack;
 
 	class GameAccountProvider
 		: public AccountProviderInterface		
@@ -92,20 +92,17 @@ namespace Menge
 
 		bool loadPersonality( const ConstString & _module ) override;
 		
-		void createResourcePak( const ResourcePackDesc & _desc ) override;		
-		PakInterfacePtr getResourcePak( const ConstString & _name ) const override;
-
 	public:
-		bool loadResourcePak( const ResourcePackDesc & _desc ) override;
-
+		bool addResourcePack( const ResourcePackDesc & _desc ) override;
+		
 	public:
-		bool applyConfigPaks() override;
+		bool applyConfigPacks() override;
 
 		void setLanguagePack( const ConstString& _packName ) override;
         const ConstString & getLanguagePack() const override;
 
 	protected:
-		bool loadLocalePaksByName_( TVectorResourcePak & _paks, const ConstString & _locale, const ConstString & _platform );
+		bool loadLocalePacksByName_( TVectorResourcePack & _packs, const ConstString & _locale, const ConstString & _platform );
 			
 	public:
 		void setCursorMode( bool _mode ) override;
@@ -168,19 +165,19 @@ namespace Menge
 
 		Arrow * m_defaultArrow;
 		
-		ConstString m_currentPakName;
+		ConstString m_currentPackName;
 		String m_currentResourcePath;
 
 		float m_timingFactor;
 
 		FilePath m_iconPath;
 					
-		TVectorResourcePak m_resourcePaks;
+		TVectorResourcePack m_resourcePacks;
 
-		typedef FactoryPoolStore<Pak, 8> TFactoryPak;
-		TFactoryPak m_factoryPak;
+		typedef FactoryPoolStore<Pack, 8> TFactoryPack;
+		TFactoryPack m_factoryPack;
 
-		ConstString m_languagePak;
+		ConstString m_languagePack;
 				
 		TMapParams m_params;
 

@@ -17,13 +17,13 @@ namespace	Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Grid2D::Grid2D()
-		: m_width(0.f)
-		, m_height(0.f)
-		, m_countX(0)
-		, m_countY(0)
-		, m_blendAdd(false)
-		, m_invalidateMaterial(true)
-		, m_invalidateVerticesWM(true)
+		: m_width( 0.f )
+		, m_height( 0.f )
+		, m_countX( 0 )
+		, m_countY( 0 )
+		, m_invalidateVerticesWM( true )
+		, m_offset(0.f, 0.f)
+		, m_angle(0.f)
 	{ 
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -46,6 +46,12 @@ namespace	Menge
 	ResourceImage * Grid2D::getResourceImage() const
 	{        
 		return m_resourceImage;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Grid2D::setAngle( const mt::vec2f & _offset, float _angle )
+	{ 
+		m_offset = _offset;
+		m_angle = _angle;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Grid2D::setWidth( float _width )
@@ -175,16 +181,16 @@ namespace	Menge
 
 				vertex.color = 0xFFFFFFFF;
 
-				vertex.uv.x = pos_uv_x * i;
-				vertex.uv.y = pos_uv_y * j;
-				vertex.uv2.x = pos_uv_x * i;
-				vertex.uv2.y = pos_uv_y * j;
+				vertex.uv.x = m_offset.x + pos_uv_x * i;
+				vertex.uv.y = m_offset.y + pos_uv_y * j;
+				vertex.uv2.x = m_offset.x + pos_uv_x * i;
+				vertex.uv2.y = m_offset.y + pos_uv_y * j;
 			}
 		}
 
 		m_indices.resize( (m_countX - 1) * (m_countY - 1) * 6 );
 
-		TVectorRenderIndices2D::iterator indices_iterator = m_indices.begin();
+		TVectorRenderIndices::iterator indices_iterator = m_indices.begin();
 		
 		for( uint32_t j = 0; j != (m_countY - 1); ++j )
 		{
@@ -211,81 +217,55 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Grid2D::_release()
 	{
+		Node::_release();
+
 		m_resourceImage.release();
 				
 		m_vertices.clear();
 		m_verticesWM.clear();
 		m_indices.clear();
+
+		this->releaseMaterial();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Grid2D::updateMaterial_()
+	RenderMaterialInterfacePtr Grid2D::_updateMaterial() const
 	{
-		m_invalidateMaterial = false;
+		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_serviceProvider, m_resourceImage, false );
 
-		uint32_t texturesNum = 0;
-		RenderTextureInterfacePtr textures[2];
-
-		textures[0] = m_resourceImage->getTexture();
-		textures[1] = m_resourceImage->getTextureAlpha();
-
-		const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
-
-		ConstString stageName;
-
-		if( textureAlpha != nullptr )
-		{
-			if( m_resourceImage->isAlpha() == true )
-			{
-				texturesNum = 2;
-
-				stageName = CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha );
-			}
-			else
-			{
-				texturesNum = 1;
-
-				stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
-			}
-		}
-		else if( m_blendAdd == true )
-		{
-			texturesNum = 1;
-
-			stageName = CONST_STRING( m_serviceProvider, Texture_Intensive );
-		}
-		else
-		{
-			texturesNum = 1;
-
-			if( m_resourceImage->isAlpha() == true )
-			{
-				stageName = CONST_STRING( m_serviceProvider, Texture_Blend );
-			}
-			else
-			{
-				stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
-			}
-		}
-
-		bool wrapU = m_resourceImage->isWrapU();
-		bool wrapV = m_resourceImage->isWrapV();
-
-		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, texturesNum, textures );
-
-		if( m_material == nullptr )
+		if( material == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Grid2D::updateMaterial_ %s m_material is NULL"
 				, this->getName().c_str()
 				);
+
+			return nullptr;
 		}
+
+		return material;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Grid2D::_update( float _current, float _timing )
+	{
+		for( TVectorRenderVertex2D::iterator
+			it = m_vertices.begin(),
+			it_end = m_vertices.end();
+		it != it_end;
+		++it )
+		{
+			RenderVertex2D & v = *it;
+
+			v.uv.x += 0.00001f * _timing * cosf( m_angle );
+			v.uv.y += 0.00001f * _timing * sinf( m_angle );
+		}
+
+		m_invalidateVerticesWM = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Grid2D::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
 		Node::_render( _viewport, _camera );
 
-		const RenderIndices2D * indices = &m_indices[0];
+		const RenderIndices * indices = &m_indices[0];
 		size_t indicesCount = m_indices.size();
 		
 		const RenderVertex2D * vertices = this->getVerticesWM();
@@ -296,7 +276,7 @@ namespace	Menge
 		const mt::box2f & bb = this->getBoundingBox();
 		
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, vertices, verticesCount, indices, indicesCount, &bb );
+			->addRenderObject( _viewport, _camera, material, vertices, verticesCount, indices, indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Grid2D::updateVerticesWM_()
@@ -311,7 +291,7 @@ namespace	Menge
 		ColourValue color;
 		this->calcTotalColor(color);
 
-		const ColourValue & textureColour = m_resourceImage->getTextureColor();
+		const ColourValue & textureColour = m_resourceImage->getColor();
 		color *= textureColour;
 
 		const mt::mat4f & wm = this->getWorldMatrix();

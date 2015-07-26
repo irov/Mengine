@@ -3,29 +3,43 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	namespace Helper
+	{
+		ColourValue_ARGB makeARGB( float _r, float _g, float _b, float _a )
+		{
+			const float rgba_255 = 255.f;
+
+#   ifdef MENGE_RENDER_TEXTURE_RGBA
+			uint8_t a8 = static_cast<uint8_t>(_a * rgba_255);
+			uint8_t b8 = static_cast<uint8_t>(_r * rgba_255);
+			uint8_t g8 = static_cast<uint8_t>(_g * rgba_255);
+			uint8_t r8 = static_cast<uint8_t>(_b * rgba_255);
+#	else // MENGE_RENDER_TEXTURE_RGBA
+			uint8_t a8 = static_cast<uint8_t>(_a * rgba_255);
+			uint8_t r8 = static_cast<uint8_t>(_r * rgba_255);
+			uint8_t g8 = static_cast<uint8_t>(_g * rgba_255);
+			uint8_t b8 = static_cast<uint8_t>(_b * rgba_255);
+#	endif // MENGE_RENDER_TEXTURE_RGBA
+
+			ColourValue_ARGB argb = (a8 << 24) | (r8 << 16) | (g8 << 8) | (b8 << 0);
+
+			return argb;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::updateARGB_() const
 	{
 		m_invalidateARGB = false;
 
-		const float rgba_255 = 255.f;
-
-#   ifdef MENGE_RENDER_TEXTURE_RGBA
-		uint8_t a8 = static_cast<uint8_t>(m_a * rgba_255);
-		uint8_t b8 = static_cast<uint8_t>(m_r * rgba_255);
-		uint8_t g8 = static_cast<uint8_t>(m_g * rgba_255);
-		uint8_t r8 = static_cast<uint8_t>(m_b * rgba_255);
-#	else // MENGE_RENDER_TEXTURE_RGBA
-		uint8_t a8 = static_cast<uint8_t>(m_a * rgba_255);
-		uint8_t r8 = static_cast<uint8_t>(m_r * rgba_255);
-		uint8_t g8 = static_cast<uint8_t>(m_g * rgba_255);
-		uint8_t b8 = static_cast<uint8_t>(m_b * rgba_255);
-#	endif // MENGE_RENDER_TEXTURE_RGBA
-
-		m_argb = (a8 << 24) | (r8 << 16) | (g8 << 8) | (b8 << 0);
+		m_argb = Helper::makeARGB( m_r, m_g, m_b, m_a );
 
 		if( m_argb == 0xFFFFFFFF )
 		{
 			m_identity = true;
+		}
+		else
+		{
+			m_identity = false;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

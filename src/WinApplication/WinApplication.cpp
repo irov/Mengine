@@ -14,6 +14,8 @@
 #	include "Factory/FactorableUnique.h"
 #	include "Factory/FactoryDefault.h"
 
+#	include "Core/Date.h"
+
 #	include "Logger/Logger.h"
 
 #	include <cstdio>
@@ -38,7 +40,6 @@
 #	include <functional>
 
 #	include <sstream>
-#	include <iomanip>
 
 #   include <WinBase.h>
 #   include <Psapi.h>
@@ -60,9 +61,6 @@ SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
 SERVICE_EXTERN(ParticleService2, Menge::ParticleServiceInterface2);
 
 SERVICE_EXTERN(RenderSystem, Menge::RenderSystemInterface);
-SERVICE_EXTERN(RenderService, Menge::RenderServiceInterface);
-SERVICE_EXTERN(RenderTextureManager, Menge::RenderTextureServiceInterface);
-SERVICE_EXTERN(RenderMaterialManager, Menge::RenderMaterialServiceInterface);
 
 SERVICE_DUMMY(PhysicSystem, Menge::PhysicSystemInterface);
 
@@ -100,6 +98,7 @@ extern "C" // only required if using g++
 	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );	
 	extern bool initPluginMengeOggVorbis( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeWin32FileGroup( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeSpine( Menge::PluginInterface ** _plugin );
 
 	extern bool initPluginPathFinder( Menge::PluginInterface ** _plugin );
 }
@@ -206,9 +205,6 @@ namespace Menge
 		, m_particleService2(nullptr)
 		, m_physicSystem(nullptr)
 		, m_renderSystem(nullptr)
-		, m_renderService(nullptr)
-		, m_renderTextureManager(nullptr)
-		, m_renderMaterialManager(nullptr)
 		, m_stringizeService(nullptr)
 		, m_soundSystem(nullptr)
 		, m_soundService(nullptr)
@@ -233,24 +229,11 @@ namespace Menge
 		return m_winTimer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t WinApplication::getShortPathName( const String & _path, char * _shortpath, size_t _shortpathlen )
+	size_t WinApplication::getShortPathName( const WString & _path, WChar * _shortpath, size_t _len ) const
 	{
-		WString unicode_path;
-		Helper::utf8ToUnicode(m_serviceProvider, _path, unicode_path);
+		DWORD len = GetShortPathName( _path.c_str(), _shortpath, (DWORD)_len );
 
-		wchar_t unicode_shortpath[MENGINE_MAX_PATH];
-		DWORD unicode_shortpath_len = GetShortPathName( unicode_path.c_str(), unicode_shortpath, MENGINE_MAX_PATH );
-
-		size_t utf8_shortpath_len;
-		if( UNICODE_SERVICE(m_serviceProvider)
-			->unicodeToUtf8( unicode_shortpath, unicode_shortpath_len, _shortpath, _shortpathlen, &utf8_shortpath_len ) == false )
-		{
-			return 0;
-		}
-
-		_shortpath[ utf8_shortpath_len ] = '\0';
-
-		return utf8_shortpath_len;
+		return (size_t)len;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeApplicationService_()
@@ -512,7 +495,11 @@ namespace Menge
 			m_windowsLayer->setModuleCurrentDirectory();
 		}
 
-		if( m_windowsLayer->getCurrentDirectory( m_currentPath ) == false )
+		WChar currentPath[MENGINE_MAX_PATH];
+
+		size_t currentPathLen = m_windowsLayer->getCurrentDirectory( currentPath, MENGINE_MAX_PATH );
+		
+		if( currentPathLen == 0 )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to get current directory"
 				);
@@ -520,27 +507,25 @@ namespace Menge
 			return false;
 		}
 
-		String utf8_currentPath;        
-		if( Helper::unicodeToUtf8( m_serviceProvider, m_currentPath, utf8_currentPath ) == false )
+		String utf8_currentPath;
+		if( Helper::unicodeToUtf8Size( m_serviceProvider, currentPath, currentPathLen, utf8_currentPath ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to convert %ls to utf8"
-				, m_currentPath.c_str()
+				, currentPath
 				);
 
 			return false;
 		}
 
 		LOGGER_WARNING(m_serviceProvider)("Current Path %ls"
-			, m_currentPath.c_str()
+			, currentPath
 			);
-
-		ConstString currentPath = Helper::stringizeString( m_serviceProvider, utf8_currentPath );
-
+		
 		// mount root		
-		if( m_fileService->mountFileGroup( ConstString::none(), currentPath, STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
+		if( m_fileService->mountFileGroup( ConstString::none(), Helper::stringizeString( m_serviceProvider, utf8_currentPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount application directory %ls"
-				, m_currentPath.c_str()
+				, currentPath
 				);
 
 			return false;
@@ -551,7 +536,7 @@ namespace Menge
 		if( m_fileService->mountFileGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dev"), ConstString::none(), STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount dev directory %ls"
-				, m_currentPath.c_str()
+				, currentPath
 				);
 
 			return false;
@@ -561,16 +546,26 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeUserDirectory_()
-	{
-		//m_tempPath.clear();
-		m_userPath.clear();
-
+	bool WinApplication::makeUserPath_( WString & _wstring ) const
+	{ 
+		_wstring.clear();
+		
 		if( m_developmentMode == true && m_roamingMode == false )
-		{			
-			m_userPath += m_currentPath;
-			m_userPath += L"User";
-			m_userPath += MENGE_FOLDER_DELIM;
+		{
+			WChar currentPath[MENGINE_MAX_PATH];
+			size_t currentPathLen = m_windowsLayer->getCurrentDirectory( currentPath, MENGINE_MAX_PATH );
+			
+			if( currentPathLen == 0 )
+			{
+				LOGGER_ERROR( m_serviceProvider )("WinApplication::makeUserPath_: failed to get current directory"
+					);
+
+				return false;
+			}
+
+			_wstring += currentPath;
+			_wstring += L"User";
+			_wstring += L'\\';
 		}
 		else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
 		{
@@ -586,13 +581,13 @@ namespace Menge
 
 				if( m_windowsLayer->makeFormatMessage( hr, msg ) == false )
 				{
-					LOGGER_ERROR(m_serviceProvider)("SHGetSpecialFolderLocation invalid %d"
+					LOGGER_ERROR( m_serviceProvider )("SHGetSpecialFolderLocation invalid %d"
 						, hr
 						);
 				}
 				else
 				{
-					LOGGER_ERROR(m_serviceProvider)("SHGetSpecialFolderLocation invalid %ls '%d'"
+					LOGGER_ERROR( m_serviceProvider )("SHGetSpecialFolderLocation invalid %ls '%d'"
 						, msg.c_str()
 						, hr
 						);
@@ -605,7 +600,7 @@ namespace Menge
 
 			if( result == FALSE )
 			{
-				LOGGER_ERROR(m_serviceProvider)("SHGetPathFromIDListW invalid"
+				LOGGER_ERROR( m_serviceProvider )("SHGetPathFromIDListW invalid"
 					);
 
 				return false;
@@ -613,31 +608,38 @@ namespace Menge
 
 			CoTaskMemFree( itemIDList );
 
-			m_userPath = buffer;
-			m_userPath += MENGE_FOLDER_DELIM;
-			m_userPath += CONFIG_VALUE(m_serviceProvider, "Project", "Company", L"NONAME");
-			m_userPath += MENGE_FOLDER_DELIM;
-			m_userPath += CONFIG_VALUE(m_serviceProvider, "Project", "Name", L"UNKNOWN");
-			m_userPath += MENGE_FOLDER_DELIM;
+			_wstring = buffer;
+			_wstring += L'\\';
+			_wstring += CONFIG_VALUE( m_serviceProvider, "Project", "Company", L"NONAME" );
+			_wstring += L'\\';
+			_wstring += CONFIG_VALUE( m_serviceProvider, "Project", "Name", L"UNKNOWN" );
+			_wstring += L'\\';
 		}
 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::initializeUserDirectory_()
+	{
+		//m_tempPath.clear();
+		WString userPath;
+		this->makeUserPath_( userPath );
+
 		String utf8_userPath;
-		if( Helper::unicodeToUtf8( m_serviceProvider, m_userPath, utf8_userPath ) == false )
+		if( Helper::unicodeToUtf8( m_serviceProvider, userPath, utf8_userPath ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed user directory %ls convert to ut8f"
-				, m_userPath.c_str()
+				, userPath.c_str()
 				);
 
 			return false;
 		}
 
-		ConstString userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
-
 		// mount user directory
-		if( m_fileService->mountFileGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user"), userPath, STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
+		if( m_fileService->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), Helper::stringizeString( m_serviceProvider, utf8_userPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed to mount user directory %ls"
-				, m_userPath.c_str()
+				, userPath.c_str()
 				);
 
 			return false;
@@ -658,19 +660,8 @@ namespace Menge
 			return true;
 		}
 
-		std::time_t ctTime; 
-		std::time(&ctTime);
-		std::tm* sTime = std::localtime( &ctTime );
-
-		WStringstream dateStream;
-		dateStream << 1900 + sTime->tm_year 
-			<< L"_" << std::setw(2) << std::setfill(L'0') << (sTime->tm_mon+1) 
-			<< L"_" << std::setw(2) << std::setfill(L'0') << sTime->tm_mday 
-			<< L"_" << std::setw(2) << std::setfill(L'0') << sTime->tm_hour 
-			<< L"_" << std::setw(2) << std::setfill(L'0') << sTime->tm_min 
-			<< L"_"	<< std::setw(2) << std::setfill(L'0') << sTime->tm_sec;
-
-		WString date = dateStream.str();
+		WString date;
+		Helper::makeDateTime( date );
 
 		WString unicode_logFilename;
 		unicode_logFilename += L"Game";
@@ -700,7 +691,7 @@ namespace Menge
 
 		if( fileLogInterface != nullptr )
 		{
-			m_fileLog = new FileLogger(fileLogInterface);
+			m_fileLog = new FileLogger();
 
 			m_logService->registerLogger( m_fileLog );
 
@@ -708,19 +699,6 @@ namespace Menge
 				, logFilename.c_str()
 				);
 		}
-
-		WString logPath;
-		logPath += m_userPath;
-		logPath += unicode_logFilename;
-
-		WString dumpPath;
-		dumpPath += m_userPath;
-		dumpPath += L"Dump";
-		dumpPath += L"_";
-		dumpPath += date;
-		dumpPath += L".dmp";
-
-		CriticalErrorsMonitor::run( logPath, dumpPath );
 
 		return true;
 	}
@@ -760,19 +738,14 @@ namespace Menge
 
 		if( Helper::s_hasOption( " -console ", m_commandLine ) == true && m_nologsMode == false )
 		{
-			m_loggerConsole = new ConsoleLogger(m_serviceProvider);
-
-			if( m_windowsType != EWT_98 )
-			{
-				m_loggerConsole->createConsole();
-			}
+			m_loggerConsole = new ConsoleLogger();
 
 			m_logService->registerLogger( m_loggerConsole );
 		}
 
 		if( m_nologsMode == false )
 		{
-			m_loggerMessageBox = new MessageBoxLogger(m_serviceProvider);
+			m_loggerMessageBox = new MessageBoxLogger();
 
 			m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
@@ -980,69 +953,6 @@ namespace Menge
 		}
 
 		m_renderSystem = renderSystem;
-
-		RenderServiceInterface * renderService;
-		if( SERVICE_CREATE( RenderService, &renderService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, renderService ) == false )
-		{
-			return false;
-		}
-
-		m_renderService = renderService;
-
-		if( m_renderService->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeRenderEngine_ Failed to initialize Render Engine"
-				);
-
-			return false;
-		}
-
-		RenderTextureServiceInterface * renderTextureManager;
-		if( SERVICE_CREATE( RenderTextureManager, &renderTextureManager) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, renderTextureManager ) == false )
-		{
-			return false;
-		}
-
-		m_renderTextureManager = renderTextureManager;
-
-		if( m_renderTextureManager->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeRenderEngine_ Failed to initialize Render Texture Service"
-				);
-
-			return false;
-		}
-
-		RenderMaterialServiceInterface * renderMaterialManager;
-		if( SERVICE_CREATE( RenderMaterialManager, &renderMaterialManager ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, renderMaterialManager ) == false )
-		{
-			return false;
-		}
-
-		m_renderMaterialManager = renderMaterialManager;
-
-		if( m_renderMaterialManager->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeRenderEngine_ Failed to initialize Render Material Service"
-				);
-
-			return false;
-		}
 
 		return true;
 	}
@@ -1478,8 +1388,13 @@ namespace Menge
 			return false;
 		}
 
-		m_windowsType = m_windowsLayer->getWindowsType();
+		{
+			WString userPath;
+			this->makeUserPath_( userPath );
 
+			CriticalErrorsMonitor::run( userPath );
+		}
+				
 		if( this->initializeStringizeService_() == false )
 		{
 			return false;
@@ -1659,7 +1574,9 @@ namespace Menge
 		MENGINE_ADD_PLUGIN( initPluginMengeOggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
 		MENGINE_ADD_PLUGIN( initPluginMengeAmplifier, "initialize Plugin Amplifier..." );
 		MENGINE_ADD_PLUGIN( initPluginMengeVideoCodec, "initialize Plugin Video Codec..." );
+		MENGINE_ADD_PLUGIN( initPluginMengeSpine, "initialize Plugin Spine..." );
 		MENGINE_ADD_PLUGIN( initPluginPathFinder, "initialize Plugin Path Finder..." );
+
 
 #	undef MENGINE_ADD_PLUGIN
 
@@ -1730,6 +1647,17 @@ namespace Menge
 					, moduleName.c_str()
 					);
 
+				return false;
+			}
+		}
+
+		ConstString renderMaterialsPath = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaterials", ConstString::none() );
+
+		if( renderMaterialsPath.empty() == false )
+		{
+			if( RENDERMATERIAL_SERVICE( m_serviceProvider )
+				->loadMaterials( ConstString::none(), renderMaterialsPath ) == false )
+			{
 				return false;
 			}
 		}
@@ -2197,44 +2125,11 @@ namespace Menge
 			m_converterService = nullptr;
 		}
 
-		if( m_renderService != nullptr )
-		{
-			m_renderService->finalize();
-		}
-
-		if( m_renderMaterialManager != nullptr )
-		{
-			m_renderMaterialManager->finalize();
-		}
-
-		if( m_renderTextureManager != nullptr )
-		{
-			m_renderTextureManager->finalize();
-		}
-
 		if( m_renderSystem != nullptr )
 		{
 			m_renderSystem->finalize();
 		}
 		
-		if( m_renderService != nullptr )
-		{
-			SERVICE_DESTROY( RenderService, m_renderService );
-			m_renderService = nullptr;
-		}
-
-		if( m_renderMaterialManager != nullptr )
-		{
-			SERVICE_DESTROY( RenderMaterialManager, m_renderMaterialManager );
-			m_renderMaterialManager = nullptr;
-		}
-
-		if( m_renderTextureManager != nullptr )
-		{
-			SERVICE_DESTROY( RenderTextureManager, m_renderTextureManager );
-			m_renderTextureManager = nullptr;
-		}        
-
 		if( m_renderSystem != nullptr )
 		{
 			SERVICE_DESTROY( RenderSystem, m_renderSystem );
@@ -3234,15 +3129,12 @@ namespace Menge
 		_resolution.setHeight( cyscreen );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const String & WinApplication::getCurrentPath() const
+	size_t WinApplication::getCurrentPath( WChar * _path, size_t _len ) const
 	{
-		static String path;
-		if( Helper::unicodeToUtf8( m_serviceProvider, m_currentPath, path ) == false )
-		{
-			return path;
-		}
+		size_t len = WINDOWSLAYER_SERVICE(m_serviceProvider)
+			->getCurrentDirectory( _path, _len );
 
-		return path;
+		return len;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::minimizeWindow()
@@ -3367,7 +3259,7 @@ namespace Menge
 
 			PathString icoFile;
 			icoFile += "IconCache";
-			icoFile += MENGE_FOLDER_DELIM;
+			icoFile += '\\';
 			icoFile += _path;
 			icoFile += ".ico";
 
@@ -3526,6 +3418,11 @@ namespace Menge
 	bool WinApplication::isDevelopmentMode() const
 	{
 		return m_developmentMode;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool WinApplication::isRoamingMode() const
+	{
+		return m_roamingMode;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t WinApplication::getProcessHandleCount() const

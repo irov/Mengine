@@ -1,6 +1,7 @@
 #	include "ConsoleLogger.h"
 
 #   include "Interface/UnicodeInterface.h"
+#   include "Interface/WindowsLayerInterface.h"
 
 #	include <io.h>
 #	include <cstdio>
@@ -14,31 +15,61 @@ typedef BOOL (WINAPI *PATTACHCONSOLE)(DWORD);
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ConsoleLogger::ConsoleLogger( ServiceProviderInterface * _serviceProvider )
-		: m_serviceProvider(_serviceProvider)
+	ConsoleLogger::ConsoleLogger()
+		: m_serviceProvider(nullptr)
 		, m_verboseLevel(LM_INFO)
 		, m_verboseFlag(0xFFFFFFFF)
 		, m_createConsole(false)
-		, m_ConsoleHandle(NULL)
+		, m_ConsoleHandle( nullptr )
 	{
+		m_fp[0] = nullptr;
+		m_fp[1] = nullptr;
+		m_fp[2] = nullptr;
+
+		m_lStdHandle[0] = INVALID_HANDLE_VALUE;
+		m_lStdHandle[1] = INVALID_HANDLE_VALUE;
+		m_lStdHandle[2] = INVALID_HANDLE_VALUE;
+
+		m_hConHandle[0] = 0;
+		m_hConHandle[1] = 0;
+		m_hConHandle[2] = 0;
+
+		m_hOldHandle[0] = 0;
+		m_hOldHandle[1] = 0;
+		m_hOldHandle[2] = 0;
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConsoleLogger::~ConsoleLogger()
 	{
-		if( m_createConsole == false )
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ConsoleLogger::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	{
+		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProviderInterface * ConsoleLogger::getServiceProvider() const
+	{ 
+		return m_serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ConsoleLogger::initialize()
+	{ 
+		EWindowsType windowsType = WINDOWSLAYER_SERVICE( m_serviceProvider )
+			->getWindowsType();
+
+		if( windowsType != EWT_98 )
 		{
-			return;
+			this->createConsole_();
 		}
 
-		//_close( hConHandle[0] );
-		//_close( hConHandle[1] );
-		//_close( hConHandle[2] );
-		
-		fclose( fp[0] );
-		fclose( fp[1] );
-		fclose( fp[2] );
-
-		FreeConsole();
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ConsoleLogger::finalize()
+	{
+		this->removeConsole_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ConsoleLogger::setVerboseLevel( EMessageLevel _level )
@@ -71,7 +102,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConsoleLogger::createConsole()
+	void ConsoleLogger::createConsole_()
 	{
 		PATTACHCONSOLE pAttachConsole = nullptr;
 		
@@ -106,27 +137,33 @@ namespace Menge
 		}
 		
 		// redirect unbuffered STDOUT to the console
-		lStdHandle[0] = GetStdHandle(STD_OUTPUT_HANDLE);
-		hConHandle[0] = _open_osfhandle((intptr_t)lStdHandle[0], _O_TEXT);
-		fp[0] = _fdopen( hConHandle[0], "w" );
-		*stdout = *fp[0];
+		fgetpos( stdout, &m_pOldHandle[0] );
+		m_hOldHandle[0] = _dup( _fileno( stdout ) );
+		m_lStdHandle[0] = GetStdHandle(STD_OUTPUT_HANDLE);
+		m_hConHandle[0] = _open_osfhandle((intptr_t)m_lStdHandle[0], _O_TEXT);
+		m_fp[0] = _fdopen( m_hConHandle[0], "w" );
+		*stdout = *m_fp[0];
 		setvbuf( stdout, NULL, _IONBF, 0 );
 
 		// redirect unbuffered STDIN to the console
-		lStdHandle[1] = GetStdHandle(STD_INPUT_HANDLE);
-		hConHandle[1] = _open_osfhandle((intptr_t)lStdHandle[1], _O_TEXT);
-		fp[1] = _fdopen( hConHandle[1], "r" );
-		*stdin = *fp[1];
+		fgetpos( stdin, &m_pOldHandle[1] );
+		m_hOldHandle[1] = _dup( _fileno( stdin ) );
+		m_lStdHandle[1] = GetStdHandle(STD_INPUT_HANDLE);
+		m_hConHandle[1] = _open_osfhandle((intptr_t)m_lStdHandle[1], _O_TEXT);
+		m_fp[1] = _fdopen( m_hConHandle[1], "r" );
+		*stdin = *m_fp[1];
 		setvbuf( stdin, NULL, _IONBF, 0 );
 		
 		// redirect unbuffered STDERR to the console
-		lStdHandle[2] = GetStdHandle(STD_ERROR_HANDLE);
-		hConHandle[2] = _open_osfhandle((intptr_t)lStdHandle[2], _O_TEXT);
-		fp[2] = _fdopen( hConHandle[2], "w" );
-		*stderr = *fp[2];
+		fgetpos( stderr, &m_pOldHandle[2] );
+		m_hOldHandle[2] = _dup( _fileno( stderr ) );
+		m_lStdHandle[2] = GetStdHandle(STD_ERROR_HANDLE);
+		m_hConHandle[2] = _open_osfhandle((intptr_t)m_lStdHandle[2], _O_TEXT);
+		m_fp[2] = _fdopen( m_hConHandle[2], "w" );
+		*stderr = *m_fp[2];
 		setvbuf( stderr, NULL, _IONBF, 0 );
 		
-		m_ConsoleHandle = lStdHandle[2];
+		m_ConsoleHandle = m_lStdHandle[2];
 		//::MoveWindow( GetConsoleWindow(), 0, 650, 0, 0, TRUE );
 		// make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
 		// point to console as well
@@ -138,6 +175,32 @@ namespace Menge
 		}
 		
 		std::cout << "console ready.." << std::endl;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ConsoleLogger::removeConsole_()
+	{ 
+		if( m_createConsole == false )
+		{
+			return;
+		}
+
+		fflush( m_fp[0] );
+		fflush( m_fp[1] );
+		fflush( m_fp[2] );
+
+		fclose( m_fp[0] );
+		fclose( m_fp[1] );
+		fclose( m_fp[2] );
+
+		_dup2( m_hOldHandle[0], _fileno( stdout ) );
+		_dup2( m_hOldHandle[1], _fileno( stdin ) );
+		_dup2( m_hOldHandle[2], _fileno( stderr ) );
+
+		_close( m_hOldHandle[0] );
+		_close( m_hOldHandle[1] );
+		_close( m_hOldHandle[2] );
+
+		FreeConsole();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ConsoleLogger::log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _count )
@@ -179,6 +242,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ConsoleLogger::flush()
 	{
-		//Empty
+		std::cout.flush();
 	}
 }	// namespace Menge

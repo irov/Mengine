@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Kernel/Node.h"
+#	include "Kernel/Materialable.h"
 
 #   include "Kernel/ResourceImage.h"
 
@@ -34,6 +35,7 @@ namespace Menge
 	
 	class Landscape2D 
 		: public Node
+		, public Materialable
 	{
 	public:
 		Landscape2D();
@@ -64,13 +66,15 @@ namespace Menge
 		bool compileResources_();
 
 	protected:
+		RenderMaterialInterfacePtr _updateMaterial() const override;
+
+	protected:
 		TVectorResourceImage m_images;
 
 		uint32_t m_elementCountX;
 		uint32_t m_elementCountY;
 		float m_elementWidth;
 		float m_elementHeight;
-
 
 		TVectorLandscape2DElements m_elements;
 				

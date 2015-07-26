@@ -112,7 +112,6 @@ namespace Menge
 	BurritoWorld::BurritoWorld()
 		: m_serviceProvider(nullptr)
 		, m_bison(nullptr)
-		, m_ground(nullptr)
 		, m_dead(false)
 		, m_freeze(false)
 	{
@@ -125,6 +124,35 @@ namespace Menge
 	void BurritoWorld::setServiceProvider( ServiceProviderInterface * _serviceProvider )
 	{ 
 		m_serviceProvider = _serviceProvider;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoWorld::initialize()
+	{ 
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoWorld::finalize()
+	{
+		for( TVectorBurritoGround::iterator
+			it = m_grounds.begin(),
+			it_end = m_grounds.end();
+		it != it_end;
+		++it )
+		{
+			BurritoGround * ground = *it;
+
+			delete ground;
+		}
+
+		m_grounds.clear();
+
+		if( m_bison != nullptr )
+		{
+			m_bison->finalize();
+
+			delete m_bison;
+			m_bison = nullptr;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoWorld::setDead()
@@ -156,13 +184,17 @@ namespace Menge
 		return m_bison;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoWorld::createGround( float _x, float _y, float _z, float _d, const pybind::object & _cb )
+	BurritoGround * BurritoWorld::createGround( float _x, float _y, float _z, float _d, const pybind::object & _cb )
 	{
-		m_ground = new BurritoGround();
+		BurritoGround * ground = new BurritoGround();
 
 		mt::planef p( _x, _y, _z, _d );
 		
-		m_ground->initialize( p, _cb );
+		ground->initialize( p, _cb );
+
+		m_grounds.push_back( ground );
+
+		return ground;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoWorld::addUnitBounds( float _value, bool _less, const pybind::object & _cb )
@@ -350,11 +382,20 @@ namespace Menge
 						}
 					}
 
-					if( m_ground != nullptr && collision == false )
+					if( collision == false )
 					{
-						if( m_ground->check_collision( iterate_timing, offsetH, bison_radius, velocity, collisionTiming ) == true )
+						for( TVectorBurritoGround::iterator
+							it = m_grounds.begin(),
+							it_end = m_grounds.end();
+						it != it_end;
+						++it )
 						{
-							collision = true;
+							BurritoGround * ground = *it;
+
+							if( ground->check_collision( iterate_timing, offsetH, bison_radius, velocity, collisionTiming ) == true )
+							{
+								collision = true;
+							}
 						}
 					}
 
@@ -372,7 +413,16 @@ namespace Menge
 				
 				m_bison->translate( bison_translate, translate_position );
 
-				m_ground->translate( translate_position );
+				for( TVectorBurritoGround::iterator
+					it = m_grounds.begin(),
+					it_end = m_grounds.end();
+				it != it_end;
+				++it )
+				{
+					BurritoGround * ground = *it;
+
+					ground->translate( translate_position );
+				}
 
 				for( TVectorBurritoLayer::iterator
 					it = m_layers.begin(),

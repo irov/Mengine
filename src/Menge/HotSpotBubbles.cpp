@@ -23,7 +23,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t HotSpotBubbles::addBubble( const mt::vec2f & _pos, float _radius, bool _outward )
+	uint32_t HotSpotBubbles::addBubble( const mt::vec2f & _pos, float _radius, float _ellipse, bool _outward )
 	{		
 		Bubble b;
 
@@ -32,6 +32,7 @@ namespace Menge
 		b.pos = _pos;
 		b.pos_wm = _pos;
 		b.radius = _radius;
+		b.ellipse = _ellipse;
 		b.outward = _outward;
 
 		m_bubbles.push_back( b );
@@ -56,7 +57,13 @@ namespace Menge
 		{
 			const Bubble & b = *it;
 
-			if( mt::sqrlength_v2_v2( b.pos_wm, _point) < b.radius * b.radius )
+			mt::vec2f v = _point - b.pos_wm;
+
+			v.y /= b.ellipse;
+
+			float v_sqrlength = v.sqrlength();
+
+			if( v_sqrlength < b.radius * b.radius )
 			{
 				return !m_outward;
 			}
@@ -82,7 +89,13 @@ namespace Menge
 		{
 			const Bubble & b = *it;
 
-			if( mt::sqrlength_v2_v2( b.pos_wm, _point) < (b.radius + _radius) * (b.radius + _radius) )
+			mt::vec2f v = _point - b.pos_wm;
+
+			v.y /= b.ellipse;
+
+			float v_sqrlength = v.sqrlength();
+
+			if( v_sqrlength < (b.radius + _radius) * (b.radius + _radius) )
 			{
 				return !m_outward;
 			}

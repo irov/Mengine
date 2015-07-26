@@ -225,7 +225,7 @@ namespace	Menge
             }
 
             RENDER_SERVICE(m_serviceProvider)
-				->addRenderQuad( _viewport, _camera, batch.material, batch_vertices, batch.size, &batch.bb );
+				->addRenderQuad( _viewport, _camera, batch.material, batch_vertices, batch.size, &batch.bb, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -588,38 +588,8 @@ namespace	Menge
 		{
 			ResourceImage * image = m_resourceParticle->getAtlasImageResource( i );
 
-			RenderTextureInterfacePtr textures[2];
-
-			textures[0] = image->getTexture();
-			textures[1] = image->getTextureAlpha();
-
-			RenderMaterialInterfacePtr mg_intensive;
-			RenderMaterialInterfacePtr mg_nonintensive;
-
-			if( textures[1] != nullptr )
-			{
-				mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING( m_serviceProvider, Texture_Intensive_ExternalAlpha ), false, false, PT_TRIANGLELIST, 2, textures );
-
-				mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha ), false, false, PT_TRIANGLELIST, 2, textures );
-			}
-			else if( textures[0] != nullptr )
-			{
-				mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING( m_serviceProvider, Texture_Intensive ), false, false, PT_TRIANGLELIST, 1, textures );
-
-				mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING( m_serviceProvider, Texture_Blend ), false, false, PT_TRIANGLELIST, 1, textures );
-			}
-			else
-			{
-				mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING( m_serviceProvider, Color_Intensive ), false, false, PT_TRIANGLELIST, 0, nullptr );
-
-				mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-					->getMaterial( CONST_STRING( m_serviceProvider, Color_Blend ), false, false, PT_TRIANGLELIST, 0, nullptr );
-			}
+			RenderMaterialInterfacePtr mg_intensive = Helper::makeImageMaterial( m_serviceProvider, image, ConstString::none(), EMB_ADD, false, false );
+			RenderMaterialInterfacePtr mg_nonintensive = Helper::makeImageMaterial( m_serviceProvider, image, ConstString::none(), EMB_NORMAL, false, false );
 
 			m_materials[i*2 + 0] = mg_intensive;
 			m_materials[i*2 + 1] = mg_nonintensive;

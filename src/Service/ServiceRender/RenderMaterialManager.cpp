@@ -1,6 +1,7 @@
 #   include "RenderMaterialManager.h"
 
 #   include "Interface/StringizeInterface.h"
+#   include "Interface/ConfigInterface.h"
 #   include "Interface/LoaderInterface.h"
 
 #   include "Logger/Logger.h"
@@ -39,6 +40,35 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::initialize()
     {
+		m_defaultStages[EM_DEBUG] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" );
+
+		m_defaultStages[EM_TEXTURE_SOLID] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Solid" );
+		m_defaultStages[EM_TEXTURE_BLEND] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend" );
+		m_defaultStages[EM_TEXTURE_INTENSIVE] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive" );
+		m_defaultStages[EM_TEXTURE_MULTIPLY] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Multiply" );
+		m_defaultStages[EM_TEXTURE_SCREEN] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Screen" );
+
+		m_defaultStages[EM_TEXTURE_BLEND_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_INTENSIVE_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_MULTIPLY_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Multiply_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_SCREEN_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Screen_OnlyColor" );
+
+		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_ExternalAlpha" );
+		m_defaultStages[EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive_ExternalAlpha" );
+		m_defaultStages[EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Multiply_ExternalAlpha" );
+		m_defaultStages[EM_TEXTURE_SCREEN_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Screen_ExternalAlpha" );
+
+		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_ExternalAlpha_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive_ExternalAlpha_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Multiply_ExternalAlpha_OnlyColor" );
+		m_defaultStages[EM_TEXTURE_SCREEN_EXTERNAL_ALPHA_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Screen_ExternalAlpha_OnlyColor" );
+
+		m_defaultStages[EM_COLOR_SOLID] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Solid" );
+		m_defaultStages[EM_COLOR_BLEND] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Blend" );
+		m_defaultStages[EM_COLOR_INTENSIVE] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Intensive" );
+		m_defaultStages[EM_COLOR_MULTIPLY] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Multiply" );
+		m_defaultStages[EM_COLOR_SCREEN] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Screen" );
+
 		m_factoryMaterial.setMethodListener( this, &RenderMaterialManager::onRenderMaterialDestroy_ );
 
 		return true;
@@ -356,8 +386,20 @@ namespace Menge
 
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & RenderMaterialManager::getMaterialName( EMaterial _materialId ) const
+	{
+		if( _materialId >= EM_MATERIAL_COUNT )
+		{
+			return ConstString::none();
+		}
+
+		const ConstString & materialName = m_defaultStages[_materialId];
+
+		return materialName;
+	}
     //////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial( const ConstString & _stageName
+	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial( const ConstString & _materialName
 		, bool _wrapU
 		, bool _wrapV
 		, EPrimitiveType _primitiveType
@@ -365,10 +407,10 @@ namespace Menge
 		, const RenderTextureInterfacePtr * _textures )
 	{
 		const RenderStageGroup * stageGroup;
-		if( m_stages.has( _stageName, &stageGroup ) == false )
+		if( m_stages.has( _materialName, &stageGroup ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::getMaterial stage %s not found"
-				, _stageName.c_str()
+				, _materialName.c_str()
 				);
 
 			return nullptr;
@@ -379,7 +421,7 @@ namespace Menge
 			if( _textures[i] == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::getMaterial stage %s invalid setup texture %d"
-					, _stageName.c_str()
+					, _materialName.c_str()
 					, i
 					);
 
@@ -462,17 +504,7 @@ namespace Menge
 		{
 			RenderMaterial * material = *it;
 
-			if( material->getHash() != material_hash )
-			{
-				continue;
-			}
-			
-			EPrimitiveType primitiveType = _material->getPrimitiveType();
-			uint32_t textureCount = _material->getTextureCount();
-			const RenderTextureInterfacePtr * textures = _material->getTextures();
-			const RenderStage * stage = _material->getStage();
-
-			if( s_equalMaterial( material, primitiveType, textureCount, textures, stage ) == false )
+			if( material != _material )
 			{
 				continue;
 			}

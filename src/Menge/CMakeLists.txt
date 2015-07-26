@@ -48,8 +48,8 @@ Arrow
 
 ADD_FILTER(
 Game
-	Pak.cpp	
-	Pak.h
+	Pack.cpp	
+	Pack.h
 	Game.cpp
 	Game.h
 )
@@ -365,19 +365,17 @@ Utils
 )
 
 INCLUDE_DIRECTORIES( 
+    ${Mengine_SOURCE_DIR}/Menge
     ${Mengine_SOURCE_DIR}/Utils 
     ${THIRDPARTY_DIR}
     ${THIRDPARTY_DIR}/pybind/include
-    ${THIRDPARTY_DIR}/xxbind/
     ${THIRDPARTY_DIR}/boost
     ${THIRDPARTY_DIR}/metabuf
+    ${THIRDPARTY_DIR}/stdex/include
     ${THIRDPARTY_DIR}/utf8/source
 )
 
-
 add_definitions(-D_UNICODE)
-
-include_directories( ${Mengine_SOURCE_DIR}/Menge )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
@@ -385,9 +383,15 @@ SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
  ${MY_LIB_NAME}  
  Kernel
+ Core
+ Logger
+ Codec
+ Factory
+ Archive
  Metacode 
  ServiceText
  ServiceGraveyard
+ ServiceRender
 )
 
 SET( APPLICATION_DEPENDENCIES
@@ -402,7 +406,6 @@ SET( APPLICATION_LIBS
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX}
     )
-
     
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}

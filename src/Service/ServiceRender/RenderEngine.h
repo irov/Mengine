@@ -37,7 +37,7 @@ namespace Menge
 		const RenderVertex2D * vertexData;
 		uint32_t verticesNum;
 
-        const RenderIndices2D * indicesData;
+        const RenderIndices * indicesData;
         uint32_t indicesNum;
 
 		uint32_t minIndex;
@@ -94,23 +94,22 @@ namespace Menge
 	public:
 		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material            
             , const RenderVertex2D * _vertices, uint32_t _verticesNum 
-			, const RenderIndices2D * _indices, uint32_t _indicesNum 
-			, const mt::box2f * _bb ) override;
+			, const RenderIndices * _indices, uint32_t _indicesNum 
+			, const mt::box2f * _bb, bool _debug ) override;
 
         void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
 			, const RenderVertex2D * _vertices, uint32_t _verticesNum 
-			, const mt::box2f * _bb ) override;
+			, const mt::box2f * _bb, bool _debug ) override;
 
         void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
-			, const mt::box2f * _bb ) override;
+			, const mt::box2f * _bb, bool _debug ) override;
 		
 	protected:
 		void createRenderPass_();
 
 	public:
-		RenderVertex2D * getMutableRenderVertex2D( uint32_t _count ) override;
-		RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) override;
+		RenderVertex2D * getDebugRenderVertex2D( size_t _count ) override;
 
 	public:
 		void setBatchMode( ERenderBatchMode _mode ) override;
@@ -124,7 +123,7 @@ namespace Menge
 		void releaseIndicesBuffer( IBHandle _handle );
 
 		bool updateVertexBuffer( VBHandle _handle, const RenderVertex2D * _vertexies, uint32_t _verticesNum );
-		bool updateIndicesBuffer( IBHandle _handle, const RenderIndices2D * _buffer, uint32_t _count );
+		bool updateIndicesBuffer( IBHandle _handle, const RenderIndices * _buffer, uint32_t _count );
 
 	public:
 		void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) override;
@@ -190,9 +189,9 @@ namespace Menge
         bool makeBatches_();
 
 	protected:
-        void insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize );
-        void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos );
-		bool insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t _vbPos, uint32_t _ibPos ) const;
+        void insertRenderPasses_( RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize );
+        void insertRenderObjects_( RenderPass * _pass, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos );
+		bool insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t _vbPos, uint32_t _ibPos ) const;
 
 		void flushRender_();
 		void prepare2D_();
@@ -201,7 +200,7 @@ namespace Menge
         		
     protected:
         void calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum );
-        void calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _verteNum, const RenderIndices2D * _indices, uint32_t _indicesNum );
+        void calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _verteNum, const RenderIndices * _indices, uint32_t _indicesNum );
 
     protected:
         bool createNullTexture_();
@@ -269,9 +268,9 @@ namespace Menge
 
 		RenderDebugInfo m_debugInfo;	    // debug info
 
-		typedef stdex::heap_array<RenderIndices2D> TArrayRenderIndices2D;
-		TArrayRenderIndices2D m_indicesQuad;
-        TArrayRenderIndices2D m_indicesLine;
+		typedef stdex::heap_array<RenderIndices> TArrayRenderIndices;
+		TArrayRenderIndices m_indicesQuad;
+        TArrayRenderIndices m_indicesLine;
 
 		Viewport m_renderViewport;
 
@@ -282,9 +281,6 @@ namespace Menge
 
         typedef stdex::heap_array<RenderPass> TArrayRenderPass;
         TArrayRenderPass m_renderPasses;
-
-		typedef stdex::heap_array<RenderVertex2D> TArrayRenderVertex2D;
-		TArrayRenderVertex2D m_mutableRenderVertex2D;
 
 		typedef stdex::heap_array<RenderVertex2D> TArrayRenderVertex2D;
 		TArrayRenderVertex2D m_debugRenderVertex2D;
@@ -300,7 +296,7 @@ namespace Menge
 		uint32_t m_iterateRenderObjects;
 		
 	protected:
-		void batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos );
-		void batchRenderObjectSmart_( RenderPass * _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices2D * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos );
+		void batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos );
+		void batchRenderObjectSmart_( RenderPass * _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t & _vbPos, uint32_t & _ibPos );
 	};
 }

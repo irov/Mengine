@@ -24,18 +24,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::setMaterialName( const ConstString & _materialName )
-	{
-		m_materialName = _materialName;
-
-		this->invalidateMaterial();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Sprite::getMaterialName() const
-	{
-		return m_materialName;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Sprite::_compile()
 	{
 		if( Shape::_compile() == false )
@@ -48,149 +36,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_release()
 	{
-		Shape::_release();
-
-		m_material = nullptr;
+		Shape::_release();		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::updateMaterial()
+	RenderMaterialInterfacePtr Sprite::_updateMaterial() const
 	{
-        m_invalidateMaterial = false;
+		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_serviceProvider, m_resourceImage, m_solid );
 
-		uint32_t texturesNum = 0;
-		RenderTextureInterfacePtr textures[2];
-
-		textures[0] = m_resourceImage->getTexture();
-		textures[1] = m_resourceImage->getTextureAlpha();
-
-		ConstString stageName;
-
-		if( m_materialName.empty() == true )
-		{
-			if( textures[1] != nullptr )
-			{
-				if( m_blendAdd == true )
-				{
-					if( m_disableTextureColor == true )
-					{
-						texturesNum = 2;
-
-						stageName = CONST_STRING( m_serviceProvider, Texture_Intensive_ExternalAlpha_OnlyColor );
-					}
-					else if( m_resourceImage->isAlpha() == true )
-					{
-						texturesNum = 2;
-
-						stageName = CONST_STRING( m_serviceProvider, Texture_Intensive_ExternalAlpha );
-					}
-					else
-					{
-						texturesNum = 1;
-
-						stageName = CONST_STRING( m_serviceProvider, Texture_Intensive );
-					}
-				}
-				else
-				{
-					if( m_disableTextureColor == true )
-					{
-						texturesNum = 2;
-
-						stageName = CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha_OnlyColor );
-					}
-					else if( m_resourceImage->isAlpha() == true )
-					{
-						texturesNum = 2;
-
-						stageName = CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha );
-					}
-					else if( m_solid == false )
-					{
-						texturesNum = 1;
-
-						stageName = CONST_STRING( m_serviceProvider, Texture_Blend );
-					}
-					else
-					{
-						texturesNum = 1;
-
-						stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
-					}
-				}
-			}
-			else if( textures[0] != nullptr )
-			{
-				texturesNum = 1;
-
-				if( m_blendAdd == true )
-				{
-					if( m_disableTextureColor == true )
-					{
-						stageName = CONST_STRING( m_serviceProvider, Texture_Intensive_OnlyColor );
-					}
-					else
-					{
-						stageName = CONST_STRING( m_serviceProvider, Texture_Intensive );
-					}
-				}
-				else
-				{
-					if( m_disableTextureColor == true )
-					{
-						stageName = CONST_STRING( m_serviceProvider, Texture_Blend_OnlyColor );
-					}
-					else
-					{
-						if( m_resourceImage->isAlpha() == true || m_solid == false )
-						{
-							stageName = CONST_STRING( m_serviceProvider, Texture_Blend );
-						}
-						else
-						{
-							stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
-						}
-					}
-				}
-			}
-			else
-			{
-				texturesNum = 0;
-
-				if( m_blendAdd == true )
-				{
-					stageName = CONST_STRING( m_serviceProvider, Color_Intensive );
-				}
-				else
-				{
-					if( m_solid == false )
-					{
-						stageName = CONST_STRING( m_serviceProvider, Color_Blend );
-					}
-					else
-					{
-						stageName = CONST_STRING( m_serviceProvider, Color_Solid );
-					}
-				}
-			}
-		}
-		else
-		{
-			stageName = m_materialName;
-		}
-
-		bool wrapU = m_resourceImage->isWrapU();
-		bool wrapV = m_resourceImage->isWrapV();
-
-		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, texturesNum, textures );
-
-		if( m_material == nullptr )
+		if( material == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Sprite::updateMaterial_ %s resource %s m_material is NULL"
 				, this->getName().c_str()
 				, m_resourceImage->getName().c_str()
 				);
+
+			return nullptr;
 		}
+
+		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
@@ -202,8 +65,8 @@ namespace Menge
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _viewport, _camera, material, vertices, 4, &bb );
+		RENDER_SERVICE( m_serviceProvider )
+			->addRenderQuad( _viewport, _camera, material, vertices, 4, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox ) const

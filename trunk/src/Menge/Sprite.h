@@ -16,19 +16,12 @@
 
 namespace Menge
 {
-	struct RenderMaterial;
-	struct RenderMaterialGroup;    
-	
 	class Sprite
 		: public Shape
 	{
 	public:
 		Sprite();
 		~Sprite();
-
-	public:
-		void setMaterialName( const ConstString & _materialName );
-		const ConstString & getMaterialName() const;
 
 	protected:
 		bool _compile() override;
@@ -40,22 +33,6 @@ namespace Menge
         void _invalidateColor() override;
 
     protected:
-        void updateMaterial();
-        inline const RenderMaterialInterfacePtr & getMaterial();
-
-	protected:
-		RenderMaterialInterfacePtr m_material;
-
-		ConstString m_materialName;
+		RenderMaterialInterfacePtr _updateMaterial() const override;
     };
-    //////////////////////////////////////////////////////////////////////////
-    inline const RenderMaterialInterfacePtr & Sprite::getMaterial()
-    {
-        if( this->isInvalidateMaterial() == true )
-        {
-            this->updateMaterial();
-        }
-
-        return m_material;
-    }
 }

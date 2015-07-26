@@ -80,7 +80,7 @@ namespace Menge
 	{
 		mt::vec2f pos[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
 		mt::vec2f uv[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
-		RenderIndices2D indices[MENGINE_MOVIE_SHAPE_MAX_INDICES];
+		RenderIndices indices[MENGINE_MOVIE_SHAPE_MAX_INDICES];
 
 		uint8_t vertexCount;
 		uint8_t indexCount;

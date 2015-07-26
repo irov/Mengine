@@ -1,5 +1,7 @@
 #	include "CriticalErrorsMonitor.h"
 
+#	include "Core/Date.h"
+
 #   include "WindowsLayer/WindowsIncluder.h"
 #   include "DbgHelp.h"
 
@@ -16,7 +18,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	struct CrashDumpExceptionHandlerData
 	{
-		WString logPath;
 		WString dumpPath;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -87,11 +88,21 @@ namespace Menge
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CriticalErrorsMonitor::run( const WString & _logPath, const WString & _dumpPath )
+	void CriticalErrorsMonitor::run( const WString & _userPath )
 	{
+		WString dumpPath;
+		dumpPath += _userPath;
+		dumpPath += L"Dump";
+		dumpPath += L"_";
+
+		WString date;
+		Helper::makeDateTime( date );
+		
+		dumpPath += date;
+		dumpPath += L".dmp";
+
 		g_crashDumpExceptionHandlerData = new CrashDumpExceptionHandlerData;
-		g_crashDumpExceptionHandlerData->logPath = _logPath;
-        g_crashDumpExceptionHandlerData->dumpPath = _dumpPath;
+		g_crashDumpExceptionHandlerData->dumpPath = dumpPath;
 
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );

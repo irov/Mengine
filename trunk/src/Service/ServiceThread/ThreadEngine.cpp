@@ -70,7 +70,7 @@ namespace Menge
 		m_allocatorPoolMutex = THREAD_SYSTEM(m_serviceProvider)
 			->createMutex();
 
-		stdex_allocator_threadsafe( m_allocatorPoolMutex.get()
+		stdex_allocator_initialize_threadsafe( m_allocatorPoolMutex.get()
 			, (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
 			, (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock 
 			);
@@ -108,10 +108,7 @@ namespace Menge
 
 		m_threads.clear();
 
-		stdex_allocator_threadsafe( nullptr
-			, nullptr
-			, nullptr
-			);
+		stdex_allocator_finalize_threadsafe();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::isTaskOnProgress_( const ThreadTaskInterfacePtr & _task, ThreadIdentityPtr & _identity ) const

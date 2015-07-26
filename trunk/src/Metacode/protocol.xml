@@ -1,4 +1,4 @@
-<Protocol Version = "85">
+<Protocol Version = "88">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -351,7 +351,17 @@
     <Node Name="ResourceCal3dMesh" Inheritance = "Resource">
       <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
     </Node>
+      
+    <Node Name="ResourceSpine" Inheritance = "Resource">
+      <Member Node="Skeleton" Name="Path" Type="Menge::FilePath" Required="1"/>
+      <Member Node="Atlas" Name="Path" Type="Menge::FilePath" Required="1"/>
 
+      <Node Name="Image">
+        <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
+        <Attribute Name="Resource" Type="Menge::ConstString" Required="1"/>
+      </Node>
+    </Node>      
+    
     <Node Name="ResourceExternal" Inheritance = "Resource" NoWrite = "1"/>
   </Node>
 

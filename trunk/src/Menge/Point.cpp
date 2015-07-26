@@ -129,7 +129,7 @@ namespace Menge
 			->getMaterial( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Debug"), false, false, PT_TRIANGLELIST, 0, nullptr );
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _viewport, _camera, material, m_vertices, 4, nullptr );
+			->addRenderQuad( _viewport, _camera, material, m_vertices, 4, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Point::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
@@ -195,7 +195,7 @@ namespace Menge
 			->getDebugMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderLine( _viewport, _camera, debugMaterial, vertices, 8, nullptr );
+			->addRenderLine( _viewport, _camera, debugMaterial, vertices, 8, nullptr, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 

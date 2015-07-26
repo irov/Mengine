@@ -1,9 +1,15 @@
 #	include "Spine.h"
 
+#	include "Kernel/Materialable.h"
+
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 
 #	include "Logger/Logger.h"
+
+#	ifndef MENGINE_SPINE_MAX_VERTICES
+#	define MENGINE_SPINE_MAX_VERTICES 512
+#	endif
 
 namespace Menge
 {
@@ -12,6 +18,7 @@ namespace Menge
 		: m_skeleton( nullptr )
 		, m_animationStateData( nullptr )
 		, m_animationState( nullptr )
+		, m_currentAnimation( nullptr )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -32,8 +39,92 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceSpine * Spine::getResourceSpine() const
-	{ 
+	{
 		return m_resourceSpine;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_spineAnimationStateListener( spAnimationState * _state, int _trackIndex, spEventType _type, spEvent * _event, int _loopCount )
+	{
+		Spine * spine = (Spine *)_state->rendererObject;
+
+		if( spine != nullptr )
+		{
+			spine->onAnimationEvent( _state, _trackIndex, _type, _event, _loopCount );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Spine::setAnimationName( const ConstString & _name )
+	{
+		if( m_currentAnimationName == _name )
+		{
+			return;
+		}
+
+		m_currentAnimationName = _name;
+
+		if( this->isCompile() == false )
+		{
+			return;
+		}
+
+		this->updateAnimation_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Spine::updateAnimation_()
+	{
+		if( m_currentAnimationName.empty() )
+		{
+			m_currentAnimation = nullptr;
+
+			return;
+		}
+		
+		spAnimation * animation = m_resourceSpine->findSkeletonAnimation( m_currentAnimationName );
+
+		bool loop = this->getLoop();
+
+		spTrackEntry * entry = spAnimationState_setAnimation( m_animationState, 0, animation, loop );
+
+		if( entry != nullptr )
+		{
+			entry->listener = &s_spineAnimationStateListener;
+		}
+
+		m_currentAnimation = animation;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Spine::setAnimationMix( const ConstString & _from, const ConstString & _to, float _time )
+	{
+		spAnimationStateData_setMixByName( m_animationStateData, _from.c_str(), _to.c_str(), _time );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & Spine::getAnimationName() const
+	{
+		return m_currentAnimationName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Spine::getDuration( const ConstString & _name ) const
+	{
+		if( m_resourceSpine == nullptr )
+		{
+			return false;
+		}
+
+		spAnimation * animation = m_resourceSpine->findSkeletonAnimation( _name );
+
+		float duration = animation->duration;
+
+		return duration;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Spine::_setEventListener( const pybind::dict & _listener )
+	{
+		Node::_setEventListener( _listener );
+
+		this->registerEvent( EVENT_SPINE_END, ("onSpineEnd"), _listener );
+		this->registerEvent( EVENT_SPINE_STOP, ("onSpineStop"), _listener );
+		this->registerEvent( EVENT_SPINE_PAUSE, ("onSpinePause"), _listener );
+		this->registerEvent( EVENT_SPINE_RESUME, ("onSpineResume"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::_compile()
@@ -62,7 +153,7 @@ namespace Menge
 		spSkeleton * skeleton = spSkeleton_create( skeletonData );
 
 		spAnimationStateData * animationStateData = spAnimationStateData_create( skeletonData );
-
+		
 		spAnimationState * animationState = spAnimationState_create( animationStateData );
 
 		animationState->rendererObject = this;
@@ -74,49 +165,145 @@ namespace Menge
 		spSkeleton_updateWorldTransform( skeleton );
 
 		m_skeleton = skeleton;
-		m_skeletonData = skeletonData;
 		m_animationStateData = animationStateData;
 		m_animationState = animationState;
 
-		this->updateMaterial_();
-		
+		int slotCount = m_skeleton->slotsCount;
+
+		m_attachmentMeshes.resize( slotCount );
+
+		ResourceImage * resourceImage = nullptr;
+
+		for( int i = 0; i < slotCount; ++i )
+		{
+			spSlot * slot = m_skeleton->slots[i];
+
+			if( slot->attachment == nullptr )
+			{
+				continue;
+			}
+
+			AttachmentMesh & mesh = m_attachmentMeshes[i];
+
+			const spAttachmentType attachment_type = slot->attachment->type;
+
+			switch( attachment_type )
+			{
+			case SP_ATTACHMENT_REGION:
+				{
+					spRegionAttachment * attachment = (spRegionAttachment *)slot->attachment;
+
+					resourceImage = (ResourceImage*)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
+								
+					mesh.vertices.resize( 4 );
+					mesh.indices.resize( 6 );
+				}break;
+			case SP_ATTACHMENT_MESH:
+				{
+					spMeshAttachment * attachment = (spMeshAttachment *)slot->attachment;
+
+					resourceImage = (ResourceImage*)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
+
+					mesh.vertices.resize( attachment->verticesCount / 2 );
+					mesh.indices.resize( attachment->trianglesCount );
+				}break;
+			case SP_ATTACHMENT_SKINNED_MESH:
+				{
+					spSkinnedMeshAttachment* attachment = (spSkinnedMeshAttachment*)slot->attachment;
+
+					resourceImage = (ResourceImage*)(((spAtlasRegion *)attachment->rendererObject)->page->rendererObject);
+
+					mesh.vertices.resize( attachment->uvsCount / 2 );
+					mesh.indices.resize( attachment->trianglesCount );
+				}break;
+			default:
+				continue;
+				break;
+			}
+
+			if( resourceImage == nullptr )
+			{
+				return false;
+			}
+
+			mesh.material = this->makeMaterial_( slot, resourceImage );
+		}
+
+		this->updateAnimation_();
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_release()
-	{		
+	{
+		Node::_release();
+
+		m_resourceSpine.release();
+
+		if( m_skeleton != nullptr )
+		{
+			spSkeleton_dispose( m_skeleton );
+			m_skeleton = nullptr;
+		}
+
+		if( m_animationState != nullptr )
+		{
+			spAnimationState_dispose( m_animationState );
+			m_animationState = nullptr;
+		}
+
+		if( m_animationStateData != nullptr )
+		{
+			spAnimationStateData_dispose( m_animationStateData );
+			m_animationStateData = nullptr;
+		}
+
+		m_attachmentMeshes.clear();
+
+		m_currentAnimationName.clear();
+		m_currentAnimation = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::updateMaterial_()
+	RenderMaterialInterfacePtr Spine::makeMaterial_( spSlot * slot, ResourceImage * _resourceImage ) const
 	{ 
-		uint32_t texturesNum = 1;
-		RenderTextureInterfacePtr textures[2];
+		EMaterialBlendMode blendMode = EMB_NORMAL;
 
-		textures[0] = m_resourceSpine->getAtlasTexture();
-		textures[1] = nullptr;
-
-		ConstString stageName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend" );
-		
-		m_material = RENDERMATERIAL_SERVICE( m_serviceProvider )
-			->getMaterial( stageName, false, false, PT_TRIANGLELIST, texturesNum, textures );
-
-		if( m_material == nullptr )
+		switch( slot->data->blendMode )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Spine::updateMaterial_ %s resource %s m_material is NULL"
+		case SP_BLEND_MODE_NORMAL:
+			{
+				blendMode = EMB_NORMAL;
+			}break;
+		case SP_BLEND_MODE_ADDITIVE:
+			{
+				blendMode = EMB_ADD;
+			}break;
+		case SP_BLEND_MODE_MULTIPLY:
+			{
+				blendMode = EMB_MULTIPLY;
+			}break;
+		case SP_BLEND_MODE_SCREEN:
+			{
+				blendMode = EMB_SCREEN;
+			}break;
+		default:
+			break;
+		}
+
+		RenderMaterialInterfacePtr material = Helper::makeImageMaterial( m_serviceProvider, _resourceImage, ConstString::none(), blendMode, false, false );
+		
+		if( material == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::updateMaterial_ %s resource %s image %s m_material is NULL"
 				, this->getName().c_str()
 				, m_resourceSpine->getName().c_str()
+				, _resourceImage->getName().c_str()
 				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void s_spineAnimationStateListener( spAnimationState * _state, int _trackIndex, spEventType _type, spEvent * _event, int _loopCount )
-	{
-		Spine * spine = (Spine *)_state->rendererObject;
 
-		if( spine != nullptr )
-		{
-			spine->onAnimationEvent( _state, _trackIndex, _type, _event, _loopCount );
+			return nullptr;
 		}
+
+		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::onAnimationEvent( spAnimationState * _state, int _trackIndex, spEventType _type, spEvent * _event, int _loopCount )
@@ -126,28 +313,17 @@ namespace Menge
 
 		spTrackEntry * entry = spAnimationState_getCurrent( _state, _trackIndex );
 
-		if( entry != nullptr && entry->loop > 0 && _type == SP_ANIMATION_COMPLETE )
+		if( entry != nullptr && entry->loop == 0 && _type == SP_ANIMATION_COMPLETE )
 		{
-			this->stop();
+			this->end();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_update( float _current, float _timing )
 	{
-		if( m_invalidateCurrentAnimation == true )
+		if( m_currentAnimation == nullptr )
 		{
-			m_invalidateCurrentAnimation = false;
-
-			spAnimation * animation = spSkeletonData_findAnimation( m_skeletonData, m_currentAnimationName.c_str() );
-
-			spTrackEntry * entry = spAnimationState_setAnimation( m_animationState, 0, animation, true );
-
-			if( entry != nullptr )
-			{
-				entry->listener = s_spineAnimationStateListener;
-			}
-
-			m_currentAnimation = animation;
+			return;
 		}
 
 		if( this->isPlay() == false )
@@ -161,7 +337,7 @@ namespace Menge
 			_timing -= deltha;
 		}
 
-		float spTiming = _timing * 0.0001f;
+		float spTiming = _timing * 0.001f;
 
 		spSkeleton_update( m_skeleton, spTiming );
 		spAnimationState_update( m_animationState, spTiming );
@@ -173,125 +349,186 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
+		if( m_currentAnimation == nullptr )
+		{
+			return;
+		}
+
 		const mt::mat4f & wm = this->getWorldMatrix();
 
 		int slotCount = m_skeleton->slotsCount;
 
+		const int quadTriangles[6] = {0, 1, 2, 2, 3, 0};
+
+		float attachment_vertices[MENGINE_SPINE_MAX_VERTICES * 2];
+
+		const float * uvs = nullptr;
+		int verticesCount;
+		const int * triangles;
+		int trianglesCount;
+		float r = 0.f;
+		float g = 0.f;
+		float b = 0.f;
+		float a = 0.f;
+
 		for( int i = 0; i < slotCount; ++i )
 		{
 			spSlot * slot = m_skeleton->slots[i];
-
-			spAttachment * attachment = slot->attachment;
-
-			if( attachment == nullptr || attachment->type != SP_ATTACHMENT_REGION )
+			
+			if( slot->attachment == nullptr )
 			{
 				continue;
 			}
 
-			switch( attachment->type )
+			const spAttachmentType attachment_type = slot->attachment->type;
+
+			switch( attachment_type )
 			{
 			case SP_ATTACHMENT_REGION:
 				{
-					spRegionAttachment * regionAttachment = (spRegionAttachment *)attachment;
+					spRegionAttachment * attachment = (spRegionAttachment *)slot->attachment;
 
-					RenderVertex2D * vertices = RENDER_SERVICE( m_serviceProvider )
-						->getMutableRenderVertex2D( 4 );
+					spRegionAttachment_computeWorldVertices( attachment, slot->bone, attachment_vertices );
 
-					this->fillSlotVertices_( wm, vertices, slot, regionAttachment );
+					uvs = attachment->uvs;
+					verticesCount = 8;
+					triangles = quadTriangles;
+					trianglesCount = 6;
+					r = attachment->r;
+					g = attachment->g;
+					b = attachment->b;
+					a = attachment->a;
+				}break;
+			case SP_ATTACHMENT_MESH:
+				{
+					spMeshAttachment * attachment = (spMeshAttachment *)slot->attachment;
 
-					RENDER_SERVICE( m_serviceProvider )
-						->addRenderQuad( _viewport, _camera, m_material, vertices, 4, nullptr );
+					spMeshAttachment_computeWorldVertices( attachment, slot, attachment_vertices );
+
+					uvs = attachment->uvs;
+					verticesCount = attachment->verticesCount;
+					triangles = attachment->triangles;
+					trianglesCount = attachment->trianglesCount;
+					r = attachment->r;
+					g = attachment->g;
+					b = attachment->b;
+					a = attachment->a;
+				}break;
+			case SP_ATTACHMENT_SKINNED_MESH:
+				{
+					spSkinnedMeshAttachment* attachment = (spSkinnedMeshAttachment*)slot->attachment;
+					
+					spSkinnedMeshAttachment_computeWorldVertices( attachment, slot, attachment_vertices );
+					
+					uvs = attachment->uvs;
+					verticesCount = attachment->uvsCount;
+					triangles = attachment->triangles;
+					trianglesCount = attachment->trianglesCount;
+					r = attachment->r;
+					g = attachment->g;
+					b = attachment->b;
+					a = attachment->a;
 				}break;
 			default:
+				continue;
 				break;
 			}
+
+			float wr = m_skeleton->r * slot->r * r;
+			float wg = m_skeleton->g * slot->g * g;
+			float wb = m_skeleton->b * slot->b * b;
+			float wa = m_skeleton->a * slot->a * a;
+
+			ColourValue_ARGB argb = Helper::makeARGB( wr, wg, wb, wa );
+
+			RenderVertex2D * vertices = m_attachmentMeshes[i].vertices.buff();
+			RenderIndices * indices = m_attachmentMeshes[i].indices.buff();
+				
+			this->fillVertices_( vertices, attachment_vertices, uvs, argb, verticesCount / 2, wm );
+			this->fillIndices_( indices, triangles, trianglesCount );
+
+			RenderMaterialInterfacePtr material = m_attachmentMeshes[i].material;
+
+			RENDER_SERVICE( m_serviceProvider )
+				->addRenderObject( _viewport, _camera, material, vertices, verticesCount / 2, indices, trianglesCount, nullptr, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::fillSlotVertices_( const mt::mat4f & _wm, RenderVertex2D * _vertex, spSlot * _slot, spRegionAttachment * _regionAttachment )
+	void Spine::fillVertices_( RenderVertex2D * _vertices2D, const float * _vertices, const float * _uv, ColourValue_ARGB _argb, int _count, const mt::mat4f & _wm )
 	{
-		ColourValue color( m_skeleton->r * _slot->r, m_skeleton->g * _slot->g, m_skeleton->b * _slot->b, m_skeleton->a * _slot->a );
+		for( int i = 0; i != _count; ++i )
+		{
+			int index_x = i * 2 + 0;
+			int index_y = i * 2 + 1;
 
-		ColourValue_ARGB argb = color.getAsARGB();
-				
-		_vertex[0].color = argb;
-		_vertex[1].color = argb;
-		_vertex[2].color = argb;
-		_vertex[3].color = argb;
+			mt::vec3f v;
+			v.x = _vertices[index_x];
+			v.y = -_vertices[index_y];
+			v.z = 0.f;
 
-		_vertex[0].uv.x = _regionAttachment->uvs[SP_VERTEX_X1];
-		_vertex[0].uv.y = _regionAttachment->uvs[SP_VERTEX_Y1];
-		_vertex[1].uv.x = _regionAttachment->uvs[SP_VERTEX_X2];
-		_vertex[1].uv.y = _regionAttachment->uvs[SP_VERTEX_Y2];
-		_vertex[2].uv.x = _regionAttachment->uvs[SP_VERTEX_X3];
-		_vertex[2].uv.y = _regionAttachment->uvs[SP_VERTEX_Y3];
-		_vertex[3].uv.x = _regionAttachment->uvs[SP_VERTEX_X4];
-		_vertex[3].uv.y = _regionAttachment->uvs[SP_VERTEX_Y4];
+			mt::mul_v3_m4( _vertices2D[i].pos, v, _wm );
 
-		float * offset = _regionAttachment->offset;
+			_vertices2D[i].uv.x = _uv[index_x];
+			_vertices2D[i].uv.y = _uv[index_y];
+			_vertices2D[i].uv2.x = 0.f;
+			_vertices2D[i].uv2.y = 0.f;
 
-		float xx = m_skeleton->x + _slot->bone->worldX;
-		float yy = m_skeleton->y + _slot->bone->worldY;
-
-		mt::vec3f pos[4];
-
-		float m00 = _slot->bone->m00;
-		float m10 = _slot->bone->m10;
-		float m11 = _slot->bone->m11;
-		float m01 = _slot->bone->m01;
-
-		pos[0].x = xx + offset[SP_VERTEX_X1] * m00 + offset[SP_VERTEX_Y1] * m01;
-		pos[0].y = yy + offset[SP_VERTEX_X1] * m10 + offset[SP_VERTEX_Y1] * m11;
-		pos[0].z = 0.f;
-		pos[1].x = xx + offset[SP_VERTEX_X2] * m00 + offset[SP_VERTEX_Y2] * m01;
-		pos[1].y = yy + offset[SP_VERTEX_X2] * m10 + offset[SP_VERTEX_Y2] * m11;
-		pos[1].z = 0.f;
-		pos[2].x = xx + offset[SP_VERTEX_X3] * m00 + offset[SP_VERTEX_Y3] * m01;
-		pos[2].y = yy + offset[SP_VERTEX_X3] * m10 + offset[SP_VERTEX_Y3] * m11;
-		pos[2].z = 0.f;
-		pos[3].x = xx + offset[SP_VERTEX_X4] * m00 + offset[SP_VERTEX_Y4] * m01;
-		pos[3].y = yy + offset[SP_VERTEX_X4] * m10 + offset[SP_VERTEX_Y4] * m11;
-		pos[3].z = 0.f;
-
-		mt::mul_v3_m4( _vertex[0].pos, pos[0], _wm );
-		mt::mul_v3_m4( _vertex[1].pos, pos[1], _wm );
-		mt::mul_v3_m4( _vertex[2].pos, pos[2], _wm );
-		mt::mul_v3_m4( _vertex[3].pos, pos[3], _wm );
+			_vertices2D[i].color = _argb;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Spine::fillIndices_( RenderIndices * _indices, const int * _triangles, int _count )
+	{ 
+		for( int i = 0; i != _count; ++i )
+		{
+			_indices[i] = (uint16_t)_triangles[i];
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::_play( float _time )
 	{
-		return false;
+		(void)_time;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::_restart( float _time, uint32_t _enumerator )
 	{ 
-		return false;
+		(void)_time;
+		(void)_enumerator;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_pause( uint32_t _enumerator )
 	{ 
-
+		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_resume( uint32_t _enumerator )
 	{
-
+		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_stop( uint32_t _enumerator )
 	{ 
-		
+		(void)_enumerator;
+
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_end( uint32_t _enumerator )
 	{ 
-	
+		(void)_enumerator;
+
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::_interrupt( uint32_t _enumerator )
 	{
-		return false;
+		(void)_enumerator;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

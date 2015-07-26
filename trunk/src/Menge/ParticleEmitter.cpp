@@ -238,7 +238,7 @@ namespace	Menge
             }
 
             RENDER_SERVICE(m_serviceProvider)
-				->addRenderQuad( _viewport, _camera, batch.material, batch_vertices, batch.size, &batch.bb );
+				->addRenderQuad( _viewport, _camera, batch.material, batch_vertices, batch.size, &batch.bb, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -580,11 +580,17 @@ namespace	Menge
 		{
 			const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( i );
 
+			const ConstString & textureIntensive = RENDERMATERIAL_SERVICE( m_serviceProvider )
+				->getMaterialName( EM_TEXTURE_INTENSIVE );
+
 			const RenderMaterialInterfacePtr & mg_intensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING( m_serviceProvider, Texture_Intensive ), false, false, PT_TRIANGLELIST, 1, &texture );
+				->getMaterial( textureIntensive, false, false, PT_TRIANGLELIST, 1, &texture );
+
+			const ConstString & textureBlend = RENDERMATERIAL_SERVICE( m_serviceProvider )
+				->getMaterialName( EM_TEXTURE_BLEND );
 
 			const RenderMaterialInterfacePtr & mg_nonintensive = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( CONST_STRING( m_serviceProvider, Texture_Blend ), false, false, PT_TRIANGLELIST, 1, &texture );
+				->getMaterial( textureBlend, false, false, PT_TRIANGLELIST, 1, &texture );
 
 			m_materials[i*2 + 0] = mg_intensive;
 			m_materials[i*2 + 1] = mg_nonintensive;

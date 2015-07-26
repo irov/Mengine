@@ -14,11 +14,13 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	// keep compiler happy
 	UNREFERENCED_PARAMETER( hPrevInstance );
 	UNREFERENCED_PARAMETER( nShowCmd );
-
-	Menge::WinApplication winApplication;
+	
+	stdex_allocator_initialize();
 
 	try
 	{
+		Menge::WinApplication winApplication;
+
 		bool initialize = winApplication.initialize( hInstance, lpCmdLine );
     
 		if( initialize == true )
@@ -38,7 +40,9 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
 		MessageBoxA( NULL, se_what, "Mengine exception", MB_OK );
 	}
-    
+
+	stdex_allocator_finalize();
+	    
 	return 0;
 }
 //////////////////////////////////////////////////////////////////////////

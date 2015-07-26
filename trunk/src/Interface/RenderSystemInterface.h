@@ -209,14 +209,6 @@ namespace Menge
 		virtual const RenderImageInterfacePtr & getImage() const = 0;
 
 	public:
-		virtual ETextureFilter getMipmapFilter() const = 0;
-		virtual ETextureFilter getMagnificationFilter() const = 0;
-		virtual ETextureFilter getMinificationFilter() const = 0;
-
-		virtual ETextureAddressMode getAddressU() const = 0;
-		virtual ETextureAddressMode getAddressV() const = 0;
-
-	public:
 		virtual uint32_t getId() const = 0;
 
 		virtual const Rect & getRect() const = 0;
@@ -327,6 +319,39 @@ namespace Menge
 
 		RenderProgramInterfacePtr program;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	enum EMaterial
+	{
+		EM_DEBUG,
+
+		EM_TEXTURE_SOLID,
+		EM_TEXTURE_BLEND,
+		EM_TEXTURE_INTENSIVE,
+		EM_TEXTURE_MULTIPLY,
+		EM_TEXTURE_SCREEN,
+
+		EM_TEXTURE_BLEND_ONLYCOLOR,
+		EM_TEXTURE_INTENSIVE_ONLYCOLOR,
+		EM_TEXTURE_MULTIPLY_ONLYCOLOR,
+		EM_TEXTURE_SCREEN_ONLYCOLOR,
+
+		EM_TEXTURE_BLEND_EXTERNAL_ALPHA,
+		EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA,
+		EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA,
+		EM_TEXTURE_SCREEN_EXTERNAL_ALPHA,
+
+		EM_TEXTURE_BLEND_EXTERNAL_ALPHA_ONLYCOLOR,
+		EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA_ONLYCOLOR,
+		EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA_ONLYCOLOR,
+		EM_TEXTURE_SCREEN_EXTERNAL_ALPHA_ONLYCOLOR,
+
+		EM_COLOR_SOLID,
+		EM_COLOR_BLEND,
+		EM_COLOR_INTENSIVE,
+		EM_COLOR_MULTIPLY,
+		EM_COLOR_SCREEN,
+		EM_MATERIAL_COUNT
+	};
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialInterface
 		: public FactorablePtr
@@ -350,7 +375,10 @@ namespace Menge
         virtual bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) = 0;
 
 	public:
-		virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _stageName
+		virtual const ConstString & getMaterialName( EMaterial _materialId ) const = 0;
+
+	public:
+		virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
 			, bool _wrapU
 			, bool _wrapV
 			, EPrimitiveType _primitiveType
@@ -375,9 +403,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static const uint32_t Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX2;
 	//////////////////////////////////////////////////////////////////////////
-	typedef uint16_t RenderIndices2D;
+	typedef uint16_t RenderIndices;
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<RenderIndices2D> TVectorRenderIndices2D;
+	typedef stdex::vector<RenderIndices> TVectorRenderIndices;
     //////////////////////////////////////////////////////////////////////////
     struct RenderVertex2D
     {
@@ -525,7 +553,7 @@ namespace Menge
 
 		virtual IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) = 0;
 		virtual void releaseIndexBuffer( IBHandle _ibHandle ) = 0;
-		virtual RenderIndices2D * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
+		virtual RenderIndices * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) = 0;
 
@@ -642,20 +670,19 @@ namespace Menge
     public:
         virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
-            , const RenderIndices2D * _indices, uint32_t _indicesNum
-			, const mt::box2f * _bb ) = 0;
+            , const RenderIndices * _indices, uint32_t _indicesNum
+			, const mt::box2f * _bb, bool _debug ) = 0;
 
         virtual void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
-			, const mt::box2f * _bb ) = 0;
+			, const mt::box2f * _bb, bool _debug ) = 0;
 
         virtual void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
-			, const mt::box2f * _bb ) = 0;
+			, const mt::box2f * _bb, bool _debug ) = 0;
 
 	public:
-		virtual RenderVertex2D * getMutableRenderVertex2D( uint32_t _count ) = 0;
-		virtual RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) = 0;
+		virtual RenderVertex2D * getDebugRenderVertex2D( size_t _count ) = 0;
 
 	public:
 		virtual void setBatchMode( ERenderBatchMode _mode ) = 0;

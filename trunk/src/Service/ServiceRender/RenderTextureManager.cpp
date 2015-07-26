@@ -303,7 +303,7 @@ namespace Menge
 		_texture->setCategory( _pakName );
         _texture->setFileName( _fileName );
 
-        RenderTexture * texture = _texture.getT<RenderTexture>();
+        RenderTexture * texture = _texture.getT<RenderTexture *>();
 		
         m_textures.insert( texture, nullptr );
 
@@ -329,7 +329,7 @@ namespace Menge
 			resurrect_texture->setCategory( _pakName );
 			resurrect_texture->setFileName( _fileName );
 
-			RenderTexture * resurrect_texture_t = resurrect_texture.getT<RenderTexture>();
+			RenderTexture * resurrect_texture_t = resurrect_texture.getT<RenderTexture *>();
 
 			m_textures.insert( resurrect_texture_t, nullptr );
 

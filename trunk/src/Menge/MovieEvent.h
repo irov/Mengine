@@ -14,7 +14,7 @@ namespace Menge
         ~MovieEvent();
 
     public:
-        void setEvent( PyObject * _cb );
+		void setEvent( const pybind::object & _cb );
 
     public:
         void setResourceMovie( ResourceMovie * _resourceMovie );
@@ -23,7 +23,7 @@ namespace Menge
         void _movieForwardUpdate( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer ) override;        
 
     protected:
-        PyObject * m_cb;
+		pybind::object m_cb;
 
         ResourceMovie * m_resourceMovie;
 	};

@@ -460,22 +460,19 @@ namespace Menge
         return result;		
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::getCurrentDirectory( WString & _path )
-    {
-        WChar buffer[MENGINE_MAX_PATH];
+	size_t VistaWindowsLayer::getCurrentDirectory( WChar * _path, size_t _len )
+    {        
+		DWORD len = ::GetCurrentDirectory( _len, _path );
 
-        if( ::GetCurrentDirectory( MENGINE_MAX_PATH, buffer ) == 0 )
+		if( len == 0 )
         {
-            return false;
+            return 0;
         }
 
-        //WChar shortpath[MAX_PATH];
-        //GetShortPathName( buffer, shortpath, MAX_PATH );
+		_path[len] = L'\\';
+		_path[len + 1] = L'\0';
 
-        _path.assign( buffer );
-        _path += MENGE_FOLDER_DELIM;
-
-        return true;
+        return (size_t)len + 1;
     }
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::peekMessage( LPMSG _msg, HWND _hWnd, UINT _msgFilterMin, UINT _msgFilterMax, UINT _removeMsg )

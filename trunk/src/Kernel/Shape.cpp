@@ -6,21 +6,17 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     Shape::Shape()
-		: m_customSize( 0.f, 0.f )
+		: m_customSize( -1.f, -1.f )
 		, m_percentVisibility( 0.f, 0.f, 1.f, 1.f )
 		, m_textureUVOffset( 0.f, 0.f )
 		, m_textureUVScale( 1.f, 1.f )
-		, m_hasCustomSize( false )
 		, m_centerAlign( false )
 		, m_flipX( false )
 		, m_flipY( false )
 		, m_invalidateVerticesLocal( true )
 		, m_invalidateVerticesWM( true )
 		, m_invalidateVerticesColor( true )
-		, m_blendAdd( false )
 		, m_solid( false )
-		, m_invalidateMaterial( true )
-		, m_disableTextureColor( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -77,55 +73,28 @@ namespace Menge
 		Node::_release();
 
 		m_resourceImage.release();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Shape::disableTextureColor( bool _disable )
-	{
-		if( m_disableTextureColor == _disable )
-		{
-			return;
-		}
 
-		m_disableTextureColor = _disable;
-
-		this->invalidateMaterial();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Shape::setBlendAdd( bool _value )
-	{
-		if ( m_blendAdd == _value )
-		{
-			return;
-		}
-
-		m_blendAdd = _value;
-
-		this->invalidateMaterial();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Shape::isBlendAdd() const
-	{
-		return m_blendAdd;
+		this->releaseMaterial();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Shape::setCustomSize( const mt::vec2f & _customSize )
 	{
-		m_customSize = _customSize;
-		m_hasCustomSize = true;
+		m_customSize = _customSize;		
 
 		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Shape::removeCustomSize()
 	{ 
-		m_hasCustomSize = false;
+		m_customSize.x = -1.f;
+		m_customSize.y = -1.f;
 
 		this->invalidateVertices();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Shape::hasCustomSize() const
 	{
-		return m_hasCustomSize;
+		return m_customSize.x < 0.f || m_customSize.y < 0.f;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const mt::vec2f & Shape::getCustomSize() const
@@ -234,7 +203,7 @@ namespace Menge
 		mt::vec2f size;
 		mt::vec2f offset;
 
-		if( m_hasCustomSize == false )
+		if( m_customSize.x < 0.f || m_customSize.y < 0.f )
 		{
 			const mt::vec2f & image_maxSize = m_resourceImage->getMaxSize();
 			const mt::vec2f & image_size = m_resourceImage->getSize();
@@ -355,7 +324,7 @@ namespace Menge
         ColourValue color;
         this->calcTotalColor(color);
 
-		const ColourValue & textureColour = m_resourceImage->getTextureColor();
+		const ColourValue & textureColour = m_resourceImage->getColor();
 		color *= textureColour;
 
         uint32_t argb = color.getAsARGB();

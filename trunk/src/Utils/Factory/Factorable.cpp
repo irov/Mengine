@@ -1,6 +1,8 @@
 #	include "Factorable.h"
 #	include "Factory.h"
 
+#	include "Core/Exception.h"
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////

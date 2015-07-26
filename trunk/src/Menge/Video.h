@@ -6,6 +6,7 @@
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
 #	include "Kernel/FixedVertices.h"
+#	include "Kernel/Materialable.h"
 
 #   include "ResourceVideo.h"
 
@@ -25,6 +26,7 @@ namespace Menge
 		: public Node
 		, public QuadVertices
 		, public Animatable
+		, public Materialable
 	{
 	public:
 		Video();
@@ -43,9 +45,6 @@ namespace Menge
 		void _setFirstFrame() override;
 		void _setLastFrame() override;
 
-		void setBlendAdd( bool _blendAdd );
-		bool isBlendAdd() const;
-
 	protected:
 		void _update( float _current, float _timing ) override;
 		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
@@ -61,7 +60,7 @@ namespace Menge
 		void _invalidateColor() override;
 		
     protected:
-		void updateUV_();		
+		void updateUV_();
 
 		bool sync_( float _timing );
 		bool syncFirstFrame_();
@@ -81,39 +80,22 @@ namespace Menge
 		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) const override;
 
 	protected:
-		void invalidateMaterial_();
-		void updateMaterial_();
-
-		inline const RenderMaterialInterfacePtr & getMaterial();
+		RenderMaterialInterfacePtr _updateMaterial() const override;
 
 	protected:
 		ResourceHolder<ResourceVideo> m_resourceVideo;
 
 		RenderTextureInterfacePtr m_textures[1];
 		
-		RenderMaterialInterfacePtr m_material;
-		bool m_invalidateMaterial;
-
 		VideoDecoderInterfacePtr m_videoDecoder;
 		mt::vec2f m_frameSize;
 		mt::vec4f m_uv;
 
 		float m_timing;        
 
-		bool m_blendAdd;
 		bool m_autoStart;
 		bool m_needUpdate;
 		bool m_invalidFirstFrame;
         bool m_invalidVideoTexture;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline const RenderMaterialInterfacePtr & Video::getMaterial()
-	{
-		if( m_invalidateMaterial == true )
-		{
-			this->updateMaterial_(); 
-		}
-
-		return m_material;
-	}
 }

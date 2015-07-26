@@ -6,7 +6,8 @@
 #	include "Factory/FactoryStore.h"
 
 #	include "Core/MemoryInput.h"
-#   include "Core/IntrusiveTree.h"
+
+#	include "stdex/stl_map.h"
 
 namespace Menge
 {
@@ -64,29 +65,14 @@ namespace Menge
 		ThreadMutexInterfacePtr m_mutex;
 	
 		struct FileInfo
-			: public Factorable
-			, public stdex::intrusive_tree_node<FileInfo>
 		{
-			typedef FilePath key_type;
-			typedef FilePath::less_type less_type;
-
-			struct key_getter_type
-			{
-				const FilePath & operator()( const FileInfo * _node ) const
-				{
-					return _node->fileName;
-				}
-			};
-
-			FilePath fileName;
-
 			size_t seek_pos;
 			size_t file_size;
 			size_t unz_size;
 			uint32_t compr_method;
 		};
 
-		typedef IntrusiveTree<FileInfo, 512> TMapFileInfo;
+		typedef stdex::map<FilePath, FileInfo> TMapFileInfo;
 		TMapFileInfo m_files;
 	};
 }	// namespace Menge

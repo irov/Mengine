@@ -6,6 +6,9 @@ src
     CRC32.h
     CRC32.cpp
     
+    Date.h
+    Date.cpp
+    
     Exception.h
     
     Polygon.h

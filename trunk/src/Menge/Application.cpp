@@ -119,16 +119,19 @@
 #	include <sstream>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN(Consts, Menge::Consts);
-SERVICE_EXTERN(TextService, Menge::TextServiceInterface);
-SERVICE_EXTERN(NodeService, Menge::NodeServiceInterface);
-SERVICE_EXTERN(LoaderService, Menge::LoaderServiceInterface);
-SERVICE_EXTERN(ResourceService, Menge::ResourceServiceInterface);
-SERVICE_EXTERN(Watchdog, Menge::WatchdogInterface);
-SERVICE_EXTERN(GameService, Menge::GameServiceInterface);
-SERVICE_EXTERN(PlayerService, Menge::PlayerServiceInterface );
-SERVICE_EXTERN(PrototypeService, Menge::PrototypeServiceInterface);
-SERVICE_EXTERN(Graveyard, Menge::GraveyardInterface);
+SERVICE_EXTERN( Consts, Menge::Consts );
+SERVICE_EXTERN( TextService, Menge::TextServiceInterface );
+SERVICE_EXTERN( NodeService, Menge::NodeServiceInterface );
+SERVICE_EXTERN( LoaderService, Menge::LoaderServiceInterface );
+SERVICE_EXTERN( ResourceService, Menge::ResourceServiceInterface );
+SERVICE_EXTERN( Watchdog, Menge::WatchdogInterface );
+SERVICE_EXTERN( GameService, Menge::GameServiceInterface );
+SERVICE_EXTERN( PlayerService, Menge::PlayerServiceInterface );
+SERVICE_EXTERN( PrototypeService, Menge::PrototypeServiceInterface );
+SERVICE_EXTERN( Graveyard, Menge::GraveyardInterface );
+SERVICE_EXTERN( RenderService, Menge::RenderServiceInterface );
+SERVICE_EXTERN( RenderTextureManager, Menge::RenderTextureServiceInterface );
+SERVICE_EXTERN( RenderMaterialManager, Menge::RenderMaterialServiceInterface );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::ApplicationInterface, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -153,6 +156,9 @@ namespace Menge
 		, m_prototypeService(nullptr)
 		, m_gameService(nullptr)
 		, m_playerService(nullptr)
+		, m_renderService( nullptr )
+		, m_renderTextureManager( nullptr )
+		, m_renderMaterialManager( nullptr )
 		, m_createRenderWindow(false)
 		, m_cursorMode(false)
 		, m_invalidateVsync(false)
@@ -254,6 +260,7 @@ namespace Menge
         exinit.add( &Application::initializePrototypeManager_ );
         exinit.add( &Application::initializeNodeManager_ );
         exinit.add( &Application::initializeLoaderEngine_ );
+		exinit.add( &Application::initializeRenderEngine_ );
         exinit.add( &Application::initializeResourceManager_ );
         exinit.add( &Application::initializeSceneManager_ );
         exinit.add( &Application::initializeTextManager_ );        
@@ -347,11 +354,55 @@ namespace Menge
 
 		resourceInputStream = nullptr;
 
+		ConstString c_dir = STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" );
+
+		TVectorString frameworkPacksSettings;
+		IniUtil::getIniValue( ini, "GAME_RESOURCES", "FrameworkPack", frameworkPacksSettings, m_serviceProvider );
+
+		for( TVectorString::iterator
+			it = frameworkPacksSettings.begin(),
+			it_end = frameworkPacksSettings.end();
+		it != it_end;
+		++it )
+		{
+			const String & resourcePack = *it;
+
+			ResourcePackDesc desc;
+
+			desc.dev = false;
+			desc.immediately = true;
+			desc.preload = true;
+			desc.type = c_dir;
+
+			if( ini.hasSection( resourcePack.c_str() ) == false )
+			{
+				LOGGER_CRITICAL( m_serviceProvider )("Application::loadResourcePacks_ %s invalid load resource pack no found section for '%s'"
+					, _resourceIni.c_str()
+					, resourcePack.c_str()
+					);
+
+				return false;
+			}
+
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", desc.name, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", desc.type, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", desc.path, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", desc.locale, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", desc.platform, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", desc.descriptionPath, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", desc.dev, m_serviceProvider );
+			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", desc.preload, m_serviceProvider );
+
+			if( GAME_SERVICE( m_serviceProvider )
+				->addResourcePack( desc ) == false )
+			{
+				return false;
+			}
+		}
+
 		TVectorString resourcePacksSettings;
 		IniUtil::getIniValue( ini, "GAME_RESOURCES", "ResourcePack", resourcePacksSettings, m_serviceProvider );
-
-		ConstString c_dir = STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir");
-
+		
 		for( TVectorString::iterator
 			it = resourcePacksSettings.begin(),
 			it_end = resourcePacksSettings.end();
@@ -363,6 +414,7 @@ namespace Menge
 			ResourcePackDesc pack;
 
 			pack.dev = false;
+			pack.immediately = false;
 			pack.preload = true;
 			pack.type = c_dir;
 
@@ -385,8 +437,11 @@ namespace Menge
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
 			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );			
 
-			GAME_SERVICE(m_serviceProvider)
-				->createResourcePak( pack );
+			if( GAME_SERVICE(m_serviceProvider)
+				->addResourcePack( pack ) == false )
+			{
+				return false;
+			}
 		}
 
 		TVectorString languagePackSettings;
@@ -403,6 +458,7 @@ namespace Menge
 			ResourcePackDesc pack;
 
 			pack.dev = false;
+			pack.immediately = false;
 			pack.preload = true;
 			pack.type = c_dir;
 
@@ -425,8 +481,11 @@ namespace Menge
 			IniUtil::getIniValue( ini, languagePack.c_str(), "Dev", pack.dev, m_serviceProvider );
 			IniUtil::getIniValue( ini, languagePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );	
 
-			GAME_SERVICE(m_serviceProvider)
-				->createResourcePak( pack );
+			if( GAME_SERVICE( m_serviceProvider )
+				->addResourcePack( pack ) == false )
+			{
+				return false;
+			}
 		}
 
 		return true;
@@ -543,6 +602,74 @@ namespace Menge
 		}
 
         m_loaderService = loaderService;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::initializeRenderEngine_()
+	{ 
+		RenderServiceInterface * renderService;
+		if( SERVICE_CREATE( RenderService, &renderService ) == false )
+		{
+			return false;
+		}
+
+		if( SERVICE_REGISTRY( m_serviceProvider, renderService ) == false )
+		{
+			return false;
+		}
+		
+		if( renderService->initialize() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("WinApplication::initializeRenderEngine_ Failed to initialize Render Engine"
+				);
+
+			return false;
+		}
+
+		m_renderService = renderService;
+
+		RenderTextureServiceInterface * renderTextureManager;
+		if( SERVICE_CREATE( RenderTextureManager, &renderTextureManager ) == false )
+		{
+			return false;
+		}
+
+		if( SERVICE_REGISTRY( m_serviceProvider, renderTextureManager ) == false )
+		{
+			return false;
+		}
+
+		if( renderTextureManager->initialize() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("WinApplication::initializeRenderEngine_ Failed to initialize Render Texture Service"
+				);
+
+			return false;
+		}
+
+		m_renderTextureManager = renderTextureManager;
+
+		RenderMaterialServiceInterface * renderMaterialManager;
+		if( SERVICE_CREATE( RenderMaterialManager, &renderMaterialManager ) == false )
+		{
+			return false;
+		}
+
+		if( SERVICE_REGISTRY( m_serviceProvider, renderMaterialManager ) == false )
+		{
+			return false;
+		}
+
+		if( renderMaterialManager->initialize() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("WinApplication::initializeRenderEngine_ Failed to initialize Render Material Service"
+				);
+
+			return false;
+		}
+		
+		m_renderMaterialManager = renderMaterialManager;
 
 		return true;
 	}
@@ -916,7 +1043,7 @@ namespace Menge
 			->setLanguagePack( _language );
 
 		if( GAME_SERVICE( m_serviceProvider )
-			->applyConfigPaks() == false )
+			->applyConfigPacks() == false )
 		{
 			return false;
 		}
@@ -1688,6 +1815,39 @@ namespace Menge
 			SERVICE_DESTROY( ResourceService, m_resourceService );
 		}
 
+		if( m_renderService != nullptr )
+		{
+			m_renderService->finalize();
+		}
+
+		if( m_renderMaterialManager != nullptr )
+		{
+			m_renderMaterialManager->finalize();
+		}
+
+		if( m_renderTextureManager != nullptr )
+		{
+			m_renderTextureManager->finalize();
+		}
+
+		if( m_renderService != nullptr )
+		{
+			SERVICE_DESTROY( RenderService, m_renderService );
+			m_renderService = nullptr;
+		}
+
+		if( m_renderMaterialManager != nullptr )
+		{
+			SERVICE_DESTROY( RenderMaterialManager, m_renderMaterialManager );
+			m_renderMaterialManager = nullptr;
+		}
+
+		if( m_renderTextureManager != nullptr )
+		{
+			SERVICE_DESTROY( RenderTextureManager, m_renderTextureManager );
+			m_renderTextureManager = nullptr;
+		}
+
         SERVICE_DESTROY( Watchdog, m_watchdog );
         SERVICE_DESTROY( LoaderService, m_loaderService );
         
@@ -1701,7 +1861,7 @@ namespace Menge
         SERVICE_DESTROY( NodeService, m_nodeService );
         
 		SERVICE_DESTROY( PrototypeService, m_prototypeService );
-        SERVICE_DESTROY( Consts, m_consts );
+		SERVICE_DESTROY( Consts, m_consts );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::calcWindowResolution( Resolution & _windowResolution ) const

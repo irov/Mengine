@@ -17,11 +17,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Model3D::Model3D()
-		: m_material(nullptr)
-		, m_blendAdd(false)
-		, m_solid(false)
+		: m_solid(false)
 		, m_frame(nullptr)
-		, m_invalidateMaterial(true)
 		, m_invalidateVerticesLocal(true)
 		, m_invalidateVerticesWM(true)
 		, m_invalidateVerticesColor(true)
@@ -97,6 +94,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Model3D::_release()
 	{
+		Node::_release();
+
 		m_resourceModel.release();
 
 		if( m_camera != nullptr )
@@ -104,9 +103,10 @@ namespace Menge
 			m_camera->destroy();
 			m_camera = nullptr;
 		}
-
-		m_material = nullptr;
+				
 		m_frame = nullptr;
+
+		this->releaseMaterial();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Model3D::setResourceModel3D( ResourceModel3D * _resourceModel )
@@ -129,74 +129,22 @@ namespace Menge
 		return m_resourceModel;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::invalidateMaterial()
+	RenderMaterialInterfacePtr Model3D::_updateMaterial() const
 	{
-		m_invalidateMaterial = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Model3D::updateMaterial()
-	{
-		m_invalidateMaterial = false;
-
 		const ResourceImage * resourceImage = m_resourceModel->getResourceImage();
 
-		const RenderTextureInterfacePtr & textureAlpha = resourceImage->getTextureAlpha();
+		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_serviceProvider, resourceImage, m_solid );
 
-		uint32_t texturesNum = 0;
-		RenderTextureInterfacePtr textures[2];
-
-		textures[0] = resourceImage->getTexture();
-		textures[1] = resourceImage->getTextureAlpha();
-
-		ConstString stageName;
-
-		if( textureAlpha != nullptr )
-		{
-			if( resourceImage->isAlpha() == true || m_solid == false )
-			{
-				texturesNum = 2;
-
-				stageName = CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha );
-			}
-			else
-			{
-				texturesNum = 1;
-
-				stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
-			}
-		}
-		else if( m_blendAdd == true )
-		{
-			texturesNum = 1;
-
-			stageName = CONST_STRING( m_serviceProvider, Texture_Intensive );
-		}
-		else
-		{
-			texturesNum = 1;
-
-			if( resourceImage->isAlpha() == true || m_solid == false )
-			{
-				stageName = CONST_STRING( m_serviceProvider, Texture_Blend );
-			}
-			else
-			{
-				stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
-			}
-		}
-
-		bool wrapU = resourceImage->isWrapU();
-		bool wrapV = resourceImage->isWrapV();
-
-		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, texturesNum, textures );
-
-		if( m_material == nullptr )
+		if( material == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Mesh::updateMaterial_ %s m_material is NULL"
 				, this->getName().c_str()
 				);
+
+			return nullptr;
 		}
+		
+		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Model3D::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
@@ -212,7 +160,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, nullptr );
+			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Model3D::_activate()
@@ -329,23 +277,6 @@ namespace Menge
 
 			vtx.color = argb;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Model3D::setBlendAdd( bool _value )
-	{
-		if( m_blendAdd == _value )
-		{
-			return;
-		}
-
-		m_blendAdd = _value;
-
-		this->invalidateMaterial();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Model3D::isBlendAdd() const
-	{
-		return m_blendAdd;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Model3D::updateVerticesWM() const

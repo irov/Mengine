@@ -139,14 +139,20 @@ namespace Menge
         {
             return;
         }
+
+		AccountInterfacePtr currentAccount = m_currentAccount;
         
         if( m_accountListener != nullptr )
         {
             const WString & name = m_currentAccount->getName();
-            m_accountListener->onUnselectAccount( name );
-        }        
 
-        m_currentAccount = nullptr;
+            m_accountListener->onUnselectAccount( name );
+        }
+
+		if( m_currentAccount == currentAccount )
+		{
+			m_currentAccount = nullptr;
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountManager::newAccount_( const WString& _accountID )

@@ -87,7 +87,7 @@ namespace Menge
 
 		IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
-		RenderIndices2D * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
+		RenderIndices * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
 		void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
 
@@ -229,11 +229,7 @@ namespace Menge
 		void refreshRenderStates_();
 
 	protected:
-		DWORD m_renderStates[256];
-		DWORD m_textureStageStates[MENGE_MAX_TEXTURE_STAGES][64];
-		DWORD m_samplerStates[MENGE_MAX_TEXTURE_STAGES][16];
-
-        UINT m_adapterToUse;
+		UINT m_adapterToUse;
         D3DDEVTYPE m_deviceType;
 
         Viewport m_viewport;

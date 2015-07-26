@@ -16,11 +16,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Mesh2D::Mesh2D()
-		: m_material(nullptr)
-		, m_blendAdd(false)
-		, m_solid(false)
-		, m_shape(nullptr)
-        , m_invalidateMaterial(true)
+		: m_shape( nullptr )
+		, m_solid(false)		
 		, m_invalidateVerticesLocal(true)
 		, m_invalidateVerticesWM(true)
 		, m_invalidateVerticesColor(true)
@@ -71,9 +68,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh2D::_release()
 	{
+		Node::_release();
+
         m_resourceImage.release();
 
-		m_material = nullptr;
+		this->releaseMaterial();
 	}
     //////////////////////////////////////////////////////////////////////////
     void Mesh2D::setResourceImage( ResourceImage * _resourceImage )
@@ -92,73 +91,21 @@ namespace Menge
     {        
         return m_resourceImage;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Mesh2D::invalidateMaterial()
-    {
-        m_invalidateMaterial = true;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::updateMaterial()
+	RenderMaterialInterfacePtr Mesh2D::_updateMaterial() const
 	{
-        m_invalidateMaterial = false;
-
-		uint32_t texturesNum = 0;
-		RenderTextureInterfacePtr textures[2];
-
-		textures[0] = m_resourceImage->getTexture();
-		textures[1] = m_resourceImage->getTextureAlpha();
+		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_serviceProvider, m_resourceImage, m_solid );
 		
-        const RenderTextureInterfacePtr & textureAlpha = m_resourceImage->getTextureAlpha();
-
-		ConstString stageName;
-
-        if( textureAlpha != nullptr )
-        {
-            if( m_resourceImage->isAlpha() == true || m_solid == false )
-            {
-                texturesNum = 2;
-
-				stageName = CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha );
-            }
-            else
-            {
-                texturesNum = 1;
-				
-				stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
-            }
-        }
-		else if( m_blendAdd == true )
-		{
-			texturesNum = 1;
-
-			stageName = CONST_STRING( m_serviceProvider, Texture_Intensive );
-		}
-		else
-		{
-			texturesNum = 1;
-
-			if( m_resourceImage->isAlpha() == true || m_solid == false )
-			{
-				stageName = CONST_STRING( m_serviceProvider, Texture_Blend );
-			}
-			else
-			{
-				stageName = CONST_STRING( m_serviceProvider, Texture_Solid );
-			}
-		}
-
-		bool wrapU = m_resourceImage->isWrapU();
-		bool wrapV = m_resourceImage->isWrapV();
-
-		m_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, texturesNum, textures );
-
-		if( m_material == nullptr )
+		if( material == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Mesh::updateMaterial_ %s m_material is NULL"
 				, this->getName().c_str()
 				);
+
+			return nullptr;
 		}
+
+		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh2D::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
@@ -174,7 +121,7 @@ namespace Menge
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount, nullptr );
+			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh2D::_updateBoundingBox( mt::box2f & _boundingBox ) const
@@ -274,23 +221,6 @@ namespace Menge
 			vtx.color = argb;
 		}
 		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::setBlendAdd( bool _value )
-	{
-		if( m_blendAdd == _value )
-		{
-			return;
-		}
-
-		m_blendAdd = _value;
-
-		this->invalidateMaterial();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Mesh2D::isBlendAdd() const
-	{
-		return m_blendAdd;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh2D::setFrameShape( const MovieFrameShape * _shape )

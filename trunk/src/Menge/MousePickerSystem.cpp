@@ -100,6 +100,11 @@ namespace Menge
 					return;
 				}
 
+				if( trapState->dead == true )
+				{
+					return;
+				}
+
 				PickerTrapStateDesc desc;
 				desc.state = trapState;
 				desc.viewport = m_currentViewport;
@@ -250,6 +255,8 @@ namespace Menge
 			{
 				state.dead = true;
 				//it->picked = false;
+
+				--m_pickerTrapCount;
 
 				if( state.picked == true )
 				{
@@ -717,9 +724,7 @@ namespace Menge
 		{
 			if( it->dead == true )
 			{				
-				it = m_pickerTrapState.erase( it );
-
-				--m_pickerTrapCount;
+				it = m_pickerTrapState.erase( it );				
 			}
 			else
 			{

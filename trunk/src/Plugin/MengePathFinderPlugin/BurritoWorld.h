@@ -57,6 +57,10 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
+		bool initialize();
+		void finalize();
+
+	public:
 		void setDead();
 		bool isDead() const;
 
@@ -68,7 +72,7 @@ namespace Menge
 		BurritoBison * createBison( Node * _node, const mt::vec3f & _offset, float _bisonY, float _radius );
 
 	public:
-		void createGround( float _x, float _y, float _z, float _d, const pybind::object & _cb );
+		BurritoGround * createGround( float _x, float _y, float _z, float _d, const pybind::object & _cb );
 
 	public:
 		void addUnitBounds( float _value, bool _less, const pybind::object & _cb );
@@ -91,7 +95,8 @@ namespace Menge
 			
 		BurritoBison * m_bison;
 
-		BurritoGround * m_ground;
+		typedef stdex::vector<BurritoGround *> TVectorBurritoGround;
+		TVectorBurritoGround m_grounds;
 
 		TVectorBurritoUnitBounds m_unitBounds;
 

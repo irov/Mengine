@@ -69,7 +69,7 @@ namespace Menge
 
 		void getDesktopResolution( Resolution & _resolution ) const override;
 
-		const String & getCurrentPath() const override;
+		size_t getCurrentPath( WChar * _path, size_t _len ) const override;
 
 		void minimizeWindow() override;
 
@@ -78,7 +78,7 @@ namespace Menge
 
 		TimerInterface * getTimer() const override;
 
-		size_t getShortPathName( const String & _name, char * _shortpath, size_t _shortpathlen ) override;
+		size_t getShortPathName( const WString & _name, WChar * _shortpath, size_t _len ) const override;
 		void getMaxClientResolution( Resolution & _resolution ) const override;
 
 		void showKeyboard() override;
@@ -102,6 +102,7 @@ namespace Menge
 		bool isSaverRunning() const;
 
 		bool isDevelopmentMode() const override;
+		bool isRoamingMode() const override;
 		//void setAsScreensaver( bool _set );
 
 	public:
@@ -158,6 +159,9 @@ namespace Menge
 		bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 		bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 
+	protected:
+		bool makeUserPath_( WString & _wstring ) const;
+
 	private:
 		WinTimer * m_winTimer;
 		FPSMonitor * m_fpsMonitor;
@@ -166,8 +170,6 @@ namespace Menge
 		ApplicationInterface * m_application;
 
 		ConstString m_platformName;
-
-		EWindowsType m_windowsType;
 
 		float m_pauseUpdatingTime;
 
@@ -187,11 +189,7 @@ namespace Menge
 		TMapCursors m_cursors;
 
 		WString m_windowClassName;
-
-		WString m_currentPath;
-		WString m_userPath;
-		WString m_tempPath;
-
+		
 		Resolution m_windowResolution;
 
 		BOOL m_clipingCursor;
@@ -222,9 +220,6 @@ namespace Menge
 		PhysicSystemInterface * m_physicSystem;
 
 		RenderSystemInterface * m_renderSystem;
-		RenderServiceInterface * m_renderService;
-		RenderTextureServiceInterface * m_renderTextureManager;
-		RenderMaterialServiceInterface * m_renderMaterialManager;
 
 		StringizeServiceInterface * m_stringizeService;
 

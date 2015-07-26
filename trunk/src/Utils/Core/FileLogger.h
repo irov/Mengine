@@ -9,9 +9,17 @@ namespace Menge
 		: public LoggerInterface
 	{
 	public:
-		FileLogger( const OutputStreamInterfacePtr & _fileStream );
+		FileLogger();
 		virtual ~FileLogger();
 
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
+
+	public:
+		bool initialize() override;
+		void finalize() override;
+		
 	public:
 		void setVerboseLevel( EMessageLevel _level ) override;
         void setVerboseFlag( uint32_t _flag ) override;
@@ -29,6 +37,8 @@ namespace Menge
 		void flush() override;
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
 		EMessageLevel m_verboseLevel;
         uint32_t m_verboseFlag;
 

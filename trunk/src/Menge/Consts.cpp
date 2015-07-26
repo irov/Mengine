@@ -93,21 +93,6 @@ namespace Menge
         INIT_CONST( WorldPhysObject );
         INIT_CONST( NullTexture );
 
-
-		INIT_CONST( Texture_Solid );
-		INIT_CONST( Texture_Blend );
-		INIT_CONST( Texture_Intensive );
-		INIT_CONST( Texture_Accumulator );
-		INIT_CONST( Texture_Blend_ExternalAlpha );
-		INIT_CONST( Texture_Intensive_ExternalAlpha );
-		INIT_CONST( Texture_Blend_ExternalAlpha_OnlyColor );
-		INIT_CONST( Texture_Intensive_ExternalAlpha_OnlyColor );
-		INIT_CONST( Texture_Blend_OnlyColor );
-		INIT_CONST( Texture_Intensive_OnlyColor );
-		INIT_CONST( Color_Intensive );
-		INIT_CONST( Color_Blend );
-		INIT_CONST( Color_Solid );
-
 		INIT_CONST( Debug );
 
         INIT_CONST( ParticleEmitter );

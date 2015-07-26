@@ -8,8 +8,16 @@ namespace Menge
 		: public LoggerInterface
 	{
 	public:
-		MessageBoxLogger( ServiceProviderInterface * _serviceProvider );
+		MessageBoxLogger();
 		~MessageBoxLogger();
+
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
+
+	public:
+		bool initialize() override;
+		void finalize() override;
 
 	public:
 		void setVerboseLevel( EMessageLevel _level ) override;

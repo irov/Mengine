@@ -10,11 +10,16 @@ namespace Menge
 		: public LoggerInterface
 	{
 	public:
-		ConsoleLogger( ServiceProviderInterface * _serviceProvider );
+		ConsoleLogger();
 		~ConsoleLogger();
 
 	public:
-		void createConsole();
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
+
+	public:
+		bool initialize() override;
+		void finalize() override;
 
 	public:
 		void setVerboseLevel( EMessageLevel _level ) override;
@@ -26,6 +31,10 @@ namespace Menge
 	public:
 		void log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _count ) override;
 		void flush() override;
+
+	protected:
+		void createConsole_();
+		void removeConsole_();
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
@@ -40,8 +49,10 @@ namespace Menge
 
 		HANDLE m_ConsoleHandle;
 		
-		FILE *fp[3];
-		HANDLE lStdHandle[3];
-		int hConHandle[3];
+		FILE * m_fp[3];
+		HANDLE m_lStdHandle[3];
+		int m_hConHandle[3];
+		fpos_t m_pOldHandle[3];
+		int m_hOldHandle[3];
 	};
 }

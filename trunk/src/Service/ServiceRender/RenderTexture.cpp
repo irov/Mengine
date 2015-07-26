@@ -7,11 +7,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderTexture::RenderTexture()
         : m_serviceProvider(nullptr)
-		, m_mipmapFilter( TF_NONE )
-		, m_magnificationFilter( TF_LINEAR )
-		, m_minificationFilter( TF_LINEAR )
-		, m_addressU( TAM_CLAMP )
-		, m_addressV( TAM_CLAMP )
 		, m_mipmaps(0)
 		, m_width(0)
 		, m_height(0)
@@ -68,31 +63,6 @@ namespace Menge
 	const RenderImageInterfacePtr & RenderTexture::getImage() const
 	{
 		return m_image;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ETextureFilter RenderTexture::getMipmapFilter() const
-	{
-		return m_mipmapFilter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ETextureFilter RenderTexture::getMagnificationFilter() const
-	{
-		return m_magnificationFilter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ETextureFilter RenderTexture::getMinificationFilter() const
-	{
-		return m_minificationFilter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ETextureAddressMode RenderTexture::getAddressU() const
-	{
-		return m_addressU;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ETextureAddressMode RenderTexture::getAddressV() const
-	{
-		return m_addressV;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t RenderTexture::getId() const

@@ -421,7 +421,7 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool movie_setMovieEvent( Movie * _movie, const ConstString & _name, PyObject * _cb )
+		bool movie_setMovieEvent( Movie * _movie, const ConstString & _name, const pybind::object & _cb )
 		{
 			Node * node;
 			Movie * submovie;
@@ -1042,46 +1042,42 @@ namespace Menge
 		public:
 			PyObjectTimingListener()
 				: m_serviceProvider(nullptr)
-				, m_script(nullptr)
 			{
 			}
 
 			~PyObjectTimingListener()
 			{
-				pybind::decref(m_script);
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, PyObject * _script )
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _script )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_script = _script;
-
-				pybind::incref( m_script );
 			}
 
 		protected:
 			bool onTimingUpdate( uint32_t _id, float _timing ) override
 			{
-				pybind::call_t( m_script, _id, _timing, false );
+				m_script( _id, _timing, false );
 
 				return false;
 			}
 
 			void onTimingStop( uint32_t _id ) override
 			{
-				pybind::call_t( m_script, _id, 0.f, true );
+				m_script( _id, 0.f, true );
 			}
 
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
-			PyObject * m_script;
+			pybind::object m_script;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		typedef FactoryPoolStore<PyObjectTimingListener, 8> TFactoryPyObjectTimingListener;
 		TFactoryPyObjectTimingListener m_factoryPyObjectTimingListener;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t timing( float _timing, PyObject * _script )
+        uint32_t timing( float _timing, const pybind::object & _script )
         {
             TimingManagerInterface * tm = PLAYER_SERVICE(m_serviceProvider)
                 ->getTimingManager();
@@ -1135,44 +1131,40 @@ namespace Menge
         public:
             PyObjectScheduleListener()
                 : m_serviceProvider(nullptr)
-                , m_cb(nullptr)
             {
             }
 
             ~PyObjectScheduleListener()
             {
-                pybind::decref( m_cb );
             }
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, PyObject * _cb )
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_cb = _cb;
-
-				pybind::incref( m_cb );
 			}
 
         protected:
             void onScheduleComplete( uint32_t _id ) override
             {
-                pybind::call_t( m_cb, _id, false );
+                m_cb( _id, false );
             }
 
             void onScheduleStop( uint32_t _id ) override
             {
-                pybind::call_t( m_cb, _id, true );
+                m_cb( _id, true );
             }
 
         protected:
             ServiceProviderInterface * m_serviceProvider;
-            PyObject * m_cb;
+            pybind::object m_cb;
         };
 		//////////////////////////////////////////////////////////////////////////
 		typedef FactoryPoolStore<PyObjectScheduleListener, 8> TFactoryPyObjectScheduleListener;
 		TFactoryPyObjectScheduleListener m_factoryPyObjectScheduleListener;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t schedule( float _timing, PyObject * _script )
+        uint32_t schedule( float _timing, const pybind::object & _script )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
@@ -1186,7 +1178,7 @@ namespace Menge
             return id;
         }
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, PyObject * _script )
+		uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, const pybind::object & _script )
 		{
 			PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObjectT();
 
@@ -1197,7 +1189,7 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t TimingManagerInterface_timing( TimingManagerInterface * _timingManager, float _timing, PyObject * _script )
+		uint32_t TimingManagerInterface_timing( TimingManagerInterface * _timingManager, float _timing, const pybind::object & _script )
 		{
 			PyObjectTimingListener * tl = m_factoryPyObjectTimingListener.createObjectT();
 
@@ -1305,7 +1297,7 @@ namespace Menge
             return time;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_scheduleGlobal( float _timing, PyObject * _script )
+		uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManagerGlobal();
@@ -1947,28 +1939,26 @@ namespace Menge
 			: public HttpDownloadAssetReceiver
 		{
 		public:
-			PyHttpDownloadAssetReceiver( PyObject * _cb )
+			PyHttpDownloadAssetReceiver( const pybind::object & _cb )
 				: m_cb(_cb)
 			{
-				pybind::incref( m_cb );
 			}
 
 			~PyHttpDownloadAssetReceiver()
 			{
-				pybind::decref( m_cb );
 			}
 
 		protected:
 			void onDownloadAssetComplete( uint32_t _id, bool _successful ) override
 			{
-				pybind::call_t( m_cb, _id, _successful );
+				m_cb( _id, _successful );
 			}
 
 		protected:
-			PyObject * m_cb;
+			pybind::object m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_downloadAsset( const String & _url, const ConstString & _category, const FilePath & _filepath, PyObject * _cb )
+		uint32_t s_downloadAsset( const String & _url, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb )
 		{
 			uint32_t id = HTTP_SYSTEM(m_serviceProvider)
 				->downloadAsset( _url, _category, _filepath, new PyHttpDownloadAssetReceiver(_cb) );
@@ -2001,6 +1991,8 @@ namespace Menge
 			}
 
 			ResourcePackDesc desc;
+			desc.immediately = true;
+
 			desc.name = _name;
 			desc.type = _type;
 
@@ -2008,7 +2000,7 @@ namespace Menge
 			desc.descriptionPath = _descriptionPath;
 			
 			bool result = GAME_SERVICE(m_serviceProvider)
-				->loadResourcePak( desc );
+				->addResourcePack( desc );
 
 			return result;
 		}
@@ -2024,7 +2016,7 @@ namespace Menge
 		class PythonSaxCallback
 		{
 		public:
-			PythonSaxCallback( ServiceProviderInterface * _serviceProvider, PyObject * _cb )
+			PythonSaxCallback( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb )
 				: m_serviceProvider(_serviceProvider)
 				, m_cb(_cb)
 			{
@@ -2038,7 +2030,7 @@ namespace Menge
 		public:
 			void callback_begin_node( const char * _node )
 			{
-				pybind::call_method( m_cb, "begin", "(s)", _node );
+				pybind::call_method( m_cb.ptr(), "begin", "(s)", _node );
 			}
 
 			void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
@@ -2061,7 +2053,7 @@ namespace Menge
 					pybind::decref( py_value );
 				}
 
-				pybind::call_method( m_cb, "attr", "(O)", py_attr );
+				pybind::call_method( m_cb.ptr(), "attr", "(O)", py_attr );
 
 				pybind::decref( py_attr );
 			}
@@ -2070,15 +2062,15 @@ namespace Menge
 			{
 				(void)_node;
 
-				pybind::call_method( m_cb, "end", "()" );
+				pybind::call_method( m_cb.ptr(), "end", "()" );
 			}
 
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
-			PyObject * m_cb;
+			pybind::object m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		bool s_parseXml( const ConstString & _fileGroup, const FilePath & _path, PyObject * _cb )
+		bool s_parseXml( const ConstString & _fileGroup, const FilePath & _path, const pybind::object & _cb )
 		{
 			MemoryCacheBufferPtr binary_buffer = Helper::createMemoryFileString( m_serviceProvider, _fileGroup, _path, false, "parseXml" );
 
@@ -2098,34 +2090,34 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void s_visitFonts( PyObject * _cb )
+		class MyVisitorTextFont
+			: public VisitorTextFontInterface
 		{
-			class MyVisitorTextFont
-				: public VisitorTextFontInterface
+		public:
+			MyVisitorTextFont( const pybind::object & _cb )
+				: m_cb( _cb )
 			{
-			public:
-				MyVisitorTextFont( PyObject * _cb )
-					: m_cb(_cb)
-				{
-				}
+			}
 
-			protected:
-				void onTextFont( const TextFontInterfacePtr & _font ) override
-				{
-					const ConstString & name = _font->getName();
+		protected:
+			void onTextFont( const TextFontInterfacePtr & _font ) override
+			{
+				const ConstString & name = _font->getName();
 
-					pybind::call_t( m_cb, name );
-				}
+				m_cb( name );
+			}
 
-			protected:
-				PyObject * m_cb;
+		protected:
+			pybind::object m_cb;
 
-			private:
-				void operator = ( const MyVisitorTextFont & )
-				{
-				}
-			};
-
+		private:
+			void operator = (const MyVisitorTextFont &)
+			{
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		void s_visitFonts( const pybind::object & _cb )
+		{
 			MyVisitorTextFont mvtf(_cb);
 
 			TEXT_SERVICE(m_serviceProvider)
@@ -2141,7 +2133,7 @@ namespace Menge
 			return has;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool s_validateFont( const ConstString & _fontName, const String & _text, PyObject * _cb )
+		bool s_validateFont( const ConstString & _fontName, const String & _text, const pybind::object & _cb )
 		{
 			TextFontInterfacePtr font;
 			if( TEXT_SERVICE(m_serviceProvider)
@@ -2171,7 +2163,7 @@ namespace Menge
 				if( UNICODE_SERVICE(m_serviceProvider)
 					->unicodeToUtf8( ws_str.c_str(), ws_str.size(), text_utf8, 8, &text_utf8_len ) == false )
 				{
-					pybind::call_t( _cb, "invalid utf8 ", 0, ws_str );
+					_cb( "invalid utf8 ", 0, ws_str );
 					
 					continue;
 				}
@@ -2182,7 +2174,7 @@ namespace Menge
 				
 				if( err != utf8::internal::UTF8_OK )
 				{
-					pybind::call_t( _cb, "validate utf8 ", code, ws_str );
+					_cb( "validate utf8 ", code, ws_str );
 
 					continue;
 				}
@@ -2192,7 +2184,7 @@ namespace Menge
 
 				if( font->hasGlyph( glyphChar ) == false )
 				{					
-					pybind::call_t( _cb, "not found glyph ", code, ws_str );
+					_cb( "not found glyph ", code, ws_str );
 
 					continue;
 				}
@@ -2201,209 +2193,209 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		class PrefetchResourceVisitor
+			: public ResourceVisitor
+		{
+		public:
+			PrefetchResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category )
+				: m_serviceProvider( _serviceProvider )
+				, m_category( _category )
+			{
+			}
+
+			~PrefetchResourceVisitor()
+			{
+			}
+
+		protected:
+			void visit( ResourceImageDefault * _resource ) override
+			{
+				const FilePath & fileName = _resource->getFilePath();
+				const ConstString & codecType = _resource->getCodecType();
+
+				PREFETCHER_SERVICE( m_serviceProvider )
+					->prefetchImageDecoder( m_category, fileName, codecType );
+			}
+
+			void visit( ResourceSound * _resource ) override
+			{
+				const FilePath & filePath = _resource->getFilePath();
+				const ConstString & codecType = _resource->getCodecType();
+
+				PREFETCHER_SERVICE( m_serviceProvider )
+					->prefetchSoundDecoder( m_category, filePath, codecType );
+			}
+
+			void visit( ResourceMovie * _resource ) override
+			{
+				const FilePath & filePath = _resource->getFilePath();
+				const ConstString & dataflowType = _resource->getDataflowType();
+
+				PREFETCHER_SERVICE( m_serviceProvider )
+					->prefetchData( m_category, filePath, dataflowType );
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			ConstString m_category;
+		};
+		//////////////////////////////////////////////////////////////////////////
 		void s_prefetchResources( const ConstString & _category, const ConstString & _groupName )
 		{
-			class MyResourceVisitor
-				: public ResourceVisitor
-			{
-			public:
-				MyResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category )
-					: m_serviceProvider(_serviceProvider)
-					, m_category(_category)
-				{
-				}
-
-				~MyResourceVisitor()
-				{
-				}
-
-			protected:
-				void visit( ResourceImageDefault * _resource ) override
-				{
-					const FilePath & fileName = _resource->getFilePath();
-					const ConstString & codecType = _resource->getCodecType();
-
-					PREFETCHER_SERVICE(m_serviceProvider)
-						->prefetchImageDecoder( m_category, fileName, codecType );
-				}
-
-				void visit( ResourceSound * _resource ) override
-				{
-					const FilePath & filePath = _resource->getFilePath();
-					const ConstString & codecType = _resource->getCodecType();
-
-					PREFETCHER_SERVICE(m_serviceProvider)
-						->prefetchSoundDecoder( m_category, filePath, codecType );
-				}
-
-				void visit( ResourceMovie * _resource ) override
-				{
-					const FilePath & filePath = _resource->getFilePath();
-					const ConstString & dataflowType = _resource->getDataflowType();
-
-					PREFETCHER_SERVICE(m_serviceProvider)
-						->prefetchData( m_category, filePath, dataflowType );
-				}
-				
-			protected:
-				ServiceProviderInterface * m_serviceProvider;
-				ConstString m_category;
-			};
-
-			MyResourceVisitor rv_gac(m_serviceProvider, _category);
+			PrefetchResourceVisitor rv_gac( m_serviceProvider, _category );
 
 			RESOURCE_SERVICE(m_serviceProvider)
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
+		//////////////////////////////////////////////////////////////////////////
+		class UnfetchResourceVisitor
+			: public ResourceVisitor
+		{
+		public:
+			UnfetchResourceVisitor( ServiceProviderInterface * _serviceProvider )
+				: m_serviceProvider( _serviceProvider )
+			{
+			}
+
+			~UnfetchResourceVisitor()
+			{
+			}
+
+		protected:
+			void visit( ResourceImageDefault * _resource ) override
+			{
+				const ConstString & category = _resource->getCategory();
+				const FilePath & fileName = _resource->getFilePath();
+
+				PREFETCHER_SERVICE( m_serviceProvider )
+					->unfetchImageDecoder( category, fileName );
+			}
+
+			void visit( ResourceSound * _resource ) override
+			{
+				const ConstString & category = _resource->getCategory();
+				const FilePath & filePath = _resource->getFilePath();
+
+				PREFETCHER_SERVICE( m_serviceProvider )
+					->unfetchSoundDecoder( category, filePath );
+			}
+
+			void visit( ResourceMovie * _resource ) override
+			{
+				const ConstString & category = _resource->getCategory();
+				const FilePath & fileName = _resource->getFilePath();
+
+				PREFETCHER_SERVICE( m_serviceProvider )
+					->unfetchData( category, fileName );
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+		};
 		//////////////////////////////////////////////////////////////////////////
 		void s_unfetchResources( const ConstString & _category, const ConstString & _groupName )
 		{
-			class MyResourceVisitor
-				: public ResourceVisitor
-			{
-			public:
-				MyResourceVisitor( ServiceProviderInterface * _serviceProvider )
-					: m_serviceProvider(_serviceProvider)
-				{
-				}
-
-				~MyResourceVisitor()
-				{
-				}
-
-			protected:
-				void visit( ResourceImageDefault * _resource ) override
-				{
-					const ConstString & category = _resource->getCategory();
-					const FilePath & fileName = _resource->getFilePath();
-
-					PREFETCHER_SERVICE(m_serviceProvider)
-						->unfetchImageDecoder( category, fileName );
-				}
-
-				void visit( ResourceSound * _resource ) override
-				{
-					const ConstString & category = _resource->getCategory();
-					const FilePath & filePath = _resource->getFilePath();
-
-					PREFETCHER_SERVICE(m_serviceProvider)
-						->unfetchSoundDecoder( category, filePath );
-				}
-
-				void visit( ResourceMovie * _resource ) override
-				{
-					const ConstString & category = _resource->getCategory();
-					const FilePath & fileName = _resource->getFilePath();
-
-					PREFETCHER_SERVICE(m_serviceProvider)
-						->unfetchData( category, fileName );
-				}
-				
-			protected:
-				ServiceProviderInterface * m_serviceProvider;
-			};
-
-			MyResourceVisitor rv_gac(m_serviceProvider);
+			UnfetchResourceVisitor rv_gac( m_serviceProvider );
 
 			RESOURCE_SERVICE(m_serviceProvider)
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
+		//////////////////////////////////////////////////////////////////////////
+		class CacheResourceVisitor
+			: public ResourceVisitor
+		{
+		public:
+			CacheResourceVisitor( ServiceProviderInterface * _serviceProvider )
+				: m_serviceProvider( _serviceProvider )
+			{
+			}
+
+			~CacheResourceVisitor()
+			{
+			}
+
+		protected:
+			bool filterResource( ResourceReference * _resource ) const
+			{
+				if( _resource->isCompile() == false )
+				{
+					return false;
+				}
+
+				return true;
+			}
+
+		protected:
+			void visit( ResourceReference * _resource ) override
+			{
+				if( this->filterResource( _resource ) == false )
+				{
+					return;
+				}
+
+				_resource->cache();
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+		};
 		//////////////////////////////////////////////////////////////////////////
 		void s_cacheResources( const ConstString & _category, const ConstString & _groupName )
 		{
-			class MyResourceVisitor
-				: public ResourceVisitor
-			{
-			public:
-				MyResourceVisitor( ServiceProviderInterface * _serviceProvider )
-					: m_serviceProvider(_serviceProvider)
-				{
-				}
-
-				~MyResourceVisitor()
-				{
-				}
-
-			protected:
-				bool filterResource( ResourceReference * _resource ) const
-				{
-					if( _resource->isCompile() == false )
-					{
-						return false;
-					}
-
-					return true;
-				}
-
-			protected:
-				void visit( ResourceReference * _resource ) override
-				{
-					if( this->filterResource( _resource ) == false )
-					{
-						return;
-					}
-
-					_resource->cache();
-				}
-
-			protected:
-				ServiceProviderInterface * m_serviceProvider;
-			};
-
-			MyResourceVisitor rv_gac(m_serviceProvider);
+			CacheResourceVisitor rv_gac( m_serviceProvider );
 
 			RESOURCE_SERVICE(m_serviceProvider)
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
+		class UncacheResourceVisitor
+			: public ResourceVisitor
+		{
+		public:
+			UncacheResourceVisitor( ServiceProviderInterface * _serviceProvider )
+				: m_serviceProvider( _serviceProvider )
+			{
+			}
+
+			~UncacheResourceVisitor()
+			{
+			}
+
+		protected:
+			bool filterResource( ResourceReference * _resource ) const
+			{
+				if( _resource->isCompile() == false )
+				{
+					return false;
+				}
+
+				if( _resource->isCache() == false )
+				{
+					return false;
+				}
+
+				return true;
+			}
+
+		protected:
+			void visit( ResourceReference * _resource ) override
+			{
+				if( this->filterResource( _resource ) == false )
+				{
+					return;
+				}
+
+				_resource->uncache();
+			}
+
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+		};
+		//////////////////////////////////////////////////////////////////////////
 		void s_uncacheResources( const ConstString & _category, const ConstString & _groupName )
 		{
-			class MyResourceVisitor
-				: public ResourceVisitor
-			{
-			public:
-				MyResourceVisitor( ServiceProviderInterface * _serviceProvider )
-					: m_serviceProvider(_serviceProvider)
-				{
-				}
-
-				~MyResourceVisitor()
-				{
-				}
-
-			protected:
-				bool filterResource( ResourceReference * _resource ) const
-				{
-					if( _resource->isCompile() == false )
-					{
-						return false;
-					}
-
-					if( _resource->isCache() == false )
-					{
-						return false;
-					}
-
-					return true;
-				}
-
-			protected:
-				void visit( ResourceReference * _resource ) override
-				{
-					if( this->filterResource( _resource ) == false )
-					{
-						return;
-					}
-
-					_resource->uncache();
-				}
-
-
-			protected:
-				ServiceProviderInterface * m_serviceProvider;
-			};
-
-			MyResourceVisitor rv_gac(m_serviceProvider);
+			UncacheResourceVisitor rv_gac( m_serviceProvider );
 
 			RESOURCE_SERVICE(m_serviceProvider)
 				->visitGroupResources( _category, _groupName, &rv_gac );
@@ -2716,9 +2708,9 @@ namespace Menge
 		{
 			stdex::array_string<128> buffer;
 			buffer.append( "Movie" );			
-			buffer.append( _groupName.c_str(), _groupName.size() );
+			buffer.append( _groupName );
 			buffer.append( "_" );
-			buffer.append( _movieName.c_str(), _movieName.size() );
+			buffer.append( _movieName );
 
 			ConstString resourceMovieName = Helper::stringizeStringSize( m_serviceProvider, buffer.c_str(), buffer.size() );
 
@@ -2761,9 +2753,9 @@ namespace Menge
 		{
 			stdex::array_string<128> buffer;
 			buffer.append( "Movie" );			
-			buffer.append( _groupName.c_str(), _groupName.size() );
+			buffer.append( _groupName );
 			buffer.append( "_" );
-			buffer.append( _movieName.c_str(), _movieName.size() );
+			buffer.append( _movieName );
 
 			ConstString resourceMovieName = Helper::stringizeStringSize( m_serviceProvider, buffer.c_str(), buffer.size() );
 
@@ -2811,7 +2803,7 @@ namespace Menge
 			}
 
 		public:
-			void initialize( Grid2D * _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra )
+			void initialize( Grid2D * _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
 			{
 				m_grid = _grid;
 				m_pos = _pos;
@@ -2819,6 +2811,7 @@ namespace Menge
 				m_radius = _radius;
 				m_ellipse = _ellipse;
 				m_penumbra = _penumbra;
+				m_cb = _cb;
 			}
 
 		protected:
@@ -2852,30 +2845,34 @@ namespace Menge
 					for( uint32_t i = 0; i != countX; ++i )
 					{
 						mt::vec2f grid_pos( pos_step_x * i, pos_step_y * j );
+						
+						mt::vec2f v = m_pos - grid_pos;
 
-						float pos_distance = mt::length_v2_v2( m_pos, grid_pos );
+						v.y /= m_ellipse;
 
-						if( pos_distance < radius )
+						float pos_sqrdistance = v.sqrlength();
+
+						if( pos_sqrdistance < radius * radius )
 						{
 							m_grid->setGridColor( i, j, ColourValue( 0x00FFFFFF ) );
 						}
-						else if( pos_distance < radius + penumbra )
+						else if( pos_sqrdistance < (radius + penumbra) * (radius + penumbra) )
 						{
 							ColourValue cv;
 							m_grid->getGridColor( i, j, cv );
 
 							float cv_a = cv.getA();
 
-							float a0 = (pos_distance - radius) / penumbra;
+							float pos_distance = sqrtf( pos_sqrdistance );
 
-							float total_a = a0;
+							float a0 = (pos_distance - radius) / penumbra;
 							
-							if( mt::equal_f_z( cv_a ) == true )
+							if( cv_a < a0 )
 							{
-								total_a = 0.f;
+								continue;
 							}
 
-							m_grid->setGridColor( i, j, ColourValue( total_a, 1.f, 1.f, 1.f ) );
+							m_grid->setGridColor( i, j, ColourValue( a0, 1.f, 1.f, 1.f ) );
 						}
 					}
 				}
@@ -2885,10 +2882,18 @@ namespace Menge
 
 			void complete() override
 			{
+				if( m_cb.is_callable() == true )
+				{
+					m_cb( true );
+				}
 			}
 
 			void stop() override
 			{
+				if( m_cb.is_callable() == true )
+				{
+					m_cb( false );
+				}
 			}
 
 		protected:
@@ -2900,19 +2905,21 @@ namespace Menge
 			float m_ellipse;
 			float m_penumbra;
 
-			float m_timing;
+			pybind::object m_cb;
+
+			float m_timing;			
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPoolStore<AffectorGridBurnTransparency, 4> m_factoryAffectorGridBurnTransparency;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_gridBurnTransparency( Grid2D * _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra )
+		uint32_t s_gridBurnTransparency( Grid2D * _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
 		{
 			AffectorGridBurnTransparency * affector = m_factoryAffectorGridBurnTransparency.createObjectT();
 
 			affector->setServiceProvider( m_serviceProvider );
 			affector->setAffectorType( ETA_USER );
 
-			affector->initialize( _grid, _pos, _time, _radius, _ellipse, _penumbra );
+			affector->initialize( _grid, _pos, _time, _radius, _ellipse, _penumbra, _cb );
 
 			uint32_t id = _grid->addAffector( affector );
 
@@ -3102,43 +3109,35 @@ namespace Menge
 			ScriptableAffectorCallback()
 				: m_serviceProvider(nullptr)
 				, m_scriptable(nullptr)
-				, m_cb(nullptr)
 			{
 			}
 
 			~ScriptableAffectorCallback()
 			{
-				if( m_cb != nullptr )
-				{
-					pybind::decref( m_cb );
-					m_cb = nullptr;
-				}
 			}
 
 		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, Scriptable * _scriptable, PyObject * _cb )
+			void initialize( ServiceProviderInterface * _serviceProvider, Scriptable * _scriptable, const pybind::object & _cb )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_scriptable = _scriptable;
 				m_cb = _cb;
-
-				pybind::incref( m_cb );
 			}
 
 		protected:
 			void onAffectorEnd( uint32_t _id, bool _isEnd ) override
 			{
-				if( m_cb == nullptr )
+				if( m_cb.is_invalid() == true )
 				{
 					return;
 				}
 
-				if( pybind::is_none(m_cb) == true )
+				if( m_cb.is_none() == true )
 				{
 					return;
 				}
 
-				pybind::call_t( m_cb, m_scriptable, _id, _isEnd );
+				m_cb( m_scriptable, _id, _isEnd );
 
 				this->destroy();
 			}
@@ -3146,12 +3145,13 @@ namespace Menge
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
 			Scriptable * m_scriptable;
-			PyObject * m_cb;
+
+			pybind::object m_cb;
 		};
 		//////////////////////////////////////////////////////////////////////////
 		FactoryPoolStore<ScriptableAffectorCallback, 4> m_factoryNodeAffectorCallback;
 		//////////////////////////////////////////////////////////////////////////
-		ScriptableAffectorCallback * createNodeAffectorCallback( Scriptable * _scriptable, PyObject * _cb )
+		ScriptableAffectorCallback * createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb )
 		{
 			ScriptableAffectorCallback * callback = m_factoryNodeAffectorCallback.createObjectT();
 
@@ -3162,7 +3162,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorAccumulateLinear;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, PyObject* _cb )
+        uint32_t velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, const pybind::object & _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -3187,7 +3187,7 @@ namespace Menge
         }
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorInterpolateLinear;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t moveTo( Node * _node, float _time, const mt::vec3f& _point, PyObject* _cb )
+		uint32_t moveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -3218,7 +3218,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)( const mt::vec3f & ), mt::vec3f> m_nodeAffectorCreatorInterpolateQuadratic;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t accMoveTo( Node * _node, float _time, const mt::vec3f& _point, PyObject* _cb )
+		uint32_t accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -3248,7 +3248,7 @@ namespace Menge
             , float _time
             , const mt::vec3f& _point1
             , const mt::vec3f& _point2
-            , PyObject* _cb )
+			, const pybind::object & _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -3277,7 +3277,7 @@ namespace Menge
             , const mt::vec3f& _point1
             , const mt::vec3f& _point2
             , const mt::vec3f& _point3
-            , PyObject* _cb )
+			, const pybind::object & _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -3308,7 +3308,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)( float ), float> m_odeAffectorCreatorInterpolateLinear;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t angleTo( Node * _node, float _time, float _angle, PyObject* _cb )
+		uint32_t angleTo( Node * _node, float _time, float _angle, const pybind::object & _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -3342,7 +3342,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)( float ), float> m_nodeAffectorCreatorInterpolateQuadraticFloat;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t accAngleTo( Node * _node, float _time, float _angle, PyObject* _cb )
+		uint32_t accAngleTo( Node * _node, float _time, float _angle, const pybind::object & _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -3378,7 +3378,7 @@ namespace Menge
             _node->stopAffectors( ETA_SCALE );
         }	
         //////////////////////////////////////////////////////////////////////////
-        uint32_t scaleTo( Node * _node, float _time, const mt::vec3f& _scale, PyObject* _cb )
+		uint32_t scaleTo( Node * _node, float _time, const mt::vec3f& _scale, const pybind::object & _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -3426,9 +3426,8 @@ namespace Menge
 			return 1.0f;
 		}
         //////////////////////////////////////////////////////////////////////////
-        uint32_t colorTo( Node * _node, float _time, const ColourValue& _color, PyObject* _cb )
+		uint32_t colorTo( Node * _node, float _time, const ColourValue& _color, const pybind::object & _cb )
         {
-
             if( _node->isActivate() == false )
             {
                 return 0;
@@ -3450,7 +3449,7 @@ namespace Menge
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t alphaTo( Node * _node, float _time, float _alpha, PyObject* _cb )
+        uint32_t alphaTo( Node * _node, float _time, float _alpha, const pybind::object & _cb )
         {
             if( _node->isActivate() == false )
             {
@@ -3467,7 +3466,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Shape, void (Shape::*)( const mt::vec4f & ), mt::vec4f> m_NodeAffectorCreatorInterpolateLinearVec4;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t setPercentVisibilityTo( Shape * _shape, float _time, const mt::vec4f& _percent, PyObject* _cb )
+		uint32_t setPercentVisibilityTo( Shape * _shape, float _time, const mt::vec4f& _percent, const pybind::object & _cb )
         {
             if( _shape->isActivate() == false )
             {
@@ -3671,15 +3670,15 @@ namespace Menge
             }
         };
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyGlobalMouseMoveHandler, 32> TPoolPyGlobalMouseMoveHandlers;
-		TPoolPyGlobalMouseMoveHandlers m_poolPyGlobalMouseMoveHandlers;
+		typedef FactoryPoolStore<PyGlobalMouseMoveHandler, 32> TFactoryPyGlobalMouseMoveHandlers;
+		TFactoryPyGlobalMouseMoveHandlers m_factoryPyGlobalMouseMoveHandlers;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_addMouseMoveHandler( const pybind::object & _cb )
         {
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
-			PyGlobalMouseMoveHandler * handler = m_poolPyGlobalMouseMoveHandlers.createObjectT();
+			PyGlobalMouseMoveHandler * handler = m_factoryPyGlobalMouseMoveHandlers.createObjectT();
 
 			handler->initialize( m_serviceProvider, _cb );
             
@@ -3708,15 +3707,15 @@ namespace Menge
             }
         };
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyGlobalMouseHandlerButton, 32> TPoolPyGlobalMouseHandlerButtons;
-		TPoolPyGlobalMouseHandlerButtons m_poolPyGlobalMouseHandlerButtons;
+		typedef FactoryPoolStore<PyGlobalMouseHandlerButton, 32> TFactoryPyGlobalMouseHandlerButtons;
+		TFactoryPyGlobalMouseHandlerButtons m_factoryPyGlobalMouseHandlerButtons;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_addMouseButtonHandler( const pybind::object & _cb )
         {
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
-            PyGlobalMouseHandlerButton * handler = m_poolPyGlobalMouseHandlerButtons.createObjectT();
+            PyGlobalMouseHandlerButton * handler = m_factoryPyGlobalMouseHandlerButtons.createObjectT();
 			
 			handler->initialize( m_serviceProvider, _cb );
 
@@ -3746,15 +3745,15 @@ namespace Menge
             }
         };
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyGlobalMouseHandlerButtonEnd, 32> TPoolPyGlobalMouseHandlerButtonEnds;
-		TPoolPyGlobalMouseHandlerButtonEnds m_poolPyGlobalMouseHandlerButtonEnds;
+		typedef FactoryPoolStore<PyGlobalMouseHandlerButtonEnd, 32> TFactoryPyGlobalMouseHandlerButtonEnds;
+		TFactoryPyGlobalMouseHandlerButtonEnds m_factoryPyGlobalMouseHandlerButtonEnds;
         //////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseButtonHandlerEnd( const pybind::object & _cb )
         {
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
-            PyGlobalMouseHandlerButtonEnd * handler = m_poolPyGlobalMouseHandlerButtonEnds.createObjectT();
+            PyGlobalMouseHandlerButtonEnd * handler = m_factoryPyGlobalMouseHandlerButtonEnds.createObjectT();
 
 			handler->initialize( m_serviceProvider, _cb );
 
@@ -3784,15 +3783,15 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyGlobalMouseHandlerWheel, 32> TPoolPyGlobalMouseHandlerWheels;
-		TPoolPyGlobalMouseHandlerWheels m_poolPyGlobalMouseHandlerWheels;
+		typedef FactoryPoolStore<PyGlobalMouseHandlerWheel, 32> TFactoryPyGlobalMouseHandlerWheels;
+		TFactoryPyGlobalMouseHandlerWheels m_factoryPyGlobalMouseHandlerWheels;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseWheelHandler( const pybind::object & _cb )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
 
-			PyGlobalMouseHandlerWheel * handler = m_poolPyGlobalMouseHandlerWheels.createObjectT();
+			PyGlobalMouseHandlerWheel * handler = m_factoryPyGlobalMouseHandlerWheels.createObjectT();
 
 			handler->initialize( m_serviceProvider, _cb );
 
@@ -3822,15 +3821,15 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyGlobalMouseHandlerButtonBegin, 32> TPoolPyGlobalMouseHandlerButtonBegins;
-		TPoolPyGlobalMouseHandlerButtonBegins m_poolPyGlobalMouseHandlerButtonBegins;
+		typedef FactoryPoolStore<PyGlobalMouseHandlerButtonBegin, 32> TFactoryPyGlobalMouseHandlerButtonBegins;
+		TFactoryPyGlobalMouseHandlerButtonBegins m_factoryPyGlobalMouseHandlerButtonBegins;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addMouseButtonHandlerBegin( const pybind::object & _cb )
 		{
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
 
-			PyGlobalMouseHandlerButtonBegin * handler = m_poolPyGlobalMouseHandlerButtonBegins.createObjectT();
+			PyGlobalMouseHandlerButtonBegin * handler = m_factoryPyGlobalMouseHandlerButtonBegins.createObjectT();
 			
 			handler->initialize( m_serviceProvider, _cb );
 			
@@ -3859,8 +3858,8 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyGlobalKeyHandler, 32> TPoolPyGlobalKeyHandler;
-		TPoolPyGlobalKeyHandler m_poolPyGlobalKeyHandler;
+		typedef FactoryPoolStore<PyGlobalKeyHandler, 32> TFactoryPyGlobalKeyHandler;
+		TFactoryPyGlobalKeyHandler m_poolPyGlobalKeyHandler;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_addKeyHandler( const pybind::object & _cb )
 		{
@@ -4035,63 +4034,64 @@ namespace Menge
 
             return defaultResourceFontName;
         }
+		//////////////////////////////////////////////////////////////////////////
+		class ResourceMovieVisitorNullLayers
+			: public VisitorResourceMovie
+		{
+		public:
+			ResourceMovieVisitorNullLayers( ServiceProviderInterface * _serviceProvider, PyObject * _dictResult, float _frameDuration )
+				: m_serviceProvider( _serviceProvider )
+				, m_dictResult( _dictResult )
+				, m_frameDuration( _frameDuration )
+			{
+			}
+
+		protected:
+			void visitLayer( const MovieFramePackInterfacePtr & _framePack, const MovieLayer & _layer ) override
+			{
+				if( _layer.source != CONST_STRING( m_serviceProvider, MovieSlot ) )
+				{
+					return;
+				}
+
+				if( _framePack->hasLayer( _layer.index ) == false )
+				{
+					return;
+				}
+
+				PyObject * py_list_frames = pybind::list_new( 0 );
+
+				const MovieLayerFrame & frames = _framePack->getLayer( _layer.index );
+
+				for( uint32_t i = 0; i != frames.count; ++i )
+				{
+					MovieFrameSource frame_source;
+					_framePack->getLayerFrame( _layer.index, i, frame_source );
+
+					PyObject * py_dict_frame = pybind::dict_new();
+
+					pybind::dict_setstring_t( py_dict_frame, "position", frame_source.position );
+
+					float frameTime = _layer.in + i * m_frameDuration;
+
+					pybind::dict_setstring_t( py_dict_frame, "time", frameTime );
+
+					pybind::list_appenditem( py_list_frames, py_dict_frame );
+
+					pybind::decref( py_dict_frame );
+				}
+
+				pybind::dict_setstring_t( m_dictResult, _layer.name.c_str(), py_list_frames );
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			PyObject * m_dictResult;
+			float m_frameDuration;
+		};
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_getNullObjectsFromResourceVideo( ResourceMovie * _resource )
         {			
-            class ResourceMovieVisitorNullLayers
-                : public VisitorResourceMovie
-            {
-            public:
-                ResourceMovieVisitorNullLayers( ServiceProviderInterface * _serviceProvider, PyObject * _dictResult, float _frameDuration )
-                    : m_serviceProvider(_serviceProvider)
-                    , m_dictResult(_dictResult)
-                    , m_frameDuration( _frameDuration )
-                {}
-
-            protected:
-                void visitLayer( const MovieFramePackInterfacePtr & _framePack, const MovieLayer & _layer ) override
-                {
-                    if( _layer.source != CONST_STRING(m_serviceProvider, MovieSlot) )
-                    {
-                        return;
-                    }
-
-					if( _framePack->hasLayer( _layer.index ) == false )
-					{
-						return;
-					}
-
-                    PyObject * py_list_frames = pybind::list_new(0);
-
-					const MovieLayerFrame & frames = _framePack->getLayer( _layer.index );
-
-					for( uint32_t i = 0; i != frames.count; ++i )
-					{
-						MovieFrameSource frame_source; 
-						_framePack->getLayerFrame( _layer.index, i, frame_source );
-
-						PyObject * py_dict_frame = pybind::dict_new();
-
-						pybind::dict_setstring_t( py_dict_frame, "position", frame_source.position );
-
-						float frameTime = _layer.in + i * m_frameDuration;
-
-						pybind::dict_setstring_t( py_dict_frame, "time", frameTime );
-
-						pybind::list_appenditem( py_list_frames, py_dict_frame );
-						
-						pybind::decref( py_dict_frame );
-					}
-
-                    pybind::dict_setstring_t( m_dictResult, _layer.name.c_str(), py_list_frames );                    
-                }
-
-            protected:
-                ServiceProviderInterface * m_serviceProvider;
-                PyObject * m_dictResult;
-                float m_frameDuration;
-            };		
-
             if( _resource == nullptr )
             {
                 return pybind::ret_none();
@@ -4268,7 +4268,7 @@ namespace Menge
             return py_dict_result;
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_visitChild( Node * _node, PyObject * _cb )
+        void s_visitChild( Node * _node, const pybind::object & _cb )
         {
             TListNodeChild & child = _node->getChildren();
 
@@ -4280,110 +4280,108 @@ namespace Menge
             {
                 Node * children = *it;
                 
-                pybind::call_t( _cb, children );
+                _cb( children );
             }
         }
+		//////////////////////////////////////////////////////////////////////////
+		class ResourceVisitorGetAlreadyCompiled
+			: public ResourceVisitor
+		{
+		public:
+			ResourceVisitorGetAlreadyCompiled( const pybind::object & _cb )
+				: m_cb( _cb )
+			{
+			}
+
+			~ResourceVisitorGetAlreadyCompiled()
+			{
+			}
+
+		protected:
+			void visit( ResourceReference* _resource )
+			{
+				if( _resource->isCompile() == false )
+				{
+					return;
+				}
+
+				m_cb( _resource );
+			}
+
+		protected:
+			pybind::object m_cb;
+		};
         //////////////////////////////////////////////////////////////////////////
-        void s_visitCompiledResources( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
+		void s_visitCompiledResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb )
         {
-            class ResourceVisitorGetAlreadyCompiled
-                : public ResourceVisitor
-            {
-            public:
-                ResourceVisitorGetAlreadyCompiled( PyObject * _cb )
-                    : m_cb(_cb)
-                {
-                    pybind::incref( m_cb );
-                }
-
-                ~ResourceVisitorGetAlreadyCompiled()
-                {
-                    pybind::decref( m_cb );
-                }
-
-            protected:
-                void visit( ResourceReference* _resource )
-                {
-                    if( _resource->isCompile() == false )
-                    {
-                        return;
-                    }
-
-                    pybind::call_t( m_cb, _resource );
-                }
-
-            protected:
-                PyObject * m_cb;
-            };
-
             ResourceVisitorGetAlreadyCompiled rv_gac(_cb);
 
             RESOURCE_SERVICE(m_serviceProvider)
                 ->visitGroupResources( _category, _groupName, &rv_gac );						
         }
-        //////////////////////////////////////////////////////////////////////////
-        void s_visitResources( const ConstString & _category, const ConstString & _groupName, PyObject * _cb )
+		//////////////////////////////////////////////////////////////////////////
+		class MyResourceVisitor
+			: public ResourceVisitor
+		{
+		public:
+			MyResourceVisitor( const pybind::object & _cb )
+				: m_cb( _cb )
+			{
+			}
+
+			~MyResourceVisitor()
+			{
+			}
+
+		protected:
+			void visit( ResourceReference* _resource )
+			{
+				m_cb( _resource );
+			}
+
+		protected:
+			pybind::object m_cb;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		void s_visitResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb )
         {
-            class MyResourceVisitor
-                : public ResourceVisitor
-            {
-            public:
-                MyResourceVisitor( PyObject * _cb )
-                    : m_cb(_cb)
-                {
-                }
-
-                ~MyResourceVisitor()
-                {
-                }
-
-            protected:
-                void visit( ResourceReference* _resource )
-                {
-                    pybind::call_t( m_cb, _resource );
-                }
-
-            protected:
-                PyObject * m_cb;
-            };
-
             MyResourceVisitor rv_gac(_cb);
 
             RESOURCE_SERVICE(m_serviceProvider)
                 ->visitGroupResources( _category, _groupName, &rv_gac );						
         }
+		//////////////////////////////////////////////////////////////////////////
+		class IncrefResourceVisitor
+			: public ResourceVisitor
+		{
+		protected:
+			void visit( ResourceReference* _resource )
+			{
+				_resource->incrementReference();
+			}
+		};
 		//////////////////////////////////////////////////////////////////////////		
 		void s_incrementResources( const ConstString & _category, const ConstString & _groupName )
 		{
-			class MyResourceVisitor
-				: public ResourceVisitor
-			{
-			protected:
-				void visit( ResourceReference* _resource )
-				{
-					_resource->incrementReference();
-				}
-			};
-
-			MyResourceVisitor rv_gac;
+			IncrefResourceVisitor rv_gac;
 
 			RESOURCE_SERVICE(m_serviceProvider)
 				->visitGroupResources( _category, _groupName, &rv_gac );						
 		}
+		//////////////////////////////////////////////////////////////////////////
+		class DecrementResourceVisitor
+			: public ResourceVisitor
+		{
+		protected:
+			void visit( ResourceReference * _resource )
+			{
+				_resource->decrementReference();
+			}
+		};
 		//////////////////////////////////////////////////////////////////////////		
 		void s_decrementResources( const ConstString & _category, const ConstString & _groupName )
 		{
-			class MyResourceVisitor
-				: public ResourceVisitor
-			{
-			protected:
-				void visit( ResourceReference * _resource )
-				{
-					_resource->decrementReference();
-				}
-			};
-
-			MyResourceVisitor rv_gac;
+			DecrementResourceVisitor rv_gac;
 
 			RESOURCE_SERVICE(m_serviceProvider)
 				->visitGroupResources( _category, _groupName, &rv_gac );						
@@ -4745,6 +4743,15 @@ namespace Menge
 			.def( "stopAffector", &Affectorable::stopAffector )
 			.def( "stopAllAffectors", &Affectorable::stopAllAffectors )
             ;
+
+		pybind::interface_<Materialable>( "Materialable", false )
+			.def( "setMaterialName", &Materialable::setMaterialName )
+			.def( "getMaterialName", &Materialable::getMaterialName )
+			.def( "setDisableTextureColor", &Materialable::setDisableTextureColor )
+			.def( "getDisableTextureColor", &Materialable::getDisableTextureColor )
+			.def( "setBlendMode", &Materialable::setBlendMode )
+			.def( "getBlendMode", &Materialable::getBlendMode )
+			;
 
 		pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, BoundingBox, Colorable, Resource, Renderable, Affectorable> >( "Node", false )
             .def( "enable", &Node::enable )
@@ -5148,9 +5155,7 @@ namespace Menge
 					.def( "addBubble", &HotSpotBubbles::addBubble )
 					;
 
-				pybind::interface_<Shape, pybind::bases<Node> >("Shape", false)
-					.def( "setBlendAdd", &Shape::setBlendAdd )
-					.def( "isBlendAdd", &Shape::isBlendAdd )
+				pybind::interface_<Shape, pybind::bases<Node, Materialable> >("Shape", false)
 					.def( "setCenterAlign", &Shape::setCenterAlign )
 					.def( "getCenterAlign", &Shape::getCenterAlign )
 					.def( "setFlipX", &Shape::setFlipX )
@@ -5171,11 +5176,11 @@ namespace Menge
 					.def( "getTextureUVScale", &Shape::getTextureUVScale )
 					;
 
-				pybind::interface_<Landscape2D, pybind::bases<Node> >("Landscape2D", false)
+				pybind::interface_<Landscape2D, pybind::bases<Node, Materialable> >( "Landscape2D", false )
 					.def( "setBackParts", &Landscape2D::setBackParts )
 					;
 
-				pybind::interface_<Grid2D, pybind::bases<Node> >("Grid2D", false)
+				pybind::interface_<Grid2D, pybind::bases<Node, Materialable> >( "Grid2D", false )
 					.def( "setResourceImage", &Grid2D::setResourceImage )
 					.def( "getResourceImage", &Grid2D::getResourceImage )
 					.def( "setWidth", &Grid2D::setWidth )
@@ -5186,6 +5191,7 @@ namespace Menge
 					.def( "getCountX", &Grid2D::getCountX )
 					.def( "setCountY", &Grid2D::setCountY )
 					.def( "getCountY", &Grid2D::getCountY )
+					.def( "setAngle", &Grid2D::setAngle )
 					;
 
 				pybind::interface_<Sprite, pybind::bases<Shape> >( "Sprite", false )
@@ -5200,9 +5206,7 @@ namespace Menge
                     .def_proxy_static( "getImageSize", nodeScriptMethod, &NodeScriptMethod::s_getImageSize )
                     
                     .def_proxy_static( "getLocalImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getLocalImageCenter )
-                    .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldImageCenter )
-
-                    .def( "disableTextureColor", &Sprite::disableTextureColor )					
+                    .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_getWorldImageCenter )			
                     ;
 
 				pybind::interface_<Gyroscope, pybind::bases<Node> >("Gyroscope", false)
@@ -5223,7 +5227,7 @@ namespace Menge
                 }
 
 				{
-					pybind::interface_<Model3D, pybind::bases<Node, Animatable> >("Model3D", false)
+					pybind::interface_<Model3D, pybind::bases<Node, Animatable, Materialable> >( "Model3D", false )
 						.def( "setResourceModel3D", &Model3D::setResourceModel3D )
 						.def( "getResourceModel3D", &Model3D::getResourceModel3D )
 						;
@@ -5320,7 +5324,7 @@ namespace Menge
                 pybind::interface_<MovieInternalObject, pybind::bases<Node> >("MovieInternalObject", false)
                     ;
 
-                pybind::interface_<Video, pybind::bases<Node, Animatable> >("Video", false)                    
+				pybind::interface_<Video, pybind::bases<Node, Animatable, Materialable> >( "Video", false )
                     .def( "setResourceVideo", &Video::setResourceVideo )
                     .def( "getResourceVideo", &Video::getResourceVideo )                    
                     ;

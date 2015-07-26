@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 86;
+        _needVersion = 88;
 
-        if( version != 86 )
+        if( version != 88 )
         {
             return false;
         }
@@ -4369,24 +4369,6 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
-            {
-                if( this->read( _buff, _size, _read, this->Texture_Codec ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-            }break;
-        case 5:
-            {
-                if( this->read( _buff, _size, _read, this->Texture_Path ) == false )
-                {
-                    return false;
-                }
-    
-                return true;
-            }break;
         }
     
         return false;
@@ -4399,6 +4381,16 @@ namespace Metacode
             return true;
         }
     
+        switch( _includes )
+        {
+        case 5:
+            {
+                includes_Meta_Image.reserve( _count );
+                return true;
+                break;
+            }
+        }
+    
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -4407,6 +4399,22 @@ namespace Metacode
         if( Meta_DataBlock::Meta_Resource::_parseIncludes( _buff, _size, _read, _includes ) == true )
         {
             return true;
+        }
+    
+        switch( _includes )
+        {
+        case 5:
+            {
+                Meta_DataBlock::Meta_ResourceSpine::Meta_Image & metadata = includes_Meta_Image.emplace_back();
+    
+                if( metadata.parse( _buff, _size, _read, m_userData ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+                break;
+            }
         }
     
         return false;
@@ -4418,6 +4426,75 @@ namespace Metacode
         {
             return true;
         }
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meta_DataBlock::Meta_ResourceSpine::Meta_Image::Meta_Image()
+        : Metabuf::Metadata()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Meta_DataBlock::Meta_ResourceSpine::Meta_Image::getId() const
+    {
+        return 5;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceSpine::Meta_Image::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
+    {
+        switch( _id )
+        {
+        case 1:
+            {
+                if( this->read( _buff, _size, _read, this->Name ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        case 2:
+            {
+                if( this->read( _buff, _size, _read, this->Resource ) == false )
+                {
+                    return false;
+                }
+    
+                return true;
+            }break;
+        }
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceSpine::Meta_Image::_preparationIncludes( uint32_t _includes, uint32_t _count )
+    {
+        (void)_includes;
+        (void)_count;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceSpine::Meta_Image::_parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes )
+    {
+        (void)_buff;
+        (void)_size;
+        (void)_read;
+        (void)_includes;
+    
+    
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meta_DataBlock::Meta_ResourceSpine::Meta_Image::_parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators )
+    {
+        (void)_buff;
+        (void)_size;
+        (void)_read;
+        (void)_generators;
+    
     
         return false;
     }

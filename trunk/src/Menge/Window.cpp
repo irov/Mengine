@@ -3,6 +3,8 @@
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 
+#	include "Kernel/Materialable.h"
+
 #   include "Logger/Logger.h"
 
 #	include "Consts.h"
@@ -101,26 +103,35 @@ namespace Menge
             textures[0] = texture;
             textures[1] = textureAlpha;
 
-			ConstString stageName;
+			EMaterial materialId;
 
-            if( textureAlpha == nullptr )
+            if( textureAlpha != nullptr )
             {
-				stageName = CONST_STRING( m_serviceProvider, Texture_Blend );
-				
-                textureCount = 1;
-            }
-            else
-            {
-				stageName = CONST_STRING( m_serviceProvider, Texture_Blend_ExternalAlpha );
-
+				materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA;
+								
                 textureCount = 2;
+            }
+			else if( texture != nullptr )
+            {
+				materialId = EM_TEXTURE_BLEND;
+
+                textureCount = 1;
             }            
+			else
+			{
+				materialId = EM_COLOR_BLEND;
+
+				textureCount = 0;
+			}
+
+			const ConstString & materialName = RENDERMATERIAL_SERVICE( m_serviceProvider )
+				->getMaterialName( materialId );
 
 			bool wrapU = c_WindowWrapU[i];
 			bool wrapV = c_WindowWrapV[i];
 
 			edge.material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( stageName, wrapU, wrapV, PT_TRIANGLELIST, textureCount, textures );
+				->getMaterial( materialName, wrapU, wrapV, PT_TRIANGLELIST, textureCount, textures );
 		}
 
 		this->invalidateVertices();
@@ -151,7 +162,7 @@ namespace Menge
             const WindowEdge & edge = m_edge[ResourceWindow_Background];
 
             RENDER_SERVICE(m_serviceProvider)
-                ->addRenderQuad( _viewport, _camera, edge.material, &vertices[0*4], 4, nullptr );
+				->addRenderQuad( _viewport, _camera, edge.material, &vertices[0 * 4], 4, nullptr, false );
         }
 
         for( uint32_t i = 1; i != ResourceWindow_Count; ++i )
@@ -159,7 +170,7 @@ namespace Menge
             const WindowEdge & edge = m_edge[i];
 
             RENDER_SERVICE(m_serviceProvider)
-                ->addRenderQuad( _viewport, _camera, edge.material, &vertices[i*4], 4, nullptr );
+				->addRenderQuad( _viewport, _camera, edge.material, &vertices[i * 4], 4, nullptr, false );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////

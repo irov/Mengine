@@ -343,6 +343,14 @@ namespace Menge
 	{
 		m_params = _params;
 
+		m_archivator = ARCHIVE_SERVICE( m_serviceProvider )
+			->getArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "lz4" ) );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
+
 		AccountServiceInterface * accountService;
 		if( SERVICE_CREATE( AccountService, &accountService ) == false )
         {
@@ -370,21 +378,6 @@ namespace Menge
 		{
 			LOGGER_ERROR( m_serviceProvider )("Game::initialize failed load accounts"
 				);
-		}
-				
-		bool hasCurrentAccount = m_accountService->hasCurrentAccount();
-
-		if( hasCurrentAccount == false )
-		{
-			EVENTABLE_CALL( m_serviceProvider, this, EVENT_CREATE_DEFAULT_ACCOUNT)();
-		}
-
-		bool EVENT_LOAD_ACCOUNTS_result = true;
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_LOAD_ACCOUNTS, EVENT_LOAD_ACCOUNTS_result )();
-
-		if( EVENT_LOAD_ACCOUNTS_result == false )
-		{
-			return false;
 		}
 
 		m_defaultArrow = PROTOTYPE_SERVICE(m_serviceProvider)
@@ -441,13 +434,14 @@ namespace Menge
 			return false;
 		}
 
-		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
-			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
+		bool hasCurrentAccount = m_accountService->hasCurrentAccount();
 
-		if( m_archivator == nullptr )
+		if( hasCurrentAccount == false )
 		{
-			return false;
+			EVENTABLE_CALL( m_serviceProvider, this, EVENT_CREATE_DEFAULT_ACCOUNT )();
 		}
+
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_LOAD_ACCOUNTS )();
 
 		return true;
 	}
@@ -500,7 +494,7 @@ namespace Menge
 
 		this->destroyArrow();
 		      
-		m_resourcePaks.clear();
+		m_resourcePacks.clear();
 				
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_DESTROY )();
 	}
@@ -581,32 +575,32 @@ namespace Menge
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_USER )(_event, _params);
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadLocalePaksByName_( TVectorResourcePak & _paks, const ConstString & _locale, const ConstString & _platform )
+	bool Game::loadLocalePacksByName_( TVectorResourcePack & _packs, const ConstString & _locale, const ConstString & _platform )
 	{
 		bool hasLocale = false;
 
-		for( TVectorResourcePak::const_iterator 
-			it = m_resourcePaks.begin(),
-			it_end = m_resourcePaks.end();
+		for( TVectorResourcePack::const_iterator 
+			it = m_resourcePacks.begin(),
+			it_end = m_resourcePacks.end();
 		it != it_end;
 		++it )
 		{
-			const PakPtr & pak = *it;
+			const PackPtr & pack = *it;
 
-			const ConstString & pakLocale = pak->getLocale();
-			const ConstString & pakPlatform = pak->getPlatfrom();
+			const ConstString & packLocale = pack->getLocale();
+			const ConstString & packPlatform = pack->getPlatfrom();
 
-			if( pakPlatform.empty() == false && pakPlatform != _platform )
+			if( packPlatform.empty() == false && packPlatform != _platform )
 			{
 				continue;
 			}
 			
-			if( pakLocale != _locale )
+			if( packLocale != _locale )
 			{
 				continue;
 			}
 
-			_paks.push_back( pak );
+			_packs.push_back( pack );
 
 			hasLocale = true;
 		}
@@ -614,16 +608,17 @@ namespace Menge
 		return hasLocale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::createResourcePak( const ResourcePackDesc & _desc )
+	bool Game::addResourcePack( const ResourcePackDesc & _desc )
 	{
-#   ifdef MENGINE_MASTER_RELEASE
-		if( _desc.dev == true )
-		{
-			return;
-		}
-#   endif
+		bool developmentMode = APPLICATION_SERVICE( m_serviceProvider )
+			->isDevelopmentMode();
 
-		PakPtr pack = m_factoryPak.createObjectT();
+		if( developmentMode == false && _desc.dev == true )
+		{
+			return true;
+		}
+
+		PackPtr pack = m_factoryPack.createObjectT();
 		
 		pack->setup( m_serviceProvider
 			, _desc.name
@@ -633,158 +628,124 @@ namespace Menge
 			, _desc.descriptionPath
 			, _desc.path
 			, _desc.preload
-			); 
-
-		m_resourcePaks.push_back( pack );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PakInterfacePtr Game::getResourcePak( const ConstString & _name ) const
-	{
-		for( TVectorResourcePak::const_iterator 
-			it = m_resourcePaks.begin(),
-			it_end = m_resourcePaks.end();
-		it != it_end;
-		++it )
-		{
-			const PakPtr & pak = *it;
-
-			const ConstString & name = pak->getName();
-
-			if( name != _name )
-			{
-				continue;
-			}
-
-			return pak;
-		}
-
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadResourcePak( const ResourcePackDesc & _desc )
-	{
-		PakPtr pack = m_factoryPak.createObjectT();
-
-		pack->setup(
-			m_serviceProvider
-			, _desc.name
-			, _desc.type
-			, _desc.locale
-			, _desc.platform
-			, _desc.descriptionPath
-			, _desc.path
-			, _desc.preload
 			);
 
-		if( pack->load() == false )
+		if( _desc.immediately == false )
 		{
-			return false;
+			m_resourcePacks.push_back( pack );
 		}
-
-		if( pack->apply() == false )
+		else
 		{
-			return false;
+			if( pack->load() == false )
+			{
+				return false;
+			}
+
+			if( pack->apply() == false )
+			{
+				return false;
+			}
 		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::applyConfigPaks()
+	bool Game::applyConfigPacks()
 	{
 		const ConstString & platformName = PLATFORM_SERVICE(m_serviceProvider)
 			->getPlatformName();
 
-		TVectorResourcePak paks;
+		TVectorResourcePack packs;
 
-		for( TVectorResourcePak::const_iterator 
-			it = m_resourcePaks.begin(),
-			it_end = m_resourcePaks.end();
+		for( TVectorResourcePack::const_iterator 
+			it = m_resourcePacks.begin(),
+			it_end = m_resourcePacks.end();
 		it != it_end;
 		++it )
 		{
-			const PakPtr & pak = *it;
+			const PackPtr & pack = *it;
 
-			const ConstString & pakPlatform = pak->getPlatfrom();
+			const ConstString & packPlatform = pack->getPlatfrom();
 
-			if( pakPlatform.empty() == false && pakPlatform != platformName )
+			if( packPlatform.empty() == false && packPlatform != platformName )
 			{
 				continue;
 			}
 
-			const ConstString & locale = pak->getLocale();
+			const ConstString & locale = pack->getLocale();
 
 			if( locale.empty() == false )
 			{
 				continue;
 			}
 
-			paks.push_back( pak );
+			packs.push_back( pack );
 		}
 		
-		if( this->loadLocalePaksByName_( paks, m_languagePak, platformName ) == false )			
+		if( this->loadLocalePacksByName_( packs, m_languagePack, platformName ) == false )
 		{
-			if( this->loadLocalePaksByName_( paks, CONST_STRING(m_serviceProvider, eng), platformName ) == false )
+			if( this->loadLocalePacksByName_( packs, CONST_STRING(m_serviceProvider, eng), platformName ) == false )
 			{
-				LOGGER_WARNING(m_serviceProvider)("Game::loadConfigPaks not set locale pak"						
+				LOGGER_WARNING(m_serviceProvider)("Game::loadConfigPacks not set locale pack"						
 					);
 			}
 		}
 
-		for( TVectorResourcePak::const_iterator 
-			it = paks.begin(), 
-			it_end = paks.end();
+		for( TVectorResourcePack::const_iterator 
+			it = packs.begin(),
+			it_end = packs.end();
 		it != it_end;
 		++it )
 		{
-			const PakPtr & pak = *it;
+			const PackPtr & pack = *it;
 
-			if( pak->isPreload() == false )
+			if( pack->isPreload() == false )
 			{
 				continue;
 			}
 
-			if( pak->load() == false )
+			if( pack->load() == false )
 			{
 				return false;
 			}
 		}
 
-		BEGIN_WATCHDOG(m_serviceProvider, "pak apply");
+		BEGIN_WATCHDOG(m_serviceProvider, "pack apply");
 
-		for( TVectorResourcePak::const_iterator 
-			it = paks.begin(), 
-			it_end = paks.end();
+		for( TVectorResourcePack::const_iterator 
+			it = packs.begin(),
+			it_end = packs.end();
 		it != it_end;
 		++it )
 		{
-			const PakPtr & pak = *it;
+			const PackPtr & pack = *it;
 
-			if( pak->isPreload() == false )
+			if( pack->isPreload() == false )
 			{
 				continue;
 			}
 
-			if( pak->apply() == false )
+			if( pack->apply() == false )
             {
                 return false;
             }
 		}
 
-		END_WATCHDOG(m_serviceProvider, "pak apply", 0)("");
+		END_WATCHDOG(m_serviceProvider, "pack apply", 0)("");
 
-		m_resourcePaks.clear();
+		m_resourcePacks.clear();
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setLanguagePack( const ConstString& _packName )
 	{
-		m_languagePak = _packName;
+		m_languagePack = _packName;
 	}
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Game::getLanguagePack() const
     {
-        return m_languagePak;
+        return m_languagePack;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )
@@ -840,6 +801,10 @@ namespace Menge
 		
 		if( it_found != m_datas.end() )
 		{
+			LOGGER_ERROR( m_serviceProvider )("Game::addData data %s already exist"
+				, _name.c_str()
+				);
+
 			return false;
 		}
 

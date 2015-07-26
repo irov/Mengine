@@ -1187,7 +1187,7 @@ namespace Menge
 		}
 
 		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceImage>( _layer.source );
+			->getResourceReferenceT<ResourceImage *>( _layer.source );
 
 		if( resourceImage == nullptr )
 		{
@@ -1206,7 +1206,7 @@ namespace Menge
 		}
 		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
 		{
-			layer_sprite->setBlendAdd( true );
+			layer_sprite->setBlendMode( EMB_ADD );
 		}
 		else
 		{
@@ -1236,7 +1236,7 @@ namespace Menge
 		}
 
 		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceImage>( _layer.source );
+			->getResourceReferenceT<ResourceImage *>( _layer.source );
 
 		if( resourceImage == nullptr )
 		{
@@ -1255,7 +1255,7 @@ namespace Menge
 		}
 		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
 		{
-			layer_mesh->setBlendAdd( true );
+			layer_mesh->setBlendMode( EMB_ADD );
 		}
 		else
 		{
@@ -1310,7 +1310,7 @@ namespace Menge
 		}
 		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
 		{
-			layer_sprite->setBlendAdd( true );
+			layer_sprite->setBlendMode( EMB_ADD );
 		}
 		else
 		{
@@ -1340,7 +1340,7 @@ namespace Menge
 		}
 
 		ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceHIT>( _layer.source );
+			->getResourceReferenceT<ResourceHIT *>( _layer.source );
 
 		if( resourceHIT == nullptr )
 		{
@@ -1365,7 +1365,7 @@ namespace Menge
 		}
 
 		ResourceShape * resourceShape = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceShape>( _layer.source );
+			->getResourceReferenceT<ResourceShape *>( _layer.source );
 
 		if( resourceShape == nullptr )
 		{
@@ -1390,7 +1390,7 @@ namespace Menge
 		}
 
 		ResourceAnimation * resourceAnimation = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceAnimation>( _layer.source );
+			->getResourceReferenceT<ResourceAnimation *>( _layer.source );
 
 		if( resourceAnimation == nullptr )
 		{
@@ -1414,7 +1414,7 @@ namespace Menge
 		}
 		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
 		{
-			layer_animation->setBlendAdd( true );
+			layer_animation->setBlendMode( EMB_ADD );
 		}
 		else
 		{
@@ -1444,7 +1444,7 @@ namespace Menge
 		}
 
 		ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceMovie>( _layer.source );
+			->getResourceReferenceT<ResourceMovie *>( _layer.source );
 
 		if( resourceMovie == nullptr )
 		{
@@ -1477,7 +1477,7 @@ namespace Menge
 		}
 
 		ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceMovie>( _layer.source );
+			->getResourceReferenceT<ResourceMovie *>( _layer.source );
 
 		if( resourceMovie == nullptr )
 		{
@@ -1536,7 +1536,7 @@ namespace Menge
 		}
 
 		ResourceVideo * resourceVideo = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceVideo>( _layer.source );
+			->getResourceReferenceT<ResourceVideo *>( _layer.source );
 
 		if( resourceVideo == nullptr )
 		{
@@ -1560,7 +1560,7 @@ namespace Menge
 		}
 		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
 		{
-			layer_video->setBlendAdd( true );
+			layer_video->setBlendMode( EMB_ADD );
 		}
 		else
 		{
@@ -1590,7 +1590,7 @@ namespace Menge
 		}
 
 		ResourceSound * resourceSound = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceSound>( _layer.source );
+			->getResourceReferenceT<ResourceSound *>( _layer.source );
 
 		if( resourceSound == nullptr )
 		{
@@ -1621,7 +1621,7 @@ namespace Menge
 		}
 
 		ResourceSound * resourceSound = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceSound>( _layer.name );
+			->getResourceReferenceT<ResourceSound *>( _layer.name );
 
 		if( resourceSound == nullptr )
 		{
@@ -1702,7 +1702,7 @@ namespace Menge
 		}
 
 		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceImage>( _layer.name );
+			->getResourceReferenceT<ResourceImage *>( _layer.name );
 
 		if( resourceImage == nullptr )
 		{
@@ -1728,7 +1728,7 @@ namespace Menge
 		}
 		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
 		{
-			layer_sprite->setBlendAdd( true );
+			layer_sprite->setBlendMode( EMB_ADD );
 		}
 		else
 		{
@@ -1820,7 +1820,7 @@ namespace Menge
 			->createNodeT<ParticleEmitter>( CONST_STRING(m_serviceProvider, ParticleEmitter) );
 
 		ResourceEmitter * resourceEmitter = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceEmitter>( _layer.source );
+			->getResourceReferenceT<ResourceEmitter *>( _layer.source );
 
 		if( resourceEmitter == nullptr )
 		{
@@ -1830,7 +1830,7 @@ namespace Menge
 		const ConstString & container = resourceEmitter->getContainer();
 
 		ResourceEmitterContainer * resourceEmitterContainer = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceEmitterContainer>( container );
+			->getResourceReferenceT<ResourceEmitterContainer *>( container );
 
 		if( resourceEmitterContainer == nullptr )
 		{
@@ -1875,7 +1875,7 @@ namespace Menge
 			->createNodeT<ParticleEmitter2>( CONST_STRING(m_serviceProvider, ParticleEmitter2) );
 
 		ResourceParticle * resourceParticle = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceParticle>( _layer.source );
+			->getResourceReferenceT<ResourceParticle *>( _layer.source );
 
 		if( resourceParticle == nullptr )
 		{

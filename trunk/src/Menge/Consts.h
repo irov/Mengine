@@ -90,20 +90,6 @@ namespace Menge
 		DECL_CONST( WorldPhysObject );
 		DECL_CONST( NullTexture );
 
-		DECL_CONST( Texture_Solid );
-		DECL_CONST( Texture_Blend );
-		DECL_CONST( Texture_Intensive );
-		DECL_CONST( Texture_Accumulator );
-		DECL_CONST( Texture_Blend_ExternalAlpha );
-		DECL_CONST( Texture_Intensive_ExternalAlpha );
-		DECL_CONST( Texture_Blend_ExternalAlpha_OnlyColor );
-		DECL_CONST( Texture_Intensive_ExternalAlpha_OnlyColor );
-		DECL_CONST( Texture_Blend_OnlyColor );
-		DECL_CONST( Texture_Intensive_OnlyColor );
-		DECL_CONST( Color_Intensive );
-		DECL_CONST( Color_Blend );
-		DECL_CONST( Color_Solid );
-
 		DECL_CONST( Debug );
 
 		//DECL_CONST( Blend );

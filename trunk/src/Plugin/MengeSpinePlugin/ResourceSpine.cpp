@@ -3,6 +3,8 @@
 #	include "Kernel/ResourceImplement.h"
 
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/ResourceInterface.h"
+#	include "Interface/StringizeInterface.h"
 
 #	include "Core/MemoryCacheBuffer.h"
 
@@ -28,37 +30,87 @@ namespace Menge
 
 		m_skeletonPath = metadata->get_Skeleton_Path();
 		m_atlasPath = metadata->get_Atlas_Path();
-		m_texturePath = metadata->get_Texture_Path();
-		m_textureCodecName = metadata->get_Texture_Codec();
+
+		const Metacode::Meta_DataBlock::Meta_ResourceSpine::TVectorMeta_Image & includes_images = metadata->get_IncludesImage();
+
+		for( Metacode::Meta_DataBlock::Meta_ResourceSpine::TVectorMeta_Image::const_iterator
+			it = includes_images.begin(),
+			it_end = includes_images.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_ResourceSpine::Meta_Image & meta_image = *it;
+
+			const ConstString & name = meta_image.get_Name();
+			const ConstString & resourceName = meta_image.get_Resource();
+
+			ResourceImage * image = RESOURCE_SERVICE( m_serviceProvider )
+				->getResourceReferenceT<ResourceImage *>( resourceName );
+
+			ImageDesc desc;
+			desc.name = name;
+			desc.image = image;
+
+			m_images.push_back( desc );
+		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderTextureInterfacePtr & ResourceSpine::getAtlasTexture() const
+	ResourceImage * ResourceSpine::getResourceImage_( const char * _name ) const
 	{
-		return m_texture;
+		for( TVectorImageDesc::const_iterator
+			it = m_images.begin(),
+			it_end = m_images.end();
+		it != it_end;
+		++it )
+		{
+			const ImageDesc & desc = *it;
+
+			if( desc.name != _name )
+			{
+				continue;
+			}
+
+			return desc.image;
+		}
+
+		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	spAtlas * ResourceSpine::getAtlas()
+	spAtlas * ResourceSpine::getAtlas() const
 	{
 		return m_atlas;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	spSkeletonData * ResourceSpine::getSkeletonData()
+	spSkeletonData * ResourceSpine::getSkeletonData() const
 	{
 		return m_skeletonData;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	spAnimation * ResourceSpine::findSkeletonAnimation( const ConstString & _name ) const
+	{
+		spAnimation * animation = spSkeletonData_findAnimation( m_skeletonData, _name.c_str() );
+
+		return animation;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	extern "C" void _spAtlasPage_createTexture( spAtlasPage * _page, const char * _path )
 	{
-		(void)_path;
+		ResourceSpine * resource = (ResourceSpine*)_page->atlas->rendererObject;
 
-		ResourceSpine * resource = (ResourceSpine*)_page->rendererObject;
+		ResourceImage * resourceImage = resource->getResourceImage_( _path );
 
-		const RenderTextureInterfacePtr & texture = resource->getAtlasTexture();
+		if( resourceImage == nullptr )
+		{
+			return;
+		}
 
-		_page->width = texture->getWidth();
-		_page->height = texture->getHeight();
+		const mt::vec2f & size = resourceImage->getMaxSize();
+
+		_page->width = (int)size.x;
+		_page->height = (int)size.y;
+		_page->rendererObject = (void *)resourceImage;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	extern "C" void _spAtlasPage_disposeTexture( spAtlasPage * _page )
@@ -69,24 +121,31 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	extern "C" char * _spUtil_readFile( const char* path, int* length )
 	{
+		(void)path;
+		(void)length;
+
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceSpine::_compile()
 	{
-		const ConstString & category = this->getCategory();
-
-		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE( m_serviceProvider )
-			->loadTexture( category, m_texturePath, m_textureCodecName );
-
-		if( texture == nullptr )
+		for( TVectorImageDesc::iterator
+			it = m_images.begin(),
+			it_end = m_images.end();
+		it != it_end;
+		++it )
 		{
-			return false;
+			ResourceImage * image = it->image;
+
+			if( image->incrementReference() == false )
+			{
+				return false;
+			}
 		}
 
-		m_texture = texture;
+		const ConstString & category = this->getCategory();
 
-		MemoryCacheBufferPtr atlas_buffer = Helper::createMemoryFileString( m_serviceProvider, category, m_atlasPath, false, "ResourceSpine::_compile m_atlasPath" );
+		MemoryCacheBufferPtr atlas_buffer = Helper::createMemoryFile( m_serviceProvider, category, m_atlasPath, false, "ResourceSpine::_compile m_atlasPath" );
 
 		if( atlas_buffer == nullptr )
 		{
@@ -125,7 +184,28 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceSpine::_release()
 	{
-		m_texture = nullptr;
+		for( TVectorImageDesc::iterator
+			it = m_images.begin(),
+			it_end = m_images.end();
+		it != it_end;
+		++it )
+		{
+			ResourceImage * image = it->image;
+
+			image->decrementReference();
+		}
+
+		if( m_skeletonData != nullptr )
+		{
+			spSkeletonData_dispose( m_skeletonData );
+			m_skeletonData = nullptr;
+		}
+
+		if( m_atlas != nullptr )
+		{
+			spAtlas_dispose( m_atlas );
+			m_atlas = nullptr;
+		}				
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceSpine::_isValid() const

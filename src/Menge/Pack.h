@@ -11,11 +11,11 @@
 
 namespace Menge
 {
-	class Pak
-		: public PakInterface
+	class Pack
+		: public PackInterface
 	{
 	public:
-		Pak();
+		Pack();
 
 	public:
 		void setup( ServiceProviderInterface * _serviceProvider
@@ -45,8 +45,8 @@ namespace Menge
 		const ConstString & getPath() const override;
 
 	public:
-		bool load();
-		bool apply();
+		bool load() override;
+		bool apply() override;
 		
 	protected:
 		bool mountFileGroup_();
@@ -102,5 +102,5 @@ namespace Menge
         bool m_preload;
 	};
 
-	typedef stdex::intrusive_ptr<Pak> PakPtr;
+	typedef stdex::intrusive_ptr<Pack> PackPtr;
 }

@@ -1,4 +1,4 @@
-#	include "Pak.h"
+#	include "Pack.h"
 
 #	include "Interface/LoaderInterface.h"
 #	include "Interface/FileSystemInterface.h"
@@ -20,13 +20,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Pak::Pak()
+	Pack::Pack()
 		: m_serviceProvider(nullptr)
 		, m_preload(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::setup( ServiceProviderInterface * _serviceProvider
+	void Pack::setup( ServiceProviderInterface * _serviceProvider
 		, const ConstString & _name
 		, const ConstString & _type
 		, const ConstString & _locale
@@ -45,52 +45,52 @@ namespace Menge
 		m_preload = _preload;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::setPreload( bool _value )
+	void Pack::setPreload( bool _value )
 	{
 		m_preload = _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Pak::isPreload() const
+	bool Pack::isPreload() const
 	{
 		return m_preload;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Pak::getName() const
+	const ConstString & Pack::getName() const
 	{
 		return m_name;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::setLocale( const ConstString & _locale )
+	void Pack::setLocale( const ConstString & _locale )
 	{
 		m_locale = _locale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Pak::getLocale() const
+	const ConstString & Pack::getLocale() const
 	{
 		return m_locale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::setPlatfrom( const ConstString & _platform )
+	void Pack::setPlatfrom( const ConstString & _platform )
 	{
 		m_platform = _platform;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Pak::getPlatfrom() const
+	const ConstString & Pack::getPlatfrom() const
 	{
 		return m_platform;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::setPath( const ConstString & _path )
+	void Pack::setPath( const ConstString & _path )
 	{
 		m_path = _path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Pak::getPath() const
+	const ConstString & Pack::getPath() const
 	{
 		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Pak::load()
+	bool Pack::load()
 	{		
 		if( this->mountFileGroup_() == false )
 		{
@@ -105,7 +105,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Pak::mountFileGroup_()
+	bool Pack::mountFileGroup_()
 	{
 		//if( m_path.empty() == true )
 		//{
@@ -128,7 +128,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Pak::loadPak_()
+	bool Pack::loadPak_()
 	{
 		if( SERVICE_EXIST( m_serviceProvider, LoaderServiceInterface ) == false )
 		{
@@ -304,7 +304,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Pak::apply()
+	bool Pack::apply()
 	{
 		for( TVectorConstString::const_iterator
 			it = m_resourcesDesc.begin(),
@@ -391,7 +391,7 @@ namespace Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool Pak::loadText_( const ConstString & _pakName, const ConstString & _path )
+    bool Pack::loadText_( const ConstString & _pakName, const ConstString & _path )
     {
         bool result = TEXT_SERVICE(m_serviceProvider)
 			->loadTextEntry( m_locale, _pakName, _path );
@@ -399,7 +399,7 @@ namespace Menge
         return result;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Pak::loadFont_( const ConstString & _pakName, const ConstString & _path )
+	bool Pack::loadFont_( const ConstString & _pakName, const ConstString & _path )
 	{
 		bool result = TEXT_SERVICE(m_serviceProvider)
 			->loadFonts( m_locale, _pakName, _path );
@@ -407,7 +407,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Pak::loadMaterials_( const ConstString & _pakName, const FilePath & _path )
+	bool Pack::loadMaterials_( const ConstString & _pakName, const FilePath & _path )
 	{
 		bool result = RENDERMATERIAL_SERVICE( m_serviceProvider )
 			->loadMaterials( _pakName, _path );
@@ -415,7 +415,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Pak::loadData_( const ConstString & _pakName, const ConstString & _name, const FilePath & _path )
+	bool Pack::loadData_( const ConstString & _pakName, const ConstString & _name, const FilePath & _path )
 	{
 		DataDesc data;
 		data.category = _pakName;
@@ -427,17 +427,17 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::addResource_( const ConstString & _path )
+	void Pack::addResource_( const ConstString & _path )
 	{
 		m_resourcesDesc.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::addTextPath_( const ConstString & _path )
+	void Pack::addTextPath_( const ConstString & _path )
 	{
 		m_pathTexts.push_back( _path );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer )
+	void Pack::addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer )
 	{
 		ScriptModulePak pak;
 		pak.path = _path;
@@ -447,12 +447,12 @@ namespace Menge
 		m_scriptsPak.push_back( pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::addFontPath_( const ConstString & _font )
+	void Pack::addFontPath_( const ConstString & _font )
 	{
 		m_pathFonts.push_back( _font );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::addData_( const ConstString & _name, const ConstString & _path )
+	void Pack::addData_( const ConstString & _name, const ConstString & _path )
 	{
 		PakDataDesc desc;
 		desc.name = _name;
@@ -461,7 +461,7 @@ namespace Menge
 		m_datas.push_back( desc );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Pak::addMaterial_( const ConstString & _path )
+	void Pack::addMaterial_( const ConstString & _path )
 	{ 
 		m_materials.push_back( _path );
 	}

@@ -94,5 +94,7 @@ namespace Menge
 
 		ConstString m_currentAnimationName;
 		spAnimation * m_currentAnimation;
+
+		bool m_end;
 	};
 }

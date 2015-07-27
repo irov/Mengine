@@ -19,6 +19,7 @@ namespace Menge
 		, m_animationStateData( nullptr )
 		, m_animationState( nullptr )
 		, m_currentAnimation( nullptr )
+		, m_end(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -315,7 +316,7 @@ namespace Menge
 
 		if( entry != nullptr && entry->loop == 0 && _type == SP_ANIMATION_COMPLETE )
 		{
-			this->end();
+			m_end = true;			
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -345,6 +346,13 @@ namespace Menge
 		spAnimationState_apply( m_animationState, m_skeleton );
 
 		spSkeleton_updateWorldTransform( m_skeleton );
+
+		if( m_end == true )
+		{
+			m_end = false;
+
+			this->end();
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )

@@ -140,20 +140,55 @@ namespace Menge
 			_timing = duration;
 		}
 
+		bool loop = this->getLoop();
+		
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
-		m_currentFrame = ( uint32_t )(_timing / frameDuration + 0.5f);
+		uint32_t frame = (uint32_t)(_timing / frameDuration + 0.5f);
 
 		uint32_t frameCount = m_resourceMovie->getFrameCount();
 
-		if( m_currentFrame > frameCount )
+		if( frameCount == 0 )
 		{
-			m_currentFrame = frameCount;
+			m_currentFrame = 0;
 			m_frameTiming = 0.f;
+		}
+		else if( loop == true )
+		{
+			m_currentFrame = frame % frameCount;
+			m_frameTiming = frameDuration - m_currentFrame * frameDuration;
+		}
+		else if( m_playIterator != 0 )
+		{ 
+			uint32_t iterator = frame / frameCount;
+
+			if( m_playIterator <= iterator )
+			{
+				m_playIterator -= iterator;
+
+				m_currentFrame = frame % frameCount;
+				m_frameTiming = frameDuration - m_currentFrame * frameDuration;
+			}
+			else
+			{
+				m_playIterator = 0;
+
+				m_currentFrame = frameCount;
+				m_frameTiming = 0.f;
+			}
 		}
 		else
 		{
-			m_frameTiming = _timing - m_currentFrame * frameDuration;
+			if( frame > frameCount )
+			{
+				m_currentFrame = frameCount;
+				m_frameTiming = 0.f;
+			}
+			else
+			{
+				m_currentFrame = frame;
+				m_frameTiming = _timing - m_currentFrame * frameDuration;
+			}
 		}		
 
 		if( this->isActivate() == true )

@@ -74,7 +74,7 @@ namespace Menge
 		desc.listener = _listener;
 		
 		desc.timing = 0.f;
-		desc.delay = _delay * 1000.f;
+		desc.delay = _delay;
 
 		uint32_t new_id = ++m_enumerator;
 

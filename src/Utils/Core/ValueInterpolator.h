@@ -129,7 +129,7 @@ namespace Menge
 			ValueInterpolator<T>::m_value2 = _value2;
 			ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
 			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-			ValueInterpolator<T>::m_time = _time * 1000.f;
+			ValueInterpolator<T>::m_time = _time;
 			ValueInterpolator<T>::m_timing = 0.f;
 			if( _time < 0.00001f || _abs( _value2 - _value1 ) < 0.00001f ) 
 			{
@@ -188,7 +188,7 @@ namespace Menge
 			ValueInterpolator<T>::m_value2 = _value2;
 			ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
 			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-			ValueInterpolator<T>::m_time = _time * 1000.f;
+			ValueInterpolator<T>::m_time = _time;
 			ValueInterpolator<T>::m_timing = 0.f;
 			
 			m_v0 = _v0;
@@ -252,7 +252,7 @@ namespace Menge
 			ValueInterpolator<T>::m_value2 = _value2;
 			ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
 			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-			ValueInterpolator<T>::m_time = _time * 1000.f;
+			ValueInterpolator<T>::m_time = _time;
 			ValueInterpolator<T>::m_timing = 0.f;
 
 			m_v0 = _v0;
@@ -316,7 +316,7 @@ namespace Menge
 			ValueInterpolator<T>::m_value2 = _value2;
 			ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
 			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-			ValueInterpolator<T>::m_time = _time * 1000.f;
+			ValueInterpolator<T>::m_time = _time;
 			ValueInterpolator<T>::m_timing = 0.f;
 
 			m_v0 = _v0;

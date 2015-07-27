@@ -31,7 +31,7 @@ namespace Menge
 	ResourceMovie::ResourceMovie()
 		: m_frameDuration( 0.f )
 		, m_duration( 0.f )
-		, m_loopSegment( 0.f, 0.f )
+		, m_loopSegment( 0.f, -1.f )
 		, m_size( 0.f, 0.f )
 		, m_maxLayerIndex( 0 )
 		, m_hasCamera3D( false )
@@ -374,12 +374,8 @@ namespace Menge
         m_size.x = metadata->get_Width_Value();
         m_size.y = metadata->get_Height_Value();
         
-		if( metadata->get_Loop_Segment( m_loopSegment ) == false )
-		{
-			m_loopSegment.x = 0.f;
-			m_loopSegment.y = m_duration;
-		}
-		
+		metadata->get_Loop_Segment( m_loopSegment );
+
 		m_hasBoundBox = metadata->get_Bounds_Box( m_boundbox );
 		m_hasAnchorPoint = metadata->get_Anchor_Point( m_anchorPoint );
 		m_hasOffsetPoint = metadata->get_Offset_Point( m_offsetPoint );

@@ -156,27 +156,8 @@ namespace Menge
 		else if( loop == true )
 		{
 			m_currentFrame = frame % frameCount;
-			m_frameTiming = frameDuration - m_currentFrame * frameDuration;
-		}
-		else if( m_playIterator != 0 )
-		{ 
-			uint32_t iterator = frame / frameCount;
-
-			if( m_playIterator <= iterator )
-			{
-				m_playIterator -= iterator;
-
-				m_currentFrame = frame % frameCount;
-				m_frameTiming = frameDuration - m_currentFrame * frameDuration;
-			}
-			else
-			{
-				m_playIterator = 0;
-
-				m_currentFrame = frameCount;
-				m_frameTiming = 0.f;
-			}
-		}
+			m_frameTiming = _timing - m_currentFrame * frameDuration;
+		}		
 		else
 		{
 			if( frame > frameCount )
@@ -247,6 +228,8 @@ namespace Menge
 		//    return false;
 		//}
 
+		m_playIterator = this->getPlayCount();
+
 		if( m_reverse == true )
 		{
 			uint32_t frameCount = m_resourceMovie->getFrameCount();
@@ -259,9 +242,7 @@ namespace Menge
 			//this->updateForwardFrame_( _time, 0, m_currentFrame );
 			this->updateAnimatablePlay_();
 		}
-
-		m_playIterator = this->getPlayCount();
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -274,6 +255,8 @@ namespace Menge
 			return false;
 		}
 
+		m_playIterator = this->getPlayCount();
+
 		if( m_reverse == true )
 		{
 			uint32_t frameCount = m_resourceMovie->getFrameCount();
@@ -285,9 +268,7 @@ namespace Menge
 		{
 			//this->updateForwardFrame_( _time, 0, m_currentFrame );
 			this->updateAnimatablePlay_();
-		}
-
-		m_playIterator = this->getPlayCount();
+		}		
 
 		return true;
 	}

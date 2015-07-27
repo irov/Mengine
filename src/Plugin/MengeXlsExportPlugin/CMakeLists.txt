@@ -12,8 +12,10 @@ src
 add_definitions(-DMENGE_PLUGIN_DLL)
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 
-					 ${THIRDPARTY_DIR}/pybind/include
                      ${THIRDPARTY_DIR}/boost
+					 ${THIRDPARTY_DIR}/pybind/include
+                     ${THIRDPARTY_DIR}/stdex/include
+                     
 )
 
 add_definitions(-DUNICODE)
@@ -33,6 +35,4 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}python3_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}zlib_static${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}stdex_static${MENGINE_LIB_SUFFIX}
-    ${THIRDPARTY_DIR}/openssl/lib/libeay32.lib
-    ${THIRDPARTY_DIR}/openssl/lib/ssleay32.lib
     )

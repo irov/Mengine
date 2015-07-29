@@ -95,7 +95,9 @@ namespace Menge
 			.def( "addEdge", &fastpathfinder::graph::addEdge )
 			.def( "addEdge2", &fastpathfinder::graph::addEdge2 )
 			.def( "setBlock", &fastpathfinder::graph::setBlock )
-			.def( "getBlock", &fastpathfinder::graph::getBlock )
+			.def( "getBlock", &fastpathfinder::graph::getBlock )			
+			.def( "hasPath", &fastpathfinder::graph::hasPath )
+			.def( "getPathWeight", &fastpathfinder::graph::getPathWeight )			
 			.def_static( "getPath", &s_fastpathfinder_graph_getPath )
 			;
 

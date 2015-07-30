@@ -15,7 +15,6 @@ src
 )
 
 if( DEFINED MENGINE_ASTRALAX_PARTICLE2_DLL )
-    MESSAGE(dsadasda)
     add_definitions(-DMENGE_PLUGIN_DLL)
 endif()
 

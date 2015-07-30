@@ -1639,7 +1639,7 @@ namespace Menge
 		++it_batch_start_end;
 
 		TArrayRenderObject::iterator it_batch = _begin;
-		++it_batch;	
+		++it_batch;
 
 		uint32_t materialId = _ro->materialId;		
 		TArrayRenderObject::const_iterator it_end = _renderPass->materialEnd[materialId];

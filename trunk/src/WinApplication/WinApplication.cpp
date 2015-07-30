@@ -1388,6 +1388,7 @@ namespace Menge
 			return false;
 		}
 
+		if( m_developmentMode == true && m_roamingMode == false )
 		{
 			WString userPath;
 			this->makeUserPath_( userPath );

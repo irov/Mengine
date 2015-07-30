@@ -53,7 +53,7 @@ namespace Menge
 		uint32_t m_bufferId;
 
 		typedef FactoryPoolStore<AstralaxEmitter2, 16> TFactoryPoolAstralaxEmitter;
-		mutable TFactoryPoolAstralaxEmitter m_factoryPoolAstralaxEmitter;
+		TFactoryPoolAstralaxEmitter m_factoryPoolAstralaxEmitter;
 	};
 
 	typedef stdex::intrusive_ptr<AstralaxEmitterContainer2> AstralaxEmitterContainer2Ptr;

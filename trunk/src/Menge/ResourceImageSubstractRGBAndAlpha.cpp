@@ -12,6 +12,8 @@ namespace Menge
 	RESOURCE_IMPLEMENT( ResourceImageSubstractRGBAndAlpha );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageSubstractRGBAndAlpha::ResourceImageSubstractRGBAndAlpha()
+		: m_resourceImageRGB(nullptr)
+		, m_resourceImageAlpha(nullptr)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////

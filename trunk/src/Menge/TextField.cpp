@@ -204,7 +204,7 @@ namespace Menge
 
 		const TVectorRenderVertex2D::value_type * vertices = &(textVertices[0]);
 
-        RENDER_SERVICE(m_serviceProvider)
+		RENDER_SERVICE( m_serviceProvider )
 			->addRenderQuad( _viewport, _camera, material, vertices, countVertex, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////

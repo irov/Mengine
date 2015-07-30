@@ -53,77 +53,75 @@ namespace Menge
 
         TMapPlugins::iterator it_found = m_plugins.find( _name );
 
-        if( it_found == m_plugins.end() )
-        {
-            LOGGER_WARNING(m_serviceProvider)( "Load plugin %ls"
-                , _name.c_str() 
-                );
+		if( it_found != m_plugins.end() )
+		{
+			LOGGER_WARNING( m_serviceProvider )("plugin %ls alredy exist"
+				, _name.c_str()
+				);
 
-            DynamicLibraryInterface * dlib = WINDOWSLAYER_SERVICE(m_serviceProvider)
-                ->loadDynamicLibrary( _name );
+			return nullptr;
+		}
 
-            if( dlib == nullptr )
-            {
-                LOGGER_ERROR(m_serviceProvider)("PluginService::loadPlugin can't load %ls plugin [invalid load]"
-                    , _name.c_str() 
-                    );
+		DynamicLibraryInterface * dlib = WINDOWSLAYER_SERVICE( m_serviceProvider )
+			->loadDynamicLibrary( _name );
 
-                return nullptr;
-            }
+		if( dlib == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [invalid load]"
+				, _name.c_str()
+				);
 
-            TDynamicLibraryFunction function_dllCreatePlugin =
-                dlib->getSymbol( m_dllCreatePluginName );
+			return nullptr;
+		}
 
-            if( function_dllCreatePlugin == nullptr )
-            {
-                LOGGER_ERROR(m_serviceProvider)("PluginService::loadPlugin can't load %ls plugin [dllCreatePlugin]"
-                    , _name.c_str() 
-                    );
+		TDynamicLibraryFunction function_dllCreatePlugin =
+			dlib->getSymbol( m_dllCreatePluginName );
 
-                return nullptr;
-            }
+		if( function_dllCreatePlugin == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [dllCreatePlugin]"
+				, _name.c_str()
+				);
 
-            TPluginCreate dllCreatePlugin = (TPluginCreate)function_dllCreatePlugin;
+			return nullptr;
+		}
 
-            PluginInterface * plugin;
-            if( dllCreatePlugin( &plugin ) == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("PluginService::loadPlugin can't load %ls plugin [invalid create]"
-                    , _name.c_str() 
-                    );
+		TPluginCreate dllCreatePlugin = (TPluginCreate)function_dllCreatePlugin;
 
-                return nullptr;
-            }
+		PluginInterface * plugin;
+		if( dllCreatePlugin( &plugin ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [invalid create]"
+				, _name.c_str()
+				);
 
-            if( plugin == nullptr )
-            {
-                LOGGER_ERROR(m_serviceProvider)("PluginService::loadPlugin can't load %ls plugin [plugin is NULL]"
-                    , _name.c_str() 
-                    );
+			return nullptr;
+		}
 
-                return nullptr;
-            }
+		if( plugin == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [plugin is NULL]"
+				, _name.c_str()
+				);
 
-            if( plugin->initialize( m_serviceProvider ) == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("PluginService::loadPlugin can't load %ls plugin [invalid initialize]"
-                    , _name.c_str() 
-                    );
+			return nullptr;
+		}
 
-                return nullptr;
-            }
-            
-            PluginDesc desc;
-            desc.dlib = dlib;
-            desc.plugin = plugin;
+		if( plugin->initialize( m_serviceProvider ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [invalid initialize]"
+				, _name.c_str()
+				);
 
-            it_found = m_plugins.insert( std::make_pair(_name, desc) ).first;
-        }
+			return nullptr;
+		}
 
-        const PluginDesc & desc = it_found->second;
+		PluginDesc desc;
+		desc.dlib = dlib;
+		desc.plugin = plugin;
 
-        PluginInterface * plugin = desc.plugin;
-
+		m_plugins.insert( std::make_pair( _name, desc ) );
+		
         return plugin;
     }
     //////////////////////////////////////////////////////////////////////////

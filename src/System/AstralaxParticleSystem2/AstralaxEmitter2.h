@@ -120,7 +120,6 @@ namespace Menge
 		bool m_looped;
 
 		bool m_background;
-        bool m_firstUpdate;
 	};
 
 	typedef stdex::intrusive_ptr<AstralaxEmitter2> AstralaxEmitter2Ptr;

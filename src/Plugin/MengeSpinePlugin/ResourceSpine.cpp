@@ -47,6 +47,11 @@ namespace Menge
 			ResourceImage * image = RESOURCE_SERVICE( m_serviceProvider )
 				->getResourceReferenceT<ResourceImage *>( resourceName );
 
+			if( image == nullptr )
+			{
+				return false;
+			}
+
 			ImageDesc desc;
 			desc.name = name;
 			desc.image = image;

@@ -455,7 +455,7 @@ namespace Menge
 			this->fillVertices_( vertices, attachment_vertices, uvs, argb, verticesCount / 2, wm );
 			this->fillIndices_( indices, triangles, trianglesCount );
 
-			RenderMaterialInterfacePtr material = m_attachmentMeshes[i].material;
+			const RenderMaterialInterfacePtr & material = m_attachmentMeshes[i].material;
 
 			RENDER_SERVICE( m_serviceProvider )
 				->addRenderObject( _viewport, _camera, material, vertices, verticesCount / 2, indices, trianglesCount, nullptr, false );
@@ -478,8 +478,8 @@ namespace Menge
 
 			_vertices2D[i].uv.x = _uv[index_x];
 			_vertices2D[i].uv.y = _uv[index_y];
-			_vertices2D[i].uv2.x = 0.f;
-			_vertices2D[i].uv2.y = 0.f;
+			_vertices2D[i].uv2.x = _uv[index_x];
+			_vertices2D[i].uv2.y = _uv[index_y];
 
 			_vertices2D[i].color = _argb;
 		}

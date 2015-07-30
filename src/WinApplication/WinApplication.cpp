@@ -1388,6 +1388,7 @@ namespace Menge
 			return false;
 		}
 
+#	ifdef _DEBUG
 		if( m_developmentMode == true && m_roamingMode == false )
 		{
 			WString userPath;
@@ -1395,6 +1396,7 @@ namespace Menge
 
 			CriticalErrorsMonitor::run( userPath );
 		}
+#	endif
 				
 		if( this->initializeStringizeService_() == false )
 		{

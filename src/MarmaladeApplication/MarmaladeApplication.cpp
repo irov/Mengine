@@ -93,6 +93,7 @@ extern "C" // only required if using g++
 	extern bool initPluginMengeAmplifier( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );
+	extern bool initPluginMengeSpine( Menge::PluginInterface ** _plugin );
 
 	extern bool initPluginMengeOggVorbis( Menge::PluginInterface ** _plugin );
 
@@ -197,16 +198,27 @@ namespace Menge
     MarmaladeApplication::~MarmaladeApplication()
     {
     }
-    //////////////////////////////////////////////////////////////////////////
-    const String & MarmaladeApplication::getCurrentPath() const
+    //////////////////////////////////////////////////////////////////////////    
+	size_t MarmaladeApplication::getCurrentPath( WChar * _path, size_t _len ) const
     {
-        static String empty;
-        return empty;
+		if( _len > 0 )
+		{
+			wcscpy( _path, L"" );
+		}
+
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t MarmaladeApplication::getShortPathName( const String & _path, char * _shortpath, size_t _shortpathlen )
+	size_t MarmaladeApplication::getShortPathName( const WString & _path, WChar * _short, size_t _len ) const
     {
-        return 0;
+		size_t pathSize = _path.size();
+
+		if( _len == pathSize )
+		{
+			wcscpy( _short, _path.c_str() );
+		}
+		
+		return _path.size();
     }
     //////////////////////////////////////////////////////////////////////////
     TimerInterface * MarmaladeApplication::getTimer() const
@@ -360,7 +372,7 @@ namespace Menge
         m_userPath.clear();
 
         m_userPath += L"User";
-        m_userPath += MENGE_FOLDER_DELIM;
+        m_userPath += L"/";
 
         String utf8_userPath;
         if( Helper::unicodeToUtf8( m_serviceProvider, m_userPath, utf8_userPath ) == false )
@@ -396,7 +408,7 @@ namespace Menge
 
         if( fileLogInterface != nullptr )
         {
-            m_fileLog = new FileLogger(fileLogInterface);
+            m_fileLog = new FileLogger();
 
             m_logService->registerLogger( m_fileLog );
         }
@@ -1503,6 +1515,15 @@ namespace Menge
 			m_plugins.push_back( pluginPluginPathFinder );
 		}
 
+		{
+			LOGGER_INFO( m_serviceProvider )("initialize Spine...");
+
+			PluginInterface * pluginMengeSpine;
+			initPluginMengeSpine( &pluginMengeSpine );
+			pluginMengeSpine->initialize( m_serviceProvider );
+			m_plugins.push_back( pluginMengeSpine );
+		}
+
 		TVectorString modules;
 		CONFIG_VALUES(m_serviceProvider, "Modules", "Name", modules);
 
@@ -1555,16 +1576,6 @@ namespace Menge
 		m_application->setDefaultWindowDescription( defaultWindowResolution, defaultWindowBits, defaultWindowFullscreen, defaultWindowVSync );
 
 		s3eDeviceYield(0);
-
-		GameServiceInterface * gameService = m_application->createGame();
-
-		if( gameService == nullptr )
-		{
-			LOGGER_CRITICAL(m_serviceProvider)( "Application create game failed"
-				);
-
-			return false;
-		}
 		
         if( m_application->loadResourcePacks( ConstString::none(), resourceIniPath ) == false )
         {
@@ -2150,6 +2161,11 @@ namespace Menge
     {
         return m_developmentMode;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeApplication::isRoamingMode() const
+	{
+		return false;
+	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::onEvent( const ConstString & _event, const TMapParams & _params )
     {

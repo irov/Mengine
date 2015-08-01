@@ -48,13 +48,17 @@ namespace Menge
 		stream->read( _data, _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static png_voidp PNGAPI s_png_malloc_ptr( png_structp _png, png_alloc_size_t _size )
+	static png_voidp PNGAPI s_png_malloc_ptr( png_structp _png, png_size_t _size )
 	{
+		(void)_png;
+
 		return stdex_malloc_threadsafe( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void PNGAPI s_png_free_ptr( png_structp _png, png_voidp _ptr )
 	{
+		(void)_png;
+
 		stdex_free_threadsafe( _ptr );
 	}
 	//////////////////////////////////////////////////////////////////////////

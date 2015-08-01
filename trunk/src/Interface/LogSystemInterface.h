@@ -23,6 +23,15 @@ namespace Menge
 	class LoggerInterface
 	{
 	public:
+		LoggerInterface()
+		{
+		};
+
+		virtual ~LoggerInterface()
+		{
+		};
+
+	public:
 		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 

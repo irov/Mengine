@@ -63,7 +63,7 @@ namespace Menge
     public:
         void getDesktopResolution( Resolution & _resolution ) const override;
 
-        const String & getCurrentPath() const override;
+		size_t getCurrentPath( WChar * _path, size_t _len ) const override;
 
         void minimizeWindow() override;
 
@@ -72,7 +72,7 @@ namespace Menge
 
         TimerInterface * getTimer() const override;
 
-        size_t getShortPathName( const String & _name, char * _shortpath, size_t _shortpathlen ) override;
+		size_t getShortPathName( const WString & _path, WChar * _short, size_t _len ) const override;
         void getMaxClientResolution( Resolution & _resolution ) const override;
 
         void showKeyboard() override;
@@ -89,6 +89,7 @@ namespace Menge
         bool openUrlInDefaultBrowser( const WString & _url ) override;
 
         bool isDevelopmentMode() const override;
+		bool isRoamingMode() const override;
 
         void onEvent( const ConstString & _event, const TMapParams & _params ) override;
 

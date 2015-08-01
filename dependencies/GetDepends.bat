@@ -17,7 +17,7 @@ call:getdepend http://download.sourceforge.net/libpng/lpng1616.zip lpng1616.zip 
 call:getdepend http://www.ijg.org/files/jpegsr9a.zip jpegsr9a.zip jpeg-9a libjpeg
 call:getdepend http://zlib.net/zlib128.zip zlib128.zip zlib-1.2.8 zlib
 call:getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.2.zip libogg-1.3.2.zip libogg-1.3.2 libogg
-call:getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.4.zip libvorbis-1.3.4.zip libvorbis-1.3.4 libvorbis
+call:getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.zip libvorbis-1.3.5.zip libvorbis-1.3.5 libvorbis
 call:getdepend http://downloads.xiph.org/releases/theora/libtheora-1.1.1.zip libtheora-1.1.1.zip libtheora-1.1.1 libtheora
 call:getdepend_2 http://kcat.strangesoft.net/openal-releases/openal-soft-1.16.0.tar.bz2 openal-soft-1.16.0.tar.bz2 openal-soft-1.16.0.tar openal-soft-1.16.0 openal-soft
 

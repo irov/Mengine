@@ -5,6 +5,7 @@ project( theora )
 SET( SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../libtheora )
 
 INCLUDE_DIRECTORIES( ${SOURCE_DIR}/include )
+INCLUDE_DIRECTORIES( ${SOURCE_DIR}/lib )
 
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../../libogg/include )
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_SOURCE_DIR}/../../stdex/include )
@@ -34,7 +35,5 @@ set( sources
     ${SOURCE_DIR}/lib/state.c
     ${SOURCE_DIR}/lib/tokenize.c
     )
-
-include_directories( ${SOURCE_DIR} )
 
 add_library( ${PROJECT_NAME}_static STATIC ${sources} )

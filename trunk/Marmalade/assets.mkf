@@ -5,6 +5,7 @@ assets
     Locale_RU    
     app.config.txt
     application.ini    
+    Framework.pak
 	Framework2.pak
     Framework3.pak    
     Game.ini
@@ -17,6 +18,7 @@ assets
     Locale_RU    
     app.config.txt
     application.ini    
+    Framework.pak
 	Framework2.pak
     Framework3.pak    
     Game.ini
@@ -30,6 +32,7 @@ assets
     Locale_RU    
     app.config.txt
     application.ini    
+    Framework.pak
 	Framework2.pak
     Framework3.pak    
     Game.ini
@@ -42,7 +45,8 @@ assets
     External
     Locale_RU
     app.config.txt
-    application.ini    
+    application.ini  
+    Framework.pak    
 	Framework2.pak
     Framework3.pak    
     Game.ini
@@ -55,6 +59,7 @@ assets
     Localization
     app.config.txt
     application.ini    
+    Framework.pak
 	Framework2.pak
     Framework3.pak    
     Game.ini
@@ -67,6 +72,7 @@ assets
     Localization
     app.config.txt
     application.ini
+    Framework.pak
 	Framework2.pak
     Framework3.pak
     Game.ini

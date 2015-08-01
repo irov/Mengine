@@ -22,25 +22,36 @@ subprojects
 includepaths
 {
     "."
-    "./Modified/boost"    
+    
+    "./Modified/boost"
+	"./Modified/pugixml/src"    
+    "./Modified/Python"
+    "./Modified/lz4"
+    "./Modified/ogg"
+    "./Modified/png"
+    "./Modified/jpeg"
     
 	"../src"
 	"../src/Utils"
-	"../src/MarmaladeApplication"
+	"../src/MarmaladeApplication"    
 	"../dependencies/pugixml/src"
 	"../dependencies/pybind/include"
 	"../dependencies/boost"
 	"../dependencies/simpleini"
 	"../dependencies/metabuf"
+    "../dependencies/libpng"
+    "../dependencies/libjpeg"    
     "../dependencies/zlib"
     "../dependencies/lz4/lib"
     "../dependencies/stdex/include"
 	"../dependencies/utf8/source"
     "../dependencies/fastpathfinder/include"
-    "../dependencies/libtheora/include"
+    "../dependencies/spine-c/include"
 
-    "./dependencies/marm_libogg/libogg-1.3.0/include"
-    "./dependencies/marm_libvorbis/libvorbis-1.3.2/include"
+    "../dependencies/libogg/include"
+    "../dependencies/libvorbis/include"
+    "../dependencies/libvorbis/lib"
+    "../dependencies/libtheora/include"    
 }
 
 files
@@ -99,6 +110,20 @@ files
     ("../src/Plugin/MengePathFinderPlugin")	
 	"*.cpp"
 	"*.h"  
+    
+    [Plugin/MengePathFinderPlugin]
+    ("../src/Plugin/MengePathFinderPlugin")	
+	"*.cpp"
+	"*.h"      
+    
+    [Plugin/MengeSpinePlugin]
+    ("../src/Plugin/MengeSpinePlugin")
+    PluginSpine.cpp
+    PluginSpine.h
+    ResourceSpine.cpp
+    ResourceSpine.h
+    Spine.cpp
+    Spine.h
 
     [Plugin/MengeVideoCodecPlugin]
     ("../src/Plugin/MengeVideoCodecPlugin")

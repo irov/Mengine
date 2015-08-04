@@ -126,12 +126,11 @@ deployments
 	assets='Burritos_IOS'
 	caption='Burritos'
 	iphone-appid='com.IROV.IROV'
-	iphone-provisioning-profile='IROV.mobileprovision'
+	iphone-provisioning-profile='Argali.mobileprovision'
 	iphone-sign-for-distribution=1
 	iphone-signing-identity='iPhone Distribution'
 	iphone-testflight=0
 	name='Burritos'
-	["Default"]
 	["HolidayFun_Android"]
 	app-icf='d:/Projects/HolidayFunBuild_ETC1/app.icf'
 	assets='HolidayFun_Android'

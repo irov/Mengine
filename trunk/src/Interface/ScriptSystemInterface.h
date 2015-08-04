@@ -32,6 +32,10 @@ namespace Menge
 		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
 		virtual ServiceProviderInterface * getServiceProvider() = 0;
 
+	public:
+		virtual bool initialize( pybind::kernel_interface * _kernel ) = 0;
+		virtual void finalize() = 0;
+
     public:
 		virtual pybind::object wrap( Scriptable * _node ) = 0;
 

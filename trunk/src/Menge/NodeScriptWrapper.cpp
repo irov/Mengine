@@ -4476,8 +4476,10 @@ namespace Menge
     struct extract_TBlobject_type
         : public pybind::type_cast_result<Blobject>
     {
-        bool apply( PyObject * _obj, Blobject & _value ) override
+		bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, Blobject & _value ) override
         {
+			(void)_kernel;
+
             if( pybind::string_check( _obj ) == true )
             {
                 size_t size;
@@ -4498,8 +4500,10 @@ namespace Menge
             return true;
         }
 
-        PyObject * wrap( pybind::type_cast_result<Blobject>::TCastRef _value ) override
+		PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<Blobject>::TCastRef _value ) override
         {
+			(void)_kernel;
+
             PyObject * py_value = pybind::string_from_char_size( reinterpret_cast<const char *>(&_value[0]), _value.size() );
 
             return py_value;
@@ -4508,16 +4512,18 @@ namespace Menge
 
 	typedef stdex::vector<ResourceImage *> TVectorResourceImage;
 
-    void ScriptWrapper::nodeWrap( ServiceProviderInterface * _serviceProvider )
+	void ScriptWrapper::nodeWrap( ServiceProviderInterface * _serviceProvider )
     {        
         NodeScriptMethod * nodeScriptMethod = new NodeScriptMethod(_serviceProvider);
-        
-        pybind::registration_type_cast<Blobject>( new extract_TBlobject_type );
 
-		pybind::registration_stl_vector_type_cast<ResourceImage *, stdex::vector<ResourceImage *> >();
-		pybind::registration_stl_vector_type_cast<HotSpotPolygon *, stdex::vector<HotSpotPolygon *> >();
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+        
+        pybind::registration_type_cast<Blobject>( kernel, new extract_TBlobject_type );
+
+		pybind::registration_stl_vector_type_cast<ResourceImage *, stdex::vector<ResourceImage *>>(kernel);
+		pybind::registration_stl_vector_type_cast<HotSpotPolygon *, stdex::vector<HotSpotPolygon *> >(kernel);
 		
-		pybind::registration_stl_map_type_cast<ConstString, WString, stdex::map<ConstString, WString> >();
+		pybind::registration_stl_map_type_cast<ConstString, WString, stdex::map<ConstString, WString> >(kernel);
 
         classWrapping( _serviceProvider );
 

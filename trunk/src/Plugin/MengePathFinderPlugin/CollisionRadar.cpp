@@ -130,6 +130,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool CollisionRadar::onRadarObjectFilter( CollisionObject * _object )
 	{
+		(void)_object;
 		//Empty
 
 		return true;
@@ -137,11 +138,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionRadar::onRadarObjectEnter( CollisionObject * _object )
 	{
+		(void)_object;
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionRadar::onRadarObjectLeave( CollisionObject * _object )
 	{
+		(void)_object;
 		//Empty
 	}
 }

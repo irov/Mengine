@@ -1533,7 +1533,7 @@ namespace Menge
                     }
 
                 protected:
-                    void visit_scope( pybind::class_type_scope * _scope ) override
+                    void visit_scope( pybind::class_type_scope_interface * _scope ) override
                     {   
                         uint32_t count = _scope->getObjectCount();
 
@@ -1567,7 +1567,9 @@ namespace Menge
                 };
 
                 MyVisitorClassTypeScope mvcts(ss);
-                pybind::visit_class_type_scope(&mvcts);
+
+				pybind::kernel_interface * k = pybind::get_kernel();
+				k->visit_types_scope( &mvcts );
             }
             
 			String text = ss.str();

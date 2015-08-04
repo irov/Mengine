@@ -72,8 +72,10 @@ namespace Menge
 			return unscrew;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static String vec2f_repr( mt::vec2f * _v )
+		static String vec2f_repr( pybind::kernel_interface * _kernel, mt::vec2f * _v )
 		{
+			(void)_kernel;
+
 			Stringstream ss;
 			ss << "<vec2f: " << _v->x << ", " << _v->y << ">";
 			
@@ -82,8 +84,10 @@ namespace Menge
             return repr;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static float vec2_sequence_get( mt::vec2f * _vec, uint32_t _index )
+		static float vec2_sequence_get( pybind::kernel_interface * _kernel, mt::vec2f * _vec, uint32_t _index )
 		{
+			(void)_kernel;
+
 			if( _index > 2 )
 			{
 				pybind::throw_exception("vec2 index == 2");
@@ -92,8 +96,10 @@ namespace Menge
 			return _vec->operator [] (_index);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void vec2_sequence_set( mt::vec2f * _vec, uint32_t _index, float _value )
+		static void vec2_sequence_set( pybind::kernel_interface * _kernel, mt::vec2f * _vec, uint32_t _index, float _value )
 		{
+			(void)_kernel;
+
 			if( _index > 2 )
 			{
 				pybind::throw_exception("vec2 index == 2");
@@ -102,8 +108,10 @@ namespace Menge
 			_vec->operator [] (_index) = _value;
 		}
         //////////////////////////////////////////////////////////////////////////
-        static String vec3f_repr( mt::vec3f * _v )
+		static String vec3f_repr( pybind::kernel_interface * _kernel, mt::vec3f * _v )
         {
+			(void)_kernel;
+
             Stringstream ss;
             ss << "<vec3f: " << _v->x << ", " << _v->y << ", " << _v->z << ">";
             
@@ -112,8 +120,10 @@ namespace Menge
             return repr;
         }
 		//////////////////////////////////////////////////////////////////////////
-		static float vec3_sequence_get( mt::vec3f * _vec, uint32_t _index )
+		static float vec3_sequence_get( pybind::kernel_interface * _kernel, mt::vec3f * _vec, uint32_t _index )
 		{
+			(void)_kernel;
+
 			if( _index > 3 )
 			{
 				pybind::throw_exception("vec3 index == 3");
@@ -122,8 +132,10 @@ namespace Menge
 			return _vec->operator [] (_index);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void vec3_sequence_set( mt::vec3f * _vec, uint32_t _index, float _value )
+		static void vec3_sequence_set( pybind::kernel_interface * _kernel, mt::vec3f * _vec, uint32_t _index, float _value )
 		{
+			(void)_kernel;
+
 			if( _index > 3 )
 			{
 				pybind::throw_exception("vec3 index == 3");
@@ -132,8 +144,10 @@ namespace Menge
 			_vec->operator [] (_index) = _value;
 		}
         //////////////////////////////////////////////////////////////////////////
-        static String vec4f_repr( mt::vec4f * _v )
+		static String vec4f_repr( pybind::kernel_interface * _kernel, mt::vec4f * _v )
         {
+			(void)_kernel;
+
             Stringstream ss;
             ss << "<vec4f: " << _v->x << ", " << _v->y << ", " << _v->z << ", " << _v->w << ">";
 
@@ -142,8 +156,10 @@ namespace Menge
             return repr;
         }
 		//////////////////////////////////////////////////////////////////////////
-		static float vec4_sequence_get( mt::vec4f * _vec, uint32_t _index )
+		static float vec4_sequence_get( pybind::kernel_interface * _kernel, mt::vec4f * _vec, uint32_t _index )
 		{
+			(void)_kernel;
+
 			if( _index > 4 )
 			{
 				pybind::throw_exception("vec4 index == 4");
@@ -152,8 +168,10 @@ namespace Menge
 			return _vec->operator [] (_index);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void vec4_sequence_set( mt::vec4f * _vec, uint32_t _index, float _value )
+		static void vec4_sequence_set( pybind::kernel_interface * _kernel, mt::vec4f * _vec, uint32_t _index, float _value )
 		{
+			(void)_kernel;
+
 			if( _index > 4 )
 			{
 				pybind::throw_exception("vec4 index == 4");
@@ -162,8 +180,10 @@ namespace Menge
 			_vec->operator [] (_index) = _value;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static String uv4f_repr( mt::uv4f * _v )
+		static String uv4f_repr( pybind::kernel_interface * _kernel, mt::uv4f * _v )
 		{
+			(void)_kernel;
+
 			Stringstream ss;
 			ss << "<uv4f: " 
 				<< "(" << _v->p0.x << ", " << _v->p0.y << ")"
@@ -177,8 +197,10 @@ namespace Menge
 			return repr;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static const mt::vec2f & uv4f_sequence_get( mt::uv4f * _uv, uint32_t _index )
+		static const mt::vec2f & uv4f_sequence_get( pybind::kernel_interface * _kernel, mt::uv4f * _uv, uint32_t _index )
 		{
+			(void)_kernel;
+
 			if( _index > 4 )
 			{
 				pybind::throw_exception("uv4f index == 4");
@@ -187,8 +209,10 @@ namespace Menge
 			return _uv->operator [] (_index);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static void uv4f_sequence_set( mt::uv4f * _vec, uint32_t _index, const mt::vec2f & _value )
+		static void uv4f_sequence_set( pybind::kernel_interface * _kernel, mt::uv4f * _vec, uint32_t _index, const mt::vec2f & _value )
 		{
+			(void)_kernel;
+
 			if( _index > 4 )
 			{
 				pybind::throw_exception("vec4 index == 4");
@@ -197,7 +221,7 @@ namespace Menge
 			_vec->operator [] (_index) = _value;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool vec2f_convert( PyObject * _obj, mt::vec2f * _place, void * _user )
+		static bool vec2f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::vec2f * _place, void * _user )
 		{
             (void)_user;
 
@@ -225,7 +249,7 @@ namespace Menge
 
 				return true;
 			}
-			else if( pybind::instance_of<mt::vec3f>( _obj ) == true )
+			else if( pybind::instance_of<mt::vec3f>( _kernel, _obj ) == true )
 			{
 				mt::vec3f v3 = pybind::extract_t( _obj );
 								
@@ -238,7 +262,7 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool vec3f_convert( PyObject * _obj, mt::vec3f * _place, void * _user )
+		static bool vec3f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::vec3f * _place, void * _user )
 		{
             (void)_user;
 
@@ -284,7 +308,7 @@ namespace Menge
 
 				return true;
 			}
-			else if( pybind::instance_of<mt::vec2f>( _obj ) == true )
+			else if( pybind::instance_of<mt::vec2f>( _kernel, _obj ) == true )
 			{
 				mt::vec2f v2 = pybind::extract_t( _obj );
 
@@ -298,8 +322,9 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool vec4f_convert( PyObject * _obj, mt::vec4f * _place, void * _user )
+		static bool vec4f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::vec4f * _place, void * _user )
 		{
+			(void)_kernel;
             (void)_user;
 
 			if( pybind::tuple_check( _obj ) == true )
@@ -334,8 +359,9 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool uv4f_convert( PyObject * _obj, mt::uv4f * _uv, void * _user )
+		static bool uv4f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::uv4f * _uv, void * _user )
 		{
+			(void)_kernel;
 			(void)_user;
 
 			if( pybind::tuple_check( _obj ) == true )
@@ -370,8 +396,10 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static String box2f_repr( mt::box2f * _v )
+		static String box2f_repr( pybind::kernel_interface * _kernel, mt::box2f * _v )
 		{
+			(void)_kernel;
+
 			Stringstream ss;
 			ss << "<box2f: " << _v->minimum.x << ", " << _v->minimum.y << ", " << _v->maximum.x << ", " << _v->maximum.y << ">";
 
@@ -380,8 +408,10 @@ namespace Menge
 			return repr;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool box2f_convert( PyObject * _obj, mt::box2f * _place, void * _user )
+		static bool box2f_convert( pybind::kernel_interface * _kernel, PyObject * _obj, mt::box2f * _place, void * _user )
         {
+			(void)_kernel;
+
             (void)_user;
 
 			if( pybind::tuple_check( _obj ) == true )
@@ -416,8 +446,9 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool Polygon_convert( PyObject * _obj, void * _place, void * _user )
+		static bool Polygon_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
         {
+			(void)_kernel;
             (void)_user;
 
 			if( pybind::list_check( _obj ) == false )
@@ -455,8 +486,10 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static String color_repr( ColourValue * _v )
+		static String color_repr( pybind::kernel_interface * _kernel, ColourValue * _v )
         {
+			(void)_kernel;
+
 			Stringstream ss;
 			ss << "<color: " << _v->getA() << ", " << _v->getR() << ", " << _v->getG() << ", " << _v->getB() << ">";
             
@@ -465,8 +498,9 @@ namespace Menge
             return repr;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool color_convert( PyObject * _obj, ColourValue * _place, void * _user )
+		static bool color_convert( pybind::kernel_interface * _kernel, PyObject * _obj, ColourValue * _place, void * _user )
         {
+			(void)_kernel;
             (void)_user;
 
 			if( pybind::tuple_check( _obj ) == true )
@@ -527,8 +561,9 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool Resolution_convert( PyObject * _obj, Resolution * _place, void * _user )
+		static bool Resolution_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Resolution * _place, void * _user )
         {
+			(void)_kernel;
             (void)_user;
 
 			if( pybind::tuple_check( _obj ) == true )
@@ -565,8 +600,10 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static String Resolution_repr( Resolution * _v )
+		static String Resolution_repr( pybind::kernel_interface * _kernel, Resolution * _v )
 		{
+			(void)_kernel;
+
 			Stringstream ss;
 			ss << "<Resolution: " << _v->getWidth() << ", " << _v->getHeight() << ">";
 
@@ -575,8 +612,9 @@ namespace Menge
 			return repr;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool Viewport_convert( PyObject * _obj, Viewport * _place, void * _user )
+		static bool Viewport_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Viewport * _place, void * _user )
         {
+			(void)_kernel;
             (void)_user;
 
 			if( pybind::tuple_check( _obj ) == true )
@@ -611,8 +649,10 @@ namespace Menge
 			return false;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static String Viewport_repr( Viewport * _v )
+		static String Viewport_repr( pybind::kernel_interface * _kernel, Viewport * _v )
 		{
+			(void)_kernel;
+
 			Stringstream ss;
 			ss << "<Viewport: " << _v->begin.x << ", " << _v->begin.y << ", " << _v->end.x << ", " << _v->end.y << ", " << ">";
 
@@ -621,8 +661,9 @@ namespace Menge
 			return repr;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		static bool Rect_convert( PyObject * _obj, Rect * _place, void * _user )
+		static bool Rect_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Rect * _place, void * _user )
         {
+			(void)_kernel;
             (void)_user;
 
 			if( pybind::tuple_check( _obj ) == true )
@@ -662,7 +703,9 @@ namespace Menge
 	{
         (void)_serviceProvider;
 
-		pybind::registration_stl_vector_type_cast<Polygon, stdex::vector<Polygon> >();
+		pybind::kernel_interface * kernel = pybind::get_kernel();
+
+		pybind::registration_stl_vector_type_cast<Polygon, stdex::vector<Polygon> >(kernel);
 
 		pybind::struct_<mt::vec2f>("vec2f")
 			.def_constructor( pybind::init<float,float>() )

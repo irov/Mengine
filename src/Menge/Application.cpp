@@ -274,7 +274,7 @@ namespace Menge
         {
             return false;
         }
-
+		
         ScriptWrapper::constsWrap( m_serviceProvider );
         ScriptWrapper::mathWrap( m_serviceProvider );
         ScriptWrapper::nodeWrap( m_serviceProvider );

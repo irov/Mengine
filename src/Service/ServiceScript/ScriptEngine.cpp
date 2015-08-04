@@ -617,6 +617,13 @@ namespace Menge
 	{
 		_wrapper->setServiceProvider( m_serviceProvider );
 
+		pybind::kernel_interface * k = pybind::get_kernel();
+
+		if( _wrapper->initialize( k ) == false )
+		{
+			return;
+		}
+
 		m_scriptWrapper.insert( _type, _wrapper );
 	}
 	//////////////////////////////////////////////////////////////////////////|

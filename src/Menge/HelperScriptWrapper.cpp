@@ -72,7 +72,9 @@ namespace Menge
     public:
         bool s_is_class( PyObject * _obj )
         {
-            return pybind::detail::is_class( _obj );
+			pybind::kernel_interface * k = pybind::get_kernel();
+
+            return k->is_class( _obj );
         }
 		
         const ConstString & s_getLanguagePack()

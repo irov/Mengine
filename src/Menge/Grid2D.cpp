@@ -246,6 +246,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Grid2D::_update( float _current, float _timing )
 	{
+		(void)_current;
+
 		for( TVectorRenderVertex2D::iterator
 			it = m_vertices.begin(),
 			it_end = m_vertices.end();

@@ -4520,7 +4520,7 @@ namespace Menge
         
         pybind::registration_type_cast<Blobject>( kernel, new extract_TBlobject_type );
 
-		pybind::registration_stl_vector_type_cast<ResourceImage *, stdex::vector<ResourceImage *>>(kernel);
+		pybind::registration_stl_vector_type_cast<ResourceImage *, stdex::vector<ResourceImage *> >(kernel);
 		pybind::registration_stl_vector_type_cast<HotSpotPolygon *, stdex::vector<HotSpotPolygon *> >(kernel);
 		
 		pybind::registration_stl_map_type_cast<ConstString, WString, stdex::map<ConstString, WString> >(kernel);

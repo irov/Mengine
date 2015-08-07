@@ -11,9 +11,13 @@ set cmd_msbuild=msbuild
 call %cmd_vcvars% x86
 if errorlevel 1 goto error
 
-@echo Starting dependencies build release with debug info configuration...
-@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Depends_WIN32" "..\dependencies\build_msvc12" "NMake Makefiles" RelWithDebInfo
-@pushd ..\dependencies\build_msvc12\RelWithDebInfo
+@echo Starting dependencies build release configuration...
+
+@pushd ..
+@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Depends_WIN32" "..\dependencies\build_msvc12" "NMake Makefiles" Release
+@popd
+
+@pushd ..\dependencies\build_msvc12\Release
 nmake
 @popd
 

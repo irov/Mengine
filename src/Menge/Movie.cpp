@@ -2735,7 +2735,7 @@ namespace Menge
 					animatable->setTiming( timing );
 
 					float playTime = this->getPlayTime();
-					animatable->play( playTime );                                       
+					animatable->play( playTime );
 				}
 			}
 			else if( _endFrame <= indexIn && _beginFrame <= indexOut && _beginFrame > indexIn )

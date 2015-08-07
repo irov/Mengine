@@ -7,9 +7,8 @@
 
 namespace Menge
 {
-    static bool s_ConstString_compare( pybind::kernel_interface * _kernel, PyObject * _obj, ConstString * _self, PyObject * _compare, pybind::PybindOperatorCompare _op, bool & _result )
+    static bool s_ConstString_compare( PyObject * _obj, ConstString * _self, PyObject * _compare, pybind::PybindOperatorCompare _op, bool & _result )
     {
-		(void)_kernel;
         (void)_obj;
 
         ConstString cs_compare;
@@ -49,28 +48,22 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static const char * s_ConstString_repr( pybind::kernel_interface * _kernel, ConstString * _cs )
+    static const char * s_ConstString_repr( ConstString * _cs )
     {
-		(void)_kernel;
-
         const char * str_repr = _cs->c_str();
 
         return str_repr;
     }
     //////////////////////////////////////////////////////////////////////////
-	static ConstString::hash_type s_ConstString_hash( pybind::kernel_interface * _kernel, ConstString * _cs )
+	static ConstString::hash_type s_ConstString_hash( ConstString * _cs )
     {
-		(void)_kernel;
-
  		ConstString::hash_type hash = _cs->hash();
 			
 		return hash;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool ConstString_convert( pybind::kernel_interface * _kernel, PyObject * _obj, void * _place, void * _user )
+    static bool ConstString_convert( PyObject * _obj, void * _place, void * _user )
     {
-		(void)_kernel;
-
         if( pybind::string_check( _obj ) == false )
         {
             return false;

@@ -40,7 +40,7 @@ namespace Menge
 		: public pybind::new_adapter_interface
 	{
 	public:
-		void * call( const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
+		void * call( const pybind::class_type_scope_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
 		{
 			(void)_scope;
 			(void)_obj;

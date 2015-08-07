@@ -12,8 +12,12 @@ call %cmd_vcvars% x86
 if errorlevel 1 goto error
 
 @echo Starting dependencies build debug configuration...
+
+@pushd ..
 @call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Depends_WIN32" "..\dependencies\build_msvc12" "NMake Makefiles" Debug
-@pushd ..\dependencies\build_msvc12\Debug
+@popd
+
+@pushd ..\..\dependencies\build_msvc12\Debug
 nmake
 @popd
 

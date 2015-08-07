@@ -13,10 +13,8 @@ namespace Menge
     struct ScriptClassExtract
         : public pybind::interface_<T>::extract_type_ptr
     {
-        PyObject * wrap( pybind::kernel_interface * _kernel, typename pybind::interface_<T>::extract_type_ptr::TCastRef _node ) override
+        PyObject * wrap( typename pybind::interface_<T>::extract_type_ptr::TCastRef _node ) override
         {
-			(void)_kernel;
-
             if( _node == nullptr )
             {
                 return pybind::ret_none();
@@ -39,7 +37,6 @@ namespace Menge
 	public:
 		ScriptClassWrapper()
 			: m_serviceProvider( nullptr )
-			, m_kernel( nullptr )
 		{
 		}
 
@@ -55,11 +52,9 @@ namespace Menge
 		}
 
 	public:
-		bool initialize( pybind::kernel_interface * _kernel ) override
+		bool initialize() override
 		{
-			m_kernel = _kernel;
-
-			pybind::registration_type_cast<T>(m_kernel, new ScriptClassExtract<T>());
+			pybind::registration_type_cast<T>(new ScriptClassExtract<T>());
 
 			return true;
 		}
@@ -84,7 +79,7 @@ namespace Menge
 
             T * obj = static_cast<T *>( _node );
 
-			const pybind::class_type_scope_interface_ptr & scope = m_kernel->class_scope<T>();
+			const pybind::class_type_scope_ptr & scope = pybind::detail::class_scope<T>();
 
 			PyObject * py_obj = scope->create_holder( (void *)obj );
 
@@ -103,8 +98,6 @@ namespace Menge
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
-
-		pybind::kernel_interface * m_kernel;
 	};
 }
 

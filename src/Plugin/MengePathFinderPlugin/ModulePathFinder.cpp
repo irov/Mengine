@@ -52,7 +52,7 @@ namespace Menge
 
 			PathGraphNode * node = new PathGraphNode;
 
-			node->setEmbed( pybind::object( _obj ) );
+			node->setEmbed( _obj );
 
 			return node;
 		}

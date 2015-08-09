@@ -1040,11 +1040,11 @@ namespace Menge
 		return m_isometricOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	pybind::object Node::_embedded()
+	PyObject * Node::_embedded()
 	{ 
         const ConstString & type = this->getType();
 
-		pybind::object embedding = SCRIPT_SERVICE(m_serviceProvider)
+		PyObject * embedding = SCRIPT_SERVICE(m_serviceProvider)
 			->wrap( type, this );
 
 		return embedding;

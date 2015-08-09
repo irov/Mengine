@@ -238,7 +238,7 @@ namespace Menge
 		mt::vec3f m_isometricOffset;
 		
 	protected:
-		pybind::object _embedded() override;
+		PyObject * _embedded() override;
 
 	public:
 		PyObject * setEventListener( PyObject * _args, PyObject * _kwds );

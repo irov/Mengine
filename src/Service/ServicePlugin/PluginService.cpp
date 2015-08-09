@@ -47,7 +47,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     PluginInterface * PluginService::loadPlugin( const WString & _name )
     {
-        LOGGER_INFO(m_serviceProvider)( "PluginService::loadPlugin get %ls"
+		LOGGER_INFO( m_serviceProvider )("load Plugin %ls"
             , _name.c_str() 
             );
 

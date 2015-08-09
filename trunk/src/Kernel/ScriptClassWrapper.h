@@ -17,16 +17,14 @@ namespace Menge
         {
             if( _node == nullptr )
             {
-                return pybind::ret_none();
+                return nullptr;
             }
 
-            pybind::object py_obj = _node->getEmbed();
+            PyObject * py_obj = _node->getEmbed();
 
-			PyObject * py_obj_ptr = py_obj.ptr();
+			pybind::incref( py_obj );
 
-			pybind::incref( py_obj_ptr );
-
-			return py_obj_ptr;
+			return py_obj;
         }
     };
 
@@ -65,7 +63,7 @@ namespace Menge
 		}
 
 	protected:
-		pybind::object wrap( Scriptable * _node ) override
+		PyObject * wrap( Scriptable * _node ) override
 		{
 #   ifdef _DEBUG
 			if( dynamic_cast<T *>( _node ) == nullptr )
@@ -73,7 +71,7 @@ namespace Menge
 				LOGGER_ERROR( m_serviceProvider )("ScriptClassWrapper::wrap invalid type"
 					);
 
-                return pybind::make_invalid_object_t();
+                return nullptr;
             }
 #   endif
 
@@ -87,7 +85,7 @@ namespace Menge
 			//pybind::set_attr( py_embedded, "Menge_type", pybind::ptr(_node->getType()) );
 			//pybind::set_attr( py_embedded, "Menge_tag", pybind::ptr(_node->getTag()) );
 
-			return pybind::object( py_obj );
+			return py_obj;
 		}
 
 	protected:

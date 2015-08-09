@@ -69,7 +69,7 @@ namespace Menge
 
 	public:
 		void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper ) override;
-		pybind::object wrap( const ConstString & _type, Scriptable * _node ) override;
+		PyObject * wrap( const ConstString & _type, Scriptable * _node ) override;
 		
 	public:
 		bool hasModuleFunction( const pybind::object & _module, const char * _name ) override;

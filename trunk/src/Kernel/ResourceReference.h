@@ -84,7 +84,7 @@ namespace Menge
 		void _decrementZero() override;
 
     protected:
-		pybind::object _embedded() override;
+		PyObject * _embedded() override;
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;

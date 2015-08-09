@@ -37,7 +37,7 @@ namespace Menge
 		virtual void finalize() = 0;
 
     public:
-		virtual pybind::object wrap( Scriptable * _node ) = 0;
+		virtual PyObject * wrap( Scriptable * _node ) = 0;
 
     public:
         virtual void destroy() = 0;
@@ -63,7 +63,7 @@ namespace Menge
 
 	public:
         virtual void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper ) = 0;
-		virtual pybind::object wrap( const ConstString & _type, Scriptable * _node ) = 0;
+		virtual PyObject * wrap( const ConstString & _type, Scriptable * _node ) = 0;
 
 	public:
 		virtual bool bootstrapModules() = 0;

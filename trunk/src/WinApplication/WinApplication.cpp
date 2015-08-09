@@ -1558,6 +1558,7 @@ namespace Menge
 
 #	define MENGINE_ADD_PLUGIN( Init, Info )\
 	{\
+		LOGGER_INFO(m_serviceProvider)( Info );\
 		PluginInterface * plugin;\
 		Init( &plugin );\
 		if( plugin->initialize( m_serviceProvider ) == false )\
@@ -1567,7 +1568,6 @@ namespace Menge
 		}\
 		else\
 		{\
-			LOGGER_INFO(m_serviceProvider)( Info );\
 			m_plugins.push_back( plugin );\
 		}\
 	}		
@@ -1582,7 +1582,7 @@ namespace Menge
 
 
 #	undef MENGINE_ADD_PLUGIN
-
+	
 		TVectorWString plugins;
 		CONFIG_VALUES(m_serviceProvider, "Plugins", "Name", plugins);
 

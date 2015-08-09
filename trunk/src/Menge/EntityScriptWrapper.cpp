@@ -120,8 +120,7 @@ namespace Menge
 			Entity * entity = NODE_SERVICE( serviceProvider )
 				->createNodeT<Entity>( CONST_STRING( serviceProvider, Entity ) );
 
-			entity->setEmbed( pybind::object( _obj ) );
-			//pybind::incref( _obj );
+			entity->setEmbed( _obj );
 
 			return entity;
 		}
@@ -142,7 +141,7 @@ namespace Menge
 			Arrow * arrow = NODE_SERVICE( serviceProvider )
 				->createNodeT<Arrow>( CONST_STRING( serviceProvider, Arrow ) );
 
-			arrow->setEmbed( pybind::object( _obj ) );
+			arrow->setEmbed( _obj );
 
 			return arrow;
 		}
@@ -163,7 +162,7 @@ namespace Menge
 			Scene * scene = NODE_SERVICE( serviceProvider )
 				->createNodeT<Scene>( CONST_STRING( serviceProvider, Scene ) );
 
-			scene->setEmbed( pybind::object( _obj ) );
+			scene->setEmbed( _obj );
 
 			return scene;
 		}

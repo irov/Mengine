@@ -652,6 +652,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::dumpResources( const String & _tag )
 	{
+		(void)_tag;
+
 #	ifdef _DEBUG
 		LOGGER_ERROR(m_serviceProvider)("Dumping resources... %s"
 			, _tag.c_str()

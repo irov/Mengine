@@ -52,6 +52,11 @@ namespace Menge
 			(void)_functionName;
 			(void)_className;
 
+			LOGGER_INFO( m_serviceProvider )("pybind call begin %s %s"
+				, _className
+				, _functionName
+				);
+
 			size_t count = LOG_SERVICE(m_serviceProvider)
 				->getCountMessage( LM_ERROR );
 
@@ -62,6 +67,11 @@ namespace Menge
 		{
 			(void)_kwds;
 			(void)_args;
+
+			LOGGER_INFO( m_serviceProvider )("pybind call end %s %s"
+				, _className
+				, _functionName
+				);
 
 			size_t count = LOG_SERVICE(m_serviceProvider)
 				->getCountMessage( LM_ERROR );
@@ -189,6 +199,7 @@ namespace Menge
 		pybind::setStdErrorHandle( py_loggerError );
 		pybind::decref( py_loggerError );
 
+		pybind::set_observer_bind_call( new My_observer_bind_call( m_serviceProvider ) );
 
         pybind::interface_<ScriptModuleFinder>("ScriptModuleFinder", true)
             .def("find_module", &ScriptModuleFinder::find_module)   
@@ -210,9 +221,7 @@ namespace Menge
 		m_moduleFinder->setEmbed( py_moduleFinder );
 
         pybind::_set_module_finder( py_moduleFinder );
-
-		pybind::set_observer_bind_call( new My_observer_bind_call(m_serviceProvider) );
-
+				
 		bool gc_exist;
 		PyObject * gc = pybind::module_import( "gc", gc_exist );
 
@@ -625,7 +634,7 @@ namespace Menge
 		m_scriptWrapper.insert( _type, _wrapper );
 	}
 	//////////////////////////////////////////////////////////////////////////|
-	pybind::object ScriptEngine::wrap( const ConstString & _type, Scriptable * _scriptable )
+	PyObject * ScriptEngine::wrap( const ConstString & _type, Scriptable * _scriptable )
 	{
 		ScriptClassInterface * scriptClass = nullptr;
 		if( m_scriptWrapper.has( _type, &scriptClass ) == false )
@@ -634,10 +643,10 @@ namespace Menge
                 , _type.c_str()
                 );
 
-			return pybind::make_invalid_object_t();
+			return nullptr;
 		}        
 
-		pybind::object py_embedded = scriptClass->wrap( _scriptable );
+		PyObject * py_embedded = scriptClass->wrap( _scriptable );
 
 		return py_embedded;
 	}

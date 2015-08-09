@@ -18,9 +18,9 @@ namespace Menge
 		}
 
 	protected:
-		pybind::object _embedded() override
+		PyObject * _embedded() override
 		{
-			return pybind::make_invalid_object_t();
+			return nullptr;
 		}
 	};
 }

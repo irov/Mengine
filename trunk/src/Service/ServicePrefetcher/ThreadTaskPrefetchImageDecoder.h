@@ -45,7 +45,6 @@ namespace Menge
 		FileGroupInterfacePtr m_group;
 		InputStreamInterfacePtr m_stream;
 		ImageDecoderInterfacePtr m_imageDecoder;
-		MemoryInputPtr m_memoryInput;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & ThreadTaskPrefetchImageDecoder::getPakName() const

@@ -40,7 +40,7 @@ namespace Menge
 
 		m_factoryPoolMemoryCacheBuffer.setMutex( m_memoryMutex );
 		m_factoryPoolMemoryCacheInput.setMutex( m_memoryMutex );
-		m_factoryPoolMemoryProxyInput.setMutex( m_memoryMutex );				
+		m_factoryPoolMemoryProxyInput.setMutex( m_memoryMutex );
 		m_factoryPoolMemoryInput.setMutex( m_memoryMutex );
 		m_factoryPoolMemory.setMutex( m_memoryMutex );
 

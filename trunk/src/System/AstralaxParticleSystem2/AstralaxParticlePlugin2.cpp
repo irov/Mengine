@@ -9,6 +9,8 @@ extern "C" // only required if using g++
 	//////////////////////////////////////////////////////////////////////////
 	bool initPluginAstralaxParticlePlugin2( Menge::PluginInterface ** _plugin )
 	{
+		stdex_allocator_initialize();
+
 		*_plugin = new Menge::AstralaxParticlePlugin2();
 
 		return true;
@@ -34,7 +36,7 @@ namespace Menge
 	bool AstralaxParticlePlugin2::initialize( ServiceProviderInterface * _provider )
 	{
 		m_serviceProvider = _provider;
-
+		
 		LOGGER_INFO(m_serviceProvider)( "Initializing Particle System 3D..." );
 
 		ParticleSystemInterface2 * particleSystem2;
@@ -78,5 +80,7 @@ namespace Menge
 		}
 
 		delete this;
+
+		stdex_allocator_finalize();
 	}
 }

@@ -16,18 +16,31 @@
 #pragma comment ( lib, "Crypt32.lib" )
 
 //////////////////////////////////////////////////////////////////////////
-bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
+extern "C" // only required if using g++
 {
-	*_plugin = new Menge::XlsExportPlugin();
-	return true;
-}
+	//////////////////////////////////////////////////////////////////////////
+	bool initPluginMengeXlsExport( Menge::PluginInterface ** _plugin )
+	{
+		stdex_allocator_initialize();
 
+		*_plugin = new Menge::XlsExportPlugin();
+
+		return true;
+	}
+	////////////////////////////////////////////////////////////////////////////
+#	ifdef MENGE_PLUGIN_DLL
+	__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
+	{
+		return initPluginMengeXlsExport( _plugin );
+	}
+#	endif
+}
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	XlsExportPlugin::XlsExportPlugin()
-        : m_serviceProvider(NULL)
+        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -128,6 +141,8 @@ namespace Menge
 	void XlsExportPlugin::destroy()
 	{
 		delete this;
+
+		stdex_allocator_finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool XlsExportPlugin::proccess_( const char * _projectName )

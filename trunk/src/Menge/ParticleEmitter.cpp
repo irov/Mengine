@@ -442,6 +442,8 @@ namespace	Menge
 
 			const mt::uv4f & texture_uv = texture->getUV();
 
+			bool texture_uv_identity = mt::uv4_identity( texture_uv );
+
 			for( uint32_t
 				it = mesh.begin,
 				it_end = mesh.begin + mesh.size;
@@ -470,7 +472,17 @@ namespace	Menge
 				RenderVertex2D * vertice = &m_vertices[it * 4];
 
 				mt::uv4f uv;
-				mt::multiply_tetragon_uv4_vp( uv, texture_uv, p.uv );
+				if( texture_uv_identity == false )
+				{
+					mt::multiply_tetragon_uv4_vp( uv, texture_uv, p.uv );
+				}
+				else
+				{
+					uv.p0 = p.uv[0];
+					uv.p1 = p.uv[1];
+					uv.p2 = p.uv[2];
+					uv.p3 = p.uv[3];
+				}
 
 				for( size_t i = 0; i != 4; ++i )
 				{

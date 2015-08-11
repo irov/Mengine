@@ -24,6 +24,8 @@ extern "C" // only required if using g++
 	//////////////////////////////////////////////////////////////////////////
     bool initPluginDevelopmentConverter( Menge::PluginInterface ** _plugin )
     {
+		stdex_allocator_initialize();
+
         *_plugin = new Menge::DevelopmentConverterPlugin();
 
         return true;
@@ -100,5 +102,7 @@ namespace Menge
 	void DevelopmentConverterPlugin::destroy()
 	{
 		delete this;
+
+		stdex_allocator_finalize();
 	}
 }

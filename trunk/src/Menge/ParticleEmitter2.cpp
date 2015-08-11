@@ -434,6 +434,9 @@ namespace	Menge
 			const mt::uv4f & mesh_uv_image = image->getUVImage();
 			const mt::uv4f & mesh_uv_alpha = image->getUVAlpha();
 
+			bool mesh_uv_image_identity = mt::uv4_identity( mesh_uv_image );
+			bool mesh_uv_alpha_identity = mt::uv4_identity( mesh_uv_alpha );
+
 			for( uint32_t
 				it = mesh.begin,
 				it_end = mesh.begin + mesh.size;
@@ -473,10 +476,32 @@ namespace	Menge
 				RenderVertex2D * vertice = &m_vertices[it * 4];
 
 				mt::uv4f uv;
+
+				if( mesh_uv_image_identity == false )
+				{
+					mt::multiply_tetragon_uv4_vp( uv, mesh_uv_image, p.uv );
+				}
+				else
+				{
+					uv.p0 = p.uv[0];
+					uv.p1 = p.uv[1];
+					uv.p2 = p.uv[2];
+					uv.p3 = p.uv[3];
+				}
+
 				mt::uv4f uv2;
 
-				mt::multiply_tetragon_uv4_vp( uv, mesh_uv_image, p.uv );
-				mt::multiply_tetragon_uv4_vp( uv2, mesh_uv_alpha, p.uv );
+				if( mesh_uv_alpha_identity == false )
+				{
+					mt::multiply_tetragon_uv4_vp( uv2, mesh_uv_alpha, p.uv );
+				}
+				else
+				{
+					uv2.p0 = p.uv[0];
+					uv2.p1 = p.uv[1];
+					uv2.p2 = p.uv[2];
+					uv2.p3 = p.uv[3];
+				}
 
 				for( size_t i = 0; i != 4; ++i )
 				{

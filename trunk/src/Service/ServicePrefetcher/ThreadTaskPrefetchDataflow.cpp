@@ -33,7 +33,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskPrefetchDataflow::_onRun()
 	{
-		m_group = FILE_SERVICE(m_serviceProvider)
+		m_group = FILE_SERVICE( m_serviceProvider )
 			->getFileGroup( m_pakName );
 
 		if( m_group == nullptr )

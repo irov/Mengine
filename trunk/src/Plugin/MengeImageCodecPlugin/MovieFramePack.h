@@ -46,37 +46,19 @@ namespace Menge
 		bool isLayerPermanentlyHide( uint32_t _layerIndex ) const override;
 
 	public:
-		inline const TVectorMovieFrameLayer & getLayers() const;
-
-	public:
         MovieLayerTimeRemap & mutableLayerTimeRemap( uint32_t _index );
 		MovieLayerShapes & mutableLayerShape( uint32_t _index );
 		MovieLayerPolygon & mutableLayerPolygon( uint32_t _index );
-
-	public:		
-		inline const TVectorMovieLayerTimeRemap & getTimeremap() const;
-		inline const TVectorMovieLayerShapes & getShapes() const;
-		inline const TVectorMovieLayerPolygons & getPolygons() const;
 			
 	protected:
-		TVectorMovieFrameLayer m_layers;
-        TVectorMovieLayerTimeRemap m_timeremap;
-		TVectorMovieLayerShapes m_shapes;
-		TVectorMovieLayerPolygons m_polygons;
+		uint32_t m_sizeLayers;
+		uint32_t m_sizeTimeremap;
+		uint32_t m_sizeShapes;
+		uint32_t m_sizePolygons;
+
+		MovieLayerFrame * m_layers;
+		MovieLayerTimeRemap * m_timeremap;
+		MovieLayerShapes * m_shapes;		
+		MovieLayerPolygon * m_polygons;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline const TVectorMovieFrameLayer & MovieFramePack::getLayers() const
-	{
-		return m_layers;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const TVectorMovieLayerTimeRemap & MovieFramePack::getTimeremap() const
-	{
-		return m_timeremap;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const TVectorMovieLayerShapes & MovieFramePack::getShapes() const
-	{
-		return m_shapes;
-	}
 }

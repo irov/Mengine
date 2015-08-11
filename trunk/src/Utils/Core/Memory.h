@@ -64,26 +64,26 @@ namespace Menge
 	public:
 		inline void * operator new (size_t _size)
 		{
-			return stdex_malloc( _size );
+			return stdex_malloc_threadsafe( _size );
 		}
 
-			inline void operator delete (void * _ptr, size_t _size)
+		inline void operator delete (void * _ptr, size_t _size)
 		{
 			(void)_size;
 
-			stdex_free( _ptr );
+			stdex_free_threadsafe( _ptr );
 		}
 
 		inline void * operator new []( size_t _size )
 		{
-			return stdex_malloc( _size );
+			return stdex_malloc_threadsafe( _size );
 		}
 
 			inline void operator delete []( void * _ptr, size_t _size )
 		{
 			(void)_size;
 
-			stdex_free( _ptr );
+			stdex_free_threadsafe( _ptr );
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@ namespace Menge
 		T * allocateT()
 		{
 			size_t memory_size = sizeof( T );
-			void * memory_buffer = stdex_malloc( memory_size );
+			void * memory_buffer = stdex_malloc_threadsafe( memory_size );
 
 			new (memory_buffer)T();
 
@@ -105,14 +105,14 @@ namespace Menge
 		{
 			_t->~T();
 			
-			stdex_free( _t );
+			stdex_free_threadsafe( _t );
 		}
 
 		template<class T>
 		T * allocateMemory( uint32_t _count )
 		{
 			size_t memory_size = sizeof(T) * _count;
-			void * memory_buffer = stdex_malloc( memory_size );
+			void * memory_buffer = stdex_malloc_threadsafe( memory_size );
 
 			return reinterpret_cast<T *>(memory_buffer);
 		}
@@ -121,14 +121,14 @@ namespace Menge
 		T * reallocateMemory( void * _buffer, uint32_t _count )
 		{
 			size_t memory_size = sizeof(T) * _count;
-			void * memory_buffer = stdex_realloc( _buffer, memory_size );
+			void * memory_buffer = stdex_realloc_threadsafe( _buffer, memory_size );
 
 			return reinterpret_cast<T *>(memory_buffer);
 		}
 
 		inline void freeMemory( void * _memory )
 		{
-			stdex_free( _memory );
+			stdex_free_threadsafe( _memory );
 		}
 	}
 }

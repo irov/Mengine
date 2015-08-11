@@ -2,6 +2,8 @@
 
 #	include "line2.h"
 
+#	include "utils.h"
+
 namespace mt
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -47,6 +49,28 @@ namespace mt
 		p3 = _rhs.p3;
 
 		return *this;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE bool uv4_identity( const mt::uv4f & _uv )
+	{ 
+		float uv_c = _uv.p0.x + _uv.p0.y +
+			_uv.p1.x + _uv.p1.y +
+			_uv.p2.x + _uv.p2.y +
+			_uv.p3.x + _uv.p3.y;
+
+		if( mt::equal_f_f( uv_c, 4.f ) == false )
+		{
+			return false;
+		}
+
+		return mt::equal_f_z( _uv.p0.x ) == true &&
+			mt::equal_f_z( _uv.p0.y ) == true &&
+			mt::equal_f_1( _uv.p1.x ) == true &&
+			mt::equal_f_z( _uv.p1.y ) == true &&
+			mt::equal_f_1( _uv.p2.x ) == true &&
+			mt::equal_f_1( _uv.p2.y ) == true &&
+			mt::equal_f_z( _uv.p3.x ) == true &&
+			mt::equal_f_1( _uv.p3.y ) == true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void uv4_from_mask( mt::uv4f & _out, const mt::vec4f & _mask )

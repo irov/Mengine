@@ -45,7 +45,6 @@ namespace Menge
 		FileGroupInterfacePtr m_group;
 		InputStreamInterfacePtr m_stream;
 		SoundDecoderInterfacePtr m_soundDecoder;
-		MemoryInputPtr m_memoryInput;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & ThreadTaskPrefetchSoundDecoder::getPakName() const

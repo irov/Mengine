@@ -3,8 +3,6 @@
 #   include "Interface/DataInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 
-#   include "Config/Floats.h"
-
 #   include "Core/Magic.h"
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
@@ -12,8 +10,6 @@
 #   include "Factory/Factorable.h"
 
 #   include "Math/vec3.h"
-
-#   include <stdex/stl_vector.h>
 
 #	include <stdint.h>
 
@@ -42,14 +38,14 @@ namespace Menge
 	
     struct MovieLayerFrame
     {
-		uint32_t count;		
+		uint32_t count;
 		
 		mt::vec3f * anchorPoint;
 		mt::vec3f * position;
 		mt::vec3f * scale;
 		float * rotation_x;
 		float * rotation_y;
-		float * rotation_z;		
+		float * rotation_z;
 		float * opacity;
 		float * volume;
 
@@ -59,16 +55,12 @@ namespace Menge
         bool immutable;
     };
 
-	typedef stdex::vector<MovieLayerFrame> TVectorMovieFrameLayer;
-
-    struct MovieLayerTimeRemap
+	struct MovieLayerTimeRemap
     {
 		uint32_t layerId;
 
-        Floats times;
+		float * times;
     };
-
-	typedef stdex::vector<MovieLayerTimeRemap> TVectorMovieLayerTimeRemap;
 
 #	ifndef MENGINE_MOVIE_SHAPE_MAX_VERTEX
 #	define MENGINE_MOVIE_SHAPE_MAX_VERTEX 32
@@ -86,16 +78,12 @@ namespace Menge
 		uint8_t indexCount;
 	};
 
-	typedef stdex::vector<MovieFrameShape> TVectorMovieFrameShapes;
-
 	struct MovieLayerShapes
 	{
 		uint32_t layerId;
 
-		TVectorMovieFrameShapes shapes;
+		MovieFrameShape * shapes;
 	};
-
-	typedef stdex::vector<MovieLayerShapes> TVectorMovieLayerShapes;
 
 #	ifndef MENGINE_MOVIE_POLYGON_MAX_VERTEX
 #	define MENGINE_MOVIE_POLYGON_MAX_VERTEX 32
@@ -108,8 +96,6 @@ namespace Menge
 		mt::vec2f polygon[MENGINE_MOVIE_POLYGON_MAX_VERTEX];
 		uint8_t vertexCount;
 	};
-
-	typedef stdex::vector<MovieLayerPolygon> TVectorMovieLayerPolygons;
 
 	class MovieFramePackInterface
 		: public DataInterface

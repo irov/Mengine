@@ -61,6 +61,9 @@ namespace Menge
 		bool interrupt();
 
 	public:
+		void update( float _timing );
+
+	public:
 		inline bool isPlay() const;
 		inline bool isPause() const;
 
@@ -87,6 +90,7 @@ namespace Menge
 		uint32_t m_enumerator;
 		
 		float m_playTime;
+		float m_timing;
 
 		float m_animationSpeedFactor;        
 		float m_intervalStart;

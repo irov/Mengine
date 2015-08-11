@@ -68,10 +68,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::invalidateWorldMatrix()
 	{
-		//if( m_invalidateWorldMatrix == true )
-		//{
-		//	return;
-		//}
+		if( m_invalidateWorldMatrix == true )
+		{
+			return;
+		}
 
 		m_invalidateWorldMatrix = true;
 

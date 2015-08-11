@@ -813,6 +813,11 @@ namespace Menge
 	{
         (void)_current;
         (void)_timing;
+
+		if( m_invalidateWorldMatrix == true )
+		{
+			this->updateWorldMatrix();
+		}
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////

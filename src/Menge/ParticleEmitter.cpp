@@ -81,7 +81,12 @@ namespace	Menge
 			return false;
 		}
 
-		this->invalidateWorldMatrix();
+		if( m_emitterRelative == true )
+		{
+			const mt::vec3f & wm_pos = this->getWorldPosition();
+
+			m_emitter->setPosition( wm_pos );
+		}
         
 		return true;
 	}
@@ -369,6 +374,8 @@ namespace	Menge
 		{
 			return;
 		}
+
+		Node::_update( _current, _timing );
 
 		bool enabled = APPLICATION_SERVICE(m_serviceProvider)
 			->getParticlesEnabled();

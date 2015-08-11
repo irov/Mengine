@@ -14,6 +14,8 @@ extern "C" // only required if using g++
     //////////////////////////////////////////////////////////////////////////
     bool initPluginMengeXmlCodec( Menge::PluginInterface ** _plugin )
     {
+		stdex_allocator_initialize();
+
         *_plugin = new Menge::XmlCodecPlugin();
 
         return true;
@@ -54,5 +56,7 @@ namespace Menge
 	void XmlCodecPlugin::destroy()
 	{
 		delete this;
+
+		stdex_allocator_finalize();
 	}
 }

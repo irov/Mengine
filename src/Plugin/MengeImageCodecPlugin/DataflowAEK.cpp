@@ -86,132 +86,141 @@ namespace Menge
 			uint32_t maxIndex;
 			ar << maxIndex;
 			
-			_pack->initialize( maxIndex );
-
-			for( uint32_t it_layer = 0; it_layer != maxIndex; ++it_layer )
+			if( maxIndex != 0 )
 			{
-				uint32_t frames_size;
-				ar << frames_size;
+				_pack->initialize( maxIndex );
 
-				uint8_t immutable;
-				ar << immutable;
-									
-				MovieLayerFrame & frame = _pack->initializeLayer( it_layer, frames_size, !!immutable );
+				for( uint32_t it_layer = 0; it_layer != maxIndex; ++it_layer )
+				{
+					uint32_t frames_size;
+					ar << frames_size;
 
-				if( frames_size == 0 )
-				{
-					continue;
-				}
+					uint8_t immutable;
+					ar << immutable;
 
-				if( immutable == 1 )
-				{
-					ar << frame.source.anchorPoint;
-					ar << frame.source.position;
-					ar << frame.source.rotation;
-					ar << frame.source.scale;
-					ar << frame.source.opacity;
-					ar << frame.source.volume;
-				}
-				else
-				{
-	#	define READ_FRAME_SOURCE( Type, Member1, Member2, Mask )\
-					{ \
+					MovieLayerFrame & frame = _pack->initializeLayer( it_layer, frames_size, !!immutable );
+
+					if( frames_size == 0 )
+					{
+						continue;
+					}
+
+					if( immutable == 1 )
+					{
+						ar << frame.source.anchorPoint;
+						ar << frame.source.position;
+						ar << frame.source.rotation;
+						ar << frame.source.scale;
+						ar << frame.source.opacity;
+						ar << frame.source.volume;
+					}
+					else
+					{
+#	define READ_FRAME_SOURCE( Type, Member1, Member2, Mask )\
+										{ \
 						uint8_t value_immutable; \
 						ar << value_immutable; \
 						if( value_immutable == 1 ) \
-						{ \
+												{ \
 							ar << frame.source.Member1; \
 							frame.immutable_mask |= Mask; \
-						} \
-						else \
-						{ \
+												} \
+											else \
+											{ \
 							frame.Member2 = Helper::allocateMemory<Type>( frames_size ); \
 							ar.readPODs( frame.Member2, frames_size );\
-						} \
-					}
-			
-					READ_FRAME_SOURCE( mt::vec3f, anchorPoint, anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
-					READ_FRAME_SOURCE( mt::vec3f, position, position, MOVIE_KEY_FRAME_IMMUTABLE_POSITION );
-					READ_FRAME_SOURCE( float, rotation.x, rotation_x, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_X );
-					READ_FRAME_SOURCE( float, rotation.y, rotation_y, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Y );
-					READ_FRAME_SOURCE( float, rotation.z, rotation_z, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Z );
-					READ_FRAME_SOURCE( mt::vec3f, scale, scale, MOVIE_KEY_FRAME_IMMUTABLE_SCALE );
-					READ_FRAME_SOURCE( float, opacity, opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
-					READ_FRAME_SOURCE( float, volume, volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
+											} \
+										}
 
-	#	undef READ_FRAME_SOURCE
+						READ_FRAME_SOURCE( mt::vec3f, anchorPoint, anchorPoint, MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT );
+						READ_FRAME_SOURCE( mt::vec3f, position, position, MOVIE_KEY_FRAME_IMMUTABLE_POSITION );
+						READ_FRAME_SOURCE( float, rotation.x, rotation_x, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_X );
+						READ_FRAME_SOURCE( float, rotation.y, rotation_y, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Y );
+						READ_FRAME_SOURCE( float, rotation.z, rotation_z, MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Z );
+						READ_FRAME_SOURCE( mt::vec3f, scale, scale, MOVIE_KEY_FRAME_IMMUTABLE_SCALE );
+						READ_FRAME_SOURCE( float, opacity, opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
+						READ_FRAME_SOURCE( float, volume, volume, MOVIE_KEY_FRAME_IMMUTABLE_VOLUME );
+
+#	undef READ_FRAME_SOURCE
+					}
 				}
 			}
 
 			uint32_t times_count;
 			ar << times_count;
 
-			_pack->initializeTimeremap( times_count );
+			if( times_count != 0 )
+			{
+				_pack->initializeTimeremap( times_count );
 
-			for( uint32_t i = 0; i != times_count; ++i )
-			{			
-				MovieLayerTimeRemap & timeremap = _pack->mutableLayerTimeRemap( i );
-
-				uint32_t layerId;
-				ar << layerId;
-
-				timeremap.layerId = layerId;
-
-				uint32_t times_size;
-				ar << times_size;
-
-				if( times_size == 0 )
+				for( uint32_t i = 0; i != times_count; ++i )
 				{
-					continue;
+					MovieLayerTimeRemap & timeremap = _pack->mutableLayerTimeRemap( i );
+
+					uint32_t layerId;
+					ar << layerId;
+
+					timeremap.layerId = layerId;
+
+					uint32_t times_size;
+					ar << times_size;
+
+					if( times_size == 0 )
+					{
+						continue;
+					}
+
+					timeremap.times = Helper::allocateMemory<float>( times_size );
+
+					float * times_buff = &timeremap.times[0];
+					ar.readPODs( times_buff, times_size );
 				}
-
-				timeremap.times.resize( times_size );
-
-				float * times_buff = &timeremap.times[0];
-				ar.readPODs( times_buff, times_size );
 			}
 
 			uint32_t shapes_count;
 			ar << shapes_count;
 
-			_pack->initializeShapes( shapes_count );
-
-			for( uint32_t i = 0; i != shapes_count; ++i )
+			if( shapes_count != 0 )
 			{
-				MovieLayerShapes & shapes = _pack->mutableLayerShape( i );
+				_pack->initializeShapes( shapes_count );
 
-				uint32_t layerId;
-				ar << layerId;
-
-				shapes.layerId = layerId;
-
-				uint32_t shapes_size;
-				ar << shapes_size;
-
-				if( shapes_size == 0 )
+				for( uint32_t i = 0; i != shapes_count; ++i )
 				{
-					continue;
-				}
+					MovieLayerShapes & shapes = _pack->mutableLayerShape( i );
 
-				shapes.shapes.resize( shapes_size );
+					uint32_t layerId;
+					ar << layerId;
 
-				for( uint32_t j = 0; j != shapes_size; ++j )
-				{
-					MovieFrameShape & shape = shapes.shapes[j];
+					shapes.layerId = layerId;
 
-					ar << shape.vertexCount;
+					uint32_t shapes_size;
+					ar << shapes_size;
 
-					if( shape.vertexCount > 0 )
+					if( shapes_size == 0 )
 					{
-						ar.readPODs( shape.pos, shape.vertexCount );
-						ar.readPODs( shape.uv, shape.vertexCount );
-
-						ar << shape.indexCount;
-						ar.readPODs( shape.indices, shape.indexCount );
+						continue;
 					}
-					else
+
+					shapes.shapes = Helper::allocateMemory<MovieFrameShape>( shapes_size );
+
+					for( uint32_t j = 0; j != shapes_size; ++j )
 					{
-						shape.indexCount = 0;
+						MovieFrameShape & shape = shapes.shapes[j];
+
+						ar << shape.vertexCount;
+
+						if( shape.vertexCount > 0 )
+						{
+							ar.readPODs( shape.pos, shape.vertexCount );
+							ar.readPODs( shape.uv, shape.vertexCount );
+
+							ar << shape.indexCount;
+							ar.readPODs( shape.indices, shape.indexCount );
+						}
+						else
+						{
+							shape.indexCount = 0;
+						}
 					}
 				}
 			}
@@ -219,29 +228,32 @@ namespace Menge
 			uint32_t polygons_count;
 			ar << polygons_count;
 
-			_pack->initializePolygons( polygons_count );
-
-			for( uint32_t i = 0; i != polygons_count; ++i )
+			if( polygons_count != 0 )
 			{
-				MovieLayerPolygon & polygon = _pack->mutableLayerPolygon( i );
+				_pack->initializePolygons( polygons_count );
 
-				uint32_t layerId;
-				ar << layerId;
-
-				polygon.layerId = layerId;
-
-				uint8_t vertexCount;
-				ar << vertexCount;
-
-				polygon.vertexCount = vertexCount;
-
-				for( uint32_t j = 0; j != vertexCount; ++j )
+				for( uint32_t i = 0; i != polygons_count; ++i )
 				{
-					mt::vec2f v;
-					ar << v.x;
-					ar << v.y;
+					MovieLayerPolygon & polygon = _pack->mutableLayerPolygon( i );
 
-					polygon.polygon[j] = v;
+					uint32_t layerId;
+					ar << layerId;
+
+					polygon.layerId = layerId;
+
+					uint8_t vertexCount;
+					ar << vertexCount;
+
+					polygon.vertexCount = vertexCount;
+
+					for( uint32_t j = 0; j != vertexCount; ++j )
+					{
+						mt::vec2f v;
+						ar << v.x;
+						ar << v.y;
+
+						polygon.polygon[j] = v;
+					}
 				}
 			}
 						

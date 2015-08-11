@@ -9,6 +9,8 @@ extern "C" // only required if using g++
 	//////////////////////////////////////////////////////////////////////////
 	bool initPluginAstralaxParticlePlugin( Menge::PluginInterface ** _plugin )
 	{
+		stdex_allocator_initialize();
+
 		*_plugin = new Menge::AstralaxParticlePlugin();
 
 		return true;
@@ -66,8 +68,8 @@ namespace Menge
 	{
 		if( m_particleSystem != nullptr )
 		{
-			m_particleSystem->finalize();
-		}
+			m_particleSystem->finalize();			
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticlePlugin::destroy()
@@ -79,5 +81,7 @@ namespace Menge
 		}
 
 		delete this;
+
+		stdex_allocator_finalize();
 	}
 }

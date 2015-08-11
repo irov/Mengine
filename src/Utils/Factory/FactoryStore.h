@@ -118,7 +118,7 @@ namespace Menge
 	public:
 		T * createObjectT()
 		{
-			Factorable * obj = m_ptr->createObject();
+			Factorable * obj = this->createObject();
 
 			T * t = static_cast<T *>(obj);
 
@@ -152,12 +152,6 @@ namespace Menge
 			: m_mutex(nullptr)
 		{
 			m_ptr = new FactorableUnique<TFactoryType>();
-		}
-
-		~FactoryPoolStore()
-		{
-			m_ptr = nullptr;
-			m_mutex = nullptr;
 		}
 
 	public:
@@ -226,7 +220,7 @@ namespace Menge
 	public:
 		T * createObjectT()
 		{
-			Factorable * obj = m_ptr->createObject();
+			Factorable * obj = this->createObject();
 
 			T * t = static_cast<T *>(obj);
 

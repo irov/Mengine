@@ -28,6 +28,8 @@ namespace Menge
 		m_pakName = _pakName;
 		m_filePath = _fileName;
 		m_codec = _codec;
+
+
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const SoundDecoderInterfacePtr & ThreadTaskPrefetchSoundDecoder::getDecoder() const
@@ -71,10 +73,7 @@ namespace Menge
 
 			return false;
 		}
-
-		m_memoryInput = CACHE_SERVICE(m_serviceProvider)
-			->createMemoryInput();
-		
+	
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -92,7 +91,10 @@ namespace Menge
 
 		size_t stream_size = m_stream->size();
 
-		void * memory = m_memoryInput->newMemory( stream_size );
+		MemoryInputPtr memoryInput = CACHE_SERVICE( m_serviceProvider )
+			->createMemoryInput();
+
+		void * memory = memoryInput->newMemory( stream_size );
 
 		if( memory == nullptr )
 		{
@@ -114,7 +116,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_soundDecoder->prepareData( m_memoryInput ) == false )
+		if( m_soundDecoder->prepareData( memoryInput ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onMain: decoder for file '%s' was not initialize"
 				, m_filePath.c_str() 
@@ -132,6 +134,5 @@ namespace Menge
 
 		m_group = nullptr;
 		m_stream = nullptr;
-		m_memoryInput = nullptr;
 	}
 }

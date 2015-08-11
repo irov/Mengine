@@ -238,7 +238,7 @@ namespace Menge
             return 0.f;
         }
 
-        float adapt_timing = event->timing * 0.001f; //Bullshit
+        float adapt_timing = event->timing;
 
         return adapt_timing;
     }

@@ -39,18 +39,15 @@ namespace Menge
         if( m_relationTransformation != nullptr )
         {
             m_relationTransformation->addRelationChildren_( this );
-        }
 
-		if( m_relationTransformation == nullptr )
-		{
-			if( identityPrevTransformation == true )
+			if( m_relationTransformation->isIdentityWorldMatrix() == true && m_identityWorldMatrix == true )
 			{
 				return;
 			}
-		}
+        }
 		else
 		{
-			if( m_relationTransformation->isIdentityWorldMatrix() == true && m_identityWorldMatrix == true )
+			if( identityPrevTransformation == true )
 			{
 				return;
 			}
@@ -71,10 +68,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::invalidateWorldMatrix()
 	{
-		if( m_invalidateWorldMatrix == true )
-		{
-			return;
-		}
+		//if( m_invalidateWorldMatrix == true )
+		//{
+		//	return;
+		//}
 
 		m_invalidateWorldMatrix = true;
 

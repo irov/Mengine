@@ -72,9 +72,6 @@ namespace Menge
 			return false;
 		}
 
-		m_memoryInput = CACHE_SERVICE(m_serviceProvider)
-			->createMemoryInput();
-		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -92,7 +89,10 @@ namespace Menge
 
 		size_t stream_size = m_stream->size();
 
-		void * memory = m_memoryInput->newMemory( stream_size );
+		MemoryInputPtr memoryInput = CACHE_SERVICE( m_serviceProvider )
+			->createMemoryInput();
+
+		void * memory = memoryInput->newMemory( stream_size );
 
 		if( memory == nullptr )
 		{
@@ -114,7 +114,7 @@ namespace Menge
 			return false;
 		}
 
-		if( m_imageDecoder->prepareData( m_memoryInput ) == false )
+		if( m_imageDecoder->prepareData( memoryInput ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetcherTextureDecoder::_onMain: decoder for file '%s' was not initialize"
 				, m_filePath.c_str() 
@@ -132,6 +132,5 @@ namespace Menge
 
 		m_group = nullptr;
 		m_stream = nullptr;
-		m_memoryInput = nullptr;
 	}
 }

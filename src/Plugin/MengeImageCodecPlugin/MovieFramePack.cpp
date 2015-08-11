@@ -7,18 +7,18 @@ namespace Menge
 {
 	///////////////////////////////////////////////////////////////////////
 	MovieFramePack::MovieFramePack()
+		: m_sizeLayers(0)
+		, m_sizeTimeremap(0)
+		, m_sizeShapes(0)
+		, m_sizePolygons(0)
 	{		
 	}
 	///////////////////////////////////////////////////////////////////////
 	MovieFramePack::~MovieFramePack()
 	{
-		for( TVectorMovieFrameLayer::iterator
-			it = m_layers.begin(),
-			it_end = m_layers.end();
-		it != it_end;
-		++it )
+		for( uint32_t index = 0; index != m_sizeLayers; ++index )
 		{
-			MovieLayerFrame & layer = *it;
+			MovieLayerFrame & layer = m_layers[index];
 
 			Helper::freeMemory( layer.anchorPoint );
 			Helper::freeMemory( layer.position );
@@ -29,26 +29,41 @@ namespace Menge
 			Helper::freeMemory( layer.opacity );
 			Helper::freeMemory( layer.volume );
 		}
+
+		for( uint32_t index = 0; index != m_sizeTimeremap; ++index )
+		{
+			MovieLayerTimeRemap & layer = m_timeremap[index];
+
+			Helper::freeMemory( layer.times );
+		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void MovieFramePack::initialize( uint32_t _size )
     {
-        m_layers.resize( _size );
+		m_sizeLayers = _size;
+
+		m_layers = Helper::allocateMemory<MovieLayerFrame>( _size );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void MovieFramePack::initializeTimeremap( uint32_t _size )
 	{
-		m_timeremap.resize( _size );
+		m_sizeTimeremap = _size;
+
+		m_timeremap = Helper::allocateMemory<MovieLayerTimeRemap>( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieFramePack::initializeShapes( uint32_t _size )
 	{
-		m_shapes.resize( _size );
+		m_sizeShapes = _size;
+
+		m_shapes = Helper::allocateMemory<MovieLayerShapes>( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieFramePack::initializePolygons( uint32_t _size )
 	{
-		m_polygons.resize( _size );
+		m_sizePolygons = _size;
+
+		m_polygons = Helper::allocateMemory<MovieLayerPolygon>( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MovieLayerFrame & MovieFramePack::initializeLayer( uint32_t _layerIndex, uint32_t _count, bool _immutable )
@@ -56,25 +71,26 @@ namespace Menge
 		MovieLayerFrame & layer = m_layers[_layerIndex];
 
 		layer.count = _count;
-		layer.immutable = _immutable;
 
 		layer.anchorPoint = nullptr;
 		layer.position = nullptr;
+		layer.scale = nullptr;
 		layer.rotation_x = nullptr;
 		layer.rotation_y = nullptr;
 		layer.rotation_z = nullptr;
-		layer.scale = nullptr;
 		layer.opacity = nullptr;
 		layer.volume = nullptr;
-		
+	
 		layer.immutable_mask = 0;
+
+		layer.immutable = _immutable;
 
 		return layer;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool MovieFramePack::hasLayer( uint32_t _layerIndex ) const
     {
-        if( (_layerIndex - 1) >= m_layers.size() )
+        if( (_layerIndex - 1) >= m_sizeLayers )
         {
             return false;
         }
@@ -112,7 +128,7 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerFrame( uint32_t _layerIndex, uint32_t _frameIndex, MovieFrameSource & _frame ) const
 	{
-        if( (_layerIndex - 1) >= m_layers.size() )
+        if( (_layerIndex - 1) >= m_sizeLayers )
         {
             return false;
         }
@@ -173,7 +189,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerFrameInterpolate( uint32_t _layerIndex, uint32_t _frameIndex, float _t, MovieFrameSource & _frame ) const
 	{
-		if( (_layerIndex - 1) >= m_layers.size() )
+		if( (_layerIndex - 1) >= m_sizeLayers )
 		{
 			return false;
 		}
@@ -281,13 +297,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MovieFramePack::getLayerTimeRemap( uint32_t _layerIndex, uint32_t _frameIndex, float & _time ) const
     {
-		for( TVectorMovieLayerTimeRemap::const_iterator
-			it = m_timeremap.begin(),
-			it_end = m_timeremap.end();
-		it != it_end;
-		++it )
+		for( uint32_t index = 0; index != m_sizeTimeremap; ++index )
 		{
-			const MovieLayerTimeRemap & timeremap = *it;
+			const MovieLayerTimeRemap & timeremap = m_timeremap[index];
 
 			if( timeremap.layerId != _layerIndex )
 			{
@@ -306,13 +318,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerShape( uint32_t _layerIndex, uint32_t _frameIndex, const MovieFrameShape ** _shape ) const
 	{
-		for( TVectorMovieLayerShapes::const_iterator
-			it = m_shapes.begin(),
-			it_end = m_shapes.end();
-		it != it_end;
-		++it )
+		for( uint32_t index = 0; index != m_sizeShapes; ++index )
 		{
-			const MovieLayerShapes & shapes = *it;
+			const MovieLayerShapes & shapes = m_shapes[index];
 
 			if( shapes.layerId != _layerIndex )
 			{
@@ -331,13 +339,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::getLayerPolygon( uint32_t _layerIndex, const mt::vec2f ** _polygon, uint8_t & _vertexCount ) const
 	{
-		for( TVectorMovieLayerPolygons::const_iterator
-			it = m_polygons.begin(),
-			it_end = m_polygons.end();
-		it != it_end;
-		++it )
+		for( uint32_t index = 0; index != m_sizePolygons; ++index )
 		{
-			const MovieLayerPolygon & polygon = *it;
+			const MovieLayerPolygon & polygon = m_polygons[index];
 
 			if( polygon.layerId != _layerIndex )
 			{
@@ -355,7 +359,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MovieFramePack::isLayerPermanentlyHide( uint32_t _layerIndex ) const
 	{
-		if( (_layerIndex - 1) >= m_layers.size() )
+		if( (_layerIndex - 1) >= m_sizeLayers )
 		{
 			return false;
 		}

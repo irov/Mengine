@@ -2297,7 +2297,7 @@ namespace Menge
 		{
 			UnfetchResourceVisitor rv_gac( m_serviceProvider );
 
-			RESOURCE_SERVICE(m_serviceProvider)
+			RESOURCE_SERVICE( m_serviceProvider )
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////

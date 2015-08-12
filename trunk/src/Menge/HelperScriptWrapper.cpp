@@ -923,6 +923,35 @@ namespace Menge
             return result;
 		}
 
+		bool s_changeSettingBool( const ConstString & _setting, bool _value )
+		{
+			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE( m_serviceProvider )
+				->getCurrentAccount();
+
+			if( currentAccount == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("changeSetting: currentAccount is none [%s]"
+					, _setting.c_str()
+					);
+
+				return false;
+			}
+
+			WString setting_value;
+			if( _value == true )
+			{
+				setting_value = L"True";
+			}
+			else
+			{
+				setting_value = L"False";
+			}
+
+			bool result = currentAccount->changeSetting( _setting, setting_value );
+
+			return result;
+		}
+
         bool s_hasSetting( const ConstString & _setting )
         {
             AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
@@ -977,22 +1006,29 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & setting = currentAccount->getSetting( _setting );
-		
-			if( setting != L"True" && setting != L"False" )
-			{
-				LOGGER_ERROR(m_serviceProvider)("getSettingBool: can't scanf from [%s]"
-					, _setting.c_str()
-					);
+			const WString & value = currentAccount->getSetting( _setting );
 
-				return pybind::ret_none();
+			if( value == L"True" ||
+				value == L"true" )
+			{
+				return pybind::ret_true();
 			}
 
-			bool bool_value = setting == L"True" ? true : false;
+			if( value == L"False" ||
+				value == L"false" )
+			{
+				return pybind::ret_false();
+			}
 
-			PyObject * py_value = pybind::ret_bool( bool_value );
+			const WString & accountID = currentAccount->getName();
 
-			return py_value;
+			LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%ls' setting '%s' value '%ls' is not bool [True|False]"
+				, accountID.c_str()
+				, _setting.c_str()
+				, value.c_str()
+				);
+
+			return pybind::ret_none();
 		}
 
 		PyObject * s_getSettingInt( const ConstString & _setting )
@@ -1148,13 +1184,27 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			const WString & setting = account->getSetting( _setting );
+			const WString & value = account->getSetting( _setting );
 
-			bool bool_value = setting == L"True" ? true : false;
-			
-			PyObject * py_value = pybind::ret_bool( bool_value );
+			if( value == L"True" ||
+				value == L"true" )
+			{
+				return pybind::ret_true();
+			}
 
-			return py_value;
+			if( value == L"False" ||
+				value == L"false" )
+			{
+				return pybind::ret_false();
+			}
+
+			LOGGER_ERROR( m_serviceProvider )("getAccountSettingUInt account '%ls' setting '%s' value '%ls' is not bool [True|False]"
+				, _accountID.c_str()
+				, _setting.c_str()
+				, value.c_str()
+				);
+
+			return pybind::ret_none();
 		}
 
 		PyObject * s_getAccountSettingUInt( const WString& _accountID, const ConstString & _setting )
@@ -1861,6 +1911,8 @@ namespace Menge
 		
 
 		pybind::def_functor( "changeSetting", helperScriptMethod, &HelperScriptMethod::s_changeSetting );
+		pybind::def_functor( "changeSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeSettingBool );
+		
 		
 
 		pybind::def_functor( "getAccountSetting", helperScriptMethod, &HelperScriptMethod::s_getAccountSetting );

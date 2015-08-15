@@ -7,7 +7,7 @@
 #	include "Math/vec2.h"
 #	include "Math/vec3.h"
 
-#	include <stdex/stl_vector.h>
+#	include <stdex/heap_array.h>
 
 #	include <stdint.h>
 #	include <memory.h>
@@ -51,6 +51,7 @@ namespace Menge
 
 		float m_frameDelay;
 
+		typedef stdex::heap_array<Model3DFrame> TVectorModel3DFrames;
 		TVectorModel3DFrames m_model3DFrames;
 	};
 }

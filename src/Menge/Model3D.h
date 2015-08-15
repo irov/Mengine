@@ -103,7 +103,7 @@ namespace Menge
 
 		const Model3DFrame * m_frame;
 		
-		mutable RenderVertex2D m_verticesWM[MENGINE_MODEL_MAX_VERTEX];
+		mutable RenderVertex2D * m_verticesWM;
 
 		uint32_t m_vertexCount;
 		uint32_t m_indicesCount;

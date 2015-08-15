@@ -19,21 +19,16 @@ namespace Menge
 {
 	DECLARE_MAGIC_NUMBER(MAGIC_MDL, 'M', 'D', 'L', '1', 1);
 
-#	define MENGINE_MODEL_MAX_VERTEX 1024
-#	define MENGINE_MODEL_MAX_INDICES ((MENGINE_MODEL_MAX_VERTEX - 2) * 3)
-
 	struct Model3DFrame
 	{
 		mt::vec3f cameraPos;
 		mt::vec3f cameraDir;
 		mt::vec3f cameraUp;
 
-		mt::vec3f pos[MENGINE_MODEL_MAX_VERTEX];
-		mt::vec2f uv[MENGINE_MODEL_MAX_VERTEX];
-		RenderIndices indecies[MENGINE_MODEL_MAX_INDICES];
+		mt::vec3f * pos;
+		mt::vec2f * uv;
+		RenderIndices * indecies;
 	};
-
-	typedef stdex::vector<Model3DFrame> TVectorModel3DFrames;
 
 	class Model3DInterface
 		: public DataInterface

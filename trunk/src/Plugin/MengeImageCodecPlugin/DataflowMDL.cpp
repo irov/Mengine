@@ -90,22 +90,6 @@ namespace Menge
 		float cameraRightSign;
 		ar >> cameraRightSign;
 
-		if( vertexCount > MENGINE_MODEL_MAX_VERTEX ||
-			indicesCount > MENGINE_MODEL_MAX_INDICES )
-		{
-			LOGGER_ERROR(m_serviceProvider)("DataflowMDL::load: mdl overflow vertex %d:%d indices %d:%d"
-				, vertexCount
-				, MENGINE_MODEL_MAX_VERTEX
-				, indicesCount
-				, MENGINE_MODEL_MAX_INDICES
-				);
-
-			CACHE_SERVICE(m_serviceProvider)
-				->unlockBuffer( bufferId );
-
-			return false;
-		}
-
 		Model3DPack * pack = stdex::intrusive_get<Model3DPack>(_data);
 
 		pack->initialize( frameCount, vertexCount, indicesCount, frameDelay );
@@ -116,12 +100,15 @@ namespace Menge
 			Model3DFrame & frame = pack->mutableFrame( i );
 						
 			ar >> frame.cameraPos;
-			ar >> frame.cameraDir;	
+			ar >> frame.cameraDir;
 			ar >> frame.cameraUp;
+
+			frame.pos = Helper::allocateMemory<mt::vec3f>( vertexCount );
+			frame.uv = Helper::allocateMemory<mt::vec2f>( vertexCount );
+			frame.indecies = Helper::allocateMemory<RenderIndices>( indicesCount );
 
 			ar.readPODs( frame.pos, vertexCount );
 			ar.readPODs( frame.uv, vertexCount );
-
 			ar.readPODs( frame.indecies, indicesCount );
 		}
 

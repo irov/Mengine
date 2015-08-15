@@ -31,7 +31,7 @@ ${SOURCE_DIR}/src/tuple.cpp
 ${SOURCE_DIR}/src/dict.cpp
 )
 
-if( CMAKE_BUILD_TYPE EQUAL "DEBUG" )
+if( CMAKE_BUILD_TYPE MATCHES Debug )
     add_definitions(-DPYBIND_CALL_DEBUG)
 endif()    
 

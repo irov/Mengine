@@ -560,7 +560,19 @@ namespace Menge
 				boost::geometry::correct( imagePolygon );
 
 				std::deque<Menge::Polygon> output;
-				boost::geometry::intersection( polygon, imagePolygon, output );
+				try
+				{
+					boost::geometry::intersection( polygon, imagePolygon, output );
+				}
+				catch( const std::exception & ex )
+				{
+					LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes has exception '%s'"
+						, layerIndex
+						, ex.what()
+						);
+
+					return false;
+				}
 
 				MovieFrameShape shape;
 				if( output.empty() == true )

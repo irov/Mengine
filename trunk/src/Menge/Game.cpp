@@ -650,6 +650,29 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	PackInterfacePtr Game::getResourcePack( const ConstString & _name ) const
+	{
+		for( TVectorResourcePack::const_iterator
+			it = m_resourcePacks.begin(),
+			it_end = m_resourcePacks.end();
+		it != it_end;
+		++it )
+		{
+			const PackPtr & pack = *it;
+
+			const ConstString & packName = pack->getName();
+
+			if( packName != _name )
+			{
+				continue;
+			}
+
+			return pack;
+		}
+
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Game::applyConfigPacks()
 	{
 		const ConstString & platformName = PLATFORM_SERVICE(m_serviceProvider)

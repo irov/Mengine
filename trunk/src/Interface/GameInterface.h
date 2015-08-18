@@ -107,6 +107,7 @@ namespace Menge
 
     public:
 		virtual bool addResourcePack( const ResourcePackDesc & _desc ) = 0;
+		virtual PackInterfacePtr getResourcePack( const ConstString & _name ) const = 0;
 
 	public:
         virtual void setLanguagePack( const ConstString& _packName ) = 0;

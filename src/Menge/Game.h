@@ -94,6 +94,7 @@ namespace Menge
 		
 	public:
 		bool addResourcePack( const ResourcePackDesc & _desc ) override;
+		PackInterfacePtr getResourcePack( const ConstString & _name ) const override;
 		
 	public:
 		bool applyConfigPacks() override;

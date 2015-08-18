@@ -17,7 +17,7 @@ if errorlevel 1 goto error
 @call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Depends_WIN32" "..\dependencies\build_msvc12" "NMake Makefiles" Release
 @popd
 
-@pushd ..\dependencies\build_msvc12\Release
+@pushd ..\..\dependencies\build_msvc12\Release
 nmake
 @popd
 

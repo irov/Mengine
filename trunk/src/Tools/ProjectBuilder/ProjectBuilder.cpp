@@ -238,6 +238,25 @@ namespace Menge
 			: public LoggerInterface
 		{
 		public:
+			bool initialize() override 
+			{ 
+				return true; 
+			}
+			
+			void finalize() override 
+			{
+			};
+
+			void setServiceProvider(ServiceProviderInterface * _serviceProvider) override 
+			{ 
+				m_serviceProvider = _serviceProvider; 
+			}
+
+			ServiceProviderInterface * getServiceProvider() const override 
+			{ 
+				return m_serviceProvider; 
+			}
+
 			void setVerboseLevel( EMessageLevel _level ) override 
 			{
 				(void)_level;
@@ -272,6 +291,9 @@ namespace Menge
 			void flush() override 
 			{
 			}
+
+		private:
+			ServiceProviderInterface * m_serviceProvider;
 		};
 
 		logService->setVerboseLevel( LM_WARNING );

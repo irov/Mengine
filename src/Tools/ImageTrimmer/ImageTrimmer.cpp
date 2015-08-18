@@ -143,6 +143,25 @@ namespace Menge
 			: public LoggerInterface
 		{
 		public:
+			bool initialize() override 
+			{ 
+				return true; 
+			}
+
+			void finalize() override 
+			{
+			};
+
+			void setServiceProvider(ServiceProviderInterface * _serviceProvider) override
+			{
+				m_serviceProvider = _serviceProvider;
+			}
+
+			ServiceProviderInterface * getServiceProvider() const override
+			{
+				return m_serviceProvider;
+			}
+
 			MyLogger()
 				: m_verboseLevel(LM_WARNING)
 				, m_verboseFlag(0xFFFFFFFF)
@@ -200,6 +219,9 @@ namespace Menge
 		protected:
 			EMessageLevel m_verboseLevel;
 			uint32_t m_verboseFlag;
+
+		private:
+			ServiceProviderInterface * m_serviceProvider;
 		};
 
 		logService->setVerboseLevel( LM_WARNING );

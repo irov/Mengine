@@ -50,9 +50,6 @@ namespace Menge
 		uint32_t m_samplerCount;
 		
 		mutable mt::mat4f m_mvpMat;
-
-		int m_transformLocation;
-		int m_samplerLocation[MENGE_MAX_TEXTURE_STAGES];
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MarmaladeProgram> MarmaladeProgramPtr;

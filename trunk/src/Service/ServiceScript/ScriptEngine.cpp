@@ -246,7 +246,7 @@ namespace Menge
             scriptClass->destroy();
 		}
 
-		pybind::decref( m_moduleMenge );
+		//pybind::decref( m_moduleMenge );
 
 		m_scriptWrapper.clear();       
 

@@ -13,7 +13,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeShader::MarmaladeShader()
-		: m_serviceProvider(nullptr)
+		: m_serviceProvider( nullptr )
 		, m_shaderId( 0 )
 	{
 	}

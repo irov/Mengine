@@ -29,6 +29,9 @@ namespace Menge
 		void unlockBuffer( CacheBufferID _bufferId ) override;
 
 	public:
+		void clearBuffers() override;
+
+	public:
 		MemoryCacheBufferPtr createMemoryCacheBuffer() override;
 		MemoryCacheInputPtr createMemoryCacheInput() override;
 		MemoryProxyInputPtr createMemoryProxyInput() override;

@@ -11,6 +11,7 @@
 
 namespace Menge
 {
+	static const char * g_inSamplerName[] = {"inSampler0", "inSampler1", "inSampler2", "inSampler3", "inSampler4", "inSampler5", "inSampler6", "inSampler7"};
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeProgram::MarmaladeProgram()
 		: m_serviceProvider( nullptr )
@@ -111,13 +112,12 @@ namespace Menge
 
 		for( uint32_t index = 0; index != m_samplerCount; ++index )
 		{
-			char samplerVar[16];
-			sprintf( samplerVar, "inSampler%d", index );
+			//const char * inSamplerName = g_inSamplerName[index];
 
-			int location;
-			GLCALLR( m_serviceProvider, location, glGetUniformLocation, (program, samplerVar) );
+			//int location;
+			//GLCALLR( m_serviceProvider, location, glGetUniformLocation, (program, inSamplerName) );
 
-			m_samplerLocation[index] = location;
+			//m_samplerLocation[index] = location;
 		}
 
 		m_program = program;
@@ -139,7 +139,10 @@ namespace Menge
 	{
 		m_mvpMat = _worldMatrix * _viewMatrix * _projectionMatrix;
 
-		GLCALL( m_serviceProvider, glUniformMatrix4fv, (m_transformLocation, 1, GL_FALSE, m_mvpMat.buff()) );
+		int transformLocation;
+		GLCALLR( m_serviceProvider, transformLocation, glGetUniformLocation, (m_program, "mvpMat") );
+
+		GLCALL( m_serviceProvider, glUniformMatrix4fv, (transformLocation, 1, GL_FALSE, m_mvpMat.buff()) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeProgram::bindTexture( uint32_t _index ) const
@@ -155,9 +158,12 @@ namespace Menge
 			return;
 		}
 
-		int location = m_samplerLocation[_index];
+		const char * inSamplerName = g_inSamplerName[_index];
 
-		GLCALL( m_serviceProvider, glUniform1i, (location, _index) );
+		int samplerLocation;
+		GLCALLR( m_serviceProvider, samplerLocation, glGetUniformLocation, (m_program, inSamplerName) );
+		
+		GLCALL( m_serviceProvider, glUniform1i, (samplerLocation, _index) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeProgram::finalize()

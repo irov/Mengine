@@ -49,31 +49,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CacheManager::finalize()
 	{
-		m_memoryMutex->lock();
-		//MutexGuard guard(m_memoryMutex);
-
-		for( TVectorCacheBufferMemory::iterator
-			it = m_buffers.begin(),
-			it_end = m_buffers.end();
-		it != it_end;
-		++it )
-		{
-			const CacheBufferMemory & buffer = *it;
-
-			if( buffer.lock == true )
-			{
-				LOGGER_ERROR(m_serviceProvider)("CacheManager::finalize dont unlock buffer %d size %d"
-					, buffer.id
-					, buffer.size
-					);
-			}
-
-			Helper::freeMemory( buffer.memory );
-		}
-
-		m_buffers.clear();
-
-		m_memoryMutex->unlock();
+		this->clearBuffers();
 
 		m_memoryMutex = nullptr;
 	}
@@ -212,6 +188,35 @@ namespace Menge
 
 			break;
 		}
+
+		m_memoryMutex->unlock();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void CacheManager::clearBuffers()
+	{
+		m_memoryMutex->lock();
+		//MutexGuard guard(m_memoryMutex);
+
+		for( TVectorCacheBufferMemory::iterator
+			it = m_buffers.begin(),
+			it_end = m_buffers.end();
+		it != it_end;
+		++it )
+		{
+			const CacheBufferMemory & buffer = *it;
+
+			if( buffer.lock == true )
+			{
+				LOGGER_ERROR( m_serviceProvider )("CacheManager::finalize dont unlock buffer %d size %d"
+					, buffer.id
+					, buffer.size
+					);
+			}
+
+			Helper::freeMemory( buffer.memory );
+		}
+
+		m_buffers.clear();
 
 		m_memoryMutex->unlock();
 	}

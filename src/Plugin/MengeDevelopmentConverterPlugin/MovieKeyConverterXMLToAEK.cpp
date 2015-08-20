@@ -578,7 +578,7 @@ namespace Menge
 				if( output.empty() == true )
 				{					
 					shape.vertexCount = 0;
-					shape.indexCount = 0;					
+					shape.indexCount = 0;
 				}
 				else
 				{

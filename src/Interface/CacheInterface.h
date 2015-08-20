@@ -34,6 +34,9 @@ namespace Menge
 		virtual void unlockBuffer( CacheBufferID _bufferId ) = 0;
 
 	public:
+		virtual void clearBuffers() = 0;
+
+	public:
 		virtual MemoryCacheBufferPtr createMemoryCacheBuffer() = 0;
 		virtual MemoryCacheInputPtr createMemoryCacheInput() = 0;
 		virtual MemoryProxyInputPtr createMemoryProxyInput() = 0;

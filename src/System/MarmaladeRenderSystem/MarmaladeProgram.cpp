@@ -11,13 +11,17 @@
 
 namespace Menge
 {
-	static const char * g_inSamplerName[] = {"inSampler0", "inSampler1", "inSampler2", "inSampler3", "inSampler4", "inSampler5", "inSampler6", "inSampler7"};
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeProgram::MarmaladeProgram()
 		: m_serviceProvider( nullptr )
 		, m_program( 0 )
 		, m_samplerCount( 0 )
+		, m_transformLocation( -1 )		
 	{
+		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			m_samplerLocation[i] = -1;
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeProgram::~MarmaladeProgram()
@@ -103,6 +107,19 @@ namespace Menge
 			return false;
 		}
 				
+		GLCALLR( m_serviceProvider, m_transformLocation, glGetUniformLocation, (program, "mvpMat") );
+
+		for( uint32_t index = 0; index != m_samplerCount; ++index )
+		{
+			char samplerVar[16];
+			sprintf( samplerVar, "inSampler%d", index );
+
+			int location;
+			GLCALLR( m_serviceProvider, location, glGetUniformLocation, (program, samplerVar) );
+
+			m_samplerLocation[index] = location;
+		}
+
 		m_program = program;
 
 		return true;
@@ -122,10 +139,7 @@ namespace Menge
 	{
 		m_mvpMat = _worldMatrix * _viewMatrix * _projectionMatrix;
 
-		int transformLocation;
-		GLCALLR( m_serviceProvider, transformLocation, glGetUniformLocation, (m_program, "mvpMat") );
-
-		GLCALL( m_serviceProvider, glUniformMatrix4fv, (transformLocation, 1, GL_FALSE, m_mvpMat.buff()) );
+		GLCALL( m_serviceProvider, glUniformMatrix4fv, (m_transformLocation, 1, GL_FALSE, m_mvpMat.buff()) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeProgram::bindTexture( uint32_t _index ) const
@@ -141,12 +155,9 @@ namespace Menge
 			return;
 		}
 
-		const char * inSamplerName = g_inSamplerName[_index];
+		int location = m_samplerLocation[_index];
 
-		int samplerLocation;
-		GLCALLR( m_serviceProvider, samplerLocation, glGetUniformLocation, (m_program, inSamplerName) );
-		
-		GLCALL( m_serviceProvider, glUniform1i, (samplerLocation, _index) );
+		GLCALL( m_serviceProvider, glUniform1i, (location, _index) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeProgram::finalize()

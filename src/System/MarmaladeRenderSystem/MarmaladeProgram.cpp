@@ -17,12 +17,7 @@ namespace Menge
 		: m_serviceProvider( nullptr )
 		, m_program( 0 )
 		, m_samplerCount( 0 )
-		, m_transformLocation( -1 )		
 	{
-		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
-		{
-			m_samplerLocation[i] = -1;
-		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeProgram::~MarmaladeProgram()
@@ -108,18 +103,6 @@ namespace Menge
 			return false;
 		}
 				
-		GLCALLR( m_serviceProvider, m_transformLocation, glGetUniformLocation, (program, "mvpMat") );
-
-		for( uint32_t index = 0; index != m_samplerCount; ++index )
-		{
-			//const char * inSamplerName = g_inSamplerName[index];
-
-			//int location;
-			//GLCALLR( m_serviceProvider, location, glGetUniformLocation, (program, inSamplerName) );
-
-			//m_samplerLocation[index] = location;
-		}
-
 		m_program = program;
 
 		return true;

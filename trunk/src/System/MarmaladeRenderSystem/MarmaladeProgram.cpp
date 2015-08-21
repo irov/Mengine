@@ -107,7 +107,10 @@ namespace Menge
 			return false;
 		}
 				
+		int transformLocation;
 		GLCALLR( m_serviceProvider, m_transformLocation, glGetUniformLocation, (program, "mvpMat") );
+
+		m_transformLocation = transformLocation;
 
 		for( uint32_t index = 0; index != m_samplerCount; ++index )
 		{
@@ -163,6 +166,7 @@ namespace Menge
 	void MarmaladeProgram::finalize()
 	{ 
 		GLCALL( m_serviceProvider, glDeleteProgram, (m_program) );
+		m_program = 0;
 
 		m_vertexShader = nullptr;
 		m_fragmentShader = nullptr;

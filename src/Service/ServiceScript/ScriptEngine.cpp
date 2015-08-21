@@ -241,7 +241,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            ScriptClassInterface * scriptClass = m_scriptWrapper.get_value(it);
+			ScriptClassInterface * scriptClass = it->second;
 			
             scriptClass->destroy();
 		}
@@ -631,20 +631,23 @@ namespace Menge
 			return;
 		}
 
-		m_scriptWrapper.insert( _type, _wrapper );
+		m_scriptWrapper.insert( std::make_pair(_type, _wrapper) );
 	}
 	//////////////////////////////////////////////////////////////////////////|
 	PyObject * ScriptEngine::wrap( const ConstString & _type, Scriptable * _scriptable )
 	{
-		ScriptClassInterface * scriptClass = nullptr;
-		if( m_scriptWrapper.has( _type, &scriptClass ) == false )
+		TMapScriptWrapper::iterator it_found = m_scriptWrapper.find( _type );
+
+		if( it_found == m_scriptWrapper.end() )
 		{
             LOGGER_ERROR(m_serviceProvider)("ScriptEngine::wrap not found type %s"
                 , _type.c_str()
                 );
 
 			return nullptr;
-		}        
+		}
+
+		ScriptClassInterface * scriptClass = it_found->second;
 
 		PyObject * py_embedded = scriptClass->wrap( _scriptable );
 

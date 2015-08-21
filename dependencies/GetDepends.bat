@@ -11,7 +11,8 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 unzip -o 7za465.zip 7za.exe
 
 call:getdepend http://downloads.sourceforge.net/project/boost/boost/1.58.0/boost_1_58_0.7z boost_1_58_0.7z boost_1_58_0 boost
-call:getdepend http://www.cmake.org/files/v3.1/cmake-3.1.2-win32-x86.zip cmake-3.1.2-win32-x86.zip cmake-3.1.2-win32-x86 CMake
+
+call:getdepend http://www.cmake.org/files/v3.3/cmake-3.3.0-win32-x86.zip cmake-3.3.0-win32-x86.zip cmake-3.3.0-win32-x86 cmake
 call:getdepend http://zlib.net/zlib128.zip zlib128.zip zlib-1.2.8 zlib
 call:getdepend http://download.sourceforge.net/libpng/lpng1616.zip lpng1616.zip lpng1616 libpng
 call:getdepend http://www.ijg.org/files/jpegsr9a.zip jpegsr9a.zip jpeg-9a libjpeg

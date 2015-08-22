@@ -5,8 +5,6 @@
 
 #	include "pybind/pybind.hpp"
 
-#	include "Core/Polygon.h"
-
 #	include "Utils/Math/angle.h"
 #	include "Utils/Math/vec4.h"
 #	include "Utils/Math/mat3.h"
@@ -15,26 +13,13 @@
 #	include "Utils/Math/uv4.h"
 #	include "Utils/Math/utils.h"
 
-#	include "Utils/Core/ColourValue.h"
-#	include "Utils/Core/Resolution.h"
-#	include "Utils/Core/Viewport.h"
-#	include "Utils/Core/Rect.h"
+#	include "Core/ColourValue.h"
+#	include "Core/Resolution.h"
+#	include "Core/Viewport.h"
+#	include "Utils/Core/Polygon.h"
+#	include "Core/Rect.h"
 
 #	include "pybind/stl_type_cast.hpp"
-
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(push, 0) 
-#   pragma warning(disable:4800)
-#   endif
-
-#	include <boost/geometry/geometry.hpp> 
-#	include <boost/geometry/geometries/point_xy.hpp>
-#	include <boost/geometry/geometries/polygon.hpp>
-#	include <boost/geometry/algorithms/intersects.hpp>
-
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(pop) 
-#   endif
 
 namespace Menge
 {

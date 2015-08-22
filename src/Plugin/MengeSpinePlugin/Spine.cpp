@@ -165,19 +165,13 @@ namespace Menge
 
 		spSkeleton_updateWorldTransform( skeleton );
 
-		m_skeleton = skeleton;
-		m_animationStateData = animationStateData;
-		m_animationState = animationState;
-
-		int slotCount = m_skeleton->slotsCount;
+		int slotCount = skeleton->slotsCount;
 
 		m_attachmentMeshes.resize( slotCount );
 
-		ResourceImage * resourceImage = nullptr;
-
 		for( int i = 0; i < slotCount; ++i )
 		{
-			spSlot * slot = m_skeleton->slots[i];
+			spSlot * slot = skeleton->slots[i];
 
 			if( slot->attachment == nullptr )
 			{
@@ -185,6 +179,8 @@ namespace Menge
 			}
 
 			AttachmentMesh & mesh = m_attachmentMeshes[i];
+
+			ResourceImage * resourceImage = nullptr;
 
 			const spAttachmentType attachment_type = slot->attachment->type;
 
@@ -229,6 +225,10 @@ namespace Menge
 
 			mesh.material = this->makeMaterial_( slot, resourceImage );
 		}
+
+		m_skeleton = skeleton;
+		m_animationStateData = animationStateData;
+		m_animationState = animationState;
 
 		this->updateAnimation_();
 

@@ -108,7 +108,7 @@ namespace Menge
 		}
 				
 		int transformLocation;
-		GLCALLR( m_serviceProvider, m_transformLocation, glGetUniformLocation, (program, "mvpMat") );
+		GLCALLR( m_serviceProvider, transformLocation, glGetUniformLocation, (program, "mvpMat") );
 
 		m_transformLocation = transformLocation;
 

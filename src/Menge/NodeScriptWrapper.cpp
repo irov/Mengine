@@ -140,6 +140,7 @@
 
 #	include "Utils/Core/Rect.h"
 #	include "Utils/Core/String.h"
+#	include "Utils/Core/Polygon.h"
 #	include "Utils/Core/MemoryCacheBuffer.h"
 
 #	include "pybind/stl_type_cast.hpp"
@@ -149,20 +150,6 @@
 #   include <utf8.h>
 
 #	include <sstream>
-
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(push, 0) 
-#   pragma warning(disable:4800)  
-#   endif
-
-#	include <boost/geometry/geometry.hpp> 
-#	include <boost/geometry/geometries/point_xy.hpp>
-#	include <boost/geometry/geometries/polygon.hpp>
-#	include <boost/geometry/algorithms/intersects.hpp>
-
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(pop) 
-#   endif
 
 #	include <stdex/xml_sax_parser.h>
 

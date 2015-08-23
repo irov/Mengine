@@ -29,6 +29,7 @@ namespace Menge
     public:
         virtual ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;
 
+	public:
         template<class T>
         T * createResourceT( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
         {
@@ -50,18 +51,18 @@ namespace Menge
         virtual ResourceReference * getResource( const ConstString& _name ) const = 0;
 
         template<class T>
-        T * getResourceT( const ConstString& _name ) const
+        T getResourceT( const ConstString & _name ) const
         {
             ResourceReference * resource = this->getResource( _name );
 
 #   ifdef _DEBUG
-            if( dynamic_cast<T *>(resource) == nullptr )
+            if( dynamic_cast<T>(resource) == nullptr )
             {
                 return nullptr;
             }
 #   endif
 
-            T * t = static_cast<T *>(resource);
+            T t = static_cast<T>(resource);
 
             return t;
         }
@@ -69,7 +70,7 @@ namespace Menge
         virtual ResourceReference * getResourceReference( const ConstString& _name ) const = 0;
 
         template<class T>
-        T getResourceReferenceT( const ConstString& _name ) const
+        T getResourceReferenceT( const ConstString & _name ) const
         {
             ResourceReference * resource = this->getResourceReference( _name );
 

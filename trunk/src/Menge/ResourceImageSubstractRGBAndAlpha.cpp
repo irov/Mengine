@@ -72,7 +72,7 @@ namespace Menge
 		}
         
 		m_resourceImageRGB = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceImage>( m_resourceImageRGBName );
+			->getResourceT<ResourceImage *>( m_resourceImageRGBName );
 
 		if( m_resourceImageRGB == nullptr )
 		{
@@ -85,7 +85,7 @@ namespace Menge
 		}
 
 		m_resourceImageAlpha = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceImage>( m_resourceImageAlphaName );
+			->getResourceT<ResourceImage *>( m_resourceImageAlphaName );
 
 		if( m_resourceImageAlpha == nullptr )
 		{

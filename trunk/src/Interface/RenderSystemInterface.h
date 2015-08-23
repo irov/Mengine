@@ -357,6 +357,7 @@ namespace Menge
 		: public FactorablePtr
     {
 	public:
+		virtual const ConstString & getName() const = 0;
 		virtual uint32_t getId() const = 0;
     };
 	//////////////////////////////////////////////////////////////////////////

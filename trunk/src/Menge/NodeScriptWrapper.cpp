@@ -1753,7 +1753,7 @@ namespace Menge
         void writeImageToFile( const ConstString& _resource, const FilePath& _fileName )
         {
             ResourceImage * resource = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceT<ResourceImage>( _resource );
+                ->getResourceT<ResourceImage *>( _resource );
 
             if( resource == nullptr )
             {
@@ -1834,7 +1834,7 @@ namespace Menge
 			mt::uv4f uv_alpha;
 			
 			resource->setup( _fileName, ConstString::none(), uv_image, uv_alpha, false, false, maxSize );
-
+			
 			return resource;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2544,7 +2544,7 @@ namespace Menge
 		bool s_copyFile_( const ConstString & _resourceFileName, Blobject & _blob )
 		{
 			ResourceFile * resourceFile =  RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceFile>( _resourceFileName );
+				->getResourceT<ResourceFile *>( _resourceFileName );
 
 			if( resourceFile == false )
 			{
@@ -3900,7 +3900,7 @@ namespace Menge
         float s_getMovieDuration( const ConstString & _resourceName )
         {
             ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceT<ResourceMovie>( _resourceName );
+                ->getResourceT<ResourceMovie *>( _resourceName );
 
             if( resourceMovie == nullptr )
             {
@@ -4133,7 +4133,7 @@ namespace Menge
         bool s_hasMovieElement( const ConstString & _resourceName, const ConstString & _slotName, const ConstString & _typeName )
         {
             ResourceMovie * resource = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceT<ResourceMovie>( _resourceName );
+                ->getResourceT<ResourceMovie *>( _resourceName );
 
             if( resource == nullptr )
             {
@@ -4206,7 +4206,7 @@ namespace Menge
         PyObject * s_visitResourceEmitterContainer( const ConstString & _resourceName )
         {
             ResourceEmitterContainer * resource = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceT<ResourceEmitterContainer>( _resourceName );
+                ->getResourceT<ResourceEmitterContainer *>( _resourceName );
 
             if( resource == nullptr )
             {

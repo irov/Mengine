@@ -146,7 +146,7 @@ namespace Menge
 			const ConstString & resourceName = *it;
 
 			ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceImage>( resourceName );
+				->getResourceT<ResourceImage *>( resourceName );
 
 			if( resourceImage == nullptr )
 			{

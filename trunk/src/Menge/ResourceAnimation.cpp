@@ -68,7 +68,7 @@ namespace Menge
 			AnimationSequence & sequence = *(it);
 			
 			ResourceImage * resource  = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceImage>( sequence.resourceName );
+				->getResourceT<ResourceImage *>( sequence.resourceName );
 
 			if( resource == nullptr )
 			{

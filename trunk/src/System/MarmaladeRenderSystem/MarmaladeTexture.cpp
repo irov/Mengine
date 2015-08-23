@@ -140,7 +140,7 @@ namespace Menge
 
 		GLuint textureMemorySize = Helper::getTextureMemorySize(miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat);
 
-		LOGGER_INFO(m_serviceProvider)("MarmaladeTexture::unlock l %d w %d d %d"
+		LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock l %d w %d d %d"
 			, _level
 			, miplevel_width
 			, miplevel_height

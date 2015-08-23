@@ -13,9 +13,10 @@ namespace Menge
 		~RenderMaterial();
 
 	public:
-		void initialize( uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage );
+		void initialize( const ConstString & _name, uint32_t _id, uint32_t _hash, EPrimitiveType _primitiveType, uint32_t _textureCount, const RenderTextureInterfacePtr * _textures, const RenderStage * _stage );
 		
 	public:
+		const ConstString & getName() const override;
 		uint32_t getId() const override;
 
 	public:
@@ -28,6 +29,8 @@ namespace Menge
 		inline const RenderStage * getStage() const;
 
 	protected:
+		ConstString m_name;
+
 		uint32_t m_id;
 		uint32_t m_hash;
 
@@ -38,6 +41,11 @@ namespace Menge
 
 		const RenderStage * m_stage;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	inline const ConstString & RenderMaterial::getName() const
+	{ 
+		return m_name;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	inline uint32_t RenderMaterial::getId() const
 	{

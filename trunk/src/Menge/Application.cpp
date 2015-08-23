@@ -2509,7 +2509,7 @@ namespace Menge
 		}
 
 		m_cursorResource = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceCursor>(_resourceName);
+			->getResourceT<ResourceCursor *>(_resourceName);
 
 		if( m_cursorResource == nullptr )
 		{

@@ -103,7 +103,7 @@ namespace	Menge
 		uint32_t s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceType _type, PyObject * _cb )
 		{
 			ResourceSound * resource = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceSound>( _resourceName );
+				->getResourceT<ResourceSound *>( _resourceName );
 
 			if( resource == nullptr )
 			{

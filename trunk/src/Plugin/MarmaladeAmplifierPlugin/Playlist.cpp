@@ -34,7 +34,7 @@ namespace Menge
 	bool Playlist::initialize( const ConstString & _playlistResource )
 	{
         m_playlistResource = RESOURCE_SERVICE(m_serviceProvider)
-            ->getResourceT<ResourcePlaylist>( _playlistResource );
+            ->getResourceT<ResourcePlaylist *>( _playlistResource );
 
         if( m_playlistResource == nullptr )
         {

@@ -67,7 +67,7 @@ namespace Menge
 			}
 
 			ResourceImage * resource  = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceImage>( m_images[i].resourceName );
+				->getResourceT<ResourceImage *>( m_images[i].resourceName );
 			
 			if( resource == 0 )
 			{

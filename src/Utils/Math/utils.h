@@ -67,17 +67,17 @@ namespace mt
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_INLINE bool equal_f_f( float _a, float _b )
 	{
-		return (_a > (_b + mt::m_neps)) && (_a < (_b + mt::m_eps));
+		return (_a >= (_b + mt::m_neps)) && (_a <= (_b + mt::m_eps));
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_INLINE bool equal_f_z( float _f )
 	{
-		return (_f > mt::m_neps) && (_f < mt::m_eps);
+		return (_f >= mt::m_neps) && (_f <= mt::m_eps);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_INLINE bool equal_f_1( float _f )
 	{
-		return (_f > mt::m_1_eps) && (_f < mt::m_1_neps);
+		return (_f >= mt::m_1_eps) && (_f <= mt::m_1_neps);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_INLINE bool greatequal_f_z( float _f )

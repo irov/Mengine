@@ -8,6 +8,8 @@
 
 #	include "Core/MemoryCacheBuffer.h"
 
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -49,6 +51,20 @@ namespace Menge
 
 			if( image == nullptr )
 			{
+				return false;
+			}
+
+			const mt::vec2f & ms = image->getMaxSize();
+			
+			if( mt::equal_f_f( ms.x, ms.y ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceSpine::_loader %s resource image %s not square texture %f:%f"
+					, this->getName().c_str()
+					, resourceName.c_str()
+					, ms.x
+					, ms.y
+					);
+
 				return false;
 			}
 

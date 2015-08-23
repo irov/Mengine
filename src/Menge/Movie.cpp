@@ -1293,7 +1293,7 @@ namespace Menge
 	bool Movie::createMovieImageSolid_( const MovieLayer & _layer )
 	{
 		ResourceImageSolid * resource = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceImageSolid>( _layer.source );
+			->getResourceT<ResourceImageSolid *>( _layer.source );
 
 		if( resource == nullptr )
 		{
@@ -1526,7 +1526,7 @@ namespace Menge
 		}
 
 		ResourceInternalObject * resourceInternalObject = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceInternalObject>( _layer.source );
+			->getResourceT<ResourceInternalObject *>( _layer.source );
 
 		if( resourceInternalObject == nullptr )
 		{

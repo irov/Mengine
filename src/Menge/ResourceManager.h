@@ -90,6 +90,7 @@ namespace Menge
 	public:
 		ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
         
+	public:
 		bool hasResource( const ConstString& _name, ResourceReference ** _resource ) const override;
 		bool lockResource( const ConstString& _name );
 		bool unlockResource( const ConstString& _name );

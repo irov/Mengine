@@ -109,7 +109,7 @@ namespace Menge
 		}
 
 		ResourceImage * resource  = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceImage>( m_imageResourceName );
+			->getResourceT<ResourceImage *>( m_imageResourceName );
 
 		if( resource == nullptr )
 		{

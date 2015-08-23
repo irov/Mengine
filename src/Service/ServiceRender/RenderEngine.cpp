@@ -236,24 +236,6 @@ namespace Menge
 			return false;
 		}
 
-		if( this->createNullTexture_() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createRenderWindow invalid create __null__ texture"
-				);
-
-			return false;
-		}
-
-		if( this->createWhitePixelTexture_() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::createRenderWindow invalid create WhitePixel texture"
-				);
-
-			return false;
-		}
-
-		//m_debugInfo.megatextures = 0;
-
 		if( this->recreate2DBuffers_() == false )
 		{
 			return false;
@@ -261,6 +243,22 @@ namespace Menge
 
 		this->restoreRenderSystemStates_();
 		this->prepare2D_();
+
+		if( this->createNullTexture_() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderEngine::createRenderWindow invalid create __null__ texture"
+				);
+
+			return false;
+		}
+
+		if( this->createWhitePixelTexture_() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderEngine::createRenderWindow invalid create WhitePixel texture"
+				);
+
+			return false;
+		}
 
 		return true;
 	}

@@ -737,7 +737,7 @@ namespace	Menge
 	bool ParticleEmitter2::compileEmitterImage_( const ParticleEmitterInterfacePtr & _emitter )
 	{
 		ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceHIT>(m_emitterImageName);
+			->getResourceT<ResourceHIT *>(m_emitterImageName);
 
 		if( resourceHIT == nullptr )
 		{

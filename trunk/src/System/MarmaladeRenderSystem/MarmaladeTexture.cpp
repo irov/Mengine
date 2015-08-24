@@ -46,7 +46,7 @@ namespace Menge
 			{
 				if( _width != _height )
 				{
-					LOGGER_ERROR( m_serviceProvider )("MarmaladeTexture::initialize not square texture %f:%f"
+					LOGGER_ERROR( m_serviceProvider )("MarmaladeTexture::initialize not square texture %d:%d"
 						, _width
 						, _height
 						);

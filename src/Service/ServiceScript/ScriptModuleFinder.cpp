@@ -70,7 +70,7 @@ namespace Menge
 			{
 				m_loaders.push_back( loaderSource );
 
-				//pybind::incref( m_embed );
+				pybind::incref( m_embed );
 
 				return m_embed;
 			}
@@ -87,7 +87,7 @@ namespace Menge
 			{
 				m_loaders.push_back( loaderCode );
 
-				//pybind::incref( m_embed );
+				pybind::incref( m_embed );
 
 				return m_embed;
 			}

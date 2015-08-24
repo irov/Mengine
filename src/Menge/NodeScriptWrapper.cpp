@@ -4063,9 +4063,7 @@ namespace Menge
 
 					pybind::dict_setstring_t( py_dict_frame, "time", frameTime );
 
-					pybind::list_appenditem( py_list_frames, py_dict_frame );
-
-					pybind::decref( py_dict_frame );
+					pybind::list_appenditem_t( py_list_frames, py_dict_frame );
 				}
 
 				pybind::dict_setstring_t( m_dictResult, _layer.name.c_str(), py_list_frames );
@@ -4242,9 +4240,7 @@ namespace Menge
 
 				pybind::dict_setstring_t( py_dict, "file", (*it).filename );
 				
-				pybind::list_appenditem( py_list_atlas, py_dict );
-
-				pybind::decref( py_dict );
+				pybind::list_appenditem_t( py_list_atlas, py_dict );
             }
 
             pybind::dict_setstring_t( py_dict_result, "Emitters", py_list_names );

@@ -71,8 +71,7 @@ namespace Menge
         if( m_packagePath == true )
         {
 			PyObject * py_packagePath = pybind::build_value( "[O]", _module );
-            pybind::dict_setstring( dict, "__path__", py_packagePath );
-            pybind::decref( py_packagePath );
+            pybind::dict_setstring_t( dict, "__path__", py_packagePath );
         }
 
         PyObject * py_module_exec = pybind::module_execcode( str_module, code );

@@ -82,7 +82,7 @@ namespace Menge
 		uint32_t height = decode_dataInfo->height;
 		uint32_t channels = decode_dataInfo->channels;
 
-		unsigned int bufferSize = width * height * channels;
+		uint32_t bufferSize = width * height * channels;
 
 		unsigned char * textureBuffer = new unsigned char[bufferSize];
 
@@ -97,11 +97,11 @@ namespace Menge
 
 		if( channels == 4 )
 		{
-			for( int i = 0; i != height; ++i )
+			for( uint32_t i = 0; i != height; ++i )
 			{
-				for( int j = 0; j != width; ++j )
+				for( uint32_t j = 0; j != width; ++j )
 				{
-					size_t index = j + i * width;
+					uint32_t index = j + i * width;
 					unsigned char alpha = textureBuffer[index * 4 + 3];
 
 					if( alpha != 0 )
@@ -109,7 +109,7 @@ namespace Menge
 						continue;
 					}
 
-					size_t count = 0;
+					uint32_t count = 0;
 
 					float r = 0;
 					float g = 0;
@@ -118,22 +118,12 @@ namespace Menge
 					int di[] = {-1, 0, 1, 1, 1, 0, -1, -1};
 					int dj[] = {1, 1, 1, 0, -1, -1, -1, 0};
 
-					for( int d = 0; d != 8; ++d )
+					for( uint32_t d = 0; d != 8; ++d )
 					{
-						int ni = i + di[d];
-						int nj = j + dj[d];
-
-						if( ni < 0 )
-						{
-							continue;
-						}
+						uint32_t ni = i + di[d];
+						uint32_t nj = j + dj[d];
 
 						if( ni >= height )
-						{
-							continue;
-						}
-
-						if( nj < 0 )
 						{
 							continue;
 						}
@@ -143,7 +133,7 @@ namespace Menge
 							continue;
 						}
 
-						size_t index_kl = nj + ni * width;
+						uint32_t index_kl = nj + ni * width;
 						unsigned char alpha_kl = textureBuffer[index_kl * 4 + 3];
 
 						if( alpha_kl != 0 )

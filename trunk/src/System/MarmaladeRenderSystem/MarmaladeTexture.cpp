@@ -33,9 +33,28 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeTexture::initialize( ServiceProviderInterface * _serviceProvider, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
-    {
+	bool MarmaladeTexture::initialize( ServiceProviderInterface * _serviceProvider, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
+	{
 		m_serviceProvider = _serviceProvider;
+
+		switch( _internalFormat )
+		{
+		case GL_ETC1_RGB8_OES:
+		case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
+		case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
+		case GL_COMPRESSED_RGB_S3TC_DXT1_EXT:
+			{
+				if( _width != _height )
+				{
+					LOGGER_ERROR( m_serviceProvider )("MarmaladeTexture::initialize not square texture %f:%f"
+						, _width
+						, _height
+						);
+
+					return false;
+				}
+			}break;
+		}
 
 		GLuint tuid = 0;
 		GLCALL( m_serviceProvider, glGenTextures, (1, &tuid) );

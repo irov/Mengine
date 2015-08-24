@@ -122,6 +122,8 @@ namespace Menge
 
 			entity->setEmbed( _obj );
 
+			pybind::decref( _obj );
+
 			return entity;
 		}
 	};
@@ -143,6 +145,8 @@ namespace Menge
 
 			arrow->setEmbed( _obj );
 
+			pybind::decref( _obj );
+
 			return arrow;
 		}
 	};
@@ -163,6 +167,8 @@ namespace Menge
 				->createNodeT<Scene>( CONST_STRING( serviceProvider, Scene ) );
 
 			scene->setEmbed( _obj );
+
+			pybind::decref( _obj );
 
 			return scene;
 		}

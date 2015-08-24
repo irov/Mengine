@@ -34,15 +34,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptModuleFinder::finalize()
 	{
-		if( m_embed != nullptr )
-		{
-			pybind::decref( m_embed );
-			m_embed = nullptr;
-		}
+		pybind::decref( m_embed );
+		m_embed = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptModuleFinder::setEmbed( PyObject * _embed )
 	{
+		pybind::decref( m_embed );
 		m_embed = _embed;
 		pybind::incref( m_embed );
 	}
@@ -72,7 +70,7 @@ namespace Menge
 			{
 				m_loaders.push_back( loaderSource );
 
-				pybind::incref( m_embed );
+				//pybind::incref( m_embed );
 
 				return m_embed;
 			}
@@ -89,7 +87,7 @@ namespace Menge
 			{
 				m_loaders.push_back( loaderCode );
 
-				pybind::incref( m_embed );
+				//pybind::incref( m_embed );
 
 				return m_embed;
 			}

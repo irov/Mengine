@@ -218,6 +218,8 @@ namespace Menge
 
 		m_moduleFinder->setEmbed( py_moduleFinder );
 
+		//pybind::decref( m_moduleMenge );
+
         pybind::_set_module_finder( py_moduleFinder );
 				
 		bool gc_exist;

@@ -814,6 +814,7 @@ namespace Menge
 
 		m_debugText->setFontName( STRINGIZE_STRING_LOCAL(m_serviceProvider, "__CONSOLE_FONT__") );
 		m_debugText->setTextID( STRINGIZE_STRING_LOCAL(m_serviceProvider, "__ID_TEXT_CONSOLE") );
+		m_debugText->setLocalColor( ColourValue( 1.0, 0.0, 0.0, 1.0 ) );
 		m_debugText->enable();
 
 		const Resolution & contentResolution = APPLICATION_SERVICE( m_serviceProvider )
@@ -1661,7 +1662,7 @@ namespace Menge
 	void Player::toggleDebugText()
 	{
 		++m_showDebugText;
-        m_showDebugText %= 4;
+        m_showDebugText %= 5;
 
 		if( m_showDebugText == 2 )
 		{

@@ -54,6 +54,8 @@ namespace Menge
 
 			node->setEmbed( _obj );
 
+			pybind::decref( _obj );
+
 			return node;
 		}
 	};

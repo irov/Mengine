@@ -241,12 +241,10 @@ namespace Menge
 
 				for( uint32_t k = 0; k != m_channels; ++k )
 				{
-					PyObject * color = pybind::ptr( m_memory[index + k] );
-
-					pybind::tuple_setitem( pixel, k, color );
+					pybind::tuple_setitem_t( pixel, k, m_memory[index + k] );
 				}
 
-				pybind::list_setitem( pixels, pixel_index, pixel );
+				pybind::list_setitem_t( pixels, pixel_index, pixel );
 			}
 		}
 
@@ -301,7 +299,7 @@ namespace Menge
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Image::getextrema() const
+	pybind::list Image::getextrema() const
 	{
 		uint8_t min_color[4];
 		uint8_t max_color[4];
@@ -335,19 +333,11 @@ namespace Menge
 			}
 		}
 
-		PyObject * py_extrema = pybind::list_new( m_channels );
+		pybind::list py_extrema = pybind::make_list_t( m_channels );
 
 		for( uint32_t k = 0; k != m_channels; ++k )
 		{
-			PyObject * py_minmax = pybind::tuple_new( 2 );
-
-			PyObject * py_min = pybind::ptr( min_color[k] );
-			PyObject * py_max = pybind::ptr( max_color[k] );
-
-			pybind::tuple_setitem( py_minmax, 0, py_min );
-			pybind::tuple_setitem( py_minmax, 1, py_max );
-
-			pybind::list_setitem( py_extrema, k, py_minmax );
+			py_extrema[k] = pybind::make_tuple_t( min_color[k], max_color[k] );
 		}
 
 		return py_extrema;
@@ -385,7 +375,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Image::split() const
+	pybind::tuple Image::split() const
 	{
 		Image * imageRGB = new Image;
 		imageRGB->create(m_width, m_height, 3);
@@ -412,15 +402,7 @@ namespace Menge
 			}
 		}
 
-		PyObject * py_split = pybind::tuple_new(2);
-
-		PyObject * py_rgb = pybind::ptr(imageRGB);
-		PyObject * py_alpha = pybind::ptr(imageAlpha);
-
-		pybind::tuple_setitem(py_split, 0, py_rgb);
-		pybind::tuple_setitem(py_split, 1, py_alpha);
-
-		return py_split;
+		return pybind::make_tuple_t( imageRGB, imageAlpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Image::embedding( PyObject * _module )

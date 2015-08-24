@@ -1538,26 +1538,26 @@ namespace Menge
                     {   
                         uint32_t count = _scope->getObjectCount();
 
-                        if( count == 0 )
-                        {
-                            return;
-                        }
+						if( count == 0 )
+						{
+							return;
+						}
 
-                        if( m_count % 3 == 0 )
-                        {
-                            m_ss << "Py: ";
-                        }
+						if( m_count % 3 == 0 )
+						{
+							m_ss << "Py: ";
+						}
                         
-                        m_ss << _scope->get_name() << " " << _scope->getObjectCount();
+						m_ss << _scope->get_name() << " " << count;
                         
-                        if( m_count % 3 != 2 )
-                        {
-                            m_ss << "        ";
-                        }
-                        else
-                        {
-                            m_ss << std::endl;
-                        }                        
+						if( m_count % 3 != 2 )
+						{
+							m_ss << "        ";
+						}
+						else
+						{
+							m_ss << std::endl;
+						}
 
                         ++m_count;
                     }

@@ -30,10 +30,10 @@ namespace Menge
 
 		Image * rotate( float _angle );
 
-		PyObject * getextrema() const;
+		pybind::list getextrema() const;
 		bool uselessalpha() const;
 
-		PyObject * split() const;
+		pybind::tuple split() const;
 
 	public:
 		uint8_t * getMemory() const;

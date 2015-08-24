@@ -1147,10 +1147,8 @@ bool run()
 	for( int i = 3; i != nArgs; ++i )
 	{
 		LPWSTR arg = szArglist[i];
-
-		PyObject * py_arg = pybind::ptr( arg );
-
-		pybind::tuple_setitem( py_args, i - 3, py_arg );
+		
+		pybind::tuple_setitem_t( py_args, i - 3, arg );
 	}
 
 	pybind::call_method_native( py_run_module, utf8_FunctionName.c_str(), py_args );

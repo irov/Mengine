@@ -66,7 +66,7 @@ namespace Menge
         return m_folder;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Account::addSetting( const ConstString & _setting, const WString& _defaultValue, PyObject* _applyFunc )
+	bool Account::addSetting( const ConstString & _setting, const WString& _defaultValue, const pybind::object & _applyFunc )
 	{
 		TMapSettings::iterator it = m_settings.find( _setting );
 		
@@ -80,11 +80,9 @@ namespace Menge
 			return false;
 		}
 
-		pybind::incref( _applyFunc );
-
         Setting st;
         st.value = _defaultValue;
-        st.cb = pybind::object(_applyFunc);
+        st.cb = _applyFunc;
         
         m_settings.insert( std::make_pair(_setting, st) );
 

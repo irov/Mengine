@@ -33,7 +33,7 @@ namespace Menge
         const ConstString & getFolder() const override;
 
     public:
-		bool addSetting( const ConstString & _setting, const WString& _defaultValue, PyObject* _applyFunc ) override;
+		bool addSetting( const ConstString & _setting, const WString& _defaultValue, const pybind::object & _applyFunc ) override;
 		bool changeSetting( const ConstString & _setting, const WString& _value ) override;
 		const WString& getSetting( const ConstString & _setting ) const override;
         bool hasSetting( const ConstString & _setting ) const override;

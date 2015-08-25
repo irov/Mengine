@@ -3519,14 +3519,7 @@ namespace Menge
             PLAYER_SERVICE(m_serviceProvider)
                 ->getJoins( _left, joins );
 
-            for( TVectorNode::iterator
-                it = joins.begin(),
-                it_end = joins.end();
-            it != it_end;
-            ++it )
-            {
-                pybind::list_appenditem_t( py_list, *it );
-            }
+			pybind::list_appenditems_t( py_list, joins.begin(), joins.end() );
 
             return py_list;
         }
@@ -4221,14 +4214,7 @@ namespace Menge
             ResourceEmitterContainerVisitor visitor;
             container->visitContainer( &visitor );
 
-            for( TVectorConstString::const_iterator
-                it = visitor.catchedNames.begin(),
-                it_end = visitor.catchedNames.end();
-            it != it_end;
-            ++it )
-            {
-                pybind::list_appenditem_t( py_list_names, *it );
-            }
+			pybind::list_appenditems_t( py_list_names, visitor.catchedNames.begin(), visitor.catchedNames.end() );
 
             for( TVectorParticleEmitterAtlas::const_iterator
                 it = visitor.cathedAtlas.begin(),

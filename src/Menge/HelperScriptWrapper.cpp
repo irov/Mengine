@@ -885,7 +885,7 @@ namespace Menge
 			return v_accounts;
 		}
 
-		bool s_addSetting( const ConstString & _setting, const WString & _defaultValue, PyObject * _applyFunc )
+		bool s_addSetting( const ConstString & _setting, const WString & _defaultValue, const pybind::object & _applyFunc )
 		{
 			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
 				->getCurrentAccount();
@@ -1335,7 +1335,7 @@ namespace Menge
 		const WString & s_getCurrentAccountName()
 		{
 			AccountInterfacePtr currentAccount = ACCOUNT_SERVICE(m_serviceProvider)
-				->getCurrentAccount();
+  				->getCurrentAccount();
 
 			if( currentAccount == nullptr )
 			{

@@ -482,9 +482,7 @@ namespace Menge
 
         PyObject * dir_bltin = pybind::module_dict( builtins );
 
-		pybind::incref( _module );
-
-        pybind::dict_setstring_t( dir_bltin, _name.c_str(), _module );
+        pybind::dict_set_t( dir_bltin, _name, _module );
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptEngine::removeGlobalModule( const String & _name )
@@ -493,7 +491,7 @@ namespace Menge
 
         PyObject * dir_bltin = pybind::module_dict( builtins );
 
-        pybind::dict_remove( dir_bltin, _name.c_str() );
+        pybind::dict_remove_t( dir_bltin, _name );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScriptEngine::stringize( PyObject * _object, ConstString & _str )

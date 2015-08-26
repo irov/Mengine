@@ -34,7 +34,7 @@ call:svndepend https://github.com/EsotericSoftware/spine-runtimes/trunk/spine-c 
 call:svndepend https://github.com/irov/pybind.git/trunk pybind
 call:svndepend https://github.com/irov/metabuf.git/trunk metabuf
 call:svndepend https://github.com/irov/stdex.git/trunk stdex
-call:svndepend https://github.com/irov/fastpathfinder.git fastpathfinder
+call:svndepend https://github.com/irov/fastpathfinder.git/trunk fastpathfinder
 
 echo.&pause&goto:eof
 

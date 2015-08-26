@@ -64,22 +64,28 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     static bool ConstString_convert( PyObject * _obj, void * _place, void * _user )
     {
-        if( pybind::string_check( _obj ) == false )
-        {
-            return false;
-        }
+		ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(_user);
 
-        ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(_user);
+		ConstString & cstr = *(ConstString*)_place;
+		
+		if( pybind::string_check( _obj ) == true )
+		{
+			if( SCRIPT_SERVICE( serviceProvider )
+				->stringize( _obj, cstr ) == false )
+			{
+				return false;
+			}
 
-        ConstString & cstr = *(ConstString*)_place;
+			return true;
+		}
+		else if( pybind::is_none( _obj ) == true )
+		{
+			cstr = ConstString::none();
 
-        if( SCRIPT_SERVICE(serviceProvider)
-            ->stringize( _obj, cstr ) == false )
-        {
-            return false;
-        }
+			return true;
+		}
         
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
 	void ScriptWrapper::constsWrap( ServiceProviderInterface * _serviceProvider )

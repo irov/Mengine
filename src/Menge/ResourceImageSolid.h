@@ -15,6 +15,9 @@ namespace Menge
 	public:
 		ResourceImageSolid();
 
+	public:
+
+
 	protected:
 		bool _isValid() const override;
 

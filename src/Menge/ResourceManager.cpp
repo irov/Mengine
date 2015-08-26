@@ -290,30 +290,46 @@ namespace Menge
 		return total_successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
+	ResourceReference * ResourceManager::generateResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
 	{
-        ResourceReference * resource = PROTOTYPE_SERVICE(m_serviceProvider)
-            ->generatePrototypeT<ResourceReference>( CONST_STRING(m_serviceProvider, Resource), _type );
+		ResourceReference * resource = PROTOTYPE_SERVICE( m_serviceProvider )
+			->generatePrototypeT<ResourceReference>( CONST_STRING( m_serviceProvider, Resource ), _type );
 
 		if( resource == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceManager createResource: not registered resource type '%s'"
-				, _type.c_str() 
+			LOGGER_ERROR( m_serviceProvider )("ResourceManager::generateResource not registered resource type '%s'"
+				, _type.c_str()
 				);
 
 			return nullptr;
 		}
 
-        LOGGER_INFO(m_serviceProvider)("ResourceManager::createResource category %s group %s name %s type %s"
-            , _category.c_str()
-            , _group.c_str()
-            , _name.c_str()
-            , _type.c_str()
-            );
-		
+		LOGGER_INFO( m_serviceProvider )("ResourceManager::generateResource category %s group %s name %s type %s"
+			, _category.c_str()
+			, _group.c_str()
+			, _name.c_str()
+			, _type.c_str()
+			);
+
 		resource->setCategory( _category );
 		resource->setGroup( _group );
-		resource->setName( _name );		
+		resource->setName( _name );
+
+		return resource;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ResourceReference * ResourceManager::createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
+	{
+		ResourceReference * resource = this->generateResource( _category, _group, _name, _type );
+
+		if( resource == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ResourceManager createResource: invalid generate resource '%s'"
+				, _type.c_str()
+				);
+
+			return nullptr;
+		}
 
 		ResourceEntry * entry = m_resources.create();
 				

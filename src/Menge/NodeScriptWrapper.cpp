@@ -1776,14 +1776,8 @@ namespace Menge
                 ->setParticlesEnabled( _enabled );
         }
         //////////////////////////////////////////////////////////////////////////
-		ResourceImageDefault * s_createImageResource( const ConstString& _resourceName, const ConstString& _pakName, const FilePath& _fileName, const mt::vec2f & _maxSize )
+		ResourceImageDefault * s_createImageResource( const ConstString & _resourceName, const ConstString& _pakName, const FilePath& _fileName, const mt::vec2f & _maxSize )
         {
-            if( RESOURCE_SERVICE(m_serviceProvider)
-                ->hasResource( _resourceName, nullptr ) == true )
-			{
-				return nullptr;
-			}
-
 			mt::vec2f maxSize;
 
 			if( _maxSize.x < 0.f || _maxSize.y < 0.f )
@@ -1823,7 +1817,7 @@ namespace Menge
 			}
 
 			ResourceImageDefault * resource = RESOURCE_SERVICE( m_serviceProvider )
-				->createResourceT<ResourceImageDefault>( _pakName, ConstString::none(), _resourceName, CONST_STRING(m_serviceProvider, ResourceImageDefault) );
+				->generateResourceT<ResourceImageDefault *>( ConstString::none(), ConstString::none(), _resourceName, CONST_STRING( m_serviceProvider, ResourceImageDefault ) );
 
 			if( resource == nullptr )
 			{
@@ -1837,6 +1831,24 @@ namespace Menge
 			
 			return resource;
         }
+		//////////////////////////////////////////////////////////////////////////
+		ResourceImageSolid * s_createImageSolidResource( const ConstString & _resourceName, const ColourValue & _colour, const mt::vec2f & _maxSize )
+		{
+			ResourceImageSolid * resource = RESOURCE_SERVICE( m_serviceProvider )
+				->generateResourceT<ResourceImageSolid *>( ConstString::none(), ConstString::none(), _resourceName, CONST_STRING( m_serviceProvider, ResourceImageSolid ) );
+
+			if( resource == nullptr )
+			{
+				return nullptr;
+			}
+						
+			resource->setColor( _colour );
+
+			resource->setMaxSize( _maxSize );
+			resource->setSize( _maxSize );			
+
+			return resource;
+		}
         //////////////////////////////////////////////////////////////////////////
         void minimizeWindow()
         {
@@ -2704,7 +2716,7 @@ namespace Menge
 			ResourceMovie * resourceMovie;
 
 			if( RESOURCE_SERVICE(m_serviceProvider)
-				->hasResourceT<ResourceMovie>( resourceMovieName, &resourceMovie ) == false )
+				->hasResourceT<ResourceMovie *>( resourceMovieName, &resourceMovie ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("s_getMovieSlotsPosition: not found resource movie %s"
 					, resourceMovieName.c_str()
@@ -2749,7 +2761,7 @@ namespace Menge
 			ResourceMovie * resourceMovie;
 
 			if( RESOURCE_SERVICE(m_serviceProvider)
-				->hasResourceT<ResourceMovie>( resourceMovieName, &resourceMovie ) == false )
+				->hasResourceT<ResourceMovie *>( resourceMovieName, &resourceMovie ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("getMovieSlotPosition: not found resource movie %s"
 					, resourceMovieName.c_str()
@@ -4591,6 +4603,8 @@ namespace Menge
 			.def( "isAlpha", &ResourceImage::isAlpha )
 			.def( "isWrapU", &ResourceImage::isWrapU )
 			.def( "isWrapV", &ResourceImage::isWrapV )
+			.def( "setColor", &ResourceImage::setColor )
+			.def( "getColor", &ResourceImage::getColor )
             ;
 
 		pybind::interface_<ResourceImageData, pybind::bases<ResourceReference> >("ResourceImageData", false)
@@ -5403,6 +5417,7 @@ namespace Menge
             pybind::def_functor( "renderOneFrame", nodeScriptMethod, &NodeScriptMethod::renderOneFrame );
             pybind::def_functor( "writeImageToFile", nodeScriptMethod, &NodeScriptMethod::writeImageToFile );
             pybind::def_functor( "createImageResource", nodeScriptMethod, &NodeScriptMethod::s_createImageResource );
+			pybind::def_functor( "createImageSolidResource", nodeScriptMethod, &NodeScriptMethod::s_createImageSolidResource );
             //pybind::def_function( "createFolder", &ScriptMethod::createFolder );
             //pybind::def_function( "deleteFolder", &ScriptMethod::deleteFolder );
             pybind::def_functor( "minimizeWindow", nodeScriptMethod, &NodeScriptMethod::minimizeWindow );

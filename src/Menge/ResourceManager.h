@@ -88,8 +88,10 @@ namespace Menge
 		bool loadResource( const ConstString & _pakName, const FilePath & _path ) override;
 		
 	public:
+		ResourceReference * generateResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
+
 		ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
-        
+		        
 	public:
 		bool hasResource( const ConstString& _name, ResourceReference ** _resource ) const override;
 		bool lockResource( const ConstString& _name );

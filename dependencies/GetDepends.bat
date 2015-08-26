@@ -10,13 +10,12 @@ if NOT EXIST %toolsdir%\wget\wget.exe goto wget_not_found
 :: extracting 7za.exe
 unzip -o 7za465.zip 7za.exe
 
-call:getdepend http://downloads.sourceforge.net/project/boost/boost/1.58.0/boost_1_58_0.7z boost_1_58_0.7z boost_1_58_0 boost
+call:getdepend http://downloads.sourceforge.net/project/boost/boost/1.59.0/boost_1_59_0.7z boost_1_59_0.7z boost_1_59_0 boost
 
 call:getdepend http://www.cmake.org/files/v3.3/cmake-3.3.0-win32-x86.zip cmake-3.3.0-win32-x86.zip cmake-3.3.0-win32-x86 cmake
 call:getdepend http://zlib.net/zlib128.zip zlib128.zip zlib-1.2.8 zlib
-call:getdepend http://download.sourceforge.net/libpng/lpng1616.zip lpng1616.zip lpng1616 libpng
+call:getdepend http://download.sourceforge.net/libpng/lpng1618.zip lpng1618.zip lpng1618 libpng
 call:getdepend http://www.ijg.org/files/jpegsr9a.zip jpegsr9a.zip jpeg-9a libjpeg
-call:getdepend http://zlib.net/zlib128.zip zlib128.zip zlib-1.2.8 zlib
 call:getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.2.zip libogg-1.3.2.zip libogg-1.3.2 libogg
 call:getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.zip libvorbis-1.3.5.zip libvorbis-1.3.5 libvorbis
 call:getdepend http://downloads.xiph.org/releases/theora/libtheora-1.1.1.zip libtheora-1.1.1.zip libtheora-1.1.1 libtheora
@@ -28,12 +27,14 @@ call:getdepend_2 https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tgz Python
 call:getdepend http://www.astralax.ru/download/programm/magic_win_140704.zip magic_win_140704.zip win astralax
 
 call:svndepend http://pugixml.googlecode.com/svn/trunk pugixml
-call:svndepend https://svn.code.sf.net/p/pybind/code/trunk pybind
-call:svndepend https://svn.code.sf.net/p/metabuf/code/trunk metabuf
-call:svndepend https://svn.code.sf.net/p/stdex2/code/trunk stdex
 call:svndepend http://svn.code.sf.net/p/utfcpp/code/v2_0 utf8
 call:svndepend http://lz4.googlecode.com/svn/trunk lz4
-call:svndepend https://svn.code.sf.net/p/fastpathfinder/code fastpathfinder
+call:svndepend https://github.com/EsotericSoftware/spine-runtimes/trunk/spine-c spine-c
+
+call:svndepend https://github.com/irov/pybind.git/trunk pybind
+call:svndepend https://github.com/irov/metabuf.git/trunk metabuf
+call:svndepend https://github.com/irov/stdex.git/trunk stdex
+call:svndepend https://github.com/irov/fastpathfinder.git fastpathfinder
 
 echo.&pause&goto:eof
 

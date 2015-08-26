@@ -4019,7 +4019,7 @@ namespace Menge
 			: public VisitorResourceMovie
 		{
 		public:
-			ResourceMovieVisitorNullLayers( ServiceProviderInterface * _serviceProvider, PyObject * _dictResult, float _frameDuration )
+			ResourceMovieVisitorNullLayers( ServiceProviderInterface * _serviceProvider, const pybind::dict & _dictResult, float _frameDuration )
 				: m_serviceProvider( _serviceProvider )
 				, m_dictResult( _dictResult )
 				, m_frameDuration( _frameDuration )
@@ -4039,7 +4039,7 @@ namespace Menge
 					return;
 				}
 
-				PyObject * py_list_frames = pybind::list_new( 0 );
+				pybind::list py_list_frames;
 
 				const MovieLayerFrame & frames = _framePack->getLayer( _layer.index );
 
@@ -4048,23 +4048,23 @@ namespace Menge
 					MovieFrameSource frame_source;
 					_framePack->getLayerFrame( _layer.index, i, frame_source );
 
-					PyObject * py_dict_frame = pybind::dict_new();
+					pybind::dict py_dict_frame;
 
-					pybind::dict_setstring_t( py_dict_frame, "position", frame_source.position );
+					py_dict_frame["position"] = frame_source.position;
 
 					float frameTime = _layer.in + i * m_frameDuration;
 
-					pybind::dict_setstring_t( py_dict_frame, "time", frameTime );
+					py_dict_frame["time"] = frameTime;
 
-					pybind::list_appenditem_t( py_list_frames, py_dict_frame );
+					py_list_frames.append( py_dict_frame );
 				}
 
-				pybind::dict_setstring_t( m_dictResult, _layer.name.c_str(), py_list_frames );
+				m_dictResult[_layer.name] = py_list_frames;
 			}
 
 		protected:
 			ServiceProviderInterface * m_serviceProvider;
-			PyObject * m_dictResult;
+			pybind::dict m_dictResult;
 			float m_frameDuration;
 		};
         //////////////////////////////////////////////////////////////////////////
@@ -4075,14 +4075,14 @@ namespace Menge
                 return pybind::ret_none();
             }
 
-            PyObject * py_dict_result = pybind::dict_new();
+			pybind::dict py_dict_result;
 
             float frameTime = _resource->getFrameDuration();
             ResourceMovieVisitorNullLayers visitor(m_serviceProvider, py_dict_result, frameTime);
 
             _resource->visitResourceMovie( &visitor );
 
-            return py_dict_result;
+			return py_dict_result.ret();
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_hasMovieElement2( ResourceMovie * _resource, const ConstString & _slotName, const ConstString & _typeName )
@@ -4194,27 +4194,27 @@ namespace Menge
             TVectorConstString catchedNames;
         };
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_visitResourceEmitterContainer( const ConstString & _resourceName )
+		pybind::dict s_visitResourceEmitterContainer( const ConstString & _resourceName )
         {
             ResourceEmitterContainer * resource = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceT<ResourceEmitterContainer *>( _resourceName );
 
             if( resource == nullptr )
             {
-                return pybind::ret_none();
+                return pybind::make_invalid_dict_t();
             }
 
-            PyObject * py_dict_result = pybind::dict_new();
+			pybind::dict py_dict_result;
 
-            PyObject * py_list_names = pybind::list_new(0);
-            PyObject * py_list_atlas = pybind::list_new(0);
+			pybind::list py_list_names;
+			pybind::list py_list_atlas;
 
             const ParticleEmitterContainerInterfacePtr & container = resource->getContainer();
 
             ResourceEmitterContainerVisitor visitor;
             container->visitContainer( &visitor );
 
-			pybind::list_appenditems_t( py_list_names, visitor.catchedNames.begin(), visitor.catchedNames.end() );
+			py_list_names.append( visitor.catchedNames.begin(), visitor.catchedNames.end() );
 
             for( TVectorParticleEmitterAtlas::const_iterator
                 it = visitor.cathedAtlas.begin(),
@@ -4222,15 +4222,15 @@ namespace Menge
             it != it_end;
             ++it )
             {
-                PyObject * py_dict = pybind::dict_new();
+                pybind::dict py_dict;
 
-				pybind::dict_setstring_t( py_dict, "file", (*it).filename );
+				py_dict["file"] = (*it).filename;
 				
-				pybind::list_appenditem_t( py_list_atlas, py_dict );
+				py_list_atlas.append( py_dict );
             }
 
-            pybind::dict_setstring_t( py_dict_result, "Emitters", py_list_names );
-            pybind::dict_setstring_t( py_dict_result, "Atlasses", py_list_atlas );
+            py_dict_result["Emitters"] = py_list_names;
+            py_dict_result["Atlasses"] = py_list_atlas;
 
             resource->decrementReference();
 

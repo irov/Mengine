@@ -42,22 +42,22 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void GameAccountProvider::onCreateAccount( const WString & _accountID )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_CREATE_ACCOUNT)( _accountID.c_str() );
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_CREATE_ACCOUNT)( _accountID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GameAccountProvider::onDeleteAccount( const WString & _accountID )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_DELETE_ACCOUNT)( _accountID.c_str() );
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_DELETE_ACCOUNT)( _accountID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GameAccountProvider::onSelectAccount( const WString & _accountID )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_SELECT_ACCOUNT)( _accountID.c_str() );
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_SELECT_ACCOUNT)( _accountID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void GameAccountProvider::onUnselectAccount( const WString & _accountID )
 	{
-		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_UNSELECT_ACCOUNT)( _accountID.c_str() );
+		EVENTABLE_CALL(m_serviceProvider, m_game, EVENT_UNSELECT_ACCOUNT)( _accountID );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	GameSoundVolumeProvider::GameSoundVolumeProvider( ServiceProviderInterface * _serviceProvider, Game * _game )
@@ -421,7 +421,7 @@ namespace Menge
 			->getPlatformName();
 
 		bool EVENT_INITIALIZE_result = true;
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_INITIALIZE, EVENT_INITIALIZE_result )(_scriptInitParams.c_str(), platformName, isMaster);
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_INITIALIZE, EVENT_INITIALIZE_result )(_scriptInitParams, platformName, isMaster);
 
 		if( EVENT_INITIALIZE_result == false )
 		{

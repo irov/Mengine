@@ -63,7 +63,7 @@ namespace Menge
 			}
 #   endif
 
-			T t = static_cast<T *>(resource);
+			T t = static_cast<T>(resource);
 
 			return t;
         }

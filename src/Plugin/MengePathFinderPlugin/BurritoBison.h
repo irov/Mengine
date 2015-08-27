@@ -60,8 +60,8 @@ namespace Menge
 		void finalize();
 
 	public:
-		void addForce( const ConstString & _name, const mt::vec3f & _direction, float _value );
-		void removeForce( const ConstString & _name );
+		bool addForce( const ConstString & _name, const mt::vec3f & _direction, float _value );
+		bool removeForce( const ConstString & _name );
 
 		void addImpulse( const mt::vec3f & _direction, float _value, float _time );
 

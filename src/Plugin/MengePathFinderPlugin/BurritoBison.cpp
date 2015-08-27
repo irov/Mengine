@@ -84,20 +84,37 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::addForce( const ConstString & _name, const mt::vec3f & _direction, float _value )
+	bool BurritoBison::addForce( const ConstString & _name, const mt::vec3f & _direction, float _value )
 	{
+		TVectorBurritoBisonForce::iterator it_erase = std::find_if( m_forces.begin(), m_forces.end(), FBurritoBisonForceRemove( _name ) );
+
+		if( it_erase != m_forces.end() )
+		{
+			return false;
+		}
+
 		BurritoBisonForce force;
 		force.name = _name;
 		force.direction = _direction;
 		force.value = _value;
 
 		m_forces.push_back( force );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::removeForce( const ConstString & _name )
+	bool BurritoBison::removeForce( const ConstString & _name )
 	{
 		TVectorBurritoBisonForce::iterator it_erase = std::find_if( m_forces.begin(), m_forces.end(), FBurritoBisonForceRemove(_name) );
+
+		if( it_erase == m_forces.end() )
+		{
+			return false;
+		}
+
 		m_forces.erase( it_erase );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::addImpulse( const mt::vec3f & _direction, float _value, float _time )

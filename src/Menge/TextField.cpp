@@ -38,7 +38,7 @@ namespace Menge
 		, m_charOffset(0.f)
 		, m_lineOffset(0.f)
 		, m_wrap(true)
-		, m_outline(false)
+		, m_outline(true)
 		, m_pixelsnap(true)
 		, m_materialFont(nullptr)
 		, m_materialOutline(nullptr)
@@ -595,29 +595,6 @@ namespace Menge
 
 			if( fontName == currentFontName )
 			{
-				const RenderTextureInterfacePtr & textureOutline = m_font->getTextureOutline();
-
-				if( m_outline == true )
-				{
-					if( textureOutline == nullptr )
-					{
-						LOGGER_ERROR(m_serviceProvider)("TextField::updateFont_ '%s' font '%s' can't setup outline texture but textfield setup 'outline'"
-							, this->getName().c_str()
-							, fontName.c_str()
-							);
-
-						TEXT_SERVICE(m_serviceProvider)
-							->releaseFont( m_font );
-
-						m_font = nullptr;
-
-						m_materialFont = nullptr;
-						m_materialOutline = nullptr;
-
-						return;
-					}
-				}
-
 				return;
 			}
 			else
@@ -659,19 +636,6 @@ namespace Menge
 			->getMaterial( textureBlend, false, false, PT_TRIANGLELIST, 1, &textureFont );
 
 		const RenderTextureInterfacePtr & textureOutline = m_font->getTextureOutline();
-
-		if( m_outline == true )
-		{
-			if( textureOutline == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("TextField::updateFont_ '%s' font '%s' can't setup outline texture but textfield setup 'outline'"
-					, this->getName().c_str()
-					, fontName.c_str()
-					);
-
-				return;
-			}
-		}
 
 		if( textureOutline != nullptr )
 		{
@@ -1222,7 +1186,7 @@ namespace Menge
 
         this->updateVertexDataWM_( m_vertexDataTextWM, m_vertexDataText );
 
-		if( m_outline == true )
+		if( m_outline == true && m_materialOutline != nullptr )
 		{
 			this->updateVertexDataWM_( m_vertexDataOutlineWM, m_vertexDataOutline );
 		}
@@ -1269,7 +1233,7 @@ namespace Menge
 		
 		this->updateVertexData_( _font, colorFont, m_vertexDataText );
 		
-		if( m_outline == true )
+		if( m_outline == true && m_materialOutline != nullptr )
 		{
 			ColourValue colorOutline;
 

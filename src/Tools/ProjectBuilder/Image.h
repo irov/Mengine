@@ -25,8 +25,8 @@ namespace Menge
 
 		bool paste( Image * _image, uint32_t _x, uint32_t _y );
 
-		PyObject * getdata() const;
-		bool putdata( PyObject * _data );
+		pybind::list getdata() const;
+		bool putdata( const pybind::list & _data );
 
 		Image * rotate( float _angle );
 

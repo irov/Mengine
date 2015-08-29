@@ -28,7 +28,7 @@ static void message_error( const char * _format, ... )
 
 	char str[2048];
 
-	int size = vsnprintf( str, 2048 - 1, _format, argList );
+	vsnprintf( str, 2048 - 1, _format, argList );
 
 	va_end(argList);
 

@@ -226,9 +226,9 @@ namespace Menge
 		return m_channels;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Image::getdata() const
+	pybind::list Image::getdata() const
 	{
-		PyObject * pixels = pybind::list_new( m_width * m_height );
+		pybind::list pixels( m_width * m_height );
 
 		for( uint32_t j = 0; j != m_height; ++j )
 		{
@@ -237,21 +237,23 @@ namespace Menge
 				uint32_t pixel_index = i + (j * m_width);
 				uint32_t index = pixel_index * m_channels;
 
-				PyObject * pixel = pybind::tuple_new( m_channels );
+				pybind::list pixel( m_channels );
 
 				for( uint32_t k = 0; k != m_channels; ++k )
 				{
-					pybind::tuple_setitem_t( pixel, k, m_memory[index + k] );
+					uint8_t color = m_memory[index + k];
+
+					pixel[k] = color;
 				}
 
-				pybind::list_setitem_t( pixels, pixel_index, pixel );
+				pixels[pixel_index] = pixel;
 			}
 		}
 
 		return pixels;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Image::putdata( PyObject * _data )
+	bool Image::putdata( const pybind::list & _data )
 	{
 		for( uint32_t j = 0; j != m_height; ++j )
 		{
@@ -260,13 +262,13 @@ namespace Menge
 				uint32_t pixel_index = i + (j * m_width);
 				uint32_t index = pixel_index * m_channels;
 
-				PyObject * pixel = pybind::list_getitem( _data, pixel_index );
+				pybind::list pixel = _data[pixel_index];
 
 				for( uint32_t k = 0; k != m_channels; ++k )
 				{
-					PyObject * color = pybind::tuple_getitem( pixel, k );
+					uint8_t color = pixel[k];
 
-					m_memory[index + k] = pybind::extract<uint8_t>( color );
+					m_memory[index + k] = color;
 				}								
 			}
 		}
@@ -276,6 +278,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Image * Image::rotate( float _angle )
 	{
+		(void)_angle;
+
 		Image * image = new Image();
 
 		image->create( m_height, m_width, m_channels );
@@ -333,7 +337,7 @@ namespace Menge
 			}
 		}
 
-		pybind::list py_extrema = pybind::make_list_t( m_channels );
+		pybind::list py_extrema( m_channels );
 
 		for( uint32_t k = 0; k != m_channels; ++k )
 		{

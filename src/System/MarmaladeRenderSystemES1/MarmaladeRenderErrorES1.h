@@ -4,10 +4,10 @@
 
 namespace Menge
 {
-	bool marmaladeRenderErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _file, int _line );
+	bool marmaladeRenderErrorCheckES1( ServiceProviderInterface * _serviceProvider, const char * _file, int _line );
 }
 
-#	define MARMALADE_RENDER_CHECK_ERROR(serviceProvider) Menge::marmaladeRenderErrorCheck( serviceProvider, __FILE__, __LINE__ )
+#	define MARMALADE_RENDER_CHECK_ERROR(serviceProvider) Menge::marmaladeRenderErrorCheckES1( serviceProvider, __FILE__, __LINE__ )
 
 #	define GLCALL( ServiceProvider, Method, Args )\
 	do{\

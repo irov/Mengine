@@ -287,7 +287,6 @@ namespace Menge
               
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;
-		bool m_alphaTestEnable;
 
         uint32_t m_debugMode;
 

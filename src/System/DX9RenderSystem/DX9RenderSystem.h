@@ -124,7 +124,6 @@ namespace Menge
 		void setFillMode( EFillMode _mode ) override;
 		void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) override;
 		void setShadeType( EShadeType _sType ) override;
-		void setAlphaTestEnable( bool _alphaTest ) override;
 		void setAlphaBlendEnable( bool _alphaBlend ) override;
 		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha ) override;
 		void setLightingEnable( bool _light ) override;

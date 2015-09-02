@@ -1,10 +1,8 @@
+#	include "MarmaladeRenderSystemES1.h"
 
-#	include "MarmaladeRenderSystem.h"
+#	include "MarmaladeRenderErrorES1.h"
 
-#	include "MarmaladeRenderError.h"
-
-#	include "Interface/LogSystemInterface.h"
-//#	include "OGLWindowContext.h"
+#	include "Interface/StringizeInterface.h"
 
 #   include "Logger/Logger.h"
 
@@ -16,7 +14,7 @@
 #	define GET_G_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 8) & 0xFF)) / 255.0f )
 #	define GET_B_FLOAT_FROM_ARGB32( argb ) ( (float)(argb & 0xFF) / 255.0f )
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY(RenderSystem, Menge::RenderSystemInterface, Menge::MarmaladeRenderSystem);
+SERVICE_FACTORY(RenderSystemES1, Menge::RenderSystemInterface, Menge::MarmaladeRenderSystemES1);
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -278,7 +276,7 @@ namespace Menge
 		return GL_REPLACE;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeRenderSystem::MarmaladeRenderSystem()
+	MarmaladeRenderSystemES1::MarmaladeRenderSystemES1()
 		: m_serviceProvider(nullptr)
 		, m_supportNPOT(false)
 		, m_currentVertexBuffer(0)
@@ -293,21 +291,21 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeRenderSystem::~MarmaladeRenderSystem()
+	MarmaladeRenderSystemES1::~MarmaladeRenderSystemES1()
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    void MarmaladeRenderSystemES1::setServiceProvider( ServiceProviderInterface * _serviceProvider )
     {
         m_serviceProvider = _serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * MarmaladeRenderSystem::getServiceProvider() const
+    ServiceProviderInterface * MarmaladeRenderSystemES1::getServiceProvider() const
     {
         return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::initialize()
+	bool MarmaladeRenderSystemES1::initialize()
 	{
 		LOGGER_WARNING(m_serviceProvider)("Initializing OpenGL RenderSystem...");
 
@@ -368,21 +366,28 @@ namespace Menge
 
 		GLCALL( m_serviceProvider, glMatrixMode, ( GL_TEXTURE ) );
 		GLCALL( m_serviceProvider, glLoadIdentity, () );
+
+		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Marmalade OpenGL ES1" );
 						
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::finalize()
+    void MarmaladeRenderSystemES1::finalize()
     {
 		GLCALL( m_serviceProvider, IwGLTerminate, () );		
     }
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & MarmaladeRenderSystemES1::getRenderPlatformName() const
+	{
+		return m_renderPlatform;
+	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::setRenderListener( RenderSystemListener * _listener )
+    void MarmaladeRenderSystemES1::setRenderListener( RenderSystemListener * _listener )
     {
         m_listener = _listener;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits,
+	bool MarmaladeRenderSystemES1::createRenderWindow( const Resolution & _resolution, uint32_t _bits,
 												bool _fullscreen, WindowHandle _winHandle, 
 												bool _waitForVSync, int _FSAAType, int _FSAAQuality )
 	{
@@ -393,7 +398,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect )
+	bool MarmaladeRenderSystemES1::screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect )
 	{
 		(void)_image;
 		(void)_rect;
@@ -402,7 +407,7 @@ namespace Menge
 		return false;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::setViewport( const Viewport & _viewport )
+    void MarmaladeRenderSystemES1::setViewport( const Viewport & _viewport )
     {
         float w = _viewport.getWidth();
         float h = _viewport.getHeight();
@@ -414,7 +419,7 @@ namespace Menge
         GLCALL( m_serviceProvider, glViewport, ( (GLsizei)xb, height - (GLsizei)(yb), (GLsizei)w, (GLsizei)h ) );
     }
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
+	void MarmaladeRenderSystemES1::setProjectionMatrix( const mt::mat4f & _projection )
 	{
         GLCALL( m_serviceProvider, glMatrixMode, ( GL_PROJECTION ) );
 
@@ -422,7 +427,7 @@ namespace Menge
         GLCALL( m_serviceProvider, glLoadMatrixf, ( matrix ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setModelViewMatrix( const mt::mat4f & _view )
+	void MarmaladeRenderSystemES1::setModelViewMatrix( const mt::mat4f & _view )
 	{
         GLCALL( m_serviceProvider, glMatrixMode, ( GL_MODELVIEW ) );
 
@@ -430,17 +435,17 @@ namespace Menge
         GLCALL( m_serviceProvider, glLoadMatrixf, ( matrix ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setTextureMatrix( uint32_t _stage, const float* _texture )
+	void MarmaladeRenderSystemES1::setTextureMatrix( uint32_t _stage, const float* _texture )
 	{
         // To Do
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::setWorldMatrix( const mt::mat4f & _world )
+    void MarmaladeRenderSystemES1::setWorldMatrix( const mt::mat4f & _world )
     {
         // To Do
     }
 	//////////////////////////////////////////////////////////////////////////
-	VBHandle MarmaladeRenderSystem::createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic )
+	VBHandle MarmaladeRenderSystemES1::createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic )
 	{
 		size_t size = _verticesNum * _vertexSize;
 		unsigned char * memory = new unsigned char[size];
@@ -473,7 +478,7 @@ namespace Menge
         return vbHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::releaseVertexBuffer( VBHandle _vbHandle )
+	void MarmaladeRenderSystemES1::releaseVertexBuffer( VBHandle _vbHandle )
 	{
 		MemoryRange * range;
 		if( m_vBuffersMemory.has( _vbHandle, &range) == false )
@@ -495,7 +500,7 @@ namespace Menge
 		m_vBuffersMemory.erase( _vbHandle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MarmaladeRenderSystem::lockVertexBuffer( VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
+	void * MarmaladeRenderSystemES1::lockVertexBuffer( VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
 	{
 		MemoryRange * range;
 		if( m_vBuffersMemory.has( _vbHandle, &range) == false )
@@ -517,7 +522,7 @@ namespace Menge
         return mem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::unlockVertexBuffer( VBHandle _vbHandle )
+	bool MarmaladeRenderSystemES1::unlockVertexBuffer( VBHandle _vbHandle )
 	{
 		MemoryRange * range;
 		if( m_vBuffersLocks.has( _vbHandle, &range) == false )
@@ -534,12 +539,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setVertexBuffer( VBHandle _vbHandle )
+	void MarmaladeRenderSystemES1::setVertexBuffer( VBHandle _vbHandle )
 	{
 		m_currentVertexBuffer = _vbHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IBHandle MarmaladeRenderSystem::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
+	IBHandle MarmaladeRenderSystemES1::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
 	{
 		size_t size = _indiciesNum * sizeof( uint16 );
 		unsigned char * memory = new unsigned char[size];
@@ -576,7 +581,7 @@ namespace Menge
 		return ibHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::releaseIndexBuffer( IBHandle _ibHandle )
+	void MarmaladeRenderSystemES1::releaseIndexBuffer( IBHandle _ibHandle )
 	{
 		MemoryRange * range;
 		if( m_iBuffersMemory.has( _ibHandle, &range) == false )
@@ -602,7 +607,7 @@ namespace Menge
 		m_iBuffersMemory.erase( _ibHandle );		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderIndices2D * MarmaladeRenderSystem::lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
+	RenderIndices * MarmaladeRenderSystemES1::lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
 	{
 		MemoryRange * range;
 		if( m_iBuffersMemory.has( _ibHandle, &range) == false )
@@ -619,12 +624,12 @@ namespace Menge
 
 		m_iBuffersLocks.insert( _ibHandle, memRange );
 		
-        RenderIndices2D * mem = reinterpret_cast<RenderIndices2D *>(memRange.pMem);
+        RenderIndices * mem = reinterpret_cast<RenderIndices *>(memRange.pMem);
 
         return mem;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::unlockIndexBuffer( IBHandle _ibHandle )
+	bool MarmaladeRenderSystemES1::unlockIndexBuffer( IBHandle _ibHandle )
 	{
 		MemoryRange * range;
 		if( m_iBuffersLocks.has( _ibHandle, &range) == false )
@@ -643,17 +648,52 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex )
+	void MarmaladeRenderSystemES1::setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex )
 	{
 		m_currentIndexBuffer = _ibHandle;        
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration )
+	void MarmaladeRenderSystemES1::setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration )
 	{
         // To Do
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::drawIndexedPrimitive( EPrimitiveType _type, 
+	RenderShaderInterfacePtr MarmaladeRenderSystemES1::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+	{
+		(void)_name;
+		(void)_buffer;
+		(void)_size;
+		(void)_isCompile;
+
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderShaderInterfacePtr MarmaladeRenderSystemES1::createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
+	{
+		(void)_name;
+		(void)_buffer;
+		(void)_size;
+		(void)_isCompile;
+
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderProgramInterfacePtr MarmaladeRenderSystemES1::createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex, uint32_t _samplerCount )
+	{
+		(void)_name;
+		(void)_fragment;
+		(void)_vertex;
+		(void)_samplerCount;
+
+		return nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeRenderSystemES1::setProgram( const RenderProgramInterfacePtr & _program )
+	{
+		(void)_program;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeRenderSystemES1::drawIndexedPrimitive( EPrimitiveType _type, 
 		uint32_t _baseVertexIndex,  uint32_t _minIndex, 
 		uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount )
 	{
@@ -661,15 +701,15 @@ namespace Menge
 		{
 			const TextureStage & textureStage = m_textureStage[i];
 
+			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
+			
 			if( textureStage.texture == 0 )
-			{
-				GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
+			{				
 				GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
-				break;
+
+				continue;
 			}
-
-			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i));
-
+			
 			GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
 
 			GLCALL( m_serviceProvider, glBindTexture, ( GL_TEXTURE_2D, textureStage.texture ) );
@@ -783,13 +823,13 @@ namespace Menge
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture )
+	void MarmaladeRenderSystemES1::setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture )
 	{        
         TextureStage & tStage = m_textureStage[_stage];
 
         if( _texture != nullptr )
         {
-            MarmaladeTexture * texture = stdex::intrusive_get<MarmaladeTexture>(_texture);
+            MarmaladeTextureES1 * texture = stdex::intrusive_get<MarmaladeTextureES1>(_texture);
             
             tStage.texture = texture->getUId();
             tStage.wrapS = texture->getWrapS();
@@ -803,7 +843,7 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
+	void MarmaladeRenderSystemES1::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )
 	{
         GLenum modeUGL = s_getGLAddressMode( _modeU );
         GLenum modeVGL = s_getGLAddressMode( _modeV );
@@ -812,26 +852,26 @@ namespace Menge
         m_textureStage[_stage].wrapT = modeVGL;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setTextureFactor( uint32_t _color )
+	void MarmaladeRenderSystemES1::setTextureFactor( uint32_t _color )
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setSrcBlendFactor( EBlendFactor _src )
+	void MarmaladeRenderSystemES1::setSrcBlendFactor( EBlendFactor _src )
 	{
 		m_srcBlendFactor = s_toGLBlendFactor[ _src ];
 
 		GLCALL( m_serviceProvider, glBlendFunc, ( m_srcBlendFactor, m_dstBlendFactor ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setDstBlendFactor( EBlendFactor _dst )
+	void MarmaladeRenderSystemES1::setDstBlendFactor( EBlendFactor _dst )
 	{
 		m_dstBlendFactor = s_toGLBlendFactor[ _dst ];
 
 		GLCALL( m_serviceProvider, glBlendFunc, ( m_srcBlendFactor, m_dstBlendFactor ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setCullMode( ECullMode _mode )
+	void MarmaladeRenderSystemES1::setCullMode( ECullMode _mode )
 	{
 		bool enable = true;
 		GLenum face = GL_BACK;
@@ -857,12 +897,12 @@ namespace Menge
         }
 	}
     /////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::setSeparateAlphaBlendMode()
+    void MarmaladeRenderSystemES1::setSeparateAlphaBlendMode()
     {
     
     }
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setDepthBufferTestEnable( bool _depthTest )
+	void MarmaladeRenderSystemES1::setDepthBufferTestEnable( bool _depthTest )
 	{
         if( _depthTest == true )
         {
@@ -874,50 +914,38 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setDepthBufferWriteEnable( bool _depthWrite )
+	void MarmaladeRenderSystemES1::setDepthBufferWriteEnable( bool _depthWrite )
 	{
 		m_depthMask = _depthWrite;
 
 		GLCALL( m_serviceProvider, glDepthMask, ( m_depthMask ? GL_TRUE : GL_FALSE ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
+	void MarmaladeRenderSystemES1::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
 	{
 		GLenum cmpFunc = s_toGLCmpFunc[ _depthFunction ];
 
 		GLCALL( m_serviceProvider, glDepthFunc, ( cmpFunc ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setFillMode( EFillMode _mode )
+	void MarmaladeRenderSystemES1::setFillMode( EFillMode _mode )
 	{
 		/*GLenum mode = s_toGLFillMode[ _mode ];
 		glPolygonMode( GL_FRONT_AND_BACK, mode );*/
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
+	void MarmaladeRenderSystemES1::setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a )
 	{
 		GLCALL( m_serviceProvider, glColorMask, ( _r ? GL_TRUE : GL_FALSE, _g ? GL_TRUE : GL_FALSE, _b ? GL_TRUE : GL_FALSE, _a ? GL_TRUE : GL_FALSE ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setShadeType( EShadeType _sType )
+	void MarmaladeRenderSystemES1::setShadeType( EShadeType _sType )
 	{
 		GLenum model = s_toGLShadeMode[ _sType ];
 		GLCALL( m_serviceProvider, glShadeModel, ( model ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setAlphaTestEnable( bool _alphaTest )
-	{
-        if( _alphaTest == true )
-        {
-            GLCALL( m_serviceProvider, glEnable, ( GL_ALPHA_TEST ) );
-        }
-        else
-        {
-            GLCALL( m_serviceProvider, glDisable, ( GL_ALPHA_TEST ) );
-        }
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setAlphaBlendEnable( bool _alphaBlend )
+	void MarmaladeRenderSystemES1::setAlphaBlendEnable( bool _alphaBlend )
 	{
 		if( _alphaBlend == true )
         {
@@ -929,7 +957,7 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha )
+	void MarmaladeRenderSystemES1::setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha )
 	{
 		GLenum cmpFunc = s_toGLCmpFunc[_alphaFunc];
 		GLclampf ref = (GLclampf)(static_cast<float>( _alpha ) / 255.0f);
@@ -937,7 +965,7 @@ namespace Menge
 		GLCALL( m_serviceProvider, glAlphaFunc, ( cmpFunc, ref ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setLightingEnable( bool _light )
+	void MarmaladeRenderSystemES1::setLightingEnable( bool _light )
 	{
 		if( _light == true )
         {
@@ -949,7 +977,7 @@ namespace Menge
         }
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
+	void MarmaladeRenderSystemES1::setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
         if( _textrueOp == Menge::TOP_SELECTARG2 )
         {
@@ -962,7 +990,7 @@ namespace Menge
         m_textureStage[_stage].colorArg2 = s_getGLTextureArg( _arg2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
+	void MarmaladeRenderSystemES1::setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,  ETextureArgument _arg1, ETextureArgument _arg2 )
 	{
         if( _textrueOp == Menge::TOP_SELECTARG2 )
         {
@@ -975,12 +1003,12 @@ namespace Menge
         m_textureStage[_stage].alphaArg2 = s_getGLTextureArg( _arg2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index )
+    void MarmaladeRenderSystemES1::setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index )
     {
         //m_textureStage[_stage].texCoordIndex = _index;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
+	void MarmaladeRenderSystemES1::setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
 	{
         TextureStage & tStage = m_textureStage[_stage];
 
@@ -1000,17 +1028,7 @@ namespace Menge
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    RenderShaderInterface * MarmaladeRenderSystem::createShader( const void * _buffer, size_t _size )
-    {
-        return nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::setShader( RenderShaderInterface * _shader )
-    {
-
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const
+    void MarmaladeRenderSystemES1::findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const
     {
         switch( _format )
         {
@@ -1040,7 +1058,7 @@ namespace Menge
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr MarmaladeRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+	RenderImageInterfacePtr MarmaladeRenderSystemES1::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
 	{
         uint32_t hwChannels = 0;
         PixelFormat hwFormat = PF_UNKNOWN;
@@ -1096,7 +1114,7 @@ namespace Menge
 			return nullptr;
 		}
 
-        MarmaladeTexture * texture = m_factoryOGLTexture.createObjectT();
+        MarmaladeTextureES1 * texture = m_factoryOGLTexture.createObjectT();
 
 		texture->initialize(
 			m_serviceProvider
@@ -1124,35 +1142,35 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::lockRenderTarget( const RenderImageInterfacePtr & _renderTarget )
+	bool MarmaladeRenderSystemES1::lockRenderTarget( const RenderImageInterfacePtr & _renderTarget )
 	{
 		//TODO
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::unlockRenderTarget()
+	bool MarmaladeRenderSystemES1::unlockRenderTarget()
 	{
 		//TODO
 		return false;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeRenderSystem::beginScene()
+    bool MarmaladeRenderSystemES1::beginScene()
     {
 		this->clearFrameBuffer( FBT_COLOR, 0, 1.f, 0 );
 
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::endScene()
+	void MarmaladeRenderSystemES1::endScene()
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::swapBuffers()
+	void MarmaladeRenderSystemES1::swapBuffers()
 	{
         GLCALL( m_serviceProvider, IwGLSwapBuffers, () );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil )
+	void MarmaladeRenderSystemES1::clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil )
 	{
 		GLbitfield frameBufferFlags = 0;
 		
@@ -1195,7 +1213,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
+	void MarmaladeRenderSystemES1::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
 	{
         m_resolution = _resolution;
         
@@ -1209,37 +1227,37 @@ namespace Menge
 		//m_winContextHeight = _resolution.getHeight();
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::supportTextureFormat( PixelFormat _format ) const
+	bool MarmaladeRenderSystemES1::supportTextureFormat( PixelFormat _format ) const
 	{
 		return s_toGLInternalFormat( _format ) != 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::onWindowMovedOrResized()
+	void MarmaladeRenderSystemES1::onWindowMovedOrResized()
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::onWindowClose()
+	void MarmaladeRenderSystemES1::onWindowClose()
 	{
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setVSync( bool _vSync )
+	void MarmaladeRenderSystemES1::setVSync( bool _vSync )
 	{
 		//m_windowContext->setVSync( _vSync );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::clear( uint32_t _color )
+    void MarmaladeRenderSystemES1::clear( uint32_t _color )
     {
     
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr MarmaladeRenderSystem::createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+    RenderImageInterfacePtr MarmaladeRenderSystemES1::createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
     {
         return nullptr;
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr MarmaladeRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+	RenderImageInterfacePtr MarmaladeRenderSystemES1::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
 	{
 		uint32_t hwChannels = 0;
 		PixelFormat hwFormat = PF_UNKNOWN;
@@ -1294,7 +1312,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		MarmaladeTexture * texture = m_factoryOGLTexture.createObjectT();
+		MarmaladeTextureES1 * texture = m_factoryOGLTexture.createObjectT();
 
 		texture->initialize( 
 			m_serviceProvider
@@ -1322,7 +1340,7 @@ namespace Menge
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
+    void MarmaladeRenderSystemES1::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
 	{
         mt::mat4f scale;
         mt::make_scale_m4( scale, 1.f, 1.f, 1.f );
@@ -1339,7 +1357,7 @@ namespace Menge
         mt::mul_m4_m4( _projectionMatrix, transform, ortho );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float _zn, float _zf )
+	void MarmaladeRenderSystemES1::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float _zn, float _zf )
 	{
 		mt::mat4f scale;
 		mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
@@ -1356,7 +1374,7 @@ namespace Menge
 		mt::mul_m4_m4( _projectionMatrix, transform, projection_fov );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
+	void MarmaladeRenderSystemES1::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
 	{
 		mt::mat4f scale;
 		mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
@@ -1373,7 +1391,7 @@ namespace Menge
 		mt::mul_m4_m4( _projectionMatrix, transform, frustum );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport )
+    void MarmaladeRenderSystemES1::makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport )
     {
         mt::mat4f wm;
         mt::ident_m4( wm );
@@ -1381,7 +1399,7 @@ namespace Menge
         mt::inv_m4( _viewMatrix, wm );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )
+    void MarmaladeRenderSystemES1::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )
     {
         mt::make_lookat_m4( _viewMatrix, _eye, _dir, _up, _sign );
     }

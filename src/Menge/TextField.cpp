@@ -84,6 +84,24 @@ namespace Menge
 
         m_font = nullptr;
 
+		String cacheText;
+		m_cacheText.swap( cacheText );
+
+		TVectorTextLine lines;
+		m_lines.swap( lines );
+
+		TVectorRenderVertex2D vertexDataText;
+		m_vertexDataText.swap( vertexDataText );
+
+		TVectorRenderVertex2D vertexDataOutline;
+		m_vertexDataOutline.swap( vertexDataOutline );
+
+		TVectorRenderVertex2D vertexDataTextWM;
+		m_vertexDataTextWM.swap( vertexDataTextWM );
+
+		TVectorRenderVertex2D vertexDataOutlineWM;
+		m_vertexDataOutlineWM.swap( vertexDataOutlineWM );
+
 		m_materialFont = nullptr;
 		m_materialOutline = nullptr;
 	}

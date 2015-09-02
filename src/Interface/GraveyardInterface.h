@@ -24,7 +24,7 @@ namespace Menge
 		virtual void clearTextures() = 0;
 
 	public:
-		virtual void buryTexture( RenderTextureInterface * _texture ) = 0;
+		virtual bool buryTexture( RenderTextureInterface * _texture ) = 0;
 		virtual RenderTextureInterfacePtr resurrectTexture( const ConstString& _pakName, const FilePath & _path ) = 0;
 	};
 

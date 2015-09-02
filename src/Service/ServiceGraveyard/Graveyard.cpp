@@ -10,6 +10,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Graveyard::Graveyard()
 		: m_serviceProvider(nullptr)
+		, m_count(0)
 		, m_graveyardTime(1000.f)
 	{
 	}
@@ -42,67 +43,141 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Graveyard::clearTextures()
 	{
-		for( TMapTextureGrave::iterator
+		for( TVectorTextureGrave::iterator
 			it = m_textures.begin(),
 			it_end = m_textures.end();
 		it != it_end;
 		++it )
 		{
-			RenderTextureGraveEntry * entry = *it;
+			RenderTextureGraveEntry & entry = *it;
 
-			entry->image = nullptr;
+			m_count--;
+
+			entry.image = nullptr;
 		}
 		
 		m_textures.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class FGraveyardDead
+		{
+		public:
+			FGraveyardDead( float _timing )
+				: m_timing( _timing )
+			{
+			}
+
+		public:
+			bool operator ()( RenderTextureGraveEntry & _entry ) const
+			{
+				_entry.timing -= m_timing;
+
+				if( _entry.timing > 0.f )
+				{
+					return false;
+				}			
+
+				return true;
+			}
+
+		protected:
+			float m_timing;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Graveyard::update( float _timing )
 	{
-		m_textures.foreach( this, &Graveyard::updateTexture_, _timing );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Graveyard::updateTexture_( RenderTextureGraveEntry * _entry, float _timing )
-	{
-		_entry->timing -= _timing;
+		TVectorTextureGrave::iterator it_erase = std::remove_if( m_textures.begin(), m_textures.end(), FGraveyardDead( _timing ) );
 
-		if( _entry->timing > 0.f )
+		for( TVectorTextureGrave::iterator
+			it = it_erase,
+			it_end = m_textures.end();
+		it != it_end;
+		++it )
 		{
-			return;
+			RenderTextureGraveEntry & entry = *it;
+
+			entry.image = nullptr;
+
+			m_count--;
 		}
 
-		_entry->image = nullptr;
-
-		m_textures.erase_node( _entry );
+		m_textures.erase( it_erase, m_textures.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Graveyard::buryTexture( RenderTextureInterface * _texture )
+	bool Graveyard::buryTexture( RenderTextureInterface * _texture )
 	{
 		const ConstString & category = _texture->getCategory();
 		const FilePath & filePath = _texture->getFileName();
 
 		if( filePath.empty() == true )
 		{
-			return;
+			return false;
 		}
 
 		if( mt::equal_f_z( m_graveyardTime ) == true )
 		{
-			return;
+			return false;
 		}
 
-		RenderTextureGraveEntry * entry = m_textures.create();
+		m_count++;
 
-		entry->category = category;
-		entry->filePath = filePath;
+		RenderTextureGraveEntry entry;
 
-		entry->image = _texture->getImage();
-		entry->mipmaps = _texture->getMipmaps();
-		entry->width = _texture->getWidth();
-		entry->height = _texture->getHeight();
-		entry->channels = _texture->getChannels();
-		entry->timing = m_graveyardTime;
+		entry.category = category;
+		entry.filePath = filePath;
 
-		m_textures.insert( entry, nullptr );
+		entry.image = _texture->getImage();
+		entry.mipmaps = _texture->getMipmaps();
+		entry.width = _texture->getWidth();
+		entry.height = _texture->getHeight();
+		entry.channels = _texture->getChannels();
+		entry.timing = m_graveyardTime;
+
+		m_textures.push_back( entry );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class FGraveyardFind
+		{
+		public:
+			FGraveyardFind( const ConstString& _pakName, const FilePath & _filePath )
+				: m_pakName(_pakName)
+				, m_filePath(_filePath)
+			{
+			}
+
+		public:
+			bool operator() ( const RenderTextureGraveEntry & _entry )
+			{
+				if( _entry.category != m_pakName )
+				{
+					return false;
+				}
+
+				if( _entry.filePath != m_filePath )
+				{
+					return false;
+				}
+
+				return true;
+			}
+
+		protected:
+			void operator = (const FGraveyardFind & _find)
+			{
+				(void)_find;
+			}
+
+		protected:
+			const ConstString& m_pakName;
+			const FilePath & m_filePath;
+		};
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderTextureInterfacePtr Graveyard::resurrectTexture( const ConstString& _pakName, const FilePath & _filePath )
@@ -115,18 +190,26 @@ namespace Menge
 		if( mt::equal_f_z( m_graveyardTime ) == true )
 		{
 			return nullptr;
-		}
+		}					
 
-		RenderTextureGraveEntry * entry;
-		if( m_textures.has( _pakName, _filePath, &entry ) == false )
+		TVectorTextureGrave::iterator it_found = std::find_if( m_textures.begin(), m_textures.end(), FGraveyardFind( _pakName, _filePath ) );
+
+		if( it_found == m_textures.end() )
 		{
 			return nullptr;
 		}
-		
-		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE(m_serviceProvider)
-			->createRenderTexture( entry->image, entry->mipmaps, entry->width, entry->height, entry->channels );
 
-		m_textures.erase_node( entry );
+		--m_count;
+
+		RenderTextureGraveEntry & entry = *it_found;
+
+		RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE( m_serviceProvider )
+			->createRenderTexture( entry.image, entry.mipmaps, entry.width, entry.height, entry.channels );
+
+		entry.image = nullptr;
+
+		*it_found = m_textures.back();
+		m_textures.pop_back();
 
 		return texture;
 	}

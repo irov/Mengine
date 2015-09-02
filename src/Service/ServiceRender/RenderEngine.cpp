@@ -42,7 +42,6 @@ namespace Menge
 		, m_maxIndexCount(0)
 		, m_depthBufferWriteEnable(false)
 		, m_alphaBlendEnable(false)
-		, m_alphaTestEnable(false)
 		, m_debugMode(0)
 		, m_currentStage(nullptr)
 		, m_nullTexture(nullptr)
@@ -654,14 +653,6 @@ namespace Menge
 				->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
 		}
 
-		if( m_alphaTestEnable != m_currentStage->alphaTestEnable )
-		{
-			m_alphaTestEnable = m_currentStage->alphaTestEnable;
-
-			RENDER_SYSTEM(m_serviceProvider)
-				->setAlphaTestEnable( m_alphaTestEnable );
-		}
-
 		if( m_alphaBlendEnable != m_currentStage->alphaBlendEnable )
 		{
 			m_alphaBlendEnable = m_currentStage->alphaBlendEnable;
@@ -822,7 +813,6 @@ namespace Menge
 		m_currentBlendDst = BF_ZERO;
 		m_depthBufferWriteEnable = false;
 		m_alphaBlendEnable = false;
-		m_alphaTestEnable = false;
 
 		for( int i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
@@ -901,7 +891,7 @@ namespace Menge
 		RENDER_SYSTEM(m_serviceProvider)->setDepthBufferTestEnable( false );
 		RENDER_SYSTEM(m_serviceProvider)->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
 		RENDER_SYSTEM(m_serviceProvider)->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
-		RENDER_SYSTEM(m_serviceProvider)->setAlphaTestEnable( m_alphaTestEnable );
+		RENDER_SYSTEM(m_serviceProvider)->setAlphaTestEnable( false );
 		RENDER_SYSTEM(m_serviceProvider)->setAlphaBlendEnable( m_alphaBlendEnable );
 		RENDER_SYSTEM(m_serviceProvider)->setAlphaCmpFunc( CMPF_GREATER_EQUAL, 0x01 );
 		RENDER_SYSTEM(m_serviceProvider)->setLightingEnable( false );

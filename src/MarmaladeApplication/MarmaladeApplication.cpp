@@ -29,59 +29,60 @@
 #	include <iomanip>
 
 //#	include <mhook.h>
-#	include "s3eDevice.h"
-#	include "s3eWindow.h"
-#	include "s3e.h"
+#	include <s3eDevice.h>
+#	include <s3eWindow.h>
+#	include <s3e.h>
 
 #ifdef _MSC_VER
 #	define snprintf _snprintf
 #endif
 
-SERVICE_EXTERN(ServiceProvider, Menge::ServiceProviderInterface);
-SERVICE_EXTERN(Application, Menge::ApplicationInterface);
-SERVICE_EXTERN(StringizeService, Menge::StringizeServiceInterface);
-SERVICE_EXTERN(LogService, Menge::LogServiceInterface);
-SERVICE_EXTERN(MarmaladeLayer, Menge::MarmaladeLayerInterface);
+SERVICE_EXTERN( ServiceProvider, Menge::ServiceProviderInterface );
+SERVICE_EXTERN( Application, Menge::ApplicationInterface );
+SERVICE_EXTERN( StringizeService, Menge::StringizeServiceInterface );
+SERVICE_EXTERN( LogService, Menge::LogServiceInterface );
+SERVICE_EXTERN( MarmaladeLayer, Menge::MarmaladeLayerInterface );
 
-SERVICE_EXTERN(ArchiveService, Menge::ArchiveServiceInterface);
+SERVICE_EXTERN( ArchiveService, Menge::ArchiveServiceInterface );
 
-SERVICE_EXTERN(ThreadSystem, Menge::ThreadSystemInterface);
-SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
+SERVICE_EXTERN( ThreadSystem, Menge::ThreadSystemInterface );
+SERVICE_EXTERN( ThreadService, Menge::ThreadServiceInterface );
 
 //SERVICE_EXTERN(ParticleSystem, Menge::ParticleSystemInterface);
-SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
+SERVICE_EXTERN( ParticleService, Menge::ParticleServiceInterface );
 
-SERVICE_EXTERN(ParticleSystem2, Menge::ParticleSystemInterface2);
-SERVICE_EXTERN(ParticleService2, Menge::ParticleServiceInterface2);
+SERVICE_EXTERN( ParticleSystem2, Menge::ParticleSystemInterface2 );
+SERVICE_EXTERN( ParticleService2, Menge::ParticleServiceInterface2 );
 
-SERVICE_EXTERN(RenderSystem, Menge::RenderSystemInterface);
-SERVICE_EXTERN(RenderService, Menge::RenderServiceInterface);
-SERVICE_EXTERN(RenderTextureManager, Menge::RenderTextureServiceInterface);
-SERVICE_EXTERN(RenderMaterialManager, Menge::RenderMaterialServiceInterface);
+SERVICE_EXTERN( RenderSystem, Menge::RenderSystemInterface );
+SERVICE_EXTERN( RenderSystemES1, Menge::RenderSystemInterface );
+SERVICE_EXTERN( RenderService, Menge::RenderServiceInterface );
+SERVICE_EXTERN( RenderTextureManager, Menge::RenderTextureServiceInterface );
+SERVICE_EXTERN( RenderMaterialManager, Menge::RenderMaterialServiceInterface );
 
-SERVICE_EXTERN(PhysicSystem, Menge::PhysicSystemInterface);
+SERVICE_EXTERN( PhysicSystem, Menge::PhysicSystemInterface );
 
-SERVICE_EXTERN(UnicodeSystem, Menge::UnicodeSystemInterface);
-SERVICE_EXTERN(UnicodeService, Menge::UnicodeServiceInterface);
+SERVICE_EXTERN( UnicodeSystem, Menge::UnicodeSystemInterface );
+SERVICE_EXTERN( UnicodeService, Menge::UnicodeServiceInterface );
 
-SERVICE_EXTERN(FileService, Menge::FileServiceInterface);
+SERVICE_EXTERN( FileService, Menge::FileServiceInterface );
 
-SERVICE_EXTERN(NotificationService, Menge::NotificationServiceInterface);
-SERVICE_EXTERN(ScriptService, Menge::ScriptServiceInterface);
+SERVICE_EXTERN( NotificationService, Menge::NotificationServiceInterface );
+SERVICE_EXTERN( ScriptService, Menge::ScriptServiceInterface );
 
-SERVICE_EXTERN(SoundSystem, Menge::SoundSystemInterface);
-SERVICE_EXTERN(SilentSoundSystem, Menge::SoundSystemInterface);
-SERVICE_EXTERN(SoundService, Menge::SoundServiceInterface);
+SERVICE_EXTERN( SoundSystem, Menge::SoundSystemInterface );
+SERVICE_EXTERN( SilentSoundSystem, Menge::SoundSystemInterface );
+SERVICE_EXTERN( SoundService, Menge::SoundServiceInterface );
 
-SERVICE_EXTERN(InputService, Menge::InputServiceInterface);
-SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
-SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
+SERVICE_EXTERN( InputService, Menge::InputServiceInterface );
+SERVICE_EXTERN( CodecService, Menge::CodecServiceInterface );
+SERVICE_EXTERN( PluginService, Menge::PluginServiceInterface );
 
-SERVICE_EXTERN(ModuleService, Menge::ModuleServiceInterface);
-SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
-SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
-SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
-SERVICE_EXTERN(PrefetcherService, Menge::PrefetcherServiceInterface);
+SERVICE_EXTERN( ModuleService, Menge::ModuleServiceInterface );
+SERVICE_EXTERN( DataService, Menge::DataServiceInterface );
+SERVICE_EXTERN( CacheService, Menge::CacheServiceInterface );
+SERVICE_EXTERN( ConfigService, Menge::ConfigServiceInterface );
+SERVICE_EXTERN( PrefetcherService, Menge::PrefetcherServiceInterface );
 
 
 extern "C" // only required if using g++
@@ -835,12 +836,40 @@ namespace Menge
     bool MarmaladeApplication::initializeRenderEngine_()
     {
         LOGGER_INFO(m_serviceProvider)( "Initializing Render Service..." );
+		
+		char config_SysGlesVersion[S3E_CONFIG_STRING_MAX] = {0};
+		if( s3eConfigGetString( "S3E", "SysGlesVersion", config_SysGlesVersion ) == S3E_RESULT_ERROR )
+		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeRenderEngine_ please setup SysGlesVersion"
+				);
 
-        RenderSystemInterface * renderSystem;
-        if( SERVICE_CREATE( RenderSystem, &renderSystem ) == false )
-        {
-            return false;
-        }
+			return false;
+		}
+
+		RenderSystemInterface * renderSystem;
+
+		if( strcmp( config_SysGlesVersion, "1" ) == 0 )
+		{
+			if( SERVICE_CREATE( RenderSystemES1, &renderSystem ) == false )
+			{
+				return false;
+			}
+		}
+		else if( strcmp( config_SysGlesVersion, "2" ) == 0 )
+		{ 
+			if( SERVICE_CREATE( RenderSystem, &renderSystem ) == false )
+			{
+				return false;
+			}
+		}
+		else
+		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeRenderEngine_ not support OpenGL ES '%s'"
+				, config_SysGlesVersion
+				);
+
+			return false;
+		}
 
         if( SERVICE_REGISTRY( m_serviceProvider, renderSystem ) == false )
         {

@@ -7,31 +7,7 @@
 namespace Menge
 {
 	struct RenderTextureGraveEntry
-		: public Factorable
-		, public stdex::intrusive_duplex_tree_node<RenderTextureGraveEntry>
 	{
-		typedef ConstString key_first_type;
-		typedef ConstString::less_type less_first_type;
-
-		typedef FilePath key_second_type;
-		typedef FilePath::less_type less_second_type;
-
-		struct key_first_getter_type
-		{
-			const ConstString & operator()( const RenderTextureGraveEntry * _node ) const
-			{
-				return _node->category;
-			}
-		};
-
-		struct key_second_getter_type
-		{
-			const FilePath & operator()( const RenderTextureGraveEntry * _node ) const
-			{
-				return _node->filePath;
-			}
-		};
-
 		ConstString category;
 		FilePath filePath;
 
@@ -65,7 +41,7 @@ namespace Menge
 		void clearTextures() override;
 
 	public:
-		void buryTexture( RenderTextureInterface * _texture ) override;
+		bool buryTexture( RenderTextureInterface * _texture ) override;
 		RenderTextureInterfacePtr resurrectTexture( const ConstString& _pakName, const FilePath & _filePath ) override;
 
 	protected:
@@ -74,9 +50,10 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
+		uint32_t m_count;
 		float m_graveyardTime;
 
-		typedef IntrusiveDuplexTree<RenderTextureGraveEntry, 16> TMapTextureGrave;
-		TMapTextureGrave m_textures;
+		typedef stdex::vector<RenderTextureGraveEntry> TVectorTextureGrave;
+		TVectorTextureGrave m_textures;
 	};
 }

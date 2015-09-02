@@ -33,10 +33,10 @@ namespace Menge
         //const char * text_it = text_str;
         //const char * text_end = text_str + text_len + 1;
 
-		const RenderTextureInterfacePtr & image = _font->getTextureFont();
+		const RenderTextureInterfacePtr & textureFont = _font->getTextureFont();
 
-		float image_width = (float)image->getWidth();
-		float image_height = (float)image->getHeight();
+		float image_width = (float)textureFont->getWidth();
+		float image_height = (float)textureFont->getHeight();
 
 		float inv_image_width = 1.f / image_width;
 		float inv_image_height = 1.f / image_height;

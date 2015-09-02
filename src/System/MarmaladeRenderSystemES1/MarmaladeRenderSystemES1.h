@@ -4,7 +4,7 @@
 
 #   include "Config/String.h"
 
-#   include "MarmaladeTexture.h"
+#   include "MarmaladeTextureES1.h"
 
 #   include "Factory/FactoryStore.h"
 
@@ -19,7 +19,7 @@ namespace Menge
     class LogServiceInterface;
     
 	class OGLWindowContext;
-	class MarmaladeTexture;
+	class MarmaladeTextureES1;
 
     struct TextureStage
     {
@@ -56,12 +56,12 @@ namespace Menge
         GLenum alphaArg2;
     };
     
-	class MarmaladeRenderSystem 
+	class MarmaladeRenderSystemES1 
 		: public RenderSystemInterface
 	{
 	public:
-		MarmaladeRenderSystem();
-		~MarmaladeRenderSystem();
+		MarmaladeRenderSystemES1();
+		~MarmaladeRenderSystemES1();
 
     public:
         void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
@@ -70,6 +70,9 @@ namespace Menge
 	public:
 		bool initialize() override;
         void finalize() override;
+
+	public:
+		const ConstString & getRenderPlatformName() const override;
 
     public:
         void setRenderListener( RenderSystemListener * _listener ) override;
@@ -100,15 +103,25 @@ namespace Menge
 
 		IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
 		void releaseIndexBuffer( IBHandle _ibHandle ) override;
-		RenderIndices2D * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
+		RenderIndices * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
 		void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
 
 		void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) override;
 
+	public:
+		RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
+		RenderShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
+
+		RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderShaderInterfacePtr & _fragment, const RenderShaderInterfacePtr & _vertex, uint32_t _samplerCount ) override;
+		void setProgram( const RenderProgramInterfacePtr & _program ) override;
+
+
+	public:
 		void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
 			uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount ) override;
 
+	public:
 		void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
 		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32_t _color ) override;
@@ -121,7 +134,6 @@ namespace Menge
 		void setFillMode( EFillMode _mode ) override;
 		void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) override;
 		void setShadeType( EShadeType _sType ) override;
-		void setAlphaTestEnable( bool _alphaTest ) override;
 		void setAlphaBlendEnable( bool _alphaBlend ) override;
 		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha ) override;
 		void setLightingEnable( bool _light ) override;
@@ -131,11 +143,7 @@ namespace Menge
 			ETextureArgument _arg1, ETextureArgument _arg2 ) override;
         void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
 		void setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
-		
-        RenderShaderInterface * createShader( const void * _buffer, size_t _size ) override;
-        void setShader( RenderShaderInterface * _shader ) override;
-        
-        
+		              
         // create texture
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )
@@ -181,6 +189,8 @@ namespace Menge
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
+
+		ConstString m_renderPlatform;
 
         RenderSystemListener * m_listener;
 		
@@ -230,7 +240,7 @@ namespace Menge
 		uint32_t m_activeTextureStage;
 		GLuint m_activeTexture;
 
-        typedef FactoryPoolStore<MarmaladeTexture, 128> TFactoryOGLTexture;
+        typedef FactoryPoolStore<MarmaladeTextureES1, 128> TFactoryOGLTexture;
         TFactoryOGLTexture m_factoryOGLTexture;
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];

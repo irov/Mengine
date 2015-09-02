@@ -336,6 +336,8 @@ namespace Menge
 			s3eDeviceYield( 0 );
 		}			
 
+		LOGGER_WARNING( m_serviceProvider )("Marmalade GL Version: %d", IwGLGetInt( IW_GL_VERSION ) );
+
 		MARMALADE_RENDER_CHECK_ERROR( m_serviceProvider );
 
 		LOGGER_WARNING(m_serviceProvider)("Vendor      : %s", (const char*)glGetString( GL_VENDOR ) );
@@ -344,11 +346,6 @@ namespace Menge
 		LOGGER_WARNING(m_serviceProvider)("Extensions  : %s", (const char*)glGetString( GL_EXTENSIONS ) );
 
 		MARMALADE_RENDER_CHECK_ERROR( m_serviceProvider );
-
-		if( sizeof(RenderVertex2D) != 32 )
-		{
-			return false;
-		}
 
 		GLCALL( m_serviceProvider, glFrontFace, ( GL_CW ) );
 		GLCALL( m_serviceProvider, glDisable, ( GL_DEPTH_TEST ) );
@@ -361,8 +358,9 @@ namespace Menge
 
 		GLCALL( m_serviceProvider, glDepthMask, ( GL_FALSE ) );
 
+		//m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Marmalade OpenGL ES2" );
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Marmalade" );
-						
+								
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -720,12 +718,14 @@ namespace Menge
 		{
 			const TextureStage & textureStage = m_textureStage[i];
 
-			if( textureStage.texture == 0 )
-			{				
-				break;
-			}
-
 			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
+
+			if( textureStage.texture == 0 )
+			{			
+				GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
+
+				continue;
+			}
 
 			GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, textureStage.texture) );
 
@@ -963,18 +963,6 @@ namespace Menge
 	{
 		GLenum model = s_toGLShadeMode[ _sType ];
 		GLCALL( m_serviceProvider, glShadeModel, ( model ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setAlphaTestEnable( bool _alphaTest )
-	{
-        if( _alphaTest == true )
-        {
-            GLCALL( m_serviceProvider, glEnable, ( GL_ALPHA_TEST ) );
-        }
-        else
-        {
-            GLCALL( m_serviceProvider, glDisable, ( GL_ALPHA_TEST ) );
-        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::setAlphaBlendEnable( bool _alphaBlend )

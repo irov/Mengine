@@ -107,9 +107,18 @@ namespace Menge
             return;
         }
 
+        Factorable::destroy();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Entity::_destroy()
+	{
+		this->release();
+
 		Node * old_parent = this->getParent();
-		
+
 		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_DESTROY )(m_object);
+
+		m_object.reset();
 
 		Node * new_parent = this->getParent();
 
@@ -123,7 +132,10 @@ namespace Menge
 			return;
 		}
 
-        Factorable::destroy();
+		this->destroyAllChild();
+		this->removeFromParent();
+
+		this->unwrap();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_unshallowGrave()

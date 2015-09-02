@@ -367,8 +367,13 @@ namespace Menge
 	{
 		const Polygon & polygon = _obstacle->bigHole;
 		
-		const mt::vec2f & minp = _obstacle->bigMinHole;
-		const mt::vec2f & maxp = _obstacle->bigMaxHole;
+		mt::vec2f minp = _obstacle->bigMinHole;
+		mt::vec2f maxp = _obstacle->bigMaxHole;
+
+		minp.x = mt::ltrim_f( minp.x, 0.f );
+		minp.y = mt::ltrim_f( minp.y, 0.f );
+		maxp.x = mt::ltrim_f( maxp.x, 0.f );
+		maxp.y = mt::ltrim_f( maxp.y, 0.f );
 
 		uint16_t map_width = m_map.getWidth();
 		uint16_t map_height = m_map.getHeight();

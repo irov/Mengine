@@ -40,6 +40,7 @@ namespace Menge
 			
 	public:
 		void destroy() override;
+		void _destroy() override;
 
 	protected:
 		void _unshallowGrave() override;

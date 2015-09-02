@@ -2202,21 +2202,6 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_SHADEMODE, mode ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setAlphaTestEnable( bool _alphaTest )
-	{
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setAlphaTestEnable device not created"
-                );
-
-            return;
-        }
-
-		DWORD alphaTest = _alphaTest ? TRUE : FALSE;
-
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHATESTENABLE, alphaTest ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setAlphaBlendEnable( bool _alphaBlend )
 	{
         if( m_pD3DDevice == nullptr )

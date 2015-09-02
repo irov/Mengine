@@ -1,4 +1,4 @@
-#	include "MarmaladeRenderError.h"
+#	include "MarmaladeRenderErrorES1.h"
 
 #	include "Logger/Logger.h"
 
@@ -33,7 +33,7 @@ namespace Menge
 		return "GL_UNKNOWN";
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool marmaladeRenderErrorCheck( ServiceProviderInterface * _serviceProvider, const char * _file, int _line )
+	bool marmaladeRenderErrorCheckES1( ServiceProviderInterface * _serviceProvider, const char * _file, int _line )
 	{
 		GLenum err = glGetError();
 

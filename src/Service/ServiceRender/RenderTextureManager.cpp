@@ -325,13 +325,8 @@ namespace Menge
 			->resurrectTexture( _pakName, _fileName );
 
 		if( resurrect_texture != nullptr )
-		{
-			resurrect_texture->setCategory( _pakName );
-			resurrect_texture->setFileName( _fileName );
-
-			RenderTexture * resurrect_texture_t = resurrect_texture.getT<RenderTexture *>();
-
-			m_textures.insert( resurrect_texture_t, nullptr );
+		{			
+			this->cacheFileTexture( _pakName, _fileName, resurrect_texture );
 
 			return resurrect_texture;
 		}
@@ -532,8 +527,8 @@ namespace Menge
         RenderTexture * texture_t = static_cast<RenderTexture *>(_texture);
 
 		m_textures.erase_node( texture_t );
-
-		GRAVEYARD_SERVICE(m_serviceProvider)
+				
+		GRAVEYARD_SERVICE( m_serviceProvider )
 			->buryTexture( _texture );
 
 		this->releaseRenderTexture_( _texture );

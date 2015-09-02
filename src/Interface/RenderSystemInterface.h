@@ -303,7 +303,6 @@ namespace Menge
 			: blendSrc(BF_SOURCE_ALPHA)
 			, blendDst(BF_ONE_MINUS_SOURCE_ALPHA)
 			, depthBufferWriteEnable(false)
-			, alphaTestEnable(false)
 			, alphaBlendEnable(false)
 		{
 		}
@@ -314,7 +313,6 @@ namespace Menge
 		EBlendFactor blendDst;
 
 		bool depthBufferWriteEnable;
-		bool alphaTestEnable;
 		bool alphaBlendEnable;
 
 		RenderProgramInterfacePtr program;
@@ -583,7 +581,6 @@ namespace Menge
 		virtual void setFillMode( EFillMode _mode ) = 0;
 		virtual void setColorBufferWriteEnable( bool _r, bool _g, bool _b, bool _a ) = 0;
 		virtual void setShadeType( EShadeType _sType ) = 0;
-		virtual void setAlphaTestEnable( bool _alphaTest ) = 0;
 		virtual void setAlphaBlendEnable( bool _alphaBlend ) = 0;
 		virtual void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha ) = 0;
 		virtual void setLightingEnable( bool _light ) = 0;

@@ -890,8 +890,7 @@ namespace Menge
 		RENDER_SYSTEM(m_serviceProvider)->setFillMode( FM_SOLID );
 		RENDER_SYSTEM(m_serviceProvider)->setDepthBufferTestEnable( false );
 		RENDER_SYSTEM(m_serviceProvider)->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
-		RENDER_SYSTEM(m_serviceProvider)->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
-		RENDER_SYSTEM(m_serviceProvider)->setAlphaTestEnable( false );
+		RENDER_SYSTEM(m_serviceProvider)->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );		
 		RENDER_SYSTEM(m_serviceProvider)->setAlphaBlendEnable( m_alphaBlendEnable );
 		RENDER_SYSTEM(m_serviceProvider)->setAlphaCmpFunc( CMPF_GREATER_EQUAL, 0x01 );
 		RENDER_SYSTEM(m_serviceProvider)->setLightingEnable( false );

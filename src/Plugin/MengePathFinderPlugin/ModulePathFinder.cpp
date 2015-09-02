@@ -60,13 +60,13 @@ namespace Menge
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
-	static PyObject * s_fastpathfinder_graph_getPath( fastpathfinder::graph * _graph, fastpathfinder::graph_node * _from, fastpathfinder::graph_node * _to )
+	static pybind::list s_fastpathfinder_graph_getPath( fastpathfinder::graph * _graph, fastpathfinder::graph_node * _from, fastpathfinder::graph_node * _to, uint32_t _mask )
 	{
 		fastpathfinder::vector_graph_node path;
 
-		_graph->getPath( _from, _to, path );
+		_graph->getPath( _from, _to, _mask, path );
 		
-		PyObject * py_path = pybind::list_new(0);
+		pybind::list py_path;
 
 		for( fastpathfinder::vector_graph_node::iterator
 			it = path.begin(),
@@ -76,7 +76,7 @@ namespace Menge
 		{
 			PathGraphNode * node = static_cast<PathGraphNode *>(*it);
 			
-			pybind::list_appenditem_t( py_path, node );
+			py_path.append( node );
 		}
 
 		return py_path;

@@ -2147,6 +2147,11 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
+			if( layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2197,6 +2202,11 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
+			if( layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2239,6 +2249,11 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
+			if( layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2271,6 +2286,11 @@ namespace Menge
 		++it )
 		{
 			const MovieLayer & layer = *it;
+
+			if( layer.isSubMovie() == true )
+			{
+				continue;
+			}
 
 			if( layer.isAnimatable() == false )
 			{
@@ -2793,6 +2813,11 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
+			if( layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
@@ -2984,6 +3009,11 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
+			if( layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
@@ -3094,6 +3124,11 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
+			if( layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
 			if( layer.isAnimatable() == false )
 			{
 				continue;
@@ -3126,6 +3161,11 @@ namespace Menge
 		++it )
 		{
 			const MovieLayer & layer = *it;
+
+			if( layer.isSubMovie() == true )
+			{
+				continue;
+			}
 
 			if( layer.isAnimatable() == false )
 			{

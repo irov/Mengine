@@ -291,6 +291,17 @@ namespace Menge
 			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		PyObject * movie_getEnableMovieLayer( Movie * _movie, const ConstString & _name )
+		{
+			bool enable;
+			if( _movie->getEnableMovieLayer( _name, enable ) == false )
+			{
+				return pybind::ret_none();
+			}
+
+			return pybind::ptr( enable );
+		}
+		//////////////////////////////////////////////////////////////////////////
 		PyObject * movie_getMovieSlot( Movie * _movie, const ConstString & _name )
 		{
 			Node * node;
@@ -5275,7 +5286,9 @@ namespace Menge
                     .def( "setResourceMovie", &Movie::setResourceMovie )
                     .def( "getResourceMovie", &Movie::getResourceMovie )
                     .def( "setReverse", &Movie::setReverse )
-                    .def( "getReverse", &Movie::getReverse )		
+                    .def( "getReverse", &Movie::getReverse )
+					.def( "setEnableMovieLayer", &Movie::setEnableMovieLayer )
+					.def_proxy_static( "getEnableMovieLayer", nodeScriptMethod, &NodeScriptMethod::movie_getEnableMovieLayer )
 					.def_proxy_static( "getMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlot )
 					.def_proxy_static( "hasMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieSlot )
 					.def_proxy_static( "getMovieText", nodeScriptMethod, &NodeScriptMethod::movie_getMovieText )

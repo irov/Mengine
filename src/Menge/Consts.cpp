@@ -110,6 +110,8 @@ namespace Menge
 		INIT_CONST( SolidSprite );
 		INIT_CONST( SoundId );
 
+		INIT_CONST( BlendingModeScreen );
+		INIT_CONST( BlendingModeMultiply );
         INIT_CONST( BlendingModeAdd );
         INIT_CONST( BlendingModeNormal );
 

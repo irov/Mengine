@@ -124,6 +124,8 @@ namespace Menge
 		DECL_CONST( SolidSprite );
 		DECL_CONST( SoundId );
 
+		DECL_CONST( BlendingModeScreen );
+		DECL_CONST( BlendingModeMultiply );
 		DECL_CONST( BlendingModeAdd );
 		DECL_CONST( BlendingModeNormal );
 

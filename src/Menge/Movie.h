@@ -17,6 +17,8 @@ namespace Menge
     class MovieSceneEffect;
     class MovieInternalObject;
 
+	class Materialable;
+
 	class Movie;
 
 	struct MovieLayer;
@@ -49,12 +51,17 @@ namespace Menge
 	public:
 		bool visitMovieNode( const ConstString & _type, VisitorMovieNode * _visitor );
 
+	public:
 		bool getMovieNode( const ConstString & _name, const ConstString & _type, Node ** _node, Movie ** _movie );
 		bool hasMovieNode( const ConstString & _name, const ConstString & _type, Node ** _node, Movie ** _movie );
 
 	public:		
 		bool getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, Movie ** _movie );
 		bool hasMovieLayer( const ConstString & _name ) const;
+
+	public:
+		bool setEnableMovieLayer( const ConstString & _name, bool _enable );
+		bool getEnableMovieLayer( const ConstString & _name, bool & _enable );
 
 	protected:
 		void _setReverse( bool _reverse ) override;
@@ -156,7 +163,7 @@ namespace Menge
 		bool compileMovieText_( const MovieLayer & _layer );  
 
 	protected:
-		void addMovieNode_( const MovieLayer & _layer, Node * _node );
+		void addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable );
 
 	protected:
 		inline Node * getLayerNode_( const MovieLayer & _layer ) const;
@@ -171,6 +178,13 @@ namespace Menge
 
 		void createCamera3D_();
 		void destroyCamera3D_();
+
+	protected:
+		void setVisibleLayer_( const MovieLayer & _layer, bool _visible );
+		bool getVisibleLayer_( const MovieLayer & _layer ) const;
+
+	protected:
+		bool setupBlendingMode_( const MovieLayer & _layer, Materialable * _materiable );
 		
 	protected:
 		ResourceHolder<ResourceMovie> m_resourceMovie;
@@ -183,11 +197,13 @@ namespace Menge
 			Nodies()
 				: node(nullptr)
 				, animatable(nullptr)
+				, visible(0)
 				, child(false)
 			{}
 
             Node * node;
 			Animatable * animatable;
+			int32_t visible;
 			bool child;
         };
 

@@ -431,31 +431,30 @@ namespace Menge
 		this->setTiming( duration - frameDuration );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::addMovieNode_( const MovieLayer & _layer, Node * _node )
+	void Movie::addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable )
 	{		
-		if( _layer.in < 0.0001f )
+		Nodies nd;
+		nd.node = _node;
+
+		if( _layer.in <= 0.0001f )
 		{
-			_node->localHide( false );
+			nd.visible = 1;
+			nd.node->localHide( false );			
 		}
 		else
 		{
-			_node->localHide( true );
+			nd.visible = 0;
+			nd.node->localHide( true );
 		}
 
-		Nodies ns;
-		ns.node = _node;
+		nd.animatable = _animatable;
 
-		if( _layer.isAnimatable() == true )
-		{
-			ns.animatable = dynamic_cast<Animatable *>(_node);
-		}
-		
-		ns.child = (_layer.parent != movie_layer_parent_none);
+		nd.child = (_layer.parent != movie_layer_parent_none);
 
 		_node->setName( _layer.name );
 		_node->setLocalPosition( _layer.position );
 
-		m_nodies[_layer.index - 1] = ns;
+		m_nodies[_layer.index - 1] = nd;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::visitMovieNode( const ConstString & _type, VisitorMovieNode * _visitor )
@@ -773,6 +772,160 @@ namespace Menge
 
 			return true;
 		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::setEnableMovieLayer( const ConstString & _name, bool _enable )
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Movie::setEnableMovieLayer %s resource %s invalid get layer %s not compile"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		const MovieLayer * layer;
+		if( m_resourceMovie->hasMovieLayer( _name, &layer ) == true )
+		{
+			this->setVisibleLayer_( *layer, _enable );
+
+			return true;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getLayerNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+#   ifdef _DEBUG
+			if( dynamic_cast<Movie *>(node) == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::setEnableMovieLayer %s resource %s layer %s must be 'Movie' but node is %s type %s"
+					, this->getName().c_str()
+					, this->getResourceMovieName().c_str()
+					, layer.name.c_str()
+					, node->getName().c_str()
+					, node->getType().c_str()
+					);
+
+				return false;
+			}
+#   endif
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			if( movie->setEnableMovieLayer( _name, _enable ) == false )
+			{
+				continue;
+			}
+
+			return true;
+		}
+
+		LOGGER_ERROR( m_serviceProvider )("Movie::setEnableMovieLayer %s resource %s not found layer %s"
+			, this->getName().c_str()
+			, this->getResourceMovieName().c_str()
+			, _name.c_str()
+			);
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::getEnableMovieLayer( const ConstString & _name, bool & _enable )
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Movie::getEnableMovieLayer %s resource %s invalid get layer %s not compile"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
+				, _name.c_str()
+				);
+
+			return nullptr;
+		}
+
+		const MovieLayer * layer;
+		if( m_resourceMovie->hasMovieLayer( _name, &layer ) == true )
+		{
+			_enable = this->getVisibleLayer_( *layer );
+
+			return true;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getLayerNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+#   ifdef _DEBUG
+			if( dynamic_cast<Movie *>(node) == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::getEnableMovieLayer %s resource %s layer %s must be 'Movie' but node is %s type %s"
+					, this->getName().c_str()
+					, this->getResourceMovieName().c_str()
+					, layer.name.c_str()
+					, node->getName().c_str()
+					, node->getType().c_str()
+					);
+
+				return false;
+			}
+#   endif
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			if( movie->getEnableMovieLayer( _name, _enable ) == false )
+			{
+				continue;
+			}
+
+			return true;
+		}
+
+		LOGGER_ERROR( m_serviceProvider )("Movie::getEnableMovieLayer %s resource %s not found layer %s"
+			, this->getName().c_str()
+			, this->getResourceMovieName().c_str()
+			, _name.c_str()
+			);
 
 		return false;
 	}
@@ -1157,7 +1310,7 @@ namespace Menge
 
 		layer_slot->setMovieName( m_name );		
 
-		this->addMovieNode_( _layer, layer_slot );
+		this->addMovieNode_( _layer, layer_slot, nullptr );
 
 		return true;
 	}
@@ -1172,7 +1325,7 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, sceneeffect_slot );
+		this->addMovieNode_( _layer, sceneeffect_slot, nullptr );
 
 		return true;
 	}
@@ -1187,7 +1340,7 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_slot );
+		this->addMovieNode_( _layer, layer_slot, nullptr );
 
 		return true;
 	}
@@ -1212,31 +1365,12 @@ namespace Menge
 
 		layer_sprite->setResourceImage( resourceImage );
 
-		if( _layer.blendingMode.empty() == true )
+		if( this->setupBlendingMode_( _layer, layer_sprite ) == false )
 		{
-			//Empty
-		}
-		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeNormal) )
-		{
-			//Empty
-		}
-		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
-		{
-			layer_sprite->setBlendMode( EMB_ADD );
-		}
-		else
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieImage_: %s resource %s layer '%s' blending mode not supported '%s'"
-				, this->getName().c_str()
-				, this->getResourceMovieName().c_str()
-				, _layer.name.c_str()
-				, _layer.blendingMode.c_str()
-				);
-
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_sprite );
+		this->addMovieNode_( _layer, layer_sprite, nullptr );
 
 		return true;
 	}
@@ -1261,31 +1395,12 @@ namespace Menge
 
 		layer_mesh->setResourceImage( resourceImage );
 
-		if( _layer.blendingMode.empty() == true )
+		if( this->setupBlendingMode_( _layer, layer_mesh ) == false )
 		{
-			//Empty
-		}
-		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeNormal) )
-		{
-			//Empty
-		}
-		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
-		{
-			layer_mesh->setBlendMode( EMB_ADD );
-		}
-		else
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieMesh2D_: %s resource %s layer '%s' blending mode not supported '%s'"
-				, this->getName().c_str()
-				, this->getResourceMovieName().c_str()
-				, _layer.name.c_str()
-				, _layer.blendingMode.c_str()
-				);
-
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_mesh );
+		this->addMovieNode_( _layer, layer_mesh, nullptr );
 
 		return true;
 	}
@@ -1316,31 +1431,12 @@ namespace Menge
 
 		layer_sprite->setResourceImage( resource );
 
-		if( _layer.blendingMode.empty() == true )
+		if( this->setupBlendingMode_( _layer, layer_sprite ) == false )
 		{
-			//Empty
-		}
-		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeNormal) )
-		{
-			//Empty
-		}
-		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
-		{
-			layer_sprite->setBlendMode( EMB_ADD );
-		}
-		else
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieImageSolid_: %s resource %s layer '%s' blending mode not supported '%s'"
-				, this->getName().c_str()
-				, this->getResourceMovieName().c_str()
-				, _layer.name.c_str()
-				, _layer.blendingMode.c_str()
-				);
-
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_sprite );
+		this->addMovieNode_( _layer, layer_sprite, nullptr );
 
 		return true;
 	}
@@ -1365,7 +1461,7 @@ namespace Menge
 		
 		layer_hotspotimage->setResourceHIT( resourceHIT );
 
-		this->addMovieNode_( _layer, layer_hotspotimage );
+		this->addMovieNode_( _layer, layer_hotspotimage, nullptr );
 
 		return true;
 	}
@@ -1390,7 +1486,7 @@ namespace Menge
 
 		layer_hotspotshape->setResourceShape( resourceShape );
 		
-		this->addMovieNode_( _layer, layer_hotspotshape );
+		this->addMovieNode_( _layer, layer_hotspotshape, nullptr );
 
 		return true;
 	}
@@ -1420,31 +1516,12 @@ namespace Menge
 		layer_animation->setScretch( _layer.scretch );
 		//layer_animation->setLoop( _layer.loop );
 
-		if( _layer.blendingMode.empty() == true )
+		if( this->setupBlendingMode_( _layer, layer_animation ) == false )
 		{
-			//Empty
-		}
-		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeNormal) )
-		{
-			//Empty
-		}
-		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
-		{
-			layer_animation->setBlendMode( EMB_ADD );
-		}
-		else
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieAnimation_: %s resource %s layer '%s' blending mode not supported '%s'"
-				, this->getName().c_str()
-				, this->getResourceMovieName().c_str()
-				, _layer.name.c_str()
-				, _layer.blendingMode.c_str()
-				);
-
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_animation );
+		this->addMovieNode_( _layer, layer_animation, layer_animation );
 
 		return true;
 	}
@@ -1477,7 +1554,7 @@ namespace Menge
 
 		layer_movie->setParentMovie( true );
 
-		this->addMovieNode_( _layer, layer_movie );
+		this->addMovieNode_( _layer, layer_movie, layer_movie );
 
 		return true;
 	}
@@ -1510,7 +1587,7 @@ namespace Menge
 
 		layer_movie->setParentMovie( true );
 
-		this->addMovieNode_( _layer, layer_movie );
+		this->addMovieNode_( _layer, layer_movie, layer_movie );
 
 		return true;
 	}
@@ -1536,7 +1613,7 @@ namespace Menge
 		movie_internal->setMovie( this );
 		movie_internal->setResourceInternalObject( resourceInternalObject );
 
-		this->addMovieNode_( _layer, movie_internal );
+		this->addMovieNode_( _layer, movie_internal, nullptr );
 
 		return true;
 	}
@@ -1566,31 +1643,12 @@ namespace Menge
 		layer_video->setScretch( _layer.scretch );
 		//layer_video->setLoop( _layer.loop );
 
-		if( _layer.blendingMode.empty() == true )
+		if( this->setupBlendingMode_( _layer, layer_video ) == false )
 		{
-			//Empty
-		}
-		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeNormal) )
-		{
-			//Empty
-		}
-		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
-		{
-			layer_video->setBlendMode( EMB_ADD );
-		}
-		else
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieVideo_: %s resource %s layer '%s' blending mode not supported '%s'"
-				, this->getName().c_str()
-				, this->getResourceMovieName().c_str()
-				, _layer.name.c_str()
-				, _layer.blendingMode.c_str()
-				);
-
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_video );
+		this->addMovieNode_( _layer, layer_video, layer_video );
 
 		return true;
 	}
@@ -1621,7 +1679,7 @@ namespace Menge
 		layer_sound->setScretch( _layer.scretch );
 		//layer_sound->setLoop( _layer.loop );
 
-		this->addMovieNode_( _layer, layer_sound );
+		this->addMovieNode_( _layer, layer_sound, layer_sound );
 
 		return true;
 	}
@@ -1651,7 +1709,7 @@ namespace Menge
 		layer_sound->setScretch( _layer.scretch );
 		//layer_sound->setLoop( _layer.loop );
 
-		this->addMovieNode_( _layer, layer_sound );
+		this->addMovieNode_( _layer, layer_sound, layer_sound );
 
 		return true;
 	}
@@ -1678,7 +1736,7 @@ namespace Menge
 			layer_text->setVerticalCenterAlign();
 		}
 
-		this->addMovieNode_( _layer, layer_text );
+		this->addMovieNode_( _layer, layer_text, nullptr );
 
 		return true;
 	}
@@ -1696,7 +1754,7 @@ namespace Menge
 		layer_text->setTextID( _layer.name ); //Name = TextID
 		layer_text->setHorizontalCenterAlign();
 
-		this->addMovieNode_( _layer, layer_text );
+		this->addMovieNode_( _layer, layer_text, nullptr );
 
 		return true;
 	}
@@ -1734,31 +1792,12 @@ namespace Menge
 
 		layer_sprite->setResourceImage( resourceImage );
 
-		if( _layer.blendingMode.empty() == true )
+		if( this->setupBlendingMode_( _layer, layer_sprite ) == false )
 		{
-			//Empty
-		}
-		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeNormal) )
-		{
-			//Empty
-		}
-		else if( _layer.blendingMode == CONST_STRING(m_serviceProvider, BlendingModeAdd) )
-		{
-			layer_sprite->setBlendMode( EMB_ADD );
-		}
-		else
-		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieExtraSprite_: %s resource %s layer '%s' blending mode not supported '%s'"
-				, this->getName().c_str()
-				, this->getResourceMovieName().c_str()
-				, _layer.name.c_str()
-				, _layer.blendingMode.c_str()
-				);
-
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_sprite );
+		this->addMovieNode_( _layer, layer_sprite, nullptr );
 
 		return true;
 	}
@@ -1825,7 +1864,7 @@ namespace Menge
 
 		layer_event->setResourceMovie( m_resourceMovie );
 
-		this->addMovieNode_( _layer, layer_event );
+		this->addMovieNode_( _layer, layer_event, nullptr );
 
 		return true;
 	}
@@ -1880,7 +1919,7 @@ namespace Menge
 
 		layer_particles->setEmitterPosition( position );
 
-		this->addMovieNode_( _layer, layer_particles );
+		this->addMovieNode_( _layer, layer_particles, layer_particles );
 
 		return true;
 	}
@@ -1907,7 +1946,7 @@ namespace Menge
 
 		layer_particles->setEmitterTranslateWithParticle( true );
 
-		this->addMovieNode_( _layer, layer_particles );
+		this->addMovieNode_( _layer, layer_particles, layer_particles );
 
 		return true;
 	}
@@ -2147,11 +2186,6 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2161,10 +2195,15 @@ namespace Menge
 
 			if( layer.switcher == true )
 			{
-				node->localHide( true );
+				this->setVisibleLayer_( layer, false );
 			}
 
 			if( layer.isAnimatable() == false )
+			{
+				continue;
+			}
+
+			if( layer.isSubMovie() == true )
 			{
 				continue;
 			}
@@ -2202,11 +2241,6 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2215,6 +2249,11 @@ namespace Menge
 			}
 
 			if( layer.isAnimatable() == false )
+			{
+				continue;
+			}
+
+			if( layer.isSubMovie() == true )
 			{
 				continue;
 			}
@@ -2249,11 +2288,6 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2262,6 +2296,11 @@ namespace Menge
 			}
 
 			if( layer.isAnimatable() == false )
+			{
+				continue;
+			}
+
+			if( layer.isSubMovie() == true )
 			{
 				continue;
 			}
@@ -2287,12 +2326,12 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.isSubMovie() == true )
+			if( layer.isAnimatable() == false )
 			{
 				continue;
 			}
 
-			if( layer.isAnimatable() == false )
+			if( layer.isSubMovie() == true )
 			{
 				continue;
 			}
@@ -2539,11 +2578,6 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
 			Node * node = this->getLayerNode_( layer );
 
 			if( node == nullptr )
@@ -2600,10 +2634,10 @@ namespace Menge
 			uint32_t frameId = _endFrame - indexIn;
 
 			this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, true );
+						
+			this->setVisibleLayer_( _layer, true );
 
-			_node->localHide( false );
-
-			if( _layer.isAnimatable() == true )
+			if( _layer.isAnimatable() == true && _layer.isSubMovie() == false )
 			{
 				Animatable * animatable = this->getLayerAnimatable_( _layer );
 
@@ -2638,9 +2672,8 @@ namespace Menge
 			}
 		}
 		else if( _endFrame >= indexOut && _beginFrame >= indexIn && _beginFrame < indexOut )
-		{
-			//printf("Movie %s enable %f %d\n", m_name.c_str(), m_timing, layer.index);
-			_node->localHide( true );
+		{			
+			this->setVisibleLayer_( _layer, false );
 
 			if( _layer.isAnimatable() == true )
 			{
@@ -2715,11 +2748,6 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
@@ -2738,9 +2766,9 @@ namespace Menge
 				uint32_t frameId = _endFrame - indexIn;
 				this->updateFrameNode_( layer, node, frameId, false, true );
 
-				node->localHide(false);
+				this->setVisibleLayer_( layer, true );
 
-				if( layer.isAnimatable() == true )
+				if( layer.isAnimatable() == true && layer.isSubMovie() == false )
 				{
 					Animatable * animatable = this->getLayerAnimatable_( layer );
 
@@ -2760,9 +2788,9 @@ namespace Menge
 			}
 			else if( _endFrame <= indexIn && _beginFrame <= indexOut && _beginFrame > indexIn )
 			{
-				node->localHide(true);
+				this->setVisibleLayer_( layer, false );
 
-				if( layer.isAnimatable() == true )
+				if( layer.isAnimatable() == true && layer.isSubMovie() == false )
 				{
 					Animatable * animatable = this->getLayerAnimatable_( layer );
 
@@ -2813,11 +2841,6 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
@@ -2839,14 +2862,14 @@ namespace Menge
 
 				if( layer.switcher == true && m_currentFrame + 1 == indexOut )
 				{
-					node->localHide(true);
+					this->setVisibleLayer_( layer, false );
 				}
 				else
 				{
-					node->localHide(false);
+					this->setVisibleLayer_( layer, true );
 				}
 
-				if( layer.isAnimatable() == true )
+				if( layer.isAnimatable() == true && layer.isSubMovie() == false )
 				{
 					Animatable * animatable = this->getLayerAnimatable_( layer );
 
@@ -2871,7 +2894,7 @@ namespace Menge
 			}
 			else
 			{
-				node->localHide( true );
+				this->setVisibleLayer_( layer, false );
 			}
 		}
 	}
@@ -2889,11 +2912,6 @@ namespace Menge
 		++it )
 		{
 			const MovieLayer & layer = *it;
-
-			if( layer.isSubMovie() == true )
-			{
-				continue;
-			}
 
 			float layerIn = layer.in;
 			float layerOut = layer.out;
@@ -2919,9 +2937,9 @@ namespace Menge
 
 				this->updateFrameNode_( layer, node, frameId, (m_currentFrame + 1) < indexOut, true );
 
-				node->localHide( false );
+				this->setVisibleLayer_( layer, true );
 
-				if( layer.isAnimatable() == true )
+				if( layer.isAnimatable() == true && layer.isSubMovie() == false )
 				{
 					Animatable * animatable = this->getLayerAnimatable_( layer );
 
@@ -2961,9 +2979,9 @@ namespace Menge
 			{
 				uint32_t frameId = indexOut - indexIn;
 
-				node->localHide( true );
+				this->setVisibleLayer_( layer, false );
 
-				if( layer.isAnimatable() == true )
+				if( layer.isAnimatable() == true && layer.isSubMovie() == false )
 				{
 					Animatable * animatable = this->getLayerAnimatable_( layer );
 
@@ -3009,11 +3027,6 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.isSubMovie() == true )
-			{
-				continue;
-			}
-
 			float layerIn = layer.in;
 			float layerOut = layer.out;
 
@@ -3034,7 +3047,7 @@ namespace Menge
 
 			if( m_currentFrame > indexIn )
 			{
-				node->localHide( true );
+				this->setVisibleLayer_( layer, false );
 			}	
 		}
 	}
@@ -3101,6 +3114,78 @@ namespace Menge
 			m_renderViewport->destroy();
 			m_renderViewport = nullptr;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Movie::setVisibleLayer_( const MovieLayer & _layer, bool _visible )
+	{ 
+		Nodies & nd = m_nodies[_layer.index - 1];
+
+		if( _visible == true )
+		{
+			nd.visible++;
+		}
+		else
+		{
+			nd.visible--;
+		}
+
+		if( nd.visible == 1 )
+		{
+			nd.node->localHide( false );
+		}
+		else if( nd.visible == 0 )
+		{
+			nd.node->localHide( true );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::getVisibleLayer_( const MovieLayer & _layer ) const
+	{
+		const Nodies & nd = m_nodies[_layer.index - 1];
+
+		if( nd.visible <= 0 )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Movie::setupBlendingMode_( const MovieLayer & _layer, Materialable * _materiable )
+	{ 
+		if( _layer.blendingMode.empty() == true )
+		{
+			//Empty
+		}
+		else if( _layer.blendingMode == CONST_STRING( m_serviceProvider, BlendingModeScreen ) )
+		{
+			_materiable->setBlendMode( EMB_SCREEN );
+		}
+		else if( _layer.blendingMode == CONST_STRING( m_serviceProvider, BlendingModeMultiply ) )
+		{
+			_materiable->setBlendMode( EMB_MULTIPLY );
+		}
+		else if( _layer.blendingMode == CONST_STRING( m_serviceProvider, BlendingModeNormal ) )
+		{
+			_materiable->setBlendMode( EMB_NORMAL );
+		}
+		else if( _layer.blendingMode == CONST_STRING( m_serviceProvider, BlendingModeAdd ) )
+		{
+			_materiable->setBlendMode( EMB_ADD );
+		}
+		else
+		{
+			LOGGER_ERROR( m_serviceProvider )("Movie.setupBlendingMode_: %s resource %s layer '%s' blending mode not supported '%s'"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
+				, _layer.name.c_str()
+				, _layer.blendingMode.c_str()
+				);
+
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setSpeedFactor( float _factor )

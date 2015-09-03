@@ -180,8 +180,11 @@ namespace Menge
 		void destroyCamera3D_();
 
 	protected:
+		void setEnableLayer_( const MovieLayer & _layer, bool _enable );
+		inline bool getEnableLayer_( const MovieLayer & _layer ) const;
+
 		void setVisibleLayer_( const MovieLayer & _layer, bool _visible );
-		bool getVisibleLayer_( const MovieLayer & _layer ) const;
+		inline bool getVisibleLayer_( const MovieLayer & _layer ) const;
 
 	protected:
 		bool setupBlendingMode_( const MovieLayer & _layer, Materialable * _materiable );
@@ -197,13 +200,15 @@ namespace Menge
 			Nodies()
 				: node(nullptr)
 				, animatable(nullptr)
-				, visible(0)
+				, visible(false)
+				, enable(true)
 				, child(false)
 			{}
 
             Node * node;
 			Animatable * animatable;
-			int32_t visible;
+			bool visible;
+			bool enable;
 			bool child;
         };
 
@@ -236,4 +241,18 @@ namespace Menge
 
 		return ns.node;
 	}  
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Movie::getVisibleLayer_( const MovieLayer & _layer ) const
+	{
+		const Nodies & nd = m_nodies[_layer.index - 1];
+
+		return nd.visible;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Movie::getEnableLayer_( const MovieLayer & _layer ) const
+	{
+		const Nodies & nd = m_nodies[_layer.index - 1];
+
+		return nd.enable;
+	}
 }

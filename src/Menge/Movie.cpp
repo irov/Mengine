@@ -438,12 +438,12 @@ namespace Menge
 
 		if( _layer.in <= 0.0001f )
 		{
-			nd.visible = 1;
-			nd.node->localHide( false );			
+			nd.visible = true;
+			nd.node->localHide( false );
 		}
 		else
 		{
-			nd.visible = 0;
+			nd.visible = false;
 			nd.node->localHide( true );
 		}
 
@@ -792,7 +792,7 @@ namespace Menge
 		const MovieLayer * layer;
 		if( m_resourceMovie->hasMovieLayer( _name, &layer ) == true )
 		{
-			this->setVisibleLayer_( *layer, _enable );
+			this->setEnableLayer_( *layer, _enable );
 
 			return true;
 		}
@@ -869,7 +869,7 @@ namespace Menge
 		const MovieLayer * layer;
 		if( m_resourceMovie->hasMovieLayer( _name, &layer ) == true )
 		{
-			_enable = this->getVisibleLayer_( *layer );
+			_enable = this->getEnableLayer_( *layer );
 
 			return true;
 		}
@@ -3116,39 +3116,36 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::setVisibleLayer_( const MovieLayer & _layer, bool _visible )
-	{ 
+	void Movie::setEnableLayer_( const MovieLayer & _layer, bool _enable )
+	{
 		Nodies & nd = m_nodies[_layer.index - 1];
 
-		if( _visible == true )
-		{
-			nd.visible++;
-		}
-		else
-		{
-			nd.visible--;
-		}
+		nd.enable = _enable;
 
-		if( nd.visible == 1 )
+		if( nd.visible == true && nd.enable == true )
 		{
 			nd.node->localHide( false );
 		}
-		else if( nd.visible == 0 )
+		else
 		{
 			nd.node->localHide( true );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::getVisibleLayer_( const MovieLayer & _layer ) const
-	{
-		const Nodies & nd = m_nodies[_layer.index - 1];
+	void Movie::setVisibleLayer_( const MovieLayer & _layer, bool _visible )
+	{ 
+		Nodies & nd = m_nodies[_layer.index - 1];
 
-		if( nd.visible <= 0 )
+		nd.visible = _visible;
+
+		if( nd.visible == true && nd.enable == true )
 		{
-			return false;
+			nd.node->localHide( false );
 		}
-
-		return true;
+		else
+		{
+			nd.node->localHide( true );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::setupBlendingMode_( const MovieLayer & _layer, Materialable * _materiable )

@@ -29,6 +29,7 @@ ${SOURCE_DIR}/src/object.cpp
 ${SOURCE_DIR}/src/list.cpp
 ${SOURCE_DIR}/src/tuple.cpp
 ${SOURCE_DIR}/src/dict.cpp
+${SOURCE_DIR}/src/linked.cpp
 )
 
 if( CMAKE_BUILD_TYPE EQUAL "DEBUG" )

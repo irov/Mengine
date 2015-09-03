@@ -12,8 +12,16 @@ namespace Menge
 			uint32_t texturesNum = 0;
 			RenderTextureInterfacePtr textures[2];
 
-			textures[0] = _resourceImage->getTexture();
-			textures[1] = _resourceImage->getTextureAlpha();
+			if( _resourceImage != nullptr )
+			{
+				textures[0] = _resourceImage->getTexture();
+				textures[1] = _resourceImage->getTextureAlpha();
+			}
+			else
+			{ 
+				textures[0] = nullptr;
+				textures[1] = nullptr;
+			}
 
 			ConstString materialName;
 
@@ -89,7 +97,14 @@ namespace Menge
 							}
 							else
 							{
-								if( _resourceImage->isAlpha() == true || _solid == false )
+								bool isAlpha = true;
+
+								if( _resourceImage != nullptr )
+								{
+									isAlpha = _resourceImage->isAlpha();
+								}
+
+								if( isAlpha == true || _solid == false )
 								{
 									materialId = EM_TEXTURE_BLEND;
 								}
@@ -142,15 +157,29 @@ namespace Menge
 					{
 					case EMB_NORMAL:
 						{
-							const ColourValue & colour = _resourceImage->getColor();
-
-							if( colour.isSolid() == false || _solid == false )
+							if( _resourceImage != nullptr )
 							{
-								materialId = EM_COLOR_BLEND;
+								const ColourValue & colour = _resourceImage->getColor();
+
+								if( colour.isSolid() == false || _solid == false )
+								{
+									materialId = EM_COLOR_BLEND;
+								}
+								else
+								{
+									materialId = EM_COLOR_SOLID;
+								}
 							}
 							else
 							{
-								materialId = EM_COLOR_SOLID;
+								if( _solid == false )
+								{
+									materialId = EM_COLOR_BLEND;
+								}
+								else
+								{
+									materialId = EM_COLOR_SOLID;
+								}
 							}
 						}break;
 					case EMB_ADD:
@@ -176,8 +205,15 @@ namespace Menge
 				materialName = _materialName;
 			}
 
-			bool wrapU = _resourceImage->isWrapU();
-			bool wrapV = _resourceImage->isWrapV();
+			bool wrapU = false;
+			bool wrapV = false;
+
+			if( _resourceImage != nullptr )
+			{
+				wrapU = _resourceImage->isWrapU();
+				wrapV = _resourceImage->isWrapV();
+			}
+			
 
 			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( _serviceProvider )
 				->getMaterial( materialName, wrapU, wrapV, PT_TRIANGLELIST, texturesNum, textures );

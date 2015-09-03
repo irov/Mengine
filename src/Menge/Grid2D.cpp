@@ -128,23 +128,17 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Grid2D::_compile()
 	{
-		if( m_resourceImage == nullptr )
+		if( m_resourceImage != nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Grid2D::compileResource_ '%s' image resource null"
-				, m_name.c_str()
-				);
+			if( m_resourceImage.compile() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Grid2D::compileResource_ '%s' image resource %s not compile"
+					, m_name.c_str()
+					, m_resourceImage->getName().c_str()
+					);
 
-			return false;
-		}
-
-		if( m_resourceImage.compile() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Grid2D::compileResource_ '%s' image resource %s not compile"
-				, m_name.c_str()
-				, m_resourceImage->getName().c_str()
-				);
-
-			return false;
+				return false;
+			}
 		}
 
 		if( m_countX < 2 || m_countY < 2 )
@@ -293,8 +287,11 @@ namespace	Menge
 		ColourValue color;
 		this->calcTotalColor(color);
 
-		const ColourValue & textureColour = m_resourceImage->getColor();
-		color *= textureColour;
+		if( m_resourceImage != nullptr )
+		{
+			const ColourValue & textureColour = m_resourceImage->getColor();
+			color *= textureColour;
+		}
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 		

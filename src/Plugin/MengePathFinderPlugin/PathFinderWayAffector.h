@@ -22,7 +22,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( Node * _node, float _speed, PyObject * _way, PyObject * _cb );
+		bool initialize( Node * _node, float _speed, PyObject * _way, const pybind::object & _cb );
 		
 	public:
 		bool prepare() override;
@@ -41,7 +41,7 @@ namespace Menge
 		PyObject * m_way;
 
 		float m_speed;
-		PyObject * m_cb;
+		pybind::object m_cb;
 
 		uint32_t m_iterator;
 		uint32_t m_wayCount;

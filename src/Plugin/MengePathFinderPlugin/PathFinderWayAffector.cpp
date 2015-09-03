@@ -12,7 +12,6 @@ namespace Menge
 		, m_node(nullptr)
 		, m_speed(0.f)
 		, m_way(nullptr)
-		, m_cb(nullptr)
 		, m_iterator(0)
 		, m_wayCount(0)
 	{
@@ -20,7 +19,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderWayAffector::~PathFinderWayAffector()
 	{
-		pybind::decref( m_cb );
 		pybind::decref( m_way );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -29,9 +27,9 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderWayAffector::initialize( Node * _node, float _speed, PyObject * _way, PyObject * _cb )
+	bool PathFinderWayAffector::initialize( Node * _node, float _speed, PyObject * _way, const pybind::object & _cb )
 	{
-		if( pybind::is_callable( _cb ) == false )
+		if( _cb.is_callable() == false )
 		{
 			return false;
 		}
@@ -48,7 +46,6 @@ namespace Menge
 		pybind::incref( m_way );		
 		
 		m_cb = _cb;
-		pybind::incref( m_cb );
 
 		m_iterator = 0;
 		m_wayCount = pybind::list_size( m_way );
@@ -131,7 +128,7 @@ namespace Menge
 		
 		uint32_t id = this->getId();
 
-		pybind::call_t( m_cb, id, m_node, wp_current, dir, true, false, false );
+		m_cb( id, m_node, wp_current, dir, true, false, false );
 
 		return true;
 	}
@@ -152,7 +149,7 @@ namespace Menge
 		{
 			uint32_t id = this->getId();
 
-			pybind::call_t( m_cb, id, m_node, new_pos, new_dir, false, false, false );
+			m_cb( id, m_node, new_pos, new_dir, false, false, false );
 		}
 
 		if( m_iterator == m_wayCount )
@@ -173,7 +170,7 @@ namespace Menge
 
 		uint32_t id = this->getId();
 
-		pybind::call_t( m_cb, id, m_node, wp_current, dir, false, false, true );
+		m_cb( id, m_node, wp_current, dir, false, false, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::stop()
@@ -188,7 +185,7 @@ namespace Menge
 
 		uint32_t id = this->getId();
 
-		pybind::call_t( m_cb, id, m_node, lp, dir, false, true, false );
+		m_cb( id, m_node, lp, dir, false, true, false );
 	}
 }
 

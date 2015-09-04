@@ -26,20 +26,13 @@ namespace Menge
 	namespace ScriptMethod
 	{
 		//////////////////////////////////////////////////////////////////////////
-		static PyObject * s_Polygon_getPoints( Polygon * _polygon )
+		static pybind::list s_Polygon_getPoints( Polygon * _polygon )
 		{				
-			PyObject * py_list_vec2f = pybind::list_new(0);
+			pybind::list py_list_vec2f;
 
 			const Polygon::ring_type & ring = _polygon->outer();
 
-			for( Polygon::ring_type::const_iterator
-				it = ring.begin(),
-				it_end = ring.end();
-			it != it_end;
-			++it )
-			{
-				pybind::list_appenditem_t( py_list_vec2f, *it );
-			}
+			py_list_vec2f.append( ring.begin(), ring.end() );
 
 			return py_list_vec2f;
 		}
@@ -412,16 +405,15 @@ namespace Menge
 
 			Polygon * polygon = (Polygon*)_place;
 
-			uint32_t size = pybind::list_size( _obj );
+			size_t size = pybind::list_size( _obj );
 
-			for( uint32_t i = 0; i != size; ++i )
+			for( size_t i = 0; i != size; ++i )
 			{
 				PyObject * py_item = pybind::list_getitem( _obj, i );
 
 				if( pybind::list_check( py_item ) == true )
 				{
-					Polygon inner;
-					pybind::extract_value( py_item, inner );
+					Polygon inner = pybind::extract<Polygon>( py_item );
 
 					const Polygon::ring_type & ring = inner.outer();
 
@@ -429,7 +421,7 @@ namespace Menge
 				}
 				else
 				{
-					mt::vec2f point = pybind::list_getitem_t( _obj, i );
+					mt::vec2f point = pybind::extract<mt::vec2f>( py_item );
 
 					boost::geometry::append( *polygon, point );
 				}

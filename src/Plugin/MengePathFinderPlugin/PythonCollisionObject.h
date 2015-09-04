@@ -14,10 +14,10 @@ namespace Menge
 		~PythonCollisionObject();
 
 	public:
-		void setPythonUser( PyObject * _user );
-		PyObject * getPythonUser() const;
+		void setPythonUser( const pybind::object & _user );
+		const pybind::object & getPythonUser() const;
 
 	protected:
-		PyObject * m_user;
+		pybind::object m_user;
 	};	
 }

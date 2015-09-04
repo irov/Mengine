@@ -13,7 +13,7 @@ namespace Menge
 		~CollisionMotor();
 		
 	public:
-		void setCallback( PyObject * _cb );
+		void setCallback( const pybind::object & _cb );
 
 	public:
 		void setLinearSpeed( float _speed );
@@ -41,6 +41,6 @@ namespace Menge
 		bool m_transiting;
 		bool m_finish;
 
-		PyObject * m_cb;
+		pybind::object m_cb;
 	};	
 }

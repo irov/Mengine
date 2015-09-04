@@ -56,7 +56,7 @@ namespace Menge
 		void removeObstacle( uint32_t _id );
 		
 	public:
-		uint32_t createPathFinder( const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb );
+		uint32_t createPathFinder( const mt::vec2f & _from, const mt::vec2f & _to, const pybind::object & _cb );
 		void removePathFinder( uint32_t _finderId );
 
 	protected:
@@ -85,7 +85,7 @@ namespace Menge
 		{
 			uint32_t id;
 			PathFinderPtr finder;
-			PyObject * cb;
+			pybind::object cb;
 			bool successful;
 			bool complete;
 		};

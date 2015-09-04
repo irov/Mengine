@@ -514,7 +514,7 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t PathFinderMap::createPathFinder( const mt::vec2f & _from, const mt::vec2f & _to, PyObject * _cb )
+	uint32_t PathFinderMap::createPathFinder( const mt::vec2f & _from, const mt::vec2f & _to, const pybind::object & _cb )
 	{
 		if( m_threadPathFinders == nullptr )
 		{
@@ -538,7 +538,6 @@ namespace Menge
 		desc.finder = pf;
 		
 		desc.cb = _cb;
-		pybind::incref( desc.cb );
 
 		desc.complete = false;
 		desc.successful = false;
@@ -570,9 +569,8 @@ namespace Menge
 
 			desc.finder->cancel();
 			desc.finder = nullptr;
-			
-			pybind::decref( desc.cb );
-			desc.cb = nullptr;
+
+			desc.cb.reset();
 
 			desc.complete = true;
 
@@ -634,17 +632,16 @@ namespace Menge
 
 			if( desc.finder->isSuccessful() == false )
 			{
-				pybind::call_t( desc.cb, desc.id, false, pybind::ret_none() );
+				desc.cb( desc.id, false, pybind::ret_none() );
 			}
 			else
 			{
-				PyObject * way = desc.finder->getWay();
+				const pybind::list & way = desc.finder->getWay();
 
-				pybind::call_t( desc.cb, desc.id, true, way );
+				desc.cb( desc.id, true, way );
 			}
 
-			pybind::decref( desc.cb );
-			desc.cb = nullptr;
+			desc.cb.reset();
 		}
 
 		pathcomplete.clear();

@@ -10,7 +10,6 @@ namespace Menge
 		: m_linearSpeed(0.f)
 		, m_angularSpeed(0.f)
 		, m_moveStop(false)
-		, m_cb(nullptr)
 		, m_rotating(false)
 		, m_transiting(false)
 		, m_finish(false)
@@ -19,14 +18,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	CollisionMotor::~CollisionMotor()
 	{
-		pybind::decref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CollisionMotor::setCallback( PyObject * _cb )
+	void CollisionMotor::setCallback( const pybind::object & _cb )
 	{
-		pybind::decref( m_cb );
 		m_cb = _cb;
-		pybind::incref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionMotor::setLinearSpeed( float _speed )
@@ -124,7 +120,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionMotor::updateState_( CollisionObject * _object, bool _rotating, bool _transiting, bool _finish )
 	{
-		if( m_cb == nullptr || pybind::is_none( m_cb ) == true )
+		if( m_cb.is_callable() == false )
 		{
 			return;
 		}
@@ -141,6 +137,6 @@ namespace Menge
 		float angle = _object->getOrientationX();
 		uint32_t rotateState = s_rotateToState( angle );
 
-		pybind::call_t( m_cb, _object, rotateState, m_rotating, m_transiting, m_finish );
+		m_cb( _object, rotateState, m_rotating, m_transiting, m_finish );
 	}
 }

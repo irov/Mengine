@@ -16,10 +16,10 @@ namespace Menge
 		~PythonCollisionRadar();
 
 	public:
-		void setCallback( PyObject * _pyFilter, PyObject * _pyEnter, PyObject * _pyLeave );
+		void setCallback( const pybind::object & _pyFilter, const pybind::object & _pyEnter, const pybind::object & _pyLeave );
 		
 	public:
-		PythonCollisionObject * findMinimalObject( PyObject * _filter ) const;
+		PythonCollisionObject * findMinimalObject( const pybind::object & _filter ) const;
 
 	protected:
 		bool onRadarObjectFilter( CollisionObject * _object ) override;
@@ -27,8 +27,8 @@ namespace Menge
 		void onRadarObjectLeave( CollisionObject * _object ) override;
 
 	protected:
-		PyObject * m_pyFilter;
-		PyObject * m_pyEnter;
-		PyObject * m_pyLeave;
+		pybind::object m_pyFilter;
+		pybind::object m_pyEnter;
+		pybind::object m_pyLeave;
 	};	
 }

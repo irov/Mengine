@@ -8,6 +8,8 @@
 #	include "fastpathfinder/pathfinder.h"
 #	include "fastpathfinder/map.h"
 
+#	include "pybind/pybind.hpp"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -22,7 +24,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( Node * _node, float _speed, PyObject * _way, const pybind::object & _cb );
+		bool initialize( Node * _node, float _speed, const pybind::list & _way, const pybind::object & _cb );
 		
 	public:
 		bool prepare() override;
@@ -38,7 +40,7 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 
 		Node * m_node;
-		PyObject * m_way;
+		pybind::list m_way;
 
 		float m_speed;
 		pybind::object m_cb;

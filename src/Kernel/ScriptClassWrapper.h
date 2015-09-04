@@ -22,8 +22,6 @@ namespace Menge
 
             PyObject * py_obj = _node->getEmbed();
 
-			pybind::incref( py_obj );
-
 			return py_obj;
         }
     };

@@ -9,13 +9,11 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_from(0.f, 0.f)
 		, m_to(0.f, 0.f)
-		, m_way(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PathFinder::~PathFinder()
 	{
-		pybind::decref( m_way );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -58,10 +56,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * PathFinder::getWay()
+	pybind::list PathFinder::getWay()
 	{
-		pybind::incref( m_way );
-
 		return m_way;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -106,9 +102,9 @@ namespace Menge
 
 		fastpathfinder::point_array::size_type pa_size = pa.size();
 
-		PyObject * py_way = pybind::list_new( pa_size );
+		pybind::list py_way( pa_size );
 
-		pybind::list_setitem_t( py_way, 0, m_from );
+		py_way[0] = m_from;
 
 		for( fastpathfinder::point_array::size_type i = 1; i != (pa_size - 1); ++i )
 		{
@@ -118,10 +114,10 @@ namespace Menge
 			v.x = p.x * m_gridSize + m_gridSize * 0.5f;
 			v.y = p.y * m_gridSize + m_gridSize * 0.5f;
 
-			pybind::list_setitem_t( py_way, i, v );
+			py_way[i] = v;
 		}
 
-		pybind::list_setitem_t( py_way, pa_size - 1, m_to );
+		py_way[pa_size - 1] = m_to;
 
 		m_way = py_way;
 	}

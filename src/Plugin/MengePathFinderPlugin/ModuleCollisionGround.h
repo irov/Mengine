@@ -33,8 +33,8 @@ namespace Menge
 		CollisionGround * createCollisionGround();
 
 	public:		
-		CollisionMotorPosition * createCollisionMotorPosition( PyObject * _cb );
-		CollisionMotorFollow * createCollisionMotorFollow( PyObject * _cb );		
+		CollisionMotorPosition * createCollisionMotorPosition( const pybind::object & _cb );
+		CollisionMotorFollow * createCollisionMotorFollow( const pybind::object & _cb );
 
 	public:
 		void update( float _time, float _timing ) override;

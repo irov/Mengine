@@ -6,7 +6,6 @@ namespace Menge
 	Trigger::Trigger()
 		: m_aoi(nullptr)
 		, m_actor(nullptr)
-		, m_data(nullptr)
 		, m_radius(0.f)
 		, m_iff(0)
 	{
@@ -14,7 +13,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Trigger::~Trigger()
 	{
-		pybind::decref( m_data );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Trigger::setTriggerRadius( float _radius )
@@ -47,17 +45,13 @@ namespace Menge
 		return m_aoi;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Trigger::setTriggerUserData( PyObject * _data )
+	void Trigger::setTriggerUserData( const pybind::object & _data )
 	{
-		pybind::decref( m_data );
 		m_data = _data;
-		pybind::incref( m_data );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Trigger::getTriggerUserData()
+	const pybind::object & Trigger::getTriggerUserData() const
 	{
-		pybind::incref( m_data );
-
 		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////

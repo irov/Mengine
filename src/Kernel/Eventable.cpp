@@ -77,7 +77,7 @@ namespace Menge
 			return true;
 		}
 
-		const pybind::object & ev = this->getEventMethod_( _module, _method );
+		pybind::object ev = this->getEventMethod_( _module, _method );
 
 		if( ev.is_invalid() == true )
 		{

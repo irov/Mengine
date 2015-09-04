@@ -11,20 +11,16 @@ namespace Menge
 	CollisionMotorPosition::CollisionMotorPosition()
 		: m_position(0.f, 0.f, 0.f)
 		, m_angle(0.f)
-		, m_cb(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CollisionMotorPosition::~CollisionMotorPosition()
 	{
-		pybind::decref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CollisionMotorPosition::setCallback( PyObject * _cb )
+	void CollisionMotorPosition::setCallback( const pybind::object & _cb )
 	{
-		pybind::decref( m_cb );
 		m_cb = _cb;
-		pybind::incref( m_cb );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CollisionMotorPosition::setPositionAngle( const mt::vec3f & _position, float _angle )

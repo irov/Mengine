@@ -30,7 +30,7 @@ namespace Menge
 		bool initialize( TPathMap * _map, const mt::vec2f & _from, const mt::vec2f & _to, float _gridSize );
 
 	public:
-		PyObject * getWay();
+		pybind::list getWay();
 
 	protected:
 		bool _onRun() override;
@@ -46,7 +46,7 @@ namespace Menge
 		float m_gridSize;
 
 		TPathFinder m_pathfinder;
-		PyObject * m_way;
+		pybind::list m_way;
 	};
 
 	typedef stdex::intrusive_ptr<PathFinder> PathFinderPtr;

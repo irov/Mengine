@@ -188,7 +188,7 @@ namespace Menge
 		delete _graph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PathFinderWayAffector * ModulePathFinder::createPathFinderWayAffertor( Node * _node, PyObject * _way, float _speed, const pybind::object & _cb )
+	PathFinderWayAffector * ModulePathFinder::createPathFinderWayAffertor( Node * _node, const pybind::list & _way, float _speed, const pybind::object & _cb )
 	{
 		PathFinderWayAffector * affector = m_factoryPathFinderWayAffector.createObjectT();
 

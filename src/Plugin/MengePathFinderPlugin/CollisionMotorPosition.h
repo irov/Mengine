@@ -16,7 +16,7 @@ namespace Menge
 		~CollisionMotorPosition();
 
 	public:
-		void setCallback( PyObject * _cb );
+		void setCallback( const pybind::object & _cb );
 
 	public:
 		void setPositionAngle( const mt::vec3f & _position, float _angle );
@@ -29,6 +29,6 @@ namespace Menge
 		mt::vec3f m_position;
 		float m_angle;
 
-		PyObject * m_cb;
+		pybind::object m_cb;
 	};	
 }

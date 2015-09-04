@@ -482,20 +482,13 @@ namespace Menge
             return angle;
         }
 
-		PyObject * s_getPolygonPoints( const Polygon & _polygon )
+		pybind::list s_getPolygonPoints( const Polygon & _polygon )
 		{
-			PyObject * py_list = pybind::list_new(0);
+			pybind::list py_list;
 
 			const Polygon::ring_type & ring = _polygon.outer();
 
-			for( Polygon::ring_type::const_iterator 
-				it = ring.begin(),
-				it_end = ring.end();
-			it != it_end;
-			++it )
-			{
-				pybind::list_appenditem_t( py_list, *it );
-			}
+			py_list.append( ring.begin(), ring.end() );
 
 			return py_list;
 		}
@@ -714,7 +707,7 @@ namespace Menge
 			: public pybind::pybind_visit_objects
 		{
 		public:
-			MyObjectVisits( PyObject * _py_list )
+			MyObjectVisits( const pybind::list & _py_list )
 				: m_py_list(_py_list)
 			{
 			}
@@ -722,17 +715,17 @@ namespace Menge
 		protected:
 			void visit( PyObject * _obj ) override
 			{
-				pybind::list_appenditem( m_py_list, _obj );
+				m_py_list.append( _obj );
 			}
 
 		protected:
-			PyObject * m_py_list;
+			pybind::list m_py_list;
 		};
 #	endif
 
-		PyObject * s_objects()
+		pybind::list s_objects()
 		{
-			PyObject * py_list = pybind::list_new(0);
+			pybind::list py_list;
 
 #	ifdef PYBIND_VISIT_OBJECTS
 			MyObjectVisits mov(py_list);
@@ -746,7 +739,7 @@ namespace Menge
             : public VisitorRenderTextureInterface
         {
         public:
-            MyVisitorRenderTexture( PyObject * _list )
+			MyVisitorRenderTexture( const pybind::list & _list )
                 : m_list(_list)
             {
             }
@@ -756,16 +749,16 @@ namespace Menge
             {
                 const FilePath & filePath = _texture->getFileName();
 
-                pybind::list_appenditem_t( m_list, filePath );
+                m_list.append( filePath );
             }
 
         protected:
-            PyObject * m_list;
+			pybind::list m_list;
         };
 
-        PyObject * s_textures()
+		pybind::list s_textures()
         {
-            PyObject * py_list = pybind::list_new(0);
+			pybind::list py_list;
 
             MyVisitorRenderTexture mvrt(py_list);
             RENDERTEXTURE_SERVICE(m_serviceProvider)

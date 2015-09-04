@@ -29,8 +29,8 @@ namespace Menge
 		AreaOfInterest * getTriggerAOI() const;
 
 	public:
-		void setTriggerUserData( PyObject * _data );
-		PyObject * getTriggerUserData();
+		void setTriggerUserData( const pybind::object & _data );
+		const pybind::object & getTriggerUserData() const;
 
 	protected:
 		mt::vec2f getAOIActorPosition() const override;
@@ -51,7 +51,7 @@ namespace Menge
 		AreaOfInterest * m_aoi;
 		AOIActor * m_actor;
 
-		PyObject * m_data;
+		pybind::object m_data;
 		
 		float m_radius;
 		

@@ -11,7 +11,6 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_node(nullptr)
 		, m_speed(0.f)
-		, m_way(nullptr)
 		, m_iterator(0)
 		, m_wayCount(0)
 	{
@@ -19,7 +18,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderWayAffector::~PathFinderWayAffector()
 	{
-		pybind::decref( m_way );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -27,14 +25,9 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderWayAffector::initialize( Node * _node, float _speed, PyObject * _way, const pybind::object & _cb )
+	bool PathFinderWayAffector::initialize( Node * _node, float _speed, const pybind::list & _way, const pybind::object & _cb )
 	{
 		if( _cb.is_callable() == false )
-		{
-			return false;
-		}
-
-		if( pybind::list_check( _way ) == false )
 		{
 			return false;
 		}
@@ -43,12 +36,10 @@ namespace Menge
 		m_speed = _speed;
 
 		m_way = _way;
-		pybind::incref( m_way );		
-		
 		m_cb = _cb;
 
 		m_iterator = 0;
-		m_wayCount = pybind::list_size( m_way );
+		m_wayCount = m_way.size();
 
 		if( m_wayCount < 2 )
 		{
@@ -60,7 +51,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderWayAffector::stepNextPoint_( const mt::vec3f & _pos, float _step, mt::vec3f & _out, mt::vec3f & _dir )
 	{
-		mt::vec3f wp = pybind::list_getitem_t( m_way, m_iterator );
+		mt::vec3f wp = m_way[m_iterator];
 
 		float ll = mt::sqrlength_v3_v3( _pos, wp );
 
@@ -81,8 +72,8 @@ namespace Menge
 
 		while( ++m_iterator != m_wayCount )
 		{
-			mt::vec3f wp_prev = pybind::list_getitem_t( m_way, m_iterator - 1 );
-			mt::vec3f wp_current = pybind::list_getitem_t( m_way, m_iterator );
+			mt::vec3f wp_prev = m_way[m_iterator - 1];
+			mt::vec3f wp_current = m_way[m_iterator];
 
 			float ll = mt::sqrlength_v3_v3( wp_prev, wp_current );
 
@@ -102,8 +93,8 @@ namespace Menge
 			_step -= l;
 		}
 
-		mt::vec3f wp_prev = pybind::list_getitem_t( m_way, m_wayCount - 2 );
-		mt::vec3f wp_current = pybind::list_getitem_t( m_way, m_wayCount - 1 );
+		mt::vec3f wp_prev = m_way[m_wayCount - 2];
+		mt::vec3f wp_current = m_way[m_wayCount - 1];
 
 		mt::vec3f dir;
 		mt::dir_v3_v3( dir, wp_current, wp_prev );
@@ -116,8 +107,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderWayAffector::prepare()
 	{
-		mt::vec3f wp_current = pybind::list_getitem_t( m_way, 0 );
-		mt::vec3f wp_target = pybind::list_getitem_t( m_way, 1 );
+		mt::vec3f wp_current = m_way[0];
+		mt::vec3f wp_target = m_way[1];
 
 		m_iterator = 1;
 		
@@ -162,8 +153,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::complete()
 	{
-		mt::vec3f wp_prev = pybind::list_getitem_t( m_way, m_wayCount - 2 );
-		mt::vec3f wp_current = pybind::list_getitem_t( m_way, m_wayCount - 1 );
+		mt::vec3f wp_prev = m_way[m_wayCount - 2];
+		mt::vec3f wp_current = m_way[m_wayCount - 1];
 
 		mt::vec3f dir;
 		mt::dir_v3_v3( dir, wp_current, wp_prev );
@@ -177,8 +168,8 @@ namespace Menge
 	{
 		const mt::vec3f & lp = m_node->getLocalPosition();
 
-		mt::vec3f wp_prev = pybind::list_getitem_t( m_way, m_iterator - 1 );
-		mt::vec3f wp_current = pybind::list_getitem_t( m_way, m_iterator );
+		mt::vec3f wp_prev = m_way[m_iterator - 1];
+		mt::vec3f wp_current = m_way[m_iterator];
 
 		mt::vec3f dir;
 		mt::dir_v3_v3( dir, wp_current, wp_prev );

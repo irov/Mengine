@@ -268,18 +268,16 @@ namespace Menge
             return unicode;            
         }
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_getMovieNode( Movie * _movie, const ConstString & _name, const ConstString & _type )
+		Node * movie_getMovieNode( Movie * _movie, const ConstString & _name, const ConstString & _type )
 		{
 			Node * node;
 			Movie * submovie;
 			if( _movie->getMovieNode( _name, _type, &node, &submovie ) == false )
 			{
-				return pybind::ret_none();
+				return nullptr;
 			}
-
-			PyObject * py_node = pybind::ptr( node );
-
-			return py_node;
+			
+			return node;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool movie_hasMovieNode( Movie * _movie, const ConstString & _name, const ConstString & _type )
@@ -302,18 +300,16 @@ namespace Menge
 			return pybind::ptr( enable );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_getMovieSlot( Movie * _movie, const ConstString & _name )
+		Node * movie_getMovieSlot( Movie * _movie, const ConstString & _name )
 		{
 			Node * node;
 			Movie * submovie;
 			if( _movie->getMovieNode( _name, CONST_STRING(m_serviceProvider, MovieSlot), &node, &submovie ) == false )
 			{
-				return pybind::ret_none();
-			}
-			
-			PyObject * py_node = pybind::ptr( node );
+				return nullptr;
+			}			
 
-			return py_node;
+			return node;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool movie_hasMovieSlot( Movie * _movie, const ConstString & _name )
@@ -325,19 +321,17 @@ namespace Menge
 			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_getMovieText( Movie * _movie, const ConstString & _name )
+		Node * movie_getMovieText( Movie * _movie, const ConstString & _name )
 		{
 			Node * node;
 			Movie * submovie;
 
 			if( _movie->getMovieNode( _name, CONST_STRING(m_serviceProvider, MovieText), &node, &submovie ) == false )
 			{
-				return pybind::ret_none();
+				return nullptr;
 			}
 
-			PyObject * py_node = pybind::ptr( node );
-
-			return py_node;
+			return node;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool movie_hasMovieText( Movie * _movie, const ConstString & _name )
@@ -350,18 +344,16 @@ namespace Menge
 			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_getSubMovie( Movie * _movie, const ConstString & _name )
+		Node * movie_getSubMovie( Movie * _movie, const ConstString & _name )
 		{
 			Node * node;
 			Movie * submovie;
 			if( _movie->getMovieNode( _name, CONST_STRING(m_serviceProvider, SubMovie), &node, &submovie ) == false )
 			{
-				return pybind::ret_none();
+				return nullptr;
 			}
 
-			PyObject * py_node = pybind::ptr( node );
-
-			return py_node;
+			return node;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool movie_hasSubMovie( Movie * _movie, const ConstString & _name )
@@ -373,23 +365,19 @@ namespace Menge
 			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_getSocket( Movie * _movie, const ConstString & _name )
+		Node * movie_getSocket( Movie * _movie, const ConstString & _name )
 		{
 			Node * node;
 			Movie * submovie;
 
 			if( _movie->hasMovieNode( _name, CONST_STRING(m_serviceProvider, MovieSocketImage), &node, &submovie ) == true )
-			{
-				PyObject * py_node = pybind::ptr( node );
-
-				return py_node;
+			{				
+				return node;
 			}
 
 			if( _movie->hasMovieNode( _name, CONST_STRING(m_serviceProvider, MovieSocketShape), &node, &submovie ) == true )
 			{
-				PyObject * py_node = pybind::ptr( node );
-
-				return py_node;
+				return node;
 			}
 
 			LOGGER_ERROR(m_serviceProvider)("Movie::getSocket: movie %s resource %s not found %s"
@@ -398,7 +386,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return pybind::ret_none();
+			return nullptr;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		bool movie_hasSocket( Movie * _movie, const ConstString & _name )
@@ -719,7 +707,7 @@ namespace Menge
 			return len;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_getLayerPath( Movie * _movie, const ConstString & _name )
+		pybind::list movie_getLayerPath( Movie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
 			Movie * sub_movie;
@@ -730,7 +718,7 @@ namespace Menge
 					, _name.c_str()
 					);
 
-				return pybind::ret_none();
+				return pybind::make_invalid_list_t();
 			}
 
 			ResourceMovie * resourceMovie = sub_movie->getResourceMovie();
@@ -756,17 +744,17 @@ namespace Menge
 					, _name.c_str()
 					);
 
-				return pybind::ret_none();
+				return pybind::make_invalid_list_t();
 			}
 
-			PyObject * py_path = pybind::list_new( indexCount );
+			pybind::list py_path( indexCount );
 
 			for( uint32_t i = 0; i != indexCount; ++i )
 			{
 				MovieFrameSource frame;
 				framePack->getLayerFrame( layer->index, i, frame );
 
-				pybind::list_setitem_t( py_path, i, frame.position );				
+				py_path[i] = frame.position;				
 			}
 
 			if( isCompile == false )
@@ -777,7 +765,7 @@ namespace Menge
 			return py_path;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * movie_getLayerPath2( Movie * _movie, const ConstString & _name )
+		pybind::list movie_getLayerPath2( Movie * _movie, const ConstString & _name )
 		{
 			const MovieLayer * layer;
 			Movie * sub_movie;
@@ -788,7 +776,7 @@ namespace Menge
 					, _name.c_str()
 					);
 
-				return pybind::ret_none();
+				return pybind::make_invalid_list_t();
 			}
 
 			ResourceMovie * resourceMovie = sub_movie->getResourceMovie();
@@ -800,7 +788,7 @@ namespace Menge
 
 			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
-			PyObject * py_path = pybind::list_new( indexCount );
+			pybind::list py_path( indexCount );
 
 			for( uint32_t i = 0; i != indexCount; ++i )
 			{
@@ -811,7 +799,7 @@ namespace Menge
 				pos.x = frame.position.x;
 				pos.y = frame.position.y;
 				
-				pybind::list_setitem_t( py_path, i, pos );
+				py_path[i] = pos;
 			}
 
 			return py_path;
@@ -2040,39 +2028,37 @@ namespace Menge
 		public:
 			void callback_begin_node( const char * _node )
 			{
-				pybind::call_method( m_cb.ptr(), "begin", "(s)", _node );
+				pybind::object py_cb_begin = m_cb.get_attr( "begin" );
+
+				py_cb_begin( _node );
 			}
 
 			void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
 			{
 				(void)_node;
 
-				PyObject * py_attr = pybind::dict_new_presized( _count );
+				pybind::dict py_attr( _count );
 				
 				for( uint32_t i = 0; i != _count; ++i )
 				{
 					const char * key = _keys[i];
 					const char * value = _values[i];
-
-					PyObject * py_key = pybind::string_from_char( key );
-					PyObject * py_value = pybind::string_from_char( value );
-
-					pybind::dict_set( py_attr, py_key, py_value );
-
-					pybind::decref( py_key );
-					pybind::decref( py_value );
+					
+					py_attr[key] = value;					
 				}
 
-				pybind::call_method( m_cb.ptr(), "attr", "(O)", py_attr );
+				pybind::object py_cb_attr = m_cb.get_attr( "attr" );
 
-				pybind::decref( py_attr );
+				py_cb_attr( py_attr );
 			}
 
 			void callback_end_node( const char * _node )
 			{
 				(void)_node;
 
-				pybind::call_method( m_cb.ptr(), "end", "()" );
+				pybind::object py_cb_end = m_cb.get_attr( "end" );
+
+				py_cb_end();
 			}
 
 		protected:
@@ -3086,13 +3072,13 @@ namespace Menge
             return newNode;
         }
 		//////////////////////////////////////////////////////////////////////////
-		PyObject * getAllChildren( Node * _node )
+		pybind::list getAllChildren( Node * _node )
 		{
 			TListNodeChild & children = _node->getChildren();
 
 			size_t size = children.size();
 
-			PyObject * py_children = pybind::list_new( size );
+			pybind::list py_children( size );
 
 			size_t index = 0;
 
@@ -3100,7 +3086,7 @@ namespace Menge
 			{
 				Node * child = *it;
 				
-				pybind::list_setitem_t( py_children, index++, child );
+				py_children[index++] = child;
 			}
 
 			return py_children;
@@ -3533,16 +3519,16 @@ namespace Menge
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getJoins( Node * _left )
+		pybind::list s_getJoins( Node * _left )
         {
-            PyObject * py_list = pybind::list_new(0);
+            pybind::list py_list;
 
             TVectorNode joins;
 
             PLAYER_SERVICE(m_serviceProvider)
                 ->getJoins( _left, joins );
 
-			pybind::list_appenditems_t( py_list, joins.begin(), joins.end() );
+			py_list.append( joins.begin(), joins.end() );
 
             return py_list;
         }

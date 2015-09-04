@@ -9,9 +9,9 @@ namespace Menge
     }
     //////////////////////////////////////////////////////////////////////////
     void ConstStringHolderPythonString::setPythonObject( PyObject * _value )
-    {        
+    {   
+		pybind::decref( m_value );
         m_value = _value;
-
         pybind::incref( m_value );
 
         const char * data = pybind::string_to_char( m_value );

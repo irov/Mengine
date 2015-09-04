@@ -137,7 +137,7 @@ namespace Menge
 		return ground;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CollisionMotorPosition * ModuleCollisionGround::createCollisionMotorPosition( PyObject * _cb )
+	CollisionMotorPosition * ModuleCollisionGround::createCollisionMotorPosition( const pybind::object & _cb )
 	{
 		CollisionMotorPosition * motor = new CollisionMotorPosition;
 
@@ -146,7 +146,7 @@ namespace Menge
 		return motor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CollisionMotorFollow * ModuleCollisionGround::createCollisionMotorFollow( PyObject * _cb )
+	CollisionMotorFollow * ModuleCollisionGround::createCollisionMotorFollow( const pybind::object & _cb )
 	{
 		CollisionMotorFollow * motor = new CollisionMotorFollow;
 

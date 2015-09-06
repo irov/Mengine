@@ -12,9 +12,6 @@
 #	pragma warning(pop) 
 #	endif
 
-#	include <stdex/stl_string.h>
-#	include <stdex/stl_vector.h>
-
 namespace Menge
 {
 	class AstralaxEmitter2 
@@ -57,15 +54,15 @@ namespace Menge
 
 		bool getCamera( ParticleCamera & _camera ) const override;
 
-	public:
-		bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, ParticleVertices * _particles, uint32_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override;
+	public:		
+		bool prepareParticles( ParticleEmitterRenderFlush & _flush ) override;
+		bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndices * _indices, ParticleEmitterRenderFlush & _flush );
 
 	public:
 		//void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
 		void getBoundingBox( mt::box2f& _box ) const override;
 		//void getBoundingBox( Rect & _rect )  const override;
 		void setEmitterTranslateWithParticle( bool _value ) override;
-		bool isIntensive() const override;
 
 	public:
 		bool changeEmitterImage( uint32_t _width, uint32_t _height, unsigned char* _data, size_t _bytes ) override;
@@ -87,9 +84,8 @@ namespace Menge
 		HM_EMITTER getId() const;
 
 		bool inInterval() const;
-		bool createFirstRenderedParticlesList( MAGIC_RENDERING * _rendering );
 
-    public:
+	public:
 		float getUpdateTemp() const;
 
     protected:
@@ -100,7 +96,7 @@ namespace Menge
 		
 		HM_EMITTER m_emitterId;
 
-        mt::vec3f m_basePosition;		
+        mt::vec3f m_basePosition;
 
 		double m_tempScale;
 		double m_leftBorder;
@@ -120,6 +116,9 @@ namespace Menge
 		bool m_looped;
 
 		bool m_background;
+
+		MAGIC_RENDERING_START m_prepareStart;
+		void * m_prepareContext;
 	};
 
 	typedef stdex::intrusive_ptr<AstralaxEmitter2> AstralaxEmitter2Ptr;

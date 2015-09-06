@@ -294,12 +294,7 @@ namespace Menge
 	{
         const Metacode::Meta_DataBlock::Meta_ResourceImageDefault * metadata 
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageDefault *>(_meta);
-		        
-        m_isAlpha = true;
-
-        m_wrapU = false;
-        m_wrapV = false;
-        
+		       
         metadata->swap_File_Path( m_filePath );
         metadata->swap_File_Codec( m_codecType );
 
@@ -309,10 +304,8 @@ namespace Menge
                 ->findCodecType( m_filePath );
         }
 
+		m_isAlpha = true;
         metadata->get_File_Alpha( m_isAlpha );
-
-        metadata->get_File_WrapX( m_wrapU );
-        metadata->get_File_WrapY( m_wrapV );
         		
 		m_maxSize = metadata->get_File_MaxSize();
 
@@ -377,7 +370,7 @@ namespace Menge
 		ResourceImage::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, bool _wrapU, bool _wrapV, const mt::vec2f & _maxSize )
+	void ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize )
 	{
         m_filePath = _imagePath;
 
@@ -389,9 +382,6 @@ namespace Menge
 
         m_uv_image = _uv_image;
 		m_uv_alpha = _uv_alpha;
-
-		m_wrapU = _wrapU;
-		m_wrapV = _wrapV;
 
 		m_maxSize = _maxSize;
 		m_size = m_maxSize;

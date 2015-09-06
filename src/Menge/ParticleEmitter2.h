@@ -56,7 +56,7 @@ namespace Menge
 		mt::vec3f getEmitterPosition() const;
 		mt::box2f getEmitterBoundingBox() const;
 		
-		void setEmitterImage( const ConstString & _emitterImageName );
+		void changeEmitterImage( const ConstString & _emitterImageName );
         void removeEmitterImage();
 
 		bool changeEmitterPolygon( const Polygon & _polygon );
@@ -98,19 +98,8 @@ namespace Menge
 		bool compilePolygon_( const ParticleEmitterInterfacePtr & _emitter );
 
     protected:
-		bool updateParticleVertex_();
-        void updateRelative_();
-
-    protected:
-        void updateVertexWM_();
-		void updateBB_();
-
-	protected:
-		void updateMaterial_();
-		void invalidateMaterial_();
-
-	protected:
-		inline const RenderMaterialInterfacePtr & getMaterial( uint32_t _index );
+		void updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount );
+		void updateVertexWM_( RenderVertex2D * _vertices, uint32_t _verticesCount );
 
 	protected:
 		ResourceHolder<ResourceParticle> m_resourceParticle;
@@ -128,38 +117,13 @@ namespace Menge
         bool m_randomMode;
 
 		float m_startPosition;
-
-		RenderMaterialInterfacePtr m_materials[MENGINE_PARTICLE_MAX_ATLAS_TEXTURE * 2]; //intensive and non intensive
-		bool m_invalidateMaterial;
-
-		//TVectorVertex2D m_vertices;
+				
 		RenderVertex2D * m_vertices;
-		uint32_t m_verticesCount;
+		uint32_t m_verticesSize;
 
-		struct Batch
-		{
-			TVectorRenderVertex2D::size_type begin;
-			TVectorRenderVertex2D::size_type size;
-			RenderMaterialInterfacePtr material;
-
-			mt::box2f bb;
-		};
-
-		typedef stdex::vector<Batch> TVectorBatchs;
-		TVectorBatchs m_batchs;
+		RenderIndices * m_indicies;
+		uint32_t m_indiciesSize;		
 
 		bool m_emitterTranslateWithParticle;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline const RenderMaterialInterfacePtr & ParticleEmitter2::getMaterial( uint32_t _index )
-	{
-		if( m_invalidateMaterial == true )
-		{
-			this->updateMaterial_();
-		}
-
-		const RenderMaterialInterfacePtr & material = m_materials[_index];
-
-		return material;
-	}
 }

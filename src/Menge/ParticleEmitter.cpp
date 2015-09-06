@@ -35,10 +35,6 @@
 
 namespace	Menge
 {
-    //////////////////////////////////////////////////////////////////////////
-#	ifndef MENGINE_PARTICLE_MAX_VERTICES
-#	define MENGINE_PARTICLE_MAX_VERTICES 2000
-#	endif
 	//////////////////////////////////////////////////////////////////////////
 #	ifndef MENGINE_PARTICLE_MAX_MESH
 #	define MENGINE_PARTICLE_MAX_MESH 100
@@ -50,6 +46,8 @@ namespace	Menge
         , m_randomMode(false)
 		, m_vertices(nullptr)
 		, m_verticesCount(0)
+		, m_indicies(nullptr)
+		, m_indiciesCount(0)
         , m_emitterRelative(false)
         , m_emitterPosition(0.f, 0.f, 0.f)
         , m_emitterTranslateWithParticle(true)
@@ -191,10 +189,15 @@ namespace	Menge
 
         m_resourceEmitterContainer.release();
 
-		Helper::freeMemory( m_vertices );
+		Helper::freeMemoryNoThreadSafe( m_vertices );
 		m_vertices = nullptr;
 
 		m_verticesCount = 0;
+
+		Helper::freeMemoryNoThreadSafe( m_indicies );
+		m_indicies = nullptr;
+
+		m_indiciesCount = 0;
 
         m_batchs.clear();
 		
@@ -401,8 +404,6 @@ namespace	Menge
 		bool stop;
 		m_emitter->update( totalTiming, stop );
 		
-		this->updateParticleVertex_();
-
 		if( stop == true )
 		{
 			this->end();
@@ -412,26 +413,41 @@ namespace	Menge
 	bool ParticleEmitter::updateParticleVertex_()
 	{
 		uint32_t partCount = 0;
-				
-        static ParticleVertices s_particles[MENGINE_PARTICLE_MAX_VERTICES];
-		static ParticleMesh s_meshes[MENGINE_PARTICLE_MAX_MESH];
-				
+			
 		m_batchs.clear();
    
+		uint32_t meshes_limit;
+		ParticleMesh * meshes_cache = PARTICLE_SERVICE( m_serviceProvider )
+			->getParticleMeshesCache( meshes_limit );
+
 		ParticleEmitterRenderFlush flush;
 
-		if( m_emitter->flushParticles( s_meshes, MENGINE_PARTICLE_MAX_MESH, s_particles, MENGINE_PARTICLE_MAX_VERTICES, flush ) == false )
+		if( m_emitter->prepareParticles( flush ) == false )
 		{
 			return false;
 		}
 
-		if( m_verticesCount < flush.particleCount * 4 )
-		{			
-			m_verticesCount = flush.particleCount * 4;
+		if( m_verticesCount < flush.verticesCount )
+		{
+			m_verticesCount = flush.verticesCount;
 
-			m_vertices = Helper::reallocateMemory<RenderVertex2D>( m_vertices, m_verticesCount );
+			m_vertices = Helper::reallocateMemoryNoThreadSafe<RenderVertex2D>( m_vertices, m_verticesCount );
 		}
 
+		if( m_indiciesCount < flush.indicesCount )
+		{
+			m_indiciesCount = flush.indicesCount;
+
+			m_indicies = Helper::reallocateMemoryNoThreadSafe<RenderIndices>( m_indicies, m_indiciesCount );
+		}
+
+		ParticleMesh meshes[MENGINE_PARTICLE_MAX_MESH];
+
+		if( m_emitter->flushParticles( meshes, MENGINE_PARTICLE_MAX_MESH, m_vertices, m_indicies, flush ) == false )
+		{
+			return false;
+		}
+		
 		ColourValue color;
 		this->calcTotalColor(color);
 
@@ -443,7 +459,48 @@ namespace	Menge
 		it_mesh != it_mesh_end;
 		++it_mesh )
 		{
-			const ParticleMesh & mesh = s_meshes[it_mesh];
+			const ParticleMesh & mesh = meshes[it_mesh];
+
+			MAGIC_MATERIAL m;
+			int a = Magic_GetMaterial( mesh.material, &m );
+
+			PARTICLE_SERVICE( m_serviceProvider )
+				->makeMaterial( m_resourceEmitterContainer, mesh.material );
+
+			switch( m.blending )
+			{
+			case MAGIC_BLENDING_NORMAL:
+				{
+					DXCALL m_device->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+					DXCALL m_device->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+					DXCALL m_device->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA );
+				}break;
+			case MAGIC_BLENDING_ADD:
+				{
+					DXCALL m_device->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
+					DXCALL m_device->SetRenderState( D3DRS_SRCBLEND, D3DBLEND_SRCALPHA );
+					DXCALL m_device->SetRenderState( D3DRS_DESTBLEND, D3DBLEND_ONE );
+				}break;
+			case MAGIC_BLENDING_OPACITY:
+				{
+					DXCALL m_device->SetRenderState( D3DRS_ALPHABLENDENABLE, FALSE );
+				}break;
+			}
+
+			RenderTextureInterfacePtr textures[8];
+
+			for( int stage = 0; stage != m.textures; ++stage )
+			{
+				int textureId = mesh.texture[stage];
+
+				const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( textureId );
+
+				texture[stage] = texture;
+			}
+
+			const int dx_address[] = {D3DTADDRESS_WRAP, D3DTADDRESS_MIRROR, D3DTADDRESS_CLAMP, D3DTADDRESS_BORDER};
+			
+			Helper::makeTextureMaterial(m_serviceProvider, textures, m.textures, )
 
 			const RenderTextureInterfacePtr & texture = m_resourceEmitterContainer->getAtlasTexture( mesh.texture );
 

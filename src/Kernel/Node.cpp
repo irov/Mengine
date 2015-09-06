@@ -1328,10 +1328,10 @@ namespace Menge
 			vertices[i].pos.z = 0.f;
 
 			vertices[i].color = 0xFF00FF00;
-			vertices[i].uv.x = 0.f;
-			vertices[i].uv.y = 0.f;
-			vertices[i].uv2.x = 0.f;
-			vertices[i].uv2.y = 0.f;
+			vertices[i].uv[0].x = 0.f;
+			vertices[i].uv[0].y = 0.f;
+			vertices[i].uv[1].x = 0.f;
+			vertices[i].uv[1].y = 0.f;
 		}
 
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE(m_serviceProvider)

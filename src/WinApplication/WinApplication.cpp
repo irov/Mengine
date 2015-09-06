@@ -57,7 +57,7 @@ SERVICE_EXTERN(ModuleService, Menge::ModuleServiceInterface);
 SERVICE_EXTERN(ThreadSystem, Menge::ThreadSystemInterface);
 SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
 
-SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
+//SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
 SERVICE_EXTERN(ParticleService2, Menge::ParticleServiceInterface2);
 
 SERVICE_EXTERN(RenderSystem, Menge::RenderSystemInterface);
@@ -201,7 +201,6 @@ namespace Menge
 		, m_archiveService(nullptr)
 		, m_threadSystem(nullptr)
 		, m_threadService(nullptr)
-		, m_particleService(nullptr)
 		, m_particleService2(nullptr)
 		, m_physicSystem(nullptr)
 		, m_renderSystem(nullptr)
@@ -845,29 +844,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeParticleEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service..." );
-
-		ParticleServiceInterface * particleService;
-		if( SERVICE_CREATE( ParticleService, &particleService ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeParticleEngine_ Failed to initialize ParticleService"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
-		{
-			return false;
-		}
-
-		m_particleService = particleService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeParticleEngine2_()
 	{
 		LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service 2..." );
@@ -1446,11 +1422,6 @@ namespace Menge
 		}
 
 		if( this->initializeThreadEngine_() == false )
-		{
-			return false;
-		}
-
-		if( this->initializeParticleEngine_() == false )
 		{
 			return false;
 		}
@@ -2081,12 +2052,6 @@ namespace Menge
 			
 			SERVICE_DESTROY( CodecService, m_codecService );
 			m_codecService = nullptr;
-		}
-
-		if( m_particleService != nullptr )
-		{
-			SERVICE_DESTROY( ParticleService, m_particleService );
-			m_particleService = nullptr;
 		}
 
 		if( m_particleService2 != nullptr )

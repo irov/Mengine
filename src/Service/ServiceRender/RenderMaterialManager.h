@@ -12,15 +12,13 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+#	ifndef MENGINE_MATERIAL_RENDER_STAGE_MAX
+#	define MENGINE_MATERIAL_RENDER_STAGE_MAX 256
+#	endif
+
 #	ifndef MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE
 #	define MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE 128
 #	endif
-	//////////////////////////////////////////////////////////////////////////
-	struct RenderStageGroup
-		: public Factorable
-	{
-		RenderStage stage[4];
-	};
 	//////////////////////////////////////////////////////////////////////////
     class RenderMaterialManager
         : public RenderMaterialServiceInterface
@@ -44,12 +42,18 @@ namespace Menge
 		const ConstString & getMaterialName( EMaterial _materialId ) const override;
 
 	public:
+		const RenderStage * cacheStage( const RenderStage & _other ) override;
+
+	public:
 		RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
-			, bool _wrapU
-			, bool _wrapV
 			, EPrimitiveType _primitiveType
 			, uint32_t _textureCount
-			, const RenderTextureInterfacePtr * _textures ) override;        
+			, const RenderTextureInterfacePtr * _textures ) override;       
+
+		RenderMaterialInterfacePtr getMaterial2( const RenderStage * _stage
+			, EPrimitiveType _primitiveType
+			, uint32_t _textureCount
+			, const RenderTextureInterfacePtr * _textures ) override;
 
 	public:
 		void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) override;
@@ -80,11 +84,11 @@ namespace Menge
 
 		uint32_t m_materialEnumerator;
 
-        typedef stdex::binary_vector<ConstString, RenderStageGroup *> TMapRenderStage;
-        TMapRenderStage m_stages;
+		typedef stdex::map<ConstString, const RenderStage *> TMapRenderStage;
+        TMapRenderStage m_stageIndexer;
 
-		typedef FactoryPoolStore<RenderStageGroup, 256> TFactoryRenderStage; 
-		TFactoryRenderStage m_factoryStage;
+		RenderStage m_stages[MENGINE_MATERIAL_RENDER_STAGE_MAX];
+		uint32_t m_stageCount;
 
 		typedef stdex::vector<RenderMaterial *> TVectorRenderMaterial;
 		TVectorRenderMaterial m_materials[MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE];

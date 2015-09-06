@@ -645,14 +645,6 @@ namespace Menge
 			}
 		}
 
-		if( m_depthBufferWriteEnable != m_currentStage->depthBufferWriteEnable )
-		{
-			m_depthBufferWriteEnable = m_currentStage->depthBufferWriteEnable;
-
-			RENDER_SYSTEM(m_serviceProvider)
-				->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
-		}
-
 		if( m_alphaBlendEnable != m_currentStage->alphaBlendEnable )
 		{
 			m_alphaBlendEnable = m_currentStage->alphaBlendEnable;
@@ -1091,6 +1083,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material        
+		, uint32_t _indexBegin
 		, const RenderVertex2D * _vertices, uint32_t _verticesNum
 		, const RenderIndices * _indices, uint32_t _indicesNum
 		, const mt::box2f * _bb, bool _debug )
@@ -1208,7 +1201,6 @@ namespace Menge
 			{				
 				RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE(m_serviceProvider)
 					->getMaterial( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Color_Blend")
-					, false, false
 					, ro_material->getPrimitiveType()
 					, 0
 					, nullptr
@@ -1237,11 +1229,15 @@ namespace Menge
 		ro.ibHandle = m_ibHandle2D;
 		ro.vbHandle = m_vbHandle2D;
 
+		ro.indexBegin = _indexBegin;
+
 		ro.vertexData = _vertices;
 		ro.verticesNum = _verticesNum;
 
 		ro.indicesData = _indices;
 		ro.indicesNum = _indicesNum;
+
+		ro.bb = bb;
 
 		ro.minIndex = 0;
 		ro.startIndex = 0;
@@ -1249,8 +1245,6 @@ namespace Menge
 
 		ro.dipVerticesNum = 0;
 		ro.dipIndiciesNum = 0;
-
-		ro.bb = bb;
 		
 		m_renderVertexCount += _verticesNum;
 		m_renderIndicesCount += _indicesNum;
@@ -1274,7 +1268,7 @@ namespace Menge
 
 		RenderIndices * indices = m_indicesQuad.buff();
 
-		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
+		this->addRenderObject( _viewport, _camera, _material, 0, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
@@ -1295,7 +1289,7 @@ namespace Menge
 
 		RenderIndices * indices = m_indicesLine.buff();
 
-		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
+		this->addRenderObject( _viewport, _camera, _material, 0, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertex2D * RenderEngine::getDebugRenderVertex2D( size_t _count )

@@ -31,7 +31,6 @@
 #   include "Interface/ConverterInterface.h"
 
 #   include "Interface/ResourceInterface.h"
-#   include "Interface/AlphaChannelInterface.h"
 #   include "Interface/AccountInterface.h"
 #   include "Interface/ProfilerInterface.h"
 

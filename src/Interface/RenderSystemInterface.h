@@ -20,8 +20,12 @@
 #	include "Math/uv4.h"
 
 #   ifndef MENGE_MAX_TEXTURE_STAGES
-#	define MENGE_MAX_TEXTURE_STAGES 2
+#	define MENGE_MAX_TEXTURE_STAGES 4
 #   endif
+
+#	ifndef MENGINE_RENDER_VERTEX_UV_COUNT
+#	define MENGINE_RENDER_VERTEX_UV_COUNT 4
+#	endif
 
 namespace Menge
 {
@@ -56,9 +60,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	enum ETextureAddressMode
 	{
-		TAM_CLAMP = 0,
-		TAM_WRAP,
+		TAM_WRAP = 0,		
 		TAM_MIRROR,
+		TAM_CLAMP,
+		TAM_BORDER,
+		TAM_MIRRORONCE,
 
 		TAM_MAX_VALUE
 	};
@@ -117,8 +123,10 @@ namespace Menge
 		TOP_SELECTARG1,
 		TOP_SELECTARG2,
 		TOP_MODULATE,
+		TOP_MODULATE2X,
+		TOP_MODULATE4X,
 		TOP_ADD,
-		TOP_SUBSTRACT,
+		TOP_SUBTRACT,
 
 		TOP_MAX_VALUE
 	};
@@ -302,17 +310,15 @@ namespace Menge
 		RenderStage()
 			: blendSrc(BF_SOURCE_ALPHA)
 			, blendDst(BF_ONE_MINUS_SOURCE_ALPHA)
-			, depthBufferWriteEnable(false)
 			, alphaBlendEnable(false)
 		{
 		}
 
 		RenderTextureStage textureStage[MENGE_MAX_TEXTURE_STAGES];
-
+		
 		EBlendFactor blendSrc;
 		EBlendFactor blendDst;
 
-		bool depthBufferWriteEnable;
 		bool alphaBlendEnable;
 
 		RenderProgramInterfacePtr program;
@@ -324,6 +330,9 @@ namespace Menge
 
 		EM_TEXTURE_SOLID,
 		EM_TEXTURE_BLEND,
+		EM_TEXTURE_BLEND_WC,
+		EM_TEXTURE_BLEND_WW,
+		EM_TEXTURE_BLEND_CW,
 		EM_TEXTURE_INTENSIVE,
 		EM_TEXTURE_MULTIPLY,
 		EM_TEXTURE_SCREEN,
@@ -334,6 +343,9 @@ namespace Menge
 		EM_TEXTURE_SCREEN_ONLYCOLOR,
 
 		EM_TEXTURE_BLEND_EXTERNAL_ALPHA,
+		EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WC,
+		EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WW,
+		EM_TEXTURE_BLEND_EXTERNAL_ALPHA_CW,
 		EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA,
 		EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA,
 		EM_TEXTURE_SCREEN_EXTERNAL_ALPHA,
@@ -377,9 +389,15 @@ namespace Menge
 		virtual const ConstString & getMaterialName( EMaterial _materialId ) const = 0;
 
 	public:
+		virtual const RenderStage * cacheStage( const RenderStage & _other ) = 0;
+
+	public:
 		virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
-			, bool _wrapU
-			, bool _wrapV
+			, EPrimitiveType _primitiveType
+			, uint32_t _textureCount
+			, const RenderTextureInterfacePtr * _textures ) = 0;
+
+		virtual RenderMaterialInterfacePtr getMaterial2( const RenderStage * _stage
 			, EPrimitiveType _primitiveType
 			, uint32_t _textureCount
 			, const RenderTextureInterfacePtr * _textures ) = 0;
@@ -410,8 +428,7 @@ namespace Menge
     {
         mt::vec3f pos;
         uint32_t color;
-        mt::vec2f uv;
-        mt::vec2f uv2;
+		mt::vec2f uv[MENGINE_RENDER_VERTEX_UV_COUNT];
     };
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<RenderVertex2D> TVectorRenderVertex2D;
@@ -667,6 +684,7 @@ namespace Menge
 
     public:
         virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
+			, uint32_t _indexBegin
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
             , const RenderIndices * _indices, uint32_t _indicesNum
 			, const mt::box2f * _bb, bool _debug ) = 0;

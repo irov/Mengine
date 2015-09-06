@@ -14,7 +14,6 @@
 #   include "Interface/SoundSystemInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
-#   include "Interface/ParticleSystemInterface2.h"
 #   include "Interface/CodecInterface.h"
 #   include "Interface/DataInterface.h"
 #   include "Interface/ConverterInterface.h"
@@ -119,7 +118,6 @@ namespace Menge
 		bool initializeLogEngine_();
 		bool initializeConfigEngine_();
 		bool initializeUnicodeEngine_();
-		bool initializeParticleEngine_();
 		bool initializeParticleEngine2_();
 		bool initializePhysicEngine2D_();
 		bool initializeRenderEngine_();
@@ -214,7 +212,6 @@ namespace Menge
 		ThreadSystemInterface * m_threadSystem;
 		ThreadServiceInterface * m_threadService;
 
-		ParticleServiceInterface * m_particleService;
 		ParticleServiceInterface2 * m_particleService2;
 
 		PhysicSystemInterface * m_physicSystem;

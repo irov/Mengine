@@ -105,15 +105,48 @@ namespace Menge
 
 			EMaterial materialId;
 
+			bool wrapU = c_WindowWrapU[i];
+			bool wrapV = c_WindowWrapV[i];
+
             if( textureAlpha != nullptr )
             {
-				materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA;
-								
+				if( wrapU == false && wrapV == false )
+				{
+					materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA;
+				}
+				else if( wrapU == true && wrapV == false )
+				{
+					materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WC;
+				}
+				else if( wrapU == true && wrapV == true )
+				{
+					materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WW;
+				}
+				else if( wrapU == false && wrapV == true )
+				{
+					materialId = EM_TEXTURE_BLEND_EXTERNAL_ALPHA_CW;
+				}
+				
                 textureCount = 2;
             }
 			else if( texture != nullptr )
             {
-				materialId = EM_TEXTURE_BLEND;
+				if( wrapU == false && wrapV == false )
+				{
+					materialId = EM_TEXTURE_BLEND;
+				}
+				else if( wrapU == true && wrapV == false )
+				{
+					materialId = EM_TEXTURE_BLEND_WC;
+				}
+				else if( wrapU == true && wrapV == true )
+				{
+					materialId = EM_TEXTURE_BLEND_WW;
+				}
+				else if( wrapU == false && wrapV == true )
+				{
+					materialId = EM_TEXTURE_BLEND_CW;
+				}
 
                 textureCount = 1;
             }            
@@ -127,11 +160,8 @@ namespace Menge
 			const ConstString & materialName = RENDERMATERIAL_SERVICE( m_serviceProvider )
 				->getMaterialName( materialId );
 
-			bool wrapU = c_WindowWrapU[i];
-			bool wrapV = c_WindowWrapV[i];
-
 			edge.material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( materialName, wrapU, wrapV, PT_TRIANGLELIST, textureCount, textures );
+				->getMaterial( materialName, PT_TRIANGLELIST, textureCount, textures );
 		}
 
 		this->invalidateVertices();
@@ -369,27 +399,27 @@ namespace Menge
             RenderVertex2D & v0 = _vertices[i * 4 + 0];
             mt::mul_v3_m4( v0.pos, mt::vec3f(quad.a, 0.f), worldMatrix );
 			
-			v0.uv = uv1[0];
-			v0.uv2 = uv2[0];
+			v0.uv[0] = uv1[0];
+			v0.uv[1] = uv2[0];
 			
             RenderVertex2D & v1 = _vertices[i * 4 + 1];
             mt::mul_v3_m4( v1.pos, mt::vec3f(quad.b, 0.f), worldMatrix );
 
-			v1.uv = uv1[1];
-			v1.uv2 = uv2[1];
+			v1.uv[0] = uv1[1];
+			v1.uv[1] = uv2[1];
 
 
             RenderVertex2D & v2 = _vertices[i * 4 + 2];
             mt::mul_v3_m4( v2.pos, mt::vec3f(quad.c, 0.f), worldMatrix );
 
-			v2.uv = uv1[2];
-			v2.uv2 = uv2[2];
+			v2.uv[0] = uv1[2];
+			v2.uv[1] = uv2[2];
 			
             RenderVertex2D & v3 = _vertices[i * 4 + 3];
             mt::mul_v3_m4( v3.pos, mt::vec3f(quad.d, 0.f), worldMatrix );
 
-			v3.uv = uv1[3];
-			v3.uv2 = uv2[3];
+			v3.uv[0] = uv1[3];
+			v3.uv[1] = uv2[3];
 		}
 
 		ColourValue color;

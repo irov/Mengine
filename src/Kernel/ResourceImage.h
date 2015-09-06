@@ -36,12 +36,6 @@ namespace Menge
 
 		inline void setAlpha( bool _alpha );
 		inline bool isAlpha() const;
-
-		inline void setWrapU( bool _wrap );
-        inline bool isWrapU() const;
-
-		inline void setWrapV( bool _wrap );
-        inline bool isWrapV() const;
     
     public:
 		inline const RenderTextureInterfacePtr & getTexture() const;
@@ -70,9 +64,6 @@ namespace Menge
         mt::uv4f m_uv_alpha;
 
         bool m_isAlpha;
-
-        bool m_wrapU;
-        bool m_wrapV;        
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline void ResourceImage::setMaxSize( const mt::vec2f & _maxSize )
@@ -153,25 +144,5 @@ namespace Menge
     inline bool ResourceImage::isAlpha() const
     {
         return m_isAlpha;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	inline void ResourceImage::setWrapU( bool _wrap )
-	{
-		m_wrapU = _wrap;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    inline bool ResourceImage::isWrapU() const
-    {
-        return m_wrapU;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	inline void ResourceImage::setWrapV( bool _wrap )
-	{
-		m_wrapV = _wrap;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    inline bool ResourceImage::isWrapV() const
-    {
-        return m_wrapV;
     }
 }

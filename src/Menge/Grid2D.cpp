@@ -175,10 +175,10 @@ namespace	Menge
 
 				vertex.color = 0xFFFFFFFF;
 
-				vertex.uv.x = m_offset.x + pos_uv_x * i;
-				vertex.uv.y = m_offset.y + pos_uv_y * j;
-				vertex.uv2.x = m_offset.x + pos_uv_x * i;
-				vertex.uv2.y = m_offset.y + pos_uv_y * j;
+				vertex.uv[0].x = m_offset.x + pos_uv_x * i;
+				vertex.uv[0].y = m_offset.y + pos_uv_y * j;
+				vertex.uv[1].x = m_offset.x + pos_uv_x * i;
+				vertex.uv[1].y = m_offset.y + pos_uv_y * j;
 			}
 		}
 
@@ -250,8 +250,10 @@ namespace	Menge
 		{
 			RenderVertex2D & v = *it;
 
-			v.uv.x += 0.00001f * _timing * cosf( m_angle );
-			v.uv.y += 0.00001f * _timing * sinf( m_angle );
+			v.uv[0].x += 0.00001f * _timing * cosf( m_angle );
+			v.uv[0].y += 0.00001f * _timing * sinf( m_angle );
+			v.uv[1].x += 0.00001f * _timing * cosf( m_angle );
+			v.uv[1].y += 0.00001f * _timing * sinf( m_angle );
 		}
 
 		m_invalidateVerticesWM = true;
@@ -272,7 +274,7 @@ namespace	Menge
 		const mt::box2f & bb = this->getBoundingBox();
 		
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, vertices, verticesCount, indices, indicesCount, &bb, false );
+			->addRenderObject( _viewport, _camera, material, 0, vertices, verticesCount, indices, indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Grid2D::updateVerticesWM_()
@@ -309,8 +311,8 @@ namespace	Menge
 			uint32_t argb = vertex_color.getAsARGB();
 			
 			vertex_w.color = argb;
-			vertex_w.uv = vertex.uv;
-			vertex_w.uv2 = vertex.uv2;
+			vertex_w.uv[0] = vertex.uv[0];
+			vertex_w.uv[1] = vertex.uv[1];
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

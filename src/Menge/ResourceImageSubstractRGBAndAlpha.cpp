@@ -33,8 +33,6 @@ namespace Menge
             = static_cast<const Metacode::Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha *>(_meta);
 
         m_isAlpha = true;
-        m_wrapU = false;
-        m_wrapV = false;
 
         m_resourceImageRGBName = metadata->get_Image_NameRGB();
 		m_resourceImageAlphaName = metadata->get_Image_NameAlpha();

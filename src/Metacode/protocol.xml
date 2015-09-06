@@ -1,4 +1,4 @@
-<Protocol Version = "88">
+<Protocol Version = "89">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -34,8 +34,10 @@
     <SELECTARG1/>
     <SELECTARG2/>
     <MODULATE/>
+    <MODULATE2X/>
+    <MODULATE4X/>
     <ADD/>
-    <SUBSTRACT/>
+    <SUBTRACT/>
   </Enum>
 
   <Enum Name="Menge::ETextureArgument">
@@ -45,6 +47,14 @@
     <TEXTURE/>
     <TFACTOR/>
   </Enum>
+  
+  <Enum Name="Menge::ETextureAddressMode">
+    <WRAP/>
+    <MIRROR/>
+    <CLAMP/>
+    <BORDER/>
+    <MIRRORONCE/>
+  </Enum>  
 
   <Node Name="DataBlock">    
     <Attribute Name="Name" Type="Menge::ConstString" Required="1"/>
@@ -91,6 +101,9 @@
 
       <Node Name="TextureStages">
         <Attribute Name="Stage" Type="uint32_t" Required="1"/>
+        
+        <Member Node="AddressMode" Name="U" Type="Menge::ETextureAddressMode"/>
+        <Member Node="AddressMode" Name="V" Type="Menge::ETextureAddressMode"/>
 
         <Member Node="Color" Name="Operator" Type="Menge::ETextureOp" Required="1"/>
         <Member Node="Color" Name="Arg1" Type="Menge::ETextureArgument"/>
@@ -123,8 +136,6 @@
       <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
       <Member Node="File" Name="Alpha" Type="bool"/>
-      <Member Node="File" Name="WrapX" Type="bool"/>
-      <Member Node="File" Name="WrapY" Type="bool"/>
       
       <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
       <Member Node="File" Name="Size" Type="mt::vec2f"/>

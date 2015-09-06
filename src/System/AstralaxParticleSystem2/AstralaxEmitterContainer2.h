@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Interface/ParticleSystemInterface2.h"
+#	include "Interface/ParticleSystemInterface.h"
 
 #	include "AstralaxEmitter2.h"
 

@@ -21,6 +21,7 @@ namespace Menge
     RenderMaterialManager::RenderMaterialManager()
         : m_serviceProvider(nullptr)
 		, m_materialEnumerator(0)
+		, m_stageCount(0)
     {
     }
     //////////////////////////////////////////////////////////////////////////    
@@ -43,7 +44,11 @@ namespace Menge
 		m_defaultStages[EM_DEBUG] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" );
 
 		m_defaultStages[EM_TEXTURE_SOLID] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Solid" );
+
 		m_defaultStages[EM_TEXTURE_BLEND] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend" );
+		m_defaultStages[EM_TEXTURE_BLEND_WC] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_WC" );
+		m_defaultStages[EM_TEXTURE_BLEND_WW] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_WW" );
+		m_defaultStages[EM_TEXTURE_BLEND_CW] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_CW" );
 		m_defaultStages[EM_TEXTURE_INTENSIVE] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive" );
 		m_defaultStages[EM_TEXTURE_MULTIPLY] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Multiply" );
 		m_defaultStages[EM_TEXTURE_SCREEN] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Screen" );
@@ -54,6 +59,9 @@ namespace Menge
 		m_defaultStages[EM_TEXTURE_SCREEN_ONLYCOLOR] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Screen_OnlyColor" );
 
 		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_ExternalAlpha" );
+		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WC] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_ExternalAlpha_WC" );
+		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_WW] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_ExternalAlpha_WW" );
+		m_defaultStages[EM_TEXTURE_BLEND_EXTERNAL_ALPHA_CW] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Blend_ExternalAlpha_CW" );
 		m_defaultStages[EM_TEXTURE_INTENSIVE_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Intensive_ExternalAlpha" );
 		m_defaultStages[EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Multiply_ExternalAlpha" );
 		m_defaultStages[EM_TEXTURE_SCREEN_EXTERNAL_ALPHA] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Texture_Screen_ExternalAlpha" );
@@ -76,19 +84,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialManager::finalize()
     {
-		for( TMapRenderStage::iterator
-			it = m_stages.begin(),
-			it_end = m_stages.end();
-		it != it_end;
-		++it )
-		{
-			RenderStageGroup * stage = m_stages.get_value( it );
-
-			stage->destroy();
-		}
-
-		m_stages.clear();
-
 		for( uint32_t i = 0; i != MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE; ++i )
 		{
 			TVectorRenderMaterial & material = m_materials[i];
@@ -283,7 +278,6 @@ namespace Menge
 
 			RenderStage stage;
 			meta_Material.get_AlphaBlend_Enable( stage.alphaBlendEnable );
-			meta_Material.get_DepthBufferWrite_Enable( stage.depthBufferWriteEnable );
 			meta_Material.get_BlendFactor_Source( stage.blendSrc );
 			meta_Material.get_BlendFactor_Dest( stage.blendDst );
 
@@ -320,6 +314,9 @@ namespace Menge
 
 				RenderTextureStage & textureStage = stage.textureStage[index];
 
+				meta_TextureStages.get_AddressMode_U( textureStage.addressU );
+				meta_TextureStages.get_AddressMode_V( textureStage.addressV );
+
 				textureStage.colorOp = meta_TextureStages.get_Color_Operator();
 				meta_TextureStages.get_Color_Arg1( textureStage.colorArg1 );
 				meta_TextureStages.get_Color_Arg2( textureStage.colorArg2 );
@@ -345,7 +342,7 @@ namespace Menge
 			if( is_debug == true )
 			{
 				RenderMaterialInterfacePtr debugMaterial = 
-					this->getMaterial( name, false, false, PT_LINELIST, 0, nullptr );
+					this->getMaterial( name, PT_LINELIST, 0, nullptr );
 
 				this->setDebugMaterial( debugMaterial );
 			}
@@ -373,7 +370,9 @@ namespace Menge
 
 		for( uint32_t i = 0; i != _textureCount; ++i )
 		{
-			if( _material->getTexture(i) != _textures[i] )
+			const RenderTextureInterfacePtr & texture = _material->getTexture( i );
+
+			if( texture != _textures[i] )
 			{
 				return false;
 			}
@@ -398,29 +397,159 @@ namespace Menge
 
 		return materialName;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_equalTextureStage( const RenderTextureStage & _src, const RenderTextureStage & _dst )
+	{
+		if( _src.mipmap != _dst.mipmap )
+		{
+			return false;
+		}
+
+		if( _src.magnification != _dst.magnification )
+		{
+			return false;
+		}
+
+		if( _src.minification != _dst.minification )
+		{
+			return false;
+		}
+
+		if( _src.addressU != _dst.addressU )
+		{
+			return false;
+		}
+
+		if( _src.addressV != _dst.addressV )
+		{
+			return false;
+		}
+
+		if( _src.colorOp != _dst.colorOp )
+		{
+			return false;
+		}
+
+		if( _src.colorArg1 != _dst.colorArg1 )
+		{
+			return false;
+		}
+
+		if( _src.colorArg2 != _dst.colorArg2 )
+		{
+			return false;
+		}
+
+		if( _src.alphaOp != _dst.alphaOp )
+		{
+			return false;
+		}
+
+		if( _src.alphaArg1 != _dst.alphaArg1 )
+		{
+			return false;
+		}
+
+		if( _src.alphaArg2 != _dst.alphaArg2 )
+		{
+			return false;
+		}
+
+		if( _src.texCoordIndex != _dst.texCoordIndex )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static bool s_equalRenderStage( const RenderStage & _src, const RenderStage & _dst )
+	{
+		if( _src.alphaBlendEnable != _dst.alphaBlendEnable )
+		{
+			return false;
+		}
+
+		if( _src.blendDst != _dst.blendDst )
+		{
+			return false;
+		}
+
+		if( _src.blendSrc != _dst.blendSrc )
+		{
+			return false;
+		}
+
+		if( _src.program != _dst.program )
+		{
+			return false;
+		}
+
+		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			const RenderTextureStage & src_textureStage = _src.textureStage[i];
+			const RenderTextureStage & dst_textureStage = _dst.textureStage[i];
+
+			if( s_equalTextureStage( src_textureStage, dst_textureStage ) == false )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderStage * RenderMaterialManager::cacheStage( const RenderStage & _other )
+	{
+		for( uint32_t it = 0; it != m_stageCount; ++it )
+		{
+			const RenderStage & self = m_stages[it];
+
+			if( s_equalRenderStage( self, _other ) == false )
+			{
+				break;
+			}
+
+			return &self;
+		}
+
+		if( m_stageCount == MENGINE_MATERIAL_RENDER_STAGE_MAX )
+		{
+			return nullptr;
+		}
+
+		m_stages[m_stageCount] = _other;
+
+		const RenderStage & cache_other = m_stages[m_stageCount];
+
+		m_stageCount++;
+
+		return &cache_other;
+	}
     //////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial( const ConstString & _materialName
-		, bool _wrapU
-		, bool _wrapV
 		, EPrimitiveType _primitiveType
 		, uint32_t _textureCount
 		, const RenderTextureInterfacePtr * _textures )
 	{
-		const RenderStageGroup * stageGroup;
-		if( m_stages.has( _materialName, &stageGroup ) == false )
+		TMapRenderStage::const_iterator it_found = m_stageIndexer.find( _materialName );
+
+		if( it_found == m_stageIndexer.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::getMaterial stage %s not found"
+			LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::getMaterial stage %s not found"
 				, _materialName.c_str()
 				);
 
 			return nullptr;
 		}
 
+		const RenderStage * stage = it_found->second;
+
 		for( uint32_t i = 0; i != _textureCount; ++i )
 		{
 			if( _textures[i] == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::getMaterial stage %s invalid setup texture %d"
+				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::getMaterial stage %s invalid setup texture %d"
 					, _materialName.c_str()
 					, i
 					);
@@ -429,10 +558,16 @@ namespace Menge
 			}
 		}
 
-		uint32_t stageWrapId = (_wrapU ? 1 : 0) + (_wrapV ? 2 : 0);
+		RenderMaterialInterfacePtr material = this->getMaterial2( stage, _primitiveType, _textureCount, _textures );
 
-		const RenderStage * stage = &stageGroup->stage[stageWrapId];
-
+		return material;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderMaterialInterfacePtr RenderMaterialManager::getMaterial2( const RenderStage * _stage
+		, EPrimitiveType _primitiveType
+		, uint32_t _textureCount
+		, const RenderTextureInterfacePtr * _textures )
+	{
 		uint32_t material_hash = this->makeMaterialHash( _textureCount, _textures );
 
 		uint32_t material_table_index = material_hash % MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE;
@@ -452,7 +587,7 @@ namespace Menge
 				continue;
 			}
 			
-			if( s_equalMaterial( material, _primitiveType, _textureCount, _textures, stage ) == false )
+			if( s_equalMaterial( material, _primitiveType, _textureCount, _textures, _stage ) == false )
 			{
 				continue;
 			}
@@ -463,7 +598,7 @@ namespace Menge
 		RenderMaterial * material = m_factoryMaterial.createObjectT();
 
 		uint32_t id = this->makeMaterialIndex_();
-		material->initialize( _materialName, id, material_hash, _primitiveType, _textureCount, _textures, stage );
+		material->initialize( id, material_hash, _primitiveType, _textureCount, _textures, _stage );
 		
 		materials.push_back( material );
 
@@ -521,7 +656,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderMaterialManager::createRenderStageGroup( const ConstString & _name, const RenderStage & _stage )
     {
-        if( m_stages.exist( _name ) == true )
+		TMapRenderStage::const_iterator it_found = m_stageIndexer.find( _name );
+
+		if( it_found != m_stageIndexer.end() )
         {
             LOGGER_ERROR(m_serviceProvider)("RenderEngine::createRenderStage: RenderStage '%s' is already created!"
                 , _name.c_str()
@@ -529,30 +666,10 @@ namespace Menge
 
             return false;
         }
+
+		const RenderStage * cache_stage = this->cacheStage( _stage );
 		
-		RenderStageGroup * stageGroup = m_factoryStage.createObjectT();
-
-		stageGroup->stage[0] = _stage;
-		stageGroup->stage[1] = _stage;
-		stageGroup->stage[2] = _stage;
-		stageGroup->stage[3] = _stage;
-
-		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
-		{
-			stageGroup->stage[0].textureStage[i].addressU = TAM_CLAMP;
-			stageGroup->stage[0].textureStage[i].addressV = TAM_CLAMP;
-
-			stageGroup->stage[1].textureStage[i].addressU = TAM_WRAP;
-			stageGroup->stage[1].textureStage[i].addressV = TAM_CLAMP;
-
-			stageGroup->stage[2].textureStage[i].addressU = TAM_CLAMP;
-			stageGroup->stage[2].textureStage[i].addressV = TAM_WRAP;
-
-			stageGroup->stage[3].textureStage[i].addressU = TAM_WRAP;
-			stageGroup->stage[3].textureStage[i].addressV = TAM_WRAP;
-		}
-
-		m_stages.insert( _name, stageGroup );
+		m_stageIndexer.insert( std::make_pair( _name, cache_stage ) );
 
         return true;
     }

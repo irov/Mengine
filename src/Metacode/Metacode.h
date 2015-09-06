@@ -317,35 +317,6 @@ namespace Metacode
                 return true;
             }
             
-            bool has_DepthBufferWrite_Enable() const
-            {
-                return DepthBufferWrite_Enable_successful;
-            }
-            
-            bool get_DepthBufferWrite_Enable( bool & _value ) const
-            {
-                if( DepthBufferWrite_Enable_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->DepthBufferWrite_Enable;
-            
-                return true;
-            }
-            
-            bool swap_DepthBufferWrite_Enable( bool & _value ) const
-            {
-                if( DepthBufferWrite_Enable_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->DepthBufferWrite_Enable);
-            
-                return true;
-            }
-            
             bool has_Program_Name() const
             {
                 return Program_Name_successful;
@@ -399,6 +370,64 @@ namespace Metacode
                 void swap_Stage( uint32_t & _value ) const
                 {
                     std::swap( _value, this->Stage);
+                }
+                
+                bool has_AddressMode_U() const
+                {
+                    return AddressMode_U_successful;
+                }
+                
+                bool get_AddressMode_U( Menge::ETextureAddressMode & _value ) const
+                {
+                    if( AddressMode_U_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->AddressMode_U;
+                
+                    return true;
+                }
+                
+                bool swap_AddressMode_U( Menge::ETextureAddressMode & _value ) const
+                {
+                    if( AddressMode_U_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap(_value, this->AddressMode_U);
+                
+                    return true;
+                }
+                
+                bool has_AddressMode_V() const
+                {
+                    return AddressMode_V_successful;
+                }
+                
+                bool get_AddressMode_V( Menge::ETextureAddressMode & _value ) const
+                {
+                    if( AddressMode_V_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->AddressMode_V;
+                
+                    return true;
+                }
+                
+                bool swap_AddressMode_V( Menge::ETextureAddressMode & _value ) const
+                {
+                    if( AddressMode_V_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap(_value, this->AddressMode_V);
+                
+                    return true;
                 }
                 
                 bool has_Alpha_Arg1() const
@@ -575,6 +604,10 @@ namespace Metacode
             protected:
             protected:
                 mutable uint32_t Stage;
+                bool AddressMode_U_successful;
+                mutable Menge::ETextureAddressMode AddressMode_U;
+                bool AddressMode_V_successful;
+                mutable Menge::ETextureAddressMode AddressMode_V;
                 bool Alpha_Arg1_successful;
                 mutable Menge::ETextureArgument Alpha_Arg1;
                 bool Alpha_Arg2_successful;
@@ -602,8 +635,6 @@ namespace Metacode
             mutable Menge::EBlendFactor BlendFactor_Dest;
             bool BlendFactor_Source_successful;
             mutable Menge::EBlendFactor BlendFactor_Source;
-            bool DepthBufferWrite_Enable_successful;
-            mutable bool DepthBufferWrite_Enable;
             bool Program_Name_successful;
             mutable Menge::ConstString Program_Name;
         public:
@@ -1615,64 +1646,6 @@ namespace Metacode
                 return true;
             }
             
-            bool has_File_WrapX() const
-            {
-                return File_WrapX_successful;
-            }
-            
-            bool get_File_WrapX( bool & _value ) const
-            {
-                if( File_WrapX_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_WrapX;
-            
-                return true;
-            }
-            
-            bool swap_File_WrapX( bool & _value ) const
-            {
-                if( File_WrapX_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_WrapX);
-            
-                return true;
-            }
-            
-            bool has_File_WrapY() const
-            {
-                return File_WrapY_successful;
-            }
-            
-            bool get_File_WrapY( bool & _value ) const
-            {
-                if( File_WrapY_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_WrapY;
-            
-                return true;
-            }
-            
-            bool swap_File_WrapY( bool & _value ) const
-            {
-                if( File_WrapY_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->File_WrapY);
-            
-                return true;
-            }
-            
         protected:
             bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
             bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
@@ -1693,10 +1666,6 @@ namespace Metacode
             mutable Menge::FilePath File_Path;
             bool File_Size_successful;
             mutable mt::vec2f File_Size;
-            bool File_WrapX_successful;
-            mutable bool File_WrapX;
-            bool File_WrapY_successful;
-            mutable bool File_WrapY;
         };
         
         class Meta_ResourceImageSolid

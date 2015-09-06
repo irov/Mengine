@@ -23,7 +23,6 @@ namespace Menge
 			, m_b( 1.f )
 			, m_argb( 0xFFFFFFFF )
 			, m_invalidateARGB( false )
-			, m_identity( true )
 		{
 		}
 
@@ -34,7 +33,6 @@ namespace Menge
 			, m_b( _b )
 			, m_argb( 0xFFFFFFFF )
 			, m_invalidateARGB( true )
-			, m_identity( false )
 		{
 		}
 
@@ -50,7 +48,6 @@ namespace Menge
 			, m_b( _copy.m_b )
 			, m_argb( _copy.m_argb )
 			, m_invalidateARGB( _copy.m_invalidateARGB )
-			, m_identity( _copy.m_identity )
 		{
 		}
 
@@ -63,7 +60,6 @@ namespace Menge
 
 			m_invalidateARGB = _other.m_invalidateARGB;
 			m_argb = _other.m_argb;
-			m_identity = _other.m_identity;
 
 			return *this;
 		}
@@ -183,7 +179,6 @@ namespace Menge
 		mutable ColourValue_ARGB m_argb;
 
 		mutable bool m_invalidateARGB;
-		mutable bool m_identity;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline float ColourValue::getA() const
@@ -218,7 +213,7 @@ namespace Menge
 			this->updateARGB_();
 		}
 
-		return m_identity;
+		return m_argb == 0xFFFFFFFF;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline void ColourValue::invalidate() const

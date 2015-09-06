@@ -156,7 +156,6 @@ namespace Menge
 		bool createMovieTextCenter_( const MovieLayer & _layer );
 		bool createMovieExtraSprite_( const MovieLayer & _layer );
         bool createMovieEvent_( const MovieLayer & _layer );
-		bool createMovieParticleEmitter_( const MovieLayer & _layer );
 		bool createMovieParticleEmitter2_( const MovieLayer & _layer );
 
 	protected:

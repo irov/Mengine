@@ -529,7 +529,7 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, Gyroscope );
 		NODE_FACTORY( m_serviceProvider, Isometric );
 		
-		NODE_FACTORY( m_serviceProvider, ParticleEmitter );
+		//NODE_FACTORY( m_serviceProvider, ParticleEmitter );
 		NODE_FACTORY( m_serviceProvider, ParticleEmitter2 );
 
 		NODE_FACTORY( m_serviceProvider, HotSpotPolygon );
@@ -869,11 +869,11 @@ namespace Menge
 
 #	define RESOURCE_FACTORY( serviceProvider, Type ) \
     PROTOTYPE_SERVICE(serviceProvider)->addPrototype( CONST_STRING(serviceProvider, Resource), STRINGIZE_STRING_LOCAL(serviceProvider, #Type), new ResourcePrototypeGenerator<Type, 128>(m_serviceProvider) )
-
+		
 		RESOURCE_FACTORY( m_serviceProvider, ResourceAnimation );
 
-		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitterContainer );
-		RESOURCE_FACTORY( m_serviceProvider, ResourceEmitter );
+		//RESOURCE_FACTORY( m_serviceProvider, ResourceEmitterContainer );
+		//RESOURCE_FACTORY( m_serviceProvider, ResourceEmitter );
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceParticle );
 
@@ -1592,18 +1592,6 @@ namespace Menge
 
 		INPUT_SERVICE(m_serviceProvider)
 			->update();
-
-		if( SERVICE_EXIST(m_serviceProvider, Menge::ParticleServiceInterface) == true )
-		{
-			PARTICLE_SERVICE(m_serviceProvider)
-				->update();
-		}
-
-		if( SERVICE_EXIST(m_serviceProvider, Menge::ParticleServiceInterface2) == true )
-		{
-			PARTICLE_SERVICE2(m_serviceProvider)
-				->update();
-		}
 
 		if( PLAYER_SERVICE( m_serviceProvider )->update() == false )
 		{

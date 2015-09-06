@@ -33,24 +33,27 @@ namespace Menge
     {
 		RenderMaterial * material;
 		uint32_t materialId;
-				
+
+		IBHandle ibHandle;
+		VBHandle vbHandle;
+
+		uint32_t indexBegin;
+
 		const RenderVertex2D * vertexData;
 		uint32_t verticesNum;
 
         const RenderIndices * indicesData;
         uint32_t indicesNum;
 
+		mt::box2f bb;
+				
 		uint32_t minIndex;
 		uint32_t startIndex;
 
         uint32_t dipVerticesNum;
         uint32_t dipIndiciesNum;
 
-		IBHandle ibHandle;
-        VBHandle vbHandle;
-		uint32_t baseVertexIndex;
-
-		mt::box2f bb;
+		uint32_t baseVertexIndex;		
 	};
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderPass
@@ -92,7 +95,8 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
 	public:
-		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material            
+		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
+			, uint32_t _indexBegin
             , const RenderVertex2D * _vertices, uint32_t _verticesNum 
 			, const RenderIndices * _indices, uint32_t _indicesNum 
 			, const mt::box2f * _bb, bool _debug ) override;

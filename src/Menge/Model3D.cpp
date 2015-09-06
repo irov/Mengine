@@ -160,7 +160,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, nullptr, false );
+			->addRenderObject( _viewport, _camera, material, 0, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Model3D::_activate()
@@ -226,14 +226,8 @@ namespace Menge
 		{
 			const mt::vec2f & uv = m_frame->uv[i];
 
-			multiply_tetragon_uv4_v2( m_verticesWM[i].uv, uv_image, uv );
-		}
-
-		for( uint32_t i = 0; i != m_vertexCount; ++i )
-		{
-			const mt::vec2f & uv = m_frame->uv[i];
-
-			multiply_tetragon_uv4_v2( m_verticesWM[i].uv2, uv_alpha, uv );
+			multiply_tetragon_uv4_v2( m_verticesWM[i].uv[0], uv_image, uv );
+			multiply_tetragon_uv4_v2( m_verticesWM[i].uv[1], uv_alpha, uv );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -1826,7 +1826,7 @@ namespace Menge
 			mt::uv4f uv_image;
 			mt::uv4f uv_alpha;
 			
-			resource->setup( _fileName, ConstString::none(), uv_image, uv_alpha, false, false, maxSize );
+			resource->setup( _fileName, ConstString::none(), uv_image, uv_alpha, maxSize );
 			
 			return resource;
         }
@@ -4185,81 +4185,11 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         typedef stdex::vector<String> TVectorConstString;
         //////////////////////////////////////////////////////////////////////////
-        class ResourceEmitterContainerVisitor
-            : public ParticleEmitterContainerVisitor
-        {
-        public:
-            void visitEmitterName( const char * _emitterName )
-            {
-                catchedNames.push_back( _emitterName );
-            }
-
-            void visitAtlas( const ParticleEmitterAtlas & _atlas )
-            {
-                cathedAtlas.push_back( _atlas );
-            }
-
-            TVectorParticleEmitterAtlas cathedAtlas;                       
-            TVectorConstString catchedNames;
-        };
-        //////////////////////////////////////////////////////////////////////////
-		pybind::dict s_visitResourceEmitterContainer( const ConstString & _resourceName )
-        {
-            ResourceEmitterContainer * resource = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceT<ResourceEmitterContainer *>( _resourceName );
-
-            if( resource == nullptr )
-            {
-                return pybind::make_invalid_dict_t();
-            }
-
-			pybind::dict py_dict_result;
-
-			pybind::list py_list_names;
-			pybind::list py_list_atlas;
-
-            const ParticleEmitterContainerInterfacePtr & container = resource->getContainer();
-
-            ResourceEmitterContainerVisitor visitor;
-            container->visitContainer( &visitor );
-
-			py_list_names.append( visitor.catchedNames.begin(), visitor.catchedNames.end() );
-
-            for( TVectorParticleEmitterAtlas::const_iterator
-                it = visitor.cathedAtlas.begin(),
-                it_end = visitor.cathedAtlas.end();
-            it != it_end;
-            ++it )
-            {
-                pybind::dict py_dict;
-
-				py_dict["file"] = (*it).filename;
-				
-				py_list_atlas.append( py_dict );
-            }
-
-            py_dict_result["Emitters"] = py_list_names;
-            py_dict_result["Atlasses"] = py_list_atlas;
-
-            resource->decrementReference();
-
-            return py_dict_result;
-        }
-        //////////////////////////////////////////////////////////////////////////
         void s_visitChild( Node * _node, const pybind::object & _cb )
         {
             TListNodeChild & child = _node->getChildren();
-
-            for( TListNodeChild::iterator
-                it = child.begin(),
-                it_end = child.end();
-            it != it_end;
-            ++it )
-            {
-                Node * children = *it;
-                
-                _cb( children );
-            }
+			
+			pybind::foreach_t( _cb, child.begin(), child.end() );
         }
 		//////////////////////////////////////////////////////////////////////////
 		class ResourceVisitorGetAlreadyCompiled
@@ -4402,7 +4332,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Arrow );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, TextField );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, SoundEmitter );
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, ParticleEmitter );
+        //SCRIPT_CLASS_WRAPPING( _serviceProvider, ParticleEmitter );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Movie );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieSlot );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieInternalObject );
@@ -4441,7 +4371,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceSound );
 
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSolid );
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceEmitterContainer );
+        //SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceEmitterContainer );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceShape );
         //SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceFont );       
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceWindow );
@@ -4598,8 +4528,6 @@ namespace Menge
 			.def( "getUVImage", &ResourceImage::getUVImage )
 			.def( "getUVAlpha", &ResourceImage::getUVAlpha )
 			.def( "isAlpha", &ResourceImage::isAlpha )
-			.def( "isWrapU", &ResourceImage::isWrapU )
-			.def( "isWrapV", &ResourceImage::isWrapV )
 			.def( "setColor", &ResourceImage::setColor )
 			.def( "getColor", &ResourceImage::getColor )
             ;
@@ -4651,10 +4579,7 @@ namespace Menge
         
         pybind::interface_<ResourceSound, pybind::bases<ResourceReference> >("ResourceSound", false)
             ;            
-       
-        pybind::interface_<ResourceEmitterContainer, pybind::bases<ResourceReference> >("ResourceEmitterContainer", false)
-            ;           
-
+        
         pybind::interface_<ResourceInternalObject, pybind::bases<ResourceReference> >("ResourceInternalObject", false)
             ;                   
 
@@ -4698,8 +4623,8 @@ namespace Menge
             .def( "stop", &Animatable::stop )
 			.def( "pause", &Animatable::pause )
 			.def( "resume", &Animatable::resume )
-			.def( "interrupt", &ParticleEmitter::interrupt )
-			.def( "isInterrupt", &ParticleEmitter::isInterrupt )
+			.def( "interrupt", &Animatable::interrupt )
+			.def( "isInterrupt", &Animatable::isInterrupt )
             .def( "isPlay", &Animatable::isPlay )
             .def( "getPlayId", &Animatable::getPlayId )
             .def( "setAnimationSpeedFactor", &Animatable::setAnimationSpeedFactor )
@@ -4935,32 +4860,32 @@ namespace Menge
             }
 
             {
-                pybind::interface_<ParticleEmitter, pybind::bases<Node, Animatable> >("ParticleEmitter", false)
-					.def( "setResourceEmitterContainer", &ParticleEmitter::setResourceEmitterContainer )
-					.def( "getResourceEmitterContainer", &ParticleEmitter::getResourceEmitterContainer )
-                    .def( "playFromPosition", &ParticleEmitter::playFromPosition )
-                    .def( "setLoop", &ParticleEmitter::setLoop )
-                    .def( "getLoop", &ParticleEmitter::getLoop )
-                    //.def( "interrupt", &ParticleEmitter::interrupt )
-                    .def( "setLeftBorder", &ParticleEmitter::setLeftBorder )                    
-                    .def( "setEmitter", &ParticleEmitter::setEmitter )
-                    .def( "setEmitterTranslateWithParticle", &ParticleEmitter::setEmitterTranslateWithParticle )
-                    .def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
-					.def( "setEmitterPosition", &ParticleEmitter::setEmitterPosition )
-                    .def( "setEmitterImage", &ParticleEmitter::setEmitterImage )
-                    .def( "removeEmitterImage", &ParticleEmitter::removeEmitterImage )
-                    .def( "changeEmitterPolygon", &ParticleEmitter::changeEmitterPolygon )
-                    .def( "removeEmitterPolygon", &ParticleEmitter::removeEmitterPolygon )
-                    .def( "setStartPosition", &ParticleEmitter::setStartPosition )
-                    .def( "getEmitterName" , &ParticleEmitter::getEmitterName )
-                    .def( "getLeftBorder" , &ParticleEmitter::getLeftBorder )
-                    .def( "getRightBorder" , &ParticleEmitter::getRightBorder )
-                    .def( "getDuration" , &ParticleEmitter::getDuration )
-                    .def( "getEmitterBoundingBox", &ParticleEmitter::getEmitterBoundingBox )
-                    .def( "getEmitterPosition", &ParticleEmitter::getEmitterPosition )
-                    .def( "setRandomMode", &ParticleEmitter::setRandomMode )
-                    .def( "getRandomMode", &ParticleEmitter::getRandomMode )
-                    ;
+     //           pybind::interface_<ParticleEmitter, pybind::bases<Node, Animatable> >("ParticleEmitter", false)
+					//.def( "setResourceEmitterContainer", &ParticleEmitter::setResourceEmitterContainer )
+					//.def( "getResourceEmitterContainer", &ParticleEmitter::getResourceEmitterContainer )
+     //               .def( "playFromPosition", &ParticleEmitter::playFromPosition )
+     //               .def( "setLoop", &ParticleEmitter::setLoop )
+     //               .def( "getLoop", &ParticleEmitter::getLoop )
+     //               //.def( "interrupt", &ParticleEmitter::interrupt )
+     //               .def( "setLeftBorder", &ParticleEmitter::setLeftBorder )                    
+     //               .def( "setEmitter", &ParticleEmitter::setEmitter )
+     //               .def( "setEmitterTranslateWithParticle", &ParticleEmitter::setEmitterTranslateWithParticle )
+     //               .def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
+					//.def( "setEmitterPosition", &ParticleEmitter::setEmitterPosition )
+     //               .def( "setEmitterImage", &ParticleEmitter::setEmitterImage )
+     //               .def( "removeEmitterImage", &ParticleEmitter::removeEmitterImage )
+     //               .def( "changeEmitterPolygon", &ParticleEmitter::changeEmitterPolygon )
+     //               .def( "removeEmitterPolygon", &ParticleEmitter::removeEmitterPolygon )
+     //               .def( "setStartPosition", &ParticleEmitter::setStartPosition )
+     //               .def( "getEmitterName" , &ParticleEmitter::getEmitterName )
+     //               .def( "getLeftBorder" , &ParticleEmitter::getLeftBorder )
+     //               .def( "getRightBorder" , &ParticleEmitter::getRightBorder )
+     //               .def( "getDuration" , &ParticleEmitter::getDuration )
+     //               .def( "getEmitterBoundingBox", &ParticleEmitter::getEmitterBoundingBox )
+     //               .def( "getEmitterPosition", &ParticleEmitter::getEmitterPosition )
+     //               .def( "setRandomMode", &ParticleEmitter::setRandomMode )
+     //               .def( "getRandomMode", &ParticleEmitter::getRandomMode )
+     //               ;
 
                 pybind::interface_<SoundEmitter, pybind::bases<Node, Animatable> >("SoundEmitter", false)
 					.def( "setResourceSound", &SoundEmitter::setResourceSound )
@@ -5513,10 +5438,7 @@ namespace Menge
 
             pybind::def_functor( "cancelTask", nodeScriptMethod, &NodeScriptMethod::s_cancelTask );
             pybind::def_functor( "joinTask", nodeScriptMethod, &NodeScriptMethod::s_joinTask );
-
-            //For Astralax
-            pybind::def_functor( "visitResourceEmitterContainer", nodeScriptMethod, &NodeScriptMethod::s_visitResourceEmitterContainer );
-
+			            
             pybind::def_functor( "getNullObjectsFromResourceVideo", nodeScriptMethod, &NodeScriptMethod::s_getNullObjectsFromResourceVideo );
 
             pybind::def_functor( "hasMovieSlot", nodeScriptMethod, &NodeScriptMethod::s_hasMovieSlot );

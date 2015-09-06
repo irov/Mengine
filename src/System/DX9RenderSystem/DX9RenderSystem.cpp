@@ -158,13 +158,18 @@ namespace Menge
 	{
 		switch( _mode )
 		{
-		case TAM_CLAMP:
-			return D3DTADDRESS_CLAMP;
 		case TAM_WRAP:
 			return D3DTADDRESS_WRAP;
 		case TAM_MIRROR:
 			return D3DTADDRESS_MIRROR;
+		case TAM_CLAMP:
+			return D3DTADDRESS_CLAMP;
+		case TAM_BORDER:
+			return D3DTADDRESS_BORDER;
+		case TAM_MIRRORONCE:
+			return D3DTADDRESS_MIRRORONCE;
 		}
+
 		return D3DTADDRESS_CLAMP;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -248,7 +253,7 @@ namespace Menge
 			return D3DTOP_MODULATE;
 		case TOP_ADD:
 			return D3DTOP_ADD;
-		case TOP_SUBSTRACT:
+		case TOP_SUBTRACT:
 			return D3DTOP_SUBTRACT;
 		}
 		return D3DTOP_DISABLE;

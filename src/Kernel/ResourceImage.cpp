@@ -12,8 +12,6 @@ namespace Menge
         , m_size(0.f, 0.f)
 		, m_offset(0.f, 0.f)
         , m_isAlpha(false)
-        , m_wrapU(false)
-        , m_wrapV(false)        
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

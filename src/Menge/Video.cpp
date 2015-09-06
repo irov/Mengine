@@ -355,23 +355,23 @@ namespace Menge
 		_vertices[2].pos = _vertices[1].pos + transformY;
 		_vertices[3].pos = _vertices[0].pos + transformY;
 
-		_vertices[0].uv.x = m_uv.x;
-		_vertices[0].uv.y = m_uv.y;
-		_vertices[1].uv.x = m_uv.z;
-		_vertices[1].uv.y = m_uv.y;
-		_vertices[2].uv.x = m_uv.z;
-		_vertices[2].uv.y = m_uv.w;
-		_vertices[3].uv.x = m_uv.x;
-		_vertices[3].uv.y = m_uv.w;
+		_vertices[0].uv[0].x = m_uv.x;
+		_vertices[0].uv[0].y = m_uv.y;
+		_vertices[1].uv[0].x = m_uv.z;
+		_vertices[1].uv[0].y = m_uv.y;
+		_vertices[2].uv[0].x = m_uv.z;
+		_vertices[2].uv[0].y = m_uv.w;
+		_vertices[3].uv[0].x = m_uv.x;
+		_vertices[3].uv[0].y = m_uv.w;
 
-        _vertices[0].uv2.x = 0.f;
-        _vertices[0].uv2.y = 0.f;
-        _vertices[1].uv2.x = 0.f;
-        _vertices[1].uv2.y = 0.f;
-        _vertices[2].uv2.x = 0.f;
-        _vertices[2].uv2.y = 0.f;
-        _vertices[3].uv2.x = 0.f;
-        _vertices[3].uv2.y = 0.f;
+		_vertices[0].uv[1].x = 0.f;
+		_vertices[0].uv[1].y = 0.f;
+		_vertices[1].uv[1].x = 0.f;
+		_vertices[1].uv[1].y = 0.f;
+		_vertices[2].uv[1].x = 0.f;
+		_vertices[2].uv[1].y = 0.f;
+		_vertices[3].uv[1].x = 0.f;
+		_vertices[3].uv[1].y = 0.f;
 
 		ColourValue color;
 		this->calcTotalColor(color);
@@ -730,8 +730,8 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr Video::_updateMaterial() const
 	{
-		RenderMaterialInterfacePtr material = this->makeTextureMaterial( m_serviceProvider, m_textures, 1, false, false, false );
-		
+		RenderMaterialInterfacePtr material = this->makeTextureMaterial( m_serviceProvider, m_textures, 1, false );
+
 		if( material == nullptr )
 		{
 			LOGGER_ERROR( m_serviceProvider )("Video::_updateMaterial %s invalid make material"

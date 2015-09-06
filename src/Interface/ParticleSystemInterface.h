@@ -2,6 +2,8 @@
 
 #   include "Interface/ServiceInterface.h"
 #	include "Interface/StreamInterface.h"
+#	include "Interface/RenderSystemInterface.h"
+#	include "Interface/ArchiveInterface.h"
 
 #	include "Config/Typedef.h"
 #	include "Config/String.h"
@@ -9,6 +11,7 @@
 #   include "Core/ConstString.h"
 #   include "Core/FilePath.h"
 #   include "Core/ColourValue.h"
+#	include "Core/Magic.h"
 
 #   include "Factory/Factorable.h"
 #   include "Factory/FactorablePtr.h"
@@ -19,33 +22,32 @@
 #   include "Math/mat4.h"
 #   include "Math/uv4.h"
 
-#	include <stdex/stl_vector.h>
+#	ifndef MENGINE_PARTICLE_MAX_MESH
+#	define MENGINE_PARTICLE_MAX_MESH 1000
+#	endif
 
 namespace Menge
 {
-	struct ParticleVertices
-	{
-		mt::vec3f v[4];
-		mt::vec2f uv[4];
-
-		ColourValue_ARGB color;
-	};
-
-	typedef stdex::vector<ParticleVertices> TVectorParticleVerices;
-
 	struct ParticleMesh
 	{
-		uint32_t begin;
-		uint32_t size;
+		uint32_t vertexCount;
+		uint32_t indexBegin;
+		uint32_t primCount;
 
-		int texture;
-		bool intense;
+		int texture[8];
+		uint32_t textures;
+
+		RenderStage stage;
 	};
 
 	struct ParticleEmitterRenderFlush
-	{
+	{		
 		uint32_t meshCount;
-		uint32_t particleCount;
+		uint32_t verticesCount;
+		uint32_t indicesCount;
+
+		uint32_t arrays;
+		void * context;
 	};
 
 	struct ParticleCamera
@@ -89,7 +91,8 @@ namespace Menge
 		virtual bool getCamera( ParticleCamera & _camera ) const = 0;
 
 	public:
-		virtual bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, ParticleVertices * _particles, uint32_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) = 0;
+		virtual bool prepareParticles( ParticleEmitterRenderFlush & _flush ) = 0;
+		virtual bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndices * _indices, ParticleEmitterRenderFlush & _flush ) = 0;
 
 	public:
 		virtual bool isBackground() const = 0;
@@ -100,7 +103,6 @@ namespace Menge
 		virtual float getRightBorder() const = 0;
 		virtual float getDuration() const = 0;
 		
-		virtual bool isIntensive() const = 0;
 		virtual void setEmitterTranslateWithParticle( bool _value ) = 0;
 
 	public:
@@ -125,79 +127,64 @@ namespace Menge
 	};
 
 	typedef stdex::intrusive_ptr<ParticleEmitterInterface> ParticleEmitterInterfacePtr;
-
-    struct ParticleEmitterAtlas
-    {
-		FilePath filename;
-    };
-
-    typedef stdex::vector<ParticleEmitterAtlas> TVectorParticleEmitterAtlas;
-    
-    class ParticleEmitterContainerVisitor
-    {
-    public:
-        virtual void visitEmitterName( const char * _name ) = 0;
-        virtual void visitAtlas( const ParticleEmitterAtlas & _atlas ) = 0;
-    };
 	
-	class ParticleEmitterContainerInterface
-        : public FactorablePtr
+	DECLARE_MAGIC_NUMBER( MAGIC_PTZ, 'P', 'T', 'Z', '2', 2 );
+
+	class ParticleEmitterContainerInterface2
+		: public FactorablePtr
 	{
 	public:
 		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
-    public:
-        virtual bool initialize() = 0;
-		
-    public:
-        virtual bool isValid() const = 0;
+	public:
+		virtual bool initialize( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
+		virtual void finalize() = 0;
 
 	public:
-		virtual const TVectorParticleEmitterAtlas & getAtlas() const = 0;
-		virtual void visitContainer( ParticleEmitterContainerVisitor * visitor ) = 0;
+		virtual bool isValid() const = 0;
 
-    public:
-		virtual ParticleEmitterInterfacePtr createEmitter( const ConstString & _name ) = 0;
+	public:
+		virtual ParticleEmitterInterfacePtr createEmitter() = 0;
 	};
 
-    typedef stdex::intrusive_ptr<ParticleEmitterContainerInterface> ParticleEmitterContainerInterfacePtr;
+	typedef stdex::intrusive_ptr<ParticleEmitterContainerInterface2> ParticleEmitterContainerInterface2Ptr;
 
-	class ParticleSystemInterface
-        : public ServiceInterface
+	class ParticleSystemInterface2
+		: public ServiceInterface
 	{
-        SERVICE_DECLARE("ParticleSystem")
+		SERVICE_DECLARE( "ParticleSystem2" )
 
 	public:
 		virtual bool initialize() = 0;
 		virtual void finalize() = 0;
 
 	public:
-		virtual ParticleEmitterContainerInterfacePtr createParticleEmitterContainer() = 0;
-		virtual bool loadParticleEmitterContainerFromMemory( const ParticleEmitterContainerInterfacePtr & _container, const InputStreamInterfacePtr & _stream ) = 0;
+		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
 	};
 
-#   define PARTICLE_SYSTEM( serviceProvider )\
-    ((Menge::ParticleSystemInterface*)SERVICE_GET(serviceProvider, Menge::ParticleSystemInterface))
+#   define PARTICLE_SYSTEM2( serviceProvider )\
+	SERVICE_GET(serviceProvider, Menge::ParticleSystemInterface2)
 
-    class ParticleServiceInterface
-        : public ServiceInterface
-    {
-        SERVICE_DECLARE("ParticleService")
-
-    public:
-        virtual uint32_t renderParticlesCount( uint32_t _count ) = 0;
+	class ParticleServiceInterface2
+		: public ServiceInterface
+	{
+		SERVICE_DECLARE( "ParticleService2" )
 
 	public:
-        virtual ParticleEmitterContainerInterfacePtr createParticleEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) = 0;
+		virtual bool initialize() = 0;
+		virtual void finalize() = 0;
 
-    public:
-        virtual uint32_t getMaxParticlesCount() const = 0;
+	public:
+		virtual bool isAvailable() const = 0;
 
-    public:
-        virtual void update() = 0;
-    };
+	public:
+		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) = 0;
 
-#   define PARTICLE_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::ParticleServiceInterface)
+	public:
+		virtual uint32_t getMaxParticlesCount() const = 0;
+	};
+
+#   define PARTICLE_SERVICE2( serviceProvider )\
+	SERVICE_GET(serviceProvider, Menge::ParticleServiceInterface2)
 }

@@ -458,7 +458,7 @@ namespace Menge
 			const RenderMaterialInterfacePtr & material = m_attachmentMeshes[i].material;
 
 			RENDER_SERVICE( m_serviceProvider )
-				->addRenderObject( _viewport, _camera, material, vertices, verticesCount / 2, indices, trianglesCount, nullptr, false );
+				->addRenderObject( _viewport, _camera, material, 0, vertices, verticesCount / 2, indices, trianglesCount, nullptr, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -476,10 +476,10 @@ namespace Menge
 
 			mt::mul_v3_m4( _vertices2D[i].pos, v, _wm );
 
-			_vertices2D[i].uv.x = _uv[index_x];
-			_vertices2D[i].uv.y = _uv[index_y];
-			_vertices2D[i].uv2.x = _uv[index_x];
-			_vertices2D[i].uv2.y = _uv[index_y];
+			_vertices2D[i].uv[0].x = _uv[index_x];
+			_vertices2D[i].uv[0].y = _uv[index_y];
+			_vertices2D[i].uv[1].x = _uv[index_x];
+			_vertices2D[i].uv[1].y = _uv[index_y];
 
 			_vertices2D[i].color = _argb;
 		}

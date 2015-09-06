@@ -19,8 +19,6 @@
 
 #   include "Interface/ResourceInterface.h"
 
-#   include "Interface/AlphaChannelInterface.h"
-
 #	include "Sprite.h"
 #	include "Consts.h"
 
@@ -41,17 +39,13 @@ namespace	Menge
 		, m_startPosition(0.f)
         , m_randomMode(false)
 		, m_vertices(nullptr)
-		, m_verticesCount(0)
+		, m_verticesSize(0)
+		, m_indicies(nullptr)
+		, m_indiciesSize(0)
         , m_emitterRelative(false)
         , m_emitterPosition(0.f, 0.f, 0.f)
         , m_emitterTranslateWithParticle(true)
-		, m_invalidateMaterial(true)
 	{
-		for( uint32_t i = 0; i != MENGINE_PARTICLE_MAX_ATLAS_TEXTURE; ++i )
-		{
-			m_materials[i * 2 + 0] = nullptr;
-			m_materials[i * 2 + 1] = nullptr;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter2::~ParticleEmitter2()
@@ -167,8 +161,6 @@ namespace	Menge
 
 		m_emitter = emitter;
 
-		this->invalidateMaterial_();
-
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -178,60 +170,13 @@ namespace	Menge
 
         m_resourceParticle.release();
 
-		Helper::freeMemory( m_vertices );
+		Helper::freeMemoryNoThreadSafe( m_vertices );
 		m_vertices = nullptr;
+		m_verticesSize = 0;
 
-		m_verticesCount = 0;
-
-        m_batchs.clear();
-		
-		for( uint32_t i = 0; i != MENGINE_PARTICLE_MAX_ATLAS_TEXTURE; ++i )
-		{
-			m_materials[i * 2 + 0] = nullptr;
-			m_materials[i * 2 + 1] = nullptr;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
-	{		
-		Node::_render( _viewport, _camera );
-
-		bool enabled = APPLICATION_SERVICE(m_serviceProvider)
-			->getParticlesEnabled();
-
-		if( enabled == false )
-		{
-			return;
-		}
-
-		if( this->isPlay() == false)
-		{
-			return;
-		}
-
-        if( m_vertices == nullptr )
-        {
-            return;
-        }
-		
-		for( TVectorBatchs::const_iterator
-			it = m_batchs.begin(),
-			it_end = m_batchs.end();
-		it != it_end;
-		++it )
-		{
-			const Batch & batch = *it;
-
-            RenderVertex2D * batch_vertices = m_vertices + batch.begin;
-
-            if( batch.begin + batch.size > m_verticesCount )
-            {
-                return;
-            }
-
-            RENDER_SERVICE(m_serviceProvider)
-				->addRenderQuad( _viewport, _camera, batch.material, batch_vertices, batch.size, &batch.bb, false );
-		}
+		Helper::freeMemoryNoThreadSafe( m_indicies );
+		m_indicies = nullptr;
+		m_indiciesSize = 0;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter2::_play( float _time )
@@ -387,8 +332,6 @@ namespace	Menge
 
 		bool stop;
 		m_emitter->update( totalTiming, stop );
-		
-		this->updateParticleVertex_();
 
 		if( stop == true )
 		{
@@ -396,37 +339,57 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter2::updateParticleVertex_()
+	void ParticleEmitter2::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
 	{
-		uint32_t partCount = 0;
+		Node::_render( _viewport, _camera );
 
-		m_batchs.clear();
+		bool enabled = APPLICATION_SERVICE( m_serviceProvider )
+			->getParticlesEnabled();
 
-		uint32_t meshes_limit;
-		ParticleMesh * meshes_cache = PARTICLE_SERVICE2( m_serviceProvider )
-			->getParticleMeshesCache( meshes_limit );
+		if( enabled == false )
+		{
+			return;
+		}
 
-		uint32_t vertices_limit;
-		ParticleVertices * vertices_cache = PARTICLE_SERVICE2( m_serviceProvider )
-			->getParticleVerticesCache( vertices_limit );
+		if( this->isPlay() == false )
+		{
+			return;
+		}
 
 		ParticleEmitterRenderFlush flush;
-		if( m_emitter->flushParticles( meshes_cache, meshes_limit, vertices_cache, vertices_limit, flush ) == false )
+
+		if( m_emitter->prepareParticles( flush ) == false )
 		{
-			return false;
+			return;
 		}
 
-		if( m_verticesCount < flush.particleCount * 4 )
-		{			
-			m_verticesCount = flush.particleCount * 4;
+		if( m_verticesSize < flush.verticesCount )
+		{
+			m_verticesSize = flush.verticesCount;
 
-			m_vertices = Helper::reallocateMemory<RenderVertex2D>( m_vertices, m_verticesCount );
+			m_vertices = Helper::reallocateMemoryNoThreadSafe<RenderVertex2D>( m_vertices, m_verticesSize );
 		}
 
-		ColourValue color;
-		this->calcTotalColor(color);
+		if( m_indiciesSize < flush.indicesCount )
+		{
+			m_indiciesSize = flush.indicesCount;
 
-		ColourValue_ARGB color_argb = color.getAsARGB();
+			m_indicies = Helper::reallocateMemoryNoThreadSafe<RenderIndices>( m_indicies, m_indiciesSize );
+		}
+
+		ParticleMesh meshes[MENGINE_PARTICLE_MAX_MESH];
+
+		if( m_emitter->flushParticles( meshes, MENGINE_PARTICLE_MAX_MESH, m_vertices, m_indicies, flush ) == false )
+		{
+			return;
+		}
+
+		this->updateVertexColor_( m_vertices, flush.verticesCount );
+
+		if( m_emitterRelative == false )
+		{
+			this->updateVertexWM_( m_vertices, flush.verticesCount );
+		}
 		
 		for( uint32_t
 			it_mesh = 0,
@@ -434,120 +397,64 @@ namespace	Menge
 		it_mesh != it_mesh_end;
 		++it_mesh )
 		{
-			const ParticleMesh & mesh = meshes_cache[it_mesh];
+			const ParticleMesh & mesh = meshes[it_mesh];
 
-			ResourceImage * image = m_resourceParticle->getAtlasImageResource( mesh.texture );
-						
-			const mt::uv4f & mesh_uv_image = image->getUVImage();
-			const mt::uv4f & mesh_uv_alpha = image->getUVAlpha();
+			RenderTextureInterfacePtr textures[MENGE_MAX_TEXTURE_STAGES];
 
-			bool mesh_uv_image_identity = mt::uv4_identity( mesh_uv_image );
-			bool mesh_uv_alpha_identity = mt::uv4_identity( mesh_uv_alpha );
-
-			for( uint32_t
-				it = mesh.begin,
-				it_end = mesh.begin + mesh.size;
-			it != it_end;
-			++it )
+			for( uint32_t i = 0; i != mesh.textures; ++i )
 			{
-				const ParticleVertices & p = vertices_cache[it];
+				ResourceImage * image = m_resourceParticle->getAtlasImageResource( mesh.texture[i] );
 
-				uint32_t argb = 0xFFFFFFFF;
+				const RenderTextureInterfacePtr & texture = image->getTexture();
 
-#	ifdef MENGE_RENDER_TEXTURE_RGBA
-				uint32_t a = (p.color >> 24) & 0xFF;
-				uint32_t b = (p.color >> 16) & 0xFF;
-				uint32_t g = (p.color >> 8) & 0xFF;
-				uint32_t r = (p.color >> 0) & 0xFF;
-
-				ColourValue_ARGB p_color = (a << 24) | (r << 16) | (g << 8) | (b << 0);
-#	else
-				ColourValue_ARGB p_color = p.color;
-#	endif
-
-				if( color.isIdentity() == true )
-				{
-					argb = p_color;
-				}
-				else if( p_color == 0xFFFFFFFF )
-				{
-					argb = color_argb;
-				}
-				else
-				{
-					ColourValue cv(p_color);
-					cv *= color;
-					argb = cv.getAsARGB();
-				}
-
-				RenderVertex2D * vertice = &m_vertices[it * 4];
-
-				mt::uv4f uv;
-
-				if( mesh_uv_image_identity == false )
-				{
-					mt::multiply_tetragon_uv4_vp( uv, mesh_uv_image, p.uv );
-				}
-				else
-				{
-					uv.p0 = p.uv[0];
-					uv.p1 = p.uv[1];
-					uv.p2 = p.uv[2];
-					uv.p3 = p.uv[3];
-				}
-
-				mt::uv4f uv2;
-
-				if( mesh_uv_alpha_identity == false )
-				{
-					mt::multiply_tetragon_uv4_vp( uv2, mesh_uv_alpha, p.uv );
-				}
-				else
-				{
-					uv2.p0 = p.uv[0];
-					uv2.p1 = p.uv[1];
-					uv2.p2 = p.uv[2];
-					uv2.p3 = p.uv[3];
-				}
-
-				for( size_t i = 0; i != 4; ++i )
-				{
-					const mt::vec3f & wm_pos = p.v[i];
-
-					vertice[i].pos = wm_pos;
-					vertice[i].color = argb;
-					vertice[i].uv = uv[i];
-					vertice[i].uv2 = uv2[i];
-				}
+				textures[i] = texture;
 			}
 
-			++partCount;
+			const RenderStage * stage = RENDERMATERIAL_SERVICE( m_serviceProvider )
+				->cacheStage( mesh.stage );
 
-			Batch batch;
-			batch.begin = mesh.begin * 4;
-			batch.size = mesh.size * 4;
+			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )
+				->getMaterial2( stage, PT_TRIANGLELIST, mesh.textures, textures );
 
-			uint32_t materialIndex = mesh.texture * 2 + (mesh.intense ? 0 : 1);
-			
-			batch.material = this->getMaterial( materialIndex );
+			RENDER_SERVICE( m_serviceProvider )
+				->addRenderObject( _viewport, _camera, material, 0, m_vertices, mesh.vertexCount, m_indicies, m_indiciesSize, nullptr, false );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter2::updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount )
+	{ 
+		ColourValue color;
+		this->calcTotalColor( color );
 
-			m_batchs.push_back( batch );
+		if( color.isIdentity() == true )
+		{
+			return;
 		}
 
-        if( m_emitterRelative == false )
-        {
-            this->updateVertexWM_();
-        }
+		ColourValue_ARGB color_argb = color.getAsARGB();
 
-		this->updateBB_();
-
-		PARTICLE_SERVICE2(m_serviceProvider)
-			->renderParticlesCount( partCount );
-
-        return true;
+		for( uint32_t
+			it = 0,
+			it_end = _verticesCount;
+		it != it_end;
+		++it )
+		{
+			RenderVertex2D & p = _vertices[it];
+			
+			if( p.color == 0xFFFFFFFF )
+			{
+				p.color = color_argb;
+			}
+			else
+			{
+				ColourValue cv( p.color );
+				cv *= color;
+				p.color = cv.getAsARGB();								 
+			}
+		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::updateVertexWM_()
+    void ParticleEmitter2::updateVertexWM_( RenderVertex2D * _vertices, uint32_t _verticesCount )
     {        
         if( this->isIdentityWorldMatrix() == true )
         {
@@ -556,77 +463,20 @@ namespace	Menge
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
-        for( TVectorBatchs::const_iterator
-            it = m_batchs.begin(),
-            it_end = m_batchs.end();
-        it != it_end;
-        ++it )
-        {
-            const Batch & batch = *it;
-
-            for( uint32_t 
-                index = batch.begin, 
-                index_end = batch.begin + batch.size; 
-            index != index_end; 
-            ++index )
-            {
-                mt::vec3f & pos = m_vertices[index].pos;
-
-                mt::vec3f wm_pos;
-                mt::mul_v3_m4( wm_pos, pos, wm);
-
-                pos = wm_pos;
-            }			
-        }
-    }
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::updateBB_()
-	{
-		for( TVectorBatchs::iterator
-			it = m_batchs.begin(),
-			it_end = m_batchs.end();
+		for( uint32_t
+			it = 0,
+			it_end = _verticesCount;
 		it != it_end;
 		++it )
 		{
-			Batch & batch = *it;
+			mt::vec3f & pos = _vertices[it].pos;
 
-			Helper::makeRenderBoundingBox( batch.bb, m_vertices + batch.begin, batch.size );
+			mt::vec3f wm_pos;
+			mt::mul_v3_m4( wm_pos, pos, wm );
+
+			_vertices[it].pos = wm_pos;
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::invalidateMaterial_()
-	{
-		m_invalidateMaterial = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::updateMaterial_()
-	{
-		m_invalidateMaterial = false;
-
-		uint32_t imageCount = m_resourceParticle->getAtlasImageCount();
-
-		if( imageCount > MENGINE_PARTICLE_MAX_ATLAS_TEXTURE )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::updateMaterial_ %s particle resource %s max atlas texture %d"
-				, this->getName().c_str()
-				, m_resourceParticle->getName().c_str()
-				, MENGINE_PARTICLE_MAX_ATLAS_TEXTURE
-				);
-
-			return;
-		}
-
-		for( uint32_t i = 0; i != imageCount; ++i )
-		{
-			ResourceImage * image = m_resourceParticle->getAtlasImageResource( i );
-
-			RenderMaterialInterfacePtr mg_intensive = Helper::makeImageMaterial( m_serviceProvider, image, ConstString::none(), EMB_ADD, false, false );
-			RenderMaterialInterfacePtr mg_nonintensive = Helper::makeImageMaterial( m_serviceProvider, image, ConstString::none(), EMB_NORMAL, false, false );
-
-			m_materials[i*2 + 0] = mg_intensive;
-			m_materials[i*2 + 1] = mg_nonintensive;
-		}
-	}
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::restart()
 	{
@@ -708,7 +558,7 @@ namespace	Menge
 		m_startPosition = _pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::setEmitterImage( const ConstString & _emitterImageName )
+	void ParticleEmitter2::changeEmitterImage( const ConstString & _emitterImageName )
 	{
 		m_emitterImageName = _emitterImageName;
 

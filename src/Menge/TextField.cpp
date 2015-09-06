@@ -651,14 +651,14 @@ namespace Menge
 			->getMaterialName( EM_TEXTURE_BLEND );
 
 		m_materialFont = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( textureBlend, false, false, PT_TRIANGLELIST, 1, &textureFont );
+			->getMaterial( textureBlend, PT_TRIANGLELIST, 1, &textureFont );
 
 		const RenderTextureInterfacePtr & textureOutline = m_font->getTextureOutline();
 
 		if( textureOutline != nullptr )
 		{
 			m_materialOutline = RENDERMATERIAL_SERVICE(m_serviceProvider)
-				->getMaterial( textureBlend, false, false, PT_TRIANGLELIST, 1, &textureOutline );
+				->getMaterial( textureBlend, PT_TRIANGLELIST, 1, &textureOutline );
 		}
 		else
 		{

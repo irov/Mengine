@@ -1153,13 +1153,6 @@ namespace Menge
 					return false;
 				}
 			}
-			else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter) )
-			{
-				if( this->createMovieParticleEmitter_( layer ) == false )
-				{
-					return false;
-				}
-			}
 			else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter2) )
 			{
 				if( this->createMovieParticleEmitter2_( layer ) == false )
@@ -1865,61 +1858,6 @@ namespace Menge
 		layer_event->setResourceMovie( m_resourceMovie );
 
 		this->addMovieNode_( _layer, layer_event, nullptr );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Movie::createMovieParticleEmitter_( const MovieLayer & _layer )
-	{
-		ParticleEmitter * layer_particles = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<ParticleEmitter>( CONST_STRING(m_serviceProvider, ParticleEmitter) );
-
-		ResourceEmitter * resourceEmitter = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceEmitter *>( _layer.source );
-
-		if( resourceEmitter == nullptr )
-		{
-			return false;
-		}
-
-		const ConstString & container = resourceEmitter->getContainer();
-
-		ResourceEmitterContainer * resourceEmitterContainer = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceEmitterContainer *>( container );
-
-		if( resourceEmitterContainer == nullptr )
-		{
-			return false;
-		}
-
-		layer_particles->setResourceEmitterContainer( resourceEmitterContainer );
-
-		//layer_particles->setIntervalStart( _layer.startInterval );        
-		layer_particles->setPlayCount( _layer.playCount );
-		layer_particles->setScretch( _layer.scretch );
-		//layer_particles->setLoop( _layer.loop );
-
-		layer_particles->setLoop( true );
-
-		if( resourceEmitter->getEmitterRelative() == true )
-		{
-			//layer_particles->setEmitterRelative( true );
-			layer_particles->setEmitterTranslateWithParticle( true );
-		}
-
-		const ConstString & emitterName = resourceEmitter->getEmitterName();
-		layer_particles->setEmitter( emitterName );
-
-		const mt::vec2f & offset = resourceEmitter->getOffset();
-
-		mt::vec3f position;
-		position.x = offset.x;
-		position.y = offset.y;
-		position.z = 0.f;
-
-		layer_particles->setEmitterPosition( position );
-
-		this->addMovieNode_( _layer, layer_particles, layer_particles );
 
 		return true;
 	}

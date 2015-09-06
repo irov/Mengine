@@ -200,10 +200,7 @@ namespace Menge
 				renderVertex.pos.z = 0.f;
 
 				renderVertex.color = _argb;
-
-                renderVertex.uv2.x = 0.f;
-                renderVertex.uv2.y = 0.f;
-            }
+			}
 
 			const mt::vec4f & char_uv = data.uv;
 
@@ -212,7 +209,8 @@ namespace Menge
 
 			for( size_t i = 0; i != 4; ++i )
 			{
-				_renderObject[renderObjectNum + i].uv = total_uv[i];
+				_renderObject[renderObjectNum + i].uv[0] = total_uv[i];
+				_renderObject[renderObjectNum + i].uv[1] = total_uv[i];
 			}
 
 			renderObjectNum += 4;

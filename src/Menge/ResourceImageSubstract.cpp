@@ -22,9 +22,6 @@ namespace Menge
         
         m_isAlpha = true;
 
-        m_wrapU = false;
-        m_wrapV = false;
-
         m_resourceImageName = metadata->get_Image_Name();
 
 		m_uv_image = metadata->get_Image_UV();
@@ -67,10 +64,7 @@ namespace Menge
                        
         m_texture = m_resourceImage->getTexture();
         m_textureAlpha = m_resourceImage->getTextureAlpha();
-      
-        m_wrapU = false;
-        m_wrapV = false;
-		        
+      		        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

@@ -32,15 +32,6 @@ namespace Menge
 		m_invalidateARGB = false;
 
 		m_argb = Helper::makeARGB( m_r, m_g, m_b, m_a );
-
-		if( m_argb == 0xFFFFFFFF )
-		{
-			m_identity = true;
-		}
-		else
-		{
-			m_identity = false;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ColourValue::setARGB( float _a, float _r, float _g, float _b )
@@ -60,8 +51,6 @@ namespace Menge
 
 		if( _val == 0xFFFFFFFF )
 		{			
-			m_identity = true;
-
 			m_r = 1.f;
 			m_g = 1.f;
 			m_b = 1.f;
@@ -69,8 +58,6 @@ namespace Menge
 
 			return;
 		}
-
-		m_identity = false;
 
 #   ifdef MENGE_RENDER_TEXTURE_RGBA
 		uint8_t a8 = (m_argb >> 24) & 0xFF;

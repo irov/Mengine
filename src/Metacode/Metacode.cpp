@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 88;
+        _needVersion = 89;
 
-        if( version != 88 )
+        if( version != 89 )
         {
             return false;
         }
@@ -810,7 +810,6 @@ namespace Metacode
         , AlphaTest_Enable_successful(false)
         , BlendFactor_Dest_successful(false)
         , BlendFactor_Source_successful(false)
-        , DepthBufferWrite_Enable_successful(false)
         , Program_Name_successful(false)
     {
     }
@@ -844,7 +843,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->AlphaBlend_Enable ) == false )
                 {
@@ -855,7 +854,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->AlphaTest_Enable ) == false )
                 {
@@ -888,18 +887,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
-            {
-                if( this->read( _buff, _size, _read, this->DepthBufferWrite_Enable ) == false )
-                {
-                    return false;
-                }
-    
-                this->DepthBufferWrite_Enable_successful = true;
-    
-                return true;
-            }break;
-        case 9:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->Program_Name ) == false )
                 {
@@ -919,7 +907,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 8:
+        case 7:
             {
                 includes_Meta_TextureStages.reserve( _count );
                 return true;
@@ -934,7 +922,7 @@ namespace Metacode
     {
         switch( _includes )
         {
-        case 8:
+        case 7:
             {
                 Meta_DataBlock::Meta_Material::Meta_TextureStages & metadata = includes_Meta_TextureStages.emplace_back();
     
@@ -964,6 +952,8 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_Material::Meta_TextureStages::Meta_TextureStages()
         : Metabuf::Metadata()
+        , AddressMode_U_successful(false)
+        , AddressMode_V_successful(false)
         , Alpha_Arg1_successful(false)
         , Alpha_Arg2_successful(false)
         , Color_Arg1_successful(false)
@@ -974,7 +964,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_Material::Meta_TextureStages::getId() const
     {
-        return 8;
+        return 7;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_Material::Meta_TextureStages::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -990,7 +980,29 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 2:
+            {
+                if( this->read( _buff, _size, _read, this->AddressMode_U ) == false )
+                {
+                    return false;
+                }
+    
+                this->AddressMode_U_successful = true;
+    
+                return true;
+            }break;
+        case 3:
+            {
+                if( this->read( _buff, _size, _read, this->AddressMode_V ) == false )
+                {
+                    return false;
+                }
+    
+                this->AddressMode_V_successful = true;
+    
+                return true;
+            }break;
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->Alpha_Arg1 ) == false )
                 {
@@ -1001,7 +1013,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->Alpha_Arg2 ) == false )
                 {
@@ -1012,7 +1024,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->Alpha_Operator ) == false )
                 {
@@ -1021,7 +1033,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->Color_Arg1 ) == false )
                 {
@@ -1032,7 +1044,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->Color_Arg2 ) == false )
                 {
@@ -1043,7 +1055,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 2:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->Color_Operator ) == false )
                 {
@@ -1052,7 +1064,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 10:
             {
                 if( this->read( _buff, _size, _read, this->TextureCoord_Index ) == false )
                 {
@@ -2284,8 +2296,6 @@ namespace Metacode
         , File_NoExist_successful(false)
         , File_Offset_successful(false)
         , File_Size_successful(false)
-        , File_WrapX_successful(false)
-        , File_WrapY_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2325,7 +2335,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->File_MaxSize ) == false )
                 {
@@ -2334,7 +2344,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 11:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->File_NoExist ) == false )
                 {
@@ -2345,7 +2355,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 10:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->File_Offset ) == false )
                 {
@@ -2365,7 +2375,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 9:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->File_Size ) == false )
                 {
@@ -2373,28 +2383,6 @@ namespace Metacode
                 }
     
                 this->File_Size_successful = true;
-    
-                return true;
-            }break;
-        case 6:
-            {
-                if( this->read( _buff, _size, _read, this->File_WrapX ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_WrapX_successful = true;
-    
-                return true;
-            }break;
-        case 7:
-            {
-                if( this->read( _buff, _size, _read, this->File_WrapY ) == false )
-                {
-                    return false;
-                }
-    
-                this->File_WrapY_successful = true;
     
                 return true;
             }break;

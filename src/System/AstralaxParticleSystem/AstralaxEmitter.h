@@ -62,14 +62,14 @@ namespace Menge
 		bool getCamera( ParticleCamera & _camera ) const override;
 
 	public:
-		bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, ParticleVertices * _particles, uint32_t _particlesLimit, ParticleEmitterRenderFlush & _flush ) override;
+		bool prepareParticles( ParticleEmitterRenderFlush & _flush ) override;
+		bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndices * _indices, ParticleEmitterRenderFlush & _flush ) override;
 
 	public:
 		//void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
 		void getBoundingBox( mt::box2f& _box ) const override;
 		//void getBoundingBox( Rect & _rect )  const override;
 		void setEmitterTranslateWithParticle( bool _value ) override;
-		bool isIntensive() const override;
 
 	public:
 		bool changeEmitterImage( uint32_t _width, uint32_t _height, unsigned char * _data, size_t _bytes ) override;
@@ -91,7 +91,6 @@ namespace Menge
 		HM_EMITTER getId() const;
 
 		bool inInterval() const;
-		bool createFirstRenderedParticlesList( MAGIC_RENDERING * _rendering );
 
     public:
 		float getUpdateTemp() const;

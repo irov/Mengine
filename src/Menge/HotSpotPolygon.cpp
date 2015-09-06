@@ -270,10 +270,10 @@ namespace Menge
 			v0.pos.z = 0.f;
 
 			v0.color = m_debugColor;
-			v0.uv.x = 0.f;
-			v0.uv.y = 0.f;
-			v0.uv2.x = 0.f;
-			v0.uv2.y = 0.f;
+			v0.uv[0].x = 0.f;
+			v0.uv[0].y = 0.f;
+			v0.uv[1].x = 0.f;
+			v0.uv[1].y = 0.f;
 
 			mt::vec2f trP1;
 			mt::mul_v2_m4( trP1, ring[j], worldMat );
@@ -285,10 +285,10 @@ namespace Menge
 			v1.pos.z = 0.f;
 
 			v1.color = m_debugColor;
-			v1.uv.x = 0.f;
-			v1.uv.y = 0.f;
-			v1.uv2.x = 0.f;
-			v1.uv2.y = 0.f;
+			v1.uv[0].x = 0.f;
+			v1.uv[0].y = 0.f;
+			v1.uv[1].x = 0.f;
+			v1.uv[1].y = 0.f;
 		}
 
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )

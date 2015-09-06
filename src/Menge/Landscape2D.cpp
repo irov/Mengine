@@ -250,8 +250,8 @@ namespace	Menge
 		{
 			Landscape2DElement & el = *it;
 
-			const mt::uv4f & uv = el.image->getUVImage();
-			const mt::uv4f & uv2 = el.image->getUVAlpha();
+			const mt::uv4f & uv_image = el.image->getUVImage();
+			const mt::uv4f & uv_alpha = el.image->getUVAlpha();
 
 			for( size_t i = 0; i != 4; ++i )
 			{
@@ -259,8 +259,8 @@ namespace	Menge
 				RenderVertex2D & v = m_verticesWM[vertex_offset + i];
 				
 				v.color = 0xffffffff;
-				v.uv = uv[i];
-				v.uv2 = uv2[i];
+				v.uv[0] = uv_image[i];
+				v.uv[1] = uv_alpha[i];
 
 				mt::vec3f p;
 				p.x = (el.i + coeff_x[i]) * m_elementWidth;

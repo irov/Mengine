@@ -119,14 +119,14 @@ namespace Menge
 		for( uint32_t i = 0; i != 4; ++i )
 		{
 			m_vertices[i].color = argb;
-			m_vertices[i].uv.x = 0.f;
-			m_vertices[i].uv.y = 0.f;
-			m_vertices[i].uv2.x = 0.f;
-			m_vertices[i].uv2.y = 0.f;
+			m_vertices[i].uv[0].x = 0.f;
+			m_vertices[i].uv[0].y = 0.f;
+			m_vertices[i].uv[1].x = 0.f;
+			m_vertices[i].uv[1].y = 0.f;
 		}
 
 		RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE(m_serviceProvider)
-			->getMaterial( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Debug"), false, false, PT_TRIANGLELIST, 0, nullptr );
+			->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" ), PT_TRIANGLELIST, 0, nullptr );
 
 		RENDER_SERVICE(m_serviceProvider)
 			->addRenderQuad( _viewport, _camera, material, m_vertices, 4, nullptr, false );
@@ -185,10 +185,10 @@ namespace Menge
 			vertices[i].pos.z = 0.f;
 
 			vertices[i].color = 0xFF00FF00;
-			vertices[i].uv.x = 0.f;
-			vertices[i].uv.y = 0.f;
-			vertices[i].uv2.x = 0.f;
-			vertices[i].uv2.y = 0.f;
+			vertices[i].uv[0].x = 0.f;
+			vertices[i].uv[0].y = 0.f;
+			vertices[i].uv[1].x = 0.f;
+			vertices[i].uv[1].y = 0.f;
 		}
 
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )

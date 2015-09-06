@@ -2,7 +2,7 @@
 
 #	include "Interface/PluginInterface.h"
 
-#	include "Interface/ParticleSystemInterface2.h"
+#	include "Interface/ParticleSystemInterface.h"
 
 namespace Menge
 {

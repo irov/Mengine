@@ -75,12 +75,6 @@ Object2D\\\\Animation
 )
 
 ADD_FILTER(
-Object2D\\\\ParticleEmitter
-	ParticleEmitter.cpp
-	ParticleEmitter.h
-)
-
-ADD_FILTER(
 Object2D\\\\ParticleEmitter2
 	ParticleEmitter2.cpp
 	ParticleEmitter2.h
@@ -245,14 +239,6 @@ Resource\\\\Cursor
 	ResourceCursorICO.h
     ResourceCursorSystem.cpp
     ResourceCursorSystem.h
-)
-
-ADD_FILTER(
-Resource\\\\EmitterContainer
-	ResourceEmitterContainer.cpp
-	ResourceEmitterContainer.h
-	ResourceEmitter.cpp
-	ResourceEmitter.h
 )
 
 ADD_FILTER(

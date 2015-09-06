@@ -264,4 +264,14 @@ namespace Metabuf
 
 		_value = (Menge::ETextureArgument)tmp_value;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::ETextureAddressMode & _value, void * _userData )
+	{
+		(void)_userData;
+
+		uint32_t tmp_value;
+		ar.readPOD( tmp_value );
+
+		_value = (Menge::ETextureAddressMode)tmp_value;
+	}
 }

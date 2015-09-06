@@ -285,7 +285,7 @@ namespace Menge
 
 			for( size_t i = 0; i != 4; ++i )
 			{
-				m_verticesWM[i].uv = uv[i] * m_textureUVScale + m_textureUVOffset;
+				m_verticesWM[i].uv[0] = uv[i] * m_textureUVScale + m_textureUVOffset;
 			}
 		}
 
@@ -307,7 +307,7 @@ namespace Menge
 
 			for( size_t i = 0; i != 4; ++i )
 			{
-				m_verticesWM[i].uv2 = uv[i] * m_textureUVScale + m_textureUVOffset;
+				m_verticesWM[i].uv[1] = uv[i] * m_textureUVScale + m_textureUVOffset;
 			}
 		}
     }

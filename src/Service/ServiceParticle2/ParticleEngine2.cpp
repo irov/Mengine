@@ -19,9 +19,8 @@ namespace Menge
 {
 	ParticleEngine2::ParticleEngine2()
 		: m_serviceProvider(nullptr)
-		, m_maxParticlesNum(2000)
-		, m_renderParticleNum(0)
-		, m_available(false)
+		, m_maxParticlesNum(10000U)
+		, m_available(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -43,6 +42,8 @@ namespace Menge
 	{
 		m_available = CONFIG_VALUE( m_serviceProvider, "Engine", "ParticleService2Avaliable", true );
 
+		m_maxParticlesNum = CONFIG_VALUE( m_serviceProvider, "Engine", "ParticleMaxCount", 10000U );
+		
 		if( m_available == false )
 		{
 			return true;
@@ -57,6 +58,11 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ParticleEngine2::isAvailable() const
+	{
+		return m_available;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEngine2::finalize()
@@ -98,40 +104,9 @@ namespace Menge
 		return container;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleMesh * ParticleEngine2::getParticleMeshesCache( uint32_t & _limit )
-	{
-		_limit = MENGINE_PARTICLE_MAX_MESH;
-
-		return m_particleMesh;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ParticleVertices * ParticleEngine2::getParticleVerticesCache( uint32_t & _limit )
-	{ 
-		_limit = MENGINE_PARTICLE_MAX_VERTICES;
-
-		return m_particleVertices;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	uint32_t ParticleEngine2::getMaxParticlesCount() const
 	{
 		return m_maxParticlesNum;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine2::setMaxParticlesCount( uint32_t _count )
-	{
-		m_maxParticlesNum = _count;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine2::update()
-	{
-		m_renderParticleNum = m_maxParticlesNum;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t ParticleEngine2::renderParticlesCount( uint32_t _count )
-	{
-        uint32_t count = m_renderParticleNum - _count;
-
-		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

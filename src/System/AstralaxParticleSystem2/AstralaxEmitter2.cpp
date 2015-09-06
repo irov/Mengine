@@ -302,31 +302,9 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::createFirstRenderedParticlesList( MAGIC_RENDERING * _rendering )
-	{
-		if( m_emitterId == 0 )
-		{
-			return false;				 
-		}
-		
-		if( Magic_CreateFirstRenderedParticlesList( m_emitterId, _rendering ) != MAGIC_SUCCESS )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setEmitterTranslateWithParticle( bool _value )
 	{
 		Magic_SetEmitterPositionMode( m_emitterId, _value );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::isIntensive() const
-	{
-		bool intensive = Magic_IsIntensive();
-
-		return intensive;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::changeEmitterImage( uint32_t _width, uint32_t _height, unsigned char * _data, size_t _bytes )
@@ -516,90 +494,155 @@ namespace Menge
 		return m_background;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_fillParticles_( ParticleVertices * _particles, uint32_t _offset, uint32_t _count, const mt::mat4f & _vpm, float _width, float _height )
+	bool AstralaxEmitter2::prepareParticles( ParticleEmitterRenderFlush & _flush )
 	{
-		for( uint32_t i = 0; i != _count; ++i )
-		{
-			MAGIC_PARTICLE_VERTEXES vertexes;
-			Magic_GetNextParticleVertexes( &vertexes );
-
-			ParticleVertices & rp = _particles[_offset + i];
-
-			mt::vec3f v0;
-			v0.x = vertexes.vertex1.x;
-			v0.y = vertexes.vertex1.y;
-			v0.z = vertexes.vertex1.z;
-
-			mt::vec3f v0_vpm;
-			mt::mul_v3_v3_m4_homogenize( v0_vpm, v0, _vpm );
-
-			rp.v[0].x = (1.f + v0_vpm.x) * _width * 0.5f;
-			rp.v[0].y = (1.f + v0_vpm.y) * _height * 0.5f;
-			rp.v[0].z = v0_vpm.z;
-			
-			mt::vec3f v1;
-			v1.x = vertexes.vertex2.x;
-			v1.y = vertexes.vertex2.y;
-			v1.z = vertexes.vertex2.z;
-
-			mt::vec3f v1_vpm;
-			mt::mul_v3_v3_m4_homogenize( v1_vpm, v1, _vpm );
-
-			rp.v[1].x = (1.f + v1_vpm.x) * _width * 0.5f;
-			rp.v[1].y = (1.f + v1_vpm.y) * _height * 0.5f;
-			rp.v[1].z = v1_vpm.z;
-
-			mt::vec3f v2;
-			v2.x = vertexes.vertex3.x;
-			v2.y = vertexes.vertex3.y;
-			v2.z = vertexes.vertex3.z;
-
-			mt::vec3f v2_vpm;
-			mt::mul_v3_v3_m4_homogenize( v2_vpm, v2, _vpm );
-			
-			rp.v[2].x = (1.f + v2_vpm.x) * _width * 0.5f;
-			rp.v[2].y = (1.f + v2_vpm.y) * _height * 0.5f;
-			rp.v[2].z = v2_vpm.z;
-
-			mt::vec3f v3;
-			v3.x = vertexes.vertex4.x;
-			v3.y = vertexes.vertex4.y;
-			v3.z = vertexes.vertex4.z;
-
-			mt::vec3f v3_vpm;
-			mt::mul_v3_v3_m4_homogenize( v3_vpm, v3, _vpm );
-
-			rp.v[3].x = (1.f + v3_vpm.x) * _width * 0.5f;
-			rp.v[3].y = (1.f + v3_vpm.y) * _height * 0.5f;
-			rp.v[3].z = v3_vpm.z;
-
-			rp.uv[0].x = vertexes.u1;
-			rp.uv[0].y = vertexes.v1;
-			rp.uv[1].x = vertexes.u2;
-			rp.uv[1].y = vertexes.v2;
-			rp.uv[2].x = vertexes.u3;
-			rp.uv[2].y = vertexes.v3;
-			rp.uv[3].x = vertexes.u4;
-			rp.uv[3].y = vertexes.v4;
-
-			rp.color = vertexes.color;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, ParticleVertices * _particles, uint32_t _particlesLimit, ParticleEmitterRenderFlush & _flush )
-	{
-		_flush.particleCount = 0;
 		_flush.meshCount = 0;
+		_flush.verticesCount = 0;
+		_flush.indicesCount = 0;
+		_flush.arrays = 0;
+		_flush.context = nullptr;
 
 		if( this->inInterval() == false )
 		{
 			return false;
 		}
 
-		MAGIC_RENDERING rendering;
-		if( this->createFirstRenderedParticlesList( &rendering ) == false )
+		MAGIC_RENDERING_START start;
+		void * context = Magic_PrepareRenderArrays( m_emitterId, &start, 100, MAGIC_ABGR );
+
+		if( start.vertices == 0 || start.indexes == 0 )
 		{
 			return false;
+		}
+
+		_flush.verticesCount = start.vertices;
+		_flush.indicesCount = start.indexes;
+		_flush.arrays = start.arrays;
+		_flush.context = context;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool AstralaxEmitter2::flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndices * _indices, ParticleEmitterRenderFlush & _flush )
+	{
+		for( uint32_t i = 0; i != _flush.arrays; ++i )
+		{
+			MAGIC_ARRAY_INFO array_info;
+			Magic_GetRenderArrayData( _flush.context, i, &array_info );
+
+			switch( array_info.type )
+			{
+			case MAGIC_VERTEX_FORMAT_INDEX:
+				{
+					Magic_SetRenderArrayData( _flush.context, i, _indices, 0, sizeof( RenderIndices ) );
+				}break;
+			case MAGIC_VERTEX_FORMAT_POSITION:
+				{
+					Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, pos ), sizeof( RenderVertex2D ) );
+				}break;
+			case MAGIC_VERTEX_FORMAT_COLOR:
+				{
+					Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, color ), sizeof( RenderVertex2D ) );
+				}break;
+			case MAGIC_VERTEX_FORMAT_UV:
+				{
+					if( array_info.index >= MENGINE_RENDER_VERTEX_UV_COUNT )
+					{
+						return false;
+					}
+
+					Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, uv[array_info.index] ), sizeof( RenderVertex2D ) );
+				}break;
+			case MAGIC_VERTEX_FORMAT_NORMAL:
+				{
+
+				}break;
+			case MAGIC_VERTEX_FORMAT_TANGENT:
+				{
+
+				}break;
+			case MAGIC_VERTEX_FORMAT_BINORMAL:
+				{
+
+				}break;
+			}
+		}
+
+		Magic_FillRenderArrays( _flush.context );
+
+		unsigned int start_index = 0;
+
+		MAGIC_RENDER_VERTICES vrts;		
+		while( Magic_GetVertices( _flush.context, &vrts ) == true )
+		{
+			if( _flush.meshCount >= _meshLimit )
+			{
+				return false;
+			}
+
+			ParticleMesh & mesh = _meshes[_flush.meshCount];
+
+			mesh.vertexCount = vrts.vertices;
+			mesh.indexBegin = start_index;
+			mesh.primCount = vrts.vertices / 3;
+
+			MAGIC_RENDER_STATE state;
+			while( Magic_GetNextRenderState( _flush.context, &state ) == MAGIC_SUCCESS )
+			{
+				mesh.texture[state.index] = state.value;
+			}
+
+			MAGIC_MATERIAL m;
+			Magic_GetMaterial( vrts.material, &m );
+
+			mesh.textures = m.textures;
+
+			switch( m.blending )
+			{
+			case MAGIC_BLENDING_NORMAL:
+				{
+					mesh.stage.alphaBlendEnable = true;
+					mesh.stage.blendSrc = BF_SOURCE_ALPHA;
+					mesh.stage.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+				}break;
+			case MAGIC_BLENDING_ADD:
+				{
+					mesh.stage.alphaBlendEnable = true;
+					mesh.stage.blendSrc = BF_SOURCE_ALPHA;
+					mesh.stage.blendDst = BF_ONE;
+				}break;
+			case MAGIC_BLENDING_OPACITY:
+				{
+					mesh.stage.alphaBlendEnable = false;
+				}break;
+			}
+
+			for( int stage = 0; stage != m.textures; ++stage )
+			{
+				MAGIC_TEXTURE_STATES & state = m.states[stage];
+
+				const ETextureAddressMode dx_address[] = {TAM_WRAP, TAM_MIRROR, TAM_CLAMP, TAM_BORDER};
+
+				RenderTextureStage & textureStage = mesh.stage.textureStage[stage];
+								
+				textureStage.addressU = dx_address[state.address_u];
+				textureStage.addressV = dx_address[state.address_v];
+
+				const ETextureOp dx_operation[] = {TOP_SELECTARG1, TOP_ADD, TOP_SUBTRACT, TOP_MODULATE, TOP_MODULATE2X, TOP_MODULATE4X};
+				const ETextureArgument dx_arg[] = {TARG_CURRENT, TARG_DIFFUSE, TARG_TEXTURE};
+
+				textureStage.colorOp = dx_operation[state.operation_rgb];
+				textureStage.colorArg1 = dx_arg[state.argument_rgb1];
+				textureStage.colorArg2 = dx_arg[state.argument_rgb2];
+
+				textureStage.alphaOp = dx_operation[state.operation_alpha];
+				textureStage.alphaArg1 = dx_arg[state.argument_alpha1];
+				textureStage.alphaArg2 = dx_arg[state.argument_alpha2];
+			}
+
+			_flush.meshCount++;
+
+			start_index += vrts.vertices;
 		}
 		
 		mt::mat4f vpm;
@@ -627,28 +670,20 @@ namespace Menge
 
 			mt::mul_m4_m4( vpm, vm, pm );
 		}
+
+		float half_width = m_width * 0.5f;
+		float half_height = m_width * 0.5f;
 		
-		while( rendering.count != 0 )
+		for( uint32_t i = 0; i != _flush.verticesCount; ++i )
 		{
-			if( _particlesLimit <= _flush.particleCount + rendering.count || 
-				_meshLimit <= _flush.meshCount )
-			{
-				return true;
-			}
+			RenderVertex2D & v = _vertices[i];
 
-			ParticleMesh & mesh = _meshes[_flush.meshCount];
+			mt::vec3f v_vpm;
+			mt::mul_v3_v3_m4_homogenize( v_vpm, v.pos, vpm );
 
-			mesh.begin = _flush.particleCount;
-			mesh.size = rendering.count;
-			mesh.texture = rendering.texture_id;
-			mesh.intense = rendering.intense;
-
-			s_fillParticles_( _particles, _flush.particleCount, mesh.size, vpm, m_width, m_height );
-
-			_flush.particleCount += rendering.count;
-			++_flush.meshCount;
-
-			Magic_CreateNextRenderedParticlesList( &rendering );
+			v.pos.x = (1.f + v_vpm.x) * half_width;
+			v.pos.y = (1.f + v_vpm.y) * half_height;
+			v.pos.z = v_vpm.z;
 		}
 
 		return true;

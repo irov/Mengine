@@ -1,6 +1,6 @@
 #	include "ParticleConverterPTCToPTZ.h"
 
-#	include "Interface/ParticleSystemInterface2.h"
+#	include "Interface/ParticleSystemInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 #   include "Interface/ArchiveInterface.h"

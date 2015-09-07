@@ -119,10 +119,10 @@ namespace Menge
 		float m_startPosition;
 				
 		RenderVertex2D * m_vertices;
-		uint32_t m_verticesSize;
+		uint32_t m_vertexCount;
 
 		RenderIndices * m_indicies;
-		uint32_t m_indiciesSize;		
+		uint32_t m_indexCount;		
 
 		bool m_emitterTranslateWithParticle;
 	};

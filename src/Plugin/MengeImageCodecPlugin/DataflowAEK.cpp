@@ -73,7 +73,15 @@ namespace Menge
 		CACHE_SERVICE(m_serviceProvider)
 			->unlockBuffer( bufferId );
 
-		return successful;
+		if( successful == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DataflowAEK::load: invalid load buffer"
+				);
+
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowAEK::loadBuffer_( MovieFramePack * _pack, const unsigned char * _buffer, size_t _size )

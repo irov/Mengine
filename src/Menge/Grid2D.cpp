@@ -274,7 +274,7 @@ namespace	Menge
 		const mt::box2f & bb = this->getBoundingBox();
 		
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, 0, vertices, verticesCount, indices, indicesCount, &bb, false );
+			->addRenderObject( _viewport, _camera, material, vertices, verticesCount, indices, indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Grid2D::updateVerticesWM_()

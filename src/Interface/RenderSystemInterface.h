@@ -420,7 +420,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static const uint32_t Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX2;
 	//////////////////////////////////////////////////////////////////////////
-	typedef uint16_t RenderIndices;
+	typedef uint32_t RenderIndices;
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<RenderIndices> TVectorRenderIndices;
     //////////////////////////////////////////////////////////////////////////
@@ -572,8 +572,6 @@ namespace Menge
 		virtual RenderIndices * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) = 0;
-
-		virtual void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) = 0;
 		
 	public:
 		virtual RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) = 0;
@@ -684,7 +682,6 @@ namespace Menge
 
     public:
         virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-			, uint32_t _indexBegin
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
             , const RenderIndices * _indices, uint32_t _indicesNum
 			, const mt::box2f * _bb, bool _debug ) = 0;

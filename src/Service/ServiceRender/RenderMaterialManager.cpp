@@ -507,7 +507,7 @@ namespace Menge
 
 			if( s_equalRenderStage( self, _other ) == false )
 			{
-				break;
+				continue;
 			}
 
 			return &self;
@@ -660,7 +660,7 @@ namespace Menge
 
 		if( it_found != m_stageIndexer.end() )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::createRenderStage: RenderStage '%s' is already created!"
+            LOGGER_ERROR(m_serviceProvider)("RenderEngine::createRenderStage: RenderStage '%s' is already created"
                 , _name.c_str()
                 );
 
@@ -668,6 +668,15 @@ namespace Menge
         }
 
 		const RenderStage * cache_stage = this->cacheStage( _stage );
+
+		if( cache_stage == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderEngine::createRenderStage: RenderStage '%s' invalid cache"
+				, _name.c_str()
+				);
+
+			return false;
+		}
 		
 		m_stageIndexer.insert( std::make_pair( _name, cache_stage ) );
 

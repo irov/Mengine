@@ -458,7 +458,7 @@ namespace Menge
 			const RenderMaterialInterfacePtr & material = m_attachmentMeshes[i].material;
 
 			RENDER_SERVICE( m_serviceProvider )
-				->addRenderObject( _viewport, _camera, material, 0, vertices, verticesCount / 2, indices, trianglesCount, nullptr, false );
+				->addRenderObject( _viewport, _camera, material, vertices, verticesCount / 2, indices, trianglesCount, nullptr, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

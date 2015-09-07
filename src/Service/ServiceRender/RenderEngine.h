@@ -37,8 +37,6 @@ namespace Menge
 		IBHandle ibHandle;
 		VBHandle vbHandle;
 
-		uint32_t indexBegin;
-
 		const RenderVertex2D * vertexData;
 		uint32_t verticesNum;
 
@@ -96,7 +94,6 @@ namespace Menge
 
 	public:
 		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
-			, uint32_t _indexBegin
             , const RenderVertex2D * _vertices, uint32_t _verticesNum 
 			, const RenderIndices * _indices, uint32_t _indicesNum 
 			, const mt::box2f * _bb, bool _debug ) override;
@@ -121,7 +118,7 @@ namespace Menge
 
 	public:
 		VBHandle createVertexBuffer( const RenderVertex2D * _vertexies, uint32_t _verticesNum );
-		IBHandle createIndicesBuffer( const unsigned short * _buffer, uint32_t _count );
+		IBHandle createIndicesBuffer( const RenderIndices * _buffer, uint32_t _count );
 
 		void releaseVertexBuffer( VBHandle _handle );
 		void releaseIndicesBuffer( IBHandle _handle );
@@ -198,7 +195,6 @@ namespace Menge
 		bool insertRenderObject_( const RenderObject * _renderObject, RenderVertex2D * _vertexBuffer, RenderIndices * _indicesBuffer, uint32_t _vbSize, uint32_t _ibSize, uint32_t _vbPos, uint32_t _ibPos ) const;
 
 		void flushRender_();
-		void prepare2D_();
 
 		bool recreate2DBuffers_();
         		
@@ -277,9 +273,7 @@ namespace Menge
         TArrayRenderIndices m_indicesLine;
 
 		Viewport m_renderViewport;
-
-		uint32_t m_currentVertexDeclaration;
-        
+       
         typedef stdex::heap_array<RenderObject> TArrayRenderObject;
         TArrayRenderObject m_renderObjects;
 

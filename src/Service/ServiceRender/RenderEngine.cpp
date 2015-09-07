@@ -37,7 +37,6 @@ namespace Menge
 		, m_currentTextureStages( 0 )
 		, m_currentRenderCamera( nullptr )
 		, m_currentRenderViewport( nullptr )
-		, m_currentVertexDeclaration( 0 )
 		, m_maxVertexCount(0)
 		, m_maxIndexCount(0)
 		, m_depthBufferWriteEnable(false)
@@ -241,7 +240,6 @@ namespace Menge
 		}
 
 		this->restoreRenderSystemStates_();
-		this->prepare2D_();
 
 		if( this->createNullTexture_() == false )
 		{
@@ -476,7 +474,6 @@ namespace Menge
 		}
 
 		this->restoreRenderSystemStates_();
-		this->prepare2D_();
 
 		return true;
 	}
@@ -872,20 +869,19 @@ namespace Menge
 		mt::ident_m4( projTransform );
 		mt::ident_m4( worldTransform );
 
-		RENDER_SYSTEM(m_serviceProvider)->setVertexBuffer( m_currentVBHandle );
-		RENDER_SYSTEM(m_serviceProvider)->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
-		RENDER_SYSTEM(m_serviceProvider)->setVertexDeclaration( sizeof(RenderVertex2D), Vertex2D_declaration );
-		RENDER_SYSTEM(m_serviceProvider)->setProjectionMatrix( projTransform );
-		RENDER_SYSTEM(m_serviceProvider)->setModelViewMatrix( viewTransform );
-		RENDER_SYSTEM(m_serviceProvider)->setWorldMatrix( worldTransform );
-		RENDER_SYSTEM(m_serviceProvider)->setCullMode( CM_CULL_NONE );
-		RENDER_SYSTEM(m_serviceProvider)->setFillMode( FM_SOLID );
-		RENDER_SYSTEM(m_serviceProvider)->setDepthBufferTestEnable( false );
-		RENDER_SYSTEM(m_serviceProvider)->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
-		RENDER_SYSTEM(m_serviceProvider)->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );		
-		RENDER_SYSTEM(m_serviceProvider)->setAlphaBlendEnable( m_alphaBlendEnable );
-		RENDER_SYSTEM(m_serviceProvider)->setAlphaCmpFunc( CMPF_GREATER_EQUAL, 0x01 );
-		RENDER_SYSTEM(m_serviceProvider)->setLightingEnable( false );
+		RENDER_SYSTEM( m_serviceProvider )->setVertexBuffer( m_currentVBHandle );
+		RENDER_SYSTEM( m_serviceProvider )->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
+		RENDER_SYSTEM( m_serviceProvider )->setProjectionMatrix( projTransform );
+		RENDER_SYSTEM( m_serviceProvider )->setModelViewMatrix( viewTransform );
+		RENDER_SYSTEM( m_serviceProvider )->setWorldMatrix( worldTransform );
+		RENDER_SYSTEM( m_serviceProvider )->setCullMode( CM_CULL_NONE );
+		RENDER_SYSTEM( m_serviceProvider )->setFillMode( FM_SOLID );
+		RENDER_SYSTEM( m_serviceProvider )->setDepthBufferTestEnable( false );
+		RENDER_SYSTEM( m_serviceProvider )->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
+		RENDER_SYSTEM( m_serviceProvider )->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
+		RENDER_SYSTEM( m_serviceProvider )->setAlphaBlendEnable( m_alphaBlendEnable );
+		RENDER_SYSTEM( m_serviceProvider )->setAlphaCmpFunc( CMPF_GREATER_EQUAL, 0x01 );
+		RENDER_SYSTEM( m_serviceProvider )->setLightingEnable( false );
 
 		LOGGER_INFO(m_serviceProvider)("RenderEngine::restoreRenderSystemStates_ texture stages %d"
 			, MENGE_MAX_TEXTURE_STAGES
@@ -1083,7 +1079,6 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material        
-		, uint32_t _indexBegin
 		, const RenderVertex2D * _vertices, uint32_t _verticesNum
 		, const RenderIndices * _indices, uint32_t _indicesNum
 		, const mt::box2f * _bb, bool _debug )
@@ -1229,8 +1224,6 @@ namespace Menge
 		ro.ibHandle = m_ibHandle2D;
 		ro.vbHandle = m_vbHandle2D;
 
-		ro.indexBegin = _indexBegin;
-
 		ro.vertexData = _vertices;
 		ro.verticesNum = _verticesNum;
 
@@ -1268,7 +1261,7 @@ namespace Menge
 
 		RenderIndices * indices = m_indicesQuad.buff();
 
-		this->addRenderObject( _viewport, _camera, _material, 0, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
+		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
@@ -1289,7 +1282,7 @@ namespace Menge
 
 		RenderIndices * indices = m_indicesLine.buff();
 
-		this->addRenderObject( _viewport, _camera, _material, 0, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
+		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertex2D * RenderEngine::getDebugRenderVertex2D( size_t _count )
@@ -1782,25 +1775,6 @@ namespace Menge
 
 		m_debugInfo.dips = 0;		
 		this->renderPasses_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::prepare2D_()
-	{
-		if( m_currentVBHandle != m_vbHandle2D )
-		{
-			m_currentVBHandle = m_vbHandle2D;
-
-			RENDER_SYSTEM(m_serviceProvider)
-				->setVertexBuffer( m_currentVBHandle );
-		}
-
-		if( m_currentVertexDeclaration != Vertex2D_declaration )
-		{
-			m_currentVertexDeclaration = Vertex2D_declaration;
-
-			RENDER_SYSTEM(m_serviceProvider)
-				->setVertexDeclaration( sizeof(RenderVertex2D), m_currentVertexDeclaration );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::recreate2DBuffers_()

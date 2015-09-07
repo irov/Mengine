@@ -350,7 +350,7 @@ namespace Menge
         , m_deviceType(D3DDEVTYPE_HAL)
         , m_waitForVSync(false)
 		, m_oldRenderTarget(nullptr)
-        //, m_currentTexture(nullptr)
+		, m_vertexDeclaration(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -566,62 +566,6 @@ namespace Menge
             m_hd3d9 = NULL;
         }
     }
-	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::refreshRenderStates_()
-	{
-		/*#	define REFRESH_RENDER_STATE(STATE)\
-			DXCALL( m_serviceProvider, m_pD3DDevice, GetRenderState, (STATE, &m_renderStates[STATE]) );
-
-			REFRESH_RENDER_STATE( D3DRS_SRCBLEND );
-			REFRESH_RENDER_STATE( D3DRS_DESTBLEND );
-			REFRESH_RENDER_STATE( D3DRS_CULLMODE );
-			REFRESH_RENDER_STATE( D3DRS_ZENABLE );
-			REFRESH_RENDER_STATE( D3DRS_ZWRITEENABLE );
-			REFRESH_RENDER_STATE( D3DRS_ZFUNC );
-			REFRESH_RENDER_STATE( D3DRS_FILLMODE );
-			REFRESH_RENDER_STATE( D3DRS_COLORWRITEENABLE );
-			REFRESH_RENDER_STATE( D3DRS_SHADEMODE );
-			REFRESH_RENDER_STATE( D3DRS_ALPHATESTENABLE );
-			REFRESH_RENDER_STATE( D3DRS_ALPHABLENDENABLE );
-			REFRESH_RENDER_STATE( D3DRS_ALPHAFUNC );
-			REFRESH_RENDER_STATE( D3DRS_ALPHAREF );
-			REFRESH_RENDER_STATE( D3DRS_LIGHTING );
-			REFRESH_RENDER_STATE( D3DRS_ZENABLE );
-
-			#	undef REFRESH_RENDER_STATE
-
-			#	define REFRESH_TEXTURE_STAGE_STATE(STATE)\
-			DXCALL( m_serviceProvider, m_pD3DDevice, GetTextureStageState, (stage, STATE, &m_textureStageStates[stage][STATE]) );
-
-			for( DWORD stage = 0; stage != MENGE_MAX_TEXTURE_STAGES; ++stage )
-			{
-			REFRESH_TEXTURE_STAGE_STATE( D3DTSS_COLOROP );
-			REFRESH_TEXTURE_STAGE_STATE( D3DTSS_COLORARG1 );
-			REFRESH_TEXTURE_STAGE_STATE( D3DTSS_COLORARG2 );
-			REFRESH_TEXTURE_STAGE_STATE( D3DTSS_ALPHAOP );
-			REFRESH_TEXTURE_STAGE_STATE( D3DTSS_ALPHAARG1 );
-			REFRESH_TEXTURE_STAGE_STATE( D3DTSS_ALPHAARG2 );
-			REFRESH_TEXTURE_STAGE_STATE( D3DTSS_TEXCOORDINDEX );
-			REFRESH_TEXTURE_STAGE_STATE( D3DTSS_TEXTURETRANSFORMFLAGS );
-			}
-
-			#	undef REFRESH_TEXTURE_STAGE_STATE
-
-
-			#	define REFRESH_SAMPLER_STATE(STATE)\
-			DXCALL( m_serviceProvider, m_pD3DDevice, GetSamplerState, (stage, STATE, &m_samplerStates[stage][STATE]) );
-
-			for( DWORD stage = 0; stage != MENGE_MAX_TEXTURE_STAGES; ++stage )
-			{
-			REFRESH_SAMPLER_STATE( D3DSAMP_ADDRESSU );
-			REFRESH_SAMPLER_STATE( D3DSAMP_ADDRESSV );
-			REFRESH_SAMPLER_STATE( D3DSAMP_MAGFILTER );
-			REFRESH_SAMPLER_STATE( D3DSAMP_MINFILTER );
-			REFRESH_SAMPLER_STATE( D3DSAMP_MIPFILTER );
-			}
-
-			#	undef REFRESH_SAMPLER_STATE	*/
-	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, 
 		bool _fullscreen, WindowHandle _winHandle, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
@@ -1316,6 +1260,12 @@ namespace Menge
 		
 		//this->createSyncTargets_();
 
+		DWORD FVF_UV = (MENGINE_RENDER_VERTEX_UV_COUNT << D3DFVF_TEXCOUNT_SHIFT) & D3DFVF_TEXCOUNT_MASK;
+
+		m_vertexDeclaration = D3DFVF_XYZ | D3DFVF_DIFFUSE | FVF_UV;
+
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, (m_vertexDeclaration) );
+
 		for( TMapVBInfo::iterator 
 			it = m_vertexBuffers.begin(), 
 			it_end = m_vertexBuffers.end();
@@ -1353,34 +1303,6 @@ namespace Menge
 				return false;
 			}
 		}
-
-		// Set common render states
-		//m_pD3DDevice->SetVertexShader( D3DFVF_MENGE_VERTEX );
-
-		//hr = m_pD3DDevice->SetTextureStageState( 1, D3DTSS_TEXCOORDINDEX, 0 );
-		//if( FAILED( hr ) )
-		//{
-		//	LOGGER_ERROR(m_logService)( "Error: DX9RenderSystem::init_lost_ failed to SetTextureStageState (hr:%p)"
-		//		, hr 
-		//		);
-		//}
-
-        //this->clear_( 0 );
-
-   //     if( m_caps.AlphaCmpCaps & D3DPCMPCAPS_GREATEREQUAL )
-   //     {
-   //         IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHAREF, (DWORD)0x00000001 ) )
-			//{
-			//	return false;
-			//}
-
-   //         IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_ALPHAFUNC, D3DCMP_GREATEREQUAL ) )
-			//{
-			//	return false;
-			//}
-   //     }
-
-		this->refreshRenderStates_();
 
 		return true;
 	}
@@ -1665,7 +1587,7 @@ namespace Menge
    //     }
 
 		IDirect3DVertexBuffer9 * vb = nullptr;
-		IF_DXCALL(m_serviceProvider, m_pD3DDevice, CreateVertexBuffer, ( _verticesNum * _vertexSize, Usage, Vertex2D_declaration, Pool, &vb, NULL ) )
+		IF_DXCALL(m_serviceProvider, m_pD3DDevice, CreateVertexBuffer, ( _verticesNum * _vertexSize, Usage, m_vertexDeclaration, Pool, &vb, NULL ) )
 		{
 			return 0;
 		}
@@ -1673,8 +1595,8 @@ namespace Menge
 		VBInfo vbInfo;
 		vbInfo.length = _verticesNum * _vertexSize;
 		vbInfo.vertexSize = _vertexSize;
+		vbInfo.fvf = m_vertexDeclaration;
 		vbInfo.usage = Usage;
-		vbInfo.fvf = Vertex2D_declaration;
 		vbInfo.pool = Pool;
 		vbInfo.pVB = vb;
 		vbInfo.dynamic = _dynamic;
@@ -1731,8 +1653,10 @@ namespace Menge
 			//Pool = D3DPOOL_DEFAULT;
    //     }
 
+		D3DFORMAT indexFormat = sizeof( RenderIndices ) == 4 ? D3DFMT_INDEX32 : D3DFMT_INDEX16;
+
 		IDirect3DIndexBuffer9 * ib = nullptr;
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, ( sizeof(RenderIndices) * _indiciesNum, Usage, D3DFMT_INDEX16, Pool, &ib, NULL ) )
+		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, (sizeof( RenderIndices ) * _indiciesNum, Usage, indexFormat, Pool, &ib, NULL) )
 		{
 			return 0;
 		}
@@ -1740,7 +1664,7 @@ namespace Menge
 		IBInfo ibInfo;
 		ibInfo.length = sizeof(RenderIndices) * _indiciesNum;
 		ibInfo.usage = Usage;
-		ibInfo.format = D3DFMT_INDEX16;
+		ibInfo.format = indexFormat;
 		ibInfo.pool = Pool;
 		ibInfo.pIB = ib;
 		ibInfo.dynamic = _dynamic;
@@ -2325,21 +2249,6 @@ namespace Menge
 		D3DTEXTUREFILTERTYPE textureFilter = s_toD3DTextureFilter( _filter );
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, textureFilterType, textureFilter ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration )
-	{
-        (void)_vertexSize;
-
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setVertexDeclaration device not created"
-                );
-
-            return;
-        }
-
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, ( _declaration ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )

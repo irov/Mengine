@@ -160,7 +160,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, 0, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, nullptr, false );
+			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Model3D::_activate()

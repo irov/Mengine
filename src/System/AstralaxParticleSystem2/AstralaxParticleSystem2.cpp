@@ -32,6 +32,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxParticleSystem2::initialize()
 	{
+		bool states[17];
+		states[MAGIC_RENDER_STATE_BLENDING] = false;
+		states[MAGIC_RENDER_STATE_TEXTURE_COUNT] = false;
+		states[MAGIC_RENDER_STATE_TEXTURE] = true;
+		states[MAGIC_RENDER_STATE_ADDRESS_U] = false;
+		states[MAGIC_RENDER_STATE_ADDRESS_V] = false;
+		states[MAGIC_RENDER_STATE_OPERATION_RGB] = false;
+		states[MAGIC_RENDER_STATE_ARGUMENT1_RGB] = false;
+		states[MAGIC_RENDER_STATE_ARGUMENT2_RGB] = false;
+		states[MAGIC_RENDER_STATE_OPERATION_ALPHA] = false;
+		states[MAGIC_RENDER_STATE_ARGUMENT1_ALPHA] = false;
+		states[MAGIC_RENDER_STATE_ARGUMENT2_ALPHA] = false;
+		states[MAGIC_RENDER_STATE_ZENABLE] = false;
+		states[MAGIC_RENDER_STATE_ZWRITE] = false;
+		states[MAGIC_RENDER_STATE_ALPHATEST_INIT] = false;
+		states[MAGIC_RENDER_STATE_ALPHATEST] = false;
+		states[MAGIC_RENDER_STATE_TECHNIQUE_ON] = false;
+		states[MAGIC_RENDER_STATE_TECHNIQUE_OFF] = false;
+
+		Magic_SetRenderStateFilter( states, false );
+
 		Magic_SetAxis( MAGIC_pXpYpZ );
 
 		m_factoryPoolAstralaxEmitterContainer.setMethodListener( this, &AstralaxParticleSystem2::onContainerRelease_ );

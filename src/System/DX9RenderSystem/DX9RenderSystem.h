@@ -18,8 +18,8 @@ namespace Menge
 	{
 		uint32_t length;
 		uint32_t vertexSize;
-		DWORD usage;
 		DWORD fvf;
+		DWORD usage;
 		D3DPOOL pool;
 		IDirect3DVertexBuffer9* pVB;
 		bool dynamic;
@@ -90,8 +90,6 @@ namespace Menge
 		RenderIndices * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
 		void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
-
-		void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) override;
 
 	public:
 		RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
@@ -225,8 +223,6 @@ namespace Menge
 		bool d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels,
 			DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture );
 
-		void refreshRenderStates_();
-
 	protected:
 		UINT m_adapterToUse;
         D3DDEVTYPE m_deviceType;
@@ -235,6 +231,8 @@ namespace Menge
 
 		VBHandle m_vbHandleCounter;
 		IBHandle m_ibHandleCounter;
+
+		DWORD m_vertexDeclaration;
 
 		typedef stdex::binary_vector<VBHandle, VBInfo> TMapVBInfo;
 		TMapVBInfo m_vertexBuffers;

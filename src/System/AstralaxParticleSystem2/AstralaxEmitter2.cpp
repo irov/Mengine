@@ -497,8 +497,8 @@ namespace Menge
 	bool AstralaxEmitter2::prepareParticles( ParticleEmitterRenderFlush & _flush )
 	{
 		_flush.meshCount = 0;
-		_flush.verticesCount = 0;
-		_flush.indicesCount = 0;
+		_flush.vertexCount = 0;
+		_flush.indexCount = 0;
 		_flush.arrays = 0;
 		_flush.context = nullptr;
 
@@ -515,8 +515,8 @@ namespace Menge
 			return false;
 		}
 
-		_flush.verticesCount = start.vertices;
-		_flush.indicesCount = start.indexes;
+		_flush.vertexCount = start.vertices;
+		_flush.indexCount = start.indexes;
 		_flush.arrays = start.arrays;
 		_flush.context = context;
 
@@ -570,7 +570,7 @@ namespace Menge
 
 		Magic_FillRenderArrays( _flush.context );
 
-		unsigned int start_index = 0;
+		uint32_t vertexOffset = 0;
 
 		MAGIC_RENDER_VERTICES vrts;		
 		while( Magic_GetVertices( _flush.context, &vrts ) == true )
@@ -582,18 +582,27 @@ namespace Menge
 
 			ParticleMesh & mesh = _meshes[_flush.meshCount];
 
+			mesh.vertexOffset = vertexOffset;
 			mesh.vertexCount = vrts.vertices;
-			mesh.indexBegin = start_index;
-			mesh.primCount = vrts.vertices / 3;
+			mesh.indexOffset = vertexOffset;
+			mesh.indexCount = vrts.vertices;
 
 			MAGIC_RENDER_STATE state;
 			while( Magic_GetNextRenderState( _flush.context, &state ) == MAGIC_SUCCESS )
 			{
+				if( state.index == -1 )
+				{
+					return false;
+				}
+
 				mesh.texture[state.index] = state.value;
 			}
 
 			MAGIC_MATERIAL m;
-			Magic_GetMaterial( vrts.material, &m );
+			if( Magic_GetMaterial( vrts.material, &m ) != MAGIC_SUCCESS )
+			{
+				return false;
+			}
 
 			mesh.textures = m.textures;
 
@@ -619,7 +628,7 @@ namespace Menge
 
 			for( int stage = 0; stage != m.textures; ++stage )
 			{
-				MAGIC_TEXTURE_STATES & state = m.states[stage];
+				const MAGIC_TEXTURE_STATES & state = m.states[stage];
 
 				const ETextureAddressMode dx_address[] = {TAM_WRAP, TAM_MIRROR, TAM_CLAMP, TAM_BORDER};
 
@@ -642,7 +651,7 @@ namespace Menge
 
 			_flush.meshCount++;
 
-			start_index += vrts.vertices;
+			vertexOffset += vrts.vertices;
 		}
 		
 		mt::mat4f vpm;
@@ -674,7 +683,7 @@ namespace Menge
 		float half_width = m_width * 0.5f;
 		float half_height = m_width * 0.5f;
 		
-		for( uint32_t i = 0; i != _flush.verticesCount; ++i )
+		for( uint32_t i = 0; i != _flush.vertexCount; ++i )
 		{
 			RenderVertex2D & v = _vertices[i];
 

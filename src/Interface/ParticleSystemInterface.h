@@ -30,9 +30,11 @@ namespace Menge
 {
 	struct ParticleMesh
 	{
+		uint32_t vertexOffset;
 		uint32_t vertexCount;
-		uint32_t indexBegin;
-		uint32_t primCount;
+		uint32_t indexOffset;
+		uint32_t indexCount;
+		
 
 		int texture[8];
 		uint32_t textures;
@@ -43,8 +45,8 @@ namespace Menge
 	struct ParticleEmitterRenderFlush
 	{		
 		uint32_t meshCount;
-		uint32_t verticesCount;
-		uint32_t indicesCount;
+		uint32_t vertexCount;
+		uint32_t indexCount;
 
 		uint32_t arrays;
 		void * context;

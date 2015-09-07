@@ -39,9 +39,9 @@ namespace	Menge
 		, m_startPosition(0.f)
         , m_randomMode(false)
 		, m_vertices(nullptr)
-		, m_verticesSize(0)
+		, m_vertexCount(0)
 		, m_indicies(nullptr)
-		, m_indiciesSize(0)
+		, m_indexCount(0)
         , m_emitterRelative(false)
         , m_emitterPosition(0.f, 0.f, 0.f)
         , m_emitterTranslateWithParticle(true)
@@ -172,11 +172,11 @@ namespace	Menge
 
 		Helper::freeMemoryNoThreadSafe( m_vertices );
 		m_vertices = nullptr;
-		m_verticesSize = 0;
+		m_vertexCount = 0;
 
 		Helper::freeMemoryNoThreadSafe( m_indicies );
 		m_indicies = nullptr;
-		m_indiciesSize = 0;		
+		m_indexCount = 0;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter2::_play( float _time )
@@ -363,18 +363,18 @@ namespace	Menge
 			return;
 		}
 
-		if( m_verticesSize < flush.verticesCount )
+		if( m_vertexCount < flush.vertexCount )
 		{
-			m_verticesSize = flush.verticesCount;
+			m_vertexCount = flush.vertexCount;
 
-			m_vertices = Helper::reallocateMemoryNoThreadSafe<RenderVertex2D>( m_vertices, m_verticesSize );
+			m_vertices = Helper::reallocateMemoryNoThreadSafe<RenderVertex2D>( m_vertices, m_vertexCount );
 		}
 
-		if( m_indiciesSize < flush.indicesCount )
+		if( m_indexCount < flush.indexCount )
 		{
-			m_indiciesSize = flush.indicesCount;
+			m_indexCount = flush.indexCount;
 
-			m_indicies = Helper::reallocateMemoryNoThreadSafe<RenderIndices>( m_indicies, m_indiciesSize );
+			m_indicies = Helper::reallocateMemoryNoThreadSafe<RenderIndices>( m_indicies, m_indexCount );
 		}
 
 		ParticleMesh meshes[MENGINE_PARTICLE_MAX_MESH];
@@ -384,11 +384,11 @@ namespace	Menge
 			return;
 		}
 
-		this->updateVertexColor_( m_vertices, flush.verticesCount );
+		this->updateVertexColor_( m_vertices, flush.vertexCount );
 
 		if( m_emitterRelative == false )
 		{
-			this->updateVertexWM_( m_vertices, flush.verticesCount );
+			this->updateVertexWM_( m_vertices, flush.vertexCount );
 		}
 		
 		for( uint32_t
@@ -417,7 +417,7 @@ namespace	Menge
 				->getMaterial2( stage, PT_TRIANGLELIST, mesh.textures, textures );
 
 			RENDER_SERVICE( m_serviceProvider )
-				->addRenderObject( _viewport, _camera, material, 0, m_vertices, mesh.vertexCount, m_indicies, m_indiciesSize, nullptr, false );
+				->addRenderObject( _viewport, _camera, material, m_vertices, flush.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, nullptr, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

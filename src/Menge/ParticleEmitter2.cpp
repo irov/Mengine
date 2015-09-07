@@ -417,7 +417,7 @@ namespace	Menge
 				->getMaterial2( stage, PT_TRIANGLELIST, mesh.textures, textures );
 
 			RENDER_SERVICE( m_serviceProvider )
-				->addRenderObject( _viewport, _camera, material, m_vertices, flush.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, nullptr, false );
+				->addRenderObject( _viewport, _camera, material, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, nullptr, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

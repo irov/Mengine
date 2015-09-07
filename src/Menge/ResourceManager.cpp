@@ -191,7 +191,8 @@ namespace Menge
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: invalid create resource %s:%s name %s type %s"
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::loadResource: '%s' invalid create resource '%s:%s' name %s type %s"
+					, _path.c_str()
                     , _pakName.c_str()
                     , groupName.c_str()
                     , name.c_str()
@@ -324,7 +325,10 @@ namespace Menge
 
 		if( resource == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceManager createResource: invalid generate resource '%s'"
+			LOGGER_ERROR( m_serviceProvider )("ResourceManager createResource: invalid generate resource category '%s' group '%s' name '%s' type '%s'"
+				, _category.c_str()
+				, _group.c_str()
+				, _name.c_str()
 				, _type.c_str()
 				);
 

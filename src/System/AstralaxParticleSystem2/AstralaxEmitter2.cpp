@@ -582,10 +582,15 @@ namespace Menge
 
 			ParticleMesh & mesh = _meshes[_flush.meshCount];
 
-			mesh.vertexOffset = vertexOffset;
-			mesh.vertexCount = vrts.vertices;
+			mesh.vertexOffset = vertexOffset * 4 / 6;
+			mesh.vertexCount = vrts.vertices * 4 / 6;
 			mesh.indexOffset = vertexOffset;
 			mesh.indexCount = vrts.vertices;
+
+			for( uint32_t i = mesh.indexOffset; i != mesh.indexCount; ++i )
+			{
+				_indices[i] -= vertexOffset;
+			}
 
 			MAGIC_RENDER_STATE state;
 			while( Magic_GetNextRenderState( _flush.context, &state ) == MAGIC_SUCCESS )

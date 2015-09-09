@@ -1480,7 +1480,7 @@ namespace Menge
 			m_ibHandle2D
 			, 0
 			, m_renderIndicesCount * sizeof(RenderIndices)
-			, BLF_LOCK_NONE 
+			, BLF_LOCK_DISCARD
 			);
 
 		if( ibData == nullptr )

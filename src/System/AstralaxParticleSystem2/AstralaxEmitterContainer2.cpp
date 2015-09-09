@@ -55,6 +55,22 @@ namespace Menge
 			return false;
 		}
 
+		if( Magic_HasTextures( mf ) == true )
+		{
+			LOGGER_ERROR( m_serviceProvider )("AstralaxEmitterContainer2::initialize: particle textures are stored within the file"
+				);
+
+			return false;
+		}
+
+		if( Magic_GetStaticAtlasCount( mf ) != 1 )
+		{
+			LOGGER_ERROR( m_serviceProvider )("AstralaxEmitterContainer2::initialize: particle has many static atlas, sorry need one :("
+				);
+
+			return false;
+		}
+
 		m_mf = mf;
 
 		m_factoryPoolAstralaxEmitter.setMethodListener( this, &AstralaxEmitterContainer2::onEmitterRelease_ );

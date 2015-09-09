@@ -185,6 +185,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage * ResourceParticle::getAtlasImageResource( uint32_t _atlasId ) const
 	{
+		if( _atlasId >= m_resourceImages.size() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ResourceParticle::getAtlasImageResource %s invalid get atlas image index %d count %d"
+				, this->getName().c_str()
+				, _atlasId
+				, m_resourceImages.size()
+				);
+
+			return nullptr;
+		}
+
 		ResourceImage * resource = m_resourceImages[_atlasId];
 
 		return resource;

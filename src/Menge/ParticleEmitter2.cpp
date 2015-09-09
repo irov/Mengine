@@ -403,7 +403,16 @@ namespace	Menge
 
 			for( uint32_t i = 0; i != mesh.textures; ++i )
 			{
-				ResourceImage * image = m_resourceParticle->getAtlasImageResource( mesh.texture[i] );
+				//int textureId = mesh.texture[i];
+
+				//ResourceImage * image = m_resourceParticle->getAtlasImageResource( textureId );
+				//TODO
+				ResourceImage * image = m_resourceParticle->getAtlasImageResource( 0 );
+
+				if( image == nullptr )
+				{
+					return;
+				}
 
 				const RenderTextureInterfacePtr & texture = image->getTexture();
 

@@ -67,6 +67,10 @@ static void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path
 
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
+	(void)hInstance;
+	(void)hPrevInstance;
+	(void)nShowCmd;
+
 	int cmd_num;
 	LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
 
@@ -130,7 +134,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	WCHAR szBuffer[512];
 	if( astralax.empty() == true )
 	{
-		const WCHAR * regPath = L"Software\\Astralax\\Magic Particles 3D (Dev) 2.25\\Path";
+		const WCHAR * regPath = L"Software\\Astralax\\Magic Particles 3D (Dev) 3.11\\Path";
 
 		HKEY openedKey;
 		if( ::RegOpenKeyEx( HKEY_CURRENT_USER, regPath, 0, KEY_READ, &openedKey ) != ERROR_SUCCESS )

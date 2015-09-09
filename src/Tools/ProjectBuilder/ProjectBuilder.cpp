@@ -564,88 +564,6 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool s_magicParticlesAtlasFiles( const wchar_t * _path, PyObject * _atlasFiles )
-	{
-		String utf8_path;
-		if( Helper::unicodeToUtf8( serviceProvider, _path, utf8_path ) == false )
-		{
-			return false;
-		}
-
-		ConstString c_path = Helper::stringizeString(serviceProvider, utf8_path);
-
-		InputStreamInterfacePtr stream = FILE_SERVICE(serviceProvider)
-			->openInputFile( ConstString::none(), c_path, false );
-
-		if( stream == nullptr )
-		{
-			LOGGER_ERROR(serviceProvider)("magicParticlesAtlasFiles: Image file '%s' was not found"
-				, c_path.c_str() 
-				);
-
-			return false;
-		}
-
-		ParticleEmitterContainerInterfacePtr container = PARTICLE_SYSTEM(serviceProvider)
-			->createParticleEmitterContainer();
-
-		if( container == nullptr )
-		{
-			LOGGER_ERROR(serviceProvider)("magicParticlesAtlasFiles: invalid create container '%s'"
-				, c_path.c_str() 
-				);
-
-			return false;
-		}
-
-		if( PARTICLE_SYSTEM(serviceProvider)
-			->loadParticleEmitterContainerFromMemory( container, stream ) == false )
-		{
-			LOGGER_ERROR(serviceProvider)("magicParticlesAtlasFiles: invalid load container '%s'"
-				, c_path.c_str() 
-				);
-
-			return false;
-		}
-
-		const TVectorParticleEmitterAtlas &  atlas = container->getAtlas();
-
-		for( TVectorParticleEmitterAtlas::const_iterator
-			it = atlas.begin(),
-			it_end = atlas.end();
-		it != it_end;
-		++it )
-		{
-			const ParticleEmitterAtlas & atlas = *it;
-
-			WString unicode_filename;
-			if( Helper::utf8ToUnicode( serviceProvider, atlas.filename, unicode_filename ) == false )
-			{
-				return false;
-			}
-			
-			pybind::list_appenditem_t( _atlasFiles, unicode_filename );
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * magicParticlesAtlasFiles( const wchar_t * _path )
-	{
-		PyObject * atlasFiles = pybind::list_new( 0 );
-
-		if( s_magicParticlesAtlasFiles( _path, atlasFiles ) == false )
-		{
-			LOGGER_ERROR(serviceProvider)("magicParticlesAtlasFiles: error process %ls"
-				, _path
-				);
-
-			return pybind::ret_none();
-		}
-
-		return atlasFiles;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	PyObject * isAlphaInImageFile( const wchar_t * _path )
 	{
 		String utf8_path;
@@ -1058,7 +976,6 @@ bool run()
 	pybind::def_function( "writeAek", &Menge::writeAek, py_tools_module );
 
 	pybind::def_function( "convert", &Menge::convert, py_tools_module );	
-	pybind::def_function( "magicParticlesAtlasFiles", &Menge::magicParticlesAtlasFiles, py_tools_module );
 	pybind::def_function( "isAlphaInImageFile", &Menge::isAlphaInImageFile, py_tools_module );
 	pybind::def_function( "isUselessAlphaInImageFile", &Menge::isUselessAlphaInImageFile, py_tools_module );
 
@@ -1160,6 +1077,11 @@ bool run()
 ///////////////////////////////////////////////////////////////////////////////////
 int CALLBACK WinMain( _In_  HINSTANCE hInstance, _In_  HINSTANCE hPrevInstance, _In_  LPSTR lpCmdLine, _In_  int nCmdShow )
 { 
+	(void)hInstance;
+	(void)hPrevInstance;
+	(void)lpCmdLine;
+	(void)nCmdShow;
+
 	Menge::createConsole();
 
 	run();

@@ -461,7 +461,7 @@ namespace Menge
 			bool isCanUpdate = Magic_Update( m_emitterId,rate );
 			if( !isCanUpdate )
 			{
-				restart();
+				this->restart();
 			}
 		}
 		
@@ -572,7 +572,7 @@ namespace Menge
 
 		uint32_t vertexOffset = 0;
 
-		MAGIC_RENDER_VERTICES vrts;		
+		MAGIC_RENDER_VERTICES vrts;
 		while( Magic_GetVertices( _flush.context, &vrts ) == true )
 		{
 			if( _flush.meshCount >= _meshLimit )
@@ -595,6 +595,11 @@ namespace Menge
 			MAGIC_RENDER_STATE state;
 			while( Magic_GetNextRenderState( _flush.context, &state ) == MAGIC_SUCCESS )
 			{
+				if( state.state != MAGIC_RENDER_STATE_TEXTURE )
+				{
+					return false;
+				}
+
 				if( state.index == -1 )
 				{
 					return false;

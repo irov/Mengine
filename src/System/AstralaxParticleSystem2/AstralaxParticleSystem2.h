@@ -39,6 +39,12 @@ namespace Menge
 	public:
 		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) override;
 
+	public:
+		const RenderStage * getMaterialStage( int _index ) const override;
+
+	public:
+		void updateMaterial();
+
 	protected:
 		void onContainerRelease_( AstralaxEmitterContainer2 * _contanier );
 
@@ -47,5 +53,8 @@ namespace Menge
 
         typedef FactoryPoolStore<AstralaxEmitterContainer2, 16> TFactoryPoolAstralaxEmitterContainer;
         TFactoryPoolAstralaxEmitterContainer m_factoryPoolAstralaxEmitterContainer;
+
+		int m_stageCount;
+		const RenderStage * m_stages[256];
 	};
 }

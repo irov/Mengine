@@ -209,6 +209,7 @@ namespace Menge
 						continue;
 					}
 
+					shapes.shapes_size = shapes_size;
 					shapes.shapes = Helper::allocateMemory<MovieFrameShape>( shapes_size );
 
 					for( uint32_t j = 0; j != shapes_size; ++j )
@@ -219,15 +220,25 @@ namespace Menge
 
 						if( shape.vertexCount > 0 )
 						{
+							shape.pos = Helper::allocateMemory<mt::vec2f>( shape.vertexCount );
+							shape.uv = Helper::allocateMemory<mt::vec2f>( shape.vertexCount );
+							
 							ar.readPODs( shape.pos, shape.vertexCount );
 							ar.readPODs( shape.uv, shape.vertexCount );
 
 							ar << shape.indexCount;
+
+							shape.indices = Helper::allocateMemory<RenderIndices>( shape.indexCount );
+
 							ar.readPODs( shape.indices, shape.indexCount );
 						}
 						else
 						{
 							shape.indexCount = 0;
+
+							shape.pos = nullptr;
+							shape.uv = nullptr;
+							shape.indices = nullptr;
 						}
 					}
 				}
@@ -253,6 +264,7 @@ namespace Menge
 					ar << vertexCount;
 
 					polygon.vertexCount = vertexCount;
+					polygon.polygon = Helper::allocateMemory<mt::vec2f>( vertexCount );
 
 					for( uint32_t j = 0; j != vertexCount; ++j )
 					{

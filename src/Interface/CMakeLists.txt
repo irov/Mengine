@@ -17,7 +17,6 @@ src
 	SoundCodecInterface.h
 	VideoCodecInterface.h
 	ParticleSystemInterface.h
-    ParticleSystemInterface2.h
 	FileSystemInterface.h
 	RenderSystemInterface.h
 	PhysicSystemInterface.h
@@ -26,7 +25,6 @@ src
 	LogSystemInterface.h
 	ApplicationInterface.h
 	InputSystemInterface.h
-	MengineInterface.h
 	SoundSystemInterface.h
 	ThreadSystemInterface.h
 	HttpSystemInterface.h

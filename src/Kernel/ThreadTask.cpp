@@ -51,7 +51,13 @@ namespace Menge
 
 		m_run = this->_onRun();
 
-		return m_run;
+		if( m_run == false )
+		{
+			m_successful = false;
+			m_finish = true;
+		}
+		
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTask::isRun() const

@@ -79,10 +79,7 @@ namespace Menge
 		mt::vec2f m_customSize;
 
         mt::vec4f m_percentVisibility;
-
-        TVectorRenderVertex2D m_maskPolygonVertex;
-        TVectorIndices m_maskPolygonIndices;
-        
+       
         mt::vec2f m_textureUVOffset;
         mt::vec2f m_textureUVScale;
 

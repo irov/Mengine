@@ -219,8 +219,7 @@ namespace Menge
 			RenderVertex2D & vtx = *it;
 			
 			vtx.color = argb;
-		}
-		
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh2D::setFrameShape( const MovieFrameShape * _shape )

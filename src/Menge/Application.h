@@ -16,6 +16,7 @@
 #   include "Interface/ConfigInterface.h"
 #   include "Interface/GameInterface.h"
 #   include "Interface/PlayerInterface.h"
+#	include "Interface/PrefetcherInterface.h"
 
 #   include "Interface/StringizeInterface.h"
 

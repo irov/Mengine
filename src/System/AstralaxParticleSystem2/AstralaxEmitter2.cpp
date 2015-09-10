@@ -608,56 +608,15 @@ namespace Menge
 				mesh.texture[state.index] = state.value;
 			}
 
+			mesh.material = vrts.material;
+
 			MAGIC_MATERIAL m;
 			if( Magic_GetMaterial( vrts.material, &m ) != MAGIC_SUCCESS )
 			{
 				return false;
 			}
-
+						
 			mesh.textures = m.textures;
-
-			switch( m.blending )
-			{
-			case MAGIC_BLENDING_NORMAL:
-				{
-					mesh.stage.alphaBlendEnable = true;
-					mesh.stage.blendSrc = BF_SOURCE_ALPHA;
-					mesh.stage.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
-				}break;
-			case MAGIC_BLENDING_ADD:
-				{
-					mesh.stage.alphaBlendEnable = true;
-					mesh.stage.blendSrc = BF_SOURCE_ALPHA;
-					mesh.stage.blendDst = BF_ONE;
-				}break;
-			case MAGIC_BLENDING_OPACITY:
-				{
-					mesh.stage.alphaBlendEnable = false;
-				}break;
-			}
-
-			for( int stage = 0; stage != m.textures; ++stage )
-			{
-				const MAGIC_TEXTURE_STATES & state = m.states[stage];
-
-				const ETextureAddressMode dx_address[] = {TAM_WRAP, TAM_MIRROR, TAM_CLAMP, TAM_BORDER};
-
-				RenderTextureStage & textureStage = mesh.stage.textureStage[stage];
-								
-				textureStage.addressU = dx_address[state.address_u];
-				textureStage.addressV = dx_address[state.address_v];
-
-				const ETextureOp dx_operation[] = {TOP_SELECTARG1, TOP_ADD, TOP_SUBTRACT, TOP_MODULATE, TOP_MODULATE2X, TOP_MODULATE4X};
-				const ETextureArgument dx_arg[] = {TARG_CURRENT, TARG_DIFFUSE, TARG_TEXTURE};
-
-				textureStage.colorOp = dx_operation[state.operation_rgb];
-				textureStage.colorArg1 = dx_arg[state.argument_rgb1];
-				textureStage.colorArg2 = dx_arg[state.argument_rgb2];
-
-				textureStage.alphaOp = dx_operation[state.operation_alpha];
-				textureStage.alphaArg1 = dx_arg[state.argument_alpha1];
-				textureStage.alphaArg2 = dx_arg[state.argument_alpha2];
-			}
 
 			_flush.meshCount++;
 

@@ -39,7 +39,7 @@ namespace Menge
 		int texture[8];
 		uint32_t textures;
 
-		RenderStage stage;
+		int material;
 	};
 
 	struct ParticleEmitterRenderFlush
@@ -140,10 +140,6 @@ namespace Menge
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
 	public:
-		virtual bool initialize( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
-		virtual void finalize() = 0;
-
-	public:
 		virtual bool isValid() const = 0;
 
 	public:
@@ -163,6 +159,9 @@ namespace Menge
 
 	public:
 		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
+
+	public:
+		virtual const RenderStage * getMaterialStage( int _index ) const = 0;
 	};
 
 #   define PARTICLE_SYSTEM2( serviceProvider )\

@@ -10,19 +10,11 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTaskPrefetchDataflow::ThreadTaskPrefetchDataflow()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchDataflow::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	void ThreadTaskPrefetchDataflow::setDataflowType( const ConstString & _dataflowType )
 	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchDataflow::initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _dataflowType )
-	{
-		m_pakName = _pakName;
-		m_filePath = _fileName;
 		m_dataflowType = _dataflowType;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -105,10 +97,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPrefetchDataflow::_onComplete( bool _successful )
 	{
-		(void) _successful;
+		ThreadTaskPrefetch::_onComplete( _successful );
 
-		m_group = nullptr;
-		m_stream = nullptr;
 		m_dataflow = nullptr;
 	}
 }

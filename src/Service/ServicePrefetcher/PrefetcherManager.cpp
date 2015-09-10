@@ -42,49 +42,66 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		template<class T>
-		class FVisitorReceiverJoinTask
-		{
-		public:
-			FVisitorReceiverJoinTask( ThreadServiceInterface * _threadService )
-				: m_threadService(_threadService)
-			{
-			}
-
-		public:
-			void operator()( T * _receiver )
-			{
-				m_threadService->joinTask( _receiver->prefetcher );				
-			}
-
-		protected:
-			ThreadServiceInterface * m_threadService;
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void PrefetcherManager::finalize()
 	{
-		ThreadServiceInterface * threadService = THREAD_SERVICE(m_serviceProvider);
+		for( TVectorPrefetchReceiver::const_iterator
+			it = m_prefetchReceiver.begin(),
+			it_end = m_prefetchReceiver.end();
+		it != it_end;
+		++it )
+		{
+			const PrefetchReceiver & receiver = *it;
 
-		FVisitorReceiverJoinTask<PrefetchImageDecoderReceiver> fvr_image(threadService);
-		m_prefetchImageDecoderReceiver.foreach( fvr_image );
-		m_prefetchImageDecoderReceiver.clear();
+			receiver.prefetcher->cancel();
+		}
 
-		FVisitorReceiverJoinTask<PrefetchSoundDecoderReceiver> fvr_sound(threadService);
-		m_prefetchSoundDecoderReceiver.foreach( fvr_sound );
-		m_prefetchSoundDecoderReceiver.clear();
+		for( TVectorPrefetchReceiver::const_iterator
+			it = m_prefetchReceiver.begin(),
+			it_end = m_prefetchReceiver.end();
+		it != it_end;
+		++it )
+		{
+			const PrefetchReceiver & receiver = *it;
 
-		FVisitorReceiverJoinTask<PrefetchDataReceiver> fvr_data(threadService);
-		m_prefetchDataReceiver.foreach( fvr_data );
-		m_prefetchDataReceiver.clear();
+			THREAD_SERVICE( m_serviceProvider )
+				->joinTask( receiver.prefetcher );
+		}
+
+		m_prefetchReceiver.clear();
 
 		if( m_threadQueue != nullptr )
 		{
 			m_threadQueue->cancel();
 			m_threadQueue = nullptr;
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		//////////////////////////////////////////////////////////////////////////
+		struct FReceiverComplete
+		{
+			bool operator ()( const PrefetchReceiver & _receiver ) const
+			{
+				if( _receiver.prefetcher->isComplete() == false )
+				{
+					return false;
+				}
+
+				if( _receiver.prefetcher->isSuccessful() == false )
+				{
+					return false;
+				}
+
+				return true;
+			}
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PrefetcherManager::update()
+	{
+		TVectorPrefetchReceiver::iterator it_erase = std::remove_if( m_prefetchReceiver.begin(), m_prefetchReceiver.end(), FReceiverComplete() );
+		m_prefetchReceiver.erase( it_erase, m_prefetchReceiver.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::prefetchImageDecoder( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
@@ -94,55 +111,40 @@ namespace Menge
 			return false;
 		}
 
-		PrefetchImageDecoderReceiver * receiver;
-		if( m_prefetchImageDecoderReceiver.create_if( _pakName, _fileName, &receiver ) == true )
+		PrefetchReceiver * receiver;
+		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == true )
 		{
-			receiver->refcount = 1;
-						
-			ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder.createObjectT();
-			task->setServiceProvider( m_serviceProvider );
-			task->initialize( _pakName, _fileName, _codec );
-
-			receiver->prefetcher = task;
-
-			m_prefetchImageDecoderReceiver.insert( receiver, nullptr );
-
-			m_threadQueue->addTask( task );
+			++receiver->refcount;
 
 			return true;
 		}
 
-		++receiver->refcount;
+		PrefetchReceiver new_receiver;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PrefetcherManager::unfetchImageDecoder( const ConstString& _pakName, const FilePath& _fileName )
-	{
-		PrefetchImageDecoderReceiver * receiver;
-		if( m_prefetchImageDecoderReceiver.has( _pakName, _fileName, &receiver ) == false )
-		{
-			return;
-		}
+		new_receiver.refcount = 1;
+	
+		ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder.createObjectT();
+		task->setServiceProvider( m_serviceProvider );
+		task->initialize( _pakName, _fileName );
+		task->setImageCodec( _codec );
 
-		if( --receiver->refcount > 0 )
-		{
-			return;
-		}
+		new_receiver.prefetcher = task;
 
-		receiver->prefetcher->cancel();
+		m_prefetchReceiver.push_back( new_receiver );
 
-		m_prefetchImageDecoderReceiver.erase_node( receiver );
+		m_threadQueue->addTask( task );
+
+		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::getImageDecoder( const ConstString & _pakName, const FilePath & _fileName, ImageDecoderInterfacePtr & _decoder ) const
 	{
-		const PrefetchImageDecoderReceiver * receiver;
-		if( m_prefetchImageDecoderReceiver.has( _pakName, _fileName, &receiver ) == false )
+		PrefetchReceiver * receiver;
+		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == false )
 		{
 			return false;
 		}
-				
+
 		if( receiver->prefetcher->isComplete() == false )
 		{
 			return false;
@@ -153,13 +155,15 @@ namespace Menge
 			return false;
 		}
 
-		const ImageDecoderInterfacePtr & prefetch_decoder = receiver->prefetcher->getDecoder();
+		ThreadTaskPrefetchImageDecoderPtr prefetcherImageDecoder = stdex::intrusive_static_cast<ThreadTaskPrefetchImageDecoderPtr>(receiver->prefetcher);
+
+		const ImageDecoderInterfacePtr & prefetch_decoder = prefetcherImageDecoder->getDecoder();
 
 		if( prefetch_decoder == nullptr )
 		{
 			return false;
 		}
-		
+
 		_decoder = prefetch_decoder;
 
 		return true;
@@ -172,51 +176,36 @@ namespace Menge
 			return false;
 		}
 
-		PrefetchSoundDecoderReceiver * receiver;
-		if( m_prefetchSoundDecoderReceiver.create_if( _pakName, _fileName, &receiver ) == true )
+		PrefetchReceiver * receiver;
+		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == true )
 		{
-			receiver->refcount = 1;
-
-			ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder.createObjectT();
-			task->setServiceProvider( m_serviceProvider );
-			task->initialize( _pakName, _fileName, _codec );
-
-			receiver->prefetcher = task;
-
-			m_prefetchSoundDecoderReceiver.insert( receiver, nullptr );
-
-			m_threadQueue->addTask( task );
+			++receiver->refcount;
 
 			return true;
 		}
-		
-		++receiver->refcount;
+
+		PrefetchReceiver new_receiver;
+
+		new_receiver.refcount = 1;
+
+		ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder.createObjectT();
+		task->setServiceProvider( m_serviceProvider );
+		task->initialize( _pakName, _fileName );
+		task->setSoundCodec( _codec );
+
+		new_receiver.prefetcher = task;
+
+		m_prefetchReceiver.push_back( new_receiver );
+
+		m_threadQueue->addTask( task );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PrefetcherManager::unfetchSoundDecoder( const ConstString& _pakName, const FilePath& _fileName )
-	{
-		PrefetchSoundDecoderReceiver * receiver;
-		if( m_prefetchSoundDecoderReceiver.has( _pakName, _fileName, &receiver ) == false )
-		{
-			return;
-		}
-
-		if( --receiver->refcount > 0 )
-		{
-			return;
-		}
-
-		receiver->prefetcher->cancel();
-
-		m_prefetchSoundDecoderReceiver.erase_node( receiver );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::getSoundDecoder( const ConstString& _pakName, const FilePath & _fileName, SoundDecoderInterfacePtr & _decoder ) const
 	{
-		const PrefetchSoundDecoderReceiver * receiver;
-		if( m_prefetchSoundDecoderReceiver.has( _pakName, _fileName, &receiver ) == false )
+		PrefetchReceiver * receiver;
+		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == false )
 		{
 			return false;
 		}
@@ -231,7 +220,9 @@ namespace Menge
 			return false;
 		}
 
-		const SoundDecoderInterfacePtr & prefetch_decoder = receiver->prefetcher->getDecoder();
+		ThreadTaskPrefetchSoundDecoderPtr prefetcherSoundDecoder = stdex::intrusive_static_cast<ThreadTaskPrefetchSoundDecoderPtr>(receiver->prefetcher);
+
+		const SoundDecoderInterfacePtr & prefetch_decoder = prefetcherSoundDecoder->getDecoder();
 
 		if( prefetch_decoder == nullptr )
 		{
@@ -250,51 +241,36 @@ namespace Menge
 			return false;
 		}
 
-		PrefetchDataReceiver * receiver;
-		if( m_prefetchDataReceiver.create_if( _pakName, _fileName, &receiver ) == true )
+		PrefetchReceiver * receiver;
+		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == true )
 		{
-			receiver->refcount = 1;
-
-			ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow.createObjectT();
-			task->setServiceProvider( m_serviceProvider );
-			task->initialize( _pakName, _fileName, _dataflowType );
-
-			receiver->prefetcher = task;
-
-			m_prefetchDataReceiver.insert( receiver, nullptr );
-
-			m_threadQueue->addTask( task );
+			++receiver->refcount;
 
 			return true;
 		}
 
-		++receiver->refcount;
+		PrefetchReceiver new_receiver;
+
+		new_receiver.refcount = 1;
+
+		ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow.createObjectT();
+		task->setServiceProvider( m_serviceProvider );
+		task->initialize( _pakName, _fileName );
+		task->setDataflowType( _dataflowType );
+
+		new_receiver.prefetcher = task;
+
+		m_prefetchReceiver.push_back( new_receiver );
+
+		m_threadQueue->addTask( task );
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PrefetcherManager::unfetchData( const ConstString& _pakName, const FilePath& _fileName )
-	{
-		PrefetchDataReceiver * receiver;
-		if( m_prefetchDataReceiver.has( _pakName, _fileName, &receiver ) == false )
-		{
-			return;
-		}
-
-		if( --receiver->refcount > 0 )
-		{
-			return;
-		}
-
-		receiver->prefetcher->cancel();
-
-		m_prefetchDataReceiver.erase_node( receiver );
 	}
 	//////////////////////////////////////////////////////////////////////////			
 	bool PrefetcherManager::getData( const ConstString& _pakName, const FilePath & _fileName, DataInterfacePtr & _data ) const
 	{
-		const PrefetchDataReceiver * receiver;
-		if( m_prefetchDataReceiver.has( _pakName, _fileName, &receiver ) == false )
+		PrefetchReceiver * receiver;
+		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == false )
 		{
 			return false;
 		}
@@ -309,7 +285,9 @@ namespace Menge
 			return false;
 		}
 
-		const DataInterfacePtr & prefetch_data = receiver->prefetcher->getData();
+		ThreadTaskPrefetchDataflowPtr prefetcherDataflow = stdex::intrusive_static_cast<ThreadTaskPrefetchDataflowPtr>(receiver->prefetcher);
+
+		const DataInterfacePtr & prefetch_data = prefetcherDataflow->getData();
 
 		if( prefetch_data == nullptr )
 		{
@@ -321,62 +299,76 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void PrefetcherManager::unfetch( const ConstString& _pakName, const FilePath& _fileName )
+	{
+		PrefetchReceiver * receiver;
+		if( this->hasPrefetch( _pakName, _fileName, &receiver ) == false )
+		{
+			return;
+		}
+
+		if( --receiver->refcount > 0 )
+		{
+			return;
+		}
+
+		receiver->prefetcher->cancel();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	PrefetcherDebugInfo PrefetcherManager::getDebugInfo() const
 	{
 		PrefetcherDebugInfo info;
 
-		info.decoderCount = 0;
-		info.soundCount = 0;
-		info.dataCount = 0;
+		info.receiverCount = 0;
 
-		for( TMapPrefetchImageDecoderReceiver::const_iterator
-			it = m_prefetchImageDecoderReceiver.begin(),
-			it_end = m_prefetchImageDecoderReceiver.end();
+		for( TVectorPrefetchReceiver::const_iterator
+			it = m_prefetchReceiver.begin(),
+			it_end = m_prefetchReceiver.end();
 		it != it_end;
 		++it )
 		{
-			const PrefetchImageDecoderReceiver * receiver = *it;
+			const PrefetchReceiver & receiver = *it;
 
-			if( receiver->prefetcher->isComplete() == false )
+			if( receiver.prefetcher->isComplete() == false )
 			{
 				continue;
 			}
 
-			++info.decoderCount;
+			++info.receiverCount;
 		}
-
-		for( TMapPrefetchSoundDecoderReceiver::const_iterator
-			it = m_prefetchSoundDecoderReceiver.begin(),
-			it_end = m_prefetchSoundDecoderReceiver.end();
-		it != it_end;
-		++it )
-		{
-			const PrefetchSoundDecoderReceiver * receiver = *it;
-
-			if( receiver->prefetcher->isComplete() == false )
-			{
-				continue;
-			}
-
-			++info.soundCount;
-		}
-
-		for( TMapPrefetchDataReceiver::const_iterator
-			it = m_prefetchDataReceiver.begin(),
-			it_end = m_prefetchDataReceiver.end();
-		it != it_end;
-		++it )
-		{
-			const PrefetchDataReceiver * receiver = *it;
-
-			if( receiver->prefetcher->isComplete() == false )
-			{
-				continue;
-			}
-
-			++info.dataCount;
-		}
-
+		
 		return info;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PrefetcherManager::hasPrefetch( const ConstString& _pakName, const FilePath & _fileName, PrefetchReceiver ** _receiver ) const
+	{ 
+		for( TVectorPrefetchReceiver::const_iterator
+			it = m_prefetchReceiver.begin(),
+			it_end = m_prefetchReceiver.end();
+		it != it_end;
+		++it )
+		{
+			const PrefetchReceiver & receiver = *it;
+
+			const ConstString & pakName = receiver.prefetcher->getPakName();
+
+			if( pakName != _pakName )
+			{
+				continue;
+			}
+
+			const FilePath & filePath = receiver.prefetcher->getFilePath();
+
+			if( filePath != _fileName )
+			{
+				continue;
+			}
+
+			*_receiver = const_cast<PrefetchReceiver *>(&receiver);
+
+			return true;
+		}
+		
+		return false;
 	}
 }

@@ -2264,7 +2264,7 @@ namespace Menge
 				const FilePath & fileName = _resource->getFilePath();
 
 				PREFETCHER_SERVICE( m_serviceProvider )
-					->unfetchImageDecoder( category, fileName );
+					->unfetch( category, fileName );
 			}
 
 			void visit( ResourceSound * _resource ) override
@@ -2273,7 +2273,7 @@ namespace Menge
 				const FilePath & filePath = _resource->getFilePath();
 
 				PREFETCHER_SERVICE( m_serviceProvider )
-					->unfetchSoundDecoder( category, filePath );
+					->unfetch( category, filePath );
 			}
 
 			void visit( ResourceMovie * _resource ) override
@@ -2282,7 +2282,7 @@ namespace Menge
 				const FilePath & fileName = _resource->getFilePath();
 
 				PREFETCHER_SERVICE( m_serviceProvider )
-					->unfetchData( category, fileName );
+					->unfetch( category, fileName );
 			}
 
 		protected:

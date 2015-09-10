@@ -52,14 +52,14 @@ namespace Menge
 	{
 		(void)_png;
 
-		return stdex_malloc_threadsafe( _size );
+		return stdex_malloc( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void PNGAPI s_png_free_ptr( png_structp _png, png_voidp _ptr )
 	{
 		(void)_png;
 
-		stdex_free_threadsafe( _ptr );
+		stdex_free( _ptr );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImageDecoderPNG::ImageDecoderPNG()
@@ -78,6 +78,7 @@ namespace Menge
 		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
 
 		m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
+		//m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
 
 		if( m_png_ptr == nullptr )
 		{
@@ -393,13 +394,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderPNG::_rewind()
 	{
-		m_stream->seek( PNG_BYTES_TO_CHECK );
-
 		png_destroy_read_struct( &m_png_ptr, &m_info_ptr, nullptr );
 
 		png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
 
-		m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
+		//m_png_ptr = png_create_read_struct( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning );
+		m_png_ptr = png_create_read_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
 
 		if( m_png_ptr == nullptr )
 		{
@@ -421,57 +421,10 @@ namespace Menge
 			return false;
 		}
 
-		if( setjmp( png_jmpbuf( m_png_ptr ) ) )
+		if( m_stream->seek( 0 ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::_rewind" 
-				);
-
-			png_destroy_write_struct( &m_png_ptr, &m_info_ptr );
-
 			return false;
 		}
-
-		png_set_read_fn( m_png_ptr, m_stream.get(), &s_readProc );
-
-		png_set_sig_bytes( m_png_ptr, PNG_BYTES_TO_CHECK );
-
-		png_read_info( m_png_ptr, m_info_ptr );
-
-		png_uint_32 width = 0;
-		png_uint_32 height = 0;
-		int color_type = 0;
-		int bit_depth = 0;
-		int interlace_method = 0;
-
-		png_get_IHDR( m_png_ptr, m_info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, nullptr, nullptr );
-
-		if( interlace_method != PNG_INTERLACE_NONE )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::_rewind PNG is interlacing (Engine not support to read this png format)"
-				);
-
-			png_destroy_info_struct( m_png_ptr, &m_info_ptr );
-
-			return false;
-		}
-
-		switch( color_type )
-		{
-		case PNG_COLOR_TYPE_RGB:
-		case PNG_COLOR_TYPE_RGB_ALPHA:
-#   ifndef MENGE_RENDER_TEXTURE_RGBA
-			png_set_bgr(m_png_ptr);
-#   endif
-			break;
-
-		case PNG_COLOR_TYPE_GRAY:
-
-			break;
-		case PNG_COLOR_TYPE_GRAY_ALPHA:
-
-			png_set_strip_alpha(m_png_ptr);
-			break;
-		};
 
 		return true;
 	}

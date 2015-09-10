@@ -1991,7 +1991,7 @@ namespace Menge
 		{
 			m_application->finalizeGame();
 		}
-
+		
 		for( TVectorPlugins::iterator
 			it = m_plugins.begin(),
 			it_end = m_plugins.end();
@@ -2002,10 +2002,18 @@ namespace Menge
 
 			plugin->finalize();
 		}
-
+		
 		if( m_application != nullptr )
 		{
 			m_application->finalize();
+		}
+
+		if( m_prefetcherService != nullptr )
+		{
+			m_prefetcherService->finalize();
+
+			SERVICE_DESTROY( PrefetcherService, m_prefetcherService );
+			m_prefetcherService = nullptr;
 		}
 
 		if( m_dataService != nullptr )
@@ -2034,7 +2042,7 @@ namespace Menge
 			m_inputService = nullptr;
 		}
 
-		SERVICE_DESTROY( UnicodeService, m_unicodeService );        
+		SERVICE_DESTROY( UnicodeService, m_unicodeService );
 		m_unicodeService = nullptr;
 
 		SERVICE_DESTROY( UnicodeSystem, m_unicodeSystem );
@@ -2104,30 +2112,6 @@ namespace Menge
 			m_renderSystem = nullptr;
 		}
 
-		if( m_prefetcherService != nullptr )
-		{
-			m_prefetcherService->finalize();
-
-			SERVICE_DESTROY( PrefetcherService, m_prefetcherService );
-			m_prefetcherService = nullptr;
-		}
-
-		if( m_threadService != nullptr )
-		{
-			m_threadService->finalize();
-
-			SERVICE_DESTROY( ThreadService, m_threadService );
-			m_threadService = nullptr;
-		}        
-
-		if( m_threadSystem != nullptr )
-		{
-			m_threadSystem->finalize();
-
-			SERVICE_DESTROY( ThreadSystem, m_threadSystem );
-			m_threadSystem = nullptr;
-		}
-
 		if( m_scriptService != nullptr )
 		{
 			SERVICE_DESTROY( ScriptService, m_scriptService );
@@ -2187,6 +2171,22 @@ namespace Menge
 		{
 			SERVICE_DESTROY(NotificationService, m_notificationService);
 			m_notificationService = nullptr;
+		}
+
+		if( m_threadService != nullptr )
+		{
+			m_threadService->finalize();
+
+			SERVICE_DESTROY( ThreadService, m_threadService );
+			m_threadService = nullptr;
+		}
+
+		if( m_threadSystem != nullptr )
+		{
+			m_threadSystem->finalize();
+
+			SERVICE_DESTROY( ThreadSystem, m_threadSystem );
+			m_threadSystem = nullptr;
 		}
 
 		if( m_alreadyRunningMonitor != nullptr )

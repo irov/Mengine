@@ -38,6 +38,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Win32ThreadSystem::finalize()
 	{
+		if( m_poolWin32ThreadIdentity.emptyObject() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Win32ThreadSystem::finalize Win32ThreadIdentity not all remove %d"
+				, m_poolWin32ThreadIdentity.countObject()
+				);
+		}
+
+		if( m_poolWin32ThreadMutex.emptyObject() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Win32ThreadSystem::finalize Win32ThreadMutex not all remove %d"
+				, m_poolWin32ThreadMutex.countObject()
+				);
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32ThreadSystem::avaliable() const

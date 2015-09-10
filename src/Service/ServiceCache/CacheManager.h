@@ -53,7 +53,7 @@ namespace Menge
 			bool lock;
 		};
 
-		typedef stdex::vector_threadsafe<CacheBufferMemory> TVectorCacheBufferMemory;
+		typedef stdex::vector<CacheBufferMemory> TVectorCacheBufferMemory;
 		TVectorCacheBufferMemory m_buffers;
 
 		CacheBufferID m_enumeratorId;

@@ -1501,8 +1501,7 @@ namespace Menge
 				PrefetcherDebugInfo pdInfo = PREFETCHER_SERVICE(m_serviceProvider)
 					->getDebugInfo();
 
-				ss << "Prefetcher: decoder " << pdInfo.decoderCount << std::endl;
-				ss << "Prefetcher: data " << pdInfo.dataCount << std::endl;
+				ss << "Prefetcher " << pdInfo.receiverCount << std::endl;
 
 				MousePickerSystemInterface * mousePickerSystem = 
 					PLAYER_SERVICE(m_serviceProvider)->getMousePickerSystem();

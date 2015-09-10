@@ -3,46 +3,28 @@
 #	include "Interface/DataInterface.h"
 #	include "Interface/FileSystemInterface.h"
 
-#	include "Kernel/ThreadTask.h"
-
-#	include "Core/MemoryInput.h"
-
-#	include "Factory/FactoryDefault.h"
+#	include "ThreadTaskPrefetch.h"
 
 namespace Menge
 {
 	class ThreadTaskPrefetchDataflow
-		: public ThreadTask
+		: public ThreadTaskPrefetch
 	{
 	public:
 		ThreadTaskPrefetchDataflow();
 		
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+		void setDataflowType( const ConstString & _dataflowType );
 
 	public:
-		void initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _dataflowType );
-
-	public:
-		inline const ConstString & getPakName() const;
-		inline const FilePath & getFilePath() const;
-
 		const DataInterfacePtr & getData() const;
 
 	protected:
 		bool _onRun() override;
-
-	protected:
 		bool _onMain() override;
-
-	protected:
 		void _onComplete( bool _successful ) override;
 		
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
-		ConstString m_pakName;
-		FilePath m_filePath;
 		ConstString m_dataflowType;
 		
 	protected:
@@ -53,16 +35,6 @@ namespace Menge
 	protected:
 		DataInterfacePtr m_data;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline const ConstString & ThreadTaskPrefetchDataflow::getPakName() const
-	{
-		return m_pakName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const FilePath & ThreadTaskPrefetchDataflow::getFilePath() const
-	{
-		return m_filePath;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ThreadTaskPrefetchDataflow> ThreadTaskPrefetchDataflowPtr;
 }

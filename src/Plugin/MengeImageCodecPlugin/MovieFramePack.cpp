@@ -11,6 +11,10 @@ namespace Menge
 		, m_sizeTimeremap(0)
 		, m_sizeShapes(0)
 		, m_sizePolygons(0)
+		, m_layers(nullptr)
+		, m_timeremap(nullptr)
+		, m_shapes(nullptr)
+		, m_polygons(nullptr)
 	{		
 	}
 	///////////////////////////////////////////////////////////////////////
@@ -18,7 +22,7 @@ namespace Menge
 	{
 		for( uint32_t index = 0; index != m_sizeLayers; ++index )
 		{
-			MovieLayerFrame & layer = m_layers[index];
+			const MovieLayerFrame & layer = m_layers[index];
 
 			Helper::freeMemory( layer.anchorPoint );
 			Helper::freeMemory( layer.position );
@@ -32,10 +36,37 @@ namespace Menge
 
 		for( uint32_t index = 0; index != m_sizeTimeremap; ++index )
 		{
-			MovieLayerTimeRemap & layer = m_timeremap[index];
+			const MovieLayerTimeRemap & layer = m_timeremap[index];
 
 			Helper::freeMemory( layer.times );
 		}
+
+		for( uint32_t index = 0; index != m_sizeShapes; ++index )
+		{
+			const MovieLayerShapes & layer_shape = m_shapes[index];
+
+			for( uint32_t j = 0; j != layer_shape.shapes_size; ++j )
+			{
+				const MovieFrameShape & frame_shape = layer_shape.shapes[j];
+
+				Helper::freeMemory( frame_shape.pos );
+				Helper::freeMemory( frame_shape.uv );
+				Helper::freeMemory( frame_shape.indices );
+			}
+
+			Helper::freeMemory( layer_shape.shapes );
+		}
+
+		Helper::freeMemory( m_shapes );
+
+		for( uint32_t index = 0; index != m_sizePolygons; ++index )
+		{
+			const MovieLayerPolygon & polygon = m_polygons[index];
+
+			Helper::freeMemory( polygon.polygon );
+		}
+
+		Helper::freeMemory( m_polygons );
 	}
     //////////////////////////////////////////////////////////////////////////
     void MovieFramePack::initialize( uint32_t _size )

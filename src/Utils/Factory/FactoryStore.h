@@ -228,6 +228,13 @@ namespace Menge
 		}
 
 	public:
+		bool emptyObject() const
+		{
+			uint32_t count = m_ptr->countObject();
+
+			return count == 0;
+		}
+
 		uint32_t countObject() const
 		{
 			uint32_t count = m_ptr->countObject();

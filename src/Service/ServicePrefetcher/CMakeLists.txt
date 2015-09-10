@@ -4,7 +4,8 @@ ADD_FILTER(
 src
     PrefetcherManager.h
 	PrefetcherManager.cpp    
-    PrefetcherReceiver.h
+    ThreadTaskPrefetch.h
+    ThreadTaskPrefetch.cpp
     ThreadTaskPrefetchDataflow.h
     ThreadTaskPrefetchDataflow.cpp
     ThreadTaskPrefetchImageDecoder.h

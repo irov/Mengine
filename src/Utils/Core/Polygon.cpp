@@ -142,9 +142,9 @@ namespace Menge
 				uint32_t b = V[v]; 
 				uint32_t c = V[w];
                 
-				_result.push_back( (uint16_t)a );
-				_result.push_back( (uint16_t)b );
-				_result.push_back( (uint16_t)c );
+				_result.push_back( (TVectorIndices::value_type)a );
+				_result.push_back( (TVectorIndices::value_type)b );
+				_result.push_back( (TVectorIndices::value_type)c );
 
 				m++; 
 

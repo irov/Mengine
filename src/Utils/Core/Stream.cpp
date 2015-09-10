@@ -75,7 +75,7 @@ namespace Menge
 			size_t binary_size = (size_t)load_binary_size;
 			size_t compress_size = (size_t)load_compress_size;
 
-			MemoryCacheBufferPtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "ArchiveService::getData compress_memory" );
+			MemoryCacheBufferPtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "loadStreamArchiveBuffer" );
 
 			if( compress_buffer == nullptr )
 			{
@@ -375,6 +375,108 @@ namespace Menge
 			}
 
 			return true;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		MemoryPtr loadStreamArchiveMemory( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
+		{
+			uint32_t crc32;
+			_stream->read( &crc32, sizeof( crc32 ) );
+
+			uint32_t load_binary_size;
+			_stream->read( &load_binary_size, sizeof( load_binary_size ) );
+
+			uint32_t load_compress_size;
+			_stream->read( &load_compress_size, sizeof( load_compress_size ) );
+
+			size_t binary_size = (size_t)load_binary_size;
+			size_t compress_size = (size_t)load_compress_size;
+
+			MemoryCacheBufferPtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "loadStreamArchiveMemory compress" );
+
+			if( compress_buffer == nullptr )
+			{
+				LOGGER_ERROR( _serviceProvider )("loadStreamArchiveBuffer: invalid get memory %d (compress)"
+					, compress_size
+					);
+
+				return nullptr;
+			}
+
+			void * compress_memory = compress_buffer->getMemory();
+
+			size_t read_data = _stream->read( compress_memory, compress_size );
+
+			if( read_data != (size_t)compress_size )
+			{
+				LOGGER_ERROR( _serviceProvider )("loadStreamArchiveBuffer: invalid read data %d need %d"
+					, read_data
+					, compress_size
+					);
+
+				return nullptr;
+			}
+
+			if( crc32 != 0 )
+			{
+				uint32_t check_crc32 = Helper::make_crc32( compress_memory, compress_size );
+
+				if( check_crc32 != crc32 )
+				{
+					LOGGER_ERROR( _serviceProvider )("loadStreamArchiveBuffer: invalid crc32 %d need %d"
+						, check_crc32
+						, crc32
+						);
+
+					return nullptr;
+				}
+			}
+
+			MemoryPtr binary_buffer = CACHE_SERVICE( _serviceProvider )
+				->createMemory();
+
+			if( binary_buffer == nullptr )
+			{
+				LOGGER_ERROR( _serviceProvider )("loadStreamArchiveBuffer: invalid get memory %d (binary)"
+					, binary_size
+					);
+
+				return nullptr;
+			}
+
+			void * binary_memory = binary_buffer->newMemory( binary_size );
+
+			size_t uncompressSize = 0;
+			if( _archivator->decompress( binary_memory, binary_size, compress_memory, compress_size, uncompressSize ) == false )
+			{
+				LOGGER_ERROR( _serviceProvider )("loadStreamArchiveBuffer: invalid decompress"
+					);
+
+				return nullptr;
+			}
+
+			if( uncompressSize != binary_size )
+			{
+				LOGGER_ERROR( _serviceProvider )("loadStreamArchiveBuffer: invalid decompress size %d need %d"
+					, uncompressSize
+					, binary_size
+					);
+
+				return nullptr;
+			}
+
+			return binary_buffer;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		MemoryPtr loadStreamArchiveMemory( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version )
+		{
+			if( Helper::loadStreamMagicHeader( _serviceProvider, _stream, _magic, _version ) == false )
+			{
+				return nullptr;
+			}
+
+			MemoryPtr memory = Helper::loadStreamArchiveMemory( _serviceProvider, _stream, _archivator );
+
+			return memory;
 		}
 	}
 }

@@ -15,7 +15,7 @@
 
 namespace Menge
 {
-	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 33);
+	DECLARE_MAGIC_NUMBER(MAGIC_AEK, 'A', 'E', 'K', '1', 34);
 
     struct MovieFrameSource
     {
@@ -63,37 +63,38 @@ namespace Menge
     };
 
 #	ifndef MENGINE_MOVIE_SHAPE_MAX_VERTEX
-#	define MENGINE_MOVIE_SHAPE_MAX_VERTEX 32
+#	define MENGINE_MOVIE_SHAPE_MAX_VERTEX 128
 #	endif
 
 #	define MENGINE_MOVIE_SHAPE_MAX_INDICES ((MENGINE_MOVIE_SHAPE_MAX_VERTEX - 2) * 3)
 
 	struct MovieFrameShape
 	{
-		mt::vec2f pos[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
-		mt::vec2f uv[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
-		RenderIndices indices[MENGINE_MOVIE_SHAPE_MAX_INDICES];
+		mt::vec2f * pos;
+		mt::vec2f * uv;
+		RenderIndices * indices;
 
-		uint8_t vertexCount;
-		uint8_t indexCount;
+		uint16_t vertexCount;
+		uint16_t indexCount;
 	};
 
 	struct MovieLayerShapes
 	{
 		uint32_t layerId;
 
+		uint32_t shapes_size;
 		MovieFrameShape * shapes;
 	};
 
 #	ifndef MENGINE_MOVIE_POLYGON_MAX_VERTEX
-#	define MENGINE_MOVIE_POLYGON_MAX_VERTEX 32
+#	define MENGINE_MOVIE_POLYGON_MAX_VERTEX 128
 #	endif
 	
 	struct MovieLayerPolygon
 	{
 		uint32_t layerId;
 
-		mt::vec2f polygon[MENGINE_MOVIE_POLYGON_MAX_VERTEX];
+		mt::vec2f * polygon;
 		uint8_t vertexCount;
 	};
 

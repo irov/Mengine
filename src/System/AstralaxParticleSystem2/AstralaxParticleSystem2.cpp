@@ -13,6 +13,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxParticleSystem2::AstralaxParticleSystem2()
         : m_serviceProvider(nullptr)
+		, m_stageCount(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -80,7 +81,7 @@ namespace Menge
 
 		container->setServiceProvider( m_serviceProvider );
 
-		if( container->initialize( _stream, _archivator ) == false )
+		if( container->initialize( this, _stream, _archivator ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container"
 				);
@@ -89,6 +90,86 @@ namespace Menge
 		}
 
 		return container;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void AstralaxParticleSystem2::updateMaterial()
+	{
+		int materialCount = Magic_GetMaterialCount();
+
+		for( int i = m_stageCount; i != materialCount; ++i )
+		{
+			MAGIC_MATERIAL m;
+			if( Magic_GetMaterial( i, &m ) != MAGIC_SUCCESS )
+			{
+				LOGGER_ERROR( m_serviceProvider )("AstralaxParticleSystem2::updateMaterial invalid get material %d"
+					, i
+					);
+
+				return;
+			}
+
+			RenderStage rs;
+						
+			switch( m.blending )
+			{
+			case MAGIC_BLENDING_NORMAL:
+				{
+					rs.alphaBlendEnable = true;
+					rs.blendSrc = BF_SOURCE_ALPHA;
+					rs.blendDst = BF_ONE_MINUS_SOURCE_ALPHA;
+				}break;
+			case MAGIC_BLENDING_ADD:
+				{
+					rs.alphaBlendEnable = true;
+					rs.blendSrc = BF_SOURCE_ALPHA;
+					rs.blendDst = BF_ONE;
+				}break;
+			case MAGIC_BLENDING_OPACITY:
+				{
+					rs.alphaBlendEnable = false;
+				}break;
+			}
+
+			for( int stage = 0; stage != m.textures; ++stage )
+			{
+				const MAGIC_TEXTURE_STATES & state = m.states[stage];
+
+				const ETextureAddressMode dx_address[] = {TAM_WRAP, TAM_MIRROR, TAM_CLAMP, TAM_BORDER};
+
+				RenderTextureStage & textureStage = rs.textureStage[stage];
+
+				textureStage.addressU = dx_address[state.address_u];
+				textureStage.addressV = dx_address[state.address_v];
+
+				const ETextureOp dx_operation[] = {TOP_SELECTARG1, TOP_ADD, TOP_SUBTRACT, TOP_MODULATE, TOP_MODULATE2X, TOP_MODULATE4X};
+				const ETextureArgument dx_arg[] = {TARG_CURRENT, TARG_DIFFUSE, TARG_TEXTURE};
+
+				textureStage.colorOp = dx_operation[state.operation_rgb];
+				textureStage.colorArg1 = dx_arg[state.argument_rgb1];
+				textureStage.colorArg2 = dx_arg[state.argument_rgb2];
+
+				textureStage.alphaOp = dx_operation[state.operation_alpha];
+				textureStage.alphaArg1 = dx_arg[state.argument_alpha1];
+				textureStage.alphaArg2 = dx_arg[state.argument_alpha2];
+			}
+
+			const RenderStage * cache_stage = RENDERMATERIAL_SERVICE( m_serviceProvider )
+				->cacheStage( rs );
+
+			m_stages[i] = cache_stage;
+		}
+
+		m_stageCount = materialCount;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderStage * AstralaxParticleSystem2::getMaterialStage( int _index ) const
+	{
+		if( _index >= m_stageCount )
+		{
+			return nullptr;
+		}
+
+		return m_stages[_index];
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticleSystem2::onContainerRelease_( AstralaxEmitterContainer2 * _contanier )

@@ -170,11 +170,11 @@ namespace	Menge
 
         m_resourceParticle.release();
 
-		Helper::freeMemoryNoThreadSafe( m_vertices );
+		Helper::freeMemory( m_vertices );
 		m_vertices = nullptr;
 		m_vertexCount = 0;
 
-		Helper::freeMemoryNoThreadSafe( m_indicies );
+		Helper::freeMemory( m_indicies );
 		m_indicies = nullptr;
 		m_indexCount = 0;		
 	}
@@ -367,14 +367,14 @@ namespace	Menge
 		{
 			m_vertexCount = flush.vertexCount;
 
-			m_vertices = Helper::reallocateMemoryNoThreadSafe<RenderVertex2D>( m_vertices, m_vertexCount );
+			m_vertices = Helper::reallocateMemory<RenderVertex2D>( m_vertices, m_vertexCount );
 		}
 
 		if( m_indexCount < flush.indexCount )
 		{
 			m_indexCount = flush.indexCount;
 
-			m_indicies = Helper::reallocateMemoryNoThreadSafe<RenderIndices>( m_indicies, m_indexCount );
+			m_indicies = Helper::reallocateMemory<RenderIndices>( m_indicies, m_indexCount );
 		}
 
 		ParticleMesh meshes[MENGINE_PARTICLE_MAX_MESH];
@@ -419,8 +419,8 @@ namespace	Menge
 				textures[i] = texture;
 			}
 
-			const RenderStage * stage = RENDERMATERIAL_SERVICE( m_serviceProvider )
-				->cacheStage( mesh.stage );
+			const RenderStage * stage = PARTICLE_SYSTEM2( m_serviceProvider )
+				->getMaterialStage( mesh.material );
 
 			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE( m_serviceProvider )
 				->getMaterial2( stage, PT_TRIANGLELIST, mesh.textures, textures );

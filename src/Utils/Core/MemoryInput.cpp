@@ -36,6 +36,11 @@ namespace Menge
 
 		if( memory == nullptr )
 		{
+			m_data = nullptr;
+			m_size = 0;
+			m_pos = 0;
+			m_end = 0;
+
 			return nullptr;
 		}
 
@@ -49,18 +54,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void * MemoryInput::copyMemory( const void * _source, size_t _size )
 	{
-		if( m_data != nullptr )
-		{
-			Helper::freeMemory( m_data );
-
-			m_data = nullptr;
-			m_size = 0;
-		}
-
-		unsigned char * memory = Helper::allocateMemory<unsigned char>( _size );
+		unsigned char * memory = Helper::reallocateMemory<unsigned char>( m_data, _size );
 
 		if( memory == nullptr )
 		{
+			m_data = nullptr;
+			m_size = 0;
+			m_pos = 0;
+			m_end = 0;
+
 			return nullptr;
 		}
 

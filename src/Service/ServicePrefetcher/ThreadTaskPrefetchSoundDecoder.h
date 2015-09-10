@@ -5,40 +5,27 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/SoundCodecInterface.h"
 
-#	include "Kernel/ThreadTask.h"
-
-#	include "Core/MemoryInput.h"
+#	include "ThreadTaskPrefetch.h"
 
 namespace Menge
 {
 	class ThreadTaskPrefetchSoundDecoder
-		: public ThreadTask
+		: public ThreadTaskPrefetch
 	{
 	public:
 		ThreadTaskPrefetchSoundDecoder();
 	
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-
-	public:
-		void initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec );
+		void setSoundCodec( const ConstString & _codec );
 		
 	public:
-		inline const ConstString & getPakName() const;
-		inline const FilePath & getFilePath() const;
-
 		const SoundDecoderInterfacePtr & getDecoder() const;
 
 	protected:
 		bool _onRun() override;
 		bool _onMain() override;
-		void _onComplete( bool _successful ) override;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
-		ConstString m_pakName;
-		FilePath m_filePath; 
 		ConstString m_codec;
 				
 	protected:
@@ -46,16 +33,6 @@ namespace Menge
 		InputStreamInterfacePtr m_stream;
 		SoundDecoderInterfacePtr m_soundDecoder;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	inline const ConstString & ThreadTaskPrefetchSoundDecoder::getPakName() const
-	{
-		return m_pakName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const FilePath & ThreadTaskPrefetchSoundDecoder::getFilePath() const
-	{
-		return m_filePath;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<ThreadTaskPrefetchSoundDecoder> ThreadTaskPrefetchSoundDecoderPtr;
 }

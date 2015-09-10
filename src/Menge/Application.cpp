@@ -1,8 +1,5 @@
 #	include "Application.h"
 
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/TextInterface.h"
-
 #	include "Game.h"
 
 #	include "Logger/Logger.h"
@@ -1582,7 +1579,14 @@ namespace Menge
 	{	
 		if( SERVICE_EXIST(m_serviceProvider, Menge::ThreadServiceInterface) == true )
 		{
-			THREAD_SERVICE(m_serviceProvider)->update();
+			THREAD_SERVICE(m_serviceProvider)
+				->update();
+		}
+
+		if( SERVICE_EXIST( m_serviceProvider, Menge::PrefetcherServiceInterface ) == true )
+		{
+			PREFETCHER_SERVICE( m_serviceProvider )
+				->update();
 		}
 
 		if( m_update == false && m_focus == false )

@@ -76,7 +76,7 @@ namespace boost
 namespace Menge
 {
     typedef stdex::vector<mt::vec2f> TVectorPoints;
-    typedef stdex::vector<uint16_t> TVectorIndices;
+    typedef stdex::vector<uint32_t> TVectorIndices;
 
 	typedef boost::geometry::model::d2::point_xy<float> GeometryPoint;
     typedef boost::geometry::model::polygon<mt::vec2f, true, true, stdex::vector, stdex::vector, stdex::stl_allocator, stdex::stl_allocator> Polygon;

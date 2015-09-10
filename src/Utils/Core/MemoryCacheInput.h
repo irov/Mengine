@@ -22,11 +22,11 @@ namespace Menge
 		void * getMemory( size_t & _size ) const;
 
 		template<class T>
-		T * getMemoryT( size_t & _size ) const
+		T getMemoryT( size_t & _size ) const
 		{
 			void * memory = this->getMemory( _size );
 
-			return static_cast<T *>(memory);
+			return static_cast<T>(memory);
 		}
 
 

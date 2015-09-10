@@ -14,22 +14,12 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTaskPrefetchSoundDecoder::ThreadTaskPrefetchSoundDecoder()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchSoundDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	void ThreadTaskPrefetchSoundDecoder::setSoundCodec( const ConstString & _codec )
 	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchSoundDecoder::initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
-	{
-		m_pakName = _pakName;
-		m_filePath = _fileName;
 		m_codec = _codec;
-
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const SoundDecoderInterfacePtr & ThreadTaskPrefetchSoundDecoder::getDecoder() const
@@ -126,13 +116,5 @@ namespace Menge
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchSoundDecoder::_onComplete( bool _successful )
-	{
-		(void) _successful;
-
-		m_group = nullptr;
-		m_stream = nullptr;
 	}
 }

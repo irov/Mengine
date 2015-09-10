@@ -152,27 +152,15 @@ namespace Menge
 	{
 		THREAD_GUARD_SCOPE(this, m_serviceProvider, "SoundDecoderOGGVorbis::_rewind");
 
-		if( m_stream->seek( 0 ) == false )
+		if( m_oggVorbisFileInitialize == true )
 		{
-			return false;
+			m_oggVorbisFileInitialize = false;
+
+			ov_clear( &m_oggVorbisFile );
 		}
 
-		ov_clear( &m_oggVorbisFile );
-
-		ov_callbacks vorbisCallbacks;
-		vorbisCallbacks.read_func = s_readOgg;
-		vorbisCallbacks.seek_func = s_seekOgg;
-		vorbisCallbacks.tell_func = s_tellOgg;
-		vorbisCallbacks.close_func = s_closeOgg;
-
-		int opcall_err = ov_open_callbacks( m_stream.get(), &m_oggVorbisFile, nullptr, 0, vorbisCallbacks );
-		
-		if( opcall_err < 0 )
+		if( m_stream->seek( 0 ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::_rewind invalid ov_open_callbacks [%d]"
-				, opcall_err
-				);
-
 			return false;
 		}
 

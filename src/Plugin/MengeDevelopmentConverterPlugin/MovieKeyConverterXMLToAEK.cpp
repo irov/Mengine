@@ -576,7 +576,11 @@ namespace Menge
 
 				MovieFrameShape shape;
 				if( output.empty() == true )
-				{					
+				{	
+					shape.pos = nullptr;
+					shape.uv = nullptr;
+					shape.indices = nullptr;
+
 					shape.vertexCount = 0;
 					shape.indexCount = 0;
 				}
@@ -623,28 +627,28 @@ namespace Menge
 						return false;
 					}
 
-					shape.vertexCount = (uint8_t)shapeVertexCount;
-					shape.indexCount = (uint8_t)shapeIndicesCount;
+					shape.vertexCount = (uint16_t)shapeVertexCount;
+					shape.indexCount = (uint16_t)shapeIndicesCount;
+
+					shape.pos = Helper::allocateMemory<mt::vec2f>( shapeVertexCount );
+					shape.uv = Helper::allocateMemory<mt::vec2f>( shapeVertexCount );
+
+					shape.indices = Helper::allocateMemory<RenderIndices>( shapeIndicesCount );
 
 					for( uint32_t i = 0; i != shapeVertexCount; ++i )
 					{
-						mt::vec2f & pos = shape.pos[i];
-
 						const mt::vec2f & shape_pos = shape_vertex.outer()[i];
 
-						pos.x = shape_pos.x;
-						pos.y = shape_pos.y;
+						shape.pos[i].x = shape_pos.x;
+						shape.pos[i].y = shape_pos.y;
 
-						mt::vec2f & uv = shape.uv[i];
-						uv.x = pos.x / width;
-						uv.y = pos.y / height;
+						shape.uv[i].x = shape_pos.x / width;
+						shape.uv[i].y = shape_pos.y / height;
 					}
 
 					for( uint32_t i = 0; i != shapeIndicesCount; ++i )
 					{
-						RenderIndices & indices = shape.indices[i];
-
-						indices = shape_indices[i];
+						shape.indices[i] = (uint16_t)shape_indices[i];
 					}
 				}
 
@@ -659,6 +663,10 @@ namespace Menge
 
 					aw.writePODs( shape.indices, shape.indexCount );
 				}
+
+				Helper::freeMemory( shape.pos );
+				Helper::freeMemory( shape.uv );
+				Helper::freeMemory( shape.indices );
 			}
 		}
 

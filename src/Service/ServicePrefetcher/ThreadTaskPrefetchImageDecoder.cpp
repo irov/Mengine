@@ -14,19 +14,11 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTaskPrefetchImageDecoder::ThreadTaskPrefetchImageDecoder()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchImageDecoder::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	void ThreadTaskPrefetchImageDecoder::setImageCodec( const ConstString & _codec )
 	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchImageDecoder::initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codec )
-	{
-		m_pakName = _pakName;
-		m_filePath = _fileName;
 		m_codec = _codec;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -124,13 +116,5 @@ namespace Menge
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchImageDecoder::_onComplete( bool _successful )
-	{
-		(void) _successful;
-
-		m_group = nullptr;
-		m_stream = nullptr;
 	}
 }

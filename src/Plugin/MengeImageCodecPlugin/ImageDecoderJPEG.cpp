@@ -361,15 +361,10 @@ namespace Menge
 			return false;
 		}
 
-		m_stream->seek( 0 );
-
-		// step 2a: specify data source (eg, a handle)
-		s_jpeg_menge_src( &m_jpegObject, m_stream.get() );
-
-		// step 3: read handle parameters with jpeg_read_header()
-		jpeg_read_header( &m_jpegObject, TRUE );
-
-		jpeg_calc_output_dimensions( &m_jpegObject );
+		if( m_stream->seek( 0 ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}

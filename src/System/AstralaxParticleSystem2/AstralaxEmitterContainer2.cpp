@@ -1,4 +1,5 @@
 #	include "AstralaxEmitterContainer2.h"
+#	include "AstralaxParticleSystem2.h"
 
 #	include "Interface/CacheInterface.h"
 
@@ -12,8 +13,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitterContainer2::AstralaxEmitterContainer2()
         : m_serviceProvider(nullptr)
+		, m_particleSystem(nullptr)
 		, m_mf(0)
-		, m_bufferId(0)
 	{
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -31,12 +32,13 @@ namespace Menge
 		return m_serviceProvider;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitterContainer2::initialize( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
+	bool AstralaxEmitterContainer2::initialize( AstralaxParticleSystem2 * _particleSystem, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
     {
-		unsigned char * binary_memory;
-		size_t binary_size;
+		m_particleSystem = _particleSystem;
 
-		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, _archivator, GET_MAGIC_NUMBER(MAGIC_PTZ), GET_MAGIC_VERSION(MAGIC_PTZ), m_bufferId, &binary_memory, binary_size ) == false )
+		MemoryPtr memory = Helper::loadStreamArchiveMemory( m_serviceProvider, _stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ) );
+
+		if( memory == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer2::initialize: invalid get data"
 				);
@@ -44,14 +46,12 @@ namespace Menge
 			return false;
 		}
 
+		size_t binary_size;
+		unsigned char * binary_memory = memory->getMemoryT<unsigned char *>(binary_size);
+
 		HM_FILE mf;
 		if( this->loadContainer_( binary_memory, binary_size, mf ) == false )
 		{
-			CACHE_SERVICE(m_serviceProvider)
-				->unlockBuffer( m_bufferId );
-
-			m_bufferId = 0;
-
 			return false;
 		}
 
@@ -73,6 +73,8 @@ namespace Menge
 
 		m_mf = mf;
 
+		m_memory = memory;
+
 		m_factoryPoolAstralaxEmitter.setMethodListener( this, &AstralaxEmitterContainer2::onEmitterRelease_ );
 
         return true;
@@ -80,10 +82,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitterContainer2::finalize()
 	{
-		CACHE_SERVICE(m_serviceProvider)
-			->unlockBuffer( m_bufferId );
-
-		m_bufferId = 0;
+		m_memory = nullptr;
 
 		Magic_CloseFile( m_mf );
 		m_mf = 0;
@@ -91,35 +90,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitterContainer2::isValid() const
     {
-        //for( TMapEmitters::const_iterator
-        //    it = m_emitters.begin(),
-        //    it_end = m_emitters.end();
-        //it != it_end;
-        //++it )
-        //{
-        //    const ConstString & emitterName = it->first;
-
-        //    const EmitterPool & emitter = it->second;
-
-        //    HM_EMITTER id = Magic_DuplicateEmitter( emitter.id );
-
-        //    MAGIC_RECT rect;
-        //    float backgroundScale = Magic_GetBackgroundRect( id, &rect );
-
-        //    if( fabsf( backgroundScale - 1.f ) > 0.0001f )
-        //    {
-        //        LOGGER_ERROR(m_serviceProvider)("AstralaxEmitterContainer::isValid %s emitter %s background scale is not 1.f (%f if is zero, add background!) Please remove scale from source and re-export!"
-        //            , m_name.c_str()
-        //            , emitterName.c_str()
-        //            , backgroundScale
-        //            );
-
-        //        return false;
-        //    }
-
-        //    Magic_UnloadEmitter( id );
-        //}
-
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -211,6 +181,8 @@ namespace Menge
         {
             return nullptr;
         }
+
+		m_particleSystem->updateMaterial();
 
 		return emitter;
 	}

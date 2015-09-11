@@ -72,11 +72,11 @@ namespace Menge
 				pos.y = 0.f;
 				pos.z = 0.f;
 
+				Magic_SetEmitterPosition( m_emitterId, &pos );
+
 				m_basePosition.x = 0.f;
 				m_basePosition.y = 0.f;
-				m_basePosition.z = 0.f;
-
-				Magic_SetEmitterPosition( m_emitterId, &pos );
+				m_basePosition.z = 0.f;				
 
 				m_width = 2048.f;
 				m_height = 2048.f;
@@ -94,19 +94,23 @@ namespace Menge
 					return false;
 				}
 
-				MAGIC_POSITION pos;
-				Magic_GetEmitterPosition( m_emitterId, &pos );
+				//MAGIC_POSITION pos;
+				//Magic_GetEmitterPosition( m_emitterId, &pos );
 
-				MAGIC_POSITION adapt_pos;
-				adapt_pos.x = pos.x - (float)rect.left;
-				adapt_pos.y = pos.y - (float)rect.top;
-				adapt_pos.z = pos.z;
+				//MAGIC_POSITION adapt_pos;
+				//adapt_pos.x = pos.x - (float)rect.left;
+				//adapt_pos.y = pos.y - (float)rect.top;
+				//adapt_pos.z = pos.z;
 
-				Magic_SetEmitterPosition( m_emitterId, &adapt_pos );
+				//Magic_SetEmitterPosition( m_emitterId, &adapt_pos );
 
-				m_basePosition.x = adapt_pos.x;
-				m_basePosition.y = adapt_pos.y;
-				m_basePosition.z = adapt_pos.z;
+				//m_basePosition.x = adapt_pos.x;
+				//m_basePosition.y = adapt_pos.y;
+				//m_basePosition.z = adapt_pos.z;
+
+				m_basePosition.x = 0.f;
+				m_basePosition.y = 0.f;
+				m_basePosition.z = 0.f;
 
 				m_width = (float)(rect.right - rect.left);
 				m_height = (float)(rect.bottom - rect.top);
@@ -587,9 +591,12 @@ namespace Menge
 			mesh.indexOffset = vertexOffset;
 			mesh.indexCount = vrts.vertices;
 
-			for( uint32_t i = mesh.indexOffset; i != mesh.indexCount; ++i )
+			if( vertexOffset != 0 )
 			{
-				_indices[i] -= vertexOffset;
+				for( uint32_t i = mesh.indexOffset; i != mesh.indexCount; ++i )
+				{
+					_indices[i] -= vertexOffset;
+				}
 			}
 
 			MAGIC_RENDER_STATE state;
@@ -650,7 +657,7 @@ namespace Menge
 		}
 
 		float half_width = m_width * 0.5f;
-		float half_height = m_width * 0.5f;
+		float half_height = m_height * 0.5f;
 		
 		for( uint32_t i = 0; i != _flush.vertexCount; ++i )
 		{

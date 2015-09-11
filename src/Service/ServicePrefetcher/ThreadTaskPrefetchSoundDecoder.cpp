@@ -71,7 +71,7 @@ namespace Menge
 	{		
 		if( m_group->openInputFile( m_filePath, m_stream, 0, 0, false ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onRun: invalide open file '%s':'%s'"
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onRun: invalide open file '%s:%s'"
 				, m_pakName.c_str()
 				, m_filePath.c_str()
 				);
@@ -88,7 +88,8 @@ namespace Menge
 
 		if( memory == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onMain: '%s' invalid alloc memory '%d'"
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onMain: '%s:%s' invalid alloc memory '%d'"
+				, m_pakName.c_str()
 				, m_filePath.c_str() 
 				, stream_size
 				);
@@ -98,7 +99,8 @@ namespace Menge
 
 		if( m_stream->read( memory, stream_size ) != stream_size )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onMain: '%s' invalid read stream '%d'"
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onMain: '%s:%s' invalid read stream '%d'"
+				, m_pakName.c_str()
 				, m_filePath.c_str() 
 				, stream_size
 				);
@@ -108,7 +110,8 @@ namespace Menge
 
 		if( m_soundDecoder->prepareData( memoryInput ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onMain: decoder for file '%s' was not initialize"
+			LOGGER_ERROR(m_serviceProvider)("ThreadTaskPrefetchSoundDecoder::_onMain: decoder for file '%s:%s' was not initialize"
+				, m_pakName.c_str()
 				, m_filePath.c_str() 
 				);
 

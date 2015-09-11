@@ -1,7 +1,6 @@
 ADD_SUBDIRECTORY( SilentSoundSystem )
 
 if( DEFINED MENGINE_TARGET_MSVC )
-    #ADD_SUBDIRECTORY( AstralaxParticleSystem )
     ADD_SUBDIRECTORY( AstralaxParticleSystem2 )
     
     ADD_SUBDIRECTORY( OALSoundSystem )
@@ -12,7 +11,6 @@ if( DEFINED MENGINE_TARGET_MSVC )
 endif()
 
 if( DEFINED MENGINE_TARGET_MINGW )
-    ADD_SUBDIRECTORY( AstralaxParticleSystem )
     ADD_SUBDIRECTORY( AstralaxParticleSystem2 )
     
     ADD_SUBDIRECTORY( OALSoundSystem )

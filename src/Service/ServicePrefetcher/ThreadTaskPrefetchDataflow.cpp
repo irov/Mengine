@@ -90,9 +90,17 @@ namespace Menge
 			return false;
 		}
 
-		bool successful = m_dataflow->load( m_data, m_stream );
+		if( m_dataflow->load( m_data, m_stream ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide load file '%s':'%s'"
+				, m_pakName.c_str()
+				, m_filePath.c_str()
+				);
 
-		return successful;
+			return false;
+		}
+		
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPrefetchDataflow::_onComplete( bool _successful )

@@ -26,11 +26,11 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	signed int s_YTable[256];
-	signed int s_BUTable[256];
-	signed int s_GUTable[256];
-	signed int s_GVTable[256];
-	signed int s_RVTable[256];	
+	static int s_YTable[256];
+	static int s_BUTable[256];
+	static int s_GUTable[256];
+	static int s_GVTable[256];
+	static int s_RVTable[256];
 	//////////////////////////////////////////////////////////////////////////
 	static void s_createCoefTables()
 	{
@@ -68,18 +68,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderTheora::_initialize()
 	{
-		std::fill( (char*)&m_oggStreamState, (char*)&m_oggStreamState + sizeof(ogg_stream_state), 0x00 );
-		std::fill( (char*)&m_oggSyncState, (char*)&m_oggSyncState + sizeof(ogg_sync_state), 0x00 );
-		std::fill( (char*)&m_oggPage, (char*)&m_oggPage + sizeof(ogg_page), 0x00 );
-		std::fill( (char*)&m_oggPacket, (char*)&m_oggPacket + sizeof(ogg_packet), 0x00 );
-
-		std::fill( (char*)&m_theoraComment, (char*)&m_theoraComment + sizeof(theora_comment), 0x00 );
-		std::fill( (char*)&m_theoraInfo, (char*)&m_theoraInfo + sizeof(theora_info), 0x00 );
-		std::fill( (char*)&m_theoraState, (char*)&m_theoraState + sizeof(theora_state), 0x00 );
-		std::fill( (char*)&m_yuvBuffer, (char*)&m_yuvBuffer + sizeof(yuv_buffer), 0x00 );
-
-		//инициализируем основную структуру контейнера ogg
-		ogg_stream_clear( &m_oggStreamState );
 		// start up Ogg stream synchronization layer
 		ogg_sync_init( &m_oggSyncState );
 
@@ -113,8 +101,10 @@ namespace Menge
 
 				return false;
 			}
+
+			ogg_page page;
 			// ogg_sync_pageout - формирует страницу
-			while( ogg_sync_pageout( &m_oggSyncState, &m_oggPage ) > 0 )
+			while( ogg_sync_pageout( &m_oggSyncState, &page ) > 0 )
 				// 1-больше данных не требуется
 				// 0-требуется больше данных для создания страницы
 			{
@@ -122,7 +112,7 @@ namespace Menge
 				// что страница сформирована успешно
 
 				// это страница заголовков? если нет, кончаем искать заголовки
-				if( ogg_page_bos(&m_oggPage) == false )
+				if( ogg_page_bos( &page ) == false )
 				{
 					// нет, это не страница заголовков
 					// значит, страницы заголовков всех логических потоков кончились
@@ -130,7 +120,7 @@ namespace Menge
 					// таким образом надо переходить к чтению страниц данных
 
 					// закидываем эту страничку в логический видеопоток
-					ogg_stream_pagein( &m_oggStreamState, &m_oggPage );
+					ogg_stream_pagein( &m_oggStreamState, &page );
 					// закидывает страничку
 					// в логический поток theora, если
 					// совпадает идентификатор логического потока
@@ -144,12 +134,9 @@ namespace Menge
 				// да, это страница заголовков
 
 				// тестовый логический поток
-				ogg_stream_state oggStreamStateTest;
-				std::fill( (char*)&oggStreamStateTest, (char*)&oggStreamStateTest + sizeof(ogg_stream_state), 0x00 );
-
 				// инициализируем тестовый поток на тот же поток с таким же
 				// идентификатором потока, как и у текущей странички
-				if( ogg_stream_init( &oggStreamStateTest, ogg_page_serialno(&m_oggPage) ) != 0 )
+				if( ogg_stream_init( &m_oggStreamState, ogg_page_serialno( &page ) ) != 0 )
 				{
 					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_init" );
 
@@ -157,14 +144,14 @@ namespace Menge
 				}
 
 				// добавляем страницу в тестовый поток
-				if( ogg_stream_pagein( &oggStreamStateTest, &m_oggPage) != 0 )
+				if( ogg_stream_pagein( &m_oggStreamState, &page ) != 0 )
 				{
 					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_pagein" );
 
 					return false;
 				}
 				// декодируем данные из этого тестового потока в пакет
-				if( ogg_stream_packetout( &oggStreamStateTest, &m_oggPacket ) == -1 )
+				if( ogg_stream_packetout( &m_oggStreamState, &m_oggPacket ) == -1 )
 				{
 					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_packetout" );
 
@@ -183,7 +170,7 @@ namespace Menge
 						// это не заголовок theora
 
 						// очищаем структуру тестового потока
-						ogg_stream_clear( &oggStreamStateTest );
+						ogg_stream_clear( &m_oggStreamState );
 						//и продолжаем цикл в поисках заголовков theora
 					}
 					else
@@ -191,7 +178,6 @@ namespace Menge
 						// это заголовок theora!
 
 						// вот таким образом "инициализируем" логический поток theora:
-						std::copy( (char*)&oggStreamStateTest, (char*)&oggStreamStateTest + sizeof(ogg_stream_state), (char*)&m_oggStreamState );
 						// теперь из этого потока будут всегда сыпаться пакеты theora
 
 						theoraHeaderPackets++;
@@ -208,7 +194,7 @@ namespace Menge
 		// и можно переходить к потоковому воспроизведению
 
 		while( theoraHeaderPackets < 3 )
-		{
+		{			
 			int result = ogg_stream_packetout( &m_oggStreamState, &m_oggPacket );
 			// если функция возвращает нуль, значит не хватает данных для декодирования
 
@@ -236,15 +222,17 @@ namespace Menge
 				++theoraHeaderPackets;
 			}
 
+			ogg_page page;
+
 			// эту страничку обработали, надо извлечь новую
 			// для этого проверяем буфер чтения, вдруг там осталось что-нить похожее
-			// на страничку. Если не осталось, тогда просто читаем эти данные из файла:
-			if( ogg_sync_pageout( &m_oggSyncState, &m_oggPage ) >0 )
+			// на страничку. Если не осталось, тогда просто читаем эти данные из файла:			
+			if( ogg_sync_pageout( &m_oggSyncState, &page ) >0 )
 				// ogg_sync_pageout - функция, берет данные из буфера приема ogg
 				// и записывает их в ogg_page
 			{
 				//мы нашли страничку в буфере и...
-				ogg_stream_pagein( &m_oggStreamState, &m_oggPage );
+				ogg_stream_pagein( &m_oggStreamState, &page );
 				// ...пихаем эти данные в подходящий поток
 			}
 			else
@@ -287,11 +275,12 @@ namespace Menge
 	void VideoDecoderTheora::_finalize()
 	{
 		ogg_stream_clear( &m_oggStreamState );
+		ogg_sync_clear( &m_oggSyncState );
+		ogg_packet_clear( &m_oggPacket );
+
 		theora_clear( &m_theoraState );
 		theora_comment_clear( &m_theoraComment );
 		theora_info_clear( &m_theoraInfo );
-
-		ogg_sync_clear( &m_oggSyncState );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t VideoDecoderTheora::decode( void * _buffer, size_t _bufferSize )
@@ -669,6 +658,7 @@ namespace Menge
 	EVideoDecoderReadState VideoDecoderTheora::readNextFrame( float & _pts )
 	{
 		m_lastReadBytes = 0;
+				
 		// theora processing...
 		while( ogg_stream_packetout( &m_oggStreamState, &m_oggPacket ) <= 0 )
 		{
@@ -695,13 +685,14 @@ namespace Menge
 				//FINISHED=true;
 				return VDRS_END_STREAM;
 			}
-
-			while( ogg_sync_pageout(&m_oggSyncState, &m_oggPage ) > 0 )
+			
+			ogg_page page;
+			while( ogg_sync_pageout( &m_oggSyncState, &page ) > 0 )
 				// декодируем данные из буфера в страницы (ogg_page)
 				// пока они не кончатся в буфере
 			{
 				// пихаем эти страницы в соотв. логические потоки
-				ogg_stream_pagein( &m_oggStreamState, &m_oggPage );
+				ogg_stream_pagein( &m_oggStreamState, &page );
 			}
 
 		}
@@ -717,26 +708,6 @@ namespace Menge
 
 		return VDRS_SUCCESS;
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//int VideoDecoderTheora::readNextFrame( float _timing )
-	//{
-	//	int ret = 0;
-	//	float frame_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos ) * 1000.0f;
-	//	if( frame_time < _timing )
-	//	{
-	//		ret = -1;
-	//	}
-	//	else if( frame_time > _timing )
-	//	{
-	//		ret = 1;
-	//	}
-	//	while( frame_time < _timing )
-	//	{
-	//		readFrame_();
-	//		frame_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos ) * 1000.0f;	
-	//	}
-	//	return ret;
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderTheora::seek( float _timing )
 	{

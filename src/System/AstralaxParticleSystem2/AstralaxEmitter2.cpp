@@ -8,15 +8,13 @@ namespace Menge
 	AstralaxEmitter2::AstralaxEmitter2()
 		: m_serviceProvider( nullptr )
 		, m_emitterId( 0 )
-		, m_basePosition( 0.f, 0.f, 0.f )
 		, m_tempScale( 1.0 )		
 		, m_leftBorder(0.0)
 		, m_rightBorder(0.0)
 		, m_rate( 0.0 )
 		, m_total_rate( 0.0 )
 		, m_time( 0.0 )
-		, m_width( 0.f )
-		, m_height( 0.f )		
+	
 		, m_angle( 0.f )
 		, m_start( false )
 		, m_looped( false )
@@ -67,19 +65,10 @@ namespace Menge
 
 			if( rect.left == rect.right || rect.bottom == rect.top )
 			{
-				MAGIC_POSITION pos;
-				pos.x = 0.f;
-				pos.y = 0.f;
-				pos.z = 0.f;
-
-				Magic_SetEmitterPosition( m_emitterId, &pos );
-
-				m_basePosition.x = 0.f;
-				m_basePosition.y = 0.f;
-				m_basePosition.z = 0.f;				
-
-				m_width = 2048.f;
-				m_height = 2048.f;
+				m_rect.x = 0.f;
+				m_rect.y = 0.f;
+				m_rect.z = 2048.f;
+				m_rect.w = 2048.f;
 
 				m_background = false;
 			}
@@ -94,26 +83,10 @@ namespace Menge
 					return false;
 				}
 
-				//MAGIC_POSITION pos;
-				//Magic_GetEmitterPosition( m_emitterId, &pos );
-
-				//MAGIC_POSITION adapt_pos;
-				//adapt_pos.x = pos.x - (float)rect.left;
-				//adapt_pos.y = pos.y - (float)rect.top;
-				//adapt_pos.z = pos.z;
-
-				//Magic_SetEmitterPosition( m_emitterId, &adapt_pos );
-
-				//m_basePosition.x = adapt_pos.x;
-				//m_basePosition.y = adapt_pos.y;
-				//m_basePosition.z = adapt_pos.z;
-
-				m_basePosition.x = 0.f;
-				m_basePosition.y = 0.f;
-				m_basePosition.z = 0.f;
-
-				m_width = (float)(rect.right - rect.left);
-				m_height = (float)(rect.bottom - rect.top);
+				m_rect.x = (float)rect.left;
+				m_rect.y = (float)rect.top;
+				m_rect.z = (float)rect.right;
+				m_rect.w = (float)rect.bottom;
 
 				m_background = true;
 			}
@@ -128,9 +101,11 @@ namespace Menge
 			{
 				return false;
 			}
-
-			m_width = (float)view.viewport_width;
-			m_height = (float)view.viewport_height;
+			
+			m_rect.x = (float)0.f;
+			m_rect.y = (float)0.f;
+			m_rect.z = (float)view.viewport_width;
+			m_rect.w = (float)view.viewport_height;
 
 			m_background = true;
 		}
@@ -352,11 +327,6 @@ namespace Menge
 		_pos.y = pos.y;
         _pos.z = pos.z;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter2::getBasePosition( mt::vec3f & _pos )
-    {
-        _pos = m_basePosition;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setScale( float _scale )
 	{
@@ -651,13 +621,13 @@ namespace Menge
 			mt::ident_m4( vm );
 		
 			mt::mat4f pm;
-			mt::make_projection_ortho_lh_m4( pm, m_width * -0.5f, m_width * 0.5f, m_height * -0.5f, m_height * 0.5f, -1000.f, 1000.f );
+			mt::make_projection_ortho_lh_m4( pm, m_rect.x, m_rect.z, m_rect.y, m_rect.w, -1000.f, 1000.f );
 
 			mt::mul_m4_m4( vpm, vm, pm );
 		}
 
-		float half_width = m_width * 0.5f;
-		float half_height = m_height * 0.5f;
+		float half_width = (m_rect.z - m_rect.x) * 0.5f;
+		float half_height = (m_rect.w - m_rect.y) * 0.5f;
 		
 		for( uint32_t i = 0; i != _flush.vertexCount; ++i )
 		{

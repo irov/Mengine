@@ -115,8 +115,6 @@ namespace Menge
 		virtual void setPosition( const mt::vec3f & _pos ) = 0;
 		virtual void getPosition( mt::vec3f & _pos ) = 0;
 
-        virtual void getBasePosition( mt::vec3f & _pos ) = 0;
-
 		virtual void setScale( float _scale ) = 0;
 
 		virtual void setAngle( float _radians ) = 0;

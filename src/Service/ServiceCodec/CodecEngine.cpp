@@ -44,7 +44,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory )
 	{
-		m_mapDecoderSystem.insert( _type, _factory );
+		m_mapDecoderSystem.insert( std::make_pair(_type, _factory) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::unregisterDecoder( const ConstString& _type )
@@ -54,7 +54,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory )
 	{
-		m_mapEncoderSystem.insert( _type, _factory );
+		m_mapEncoderSystem.insert( std::make_pair( _type, _factory) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CodecEngine::unregisterEncoder( const ConstString& _type )
@@ -64,8 +64,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterfacePtr CodecEngine::createDecoder( const ConstString& _type )
 	{
-		DecoderFactoryInterfacePtr decoderFactory;
-		if( m_mapDecoderSystem.has_copy( _type, decoderFactory ) == false )
+		TMapDecoderSystem::iterator it_found = m_mapDecoderSystem.find( _type );
+
+		if( it_found == m_mapDecoderSystem.end() )
 		{
             LOGGER_ERROR(m_serviceProvider)("CodecEngine::createDecoder not found codec %s"
                 , _type.c_str()
@@ -73,6 +74,8 @@ namespace Menge
 
 			return nullptr;
 		}
+
+		const DecoderFactoryInterfacePtr & decoderFactory = it_found->second;
 
 		DecoderInterfacePtr decoder = decoderFactory->createDecoder();
 
@@ -90,30 +93,33 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     EncoderInterfacePtr CodecEngine::createEncoder( const ConstString& _type )
     {
-		EncoderFactoryInterfacePtr encoderSystem;
-        if( m_mapEncoderSystem.has_copy( _type, encoderSystem ) == false )
-        {
-			LOGGER_ERROR(m_serviceProvider)("CodecEngine::createEncoder not found codec %s"
+		TMapEncoderSystem::iterator it_found = m_mapEncoderSystem.find( _type );
+
+		if( it_found == m_mapEncoderSystem.end() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("CodecEngine::createEncoder not found codec %s"
 				, _type.c_str()
 				);
 
-            return nullptr;
-        }
+			return nullptr;
+		}
 
-        EncoderInterfacePtr encoder = encoderSystem->createEncoder();
+		const EncoderFactoryInterfacePtr & encoderFactory = it_found->second;
+
+		EncoderInterfacePtr encoder = encoderFactory->createEncoder();
 
         return encoder;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool CodecEngine::registerCodecExt( const String & _ext, const ConstString & _codecType )
 	{
-		TMapCodecTypes::insert_type insert_ret = m_codecTypes.insert( _ext, _codecType );
+		TMapCodecTypes::iterator it_found = m_codecTypes.find( _ext );
 
-		if( insert_ret.second == false )
+		if( it_found != m_codecTypes.end() )
 		{
-			const ConstString & alredyCodec = m_codecTypes.get_value( insert_ret.first );
+			const ConstString & alredyCodec = it_found->second;
 
-			LOGGER_ERROR(m_serviceProvider)("CodecEngine::registerCodecExt '%s' '%s' alredy registry in '%s'"
+			LOGGER_ERROR( m_serviceProvider )("CodecEngine::registerCodecExt '%s' '%s' alredy registry in '%s'"
 				, _ext.c_str()
 				, _codecType.c_str()
 				, alredyCodec.c_str()
@@ -121,39 +127,34 @@ namespace Menge
 
 			return false;
 		}
+		
+		m_codecTypes.insert( std::make_pair(_ext, _codecType) );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & CodecEngine::findCodecType( const FilePath & _path ) const
 	{
-        for( TMapCodecTypes::const_iterator
-            it = m_codecTypes.begin(),
-            it_end = m_codecTypes.end();
-        it != it_end;
-        ++it )
-        {
-            const String & ext = m_codecTypes.get_key( it );
+		const char * str_path = _path.c_str();
 
-            const char * str = _path.c_str();
+		const char * dot_find = strrchr( str_path, '.' );
 
-            const char * dot_find = strrchr( str, '.' );
+		if( dot_find == nullptr )
+		{
+			return ConstString::none();
+		}
 
-            if( dot_find == nullptr )
-            {
-                continue;
-            }
+		String ext( dot_find + 1 );
 
-            if( strcmp( dot_find + 1, ext.c_str() ) != 0 )
-            {
-                continue;
-            }
+		TMapCodecTypes::const_iterator it_found = m_codecTypes.find( ext );
 
-            const ConstString & codecType = m_codecTypes.get_value( it );
-            
-            return codecType;
-        }
+		if( it_found == m_codecTypes.end() )
+		{
+			return ConstString::none();
+		}
 
-        return ConstString::none();
+		const ConstString & codecType = it_found->second;
+
+		return codecType;
 	}
 }

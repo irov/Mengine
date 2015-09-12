@@ -56,6 +56,12 @@ namespace Menge
 
 		Magic_SetAxis( MAGIC_pXpYpZ );
 
+		const char * version = Magic_GetVersion();
+
+		LOGGER_WARNING( m_serviceProvider )("Astralax Magic Particles Version: %s"
+			, version
+			);
+
 		m_factoryPoolAstralaxEmitterContainer.setMethodListener( this, &AstralaxParticleSystem2::onContainerRelease_ );
 
 		return true;

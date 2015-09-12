@@ -34,7 +34,6 @@ namespace Menge
 	protected:
 		ogg_stream_state m_oggStreamState;
 		ogg_sync_state	m_oggSyncState;
-		ogg_page m_oggPage;
 		ogg_packet m_oggPacket;
 
 		theora_comment m_theoraComment;

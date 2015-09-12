@@ -72,8 +72,6 @@ namespace Menge
 		void setPosition( const mt::vec3f & _pos ) override;
 		void getPosition( mt::vec3f & _pos ) override;
 
-        void getBasePosition( mt::vec3f & _pos ) override;
-
 		void setScale( float _scale ) override;
 
 		void setAngle( float _radians ) override;
@@ -96,8 +94,6 @@ namespace Menge
 		
 		HM_EMITTER m_emitterId;
 
-        mt::vec3f m_basePosition;
-
 		double m_tempScale;
 		double m_leftBorder;
 		double m_rightBorder;
@@ -109,6 +105,7 @@ namespace Menge
 
 		float m_width;
 		float m_height;
+		mt::vec4f m_rect;
 		
 		float m_angle;
 

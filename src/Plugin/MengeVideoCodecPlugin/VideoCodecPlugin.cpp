@@ -42,8 +42,7 @@ namespace Menge
         //m_decoders.push_back( new DecoderFactory<VideoDecoderVPX>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "vpxVideo")) );
 		m_decoders.push_back( new DecoderFactory<VideoDecoderTheora>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ogvVideo")) );
 		m_decoders.push_back( new DecoderFactory<VideoDecoderTheora>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ogvaVideo")) );
-		
-		
+				
 		for( TVectorVideoDecoders::iterator
 			it = m_decoders.begin(),
 			it_end = m_decoders.end();
@@ -55,6 +54,10 @@ namespace Menge
 			CODEC_SERVICE(m_serviceProvider)
 				->registerDecoder( name, (*it) );
 		}
+
+		LOGGER_WARNING( m_serviceProvider )("Video Theora Version: %s"
+			, theora_version_string()
+			);
         
         return true;
 	}

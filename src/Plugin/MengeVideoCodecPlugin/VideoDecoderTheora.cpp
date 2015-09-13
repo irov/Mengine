@@ -276,7 +276,7 @@ namespace Menge
 	{
 		ogg_stream_clear( &m_oggStreamState );
 		ogg_sync_clear( &m_oggSyncState );
-		ogg_packet_clear( &m_oggPacket );
+		//ogg_packet_clear( &m_oggPacket );
 
 		theora_clear( &m_theoraState );
 		theora_comment_clear( &m_theoraComment );
@@ -711,8 +711,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderTheora::seek( float _timing )
 	{
-		ogg_page page;
-		long seek = ogg_sync_pageseek( &m_oggSyncState, &page );
+		//for( ;; )
+		//{
+		//	ogg_page page;
+		//	long seek = ogg_sync_pageseek( &m_oggSyncState, &page );
+
+		//	if( seek != 0 )
+		//	{
+		//		ogg_int64_t granulepos = ogg_page_granulepos( &page );
+
+		//		double time = theora_granule_time( &m_theoraState, granulepos );
+
+		//		printf( "%f", (float)time );
+		//	}
+		//	else
+		//	{
+		//		char* buffer = ogg_sync_buffer( &m_oggSyncState, OGG_BUFFER_SIZE );
+		//		size_t bytes = m_stream->read( buffer, OGG_BUFFER_SIZE );
+		//		ogg_sync_wrote( &m_oggSyncState, bytes );
+		//	}
+		//}
 
 		return true;
 	}

@@ -525,7 +525,7 @@ namespace Menge
 						return false;
 					}
 
-					Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, uv[array_info.index] ), sizeof( RenderVertex2D ) );
+					Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * array_info.index, sizeof( RenderVertex2D ) );
 				}break;
 			case MAGIC_VERTEX_FORMAT_NORMAL:
 				{

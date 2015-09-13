@@ -31,7 +31,6 @@
 //#	include "ResourceSequence.h"
 
 #	include "Player.h"
-#	include "Kernel/TimingManager.h"
 
 #	include "Watchdog.h"
 
@@ -52,8 +51,6 @@
 #	include "Math/angle.h"
 
 #	include "Interface/ScriptSystemInterface.h"
-
-#	include "Kernel/TimingManager.h"
 
 #   include "pybind/pybind.hpp"
 #   include "pybind/pickle.hpp"

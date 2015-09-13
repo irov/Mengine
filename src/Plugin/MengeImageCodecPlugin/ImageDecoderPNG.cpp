@@ -426,6 +426,11 @@ namespace Menge
 			return false;
 		}
 
+		if( this->_prepareData() == false )
+		{
+			return false;
+		}
+
 		return true;
 	}
 }

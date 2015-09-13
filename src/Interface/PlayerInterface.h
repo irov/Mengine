@@ -1,7 +1,6 @@
 #   pragma once
 
 #   include "Interface/ServiceInterface.h"
-#   include "Interface/TimingManagerInterface.h"
 #   include "Interface/ScheduleManagerInterface.h"
 #   include "Interface/MousePickerSystemInterface.h"
 #   include "Interface/GlobalHandleSystemInterface.h"
@@ -93,12 +92,12 @@ namespace Menge
         virtual ScheduleManagerInterface * getScheduleManagerGlobal() const = 0;
 
 	public:
-		virtual TimingManagerInterface * createTimingManager() = 0;
-		virtual bool destroyTimingManager( TimingManagerInterface * _timing ) = 0;
+		virtual ScheduleManagerInterface * createTimingManager() = 0;
+		virtual bool destroyTimingManager( ScheduleManagerInterface * _timing ) = 0;
 
     public:
-        virtual TimingManagerInterface * getTimingManager() const = 0;
-        virtual TimingManagerInterface * getTimingManagerGlobal() const = 0;
+		virtual ScheduleManagerInterface * getTimingManager() const = 0;
+		virtual ScheduleManagerInterface * getTimingManagerGlobal() const = 0;
 
 	public:
 		virtual Affectorable * getAffectorable() const = 0;

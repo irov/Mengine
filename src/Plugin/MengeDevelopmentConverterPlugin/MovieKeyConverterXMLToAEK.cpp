@@ -118,7 +118,7 @@ namespace Menge
 
 		ArchiveWrite aw(_buffer);
 
-		uint32_t maxIndex = (uint32_t)keyFramesPack.get_MaxIndex();
+		uint32_t maxIndex = keyFramesPack.get_MaxIndex();
 
 		aw << maxIndex;
 
@@ -199,21 +199,6 @@ namespace Menge
 
 					frameLayer.source = frame;
 					frameLayer.count = count;
-
-					//if( mt::equal_f_z( frame.scale.x ) == true )
-					//{
-					//	frame.scale.x = mt::m_eps2;
-					//}
-
-					//if( mt::equal_f_z( frame.scale.y ) == true )
-					//{
-					//	frame.scale.y = mt::m_eps2;
-					//}
-
-					//if( mt::equal_f_z( frame.scale.z ) == true )
-					//{
-					//	frame.scale.z = mt::m_eps2;
-					//}
 				}
 			}
 			else
@@ -284,21 +269,6 @@ namespace Menge
 					frame.rotation.x = -angle;
 					frame.rotation.y = 0.f;
 					frame.rotation.z = 0.f;
-
-					//if( mt::equal_f_z( frame.scale.x ) == true )
-					//{
-					//	frame.scale.x = mt::m_eps2;
-					//}
-
-					//if( mt::equal_f_z( frame.scale.y ) == true )
-					//{
-					//	frame.scale.y = mt::m_eps2;
-					//}
-
-					//if( mt::equal_f_z( frame.scale.z ) == true )
-					//{
-					//	frame.scale.z = mt::m_eps2;
-					//}
 
 					for( uint32_t i = 0; i != count; ++i )
 					{
@@ -376,22 +346,7 @@ namespace Menge
 				mt::mul_q_q( qor, qo, qr );
 
 				mt::quat_to_euler( qor, frame.rotation );
-
-				//if( mt::equal_f_z( frame.scale.x ) == true )
-				//{
-				//	frame.scale.x = mt::m_eps2;
-				//}
-
-				//if( mt::equal_f_z( frame.scale.y ) == true )
-				//{
-				//	frame.scale.y = mt::m_eps2;
-				//}
-
-				//if( mt::equal_f_z( frame.scale.z ) == true )
-				//{
-				//	frame.scale.z = mt::m_eps2;
-				//}
-				
+			
 				if( frameLayer.immutable == 0 )
 				{
 					for( uint32_t i = 0; i != count; ++i )
@@ -499,7 +454,7 @@ namespace Menge
 
 			uint32_t layerIndex = meta_timeremap.get_LayerIndex();
 
-			aw << (uint32_t)layerIndex;
+			aw << layerIndex;
 
 			const Floats & floats = meta_timeremap.get_Time();
 
@@ -527,7 +482,7 @@ namespace Menge
 
 			uint32_t layerIndex = meta_imageshape.get_LayerIndex();
 
-			aw << (uint32_t)layerIndex;
+			aw << layerIndex;
 
 			float width = meta_imageshape.get_Width();
 			float height = meta_imageshape.get_Height();
@@ -590,7 +545,7 @@ namespace Menge
 
 					boost::geometry::correct( shape_vertex );
 
-					uint32_t shapeVertexCount = boost::geometry::num_points( shape_vertex ) - 1;
+					size_t shapeVertexCount = boost::geometry::num_points( shape_vertex ) - 1;
 
 					if( shapeVertexCount >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
 					{
@@ -614,7 +569,7 @@ namespace Menge
 						return false;
 					}
 
-					uint32_t shapeIndicesCount = shape_indices.size();
+					size_t shapeIndicesCount = shape_indices.size();
 
 					if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
 					{
@@ -635,7 +590,7 @@ namespace Menge
 
 					shape.indices = Helper::allocateMemory<RenderIndices>( shapeIndicesCount );
 
-					for( uint32_t i = 0; i != shapeVertexCount; ++i )
+					for( size_t i = 0; i != shapeVertexCount; ++i )
 					{
 						const mt::vec2f & shape_pos = shape_vertex.outer()[i];
 
@@ -646,7 +601,7 @@ namespace Menge
 						shape.uv[i].y = shape_pos.y / height;
 					}
 
-					for( uint32_t i = 0; i != shapeIndicesCount; ++i )
+					for( size_t i = 0; i != shapeIndicesCount; ++i )
 					{
 						shape.indices[i] = (uint16_t)shape_indices[i];
 					}
@@ -685,7 +640,7 @@ namespace Menge
 
 			uint32_t layerIndex = meta_polygon.get_LayerIndex();
 
-			aw << (uint32_t)layerIndex;
+			aw << layerIndex;
 
 			const Menge::Polygon & polygon = meta_polygon.get_Value();
 

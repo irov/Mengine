@@ -196,12 +196,6 @@ Manager\\\\Schedule
 )
 
 ADD_FILTER(
-Manager\\\\Timing
-	TimingManager.cpp
-	TimingManager.h
-)
-
-ADD_FILTER(
 Module
     ModuleFactory.h
 )

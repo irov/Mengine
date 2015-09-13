@@ -115,7 +115,6 @@
 
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/PhysicSystemInterface.h"
-#   include "Interface/TimingManagerInterface.h"
 
 #	include "Kernel/Identity.h"
 
@@ -998,15 +997,15 @@ namespace Menge
                 ->getInputMouseButtonEventBlock();
         }
 		//////////////////////////////////////////////////////////////////////////
-		TimingManagerInterface * createTiming()
+		ScheduleManagerInterface * createTiming()
 		{
-			TimingManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
+			ScheduleManagerInterface * sm = PLAYER_SERVICE( m_serviceProvider )
 				->createTimingManager();
 			
 			return sm;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool destroyTiming( TimingManagerInterface * _tm )
+		bool destroyTiming( ScheduleManagerInterface * _tm )
 		{
 			if( _tm == nullptr )
 			{
@@ -1023,7 +1022,7 @@ namespace Menge
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class PyObjectTimingListener
-			: public TimingListenerInterface
+			: public ScheduleListenerInterface
 		{
 		public:
 			PyObjectTimingListener()
@@ -1043,14 +1042,20 @@ namespace Menge
 			}
 
 		protected:
-			bool onTimingUpdate( uint32_t _id, float _timing ) override
+			bool onScheduleUpdate( uint32_t _id, float _timing ) override
 			{
 				m_script( _id, _timing, false );
 
 				return false;
 			}
 
-			void onTimingStop( uint32_t _id ) override
+			void onScheduleComplete( uint32_t _id ) override
+			{
+				(void)_id;
+				//Empty
+			}
+
+			void onScheduleStop( uint32_t _id ) override
 			{
 				m_script( _id, 0.f, true );
 			}
@@ -1065,7 +1070,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         uint32_t timing( float _timing, const pybind::object & _script )
         {
-            TimingManagerInterface * tm = PLAYER_SERVICE(m_serviceProvider)
+			ScheduleManagerInterface * tm = PLAYER_SERVICE( m_serviceProvider )
                 ->getTimingManager();
 
             PyObjectTimingListener * listener = m_factoryPyObjectTimingListener.createObjectT();
@@ -1079,7 +1084,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool timingRemove( uint32_t _id )
         {
-            TimingManagerInterface * tm = PLAYER_SERVICE(m_serviceProvider)
+			ScheduleManagerInterface * tm = PLAYER_SERVICE( m_serviceProvider )
                 ->getTimingManager();
 
             bool successful = tm->remove( _id );
@@ -1132,6 +1137,16 @@ namespace Menge
 			}
 
         protected:
+			bool onScheduleUpdate( uint32_t _id, float _timing ) override
+			{
+				(void)_id;
+				(void)_timing;
+
+				//Empty
+
+				return false;
+			}
+
             void onScheduleComplete( uint32_t _id ) override
             {
                 m_cb( _id, false );
@@ -1175,13 +1190,13 @@ namespace Menge
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t TimingManagerInterface_timing( TimingManagerInterface * _timingManager, float _timing, const pybind::object & _script )
+		uint32_t TimingManagerInterface_timing( ScheduleManagerInterface * _timingManager, float _delay, const pybind::object & _script )
 		{
 			PyObjectTimingListener * tl = m_factoryPyObjectTimingListener.createObjectT();
 
 			tl->initialize( m_serviceProvider, _script );
 
-			uint32_t id = _timingManager->timing( _timing, tl );
+			uint32_t id = _timingManager->timing( _delay, tl );
 
 			return id;
 		}
@@ -5262,24 +5277,11 @@ namespace Menge
 
             pybind::def_functor( "timing", nodeScriptMethod, &NodeScriptMethod::timing );
             pybind::def_functor( "timingRemove", nodeScriptMethod, &NodeScriptMethod::timingRemove );
-
-			pybind::interface_<TimingManagerInterface>("TimingManagerInterface", true)
-				.def_proxy_static( "timing", nodeScriptMethod, &NodeScriptMethod::TimingManagerInterface_timing )
-				.def( "remove", &TimingManagerInterface::remove )
-				.def( "removeAll", &TimingManagerInterface::removeAll )
-				.def( "freeze", &TimingManagerInterface::freeze )
-				.def( "freezeAll", &TimingManagerInterface::freezeAll )
-				.def( "isFreeze", &TimingManagerInterface::isFreeze )
-				.def( "setSpeedFactor", &TimingManagerInterface::setSpeedFactor )
-				.def( "getSpeedFactor", &TimingManagerInterface::getSpeedFactor )
-				;
-
-			pybind::def_functor( "createTiming", nodeScriptMethod, &NodeScriptMethod::createTiming );
-			pybind::def_functor( "destroyTiming", nodeScriptMethod, &NodeScriptMethod::destroyTiming );
-
-						
+					
 			pybind::interface_<ScheduleManagerInterface>("ScheduleManagerInterface", true)
+				.def_proxy_static( "timing", nodeScriptMethod, &NodeScriptMethod::TimingManagerInterface_timing )
 				.def_proxy_static( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
+				.def( "exist", &ScheduleManagerInterface::exist )
 				.def( "remove", &ScheduleManagerInterface::remove )
 				.def( "removeAll", &ScheduleManagerInterface::removeAll )
 				.def( "freeze", &ScheduleManagerInterface::freeze )
@@ -5290,7 +5292,8 @@ namespace Menge
 				.def( "getSpeedFactor", &ScheduleManagerInterface::getSpeedFactor )
 				;
 
-
+			pybind::def_functor( "createTiming", nodeScriptMethod, &NodeScriptMethod::createTiming );
+			pybind::def_functor( "destroyTiming", nodeScriptMethod, &NodeScriptMethod::destroyTiming );
 			
 			pybind::def_functor( "createScheduler", nodeScriptMethod, &NodeScriptMethod::createScheduler );
 			pybind::def_functor( "destroyScheduler", nodeScriptMethod, &NodeScriptMethod::destroyScheduler );				

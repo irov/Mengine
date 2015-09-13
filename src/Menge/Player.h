@@ -14,7 +14,6 @@
 #   include "MousePickerSystem.h"
 #   include "GlobalHandleSystem.h"
 #   include "Kernel/ScheduleManager.h"
-#   include "Kernel/TimingManager.h"
 
 
 namespace Menge
@@ -34,7 +33,6 @@ namespace Menge
 	class GlobalHandleSystem;
 
 	class ScheduleManagerInterface;
-	class TimingManagerInterface;
 
 	class EventManager;
 
@@ -91,12 +89,12 @@ namespace Menge
 		ScheduleManagerInterface * getScheduleManagerGlobal() const override;
 
 	public:
-		TimingManagerInterface * createTimingManager() override;
-		bool destroyTimingManager( TimingManagerInterface * _timing ) override;
+		ScheduleManagerInterface * createTimingManager() override;
+		bool destroyTimingManager( ScheduleManagerInterface * _timing ) override;
 
     public:
-		TimingManagerInterface * getTimingManager() const override;
-        TimingManagerInterface * getTimingManagerGlobal() const override;
+		ScheduleManagerInterface * getTimingManager() const override;
+		ScheduleManagerInterface * getTimingManagerGlobal() const override;
 
 	public:
 		Affectorable * getAffectorable() const override;
@@ -187,13 +185,13 @@ namespace Menge
 
         FactoryDefaultStore<ScheduleManager> m_factoryScheduleManager;
 
-		TimingManagerInterface * m_timingManager;
-        TimingManagerInterface * m_timingManagerGlobal;
+		ScheduleManagerInterface * m_timingManager;
+		ScheduleManagerInterface * m_timingManagerGlobal;
 
-		typedef stdex::vector<TimingManagerInterface *> TVectorUserTiming;
+		typedef stdex::vector<ScheduleManagerInterface *> TVectorUserTiming;
 		TVectorUserTiming m_timingers;
 
-        FactoryDefaultStore<TimingManager> m_factoryTimingManager;
+        FactoryDefaultStore<ScheduleManager> m_factoryTimingManager;
 
 		Affectorable * m_affectorable;
 		Affectorable * m_affectorableGlobal;

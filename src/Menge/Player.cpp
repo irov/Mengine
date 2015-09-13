@@ -614,9 +614,9 @@ namespace Menge
 		return m_scheduleManagerGlobal;
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	TimingManagerInterface * Player::createTimingManager()
+	ScheduleManagerInterface * Player::createTimingManager()
 	{
-		TimingManagerInterface * tm = m_factoryTimingManager.createObjectT();
+		ScheduleManagerInterface * tm = m_factoryTimingManager.createObjectT();
 
 		tm->setServiceProvider( m_serviceProvider );
 
@@ -625,7 +625,7 @@ namespace Menge
 		return tm;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::destroyTimingManager( TimingManagerInterface * _timing )
+	bool Player::destroyTimingManager( ScheduleManagerInterface * _timing )
 	{	
 		TVectorUserTiming::iterator it_found = std::find( m_timingers.begin(), m_timingers.end(), _timing );
 
@@ -644,12 +644,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TimingManagerInterface * Player::getTimingManager() const
+	ScheduleManagerInterface * Player::getTimingManager() const
 	{
 		return m_timingManager;
 	}
     //////////////////////////////////////////////////////////////////////////
-    TimingManagerInterface * Player::getTimingManagerGlobal() const
+	ScheduleManagerInterface * Player::getTimingManagerGlobal() const
     {
         return m_timingManagerGlobal;
     }
@@ -765,7 +765,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			TimingManagerInterface * tm = *it;
+			ScheduleManagerInterface * tm = *it;
 
 			tm->destroy();
 		}
@@ -1099,7 +1099,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			TimingManagerInterface * tm = *it;
+			ScheduleManagerInterface * tm = *it;
 
 			tm->update( gameTime, _timing );
 		}

@@ -33,7 +33,6 @@ src
     GameInterface.h
     NodeInterface.h
     PlayerInterface.h
-    TimingManagerInterface.h
     ScheduleManagerInterface.h
     MousePickerSystemInterface.h
     MovieKeyFrameInterface.h

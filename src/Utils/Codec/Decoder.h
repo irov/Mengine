@@ -104,17 +104,9 @@ namespace Menge
 	public:
 		bool rewind() override
 		{			
-			if( this->_rewind() == false )
-			{
-				return false;
-			}
+			bool successful = this->_rewind();
 
-			if( this->_prepareData() == false )
-			{
-				return false;
-			}
-
-			return true;
+			return successful;
 		}
 
 		virtual bool _rewind()

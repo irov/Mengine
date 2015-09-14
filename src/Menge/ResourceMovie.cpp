@@ -359,6 +359,23 @@ namespace Menge
 					continue;
 				}
 			}
+
+			if( layer.type == CONST_STRING( m_serviceProvider, ParticleEmitter2 )
+				|| layer.type == CONST_STRING( m_serviceProvider, Video ) )
+			{
+				if( mt::equal_f_z( layer.startInterval ) == false )
+				{
+					LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' type '%s' start interval is not support"
+						, this->getName().c_str()
+						, layer.index
+						, layer.name.c_str()
+						, layer.type.c_str()
+						, layer.name.c_str()
+						);
+
+					layers_successful = false;
+				}
+			}
         }
 
         return layers_successful;

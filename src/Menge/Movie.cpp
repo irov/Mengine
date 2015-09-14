@@ -1877,10 +1877,19 @@ namespace Menge
 
 		layer_particles->setResourceParticle( resourceParticle );
 
-		//layer_particles->setIntervalStart( _layer.startInterval );        
+		layer_particles->setIntervalStart( _layer.startInterval );
 		layer_particles->setPlayCount( _layer.playCount );
 		layer_particles->setScretch( _layer.scretch );
-		layer_particles->setLoop( true );
+		
+		float frameDuration = m_resourceMovie->getFrameDuration();
+		float duration = m_resourceMovie->getDuration();
+
+		if( mt::equal_f_z( _layer.in ) == true &&
+			mt::equal_f_f_e( _layer.out, duration, frameDuration ) == true &&
+			mt::equal_f_z( _layer.startInterval ) == true )
+		{
+			layer_particles->setLoop( true );
+		}
 
 		layer_particles->setEmitterTranslateWithParticle( true );
 

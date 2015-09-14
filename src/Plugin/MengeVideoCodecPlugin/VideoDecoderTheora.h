@@ -40,8 +40,6 @@ namespace Menge
 		theora_info m_theoraInfo;
 		mutable theora_state m_theoraState;
 
-		yuv_buffer m_yuvBuffer;
-
 		unsigned int m_currentFrame;
 
 		size_t m_pitch;
@@ -51,7 +49,7 @@ namespace Menge
 	private:
 		bool readHeader_();
 		size_t buffer_data_();
-		void decodeBuffer_( unsigned char * _buffer, size_t _pitch );
+		bool decodeBuffer_( const yuv_buffer & _yuvBuffer, unsigned char * _buffer, size_t _pitch );
 		int readFrame_();
 	};
 }	// namespace Menge

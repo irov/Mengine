@@ -38,11 +38,11 @@ namespace Menge
 		//can maintain high precision and not use floats (FIXED POINT)
 		int scale = 1L << 13;
 
-		for ( int i = 0; i < 256; i++ )
+		for( int i = 0; i < 256; i++ )
 		{
 			int temp = i - 128;
 
-			s_YTable[i]  = (int)((1.164 * scale + 0.5) * (i - 16));	//Calc Y component
+			s_YTable[i] = (int)((1.164 * scale + 0.5) * (i - 16));	//Calc Y component
 
 			s_RVTable[i] = (int)((1.596 * scale + 0.5) * temp);		//Calc R component
 
@@ -55,10 +55,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderTheora::VideoDecoderTheora()
 		: VideoDecoder()
-		, m_eof(true)
-		, m_currentFrame(0)
-		, m_lastReadBytes(0)
-		, m_pitch(0)
+		, m_eof( true )
+		, m_currentFrame( 0 )
+		, m_lastReadBytes( 0 )
+		, m_pitch( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -80,7 +80,7 @@ namespace Menge
 		{
 			s_initializeCoefTables = true;
 			s_createCoefTables();
-		}		
+		}
 
 		return true;
 	}
@@ -94,10 +94,10 @@ namespace Menge
 		while( !stateFlag )
 		{
 			// и передает их в буфер приема ogg
-			if( buffer_data_() == 0 )
+			if( this->buffer_data_() == 0 )
 			{
 				// кончился файл, на данном этапе это ошибка
-				LOGGER_ERROR(m_serviceProvider)( "Theora Codec Error: bad file" );
+				LOGGER_ERROR( m_serviceProvider )("Theora Codec Error: bad file");
 
 				return false;
 			}
@@ -138,7 +138,7 @@ namespace Menge
 				// идентификатором потока, как и у текущей странички
 				if( ogg_stream_init( &m_oggStreamState, ogg_page_serialno( &page ) ) != 0 )
 				{
-					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_init" );
+					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_init");
 
 					return false;
 				}
@@ -146,14 +146,14 @@ namespace Menge
 				// добавляем страницу в тестовый поток
 				if( ogg_stream_pagein( &m_oggStreamState, &page ) != 0 )
 				{
-					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_pagein" );
+					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_pagein");
 
 					return false;
 				}
 				// декодируем данные из этого тестового потока в пакет
 				if( ogg_stream_packetout( &m_oggStreamState, &m_oggPacket ) == -1 )
 				{
-					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_packetout" );
+					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout");
 
 					return false;
 				}
@@ -194,14 +194,14 @@ namespace Menge
 		// и можно переходить к потоковому воспроизведению
 
 		while( theoraHeaderPackets < 3 )
-		{			
+		{
 			int result = ogg_stream_packetout( &m_oggStreamState, &m_oggPacket );
 			// если функция возвращает нуль, значит не хватает данных для декодирования
 
 			if( result < 0 )
 			{
 				// ошибка декодирования, поврежденный поток
-				LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during ogg_stream_packetout" );
+				LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout");
 
 				return false;
 			}
@@ -214,7 +214,7 @@ namespace Menge
 				if( result2 < 0 )
 				{
 					// ошибка декодирования, поврежденный поток
-					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: error during theora_decode_header (corrupt stream)" );
+					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during theora_decode_header (corrupt stream)");
 
 					return false;
 				}
@@ -238,12 +238,12 @@ namespace Menge
 			else
 			{
 				// ничего мы в буфере не нашли
-				int ret = buffer_data_();
+				int ret = this->buffer_data_();
 				// надо больше данных! читаем их из файла
 				if( ret == 0 )
 				{
 					// опять файл кончился!
-					LOGGER_ERROR(m_serviceProvider)( "TheoraCodec Error: eof searched. terminate..." );
+					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: eof searched. terminate...");
 
 					return false;
 				}
@@ -252,7 +252,7 @@ namespace Menge
 
 		// наконец мы получили, все, что хотели. инициализируем декодеры
 		theora_decode_init( &m_theoraState, &m_theoraInfo );
-				
+
 		if( m_options.alpha == true )
 		{
 			m_dataInfo.frameWidth = m_theoraInfo.width;
@@ -285,23 +285,27 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t VideoDecoderTheora::decode( void * _buffer, size_t _bufferSize )
 	{
+		yuv_buffer yuvBuffer;
 		// декодируем страничку в YUV-виде в спец. структуру yuv_buffer
-		if( theora_decode_YUVout( &m_theoraState, &m_yuvBuffer ) != 0 )
+		if( theora_decode_YUVout( &m_theoraState, &yuvBuffer ) != 0 )
 		{
 			// ошибка декодирования
-			LOGGER_ERROR(m_serviceProvider)("error during theora_decode_YUVout...");
+			LOGGER_ERROR( m_serviceProvider )("error during theora_decode_YUVout...");
 
 			return 0;
 		}
 
 		unsigned char * byte_buffer = static_cast<unsigned char *>(_buffer);
 
-		this->decodeBuffer_( byte_buffer, _bufferSize );
+		if( this->decodeBuffer_( yuvBuffer, byte_buffer, _bufferSize ) == false )
+		{
+			return 0;
+		}
 
 		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void VideoDecoderTheora::decodeBuffer_( unsigned char * _buffer, size_t _size )
+	bool VideoDecoderTheora::decodeBuffer_( const yuv_buffer & _yuvBuffer, unsigned char * _buffer, size_t _size )
 	{
 		if( m_options.alpha == false && m_options.pixelFormat == PF_X8R8G8B8 )
 		{
@@ -309,36 +313,36 @@ namespace Menge
 			unsigned char * dstBitmapOffset = _buffer + m_pitch;
 
 			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 4;
-			int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
+			int yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
-			m_yuvBuffer.y_height = m_yuvBuffer.y_height >> 1;
-			m_yuvBuffer.y_width = m_yuvBuffer.y_width >> 1;
-			
-			unsigned char * ySrc = (unsigned char*)m_yuvBuffer.y;
-			unsigned char * uSrc = (unsigned char*)m_yuvBuffer.u;
-			unsigned char * vSrc = (unsigned char*)m_yuvBuffer.v;
-			unsigned char * ySrc2 = ySrc + m_yuvBuffer.y_stride;
+			int y_height = _yuvBuffer.y_height >> 1;
+			int y_width = _yuvBuffer.y_width >> 1;
+
+			unsigned char * ySrc = (unsigned char*)_yuvBuffer.y;
+			unsigned char * uSrc = (unsigned char*)_yuvBuffer.u;
+			unsigned char * vSrc = (unsigned char*)_yuvBuffer.v;
+			unsigned char * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
 			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-			for( int y = m_yuvBuffer.y_height; y > 0; --y )
+			for( int y = y_height; y > 0; --y )
 			{
-				for( int x = 0; x < m_yuvBuffer.y_width; ++x )
+				for( int x = 0; x < y_width; ++x )
 				{
 					//Get uv pointers for row
-					int u = uSrc[x]; 
+					int u = uSrc[x];
 					int v = vSrc[x];
 
 					//get corresponding lookup values
-					int rgbY = s_YTable[*ySrc];				
+					int rgbY = s_YTable[*ySrc];
 					int rV = s_RVTable[v];
 					int gUV = s_GUTable[u] + s_GVTable[v];
 					int bU = s_BUTable[u];
 					++ySrc;
 
 					//scale down - brings are values back into the 8 bits of a byte
-					int r = (rgbY + rV ) >> 13;
+					int r = (rgbY + rV) >> 13;
 					int g = (rgbY - gUV) >> 13;
-					int b = (rgbY + bU ) >> 13;
+					int b = (rgbY + bU) >> 13;
 
 					//Clip to RGB values (255 0)
 					CLIP_RGB_COLOR( r, dstBitmap[COLOR_R] );
@@ -349,19 +353,19 @@ namespace Menge
 					//And repeat for other pixels (note, y is unique for each
 					//pixel, while uv are not)
 					rgbY = s_YTable[*ySrc];
-					r = (rgbY + rV)  >> 13;
+					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
-					b = (rgbY + bU)  >> 13;
-					CLIP_RGB_COLOR( r, dstBitmap[4+COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmap[4+COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmap[4+COLOR_B] );
-					dstBitmap[4+COLOR_A] = 255;
+					b = (rgbY + bU) >> 13;
+					CLIP_RGB_COLOR( r, dstBitmap[4 + COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmap[4 + COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmap[4 + COLOR_B] );
+					dstBitmap[4 + COLOR_A] = 255;
 					++ySrc;
 
 					rgbY = s_YTable[*ySrc2];
-					r = (rgbY + rV)  >> 13;
+					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
-					b = (rgbY + bU)  >> 13;
+					b = (rgbY + bU) >> 13;
 					CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_R] );
 					CLIP_RGB_COLOR( g, dstBitmapOffset[COLOR_G] );
 					CLIP_RGB_COLOR( b, dstBitmapOffset[COLOR_B] );
@@ -369,13 +373,13 @@ namespace Menge
 					++ySrc2;
 
 					rgbY = s_YTable[*ySrc2];
-					r = (rgbY + rV)  >> 13;
+					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
-					b = (rgbY + bU)  >> 13;
-					CLIP_RGB_COLOR( r, dstBitmapOffset[4+COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmapOffset[4+COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmapOffset[4+COLOR_B] );
-					dstBitmapOffset[4+COLOR_A] = 255;
+					b = (rgbY + bU) >> 13;
+					CLIP_RGB_COLOR( r, dstBitmapOffset[4 + COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmapOffset[4 + COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmapOffset[4 + COLOR_B] );
+					dstBitmapOffset[4 + COLOR_A] = 255;
 					++ySrc2;
 
 					/*dstBitmap[COLOR_G] = 0;
@@ -389,12 +393,12 @@ namespace Menge
 				} // end for x
 
 				//Advance destination pointers by offsets
-				dstBitmap		+= dstOff;
+				dstBitmap += dstOff;
 				dstBitmapOffset += dstOff;
-				ySrc			+= yOff;
-				ySrc2			+= yOff;
-				uSrc			+= m_yuvBuffer.uv_stride;
-				vSrc			+= m_yuvBuffer.uv_stride;
+				ySrc += yOff;
+				ySrc2 += yOff;
+				uSrc += _yuvBuffer.uv_stride;
+				vSrc += _yuvBuffer.uv_stride;
 			} //end for y
 		}
 		else if( m_options.alpha == false && m_options.pixelFormat == PF_R8G8B8 )
@@ -403,36 +407,36 @@ namespace Menge
 			unsigned char * dstBitmapOffset = _buffer + m_pitch;
 
 			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 3;
-			int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
+			int yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
-			m_yuvBuffer.y_height = m_yuvBuffer.y_height >> 1;
-			m_yuvBuffer.y_width = m_yuvBuffer.y_width >> 1;
+			int y_height = _yuvBuffer.y_height >> 1;
+			int y_width = _yuvBuffer.y_width >> 1;
 
-			unsigned char * ySrc = (unsigned char*)m_yuvBuffer.y;
-			unsigned char * uSrc = (unsigned char*)m_yuvBuffer.u;
-			unsigned char * vSrc = (unsigned char*)m_yuvBuffer.v;
-			unsigned char * ySrc2 = ySrc + m_yuvBuffer.y_stride;
+			unsigned char * ySrc = (unsigned char*)_yuvBuffer.y;
+			unsigned char * uSrc = (unsigned char*)_yuvBuffer.u;
+			unsigned char * vSrc = (unsigned char*)_yuvBuffer.v;
+			unsigned char * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
 			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-			for( int y = m_yuvBuffer.y_height; y > 0; --y )
+			for( int y = y_height; y > 0; --y )
 			{
-				for( int x = 0; x < m_yuvBuffer.y_width; ++x )
+				for( int x = 0; x < y_width; ++x )
 				{
 					//Get uv pointers for row
-					int u = uSrc[x]; 
+					int u = uSrc[x];
 					int v = vSrc[x];
 
 					//get corresponding lookup values
-					int rgbY = s_YTable[*ySrc];				
+					int rgbY = s_YTable[*ySrc];
 					int rV = s_RVTable[v];
 					int gUV = s_GUTable[u] + s_GVTable[v];
 					int bU = s_BUTable[u];
 					++ySrc;
 
 					//scale down - brings are values back into the 8 bits of a byte
-					int r = (rgbY + rV ) >> 13;
+					int r = (rgbY + rV) >> 13;
 					int g = (rgbY - gUV) >> 13;
-					int b = (rgbY + bU ) >> 13;
+					int b = (rgbY + bU) >> 13;
 
 					//Clip to RGB values (255 0)
 					CLIP_RGB_COLOR( r, dstBitmap[COLOR_R] );
@@ -442,30 +446,30 @@ namespace Menge
 					//And repeat for other pixels (note, y is unique for each
 					//pixel, while uv are not)
 					rgbY = s_YTable[*ySrc];
-					r = (rgbY + rV)  >> 13;
+					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
-					b = (rgbY + bU)  >> 13;
-					CLIP_RGB_COLOR( r, dstBitmap[3+COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmap[3+COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmap[3+COLOR_B] );
+					b = (rgbY + bU) >> 13;
+					CLIP_RGB_COLOR( r, dstBitmap[3 + COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmap[3 + COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmap[3 + COLOR_B] );
 					++ySrc;
 
 					rgbY = s_YTable[*ySrc2];
-					r = (rgbY + rV)  >> 13;
+					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
-					b = (rgbY + bU)  >> 13;
+					b = (rgbY + bU) >> 13;
 					CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_R] );
 					CLIP_RGB_COLOR( g, dstBitmapOffset[COLOR_G] );
 					CLIP_RGB_COLOR( b, dstBitmapOffset[COLOR_B] );
 					++ySrc2;
 
 					rgbY = s_YTable[*ySrc2];
-					r = (rgbY + rV)  >> 13;
+					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
-					b = (rgbY + bU)  >> 13;
-					CLIP_RGB_COLOR( r, dstBitmapOffset[3+COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmapOffset[3+COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmapOffset[3+COLOR_B] );
+					b = (rgbY + bU) >> 13;
+					CLIP_RGB_COLOR( r, dstBitmapOffset[3 + COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmapOffset[3 + COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmapOffset[3 + COLOR_B] );
 					++ySrc2;
 
 					/*dstBitmap[COLOR_G] = 0;
@@ -479,12 +483,12 @@ namespace Menge
 				} // end for x
 
 				//Advance destination pointers by offsets
-				dstBitmap		+= dstOff;
+				dstBitmap += dstOff;
 				dstBitmapOffset += dstOff;
-				ySrc			+= yOff;
-				ySrc2			+= yOff;
-				uSrc			+= m_yuvBuffer.uv_stride;
-				vSrc			+= m_yuvBuffer.uv_stride;
+				ySrc += yOff;
+				ySrc2 += yOff;
+				uSrc += _yuvBuffer.uv_stride;
+				vSrc += _yuvBuffer.uv_stride;
 			} //end for y
 		}
 		else if( m_options.alpha == true )
@@ -493,38 +497,39 @@ namespace Menge
 			unsigned char * dstBitmapOffset = _buffer + m_pitch;
 
 			unsigned int dstOff = m_pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
-			int yOff = (m_yuvBuffer.y_stride * 2) - m_yuvBuffer.y_width;
+			int yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
-			m_yuvBuffer.y_height = m_yuvBuffer.y_height >> 1;
-			m_yuvBuffer.y_width = m_yuvBuffer.y_width >> 1;
-			
-			unsigned char * ySrc = (unsigned char*)m_yuvBuffer.y;
-			unsigned char * uSrc = (unsigned char*)m_yuvBuffer.u;
-			unsigned char * vSrc = (unsigned char*)m_yuvBuffer.v;
-			unsigned char * ySrc2 = ySrc + m_yuvBuffer.y_stride;
+			int y_height = _yuvBuffer.y_height >> 1;
+			int y_width = _yuvBuffer.y_width >> 1;
+
+			unsigned char * ySrc = (unsigned char*)_yuvBuffer.y;
+			unsigned char * uSrc = (unsigned char*)_yuvBuffer.u;
+			unsigned char * vSrc = (unsigned char*)_yuvBuffer.v;
+			unsigned char * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
 			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-			int y_rgb_height_begin = m_yuvBuffer.y_height;
-			int y_rgb_height_end = m_yuvBuffer.y_height / 2;
+			int y_rgb_height_begin = y_height;
+			int y_rgb_height_end = y_height / 2;
+
 			for( int y = y_rgb_height_begin; y > y_rgb_height_end; --y )
 			{
-				for( int x = 0; x < m_yuvBuffer.y_width; ++x )
+				for( int x = 0; x < y_width; ++x )
 				{
 					//Get uv pointers for row
-					int u = uSrc[x]; 
+					int u = uSrc[x];
 					int v = vSrc[x];
 
 					//get corresponding lookup values
-					int rgbY = s_YTable[*ySrc];				
+					int rgbY = s_YTable[*ySrc];
 					int rV = s_RVTable[v];
 					int gUV = s_GUTable[u] + s_GVTable[v];
 					int bU = s_BUTable[u];
 					++ySrc;
 
 					//scale down - brings are values back into the 8 bits of a byte
-					int r = (rgbY + rV ) >> 13;
+					int r = (rgbY + rV) >> 13;
 					int g = (rgbY - gUV) >> 13;
-					int b = (rgbY + bU ) >> 13;
+					int b = (rgbY + bU) >> 13;
 
 					//Clip to RGB values (255 0)
 					CLIP_RGB_COLOR( r, dstBitmap[COLOR_R] );
@@ -534,30 +539,30 @@ namespace Menge
 					//And repeat for other pixels (note, y is unique for each
 					//pixel, while uv are not)
 					rgbY = s_YTable[*ySrc];
-					r = (rgbY + rV)  >> 13;
+					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
-					b = (rgbY + bU)  >> 13;
-					CLIP_RGB_COLOR( r, dstBitmap[4+COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmap[4+COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmap[4+COLOR_B] );
+					b = (rgbY + bU) >> 13;
+					CLIP_RGB_COLOR( r, dstBitmap[4 + COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmap[4 + COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmap[4 + COLOR_B] );
 					++ySrc;
 
 					rgbY = s_YTable[*ySrc2];
-					r = (rgbY + rV)  >> 13;
+					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
-					b = (rgbY + bU)  >> 13;
+					b = (rgbY + bU) >> 13;
 					CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_R] );
 					CLIP_RGB_COLOR( g, dstBitmapOffset[COLOR_G] );
 					CLIP_RGB_COLOR( b, dstBitmapOffset[COLOR_B] );
 					++ySrc2;
 
 					rgbY = s_YTable[*ySrc2];
-					r = (rgbY + rV)  >> 13;
+					r = (rgbY + rV) >> 13;
 					g = (rgbY - gUV) >> 13;
-					b = (rgbY + bU)  >> 13;
-					CLIP_RGB_COLOR( r, dstBitmapOffset[4+COLOR_R] );
-					CLIP_RGB_COLOR( g, dstBitmapOffset[4+COLOR_G] );
-					CLIP_RGB_COLOR( b, dstBitmapOffset[4+COLOR_B] );
+					b = (rgbY + bU) >> 13;
+					CLIP_RGB_COLOR( r, dstBitmapOffset[4 + COLOR_R] );
+					CLIP_RGB_COLOR( g, dstBitmapOffset[4 + COLOR_G] );
+					CLIP_RGB_COLOR( b, dstBitmapOffset[4 + COLOR_B] );
 					++ySrc2;
 
 					/*dstBitmap[COLOR_G] = 0;
@@ -571,34 +576,34 @@ namespace Menge
 				} // end for x
 
 				//Advance destination pointers by offsets
-				dstBitmap		+= dstOff;
+				dstBitmap += dstOff;
 				dstBitmapOffset += dstOff;
-				ySrc			+= yOff;
-				ySrc2			+= yOff;
-				uSrc			+= m_yuvBuffer.uv_stride;
-				vSrc			+= m_yuvBuffer.uv_stride;
+				ySrc += yOff;
+				ySrc2 += yOff;
+				uSrc += _yuvBuffer.uv_stride;
+				vSrc += _yuvBuffer.uv_stride;
 			} //end for y
 
 			dstBitmap = _buffer;
 			dstBitmapOffset = _buffer + m_pitch;
 
-			ySrc = (unsigned char*)m_yuvBuffer.y;
-			uSrc = (unsigned char*)m_yuvBuffer.u;
-			vSrc = (unsigned char*)m_yuvBuffer.v;
-			ySrc2 = ySrc + m_yuvBuffer.y_stride;
+			ySrc = (unsigned char*)_yuvBuffer.y;
+			uSrc = (unsigned char*)_yuvBuffer.u;
+			vSrc = (unsigned char*)_yuvBuffer.v;
+			ySrc2 = ySrc + _yuvBuffer.y_stride;
 
 			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-			int y_alpha_height_begin = m_yuvBuffer.y_height / 2;
+			int y_alpha_height_begin = y_height / 2;
 			int y_alpha_height_end = 0;
 			for( int y = y_alpha_height_begin; y > y_alpha_height_end; --y )
 			{
-				for( int x = 0; x < m_yuvBuffer.y_width; ++x )
+				for( int x = 0; x < y_width; ++x )
 				{
 					//Get uv pointers for row
 					int v = vSrc[x];
 
 					//get corresponding lookup values
-					int rgbY = s_YTable[*ySrc];				
+					int rgbY = s_YTable[*ySrc];
 					int rV = s_RVTable[v];
 					++ySrc;
 
@@ -611,18 +616,18 @@ namespace Menge
 					//And repeat for other pixels (note, y is unique for each
 					//pixel, while uv are not)
 					rgbY = s_YTable[*ySrc];
-					r = (rgbY + rV)  >> 13;
-					CLIP_RGB_COLOR( r, dstBitmap[4+COLOR_A] );
+					r = (rgbY + rV) >> 13;
+					CLIP_RGB_COLOR( r, dstBitmap[4 + COLOR_A] );
 					++ySrc;
 
 					rgbY = s_YTable[*ySrc2];
-					r = (rgbY + rV)  >> 13;
+					r = (rgbY + rV) >> 13;
 					CLIP_RGB_COLOR( r, dstBitmapOffset[COLOR_A] );
 					++ySrc2;
 
 					rgbY = s_YTable[*ySrc2];
-					r = (rgbY + rV)  >> 13;
-					CLIP_RGB_COLOR( r, dstBitmapOffset[4+COLOR_A] );
+					r = (rgbY + rV) >> 13;
+					CLIP_RGB_COLOR( r, dstBitmapOffset[4 + COLOR_A] );
 					++ySrc2;
 
 					/*dstBitmap[COLOR_G] = 0;
@@ -636,20 +641,28 @@ namespace Menge
 				} // end for x
 
 				//Advance destination pointers by offsets
-				dstBitmap		+= dstOff;
+				dstBitmap += dstOff;
 				dstBitmapOffset += dstOff;
-				ySrc			+= yOff;
-				ySrc2			+= yOff;
-				uSrc			+= m_yuvBuffer.uv_stride;
-				vSrc			+= m_yuvBuffer.uv_stride;
+				ySrc += yOff;
+				ySrc2 += yOff;
+				uSrc += _yuvBuffer.uv_stride;
+				vSrc += _yuvBuffer.uv_stride;
 			} //end for y
 		}
+		else
+		{
+			LOGGER_ERROR( m_serviceProvider )("VideoDecoderTheora::decodeBuffer_ unsupport format");
+
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t VideoDecoderTheora::buffer_data_()
 	{
 		char* buffer = ogg_sync_buffer( &m_oggSyncState, OGG_BUFFER_SIZE );
-		size_t bytes = m_stream->read( buffer, OGG_BUFFER_SIZE );	
+		size_t bytes = m_stream->read( buffer, OGG_BUFFER_SIZE );
 		ogg_sync_wrote( &m_oggSyncState, bytes );
 
 		return bytes;
@@ -658,7 +671,7 @@ namespace Menge
 	EVideoDecoderReadState VideoDecoderTheora::readNextFrame( float & _pts )
 	{
 		m_lastReadBytes = 0;
-				
+
 		// theora processing...
 		while( ogg_stream_packetout( &m_oggStreamState, &m_oggPacket ) <= 0 )
 		{
@@ -666,7 +679,7 @@ namespace Menge
 			// надо надергать данных из физического потока и затолкать их в логический поток
 
 			// читаем данные из файла
-			size_t bytes = buffer_data_();
+			size_t bytes = this->buffer_data_();
 
 			if( bytes == 0 )
 			{
@@ -685,7 +698,7 @@ namespace Menge
 				//FINISHED=true;
 				return VDRS_END_STREAM;
 			}
-			
+
 			ogg_page page;
 			while( ogg_sync_pageout( &m_oggSyncState, &page ) > 0 )
 				// декодируем данные из буфера в страницы (ogg_page)
@@ -694,14 +707,13 @@ namespace Menge
 				// пихаем эти страницы в соотв. логические потоки
 				ogg_stream_pagein( &m_oggStreamState, &page );
 			}
-
 		}
 
 		// удачно декодировали. в пакете содержится декодированная ogg-информация
 		// (то бишь закодированная theora-информация)
 
 		// загружаем пакет в декодер theora
-		if( theora_decode_packetin(&m_theoraState,&m_oggPacket) == OC_BADPACKET)
+		if( theora_decode_packetin( &m_theoraState, &m_oggPacket ) == OC_BADPACKET )
 		{
 			return VDRS_FAILURE;
 		}
@@ -711,6 +723,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderTheora::seek( float _timing )
 	{
+		(void)_timing;
+
+		if( ogg_sync_reset( &m_oggSyncState ) == -1 )
+		{
+			return false;
+		}
+
+		if( this->_rewind() == false )
+		{
+			return false;
+		}
+
 		//for( ;; )
 		//{
 		//	ogg_page page;
@@ -738,7 +762,7 @@ namespace Menge
 	float VideoDecoderTheora::getTiming() const
 	{
 		double granule_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
-		
+
 		float timing = (float)(granule_time * 1000.0);
 
 		return timing;

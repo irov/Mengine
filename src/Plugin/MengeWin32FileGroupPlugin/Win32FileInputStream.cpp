@@ -255,7 +255,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileInputStream::seek_( size_t _pos )
 	{
-        if( _pos >= m_reading - m_capacity && _pos < m_reading )
+        if( _pos >= m_reading - m_capacity && _pos <= m_reading )
         {
             m_carriage = m_capacity - (m_reading - _pos);
         }

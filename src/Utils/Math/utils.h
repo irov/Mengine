@@ -65,6 +65,11 @@ namespace mt
 		return clampedValue;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_INLINE bool equal_f_f_e( float _a, float _b, float _e )
+	{
+		return (_a >= (_b - _e)) && (_a <= (_b + _e));
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_INLINE bool equal_f_f( float _a, float _b )
 	{
 		return (_a >= (_b + mt::m_neps)) && (_a <= (_b + mt::m_eps));

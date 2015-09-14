@@ -2524,6 +2524,35 @@ namespace Metacode
                     std::swap( _value, this->Index);
                 }
                 
+                bool has_Loop() const
+                {
+                    return Loop_successful;
+                }
+                
+                bool get_Loop( bool & _value ) const
+                {
+                    if( Loop_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Loop;
+                
+                    return true;
+                }
+                
+                bool swap_Loop( bool & _value ) const
+                {
+                    if( Loop_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Loop);
+                
+                    return true;
+                }
+                
                 const Menge::ConstString & get_Name() const
                 {
                     return this->Name;
@@ -2866,6 +2895,8 @@ namespace Metacode
                 mutable Menge::ConstString BlendingMode;
                 mutable float In;
                 mutable uint32_t Index;
+                bool Loop_successful;
+                mutable bool Loop;
                 mutable Menge::ConstString Name;
                 mutable float Out;
                 bool Params_successful;
@@ -2951,6 +2982,35 @@ namespace Metacode
                     std::swap( _value, this->Index);
                 }
                 
+                bool has_Loop() const
+                {
+                    return Loop_successful;
+                }
+                
+                bool get_Loop( bool & _value ) const
+                {
+                    if( Loop_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Loop;
+                
+                    return true;
+                }
+                
+                bool swap_Loop( bool & _value ) const
+                {
+                    if( Loop_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Loop);
+                
+                    return true;
+                }
+                
                 const Menge::ConstString & get_Name() const
                 {
                     return this->Name;
@@ -3293,6 +3353,8 @@ namespace Metacode
                 mutable Menge::ConstString BlendingMode;
                 mutable float In;
                 mutable uint32_t Index;
+                bool Loop_successful;
+                mutable bool Loop;
                 mutable Menge::ConstString Name;
                 mutable float Out;
                 bool Params_successful;

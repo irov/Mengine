@@ -1507,7 +1507,7 @@ namespace Menge
 		layer_animation->setIntervalStart( _layer.startInterval );
 		layer_animation->setPlayCount( _layer.playCount );
 		layer_animation->setScretch( _layer.scretch );
-		//layer_animation->setLoop( _layer.loop );
+		layer_animation->setLoop( _layer.loop );
 
 		if( this->setupBlendingMode_( _layer, layer_animation ) == false )
 		{
@@ -1543,7 +1543,7 @@ namespace Menge
 
 		layer_movie->setPlayCount( _layer.playCount );
 		layer_movie->setScretch( _layer.scretch );
-		//layer_movie->setLoop( _layer.loop );
+		layer_movie->setLoop( _layer.loop );
 
 		layer_movie->setParentMovie( true );
 
@@ -1634,7 +1634,7 @@ namespace Menge
 		layer_video->setIntervalStart( _layer.startInterval );
 		layer_video->setPlayCount( _layer.playCount );
 		layer_video->setScretch( _layer.scretch );
-		//layer_video->setLoop( _layer.loop );
+		layer_video->setLoop( _layer.loop );
 
 		if( this->setupBlendingMode_( _layer, layer_video ) == false )
 		{
@@ -1670,7 +1670,7 @@ namespace Menge
 
 		layer_sound->setPlayCount( _layer.playCount );
 		layer_sound->setScretch( _layer.scretch );
-		//layer_sound->setLoop( _layer.loop );
+		layer_sound->setLoop( _layer.loop );
 
 		this->addMovieNode_( _layer, layer_sound, layer_sound );
 
@@ -1696,11 +1696,11 @@ namespace Menge
 		}
 
 		layer_sound->setResourceSound( resourceSound );
-		//layer_sound->setIntervalStart( _layer.startInterval );
+		layer_sound->setIntervalStart( _layer.startInterval );
 
 		layer_sound->setPlayCount( 1 );
 		layer_sound->setScretch( _layer.scretch );
-		//layer_sound->setLoop( _layer.loop );
+		layer_sound->setLoop( _layer.loop );
 
 		this->addMovieNode_( _layer, layer_sound, layer_sound );
 
@@ -1880,16 +1880,7 @@ namespace Menge
 		layer_particles->setIntervalStart( _layer.startInterval );
 		layer_particles->setPlayCount( _layer.playCount );
 		layer_particles->setScretch( _layer.scretch );
-		
-		float frameDuration = m_resourceMovie->getFrameDuration();
-		float duration = m_resourceMovie->getDuration();
-
-		if( mt::equal_f_z( _layer.in ) == true &&
-			mt::equal_f_f_e( _layer.out, duration, frameDuration ) == true &&
-			mt::equal_f_z( _layer.startInterval ) == true )
-		{
-			layer_particles->setLoop( true );
-		}
+		layer_particles->setLoop( _layer.loop );
 
 		layer_particles->setEmitterTranslateWithParticle( true );
 

@@ -1,4 +1,4 @@
-<Protocol Version = "89">
+<Protocol Version = "90">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -95,7 +95,6 @@
 
       <Member Node="BlendFactor" Name="Source" Type="Menge::EBlendFactor"/>
       <Member Node="BlendFactor" Name="Dest" Type="Menge::EBlendFactor"/>
-      <Member Node="DepthBufferWrite" Name="Enable" Type="bool"/>
       <Member Node="AlphaTest" Name="Enable" Type="bool"/>
       <Member Node="AlphaBlend" Name="Enable" Type="bool"/>
 
@@ -268,11 +267,12 @@
         <Attribute Name="StartInterval" Type="float"/>
         <Attribute Name="BlendingMode" Type="Menge::ConstString"/>
         <Attribute Name="TimeRemap" Type="bool"/>
-        <Attribute Name="Shape" Type="bool"/>
+        <Attribute Name="Shape" Type="bool"/>        
         <Attribute Name="Polygon" Type="bool"/>
         <Attribute Name="PlayCount" Type="uint32_t"/>
         <Attribute Name="Stretch" Type="float"/>
         <Attribute Name="Switch" Type="bool"/>
+        <Attribute Name="Loop" Type="bool"/>
         <Attribute Name="Position" Type="mt::vec3f"/>
         <Attribute Name="Params" Type="uint32_t"/>
       </Node>
@@ -293,6 +293,7 @@
         <Attribute Name="PlayCount" Type="uint32_t"/>
         <Attribute Name="Stretch" Type="float"/>
         <Attribute Name="Switch" Type="bool"/>
+        <Attribute Name="Loop" Type="bool"/>
         <Attribute Name="Position" Type="mt::vec3f"/>
         <Attribute Name="Params" Type="uint32_t"/>
       </Node>

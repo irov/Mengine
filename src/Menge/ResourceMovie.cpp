@@ -442,19 +442,30 @@ namespace Menge
             meta_layer2d.get_PlayCount( ml.playCount );
             meta_layer2d.get_Stretch( ml.scretch );
 			meta_layer2d.get_Switch( ml.switcher );
+			meta_layer2d.get_Loop( ml.loop );
 			meta_layer2d.get_Position( ml.position );
 			meta_layer2d.get_Params( ml.params );
 
-            if( ml.in < 0.f )
-            {
-                ml.startInterval -= ml.in;
-                ml.in = 0.f;
-            }
+			if( ml.loop == false )
+			{
+				if( ml.in < 0.f )
+				{
+					ml.startInterval -= ml.in;
+					ml.in = 0.f;
+				}
 
-            if( ml.out > m_duration )
-            {
-                ml.out = m_duration;
-            }
+				if( ml.out > m_duration )
+				{
+					ml.out = m_duration;
+				}
+			}
+			else
+			{
+				ml.startInterval = 0.f;
+
+				ml.in = 0.f;
+				ml.out = m_duration;
+			}
         }
 
         const Metacode::Meta_DataBlock::Meta_ResourceMovie::TVectorMeta_MovieLayer3D & includes_layer3d = metadata->get_IncludesMovieLayer3D();
@@ -493,19 +504,30 @@ namespace Menge
             meta_layer3d.get_PlayCount( ml.playCount );
             meta_layer3d.get_Stretch( ml.scretch );
 			meta_layer3d.get_Switch( ml.switcher );
+			meta_layer3d.get_Loop( ml.loop );
 			meta_layer3d.get_Position( ml.position );
 			meta_layer3d.get_Params( ml.params );
 				
-            if( ml.in < 0.f )
-            {
-                ml.startInterval -= ml.in;
-                ml.in = 0.f;
-            }
+			if( ml.loop == false )
+			{
+				if( ml.in < 0.f )
+				{
+					ml.startInterval -= ml.in;
+					ml.in = 0.f;
+				}
 
-            if( ml.out > m_duration )
-            {
-                ml.out = m_duration;
-            }
+				if( ml.out > m_duration )
+				{
+					ml.out = m_duration;
+				}
+			}
+			else
+			{
+				ml.startInterval = 0.f;
+
+				ml.in = 0.f;
+				ml.out = m_duration;
+			}
         }
 
 
@@ -535,109 +557,113 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            m_maxLayerIndex = m_maxLayerIndex > it->index ? m_maxLayerIndex : it->index;
-            
-			if( it->type == CONST_STRING(m_serviceProvider, MovieSlot) )
-            {
-                it->state |= MOVIE_LAYER_NODE;
-            }
-            else if( it->type == CONST_STRING(m_serviceProvider, MovieSceneEffect) )
-            {
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_SCENE_EFFECT;
+			MovieLayer & layer = *it;
 
-                it->parent = movie_layer_parent_none;
-            }
-            else if( it->type == CONST_STRING(m_serviceProvider, MovieText) )
+			m_maxLayerIndex = m_maxLayerIndex > layer.index ? m_maxLayerIndex : layer.index;
+            
+			if( layer.type == CONST_STRING( m_serviceProvider, MovieSlot ) )
             {
-                it->state |= MOVIE_LAYER_NODE;
+				layer.state |= MOVIE_LAYER_NODE;
             }
-			else if( it->type == CONST_STRING(m_serviceProvider, MovieTextCenter) )
+			else if( layer.type == CONST_STRING( m_serviceProvider, MovieSceneEffect ) )
+            {
+                layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_SCENE_EFFECT;
+
+                layer.parent = movie_layer_parent_none;
+            }
+            else if( layer.type == CONST_STRING(m_serviceProvider, MovieText) )
+            {
+                layer.state |= MOVIE_LAYER_NODE;
+            }
+			else if( layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) )
 			{
-				it->state |= MOVIE_LAYER_NODE;
+				layer.state |= MOVIE_LAYER_NODE;
 			}
-            else if( it->type == CONST_STRING(m_serviceProvider, MovieNullObject) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, MovieNullObject) )
             {
-                it->state |= MOVIE_LAYER_NODE;
+                layer.state |= MOVIE_LAYER_NODE;
             }
-            else if( it->type == CONST_STRING(m_serviceProvider, Image) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, Image) )
             {				
-                it->state |= MOVIE_LAYER_NODE;
+                layer.state |= MOVIE_LAYER_NODE;
 				
-				if( it->shape == true )
+				if( layer.shape == true )
 				{
-					it->state |= MOVIE_LAYER_MESH_2D;
+					layer.state |= MOVIE_LAYER_MESH_2D;
 				}
             }
-            else if( it->type == CONST_STRING(m_serviceProvider, SolidSprite) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, SolidSprite) )
             {
-                it->state |= MOVIE_LAYER_NODE;
+                layer.state |= MOVIE_LAYER_NODE;
             }
-            else if( it->type == CONST_STRING(m_serviceProvider, MovieSocketImage) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketImage) )
             {
-                it->state |= MOVIE_LAYER_NODE;
+                layer.state |= MOVIE_LAYER_NODE;
             }
-            else if( it->type == CONST_STRING(m_serviceProvider, MovieSocketShape) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, MovieSocketShape) )
             {
-                it->state |= MOVIE_LAYER_NODE;
+                layer.state |= MOVIE_LAYER_NODE;
             }
-            else if( it->type == CONST_STRING(m_serviceProvider, Animation) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, Animation) )
             {
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
+                layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
             }
-            else if( it->type == CONST_STRING(m_serviceProvider, Video) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, Video) )
             {
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
+                layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
             }
-            else if( it->type == CONST_STRING(m_serviceProvider, Sound) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, Sound) )
             {
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO;
+                layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO;
             }
-			else if( it->type == CONST_STRING(m_serviceProvider, SoundId) )
+			else if( layer.type == CONST_STRING(m_serviceProvider, SoundId) )
 			{
-				it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO | MOVIE_LAYER_UNSTOPPABLE;
+				layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_AUDIO | MOVIE_LAYER_UNSTOPPABLE;
 			}
-			else if( it->type == CONST_STRING(m_serviceProvider, MovieSprite) )
+			else if( layer.type == CONST_STRING(m_serviceProvider, MovieSprite) )
 			{
-				it->state |= MOVIE_LAYER_NODE;
+				layer.state |= MOVIE_LAYER_NODE;
 			}
-            else if( it->type == CONST_STRING(m_serviceProvider, ParticleEmitter) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter) )
             {
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
+                layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
             }
-			else if( it->type == CONST_STRING(m_serviceProvider, ParticleEmitter2) )
+			else if( layer.type == CONST_STRING(m_serviceProvider, ParticleEmitter2) )
 			{
-				it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
+				layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE;
 			}
-            else if( it->type == CONST_STRING(m_serviceProvider, Movie) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, Movie) )
             {
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE;
+                layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE;
             }
-            else if( it->type == CONST_STRING(m_serviceProvider, SubMovie) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, SubMovie) )
             {
-                it->state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE | MOVIE_LAYER_SUB_MOVIE;
+                layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_ANIMATABLE | MOVIE_LAYER_MOVIE | MOVIE_LAYER_SUB_MOVIE;
             }
-            else if( it->type == CONST_STRING(m_serviceProvider, MovieInternalObject) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, MovieInternalObject) )
             {
-                it->state |= MOVIE_LAYER_NODE;
+                layer.state |= MOVIE_LAYER_NODE;
             }
-            else if( it->type == CONST_STRING(m_serviceProvider, MovieEvent) )
+            else if( layer.type == CONST_STRING(m_serviceProvider, MovieEvent) )
             {
-                it->state |= MOVIE_LAYER_EXTRA;
+                layer.state |= MOVIE_LAYER_EXTRA;
             }
             else
             {
                 LOGGER_ERROR(m_serviceProvider)("ResourceMovie: '%s' can't setup layer2d '%s' type '%s'"
                     , this->getName().c_str()
-                    , it->source.c_str()
-                    , it->type.c_str()
+                    , layer.source.c_str()
+                    , layer.type.c_str()
                     );
 
                 return false;
             }
 
-            if( fabsf( it->in - 0.f ) < 0.0001f && fabsf( it->out - m_duration ) < 0.0001f )
+            if( mt::equal_f_z( layer.in ) == true && 
+				mt::equal_f_f_e( layer.out, m_duration, m_frameDuration ) == true &&
+				mt::equal_f_z( layer.startInterval ) == true )
             {
-                it->loop = true;
+                layer.loop = true;
             }
         }
 
@@ -647,9 +673,11 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			if( this->isThreeDNode( it->index ) == true )
+			MovieLayer & layer = *it;
+
+			if( this->isThreeDNode( layer.index ) == true )
 			{
-				it->state |= MOVIE_LAYER_THREED;
+				layer.state |= MOVIE_LAYER_THREED;
 			}
 		}
 
@@ -666,22 +694,24 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			if( it->index != _index )
+			const MovieLayer & layer = *it;
+
+			if( layer.index != _index )
 			{
 				continue;
 			}
 
-			if( it->isThreeD() == true )
+			if( layer.isThreeD() == true )
 			{
 				return true;
 			}
 
-			if( it->parent == 0 || it->parent == movie_layer_parent_none )
+			if( layer.parent == 0 || layer.parent == movie_layer_parent_none )
 			{
 				return false;
 			}
 
-			bool threeD = this->isThreeDNode( it->parent );
+			bool threeD = this->isThreeDNode( layer.parent );
 
 			return threeD;
 		}

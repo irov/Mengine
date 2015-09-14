@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 89;
+        _needVersion = 90;
 
-        if( version != 89 )
+        if( version != 90 )
         {
             return false;
         }
@@ -3242,6 +3242,7 @@ namespace Metacode
     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::Meta_MovieLayer2D()
         : Metabuf::Metadata()
         , BlendingMode_successful(false)
+        , Loop_successful(false)
         , Params_successful(false)
         , Parent_successful(false)
         , PlayCount_successful(false)
@@ -3293,6 +3294,17 @@ namespace Metacode
     
                 return true;
             }break;
+        case 16:
+            {
+                if( this->read( _buff, _size, _read, this->Loop ) == false )
+                {
+                    return false;
+                }
+    
+                this->Loop_successful = true;
+    
+                return true;
+            }break;
         case 1:
             {
                 if( this->read( _buff, _size, _read, this->Name ) == false )
@@ -3311,7 +3323,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 17:
+        case 18:
             {
                 if( this->read( _buff, _size, _read, this->Params ) == false )
                 {
@@ -3355,7 +3367,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 16:
+        case 17:
             {
                 if( this->read( _buff, _size, _read, this->Position ) == false )
                 {
@@ -3478,6 +3490,7 @@ namespace Metacode
     Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::Meta_MovieLayer3D()
         : Metabuf::Metadata()
         , BlendingMode_successful(false)
+        , Loop_successful(false)
         , Params_successful(false)
         , Parent_successful(false)
         , PlayCount_successful(false)
@@ -3529,6 +3542,17 @@ namespace Metacode
     
                 return true;
             }break;
+        case 16:
+            {
+                if( this->read( _buff, _size, _read, this->Loop ) == false )
+                {
+                    return false;
+                }
+    
+                this->Loop_successful = true;
+    
+                return true;
+            }break;
         case 1:
             {
                 if( this->read( _buff, _size, _read, this->Name ) == false )
@@ -3547,7 +3571,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 17:
+        case 18:
             {
                 if( this->read( _buff, _size, _read, this->Params ) == false )
                 {
@@ -3591,7 +3615,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 16:
+        case 17:
             {
                 if( this->read( _buff, _size, _read, this->Position ) == false )
                 {

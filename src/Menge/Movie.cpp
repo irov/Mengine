@@ -36,8 +36,6 @@
 #   include "MovieSceneEffect.h"
 #	include "MovieInternalObject.h"
 
-#	include "Kernel/Soundable.h"
-
 #	include "SoundEmitter.h"
 
 #   include "Interface/NodeInterface.h"
@@ -355,32 +353,26 @@ namespace Menge
 			}
 		}
 
-		const mt::vec3f coordinate(0.f, 0.f, 0.f);
-
-		_node->setTransformation( 
-			frame.position, 
-			frame.anchorPoint, 
-			coordinate,
-			frame.scale, 
-			frame.rotation
-			);
-
-		if( _layer.isMovie() == false )
+		if( _layer.isInternal() == false )
 		{
-			_node->setPersonalAlpha( frame.opacity );
+			const mt::vec3f coordinate( 0.f, 0.f, 0.f );
+
+			_node->setTransformation(
+				frame.position,
+				frame.anchorPoint,
+				coordinate,
+				frame.scale,
+				frame.rotation
+				);
 		}
 		else
 		{
-			_node->setLocalColorAlpha( frame.opacity );
-		}
-
-		if( _layer.isAudio() == true )
-		{
 #   ifdef _DEBUG
-			if( dynamic_cast<Soundable *>( _node ) == nullptr )
+			if( dynamic_cast<MovieInternalObject *>(_node) == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("Movie::updateFrameNode_ %s layer %s is Audio but node is not Soundable %s:%s"
+				LOGGER_ERROR( m_serviceProvider )("Movie::updateFrameNode_ %s resource %s layer %s is Internal but node is not MovieInternalObject %s:%s"
 					, this->getName().c_str()
+					, this->getResourceMovieName().c_str()
 					, _layer.name.c_str()
 					, _node->getName().c_str()
 					, _node->getType().c_str()
@@ -390,9 +382,40 @@ namespace Menge
 			}
 #   endif
 
-			SoundEmitter * sounding = static_cast<SoundEmitter *>( _node );
+			MovieInternalObject * internal = static_cast<MovieInternalObject *>(_node);
 
-			sounding->setVolume( frame.volume );
+			internal->resetTransformation();
+
+			Node * internalNode = internal->getInternalNode();
+
+			if( internalNode != nullptr )
+			{
+				const mt::vec3f coordinate( 0.f, 0.f, 0.f );
+
+				internalNode->setTransformation(
+					frame.position,
+					frame.anchorPoint,
+					coordinate,
+					frame.scale,
+					frame.rotation
+					);
+			}
+		}
+
+		if( _layer.isMovie() == false )
+		{
+			_node->setPersonalAlpha( frame.opacity );
+		}
+		else
+		{
+			_node->setLocalColorAlpha( frame.opacity );
+		}
+		
+		Soundable * soundable = this->getLayerSoundable_( _layer );
+
+		if( soundable != nullptr )
+		{
+			soundable->setVolume( frame.volume );
 		}
 
 		return true;
@@ -431,7 +454,7 @@ namespace Menge
 		this->setTiming( duration - frameDuration );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable )
+	void Movie::addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable, Soundable * _soundable )
 	{		
 		Nodies nd;
 		nd.node = _node;
@@ -448,6 +471,7 @@ namespace Menge
 		}
 
 		nd.animatable = _animatable;
+		nd.soundable = _soundable;
 
 		nd.child = (_layer.parent != movie_layer_parent_none);
 
@@ -1303,7 +1327,7 @@ namespace Menge
 
 		layer_slot->setMovieName( m_name );		
 
-		this->addMovieNode_( _layer, layer_slot, nullptr );
+		this->addMovieNode_( _layer, layer_slot, nullptr, nullptr );
 
 		return true;
 	}
@@ -1318,7 +1342,7 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, sceneeffect_slot, nullptr );
+		this->addMovieNode_( _layer, sceneeffect_slot, nullptr, nullptr );
 
 		return true;
 	}
@@ -1333,7 +1357,7 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_slot, nullptr );
+		this->addMovieNode_( _layer, layer_slot, nullptr, nullptr );
 
 		return true;
 	}
@@ -1363,7 +1387,7 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_sprite, nullptr );
+		this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr );
 
 		return true;
 	}
@@ -1393,7 +1417,7 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_mesh, nullptr );
+		this->addMovieNode_( _layer, layer_mesh, nullptr, nullptr );
 
 		return true;
 	}
@@ -1429,7 +1453,7 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_sprite, nullptr );
+		this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr );
 
 		return true;
 	}
@@ -1454,7 +1478,7 @@ namespace Menge
 		
 		layer_hotspotimage->setResourceHIT( resourceHIT );
 
-		this->addMovieNode_( _layer, layer_hotspotimage, nullptr );
+		this->addMovieNode_( _layer, layer_hotspotimage, nullptr, nullptr );
 
 		return true;
 	}
@@ -1479,7 +1503,7 @@ namespace Menge
 
 		layer_hotspotshape->setResourceShape( resourceShape );
 		
-		this->addMovieNode_( _layer, layer_hotspotshape, nullptr );
+		this->addMovieNode_( _layer, layer_hotspotshape, nullptr, nullptr );
 
 		return true;
 	}
@@ -1514,7 +1538,7 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_animation, layer_animation );
+		this->addMovieNode_( _layer, layer_animation, layer_animation, nullptr );
 
 		return true;
 	}
@@ -1547,7 +1571,7 @@ namespace Menge
 
 		layer_movie->setParentMovie( true );
 
-		this->addMovieNode_( _layer, layer_movie, layer_movie );
+		this->addMovieNode_( _layer, layer_movie, layer_movie, nullptr );
 
 		return true;
 	}
@@ -1580,7 +1604,7 @@ namespace Menge
 
 		layer_movie->setParentMovie( true );
 
-		this->addMovieNode_( _layer, layer_movie, layer_movie );
+		this->addMovieNode_( _layer, layer_movie, layer_movie, nullptr );
 
 		return true;
 	}
@@ -1606,7 +1630,7 @@ namespace Menge
 		movie_internal->setMovie( this );
 		movie_internal->setResourceInternalObject( resourceInternalObject );
 
-		this->addMovieNode_( _layer, movie_internal, nullptr );
+		this->addMovieNode_( _layer, movie_internal, nullptr, nullptr );
 
 		return true;
 	}
@@ -1641,7 +1665,7 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_video, layer_video );
+		this->addMovieNode_( _layer, layer_video, layer_video, nullptr );
 
 		return true;
 	}
@@ -1672,7 +1696,7 @@ namespace Menge
 		layer_sound->setScretch( _layer.scretch );
 		layer_sound->setLoop( _layer.loop );
 
-		this->addMovieNode_( _layer, layer_sound, layer_sound );
+		this->addMovieNode_( _layer, layer_sound, layer_sound, layer_sound );
 
 		return true;
 	}
@@ -1702,7 +1726,7 @@ namespace Menge
 		layer_sound->setScretch( _layer.scretch );
 		layer_sound->setLoop( _layer.loop );
 
-		this->addMovieNode_( _layer, layer_sound, layer_sound );
+		this->addMovieNode_( _layer, layer_sound, layer_sound, layer_sound );
 
 		return true;
 	}
@@ -1729,7 +1753,7 @@ namespace Menge
 			layer_text->setVerticalCenterAlign();
 		}
 
-		this->addMovieNode_( _layer, layer_text, nullptr );
+		this->addMovieNode_( _layer, layer_text, nullptr, nullptr );
 
 		return true;
 	}
@@ -1747,7 +1771,7 @@ namespace Menge
 		layer_text->setTextID( _layer.name ); //Name = TextID
 		layer_text->setHorizontalCenterAlign();
 
-		this->addMovieNode_( _layer, layer_text, nullptr );
+		this->addMovieNode_( _layer, layer_text, nullptr, nullptr );
 
 		return true;
 	}
@@ -1790,7 +1814,7 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_sprite, nullptr );
+		this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr );
 
 		return true;
 	}
@@ -1857,7 +1881,7 @@ namespace Menge
 
 		layer_event->setResourceMovie( m_resourceMovie );
 
-		this->addMovieNode_( _layer, layer_event, nullptr );
+		this->addMovieNode_( _layer, layer_event, nullptr, nullptr );
 
 		return true;
 	}
@@ -1884,7 +1908,7 @@ namespace Menge
 
 		layer_particles->setEmitterTranslateWithParticle( true );
 
-		this->addMovieNode_( _layer, layer_particles, layer_particles );
+		this->addMovieNode_( _layer, layer_particles, layer_particles, nullptr );
 
 		return true;
 	}

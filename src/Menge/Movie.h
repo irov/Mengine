@@ -2,6 +2,7 @@
 
 #	include "Kernel/Node.h"
 #	include "Kernel/Animatable.h"
+#	include "Kernel/Soundable.h"
 
 #   include "ResourceMovie.h"
 
@@ -162,11 +163,12 @@ namespace Menge
 		bool compileMovieText_( const MovieLayer & _layer );  
 
 	protected:
-		void addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable );
+		void addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable, Soundable * _soundable );
 
 	protected:
 		inline Node * getLayerNode_( const MovieLayer & _layer ) const;
 		inline Animatable * getLayerAnimatable_( const MovieLayer & _layer ) const;
+		inline Soundable * getLayerSoundable_( const MovieLayer & _layer ) const;
 		inline Node * getLayerParent_( const MovieLayer & _layer ) const;
 
 	protected:		
@@ -199,6 +201,7 @@ namespace Menge
 			Nodies()
 				: node(nullptr)
 				, animatable(nullptr)
+				, soundable(nullptr)
 				, visible(false)
 				, enable(true)
 				, child(false)
@@ -206,6 +209,8 @@ namespace Menge
 
             Node * node;
 			Animatable * animatable;
+			Soundable * soundable;
+
 			bool visible;
 			bool enable;
 			bool child;
@@ -232,6 +237,13 @@ namespace Menge
 		const Nodies & ns = m_nodies[_layer.index - 1];
 
 		return ns.animatable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline Soundable * Movie::getLayerSoundable_( const MovieLayer & _layer ) const
+	{
+		const Nodies & ns = m_nodies[_layer.index - 1];
+
+		return ns.soundable;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline Node * Movie::getLayerParent_( const MovieLayer & _layer ) const

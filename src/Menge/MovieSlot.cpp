@@ -115,10 +115,12 @@ namespace Menge
 			v0.pos.z = 0.f;
 
 			v0.color = 0x000000FF;
-			v0.uv[0].x = 0.f;
-			v0.uv[0].y = 0.f;
-			v0.uv[1].x = 0.f;
-			v0.uv[1].y = 0.f;
+
+			for( uint32_t j = 0; j != MENGINE_RENDER_VERTEX_UV_COUNT; ++j )
+			{
+				v0.uv[j].x = 0.f;
+				v0.uv[j].y = 0.f;
+			}
 
 			mt::vec2f trP1;
 			mt::mul_v2_m4( trP1, ring[j], worldMat );
@@ -130,10 +132,12 @@ namespace Menge
 			v1.pos.z = 0.f;
 
 			v1.color = 0x000000FF;
-			v1.uv[0].x = 0.f;
-			v1.uv[0].y = 0.f;
-			v1.uv[1].x = 0.f;
-			v1.uv[1].y = 0.f;
+
+			for( uint32_t j = 0; j != MENGINE_RENDER_VERTEX_UV_COUNT; ++j )
+			{
+				v1.uv[j].x = 0.f;
+				v1.uv[j].y = 0.f;
+			}
 		}
 
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )

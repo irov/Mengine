@@ -27,6 +27,7 @@ namespace Menge
     const uint32_t MOVIE_LAYER_MESH_2D = 0x0100;
 	const uint32_t MOVIE_LAYER_UNSTOPPABLE = 0x0200;
 	const uint32_t MOVIE_LAYER_SCENE_EFFECT = 0x0400;
+	const uint32_t MOVIE_LAYER_INTERNAL = 0x0800;
 	
     const uint32_t movie_layer_parent_none = (uint32_t)-1;
 
@@ -89,62 +90,67 @@ namespace Menge
 
 		bool hasParam( uint32_t _param ) const
 		{
-			return (params & _param) > 0;
+			return (params & _param) == _param;
 		}
 
         bool isNode() const
         {
-            return (state & MOVIE_LAYER_NODE) > 0;
+			return (state & MOVIE_LAYER_NODE) == MOVIE_LAYER_NODE;
         }
         
 		bool isAnimatable() const
         {
-            return (state & MOVIE_LAYER_ANIMATABLE) > 0;
+			return (state & MOVIE_LAYER_ANIMATABLE) == MOVIE_LAYER_ANIMATABLE;
         }
 
 		bool isMovie() const
         {
-            return (state & MOVIE_LAYER_MOVIE) > 0;
+			return (state & MOVIE_LAYER_MOVIE) == MOVIE_LAYER_MOVIE;
         }
 
         bool isMesh2D() const
         {
-            return (state & MOVIE_LAYER_MESH_2D) > 0;
+			return (state & MOVIE_LAYER_MESH_2D) == MOVIE_LAYER_MESH_2D;
         }
 
 		bool isThreeD() const
         {
-            return (state & MOVIE_LAYER_THREED) > 0;
+			return (state & MOVIE_LAYER_THREED) == MOVIE_LAYER_THREED;
         }
 
 		bool isAudio() const
         {
-            return (state & MOVIE_LAYER_AUDIO) > 0;
+			return (state & MOVIE_LAYER_AUDIO) == MOVIE_LAYER_AUDIO;
         }
 
         bool isEvent() const
         {
-            return (state & MOVIE_LAYER_EVENT) > 0;
+			return (state & MOVIE_LAYER_EVENT) == MOVIE_LAYER_EVENT;
         }
 
         bool isExtra() const
         {
-            return (state & MOVIE_LAYER_EXTRA) > 0;
+			return (state & MOVIE_LAYER_EXTRA) == MOVIE_LAYER_EXTRA;
         }
 
         bool isSubMovie() const
         {
-            return (state & MOVIE_LAYER_SUB_MOVIE) > 0;
+			return (state & MOVIE_LAYER_SUB_MOVIE) == MOVIE_LAYER_SUB_MOVIE;
         }
 
 		bool isUnstoppable() const
 		{
-			return (state & MOVIE_LAYER_UNSTOPPABLE) > 0;
+			return (state & MOVIE_LAYER_UNSTOPPABLE) == MOVIE_LAYER_UNSTOPPABLE;
 		}
 
 		bool isSceneEffect() const
 		{
-			return (state & MOVIE_LAYER_SCENE_EFFECT) > 0;
+			return (state & MOVIE_LAYER_SCENE_EFFECT) == MOVIE_LAYER_SCENE_EFFECT;
+		}
+
+		bool isInternal() const
+		{
+			return (state & MOVIE_LAYER_INTERNAL) == MOVIE_LAYER_INTERNAL;
 		}
 	};
 
@@ -165,16 +171,6 @@ namespace Menge
 		: public MovieLayer
 	{
 		MovieLayerCamera3D camera;
-	};
-
-	struct MovieFootage
-	{
-		ConstString path;
-	};
-
-	struct MovieInternal
-	{
-		ConstString group;
 	};
 
 	class VisitorResourceMovie

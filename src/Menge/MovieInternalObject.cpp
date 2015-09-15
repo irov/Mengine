@@ -38,6 +38,11 @@ namespace Menge
 	{
 		return m_resourceInternalObject;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	Node * MovieInternalObject::getInternalNode() const
+	{ 
+		return m_internalNode;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool MovieInternalObject::_compile()
     {
@@ -70,7 +75,7 @@ namespace Menge
         }
 
         const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
-        const ConstString & internalName = m_resourceInternalObject->getInternalName();		
+        const ConstString & internalName = m_resourceInternalObject->getInternalName();
 
 		pybind::object py_object;
 		EVENTABLE_ASK( m_serviceProvider, m_movie, EVENT_MOVIE_GET_INTERNAL, py_object )(internalGroup, internalName);
@@ -112,7 +117,7 @@ namespace Menge
 		if( node == nullptr )
 		{
 			const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
-			const ConstString & internalName = m_resourceInternalObject->getInternalName();		
+			const ConstString & internalName = m_resourceInternalObject->getInternalName();
 
 			LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_activate '%s' resource '%s' invalid get internal node '%s:%s'"
 				, m_name.c_str()
@@ -127,7 +132,7 @@ namespace Menge
 		if( this->addChild( node ) == false )
 		{
 			const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
-			const ConstString & internalName = m_resourceInternalObject->getInternalName();		
+			const ConstString & internalName = m_resourceInternalObject->getInternalName();
 
 			LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_activate '%s' resource '%s' get internal node '%s:%s' invalid add children"
 				, m_name.c_str()
@@ -170,10 +175,18 @@ namespace Menge
 		this->updateHide_( _hide );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void MovieInternalObject::_setPersonalColor( const ColourValue& _color )
+	{
+		this->setLocalColor( _color );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MovieInternalObject::_setPersonalAlpha( float _alpha )
+	{
+		this->setLocalColorAlpha( _alpha );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::updateHide_( bool _hide )
 	{
-		bool hide = this->isHide();
-
 		if( m_internalNode == nullptr )
 		{
 			LOGGER_ERROR( m_serviceProvider )("MovieInternalObject::updateHide_ %s internal Node is nullptr"
@@ -182,6 +195,8 @@ namespace Menge
 
 			return;
 		}
+
+		bool hide = this->isHide();
 
 		m_internalNode->hide( hide | _hide );
 	}

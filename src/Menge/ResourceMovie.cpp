@@ -642,7 +642,7 @@ namespace Menge
             }
             else if( layer.type == CONST_STRING(m_serviceProvider, MovieInternalObject) )
             {
-                layer.state |= MOVIE_LAYER_NODE;
+				layer.state |= MOVIE_LAYER_NODE | MOVIE_LAYER_INTERNAL;
             }
             else if( layer.type == CONST_STRING(m_serviceProvider, MovieEvent) )
             {

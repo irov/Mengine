@@ -22,6 +22,9 @@ namespace Menge
 		void setResourceInternalObject( ResourceInternalObject * _resource );
 		ResourceInternalObject * getResourceInternalObject() const;
 
+	public:
+		Node * getInternalNode() const;
+
 	protected:
         bool _compile() override;
         void _release() override;
@@ -29,6 +32,10 @@ namespace Menge
 		bool _activate() override;
 		void _deactivate() override;
         	
+	protected:
+		void _setPersonalColor( const ColourValue& _color ) override;
+		void _setPersonalAlpha( float _alpha ) override;
+
 	protected:
 		void _localHide( bool _hide ) override;
 

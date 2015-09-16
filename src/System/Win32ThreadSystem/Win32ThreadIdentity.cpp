@@ -34,7 +34,6 @@ namespace Menge
 		try
 #	endif
 		{
-
 			thread->main();
 		}
 #	ifndef _DEBUG

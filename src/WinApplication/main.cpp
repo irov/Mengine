@@ -17,7 +17,9 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	
 	stdex_allocator_initialize();
 
+#	ifndef _DEBUG
 	try
+#	endif
 	{
 		Menge::WinApplication winApplication;
 
@@ -34,12 +36,14 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
     
 		winApplication.finalize();
 	}
+#	ifndef _DEBUG
 	catch( const std::exception & se )
 	{		
 		const char * se_what = se.what();
 
 		MessageBoxA( NULL, se_what, "Mengine exception", MB_OK );
 	}
+#	endif
 
 	stdex_allocator_finalize();
 	    

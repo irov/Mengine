@@ -29,11 +29,15 @@ namespace Menge
 	static unsigned int __stdcall s_tread_job( void * _userData )
 	{
 		Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity*>(_userData);
-		
+
+#	ifndef _DEBUG
 		try
+#	endif
 		{
+
 			thread->main();
 		}
+#	ifndef _DEBUG
 		catch( const std::exception & ex )
 		{
 			ServiceProviderInterface * serviceProvider = thread->getServiceProvider();
@@ -49,6 +53,7 @@ namespace Menge
 			LOGGER_CRITICAL(serviceProvider)("Win32ThreadIdentity unknown exception"
 				);
 		}
+#	endif
 
 		return 0;
 	}

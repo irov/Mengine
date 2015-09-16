@@ -35,7 +35,7 @@ namespace Menge
 		void setAnimationMix( const ConstString & _from, const ConstString & _to, float _time );
 
 	public:
-		float getDuration( const ConstString & _name ) const;
+		float getDuration( const ConstString & _name );
 
 	protected:
 		void _setEventListener( const pybind::dict & _listener ) override;

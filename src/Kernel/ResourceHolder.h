@@ -98,6 +98,11 @@ namespace Menge
 			m_compile = false;
 		}
 
+		inline bool isCompile() const
+		{
+			return m_compile;
+		}
+
 	protected:
 		T * m_resource;
 		bool m_compile;

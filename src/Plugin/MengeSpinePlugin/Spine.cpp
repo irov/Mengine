@@ -73,7 +73,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::updateAnimation_()
 	{
-		if( m_currentAnimationName.empty() )
+		if( m_currentAnimationName.empty() == true )
 		{
 			m_currentAnimation = nullptr;
 
@@ -81,6 +81,16 @@ namespace Menge
 		}
 		
 		spAnimation * animation = m_resourceSpine->findSkeletonAnimation( m_currentAnimationName );
+
+		if( animation == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::updateAnimation_ %s invalid find skeleton animation %s"
+				, this->getName().c_str()
+				, m_currentAnimationName.c_str()
+				);
+
+			return;
+		}
 
 		bool loop = this->getLoop();
 
@@ -104,16 +114,44 @@ namespace Menge
 		return m_currentAnimationName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Spine::getDuration( const ConstString & _name ) const
+	float Spine::getDuration( const ConstString & _name )
 	{
 		if( m_resourceSpine == nullptr )
 		{
-			return false;
+			LOGGER_ERROR( m_serviceProvider )("Spine::getDuration %s not setup resource"
+				, this->getName().c_str()
+				, m_currentAnimationName.c_str()
+				);
+
+			return 0.f;
+		}
+
+		//TODO FIXME
+		bool compile = m_resourceSpine.isCompile();
+
+		if( compile == false )
+		{
+			m_resourceSpine.compile();
 		}
 
 		spAnimation * animation = m_resourceSpine->findSkeletonAnimation( _name );
 
+		if( animation == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::getDuration %s invalid find skeleton animation %s"
+				, this->getName().c_str()
+				, m_currentAnimationName.c_str()
+				);
+
+			return 0.f;
+		}
+
 		float duration = animation->duration;
+
+		if( compile == false )
+		{
+			m_resourceSpine.release();
+		}		
 
 		return duration;
 	}

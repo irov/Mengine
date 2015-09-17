@@ -58,7 +58,7 @@ namespace Menge
 		bool _interrupt( uint32_t _enumerator ) override;
 
 	public:
-		void onAnimationEvent( spAnimationState * _state, int _trackIndex, spEventType _type, spEvent * _event, int _loopCount );
+		void addAnimationEvent( int _trackIndex, spEventType _type, spEvent * _event, int _loopCount );
 
 	protected:
 		void fillVertices_( RenderVertex2D * _vertices2D, const float * _vertices, const float * _uv, ColourValue_ARGB _argb, int _count, const mt::mat4f & _wm );
@@ -95,6 +95,20 @@ namespace Menge
 		ConstString m_currentAnimationName;
 		spAnimation * m_currentAnimation;
 
-		bool m_end;
+		struct AnimationEvent
+		{
+			int trackIndex;
+			spEventType type;
+
+			const char * eventName;
+			int eventIntValue;
+			float eventFloatValue;
+			const char* eventStringValue;
+
+			int loopCount;
+		};
+
+		typedef std::vector<AnimationEvent> TVectorAnimationEvent;
+		TVectorAnimationEvent m_events;
 	};
 }

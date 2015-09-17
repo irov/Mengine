@@ -5214,6 +5214,7 @@ namespace Menge
                     .def( "setReverse", &Movie::setReverse )
                     .def( "getReverse", &Movie::getReverse )
 					.def( "setEnableMovieLayer", &Movie::setEnableMovieLayer )
+					.def( "setEnableMovieLayers", &Movie::setEnableMovieLayers )
 					.def_proxy_static( "getEnableMovieLayer", nodeScriptMethod, &NodeScriptMethod::movie_getEnableMovieLayer )
 					.def_proxy_static( "getMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlot )
 					.def_proxy_static( "hasMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieSlot )

@@ -64,6 +64,9 @@ namespace Menge
 		bool setEnableMovieLayer( const ConstString & _name, bool _enable );
 		bool getEnableMovieLayer( const ConstString & _name, bool & _enable );
 
+	public:
+		void setEnableMovieLayers( const ConstString & _name, bool _enable );
+
 	protected:
 		void _setReverse( bool _reverse ) override;
 

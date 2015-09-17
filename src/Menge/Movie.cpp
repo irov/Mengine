@@ -800,6 +800,78 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::setEnableMovieLayers( const ConstString & _name, bool _enable )
+	{
+		if( m_resourceMovie == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Movie::setEnableMovieLayers %s resource %s invalid get layer %s not compile"
+				, this->getName().c_str()
+				, this->getResourceMovieName().c_str()
+				, _name.c_str()
+				);
+
+			return;
+		}
+
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.name != _name )
+			{
+				continue;
+			}
+			
+			this->setEnableLayer_( layer, _enable );
+		}			
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isMovie() == false || layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			Node * node = this->getLayerNode_( layer );
+
+			if( node == nullptr )
+			{
+				continue;
+			}
+
+#   ifdef _DEBUG
+			if( dynamic_cast<Movie *>(node) == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::setEnableMovieLayer %s resource %s layer %s must be 'Movie' but node is %s type %s"
+					, this->getName().c_str()
+					, this->getResourceMovieName().c_str()
+					, layer.name.c_str()
+					, node->getName().c_str()
+					, node->getType().c_str()
+					);
+
+				continue;
+			}
+#   endif
+
+			Movie * movie = static_cast<Movie *>(node);
+
+			movie->setEnableMovieLayers( _name, _enable );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Movie::setEnableMovieLayer( const ConstString & _name, bool _enable )
 	{
 		if( m_resourceMovie == nullptr )

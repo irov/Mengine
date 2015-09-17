@@ -19,7 +19,6 @@ namespace Menge
 		, m_animationStateData( nullptr )
 		, m_animationState( nullptr )
 		, m_currentAnimation( nullptr )
-		, m_end(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -42,16 +41,6 @@ namespace Menge
 	ResourceSpine * Spine::getResourceSpine() const
 	{
 		return m_resourceSpine;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void s_spineAnimationStateListener( spAnimationState * _state, int _trackIndex, spEventType _type, spEvent * _event, int _loopCount )
-	{
-		Spine * spine = (Spine *)_state->rendererObject;
-
-		if( spine != nullptr )
-		{
-			spine->onAnimationEvent( _state, _trackIndex, _type, _event, _loopCount );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::setAnimationName( const ConstString & _name )
@@ -94,12 +83,7 @@ namespace Menge
 
 		bool loop = this->getLoop();
 
-		spTrackEntry * entry = spAnimationState_setAnimation( m_animationState, 0, animation, loop );
-
-		if( entry != nullptr )
-		{
-			entry->listener = &s_spineAnimationStateListener;
-		}
+		spAnimationState_setAnimation( m_animationState, 0, animation, loop );
 
 		m_currentAnimation = animation;
 	}
@@ -164,6 +148,14 @@ namespace Menge
 		this->registerEvent( EVENT_SPINE_STOP, ("onSpineStop"), _listener );
 		this->registerEvent( EVENT_SPINE_PAUSE, ("onSpinePause"), _listener );
 		this->registerEvent( EVENT_SPINE_RESUME, ("onSpineResume"), _listener );
+		this->registerEvent( EVENT_SPINE_EVENT, ("onSpineEvent"), _listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static void s_spAnimationStateListener( spAnimationState* state, int trackIndex, spEventType type, spEvent* event, int loopCount )
+	{
+		Spine * spine = static_cast<Spine*>(state->rendererObject);
+
+		spine->addAnimationEvent( trackIndex, type, event, loopCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::_compile()
@@ -196,6 +188,7 @@ namespace Menge
 		spAnimationState * animationState = spAnimationState_create( animationStateData );
 
 		animationState->rendererObject = this;
+		animationState->listener = &s_spAnimationStateListener;
 
 		spSkeleton_update( skeleton, 0.f );
 		spAnimationState_update( animationState, 0.f );
@@ -345,17 +338,39 @@ namespace Menge
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::onAnimationEvent( spAnimationState * _state, int _trackIndex, spEventType _type, spEvent * _event, int _loopCount )
+	void Spine::addAnimationEvent( int _trackIndex, spEventType _type, spEvent * _event, int _loopCount )
 	{
 		(void)_loopCount;
 		(void)_event;
 
-		spTrackEntry * entry = spAnimationState_getCurrent( _state, _trackIndex );
+		AnimationEvent ev;
 
-		if( entry != nullptr && entry->loop == 0 && _type == SP_ANIMATION_COMPLETE )
+		ev.trackIndex = _trackIndex;
+		ev.type = _type;
+
+		switch( _type )
 		{
-			m_end = true;			
+		case SP_ANIMATION_START:
+		case SP_ANIMATION_END:
+		case SP_ANIMATION_COMPLETE:
+			{
+				ev.eventName = nullptr;
+				ev.eventIntValue = 0;
+				ev.eventFloatValue = 0.f;
+				ev.eventStringValue = nullptr;
+			}break;
+		case SP_ANIMATION_EVENT:
+			{
+				ev.eventName = _event->data->name;
+				ev.eventIntValue = _event->intValue;
+				ev.eventFloatValue = _event->floatValue;
+				ev.eventStringValue = _event->stringValue;
+			}break;
 		}
+
+		ev.loopCount = _loopCount;
+		
+		m_events.push_back( ev );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_update( float _current, float _timing )
@@ -385,11 +400,33 @@ namespace Menge
 
 		spSkeleton_updateWorldTransform( m_skeleton );
 
-		if( m_end == true )
-		{
-			m_end = false;
+		TVectorAnimationEvent events;
+		m_events.swap( events );
 
-			this->end();
+		for( TVectorAnimationEvent::const_iterator
+			it = events.begin(),
+			it_end = events.end();
+		it != it_end;
+		++it )
+		{
+			const AnimationEvent & ev = *it;
+
+			switch( ev.type )
+			{
+			case SP_ANIMATION_COMPLETE:
+				{
+					spTrackEntry * entry = spAnimationState_getCurrent( m_animationState, ev.trackIndex );
+
+					if( entry != nullptr && entry->loop == 0 )
+					{
+						this->end();
+					}
+				}break;
+			case SP_ANIMATION_EVENT:
+				{
+					EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, ev.eventName, ev.eventIntValue, ev.eventFloatValue, ev.eventStringValue);
+				}break;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

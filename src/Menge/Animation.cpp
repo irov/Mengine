@@ -197,8 +197,6 @@ namespace	Menge
 
 			return false;
 		}
-		        
-        m_playIterator = this->getPlayCount();
 
 		return true;
 	}
@@ -212,8 +210,6 @@ namespace	Menge
 		{
 			return false;
 		}
-
-        m_playIterator = this->getPlayCount();
 
 		return true;
 	}
@@ -428,6 +424,17 @@ namespace	Menge
 				);
 
 			return;
+		}
+
+		float duration = m_resourceAnimation->getSequenceDuration();
+
+		m_playIterator = this->getPlayCount();
+
+		uint32_t skipIterator = (uint32_t)((m_intervalStart / duration) + 0.5f);
+
+		if( skipIterator > 0 )
+		{
+			m_playIterator -= skipIterator;
 		}
 				
 		m_currentFrame = this->getFrame_( _timing, m_frameTiming );

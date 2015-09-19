@@ -201,6 +201,10 @@ namespace Menge
 
 		if( this->isActivate() == false )
 		{
+			LOGGER_ERROR( m_serviceProvider )("Movie::_play: '%s' play not activate"
+				, this->getName().c_str()
+				);
+
 			return false;
 		}
 
@@ -226,8 +230,6 @@ namespace Menge
 		//    return false;
 		//}
 
-		m_playIterator = this->getPlayCount();
-
 		if( m_reverse == true )
 		{
 			uint32_t frameCount = m_resourceMovie->getFrameCount();
@@ -252,8 +254,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		m_playIterator = this->getPlayCount();
 
 		if( m_reverse == true )
 		{
@@ -431,8 +431,6 @@ namespace Menge
 
 			return;
 		}
-
-		m_playIterator = this->getPlayCount();
 
 		this->setTiming( 0.f );
 	}

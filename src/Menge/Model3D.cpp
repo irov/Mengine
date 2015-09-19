@@ -389,8 +389,6 @@ namespace Menge
 			return false;
 		}
 
-		m_playIterator = this->getPlayCount();
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -403,8 +401,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-		m_playIterator = this->getPlayCount();
 
 		return true;
 	}

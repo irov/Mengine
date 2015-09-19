@@ -41,6 +41,7 @@ namespace Menge
     ScheduleManager::ScheduleManager()
         : m_serviceProvider(nullptr)
 		, m_speedFactor(1.f)
+		, m_timing(0.f)
         , m_enumeratorSchedule(0)
         , m_freezeAll(false)
     {
@@ -186,12 +187,14 @@ namespace Menge
     {
         (void)_current;
 
+		float total_timing = _timing * m_speedFactor;
+
+		m_timing += total_timing;
+
         if( m_schedules.empty() == true )
         {
             return;
-        }
-
-		float total_timing = _timing * m_speedFactor;
+        }		
 
         for( TListSchedules::size_type 
             it = 0,
@@ -321,6 +324,11 @@ namespace Menge
 	float ScheduleManager::getSpeedFactor() const
 	{
 		return m_speedFactor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float ScheduleManager::getTiming() const
+	{
+		return m_timing;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScheduleManager::findScheduleEvent_( uint32_t _id, ScheduleEventDesc *& _desc )

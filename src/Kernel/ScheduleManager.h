@@ -55,6 +55,9 @@ namespace Menge
 	public:
 		void setSpeedFactor( float _factor ) override;
 		float getSpeedFactor() const override;
+
+	public:
+		float getTiming() const override;
 		
 	public:
 		void update( float _current, float _timing ) override;
@@ -66,6 +69,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
 
 		float m_speedFactor;
+		float m_timing;
 
 		typedef stdex::vector<ScheduleEventDesc> TListSchedules;
 		TListSchedules m_schedules;

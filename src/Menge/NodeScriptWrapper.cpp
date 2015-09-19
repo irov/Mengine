@@ -5291,6 +5291,7 @@ namespace Menge
 				.def( "time", &ScheduleManagerInterface::time )
 				.def( "setSpeedFactor", &ScheduleManagerInterface::setSpeedFactor )
 				.def( "getSpeedFactor", &ScheduleManagerInterface::getSpeedFactor )
+				.def( "getTiming", &ScheduleManagerInterface::getTiming )
 				;
 
 			pybind::def_functor( "createTiming", nodeScriptMethod, &NodeScriptMethod::createTiming );

@@ -216,6 +216,7 @@ namespace Menge
 		, m_httpSystem(nullptr)
 		, m_configService(nullptr)
 		, m_pauseUpdatingTime(-1.f)
+		, m_applicationUpdate(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1913,6 +1914,8 @@ namespace Menge
 					m_windowsLayer->dispatchMessage( &msg );
 				}
 
+				m_applicationUpdate = true;
+
 				bool updating = m_application->beginUpdate();
 
 				if( updating == true )
@@ -1949,6 +1952,8 @@ namespace Menge
 				}     
 
 				m_application->endUpdate();
+
+				m_applicationUpdate = false;
 			}
 		}
 		catch( const std::exception & ex )
@@ -2382,9 +2387,12 @@ namespace Menge
 			}break;
 		case WM_PAINT:
 			{
-				if( m_application->getFullscreenMode() == false )
+				if( m_applicationUpdate == false )
 				{
-					m_application->paint();
+					if( m_application->getFullscreenMode() == false )
+					{
+						m_application->paint();
+					}
 				}
 			}break;
 		case WM_DISPLAYCHANGE:

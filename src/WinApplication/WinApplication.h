@@ -166,13 +166,14 @@ namespace Menge
 		AlreadyRunningMonitor * m_alreadyRunningMonitor;
 
 		ApplicationInterface * m_application;
-
+		
 		ConstString m_platformName;
 
 		float m_pauseUpdatingTime;
 
 		bool m_running;
 		bool m_active;
+		bool m_applicationUpdate;
 
 		HWND m_hWnd;
 

@@ -258,8 +258,6 @@ namespace Menge
 			return false;
 		}
 
-        m_playIterator = this->getPlayCount();
-
         m_timing = 0.f;
 
 		return true;
@@ -274,8 +272,6 @@ namespace Menge
 		{
 			return false;
 		}
-
-        m_playIterator = this->getPlayCount();
 
 		return true;
 	}
@@ -581,9 +577,7 @@ namespace Menge
 
             return;
         }
-
-        m_playIterator = this->getPlayCount();
-				
+		
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
         float frameTiming = dataInfo->getFrameTiming();
@@ -603,6 +597,8 @@ namespace Menge
 		}
 
 		float duration = dataInfo->duration;
+
+		m_playIterator = this->getPlayCount();
 
 		uint32_t skipIterator = (uint32_t)((m_intervalStart / duration) + 0.5f);
 

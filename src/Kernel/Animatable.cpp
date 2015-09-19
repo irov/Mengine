@@ -1,5 +1,7 @@
 #	include "Kernel/Animatable.h"
 
+#	include "Math/utils.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -23,6 +25,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::setLoop( bool _value )
 	{
+		if( m_loop == _value )
+		{
+			return;
+		}
+
 		m_loop = _value;
 
         this->_setLoop( _value );
@@ -30,6 +37,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::setAnimationSpeedFactor( float _factor )
 	{
+		if( mt::equal_f_f( m_animationSpeedFactor, _factor ) == true )
+		{
+			return;
+		}
+
 		m_animationSpeedFactor = _factor;
 
 		this->_setSpeedFactor( _factor );
@@ -96,6 +108,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::setReverse( bool _value)
 	{
+		if( m_reverse == _value )
+		{
+			return;
+		}
+
 		m_reverse = _value;
 
 		this->_setReverse( _value );
@@ -123,6 +140,8 @@ namespace Menge
 		{
 			return 0;
 		}
+		
+		m_playIterator = m_playCount;
 
 		if( m_play == true )
 		{

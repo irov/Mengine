@@ -108,7 +108,7 @@ namespace Menge
 			int loopCount;
 		};
 
-		typedef std::vector<AnimationEvent> TVectorAnimationEvent;
+		typedef stdex::vector<AnimationEvent> TVectorAnimationEvent;
 		TVectorAnimationEvent m_events;
 	};
 }

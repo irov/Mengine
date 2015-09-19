@@ -81,11 +81,11 @@ namespace Menge
 			return;
 		}
 
+		m_currentAnimation = animation;
+
 		bool loop = this->getLoop();
 
-		spAnimationState_setAnimation( m_animationState, 0, animation, loop );
-
-		m_currentAnimation = animation;
+		spAnimationState_setAnimation( m_animationState, 0, m_currentAnimation, loop ? 1 : 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::setAnimationMix( const ConstString & _from, const ConstString & _to, float _time )
@@ -251,6 +251,13 @@ namespace Menge
 
 			if( resourceImage == nullptr )
 			{
+				LOGGER_ERROR( m_serviceProvider )("Spine::_compile: '%s' resource '%s' image not setup for attachment '%d' type '%d'"
+					, m_name.c_str()
+					, m_resourceSpine->getName().c_str()
+					, i
+					, attachment_type
+					);
+
 				return false;
 			}
 
@@ -292,7 +299,6 @@ namespace Menge
 
 		m_attachmentMeshes.clear();
 
-		m_currentAnimationName.clear();
 		m_currentAnimation = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -364,7 +370,7 @@ namespace Menge
 				ev.eventName = _event->data->name;
 				ev.eventIntValue = _event->intValue;
 				ev.eventFloatValue = _event->floatValue;
-				ev.eventStringValue = _event->stringValue;
+				ev.eventStringValue = _event->stringValue != nullptr ? _event->stringValue : "";
 			}break;
 		}
 
@@ -403,6 +409,8 @@ namespace Menge
 		TVectorAnimationEvent events;
 		m_events.swap( events );
 
+		bool loop = this->getLoop();
+
 		for( TVectorAnimationEvent::const_iterator
 			it = events.begin(),
 			it_end = events.end();
@@ -415,16 +423,14 @@ namespace Menge
 			{
 			case SP_ANIMATION_COMPLETE:
 				{
-					spTrackEntry * entry = spAnimationState_getCurrent( m_animationState, ev.trackIndex );
-
-					if( entry != nullptr && entry->loop == 0 )
+					if( loop == false )
 					{
 						this->end();
 					}
 				}break;
 			case SP_ANIMATION_EVENT:
 				{
-					EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, ev.eventName, ev.eventIntValue, ev.eventFloatValue, ev.eventStringValue);
+					EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_EVENT )(this, ev.eventName, ev.eventIntValue, ev.eventFloatValue, ev.eventStringValue);
 				}break;
 			}
 		}
@@ -549,14 +555,20 @@ namespace Menge
 			v.y = -_vertices[index_y];
 			v.z = 0.f;
 
-			mt::mul_v3_m4( _vertices2D[i].pos, v, _wm );
+			RenderVertex2D & vertex = _vertices2D[i];
 
-			_vertices2D[i].uv[0].x = _uv[index_x];
-			_vertices2D[i].uv[0].y = _uv[index_y];
-			_vertices2D[i].uv[1].x = _uv[index_x];
-			_vertices2D[i].uv[1].y = _uv[index_y];
+			mt::mul_v3_m4( vertex.pos, v, _wm );
 
-			_vertices2D[i].color = _argb;
+			float uv_x = _uv[index_x];
+			float uv_y = _uv[index_y];
+
+			for( int j = 0; j != MENGINE_RENDER_VERTEX_UV_COUNT; ++j )
+			{
+				vertex.uv[j].x = uv_x;
+				vertex.uv[j].y = uv_y;
+			}			
+
+			vertex.color = _argb;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -564,13 +576,26 @@ namespace Menge
 	{ 
 		for( int i = 0; i != _count; ++i )
 		{
-			_indices[i] = (uint16_t)_triangles[i];
+			_indices[i] = (RenderIndices)_triangles[i];
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::_play( float _time )
 	{
 		(void)_time;
+
+		if( this->isActivate() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::_play: '%s' play not activate"
+				, this->getName().c_str()
+				);
+
+			return false;
+		}
+				
+		bool loop = this->getLoop();
+
+		spAnimationState_setAnimation( m_animationState, 0, m_currentAnimation, loop ? 1 : 0 );
 
 		return true;
 	}
@@ -597,14 +622,14 @@ namespace Menge
 	{ 
 		(void)_enumerator;
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator, false);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_STOP )(this, _enumerator);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_end( uint32_t _enumerator )
 	{ 
 		(void)_enumerator;
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator, true);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::_interrupt( uint32_t _enumerator )
@@ -613,5 +638,4 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
 }

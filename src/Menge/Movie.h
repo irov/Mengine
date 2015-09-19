@@ -100,6 +100,9 @@ namespace Menge
 		void _deactivate() override;
 
 	protected:
+		void _afterActivate() override;
+
+	protected:
 		void _update( float _current, float _timing ) override;
 
     protected:

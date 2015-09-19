@@ -2400,6 +2400,21 @@ namespace Menge
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Movie::_afterActivate()
+	{ 
+		Node::_afterActivate();
+
+		bool autoPlay = this->getAutoPlay();
+
+		if( autoPlay == true )
+		{
+			float time = PLAYER_SERVICE( m_serviceProvider )
+				->getTime();
+
+			this->play( time );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setEventListener( const pybind::dict & _embed )
 	{
 		Node::_setEventListener(_embed);

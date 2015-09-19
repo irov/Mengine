@@ -4651,6 +4651,8 @@ namespace Menge
 			.def( "setPlayCount", &Animatable::setPlayCount )
 			.def( "getPlayCount", &Animatable::getPlayCount )
 			.def( "getPlayIterator", &Animatable::getPlayIterator )
+			.def( "setAutoPlay", &Animatable::setAutoPlay )
+			.def( "getAutoPlay", &Animatable::getAutoPlay )
             .def( "setLoop", &Animatable::setLoop )
             .def( "getLoop", &Animatable::getLoop )
             .def( "setInterval", &Animatable::setInterval )

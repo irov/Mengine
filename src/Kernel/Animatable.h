@@ -39,6 +39,9 @@ namespace Menge
 
 		inline uint32_t getPlayIterator() const;
 
+		void setAutoPlay( bool _autoPlay );
+		inline bool getAutoPlay() const;
+
         void setScretch( float _scretch );
         inline float getScretch() const;
 
@@ -101,6 +104,8 @@ namespace Menge
 		uint32_t m_playIterator;
         float m_scretch;
 		
+		bool m_autoPlay;
+
 		bool m_play;
 		bool m_pause;
 		bool m_interrupt;
@@ -177,5 +182,10 @@ namespace Menge
 	inline float Animatable::getIntervalEnd() const
 	{
 		return m_intervalEnd;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Animatable::getAutoPlay() const
+	{ 
+		return m_autoPlay;
 	}
 }

@@ -15,6 +15,7 @@ namespace Menge
         , m_playCount(1)
 		, m_playIterator(0)
         , m_scretch(1.f)
+		, m_autoPlay(false)
 		, m_play(false)
 		, m_pause(false)
 		, m_interrupt(false)
@@ -122,6 +123,11 @@ namespace Menge
     {
         m_playCount = _count;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Animatable::setAutoPlay( bool _autoPlay )
+	{
+		m_autoPlay = _autoPlay;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::_setReverse( bool _value )
 	{

@@ -176,7 +176,7 @@ namespace Menge
 	protected:
 		void _destroy() override;
 	
-	public:
+	protected:
 		bool activate();
 		void deactivate();
 

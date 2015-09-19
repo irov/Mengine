@@ -2411,7 +2411,15 @@ namespace Menge
 			float time = PLAYER_SERVICE( m_serviceProvider )
 				->getTime();
 
-			this->play( time );
+			if( this->play( time ) == 0 )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::_afterActivate '%s' resource '%s' auto play return 0"
+					, this->getName().c_str()
+					, this->m_resourceMovie->getName().c_str()
+					);
+
+				return;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

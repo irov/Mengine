@@ -1419,11 +1419,11 @@ namespace Menge
 		return handle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::notifyDebugOpenFile_( FilePath _folder, FilePath _fileName )
+	void Application::notifyDebugOpenFile_( const char * _folder, const char * _fileName )
 	{ 
 		LOGGER_WARNING( m_serviceProvider )("open %s:%s"
-			, _folder.c_str()
-			, _fileName.c_str()
+			, _folder
+			, _fileName
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -195,7 +195,6 @@ namespace Menge
 	void CacheManager::clearBuffers()
 	{
 		m_memoryMutex->lock();
-		//MutexGuard guard(m_memoryMutex);
 
 		for( TVectorCacheBufferMemory::iterator
 			it = m_buffers.begin(),

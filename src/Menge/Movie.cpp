@@ -2428,11 +2428,8 @@ namespace Menge
 		Node::_setEventListener(_embed);
 
 		this->registerEvent( EVENT_MOVIE_GET_INTERNAL, ("onMovieGetInternal"), _embed );
-		//this->registerEvent( EVENT_MOVIE_HIDE_INTERNAL, ("onMovieHideInternal"), _embed );
 		this->registerEvent( EVENT_MOVIE_ACTIVATE_INTERNAL, ("onMovieActivateInternal"), _embed );
 		this->registerEvent( EVENT_MOVIE_DEACTIVATE_INTERNAL, ("onMovieDeactivateInternal"), _embed );
-		//Eventable::registerEvent( EVENT_MOVIE_APPLY_INTERNAL_TRANSFORMATION, ("onMovieApplyInternalTransformation"), _embed );
-		//Eventable::registerEvent( EVENT_MOVIE_APPLY_INTERNAL_OPACITY, ("onMovieApplyInternalOpacity"), _embed );
 
 		this->registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _embed );
 	}
@@ -2457,8 +2454,6 @@ namespace Menge
 			float deltha = m_playTime - _current;
 			_timing -= deltha;
 		}
-
-		//float frameDuration = m_resourceMovie->getFrameDuration();
 
 		float speedFactor = this->getAnimationSpeedFactor();
 		float realTiming = _timing * speedFactor;
@@ -2496,8 +2491,6 @@ namespace Menge
 
 		uint32_t lastFrame = m_currentFrame;
 
-		//bool needUpdate = true;
-
 		if( m_currentFrame != frameCount )
 		{
 			while( m_frameTiming >= frameDuration )
@@ -2506,13 +2499,9 @@ namespace Menge
 
 				++m_currentFrame;
 
-				//needUpdate = true;
-
 				if ( m_currentFrame == frameCount )
 				{
 					this->updateForwardFrame_( _time, lastFrame, frameCount );
-
-					//needUpdate = false;
 
 					bool loop = this->getLoop();
 					bool interrupt = this->isInterrupt();
@@ -2537,8 +2526,6 @@ namespace Menge
 						lastFrame = m_currentFrame;
 
 						this->updateAnimatablePlay_();
-
-						//needUpdate = false;
 					}
 				}	
 			}
@@ -2552,23 +2539,13 @@ namespace Menge
 			return;
 		}
 
-		//if( needUpdate == true )
-		//{
-		//printf("Movie::update %s %d:%d\n"
-		//    , this->getName().c_str()
-		//    , lastFrame
-		//    , m_currentFrame
-		//    );
-
 		this->updateForwardFrame_( _time, lastFrame, m_currentFrame );
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateBackward_()
 	{
 		float frameDuration = m_resourceMovie->getFrameDuration();
 		float duration = m_resourceMovie->getDuration();
-		//size_t frameCount = m_resourceMovie->getFrameCount();
 
 		uint32_t lastFrame = m_currentFrame;
 

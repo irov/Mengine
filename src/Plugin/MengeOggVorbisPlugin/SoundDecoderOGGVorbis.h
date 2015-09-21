@@ -4,7 +4,7 @@
 
 #	include "vorbis/vorbisfile.h"
 
-#	include "Core/ThreadGuard.h"
+#	include "stdex/thread_guard.h"
 
 namespace Menge
 {
@@ -36,6 +36,6 @@ namespace Menge
 
 		bool m_oggVorbisFileInitialize;
 
-		THREAD_GUARD_INIT;
+		STDEX_THREAD_GUARD_INIT;
 	};
 }	// namespace Menge

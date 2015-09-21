@@ -71,7 +71,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryCacheInput::read( void * _buf, size_t _size )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryCacheInput::read");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::read" );
 
 		size_t cnt = _size;
 		// Read over end of memory?
@@ -95,7 +95,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryCacheInput::seek( size_t _pos )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryCacheInput::seek");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::seek" );
 
 		if( _pos > m_size )
 		{
@@ -109,7 +109,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryCacheInput::skip( size_t _pos )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryCacheInput::skip");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::skip" );
 
 		if( m_pos + _pos > m_end )
 		{
@@ -128,14 +128,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryCacheInput::eof() const
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryCacheInput::eof");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::eof" );
 
 		return m_pos == m_end;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryCacheInput::tell() const
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryCacheInput::tell");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryCacheInput::tell" );
 
         size_t distance = m_pos - m_data;
 

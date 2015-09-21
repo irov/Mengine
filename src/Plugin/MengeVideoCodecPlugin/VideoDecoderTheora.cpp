@@ -307,6 +307,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderTheora::decodeBuffer_( const yuv_buffer & _yuvBuffer, unsigned char * _buffer, size_t _size )
 	{
+		(void)_size;
+
 		if( m_options.alpha == false && m_options.pixelFormat == PF_X8R8G8B8 )
 		{
 			unsigned char * dstBitmap = _buffer;
@@ -670,6 +672,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	EVideoDecoderReadState VideoDecoderTheora::readNextFrame( float & _pts )
 	{
+		(void)_pts;
+
 		m_lastReadBytes = 0;
 
 		// theora processing...

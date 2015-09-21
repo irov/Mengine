@@ -91,7 +91,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryInput::read( void * _buf, size_t _count )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryInput::read");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryInput::read" );
 
 		size_t cnt = _count;
 		// Read over end of memory?
@@ -115,7 +115,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryInput::seek( size_t _pos )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryInput::seek");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryInput::seek" );
 
 		if( _pos > m_size )
 		{
@@ -129,7 +129,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryInput::skip( size_t _pos )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryInput::skip");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryInput::skip" );
 
 		if( m_pos + _pos > m_end )
 		{
@@ -143,21 +143,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryInput::size() const 
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryInput::size");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryInput::size" );
 
 		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryInput::eof() const
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryInput::eof");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryInput::eof" );
 
 		return m_pos == m_end;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryInput::tell() const
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryInput::tell");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryInput::tell" );
 
         size_t distance = m_pos - m_data;
 

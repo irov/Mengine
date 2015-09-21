@@ -6,7 +6,7 @@
 #	include "Factory/FactoryPool.h"
 #	include "Factory/FactorableUnique.h"
 
-#	include "Core/ThreadGuard.h"
+#	include "stdex/thread_guard.h"
 
 namespace Menge
 {
@@ -79,7 +79,7 @@ namespace Menge
 
 			if( m_mutex == nullptr )
 			{
-				THREAD_GUARD_CHECK( this, nullptr, "FactoryDefaultStore::createObject" );
+				STDEX_THREAD_GUARD_CHECK( this, "FactoryDefaultStore::createObject" );
 
 				factorable = m_ptr->createObject();
 			}
@@ -101,7 +101,7 @@ namespace Menge
 
 			if( m_mutex == nullptr )
 			{
-				THREAD_GUARD_CHECK( this, nullptr, "FactoryDefaultStore::destroyObject" );
+				STDEX_THREAD_GUARD_CHECK( this, "FactoryDefaultStore::destroyObject" );
 
 				m_ptr->destroyObject( _object );
 			}
@@ -138,7 +138,7 @@ namespace Menge
 
 		ThreadMutexInterfacePtr m_mutex;
 
-		THREAD_GUARD_INIT
+		STDEX_THREAD_GUARD_INIT;
 	};
 
 	template<class T, uint32_t Count>
@@ -181,7 +181,7 @@ namespace Menge
 
 			if( m_mutex == nullptr )
 			{
-				THREAD_GUARD_CHECK( this, nullptr, "FactoryPoolStore::createObject" );
+				STDEX_THREAD_GUARD_CHECK( this, "FactoryPoolStore::createObject" );
 
 				factorable = m_ptr->createObject();
 			}
@@ -203,7 +203,7 @@ namespace Menge
 
 			if( m_mutex == nullptr )
 			{
-				THREAD_GUARD_CHECK( this, nullptr, "FactoryPoolStore::destroyObject" );
+				STDEX_THREAD_GUARD_SCOPE( this, "FactoryPoolStore::destroyObject" );
 
 				m_ptr->destroyObject( _object );
 			}
@@ -247,6 +247,6 @@ namespace Menge
 
 		ThreadMutexInterfacePtr m_mutex;
 
-		THREAD_GUARD_INIT
+		STDEX_THREAD_GUARD_INIT;
 	};
 }

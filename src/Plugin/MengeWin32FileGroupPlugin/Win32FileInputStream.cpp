@@ -43,7 +43,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	bool Win32FileInputStream::open( const FilePath & _folder, const FilePath & _fileName, size_t _offset, size_t _size )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::open");
+		STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::open" );
 
 		WChar filePath[MENGINE_MAX_PATH];
 		if( this->openFile_( _folder, _fileName, filePath ) == false )
@@ -127,7 +127,7 @@ namespace Menge
 		if( SERVICE_EXIST( m_serviceProvider, NotificationServiceInterface ) == true )
 		{
 			NOTIFICATION_SERVICE( m_serviceProvider )
-				->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folder, _fileName );
+				->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folder.c_str(), _fileName.c_str() );
 		}
 #	endif
 
@@ -136,7 +136,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32FileInputStream::read( void * _buf, size_t _count )
 	{     
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::read");
+		STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::read" );
 
 		size_t pos = m_reading - m_capacity + m_carriage;
 		
@@ -246,7 +246,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileInputStream::seek( size_t _pos )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::seek");
+		STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::seek" );
 
 		bool successful = this->seek_( _pos );
 
@@ -265,7 +265,7 @@ namespace Menge
 
             if( dwPtr == INVALID_SET_FILE_POINTER )
             {
-                DWORD dwError = GetLastError();
+                DWORD dwError = ::GetLastError();
 
                 LOGGER_ERROR(m_serviceProvider)("Win32InputStream::seek %d:%d get error '%d'"
                     , _pos
@@ -287,7 +287,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileInputStream::skip( size_t _pos )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::skip");
+		STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::skip" );
 
 		size_t current = m_reading - m_capacity + m_carriage;
 
@@ -300,7 +300,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t Win32FileInputStream::tell() const
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::tell");
+		STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::tell" );
 
         size_t current = m_reading - m_capacity + m_carriage;
 
@@ -314,7 +314,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileInputStream::eof() const
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "Win32FileInputStream::eof");
+		STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::eof" );
 
 		return (m_reading - m_capacity + m_carriage) == m_size;
 	}
@@ -390,7 +390,7 @@ namespace Menge
 		FILETIME access;
 		FILETIME write;
 
-		if( GetFileTime( m_hFile, &creation, &access, &write ) == FALSE )
+		if( ::GetFileTime( m_hFile, &creation, &access, &write ) == FALSE )
         {
             DWORD dwError = GetLastError();
 

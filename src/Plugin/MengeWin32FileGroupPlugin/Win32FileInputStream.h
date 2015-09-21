@@ -3,7 +3,7 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/WindowsLayerInterface.h"
 
-#	include "Core/ThreadGuard.h"
+#	include "stdex/thread_guard.h"
 
 namespace Menge
 {
@@ -59,6 +59,6 @@ namespace Menge
 
 		uint8_t m_readCache[MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE];
 
-		THREAD_GUARD_INIT;
+		STDEX_THREAD_GUARD_INIT;
 	};
 }	// namespace Menge

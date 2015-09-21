@@ -57,12 +57,6 @@ src
 	
     ValueInterpolator.h
     
-    MutexGuard.h
-    MutexGuard.cpp
-    
-    ThreadGuard.h
-    ThreadGuard.cpp
-    
     String.h
 	String.cpp
     

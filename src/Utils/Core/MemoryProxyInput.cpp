@@ -45,7 +45,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryProxyInput::read( void * _buf, size_t _count )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryProxyInput::read");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryProxyInput::read" );
 
 		size_t cnt = _count;
 		// Read over end of memory?
@@ -69,7 +69,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryProxyInput::seek( size_t _pos )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryProxyInput::seek");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryProxyInput::seek" );
 
 		if( _pos > m_size )
 		{
@@ -83,7 +83,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryProxyInput::skip( size_t _pos )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryProxyInput::skip");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryProxyInput::skip" );
 
 		if( m_pos + _pos > m_end )
 		{
@@ -102,14 +102,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryProxyInput::eof() const
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryProxyInput::eof");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryProxyInput::eof" );
 
 		return m_pos == m_end;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryProxyInput::tell() const
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "MemoryProxyInput::tell");
+		STDEX_THREAD_GUARD_SCOPE( this, "MemoryProxyInput::tell" );
 
         size_t distance = m_pos - m_data;
 

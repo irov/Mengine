@@ -75,7 +75,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundDecoderOGGVorbis::_finalize()
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "SoundDecoderOGGVorbis::_finalize");
+		STDEX_THREAD_GUARD_SCOPE( this, "SoundDecoderOGGVorbis::_finalize" );
 
 		if( m_oggVorbisFileInitialize == true )
 		{
@@ -87,7 +87,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SoundDecoderOGGVorbis::_prepareData()
     {
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "SoundDecoderOGGVorbis::_prepareData");
+		STDEX_THREAD_GUARD_SCOPE( this, "SoundDecoderOGGVorbis::_prepareData" );
 
         ov_callbacks vorbisCallbacks;
         vorbisCallbacks.read_func = s_readOgg;
@@ -150,7 +150,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundDecoderOGGVorbis::_rewind()
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "SoundDecoderOGGVorbis::_rewind");
+		STDEX_THREAD_GUARD_SCOPE( this, "SoundDecoderOGGVorbis::_rewind" );
 
 		if( m_oggVorbisFileInitialize == true )
 		{
@@ -174,7 +174,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t SoundDecoderOGGVorbis::decode( void * _buffer, size_t _bufferSize )
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "SoundDecoderOGGVorbis::decode");
+		STDEX_THREAD_GUARD_SCOPE( this, "SoundDecoderOGGVorbis::decode" );
 
 		long bytesDone = 0;
         long bytesReading = _bufferSize;
@@ -229,7 +229,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundDecoderOGGVorbis::seek( float _timing )
 	{   
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "SoundDecoderOGGVorbis::seek");
+		STDEX_THREAD_GUARD_SCOPE( this, "SoundDecoderOGGVorbis::seek" );
 
         if( _timing >= m_dataInfo.length )
         {
@@ -266,7 +266,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float SoundDecoderOGGVorbis::tell()
 	{
-		THREAD_GUARD_SCOPE(this, m_serviceProvider, "SoundDecoderOGGVorbis::tell");
+		STDEX_THREAD_GUARD_SCOPE( this, "SoundDecoderOGGVorbis::tell" );
 
 		double al_pos = ov_time_tell( &m_oggVorbisFile );
 

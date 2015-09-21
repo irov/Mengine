@@ -1,8 +1,9 @@
 #	pragma once
 
+#	include "Interface/ServiceInterface.h"
 #	include "Interface/StreamInterface.h"
 
-#	include "Core/ThreadGuard.h"
+#	include "stdex/thread_guard.h"
 
 namespace Menge
 {
@@ -48,7 +49,7 @@ namespace Menge
 		unsigned char * m_pos;
 		unsigned char * m_end;
 
-		THREAD_GUARD_INIT;
+		STDEX_THREAD_GUARD_INIT;
 	};
 
 	typedef stdex::intrusive_ptr<MemoryInput> MemoryInputPtr;

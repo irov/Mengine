@@ -1,7 +1,5 @@
 #	include "ThreadJob.h"
 
-#	include "Core/MutexGuard.h"
-
 #	include "Logger/Logger.h"
 
 namespace Menge 

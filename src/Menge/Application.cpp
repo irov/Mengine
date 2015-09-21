@@ -19,7 +19,6 @@
 
 #	include "Animation.h"
 #	include "Arrow.h"
-#	include "ParticleEmitter.h"
 #	include "ParticleEmitter2.h"
 #	include "HotSpot.h"
 #	include "HotSpotPolygon.h"
@@ -64,7 +63,6 @@
 // All Resource type
 //#	include "ResourceSequence.h"
 #	include "ResourceAnimation.h"
-#	include "ResourceEmitterContainer.h"
 #	include "ResourceEmitter.h"
 
 #	include "Kernel/ResourceImageData.h"

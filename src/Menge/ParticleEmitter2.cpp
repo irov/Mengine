@@ -13,7 +13,6 @@
 
 #   include "Interface/ParticleSystemInterface.h"
 
-#	include "ResourceEmitterContainer.h"
 #	include "ResourceImageDefault.h"
 #	include "ResourceHIT.h"
 

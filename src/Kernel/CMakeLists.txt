@@ -15,11 +15,6 @@ Affector
 	AffectorType.h
     AffectorType.cpp
 )
-ADD_FILTER(
-GlobalHandleAdapter
-	GlobalHandleAdapter.cpp
-	GlobalHandleAdapter.h
-)
 
 ADD_FILTER(
 Shape
@@ -145,7 +140,6 @@ Resource
     ResourceReference.cpp
     ResourceReference.h
     ResourceCacher.h
-    ResourceHolder.cpp
     ResourceHolder.h
 	ResourceDeclare.h
 	ResourceImplement.h

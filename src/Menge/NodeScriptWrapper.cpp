@@ -39,13 +39,11 @@
 #	include "ResourceVideo.h"
 #	include "ResourceSound.h"
 #   include "ResourceImageSolid.h"
-#   include "ResourceEmitterContainer.h"
 
 #	include "ResourceImageDefault.h"
 #	include "ResourceTestPick.h"
 #	include "ResourceHIT.h"
 #	include "ResourceShape.h"
-#	include "ResourceEmitterContainer.h"
 #	include "ResourceInternalObject.h"
 
 #   include "ResourceImageSubstractRGBAndAlpha.h"
@@ -76,7 +74,6 @@
 #	include "Arrow.h"
 #	include "TextField.h"
 #	include "SoundEmitter.h"
-#	include "ParticleEmitter.h"
 #	include "Point.h"
 #	include "Line.h"
 #	include "Camera3d.h"

@@ -11,7 +11,6 @@
 #   include "ResourceVideo.h"
 #   include "ResourceSound.h"
 #   include "ResourceShape.h"
-#   include "ResourceEmitterContainer.h"
 #	include "ResourceEmitter.h"
 #   include "ResourceParticle.h"
 
@@ -26,7 +25,6 @@
 #	include "Animation.h"
 #	include "Video.h"
 #   include "TextField.h"
-#	include "ParticleEmitter.h"
 #	include "ParticleEmitter2.h"
 #   include "MovieSlot.h"
 #   include "MovieNodeExtra.h"

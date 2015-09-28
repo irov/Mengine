@@ -128,9 +128,9 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void Animation::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
 	{
-		Sprite::_render( _viewport, _camera );
+		Sprite::_render( _viewport, _camera, _clipplane );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animation::_activate()

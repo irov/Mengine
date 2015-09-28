@@ -118,10 +118,10 @@ namespace Menge
 		uint32_t getCharCount() const;
 
 	protected:
-		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
+		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane ) override;
 
 	protected:
-		void renderOutline_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera );
+		void renderOutline_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane );
 
 	protected:	
 		bool _activate() override;

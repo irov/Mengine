@@ -50,7 +50,7 @@ namespace	Menge
 		_screen.y = sp.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DParallax::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
+	void Layer2DParallax::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
 	{
 		const mt::mat4f & camera_vm = _camera->getCameraViewMatrix();
 		const mt::mat4f & camera_pm = _camera->getCameraProjectionMatrix();
@@ -85,7 +85,7 @@ namespace	Menge
 
 			rc.initialize( wm, camera_pm, vm, renderport, isOrthogonalProjection );
 
-			Layer::render( _viewport, &rc, _debugMask );
+			Layer::render( _viewport, &rc, _clipplane, _debugMask );
 		}
 	}
 }

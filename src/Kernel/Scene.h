@@ -38,9 +38,6 @@ namespace Menge
 		void onFocus( bool _focus );
 
 	protected:
-		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
-
-	protected:
 		void _addChild( Node * _layer ) override;
         void _removeChild( Node * _node ) override;
 

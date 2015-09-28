@@ -436,7 +436,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void Spine::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
 	{
 		if( m_currentAnimation == nullptr )
 		{
@@ -539,7 +539,7 @@ namespace Menge
 			const RenderMaterialInterfacePtr & material = m_attachmentMeshes[i].material;
 
 			RENDER_SERVICE( m_serviceProvider )
-				->addRenderObject( _viewport, _camera, material, vertices, verticesCount / 2, indices, trianglesCount, nullptr, false );
+				->addRenderObject( _viewport, _camera, _clipplane, material, vertices, verticesCount / 2, indices, trianglesCount, nullptr, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -338,9 +338,9 @@ namespace	Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void ParticleEmitter2::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
 	{
-		Node::_render( _viewport, _camera );
+		Node::_render( _viewport, _camera, _clipplane );
 
 		bool enabled = APPLICATION_SERVICE( m_serviceProvider )
 			->getParticlesEnabled();
@@ -425,7 +425,7 @@ namespace	Menge
 				->getMaterial2( stage, PT_TRIANGLELIST, mesh.textures, textures );
 
 			RENDER_SERVICE( m_serviceProvider )
-				->addRenderObject( _viewport, _camera, material, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, nullptr, false );
+				->addRenderObject( _viewport, _camera, _clipplane, material, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, nullptr, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

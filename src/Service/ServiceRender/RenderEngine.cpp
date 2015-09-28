@@ -37,6 +37,7 @@ namespace Menge
 		, m_currentTextureStages( 0 )
 		, m_currentRenderCamera( nullptr )
 		, m_currentRenderViewport( nullptr )
+		, m_currentRenderClipplane( nullptr )
 		, m_maxVertexCount(0)
 		, m_maxIndexCount(0)
 		, m_depthBufferWriteEnable(false)
@@ -456,6 +457,7 @@ namespace Menge
 
 		m_currentRenderViewport = nullptr;
 		m_currentRenderCamera = nullptr;
+		m_currentRenderClipplane = nullptr;
 
 		m_currentProgram = nullptr;
 	}
@@ -503,6 +505,7 @@ namespace Menge
 
 		m_currentRenderCamera = nullptr;
 		m_currentRenderViewport = nullptr;
+		m_currentRenderClipplane = nullptr;
 		
 		m_currentMaterialId = 0;
 		m_currentStage = nullptr;
@@ -1020,30 +1023,89 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::renderPass_( RenderPass & _renderPass )
 	{
-		const RenderCameraInterface * camera = _renderPass.camera;
+		if( _renderPass.viewport != nullptr )
+		{
+			const Viewport & viewport = _renderPass.viewport->getViewport();
 
-		const Viewport & viewport = _renderPass.viewport->getViewport();
+			Viewport renderViewport;
+			this->calcRenderViewport_( viewport, renderViewport );
 
-		Viewport renderViewport;
-		this->calcRenderViewport_( viewport, renderViewport );
-		
-		RENDER_SYSTEM(m_serviceProvider)
-			->setViewport( renderViewport );
+			RENDER_SYSTEM( m_serviceProvider )
+				->setViewport( renderViewport );
+		}
+		else
+		{
+			uint32_t width = m_contentResolution.getWidth();
+			uint32_t height = m_contentResolution.getHeight();
 
-		const mt::mat4f & worldMatrix = camera->getCameraWorldMatrix();
+			Viewport renderViewport;
+			renderViewport.begin.x = 0.f;
+			renderViewport.begin.y = 0.f;
+			renderViewport.end.x = (float)width;
+			renderViewport.end.y = (float)height;
 
-		RENDER_SYSTEM( m_serviceProvider )
-			->setWorldMatrix( worldMatrix );
+			RENDER_SYSTEM( m_serviceProvider )
+				->setViewport( renderViewport );
+		}
 
-		const mt::mat4f & viewMatrix = camera->getCameraViewMatrix();
+		if( _renderPass.clipplane != nullptr )
+		{
+			uint32_t count = _renderPass.clipplane->getCount();
 
-		RENDER_SYSTEM( m_serviceProvider )
-			->setModelViewMatrix( viewMatrix );
+			RENDER_SYSTEM( m_serviceProvider )
+				->setClipplaneCount( count );
 
-		const mt::mat4f & projectionMatrix = camera->getCameraProjectionMatrix();
+			for( uint32_t i = 0; i != count; ++i )
+			{
+				const mt::planef & p = _renderPass.clipplane->getPlane( i );
 
-		RENDER_SYSTEM( m_serviceProvider )
-			->setProjectionMatrix( projectionMatrix );
+				RENDER_SYSTEM( m_serviceProvider )
+					->setClipplane( i, p );
+			}
+		}
+		else
+		{
+			RENDER_SYSTEM( m_serviceProvider )
+				->setClipplaneCount( 0 );
+		}
+
+		if( _renderPass.camera != nullptr )
+		{
+			const mt::mat4f & worldMatrix = _renderPass.camera->getCameraWorldMatrix();
+
+			RENDER_SYSTEM( m_serviceProvider )
+				->setWorldMatrix( worldMatrix );
+
+			const mt::mat4f & viewMatrix = _renderPass.camera->getCameraViewMatrix();
+
+			RENDER_SYSTEM( m_serviceProvider )
+				->setModelViewMatrix( viewMatrix );
+
+			const mt::mat4f & projectionMatrix = _renderPass.camera->getCameraProjectionMatrix();
+
+			RENDER_SYSTEM( m_serviceProvider )
+				->setProjectionMatrix( projectionMatrix );
+		}
+		else
+		{
+			mt::mat4f worldMatrix;
+			mt::ident_m4( worldMatrix );
+
+			RENDER_SYSTEM( m_serviceProvider )
+				->setWorldMatrix( worldMatrix );
+
+			mt::mat4f viewMatrix;
+			mt::ident_m4( viewMatrix );
+
+			RENDER_SYSTEM( m_serviceProvider )
+				->setModelViewMatrix( viewMatrix );
+
+			mt::mat4f projectionMatrix;
+			mt::ident_m4( projectionMatrix );
+
+			RENDER_SYSTEM( m_serviceProvider )
+				->setProjectionMatrix( projectionMatrix );
+		}
 
 		this->renderObjects_( _renderPass );
 	}
@@ -1069,16 +1131,24 @@ namespace Menge
 		pass.countRenderObject = 0U;
 		pass.viewport = m_currentRenderViewport;
 		pass.camera = m_currentRenderCamera;
+		pass.clipplane = m_currentRenderClipplane;
 
 		for( uint32_t i = 0U; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )
 		{
 			pass.materialEnd[i] = nullptr;
 		}
 
-		pass.orthogonalProjection = pass.camera->isOrthogonalProjection();
+		if( m_currentRenderCamera != nullptr )
+		{
+			pass.orthogonalProjection = pass.camera->isOrthogonalProjection();
+		}
+		else
+		{
+			pass.orthogonalProjection = true;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material        
+	void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
 		, const RenderVertex2D * _vertices, uint32_t _verticesNum
 		, const RenderIndices * _indices, uint32_t _indicesNum
 		, const mt::box2f * _bb, bool _debug )
@@ -1126,7 +1196,7 @@ namespace Menge
 			return;
 		}
 
-		if( m_currentRenderCamera != _camera || m_currentRenderViewport != _viewport )
+		if( m_currentRenderCamera != _camera || m_currentRenderViewport != _viewport || m_currentRenderClipplane != _clipplane )
 		{
 			if( m_renderPasses.full() == true )
 			{
@@ -1139,6 +1209,7 @@ namespace Menge
 
 			m_currentRenderCamera = _camera;
 			m_currentRenderViewport = _viewport;
+			m_currentRenderClipplane = _clipplane;
 
 			this->createRenderPass_();
 		}
@@ -1147,7 +1218,7 @@ namespace Menge
 
 		mt::box2f bb;
 
-		if( rp.orthogonalProjection == true )
+		if( rp.orthogonalProjection == true && rp.camera != nullptr )
 		{
 			if( _bb != nullptr )
 			{
@@ -1243,7 +1314,7 @@ namespace Menge
 		m_renderIndicesCount += _indicesNum;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
+	void RenderEngine::addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
 		, const RenderVertex2D * _vertices, uint32_t _verticesNum
 		, const mt::box2f * _bb, bool _debug )
 	{
@@ -1261,10 +1332,10 @@ namespace Menge
 
 		RenderIndices * indices = m_indicesQuad.buff();
 
-		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
+		this->addRenderObject( _viewport, _camera, _clipplane, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
+	void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
 		, const RenderVertex2D * _vertices, uint32_t _verticesNum
 		, const mt::box2f * _bb, bool _debug )
 	{
@@ -1282,7 +1353,7 @@ namespace Menge
 
 		RenderIndices * indices = m_indicesLine.buff();
 
-		this->addRenderObject( _viewport, _camera, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
+		this->addRenderObject( _viewport, _camera, _clipplane, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertex2D * RenderEngine::getDebugRenderVertex2D( size_t _count )

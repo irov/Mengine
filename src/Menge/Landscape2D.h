@@ -49,7 +49,7 @@ namespace Menge
 		void _release() override;
 
 	protected:
-		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
+		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane ) override;
 
     protected:
 		void _invalidateWorldMatrix() override;

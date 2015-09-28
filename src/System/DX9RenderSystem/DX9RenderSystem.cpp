@@ -1073,6 +1073,46 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, Clear, ( 0, NULL, frameBufferFlags, _color, _depth, _stencil ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::setClipplaneCount( uint32_t _count )
+	{
+		DWORD CLIPPLANEENABLE = 0U;
+
+		switch( _count )
+		{
+		case 0:			
+			break;
+		case 1:
+			CLIPPLANEENABLE = D3DCLIPPLANE0;
+			break;
+		case 2:
+			CLIPPLANEENABLE = D3DCLIPPLANE0 | D3DCLIPPLANE1;
+			break;
+		case 3:
+			CLIPPLANEENABLE = D3DCLIPPLANE0 | D3DCLIPPLANE1 | D3DCLIPPLANE2;
+			break;
+		case 4:
+			CLIPPLANEENABLE = D3DCLIPPLANE0 | D3DCLIPPLANE1 | D3DCLIPPLANE2 | D3DCLIPPLANE3;
+			break;
+		case 5:
+			CLIPPLANEENABLE = D3DCLIPPLANE0 | D3DCLIPPLANE1 | D3DCLIPPLANE2 | D3DCLIPPLANE3 | D3DCLIPPLANE4;
+			break;
+		case 6:
+			CLIPPLANEENABLE = D3DCLIPPLANE0 | D3DCLIPPLANE1 | D3DCLIPPLANE2 | D3DCLIPPLANE3 | D3DCLIPPLANE4 | D3DCLIPPLANE5;
+			break;
+		}
+
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_CLIPPLANEENABLE, CLIPPLANEENABLE) );
+		//DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_CLIPPLANEENABLE, D3DCLIPPLANE0) );
+
+		//mt::planef p( 1.f, 0.f, 0.f, -1000.f );
+		//DXCALL( m_serviceProvider, m_pD3DDevice, SetClipPlane, (0, p.buff()) );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderSystem::setClipplane( uint32_t _i, const mt::planef & _plane )
+	{
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetClipPlane, (_i, _plane.buff()) );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setViewport( const Viewport & _viewport )
 	{
 		m_viewport = _viewport;

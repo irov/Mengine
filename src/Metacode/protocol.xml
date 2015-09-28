@@ -1,4 +1,4 @@
-<Protocol Version = "90">
+<Protocol Version = "92">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -11,9 +11,10 @@
   <Type Name="mt::vec3f" Evict="float3"/>
   <Type Name="mt::vec4f" Evict="float4"/>
   <Type Name="mt::box2f" Evict="float4"/>
-  <Type Name="mt::uv4f" Evict="float8"/>
+  <Type Name="mt::uv4f" Evict="float8"/>  
   <Type Name="Menge::ColourValue" Evict="float4"/>
   <Type Name="Menge::Polygon" Evict="floats"/>
+  <Type Name="Menge::Viewport" Evict="float4"/>  
   <Type Name="Menge::Floats" Evict="floats"/>
   
   <Enum Name="Menge::EBlendFactor">
@@ -253,7 +254,7 @@
       <Member Node="KeyFramesPackPath" Name="Converter" Type="Menge::ConstString"/>
       <Member Node="Loop" Name="Segment" Type="mt::vec2f"/>      
       <Member Node="Anchor" Name="Point" Type="mt::vec3f"/>
-      <Member Node="Offset" Name="Point" Type="mt::vec3f"/>
+      <Member Node="Offset" Name="Point" Type="mt::vec3f"/>      
       <Member Node="Bounds" Name="Box" Type="mt::box2f"/>
 
       <Node Name="MovieLayer2D">
@@ -274,6 +275,7 @@
         <Attribute Name="Switch" Type="bool"/>
         <Attribute Name="Loop" Type="bool"/>
         <Attribute Name="Position" Type="mt::vec3f"/>
+        <Attribute Name="Viewport" Type="Menge::Viewport"/>
         <Attribute Name="Params" Type="uint32_t"/>
       </Node>
 

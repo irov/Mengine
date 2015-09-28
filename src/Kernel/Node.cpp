@@ -31,6 +31,7 @@ namespace Menge
 		, m_cameraRevision(0)
 		, m_renderCamera(nullptr)
 		, m_renderViewport(nullptr)
+		, m_renderClipplane(nullptr)
 		, m_shallowGrave(0)
 		, m_shallowGravePropagate(false)
 		, m_isometricOffset(0.f, 0.f, 0.f)
@@ -896,7 +897,7 @@ namespace Menge
         this->deactivate();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
+	void Node::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
 	{
 		if( this->isRenderable() == false )
 		{
@@ -915,6 +916,13 @@ namespace Menge
 		if( m_renderCamera != nullptr )
 		{
 			renderCamera = m_renderCamera;
+		}
+
+		const RenderClipplaneInterface * renderClipplane = _clipplane;
+
+		if( m_renderClipplane != nullptr )
+		{
+			renderClipplane = m_renderClipplane;
 		}
 
 		//const Viewport& viewPort = _camera->getViewport();
@@ -936,10 +944,10 @@ namespace Menge
 		{
 			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
 			{
-				this->_render( renderViewport, renderCamera );
+				this->_render( renderViewport, renderCamera, renderClipplane );
 			}
 
-			this->renderChild_( renderViewport, renderCamera, _debugMask );
+			this->renderChild_( renderViewport, renderCamera, renderClipplane, _debugMask );
 		}
 		//}
 
@@ -947,7 +955,7 @@ namespace Menge
         {
 			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
 			{
-				this->_debugRender( renderViewport, renderCamera, _debugMask );
+				this->_debugRender( renderViewport, renderCamera, renderClipplane, _debugMask );
 			}
         }
 	}
@@ -1014,6 +1022,37 @@ namespace Menge
 		return rc_parent;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Node::setRenderClipplane( const RenderClipplaneInterface * _clipplane )
+	{
+		m_renderClipplane = _clipplane;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderClipplaneInterface * Node::getRenderClipplane() const
+	{
+		return m_renderClipplane;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderClipplaneInterface * Node::getRenderClipplaneInheritance() const
+	{
+		const RenderClipplaneInterface * rc = this->getRenderClipplane();
+
+		if( rc != nullptr )
+		{
+			return rc;
+		}
+
+		Node * parent = this->getParent();
+
+		if( parent == nullptr )
+		{
+			return nullptr;
+		}
+
+		const RenderClipplaneInterface * rc_parent = parent->getRenderClipplaneInheritance();
+
+		return rc_parent;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Node::_hide( bool _value )
 	{
         (void)_value;
@@ -1021,7 +1060,7 @@ namespace Menge
 		m_invalidateRendering = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderChild_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
+	void Node::renderChild_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
 	{
 		for( TListNodeChild::unslug_iterator
 			it = m_children.ubegin(),
@@ -1031,7 +1070,7 @@ namespace Menge
 		{
 			Node * node = (*it);
 
-			node->render( _viewport, _camera, _debugMask );
+			node->render( _viewport, _camera, _clipplane, _debugMask );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1277,7 +1316,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface* _camera, unsigned int _debugMask )
+	void Node::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface* _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
 	{
 		if( (_debugMask & MENGE_DEBUG_NODES) == 0 )
 		{
@@ -1337,7 +1376,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getDebugMaterial();
 		
-		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
+		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, _clipplane, debugMaterial
 			, vertices
 			, 8
 			, nullptr

@@ -33,6 +33,7 @@ namespace Menge
 		void setScene( Scene * _scene ) override;
 		void setRenderViewport( const RenderViewportInterface * _viewport ) override;
 		void setRenderCamera( const RenderCameraInterface * _camera ) override;
+		void setRenderClipplane( const RenderClipplaneInterface * _clipplane ) override;
 
 	public:
 		void update() override;
@@ -81,6 +82,7 @@ namespace Menge
 
 		const RenderViewportInterface * m_viewport;
 		const RenderCameraInterface * m_camera;
+		const RenderClipplaneInterface * m_clipplane;
 
 		typedef stdex::list<PickerTrapState> TPickerTrapState;
 		TPickerTrapState m_pickerTrapState;

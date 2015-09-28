@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 90;
+        _needVersion = 92;
 
-        if( version != 90 )
+        if( version != 92 )
         {
             return false;
         }
@@ -3253,6 +3253,7 @@ namespace Metacode
         , Stretch_successful(false)
         , Switch_successful(false)
         , TimeRemap_successful(false)
+        , Viewport_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3323,7 +3324,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 18:
+        case 19:
             {
                 if( this->read( _buff, _size, _read, this->Params ) == false )
                 {
@@ -3448,6 +3449,17 @@ namespace Metacode
                 {
                     return false;
                 }
+    
+                return true;
+            }break;
+        case 18:
+            {
+                if( this->read( _buff, _size, _read, this->Viewport ) == false )
+                {
+                    return false;
+                }
+    
+                this->Viewport_successful = true;
     
                 return true;
             }break;

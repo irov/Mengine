@@ -23,6 +23,8 @@
 #	include "Kernel/Join.h"
 
 #	include "RenderViewport.h"
+#	include "RenderClipplane.h"
+
 #	include "Camera2D.h"
 #	include "Consts.h"
 
@@ -56,6 +58,7 @@ namespace Menge
 		, m_arrowCamera2D(nullptr)
 		, m_renderCamera(nullptr)
 		, m_renderViewport(nullptr)
+		, m_renderClipplane(nullptr)
 		, m_switchSceneTo(nullptr)
 		, m_mousePickerSystem(nullptr)
 		, m_switchScene(false)
@@ -496,6 +499,7 @@ namespace Menge
 		{
 			m_arrow->setRenderCamera( m_arrowCamera2D );
 			m_arrow->setRenderViewport( m_renderViewport );
+			m_arrow->setRenderClipplane( m_renderClipplane );
 
 			if( m_scene != nullptr )
 			{
@@ -854,6 +858,7 @@ namespace Menge
 		{
 			m_arrow->setRenderCamera( m_arrowCamera2D );
 			m_arrow->setRenderViewport( m_renderViewport );
+			m_arrow->setRenderClipplane( m_renderClipplane );
 		}
 
 
@@ -1299,9 +1304,9 @@ namespace Menge
 		return m_renderCamera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::setRenderViewport( RenderViewportInterface * _renderViewport )
+	void Player::setRenderViewport( RenderViewportInterface * _viewport )
 	{
-		m_renderViewport = _renderViewport;
+		m_renderViewport = _viewport;
 
 		if( m_mousePickerSystem != nullptr )
 		{
@@ -1312,6 +1317,21 @@ namespace Menge
 	const RenderViewportInterface * Player::getRenderViewport() const 
 	{
 		return m_renderViewport;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Player::setRenderClipplane( RenderClipplaneInterface * _clipplane )
+	{
+		m_renderClipplane = _clipplane;
+
+		if( m_mousePickerSystem != nullptr )
+		{
+			m_mousePickerSystem->setRenderClipplane( _clipplane );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const RenderClipplaneInterface * Player::getRenderClipplane() const
+	{
+		return m_renderClipplane;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Player::getTime() const
@@ -1392,7 +1412,7 @@ namespace Menge
 
 		if( m_scene != nullptr )
 		{
-			m_scene->render( m_renderViewport, m_renderCamera, debugMask );
+			m_scene->render( m_renderViewport, m_renderCamera, m_renderClipplane, debugMask );
 		}
 
 		//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
@@ -1406,14 +1426,14 @@ namespace Menge
 		//renderEngine->newRenderPass( m_renderCamera2D );
 
 		MODULE_SERVICE(m_serviceProvider)
-			->render( m_renderViewport, m_renderCamera, debugMask );
+			->render( m_renderViewport, m_renderCamera, m_renderClipplane, debugMask );
 
 		RENDER_SERVICE(m_serviceProvider)
 			->endLimitRenderObjects();
 
 		if( m_arrow != nullptr )
 		{
-			m_arrow->render( m_renderViewport, m_arrowCamera2D, debugMask );
+			m_arrow->render( m_renderViewport, m_arrowCamera2D, m_renderClipplane, debugMask );
 		}
 
 //#	ifndef MENGINE_MASTER_RELEASE
@@ -1585,7 +1605,7 @@ namespace Menge
 
             m_debugText->setLocalPosition( mt::vec3f(gameViewport.begin, 0.f) );
 
-			m_debugText->render( m_renderViewport, m_debugCamera2D, debugMask );
+			m_debugText->render( m_renderViewport, m_debugCamera2D, m_renderClipplane, debugMask );
 		}
 //#	endif
 		//m_renderCamera2D->setLocalPosition( pos );

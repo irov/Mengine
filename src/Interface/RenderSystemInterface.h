@@ -18,6 +18,7 @@
 
 #	include "Math/mat4.h"
 #	include "Math/uv4.h"
+#	include "Math/plane.h"
 
 #   ifndef MENGE_MAX_TEXTURE_STAGES
 #	define MENGE_MAX_TEXTURE_STAGES 4
@@ -496,6 +497,13 @@ namespace Menge
 		virtual const Viewport & getViewport() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
+	class RenderClipplaneInterface
+	{
+	public:
+		virtual uint32_t getCount() const = 0;
+		virtual const mt::planef & getPlane( uint32_t _index ) const = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class RenderCameraInterface
 	{
 	public:
@@ -628,6 +636,9 @@ namespace Menge
 		virtual void swapBuffers() = 0;
 		virtual void clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil ) = 0;
 
+		virtual void setClipplaneCount( uint32_t _count ) = 0;
+		virtual void setClipplane( uint32_t _i, const mt::planef & _plane ) = 0;
+
 		virtual void setViewport( const Viewport & _viewport ) = 0;
 
 		virtual void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) = 0;
@@ -681,16 +692,16 @@ namespace Menge
         virtual void finalize() = 0;
 
     public:
-        virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
+		virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
             , const RenderIndices * _indices, uint32_t _indicesNum
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
-        virtual void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
+		virtual void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
-        virtual void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
+		virtual void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
 			, const mt::box2f * _bb, bool _debug ) = 0;
 

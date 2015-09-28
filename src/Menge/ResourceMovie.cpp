@@ -444,6 +444,7 @@ namespace Menge
 			meta_layer2d.get_Switch( ml.switcher );
 			meta_layer2d.get_Loop( ml.loop );
 			meta_layer2d.get_Position( ml.position );
+			ml.hasViewport = meta_layer2d.get_Viewport( ml.viewport );
 			meta_layer2d.get_Params( ml.params );
 
 			if( ml.loop == false )

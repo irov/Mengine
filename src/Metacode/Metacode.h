@@ -2883,6 +2883,35 @@ namespace Metacode
                     std::swap( _value, this->Type);
                 }
                 
+                bool has_Viewport() const
+                {
+                    return Viewport_successful;
+                }
+                
+                bool get_Viewport( Menge::Viewport & _value ) const
+                {
+                    if( Viewport_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    _value = this->Viewport;
+                
+                    return true;
+                }
+                
+                bool swap_Viewport( Menge::Viewport & _value ) const
+                {
+                    if( Viewport_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    std::swap( _value, this->Viewport);
+                
+                    return true;
+                }
+                
             protected:
                 bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
                 bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
@@ -2921,6 +2950,8 @@ namespace Metacode
                 bool TimeRemap_successful;
                 mutable bool TimeRemap;
                 mutable Menge::ConstString Type;
+                bool Viewport_successful;
+                mutable Menge::Viewport Viewport;
             };
             
             class Meta_MovieLayer3D

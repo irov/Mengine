@@ -51,6 +51,7 @@
 #	include "Layer2DIsometric.h"
 #	include "Layer2DLoop.h"
 #	include "RenderViewport.h"
+#	include "RenderClipplane.h"
 #	include "Camera2D.h"
 #	include "CameraTarget2D.h"
 #	include "Camera3D.h"
@@ -565,6 +566,7 @@ namespace Menge
 		//NODE_FACTORY( LayerScene );
 		//NODE_FACTORY( RenderMesh );
 		NODE_FACTORY( m_serviceProvider, RenderViewport );
+		NODE_FACTORY( m_serviceProvider, RenderClipplane );
 		NODE_FACTORY( m_serviceProvider, Camera2D );
 		NODE_FACTORY( m_serviceProvider, CameraTarget2D );
 		NODE_FACTORY( m_serviceProvider, Camera3D );

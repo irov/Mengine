@@ -76,9 +76,9 @@ namespace	Menge
 		m_verticesWM.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void Landscape2D::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
 	{
-		Node::_render( _viewport, _camera );
+		Node::_render( _viewport, _camera, _clipplane );
 		
 		const mt::box2f & cameraBBWM = _camera->getCameraBBoxWM();
 
@@ -146,7 +146,7 @@ namespace	Menge
 				const RenderVertex2D * vertices = this->getVerticesWM( elementVertexOffset );
 
 				RENDER_SERVICE( m_serviceProvider )
-					->addRenderQuad( _viewport, _camera, el.material, vertices, 4, nullptr, false );
+					->addRenderQuad( _viewport, _camera, _clipplane, el.material, vertices, 4, nullptr, false );
 			}
 
 			elementVertexOffset += 4;

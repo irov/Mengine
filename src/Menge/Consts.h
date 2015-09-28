@@ -81,6 +81,7 @@ namespace Menge
 		DECL_CONST( Grid2D );
 		DECL_CONST( Animation );
 		DECL_CONST( RenderViewport );
+		DECL_CONST( RenderClipplane );
 		DECL_CONST( Camera2D );
 		DECL_CONST( Camera3D );
 		DECL_CONST( TextField );

@@ -72,7 +72,7 @@ namespace Menge
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MovieSlot::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
+	void MovieSlot::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
 	{
 		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
 		{
@@ -143,7 +143,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
 			->getDebugMaterial();
 
-		RENDER_SERVICE( m_serviceProvider )->addRenderLine( _viewport, _camera, debugMaterial
+		RENDER_SERVICE( m_serviceProvider )->addRenderLine( _viewport, _camera, _clipplane, debugMaterial
 			, vertices
 			, vertexCount
 			, nullptr

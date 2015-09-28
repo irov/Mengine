@@ -24,6 +24,8 @@ Camera
     RenderViewport.cpp
     RenderCamera.h
     RenderCamera.cpp
+    RenderClipplane.h
+    RenderClipplane.cpp
 )
 
 SOURCE_GROUP( Engine )

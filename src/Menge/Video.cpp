@@ -286,9 +286,9 @@ namespace Menge
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void Video::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
 	{
-		Node::_render( _viewport, _camera );
+		Node::_render( _viewport, _camera, _clipplane );
 
 		if( m_invalidFirstFrame == true )
 		{
@@ -326,7 +326,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & material = this->getMaterial(); 
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _viewport, _camera, material, vertices, 4, nullptr, false );
+			->addRenderQuad( _viewport, _camera, _clipplane, material, vertices, 4, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) const

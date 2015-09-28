@@ -164,6 +164,16 @@ namespace Metabuf
             boost::geometry::append( _value, v );
         }
     }
+	//////////////////////////////////////////////////////////////////////////
+	void archive_read( stdex::memory_reader & ar, Menge::Viewport & _value, void * _userData )
+	{
+		(void)_userData;
+
+		ar.readPOD( _value.begin.x );
+		ar.readPOD( _value.begin.y );
+		ar.readPOD( _value.end.x );
+		ar.readPOD( _value.end.y );
+	}
     //////////////////////////////////////////////////////////////////////////
     void archive_read( stdex::memory_reader & ar, Menge::Floats & _value, void * _userData )
     {

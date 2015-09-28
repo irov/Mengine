@@ -53,6 +53,7 @@ namespace Menge
 		virtual void setScene( Scene * _scene ) = 0;
 		virtual void setRenderViewport( const RenderViewportInterface * _viewport ) = 0;
 		virtual void setRenderCamera( const RenderCameraInterface * _camera ) = 0;
+		virtual void setRenderClipplane( const RenderClipplaneInterface * _viewport ) = 0;
 
     public:
         virtual void update() = 0;

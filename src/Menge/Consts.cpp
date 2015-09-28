@@ -85,6 +85,7 @@ namespace Menge
         INIT_CONST( Animation );
         INIT_CONST( Camera2D );
 		INIT_CONST( RenderViewport );
+		INIT_CONST( RenderClipplane );
         INIT_CONST( Camera3D );
         INIT_CONST( TextField );
         INIT_CONST( __CONSOLE_FONT__ );

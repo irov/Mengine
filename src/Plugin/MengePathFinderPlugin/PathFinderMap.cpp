@@ -652,7 +652,7 @@ namespace Menge
 		m_camera = _camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::renderPolygonRing_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Polygon::ring_type & _ring, uint32_t _color )
+	void PathFinderMap::renderPolygonRing_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const Polygon::ring_type & _ring, uint32_t _color )
 	{
 		Polygon::ring_type::size_type numpoints = _ring.size();
 
@@ -705,7 +705,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
 			->getDebugMaterial();
 
-		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, debugMaterial
+		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, _clipplane, debugMaterial
 			, vertices
 			, vertexCount
 			, nullptr
@@ -713,7 +713,7 @@ namespace Menge
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
+	void PathFinderMap::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
 	{
 		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) == 0 )
 		{
@@ -735,7 +735,7 @@ namespace Menge
 			
 			const Polygon::ring_type & ring = polygon.outer();
 
-			this->renderPolygonRing_( _viewport, _camera, ring, 0xFFFFFF00 );
+			this->renderPolygonRing_( _viewport, _camera, _clipplane, ring, 0xFFFFFF00 );
 
 			const Polygon::inner_container_type & inners = polygon.inners();
 
@@ -747,7 +747,7 @@ namespace Menge
 			{
 				const Polygon::ring_type & ring = *it;
 
-				this->renderPolygonRing_( _viewport, _camera, ring, 0xFFFFFF00 );
+				this->renderPolygonRing_( _viewport, _camera, _clipplane, ring, 0xFFFFFF00 );
 			}
 		}
 
@@ -761,7 +761,7 @@ namespace Menge
 
 			const Polygon::ring_type & ring = polygon.outer();
 
-			this->renderPolygonRing_( _viewport, _camera, ring, 0xFFFF0000 );
+			this->renderPolygonRing_( _viewport, _camera, _clipplane, ring, 0xFFFF0000 );
 
 			const Polygon::inner_container_type & inners = polygon.inners();
 
@@ -773,7 +773,7 @@ namespace Menge
 			{
 				const Polygon::ring_type & ring = *it_ring;
 
-				this->renderPolygonRing_( _viewport, _camera, ring, 0xFFFF0000 );
+				this->renderPolygonRing_( _viewport, _camera, _clipplane, ring, 0xFFFF0000 );
 			}
 		}
 

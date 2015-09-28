@@ -130,6 +130,7 @@ namespace Menge
 		, m_scene(nullptr)
 		, m_viewport(nullptr)
 		, m_camera(nullptr)
+		, m_clipplane(nullptr)
 		, m_pickerTrapCount(0)
 	{
 	}
@@ -162,6 +163,11 @@ namespace Menge
 	void MousePickerSystem::setRenderCamera( const RenderCameraInterface * _camera )
 	{
 		m_camera = _camera;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MousePickerSystem::setRenderClipplane( const RenderClipplaneInterface * _clipplane )
+	{
+		m_clipplane = _clipplane;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps )

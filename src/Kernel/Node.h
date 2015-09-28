@@ -82,7 +82,7 @@ namespace Menge
 		Layer * m_layer;
 
 	public:
-		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
+		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask ) override;
 		inline bool isRenderable() const;
 		
 	public:
@@ -99,18 +99,26 @@ namespace Menge
 	public:
 		const RenderCameraInterface * getRenderCameraInheritance() const;
 
+	public:
+		void setRenderClipplane( const RenderClipplaneInterface * _clipplane );
+		const RenderClipplaneInterface * getRenderClipplane() const;
+
+	public:
+		const RenderClipplaneInterface * getRenderClipplaneInheritance() const;
+
 	protected:
 		void _hide( bool _value ) override;
 			
 	protected:
-		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface* _camera, unsigned int _debugMask ) override;
+		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface* _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask ) override;
 	
 	protected:
 		const RenderViewportInterface * m_renderViewport;
 		const RenderCameraInterface * m_renderCamera;
+		const RenderClipplaneInterface * m_renderClipplane;
 
 	protected:
-		void renderChild_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask );
+		void renderChild_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask );
 
 	public:
 		void getScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _position );

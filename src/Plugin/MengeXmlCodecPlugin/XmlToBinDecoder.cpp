@@ -135,8 +135,6 @@ namespace Menge
         InputStreamInterfacePtr protocol_stream = FILE_SERVICE(m_serviceProvider)
             ->openInputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), m_options.pathProtocol, false );
 
-		//FILE * file_protocol = _wfopen( unicode_pathProtocol.c_str(), L"rb" );
-
         if( protocol_stream == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("Xml2BinDecoder::decode: error open protocol %s"
@@ -151,7 +149,15 @@ namespace Menge
 		Blobject protocol_buf;
 		protocol_buf.resize( protocol_size );
 
-        protocol_stream->read( &protocol_buf[0], protocol_size );
+		if( protocol_stream->read( &protocol_buf[0], protocol_size ) != protocol_size )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Xml2BinDecoder::decode: error read protocol %s error invalid read size"
+				, m_options.pathProtocol.c_str()
+				);
+
+			return 0;
+		}
+
         protocol_stream = nullptr;
 
         Metabuf::XmlProtocol xml_protocol;
@@ -239,6 +245,15 @@ namespace Menge
 		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
 			->compressBuffer( m_archivator, &bin_buf[0], bin_size );
 
+		if( compress_memory == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Xml2BinDecoder::decode: error convert %s invalid compress buffer"
+				, m_options.pathXml.c_str()				
+				);
+
+			return 0;
+		}
+
         OutputStreamInterfacePtr bin_stream = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dev"), m_options.pathBin );
 
@@ -259,6 +274,15 @@ namespace Menge
 
 		size_t compress_size;
 		const void * compress_buffer = compress_memory->getMemory( compress_size );
+
+		if( compress_buffer == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Xml2BinDecoder::decode: error create bin %s invalid get memory"
+				, m_options.pathBin.c_str()
+				);
+
+			return 0;
+		}
 
 		uint32_t write_compress_size = (uint32_t)compress_size;
         bin_stream->write( &write_compress_size, sizeof(write_compress_size) );

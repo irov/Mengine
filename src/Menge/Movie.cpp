@@ -19,6 +19,7 @@
 #	include "Kernel/Layer.h"
 #	include "Camera3D.h"
 #	include "RenderViewport.h"
+#	include "RenderClipplane.h"
 
 #	include "Sprite.h"
 #	include "Mesh2D.h"
@@ -1629,6 +1630,24 @@ namespace Menge
 			return false;
 		}
 
+		if( _layer.hasViewport == true )
+		{
+			RenderClipplane * clippane = NODE_SERVICE( m_serviceProvider )
+				->createNodeT<RenderClipplane>( CONST_STRING( m_serviceProvider, RenderClipplane ) );
+
+			if( clippane == nullptr )
+			{
+				return false;
+			}
+
+			clippane->setName( _layer.name );
+			clippane->setViewport( _layer.viewport );
+
+			layer_movie->setRenderClipplane( clippane );
+
+			this->addChild( clippane );
+		}
+
 		layer_movie->setResourceMovie( resourceMovie );
 
 		layer_movie->setIntervalStart( _layer.startInterval );
@@ -3128,7 +3147,6 @@ namespace Menge
 		m_renderViewport->setViewport( vp );
 
 		this->addChild( m_renderViewport );
-		//m_renderCamera3D->setRelationTransformation( NULL );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::destroyCamera3D_()

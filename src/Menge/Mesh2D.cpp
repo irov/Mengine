@@ -108,9 +108,9 @@ namespace Menge
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void Mesh2D::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
 	{
-		Node::_render( _viewport, _camera );
+		Node::_render( _viewport, _camera, _clipplane );
 
 		if( m_vertexCount == 0 )
 		{
@@ -121,7 +121,7 @@ namespace Menge
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount, nullptr, false );
+			->addRenderObject( _viewport, _camera, _clipplane, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh2D::_updateBoundingBox( mt::box2f & _boundingBox ) const

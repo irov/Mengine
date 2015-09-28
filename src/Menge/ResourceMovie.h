@@ -46,6 +46,7 @@ namespace Menge
 			, startInterval(0.f)
             , state(0)
 			, position(0.f, 0.f, 0.f)
+			, viewport(0.f, 0.f, 0.f, 0.f)
 			, params(0)
 			, immutable(false)
 			, switcher(false)
@@ -53,6 +54,7 @@ namespace Menge
 			, shape(false)
 			, polygon(false)
 			, loop(false)
+			, hasViewport(false)
 		{
 		}
 
@@ -78,15 +80,18 @@ namespace Menge
 		ConstString source;
 
 		mt::vec3f position;
+		Viewport viewport;
 
 		uint32_t params;
 
 		bool immutable;
 		bool timeRemap;
-		bool shape;
+		bool shape;		
 		bool polygon;
 		bool loop;
 		bool switcher;
+
+		bool hasViewport;
 
 		bool hasParam( uint32_t _param ) const
 		{

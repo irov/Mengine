@@ -41,7 +41,7 @@ namespace Menge
 		inline const Polygon & getPolygonWM() const;
 
 	protected:
-		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
+		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask ) override;
 
 	protected:        
 		Polygon m_polygon;

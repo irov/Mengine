@@ -170,11 +170,4 @@ namespace Menge
 			}			
 		}
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
-	{
-		(void)_viewport;
-        (void)_camera;
-		// nothing
-	}
 }

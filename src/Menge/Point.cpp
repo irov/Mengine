@@ -63,9 +63,9 @@ namespace Menge
 		Node::_destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void Point::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
 	{
-		Node::_render( _viewport, _camera );
+		Node::_render( _viewport, _camera, _clipplane );
 
 		if( m_linked == nullptr )
 		{
@@ -129,10 +129,10 @@ namespace Menge
 			->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" ), PT_TRIANGLELIST, 0, nullptr );
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _viewport, _camera, material, m_vertices, 4, nullptr, false );
+			->addRenderQuad( _viewport, _camera, _clipplane, material, m_vertices, 4, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
+	void Point::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
 	{
 		(void)_viewport;
         (void)_camera;
@@ -195,7 +195,7 @@ namespace Menge
 			->getDebugMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderLine( _viewport, _camera, debugMaterial, vertices, 8, nullptr, true );
+			->addRenderLine( _viewport, _camera, _clipplane, debugMaterial, vertices, 8, nullptr, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 

@@ -82,6 +82,10 @@ namespace Menge
 	public:
 		virtual void setRenderViewport( RenderViewportInterface * _renderViewport ) = 0;
 		virtual const RenderViewportInterface * getRenderViewport() const = 0;
+
+	public:
+		virtual void setRenderClipplane( RenderClipplaneInterface * _clipplane ) = 0;
+		virtual const RenderClipplaneInterface * getRenderClipplane() const = 0;
         
     public:
         virtual MousePickerSystemInterface * getMousePickerSystem() const = 0;

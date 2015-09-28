@@ -45,7 +45,7 @@ namespace Menge
 
 	public:
 		void update( float _time, float _timing ) override;
-		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
+		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask ) override;
 		
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

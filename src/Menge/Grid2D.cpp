@@ -259,9 +259,9 @@ namespace	Menge
 		m_invalidateVerticesWM = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Grid2D::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void Grid2D::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
 	{
-		Node::_render( _viewport, _camera );
+		Node::_render( _viewport, _camera, _clipplane );
 
 		const RenderIndices * indices = &m_indices[0];
 		size_t indicesCount = m_indices.size();
@@ -274,7 +274,7 @@ namespace	Menge
 		const mt::box2f & bb = this->getBoundingBox();
 		
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, material, vertices, verticesCount, indices, indicesCount, &bb, false );
+			->addRenderObject( _viewport, _camera, _clipplane, material, vertices, verticesCount, indices, indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Grid2D::updateVerticesWM_()

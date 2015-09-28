@@ -61,6 +61,7 @@ namespace Menge
 
 		const RenderViewportInterface * viewport;
 		const RenderCameraInterface * camera;
+		const RenderClipplaneInterface * clipplane;
 				
 		mt::box2f bb_inv;
 
@@ -93,16 +94,16 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
 	public:
-		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
+		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum 
 			, const RenderIndices * _indices, uint32_t _indicesNum 
 			, const mt::box2f * _bb, bool _debug ) override;
 
-        void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
+		void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
 			, const RenderVertex2D * _vertices, uint32_t _verticesNum 
 			, const mt::box2f * _bb, bool _debug ) override;
 
-        void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderMaterialInterfacePtr & _material
+		void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
 			, const mt::box2f * _bb, bool _debug ) override;
 		
@@ -140,8 +141,7 @@ namespace Menge
 		void endLimitRenderObjects() override;
 		void increfLimitRenderObjects() override;
 		bool decrefLimitRenderObjects() override;
-        
-		
+        		
     public:
 		bool beginScene() override;
 		void endScene() override;
@@ -156,8 +156,10 @@ namespace Menge
 	public:
         const Viewport & getRenderViewport() const;
 
+	public:
 		bool isWindowCreated() const override;
 		
+	public:
 		void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
 		void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) override;
 		void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float zn, float zf ) override;
@@ -168,6 +170,7 @@ namespace Menge
 		const RenderDebugInfo & getDebugInfo() const override;
 		void resetFrameCount() override;
 
+	public:
 		void setVSync( bool _vSync ) override;
 		bool getVSync() const override;
 
@@ -263,6 +266,7 @@ namespace Menge
 
 		const RenderViewportInterface * m_currentRenderViewport;
 		const RenderCameraInterface * m_currentRenderCamera;
+		const RenderClipplaneInterface * m_currentRenderClipplane;
 
 		RenderProgramInterfacePtr m_currentProgram;
 

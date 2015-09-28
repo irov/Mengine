@@ -60,8 +60,8 @@ namespace Menge
         void setRenderListener( RenderSystemListener * _listener ) override;
 		
 	public:
-		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, WindowHandle _winHandle,
-			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
+		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, WindowHandle _winHandle
+			, bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 		
         void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
         void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
@@ -148,6 +148,9 @@ namespace Menge
 		void endScene() override;
 		void swapBuffers() override;
 		void clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil ) override;
+
+		void setClipplaneCount( uint32_t _count ) override;
+		void setClipplane( uint32_t _i, const mt::planef & _plane ) override;
 
 		void setViewport( const Viewport & _viewport ) override;
 

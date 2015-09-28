@@ -4,10 +4,11 @@
 
 #   include "stdex/memory_reader.h"
 
-#	include "Utils/Core/ConstString.h"
-#	include "Utils/Core/FilePath.h"
-#	include "Utils/Core/ColourValue.h"
-#	include "Utils/Core/Polygon.h"
+#	include "Core/ConstString.h"
+#	include "Core/FilePath.h"
+#	include "Core/ColourValue.h"
+#	include "Core/Polygon.h"
+#	include "Core/Viewport.h"
 
 #	include "Config/Typedef.h"
 #	include "Config/String.h"
@@ -35,6 +36,7 @@ namespace Metabuf
     void archive_read( stdex::memory_reader & ar, Menge::WString & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, Menge::ColourValue & _value, void * _userData );    
     void archive_read( stdex::memory_reader & ar, Menge::Polygon & _value, void * _userData );
+	void archive_read( stdex::memory_reader & ar, Menge::Viewport & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, Menge::Floats & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, mt::vec2f & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, mt::vec3f & _value, void * _userData );

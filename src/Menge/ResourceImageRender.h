@@ -37,7 +37,7 @@ namespace Menge
 		PixelFormat getPixelFormat() const;
 
 	public:
-		bool bake( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, Node * _node, bool _clear );
+		bool bake( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, Node * _node, bool _clear );
 
 	protected:
 		bool _compile() override;

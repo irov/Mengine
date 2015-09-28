@@ -129,7 +129,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleService::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
+	void ModuleService::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, uint32_t _debugMask )
 	{
 		for( TVectorModules::iterator
 			it = m_modules.begin(),
@@ -139,7 +139,7 @@ namespace Menge
 		{
 			const ModuleInterfacePtr & module = *it;
 
-			module->render( _viewport, _camera, _debugMask );
+			module->render( _viewport, _camera, _clipplane, _debugMask );
 		}
 	}
 }

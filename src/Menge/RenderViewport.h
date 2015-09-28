@@ -9,8 +9,6 @@
 
 namespace Menge
 {
-	class Viewport;
-	
 	class RenderViewport
 		: public Node
         , public RenderViewportInterface

@@ -10,17 +10,19 @@ namespace Menge
 		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void Renderable::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
 	{
 		(void)_viewport;
         (void)_camera;
+		(void)_clipplane;
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask )
+	void Renderable::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
 	{
 		(void)_viewport;
         (void)_camera;
+		(void)_clipplane;
         (void)_debugMask;
 		//Empty
 	}

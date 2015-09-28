@@ -47,7 +47,7 @@ namespace Menge
 
 	protected:
 		void _update( float _current, float _timing ) override;
-		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera ) override;
+		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane ) override;
 		
     protected:
 		bool _activate() override;

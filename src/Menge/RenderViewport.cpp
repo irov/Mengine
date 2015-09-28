@@ -7,8 +7,9 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderViewport::RenderViewport()
-		: m_invalidateViewport(true)
-		, m_fixedViewport(false)
+		: m_observerChangeWindowResolution(nullptr)
+		, m_fixedViewport( false )
+		, m_invalidateViewport(true)		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

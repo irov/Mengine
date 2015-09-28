@@ -56,9 +56,9 @@ namespace Menge
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Sprite::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera )
+	void Sprite::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
 	{
-		Node::_render( _viewport, _camera );
+		Node::_render( _viewport, _camera, _clipplane );
 
 		const RenderMaterialInterfacePtr & material = this->getMaterial();
 		const RenderVertex2D * vertices = this->getVerticesWM();        
@@ -66,7 +66,7 @@ namespace Menge
 		const mt::box2f & bb = this->getBoundingBox();
 
 		RENDER_SERVICE( m_serviceProvider )
-			->addRenderQuad( _viewport, _camera, material, vertices, 4, &bb, false );
+			->addRenderQuad( _viewport, _camera, _clipplane, material, vertices, 4, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_updateBoundingBox( mt::box2f & _boundingBox ) const

@@ -67,7 +67,7 @@ namespace Menge
 		void _deactivate() override;
 
     protected:
-        void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, unsigned int _debugMask ) override;
+		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask ) override;
 
 	protected:
 		void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) override;

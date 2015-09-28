@@ -105,8 +105,12 @@ namespace Menge
 		const RenderCameraInterface * getRenderCamera() const override;
 
 	public:
-		void setRenderViewport( RenderViewportInterface * _renderViewport ) override;
+		void setRenderViewport( RenderViewportInterface * _viewport ) override;
 		const RenderViewportInterface * getRenderViewport() const override;
+
+	public:
+		void setRenderClipplane( RenderClipplaneInterface * _clipplane ) override;
+		const RenderClipplaneInterface * getRenderClipplane() const override;
 
     public:
 		void initializeRenderResources() override;
@@ -173,6 +177,7 @@ namespace Menge
 		
 		RenderCameraInterface * m_renderCamera;
 		RenderViewportInterface * m_renderViewport;
+		RenderClipplaneInterface * m_renderClipplane;
 
         MousePickerSystem * m_mousePickerSystem;
         GlobalHandleSystem * m_globalHandleSystem;

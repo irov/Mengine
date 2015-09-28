@@ -14,7 +14,7 @@ namespace Menge
 		, m_rate( 0.0 )
 		, m_total_rate( 0.0 )
 		, m_time( 0.0 )
-	
+		, m_rect(0.f, 0.f, 0.f, 0.f)
 		, m_angle( 0.f )
 		, m_start( false )
 		, m_looped( false )
@@ -58,17 +58,19 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter2::setupBasePosition_()
     {
-		if( Magic_Is3d( m_emitterId ) == false )
+		bool is3d = Magic_Is3d( m_emitterId );
+
+		if( is3d == false )
 		{
 			MAGIC_RECT rect;
 			float backgroundScale = Magic_GetBackgroundRect( m_emitterId, &rect );
 
 			if( rect.left == rect.right || rect.bottom == rect.top )
 			{
-				m_rect.x = 0.f;
-				m_rect.y = 0.f;
-				m_rect.z = 2048.f;
-				m_rect.w = 2048.f;
+				m_rect.x = -1024.f;
+				m_rect.y = -1024.f;
+				m_rect.z = 1024.f;
+				m_rect.w = 1024.f;
 
 				m_background = false;
 			}
@@ -177,6 +179,11 @@ namespace Menge
 		MAGIC_VIEW view;
 		int user_camera = Magic_GetView( m_emitterId, &view );
 				
+		if( user_camera != MAGIC_SUCCESS )
+		{
+			return false;
+		}
+
 		_camera.pos.x = view.pos.x;
 		_camera.pos.y = view.pos.y;
 		_camera.pos.z = view.pos.z;
@@ -196,12 +203,7 @@ namespace Menge
 
 		_camera.width = (float)view.viewport_width;
 		_camera.height = (float)view.viewport_height;
-
-		if( user_camera != MAGIC_SUCCESS )
-		{
-			return false;
-		}
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -232,7 +234,9 @@ namespace Menge
 		m_total_rate += _timing;
         m_time += _timing;
 
-		if( this->is3d() == true )
+		bool is3d = this->is3d();
+
+		if( is3d == true )
 		{
 			MAGIC_VIEW view;
 			if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
@@ -602,10 +606,15 @@ namespace Menge
 		
 		mt::mat4f vpm;
 
-		if( this->is3d() == true )
+		bool is3d = this->is3d();
+
+		if( is3d == true )
 		{
 			ParticleCamera pc;
-			this->getCamera( pc );
+			if( this->getCamera( pc ) == false )
+			{
+				return false;
+			}
 
 			mt::mat4f vm;
 			mt::make_lookat_m4( vm, pc.pos, pc.dir, -pc.up, -1.f );

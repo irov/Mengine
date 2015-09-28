@@ -12,6 +12,7 @@ namespace Menge
 {
 	class Camera3D;
 	class RenderViewport;
+	class RenderClipplane;
 
     class MovieNodeExtra;
     class MovieEvent;
@@ -202,6 +203,9 @@ namespace Menge
 		Camera3D * m_renderCamera3D;
 		RenderViewport * m_renderViewport;
 
+		typedef std::vector<RenderClipplane *> TVectorClipplane;
+		TVectorClipplane m_clipplanes;
+
         struct Nodies
         {	
 			Nodies()
@@ -224,7 +228,7 @@ namespace Menge
 
 		typedef stdex::vector<Nodies> TVectorNodies;
 		TVectorNodies m_nodies;
-		
+				
 		float m_frameTiming;
 		uint32_t m_currentFrame;
         

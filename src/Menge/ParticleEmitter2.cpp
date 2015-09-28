@@ -356,7 +356,6 @@ namespace	Menge
 		}
 
 		ParticleEmitterRenderFlush flush;
-
 		if( m_emitter->prepareParticles( flush ) == false )
 		{
 			return;

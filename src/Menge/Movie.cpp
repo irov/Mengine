@@ -1645,6 +1645,8 @@ namespace Menge
 
 			layer_movie->setRenderClipplane( clippane );
 
+			m_clipplanes.push_back( clippane );
+
 			this->addChild( clippane );
 		}
 
@@ -1977,6 +1979,11 @@ namespace Menge
 	{
 		ParticleEmitter2 * layer_particles = NODE_SERVICE(m_serviceProvider)
 			->createNodeT<ParticleEmitter2>( CONST_STRING(m_serviceProvider, ParticleEmitter2) );
+
+		if( layer_particles == nullptr )
+		{
+			return false;
+		}
 
 		ResourceParticle * resourceParticle = RESOURCE_SERVICE(m_serviceProvider)
 			->getResourceReferenceT<ResourceParticle *>( _layer.source );
@@ -3162,6 +3169,19 @@ namespace Menge
 			m_renderViewport->destroy();
 			m_renderViewport = nullptr;
 		}
+
+		for( TVectorClipplane::iterator
+			it = m_clipplanes.begin(),
+			it_end = m_clipplanes.end();
+		it != it_end;
+		++it )
+		{
+			RenderClipplane * clipplane = *it;
+
+			clipplane->destroy();
+		}
+
+		m_clipplanes.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setEnableLayer_( const MovieLayer & _layer, bool _enable )

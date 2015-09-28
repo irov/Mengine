@@ -103,8 +103,6 @@ namespace Menge
 
         double m_time;
 
-		float m_width;
-		float m_height;
 		mt::vec4f m_rect;
 		
 		float m_angle;
@@ -113,9 +111,6 @@ namespace Menge
 		bool m_looped;
 
 		bool m_background;
-
-		MAGIC_RENDERING_START m_prepareStart;
-		void * m_prepareContext;
 	};
 
 	typedef stdex::intrusive_ptr<AstralaxEmitter2> AstralaxEmitter2Ptr;

@@ -21,11 +21,13 @@ namespace Menge
     class ServiceProviderInterface;
 	//////////////////////////////////////////////////////////////////////////
 	class AffectorCallback
-		: public Factorable
+		: public FactorablePtr
 	{
 	public:
 		virtual void onAffectorEnd( AFFECTOR_ID _id, bool _isEnd ) = 0;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<AffectorCallback> AffectorCallbackPtr;
 	//////////////////////////////////////////////////////////////////////////
 	class Affector
         : public stdex::intrusive_slug_linked<Affector>
@@ -69,14 +71,14 @@ namespace Menge
 		~CallbackAffector();
 
 	public:
-		void setCallback( AffectorCallback * _cb );
-		AffectorCallback * getCallback() const;
+		void setCallback( const AffectorCallbackPtr & _cb );
+		const AffectorCallbackPtr & getCallback() const;
 
 	protected:
 		void end_( bool _isEnd );
 
 	protected:
-		AffectorCallback * m_cb;
+		AffectorCallbackPtr m_cb;
 	};
     //////////////////////////////////////////////////////////////////////////
 	template<class C, class M>
@@ -249,7 +251,7 @@ namespace Menge
 
         public:
             template<class ABS>
-            Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, AffectorCallback * _cb
+			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
                 , C * _self, M _method
                 , const T & _pos, const T & _dir, float _speed, ABS _abs )
             {
@@ -278,7 +280,7 @@ namespace Menge
 
         public:
             template<class ABS>
-            Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, AffectorCallback * _cb
+			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
                 , C * _self, M _method
                 , const T & _start, const T & _end, float _time, ABS _abs )
             {
@@ -308,7 +310,7 @@ namespace Menge
 
         public:
             template<class ABS>
-		    Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, AffectorCallback * _cb
+			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
 			    , C * _self, M _method
 			    , const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		    {
@@ -338,7 +340,7 @@ namespace Menge
 
         public:
             template<class ABS>
-		    Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, AffectorCallback * _cb
+			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
 			    , C * _self, M _method
 			    , const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		    {
@@ -368,7 +370,7 @@ namespace Menge
 
         public:
             template<class ABS>
-            Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, AffectorCallback * _cb
+			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
                 , C * _self, M _method
                 , const T & _start, const T & _end, const T & _v0, const T & _v1, float _time, ABS _abs )
             {

@@ -11,6 +11,10 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	Affectorable::~Affectorable()
+	{ 
+	}
+	//////////////////////////////////////////////////////////////////////////
 	AFFECTOR_ID Affectorable::addAffector( Affector * _affector )
 	{
 		AFFECTOR_ID id = ++m_enumerator;
@@ -29,9 +33,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Affectorable::stopAffector( uint32_t _id )
 	{
-		for( TSlugAffector it(m_affectors); it.eof() == false; it.next_shuffle() )
+		for( TSlugAffector it(m_affectors); it.eof() == false; )
 		{
 			Affector * affector = *it;
+
+			it.next_shuffle();
 
 			if( affector->getId() == _id )
 			{
@@ -45,9 +51,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Affectorable::stopAffectors( EAffectorType _type )
 	{
-        for( TSlugAffector it(m_affectors); it.eof() == false; it.next_shuffle() )
+        for( TSlugAffector it(m_affectors); it.eof() == false; )
         {
             Affector * affector = *it;
+
+			it.next_shuffle();
 
             if( affector->getType() == _type )
             {
@@ -61,9 +69,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Affectorable::stopAllAffectors()
 	{
-        for( TSlugAffector it(m_affectors); it.eof() == false; it.next_shuffle() )
+        for( TSlugAffector it(m_affectors); it.eof() == false; )
         {
             Affector * affector = *it;
+
+			it.next_shuffle();
 
 			m_affectors.remove( affector );
 
@@ -84,9 +94,11 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugAffector it(m_affectors); it.eof() == false; it.next_shuffle() )
+			for( TSlugAffector it(m_affectors); it.eof() == false; )
 			{
 				Affector * affector = *it;
+
+				it.next_shuffle();
 
 				this->updateAffector_( affector, _current, _timing );
 			}

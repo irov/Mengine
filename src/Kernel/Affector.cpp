@@ -49,7 +49,6 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CallbackAffector::CallbackAffector()
-		: m_cb(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -57,20 +56,23 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CallbackAffector::setCallback( AffectorCallback * _cb )
+	void CallbackAffector::setCallback( const AffectorCallbackPtr & _cb )
 	{
 		m_cb = _cb;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AffectorCallback * CallbackAffector::getCallback() const
+	const AffectorCallbackPtr & CallbackAffector::getCallback() const
 	{
 		return m_cb;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void CallbackAffector::end_( bool _isEnd )
 	{
-		uint32_t id = this->getId();
+		if( m_cb != nullptr )
+		{
+			uint32_t id = this->getId();
 
-		m_cb->onAffectorEnd( id, _isEnd );
+			m_cb->onAffectorEnd( id, _isEnd );
+		}
 	}
 }	// namespace Menge

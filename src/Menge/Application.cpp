@@ -1134,9 +1134,11 @@ namespace Menge
 	{
 		TListNodeChild & children = _node->getChildren();
 
-		for( TSlugChild it(children); it.eof() == false; it.next_shuffle() )
+		for( TSlugChild it(children); it.eof() == false; )
 		{
 			Node * child = *it;
+
+			it.next_shuffle();
 
 			printf( "%.*s%s%s [%s] (%.2f, %.2f) %d\n"
 				, _tab

@@ -83,9 +83,11 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugTransformation3D it(m_relationChild); it.eof() == false; it.next_shuffle() )
+			for( TSlugTransformation3D it(m_relationChild); it.eof() == false; )
 			{
 				Transformation3D * transform = *it;
+
+				it.next_shuffle();
 				
 				transform->invalidateWorldMatrix();
 			}

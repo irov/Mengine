@@ -462,12 +462,17 @@ namespace	Menge
 		protected:
 			void onAffectorEnd( uint32_t _id, bool _isEnd ) override
 			{
-				if( m_cb.is_callable() == true )
+				if( m_cb.is_invalid() == true )
 				{
-					m_cb( _id, _isEnd );
+					return;
 				}
 
-				this->destroy();
+				if( m_cb.is_none() == true )
+				{
+					return;
+				}
+
+				m_cb( _id, _isEnd );
 			}
 
 		protected:

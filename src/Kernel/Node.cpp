@@ -153,9 +153,11 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; )
 			{
 				Node * children = (*it);
+
+				it.next_shuffle();
 
 				children->activate();
 			}
@@ -216,9 +218,11 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; )
 			{
 				Node * children = *it;
+
+				it.next_shuffle();
 
 				children->deactivate();
 			}
@@ -302,9 +306,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeChildren()
 	{
-		for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
+		for( TSlugChild it(m_children); it.eof() == false; )
 		{
             Node * node = (*it);
+
+			it.next_shuffle();
 
             node->deactivate();
 
@@ -499,9 +505,11 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; )
 			{
 				Node * children = (*it);
+
+				it.next_shuffle();
 
 				children->visitChildren( _visitor );
 			}
@@ -726,9 +734,11 @@ namespace Menge
 	{
 		this->setShallowGrave();
 
-		for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
+		for( TSlugChild it(m_children); it.eof() == false; )
 		{
 			Node * node = *it;
+
+			it.next_shuffle();
 
 			node->freeze( _value );
 		}
@@ -781,9 +791,11 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; )
 			{
 				Node * children = *it;
+
+				it.next_shuffle();
 			
 				children->update( _current, _timing );
 			}
@@ -848,9 +860,11 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; )
 			{
 				Node * node = (*it);
+
+				it.next_shuffle();
 
 				node->release();
 			}
@@ -1165,9 +1179,11 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; )
 			{
 				Node * node = (*it);
+
+				it.next_shuffle();
 
 				node->setLayer( _layer );
 			}
@@ -1224,9 +1240,11 @@ namespace Menge
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(m_children); it.eof() == false; )
 			{
 				Node * node = (*it);
+
+				it.next_shuffle();
 
 				node->invalidateColor();
 			}

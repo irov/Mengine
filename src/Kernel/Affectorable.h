@@ -14,6 +14,7 @@ namespace Menge
 	{
 	public:
 		Affectorable();
+		~Affectorable();
 
 	public:
 		AFFECTOR_ID addAffector( Affector * _affector );

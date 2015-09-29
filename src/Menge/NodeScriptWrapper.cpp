@@ -3094,9 +3094,11 @@ namespace Menge
 
 			size_t index = 0;
 
-			for( TSlugChild it(children); it.eof() == false; it.next_shuffle() )
+			for( TSlugChild it(children); it.eof() == false; )
 			{
 				Node * child = *it;
+
+				it.next_shuffle();
 				
 				py_children[index++] = child;
 			}
@@ -3146,8 +3148,6 @@ namespace Menge
 				}
 
 				m_cb( m_scriptable, _id, _isEnd );
-
-				this->destroy();
 			}
 
 		protected:
@@ -3177,6 +3177,11 @@ namespace Menge
                 return 0;
             }
 
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
+
             moveStop( _node );
 
 			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );			
@@ -3201,6 +3206,11 @@ namespace Menge
             {
                 return 0;
             }
+
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
 
             moveStop( _node );
 
@@ -3233,6 +3243,11 @@ namespace Menge
                 return 0;
             }
 
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
+
             mt::vec3f linearSpeed = _node->getLinearSpeed();
 
             moveStop( _node );
@@ -3263,6 +3278,11 @@ namespace Menge
                 return 0;
             }
 
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
+
             moveStop( _node );
 
 			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
@@ -3291,6 +3311,11 @@ namespace Menge
             {
                 return 0;
             }
+
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
 
             moveStop( _node );
 
@@ -3322,6 +3347,11 @@ namespace Menge
             {
                 return 0;
             }
+
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
 
             angleStop( _node );
 
@@ -3356,6 +3386,11 @@ namespace Menge
             {
                 return 0;
             }
+
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
 
             float angularSpeed = _node->getAngularSpeed();
 
@@ -3392,6 +3427,11 @@ namespace Menge
             {
                 return 0;
             }
+
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
 
             //if( mt::equal_f_z( _scale.x ) == true || mt::equal_f_z( _scale.y ) == true || mt::equal_f_z( _scale.z ) == true )
             //{
@@ -3441,6 +3481,11 @@ namespace Menge
                 return 0;
             }
 
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
+
             colorStop( _node );
 
 			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
@@ -3463,6 +3508,11 @@ namespace Menge
             {
                 return 0;
             }
+
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
 
             ColourValue color = _node->getLocalColor();
             color.setA( _alpha );

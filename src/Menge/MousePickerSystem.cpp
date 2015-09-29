@@ -74,9 +74,11 @@ namespace Menge
 				}
 				else
 				{
-					for( TSlugChild it(child); it.eof() == false; it.next_shuffle() )
+					for( TSlugChild it(child); it.eof() == false; )
 					{
 						Node * children = (*it);
+
+						it.next_shuffle();
 
 						this->visit( nodeViewport, nodeCamera, children );
 					}

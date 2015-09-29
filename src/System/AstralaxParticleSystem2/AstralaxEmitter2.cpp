@@ -8,13 +8,11 @@ namespace Menge
 	AstralaxEmitter2::AstralaxEmitter2()
 		: m_serviceProvider( nullptr )
 		, m_emitterId( 0 )
-		, m_tempScale( 1.0 )		
-		, m_leftBorder(0.0)
-		, m_rightBorder(0.0)
-		, m_rate( 0.0 )
-		, m_total_rate( 0.0 )
+		, m_updateSpeed( 0.f )
+		, m_leftBorder( 0.0 )
+		, m_rightBorder( 0.0 )
 		, m_time( 0.0 )
-		, m_rect(0.f, 0.f, 0.f, 0.f)
+		, m_rect( 0.f, 0.f, 0.f, 0.f )
 		, m_angle( 0.f )
 		, m_start( false )
 		, m_looped( false )
@@ -36,10 +34,9 @@ namespace Menge
         // set interpolation
         Magic_SetInterpolationMode( m_emitterId, true );
 
+		m_updateSpeed = Magic_GetUpdateSpeed( m_emitterId );
         m_leftBorder = Magic_GetInterval1( m_emitterId );
         m_rightBorder = Magic_GetInterval2( m_emitterId );
-
-        m_rate = Magic_GetUpdateTime( m_emitterId );
 
         if( this->setupBasePosition_() == false )
         {
@@ -137,7 +134,6 @@ namespace Menge
 			Magic_EmitterToInterval1( m_emitterId, 1.f, nullptr );
 		}
 
-		m_total_rate = 0.0;
         m_time = 0.0;
 
 		m_start = true;
@@ -231,7 +227,6 @@ namespace Menge
 			return false;
 		}
 
-		m_total_rate += _timing;
         m_time += _timing;
 
 		bool is3d = this->is3d();
@@ -250,9 +245,10 @@ namespace Menge
 
 			Magic_SetCamera( &camera );
 		}
+
+		float total_timing = _timing / m_updateSpeed;
 		
-		bool restart = Magic_Update( m_emitterId, m_total_rate );
-		m_total_rate = 0.f;
+		bool restart = Magic_Update( m_emitterId, total_timing );
 
         if( restart == false )
         { 
@@ -414,7 +410,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float AstralaxEmitter2::getDuration() const
 	{
-		double duration = (m_rightBorder - m_leftBorder) / m_tempScale;
+		double duration = (m_rightBorder - m_leftBorder);
 
         float float_duration = (float)duration;
 
@@ -423,29 +419,39 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::seek( float _time )
 	{
-		double rate = Magic_GetUpdateTime( m_emitterId );
-		bool randomMode = Magic_IsRandomMode(m_emitterId);
-		Magic_SetRandomMode( m_emitterId, false );
+		Magic_Restart( m_emitterId );
 
-		double currentTime = Magic_GetPosition( m_emitterId );
-		double delta = currentTime - m_total_rate;
-		delta = _time;
+		float duration = this->getDuration();
 
-		this->restart();
+		if( _time >= duration )
+		{	
+			m_time = (double)duration;
 
-		while( delta >= rate )
+			return;
+		}
+
+		m_time = (double)_time;
+
+		if( Magic_IsInterval1( m_emitterId ) == true )
 		{
-			delta -= rate;
-			bool isCanUpdate = Magic_Update( m_emitterId,rate );
-			if( !isCanUpdate )
+			Magic_EmitterToInterval1( m_emitterId, 1.f, nullptr );
+		}
+
+		double rate = Magic_GetUpdateTime( m_emitterId );
+		
+		double time = _time;
+
+		while( time >= rate )
+		{
+			time -= rate;
+
+			if( Magic_Update( m_emitterId, rate ) == false )
 			{
-				this->restart();
+				return;
 			}
 		}
-		
-		Magic_SetRandomMode( m_emitterId, randomMode );
 
-		m_total_rate = _time;
+		Magic_Update( m_emitterId, time );	
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float AstralaxEmitter2::getUpdateTemp() const

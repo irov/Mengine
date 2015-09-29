@@ -94,13 +94,10 @@ namespace Menge
 		
 		HM_EMITTER m_emitterId;
 
-		double m_tempScale;
+		float m_updateSpeed;
 		double m_leftBorder;
 		double m_rightBorder;
 		
-        double m_rate;
-		double m_total_rate;
-
         double m_time;
 
 		mt::vec4f m_rect;

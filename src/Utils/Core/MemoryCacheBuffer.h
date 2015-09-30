@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
-#	include "Interface/StreamInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 
@@ -11,7 +11,7 @@
 namespace Menge
 {
 	class MemoryCacheBuffer
-		: public FactorablePtr
+		: public MemoryCacheBufferInterface
 	{
 	public:
 		MemoryCacheBuffer();
@@ -21,19 +21,11 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     public:
-        void * cacheMemory( size_t _size, const char * _doc );
+        void * cacheMemory( size_t _size, const char * _doc ) override;
 		
-		inline void * getMemory() const;
+		inline void * getMemory() const override;
 
-		template<class T>
-		inline T getMemoryT() const
-		{
-			void * memory = this->getMemory();
-
-			return static_cast<T>(memory);
-		}
-
-		inline size_t getSize() const;
+		inline size_t getSize() const override;
 
 	protected:
 		void uncache_();
@@ -46,8 +38,6 @@ namespace Menge
 		unsigned char * m_data;
 		size_t m_size;
 	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MemoryCacheBuffer> MemoryCacheBufferPtr;
 	//////////////////////////////////////////////////////////////////////////	
 	void * MemoryCacheBuffer::getMemory() const
 	{
@@ -62,15 +52,15 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferPtr createMemoryBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc );
+		MemoryCacheBufferInterfacePtr createMemoryBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc );
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferPtr createMemoryStreamSize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size, const char * _doc );
+		MemoryCacheBufferInterfacePtr createMemoryStreamSize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size, const char * _doc );
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferPtr createMemoryStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const char * _doc );
+		MemoryCacheBufferInterfacePtr createMemoryStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const char * _doc );
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferPtr createMemoryFile( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc );
+		MemoryCacheBufferInterfacePtr createMemoryFile( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc );
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferPtr createMemoryFileString( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc );
+		MemoryCacheBufferInterfacePtr createMemoryFileString( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc );
 	}
 }	// namespace Menge
 

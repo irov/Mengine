@@ -2080,7 +2080,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_parseXml( const ConstString & _fileGroup, const FilePath & _path, const pybind::object & _cb )
 		{
-			MemoryCacheBufferPtr binary_buffer = Helper::createMemoryFileString( m_serviceProvider, _fileGroup, _path, false, "parseXml" );
+			MemoryCacheBufferInterfacePtr binary_buffer = Helper::createMemoryFileString( m_serviceProvider, _fileGroup, _path, false, "parseXml" );
 
 			if( binary_buffer == nullptr )
 			{

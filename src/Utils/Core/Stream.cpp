@@ -75,7 +75,7 @@ namespace Menge
 			size_t binary_size = (size_t)load_binary_size;
 			size_t compress_size = (size_t)load_compress_size;
 
-			MemoryCacheBufferPtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "loadStreamArchiveBuffer" );
+			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "loadStreamArchiveBuffer" );
 
 			if( compress_buffer == nullptr )
 			{
@@ -184,7 +184,7 @@ namespace Menge
 				return false;
 			}
 
-			MemoryCacheBufferPtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "ArchiveService::getData compress_memory" );
+			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "ArchiveService::getData compress_memory" );
 
 			if( compress_buffer == nullptr )
 			{
@@ -285,7 +285,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool writeStreamArchiveBuffer( ServiceProviderInterface * _serviceProvider, const OutputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, bool _crc32, const void * _data, size_t _size )
 		{
-			MemoryInputPtr compress_memory = ARCHIVE_SERVICE(_serviceProvider)
+			MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE( _serviceProvider )
 				->compressBuffer( _archivator, _data, _size );
 
 			if( compress_memory == nullptr )
@@ -377,7 +377,7 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryPtr loadStreamArchiveMemory( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
+		MemoryInterfacePtr loadStreamArchiveMemory( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
 		{
 			uint32_t crc32;
 			_stream->read( &crc32, sizeof( crc32 ) );
@@ -391,7 +391,7 @@ namespace Menge
 			size_t binary_size = (size_t)load_binary_size;
 			size_t compress_size = (size_t)load_compress_size;
 
-			MemoryCacheBufferPtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "loadStreamArchiveMemory compress" );
+			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "loadStreamArchiveMemory compress" );
 
 			if( compress_buffer == nullptr )
 			{
@@ -431,7 +431,7 @@ namespace Menge
 				}
 			}
 
-			MemoryPtr binary_buffer = CACHE_SERVICE( _serviceProvider )
+			MemoryInterfacePtr binary_buffer = CACHE_SERVICE( _serviceProvider )
 				->createMemory();
 
 			if( binary_buffer == nullptr )
@@ -467,14 +467,14 @@ namespace Menge
 			return binary_buffer;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryPtr loadStreamArchiveMemory( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version )
+		MemoryInterfacePtr loadStreamArchiveMemory( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version )
 		{
 			if( Helper::loadStreamMagicHeader( _serviceProvider, _stream, _magic, _version ) == false )
 			{
 				return nullptr;
 			}
 
-			MemoryPtr memory = Helper::loadStreamArchiveMemory( _serviceProvider, _stream, _archivator );
+			MemoryInterfacePtr memory = Helper::loadStreamArchiveMemory( _serviceProvider, _stream, _archivator );
 
 			return memory;
 		}

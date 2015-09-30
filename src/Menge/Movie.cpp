@@ -451,8 +451,28 @@ namespace Menge
 		this->setTiming( duration - frameDuration );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable, Soundable * _soundable )
+	bool Movie::addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable, Soundable * _soundable )
 	{		
+		if( _layer.hasViewport == true )
+		{
+			RenderClipplane * clippane = NODE_SERVICE( m_serviceProvider )
+				->createNodeT<RenderClipplane>( CONST_STRING( m_serviceProvider, RenderClipplane ) );
+
+			if( clippane == nullptr )
+			{
+				return false;
+			}
+
+			clippane->setName( _layer.name );
+			clippane->setViewport( _layer.viewport );
+
+			_node->setRenderClipplane( clippane );
+
+			m_clipplanes.push_back( clippane );
+
+			this->addChild( clippane );
+		}
+
 		Nodies nd;
 		nd.node = _node;
 
@@ -476,6 +496,8 @@ namespace Menge
 		_node->setLocalPosition( _layer.position );
 
 		m_nodies[_layer.index - 1] = nd;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::visitMovieNode( const ConstString & _type, VisitorMovieNode * _visitor )
@@ -1396,7 +1418,10 @@ namespace Menge
 
 		layer_slot->setMovieName( m_name );		
 
-		this->addMovieNode_( _layer, layer_slot, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, layer_slot, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1411,7 +1436,10 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, sceneeffect_slot, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, sceneeffect_slot, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1426,7 +1454,10 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_slot, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, layer_slot, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1456,7 +1487,10 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1486,7 +1520,10 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_mesh, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, layer_mesh, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1522,7 +1559,10 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1547,7 +1587,10 @@ namespace Menge
 		
 		layer_hotspotimage->setResourceHIT( resourceHIT );
 
-		this->addMovieNode_( _layer, layer_hotspotimage, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, layer_hotspotimage, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1572,7 +1615,10 @@ namespace Menge
 
 		layer_hotspotshape->setResourceShape( resourceShape );
 		
-		this->addMovieNode_( _layer, layer_hotspotshape, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, layer_hotspotshape, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1607,7 +1653,10 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_animation, layer_animation, nullptr );
+		if( this->addMovieNode_( _layer, layer_animation, layer_animation, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1630,26 +1679,6 @@ namespace Menge
 			return false;
 		}
 
-		if( _layer.hasViewport == true )
-		{
-			RenderClipplane * clippane = NODE_SERVICE( m_serviceProvider )
-				->createNodeT<RenderClipplane>( CONST_STRING( m_serviceProvider, RenderClipplane ) );
-
-			if( clippane == nullptr )
-			{
-				return false;
-			}
-
-			clippane->setName( _layer.name );
-			clippane->setViewport( _layer.viewport );
-
-			layer_movie->setRenderClipplane( clippane );
-
-			m_clipplanes.push_back( clippane );
-
-			this->addChild( clippane );
-		}
-
 		layer_movie->setResourceMovie( resourceMovie );
 
 		layer_movie->setIntervalStart( _layer.startInterval );
@@ -1660,7 +1689,10 @@ namespace Menge
 
 		layer_movie->setParentMovie( true );
 
-		this->addMovieNode_( _layer, layer_movie, layer_movie, nullptr );
+		if( this->addMovieNode_( _layer, layer_movie, layer_movie, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1689,11 +1721,14 @@ namespace Menge
 
 		layer_movie->setPlayCount( _layer.playCount );
 		layer_movie->setScretch( _layer.scretch );
-		//layer_movie->setLoop( _layer.loop );
+		layer_movie->setLoop( _layer.loop );
 
 		layer_movie->setParentMovie( true );
 
-		this->addMovieNode_( _layer, layer_movie, layer_movie, nullptr );
+		if( this->addMovieNode_( _layer, layer_movie, layer_movie, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1719,7 +1754,10 @@ namespace Menge
 		movie_internal->setMovie( this );
 		movie_internal->setResourceInternalObject( resourceInternalObject );
 
-		this->addMovieNode_( _layer, movie_internal, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, movie_internal, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1754,7 +1792,10 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_video, layer_video, nullptr );
+		if( this->addMovieNode_( _layer, layer_video, layer_video, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1785,7 +1826,10 @@ namespace Menge
 		layer_sound->setScretch( _layer.scretch );
 		layer_sound->setLoop( _layer.loop );
 
-		this->addMovieNode_( _layer, layer_sound, layer_sound, layer_sound );
+		if( this->addMovieNode_( _layer, layer_sound, layer_sound, layer_sound ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1815,7 +1859,10 @@ namespace Menge
 		layer_sound->setScretch( _layer.scretch );
 		layer_sound->setLoop( _layer.loop );
 
-		this->addMovieNode_( _layer, layer_sound, layer_sound, layer_sound );
+		if( this->addMovieNode_( _layer, layer_sound, layer_sound, layer_sound ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1842,7 +1889,10 @@ namespace Menge
 			layer_text->setVerticalCenterAlign();
 		}
 
-		this->addMovieNode_( _layer, layer_text, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, layer_text, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1860,7 +1910,10 @@ namespace Menge
 		layer_text->setTextID( _layer.name ); //Name = TextID
 		layer_text->setHorizontalCenterAlign();
 
-		this->addMovieNode_( _layer, layer_text, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, layer_text, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1903,7 +1956,10 @@ namespace Menge
 			return false;
 		}
 
-		this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, layer_sprite, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -1970,7 +2026,10 @@ namespace Menge
 
 		layer_event->setResourceMovie( m_resourceMovie );
 
-		this->addMovieNode_( _layer, layer_event, nullptr, nullptr );
+		if( this->addMovieNode_( _layer, layer_event, nullptr, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -2002,7 +2061,10 @@ namespace Menge
 
 		layer_particles->setEmitterTranslateWithParticle( true );
 
-		this->addMovieNode_( _layer, layer_particles, layer_particles, nullptr );
+		if( this->addMovieNode_( _layer, layer_particles, layer_particles, nullptr ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}

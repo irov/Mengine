@@ -55,7 +55,7 @@ namespace Menge
 
 		HM_FILE m_mf;
 
-		MemoryPtr m_memory;
+		MemoryInterfacePtr m_memory;
 
 		typedef FactoryPoolStore<AstralaxEmitter2, 16> TFactoryPoolAstralaxEmitter;
 		TFactoryPoolAstralaxEmitter m_factoryPoolAstralaxEmitter;

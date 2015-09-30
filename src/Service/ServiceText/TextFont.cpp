@@ -9,7 +9,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextFont::TextFont()
 		: m_serviceProvider(nullptr)
-		, m_glyph(nullptr)
 		, m_height(0.f)
 		, m_params(EFP_NONE)
 		, m_lineOffset(0.f)

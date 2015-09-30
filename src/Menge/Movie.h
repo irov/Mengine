@@ -170,7 +170,7 @@ namespace Menge
 		bool compileMovieText_( const MovieLayer & _layer );  
 
 	protected:
-		void addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable, Soundable * _soundable );
+		bool addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable, Soundable * _soundable );
 
 	protected:
 		inline Node * getLayerNode_( const MovieLayer & _layer ) const;

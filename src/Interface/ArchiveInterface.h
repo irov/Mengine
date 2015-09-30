@@ -42,10 +42,10 @@ namespace Menge
 
 	public:
 		virtual bool decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress ) = 0;
-		virtual MemoryInputPtr compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream ) = 0;
+		virtual MemoryInputInterfacePtr compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream ) = 0;
 
 	public:
-		virtual MemoryInputPtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size ) = 0;
+		virtual MemoryInputInterfacePtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size ) = 0;
     };
 
 #   define ARCHIVE_SERVICE( serviceProvider )\

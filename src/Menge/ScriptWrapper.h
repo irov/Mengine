@@ -12,7 +12,6 @@ namespace Menge
 		static void mathWrap( ServiceProviderInterface * _serviceProvider );
 		static void nodeWrap( ServiceProviderInterface * _serviceProvider );
         static void constsWrap( ServiceProviderInterface * _serviceProvider );
-        static void constsUnwrap( ServiceProviderInterface * _serviceProvider );
 		static void soundWrap( ServiceProviderInterface * _serviceProvider );
 	};
 }

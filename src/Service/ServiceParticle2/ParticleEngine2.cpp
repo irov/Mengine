@@ -42,6 +42,8 @@ namespace Menge
 	{
 		m_available = CONFIG_VALUE( m_serviceProvider, "Engine", "ParticleService2Avaliable", true );
 
+		//m_available = false;
+
 		m_maxParticlesNum = CONFIG_VALUE( m_serviceProvider, "Engine", "ParticleMaxCount", 10000U );
 		
 		if( m_available == false )
@@ -88,7 +90,7 @@ namespace Menge
 
 			return nullptr;
 		}
-	
+
 		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SYSTEM2(m_serviceProvider)
             ->createEmitterContainerFromMemory( stream, m_archivator );
 

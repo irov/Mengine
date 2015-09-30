@@ -81,7 +81,7 @@ namespace Menge
 
 		size_t stream_size = m_stream->size();
 
-		MemoryInputPtr memoryInput = CACHE_SERVICE( m_serviceProvider )
+		MemoryInputInterfacePtr memoryInput = CACHE_SERVICE( m_serviceProvider )
 			->createMemoryInput();
 
 		void * memory = memoryInput->newMemory( stream_size );

@@ -132,7 +132,7 @@ namespace Menge
 			size_t size;
 			pybind::pickle( _data, _pickleTypes, nullptr, 0, size );
 
-			MemoryCacheBufferPtr buffer = Helper::createMemoryBuffer( m_serviceProvider, size, "s_writeAccountBinaryFile" );
+			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryBuffer( m_serviceProvider, size, "s_writeAccountBinaryFile" );
 
 			if( buffer == nullptr )
 			{
@@ -1380,7 +1380,7 @@ namespace Menge
 				return false;
 			}
 
-			MemoryCacheBufferPtr buffer = Helper::createMemoryBuffer( m_serviceProvider, size, "s_writeAccountBinaryFile" );
+			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryBuffer( m_serviceProvider, size, "s_writeAccountBinaryFile" );
 
 			if( buffer == nullptr )
 			{
@@ -1565,7 +1565,7 @@ namespace Menge
 
 			uint32_t data_size = _data.size();
 
-			MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
+			MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE( m_serviceProvider )
 				->compressBuffer( archivator, &_data[0], data_size );
 
 			if( compress_memory == nullptr )

@@ -149,7 +149,6 @@ namespace Menge
 
 	public:
 		FactoryPoolStore()
-			: m_mutex(nullptr)
 		{
 			m_ptr = new FactorableUnique<TFactoryType>();
 		}

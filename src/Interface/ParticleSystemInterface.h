@@ -33,8 +33,7 @@ namespace Menge
 		uint32_t vertexOffset;
 		uint32_t vertexCount;
 		uint32_t indexOffset;
-		uint32_t indexCount;
-		
+		uint32_t indexCount;		
 
 		int texture[8];
 		uint32_t textures;
@@ -185,5 +184,5 @@ namespace Menge
 	};
 
 #   define PARTICLE_SERVICE2( serviceProvider )\
-	SERVICE_GET(serviceProvider, Menge::ParticleServiceInterface2)
+	((ParticleServiceInterface2 *)SERVICE_GET(serviceProvider, Menge::ParticleServiceInterface2))
 }

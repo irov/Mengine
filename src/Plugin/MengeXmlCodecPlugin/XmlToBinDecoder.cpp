@@ -242,7 +242,7 @@ namespace Menge
 			return 0;
 		}
 
-		MemoryInputPtr compress_memory = ARCHIVE_SERVICE(m_serviceProvider)
+		MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE( m_serviceProvider )
 			->compressBuffer( m_archivator, &bin_buf[0], bin_size );
 
 		if( compress_memory == nullptr )

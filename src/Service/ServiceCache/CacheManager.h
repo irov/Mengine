@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 #	include "Interface/ThreadSystemInterface.h"
 
 #	include "Factory/FactoryStore.h"
@@ -32,11 +33,11 @@ namespace Menge
 		void clearBuffers() override;
 
 	public:
-		MemoryCacheBufferPtr createMemoryCacheBuffer() override;
-		MemoryCacheInputPtr createMemoryCacheInput() override;
-		MemoryProxyInputPtr createMemoryProxyInput() override;
-		MemoryInputPtr createMemoryInput() override;
-		MemoryPtr createMemory() override;
+		MemoryCacheBufferInterfacePtr createMemoryCacheBuffer() override;
+		MemoryCacheInputInterfacePtr createMemoryCacheInput() override;
+		MemoryProxyInputInterfacePtr createMemoryProxyInput() override;
+		MemoryInputInterfacePtr createMemoryInput() override;
+		MemoryInterfacePtr createMemory() override;
 
 	protected:
 		CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc );

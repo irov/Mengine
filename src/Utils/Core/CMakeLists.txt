@@ -54,6 +54,8 @@ src
     
     MemoryCacheBuffer.h
     MemoryCacheBuffer.cpp
+    
+    MemoryAllocator.h
 	
     ValueInterpolator.h
     

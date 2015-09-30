@@ -37,11 +37,11 @@ namespace Menge
 		virtual void clearBuffers() = 0;
 
 	public:
-		virtual MemoryCacheBufferPtr createMemoryCacheBuffer() = 0;
-		virtual MemoryCacheInputPtr createMemoryCacheInput() = 0;
-		virtual MemoryProxyInputPtr createMemoryProxyInput() = 0;
-		virtual MemoryInputPtr createMemoryInput() = 0;
-		virtual MemoryPtr createMemory() = 0;
+		virtual MemoryCacheBufferInterfacePtr createMemoryCacheBuffer() = 0;
+		virtual MemoryCacheInputInterfacePtr createMemoryCacheInput() = 0;
+		virtual MemoryProxyInputInterfacePtr createMemoryProxyInput() = 0;
+		virtual MemoryInputInterfacePtr createMemoryInput() = 0;
+		virtual MemoryInterfacePtr createMemory() = 0;
 	};
 
 #   define CACHE_SERVICE( serviceProvider )\

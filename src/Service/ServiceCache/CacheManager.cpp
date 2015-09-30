@@ -220,7 +220,7 @@ namespace Menge
 		m_memoryMutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryCacheBufferPtr CacheManager::createMemoryCacheBuffer()
+	MemoryCacheBufferInterfacePtr CacheManager::createMemoryCacheBuffer()
 	{
 		MemoryCacheBuffer * memoryBuffer = m_factoryPoolMemoryCacheBuffer.createObjectT();
 
@@ -229,7 +229,7 @@ namespace Menge
 		return memoryBuffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryCacheInputPtr CacheManager::createMemoryCacheInput()
+	MemoryCacheInputInterfacePtr CacheManager::createMemoryCacheInput()
 	{
 		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput.createObjectT();
 
@@ -238,7 +238,7 @@ namespace Menge
 		return memoryCache;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryProxyInputPtr CacheManager::createMemoryProxyInput()
+	MemoryProxyInputInterfacePtr CacheManager::createMemoryProxyInput()
 	{
 		MemoryProxyInput * memoryProxy = m_factoryPoolMemoryProxyInput.createObjectT();
 
@@ -247,7 +247,7 @@ namespace Menge
 		return memoryProxy;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInputPtr CacheManager::createMemoryInput()
+	MemoryInputInterfacePtr CacheManager::createMemoryInput()
 	{
 		MemoryInput * memory = m_factoryPoolMemoryInput.createObjectT();
 
@@ -256,7 +256,7 @@ namespace Menge
 		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryPtr CacheManager::createMemory()
+	MemoryInterfacePtr CacheManager::createMemory()
 	{
 		Memory * memory = m_factoryPoolMemory.createObjectT();
 

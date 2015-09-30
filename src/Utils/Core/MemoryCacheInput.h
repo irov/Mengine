@@ -1,14 +1,14 @@
 #	pragma once
 
 #	include "Interface/ServiceInterface.h"
-#	include "Interface/StreamInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "stdex/thread_guard.h"
 
 namespace Menge
 {
 	class MemoryCacheInput
-		: public InputStreamInterface
+		: public MemoryCacheInputInterface
 	{
 	public:
 		MemoryCacheInput();
@@ -18,17 +18,8 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
     public:
-        bool cacheMemory( size_t _size, const char * _doc );
-		void * getMemory( size_t & _size ) const;
-
-		template<class T>
-		T getMemoryT( size_t & _size ) const
-		{
-			void * memory = this->getMemory( _size );
-
-			return static_cast<T>(memory);
-		}
-
+		bool cacheMemory( size_t _size, const char * _doc ) override;
+		void * getMemory( size_t & _size ) const override;
 
 	public:
 		size_t read( void * _buf, size_t _size ) override;
@@ -60,8 +51,6 @@ namespace Menge
 
 		STDEX_THREAD_GUARD_INIT;
 	};
-
-	typedef stdex::intrusive_ptr<MemoryCacheInput> MemoryCacheInputPtr;
 }	// namespace Menge
 
 

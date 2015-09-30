@@ -363,7 +363,7 @@ namespace Menge
 
 		size_t xml_buffer_size = stream->size();
 		
-		MemoryCacheBufferPtr buffer = Helper::createMemoryBuffer( m_serviceProvider, xml_buffer_size + 1, "TextGlyph" );
+		MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryBuffer( m_serviceProvider, xml_buffer_size + 1, "TextGlyph" );
 
 		if( buffer == nullptr )
 		{

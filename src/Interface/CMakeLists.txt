@@ -10,6 +10,7 @@ src
     ConfigInterface.h
     DataInterface.h
     CacheInterface.h
+    MemoryInterface.h
     PlatformInterface.h
 	XmlCodecInterface.h
 	ImageCodecInterface.h

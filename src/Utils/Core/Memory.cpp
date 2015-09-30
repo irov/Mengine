@@ -1,5 +1,7 @@
 #	include "Memory.h"
 
+#	include "MemoryAllocator.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -37,24 +39,5 @@ namespace Menge
 		m_size = _size;
 
 		return m_memory;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Memory::readStream( const InputStreamInterfacePtr & _stream )
-	{
-		size_t size = _stream->size();
-
-		void * memory = this->newMemory( size );
-
-		if( memory == nullptr )
-		{
-			return false;
-		}
-
-		if( _stream->read( memory, size ) != size )
-		{
-			return false;
-		}
-
-		return true;
 	}
 }

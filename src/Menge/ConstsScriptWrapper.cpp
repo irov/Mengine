@@ -97,10 +97,5 @@ namespace Menge
             .def_hash( &s_ConstString_hash )
             ;
 	}
-	//////////////////////////////////////////////////////////////////////////
-    void ScriptWrapper::constsUnwrap( ServiceProviderInterface * _serviceProvider )
-    {
-        (void)_serviceProvider;
-    }
 }
 

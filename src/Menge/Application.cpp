@@ -1797,11 +1797,6 @@ namespace Menge
             m_nodeService->finalize();
         }
         
-		if( SCRIPT_SERVICE(m_serviceProvider) )
-		{
-            ScriptWrapper::constsUnwrap( m_serviceProvider );            			
-		}
-
 		if( m_resourceService != nullptr )
 		{
 			m_resourceService->finalize();

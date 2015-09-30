@@ -36,7 +36,7 @@ namespace Menge
     {
 		m_particleSystem = _particleSystem;
 
-		MemoryPtr memory = Helper::loadStreamArchiveMemory( m_serviceProvider, _stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ) );
+		MemoryInterfacePtr memory = Helper::loadStreamArchiveMemory( m_serviceProvider, _stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ) );
 
 		if( memory == nullptr )
 		{
@@ -55,22 +55,6 @@ namespace Menge
 			return false;
 		}
 
-		if( Magic_HasTextures( mf ) == true )
-		{
-			LOGGER_ERROR( m_serviceProvider )("AstralaxEmitterContainer2::initialize: particle textures are stored within the file"
-				);
-
-			return false;
-		}
-
-		if( Magic_GetStaticAtlasCount( mf ) != 1 )
-		{
-			LOGGER_ERROR( m_serviceProvider )("AstralaxEmitterContainer2::initialize: particle has many static atlas, sorry need one :("
-				);
-
-			return false;
-		}
-
 		m_mf = mf;
 
 		m_memory = memory;
@@ -82,15 +66,33 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitterContainer2::finalize()
 	{
-		m_memory = nullptr;
-
 		Magic_CloseFile( m_mf );
 		m_mf = 0;
+
+		m_memory = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitterContainer2::isValid() const
     {
-        return true;
+		if( Magic_HasTextures( m_mf ) == true )
+		{
+			LOGGER_ERROR( m_serviceProvider )("AstralaxEmitterContainer2::isValid: particle textures are stored within the file"
+				);
+
+			return false;
+		}
+
+		int atlasCount = Magic_GetStaticAtlasCount( m_mf );
+
+		if( atlasCount > 1 )
+		{
+			LOGGER_ERROR( m_serviceProvider )("AstralaxEmitterContainer2::isValid: particle has many static atlas, sorry need one :("
+				);
+
+			return false;
+		}
+
+		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitterContainer2::loadContainer_( unsigned char * _buffer, size_t _size, HM_FILE & _mf ) const

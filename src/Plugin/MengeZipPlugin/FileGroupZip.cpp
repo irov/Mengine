@@ -324,7 +324,7 @@ namespace Menge
 			return stream;
 		}
 		
-		MemoryInputPtr memory = CACHE_SERVICE(m_serviceProvider)
+		MemoryInputInterfacePtr memory = CACHE_SERVICE( m_serviceProvider )
 			->createMemoryInput();
 				
 		return memory;
@@ -437,7 +437,7 @@ namespace Menge
 				return false;
 			}
 
-			MemoryCacheBufferPtr compress_buffer = Helper::createMemoryBuffer( m_serviceProvider, fi.file_size, "FileGroupZip_createInputFile" );
+			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryBuffer( m_serviceProvider, fi.file_size, "FileGroupZip_createInputFile" );
 			
 			if( compress_buffer == nullptr )
 			{

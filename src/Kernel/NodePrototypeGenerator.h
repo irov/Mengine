@@ -5,7 +5,7 @@
 #	include "Kernel/Node.h"
 
 #	include "Core/ConstString.h"
-#   include "Core/Memory.h"
+#   include "Core/MemoryAllocator.h"
 
 #	include "Factory/FactoryStore.h"
 

@@ -72,11 +72,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceParticle::_isValid() const
 	{
+		if( PARTICLE_SERVICE2( m_serviceProvider )->isAvailable() == false )
+		{
+			return true;
+		}
+
 		const ConstString & category = this->getCategory();
 
 		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SERVICE2(m_serviceProvider)
 			->createEmitterContainerFromFile( category, m_fileName );
-
+		
 		if( container == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_isValid %s can't create container file '%s'"

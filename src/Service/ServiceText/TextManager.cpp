@@ -451,7 +451,7 @@ namespace Menge
 				font->setCharOffset( charOffset );
 			}						
 
-			m_fonts.insert( fontName, font );
+			m_fonts.insert( std::make_pair(fontName, font) );
 		}
 
 		ConstString defaultFontName;
@@ -465,10 +465,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	TextGlyphPtr TextManager::loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const ConstString & _path )
 	{
-		TextGlyphPtr glyph_has;
-		if( m_glyphs.has_copy( _path, glyph_has ) == true )
+		TMapTextGlyph::iterator it_found = m_glyphs.find( _path );
+		
+		if( it_found != m_glyphs.end() )
 		{
-			return glyph_has;
+			const TextGlyphPtr & glyph = it_found->second;
+
+			return glyph;
 		}
 
 		TextGlyphPtr glyph = m_factoryTextGlyph.createObjectT();
@@ -477,6 +480,8 @@ namespace Menge
 		{
 			return nullptr;
 		}
+
+		m_glyphs.insert( std::make_pair( _path, glyph ) );
 
 		return glyph;
 	}
@@ -552,28 +557,37 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const
 	{	
-		TextFontPtr font;
-		bool result = m_fonts.has_copy( _name, font );
+		TMapTextFont::const_iterator it_found = m_fonts.find( _name );
 
+		if( it_found == m_fonts.end() )
+		{
+			return false;
+		}
+
+		const TextFontPtr & font = it_found->second;
+				
 		_font = font;
 
-		return result;
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextFontInterfacePtr TextManager::getFont( const ConstString & _name )
+	TextFontInterfacePtr TextManager::getFont( const ConstString & _name ) const
 	{		
-		TextFontPtr font_has;
-		if( m_fonts.has_copy( _name, font_has ) == false )
+		TMapTextFont::const_iterator it_found = m_fonts.find( _name );
+
+		if( it_found == m_fonts.end() )
 		{
 			return nullptr;
 		}
 
-		if( font_has->incrementReference() == false )
+		const TextFontPtr & font = it_found->second;
+
+		if( font->incrementReference() == false )
 		{
 			return nullptr;
 		}
 
-		return font_has;
+		return font;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextManager::releaseFont( const TextFontInterfacePtr & _font )
@@ -596,7 +610,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const TextFontPtr & font = m_fonts.get_value( it );
+			const TextFontPtr & font = it->second;
 
 			_vistitor->onTextFont( font );
 		}

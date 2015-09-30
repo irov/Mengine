@@ -56,9 +56,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	namespace Helper
 	{
-		MemoryCacheBufferPtr createMemoryBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc )
+		MemoryCacheBufferInterfacePtr createMemoryBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc )
 		{
-			MemoryCacheBufferPtr cache = CACHE_SERVICE( _serviceProvider )
+			MemoryCacheBufferInterfacePtr cache = CACHE_SERVICE( _serviceProvider )
 				->createMemoryCacheBuffer();
 
 			if( cache == nullptr )
@@ -74,9 +74,9 @@ namespace Menge
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferPtr createMemoryStreamSize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size, const char * _doc )
+		MemoryCacheBufferInterfacePtr createMemoryStreamSize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size, const char * _doc )
 		{
-			MemoryCacheBufferPtr cache = Helper::createMemoryBuffer( _serviceProvider, _size, _doc );
+			MemoryCacheBufferInterfacePtr cache = Helper::createMemoryBuffer( _serviceProvider, _size, _doc );
 
 			if( cache == nullptr )
 			{
@@ -95,11 +95,11 @@ namespace Menge
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferPtr createMemoryStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const char * _doc )
+		MemoryCacheBufferInterfacePtr createMemoryStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const char * _doc )
 		{
 			size_t size = _stream->size();
 
-			MemoryCacheBufferPtr cache = Helper::createMemoryStreamSize( _serviceProvider, _stream, size, _doc );
+			MemoryCacheBufferInterfacePtr cache = Helper::createMemoryStreamSize( _serviceProvider, _stream, size, _doc );
 
 			if( cache == nullptr )
 			{
@@ -109,7 +109,7 @@ namespace Menge
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferPtr createMemoryFile( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc )
+		MemoryCacheBufferInterfacePtr createMemoryFile( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc )
 		{
 			InputStreamInterfacePtr stream = FILE_SERVICE( _serviceProvider )
 				->openInputFile( _category, _filePath, _stream );
@@ -119,7 +119,7 @@ namespace Menge
 				return nullptr;
 			}
 
-			MemoryCacheBufferPtr cache = Helper::createMemoryStream( _serviceProvider, stream, _doc );
+			MemoryCacheBufferInterfacePtr cache = Helper::createMemoryStream( _serviceProvider, stream, _doc );
 
 			if( cache == nullptr )
 			{
@@ -129,7 +129,7 @@ namespace Menge
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferPtr createMemoryFileString( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc )
+		MemoryCacheBufferInterfacePtr createMemoryFileString( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc )
 		{
 			InputStreamInterfacePtr stream = FILE_SERVICE( _serviceProvider )
 				->openInputFile( _category, _filePath, _stream );
@@ -141,7 +141,7 @@ namespace Menge
 
 			size_t size = stream->size();
 
-			MemoryCacheBufferPtr cache = Helper::createMemoryBuffer( _serviceProvider, size + 1, _doc );
+			MemoryCacheBufferInterfacePtr cache = Helper::createMemoryBuffer( _serviceProvider, size + 1, _doc );
 
 			if( cache == nullptr )
 			{

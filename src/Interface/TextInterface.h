@@ -114,7 +114,7 @@ namespace Menge
 	public:
 		virtual bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const = 0;
 
-		virtual TextFontInterfacePtr getFont( const ConstString & _name ) = 0;
+		virtual TextFontInterfacePtr getFont( const ConstString & _name ) const = 0;
 		virtual void releaseFont( const TextFontInterfacePtr & _font ) = 0;
 
 	public:

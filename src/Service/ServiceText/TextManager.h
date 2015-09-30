@@ -10,7 +10,7 @@
 
 #	include "Core/ConstString.h"
 
-#   include "stdex/binary_vector.h"
+#   include "stdex/stl_map.h"
 
 #	include "Config/Typedef.h"
 
@@ -42,7 +42,7 @@ namespace Menge
 	public:
 		bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const override;
 
-		TextFontInterfacePtr getFont( const ConstString & _name ) override;
+		TextFontInterfacePtr getFont( const ConstString & _name ) const override;
 		void releaseFont( const TextFontInterfacePtr & _font ) override;
 
 		void visitFonts( VisitorTextFontInterface * _vistitor ) override;
@@ -72,10 +72,10 @@ namespace Menge
 		typedef IntrusiveTree<TextEntry, 256> TMapTextEntry;
 		TMapTextEntry m_texts;
 
-		typedef stdex::binary_vector<ConstString, TextFontPtr> TMapTextFont;
+		typedef stdex::map<ConstString, TextFontPtr> TMapTextFont;
 		TMapTextFont m_fonts;
 
-		typedef stdex::binary_vector<ConstString, TextGlyphPtr> TMapTextGlyph;
+		typedef stdex::map<ConstString, TextGlyphPtr> TMapTextGlyph;
 		TMapTextGlyph m_glyphs;
 
 		typedef stdex::vector<TextLocalePakPtr> TVectorPaks;

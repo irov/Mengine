@@ -10,6 +10,7 @@
 #	include "Archive/ArchiveWrite.hpp"
 
 #	include "Core/Stream.h"
+#	include "Core/MemoryAllocator.h"
 
 #	include "Logger/Logger.h"
 

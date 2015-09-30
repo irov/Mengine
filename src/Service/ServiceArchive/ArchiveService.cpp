@@ -72,7 +72,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
 	{
-		MemoryCacheBufferPtr compress_buffer = Helper::createMemoryStreamSize( m_serviceProvider, _stream, _size, "ArchiveService::decompressStream" );
+		MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryStreamSize( m_serviceProvider, _stream, _size, "ArchiveService::decompressStream" );
 
 		if( compress_buffer == nullptr )
 		{
@@ -99,9 +99,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInputPtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream )
+	MemoryInputInterfacePtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream )
 	{
-		MemoryCacheBufferPtr uncompress_buffer = Helper::createMemoryStream( m_serviceProvider, _stream, "ArchiveService::compressStream" );
+		MemoryCacheBufferInterfacePtr uncompress_buffer = Helper::createMemoryStream( m_serviceProvider, _stream, "ArchiveService::compressStream" );
 
 		if( uncompress_buffer == nullptr )
 		{
@@ -114,16 +114,16 @@ namespace Menge
 		const void * uncompress_memory = uncompress_buffer->getMemory();
 		size_t uncompress_size = uncompress_buffer->getSize();
 				
-		MemoryInputPtr compress_memory = this->compressBuffer( _archivator, uncompress_memory, uncompress_size );
+		MemoryInputInterfacePtr compress_memory = this->compressBuffer( _archivator, uncompress_memory, uncompress_size );
 
 		return compress_memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInputPtr ArchiveService::compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size )
+	MemoryInputInterfacePtr ArchiveService::compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size )
 	{
 		size_t compressSize2 = _archivator->compressBound( _size );
 
-		MemoryInputPtr memory = CACHE_SERVICE(m_serviceProvider)
+		MemoryInputInterfacePtr memory = CACHE_SERVICE( m_serviceProvider )
 			->createMemoryInput();
 
 		void * buffer = memory->newMemory( compressSize2 );

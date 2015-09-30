@@ -5,7 +5,7 @@
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/NotificatorInterface.h"
 
-#	include "Core/Memory.h"
+#	include "Core/MemoryAllocator.h"
 
 namespace Menge
 {

@@ -166,7 +166,7 @@ namespace Menge
 
 		const ConstString & category = this->getCategory();
 
-		MemoryCacheBufferPtr atlas_buffer = Helper::createMemoryFile( m_serviceProvider, category, m_atlasPath, false, "ResourceSpine::_compile m_atlasPath" );
+		MemoryCacheBufferInterfacePtr atlas_buffer = Helper::createMemoryFile( m_serviceProvider, category, m_atlasPath, false, "ResourceSpine::_compile m_atlasPath" );
 
 		if( atlas_buffer == nullptr )
 		{
@@ -182,7 +182,7 @@ namespace Menge
 
 		spSkeletonJson * skeletonJson = spSkeletonJson_create( atlas );
 		
-		MemoryCacheBufferPtr skeleton_buffer = Helper::createMemoryFileString( m_serviceProvider, category, m_skeletonPath, false, "ResourceSpine::_compile m_skeletonPath" );
+		MemoryCacheBufferInterfacePtr skeleton_buffer = Helper::createMemoryFileString( m_serviceProvider, category, m_skeletonPath, false, "ResourceSpine::_compile m_skeletonPath" );
 
 		if( skeleton_buffer == nullptr )
 		{

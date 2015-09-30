@@ -86,7 +86,7 @@ namespace Menge
 		}
 
 		container->setServiceProvider( m_serviceProvider );
-
+		
 		if( container->initialize( this, _stream, _archivator ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container"

@@ -2,8 +2,9 @@
 
 #	include "Memory.h"
 
-#	include "stdex/memorycopy.h"
+#	include "MemoryAllocator.h"
 
+#	include "stdex/memorycopy.h"
 
 #	include <memory.h>
 

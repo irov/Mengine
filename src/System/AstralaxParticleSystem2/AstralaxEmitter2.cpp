@@ -554,7 +554,7 @@ namespace Menge
 
 		Magic_FillRenderArrays( _flush.context );
 
-		uint32_t vertexOffset = 0;
+		uint32_t indexOffset = 0;
 
 		MAGIC_RENDER_VERTICES vrts;
 		while( Magic_GetVertices( _flush.context, &vrts ) == true )
@@ -566,16 +566,24 @@ namespace Menge
 
 			ParticleMesh & mesh = _meshes[_flush.meshCount];
 
-			mesh.vertexOffset = vertexOffset * 4 / 6;
+			mesh.vertexOffset = indexOffset * 4 / 6;
 			mesh.vertexCount = vrts.vertices * 4 / 6;
-			mesh.indexOffset = vertexOffset;
+			mesh.indexOffset = indexOffset;
 			mesh.indexCount = vrts.vertices;
+
+			RenderIndices vertexOffset = indexOffset * 4 / 6;
 
 			if( vertexOffset != 0 )
 			{
-				for( uint32_t i = mesh.indexOffset; i != mesh.indexCount; ++i )
+				for( RenderIndices
+					*it = _indices + mesh.indexOffset,
+					*it_end = _indices + mesh.indexOffset + mesh.indexCount;
+				it != it_end;
+				++it )
 				{
-					_indices[i] -= vertexOffset;
+					RenderIndices & indices = *it;
+
+					indices -= vertexOffset;
 				}
 			}
 
@@ -607,7 +615,7 @@ namespace Menge
 
 			_flush.meshCount++;
 
-			vertexOffset += vrts.vertices;
+			indexOffset += vrts.vertices;
 		}
 		
 		mt::mat4f vpm;

@@ -520,10 +520,6 @@ namespace	Menge
 		}
 
 		m_emitter->seek( _pos );
-		//m_interface->setLeftBorder( _pos );
-		//m_interface->restart();
-		//m_interface->play();
-		//m_interface->update( _pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::setEmitterTranslateWithParticle( bool _with )

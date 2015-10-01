@@ -4,11 +4,11 @@
 #	include "Interface/MemoryInterface.h"
 #	include "Interface/ThreadSystemInterface.h"
 
-#	include "Core/MemoryCacheBuffer.h"
-#	include "Core/MemoryCacheInput.h"
-#	include "Core/MemoryProxyInput.h"
-#	include "Core/MemoryInput.h"
-#	include "Core/Memory.h"
+#	include "MemoryCacheBuffer.h"
+#	include "MemoryCacheInput.h"
+#	include "MemoryProxyInput.h"
+#	include "MemoryInput.h"
+#	include "Memory.h"
 
 #	include "Factory/FactoryStore.h"
 

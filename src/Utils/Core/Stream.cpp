@@ -1,6 +1,6 @@
 #	include "Stream.h"
 
-#	include "Core/MemoryCacheBuffer.h"
+#	include "Core/MemoryHelper.h"
 
 #	include "Core/CRC32.h"
 

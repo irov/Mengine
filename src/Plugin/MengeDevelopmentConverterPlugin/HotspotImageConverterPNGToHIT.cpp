@@ -7,9 +7,9 @@
 #	include "Interface/ImageCodecInterface.h"
 #	include "Interface/PickCodecInterface.h"
 
-#	include "Logger/Logger.h"
+#	include "Core/MemoryHelper.h"
 
-#	include "Core/MemoryCacheBuffer.h"
+#	include "Logger/Logger.h"
 
 #   include <math.h>
 
@@ -50,7 +50,7 @@ namespace Menge
 
 		size_t bufferSize = dataInfo->mipmapsize;
 
-		MemoryCacheBufferPtr memory = Helper::createMemoryBuffer( m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::validateVersion" );
+		MemoryCacheBufferInterfacePtr memory = Helper::createMemoryBuffer( m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::validateVersion" );
 
 		if( memory == nullptr )
 		{
@@ -123,7 +123,7 @@ namespace Menge
 
         size_t bufferSize = width * height + mimmap_size;
 		
-		MemoryCacheBufferPtr memory = Helper::createMemoryBuffer( m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::convert" );
+		MemoryCacheBufferInterfacePtr memory = Helper::createMemoryBuffer( m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::convert" );
 
 		if( memory == nullptr )
 		{

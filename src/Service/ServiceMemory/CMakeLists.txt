@@ -4,6 +4,21 @@ ADD_FILTER(
 src
 	MemoryManager.cpp
 	MemoryManager.h
+    
+    Memory.h
+    Memory.cpp
+	
+	MemoryInput.h
+	MemoryInput.cpp
+        
+	MemoryProxyInput.h
+	MemoryProxyInput.cpp
+
+    MemoryCacheInput.h
+    MemoryCacheInput.cpp
+    
+    MemoryCacheBuffer.h
+    MemoryCacheBuffer.cpp    
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

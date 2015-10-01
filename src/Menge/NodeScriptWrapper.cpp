@@ -126,6 +126,7 @@
 #   include "Interface/ThreadSystemInterface.h"
 
 #	include "Core/Polygon.h"
+#	include "Core/MemoryHelper.h"
 
 #	include "Utils/Math/angle.h"
 #	include "Utils/Math/vec4.h"
@@ -137,7 +138,6 @@
 #	include "Utils/Core/Rect.h"
 #	include "Utils/Core/String.h"
 #	include "Utils/Core/Polygon.h"
-#	include "Utils/Core/MemoryCacheBuffer.h"
 
 #	include "pybind/stl_type_cast.hpp"
 

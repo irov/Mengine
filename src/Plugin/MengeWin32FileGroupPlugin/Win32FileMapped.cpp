@@ -1,6 +1,7 @@
 #	include "Win32FileMapped.h"
 
 #	include "Interface/LogSystemInterface.h"
+#	include "Interface/MemoryInterface.h"
 #	include "Interface/UnicodeInterface.h"
 
 #   include "Logger/Logger.h"
@@ -123,14 +124,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	InputStreamInterfacePtr Win32FileMapped::createFileStream()
 	{
-		MemoryProxyInput * memory = m_factoryMemoryProxyInput.createObjectT();
+		MemoryProxyInputInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
+			->createMemoryProxyInput();
 
 		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileMapped::openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory )
 	{
-		MemoryProxyInput * memory = stdex::intrusive_get<MemoryProxyInput>(_stream);
+		MemoryProxyInputInterface * memory = stdex::intrusive_get<MemoryProxyInputInterface>( _stream );
 		
 		void * memory_buffer = memory->setMemory( m_memory, _offset, _size );
 		

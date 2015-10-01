@@ -11,7 +11,7 @@
 
 #	include "Core/ConstString.h"
 #	include "Core/String.h"
-#	include "Core/Memory.h"
+
 #	include "Core/MemoryAllocator.h"
 
 namespace Menge

@@ -3,8 +3,6 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#	include "Core/Memory.h"
-
 #	include "Logger/Logger.h"
 
 namespace Menge

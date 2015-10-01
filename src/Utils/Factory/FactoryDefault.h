@@ -3,8 +3,6 @@
 #	include "Factory.h"
 #	include "FactorableUnique.h"
 
-#	include "Core/Memory.h"
-
 namespace Menge
 {
 	template<class T>

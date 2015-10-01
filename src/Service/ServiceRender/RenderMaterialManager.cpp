@@ -4,9 +4,9 @@
 #   include "Interface/ConfigInterface.h"
 #   include "Interface/LoaderInterface.h"
 
-#   include "Logger/Logger.h"
+#	include "Core/MemoryHelper.h"
 
-#	include "Core/MemoryCacheBuffer.h"
+#   include "Logger/Logger.h"
 
 #	include <Metacode/Metacode.h>
 

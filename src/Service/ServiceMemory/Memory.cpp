@@ -1,6 +1,6 @@
 #	include "Memory.h"
 
-#	include "MemoryAllocator.h"
+#	include "Core/MemoryAllocator.h"
 
 namespace Menge
 {

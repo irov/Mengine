@@ -5,8 +5,6 @@
 
 #	include "Factory/FactoryStore.h"
 
-#	include "Core/MemoryInput.h"
-
 #	include "stdex/stl_map.h"
 
 namespace Menge

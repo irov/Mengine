@@ -2,12 +2,12 @@
 
 #   include "Interface/ServiceInterface.h"
 #   include "Interface/StreamInterface.h"
+#   include "Interface/MemoryInterface.h"
 
 #	include "Factory/FactorablePtr.h"
 
 #	include "Core/Magic.h"
 #	include "Core/ConstString.h"
-#	include "Core/MemoryInput.h"
 
 namespace Menge
 {

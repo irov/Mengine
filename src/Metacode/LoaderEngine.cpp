@@ -6,10 +6,10 @@
 #	include "Interface/XmlCodecInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Core/MemoryHelper.h"
+
 #	include "metabuf/Metabuf.hpp"
 #   include "Metacode.h"
-
-#	include "Core/MemoryCacheBuffer.h"
 
 #   include "Logger/Logger.h"
 

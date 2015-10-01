@@ -6,7 +6,6 @@
 #	include "Core/ConstString.h"
 #	include "Core/FilePath.h"
 #	include "Core/String.h"
-#	include "Core/MemoryInput.h"
 
 #	include "Factory/Factorable.h"
 #	include "Factory/Factory.h"

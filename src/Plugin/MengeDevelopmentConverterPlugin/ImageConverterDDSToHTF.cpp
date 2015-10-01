@@ -5,13 +5,13 @@
 #	include "Interface/ImageCodecInterface.h"
 #	include "Interface/StringizeInterface.h"
 #   include "Interface/ArchiveInterface.h"
-#   include "Interface/CacheInterface.h"
+#   include "Interface/MemoryInterface.h"
 
 #	include "Logger/Logger.h"
 
 #   include "Core/Magic.h"
 #   include "Core/FilePath.h"
-#	include "Core/MemoryCacheBuffer.h"
+#	include "Core/MemoryHelper.h"
 
 #   include "Config/Blobject.h"
 
@@ -89,7 +89,7 @@ namespace Menge
 
 		size_t data_full_size = dataInfo->getFullSize();
 
-		MemoryCacheBufferPtr data_buffer = Helper::createMemoryBuffer( m_serviceProvider, data_full_size, "ImageConverterDDSToHTF_data" );
+		MemoryCacheBufferInterfacePtr data_buffer = Helper::createMemoryBuffer( m_serviceProvider, data_full_size, "ImageConverterDDSToHTF_data" );
 
 		if( data_buffer == nullptr )
 		{

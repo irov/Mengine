@@ -1,6 +1,6 @@
 #	include "ImageDecoderArchive.h"
 
-#	include "Core/MemoryCacheBuffer.h"
+#	include "Core/MemoryHelper.h"
 
 #   include "Logger/Logger.h"
 

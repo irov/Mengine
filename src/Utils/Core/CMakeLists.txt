@@ -37,25 +37,13 @@ src
     FileLogger.cpp
     FileLogger.h
     
-    Memory.h
-    Memory.cpp
-	
-	MemoryInput.h
-	MemoryInput.cpp
-    
     PixelFormat.h
     PixelFormat.cpp
-        
-	MemoryProxyInput.h
-	MemoryProxyInput.cpp
-
-    MemoryCacheInput.h
-    MemoryCacheInput.cpp
-    
-    MemoryCacheBuffer.h
-    MemoryCacheBuffer.cpp
     
     MemoryAllocator.h
+    
+    MemoryHelper.h
+    MemoryHelper.cpp
 	
     ValueInterpolator.h
     

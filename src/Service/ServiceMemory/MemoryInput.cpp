@@ -2,7 +2,7 @@
 
 #	include "Memory.h"
 
-#	include "MemoryAllocator.h"
+#	include "Core/MemoryAllocator.h"
 
 #	include "stdex/memorycopy.h"
 

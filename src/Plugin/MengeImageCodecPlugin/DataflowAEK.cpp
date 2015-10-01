@@ -4,8 +4,8 @@
 #	include "Interface/MemoryInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "Core/Memory.h"
 #	include "Core/Stream.h"
+#	include "Core/MemoryHelper.h"
 
 #	include "stdex/memory_reader.h"
 

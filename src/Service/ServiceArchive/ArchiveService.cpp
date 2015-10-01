@@ -2,7 +2,7 @@
 
 #	include "Interface/MemoryInterface.h"
 
-#	include "Core/MemoryCacheBuffer.h"
+#	include "Core/MemoryHelper.h"
 
 #	include "Logger/Logger.h"
 

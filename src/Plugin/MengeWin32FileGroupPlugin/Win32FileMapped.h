@@ -3,8 +3,6 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/WindowsLayerInterface.h"
 
-#   include "Core/MemoryProxyInput.h"
-
 #   include "Factory/FactoryStore.h"
 
 namespace Menge
@@ -32,8 +30,5 @@ namespace Menge
 		HANDLE m_hFile;
 		HANDLE m_hMapping;
 		LPVOID m_memory;
-
-		typedef FactoryPoolStore<MemoryProxyInput, 16> TFactoryMemoryProxyInput;
-		TFactoryMemoryProxyInput m_factoryMemoryProxyInput;
 	};
 }	// namespace Menge

@@ -6,7 +6,7 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "Core/MemoryCacheBuffer.h"
+#	include "Core/MemoryHelper.h"
 
 #	include "Logger/Logger.h"
 

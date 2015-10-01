@@ -11,6 +11,7 @@
 
 #	include "Core/Polygon.h"
 #	include "Core/ColourValue.h"
+#	include "Core/MemoryHelper.h"
 
 #	include "Account.h"
 #	include "Game.h"
@@ -41,7 +42,6 @@
 #	include "Kernel/ResourceImage.h"
 #	include "ResourceCursorICO.h"
 #	include "AccountManager.h"
-#	include "Core/MemoryCacheBuffer.h"
 
 #	include "Kernel/Affector.h"
 

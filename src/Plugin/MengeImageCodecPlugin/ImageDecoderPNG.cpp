@@ -3,7 +3,8 @@
 #	include "Interface/MemoryInterface.h"
 
 #   include "Config/Blobject.h"
-#	include "Core/MemoryCacheBuffer.h"
+
+#	include "Core/MemoryHelper.h"
 
 #	include "Logger/Logger.h"
 

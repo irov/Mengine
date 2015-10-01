@@ -4,14 +4,15 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 #   include "Interface/ArchiveInterface.h"
-#   include "Interface/CacheInterface.h"
+#   include "Interface/MemoryInterface.h"
 
 #	include "Logger/Logger.h"
 
 #   include "Core/Magic.h"
 #   include "Core/FilePath.h"
-#	include "Core/MemoryCacheBuffer.h"
 #	include "Core/Stream.h"
+#	include "Core/MemoryHelper.h"
+
 
 #   include "Config/Blobject.h"
 
@@ -60,7 +61,7 @@ namespace Menge
         ConstString full_input = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
         ConstString full_output = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
 		        
-		MemoryCacheBufferPtr data_cache = Helper::createMemoryFile( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false, "ParticleConverterPTCToPTZ_data" );
+		MemoryCacheBufferInterfacePtr data_cache = Helper::createMemoryFile( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false, "ParticleConverterPTCToPTZ_data" );
 
 		if( data_cache == nullptr )
 		{

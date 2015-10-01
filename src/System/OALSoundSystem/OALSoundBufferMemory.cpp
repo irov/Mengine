@@ -2,9 +2,9 @@
 #	include "OALSoundSystem.h"
 #	include "OALSoundError.h"
 
-#	include "Interface/SoundCodecInterface.h"
+#	include "Core/MemoryHelper.h"
 
-#	include "Core/MemoryCacheBuffer.h"
+#	include "Interface/SoundCodecInterface.h"
 
 #	include "Logger/Logger.h"
 

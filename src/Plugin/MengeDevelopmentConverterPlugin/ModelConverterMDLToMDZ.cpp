@@ -5,13 +5,13 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 #   include "Interface/ArchiveInterface.h"
-#   include "Interface/CacheInterface.h"
+#   include "Interface/MemoryInterface.h"
 
 #	include "Logger/Logger.h"
 
 #   include "Core/FilePath.h"
-#	include "Core/MemoryCacheBuffer.h"
 #	include "Core/Stream.h"
+#	include "Core/MemoryHelper.h"
 
 #   include "Config/Blobject.h"
 
@@ -62,7 +62,7 @@ namespace Menge
 
         ConstString c_dev = STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" );
 
-		MemoryCacheBufferPtr cache = Helper::createMemoryFile( m_serviceProvider, c_dev, full_input, false, "ModelConverterMDLToMDZ_data" );
+		MemoryCacheBufferInterfacePtr cache = Helper::createMemoryFile( m_serviceProvider, c_dev, full_input, false, "ModelConverterMDLToMDZ_data" );
 
 		if( cache == nullptr )
 		{

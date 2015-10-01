@@ -7,9 +7,9 @@
 
 #	include "Logger/Logger.h"
 
-#	include "Core/MemoryCacheBuffer.h"
 #	include "Core/FilePath.h"
 #	include "Core/String.h"
+#	include "Core/MemoryHelper.h"
 
 #	include <string.h>
 #   include <stdio.h>
@@ -400,7 +400,7 @@ namespace Menge
 			return true;
 		}
 		
-		MemoryInput * memory = stdex::intrusive_get<MemoryInput>(_stream);
+		MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface>( _stream );
 		
 		if( fi.compr_method == Z_NO_COMPRESSION )
 		{

@@ -28,7 +28,6 @@
 #   include "pybind/pybind.hpp"
 
 #	include "Core/RenderUtil.h"
-#	include "Core/Memory.h"
 
 namespace	Menge
 {

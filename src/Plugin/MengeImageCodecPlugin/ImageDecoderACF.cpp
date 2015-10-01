@@ -5,8 +5,8 @@
 #	include "Interface/FileSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
 
-#	include "Core/MemoryCacheBuffer.h"
 #	include "Core/Stream.h"
+#	include "Core/MemoryHelper.h"
 
 #   include "Config/Blobject.h"
 

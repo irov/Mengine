@@ -68,28 +68,26 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::invalidateWorldMatrix()
 	{
-		if( m_invalidateWorldMatrix == true )
+		if( m_invalidateWorldMatrix == false )
 		{
-			return;
-		}
+			m_invalidateWorldMatrix = true;
 
-		m_invalidateWorldMatrix = true;
+			Transformation3D * single = m_relationChild.single();
 
-		Transformation3D * single = m_relationChild.single();
-
-		if( single != nullptr )
-		{
-			single->invalidateWorldMatrix();
-		}
-		else
-		{
-			for( TSlugTransformation3D it(m_relationChild); it.eof() == false; )
+			if( single != nullptr )
 			{
-				Transformation3D * transform = *it;
+				single->invalidateWorldMatrix();
+			}
+			else
+			{
+				for( TSlugTransformation3D it( m_relationChild ); it.eof() == false; )
+				{
+					Transformation3D * transform = *it;
 
-				it.next_shuffle();
-				
-				transform->invalidateWorldMatrix();
+					it.next_shuffle();
+
+					transform->invalidateWorldMatrix();
+				}
 			}
 		}
 

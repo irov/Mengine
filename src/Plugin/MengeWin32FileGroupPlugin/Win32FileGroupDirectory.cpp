@@ -1,6 +1,6 @@
 #	include "Win32FileGroupDirectory.h"
 
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "Logger/Logger.h"
 

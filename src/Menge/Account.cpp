@@ -3,7 +3,7 @@
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/StringizeInterface.h"
-#   include "Interface/CacheInterface.h"
+#   include "Interface/MemoryInterface.h"
 #   include "Interface/ArchiveInterface.h"
 
 #	include "Consts.h"

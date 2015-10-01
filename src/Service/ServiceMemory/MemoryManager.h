@@ -1,8 +1,14 @@
 #	pragma once
 
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 #	include "Interface/MemoryInterface.h"
 #	include "Interface/ThreadSystemInterface.h"
+
+#	include "Core/MemoryCacheBuffer.h"
+#	include "Core/MemoryCacheInput.h"
+#	include "Core/MemoryProxyInput.h"
+#	include "Core/MemoryInput.h"
+#	include "Core/Memory.h"
 
 #	include "Factory/FactoryStore.h"
 
@@ -10,12 +16,12 @@
 
 namespace Menge
 {
-	class CacheManager
-		: public CacheServiceInterface
+	class MemoryManager
+		: public MemoryServiceInterface
 	{
 	public:
-		CacheManager();
-		~CacheManager();
+		MemoryManager();
+		~MemoryManager();
 
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;

@@ -1,5 +1,7 @@
 #	include "Stream.h"
 
+#	include "Core/MemoryCacheBuffer.h"
+
 #	include "Core/CRC32.h"
 
 #	include "Logger/Logger.h"
@@ -116,7 +118,7 @@ namespace Menge
 			}
 
 			void * binaryMemory = nullptr;
-			CacheBufferID binaryBufferId = CACHE_SERVICE(_serviceProvider)
+			CacheBufferID binaryBufferId = MEMORY_SERVICE(_serviceProvider)
 				->lockBuffer( binary_size, &binaryMemory, "loadStreamArchiveBuffer binary_memory" );
 
 			if( binaryBufferId == INVALID_CACHE_BUFFER_ID )
@@ -134,7 +136,7 @@ namespace Menge
 				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveBuffer: invalid decompress"
 					);
 
-				CACHE_SERVICE(_serviceProvider)
+				MEMORY_SERVICE(_serviceProvider)
 					->unlockBuffer( binaryBufferId );
 
 				return false;
@@ -147,7 +149,7 @@ namespace Menge
 					, binary_size
 					);
 
-				CACHE_SERVICE(_serviceProvider)
+				MEMORY_SERVICE(_serviceProvider)
 					->unlockBuffer( binaryBufferId );
 
 				return false;
@@ -431,7 +433,7 @@ namespace Menge
 				}
 			}
 
-			MemoryInterfacePtr binary_buffer = CACHE_SERVICE( _serviceProvider )
+			MemoryInterfacePtr binary_buffer = MEMORY_SERVICE( _serviceProvider )
 				->createMemory();
 
 			if( binary_buffer == nullptr )

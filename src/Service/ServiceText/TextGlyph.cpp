@@ -4,7 +4,7 @@
 #	include "Interface/StringizeInterface.h"
 
 #	include "Interface/FileSystemInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "Core/MemoryCacheBuffer.h"
 

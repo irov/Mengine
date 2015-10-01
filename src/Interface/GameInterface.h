@@ -2,7 +2,7 @@
 
 #   include "Interface/ServiceInterface.h"
 #   include "Interface/PlayerInterface.h"
-#   include "Interface/CacheInterface.h"
+#   include "Interface/MemoryInterface.h"
 
 #	include "Core/Params.h"
 

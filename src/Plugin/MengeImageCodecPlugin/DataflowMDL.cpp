@@ -1,7 +1,7 @@
 #	include "DataflowMDL.h"
 
 #	include "Interface/ArchiveInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 #	include "Interface/StringizeInterface.h"
 
 #	include "Core/BlobjectRead.h"
@@ -112,7 +112,7 @@ namespace Menge
 			ar.readPODs( frame.indecies, indicesCount );
 		}
 
-		CACHE_SERVICE(m_serviceProvider)
+		MEMORY_SERVICE(m_serviceProvider)
 			->unlockBuffer( bufferId );
 
 		return true;

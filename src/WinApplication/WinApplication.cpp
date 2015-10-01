@@ -82,7 +82,7 @@ SERVICE_EXTERN(InputService, Menge::InputServiceInterface);
 SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
 SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
 SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
-SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
+SERVICE_EXTERN(MemoryService, Menge::MemoryServiceInterface);
 
 //SERVICE_EXTERN(HttpSystem, Menge::HttpSystemInterface);
 SERVICE_EXTERN(PrefetcherService, Menge::PrefetcherServiceInterface); 
@@ -212,7 +212,7 @@ namespace Menge
 		, m_converterService(nullptr)
 		, m_moduleService(nullptr)
 		, m_dataService(nullptr)
-		, m_cacheService(nullptr)
+		, m_memoryService(nullptr)
 		, m_httpSystem(nullptr)
 		, m_configService(nullptr)
 		, m_pauseUpdatingTime(-1.f)
@@ -1134,25 +1134,25 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeCacheManager_()
+	bool WinApplication::initializeMemoryManager_()
 	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Cache Manager..." );
+		LOGGER_INFO(m_serviceProvider)( "Inititalizing Memory Manager..." );
 
-		CacheServiceInterface * cacheService;
+		MemoryServiceInterface * memoryService;
 
-		if( SERVICE_CREATE( CacheService, &cacheService ) == false )
+		if( SERVICE_CREATE( MemoryService, &memoryService ) == false )
 		{
 			return false;
 		}
 
-		SERVICE_REGISTRY( m_serviceProvider, cacheService );
+		SERVICE_REGISTRY( m_serviceProvider, memoryService );
 
-		if( cacheService->initialize() == false )
+		if( memoryService->initialize() == false )
 		{
 			return false;
 		}
 
-		m_cacheService = cacheService;
+		m_memoryService = memoryService;
 
 		return true;
 	}	
@@ -1480,7 +1480,7 @@ namespace Menge
 			return false;
 		}
 
-		if( this->initializeCacheManager_() == false )
+		if( this->initializeMemoryManager_() == false )
 		{
 			return false;
 		}
@@ -2152,11 +2152,11 @@ namespace Menge
 			m_archiveService = nullptr;
 		}
 
-		if( m_cacheService != nullptr )
+		if( m_memoryService != nullptr )
 		{
-			m_cacheService->finalize();
-			SERVICE_DESTROY( CacheService, m_cacheService );
-			m_cacheService = nullptr;
+			m_memoryService->finalize();
+			SERVICE_DESTROY( MemoryService, m_memoryService );
+			m_memoryService = nullptr;
 		}
 
 		for( TVectorPlugins::iterator

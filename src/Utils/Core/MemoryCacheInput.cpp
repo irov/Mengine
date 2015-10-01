@@ -1,6 +1,6 @@
 #	include "MemoryCacheInput.h"
 
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "stdex/memorycopy.h"
 
@@ -33,7 +33,7 @@ namespace Menge
 	{
 		if( m_bufferId != 0 )
 		{
-			CACHE_SERVICE(m_serviceProvider)
+			MEMORY_SERVICE(m_serviceProvider)
 				->unlockBuffer( m_bufferId );
 		}
 	}
@@ -43,7 +43,7 @@ namespace Menge
 		this->uncache_();
 
 		void * memory;
-		uint32_t bufferId = CACHE_SERVICE(m_serviceProvider)
+		uint32_t bufferId = MEMORY_SERVICE(m_serviceProvider)
 			->lockBuffer( _size, &memory, _doc );
 
 		if( bufferId == INVALID_CACHE_BUFFER_ID )

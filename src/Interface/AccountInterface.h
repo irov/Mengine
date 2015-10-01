@@ -2,7 +2,8 @@
 
 #   include "Interface/ServiceInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
-#   include "Interface/CacheInterface.h"
+#   include "Interface/StreamInterface.h"
+#   include "Interface/MemoryInterface.h"
 
 #   include "Core/ConstString.h"
 #	include "Factory/FactorablePtr.h"

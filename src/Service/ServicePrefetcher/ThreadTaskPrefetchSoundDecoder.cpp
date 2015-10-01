@@ -2,7 +2,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/CodecInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 #	include "Interface/StringizeInterface.h"
 
 #	include "Factory/FactorableUnique.h"
@@ -81,7 +81,7 @@ namespace Menge
 
 		size_t stream_size = m_stream->size();
 
-		MemoryInputInterfacePtr memoryInput = CACHE_SERVICE( m_serviceProvider )
+		MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE( m_serviceProvider )
 			->createMemoryInput();
 
 		void * memory = memoryInput->newMemory( stream_size );

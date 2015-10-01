@@ -1,9 +1,9 @@
-SET( MY_LIB_NAME ServiceCache )
+SET( MY_LIB_NAME ServiceMemory )
 
 ADD_FILTER(
 src
-	CacheManager.cpp
-	CacheManager.h
+	MemoryManager.cpp
+	MemoryManager.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

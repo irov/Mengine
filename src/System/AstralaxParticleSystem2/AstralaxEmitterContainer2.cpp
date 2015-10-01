@@ -1,7 +1,7 @@
 #	include "AstralaxEmitterContainer2.h"
 #	include "AstralaxParticleSystem2.h"
 
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #   include "Logger/Logger.h"
 

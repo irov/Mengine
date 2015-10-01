@@ -1,6 +1,6 @@
 #	include "ImageDecoderPNG.h"
 
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #   include "Config/Blobject.h"
 #	include "Core/MemoryCacheBuffer.h"

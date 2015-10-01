@@ -1,6 +1,6 @@
 #	include "MemoryCacheBuffer.h"
 
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 #	include "Interface/FileSystemInterface.h"
 
 namespace Menge
@@ -28,7 +28,7 @@ namespace Menge
 	{
 		if( m_bufferId != 0 )
 		{
-			CACHE_SERVICE(m_serviceProvider)
+			MEMORY_SERVICE(m_serviceProvider)
 				->unlockBuffer( m_bufferId );
 		}
 	}
@@ -38,7 +38,7 @@ namespace Menge
 		this->uncache_();
 
 		void * memory;
-		uint32_t bufferId = CACHE_SERVICE(m_serviceProvider)
+		uint32_t bufferId = MEMORY_SERVICE(m_serviceProvider)
 			->lockBuffer( _size, &memory, _doc );
 
 		if( bufferId == INVALID_CACHE_BUFFER_ID )
@@ -58,7 +58,7 @@ namespace Menge
 	{
 		MemoryCacheBufferInterfacePtr createMemoryBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc )
 		{
-			MemoryCacheBufferInterfacePtr cache = CACHE_SERVICE( _serviceProvider )
+			MemoryCacheBufferInterfacePtr cache = MEMORY_SERVICE( _serviceProvider )
 				->createMemoryCacheBuffer();
 
 			if( cache == nullptr )

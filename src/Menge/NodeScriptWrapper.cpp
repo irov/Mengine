@@ -5,7 +5,7 @@
 
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/NodeInterface.h"
-#   include "Interface/CacheInterface.h"
+#   include "Interface/MemoryInterface.h"
 #	include "Interface/HttpSystemInterface.h"
 #	include "Interface/PrefetcherInterface.h"
 #	include "Interface/PlatformInterface.h"

@@ -93,4 +93,35 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MemoryInterface> MemoryInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
+	typedef uint32_t CacheBufferID;
+
+	static const CacheBufferID INVALID_CACHE_BUFFER_ID = 0;
+
+	class MemoryServiceInterface
+		: public ServiceInterface
+	{
+		SERVICE_DECLARE( "MemoryService" )
+
+	public:
+		virtual bool initialize() = 0;
+		virtual void finalize() = 0;
+
+	public:
+		virtual CacheBufferID lockBuffer( size_t _size, void ** _memory, const char * _doc ) = 0;
+		virtual void unlockBuffer( CacheBufferID _bufferId ) = 0;
+
+	public:
+		virtual void clearBuffers() = 0;
+
+	public:
+		virtual MemoryCacheBufferInterfacePtr createMemoryCacheBuffer() = 0;
+		virtual MemoryCacheInputInterfacePtr createMemoryCacheInput() = 0;
+		virtual MemoryProxyInputInterfacePtr createMemoryProxyInput() = 0;
+		virtual MemoryInputInterfacePtr createMemoryInput() = 0;
+		virtual MemoryInterfacePtr createMemory() = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+#   define MEMORY_SERVICE( serviceProvider )\
+	((Menge::MemoryServiceInterface *)SERVICE_GET(serviceProvider, Menge::MemoryServiceInterface))
 }

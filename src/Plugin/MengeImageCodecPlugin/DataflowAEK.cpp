@@ -1,7 +1,7 @@
 #	include "DataflowAEK.h"
 
 #	include "Interface/ArchiveInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 #	include "Interface/StringizeInterface.h"
 
 #	include "Core/Memory.h"
@@ -70,7 +70,7 @@ namespace Menge
 		
 		bool successful = this->loadBuffer_( pack, bufferMemory, bufferSize );
 
-		CACHE_SERVICE(m_serviceProvider)
+		MEMORY_SERVICE(m_serviceProvider)
 			->unlockBuffer( bufferId );
 
 		if( successful == false )

@@ -3,7 +3,7 @@
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/StringizeInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -324,7 +324,7 @@ namespace Menge
 			return stream;
 		}
 		
-		MemoryInputInterfacePtr memory = CACHE_SERVICE( m_serviceProvider )
+		MemoryInputInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
 			->createMemoryInput();
 				
 		return memory;

@@ -1,4 +1,4 @@
-#	include "CacheManager.h"
+#	include "MemoryManager.h"
 
 #	include "Core/Memory.h"
 #	include "Core/CRC32.h"
@@ -8,32 +8,32 @@
 #	include <malloc.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( CacheService, Menge::CacheServiceInterface, Menge::CacheManager );
+SERVICE_FACTORY( MemoryService, Menge::MemoryServiceInterface, Menge::MemoryManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	CacheManager::CacheManager()
+	MemoryManager::MemoryManager()
 		: m_serviceProvider(nullptr)
 		, m_enumeratorId(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CacheManager::~CacheManager()
+	MemoryManager::~MemoryManager()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CacheManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	void MemoryManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
 	{
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * CacheManager::getServiceProvider() const
+	ServiceProviderInterface * MemoryManager::getServiceProvider() const
 	{
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool CacheManager::initialize()
+	bool MemoryManager::initialize()
 	{
 		m_memoryMutex = THREAD_SERVICE(m_serviceProvider)
 			->createMutex();
@@ -47,14 +47,14 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CacheManager::finalize()
+	void MemoryManager::finalize()
 	{
 		this->clearBuffers();
 
 		m_memoryMutex = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CacheBufferID CacheManager::lockBuffer( size_t _size, void ** _memory, const char * _doc )
+	CacheBufferID MemoryManager::lockBuffer( size_t _size, void ** _memory, const char * _doc )
 	{
 		m_memoryMutex->lock();
 
@@ -66,7 +66,7 @@ namespace Menge
 		return buffer_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CacheBufferID CacheManager::lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc )
+	CacheBufferID MemoryManager::lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc )
 	{
 		size_t minSize = (size_t)(0);
 		size_t maxSize = (size_t)(-1);
@@ -167,7 +167,7 @@ namespace Menge
 		return new_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CacheManager::unlockBuffer( CacheBufferID _bufferId )
+	void MemoryManager::unlockBuffer( CacheBufferID _bufferId )
 	{
 		m_memoryMutex->lock();
 
@@ -192,7 +192,7 @@ namespace Menge
 		m_memoryMutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CacheManager::clearBuffers()
+	void MemoryManager::clearBuffers()
 	{
 		m_memoryMutex->lock();
 
@@ -220,7 +220,7 @@ namespace Menge
 		m_memoryMutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryCacheBufferInterfacePtr CacheManager::createMemoryCacheBuffer()
+	MemoryCacheBufferInterfacePtr MemoryManager::createMemoryCacheBuffer()
 	{
 		MemoryCacheBuffer * memoryBuffer = m_factoryPoolMemoryCacheBuffer.createObjectT();
 
@@ -229,7 +229,7 @@ namespace Menge
 		return memoryBuffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryCacheInputInterfacePtr CacheManager::createMemoryCacheInput()
+	MemoryCacheInputInterfacePtr MemoryManager::createMemoryCacheInput()
 	{
 		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput.createObjectT();
 
@@ -238,7 +238,7 @@ namespace Menge
 		return memoryCache;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryProxyInputInterfacePtr CacheManager::createMemoryProxyInput()
+	MemoryProxyInputInterfacePtr MemoryManager::createMemoryProxyInput()
 	{
 		MemoryProxyInput * memoryProxy = m_factoryPoolMemoryProxyInput.createObjectT();
 
@@ -247,7 +247,7 @@ namespace Menge
 		return memoryProxy;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInputInterfacePtr CacheManager::createMemoryInput()
+	MemoryInputInterfacePtr MemoryManager::createMemoryInput()
 	{
 		MemoryInput * memory = m_factoryPoolMemoryInput.createObjectT();
 
@@ -256,7 +256,7 @@ namespace Menge
 		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MemoryInterfacePtr CacheManager::createMemory()
+	MemoryInterfacePtr MemoryManager::createMemory()
 	{
 		Memory * memory = m_factoryPoolMemory.createObjectT();
 

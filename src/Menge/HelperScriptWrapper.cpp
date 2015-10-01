@@ -181,7 +181,7 @@ namespace Menge
 
 			PyObject * py_data = pybind::unpickle( buffer_data, buffer_size, _pickleTypes );
 
-			CACHE_SERVICE(m_serviceProvider)
+			MEMORY_SERVICE(m_serviceProvider)
 				->unlockBuffer( bufferId );
 
 			if( py_data == nullptr )
@@ -1467,7 +1467,7 @@ namespace Menge
 	
             PyObject * py_data = pybind::unpickle( buffer_data, buffer_size, _pickleTypes );
 
-			CACHE_SERVICE(m_serviceProvider)
+			MEMORY_SERVICE(m_serviceProvider)
 				->unlockBuffer( bufferId );
 
 			if( py_data == nullptr )

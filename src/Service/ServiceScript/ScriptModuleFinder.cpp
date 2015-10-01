@@ -2,7 +2,7 @@
 
 #   include "Interface/StringizeInterface.h"
 #	include "Interface/ArchiveInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #   include "Config/Blobject.h"
 

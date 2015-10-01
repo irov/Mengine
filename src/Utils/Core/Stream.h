@@ -2,7 +2,7 @@
 
 #	include "Interface/StreamInterface.h"
 #	include "Interface/ArchiveInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "Core/Magic.h"
 

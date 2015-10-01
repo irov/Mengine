@@ -7,7 +7,7 @@
 #   include "Interface/LogSystemInterface.h"
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/ArchiveInterface.h"
-#   include "Interface/CacheInterface.h"
+#   include "Interface/MemoryInterface.h"
 #   include "Interface/ThreadSystemInterface.h"
 #   include "Interface/PhysicSystemInterface.h"
 #   include "Interface/RenderSystemInterface.h"
@@ -131,7 +131,7 @@ namespace Menge
 		bool initializeArchiveService_();
 		bool initializeModuleEngine_();
 		bool initializeDataManager_();
-		bool initializeCacheManager_();
+		bool initializeMemoryManager_();
 		bool initializeHttpService_();
 		bool initializePrefetcherService_();
 
@@ -231,7 +231,7 @@ namespace Menge
 		PluginServiceInterface * m_pluginService;
 		ModuleServiceInterface * m_moduleService;
 		DataServiceInterface * m_dataService;
-		CacheServiceInterface * m_cacheService;
+		MemoryServiceInterface * m_memoryService;
 		HttpSystemInterface * m_httpSystem;
 		ConfigServiceInterface * m_configService;
 

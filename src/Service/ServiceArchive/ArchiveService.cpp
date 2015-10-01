@@ -1,6 +1,6 @@
 #	include "ArchiveService.h"
 
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "Core/MemoryCacheBuffer.h"
 
@@ -123,7 +123,7 @@ namespace Menge
 	{
 		size_t compressSize2 = _archivator->compressBound( _size );
 
-		MemoryInputInterfacePtr memory = CACHE_SERVICE( m_serviceProvider )
+		MemoryInputInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
 			->createMemoryInput();
 
 		void * buffer = memory->newMemory( compressSize2 );

@@ -2059,7 +2059,14 @@ namespace Menge
 		layer_particles->setScretch( _layer.scretch );
 		layer_particles->setLoop( _layer.loop );
 
-		layer_particles->setEmitterTranslateWithParticle( true );
+		if( _layer.hasParam( MOVIE_LAYER_PARAM_PARTICLE_TRANSLATE ) == true )
+		{
+			layer_particles->setEmitterTranslateWithParticle( false );
+		}
+		else
+		{
+			layer_particles->setEmitterTranslateWithParticle( true );
+		}
 
 		if( this->addMovieNode_( _layer, layer_particles, layer_particles, nullptr ) == false )
 		{

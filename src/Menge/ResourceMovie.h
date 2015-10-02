@@ -33,6 +33,7 @@ namespace Menge
 
 	const uint32_t MOVIE_LAYER_PARAM_TEXT_HORIZONTAL_CENTER = 0x00000001;
 	const uint32_t MOVIE_LAYER_PARAM_TEXT_VERTICAL_CENTER = 0x00000002;
+	const uint32_t MOVIE_LAYER_PARAM_PARTICLE_TRANSLATE = 0x00000004;
 
 	struct MovieLayer
 	{
@@ -74,8 +75,6 @@ namespace Menge
         uint32_t state;
 
 		ConstString blendingMode;
-		ConstString keyFramesName;
-		FilePath keyFramesPath;
 
 		ConstString source;
 

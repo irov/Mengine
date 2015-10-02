@@ -55,8 +55,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderTheora::VideoDecoderTheora()
 		: VideoDecoder()
-		, m_eof( true )
-		, m_currentFrame( 0 )
 		, m_lastReadBytes( 0 )
 		, m_pitch( 0 )
 	{
@@ -243,7 +241,8 @@ namespace Menge
 				if( ret == 0 )
 				{
 					// опять файл кончился!
-					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: eof searched. terminate...");
+					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: eof searched. terminate..."
+						);
 
 					return false;
 				}
@@ -252,6 +251,17 @@ namespace Menge
 
 		// наконец мы получили, все, что хотели. инициализируем декодеры
 		theora_decode_init( &m_theoraState, &m_theoraInfo );
+
+		if( m_theoraInfo.pixelformat != OC_PF_420 )
+		{
+			const char * pixelformat[] = {"OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444"};
+
+			LOGGER_ERROR( m_serviceProvider )("VideoDecoderTheora::_prepareData invalid support pixel format '%s' pls use OC_PF_420"
+				, pixelformat[m_theoraInfo.pixelformat]
+				);
+
+			return false;
+		}
 
 		if( m_options.alpha == true )
 		{
@@ -734,7 +744,7 @@ namespace Menge
 			return false;
 		}
 
-		if( this->_rewind() == false )
+		if( m_stream->seek( 0 ) == false )
 		{
 			return false;
 		}

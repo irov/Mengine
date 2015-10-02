@@ -40,11 +40,8 @@ namespace Menge
 		theora_info m_theoraInfo;
 		mutable theora_state m_theoraState;
 
-		unsigned int m_currentFrame;
-
 		size_t m_pitch;
 		size_t m_lastReadBytes;
-		bool m_eof;
 
 	private:
 		bool readHeader_();

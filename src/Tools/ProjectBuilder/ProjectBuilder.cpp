@@ -41,7 +41,7 @@
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/CodecInterface.h"
 #	include "Interface/DataInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/PluginInterface.h"
@@ -77,7 +77,7 @@ SERVICE_EXTERN(LogService, Menge::LogServiceInterface);
 SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
 SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
 SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
-SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
+SERVICE_EXTERN(MemoryService, Menge::MemoryServiceInterface);
 SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
 SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
 
@@ -391,18 +391,18 @@ namespace Menge
 			return false;
 		}
 				
-		CacheServiceInterface * cacheService;
-		if( SERVICE_CREATE( CacheService, &cacheService ) == false )
+		MemoryServiceInterface * memoryService;
+		if( SERVICE_CREATE( MemoryService, &memoryService ) == false )
 		{
 			return false;
 		}
 
-		if( SERVICE_REGISTRY(serviceProvider, cacheService) == false )
+		if( SERVICE_REGISTRY( serviceProvider, memoryService ) == false )
 		{
 			return false;
 		}
 
-		if( cacheService->initialize() == false )
+		if( memoryService->initialize() == false )
 		{
 			return false;
 		}

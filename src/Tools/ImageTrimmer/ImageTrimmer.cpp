@@ -24,7 +24,7 @@
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/CodecInterface.h"
 #	include "Interface/DataInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/WindowsLayerInterface.h"
 #   include "Interface/ImageCodecInterface.h"
@@ -67,7 +67,7 @@ SERVICE_EXTERN(StringizeService, Menge::StringizeServiceInterface);
 SERVICE_EXTERN(LogService, Menge::LogServiceInterface);
 SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
 SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
-SERVICE_EXTERN(CacheService, Menge::CacheServiceInterface);
+SERVICE_EXTERN(MemoryService, Menge::MemoryServiceInterface);
 SERVICE_EXTERN(ThreadSystem, Menge::ThreadSystemInterface);
 SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
 
@@ -301,18 +301,18 @@ namespace Menge
 			return false;
 		}
 
-		CacheServiceInterface * cacheService;
-		if( SERVICE_CREATE( CacheService, &cacheService ) == false )
+		MemoryServiceInterface * memoryService;
+		if( SERVICE_CREATE( MemoryService, &memoryService ) == false )
 		{
 			return false;
 		}
 
-		if( SERVICE_REGISTRY(serviceProvider, cacheService) == false )
+		if( SERVICE_REGISTRY( serviceProvider, memoryService ) == false )
 		{
 			return false;
 		}
 
-		if( cacheService->initialize() == false )
+		if( memoryService->initialize() == false )
 		{
 			return false;
 		}
@@ -856,6 +856,10 @@ static Menge::WString s_correct_path( const Menge::WString & _path )
 
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
+	(void)hInstance;
+	(void)hPrevInstance;
+	(void)nShowCmd;
+
 	int cmd_num;
 	LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
 

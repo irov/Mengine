@@ -93,7 +93,6 @@ namespace Menge
 		uint32_t m_enumerator;
 		
 		float m_playTime;
-		float m_timing;
 
 		float m_animationSpeedFactor;        
 		float m_intervalStart;

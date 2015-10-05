@@ -465,8 +465,6 @@ namespace Menge
                             , time
                             );
                     }
-
-                    m_timing += frameTiming;
 				}
 			}
 			else if( state == VDRS_FAILURE )

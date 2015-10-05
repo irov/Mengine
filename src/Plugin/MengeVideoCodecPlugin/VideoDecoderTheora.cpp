@@ -12,13 +12,13 @@
 #		define COLOR_R 0
 #		define COLOR_G 1
 #		define COLOR_B 2
+#		define COLOR_A 3
 #	else
 #		define COLOR_R 2
 #		define COLOR_G 1
 #		define COLOR_B 0
+#		define COLOR_A 3
 #	endif
-
-#define COLOR_A 3
 
 #define CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
 	rgb_char_buffer = (unsigned char)(MAX( MIN(rgb_color_test, 255), 0 ))
@@ -55,7 +55,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	VideoDecoderTheora::VideoDecoderTheora()
 		: VideoDecoder()
-		, m_lastReadBytes( 0 )
 		, m_pitch( 0 )
 	{
 	}
@@ -149,7 +148,8 @@ namespace Menge
 					return false;
 				}
 				// декодируем данные из этого тестового потока в пакет
-				if( ogg_stream_packetout( &m_oggStreamState, &m_oggPacket ) == -1 )
+				ogg_packet packet;
+				if( ogg_stream_packetout( &m_oggStreamState, &packet ) == -1 )
 				{
 					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout");
 
@@ -161,7 +161,7 @@ namespace Menge
 				// по спецификации theora таких пакетов должно быть три
 				if( theoraHeaderPackets == 0 )
 				{
-					int dhr = theora_decode_header( &m_theoraInfo, &m_theoraComment, &m_oggPacket );
+					int dhr = theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet );
 					// декодируем заголовок theora
 					if( dhr < 0 )
 					{
@@ -193,7 +193,8 @@ namespace Menge
 
 		while( theoraHeaderPackets < 3 )
 		{
-			int result = ogg_stream_packetout( &m_oggStreamState, &m_oggPacket );
+			ogg_packet packet;
+			int result = ogg_stream_packetout( &m_oggStreamState, &packet );
 			// если функция возвращает нуль, значит не хватает данных для декодирования
 
 			if( result < 0 )
@@ -207,7 +208,7 @@ namespace Menge
 			if( result > 0 )
 			{
 				// удалось успешно извлечь пакет информации theora
-				int result2 = theora_decode_header( &m_theoraInfo, &m_theoraComment, &m_oggPacket );
+				int result2 = theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet );
 
 				if( result2 < 0 )
 				{
@@ -220,11 +221,10 @@ namespace Menge
 				++theoraHeaderPackets;
 			}
 
-			ogg_page page;
-
 			// эту страничку обработали, надо извлечь новую
 			// для этого проверяем буфер чтения, вдруг там осталось что-нить похожее
 			// на страничку. Если не осталось, тогда просто читаем эти данные из файла:			
+			ogg_page page;
 			if( ogg_sync_pageout( &m_oggSyncState, &page ) >0 )
 				// ogg_sync_pageout - функция, берет данные из буфера приема ogg
 				// и записывает их в ogg_page
@@ -684,10 +684,9 @@ namespace Menge
 	{
 		(void)_pts;
 
-		m_lastReadBytes = 0;
-
 		// theora processing...
-		while( ogg_stream_packetout( &m_oggStreamState, &m_oggPacket ) <= 0 )
+		ogg_packet packet;
+		while( ogg_stream_packetout( &m_oggStreamState, &packet ) <= 0 )
 		{
 			// не хватает данных в логическом потоке theora
 			// надо надергать данных из физического потока и затолкать их в логический поток
@@ -697,19 +696,6 @@ namespace Menge
 
 			if( bytes == 0 )
 			{
-				return VDRS_END_STREAM;
-			}
-
-			m_lastReadBytes += bytes;
-
-			if( m_lastReadBytes == 0 )
-			{
-				// файл кончился, необходимо выполнить закрывающие действия
-				// и выйти из приложения
-				//TheoraClose();
-
-				//LOG_NUMBER(LOG_NOTE, "frames: ", current_frame);
-				//FINISHED=true;
 				return VDRS_END_STREAM;
 			}
 
@@ -727,7 +713,7 @@ namespace Menge
 		// (то бишь закодированная theora-информация)
 
 		// загружаем пакет в декодер theora
-		if( theora_decode_packetin( &m_theoraState, &m_oggPacket ) == OC_BADPACKET )
+		if( theora_decode_packetin( &m_theoraState, &packet ) == OC_BADPACKET )
 		{
 			return VDRS_FAILURE;
 		}
@@ -739,16 +725,21 @@ namespace Menge
 	{
 		(void)_timing;
 
-		if( ogg_sync_reset( &m_oggSyncState ) == -1 )
+		//if( ogg_sync_reset( &m_oggSyncState ) == -1 )
+		//{
+		//	return false;
+		//}
+
+		//if( ogg_stream_reset( &m_oggStreamState ) == -1 )
+		//{
+		//	return false;
+		//}
+
+		if( this->rewind() == false )
 		{
 			return false;
 		}
-
-		if( m_stream->seek( 0 ) == false )
-		{
-			return false;
-		}
-
+		
 		//for( ;; )
 		//{
 		//	ogg_page page;

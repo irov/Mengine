@@ -34,14 +34,12 @@ namespace Menge
 	protected:
 		ogg_stream_state m_oggStreamState;
 		ogg_sync_state	m_oggSyncState;
-		ogg_packet m_oggPacket;
 
 		theora_comment m_theoraComment;
 		theora_info m_theoraInfo;
 		mutable theora_state m_theoraState;
 
 		size_t m_pitch;
-		size_t m_lastReadBytes;
 
 	private:
 		bool readHeader_();

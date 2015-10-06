@@ -120,10 +120,10 @@ namespace Menge
         virtual FileMappedInterfacePtr openMappedFile( const ConstString & _fileGroupName, const FilePath& _fileName ) = 0;
 
     public:
-        virtual bool existDirectory( const ConstString& _fileGroupName, const FilePath& _path ) const = 0;
-        virtual bool createDirectory( const ConstString& _fileGroupName, const FilePath& _path ) = 0;
-        virtual bool removeDirectory( const ConstString& _fileGroupName, const FilePath& _path ) = 0;
-        virtual bool removeFile( const ConstString& _fileGroupName, const FilePath& _fileName ) = 0;
+        virtual bool existDirectory( const ConstString & _fileGroupName, const FilePath& _path ) const = 0;
+        virtual bool createDirectory( const ConstString & _fileGroupName, const FilePath& _path ) = 0;
+        virtual bool removeDirectory( const ConstString & _fileGroupName, const FilePath& _path ) = 0;
+        virtual bool removeFile( const ConstString & _fileGroupName, const FilePath& _fileName ) = 0;
 	};
 
 #   define FILE_SERVICE( serviceProvider )\

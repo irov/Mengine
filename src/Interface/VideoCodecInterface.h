@@ -71,10 +71,6 @@ namespace Menge
 	public:
 		virtual const VideoCodecDataInfo* getCodecDataInfo() const override = 0;
 
-	public:
-		virtual bool seek( float _timing ) = 0;
-		virtual float getTiming() const = 0;
-
     public:
         virtual void setPitch( size_t _pitch ) = 0;
 

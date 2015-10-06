@@ -200,7 +200,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageDecoderPNG::decode( void * _buffer, size_t _bufferSize )
+	size_t ImageDecoderPNG::_decode( void * _buffer, size_t _bufferSize )
 	{	
 		if( _bufferSize < m_options.pitch * m_dataInfo.height )
 		{

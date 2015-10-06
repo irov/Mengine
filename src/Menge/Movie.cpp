@@ -3401,6 +3401,31 @@ namespace Menge
 	{
 		(void)_enumerator;
 
-		return false;
+		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+
+		for( TVectorMovieLayers::const_iterator
+			it = layers.begin(),
+			it_end = layers.end();
+		it != it_end;
+		++it )
+		{
+			const MovieLayer & layer = *it;
+
+			if( layer.isSubMovie() == true )
+			{
+				continue;
+			}
+
+			if( layer.isAnimatable() == false )
+			{
+				continue;
+			}
+
+			Animatable * animatable = this->getLayerAnimatable_( layer );
+
+			animatable->interrupt();
+		}
+
+		return true;
 	}
 }

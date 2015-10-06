@@ -63,7 +63,7 @@ ImageDecoderPVRTC::~ImageDecoderPVRTC()
 {
 }
 //////////////////////////////////////////////////////////////////////////
-size_t ImageDecoderPVRTC::decode( void * _buffer, size_t _bufferSize )
+size_t ImageDecoderPVRTC::_decode( void * _buffer, size_t _bufferSize )
 {
 	// TODO: investigate why sizeof(PVRTextureHeader) != 52
 	m_stream->seek(52 + m_pvrtc_ptr.metaDataSize);

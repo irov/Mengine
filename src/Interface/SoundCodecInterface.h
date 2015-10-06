@@ -36,9 +36,6 @@ namespace Menge
 		: public DecoderInterface
 	{
 	public:
-		virtual bool seek( float _timing ) = 0;
-		virtual float tell() = 0;
-
 		virtual const SoundCodecDataInfo * getCodecDataInfo() const override = 0;
 	};
 

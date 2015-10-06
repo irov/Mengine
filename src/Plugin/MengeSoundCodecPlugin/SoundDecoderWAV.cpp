@@ -143,14 +143,14 @@ namespace Menge
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t SoundDecoderWAV::decode( void * _buffer, size_t _bufferSize )
+	size_t SoundDecoderWAV::_decode( void * _buffer, size_t _bufferSize )
 	{
 		size_t bytesDone = m_stream->read( _buffer, _bufferSize );
 		
 		return bytesDone;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundDecoderWAV::seek( float _timing )
+	bool SoundDecoderWAV::_seek( float _timing )
 	{         
         if( _timing > m_dataInfo.length )
         {
@@ -169,7 +169,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundDecoderWAV::tell()
+	float SoundDecoderWAV::_tell() const
 	{
 		size_t wav_pos = m_stream->tell();
 		

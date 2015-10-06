@@ -23,7 +23,7 @@ namespace Menge
 		bool _prepareData() override;
 
 	public:
-		size_t decode( void * _buffer, size_t _bufferSize ) override;
+		size_t _decode( void * _buffer, size_t _bufferSize ) override;
 
 	public:
 		bool _rewind() override;

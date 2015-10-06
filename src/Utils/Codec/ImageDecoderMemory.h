@@ -11,7 +11,7 @@ namespace Menge
 		ImageDecoderMemory();
 
 	protected:
-		size_t decode( void * _buffer, size_t _bufferSize ) override;
+		size_t _decode( void * _buffer, size_t _bufferSize ) override;
 
 	protected:
 		size_t decodeData_( void * _buffer, size_t _bufferSize ) const;

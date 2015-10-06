@@ -59,6 +59,10 @@ namespace Menge
 	public:
 		virtual size_t decode( void * _buffer, size_t _bufferSize ) = 0;
 		virtual bool rewind() = 0;
+
+	public:
+		virtual bool seek( float _timing ) = 0;
+		virtual float tell() const = 0;
 	};
 
     typedef stdex::intrusive_ptr<DecoderInterface> DecoderInterfacePtr;

@@ -5,6 +5,8 @@
 
 #	include "Logger/Logger.h"
 
+#	include "stdex/thread_guard.h"
+
 namespace Menge
 {
 	template<class TDecoderInterface>
@@ -33,6 +35,8 @@ namespace Menge
 	public:
 		bool initialize() override
 		{
+			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::initialize" );
+
 			if( m_initialize == true )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Decoder::initialize: alredy initialize!"
@@ -55,6 +59,8 @@ namespace Menge
 	public:
 		void finalize() override
 		{
+			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::finalize" );
+
 			if( m_initialize == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Decoder::initialize: alredy finalize!"
@@ -86,9 +92,11 @@ namespace Menge
 			return m_stream;				 
 		}
 
-	public:
+	private:
 		bool prepareData( const InputStreamInterfacePtr & _stream ) override
 		{
+			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::prepareData" );
+
 			m_stream = _stream;
 
 			if( this->_prepareData() == false )
@@ -101,25 +109,75 @@ namespace Menge
 			return true;
 		}
 
-	public:
-		bool rewind() override
-		{			
-			bool successful = this->_rewind();
-
-			return successful;
+	protected:
+		virtual bool _prepareData()
+		{
+			return true;
 		}
 
-		virtual bool _rewind()
+	private:
+		size_t decode( void * _buffer, size_t _bufferSize ) override
 		{
-			bool successful = m_stream->seek( m_rewindPos );
+			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::decode" );
+
+			size_t byte = this->_decode( _buffer, _bufferSize );
+
+			return byte;
+		}
+
+	protected:
+		virtual size_t _decode( void * _buffer, size_t _bufferSize ) = 0;
+
+	private:
+		bool seek( float _timing ) override
+		{
+			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::seek" );
+
+			bool successful = this->_seek( _timing );
 
 			return successful;
 		}
 
 	protected:
-		virtual bool _prepareData()
+		virtual bool _seek( float _timing )
+		{ 
+			(void)_timing;
+
+			return false;
+		}
+
+	private:
+		float tell() const override
 		{
-			return true;
+			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::tell" );
+
+			float value = this->_tell();
+
+			return value;
+		}
+
+	protected:
+		virtual float _tell() const
+		{
+			return 0.0;
+		}
+
+	private:
+		bool rewind() override
+		{			
+			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::rewind" );
+
+			bool successful = this->_rewind();
+
+			return successful;
+		}
+
+	protected:
+		virtual bool _rewind()
+		{
+			bool successful = m_stream->seek( m_rewindPos );
+
+			return successful;
 		}
 
 	protected:
@@ -129,5 +187,7 @@ namespace Menge
 		size_t m_rewindPos;
 
 		bool m_initialize;
+
+		STDEX_THREAD_GUARD_INIT;
 	};    
 }

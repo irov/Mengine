@@ -2450,7 +2450,6 @@ namespace Menge
 			for( uint32_t i = 0; i != 8; ++i )
 			{
 				float low_angle = pi_deltha[ i * 3 + 0];
-				//float test_angle = pi_deltha[ i * 3 + 1];
 				float hight_angle = pi_deltha[ i * 3 + 2];
 
 				if( mt::angle_length( angle_norm, low_angle ) > 0.f )
@@ -2469,7 +2468,7 @@ namespace Menge
 			return 0;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_rotateToDiometric( float _angle )
+		uint32_t s_rotateToTrimetric( float _angle, float _x, float _y )
 		{
 			float angle_norm = mt::angle_norm( _angle );
 
@@ -5544,7 +5543,7 @@ namespace Menge
 			pybind::def_functor( "uncacheResources", nodeScriptMethod, &NodeScriptMethod::s_uncacheResources );
 
 			pybind::def_functor( "rotateToIsometric", nodeScriptMethod, &NodeScriptMethod::s_rotateToIsometric );
-			pybind::def_functor( "rotateToDiometric", nodeScriptMethod, &NodeScriptMethod::s_rotateToDiometric );
+			pybind::def_functor( "rotateToTrimetric", nodeScriptMethod, &NodeScriptMethod::s_rotateToTrimetric );
 
 			pybind::def_functor( "hotspotCorrect", nodeScriptMethod, &NodeScriptMethod::s_hotspotCorrect );
 

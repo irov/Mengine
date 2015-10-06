@@ -624,7 +624,7 @@ namespace Menge
 	////////////////////////////////////////////////////////////////////
 	float Video::_getTiming() const
 	{
-		float timing = m_videoDecoder->getTiming();
+		float timing = m_videoDecoder->tell();
 
 		return timing;
 	}

@@ -37,6 +37,10 @@ namespace Menge
 		size_t decode( void * _buffer, size_t _bufferSize ) override;
 		bool rewind() override;
 
+	public:
+		bool seek( float _timing ) override;
+		float tell() const override;
+
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 

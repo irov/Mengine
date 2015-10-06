@@ -26,7 +26,7 @@ public:
 	bool _prepareData() override;
 
 public:
-	size_t decode( void * _buffer, size_t _bufferSize ) override;
+	size_t _decode( void * _buffer, size_t _bufferSize ) override;
 
 private:
 	ETC1Header m_etc1_ptr;

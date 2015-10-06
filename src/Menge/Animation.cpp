@@ -90,29 +90,25 @@ namespace	Menge
 
                 if( m_currentFrame == frameCount )
                 {
-                    if( this->getLoop() == true )
-                    {
+					bool loop = this->getLoop();
+					bool interrupt = this->isInterrupt();
+
+					if( (loop == false && --m_playIterator == 0) || interrupt == true )
+					{
+						m_currentFrame = frameCount - 1;
+						this->updateCurrentFrame_();
+
+						m_frameTiming = 0.f;
+
+						lastFrame = m_currentFrame;
+
+						this->end();
+
+						break;
+					}
+					else
+					{
                         this->setTiming( m_frameTiming );                                   
-                    }
-                    else
-                    {
-                        if( --m_playIterator == 0 )
-                        {
-                            m_currentFrame = frameCount - 1;
-                            this->updateCurrentFrame_();
-
-                            m_frameTiming = 0.f;
-
-                            lastFrame = m_currentFrame;
-
-                            this->end();
-
-                            break;
-                        }
-                        else
-                        {
-                            this->setTiming( m_frameTiming );
-                        }					
                     }
 
                     lastFrame = m_currentFrame;

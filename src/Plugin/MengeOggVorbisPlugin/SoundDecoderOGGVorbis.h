@@ -4,8 +4,6 @@
 
 #	include "vorbis/vorbisfile.h"
 
-#	include "stdex/thread_guard.h"
-
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -25,17 +23,15 @@ namespace Menge
 		bool _rewind() override;
 
 	public:
-		size_t decode( void * _buffer, size_t _bufferSize ) override;
+		size_t _decode( void * _buffer, size_t _bufferSize ) override;
 		
 	public:
-		bool seek( float _timing ) override;
-		float tell() override;
+		bool _seek( float _timing ) override;
+		float _tell() const override;
 
 	protected:
 		OggVorbis_File m_oggVorbisFile;
 
 		bool m_oggVorbisFileInitialize;
-
-		STDEX_THREAD_GUARD_INIT;
 	};
 }	// namespace Menge

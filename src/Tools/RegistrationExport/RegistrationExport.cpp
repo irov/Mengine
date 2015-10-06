@@ -64,7 +64,7 @@ int WINAPI wWinMain( HINSTANCE hThisInstance,
 		CW_USEDEFAULT,       /* Windows decides the position */
 		CW_USEDEFAULT,       /* where the window ends up on the screen */
 		544,                 /* The programs width */
-		180,                 /* and height in pixels */
+		200,                 /* and height in pixels */
 		HWND_DESKTOP,        /* The window is a child-window to desktop */
 		NULL,                /* No menu */
 		hThisInstance,       /* Program Instance handler */

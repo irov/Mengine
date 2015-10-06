@@ -22,13 +22,16 @@ namespace Menge
 		bool _prepareData() override;
 
 	public:
-		size_t decode( void * _buffer, size_t _bufferSize ) override;
+		size_t _decode( void * _buffer, size_t _bufferSize ) override;
+
+	public:
+		bool _seek( float _timing ) override;
+		float _tell() const override;
 
 	public:
 		EVideoDecoderReadState readNextFrame( float & _pts ) override;
-		bool seek( float _timing ) override;
 
-		float getTiming() const override;
+	public:		
 		void setPitch( size_t _pitch ) override;
 		
 	protected:

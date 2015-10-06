@@ -9,7 +9,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageDecoderMemory::decode( void * _buffer, size_t _bufferSize )
+	size_t ImageDecoderMemory::_decode( void * _buffer, size_t _bufferSize )
 	{
 		if( _bufferSize < m_options.pitch * m_dataInfo.height )
 		{

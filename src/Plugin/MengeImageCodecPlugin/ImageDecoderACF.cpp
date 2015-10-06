@@ -66,7 +66,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageDecoderACF::decode( void * _buffer, size_t _bufferSize )
+	size_t ImageDecoderACF::_decode( void * _buffer, size_t _bufferSize )
 	{
 		(void)_bufferSize;
 

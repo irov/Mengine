@@ -146,7 +146,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageDecoderDDS::decode( void * _buffer, size_t _bufferSize )
+	size_t ImageDecoderDDS::_decode( void * _buffer, size_t _bufferSize )
 	{
         (void)_bufferSize;
 

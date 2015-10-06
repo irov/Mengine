@@ -2,7 +2,7 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#	include "Utils/Logger/Logger.h"
+#	include "Logger/Logger.h"
 
 namespace Menge
 {
@@ -75,8 +75,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void SoundDecoderOGGVorbis::_finalize()
 	{
-		STDEX_THREAD_GUARD_SCOPE( this, "SoundDecoderOGGVorbis::_finalize" );
-
 		if( m_oggVorbisFileInitialize == true )
 		{
 			m_oggVorbisFileInitialize = false;
@@ -87,8 +85,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SoundDecoderOGGVorbis::_prepareData()
     {
-		STDEX_THREAD_GUARD_SCOPE( this, "SoundDecoderOGGVorbis::_prepareData" );
-
         ov_callbacks vorbisCallbacks;
         vorbisCallbacks.read_func = s_readOgg;
         vorbisCallbacks.seek_func = s_seekOgg;
@@ -150,8 +146,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundDecoderOGGVorbis::_rewind()
 	{
-		STDEX_THREAD_GUARD_SCOPE( this, "SoundDecoderOGGVorbis::_rewind" );
-
 		if( m_oggVorbisFileInitialize == true )
 		{
 			m_oggVorbisFileInitialize = false;
@@ -172,10 +166,8 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t SoundDecoderOGGVorbis::decode( void * _buffer, size_t _bufferSize )
+	size_t SoundDecoderOGGVorbis::_decode( void * _buffer, size_t _bufferSize )
 	{
-		STDEX_THREAD_GUARD_SCOPE( this, "SoundDecoderOGGVorbis::decode" );
-
 		long bytesDone = 0;
         long bytesReading = _bufferSize;
         
@@ -227,10 +219,8 @@ namespace Menge
 		return bytesDone;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundDecoderOGGVorbis::seek( float _timing )
+	bool SoundDecoderOGGVorbis::_seek( float _timing )
 	{   
-		STDEX_THREAD_GUARD_SCOPE( this, "SoundDecoderOGGVorbis::seek" );
-
         if( _timing >= m_dataInfo.length )
         {
             LOGGER_ERROR(m_serviceProvider)("SoundDecoderOGGVorbis::seek timing %f > total %f"
@@ -264,11 +254,9 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundDecoderOGGVorbis::tell()
+	float SoundDecoderOGGVorbis::_tell() const
 	{
-		STDEX_THREAD_GUARD_SCOPE( this, "SoundDecoderOGGVorbis::tell" );
-
-		double al_pos = ov_time_tell( &m_oggVorbisFile );
+		double al_pos = ov_time_tell( const_cast<OggVorbis_File *>(&m_oggVorbisFile) );
 
         float float_pos = (float)(al_pos * 1000.0);
 

@@ -16,10 +16,10 @@ namespace Menge
 		bool _prepareData() override;
 
 	public:
-		size_t decode( void * _buffer, size_t _bufferSize ) override;
+		size_t _decode( void * _buffer, size_t _bufferSize ) override;
 
-		bool seek( float _timing ) override;
-		float tell() override;
+		bool _seek( float _timing ) override;
+		float _tell() const override;
 
 	protected:		
 		bool findChunkData_( size_t & _size );

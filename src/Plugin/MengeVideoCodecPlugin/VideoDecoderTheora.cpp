@@ -293,7 +293,7 @@ namespace Menge
 		theora_info_clear( &m_theoraInfo );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t VideoDecoderTheora::decode( void * _buffer, size_t _bufferSize )
+	size_t VideoDecoderTheora::_decode( void * _buffer, size_t _bufferSize )
 	{
 		yuv_buffer yuvBuffer;
 		// декодируем страничку в YUV-виде в спец. структуру yuv_buffer
@@ -721,7 +721,7 @@ namespace Menge
 		return VDRS_SUCCESS;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderTheora::seek( float _timing )
+	bool VideoDecoderTheora::_seek( float _timing )
 	{
 		(void)_timing;
 
@@ -735,7 +735,7 @@ namespace Menge
 		//	return false;
 		//}
 
-		if( this->rewind() == false )
+		if( this->_rewind() == false )
 		{
 			return false;
 		}
@@ -764,7 +764,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float VideoDecoderTheora::getTiming() const
+	float VideoDecoderTheora::_tell() const
 	{
 		double granule_time = theora_granule_time( &m_theoraState, m_theoraState.granulepos );
 

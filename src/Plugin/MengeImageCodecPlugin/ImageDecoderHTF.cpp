@@ -82,7 +82,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageDecoderHTF::decode( void * _buffer, size_t _bufferSize )
+	size_t ImageDecoderHTF::_decode( void * _buffer, size_t _bufferSize )
 	{
 		if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, _buffer, _bufferSize ) == false )
         {

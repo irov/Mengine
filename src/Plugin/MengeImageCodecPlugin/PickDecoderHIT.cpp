@@ -54,7 +54,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	size_t PickDecoderHIT::decode( void * _buffer, size_t _bufferSize )
+	size_t PickDecoderHIT::_decode( void * _buffer, size_t _bufferSize )
 	{	        	
 		if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, _buffer, _bufferSize ) == false )
 		{

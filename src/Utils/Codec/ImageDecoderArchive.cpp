@@ -32,7 +32,7 @@ namespace Menge
 		return m_uncompressSize;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageDecoderArchive::decode( void * _buffer, size_t _bufferSize )
+	size_t ImageDecoderArchive::_decode( void * _buffer, size_t _bufferSize )
 	{
 		if( _bufferSize < m_options.pitch * m_dataInfo.height )
 		{

@@ -27,7 +27,7 @@ namespace Menge
 		const FilePath& getFilePath() const;
 
 	public:
-		const ParticleEmitterContainerInterface2Ptr & getContainer() const;
+		ParticleEmitterInterfacePtr createEmitter();
 
 	public:
 		ResourceImage * getAtlasImageResource( uint32_t _atlasId ) const;

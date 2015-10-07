@@ -34,14 +34,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitter2::ParticleEmitter2()
 		: m_emitter(nullptr)
-		, m_startPosition(0.f)
         , m_randomMode(false)
 		, m_vertices(nullptr)
 		, m_vertexCount(0)
 		, m_indicies(nullptr)
 		, m_indexCount(0)
         , m_emitterRelative(false)
-        , m_emitterPosition(0.f, 0.f, 0.f)
         , m_emitterTranslateWithParticle(true)
 	{
 	}
@@ -65,12 +63,12 @@ namespace	Menge
 			return false;
 		}
 
-		if( m_emitterRelative == true )
-		{
-			const mt::vec3f & wm_pos = this->getWorldPosition();
+		//if( m_emitterRelative == true )
+		//{
+		//	const mt::vec3f & wm_pos = this->getWorldPosition();
 
-			m_emitter->setPosition( wm_pos );
-		}
+		//	m_emitter->setPosition( wm_pos );
+		//}
         
 		return true;
 	}
@@ -103,19 +101,7 @@ namespace	Menge
             return false;
         }
 
-		const ParticleEmitterContainerInterface2Ptr & container = m_resourceParticle->getContainer();
-
-		if( container == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter2::_compile '%s' can't open container file '%s'"
-				, m_name.c_str()
-				, m_resourceParticle->getName().c_str() 
-				);
-
-			return false;
-		}
-
-		ParticleEmitterInterfacePtr emitter = container->createEmitter();
+		ParticleEmitterInterfacePtr emitter = m_resourceParticle->createEmitter();
 
 		if( emitter == nullptr )
 		{
@@ -152,9 +138,13 @@ namespace	Menge
             }
         }
 
-		if( emitter->isBackground() == false )
+		if( m_emitterRelative == true )
 		{
-			emitter->setPosition( m_emitterPosition );
+			emitter->setPositionProvider( this );
+		}
+		else
+		{
+			emitter->setPositionProvider( nullptr );
 		}
 
 		m_emitter = emitter;
@@ -187,13 +177,6 @@ namespace	Menge
 		}
 
 		m_emitter->play();
-
-		//TODO!???
-		if( m_startPosition > 0.f )
-		{
-			bool stop;
-			m_emitter->update( m_startPosition, stop );
-		}
 
 		return true;
 	}
@@ -284,20 +267,6 @@ namespace	Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::setLeftBorder( float _leftBorder )
-	{
-		if( this->isCompile() == false )
-		{
-            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::setLeftBorder '%s' can't compile"
-                , m_name.c_str()
-                );
-
-			return;
-		}
-
-		return m_emitter->setLeftBorder( _leftBorder );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_update( float _current, float _timing )
 	{
 		if( this->isPlay() == false )
@@ -383,10 +352,12 @@ namespace	Menge
 
 		this->updateVertexColor_( m_vertices, flush.vertexCount );
 
-		if( m_emitterRelative == false )
+		//if( m_emitterRelative == false )
 		{
 			this->updateVertexWM_( m_vertices, flush.vertexCount );
 		}
+
+		const mt::box2f & bb = this->getBoundingBox();
 		
 		for( uint32_t
 			it_mesh = 0,
@@ -423,7 +394,7 @@ namespace	Menge
 				->getMaterial2( stage, PT_TRIANGLELIST, mesh.textures, textures );
 
 			RENDER_SERVICE( m_serviceProvider )
-				->addRenderObject( _viewport, _camera, _clipplane, material, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, nullptr, false );
+				->addRenderObject( _viewport, _camera, _clipplane, material, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, &bb, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -484,16 +455,6 @@ namespace	Menge
 		}
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::restart()
-	{
-		if( this->isActivate() == false )
-		{
-			return;
-		}
-
-		m_emitter->restart();
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::setResourceParticle( ResourceParticle * _resourceParticle )
 	{
 		if( m_resourceParticle == _resourceParticle )
@@ -511,16 +472,6 @@ namespace	Menge
         return m_resourceParticle;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::playFromPosition( float _pos )
-	{
-		if( this->isActivate() == false )
-		{
-			return;
-		}
-
-		m_emitter->seek( _pos );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::setEmitterTranslateWithParticle( bool _with )
 	{
 		m_emitterTranslateWithParticle = _with;
@@ -533,31 +484,23 @@ namespace	Menge
 		m_emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::setEmitterPosition( const mt::vec3f & _position )
+	void ParticleEmitter2::setEmitterRelative( bool _relative )
 	{
-		m_emitterPosition = _position;
+        m_emitterRelative = _relative;
 
 		if( this->isCompile() == false )
 		{
 			return;
 		}
 
-		if( m_emitter->isBackground() == false )
+		if( m_emitterRelative == true )
 		{
-			m_emitter->setPosition( m_emitterPosition );
+			m_emitter->setPositionProvider( this );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::setEmitterRelative( bool _relative )
-	{
-        m_emitterRelative = _relative;
-
-		this->invalidateWorldMatrix();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::setStartPosition( float _pos )
-	{
-		m_startPosition = _pos;
+		else
+		{ 
+			m_emitter->setPositionProvider( nullptr );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::changeEmitterImage( const ConstString & _emitterImageName )
@@ -699,23 +642,9 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_updateBoundingBox( mt::box2f& _boundingBox ) const
 	{
-        (void)_boundingBox;
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_invalidateWorldMatrix()
-	{
-        if( this->isCompile() == false )
-        {
-            return;
-        }
+		const mt::box2f & bb = m_emitter->getBoundingBox();
 
-        if( m_emitterRelative == true )
-        {
-            const mt::vec3f & wm_pos = this->getWorldPosition();
-
-            m_emitter->setPosition( wm_pos );
-        }
+        _boundingBox = bb;
 	}
 	/////////////////////////////////////////////////////////////////////////
 	float ParticleEmitter2::getDuration() const
@@ -733,76 +662,8 @@ namespace	Menge
 
 		return duration;
 	}
-	/////////////////////////////////////////////////////////////////////////
-	float ParticleEmitter2::getLeftBorder() const
-	{
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::getLeftBorder '%s' can't compile"
-                , m_name.c_str()
-                );
-
-            return 0.f;
-        }
-
-        float leftBoard = m_emitter->getLeftBorder();
-
-		return leftBoard;
-	}
-	/////////////////////////////////////////////////////////////////////////
-	float ParticleEmitter2::getRightBorder() const
-	{
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::getRightBorder '%s' can't compile"
-                , m_name.c_str()
-                );
-
-            return 0.f;
-        }
-
-        float rightBoard = m_emitter->getRightBorder();
-
-		return rightBoard;
-	}
 	//////////////////////////////////////////////////////////////////////////
-	mt::box2f ParticleEmitter2::getEmitterBoundingBox() const
-	{
-		mt::box2f box;
-
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::getEmitterBoundingBox '%s' can't compile"
-                , m_name.c_str()
-                );
-
-            return box;
-        }
-
-		m_emitter->getBoundingBox( box );
-
-		return box;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	mt::vec3f ParticleEmitter2::getEmitterPosition() const
-	{
-		mt::vec3f pos;
-
-        if( this->isCompile() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::getEmitterPosition '%s' can't compile"
-                , m_name.c_str()
-                );
-
-            return pos;
-        }
-
-		m_emitter->getPosition( pos );
-
-		return pos;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::setRandomMode( bool _randomMode )
+	void ParticleEmitter2::setEmitterRandomMode( bool _randomMode )
 	{
         m_randomMode = _randomMode;
 
@@ -814,8 +675,15 @@ namespace	Menge
 		m_emitter->setRandomMode( _randomMode );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEmitter2::getRandomMode() const
+	bool ParticleEmitter2::getEmitterRandomMode() const
 	{
         return m_randomMode;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEmitter2::onProviderEmitterPosition( mt::vec3f & _position )
+	{ 
+		const mt::vec3f & w_pos = this->getWorldPosition();
+
+		_position = w_pos;
 	}
 }

@@ -32,7 +32,6 @@ namespace Menge
 		void resume() override;
 		void restart() override;
 		bool update( float _timing, bool & _stop ) override;
-		void setLeftBorder( float _leftBorder ) override;
 		void seek( float _timming ) override;
 		void setLoop( bool _loop ) override;
 		bool getLoop() const override;
@@ -60,7 +59,7 @@ namespace Menge
 
 	public:
 		//void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
-		void getBoundingBox( mt::box2f& _box ) const override;
+		const mt::box2f & getBoundingBox() const override;
 		//void getBoundingBox( Rect & _rect )  const override;
 		void setEmitterTranslateWithParticle( bool _value ) override;
 
@@ -69,8 +68,7 @@ namespace Menge
 		bool changeEmitterModel( float * _points, uint32_t _count ) override;
 		
 	public:
-		void setPosition( const mt::vec3f & _pos ) override;
-		void getPosition( mt::vec3f & _pos ) override;
+		void setPositionProvider( ParticlePositionProviderInterface * _positionProvider ) override;
 
 		void setScale( float _scale ) override;
 
@@ -94,6 +92,8 @@ namespace Menge
 		
 		HM_EMITTER m_emitterId;
 
+		ParticlePositionProviderInterface * m_positionProvider;
+
 		float m_updateSpeed;
 		double m_leftBorder;
 		double m_rightBorder;
@@ -104,10 +104,13 @@ namespace Menge
 		
 		float m_angle;
 
+		mt::box2f m_box;
+
 		bool m_start;
 		bool m_looped;
 
 		bool m_background;
+		bool m_relative;
 	};
 
 	typedef stdex::intrusive_ptr<AstralaxEmitter2> AstralaxEmitter2Ptr;

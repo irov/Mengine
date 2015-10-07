@@ -581,7 +581,7 @@ namespace Menge
 	{
 		if( m_resourceMovie == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.getMovieNode %s resource %s invalid not compile %s:%s"
+			LOGGER_ERROR(m_serviceProvider)("Movie.getMovieNode %s resource %s invalid not compile '%s' type '%s'"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _name.c_str()
@@ -601,7 +601,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.name != _name || layer.type != _type )
+			if( layer.name != _name || (layer.type != _type && _type.empty() == false) )
 			{
 				continue;
 			}
@@ -691,7 +691,7 @@ namespace Menge
 		{
 			const MovieLayer & layer = *it;
 
-			if( layer.name != _name || layer.type != _type )
+			if( layer.name != _name || (layer.type != _type && _type.empty() == false) )
 			{
 				continue;
 			}
@@ -2061,11 +2061,13 @@ namespace Menge
 
 		if( _layer.hasParam( MOVIE_LAYER_PARAM_PARTICLE_TRANSLATE ) == true )
 		{
-			layer_particles->setEmitterTranslateWithParticle( false );
+			layer_particles->setEmitterRelative( true );
+			//layer_particles->setEmitterTranslateWithParticle( true );
 		}
 		else
 		{
-			layer_particles->setEmitterTranslateWithParticle( true );
+			layer_particles->setEmitterRelative( false );
+			//layer_particles->setEmitterTranslateWithParticle( false );
 		}
 
 		if( this->addMovieNode_( _layer, layer_particles, layer_particles, nullptr ) == false )

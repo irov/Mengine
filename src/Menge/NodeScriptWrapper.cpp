@@ -59,6 +59,7 @@
 #	include "MovieInternalObject.h"
 #   include "MovieEvent.h"
 #	include "Animation.h"
+#	include "ParticleEmitter2.h"
 #	include "Model3D.h"
 #	include "HotSpot.h"
 #	include "HotSpotPolygon.h"
@@ -264,11 +265,11 @@ namespace Menge
             return unicode;            
         }
 		//////////////////////////////////////////////////////////////////////////
-		Node * movie_getMovieNode( Movie * _movie, const ConstString & _name, const ConstString & _type )
+		Node * movie_getMovieNode( Movie * _movie, const ConstString & _name )
 		{
 			Node * node;
 			Movie * submovie;
-			if( _movie->getMovieNode( _name, _type, &node, &submovie ) == false )
+			if( _movie->getMovieNode( _name, ConstString::none(), &node, &submovie ) == false )
 			{
 				return nullptr;
 			}
@@ -276,11 +277,11 @@ namespace Menge
 			return node;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool movie_hasMovieNode( Movie * _movie, const ConstString & _name, const ConstString & _type )
+		bool movie_hasMovieNode( Movie * _movie, const ConstString & _name )
 		{
 			Node * node;
 			Movie * submovie;
-			bool successful = _movie->hasMovieNode( _name, _type, &node, &submovie );
+			bool successful = _movie->hasMovieNode( _name, ConstString::none(), &node, &submovie );
 
 			return successful;
 		}
@@ -4923,32 +4924,23 @@ namespace Menge
             }
 
             {
-     //           pybind::interface_<ParticleEmitter, pybind::bases<Node, Animatable> >("ParticleEmitter", false)
-					//.def( "setResourceEmitterContainer", &ParticleEmitter::setResourceEmitterContainer )
-					//.def( "getResourceEmitterContainer", &ParticleEmitter::getResourceEmitterContainer )
-     //               .def( "playFromPosition", &ParticleEmitter::playFromPosition )
-     //               .def( "setLoop", &ParticleEmitter::setLoop )
-     //               .def( "getLoop", &ParticleEmitter::getLoop )
-     //               //.def( "interrupt", &ParticleEmitter::interrupt )
-     //               .def( "setLeftBorder", &ParticleEmitter::setLeftBorder )                    
-     //               .def( "setEmitter", &ParticleEmitter::setEmitter )
-     //               .def( "setEmitterTranslateWithParticle", &ParticleEmitter::setEmitterTranslateWithParticle )
-     //               .def( "setEmitterRelative", &ParticleEmitter::setEmitterRelative )
-					//.def( "setEmitterPosition", &ParticleEmitter::setEmitterPosition )
-     //               .def( "setEmitterImage", &ParticleEmitter::setEmitterImage )
-     //               .def( "removeEmitterImage", &ParticleEmitter::removeEmitterImage )
-     //               .def( "changeEmitterPolygon", &ParticleEmitter::changeEmitterPolygon )
-     //               .def( "removeEmitterPolygon", &ParticleEmitter::removeEmitterPolygon )
-     //               .def( "setStartPosition", &ParticleEmitter::setStartPosition )
-     //               .def( "getEmitterName" , &ParticleEmitter::getEmitterName )
-     //               .def( "getLeftBorder" , &ParticleEmitter::getLeftBorder )
-     //               .def( "getRightBorder" , &ParticleEmitter::getRightBorder )
-     //               .def( "getDuration" , &ParticleEmitter::getDuration )
-     //               .def( "getEmitterBoundingBox", &ParticleEmitter::getEmitterBoundingBox )
-     //               .def( "getEmitterPosition", &ParticleEmitter::getEmitterPosition )
-     //               .def( "setRandomMode", &ParticleEmitter::setRandomMode )
-     //               .def( "getRandomMode", &ParticleEmitter::getRandomMode )
-     //               ;
+                pybind::interface_<ParticleEmitter2, pybind::bases<Node, Animatable> >("ParticleEmitter2", false)
+					.def( "setResourceParticle", &ParticleEmitter2::setResourceParticle )
+					.def( "getResourceParticle", &ParticleEmitter2::getResourceParticle )
+
+					.def( "setEmitterTranslateWithParticle", &ParticleEmitter2::setEmitterTranslateWithParticle )
+					.def( "setEmitterRelative", &ParticleEmitter2::setEmitterRelative )
+
+					.def( "changeEmitterImage", &ParticleEmitter2::changeEmitterImage )
+					.def( "removeEmitterImage", &ParticleEmitter2::removeEmitterImage )
+					.def( "changeEmitterPolygon", &ParticleEmitter2::changeEmitterPolygon )
+					.def( "removeEmitterPolygon", &ParticleEmitter2::removeEmitterPolygon )
+
+					.def( "getDuration", &ParticleEmitter2::getDuration )
+
+					.def( "setEmitterRandomMode", &ParticleEmitter2::setEmitterRandomMode )
+					.def( "getEmitterRandomMode", &ParticleEmitter2::getEmitterRandomMode )                    
+                    ;
 
                 pybind::interface_<SoundEmitter, pybind::bases<Node, Animatable> >("SoundEmitter", false)
 					.def( "setResourceSound", &SoundEmitter::setResourceSound )
@@ -5543,6 +5535,7 @@ namespace Menge
 			pybind::def_functor( "uncacheResources", nodeScriptMethod, &NodeScriptMethod::s_uncacheResources );
 
 			pybind::def_functor( "rotateToIsometric", nodeScriptMethod, &NodeScriptMethod::s_rotateToIsometric );
+			pybind::def_functor( "rotateToDiometric", nodeScriptMethod, &NodeScriptMethod::s_rotateToIsometric );
 			pybind::def_functor( "rotateToTrimetric", nodeScriptMethod, &NodeScriptMethod::s_rotateToTrimetric );
 
 			pybind::def_functor( "hotspotCorrect", nodeScriptMethod, &NodeScriptMethod::s_hotspotCorrect );

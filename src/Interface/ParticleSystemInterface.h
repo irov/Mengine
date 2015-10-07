@@ -66,6 +66,12 @@ namespace Menge
 		float height;
 	};
 
+	class ParticlePositionProviderInterface
+	{
+	public:
+		virtual void onProviderEmitterPosition( mt::vec3f & _position ) = 0;
+	};
+
 	class ParticleEmitterInterface
         : public FactorablePtr
 	{
@@ -97,9 +103,11 @@ namespace Menge
 
 	public:
 		virtual bool isBackground() const = 0;
-		virtual void getBoundingBox( mt::box2f& _box ) const = 0;		
-		virtual void setLeftBorder( float _leftBorder ) = 0;
-		
+
+	public:
+		virtual const mt::box2f & getBoundingBox() const = 0;
+
+	public:						
 		virtual float getLeftBorder() const = 0;
 		virtual float getRightBorder() const = 0;
 		virtual float getDuration() const = 0;
@@ -111,8 +119,7 @@ namespace Menge
 		virtual bool changeEmitterModel( float * _points, uint32_t _count ) = 0;
 
     public:
-		virtual void setPosition( const mt::vec3f & _pos ) = 0;
-		virtual void getPosition( mt::vec3f & _pos ) = 0;
+		virtual void setPositionProvider( ParticlePositionProviderInterface * _positionProvider ) = 0;
 
 		virtual void setScale( float _scale ) = 0;
 

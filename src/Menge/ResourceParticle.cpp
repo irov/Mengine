@@ -129,10 +129,10 @@ namespace Menge
 	{
 		const ConstString & category = this->getCategory();
 
-		m_container = PARTICLE_SERVICE2(m_serviceProvider)
+		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SERVICE2( m_serviceProvider )
 			->createEmitterContainerFromFile( category, m_fileName );
 
-		if( m_container == nullptr )
+		if( container == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceParticle::_compile %s can't create container file '%s'"
 				, m_name.c_str()
@@ -167,6 +167,8 @@ namespace Menge
 			m_resourceImages.push_back( resourceImage );
 		}
 
+		m_container = container;
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -190,6 +192,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImage * ResourceParticle::getAtlasImageResource( uint32_t _atlasId ) const
 	{
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ResourceParticle::getAtlasImageResource %s invalid get atlas image not compile"
+				, this->getName().c_str()
+				);
+
+			return nullptr;
+		}
+
 		if( _atlasId >= m_resourceImages.size() )
 		{
 			LOGGER_ERROR( m_serviceProvider )("ResourceParticle::getAtlasImageResource %s invalid get atlas image index %d count %d"
@@ -208,14 +219,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t ResourceParticle::getAtlasImageCount() const
 	{
-		uint32_t count = m_resourceImages.size();
+		uint32_t count = m_resourceImageNames.size();
 
 		return count;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ParticleEmitterContainerInterface2Ptr & ResourceParticle::getContainer() const
+	ParticleEmitterInterfacePtr ResourceParticle::createEmitter()
 	{
-		return m_container;
+		if( this->isCompile() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ResourceParticle::createEmitter %s not compile"
+				, this->getName().c_str()
+				);
+
+			return nullptr;
+		}
+
+		ParticleEmitterInterfacePtr emitter = m_container->createEmitter();
+
+		return emitter;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

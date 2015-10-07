@@ -2,12 +2,15 @@
 
 #	include <Utils/Logger/Logger.h>
 
+#	include <limits>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxEmitter2::AstralaxEmitter2()
 		: m_serviceProvider( nullptr )
 		, m_emitterId( 0 )
+		, m_positionProvider( nullptr )
 		, m_updateSpeed( 0.f )
 		, m_leftBorder( 0.0 )
 		, m_rightBorder( 0.0 )
@@ -17,6 +20,7 @@ namespace Menge
 		, m_start( false )
 		, m_looped( false )
 		, m_background( false )
+		, m_relative( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -33,6 +37,7 @@ namespace Menge
 
         // set interpolation
         Magic_SetInterpolationMode( m_emitterId, true );
+		Magic_SetEmitterPositionMode( m_emitterId, false );
 
 		m_updateSpeed = Magic_GetUpdateSpeed( m_emitterId );
         m_leftBorder = Magic_GetInterval1( m_emitterId );
@@ -42,6 +47,11 @@ namespace Menge
         {
             return false;
         }
+
+		m_box.minimum.x = -std::numeric_limits<float>::max();
+		m_box.minimum.y = -std::numeric_limits<float>::max();
+		m_box.maximum.x = std::numeric_limits<float>::max();
+		m_box.maximum.y = std::numeric_limits<float>::max();
                
         return true;
     }
@@ -69,6 +79,13 @@ namespace Menge
 				m_rect.z = 1024.f;
 				m_rect.w = 1024.f;
 
+				MAGIC_POSITION pos;
+				pos.x = 0.f;
+				pos.y = 0.f;
+				pos.z = 0.f;
+
+				Magic_SetEmitterPosition( m_emitterId, &pos );
+
 				m_background = false;
 			}
 			else
@@ -92,9 +109,6 @@ namespace Menge
 		}
 		else
 		{
-			MAGIC_POSITION pos;
-			Magic_GetEmitterPosition( m_emitterId, &pos );
-
 			MAGIC_VIEW view;
 			if( Magic_GetView( m_emitterId, &view ) != MAGIC_SUCCESS )
 			{
@@ -112,16 +126,9 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter2::getBoundingBox( mt::box2f& _box ) const
+	const mt::box2f & AstralaxEmitter2::getBoundingBox() const
 	{
-		(void)_box;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter2::setLeftBorder( float _leftBorder )
-	{
-		m_leftBorder = (double)_leftBorder;
-
-		Magic_SetInterval1( m_emitterId, m_leftBorder );
+		return m_box;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::play()
@@ -130,7 +137,6 @@ namespace Menge
 
 		if( Magic_IsInterval1( m_emitterId ) == true )
 		{
-			//Magic_SetInterval1( m_id, m_leftBorder );
 			Magic_EmitterToInterval1( m_emitterId, 1.f, nullptr );
 		}
 
@@ -141,7 +147,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setLoop( bool _loop )
 	{
-		Magic_SetLoopMode( m_emitterId, _loop? 1: 0 );
+		Magic_SetLoopMode( m_emitterId, _loop ? 1 : 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::getLoop() const
@@ -240,11 +246,39 @@ namespace Menge
 			}
 
 			MAGIC_CAMERA camera;
+			camera.mode = MAGIC_CAMERA_FREE;
 			camera.pos = view.pos;
 			camera.dir = view.dir;
 
 			Magic_SetCamera( &camera );
 		}
+		else
+		{
+			MAGIC_CAMERA camera;
+			camera.mode = MAGIC_CAMERA_ORTHO;
+			camera.pos.x = 0.f;
+			camera.pos.y = 0.f;
+			camera.pos.z = 0.f;
+
+			camera.dir.x = 0.f;
+			camera.dir.y = 0.f;
+			camera.dir.z = 1.f;
+
+			Magic_SetCamera( &camera );
+		}
+
+		//if( m_positionProvider != nullptr )
+		//{
+		//	mt::vec3f pos;
+		//	m_positionProvider->onProviderEmitterPosition( pos );
+
+		//	MAGIC_POSITION mp;
+		//	mp.x = pos.x;
+		//	mp.y = pos.y;
+		//	mp.z = pos.z;
+
+		//	Magic_SetEmitterPosition( m_emitterId, &mp );
+		//}
 
 		float total_timing = _timing / m_updateSpeed;
 		
@@ -308,24 +342,31 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter2::setPosition( const mt::vec3f & _pos )
+	void AstralaxEmitter2::setPositionProvider( ParticlePositionProviderInterface * _positionProvider )
 	{
-		MAGIC_POSITION pos;
-		pos.x = _pos.x;
-		pos.y = _pos.y;
-        pos.z = _pos.z;
+		if( m_background == true )
+		{
+			return;
+		}
 
-		Magic_SetEmitterPosition( m_emitterId, &pos );
-	}  
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter2::getPosition( mt::vec3f & _pos )
-	{
-		MAGIC_POSITION pos;
-		Magic_GetEmitterPosition( m_emitterId, &pos );
+		m_positionProvider = _positionProvider;
 
-		_pos.x = pos.x;
-		_pos.y = pos.y;
-        _pos.z = pos.z;
+		//if( m_positionProvider != nullptr )
+		//{
+		//	Magic_SetEmitterPositionMode( m_emitterId, true );
+
+		//	mt::vec3f pos;
+		//	m_positionProvider->onProviderEmitterPosition( pos );
+
+		//	MAGIC_POSITION mp;
+		//	mp.x = pos.x;
+		//	mp.y = pos.y;
+		//	mp.z = pos.z;
+
+		//	Magic_SetEmitterPosition( m_emitterId, &mp );
+
+		//	Magic_SetEmitterPositionMode( m_emitterId, false );
+		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setScale( float _scale )
@@ -492,7 +533,7 @@ namespace Menge
 		}
 
 		MAGIC_RENDERING_START start;
-		void * context = Magic_PrepareRenderArrays( m_emitterId, &start, 100, MAGIC_ABGR );
+		void * context = Magic_PrepareRenderArrays( m_emitterId, &start, 100, MAGIC_ABGR, true );
 
 		if( start.vertices == 0 || start.indexes == 0 )
 		{
@@ -554,10 +595,8 @@ namespace Menge
 
 		Magic_FillRenderArrays( _flush.context );
 
-		uint32_t indexOffset = 0;
-
 		MAGIC_RENDER_VERTICES vrts;
-		while( Magic_GetVertices( _flush.context, &vrts ) == true )
+		while( Magic_GetVertices( _flush.context, &vrts ) == MAGIC_SUCCESS )
 		{
 			if( _flush.meshCount >= _meshLimit )
 			{
@@ -566,14 +605,12 @@ namespace Menge
 
 			ParticleMesh & mesh = _meshes[_flush.meshCount];
 
-			mesh.vertexOffset = indexOffset * 4 / 6;
-			mesh.vertexCount = vrts.vertices * 4 / 6;
-			mesh.indexOffset = indexOffset;
-			mesh.indexCount = vrts.vertices;
+			mesh.vertexOffset = vrts.starting_index * 4 / 6;
+			mesh.vertexCount = vrts.indexes_count * 4 / 6;
+			mesh.indexOffset = vrts.starting_index;
+			mesh.indexCount = vrts.indexes_count;
 
-			RenderIndices vertexOffset = indexOffset * 4 / 6;
-
-			if( vertexOffset != 0 )
+			if( mesh.vertexOffset != 0 )
 			{
 				for( RenderIndices
 					*it = _indices + mesh.indexOffset,
@@ -583,7 +620,7 @@ namespace Menge
 				{
 					RenderIndices & indices = *it;
 
-					indices -= vertexOffset;
+					indices -= mesh.vertexOffset;
 				}
 			}
 
@@ -614,10 +651,8 @@ namespace Menge
 			mesh.textures = m.textures;
 
 			_flush.meshCount++;
-
-			indexOffset += vrts.vertices;
 		}
-		
+	
 		mt::mat4f vpm;
 
 		bool is3d = this->is3d();
@@ -655,6 +690,8 @@ namespace Menge
 		for( uint32_t i = 0; i != _flush.vertexCount; ++i )
 		{
 			RenderVertex2D & v = _vertices[i];
+
+			mt::vec3f v_old = v.pos;
 
 			mt::vec3f v_vpm;
 			mt::mul_v3_v3_m4_homogenize( v_vpm, v.pos, vpm );

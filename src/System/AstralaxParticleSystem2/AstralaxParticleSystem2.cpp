@@ -69,8 +69,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticleSystem2::finalize()
 	{
-		Magic_UnloadAllEmitters();
-		Magic_DestroyAll();
+		uint32_t count = m_factoryPoolAstralaxEmitterContainer.countObject();
+
+		if( count != 0 )
+		{
+			LOGGER_ERROR( m_serviceProvider )("AstralaxParticleSystem2::finalize have %d container"
+				, count
+				);
+		}
+		else
+		{
+			Magic_DestroyAll();
+		}				
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )

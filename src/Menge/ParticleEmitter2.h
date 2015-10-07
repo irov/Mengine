@@ -26,6 +26,7 @@ namespace Menge
 	class ParticleEmitter2
 		: public Node
 		, public Animatable
+		, public ParticlePositionProviderInterface
 	{
 	public:
 		ParticleEmitter2();
@@ -41,21 +42,9 @@ namespace Menge
 		bool _interrupt( uint32_t _enumerator ) override;
 
 	public:
-		void pause();
-		void restart();
-
-		void setLeftBorder( float _leftBorder );
-		void playFromPosition( float _pos );
-
 		void setEmitterTranslateWithParticle( bool _with );
-		void setEmitterPosition( const mt::vec3f & _position );
 		void setEmitterRelative( bool _relative );
-		void setStartPosition( float _pos );
-        		
-		//for astralax plugin
-		mt::vec3f getEmitterPosition() const;
-		mt::box2f getEmitterBoundingBox() const;
-		
+
 		void changeEmitterImage( const ConstString & _emitterImageName );
         void removeEmitterImage();
 
@@ -66,14 +55,9 @@ namespace Menge
         ResourceParticle * getResourceParticle() const;
 
 		float getDuration() const;
-		float getLeftBorder() const;
-		float getRightBorder() const;
 		
-		void setRandomMode( bool _randomMode );
-		bool getRandomMode() const;
-
-    protected:
-        void getRelativePosition( mt::vec3f & _pos );
+		void setEmitterRandomMode( bool _randomMode );
+		bool getEmitterRandomMode() const;
 
     protected:
         void _setLoop( bool _value ) override;
@@ -91,7 +75,6 @@ namespace Menge
 		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane ) override;
 
 		void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
-		void _invalidateWorldMatrix() override;
 
 	private:
 		bool compileEmitterImage_( const ParticleEmitterInterfacePtr & _emitter );
@@ -100,6 +83,9 @@ namespace Menge
     protected:
 		void updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount );
 		void updateVertexWM_( RenderVertex2D * _vertices, uint32_t _verticesCount );
+
+	protected:
+		void onProviderEmitterPosition( mt::vec3f & _position ) override;
 
 	protected:
 		ResourceHolder<ResourceParticle> m_resourceParticle;
@@ -111,12 +97,8 @@ namespace Menge
         Polygon m_polygon;
 
         bool m_emitterRelative;
-		
-        mt::vec3f m_emitterPosition;
 
         bool m_randomMode;
-
-		float m_startPosition;
 				
 		RenderVertex2D * m_vertices;
 		uint32_t m_vertexCount;

@@ -19,9 +19,9 @@ namespace Metacode
         ar.readPOD( version );
 
         _readVersion = version;
-        _needVersion = 92;
+        _needVersion = 93;
 
-        if( version != 92 )
+        if( version != 93 )
         {
             return false;
         }
@@ -1297,6 +1297,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     Meta_DataBlock::Meta_Resource::Meta_Resource()
         : Metabuf::Metadata()
+        , Unique_successful(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1324,6 +1325,17 @@ namespace Metacode
                 {
                     return false;
                 }
+    
+                return true;
+            }break;
+        case 3:
+            {
+                if( this->read( _buff, _size, _read, this->Unique ) == false )
+                {
+                    return false;
+                }
+    
+                this->Unique_successful = true;
     
                 return true;
             }break;
@@ -1393,7 +1405,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 3:
+        case 4:
             {
                 includes_Meta_Sequence.reserve( _count );
                 return true;
@@ -1413,7 +1425,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 3:
+        case 4:
             {
                 Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence & metadata = includes_Meta_Sequence.emplace_back();
     
@@ -1448,7 +1460,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::getId() const
     {
-        return 3;
+        return 4;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -1528,7 +1540,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -1591,7 +1603,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -1654,7 +1666,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -1717,7 +1729,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -1780,7 +1792,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -1844,7 +1856,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->Container_Name ) == false )
                 {
@@ -1853,7 +1865,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->Emitter_Name ) == false )
                 {
@@ -1862,7 +1874,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->EmitterRelative_Value ) == false )
                 {
@@ -1871,7 +1883,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->Offset_Value ) == false )
                 {
@@ -1936,7 +1948,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -1945,7 +1957,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->Folder_Path ) == false )
                 {
@@ -2059,7 +2071,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -2124,7 +2136,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->File_Codec ) == false )
                 {
@@ -2135,7 +2147,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->File_Converter ) == false )
                 {
@@ -2146,7 +2158,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -2212,7 +2224,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->File_Codec ) == false )
                 {
@@ -2223,7 +2235,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->File_MaxSize ) == false )
                 {
@@ -2234,7 +2246,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->File_NoExist ) == false )
                 {
@@ -2245,7 +2257,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -2313,7 +2325,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->File_Alpha ) == false )
                 {
@@ -2324,7 +2336,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->File_Codec ) == false )
                 {
@@ -2335,7 +2347,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->File_MaxSize ) == false )
                 {
@@ -2344,7 +2356,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 9:
+        case 10:
             {
                 if( this->read( _buff, _size, _read, this->File_NoExist ) == false )
                 {
@@ -2355,7 +2367,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->File_Offset ) == false )
                 {
@@ -2366,7 +2378,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -2375,7 +2387,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->File_Size ) == false )
                 {
@@ -2440,7 +2452,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->Color_Value ) == false )
                 {
@@ -2449,7 +2461,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->Size_Value ) == false )
                 {
@@ -2515,7 +2527,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->Image_Alpha ) == false )
                 {
@@ -2526,7 +2538,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->Image_MaxSize ) == false )
                 {
@@ -2535,7 +2547,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->Image_Name ) == false )
                 {
@@ -2544,7 +2556,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->Image_Offset ) == false )
                 {
@@ -2555,7 +2567,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->Image_Size ) == false )
                 {
@@ -2566,7 +2578,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->Image_UV ) == false )
                 {
@@ -2631,7 +2643,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 7:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->Image_MaxSize ) == false )
                 {
@@ -2640,7 +2652,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->Image_NameAlpha ) == false )
                 {
@@ -2649,7 +2661,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->Image_NameRGB ) == false )
                 {
@@ -2658,7 +2670,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 9:
+        case 10:
             {
                 if( this->read( _buff, _size, _read, this->Image_Offset ) == false )
                 {
@@ -2669,7 +2681,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->Image_Size ) == false )
                 {
@@ -2680,7 +2692,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->Image_UVAlpha ) == false )
                 {
@@ -2689,7 +2701,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->Image_UVRGB ) == false )
                 {
@@ -2752,7 +2764,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->Internal_Group ) == false )
                 {
@@ -2761,7 +2773,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->Internal_Name ) == false )
                 {
@@ -2826,7 +2838,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->File_Converter ) == false )
                 {
@@ -2837,7 +2849,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->File_Dataflow ) == false )
                 {
@@ -2848,7 +2860,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -2857,7 +2869,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->Image_Resource ) == false )
                 {
@@ -2926,7 +2938,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 11:
+        case 12:
             {
                 if( this->read( _buff, _size, _read, this->Anchor_Point ) == false )
                 {
@@ -2937,7 +2949,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 13:
+        case 14:
             {
                 if( this->read( _buff, _size, _read, this->Bounds_Box ) == false )
                 {
@@ -2948,7 +2960,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->Duration_Value ) == false )
                 {
@@ -2957,7 +2969,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->FrameDuration_Value ) == false )
                 {
@@ -2966,7 +2978,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->Height_Value ) == false )
                 {
@@ -2975,7 +2987,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->KeyFramesPackPath_Codec ) == false )
                 {
@@ -2986,7 +2998,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 9:
+        case 10:
             {
                 if( this->read( _buff, _size, _read, this->KeyFramesPackPath_Converter ) == false )
                 {
@@ -2997,7 +3009,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->KeyFramesPackPath_Path ) == false )
                 {
@@ -3006,7 +3018,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 10:
+        case 11:
             {
                 if( this->read( _buff, _size, _read, this->Loop_Segment ) == false )
                 {
@@ -3017,7 +3029,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 12:
+        case 13:
             {
                 if( this->read( _buff, _size, _read, this->Offset_Point ) == false )
                 {
@@ -3028,7 +3040,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->Width_Value ) == false )
                 {
@@ -3051,19 +3063,19 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 16:
+        case 17:
             {
                 includes_Meta_MovieCamera3D.reserve( _count );
                 return true;
                 break;
             }
-        case 14:
+        case 15:
             {
                 includes_Meta_MovieLayer2D.reserve( _count );
                 return true;
                 break;
             }
-        case 15:
+        case 16:
             {
                 includes_Meta_MovieLayer3D.reserve( _count );
                 return true;
@@ -3083,7 +3095,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 16:
+        case 17:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & metadata = includes_Meta_MovieCamera3D.emplace_back();
     
@@ -3095,7 +3107,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 14:
+        case 15:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & metadata = includes_Meta_MovieLayer2D.emplace_back();
     
@@ -3107,7 +3119,7 @@ namespace Metacode
                 return true;
                 break;
             }
-        case 15:
+        case 16:
             {
                 Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & metadata = includes_Meta_MovieLayer3D.emplace_back();
     
@@ -3142,7 +3154,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::getId() const
     {
-        return 16;
+        return 17;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -3259,7 +3271,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::getId() const
     {
-        return 14;
+        return 15;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -3518,7 +3530,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::getId() const
     {
-        return 15;
+        return 16;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -3767,7 +3779,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->AtlasCount_Value ) == false )
                 {
@@ -3776,7 +3788,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->File_Converter ) == false )
                 {
@@ -3787,7 +3799,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -3810,7 +3822,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 6:
+        case 7:
             {
                 includes_Meta_Atlas.reserve( _count );
                 return true;
@@ -3830,7 +3842,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 6:
+        case 7:
             {
                 Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas & metadata = includes_Meta_Atlas.emplace_back();
     
@@ -3865,7 +3877,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas::getId() const
     {
-        return 6;
+        return 7;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -3947,7 +3959,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->Loop_Value ) == false )
                 {
@@ -3958,7 +3970,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->Shuffle_Value ) == false )
                 {
@@ -3983,7 +3995,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 5:
+        case 6:
             {
                 includes_Meta_Tracks.reserve( _count );
                 return true;
@@ -4003,7 +4015,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 5:
+        case 6:
             {
                 Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks & metadata = includes_Meta_Tracks.emplace_back();
     
@@ -4038,7 +4050,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::getId() const
     {
-        return 5;
+        return 6;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourcePlaylist::Meta_Tracks::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -4201,7 +4213,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->Polygon_Value ) == false )
                 {
@@ -4268,7 +4280,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 6:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->DefaultVolume_Value ) == false )
                 {
@@ -4279,7 +4291,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->File_Codec ) == false )
                 {
@@ -4290,7 +4302,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->File_Converter ) == false )
                 {
@@ -4301,7 +4313,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -4310,7 +4322,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->IsStreamable_Value ) == false )
                 {
@@ -4375,7 +4387,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->Atlas_Path ) == false )
                 {
@@ -4384,7 +4396,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->Skeleton_Path ) == false )
                 {
@@ -4407,7 +4419,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 5:
+        case 6:
             {
                 includes_Meta_Image.reserve( _count );
                 return true;
@@ -4427,7 +4439,7 @@ namespace Metacode
     
         switch( _includes )
         {
-        case 5:
+        case 6:
             {
                 Meta_DataBlock::Meta_ResourceSpine::Meta_Image & metadata = includes_Meta_Image.emplace_back();
     
@@ -4462,7 +4474,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t Meta_DataBlock::Meta_ResourceSpine::Meta_Image::getId() const
     {
-        return 5;
+        return 6;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Meta_DataBlock::Meta_ResourceSpine::Meta_Image::_parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id )
@@ -4548,7 +4560,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->File_Alpha ) == false )
                 {
@@ -4559,7 +4571,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->File_Codec ) == false )
                 {
@@ -4570,7 +4582,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->File_Converter ) == false )
                 {
@@ -4581,7 +4593,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 9:
+        case 10:
             {
                 if( this->read( _buff, _size, _read, this->File_Duration ) == false )
                 {
@@ -4592,7 +4604,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->File_FrameRate ) == false )
                 {
@@ -4603,7 +4615,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->File_NoSeek ) == false )
                 {
@@ -4614,7 +4626,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->File_Path ) == false )
                 {
@@ -4678,7 +4690,7 @@ namespace Metacode
     
         switch( _id )
         {
-        case 3:
+        case 4:
             {
                 if( this->read( _buff, _size, _read, this->WindowBackground_ResourceImageName ) == false )
                 {
@@ -4689,7 +4701,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 17:
+        case 18:
             {
                 if( this->read( _buff, _size, _read, this->WindowBottom_Offset ) == false )
                 {
@@ -4698,7 +4710,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 9:
+        case 10:
             {
                 if( this->read( _buff, _size, _read, this->WindowBottom_ResourceImageName ) == false )
                 {
@@ -4707,7 +4719,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 19:
+        case 20:
             {
                 if( this->read( _buff, _size, _read, this->WindowLeft_Offset ) == false )
                 {
@@ -4716,7 +4728,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 11:
+        case 12:
             {
                 if( this->read( _buff, _size, _read, this->WindowLeft_ResourceImageName ) == false )
                 {
@@ -4725,7 +4737,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 18:
+        case 19:
             {
                 if( this->read( _buff, _size, _read, this->WindowLeftBottom_Offset ) == false )
                 {
@@ -4734,7 +4746,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 10:
+        case 11:
             {
                 if( this->read( _buff, _size, _read, this->WindowLeftBottom_ResourceImageName ) == false )
                 {
@@ -4743,7 +4755,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 12:
+        case 13:
             {
                 if( this->read( _buff, _size, _read, this->WindowLeftTop_Offset ) == false )
                 {
@@ -4752,7 +4764,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 4:
+        case 5:
             {
                 if( this->read( _buff, _size, _read, this->WindowLeftTop_ResourceImageName ) == false )
                 {
@@ -4761,7 +4773,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 15:
+        case 16:
             {
                 if( this->read( _buff, _size, _read, this->WindowRight_Offset ) == false )
                 {
@@ -4770,7 +4782,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 7:
+        case 8:
             {
                 if( this->read( _buff, _size, _read, this->WindowRight_ResourceImageName ) == false )
                 {
@@ -4779,7 +4791,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 16:
+        case 17:
             {
                 if( this->read( _buff, _size, _read, this->WindowRightBottom_Offset ) == false )
                 {
@@ -4788,7 +4800,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 8:
+        case 9:
             {
                 if( this->read( _buff, _size, _read, this->WindowRightBottom_ResourceImageName ) == false )
                 {
@@ -4797,7 +4809,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 14:
+        case 15:
             {
                 if( this->read( _buff, _size, _read, this->WindowRightTop_Offset ) == false )
                 {
@@ -4806,7 +4818,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 6:
+        case 7:
             {
                 if( this->read( _buff, _size, _read, this->WindowRightTop_ResourceImageName ) == false )
                 {
@@ -4815,7 +4827,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 13:
+        case 14:
             {
                 if( this->read( _buff, _size, _read, this->WindowTop_Offset ) == false )
                 {
@@ -4824,7 +4836,7 @@ namespace Metacode
     
                 return true;
             }break;
-        case 5:
+        case 6:
             {
                 if( this->read( _buff, _size, _read, this->WindowTop_ResourceImageName ) == false )
                 {

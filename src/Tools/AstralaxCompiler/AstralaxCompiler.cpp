@@ -112,7 +112,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		message_error("not found 'in' param\n"
 			);
 
-		return 1;
+		return 0;
 	}
 
 	if( out.empty() == true )
@@ -120,7 +120,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		message_error("not found 'out' param\n"
 			);
 
-		return 1;
+		return 0;
 	}
 
 	if( csa.empty() == true )
@@ -128,10 +128,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		message_error("not found 'csa' param\n"
 			);
 
-		return 1;
+		return 0;
 	}
 
-	WCHAR szBuffer[512];
+	WCHAR szBuffer[MAX_PATH];
 	if( astralax.empty() == true )
 	{
 		const WCHAR * regPath = L"Software\\Astralax\\Magic Particles 3D (Dev) 3.11\\Path";
@@ -143,7 +143,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 				, regPath
 				);
 
-			return 1;
+			return 0;
 		}
 
 		DWORD dwBufferSize = sizeof(szBuffer);
@@ -153,7 +153,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 				, regPath
 				);
 
-			return 1;
+			return 0;
 		}
 	}
 	else
@@ -209,7 +209,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			, lpCommandLine
 			);
 
-		return 1;
+		return 0;
 	}
 
 	CloseHandle( lpProcessInformation.hThread );
@@ -228,7 +228,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			, exit_code
 			);
 
-		return 1;
+		return 0;
 	}
 
 	if( info.empty() == false )
@@ -245,7 +245,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 				, outCanonicalize
 				);
 
-			return 1;
+			return 0;
 		}
 
 		fseek( f, 0, SEEK_END );
@@ -264,7 +264,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 				, outCanonicalize
 				);
 
-			return 1;
+			return 0;
 		}
 
 		if( mf == MAGIC_UNKNOWN )
@@ -273,7 +273,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 				, outCanonicalize
 				);
 
-			return 1;
+			return 0;
 		}
 
 		int atlasCount = Magic_GetStaticAtlasCount( mf );
@@ -320,14 +320,15 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 				, err
 				);
 
-			return 1;
+			return 0;
 		}
 
-		CHAR s_atlasCount[16];
-		sprintf_s( s_atlasCount, 16, "%d", atlasCount );
+		//CHAR s_atlasCount[16];
+		//sprintf_s( s_atlasCount, 16, "%d", atlasCount );
 
-		fputs( s_atlasCount, f_info );
-		fputs( "\n", f_info );
+		//fputs( s_atlasCount, f_info );
+		//fputs( "\n", f_info );
+		fprintf_s( f_info, "%d\n", atlasCount );
 
 		for( TVectorAtlas::const_iterator
 			it = atlas.begin(),
@@ -337,20 +338,23 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		{
 			const AtlasDesc & desc = *it;
 
-			fputs( desc.path.c_str(), f_info );
-			fputs( "\n", f_info );
+			fprintf_s( f_info, "%s\n", desc.path.c_str() );
+			//fputs( desc.path.c_str(), f_info );
+			//fputs( "\n", f_info );
 
-			CHAR s_atlasWidth[16];
-			sprintf_s( s_atlasWidth, 16, "%d", desc.width );
+			//CHAR s_atlasWidth[16];
+			//sprintf_s( s_atlasWidth, 16, "%d", desc.width );
+			fprintf_s( f_info, "%d\n", desc.width );
 
-			fputs( s_atlasWidth, f_info );
-			fputs( "\n", f_info );  
+			//fputs( s_atlasWidth, f_info );
+			//fputs( "\n", f_info );  
 			 
-			CHAR s_atlasHeight[16];
-			sprintf_s( s_atlasHeight, 16, "%d", desc.height );
+			//CHAR s_atlasHeight[16];
+			//sprintf_s( s_atlasHeight, 16, "%d", desc.height );
+			fprintf_s( f_info, "%d\n", desc.height );
 
-			fputs( s_atlasHeight, f_info );
-			fputs( "\n", f_info );
+			//fputs( s_atlasHeight, f_info );
+			//fputs( "\n", f_info );
 		}
 
 		fclose( f_info );

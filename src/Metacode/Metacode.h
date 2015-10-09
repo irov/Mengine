@@ -838,6 +838,35 @@ namespace Metacode
                 std::swap( _value, this->Type);
             }
             
+            bool has_Unique() const
+            {
+                return Unique_successful;
+            }
+            
+            bool get_Unique( bool & _value ) const
+            {
+                if( Unique_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->Unique;
+            
+                return true;
+            }
+            
+            bool swap_Unique( bool & _value ) const
+            {
+                if( Unique_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap( _value, this->Unique);
+            
+                return true;
+            }
+            
         protected:
             bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
             bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
@@ -848,6 +877,8 @@ namespace Metacode
         protected:
             mutable Menge::ConstString Name;
             mutable Menge::ConstString Type;
+            bool Unique_successful;
+            mutable bool Unique;
         };
         
         class Meta_ResourceAnimation

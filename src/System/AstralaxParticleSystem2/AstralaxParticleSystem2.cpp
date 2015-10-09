@@ -58,6 +58,16 @@ namespace Menge
 
 		const char * version = Magic_GetVersion();
 
+		if( strstr( version, MAGIC_API ) == nullptr )
+		{
+			LOGGER_CRITICAL( m_serviceProvider )("Astralax Magic Particles Version: %s but need %s"
+				, version
+				, MAGIC_API
+				);
+
+			return false;
+		}
+
 		LOGGER_WARNING( m_serviceProvider )("Astralax Magic Particles Version: %s"
 			, version
 			);

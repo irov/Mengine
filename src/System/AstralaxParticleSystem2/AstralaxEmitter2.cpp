@@ -147,7 +147,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setLoop( bool _loop )
 	{
-		Magic_SetLoopMode( m_emitterId, _loop ? 1 : 0 );
+		Magic_SetLoopMode( m_emitterId, _loop ? MAGIC_LOOP : MAGIC_NOLOOP );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::getLoop() const
@@ -165,7 +165,7 @@ namespace Menge
 		}
 
 		Magic_Update( m_emitterId, 0.f );
-		Magic_SetLoopMode( m_emitterId, 0 );
+		Magic_SetLoopMode( m_emitterId, MAGIC_NOLOOP );
 		Magic_SetInterrupt( m_emitterId, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -388,11 +388,11 @@ namespace Menge
 	{
 		m_angle = _radians / mt::m_pi * 180.f;
 
-		Magic_SetDiagramAddition( m_emitterId, MAGIC_DIAGRAM_DIRECTION, -1, m_angle );
+		Magic_SetDiagramAddition( m_emitterId, -1, MAGIC_DIAGRAM_DIRECTION, m_angle );
 		int k_par = Magic_GetParticlesTypeCount( m_emitterId );
 		for( int j = 0; j < k_par; j++ )
 		{
-			Magic_SetDiagramAddition( m_emitterId, MAGIC_DIAGRAM_DIRECTION, j, m_angle );
+			Magic_SetDiagramAddition( m_emitterId, j, MAGIC_DIAGRAM_DIRECTION, m_angle );
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -690,8 +690,6 @@ namespace Menge
 		for( uint32_t i = 0; i != _flush.vertexCount; ++i )
 		{
 			RenderVertex2D & v = _vertices[i];
-
-			mt::vec3f v_old = v.pos;
 
 			mt::vec3f v_vpm;
 			mt::mul_v3_v3_m4_homogenize( v_vpm, v.pos, vpm );

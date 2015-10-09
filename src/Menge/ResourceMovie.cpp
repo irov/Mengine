@@ -312,6 +312,21 @@ namespace Menge
                 continue;
             }
 
+			if( layer.type == CONST_STRING( m_serviceProvider, MovieSceneEffect ) )
+			{
+				if( layer.isThreeD() == true )
+				{
+					LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' invalid layer '%d' SceneEffect not be threeD"
+						, this->getName().c_str()
+						, layer.index
+						);
+
+					layers_successful = false;
+
+					continue;
+				}
+			}
+
 			if( layer.type == CONST_STRING(m_serviceProvider, MovieSceneEffect) 
 				|| layer.type == CONST_STRING(m_serviceProvider, MovieText)
 				|| layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) 				

@@ -316,7 +316,7 @@ namespace Menge
 			{
 				if( layer.isThreeD() == true )
 				{
-					LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' invalid layer '%d' SceneEffect not be threeD"
+					LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' invalid layer '%d' SceneEffect should not be threeD"
 						, this->getName().c_str()
 						, layer.index
 						);

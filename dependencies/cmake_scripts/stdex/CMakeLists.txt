@@ -16,6 +16,7 @@ ${SOURCE_DIR}/src/const_string_holder_none.cpp
 ${SOURCE_DIR}/src/const_string_holder_local.cpp
 ${SOURCE_DIR}/src/xml_sax_parser.cpp
 ${SOURCE_DIR}/src/ini.cpp
+${SOURCE_DIR}/src/thread_guard.cpp
 )
 
 #add_definitions(-Dstdex_allocator_disable)

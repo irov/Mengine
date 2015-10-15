@@ -82,6 +82,6 @@ namespace Menge
 			return n;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		size_t getTextureMemorySize( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format );
+		uint32_t getTextureMemorySize( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format );
 	}
 }

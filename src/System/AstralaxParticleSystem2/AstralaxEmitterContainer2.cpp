@@ -179,7 +179,7 @@ namespace Menge
 
 		AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter.createObjectT();
 
-        if( emitter->initialize( m_serviceProvider, id ) == false )
+        if( emitter->initialize( m_serviceProvider, this, id ) == false )
         {
             return nullptr;
         }

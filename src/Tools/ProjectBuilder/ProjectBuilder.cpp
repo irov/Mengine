@@ -179,6 +179,8 @@ namespace Menge
 
 	static bool initialize()
 	{
+		stdex_allocator_initialize();
+
 		if( SERVICE_CREATE( ServiceProvider, &serviceProvider ) == false )
 		{
 			return false;
@@ -870,7 +872,7 @@ static void s_error( const wchar_t * _msg )
 		);
 }
 //////////////////////////////////////////////////////////////////////////
-static bool getRegValue(const WCHAR * _path, WCHAR * _value )
+static bool getRegValue( const WCHAR * _path, WCHAR * _value, DWORD _size )
 {
 	HKEY hKey;
 	LONG lRes = RegOpenKeyEx(HKEY_LOCAL_MACHINE, _path, 0, KEY_READ, &hKey);  // Check Python x32
@@ -889,7 +891,7 @@ static bool getRegValue(const WCHAR * _path, WCHAR * _value )
 		return false;
 	}
 		
-	DWORD dwBufferSize;
+	DWORD dwBufferSize = _size;
 	LONG nError = ::RegQueryValueEx( hKey, L"", 0, NULL, (LPBYTE)_value, &dwBufferSize );
 
 	RegCloseKey( hKey );
@@ -935,7 +937,7 @@ bool run()
 
 	{
 		WCHAR szPythonPath[512];
-		if( getRegValue( L"SOFTWARE\\Python\\PythonCore\\3.4\\PythonPath", szPythonPath ) == false )
+		if( getRegValue( L"SOFTWARE\\Python\\PythonCore\\3.4\\PythonPath", szPythonPath, 512 ) == false )
 		{
 			LOGGER_ERROR(Menge::serviceProvider)("invalid get reg value '%ls'"
 				, L"SOFTWARE\\Python\\PythonCore\\3.4\\PythonPath"
@@ -1003,7 +1005,7 @@ bool run()
 
 	{
 		WCHAR szPythonPath[512];
-		getRegValue( L"SOFTWARE\\Python\\PythonCore\\3.4\\PythonPath", szPythonPath );
+		getRegValue( L"SOFTWARE\\Python\\PythonCore\\3.4\\PythonPath", szPythonPath, 512 );
 
 		WCHAR * ch = wcstok( szPythonPath, L";" );
 

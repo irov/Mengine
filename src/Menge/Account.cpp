@@ -350,7 +350,7 @@ namespace Menge
 		return stream;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    CacheBufferID Account::loadBinaryFile( const ConstString & _fileName, const void ** _data, size_t & _size )
+	MemoryCacheBufferInterfacePtr Account::loadBinaryFile( const ConstString & _fileName )
     {        
         InputStreamInterfacePtr stream = this->openReadBinaryFile( _fileName );           
 
@@ -361,27 +361,22 @@ namespace Menge
                 , _fileName.c_str()
                 );
 
-            return 0;
+            return nullptr;
         }
 		
-		CacheBufferID bufferId;
-		unsigned char * data_memory;
-		size_t data_size;
+		MemoryCacheBufferInterfacePtr binaryBuffer;
 		
-		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_ACCOUNT_DATA), GET_MAGIC_VERSION(MAGIC_ACCOUNT_DATA), bufferId, &data_memory, data_size ) == false )
+		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), binaryBuffer ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Account::loadBinaryFile: account %ls invalid load stream archive %s"
 				, m_name.c_str()
 				, _fileName.c_str()
 				);
 
-			return false;
+			return nullptr;
 		}
 
-		*_data = data_memory;
-		_size = data_size;
-
-        return bufferId;
+		return binaryBuffer;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Account::writeBinaryFile( const ConstString & _fileName, const void * _data, size_t _size )

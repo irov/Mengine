@@ -25,7 +25,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     static bool s_writeCrashDump( EXCEPTION_POINTERS * pExceptionPointers )
     {
-        HANDLE hFile = CreateFile( g_crashDumpExceptionHandlerData->dumpPath.c_str(), GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
+		HANDLE hFile = CreateFile( g_crashDumpExceptionHandlerData->dumpPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
 
         if( hFile == INVALID_HANDLE_VALUE ) 
         {
@@ -62,12 +62,14 @@ namespace Menge
 
         exinfo.ThreadId = ::GetCurrentThreadId();
         exinfo.ExceptionPointers = pExceptionPointers;
-        exinfo.ClientPointers = FALSE;
+        exinfo.ClientPointers = TRUE;
 
         HANDLE hProcess = GetCurrentProcess();
         DWORD dwProcessId = GetCurrentProcessId();
-                
-        BOOL successful = MiniDumpWriteDump( hProcess, dwProcessId, hFile, MiniDumpNormal, &exinfo, NULL, NULL );
+
+		DWORD dumptype = MiniDumpNormal | MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithDataSegs | MiniDumpWithThreadInfo;
+        
+		BOOL successful = MiniDumpWriteDump( hProcess, dwProcessId, hFile, (MINIDUMP_TYPE)dumptype, &exinfo, NULL, NULL );
 
         FreeLibrary( dbghelp_dll );
         ::CloseHandle( hFile );

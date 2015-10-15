@@ -63,7 +63,7 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool loadStreamArchiveBuffer( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, CacheBufferID & _bufferId, unsigned char ** _data, size_t & _size )
+		bool loadStreamArchiveBuffer( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, MemoryCacheBufferInterfacePtr & _binaryBuffer )
 		{
 			uint32_t crc32;
 			_stream->read( &crc32, sizeof(crc32) );
@@ -117,13 +117,23 @@ namespace Menge
 				}
 			}
 
-			void * binaryMemory = nullptr;
-			CacheBufferID binaryBufferId = MEMORY_SERVICE(_serviceProvider)
-				->lockBuffer( binary_size, &binaryMemory, "loadStreamArchiveBuffer binary_memory" );
+			MemoryCacheBufferInterfacePtr binaryBuffer = MEMORY_SERVICE( _serviceProvider )
+				->createMemoryCacheBuffer();
 
-			if( binaryBufferId == INVALID_CACHE_BUFFER_ID )
+			if( binaryBuffer == nullptr )
 			{
-				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveBuffer: invalid get memory %d (binary)"
+				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveBuffer: invalid create memory cache"
+					, binary_size
+					);
+
+				return false;
+			}
+
+			void * binaryMemory = binaryBuffer->cacheMemory( binary_size, "loadStreamArchiveBuffer binary_memory" );
+
+			if( binaryMemory == nullptr )
+			{
+				LOGGER_ERROR( _serviceProvider )("loadStreamArchiveBuffer: invalid get memory %d (binary)"
 					, binary_size
 					);
 
@@ -136,9 +146,6 @@ namespace Menge
 				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveBuffer: invalid decompress"
 					);
 
-				MEMORY_SERVICE(_serviceProvider)
-					->unlockBuffer( binaryBufferId );
-
 				return false;
 			}
 
@@ -149,15 +156,10 @@ namespace Menge
 					, binary_size
 					);
 
-				MEMORY_SERVICE(_serviceProvider)
-					->unlockBuffer( binaryBufferId );
-
 				return false;
 			}
 
-			_bufferId = binaryBufferId;
-			*_data = static_cast<unsigned char *>(binaryMemory);
-			_size = binary_size;
+			_binaryBuffer = binaryBuffer;
 
 			return true;
 		}
@@ -349,14 +351,14 @@ namespace Menge
 			return true;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool loadStreamArchiveData( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, CacheBufferID & _bufferId, unsigned char ** _data, size_t & _size )
+		bool loadStreamArchiveData( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, MemoryCacheBufferInterfacePtr & _binaryBuffer )
 		{
 			if( Helper::loadStreamMagicHeader( _serviceProvider, _stream, _magic, _version ) == false )
 			{
 				return false;
 			}
 
-			if( Helper::loadStreamArchiveBuffer( _serviceProvider, _stream, _archivator, _bufferId, _data, _size ) == false )
+			if( Helper::loadStreamArchiveBuffer( _serviceProvider, _stream, _archivator, _binaryBuffer ) == false )
 			{
 				return false;
 			}

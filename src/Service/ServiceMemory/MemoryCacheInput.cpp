@@ -1,5 +1,7 @@
 #	include "MemoryCacheInput.h"
 
+#	include "MemoryManager.h"
+
 #	include "Interface/MemoryInterface.h"
 
 #	include "stdex/memorycopy.h"
@@ -11,6 +13,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheInput::MemoryCacheInput()
 		: m_serviceProvider(nullptr)
+		, m_memoryManager(nullptr)
 		, m_bufferId(0)
 		, m_data(nullptr)
 		, m_size(0)
@@ -29,12 +32,16 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void MemoryCacheInput::setMemoryManager( MemoryManager * _memoryManager )
+	{ 
+		m_memoryManager = _memoryManager;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void MemoryCacheInput::uncache_()
 	{
 		if( m_bufferId != 0 )
 		{
-			MEMORY_SERVICE(m_serviceProvider)
-				->unlockBuffer( m_bufferId );
+			m_memoryManager->unlockBuffer( m_bufferId );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -43,8 +50,7 @@ namespace Menge
 		this->uncache_();
 
 		void * memory;
-		uint32_t bufferId = MEMORY_SERVICE(m_serviceProvider)
-			->lockBuffer( _size, &memory, _doc );
+		uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, _doc );
 
 		if( bufferId == INVALID_CACHE_BUFFER_ID )
 		{

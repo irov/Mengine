@@ -28,12 +28,13 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::initialize( ServiceProviderInterface * _serviceProvider, HM_EMITTER _id )
+	bool AstralaxEmitter2::initialize( ServiceProviderInterface * _serviceProvider, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id )
     {
         m_serviceProvider = _serviceProvider;
+		m_container = _container;
         m_emitterId = _id;
 
-        Magic_SetRandomMode( m_emitterId, false );
+        Magic_SetRandomMode( m_emitterId, true );
 
         // set interpolation
         Magic_SetInterpolationMode( m_emitterId, true );
@@ -59,6 +60,8 @@ namespace Menge
 	void AstralaxEmitter2::finalize()
 	{
 		Magic_UnloadEmitter( m_emitterId );
+
+		m_container = nullptr;
 
 		m_emitterId = 0;
 	}

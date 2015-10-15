@@ -856,7 +856,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CacheBufferID Game::loadData( const ConstString & _name, const void ** _data, size_t & _size ) const
+	MemoryCacheBufferInterfacePtr Game::loadData( const ConstString & _name ) const
 	{
 		TMapDatas::const_iterator it_found = m_datas.find( _name );
 
@@ -866,7 +866,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return INVALID_CACHE_BUFFER_ID;
+			return nullptr;
 		}
 
 		const DataDesc & desc = it_found->second;
@@ -881,27 +881,21 @@ namespace Menge
 				, desc.path.c_str()
 				);
 
-			return INVALID_CACHE_BUFFER_ID;
+			return nullptr;
 		}  
-
-		CacheBufferID bufferId;
-		unsigned char * data_memory;
-		size_t data_size;
-
-		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_GAME_DATA), GET_MAGIC_VERSION(MAGIC_GAME_DATA), bufferId, &data_memory, data_size ) == false )
+		
+		MemoryCacheBufferInterfacePtr binaryBuffer;
+		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_GAME_DATA ), GET_MAGIC_VERSION( MAGIC_GAME_DATA ), binaryBuffer ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Game::loadData: data %s invalid load stream archive %s"
 				, _name.c_str()
 				, desc.path.c_str()
 				);
 
-			return false;
+			return nullptr;
 		}
 
-		*_data = data_memory;
-		_size = data_size;
-
-		return bufferId;
+		return binaryBuffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::writeData( const ConstString & _name, const void * _data, size_t _size ) const

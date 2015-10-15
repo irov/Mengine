@@ -32,11 +32,11 @@ namespace Menge
 		void finalize() override;
 
 	public:
-		CacheBufferID lockBuffer( size_t _size, void ** _memory, const char * _doc ) override;
-		void unlockBuffer( CacheBufferID _bufferId ) override;
+		CacheBufferID lockBuffer( size_t _size, void ** _memory, const char * _doc );
+		void unlockBuffer( CacheBufferID _bufferId );
 
 	public:
-		void clearBuffers() override;
+		void clearCacheBuffers() override;
 
 	public:
 		MemoryCacheBufferInterfacePtr createMemoryCacheBuffer() override;
@@ -80,7 +80,6 @@ namespace Menge
 		TFactoryPoolMemoryInput m_factoryPoolMemoryInput;
 
 		typedef FactoryPoolStore<Memory, 16> TFactoryPoolMemory;
-		TFactoryPoolMemory m_factoryPoolMemory;
-		
+		TFactoryPoolMemory m_factoryPoolMemory;		
 	};
 }

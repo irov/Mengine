@@ -22,7 +22,7 @@ namespace Menge
 		~AstralaxEmitter2();
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, HM_EMITTER _id );
+		bool initialize( ServiceProviderInterface * _serviceProvider, const ParticleEmitterContainerInterface2Ptr & _container, HM_EMITTER _id );
 		void finalize();
 		
 	public:
@@ -88,7 +88,9 @@ namespace Menge
         bool setupBasePosition_();
 		
 	protected:
-        ServiceProviderInterface * m_serviceProvider; 
+        ServiceProviderInterface * m_serviceProvider;
+
+		ParticleEmitterContainerInterface2Ptr m_container;
 		
 		HM_EMITTER m_emitterId;
 

@@ -1,7 +1,5 @@
 #	include "MemoryManager.h"
 
-#	include "Core/CRC32.h"
-
 #	include "Logger/Logger.h"
 
 #	include <malloc.h>
@@ -48,7 +46,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MemoryManager::finalize()
 	{
-		this->clearBuffers();
+		this->clearCacheBuffers();
 
 		m_memoryMutex = nullptr;
 	}
@@ -191,7 +189,7 @@ namespace Menge
 		m_memoryMutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryManager::clearBuffers()
+	void MemoryManager::clearCacheBuffers()
 	{
 		m_memoryMutex->lock();
 
@@ -225,6 +223,8 @@ namespace Menge
 
 		memoryBuffer->setServiceProvider( m_serviceProvider );
 
+		memoryBuffer->setMemoryManager( this );
+
 		return memoryBuffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -233,6 +233,8 @@ namespace Menge
 		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput.createObjectT();
 
 		memoryCache->setServiceProvider( m_serviceProvider );
+
+		memoryCache->setMemoryManager( this );
 
 		return memoryCache;
 	}

@@ -120,7 +120,7 @@ namespace Menge
 		size_t zip_size = zipFile->size();
 		zipFile->seek( zip_size - 22 );
 
-		size_t header_position = zipFile->tell();
+		uint32_t header_position = (uint32_t)zipFile->tell();
 
 		unsigned char endof_central_dir[22];
 

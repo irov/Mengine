@@ -44,12 +44,12 @@ namespace Menge
 			return full_size;
 		}
 
-		size_t getMipMapSize( size_t _level ) const
+		uint32_t getMipMapSize( uint32_t _level ) const
 		{
-			size_t mipmap_width = (width >> _level);
-			size_t mipmap_height = (height >> _level);
+			uint32_t mipmap_width = (width >> _level);
+			uint32_t mipmap_height = (height >> _level);
 
-			size_t mipmap_size = Helper::getTextureMemorySize( mipmap_width, mipmap_height, channels, depth, format );
+			uint32_t mipmap_size = Helper::getTextureMemorySize( mipmap_width, mipmap_height, channels, depth, format );
 						
 			return mipmap_size;
 		}

@@ -121,7 +121,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::importBin_( const InputStreamInterfacePtr & _stream, Metabuf::Metadata * _metadata, bool * _reimport )
 	{
-		int size = _stream->size();
+		size_t size = _stream->size();
 
 		if( size == 0 )
 		{

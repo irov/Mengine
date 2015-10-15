@@ -61,9 +61,7 @@ src
     Stream.cpp
 	
     ConstString.h
-    
-    BlobjectRead.h
-    
+        
     RenderUtil.h
     
     OutputStreamWriter.h   

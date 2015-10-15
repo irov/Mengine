@@ -119,9 +119,9 @@ namespace Menge
         uint32_t height = dataInfo->height;
 
         uint32_t mimmap_level;
-        size_t mimmap_size = this->calcMimMapBufferLevelAndSize_( width, height, mimmap_level );
+		uint32_t mimmap_size = this->calcMimMapBufferLevelAndSize_( width, height, mimmap_level );
 
-        size_t bufferSize = width * height + mimmap_size;
+		uint32_t bufferSize = width * height + mimmap_size;
 		
 		MemoryCacheBufferInterfacePtr memory = Helper::createMemoryBuffer( m_serviceProvider, bufferSize, "HotspotImageConverterPNGToHIT::convert" );
 
@@ -193,17 +193,17 @@ namespace Menge
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    size_t HotspotImageConverterPNGToHIT::calcMimMapBufferLevelAndSize_( uint32_t _width, uint32_t _height, uint32_t & _level )
+	uint32_t HotspotImageConverterPNGToHIT::calcMimMapBufferLevelAndSize_( uint32_t _width, uint32_t _height, uint32_t & _level )
     {
         uint32_t mipmap_pow_width = (uint32_t)(logf( (float)_width ) / logf( 2.f ));
         uint32_t mipmap_pow_height = (uint32_t)(logf( (float)_height ) / logf( 2.f ));
 
         uint32_t mipmap_level = (std::min)(mipmap_pow_width, mipmap_pow_height) + 1;
 
-        size_t bufferOffset = 0;
+		uint32_t bufferOffset = 0;
         for( uint32_t i = 1; i != mipmap_level; ++i )
         {
-            size_t offset = (_width >> i) * (_height >> i);
+			uint32_t offset = (_width >> i) * (_height >> i);
             bufferOffset += offset;
         }
 

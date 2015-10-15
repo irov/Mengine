@@ -165,12 +165,10 @@ namespace Menge
 		
 		PyObject * s_loadGameData( const ConstString & _name, PyObject * _pickleTypes )
 		{
-			const void * buffer_data;
-			size_t buffer_size;
-			CacheBufferID bufferId = GAME_SERVICE(m_serviceProvider)
-				->loadData( _name, &buffer_data, buffer_size );
+			MemoryCacheBufferInterfacePtr binaryBuffer = GAME_SERVICE( m_serviceProvider )
+				->loadData( _name );
 
-			if( bufferId == INVALID_CACHE_BUFFER_ID )
+			if( binaryBuffer == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("s_readGameData: data %ls invalid load"
 					, _name.c_str()
@@ -179,10 +177,10 @@ namespace Menge
 				return pybind::ret_none();
 			}
 
-			PyObject * py_data = pybind::unpickle( buffer_data, buffer_size, _pickleTypes );
+			void * binaryBuffer_memory = binaryBuffer->getMemory();
+			size_t binaryBuffer_size = binaryBuffer->getSize();
 
-			MEMORY_SERVICE(m_serviceProvider)
-				->unlockBuffer( bufferId );
+			PyObject * py_data = pybind::unpickle( binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
 
 			if( py_data == nullptr )
 			{
@@ -1449,11 +1447,9 @@ namespace Menge
 
             ConstString filename = Helper::stringizeString( m_serviceProvider, utf8_fileName );
 
-            const void * buffer_data;
-			size_t buffer_size;
-			CacheBufferID bufferId = currentAccount->loadBinaryFile( filename, &buffer_data, buffer_size );
+			MemoryCacheBufferInterfacePtr binaryBuffer = currentAccount->loadBinaryFile( filename );
 
-            if( bufferId == INVALID_CACHE_BUFFER_ID )
+			if( binaryBuffer == nullptr )
             {
                 const WString & accountName = currentAccount->getName();
 
@@ -1464,11 +1460,11 @@ namespace Menge
 
                 return pybind::ret_none();
             }
-	
-            PyObject * py_data = pybind::unpickle( buffer_data, buffer_size, _pickleTypes );
 
-			MEMORY_SERVICE(m_serviceProvider)
-				->unlockBuffer( bufferId );
+			void * binaryBuffer_memory = binaryBuffer->getMemory();
+			size_t binaryBuffer_size = binaryBuffer->getSize();
+	
+			PyObject * py_data = pybind::unpickle( binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
 
 			if( py_data == nullptr )
 			{

@@ -55,7 +55,7 @@ namespace Menge
 		}
 
 		template<class T>
-		T * allocateMemory( uint32_t _count )
+		T * allocateMemory( size_t _count )
 		{
 			size_t memory_size = sizeof(T) * _count;
 			void * memory_buffer = stdex_malloc( memory_size );
@@ -64,7 +64,7 @@ namespace Menge
 		}
 
 		template<class T>
-		T * reallocateMemory( void * _buffer, uint32_t _count )
+		T * reallocateMemory( void * _buffer, size_t _count )
 		{
 			size_t memory_size = sizeof(T) * _count;
 			void * memory_buffer = stdex_realloc( _buffer, memory_size );

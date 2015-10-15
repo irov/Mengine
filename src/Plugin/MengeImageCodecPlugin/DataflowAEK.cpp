@@ -55,10 +55,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
-		CacheBufferID bufferId;
-		unsigned char * bufferMemory;
-		size_t bufferSize;
-		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_AEK), GET_MAGIC_VERSION(MAGIC_AEK), bufferId, &bufferMemory, bufferSize ) == false )
+		MemoryCacheBufferInterfacePtr binaryBuffer;
+		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), binaryBuffer ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DataflowAEK::load: invalid get data"
 				);
@@ -67,13 +65,11 @@ namespace Menge
 		}
 
 		MovieFramePack * pack = stdex::intrusive_get<MovieFramePack>(_data);
+
+		void * binaryBuffer_memory = binaryBuffer->getMemory();
+		size_t binaryBuffer_size = binaryBuffer->getSize();
 		
-		bool successful = this->loadBuffer_( pack, bufferMemory, bufferSize );
-
-		MEMORY_SERVICE(m_serviceProvider)
-			->unlockBuffer( bufferId );
-
-		if( successful == false )
+		if( this->loadBuffer_( pack, binaryBuffer_memory, binaryBuffer_size ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("DataflowAEK::load: invalid load buffer"
 				);
@@ -84,12 +80,12 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DataflowAEK::loadBuffer_( MovieFramePack * _pack, const unsigned char * _buffer, size_t _size )
+	bool DataflowAEK::loadBuffer_( MovieFramePack * _pack, const void * _buffer, size_t _size )
 	{
 		try
 		{
 			size_t binary_read = 0;
-			stdex::memory_reader ar(_buffer, _size, binary_read);
+			stdex::memory_reader ar( _buffer, _size, binary_read );
 
 			uint32_t maxIndex;
 			ar << maxIndex;

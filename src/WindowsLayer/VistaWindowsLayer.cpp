@@ -109,7 +109,7 @@ namespace Menge
 
         typedef BOOL (WINAPI *PSETPROCESSDPIAWARE)(VOID);
 
-        PSETPROCESSDPIAWARE pSetProcessDPIAware = 
+		FARPROC pSetProcessDPIAware =
             ::GetProcAddress( hUser32, "SetProcessDPIAware" );
 
         if( pSetProcessDPIAware == NULL )

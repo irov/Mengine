@@ -4,8 +4,9 @@
 #	include "Interface/MemoryInterface.h"
 #	include "Interface/StringizeInterface.h"
 
-#	include "Core/BlobjectRead.h"
 #	include "Core/Stream.h"
+
+#	include "stdex/memory_reader.h"
 
 #	include "Logger/Logger.h"
 
@@ -53,10 +54,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DataflowMDL::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
 	{
-		CacheBufferID bufferId;
-		unsigned char * bufferMemory;
-		size_t bufferSize;
-		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_MDL), GET_MAGIC_VERSION(MAGIC_MDL), bufferId, &bufferMemory, bufferSize ) == false )
+		MemoryCacheBufferInterfacePtr binaryBuffer;
+		if( Helper::loadStreamArchiveData( m_serviceProvider, _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_MDL ), GET_MAGIC_VERSION( MAGIC_MDL ), binaryBuffer ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("DataflowMDL::load: invalid get data"
 				);
@@ -64,31 +63,35 @@ namespace Menge
 			return false;
 		}
 
-		BlobjectRead ar(bufferMemory, bufferSize);
-		
+		void * binaryBuffer_memory = binaryBuffer->getMemory();
+		size_t binaryBuffer_size = binaryBuffer->getSize();
+
+		size_t binary_read = 0;
+		stdex::memory_reader ar( binaryBuffer_memory, binaryBuffer_size, binary_read );
+				
 		uint32_t frameCount;
-		ar >> frameCount;
+		ar << frameCount;
 
 		uint32_t vertexCount;
-		ar >> vertexCount;
+		ar << vertexCount;
 
 		uint32_t indicesCount;
-		ar >> indicesCount;
+		ar << indicesCount;
 
 		float frameDelay;
-		ar >> frameDelay;
+		ar << frameDelay;
 
 		float cameraFOV;
-		ar >> cameraFOV;
+		ar << cameraFOV;
 
 		float cameraWidth;
-		ar >> cameraWidth;
+		ar << cameraWidth;
 
 		float cameraHeight;
-		ar >> cameraHeight;
+		ar << cameraHeight;
 
 		float cameraRightSign;
-		ar >> cameraRightSign;
+		ar << cameraRightSign;
 
 		Model3DPack * pack = stdex::intrusive_get<Model3DPack>(_data);
 
@@ -99,9 +102,9 @@ namespace Menge
 		{
 			Model3DFrame & frame = pack->mutableFrame( i );
 						
-			ar >> frame.cameraPos;
-			ar >> frame.cameraDir;
-			ar >> frame.cameraUp;
+			ar << frame.cameraPos;
+			ar << frame.cameraDir;
+			ar << frame.cameraUp;
 
 			frame.pos = Helper::allocateMemory<mt::vec3f>( vertexCount );
 			frame.uv = Helper::allocateMemory<mt::vec2f>( vertexCount );
@@ -111,9 +114,6 @@ namespace Menge
 			ar.readPODs( frame.uv, vertexCount );
 			ar.readPODs( frame.indecies, indicesCount );
 		}
-
-		MEMORY_SERVICE(m_serviceProvider)
-			->unlockBuffer( bufferId );
 
 		return true;
 	}

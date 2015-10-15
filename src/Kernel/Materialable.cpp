@@ -211,7 +211,7 @@ namespace Menge
 			return material;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, size_t _textureCount, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid )
+		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid )
 		{
 			ConstString materialName;
 
@@ -441,7 +441,7 @@ namespace Menge
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr Materialable::makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, size_t _textureCount, bool _solid ) const
+	RenderMaterialInterfacePtr Materialable::makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, bool _solid ) const
 	{
 		RenderMaterialInterfacePtr material = Helper::makeTextureMaterial( _serviceProvider, _textures, _textureCount, m_materialName, m_blendMode, m_disableTextureColor, _solid );
 

@@ -5,7 +5,7 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		size_t getTextureMemorySize( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+		uint32_t getTextureMemorySize( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
 		{
 			uint32_t HWWidth = Helper::getTexturePOW2( _width );
 			uint32_t HWHeight = Helper::getTexturePOW2( _height );
@@ -39,7 +39,7 @@ namespace Menge
 					uint32_t w = (HWWidth + 3) / 4;
 					uint32_t h = (HWHeight + 3) / 4;
 
-					size_t size = w * h * _depth * 8;
+					uint32_t size = w * h * _depth * 8;
 
 					return size;
 				}break;
@@ -52,7 +52,7 @@ namespace Menge
 					uint32_t w = (HWWidth + 3) / 4;
 					uint32_t h = (HWHeight + 3) / 4;
 
-					size_t size = w * h * _depth * 16;
+					uint32_t size = w * h * _depth * 16;
 
 					return size;
 				}break;
@@ -68,7 +68,7 @@ namespace Menge
 					widthBlocks = widthBlocks > 2 ? widthBlocks : 2;
 					heightBlocks = heightBlocks > 2 ? heightBlocks : 2;
 
-					size_t size = widthBlocks * heightBlocks * ((blockSize  * bpp) / 8);
+					uint32_t size = widthBlocks * heightBlocks * ((blockSize  * bpp) / 8);
 
 					return size;
 				}break;

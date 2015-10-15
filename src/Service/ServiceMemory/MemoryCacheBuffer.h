@@ -10,6 +10,8 @@
 
 namespace Menge
 {
+	class MemoryManager;
+
 	class MemoryCacheBuffer
 		: public MemoryCacheBufferInterface
 	{
@@ -19,6 +21,7 @@ namespace Menge
 		
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
+		void setMemoryManager( MemoryManager * _memoryManager );
 
     public:
         void * cacheMemory( size_t _size, const char * _doc ) override;
@@ -32,6 +35,7 @@ namespace Menge
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
+		MemoryManager * m_memoryManager;
 
 		uint32_t m_bufferId;
 

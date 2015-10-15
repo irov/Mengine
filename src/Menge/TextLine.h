@@ -37,7 +37,7 @@ namespace Menge
 		bool initialize( const TextFontInterfacePtr & _font, const String& _text );
 
 	public:
-		void prepareRenderObject( mt::vec2f & offset
+		void prepareRenderObject( mt::vec2f & _offset
 			, const mt::uv4f & _uv
 			, ColourValue_ARGB _argb
             , bool _pixelsnap

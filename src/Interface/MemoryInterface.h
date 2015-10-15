@@ -108,18 +108,14 @@ namespace Menge
 		virtual void finalize() = 0;
 
 	public:
-		virtual CacheBufferID lockBuffer( size_t _size, void ** _memory, const char * _doc ) = 0;
-		virtual void unlockBuffer( CacheBufferID _bufferId ) = 0;
-
-	public:
-		virtual void clearBuffers() = 0;
-
-	public:
 		virtual MemoryCacheBufferInterfacePtr createMemoryCacheBuffer() = 0;
 		virtual MemoryCacheInputInterfacePtr createMemoryCacheInput() = 0;
 		virtual MemoryProxyInputInterfacePtr createMemoryProxyInput() = 0;
 		virtual MemoryInputInterfacePtr createMemoryInput() = 0;
 		virtual MemoryInterfacePtr createMemory() = 0;
+
+	public:
+		virtual void clearCacheBuffers() = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define MEMORY_SERVICE( serviceProvider )\

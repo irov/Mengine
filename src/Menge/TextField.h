@@ -112,7 +112,7 @@ namespace Menge
 		bool getPixelsnap() const;
 
 	public:
-		const mt::vec2f& getTextSize() const;
+		const mt::vec2f & getTextSize() const;
 
     public:
 		uint32_t getCharCount() const;

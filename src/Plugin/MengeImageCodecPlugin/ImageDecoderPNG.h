@@ -31,6 +31,6 @@ namespace Menge
 	private:
 		png_structp m_png_ptr;
 		png_infop m_info_ptr;
-		png_uint_32 m_row_bytes;		
+		png_size_t m_row_bytes;
 	};
 }	// namespace Menge

@@ -19,7 +19,7 @@ namespace Menge
 	namespace Helper
 	{
 		RenderMaterialInterfacePtr makeImageMaterial( ServiceProviderInterface * _serviceProvider, const ResourceImage * _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blend, bool _disableTextureColor, bool _solid );
-		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, size_t _textureCount, const ConstString & _materialName, EMaterialBlendMode _blend, bool _disableTextureColor, bool _solid );
+		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, const ConstString & _materialName, EMaterialBlendMode _blend, bool _disableTextureColor, bool _solid );
 	}
 
 	class Materialable
@@ -51,7 +51,7 @@ namespace Menge
 
 	protected:
 		RenderMaterialInterfacePtr makeImageMaterial( ServiceProviderInterface * _serviceProvider, const ResourceImage * _resourceImage, bool _solid ) const;
-		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, size_t _textureCount, bool _solid ) const;
+		RenderMaterialInterfacePtr makeTextureMaterial( ServiceProviderInterface * _serviceProvider, const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, bool _solid ) const;
 
 	protected:
 		inline const RenderMaterialInterfacePtr & getMaterial();

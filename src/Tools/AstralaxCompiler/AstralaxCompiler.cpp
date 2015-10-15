@@ -306,6 +306,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		Magic_CloseFile( mf );
 
+		delete[] mf_buffer;
+
 		WCHAR infoCanonicalizeQuote[MAX_PATH];
 		ForcePathQuoteSpaces( infoCanonicalizeQuote, info.c_str() );
 		PathUnquoteSpaces( infoCanonicalizeQuote );

@@ -31,7 +31,7 @@ namespace Menge
 		bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream ) override;
 
 	protected:
-		bool loadBuffer_( MovieFramePack * _pack, const unsigned char * _buffer, size_t _size );
+		bool loadBuffer_( MovieFramePack * _pack, const void * _buffer, size_t _size );
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;

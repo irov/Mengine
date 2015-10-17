@@ -1,0 +1,45 @@
+set( MY_LIB_NAME AstralaxIO )
+
+ADD_FILTER(
+src
+    Emitter.h
+    Emitter.cpp
+    Atlas.h
+    Atlas.cpp
+    
+    AstralaxRender.h
+    AstralaxRender.cpp
+    
+    AstralaxOptions.h
+    AstralaxOptions.cpp
+    
+    AstralaxIO.h
+    AstralaxIO.cpp
+    AstralaxIO.rc
+)
+
+add_definitions(-DUNICODE)
+add_definitions(-DMAGIC_3D)
+
+INCLUDE_DIRECTORIES( ${SOURCE_DIR}/AEPlugin/AEIO )
+INCLUDE_DIRECTORIES( ${SOURCE_DIR}/Util )
+
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/astralax )
+
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/AE/Util )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/AE/Headers )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/AE/Headers/SP )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/AE/Headers/Win )    
+
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/DirectX/DX9/Include )
+
+ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+set_target_properties( ${MY_LIB_NAME} PROPERTIES SUFFIX ".aex")
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Math)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} AEIO)
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}astralax_static${MENGINE_LIB_SUFFIX} )
+
+TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${APPLICATION_LIBS} comctl32 )

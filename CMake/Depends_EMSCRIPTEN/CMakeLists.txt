@@ -4,8 +4,6 @@ PROJECT( Depends_EMSCRIPTEN )
 
 INCLUDE( ../emscripten_template.cmake )
 
-set(MENGINE_LIB_DIR "build_emscripten" )
-
 SET( MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../.. )
 SET( THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies/cmake_scripts )
 

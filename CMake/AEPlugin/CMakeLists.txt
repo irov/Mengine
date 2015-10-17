@@ -10,11 +10,13 @@ ENDMACRO( ADD_FILTER group_name files )
 
 # solution
 
-PROJECT( Tools_WIN32 )
+PROJECT( AEPlugin )
 
-SET(MENGINE_TARGET "WIN32")
+SET(MENGINE_TARGET "WIN64")
 
-INCLUDE( ../win32_template.cmake )
+SET(MENGINE_TARGET_AEPLUGIN ON)
+
+INCLUDE( ../win64_template.cmake )
 
 SET( MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../.. )
 
@@ -24,12 +26,12 @@ SET( MENGINE_LIB_SUFFIX ".lib" )
 
 # output paths
 SET( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${MENGINE_REPOSITORY}/${MENGINE_LIB_DIR} )
-SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${MENGINE_REPOSITORY}/bin_tools )
+SET( CMAKE_RUNTIME_OUTPUT_DIRECTORY ${MENGINE_REPOSITORY}/bin_aeplugin )
 
 # input and thirdparty paths
 SET( THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies )
 SET( SOURCE_DIR ${MENGINE_REPOSITORY}/src )
-SET( CMAKE_TEMP_DIR ${MENGINE_REPOSITORY}/CMakeTemp/Tools_WIN32/${CMAKE_BUILD_TYPE} )
+SET( CMAKE_TEMP_DIR ${MENGINE_REPOSITORY}/CMakeTemp/AEPlugin/${CMAKE_BUILD_TYPE} )
 
 # implementation
 
@@ -66,9 +68,8 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceConfig ${CMAKE_TEMP_DIR}/Service/
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeDevelopmentConverterPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeDevelopmentConverterPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeImageCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeImageCodecPlugin )
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeXmlCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeXmlCodecPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeZipPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeZipPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeLZ4Plugin ${CMAKE_TEMP_DIR}/Plugin/MengeLZ4Plugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MengeWin32FileGroupPlugin ${CMAKE_TEMP_DIR}/Plugin/MengeWin32FileGroupPlugin )
 
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Tools ${CMAKE_TEMP_DIR}/Tools )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/AEPlugin ${CMAKE_TEMP_DIR}/AEPlugin )

@@ -4,8 +4,6 @@ PROJECT( Depends_SDL )
 
 INCLUDE( ../win32_template.cmake )
 
-set(MENGINE_LIB_DIR "build_sdl" )
-
 SET(MENGINE_TARGET_SDL ON)
 
 SET( MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../.. )

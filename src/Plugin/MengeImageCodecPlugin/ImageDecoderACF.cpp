@@ -101,7 +101,7 @@ namespace Menge
 		}
 		else
 		{
-			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryBuffer( m_serviceProvider, dataSize, "ImageDecoderACF::decode" );
+			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, dataSize, "ImageDecoderACF::decode" );
 
 			if( buffer == nullptr )
 			{

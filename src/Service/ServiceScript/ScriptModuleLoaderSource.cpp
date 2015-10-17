@@ -74,7 +74,7 @@ namespace Menge
     {
         size_t file_size = _stream->size();
 
-		MemoryCacheBufferInterfacePtr source_buffer = Helper::createMemoryBuffer( m_serviceProvider, file_size + 2, "unmarshal_source_" );
+		MemoryCacheBufferInterfacePtr source_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, file_size + 2, "unmarshal_source_" );
 
 		if( source_buffer == nullptr )
 		{

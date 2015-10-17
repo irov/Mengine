@@ -23,8 +23,6 @@ namespace Menge
 		, m_minFilter(GL_LINEAR)
 		, m_magFilter(GL_LINEAR)
 		, m_mode(ERIM_NORMAL)
-		, m_lockMemory(nullptr)
-		, m_lockBufferId(INVALID_CACHE_BUFFER_ID)
 		, m_lockLevel(0)
 	{
 	}
@@ -86,13 +84,22 @@ namespace Menge
 
 		size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
-		void * memory;
-		CacheBufferID lockBufferId = CACHE_SERVICE(m_serviceProvider)
-			->lockBuffer( size, &memory, "MarmaladeTexture::lock" );
+		MemoryCacheBufferInterfacePtr lockMemory = MEMORY_SERVICE( m_serviceProvider )
+			->createMemoryCacheBuffer();
 
-		if( lockBufferId == INVALID_CACHE_BUFFER_ID )
+		if( lockMemory == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::lock invalid cache memory %d (l %d w %d h %d c %d f %d)"
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeTexture::lock invalid create cache buffer"
+				);
+
+			return nullptr;
+		}
+
+		void * memory = lockMemory->cacheMemory( size, "MarmaladeTexture::lock" );
+
+		if( memory == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeTexture::lock invalid cache memory %d (l %d w %d h %d c %d f %d)"
 				, size
 				, _level
 				, miplevel_width
@@ -104,14 +111,13 @@ namespace Menge
 			return nullptr;
 		}
 
-		m_lockBufferId = lockBufferId;
-		m_lockMemory = memory;
+		m_lockMemory = lockMemory;
 		
 		*_pitch = size / miplevel_height;
 		
 		m_lockLevel = _level;
 
-		return m_lockMemory;
+		return memory;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeTextureES1::unlock( uint32_t _level )
@@ -136,7 +142,9 @@ namespace Menge
 		case GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG:
 		case GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG:
 			{				
-				IF_GLCALL( m_serviceProvider, glCompressedTexImage2D, ( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, m_lockMemory ) )
+				void * memory = m_lockMemory->getMemory();
+
+				IF_GLCALL( m_serviceProvider, glCompressedTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, memory) )
 				{
 					LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
 						, _level
@@ -150,7 +158,9 @@ namespace Menge
 			}break;
 		default:
 			{
-				IF_GLCALL( m_serviceProvider, glTexImage2D, ( GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, m_format, m_type, m_lockMemory ) )
+				void * memory = m_lockMemory->getMemory();
+
+				IF_GLCALL( m_serviceProvider, glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, m_format, m_type, memory) )
 				{
 					LOGGER_ERROR(m_serviceProvider)("MarmaladeTexture::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
 						, _level
@@ -165,12 +175,9 @@ namespace Menge
 			}break;
 		}
 
-		CACHE_SERVICE(m_serviceProvider)
-			->unlockBuffer( m_lockBufferId );
+		m_lockMemory = nullptr;
 
 		m_lockLevel = 0;
-		m_lockBufferId = INVALID_CACHE_BUFFER_ID;
-		m_lockMemory = nullptr;		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeTextureES1::_destroy()

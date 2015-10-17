@@ -61,7 +61,7 @@ namespace Menge
         ConstString full_input = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.inputFileName );
         ConstString full_output = Helper::concatenationFilePath( m_serviceProvider, pakPath, m_options.outputFileName );
 		        
-		MemoryCacheBufferInterfacePtr data_cache = Helper::createMemoryFile( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false, "ParticleConverterPTCToPTZ_data" );
+		MemoryCacheBufferInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), full_input, false, "ParticleConverterPTCToPTZ_data" );
 
 		if( data_cache == nullptr )
 		{

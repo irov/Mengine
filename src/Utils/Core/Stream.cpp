@@ -77,7 +77,7 @@ namespace Menge
 			size_t binary_size = (size_t)load_binary_size;
 			size_t compress_size = (size_t)load_compress_size;
 
-			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "loadStreamArchiveBuffer" );
+			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( _serviceProvider, compress_size, "loadStreamArchiveBuffer" );
 
 			if( compress_buffer == nullptr )
 			{
@@ -188,7 +188,7 @@ namespace Menge
 				return false;
 			}
 
-			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "ArchiveService::getData compress_memory" );
+			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( _serviceProvider, compress_size, "ArchiveService::getData compress_memory" );
 
 			if( compress_buffer == nullptr )
 			{
@@ -395,7 +395,7 @@ namespace Menge
 			size_t binary_size = (size_t)load_binary_size;
 			size_t compress_size = (size_t)load_compress_size;
 
-			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryBuffer( _serviceProvider, compress_size, "loadStreamArchiveMemory compress" );
+			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( _serviceProvider, compress_size, "loadStreamArchiveMemory compress" );
 
 			if( compress_buffer == nullptr )
 			{

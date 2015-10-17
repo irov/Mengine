@@ -77,7 +77,7 @@ namespace Menge
 		void * stream_memory;
 		if( m_stream->memory( &stream_memory, &stream_size ) == false )
 		{
-			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryStream( m_serviceProvider, m_stream, "ImageDecoderArchive::decodeData_" );
+			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheStream( m_serviceProvider, m_stream, "ImageDecoderArchive::decodeData_" );
 
 			if( buffer == nullptr )
 			{
@@ -113,7 +113,7 @@ namespace Menge
 		}
 		else
 		{
-			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryBuffer( m_serviceProvider, _capacityDest, "ImageDecoderArchive::decompressData_" );
+			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, _capacityDest, "ImageDecoderArchive::decompressData_" );
 
 			if( buffer == nullptr )
 			{

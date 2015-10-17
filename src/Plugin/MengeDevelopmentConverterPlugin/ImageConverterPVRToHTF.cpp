@@ -89,7 +89,7 @@ namespace Menge
 
 		size_t data_full_size = dataInfo->getFullSize();
 
-		MemoryCacheBufferInterfacePtr data_buffer = Helper::createMemoryBuffer( m_serviceProvider, data_full_size, "ImageConverterPVRToHTF_data" );
+		MemoryCacheBufferInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, data_full_size, "ImageConverterPVRToHTF_data" );
 		
 		if( data_buffer == nullptr )
 		{

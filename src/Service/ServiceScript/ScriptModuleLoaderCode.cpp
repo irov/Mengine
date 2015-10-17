@@ -100,7 +100,7 @@ namespace Menge
         uint32_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 		
-		MemoryCacheBufferInterfacePtr code_buffer = Helper::createMemoryBuffer( m_serviceProvider, code_size, "unmarshal_code_buffer" );
+		MemoryCacheBufferInterfacePtr code_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, code_size, "unmarshal_code_buffer" );
 
 		if( code_buffer == nullptr )
 		{

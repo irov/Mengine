@@ -1,6 +1,6 @@
 #	include "AstralaxEmitter2.h"
 
-#	include <Utils/Logger/Logger.h>
+#	include <Logger/Logger.h>
 
 #	include <limits>
 

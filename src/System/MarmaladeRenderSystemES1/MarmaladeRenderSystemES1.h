@@ -107,8 +107,6 @@ namespace Menge
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
 		void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
 
-		void setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration ) override;
-
 	public:
 		RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
 		RenderShaderInterfacePtr createVertexShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
@@ -168,6 +166,9 @@ namespace Menge
 		void endScene() override;
 		void swapBuffers() override;
 		void clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil ) override;
+
+		void setClipplaneCount( uint32_t _count ) override;
+		void setClipplane( uint32_t _i, const mt::planef & _plane ) override;
 
 		void setViewport( const Viewport & _viewport ) override;
 

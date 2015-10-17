@@ -12,15 +12,17 @@ namespace Menge
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferInterfacePtr createMemoryBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc );
+		MemoryInterfacePtr createMemoryStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream );
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferInterfacePtr createMemoryStreamSize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size, const char * _doc );
+		MemoryCacheBufferInterfacePtr createMemoryCacheBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc );
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferInterfacePtr createMemoryStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const char * _doc );
+		MemoryCacheBufferInterfacePtr createMemoryCacheStreamSize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size, const char * _doc );
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferInterfacePtr createMemoryFile( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc );
+		MemoryCacheBufferInterfacePtr createMemoryCacheStream( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, const char * _doc );
 		//////////////////////////////////////////////////////////////////////////
-		MemoryCacheBufferInterfacePtr createMemoryFileString( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc );
+		MemoryCacheBufferInterfacePtr createMemoryCacheFile( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc );
+		//////////////////////////////////////////////////////////////////////////
+		MemoryCacheBufferInterfacePtr createMemoryCacheFileString( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _doc );
 	}
 }	// namespace Menge
 

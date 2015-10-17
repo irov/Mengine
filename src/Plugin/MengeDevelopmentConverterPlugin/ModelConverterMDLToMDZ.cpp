@@ -62,7 +62,7 @@ namespace Menge
 
         ConstString c_dev = STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" );
 
-		MemoryCacheBufferInterfacePtr cache = Helper::createMemoryFile( m_serviceProvider, c_dev, full_input, false, "ModelConverterMDLToMDZ_data" );
+		MemoryCacheBufferInterfacePtr cache = Helper::createMemoryCacheFile( m_serviceProvider, c_dev, full_input, false, "ModelConverterMDLToMDZ_data" );
 
 		if( cache == nullptr )
 		{

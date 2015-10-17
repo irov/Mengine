@@ -283,7 +283,7 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 1 )
 			{
-				MemoryCacheBufferInterfacePtr row_buffer = Helper::createMemoryBuffer( m_serviceProvider, m_row_bytes, "ImageDecoderPNG_4_1" );
+				MemoryCacheBufferInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, m_row_bytes, "ImageDecoderPNG_4_1" );
 
 				if( row_buffer == nullptr )
 				{
@@ -321,7 +321,7 @@ namespace Menge
 		{				
 			if( m_dataInfo.channels == 1 && m_options.channels == 4 )
 			{
-				MemoryCacheBufferInterfacePtr row_buffer = Helper::createMemoryBuffer( m_serviceProvider, m_row_bytes, "ImageDecoderPNG_1_4" );
+				MemoryCacheBufferInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, m_row_bytes, "ImageDecoderPNG_1_4" );
 
 				if( row_buffer == nullptr )
 				{
@@ -346,7 +346,7 @@ namespace Menge
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
 			{
-				MemoryCacheBufferInterfacePtr row_buffer = Helper::createMemoryBuffer( m_serviceProvider, m_row_bytes, "ImageDecoderPNG_4_4" );
+				MemoryCacheBufferInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, m_row_bytes, "ImageDecoderPNG_4_4" );
 
 				if( row_buffer == nullptr )
 				{

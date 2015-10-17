@@ -48,9 +48,6 @@ SERVICE_EXTERN( ArchiveService, Menge::ArchiveServiceInterface );
 SERVICE_EXTERN( ThreadSystem, Menge::ThreadSystemInterface );
 SERVICE_EXTERN( ThreadService, Menge::ThreadServiceInterface );
 
-//SERVICE_EXTERN(ParticleSystem, Menge::ParticleSystemInterface);
-SERVICE_EXTERN( ParticleService, Menge::ParticleServiceInterface );
-
 SERVICE_EXTERN( ParticleSystem2, Menge::ParticleSystemInterface2 );
 SERVICE_EXTERN( ParticleService2, Menge::ParticleServiceInterface2 );
 
@@ -80,7 +77,7 @@ SERVICE_EXTERN( PluginService, Menge::PluginServiceInterface );
 
 SERVICE_EXTERN( ModuleService, Menge::ModuleServiceInterface );
 SERVICE_EXTERN( DataService, Menge::DataServiceInterface );
-SERVICE_EXTERN( CacheService, Menge::CacheServiceInterface );
+SERVICE_EXTERN( MemoryService, Menge::MemoryServiceInterface );
 SERVICE_EXTERN( ConfigService, Menge::ConfigServiceInterface );
 SERVICE_EXTERN( PrefetcherService, Menge::PrefetcherServiceInterface );
 
@@ -175,7 +172,6 @@ namespace Menge
 		, m_codecService(nullptr)
 		, m_threadSystem(nullptr)
 		, m_threadService(nullptr)
-		, m_particleService(nullptr)
 		, m_particleService2(nullptr)
 		, m_renderSystem(nullptr)
 		, m_renderService(nullptr)
@@ -187,7 +183,7 @@ namespace Menge
 		, m_archiveService(nullptr)
 		, m_moduleService(nullptr)
 		, m_dataService(nullptr)
-		, m_cacheService(nullptr)
+		, m_memoryService(nullptr)
 		, m_configService(nullptr)
 		, m_prefetcherService(nullptr)
 		, m_notificationService(nullptr)
@@ -680,43 +676,6 @@ namespace Menge
 
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeParticleEngine_()
-    {
-        //LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service..." );
-
-        //ParticleSystemInterface * particleSystem;
-        //if( SERVICE_CREATE( ParticleSystem, &particleSystem ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleSystem"
-        //        );
-
-        //    return false;
-        //}
-
-        //if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
-        //{
-        //    return false;
-        //}
-
-        //ParticleServiceInterface * particleService;
-        //if( SERVICE_CREATE( ParticleService, &particleService ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeParticleEngine_ Failed to initialize ParticleService"
-        //        );
-
-        //    return false;
-        //}
-
-        //if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
-        //{
-        //    return false;
-        //}
-
-        //m_particleService = particleService;
-
-        return true;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeApplication::initializeParticleEngine2_()
 	{
@@ -1127,25 +1086,25 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::initializeCacheManager_()
+	bool MarmaladeApplication::initializeMemoryManager_()
 	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Cache Manager..." );
+		LOGGER_INFO(m_serviceProvider)( "Inititalizing Memory Manager..." );
 
-		CacheServiceInterface * cacheService;
+		MemoryServiceInterface * memoryService;
 
-		if( SERVICE_CREATE( CacheService, &cacheService ) == false )
+		if( SERVICE_CREATE( MemoryService, &memoryService ) == false )
 		{
 			return false;
 		}
 
-		SERVICE_REGISTRY( m_serviceProvider, cacheService );
+		SERVICE_REGISTRY( m_serviceProvider, memoryService );
 
-		if( cacheService->initialize() == false )
+		if( memoryService->initialize() == false )
 		{
 			return false;
 		}
 
-		m_cacheService = cacheService;
+		m_memoryService = memoryService;
 
 		return true;
 	}	
@@ -1410,7 +1369,7 @@ namespace Menge
 			return false;
 		}
 
-		if( this->initializeCacheManager_() == false )
+		if( this->initializeMemoryManager_() == false )
 		{
 			return false;
 		}
@@ -1914,12 +1873,6 @@ namespace Menge
 			m_codecService = nullptr;
 		}
 
-		//if( m_particleService != nullptr )
-		//{
-		//	SERVICE_DESTROY( ParticleService, m_particleService );
-		//	m_particleService = nullptr;
-		//}
-
 		if( m_particleService2 != nullptr )
 		{
 			SERVICE_DESTROY( ParticleService2, m_particleService2 );
@@ -2053,11 +2006,11 @@ namespace Menge
 			m_archiveService = nullptr;
 		}
 
-		if( m_cacheService != nullptr )
+		if( m_memoryService != nullptr )
 		{
-			m_cacheService->finalize();
-			SERVICE_DESTROY( CacheService, m_cacheService );
-			m_cacheService = nullptr;
+			m_memoryService->finalize();
+			SERVICE_DESTROY( MemoryService, m_memoryService );
+			m_memoryService = nullptr;
 		}
 
 		for( TVectorPlugins::iterator

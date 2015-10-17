@@ -268,7 +268,7 @@ namespace Menge
 			return GL_MODULATE;
 		case TOP_ADD:
 			return GL_ADD;
-		case TOP_SUBSTRACT:
+		case TOP_SUBTRACT:
 			return GL_SUBTRACT;
 		default:;
 		}
@@ -405,6 +405,16 @@ namespace Menge
         //ToDo!
 		
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeRenderSystemES1::setClipplaneCount( uint32_t _count )
+	{
+		//ToDo
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeRenderSystemES1::setClipplane( uint32_t _i, const mt::planef & _plane )
+	{
+		//ToDo
 	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystemES1::setViewport( const Viewport & _viewport )
@@ -651,11 +661,6 @@ namespace Menge
 	void MarmaladeRenderSystemES1::setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex )
 	{
 		m_currentIndexBuffer = _ibHandle;        
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystemES1::setVertexDeclaration( uint32_t _vertexSize, uint32_t _declaration )
-	{
-        // To Do
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderShaderInterfacePtr MarmaladeRenderSystemES1::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )

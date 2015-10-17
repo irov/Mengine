@@ -1,7 +1,7 @@
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #   include "IwGL.h"
 #   include "s3e.h"
@@ -74,8 +74,7 @@ namespace Menge
 		GLenum m_format;
 		GLenum m_type;
 
-		void * m_lockMemory;
-		CacheBufferID m_lockBufferId;
+		MemoryCacheBufferInterfacePtr m_lockMemory;
 		uint32_t m_lockLevel;
 	};
 

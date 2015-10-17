@@ -223,7 +223,7 @@ namespace Menge
 		{
 			size_t texture_size = dataInfo->getSize();
 
-			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryBuffer( m_serviceProvider, texture_size, "ResourceImageDefault::_isValid" );
+			MemoryCacheBufferInterfacePtr buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, texture_size, "ResourceImageDefault::_isValid" );
 
 			if( buffer == nullptr )
 			{

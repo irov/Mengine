@@ -2,11 +2,13 @@
 
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/StringizeInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "Playlist.h"
 
 #	include "ResourcePlaylist.h"
+
+#	include "Core/MemoryHelper.h"
 
 #   include "Logger/Logger.h"
 
@@ -398,23 +400,13 @@ namespace Menge
 
 				return false;
 			}
-
-			m_audioMemory = CACHE_SERVICE(m_serviceProvider)
-				->createMemory();
+						
+			
+			m_audioMemory = Helper::createMemoryStream( m_serviceProvider, stream );
 
 			if( m_audioMemory == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: invalid create memory '%s:%s'"
-					, _pakName.c_str()
-					, _filePath.c_str()
-					);
-
-				return false;
-			}
-
-			if( m_audioMemory->readStream( stream ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("Amplifier::play_: invalid read stream '%s:%s'"
 					, _pakName.c_str()
 					, _filePath.c_str()
 					);

@@ -11,7 +11,6 @@
 #	include "Interface/PhysicSystemInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
-#   include "Interface/ParticleSystemInterface2.h"
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/InputSystemInterface.h"
@@ -20,7 +19,7 @@
 #   include "Interface/MarmaladeLayerInterface.h"
 #	include "Interface/ModuleInterface.h"
 #	include "Interface/DataInterface.h"
-#	include "Interface/CacheInterface.h"
+#	include "Interface/MemoryInterface.h"
 #	include "Interface/ConfigInterface.h"
 #	include "Interface/PrefetcherInterface.h"
 
@@ -113,7 +112,6 @@ namespace Menge
         bool initializeLogEngine_();
         bool initializeMarmaladeLayerService_();
         bool initializeUnicodeEngine_();
-        bool initializeParticleEngine_();
 		bool initializeParticleEngine2_();
         bool initializePhysicEngine2D_();
         bool initializeRenderEngine_();
@@ -127,7 +125,7 @@ namespace Menge
         bool initializeArchiveService_();
 		bool initializeModuleEngine_();		
 		bool initializeDataManager_();
-		bool initializeCacheManager_();
+		bool initializeMemoryManager_();
 		bool initializePrefetcherService_();
 
 	public:
@@ -167,7 +165,6 @@ namespace Menge
         CodecServiceInterface * m_codecService;
 		ThreadSystemInterface * m_threadSystem;
         ThreadServiceInterface * m_threadService;
-        ParticleServiceInterface * m_particleService;
 		ParticleServiceInterface2 * m_particleService2;
 		RenderSystemInterface * m_renderSystem;
         RenderServiceInterface * m_renderService;
@@ -179,7 +176,7 @@ namespace Menge
         ArchiveServiceInterface * m_archiveService;
 		ModuleServiceInterface * m_moduleService;
 		DataServiceInterface * m_dataService;
-		CacheServiceInterface * m_cacheService;
+		MemoryServiceInterface * m_memoryService;
 		ConfigServiceInterface * m_configService;
 		PrefetcherServiceInterface * m_prefetcherService;
 		NotificationServiceInterface * m_notificationService;

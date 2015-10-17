@@ -110,7 +110,7 @@ namespace Menge
 		
 		size_t data_size = dataInfo->getSize();
 
-		MemoryCacheBufferInterfacePtr data_buffer = Helper::createMemoryBuffer( m_serviceProvider, data_size, "ImageConverterPNGToACF_data" );
+		MemoryCacheBufferInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( m_serviceProvider, data_size, "ImageConverterPNGToACF_data" );
 
 		if( data_buffer == nullptr )
 		{

@@ -61,8 +61,5 @@ namespace Menge
 
         typedef FactoryPoolStore<MarmaladeFileOutputStream, 4> TFactoryFileOutputStream;
         TFactoryFileOutputStream m_factoryOutputStream;
-
-		typedef FactoryPoolStore<MemoryInput, 32> TFactoryMemoryInput;
-		TFactoryMemoryInput m_factoryMemoryInput;
 	};
 }

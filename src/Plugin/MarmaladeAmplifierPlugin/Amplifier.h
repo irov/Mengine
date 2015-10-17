@@ -2,9 +2,9 @@
 
 #	include "Interface/AmplifierInterface.h"
 #	include "Interface/SoundSystemInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "Core/ConstString.h"
-#	include "Core/Memory.h"
 
 #	include "Config/Typedef.h"
 
@@ -69,7 +69,7 @@ namespace	Menge
 		bool m_needRefocus;
         bool m_turn;
 
-		MemoryPtr m_audioMemory;
+		MemoryInterfacePtr m_audioMemory;
 
 	public:		
 		void onSoundStop();

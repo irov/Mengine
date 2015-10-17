@@ -31,7 +31,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t ThreadTaskPacket::countTask() const
 	{
-		uint32_t count = m_tasks.size();
+		uint32_t count = (uint32_t)m_tasks.size();
 
 		return count;
 	}

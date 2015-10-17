@@ -462,7 +462,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	size_t VistaWindowsLayer::getCurrentDirectory( WChar * _path, size_t _len )
     {        
-		DWORD len = ::GetCurrentDirectory( _len, _path );
+		DWORD len = (DWORD)::GetCurrentDirectory( (DWORD)_len, _path );
 
 		if( len == 0 )
         {
@@ -501,7 +501,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::getModuleFileName( HMODULE hModule, WChar * _moduleFilename, size_t _capacity )
     {
-        if( ::GetModuleFileName( hModule, _moduleFilename, _capacity ) == 0 )
+		if( ::GetModuleFileName( hModule, _moduleFilename, (DWORD)_capacity ) == 0 )
         {
             return false;
         }
@@ -681,7 +681,7 @@ namespace Menge
 		}
 
 		DWORD bytesWritten = 0;
-		BOOL result = ::WriteFile( hFile, _data, _size, &bytesWritten, NULL );
+		BOOL result = ::WriteFile( hFile, _data, (DWORD)_size, &bytesWritten, NULL );
 
 		::CloseHandle( hFile );
 

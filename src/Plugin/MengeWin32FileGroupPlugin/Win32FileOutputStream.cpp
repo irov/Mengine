@@ -64,7 +64,7 @@ namespace Menge
 	bool Win32FileOutputStream::write( const void * _data, size_t _count )
 	{
 		DWORD bytesWritten = 0;
-		BOOL result = ::WriteFile( m_hFile, _data, _count, &bytesWritten, NULL );
+		BOOL result = ::WriteFile( m_hFile, _data, (DWORD)_count, &bytesWritten, NULL );
 
         if( result == FALSE )
         {

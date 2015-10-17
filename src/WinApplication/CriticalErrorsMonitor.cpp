@@ -2,6 +2,10 @@
 
 #	include "Core/Date.h"
 
+#	include "Logger/Logger.h"
+
+#	include "stdex/stack.h"
+
 #   include "WindowsLayer/WindowsIncluder.h"
 #   include "DbgHelp.h"
 
@@ -19,12 +23,18 @@ namespace Menge
 	struct CrashDumpExceptionHandlerData
 	{
 		WString dumpPath;
+		ServiceProviderInterface * serviceProvider;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	CrashDumpExceptionHandlerData * g_crashDumpExceptionHandlerData = nullptr;
+	static CrashDumpExceptionHandlerData * g_crashDumpExceptionHandlerData = nullptr;
     //////////////////////////////////////////////////////////////////////////
     static bool s_writeCrashDump( EXCEPTION_POINTERS * pExceptionPointers )
     {
+		if( g_crashDumpExceptionHandlerData == nullptr )
+		{
+			return false;
+		}
+
 		HANDLE hFile = CreateFile( g_crashDumpExceptionHandlerData->dumpPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
 
         if( hFile == INVALID_HANDLE_VALUE ) 
@@ -62,14 +72,14 @@ namespace Menge
 
         exinfo.ThreadId = ::GetCurrentThreadId();
         exinfo.ExceptionPointers = pExceptionPointers;
-        exinfo.ClientPointers = TRUE;
+        exinfo.ClientPointers = FALSE;
 
         HANDLE hProcess = GetCurrentProcess();
         DWORD dwProcessId = GetCurrentProcessId();
 
-		DWORD dumptype = MiniDumpNormal | MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithDataSegs | MiniDumpWithThreadInfo;
+		MINIDUMP_TYPE dumptype = MINIDUMP_TYPE(MiniDumpNormal | MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithDataSegs | MiniDumpWithThreadInfo);
         
-		BOOL successful = MiniDumpWriteDump( hProcess, dwProcessId, hFile, (MINIDUMP_TYPE)dumptype, &exinfo, NULL, NULL );
+		BOOL successful = MiniDumpWriteDump( hProcess, dwProcessId, hFile, dumptype, &exinfo, NULL, NULL );
 
         FreeLibrary( dbghelp_dll );
         ::CloseHandle( hFile );
@@ -86,11 +96,19 @@ namespace Menge
 	static LONG WINAPI s_exceptionHandler( EXCEPTION_POINTERS* pExceptionPointers )
 	{       
         s_writeCrashDump( pExceptionPointers );
+
+		stdex::string stack;
+		stdex::get_callstack( stack, pExceptionPointers->ContextRecord );
+
+		LOGGER_CRITICAL( g_crashDumpExceptionHandlerData->serviceProvider )("CriticalErrorsMonitor: catch exception and write dumb %ls\n\n\n %s\n\n\n"
+			, g_crashDumpExceptionHandlerData->dumpPath.c_str()
+			, stack.c_str()
+			);
                 
 		return EXCEPTION_EXECUTE_HANDLER;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CriticalErrorsMonitor::run( const WString & _userPath )
+	void CriticalErrorsMonitor::run( const WString & _userPath, ServiceProviderInterface * _serviceProvider )
 	{
 		WString dumpPath;
 		dumpPath += _userPath;
@@ -105,8 +123,18 @@ namespace Menge
 
 		g_crashDumpExceptionHandlerData = new CrashDumpExceptionHandlerData;
 		g_crashDumpExceptionHandlerData->dumpPath = dumpPath;
+		g_crashDumpExceptionHandlerData->serviceProvider = _serviceProvider;
 
 		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
 		::SetUnhandledExceptionFilter( &s_exceptionHandler );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void CriticalErrorsMonitor::stop()
+	{
+		if( g_crashDumpExceptionHandlerData != nullptr )
+		{
+			delete g_crashDumpExceptionHandlerData;
+			g_crashDumpExceptionHandlerData = nullptr;
+		}
 	}
 }

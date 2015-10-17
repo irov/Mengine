@@ -1371,7 +1371,7 @@ namespace Menge
 			WString userPath;
 			this->makeUserPath_( userPath );
 
-			CriticalErrorsMonitor::run( userPath );
+			CriticalErrorsMonitor::run( userPath, m_serviceProvider );
 		}
 #	endif
 				
@@ -1891,7 +1891,9 @@ namespace Menge
 	{
 		m_winTimer->reset();
 
+#	ifndef _DEBUG
 		try
+#	endif
 		{
 			while( m_running )
 			{
@@ -1949,24 +1951,21 @@ namespace Menge
 					{
 						m_application->flush();
 					}
-				}     
+				}
 
 				m_application->endUpdate();
 
 				m_applicationUpdate = false;
 			}
 		}
+#	ifndef _DEBUG
 		catch( const std::exception & ex )
 		{
 			LOGGER_CRITICAL(m_serviceProvider)("WinApplication std::exception '%s'"
 				, ex.what()
 				);
 		}
-		catch( ... )
-		{			
-			LOGGER_CRITICAL(m_serviceProvider)("WinApplication unknown exception"
-				);
-		}
+#	endif
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::finalize()

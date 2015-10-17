@@ -81,6 +81,10 @@ namespace Menge
 		void removeActor( AOIActor * _actor );
 
 	public:
+		void freeze( bool _value );
+		bool isFreeze() const;
+
+	public:
 		void update();
 
 	protected:
@@ -90,5 +94,7 @@ namespace Menge
 
 		typedef FactoryPoolStore<AOIActor, 32> TFactoryAOIActor;
 		TFactoryAOIActor m_factoryAOIActor;
+
+		bool m_freeze;
 	};
 }

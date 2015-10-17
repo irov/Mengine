@@ -103,7 +103,7 @@ namespace Menge
 
 		unsigned char * miplevel_data_memory = data_buffer->getMemoryT<unsigned char *>();
 
-		for( size_t i = 0; i != dataInfo->mipmaps; ++i )
+		for( uint32_t i = 0; i != dataInfo->mipmaps; ++i )
 		{
 			ImageCodecOptions decoder_options;
 

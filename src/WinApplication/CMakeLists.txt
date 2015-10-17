@@ -18,6 +18,12 @@ MessageBoxLogger
 #	resource.h
 #	WinApplication.rc
 #)
+
+ADD_FILTER(
+CriticalErrorsMonitor
+	CriticalErrorsMonitor.h
+	CriticalErrorsMonitor.cpp
+)
 	
 ADD_FILTER(
 src
@@ -26,8 +32,7 @@ src
 	FPSMonitor.h	
 	AlreadyRunningMonitor.h
 	AlreadyRunningMonitor.cpp
-	CriticalErrorsMonitor.h
-	CriticalErrorsMonitor.cpp
+
 	WinApplication.cpp
 	WinApplication.h
     WinApplicationInitializer.cpp

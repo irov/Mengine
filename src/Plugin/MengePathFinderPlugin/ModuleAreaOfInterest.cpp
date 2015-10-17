@@ -39,6 +39,8 @@ namespace Menge
 	bool ModuleAreaOfInterest::initialize()
 	{
 		pybind::interface_<AreaOfInterest>("AreaOfInterest")
+			.def( "freeze", &AreaOfInterest::freeze )
+			.def( "isFreeze", &AreaOfInterest::isFreeze )
 			;
 
 		pybind::def_functor( "createAOI", this, &ModuleAreaOfInterest::createAOI );

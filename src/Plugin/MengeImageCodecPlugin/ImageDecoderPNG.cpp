@@ -298,8 +298,8 @@ namespace Menge
 				{
 					png_read_row( m_png_ptr, row_memory, nullptr );
 
-					png_uint_32 row_alpha = m_row_bytes / 4;
-					for( png_uint_32 j = 0; j != row_alpha; ++j )
+					png_size_t row_alpha = m_row_bytes / 4;
+					for( png_size_t j = 0; j != row_alpha; ++j )
 					{
 						bufferCursor[j] = row_memory[j*4+3];
 					}

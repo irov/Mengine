@@ -42,7 +42,7 @@ namespace Menge
 		char * dst_buffer = (char *)_distance;
 		const char * src_buffer = (const char *)_source;
 
-		int compressSize = ::LZ4_compressHC2_limitedOutput( src_buffer, dst_buffer, _sourceSize, _bufferSize, 16 );
+		int compressSize = ::LZ4_compressHC2_limitedOutput( src_buffer, dst_buffer, (int)_sourceSize, (int)_bufferSize, 16 );
 
 		if( compressSize < 0 )
 		{
@@ -65,7 +65,7 @@ namespace Menge
 		char * dst_buffer = (char *)_distance;
 		const char * src_buffer = (const char *)_source;
 
-		int decompressSize = ::LZ4_decompress_fast( src_buffer, dst_buffer, _bufferSize );
+		int decompressSize = ::LZ4_decompress_fast( src_buffer, dst_buffer, (int)_bufferSize );
 
 		if( decompressSize < 0 )
 		{

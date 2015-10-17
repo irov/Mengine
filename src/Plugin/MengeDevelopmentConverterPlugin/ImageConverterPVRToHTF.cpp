@@ -105,7 +105,7 @@ namespace Menge
 
 		unsigned char * miplevel_data_memory = reinterpret_cast<unsigned char *>(data_memory);
 
-		for( size_t i = 0; i != dataInfo->mipmaps; ++i )
+		for( uint32_t i = 0; i != dataInfo->mipmaps; ++i )
 		{
 			ImageCodecOptions decoder_options;
 

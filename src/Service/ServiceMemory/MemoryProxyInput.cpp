@@ -36,11 +36,14 @@ namespace Menge
 		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MemoryProxyInput::getMemory( size_t & _size ) const
+	void * MemoryProxyInput::getMemory() const
 	{
-        _size = m_size;
-
 		return m_data;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t MemoryProxyInput::getSize() const
+	{
+		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryProxyInput::read( void * _buf, size_t _count )

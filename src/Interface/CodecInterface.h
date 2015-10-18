@@ -96,7 +96,7 @@ namespace Menge
         virtual bool setOptions( CodecOptions * _options ) = 0;
 
 	public:
-		virtual size_t encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo ) = 0;
+		virtual size_t encode( const void * _buffer, size_t _size, const CodecDataInfo* _dataInfo ) = 0;
 
     public:
         virtual OutputStreamInterfacePtr getStream() const = 0;

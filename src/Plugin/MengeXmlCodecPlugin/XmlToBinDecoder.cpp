@@ -272,8 +272,8 @@ namespace Menge
 		uint32_t write_bin_size = (uint32_t)bin_size;
         bin_stream->write( &write_bin_size, sizeof(write_bin_size) );
 
-		size_t compress_size;
-		const void * compress_buffer = compress_memory->getMemory( compress_size );
+		const void * compress_buffer = compress_memory->getMemory();
+		size_t compress_size = compress_memory->getSize();
 
 		if( compress_buffer == nullptr )
 		{

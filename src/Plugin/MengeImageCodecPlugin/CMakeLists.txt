@@ -15,8 +15,6 @@ src
     ImageDecoderETC1.h
     ImageDecoderPVRTC.cpp
     ImageDecoderPVRTC.h
-    ImageDecoderDDS.cpp
-    ImageDecoderDDS.h
 
 	ImageEncoderJPEG.cpp
 	ImageEncoderJPEG.h    
@@ -42,6 +40,12 @@ src
     ImageEncoderACF.cpp
     ImageEncoderACF.h
     ImageVerifyACF.h
+    
+    ImageCodecDDS.h
+    ImageDecoderDDS.cpp
+    ImageDecoderDDS.h    
+    ImageEncoderDDS.cpp
+    ImageEncoderDDS.h
     
     DataflowAEK.h
     DataflowAEK.cpp

@@ -186,7 +186,7 @@ namespace Menge
         di.mipmaplevel = mimmap_level;
         di.mipmapsize = bufferSize;
 
-        encoder->encode( buffer, &di );
+        encoder->encode( buffer, bufferSize, &di );
 
 		encoder->finalize();
 		

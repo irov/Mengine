@@ -22,7 +22,10 @@ namespace Menge
 
     public:
 		bool cacheMemory( size_t _size, const char * _doc ) override;
-		void * getMemory( size_t & _size ) const override;
+		
+	public:
+		void * getMemory() const override;
+		size_t getSize() const override;
 
 	public:
 		size_t read( void * _buf, size_t _size ) override;

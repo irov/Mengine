@@ -21,7 +21,7 @@ namespace Menge
 		void * newMemory( size_t _size ) override;
 
 	public:
-		inline void * getMemory( size_t & _size ) const override;
+		inline void * getMemory() const override;
 		inline size_t getSize() const override;
 
 	protected:
@@ -31,10 +31,8 @@ namespace Menge
 		size_t m_size;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline void * Memory::getMemory( size_t & _size ) const
+	inline void * Memory::getMemory() const
 	{
-		_size = m_size;
-
 		return m_memory;
 	}
 	//////////////////////////////////////////////////////////////////////////

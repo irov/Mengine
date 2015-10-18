@@ -188,8 +188,9 @@ namespace Menge
 				return false;
 			}
 
-			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( _serviceProvider, compress_size, "ArchiveService::getData compress_memory" );
-
+			//MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _serviceProvider, _stream, compress_size, "ArchiveService::getData compress_memory" );
+			MemoryInterfacePtr compress_buffer = Helper::createMemoryStreamSize( _serviceProvider, _stream, compress_size );
+			
 			if( compress_buffer == nullptr )
 			{
 				LOGGER_ERROR( _serviceProvider )("loadStreamArchiveInplace: invalid get memory %d (compress)"
@@ -200,18 +201,6 @@ namespace Menge
 			}
 
 			void * compress_memory = compress_buffer->getMemory();
-
-			size_t read_data = _stream->read( compress_memory, compress_size );
-
-			if( read_data != (size_t)compress_size )
-			{
-				LOGGER_ERROR(_serviceProvider)("loadStreamArchiveInplace: invalid read data %d need %d"
-					, read_data
-					, compress_size
-					);
-
-				return false;
-			}
 
 			if( crc32 != 0 )
 			{
@@ -300,8 +289,8 @@ namespace Menge
 				return false;
 			}
 
-			size_t compressSize;
-			const void * compressBuffer = compress_memory->getMemory( compressSize );
+			const void * compressBuffer = compress_memory->getMemory();
+			size_t compressSize = compress_memory->getSize();
 
 			if( compressBuffer == nullptr )
 			{

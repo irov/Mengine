@@ -1572,9 +1572,9 @@ namespace Menge
 
 				return false;
 			}
-
-			size_t compressSize;
-			const void * compressBuffer = compress_memory->getMemory( compressSize );
+						
+			const void * compressBuffer = compress_memory->getMemory();
+			size_t compressSize = compress_memory->getSize();
 
 			uint32_t value_crc32 = Helper::make_crc32( (const unsigned char *)compressBuffer, compressSize );
 

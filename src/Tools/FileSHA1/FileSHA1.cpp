@@ -136,7 +136,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	if( f_sha1 == NULL )
 	{
 		message_error( L"sha1 '%ls' not open"
-			, file.c_str()
+			, sha1.c_str()
 			);
 
 		return 0;

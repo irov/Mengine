@@ -269,7 +269,9 @@ namespace Menge
 			return false;
 		}
 
-        unsigned int bytesWritten = imageEncoder->encode( buffer, &dataInfo );
+		size_t bufferSize = options.pitch * dataInfo.height;
+
+		size_t bytesWritten = imageEncoder->encode( buffer, bufferSize, &dataInfo );
 
         _texture->unlock( 0 );
 
@@ -609,7 +611,14 @@ namespace Menge
 
 			if( textureBuffer == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTextureImageData Invalid lock");
+				LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTextureImageData %s Invalid lock mipmap %d rect %d:%d:%d:%d"
+					, _texture->getFileName().c_str()
+					, i
+					, _rect.left
+					, _rect.top
+					, _rect.right					
+					, _rect.bottom
+					);
 
 				return false;
 			}
@@ -626,7 +635,14 @@ namespace Menge
 			size_t bufferSize = Helper::getTextureMemorySize( miplevel_width, miplevel_height, channels, depth, pf );
 			if( _imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
 			{
-				LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTextureImageData Invalid decode");
+				LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::loadTextureImageData %s Invalid decode mipmap %d rect %d:%d:%d:%d"
+					, _texture->getFileName().c_str()
+					, i
+					, _rect.left
+					, _rect.top
+					, _rect.right
+					, _rect.bottom
+					);
 
 				_texture->unlock( i );
 
@@ -642,20 +658,16 @@ namespace Menge
 			_texture->unlock( i );
 		}
 
-		END_WATCHDOG(m_serviceProvider, "texture decode", 1)("texture decode %s", _texture->getFileName().c_str());
+		END_WATCHDOG(m_serviceProvider, "texture decode", 1)("texture decode %s"
+			, _texture->getFileName().c_str()
+			);
 		
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderTextureManager::imageQuality( const RenderTextureInterfacePtr & _texture, void * _textureBuffer, size_t _texturePitch )
     {
-        uint32_t width = _texture->getWidth();
-        uint32_t height = _texture->getHeight();
-		
-		const RenderImageInterfacePtr & image = _texture->getImage(); 
-
-        uint32_t hwWidth = image->getHWWidth();
-        uint32_t hwHeight = image->getHWHeight();
+		const RenderImageInterfacePtr & image = _texture->getImage();
 
 		PixelFormat hwPixelFormat = image->getHWPixelFormat();
 
@@ -668,6 +680,12 @@ namespace Menge
 		{
 			return;
 		}
+
+		uint32_t width = _texture->getWidth();
+		uint32_t height = _texture->getHeight();
+
+		uint32_t hwWidth = image->getHWWidth();
+		uint32_t hwHeight = image->getHWHeight();
 		
         // copy pixels on the edge for better image quality
         if( hwWidth > width )

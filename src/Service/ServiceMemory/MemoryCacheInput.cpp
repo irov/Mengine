@@ -68,11 +68,14 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MemoryCacheInput::getMemory( size_t & _size ) const
+	void * MemoryCacheInput::getMemory() const
 	{
-		_size = m_size;
-
 		return m_data;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t MemoryCacheInput::getSize() const
+	{
+		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	size_t MemoryCacheInput::read( void * _buf, size_t _size )

@@ -53,8 +53,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageEncoderHTF::encode( const void * _buffer, const CodecDataInfo * _dataInfo )
+	size_t ImageEncoderHTF::encode( const void * _buffer, size_t _size, const CodecDataInfo * _dataInfo )
 	{
+		(void)_size;
+
 		if( Helper::writeStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_HTF), GET_MAGIC_VERSION(MAGIC_HTF) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ImageEncoderHTF::encode invalid write magic header"

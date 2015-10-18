@@ -11,6 +11,18 @@ namespace Menge
 		{
 			size_t stream_size = _stream->size();
 
+			MemoryInterfacePtr memoryBuffer = Helper::createMemoryStreamSize( _serviceProvider, _stream, stream_size );
+
+			if( memoryBuffer == nullptr )
+			{
+				return nullptr;
+			}
+
+			return memoryBuffer;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		MemoryInterfacePtr createMemoryStreamSize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size )
+		{
 			MemoryInterfacePtr memoryBuffer = MEMORY_SERVICE( _serviceProvider )
 				->createMemory();
 
@@ -19,16 +31,16 @@ namespace Menge
 				return nullptr;
 			}
 
-			void * memory = memoryBuffer->newMemory( stream_size );
+			void * memory = memoryBuffer->newMemory( _size );
 
 			if( memory == nullptr )
 			{
 				return nullptr;
 			}
 
-			size_t read_byte = _stream->read( memory, stream_size );
+			size_t read_byte = _stream->read( memory, _size );
 
-			if( read_byte != stream_size )
+			if( read_byte != _size )
 			{
 				return nullptr;
 			}

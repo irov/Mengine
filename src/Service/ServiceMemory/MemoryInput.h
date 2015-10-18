@@ -19,12 +19,10 @@ namespace Menge
 
     public:
         void * newMemory( size_t _size ) override;
-		void * copyMemory( const void * _source, size_t _size ) override;
-
-		void trimMemory( size_t _size ) override;
 
 	public:
-		const void * getMemory( size_t & _size ) const override;
+		void * getMemory() const override;
+		size_t getSize() const override;
 
 	public:
 		size_t read( void * _buf, size_t _count ) override;

@@ -45,9 +45,9 @@ namespace Menge
 
 			return false;
 		}
-
-		size_t binary_size;
-		unsigned char * binary_memory = memory->getMemoryT<unsigned char *>( binary_size );
+				
+		unsigned char * binary_memory = memory->getMemoryT<unsigned char *>();
+		size_t binary_size = memory->getSize();
 
 		HM_FILE mf;
 		if( this->loadContainer_( binary_memory, binary_size, mf ) == false )

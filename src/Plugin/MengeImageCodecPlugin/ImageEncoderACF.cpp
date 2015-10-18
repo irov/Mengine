@@ -35,8 +35,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageEncoderACF::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
+	size_t ImageEncoderACF::encode( const void * _buffer, size_t _size, const CodecDataInfo* _bufferDataInfo )
 	{
+		(void)_size;
+
 		if( Helper::writeStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_ACF), GET_MAGIC_VERSION(MAGIC_ACF) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ImageEncoderACF::encode invalid write magic header"

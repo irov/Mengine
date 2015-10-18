@@ -13,6 +13,8 @@
 #	endif
 
 #	include "ImageDecoderDDS.h"
+#	include "ImageEncoderDDS.h"
+
 #	include "ImageDecoderPVRTC.h"
 #	include "ImageDecoderETC1.h"
 
@@ -124,6 +126,8 @@ namespace Menge
 		m_encoders.push_back( new EncoderFactory<ImageEncoderJPEG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "jpegImage")) );
 		m_encoders.push_back( new EncoderFactory<ImageEncoderHTF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "htfImage")) );
 		m_encoders.push_back( new EncoderFactory<ImageEncoderACF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "acfImage")) );
+
+		m_encoders.push_back( new EncoderFactory<ImageEncoderDDS>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ddsImage" ) ) );
 
 		m_decoders.push_back( new DecoderFactory<PickDecoderHIT>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "hitPick")) );
 		m_encoders.push_back( new EncoderFactory<PickEncoderHIT>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "hitPick")) );

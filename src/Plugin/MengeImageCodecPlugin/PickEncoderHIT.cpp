@@ -35,8 +35,10 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t PickEncoderHIT::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
+	size_t PickEncoderHIT::encode( const void * _buffer, size_t _size, const CodecDataInfo* _bufferDataInfo )
 	{
+		(void)_size;
+
 		if( Helper::writeStreamMagicHeader( m_serviceProvider, m_stream, GET_MAGIC_NUMBER(MAGIC_HIT), GET_MAGIC_VERSION(MAGIC_HIT) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("PickEncoderHIT::encode invalid write magic header"

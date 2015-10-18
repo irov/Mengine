@@ -188,7 +188,7 @@ namespace Menge
 		htfDataInfo.channels = 3;
 		htfDataInfo.format = dataInfo->format;
 
-		size_t encode_byte = encoder->encode( miplevel_data_memory, &htfDataInfo );
+		size_t encode_byte = encoder->encode( miplevel_data_memory, data_full_size, &htfDataInfo );
 
 		if( encode_byte == 0 )
 		{

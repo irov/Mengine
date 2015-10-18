@@ -183,7 +183,7 @@ namespace Menge
 		htfDataInfo.channels = 1;
 		htfDataInfo.format = PF_UNKNOWN;
 
-		size_t encode_byte = encoder->encode( data_memory, &htfDataInfo );
+		size_t encode_byte = encoder->encode( data_memory, data_size, &htfDataInfo );
 
 		if( encode_byte == 0 )
 		{

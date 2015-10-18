@@ -68,8 +68,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderACF::_decode( void * _buffer, size_t _bufferSize )
 	{
-		(void)_bufferSize;
-
 		size_t dataSize;
 		if( Helper::loadStreamArchiveBufferSize( m_serviceProvider, m_stream, dataSize ) == false )
 		{

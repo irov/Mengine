@@ -85,13 +85,23 @@ namespace Menge
 	size_t ImageDecoderHTF::_decode( void * _buffer, size_t _bufferSize )
 	{
 		if( Helper::loadStreamArchiveInplace( m_serviceProvider, m_stream, m_archivator, _buffer, _bufferSize ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("ImageDecoderHTF::decode invalid load"
-                );
+		{
+			LOGGER_ERROR( m_serviceProvider )("ImageDecoderHTF::decode invalid load"
+				);
 
-            return 0;
-        }
+			return 0;
+		}
 
+		OutputStreamInterfacePtr output = FILE_SERVICE( m_serviceProvider )
+			->openOutputFile( ConstString::none(), STRINGIZE_STRING_LOCAL( m_serviceProvider, "test.dds" ) );
+
+		ImageEncoderInterfacePtr encoder = CODEC_SERVICE( m_serviceProvider )
+			->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ddsImage" ) );
+
+		encoder->initialize( output );
+
+		encoder->encode( _buffer, _bufferSize, &m_dataInfo );
+		
 		return _bufferSize;
 	}
 	//////////////////////////////////////////////////////////////////////////

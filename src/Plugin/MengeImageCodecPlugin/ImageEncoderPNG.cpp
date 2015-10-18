@@ -61,8 +61,10 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t ImageEncoderPNG::encode( const void * _buffer, const CodecDataInfo* _bufferDataInfo )
+	size_t ImageEncoderPNG::encode( const void * _buffer, size_t _size, const CodecDataInfo* _bufferDataInfo )
 	{
+		(void)_size;
+
 		const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>( _bufferDataInfo );
 			
 		// allocate/initialize the image information data.

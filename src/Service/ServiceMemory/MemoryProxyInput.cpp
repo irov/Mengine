@@ -25,7 +25,7 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MemoryProxyInput::setMemory( void * _memory, size_t _offset, size_t _size )
+	Pointer MemoryProxyInput::setMemory( void * _memory, size_t _offset, size_t _size )
 	{
 		m_data = static_cast<unsigned char*>( _memory ) + _offset;
 		m_size = _size;
@@ -36,7 +36,7 @@ namespace Menge
 		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MemoryProxyInput::getMemory() const
+	Pointer MemoryProxyInput::getMemory() const
 	{
 		return m_data;
 	}

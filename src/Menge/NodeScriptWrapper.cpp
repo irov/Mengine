@@ -2088,7 +2088,7 @@ namespace Menge
 				return false;
 			}
 
-			char * memory = binary_buffer->getMemoryT<char *>();
+			char * memory = binary_buffer->getMemory();
 
 			PythonSaxCallback pysc(m_serviceProvider, _cb);
 			if( stdex::xml_sax_parse( memory, pysc ) == false )

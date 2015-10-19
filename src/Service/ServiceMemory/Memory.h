@@ -18,10 +18,10 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		void * newMemory( size_t _size ) override;
+		Pointer newMemory( size_t _size ) override;
 
 	public:
-		inline void * getMemory() const override;
+		inline Pointer getMemory() const override;
 		inline size_t getSize() const override;
 
 	protected:
@@ -31,7 +31,7 @@ namespace Menge
 		size_t m_size;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline void * Memory::getMemory() const
+	inline Pointer Memory::getMemory() const
 	{
 		return m_memory;
 	}

@@ -21,10 +21,10 @@ namespace Menge
 		void setMemoryManager( MemoryManager * _memoryManager );
 
     public:
-		bool cacheMemory( size_t _size, const char * _doc ) override;
+		Pointer cacheMemory( size_t _size, const char * _doc ) override;
 		
 	public:
-		void * getMemory() const override;
+		Pointer getMemory() const override;
 		size_t getSize() const override;
 
 	public:

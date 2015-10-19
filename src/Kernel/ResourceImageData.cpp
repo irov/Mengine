@@ -117,8 +117,7 @@ namespace Menge
                 ->findCodecType( m_fileName );
         }
 		        		
-		m_maxSize = mt::vec2f(0.f, 0.f);
-		metadata->get_File_MaxSize( m_maxSize );
+		m_maxSize = metadata->get_File_MaxSize();
 
 		m_validNoExist = false;
 		metadata->get_File_NoExist( m_validNoExist );

@@ -26,6 +26,7 @@ namespace Menge
 
 	protected:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
+		bool _convert() override;
 
 	protected:
 		bool _compile() override;
@@ -37,6 +38,7 @@ namespace Menge
 	protected:
         FilePath m_filePath;
         ConstString m_codecType;
+		ConstString m_converter;
 
 		bool m_validNoExist;
 	};

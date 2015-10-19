@@ -298,12 +298,7 @@ namespace Menge
 		       
         metadata->swap_File_Path( m_filePath );
         metadata->swap_File_Codec( m_codecType );
-
-        if( m_codecType.empty() == true )
-        {
-            m_codecType = CODEC_SERVICE(m_serviceProvider)
-                ->findCodecType( m_filePath );
-        }
+		metadata->swap_File_Converter( m_converter );
 
 		m_isAlpha = true;
         metadata->get_File_Alpha( m_isAlpha );
@@ -319,6 +314,13 @@ namespace Menge
 		
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceImageDefault::_convert()
+	{
+		bool result = this->convertDefault_( m_converter, m_filePath, m_filePath, m_codecType );
+
+		return result;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::_compile()
 	{				

@@ -31,7 +31,7 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MemoryInput::newMemory( size_t _size )
+	Pointer MemoryInput::newMemory( size_t _size )
 	{
 		unsigned char * memory = Helper::reallocateMemory<unsigned char>( m_data, _size );
 
@@ -53,7 +53,7 @@ namespace Menge
         return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MemoryInput::getMemory() const		
+	Pointer MemoryInput::getMemory() const
 	{
 		return m_data;
 	}

@@ -34,7 +34,10 @@ namespace Menge
         : public FactorablePtr
 	{
 	public:
-		virtual bool write( const void * _data, size_t _count ) = 0;
+		virtual bool write( const void * _data, size_t _size ) = 0;
+		virtual size_t size() const = 0;
+
+	public:
 		virtual bool flush() = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////

@@ -1,4 +1,4 @@
-<Protocol Version = "93">
+<Protocol Version = "94">
   <Type Name="Menge::String" Evict="string"/>
   <Type Name="Menge::WString" Evict="wstring"/>
   <Type Name="Menge::ConstString" Evict="string"/>
@@ -129,13 +129,14 @@
       <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
 
-      <Member Node="File" Name="MaxSize" Type="mt::vec2f"/>
+      <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
       <Member Node="File" Name="NoExist" Type="bool"/>
     </Node>
 
     <Node Name="ResourceImageDefault" Inheritance = "Resource">
       <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
       <Member Node="File" Name="Codec" Type="Menge::ConstString"/>
+      <Member Node="File" Name="Converter" Type="Menge::ConstString"/>
       <Member Node="File" Name="Alpha" Type="bool"/>
       
       <Member Node="File" Name="MaxSize" Type="mt::vec2f" Required="1"/>
@@ -165,18 +166,6 @@
       <Member Node="Image" Name="MaxSize" Type="mt::vec2f" Required="1"/>
       <Member Node="Image" Name="Size" Type="mt::vec2f"/>
       <Member Node="Image" Name="Offset" Type="mt::vec2f"/>
-    </Node>
-
-    <Node Name="ResourceEmitterContainer" Inheritance = "Resource">
-      <Member Node="File" Name="Path" Type="Menge::FilePath" Required="1"/>
-      <Member Node="Folder" Name="Path" Type="Menge::ConstString" Required="1"/>
-    </Node>
-
-    <Node Name="ResourceEmitter" Inheritance = "Resource">
-      <Member Node="Container" Name="Name" Type="Menge::ConstString" Required="1"/>
-      <Member Node="Emitter" Name="Name" Type="Menge::ConstString" Required="1"/>
-      <Member Node="EmitterRelative" Name="Value" Type="bool" Required="1"/>
-      <Member Node="Offset" Name="Value" Type="mt::vec2f"/>
     </Node>
 
     <Node Name="ResourceParticle" Inheritance = "Resource">

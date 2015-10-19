@@ -1108,132 +1108,6 @@ namespace Metacode
             mutable Menge::FilePath File_Path;
         };
         
-        class Meta_ResourceEmitter
-            : public Meta_Resource
-        { 
-        public:
-            Meta_ResourceEmitter();
-        
-        public:
-            uint32_t getId() const override;
-        
-        public:
-            const Menge::ConstString & get_Container_Name() const
-            {
-                return this->Container_Name;
-            }
-            
-            void swap_Container_Name( Menge::ConstString & _value ) const
-            {
-                std::swap(_value, this->Container_Name);
-            }
-            
-            const Menge::ConstString & get_Emitter_Name() const
-            {
-                return this->Emitter_Name;
-            }
-            
-            void swap_Emitter_Name( Menge::ConstString & _value ) const
-            {
-                std::swap(_value, this->Emitter_Name);
-            }
-            
-            bool get_EmitterRelative_Value() const
-            {
-                return this->EmitterRelative_Value;
-            }
-            
-            void swap_EmitterRelative_Value( bool & _value ) const
-            {
-                std::swap(_value, this->EmitterRelative_Value);
-            }
-            
-            bool has_Offset_Value() const
-            {
-                return Offset_Value_successful;
-            }
-            
-            bool get_Offset_Value( mt::vec2f & _value ) const
-            {
-                if( Offset_Value_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->Offset_Value;
-            
-                return true;
-            }
-            
-            bool swap_Offset_Value( mt::vec2f & _value ) const
-            {
-                if( Offset_Value_successful == false )
-                {
-                    return false;
-                }
-            
-                std::swap(_value, this->Offset_Value);
-            
-                return true;
-            }
-            
-        protected:
-            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
-            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
-            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
-            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
-        public:
-        protected:
-        protected:
-            mutable Menge::ConstString Container_Name;
-            mutable Menge::ConstString Emitter_Name;
-            mutable bool EmitterRelative_Value;
-            bool Offset_Value_successful;
-            mutable mt::vec2f Offset_Value;
-        };
-        
-        class Meta_ResourceEmitterContainer
-            : public Meta_Resource
-        { 
-        public:
-            Meta_ResourceEmitterContainer();
-        
-        public:
-            uint32_t getId() const override;
-        
-        public:
-            const Menge::FilePath & get_File_Path() const
-            {
-                return this->File_Path;
-            }
-            
-            void swap_File_Path( Menge::FilePath & _value ) const
-            {
-                std::swap(_value, this->File_Path);
-            }
-            
-            const Menge::ConstString & get_Folder_Path() const
-            {
-                return this->Folder_Path;
-            }
-            
-            void swap_Folder_Path( Menge::ConstString & _value ) const
-            {
-                std::swap(_value, this->Folder_Path);
-            }
-            
-        protected:
-            bool _parseArguments( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
-            bool _preparationIncludes( uint32_t _includes, uint32_t _count ) override;
-            bool _parseIncludes( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _includes ) override;
-            bool _parseGenerators( const unsigned char * _buff, size_t _size, size_t & _read, uint32_t _generators ) override;
-        public:
-        protected:
-        protected:
-            mutable Menge::FilePath File_Path;
-            mutable Menge::ConstString Folder_Path;
-        };
-        
         class Meta_ResourceExternal
             : public Meta_Resource
         { 
@@ -1417,33 +1291,14 @@ namespace Metacode
                 return true;
             }
             
-            bool has_File_MaxSize() const
+            const mt::vec2f & get_File_MaxSize() const
             {
-                return File_MaxSize_successful;
+                return this->File_MaxSize;
             }
             
-            bool get_File_MaxSize( mt::vec2f & _value ) const
+            void swap_File_MaxSize( mt::vec2f & _value ) const
             {
-                if( File_MaxSize_successful == false )
-                {
-                    return false;
-                }
-            
-                _value = this->File_MaxSize;
-            
-                return true;
-            }
-            
-            bool swap_File_MaxSize( mt::vec2f & _value ) const
-            {
-                if( File_MaxSize_successful == false )
-                {
-                    return false;
-                }
-            
                 std::swap(_value, this->File_MaxSize);
-            
-                return true;
             }
             
             bool has_File_NoExist() const
@@ -1495,7 +1350,6 @@ namespace Metacode
         protected:
             bool File_Codec_successful;
             mutable Menge::ConstString File_Codec;
-            bool File_MaxSize_successful;
             mutable mt::vec2f File_MaxSize;
             bool File_NoExist_successful;
             mutable bool File_NoExist;
@@ -1566,6 +1420,35 @@ namespace Metacode
                 }
             
                 std::swap(_value, this->File_Codec);
+            
+                return true;
+            }
+            
+            bool has_File_Converter() const
+            {
+                return File_Converter_successful;
+            }
+            
+            bool get_File_Converter( Menge::ConstString & _value ) const
+            {
+                if( File_Converter_successful == false )
+                {
+                    return false;
+                }
+            
+                _value = this->File_Converter;
+            
+                return true;
+            }
+            
+            bool swap_File_Converter( Menge::ConstString & _value ) const
+            {
+                if( File_Converter_successful == false )
+                {
+                    return false;
+                }
+            
+                std::swap(_value, this->File_Converter);
             
                 return true;
             }
@@ -1689,6 +1572,8 @@ namespace Metacode
             mutable bool File_Alpha;
             bool File_Codec_successful;
             mutable Menge::ConstString File_Codec;
+            bool File_Converter_successful;
+            mutable Menge::ConstString File_Converter;
             mutable mt::vec2f File_MaxSize;
             bool File_NoExist_successful;
             mutable bool File_NoExist;

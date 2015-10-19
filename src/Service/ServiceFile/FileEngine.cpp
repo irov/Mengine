@@ -84,7 +84,7 @@ namespace Menge
 
 		const FactoryPtr & factory = it_found->second;
 
-		FileGroupInterface * fileGroup = factory->createObjectT<FileGroupInterface>();
+		FileGroupInterface * fileGroup = factory->createObjectT<FileGroupInterface *>();
 
 		if( fileGroup == nullptr )
 		{

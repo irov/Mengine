@@ -46,7 +46,7 @@ namespace Menge
 			return false;
 		}
 				
-		unsigned char * binary_memory = memory->getMemoryT<unsigned char *>();
+		unsigned char * binary_memory = memory->getMemory();
 		size_t binary_size = memory->getSize();
 
 		HM_FILE mf;

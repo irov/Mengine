@@ -45,7 +45,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MemoryCacheInput::cacheMemory( size_t _size, const char * _doc )
+	Pointer MemoryCacheInput::cacheMemory( size_t _size, const char * _doc )
 	{
 		this->uncache_();
 
@@ -54,7 +54,7 @@ namespace Menge
 
 		if( bufferId == INVALID_CACHE_BUFFER_ID )
 		{
-			return false;
+			return nullptr;
 		}
 
 		m_bufferId = bufferId;
@@ -65,10 +65,10 @@ namespace Menge
 		m_pos = m_data;
 		m_end = m_data + m_size;
 
-        return true;
+        return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MemoryCacheInput::getMemory() const
+	Pointer MemoryCacheInput::getMemory() const
 	{
 		return m_data;
 	}

@@ -111,7 +111,7 @@ namespace Menge
 
 		if( _codecType.empty() == true )
 		{
-			_codecType = CODEC_SERVICE(m_serviceProvider)
+			_codecType = CODEC_SERVICE( m_serviceProvider )
 				->findCodecType( _path );
 		}
 

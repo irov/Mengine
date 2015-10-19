@@ -5,23 +5,16 @@
 
 #   include "Factory/FactorablePtr.h"
 
+#	include "Core/Pointer.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryGetterInterface
 	{ 
 	public:
-		virtual void * getMemory() const = 0;
+		virtual Pointer getMemory() const = 0;
 		virtual size_t getSize() const = 0;
-
-	public:
-		template<class T>
-		T getMemoryT() const
-		{
-			void * memory = this->getMemory();
-
-			return static_cast<T>(memory);
-		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryCacheBufferInterface
@@ -29,7 +22,7 @@ namespace Menge
 		, public MemoryGetterInterface
 	{
 	public:
-		virtual void * cacheMemory( size_t _size, const char * _doc ) = 0;
+		virtual Pointer cacheMemory( size_t _size, const char * _doc ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MemoryCacheBufferInterface> MemoryCacheBufferInterfacePtr;
@@ -39,7 +32,7 @@ namespace Menge
 		, public MemoryGetterInterface
 	{
 	public:
-		virtual bool cacheMemory( size_t _size, const char * _doc ) = 0;
+		virtual Pointer cacheMemory( size_t _size, const char * _doc ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MemoryCacheInputInterface> MemoryCacheInputInterfacePtr;
@@ -49,7 +42,7 @@ namespace Menge
 		, public MemoryGetterInterface
 	{
 	public:
-		virtual void * setMemory( void * _memory, size_t _offset, size_t _size ) = 0;
+		virtual Pointer setMemory( void * _memory, size_t _offset, size_t _size ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MemoryProxyInputInterface> MemoryProxyInputInterfacePtr;
@@ -59,7 +52,7 @@ namespace Menge
 		, public MemoryGetterInterface
 	{
 	public:
-		virtual void * newMemory( size_t _size ) = 0;
+		virtual Pointer newMemory( size_t _size ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MemoryInputInterface> MemoryInputInterfacePtr;
@@ -69,7 +62,7 @@ namespace Menge
 		, public MemoryGetterInterface
 	{
 	public:
-		virtual void * newMemory( size_t _size ) = 0;
+		virtual Pointer newMemory( size_t _size ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MemoryInterface> MemoryInterfacePtr;

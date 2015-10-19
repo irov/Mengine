@@ -19,12 +19,17 @@ namespace Menge
 		bool open( const FilePath & _folder, const FilePath& _fileName ) override;
 
 	public:
-		bool write( const void * _data, size_t _count ) override;
+		bool write( const void * _data, size_t _size ) override;
+		size_t size() const override;
+
+	public:
 		bool flush() override;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
         
 		HANDLE m_hFile;
+
+		size_t m_size;
 	};
 }	// namespace Menge

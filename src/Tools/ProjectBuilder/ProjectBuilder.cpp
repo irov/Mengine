@@ -621,7 +621,7 @@ namespace Menge
 
 		ConstString c_path = Helper::stringizeString(serviceProvider, utf8_path);
 
-		Image * image = new Image;
+		Image * image = new Image( serviceProvider );
 
 		if( image->load( c_path ) == false )
 		{
@@ -654,7 +654,7 @@ namespace Menge
 
 		ConstString c_path = Helper::stringizeString(serviceProvider, utf8_path);
 
-		Image * image = new Image;
+		Image * image = new Image( serviceProvider );
 
 		if( image->load( c_path ) == false )
 		{
@@ -751,7 +751,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Image * createImage( uint32_t _width, uint32_t _height, uint32_t _channel, PyObject * _colour )
 	{
-		Image * image = new Image;
+		Image * image = new Image( serviceProvider );
 
 		image->create( _width, _height, _channel );
 		image->fill( color_convert(_colour) );

@@ -290,7 +290,7 @@ namespace Menge
 					return 0;
 				}
 				
-				png_byte * row_memory = row_buffer->getMemoryT<png_byte *>();
+				png_byte * row_memory = row_buffer->getMemory();
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
@@ -328,7 +328,7 @@ namespace Menge
 					return 0;
 				}
 				
-				png_byte * row_memory = row_buffer->getMemoryT<png_byte *>();
+				png_byte * row_memory = row_buffer->getMemory();
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
@@ -353,7 +353,7 @@ namespace Menge
 					return 0;
 				}
 
-				png_byte * row_memory = row_buffer->getMemoryT<png_byte *>();
+				png_byte * row_memory = row_buffer->getMemory();
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 

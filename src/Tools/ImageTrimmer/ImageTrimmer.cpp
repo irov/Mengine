@@ -443,9 +443,22 @@ namespace Menge
 		
 		size_t bufferSize = width * height * decode_dataInfo->channels;
 
-		std::vector<unsigned char> textureBuffer(bufferSize);
+		MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE( serviceProvider )
+			->createMemory();
 
-		if( imageDecoder->decode( &textureBuffer[0], bufferSize ) == 0U )
+		if( memory_textureBuffer == nullptr )
+		{
+			return false;
+		}
+
+		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize );
+
+		if( textureBuffer == nullptr )
+		{
+			return false;
+		}
+
+		if( imageDecoder->decode( textureBuffer, bufferSize ) == 0U )
 		{
 			return false; 
 		}
@@ -528,8 +541,21 @@ namespace Menge
 
 		size_t new_bufferSize = new_width * new_height * decode_dataInfo->channels;
 
-		std::vector<unsigned char> new_textureBuffer(new_bufferSize);
+		MemoryInterfacePtr buffer = MEMORY_SERVICE( serviceProvider )
+			->createMemory();
 
+		if( buffer == nullptr )
+		{
+			return false;
+		}
+
+		unsigned char * new_textureBuffer = buffer->newMemory( new_bufferSize );
+
+		if( new_textureBuffer == nullptr )
+		{
+			return false;
+		}
+		
 		for( size_t i = 0; i != new_width; ++i )
 		{
 			for( size_t j = 0; j != new_height; ++j )
@@ -585,7 +611,7 @@ namespace Menge
 		encode_dataInfo.depth = 1;
 		encode_dataInfo.mipmaps = 1;
 
-		if( imageEncoder->encode( &new_textureBuffer[0], &encode_dataInfo ) == 0 )
+		if( imageEncoder->encode( new_textureBuffer, new_bufferSize, &encode_dataInfo ) == 0 )
 		{
 			return false;
 		}
@@ -680,9 +706,17 @@ namespace Menge
 
 		size_t bufferSize = width * height * decode_dataInfo->channels;
 
-		std::vector<unsigned char> textureBuffer(bufferSize);
+		MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE( serviceProvider )
+			->createMemory();
+		
+		if( memory_textureBuffer == nullptr )
+		{
+			return false;
+		}
 
-		if( imageDecoder->decode( &textureBuffer[0], bufferSize ) == 0U )
+		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize );
+
+		if( imageDecoder->decode( textureBuffer, bufferSize ) == 0U )
 		{
 			return false;
 		}
@@ -710,8 +744,21 @@ namespace Menge
 		
 		size_t new_bufferSize = new_width * new_height * decode_dataInfo->channels;
 
-		std::vector<unsigned char> new_textureBuffer(new_bufferSize, 0);
+		MemoryInterfacePtr memory_new_textureBuffer = MEMORY_SERVICE( serviceProvider )
+			->createMemory();
 
+		if( memory_new_textureBuffer == nullptr )
+		{
+			return false;
+		}
+
+		unsigned char * new_textureBuffer = memory_new_textureBuffer->newMemory( new_bufferSize );
+
+		if( new_textureBuffer == nullptr )
+		{
+			return false;
+		}
+		
 		uint32_t channels = decode_dataInfo->channels;
 
 		for( size_t i = 0; i != width; ++i )
@@ -769,7 +816,7 @@ namespace Menge
 		encode_dataInfo.depth = 1;
 		encode_dataInfo.mipmaps = 1;
 
-		if( imageEncoder->encode( &new_textureBuffer[0], &encode_dataInfo ) == 0 )
+		if( imageEncoder->encode( new_textureBuffer, new_bufferSize, &encode_dataInfo ) == 0 )
 		{
 			return false;
 		}
@@ -794,9 +841,22 @@ namespace Menge
 
 		size_t bufferSize = input_stream->size();
 
-		std::vector<unsigned char> textureBuffer(bufferSize);
+		MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE( serviceProvider )
+			->createMemory();
 
-		if( input_stream->read( &textureBuffer[0], bufferSize ) == 0U )
+		if( memory_textureBuffer == nullptr )
+		{
+			return false;
+		}
+
+		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize );
+
+		if( textureBuffer == nullptr )
+		{
+			return false;
+		}
+
+		if( input_stream->read( textureBuffer, bufferSize ) == 0U )
 		{
 			return false;
 		}
@@ -804,12 +864,30 @@ namespace Menge
 		ArchivatorInterfacePtr archivator = ARCHIVE_SERVICE(serviceProvider)
 			->getArchivator( STRINGIZE_STRING_LOCAL(serviceProvider, "lz4") );
 
+		if( archivator == nullptr )
+		{
+			return false;
+		}
+
 		size_t compressBound = archivator->compressBound( bufferSize );
 
-		std::vector<unsigned char> compressBuffer(compressBound);
+		MemoryInterfacePtr memory_compressBuffer = MEMORY_SERVICE( serviceProvider )
+			->createMemory();
+
+		if( memory_compressBuffer == nullptr )
+		{
+			return false;
+		}
+
+		unsigned char * compressBuffer = memory_compressBuffer->newMemory( compressBound );
+
+		if( compressBuffer == nullptr )
+		{
+			return false;
+		}
 
 		size_t compressSize = 0;
-		archivator->compress( &compressBuffer[0], compressBound, &textureBuffer[0], bufferSize, compressSize );
+		archivator->compress( compressBuffer, compressBound, textureBuffer, bufferSize, compressSize );
 		
 		String utf8_out;
 		Helper::unicodeToUtf8(serviceProvider, out, utf8_out);
@@ -824,7 +902,7 @@ namespace Menge
 			return false;
 		}
 		
-		if( output_stream->write( &compressBuffer[0], compressSize ) == 0 )
+		if( output_stream->write( compressBuffer, compressSize ) == 0 )
 		{
 			return false;
 		}

@@ -173,7 +173,7 @@ namespace Menge
 			return false;
 		}
 
-		const char * atlas_memory = atlas_buffer->getMemoryT<const char *>();
+		const char * atlas_memory = atlas_buffer->getMemory();
 		size_t atlas_size = atlas_buffer->getSize();
 
 		spAtlas * atlas = spAtlas_create( atlas_memory, atlas_size, "", this );
@@ -189,7 +189,7 @@ namespace Menge
 			return false;
 		}
 		
-		const char * json_memory = skeleton_buffer->getMemoryT<const char *>();
+		const char * json_memory = skeleton_buffer->getMemory();
 		
 		spSkeletonData * skeletonData = spSkeletonJson_readSkeletonData( skeletonJson, json_memory );
 

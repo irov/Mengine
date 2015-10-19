@@ -11,6 +11,7 @@ namespace Menge
 	Win32FileOutputStream::Win32FileOutputStream()		
         : m_serviceProvider(nullptr)
         , m_hFile(INVALID_HANDLE_VALUE)
+		, m_size(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -61,21 +62,28 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileOutputStream::write( const void * _data, size_t _count )
+	bool Win32FileOutputStream::write( const void * _data, size_t _size )
 	{
 		DWORD bytesWritten = 0;
-		BOOL result = ::WriteFile( m_hFile, _data, (DWORD)_count, &bytesWritten, NULL );
+		BOOL result = ::WriteFile( m_hFile, _data, (DWORD)_size, &bytesWritten, NULL );
 
         if( result == FALSE )
         {
             LOGGER_ERROR(m_serviceProvider)("Win32OutputStream::write invalid %d"
-                , _count
+				, _size
                 );
 
             return false;
         }
 
+		m_size += _size;
+
         return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t Win32FileOutputStream::size() const
+	{ 
+		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileOutputStream::flush()

@@ -59,6 +59,8 @@ src
     
     Stream.h
     Stream.cpp
+    
+    Pointer.h
 	
     ConstString.h
         

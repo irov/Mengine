@@ -33,18 +33,18 @@ namespace Menge
 
 	public:
 		template<class T>
-		T * createObjectT()
+		T createObjectT()
 		{
 			Factorable * obj = this->createObject();
 
 #	ifdef _DEBUG
-			if( dynamic_cast<T *>(obj) == nullptr )
+			if( dynamic_cast<T>(obj) == nullptr )
 			{
 				return nullptr;
 			}
 #	endif
 
-			T * t = static_cast<T *>(obj);
+			T t = static_cast<T>(obj);
 
 			return t;
 		}

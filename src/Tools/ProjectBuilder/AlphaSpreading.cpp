@@ -84,7 +84,20 @@ namespace Menge
 
 		uint32_t bufferSize = width * height * channels;
 
-		unsigned char * textureBuffer = new unsigned char[bufferSize];
+		MemoryInterfacePtr memory_textureBuffer = MEMORY_SERVICE( serviceProvider )
+			->createMemory();
+		
+		if( memory_textureBuffer == nullptr )
+		{
+			return nullptr;
+		}
+
+		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize );
+
+		if( textureBuffer == nullptr )
+		{
+			return nullptr;
+		}
 
 		if( imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
 		{
@@ -161,8 +174,6 @@ namespace Menge
 
         if( output_stream == nullptr )
         {
-            delete [] textureBuffer;
-
             LOGGER_ERROR(serviceProvider)("spreadingPngAlpha invalid create PNG file '%s'"
                 , outputFileName.c_str()
                 );
@@ -175,8 +186,6 @@ namespace Menge
 
         if( imageEncoder == nullptr )
         {
-            delete [] textureBuffer;
-
             LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not found encoder for file '%s'"
                 , outputFileName.c_str()
                 );
@@ -186,8 +195,6 @@ namespace Menge
 
 		if( imageEncoder->initialize( output_stream ) == false )
 		{
-			delete [] textureBuffer;
-
 			LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not found encoder for file '%s'"
 				, outputFileName.c_str()
 				);
@@ -210,21 +217,17 @@ namespace Menge
         encode_dataInfo.depth = 1;
         encode_dataInfo.mipmaps = 1;
 
-        unsigned int bytesWritten = imageEncoder->encode( textureBuffer, &encode_dataInfo );
+		unsigned int bytesWritten = imageEncoder->encode( textureBuffer, bufferSize, &encode_dataInfo );
 		
         if( bytesWritten == 0 )
         {
-            delete [] textureBuffer;
-
             LOGGER_ERROR(serviceProvider)("spreadingPngAlpha not found encoder for file '%s'"
                 , outputFileName.c_str()
                 );
 
 			return nullptr;
         }
-
-        delete [] textureBuffer;
-                
+               
         return pybind::ret_none();
     } 
 }

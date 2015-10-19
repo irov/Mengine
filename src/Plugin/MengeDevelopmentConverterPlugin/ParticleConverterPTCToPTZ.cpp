@@ -68,7 +68,7 @@ namespace Menge
 			return false;
 		}
 			
-		const Blobject::value_type * data_memory = data_cache->getMemoryT<Blobject::value_type *>();
+		const Blobject::value_type * data_memory = data_cache->getMemory();
 		size_t data_size = data_cache->getSize();
 
 		if( data_memory == nullptr )

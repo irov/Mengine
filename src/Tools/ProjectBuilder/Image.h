@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/ImageCodecInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #	include "Core/ColourValue.h"
 
@@ -12,7 +13,7 @@ namespace Menge
 	class Image
 	{
 	public:
-		Image();
+		Image( ServiceProviderInterface * _serviceProvider );
 		~Image();
 
 	public:
@@ -46,9 +47,11 @@ namespace Menge
 		static void embedding( PyObject * _module );
 
 	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
 		FilePath m_path;
 
-		uint8_t * m_memory;
+		MemoryInterfacePtr m_memory;
 
 		uint32_t m_width;
 		uint32_t m_height;

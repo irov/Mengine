@@ -40,7 +40,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MemoryCacheBuffer::cacheMemory( size_t _size, const char * _doc )
+	Pointer MemoryCacheBuffer::cacheMemory( size_t _size, const char * _doc )
 	{
 		this->uncache_();
 

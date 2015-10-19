@@ -24,9 +24,9 @@ namespace Menge
 		void setMemoryManager( MemoryManager * _memoryManager );
 
     public:
-        void * cacheMemory( size_t _size, const char * _doc ) override;
+		Pointer cacheMemory( size_t _size, const char * _doc ) override;
 		
-		inline void * getMemory() const override;
+		inline Pointer getMemory() const override;
 
 		inline size_t getSize() const override;
 
@@ -43,7 +43,7 @@ namespace Menge
 		size_t m_size;
 	};
 	//////////////////////////////////////////////////////////////////////////	
-	void * MemoryCacheBuffer::getMemory() const
+	Pointer MemoryCacheBuffer::getMemory() const
 	{
 		return m_data;
 	}

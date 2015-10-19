@@ -101,7 +101,9 @@ namespace Menge
 			return false;
 		}
 
-		unsigned char * miplevel_data_memory = data_buffer->getMemoryT<unsigned char *>();
+		void * data_memory = data_buffer->getMemory();
+
+		unsigned char * miplevel_data_memory = reinterpret_cast<unsigned char *>(data_memory);
 
 		for( uint32_t i = 0; i != dataInfo->mipmaps; ++i )
 		{
@@ -188,7 +190,7 @@ namespace Menge
 		htfDataInfo.channels = 3;
 		htfDataInfo.format = dataInfo->format;
 
-		size_t encode_byte = encoder->encode( miplevel_data_memory, data_full_size, &htfDataInfo );
+		size_t encode_byte = encoder->encode( data_buffer_memory, data_full_size, &htfDataInfo );
 
 		if( encode_byte == 0 )
 		{

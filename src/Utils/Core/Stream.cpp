@@ -188,8 +188,7 @@ namespace Menge
 				return false;
 			}
 
-			//MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _serviceProvider, _stream, compress_size, "ArchiveService::getData compress_memory" );
-			MemoryInterfacePtr compress_buffer = Helper::createMemoryStreamSize( _serviceProvider, _stream, compress_size );
+			MemoryCacheBufferInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _serviceProvider, _stream, compress_size, "ArchiveService::getData compress_memory" );
 			
 			if( compress_buffer == nullptr )
 			{

@@ -23,7 +23,7 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * Memory::newMemory( size_t _size )
+	Pointer Memory::newMemory( size_t _size )
 	{
 		unsigned char * new_memory = Helper::reallocateMemory<unsigned char>( m_memory, _size );
 

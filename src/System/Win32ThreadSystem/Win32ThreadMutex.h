@@ -13,7 +13,7 @@ namespace Menge
         Win32ThreadMutex();
         
     public:
-        void initialize( ServiceProviderInterface * _serviceProvider );
+        void initialize( ServiceProviderInterface * _serviceProvider, const char * _doc );
 
     protected:
         void lock() override;
@@ -27,6 +27,9 @@ namespace Menge
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
+
         CRITICAL_SECTION m_cs;
+
+		const char * m_doc;
     };
 }

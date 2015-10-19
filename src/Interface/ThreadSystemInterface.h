@@ -81,13 +81,13 @@ namespace Menge
 		virtual bool avaliable() const = 0;
 
 	public:
-		virtual ThreadIdentityPtr createThread( int _priority ) = 0;
+		virtual ThreadIdentityPtr createThread( int _priority, const char * _doc ) = 0;
 
 	public:
 		virtual void sleep( uint32_t _ms ) = 0;
 
 	public:
-		virtual ThreadMutexInterfacePtr createMutex() = 0;
+		virtual ThreadMutexInterfacePtr createMutex( const char * _doc ) = 0;
 
 	public:
 		virtual ptrdiff_t getCurrentThreadId() const = 0;
@@ -109,7 +109,7 @@ namespace Menge
         virtual void update() = 0;
 
 	public:
-		virtual bool createThread( const ConstString & _threadName, int _priority ) = 0;
+		virtual bool createThread( const ConstString & _threadName, int _priority, const char * _doc ) = 0;
 		virtual bool destroyThread( const ConstString & _threadName ) = 0;
 
     public:
@@ -120,7 +120,7 @@ namespace Menge
 		virtual ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize ) = 0;
 
     public:
-        virtual ThreadMutexInterfacePtr createMutex() = 0;
+		virtual ThreadMutexInterfacePtr createMutex( const char * _doc ) = 0;
 
 	public:
 		virtual void sleep( unsigned int _ms ) = 0;

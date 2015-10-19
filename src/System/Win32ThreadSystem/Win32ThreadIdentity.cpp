@@ -57,9 +57,11 @@ namespace Menge
 		return 0;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int _priority )
+	bool Win32ThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc )
     {
 		m_mutex = _mutex;
+		
+		m_doc = _doc;
 
 		m_handle = (HANDLE)_beginthreadex( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
 

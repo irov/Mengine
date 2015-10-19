@@ -83,6 +83,17 @@ namespace Menge
 		MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE( m_serviceProvider )
 			->createMemoryInput();
 
+		if( memoryInput == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ThreadTaskPrefetchSoundDecoder::_onMain: '%s:%s' invalid create memory input"
+				, m_pakName.c_str()
+				, m_filePath.c_str()
+				, stream_size
+				);
+
+			return false;
+		}
+
 		void * memory = memoryInput->newMemory( stream_size );
 
 		if( memory == nullptr )

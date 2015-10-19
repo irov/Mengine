@@ -17,7 +17,7 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const;
 
 	public:
-        bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority );
+        bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc );
 
 	public:
 		void main();
@@ -32,9 +32,11 @@ namespace Menge
     protected:
 		ServiceProviderInterface * m_serviceProvider;
 
+		ThreadMutexInterfacePtr m_mutex;
+
 		HANDLE m_handle;
 
-		ThreadMutexInterfacePtr m_mutex;
+		const char * m_doc;
 			
         ThreadTaskInterface * m_task;
 

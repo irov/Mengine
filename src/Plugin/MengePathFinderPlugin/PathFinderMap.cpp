@@ -72,7 +72,7 @@ namespace Menge
 	bool PathFinderMap::initialize()
 	{
 		THREAD_SERVICE(m_serviceProvider)
-			->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPathFinderMap"), 0 );
+			->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPathFinderMap"), 0, "PathFinderMap::initialize" );
 
 		m_threadPathFinders = THREAD_SERVICE(m_serviceProvider)
 			->runTaskQueue( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPathFinderMap"), 1, 1 );

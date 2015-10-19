@@ -78,10 +78,20 @@ namespace Menge
 			return false;
 		}
 
-		size_t stream_size = m_stream->size();
-
 		MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE( m_serviceProvider )
 			->createMemoryInput();
+
+		if( memoryInput == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ThreadTaskPrefetcherTextureDecoder::_onRun: '%s:%s' invalide create memory input"
+				, m_pakName.c_str()
+				, m_filePath.c_str()
+				);
+
+			return false;
+		}
+
+		size_t stream_size = m_stream->size();
 
 		void * memory = memoryInput->newMemory( stream_size );
 

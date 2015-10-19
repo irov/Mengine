@@ -33,7 +33,7 @@ namespace Menge
 	bool MemoryManager::initialize()
 	{
 		m_memoryMutex = THREAD_SERVICE(m_serviceProvider)
-			->createMutex();
+			->createMutex( "MemoryManager::initialize" );
 
 		m_factoryPoolMemoryCacheBuffer.setMutex( m_memoryMutex );
 		m_factoryPoolMemoryCacheInput.setMutex( m_memoryMutex );

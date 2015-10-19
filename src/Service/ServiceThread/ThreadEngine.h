@@ -27,7 +27,7 @@ namespace Menge
         void finalize() override;
 
 	public:
-		bool createThread( const ConstString & _threadName, int _priority ) override;
+		bool createThread( const ConstString & _threadName, int _priority, const char * _doc ) override;
 		bool destroyThread( const ConstString & _threadName ) override;
 
     public:
@@ -41,7 +41,7 @@ namespace Menge
         void update() override;
 
     public:
-        ThreadMutexInterfacePtr createMutex() override;
+		ThreadMutexInterfacePtr createMutex( const char * _doc ) override;
 
     public:
         void sleep( uint32_t _ms ) override;

@@ -33,7 +33,7 @@ namespace Menge
 		for( uint32_t i = 0; i != MENGINE_PREFETCHER_THREAD_COUNT; ++i )
 		{
 			THREAD_SERVICE(m_serviceProvider)
-				->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), -1 );
+				->createThread( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ThreadPrefetcherManager"), -1, "PrefetcherManager::initialize" );
 		}
 
 		m_threadQueue = THREAD_SERVICE(m_serviceProvider)

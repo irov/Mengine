@@ -38,7 +38,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void DataManager::registerDataflow( const ConstString& _type, const DataflowInterfacePtr & _dataflow )
 	{
-		m_dataflows.insert( _type, _dataflow );
+		m_dataflows.insert( std::make_pair( _type, _dataflow ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DataManager::unregisterDataflow( const ConstString& _type )
@@ -48,30 +48,36 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DataflowInterfacePtr DataManager::getDataflow( const ConstString & _type ) const
 	{
-		DataflowInterfacePtr dataflow;
-		if( m_dataflows.has_copy( _type, dataflow ) == false )
-		{	
-			LOGGER_ERROR(m_serviceProvider)("DataManager::getDataflow '%s' don't register"
+		TMapDataflow::const_iterator it_found = m_dataflows.find( _type );
+
+		if( it_found == m_dataflows.end() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DataManager::getDataflow '%s' don't register"
 				, _type.c_str()
 				);
 
 			return nullptr;
 		}
+
+		DataflowInterfacePtr dataflow = it_found->second;
 
 		return dataflow;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DataInterfacePtr DataManager::dataflow( const ConstString & _type, const InputStreamInterfacePtr & _stream )
 	{
-		DataflowInterfacePtr dataflow;
-		if( m_dataflows.has_copy( _type, dataflow ) == false )
-		{	
-			LOGGER_ERROR(m_serviceProvider)("DataManager::dataflow '%s' don't register"
+		TMapDataflow::const_iterator it_found = m_dataflows.find( _type );
+
+		if( it_found == m_dataflows.end() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DataManager::dataflow '%s' don't register"
 				, _type.c_str()
 				);
 
 			return nullptr;
 		}
+
+		DataflowInterfacePtr dataflow = it_found->second;
 
 		DataInterfacePtr data = dataflow->create();
 

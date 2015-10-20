@@ -4,7 +4,8 @@
 
 #	include "Factory/Factorable.h"
 
-#	include "stdex/binary_vector.h"
+#	include "stdex/stl_map.h"
+
 #	include "stdex/intrusive_tree.h"
 
 namespace Menge
@@ -49,7 +50,7 @@ namespace Menge
 		float m_advance;
 		mt::vec2f m_size;
 
-		typedef stdex::binary_vector<GlyphCode, float, GlyphCharLess> TMapKerning;
+		typedef stdex::map<GlyphCode, float, GlyphCharLess> TMapKerning;
 		TMapKerning m_kernings;
 	};
 	//////////////////////////////////////////////////////////////////////////

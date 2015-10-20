@@ -73,7 +73,7 @@ namespace Menge
 
 	public:
 		virtual void registerConverter( const ConstString& _type, ConverterFactoryInterface * _interface ) = 0;
-		virtual void unregisterConverter( const ConstString& _type ) = 0;
+		virtual bool unregisterConverter( const ConstString& _type ) = 0;
 
 		virtual ConverterInterfacePtr createConverter( const ConstString & _type ) = 0; 
 

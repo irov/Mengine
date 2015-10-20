@@ -128,7 +128,7 @@ namespace Menge
 		    m_accountListener->onCreateAccount( _accountID );
         }
         
-        m_accounts.insert( _accountID, newAccount );
+		m_accounts.insert( std::make_pair( _accountID, newAccount ) );
 
         return newAccount;
 	}
@@ -207,7 +207,7 @@ namespace Menge
 			return;
 		}
 
-        AccountInterfacePtr account = m_accounts.get_value( it_find );
+        AccountInterfacePtr account = it_find->second;
 
 		if( m_currentAccount != nullptr )
 		{
@@ -259,13 +259,13 @@ namespace Menge
             }     
         }
 
-        AccountInterfacePtr account = m_accounts.get_value( it_find );
+		AccountInterfacePtr account = it_find->second;
 		       
         m_currentAccount = account;
 
 		m_currentAccount->apply();
 
-        if( m_accountListener )
+        if( m_accountListener != nullptr )
         {
 		    m_accountListener->onSelectAccount( _accountID );
         }
@@ -296,7 +296,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		AccountInterfacePtr account = m_accounts.get_value( it_found );
+		AccountInterfacePtr account = it_found->second;
 
 		return account;
 	}
@@ -309,7 +309,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const AccountInterfacePtr & account = m_accounts.get_value( it );
+			const AccountInterfacePtr & account = it->second;
 
 			_visitor->onAccount( account );
 		}		
@@ -506,7 +506,7 @@ namespace Menge
 
             validAccount = account;
 
-			m_accounts.insert( name, account );
+			m_accounts.insert( std::make_pair( name, account ) );
 		}
 
 		if( selectAccountID.empty() == false )
@@ -606,7 +606,8 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			const WString & accountID = m_accounts.get_key( it );
+			const WString & accountID = it->first;
+
             IniUtil::writeIniSetting( m_serviceProvider, file, "Account", accountID );
 		}
 
@@ -616,7 +617,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            const AccountInterfacePtr & account = m_accounts.get_value( it );
+			const AccountInterfacePtr & account = it->second;
 
             if( account->save() == false )
             {

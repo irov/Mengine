@@ -4,7 +4,7 @@
 
 #	include "Factory/FactoryStore.h"
 
-#	include "stdex/binary_vector.h"
+#	include "stdex/stl_map.h"
 
 namespace Menge
 {
@@ -36,7 +36,7 @@ namespace Menge
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef stdex::binary_vector<ConstString, ArchivatorInterfacePtr> TMapArchivators;
+		typedef stdex::map<ConstString, ArchivatorInterfacePtr> TMapArchivators;
 		TMapArchivators m_archivators;
 	};
 }

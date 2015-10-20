@@ -6,7 +6,7 @@
 
 #   include "Factory/FactoryStore.h"
 
-#   include "stdex/binary_vector.h"
+#   include "stdex/stl_map.h"
 
 #	include <d3d9.h>
 #	include <d3dx9math.h>
@@ -80,16 +80,16 @@ namespace Menge
 		void setWorldMatrix( const mt::mat4f & _world ) override;
 
 		VBHandle createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic ) override;
-		void releaseVertexBuffer( VBHandle _vbHandle ) override;
+		bool releaseVertexBuffer( VBHandle _vbHandle ) override;
 		void * lockVertexBuffer(  VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
-		void setVertexBuffer( VBHandle _vbHandle ) override;
+		bool setVertexBuffer( VBHandle _vbHandle ) override;
 
 		IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
-		void releaseIndexBuffer( IBHandle _ibHandle ) override;
+		bool releaseIndexBuffer( IBHandle _ibHandle ) override;
 		RenderIndices * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
-		void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
+		bool setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
 
 	public:
 		RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
@@ -207,9 +207,6 @@ namespace Menge
 		D3DMATRIX m_matTexture;
 
 		// sync routines
-		//IDirect3DSurface9 * m_syncTargets[2];
-		//IDirect3DTexture9 *	m_syncTempTex;
-		//IDirect3DSurface9 * m_syncTemp;
 		unsigned int m_frames;
 
     protected:
@@ -237,12 +234,12 @@ namespace Menge
 
 		DWORD m_vertexDeclaration;
 
-		typedef stdex::binary_vector<VBHandle, VBInfo> TMapVBInfo;
+		typedef stdex::map<VBHandle, VBInfo> TMapVBInfo;
 		TMapVBInfo m_vertexBuffers;
 
         VBHandle m_currentVB;
 
-		typedef stdex::binary_vector<VBHandle, IBInfo> TMapIBInfo;
+		typedef stdex::map<VBHandle, IBInfo> TMapIBInfo;
 		TMapIBInfo m_indexBuffers;
 
         IBHandle m_currentIB;

@@ -2,7 +2,7 @@
 
 #	include "Interface/DataInterface.h"
 
-#	include "stdex/binary_vector.h"
+#	include "stdex/stl_map.h"
 
 namespace Menge
 {
@@ -34,7 +34,7 @@ namespace Menge
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		typedef stdex::binary_vector<ConstString, DataflowInterfacePtr> TMapDataflow;
+		typedef stdex::map<ConstString, DataflowInterfacePtr> TMapDataflow;
 		TMapDataflow m_dataflows;
 	};
 }

@@ -35,16 +35,25 @@ namespace Menge
             , _type.c_str()
             );
 
-		m_mapConverterSystem.insert( _type, _factory );
+		m_mapConverterSystem.insert( std::make_pair(_type, _factory) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConverterEngine::unregisterConverter( const ConstString& _type )
+	bool ConverterEngine::unregisterConverter( const ConstString& _type )
 	{
         LOGGER_INFO(m_serviceProvider)("ConverterEngine::unregisterConverter remove converter %s"
             , _type.c_str()
             );
 
-		m_mapConverterSystem.erase( _type );
+		TMapConverterSystem::const_iterator it_found = m_mapConverterSystem.find( _type );
+
+		if( it_found == m_mapConverterSystem.end() )
+		{
+			return false;
+		}
+
+		m_mapConverterSystem.erase( it_found );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConverterInterfacePtr ConverterEngine::createConverter( const ConstString & _type )
@@ -64,7 +73,16 @@ namespace Menge
 			return nullptr;
 		}
 
-		ConverterFactoryInterface * factory = m_mapConverterSystem.get_value( it_find );
+		ConverterFactoryInterface * factory = it_find->second;
+
+		if( factory == nullptr )
+		{
+			LOGGER_INFO( m_serviceProvider )("ConverterEngine::createConverter invalid factory %s is nullptr"
+				, _type.c_str()
+				);
+
+			return nullptr;
+		}
 
 		ConverterInterfacePtr converter = factory->createConverter();
 

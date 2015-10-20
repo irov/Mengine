@@ -4,7 +4,7 @@
 
 #	include "Core/ConstString.h"
 
-#   include "stdex/binary_vector.h"
+#   include "stdex/stl_map.h"
 
 namespace Menge
 {
@@ -25,7 +25,7 @@ namespace Menge
 
 	public:
 		void registerConverter( const ConstString & _type, ConverterFactoryInterface * _interface ) override;
-		void unregisterConverter( const ConstString & _type ) override;
+		bool unregisterConverter( const ConstString & _type ) override;
 
 		ConverterInterfacePtr createConverter( const ConstString & _type ) override; 
 
@@ -35,7 +35,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		typedef stdex::binary_vector<ConstString, ConverterFactoryInterface *> TMapConverterSystem;
+		typedef stdex::map<ConstString, ConverterFactoryInterface *> TMapConverterSystem;
 		TMapConverterSystem m_mapConverterSystem;
 	};
 }

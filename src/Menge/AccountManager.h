@@ -6,7 +6,7 @@
 
 #	include "pybind/types.hpp"
 
-#	include "stdex/binary_vector.h"
+#	include "stdex/stl_map.h"
 
 namespace Menge
 {
@@ -73,7 +73,7 @@ namespace Menge
 
         ServiceProviderInterface * m_serviceProvider;
 		
-		typedef stdex::binary_vector<WString, AccountInterfacePtr> TMapAccounts;
+		typedef stdex::map<WString, AccountInterfacePtr> TMapAccounts;
 		TMapAccounts m_accounts;
 		
 		typedef FactoryPoolStore<Account, 8> TFactoryAccounts;

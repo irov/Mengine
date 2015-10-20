@@ -33,7 +33,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveService::registerArchivator( const ConstString & _type, const ArchivatorInterfacePtr & _archivator )
 	{
-		m_archivators.insert( _type, _archivator );
+		m_archivators.insert( std::make_pair(_type, _archivator) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveService::unregisterArchivator( const ConstString & _type )
@@ -65,7 +65,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		const ArchivatorInterfacePtr & archivator = m_archivators.get_value(it_found);
+		const ArchivatorInterfacePtr & archivator = it_found->second;
 
 		return archivator;
 	}

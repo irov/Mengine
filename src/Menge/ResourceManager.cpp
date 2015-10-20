@@ -144,7 +144,6 @@ namespace Menge
             }
         }
 
-
         const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
 
         //size_t resources_size = m_resources.size();

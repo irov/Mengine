@@ -570,16 +570,16 @@ namespace Menge
 		virtual void setTextureMatrix( uint32_t _stage, const float * _texture ) = 0;
 
 		virtual VBHandle createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic ) = 0;
-		virtual void releaseVertexBuffer( VBHandle _vbHandle ) = 0;
+		virtual bool releaseVertexBuffer( VBHandle _vbHandle ) = 0;
 		virtual void * lockVertexBuffer(  VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlockVertexBuffer( VBHandle _vbHandle ) = 0;
-		virtual void setVertexBuffer( VBHandle _vbHandle ) = 0;
+		virtual bool setVertexBuffer( VBHandle _vbHandle ) = 0;
 
 		virtual IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) = 0;
-		virtual void releaseIndexBuffer( IBHandle _ibHandle ) = 0;
+		virtual bool releaseIndexBuffer( IBHandle _ibHandle ) = 0;
 		virtual RenderIndices * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
 		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
-		virtual void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) = 0;
+		virtual bool setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) = 0;
 		
 	public:
 		virtual RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) = 0;

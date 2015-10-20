@@ -13,8 +13,7 @@
 
 #	include	"math/vec3.h"
 
-#   include "stdex/binary_vector.h"
-
+#   include "stdex/stl_map.h"
 #	include <stdex/stl_vector.h>
 
 namespace Menge
@@ -163,7 +162,7 @@ namespace Menge
         typedef stdex::template_pool<SoundSourceDesc, 32> TPoolSoundSourceDesc;
         TPoolSoundSourceDesc m_poolSoundSourceDesc;
 
-		typedef stdex::binary_vector<uint32_t, SoundSourceDesc *> TMapSoundSource;
+		typedef stdex::map<uint32_t, SoundSourceDesc *> TMapSoundSource;
 		TMapSoundSource m_soundSourceMap;
 		
         ThreadJobPtr m_threadSoundBufferUpdate;

@@ -84,7 +84,7 @@ namespace Menge
 		it != it_end;
 		++it )
         {
-            SoundSourceDesc * source = m_soundSourceMap.get_value( it );
+			SoundSourceDesc * source = it->second;
 
 			this->stopSoundBufferUpdate_( source );
 
@@ -137,7 +137,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc * source = m_soundSourceMap.get_value( it );
+			SoundSourceDesc * source = it->second;
 			
 			source->turn = true;
 
@@ -168,7 +168,7 @@ namespace Menge
         it != it_end;
         ++it )
         {
-            SoundSourceDesc * source = m_soundSourceMap.get_value( it );
+			SoundSourceDesc * source = it->second;
 			
 			source->turn = false;
 
@@ -191,7 +191,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc * source = m_soundSourceMap.get_value( it );
+            SoundSourceDesc * source = it->second;
 
 			source->turn = false;
 
@@ -282,7 +282,7 @@ namespace Menge
 
 		this->updateSourceVolume_( source, 1.f );
 
-		m_soundSourceMap.insert( soundId, source );
+		m_soundSourceMap.insert( std::make_pair( soundId, source ) );
         
 		return soundId;
 	}
@@ -453,7 +453,7 @@ namespace Menge
 			return false;
 		}
 
-        SoundSourceDesc * source = m_soundSourceMap.get_value( it_find );
+		SoundSourceDesc * source = it_find->second;
 
 		this->stopSoundBufferUpdate_( source );
 		
@@ -561,7 +561,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			SoundSourceDesc * source = m_soundSourceMap.get_value( it );
+			SoundSourceDesc * source = it->second;
 
 			if( source->state != ESS_PLAY )
 			{
@@ -633,16 +633,30 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool SoundEngine::getSoundSourceDesc_( uint32_t _emitterId, SoundSourceDesc ** _desc )
     {
-        bool result = m_soundSourceMap.has( _emitterId, _desc );
+		TMapSoundSource::iterator it_found = m_soundSourceMap.find( _emitterId );
 
-        return result;
+		if( it_found == m_soundSourceMap.end() )
+		{
+			return false;
+		}
+
+		*_desc = it_found->second;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SoundEngine::getSoundSourceDesc_( uint32_t _emitterId, const SoundSourceDesc ** _desc ) const
     {
-		bool result = m_soundSourceMap.has( _emitterId, _desc );
+		TMapSoundSource::const_iterator it_found = m_soundSourceMap.find( _emitterId );
 
-		return result;
+		if( it_found == m_soundSourceMap.end() )
+		{
+			return false;
+		}
+
+		*_desc = it_found->second;
+
+		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::play( uint32_t _emitterId )
@@ -860,7 +874,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-            SoundSourceDesc * source = m_soundSourceMap.get_value( it );
+            SoundSourceDesc * source = it->second;
 
             this->updateSourceVolume_( source, source->volume );
 		}

@@ -413,9 +413,9 @@ namespace Menge
 
 				return false;
 			}
-
-			size_t buffer_size;
-			void * buffer_memory = m_audioMemory->getMemory( buffer_size );
+						
+			void * buffer_memory = m_audioMemory->getMemory();
+			size_t buffer_size = m_audioMemory->getSize();
 
 			s3eResult result_play = s3eAudioPlayFromBuffer( const_cast<void *>(buffer_memory), buffer_size, 1 );
 

@@ -55,7 +55,7 @@ namespace Menge
 	public:
 		void setMutex( const ThreadMutexInterfacePtr & _mutex )
 		{
-			m_mutex = _mutex;
+			m_ptr->setMutex( _mutex );
 		}
 
 	public:
@@ -75,50 +75,27 @@ namespace Menge
 	public:
 		Factorable * createObject()
 		{
-			Factorable * factorable;
-
-			if( m_mutex == nullptr )
-			{
-				STDEX_THREAD_GUARD_CHECK( this, "FactoryDefaultStore::createObject" );
-
-				factorable = m_ptr->createObject();
-			}
-			else
-			{
-				m_mutex->lock();
-
-				factorable = m_ptr->createObject();
-
-				m_mutex->unlock();
-			}
+			Factorable * factorable = m_ptr->createObject();
 
 			return factorable;
 		}
 
 		void destroyObject( Factorable * _object )
 		{
-			Factorable * factorable;
-
-			if( m_mutex == nullptr )
-			{
-				STDEX_THREAD_GUARD_CHECK( this, "FactoryDefaultStore::destroyObject" );
-
-				m_ptr->destroyObject( _object );
-			}
-			else
-			{
-				m_mutex->lock();
-
-				m_ptr->destroyObject( _object );
-
-				m_mutex->unlock();
-			}
+			m_ptr->destroyObject( _object );
 		}
 
 	public:
 		T * createObjectT()
 		{
 			Factorable * obj = this->createObject();
+
+#	ifdef _DEBUG
+			if( dynamic_cast<T *>(obj) == nullptr )
+			{
+				return nullptr;
+			}
+#	endif
 
 			T * t = static_cast<T *>(obj);
 
@@ -135,10 +112,6 @@ namespace Menge
 
 	protected:
 		FactoryPtr m_ptr;
-
-		ThreadMutexInterfacePtr m_mutex;
-
-		STDEX_THREAD_GUARD_INIT;
 	};
 
 	template<class T, uint32_t Count>
@@ -156,7 +129,7 @@ namespace Menge
 	public:
 		void setMutex( const ThreadMutexInterfacePtr & _mutex )
 		{
-			m_mutex = _mutex;
+			m_ptr->setMutex( _mutex );
 		}
 		
 	public:
@@ -176,50 +149,27 @@ namespace Menge
 	public:
 		Factorable * createObject()
 		{
-			Factorable * factorable;
-
-			if( m_mutex == nullptr )
-			{
-				STDEX_THREAD_GUARD_CHECK( this, "FactoryPoolStore::createObject" );
-
-				factorable = m_ptr->createObject();
-			}
-			else
-			{
-				m_mutex->lock();
-
-				factorable = m_ptr->createObject();
-
-				m_mutex->unlock();
-			}			
+			Factorable * factorable = m_ptr->createObject();
 
 			return factorable;
 		}
 
 		void destroyObject( Factorable * _object )
 		{
-			Factorable * factorable;
-
-			if( m_mutex == nullptr )
-			{
-				STDEX_THREAD_GUARD_SCOPE( this, "FactoryPoolStore::destroyObject" );
-
-				m_ptr->destroyObject( _object );
-			}
-			else
-			{ 
-				m_mutex->lock();
-
-				m_ptr->destroyObject( _object );
-
-				m_mutex->unlock();
-			}
+			m_ptr->destroyObject( _object );
 		}
 
 	public:
 		T * createObjectT()
 		{
 			Factorable * obj = this->createObject();
+
+#	ifdef _DEBUG
+			if( dynamic_cast<T *>(obj) == nullptr )
+			{
+				return nullptr;
+			}
+#	endif
 
 			T * t = static_cast<T *>(obj);
 
@@ -243,9 +193,5 @@ namespace Menge
 
 	protected:
 		FactoryPtr m_ptr;
-
-		ThreadMutexInterfacePtr m_mutex;
-
-		STDEX_THREAD_GUARD_INIT;
 	};
 }

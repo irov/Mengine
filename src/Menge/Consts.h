@@ -72,7 +72,6 @@ namespace Menge
         DECL_CONST( ResourceHIT );
 		//DECL_CONST( ResourceSequence );
 		DECL_CONST( ResourceVideo );
-		DECL_CONST( ResourceEmitterContainer );
 		DECL_CONST( CreateImage );
 		DECL_CONST( CreateTarget );
 		DECL_CONST( CreateTexture );

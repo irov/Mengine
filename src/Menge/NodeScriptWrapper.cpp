@@ -4433,7 +4433,6 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceSound );
 
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceImageSolid );
-        //SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceEmitterContainer );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceShape );
         //SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceFont );       
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceWindow );

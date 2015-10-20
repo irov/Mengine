@@ -11,7 +11,6 @@
 #   include "ResourceVideo.h"
 #   include "ResourceSound.h"
 #   include "ResourceShape.h"
-#	include "ResourceEmitter.h"
 #   include "ResourceParticle.h"
 
 #   include "Interface/ApplicationInterface.h"

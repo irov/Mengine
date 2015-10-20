@@ -8,12 +8,15 @@ namespace Menge
     MarmaladeThreadMutex::MarmaladeThreadMutex()
         : m_serviceProvider(nullptr)
         , m_cs(nullptr)
+		, m_doc(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeThreadMutex::initialize( ServiceProviderInterface * _serviceProvider )
+	bool MarmaladeThreadMutex::initialize( ServiceProviderInterface * _serviceProvider, const char * _doc )
     {
         m_serviceProvider = _serviceProvider;
+
+		m_doc = _doc;
 
         s3eThreadLock * cs = s3eThreadLockCreate();
 

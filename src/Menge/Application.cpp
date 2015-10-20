@@ -64,7 +64,6 @@
 // All Resource type
 //#	include "ResourceSequence.h"
 #	include "ResourceAnimation.h"
-#	include "ResourceEmitter.h"
 
 #	include "Kernel/ResourceImageData.h"
 
@@ -868,9 +867,6 @@ namespace Menge
     PROTOTYPE_SERVICE(serviceProvider)->addPrototype( CONST_STRING(serviceProvider, Resource), STRINGIZE_STRING_LOCAL(serviceProvider, #Type), new ResourcePrototypeGenerator<Type, 128>(m_serviceProvider) )
 		
 		RESOURCE_FACTORY( m_serviceProvider, ResourceAnimation );
-
-		//RESOURCE_FACTORY( m_serviceProvider, ResourceEmitterContainer );
-		//RESOURCE_FACTORY( m_serviceProvider, ResourceEmitter );
 
 		RESOURCE_FACTORY( m_serviceProvider, ResourceParticle );
 

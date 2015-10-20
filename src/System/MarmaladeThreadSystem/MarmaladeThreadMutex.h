@@ -13,7 +13,7 @@ namespace Menge
         MarmaladeThreadMutex();
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider );
+		bool initialize( ServiceProviderInterface * _serviceProvider, const char * _doc );
 
     protected:
         void lock() override;
@@ -27,7 +27,10 @@ namespace Menge
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
+
         s3eThreadLock * m_cs;
+
+		const char * m_doc;
     };
 
 	typedef stdex::intrusive_ptr<MarmaladeThreadMutex> MarmaladeThreadMutexPtr;

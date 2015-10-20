@@ -14,7 +14,7 @@ namespace Menge
 		~MarmaladeThreadIdentity();
 
     public:
-        bool initialize( ServiceProviderInterface * _serviceProvider, const ThreadMutexInterfacePtr & _mutex, int _priority );
+		bool initialize( ServiceProviderInterface * _serviceProvider, const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc );
 		
 	public:
 		void main();
@@ -30,6 +30,8 @@ namespace Menge
 		ServiceProviderInterface * m_serviceProvider;
 		
 		ThreadMutexInterfacePtr m_mutex;
+
+		const char * m_doc;
 
 		s3eThread * m_thread;
 

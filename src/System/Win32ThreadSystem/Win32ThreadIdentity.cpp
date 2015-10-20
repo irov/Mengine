@@ -9,6 +9,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Win32ThreadIdentity::Win32ThreadIdentity()
         : m_serviceProvider(nullptr)
+		, m_doc(nullptr)
 		, m_handle(INVALID_HANDLE_VALUE)
         , m_task(nullptr)
 		, m_complete(true)

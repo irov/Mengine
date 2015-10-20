@@ -176,15 +176,12 @@ namespace Menge
 
 				const ConstString & resource_category = has_resource->getCategory();
 
-				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: path %s already exist resource name '%s' in group '%s' category '%s' ('%s')"
+				LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource: path %s already exist resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
 					, _path.c_str()
 					, name.c_str()
 					, groupName.c_str()
 					, _pakName.c_str()
 					, resource_category.c_str()
-					);
-
-				LOGGER_ERROR(m_serviceProvider)("has resource category '%s' group '%s' name '%s'"
 					, has_resource->getCategory().c_str()
 					, has_resource->getGroup().c_str()
 					, has_resource->getName().c_str()
@@ -212,9 +209,12 @@ namespace Menge
 
             if( resource->loader( meta_resource ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid load"
-                    , name.c_str()
-                    , type.c_str()
+                LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
+					, _path.c_str()
+					, _pakName.c_str()
+					, groupName.c_str()
+					, name.c_str()
+					, type.c_str()
                     );
 
                 continue;
@@ -261,9 +261,11 @@ namespace Menge
 
 				if( successful == false )
 				{
-					LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource %s type [%s] invalid validation"
+					LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource name '%s' type '%s' category '%s' group '%s' invalid validation"
 						, resource->getName().c_str()
 						, resource->getType().c_str()
+						, resource->getCategory().c_str()
+						, resource->getGroup().c_str()
 						);
 
 					LOGGER_WARNING(m_serviceProvider)("======================================================================");

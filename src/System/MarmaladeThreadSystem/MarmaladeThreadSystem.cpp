@@ -51,13 +51,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ThreadIdentityPtr MarmaladeThreadSystem::createThread( int _priority )
+	ThreadIdentityPtr MarmaladeThreadSystem::createThread( int _priority, const char * _doc )
 	{
 		MarmaladeThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObjectT();
 
-		ThreadMutexInterfacePtr mutex = this->createMutex();
+		ThreadMutexInterfacePtr mutex = this->createMutex( _doc );
 
-        if( identity->initialize( m_serviceProvider, mutex, _priority ) == false )
+		if( identity->initialize( m_serviceProvider, mutex, _priority, _doc ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::createThread invalid initialize"
 				);
@@ -73,11 +73,11 @@ namespace Menge
         s3eDeviceYield( _ms );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterfacePtr MarmaladeThreadSystem::createMutex()
+	ThreadMutexInterfacePtr MarmaladeThreadSystem::createMutex( const char * _doc )
     {
         MarmaladeThreadMutexPtr mutex = m_poolMarmaladeThreadMutex.createObjectT();
         
-		if( mutex->initialize( m_serviceProvider ) == false )
+		if( mutex->initialize( m_serviceProvider, _doc ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::createMutex invalid initialize"
 				);

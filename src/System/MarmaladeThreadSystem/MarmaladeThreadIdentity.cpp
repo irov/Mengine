@@ -9,6 +9,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeThreadIdentity::MarmaladeThreadIdentity()
 		: m_serviceProvider(nullptr)
+		, m_doc(nullptr)
 		, m_thread(nullptr)
 		, m_task(nullptr)
 		, m_complete(true)
@@ -30,10 +31,11 @@ namespace Menge
 		return 0;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeThreadIdentity::initialize( ServiceProviderInterface * _serviceProvider, const ThreadMutexInterfacePtr & _mutex, int _priority )
+	bool MarmaladeThreadIdentity::initialize( ServiceProviderInterface * _serviceProvider, const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _doc )
     {
 		m_serviceProvider = _serviceProvider;
 		m_mutex = _mutex;
+		m_doc = _doc;
 
 		s3eThread * s3e_thread = s3eThreadCreate( &s_tread_job, (void *)this, nullptr );
 

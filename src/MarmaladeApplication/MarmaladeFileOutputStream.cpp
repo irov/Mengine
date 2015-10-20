@@ -10,6 +10,7 @@ namespace Menge
 	MarmaladeFileOutputStream::MarmaladeFileOutputStream()		
         : m_serviceProvider(nullptr)
         , m_hFile(nullptr)
+		, m_size(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -66,18 +67,18 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeFileOutputStream::write( const void * _data, size_t _count )
+	bool MarmaladeFileOutputStream::write( const void * _data, size_t _size )
 	{
-        uint32 bytesWritten = s3eFileWrite( _data, 1, _count, m_hFile );
+        uint32 bytesWritten = s3eFileWrite( _data, 1, _size, m_hFile );
 
-        if( bytesWritten != _count )
+        if( bytesWritten != _size )
         {
 			const char * error_str = s3eFileGetErrorString();
             s3eFileError error = s3eFileGetError();
             
             LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::write %d:%d get error %s [%d]"
                 , bytesWritten
-                , _count
+                , _size
 				, error_str
                 , error
                 );
@@ -85,7 +86,14 @@ namespace Menge
             return false;        
         }
 
+		m_size += _size;
+
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	size_t MarmaladeFileOutputStream::size() const
+	{
+		return m_size;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileOutputStream::flush()

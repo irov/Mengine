@@ -75,7 +75,6 @@ namespace Menge
         INIT_CONST( ResourceHIT );
             //, c_ResourceSequence = Helper::StringizeString(m_serviceProvider, "ResourceSequence");
         INIT_CONST( ResourceVideo );
-        INIT_CONST( ResourceEmitterContainer );
         INIT_CONST( CreateImage );
         INIT_CONST( CreateTarget );
         INIT_CONST( CreateTexture );

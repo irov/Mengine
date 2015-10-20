@@ -21,6 +21,9 @@ namespace Menge
         
 	public:
 		bool write( const void * _data, size_t _count ) override;
+		size_t size() const override;
+
+	public:
 		bool flush() override;
 
     public:
@@ -30,5 +33,7 @@ namespace Menge
         ServiceProviderInterface * m_serviceProvider;
         
 		s3eFile * m_hFile;
+
+		size_t m_size;
 	};
 }	// namespace Menge

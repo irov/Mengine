@@ -1,6 +1,10 @@
 #	pragma once
 
+#	include "Interface/ThreadSystemInterface.h"
+
 #   include "Factory/FactorablePtr.h"
+
+#	include "stdex/thread_guard.h"
 
 #   include <stddef.h>
 
@@ -26,7 +30,8 @@ namespace Menge
 
 	public:
 		void setListener( const FactoryListenerInterfacePtr & _listener );
-
+		void setMutex( const ThreadMutexInterfacePtr & _mutex );
+		
 	public:
 		Factorable * createObject();
 		void destroyObject( Factorable * _object );
@@ -58,8 +63,11 @@ namespace Menge
 
 	protected:
 		FactoryListenerInterfacePtr m_listener;
+		ThreadMutexInterfacePtr m_mutex;
 
 		uint32_t m_count;
+
+		STDEX_THREAD_GUARD_INIT;
 	};
 
 	typedef stdex::intrusive_ptr<Factory> FactoryPtr;

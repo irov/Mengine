@@ -12,7 +12,6 @@ namespace Menge
 	class ResourceImageCell;
 
 	class ResourceAnimation;
-	class ResourceEmitterContainer;
 	class ResourceFont;
 	class ResourcePlaylist;
 	class ResourceWindow;
@@ -30,7 +29,6 @@ namespace Menge
 	public:
 		virtual void visit(ResourceReference* _resource) { (void)_resource; };
 		virtual void visit(ResourceAnimation* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
-		virtual void visit(ResourceEmitterContainer* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 		virtual void visit(ResourceFont* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 		virtual void visit(ResourcePlaylist* _resource) { this->visit( (ResourceReference*)( _resource ) ); };
 		virtual void visit(ResourceSound* _resource) { this->visit( (ResourceReference*)( _resource ) ); };

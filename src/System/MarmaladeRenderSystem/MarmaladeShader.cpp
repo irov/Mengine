@@ -4,11 +4,6 @@
 
 #	include "Logger/Logger.h"
 
-#	define VERTEX_ARRAY 0
-#	define COLOR_ARRAY 1
-#	define UV0_ARRAY 2
-#	define UV1_ARRAY 3
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

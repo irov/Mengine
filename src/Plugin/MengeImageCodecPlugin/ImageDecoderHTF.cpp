@@ -91,16 +91,6 @@ namespace Menge
 
 			return 0;
 		}
-
-		OutputStreamInterfacePtr output = FILE_SERVICE( m_serviceProvider )
-			->openOutputFile( ConstString::none(), STRINGIZE_STRING_LOCAL( m_serviceProvider, "test.dds" ) );
-
-		ImageEncoderInterfacePtr encoder = CODEC_SERVICE( m_serviceProvider )
-			->createEncoderT<ImageEncoderInterfacePtr>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ddsImage" ) );
-
-		encoder->initialize( output );
-
-		encoder->encode( _buffer, _bufferSize, &m_dataInfo );
 		
 		return _bufferSize;
 	}

@@ -44,7 +44,7 @@ namespace Menge
             , _type.c_str()
             );
 
-		TMapConverterSystem::const_iterator it_found = m_mapConverterSystem.find( _type );
+		TMapConverterSystem::iterator it_found = m_mapConverterSystem.find( _type );
 
 		if( it_found == m_mapConverterSystem.end() )
 		{

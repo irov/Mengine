@@ -17,7 +17,7 @@
 
 namespace Menge
 {
-	DECLARE_MAGIC_NUMBER(MAGIC_MDL, 'M', 'D', 'L', '1', 1);
+	DECLARE_MAGIC_NUMBER(MAGIC_MDL, 'M', 'D', 'L', '1', 2);
 
 	struct Model3DFrame
 	{

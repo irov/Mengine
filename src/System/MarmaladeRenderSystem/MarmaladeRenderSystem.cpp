@@ -17,11 +17,6 @@
 #	define GET_G_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 8) & 0xFF)) / 255.0f )
 #	define GET_B_FLOAT_FROM_ARGB32( argb ) ( (float)(argb & 0xFF) / 255.0f )
 //////////////////////////////////////////////////////////////////////////
-#define VERTEX_ARRAY			0
-#define COLOR_ARRAY				1
-#define UV0_ARRAY				2
-#define UV1_ARRAY				3
-//////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY(RenderSystem, Menge::RenderSystemInterface, Menge::MarmaladeRenderSystem);
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
@@ -469,20 +464,23 @@ namespace Menge
 		memRange.bufId = bufId;
 		
         VBHandle vbHandle = ++m_VBHandleGenerator;
-		m_vBuffersMemory.insert( vbHandle, memRange );
+		m_vBuffersMemory.insert( std::make_pair(vbHandle, memRange) );
 
         return vbHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::releaseVertexBuffer( VBHandle _vbHandle )
+	bool MarmaladeRenderSystem::releaseVertexBuffer( VBHandle _vbHandle )
 	{
-		MemoryRange * range;
-		if( m_vBuffersMemory.has( _vbHandle, &range) == false )
+		TMapVBufferMemory::iterator it_found = m_vBuffersMemory.find( _vbHandle );
+
+		if( it_found == m_vBuffersMemory.end() )
 		{
-			return;
+			return false;
 		}
+					
+		MemoryRange & range = it_found->second;
 		
-		stdex_free( range->pMem );
+		stdex_free( range.pMem );
 
 		if( _vbHandle == m_currentVertexBuffer )
 		{
@@ -491,27 +489,32 @@ namespace Menge
 			m_currentVertexBuffer = 0;
 		}
 
-		GLCALL( m_serviceProvider, glDeleteBuffers, ( 1, &range->bufId ) );
+		GLCALL( m_serviceProvider, glDeleteBuffers, ( 1, &range.bufId ) );
 
-		m_vBuffersMemory.erase( _vbHandle );
+		m_vBuffersMemory.erase( it_found );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void * MarmaladeRenderSystem::lockVertexBuffer( VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
 	{
-		MemoryRange * range;
-		if( m_vBuffersMemory.has( _vbHandle, &range) == false )
+		TMapVBufferMemory::iterator it_found = m_vBuffersMemory.find( _vbHandle );
+
+		if( it_found == m_vBuffersMemory.end() )
 		{
-			return nullptr;
+			return false;
 		}
 
+		MemoryRange & range = it_found->second;
+
         MemoryRange memRange;
-		memRange.pMem = range->pMem + _offset;
+		memRange.pMem = range.pMem + _offset;
 		memRange.size = _size;
 		memRange.offset = _offset;
 		memRange.flags = _flags;
-		memRange.bufId = range->bufId;
+		memRange.bufId = range.bufId;
 		
-        m_vBuffersLocks.insert( _vbHandle, memRange );
+        m_vBuffersLocks.insert( std::make_pair(_vbHandle, memRange) );
 		
         void * mem = static_cast<void *>(memRange.pMem);
 
@@ -520,29 +523,34 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeRenderSystem::unlockVertexBuffer( VBHandle _vbHandle )
 	{
-		MemoryRange * range;
-		if( m_vBuffersLocks.has( _vbHandle, &range) == false )
+		TMapVBufferMemory::iterator it_found = m_vBuffersLocks.find( _vbHandle );
+
+		if( it_found == m_vBuffersLocks.end() )
 		{
 			return false;
 		}
+
+		MemoryRange & range = it_found->second;
 	
-		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, range->bufId ) );
-		GLCALL( m_serviceProvider, glBufferSubData, ( GL_ARRAY_BUFFER, range->offset, range->size, range->pMem ) );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, range.bufId ) );
+		GLCALL( m_serviceProvider, glBufferSubData, ( GL_ARRAY_BUFFER, range.offset, range.size, range.pMem ) );
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, 0 ) );
 
-		m_vBuffersLocks.erase( _vbHandle );		
+		m_vBuffersLocks.erase( it_found );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setVertexBuffer( VBHandle _vbHandle )
+	bool MarmaladeRenderSystem::setVertexBuffer( VBHandle _vbHandle )
 	{
 		m_currentVertexBuffer = _vbHandle;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	IBHandle MarmaladeRenderSystem::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
 	{
-		size_t size = _indiciesNum * sizeof( uint16 );
+		size_t size = _indiciesNum * sizeof( RenderIndices );
 		unsigned char * memory = (unsigned char *)stdex_malloc( size );
 
         MemoryRange memRange;
@@ -560,65 +568,67 @@ namespace Menge
 
 		GLuint bufId = 0;
 
-#	ifndef __MACH__
 		GLCALL( m_serviceProvider, glGenBuffers, ( 1, &bufId ) );
 				
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, bufId ) );
 
 		GLCALL( m_serviceProvider, glBufferData, ( GL_ELEMENT_ARRAY_BUFFER, memRange.size, NULL, usage ) );
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
-#	endif
 
 		memRange.bufId = bufId;
 		
 		IBHandle ibHandle = ++m_IBHandleGenerator;
-		m_iBuffersMemory.insert( ibHandle, memRange );
+		m_iBuffersMemory.insert( std::make_pair( ibHandle, memRange ) );
 		
 		return ibHandle;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::releaseIndexBuffer( IBHandle _ibHandle )
+	bool MarmaladeRenderSystem::releaseIndexBuffer( IBHandle _ibHandle )
 	{
-		MemoryRange * range;
-		if( m_iBuffersMemory.has( _ibHandle, &range) == false )
+		TMapIBufferMemory::iterator it_found = m_iBuffersMemory.find( _ibHandle );
+
+		if( it_found == m_iBuffersMemory.end() )
 		{
-			return;
+			return false;
 		}
+
+		MemoryRange & range = it_found->second;
 
 		if( _ibHandle == m_currentIndexBuffer )
 		{
-#	ifndef __MACH__
 			GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
-#	endif
 			
 			m_currentIndexBuffer = 0;
 		}
 
-		stdex_free( range->pMem );
+		stdex_free( range.pMem );
 
-#	ifndef __MACH__
-		GLCALL( m_serviceProvider, glDeleteBuffers, ( 1, &range->bufId ) );
-#	endif
+		GLCALL( m_serviceProvider, glDeleteBuffers, ( 1, &range.bufId ) );
 
-		m_iBuffersMemory.erase( _ibHandle );		
+		m_iBuffersMemory.erase( it_found );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderIndices * MarmaladeRenderSystem::lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
 	{
-		MemoryRange * range;
-		if( m_iBuffersMemory.has( _ibHandle, &range) == false )
+		TMapIBufferMemory::iterator it_found = m_iBuffersMemory.find( _ibHandle );
+
+		if( it_found == m_iBuffersMemory.end() )
 		{
-			return nullptr;
+			return false;
 		}
+
+		MemoryRange & range = it_found->second;
 		
         MemoryRange memRange;
-		memRange.pMem = range->pMem + _offset;
+		memRange.pMem = range.pMem + _offset;
 		memRange.size = _size;
 		memRange.offset = _offset;
 		memRange.flags = _flags;
-		memRange.bufId = range->bufId;
+		memRange.bufId = range.bufId;
 
-		m_iBuffersLocks.insert( _ibHandle, memRange );
+		m_iBuffersLocks.insert( std::make_pair( _ibHandle, memRange ) );
 		
         RenderIndices * mem = reinterpret_cast<RenderIndices *>(memRange.pMem);
 
@@ -627,26 +637,29 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeRenderSystem::unlockIndexBuffer( IBHandle _ibHandle )
 	{
-		MemoryRange * range;
-		if( m_iBuffersLocks.has( _ibHandle, &range) == false )
+		TMapIBufferMemory::iterator it_found = m_iBuffersLocks.find( _ibHandle );
+
+		if( it_found == m_iBuffersLocks.end() )
 		{
-			return nullptr;
+			return false;
 		}
+
+		MemoryRange & range = it_found->second;
 		
-#	ifndef __MACH__
-		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, range->bufId ) );
-		GLCALL( m_serviceProvider, glBufferSubData, ( GL_ELEMENT_ARRAY_BUFFER, range->offset, range->size, range->pMem ) );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, range.bufId ) );
+		GLCALL( m_serviceProvider, glBufferSubData, ( GL_ELEMENT_ARRAY_BUFFER, range.offset, range.size, range.pMem ) );
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
-#	endif		
 		
-		m_iBuffersLocks.erase( _ibHandle );		
+		m_iBuffersLocks.erase( it_found );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex )
+	bool MarmaladeRenderSystem::setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex )
 	{
 		m_currentIndexBuffer = _ibHandle;        
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderShaderInterfacePtr MarmaladeRenderSystem::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )
@@ -708,6 +721,26 @@ namespace Menge
 		m_currentProgram = stdex::intrusive_static_cast<MarmaladeProgramPtr>(_program);
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeRenderSystem::bindBuffer_( GLuint _vertexId, GLuint _indexId )
+	{
+		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, _vertexId) );
+		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, _indexId) );
+
+		GLCALL( m_serviceProvider, glEnableClientState, (GL_VERTEX_ARRAY) );
+		GLCALL( m_serviceProvider, glVertexPointer, (3, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, pos ))) );
+
+		GLCALL( m_serviceProvider, glEnableClientState, (GL_COLOR_ARRAY) );
+		GLCALL( m_serviceProvider, glColorPointer, (4, GL_UNSIGNED_BYTE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, color ))) );
+
+		GLCALL( m_serviceProvider, glEnableClientState, (GL_TEXTURE_COORD_ARRAY) );
+
+		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
+		{
+			GLCALL( m_serviceProvider, glClientActiveTexture, (GL_TEXTURE0 + i) );
+			GLCALL( m_serviceProvider, glTexCoordPointer, (2, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * i)) );
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::drawIndexedPrimitive( EPrimitiveType _type, 
 		uint32_t _baseVertexIndex,  uint32_t _minIndex, 
 		uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount )
@@ -745,85 +778,74 @@ namespace Menge
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter ) );
 		}
 
-		MemoryRange * vb_range;
-		if( m_vBuffersMemory.has( m_currentVertexBuffer, &vb_range ) == false )
+		TMapVBufferMemory::iterator it_vbuffer_found = m_vBuffersMemory.find( m_currentVertexBuffer );
+
+		if( it_vbuffer_found == m_vBuffersMemory.end() )
 		{
 			return;
 		}
 
-		MemoryRange * ib_range;
-		if( m_iBuffersMemory.has( m_currentIndexBuffer, &ib_range ) == false )
+		MemoryRange & vb_range = it_vbuffer_found->second;
+
+		TMapIBufferMemory::iterator it_ibuffer_found = m_iBuffersMemory.find( m_currentVertexBuffer );
+
+		if( it_ibuffer_found == m_iBuffersMemory.end() )
 		{
 			return;
 		}
 
-#	ifndef __MACH__
-		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, vb_range->bufId ) );
-		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, ib_range->bufId ) );
+		MemoryRange & ib_range = it_ibuffer_found->second;
+
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, vb_range.bufId ) );
+		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, ib_range.bufId ) );
 
 		//glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(0));
-		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (VERTEX_ARRAY) );
-		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (COLOR_ARRAY) );
-		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (UV0_ARRAY) );
-		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (UV1_ARRAY) );
+		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (VERTEX_POSITION_ARRAY) );
+		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (VERTEX_COLOR_ARRAY) );
 
-		GLCALL( m_serviceProvider, glVertexAttribPointer, (VERTEX_ARRAY, 3, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(0)) );
-		GLCALL( m_serviceProvider, glVertexAttribPointer, (COLOR_ARRAY, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(12)) );
-		GLCALL( m_serviceProvider, glVertexAttribPointer, (UV0_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(16)) );
-		GLCALL( m_serviceProvider, glVertexAttribPointer, (UV1_ARRAY, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(24)) );
+		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
+		{
+			GLCALL( m_serviceProvider, glEnableVertexAttribArray, (VERTEX_UV0_ARRAY + i) );
+		}
+		
+		GLCALL( m_serviceProvider, glVertexAttribPointer, (VERTEX_POSITION_ARRAY, 3, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, pos ))) );
+		GLCALL( m_serviceProvider, glVertexAttribPointer, (VERTEX_COLOR_ARRAY, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, color ))) );
+
+		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
+		{
+			size_t uv_offset = offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * i;
+
+			GLCALL( m_serviceProvider, glVertexAttribPointer, (VERTEX_UV0_ARRAY + i, 2, GL_FLOAT, GL_FALSE, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(uv_offset)) );
+		}
 
         GLenum mode = s_getGLPrimitiveMode( _type );
-		const uint16_t * baseIndex = nullptr;
-		const uint16_t * offsetIndex = baseIndex + _startIndex;
-		GLCALL( m_serviceProvider, glDrawElements, ( mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(offsetIndex) ) );
+		const RenderIndices * baseIndex = nullptr;
+		const RenderIndices * offsetIndex = baseIndex + _startIndex;
 
-		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (VERTEX_ARRAY) );
-		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (COLOR_ARRAY) );
-		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (UV0_ARRAY) );
-		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (UV1_ARRAY) );
-#	else	
-		//////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////
-		//Mac dont support 'glDrawElements indices offset' - create static buffers
-		//////////////////////////////////////////////////////////////////////////
-		//////////////////////////////////////////////////////////////////////////
-		GLuint bufId = 0;
-		GLCALL( m_serviceProvider, glGenBuffers, ( 1, &bufId ) );
+		GLenum indexType;
 
-		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, bufId ) );
+		switch( sizeof( RenderIndices ) )
+		{
+		case 1:
+			indexType = GL_UNSIGNED_BYTE;
+			break;
+		case 2:
+			indexType = GL_UNSIGNED_SHORT;
+			break;
+		case 3:
+			indexType = GL_UNSIGNED_INT;
+			break;
+		}
 
-		GLCALL( m_serviceProvider, glBufferData, ( GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(uint16_t), nullptr, GL_STATIC_DRAW ) );
-		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
+		GLCALL( m_serviceProvider, glDrawElements, (mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(offsetIndex)) );
 
-		const uint16_t * baseIndex = reinterpret_cast<const uint16_t *>(ib_range->pMem);
-		const uint16_t * offsetIndex = baseIndex + _startIndex;
-
-		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, bufId ) );
-		GLCALL( m_serviceProvider, glBufferSubData, ( GL_ELEMENT_ARRAY_BUFFER, 0, _indexCount * sizeof(uint16_t), offsetIndex ) );
-		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, 0 ) );
-
-		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, vb_range->bufId ) );
-		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, bufId ) );
-				
-		GLCALL( m_serviceProvider, glEnableClientState, ( GL_VERTEX_ARRAY ) );
-		GLCALL( m_serviceProvider, glVertexPointer, ( 3, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 0 ) ) );
-
-		GLCALL( m_serviceProvider, glEnableClientState, ( GL_COLOR_ARRAY ) );
-		GLCALL( m_serviceProvider, glColorPointer, ( 4, GL_UNSIGNED_BYTE, 32, reinterpret_cast<const GLvoid *>( 12 ) ) );
-
-		GLCALL( m_serviceProvider, glEnableClientState, ( GL_TEXTURE_COORD_ARRAY ) );
-
-		GLCALL( m_serviceProvider, glClientActiveTexture, ( GL_TEXTURE0 ) );
-		GLCALL( m_serviceProvider, glTexCoordPointer, ( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 16 ) ) );
-		GLCALL( m_serviceProvider, glClientActiveTexture, ( GL_TEXTURE1 ) );
-		GLCALL( m_serviceProvider, glTexCoordPointer, ( 2, GL_FLOAT, 32, reinterpret_cast<const GLvoid *>( 24 ) ) );
-
-		GLenum mode = s_getGLPrimitiveMode( _type );
-
-		GLCALL( m_serviceProvider, glDrawElements, ( mode, _indexCount, GL_UNSIGNED_SHORT, nullptr ) );
+		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (VERTEX_POSITION_ARRAY) );
+		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (VERTEX_COLOR_ARRAY) );
 		
-		GLCALL( m_serviceProvider, glDeleteBuffers, ( 1, &bufId ) );
-#	endif
+		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
+		{
+			GLCALL( m_serviceProvider, glDisableVertexAttribArray, (VERTEX_UV0_ARRAY + i) );
+		}
 		
 		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
 		{

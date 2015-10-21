@@ -69,7 +69,8 @@ namespace Menge
 
 		CacheBufferID m_enumeratorId;
 			
-		ThreadMutexInterfacePtr m_memoryMutex;
+		ThreadMutexInterfacePtr m_memoryCacheMutex;
+		ThreadMutexInterfacePtr m_memoryFactoryMutex;
 
 		typedef FactoryPoolStore<MemoryCacheBuffer, 16> TFactoryPoolMemoryCacheBuffer;
 		TFactoryPoolMemoryCacheBuffer m_factoryPoolMemoryCacheBuffer;

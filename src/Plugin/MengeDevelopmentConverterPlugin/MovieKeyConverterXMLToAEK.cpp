@@ -604,7 +604,7 @@ namespace Menge
 
 					for( size_t i = 0; i != shapeIndicesCount; ++i )
 					{
-						shape.indices[i] = (uint16_t)shape_indices[i];
+						shape.indices[i] = (RenderIndices)shape_indices[i];
 					}
 				}
 

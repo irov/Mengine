@@ -80,4 +80,9 @@ namespace Menge
 
 		return &frame;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	Pointer Model3DPack::allocateMemory( size_t _size ) const
+	{
+		return stdex_malloc( _size );
+	}
 }

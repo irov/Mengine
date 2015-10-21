@@ -32,14 +32,17 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MemoryManager::initialize()
 	{
-		m_memoryMutex = THREAD_SERVICE(m_serviceProvider)
+		m_memoryCacheMutex = THREAD_SERVICE(m_serviceProvider)
 			->createMutex( "MemoryManager::initialize" );
 
-		m_factoryPoolMemoryCacheBuffer.setMutex( m_memoryMutex );
-		m_factoryPoolMemoryCacheInput.setMutex( m_memoryMutex );
-		m_factoryPoolMemoryProxyInput.setMutex( m_memoryMutex );
-		m_factoryPoolMemoryInput.setMutex( m_memoryMutex );
-		m_factoryPoolMemory.setMutex( m_memoryMutex );
+		m_memoryFactoryMutex = THREAD_SERVICE( m_serviceProvider )
+			->createMutex( "MemoryManager::initialize" );
+
+		m_factoryPoolMemoryCacheBuffer.setMutex( m_memoryFactoryMutex );
+		m_factoryPoolMemoryCacheInput.setMutex( m_memoryFactoryMutex );
+		m_factoryPoolMemoryProxyInput.setMutex( m_memoryFactoryMutex );
+		m_factoryPoolMemoryInput.setMutex( m_memoryFactoryMutex );
+		m_factoryPoolMemory.setMutex( m_memoryFactoryMutex );
 
 		return true;
 	}
@@ -48,17 +51,18 @@ namespace Menge
 	{
 		this->clearCacheBuffers();
 
-		m_memoryMutex = nullptr;
+		m_memoryCacheMutex = nullptr;
+		m_memoryFactoryMutex = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	CacheBufferID MemoryManager::lockBuffer( size_t _size, void ** _memory, const char * _doc )
 	{
-		m_memoryMutex->lock();
+		m_memoryCacheMutex->lock();
 
 		CacheBufferID buffer_id = 
 			this->lockBufferNoMutex_( _size, _memory, _doc );
 
-		m_memoryMutex->unlock();
+		m_memoryCacheMutex->unlock();
 
 		return buffer_id;
 	}
@@ -166,7 +170,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MemoryManager::unlockBuffer( CacheBufferID _bufferId )
 	{
-		m_memoryMutex->lock();
+		m_memoryCacheMutex->lock();
 
 		for( TVectorCacheBufferMemory::iterator
 			it = m_buffers.begin(),
@@ -186,12 +190,12 @@ namespace Menge
 			break;
 		}
 
-		m_memoryMutex->unlock();
+		m_memoryCacheMutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MemoryManager::clearCacheBuffers()
 	{
-		m_memoryMutex->lock();
+		m_memoryCacheMutex->lock();
 
 		for( TVectorCacheBufferMemory::iterator
 			it = m_buffers.begin(),
@@ -214,7 +218,7 @@ namespace Menge
 
 		m_buffers.clear();
 
-		m_memoryMutex->unlock();
+		m_memoryCacheMutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheBufferInterfacePtr MemoryManager::createMemoryCacheBuffer()

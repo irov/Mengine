@@ -131,7 +131,7 @@ namespace Menge
 												} \
 											else \
 											{ \
-							frame.Member2 = Helper::allocateMemory<Type>( frames_size ); \
+							frame.Member2 = _pack->allocateMemoryT<Type>( frames_size ); \
 							ar.readPODs( frame.Member2, frames_size );\
 											} \
 										}
@@ -174,7 +174,7 @@ namespace Menge
 						continue;
 					}
 
-					timeremap.times = Helper::allocateMemory<float>( times_size );
+					timeremap.times = _pack->allocateMemoryT<float>( times_size );
 
 					float * times_buff = &timeremap.times[0];
 					ar.readPODs( times_buff, times_size );
@@ -206,7 +206,7 @@ namespace Menge
 					}
 
 					shapes.shapes_size = shapes_size;
-					shapes.shapes = Helper::allocateMemory<MovieFrameShape>( shapes_size );
+					shapes.shapes = _pack->allocateMemoryT<MovieFrameShape>( shapes_size );
 
 					for( uint32_t j = 0; j != shapes_size; ++j )
 					{
@@ -216,15 +216,15 @@ namespace Menge
 
 						if( shape.vertexCount > 0 )
 						{
-							shape.pos = Helper::allocateMemory<mt::vec2f>( shape.vertexCount );
-							shape.uv = Helper::allocateMemory<mt::vec2f>( shape.vertexCount );
+							shape.pos = _pack->allocateMemoryT<mt::vec2f>( shape.vertexCount );
+							shape.uv = _pack->allocateMemoryT<mt::vec2f>( shape.vertexCount );
 							
 							ar.readPODs( shape.pos, shape.vertexCount );
 							ar.readPODs( shape.uv, shape.vertexCount );
 
 							ar << shape.indexCount;
-
-							shape.indices = Helper::allocateMemory<RenderIndices>( shape.indexCount );
+							
+							shape.indices = _pack->allocateMemoryT<RenderIndices>( shape.indexCount );
 
 							ar.readPODs( shape.indices, shape.indexCount );
 						}
@@ -260,7 +260,7 @@ namespace Menge
 					ar << vertexCount;
 
 					polygon.vertexCount = vertexCount;
-					polygon.polygon = Helper::allocateMemory<mt::vec2f>( vertexCount );
+					polygon.polygon = _pack->allocateMemoryT<mt::vec2f>( vertexCount );
 
 					for( uint32_t j = 0; j != vertexCount; ++j )
 					{

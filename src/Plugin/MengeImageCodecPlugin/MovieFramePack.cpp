@@ -49,7 +49,7 @@ namespace Menge
 			for( uint32_t j = 0; j != layer_shape.shapes_size; ++j )
 			{
 				const MovieFrameShape & frame_shape = layer_shape.shapes[j];
-
+				
 				Helper::freeMemory( frame_shape.pos );
 				Helper::freeMemory( frame_shape.uv );
 				Helper::freeMemory( frame_shape.indices );
@@ -58,8 +58,6 @@ namespace Menge
 			Helper::freeMemory( layer_shape.shapes );
 		}
 
-		Helper::freeMemory( m_shapes );
-
 		for( uint32_t index = 0; index != m_sizePolygons; ++index )
 		{
 			const MovieLayerPolygon & polygon = m_polygons[index];
@@ -67,6 +65,9 @@ namespace Menge
 			Helper::freeMemory( polygon.polygon );
 		}
 
+		Helper::freeMemory( m_layers );
+		Helper::freeMemory( m_timeremap );
+		Helper::freeMemory( m_shapes );
 		Helper::freeMemory( m_polygons );
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -406,5 +407,10 @@ namespace Menge
 		}
 
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	Pointer MovieFramePack::allocateMemory( size_t _size ) const
+	{
+		return stdex_malloc( _size );
 	}
 }

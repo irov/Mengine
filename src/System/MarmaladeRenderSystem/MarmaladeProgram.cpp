@@ -4,11 +4,6 @@
 
 #	include "Logger/Logger.h"
 
-#	define VERTEX_ARRAY 0
-#	define COLOR_ARRAY 1
-#	define UV0_ARRAY 2
-#	define UV1_ARRAY 3
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -16,7 +11,7 @@ namespace Menge
 		: m_serviceProvider( nullptr )
 		, m_program( 0 )
 		, m_samplerCount( 0 )
-		, m_transformLocation( -1 )		
+		, m_transformLocation( -1 )
 	{
 		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
@@ -85,10 +80,16 @@ namespace Menge
 			m_fragmentShader->attach( program );
 		}
 		
-		GLCALL( m_serviceProvider, glBindAttribLocation, ( program, VERTEX_ARRAY, "inVert" ) );
-		GLCALL( m_serviceProvider, glBindAttribLocation, ( program, COLOR_ARRAY, "inCol" ) );
-		GLCALL( m_serviceProvider, glBindAttribLocation, ( program, UV0_ARRAY, "inUV0" ) );
-		GLCALL( m_serviceProvider, glBindAttribLocation, ( program, UV1_ARRAY, "inUV1" ) );
+		GLCALL( m_serviceProvider, glBindAttribLocation, ( program, VERTEX_POSITION_ARRAY, "inVert" ) );
+		GLCALL( m_serviceProvider, glBindAttribLocation, ( program, VERTEX_COLOR_ARRAY, "inCol" ) );
+
+		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
+		{
+			char attrib[16];
+			sprintf( attrib, "inUV%d", i );
+		
+			GLCALL( m_serviceProvider, glBindAttribLocation, (program, VERTEX_UV0_ARRAY + i, attrib) );
+		}
 
 		GLCALL( m_serviceProvider, glLinkProgram, ( program ) );
 

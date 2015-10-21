@@ -106,9 +106,9 @@ namespace Menge
 			ar << frame.cameraDir;
 			ar << frame.cameraUp;
 
-			frame.pos = Helper::allocateMemory<mt::vec3f>( vertexCount );
-			frame.uv = Helper::allocateMemory<mt::vec2f>( vertexCount );
-			frame.indecies = Helper::allocateMemory<RenderIndices>( indicesCount );
+			frame.pos = _data->allocateMemoryT<mt::vec3f>( vertexCount );
+			frame.uv = _data->allocateMemoryT<mt::vec2f>( vertexCount );
+			frame.indecies = _data->allocateMemoryT<RenderIndices>( indicesCount );
 
 			ar.readPODs( frame.pos, vertexCount );
 			ar.readPODs( frame.uv, vertexCount );

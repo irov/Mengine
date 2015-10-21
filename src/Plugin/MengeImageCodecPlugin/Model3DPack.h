@@ -39,6 +39,9 @@ namespace Menge
 
 	public:
 		const Model3DFrame * getFrame( uint32_t _frameId ) const override;
+
+	public:
+		Pointer allocateMemory( size_t _size ) const override;
 		
 	protected:
 		uint32_t m_frameCount;

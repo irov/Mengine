@@ -195,12 +195,12 @@ namespace	Menge
 				uint32_t i2 = (i + 0) + (j + 1) * m_countX;
 				uint32_t i3 = (i + 1) + (j + 1) * m_countX;
 
-				*indices_iterator++ = (uint16_t)i0;
-				*indices_iterator++ = (uint16_t)i2;
-				*indices_iterator++ = (uint16_t)i1;
-				*indices_iterator++ = (uint16_t)i1;
-				*indices_iterator++ = (uint16_t)i2;
-				*indices_iterator++ = (uint16_t)i3;
+				*indices_iterator++ = (RenderIndices)i0;
+				*indices_iterator++ = (RenderIndices)i2;
+				*indices_iterator++ = (RenderIndices)i1;
+				*indices_iterator++ = (RenderIndices)i1;
+				*indices_iterator++ = (RenderIndices)i2;
+				*indices_iterator++ = (RenderIndices)i3;
 			}
 		}
 

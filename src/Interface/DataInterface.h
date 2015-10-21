@@ -4,6 +4,7 @@
 
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/StreamInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 #   include "Factory/FactorablePtr.h"
 
@@ -17,6 +18,18 @@ namespace Menge
 	class DataInterface
 		: public FactorablePtr
 	{
+	public:
+		virtual Pointer allocateMemory( size_t _size ) const = 0;
+
+	public:
+		template<class T>
+		inline Pointer allocateMemoryT( size_t _count ) const
+		{ 
+			size_t total_size = sizeof( T ) * _count;
+
+			return this->allocateMemory( total_size );
+		}
+
 	};
 
 	typedef stdex::intrusive_ptr<DataInterface> DataInterfacePtr;

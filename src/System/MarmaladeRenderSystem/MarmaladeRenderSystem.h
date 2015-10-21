@@ -10,7 +10,6 @@
 
 #   include "Factory/FactoryStore.h"
 
-#   include "stdex/binary_vector.h"
 #   include "stdex/stl_map.h"
 
 #   include <IwGL.h>
@@ -98,20 +97,25 @@ namespace Menge
         void setWorldMatrix( const mt::mat4f & _view ) override;
 
 		VBHandle createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic ) override;
-		void releaseVertexBuffer( VBHandle _vbHandle ) override;
+		bool releaseVertexBuffer( VBHandle _vbHandle ) override;
 		void* lockVertexBuffer(  VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
-		void setVertexBuffer( VBHandle _vbHandle ) override;
+		bool setVertexBuffer( VBHandle _vbHandle ) override;
 
 		IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
-		void releaseIndexBuffer( IBHandle _ibHandle ) override;
+		bool releaseIndexBuffer( IBHandle _ibHandle ) override;
 		RenderIndices * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
 		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
-		void setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
+		bool setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
 
+	public:
 		void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
 			uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount ) override;
 
+	protected:
+		void bindBuffer_( GLuint _vertexId, GLuint _indexId );
+
+	public:
 		void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
 		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32_t _color ) override;
@@ -223,11 +227,11 @@ namespace Menge
 		VBHandle m_VBHandleGenerator;
 		IBHandle m_IBHandleGenerator;
 
-        typedef stdex::binary_vector<VBHandle, MemoryRange> TMapVBufferMemory;
+		typedef stdex::map<VBHandle, MemoryRange> TMapVBufferMemory;
 		TMapVBufferMemory m_vBuffersMemory;
 		TMapVBufferMemory m_vBuffersLocks;
 		
-		typedef stdex::binary_vector<IBHandle, MemoryRange> TMapIBufferMemory;
+		typedef stdex::map<IBHandle, MemoryRange> TMapIBufferMemory;
 		TMapIBufferMemory m_iBuffersMemory;
 		TMapIBufferMemory m_iBuffersLocks;
 

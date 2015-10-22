@@ -270,7 +270,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		ThreadQueuePtr taskQueue = m_factoryThreadQueue.createObjectT();
+		ThreadQueuePtr taskQueue = m_factoryThreadQueue.createObject();
 
 		taskQueue->setServiceProvider( m_serviceProvider );
 		taskQueue->setThreadName( _threadName );
@@ -380,7 +380,7 @@ namespace Menge
 		if( m_threadAvaliable == false )
 		{
 			 ThreadMutexInterfacePtr mutex_dummy = 
-				 m_poolThreadMutexDummy.createObjectT();
+				 m_poolThreadMutexDummy.createObject();
 
 			return mutex_dummy;
 		}

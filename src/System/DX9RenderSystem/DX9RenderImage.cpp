@@ -1,11 +1,11 @@
-#	include "DX9Texture.h"
+#	include "DX9RenderImage.h"
 
 #	include "DX9ErrorHelper.h"
 
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	DX9Texture::DX9Texture()
+	DX9RenderImage::DX9RenderImage()
 		: m_serviceProvider(nullptr)
 		, m_d3dTexture(nullptr)
 		, m_mode(ERIM_NORMAL)
@@ -16,7 +16,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DX9Texture::~DX9Texture()
+	DX9RenderImage::~DX9RenderImage()
 	{
         if( m_d3dTexture != nullptr )
         {			
@@ -27,7 +27,7 @@ namespace Menge
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void DX9Texture::initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
+    void DX9RenderImage::initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
     {
 		m_serviceProvider = _serviceProvider;
         m_d3dTexture = _d3dInterface;
@@ -40,7 +40,7 @@ namespace Menge
         m_hwPixelFormat = _hwPixelFormat;
     }
 	///////////////////////////////////////////////////////////////////////////
-	void * DX9Texture::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+	void * DX9RenderImage::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
 	{
 		DWORD flags;
 		if( _readOnly == true )
@@ -71,42 +71,42 @@ namespace Menge
 		return bits;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9Texture::unlock( uint32_t _level )
+	void DX9RenderImage::unlock( uint32_t _level )
 	{
 		DXCALL( m_serviceProvider, m_d3dTexture, UnlockRect, (_level) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IDirect3DTexture9 * DX9Texture::getDXTextureInterface() const
+	IDirect3DTexture9 * DX9RenderImage::getDXTextureInterface() const
 	{
 		return m_d3dTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ERenderImageMode DX9Texture::getMode() const
+	ERenderImageMode DX9RenderImage::getMode() const
 	{
 		return m_mode;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t DX9Texture::getHWWidth() const
+	uint32_t DX9RenderImage::getHWWidth() const
 	{
 		return m_hwWidth;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t DX9Texture::getHWHeight() const
+	uint32_t DX9RenderImage::getHWHeight() const
 	{
 		return m_hwHeight;
 	}
     //////////////////////////////////////////////////////////////////////////
-    PixelFormat DX9Texture::getHWPixelFormat() const
+    PixelFormat DX9RenderImage::getHWPixelFormat() const
     {
         return m_hwPixelFormat;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9Texture::getHWChannels() const
+    uint32_t DX9RenderImage::getHWChannels() const
     {
         return m_hwChannels;
     }
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t DX9Texture::getHWDepth() const
+	uint32_t DX9RenderImage::getHWDepth() const
 	{
 		return 1; //ToDo
 	}

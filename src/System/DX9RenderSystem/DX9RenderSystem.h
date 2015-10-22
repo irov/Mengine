@@ -2,7 +2,10 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-#   include "DX9Texture.h"
+#   include "DX9RenderImage.h"
+#   include "DX9RenderShader.h"
+#   include "DX9RenderVertexBuffer.h"
+#   include "DX9RenderIndexBuffer.h"
 
 #   include "Factory/FactoryStore.h"
 
@@ -14,27 +17,6 @@
 
 namespace Menge
 {
-	struct VBInfo
-	{
-		uint32_t length;
-		uint32_t vertexSize;
-		DWORD fvf;
-		DWORD usage;
-		D3DPOOL pool;
-		IDirect3DVertexBuffer9* pVB;
-		bool dynamic;
-	};
-
-	struct IBInfo
-	{
-		uint32_t length;
-		DWORD usage;
-		D3DFORMAT format;
-		D3DPOOL pool;
-		IDirect3DIndexBuffer9* pIB;
-		bool dynamic;
-	};
-
 	class DX9RenderSystem
 		: public RenderSystemInterface
 	{
@@ -79,17 +61,12 @@ namespace Menge
 		void setTextureMatrix( uint32_t _stage, const float* _texture ) override;
 		void setWorldMatrix( const mt::mat4f & _world ) override;
 
-		VBHandle createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic ) override;
-		bool releaseVertexBuffer( VBHandle _vbHandle ) override;
-		void * lockVertexBuffer(  VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
-		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
-		bool setVertexBuffer( VBHandle _vbHandle ) override;
+	public:
+		RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _verticesNum, bool _dynamic ) override;
+		bool setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) override;
 
-		IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
-		bool releaseIndexBuffer( IBHandle _ibHandle ) override;
-		RenderIndices * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
-		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
-		bool setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
+		RenderIndexBufferInterfacePtr createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
+		bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) override;
 
 	public:
 		RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
@@ -204,8 +181,6 @@ namespace Menge
 
 		D3DPRESENT_PARAMETERS * m_d3dpp;
 
-		D3DMATRIX m_matTexture;
-
 		// sync routines
 		unsigned int m_frames;
 
@@ -229,24 +204,20 @@ namespace Menge
 
         Viewport m_viewport;
 
-		VBHandle m_vbHandleCounter;
-		IBHandle m_ibHandleCounter;
-
 		DWORD m_vertexDeclaration;
 
-		typedef stdex::map<VBHandle, VBInfo> TMapVBInfo;
-		TMapVBInfo m_vertexBuffers;
+		typedef FactoryDefaultStore<DX9RenderVertexBuffer> TFactoryDX9RenderVertexBuffer;
+		TFactoryDX9RenderVertexBuffer m_factoryVertexBuffer;
 
-        VBHandle m_currentVB;
+		typedef FactoryDefaultStore<DX9RenderIndexBuffer> TFactoryDX9RenderIndexBuffer;
+		TFactoryDX9RenderIndexBuffer m_factoryIndexBuffer;
 
-		typedef stdex::map<VBHandle, IBInfo> TMapIBInfo;
-		TMapIBInfo m_indexBuffers;
-
-        IBHandle m_currentIB;
+		bool m_vertexBufferEnable;
+		bool m_indexBufferEnable;
 
         IDirect3DTexture9 * m_currentTexture[MENGE_MAX_TEXTURE_STAGES];
 
-        typedef FactoryPoolStore<DX9Texture, 128> TFactoryDX9Texture;
+        typedef FactoryPoolStore<DX9RenderImage, 128> TFactoryDX9Texture;
         TFactoryDX9Texture m_factoryDX9Texture;
 		
 		bool m_syncReady;

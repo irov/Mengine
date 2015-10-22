@@ -837,7 +837,7 @@ namespace Menge
 			break;
 		}
 
-		GLCALL( m_serviceProvider, glDrawElements, (mode, _indexCount, GL_UNSIGNED_SHORT, reinterpret_cast<const GLvoid *>(offsetIndex)) );
+		GLCALL( m_serviceProvider, glDrawElements, (mode, _indexCount, indexType, reinterpret_cast<const GLvoid *>(offsetIndex)) );
 
 		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (VERTEX_POSITION_ARRAY) );
 		GLCALL( m_serviceProvider, glDisableVertexAttribArray, (VERTEX_COLOR_ARRAY) );

@@ -595,7 +595,7 @@ namespace Menge
 			return material;
 		}
 
-		RenderMaterial * material = m_factoryMaterial.createObjectT();
+		RenderMaterial * material = m_factoryMaterial.createObject();
 
 		uint32_t id = this->makeMaterialIndex_();
 		material->initialize( id, material_hash, _primitiveType, _textureCount, _textures, _stage );

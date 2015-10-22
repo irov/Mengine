@@ -29,11 +29,6 @@ namespace Menge
 		: m_serviceProvider( nullptr )
 		, m_windowCreated( false )
 		, m_vsync( false )
-		, m_vbHandle2D( 0 )
-		, m_ibHandle2D( 0 )
-		, m_currentVBHandle( 0 )
-		, m_currentIBHandle( 0 )
-		, m_currentBaseVertexIndex( 0 )
 		, m_currentTextureStages( 0 )
 		, m_currentRenderCamera( nullptr )
 		, m_currentRenderViewport( nullptr )
@@ -166,44 +161,12 @@ namespace Menge
 
 		m_nullTexture = nullptr;
 		m_whitePixelTexture = nullptr;
+		
+		m_vbHandle2D = nullptr;
+		m_ibHandle2D = nullptr;
 
-		RENDER_SYSTEM(m_serviceProvider)
-			->releaseVertexBuffer( m_vbHandle2D );
-
-		m_vbHandle2D = 0;
-
-		RENDER_SYSTEM(m_serviceProvider)
-			->releaseIndexBuffer( m_ibHandle2D );
-
-		m_ibHandle2D = 0;
-
-		for( TVectorVertexBuffer::iterator
-			it = m_vertexBuffer.begin(),
-			it_end = m_vertexBuffer.end();
-		it != it_end;
-		++it )
-		{
-			VBHandle handle = *it;
-
-			RENDER_SYSTEM(m_serviceProvider)
-				->releaseVertexBuffer( handle );
-		}
-
-		m_vertexBuffer.clear();
-
-		for( TVectorIndexBuffer::iterator
-			it = m_indexBuffer.begin(),
-			it_end = m_indexBuffer.end();
-		it != it_end;
-		++it )
-		{
-			IBHandle handle = *it;
-
-			RENDER_SYSTEM(m_serviceProvider)
-				->releaseIndexBuffer( handle );
-		}
-
-		m_indexBuffer.clear();
+		m_currentVBHandle = nullptr;
+		m_currentIBHandle = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
@@ -235,7 +198,7 @@ namespace Menge
 			return false;
 		}
 
-		if( this->recreate2DBuffers_() == false )
+		if( this->create2DBuffers_() == false )
 		{
 			return false;
 		}
@@ -445,12 +408,10 @@ namespace Menge
 		LOGGER_WARNING(m_serviceProvider)("RenderEngine::onRenderSystemDeviceLost"
 			);
 
-		m_currentVBHandle = 0;
-		m_currentIBHandle = 0;
+		m_currentVBHandle = nullptr;
+		m_currentIBHandle = nullptr;
 
 		m_currentTextureStages = 0;
-		m_currentBaseVertexIndex = 0;
-
 		m_currentMaterialId = 0;
 
 		m_currentStage = nullptr;
@@ -466,14 +427,6 @@ namespace Menge
 	{
 		LOGGER_WARNING(m_serviceProvider)("RenderEngine::onRenderSystemDeviceRestored"
 			);
-
-		if( this->recreate2DBuffers_() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::onRenderSystemDeviceRestored invalid recreate buffers"
-				);
-
-			return false;
-		}
 
 		this->restoreRenderSystemStates_();
 
@@ -513,6 +466,9 @@ namespace Menge
 
 		m_renderVertexCount = 0;
 		m_renderIndicesCount = 0;
+				
+		m_currentVBHandle = nullptr;
+		m_currentIBHandle = nullptr;
 
 		if( RENDER_SYSTEM(m_serviceProvider)->beginScene() == false )
 		{
@@ -728,7 +684,7 @@ namespace Menge
 		this->updateStage_( stage );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::renderObject_( RenderObject* _renderObject )
+	void RenderEngine::renderObject_( RenderObject * _renderObject )
 	{
 		if( _renderObject->dipIndiciesNum == 0 )
 		{
@@ -739,14 +695,12 @@ namespace Menge
 
 		this->updateMaterial_( material );		
 
-		if( m_currentIBHandle != _renderObject->ibHandle || 
-			m_currentBaseVertexIndex != _renderObject->baseVertexIndex )
+		if( m_currentIBHandle != _renderObject->ibHandle )
 		{
 			m_currentIBHandle = _renderObject->ibHandle;
-			m_currentBaseVertexIndex = _renderObject->baseVertexIndex;
 
 			RENDER_SYSTEM(m_serviceProvider)
-				->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
+				->setIndexBuffer( m_currentIBHandle );
 		}
 
 		if( m_currentVBHandle != _renderObject->vbHandle )
@@ -769,6 +723,8 @@ namespace Menge
 			);
 
 		stdex::intrusive_ptr_release( _renderObject->material );
+		stdex::intrusive_ptr_release( _renderObject->vbHandle );
+		stdex::intrusive_ptr_release( _renderObject->ibHandle );
 
 		++m_debugInfo.dips;
 	}
@@ -799,6 +755,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::restoreRenderSystemStates_()
 	{
+		m_currentMaterialId = 0;
 		m_currentStage = nullptr;
 
 		m_currentBlendSrc = BF_ONE;
@@ -873,7 +830,7 @@ namespace Menge
 		mt::ident_m4( worldTransform );
 
 		RENDER_SYSTEM( m_serviceProvider )->setVertexBuffer( m_currentVBHandle );
-		RENDER_SYSTEM( m_serviceProvider )->setIndexBuffer( m_currentIBHandle, m_currentBaseVertexIndex );
+		RENDER_SYSTEM( m_serviceProvider )->setIndexBuffer( m_currentIBHandle );
 		RENDER_SYSTEM( m_serviceProvider )->setProjectionMatrix( projTransform );
 		RENDER_SYSTEM( m_serviceProvider )->setModelViewMatrix( viewTransform );
 		RENDER_SYSTEM( m_serviceProvider )->setWorldMatrix( worldTransform );
@@ -1292,8 +1249,8 @@ namespace Menge
 
 		rp.materialEnd[ro.materialId] = &ro;
 
-		ro.ibHandle = m_ibHandle2D;
-		ro.vbHandle = m_vbHandle2D;
+		stdex::intrusive_ptr_setup( ro.ibHandle, m_ibHandle2D );
+		stdex::intrusive_ptr_setup( ro.vbHandle, m_vbHandle2D );
 
 		ro.vertexData = _vertices;
 		ro.verticesNum = _verticesNum;
@@ -1381,99 +1338,53 @@ namespace Menge
 		return m_batchMode;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	VBHandle RenderEngine::createVertexBuffer( const RenderVertex2D * _buffer, uint32_t _count )
+	RenderVertexBufferInterfacePtr RenderEngine::createVertexBuffer( const RenderVertex2D * _buffer, uint32_t _count )
 	{
-		VBHandle vbHandle = RENDER_SYSTEM(m_serviceProvider)
-			->createVertexBuffer( _count, sizeof(RenderVertex2D), false );
+		RenderVertexBufferInterfacePtr vb = RENDER_SYSTEM( m_serviceProvider )
+			->createVertexBuffer( _count, false );
 
-		if( vbHandle == 0 )
+		if( vb == nullptr )
 		{
-			return 0;
+			return nullptr;
 		}
 
-		m_vertexBuffer.push_back(vbHandle);
+		this->updateVertexBuffer( vb, _buffer, _count );
 
-		this->updateVertexBuffer( vbHandle, _buffer, _count );
-
-		return vbHandle;
+		return vb;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	IBHandle RenderEngine::createIndicesBuffer( const RenderIndices * _buffer, uint32_t _count )
+	RenderIndexBufferInterfacePtr RenderEngine::createIndicesBuffer( const RenderIndices * _buffer, uint32_t _count )
 	{
-		IBHandle ibHandle = RENDER_SYSTEM(m_serviceProvider)
+		RenderIndexBufferInterfacePtr ib = RENDER_SYSTEM( m_serviceProvider )
 			->createIndexBuffer( _count, false );
 
-		if( ibHandle == 0 )
+		if( ib == nullptr )
 		{
-			return 0;
+			return nullptr;
 		}
 
-		m_indexBuffer.push_back( ibHandle );
+		this->updateIndicesBuffer( ib, _buffer, _count );
 
-		this->updateIndicesBuffer( ibHandle, _buffer, _count );
-
-		return ibHandle;
+		return ib;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseVertexBuffer( VBHandle _handle )
+	bool RenderEngine::updateVertexBuffer( const RenderVertexBufferInterfacePtr & _vb, const RenderVertex2D * _buffer, uint32_t _count )
 	{
-		TVectorVertexBuffer::iterator it_found = std::find( m_vertexBuffer.begin(), m_vertexBuffer.end(), _handle );
-
-		if( it_found == m_vertexBuffer.end() )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine: failed to release vertex buffer" 
-				);
-
-			return;
-		}
-
-		m_vertexBuffer.erase( it_found );
-
-		RENDER_SYSTEM(m_serviceProvider)
-			->releaseVertexBuffer( _handle );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::releaseIndicesBuffer( IBHandle _handle )
-	{
-		TVectorIndexBuffer::iterator it_found = std::find( m_indexBuffer.begin(), m_indexBuffer.end(), _handle );
-
-		if( it_found == m_indexBuffer.end() )
-		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine: failed to release index buffer" 
-				);
-
-			return;
-		}
-
-		m_indexBuffer.erase( it_found );
-
-		RENDER_SYSTEM(m_serviceProvider)
-			->releaseIndexBuffer( _handle );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::updateVertexBuffer( VBHandle _handle, const RenderVertex2D * _buffer, uint32_t _count )
-	{
-		void * vbuffer = RENDER_SYSTEM(m_serviceProvider)->lockVertexBuffer( 
-			_handle
-			, 0
-			, _count * sizeof(RenderVertex2D)
-			, BLF_LOCK_DISCARD
-			);
+		RenderVertex2D * vbuffer = _vb->lock( 0, _count, BLF_LOCK_DISCARD );
 
 		if( vbuffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine: failed to lock vertex buffer"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::updateVertexBuffer failed to lock vertex buffer"
 				);
 
 			return false;
 		}
 
-		stdex::memorycopy( vbuffer, 0, _buffer, _count * sizeof(RenderVertex2D) );
-		//std::copy( _buffer + 0, _buffer + _count, static_cast<RenderVertex2D*>(vbuffer) );
-
-		if( RENDER_SYSTEM(m_serviceProvider)->unlockVertexBuffer( _handle ) == false )
+		stdex::memorycopy_pod( vbuffer, 0, _buffer, _count );
+		
+		if( _vb->unlock() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine: failed to unlock vertex buffer" 
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::updateVertexBuffer failed to unlock vertex buffer" 
 				);
 
 			return false;
@@ -1482,18 +1393,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::updateIndicesBuffer( IBHandle _handle, const RenderIndices * _buffer, uint32_t _count )
+	bool RenderEngine::updateIndicesBuffer( const RenderIndexBufferInterfacePtr & _ib, const RenderIndices * _buffer, uint32_t _count )
 	{
-		RenderIndices * ibuffer = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
-			_handle
-			, 0
-			, _count
-			, BLF_LOCK_DISCARD
-			);
+		RenderIndices * ibuffer = _ib->lock( 0, _count, BLF_LOCK_DISCARD );
 
 		if( ibuffer == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::updateIndicesBuffer: failed to lock vertex buffer"
+			LOGGER_ERROR(m_serviceProvider)("RenderEngine::updateIndicesBuffer failed to lock vertex buffer"
 				);
 
 			return false;
@@ -1501,7 +1407,7 @@ namespace Menge
 
 		stdex::memorycopy_pod( ibuffer, 0, _buffer, _count );
 
-		if( RENDER_SYSTEM(m_serviceProvider)->unlockIndexBuffer( _handle ) == false )
+		if( _ib->unlock() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::updateIndicesBuffer: failed to unlock vertex buffer"
 				);
@@ -1529,15 +1435,20 @@ namespace Menge
 
 			return false;
 		}
-				
-		void * vbData = RENDER_SYSTEM(m_serviceProvider)->lockVertexBuffer( 
-			m_vbHandle2D
-			, 0
-			, m_renderVertexCount * sizeof(RenderVertex2D)
-			, BLF_LOCK_DISCARD 
-			);
 
-		if( vbData == nullptr )
+		if( m_renderVertexCount == 0 )
+		{
+			return false;
+		}
+
+		if( m_renderIndicesCount == 0 )
+		{
+			return false;
+		}
+				
+		RenderVertex2D * vertexBuffer = m_vbHandle2D->lock( 0, m_renderVertexCount, BLF_LOCK_DISCARD );
+
+		if( vertexBuffer == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::makeBatches_: failed to lock vertex buffer"
 				);
@@ -1545,16 +1456,9 @@ namespace Menge
 			return false;
 		}
 
-		RenderVertex2D * vertexBuffer = static_cast<RenderVertex2D *>(vbData);
+		RenderIndices * indicesBuffer = m_ibHandle2D->lock( 0, m_renderIndicesCount, BLF_LOCK_DISCARD );
 
-		RenderIndices * ibData = RENDER_SYSTEM(m_serviceProvider)->lockIndexBuffer( 
-			m_ibHandle2D
-			, 0
-			, m_renderIndicesCount * sizeof(RenderIndices)
-			, BLF_LOCK_DISCARD
-			);
-
-		if( ibData == nullptr )
+		if( indicesBuffer == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::makeBatches_: failed to lock indices buffer"
 				);
@@ -1562,11 +1466,9 @@ namespace Menge
 			return false;
 		}
 
-		RenderIndices * indicesBuffer = static_cast<RenderIndices *>(ibData);
-
 		this->insertRenderPasses_( vertexBuffer, indicesBuffer, m_renderVertexCount, m_renderIndicesCount );
 
-		if( RENDER_SYSTEM(m_serviceProvider)->unlockIndexBuffer( m_ibHandle2D ) == false )
+		if( m_ibHandle2D->unlock() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::makeBatches_: failed to unlock indices buffer"
 				);
@@ -1574,7 +1476,7 @@ namespace Menge
 			return false;
 		}
 
-		if( RENDER_SYSTEM(m_serviceProvider)->unlockVertexBuffer( m_vbHandle2D ) == false )
+		if( m_vbHandle2D->unlock() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::makeBatches_: failed to unlock vertex buffer"
 				);
@@ -1640,6 +1542,8 @@ namespace Menge
 			_ro->dipIndiciesNum += ro_bath_begin->indicesNum;
 
 			stdex::intrusive_ptr_release( ro_bath_begin->material );
+			stdex::intrusive_ptr_release( ro_bath_begin->vbHandle );
+			stdex::intrusive_ptr_release( ro_bath_begin->ibHandle );
 
 			ro_bath_begin->dipVerticesNum = 0;
 			ro_bath_begin->dipIndiciesNum = 0;
@@ -1724,6 +1628,8 @@ namespace Menge
 			_ro->dipIndiciesNum += ro_bath->indicesNum;
 
 			stdex::intrusive_ptr_release( ro_bath->material );
+			stdex::intrusive_ptr_release( ro_bath->vbHandle );
+			stdex::intrusive_ptr_release( ro_bath->ibHandle );
 
 			ro_bath->dipVerticesNum = 0;
 			ro_bath->dipIndiciesNum = 0;
@@ -1839,34 +1745,22 @@ namespace Menge
 	void RenderEngine::flushRender_()
 	{
 		m_debugInfo.batch = 0;
+		m_debugInfo.dips = 0;
+
 		if( this->makeBatches_() == false )
 		{
 			return;
 		}
 
-		m_debugInfo.dips = 0;		
 		this->renderPasses_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::recreate2DBuffers_()
+	bool RenderEngine::create2DBuffers_()
 	{
-		if( m_ibHandle2D != 0 )
-		{
-			RENDER_SYSTEM(m_serviceProvider)
-				->releaseIndexBuffer( m_ibHandle2D );
-
-			if( m_currentIBHandle == m_ibHandle2D )
-			{
-				m_currentIBHandle = 0;
-			}
-
-			m_ibHandle2D = 0;
-		}
-
 		m_ibHandle2D = RENDER_SYSTEM(m_serviceProvider)
 			->createIndexBuffer( m_maxIndexCount, false );
 
-		if( m_ibHandle2D == 0 )
+		if( m_ibHandle2D == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
 				, m_maxIndexCount 
@@ -1875,23 +1769,10 @@ namespace Menge
 			return false;
 		}
 
-		if( m_vbHandle2D != 0 )
-		{
-			RENDER_SYSTEM(m_serviceProvider)
-				->releaseVertexBuffer( m_vbHandle2D );
-
-			if( m_currentVBHandle == m_vbHandle2D )
-			{
-				m_currentVBHandle = 0;
-			}
-
-			m_vbHandle2D = 0;
-		}
-
 		m_vbHandle2D = RENDER_SYSTEM(m_serviceProvider)
-			->createVertexBuffer( m_maxVertexCount, sizeof(RenderVertex2D), true );
+			->createVertexBuffer( m_maxVertexCount, true );
 
-		if( m_vbHandle2D == 0 )
+		if( m_vbHandle2D == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::recreate2DBuffers_: can't create index buffer for %d indicies"
 				, m_maxIndexCount 

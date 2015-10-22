@@ -27,7 +27,7 @@ namespace Menge
 	public:
 		T * create()
 		{
-			T * new_node = m_factoryNode.createObjectT();
+			T * new_node = m_factoryNode.createObject();
 
 			return new_node;
 		}

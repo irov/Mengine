@@ -521,7 +521,7 @@ namespace Menge
 			return 0;
 		}
 
-		PathFinderPtr pf = m_factoryPathFinder.createObjectT();
+		PathFinderPtr pf = m_factoryPathFinder.createObject();
 
 		if( pf->initialize( &m_map, _from, _to, m_gridSize ) == false )
 		{

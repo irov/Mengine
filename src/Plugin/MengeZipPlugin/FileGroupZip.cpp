@@ -400,7 +400,7 @@ namespace Menge
 			return true;
 		}
 		
-		MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface>( _stream );
+		MemoryInputInterface * memory = stdex::intrusive_get<MemoryInputInterface *>( _stream );
 		
 		if( fi.compr_method == Z_NO_COMPRESSION )
 		{

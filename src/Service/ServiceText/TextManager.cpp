@@ -311,7 +311,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 	{
-		TextLocalePakPtr pak = m_factoryTextLocalePak.createObjectT();
+		TextLocalePakPtr pak = m_factoryTextLocalePak.createObject();
 
 		if( pak->initialize( m_serviceProvider, _locale, _pakName, _path ) == false )
 		{
@@ -377,7 +377,7 @@ namespace Menge
 				return false;
 			}
 
-			TextFont * font = m_factoryTextFont.createObjectT();
+			TextFont * font = m_factoryTextFont.createObject();
 
 			font->setServiceProvider( m_serviceProvider );
 			font->setName( fontName );
@@ -474,7 +474,7 @@ namespace Menge
 			return glyph;
 		}
 
-		TextGlyphPtr glyph = m_factoryTextGlyph.createObjectT();
+		TextGlyphPtr glyph = m_factoryTextGlyph.createObject();
 
 		if( glyph->initialize( m_serviceProvider, _locale, _pakName, _path ) == false )
 		{

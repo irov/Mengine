@@ -505,7 +505,7 @@ namespace Menge
             return false;
         }
 
-        ConstStringHolderPythonString * stlString = m_factoryPythonString.createObjectT();
+        ConstStringHolderPythonString * stlString = m_factoryPythonString.createObject();
 
         stlString->setPythonObject( _object );
 
@@ -516,8 +516,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PrototypeGeneratorInterfacePtr ScriptEngine::createEntityGenerator( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
 	{
-		EntityPrototypeGeneratorPtr generator =
-			m_factoryEntityPrototypeGenerator.createObjectT();
+		EntityPrototypeGeneratorPtr generator =	m_factoryEntityPrototypeGenerator.createObject();
 
 		generator->setServiceProvider( m_serviceProvider );
 

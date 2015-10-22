@@ -60,7 +60,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	SoundSourceInterfacePtr SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
 	{		
-		SilentSoundSource * soundSource = m_poolSilentSoundSource.createObjectT();
+		SilentSoundSource * soundSource = m_poolSilentSoundSource.createObject();
 
 		soundSource->initialize(this);
 		
@@ -74,7 +74,7 @@ namespace Menge
 	{
         (void)_streamable;
 
-		SilentSoundBuffer * buffer = m_poolSilentSoundBuffer.createObjectT();
+		SilentSoundBuffer * buffer = m_poolSilentSoundBuffer.createObject();
 
 		if( buffer->load( _soundDecoder ) == false )
 		{

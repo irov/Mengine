@@ -47,7 +47,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DataInterfacePtr DataflowMDL::create()
 	{
-		Model3DPack * pack = m_poolModel3DPack.createObjectT();
+		Model3DPack * pack = m_poolModel3DPack.createObject();
 
 		return pack;
 	}
@@ -93,7 +93,7 @@ namespace Menge
 		float cameraRightSign;
 		ar << cameraRightSign;
 
-		Model3DPack * pack = stdex::intrusive_get<Model3DPack>(_data);
+		Model3DPack * pack = stdex::intrusive_get<Model3DPack *>(_data);
 
 		pack->initialize( frameCount, vertexCount, indicesCount, frameDelay );
 		pack->setCamera( cameraFOV, cameraWidth / cameraHeight, cameraRightSign );

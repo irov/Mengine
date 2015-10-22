@@ -6,12 +6,12 @@
 
 namespace Menge
 {
-	class DX9Texture
+	class DX9RenderImage
 		: public RenderImageInterface
 	{
 	public:
-		DX9Texture();
-        ~DX9Texture();
+		DX9RenderImage();
+        ~DX9RenderImage();
 
     public:
         void initialize( ServiceProviderInterface * _serviceProvider, IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat );
@@ -48,5 +48,5 @@ namespace Menge
         PixelFormat m_hwPixelFormat;
 	};
 
-    typedef stdex::intrusive_ptr<DX9Texture> DX9TexturePtr;
+    typedef stdex::intrusive_ptr<DX9RenderImage> DX9TexturePtr;
 }	// namespace Menge

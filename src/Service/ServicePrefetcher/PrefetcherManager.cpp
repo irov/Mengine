@@ -123,7 +123,8 @@ namespace Menge
 
 		new_receiver.refcount = 1;
 	
-		ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder.createObjectT();
+		ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder.createObject();
+
 		task->setServiceProvider( m_serviceProvider );
 		task->initialize( _pakName, _fileName );
 		task->setImageCodec( _codec );
@@ -188,7 +189,8 @@ namespace Menge
 
 		new_receiver.refcount = 1;
 
-		ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder.createObjectT();
+		ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder.createObject();
+
 		task->setServiceProvider( m_serviceProvider );
 		task->initialize( _pakName, _fileName );
 		task->setSoundCodec( _codec );
@@ -253,7 +255,8 @@ namespace Menge
 
 		new_receiver.refcount = 1;
 
-		ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow.createObjectT();
+		ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow.createObject();
+
 		task->setServiceProvider( m_serviceProvider );
 		task->initialize( _pakName, _fileName );
 		task->setDataflowType( _dataflowType );

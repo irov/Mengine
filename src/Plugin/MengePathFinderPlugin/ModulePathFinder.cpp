@@ -190,7 +190,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PathFinderWayAffector * ModulePathFinder::createPathFinderWayAffertor( Node * _node, const pybind::list & _way, float _speed, const pybind::object & _cb )
 	{
-		PathFinderWayAffector * affector = m_factoryPathFinderWayAffector.createObjectT();
+		PathFinderWayAffector * affector = m_factoryPathFinderWayAffector.createObject();
 
 		if( affector->initialize( _node, _speed, _way, _cb ) == false )
 		{

@@ -99,7 +99,7 @@ namespace Menge
 				return;
 			}
 
-			ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket.createObjectT();
+			ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket.createObject();
 			
 			if( packet->initialize( m_serviceProvider, m_packetSize ) == false )
 			{

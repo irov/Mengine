@@ -202,7 +202,7 @@ namespace Menge
 	SoundSourceInterfacePtr OALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
 	{
 		//OALSoundSource* soundSource = m_soundSources.get();
-		OALSoundSource * soundSource = m_poolOALSoundSource.createObjectT();
+		OALSoundSource * soundSource = m_poolOALSoundSource.createObject();
 
         soundSource->initialize( m_serviceProvider, this );
         		
@@ -218,7 +218,7 @@ namespace Menge
 
         if( _isStream == false || m_threadAvaliable == false )
         {
-            OALSoundBufferMemory * buffer = m_poolOALSoundBuffer.createObjectT();
+            OALSoundBufferMemory * buffer = m_poolOALSoundBuffer.createObject();
             
             buffer->initialize( m_serviceProvider, this );
 
@@ -226,7 +226,7 @@ namespace Menge
         }
         else
         {
-            OALSoundBufferStream * buffer = m_poolOALSoundBufferStream.createObjectT();
+            OALSoundBufferStream * buffer = m_poolOALSoundBufferStream.createObject();
 
             buffer->initialize( m_serviceProvider, this );
 

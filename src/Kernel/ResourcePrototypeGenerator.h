@@ -24,7 +24,7 @@ namespace Menge
 	protected:
 		Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
 		{
-			ResourceReference * resource = m_factory.createObjectT();
+			Type * resource = m_factory.createObject();
 
 			if( resource == nullptr )
 			{

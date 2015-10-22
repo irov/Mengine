@@ -484,7 +484,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		MusicAffectorCallback * createMusicAffectorCallback( const pybind::object & _cb )
 		{
-			MusicAffectorCallback * callback = m_factoryMusicAffectorCallback.createObjectT();
+			MusicAffectorCallback * callback = m_factoryMusicAffectorCallback.createObject();
 
 			callback->initialize( m_serviceProvider, _cb );
 

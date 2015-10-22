@@ -26,7 +26,7 @@ namespace Menge
     protected:
         DecoderInterfacePtr createDecoder() override
         {	
-            T * decoder = m_factory.createObjectT();
+            T * decoder = m_factory.createObject();
 
 			decoder->setServiceProvider( m_serviceProvider );
 

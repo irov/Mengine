@@ -178,7 +178,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AOIActor * AreaOfInterest::createActor( AOIActorProviderInterface * _provider, void * _userData )
 	{
-		AOIActor * actor = m_factoryAOIActor.createObjectT();
+		AOIActor * actor = m_factoryAOIActor.createObject();
 
 		actor->setProvider( _provider, _userData );
 

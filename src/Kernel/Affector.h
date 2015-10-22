@@ -255,7 +255,7 @@ namespace Menge
                 , C * _self, M _method
                 , const T & _pos, const T & _dir, float _speed, ABS _abs )
             {
-                AffectorType * affector = m_factory.createObjectT();
+                AffectorType * affector = m_factory.createObject();
 
 				affector->setServiceProvider( _serviceProvider );
 				affector->setAffectorType( _type );
@@ -284,7 +284,7 @@ namespace Menge
                 , C * _self, M _method
                 , const T & _start, const T & _end, float _time, ABS _abs )
             {
-                AffectorType * affector = m_factory.createObjectT();
+                AffectorType * affector = m_factory.createObject();
 
 				affector->setServiceProvider( _serviceProvider );
 				affector->setAffectorType( _type );
@@ -314,7 +314,7 @@ namespace Menge
 			    , C * _self, M _method
 			    , const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		    {
-                AffectorType * affector = m_factory.createObjectT();
+                AffectorType * affector = m_factory.createObject();
 
 				affector->setServiceProvider( _serviceProvider );
 				affector->setAffectorType( _type );
@@ -344,7 +344,7 @@ namespace Menge
 			    , C * _self, M _method
 			    , const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
 		    {
-                AffectorType * affector = m_factory.createObjectT();
+                AffectorType * affector = m_factory.createObject();
 
 				affector->setServiceProvider( _serviceProvider );
 				affector->setAffectorType( _type );
@@ -374,7 +374,7 @@ namespace Menge
                 , C * _self, M _method
                 , const T & _start, const T & _end, const T & _v0, const T & _v1, float _time, ABS _abs )
             {
-                AffectorType * affector = m_factory.createObjectT();
+                AffectorType * affector = m_factory.createObject();
 
 				affector->setServiceProvider( _serviceProvider );
 				affector->setAffectorType( _type );

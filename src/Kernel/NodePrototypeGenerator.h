@@ -27,7 +27,7 @@ namespace Menge
 	protected:
 		Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
 		{
-			Node * node = m_factory.createObjectT();
+			Node * node = m_factory.createObject();
 
 			if( node == nullptr )
 			{

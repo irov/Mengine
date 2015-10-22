@@ -4,14 +4,17 @@ ADD_FILTER(
 src
 	DX9RenderSystem.h
 	DX9RenderSystem.cpp
-	DX9Texture.h
-	DX9Texture.cpp
-	DX9RenderTexture.h
-	DX9RenderTexture.cpp
+	DX9RenderImage.h
+	DX9RenderImage.cpp
+    DX9RenderVertexBuffer.h
+    DX9RenderVertexBuffer.cpp
+    DX9RenderIndexBuffer.h
+    DX9RenderIndexBuffer.cpp    
     DX9RenderShader.h
     DX9RenderShader.cpp
     DX9RenderProgram.h
     DX9RenderProgram.cpp
+    DX9RenderEnum.h
     DX9ErrorHelper.h
     DX9ErrorHelper.cpp
 )

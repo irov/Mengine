@@ -1,7 +1,6 @@
 #	include "DX9RenderSystem.h"
-#	include "DX9Texture.h"
-#   include "DX9RenderShader.h"
 
+#	include "DX9RenderEnum.h"
 #	include "DX9ErrorHelper.h"
 
 #	include "Interface/StringizeInterface.h"
@@ -18,331 +17,13 @@ SERVICE_FACTORY( RenderSystem, Menge::RenderSystemInterface, Menge::DX9RenderSys
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {    
+	//////////////////////////////////////////////////////////////////////////
 	typedef IDirect3D9* (WINAPI *PDIRECT3DCREATE9)(UINT);
-
-	static const D3DFORMAT D32SFormats[] = { D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, (D3DFORMAT) 0 };
-	static const D3DFORMAT D32Formats[]	= { D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D15S1, (D3DFORMAT) 0 };
-	static const D3DFORMAT D16SFormats[] = { D3DFMT_D15S1, D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D16, D3DFMT_D32, D3DFMT_D24X8, (D3DFORMAT) 0 };
-	static const D3DFORMAT D16Formats[]	= { D3DFMT_D16, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D24S8, D3DFMT_D24X4S4, (D3DFORMAT) 0 };
-	//////////////////////////////////////////////////////////////////////////
-	static uint32_t s_getPrimitiveCount( EPrimitiveType _pType, uint32_t _indexCount )
-	{
-		switch( _pType )
-		{
-		case PT_POINTLIST:
-			return _indexCount;
-		case PT_LINELIST:
-			return _indexCount / 2;
-		case PT_LINESTRIP:
-			return _indexCount - 1;
-		case PT_TRIANGLELIST:
-			return _indexCount / 3;
-		case PT_TRIANGLESTRIP:
-		case PT_TRIANGLEFAN:
-			return _indexCount - 2;
-		}
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static DWORD s_toD3DBufferLock( EBufferLockFlag _flag )
-	{
-		switch( _flag )
-		{
-		case BLF_LOCK_NONE:
-			return 0;
-		case BLF_LOCK_DISCARD:
-			return D3DLOCK_DISCARD;
-		case BLF_LOCK_NOOVERWRITE:
-			return D3DLOCK_NOOVERWRITE;
-		case BLF_LOCK_NOSYSLOCK:
-			return D3DLOCK_NOSYSLOCK;
-		}
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static D3DFORMAT s_toD3DFormat( int _format )
-	{
-		switch( _format )
-		{
-		case 1:
-			return D3DFMT_L8;
-		case 3:
-			return D3DFMT_A8;
-		case 4:
-			return D3DFMT_A4L4;
-		case 5:
-			return D3DFMT_A8L8; // Assume little endian here
-		case 31:
-			return D3DFMT_R3G3B2;
-		case 9:
-			return D3DFMT_A1R5G5B5;
-		case 6:
-			return D3DFMT_R5G6B5;
-		case 8:
-			return D3DFMT_A4R4G4B4;
-		case 10:
-			return D3DFMT_R8G8B8;
-		case 12:
-			return D3DFMT_A8R8G8B8;
-		case 26:
-			return D3DFMT_X8R8G8B8;
-		case 34:
-			return D3DFMT_G16R16;
-		case 17:
-			return D3DFMT_DXT1;
-		case 18:
-			return D3DFMT_DXT2;
-		case 19:
-			return D3DFMT_DXT3;
-		case 20:
-			return D3DFMT_DXT4;
-		case 21:
-			return D3DFMT_DXT5;
-		case 0:
-		default:
-			return D3DFMT_UNKNOWN;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static DWORD s_toD3DBlend( EBlendFactor _blend )
-	{
-		switch( _blend )
-		{
-		case Menge::BF_ONE:
-			return D3DBLEND_ONE;
-		case Menge::BF_ZERO:
-			return D3DBLEND_ZERO;
-		case Menge::BF_DEST_COLOUR:
-			return D3DBLEND_DESTCOLOR;
-		case Menge::BF_SOURCE_COLOUR:
-			return D3DBLEND_SRCCOLOR;
-		case Menge::BF_ONE_MINUS_DEST_COLOUR:
-			return D3DBLEND_INVDESTCOLOR;
-		case Menge::BF_ONE_MINUS_SOURCE_COLOUR:
-			return D3DBLEND_INVSRCCOLOR;
-		case Menge::BF_DEST_ALPHA:
-			return D3DBLEND_DESTALPHA;
-		case Menge::BF_SOURCE_ALPHA:
-			return D3DBLEND_SRCALPHA;
-		case Menge::BF_ONE_MINUS_DEST_ALPHA:
-			return D3DBLEND_INVDESTALPHA;
-		case Menge::BF_ONE_MINUS_SOURCE_ALPHA:
-			return D3DBLEND_INVSRCALPHA;
-		}
-		return D3DBLEND_ZERO;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static D3DPRIMITIVETYPE s_toD3DPrimitiveType( EPrimitiveType _type )
-	{
-		switch( _type )
-		{
-		case Menge::PT_POINTLIST:
-			return D3DPT_POINTLIST;
-		case Menge::PT_LINELIST:
-			return D3DPT_LINELIST;
-		case Menge::PT_LINESTRIP:
-			return D3DPT_LINESTRIP;
-		case Menge::PT_TRIANGLELIST:
-			return D3DPT_TRIANGLELIST;
-		case Menge::PT_TRIANGLESTRIP:
-			return D3DPT_TRIANGLESTRIP;
-		case Menge::PT_TRIANGLEFAN:
-			return D3DPT_TRIANGLEFAN;
-		}
-		return D3DPT_POINTLIST;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static D3DTEXTUREADDRESS s_toD3DTextureAddress( ETextureAddressMode _mode )
-	{
-		switch( _mode )
-		{
-		case TAM_WRAP:
-			return D3DTADDRESS_WRAP;
-		case TAM_MIRROR:
-			return D3DTADDRESS_MIRROR;
-		case TAM_CLAMP:
-			return D3DTADDRESS_CLAMP;
-		case TAM_BORDER:
-			return D3DTADDRESS_BORDER;
-		case TAM_MIRRORONCE:
-			return D3DTADDRESS_MIRRORONCE;
-		}
-
-		return D3DTADDRESS_CLAMP;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static D3DCULL s_toD3DCullMode( ECullMode _mode )
-	{
-		switch( _mode )
-		{
-		case CM_CULL_NONE:
-			return D3DCULL_NONE;
-		case CM_CULL_CW:
-			return D3DCULL_CW;
-		case CM_CULL_CCW:
-			return D3DCULL_CCW;
-		}
-		return D3DCULL_NONE;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static D3DCMPFUNC s_toD3DCmpFunc( ECompareFunction _func )
-	{
-		switch( _func )
-		{
-		case CMPF_ALWAYS_FAIL:
-			return D3DCMP_NEVER;
-		case CMPF_LESS:
-			return D3DCMP_LESS;
-		case CMPF_EQUAL:
-			return D3DCMP_EQUAL;
-		case CMPF_LESS_EQUAL:
-			return D3DCMP_LESSEQUAL;
-		case CMPF_GREATER:
-			return D3DCMP_GREATER;
-		case CMPF_NOT_EQUAL:
-			return D3DCMP_NOTEQUAL;
-		case CMPF_GREATER_EQUAL:
-			return D3DCMP_GREATEREQUAL;
-		case CMPF_ALWAYS_PASS:
-			return D3DCMP_ALWAYS;
-		}
-		return D3DCMP_NEVER;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static D3DFILLMODE s_toD3DFillMode( EFillMode _mode )
-	{
-		switch( _mode )
-		{
-		case FM_POINT:
-			return D3DFILL_POINT;
-		case FM_WIREFRAME:
-			return D3DFILL_WIREFRAME;
-		case FM_SOLID:
-			return D3DFILL_SOLID;
-		}
-		return D3DFILL_POINT;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static D3DSHADEMODE s_toD3DShadeMode( EShadeType _type )
-	{
-		switch( _type )
-		{
-		case SHT_FLAT:
-			return D3DSHADE_FLAT;
-		case SHT_GOURAUD:
-			return D3DSHADE_GOURAUD;
-		case SHT_PHONG:
-			return D3DSHADE_PHONG;
-		}
-		return D3DSHADE_FLAT;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static D3DTEXTUREOP s_toD3DTextureOp( ETextureOp _textureOp )
-	{
-		switch( _textureOp )
-		{
-		case TOP_DISABLE:
-			return D3DTOP_DISABLE;
-		case TOP_SELECTARG1:
-			return D3DTOP_SELECTARG1;
-		case TOP_SELECTARG2:
-			return D3DTOP_SELECTARG2;
-		case TOP_MODULATE:
-			return D3DTOP_MODULATE;
-		case TOP_ADD:
-			return D3DTOP_ADD;
-		case TOP_SUBTRACT:
-			return D3DTOP_SUBTRACT;
-		}
-		return D3DTOP_DISABLE;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static DWORD s_toD3DTextureArg( ETextureArgument _texArg )
-	{
-		switch( _texArg )
-		{
-		case TARG_CURRENT:
-			return D3DTA_CURRENT;
-		case TARG_DIFFUSE:
-			return D3DTA_DIFFUSE;
-		case TARG_SPECULAR:
-			return D3DTA_SPECULAR;
-		case TARG_TEXTURE:
-			return D3DTA_TEXTURE;
-		case TARG_TFACTOR:
-			return D3DTA_TFACTOR;
-		}
-
-		return D3DTA_DIFFUSE;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static D3DSAMPLERSTATETYPE s_toD3DTextureFilterType( ETextureFilterType _filterType )
-	{
-		switch( _filterType )
-		{
-		case TFT_MAGNIFICATION:
-			return D3DSAMP_MAGFILTER;
-		case TFT_MINIFICATION:
-			return D3DSAMP_MINFILTER;
-		case TFT_MIPMAP:
-			return D3DSAMP_MIPFILTER;
-		}
-
-		return D3DSAMP_MAGFILTER;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static D3DTEXTUREFILTERTYPE s_toD3DTextureFilter( ETextureFilter _filter )
-	{
-		switch( _filter )
-		{
-		case TF_NONE:
-			return D3DTEXF_NONE;
-		case TF_POINT:
-			return D3DTEXF_POINT;
-		case TF_LINEAR:
-			return D3DTEXF_LINEAR;
-		case TF_ANISOTROPIC:
-			return D3DTEXF_ANISOTROPIC;
-		case TF_FLATCUBIC:
-			return D3DTEXF_PYRAMIDALQUAD;
-		case TF_GAUSSIANCUBIC:
-			return D3DTEXF_GAUSSIANQUAD;
-		}
-
-		return D3DTEXF_NONE;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static uint32_t s_format_id_( D3DFORMAT _format )
-	{
-		switch(_format) {
-		case D3DFMT_R5G6B5:		return 1;
-		case D3DFMT_X1R5G5B5:	return 2;
-		case D3DFMT_A1R5G5B5:	return 3;
-		case D3DFMT_X8R8G8B8:	return 4;
-		case D3DFMT_A8R8G8B8:	return 5;
-		default:				return 0;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void s_matIdent_( D3DMATRIX* _mtx )
-	{
-		_mtx->_12 = _mtx->_13 = _mtx->_14 = 
-			_mtx->_21 = _mtx->_23 = _mtx->_24 = 
-			_mtx->_31 = _mtx->_32 = _mtx->_34 = 
-			_mtx->_41 = _mtx->_42 = _mtx->_43 = 0.0f;
-		_mtx->_11 = _mtx->_22 = _mtx->_33 = _mtx->_44 = 1.0f;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderSystem::DX9RenderSystem()
 		: m_serviceProvider(nullptr)
 		, m_pD3D(nullptr)
 		, m_pD3DDevice(nullptr)
-		, m_vbHandleCounter(0)
-		, m_ibHandleCounter(0)
-		, m_currentIB(0)
-        , m_currentVB(0)
 		, m_listener(nullptr)
 		, m_syncReady(false)
         , m_hd3d9(NULL)
@@ -350,6 +31,8 @@ namespace Menge
         , m_deviceType(D3DDEVTYPE_HAL)
         , m_waitForVSync(false)
 		, m_oldRenderTarget(nullptr)
+		, m_vertexBufferEnable(false)
+		, m_indexBufferEnable(false)
 		, m_vertexDeclaration(0)
 	{
 	}
@@ -511,13 +194,13 @@ namespace Menge
 				continue;
 			}
 
-			if(Mode.Width != screenWidth || Mode.Height != screenHeight) 
+			if( Mode.Width != screenWidth || Mode.Height != screenHeight )
 			{
 				continue;
 			}
 
 			//if(nScreenBPP==16 && (_format_id(Mode.Format) > _format_id(D3DFMT_A1R5G5B5))) continue;
-			if( s_format_id_(Mode.Format) > s_format_id_(Format) )
+			if( s_lessD3DFormats( Format, Mode.Format ) == true )
 			{
 				Format = Mode.Format;
 			}
@@ -534,8 +217,6 @@ namespace Menge
 		ZeroMemory( &m_d3dppFS, sizeof(m_d3dppFS) );
 		m_d3dppFS.BackBufferFormat = Format;
 
-		s_matIdent_( &m_matTexture );
-
 		IF_DXCALL(m_serviceProvider, m_pD3D, GetDeviceCaps, ( m_adapterToUse, m_deviceType, &m_caps ) )
 		{
 			return false;
@@ -550,7 +231,7 @@ namespace Menge
 
 			return false;
 		}
-
+	
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "DX9" );
 			
 		return true;
@@ -574,15 +255,6 @@ namespace Menge
         (void)_FSAAType;
         (void)_FSAAQuality;
 
-		static const char *szFormats[]={ 
-			"UNKNOWN"
-			,"R5G6B5"
-			,"X1R5G5B5"
-			,"A1R5G5B5"
-			,"X8R8G8B8"
-			,"A8R8G8B8"
-		};
-		
 		m_windowResolution = _resolution;		
 
 		m_fullscreen = _fullscreen;
@@ -645,14 +317,7 @@ namespace Menge
 			m_d3dpp = &m_d3dppW;
 		}
 
-		if( s_format_id_(m_d3dpp->BackBufferFormat) < 4 ) 
-		{
-			m_screenBits = 16;
-		}
-		else 
-		{
-			m_screenBits = 32;
-		}
+		m_screenBits = s_getD3DFormatBits( m_d3dpp->BackBufferFormat );
 
 		//_fullscreen ? MENGE_LOG_INFO( "fullscreen mode" ) : MENGE_LOG_INFO( "windowed mode" );
 
@@ -703,7 +368,7 @@ namespace Menge
 		LOGGER_INFO(m_serviceProvider)( "Mode: %d x %d x %s\n"
 			, m_windowResolution.getWidth()
 			, m_windowResolution.getHeight()
-			, szFormats[s_format_id_(m_d3dpp->BackBufferFormat)]
+			, s_getD3DFormatName( m_d3dpp->BackBufferFormat )
 			);
 
 		// Init all stuff that can be lost
@@ -778,7 +443,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		DX9Texture * dxTexture = m_factoryDX9Texture.createObjectT();
+		DX9RenderImage * dxTexture = m_factoryDX9Texture.createObject();
         dxTexture->initialize( m_serviceProvider, dxTextureInterface, ERIM_NORMAL, texDesc.Width, texDesc.Height, _channels, _format );
 
 		LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createImage: texture created %dx%d %d:%d"
@@ -814,7 +479,7 @@ namespace Menge
 			return nullptr;
 		}
 
-        DX9Texture * dxTexture = m_factoryDX9Texture.createObjectT();
+        DX9RenderImage * dxTexture = m_factoryDX9Texture.createObject();
         dxTexture->initialize( m_serviceProvider, dxTextureInterface, ERIM_DYNAMIC, texDesc.Width, texDesc.Height, _channels, _format );		
         
 		LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createDynamicImage: texture created %dx%d %d:%d"
@@ -861,7 +526,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		DX9Texture * dxTexture = m_factoryDX9Texture.createObjectT();
+		DX9RenderImage * dxTexture = m_factoryDX9Texture.createObject();
 
         dxTexture->initialize( m_serviceProvider, dxTextureInterface, ERIM_RENDER_TARGET, texDesc.Width, texDesc.Height, _channels, _format );
         //dxTexture->setSurface( dxSurfaceInterface );
@@ -895,14 +560,7 @@ namespace Menge
 
             m_d3dppW.BackBufferFormat = Mode.Format;
 
-            if( s_format_id_(Mode.Format) < 4 ) 
-            {
-                m_screenBits = 16;
-            }
-            else 
-            {
-                m_screenBits = 32;
-            }
+			m_screenBits = s_getD3DFormatBits( Mode.Format );
         }
 
         if( this->restore_() == false )
@@ -1306,50 +964,6 @@ namespace Menge
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, (m_vertexDeclaration) );
 
-		for( TMapVBInfo::iterator 
-			it = m_vertexBuffers.begin(), 
-			it_end = m_vertexBuffers.end();
-		it != it_end;
-		++it )
-		{
-			VBInfo & vbInfo = it->second;
-
-			if( vbInfo.pool == D3DPOOL_MANAGED )
-			{
-				continue;
-			}
-
-			IDirect3DVertexBuffer9 * pVertexBuffer;
-			IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateVertexBuffer, (vbInfo.length, vbInfo.usage, vbInfo.fvf, vbInfo.pool, &pVertexBuffer, NULL) )
-			{
-				return false;
-			}
-
-			vbInfo.pVB = pVertexBuffer;
-		}
-
-		for( TMapIBInfo::iterator 
-			it = m_indexBuffers.begin(), 
-			it_end = m_indexBuffers.end();
-		it != it_end;
-		++it )
-		{
-			IBInfo & ibInfo = it->second;
-
-			if( ibInfo.pool == D3DPOOL_MANAGED )
-			{
-				continue;
-			}
-
-			IDirect3DIndexBuffer9 * pIndexBuffer;
-			IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, (ibInfo.length, ibInfo.usage, ibInfo.format, ibInfo.pool, &pIndexBuffer, NULL) )
-			{
-				return false;
-			}
-
-			ibInfo.pIB = pIndexBuffer;
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1445,9 +1059,9 @@ namespace Menge
             return false;
         }
 
-        if( m_currentIB != 0 )
+		if( m_vertexBufferEnable == true )
         {
-            m_currentIB = 0;
+			m_vertexBufferEnable = false;
 
             IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetIndices, ( nullptr ) )
             {
@@ -1455,58 +1069,15 @@ namespace Menge
             }
         }
 
-        if( m_currentVB != 0 )
+		if( m_indexBufferEnable == true )
         {
-            m_currentVB = 0;
+			m_indexBufferEnable = false;
 
             IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetStreamSource, ( 0, nullptr, 0, 0 ) )
             {
                 return false;
-            }            
+            }
         }
-
-		for( TMapVBInfo::iterator 
-			it = m_vertexBuffers.begin(), 
-			it_end = m_vertexBuffers.end();
-		it != it_end;
-		++it )
-		{
-			VBInfo & vb = it->second;
-
-			if( vb.pool == D3DPOOL_MANAGED )
-			{
-				continue;
-			}
-
-			if( vb.pVB != nullptr )
-			{
-				ULONG ref = vb.pVB->Release();
-				(void)ref;
-				vb.pVB = nullptr;
-			}
-		}
-
-
-		for( TMapIBInfo::iterator 
-			it = m_indexBuffers.begin(), 
-			it_end = m_indexBuffers.end();
-		it != it_end;
-		++it )
-		{
-			IBInfo & ib = it->second;
-
-			if( ib.pool == D3DPOOL_MANAGED )
-			{
-				continue;
-			}
-
-			if( ib.pIB != nullptr )
-			{
-				ULONG ref = ib.pIB->Release();
-				(void)ref;
-				ib.pIB = nullptr;
-			}
-		}
 
         for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
         {
@@ -1568,415 +1139,123 @@ namespace Menge
 
         if( m_listener != nullptr )
         {
-            if( m_listener->onRenderSystemDeviceRestored() == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::restore_ invalid onRenderSystemDeviceRestored"
-                    );
+			if( m_listener->onRenderSystemDeviceRestored() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::restore_ invalid onRenderSystemDeviceRestored"
+					);
 
-                return false;
-            }
-        }
+				return false;
+			}
+		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::release_()
 	{
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::release_ m_pD3DDevice is null"
-                );
+		if( m_pD3DDevice == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::release_ m_pD3DDevice is null"
+				);
 
-            return;
-        }
+			return;
+		}
 
 		if( this->releaseResources_() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::release_ invalid release resource"
-                );
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::release_ invalid release resource"
+				);
 
-            return;
-        }
-
-		if( m_pD3DDevice != nullptr ) 
-		{ 
-			ULONG ref = m_pD3DDevice->Release(); 
-			(void)ref;
-			m_pD3DDevice = nullptr; 
+			return;
 		}
 
-		if( m_pD3D != nullptr ) 
-		{ 
+		if( m_pD3DDevice != nullptr )
+		{
+			ULONG ref = m_pD3DDevice->Release();
+			(void)ref;
+			m_pD3DDevice = nullptr;
+		}
+
+		if( m_pD3D != nullptr )
+		{
 			ULONG ref = m_pD3D->Release();
 			(void)ref;
-			m_pD3D = nullptr; 
+			m_pD3D = nullptr;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	VBHandle DX9RenderSystem::createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic )
+	RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _verticesNum, bool _dynamic )
 	{
-        if( m_pD3DDevice == NULL )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::createVertexBuffer device not created"
-                );
+		DX9RenderVertexBuffer * buffer = m_factoryVertexBuffer.createObject();
 
-            return 0;
-        }
-
-        DWORD Usage = D3DUSAGE_WRITEONLY;
-		D3DPOOL Pool = D3DPOOL_MANAGED;
-
-   //     if( _dynamic == true )
-   //     {
-   //         Usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
-			//Pool = D3DPOOL_DEFAULT;
-   //     }
-
-		IDirect3DVertexBuffer9 * vb = nullptr;
-		IF_DXCALL(m_serviceProvider, m_pD3DDevice, CreateVertexBuffer, ( _verticesNum * _vertexSize, Usage, m_vertexDeclaration, Pool, &vb, NULL ) )
+		if( buffer->initialize( m_serviceProvider, m_pD3DDevice, m_vertexDeclaration, _verticesNum, _dynamic ) == false )
 		{
-			return 0;
-		}
-
-		VBInfo vbInfo;
-		vbInfo.length = _verticesNum * _vertexSize;
-		vbInfo.vertexSize = _vertexSize;
-		vbInfo.fvf = m_vertexDeclaration;
-		vbInfo.usage = Usage;
-		vbInfo.pool = Pool;
-		vbInfo.pVB = vb;
-		vbInfo.dynamic = _dynamic;
-		
-		VBHandle newVBHandleCounter = ++m_vbHandleCounter;
-		m_vertexBuffers.insert( std::make_pair(newVBHandleCounter, vbInfo) );
-
-		return newVBHandleCounter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::releaseVertexBuffer( VBHandle _vbHandle )
-	{
-		if( _vbHandle == 0 )
-		{
-			return false;
-		}
-		
-		TMapVBInfo::iterator it_found = m_vertexBuffers.find( _vbHandle );
-
-		if( it_found == m_vertexBuffers.end() )
-		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::releaseVertexBuffer not found vb handle %d"
-				, _vbHandle
-				);
-
-			return false;
-		}
-
-		VBInfo & info = it_found->second;
- 
-        if( info.pVB != nullptr )
-        {
-            ULONG ref = info.pVB->Release();
-			(void)ref;
-			info.pVB = nullptr;
-        }
-
-		m_vertexBuffers.erase( it_found );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	IBHandle DX9RenderSystem::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
-	{
-        if( m_pD3DDevice == NULL )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::createIndexBuffer device not created"
-                );
-
-            return 0;
-        }
-
-        DWORD Usage = D3DUSAGE_WRITEONLY;
-		D3DPOOL Pool = D3DPOOL_MANAGED;
-
-   //     if( _dynamic == true )
-   //     {
-   //         Usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
-			//Pool = D3DPOOL_DEFAULT;
-   //     }
-
-		D3DFORMAT indexFormat = sizeof( RenderIndices ) == 4 ? D3DFMT_INDEX32 : D3DFMT_INDEX16;
-
-		IDirect3DIndexBuffer9 * ib = nullptr;
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, CreateIndexBuffer, (sizeof( RenderIndices ) * _indiciesNum, Usage, indexFormat, Pool, &ib, NULL) )
-		{
-			return 0;
-		}
-
-		IBInfo ibInfo;
-		ibInfo.length = sizeof(RenderIndices) * _indiciesNum;
-		ibInfo.usage = Usage;
-		ibInfo.format = indexFormat;
-		ibInfo.pool = Pool;
-		ibInfo.pIB = ib;
-		ibInfo.dynamic = _dynamic;
-				
-		IBHandle newIBHandleCounter = ++m_ibHandleCounter;
-		m_indexBuffers.insert( std::make_pair(newIBHandleCounter, ibInfo) );
-
-		return newIBHandleCounter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::releaseIndexBuffer( IBHandle _ibHandle )
-	{
-		if( _ibHandle == 0 )
-		{
-			return false;
-		}
-
-		TMapIBInfo::iterator it_found = m_indexBuffers.find( _ibHandle );
-
-		if( it_found == m_indexBuffers.end() )
-		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::releaseIndexBuffer not found ib handle %d"
-				, _ibHandle
-				);
-
-			return false;
-		}
-
-		IBInfo & info = it_found->second;
-        
-        if( info.pIB != nullptr )
-        {
-            ULONG ref = info.pIB->Release();
-			(void)ref;
-			info.pIB = nullptr;
-        }
-
-        m_indexBuffers.erase( _ibHandle );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void * DX9RenderSystem::lockVertexBuffer( VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
-	{
-		TMapVBInfo::iterator it_found = m_vertexBuffers.find( _vbHandle );
-
-		if( it_found == m_vertexBuffers.end() )
-		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::lockVertexBuffer not found %d"
-				, _vbHandle
-				);
-
 			return nullptr;
 		}
 
-        VBInfo & vbinfo = it_found->second;
+		return buffer;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool DX9RenderSystem::setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer )
+	{
+		m_vertexBufferEnable = false;
 
-        if( _offset + _size > vbinfo.length )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockVertexBuffer %d lock %d size %d"
-                , _vbHandle
-                , _offset + _size
-                , vbinfo.length
-                );
-
-            return nullptr;
-        }
-
-		IDirect3DVertexBuffer9 * vb = vbinfo.pVB;
-
-		DWORD d3d_flag = s_toD3DBufferLock( _flags );
-
-		void * lock = nullptr;
-		IF_DXCALL( m_serviceProvider, vb, Lock, ( _offset, _size, &lock, d3d_flag ) )
+		if( _vertexBuffer == nullptr )
 		{
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockVertexBuffer vertex buffer %d invalid"
-                , _vbHandle
-                );
+			IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetStreamSource, (0, nullptr, 0, 0) )
+			{
+				return false;
+			}
 
+			return true;
+		}
+
+		DX9RenderVertexBuffer * vb = stdex::intrusive_get<DX9RenderVertexBuffer *>( _vertexBuffer );
+
+		if( vb->enable() == false )
+		{
+			return false;
+		}
+
+		m_vertexBufferEnable = true;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderIndexBufferInterfacePtr DX9RenderSystem::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
+	{
+		DX9RenderIndexBuffer * buffer = m_factoryIndexBuffer.createObject();
+
+		if( buffer->initialize( m_serviceProvider, m_pD3DDevice, _indiciesNum, _dynamic ) == false )
+		{
 			return nullptr;
 		}
 
-		return lock;
+		return buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::unlockVertexBuffer( VBHandle _vbHandle )
+	bool DX9RenderSystem::setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer )
 	{
-		TMapVBInfo::iterator it_found = m_vertexBuffers.find( _vbHandle );
+		m_indexBufferEnable = false;
 
-		if( it_found == m_vertexBuffers.end() )
+		if( _indexBuffer == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::unlockVertexBuffer not found %d"
-				, _vbHandle
-				);
+			IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetIndices, (nullptr) )
+			{
+				return false;
+			}
 
-			return false;
+			return true;
 		}
 
-        VBInfo & vbinfo = it_found->second;
+		DX9RenderIndexBuffer * ib = stdex::intrusive_get<DX9RenderIndexBuffer *>( _indexBuffer );
 
-        IDirect3DVertexBuffer9 * vb = vbinfo.pVB;
-
-		IF_DXCALL( m_serviceProvider, vb, Unlock, () )
-        {
-			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::unlockVertexBuffer vertex buffer %d invalid"
-				, _vbHandle
-				);
-
-            return false;
-        }
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderIndices * DX9RenderSystem::lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
-	{
-		TMapIBInfo::iterator it_found = m_indexBuffers.find( _ibHandle );
-
-		if( it_found == m_indexBuffers.end() )
-		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::lockIndexBuffer not found %d"
-				, _ibHandle
-				);
-
-			return false;
-		}
-
-		IBInfo & ibinfo = it_found->second;
-
-        IDirect3DIndexBuffer9 * ib = ibinfo.pIB;
-        
-		DWORD d3d_flag = s_toD3DBufferLock( _flags );
-
-		void * lock = nullptr;
-		IF_DXCALL( m_serviceProvider, ib, Lock, ( _offset, _size, &lock, d3d_flag ) )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::lockIndexBuffer index buffer %d invalid"
-                , _ibHandle
-                );
-
-            return nullptr;
-        }
-
-		RenderIndices * indices = static_cast<RenderIndices *>(lock);
-
-		return indices;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::unlockIndexBuffer( IBHandle _ibHandle )
-	{
-		TMapIBInfo::iterator it_found = m_indexBuffers.find( _ibHandle );
-
-		if( it_found == m_indexBuffers.end() )
-		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::unlockIndexBuffer not found %d"
-				, _ibHandle
-				);
-
-			return false;
-		}
-
-		IBInfo & ibinfo = it_found->second;
-
-        IDirect3DIndexBuffer9 * ib = ibinfo.pIB;
-
-		IF_DXCALL( m_serviceProvider, ib, Unlock, () )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::unlockIndexBuffer index buffer %d invalid"
-                , _ibHandle
-                );
-
-            return false;
-        }
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::setVertexBuffer( VBHandle _vbHandle )
-	{
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setVertexBuffer device not created"
-                );
-
-            return false;
-        }
-
-		if( _vbHandle == 0 )
-		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::setVertexBuffer handle is zero"
-				);
-			
-			return false;
-		}
-
-		TMapVBInfo::iterator it_found = m_vertexBuffers.find( _vbHandle );
-
-		if( it_found == m_vertexBuffers.end() )
-		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::setVertexBuffer not found %d"
-				, _vbHandle
-				);
-
-			return false;
-		}
-
-		VBInfo & vbinfo = it_found->second;
-
-		IDirect3DVertexBuffer9 * vb = vbinfo.pVB;
-
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetStreamSource, (0, vb, 0, vbinfo.vertexSize) )
-		{
-            return false;
-		}
-
-        m_currentVB = _vbHandle;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex )
-	{
-        (void) _baseVertexIndex;
-        
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setIndexBuffer device not created"
-                );
-
-            return false;
-        }
-
-		if( _ibHandle == 0 )
-		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::setIndexBuffer handle is zero"
-				);
-
-			return false;
-		}
-
-		TMapIBInfo::iterator it_found = m_indexBuffers.find( _ibHandle );
-
-		if( it_found == m_indexBuffers.end() )
-		{
-			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::setIndexBuffer not found %d"
-				, _ibHandle
-				);
-
-			return false;
-		}
-
-		IBInfo & ibinfo = it_found->second;
-		
-		IDirect3DIndexBuffer9 * ib = ibinfo.pIB;
-
-		IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetIndices, ( ib ) )
+		if( ib->enable() == false )
 		{
 			return false;
 		}
 
-        m_currentIB = _ibHandle;
+		m_indexBufferEnable = true;
 
 		return true;
 	}
@@ -1984,8 +1263,6 @@ namespace Menge
 	void DX9RenderSystem::drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
 		uint32_t _minIndex, uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount )
 	{
-        (void)_baseVertexIndex;
-
         if( m_pD3DDevice == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::drawIndexedPrimitive device not created"
@@ -2017,7 +1294,7 @@ namespace Menge
 		
 		if( _texture != nullptr )
         {
-			DX9Texture * image = _texture.getT<DX9Texture *>();
+			DX9RenderImage * image = _texture.getT<DX9RenderImage *>();
 			
 			dx_texture = image->getDXTextureInterface();
         }

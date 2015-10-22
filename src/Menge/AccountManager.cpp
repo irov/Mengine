@@ -184,7 +184,7 @@ namespace Menge
             }
         }
 
-        AccountPtr newAccount = m_factoryAccounts.createObjectT();
+        AccountPtr newAccount = m_factoryAccounts.createObject();
 		
 		if( newAccount->initialize( m_serviceProvider, _accountID, folder, m_projectVersion ) == false )
 		{

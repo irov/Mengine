@@ -785,7 +785,10 @@ namespace Menge
 		for( uint32_t i = 0; i != MENGINE_RENDER_VERTEX_UV_COUNT; ++i )
 		{
 			GLCALL( m_serviceProvider, glClientActiveTexture, (GL_TEXTURE0 + i) );
-			GLCALL( m_serviceProvider, glTexCoordPointer, (2, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * i)) );
+
+			size_t uv_offset = offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * i;
+
+			GLCALL( m_serviceProvider, glTexCoordPointer, (2, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(uv_offset)) );
 		}
 
 		GLenum mode = s_getGLPrimitiveMode( _type );
@@ -811,8 +814,8 @@ namespace Menge
 
 		GLCALL( m_serviceProvider, glDisableClientState, (GL_VERTEX_ARRAY) );
 		GLCALL( m_serviceProvider, glDisableClientState, (GL_COLOR_ARRAY) );
-
 		GLCALL( m_serviceProvider, glDisableClientState, (GL_TEXTURE_COORD_ARRAY) );
+
 
 		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );

@@ -34,8 +34,8 @@ namespace Menge
 		RenderMaterial * material;
 		uint32_t materialId;
 
-		IBHandle ibHandle;
-		VBHandle vbHandle;
+		RenderVertexBufferInterface * vbHandle;
+		RenderIndexBufferInterface * ibHandle;
 
 		const RenderVertex2D * vertexData;
 		uint32_t verticesNum;
@@ -118,14 +118,11 @@ namespace Menge
 		ERenderBatchMode getBatchMode() const override;
 
 	public:
-		VBHandle createVertexBuffer( const RenderVertex2D * _vertexies, uint32_t _verticesNum );
-		IBHandle createIndicesBuffer( const RenderIndices * _buffer, uint32_t _count );
-
-		void releaseVertexBuffer( VBHandle _handle );
-		void releaseIndicesBuffer( IBHandle _handle );
-
-		bool updateVertexBuffer( VBHandle _handle, const RenderVertex2D * _vertexies, uint32_t _verticesNum );
-		bool updateIndicesBuffer( IBHandle _handle, const RenderIndices * _buffer, uint32_t _count );
+		RenderVertexBufferInterfacePtr createVertexBuffer( const RenderVertex2D * _vertexies, uint32_t _verticesNum );
+		RenderIndexBufferInterfacePtr createIndicesBuffer( const RenderIndices * _buffer, uint32_t _count );
+		
+		bool updateVertexBuffer( const RenderVertexBufferInterfacePtr & _vb, const RenderVertex2D * _vertexies, uint32_t _verticesNum );
+		bool updateIndicesBuffer( const RenderIndexBufferInterfacePtr & _ib, const RenderIndices * _buffer, uint32_t _count );
 
 	public:
 		void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) override;
@@ -199,8 +196,8 @@ namespace Menge
 
 		void flushRender_();
 
-		bool recreate2DBuffers_();
-        		
+		bool create2DBuffers_();
+
     protected:
         void calcQuadSquare_( const RenderVertex2D * _vertex, uint32_t _vertexNum );
         void calcMeshSquare_( const RenderVertex2D * _vertex, uint32_t _verteNum, const RenderIndices * _indices, uint32_t _indicesNum );
@@ -227,29 +224,21 @@ namespace Menge
         RenderTextureInterfacePtr m_nullTexture;	// dummy white pixel
 		RenderTextureInterfacePtr m_whitePixelTexture;
 
-		VBHandle m_vbHandle2D;
-		IBHandle m_ibHandle2D;
+		RenderVertexBufferInterfacePtr m_vbHandle2D;
+		RenderIndexBufferInterfacePtr m_ibHandle2D;
 
 		uint32_t m_renderVertexCount;
 		uint32_t m_renderIndicesCount;
 
 		ERenderBatchMode m_batchMode;
 
-		typedef stdex::vector<VBHandle> TVectorVertexBuffer;
-		TVectorVertexBuffer m_vertexBuffer;
-
-		typedef stdex::vector<IBHandle> TVectorIndexBuffer;
-		TVectorIndexBuffer m_indexBuffer;
-
 		uint32_t m_maxVertexCount;
 		uint32_t m_maxIndexCount;
 		uint32_t m_maxObjects;
 		uint32_t m_maxPasses;
 						
-		VBHandle m_currentVBHandle;
-		VBHandle m_currentIBHandle;
-
-		uint32_t m_currentBaseVertexIndex;
+		RenderVertexBufferInterfacePtr m_currentVBHandle;
+		RenderIndexBufferInterfacePtr m_currentIBHandle;
 
 		uint32_t m_currentTextureStages;
 		RenderTextureStage m_currentTextureStage[MENGE_MAX_TEXTURE_STAGES];

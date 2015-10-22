@@ -25,7 +25,7 @@ namespace Menge
 	protected:
 		DataflowInterfacePtr createDataflow()
 		{	
-			DataflowInterfacePtr decoder = m_factory.createObjectT();
+			DataflowInterfacePtr decoder = m_factory.createObject();
 
 			decoder->setServiceProvider( m_serviceProvider );
 

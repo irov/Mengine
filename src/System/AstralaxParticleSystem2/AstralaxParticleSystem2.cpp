@@ -96,7 +96,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
 	{
-		AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer.createObjectT();
+		AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer.createObject();
 
 		if( container == nullptr )
 		{

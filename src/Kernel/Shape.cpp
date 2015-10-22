@@ -310,6 +310,15 @@ namespace Menge
 				m_verticesWM[i].uv[1] = uv[i] * m_textureUVScale + m_textureUVOffset;
 			}
 		}
+
+		for( size_t i = 0; i != 4; ++i )
+		{
+			for( uint32_t j = 2; j < MENGINE_RENDER_VERTEX_UV_COUNT; ++j )
+			{
+				m_verticesWM[i].uv[j].x = 0.f;
+				m_verticesWM[i].uv[j].y = 0.f;
+			}
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     void Shape::invalidateVerticesColor()
@@ -322,7 +331,7 @@ namespace Menge
         m_invalidateVerticesColor = false;
 
         ColourValue color;
-        this->calcTotalColor(color);
+		this->calcTotalColor( color );
 
 		const ColourValue & textureColour = m_resourceImage->getColor();
 		color *= textureColour;

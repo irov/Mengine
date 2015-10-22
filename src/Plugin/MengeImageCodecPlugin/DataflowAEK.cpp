@@ -48,7 +48,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	DataInterfacePtr DataflowAEK::create()
 	{
-		MovieFramePack * pack = m_poolMovieFramePack.createObjectT();
+		MovieFramePack * pack = m_poolMovieFramePack.createObject();
 
 		return pack;
 	}
@@ -64,7 +64,7 @@ namespace Menge
 			return false;
 		}
 
-		MovieFramePack * pack = stdex::intrusive_get<MovieFramePack>(_data);
+		MovieFramePack * pack = stdex::intrusive_get<MovieFramePack *>(_data);
 
 		void * binaryBuffer_memory = binaryBuffer->getMemory();
 		size_t binaryBuffer_size = binaryBuffer->getSize();

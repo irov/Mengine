@@ -373,6 +373,49 @@ namespace Menge
     };
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<RenderMaterialInterface> RenderMaterialInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
+	const uint32_t VDECL_XYZ = 0x00000002;
+	const uint32_t VDECL_XYZRHW = 0x00000004;
+	const uint32_t VDECL_NORMAL = 0x00000010;
+	const uint32_t VDECL_DIFFUSE = 0x00000040;
+	const uint32_t VDECL_SPECULAR = 0x00000080;
+	const uint32_t VDECL_TEX1 = 0x00000100;
+	const uint32_t VDECL_TEX2 = 0x00000200;
+	//////////////////////////////////////////////////////////////////////////
+	static const uint32_t Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX2;
+	//////////////////////////////////////////////////////////////////////////
+	typedef uint16_t RenderIndices;
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::vector<RenderIndices> TVectorRenderIndices;
+	//////////////////////////////////////////////////////////////////////////
+	struct RenderVertex2D
+	{
+		mt::vec3f pos;
+		uint32_t color;
+		mt::vec2f uv[MENGINE_RENDER_VERTEX_UV_COUNT];
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::vector<RenderVertex2D> TVectorRenderVertex2D;
+	//////////////////////////////////////////////////////////////////////////
+	class RenderVertexBufferInterface
+		: public FactorablePtr
+	{
+	public:
+		virtual RenderVertex2D * lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
+		virtual bool unlock() = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<RenderVertexBufferInterface> RenderVertexBufferInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
+	class RenderIndexBufferInterface
+		: public FactorablePtr
+	{
+	public:
+		virtual RenderIndices * lock( uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
+		virtual bool unlock() = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<RenderIndexBufferInterface> RenderIndexBufferInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialServiceInterface
         : public ServiceInterface
@@ -410,29 +453,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERMATERIAL_SERVICE( serviceProvider )\
     ((Menge::RenderMaterialServiceInterface*)SERVICE_GET(serviceProvider, Menge::RenderMaterialServiceInterface))
-    //////////////////////////////////////////////////////////////////////////
-    const uint32_t VDECL_XYZ		= 0x00000002;
-    const uint32_t VDECL_XYZRHW		= 0x00000004;
-    const uint32_t VDECL_NORMAL		= 0x00000010;
-    const uint32_t VDECL_DIFFUSE	= 0x00000040;
-    const uint32_t VDECL_SPECULAR	= 0x00000080;
-    const uint32_t VDECL_TEX1		= 0x00000100;
-    const uint32_t VDECL_TEX2		= 0x00000200;
-	//////////////////////////////////////////////////////////////////////////
-	static const uint32_t Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX2;
-	//////////////////////////////////////////////////////////////////////////
-	typedef uint16_t RenderIndices;
-	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<RenderIndices> TVectorRenderIndices;
-    //////////////////////////////////////////////////////////////////////////
-    struct RenderVertex2D
-    {
-        mt::vec3f pos;
-        uint32_t color;
-		mt::vec2f uv[MENGINE_RENDER_VERTEX_UV_COUNT];
-    };
-	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<RenderVertex2D> TVectorRenderVertex2D;
     //////////////////////////////////////////////////////////////////////////
     struct RenderTextureDebugInfo
     {
@@ -569,17 +589,11 @@ namespace Menge
 
 		virtual void setTextureMatrix( uint32_t _stage, const float * _texture ) = 0;
 
-		virtual VBHandle createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic ) = 0;
-		virtual bool releaseVertexBuffer( VBHandle _vbHandle ) = 0;
-		virtual void * lockVertexBuffer(  VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
-		virtual bool unlockVertexBuffer( VBHandle _vbHandle ) = 0;
-		virtual bool setVertexBuffer( VBHandle _vbHandle ) = 0;
+		virtual RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _verticesNum, bool _dynamic ) = 0;
+		virtual bool setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) = 0;
 
-		virtual IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) = 0;
-		virtual bool releaseIndexBuffer( IBHandle _ibHandle ) = 0;
-		virtual RenderIndices * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) = 0;
-		virtual bool unlockIndexBuffer( IBHandle _ibHandle ) = 0;
-		virtual bool setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) = 0;
+		virtual RenderIndexBufferInterfacePtr createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) = 0;
+		virtual bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) = 0;
 		
 	public:
 		virtual RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) = 0;

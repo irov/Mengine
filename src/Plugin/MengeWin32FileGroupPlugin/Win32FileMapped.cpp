@@ -132,7 +132,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32FileMapped::openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory )
 	{
-		MemoryProxyInputInterface * memory = stdex::intrusive_get<MemoryProxyInputInterface>( _stream );
+		MemoryProxyInputInterface * memory = stdex::intrusive_get<MemoryProxyInputInterface *>( _stream );
 		
 		void * memory_buffer = memory->setMemory( m_memory, _offset, _size );
 		

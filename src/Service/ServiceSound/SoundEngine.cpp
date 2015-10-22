@@ -1102,7 +1102,7 @@ namespace Menge
 
 		if( m_threadSoundBufferUpdate != nullptr )
 		{
-			ThreadWorkerSoundBufferUpdatePtr worker = m_poolWorkerTaskSoundBufferUpdate.createObjectT();
+			ThreadWorkerSoundBufferUpdatePtr worker = m_poolWorkerTaskSoundBufferUpdate.createObject();
 
 			SoundBufferInterfacePtr soundBuffer = _source->source->getSoundBuffer();
 

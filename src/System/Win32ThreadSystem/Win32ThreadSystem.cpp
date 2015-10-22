@@ -60,7 +60,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ThreadIdentityPtr Win32ThreadSystem::createThread( int _priority, const char * _doc )
 	{
-		Win32ThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObjectT();
+		Win32ThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObject();
 
 		if( identity == nullptr )
 		{
@@ -95,7 +95,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const char * _doc )
     {
-        Win32ThreadMutex * mutex = m_poolWin32ThreadMutex.createObjectT();
+        Win32ThreadMutex * mutex = m_poolWin32ThreadMutex.createObject();
 
 		mutex->initialize( m_serviceProvider, _doc );
 

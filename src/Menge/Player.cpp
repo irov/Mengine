@@ -570,7 +570,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ScheduleManagerInterface * Player::createSchedulerManager()
 	{
-		ScheduleManagerInterface * sm = m_factoryScheduleManager.createObjectT();
+		ScheduleManagerInterface * sm = m_factoryScheduleManager.createObject();
 
 		sm->setServiceProvider( m_serviceProvider );
 
@@ -620,7 +620,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ScheduleManagerInterface * Player::createTimingManager()
 	{
-		ScheduleManagerInterface * tm = m_factoryTimingManager.createObjectT();
+		ScheduleManagerInterface * tm = m_factoryTimingManager.createObject();
 
 		tm->setServiceProvider( m_serviceProvider );
 
@@ -673,16 +673,16 @@ namespace Menge
 		m_mousePickerSystem = new MousePickerSystem(m_serviceProvider);
 		m_globalHandleSystem = new GlobalHandleSystem(m_serviceProvider);
 		
-        m_scheduleManager = m_factoryScheduleManager.createObjectT();
+        m_scheduleManager = m_factoryScheduleManager.createObject();
         m_scheduleManager->setServiceProvider( m_serviceProvider );
 
-		m_scheduleManagerGlobal = m_factoryScheduleManager.createObjectT();
+		m_scheduleManagerGlobal = m_factoryScheduleManager.createObject();
         m_scheduleManagerGlobal->setServiceProvider( m_serviceProvider );
 
-		m_timingManager = m_factoryTimingManager.createObjectT();
+		m_timingManager = m_factoryTimingManager.createObject();
         m_timingManager->setServiceProvider( m_serviceProvider );
 
-        m_timingManagerGlobal = m_factoryTimingManager.createObjectT();
+        m_timingManagerGlobal = m_factoryTimingManager.createObject();
         m_timingManagerGlobal->setServiceProvider( m_serviceProvider );
 
 		m_affectorable = new Affectorable;

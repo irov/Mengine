@@ -1071,7 +1071,7 @@ namespace Menge
 			ScheduleManagerInterface * tm = PLAYER_SERVICE( m_serviceProvider )
                 ->getTimingManager();
 
-            PyObjectTimingListener * listener = m_factoryPyObjectTimingListener.createObjectT();
+            PyObjectTimingListener * listener = m_factoryPyObjectTimingListener.createObject();
 			
 			listener->initialize( m_serviceProvider, _script );
 
@@ -1168,7 +1168,7 @@ namespace Menge
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
 
-            PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObjectT();
+            PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObject();
 
 			sl->initialize( m_serviceProvider, _script );
 
@@ -1179,7 +1179,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, const pybind::object & _script )
 		{
-			PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObjectT();
+			PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObject();
 
 			sl->initialize( m_serviceProvider, _script );
 
@@ -1190,7 +1190,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t TimingManagerInterface_timing( ScheduleManagerInterface * _timingManager, float _delay, const pybind::object & _script )
 		{
-			PyObjectTimingListener * tl = m_factoryPyObjectTimingListener.createObjectT();
+			PyObjectTimingListener * tl = m_factoryPyObjectTimingListener.createObject();
 
 			tl->initialize( m_serviceProvider, _script );
 
@@ -1306,7 +1306,7 @@ namespace Menge
 				return 0;
 			}
 
-			PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObjectT();
+			PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObject();
 
 			sl->initialize( m_serviceProvider, _script );
 
@@ -2922,7 +2922,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_gridBurnTransparency( Grid2D * _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
 		{
-			AffectorGridBurnTransparency * affector = m_factoryAffectorGridBurnTransparency.createObjectT();
+			AffectorGridBurnTransparency * affector = m_factoryAffectorGridBurnTransparency.createObject();
 
 			affector->setServiceProvider( m_serviceProvider );
 			affector->setAffectorType( ETA_USER );
@@ -3161,7 +3161,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		ScriptableAffectorCallback * createNodeAffectorCallback( Scriptable * _scriptable, const pybind::object & _cb )
 		{
-			ScriptableAffectorCallback * callback = m_factoryNodeAffectorCallback.createObjectT();
+			ScriptableAffectorCallback * callback = m_factoryNodeAffectorCallback.createObject();
 
 			callback->initialize( m_serviceProvider, _scriptable, _cb );
 
@@ -3729,7 +3729,7 @@ namespace Menge
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
-			PyGlobalMouseMoveHandler * handler = m_factoryPyGlobalMouseMoveHandlers.createObjectT();
+			PyGlobalMouseMoveHandler * handler = m_factoryPyGlobalMouseMoveHandlers.createObject();
 
 			handler->initialize( m_serviceProvider, _cb );
             
@@ -3766,7 +3766,7 @@ namespace Menge
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
-            PyGlobalMouseHandlerButton * handler = m_factoryPyGlobalMouseHandlerButtons.createObjectT();
+            PyGlobalMouseHandlerButton * handler = m_factoryPyGlobalMouseHandlerButtons.createObject();
 			
 			handler->initialize( m_serviceProvider, _cb );
 
@@ -3804,7 +3804,7 @@ namespace Menge
             GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
                 ->getGlobalHandleSystem();
 
-            PyGlobalMouseHandlerButtonEnd * handler = m_factoryPyGlobalMouseHandlerButtonEnds.createObjectT();
+            PyGlobalMouseHandlerButtonEnd * handler = m_factoryPyGlobalMouseHandlerButtonEnds.createObject();
 
 			handler->initialize( m_serviceProvider, _cb );
 
@@ -3842,7 +3842,7 @@ namespace Menge
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE( m_serviceProvider )
 				->getGlobalHandleSystem();
 
-			PyGlobalMouseHandlerWheel * handler = m_factoryPyGlobalMouseHandlerWheels.createObjectT();
+			PyGlobalMouseHandlerWheel * handler = m_factoryPyGlobalMouseHandlerWheels.createObject();
 
 			handler->initialize( m_serviceProvider, _cb );
 
@@ -3880,7 +3880,7 @@ namespace Menge
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
 
-			PyGlobalMouseHandlerButtonBegin * handler = m_factoryPyGlobalMouseHandlerButtonBegins.createObjectT();
+			PyGlobalMouseHandlerButtonBegin * handler = m_factoryPyGlobalMouseHandlerButtonBegins.createObject();
 			
 			handler->initialize( m_serviceProvider, _cb );
 			
@@ -3917,7 +3917,7 @@ namespace Menge
 			GlobalHandleSystemInterface * globalHandleSystem = PLAYER_SERVICE(m_serviceProvider)
 				->getGlobalHandleSystem();
 
-			PyGlobalKeyHandler * handler = m_poolPyGlobalKeyHandler.createObjectT();
+			PyGlobalKeyHandler * handler = m_poolPyGlobalKeyHandler.createObject();
 
 			handler->initialize( m_serviceProvider, _cb );
 

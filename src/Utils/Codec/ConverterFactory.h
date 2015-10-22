@@ -26,7 +26,7 @@ namespace Menge
     protected:
         ConverterInterfacePtr createConverter() override
         {
-			ConverterInterface * converter = m_factory.createObjectT();
+			ConverterInterface * converter = m_factory.createObject();
 
 			converter->setServiceProvider( m_serviceProvider );
 

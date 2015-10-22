@@ -618,7 +618,7 @@ namespace Menge
 			return true;
 		}
 
-		PackPtr pack = m_factoryPack.createObjectT();
+		PackPtr pack = m_factoryPack.createObject();
 		
 		pack->setup( m_serviceProvider
 			, _desc.name

@@ -542,7 +542,8 @@ namespace Menge
 	{
 		uint32_t id = ++m_textureEnumerator;
 
-		RenderTexture * texture = m_factoryRenderTexture.createObjectT();
+		RenderTexture * texture = m_factoryRenderTexture.createObject();
+
 		texture->initialize( m_serviceProvider, _image, _mipmaps, _width, _height, _channels, id );
 
 //#	ifndef MENGINE_MASTER_RELEASE

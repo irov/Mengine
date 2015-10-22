@@ -77,7 +77,7 @@ namespace Menge
 		(void)_fileName;
 		(void)_streaming;
 
-		Win32FileInputStream * inputStream = m_factoryInputStream.createObjectT();
+		Win32FileInputStream * inputStream = m_factoryInputStream.createObject();
 
 		inputStream->setServiceProvider( m_serviceProvider );
 
@@ -96,7 +96,7 @@ namespace Menge
             return false;
         }
 
-        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface>(_stream);
+        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>(_stream);
 
 		if( file->open( m_path, _fileName, _offset, _size ) == false )
         {
@@ -113,7 +113,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile()
 	{
-		Win32FileOutputStream * outputStream = m_factoryOutputStream.createObjectT();
+		Win32FileOutputStream * outputStream = m_factoryOutputStream.createObject();
 
 		outputStream->setServiceProvider( m_serviceProvider );
 
@@ -130,7 +130,7 @@ namespace Menge
             return false;
         }
 
-        FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface>(_stream);
+        FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>(_stream);
 
         if( file->open( m_path, _fileName ) == false )
         {
@@ -147,7 +147,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	FileMappedInterfacePtr Win32FileGroupDirectory::createMappedFile()
 	{
-		Win32FileMapped * mappedStream = m_factoryWin32MappedFile.createObjectT();
+		Win32FileMapped * mappedStream = m_factoryWin32MappedFile.createObject();
 
 		mappedStream->setServiceProvider( m_serviceProvider );
 

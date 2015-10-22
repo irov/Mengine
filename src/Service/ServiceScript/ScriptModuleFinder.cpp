@@ -61,7 +61,7 @@ namespace Menge
 
 #   ifndef MENGINE_MASTER_RELEASE
 		{
-			ScriptModuleLoaderPtr loaderSource = m_factoryScriptModuleLoaderSource.createObjectT();
+			ScriptModuleLoaderPtr loaderSource = m_factoryScriptModuleLoaderSource.createObject();
 
 			loaderSource->setServiceProvider( m_serviceProvider );
 			loaderSource->setModule( _module );
@@ -78,7 +78,7 @@ namespace Menge
 #   endif
 	
 		{
-			ScriptModuleLoaderPtr loaderCode = m_factoryScriptModuleLoaderCode.createObjectT();
+			ScriptModuleLoaderPtr loaderCode = m_factoryScriptModuleLoaderCode.createObject();
 
 			loaderCode->setServiceProvider( m_serviceProvider );
 			loaderCode->setModule( _module );

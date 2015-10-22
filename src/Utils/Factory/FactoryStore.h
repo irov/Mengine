@@ -73,33 +73,25 @@ namespace Menge
 		}
 
 	public:
-		Factorable * createObject()
+		T * createObject()
 		{
 			Factorable * factorable = m_ptr->createObject();
 
-			return factorable;
-		}
-
-		void destroyObject( Factorable * _object )
-		{
-			m_ptr->destroyObject( _object );
-		}
-
-	public:
-		T * createObjectT()
-		{
-			Factorable * obj = this->createObject();
-
 #	ifdef _DEBUG
-			if( dynamic_cast<T *>(obj) == nullptr )
+			if( dynamic_cast<T *>(factorable) == nullptr )
 			{
 				return nullptr;
 			}
 #	endif
 
-			T * t = static_cast<T *>(obj);
+			T * t = static_cast<T *>(factorable);
 
 			return t;
+		}
+
+		void destroyObject( Factorable * _object )
+		{
+			m_ptr->destroyObject( _object );
 		}
 
 	public:
@@ -147,33 +139,25 @@ namespace Menge
 		}
 
 	public:
-		Factorable * createObject()
+		T * createObject()
 		{
 			Factorable * factorable = m_ptr->createObject();
 
-			return factorable;
-		}
-
-		void destroyObject( Factorable * _object )
-		{
-			m_ptr->destroyObject( _object );
-		}
-
-	public:
-		T * createObjectT()
-		{
-			Factorable * obj = this->createObject();
-
 #	ifdef _DEBUG
-			if( dynamic_cast<T *>(obj) == nullptr )
+			if( dynamic_cast<T *>(factorable) == nullptr )
 			{
 				return nullptr;
 			}
 #	endif
 
-			T * t = static_cast<T *>(obj);
+			T * t = static_cast<T *>(factorable);
 
 			return t;
+		}
+
+		void destroyObject( Factorable * _object )
+		{
+			m_ptr->destroyObject( _object );
 		}
 
 	public:

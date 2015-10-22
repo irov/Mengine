@@ -23,7 +23,8 @@ namespace Menge
 	public:
 		ModuleInterfacePtr createModule() override
 		{
-			ModuleInterface * module = m_factory.createObjectT();
+			ModuleInterface * module = m_factory.createObject();
+
 			module->setServiceProvider( m_serviceProvider );
 			module->setName( m_name );
 

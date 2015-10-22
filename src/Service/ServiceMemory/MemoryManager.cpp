@@ -223,7 +223,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheBufferInterfacePtr MemoryManager::createMemoryCacheBuffer()
 	{
-		MemoryCacheBuffer * memoryBuffer = m_factoryPoolMemoryCacheBuffer.createObjectT();
+		MemoryCacheBuffer * memoryBuffer = m_factoryPoolMemoryCacheBuffer.createObject();
 
 		memoryBuffer->setServiceProvider( m_serviceProvider );
 
@@ -234,7 +234,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryCacheInputInterfacePtr MemoryManager::createMemoryCacheInput()
 	{
-		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput.createObjectT();
+		MemoryCacheInput * memoryCache = m_factoryPoolMemoryCacheInput.createObject();
 
 		memoryCache->setServiceProvider( m_serviceProvider );
 
@@ -245,7 +245,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryProxyInputInterfacePtr MemoryManager::createMemoryProxyInput()
 	{
-		MemoryProxyInput * memoryProxy = m_factoryPoolMemoryProxyInput.createObjectT();
+		MemoryProxyInput * memoryProxy = m_factoryPoolMemoryProxyInput.createObject();
 
 		memoryProxy->setServiceProvider( m_serviceProvider );
 
@@ -254,7 +254,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInputInterfacePtr MemoryManager::createMemoryInput()
 	{
-		MemoryInput * memory = m_factoryPoolMemoryInput.createObjectT();
+		MemoryInput * memory = m_factoryPoolMemoryInput.createObject();
 
 		memory->setServiceProvider( m_serviceProvider );
 
@@ -263,7 +263,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInterfacePtr MemoryManager::createMemory()
 	{
-		Memory * memory = m_factoryPoolMemory.createObjectT();
+		Memory * memory = m_factoryPoolMemory.createObject();
 
 		memory->setServiceProvider( m_serviceProvider );
 

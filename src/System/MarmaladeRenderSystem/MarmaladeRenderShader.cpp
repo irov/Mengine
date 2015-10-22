@@ -1,4 +1,4 @@
-#	include "MarmaladeShader.h"
+#	include "MarmaladeRenderShader.h"
 
 #	include "MarmaladeRenderError.h"
 
@@ -7,32 +7,32 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeShader::MarmaladeShader()
+	MarmaladeRenderShader::MarmaladeRenderShader()
 		: m_serviceProvider( nullptr )
 		, m_shaderId( 0 )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeShader::~MarmaladeShader()
+	MarmaladeRenderShader::~MarmaladeRenderShader()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeShader::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	void MarmaladeRenderShader::setServiceProvider( ServiceProviderInterface * _serviceProvider )
 	{
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * MarmaladeShader::getServiceProvider()
+	ServiceProviderInterface * MarmaladeRenderShader::getServiceProvider()
 	{
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & MarmaladeShader::getName() const
+	const ConstString & MarmaladeRenderShader::getName() const
 	{
 		return m_name;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool MarmaladeShader::initialize( const ConstString & _name, GLenum _type, const void * _source, size_t _size, bool _isCompile )
+	bool MarmaladeRenderShader::initialize( const ConstString & _name, GLenum _type, const void * _source, size_t _size, bool _isCompile )
 	{
 		m_name = _name;
 
@@ -105,12 +105,12 @@ namespace Menge
 		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeShader::finalize()
+	void MarmaladeRenderShader::finalize()
 	{ 
 		GLCALL( m_serviceProvider, glDeleteShader, ( m_shaderId ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeShader::attach( GLuint _program )
+	void MarmaladeRenderShader::attach( GLuint _program )
 	{ 
 		GLCALL( m_serviceProvider, glAttachShader, ( _program, m_shaderId ) );
 	}

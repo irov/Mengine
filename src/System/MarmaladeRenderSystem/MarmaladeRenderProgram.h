@@ -2,19 +2,19 @@
 
 #	include "Interface/RenderSystemInterface.h"
 
-#	include "MarmaladeShader.h"
+#	include "MarmaladeRenderShader.h"
 
 #   include "IwGL.h"
 #   include "s3e.h"
 
 namespace Menge
 {
-	class MarmaladeProgram
+	class MarmaladeRenderProgram
 		: public RenderProgramInterface
 	{
 	public:
-		MarmaladeProgram();
-		~MarmaladeProgram();
+		MarmaladeRenderProgram();
+		~MarmaladeRenderProgram();
 
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
@@ -55,7 +55,7 @@ namespace Menge
 		int m_samplerLocation[MENGE_MAX_TEXTURE_STAGES];
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MarmaladeProgram> MarmaladeProgramPtr;
+	typedef stdex::intrusive_ptr<MarmaladeRenderProgram> MarmaladeProgramPtr;
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge
 

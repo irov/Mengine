@@ -661,7 +661,7 @@ namespace Menge
 
 		if( _isStream == false )
 		{
-			MarmaladeSoundBufferMemory * buffer = m_poolOALSoundBuffer.createObjectT();
+			MarmaladeSoundBufferMemory * buffer = m_poolOALSoundBuffer.createObject();
 
 			buffer->setServiceProvider( m_serviceProvider );
 
@@ -669,7 +669,7 @@ namespace Menge
 		}
 		else
 		{
-			MarmaladeSoundBufferStream * buffer = m_poolOALSoundBufferStream.createObjectT();
+			MarmaladeSoundBufferStream * buffer = m_poolOALSoundBufferStream.createObject();
 
 			buffer->setServiceProvider( m_serviceProvider );
 
@@ -690,7 +690,7 @@ namespace Menge
 	SoundSourceInterfacePtr MarmaladeSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
 	{
 		//OALSoundSource* soundSource = m_soundSources.get();
-		MarmaladeSoundSource * soundSource = m_poolOALSoundSource.createObjectT();
+		MarmaladeSoundSource * soundSource = m_poolOALSoundSource.createObject();
 
         soundSource->initialize( m_serviceProvider, this );
         		

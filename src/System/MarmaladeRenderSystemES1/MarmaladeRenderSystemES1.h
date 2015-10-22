@@ -4,7 +4,9 @@
 
 #   include "Config/String.h"
 
-#   include "MarmaladeTextureES1.h"
+#   include "MarmaladeRenderTextureES1.h"
+#   include "MarmaladeRenderVertexBufferES1.h"
+#   include "MarmaladeRenderIndexBufferES1.h"
 
 #   include "Factory/FactoryStore.h"
 
@@ -19,7 +21,7 @@ namespace Menge
     class LogServiceInterface;
     
 	class OGLWindowContext;
-	class MarmaladeTextureES1;
+	class MarmaladeRenderTextureES1;
 
     struct TextureStage
     {
@@ -95,17 +97,12 @@ namespace Menge
 		void setTextureMatrix( uint32_t _stage, const float* _texture ) override;
         void setWorldMatrix( const mt::mat4f & _view ) override;
 
-		VBHandle createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic ) override;
-		bool releaseVertexBuffer( VBHandle _vbHandle ) override;
-		void* lockVertexBuffer(  VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
-		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
-		bool setVertexBuffer( VBHandle _vbHandle ) override;
+	public:
+		RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _verticesNum, bool _dynamic ) override;
+		bool setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) override;
 
-		IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
-		bool releaseIndexBuffer( IBHandle _ibHandle ) override;
-		RenderIndices * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
-		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
-		bool setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
+		RenderIndexBufferInterfacePtr createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
+		bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) override;
 
 	public:
 		RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
@@ -123,8 +120,7 @@ namespace Menge
 		void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
 		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32_t _color ) override;
-		void setSrcBlendFactor( EBlendFactor _src ) override;
-		void setDstBlendFactor( EBlendFactor _dst ) override;
+		void setBlendFactor( EBlendFactor _src, EBlendFactor _dst ) override;
 		void setCullMode( ECullMode _mode ) override;
 		void setDepthBufferTestEnable( bool _depthTest ) override;
 		void setDepthBufferWriteEnable( bool _depthWrite ) override;
@@ -201,48 +197,14 @@ namespace Menge
 
 		bool m_supportNPOT;
 
-		GLuint m_currentVertexBuffer;
-		GLuint m_currentIndexBuffer;
-		//GLuint m_baseVertexIndex;
+		typedef FactoryDefaultStore<MarmaladeRenderVertexBufferES1> TFactoryRenderVertexBuffer;
+		TFactoryRenderVertexBuffer m_factoryVertexBuffer;
 
-		GLenum m_srcBlendFactor;
-		GLenum m_dstBlendFactor;
+		typedef FactoryDefaultStore<MarmaladeRenderIndexBufferES1> TFactoryRenderIndexBuffer;
+		TFactoryRenderIndexBuffer m_factoryIndexBuffer;
 
-		struct MemoryRange
-		{
-			MemoryRange()
-				: pMem(nullptr)
-				, size(0)
-				, offset(0)
-				, flags(BLF_LOCK_NONE)
-				, bufId(0)
-			{
-			}
-
-			unsigned char * pMem;
-			size_t size;
-			size_t offset;
-            EBufferLockFlag flags;
-
-			GLuint bufId;
-		};
-
-		VBHandle m_VBHandleGenerator;
-		IBHandle m_IBHandleGenerator;
-
-        typedef stdex::map<VBHandle, MemoryRange> TMapVBufferMemory;
-		TMapVBufferMemory m_vBuffersMemory;
-		TMapVBufferMemory m_vBuffersLocks;
-		
-		typedef stdex::map<IBHandle, MemoryRange> TMapIBufferMemory;
-		TMapIBufferMemory m_iBuffersMemory;
-		TMapIBufferMemory m_iBuffersLocks;
-
-		uint32_t m_activeTextureStage;
-		GLuint m_activeTexture;
-
-        typedef FactoryPoolStore<MarmaladeTextureES1, 128> TFactoryOGLTexture;
-        TFactoryOGLTexture m_factoryOGLTexture;
+        typedef FactoryPoolStore<MarmaladeRenderTextureES1, 128> TFactoryTextureES1;
+        TFactoryTextureES1 m_factoryTextureES1;
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
 

@@ -1186,7 +1186,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _verticesNum, bool _dynamic )
 	{
-		DX9RenderVertexBuffer * buffer = m_factoryVertexBuffer.createObject();
+		DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer.createObject();
 
 		if( buffer->initialize( m_serviceProvider, m_pD3DDevice, m_vertexDeclaration, _verticesNum, _dynamic ) == false )
 		{
@@ -1224,7 +1224,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderIndexBufferInterfacePtr DX9RenderSystem::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
 	{
-		DX9RenderIndexBuffer * buffer = m_factoryIndexBuffer.createObject();
+		DX9RenderIndexBufferPtr buffer = m_factoryIndexBuffer.createObject();
 
 		if( buffer->initialize( m_serviceProvider, m_pD3DDevice, _indiciesNum, _dynamic ) == false )
 		{
@@ -1302,7 +1302,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetTexture, (_stage, dx_texture) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setSrcBlendFactor( EBlendFactor _src )
+	void DX9RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -1312,24 +1312,11 @@ namespace Menge
             return;
         }
 
-		DWORD factor = s_toD3DBlend( _src );
+		DWORD src_factor = s_toD3DBlend( _src );
+		DWORD dst_factor = s_toD3DBlend( _dst );
 
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_SRCBLEND, factor ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setDstBlendFactor( EBlendFactor _dst )
-	{
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::setDstBlendFactor device not created"
-                );
-
-            return;
-        }
-
-		DWORD factor = s_toD3DBlend( _dst );
-
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, ( D3DRS_DESTBLEND, factor ) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_SRCBLEND, src_factor) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetRenderState, (D3DRS_DESTBLEND, dst_factor) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV )

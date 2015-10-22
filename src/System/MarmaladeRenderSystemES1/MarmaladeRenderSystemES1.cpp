@@ -1,5 +1,6 @@
 #	include "MarmaladeRenderSystemES1.h"
 
+#	include "MarmaladeRenderEnumES1.h"
 #	include "MarmaladeRenderErrorES1.h"
 
 #	include "Interface/StringizeInterface.h"
@@ -19,274 +20,11 @@ SERVICE_FACTORY( RenderSystemES1, Menge::RenderSystemInterface, Menge::Marmalade
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static const GLenum s_toGLBlendFactor[] =
-	{
-		GL_ONE						// BF_ONE
-		, GL_ZERO					// BF_ZERO
-		, GL_DST_COLOR				// BF_DEST_COLOUR
-		, GL_SRC_COLOR				// BF_SOURCE_COLOUR
-		, GL_ONE_MINUS_DST_COLOR	// BF_ONE_MINUS_DEST_COLOUR
-		, GL_ONE_MINUS_SRC_COLOR	// BF_ONE_MINUS_SOURCE_COLOUR
-		, GL_DST_ALPHA				// BF_DEST_ALPHA
-		, GL_SRC_ALPHA				// BF_SOURCE_ALPHA
-		, GL_ONE_MINUS_DST_ALPHA	// BF_ONE_MINUS_DEST_ALPHA
-		, GL_ONE_MINUS_SRC_ALPHA	// BF_ONE_MINUS_SOURCE_ALPHA
-	};
-	//////////////////////////////////////////////////////////////////////////
-	static const GLenum s_toGLCmpFunc[] =
-	{
-		GL_NEVER		// CMPF_ALWAYS_FAIL
-		, GL_ALWAYS		// CMPF_ALWAYS_PASS
-		, GL_LESS		// CMPF_LESS
-		, GL_LEQUAL		// CMPF_LESS_EQUAL
-		, GL_EQUAL		// CMPF_EQUAL
-		, GL_NOTEQUAL	// CMPF_NOT_EQUAL
-		, GL_GEQUAL		// CMPF_GREATER_EQUAL
-		, GL_GREATER	// CMPF_GREATER
-	};
-	//////////////////////////////////////////////////////////////////////////
-	/*static const GLenum s_toGLFillMode[] =
-	{
-	GL_POINT	// FM_POINT
-	, GL_LINE	// FM_WIREFRAME
-	, GL_FILL	// FM_SOLID
-	};*/
-	//////////////////////////////////////////////////////////////////////////
-	static const GLenum s_toGLShadeMode[] =
-	{
-		GL_FLAT		// SHT_FLAT
-		, GL_SMOOTH	// SHT_GOURAUD
-		, GL_SMOOTH	// SHT_PHONG
-	};
-	//////////////////////////////////////////////////////////////////////////
-	static const GLenum s_toMagFilter( Menge::ETextureFilter _magFilter )
-	{
-		switch( _magFilter )
-		{
-		case Menge::TF_NONE:
-		case Menge::TF_POINT:
-			return GL_NEAREST;
-			break;
-		case Menge::TF_LINEAR:
-		case Menge::TF_ANISOTROPIC:
-		case Menge::TF_FLATCUBIC:
-		case Menge::TF_GAUSSIANCUBIC:
-			return GL_LINEAR;
-			break;
-		default:
-			{
-			}break;
-		};
-
-		return GL_NEAREST;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_toGLMinFilter( Menge::ETextureFilter _minFilter, Menge::ETextureFilter _mipFilter )
-	{
-		switch( _minFilter )
-		{
-		case Menge::TF_NONE:
-		case Menge::TF_POINT:
-			switch( _mipFilter )
-			{
-			case Menge::TF_NONE:
-				return GL_NEAREST;
-			case Menge::TF_POINT:
-				return GL_NEAREST_MIPMAP_NEAREST;
-			case Menge::TF_ANISOTROPIC:
-			case Menge::TF_LINEAR:
-			case Menge::TF_FLATCUBIC:
-			case Menge::TF_GAUSSIANCUBIC:
-				return GL_NEAREST_MIPMAP_LINEAR;
-			default:;
-			}
-			break;
-		case Menge::TF_ANISOTROPIC:
-		case Menge::TF_LINEAR:
-		case Menge::TF_FLATCUBIC:
-		case Menge::TF_GAUSSIANCUBIC:
-			switch( _mipFilter )
-			{
-			case Menge::TF_NONE:
-				return GL_LINEAR;
-			case Menge::TF_POINT:
-				return GL_LINEAR_MIPMAP_NEAREST;
-			case Menge::TF_ANISOTROPIC:
-			case Menge::TF_LINEAR:
-			case Menge::TF_FLATCUBIC:
-			case Menge::TF_GAUSSIANCUBIC:
-				return GL_LINEAR_MIPMAP_LINEAR;
-			default:;
-			}
-			break;
-		default:;
-		}
-
-		return GL_NEAREST_MIPMAP_NEAREST;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static int s_toGLInternalFormat( Menge::PixelFormat _format )
-	{
-		switch( _format )
-		{
-		case Menge::PF_X8B8G8R8:
-		case Menge::PF_X8R8G8B8:
-		case Menge::PF_A8B8G8R8:
-		case Menge::PF_A8R8G8B8:
-		case Menge::PF_B8G8R8A8:
-		case Menge::PF_R8G8B8A8:
-			//return GL_RGBA8;
-			return GL_RGBA;
-		case PF_R8G8B8:
-			return GL_RGB;
-		case Menge::PF_A8:
-			return GL_ALPHA;
-			//return GL_LUMINANCE;
-		case Menge::PF_ETC1:
-			return GL_ETC1_RGB8_OES;
-		case Menge::PF_PVRTC4_RGB:
-			return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
-		case Menge::PF_PVRTC4_RGBA:
-			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-		default:;
-		}
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_toGLColorFormat( Menge::PixelFormat _format )
-	{
-		switch( _format )
-		{
-		case Menge::PF_R8G8B8:
-			return GL_RGB;
-		case Menge::PF_X8R8G8B8:
-		case Menge::PF_A8R8G8B8:
-			return GL_RGBA;
-		case Menge::PF_A8:
-			return GL_ALPHA;
-		case Menge::PF_ETC1:
-			return GL_ETC1_RGB8_OES;
-		case Menge::PF_PVRTC4_RGB:
-			return GL_COMPRESSED_RGB_PVRTC_4BPPV1_IMG;
-		case Menge::PF_PVRTC4_RGBA:
-			return GL_COMPRESSED_RGBA_PVRTC_4BPPV1_IMG;
-		default:;
-		}
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_getGLColorDataType( Menge::PixelFormat _format )
-	{
-		switch( _format )
-		{
-		case Menge::PF_R8G8B8:
-			return GL_UNSIGNED_BYTE;
-		case Menge::PF_X8R8G8B8:
-		case Menge::PF_A8R8G8B8:
-			return GL_UNSIGNED_BYTE;
-		case Menge::PF_A8:
-			return GL_UNSIGNED_BYTE;
-		case PF_ETC1:
-		case PF_PVRTC4_RGB:
-		case PF_PVRTC4_RGBA:
-			return GL_UNSIGNED_BYTE;
-		default:;
-		}
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_getGLPrimitiveMode( EPrimitiveType _mode )
-	{
-		switch( _mode )
-		{
-		case PT_POINTLIST:
-			return GL_POINTS;
-		case PT_LINELIST:
-			return GL_LINES;
-		case PT_LINESTRIP:
-			return GL_LINE_STRIP;
-		case PT_TRIANGLELIST:
-			return GL_TRIANGLES;
-		case PT_TRIANGLESTRIP:
-			return GL_TRIANGLE_STRIP;
-		case PT_TRIANGLEFAN:
-			return GL_TRIANGLE_FAN;
-		default:;
-		}
-
-		return GL_POINTS;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_getGLAddressMode( ETextureAddressMode _mode )
-	{
-		switch( _mode )
-		{
-		case TAM_CLAMP:
-			return GL_CLAMP_TO_EDGE;
-		case TAM_WRAP:
-			return GL_REPEAT;
-		default:;
-		}
-
-		return GL_CLAMP_TO_EDGE;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_getGLTextureArg( ETextureArgument _arg )
-	{
-		switch( _arg )
-		{
-		case TARG_CURRENT:
-			return GL_PREVIOUS;
-		case TARG_DIFFUSE:
-			return GL_PRIMARY_COLOR;
-		case TARG_SPECULAR:
-			return GL_PRIMARY_COLOR;
-		case TARG_TEXTURE:
-			return GL_TEXTURE;
-		case TARG_TFACTOR:
-			return GL_CONSTANT;
-		default:;
-		}
-
-		return GL_PREVIOUS;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static GLenum s_getGLTextureOp( ETextureOp _op )
-	{
-		switch( _op )
-		{
-		case TOP_DISABLE:
-			return GL_REPLACE;
-		case TOP_SELECTARG1:
-			return GL_REPLACE;
-		case TOP_SELECTARG2:
-			return GL_REPLACE;
-		case TOP_MODULATE:
-			return GL_MODULATE;
-		case TOP_ADD:
-			return GL_ADD;
-		case TOP_SUBTRACT:
-			return GL_SUBTRACT;
-		default:;
-		}
-
-		return GL_REPLACE;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderSystemES1::MarmaladeRenderSystemES1()
 		: m_serviceProvider( nullptr )
+		, m_listener( nullptr )
+		, m_windowContext( nullptr )
 		, m_supportNPOT( false )
-		, m_currentVertexBuffer( 0 )
-		, m_currentIndexBuffer( 0 )
-		, m_srcBlendFactor( GL_ONE )
-		, m_dstBlendFactor( GL_ZERO )
-		, m_activeTextureStage( 0 )
-		, m_activeTexture( 0 )
-		, m_VBHandleGenerator( 0 )
-		, m_IBHandleGenerator( 0 )
 		, m_depthMask( false )
 	{
 	}
@@ -448,228 +186,58 @@ namespace Menge
 		// To Do
 	}
 	//////////////////////////////////////////////////////////////////////////
-	VBHandle MarmaladeRenderSystemES1::createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic )
+	RenderVertexBufferInterfacePtr MarmaladeRenderSystemES1::createVertexBuffer( uint32_t _verticesNum, bool _dynamic )
 	{
-		size_t size = _verticesNum * _vertexSize;
-		unsigned char * memory = (unsigned char *)stdex_malloc( size );
+		MarmaladeRenderVertexBufferPtr buffer = m_factoryVertexBuffer.createObject();
 
-		MemoryRange memRange;
-		memRange.pMem = memory;
-		memRange.size = size;
-		memRange.offset = 0;
-		memRange.flags = BLF_LOCK_NONE;
-
-		GLenum usage = GL_STATIC_DRAW;
-
-		if( _dynamic == true )
+		if( buffer->initialize( m_serviceProvider, _verticesNum, _dynamic ) == false )
 		{
-			usage = GL_DYNAMIC_DRAW;
+			return nullptr;
 		}
 
-		GLuint bufId = 0;
-		GLCALL( m_serviceProvider, glGenBuffers, (1, &bufId) );
-
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, bufId) );
-		GLCALL( m_serviceProvider, glBufferData, (GL_ARRAY_BUFFER, memRange.size, NULL, usage) );
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, 0) );
-
-		memRange.bufId = bufId;
-
-		VBHandle vbHandle = ++m_VBHandleGenerator;
-		m_vBuffersMemory.insert( std::make_pair( vbHandle, memRange ) );
-
-		return vbHandle;
+		return buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystemES1::releaseVertexBuffer( VBHandle _vbHandle )
+	bool MarmaladeRenderSystemES1::setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer )
 	{
-		TMapVBufferMemory::iterator it_found = m_vBuffersMemory.find( _vbHandle );
-
-		if( it_found == m_vBuffersMemory.end() )
-		{
-			return false;
-		}
-
-		MemoryRange & range = it_found->second;
-
-		stdex_free( range.pMem );
-
-		if( _vbHandle == m_currentVertexBuffer )
+		if( _vertexBuffer == nullptr )
 		{
 			GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 
-			m_currentVertexBuffer = 0;
+			return true;
 		}
 
-		GLCALL( m_serviceProvider, glDeleteBuffers, (1, &range.bufId) );
+		MarmaladeRenderVertexBufferES1 * vb = stdex::intrusive_get<MarmaladeRenderVertexBufferES1 *>( _vertexBuffer );
 
-		m_vBuffersMemory.erase( it_found );
+		vb->enable();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MarmaladeRenderSystemES1::lockVertexBuffer( VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
+	RenderIndexBufferInterfacePtr MarmaladeRenderSystemES1::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
 	{
-		TMapVBufferMemory::iterator it_found = m_vBuffersMemory.find( _vbHandle );
+		MarmaladeRenderIndexBufferPtr buffer = m_factoryIndexBuffer.createObject();
 
-		if( it_found == m_vBuffersMemory.end() )
+		if( buffer->initialize( m_serviceProvider, _indiciesNum, _dynamic ) == false )
 		{
 			return nullptr;
 		}
 
-		MemoryRange & range = it_found->second;
-
-		MemoryRange memRange;
-		memRange.pMem = range.pMem + _offset;
-		memRange.size = _size;
-		memRange.offset = _offset;
-		memRange.flags = _flags;
-		memRange.bufId = range.bufId;
-
-		m_vBuffersLocks.insert( std::make_pair( _vbHandle, memRange ) );
-
-		void * mem = static_cast<void *>(memRange.pMem);
-
-		return mem;
+		return buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystemES1::unlockVertexBuffer( VBHandle _vbHandle )
+	bool MarmaladeRenderSystemES1::setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer )
 	{
-		TMapVBufferMemory::iterator it_found = m_vBuffersLocks.find( _vbHandle );
-
-		if( it_found == m_vBuffersLocks.end() )
-		{
-			return false;
-		}
-
-		MemoryRange & range = it_found->second;
-
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, range.bufId) );
-		GLCALL( m_serviceProvider, glBufferSubData, (GL_ARRAY_BUFFER, range.offset, range.size, range.pMem) );
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, 0) );
-
-		m_vBuffersLocks.erase( it_found );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystemES1::setVertexBuffer( VBHandle _vbHandle )
-	{
-		m_currentVertexBuffer = _vbHandle;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	IBHandle MarmaladeRenderSystemES1::createIndexBuffer( uint32_t _indiciesNum, bool _dynamic )
-	{
-		size_t size = _indiciesNum * sizeof( RenderIndices );
-		unsigned char * memory = (unsigned char *)stdex_malloc( size );
-
-		MemoryRange memRange;
-		memRange.pMem = memory;
-		memRange.size = size;
-		memRange.offset = 0;
-		memRange.flags = BLF_LOCK_NONE;
-
-		GLenum usage = GL_STATIC_DRAW;
-
-		if( _dynamic == true )
-		{
-			usage = GL_DYNAMIC_DRAW;
-		}
-
-		GLuint bufId = 0;
-
-		GLCALL( m_serviceProvider, glGenBuffers, (1, &bufId) );
-
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, bufId) );
-
-		GLCALL( m_serviceProvider, glBufferData, (GL_ELEMENT_ARRAY_BUFFER, memRange.size, NULL, usage) );
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
-
-		memRange.bufId = bufId;
-
-		IBHandle ibHandle = ++m_IBHandleGenerator;
-		m_iBuffersMemory.insert( std::make_pair( ibHandle, memRange ) );
-
-		return ibHandle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystemES1::releaseIndexBuffer( IBHandle _ibHandle )
-	{
-		TMapIBufferMemory::iterator it_found = m_iBuffersMemory.find( _ibHandle );
-
-		if( it_found == m_iBuffersMemory.end() )
-		{
-			return false;
-		}
-
-		MemoryRange & range = it_found->second;
-
-		if( _ibHandle == m_currentIndexBuffer )
+		if( _indexBuffer == nullptr )
 		{
 			GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
 
-			m_currentIndexBuffer = 0;
+			return true;
 		}
 
-		stdex_free( range.pMem );
+		MarmaladeRenderIndexBufferES1 * ib = stdex::intrusive_get<MarmaladeRenderIndexBufferES1 *>( _indexBuffer );
 
-		GLCALL( m_serviceProvider, glDeleteBuffers, (1, &range.bufId) );
-
-		m_iBuffersMemory.erase( it_found );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderIndices * MarmaladeRenderSystemES1::lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags )
-	{
-		TMapIBufferMemory::iterator it_found = m_iBuffersMemory.find( _ibHandle );
-
-		if( it_found == m_iBuffersMemory.end() )
-		{
-			return nullptr;
-		}
-
-		MemoryRange & range = it_found->second;
-
-		MemoryRange memRange;
-		memRange.pMem = range.pMem + _offset;
-		memRange.size = _size;
-		memRange.offset = _offset;
-		memRange.flags = _flags;
-		memRange.bufId = range.bufId;
-
-		m_iBuffersLocks.insert( std::make_pair( _ibHandle, memRange ) );
-
-		RenderIndices * mem = reinterpret_cast<RenderIndices *>(memRange.pMem);
-
-		return mem;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystemES1::unlockIndexBuffer( IBHandle _ibHandle )
-	{
-		TMapIBufferMemory::iterator it_found = m_iBuffersLocks.find( _ibHandle );
-
-		if( it_found == m_iBuffersLocks.end() )
-		{
-			return false;
-		}
-
-		MemoryRange & range = it_found->second;
-
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, range.bufId) );
-		GLCALL( m_serviceProvider, glBufferSubData, (GL_ELEMENT_ARRAY_BUFFER, range.offset, range.size, range.pMem) );
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
-
-		m_iBuffersLocks.erase( it_found );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystemES1::setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex )
-	{
-		m_currentIndexBuffer = _ibHandle;
+		ib->enable();
 
 		return true;
 	}
@@ -753,26 +321,26 @@ namespace Menge
 			GLCALL( m_serviceProvider, glTexEnvi, (GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA) );
 		}
 
-		TMapVBufferMemory::iterator it_vbuffer_found = m_vBuffersMemory.find( m_currentVertexBuffer );
+		//TMapVBufferMemory::iterator it_vbuffer_found = m_vBuffersMemory.find( m_currentVertexBuffer );
 
-		if( it_vbuffer_found == m_vBuffersMemory.end() )
-		{
-			return;
-		}
+		//if( it_vbuffer_found == m_vBuffersMemory.end() )
+		//{
+		//	return;
+		//}
 
-		MemoryRange & vb_range = it_vbuffer_found->second;
+		//MemoryRange & vb_range = it_vbuffer_found->second;
 
-		TMapIBufferMemory::iterator it_ibuffer_found = m_iBuffersMemory.find( m_currentVertexBuffer );
+		//TMapIBufferMemory::iterator it_ibuffer_found = m_iBuffersMemory.find( m_currentVertexBuffer );
 
-		if( it_ibuffer_found == m_iBuffersMemory.end() )
-		{
-			return;
-		}
+		//if( it_ibuffer_found == m_iBuffersMemory.end() )
+		//{
+		//	return;
+		//}
 
-		MemoryRange & ib_range = it_ibuffer_found->second;
+		//MemoryRange & ib_range = it_ibuffer_found->second;
 
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, vb_range.bufId) );
-		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, ib_range.bufId) );
+		//GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, vb_range.bufId) );
+		//GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, ib_range.bufId) );
 
 		GLCALL( m_serviceProvider, glEnableClientState, (GL_VERTEX_ARRAY) );
 		GLCALL( m_serviceProvider, glVertexPointer, (3, GL_FLOAT, sizeof( RenderVertex2D ), reinterpret_cast<const GLvoid *>(offsetof( RenderVertex2D, pos ))) );
@@ -827,7 +395,7 @@ namespace Menge
 
 		if( _texture != nullptr )
 		{
-			MarmaladeTextureES1 * texture = stdex::intrusive_get<MarmaladeTextureES1>( _texture );
+			MarmaladeRenderTextureES1 * texture = stdex::intrusive_get<MarmaladeRenderTextureES1 *>( _texture );
 
 			tStage.texture = texture->getUId();
 			tStage.wrapS = texture->getWrapS();
@@ -855,18 +423,12 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystemES1::setSrcBlendFactor( EBlendFactor _src )
+	void MarmaladeRenderSystemES1::setBlendFactor( EBlendFactor _src, EBlendFactor _dst )
 	{
-		m_srcBlendFactor = s_toGLBlendFactor[_src];
+		GLenum srcBlendFactor = s_toGLBlendFactor(_src);
+		GLenum dstBlendFactor = s_toGLBlendFactor( _dst );
 
-		GLCALL( m_serviceProvider, glBlendFunc, (m_srcBlendFactor, m_dstBlendFactor) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystemES1::setDstBlendFactor( EBlendFactor _dst )
-	{
-		m_dstBlendFactor = s_toGLBlendFactor[_dst];
-
-		GLCALL( m_serviceProvider, glBlendFunc, (m_srcBlendFactor, m_dstBlendFactor) );
+		GLCALL( m_serviceProvider, glBlendFunc, (srcBlendFactor, dstBlendFactor) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setCullMode( ECullMode _mode )
@@ -921,7 +483,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setDepthBufferCmpFunc( ECompareFunction _depthFunction )
 	{
-		GLenum cmpFunc = s_toGLCmpFunc[_depthFunction];
+		GLenum cmpFunc = s_toGLCmpFunc( _depthFunction );
 
 		GLCALL( m_serviceProvider, glDepthFunc, (cmpFunc) );
 	}
@@ -939,7 +501,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setShadeType( EShadeType _sType )
 	{
-		GLenum model = s_toGLShadeMode[_sType];
+		GLenum model = s_toGLShadeMode( _sType );
+
 		GLCALL( m_serviceProvider, glShadeModel, (model) );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -957,7 +520,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha )
 	{
-		GLenum cmpFunc = s_toGLCmpFunc[_alphaFunc];
+		GLenum cmpFunc = s_toGLCmpFunc( _alphaFunc );
+
 		GLclampf ref = (GLclampf)(static_cast<float>(_alpha) / 255.0f);
 
 		GLCALL( m_serviceProvider, glAlphaFunc, (cmpFunc, ref) );
@@ -1112,7 +676,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		MarmaladeTextureES1 * texture = m_factoryOGLTexture.createObjectT();
+		MarmaladeRenderTextureES1 * texture = m_factoryTextureES1.createObject();
 
 		texture->initialize(
 			m_serviceProvider
@@ -1310,7 +874,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		MarmaladeTextureES1 * texture = m_factoryOGLTexture.createObjectT();
+		MarmaladeRenderTextureES1 * texture = m_factoryTextureES1.createObject();
 
 		texture->initialize(
 			m_serviceProvider

@@ -4,9 +4,11 @@
 
 #   include "Config/String.h"
 
-#   include "MarmaladeTexture.h"
-#   include "MarmaladeShader.h"
-#   include "MarmaladeProgram.h"
+#   include "MarmaladeRenderTexture.h"
+#   include "MarmaladeRenderVertexBuffer.h"
+#   include "MarmaladeRenderIndexBuffer.h"
+#   include "MarmaladeRenderShader.h"
+#   include "MarmaladeRenderProgram.h"
 
 #   include "Factory/FactoryStore.h"
 
@@ -21,7 +23,7 @@ namespace Menge
     class LogServiceInterface;
     
 	class OGLWindowContext;
-	class MarmaladeTexture;
+	class MarmaladeRenderTexture;
 
     struct TextureStage
     {
@@ -96,17 +98,12 @@ namespace Menge
 		void setTextureMatrix( uint32_t _stage, const float* _texture ) override;
         void setWorldMatrix( const mt::mat4f & _view ) override;
 
-		VBHandle createVertexBuffer( uint32_t _verticesNum, uint32_t _vertexSize, bool _dynamic ) override;
-		bool releaseVertexBuffer( VBHandle _vbHandle ) override;
-		void* lockVertexBuffer(  VBHandle _vbHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
-		bool unlockVertexBuffer( VBHandle _vbHandle ) override;
-		bool setVertexBuffer( VBHandle _vbHandle ) override;
+	public:
+		RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _verticesNum, bool _dynamic ) override;
+		bool setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) override;
 
-		IBHandle createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
-		bool releaseIndexBuffer( IBHandle _ibHandle ) override;
-		RenderIndices * lockIndexBuffer( IBHandle _ibHandle, uint32_t _offset, uint32_t _size, EBufferLockFlag _flags ) override;
-		bool unlockIndexBuffer( IBHandle _ibHandle ) override;
-		bool setIndexBuffer( IBHandle _ibHandle, uint32_t _baseVertexIndex ) override;
+		RenderIndexBufferInterfacePtr createIndexBuffer( uint32_t _indiciesNum, bool _dynamic ) override;
+		bool setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer ) override;
 
 	public:
 		void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
@@ -119,8 +116,7 @@ namespace Menge
 		void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) override;
 		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32_t _color ) override;
-		void setSrcBlendFactor( EBlendFactor _src ) override;
-		void setDstBlendFactor( EBlendFactor _dst ) override;
+		void setBlendFactor( EBlendFactor _src, EBlendFactor _dst ) override;
 		void setCullMode( ECullMode _mode ) override;
 		void setDepthBufferTestEnable( bool _depthTest ) override;
 		void setDepthBufferWriteEnable( bool _depthWrite ) override;
@@ -198,42 +194,11 @@ namespace Menge
 
 		bool m_supportNPOT;
 
-		GLuint m_currentVertexBuffer;
-		GLuint m_currentIndexBuffer;
-		//GLuint m_baseVertexIndex;
+		typedef FactoryDefaultStore<MarmaladeRenderVertexBuffer> TFactoryRenderVertexBuffer;
+		TFactoryRenderVertexBuffer m_factoryVertexBuffer;
 
-		GLenum m_srcBlendFactor;
-		GLenum m_dstBlendFactor;
-
-		struct MemoryRange
-		{
-			MemoryRange()
-				: pMem(nullptr)
-				, size(0)
-				, offset(0)
-				, flags(BLF_LOCK_NONE)
-				, bufId(0)
-			{
-			}
-
-			unsigned char * pMem;
-			size_t size;
-			size_t offset;
-            EBufferLockFlag flags;
-
-			GLuint bufId;
-		};
-
-		VBHandle m_VBHandleGenerator;
-		IBHandle m_IBHandleGenerator;
-
-		typedef stdex::map<VBHandle, MemoryRange> TMapVBufferMemory;
-		TMapVBufferMemory m_vBuffersMemory;
-		TMapVBufferMemory m_vBuffersLocks;
-		
-		typedef stdex::map<IBHandle, MemoryRange> TMapIBufferMemory;
-		TMapIBufferMemory m_iBuffersMemory;
-		TMapIBufferMemory m_iBuffersLocks;
+		typedef FactoryDefaultStore<MarmaladeRenderIndexBuffer> TFactoryRenderIndexBuffer;
+		TFactoryRenderIndexBuffer m_factoryIndexBuffer;
 
 		typedef stdex::map<ConstString, RenderShaderInterface *> TMapRenderShaders;
 		TMapRenderShaders m_shaders;
@@ -241,13 +206,13 @@ namespace Menge
 		uint32_t m_activeTextureStage;
 		GLuint m_activeTexture;
 
-        typedef FactoryPoolStore<MarmaladeTexture, 128> TFactoryTexture;
+        typedef FactoryPoolStore<MarmaladeRenderTexture, 128> TFactoryTexture;
         TFactoryTexture m_factoryTexture;
 
-		typedef FactoryPoolStore<MarmaladeShader, 16> TFactoryShader;
+		typedef FactoryPoolStore<MarmaladeRenderShader, 16> TFactoryShader;
 		TFactoryShader m_factoryShader;
 
-		typedef FactoryPoolStore<MarmaladeProgram, 16> TFactoryProgram;
+		typedef FactoryPoolStore<MarmaladeRenderProgram, 16> TFactoryProgram;
 		TFactoryProgram m_factoryProgram;
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];

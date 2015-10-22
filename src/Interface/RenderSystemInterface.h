@@ -582,6 +582,8 @@ namespace Menge
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
 		virtual bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) = 0;
+
+	public:
 		// входные данные: матрица 4 на 4
 		virtual	void setProjectionMatrix( const mt::mat4f & _projection ) = 0;
 		virtual	void setModelViewMatrix( const mt::mat4f & _view ) = 0;
@@ -589,6 +591,7 @@ namespace Menge
 
 		virtual void setTextureMatrix( uint32_t _stage, const float * _texture ) = 0;
 
+	public:
 		virtual RenderVertexBufferInterfacePtr createVertexBuffer( uint32_t _verticesNum, bool _dynamic ) = 0;
 		virtual bool setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer ) = 0;
 
@@ -609,8 +612,7 @@ namespace Menge
 		virtual void setTexture( uint32_t _stage, const RenderImageInterfacePtr & _texture ) = 0;
 		virtual void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) = 0;
 		virtual void setTextureFactor( uint32_t _color ) = 0;
-		virtual void setSrcBlendFactor( EBlendFactor _src ) = 0;
-		virtual void setDstBlendFactor( EBlendFactor _dst ) = 0;
+		virtual void setBlendFactor( EBlendFactor _src, EBlendFactor _dst ) = 0;
 		virtual void setCullMode( ECullMode _mode ) = 0;
 		virtual void setDepthBufferTestEnable( bool _depthTest ) = 0;
 		virtual void setDepthBufferWriteEnable( bool _depthWrite ) = 0;

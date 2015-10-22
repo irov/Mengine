@@ -53,7 +53,7 @@ namespace Menge
 		(void)_fileName;
 		(void)_streaming;
 
-		MarmaladeFileInputStream * inputStream = m_factoryInputStream.createObjectT();
+		MarmaladeFileInputStream * inputStream = m_factoryInputStream.createObject();
 
         inputStream->setServiceProvider( m_serviceProvider );
 
@@ -89,7 +89,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     OutputStreamInterfacePtr MarmaladeFileGroupDirectory::createOutputFile()
     {
-        MarmaladeFileOutputStream * outStream = m_factoryOutputStream.createObjectT();
+        MarmaladeFileOutputStream * outStream = m_factoryOutputStream.createObject();
 
         outStream->setServiceProvider( m_serviceProvider );
 
@@ -106,7 +106,7 @@ namespace Menge
 			return false;
 		}
 
-		FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface>(_stream);
+		FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>(_stream);
 
 		if( file->open( m_path, _fileName ) == false )
 		{

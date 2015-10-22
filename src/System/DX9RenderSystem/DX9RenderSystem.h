@@ -87,9 +87,8 @@ namespace Menge
 		void setTextureAddressing( uint32_t _stage, ETextureAddressMode _modeU, ETextureAddressMode _modeV ) override;
 		void setTextureFactor( uint32_t _color ) override;
 
-		void setSrcBlendFactor( EBlendFactor _src ) override;
-		void setDstBlendFactor( EBlendFactor _dst ) override;
-
+		void setBlendFactor( EBlendFactor _src, EBlendFactor _dst ) override;
+		
 		void setCullMode( ECullMode _mode ) override;
 
 		void setDepthBufferTestEnable( bool _depthTest ) override;
@@ -206,11 +205,11 @@ namespace Menge
 
 		DWORD m_vertexDeclaration;
 
-		typedef FactoryDefaultStore<DX9RenderVertexBuffer> TFactoryDX9RenderVertexBuffer;
-		TFactoryDX9RenderVertexBuffer m_factoryVertexBuffer;
+		typedef FactoryDefaultStore<DX9RenderVertexBuffer> TFactoryRenderVertexBuffer;
+		TFactoryRenderVertexBuffer m_factoryVertexBuffer;
 
-		typedef FactoryDefaultStore<DX9RenderIndexBuffer> TFactoryDX9RenderIndexBuffer;
-		TFactoryDX9RenderIndexBuffer m_factoryIndexBuffer;
+		typedef FactoryDefaultStore<DX9RenderIndexBuffer> TFactoryRenderIndexBuffer;
+		TFactoryRenderIndexBuffer m_factoryIndexBuffer;
 
 		bool m_vertexBufferEnable;
 		bool m_indexBufferEnable;

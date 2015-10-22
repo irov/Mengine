@@ -609,20 +609,14 @@ namespace Menge
 				->setAlphaBlendEnable( m_alphaBlendEnable );
 		}
 
-		if( m_currentBlendSrc != m_currentStage->blendSrc )
+		if( m_currentBlendSrc != m_currentStage->blendSrc ||
+			m_currentBlendDst != m_currentStage->blendDst )
 		{
 			m_currentBlendSrc = m_currentStage->blendSrc;
-
-			RENDER_SYSTEM(m_serviceProvider)
-				->setSrcBlendFactor( m_currentBlendSrc );
-		}
-
-		if( m_currentBlendDst != m_currentStage->blendDst )
-		{
 			m_currentBlendDst = m_currentStage->blendDst;
 
 			RENDER_SYSTEM(m_serviceProvider)
-				->setDstBlendFactor( m_currentBlendDst );
+				->setBlendFactor( m_currentBlendSrc, m_currentBlendDst );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -847,8 +841,7 @@ namespace Menge
 			, MENGE_MAX_TEXTURE_STAGES
 			);
 
-		RENDER_SYSTEM(m_serviceProvider)->setSrcBlendFactor( m_currentBlendSrc );
-		RENDER_SYSTEM(m_serviceProvider)->setDstBlendFactor( m_currentBlendDst );
+		RENDER_SYSTEM( m_serviceProvider )->setBlendFactor( m_currentBlendSrc, m_currentBlendDst );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float zn, float zf )

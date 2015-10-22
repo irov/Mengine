@@ -1,4 +1,4 @@
-#	include "MarmaladeProgram.h"
+#	include "MarmaladeRenderProgram.h"
 
 #	include "MarmaladeRenderError.h"
 
@@ -7,7 +7,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeProgram::MarmaladeProgram()
+	MarmaladeRenderProgram::MarmaladeRenderProgram()
 		: m_serviceProvider( nullptr )
 		, m_program( 0 )
 		, m_samplerCount( 0 )
@@ -19,26 +19,26 @@ namespace Menge
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeProgram::~MarmaladeProgram()
+	MarmaladeRenderProgram::~MarmaladeRenderProgram()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeProgram::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	void MarmaladeRenderProgram::setServiceProvider( ServiceProviderInterface * _serviceProvider )
 	{
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * MarmaladeProgram::getServiceProvider()
+	ServiceProviderInterface * MarmaladeRenderProgram::getServiceProvider()
 	{ 
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & MarmaladeProgram::getName() const
+	const ConstString & MarmaladeRenderProgram::getName() const
 	{ 
 		return m_name;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool MarmaladeProgram::initialize( const ConstString & _name, const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader, uint32_t _samplerCount )
+	bool MarmaladeRenderProgram::initialize( const ConstString & _name, const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader, uint32_t _samplerCount )
 	{
 		m_name = _name;
 		m_samplerCount = _samplerCount;
@@ -129,24 +129,24 @@ namespace Menge
 		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeProgram::enable() const
+	void MarmaladeRenderProgram::enable() const
 	{
 		GLCALL( m_serviceProvider, glUseProgram, (m_program) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeProgram::disable() const
+	void MarmaladeRenderProgram::disable() const
 	{
 		GLCALL( m_serviceProvider, glUseProgram, (0) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeProgram::bindMatrix( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix ) const
+	void MarmaladeRenderProgram::bindMatrix( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix ) const
 	{
 		m_mvpMat = _worldMatrix * _viewMatrix * _projectionMatrix;
 
 		GLCALL( m_serviceProvider, glUniformMatrix4fv, (m_transformLocation, 1, GL_FALSE, m_mvpMat.buff()) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeProgram::bindTexture( uint32_t _index ) const
+	void MarmaladeRenderProgram::bindTexture( uint32_t _index ) const
 	{	
 		if( _index >= m_samplerCount )
 		{
@@ -164,7 +164,7 @@ namespace Menge
 		GLCALL( m_serviceProvider, glUniform1i, (location, _index) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeProgram::finalize()
+	void MarmaladeRenderProgram::finalize()
 	{ 
 		GLCALL( m_serviceProvider, glDeleteProgram, (m_program) );
 		m_program = 0;

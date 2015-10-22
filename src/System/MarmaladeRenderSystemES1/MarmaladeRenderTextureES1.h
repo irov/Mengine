@@ -8,12 +8,12 @@
 
 namespace Menge
 {
-	class MarmaladeTextureES1 
+	class MarmaladeRenderTextureES1 
 		: public RenderImageInterface
 	{
 	public:
-		MarmaladeTextureES1();
-		~MarmaladeTextureES1();
+		MarmaladeRenderTextureES1();
+		~MarmaladeRenderTextureES1();
 
     public:
         void initialize( ServiceProviderInterface * _serviceProvider, GLuint _uid, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type );
@@ -78,5 +78,5 @@ namespace Menge
 		uint32_t m_lockLevel;
 	};
 
-    typedef stdex::intrusive_ptr<MarmaladeTextureES1> OGLTexturePtr;
+    typedef stdex::intrusive_ptr<MarmaladeRenderTextureES1> OGLTexturePtr;
 }	// namespace Menge

@@ -1,4 +1,4 @@
-#	include "MarmaladeTexture.h"
+#	include "MarmaladeRenderTexture.h"
 
 #	include "MarmaladeRenderError.h"
 
@@ -7,7 +7,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeTexture::MarmaladeTexture()
+	MarmaladeRenderTexture::MarmaladeRenderTexture()
 		: m_serviceProvider( nullptr )
 		, m_uid( 0 )
 		, m_hwMipmaps( 0 )
@@ -27,11 +27,11 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MarmaladeTexture::~MarmaladeTexture()
+	MarmaladeRenderTexture::~MarmaladeRenderTexture()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeTexture::initialize( ServiceProviderInterface * _serviceProvider, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
+	bool MarmaladeRenderTexture::initialize( ServiceProviderInterface * _serviceProvider, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
 	{
 		m_serviceProvider = _serviceProvider;
 
@@ -83,37 +83,37 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ERenderImageMode MarmaladeTexture::getMode() const
+	ERenderImageMode MarmaladeRenderTexture::getMode() const
 	{
 		return m_mode;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t MarmaladeTexture::getHWWidth() const
+	uint32_t MarmaladeRenderTexture::getHWWidth() const
 	{
 		return m_hwWidth;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t MarmaladeTexture::getHWHeight() const
+	uint32_t MarmaladeRenderTexture::getHWHeight() const
 	{
 		return m_hwHeight;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t MarmaladeTexture::getHWChannels() const
+	uint32_t MarmaladeRenderTexture::getHWChannels() const
 	{
 		return m_hwChannels;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t MarmaladeTexture::getHWDepth() const
+	uint32_t MarmaladeRenderTexture::getHWDepth() const
 	{
 		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PixelFormat MarmaladeTexture::getHWPixelFormat() const
+	PixelFormat MarmaladeRenderTexture::getHWPixelFormat() const
 	{
 		return m_hwPixelFormat;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void * MarmaladeTexture::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
+	void * MarmaladeRenderTexture::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
 	{
 		uint32_t miplevel_width = m_hwWidth >> _level;
 		uint32_t miplevel_height = m_hwHeight >> _level;
@@ -156,7 +156,7 @@ namespace Menge
 		return memory;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeTexture::unlock( uint32_t _level )
+	void MarmaladeRenderTexture::unlock( uint32_t _level )
 	{
 		GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
@@ -217,52 +217,52 @@ namespace Menge
 		m_lockLevel = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeTexture::_destroy()
+	void MarmaladeRenderTexture::_destroy()
 	{
 		GLCALL( m_serviceProvider, glDeleteTextures, (1, &m_uid) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	GLuint MarmaladeTexture::getUId() const
+	GLuint MarmaladeRenderTexture::getUId() const
 	{
 		return m_uid;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	GLenum MarmaladeTexture::getMinFilter() const
+	GLenum MarmaladeRenderTexture::getMinFilter() const
 	{
 		return m_minFilter;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeTexture::setMinFilter( GLenum _minFilter )
+	void MarmaladeRenderTexture::setMinFilter( GLenum _minFilter )
 	{
 		m_minFilter = _minFilter;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	GLenum MarmaladeTexture::getMagFilter() const
+	GLenum MarmaladeRenderTexture::getMagFilter() const
 	{
 		return m_magFilter;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeTexture::setMagFilter( GLenum _magFilter )
+	void MarmaladeRenderTexture::setMagFilter( GLenum _magFilter )
 	{
 		m_magFilter = _magFilter;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	GLenum MarmaladeTexture::getWrapS() const
+	GLenum MarmaladeRenderTexture::getWrapS() const
 	{
 		return m_wrapS;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeTexture::setWrapS( GLenum _wrapS )
+	void MarmaladeRenderTexture::setWrapS( GLenum _wrapS )
 	{
 		m_wrapS = _wrapS;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	GLenum MarmaladeTexture::getWrapT() const
+	GLenum MarmaladeRenderTexture::getWrapT() const
 	{
 		return m_wrapT;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeTexture::setWrapT( GLenum _wrapT )
+	void MarmaladeRenderTexture::setWrapT( GLenum _wrapT )
 	{
 		m_wrapT = _wrapT;
 	}

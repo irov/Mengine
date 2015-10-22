@@ -34,4 +34,6 @@ namespace Menge
 		IDirect3DIndexBuffer9 * m_pIB;
 		bool m_dynamic;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<DX9RenderIndexBuffer> DX9RenderIndexBufferPtr;
 }

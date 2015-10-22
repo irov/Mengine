@@ -19,12 +19,12 @@ namespace Menge
 #	define VERTEX_UV6_ARRAY				8
 #	define VERTEX_UV7_ARRAY				9
 	//////////////////////////////////////////////////////////////////////////
-	class MarmaladeShader
+	class MarmaladeRenderShader
 		: public RenderShaderInterface
 	{
 	public:
-		MarmaladeShader();
-		~MarmaladeShader();
+		MarmaladeRenderShader();
+		~MarmaladeRenderShader();
 
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
@@ -51,5 +51,5 @@ namespace Menge
 		GLuint m_shaderId;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MarmaladeShader> MarmaladeShaderPtr;
+	typedef stdex::intrusive_ptr<MarmaladeRenderShader> MarmaladeShaderPtr;
 }	// namespace Menge

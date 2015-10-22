@@ -35,4 +35,6 @@ namespace Menge
 		IDirect3DVertexBuffer9 * m_pVB;
 		bool m_dynamic;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<DX9RenderVertexBuffer> DX9RenderVertexBufferPtr;
 }

@@ -53,7 +53,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ThreadIdentityPtr MarmaladeThreadSystem::createThread( int _priority, const char * _doc )
 	{
-		MarmaladeThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObjectT();
+		MarmaladeThreadIdentityPtr identity = m_poolWin32ThreadIdentity.createObject();
 
 		ThreadMutexInterfacePtr mutex = this->createMutex( _doc );
 
@@ -75,7 +75,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ThreadMutexInterfacePtr MarmaladeThreadSystem::createMutex( const char * _doc )
     {
-        MarmaladeThreadMutexPtr mutex = m_poolMarmaladeThreadMutex.createObjectT();
+        MarmaladeThreadMutexPtr mutex = m_poolMarmaladeThreadMutex.createObject();
         
 		if( mutex->initialize( m_serviceProvider, _doc ) == false )
 		{

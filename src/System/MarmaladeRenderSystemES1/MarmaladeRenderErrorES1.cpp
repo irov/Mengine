@@ -25,9 +25,7 @@ namespace Menge
 			return "GL_STACK_UNDERFLOW";
 		case GL_STACK_OVERFLOW:
 			return "GL_STACK_OVERFLOW";
-		default:
-			{
-			}
+		default:;
 		}
 
 		return "GL_UNKNOWN";

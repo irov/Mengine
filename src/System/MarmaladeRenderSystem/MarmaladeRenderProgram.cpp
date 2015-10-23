@@ -21,6 +21,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderProgram::~MarmaladeRenderProgram()
 	{
+		if( m_program != 0 )
+		{
+			GLCALL( m_serviceProvider, glDeleteProgram, (m_program) );
+			m_program = 0;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderProgram::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -162,15 +167,6 @@ namespace Menge
 		int location = m_samplerLocation[_index];
 
 		GLCALL( m_serviceProvider, glUniform1i, (location, _index) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderProgram::finalize()
-	{ 
-		GLCALL( m_serviceProvider, glDeleteProgram, (m_program) );
-		m_program = 0;
-
-		m_vertexShader = nullptr;
-		m_fragmentShader = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

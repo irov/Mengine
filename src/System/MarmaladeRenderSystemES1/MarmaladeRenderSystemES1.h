@@ -17,12 +17,6 @@
 
 namespace Menge
 {
-    class ServiceProviderInterface;
-    class LogServiceInterface;
-    
-	class OGLWindowContext;
-	class MarmaladeRenderTextureES1;
-
     struct TextureStage
     {
         TextureStage()
@@ -30,8 +24,6 @@ namespace Menge
             , magFilter(0)
             , wrapS(0)
             , wrapT(0)
-			, mengeMinFilter(TF_NONE)
-            , mengeMipFilter(TF_NONE)
             , texture(0)
             , colorOp(0)
             , colorArg1(0)
@@ -47,9 +39,8 @@ namespace Menge
         GLenum magFilter;
         GLenum wrapS;
         GLenum wrapT;
-        ETextureFilter mengeMinFilter;
-        ETextureFilter mengeMipFilter;
-        GLuint texture;
+
+		GLuint texture;
         GLenum colorOp;
         GLenum colorArg1;
         GLenum colorArg2;
@@ -131,12 +122,10 @@ namespace Menge
 		void setAlphaBlendEnable( bool _alphaBlend ) override;
 		void setAlphaCmpFunc( ECompareFunction _alphaFunc, uint8_t _alpha ) override;
 		void setLightingEnable( bool _light ) override;
-		void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp,
-			ETextureArgument _arg1, ETextureArgument _arg2 ) override;
-		void setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,
-			ETextureArgument _arg1, ETextureArgument _arg2 ) override;
+		void setTextureStageColorOp( uint32_t _stage, ETextureOp _textrueOp, ETextureArgument _arg1, ETextureArgument _arg2 ) override;
+		void setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp, ETextureArgument _arg1, ETextureArgument _arg2 ) override;
         void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
-		void setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
+		void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 		              
         // create texture
 		// [in/out] _width ( desired texture width, returns actual texture width )
@@ -191,8 +180,6 @@ namespace Menge
 
         RenderSystemListener * m_listener;
 		
-		OGLWindowContext* m_windowContext;
-
         Resolution m_resolution;
 
 		bool m_supportNPOT;
@@ -202,6 +189,9 @@ namespace Menge
 
 		typedef FactoryDefaultStore<MarmaladeRenderIndexBufferES1> TFactoryRenderIndexBuffer;
 		TFactoryRenderIndexBuffer m_factoryIndexBuffer;
+
+		RenderIndexBufferInterfacePtr m_currentIndexBuffer;
+		RenderVertexBufferInterfacePtr m_currentVertexBuffer;
 
         typedef FactoryPoolStore<MarmaladeRenderTextureES1, 128> TFactoryTextureES1;
         TFactoryTextureES1 m_factoryTextureES1;

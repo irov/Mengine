@@ -15,6 +15,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderShader::~MarmaladeRenderShader()
 	{
+		if( m_shaderId != 0 )
+		{
+			GLCALL( m_serviceProvider, glDeleteShader, (m_shaderId) );
+			m_shaderId = 0;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderShader::setServiceProvider( ServiceProviderInterface * _serviceProvider )
@@ -104,11 +109,6 @@ namespace Menge
 
 		return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderShader::finalize()
-	{ 
-		GLCALL( m_serviceProvider, glDeleteShader, ( m_shaderId ) );
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderShader::attach( GLuint _program )
 	{ 

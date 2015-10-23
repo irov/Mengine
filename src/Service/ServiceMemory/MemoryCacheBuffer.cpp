@@ -54,7 +54,7 @@ namespace Menge
 
 		m_bufferId = bufferId;
 
-		m_data = reinterpret_cast<unsigned char *>(memory);
+		m_data = memory;
 		m_size = _size;
 
         return m_data;

@@ -39,7 +39,7 @@ namespace Menge
 
 		uint32_t m_bufferId;
 
-		unsigned char * m_data;
+		void * m_data;
 		size_t m_size;
 	};
 	//////////////////////////////////////////////////////////////////////////	

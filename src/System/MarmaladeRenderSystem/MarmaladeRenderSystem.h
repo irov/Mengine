@@ -19,12 +19,6 @@
 
 namespace Menge
 {
-    class ServiceProviderInterface;
-    class LogServiceInterface;
-    
-	class OGLWindowContext;
-	class MarmaladeRenderTexture;
-
     struct TextureStage
     {
         TextureStage()
@@ -32,8 +26,6 @@ namespace Menge
             , magFilter(0)
             , wrapS(0)
             , wrapT(0)
-			, mengeMinFilter(TF_NONE)
-            , mengeMipFilter(TF_NONE)
             , texture(0)
             , colorOp(0)
             , colorArg1(0)
@@ -49,8 +41,6 @@ namespace Menge
         GLenum magFilter;
         GLenum wrapS;
         GLenum wrapT;
-        ETextureFilter mengeMinFilter;
-        ETextureFilter mengeMipFilter;
         GLuint texture;
         GLenum colorOp;
         GLenum colorArg1;
@@ -132,7 +122,7 @@ namespace Menge
 		void setTextureStageAlphaOp( uint32_t _stage, ETextureOp _textrueOp,
 			ETextureArgument _arg1, ETextureArgument _arg2 ) override;
         void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
-		void setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
+		void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 
 	public:
 		RenderShaderInterfacePtr createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile ) override;
@@ -182,10 +172,6 @@ namespace Menge
 
         RenderSystemListener * m_listener;
 		
-		OGLWindowContext * m_windowContext;
-
-		MarmaladeProgramPtr m_currentProgram;
-
 		mt::mat4f m_worldMatrix;
 		mt::mat4f m_viewMatrix;
 		mt::mat4f m_projectionMatrix;
@@ -199,6 +185,9 @@ namespace Menge
 
 		typedef FactoryDefaultStore<MarmaladeRenderIndexBuffer> TFactoryRenderIndexBuffer;
 		TFactoryRenderIndexBuffer m_factoryIndexBuffer;
+
+		RenderIndexBufferInterfacePtr m_currentIndexBuffer;
+		RenderVertexBufferInterfacePtr m_currentVertexBuffer;
 
 		typedef stdex::map<ConstString, RenderShaderInterface *> TMapRenderShaders;
 		TMapRenderShaders m_shaders;
@@ -214,6 +203,8 @@ namespace Menge
 
 		typedef FactoryPoolStore<MarmaladeRenderProgram, 16> TFactoryProgram;
 		TFactoryProgram m_factoryProgram;
+
+		MarmaladeProgramPtr m_currentProgram;
 
 		TextureStage m_textureStage[MENGE_MAX_TEXTURE_STAGES];
 

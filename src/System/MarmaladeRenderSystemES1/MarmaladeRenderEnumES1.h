@@ -4,6 +4,19 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	inline const GLenum s_getGLIndexType()
+	{
+		switch( sizeof( RenderIndices ) )
+		{
+		case 1: return GL_UNSIGNED_BYTE;
+		case 2: return GL_UNSIGNED_SHORT;
+		case 3: return GL_UNSIGNED_INT;
+		default:;
+		}
+
+		return 0;
+	}
     //////////////////////////////////////////////////////////////////////////
 	inline const GLenum s_toGLBlendFactor( EBlendFactor _filter )
 	{
@@ -19,8 +32,10 @@ namespace Menge
 		case BF_SOURCE_ALPHA: return GL_SRC_ALPHA;
 		case BF_ONE_MINUS_DEST_ALPHA: return GL_ONE_MINUS_DST_ALPHA;
 		case BF_ONE_MINUS_SOURCE_ALPHA: return GL_ONE_MINUS_SRC_ALPHA;
-		default: return GL_ZERO;
+		default:;
 		}
+
+		return 0;
 	}
     //////////////////////////////////////////////////////////////////////////
 	inline const GLenum s_toGLCmpFunc( ECompareFunction _function )
@@ -35,8 +50,10 @@ namespace Menge
 		case CMPF_NOT_EQUAL: return GL_NOTEQUAL;
 		case CMPF_GREATER_EQUAL: return GL_GEQUAL;
 		case CMPF_GREATER: return GL_GREATER;
-		default: return GL_NEVER;
+		default:;
 		}
+
+		return 0;
     };
 	//////////////////////////////////////////////////////////////////////////
 	static const GLenum s_toGLShadeMode( EShadeType _type )
@@ -46,8 +63,10 @@ namespace Menge
 		case SHT_FLAT: return GL_FLAT;
 		case SHT_GOURAUD: return GL_SMOOTH;
 		case SHT_PHONG: return GL_SMOOTH;
-		default: return GL_FLAT;
+		default:;
 		}
+
+		return 0;
 	};
     //////////////////////////////////////////////////////////////////////////
 	inline const GLenum s_toMagFilter( Menge::ETextureFilter _magFilter )
@@ -64,12 +83,10 @@ namespace Menge
 		case Menge::TF_GAUSSIANCUBIC:
 			return GL_LINEAR;
 			break;
-		default:
-			{
-			}break;
+		default:;
 		};
 
-		return GL_NEAREST;
+		return 0;
     };
     //////////////////////////////////////////////////////////////////////////
 	inline GLenum s_toGLMinFilter( Menge::ETextureFilter _minFilter, Menge::ETextureFilter _mipFilter )
@@ -107,13 +124,13 @@ namespace Menge
 		    case Menge::TF_FLATCUBIC:
 		    case Menge::TF_GAUSSIANCUBIC:
 			    return GL_LINEAR_MIPMAP_LINEAR;
-		    default:;
+			default:;
 		    }
 		    break;
 	    default:;
 	    }
 
-	    return GL_NEAREST_MIPMAP_NEAREST;
+	    return 0;
     }
     //////////////////////////////////////////////////////////////////////////
 	inline int s_toGLInternalFormat( Menge::PixelFormat _format )
@@ -214,7 +231,7 @@ namespace Menge
 		default:;
 		}
 
-		return GL_POINTS;
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline GLenum s_getGLAddressMode( ETextureAddressMode _mode )
@@ -228,7 +245,7 @@ namespace Menge
 		default:;
 		}
 
-		return GL_CLAMP_TO_EDGE;
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline GLenum s_getGLTextureArg( ETextureArgument _arg )
@@ -248,7 +265,7 @@ namespace Menge
 		default:;
 		}
 
-		return GL_PREVIOUS;
+		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline GLenum s_getGLTextureOp( ETextureOp _op )
@@ -270,6 +287,6 @@ namespace Menge
 		default:;
 		}
 		
-		return GL_REPLACE;
+		return 0;
 	}
 }	// namespace Menge

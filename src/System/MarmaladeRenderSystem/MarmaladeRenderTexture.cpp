@@ -18,10 +18,6 @@ namespace Menge
 		, m_internalFormat( GL_RGB )
 		, m_format( GL_RGB )
 		, m_type( GL_UNSIGNED_BYTE )
-		, m_wrapS( GL_CLAMP_TO_EDGE )
-		, m_wrapT( GL_CLAMP_TO_EDGE )
-		, m_minFilter( GL_LINEAR )
-		, m_magFilter( GL_LINEAR )
 		, m_mode( ERIM_NORMAL )
 		, m_lockLevel( 0 )
 	{
@@ -29,6 +25,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderTexture::~MarmaladeRenderTexture()
 	{
+		if( m_uid != 0 )
+		{
+			GLCALL( m_serviceProvider, glDeleteTextures, (1, &m_uid) );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeRenderTexture::initialize( ServiceProviderInterface * _serviceProvider, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _pixelFormat, GLint _internalFormat, GLenum _format, GLenum _type )
@@ -115,6 +115,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void * MarmaladeRenderTexture::lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly )
 	{
+		if( m_lockMemory != nullptr )
+		{
+			return nullptr;
+		}
+
 		uint32_t miplevel_width = m_hwWidth >> _level;
 		uint32_t miplevel_height = m_hwHeight >> _level;
 
@@ -125,17 +130,17 @@ namespace Menge
 
 		if( lockMemory == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeTexture::lock invalid create cache buffer"
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderTexture::lock invalid create cache buffer"
 				);
 
 			return nullptr;
 		}
 
-		void * memory = lockMemory->cacheMemory( size, "MarmaladeTexture::lock" );
+		void * memory = lockMemory->cacheMemory( size, "MarmaladeRenderTexture::lock" );
 
 		if( memory == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeTexture::lock invalid cache memory %d (l %d w %d h %d c %d f %d)"
+			LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderTexture::lock invalid cache memory %d (l %d w %d h %d c %d f %d)"
 				, size
 				, _level
 				, miplevel_width
@@ -165,7 +170,7 @@ namespace Menge
 
 		GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
-		LOGGER_INFO( m_serviceProvider )("MarmaladeTexture::unlock l %d w %d d %d"
+		LOGGER_INFO( m_serviceProvider )("MarmaladeRenderTexture::unlock l %d w %d d %d"
 			, _level
 			, miplevel_width
 			, miplevel_height
@@ -183,7 +188,7 @@ namespace Menge
 
 				IF_GLCALL( m_serviceProvider, glCompressedTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, textureMemorySize, memory) )
 				{
-					LOGGER_ERROR( m_serviceProvider )("MarmaladeTexture::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
+					LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderTexture::unlock glCompressedTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n PixelFormat %d\n size %d"
 						, _level
 						, miplevel_width
 						, miplevel_height
@@ -199,7 +204,7 @@ namespace Menge
 
 				IF_GLCALL( m_serviceProvider, glTexImage2D, (GL_TEXTURE_2D, m_lockLevel, m_internalFormat, miplevel_width, miplevel_height, 0, m_format, m_type, memory) )
 				{
-					LOGGER_ERROR( m_serviceProvider )("MarmaladeTexture::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
+					LOGGER_ERROR( m_serviceProvider )("MarmaladeRenderTexture::unlock glTexImage2D error\n level %d\n width %d\n height %d\n InternalFormat %d\n Format %d\n Type %d\n PixelFormat %d"
 						, _level
 						, miplevel_width
 						, miplevel_height
@@ -217,54 +222,9 @@ namespace Menge
 		m_lockLevel = 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderTexture::_destroy()
-	{
-		GLCALL( m_serviceProvider, glDeleteTextures, (1, &m_uid) );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	GLuint MarmaladeRenderTexture::getUId() const
 	{
 		return m_uid;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	GLenum MarmaladeRenderTexture::getMinFilter() const
-	{
-		return m_minFilter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderTexture::setMinFilter( GLenum _minFilter )
-	{
-		m_minFilter = _minFilter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	GLenum MarmaladeRenderTexture::getMagFilter() const
-	{
-		return m_magFilter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderTexture::setMagFilter( GLenum _magFilter )
-	{
-		m_magFilter = _magFilter;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	GLenum MarmaladeRenderTexture::getWrapS() const
-	{
-		return m_wrapS;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderTexture::setWrapS( GLenum _wrapS )
-	{
-		m_wrapS = _wrapS;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	GLenum MarmaladeRenderTexture::getWrapT() const
-	{
-		return m_wrapT;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderTexture::setWrapT( GLenum _wrapT )
-	{
-		m_wrapT = _wrapT;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

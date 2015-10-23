@@ -25,7 +25,6 @@ namespace Menge
 
     public:
 		bool initialize( const ConstString & _name, const RenderShaderInterfacePtr & _vertexShader, const RenderShaderInterfacePtr & _fragmentShader, uint32_t _samplerCount );
-		void finalize();
 
 	public:
 		void enable() const;

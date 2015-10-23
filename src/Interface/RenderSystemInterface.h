@@ -629,7 +629,7 @@ namespace Menge
 												ETextureArgument _arg1, ETextureArgument _arg2 ) = 0;
 
         virtual void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) = 0;
-		virtual void setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) = 0;
+		virtual void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) = 0;
 		// create texture
 		// [in/out] _width ( desired texture width, returns actual texture width )
 		// [in/out] _height ( desired texture height, returns actual texture height )

@@ -4,6 +4,19 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	inline const GLenum s_getGLIndexType()
+	{
+		switch( sizeof( RenderIndices ) )
+		{
+		case 1: return GL_UNSIGNED_BYTE;
+		case 2: return GL_UNSIGNED_SHORT;
+		case 3: return GL_UNSIGNED_INT;
+		default:;
+		}
+
+		return 0;
+	}
     //////////////////////////////////////////////////////////////////////////
 	inline const GLenum s_toGLBlendFactor( EBlendFactor _filter )
 	{

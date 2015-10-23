@@ -35,7 +35,6 @@ namespace Menge
 
     public:
 		bool initialize( const ConstString & _name, GLenum type, const void * _source, size_t _size, bool _isCompile );
-		void finalize();
 
 	public:
 		void attach( GLuint _program );

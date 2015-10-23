@@ -26,7 +26,6 @@ namespace Menge
 	MarmaladeRenderSystem::MarmaladeRenderSystem()
 		: m_serviceProvider( nullptr )
 		, m_listener( nullptr )
-		, m_windowContext( nullptr )
 		, m_supportNPOT( false )
 		, m_activeTextureStage( 0 )
 		, m_activeTexture( 0 )
@@ -95,6 +94,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::finalize()
     {
+		m_currentIndexBuffer = nullptr;
+		m_currentVertexBuffer = nullptr;
+
+		m_currentProgram = nullptr;
+
 		GLCALL( m_serviceProvider, IwGLTerminate, () );		
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -184,16 +188,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeRenderSystem::setVertexBuffer( const RenderVertexBufferInterfacePtr & _vertexBuffer )
 	{
-		if( _vertexBuffer == nullptr )
-		{
-			GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, 0) );
-
-			return true;
-		}
-
-		MarmaladeRenderVertexBuffer * vb = stdex::intrusive_get<MarmaladeRenderVertexBuffer *>( _vertexBuffer );
-
-		vb->enable();
+		m_currentVertexBuffer = _vertexBuffer;
 
 		return true;
 	}
@@ -212,16 +207,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeRenderSystem::setIndexBuffer( const RenderIndexBufferInterfacePtr & _indexBuffer )
 	{
-		if( _indexBuffer == nullptr )
-		{
-			GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
-
-			return true;
-		}
-
-		MarmaladeRenderIndexBuffer * ib = stdex::intrusive_get<MarmaladeRenderIndexBuffer *>( _indexBuffer );
-
-		ib->enable();
+		m_currentIndexBuffer = _indexBuffer;
 
 		return true;
 	}
@@ -309,6 +295,11 @@ namespace Menge
 		uint32_t _baseVertexIndex,  uint32_t _minIndex, 
 		uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount )
 	{
+		if( m_currentIndexBuffer == nullptr || m_currentVertexBuffer == nullptr )
+		{
+			return;
+		}
+
 		if( m_currentProgram != nullptr )
 		{			
 			m_currentProgram->enable();
@@ -323,8 +314,8 @@ namespace Menge
 			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
 
 			if( textureStage.texture == 0 )
-			{			
-				GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
+			{	
+				GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, 0) );
 
 				continue;
 			}
@@ -342,28 +333,12 @@ namespace Menge
 			GLCALL( m_serviceProvider, glTexParameteri, ( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter ) );
 		}
 
-		//TMapVBufferMemory::iterator it_vbuffer_found = m_vBuffersMemory.find( m_currentVertexBuffer );
+		MarmaladeRenderIndexBuffer * ib = stdex::intrusive_get<MarmaladeRenderIndexBuffer *>(m_currentIndexBuffer);
+		ib->enable();
 
-		//if( it_vbuffer_found == m_vBuffersMemory.end() )
-		//{
-		//	return;
-		//}
-
-		//MemoryRange & vb_range = it_vbuffer_found->second;
-
-		//TMapIBufferMemory::iterator it_ibuffer_found = m_iBuffersMemory.find( m_currentVertexBuffer );
-
-		//if( it_ibuffer_found == m_iBuffersMemory.end() )
-		//{
-		//	return;
-		//}
-
-		//MemoryRange & ib_range = it_ibuffer_found->second;
-
-		//GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, vb_range.bufId ) );
-		//GLCALL( m_serviceProvider, glBindBuffer, ( GL_ELEMENT_ARRAY_BUFFER, ib_range.bufId ) );
-
-		//glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(RenderVertex2D), reinterpret_cast<const GLvoid *>(0));
+		MarmaladeRenderVertexBuffer * vb = stdex::intrusive_get<MarmaladeRenderVertexBuffer *>(m_currentVertexBuffer);
+		vb->enable();
+		
 		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (VERTEX_POSITION_ARRAY) );
 		GLCALL( m_serviceProvider, glEnableVertexAttribArray, (VERTEX_COLOR_ARRAY) );
 
@@ -386,20 +361,7 @@ namespace Menge
 		const RenderIndices * baseIndex = nullptr;
 		const RenderIndices * offsetIndex = baseIndex + _startIndex;
 
-		GLenum indexType;
-
-		switch( sizeof( RenderIndices ) )
-		{
-		case 1:
-			indexType = GL_UNSIGNED_BYTE;
-			break;
-		case 2:
-			indexType = GL_UNSIGNED_SHORT;
-			break;
-		case 3:
-			indexType = GL_UNSIGNED_INT;
-			break;
-		}
+		GLenum indexType = s_getGLIndexType();
 
 		GLCALL( m_serviceProvider, glDrawElements, (mode, _indexCount, indexType, reinterpret_cast<const GLvoid *>(offsetIndex)) );
 
@@ -443,10 +405,6 @@ namespace Menge
             MarmaladeRenderTexture * texture = stdex::intrusive_get<MarmaladeRenderTexture *>(_texture);
             
             tStage.texture = texture->getUId();
-            tStage.wrapS = texture->getWrapS();
-            tStage.wrapT = texture->getWrapT();
-            tStage.minFilter = texture->getMinFilter();
-            tStage.magFilter = texture->getMagFilter();
         }
         else
         {
@@ -613,24 +571,12 @@ namespace Menge
         //m_textureStage[_stage].texCoordIndex = _index;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
+	void MarmaladeRenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
 	{
         TextureStage & tStage = m_textureStage[_stage];
 
-        if( _filterType == Menge::TFT_MINIFICATION )
-        {
-            tStage.mengeMinFilter = _filter;
-            tStage.minFilter = s_toGLMinFilter( tStage.mengeMinFilter, tStage.mengeMipFilter );
-        }
-        else if( _filterType == Menge::TFT_MIPMAP )
-        {
-            tStage.mengeMipFilter = _filter;
-            tStage.minFilter = s_toGLMinFilter( tStage.mengeMinFilter, tStage.mengeMipFilter );
-        }
-        else if( _filterType == Menge::TFT_MAGNIFICATION )
-        {
-            tStage.magFilter = s_toMagFilter( _filter );
-        }
+		tStage.minFilter = s_toGLMinFilter( _minification, _mipmap );
+		tStage.magFilter = s_toMagFilter( _magnification );
 	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeRenderSystem::findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const
@@ -702,7 +648,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		MarmaladeTexturePtr texture = m_factoryTexture.createObject();
+		MarmaladeRenderTexturePtr texture = m_factoryTexture.createObject();
 
 		if( texture->initialize(
 			m_serviceProvider
@@ -722,16 +668,6 @@ namespace Menge
 			return nullptr;
 		}
 
-		GLenum wrapS = GL_CLAMP_TO_EDGE;
-		GLenum wrapT = GL_CLAMP_TO_EDGE;
-		GLenum minFilter = GL_LINEAR;
-		GLenum magFilter = GL_LINEAR;
-				
-		texture->setMagFilter( magFilter );
-		texture->setMinFilter( minFilter );
-		texture->setWrapS( wrapS );
-		texture->setWrapT( wrapT );
-
 		return texture;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -750,6 +686,11 @@ namespace Menge
     bool MarmaladeRenderSystem::beginScene()
     {
 		this->clearFrameBuffer( FBT_COLOR, 0, 1.f, 0 );
+
+		m_currentIndexBuffer = nullptr;
+		m_currentVertexBuffer = nullptr;
+
+		m_currentProgram = nullptr;
 
         return true;
     }
@@ -889,7 +830,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		MarmaladeTexturePtr texture = m_factoryTexture.createObject();
+		MarmaladeRenderTexturePtr texture = m_factoryTexture.createObject();
 
 		if( texture->initialize(
 			m_serviceProvider
@@ -908,16 +849,6 @@ namespace Menge
 
 			return nullptr;
 		}
-
-		GLenum wrapS = GL_CLAMP_TO_EDGE;
-		GLenum wrapT = GL_CLAMP_TO_EDGE;
-		GLenum minFilter = GL_LINEAR;
-		GLenum magFilter = GL_LINEAR;
-
-		texture->setMagFilter( magFilter );
-		texture->setMinFilter( minFilter );
-		texture->setWrapS( wrapS );
-		texture->setWrapT( wrapT );
 
 		return texture;
 	}

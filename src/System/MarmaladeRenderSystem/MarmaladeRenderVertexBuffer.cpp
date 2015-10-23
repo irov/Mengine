@@ -58,6 +58,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertex2D * MarmaladeRenderVertexBuffer::lock( uint32_t _offset, uint32_t _count, EBufferLockFlag _flags )
 	{
+		if( m_lockMemory != nullptr )
+		{
+			return nullptr;
+		}
+
 		if( _offset + _count > m_vertexNum )
 		{
 			return nullptr;

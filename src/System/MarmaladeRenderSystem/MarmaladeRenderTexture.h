@@ -32,23 +32,8 @@ namespace Menge
 
 		PixelFormat getHWPixelFormat() const override;
 
-	public:
-		void _destroy() override;
-
 	public: 
 		GLuint getUId() const;
-		
-		void setMinFilter( GLenum _minFilter );
-        GLenum getMinFilter() const;
-
-		void setMagFilter( GLenum _magFilter );
-        GLenum getMagFilter() const;
-		
-		void setWrapS( GLenum _wrapS );
-        GLenum getWrapS() const;
-
-		void setWrapT( GLenum _wrapT );		
-        GLenum getWrapT() const;
 
 	private:
 		ServiceProviderInterface * m_serviceProvider;
@@ -64,11 +49,6 @@ namespace Menge
 		uint32_t m_hwHeight;
         uint32_t m_hwChannels;
 
-		GLenum m_minFilter;
-		GLenum m_magFilter;
-		GLenum m_wrapS;
-		GLenum m_wrapT;
-
 		GLint m_internalFormat;
 
 		GLenum m_format;
@@ -78,5 +58,5 @@ namespace Menge
 		uint32_t m_lockLevel;
 	};
 
-	typedef stdex::intrusive_ptr<MarmaladeRenderTexture> MarmaladeTexturePtr;
+	typedef stdex::intrusive_ptr<MarmaladeRenderTexture> MarmaladeRenderTexturePtr;
 }	// namespace Menge

@@ -537,29 +537,18 @@ namespace Menge
 					);
 			}
 
-			if( current_texture_stage.mipmap != texture_stage.mipmap )
+			if( current_texture_stage.mipmap != texture_stage.mipmap ||
+				current_texture_stage.magnification != texture_stage.magnification ||
+				current_texture_stage.minification != texture_stage.minification )
 			{
 				current_texture_stage.mipmap = texture_stage.mipmap;
-
-				RENDER_SYSTEM( m_serviceProvider )
-					->setTextureStageFilter( stageId, TFT_MIPMAP, current_texture_stage.mipmap );
-			}
-
-			if( current_texture_stage.magnification != texture_stage.magnification )
-			{
 				current_texture_stage.magnification = texture_stage.magnification;
-
-				RENDER_SYSTEM( m_serviceProvider )
-					->setTextureStageFilter( stageId, TFT_MAGNIFICATION, current_texture_stage.magnification );
-			}
-
-			if( current_texture_stage.minification != texture_stage.minification )
-			{
 				current_texture_stage.minification = texture_stage.minification;
 
 				RENDER_SYSTEM( m_serviceProvider )
-					->setTextureStageFilter( stageId, TFT_MINIFICATION, current_texture_stage.minification );
+					->setTextureStageFilter( stageId, current_texture_stage.minification, current_texture_stage.mipmap, current_texture_stage.magnification );
 			}
+
 
 			if( current_texture_stage.colorOp != texture_stage.colorOp
 				|| current_texture_stage.colorArg1 != texture_stage.colorArg1
@@ -777,18 +766,9 @@ namespace Menge
 			stage.colorArg2 = TARG_DIFFUSE;
 
 			RENDER_SYSTEM( m_serviceProvider )->setTextureStageFilter( i
-				, TFT_MIPMAP
+				, stage.minification
 				, stage.mipmap
-				);
-
-			RENDER_SYSTEM( m_serviceProvider )->setTextureStageFilter( i
-				, TFT_MAGNIFICATION
-				, stage.magnification 
-				);
-
-			RENDER_SYSTEM( m_serviceProvider )->setTextureStageFilter( i
-				, TFT_MINIFICATION
-				, stage.minification 
+				, stage.magnification
 				);
 
 			RENDER_SYSTEM( m_serviceProvider )->setTextureAddressing( i
@@ -1103,6 +1083,7 @@ namespace Menge
 		, const RenderIndices * _indices, uint32_t _indicesNum
 		, const mt::box2f * _bb, bool _debug )
 	{
+#	ifdef _DEBUG
 		if( _viewport == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D viewport == NULL"
@@ -1127,22 +1108,29 @@ namespace Menge
 			return;
 		}
 
-		if( m_renderObjects.full() == true )
+		if( _vertices == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D max render objects %d"
-				, m_maxObjects
+			LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D _vertices == NULL"
 				);
 
 			return;
 		}
 
-		if( _vertices == nullptr )
-		{
-			return;
-		}
-
 		if( _indices == nullptr )
 		{
+			LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D _indices == NULL"
+				);
+
+			return;
+		}
+#	endif
+
+		if( m_renderObjects.full() == true )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D max render objects %d"
+				, m_maxObjects
+				);
+
 			return;
 		}
 

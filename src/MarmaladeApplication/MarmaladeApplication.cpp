@@ -796,52 +796,89 @@ namespace Menge
     {
         LOGGER_INFO(m_serviceProvider)( "Initializing Render Service..." );
 		
+		uint32_t config_gl_version = 2;
+
 		char config_SysGlesVersion[S3E_CONFIG_STRING_MAX] = {0};
-		if( s3eConfigGetString( "S3E", "SysGlesVersion", config_SysGlesVersion ) == S3E_RESULT_ERROR )
+		if( s3eConfigGetString( "S3E", "SysGlesVersion", config_SysGlesVersion ) == S3E_RESULT_SUCCESS )
 		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeRenderEngine_ please setup SysGlesVersion"
-				);
-
-			return false;
-		}
-
-		RenderSystemInterface * renderSystem;
-
-		if( strcmp( config_SysGlesVersion, "1" ) == 0 )
-		{
-			if( SERVICE_CREATE( RenderSystemES1, &renderSystem ) == false )
+			if( strcmp( config_SysGlesVersion, "1" ) == 0 )
 			{
+				config_gl_version = 1;
+			}
+			else if( strcmp( config_SysGlesVersion, "2" ) == 0 )
+			{
+				config_gl_version = 2;
+			}
+			else
+			{
+				LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeRenderEngine_ not support OpenGL ES version '%s'"
+					, config_SysGlesVersion
+					);
+
 				return false;
 			}
 		}
-		else if( strcmp( config_SysGlesVersion, "2" ) == 0 )
-		{ 
-			if( SERVICE_CREATE( RenderSystem, &renderSystem ) == false )
+
+		RenderSystemInterface * renderSystem = nullptr;
+
+		for( uint32_t i = config_gl_version; i != 0; --i )
+		{
+			if( i == 2 )
 			{
-				return false;
+				if( SERVICE_CREATE( RenderSystem, &renderSystem ) == false )
+				{
+					return false;
+				}
+
+				if( SERVICE_REGISTRY( m_serviceProvider, renderSystem ) == false )
+				{
+					continue;
+				}
+
+				if( renderSystem->initialize() == false )
+				{
+					LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeRenderEngine_ Failed to initialize Render System version %d"
+						, i
+						);
+
+					SERVICE_UNREGISTRY( m_serviceProvider, renderSystem );
+					SERVICE_DESTROY( RenderSystem, renderSystem );
+					renderSystem = nullptr;
+				}
+
+				break;
+			}
+			else if( i == 1 )
+			{
+				if( SERVICE_CREATE( RenderSystemES1, &renderSystem ) == false )
+				{
+					continue;
+				}
+
+				if( SERVICE_REGISTRY( m_serviceProvider, renderSystem ) == false )
+				{
+					continue;
+				}
+
+				if( renderSystem->initialize() == false )
+				{
+					LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeRenderEngine_ Failed to initialize Render System version %d"
+						, i
+						);
+
+					SERVICE_UNREGISTRY( m_serviceProvider, renderSystem );
+					SERVICE_DESTROY( RenderSystemES1, renderSystem );
+					renderSystem = nullptr;
+				}
+
+				break;
 			}
 		}
-		else
-		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeRenderEngine_ not support OpenGL ES '%s'"
-				, config_SysGlesVersion
-				);
 
+		if( renderSystem == nullptr )
+		{
 			return false;
 		}
-
-        if( SERVICE_REGISTRY( m_serviceProvider, renderSystem ) == false )
-        {
-            return false;
-        }
-
-        if( renderSystem->initialize() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeRenderEngine_ Failed to initialize Render System"
-                );
-
-            return false;
-        }
 
 		m_renderSystem = renderSystem;
 

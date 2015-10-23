@@ -134,7 +134,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	WCHAR szBuffer[MAX_PATH];
 	if( astralax.empty() == true )
 	{
-		const WCHAR * regPath = L"Software\\Astralax\\Magic Particles 3D (Dev) 3.11\\Path";
+		const WCHAR * regPath = L"Software\\Astralax\\Magic Particles 3D Path";
 
 		HKEY openedKey;
 		if( ::RegOpenKeyEx( HKEY_CURRENT_USER, regPath, 0, KEY_READ, &openedKey ) != ERROR_SUCCESS )
@@ -341,22 +341,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			const AtlasDesc & desc = *it;
 
 			fprintf_s( f_info, "%s\n", desc.path.c_str() );
-			//fputs( desc.path.c_str(), f_info );
-			//fputs( "\n", f_info );
-
-			//CHAR s_atlasWidth[16];
-			//sprintf_s( s_atlasWidth, 16, "%d", desc.width );
 			fprintf_s( f_info, "%d\n", desc.width );
-
-			//fputs( s_atlasWidth, f_info );
-			//fputs( "\n", f_info );  
-			 
-			//CHAR s_atlasHeight[16];
-			//sprintf_s( s_atlasHeight, 16, "%d", desc.height );
 			fprintf_s( f_info, "%d\n", desc.height );
-
-			//fputs( s_atlasHeight, f_info );
-			//fputs( "\n", f_info );
 		}
 
 		fclose( f_info );

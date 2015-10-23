@@ -58,6 +58,10 @@ namespace Menge
 
 		MARMALADE_RENDER_CHECK_ERROR( m_serviceProvider );
 
+		int32 iwgl_version = IwGLGetInt( IW_GL_VERSION );
+
+		LOGGER_WARNING( m_serviceProvider )("Marmalade IWGL Version: %d (full %d)", iwgl_version >> 8, iwgl_version);
+
 		LOGGER_WARNING( m_serviceProvider )("Vendor      : %s", (const char*)glGetString( GL_VENDOR ));
 		LOGGER_WARNING( m_serviceProvider )("Renderer    : %s", (const char*)glGetString( GL_RENDERER ));
 		LOGGER_WARNING( m_serviceProvider )("Version     : %s", (const char*)glGetString( GL_VERSION ));

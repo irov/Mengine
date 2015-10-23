@@ -536,7 +536,7 @@ namespace Menge
 		}
 
 		MAGIC_RENDERING_START start;
-		void * context = Magic_PrepareRenderArrays( m_emitterId, &start, 100, MAGIC_ABGR, true );
+		void * context = Magic_PrepareRenderArrays( m_emitterId, &start, 100, MAGIC_ABGR, sizeof( RenderIndices ) == 4 );
 
 		if( start.vertices == 0 || start.indexes == 0 )
 		{
@@ -562,15 +562,24 @@ namespace Menge
 			{
 			case MAGIC_VERTEX_FORMAT_INDEX:
 				{
-					Magic_SetRenderArrayData( _flush.context, i, _indices, 0, sizeof( RenderIndices ) );
+					if( Magic_SetRenderArrayData( _flush.context, i, _indices, 0, sizeof( RenderIndices ) ) == MAGIC_ERROR )
+					{
+						return false;
+					}
 				}break;
 			case MAGIC_VERTEX_FORMAT_POSITION:
 				{
-					Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, pos ), sizeof( RenderVertex2D ) );
+					if( Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, pos ), sizeof( RenderVertex2D ) ) == MAGIC_ERROR )
+					{
+						return false;
+					}
 				}break;
 			case MAGIC_VERTEX_FORMAT_COLOR:
 				{
-					Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, color ), sizeof( RenderVertex2D ) );
+					if( Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, color ), sizeof( RenderVertex2D ) ) == MAGIC_ERROR )
+					{
+						return false;
+					}
 				}break;
 			case MAGIC_VERTEX_FORMAT_UV:
 				{
@@ -579,7 +588,10 @@ namespace Menge
 						return false;
 					}
 
-					Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * array_info.index, sizeof( RenderVertex2D ) );
+					if( Magic_SetRenderArrayData( _flush.context, i, _vertices, offsetof( RenderVertex2D, uv ) + sizeof( mt::vec2f ) * array_info.index, sizeof( RenderVertex2D ) ) == false )
+					{
+						return false;
+					}
 				}break;
 			case MAGIC_VERTEX_FORMAT_NORMAL:
 				{

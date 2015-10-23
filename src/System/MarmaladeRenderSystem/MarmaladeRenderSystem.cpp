@@ -64,7 +64,16 @@ namespace Menge
 			s3eDeviceYield( 0 );
 		}			
 
-		LOGGER_WARNING( m_serviceProvider )("Marmalade GL Version: %d", IwGLGetInt( IW_GL_VERSION ) );
+		int32 iwgl_version = IwGLGetInt( IW_GL_VERSION );
+		
+		if( (iwgl_version >> 8) < 2 )
+		{
+			IwGLTerminate();
+
+			return false;
+		}
+
+		LOGGER_WARNING( m_serviceProvider )("Marmalade IWGL Version: %d (full %d)", iwgl_version >> 8, iwgl_version);
 
 		MARMALADE_RENDER_CHECK_ERROR( m_serviceProvider );
 

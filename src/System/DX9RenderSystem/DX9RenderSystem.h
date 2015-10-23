@@ -108,8 +108,8 @@ namespace Menge
 										ETextureArgument _arg1, ETextureArgument _arg2 ) override;
 
         void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
-
-		void setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter ) override;
+				
+		void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 		
 		// create empty render image
 		RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;

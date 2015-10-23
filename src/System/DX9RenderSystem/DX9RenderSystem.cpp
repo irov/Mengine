@@ -1580,7 +1580,7 @@ namespace Menge
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetTextureStageState, ( _stage, D3DTSS_TEXCOORDINDEX, index ) );		
     }
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilterType _filterType, ETextureFilter _filter )
+	void DX9RenderSystem::setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification )
 	{
         if( m_pD3DDevice == nullptr )
         {
@@ -1590,10 +1590,13 @@ namespace Menge
             return;
         }
 
-		D3DSAMPLERSTATETYPE textureFilterType = s_toD3DTextureFilterType( _filterType );
-		D3DTEXTUREFILTERTYPE textureFilter = s_toD3DTextureFilter( _filter );
+		D3DTEXTUREFILTERTYPE dx_minification = s_toD3DTextureFilter( _minification );
+		D3DTEXTUREFILTERTYPE dx_mipmap = s_toD3DTextureFilter( _mipmap );
+		D3DTEXTUREFILTERTYPE dx_magnification = s_toD3DTextureFilter( _magnification );
 
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, ( _stage, textureFilterType, textureFilter ) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MINFILTER, dx_minification) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MIPFILTER, dx_mipmap) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )

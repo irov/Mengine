@@ -630,17 +630,9 @@ namespace Menge
 
         virtual void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) = 0;
 		virtual void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) = 0;
-		// create texture
-		// [in/out] _width ( desired texture width, returns actual texture width )
-		// [in/out] _height ( desired texture height, returns actual texture height )
-		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
-		// returns Texture interface handle or NULL if fails
+
 		virtual RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 		virtual RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
-		// create render target image
-		// [in/out] _width ( desired texture width, returns actual texture width )
-		// [in/out] _height ( desired texture height, returns actual texture height )
-		// returns Texture interface handle or NULL if fails
 		virtual RenderImageInterfacePtr createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 
 		//

@@ -459,7 +459,7 @@ namespace	Menge
 			}break;
 		case EAT_POLYGON:
 			{
-				uint32_t numpoints = boost::geometry::num_points( m_polygon );
+				uint32_t numpoints = m_polygon.num_points();
 
 				if( numpoints == 0 )
 				{
@@ -478,7 +478,7 @@ namespace	Menge
 
 				const mt::mat4f & worldMat = this->getWorldMatrix();
 
-				const Polygon::ring_type & ring = m_polygon.outer();
+				const mt::vec2f * ring = m_polygon.outer_points();
 
 				for( uint32_t i = 0; i != numpoints; ++i )
 				{

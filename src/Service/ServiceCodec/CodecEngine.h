@@ -15,19 +15,11 @@ namespace Menge
 	class EncoderInterface;
 
 	class CodecEngine
-		: public CodecServiceInterface
+		: public ServiceBase<CodecServiceInterface>
 	{
 	public:
 		CodecEngine();
 		~CodecEngine();
-
-	public:
-		bool initialize() override;
-		void finalize() override;
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		void registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory ) override;
@@ -48,8 +40,6 @@ namespace Menge
         const ConstString & findCodecType( const FilePath & _path ) const override;
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		typedef stdex::map<ConstString, DecoderFactoryInterfacePtr> TMapDecoderSystem;
 		TMapDecoderSystem m_mapDecoderSystem;
 

@@ -12,7 +12,9 @@
 int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd )
 { 
 	// keep compiler happy
+	UNREFERENCED_PARAMETER( hInstance );
 	UNREFERENCED_PARAMETER( hPrevInstance );
+	UNREFERENCED_PARAMETER( lpCmdLine );
 	UNREFERENCED_PARAMETER( nShowCmd );
 	
 	stdex_allocator_initialize();
@@ -23,7 +25,7 @@ int APIENTRY WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 	{
 		Menge::WinApplication winApplication;
 
-		bool initialize = winApplication.initialize( hInstance, lpCmdLine );
+		bool initialize = winApplication.initialize();
     
 		if( initialize == true )
 		{

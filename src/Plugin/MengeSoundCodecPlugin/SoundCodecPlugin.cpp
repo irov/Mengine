@@ -2,7 +2,6 @@
 
 #	include "SoundDecoderWAV.h"
 
-#	include "Interface/LogSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 
 #   include "Codec/DecoderFactory.h"

@@ -20,19 +20,15 @@ namespace Menge
 	};
 
 	class Graveyard
-		: public GraveyardInterface
+		: public ServiceBase<GraveyardInterface>
 	{
 	public:
 		Graveyard();
 		~Graveyard();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
-
-	public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		void update( float _timing ) override;
@@ -48,8 +44,6 @@ namespace Menge
 		void updateTexture_( RenderTextureGraveEntry * _entry, float _timing );
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		uint32_t m_count;
 		float m_graveyardTime;
 

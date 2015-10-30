@@ -27,19 +27,15 @@ namespace Menge
     class ScriptModuleFinder;	
 
 	class ScriptEngine
-		: public ScriptServiceInterface
+		: public ServiceBase<ScriptServiceInterface>
 	{
 	public:
 		ScriptEngine();
 		~ScriptEngine();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		PyObject * initModule( const char * _name );
@@ -79,8 +75,6 @@ namespace Menge
 		static void handleException();
 	
 	private:
-        ServiceProviderInterface * m_serviceProvider;
-
         ScriptModuleFinder * m_moduleFinder;
 
 		PyObject * m_moduleMenge;

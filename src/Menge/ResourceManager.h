@@ -70,19 +70,15 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceManager
-		: public ResourceServiceInterface
+		: public ServiceBase<ResourceServiceInterface>
 	{
 	public:
 		ResourceManager();
 		~ResourceManager();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		bool loadResource( const ConstString & _pakName, const FilePath & _path ) override;
@@ -116,9 +112,7 @@ namespace Menge
 	public:
 		void dumpResources( const String & _tag );
 
-	protected:
-        ServiceProviderInterface * m_serviceProvider;
-               
+	protected:             
 		typedef IntrusiveTree<ResourceEntry, 512> TMapResource;
 		TMapResource m_resources;
 

@@ -1,5 +1,6 @@
 #	include "PluginAmplifier.h"
 
+#	include "Interface/AmplifierInterface.h"
 #	include "Interface/ServiceInterface.h"
 #	include "Interface/StringizeInterface.h"
 
@@ -25,14 +26,11 @@ extern "C" // only required if using g++
 #   endif
 }
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN(Amplifier, Menge::AmplifierInterface);
-//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PluginAmplifier::PluginAmplifier()
-		: m_serviceProvider(nullptr)
-		, m_amplifier(nullptr)
+		: m_serviceProvider(nullptr)		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -40,23 +38,7 @@ namespace Menge
 	{
 		m_serviceProvider = _provider;
 
-		AmplifierInterface * amplifier;
-		if( SERVICE_CREATE( Amplifier, &amplifier ) == false )
-		{
-			return false;
-		}
-
-		if( amplifier->initialize() == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, amplifier ) == false )
-		{
-			return false;
-		}
-
-		m_amplifier = amplifier;
+		SERVICE_CREATE( m_serviceProvider, Amplifier, Menge::AmplifierInterface );
 
 		PROTOTYPE_SERVICE(m_serviceProvider)
 			->addPrototype( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Resource"), STRINGIZE_STRING_LOCAL(m_serviceProvider, "ResourcePlaylist"), new ResourcePrototypeGenerator<ResourcePlaylist, 8>(m_serviceProvider) );
@@ -66,19 +48,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PluginAmplifier::finalize()
 	{
-		if( m_amplifier != nullptr )
-		{
-			m_amplifier->finalize();
-		}				
+		SERVICE_FINALIZE( m_serviceProvider, Menge::AmplifierInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PluginAmplifier::destroy()
 	{
-		if( m_amplifier != nullptr )
-		{
-			SERVICE_DESTROY( Amplifier, m_amplifier );
-			m_amplifier = nullptr;
-		}
+		SERVICE_DESTROY( m_serviceProvider, Menge::AmplifierInterface );
 		
 		delete this;
 	}

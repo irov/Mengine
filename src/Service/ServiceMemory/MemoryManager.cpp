@@ -5,14 +5,13 @@
 #	include <malloc.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( MemoryService, Menge::MemoryServiceInterface, Menge::MemoryManager );
+SERVICE_FACTORY( MemoryService, Menge::MemoryManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MemoryManager::MemoryManager()
-		: m_serviceProvider(nullptr)
-		, m_enumeratorId(0)
+		: m_enumeratorId(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -20,17 +19,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * MemoryManager::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MemoryManager::initialize()
+	bool MemoryManager::_initialize()
 	{
 		m_memoryCacheMutex = THREAD_SERVICE(m_serviceProvider)
 			->createMutex( "MemoryManager::initialize" );
@@ -47,7 +36,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryManager::finalize()
+	void MemoryManager::_finalize()
 	{
 		this->clearCacheBuffers();
 

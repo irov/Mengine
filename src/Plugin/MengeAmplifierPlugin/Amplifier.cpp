@@ -12,14 +12,13 @@
 #	include <cmath>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY(Amplifier, Menge::AmplifierInterface, Menge::Amplifier);
+SERVICE_FACTORY( Amplifier, Menge::Amplifier);
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::Amplifier()
-		: m_serviceProvider(nullptr)
-		, m_currentPlayList(nullptr)
+		: m_currentPlayList(nullptr)
         , m_sourceID(0)
 		, m_buffer(nullptr)
 		, m_volume(1.f)
@@ -33,23 +32,13 @@ namespace Menge
 	Amplifier::~Amplifier()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Amplifier::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * Amplifier::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::initialize()
+	bool Amplifier::_initialize()
 	{
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::finalize()
+	void Amplifier::_finalize()
 	{
 		this->stop();
 

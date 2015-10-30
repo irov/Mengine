@@ -48,6 +48,21 @@ namespace Menge
 			return memoryBuffer;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		MemoryInterfacePtr createMemoryFile( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream )
+		{
+			InputStreamInterfacePtr fileStream = FILE_SERVICE( _serviceProvider )
+				->openInputFile( _category, _filePath, _stream );
+
+			if( fileStream == nullptr )
+			{
+				return nullptr;
+			}
+
+			MemoryInterfacePtr memory = Helper::createMemoryStream( _serviceProvider, fileStream );
+
+			return memory;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		MemoryCacheBufferInterfacePtr createMemoryCacheBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc )
 		{
 			MemoryCacheBufferInterfacePtr cache = MEMORY_SERVICE( _serviceProvider )

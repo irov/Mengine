@@ -4,6 +4,7 @@
 #	include "DX9ErrorHelper.h"
 
 #	include "Interface/StringizeInterface.h"
+#	include "Interface/PlatformInterface.h"
 
 #	include <algorithm>
 #	include <cmath>
@@ -13,7 +14,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( RenderSystem, Menge::RenderSystemInterface, Menge::DX9RenderSystem );
+SERVICE_FACTORY( RenderSystem, Menge::DX9RenderSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {    
@@ -21,11 +22,8 @@ namespace Menge
 	typedef IDirect3D9* (WINAPI *PDIRECT3DCREATE9)(UINT);
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderSystem::DX9RenderSystem()
-		: m_serviceProvider(nullptr)
-		, m_pD3D(nullptr)
+		: m_pD3D(nullptr)
 		, m_pD3DDevice(nullptr)
-		, m_listener(nullptr)
-		, m_syncReady(false)
         , m_hd3d9(NULL)
         , m_adapterToUse(D3DADAPTER_DEFAULT)
         , m_deviceType(D3DDEVTYPE_HAL)
@@ -40,28 +38,13 @@ namespace Menge
 	DX9RenderSystem::~DX9RenderSystem()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * DX9RenderSystem::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & DX9RenderSystem::getRenderPlatformName() const
 	{
 		return m_renderPlatform;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setRenderListener( RenderSystemListener * _listener )
-    {
-        m_listener = _listener;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::initialize()
+	bool DX9RenderSystem::_initialize()
 	{
 		m_frames = 0;
 
@@ -237,7 +220,7 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::finalize()
+    void DX9RenderSystem::_finalize()
     {
         this->release_();
 
@@ -249,7 +232,7 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, 
-		bool _fullscreen, WindowHandle _winHandle, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
+		bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
 	{
         (void)_bits;
         (void)_FSAAType;
@@ -268,7 +251,10 @@ namespace Menge
 		m_d3dppW.BackBufferHeight = m_windowResolution.getHeight();
 		m_d3dppW.BackBufferCount = 1;
 
-		m_d3dppW.hDeviceWindow = (HWND)_winHandle;
+		WindowHandle windowHandle = PLATFORM_SERVICE( m_serviceProvider )
+			->getWindowHandle();
+
+		m_d3dppW.hDeviceWindow = (HWND)windowHandle;
 
 		m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
 		
@@ -297,7 +283,7 @@ namespace Menge
 		m_d3dppFS.BackBufferHeight = m_windowResolution.getHeight();
 		m_d3dppFS.BackBufferCount = 1;
 
-		m_d3dppFS.hDeviceWindow = (HWND)_winHandle;
+		m_d3dppFS.hDeviceWindow = (HWND)windowHandle;
 
 		m_d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
                
@@ -327,14 +313,14 @@ namespace Menge
 		// Create D3D Device
 		HRESULT hr;
 
-		hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)_winHandle,
+		hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
 			D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE ,
 			m_d3dpp, &m_pD3DDevice );
 
 		if( FAILED( hr ) )
 		{
 			Sleep( 100 );
-			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)_winHandle,
+			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
 				D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE ,
 				m_d3dpp, &m_pD3DDevice );
 		}
@@ -342,14 +328,14 @@ namespace Menge
 		if( FAILED( hr ) )
 		{
 			Sleep( 100 );
-			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)_winHandle,
+			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
 				D3DCREATE_MIXED_VERTEXPROCESSING |D3DCREATE_FPU_PRESERVE ,
 				m_d3dpp, &m_pD3DDevice );
 
 			if( FAILED( hr ) )
 			{
 				Sleep( 100 );
-				hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)_winHandle,
+				hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
 					D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE ,
 					m_d3dpp, &m_pD3DDevice );
 			}
@@ -359,7 +345,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::createRenderWindow Can't create D3D device (hr:%u, hwnd:%u)"
 				, hr
-				, (HWND)_winHandle 
+				, (HWND)windowHandle
 				);
 
 			return false;
@@ -687,11 +673,6 @@ namespace Menge
         if( hr == D3DERR_DEVICELOST )
         {
             this->releaseResources_();
-
-			if( m_listener != nullptr )
-			{
-				m_listener->onRenderSystemDeviceLost();
-			}
         }
         else if( FAILED( hr ) )
 		{
@@ -1135,17 +1116,6 @@ namespace Menge
                 );
 
 			return false;
-		}
-
-        if( m_listener != nullptr )
-        {
-			if( m_listener->onRenderSystemDeviceRestored() == false )
-			{
-				LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::restore_ invalid onRenderSystemDeviceRestored"
-					);
-
-				return false;
-			}
 		}
 
 		return true;

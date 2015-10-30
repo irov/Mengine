@@ -16,17 +16,14 @@
 namespace Menge
 {
 	class LoaderEngine
-        : public LoaderServiceInterface
+		: public ServiceBase<LoaderServiceInterface>
 	{
 	public:
 		LoaderEngine();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize( const ConstString & _protocolPath ) override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		bool load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) override;
@@ -46,11 +43,7 @@ namespace Menge
         const ConstString & getCacheConstString( uint32_t _index ) const;
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		ArchivatorInterfacePtr m_archivator;
-
-		ConstString m_protocolPath;
 			        
         TVectorConstString m_bufferConstString;
 	};

@@ -97,15 +97,11 @@ namespace Menge
 		SERVICE_DECLARE("TextService")
 
 	public:
-		virtual bool initialize() = 0;
-		virtual void finalize() = 0;
-
-	public:
 		virtual bool loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 		virtual bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
-		virtual void addTextEntry( const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) = 0;
+		virtual bool addTextEntry( const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) = 0;
 
 	public:
 		virtual bool existText( const ConstString& _key, const TextEntryInterface ** _entry ) const = 0;
@@ -119,10 +115,6 @@ namespace Menge
 
 	public:
 		virtual void visitFonts( VisitorTextFontInterface * _vistitor ) = 0;
-
-	public:
-		virtual void setEnableText( bool _enable ) = 0;
-		virtual bool getEnableText() const = 0;
 
 	public:
 		virtual const ConstString & getDefaultFontName() const = 0;

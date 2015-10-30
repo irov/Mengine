@@ -1,6 +1,8 @@
 #	include "AccountManager.h"
 #	include "Account.h"
 
+#   include "Interface/ApplicationInterface.h"
+#   include "Interface/OptionsInterface.h"
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/StringizeInterface.h"
@@ -21,17 +23,15 @@
 #	include <wchar.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( AccountService, Menge::AccountServiceInterface, Menge::AccountManager );
+SERVICE_FACTORY( AccountService, Menge::AccountManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	AccountManager::AccountManager()
-		: m_serviceProvider(nullptr)
-        , m_accountListener(nullptr)
+		: m_accountProvider(nullptr)
 		, m_currentAccount(nullptr)
 		, m_playerEnumerator(0)
-		, m_projectVersion(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -39,26 +39,15 @@ namespace Menge
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void AccountManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    bool AccountManager::_initialize()
     {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * AccountManager::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AccountManager::initialize( const FilePath & _accountsPath, uint32_t _projectVersion, AccountProviderInterface * _listener )
-    {
-        m_accountsPath = _accountsPath;
-		m_projectVersion = _projectVersion;
-        m_accountListener = _listener;
-
+		LOGGER_INFO( m_serviceProvider )("Initializing Account manager..."
+			);
+		
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AccountManager::finalize()
+    void AccountManager::_finalize()
     {
         LOGGER_WARNING(m_serviceProvider)("AccountManager::finalize save accounts"
             );
@@ -73,6 +62,11 @@ namespace Menge
         m_currentAccount = nullptr;
         m_accounts.clear();
     }
+	//////////////////////////////////////////////////////////////////////////
+	void AccountManager::setAccountProviderInterface( AccountProviderInterface * _accountProvider )
+	{
+		m_accountProvider = _accountProvider;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	AccountInterfacePtr AccountManager::createAccount()
 	{
@@ -123,9 +117,9 @@ namespace Menge
         
 		m_currentAccount = newAccount;
 
-        if( m_accountListener != nullptr )
+        if( m_accountProvider != nullptr )
         {
-		    m_accountListener->onCreateAccount( _accountID );
+		    m_accountProvider->onCreateAccount( _accountID );
         }
         
 		m_accounts.insert( std::make_pair( _accountID, newAccount ) );
@@ -142,11 +136,11 @@ namespace Menge
 
 		AccountInterfacePtr currentAccount = m_currentAccount;
         
-        if( m_accountListener != nullptr )
+        if( m_accountProvider != nullptr )
         {
             const WString & name = m_currentAccount->getName();
 
-            m_accountListener->onUnselectAccount( name );
+            m_accountProvider->onUnselectAccount( name );
         }
 
 		if( m_currentAccount == currentAccount )
@@ -185,8 +179,11 @@ namespace Menge
         }
 
         AccountPtr newAccount = m_factoryAccounts.createObject();
+
+		uint32_t projectVersion = APPLICATION_SERVICE( m_serviceProvider )
+			->getProjectVersion();
 		
-		if( newAccount->initialize( m_serviceProvider, _accountID, folder, m_projectVersion ) == false )
+		if( newAccount->initialize( m_serviceProvider, _accountID, folder, projectVersion ) == false )
 		{
 			return nullptr;				 
 		}
@@ -230,9 +227,9 @@ namespace Menge
 
 		m_accounts.erase( it_find );
 
-        if( m_accountListener != nullptr )
+        if( m_accountProvider != nullptr )
         {
-            m_accountListener->onDeleteAccount( _accountID );
+            m_accountProvider->onDeleteAccount( _accountID );
         }  
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -265,9 +262,9 @@ namespace Menge
 
 		m_currentAccount->apply();
 
-        if( m_accountListener != nullptr )
+        if( m_accountProvider != nullptr )
         {
-		    m_accountListener->onSelectAccount( _accountID );
+		    m_accountProvider->onSelectAccount( _accountID );
         }
 
 		return true;
@@ -384,10 +381,10 @@ namespace Menge
             return nullptr;
         }
         
-        if( m_accountListener != nullptr )
+        if( m_accountProvider != nullptr )
         {
             m_currentAccount = account;
-            m_accountListener->onCreateAccount( _accountID );
+            m_accountProvider->onCreateAccount( _accountID );
             m_currentAccount = nullptr;
         }
 
@@ -405,32 +402,34 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::loadAccounts()
 	{        
-		bool noLoadAccount = CONFIG_VALUE( m_serviceProvider, "Development", "NoAccount", false );
+		bool noLoadAccount = HAS_OPTIONS( m_serviceProvider, "noaccounts" );
 
 		if( noLoadAccount == true )
 		{
 			return true;
 		}
 
+		FilePath accountsPath = CONFIG_VALUE( m_serviceProvider, "Game", "AccountsPath", STRINGIZE_STRING_LOCAL( m_serviceProvider, "accounts.ini" ) );
+
 		bool accountsExist = FILE_SERVICE(m_serviceProvider)
-            ->existFile( CONST_STRING(m_serviceProvider, user), m_accountsPath, nullptr );
+            ->existFile( CONST_STRING(m_serviceProvider, user), accountsPath, nullptr );
 
 		if( accountsExist == false )
 		{
 			LOGGER_WARNING(m_serviceProvider)( "AccountManager::loadAccounts not exist accounts '%s'"
-				, m_accountsPath.c_str()
+				, accountsPath.c_str()
 				);
 
 			return true;
 		}
         
 		InputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
-            ->openInputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath, false );
+            ->openInputFile( CONST_STRING(m_serviceProvider, user), accountsPath, false );
 
         if( file == nullptr )
         {
             LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts open accounts failed '%s'"
-                , m_accountsPath.c_str()
+                , accountsPath.c_str()
                 );
 
             return false;
@@ -440,7 +439,7 @@ namespace Menge
 		if( IniUtil::loadIni( ini, file, m_serviceProvider ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts parsing accounts failed '%s'"
-				, m_accountsPath.c_str()
+				, accountsPath.c_str()
 				);
 
 			return false;
@@ -454,7 +453,7 @@ namespace Menge
         if( IniUtil::getIniValue( ini, "SETTINGS", "AccountEnumerator", m_playerEnumerator, m_serviceProvider ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("AccountManager::loadAccounts get AccountEnumerator failed '%s'"
-                , m_accountsPath.c_str()
+                , accountsPath.c_str()
                 );
 
             return false;
@@ -463,7 +462,7 @@ namespace Menge
 		if( IniUtil::getIniValue( ini, "SETTINGS", "DefaultAccountID", m_defaultAccountID, m_serviceProvider ) == false )
         {
             LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get DefaultAccountID failed '%s'"
-                , m_accountsPath.c_str()
+                , accountsPath.c_str()
                 );
         }           
 
@@ -471,7 +470,7 @@ namespace Menge
 		if( IniUtil::getIniValue( ini, "SETTINGS", "SelectAccountID", selectAccountID, m_serviceProvider ) == false )
         {
             LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get SelectAccountID failed '%s'"
-                , m_accountsPath.c_str()
+                , accountsPath.c_str()
                 );
         }   
         
@@ -479,7 +478,7 @@ namespace Menge
 		if( IniUtil::getIniValue( ini, "ACCOUNTS", "Account", values, m_serviceProvider ) == false )
         {
             LOGGER_INFO(m_serviceProvider)( "AccountManager::loadAccounts get ACCOUNTS failed '%s'"
-                , m_accountsPath.c_str()
+                , accountsPath.c_str()
                 );
         }  
 
@@ -567,6 +566,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::saveAccounts()
 	{
+		FilePath m_accountsPath = CONFIG_VALUE( m_serviceProvider, "Game", "AccountsPath", STRINGIZE_STRING_LOCAL( m_serviceProvider, "accounts.ini" ) );
+
 		OutputStreamInterfacePtr file = FILE_SERVICE(m_serviceProvider)
             ->openOutputFile( CONST_STRING(m_serviceProvider, user), m_accountsPath );
 

@@ -1,6 +1,6 @@
 #	pragma once
 
-#	include "Interface/LogSystemInterface.h"
+#	include "Interface/LoggerInterface.h"
 
 namespace Menge
 {
@@ -31,7 +31,7 @@ namespace Menge
 		void flush() override;
 
 	private:
-        ServiceProviderInterface * m_serviceProvider;
+		ServiceProviderInterface * m_serviceProvider;
 
 		EMessageLevel m_verboseLevel;
 		uint32_t m_verboseFlag;

@@ -5,29 +5,18 @@
 #	include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( StringizeService, Menge::StringizeServiceInterface, Menge::StringizeService );
+SERVICE_FACTORY( StringizeService, Menge::StringizeService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {	
     //////////////////////////////////////////////////////////////////////////
     StringizeService::StringizeService()
-        : m_serviceProvider(nullptr)
-		, m_memory(0)
+        : m_memory(0)
     {
     }
     //////////////////////////////////////////////////////////////////////////
     StringizeService::~StringizeService()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void StringizeService::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * StringizeService::getServiceProvider() const
-    {
-        return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool StringizeService::stringize( const char * _str, size_t _size, bool _external, ConstString & _cstr )
@@ -49,76 +38,16 @@ namespace Menge
 
 			stringHolder = string;
 		}
-		else if( _size < 16 )
+		else
 		{
-			ConstStringHolderStringSize * string = m_poolStringSize.createObject();   
+			ConstStringHolderMemory * string = m_poolHolderStringMemory.createObject();
 
-			StringSizeBuffer16 * buffer = m_poolString16.createObject();
-			const char * store_value = buffer->initialize( _str, _size );			
-			string->setValue( buffer, store_value, _size, hash );
+			string->setValue( _str, _size, hash );
+
+			m_memory += _size + 1;
 
 			stringHolder = string;
-
-			m_memory += 16;
 		}
-		else if( _size < 32 )
-		{
-			ConstStringHolderStringSize * string = m_poolStringSize.createObject();    
-
-			StringSizeBuffer32 * buffer = m_poolString32.createObject();
-			const char * store_value = buffer->initialize( _str, _size );			
-			string->setValue( buffer, store_value, _size, hash );
-
-			stringHolder = string;
-
-			m_memory += 32;
-		}
-		else if( _size < 64 )
-		{
-			ConstStringHolderStringSize * string = m_poolStringSize.createObject();  
-
-			StringSizeBuffer64 * buffer = m_poolString64.createObject();
-			const char * store_value = buffer->initialize( _str, _size );
-			string->setValue( buffer, store_value, _size, hash );
-
-			stringHolder = string;
-
-			m_memory += 64;
-		}
-		else if( _size < 128 )
-		{
-			ConstStringHolderStringSize * string = m_poolStringSize.createObject();  
-
-			StringSizeBuffer128 * buffer = m_poolString128.createObject();
-			const char * store_value = buffer->initialize( _str, _size );
-			string->setValue( buffer, store_value, _size, hash );
-
-			stringHolder = string;
-
-			m_memory += 128;
-		}
-		else if( _size < 256 )
-		{
-			ConstStringHolderStringSize * string = m_poolStringSize.createObject();  
-
-			StringSizeBuffer256 * buffer = m_poolString256.createObject();
-			const char * store_value = buffer->initialize( _str, _size );
-			string->setValue( buffer, store_value, _size, hash );
-
-			stringHolder = string;
-
-			m_memory += 256;
-		}
-        else
-        {
-            ConstStringHolderStringSTL * stringSTL = m_poolStringSTL.createObject();
-
-            stringSTL->setValue( _str, _size, hash );
-
-            stringHolder = stringSTL;
-
-			m_memory += _size;
-        }
 
         _cstr = ConstString(stringHolder);
 

@@ -13,15 +13,11 @@ namespace Menge
 
 
 	class ConverterEngine
-		: public ConverterServiceInterface
+		: public ServiceBase<ConverterServiceInterface>
 	{
 	public:
 		ConverterEngine();
 		~ConverterEngine();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		void registerConverter( const ConstString & _type, ConverterFactoryInterface * _interface ) override;
@@ -33,8 +29,6 @@ namespace Menge
         bool convert( const ConstString & _converter, const ConstString & _category, const ConstString & _in, ConstString & _out ) override;
 			
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		typedef stdex::map<ConstString, ConverterFactoryInterface *> TMapConverterSystem;
 		TMapConverterSystem m_mapConverterSystem;
 	};

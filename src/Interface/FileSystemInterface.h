@@ -93,10 +93,6 @@ namespace Menge
     {
         SERVICE_DECLARE( "FileService" )
 
-    public:
-        virtual bool initialize() = 0;
-		virtual void finalize() = 0;
-
 	public:
 		virtual void registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory ) = 0;
 		virtual void unregisterFileGroupFactory( const ConstString & _type ) = 0;

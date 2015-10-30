@@ -6,14 +6,13 @@
 #   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( PluginService, Menge::PluginServiceInterface, Menge::PluginService );
+SERVICE_FACTORY( PluginService, Menge::PluginService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     PluginService::PluginService()
-        : m_serviceProvider(nullptr)
-        , m_dllCreatePluginName("dllCreatePlugin")
+        : m_dllCreatePluginName("dllCreatePlugin")
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -34,16 +33,31 @@ namespace Menge
 
         m_plugins.clear();
     }
-    //////////////////////////////////////////////////////////////////////////
-    void PluginService::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * PluginService::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
+	//////////////////////////////////////////////////////////////////////////
+	bool PluginService::_initialize()
+	{
+		//Empty
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PluginService::_finalize()
+	{
+		for( TMapPlugins::const_iterator
+			it = m_plugins.begin(),
+			it_end = m_plugins.end();
+		it != it_end;
+		++it )
+		{
+			const PluginDesc & desc = it->second;
+
+			desc.plugin->finalize();
+			desc.plugin->destroy();
+			desc.dlib->destroy();
+		}
+
+		m_plugins.clear();
+	}
     //////////////////////////////////////////////////////////////////////////
     PluginInterface * PluginService::loadPlugin( const WString & _name )
     {

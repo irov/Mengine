@@ -71,9 +71,8 @@ namespace Menge
     {
         SERVICE_DECLARE("AccountService")
 
-    public:
-        virtual bool initialize( const FilePath & _accountsPath, uint32_t _projectVersion, AccountProviderInterface * _listener ) = 0;
-        virtual void finalize() = 0;
+	public:
+		virtual void setAccountProviderInterface( AccountProviderInterface * _accountProvider ) = 0;
 
     public:
         virtual AccountInterfacePtr createAccount() = 0;

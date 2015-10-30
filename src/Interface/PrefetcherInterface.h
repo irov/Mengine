@@ -23,10 +23,6 @@ namespace Menge
         SERVICE_DECLARE("PrefetcherService")
 
 	public:
-		virtual bool initialize() = 0;
-		virtual void finalize() = 0;
-
-	public:
 		virtual void update() = 0;
 
 	public:

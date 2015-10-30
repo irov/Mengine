@@ -22,19 +22,15 @@
 namespace Menge
 {
 	class AstralaxParticleSystem2 
-		: public ParticleSystemInterface2
+		: public ServiceBase<ParticleSystemInterface2>
 	{
 	public:
 		AstralaxParticleSystem2();
 		~AstralaxParticleSystem2();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) override;
@@ -49,8 +45,6 @@ namespace Menge
 		void onContainerRelease_( AstralaxEmitterContainer2 * _contanier );
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         typedef FactoryPoolStore<AstralaxEmitterContainer2, 16> TFactoryPoolAstralaxEmitterContainer;
         TFactoryPoolAstralaxEmitterContainer m_factoryPoolAstralaxEmitterContainer;
 

@@ -161,7 +161,7 @@ namespace Metabuf
             mt::vec2f v;
             archive_read( ar, v, _userData );
 
-            boost::geometry::append( _value, v );
+			_value.append( v );
         }
     }
 	//////////////////////////////////////////////////////////////////////////

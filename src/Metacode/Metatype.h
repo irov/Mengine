@@ -35,7 +35,7 @@ namespace Metabuf
     void archive_read( stdex::memory_reader & ar, Menge::WChar & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, Menge::WString & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, Menge::ColourValue & _value, void * _userData );    
-    void archive_read( stdex::memory_reader & ar, Menge::Polygon & _value, void * _userData );
+    //void archive_read( stdex::memory_reader & ar, Menge::Polygon & _value, void * _userData );
 	void archive_read( stdex::memory_reader & ar, Menge::Viewport & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, Menge::Floats & _value, void * _userData );
     void archive_read( stdex::memory_reader & ar, mt::vec2f & _value, void * _userData );

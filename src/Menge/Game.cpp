@@ -6,7 +6,9 @@
 #	include "Arrow.h"
 
 #	include "Interface/AmplifierInterface.h"
+#	include "Interface/OptionsInterface.h"
 #	include "Interface/WatchdogInterface.h"
+#	include "Interface/ArchiveInterface.h"
 
 #	include "Interface/ScriptSystemInterface.h"
 #	include "Interface/ResourceInterface.h"
@@ -27,9 +29,7 @@
 #   include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AccountService, Menge::AccountServiceInterface );
-//////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( GameService, Menge::GameServiceInterface, Menge::Game );
+SERVICE_FACTORY( GameService, Menge::Game );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -72,10 +72,8 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Game::Game()
-		: m_serviceProvider(nullptr)
-		, m_accountProvider(nullptr)
+		: m_accountProvider(nullptr)
 		, m_soundVolumeProvider(nullptr)
-		, m_accountService(nullptr)
 		, m_defaultArrow(nullptr)
 		, m_timingFactor(1.f)
 	{
@@ -84,16 +82,6 @@ namespace Menge
 	Game::~Game()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Game::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * Game::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::handleKeyEvent( const InputKeyEvent & _event )
 	{
@@ -284,10 +272,9 @@ namespace Menge
         this->registerEventMethod( EVENT_CLOSE, "onCloseWindow", _embed );
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadPersonality( const ConstString & _module )
+	bool Game::loadPersonality()
 	{
-		bool developmentMode = APPLICATION_SERVICE( m_serviceProvider )
-			->isDevelopmentMode();
+		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
 
         SCRIPT_SERVICE(m_serviceProvider)
 			->addGlobalModule( "_DEVELOPMENT", pybind::get_bool( developmentMode ) );
@@ -309,19 +296,21 @@ namespace Menge
 			return false;
 		}
 
-		pybind::object personality = SCRIPT_SERVICE( m_serviceProvider )
-			->importModule( _module );
+		ConstString personality = CONFIG_VALUE( m_serviceProvider, "Game", "PersonalityModule", STRINGIZE_STRING_LOCAL( m_serviceProvider, "Personality" ) );
 
-		if( personality.is_invalid() == true )
+		pybind::object module = SCRIPT_SERVICE( m_serviceProvider )
+			->importModule( personality );
+
+		if( module.is_invalid() == true )
 		{
 			LOGGER_ERROR( m_serviceProvider )("Game::loadPersonality invalid import module '%s'"
-				, _module.c_str()
+				, personality.c_str()
 				);
 
 			return false;
 		}
 
-		this->registerEventMethods_( personality );
+		this->registerEventMethods_( module );
 
 #	ifdef _DEBUG
 		bool is_debug = true;
@@ -336,105 +325,50 @@ namespace Menge
 		bool result = true;
 		EVENTABLE_ASK( m_serviceProvider, this, EVENT_PREPARATION, result )( is_debug );
 
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::initialize( const FilePath & _accountPath, uint32_t _projectVersion, const TMapParams & _params, const String & _scriptInitParams )
-	{
-		m_params = _params;
-
-		m_archivator = ARCHIVE_SERVICE( m_serviceProvider )
-			->getArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "lz4" ) );
-
-		if( m_archivator == nullptr )
+		if( result == false )
 		{
 			return false;
 		}
 
-		AccountServiceInterface * accountService;
-		if( SERVICE_CREATE( AccountService, &accountService ) == false )
-        {
-            return false;
-        }
-		
-        if( SERVICE_REGISTRY( m_serviceProvider, accountService ) == false )
+		if( SCRIPT_SERVICE( m_serviceProvider )
+			->initializeModules() == false )
 		{
 			return false;
 		}
 
-		m_accountService = accountService;
-
-        m_accountProvider = new GameAccountProvider(m_serviceProvider, this);
-		
-		if( m_accountService->initialize( _accountPath, _projectVersion, m_accountProvider ) == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("Game::initialize invalid initialize account service"
-				);
-
-			return false;
-		}
-
-		if( m_accountService->loadAccounts() == false )
+		if( ACCOUNT_SERVICE( m_serviceProvider )
+			->loadAccounts() == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("Game::initialize failed load accounts"
 				);
 		}
 
-		m_defaultArrow = PROTOTYPE_SERVICE(m_serviceProvider)
-			->generatePrototypeT<Arrow>( CONST_STRING(m_serviceProvider, Arrow), CONST_STRING(m_serviceProvider, Default) );
+		m_defaultArrow = PROTOTYPE_SERVICE( m_serviceProvider )
+			->generatePrototypeT<Arrow>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Arrow" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Default" ) );
 
 		if( m_defaultArrow == nullptr )
 		{
-			LOGGER_WARNING(m_serviceProvider)("Game::initialize failed create defaultArrow 'Default'"
+			LOGGER_WARNING( m_serviceProvider )("Game::initialize failed create defaultArrow 'Default'"
 				);
 		}
 		else
 		{
-			m_defaultArrow->setName( CONST_STRING( m_serviceProvider, Default ) );
+			m_defaultArrow->setName( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Default" ) );
 
 			PLAYER_SERVICE( m_serviceProvider )
 				->setArrow( m_defaultArrow );
 		}
 
-		m_soundVolumeProvider = new GameSoundVolumeProvider(m_serviceProvider, this);
-
-		SOUND_SERVICE(m_serviceProvider)
-			->addSoundVolumeProvider( m_soundVolumeProvider );
-
-		bool developmentMode = APPLICATION_SERVICE( m_serviceProvider )
-			->isDevelopmentMode();
-
-		bool isMaster = !developmentMode;
-
-		LOGGER_WARNING(m_serviceProvider)("Game initialize [%s mode]"
-			, isMaster ? "MASTER" : "DEVELOPMENT"
-			);
-
-		if( _scriptInitParams.empty() == false )
-		{
-			LOGGER_WARNING(m_serviceProvider)("params: %s"
-				, _scriptInitParams.c_str()
-				);
-		}
-
-		const ConstString & platformName = PLATFORM_SERVICE(m_serviceProvider)
-			->getPlatformName();
-
 		bool EVENT_INITIALIZE_result = true;
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_INITIALIZE, EVENT_INITIALIZE_result )(_scriptInitParams, platformName, isMaster);
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_INITIALIZE, EVENT_INITIALIZE_result )();
 
 		if( EVENT_INITIALIZE_result == false )
 		{
 			return false;
 		}
 
-		if( SCRIPT_SERVICE(m_serviceProvider)
-			->initializeModules() == false )
-		{
-			return false;
-		}
-
-		bool hasCurrentAccount = m_accountService->hasCurrentAccount();
+		bool hasCurrentAccount = ACCOUNT_SERVICE( m_serviceProvider )
+			->hasCurrentAccount();
 
 		if( hasCurrentAccount == false )
 		{
@@ -446,11 +380,38 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Game::_initialize()
+	{
+		m_archivator = ARCHIVE_SERVICE( m_serviceProvider )
+			->getArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "lz4" ) );
+
+		if( m_archivator == nullptr )
+		{
+			return false;
+		}
+
+		CONFIG_SECTION( m_serviceProvider, "Params", m_params );
+
+		SERVICE_CREATE( m_serviceProvider, AccountService );
+
+		m_accountProvider = new GameAccountProvider( m_serviceProvider, this );
+
+		ACCOUNT_SERVICE( m_serviceProvider )
+			->setAccountProviderInterface( m_accountProvider );
+
+		m_soundVolumeProvider = new GameSoundVolumeProvider( m_serviceProvider, this );
+
+		SOUND_SERVICE( m_serviceProvider )
+			->addSoundVolumeProvider( m_soundVolumeProvider );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Game::run()
 	{
 		LOGGER_WARNING(m_serviceProvider)("Run game"
 			);
-				
+
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_RUN )();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -463,22 +424,13 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::finalize()
+	void Game::_finalize()
 	{	
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ACCOUNT_FINALIZE )();
 
-        if( m_accountService != nullptr )
-        {
-            m_accountService->finalize();
-        }
+		SERVICE_FINALIZE( m_serviceProvider, Menge::AccountServiceInterface );
 
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_FINALIZE )();
-
-        if( m_accountService != nullptr )
-        {
-            SERVICE_DESTROY(AccountService, m_accountService);
-            m_accountService = nullptr;
-        }
 
         if( m_accountProvider != nullptr )
         {
@@ -492,9 +444,7 @@ namespace Menge
 			m_soundVolumeProvider = nullptr;
 		}
 
-		this->destroyArrow();
-		      
-		m_resourcePacks.clear();
+		this->destroyArrow();		      
 				
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_DESTROY )();
 	}
@@ -575,202 +525,6 @@ namespace Menge
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_USER )(_event, _params);
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadLocalePacksByName_( TVectorResourcePack & _packs, const ConstString & _locale, const ConstString & _platform )
-	{
-		bool hasLocale = false;
-
-		for( TVectorResourcePack::const_iterator 
-			it = m_resourcePacks.begin(),
-			it_end = m_resourcePacks.end();
-		it != it_end;
-		++it )
-		{
-			const PackPtr & pack = *it;
-
-			const ConstString & packLocale = pack->getLocale();
-			const ConstString & packPlatform = pack->getPlatfrom();
-
-			if( packPlatform.empty() == false && packPlatform != _platform )
-			{
-				continue;
-			}
-			
-			if( packLocale != _locale )
-			{
-				continue;
-			}
-
-			_packs.push_back( pack );
-
-			hasLocale = true;
-		}
-
-		return hasLocale;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::addResourcePack( const ResourcePackDesc & _desc )
-	{
-		bool developmentMode = APPLICATION_SERVICE( m_serviceProvider )
-			->isDevelopmentMode();
-
-		if( developmentMode == false && _desc.dev == true )
-		{
-			return true;
-		}
-
-		PackPtr pack = m_factoryPack.createObject();
-		
-		pack->setup( m_serviceProvider
-			, _desc.name
-			, _desc.type
-			, _desc.locale
-			, _desc.platform
-			, _desc.descriptionPath
-			, _desc.path
-			, _desc.preload
-			);
-
-		if( _desc.immediately == false )
-		{
-			m_resourcePacks.push_back( pack );
-		}
-		else
-		{
-			if( pack->load() == false )
-			{
-				return false;
-			}
-
-			if( pack->apply() == false )
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PackInterfacePtr Game::getResourcePack( const ConstString & _name ) const
-	{
-		for( TVectorResourcePack::const_iterator
-			it = m_resourcePacks.begin(),
-			it_end = m_resourcePacks.end();
-		it != it_end;
-		++it )
-		{
-			const PackPtr & pack = *it;
-
-			const ConstString & packName = pack->getName();
-
-			if( packName != _name )
-			{
-				continue;
-			}
-
-			return pack;
-		}
-
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::applyConfigPacks()
-	{
-		const ConstString & platformName = PLATFORM_SERVICE(m_serviceProvider)
-			->getPlatformName();
-
-		TVectorResourcePack packs;
-
-		for( TVectorResourcePack::const_iterator 
-			it = m_resourcePacks.begin(),
-			it_end = m_resourcePacks.end();
-		it != it_end;
-		++it )
-		{
-			const PackPtr & pack = *it;
-
-			const ConstString & packPlatform = pack->getPlatfrom();
-
-			if( packPlatform.empty() == false && packPlatform != platformName )
-			{
-				continue;
-			}
-
-			const ConstString & locale = pack->getLocale();
-
-			if( locale.empty() == false )
-			{
-				continue;
-			}
-
-			packs.push_back( pack );
-		}
-		
-		if( this->loadLocalePacksByName_( packs, m_languagePack, platformName ) == false )
-		{
-			if( this->loadLocalePacksByName_( packs, CONST_STRING(m_serviceProvider, eng), platformName ) == false )
-			{
-				LOGGER_WARNING(m_serviceProvider)("Game::loadConfigPacks not set locale pack"						
-					);
-			}
-		}
-
-		for( TVectorResourcePack::const_iterator 
-			it = packs.begin(),
-			it_end = packs.end();
-		it != it_end;
-		++it )
-		{
-			const PackPtr & pack = *it;
-
-			if( pack->isPreload() == false )
-			{
-				continue;
-			}
-
-			if( pack->load() == false )
-			{
-				return false;
-			}
-		}
-
-		BEGIN_WATCHDOG(m_serviceProvider, "pack apply");
-
-		for( TVectorResourcePack::const_iterator 
-			it = packs.begin(),
-			it_end = packs.end();
-		it != it_end;
-		++it )
-		{
-			const PackPtr & pack = *it;
-
-			if( pack->isPreload() == false )
-			{
-				continue;
-			}
-
-			if( pack->apply() == false )
-            {
-                return false;
-            }
-		}
-
-		END_WATCHDOG(m_serviceProvider, "pack apply", 0)("");
-
-		m_resourcePacks.clear();
-
-        return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::setLanguagePack( const ConstString& _packName )
-	{
-		m_languagePack = _packName;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & Game::getLanguagePack() const
-    {
-        return m_languagePack;
-    }
-	//////////////////////////////////////////////////////////////////////////
 	void Game::setCursorMode( bool _mode )
 	{
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_CURSOR_MODE )(_mode);
@@ -812,140 +566,6 @@ namespace Menge
 
 		if( it_find == m_params.end() )
 		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::addData( const ConstString & _name, const DataDesc & _desc )
-	{
-		TMapDatas::const_iterator it_found = m_datas.find( _name );
-		
-		if( it_found != m_datas.end() )
-		{
-			LOGGER_ERROR( m_serviceProvider )("Game::addData data %s already exist"
-				, _name.c_str()
-				);
-
-			return false;
-		}
-
-		m_datas.insert( std::make_pair(_name, _desc) );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::hasData( const ConstString & _name ) const
-	{
-		TMapDatas::const_iterator it_found = m_datas.find( _name );
-
-		if( it_found == m_datas.end() )
-		{
-			return false;
-		}
-
-		const DataDesc & desc = it_found->second;
-
-		if( FILE_SERVICE(m_serviceProvider)
-			->existFile( desc.category, desc.path, nullptr ) == false )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	MemoryCacheBufferInterfacePtr Game::loadData( const ConstString & _name ) const
-	{
-		TMapDatas::const_iterator it_found = m_datas.find( _name );
-
-		if( it_found == m_datas.end() )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Game::loadData: data %s not found"
-				, _name.c_str()
-				);
-
-			return nullptr;
-		}
-
-		const DataDesc & desc = it_found->second;
-
-		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openInputFile( desc.category, desc.path, false );
-
-		if( stream == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Game::loadData: data %s invalid open file %s"
-				, _name.c_str()
-				, desc.path.c_str()
-				);
-
-			return nullptr;
-		}  
-		
-		MemoryCacheBufferInterfacePtr binaryBuffer;
-		if( Helper::loadStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_GAME_DATA ), GET_MAGIC_VERSION( MAGIC_GAME_DATA ), binaryBuffer ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Game::loadData: data %s invalid load stream archive %s"
-				, _name.c_str()
-				, desc.path.c_str()
-				);
-
-			return nullptr;
-		}
-
-		return binaryBuffer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::writeData( const ConstString & _name, const void * _data, size_t _size ) const
-	{
-		TMapDatas::const_iterator it_found = m_datas.find( _name );
-
-		if( it_found == m_datas.end() )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Game::writeData: data %s not found"
-				, _name.c_str()
-				);
-
-			return false;
-		}
-
-		const DataDesc & desc = it_found->second;
-
-		if( _data == nullptr || _size == 0 )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Game::writeData: data %s write empty file %s"
-				, _name.c_str()
-				, desc.path.c_str()
-				);
-
-			return false;
-		}	
-
-		OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
-			->openOutputFile( desc.category, desc.path );
-
-		if( stream == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Game::writeData: data %s invalid open file %s"
-				, _name.c_str()
-				, desc.path.c_str()
-				);
-
-			return nullptr;
-		}
-
-		const void * data_memory = _data;
-		size_t data_size = _size;
-
-		if( Helper::writeStreamArchiveData( m_serviceProvider, stream, m_archivator, GET_MAGIC_NUMBER(MAGIC_GAME_DATA), GET_MAGIC_VERSION(MAGIC_GAME_DATA), true, data_memory, data_size ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Game::writeData: data %s invalid write file %s"
-				, _name.c_str()
-				, desc.path.c_str()
-				);
-
 			return false;
 		}
 

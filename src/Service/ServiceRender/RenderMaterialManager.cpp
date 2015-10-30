@@ -13,14 +13,13 @@
 #	include "stdex/hash.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( RenderMaterialManager, Menge::RenderMaterialServiceInterface, Menge::RenderMaterialManager );
+SERVICE_FACTORY( RenderMaterialService, Menge::RenderMaterialManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////    
     RenderMaterialManager::RenderMaterialManager()
-        : m_serviceProvider(nullptr)
-		, m_materialEnumerator(0)
+        : m_materialEnumerator(0)
 		, m_stageCount(0)
     {
     }
@@ -28,18 +27,8 @@ namespace Menge
     RenderMaterialManager::~RenderMaterialManager()
     {
     }
-    //////////////////////////////////////////////////////////////////////////    
-    void RenderMaterialManager::setServiceProvider( ServiceProviderInterface * _provider )
-    {
-        m_serviceProvider = _provider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * RenderMaterialManager::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-    bool RenderMaterialManager::initialize()
+    bool RenderMaterialManager::_initialize()
     {
 		m_defaultStages[EM_DEBUG] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" );
 
@@ -82,7 +71,7 @@ namespace Menge
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderMaterialManager::finalize()
+    void RenderMaterialManager::_finalize()
     {
 		for( uint32_t i = 0; i != MENGE_RENDER_MATERIAL_HASH_TABLE_SIZE; ++i )
 		{

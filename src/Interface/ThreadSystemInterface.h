@@ -74,10 +74,6 @@ namespace Menge
         SERVICE_DECLARE("ThreadSystem")
 
 	public:
-		virtual bool initialize() = 0;
-		virtual void finalize() = 0;
-
-	public:
 		virtual bool avaliable() const = 0;
 
 	public:
@@ -101,9 +97,8 @@ namespace Menge
     {
         SERVICE_DECLARE("ThreadService")
 
-    public:
-        virtual bool initialize( uint32_t _threadCount ) = 0;
-        virtual void finalize() = 0;
+	public:
+		virtual bool avaliable() const = 0;
 
     public:
         virtual void update() = 0;

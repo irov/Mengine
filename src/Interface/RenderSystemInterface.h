@@ -423,10 +423,6 @@ namespace Menge
         SERVICE_DECLARE("RenderMaterialManager")
 
     public:
-        virtual bool initialize() = 0;
-        virtual void finalize() = 0;
-
-    public:
         virtual bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) = 0;
 
 	public:
@@ -470,10 +466,6 @@ namespace Menge
         : public ServiceInterface
     {
         SERVICE_DECLARE("RenderTextureManager")
-
-    public:
-        virtual bool initialize() = 0;
-        virtual void finalize() = 0;
 
     public:
         virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) = 0;
@@ -546,29 +538,15 @@ namespace Menge
 		virtual bool isOrthogonalProjection() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	class RenderSystemListener        
-	{
-	public:
-        virtual void onRenderSystemDeviceLost() = 0;
-		virtual bool onRenderSystemDeviceRestored() = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
 	class RenderSystemInterface
         : public ServiceInterface
 	{
         SERVICE_DECLARE("RenderSystem")
 
 	public:
-		virtual bool initialize() = 0;
-        virtual void finalize() = 0;
-
-	public:
 		virtual const ConstString & getRenderPlatformName() const = 0;
 
-    public:
-        virtual void setRenderListener( RenderSystemListener * _listener ) = 0;
-
-		virtual bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, WindowHandle _winHandle,
+		virtual bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) = 0;
 
     public:
@@ -696,10 +674,6 @@ namespace Menge
         SERVICE_DECLARE("RenderService")
 
     public:
-        virtual bool initialize() = 0;
-        virtual void finalize() = 0;
-
-    public:
 		virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
             , const RenderIndices * _indices, uint32_t _indicesNum
@@ -722,7 +696,7 @@ namespace Menge
 
 	public:
 		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen, 
-			WindowHandle _winHandle, int _FSAAType , int _FSAAQuality ) = 0;
+			int _FSAAType , int _FSAAQuality ) = 0;
 
 		virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;
 

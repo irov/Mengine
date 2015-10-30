@@ -11,59 +11,36 @@
 #	include "Core/Params.h"
 
 #	include "Interface/ServiceInterface.h"
-#	include "Interface/InputSystemInterface.h"
+#	include "Interface/MemoryInterface.h"
 
 namespace Menge
 {
-    class TimerInterface
-    {
-	public:
-		TimerInterface(){};
-		virtual ~TimerInterface(){};
-
-    public:
-        virtual void initialize() = 0;
-        virtual void reset() = 0;
-
-	public:
-        virtual float getDeltaTime() const = 0;
-		virtual uint64_t getUnixTime() const = 0;
-
-    public:
-        virtual uint64_t getMilliseconds() = 0;
-        virtual uint64_t getMicroseconds() = 0;
-    };
-
-    class ConsoleInterface 
-    {
-    public:
-        virtual void render() = 0;
-        virtual void proccessInput( KeyCode _key, unsigned int _char, bool _isDown ) = 0;
-    };
-
-    class DynamicLibraryInterface;    
+	typedef void * WindowHandle;
 
     class PlatformInterface
         : public ServiceInterface
     {
         SERVICE_DECLARE("PlatformService");
+		
+	public:
+		virtual void update() = 0;
+		virtual void stop() = 0;
+
+	public:
+		virtual bool createWindow( uint32_t _icon, const Menge::WString & _projectTitle, const Resolution & _resolution, bool _fullscreen ) = 0;
+		virtual WindowHandle getWindowHandle() const = 0;
 
 	public:
 		virtual const ConstString & getPlatformName() const = 0;
 
     public:
-        virtual void stop() = 0;
-
         virtual void getDesktopResolution( Resolution & _resolution ) const = 0;
 
 		virtual size_t getCurrentPath( WChar * _path, size_t _len ) const = 0;
 
         virtual void minimizeWindow() = 0;
 
-        virtual void setHandleMouse( bool _handle ) = 0;
 		virtual void setCursorPosition( const mt::vec2f & _pos ) = 0;
-
-        virtual TimerInterface * getTimer() const = 0;
 
         virtual void showKeyboard() = 0;
         virtual void hideKeyboard() = 0;
@@ -71,10 +48,7 @@ namespace Menge
         virtual void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) = 0;
         virtual void notifyVsyncChanged( bool _vsync ) = 0;
         virtual void notifyCursorModeChanged( bool _mode ) = 0;
-        virtual bool notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const Blobject & _buffer ) = 0;
-
-        virtual void notifyCursorClipping( const Viewport & _viewport ) = 0;
-        virtual void notifyCursorUnClipping() = 0;
+		virtual bool notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const MemoryInterfacePtr & _buffer ) = 0;
 
     public:
         virtual void onEvent( const ConstString & _event, const TMapParams & _params ) = 0;
@@ -84,12 +58,6 @@ namespace Menge
 
     public:
         virtual void getMaxClientResolution( Resolution & _resolution ) const = 0;
-
-    public:
-        virtual bool isDevelopmentMode() const = 0;
-		virtual bool isRoamingMode() const = 0;
-
-		virtual uint32_t getProcessHandleCount() const = 0;
 
     public:
         virtual bool openUrlInDefaultBrowser( const WString & _url ) = 0;       

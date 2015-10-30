@@ -9,15 +9,11 @@
 namespace Menge
 {
 	class ArchiveService
-		: public ArchiveServiceInterface
+		: public ServiceBase<ArchiveServiceInterface>
 	{
 	public:
 		ArchiveService();
 		~ArchiveService();
-
-	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		void registerArchivator( const ConstString & _type, const ArchivatorInterfacePtr & _archivator ) override;
@@ -34,8 +30,6 @@ namespace Menge
 		MemoryInputInterfacePtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size ) override;
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		typedef stdex::map<ConstString, ArchivatorInterfacePtr> TMapArchivators;
 		TMapArchivators m_archivators;
 	};

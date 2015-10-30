@@ -21,9 +21,17 @@ namespace Menge
         ServiceInterface * getService( const char * _name ) const override;
 
 	protected:
-		bool registryService( const char * _name, ServiceInterface * _service ) override;
-		bool unregistryService( const char * _name ) override;
+		bool initializeService( TServiceProviderGenerator _generator ) override;
+		bool finalizeService( const char * _name ) override;
+
+		bool destroyService( const char * _name ) override;
+		
+		//bool registryService( const char * _name, ServiceInterface * _service ) override;
+		//bool unregistryService( const char * _name ) override;
         
+	protected:
+		void destroy() override;
+
 	protected:
         struct ServiceDesc
         {

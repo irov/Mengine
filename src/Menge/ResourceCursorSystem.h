@@ -14,7 +14,7 @@ namespace Menge
 
 	public:
 		const FilePath & getPath() const override;
-		const Blobject & getBuffer() const override;
+		const MemoryInterfacePtr & getBuffer() const override;
 
 	protected:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
@@ -22,6 +22,6 @@ namespace Menge
 	protected:
 		FilePath m_path;
 
-		Blobject m_buffer;
+		MemoryInterfacePtr m_buffer;
 	};
 }

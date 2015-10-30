@@ -1,7 +1,6 @@
 #	include "ConsoleLogger.h"
 
 #   include "Interface/UnicodeInterface.h"
-#   include "Interface/WindowsLayerInterface.h"
 
 #	include <io.h>
 #	include <cstdio>
@@ -16,8 +15,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ConsoleLogger::ConsoleLogger()
-		: m_serviceProvider(nullptr)
-		, m_verboseLevel(LM_INFO)
+		: m_serviceProvider( nullptr )
+		, m_verboseLevel( LM_INFO )
 		, m_verboseFlag(0xFFFFFFFF)
 		, m_createConsole(false)
 		, m_ConsoleHandle( nullptr )
@@ -37,7 +36,6 @@ namespace Menge
 		m_hOldHandle[0] = 0;
 		m_hOldHandle[1] = 0;
 		m_hOldHandle[2] = 0;
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ConsoleLogger::~ConsoleLogger()
@@ -50,19 +48,13 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ServiceProviderInterface * ConsoleLogger::getServiceProvider() const
-	{ 
+	{
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ConsoleLogger::initialize()
 	{ 
-		EWindowsType windowsType = WINDOWSLAYER_SERVICE( m_serviceProvider )
-			->getWindowsType();
-
-		if( windowsType != EWT_98 )
-		{
-			this->createConsole_();
-		}
+		this->createConsole_();
 
 		return true;
 	}

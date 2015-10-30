@@ -1,6 +1,5 @@
 #	include "XlsExportPlugin.h"
 
-#	include "Interface/LogSystemInterface.h"
 #	include "Logger/Logger.h"
 
 #	include "Interface/ApplicationInterface.h"

@@ -1,6 +1,5 @@
 #	include "DevelopmentConverterPlugin.h"
 
-#	include "Interface/LogSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
 
 #	include "HotspotImageConverterPNGToHIT.h"

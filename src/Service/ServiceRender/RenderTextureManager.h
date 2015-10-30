@@ -16,19 +16,15 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
     class RenderTextureManager
-        : public RenderTextureServiceInterface
+        : public ServiceBase<RenderTextureServiceInterface>
     {
     public:
         RenderTextureManager();
         ~RenderTextureManager();
 
     public:
-        void setServiceProvider( ServiceProviderInterface * _provider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
-    public:
-        bool initialize() override;
-        void finalize() override;
+        bool _initialize() override;
+        void _finalize() override;
 
     public:
         RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) override;
@@ -74,8 +70,6 @@ namespace Menge
 		void updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const;
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		typedef stdex::intrusive_duplex_tree<RenderTexture> TMapRenderTextureEntry;
         TMapRenderTextureEntry m_textures;
 

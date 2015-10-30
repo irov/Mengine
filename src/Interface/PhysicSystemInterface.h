@@ -88,10 +88,6 @@ namespace Menge
     {
         SERVICE_DECLARE("PhysicSystem");
 
-    public:
-        virtual bool initialize() = 0;
-        virtual void finalize() = 0;
-
 	public:
 		virtual PhysicWorldInterface * createWorld( const ConstString & _name, float _gravityX, float _gravityY ) = 0;
 		virtual void destroyWorld( const ConstString & _name ) = 0;

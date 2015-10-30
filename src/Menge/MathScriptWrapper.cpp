@@ -29,10 +29,11 @@ namespace Menge
 		static pybind::list s_Polygon_getPoints( Polygon * _polygon )
 		{				
 			pybind::list py_list_vec2f;
+						
+			const mt::vec2f * ring = _polygon->outer_points();
+			uint32_t ring_count = _polygon->outer_count();
 
-			const Polygon::ring_type & ring = _polygon->outer();
-
-			py_list_vec2f.append( ring.begin(), ring.end() );
+			py_list_vec2f.append( ring, ring + ring_count );
 
 			return py_list_vec2f;
 		}
@@ -41,11 +42,9 @@ namespace Menge
 		{
 			Polygon unscrew;
 
-			const Polygon::ring_type & ring = _polygon->outer();
+			unscrew.append_inner( *_polygon );
 
-			boost::geometry::interior_rings( unscrew ).push_back( ring );
-
-			boost::geometry::correct( unscrew );
+			unscrew.correct();
 
 			return unscrew;
 		}
@@ -415,19 +414,18 @@ namespace Menge
 				{
 					Polygon inner = pybind::extract<Polygon>( py_item );
 
-					const Polygon::ring_type & ring = inner.outer();
 
-					boost::geometry::interior_rings( *polygon ).push_back( ring );										
+					polygon->append_inner( inner );
 				}
 				else
 				{
 					mt::vec2f point = pybind::extract<mt::vec2f>( py_item );
 
-					boost::geometry::append( *polygon, point );
+					polygon->append( point );
 				}
 			}
 
-			boost::geometry::correct( *polygon );
+			polygon->correct();
 
 			return true;
 		}

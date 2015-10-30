@@ -10,37 +10,34 @@
 
 #	include <memory>
 
-SERVICE_FACTORY(NodeService, Menge::NodeServiceInterface, Menge::NodeManager);
-
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( NodeService, Menge::NodeManager);
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	NodeManager::NodeManager()
-        : m_serviceProvider(nullptr)
-        , m_homeless(nullptr)
+        : m_homeless(nullptr)
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    void NodeManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * NodeManager::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void NodeManager::initialize()
+    bool NodeManager::_initialize()
     {
         m_homeless = new Node();
 
+		if( m_homeless == nullptr )
+		{
+			return false;
+		}
+
         m_homeless->setName( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Homeless") );
         m_homeless->setType( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Node") );
-        m_homeless->setServiceProvider( m_serviceProvider );        
+        m_homeless->setServiceProvider( m_serviceProvider );       
+
+		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeManager::finalize()
+    void NodeManager::_finalize()
     {
         if( m_homeless != nullptr )
         {

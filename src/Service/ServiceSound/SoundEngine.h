@@ -47,19 +47,15 @@ namespace Menge
 	};
 
 	class SoundEngine
-		: public SoundServiceInterface
+		: public ServiceBase<SoundServiceInterface>
 	{
 	public:
 		SoundEngine();
 		~SoundEngine();
-	
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
 
     public:
-		bool initialize( bool _silent, bool _supportStream ) override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		bool supportStreamSound() const override;
@@ -128,8 +124,6 @@ namespace Menge
 		void mute( bool _mute ) override;
 		bool isMute() const override;
 
-        bool isSilent() const override;
-
 	public:
 		void updateVolume() override;
 
@@ -150,8 +144,6 @@ namespace Menge
         bool playSoundBufferUpdate_( SoundSourceDesc * _source );
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         MixerVolume m_commonVolume;
 		MixerVolume m_soundVolume;
 		MixerVolume m_musicVolume;
@@ -173,7 +165,6 @@ namespace Menge
 		typedef stdex::vector<SoundVolumeProviderInterface *> TVectorSoundVolumeProviders;
 		TVectorSoundVolumeProviders m_soundVolumeProviders;
 
-        bool m_silent;
 		bool m_supportStream;
 		bool m_muted;
 

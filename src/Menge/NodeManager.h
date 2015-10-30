@@ -13,18 +13,14 @@ namespace Menge
 	class NodeFactory;
 
 	class NodeManager
-        : public NodeServiceInterface
+        : public ServiceBase<NodeServiceInterface>
 	{
 	public:
 		NodeManager();
 
     public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
-    public:
-        void initialize() override;
-        void finalize() override;
+        bool _initialize() override;
+        void _finalize() override;
 
     public:
 		Node * createNode( const ConstString& _type ) override;
@@ -35,8 +31,6 @@ namespace Menge
         void clearHomeless() override;
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         Node * m_homeless;
 	};
 }

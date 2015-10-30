@@ -3,6 +3,8 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
+#	include "Logger/Logger.h"
+
 #	include <string.h>
 
 static uint16_t readBEUint16(const char* pIn) 

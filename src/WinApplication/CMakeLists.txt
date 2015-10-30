@@ -28,23 +28,12 @@ CriticalErrorsMonitor
 ADD_FILTER(
 src
 	main.cpp	
-	FPSMonitor.cpp
-	FPSMonitor.h	
-	AlreadyRunningMonitor.h
-	AlreadyRunningMonitor.cpp
 
 	WinApplication.cpp
 	WinApplication.h
-    WinApplicationInitializer.cpp
-    WinApplicationInitializer.h
-	WinTimer.cpp
-	WinTimer.h
-    WinMouseEvent.cpp
-    WinMouseEvent.h
 )
 
 add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
 
 if(MINGW)
     # resource compilation for mingw

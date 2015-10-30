@@ -27,7 +27,7 @@ namespace Menge
 		return m_path;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const Blobject & ResourceCursorSystem::getBuffer() const
+	const MemoryInterfacePtr & ResourceCursorSystem::getBuffer() const
 	{		
 		return m_buffer;
 	}

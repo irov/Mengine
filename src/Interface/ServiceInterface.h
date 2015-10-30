@@ -22,14 +22,101 @@ namespace Menge
     public:
         virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
         virtual ServiceProviderInterface * getServiceProvider() const = 0;
+
+	public:
+		virtual const char * getServiceID() const = 0;
+
+	protected:
+		virtual bool initialize() = 0;
+		virtual void finalize() = 0;
+
+	public:
+		virtual void destroy() = 0;
+
+	public:
+		friend class ServiceProvider;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	class ServiceListenerInterface
+
+	//////////////////////////////////////////////////////////////////////////
+	template<class T>
+	class ServiceBase
+		: public T
 	{
 	public:
-		virtual bool onRegistryService( ServiceProviderInterface * _serviceProvider, ServiceInterface * _service ) = 0;
-        virtual void onUnregistryService( ServiceProviderInterface * _serviceProvider, ServiceInterface * _service ) = 0;
+		ServiceBase()
+			: m_serviceProvider(nullptr)
+			, m_initialize(false)
+		{
+		}
+
+		virtual ~ServiceBase()
+		{
+		}
+
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override
+		{
+			m_serviceProvider = _serviceProvider;
+		}
+
+		ServiceProviderInterface * getServiceProvider() const override
+		{
+			return m_serviceProvider;
+		}
+
+	private:
+		bool initialize() override
+		{
+			if( m_initialize == true )
+			{
+				return true;
+			}
+			
+			bool successful = this->_initialize();
+
+			m_initialize = successful;
+
+			return m_initialize;
+		}
+
+		void finalize() override
+		{
+			if( m_initialize == false )
+			{
+				return;
+			}
+
+			m_initialize = false;
+
+			this->_finalize();
+			//Empty
+		}
+
+	protected:
+		virtual bool _initialize()
+		{
+			return true;
+		}
+
+		virtual void _finalize()
+		{
+			//Empty
+		}
+
+	public:
+		void destroy() override
+		{
+			delete this;
+		}
+
+	protected:
+		ServiceProviderInterface * m_serviceProvider;
+
+		bool m_initialize;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef bool (*TServiceProviderGenerator)(Menge::ServiceInterface**);
 	//////////////////////////////////////////////////////////////////////////
 	class ServiceProviderInterface
 	{
@@ -44,8 +131,33 @@ namespace Menge
 		virtual ServiceInterface * getService( const char * _name ) const = 0;
 
     public:
-		virtual bool registryService( const char * _name, ServiceInterface * _service ) = 0;
-		virtual bool unregistryService( const char * _name ) = 0;
+		virtual bool initializeService( TServiceProviderGenerator _generator ) = 0;
+		virtual bool finalizeService( const char * _name ) = 0;
+		virtual bool destroyService( const char * _name ) = 0;		
+
+	public:
+		template<class T>
+		bool finalizeServiceT()
+		{
+			const char * name = T::getStaticServiceID();
+
+			bool successful = this->finalizeService( name );
+
+			return successful;
+		}
+
+		template<class T>
+		bool destroyServiceT()
+		{
+			const char * name = T::getStaticServiceID();
+
+			bool successful = this->destroyService( name );
+
+			return successful;
+		}
+
+	public:
+		virtual void destroy() = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
     namespace Helper
@@ -62,7 +174,7 @@ namespace Menge
 
             if( s_service == nullptr )
             {
-                const char * serviceName = T::getServiceName();
+				const char * serviceName = T::getStaticServiceID();
 
                 ServiceInterface * service = _serviceProvider->getService( serviceName );
 
@@ -99,14 +211,14 @@ namespace Menge
 			{
 				s_initialize = true;
 
-				const char * serviceName = T::getServiceName();
+				const char * serviceName = T::getStaticServiceID();
 
 				s_exist = _serviceProvider->existService( serviceName );
 			}
 
 			return s_exist;
 		}
-    }
+	}
 	//////////////////////////////////////////////////////////////////////////
 #	ifdef _DEBUG
 #	define SERVICE_GET( serviceProvider, Type )\
@@ -119,55 +231,56 @@ namespace Menge
 #	define SERVICE_EXIST( serviceProvider, Type )\
 	(Menge::Helper::existService<Type>(serviceProvider))
 
-#	define SERVICE_NAME_CREATE( Name )\
-	serviceCreate##Name
+#	define SERVICE_NAME_CREATE(Name)\
+	__createMengineService##Name
 
-#	define SERVICE_NAME_DESTROY( Name )\
-	serviceDestroy##Name
+#	define SERVICE_PROVIDER_NAME_CREATE(Name)\
+	__createMengineProvider##Name
 
-
-#   define SERVICE_DECLARE( Name )\
+#   define SERVICE_DECLARE( ID )\
     public:\
-        inline static const char * getServiceName(){ return Name; };\
+        inline static const char * getStaticServiceID(){ return ID; };\
+		inline const char * getServiceID() const override { return ID; };\
     protected:
 
-#   define SERVICE_FACTORY( Name, Service, Implement )\
-    bool SERVICE_NAME_CREATE(Name)( Service ** _service )\
-    {\
-    if( _service == nullptr )\
-    {\
-    return false;\
-    }\
-    *_service = new Implement();\
-    return true;\
-    }\
-    void SERVICE_NAME_DESTROY(Name)( Service * _service )\
-    {\
-    delete _service;\
-    }\
+#   define SERVICE_FACTORY( Name, Implement )\
+    bool SERVICE_NAME_CREATE(Name)(Menge::ServiceInterface**_service){\
+    if(_service==nullptr){return false;}\
+	try{*_service=new Implement();}catch(...){return false;}\
+    return true;}\
 	struct __mengine_dummy_factory##Name{}
 
-#   define SERVICE_EXTERN( Name, Service )\
-    extern bool SERVICE_NAME_CREATE(Name)( Service ** );\
-    extern void SERVICE_NAME_DESTROY(Name)( Service * );\
-    struct __mengine_dummy_extern_##Name{}
+#   define SERVICE_PROVIDER_FACTORY( Name, Implement )\
+    bool SERVICE_PROVIDER_NAME_CREATE(Name)(Menge::ServiceProviderInterface**_serviceProvider){\
+    if(_serviceProvider==nullptr){return false;}\
+	try{*_serviceProvider=new Implement();}catch(...){return false;}\
+    return true;}\
+	struct __mengine_dummy_factory##Name{}
 
-#   define SERVICE_DUMMY( Name, Service )\
-    bool SERVICE_NAME_CREATE(Name)( Service ** ){return false;};\
-    void SERVICE_NAME_DESTROY(Name)( Service * ){};\
-    struct __mengine_dummy_extern_##Name{}
+#   define SERVICE_PROVIDER_CREATE( Name, Provider )\
+	for(;Provider!=nullptr;){\
+	extern bool SERVICE_PROVIDER_NAME_CREATE(Name)(Menge::ServiceProviderInterface**);\
+	SERVICE_PROVIDER_NAME_CREATE(Name)(Provider);\
+	break;}	
 
-#   define SERVICE_REGISTRY( Provider, Service )\
-    Provider->registryService( Service->getServiceName(), Service )
+#	define SERVICE_PROVIDER_FINALIZE( Provider )\
+	for(;Provider!=nullptr;){\
+	Provider->destroy();\
+	break;}
 
-#   define SERVICE_UNREGISTRY( Provider, Service )\
-	Provider->unregistryService( Service->getServiceName() )
+#   define SERVICE_CREATE( Provider, Name )\
+	for(;Provider!=nullptr;){\
+	extern bool SERVICE_NAME_CREATE(Name)(Menge::ServiceInterface**);\
+	Provider->initializeService(&SERVICE_NAME_CREATE(Name));\
+	break;}
 
-#   define SERVICE_CREATE( Name, Service )\
-    SERVICE_NAME_CREATE(Name)( Service )
+#   define SERVICE_FINALIZE( Provider, Type )\
+	for(;Provider!=nullptr;){\
+	Provider->destroyServiceT<Type>();\
+	break;}
 
-#   define SERVICE_DESTROY( Name, Service )\
-	SERVICE_NAME_DESTROY(Name)( Service )
-
-#	define SERVICE_THREAD_SAFE_METHOD( Type ) Type
+#   define SERVICE_DESTROY( Provider, Type )\
+	for(;Provider!=nullptr;){\
+	Provider->finalizeServiceT<Type>();\
+	break;}
 }

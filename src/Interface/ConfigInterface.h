@@ -21,10 +21,6 @@ namespace Menge
         SERVICE_DECLARE("ConfigService")
 
 	public:
-		virtual bool initialize( const ConstString & _platformName ) = 0;
-		virtual void finalize() = 0;
-
-	public:
 		virtual bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) = 0;
 
 	public:

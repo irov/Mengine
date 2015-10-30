@@ -27,6 +27,8 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/TextInterface.h"
+#	include "Interface/TimerInterface.h"
+#	include "Interface/UserdataInterface.h"
 
 #	include "ResourceAnimation.h"
 //#	include "ResourceSequence.h"
@@ -74,10 +76,10 @@ namespace Menge
 		
         const ConstString & s_getLanguagePack()
         {
-            const ConstString & languagePack = GAME_SERVICE(m_serviceProvider)
-                ->getLanguagePack();
+            const ConstString & locale = APPLICATION_SERVICE(m_serviceProvider)
+				->getLocale();
 
-            return languagePack;
+			return locale;
         }
 
         WString s_utf8ToUnicode( const String & _utf8 )
@@ -121,8 +123,8 @@ namespace Menge
 
 		bool s_hasGameData( const ConstString & _name )
 		{
-			bool result = GAME_SERVICE(m_serviceProvider)
-				->hasData( _name );
+			bool result = USERDATA_SERVICE(m_serviceProvider)
+				->hasUserdata( _name );
 
 			return result;
 		}
@@ -151,7 +153,7 @@ namespace Menge
 				return false;
 			}
 
-			if( GAME_SERVICE(m_serviceProvider)->writeData( _name, memory_buffer, memory_size ) == false )
+			if( USERDATA_SERVICE( m_serviceProvider )->writeUserdata( _name, memory_buffer, memory_size ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("s_writeGameData: data %s invalid write"
 					, _name.c_str()
@@ -165,8 +167,8 @@ namespace Menge
 		
 		PyObject * s_loadGameData( const ConstString & _name, PyObject * _pickleTypes )
 		{
-			MemoryCacheBufferInterfacePtr binaryBuffer = GAME_SERVICE( m_serviceProvider )
-				->loadData( _name );
+			MemoryCacheBufferInterfacePtr binaryBuffer = USERDATA_SERVICE( m_serviceProvider )
+				->loadUserdata( _name );
 
 			if( binaryBuffer == nullptr )
 			{
@@ -413,11 +415,10 @@ namespace Menge
 
 		bool s_intersectsBoxes( const mt::vec2f & _minFirst, const mt::vec2f & _maxFirst, const mt::vec2f & _minSecond, const mt::vec2f & _maxSecond )
 		{
-			typedef boost::geometry::model::box<mt::vec2f> Box;
-			Box box_first(_minFirst, _maxFirst);
-			Box box_second(_minSecond, _maxSecond);
+			mt::box2f box_first(_minFirst, _maxFirst);
+			mt::box2f box_second( _minSecond, _maxSecond );
 
-			bool result = boost::geometry::intersects(box_first, box_second);
+			bool result = mt::is_intersect( box_first, box_second );
 
 			return result;
 		}
@@ -483,20 +484,21 @@ namespace Menge
 		{
 			pybind::list py_list;
 
-			const Polygon::ring_type & ring = _polygon.outer();
+			const mt::vec2f * ring = _polygon.outer_points();
+			uint32_t ring_count = _polygon.outer_count();
 
-			py_list.append( ring.begin(), ring.end() );
+			py_list.append( ring, ring + ring_count );
 
 			return py_list;
 		}
 
 		Polygon s_intersectionPolygons( Polygon _p1, Polygon _p2 )
 		{
-			boost::geometry::correct( _p1 );
-			boost::geometry::correct( _p2 );
+			_p1.correct();
+			_p2.correct();
 
-			std::deque<Polygon> output;
-			boost::geometry::difference( _p1, _p2, output );
+			TVectorPolygon output;
+			_p1.difference( _p2, output );
 
 			if( output.empty() == true )
 			{
@@ -505,52 +507,49 @@ namespace Menge
 
 			Polygon inter = output[0];
 
-			boost::geometry::correct( inter );
+			inter.correct();
 
 			return inter;
 		}
 
 		bool s_intersectsPolygons( Polygon _p1, Polygon _p2 )
 		{
-			boost::geometry::correct( _p1 );
-			boost::geometry::correct( _p2 );
+			_p1.correct();
+			_p2.correct();
 
-			bool intersect = boost::geometry::intersects( _p1, _p2 );
+			bool intersect = _p1.intersects( _p2 );
 
 			return intersect;
 		}
 
 		bool s_intersectsPolygonsWM( const mt::mat4f & _wm1, Polygon _p1, const mt::mat4f & _wm2, Polygon _p2 )
 		{
-			boost::geometry::correct( _p1 );
-			boost::geometry::correct( _p2 );
+			_p1.correct();
+			_p2.correct();
 
 			Polygon p1wm;
-			polygon_wm( p1wm, _p1, _wm1 );
+			_p1.mul_wm( p1wm, _wm1 );
 
 			Polygon p2wm;
-			polygon_wm( p2wm, _p2, _wm2 );
+			_p2.mul_wm( p2wm, _wm2 );
 						
-			bool intersect = boost::geometry::intersects( p1wm, p2wm );
+			bool intersect = p1wm.intersects( p2wm );
 
 			return intersect;
 		}
 
 		bool s_intersectsPolygonsWMP( const mt::vec3f & _wm1, Polygon _p1, const mt::vec3f & _wm2, Polygon _p2 )
 		{
-			boost::geometry::correct( _p1 );
-			boost::geometry::correct( _p2 );
+			_p1.correct();
+			_p2.correct();
 
 			Polygon p1wm;
-			polygon_transpose( p1wm, _p1, _wm1.to_vec2f() );
+			_p1.transpose( p1wm, _wm1.to_vec2f() );
 
 			Polygon p2wm;
-			polygon_transpose( p2wm, _p2, _wm2.to_vec2f() );
+			_p2.transpose( p2wm, _wm2.to_vec2f() );
 						
-			std::deque<Menge::Polygon> output;
-			boost::geometry::intersection( p1wm, p2wm, output );
-
-			bool intersect = boost::geometry::intersects( p1wm, p2wm );
+			bool intersect = p1wm.intersects( p2wm );
 
 			return intersect;
 		}
@@ -649,7 +648,7 @@ namespace Menge
 
 		bool s_intersectMoviesHotspotVsPolygon( Movie * _movie, const ConstString & _socket, Polygon _polygon )
 		{
-			boost::geometry::correct( _polygon );
+			_polygon.correct();
 
 			if( _movie == nullptr )
 			{
@@ -774,33 +773,21 @@ namespace Menge
 		bool s_isPointInsidePolygon( const mt::vec2f & _point, const Polygon & _polygon )
 		{
 			Polygon point_polygon;
-			boost::geometry::append(point_polygon, _point);
-			boost::geometry::correct(point_polygon);
+			point_polygon.append(_point );
+			point_polygon.correct();
 
 			Polygon correct_polygon(_polygon);
-			boost::geometry::correct(correct_polygon);
+			correct_polygon.correct();
 			
-			bool result = boost::geometry::intersects(point_polygon, correct_polygon);
+			bool result = point_polygon.intersects( correct_polygon );
 
 			return result;
 		}
 
 		uint64_t s_getTimeMs()
 		{
-            TimerInterface * timer = PLATFORM_SERVICE(m_serviceProvider)
-                ->getTimer();
-
-            uint64_t ms = timer->getMilliseconds();
-
-			return ms;
-		}
-
-		uint64_t s_getUnixTime()
-		{
-			TimerInterface * timer = PLATFORM_SERVICE(m_serviceProvider)
-				->getTimer();
-
-			uint64_t ms = timer->getUnixTime();
+			uint64_t ms = TIMER_SERVICE( m_serviceProvider )
+				->getMilliseconds();
 
 			return ms;
 		}
@@ -1747,7 +1734,7 @@ namespace Menge
 		void s_setParticlesEnabled( bool _enable )
 		{
 			APPLICATION_SERVICE(m_serviceProvider)
-				->setParticlesEnabled( _enable );
+				->setParticleEnable( _enable );
 		}
 
 		bool s_hasTextByKey( const ConstString& _key )
@@ -1879,7 +1866,6 @@ namespace Menge
 
 		pybind::def_functor( "getTime", helperScriptMethod, &HelperScriptMethod::s_getTime );
         pybind::def_functor( "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );
-		pybind::def_functor( "getUnixTime", helperScriptMethod, &HelperScriptMethod::s_getUnixTime );
 
         pybind::def_functor( "getDate", helperScriptMethod, &HelperScriptMethod::s_getDate );
         

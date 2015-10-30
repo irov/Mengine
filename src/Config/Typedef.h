@@ -10,7 +10,3 @@
 #   include <stddef.h>
 #	include <stdint.h>
 
-namespace Menge
-{
-	typedef void * WindowHandle;
-}

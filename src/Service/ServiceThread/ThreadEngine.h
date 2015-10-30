@@ -12,19 +12,18 @@
 namespace Menge
 {    
 	class ThreadEngine
-        : public ThreadServiceInterface
+        : public ServiceBase<ThreadServiceInterface>
 	{
 	public:
 		ThreadEngine();
 		~ThreadEngine();
 
     public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
+        bool _initialize() override;
+        void _finalize() override;
 
-    public:
-        bool initialize( uint32_t _threadCount ) override;
-        void finalize() override;
+	public:
+		bool avaliable() const override;
 
 	public:
 		bool createThread( const ConstString & _threadName, int _priority, const char * _doc ) override;
@@ -52,8 +51,6 @@ namespace Menge
 		bool hasThread_( const ConstString & _name ) const;
 		
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		ThreadMutexInterfacePtr m_allocatorPoolMutex;
 
         uint32_t m_threadCount;
@@ -88,6 +85,6 @@ namespace Menge
 		typedef stdex::vector<ThreadDesc> TVectorThreads;
 		TVectorThreads m_threads;
 
-		bool m_threadAvaliable;
+		bool m_avaliable;
 	};
 }	// namespace Menge

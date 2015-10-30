@@ -15,7 +15,7 @@ namespace	Menge
 	class Playlist;
 
 	class Amplifier
-		: public AmplifierInterface
+		: public ServiceBase<AmplifierInterface>
 		, public SoundListenerInterface	
 	{
 	public:
@@ -23,12 +23,8 @@ namespace	Menge
 		~Amplifier();
 
 	public:
-		bool initialize() override;
-		void finalize() override;
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
         bool playTrack( const ConstString& _playlistResource, uint32_t _index, float _pos, bool _looped ) override;
@@ -49,8 +45,6 @@ namespace	Menge
 		float getPosMs() const override;
 
 	private:
-        ServiceProviderInterface * m_serviceProvider;
-
 		float m_volume;
 		float m_volumeOverride;
 		float m_currentSoundPosition;

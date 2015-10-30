@@ -16,19 +16,15 @@
 namespace Menge
 {
 	class Win32ThreadSystem
-		: public ThreadSystemInterface
+		: public ServiceBase<ThreadSystemInterface>
 	{
 	public:
 		Win32ThreadSystem();
 		~Win32ThreadSystem();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		bool avaliable() const override;
@@ -49,8 +45,6 @@ namespace Menge
 		void onThreadIdentityRemove_( Win32ThreadIdentity * _identity );
 	
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
         typedef FactoryPoolStore<Win32ThreadIdentity, 16> TPoolWin32ThreadIdentity;
         TPoolWin32ThreadIdentity m_poolWin32ThreadIdentity;
 

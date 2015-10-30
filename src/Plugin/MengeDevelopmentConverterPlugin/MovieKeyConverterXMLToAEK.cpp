@@ -501,7 +501,7 @@ namespace Menge
 				const Metacode::Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & meta_shape = *it_shape;
 
 				Menge::Polygon polygon = meta_shape.get_Polygon();
-				boost::geometry::correct( polygon );
+				polygon.correct();
 
 				mt::vec2f v0(0.f, 0.f);
 				mt::vec2f v1(width, 0.f);
@@ -509,22 +509,17 @@ namespace Menge
 				mt::vec2f v3(0.f, height);
 
 				Polygon imagePolygon;
-				boost::geometry::append( imagePolygon, v0 );
-				boost::geometry::append( imagePolygon, v1 );
-				boost::geometry::append( imagePolygon, v2 );
-				boost::geometry::append( imagePolygon, v3 );
-				boost::geometry::correct( imagePolygon );
+				imagePolygon.append( v0 );
+				imagePolygon.append( v1 );
+				imagePolygon.append( v2 );
+				imagePolygon.append( v3 );
+				imagePolygon.correct();
 
-				std::deque<Menge::Polygon> output;
-				try
+				TVectorPolygon output;
+				if( polygon.intersection( imagePolygon, output ) == false )
 				{
-					boost::geometry::intersection( polygon, imagePolygon, output );
-				}
-				catch( const std::exception & ex )
-				{
-					LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes has exception '%s'"
+					LOGGER_ERROR( m_serviceProvider )("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
 						, layerIndex
-						, ex.what()
 						);
 
 					return false;
@@ -544,9 +539,9 @@ namespace Menge
 				{
 					Menge::Polygon shape_vertex = output[0];
 
-					boost::geometry::correct( shape_vertex );
+					shape_vertex.correct();
 
-					size_t shapeVertexCount = boost::geometry::num_points( shape_vertex ) - 1;
+					size_t shapeVertexCount = shape_vertex.num_points() - 1;
 
 					if( shapeVertexCount >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
 					{
@@ -560,8 +555,7 @@ namespace Menge
 					}
 
 					Menge::TVectorIndices shape_indices;
-
-					if( Menge::triangulate_polygon_indices( shape_vertex, shape_indices ) == false )
+					if( shape_vertex.triangulate_indices( shape_indices ) == false )
 					{
 						LOGGER_ERROR(m_serviceProvider)("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d invalid triangulate"
 							, layerIndex
@@ -593,7 +587,7 @@ namespace Menge
 
 					for( size_t i = 0; i != shapeVertexCount; ++i )
 					{
-						const mt::vec2f & shape_pos = shape_vertex.outer()[i];
+						const mt::vec2f & shape_pos = shape_vertex.outer_point( i );
 
 						shape.pos[i].x = shape_pos.x;
 						shape.pos[i].y = shape_pos.y;
@@ -645,7 +639,7 @@ namespace Menge
 
 			const Menge::Polygon & polygon = meta_polygon.get_Value();
 
-			uint32_t polygon_size = Menge::polygon_size( polygon );
+			uint32_t polygon_size = polygon.num_points();
 
 			if( polygon_size >= MENGINE_MOVIE_POLYGON_MAX_VERTEX )
 			{
@@ -662,7 +656,7 @@ namespace Menge
 
 			if( polygon_size > 0 )
 			{
-				const Polygon::ring_type & countour = polygon.outer();
+				const mt::vec2f * countour = polygon.outer_points();
 
 				for( uint32_t i = 0; i != polygon_size; ++i )
 				{

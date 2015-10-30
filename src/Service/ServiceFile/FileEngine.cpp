@@ -12,40 +12,17 @@
 #	include "Core/FilePath.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( FileService, Menge::FileServiceInterface, Menge::FileEngine );
+SERVICE_FACTORY( FileService, Menge::FileEngine );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::FileEngine()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	FileEngine::~FileEngine()
 	{
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void FileEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * FileEngine::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::initialize()
-	{		
-		//this->registerFileGroupFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactorableUnique<FactoryDefault<Win32FileGroupDirectory> >() );
-		
-        return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void FileEngine::finalize()
-	{
-		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void FileEngine::registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory )
@@ -109,6 +86,7 @@ namespace Menge
 			);
         
 		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _fileGroupName );
+
 		if( it_find != m_fileSystemMap.end() )
 		{
 			LOGGER_ERROR(m_serviceProvider)("FileEngine::mountFileSystem FileSystem with name '%s' is already mount\n"

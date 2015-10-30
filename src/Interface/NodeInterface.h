@@ -13,10 +13,6 @@ namespace Menge
         : public ServiceInterface
     {
         SERVICE_DECLARE("NodeService")
-                
-    public:
-        virtual void initialize() = 0;
-        virtual void finalize() = 0;
 
     public:
         virtual Node * createNode( const ConstString& _type ) = 0;

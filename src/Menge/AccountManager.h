@@ -13,19 +13,18 @@ namespace Menge
 	class Account;
     
 	class AccountManager
-        : public AccountServiceInterface
+        : public ServiceBase<AccountServiceInterface>
 	{
 	public:
 		AccountManager();
 		~AccountManager();
         
     public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
+        bool _initialize() override;
+        void _finalize() override;
 
-    public:
-        bool initialize( const FilePath & _accountsPath, uint32_t _projectVersion, AccountProviderInterface * _listener ) override;
-        void finalize() override;
+	public:
+		void setAccountProviderInterface( AccountProviderInterface * _accountProvider ) override;
 
 	public:
 		AccountInterfacePtr createAccount() override;
@@ -66,13 +65,8 @@ namespace Menge
         void unselectCurrentAccount_();
 
 	protected:
-        FilePath m_accountsPath;
-		uint32_t m_projectVersion;
-
-        AccountProviderInterface * m_accountListener;
-
-        ServiceProviderInterface * m_serviceProvider;
-		
+		AccountProviderInterface * m_accountProvider;        
+				
 		typedef stdex::map<WString, AccountInterfacePtr> TMapAccounts;
 		TMapAccounts m_accounts;
 		

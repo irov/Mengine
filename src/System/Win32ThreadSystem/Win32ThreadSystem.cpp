@@ -7,36 +7,25 @@
 #	include <process.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ThreadSystem, Menge::ThreadSystemInterface, Menge::Win32ThreadSystem );
+SERVICE_FACTORY( ThreadSystem, Menge::Win32ThreadSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32ThreadSystem::Win32ThreadSystem()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Win32ThreadSystem::~Win32ThreadSystem()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * Win32ThreadSystem::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32ThreadSystem::initialize()		
+	bool Win32ThreadSystem::_initialize()		
 	{
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32ThreadSystem::finalize()
+	void Win32ThreadSystem::_finalize()
 	{
 		if( m_poolWin32ThreadIdentity.emptyObject() == false )
 		{

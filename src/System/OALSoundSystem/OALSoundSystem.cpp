@@ -12,14 +12,13 @@
 #	include <stdarg.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( SoundSystem, Menge::SoundSystemInterface, Menge::OALSoundSystem );
+SERVICE_FACTORY( SoundSystem, Menge::OALSoundSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	OALSoundSystem::OALSoundSystem()
-		: m_serviceProvider(nullptr)
-		, m_context(nullptr)
+		: m_context(nullptr)
 		, m_device(nullptr)
 		, m_threadAvaliable(false)
 	{
@@ -28,31 +27,15 @@ namespace Menge
 	OALSoundSystem::~OALSoundSystem()
 	{     
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void OALSoundSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * OALSoundSystem::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundSystem::initialize()
+	bool OALSoundSystem::_initialize()
 	{
 		LOGGER_INFO(m_serviceProvider)( "Starting OpenAL Sound System..." );
 
 #	ifdef MENGINE_MARMALADE
 		alcInit();
 #	endif
-		
-        const ALCchar* defaultDeviceSprcifier = alcGetString( nullptr, ALC_DEVICE_SPECIFIER );
-        
-        LOGGER_WARNING(m_serviceProvider)("OpenAL default device specifier [%s]"
-            , defaultDeviceSprcifier
-            );
-				
+
         m_device = alcOpenDevice( nullptr );
 			
 		if( m_device == nullptr )
@@ -78,6 +61,23 @@ namespace Menge
 			    }			
             }
 		}
+
+		ALCint majorVersion;
+		alcGetIntegerv( m_device, ALC_MAJOR_VERSION, 1, &majorVersion );
+
+		ALCint minorVersion;
+		alcGetIntegerv( m_device, ALC_MINOR_VERSION, 1, &minorVersion );
+
+		LOGGER_WARNING( m_serviceProvider )("OpenAL version %d.%d"
+			, majorVersion
+			, minorVersion
+			);
+
+		const ALCchar* defaultDeviceSprcifier = alcGetString( m_device, ALC_DEVICE_SPECIFIER );
+
+		LOGGER_WARNING( m_serviceProvider )("OpenAL default device specifier [%s]"
+			, defaultDeviceSprcifier
+			);
 
 		const ALCchar* captureDeviceSpecifier = alcGetString( m_device, ALC_CAPTURE_DEVICE_SPECIFIER );
 
@@ -150,7 +150,7 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSystem::finalize()
+    void OALSoundSystem::_finalize()
     {
         if( m_device )
         {
@@ -176,6 +176,11 @@ namespace Menge
 	void OALSoundSystem::update()
 	{
 		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool OALSoundSystem::isSilent() const
+	{
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundSystem::onTurnSound( bool _turn )

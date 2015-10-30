@@ -18,22 +18,21 @@ namespace Menge
 	class ServiceProviderInterface;
 
 	class OALSoundSystem
-		: public SoundSystemInterface
+		: public ServiceBase<SoundSystemInterface>
 	{
 	public:
 		OALSoundSystem();
 		~OALSoundSystem();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize() override;
-        void finalize() override;
+		bool _initialize() override;
+        void _finalize() override;
 
 	public:
 		void update() override;
+
+	public:
+		bool isSilent() const override;
 		
 	public:
 		void onTurnSound( bool _turn ) override;
@@ -52,8 +51,6 @@ namespace Menge
 		void releaseBufferId( ALuint _bufferId );
 
 	private:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ALCcontext * m_context;
 		ALCdevice * m_device;
 

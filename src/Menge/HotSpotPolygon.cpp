@@ -37,7 +37,7 @@ namespace Menge
 	{
 		m_polygon = _polygon;
 
-		boost::geometry::correct( m_polygon );
+		m_polygon.correct();
 
 		this->invalidateBoundingBox();
 		this->invalidatePolygonWM();
@@ -82,12 +82,12 @@ namespace Menge
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
-		polygon_wm( m_polygonWM, m_polygon, wm );
+		m_polygon.mul_wm( m_polygonWM, wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotPolygon::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
-		uint32_t numPoints = boost::geometry::num_points( m_polygon );
+		uint32_t numPoints = m_polygon.num_points();
 
 		if( numPoints == 0 )
 		{
@@ -96,7 +96,7 @@ namespace Menge
 			return;
 		}
 
-		const Polygon::ring_type & ring = m_polygon.outer();
+		const mt::vec2f * ring = m_polygon.outer_points();
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -125,7 +125,7 @@ namespace Menge
 			return !m_outward;
 		}
 
-		if( polygon_empty( m_polygon ) == true )
+		if( m_polygon.empty() == true )
 		{
 			return m_outward;
 		}
@@ -139,9 +139,7 @@ namespace Menge
 
 		const Polygon & polygonWM = this->getPolygonWM();
 
-		GeometryPoint p(_point.x, _point.y);
-
-		if( boost::geometry::intersects( polygonWM, p ) == false )
+		if( polygonWM.intersects( _point ) == false )
 		{
 			return m_outward;
 		}
@@ -156,7 +154,7 @@ namespace Menge
 			return !m_outward;
 		}
 
-		if( polygon_empty( m_polygon ) == true )
+		if( m_polygon.empty() == true )
 		{
 			return m_outward;
 		}
@@ -170,10 +168,8 @@ namespace Menge
 
 		const Polygon & polygonWM = this->getPolygonWM();
 
-		GeometryPoint p(_point.x, _point.y);
-
 		//TODO: check polygon and circle
-		if( boost::geometry::intersects( polygonWM, p ) == false )
+		if( polygonWM.intersects( _point ) == false )
 		{
 			return m_outward;
 		}
@@ -188,25 +184,22 @@ namespace Menge
 			return !m_outward;
 		}
 
-		if( polygon_empty( m_polygon ) == true )
+		if( m_polygon.empty() == true )
 		{
 			return m_outward;
 		}
 
-		if( polygon_empty( _polygon ) == true )
+		if( _polygon.empty() == true )
 		{
 			return m_outward;
 		}
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		polygon_transpose( m_polygonTemp, _polygon, _point );
+		_polygon.transpose( m_polygonTemp, _point );
 		
 		mt::box2f bb_screen;
-		if( polygon_to_box2f( bb_screen, m_polygonTemp ) == false )
-		{
-			return m_outward;
-		}
+		m_polygonTemp.to_box2f( bb_screen );
 
 		if( mt::is_intersect( bb, bb_screen ) == false )
 		{
@@ -215,7 +208,7 @@ namespace Menge
 
 		const Polygon & polygonWM = this->getPolygonWM();
 
-		if( boost::geometry::intersects( polygonWM, m_polygonTemp ) == false )
+		if( polygonWM.intersects( m_polygonTemp ) == false )
 		{
 			return m_outward;
 		}
@@ -235,7 +228,7 @@ namespace Menge
 			return;
 		}
 
-		uint32_t numpoints = boost::geometry::num_points(m_polygon);
+		uint32_t numpoints = m_polygon.num_points();
 
 		if( numpoints == 0 )
 		{
@@ -254,7 +247,7 @@ namespace Menge
 
 		const mt::mat4f & worldMat = this->getWorldMatrix();
 
-		const Polygon::ring_type & ring = m_polygon.outer();
+		const mt::vec2f * ring = m_polygon.outer_points();
 
 		for( uint32_t i = 0; i != numpoints; ++i )
 		{

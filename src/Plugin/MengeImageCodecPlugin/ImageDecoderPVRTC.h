@@ -1,10 +1,6 @@
 #pragma once
 #include "png.h"
 #include "Utils/Codec/ImageDecoder.h"
-namespace Menge
-{
-	class LogServiceInterface;
-}
 
 class ImageDecoderPVRTC : public Menge::ImageDecoder
 {

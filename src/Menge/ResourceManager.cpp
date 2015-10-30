@@ -14,31 +14,20 @@
 #	include "Kernel/ResourceVisitor.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ResourceService, Menge::ResourceServiceInterface, Menge::ResourceManager );
+SERVICE_FACTORY( ResourceService, Menge::ResourceManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourceManager::ResourceManager()
-        : m_serviceProvider(nullptr)
+	ResourceManager::ResourceManager()       
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ResourceManager::~ResourceManager()
 	{		
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * ResourceManager::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::initialize()
+	bool ResourceManager::_initialize()
 	{
 		return true;
 	}
@@ -82,7 +71,7 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::finalize()
+	void ResourceManager::_finalize()
 	{
 		m_resourcesCache.clear();
 
@@ -292,7 +281,7 @@ namespace Menge
 		FResourcesForeachValidation rfv(m_serviceProvider, total_successful);
 		m_resources.foreach( rfv );
 
-        LOG_SERVICE(m_serviceProvider)->logMessage( Menge::LM_WARNING, 0, "\n", 2 );
+        LOGGER_SERVICE(m_serviceProvider)->logMessage( Menge::LM_WARNING, 0, "\n", 2 );
 
         LOGGER_WARNING(m_serviceProvider)("----------------------------------------------------------------------");
         LOGGER_WARNING(m_serviceProvider)("ResourceManager::loadResource validation resource complete!");

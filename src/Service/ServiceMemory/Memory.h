@@ -23,6 +23,7 @@ namespace Menge
 	public:
 		inline Pointer getMemory() const override;
 		inline size_t getSize() const override;
+		inline bool empty() const override;
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
@@ -39,5 +40,10 @@ namespace Menge
 	inline size_t Memory::getSize() const
 	{
 		return m_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Memory::empty() const
+	{
+		return m_size == 0;
 	}
 }

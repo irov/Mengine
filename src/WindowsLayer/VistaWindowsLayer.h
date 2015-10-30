@@ -9,16 +9,12 @@
 namespace Menge
 {
     class VistaWindowsLayer
-        : public WindowsLayerInterface
+        : public ServiceBase<WindowsLayerInterface>
     {
     public:
         VistaWindowsLayer();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
-    public:
+	public:
         DynamicLibraryInterface * loadDynamicLibrary( const WString & _path ) override;
 
     public:
@@ -58,8 +54,8 @@ namespace Menge
         LONG_PTR getWindowLongPtr( HWND _hWnd, int _index ) override;
         LRESULT defWindowProc( HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam ) override;
         size_t getCurrentDirectory( WChar * _path, size_t _len ) override;
-        bool peekMessage( LPMSG _msg, HWND _hWnd, UINT _msgFilterMin, UINT _msgFilterMax, UINT _removeMsg ) override;
-        LRESULT dispatchMessage( const MSG* _msg ) override;
+
+		void updateMessage( HWND _hWnd ) override;
 
         int messageBox( HWND _hWnd, const WChar * _text, const WChar * _caption, UINT _type ) override;
 
@@ -82,8 +78,6 @@ namespace Menge
 		bool createDirectoryUser_( const WChar * _userPath, const WString & _path, const WString & _file, const void * _data, size_t _size );
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         EWindowsType m_windowsType;
 
         bool m_checkedUnicode;

@@ -7,19 +7,11 @@
 namespace Menge
 {
 	class FileEngine
-		: public FileServiceInterface
+		: public ServiceBase<FileServiceInterface>
 	{
 	public:
 		FileEngine();
 		~FileEngine();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
-	public:
-		bool initialize() override;
-		void finalize() override;
 
 	public:
 		void registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory ) override;
@@ -53,8 +45,6 @@ namespace Menge
 		bool removeFile( const ConstString& _fileGroupName, const FilePath& _fileName ) override;
 
 	private:
-        ServiceProviderInterface * m_serviceProvider;
-
 		typedef stdex::map<ConstString, FactoryPtr> TFactoryFileGroups;
 		TFactoryFileGroups m_factoryFileGroups;
 

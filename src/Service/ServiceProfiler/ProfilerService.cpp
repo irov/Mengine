@@ -3,14 +3,13 @@
 //#   include "Interface/ApplicationInterface.h"
 
 ////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY(ProfilerService, Menge::ProfilerServiceInterface, Menge::ProfilerService);
+SERVICE_FACTORY( ProfilerService, Menge::ProfilerService);
 ////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     ProfilerService::ProfilerService()
-        : m_serviceProvider(nullptr)
-        , m_checkpoint(nullptr)
+        : m_checkpoint(nullptr)
         , m_beginMemoryUsage(0)
     {
     }
@@ -19,23 +18,18 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ProfilerService::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * ProfilerService::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ProfilerService::initialize()
+    bool ProfilerService::_initialize()
     {
         //m_beginMemoryUsage = PLATFORM_SERVICE(m_serviceProvider)
         //    ->getMemoryUsage();
         
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void ProfilerService::_finalize()
+	{
+		//Empty
+	}
     //////////////////////////////////////////////////////////////////////////
     void ProfilerService::memoryBegin()
     {

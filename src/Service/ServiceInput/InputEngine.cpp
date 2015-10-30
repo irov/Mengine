@@ -8,13 +8,12 @@
 #   include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( InputService, Menge::InputServiceInterface, Menge::InputEngine );
+SERVICE_FACTORY( InputService, Menge::InputEngine );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	InputEngine::InputEngine()
-		: m_serviceProvider(nullptr)		
+	InputEngine::InputEngine()		
 	{
 		for( uint32_t i = 0; i != 0; ++i )
 		{
@@ -25,18 +24,8 @@ namespace Menge
 	InputEngine::~InputEngine()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void InputEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * InputEngine::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool InputEngine::initialize()
+	bool InputEngine::_initialize()
 	{
 		std::fill( m_keyBuffer, m_keyBuffer + sizeof(m_keyBuffer), false );
 		std::fill( m_mouseBuffer, m_mouseBuffer + sizeof( m_mouseBuffer ), false );
@@ -47,7 +36,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::finalize()
+	void InputEngine::_finalize()
 	{
 		m_events.clear();
         m_eventsAdd.clear();

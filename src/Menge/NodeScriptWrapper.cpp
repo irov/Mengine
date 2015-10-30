@@ -9,6 +9,7 @@
 #	include "Interface/HttpSystemInterface.h"
 #	include "Interface/PrefetcherInterface.h"
 #	include "Interface/PlatformInterface.h"
+#	include "Interface/PackageInterface.h"
 
 #	include "Kernel/ScriptClassWrapper.h"
 #	include "Kernel/ThreadTask.h"
@@ -863,28 +864,23 @@ namespace Menge
 
             const Polygon & polygon = _hs->getPolygon();
 
-            const Polygon::ring_type & ring = polygon.outer();
+            uint32_t ring_count = polygon.outer_count();
 
-            if( ring.empty() == true )
+			if( ring_count == 0 )
             {
                 mt::vec2f empty(0.f, 0.f);
 
                 return empty;
             }
 
-            for( Polygon::ring_type::const_iterator 
-                it = ring.begin(),
-                it_end = ring.end();
-            it != it_end;
-            ++it )
+			for( uint32_t i = 0; i != ring_count - 1; ++i )
             {
-                pc += *it;
+				const mt::vec2f & p = polygon.outer_point(i);
+
+				pc += p;
             }
-
-            pc -= ring.back();
-
-            float size = (float)boost::geometry::num_points(polygon);
-            pc /= (size - 1);
+			
+			pc /= float(ring_count - 1);
 
             return pc;
         }
@@ -908,7 +904,7 @@ namespace Menge
             const mt::mat4f & wm = _hs->getWorldMatrix();
 
             Polygon pwm;
-            polygon_wm(pwm, polygon, wm);
+			polygon.mul_wm( pwm, wm );
 
             return pwm;
         }
@@ -918,7 +914,7 @@ namespace Menge
 			const mt::mat4f & wm = _node->getWorldMatrix();
 
             Polygon polygon;
-            polygon_wm(polygon, _polygon, wm);
+			_polygon.mul_wm( polygon, wm );
 
             return polygon;
         }
@@ -926,7 +922,7 @@ namespace Menge
 		Polygon s_polygon_anchor( const Polygon & _polygon, const mt::vec2f & _anchor )
 		{
 			Polygon polygon;
-			polygon_transpose( polygon, _polygon, _anchor );
+			_polygon.transpose( polygon, _anchor );
 
 			return polygon;
 		}
@@ -941,13 +937,13 @@ namespace Menge
 
             Polygon left_polygon_wm;
 
-            polygon_wm(left_polygon_wm, left_poligon, left_wm);
+			left_poligon.mul_wm( left_polygon_wm, left_wm );
 
             Polygon right_polygon_wm;
 
-            polygon_wm(right_polygon_wm, right_poligon, right_wm);
+			right_poligon.mul_wm( right_polygon_wm, right_wm );
 
-            bool result = boost::geometry::intersects( left_polygon_wm, right_polygon_wm );
+            bool result = left_polygon_wm.intersects( right_polygon_wm );
 
             return result;
 
@@ -1443,6 +1439,46 @@ namespace Menge
 
             return factor;
         }
+		//////////////////////////////////////////////////////////////////////////
+		class PythonSceneChangeCallback
+			: public SceneChangeCallbackInterface
+		{
+		public:
+			void initialize( const pybind::object & _cb )				
+			{
+				m_cb = _cb;
+			}
+			
+		public:
+			void onSceneChange( Scene * _scene, bool _enable, bool _remove ) override
+			{
+				if( _remove == false )
+				{
+					if( _scene == nullptr )
+					{
+						m_cb( pybind::ret_none(), _enable );
+					}
+					else
+					{
+						const pybind::object & py_scene = _scene->getScriptObject();
+
+						m_cb( py_scene, _enable );
+					}
+				}
+				else
+				{
+					m_cb();
+				}
+			}
+
+		public:
+			pybind::object m_cb;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		typedef stdex::intrusive_ptr<PythonSceneChangeCallback> PythonSceneChangeCallbackPtr;
+		//////////////////////////////////////////////////////////////////////////
+		typedef FactoryPoolStore<PythonSceneChangeCallback, 8> TFactoryPythonSceneChangeCallback;
+		TFactoryPythonSceneChangeCallback m_factoryPythonSceneChangeCallback;
         //////////////////////////////////////////////////////////////////////////
         bool setCurrentScene( const ConstString & _prototype, const ConstString & _name, bool _destroyOld, const pybind::object & _cb )
         {
@@ -1456,13 +1492,17 @@ namespace Menge
 				return false;
 			}
 
+			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback.createObject();
+
+			py_cb->initialize( _cb );
+
 			Scene * scene = PLAYER_SERVICE( m_serviceProvider )
 				->getCurrentScene();
 
 			if( scene != nullptr && scene->getName() == _name )
 			{
 				if( PLAYER_SERVICE( m_serviceProvider )
-					->restartCurrentScene( _cb ) == false )
+					->restartCurrentScene( py_cb ) == false )
 				{
 					return false;
 				}
@@ -1480,7 +1520,7 @@ namespace Menge
 				scene->setName( _name );
 
 				if( PLAYER_SERVICE( m_serviceProvider )
-					->setCurrentScene( scene, _destroyOld, _cb ) == false )
+					->setCurrentScene( scene, _destroyOld, py_cb ) == false )
 				{
 					scene->destroy();
 
@@ -1785,7 +1825,7 @@ namespace Menge
         void setParticlesEnabled( bool _enabled )
         {
             APPLICATION_SERVICE(m_serviceProvider)
-                ->setParticlesEnabled( _enabled );
+                ->setParticleEnable( _enabled );
         }
         //////////////////////////////////////////////////////////////////////////
 		ResourceImageDefault * s_createImageResource( const ConstString & _resourceName, const ConstString& _pakName, const FilePath& _fileName, const mt::vec2f & _maxSize )
@@ -1866,23 +1906,6 @@ namespace Menge
         {
             APPLICATION_SERVICE(m_serviceProvider)
                 ->minimizeWindow();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_setMouseBounded( bool _bounded )
-        {
-            bool mouseBound = APPLICATION_SERVICE(m_serviceProvider)->getMouseBounded();
-
-            if( mouseBound != _bounded )
-            {
-                APPLICATION_SERVICE(m_serviceProvider)
-                    ->setMouseBounded( _bounded );
-            }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_getMouseBounded()
-        {
-            return APPLICATION_SERVICE(m_serviceProvider)
-                ->getMouseBounded();
         }
 		//////////////////////////////////////////////////////////////////////////
 		bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f & _screen )
@@ -2001,8 +2024,10 @@ namespace Menge
 				return false;
 			}
 
-			ResourcePackDesc desc;
+			PackageDesc desc;
+			desc.dev = false;
 			desc.immediately = true;
+			desc.preload = false;
 
 			desc.name = _name;
 			desc.type = _type;
@@ -2010,8 +2035,8 @@ namespace Menge
 			desc.path = _path;
 			desc.descriptionPath = _descriptionPath;
 			
-			bool result = GAME_SERVICE(m_serviceProvider)
-				->addResourcePack( desc );
+			bool result = PACKAGE_SERVICE(m_serviceProvider)
+				->addPackage( desc );
 
 			return result;
 		}
@@ -2548,8 +2573,8 @@ namespace Menge
 
 				const Polygon & overlap_polygon = overlap_hotspot->getPolygon();
 
-				std::deque<Menge::Polygon> output;
-				boost::geometry::intersection( correct_polygon, overlap_polygon, output );
+				TVectorPolygon output;
+				correct_polygon.intersection( overlap_polygon, output );
 
 				if( output.empty() == true )
 				{
@@ -3559,42 +3584,6 @@ namespace Menge
             return position;
         }
         //////////////////////////////////////////////////////////////////////////
-        Join * s_addJoin( Node * _left, Node * _right, const mt::vec2f & _offset )
-        {
-            Join * join = PLAYER_SERVICE(m_serviceProvider)
-                ->addJoin( _left, _right, _offset );
-
-            return join;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_removeJoin( Join * _join )
-        {
-            PLAYER_SERVICE(m_serviceProvider)
-                ->removeJoin( _join );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_isJoin( Node * _left, Node * _right )
-        {
-            bool result = PLAYER_SERVICE(m_serviceProvider)
-                ->isJoin( _left, _right );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-		pybind::list s_getJoins( Node * _left )
-        {
-            pybind::list py_list;
-
-            TVectorNode joins;
-
-            PLAYER_SERVICE(m_serviceProvider)
-                ->getJoins( _left, joins );
-
-			py_list.append( joins.begin(), joins.end() );
-
-            return py_list;
-        }
-        //////////////////////////////////////////////////////////////////////////
         const RenderCameraInterface * s_getRenderCamera2D()
         {
             const RenderCameraInterface * renderCamera = PLAYER_SERVICE(m_serviceProvider)
@@ -3623,8 +3612,12 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void removeCurrentScene( const pybind::object & _cb )
         {
+			PythonSceneChangeCallbackPtr py_cb = m_factoryPythonSceneChangeCallback.createObject();
+
+			py_cb->initialize( _cb );
+
             PLAYER_SERVICE(m_serviceProvider)
-                ->removeCurrentScene( _cb );
+				->removeCurrentScene( py_cb );
         }
 		//////////////////////////////////////////////////////////////////////////
 		class PyGlobalBaseHandler
@@ -4073,7 +4066,8 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool s_openUrlInDefaultBrowser( const WString & _url )
         {
-            bool val = PLATFORM_SERVICE(m_serviceProvider)->openUrlInDefaultBrowser( _url );
+            bool val = PLATFORM_SERVICE(m_serviceProvider)
+				->openUrlInDefaultBrowser( _url );
 
             return val;
         }
@@ -4489,12 +4483,6 @@ namespace Menge
 		pybind::registration_stl_map_type_cast<ConstString, WString, stdex::map<ConstString, WString> >();
 
         classWrapping( _serviceProvider );
-
-        pybind::interface_<Join>("Join")
-            .def("getLeft", &Join::getLeft)
-            .def("getRight", &Join::getRight)
-            .def("getOffset", &Join::getOffset)
-            ;
 
         pybind::interface_<Affector>("Affector", true)
             .def( "stop", &Affector::stop )
@@ -5390,9 +5378,7 @@ namespace Menge
             //pybind::def_function( "createFolder", &ScriptMethod::createFolder );
             //pybind::def_function( "deleteFolder", &ScriptMethod::deleteFolder );
             pybind::def_functor( "minimizeWindow", nodeScriptMethod, &NodeScriptMethod::minimizeWindow );
-            pybind::def_functor( "setMouseBounded", nodeScriptMethod, &NodeScriptMethod::s_setMouseBounded );
-            pybind::def_functor( "getMouseBounded", nodeScriptMethod, &NodeScriptMethod::s_getMouseBounded );
-
+			
             pybind::def_functor( "getCurrentResolution", nodeScriptMethod, &NodeScriptMethod::s_getCurrentResolution );
             pybind::def_functor( "getContentResolution", nodeScriptMethod, &NodeScriptMethod::s_getContentResolution );
             pybind::def_functor( "getHotSpotImageSize", nodeScriptMethod, &NodeScriptMethod::s_getHotSpotImageSize );
@@ -5416,14 +5402,6 @@ namespace Menge
 
             pybind::def_functor( "setInputMouseButtonEventBlock", nodeScriptMethod, &NodeScriptMethod::s_setInputMouseButtonEventBlock );
             pybind::def_functor( "getInputMouseButtonEventBlock", nodeScriptMethod, &NodeScriptMethod::s_getInputMouseButtonEventBlock );
-
-
-
-            //pybind::def_function( "getParam", &ScriptMethod::s_getParam );
-            pybind::def_functor( "addJoin", nodeScriptMethod, &NodeScriptMethod::s_addJoin );
-            pybind::def_functor( "removeJoin", nodeScriptMethod, &NodeScriptMethod::s_removeJoin );
-            pybind::def_functor( "isJoin", nodeScriptMethod, &NodeScriptMethod::s_isJoin );			
-            pybind::def_functor( "getJoins", nodeScriptMethod, &NodeScriptMethod::s_getJoins );
 
             pybind::def_functor( "loadPlugin", nodeScriptMethod, &NodeScriptMethod::s_loadPlugin );
 

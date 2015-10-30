@@ -10,22 +10,21 @@
 namespace Menge
 {	
 	class SilentSoundSystem
-		: public SoundSystemInterface
+		: public ServiceBase<SoundSystemInterface>
 	{
 	public:
 		SilentSoundSystem();
 		~SilentSoundSystem();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _provider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize() override;
-        void finalize() override;
+		bool _initialize() override;
+        void _finalize() override;
 
 	public:
 		void update() override;
+
+	public:
+		bool isSilent() const override;
 		
 	public:
 		void onTurnSound( bool _turn ) override;
@@ -45,8 +44,6 @@ namespace Menge
 		void clearSourceId( uint32_t _sourceId );
 
 	private:
-		ServiceProviderInterface * m_serviceProvider;
-
         uint32_t m_enumerate;
 
         typedef FactoryPoolStore<SilentSoundBuffer, 32> TPoolSilentSoundBuffer;

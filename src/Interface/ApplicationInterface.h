@@ -22,10 +22,6 @@ namespace Menge
         SERVICE_DECLARE("ApplicationService");
 
 	public:
-		virtual bool initialize( const String & _args ) = 0;
-        virtual void finalize() = 0;
-		
-	public:
 		virtual void finalizeGame() = 0;
 			
 	public:
@@ -41,8 +37,7 @@ namespace Menge
 		virtual void close() = 0;
 
 		virtual void turnSound( bool _turn ) = 0;
-
-
+		
 	public:
 		virtual bool keyEvent( const InputKeyEvent & _event ) = 0;
 
@@ -58,11 +53,7 @@ namespace Menge
         virtual bool userEvent( const ConstString & _event, const TMapParams & _params ) = 0;
 
 	public:
-		virtual void setDefaultWindowDescription( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _vsync ) = 0;
-
-	public:
-		virtual bool loadResourcePacks( const ConstString & _fileGroup, const FilePath & _resourceIni ) = 0;
-		virtual bool initializeGame( const ConstString & _module, const ConstString & _language, const FilePath & _accountPath, const String & _scriptInitParams ) = 0;
+		virtual bool initializeGame( const ConstString & _category, const FilePath & _resourceIniPath ) = 0;
         
 	public:
 		virtual const WString & getCompanyName() const = 0;
@@ -72,6 +63,9 @@ namespace Menge
 		virtual const ConstString & getProjectTitle() const = 0;
 		virtual const ConstString & getProjectCodename() const = 0;
 		virtual uint32_t getProjectVersion() const = 0;
+		
+	public:
+		virtual const ConstString & getLocale() const = 0;
 
 	public:
 		virtual void changeWindowResolution( const Resolution & _resolution ) = 0;
@@ -86,7 +80,6 @@ namespace Menge
 
     public:
         virtual bool isValidWindowMode() const = 0;
-		virtual bool isDevelopmentMode() const = 0;
 
 	public:
 		virtual void calcWindowResolution( Resolution & _windowResolution ) const = 0;
@@ -98,12 +91,12 @@ namespace Menge
 		virtual void getGameViewport( float & _aspect, Viewport & _viewport ) const = 0;
 
 	public:
-		virtual bool createRenderWindow( WindowHandle _renderWindowHandle ) = 0;
+		virtual bool createRenderWindow() = 0;
 
 	public:
         virtual void setVSync( bool _vsync ) = 0;
 		virtual bool getVSync() const = 0;
-
+		
 		virtual bool isFocus() const = 0;
 
     public:
@@ -120,12 +113,13 @@ namespace Menge
         virtual void minimizeWindow() = 0;
 
     public:
-        virtual void setParticlesEnabled( bool _enabled ) = 0;
-        virtual bool getParticlesEnabled() const = 0;
+        virtual void setParticleEnable( bool _enable ) = 0;
+        virtual bool getParticleEnable() const = 0;
 
-        virtual void setMouseBounded( bool _bounded ) = 0;
-        virtual bool getMouseBounded() const = 0;
+		virtual void setTextEnable( bool _enable ) = 0;
+		virtual bool getTextEnable() const = 0;
 
+	public:
         virtual unsigned int getDebugMask() const = 0;
 
         virtual void showKeyboard() = 0;

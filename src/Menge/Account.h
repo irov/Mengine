@@ -13,11 +13,6 @@
 
 namespace Menge
 {
-    class ServiceProviderInterface;
-
-    class LogServiceInterface;
-    class FileServiceInterface;
-
 	class Account
         : public AccountInterface
 	{		

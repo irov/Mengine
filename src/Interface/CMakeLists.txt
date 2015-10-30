@@ -22,7 +22,7 @@ src
 	PhysicSystemInterface.h
     TextInterface.h
 	StreamInterface.h
-	LogSystemInterface.h
+	LoggerInterface.h
 	ApplicationInterface.h
 	InputSystemInterface.h
 	SoundSystemInterface.h
@@ -52,6 +52,10 @@ src
     NotificationServiceInterface.h
     MarmaladeLayerInterface.h
     SDLLayerInterface.h
+    TimerInterface.h
+    PackageInterface.h
+    UserdataInterface.h    
+    OptionsInterface.h
     
 	dummy.cpp
 )

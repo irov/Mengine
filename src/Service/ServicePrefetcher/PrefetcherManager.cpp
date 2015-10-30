@@ -4,7 +4,7 @@
 #	include "Interface/StringizeInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( PrefetcherService, Menge::PrefetcherServiceInterface, Menge::PrefetcherManager );
+SERVICE_FACTORY( PrefetcherService, Menge::PrefetcherManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -28,7 +28,7 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::initialize()
+	bool PrefetcherManager::_initialize()
 	{
 		for( uint32_t i = 0; i != MENGINE_PREFETCHER_THREAD_COUNT; ++i )
 		{
@@ -42,7 +42,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PrefetcherManager::finalize()
+	void PrefetcherManager::_finalize()
 	{
 		for( TVectorPrefetchReceiver::const_iterator
 			it = m_prefetchReceiver.begin(),

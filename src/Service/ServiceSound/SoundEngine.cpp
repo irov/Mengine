@@ -12,18 +12,16 @@
 #	include "Math/utils.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( SoundService, Menge::SoundServiceInterface, Menge::SoundEngine );
+SERVICE_FACTORY( SoundService, Menge::SoundEngine );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SoundEngine::SoundEngine()
-		: m_serviceProvider(nullptr)
-		, m_muted(false)
+		: m_muted(false)
 		, m_turnStream(false)
 		, m_turnSound(false)
         , m_enumerator(0)
-        , m_silent(false)
 		, m_supportStream(true)
 	{
 	}
@@ -31,21 +29,11 @@ namespace Menge
 	SoundEngine::~SoundEngine()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void SoundEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * SoundEngine::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::initialize( bool _silent, bool _supportStream )
+	bool SoundEngine::_initialize()
 	{
-        m_silent = _silent;
-		m_supportStream = _supportStream;
+		m_supportStream = THREAD_SERVICE( m_serviceProvider )
+			->avaliable();
 
 		if( m_supportStream == true )
 		{
@@ -74,7 +62,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::finalize()
+	void SoundEngine::_finalize()
 	{
 		this->stopSounds_();
 
@@ -625,11 +613,6 @@ namespace Menge
 	{
 		return m_muted;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool SoundEngine::isSilent() const
-    {
-        return m_silent;
-    }
     //////////////////////////////////////////////////////////////////////////
     bool SoundEngine::getSoundSourceDesc_( uint32_t _emitterId, SoundSourceDesc ** _desc )
     {

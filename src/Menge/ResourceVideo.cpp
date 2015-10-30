@@ -1,6 +1,7 @@
 #	include "ResourceVideo.h"
 
 #   include "Interface/FileSystemInterface.h"
+#   include "Interface/OptionsInterface.h"
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/VideoCodecInterface.h"
@@ -170,7 +171,7 @@ namespace Menge
 		videoCodecOptions.fps = m_frameRate;
 		videoCodecOptions.alpha = m_alpha;
 
-		videoCodecOptions.mock = CONFIG_VALUE(m_serviceProvider, "Development", "NoVideo", false);
+		videoCodecOptions.mock = HAS_OPTIONS( m_serviceProvider, "novideo" );
         videoCodecOptions.noSeek = m_noSeek;
 
         if( videoDecoder->setOptions( &videoCodecOptions ) == false )

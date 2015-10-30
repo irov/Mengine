@@ -6,32 +6,33 @@
 #   include "Interface/GlobalHandleSystemInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 #   include "Interface/NodeInterface.h"
-#   include "Interface/ScriptSystemInterface.h"
 
 namespace Menge
 {
-    class Join;
     class Node;
     class Scene;
     class Arrow;
 	class Affectorable;
-
-    typedef stdex::vector<Node *> TVectorNode;
-    
+	//////////////////////////////////////////////////////////////////////////
+	class SceneChangeCallbackInterface
+		: public FactorablePtr
+	{
+	public:
+		virtual void onSceneChange( Scene * _scene, bool _enable, bool _remove ) = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<SceneChangeCallbackInterface> SceneChangeCallbackInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
     class PlayerServiceInterface
         : public ServiceInterface
 		, public InputSystemHandler
     {
         SERVICE_DECLARE("PlayerService")
 
-	public:
-		virtual bool initialize() = 0;
-		virtual void finalize() = 0;
-
     public:
-		virtual bool setCurrentScene( Scene * _scene, bool _destroyOld, const pybind::object & _cb ) = 0;
-		virtual bool restartCurrentScene( const pybind::object & _cb ) = 0;
-		virtual bool removeCurrentScene( const pybind::object & _cb ) = 0;
+		virtual bool setCurrentScene( Scene * _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) = 0;
+		virtual bool restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) = 0;
+		virtual bool removeCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) = 0;
         
 		virtual Scene * getCurrentScene() = 0;
 
@@ -106,13 +107,6 @@ namespace Menge
 	public:
 		virtual Affectorable * getAffectorable() const = 0;
 		virtual Affectorable * getAffectorableGlobal() const = 0;
-		
-    public:
-        virtual Join * addJoin( Node * _left, Node * _right, const mt::vec2f & _offset ) = 0;
-        virtual void removeJoin( Join * _join ) = 0;
-        virtual bool isJoin( Node * _left, Node * _right ) const = 0;
-
-        virtual void getJoins( Node * _node, TVectorNode & _joins ) const = 0;
 		
     public:
         virtual void toggleDebugText() = 0;

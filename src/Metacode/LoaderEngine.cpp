@@ -5,6 +5,7 @@
 #	include "Interface/ArchiveInterface.h"
 #	include "Interface/XmlCodecInterface.h"
 #	include "Interface/StringizeInterface.h"
+#	include "Interface/ConfigInterface.h"
 
 #	include "Core/MemoryHelper.h"
 
@@ -14,30 +15,17 @@
 #   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( LoaderService, Menge::LoaderServiceInterface, Menge::LoaderEngine );
+SERVICE_FACTORY( LoaderService, Menge::LoaderEngine );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	LoaderEngine::LoaderEngine()
-		: m_serviceProvider(nullptr)
+	LoaderEngine::LoaderEngine()		
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void LoaderEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * LoaderEngine::getServiceProvider() const
-    {
-        return m_serviceProvider;             
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::initialize( const ConstString & _protocolPath )
+	bool LoaderEngine::_initialize()
 	{
-		m_protocolPath = _protocolPath;
-
 		m_archivator = ARCHIVE_SERVICE(m_serviceProvider)
 			->getArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "lz4") );
 
@@ -47,6 +35,11 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LoaderEngine::_finalize()
+	{
+		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist )
@@ -376,8 +369,10 @@ namespace Menge
 			return false;
 		}
 
+		ConstString protocolPath = CONFIG_VALUE( m_serviceProvider, "Engine", "ProtocolPath", STRINGIZE_STRING_LOCAL( m_serviceProvider, "protocol.xml" ) );
+
 		XmlCodecOptions options;
-        options.pathProtocol = m_protocolPath;
+        options.pathProtocol = protocolPath;
 		
         FileGroupInterfacePtr fileGroup = FILE_SERVICE(m_serviceProvider)
             ->getFileGroup( _pak );

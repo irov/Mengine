@@ -20,14 +20,13 @@
 #   include <memory.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( RenderService, Menge::RenderServiceInterface, Menge::RenderEngine );
+SERVICE_FACTORY( RenderService, Menge::RenderEngine );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderEngine::RenderEngine()
-		: m_serviceProvider( nullptr )
-		, m_windowCreated( false )
+		: m_windowCreated( false )
 		, m_vsync( false )
 		, m_currentTextureStages( 0 )
 		, m_currentRenderCamera( nullptr )
@@ -54,20 +53,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-
-		RENDER_SYSTEM(m_serviceProvider)
-			->setRenderListener( this );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * RenderEngine::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::initialize()
+	bool RenderEngine::_initialize()
 	{
 		m_maxVertexCount = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxVertexCount", 32000U );
 		m_maxIndexCount = CONFIG_VALUE(m_serviceProvider, "Engine", "RenderMaxIndexCount", 48000U );
@@ -142,7 +128,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::finalize()
+	void RenderEngine::_finalize()
 	{   
 		for( TArrayRenderObject::iterator
 			it = m_renderObjects.begin(),
@@ -170,7 +156,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
-		WindowHandle _winHandle, int _FSAAType, int _FSAAQuality )
+		int _FSAAType, int _FSAAQuality )
 	{
 		m_windowResolution = _resolution;
 		m_contentResolution = _contentResolution;
@@ -191,7 +177,7 @@ namespace Menge
 			);
 
 		m_windowCreated = RENDER_SYSTEM(m_serviceProvider)
-			->createRenderWindow( m_windowResolution, _bits, m_fullscreen, _winHandle, m_vsync, _FSAAType, _FSAAQuality );
+			->createRenderWindow( m_windowResolution, _bits, m_fullscreen, m_vsync, _FSAAType, _FSAAQuality );
 
 		if( m_windowCreated == false )
 		{
@@ -403,36 +389,6 @@ namespace Menge
 			->screenshot( image, _rect );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::onRenderSystemDeviceLost()
-	{
-		LOGGER_WARNING(m_serviceProvider)("RenderEngine::onRenderSystemDeviceLost"
-			);
-
-		m_currentVBHandle = nullptr;
-		m_currentIBHandle = nullptr;
-
-		m_currentTextureStages = 0;
-		m_currentMaterialId = 0;
-
-		m_currentStage = nullptr;
-
-		m_currentRenderViewport = nullptr;
-		m_currentRenderCamera = nullptr;
-		m_currentRenderClipplane = nullptr;
-
-		m_currentProgram = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool RenderEngine::onRenderSystemDeviceRestored()
-	{
-		LOGGER_WARNING(m_serviceProvider)("RenderEngine::onRenderSystemDeviceRestored"
-			);
-
-		this->restoreRenderSystemStates_();
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void RenderEngine::onWindowClose()
 	{
 		if( m_windowCreated == true )
@@ -461,6 +417,7 @@ namespace Menge
 		m_currentRenderClipplane = nullptr;
 		
 		m_currentMaterialId = 0;
+		m_currentTextureStages = 0;
 		m_currentStage = nullptr;
 		m_currentProgram = nullptr;
 

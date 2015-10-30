@@ -10,8 +10,6 @@ namespace Menge
         SERVICE_DECLARE("ProfilerService")
 
     public:
-        virtual bool initialize() = 0;
-
         virtual void memoryBegin() = 0;
         virtual size_t memoryEnd() = 0;
 

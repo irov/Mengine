@@ -1,38 +1,29 @@
 #	include "ConfigManager.h"
 
 #	include "Interface/FileSystemInterface.h"
+#	include "Interface/PlatformInterface.h"
 
 #	include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ConfigService, Menge::ConfigServiceInterface, Menge::ConfigManager );
+SERVICE_FACTORY( ConfigService, Menge::ConfigManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {	
 	//////////////////////////////////////////////////////////////////////////
 	ConfigManager::ConfigManager()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConfigManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+	bool ConfigManager::_initialize()
 	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * ConfigManager::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ConfigManager::initialize( const ConstString & _platformName )
-	{
-		m_platformName = _platformName;
+		m_platformName = PLATFORM_SERVICE( m_serviceProvider )
+			->getPlatformName();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConfigManager::finalize()
+	void ConfigManager::_finalize()
 	{
 		//Empty
 	}

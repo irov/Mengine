@@ -35,7 +35,7 @@ namespace Menge
         : public ServiceInterface
     {
     public:
-        SERVICE_DECLARE("WindowsLayerService")
+        SERVICE_DECLARE("WindowsLayer")
 
     public:
         virtual DynamicLibraryInterface * loadDynamicLibrary( const WString & _name ) = 0;
@@ -76,8 +76,8 @@ namespace Menge
         virtual LONG_PTR getWindowLongPtr( HWND _hWnd, int _index ) = 0;
         virtual LRESULT defWindowProc( HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam ) = 0;
 		virtual size_t getCurrentDirectory( WChar * _path, size_t _len ) = 0;
-        virtual bool peekMessage( LPMSG _msg, HWND _hWnd, UINT _msgFilterMin, UINT _msgFilterMax, UINT _removeMsg ) = 0;
-        virtual LRESULT dispatchMessage( const MSG* _msg ) = 0;
+
+		virtual void updateMessage( HWND _hWnd ) = 0;
 
         virtual int messageBox( HWND _hWnd, const WChar * _text, const WChar * _caption, UINT _type ) = 0;
 

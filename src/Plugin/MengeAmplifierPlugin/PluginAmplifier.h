@@ -1,7 +1,6 @@
 #	pragma once
 
 #	include "Interface/PluginInterface.h"
-#	include "Interface/AmplifierInterface.h"
 
 namespace Menge
 {
@@ -20,7 +19,5 @@ namespace Menge
 
 	protected:
         ServiceProviderInterface * m_serviceProvider;
-
-		AmplifierInterface * m_amplifier;
 	};
 }

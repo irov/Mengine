@@ -2,13 +2,12 @@
 
 #	include "Interface/ApplicationInterface.h"
 
+#   include "Interface/OptionsInterface.h"
 #   include "Interface/PrototypeManagerInterface.h"
 #	include "Interface/TextInterface.h"
-
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/RenderSystemInterface.h"
 #	include "Interface/SoundSystemInterface.h"
-
 #   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/EventInterface.h"
@@ -17,27 +16,22 @@
 #   include "Interface/GameInterface.h"
 #   include "Interface/PlayerInterface.h"
 #	include "Interface/PrefetcherInterface.h"
-
 #   include "Interface/StringizeInterface.h"
-
 #	include "Interface/NotificationServiceInterface.h"
-
 #   include "Interface/MousePickerSystemInterface.h"
-
 #	include "Interface/LoaderInterface.h"
 #	include "Interface/NodeInterface.h"
 #	include "Interface/ThreadSystemInterface.h"
 #	include "Interface/CodecInterface.h"
-
 #   include "Interface/ConverterInterface.h"
-
 #   include "Interface/ResourceInterface.h"
 #   include "Interface/AccountInterface.h"
 #   include "Interface/ProfilerInterface.h"
-
 #   include "Interface/GameInterface.h"
 #   include "Interface/WatchdogInterface.h"
 #   include "Interface/GraveyardInterface.h"
+#   include "Interface/PackageInterface.h"
+#	include "Interface/UserdataInterface.h"
 
 #   include "Consts.h"
 
@@ -56,35 +50,27 @@ namespace Menge
 	class ResourceCursor;
 
 	class Application 
-		: public ApplicationInterface
+		: public ServiceBase<ApplicationInterface>
 	{
 	public:
 		Application();
 		~Application();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
-
-	public:
-		bool initialize( const String & _args ) override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		void finalizeGame() override;
 
-	protected:
-		bool loadResourcePacks_( const ConstString & _fileGroup, const FilePath & _resourceIni );
+	public:
+		void parseArguments( const String & _args );
 
 	public:
 		bool getAllowFullscreenSwitchShortcut() const override;
 
 	public:
-		void setDefaultWindowDescription( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _vsync ) override;
-
-	public:
-		bool loadResourcePacks( const ConstString & _fileGroup, const FilePath & _resourceIni ) override;
-		bool initializeGame( const ConstString & _personalityModule, const ConstString & _language, const FilePath & _accountPath, const String & _scriptInitParams ) override;
+		bool initializeGame( const ConstString & _category, const FilePath & _resourceIniPath ) override;
 
 	public:
 		void changeWindowResolution( const Resolution & _resolution ) override;
@@ -92,33 +78,17 @@ namespace Menge
 	public:
 		void setFullscreenMode( bool _fullscreen ) override;
 		bool getFullscreenMode() const override;
-
-	public:
-		bool isValidWindowMode() const override;
-		bool isDevelopmentMode() const override;
-
-	public:
-		bool getVSync() const override;
-
+		
 	public:
 		bool isFocus() const override;
 
 	protected:
-		bool initializeNodeManager_();
-		bool initializeLoaderEngine_();
-		bool initializeRenderEngine_();
-		bool initializeResourceManager_();
-		bool initializeSceneManager_();
-		bool initializeTextManager_();
-		bool initializePrototypeManager_();
-		bool initializeWatchdog_();
-		bool initializeProfiler_();
-		bool initializeGraveyard_();
-		bool initializePlayer_();
-		bool initializeGame_();
+		bool registerBaseNodeTypes_();
+		bool registerBaseResourceTypes_();
+		bool registerSceneGenerator_();
 
 	public:
-		bool createRenderWindow( WindowHandle _renderWindowHandle ) override;
+		bool createRenderWindow() override;
 
 		//void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect );
 
@@ -161,8 +131,11 @@ namespace Menge
 		bool userEvent( const ConstString & _event, const TMapParams & _params ) override;
 
 	public:
-		void setParticlesEnabled( bool _enabled ) override;
-		bool getParticlesEnabled() const override;
+		void setParticleEnable( bool _enabled ) override;
+		bool getParticleEnable() const override;
+
+		void setTextEnable( bool _enable ) override;
+		bool getTextEnable() const override;
 
 	public:
 		void setInputMouseButtonEventBlock( bool _block ) override;
@@ -170,9 +143,6 @@ namespace Menge
 
 	public:
 		void minimizeWindow() override;
-
-		void setMouseBounded( bool _bounded ) override;
-		bool getMouseBounded() const override;
 
 		unsigned int getDebugMask() const override;
 
@@ -186,6 +156,9 @@ namespace Menge
 		uint32_t getProjectVersion() const override;
 
 	public:
+		const ConstString & getLocale() const override;
+
+	public:
 		const Resolution & getWindowResolution() const;
 
 	public:
@@ -193,10 +166,14 @@ namespace Menge
 		bool getFixedContentResolution() const override;
 
 	public:
+		bool isValidWindowMode() const override;		
+
+	public:
 		void enableDebug( bool _enable );
 
 		void updateNotification();
 		void setVSync( bool _vsync ) override;
+		bool getVSync() const override;
 		void setCursorMode( bool _mode ) override;
 		bool getCursorMode() const override;
 		void setCursorIcon( const ConstString & _resourceName ) override;
@@ -220,21 +197,15 @@ namespace Menge
 		void notifyDebugOpenFile_( const char * _folder, const char * _fileName );
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
-		ConsoleInterface * m_console;
-
-		typedef stdex::map<String, DynamicLibraryInterface *> TDynamicLibraries;
-		TDynamicLibraries m_dynamicLibraries;
-		
 		Resolution m_currentResolution;
 
 		Viewport m_renderViewport;
 
 		Viewport m_gameViewport;
 
-		bool m_particles;
-		bool m_mouseBounded;
+		bool m_particleEnable;
+		bool m_textEnable;
+
 		bool m_focus;
 		bool m_update;
 
@@ -260,27 +231,9 @@ namespace Menge
 
 		unsigned int m_debugMask;
 
-		uint32_t m_countThreads;
-
 		bool m_resetTiming;
 		float m_phycisTiming;
 		float m_maxTiming;
-
-		LoaderServiceInterface * m_loaderService;
-		ResourceServiceInterface * m_resourceService;        
-		TextServiceInterface* m_textService;
-		NodeServiceInterface * m_nodeService;		
-		PrototypeServiceInterface * m_prototypeService;
-		GraveyardInterface * m_graveyard;
-		GameServiceInterface * m_gameService;
-		PlayerServiceInterface * m_playerService;
-		RenderServiceInterface * m_renderService;
-		RenderTextureServiceInterface * m_renderTextureManager;
-		RenderMaterialServiceInterface * m_renderMaterialManager;
-		Consts * m_consts;
-
-		WatchdogInterface * m_watchdog;
-		ProfilerServiceInterface * m_profiler;
 
 		void parseArguments_( const String& _arguments );
 
@@ -289,11 +242,10 @@ namespace Menge
 		WString m_companyName;
 		WString m_projectName;
 
+		ConstString m_locale;
+
 		ConstString m_projectCodename;
 		uint32_t m_projectVersion;
-
-		bool m_allowFullscreenSwitchShortcut;
-
 
 		bool m_invalidateVsync;
 		bool m_cursorMode;
@@ -301,11 +253,7 @@ namespace Menge
 		bool m_mouseEnter;
 
 		bool m_inputMouseButtonEventBlock;
-		bool m_developmentMode;
-		bool m_masterMode;
-		bool m_nofullscreenMode;
 
-		bool m_windowModeCheck;
 		bool m_resourceCheck;
 		bool m_resourceCheckCritical;
 

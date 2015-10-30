@@ -6,49 +6,6 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_polygonToBox( const Polygon & _polygon, mt::vec2f & _min, mt::vec2f & _max )
-	{
-		if( boost::geometry::num_points(_polygon) == 0 )
-		{
-			return false;
-		}
-
-		const Polygon::ring_type & ring = _polygon.outer();
-
-		const mt::vec2f & v0 = ring[0];
-		_min = v0;
-		_max = v0;
-
-		Polygon::ring_type::size_type size = ring.size() - 1;
-
-		for( Polygon::ring_type::size_type i = 1; i != size; ++i )
-		{
-			const mt::vec2f & v = ring[i];
-
-			if( _min.x > v.x )
-			{
-				_min.x = v.x;
-			}
-
-			if( _min.y > v.y )
-			{
-				_min.y = v.y;
-			}
-
-			if( _max.x < v.x )
-			{
-				_max.x = v.x;
-			}
-
-			if( _max.y < v.y )
-			{
-				_max.y = v.y;
-			}
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	PathFinderMap::PathFinderMap()
 		: m_serviceProvider(nullptr)
 		, m_width(0)
@@ -128,22 +85,22 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_enlargePolygonRingFromLow( Polygon::ring_type & _ring, float _radius )
+	static void s_enlargePolygonRingFromLow( mt::vec2f * _ring, uint32_t _numpoints, float _radius )
 	{
-		if( _ring.empty() == true )
+		if( _numpoints == 0 )
 		{
 			return;
 		}
 
-		Polygon::ring_type::size_type numpoints = _ring.size();
+		uint32_t numpoints = _numpoints;
 
 		--numpoints;
 
-		for( Polygon::ring_type::size_type i = 0; i != numpoints; ++i )
+		for( uint32_t i = 0; i != numpoints; ++i )
 		{
-			Polygon::ring_type::size_type i0 = (i + numpoints - 1) % numpoints;
-			Polygon::ring_type::size_type i1 = (i + numpoints + 0) % numpoints;
-			Polygon::ring_type::size_type i2 = (i + numpoints + 1) % numpoints;
+			uint32_t i0 = (i + numpoints - 1) % numpoints;
+			uint32_t i1 = (i + numpoints + 0) % numpoints;
+			uint32_t i2 = (i + numpoints + 1) % numpoints;
 
 			const mt::vec2f & p0 = _ring[i0];
 			const mt::vec2f & p1 = _ring[i1];
@@ -174,22 +131,22 @@ namespace Menge
 		_ring[numpoints] = _ring[0];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_reducePolygonRingFromLow( Polygon::ring_type & _ring, float _radius )
+	static void s_reducePolygonRingFromLow( mt::vec2f * _ring, uint32_t _numpoints, float _radius )
 	{
-		if( _ring.empty() == true )
+		if( _numpoints == 0 )
 		{
 			return;
 		}
 
-		Polygon::ring_type::size_type numpoints = _ring.size();
+		uint32_t numpoints = _numpoints;
 
 		--numpoints;
 
-		for( Polygon::ring_type::size_type i = 0; i != numpoints; ++i )
+		for( uint32_t i = 0; i != numpoints; ++i )
 		{
-			Polygon::ring_type::size_type i0 = (i + numpoints - 1) % numpoints;
-			Polygon::ring_type::size_type i1 = (i + numpoints + 0) % numpoints;
-			Polygon::ring_type::size_type i2 = (i + numpoints + 1) % numpoints;
+			uint32_t i0 = (i + numpoints - 1) % numpoints;
+			uint32_t i1 = (i + numpoints + 0) % numpoints;
+			uint32_t i2 = (i + numpoints + 1) % numpoints;
 			
 			const mt::vec2f & p0 = _ring[i0];
 			const mt::vec2f & p1 = _ring[i1];
@@ -222,21 +179,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	static void s_enlargePolygonFromLow( Polygon & _big, float _radius )
 	{
-		Polygon::ring_type & ring = _big.outer();
+		mt::vec2f * ring = _big.outer_points();
+		uint32_t ring_points = _big.outer_count();
 
-		s_enlargePolygonRingFromLow( ring, _radius );
+		s_enlargePolygonRingFromLow( ring, ring_points, _radius );
 
-		Polygon::inner_container_type & inners = _big.inners();
+		uint32_t inners_count = _big.inners_count();
 
-		for( Polygon::inner_container_type::iterator
-			it = inners.begin(),
-			it_end = inners.end();
-		it != it_end;
-		++it )
-		{
-			Polygon::ring_type & ring = *it;
+		for( uint32_t i = 0; i != inners_count; ++i )
+		{			
+			mt::vec2f * inner_ring = _big.inner_points( i );
+			uint32_t inner_ring_points = _big.inner_count( i );
 
-			s_reducePolygonRingFromLow( ring, _radius );
+			s_reducePolygonRingFromLow( inner_ring, inner_ring_points, _radius );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -250,7 +205,7 @@ namespace Menge
 	bool PathFinderMap::testObstacle( const Polygon & _polygon )
 	{
 		Polygon big_polygon = _polygon;
-		boost::geometry::correct( big_polygon );
+		big_polygon.correct();
 
 		s_enlargePolygonFromLow( big_polygon, m_unitSize );
 
@@ -261,7 +216,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t PathFinderMap::addObstacle( const Polygon & _polygon )
 	{	
-		if( boost::geometry::num_points(_polygon) == 0 )
+		if( _polygon.num_points() == 0 )
 		{
 			LOGGER_ERROR(m_serviceProvider)("PathFinderMap::addObstacle polygon is empty!"
 				);
@@ -270,7 +225,7 @@ namespace Menge
 		}
 
 		Polygon big_polygon = _polygon;
-		boost::geometry::correct( big_polygon );
+		big_polygon.correct();
 
 		s_enlargePolygonFromLow( big_polygon, m_unitSize );
 
@@ -280,16 +235,15 @@ namespace Menge
 		obstacle->id = id;
 
 		obstacle->hole = _polygon;
-		boost::geometry::correct( obstacle->hole );
+		obstacle->hole.correct();
 
 		obstacle->bigHole = big_polygon;
-		if( s_polygonToBox( obstacle->bigHole, obstacle->bigMinHole, obstacle->bigMaxHole ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("PathFinderMap::addObstacle invalid polygon to box!"
-				);
 
-			return 0;
-		}
+		mt::box2f box;
+		obstacle->bigHole.to_box2f( box );
+
+		obstacle->bigMinHole = box.minimum;
+		obstacle->bigMaxHole = box.maximum;
 
 		this->obstacleCellMask_( obstacle, 1 );
 				
@@ -331,7 +285,7 @@ namespace Menge
 		{
 			const Polygon & p = (*it)->hole;
 
-			bool intersect = boost::geometry::intersects( p, _polygon );
+			bool intersect = _polygon.intersects( p );
 
 			if( intersect == true )
 			{
@@ -352,7 +306,7 @@ namespace Menge
 		{
 			const Polygon & p = (*it)->hole;
 
-			bool intersect = boost::geometry::intersects( p, _polygon );
+			bool intersect = _polygon.intersects( p );
 
 			if( intersect == true )
 			{
@@ -393,10 +347,11 @@ namespace Menge
 		{
 			for( uint16_t i = map_begin_i_crop; i != map_end_i_crop; ++i )
 			{
-				float x = (i * m_gridSize) + m_gridSize * 0.5f;
-				float y = (j * m_gridSize) + m_gridSize * 0.5f;
+				mt::vec2f p;
+				p.x = (i * m_gridSize) + m_gridSize * 0.5f;
+				p.y = (j * m_gridSize) + m_gridSize * 0.5f;
 
-				if( intersection_polygon_point( polygon, x, y ) == false )
+				if( polygon.intersects( p ) == false )
 				{
 					continue;
 				}
@@ -406,76 +361,8 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_intersectsPolygonRingSegment( const Polygon::ring_type & _ring, const Segment & _segment )
-	{
-		if( _ring.empty() == true )
-		{
-			return false;
-		}
-
-		Polygon::ring_type::size_type size = _ring.size() - 1;
-
-		for( Polygon::ring_type::size_type i = 0; i != size; ++i )
-		{
-			const mt::vec2f & v0 = _ring[i + 0];
-			const mt::vec2f & v1 = _ring[i + 1];
-
-			Segment sg(v0, v1);
-
-			if( boost::geometry::intersects( sg, _segment ) == true )
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_intersectsPolygonSegment( const Polygon & _polygon, const Segment & _segment )
-	{
-		const Polygon::inner_container_type & inner_container = _polygon.inners();
-
-		for( Polygon::inner_container_type::const_iterator 
-			it = inner_container.begin(),
-			it_end = inner_container.end();
-		it != it_end;
-		++it )
-		{
-			const Polygon::ring_type & ring = *it;
-
-			if( s_intersectsPolygonRingSegment( ring, _segment ) == true )
-			{
-				return true;
-			}
-		}
-
-		if( inner_container.empty() == false )
-		{
-			return false;
-		}
-
-		const Polygon::ring_type & ring = _polygon.outer();
-
-		if( s_intersectsPolygonRingSegment( ring, _segment ) == true )
-		{
-			return true;
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_intersectsPolygonPoint( const Polygon & _polygon, const mt::vec2f & _point )
-	{
-		GeometryPoint point(_point.x, _point.y);
-		bool intersect = boost::geometry::intersects( _polygon, point );
-
-		return intersect;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderMap::testHolesSegment_( const mt::vec2f & _p0, const mt::vec2f & _p1 ) const
 	{
-		Segment sg(_p0, _p1);
-
 		for( TVectorObstacles::const_iterator
 			it = m_obstacles.begin(),
 			it_end = m_obstacles.end();
@@ -484,7 +371,7 @@ namespace Menge
 		{
 			const Polygon & p = (*it)->hole;
 
-			if( s_intersectsPolygonSegment( p, sg ) == true )
+			if( p.intersects( _p0, _p1 ) == true )
 			{
 				return true;
 			}
@@ -503,7 +390,7 @@ namespace Menge
 		{
 			const Polygon & p = (*it)->hole;
 
-			bool intersect = s_intersectsPolygonPoint( p, _p );
+			bool intersect = p.intersects( _p );
 
 			if( intersect == true )
 			{
@@ -651,67 +538,67 @@ namespace Menge
 	{
 		m_camera = _camera;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::renderPolygonRing_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const Polygon::ring_type & _ring, uint32_t _color )
-	{
-		Polygon::ring_type::size_type numpoints = _ring.size();
+	////////////////////////////////////////////////////////////////////////////
+	//void PathFinderMap::renderPolygonRing_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const Polygon::ring_type & _ring, uint32_t _color )
+	//{
+	//	Polygon::ring_type::size_type numpoints = _ring.size();
 
-		if( numpoints == 0 )
-		{
-			return;
-		}
+	//	if( numpoints == 0 )
+	//	{
+	//		return;
+	//	}
 
-		Polygon::ring_type::size_type vertexCount = numpoints * 2;
+	//	Polygon::ring_type::size_type vertexCount = numpoints * 2;
 
-		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
-			->getDebugRenderVertex2D( vertexCount );
+	//	RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+	//		->getDebugRenderVertex2D( vertexCount );
 
-		if( vertices == nullptr )
-		{
-			return;
-		}
+	//	if( vertices == nullptr )
+	//	{
+	//		return;
+	//	}
 
-		for( Polygon::ring_type::size_type i = 0; i != numpoints; ++i )
-		{
-			Polygon::ring_type::size_type j = (i + 1) % numpoints;
+	//	for( Polygon::ring_type::size_type i = 0; i != numpoints; ++i )
+	//	{
+	//		Polygon::ring_type::size_type j = (i + 1) % numpoints;
 
-			mt::vec2f trP0 = _ring[i];
-			RenderVertex2D & v0 = vertices[i*2 + 0];
+	//		mt::vec2f trP0 = _ring[i];
+	//		RenderVertex2D & v0 = vertices[i*2 + 0];
 
-			v0.pos.x = trP0.x;
-			v0.pos.y = trP0.y;
-			v0.pos.z = 0.f;
+	//		v0.pos.x = trP0.x;
+	//		v0.pos.y = trP0.y;
+	//		v0.pos.z = 0.f;
 
-			v0.color = _color;
-			v0.uv[0].x = 0.f;
-			v0.uv[0].y = 0.f;
-			v0.uv[1].x = 0.f;
-			v0.uv[1].y = 0.f;
+	//		v0.color = _color;
+	//		v0.uv[0].x = 0.f;
+	//		v0.uv[0].y = 0.f;
+	//		v0.uv[1].x = 0.f;
+	//		v0.uv[1].y = 0.f;
 
-			mt::vec2f trP1 = _ring[j];
-			RenderVertex2D & v1 = vertices[i*2+1];
+	//		mt::vec2f trP1 = _ring[j];
+	//		RenderVertex2D & v1 = vertices[i*2+1];
 
-			v1.pos.x = trP1.x;
-			v1.pos.y = trP1.y;
-			v1.pos.z = 0.f;
+	//		v1.pos.x = trP1.x;
+	//		v1.pos.y = trP1.y;
+	//		v1.pos.z = 0.f;
 
-			v1.color = _color;
-			v1.uv[0].x = 0.f;
-			v1.uv[0].y = 0.f;
-			v1.uv[1].x = 0.f;
-			v1.uv[1].y = 0.f;
-		}
+	//		v1.color = _color;
+	//		v1.uv[0].x = 0.f;
+	//		v1.uv[0].y = 0.f;
+	//		v1.uv[1].x = 0.f;
+	//		v1.uv[1].y = 0.f;
+	//	}
 
-		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
-			->getDebugMaterial();
+	//	const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
+	//		->getDebugMaterial();
 
-		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, _clipplane, debugMaterial
-			, vertices
-			, vertexCount
-			, nullptr
-			, true
-			);
-	}
+	//	RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, _clipplane, debugMaterial
+	//		, vertices
+	//		, vertexCount
+	//		, nullptr
+	//		, true
+	//		);
+	//}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderMap::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
 	{
@@ -725,57 +612,57 @@ namespace Menge
 			_camera = m_camera;
 		}
 
-		for( TVectorObstacles::iterator
-			it = m_obstacles.begin(),
-			it_end = m_obstacles.end();
-		it != it_end;
-		++it )
-		{
-			const Polygon & polygon = (*it)->hole;
-			
-			const Polygon::ring_type & ring = polygon.outer();
+		//for( TVectorObstacles::iterator
+		//	it = m_obstacles.begin(),
+		//	it_end = m_obstacles.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	const Polygon & polygon = (*it)->hole;
+		//	
+		//	const Polygon::ring_type & ring = polygon.outer();
 
-			this->renderPolygonRing_( _viewport, _camera, _clipplane, ring, 0xFFFFFF00 );
+		//	this->renderPolygonRing_( _viewport, _camera, _clipplane, ring, 0xFFFFFF00 );
 
-			const Polygon::inner_container_type & inners = polygon.inners();
+		//	const Polygon::inner_container_type & inners = polygon.inners();
 
-			for( Polygon::inner_container_type::const_iterator
-				it = inners.begin(),
-				it_end = inners.end();
-			it != it_end;
-			++it )
-			{
-				const Polygon::ring_type & ring = *it;
+		//	for( Polygon::inner_container_type::const_iterator
+		//		it = inners.begin(),
+		//		it_end = inners.end();
+		//	it != it_end;
+		//	++it )
+		//	{
+		//		const Polygon::ring_type & ring = *it;
 
-				this->renderPolygonRing_( _viewport, _camera, _clipplane, ring, 0xFFFFFF00 );
-			}
-		}
+		//		this->renderPolygonRing_( _viewport, _camera, _clipplane, ring, 0xFFFFFF00 );
+		//	}
+		//}
 
-		for( TVectorObstacles::iterator
-			it = m_obstacles.begin(),
-			it_end = m_obstacles.end();
-		it != it_end;
-		++it )
-		{
-			const Polygon & polygon = (*it)->bigHole;
+		//for( TVectorObstacles::iterator
+		//	it = m_obstacles.begin(),
+		//	it_end = m_obstacles.end();
+		//it != it_end;
+		//++it )
+		//{
+		//	const Polygon & polygon = (*it)->bigHole;
 
-			const Polygon::ring_type & ring = polygon.outer();
+		//	const Polygon::ring_type & ring = polygon.outer();
 
-			this->renderPolygonRing_( _viewport, _camera, _clipplane, ring, 0xFFFF0000 );
+		//	this->renderPolygonRing_( _viewport, _camera, _clipplane, ring, 0xFFFF0000 );
 
-			const Polygon::inner_container_type & inners = polygon.inners();
+		//	const Polygon::inner_container_type & inners = polygon.inners();
 
-			for( Polygon::inner_container_type::const_iterator
-				it_ring = inners.begin(),
-				it_ring_end = inners.end();
-			it_ring != it_ring_end;
-			++it_ring )
-			{
-				const Polygon::ring_type & ring = *it_ring;
+		//	for( Polygon::inner_container_type::const_iterator
+		//		it_ring = inners.begin(),
+		//		it_ring_end = inners.end();
+		//	it_ring != it_ring_end;
+		//	++it_ring )
+		//	{
+		//		const Polygon::ring_type & ring = *it_ring;
 
-				this->renderPolygonRing_( _viewport, _camera, _clipplane, ring, 0xFFFF0000 );
-			}
-		}
+		//		this->renderPolygonRing_( _viewport, _camera, _clipplane, ring, 0xFFFF0000 );
+		//	}
+		//}
 
 		//uint32_t map_width = m_map.getWidth();
 		//uint32_t map_height = m_map.getHeight();

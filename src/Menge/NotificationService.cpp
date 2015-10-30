@@ -5,28 +5,17 @@
 #	include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( NotificationService, Menge::NotificationServiceInterface, Menge::NotificationService );
+SERVICE_FACTORY( NotificationService, Menge::NotificationService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     NotificationService::NotificationService()
-        : m_serviceProvider(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
     NotificationService::~NotificationService()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void NotificationService::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * NotificationService::getServiceProvider() const
-    {
-        return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void NotificationService::addObserver( uint32_t _id, Observer * _observer )

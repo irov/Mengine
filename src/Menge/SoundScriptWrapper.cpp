@@ -547,7 +547,7 @@ namespace	Menge
         //////////////////////////////////////////////////////////////////////////
         bool s_isSilent()
         {
-            bool silent = SOUND_SERVICE(m_serviceProvider)
+            bool silent = SOUND_SYSTEM(m_serviceProvider)
                 ->isSilent();
 
             return silent;

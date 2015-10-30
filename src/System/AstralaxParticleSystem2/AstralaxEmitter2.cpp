@@ -635,7 +635,7 @@ namespace Menge
 				{
 					RenderIndices & indices = *it;
 
-					indices -= mesh.vertexOffset;
+					indices -= (RenderIndices)mesh.vertexOffset;
 				}
 			}
 

@@ -29,6 +29,7 @@ namespace Menge
 		inline Pointer getMemory() const override;
 
 		inline size_t getSize() const override;
+		inline bool empty() const override;
 
 	protected:
 		void uncache_();
@@ -43,14 +44,19 @@ namespace Menge
 		size_t m_size;
 	};
 	//////////////////////////////////////////////////////////////////////////	
-	Pointer MemoryCacheBuffer::getMemory() const
+	inline Pointer MemoryCacheBuffer::getMemory() const
 	{
 		return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t MemoryCacheBuffer::getSize() const
+	inline size_t MemoryCacheBuffer::getSize() const
 	{
 		return m_size;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool MemoryCacheBuffer::empty() const
+	{
+		return m_size == 0;
 	}
 }	// namespace Menge
 

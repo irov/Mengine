@@ -21,7 +21,7 @@ namespace Menge
 	class Eventable;
 
     class Entity;
-
+	//////////////////////////////////////////////////////////////////////////
     class ScriptClassInterface
     {
 	public:
@@ -42,24 +42,20 @@ namespace Menge
     public:
         virtual void destroy() = 0;
     };
-
+	//////////////////////////////////////////////////////////////////////////
 	struct ScriptModulePak
 	{
 		ConstString path;
 		ConstString module;
 		ConstString initializer;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<ScriptModulePak> TVectorScriptModulePak;
-
+	//////////////////////////////////////////////////////////////////////////
 	class ScriptServiceInterface
 		: public ServiceInterface
 	{
         SERVICE_DECLARE("ScriptService")
-
-    public:
-        virtual bool initialize() = 0;
-        virtual void finalize() = 0;
 
 	public:
         virtual void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper ) = 0;

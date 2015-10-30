@@ -17,37 +17,25 @@
 #   include <stdio.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( TextService, Menge::TextServiceInterface, Menge::TextManager );
+SERVICE_FACTORY( TextService, Menge::TextManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	TextManager::TextManager()
-        : m_serviceProvider(nullptr)
-		, m_enableText(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TextManager::~TextManager()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void TextManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * TextManager::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::initialize()
+	bool TextManager::_initialize()
 	{
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::finalize()
+	void TextManager::_finalize()
 	{
 		m_texts.clear();
 		m_fonts.clear();
@@ -486,47 +474,51 @@ namespace Menge
 		return glyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride )
+	bool TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride )
 	{		
-		TextEntry * textEntry_has = m_texts.find( _key );
+		TMapTextEntry::iterator it_found = m_texts.find( _key );
 
-		if( textEntry_has != nullptr )
+		if( it_found != m_texts.end() )
 		{
+			TextEntry & textEntry_has = it_found->second;
+
 			if( _isOverride == false )
 			{
-				const ConstString & text = textEntry_has->getValue();
+				const ConstString & text = textEntry_has.getValue();
 
 				WString ws_text;
 				Helper::utf8ToUnicode( m_serviceProvider, text, ws_text );
 
-				LOGGER_ERROR(m_serviceProvider)("TextManager::addTextEntry: duplicate key found %s with text:"
-					, _key.c_str()					
+				LOGGER_ERROR( m_serviceProvider )("TextManager::addTextEntry: duplicate key found %s with text:"
+					, _key.c_str()
 					);
 
-				LOGGER_ERROR(m_serviceProvider)("'%ls'"
+				LOGGER_ERROR( m_serviceProvider )("'%ls'"
 					, ws_text.c_str()
 					);
+
+				return false;
 			}
-			else
-			{
-				textEntry_has->initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _params );
-			}
-			
-            return;
+
+			textEntry_has.initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _params );
+
+			return true;
 		}
 
-		TextEntry * textEntry = m_texts.create();
+		TextEntry textEntry;
 
-		textEntry->initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _params );
+		textEntry.initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _params );
 
-        m_texts.insert( textEntry, nullptr );
+        m_texts.insert( std::make_pair( _key, textEntry ) );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TextEntryInterface * TextManager::getTextEntry( const ConstString& _key ) const
 	{
-		const TextEntry * textEntry = m_texts.find( _key );
+		TMapTextEntry::const_iterator it_found = m_texts.find( _key );
 		
-		if( textEntry == nullptr )
+		if( it_found == m_texts.end() )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
 				, _key.c_str() 
@@ -534,22 +526,26 @@ namespace Menge
 
 			return nullptr;
 		}
+
+		const TextEntry & textEntry = it_found->second;
         
-        return textEntry;
+        return &textEntry;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::existText( const ConstString& _key, const TextEntryInterface ** _entry ) const
 	{
-		const TextEntry * result = m_texts.find( _key );
+		TMapTextEntry::const_iterator it_found = m_texts.find( _key );
 
-		if( result == nullptr )
+		if( it_found == m_texts.end() )
 		{
 			return false;
 		}
 
+		const TextEntry & textEntry = it_found->second;
+
 		if( _entry != nullptr )
 		{
-			*_entry = result;
+			*_entry = &textEntry;
 		}
 
 		return true;
@@ -621,106 +617,6 @@ namespace Menge
 		return m_defaultFontName;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class ForeachTextValidate
-		{
-		public:
-			ForeachTextValidate( ServiceProviderInterface * _serviceProvider, const TextManager * _textManager )
-				: m_serviceProvider(_serviceProvider)
-				, m_textManager(_textManager)
-				, m_successful(true)
-			{
-			}
-
-		public:
-			bool isSuccessful() const
-			{
-				return m_successful;
-			}
-
-		public:
-			void operator() ( TextEntry * _text )
-			{
-				const ConstString & textKey = _text->getKey();
-				const ConstString & fontName = _text->getFontName();
-
-				if( fontName.empty() == false )
-				{
-					TextFontInterfacePtr font;
-					if( m_textManager->existFont( fontName, font ) == false )
-					{
-						LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource not found font %s for text %s"
-							, fontName.c_str()
-							, textKey.c_str()
-							);
-
-						m_successful = false;
-
-						return;
-					}
-
-					const ConstString & value = _text->getValue();
-
-					const char * text_str = value.c_str();
-					size_t text_len = value.size();
-
-					for( const char
-						*text_it = text_str,
-						*text_end = text_str + text_len + 1;
-					text_it != text_end;
-					)
-					{			
-						uint32_t code = 0;
-						utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
-
-						if( err != utf8::internal::UTF8_OK )
-						{
-							LOGGER_ERROR(m_serviceProvider)("Text %s invalid utf8 |%s| err code %d"
-								, textKey.c_str()
-								, text_it
-								, err
-								);
-
-							m_successful = false;
-
-							continue;
-						}
-
-						if( code == 0 )
-						{
-							continue;
-						}
-
-						if( code == 10 )
-						{
-							continue;
-						}
-
-						GlyphCode glyphChar;
-						glyphChar.setCode( code );
-
-						if( font->hasGlyph( glyphChar ) == false )
-						{
-							LOGGER_ERROR(m_serviceProvider)("Text %s fontName %s not found glyph code '%d'"
-								, textKey.c_str()
-								, fontName.c_str()
-								, code
-								);
-
-							m_successful = false;
-						}
-					}
-				}
-			}
-
-		protected:
-			ServiceProviderInterface * m_serviceProvider;
-			const TextManager * m_textManager;
-			bool m_successful;
-		};
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::validate() const
 	{
 		bool successful = true;
@@ -744,25 +640,87 @@ namespace Menge
 				successful = false;
 			}
 		}
-		
-		ForeachTextValidate ftv(m_serviceProvider, this);
-		m_texts.foreach( ftv );
 
-		if( ftv.isSuccessful() == false )
+		for( TMapTextEntry::const_iterator
+			it = m_texts.begin(),
+			it_end = m_texts.end();
+		it != it_end;
+		++it )
 		{
-			successful = false;
+			const TextEntry & text = it->second;
+
+			const ConstString & textKey = text.getKey();
+			const ConstString & fontName = text.getFontName();
+
+			if( fontName.empty() == false )
+			{
+				TextFontInterfacePtr font;
+				if( this->existFont( fontName, font ) == false )
+				{
+					LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource not found font %s for text %s"
+						, fontName.c_str()
+						, textKey.c_str()
+						);
+
+					successful = false;
+
+					continue;
+				}
+
+				const ConstString & value = text.getValue();
+
+				const char * text_str = value.c_str();
+				size_t text_len = value.size();
+
+				for( const char
+					*text_it = text_str,
+					*text_end = text_str + text_len + 1;
+				text_it != text_end;
+				)
+				{
+					uint32_t code = 0;
+					utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
+
+					if( err != utf8::internal::UTF8_OK )
+					{
+						LOGGER_ERROR( m_serviceProvider )("Text %s invalid utf8 |%s| err code %d"
+							, textKey.c_str()
+							, text_it
+							, err
+							);
+
+						successful = false;
+
+						continue;
+					}
+
+					if( code == 0 )
+					{
+						continue;
+					}
+
+					if( code == 10 )
+					{
+						continue;
+					}
+
+					GlyphCode glyphChar;
+					glyphChar.setCode( code );
+
+					if( font->hasGlyph( glyphChar ) == false )
+					{
+						LOGGER_ERROR( m_serviceProvider )("Text %s fontName %s not found glyph code '%d'"
+							, textKey.c_str()
+							, fontName.c_str()
+							, code
+							);
+
+						successful = false;
+					}
+				}
+			}
 		}
 
 		return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TextManager::setEnableText( bool _enable )
-	{
-		m_enableText = _enable;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::getEnableText() const
-	{
-		return m_enableText;
 	}
 }

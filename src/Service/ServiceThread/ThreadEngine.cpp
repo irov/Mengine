@@ -12,31 +12,20 @@
 #	include "stdex/allocator.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ThreadService, Menge::ThreadServiceInterface, Menge::ThreadEngine );
+SERVICE_FACTORY( ThreadService, Menge::ThreadEngine );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ThreadEngine::ThreadEngine()
-		: m_serviceProvider(nullptr)      
-        , m_threadCount(0)
-		, m_threadAvaliable(false)
+		: m_threadCount(0)
+		, m_avaliable(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ThreadEngine::~ThreadEngine()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void ThreadEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {        
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * ThreadEngine::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	static void s_stdex_thread_lock( ThreadMutexInterface * _mutex )
 	{
@@ -48,7 +37,7 @@ namespace Menge
 		_mutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::initialize( uint32_t _threadCount )
+	bool ThreadEngine::_initialize()
 	{
 		bool avaliable = CONFIG_VALUE(m_serviceProvider, "Engine", "ThreadServiceAvaliable", true );
 
@@ -57,15 +46,22 @@ namespace Menge
 			return true;
 		}
 
-		m_threadAvaliable = THREAD_SYSTEM(m_serviceProvider)
+		if( SERVICE_EXIST( m_serviceProvider, Menge::ThreadSystemInterface ) == false )
+		{
+			m_avaliable = false;
+
+			return true;
+		}
+
+		m_avaliable = THREAD_SYSTEM(m_serviceProvider)
 			->avaliable();
 
-		if( m_threadAvaliable == false )
+		if( m_avaliable == false )
 		{
 			return true;
 		}
 
-        m_threadCount = _threadCount;
+		m_threadCount = CONFIG_VALUE( m_serviceProvider, "Engine", "ThreadCount", 16U );
 
 		m_allocatorPoolMutex = THREAD_SYSTEM(m_serviceProvider)
 			->createMutex( "ThreadEngine::initialize" );
@@ -78,7 +74,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadEngine::finalize()
+	void ThreadEngine::_finalize()
 	{	
 		for( TVectorThreadTaskDesc::iterator 
 			it =  m_tasks.begin(),
@@ -109,6 +105,13 @@ namespace Menge
 		m_threads.clear();
 
 		stdex_allocator_finalize_threadsafe();
+
+		m_allocatorPoolMutex = nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ThreadEngine::avaliable() const
+	{ 
+		return m_avaliable;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::isTaskOnProgress_( const ThreadTaskInterfacePtr & _task, ThreadIdentityPtr & _identity ) const
@@ -143,7 +146,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::createThread( const ConstString & _threadName, int _priority, const char * _doc )
 	{
-		if( m_threadAvaliable == false )
+		if( m_avaliable == false )
 		{
 			return false;
 		}
@@ -215,7 +218,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task )
 	{
-		if( m_threadAvaliable == false )
+		if( m_avaliable == false )
 		{
 			return false;
 		}
@@ -265,7 +268,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ThreadQueueInterfacePtr ThreadEngine::runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize )
 	{
-		if( m_threadAvaliable == false )
+		if( m_avaliable == false )
 		{
 			return nullptr;
 		}
@@ -377,7 +380,7 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	ThreadMutexInterfacePtr ThreadEngine::createMutex( const char * _doc )
     {
-		if( m_threadAvaliable == false )
+		if( m_avaliable == false )
 		{
 			 ThreadMutexInterfacePtr mutex_dummy = 
 				 m_poolThreadMutexDummy.createObject();
@@ -399,7 +402,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ptrdiff_t ThreadEngine::getCurrentThreadId()
 	{
-		if( m_threadAvaliable == false )
+		if( m_avaliable == false )
 		{
 			return 0U;
 		}

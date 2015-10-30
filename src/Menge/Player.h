@@ -37,24 +37,20 @@ namespace Menge
 	class EventManager;
 
 	class Player
-        : public PlayerServiceInterface		
+		: public ServiceBase<PlayerServiceInterface>
 	{
 	public:
 		Player();
 		~Player();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
-    public:
-        bool initialize() override;
-		void finalize() override;
+	public:
+        bool _initialize() override;
+		void _finalize() override;
 
 	public:
-		bool setCurrentScene( Scene * _scene, bool _destroyOld, const pybind::object & _cb ) override;
-		bool restartCurrentScene( const pybind::object & _cb ) override;
-		bool removeCurrentScene( const pybind::object & _cb ) override;
+		bool setCurrentScene( Scene * _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) override;
+		bool restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) override;
+		bool removeCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) override;
 
 		Scene * getCurrentScene() override;
 
@@ -147,26 +143,10 @@ namespace Menge
 		void onFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
 		void onFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
 	
-	public:
-		Join * addJoin( Node * _left, Node * _right, const mt::vec2f & _offset ) override;
-		void removeJoin( Join * _join ) override;
-		bool isJoin( Node * _left, Node * _right ) const override;
-
-		void getJoins( Node * _node, TVectorNode & _joins ) const override;
-
-	protected:
-		void updateJoins_();
-
-	protected:
-		typedef stdex::vector<Join *> TVectorJoins;
-		TVectorJoins m_joins;
-
 	protected:
 		void renderArrow_( unsigned int _debugMask );
 
 	private:
-        ServiceProviderInterface * m_serviceProvider;
-
 		Scene * m_scene;
 		Arrow * m_arrow;
 		
@@ -211,8 +191,8 @@ namespace Menge
 
 		bool m_destroyOldScene;
 				
-		pybind::object m_changeSceneCb;
-		pybind::object m_removeSceneCb;
+		SceneChangeCallbackInterfacePtr m_changeSceneCb;
+		SceneChangeCallbackInterfacePtr m_removeSceneCb;
 
 		float m_time;
 

@@ -81,10 +81,19 @@ SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+	class Win32Platform
+		: public
+	{ };
+
 	static bool initializeEngine( Menge::ServiceProviderInterface ** _serviceProvider )
 	{
 		Menge::ServiceProviderInterface * serviceProvider;
 		if( SERVICE_CREATE( ServiceProvider, &serviceProvider ) == false )
+		{
+			return false;
+		}
+
+		if( SERVICE_REGISTRY( m_serviceProvider, this ) == false )
 		{
 			return false;
 		}
@@ -288,7 +297,7 @@ namespace Menge
 		ThreadServiceInterface * threadService;
 		if( SERVICE_CREATE( ThreadService, &threadService ) == false )
 		{
-			return false;               
+			return false;
 		}
 
 		if( SERVICE_REGISTRY( serviceProvider, threadService ) == false )

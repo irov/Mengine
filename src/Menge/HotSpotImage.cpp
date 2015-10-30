@@ -179,7 +179,7 @@ namespace Menge
 			return !m_outward;
 		}
 
-		if( polygon_empty( _polygon ) == true )
+		if( _polygon.empty() == true )
 		{
 			return m_outward;
 		}
@@ -187,10 +187,7 @@ namespace Menge
 		const mt::box2f & bb = this->getBoundingBox();
 
 		mt::box2f bb_screen;
-		if( polygon_to_box2f( bb_screen, _polygon ) == false )
-		{
-			return m_outward;
-		}
+		_polygon.to_box2f( bb_screen );
 
 		mt::transpose_box( bb_screen, _point );
 

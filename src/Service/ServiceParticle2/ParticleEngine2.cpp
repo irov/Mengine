@@ -13,13 +13,12 @@
 #	include "math/box2.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ParticleService2, Menge::ParticleServiceInterface2, Menge::ParticleEngine2 );
+SERVICE_FACTORY( ParticleService, Menge::ParticleEngine2 );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	ParticleEngine2::ParticleEngine2()
-		: m_serviceProvider(nullptr)
-		, m_maxParticlesNum(10000U)
+		: m_maxParticlesNum(10000U)
 		, m_available(true)
 	{
 	}
@@ -27,25 +26,13 @@ namespace Menge
 	ParticleEngine2::~ParticleEngine2()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void ParticleEngine2::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * ParticleEngine2::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEngine2::initialize()
+	bool ParticleEngine2::_initialize()
 	{
 		m_available = CONFIG_VALUE( m_serviceProvider, "Engine", "ParticleService2Avaliable", true );
 
 		//m_available = false;
 
-		m_maxParticlesNum = CONFIG_VALUE( m_serviceProvider, "Engine", "ParticleMaxCount", 10000U );
-		
 		if( m_available == false )
 		{
 			return true;
@@ -59,16 +46,18 @@ namespace Menge
 			return false;
 		}
 
+		m_maxParticlesNum = CONFIG_VALUE( m_serviceProvider, "Engine", "ParticleMaxCount", 10000U );
+
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ParticleEngine2::_finalize()
+	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEngine2::isAvailable() const
 	{
 		return m_available;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine2::finalize()
-	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ParticleEmitterContainerInterface2Ptr ParticleEngine2::createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName )

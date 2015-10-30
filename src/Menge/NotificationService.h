@@ -7,18 +7,12 @@
 
 namespace Menge
 {
-    class LogServiceInterface;
-
 	class NotificationService
-		: public NotificationServiceInterface
+		: public ServiceBase<NotificationServiceInterface>
 	{
     public:
         NotificationService();
         ~NotificationService();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		void addObserver( uint32_t _id, Observer * _observer ) override;
@@ -31,8 +25,6 @@ namespace Menge
 		void invalidObserver_( uint32_t _id );
 
 	protected:		
-        ServiceProviderInterface * m_serviceProvider;
-
 		typedef stdex::vector<Observer *> TVectorObservers;
 		typedef stdex::map<uint32_t, TVectorObservers> TMapObservers;
 		TMapObservers m_mapObserves;

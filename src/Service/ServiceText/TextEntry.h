@@ -11,20 +11,7 @@ namespace Menge
 {
 	class TextEntry
 		: public TextEntryInterface
-		, public stdex::intrusive_tree_node<TextEntry>
 	{
-	public:
-		typedef ConstString key_type;	
-		typedef ConstString::less_type less_type;
-
-		struct key_getter_type
-		{
-			const ConstString & operator()( const TextEntry * _node ) const
-			{
-				return _node->m_key;
-			}
-		};
-
 	public:
 		TextEntry();
 

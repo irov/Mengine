@@ -69,7 +69,7 @@ namespace Menge
 		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask );
 
 	protected:
-		void renderPolygonRing_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const Polygon::ring_type & _ring, uint32_t _color );
+		//void renderPolygonRing_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const Polygon::ring_type & _ring, uint32_t _color );
 		
 	protected:
 		bool testBigHolesPolygon_( const Polygon & _polygon ) const;

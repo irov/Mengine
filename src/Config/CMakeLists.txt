@@ -3,6 +3,7 @@ SET( MY_LIB_NAME Config )
 ADD_FILTER(
 src
     Blobject.h
+    Char.h
     String.h
     Stringstream.h
     Typedef.h

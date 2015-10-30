@@ -1,88 +1,128 @@
 #	include "ServiceProvider.h"
 
-#	include "Interface/LogSystemInterface.h"
-
 #   include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ServiceProvider, Menge::ServiceProviderInterface, Menge::ServiceProvider );
+SERVICE_PROVIDER_FACTORY( ServiceProvider, Menge::ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProvider::ServiceProvider()
-    {
-        for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
-        {
-            ServiceDesc & desc = m_services[index];
-
-            desc.service = nullptr;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProvider::~ServiceProvider()
-    {
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool ServiceProvider::registryService( const char * _name, ServiceInterface * _service )
+	ServiceProvider::ServiceProvider()
 	{
-        if( _service == nullptr )
-        {
-            return false;
-        }
+		for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+		{
+			ServiceDesc & desc = m_services[index];
 
-		if( strlen( _name ) + 1 > SERVICE_PROVIDER_NAME_SIZE )
+			strcpy( desc.name, "" );
+			desc.service = nullptr;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ServiceProvider::~ServiceProvider()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ServiceProvider::initializeService( TServiceProviderGenerator _generator )
+	{
+		if( _generator == nullptr )
 		{
 			return false;
 		}
 
-        for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
-        {
-            ServiceDesc & desc = m_services[index];
+		ServiceInterface * service;
+		if( (*_generator)(&service) == false )
+		{
+			return false;
+		}
 
-            if( desc.service != nullptr )
-            {
-                if( strcmp( desc.name, _name ) == 0 )
-                {
-                    desc.service = _service;
-                }
+		const char * name = service->getServiceID();
 
-                continue;
-            }
+		if( strlen( name ) + 1 > SERVICE_PROVIDER_NAME_SIZE )
+		{
+			return false;
+		}
 
-            strcpy( desc.name, _name );
-            desc.service = _service;
+		service->setServiceProvider( this );
 
-            desc.service->setServiceProvider( this );
+		if( service->initialize() == false )
+		{
+			return false;
+		}
 
-            return true;
-        }
+		for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+		{
+			ServiceDesc & desc = m_services[index];
 
-        return false;
+			if( desc.service == nullptr )
+			{
+				strcpy( desc.name, name );
+			}
+			else if( strcmp( desc.name, name ) != 0 )
+			{
+				continue;
+			}
+			else
+			{
+				desc.service->finalize();
+				desc.service->destroy();
+			}
+
+			desc.service = service;
+
+			return true;
+		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ServiceProvider::unregistryService( const char * _name )
+	bool ServiceProvider::finalizeService( const char * _name )
 	{
-        for( size_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
-        {
-            ServiceDesc & desc = m_services[index];
+		for( size_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+		{
+			ServiceDesc & desc = m_services[index];
 
-            if( desc.service == nullptr )
-            {
-                break;
-            }
+			if( desc.service == nullptr )
+			{
+				break;
+			}
 
-            if( strcmp( desc.name, _name ) != 0 )
-            {
-                continue;
-            }
-            
-            desc.service = nullptr;
-            
-            return true;
-        }
+			if( strcmp( desc.name, _name ) != 0 )
+			{
+				continue;
+			}
 
-        return false;
+			desc.service->finalize();
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ServiceProvider::destroyService( const char * _name )
+	{
+		for( size_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+		{
+			ServiceDesc & desc = m_services[index];
+
+			if( desc.service == nullptr )
+			{
+				break;
+			}
+
+			if( strcmp( desc.name, _name ) != 0 )
+			{
+				continue;
+			}
+
+			desc.service->finalize();
+			desc.service->destroy();
+
+			return true;
+		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ServiceProvider::existService( const char * _name ) const
@@ -109,23 +149,40 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ServiceInterface * ServiceProvider::getService( const char * _name ) const
 	{
-        for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
-        {
-            const ServiceDesc & desc = m_services[index];
+		for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+		{
+			const ServiceDesc & desc = m_services[index];
 
-            if( desc.service == nullptr )
-            {
-                continue;
-            }
+			if( desc.service == nullptr )
+			{
+				continue;
+			}
 
-            if( strcmp( desc.name, _name ) != 0 )
-            {
-                continue;
-            }
+			if( strcmp( desc.name, _name ) != 0 )
+			{
+				continue;
+			}
 
-            return desc.service;
-        }
+			return desc.service;
+		}
 
 		return nullptr;
 	}
- }
+	//////////////////////////////////////////////////////////////////////////
+	void ServiceProvider::destroy()
+	{
+		for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
+		{
+			ServiceDesc & desc = m_services[index];
+
+			if( desc.service == nullptr )
+			{
+				continue;
+			}
+
+			desc.service->finalize();
+			desc.service->destroy();
+			desc.service = nullptr;
+		}
+	}
+}

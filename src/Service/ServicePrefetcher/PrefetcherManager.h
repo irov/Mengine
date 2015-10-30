@@ -25,7 +25,7 @@ namespace Menge
 	};
 
 	class PrefetcherManager
-		: public PrefetcherServiceInterface
+		: public ServiceBase<PrefetcherServiceInterface>
 	{
 	public:
 		PrefetcherManager();
@@ -36,8 +36,8 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		void update() override;

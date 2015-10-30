@@ -83,11 +83,10 @@ namespace Menge
         SERVICE_DECLARE("SoundSystem")
 
 	public:
-		virtual bool initialize() = 0;
-        virtual void finalize() = 0;
+		virtual void update() = 0;
 
 	public:
-		virtual void update() = 0;
+		virtual bool isSilent() const = 0;
 
     public:
 		virtual void onTurnSound( bool _turn ) = 0;
@@ -116,10 +115,6 @@ namespace Menge
 		: public ServiceInterface
 	{
         SERVICE_DECLARE("SoundService")
-
-    public:
-        virtual bool initialize( bool _silent, bool _supportStream ) = 0;
-        virtual void finalize() = 0;
 
 	public:
 		virtual void update( float _timing ) = 0;
@@ -185,8 +180,6 @@ namespace Menge
     public:
 		virtual void mute( bool _mute ) = 0;
 		virtual bool isMute() const = 0;
-
-        virtual bool isSilent() const = 0;
 	};
 
 #   define SOUND_SERVICE( serviceProvider )\

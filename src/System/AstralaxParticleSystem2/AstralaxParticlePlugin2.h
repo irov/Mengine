@@ -2,8 +2,6 @@
 
 #	include "Interface/PluginInterface.h"
 
-#	include "Interface/ParticleSystemInterface.h"
-
 namespace Menge
 {
 	class AstralaxParticlePlugin2
@@ -21,7 +19,5 @@ namespace Menge
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
-
-		ParticleSystemInterface2 * m_particleSystem2;
 	};
 }

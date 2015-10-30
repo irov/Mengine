@@ -71,24 +71,19 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderEngine
-		: public RenderServiceInterface
-        , public RenderSystemListener
+		: public ServiceBase<RenderServiceInterface>
 	{
 	public:
 		RenderEngine();
 		~RenderEngine();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _provider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen, 
-									WindowHandle _winHandle, int _FSAAType, int _FSAAQuality ) override;
+									int _FSAAType, int _FSAAQuality ) override;
 
 	public:
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
@@ -143,10 +138,7 @@ namespace Menge
 		bool beginScene() override;
 		void endScene() override;
 		void swapBuffers() override;
-
-        void onRenderSystemDeviceLost() override;
-		bool onRenderSystemDeviceRestored() override;
-
+		
 		void onWindowActive( bool _active );
 		void onWindowClose() override;
 
@@ -212,8 +204,6 @@ namespace Menge
 		void updateStage_( const RenderStage * _stage );
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		bool m_windowCreated;
 		bool m_vsync;
 		Resolution m_windowResolution;

@@ -7,18 +7,14 @@
 namespace Menge
 {
 	class ConfigManager
-		: public ConfigServiceInterface
+		: public ServiceBase<ConfigServiceInterface>
 	{
 	public:
 		ConfigManager();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
-
-	public:
-		bool initialize( const ConstString & _platformName ) override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) override;
@@ -46,16 +42,14 @@ namespace Menge
 		void getSection( const Char * _section, TMapParams & _params ) const override;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ConstString m_platformName;
 
 		IniUtil::IniStore m_ini;
 
 		struct ModifySetting
 		{
-			const char * section;
-			const char * key;
+			const Char * section;
+			const Char * key;
 
 			String value;
 		};

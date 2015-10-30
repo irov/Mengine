@@ -1,7 +1,7 @@
 #   pragma once
 
 #	include "Interface/InputSystemInterface.h"
-#	include "Interface/ScriptSystemInterface.h"
+//#	include "Interface/ScriptSystemInterface.h"
 #	include "Interface/RenderSystemInterface.h"
 
 #   include "Math/vec2.h"

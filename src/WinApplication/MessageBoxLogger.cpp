@@ -9,7 +9,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	MessageBoxLogger::MessageBoxLogger()
 		: m_serviceProvider(nullptr)
-		, m_verboseLevel(LM_INFO)
+		, m_verboseLevel( LM_INFO )
 		, m_verboseFlag(0xFFFFFFFF)
 	{
 	}

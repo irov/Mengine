@@ -9,7 +9,7 @@
 namespace Menge
 {
 	class Consts
-        : public ServiceInterface
+        : public ServiceBase<ServiceInterface>
 	{
         SERVICE_DECLARE("Consts")
 
@@ -17,11 +17,8 @@ namespace Menge
 		Consts();
 
     public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
-    public:
-        bool initialize();
+		bool _initialize() override;
+		void _finalize() override;
 
 #	define DECL_CONST( Const ) public: ConstString c_##Const
 
@@ -145,9 +142,6 @@ namespace Menge
 		DECL_CONST( archiveImage );
 
 #	undef DECL_CONST
-
-    protected:
-        ServiceProviderInterface * m_serviceProvider;
 	};
 
 #   define CONSTS_SERVICE( serviceProvider )\

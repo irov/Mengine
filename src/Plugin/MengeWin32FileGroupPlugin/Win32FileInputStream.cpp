@@ -1,6 +1,5 @@
 #	include "Win32FileInputStream.h"
 
-#	include "Interface/LogSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/NotificationServiceInterface.h"
 

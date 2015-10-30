@@ -1,8 +1,8 @@
 #	include "AstralaxParticlePlugin2.h"
 
-#	include "Logger/Logger.h"
+#	include "Interface/ParticleSystemInterface.h"
 
-SERVICE_EXTERN(ParticleSystem2, Menge::ParticleSystemInterface2);
+#	include "Logger/Logger.h"
 
 extern "C" // only required if using g++
 {
@@ -29,7 +29,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxParticlePlugin2::AstralaxParticlePlugin2()
 		: m_serviceProvider(nullptr)
-		, m_particleSystem2(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -39,45 +38,19 @@ namespace Menge
 		
 		LOGGER_INFO(m_serviceProvider)( "Initializing Particle System 3D..." );
 
-		ParticleSystemInterface2 * particleSystem2;
-		if( SERVICE_CREATE( ParticleSystem2, &particleSystem2 ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("AstralaxParticlePlugin2::initialize Failed to initialize ParticleSystem2"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, particleSystem2 ) == false )
-		{
-			return false;
-		}
-
-		if( particleSystem2->initialize() == false )
-		{
-			return false;
-		}
-
-		m_particleSystem2 = particleSystem2;
+		SERVICE_CREATE( m_serviceProvider, ParticleSystem, Menge::ParticleSystemInterface2 );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticlePlugin2::finalize()
 	{
-		if( m_particleSystem2 != nullptr )
-		{
-			m_particleSystem2->finalize();
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleSystemInterface2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticlePlugin2::destroy()
 	{
-		if( m_particleSystem2 != nullptr )
-		{            
-			SERVICE_DESTROY( ParticleSystem2, m_particleSystem2 );
-			m_particleSystem2 = nullptr;
-		}
+		SERVICE_DESTROY( m_serviceProvider, Menge::ParticleSystemInterface2 );
 
 		delete this;
 

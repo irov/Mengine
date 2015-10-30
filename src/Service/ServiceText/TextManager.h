@@ -17,19 +17,15 @@
 namespace Menge
 {
 	class TextManager
-        : public TextServiceInterface
+        : public ServiceBase<TextServiceInterface>
 	{
 	public:
 		TextManager();
 		~TextManager();
 
     public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
-    public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 		
 	public:
 		bool loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
@@ -48,10 +44,6 @@ namespace Menge
 		void visitFonts( VisitorTextFontInterface * _vistitor ) override;
 
 	public:
-		void setEnableText( bool _enable ) override;
-		bool getEnableText() const override;
-
-	public:
 		bool validate() const override;
 
 	protected:
@@ -61,15 +53,13 @@ namespace Menge
 		const ConstString & getDefaultFontName() const override;
 
 	public:
-		void addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) override;
+		bool addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) override;
 
 	protected:
 		TextGlyphPtr loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const ConstString & _path );
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-		
-		typedef IntrusiveTree<TextEntry, 256> TMapTextEntry;
+		typedef stdex::map<ConstString, TextEntry> TMapTextEntry;
 		TMapTextEntry m_texts;
 
 		typedef stdex::map<ConstString, TextFontPtr> TMapTextFont;
@@ -82,8 +72,6 @@ namespace Menge
 		TVectorPaks m_paks;
 		
 		ConstString m_defaultFontName;
-
-		bool m_enableText;
 
 		typedef FactoryPoolStore<TextFont, 16> TFactoryTextFont;
 		TFactoryTextFont m_factoryTextFont;

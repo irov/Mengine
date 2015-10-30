@@ -3,29 +3,18 @@
 #	include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( PrototypeService, Menge::PrototypeServiceInterface, Menge::PrototypeManager );
+SERVICE_FACTORY( PrototypeService, Menge::PrototypeManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PrototypeManager::PrototypeManager()
-        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	PrototypeManager::~PrototypeManager()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void PrototypeManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * PrototypeManager::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool PrototypeManager::addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator )
 	{

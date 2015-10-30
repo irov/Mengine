@@ -5,6 +5,7 @@
 #   include "Logger/Logger.h"
 
 #   include "Config/Typedef.h"
+#   include "Config/String.h"
 
 namespace Menge
 {
@@ -29,6 +30,6 @@ namespace Menge
 #	else
 #		define WATCHDOG( serviceProvider, tag ) WATCHDOG_SERVICE(serviceProvider)->watch(tag)
 #		define BEGIN_WATCHDOG( serviceProvider, tag ) WATCHDOG(serviceProvider, tag)
-#		define END_WATCHDOG( serviceProvider, tag, level ) if( LOG_SERVICE(serviceProvider)->validMessage(Menge::LM_ERROR, level) == false){}else Menge::LoggerOperator(LOG_SERVICE(serviceProvider), Menge::LM_ERROR, level)("(%.4f)", WATCHDOG(m_serviceProvider, tag))
+#		define END_WATCHDOG( serviceProvider, tag, level ) if( LOGGER_SERVICE(serviceProvider)->validMessage(Menge::LM_ERROR, level) == false){}else Menge::LoggerOperator(LOGGER_SERVICE(serviceProvider), Menge::LM_ERROR, level)("(%.4f)", WATCHDOG(m_serviceProvider, tag))
 #	endif
 }

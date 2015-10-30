@@ -12,19 +12,15 @@
 namespace Menge
 {
 	class InputEngine
-		: public InputServiceInterface
+		: public ServiceBase<InputServiceInterface>
 	{
 	public:
 		InputEngine();
 		~InputEngine();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		void update() override;

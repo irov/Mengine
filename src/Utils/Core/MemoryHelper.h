@@ -16,6 +16,8 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		MemoryInterfacePtr createMemoryStreamSize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size );
 		//////////////////////////////////////////////////////////////////////////
+		MemoryInterfacePtr createMemoryFile( ServiceProviderInterface * _serviceProvider, const ConstString & _category, const FilePath & _filePath, bool _stream );
+		//////////////////////////////////////////////////////////////////////////
 		MemoryCacheBufferInterfacePtr createMemoryCacheBuffer( ServiceProviderInterface * _serviceProvider, size_t _size, const char * _doc );
 		//////////////////////////////////////////////////////////////////////////
 		MemoryCacheBufferInterfacePtr createMemoryCacheStreamSize( ServiceProviderInterface * _serviceProvider, const InputStreamInterfacePtr & _stream, size_t _size, const char * _doc );

@@ -1,13 +1,13 @@
 #	pragma once
 
-#	include "Interface/LogSystemInterface.h"
+#	include "Interface/LoggerInterface.h"
 
 namespace Menge
 {	
 	class LoggerOperator
 	{
 	public:
-		LoggerOperator( LogServiceInterface * _logger, EMessageLevel _level, uint32_t _flag );
+		LoggerOperator( LoggerServiceInterface * _logger, EMessageLevel _level, uint32_t _flag );
 
 	public:
 		LoggerOperator & operator()( const char * _format, ... );
@@ -16,7 +16,7 @@ namespace Menge
 		void logMessage( const char * _format, size_t _size );
 
 	protected:
-		LogServiceInterface * m_log;
+		LoggerServiceInterface * m_log;
 		EMessageLevel m_level;
         uint32_t m_flag;
 	};
@@ -26,20 +26,20 @@ namespace Menge
 	if( LOGGER->validMessage(LEVEL, 0) == false) {} else Menge::LoggerOperator(LOGGER, LEVEL, 0)
 
 #	define LOGGER_FATAL( serviceProvider )\
-	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_FATAL )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(serviceProvider), Menge::LM_FATAL )
 
 #	define LOGGER_CRITICAL( serviceProvider )\
-	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_CRITICAL )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(serviceProvider), Menge::LM_CRITICAL )
 
 #	define LOGGER_ERROR( serviceProvider )\
-	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_ERROR )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(serviceProvider), Menge::LM_ERROR )
 
 #	define LOGGER_PERFORMANCE( serviceProvider )\
-	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_PERFOMANCE )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(serviceProvider), Menge::LM_PERFOMANCE )
 		
 #	define LOGGER_WARNING( serviceProvider )\
-	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_WARNING )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(serviceProvider), Menge::LM_WARNING )
 	
 #	define LOGGER_INFO( serviceProvider )\
-	LOGGER_VERBOSE_LEVEL( LOG_SERVICE(serviceProvider), Menge::LM_INFO )
+	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(serviceProvider), Menge::LM_INFO )
 

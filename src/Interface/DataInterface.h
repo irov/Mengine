@@ -43,6 +43,7 @@ namespace Menge
 
 	public:
 		virtual bool initialize() = 0;
+		virtual void finalize() = 0;
 
 	public:
 		virtual DataInterfacePtr create() = 0;
@@ -64,10 +65,6 @@ namespace Menge
 		: public ServiceInterface
 	{
         SERVICE_DECLARE("DataService")
-
-	public:
-		virtual bool initialize() = 0;
-		virtual void finalize() = 0;
 
 	public:
 		virtual void registerDataflow( const ConstString& _type, const DataflowInterfacePtr & _dataflow ) = 0;

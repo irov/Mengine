@@ -9,23 +9,21 @@ namespace Menge
     class DynamicLibraryInterface;
 
     class PluginService
-        : public PluginServiceInterface
+        : public ServiceBase<PluginServiceInterface>
     {
     public:
         PluginService();
         ~PluginService();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
+	public:
+		bool _initialize() override;
+		void _finalize() override;
 
     public:
         PluginInterface * loadPlugin( const WString & _name ) override;		
         void unloadPlugin( const WString & _name ) override;
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         struct PluginDesc
         {
             DynamicLibraryInterface * dlib;

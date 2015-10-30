@@ -3,28 +3,17 @@
 #   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ModuleService, Menge::ModuleServiceInterface, Menge::ModuleService );
+SERVICE_FACTORY( ModuleService, Menge::ModuleService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    ModuleService::ModuleService()
-        : m_serviceProvider(nullptr)
+    ModuleService::ModuleService()        
     {
     }
     //////////////////////////////////////////////////////////////////////////
     ModuleService::~ModuleService()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ModuleService::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * ModuleService::getServiceProvider() const
-    {
-        return m_serviceProvider;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool ModuleService::registerModule( const ConstString & _name, const ModuleFactoryInterfacePtr & _module )

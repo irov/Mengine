@@ -1,6 +1,5 @@
 #	include "Win32FileOutputStream.h"
 
-#	include "Interface/LogSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
 
 #   include "Utils/Logger/Logger.h"

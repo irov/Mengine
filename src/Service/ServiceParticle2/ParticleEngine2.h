@@ -13,19 +13,15 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ParticleEngine2
-        : public ParticleServiceInterface2
+        : public ServiceBase<ParticleServiceInterface2>
 	{
 	public:
 		ParticleEngine2();
 		~ParticleEngine2();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		bool isAvailable() const override;
@@ -37,8 +33,6 @@ namespace Menge
 		uint32_t getMaxParticlesCount() const override;		
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		ArchivatorInterfacePtr m_archivator;
 
 		uint32_t m_maxParticlesNum;

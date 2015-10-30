@@ -2,7 +2,7 @@
 
 #	include "Kernel/ResourceReference.h"
 
-#	include "Config/Blobject.h"
+#	include "Interface/MemoryInterface.h"
 
 namespace Menge
 {
@@ -11,6 +11,6 @@ namespace Menge
 	{
 	public:
 		virtual const FilePath & getPath() const = 0;
-		virtual const Blobject & getBuffer() const = 0;
+		virtual const MemoryInterfacePtr & getBuffer() const = 0;
 	};
 }

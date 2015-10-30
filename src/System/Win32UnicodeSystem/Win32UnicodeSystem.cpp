@@ -7,25 +7,14 @@
 #   include "WindowsLayer/WindowsIncluder.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( UnicodeSystem, Menge::UnicodeSystemInterface, Menge::Win32UnicodeSystem );
+SERVICE_FACTORY( UnicodeSystem, Menge::Win32UnicodeSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Win32UnicodeSystem::Win32UnicodeSystem()
-		: m_serviceProvider(nullptr)
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Win32UnicodeSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * Win32UnicodeSystem::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
     //////////////////////////////////////////////////////////////////////////
     bool Win32UnicodeSystem::unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {

@@ -14,7 +14,7 @@ namespace Menge
 
 	public:
 		const FilePath & getPath() const override;
-		const Blobject & getBuffer() const override;
+		const MemoryInterfacePtr & getBuffer() const override;
 
 	public:
 		bool _compile() override;
@@ -26,6 +26,6 @@ namespace Menge
 	protected:
 		FilePath m_path;
 				
-		Blobject m_buffer;
+		MemoryInterfacePtr m_buffer;
 	};
 }

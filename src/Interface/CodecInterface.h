@@ -125,10 +125,6 @@ namespace Menge
         SERVICE_DECLARE("CodecService")
 
 	public:
-		virtual bool initialize() = 0;
-		virtual void finalize() = 0;
-
-	public:
 		virtual void registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _interface ) = 0;
 		virtual void unregisterDecoder( const ConstString& _type ) = 0;
 		

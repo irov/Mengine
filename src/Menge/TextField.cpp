@@ -5,6 +5,7 @@
 #	include "Interface/RenderSystemInterface.h"
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/TextInterface.h"
+#	include "Interface/ApplicationInterface.h"
 
 #	include "Consts.h"
 
@@ -181,7 +182,8 @@ namespace Menge
 			return;
 		}
 
-		if( TEXT_SERVICE(m_serviceProvider)->getEnableText() == false )
+		if( APPLICATION_SERVICE(m_serviceProvider)
+			->getTextEnable() == false )
 		{
 			return;
 		}

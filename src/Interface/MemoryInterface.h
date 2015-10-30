@@ -10,16 +10,17 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	class MemoryGetterInterface
+	class MemoryGetterBufferInterface
+		: public FactorablePtr
 	{ 
 	public:
 		virtual Pointer getMemory() const = 0;
 		virtual size_t getSize() const = 0;
+		virtual bool empty() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	class MemoryCacheBufferInterface
-		: public FactorablePtr
-		, public MemoryGetterInterface
+	class MemoryCacheBufferInterface		
+		: public MemoryGetterBufferInterface
 	{
 	public:
 		virtual Pointer cacheMemory( size_t _size, const char * _doc ) = 0;
@@ -27,9 +28,25 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MemoryCacheBufferInterface> MemoryCacheBufferInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
-	class MemoryCacheInputInterface
+	class MemoryInterface
+		: public MemoryGetterBufferInterface
+	{
+	public:
+		virtual Pointer newMemory( size_t _size ) = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<MemoryInterface> MemoryInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
+	class MemoryGetterStreamInterface
 		: public InputStreamInterface
-		, public MemoryGetterInterface
+	{
+	public:
+		virtual Pointer getMemory() const = 0;
+		virtual size_t getSize() const = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	class MemoryCacheInputInterface
+		: public MemoryGetterStreamInterface
 	{
 	public:
 		virtual Pointer cacheMemory( size_t _size, const char * _doc ) = 0;
@@ -38,8 +55,7 @@ namespace Menge
 	typedef stdex::intrusive_ptr<MemoryCacheInputInterface> MemoryCacheInputInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryProxyInputInterface
-		: public InputStreamInterface
-		, public MemoryGetterInterface
+		: public MemoryGetterStreamInterface
 	{
 	public:
 		virtual Pointer setMemory( void * _memory, size_t _offset, size_t _size ) = 0;
@@ -48,8 +64,7 @@ namespace Menge
 	typedef stdex::intrusive_ptr<MemoryProxyInputInterface> MemoryProxyInputInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryInputInterface
-		: public InputStreamInterface
-		, public MemoryGetterInterface
+		: public MemoryGetterStreamInterface
 	{
 	public:
 		virtual Pointer newMemory( size_t _size ) = 0;
@@ -57,24 +72,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<MemoryInputInterface> MemoryInputInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
-	class MemoryInterface
-		: public FactorablePtr
-		, public MemoryGetterInterface
-	{
-	public:
-		virtual Pointer newMemory( size_t _size ) = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MemoryInterface> MemoryInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
 	class MemoryServiceInterface
 		: public ServiceInterface
 	{
 		SERVICE_DECLARE( "MemoryService" )
-
-	public:
-		virtual bool initialize() = 0;
-		virtual void finalize() = 0;
 
 	public:
 		virtual MemoryCacheBufferInterfacePtr createMemoryCacheBuffer() = 0;

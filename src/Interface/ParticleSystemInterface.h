@@ -158,10 +158,6 @@ namespace Menge
 		SERVICE_DECLARE( "ParticleSystem2" )
 
 	public:
-		virtual bool initialize() = 0;
-		virtual void finalize() = 0;
-
-	public:
 		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
 
 	public:
@@ -175,10 +171,6 @@ namespace Menge
 		: public ServiceInterface
 	{
 		SERVICE_DECLARE( "ParticleService2" )
-
-	public:
-		virtual bool initialize() = 0;
-		virtual void finalize() = 0;
 
 	public:
 		virtual bool isAvailable() const = 0;

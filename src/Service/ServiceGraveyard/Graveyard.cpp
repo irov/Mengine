@@ -3,14 +3,13 @@
 #	include "Interface/ConfigInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Graveyard, Menge::GraveyardInterface, Menge::Graveyard );
+SERVICE_FACTORY( Graveyard, Menge::Graveyard );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Graveyard::Graveyard()
-		: m_serviceProvider(nullptr)
-		, m_count(0)
+		: m_count(0)
 		, m_graveyardTime(1000.f)
 	{
 	}
@@ -19,24 +18,14 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Graveyard::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * Graveyard::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Graveyard::initialize()
+	bool Graveyard::_initialize()
 	{
 		m_graveyardTime = CONFIG_VALUE(m_serviceProvider, "Engine", "GraveyardTime", 1000.f);
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Graveyard::finalize()
+	void Graveyard::_finalize()
 	{
 		this->clearTextures();
 	}

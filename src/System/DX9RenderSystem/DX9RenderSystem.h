@@ -18,31 +18,21 @@
 namespace Menge
 {
 	class DX9RenderSystem
-		: public RenderSystemInterface
+		: public ServiceBase<RenderSystemInterface>
 	{
 	public:
 		DX9RenderSystem();
 		~DX9RenderSystem();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
-    protected:
-		void clear_( DWORD _color );
-
 	public:
-		bool initialize() override;
-        void finalize() override;
+		bool _initialize() override;
+        void _finalize() override;
 
 	public:
 		const ConstString & getRenderPlatformName() const override;
 
-    public:
-        void setRenderListener( RenderSystemListener * _listener ) override;
-		
 	public:
-		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, WindowHandle _winHandle
+		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen
 			, bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 		
         void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
@@ -150,6 +140,7 @@ namespace Menge
     protected:
         void updateVSyncDPP_();
         bool resetDevice_();
+		void clear_( DWORD _color );
 
 	protected:
 		void updateViewport_( const Viewport & _viewport );
@@ -157,12 +148,8 @@ namespace Menge
     protected:        
         void fixNPOTSupport_( uint32_t & _width, uint32_t & _height ) const;
 
-	private:
-		ServiceProviderInterface * m_serviceProvider;
-
+	private:	
 		ConstString m_renderPlatform;
-
-        RenderSystemListener * m_listener;
 
 		HMODULE m_hd3d9;
 
@@ -219,7 +206,6 @@ namespace Menge
         typedef FactoryPoolStore<DX9RenderImage, 128> TFactoryDX9Texture;
         TFactoryDX9Texture m_factoryDX9Texture;
 		
-		bool m_syncReady;
         bool m_waitForVSync;
 	};
 }	// namespace Menge

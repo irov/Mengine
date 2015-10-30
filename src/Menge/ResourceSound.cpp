@@ -4,7 +4,6 @@
 
 #	include "Interface/SoundSystemInterface.h"
 #   include "Interface/FileSystemInterface.h"
-#   include "Interface/LogSystemInterface.h"
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/ConfigInterface.h"

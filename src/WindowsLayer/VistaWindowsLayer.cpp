@@ -12,6 +12,9 @@
 
 #   include <Shlwapi.h>
 
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( WindowsLayer, Menge::VistaWindowsLayer );
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -29,21 +32,10 @@ namespace Menge
 	}
     //////////////////////////////////////////////////////////////////////////
     VistaWindowsLayer::VistaWindowsLayer()
-        : m_serviceProvider(nullptr)
-        , m_windowsType(EWT_UNKNOWN)
+        : m_windowsType(EWT_UNKNOWN)
         , m_checkedUnicode(false)
         , m_supportUnicode(false)        
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void VistaWindowsLayer::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * VistaWindowsLayer::getServiceProvider() const
-    {
-        return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     DynamicLibraryInterface * VistaWindowsLayer::loadDynamicLibrary( const WString & _path )
@@ -474,23 +466,17 @@ namespace Menge
 
         return (size_t)len + 1;
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool VistaWindowsLayer::peekMessage( LPMSG _msg, HWND _hWnd, UINT _msgFilterMin, UINT _msgFilterMax, UINT _removeMsg )
-    {
-        if( ::PeekMessage(  _msg, _hWnd, _msgFilterMin, _msgFilterMax, _removeMsg ) == FALSE )
-        {
-            return false;
-        }
+	//////////////////////////////////////////////////////////////////////////
+	void VistaWindowsLayer::updateMessage( HWND _hWnd )
+	{
+		MSG  msg;
+		while( ::PeekMessage( &msg, _hWnd, 0U, 0U, PM_REMOVE ) == TRUE )
+		{
+			::TranslateMessage( &msg );
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    LRESULT VistaWindowsLayer::dispatchMessage( const MSG* _msg )
-    {
-        LRESULT result = ::DispatchMessage( _msg );
-
-        return result;
-    }
+			::DispatchMessage( &msg );
+		}
+	}
     //////////////////////////////////////////////////////////////////////////
     int VistaWindowsLayer::messageBox( HWND _hWnd, const WChar * _text, const WChar * _caption, UINT _type )
     {

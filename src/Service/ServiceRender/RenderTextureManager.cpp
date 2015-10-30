@@ -12,14 +12,13 @@
 #   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( RenderTextureManager, Menge::RenderTextureServiceInterface, Menge::RenderTextureManager );
+SERVICE_FACTORY( RenderTextureService, Menge::RenderTextureManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     RenderTextureManager::RenderTextureManager()
-        : m_serviceProvider(nullptr)
-        , m_textureEnumerator(0)
+        : m_textureEnumerator(0)
 		, m_supportA8(false)
 		, m_supportR8G8B8(false)
     {
@@ -29,17 +28,7 @@ namespace Menge
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureManager::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * RenderTextureManager::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureManager::initialize()
+    bool RenderTextureManager::_initialize()
     {
         m_debugInfo.textureMemory = 0;
         m_debugInfo.textureCount = 0;
@@ -55,7 +44,7 @@ namespace Menge
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureManager::finalize()
+    void RenderTextureManager::_finalize()
     {   
 		for( TMapRenderTextureEntry::iterator
 			it = m_textures.begin(),

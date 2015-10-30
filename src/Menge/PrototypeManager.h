@@ -9,15 +9,11 @@
 namespace Menge
 {
 	class PrototypeManager
-        : public PrototypeServiceInterface
+        : public ServiceBase<PrototypeServiceInterface>
 	{
 	public:
 		PrototypeManager();
 		~PrototypeManager();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
 		bool addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator ) override;
@@ -30,8 +26,6 @@ namespace Menge
         void visitGenerators( VisitorPrototypeGenerator * _visitor ) const override;
 
 	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         struct CategoryKey
         {
             ConstString category;

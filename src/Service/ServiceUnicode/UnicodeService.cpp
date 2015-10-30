@@ -1,28 +1,17 @@
 #   include "UnicodeService.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( UnicodeService, Menge::UnicodeServiceInterface, Menge::UnicodeService );
+SERVICE_FACTORY( UnicodeService, Menge::UnicodeService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    UnicodeService::UnicodeService()
-        : m_serviceProvider(nullptr)
+    UnicodeService::UnicodeService()        
     {
     }
     //////////////////////////////////////////////////////////////////////////
     UnicodeService::~UnicodeService()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void UnicodeService::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * UnicodeService::getServiceProvider() const
-    {
-        return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     bool UnicodeService::unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )

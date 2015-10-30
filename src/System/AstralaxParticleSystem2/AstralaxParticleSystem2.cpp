@@ -6,32 +6,21 @@
 #   include "Logger/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ParticleSystem2, Menge::ParticleSystemInterface2, Menge::AstralaxParticleSystem2 );
+SERVICE_FACTORY( ParticleSystem, Menge::AstralaxParticleSystem2 );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxParticleSystem2::AstralaxParticleSystem2()
-        : m_serviceProvider(nullptr)
-		, m_stageCount(0)
+        : m_stageCount(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxParticleSystem2::~AstralaxParticleSystem2()
 	{	
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleSystem2::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * AstralaxParticleSystem2::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxParticleSystem2::initialize()
+	bool AstralaxParticleSystem2::_initialize()
 	{
 		bool states[17];
 		states[MAGIC_RENDER_STATE_BLENDING] = false;
@@ -77,7 +66,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleSystem2::finalize()
+	void AstralaxParticleSystem2::_finalize()
 	{
 		uint32_t count = m_factoryPoolAstralaxEmitterContainer.countObject();
 

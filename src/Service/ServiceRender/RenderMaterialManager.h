@@ -21,19 +21,15 @@ namespace Menge
 #	endif
 	//////////////////////////////////////////////////////////////////////////
     class RenderMaterialManager
-        : public RenderMaterialServiceInterface
+		: public ServiceBase<RenderMaterialServiceInterface>
     {
     public:
         RenderMaterialManager();
         ~RenderMaterialManager();
 
     public:
-        void setServiceProvider( ServiceProviderInterface * _provider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
-    public:
-        bool initialize() override;
-        void finalize() override;
+        bool _initialize() override;
+        void _finalize() override;
 
     public:
         bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) override;
@@ -80,8 +76,6 @@ namespace Menge
 		const RenderProgramInterfacePtr & getProgram_( const ConstString & _name ) const;
 
     protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		uint32_t m_materialEnumerator;
 
 		typedef stdex::map<ConstString, const RenderStage *> TMapRenderStage;

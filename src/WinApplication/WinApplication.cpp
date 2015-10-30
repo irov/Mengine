@@ -3,11 +3,13 @@
 
 #	include "WinApplication.h"
 
-#	include "Interface/LogSystemInterface.h"
+#	include "Interface/OptionsInterface.h"
+#	include "Interface/LoggerInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/InputSystemInterface.h"
 #	include "Interface/ConfigInterface.h"
+#	include "Interface/PackageInterface.h"
 
 #	include "WindowsLayer/VistaWindowsLayer.h"
 
@@ -26,8 +28,6 @@
 #	include "ConsoleLogger.h"
 #	include "MessageBoxLogger.h"
 
-#	include "FPSMonitor.h"
-#	include "AlreadyRunningMonitor.h"
 #	include "CriticalErrorsMonitor.h"
 
 #	include "Core/FileLogger.h"
@@ -44,48 +44,6 @@
 #   include <WinBase.h>
 #   include <Psapi.h>
 #	include <tlhelp32.h>
-
-SERVICE_EXTERN(ServiceProvider, Menge::ServiceProviderInterface);
-SERVICE_EXTERN(Application, Menge::ApplicationInterface);
-SERVICE_EXTERN(StringizeService, Menge::StringizeServiceInterface);
-SERVICE_EXTERN(LogService, Menge::LogServiceInterface);
-SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
-
-SERVICE_EXTERN(ArchiveService, Menge::ArchiveServiceInterface);
-SERVICE_EXTERN(ModuleService, Menge::ModuleServiceInterface);
-
-SERVICE_EXTERN(ThreadSystem, Menge::ThreadSystemInterface);
-SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
-
-//SERVICE_EXTERN(ParticleService, Menge::ParticleServiceInterface);
-SERVICE_EXTERN(ParticleService2, Menge::ParticleServiceInterface2);
-
-SERVICE_EXTERN(RenderSystem, Menge::RenderSystemInterface);
-
-SERVICE_DUMMY(PhysicSystem, Menge::PhysicSystemInterface);
-
-SERVICE_EXTERN(UnicodeSystem, Menge::UnicodeSystemInterface);
-SERVICE_EXTERN(UnicodeService, Menge::UnicodeServiceInterface);
-
-SERVICE_EXTERN(FileService, Menge::FileServiceInterface);
-
-SERVICE_EXTERN(NotificationService, Menge::NotificationServiceInterface);
-SERVICE_EXTERN(ScriptService, Menge::ScriptServiceInterface);
-
-SERVICE_EXTERN(SoundSystem, Menge::SoundSystemInterface);
-SERVICE_EXTERN(SilentSoundSystem, Menge::SoundSystemInterface);
-SERVICE_EXTERN(SoundService, Menge::SoundServiceInterface);
-
-SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
-
-SERVICE_EXTERN(InputService, Menge::InputServiceInterface);
-SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
-SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
-SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
-SERVICE_EXTERN(MemoryService, Menge::MemoryServiceInterface);
-
-//SERVICE_EXTERN(HttpSystem, Menge::HttpSystemInterface);
-SERVICE_EXTERN(PrefetcherService, Menge::PrefetcherServiceInterface); 
 
 extern "C" // only required if using g++
 {
@@ -106,117 +64,11 @@ extern "C" // only required if using g++
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	static const float s_activeFrameTime = 1000.f / 60.f;
-	static const float s_inactiveFrameTime = 100.f;
-	//////////////////////////////////////////////////////////////////////////
-	namespace Helper
-	{
-		//////////////////////////////////////////////////////////////////////////
-		static void s_getOption( const Menge::String& _option
-			, const Menge::String& _commandLine
-			, Menge::String* _value )
-		{
-			if( _value == NULL )
-			{
-				return;
-			}
-
-			Menge::String::size_type option_index = 0;
-			while( (option_index = _commandLine.find( _option, option_index )) != Menge::String::npos )
-			{
-				option_index += _option.length();
-				if( option_index >= _commandLine.length() )
-				{
-					break;
-				}
-				char next_delim = _commandLine[option_index] == '\"' ? '\"' : ' ';
-				Menge::String::size_type next_index = _commandLine.find( next_delim, option_index+1 );
-				if( next_delim == '\"' )
-				{
-					++option_index;
-				}
-
-				Menge::String::size_type value_length = next_index - option_index;
-				(*_value) += _commandLine.substr( option_index, value_length );
-				_value->push_back( ' ' );
-			}
-
-			if( _value->empty() == false )
-			{
-				_value->erase( _value->length() - 1 );
-			}
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static bool s_hasOption( const char * _option, const Menge::String& _commandLine )
-		{
-			if( _commandLine.find( _option ) == Menge::String::npos )
-			{
-				return false;
-			}
-
-			return true;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
 	WinApplication::WinApplication() 
-		: m_running(true)
-		, m_active(false)
-		, m_windowClassName(L"MengeWnd")
-		, m_hWnd(NULL)
-		, m_cursorInArea(false)
-		, m_clickOutArea(false)
-		, m_hInstance(NULL)
-		, m_serviceProvider(nullptr)
+		: m_serviceProvider(nullptr)
 		, m_loggerConsole(nullptr)
-		, m_loggerMessageBox(nullptr)
-		, m_application(nullptr)
-		, m_fpsMonitor(nullptr)
-		, m_alreadyRunningMonitor(0)
-		, m_lastMouse(false)
-		, m_lastMouseX(0)
-		, m_lastMouseY(0)
-		, m_vsync(false)
-		, m_maxfps(false)
-		, m_cursorMode(false)
-		, m_clipingCursor(FALSE)
-		, m_deadKey('\0')
-		, m_winTimer(nullptr)
-		, m_isDoubleClick(false)
-		, m_cursor(nullptr)
-		, m_enableDebug(false)
-		, m_developmentMode(false)
-		, m_roamingMode(false)
-		, m_nologsMode(false)
-		, m_noDevPluginsMode(false)
-		, m_muteMode(false)
-		, m_nopause(false)
+		, m_loggerMessageBox(nullptr)	
 		, m_fileLog(nullptr)
-		, m_profilerMode(false)
-		, m_prefetcherService(nullptr)
-		, m_inputService(nullptr)
-		, m_unicodeService(nullptr)
-		, m_logService(nullptr)
-		, m_fileService(nullptr)
-		, m_codecService(nullptr)
-		, m_archiveService(nullptr)
-		, m_threadSystem(nullptr)
-		, m_threadService(nullptr)
-		, m_particleService2(nullptr)
-		, m_physicSystem(nullptr)
-		, m_renderSystem(nullptr)
-		, m_stringizeService(nullptr)
-		, m_soundSystem(nullptr)
-		, m_soundService(nullptr)
-		, m_scriptService(nullptr)
-		, m_pluginService(nullptr)
-		, m_converterService(nullptr)
-		, m_moduleService(nullptr)
-		, m_dataService(nullptr)
-		, m_memoryService(nullptr)
-		, m_httpSystem(nullptr)
-		, m_configService(nullptr)
-		, m_pauseUpdatingTime(-1.f)
-		, m_applicationUpdate(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -224,136 +76,8 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TimerInterface * WinApplication::getTimer() const
-	{
-		return m_winTimer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t WinApplication::getShortPathName( const WString & _path, WChar * _shortpath, size_t _len ) const
-	{
-		DWORD len = GetShortPathName( _path.c_str(), _shortpath, (DWORD)_len );
-
-		return (size_t)len;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeApplicationService_()
-	{   
-		ApplicationInterface * application;
-		if( SERVICE_CREATE( Application, &application ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, application ) == false )
-		{
-			return false;
-		}
-
-		m_application = application;
-
-		if( m_application->initialize( m_commandLine ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application initialize failed" 
-				);
-
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeNotificationService_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Notification Service..." );
-
-		NotificationServiceInterface * notificationService;
-		if( SERVICE_CREATE( NotificationService, &notificationService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, notificationService ) == false )
-		{
-			return false;
-		}
-
-		m_notificationService = notificationService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeThreadEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Thread Service..." );
-
-		ThreadSystemInterface * threadSystem;
-		if( SERVICE_CREATE( ThreadSystem, &threadSystem ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadSystem"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(m_serviceProvider, threadSystem ) == false )
-		{
-			return false;
-		}
-
-		m_threadSystem = threadSystem;
-
-		if( m_threadSystem->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to initialize ThreadSystem"
-				);
-
-			return false;
-		}
-
-		ThreadServiceInterface * threadService;
-		if( SERVICE_CREATE( ThreadService, &threadService ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadService"
-				);
-
-			return false;               
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, threadService ) == false )
-		{
-			return false;
-		}
-
-		m_threadService = threadService;
-
-		if( m_threadService->initialize( 16 ) == false )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeArchiveService_()
 	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Archive Service..." );
-
-		ArchiveServiceInterface * archiveService;
-		if( SERVICE_CREATE( ArchiveService, &archiveService ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeArchiveService_ failed to create ArchiveService"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(m_serviceProvider, archiveService) == false )
-		{
-			return false;
-		}
-
-		m_archiveService = archiveService;
-
 		{
 			LOGGER_INFO(m_serviceProvider)("Initialize Zip...");
 			PluginInterface * plugin;
@@ -419,22 +143,6 @@ namespace Menge
 	{
 		LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
 
-		ConfigServiceInterface * configService;
-
-		if( SERVICE_CREATE( ConfigService, &configService ) == false )
-		{
-			return false;
-		}
-
-		SERVICE_REGISTRY( m_serviceProvider, configService );
-
-		m_configService = configService;
-
-		if( configService->initialize( m_platformName ) == false )
-		{
-			return false;
-		}
-
 		ConstString gameIniPath;
 		if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
 		{
@@ -458,30 +166,6 @@ namespace Menge
 	{
 		LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
 
-		FileServiceInterface * fileService;
-		if( SERVICE_CREATE( FileService, &fileService ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initialize failed to create FileService"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, fileService ) == false )
-		{
-			return false;
-		}
-
-		m_fileService = fileService;
-
-		if( m_fileService->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to initialize fileService"
-				);
-
-			return false;
-		}
-
 		{
 			LOGGER_INFO(m_serviceProvider)("Initialize Win32 file group...");
 			PluginInterface * plugin;
@@ -490,14 +174,15 @@ namespace Menge
 			m_plugins.push_back( plugin );
 		}
 
-		if( m_enableDebug == false )
-		{
-			m_windowsLayer->setModuleCurrentDirectory();
-		}
+#	ifndef _MSC_VER
+			WINDOWSLAYER_SERVICE(m_serviceProvider)
+				->setModuleCurrentDirectory();
+#	endif
 
 		WChar currentPath[MENGINE_MAX_PATH];
 
-		size_t currentPathLen = m_windowsLayer->getCurrentDirectory( currentPath, MENGINE_MAX_PATH );
+		size_t currentPathLen = WINDOWSLAYER_SERVICE( m_serviceProvider )
+			->getCurrentDirectory( currentPath, MENGINE_MAX_PATH );
 		
 		if( currentPathLen == 0 )
 		{
@@ -522,7 +207,7 @@ namespace Menge
 			);
 		
 		// mount root		
-		if( m_fileService->mountFileGroup( ConstString::none(), Helper::stringizeString( m_serviceProvider, utf8_currentPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( ConstString::none(), Helper::stringizeString( m_serviceProvider, utf8_currentPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount application directory %ls"
 				, currentPath
@@ -533,7 +218,7 @@ namespace Menge
 
 #	ifndef MENGINE_MASTER_RELEASE
 		// mount root		
-		if( m_fileService->mountFileGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dev"), ConstString::none(), STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") ) == false )
+		if( FILE_SERVICE( m_serviceProvider )->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dev" ), ConstString::none(), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication::setupFileService: failed to mount dev directory %ls"
 				, currentPath
@@ -549,11 +234,15 @@ namespace Menge
 	bool WinApplication::makeUserPath_( WString & _wstring ) const
 	{ 
 		_wstring.clear();
+
+		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
 		
-		if( m_developmentMode == true && m_roamingMode == false )
+		if( developmentMode == true && roamingMode == false )
 		{
 			WChar currentPath[MENGINE_MAX_PATH];
-			size_t currentPathLen = m_windowsLayer->getCurrentDirectory( currentPath, MENGINE_MAX_PATH );
+			size_t currentPathLen = WINDOWSLAYER_SERVICE(m_serviceProvider)
+				->getCurrentDirectory( currentPath, MENGINE_MAX_PATH );
 			
 			if( currentPathLen == 0 )
 			{
@@ -579,7 +268,7 @@ namespace Menge
 			{
 				WString msg;
 
-				if( m_windowsLayer->makeFormatMessage( hr, msg ) == false )
+				if( WINDOWSLAYER_SERVICE( m_serviceProvider )->makeFormatMessage( hr, msg ) == false )
 				{
 					LOGGER_ERROR( m_serviceProvider )("SHGetSpecialFolderLocation invalid %d"
 						, hr
@@ -636,7 +325,7 @@ namespace Menge
 		}
 
 		// mount user directory
-		if( m_fileService->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), Helper::stringizeString( m_serviceProvider, utf8_userPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
+		if( FILE_SERVICE(m_serviceProvider)->mountFileGroup( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), Helper::stringizeString( m_serviceProvider, utf8_userPath ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ) ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("WinApplication: failed to mount user directory %ls"
 				, userPath.c_str()
@@ -645,9 +334,9 @@ namespace Menge
 			return false;
 		}
 
-		if( m_fileService->existDirectory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user"), ConstString::none() ) == false )
+		if( FILE_SERVICE( m_serviceProvider )->existDirectory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), ConstString::none() ) == false )
 		{
-			m_fileService->createDirectory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user"), ConstString::none() );
+			FILE_SERVICE( m_serviceProvider )->createDirectory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), ConstString::none() );
 		}
 
 		return true;
@@ -655,7 +344,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeLogFile_()
 	{
-		if( m_nologsMode == true )
+		bool nologs = HAS_OPTIONS( m_serviceProvider, "nologs" );
+		
+		if( nologs == true )
 		{
 			return true;
 		}
@@ -666,7 +357,10 @@ namespace Menge
 		WString unicode_logFilename;
 		unicode_logFilename += L"Game";
 
-		if( m_developmentMode == true && m_roamingMode == false )
+		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
+
+		if( developmentMode == true && roamingMode == false )
 		{
 			unicode_logFilename += L"_";
 			unicode_logFilename += date;
@@ -686,14 +380,15 @@ namespace Menge
 
 		FilePath logFilename = Helper::stringizeString( m_serviceProvider, utf8_logFilename );
 
-		OutputStreamInterfacePtr fileLogInterface = 
-			m_fileService->openOutputFile( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user"), logFilename );
+		OutputStreamInterfacePtr fileLogInterface = FILE_SERVICE( m_serviceProvider )
+			->openOutputFile( STRINGIZE_STRING_LOCAL( m_serviceProvider, "user" ), logFilename );
 
 		if( fileLogInterface != nullptr )
 		{
 			m_fileLog = new FileLogger();
 
-			m_logService->registerLogger( m_fileLog );
+			LOGGER_SERVICE(m_serviceProvider)
+				->registerLogger( m_fileLog );
 
 			LOGGER_INFO(m_serviceProvider)("WinApplication: Starting log to %s"
 				, logFilename.c_str()
@@ -703,58 +398,36 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeStringizeService_()
-	{
-		StringizeServiceInterface * stringizeService;
-		if( SERVICE_CREATE( StringizeService, &stringizeService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, stringizeService ) == false )
-		{
-			return false;
-		}
-
-		m_stringizeService = stringizeService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool WinApplication::initializeLogEngine_()
 	{
-		LogServiceInterface * logService;
-		if( SERVICE_CREATE( LogService, &logService ) == false )
-		{
-			return false;
-		}
+		bool nologs = HAS_OPTIONS( m_serviceProvider, "nologs" );
 
-		if( SERVICE_REGISTRY( m_serviceProvider, logService ) == false )
-		{
-			return false;
-		}
+		bool console = HAS_OPTIONS( m_serviceProvider, "console" );
 
-		m_logService = logService;
-
-		if( Helper::s_hasOption( " -console ", m_commandLine ) == true && m_nologsMode == false )
+		if( console == true && nologs == false )
 		{
 			m_loggerConsole = new ConsoleLogger();
 
-			m_logService->registerLogger( m_loggerConsole );
+			LOGGER_SERVICE( m_serviceProvider )
+				->registerLogger( m_loggerConsole );
 		}
-
-		if( m_nologsMode == false )
+		
+		if( nologs == false )
 		{
 			m_loggerMessageBox = new MessageBoxLogger();
 
 			m_loggerMessageBox->setVerboseLevel( LM_CRITICAL );
 
-			m_logService->registerLogger( m_loggerMessageBox );
+			LOGGER_SERVICE( m_serviceProvider )
+				->registerLogger( m_loggerMessageBox );
 		}
 				
 		EMessageLevel m_logLevel;
 
-		if( m_developmentMode == true && m_roamingMode == false )
+		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
+
+		if( developmentMode == true && roamingMode == false )
 		{
 			m_logLevel = LM_LOG;
 		}
@@ -763,48 +436,50 @@ namespace Menge
 			m_logLevel = LM_ERROR;
 		}
 
-		String logLevel;
-		Helper::s_getOption( " -log:", m_commandLine, &logLevel );
-
-		if( logLevel == "0" )
+		if( HAS_OPTIONS( m_serviceProvider, "log:0" ) == true )
 		{
 			m_logLevel = LM_INFO;
 		}
-		else if ( logLevel == "1" )
+		else if( HAS_OPTIONS( m_serviceProvider, "log:1" ) == true )
 		{
 			m_logLevel = LM_LOG;
 		}
-		else if ( logLevel == "2" )
+		else if( HAS_OPTIONS( m_serviceProvider, "log:2" ) == true )
 		{
 			m_logLevel = LM_WARNING;
 		}
-		else if ( logLevel == "3" )
+		else if( HAS_OPTIONS( m_serviceProvider, "log:3" ) == true )
 		{
 			m_logLevel = LM_ERROR;
 		}
-		else if ( logLevel == "4" )
+		else if( HAS_OPTIONS( m_serviceProvider, "log:4" ) == true )
 		{
 			m_logLevel = LM_CRITICAL;
 		}
-		else if ( logLevel == "5" )
+		else if( HAS_OPTIONS( m_serviceProvider, "log:5" ) == true )
 		{
 			m_logLevel = LM_FATAL;
 		}
 
-		m_logService->setVerboseLevel( m_logLevel );
+		LOGGER_SERVICE( m_serviceProvider )
+			->setVerboseLevel( m_logLevel );
 
 		uint32_t verboseFlag = 0;
 
-		if( m_profilerMode )
+		bool profiler = HAS_OPTIONS( m_serviceProvider, "profiler" );
+
+		if( profiler == true )
 		{
 			verboseFlag |= 0x00000001;
 		}
 
-		m_logService->setVerboseFlag( verboseFlag );
+		LOGGER_SERVICE( m_serviceProvider )
+			->setVerboseFlag( verboseFlag );
 
-		if( Helper::s_hasOption( " -verbose ", m_commandLine ) == true )
+		if( HAS_OPTIONS( m_serviceProvider, "verbose" ) == true )
 		{
-			m_logService->setVerboseLevel( LM_MAX );
+			LOGGER_SERVICE( m_serviceProvider )
+				->setVerboseLevel( LM_MAX );
 
 			LOGGER_INFO(m_serviceProvider)( "Verbose logging mode enabled" );
 		}
@@ -812,602 +487,122 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeUnicodeEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Unicode Service..." );
-
-		UnicodeSystemInterface * unicodeSystem;
-		if( SERVICE_CREATE( UnicodeSystem, &unicodeSystem ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, unicodeSystem ) == false )
-		{
-			return false;
-		}
-
-		m_unicodeSystem = unicodeSystem;
-
-		UnicodeServiceInterface * unicodeService;
-		if( SERVICE_CREATE( UnicodeService, &unicodeService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, unicodeService ) == false )
-		{
-			return false;
-		}
-
-		m_unicodeService = unicodeService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeParticleEngine2_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Particle Service 2..." );
-
-		ParticleServiceInterface2 * particleService;
-		if( SERVICE_CREATE( ParticleService2, &particleService ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeParticleEngine2_ Failed to initialize ParticleService2"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
-		{
-			return false;
-		}
-
-		if( particleService->initialize() == false )
-		{
-			SERVICE_UNREGISTRY( m_serviceProvider, particleService );
-
-			return false;
-		}
-
-		m_particleService2 = particleService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializePhysicEngine2D_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Physics2D Service..." );
-
-		PhysicSystemInterface * physicSystem;
-		if( SERVICE_CREATE( PhysicSystem, &physicSystem ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to initialize PhysicSystem2D"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, physicSystem ) == false )
-		{
-			return false;
-		}
-
-		if( physicSystem->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializePhysicEngine2D_ Failed to initialize Physics System 2D"
-				);
-
-			return false;
-		}
-
-		m_physicSystem = physicSystem;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeRenderEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Render Service..." );
-
-		RenderSystemInterface * renderSystem;
-		if( SERVICE_CREATE( RenderSystem, &renderSystem ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, renderSystem ) == false )
-		{
-			return false;
-		}
-
-		if( renderSystem->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeRenderEngine_ Failed to initialize Render System"
-				);
-
-			return false;
-		}
-
-		m_renderSystem = renderSystem;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeSoundEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Sound Service..." );
-
-		SoundSystemInterface * soundSystem;
-		if( SERVICE_CREATE( SoundSystem, &soundSystem ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(m_serviceProvider, soundSystem) == false )
-		{
-			return false;
-		}
-
-		if( soundSystem->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeSoundEngine_ Failed to initialize Sound System"
-				);
-
-			return false;
-		}
-
-		m_soundSystem = soundSystem;
-
-		SoundServiceInterface * soundService;
-		if( SERVICE_CREATE( SoundService, &soundService ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeSoundEngine_ Failed to create Sound Engine"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, soundService ) == false )
-		{
-			return false;
-		}
-
-		m_soundService = soundService;
-
-		if( m_soundService->initialize( false, true ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeSoundEngine_ Failed to initialize Sound Engine"
-				);
-
-			m_serviceProvider->unregistryService( "SoundService" );
-
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeSilentSoundEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Silent Sound Service..." );
-
-		SoundSystemInterface * soundSystem;
-		if( SERVICE_CREATE( SilentSoundSystem, &soundSystem ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(m_serviceProvider, soundSystem) == false )
-		{
-			return false;
-		}
-
-		if( soundSystem->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeSoundEngine_ Failed to initialize Silent Sound System"
-				);
-
-			return false;
-		}
-
-		SoundServiceInterface * soundService;
-		if( SERVICE_CREATE( SoundService, &soundService ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application::initializeSilentSoundEngine_ Failed to create Sound Engine"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, soundService ) == false )
-		{
-			return false;
-		}
-
-		m_soundService = soundService;
-
-		if( m_soundService->initialize( true, true ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeSilentSoundEngine_ Failed to initialize Sound Engine"
-				);
-
-			return false;                
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeScriptEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Script Service..." );
-
-		ScriptServiceInterface * scriptService;
-		if( SERVICE_CREATE( ScriptService, &scriptService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, scriptService ) == false )
-		{
-			return false;
-		}
-
-		m_scriptService = scriptService;
-
-		if( m_scriptService->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeScriptEngine_ Failed to initialize Script Engine"
-				);
-
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeModuleEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Module Service..." );
-
-		ModuleServiceInterface * moduleService;
-		if( SERVICE_CREATE( ModuleService, &moduleService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, moduleService ) == false )
-		{
-			return false;
-		}
-
-		m_moduleService = moduleService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeCodecEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Codec Service..." );
-
-		CodecServiceInterface * codecService;
-		if( SERVICE_CREATE( CodecService, &codecService ) == false )
-		{
-			return false;
-		}
-
-		if( codecService->initialize() == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, codecService ) == false )
-		{
-			return false;
-		}
-
-		m_codecService = codecService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeDataManager_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Data Manager..." );
-
-		DataServiceInterface * dataService;
-
-		if( SERVICE_CREATE( DataService, &dataService ) == false )
-		{
-			return false;
-		}
-
-		SERVICE_REGISTRY( m_serviceProvider, dataService );
-
-		if( dataService->initialize() == false )
-		{
-			return false;
-		}
-
-		m_dataService = dataService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeMemoryManager_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Memory Manager..." );
-
-		MemoryServiceInterface * memoryService;
-
-		if( SERVICE_CREATE( MemoryService, &memoryService ) == false )
-		{
-			return false;
-		}
-
-		SERVICE_REGISTRY( m_serviceProvider, memoryService );
-
-		if( memoryService->initialize() == false )
-		{
-			return false;
-		}
-
-		m_memoryService = memoryService;
-
-		return true;
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeHttpService_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Http Service..." );
-
-		//HttpSystemInterface * httpSystem;
-
-		//if( SERVICE_CREATE( HttpSystem, &httpSystem ) == false )
-		//{
-		//	return false;
-		//}
-
-		//SERVICE_REGISTRY( m_serviceProvider, httpSystem );
-
-		//if( httpSystem->initialize() == false )
-		//{
-		//	return false;
-		//}
-
-		//m_httpSystem = httpSystem;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializePrefetcherService_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Prefetcher Service..." );
-
-		PrefetcherServiceInterface * prefetcherService;
-
-		if( SERVICE_CREATE( PrefetcherService, &prefetcherService ) == false )
-		{
-			return false;
-		}
-
-		SERVICE_REGISTRY( m_serviceProvider, prefetcherService );
-
-		if( prefetcherService->initialize() == false )
-		{
-			return false;
-		}
-
-		m_prefetcherService = prefetcherService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeConverterEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Codec Service..." );
-
-		ConverterServiceInterface * converterService;
-		if( SERVICE_CREATE( ConverterService, &converterService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, converterService ) == false )
-		{
-			return false;
-		}
-
-		m_converterService = converterService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializeInputEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Input Service..." );
-
-		InputServiceInterface * inputService;
-		if( SERVICE_CREATE( InputService, &inputService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, inputService ) == false )
-		{
-			return false;
-		}
-
-		//bool result = m_inputEngine->initialize( m_serviceProvider );
-		//if( result == false )
-		//{
-		//    MENGE_LOG_ERROR( "Input Engine initialization failed!" );
-		//    return false;
-		//}
-
-		if( inputService->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeInputEngine_ Failed to initialize Input Engine"
-				);
-
-			return false;
-		}
-
-		m_inputService = inputService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initializePluginService_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Plugin Service..." );
-
-		PluginServiceInterface * pluginService;
-		if( SERVICE_CREATE( PluginService, &pluginService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(m_serviceProvider, pluginService) == false )
-		{
-			return false;
-		}
-
-		m_pluginService = pluginService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		(void)_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * WinApplication::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::initialize( HINSTANCE _hInstance, const String& _commandLine )
-	{	
-		m_hInstance = _hInstance;
-		m_commandLine = " " + _commandLine + " ";
-
+	bool WinApplication::initialize()
+	{		
 		setlocale( LC_CTYPE, "" );
 		//::timeBeginPeriod( 1 );
+		
+		//if( Helper::s_hasOption( " -maxfps ", m_commandLine ) == true )
+		//{
+		//	m_maxfps = true;
+		//}
 
-#	ifdef _MSC_VER
-		m_enableDebug = true;
-#	else
-		m_enableDebug = false;
-#	endif
+		//if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )
+		//{
+		//	m_developmentMode = true;
+		//}
+		//		
+		//if( Helper::s_hasOption( " -profiler ", m_commandLine ) == true )
+		//{
+		//	m_profilerMode = true;
+		//}
 
-		if( Helper::s_hasOption( " -maxfps ", m_commandLine ) == true )
-		{
-			m_maxfps = true;
-		}
+		//if( Helper::s_hasOption( " -nodevplugins ", m_commandLine ) == true )
+		//{
+		//	m_noDevPluginsMode = true;
+		//}
 
-		if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )
-		{
-			m_developmentMode = true;
-		}
+		//if( Helper::s_hasOption( " -mute ", m_commandLine ) == true )
+		//{
+		//	m_muteMode = true;
+		//}
 
-		if( Helper::s_hasOption( " -profiler ", m_commandLine ) == true )
-		{
-			m_profilerMode = true;
-		}
+		//if( Helper::s_hasOption( " -nopause ", m_commandLine ) == true )
+		//{
+		//	m_nopause = true;
+		//}
 
-		if( Helper::s_hasOption( " -nodevplugins ", m_commandLine ) == true )
-		{
-			m_noDevPluginsMode = true;
-		}
+		//if( Helper::s_hasOption( " -roaming ", m_commandLine ) == true )
+		//{
+		//	m_roamingMode = true;
+		//}
 
-		if( Helper::s_hasOption( " -mute ", m_commandLine ) == true )
-		{
-			m_muteMode = true;
-		}
+		//if( Helper::s_hasOption( " -nologs ", m_commandLine ) == true )
+		//{
+		//	m_nologsMode = true;
+		//}
 
-		if( Helper::s_hasOption( " -nopause ", m_commandLine ) == true )
-		{
-			m_nopause = true;
-		}
+		//if( _arguments.find( " -particles " ) != String::npos )
+		//{
+		//	m_particleEnable = false;
+		//}
 
-		if( Helper::s_hasOption( " -roaming ", m_commandLine ) == true )
-		{
-			m_roamingMode = true;
-		}
+		//if( _arguments.find( " -texts " ) != String::npos )
+		//{
+		//	m_textEnable = false;
+		//}
 
-		if( Helper::s_hasOption( " -nologs ", m_commandLine ) == true )
-		{
-			m_nologsMode = true;
-		}
+		//if( _arguments.find( " -dev " ) != String::npos )
+		//{
+		//	m_developmentMode = true;
+		//}
 
-		String scriptInit;
-		Helper::s_getOption( " -s:", m_commandLine, &scriptInit );
+		//if( _arguments.find( " -roaming " ) != String::npos )
+		//{
+		//	m_roamingMode = true;
+		//}
+
+		//if( _arguments.find( " -nopause " ) != String::npos )
+		//{
+		//	m_nopauseMode = true;
+		//}
+
+		//if( _arguments.find( " -maxfps " ) != String::npos )
+		//{
+		//	m_maxfpsMode = true;
+		//}
+
+		//if( _arguments.find( " -noresourcecheck " ) != String::npos )
+		//{
+		//	m_resourceCheck = false;
+		//}
+
+		//if( _arguments.find( " -noresourcecheckcritical " ) != String::npos )
+		//{
+		//	m_resourceCheckCritical = false;
+		//}
+
+		//if( _arguments.find( " -nofullscreen " ) != String::npos )
+		//{
+		//	m_nofullscreenMode = true;
+		//}
+
+		//bool dublicate = Helper::s_hasOption( " -dublicate ", m_commandLine );
 
 		ServiceProviderInterface * serviceProvider;
-		if( SERVICE_CREATE( ServiceProvider, &serviceProvider ) == false )
-		{
-			return false;
-		}
+		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
 		m_serviceProvider = serviceProvider;
 
-		if( SERVICE_REGISTRY( m_serviceProvider, this ) == false )
-		{
-			return false;
-		}
+		SERVICE_CREATE( m_serviceProvider, Options );
 
-		m_windowsLayer = new VistaWindowsLayer();
-
-		if( SERVICE_REGISTRY( m_serviceProvider, m_windowsLayer ) == false )
-		{
-			return false;
-		}
-
-#	ifdef _DEBUG
-		if( m_developmentMode == true && m_roamingMode == false )
-		{
-			WString userPath;
-			this->makeUserPath_( userPath );
-
-			CriticalErrorsMonitor::run( userPath, m_serviceProvider );
-		}
-#	endif
-				
-		if( this->initializeStringizeService_() == false )
-		{
-			return false;
-		}
-
-		m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "WIN");
+		SERVICE_CREATE( m_serviceProvider, StringizeService );
+		SERVICE_CREATE( m_serviceProvider, LoggerService );
 
 		if( this->initializeLogEngine_() == false )
 		{
 			return false;
 		}
 
-		if( this->initializeNotificationService_() == false )
-		{
-			return false;
-		}
+		SERVICE_CREATE( m_serviceProvider, WindowsLayer );
+		SERVICE_CREATE( m_serviceProvider, Platform );
 
-		if( this->initializeUnicodeEngine_() == false )
-		{
-			return false;
-		}
+		SERVICE_CREATE( m_serviceProvider, NotificationService );
+		SERVICE_CREATE( m_serviceProvider, UnicodeService );
+		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
+		SERVICE_CREATE( m_serviceProvider, FileService );
 
 		if( this->initializeFileEngine_() == false )
-		{
-			return false;
-		}
-
-		if( this->initializeConfigEngine_() == false )
-		{
-			return false;
-		}
-
-		if( this->initializeArchiveService_() == false )
 		{
 			return false;
 		}
@@ -1422,91 +617,69 @@ namespace Menge
 			return false;
 		}
 
-		if( this->initializeThreadEngine_() == false )
+		SERVICE_CREATE( m_serviceProvider, ConfigService );
+
+		if( this->initializeConfigEngine_() == false )
 		{
 			return false;
 		}
 
-		if( this->initializeParticleEngine2_() == false )
+		SERVICE_CREATE( m_serviceProvider, ArchiveService );	
+
+		if( this->initializeArchiveService_() == false )
 		{
 			return false;
 		}
 
-		//if( this->initializePhysicEngine2D_() == false )
-		//{
-		//    return false;
-		//}
+		
+		
+		SERVICE_CREATE( m_serviceProvider, ThreadService );
+		SERVICE_CREATE( m_serviceProvider, ThreadSystem );
 
-		if( this->initializeRenderEngine_() == false )
+		SERVICE_CREATE( m_serviceProvider, ParticleService );		
+
+		SERVICE_CREATE( m_serviceProvider, RenderService );
+		SERVICE_CREATE( m_serviceProvider, RenderSystem );
+
+		SERVICE_CREATE( m_serviceProvider, SoundService );
+
+		SERVICE_CREATE( m_serviceProvider, SoundSystem );
+
+		bool muteMode = HAS_OPTIONS( m_serviceProvider, "mute" );
+		
+		if( muteMode == true || SERVICE_EXIST( m_serviceProvider, Menge::SoundSystemInterface ) == false )
 		{
-			return false;
+			SERVICE_CREATE( m_serviceProvider, SilentSoundSystem );
 		}
 
-		if( m_muteMode == true || this->initializeSoundEngine_() == false )
-		{
-			if( this->initializeSilentSoundEngine_() == false )
-			{
-				return false;
-			}
-		}
+		SERVICE_CREATE( m_serviceProvider, ScriptService );
+		SERVICE_CREATE( m_serviceProvider, ModuleService );
+		SERVICE_CREATE( m_serviceProvider, CodecService );
+		SERVICE_CREATE( m_serviceProvider, DataService );
+		SERVICE_CREATE( m_serviceProvider, PrefetcherService );
+		SERVICE_CREATE( m_serviceProvider, MemoryService );
+		SERVICE_CREATE( m_serviceProvider, ConverterService );
+		SERVICE_CREATE( m_serviceProvider, InputService );
 
-		if( this->initializeScriptEngine_() == false )
-		{
-			return false;
-		}
+		SERVICE_CREATE( m_serviceProvider, TimerService );
+		SERVICE_CREATE( m_serviceProvider, TimerSystem );
 
-		if( this->initializeModuleEngine_() == false )
-		{
-			return false;
-		}
+		SERVICE_CREATE( m_serviceProvider, PluginService );
 
-		if( this->initializeCodecEngine_() == false )
-		{
-			return false;
-		}
+#	ifdef _DEBUG
+		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
 
-		if( this->initializeDataManager_() == false )
+		if( developmentMode == true && roamingMode == false )
 		{
-			return false;
-		}
+			WString userPath;
+			this->makeUserPath_( userPath );
 
-		if( this->initializeHttpService_() == false )
-		{
-			return false;
+			CriticalErrorsMonitor::run( userPath, m_serviceProvider );
 		}
+#	endif
 
-		if( this->initializePrefetcherService_() == false )
-		{
-			return false;
-		}
-
-		if( this->initializeMemoryManager_() == false )
-		{
-			return false;
-		}
-
-		if( this->initializeConverterEngine_() == false )
-		{
-			return false;
-		}
-
-		if( this->initializeInputEngine_() == false )
-		{
-			return false;
-		}
-
-		if( this->initializeApplicationService_() == false )
-		{
-			return false;
-		}
-
-		if( this->initializePluginService_() == false )
-		{
-			return false;
-		}
-
-		m_winTimer = new WinTimer();
-		m_winTimer->initialize();
+		SERVICE_CREATE( m_serviceProvider, Application );
 
 		// seed randomizer
 		LARGE_INTEGER randomSeed;
@@ -1514,19 +687,6 @@ namespace Menge
 		srand( randomSeed.LowPart );
 
 		LOGGER_WARNING(m_serviceProvider)( "initialize Application..." );
-		LOGGER_WARNING(m_serviceProvider)( "command: '%s'"
-			, m_commandLine.c_str()
-			);
-
-		if( Helper::s_hasOption( " -noaccounts ", m_commandLine ) == true )
-		{
-			CONFIG_SET(m_serviceProvider, "Development", "NoAccount", "1");
-		}
-
-		if( Helper::s_hasOption( " -novideo ", m_commandLine ) == true )
-		{
-			CONFIG_SET(m_serviceProvider, "Development", "NoVideo", "1");
-		}
 
 #	define MENGINE_ADD_PLUGIN( Init, Info )\
 	{\
@@ -1579,7 +739,9 @@ namespace Menge
 			}
 		}
 
-		if( m_noDevPluginsMode == false )
+		bool nodevplugins = HAS_OPTIONS( m_serviceProvider, "nodevplugins" );
+
+		if( nodevplugins == false )
 		{
 			TVectorWString devPlugins;
 			CONFIG_VALUES(m_serviceProvider, "DevPlugins", "Name", devPlugins);
@@ -1637,13 +799,6 @@ namespace Menge
 			}
 		}
 
-		Resolution defaultWindowResolution = CONFIG_VALUE(m_serviceProvider, "Window", "Size", Resolution(1024, 768));
-		uint32_t defaultWindowBits = CONFIG_VALUE(m_serviceProvider, "Window", "Bits", 32U);
-		bool defaultWindowFullscreen = CONFIG_VALUE(m_serviceProvider, "Window", "Fullscreen", true);
-		bool defaultWindowVSync = CONFIG_VALUE(m_serviceProvider, "Window", "VSync", true);
-
-		m_application->setDefaultWindowDescription( defaultWindowResolution, defaultWindowBits, defaultWindowFullscreen, defaultWindowVSync );
-
 		LOGGER_INFO(m_serviceProvider)( "Application Create..."
 			);
 
@@ -1656,117 +811,7 @@ namespace Menge
 			return false;
 		}
 
-		LOGGER_INFO(m_serviceProvider)( "Application load resource packs... %s"
-			, resourceIniPath.c_str()
-			);
-
-		if( m_application->loadResourcePacks( ConstString::none(), resourceIniPath ) == false )
-		{
-			LOGGER_CRITICAL(m_serviceProvider)("Application invalid load resource packs"
-				);
-
-			return false;
-		}
-
-		LOGGER_INFO(m_serviceProvider)( "Application Initialize... %s"
-			, m_platformName.c_str()
-			);
-
-		const ConstString & projectTitle = m_application->getProjectTitle();
-
-		WString wprojectTitle;
-		if( Helper::utf8ToUnicodeSize(m_serviceProvider, projectTitle.c_str(), projectTitle.size(), wprojectTitle ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application project title %s not convert to unicode"
-				, projectTitle.c_str()
-				);
-		}
-
-		bool screenSaverMode = this->isSaverRunning();
-
-		if( screenSaverMode == true )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application is saver running"
-				);
-
-			String lowerCmdLine = m_commandLine.substr();
-			std::transform( lowerCmdLine.begin(), lowerCmdLine.end(), lowerCmdLine.begin(), std::ptr_fun( ::tolower ) );
-
-			if( lowerCmdLine.find(" /p") != String::npos || m_commandLine.find(" -p") != String::npos )
-			{
-				return false;
-			}
-			else if( lowerCmdLine.find(" /c") != String::npos || m_commandLine.find(" -c") != String::npos )
-			{
-				if( m_windowsLayer->messageBox( m_hWnd, L"This screensaver has no options you can set\nDo you want to launch game?", wprojectTitle.c_str(), MB_YESNO ) == IDNO )
-				{
-					return false;
-				}
-			}
-			else
-			{
-				scriptInit += " screensaver";
-
-				m_application->setFullscreenMode( true );
-			}
-		}
-
-		SYSTEMTIME tm;
-		GetLocalTime(&tm);
-		LOGGER_INFO(m_serviceProvider)( "Date: %02d.%02d.%d, %02d:%02d:%02d"
-			, tm.wDay
-			, tm.wMonth
-			, tm.wYear
-			, tm.wHour
-			, tm.wMinute
-			, tm.wSecond 
-			);
-
-		OSVERSIONINFO os_ver;
-		os_ver.dwOSVersionInfoSize = sizeof(os_ver);
-		GetVersionEx(&os_ver);
-		LOGGER_INFO(m_serviceProvider)( "OS: Windows %ld.%ld.%ld %S"
-			, os_ver.dwMajorVersion
-			, os_ver.dwMinorVersion
-			, os_ver.dwBuildNumber 
-			, os_ver.szCSDVersion
-			);
-
-		MEMORYSTATUS mem_st;
-		GlobalMemoryStatus(&mem_st);
-		LOGGER_INFO(m_serviceProvider)( "Memory: %ldK total, %ldK free, %ldK Page file total, %ldK Page file free"
-			, mem_st.dwTotalPhys / 1024L
-			, mem_st.dwAvailPhys / 1024L
-			, mem_st.dwTotalPageFile / 1024L
-			, mem_st.dwAvailPageFile / 1024L 
-			);
-
-		m_cursors[STRINGIZE_STRING_LOCAL(m_serviceProvider, "IDC_ARROW")] = LoadCursor( NULL, IDC_ARROW );
-		m_cursors[STRINGIZE_STRING_LOCAL(m_serviceProvider, "IDC_UPARROW")] = LoadCursor( NULL, IDC_UPARROW );
-		m_cursors[STRINGIZE_STRING_LOCAL(m_serviceProvider, "IDC_HAND")] = LoadCursor( NULL, IDC_HAND );
-		m_cursors[STRINGIZE_STRING_LOCAL(m_serviceProvider, "IDC_HELP")] = LoadCursor( NULL, IDC_HELP );
-
-		FilePath accountPath = STRINGIZE_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
-				
-		LOGGER_INFO(m_serviceProvider)( "Initializing Game data... %s"
-			, accountPath.c_str()
-			);
-
-		String languagePack;
-		Helper::s_getOption( " -lang:", m_commandLine, &languagePack );
-
-		if( languagePack.empty() == true )
-		{
-			languagePack = CONFIG_VALUE(m_serviceProvider, "Locale", "Default", "en");
-		}
-
-		LOGGER_WARNING(m_serviceProvider)("Locale %s"
-			, languagePack.c_str()
-			);
-
-		String personalityModule = CONFIG_VALUE(m_serviceProvider, "Game", "PersonalityModule", "Personality" );
-				
-		if( m_application->initializeGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack), accountPath, scriptInit ) == false )
+		if( APPLICATION_SERVICE( m_serviceProvider )->initializeGame( ConstString::none(), resourceIniPath ) == false )
 		{
 			LOGGER_CRITICAL(m_serviceProvider)("Application invalid initialize game"
 				);
@@ -1774,50 +819,50 @@ namespace Menge
 			return false;
 		}
 
-		bool dublicate = Helper::s_hasOption( " -dublicate ", m_commandLine );
-
-		bool alreadyRunning = CONFIG_VALUE(m_serviceProvider, "Game", "AlreadyRunning", true);
-
-		if( alreadyRunning == true && dublicate == false )
-		{	
-			m_alreadyRunningMonitor = new AlreadyRunningMonitor(m_serviceProvider);
-			
-			if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, m_windowClassName, wprojectTitle ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("Application invalid running monitor"
-					);
-
-				return false;
-			}
-		}
-
 		LOGGER_INFO(m_serviceProvider)( "Creating Render Window..." );
 
-		bool fullscreen = m_application->getFullscreenMode();
+		bool fullscreen = APPLICATION_SERVICE( m_serviceProvider )
+			->getFullscreenMode();
 		
 		//if( m_application->isValidWindowMode() == false )
 		//{
 		//    fullscreen = true;
 		//}
 
-		if( m_windowsLayer->setProcessDPIAware() == false )
+		if( WINDOWSLAYER_SERVICE(m_serviceProvider)->setProcessDPIAware() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Application not setup Process DPI Aware"
 				);
 		}
 
+		const ConstString & projectTitle = APPLICATION_SERVICE( m_serviceProvider )
+			->getProjectTitle();
+
+		WString wprojectTitle;
+		if( Helper::utf8ToUnicodeSize( m_serviceProvider, projectTitle.c_str(), projectTitle.size(), wprojectTitle ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Application project title %s not convert to unicode"
+				, projectTitle.c_str()
+				);
+		}
+
 		Resolution windowResolution;
-		m_application->calcWindowResolution( windowResolution );
+		APPLICATION_SERVICE( m_serviceProvider )
+			->calcWindowResolution( windowResolution );
 
-		m_hWnd = this->createWindow( wprojectTitle, windowResolution, fullscreen );
+		if( PLATFORM_SERVICE( m_serviceProvider )
+			->createWindow( IDI_MENGE, wprojectTitle, windowResolution, fullscreen ) == false )
+		{
+			return false;
+		}
+		
+		//mt::vec2f point;
+		//this->calcCursorPosition( point );
 
-		mt::vec2f point;
-		this->calcCursorPosition( point );
+		//INPUT_SERVICE( m_serviceProvider )
+		//	->setCursorPosition( 0, point );
 
-		INPUT_SERVICE( m_serviceProvider )
-			->setCursorPosition( 0, point );
-
-		if( m_application->createRenderWindow( m_hWnd ) == false )
+		if( APPLICATION_SERVICE( m_serviceProvider )->createRenderWindow() == false )
 		{
 			LOGGER_CRITICAL(m_serviceProvider)("Application not create render window"
 				);
@@ -1825,176 +870,32 @@ namespace Menge
 			return false;
 		}       
 
-		m_vsync = m_application->getVSync();
+		bool vsync = APPLICATION_SERVICE( m_serviceProvider )
+			->getVSync();
 
-		if( m_maxfps == false && m_vsync == false )
+		bool maxfps = HAS_OPTIONS( m_serviceProvider, "maxfps" );
+	
+		if( maxfps == true && vsync == true )
 		{
-			m_fpsMonitor = new FPSMonitor();
-			m_fpsMonitor->initialize();
-
-			m_fpsMonitor->setActive( true );
-			m_fpsMonitor->setFrameTime( s_activeFrameTime );
+			APPLICATION_SERVICE( m_serviceProvider )
+				->setVSync( false );
 		}
-		
-		if( m_maxfps == true && m_vsync == true )
-		{
-			m_application->setVSync( false );
-		}
-
-		HWND hWndFgnd = ::GetForegroundWindow();
-
-		if( hWndFgnd != m_hWnd )
-		{
-			LOGGER_WARNING(m_serviceProvider)("Setup Foreground Window...");
-
-			::ShowWindow(m_hWnd, SW_MINIMIZE);
-			::ShowWindow(m_hWnd, SW_RESTORE);
-
-			//SetWindowPos(m_hWnd,hWndFgnd,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE|SWP_NOACTIVATE);
-			//SetWindowPos(hWndFgnd,m_hWnd,0,0,0,0,SWP_NOSIZE|SWP_NOMOVE);
-		}
-		else
-		{
-			::ShowWindow( m_hWnd, SW_SHOW );
-		}
-
-		if( fullscreen == true )
-		{
-			Resolution desktopResolution;
-			this->getDesktopResolution( desktopResolution );
-
-			this->notifyWindowModeChanged( desktopResolution, true );
-		}
-
-		::SetForegroundWindow( m_hWnd );          // Slightly Higher Priority
-		::SetFocus( m_hWnd );                     // Sets Keyboard Focus To The Window
-		::UpdateWindow( m_hWnd );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::getMaxClientResolution( Resolution & _resolution ) const
-	{
-		RECT workArea;
-		SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
-
-		RECT clientArea = workArea;
-		::AdjustWindowRect( &clientArea, WS_OVERLAPPEDWINDOW, FALSE );
-		uint32_t maxClientWidth = 2 * (workArea.right - workArea.left) - (clientArea.right - clientArea.left);
-		uint32_t maxClientHeight = 2 * (workArea.bottom - workArea.top) - (clientArea.bottom - clientArea.top);
-
-		_resolution.setWidth( maxClientWidth );
-		_resolution.setHeight( maxClientHeight );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::loop()
 	{
-		m_winTimer->reset();
-
-#	ifndef _DEBUG
-		try
-#	endif
-		{
-			while( m_running )
-			{
-				float frameTime = m_winTimer->getDeltaTime();
-
-				//EXECUTION_STATE aState = ES_CONTINUOUS | ES_DISPLAY_REQUIRED | ES_SYSTEM_REQUIRED;
-				//
-				//if( m_windowsType == EWT_VISTA )
-				//{
-				//    aState = aState | ES_AWAYMODE_REQUIRED;
-				//}
-
-				//SetThreadExecutionState(aState);
-
-				MSG  msg;
-				while( m_windowsLayer->peekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) )
-				{
-					::TranslateMessage( &msg );
-
-					m_windowsLayer->dispatchMessage( &msg );
-				}
-
-				m_applicationUpdate = true;
-
-				bool updating = m_application->beginUpdate();
-
-				if( updating == true )
-				{
-					if( m_pauseUpdatingTime >= 0.f )
-					{
-						frameTime = m_pauseUpdatingTime;
-						m_pauseUpdatingTime = -1.f;
-					}
-
-					m_application->tick( frameTime );
-				}
-				else
-				{
-					if( m_pauseUpdatingTime < 0.f )
-					{
-						m_pauseUpdatingTime = frameTime;
-					}
-
-					Sleep( 100 );
-				}
-
-				if( m_vsync == false && m_maxfps == false )
-				{
-					m_fpsMonitor->monitor();
-				}
-
-				if( m_application->isFocus() == true && m_active == true || m_nopause == true )
-				{
-					if( m_application->render() == true )
-					{
-						m_application->flush();
-					}
-				}
-
-				m_application->endUpdate();
-
-				m_applicationUpdate = false;
-			}
-		}
-#	ifndef _DEBUG
-		catch( const std::exception & ex )
-		{
-			LOGGER_CRITICAL(m_serviceProvider)("WinApplication std::exception '%s'"
-				, ex.what()
-				);
-		}
-#	endif
+		PLATFORM_SERVICE( m_serviceProvider )
+			->update();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void WinApplication::finalize()
 	{
-		m_mouseEvent.stop();
-						
-		if( m_hWnd != NULL )
-		{
-			m_windowsLayer->destroyWindow( m_hWnd );
-			m_hWnd = NULL;
-		}
-
-		if( m_hInstance != NULL )
-		{
-			m_windowsLayer->unregisterClass( m_windowClassName.c_str(), m_hInstance );
-		}	
-
-		if( m_fpsMonitor != nullptr )
-		{
-			m_fpsMonitor->finalize();
-
-			delete m_fpsMonitor;
-			m_fpsMonitor = nullptr;
-		}
-
-		if( m_application != nullptr )
-		{
-			m_application->finalizeGame();
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PlatformInterface );
+		
+		APPLICATION_SERVICE( m_serviceProvider )
+			->finalizeGame();
 		
 		for( TVectorPlugins::iterator
 			it = m_plugins.begin(),
@@ -2006,157 +907,45 @@ namespace Menge
 
 			plugin->finalize();
 		}
+
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ApplicationInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PrefetcherServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::DataServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PluginServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ModuleServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::InputServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeSystemInterface );
+
+		SERVICE_FINALIZE( m_serviceProvider, Menge::FileServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::CodecServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleServiceInterface2 );		
+
+		SERVICE_FINALIZE( m_serviceProvider, Menge::SoundServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::SoundSystemInterface );
+
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ScriptServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ConverterServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderSystemInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ConfigServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::StringizeServiceInterface );
 		
-		if( m_application != nullptr )
-		{
-			m_application->finalize();
-		}
-
-		if( m_prefetcherService != nullptr )
-		{
-			m_prefetcherService->finalize();
-
-			SERVICE_DESTROY( PrefetcherService, m_prefetcherService );
-			m_prefetcherService = nullptr;
-		}
-
-		if( m_dataService != nullptr )
-		{
-			m_dataService->finalize();
-			SERVICE_DESTROY( DataService, m_dataService );
-		}
-
-		if( m_pluginService != nullptr )
-		{
-			SERVICE_DESTROY( PluginService, m_pluginService );
-			m_pluginService = nullptr;
-		}
-
-		if( m_moduleService != nullptr )
-		{
-			SERVICE_DESTROY( ModuleService, m_moduleService );
-			m_moduleService = nullptr;
-		}
-
-		if( m_inputService != nullptr )
-		{
-			m_inputService->finalize();
-
-			SERVICE_DESTROY( InputService, m_inputService );
-			m_inputService = nullptr;
-		}
-
-		SERVICE_DESTROY( UnicodeService, m_unicodeService );
-		m_unicodeService = nullptr;
-
-		SERVICE_DESTROY( UnicodeSystem, m_unicodeSystem );
-		m_unicodeSystem = nullptr;
-
-		if( m_fileService != nullptr )
-		{            
-			SERVICE_DESTROY( FileService, m_fileService );
-			m_fileService = nullptr;
-		}
-
-		if( m_codecService != nullptr)
-		{
-			m_codecService->finalize();
-			
-			SERVICE_DESTROY( CodecService, m_codecService );
-			m_codecService = nullptr;
-		}
-
-		if( m_particleService2 != nullptr )
-		{
-			SERVICE_DESTROY( ParticleService2, m_particleService2 );
-			m_particleService2 = nullptr;
-		}
-
-		SERVICE_DESTROY( PhysicSystem, m_physicSystem );
-		m_physicSystem = nullptr;
-
-		if( m_soundService != nullptr )
-		{
-			m_soundService->finalize();
-
-			SERVICE_DESTROY( SoundService, m_soundService );
-			m_soundService = nullptr;
-		}
-
-		if( m_soundSystem != nullptr )
-		{
-			m_soundSystem->finalize();
-
-			SERVICE_DESTROY( SoundSystem, m_soundSystem );        
-			m_soundSystem = nullptr;
-		}
-
-		SERVICE_DESTROY( Application, m_application );
-		m_application = nullptr;
-
-		if( m_scriptService != nullptr )
-		{
-			m_scriptService->finalize();
-		}
-
-		if( m_converterService != nullptr )
-		{
-			SERVICE_DESTROY( ConverterService, m_converterService );
-			m_converterService = nullptr;
-		}
-
-		if( m_renderSystem != nullptr )
-		{
-			m_renderSystem->finalize();
-		}
-		
-		if( m_renderSystem != nullptr )
-		{
-			SERVICE_DESTROY( RenderSystem, m_renderSystem );
-			m_renderSystem = nullptr;
-		}
-
-		if( m_scriptService != nullptr )
-		{
-			SERVICE_DESTROY( ScriptService, m_scriptService );
-			m_scriptService = nullptr;
-		}
-				
-		if( m_configService != nullptr )
-		{
-			SERVICE_DESTROY( ConfigService, m_configService );
-			m_configService = nullptr;
-		}
-
-		if( m_stringizeService != nullptr )
-		{
-			SERVICE_DESTROY( StringizeService, m_stringizeService );
-			m_stringizeService = nullptr;
-		}
 
 		if( m_fileLog != nullptr )
 		{
-			if( m_logService != nullptr )
+			if( SERVICE_EXIST(m_serviceProvider, Menge::LoggerServiceInterface ) == true )
 			{
-				m_logService->unregisterLogger( m_fileLog );
+				LOGGER_SERVICE( m_serviceProvider )
+					->unregisterLogger( m_fileLog );
 			}
 
 			delete m_fileLog;
 			m_fileLog = nullptr;
 		}
 
-		if( m_archiveService != nullptr )
-		{
-			SERVICE_DESTROY( ArchiveService, m_archiveService );
-			m_archiveService = nullptr;
-		}
-
-		if( m_memoryService != nullptr )
-		{
-			m_memoryService->finalize();
-			SERVICE_DESTROY( MemoryService, m_memoryService );
-			m_memoryService = nullptr;
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ArchiveServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::MemoryServiceInterface );
 
 		for( TVectorPlugins::iterator
 			it = m_plugins.begin(),
@@ -2171,53 +960,22 @@ namespace Menge
 
 		m_plugins.clear();
 
-		if( m_notificationService != nullptr )
-		{
-			SERVICE_DESTROY(NotificationService, m_notificationService);
-			m_notificationService = nullptr;
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::NotificationServiceInterface );
 
-		if( m_threadService != nullptr )
-		{
-			m_threadService->finalize();
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadSystemInterface );
 
-			SERVICE_DESTROY( ThreadService, m_threadService );
-			m_threadService = nullptr;
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::TimerServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::TimerSystemInterface );
 
-		if( m_threadSystem != nullptr )
-		{
-			m_threadSystem->finalize();
-
-			SERVICE_DESTROY( ThreadSystem, m_threadSystem );
-			m_threadSystem = nullptr;
-		}
-
-		if( m_alreadyRunningMonitor != nullptr )
-		{
-			m_alreadyRunningMonitor->stop();
-
-			delete m_alreadyRunningMonitor;
-			m_alreadyRunningMonitor = nullptr;
-		}
-
-		if( m_winTimer != nullptr )
-		{
-			delete m_winTimer;
-			m_winTimer = nullptr;
-		}
-
-		if( m_windowsLayer != nullptr )
-		{
-			delete m_windowsLayer;
-			m_windowsLayer = nullptr;
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::WindowsLayerInterface );
 
 		if( m_loggerConsole != nullptr )
 		{
-			if( m_logService != nullptr )
+			if( SERVICE_EXIST( m_serviceProvider, Menge::LoggerServiceInterface ) == true )
 			{
-				m_logService->unregisterLogger( m_loggerConsole );
+				LOGGER_SERVICE( m_serviceProvider )
+					->unregisterLogger( m_loggerConsole );
 			}
 
 			delete m_loggerConsole;
@@ -2226,1252 +984,26 @@ namespace Menge
 
 		if( m_loggerMessageBox != nullptr )
 		{
-			if( m_logService != nullptr )
+			if( SERVICE_EXIST( m_serviceProvider, Menge::LoggerServiceInterface ) == true )
 			{
-				m_logService->unregisterLogger( m_loggerMessageBox );
+				LOGGER_SERVICE( m_serviceProvider )
+					->unregisterLogger( m_loggerMessageBox );
 			}
 
 			delete m_loggerMessageBox;
 			m_loggerMessageBox = nullptr;
 		}
 
-		SERVICE_DESTROY( LogService, m_logService );
-		m_logService = nullptr;
+		SERVICE_FINALIZE( m_serviceProvider, Menge::LoggerServiceInterface );
 
-		SERVICE_DESTROY( ServiceProvider, m_serviceProvider );
-		m_serviceProvider = nullptr;
-
+		SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
+		
 		//::timeEndPeriod( 1 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::stop()
+	void WinApplication::update()
 	{
-		m_running = false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & WinApplication::getPlatformName() const
-	{
-		return m_platformName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static LRESULT CALLBACK s_wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
-	{
-		switch( uMsg )
-		{
-			//case WM_NCCREATE:
-		case WM_CREATE:
-			{
-				LPCREATESTRUCTW createStruct = (LPCREATESTRUCTW)lParam;
-
-				WinApplication * app = (WinApplication *)createStruct->lpCreateParams;
-
-				::SetWindowLongPtr( hWnd, GWL_USERDATA, (LONG_PTR)app );
-
-				return (LRESULT)NULL;
-			}
-			break;
-		}
-
-		LONG_PTR value = ::GetWindowLongPtr( hWnd, GWL_USERDATA );
-
-		WinApplication * app = (WinApplication*)value;
-
-		if( app == NULL )
-		{
-			LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
-
-			return result;
-		}
-
-		LRESULT app_result = app->wndProc( hWnd, uMsg, wParam, lParam );
-
-		return app_result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	LRESULT CALLBACK WinApplication::wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
-	{
-		if( m_hWnd != hWnd )
-		{
-			LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
-
-			return result;
-		}
-		//print "wndProc"
-		//  if( uMsg != 0x200 && uMsg != 0x84 && uMsg != 0x20 )
-		//  {
-		//printf( "wndProc %x %x %x\n", uMsg, wParam, lParam );
-		//  }
-
-		switch( uMsg )
-		{
-			//case WM_QUERYENDSESSION:
-			//	{
-			//		printf("WM_QUERYENDSESSION");
-			//	}break;
-		case WM_ACTIVATE:
-			{
-				DWORD flagActive = LOWORD(wParam); // флажок активизации
-				BOOL minimized = (BOOL) HIWORD(wParam); // флажок минимизации
-				//HWND hwndPrevious = (HWND) lParam; // дескриптор окна 
-				//bool active = (LOWORD(wParam) != WA_INACTIVE) && (HIWORD(wParam) == 0);
-
-				bool active = (flagActive != WA_INACTIVE) && (minimized == FALSE);
-
-				//printf("WM_ACTIVATE m_active %d %d %d\n"
-				//                , active
-				//                , minimized
-				//                , hwndPrevious
-				//                );
-
-				//POINT cPos;
-				//::GetCursorPos( &cPos );
-				//::ScreenToClient( m_hWnd, &cPos );
-
-				//mt::vec2f point;
-				//point.x = static_cast<float>(cPos.x);
-				//point.y = static_cast<float>(cPos.y);
-
-				//m_application->setCursorPosition( point );
-				//m_application->pushMouseMoveEvent( 0, 0, 0 );
-
-				//printf("WinApplication::wndProc WM_ACTIVATE %d\n"
-				//    , active
-				//    );
-
-				this->setActive( active );
-
-				//::SetFocus( hWnd );
-
-				return FALSE;
-			}break;
-		case WM_ACTIVATEAPP:
-			{
-				//BOOL active = (BOOL)wParam;
-
-				//printf("WM_ACTIVATEAPP %d\n"
-				//    , active
-				//    );
-			}break;
-			//case WM_NCACTIVATE:
-			//	{
-			//              BOOL fActive = (BOOL)wParam;
-
-			//              printf("WM_NCACTIVATE %d\n"
-			//                  , fActive 
-			//                  );
-			//		//if( m_active )
-			//		//{
-			//		//	return FALSE;
-			//		//}
-			//              if( fActive == FALSE )
-			//              {
-			//                  return TRUE;
-			//              }
-
-
-
-			//              //return FALSE;
-			//		//if( wParam == FALSE )
-			//		//{
-			//		//	return FALSE;
-			//		//}
-			//	}break;
-		case WM_SETFOCUS:
-			{
-				//LOGGER_INFO(m_serviceProvider)("WM_SETFOCUS");
-			}break;
-		case WM_KILLFOCUS:
-			{
-				//LOGGER_INFO(m_serviceProvider)("WM_KILLFOCUS");
-			}break;
-		case WM_PAINT:
-			{
-				if( m_applicationUpdate == false )
-				{
-					if( m_application->getFullscreenMode() == false )
-					{
-						m_application->paint();
-					}
-				}
-			}break;
-		case WM_DISPLAYCHANGE:
-			{
-				LOGGER_WARNING(m_serviceProvider)("WinApplication::wndProc WM_DISPLAYCHANGE");
-
-				//DWORD width = LOWORD(lParam); // флажок активизации
-				//DWORD height = HIWORD(lParam); // флажок минимизации
-
-				//Resolution desktopResolution;
-				//desktopResolution.setWidth( width );
-				//desktopResolution.setHeight( height );
-
-				//bool fullscreenMode = m_application->getFullscreenMode();
-
-				//this->notifyWindowModeChanged( desktopResolution, fullscreenMode );
-				//m_menge->onWindowMovedOrResized();
-			}break;
-		case WM_SIZE:
-			{
-				if( wParam == SIZE_MAXIMIZED )
-				{
-					//m_application->setFullscreenMode( true );
-
-					this->setActive( true );
-				}
-				else if( wParam == SIZE_MINIMIZED )
-				{
-					this->setActive( false );
-				}
-				else if( wParam == SIZE_RESTORED && m_application->getFullscreenMode() == true )
-				{
-					this->setActive( true );
-				}
-			}break;
-		case WM_GETMINMAXINFO:
-			{
-				// Prevent the window from going smaller than some minimu size
-				MINMAXINFO * info = (MINMAXINFO*)lParam;
-
-				info->ptMinTrackSize.x = 100;
-				info->ptMinTrackSize.y = 100;
-			}break;
-		case WM_CLOSE:
-			{
-				m_application->close();
-
-				return FALSE;
-			}break;
-		case WM_SYSKEYDOWN:
-			{
-				unsigned int vkc = static_cast<unsigned int>( wParam );
-				HKL  layout = ::GetKeyboardLayout(0);
-				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
-
-				mt::vec2f point;
-				this->calcCursorPosition(point);
-
-				WChar tvk = translateVirtualKey_( vkc, vk );
-
-				KeyCode code = (KeyCode)vkc;
-								
-				INPUT_SERVICE( m_serviceProvider )
-					->pushKeyEvent( point.x, point.y, code, tvk, true, false );
-			}break;
-		case WM_SYSKEYUP:
-			{
-				unsigned int vkc = static_cast<unsigned int>( wParam );
-				HKL  layout = ::GetKeyboardLayout(0);
-				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
-
-				mt::vec2f point;
-				this->calcCursorPosition(point);
-
-				WChar tvk = translateVirtualKey_( vkc, vk );
-
-				KeyCode code = (KeyCode)vkc;
-
-				INPUT_SERVICE( m_serviceProvider )
-					->pushKeyEvent( point.x, point.y, code, tvk, false, false );
-			}break;
-		case WM_SYSCOMMAND:
-			{
-				switch( wParam )
-				{
-				case SC_CLOSE:
-					{
-						this->stop();
-					}break;
-
-				case SC_KEYMENU:
-					{
-						if( lParam == 13 )
-						{					
-							bool fullscreen = m_application->getFullscreenMode();
-							m_application->setFullscreenMode( !fullscreen );
-						}
-
-						//return FALSE;
-					}break;
-				case SC_SCREENSAVE:
-					{
-						//Disable Screensave
-						return TRUE;
-					}break;
-				case SC_MONITORPOWER:
-					{
-						return TRUE;
-					}break;
-				}            
-			}break;
-		case WM_SETCURSOR:
-			{
-				if( m_application->isFocus() && LOWORD(lParam) == HTCLIENT && m_cursorMode == false )
-				{
-					::SetCursor(NULL);
-				}
-				else 
-				{
-					if (m_cursor == NULL)
-					{
-						m_cursor = LoadCursor(NULL, IDC_ARROW);						
-					}
-
-					::SetCursor( m_cursor );
-
-					//if( m_clipingCursor != FALSE )
-					//{
-					//	::ClipCursor( &m_clipingCursorRect );
-					//}
-				}
-
-				return FALSE;
-			}break;
-		case WM_DESTROY: 
-			::PostQuitMessage(0);
-
-			return 0;
-		}
-
-		BOOL input_result;
-		if( this->wndProcInput( hWnd, uMsg, wParam, lParam, input_result ) == true )
-		{
-			return input_result;
-		}
-
-		LRESULT result = m_windowsLayer->defWindowProc( hWnd, uMsg, wParam, lParam );
-
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & _result )
-	{
-		(void)hWnd;
-
-		bool handle = false;
-
-		switch( uMsg )
-		{
-		case WM_TIMER:
-			{
-				if( wParam == UTIMER_MOUSE_EVENT )
-				{
-					m_mouseEvent.verify( hWnd );
-				}
-
-				handle = true;
-				_result = FALSE;
-			}break;
-		case UWM_MOUSE_LEAVE:
-			{
-				if( m_cursorInArea == true )
-				{
-					m_cursorInArea = false;
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
-
-					mt::vec2f point;
-					this->calcCursorPosition( point );
-
-					INPUT_SERVICE( m_serviceProvider )
-						->pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
-
-					if( (GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
-					{
-						m_clickOutArea = true;
-					}
-				}
-
-				handle = true;
-				_result = FALSE;
-			}break;
-		case WM_MOUSEMOVE:
-			{
-				//::SetFocus( m_hWnd );
-
-				mt::vec2f point;
-				this->calcCursorPosition( point );
-
-				m_mouseEvent.notify( hWnd );
-
-				if( m_cursorInArea == false )
-				{
-					m_cursorInArea = true;
-
-					InvalidateRect(hWnd, NULL, FALSE);
-					UpdateWindow(hWnd);
-
-					INPUT_SERVICE( m_serviceProvider )
-						->pushMouseEnterEvent( 0, point.x, point.y, 0.f );
-				}
-
-				if( m_clickOutArea == true ) 
-				{
-					m_clickOutArea = false;
-
-					if( (GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
-					{
-						INPUT_SERVICE( m_serviceProvider )
-							->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false );
-					}                    
-				}
-
-				int x = (int)(short)LOWORD(lParam);
-				int y = (int)(short)HIWORD(lParam);
-
-				if( m_lastMouse == false )
-				{
-					POINT p;
-					GetCursorPos( &p );
-					ScreenToClient( hWnd, &p );
-
-					m_lastMouseX = p.x;
-					m_lastMouseY = p.y;
-
-					m_lastMouse = true;
-				}
-
-				int dx = x - m_lastMouseX;
-				int dy = y - m_lastMouseY;		
-
-				if( dx == 0 && dy == 0 )
-				{
-					break;
-				}
-
-				m_lastMouseX = x;
-				m_lastMouseY = y;
-
-				float fdx = (float)dx;
-				float fdy = (float)dy;
-
-
-				//const Resolution & contentResolution = m_application->getContentResolution();
-				//mt::vec2f resolutionScale = contentResolution.getScale( m_windowResolution );
-
-				//float fdx_scale = fdx * resolutionScale.x;
-				//float fdy_scale = fdy * resolutionScale.y;
-
-				RECT rect;
-				if( GetClientRect( m_hWnd, &rect ) == FALSE )
-				{
-					return false;
-				}
-
-				float width = static_cast<float>(rect.right - rect.left);
-				float height = static_cast<float>(rect.bottom - rect.top);
-
-				fdx /= width;
-				fdy /= height;
-
-				INPUT_SERVICE( m_serviceProvider )
-					->pushMouseMoveEvent( 0, point.x, point.y, fdx, fdy, 0.f );
-
-				handle = true;
-				_result = FALSE;
-			}break;
-		case WM_MOUSEWHEEL:
-			{
-				int zDelta = (int)(short)( HIWORD(wParam) );
-
-				mt::vec2f point;
-				this->calcCursorPosition( point );				
-
-				int wheel = zDelta / WHEEL_DELTA;
-
-				INPUT_SERVICE( m_serviceProvider )
-					->pushMouseWheelEvent( point.x, point.y, 0, wheel );
-
-				handle = true;
-				_result = FALSE;
-			}break;
-		case WM_RBUTTONDBLCLK:
-		case WM_LBUTTONDBLCLK:
-			{
-				m_isDoubleClick = true;
-
-				handle = true;
-				_result = FALSE;
-			}
-			break;
-		case WM_LBUTTONDOWN:
-			{
-				mt::vec2f point;
-				this->calcCursorPosition( point );
-
-				INPUT_SERVICE( m_serviceProvider )
-					->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, true );
-
-				handle = true;
-				_result = FALSE;
-			}
-			break;
-		case WM_LBUTTONUP:
-			{
-				if( m_isDoubleClick == false )
-				{
-					mt::vec2f point;
-					this->calcCursorPosition(point);
-
-					INPUT_SERVICE( m_serviceProvider )
-						->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false );
-				}
-
-				m_isDoubleClick = false;
-
-				handle = true;
-				_result = FALSE;
-			}break;
-		case WM_RBUTTONDOWN:
-			{
-				//::SetFocus(m_hWnd);
-
-				mt::vec2f point;
-				this->calcCursorPosition(point);
-
-				INPUT_SERVICE( m_serviceProvider )
-					->pushMouseButtonEvent( 0, point.x, point.y, 1, 0.f, true );
-
-				handle = true;
-				_result = FALSE;
-			}break;
-		case WM_RBUTTONUP:
-			{
-				if( m_isDoubleClick == false )
-				{
-					mt::vec2f point;
-					this->calcCursorPosition(point);
-
-					INPUT_SERVICE( m_serviceProvider )
-						->pushMouseButtonEvent( 0, point.x, point.y, 1, 0.f, false );
-				}
-
-				m_isDoubleClick = false;
-
-				handle = true;
-				_result = FALSE;
-			}break;
-		case WM_MBUTTONDOWN:
-			{
-				//::SetFocus(m_hWnd);
-
-				mt::vec2f point;
-				this->calcCursorPosition(point);
-
-				INPUT_SERVICE( m_serviceProvider )
-					->pushMouseButtonEvent( 0, point.x, point.y, 2, 0.f, true );
-
-				handle = true;
-				_result = FALSE;
-			}break;
-		case WM_MBUTTONUP:
-			{
-				mt::vec2f point;
-				this->calcCursorPosition(point);
-
-				INPUT_SERVICE( m_serviceProvider )
-					->pushMouseButtonEvent( 0, point.x, point.y, 2, 0.f, false );
-
-				handle = true;
-				_result = FALSE;
-			}break;
-		case WM_KEYDOWN:
-			{
-				UINT vkc = static_cast<UINT>( wParam );
-				HKL  layout = ::GetKeyboardLayout(0);
-				UINT vk = MapVirtualKeyEx( vkc, 0, layout );
-
-				mt::vec2f point;
-				this->calcCursorPosition(point);
-
-				WChar tvk = this->translateVirtualKey_( vkc, vk );
-
-				KeyCode code = (KeyCode)vkc;
-
-				INPUT_SERVICE( m_serviceProvider )
-					->pushKeyEvent( point.x, point.y, code, tvk, true, false );
-
-				handle = true;
-				_result = FALSE;
-			}break;
-		case WM_KEYUP:
-			{
-				UINT vkc = static_cast<UINT>( wParam );
-				HKL  layout = ::GetKeyboardLayout(0);
-				unsigned int vk = MapVirtualKeyEx( vkc, 0, layout );
-
-				mt::vec2f point;
-				this->calcCursorPosition(point);
-
-				WChar tvk = this->translateVirtualKey_( vkc, vk );
-
-				KeyCode code = (KeyCode)vkc;
-
-				INPUT_SERVICE( m_serviceProvider )
-					->pushKeyEvent( point.x, point.y, code, tvk, false, false );
-
-				handle = true;
-				_result = FALSE;
-			}break;
-		}
-
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	HWND WinApplication::createWindow( const Menge::WString & _projectTitle, const Resolution & _resolution, bool _fullscreen )
-	{
-		m_windowResolution = _resolution;
-
-		HBRUSH black_brush = (HBRUSH)GetStockObject(BLACK_BRUSH);
-
-		// Register the window class		
-		ATOM result = m_windowsLayer->registerClass( 
-			s_wndProc, 
-			0, 
-			0, 
-			m_hInstance, 
-			IDI_MENGE, 
-			black_brush, 
-			m_windowClassName.c_str()
-			);
-
-		if( result == FALSE )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Can't register window class");
-
-			return NULL;
-		}
-
-		DWORD dwStyle = this->getWindowStyle( _fullscreen );
-		dwStyle &= ~WS_VISIBLE;
-
-		RECT rc = this->getWindowsRect( m_windowResolution, _fullscreen );
-
-		DWORD exStyle = _fullscreen ? WS_EX_TOPMOST : 0;
-		//DWORD exStyle = 0;
-
-		HWND hwnd = m_windowsLayer->createWindowEx( exStyle, m_windowClassName.c_str(), _projectTitle.c_str(), dwStyle
-			, rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
-			, NULL, NULL, m_hInstance, (LPVOID)this );
-
-		return hwnd; 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
-	{
-		LOGGER_WARNING(m_serviceProvider)("WinApplication::notifyWindowModeChanged %d:%d %d"
-			, _resolution.getWidth()
-			, _resolution.getHeight()
-			, _fullscreen
-			);
-
-		m_windowResolution = _resolution;
-
-		DWORD dwStyle = this->getWindowStyle( _fullscreen );
-
-		RECT rc = this->getWindowsRect( m_windowResolution, _fullscreen );
-
-		DWORD dwExStyle = m_windowsLayer->getWindowLong( m_hWnd, GWL_EXSTYLE );
-
-		if( _fullscreen == false )
-		{
-			// When switching back to windowed mode, need to reset window size 
-			// after device has been restored
-
-			m_windowsLayer->setWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle & (~WS_EX_TOPMOST) );
-			m_windowsLayer->setWindowLong( m_hWnd, GWL_STYLE, dwStyle );
-
-			::SetWindowPos(
-				m_hWnd
-				, HWND_NOTOPMOST
-				, rc.left
-				, rc.top
-				, rc.right - rc.left
-				, rc.bottom - rc.top
-				, SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_NOACTIVATE
-				);
-		}
-		else
-		{
-			m_windowsLayer->setWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle | WS_EX_TOPMOST );
-			m_windowsLayer->setWindowLong( m_hWnd, GWL_STYLE, dwStyle );
-
-			::SetWindowPos( 
-				m_hWnd
-				, HWND_TOPMOST
-				, rc.left
-				, rc.top
-				, rc.right - rc.left
-				, rc.bottom - rc.top
-				//, SWP_FRAMECHANGED //| SWP_NOZORDER | SWP_NOACTIVATE  | SWP_FRAMECHANGED
-				, SWP_NOACTIVATE
-				);
-
-
-			//::SetWindowPos(
-			//    m_hWnd
-			//    , 0
-			//    , 0
-			//    , 0
-			//    , 0
-			//    , 0
-			//    , SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED
-			//    );
-		}
-
-		//::UpdateWindow( m_hWnd );
-		//::ShowWindow( m_hWnd, SW_SHOW );
-		//      ::SetFocus( m_hWnd );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DWORD WinApplication::getWindowStyle( bool _fullsreen ) const
-	{
-		DWORD dwStyle = WS_POPUP;
-
-		if( _fullsreen == false )
-		{
-			dwStyle |= WS_CAPTION | WS_VISIBLE;
-
-			bool hasWindowPanel = true;
-			//m_application->getHasWindowPanel();
-
-			if( hasWindowPanel == true )
-			{
-				dwStyle |= WS_SYSMENU | WS_MINIMIZEBOX;
-			}
-
-			bool allowMaximize = m_application->getAllowFullscreenSwitchShortcut();
-
-			if( allowMaximize == true )
-			{
-				dwStyle |= WS_MAXIMIZEBOX;
-			}
-		}
-		else
-		{
-			dwStyle |= WS_VISIBLE;
-		}
-
-		return dwStyle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RECT WinApplication::getWindowsRect( const Resolution & _resolution, bool _fullsreen ) const
-	{
-		RECT rc;
-		::SetRect(&rc, 0, 0, (int)_resolution.getWidth(), (int)_resolution.getHeight());
-
-		if( _fullsreen == false )
-		{
-			DWORD dwStyle = this->getWindowStyle( _fullsreen );
-			::AdjustWindowRect( &rc, dwStyle, FALSE );
-
-			RECT workArea;
-			::SystemParametersInfo(SPI_GETWORKAREA, 0, &workArea, 0);
-
-			LONG width = rc.right - rc.left;
-			LONG height = rc.bottom - rc.top;
-
-			rc.left = (workArea.left + workArea.right - width) / 2;
-			rc.top = (workArea.top + workArea.bottom - height) / 2;
-
-			rc.right = rc.left + width;
-			rc.bottom = rc.top + height;
-		}
-
-		return rc;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::setActive( bool _active )
-	{
-		if( m_active == _active )
-		{
-			return;
-		}
-
-		m_active = _active;
-
-		//if( m_clipingCursor != FALSE )
-		//{
-		//	::ClipCursor( (m_active)?(&m_clipingCursorRect):NULL );
-		//}
-
-		if( m_active == true )
-		{
-			if( m_cursor == NULL )
-			{
-				m_cursor = LoadCursor(NULL, IDC_ARROW);						
-			}
-
-			::SetCursor( m_cursor );
-		}
-		else
-		{
-			::SetCursor( NULL );
-		}
-
-		if( m_fpsMonitor != nullptr )
-		{
-			if( m_active == true )
-			{
-				m_fpsMonitor->setFrameTime( s_activeFrameTime );
-			}
-			else
-			{
-				m_fpsMonitor->setFrameTime( s_inactiveFrameTime );
-			}
-		}
-
-		mt::vec2f point;
-		this->calcCursorPosition(point);
-
-		INPUT_SERVICE( m_serviceProvider )
-			->pushMousePositionEvent( 0, point.x, point.y, 0.f );
-
-		if( m_nopause == false )
-		{
-			m_application->setFocus( m_active, true, point );
-			INPUT_SERVICE( m_serviceProvider )
-				->onFocus( m_active );
-
-			bool turnSound = m_active;
-			m_application->turnSound( turnSound );
-		}
-		else
-		{
-			m_application->setFocus( true, true, point );
-			INPUT_SERVICE( m_serviceProvider )
-				->onFocus( true );
-
-			m_application->turnSound( true );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::calcCursorPosition( mt::vec2f & _point ) const
-	{
-		POINT cPos;
-		if( ::GetCursorPos( &cPos ) == FALSE )
-		{
-			return false;
-		}
-
-		if( ::ScreenToClient( m_hWnd, &cPos ) == FALSE )
-		{
-			return false;
-		}
-
-		float x = static_cast<float>(cPos.x);
-		float y = static_cast<float>(cPos.y);
-
-		RECT rect;
-		if( GetClientRect( m_hWnd, &rect ) == FALSE )
-		{
-			return false;
-		}
-
-		float width = static_cast<float>(rect.right - rect.left);
-		float height = static_cast<float>(rect.bottom - rect.top);
-
-		_point.x = x / width;
-		_point.y = y / height;
-
-		//_point.x = x;
-		//_point.y = y;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
-	{
-		bool successful = WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->createDirectoryUserPicture(_path, _file, _data, _size);
-
-		return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
-	{
-		bool successful = WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->createDirectoryUserMusic(_path, _file, _data, _size);
-
-		return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::getDesktopResolution( Resolution & _resolution ) const
-	{
-		int cxscreen = ::GetSystemMetrics( SM_CXSCREEN );
-		int cyscreen = ::GetSystemMetrics( SM_CYSCREEN );
-
-		_resolution.setWidth( cxscreen );
-		_resolution.setHeight( cyscreen );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t WinApplication::getCurrentPath( WChar * _path, size_t _len ) const
-	{
-		size_t len = WINDOWSLAYER_SERVICE(m_serviceProvider)
-			->getCurrentDirectory( _path, _len );
-
-		return len;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::minimizeWindow()
-	{
-		::ShowWindow( m_hWnd, SW_MINIMIZE );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyVsyncChanged( bool _vsync )
-	{
-		m_vsync = _vsync;
-
-		if( m_fpsMonitor )
-		{
-			m_fpsMonitor->setActive( m_vsync == false );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::setHandleMouse( bool _handle )
-	{
-		(void)_handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::setCursorPosition( const mt::vec2f & _pos )
-	{        
-		POINT cPos = { (int)_pos.x, (int)_pos.y };
-
-		::ClientToScreen( m_hWnd, &cPos );
-
-		::SetCursorPos( cPos.x, cPos.y );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::showKeyboard()
-	{
-		//Empty - for iPad
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::hideKeyboard()
-	{
-		//Empty - for iPad
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyCursorModeChanged( bool _mode )
-	{
-		m_cursorMode = _mode;
-
-		if( m_cursor == NULL )
-		{
-			m_cursor = ::LoadCursor( NULL, IDC_ARROW );
-		}
-
-		m_cursor = m_cursorMode ? m_cursor : NULL;
-
-		::SetCursor( m_cursor );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyCursorClipping( const Viewport & _viewport )
-	{
-		(void)_viewport;
-
-		//POINT p1 = { static_cast<LONG>( _viewport.begin.x ),
-		//	static_cast<LONG>( _viewport.begin.y ) };
-
-		//POINT p2 = { static_cast<LONG>( _viewport.end.x ),
-		//	static_cast<LONG>( _viewport.end.y ) };
-
-		//::ClientToScreen( m_hWnd, &p1 );
-		//::ClientToScreen( m_hWnd, &p2 );
-
-		//m_clipingCursorRect.left = p1.x;
-		//m_clipingCursorRect.top = p1.y;
-		//m_clipingCursorRect.right = p2.x;
-		//m_clipingCursorRect.bottom = p2.y;
-
-		//m_clipingCursor = ::ClipCursor( &m_clipingCursorRect );	// Bound cursor
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::notifyCursorUnClipping()
-	{
-		//m_clipingCursor = FALSE;
-
-		//::ClipCursor( NULL );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const Blobject & _buffer )
-	{
-		TMapCursors::iterator it_found = m_cursors.find( _path );
-
-		if( it_found == m_cursors.end() )
-		{
-			if( _buffer.empty() == true )
-			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s buffer empty"
-					, _path.c_str()
-					);
-
-				return false;
-			}
-
-			FileGroupInterfacePtr userGroup = m_fileService->getFileGroup( STRINGIZE_STRING_LOCAL(m_serviceProvider, "user") );
-
-			if( userGroup->createDirectory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "IconCache") ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup name %s path %s can't create directory 'IconCache'"
-					, _name.c_str()
-					, _path.c_str()
-					);
-				
-				return false;
-			}
-
-			OutputStreamInterfacePtr stream = userGroup->createOutputFile();
-
-			if( stream == nullptr )
-			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup name %s path %s can't create output stream"
-					, _name.c_str()
-					, _path.c_str()
-					);
-
-				return false;
-			}
-
-			PathString icoFile;
-			icoFile += "IconCache";
-			icoFile += '\\';
-			icoFile += _path;
-			icoFile += ".ico";
-
-			ConstString c_icoFile = Helper::stringizeString( m_serviceProvider, icoFile );
-
-			if( userGroup->openOutputFile( c_icoFile, stream ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup name %s path %s can't open output stream '%s'"
-					, _name.c_str()
-					, _path.c_str()
-					, c_icoFile.c_str()
-					);
-
-				return false;
-			}
-
-			if( stream->write( &_buffer[0], _buffer.size() ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup name %s path %s can't write output stream '%s'"
-					, _name.c_str()
-					, _path.c_str()
-					, c_icoFile.c_str()
-					);
-
-				return false;
-			}
-
-			stream->flush();
-			stream = nullptr;
-
-			WString unicode_icoFile;        
-			if( Helper::utf8ToUnicode( m_serviceProvider, c_icoFile, unicode_icoFile ) == false )
-			{
-				LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup name %s path %s can't file name '%s' to unicode"
-					, _name.c_str()
-					, _path.c_str()
-					, c_icoFile.c_str()
-					);
-
-				return false;
-			}
-			
-			HCURSOR cursor = ::LoadCursorFromFileW( unicode_icoFile.c_str() );
-
-			if( cursor == NULL )
-			{
-				DWORD errCode = ::GetLastError();
-
-				if( errCode != 0 )
-				{
-					LOGGER_ERROR(m_serviceProvider)("WinApplication::notifyCursorIconSetup %s for file %ls errCode %d"
-						, _name.c_str()
-						, unicode_icoFile.c_str()
-						, errCode 
-						);
-
-					return false;
-				}
-			}
-
-			it_found = m_cursors.insert( std::make_pair( _name, cursor ) ).first;
-		}
-
-		m_cursor = it_found->second;
-
-		::SetCursor( m_cursor );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	WChar WinApplication::translateVirtualKey_( unsigned int _vkc, unsigned int _vk )
-	{
-		if( _vk == 0 )
-		{
-			return 0;
-		}
-
-		BYTE keyState[256];
-		if( ::GetKeyboardState( keyState ) == 0 )
-		{
-			return 0;
-		}
-
-		HKL layout = ::GetKeyboardLayout(0);
-
-		WCHAR wide[3];
-		int res = ::ToUnicodeEx( _vkc, _vk, keyState, wide, 3, 0, layout );
-
-		if( res == -1 )
-		{
-			m_deadKey = wide[0];
-		}
-		else if( res > 0 )
-		{
-			return wide[0];
-		}
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::isSaverRunning() const
-	{ 		
-		WChar fileName[MENGINE_MAX_PATH];
-		if( m_windowsLayer->getModuleFileName( NULL, fileName, MENGINE_MAX_PATH ) == false )
-		{
-			return false;
-		}
-
-		size_t fn_len = wcslen( fileName );
-
-		if( fn_len < 4 )
-		{
-			return false;
-		}
-
-		WChar * extention = fileName + (fn_len - 4);
-
-		if( wcscmp( extention, L".scr" ) == 0 )
-		{
-			return true;
-		}
-
-		return false;
-	}
-	////////////////////////////////////////////////////////////////////////////
-	//void WinApplication::setAsScreensaver( bool _set )
-	//{
-	//	if( _set == true )
-	//	{
-	//		WString screensaverName = m_application->getScreensaverName();
-
-	//		FilePath fullModuleName;
-	//		WindowsLayer::getModuleFileName(NULL, fullModuleName);
-
-	//		size_t separatorPos = fullModuleName.find_last_of(MENGE_FOLDER_DELIM);
-	//		FilePath binFolderPath = fullModuleName.substr(0, separatorPos);
-	//		FilePath fullScreensaverPath = binFolderPath + MENGE_FOLDER_DELIM + screensaverName;
-
-	//		FilePath fullScreensaverPathShort;
-	//		WindowsLayer::getShortPathName( fullScreensaverPath, fullScreensaverPathShort );
-
-	//		WindowsLayer::setRegistryValue( HKEY_CURRENT_USER
-	//			, L"Control Panel\\Desktop"
-	//			, L"SCRNSAVE.EXE"
-	//			, REG_SZ
-	//			, reinterpret_cast<const BYTE*>( fullScreensaverPathShort.c_str() )
-	//			, fullScreensaverPathShort.length() + 1 
-	//			);
-	//	}
-	//	else
-	//	{
-	//		WindowsLayer::deleteRegistryValue( HKEY_CURRENT_USER, L"Control Panel\\Desktop", L"SCRNSAVE.EXE" );
-	//	}		
-	//}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::isDevelopmentMode() const
-	{
-		return m_developmentMode;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::isRoamingMode() const
-	{
-		return m_roamingMode;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t WinApplication::getProcessHandleCount() const
-	{
-		// first determine the id of the current process
-		DWORD const  id = GetCurrentProcessId();
-
-		// then get a process list snapshot.
-		HANDLE const  snapshot = CreateToolhelp32Snapshot( TH32CS_SNAPALL, 0 );
-
-		// initialize the process entry structure.
-		PROCESSENTRY32 entry = { 0 };
-		entry.dwSize = sizeof( entry );
-
-		// get the first process info.
-		BOOL ret = TRUE;
-		ret = Process32First( snapshot, &entry );
-		while( ret && entry.th32ProcessID != id ) {
-			ret = Process32Next( snapshot, &entry );
-		}
-		CloseHandle( snapshot );
-		return ret 
-			?   entry.cntThreads
-			:   0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void WinApplication::onEvent( const ConstString & _event, const TMapParams & _params )
-	{
-		(void)_event;
-		(void)_params;
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool WinApplication::openUrlInDefaultBrowser( const WString & _url )
-	{
-		//size_t cmd_path_size = 0;
-		//wchar_t cmd_path [MENGINE_MAX_PATH];
-		wchar_t * cmd_path = _wgetenv( L"COMSPEC" );
-
-		WString params = L"/c start " + _url;
-
-		STARTUPINFO startup_info;
-		memset( &startup_info, 0, sizeof(startup_info) );
-		startup_info.cb = sizeof (startup_info);
-		startup_info.wShowWindow = SW_HIDE;
-		startup_info.dwFlags |= STARTF_USESHOWWINDOW;
-
-		PROCESS_INFORMATION process_info;
-		memset( &process_info, 0, sizeof(process_info) );
-
-		BOOL result = ::CreateProcess (
-			cmd_path,          // path
-			const_cast<LPWSTR>(params.c_str()), // command line
-			NULL,            // process attributes
-			NULL,            // thread attributes
-			FALSE,            // inherit handles
-			NORMAL_PRIORITY_CLASS,    // creation flags
-			NULL,            // environment
-			NULL,            // current directory
-			& startup_info,        // startup info structure
-			& process_info        // process info structure
-			);
-
-		LOGGER_WARNING(m_serviceProvider)("WinApplication::openUrlInDefaultBrowser %ls %d"
-			, _url.c_str()
-			, result
-			);
-
-		if( result == FALSE )
-		{
-			return false;
-		}
-
-		return true;
+		//
 	}
 	//////////////////////////////////////////////////////////////////////////
 }	// namespace Menge

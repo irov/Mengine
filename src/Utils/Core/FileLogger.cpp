@@ -1,6 +1,7 @@
 #	include "FileLogger.h"
 
-#	include "Interface/PlatformInterface.h"
+#	include "Interface/ApplicationInterface.h"
+#	include "Interface/OptionsInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/StringizeInterface.h"
@@ -11,7 +12,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	FileLogger::FileLogger()
-		: m_verboseLevel(LM_INFO)
+		: m_serviceProvider(nullptr)
+		, m_verboseLevel(LM_INFO)
         , m_verboseFlag(0xFFFFFFFF)
 	{		
 	}
@@ -38,11 +40,8 @@ namespace Menge
 		WString unicode_logFilename;
 		unicode_logFilename += L"Game";
 
-		bool developmentMode = PLATFORM_SERVICE( m_serviceProvider )
-			->isDevelopmentMode();
-
-		bool roamingMode = PLATFORM_SERVICE( m_serviceProvider )
-			->isRoamingMode();
+		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
 
 		if( developmentMode == true && roamingMode == false )
 		{

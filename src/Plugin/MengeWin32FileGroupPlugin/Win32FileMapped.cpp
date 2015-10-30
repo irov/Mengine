@@ -1,6 +1,5 @@
 #	include "Win32FileMapped.h"
 
-#	include "Interface/LogSystemInterface.h"
 #	include "Interface/MemoryInterface.h"
 #	include "Interface/UnicodeInterface.h"
 

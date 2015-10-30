@@ -6,6 +6,7 @@
 #	include "ScriptLogger.h"
 
 #	include "Interface/ApplicationInterface.h"
+#	include "Interface/OptionsInterface.h"
 #	include "Interface/NodeInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
@@ -29,7 +30,7 @@ extern "C" {
 }
 #endif
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ScriptService, Menge::ScriptServiceInterface, Menge::ScriptEngine );
+SERVICE_FACTORY( ScriptService, Menge::ScriptEngine );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -57,7 +58,7 @@ namespace Menge
 				, _functionName
 				);
 
-			size_t count = LOG_SERVICE(m_serviceProvider)
+			size_t count = LOGGER_SERVICE(m_serviceProvider)
 				->getCountMessage( LM_ERROR );
 
 			m_count = count;
@@ -73,7 +74,7 @@ namespace Menge
 				, _functionName
 				);
 
-			size_t count = LOG_SERVICE(m_serviceProvider)
+			size_t count = LOGGER_SERVICE(m_serviceProvider)
 				->getCountMessage( LM_ERROR );
 
 			if( m_count == count )
@@ -114,8 +115,7 @@ namespace Menge
 	};
 	//////////////////////////////////////////////////////////////////////////
 	ScriptEngine::ScriptEngine()
-		: m_serviceProvider(nullptr)
-        , m_moduleFinder(nullptr)
+		: m_moduleFinder(nullptr)
         , m_moduleMenge(nullptr)
 		, m_logger(nullptr)
         , m_loggerError(nullptr)        
@@ -125,16 +125,6 @@ namespace Menge
 	ScriptEngine::~ScriptEngine()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void ScriptEngine::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * ScriptEngine::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	static void s_pybind_logger( ServiceProviderInterface * _serviceProvider, const char * _msg )
 	{
@@ -143,10 +133,11 @@ namespace Menge
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::initialize()
+	bool ScriptEngine::_initialize()
 	{
-        if( PLATFORM_SERVICE(m_serviceProvider)
-            ->isDevelopmentMode() == true )
+		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+
+		if( developmentMode == true )
         {
             Py_ErrFormatFlag = 1;
         }
@@ -230,7 +221,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::finalize()
+	void ScriptEngine::_finalize()
 	{
 		pybind::_remove_module_finder();
 

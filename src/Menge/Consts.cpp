@@ -3,27 +3,16 @@
 #   include "Interface/StringizeInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Consts, Menge::Consts, Menge::Consts );
+SERVICE_FACTORY( Consts, Menge::Consts );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     Consts::Consts()
-        : m_serviceProvider(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Consts::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * Consts::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Consts::initialize()
+    bool Consts::_initialize()
     {
 #	define INIT_CONST( Const ) \
 		c_##Const = STRINGIZE_STRING_LOCAL(m_serviceProvider, #Const )
@@ -133,4 +122,10 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Consts::_finalize()
+	{
+		//Empty
+	}
+
 }

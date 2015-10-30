@@ -114,56 +114,43 @@
 #	include <sstream>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( Consts, Menge::Consts );
-SERVICE_EXTERN( TextService, Menge::TextServiceInterface );
-SERVICE_EXTERN( NodeService, Menge::NodeServiceInterface );
-SERVICE_EXTERN( LoaderService, Menge::LoaderServiceInterface );
-SERVICE_EXTERN( ResourceService, Menge::ResourceServiceInterface );
-SERVICE_EXTERN( Watchdog, Menge::WatchdogInterface );
-SERVICE_EXTERN( GameService, Menge::GameServiceInterface );
-SERVICE_EXTERN( PlayerService, Menge::PlayerServiceInterface );
-SERVICE_EXTERN( PrototypeService, Menge::PrototypeServiceInterface );
-SERVICE_EXTERN( Graveyard, Menge::GraveyardInterface );
-SERVICE_EXTERN( RenderService, Menge::RenderServiceInterface );
-SERVICE_EXTERN( RenderTextureManager, Menge::RenderTextureServiceInterface );
-SERVICE_EXTERN( RenderMaterialManager, Menge::RenderMaterialServiceInterface );
+//SERVICE_EXTERN( Consts, Menge::Consts );
+//SERVICE_EXTERN( TextService, Menge::TextServiceInterface );
+//SERVICE_EXTERN( NodeService, Menge::NodeServiceInterface );
+//SERVICE_EXTERN( LoaderService, Menge::LoaderServiceInterface );
+//SERVICE_EXTERN( ResourceService, Menge::ResourceServiceInterface );
+//SERVICE_EXTERN( Watchdog, Menge::WatchdogInterface );
+//SERVICE_EXTERN( GameService, Menge::GameServiceInterface );
+//SERVICE_EXTERN( PlayerService, Menge::PlayerServiceInterface );
+//SERVICE_EXTERN( PrototypeService, Menge::PrototypeServiceInterface );
+//SERVICE_EXTERN( Graveyard, Menge::GraveyardInterface );
+//SERVICE_EXTERN( RenderService, Menge::RenderServiceInterface );
+//SERVICE_EXTERN( RenderTextureManager, Menge::RenderTextureServiceInterface );
+//SERVICE_EXTERN( RenderMaterialManager, Menge::RenderMaterialServiceInterface );
+//SERVICE_EXTERN( PackageService, Menge::PackageServiceInterface );
+//SERVICE_EXTERN( UserdataService, Menge::UserdataServiceInterface );
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Application, Menge::ApplicationInterface, Menge::Application );
+SERVICE_FACTORY( Application, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Application::Application()
-		: m_particles(true)
+		: m_particleEnable(true)
+		, m_textEnable(true)
 		, m_debugMask(0)
 		, m_phycisTiming(0.f)
 		, m_resetTiming(false)
 		, m_maxTiming(100.f)
-        , m_mouseBounded(false)
-        , m_allowFullscreenSwitchShortcut(false)
         , m_focus(true)
         , m_update(true)				
-        , m_console(nullptr)
-		, m_loaderService(nullptr)
-		, m_resourceService(nullptr)
-		, m_textService(nullptr)
-        , m_nodeService(nullptr)
-		, m_prototypeService(nullptr)
-		, m_gameService(nullptr)
-		, m_playerService(nullptr)
-		, m_renderService( nullptr )
-		, m_renderTextureManager( nullptr )
-		, m_renderMaterialManager( nullptr )
 		, m_createRenderWindow(false)
 		, m_cursorMode(false)
 		, m_invalidateVsync(false)
 		, m_invalidateCursorMode(false)
 		, m_fullscreen(false)		
 		, m_inputMouseButtonEventBlock(false)
-		, m_countThreads(2)
 		, m_mouseEnter(false)
-		, m_developmentMode(false)
-        , m_nofullscreenMode(false)
         , m_resourceCheck(true)
 		, m_resourceCheckCritical(true)
 		, m_cursorResource(nullptr)
@@ -174,10 +161,6 @@ namespace Menge
 		, m_FSAAType(0)
 		, m_FSAAQuality(0)
 		, m_textureFiltering(true)
-        , m_windowModeCheck(false)
-        , m_watchdog(nullptr)
-        , m_profiler(nullptr)
-		, m_graveyard(nullptr)
 		, m_projectVersion(0)
 		, m_debugPause(false)
 		, m_debugFileOpen(false)
@@ -188,88 +171,41 @@ namespace Menge
 	Application::~Application()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Application::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * Application::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	namespace
-	{
-		class ExecuteInitialize
-		{
-		protected:
-			typedef bool (Application::*TInitializeMethod)();
-			typedef stdex::list<TInitializeMethod> TListInitializeMethods;
-
-		public:
-			ExecuteInitialize( Application * _app )
-				: m_app(_app)
-			{
-
-			}
-
-		public:
-			void add( TInitializeMethod _method )
-			{
-				m_initializators.push_back( _method );
-			}
-
-		public:
-			bool run() const
-			{
-				TListInitializeMethods::const_iterator it_found = 
-					std::find_if( m_initializators.begin(), m_initializators.end(), *this );
-
-				return it_found == m_initializators.end();
-			}
-
-		public:
-			bool operator() ( TInitializeMethod _method ) const
-			{
-				bool result = (m_app->*_method)();
-
-				return result == false;
-			}
-
-		protected:
-			Application * m_app;
-			TListInitializeMethods m_initializators;
-		};
-	}
 	//////////////////////////////////////////////////////////////////////////	
-	bool Application::initialize( const String & _args )
+	bool Application::_initialize()
 	{   
-        SERVICE_CREATE( Consts, &m_consts );
-        SERVICE_REGISTRY( m_serviceProvider, m_consts );
+		SERVICE_CREATE( m_serviceProvider, Consts );
+		SERVICE_CREATE( m_serviceProvider, PrototypeService );
+		SERVICE_CREATE( m_serviceProvider, NodeService );
+		SERVICE_CREATE( m_serviceProvider, LoaderService );
+		SERVICE_CREATE( m_serviceProvider, RenderService );
+		SERVICE_CREATE( m_serviceProvider, RenderMaterialService );
+		SERVICE_CREATE( m_serviceProvider, RenderTextureService );
+		SERVICE_CREATE( m_serviceProvider, ResourceService );
+		SERVICE_CREATE( m_serviceProvider, TextService );
+		SERVICE_CREATE( m_serviceProvider, Watchdog );
+		SERVICE_CREATE( m_serviceProvider, ProfilerService );
+		SERVICE_CREATE( m_serviceProvider, Graveyard );
+		SERVICE_CREATE( m_serviceProvider, PackageService );
+		SERVICE_CREATE( m_serviceProvider, UserdataService );
+		SERVICE_CREATE( m_serviceProvider, PlayerService );
+		SERVICE_CREATE( m_serviceProvider, GameService );
 
-        m_consts->initialize();
+		if( this->registerBaseNodeTypes_() == false )
+		{
+			return false;
+		}
 
-        ExecuteInitialize exinit( this );
-				
-        exinit.add( &Application::initializePrototypeManager_ );
-        exinit.add( &Application::initializeNodeManager_ );
-        exinit.add( &Application::initializeLoaderEngine_ );
-		exinit.add( &Application::initializeRenderEngine_ );
-        exinit.add( &Application::initializeResourceManager_ );
-        exinit.add( &Application::initializeSceneManager_ );
-        exinit.add( &Application::initializeTextManager_ );        
-        exinit.add( &Application::initializeWatchdog_ );
-        exinit.add( &Application::initializeProfiler_ );
-		exinit.add( &Application::initializeGraveyard_ );
-		exinit.add( &Application::initializePlayer_ );
-		exinit.add( &Application::initializeGame_ );
+		if( this->registerBaseResourceTypes_() == false )
+		{
+			return false;
+		}
 
-        if( exinit.run() == false )
-        {
-            return false;
-        }
-		
+		if( this->registerSceneGenerator_() == false )
+		{
+			return false;
+		}
+
         ScriptWrapper::constsWrap( m_serviceProvider );
         ScriptWrapper::mathWrap( m_serviceProvider );
         ScriptWrapper::nodeWrap( m_serviceProvider );
@@ -286,9 +222,6 @@ namespace Menge
 
 		CODEC_SERVICE(m_serviceProvider)
 			->registerDecoder( CONST_STRING(m_serviceProvider, archiveImage), imageDecoderArchive );
-
-		
-		this->parseArguments_( _args );
 	
 		m_companyName = CONFIG_VALUE(m_serviceProvider, "Project", "Company", L"NONAME");
 		m_projectName = CONFIG_VALUE(m_serviceProvider, "Project", "Name", L"UNKNOWN");
@@ -299,11 +232,10 @@ namespace Menge
         m_contentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "ContentResolution", Resolution(1024, 768));
         m_fixedContentResolution = CONFIG_VALUE(m_serviceProvider, "Game", "FixedContentResolution", true);
 		m_fixedDisplayResolution = CONFIG_VALUE(m_serviceProvider, "Game", "FixedDisplayResolution", true);
-		m_windowModeCheck = CONFIG_VALUE(m_serviceProvider, "Game", "WindowModeCheck", false);
 		
 		TVectorAspectRatioViewports aspectRatioViewports;
 		CONFIG_VALUES(m_serviceProvider, "Game", "AspectRatioViewport", aspectRatioViewports);
-
+		
         for( TVectorAspectRatioViewports::const_iterator
             it = aspectRatioViewports.begin(),
             it_end = aspectRatioViewports.end();
@@ -315,201 +247,33 @@ namespace Menge
            m_aspectRatioViewports[aspect] = it->viewport;
         }
 
+		m_locale = CONFIG_VALUE( m_serviceProvider, "Locale", "Default", STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" ) );
+
+		LOGGER_WARNING( m_serviceProvider )("Locale %s"
+			, m_locale.c_str()
+			);
+
+		m_windowResolution = CONFIG_VALUE( m_serviceProvider, "Window", "Size", Resolution( 1024, 768 ) );
+		m_bits = CONFIG_VALUE( m_serviceProvider, "Window", "Bits", 32U );
+		m_fullscreen = CONFIG_VALUE( m_serviceProvider, "Window", "Fullscreen", true );
+		m_vsync = CONFIG_VALUE( m_serviceProvider, "Window", "VSync", true );
+
+		if( HAS_OPTIONS( m_serviceProvider, "author" ) == true )
+		{
+			LOGGER_CRITICAL( m_serviceProvider )("Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru");
+		}
+
         return true;
     }
-	/////////////////////////////////////////////////////
-	bool Application::loadResourcePacks( const ConstString & _fileGroup, const FilePath & _resourceIni )
-	{
-		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == false )
-		{
-			return false;
-		}
-
-		InputStreamInterfacePtr resourceInputStream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( _fileGroup, _resourceIni, false );
-
-		if( resourceInputStream == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application::loadResourcePacks_ Invalid open resourcesPack setting '%s'"
-				, _resourceIni.c_str()
-				);  
-
-			return false;
-		}
-
-		IniUtil::IniStore ini;
-		if( IniUtil::loadIni( ini, resourceInputStream, m_serviceProvider ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application::loadResourcePacks_ Invalid load resource settings '%s'"
-				, _resourceIni.c_str()
-				);
-
-			return false;
-		}
-
-		resourceInputStream = nullptr;
-
-		ConstString c_dir = STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" );
-
-		TVectorString frameworkPacksSettings;
-		IniUtil::getIniValue( ini, "GAME_RESOURCES", "FrameworkPack", frameworkPacksSettings, m_serviceProvider );
-
-		for( TVectorString::iterator
-			it = frameworkPacksSettings.begin(),
-			it_end = frameworkPacksSettings.end();
-		it != it_end;
-		++it )
-		{
-			const String & resourcePack = *it;
-
-			ResourcePackDesc desc;
-
-			desc.dev = false;
-			desc.immediately = true;
-			desc.preload = true;
-			desc.type = c_dir;
-
-			if( ini.hasSection( resourcePack.c_str() ) == false )
-			{
-				LOGGER_CRITICAL( m_serviceProvider )("Application::loadResourcePacks_ %s invalid load resource pack no found section for '%s'"
-					, _resourceIni.c_str()
-					, resourcePack.c_str()
-					);
-
-				return false;
-			}
-
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", desc.name, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", desc.type, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", desc.path, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", desc.locale, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", desc.platform, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", desc.descriptionPath, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", desc.dev, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", desc.preload, m_serviceProvider );
-
-			if( GAME_SERVICE( m_serviceProvider )
-				->addResourcePack( desc ) == false )
-			{
-				return false;
-			}
-		}
-
-		TVectorString resourcePacksSettings;
-		IniUtil::getIniValue( ini, "GAME_RESOURCES", "ResourcePack", resourcePacksSettings, m_serviceProvider );
-		
-		for( TVectorString::iterator
-			it = resourcePacksSettings.begin(),
-			it_end = resourcePacksSettings.end();
-		it != it_end;
-		++it )
-		{
-			const String & resourcePack = *it;
-
-			ResourcePackDesc pack;
-
-			pack.dev = false;
-			pack.immediately = false;
-			pack.preload = true;
-			pack.type = c_dir;
-
-			if( ini.hasSection( resourcePack.c_str() ) == false )
-			{
-				LOGGER_CRITICAL(m_serviceProvider)("Application::loadResourcePacks_ %s invalid load resource pack no found section for '%s'"
-					, _resourceIni.c_str()
-					, resourcePack.c_str()
-					);
-
-				return false;
-			}
-
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Name", pack.name, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Type", pack.type, m_serviceProvider );            
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Path", pack.path, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Locale", pack.locale, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Platform", pack.platform, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Description", pack.descriptionPath, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "Dev", pack.dev, m_serviceProvider );
-			IniUtil::getIniValue( ini, resourcePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );			
-
-			if( GAME_SERVICE(m_serviceProvider)
-				->addResourcePack( pack ) == false )
-			{
-				return false;
-			}
-		}
-
-		TVectorString languagePackSettings;
-		IniUtil::getIniValue( ini, "GAME_RESOURCES", "LanguagePack", languagePackSettings, m_serviceProvider );
-
-		for( TVectorString::iterator
-			it = languagePackSettings.begin(),
-			it_end = languagePackSettings.end();
-		it != it_end;
-		++it )
-		{
-			const String & languagePack = *it;
-
-			ResourcePackDesc pack;
-
-			pack.dev = false;
-			pack.immediately = false;
-			pack.preload = true;
-			pack.type = c_dir;
-
-			if( ini.hasSection( languagePack.c_str() ) == false )
-			{
-				LOGGER_CRITICAL(m_serviceProvider)("Application::loadResourcePacks_ %s invalid load language pack no found section for '%s'"
-					, _resourceIni.c_str()
-					, languagePack.c_str()
-					);
-
-				return false;
-			}
-
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Name", pack.name, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Type", pack.type, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Path", pack.path, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Locale", pack.locale, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Platform", pack.platform, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Description", pack.descriptionPath, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "Dev", pack.dev, m_serviceProvider );
-			IniUtil::getIniValue( ini, languagePack.c_str(), "PreLoad", pack.preload, m_serviceProvider );	
-
-			if( GAME_SERVICE( m_serviceProvider )
-				->addResourcePack( pack ) == false )
-			{
-				return false;
-			}
-		}
-
-		return true;
-	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeNodeManager_()
+	bool Application::registerBaseNodeTypes_()
 	{	
-		NodeServiceInterface * nodeService;
-        if( SERVICE_CREATE( NodeService, &nodeService ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, nodeService ) == false )
-        {
-            return false;
-        }
-
-        m_nodeService = nodeService;
-
-        m_nodeService->initialize();
-
-/*#	define NODE_FACTORY( serviceProvider, Type )\
-		nodeService->registerFactory( Helper::stringizeString( serviceProvider, #Type), new FactoryPool<Type, 128> )
-*/
-
 #	define NODE_FACTORY( serviceProvider, Type )\
-        PROTOTYPE_SERVICE(serviceProvider)\
-            ->addPrototype( CONST_STRING(serviceProvider, Node), STRINGIZE_STRING_LOCAL( serviceProvider, #Type), new NodePrototypeGenerator<Type, 128>(serviceProvider) );
+        if( PROTOTYPE_SERVICE(serviceProvider)\
+            ->addPrototype( STRINGIZE_STRING_LOCAL(serviceProvider, "Node"), STRINGIZE_STRING_LOCAL( serviceProvider, #Type), new NodePrototypeGenerator<Type, 128>(serviceProvider) ) == false )\
+		{\
+			return false;\
+		}
 
 		LOGGER_WARNING(m_serviceProvider)("Creating Object Factory..." );
 
@@ -576,210 +340,6 @@ namespace Menge
 
 		return true;
 	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeLoaderEngine_()
-	{
-		LOGGER_WARNING(m_serviceProvider)("Initializing Loader Engine..." );
-
-		LoaderServiceInterface * loaderService;
-        if( SERVICE_CREATE( LoaderService, &loaderService ) == false )
-        {
-            return false;
-        }
-
-        SERVICE_REGISTRY( m_serviceProvider, loaderService );
-
-		if( loaderService->initialize( STRINGIZE_STRING_LOCAL(m_serviceProvider, "protocol.xml") ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application::initializeLoaderEngine_ invalid initialize Loader Engine"
-				);
-
-			return false;
-		}
-
-        m_loaderService = loaderService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeRenderEngine_()
-	{ 
-		RenderServiceInterface * renderService;
-		if( SERVICE_CREATE( RenderService, &renderService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, renderService ) == false )
-		{
-			return false;
-		}
-		
-		if( renderService->initialize() == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("WinApplication::initializeRenderEngine_ Failed to initialize Render Engine"
-				);
-
-			return false;
-		}
-
-		m_renderService = renderService;
-
-		RenderTextureServiceInterface * renderTextureManager;
-		if( SERVICE_CREATE( RenderTextureManager, &renderTextureManager ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, renderTextureManager ) == false )
-		{
-			return false;
-		}
-
-		if( renderTextureManager->initialize() == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("WinApplication::initializeRenderEngine_ Failed to initialize Render Texture Service"
-				);
-
-			return false;
-		}
-
-		m_renderTextureManager = renderTextureManager;
-
-		RenderMaterialServiceInterface * renderMaterialManager;
-		if( SERVICE_CREATE( RenderMaterialManager, &renderMaterialManager ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, renderMaterialManager ) == false )
-		{
-			return false;
-		}
-
-		if( renderMaterialManager->initialize() == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("WinApplication::initializeRenderEngine_ Failed to initialize Render Material Service"
-				);
-
-			return false;
-		}
-		
-		m_renderMaterialManager = renderMaterialManager;
-
-		return true;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::initializePrototypeManager_()
-    {
-        LOGGER_WARNING(m_serviceProvider)("Inititalizing PrototypeManager..." );
-
-        PrototypeServiceInterface * prototypeService;
-
-        if( SERVICE_CREATE( PrototypeService, &prototypeService ) == false )
-        {
-            return false;
-        }
-
-        SERVICE_REGISTRY( m_serviceProvider, prototypeService );
-
-        m_prototypeService = prototypeService;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::initializeWatchdog_()
-    {
-        LOGGER_WARNING(m_serviceProvider)("Inititalizing Watchdog..." );
-
-        WatchdogInterface * watchdog;
-        if( SERVICE_CREATE( Watchdog, &watchdog ) == false )
-        {
-            return false;
-        }
-
-        SERVICE_REGISTRY( m_serviceProvider, watchdog );
-
-        m_watchdog = watchdog;
-
-        return true;    
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Application::initializeProfiler_()
-    {
-        //LOGGER_ERROR(m_serviceProvider)("Inititalizing ProfilerService..." );
-
-        //ProfilerServiceInterface * profiler;
-        //if( SERVICE_CREATE( ProfilerService, &profiler ) == false )
-        //{
-        //    return false;
-        //}
-
-        //SERVICE_REGISTRY( m_serviceProvider, profiler );
-
-        //profiler->initialize();
-
-        //m_profiler = profiler;
-
-        return true;    
-    }
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeGraveyard_()
-	{
-		LOGGER_WARNING(m_serviceProvider)("Inititalizing Graveyard..." );
-
-		GraveyardInterface * graveyard;
-		if( SERVICE_CREATE( Graveyard, &graveyard ) == false )
-		{
-			return false;
-		}
-
-		SERVICE_REGISTRY( m_serviceProvider, graveyard );
-
-		if( graveyard->initialize() == false )
-		{
-			return false;
-		}
-
-		m_graveyard = graveyard;
-
-		return true;    
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializePlayer_()
-	{ 
-		PlayerServiceInterface * playerService;
-		SERVICE_CREATE( PlayerService, &playerService );
-
-		if( SERVICE_REGISTRY( m_serviceProvider, playerService ) == false )
-		{
-			return false;
-		}
-
-		if( playerService->initialize() == false )
-		{
-			return false;
-		}
-
-		m_playerService = playerService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeGame_()
-	{
-		GameServiceInterface * gameService;
-		SERVICE_CREATE( GameService, &gameService );
-
-		if( SERVICE_REGISTRY( m_serviceProvider, gameService ) == false )
-		{
-			return false;
-		}
-
-		m_gameService = gameService;
-
-		return true;
-	}
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
@@ -826,45 +386,31 @@ namespace Menge
         };
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeSceneManager_()
+	bool Application::registerSceneGenerator_()
 	{
 		LOGGER_INFO(m_serviceProvider)( "initialize Scene Manager..." );
 
-        //SceneServiceInterface * sceneService;
-        //if( createSceneService( &sceneService ) == false )
-        //{
-        //    return false;
-        //}
-
-        //SERVICE_REGISTRY( m_serviceProvider, sceneService );
-
-        //m_sceneService = sceneService;
-
         PrototypeGeneratorInterface * generator = new SceneCategoryGenerator(m_serviceProvider);
 
-        PROTOTYPE_SERVICE(m_serviceProvider)
-            ->addPrototype( CONST_STRING(m_serviceProvider, Scene), ConstString::none(), generator );
+		if( PROTOTYPE_SERVICE( m_serviceProvider )
+			->addPrototype( CONST_STRING( m_serviceProvider, Scene ), ConstString::none(), generator ) == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeResourceManager_()
+	bool Application::registerBaseResourceTypes_()
 	{
-        LOGGER_INFO(m_serviceProvider)( "Initializing Resource Manager..." );
-
-        ResourceServiceInterface * resourceService;
-        if( SERVICE_CREATE( ResourceService, &resourceService ) == false )
-        {
-            return false;
-        }
-
-        SERVICE_REGISTRY( m_serviceProvider, resourceService );
-        
-        m_resourceService = resourceService;
-
+        LOGGER_INFO(m_serviceProvider)( "Initializing Resource Type..." );
 
 #	define RESOURCE_FACTORY( serviceProvider, Type ) \
-    PROTOTYPE_SERVICE(serviceProvider)->addPrototype( CONST_STRING(serviceProvider, Resource), STRINGIZE_STRING_LOCAL(serviceProvider, #Type), new ResourcePrototypeGenerator<Type, 128>(m_serviceProvider) )
+		if( PROTOTYPE_SERVICE(serviceProvider)\
+			->addPrototype( STRINGIZE_STRING_LOCAL(serviceProvider, "Resource"), STRINGIZE_STRING_LOCAL(serviceProvider, #Type), new ResourcePrototypeGenerator<Type, 128>(m_serviceProvider) ) == false )\
+		{\
+			return false;\
+		}
 		
 		RESOURCE_FACTORY( m_serviceProvider, ResourceAnimation );
 
@@ -893,43 +439,11 @@ namespace Menge
 		RESOURCE_FACTORY( m_serviceProvider, ResourceInternalObject );
 
 #	undef RESOURCE_FACTORY
-
-		m_resourceService->initialize();
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeTextManager_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "initialize Text Manager..." );
-
-        TextServiceInterface * textService;
-        if( SERVICE_CREATE( TextService, &textService ) == false )
-        {
-            return false;
-        }
-
-        m_textService = textService;
-
-        if( SERVICE_REGISTRY( m_serviceProvider, m_textService ) == false )
-        {
-            return false;
-        }
-
-		m_textService->initialize();
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setDefaultWindowDescription( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _vsync )
-	{
-		m_windowResolution = _resolution;
-		m_bits = _bits;
-		m_fullscreen = _fullscreen;
-		m_vsync = _vsync;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::createRenderWindow( WindowHandle _renderWindowHandle )
+	bool Application::createRenderWindow()
 	{
         //if( this->isValidWindowMode() == false )
         //{
@@ -972,8 +486,7 @@ namespace Menge
 			, m_contentResolution
 			, m_renderViewport
 			, m_bits
-			, fullscreen
-			, _renderWindowHandle
+			, fullscreen			
 			, m_FSAAType
 			, m_FSAAQuality );
 
@@ -984,20 +497,6 @@ namespace Menge
 
 			return false;
 		}
-		
-        if( m_mouseBounded == true )
-        {
-            if( fullscreen == true )
-            {
-                PLATFORM_SERVICE(m_serviceProvider)
-					->notifyCursorClipping( m_renderViewport );
-            }
-            else
-            {
-                PLATFORM_SERVICE(m_serviceProvider)
-					->notifyCursorUnClipping();
-            }
-        }
 
         GAME_SERVICE(m_serviceProvider)
 			->initializeRenderResources();
@@ -1022,26 +521,40 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::initializeGame( const ConstString & _personalityModule, const ConstString & _language, const FilePath & _accountPath, const String & _scriptInitParams )
+	bool Application::initializeGame( const ConstString & _category, const FilePath & _resourceIniPath )
 	{
 		if( SERVICE_EXIST(m_serviceProvider, Menge::GameServiceInterface) == false )
 		{
 			return false;
 		}
 
+		LOGGER_INFO( m_serviceProvider )("Application load resource packs... %s:%s"
+			, _category.c_str()
+			, _resourceIniPath.c_str()
+			);
+
+		if( PACKAGE_SERVICE( m_serviceProvider )
+			->loadPackages( _category, _resourceIniPath ) == false )
+		{
+			LOGGER_CRITICAL( m_serviceProvider )("Application invalid load resource packs"
+				);
+
+			return false;
+		}
+
 		LOGGER_INFO(m_serviceProvider)( "Application:initializeGame load game resource"
 			);
 
-		GAME_SERVICE( m_serviceProvider )
-			->setLanguagePack( _language );
-
-		if( GAME_SERVICE( m_serviceProvider )
-			->applyConfigPacks() == false )
+		if( PACKAGE_SERVICE( m_serviceProvider )
+			->applyPackages() == false )
 		{
 			return false;
 		}
 
-		if( m_developmentMode == true && m_resourceCheck == true )
+		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
+		bool resourceCheck = APSENT_OPTIONS( m_serviceProvider, "noresourcecheck" );
+
+		if( developmentMode == true && resourceCheck == true )
 		{
 			if( TEXT_SERVICE(m_serviceProvider)
 				->validate() == false )
@@ -1067,20 +580,8 @@ namespace Menge
 		}
 
 		if( GAME_SERVICE( m_serviceProvider )
-			->loadPersonality( _personalityModule ) == false )
+			->loadPersonality() == false )
 		{
-			return false;
-		}
-
-		TMapParams params;		
-		CONFIG_SECTION(m_serviceProvider, "Params", params);
-
-		if( GAME_SERVICE( m_serviceProvider )
-			->initialize( _accountPath, m_projectVersion, params, _scriptInitParams ) == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Application::initGame invalid initialize"
-				);
-
 			return false;
 		}
 
@@ -1091,39 +592,6 @@ namespace Menge
 			->run();
 		        
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::parseArguments_( const String& _arguments )
-	{
-		if( _arguments.find( " -author " ) != String::npos )
-		{
-			LOGGER_CRITICAL( m_serviceProvider )("Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru");
-		}
-
-		if( _arguments.find( " -particles " ) != String::npos )
-		{
-			m_particles = false;
-		}
-
-		if( _arguments.find( " -dev " ) != String::npos )
-        {
-            m_developmentMode = true;
-        }
-
-		if( _arguments.find( " -noresourcecheck " ) != String::npos )
-        {
-            m_resourceCheck = false;
-        }
-
-		if( _arguments.find( " -noresourcecheckcritical " ) != String::npos )
-		{
-			m_resourceCheckCritical = false;
-		}
-
-		if( _arguments.find( " -nofullscreen " ) != String::npos )
-        {
-            m_nofullscreenMode = true;
-        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_printChildren2( Node * _node, uint32_t _tab )
@@ -1163,12 +631,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::keyEvent( const InputKeyEvent & _event )
 	{
-		if( m_console != nullptr )
-		{
-			m_console->proccessInput( _event.key, _event.code, _event.isDown );
-		}
+		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
 
-		if( m_developmentMode == true )
+		if( developmentMode == true )
 		{
 			if( _event.key == KC_F6 && _event.isDown )
 			{
@@ -1220,7 +685,8 @@ namespace Menge
 
 			if( _event.key == KC_F5 && _event.isDown == true )
 			{
-				m_resourceService->dumpResources("Application");
+				RESOURCE_SERVICE(m_serviceProvider)
+					->dumpResources("Application");
 			}
 
 			if( _event.key == KC_OEM_MINUS && _event.isDown == true )
@@ -1278,7 +744,8 @@ namespace Menge
 
 				s_particle_enable = !s_particle_enable;
 
-				this->setParticlesEnabled( s_particle_enable );
+				APPLICATION_SERVICE(m_serviceProvider)
+					->setParticleEnable( s_particle_enable );
 			}
 
 			if( _event.key == KC_T && _event.isDown == true && INPUT_SERVICE( m_serviceProvider )->isCtrlDown() == true )
@@ -1287,7 +754,8 @@ namespace Menge
 
 				s_text_enable = !s_text_enable;
 
-				TEXT_SERVICE(m_serviceProvider)->setEnableText( s_text_enable );
+				APPLICATION_SERVICE( m_serviceProvider )
+					->setTextEnable( s_text_enable );
 			}
 
 			if( _event.key == KC_0 && _event.isDown == true )
@@ -1490,14 +958,24 @@ namespace Menge
 			->onWindowClose();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setParticlesEnabled( bool _enabled )
+	void Application::setParticleEnable( bool _enable )
 	{
-		m_particles = _enabled;
+		m_particleEnable = _enable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::getParticlesEnabled() const
+	bool Application::getParticleEnable() const
 	{
-		return m_particles;
+		return m_particleEnable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Application::setTextEnable( bool _enable )
+	{
+		m_textEnable = _enable;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getTextEnable() const
+	{
+		return m_textEnable;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setInputMouseButtonEventBlock( bool _block )
@@ -1674,11 +1152,6 @@ namespace Menge
 		GAME_SERVICE( m_serviceProvider )
 			->render();
 
-		if( m_console != nullptr )
-		{
-			m_console->render();
-		}		
-
 		RENDER_SERVICE(m_serviceProvider)->endScene();
 
 		return true;
@@ -1765,88 +1238,26 @@ namespace Menge
 				->finalizeRenderResources();
 		}
 		
-		if( m_gameService != nullptr )
-		{
-			m_gameService->finalize();
-		}
-
-		SERVICE_DESTROY( GameService, m_gameService );
-
-		if( m_playerService != nullptr )
-		{
-			m_playerService->finalize();
-		}
-
-		SERVICE_DESTROY( PlayerService, m_playerService );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::GameServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PlayerServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PackageServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::UserdataServiceInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::finalize()
+	void Application::_finalize()
 	{		
 		CODEC_SERVICE(m_serviceProvider)
-			->unregisterDecoder( CONST_STRING(m_serviceProvider, memoryImage) );
+			->unregisterDecoder( STRINGIZE_STRING_LOCAL(m_serviceProvider, "memoryImage") );
 
 		CODEC_SERVICE(m_serviceProvider)
-			->unregisterDecoder( CONST_STRING(m_serviceProvider, archiveImage) );
+			->unregisterDecoder( STRINGIZE_STRING_LOCAL( m_serviceProvider, "archiveImage" ) );
 
-        if( m_nodeService != nullptr )
-        {
-            m_nodeService->finalize();
-        }
-        
-		if( m_resourceService != nullptr )
-		{
-			m_resourceService->finalize();
-
-			SERVICE_DESTROY( ResourceService, m_resourceService );
-		}
-
-		if( m_renderService != nullptr )
-		{
-			m_renderService->finalize();
-		}
-
-		if( m_renderMaterialManager != nullptr )
-		{
-			m_renderMaterialManager->finalize();
-		}
-
-		if( m_renderTextureManager != nullptr )
-		{
-			m_renderTextureManager->finalize();
-		}
-
-		if( m_renderService != nullptr )
-		{
-			SERVICE_DESTROY( RenderService, m_renderService );
-			m_renderService = nullptr;
-		}
-
-		if( m_renderMaterialManager != nullptr )
-		{
-			SERVICE_DESTROY( RenderMaterialManager, m_renderMaterialManager );
-			m_renderMaterialManager = nullptr;
-		}
-
-		if( m_renderTextureManager != nullptr )
-		{
-			SERVICE_DESTROY( RenderTextureManager, m_renderTextureManager );
-			m_renderTextureManager = nullptr;
-		}
-
-        SERVICE_DESTROY( Watchdog, m_watchdog );
-        SERVICE_DESTROY( LoaderService, m_loaderService );
-        
-		if( m_textService != nullptr )
-		{
-			m_textService->finalize();
-
-	        SERVICE_DESTROY( TextService, m_textService );
-		}
-
-        SERVICE_DESTROY( NodeService, m_nodeService );
-        
-		SERVICE_DESTROY( PrototypeService, m_prototypeService );
-		SERVICE_DESTROY( Consts, m_consts );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::NodeServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ResourceServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderMaterialServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderTextureServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::TextServiceInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::calcWindowResolution( Resolution & _windowResolution ) const
@@ -1900,32 +1311,6 @@ namespace Menge
 	const Resolution & Application::getCurrentResolution() const
 	{
 		return m_currentResolution;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::setMouseBounded( bool _bounded )
-	{
-		m_mouseBounded = _bounded;
-
-        bool fullscreen = this->getFullscreenMode();
-
-		if( fullscreen == false )	// don't override fullscreen behavior
-		{
-			if( m_mouseBounded == true )
-			{
-				PLATFORM_SERVICE(m_serviceProvider)
-					->notifyCursorClipping( m_renderViewport );
-			}
-			else
-			{
-				PLATFORM_SERVICE(m_serviceProvider)
-					->notifyCursorUnClipping();
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::getMouseBounded() const
-	{
-		return m_mouseBounded;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool Application::findBestAspectViewport_( float _aspect, float & _bestAspect, Viewport & _viewport ) const
@@ -2042,7 +1427,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool Application::isValidWindowMode() const
     {
-        if( m_windowModeCheck == false )
+		bool windowModeCheck = CONFIG_VALUE( m_serviceProvider, "Game", "WindowModeCheck", false );
+
+		if( windowModeCheck == false )
         {
             return true;
         }
@@ -2089,11 +1476,6 @@ namespace Menge
 
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool Application::isDevelopmentMode() const
-	{ 
-		return m_developmentMode;
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::changeWindowResolution( const Resolution & _resolution )
 	{
@@ -2158,34 +1540,9 @@ namespace Menge
 			, m_renderViewport.getHeight()
 			);
 
-		if( fullscreen == true )
-		{
-			PLATFORM_SERVICE(m_serviceProvider)
-				->notifyCursorClipping( m_renderViewport );
-		}
-		else
-		{
-			//m_interface->notifyCursorUnClipping();
-			this->setMouseBounded( m_mouseBounded );
-		}
-	
 		RENDER_SERVICE(m_serviceProvider)
             ->changeWindowMode( m_currentResolution, m_contentResolution, m_renderViewport, fullscreen );
 		
-		if( !m_mouseBounded && RENDER_SERVICE(m_serviceProvider)->isWindowCreated() )
-		{
-			//if( _fullscreen == false )
-			//{
-			//	m_currentResolution = m_game->getResolution();
-			//}
-			//else
-			//{
-			//	m_currentResolution = m_desktopResolution;
-			//}
-			
-			//m_game->onAppMouseEnter();	
-		}
-
 		NOTIFICATION_SERVICE(m_serviceProvider)
 			->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 
@@ -2230,7 +1587,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Application::getFullscreenMode() const
 	{
-        if( m_nofullscreenMode == true )
+		bool nofullscreen = HAS_OPTIONS( m_serviceProvider, "nofullscreen" );
+        
+		if( nofullscreen == true )
         {
             return false;
         }
@@ -2341,6 +1700,11 @@ namespace Menge
 		return m_projectVersion;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const ConstString & Application::getLocale() const
+	{
+		return m_locale;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const Resolution & Application::getContentResolution() const
 	{
 		return m_contentResolution;
@@ -2406,19 +1770,9 @@ namespace Menge
 		return m_windowResolution;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Application::getVSync() const
-	{
-		if( RENDER_SERVICE(m_serviceProvider) )
-		{
-			return RENDER_SERVICE(m_serviceProvider)->getVSync();
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Application::getAllowFullscreenSwitchShortcut() const
 	{
-		return m_allowFullscreenSwitchShortcut;
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::setVSync( bool _vsync )
@@ -2430,6 +1784,11 @@ namespace Menge
 
 		m_vsync = _vsync;
 		m_invalidateVsync = true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getVSync() const
+	{
+		return m_vsync;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::updateNotification()
@@ -2472,7 +1831,7 @@ namespace Menge
 
 			const FilePath & path = m_cursorResource->getPath();
 
-			const Blobject & buffer = m_cursorResource->getBuffer();
+			const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
 			PLATFORM_SERVICE(m_serviceProvider)
 				->notifyCursorIconSetup( name, path, buffer );
@@ -2513,16 +1872,11 @@ namespace Menge
 		const ConstString & name = m_cursorResource->getName();
 		const FilePath & path = m_cursorResource->getPath();
 
-		const Blobject & buffer = m_cursorResource->getBuffer();
+		const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
 		PLATFORM_SERVICE(m_serviceProvider)
 			->notifyCursorIconSetup( name, path, buffer );
 	}
-	////////////////////////////////////////////////////////////////////////////
-	//void Application::setAsScreensaver( bool _set )
-	//{
-	//	//m_platform->setAsScreensaver( _set );
-	//}	
 	//////////////////////////////////////////////////////////////////////////
 	void Application::showKeyboard()
 	{

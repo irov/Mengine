@@ -44,14 +44,13 @@
 #   include <iomanip>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( PlayerService, Menge::PlayerServiceInterface, Menge::Player );
+SERVICE_FACTORY( PlayerService, Menge::Player );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Player::Player()
-        : m_serviceProvider(nullptr)
-		, m_scene(nullptr)
+        : m_scene(nullptr)
 		, m_arrow(nullptr)
 		, m_scheduleManager(nullptr)
 		, m_scheduleManagerGlobal(nullptr)
@@ -81,18 +80,8 @@ namespace Menge
 	Player::~Player()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Player::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * Player::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::setCurrentScene( Scene * _scene, bool _destroyOld, const pybind::object & _cb )
+	bool Player::setCurrentScene( Scene * _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb )
 	{
 		if( _scene == nullptr )
 		{
@@ -112,15 +101,12 @@ namespace Menge
 
 		m_destroyOldScene = _destroyOld;
 
-		if( _cb.is_valid() == true && _cb.is_none() == false )
-		{
-			m_changeSceneCb = _cb;
-		}
+		m_changeSceneCb = _cb;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::restartCurrentScene( const pybind::object & _cb )
+	bool Player::restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb )
 	{
 		if( this->isChangedScene() == true )
 		{
@@ -133,15 +119,12 @@ namespace Menge
 
 		m_destroyOldScene = false;
 
-		if( _cb.is_valid() == true && _cb.is_none() == false )
-		{
-			m_removeSceneCb = _cb;
-		}
+		m_changeSceneCb = _cb;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::removeCurrentScene( const pybind::object & _cb )
+	bool Player::removeCurrentScene( const SceneChangeCallbackInterfacePtr & _cb )
 	{
 		if( this->isChangedScene() == true )
 		{
@@ -152,10 +135,7 @@ namespace Menge
         m_switchScene = false;
 		m_removeScene = true;
 		
-		if( _cb.is_valid() == true && _cb.is_none() == false )
-		{
-			m_removeSceneCb = _cb;
-		}
+		m_removeSceneCb = _cb;
 
 		return true;
 	}
@@ -207,19 +187,6 @@ namespace Menge
 			GRAVEYARD_SERVICE(m_serviceProvider)
 				->clearTextures();
 
-			for( TVectorJoins::iterator
-				it = m_joins.begin(),
-				it_end = m_joins.end();
-			it != it_end;
-			++it )
-			{
-				Join * join = *it;
-
-				delete join;
-			}
-
-			m_joins.clear();
-
 			m_scene = nullptr;
 		}
 
@@ -228,12 +195,12 @@ namespace Menge
 			m_mousePickerSystem->setScene( nullptr );
 		}
 
-		if( m_removeSceneCb.is_valid() == true )
+		if( m_removeSceneCb != nullptr )
 		{
-			pybind::object cb = m_removeSceneCb;
-			m_removeSceneCb.reset();
+			SceneChangeCallbackInterfacePtr cb = m_removeSceneCb;
+			m_removeSceneCb = nullptr;
 
-			cb();
+			cb->onSceneChange( nullptr, false, true );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -316,8 +283,8 @@ namespace Menge
 		bool destroyOldScene = m_destroyOldScene;
 		m_destroyOldScene = false;
 
-		pybind::object cb = m_changeSceneCb;
-		m_changeSceneCb.reset();
+		SceneChangeCallbackInterfacePtr cb = m_changeSceneCb;
+		m_changeSceneCb = nullptr;
 
 		if( m_arrow != nullptr )
 		{
@@ -342,23 +309,10 @@ namespace Menge
 		}
 		
 		//m_globalHandleSystem->clear();
-
-		for( TVectorJoins::iterator
-			it = m_joins.begin(),
-			it_end = m_joins.end();
-		it != it_end;
-		++it )
-		{
-			Join * join = *it;
-
-			delete join;
-		}
-
-		m_joins.clear();
         
-        if( cb.is_valid() == true )
+        if( cb != nullptr )
         {
-			cb( pybind::ret_none(), false );
+			cb->onSceneChange( nullptr, false, false );
         }
         
 		m_scene = m_switchSceneTo;
@@ -368,11 +322,9 @@ namespace Menge
 			m_mousePickerSystem->setScene( m_scene );
 		}
 
-		if( cb.is_valid() == true )
-		{
-			const pybind::object & py_scene = m_scene->getScriptObject();
-
-			cb( py_scene, false );
+		if( cb != nullptr )
+		{			
+			cb->onSceneChange( m_scene, false, false );
 		}
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
@@ -393,11 +345,9 @@ namespace Menge
 			m_arrow->enable();
         }
 
-		if( cb.is_valid() == true )
+		if( cb != nullptr )
 		{
-			const pybind::object & py_scene = m_scene->getScriptObject();
-
-			cb( py_scene, true );
+			cb->onSceneChange( m_scene, true, false );
 		}
 
 		return;
@@ -425,32 +375,17 @@ namespace Menge
 		GRAVEYARD_SERVICE( m_serviceProvider )
 			->clearTextures();
 
-		for( TVectorJoins::iterator
-			it = m_joins.begin(),
-			it_end = m_joins.end();
-		it != it_end;
-		++it )
-		{
-			Join * join = *it;
+		SceneChangeCallbackInterfacePtr cb = m_changeSceneCb;
+		m_changeSceneCb = nullptr;
 
-			delete join;
+		if( cb != nullptr )
+		{
+			cb->onSceneChange( nullptr, false, false );
 		}
 
-		m_joins.clear();
-
-		pybind::object cb = m_changeSceneCb;
-		m_changeSceneCb.reset();
-
-		if( cb.is_valid() == true )
+		if( cb != nullptr )
 		{
-			cb( pybind::ret_none(), false );
-		}
-
-		if( cb.is_valid() == true )
-		{
-			const pybind::object & py_scene = m_scene->getScriptObject();
-
-			cb( py_scene, false );
+			cb->onSceneChange( m_scene, false, false );
 		}
 
 		//Holder<ResourceManager>::get()->_dumpResources( "before compile next scene " + m_scene->getName() );
@@ -471,11 +406,9 @@ namespace Menge
 			m_arrow->enable();
 		}
 
-		if( cb.is_valid() == true )
+		if( cb != nullptr )
 		{
-			const pybind::object & py_scene = m_scene->getScriptObject();
-
-			cb( py_scene, true );
+			cb->onSceneChange( m_scene, true, false );
 		}
 
 		return;
@@ -668,7 +601,7 @@ namespace Menge
 		return m_affectorableGlobal;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Player::initialize()
+	bool Player::_initialize()
 	{
 		m_mousePickerSystem = new MousePickerSystem(m_serviceProvider);
 		m_globalHandleSystem = new GlobalHandleSystem(m_serviceProvider);
@@ -691,7 +624,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Player::finalize()
+	void Player::_finalize()
 	{
         if( m_scene != nullptr )
         {
@@ -699,8 +632,8 @@ namespace Menge
             m_scene = nullptr;
         }
 
-		m_removeSceneCb.reset();
-		m_changeSceneCb.reset();
+		m_removeSceneCb = nullptr;
+		m_changeSceneCb = nullptr;
         
         if( m_camera2D != nullptr )
         {
@@ -797,18 +730,6 @@ namespace Menge
 			delete m_affectorableGlobal;
 			m_affectorableGlobal = nullptr;
 		}
-
-		for( TVectorJoins::iterator
-			it = m_joins.begin(),
-			it_end = m_joins.end();
-		it != it_end;
-		++it )
-		{
-			Join * join = *it;
-			delete join;
-		}
-
-		m_joins.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::initializeRenderResources()
@@ -1062,8 +983,6 @@ namespace Menge
 			m_scene->update( gameTime, _timing );
 		}
 
-		this->updateJoins_();
-
 		if( m_scheduleManager != nullptr )
 		{
 			m_scheduleManager->update( gameTime, _timing );
@@ -1128,165 +1047,6 @@ namespace Menge
 		}
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Join * Player::addJoin( Node * _left, Node * _right, const mt::vec2f & _offset )
-	{
-		Join * join = new Join(_left, _right, _offset);
-
-		join->initialize();
-
-		m_joins.push_back(join);
-
-		//m_nodeJoins[_left].push_back(join);
-		//m_nodeJoins[_right].push_back(join);
-				
-		return join;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::removeJoin( Join * _join )
-	{
-		TVectorJoins::iterator it_found = std::find( m_joins.begin(), m_joins.end(), _join );
-		m_joins.erase( it_found );
-
-		//Node * left = _join->getLeft();
-
-		//TVectorJoins & leftJoins = m_nodeJoins[left];
-		//TVectorJoins::iterator it_left_found = std::find( leftJoins.begin(), leftJoins.end(), _join );
-		//leftJoins.erase( it_left_found );
-		//
-		//Node * right = _join->getRight();
-
-		//TVectorJoins & rightJoins = m_nodeJoins[right];
-		//TVectorJoins::iterator it_right_found = std::find( rightJoins.begin(), rightJoins.end(), _join );
-		//rightJoins.erase( it_right_found );
-
-		delete _join;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Player::isJoin( Node * _left, Node * _right ) const
-	{
-		for( TVectorJoins::const_iterator
-			it = m_joins.begin(),
-			it_end = m_joins.end();
-		it != it_end;
-		++it )
-		{
-			if( _left == (*it)->getLeft() && _right == (*it)->getRight() )
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::getJoins( Node * _node, TVectorNode & _joins ) const
-	{
-		for( TVectorJoins::const_iterator
-			it = m_joins.begin(),
-			it_end = m_joins.end();
-		it != it_end;
-		++it )
-		{
-			Node * left = (*it)->getLeft();
-			Node * right = (*it)->getRight();
-
-			if( _node == left )
-			{
-				_joins.push_back( right );
-			}
-			else if( _node == right )
-			{
-				_joins.push_back( left );
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Player::updateJoins_()
-	{	
-		//TVectorJoins join_updated;
-
-		//for( TVectorJoins::iterator
-		//	it = m_joins.begin(),
-		//	it_end = m_joins.end();
-		//it != it_end;
-		//++it )
-		//{
-		//	Join * join = *it;
-
-		//	if( join->valid() == true )
-		//	{
-		//		continue;
-		//	}
-
-		//	TVectorJoins::iterator it_found = std::find(join_updated.begin(), join_updated.end(), join);
-
-		//	if( it_found != join_updated.end() )
-		//	{
-		//		continue;
-		//	}
-		//	
-		//	TVectorJoins left_update;
-		//	Node * left = join->getLeft()
-		//	this->getJoins( left, left_update );
-
-		//	TVectorJoins right_update;
-		//	Node * right = join->getRight();
-		//	this->getJoins( right, right_update );
-		//		
-		//	bool up = join->update();
-		//	done |= up;
-		//}
-
-		bool done = true;
-		uint32_t count = 10;
-
-		while( done == true && --count )
-		{
-			done = false;
-
-			for( TVectorJoins::iterator
-				it = m_joins.begin(),
-				it_end = m_joins.end();
-			it != it_end;
-			++it )
-			{
-				Join * join = *it;
-				
-				bool up = join->update();
-
-				done |= up;
-			}
-
-			for( TVectorJoins::reverse_iterator
-				it = m_joins.rbegin(),
-				it_end = m_joins.rend();
-			it != it_end;
-			++it )
-			{
-				Join * join = *it;
-
-				bool up = join->update();
-
-				done |= up;
-			}
-		}
-
-		//TVectorJoins::iterator it_first = m_joins.begin();
-
-		//while(true)
-		//{
-		//	TVectorJoins::iterator it_next = 
-		//		std::partition( it_first, m_joins.end(), std::mem_fun(&Join::update) );
-
-		//	if( it_next == it_first )
-		//	{
-		//		break;
-		//	}
-
-		//	it_first = it_next;
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Player::setRenderCamera( RenderCameraInterface * _camera)
@@ -1472,10 +1232,6 @@ namespace Menge
 				ss << "Texture Memory Usage: " << (float)rtdi.textureMemory / (1024.f*1024.f) << std::endl;
 				ss << "Texture Count: " << rtdi.textureCount << std::endl;
 
-				uint32_t processHandleCount = PLATFORM_SERVICE(m_serviceProvider)
-					->getProcessHandleCount();
-
-				ss << "Handle Count: " << processHandleCount << std::endl;
 				ss << "Particles: " << particlesCount << std::endl;
 			}
 

@@ -1,7 +1,5 @@
 #	include "SilentSoundSystem.h"
 
-#	include "Interface/LogSystemInterface.h"
-
 #	include "Config/Config.h"
 #	include "Logger/Logger.h"
 
@@ -10,14 +8,13 @@
 #	include <stdarg.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( SilentSoundSystem, Menge::SoundSystemInterface, Menge::SilentSoundSystem );
+SERVICE_FACTORY( SilentSoundSystem, Menge::SilentSoundSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SilentSoundSystem::SilentSoundSystem()
-		: m_serviceProvider(nullptr)
-        , m_enumerate(0)
+		: m_enumerate(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -25,25 +22,15 @@ namespace Menge
 	{     
 
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void SilentSoundSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * SilentSoundSystem::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool SilentSoundSystem::initialize()
+	bool SilentSoundSystem::_initialize()
 	{
         LOGGER_INFO(m_serviceProvider)( "Starting Silent Sound System..." );
         		
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundSystem::finalize()
+    void SilentSoundSystem::_finalize()
     {
         
     }
@@ -51,6 +38,11 @@ namespace Menge
 	void SilentSoundSystem::update()
 	{
 		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool SilentSoundSystem::isSilent() const
+	{
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SilentSoundSystem::onTurnSound( bool _turn )

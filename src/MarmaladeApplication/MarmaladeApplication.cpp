@@ -1829,8 +1829,6 @@ namespace Menge
 			}
 
 			m_application->endUpdate();
-
-			s3eDeviceYield( 0 );
         }
     }
     //////////////////////////////////////////////////////////////////////////

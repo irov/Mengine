@@ -128,7 +128,7 @@ namespace	Menge
         bool loop = this->getLoop();
 		emitter->setLoop( loop );
 
-        uint32_t polygon_count = boost::geometry::num_points( m_polygon );
+		uint32_t polygon_count = m_polygon.num_points();
 
         if( polygon_count != 0 )
         {
@@ -277,7 +277,7 @@ namespace	Menge
 		Node::_update( _current, _timing );
 
 		bool enabled = APPLICATION_SERVICE(m_serviceProvider)
-			->getParticlesEnabled();
+			->getParticleEnable();
 
 		if( enabled == false )
 		{
@@ -311,7 +311,7 @@ namespace	Menge
 		Node::_render( _viewport, _camera, _clipplane );
 
 		bool enabled = APPLICATION_SERVICE( m_serviceProvider )
-			->getParticlesEnabled();
+			->getParticleEnable();
 
 		if( enabled == false )
 		{
@@ -570,7 +570,7 @@ namespace	Menge
 	{
         m_polygon = _polygon;
 
-        boost::geometry::correct( m_polygon );
+		m_polygon.correct();
 
         if( this->isCompile() == false ) 
 		{
@@ -587,7 +587,7 @@ namespace	Menge
     //////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter2::compilePolygon_( const ParticleEmitterInterfacePtr & _emitter )
     {
-        uint32_t n = boost::geometry::num_points( m_polygon );
+		uint32_t n = m_polygon.num_points();
 
         if( n == 0 )
         {
@@ -595,7 +595,7 @@ namespace	Menge
         }
 
 		TVectorPoints points;
-		if( triangulate_polygon( m_polygon, points ) == false )
+		if( m_polygon.triangulate( points ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ParticleEmitter::changeEmitterPolygon '%s' wrong polygon"
 				, m_name.c_str()

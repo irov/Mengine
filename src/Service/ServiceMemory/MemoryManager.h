@@ -21,19 +21,15 @@ namespace Menge
 	static const CacheBufferID INVALID_CACHE_BUFFER_ID = 0;
 
 	class MemoryManager
-		: public MemoryServiceInterface
+		: public ServiceBase<MemoryServiceInterface>
 	{
 	public:
 		MemoryManager();
 		~MemoryManager();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
-
-	public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		CacheBufferID lockBuffer( size_t _size, void ** _memory, const char * _doc );
@@ -53,8 +49,6 @@ namespace Menge
 		CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc );
 		
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		struct CacheBufferMemory
 		{
 			CacheBufferID id;

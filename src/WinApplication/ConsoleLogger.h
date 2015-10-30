@@ -1,8 +1,10 @@
 #	pragma once
 
-#	include "Interface/LogSystemInterface.h"
+#	include "Interface/LoggerInterface.h"
 
 #	include "WindowsLayer/WindowsIncluder.h"
+
+#	include "Config/String.h"
 
 namespace Menge
 {
@@ -37,7 +39,7 @@ namespace Menge
 		void removeConsole_();
 
 	private:
-        ServiceProviderInterface * m_serviceProvider;
+		ServiceProviderInterface * m_serviceProvider;
 
 		EMessageLevel m_verboseLevel;
         uint32_t m_verboseFlag;

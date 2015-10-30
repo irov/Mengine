@@ -4,10 +4,12 @@ ADD_FILTER(
 src
 	StringizeService.h
 	StringizeService.cpp
+    ConstStringHolderMemory.h
+    ConstStringHolderMemory.cpp
     ConstStringHolderStringExternal.h
-    ConstStringHolderStringSTL.h
-    ConstStringHolderStringSTL.cpp
-    ConstStringHolderStringSize.h 
+    #ConstStringHolderStringSTL.h
+    #ConstStringHolderStringSTL.cpp
+    #ConstStringHolderStringSize.h 
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

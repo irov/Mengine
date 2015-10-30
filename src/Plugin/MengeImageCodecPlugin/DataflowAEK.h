@@ -25,6 +25,7 @@ namespace Menge
 
 	public:
 		bool initialize() override;
+		void finalize() override;
 
 	public:
 		DataInterfacePtr create() override;

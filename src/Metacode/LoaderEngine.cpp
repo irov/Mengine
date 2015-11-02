@@ -34,12 +34,19 @@ namespace Menge
 			return false;
 		}
 
+		m_protocolPath = CONFIG_VALUE( m_serviceProvider, "Engine", "ProtocolPath", STRINGIZE_STRING_LOCAL( m_serviceProvider, "protocol.xml" ) );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void LoaderEngine::_finalize()
 	{
 		//Empty
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void LoaderEngine::setProtocolPath( const ConstString & _protocolPath )
+	{
+		m_protocolPath = _protocolPath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist )
@@ -369,10 +376,8 @@ namespace Menge
 			return false;
 		}
 
-		ConstString protocolPath = CONFIG_VALUE( m_serviceProvider, "Engine", "ProtocolPath", STRINGIZE_STRING_LOCAL( m_serviceProvider, "protocol.xml" ) );
-
 		XmlCodecOptions options;
-        options.pathProtocol = protocolPath;
+        options.pathProtocol = m_protocolPath;
 		
         FileGroupInterfacePtr fileGroup = FILE_SERVICE(m_serviceProvider)
             ->getFileGroup( _pak );

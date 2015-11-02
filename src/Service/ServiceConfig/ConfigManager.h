@@ -45,17 +45,6 @@ namespace Menge
 		ConstString m_platformName;
 
 		IniUtil::IniStore m_ini;
-
-		struct ModifySetting
-		{
-			const Char * section;
-			const Char * key;
-
-			String value;
-		};
-
-		typedef stdex::vector<ModifySetting> TVectorModifySetting;
-		TVectorModifySetting m_modifySettings;
 	};
 }
 

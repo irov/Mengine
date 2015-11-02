@@ -16,6 +16,10 @@ namespace Menge
 		~PrototypeManager();
 
 	public:
+		bool _initialize() override;
+		void _finalize() override;
+
+	public:
 		bool addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator ) override;
 		bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const override;
 

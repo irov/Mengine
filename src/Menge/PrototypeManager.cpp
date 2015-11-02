@@ -16,6 +16,15 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool PrototypeManager::_initialize()
+	{
+		return true;
+	}
+	void PrototypeManager::_finalize()
+	{ 
+		m_prototypes.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool PrototypeManager::addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator )
 	{
         CategoryKey key;

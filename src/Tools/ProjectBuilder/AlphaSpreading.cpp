@@ -4,7 +4,7 @@
 
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ArchiveInterface.h"
-#   include "Interface/LogSystemInterface.h"
+#   include "Interface/LoggerInterface.h"
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/FileSystemInterface.h"

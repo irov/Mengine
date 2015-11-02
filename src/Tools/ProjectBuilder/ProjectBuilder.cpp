@@ -38,7 +38,7 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/ArchiveInterface.h"
-#	include "Interface/LogSystemInterface.h"
+#	include "Interface/LoggerInterface.h"
 #	include "Interface/CodecInterface.h"
 #	include "Interface/DataInterface.h"
 #	include "Interface/MemoryInterface.h"
@@ -65,29 +65,6 @@
 
 #	include <io.h>
 
-SERVICE_EXTERN(ServiceProvider, Menge::ServiceProviderInterface);
-
-SERVICE_EXTERN(ArchiveService, Menge::ArchiveServiceInterface);
- 
-SERVICE_EXTERN(UnicodeSystem, Menge::UnicodeSystemInterface);
-SERVICE_EXTERN(UnicodeService, Menge::UnicodeServiceInterface);
-
-SERVICE_EXTERN(StringizeService, Menge::StringizeServiceInterface);
-SERVICE_EXTERN(LogService, Menge::LogServiceInterface);
-SERVICE_EXTERN(ConfigService, Menge::ConfigServiceInterface);
-SERVICE_EXTERN(CodecService, Menge::CodecServiceInterface);
-SERVICE_EXTERN(DataService, Menge::DataServiceInterface);
-SERVICE_EXTERN(MemoryService, Menge::MemoryServiceInterface);
-SERVICE_EXTERN(ConverterService, Menge::ConverterServiceInterface);
-SERVICE_EXTERN(PluginService, Menge::PluginServiceInterface);
-
-SERVICE_EXTERN(FileService, Menge::FileServiceInterface);
-
-SERVICE_EXTERN(LoaderService, Menge::LoaderServiceInterface);
-
-SERVICE_EXTERN(ThreadSystem, Menge::ThreadSystemInterface);
-SERVICE_EXTERN(ThreadService, Menge::ThreadServiceInterface);
-
 //////////////////////////////////////////////////////////////////////////
 extern "C" // only required if using g++
 {
@@ -96,7 +73,28 @@ extern "C" // only required if using g++
 	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
 	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );
 }
+//////////////////////////////////////////////////////////////////////////
+SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
+SERVICE_EXTERN( UnicodeSystem );
+SERVICE_EXTERN( UnicodeService );
+SERVICE_EXTERN( StringizeService );
+SERVICE_EXTERN( ArchiveService );
+SERVICE_EXTERN( ArchiveService );
+SERVICE_EXTERN( LoggerService );
+SERVICE_EXTERN( ConfigService );
+SERVICE_EXTERN( ConverterService );
+SERVICE_EXTERN( CodecService );
+SERVICE_EXTERN( DataService );
+SERVICE_EXTERN( ThreadSystem );
+SERVICE_EXTERN( ThreadService );
+SERVICE_EXTERN( MemoryService );
+SERVICE_EXTERN( PluginService );
+
+SERVICE_EXTERN( WindowsLayer );
+SERVICE_EXTERN( FileService );
+SERVICE_EXTERN( LoaderService );
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	ServiceProviderInterface * serviceProvider = NULL;
@@ -181,61 +179,15 @@ namespace Menge
 	{
 		stdex_allocator_initialize();
 
-		if( SERVICE_CREATE( ServiceProvider, &serviceProvider ) == false )
-		{
-			return false;
-		}
+		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
 
-		UnicodeSystemInterface * unicodeSystem;
-		if( SERVICE_CREATE( UnicodeSystem, &unicodeSystem ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(serviceProvider, unicodeSystem) == false )
-		{
-			return false;
-		}
-
-		UnicodeServiceInterface * unicodeService;
-		if( SERVICE_CREATE( UnicodeService, &unicodeService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(serviceProvider, unicodeService) == false )
-		{
-			return false;
-		}
-
-		StringizeServiceInterface * stringizeService;
-		if( SERVICE_CREATE( StringizeService, &stringizeService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(serviceProvider, stringizeService) == false )
-		{
-			return false;
-		}
-
-		ArchiveServiceInterface * archiveService;
-		if( SERVICE_CREATE( ArchiveService, &archiveService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(serviceProvider, archiveService) == false )
-		{
-			return false;
-		}
-
-		LogServiceInterface * logService;
-		if( SERVICE_CREATE( LogService, &logService ) == false )
-		{
-			return false;
-		}
-
+		SERVICE_CREATE( serviceProvider, UnicodeSystem );		
+		SERVICE_CREATE( serviceProvider, UnicodeService );
+		SERVICE_CREATE( serviceProvider, StringizeService );
+		SERVICE_CREATE( serviceProvider, ArchiveService );
+		SERVICE_CREATE( serviceProvider, ArchiveService );
+		SERVICE_CREATE( serviceProvider, LoggerService );
+		
 		class MyLoggerInterface
 			: public LoggerInterface
 		{
@@ -298,151 +250,27 @@ namespace Menge
 			ServiceProviderInterface * m_serviceProvider;
 		};
 
-		logService->setVerboseLevel( LM_WARNING );
-		logService->registerLogger( new MyLoggerInterface );
+		LOGGER_SERVICE( serviceProvider )
+			->setVerboseLevel( LM_WARNING );
 
-		if( SERVICE_REGISTRY(serviceProvider, logService) == false )
-		{
-			return false;
-		}
+		LOGGER_SERVICE( serviceProvider )
+			->registerLogger( new MyLoggerInterface );
 
 		LOGGER_WARNING(serviceProvider)("Inititalizing Config Manager..." );
-
-		ConfigServiceInterface * configService;
-
-		if( SERVICE_CREATE( ConfigService, &configService ) == false )
-		{
-			return false;
-		}
-
-		SERVICE_REGISTRY( serviceProvider, configService );
-
-		ConverterServiceInterface * converterService;
-		if( SERVICE_CREATE( ConverterService, &converterService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( serviceProvider, converterService ) == false )
-		{
-			return false;
-		}
-
-		CodecServiceInterface * codecService;
-		if( SERVICE_CREATE( CodecService, &codecService ) == false )
-		{
-			return false;
-		}
 		
-		if( SERVICE_REGISTRY(serviceProvider, codecService) == false )
-		{
-			return false;
-		}
+		SERVICE_CREATE( serviceProvider, ConfigService );
+		SERVICE_CREATE( serviceProvider, ConverterService );
+		SERVICE_CREATE( serviceProvider, CodecService );
+		SERVICE_CREATE( serviceProvider, DataService );
+		SERVICE_CREATE( serviceProvider, ThreadSystem );
+		SERVICE_CREATE( serviceProvider, ThreadService );
+		SERVICE_CREATE( serviceProvider, MemoryService );
+		SERVICE_CREATE( serviceProvider, PluginService );
 
-		DataServiceInterface * dataService;
-		if( SERVICE_CREATE( DataService, &dataService ) == false )
-		{
-			return false;
-		}
-
-		dataService->initialize();
-
-		if( SERVICE_REGISTRY(serviceProvider, dataService) == false )
-		{
-			return false;
-		}
-
-		ThreadSystemInterface * threadSystem;
-		if( SERVICE_CREATE( ThreadSystem, &threadSystem ) == false )
-		{
-			LOGGER_ERROR(serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadSystem"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(serviceProvider, threadSystem) == false )
-		{
-			return false;
-		}
-
-		if( threadSystem->initialize() == false )
-		{
-			LOGGER_ERROR(serviceProvider)("WinApplication::initializeThreadEngine_ failed to initialize ThreadSystem"
-				);
-
-			return false;
-		}
-
-		ThreadServiceInterface * threadService;
-		if( SERVICE_CREATE( ThreadService, &threadService ) == false )
-		{
-			LOGGER_ERROR(serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadService"
-				);
-
-			return false;               
-		}
-
-		if( SERVICE_REGISTRY( serviceProvider, threadService ) == false )
-		{
-			return false;
-		}
-
-		if( threadService->initialize( 16 ) == false )
-		{
-			return false;
-		}
-				
-		MemoryServiceInterface * memoryService;
-		if( SERVICE_CREATE( MemoryService, &memoryService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( serviceProvider, memoryService ) == false )
-		{
-			return false;
-		}
-
-		if( memoryService->initialize() == false )
-		{
-			return false;
-		}
-
-		PluginServiceInterface * pluginService;
-		if( SERVICE_CREATE( PluginService, &pluginService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(serviceProvider, pluginService) == false )
-		{
-			return false;
-		}
-
-		WindowsLayerInterface * windowsLayer = new VistaWindowsLayer();
-
-		if( SERVICE_REGISTRY(serviceProvider, windowsLayer) == false )
-		{
-			return false;
-		}
-
-		FileServiceInterface * fileService;
-		if( SERVICE_CREATE( FileService, &fileService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY(serviceProvider, fileService) == false )
-		{
-			return false;
-		}
-
-		if( fileService->initialize() == false )
-		{
-			return false;
-		}
-
+		SERVICE_CREATE( serviceProvider, WindowsLayer );
+		SERVICE_CREATE( serviceProvider, FileService );
+		SERVICE_CREATE( serviceProvider, LoaderService );
+		
 		PluginInterface * plugin_win32_file_group;
 		initPluginMengeWin32FileGroup( &plugin_win32_file_group );
 		
@@ -465,14 +293,6 @@ namespace Menge
 		initPluginMengeImageCodec( &plugin_image_codec );
 		plugin_image_codec->initialize( serviceProvider );
 		
-		LoaderServiceInterface * loaderService;
-		if( SERVICE_CREATE( LoaderService, &loaderService ) == false )
-		{
-			return false;
-		}
-
-		SERVICE_REGISTRY( serviceProvider, loaderService );
-
 		PLUGIN_SERVICE(serviceProvider)
 			->loadPlugin( L"MengeDevelopmentConverterPlugin.dll" );
 

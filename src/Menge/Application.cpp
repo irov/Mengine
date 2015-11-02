@@ -114,21 +114,22 @@
 #	include <sstream>
 
 //////////////////////////////////////////////////////////////////////////
-//SERVICE_EXTERN( Consts, Menge::Consts );
-//SERVICE_EXTERN( TextService, Menge::TextServiceInterface );
-//SERVICE_EXTERN( NodeService, Menge::NodeServiceInterface );
-//SERVICE_EXTERN( LoaderService, Menge::LoaderServiceInterface );
-//SERVICE_EXTERN( ResourceService, Menge::ResourceServiceInterface );
-//SERVICE_EXTERN( Watchdog, Menge::WatchdogInterface );
-//SERVICE_EXTERN( GameService, Menge::GameServiceInterface );
-//SERVICE_EXTERN( PlayerService, Menge::PlayerServiceInterface );
-//SERVICE_EXTERN( PrototypeService, Menge::PrototypeServiceInterface );
-//SERVICE_EXTERN( Graveyard, Menge::GraveyardInterface );
-//SERVICE_EXTERN( RenderService, Menge::RenderServiceInterface );
-//SERVICE_EXTERN( RenderTextureManager, Menge::RenderTextureServiceInterface );
-//SERVICE_EXTERN( RenderMaterialManager, Menge::RenderMaterialServiceInterface );
-//SERVICE_EXTERN( PackageService, Menge::PackageServiceInterface );
-//SERVICE_EXTERN( UserdataService, Menge::UserdataServiceInterface );
+SERVICE_EXTERN( Consts );
+SERVICE_EXTERN( PrototypeService );
+SERVICE_EXTERN( NodeService );
+SERVICE_EXTERN( LoaderService );
+SERVICE_EXTERN( RenderService );
+SERVICE_EXTERN( RenderMaterialService );
+SERVICE_EXTERN( RenderTextureService );
+SERVICE_EXTERN( ResourceService );
+SERVICE_EXTERN( TextService );
+SERVICE_EXTERN( Watchdog );
+SERVICE_EXTERN( ProfilerService );
+SERVICE_EXTERN( Graveyard );
+SERVICE_EXTERN( PackageService );
+SERVICE_EXTERN( UserdataService );
+SERVICE_EXTERN( PlayerService );
+SERVICE_EXTERN( GameService );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -152,7 +153,6 @@ namespace Menge
 		, m_inputMouseButtonEventBlock(false)
 		, m_mouseEnter(false)
         , m_resourceCheck(true)
-		, m_resourceCheckCritical(true)
 		, m_cursorResource(nullptr)
 		, m_fixedContentResolution(false)
 		, m_fixedDisplayResolution(false)
@@ -569,7 +569,9 @@ namespace Menge
 				LOGGER_ERROR(m_serviceProvider)("Resources validation is invalid!!!!!!!!!!!!!"
 					);
 
-				if( m_resourceCheckCritical == true )
+				bool resourceCheckCritical = HAS_OPTIONS( m_serviceProvider, "noresourcecheckcritical" );
+
+				if( resourceCheckCritical == true )
 				{
 					LOGGER_CRITICAL(m_serviceProvider)("Fix Resources"
 						);
@@ -1252,12 +1254,14 @@ namespace Menge
 		CODEC_SERVICE(m_serviceProvider)
 			->unregisterDecoder( STRINGIZE_STRING_LOCAL( m_serviceProvider, "archiveImage" ) );
 
+		SERVICE_FINALIZE( m_serviceProvider, Menge::GraveyardInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::NodeServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ResourceServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderMaterialServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderTextureServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::TextServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PrototypeServiceInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::calcWindowResolution( Resolution & _windowResolution ) const

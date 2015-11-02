@@ -153,7 +153,6 @@ namespace Menge
 			bool unique = true;
 			meta_resource->get_Unique( unique );
 
-#   ifdef _DEBUG
 			ResourceReference * has_resource = nullptr;
 			if( this->hasResource( name, &has_resource ) == true )
 			{
@@ -177,7 +176,6 @@ namespace Menge
 
 				return nullptr;
 			}
-#   endif
 
             ResourceReference * resource = 
                 this->createResource( _pakName, groupName, name, type );

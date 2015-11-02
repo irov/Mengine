@@ -255,7 +255,6 @@ namespace Menge
 		bool m_inputMouseButtonEventBlock;
 
 		bool m_resourceCheck;
-		bool m_resourceCheckCritical;
 
 		bool m_debugPause;
 

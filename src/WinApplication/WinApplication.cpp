@@ -45,6 +45,41 @@
 #   include <Psapi.h>
 #	include <tlhelp32.h>
 
+
+SERVICE_PROVIDER_EXTERN( ServiceProvider );
+
+SERVICE_EXTERN( Options );
+SERVICE_EXTERN( StringizeService );
+SERVICE_EXTERN( LoggerService );
+SERVICE_EXTERN( WindowsLayer );
+SERVICE_EXTERN( Platform );
+SERVICE_EXTERN( NotificationService );
+SERVICE_EXTERN( UnicodeService );
+SERVICE_EXTERN( UnicodeSystem );
+SERVICE_EXTERN( FileService );
+SERVICE_EXTERN( ConfigService );
+SERVICE_EXTERN( ArchiveService );
+SERVICE_EXTERN( ThreadService );
+SERVICE_EXTERN( ThreadSystem );
+SERVICE_EXTERN( ParticleService );
+SERVICE_EXTERN( RenderService );
+SERVICE_EXTERN( RenderSystem );
+SERVICE_EXTERN( SoundService );
+SERVICE_EXTERN( SoundSystem );
+SERVICE_EXTERN( SilentSoundSystem );
+SERVICE_EXTERN( ScriptService );
+SERVICE_EXTERN( ModuleService );
+SERVICE_EXTERN( CodecService );
+SERVICE_EXTERN( DataService );
+SERVICE_EXTERN( PrefetcherService );
+SERVICE_EXTERN( MemoryService );
+SERVICE_EXTERN( ConverterService );
+SERVICE_EXTERN( InputService );
+SERVICE_EXTERN( TimerService );
+SERVICE_EXTERN( TimerSystem );
+SERVICE_EXTERN( PluginService );
+SERVICE_EXTERN( Application );
+
 extern "C" // only required if using g++
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -491,93 +526,6 @@ namespace Menge
 	{		
 		setlocale( LC_CTYPE, "" );
 		//::timeBeginPeriod( 1 );
-		
-		//if( Helper::s_hasOption( " -maxfps ", m_commandLine ) == true )
-		//{
-		//	m_maxfps = true;
-		//}
-
-		//if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )
-		//{
-		//	m_developmentMode = true;
-		//}
-		//		
-		//if( Helper::s_hasOption( " -profiler ", m_commandLine ) == true )
-		//{
-		//	m_profilerMode = true;
-		//}
-
-		//if( Helper::s_hasOption( " -nodevplugins ", m_commandLine ) == true )
-		//{
-		//	m_noDevPluginsMode = true;
-		//}
-
-		//if( Helper::s_hasOption( " -mute ", m_commandLine ) == true )
-		//{
-		//	m_muteMode = true;
-		//}
-
-		//if( Helper::s_hasOption( " -nopause ", m_commandLine ) == true )
-		//{
-		//	m_nopause = true;
-		//}
-
-		//if( Helper::s_hasOption( " -roaming ", m_commandLine ) == true )
-		//{
-		//	m_roamingMode = true;
-		//}
-
-		//if( Helper::s_hasOption( " -nologs ", m_commandLine ) == true )
-		//{
-		//	m_nologsMode = true;
-		//}
-
-		//if( _arguments.find( " -particles " ) != String::npos )
-		//{
-		//	m_particleEnable = false;
-		//}
-
-		//if( _arguments.find( " -texts " ) != String::npos )
-		//{
-		//	m_textEnable = false;
-		//}
-
-		//if( _arguments.find( " -dev " ) != String::npos )
-		//{
-		//	m_developmentMode = true;
-		//}
-
-		//if( _arguments.find( " -roaming " ) != String::npos )
-		//{
-		//	m_roamingMode = true;
-		//}
-
-		//if( _arguments.find( " -nopause " ) != String::npos )
-		//{
-		//	m_nopauseMode = true;
-		//}
-
-		//if( _arguments.find( " -maxfps " ) != String::npos )
-		//{
-		//	m_maxfpsMode = true;
-		//}
-
-		//if( _arguments.find( " -noresourcecheck " ) != String::npos )
-		//{
-		//	m_resourceCheck = false;
-		//}
-
-		//if( _arguments.find( " -noresourcecheckcritical " ) != String::npos )
-		//{
-		//	m_resourceCheckCritical = false;
-		//}
-
-		//if( _arguments.find( " -nofullscreen " ) != String::npos )
-		//{
-		//	m_nofullscreenMode = true;
-		//}
-
-		//bool dublicate = Helper::s_hasOption( " -dublicate ", m_commandLine );
 
 		ServiceProviderInterface * serviceProvider;
 		SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider );
@@ -598,8 +546,10 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, Platform );
 
 		SERVICE_CREATE( m_serviceProvider, NotificationService );
-		SERVICE_CREATE( m_serviceProvider, UnicodeService );
+
 		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
+		SERVICE_CREATE( m_serviceProvider, UnicodeService );
+		
 		SERVICE_CREATE( m_serviceProvider, FileService );
 
 		if( this->initializeFileEngine_() == false )
@@ -633,24 +583,25 @@ namespace Menge
 
 		
 		
-		SERVICE_CREATE( m_serviceProvider, ThreadService );
 		SERVICE_CREATE( m_serviceProvider, ThreadSystem );
+		SERVICE_CREATE( m_serviceProvider, ThreadService );		
 
 		SERVICE_CREATE( m_serviceProvider, ParticleService );		
 
-		SERVICE_CREATE( m_serviceProvider, RenderService );
 		SERVICE_CREATE( m_serviceProvider, RenderSystem );
-
-		SERVICE_CREATE( m_serviceProvider, SoundService );
+		SERVICE_CREATE( m_serviceProvider, RenderService );
+		
 
 		SERVICE_CREATE( m_serviceProvider, SoundSystem );
-
+		
 		bool muteMode = HAS_OPTIONS( m_serviceProvider, "mute" );
 		
 		if( muteMode == true || SERVICE_EXIST( m_serviceProvider, Menge::SoundSystemInterface ) == false )
 		{
 			SERVICE_CREATE( m_serviceProvider, SilentSoundSystem );
 		}
+
+		SERVICE_CREATE( m_serviceProvider, SoundService );
 
 		SERVICE_CREATE( m_serviceProvider, ScriptService );
 		SERVICE_CREATE( m_serviceProvider, ModuleService );
@@ -661,8 +612,8 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, ConverterService );
 		SERVICE_CREATE( m_serviceProvider, InputService );
 
-		SERVICE_CREATE( m_serviceProvider, TimerService );
 		SERVICE_CREATE( m_serviceProvider, TimerSystem );
+		SERVICE_CREATE( m_serviceProvider, TimerService );		
 
 		SERVICE_CREATE( m_serviceProvider, PluginService );
 
@@ -924,6 +875,7 @@ namespace Menge
 		SERVICE_FINALIZE( m_serviceProvider, Menge::SoundServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::SoundSystemInterface );
 
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PrototypeServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ScriptServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ConverterServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderServiceInterface );

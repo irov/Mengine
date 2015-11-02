@@ -4,7 +4,7 @@
 
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ArchiveInterface.h"
-#   include "Interface/LogSystemInterface.h"
+#   include "Interface/LoggerInterface.h"
 #   include "Interface/LoaderInterface.h"
 #   include "Interface/CodecInterface.h"
 #   include "Interface/ConverterInterface.h"
@@ -13,6 +13,7 @@
 #   include "Interface/WindowsLayerInterface.h"
 #   include "Interface/UnicodeInterface.h"
 #   include "Interface/XmlCodecInterface.h"
+#   include "Interface/ConfigInterface.h"
 
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
@@ -40,10 +41,10 @@ namespace Menge
 
 		String utf8_aekPath;
 		Helper::unicodeToUtf8( serviceProvider, _aekPath, utf8_aekPath );
-
-		LOADER_SERVICE(serviceProvider)
-			->initialize( Helper::stringizeString( serviceProvider, utf8_protocolPath ) );
 		
+		LOADER_SERVICE( serviceProvider )
+			->setProtocolPath( Helper::stringizeString( serviceProvider, utf8_protocolPath ) );
+	
 		String framePackPath( utf8_xmlPath.c_str(), utf8_xmlPath.size() );
 
 		String::size_type size = framePackPath.size();

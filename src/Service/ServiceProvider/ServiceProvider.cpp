@@ -118,6 +118,7 @@ namespace Menge
 
 			desc.service->finalize();
 			desc.service->destroy();
+			desc.service = nullptr;
 
 			return true;
 		}

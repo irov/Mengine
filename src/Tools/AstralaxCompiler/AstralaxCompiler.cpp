@@ -130,7 +130,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		return 0;
 	}
-
+	
 	WCHAR szBuffer[MAX_PATH];
 	if( astralax.empty() == true )
 	{
@@ -155,6 +155,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 			return 0;
 		}
+
+		wcscat( szBuffer, L"\\Particles.exe" );
 	}
 	else
 	{
@@ -190,7 +192,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	PROCESS_INFORMATION lpProcessInformation;
 	ZeroMemory( &lpProcessInformation, sizeof(PROCESS_INFORMATION) );
 
-	WCHAR lpCommandLine[MAX_PATH];
+	WCHAR lpCommandLine[32768];
 	wcscpy_s( lpCommandLine, system_cmd.c_str() );
 
 	if( CreateProcess( szBuffer
@@ -252,7 +254,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		int f_size = ftell( f );
 		rewind( f ); 
 
-		char * mf_buffer = new char [f_size];
+		std::vector<char> v_buffer(f_size);
+		char * mf_buffer = &v_buffer[0];
+
 		fread( mf_buffer, 1, f_size, f );
 		fclose( f );
 
@@ -306,8 +310,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		Magic_CloseFile( mf );
 
-		delete[] mf_buffer;
-
 		WCHAR infoCanonicalizeQuote[MAX_PATH];
 		ForcePathQuoteSpaces( infoCanonicalizeQuote, info.c_str() );
 		PathUnquoteSpaces( infoCanonicalizeQuote );
@@ -341,10 +343,11 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			const AtlasDesc & desc = *it;
 
 			fprintf_s( f_info, "%s\n", desc.path.c_str() );
+
 			fprintf_s( f_info, "%d\n", desc.width );
 			fprintf_s( f_info, "%d\n", desc.height );
 		}
-
+		
 		fclose( f_info );
 	}
 			

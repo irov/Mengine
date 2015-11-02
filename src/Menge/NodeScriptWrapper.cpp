@@ -3974,6 +3974,17 @@ namespace Menge
 
             return duration;
         }
+		//////////////////////////////////////////////////////////////////////////
+		float s_getGameAspect()
+		{
+			float aspect;
+			Viewport viewport;
+
+			APPLICATION_SERVICE( m_serviceProvider )
+				->getGameViewport( aspect, viewport );
+
+			return aspect;
+		}
         //////////////////////////////////////////////////////////////////////////
         Viewport s_getGameViewport()
         {
@@ -5471,7 +5482,8 @@ namespace Menge
 
             pybind::def_functor( "getMovieDuration", nodeScriptMethod, &NodeScriptMethod::s_getMovieDuration );
 
-            pybind::def_functor( "getGameViewport", nodeScriptMethod, &NodeScriptMethod::s_getGameViewport );			
+			pybind::def_functor( "getGameAspect", nodeScriptMethod, &NodeScriptMethod::s_getGameAspect );
+			pybind::def_functor( "getGameViewport", nodeScriptMethod, &NodeScriptMethod::s_getGameViewport );
                         
             pybind::def_functor( "getGameParam", nodeScriptMethod, &NodeScriptMethod::s_getGameParam );
             pybind::def_functor( "getGameParamFloat", nodeScriptMethod, &NodeScriptMethod::s_getGameParamFloat );

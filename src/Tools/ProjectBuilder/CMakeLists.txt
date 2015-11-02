@@ -14,20 +14,20 @@ src
     XmlToAekConverter.h
 )
 
+add_definitions(-DUNICODE)
+
+add_definitions(-DMS_NO_COREDLL)
+add_definitions(-DPy_NO_ENABLE_SHARED)
+add_definitions(-DPYBIND_PYTHON_VERSION=342)
+
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
 			         ${THIRDPARTY_DIR}/pugixml/src
                      ${THIRDPARTY_DIR}/metabuf
                      ${THIRDPARTY_DIR}/pybind/include
 )
  
+LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
 ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
-
-add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
-
-add_definitions(-DMS_NO_COREDLL)
-add_definitions(-DPy_NO_ENABLE_SHARED)
-add_definitions(-DPYBIND_PYTHON_VERSION=342)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core)
@@ -37,7 +37,7 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceCodec)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceConverter)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceFile)
-TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceLog)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceLogger)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServicePlugin)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceProvider)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceStringize)

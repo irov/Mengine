@@ -19,6 +19,9 @@ namespace Menge
     {
         SERVICE_DECLARE("LoaderService")
 
+	public:
+		virtual void setProtocolPath( const ConstString & _protocolPath ) = 0;
+
     public:
         virtual bool load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) = 0;
     };

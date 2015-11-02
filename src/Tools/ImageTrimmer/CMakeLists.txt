@@ -6,7 +6,6 @@ src
 )
 
 add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils			         
                     )
@@ -23,7 +22,7 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Codec)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceCodec)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceFile)
-TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceLog)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceLogger)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceProvider)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceStringize)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ServiceUnicode)
@@ -55,3 +54,11 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_DIR}/${MENGINE_LIB_DIR}/${CMAKE_BUILD_TYPE}/${MENGINE_LIB_PREFIX}lz4_static${MENGINE_LIB_SUFFIX}
     Shlwapi.lib
     )   
+    
+foreach(dependency ${APPLICATION_DEPENDENCIES})
+	#MESSAGE( ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )
+	TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} debug ${dependency} )
+	TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} optimized ${dependency} )
+endforeach(dependency ${APPLICATION_DEPENDENCIES})    
+
+TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${APPLICATION_LIBS} comctl32 )

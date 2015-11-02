@@ -257,30 +257,24 @@ namespace Menge
     return true;}\
 	struct __mengine_dummy_factory##Name{}
 
+#	define SERVICE_PROVIDER_EXTERN(Name)\
+	extern bool SERVICE_PROVIDER_NAME_CREATE( Name )(Menge::ServiceProviderInterface**);
+
 #   define SERVICE_PROVIDER_CREATE( Name, Provider )\
-	for(;Provider!=nullptr;){\
-	extern bool SERVICE_PROVIDER_NAME_CREATE(Name)(Menge::ServiceProviderInterface**);\
-	SERVICE_PROVIDER_NAME_CREATE(Name)(Provider);\
-	break;}	
+	( Provider != nullptr ? SERVICE_PROVIDER_NAME_CREATE(Name)(Provider) : false )
 
 #	define SERVICE_PROVIDER_FINALIZE( Provider )\
-	for(;Provider!=nullptr;){\
-	Provider->destroy();\
-	break;}
+	( Provider != nullptr ? Provider->destroy() : false )
+
+#	define SERVICE_EXTERN(Name)\
+	extern bool SERVICE_NAME_CREATE( Name )(Menge::ServiceInterface**);
 
 #   define SERVICE_CREATE( Provider, Name )\
-	for(;Provider!=nullptr;){\
-	extern bool SERVICE_NAME_CREATE(Name)(Menge::ServiceInterface**);\
-	Provider->initializeService(&SERVICE_NAME_CREATE(Name));\
-	break;}
+	( Provider != nullptr ? Provider->initializeService(&SERVICE_NAME_CREATE(Name)) : false )
 
 #   define SERVICE_FINALIZE( Provider, Type )\
-	for(;Provider!=nullptr;){\
-	Provider->destroyServiceT<Type>();\
-	break;}
+	( Provider != nullptr ? Provider->finalizeServiceT<Type>() : false )
 
 #   define SERVICE_DESTROY( Provider, Type )\
-	for(;Provider!=nullptr;){\
-	Provider->finalizeServiceT<Type>();\
-	break;}
+	( Provider != nullptr ? Provider->destroyServiceT<Type>() : false )
 }

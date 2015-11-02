@@ -6,7 +6,8 @@ options
     strict-mkb
     #strict-compile
     enable-exceptions
-	preinclude=preinclude_mengine.h        
+	preinclude=preinclude_mengine.h
+    buildenv=VC12
 }
 
 
@@ -23,6 +24,7 @@ includepaths
 {
     "."
     
+    "./Modified/boost"
     "./Modified/boost"
 	"./Modified/pugixml/src"    
     "./Modified/Python"
@@ -160,8 +162,8 @@ files
 	"*.h"
 	"*.cpp"
 
-    [Service/ServiceCache]
-    ("../src/Service/ServiceCache")	
+    [Service/ServiceMemory]
+    ("../src/Service/ServiceMemory")	
 	"*.h"
 	"*.cpp"
     
@@ -210,11 +212,6 @@ files
 	"*.h"
 	"*.cpp"    
     
-    [Service/ServiceParticle]
-    ("../src/Service/ServiceParticle")	
-	"*.h"
-	"*.cpp"       
-
     [Service/ServiceParticle2]
     ("../src/Service/ServiceParticle2")	
 	"*.h"

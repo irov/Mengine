@@ -6,6 +6,7 @@ options
     #strict-compile
 	enable-exceptions    
 	preinclude=preinclude_application.h
+    buildenv=VC12
     
     app-icf="app.icf"
     #s3e-data-dir="d:/Projects/ZombielandBuild_PVRTC"
@@ -100,6 +101,11 @@ files
 	"*.h"
 	"*.cpp"    
    
+    [System/MarmaladeRenderSystemES1]
+    ("../src/System/MarmaladeRenderSystemES1")	
+	"*.h"
+	"*.cpp"       
+   
     [System/MarmaladeSoundSystem]
     ("../src/System/MarmaladeSoundSystem")
 	"*.h"
@@ -119,24 +125,24 @@ deployments
 	["Burritos_Android"]
 	app-icf='d:/Projects/BurritosBuild_ETC1/app.icf'
 	assets='Burritos_Android'
-	caption='Burritos'
-	name='Burritos'
+	caption='Splash Of Zombies'
+	name='Splash Of Zombies'
 	version-major=1
 	version-minor=6
-	version-revision=0
+	version-revision=1
 	["Burritos_IOS"]
 	app-icf='d:/Projects/BurritosBuild_PVRTC/app.icf'
 	assets='Burritos_IOS'
-	caption='Burritos'
+	caption='Splash Of Zombies'
 	iphone-appid='com.IROV.IROV'
 	iphone-provisioning-profile='SplashOfZombiesBeta.mobileprovision'
 	iphone-sign-for-distribution=1
 	iphone-signing-identity='iPhone Distribution'
 	iphone-testflight=1
-	name='Burritos'
+	name='Splash Of Zombies'
 	version-major=1
-	version-minor=5
-	version-revision=5
+	version-minor=6
+	version-revision=3
 	["Default"]
 	["HolidayFun_Android"]
 	app-icf='d:/Projects/HolidayFunBuild_ETC1/app.icf'

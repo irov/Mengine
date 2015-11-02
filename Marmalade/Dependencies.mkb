@@ -8,6 +8,7 @@ options
     #strict-compile
     enable-exceptions
 	preinclude=preinclude_dependencies.h
+    buildenv=VC12
 }
 
 defines

@@ -20,6 +20,14 @@ ${SOURCE_DIR}/src/thread_guard.cpp
 ${SOURCE_DIR}/src/stack.cpp
 )
 
+if(NOT MSVC)
+    if(NOT EMSCRIPTEN)
+        ADD_DEFINITIONS(-D"override = /* */")
+        ADD_DEFINITIONS(-D"nullptr=0")
+        ADD_DEFINITIONS(-D"nullptr_t=void*")     
+    endif(EMSCRIPTEN)
+endif(NOT MSVC)
+
 #add_definitions(-Dstdex_allocator_disable)
 
 include_directories( ${SOURCE_DIR}/include )

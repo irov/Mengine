@@ -17,7 +17,7 @@
 @set cmake_params=%6
 @set cmake_params2=%7
 
-@if %generator%=="NMake Makefiles" call "%VS80COMNTOOLS%vsvars32.bat" x86
+@if %generator%=="NMake Makefiles" call "%VS80COMNTOOLS%vsvars32.bat" x64
 
 
 @mkdir %build_dir%\%configuration%

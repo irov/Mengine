@@ -98,6 +98,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Graveyard::buryTexture( RenderTextureInterface * _texture )
 	{
+		if( this->isInitialize() == false )
+		{
+			return false;
+		}
+
 		const ConstString & category = _texture->getCategory();
 		const FilePath & filePath = _texture->getFileName();
 

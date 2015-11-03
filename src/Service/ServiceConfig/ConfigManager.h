@@ -13,8 +13,7 @@ namespace Menge
 		ConfigManager();
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		void setPlatformName( const ConstString & _platformName ) override;
 
 	public:
 		bool loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath ) override;

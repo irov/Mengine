@@ -1,7 +1,6 @@
 #	include "ConfigManager.h"
 
 #	include "Interface/FileSystemInterface.h"
-#	include "Interface/PlatformInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -15,17 +14,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigManager::_initialize()
+	void ConfigManager::setPlatformName( const ConstString & _platformName )
 	{
-		m_platformName = PLATFORM_SERVICE( m_serviceProvider )
-			->getPlatformName();
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ConfigManager::_finalize()
-	{
-		//Empty
+		m_platformName = _platformName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ConfigManager::loadConfig( const ConstString & _fileGroup, const ConstString & _applicationPath )

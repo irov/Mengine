@@ -449,6 +449,8 @@ namespace Menge
 		this->destroyArrow();		      
 				
 		EVENTABLE_CALL( m_serviceProvider, this, EVENT_DESTROY )();
+
+		this->unregisterEvents_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initializeRenderResources()

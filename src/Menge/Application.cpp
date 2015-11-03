@@ -545,8 +545,11 @@ namespace Menge
 		LOGGER_INFO(m_serviceProvider)( "Application:initializeGame load game resource"
 			);
 
+		const ConstString & platformName = PLATFORM_SERVICE( m_serviceProvider )
+			->getPlatformName();
+
 		if( PACKAGE_SERVICE( m_serviceProvider )
-			->applyPackages() == false )
+			->applyPackages( m_locale, platformName ) == false )
 		{
 			return false;
 		}

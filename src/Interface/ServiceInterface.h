@@ -93,6 +93,12 @@ namespace Menge
 			//Empty
 		}
 
+	public:
+		bool isInitialize() const
+		{
+			return m_initialize;
+		}
+
 	protected:
 		virtual bool _initialize()
 		{

@@ -3,6 +3,8 @@
 #	include "Interface/WatchdogInterface.h"
 #	include "Interface/StringizeInterface.h"
 
+#	include "Logger/Logger.h"
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

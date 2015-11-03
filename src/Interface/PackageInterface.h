@@ -65,7 +65,7 @@ namespace Menge
 		virtual PackageInterfacePtr getPackage( const ConstString & _name ) const = 0;
 
 	public:
-		virtual bool applyPackages() = 0;
+		virtual bool applyPackages( const ConstString & _locale, const ConstString & _platformName ) = 0;
 	};
 
 #   define PACKAGE_SERVICE( serviceProvider )\

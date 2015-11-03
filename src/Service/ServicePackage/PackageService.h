@@ -27,7 +27,7 @@ namespace Menge
 		PackageInterfacePtr getPackage( const ConstString & _name ) const override;
 
 	public:
-		bool applyPackages() override;
+		bool applyPackages( const ConstString & _locale, const ConstString & _platformName ) override;
 
 	protected:
 		typedef stdex::vector<PackagePtr> TVectorPackage;

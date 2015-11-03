@@ -178,6 +178,12 @@ namespace Menge
 	{
 		LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
 
+		const ConstString & platformName = PLATFORM_SERVICE( m_serviceProvider )
+			->getPlatformName();
+
+		CONFIG_SERVICE( m_serviceProvider )
+			->setPlatformName( platformName );
+
 		ConstString gameIniPath;
 		if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
 		{

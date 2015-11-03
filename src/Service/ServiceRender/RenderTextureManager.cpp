@@ -582,8 +582,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::loadTextureRectImageData( const RenderTextureInterfacePtr & _texture, const Rect & _rect, const ImageDecoderInterfacePtr & _imageDecoder )
     {
-		BEGIN_WATCHDOG(m_serviceProvider, "texture decode");
-		
 		const RenderImageInterfacePtr & image = _texture->getImage();
 
 		uint32_t width = image->getHWWidth();
@@ -647,10 +645,6 @@ namespace Menge
 
 			_texture->unlock( i );
 		}
-
-		END_WATCHDOG(m_serviceProvider, "texture decode", 1)("texture decode %s"
-			, _texture->getFileName().c_str()
-			);
 		
         return true;
     }

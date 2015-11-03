@@ -4,7 +4,6 @@
 #	include "Interface/OptionsInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
-#	include "Interface/WatchdogInterface.h"
 
 #   include "Logger/Logger.h"
 
@@ -293,11 +292,8 @@ namespace Menge
 		return hasLocale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PackageService::applyPackages()
+	bool PackageService::applyPackages( const ConstString & _locale, const ConstString & _platformName )
 	{
-		const ConstString & platformName = PLATFORM_SERVICE( m_serviceProvider )
-			->getPlatformName();
-
 		TVectorPackage packages;
 
 		for( TVectorPackage::const_iterator
@@ -310,7 +306,7 @@ namespace Menge
 
 			const ConstString & packPlatform = pack->getPlatfrom();
 
-			if( packPlatform.empty() == false && packPlatform != platformName )
+			if( packPlatform.empty() == false && packPlatform != _platformName )
 			{
 				continue;
 			}
@@ -325,12 +321,9 @@ namespace Menge
 			packages.push_back( pack );
 		}
 
-		const ConstString & locale = APPLICATION_SERVICE( m_serviceProvider )
-			->getLocale();
-
-		if( this->loadLocalePacksByName_( packages, locale, platformName ) == false )
+		if( this->loadLocalePacksByName_( packages, _locale, _platformName ) == false )
 		{
-			if( this->loadLocalePacksByName_( packages, STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" ), platformName ) == false )
+			if( this->loadLocalePacksByName_( packages, STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" ), _platformName ) == false )
 			{
 				LOGGER_WARNING( m_serviceProvider )("PackageService::applyPackages not set locale pack"
 					);
@@ -356,8 +349,6 @@ namespace Menge
 			}
 		}
 
-		BEGIN_WATCHDOG( m_serviceProvider, "packages apply" );
-
 		for( TVectorPackage::const_iterator
 			it = packages.begin(),
 			it_end = packages.end();
@@ -376,8 +367,6 @@ namespace Menge
 				return false;
 			}
 		}
-
-		END_WATCHDOG( m_serviceProvider, "packages apply", 0 )("");
 
 		return true;
 	}

@@ -87,7 +87,6 @@ namespace Menge
         mutable RenderVertex2D m_verticesWM[4];
 
 		bool m_centerAlign;
-		bool m_hasCustomSize;
 
 		bool m_flipX;
 		bool m_flipY;

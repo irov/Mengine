@@ -31,6 +31,9 @@ namespace Menge
 		virtual uint32_t timing( float _delay, const ScheduleListenerInterfacePtr & _listener ) = 0;
 
 	public:
+		virtual bool refresh( uint32_t _id, float _timing ) = 0;
+
+	public:
 		virtual bool exist( uint32_t _id ) const = 0;
 
 	public:

@@ -128,6 +128,8 @@ namespace Menge
 		pybind::def_functor( "setPathFinderMapWeight", this, &ModulePathFinder::setMapWeight );
 
 		pybind::interface_<PathFinderWayAffector, pybind::bases<Affector> >("PathFinderWayAffector")
+			.def( "setSpeedAffector", &PathFinderWayAffector::setSpeedAffector )
+			.def( "getSpeedAffector", &PathFinderWayAffector::getSpeedAffector )
 			;
 
 		pybind::def_functor( "createPathFinderWayAffertor", this, &ModulePathFinder::createPathFinderWayAffertor );

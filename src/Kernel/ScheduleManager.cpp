@@ -124,6 +124,23 @@ namespace Menge
 		
 		return true;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ScheduleManager::refresh( uint32_t _id, float _timing )
+	{
+		TListSchedules::iterator it_find =
+			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind( _id ) );
+
+		if( it_find == m_schedules.end() )
+		{
+			return false;
+		}
+
+		ScheduleEventDesc & desc = *it_find;
+
+		desc.timing = _timing;
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::remove( uint32_t _id )
     {

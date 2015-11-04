@@ -39,6 +39,9 @@ namespace Menge
 		uint32_t timing( float _delay, const ScheduleListenerInterfacePtr & _listener ) override;
 
 	public:
+		bool refresh( uint32_t _id, float _timing ) override;
+
+	public:
 		bool exist( uint32_t _id ) const override;
 
     public:

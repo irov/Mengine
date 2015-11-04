@@ -11,6 +11,7 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_node(nullptr)
 		, m_speed(0.f)
+		, m_speedAffector(1.f)
 		, m_iterator(0)
 		, m_wayCount(0)
 	{
@@ -47,6 +48,16 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PathFinderWayAffector::setSpeedAffector( float _speedAffector )
+	{
+		m_speedAffector = _speedAffector;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float PathFinderWayAffector::getSpeedAffector() const
+	{
+		return m_speedAffector;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderWayAffector::stepNextPoint_( const mt::vec3f & _pos, float _step, mt::vec3f & _out, mt::vec3f & _dir )
@@ -126,7 +137,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PathFinderWayAffector::affect( float _timing )
 	{
-		float step = m_speed * _timing;
+		float step = m_speed * m_speedAffector * _timing;
 
 		const mt::vec3f & lp = m_node->getLocalPosition();
 

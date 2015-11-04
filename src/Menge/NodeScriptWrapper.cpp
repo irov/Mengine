@@ -5321,6 +5321,7 @@ namespace Menge
 			pybind::interface_<ScheduleManagerInterface>("ScheduleManagerInterface", true)
 				.def_proxy_static( "timing", nodeScriptMethod, &NodeScriptMethod::TimingManagerInterface_timing )
 				.def_proxy_static( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
+				.def( "refresh", &ScheduleManagerInterface::refresh )
 				.def( "exist", &ScheduleManagerInterface::exist )
 				.def( "remove", &ScheduleManagerInterface::remove )
 				.def( "removeAll", &ScheduleManagerInterface::removeAll )

@@ -42,7 +42,7 @@ namespace Menge
 		bool _interrupt( uint32_t _enumerator ) override;
 
 	public:
-		void setEmitterTranslateWithParticle( bool _with );
+		void setEmitterTranslateWithParticle( bool _translateWithParticle );
 		void setEmitterRelative( bool _relative );
 
 		void changeEmitterImage( const ConstString & _emitterImageName );

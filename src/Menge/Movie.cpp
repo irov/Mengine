@@ -2061,12 +2061,12 @@ namespace Menge
 		if( _layer.hasParam( MOVIE_LAYER_PARAM_PARTICLE_TRANSLATE ) == true )
 		{
 			layer_particles->setEmitterRelative( true );
-			//layer_particles->setEmitterTranslateWithParticle( true );
+			layer_particles->setEmitterTranslateWithParticle( false );
 		}
 		else
 		{
 			layer_particles->setEmitterRelative( false );
-			//layer_particles->setEmitterTranslateWithParticle( false );
+			layer_particles->setEmitterTranslateWithParticle( true );
 		}
 
 		if( this->addMovieNode_( _layer, layer_particles, layer_particles, nullptr ) == false )

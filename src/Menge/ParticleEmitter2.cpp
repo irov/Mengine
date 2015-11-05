@@ -352,7 +352,7 @@ namespace	Menge
 
 		this->updateVertexColor_( m_vertices, flush.vertexCount );
 
-		//if( m_emitterRelative == false )
+		if( m_emitterRelative == false )
 		{
 			this->updateVertexWM_( m_vertices, flush.vertexCount );
 		}
@@ -472,9 +472,9 @@ namespace	Menge
         return m_resourceParticle;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::setEmitterTranslateWithParticle( bool _with )
+	void ParticleEmitter2::setEmitterTranslateWithParticle( bool _translateWithParticle )
 	{
-		m_emitterTranslateWithParticle = _with;
+		m_emitterTranslateWithParticle = _translateWithParticle;
 		
 		if( this->isCompile() == false )
 		{
@@ -682,8 +682,16 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::onProviderEmitterPosition( mt::vec3f & _position )
 	{ 
-		const mt::vec3f & w_pos = this->getWorldPosition();
+		mt::vec3f position;
+		mt::vec3f origin;
+		mt::vec3f coordinate;
+		mt::vec3f scale; 
+		mt::vec3f orientation;
+		this->getTransformation( position, origin, coordinate, scale, orientation );
 
-		_position = w_pos;
+		mt::mat4f wm;
+		this->calcWorldMatrix( wm, position + mt::vec3f( 1024.f, 1024.f, 0.f ), origin, coordinate, scale, orientation );
+		
+		_position = wm.v3.to_vec3f();
 	}
 }

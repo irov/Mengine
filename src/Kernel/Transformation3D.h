@@ -65,7 +65,8 @@ namespace Menge
 
 	public:
 		void setTransformation( const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _orientation );
-        void getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f & _coordinate, mt::vec3f& _scale, mt::vec3f& _orientation );
+        void getTransformation( mt::vec3f & _position, mt::vec3f& _origin, mt::vec3f & _coordinate, mt::vec3f& _scale, mt::vec3f& _orientation ) const;
+		void calcWorldMatrix( mt::mat4f & _wm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _orientation ) const;
 
         void resetTransformation();
 		
@@ -86,6 +87,9 @@ namespace Menge
 	public:
 		virtual void updateLocalMatrix() const;
 		virtual void updateWorldMatrix() const;
+
+	protected:
+		static bool makeLocalMatrix_( mt::mat4f & _lm, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f & _coordinate, const mt::vec3f& _scale, const mt::vec3f& _orientation );
 
 	protected:
 		Transformation3D * m_relationTransformation;

@@ -146,6 +146,24 @@ namespace Menge
         m_time = 0.0;
 
 		m_start = true;
+
+		if( m_positionProvider != nullptr )
+		{
+			bool old_translate = Magic_GetEmitterPositionMode( m_emitterId );
+			Magic_SetEmitterPositionMode( m_emitterId, true );
+
+			mt::vec3f pos;
+			m_positionProvider->onProviderEmitterPosition( pos );
+
+			MAGIC_POSITION mp;
+			mp.x = pos.x;
+			mp.y = pos.y;
+			mp.z = pos.z;
+
+			Magic_SetEmitterPosition( m_emitterId, &mp );
+
+			Magic_SetEmitterPositionMode( m_emitterId, old_translate );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setLoop( bool _loop )
@@ -270,18 +288,18 @@ namespace Menge
 			Magic_SetCamera( &camera );
 		}
 
-		//if( m_positionProvider != nullptr )
-		//{
-		//	mt::vec3f pos;
-		//	m_positionProvider->onProviderEmitterPosition( pos );
+		if( m_positionProvider != nullptr )
+		{
+			mt::vec3f pos;
+			m_positionProvider->onProviderEmitterPosition( pos );
 
-		//	MAGIC_POSITION mp;
-		//	mp.x = pos.x;
-		//	mp.y = pos.y;
-		//	mp.z = pos.z;
+			MAGIC_POSITION mp;
+			mp.x = pos.x;
+			mp.y = pos.y;
+			mp.z = pos.z;
 
-		//	Magic_SetEmitterPosition( m_emitterId, &mp );
-		//}
+			Magic_SetEmitterPosition( m_emitterId, &mp );
+		}
 
 		float total_timing = _timing / m_updateSpeed;
 		
@@ -353,23 +371,6 @@ namespace Menge
 		}
 
 		m_positionProvider = _positionProvider;
-
-		//if( m_positionProvider != nullptr )
-		//{
-		//	Magic_SetEmitterPositionMode( m_emitterId, true );
-
-		//	mt::vec3f pos;
-		//	m_positionProvider->onProviderEmitterPosition( pos );
-
-		//	MAGIC_POSITION mp;
-		//	mp.x = pos.x;
-		//	mp.y = pos.y;
-		//	mp.z = pos.z;
-
-		//	Magic_SetEmitterPosition( m_emitterId, &mp );
-
-		//	Magic_SetEmitterPositionMode( m_emitterId, false );
-		//}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setScale( float _scale )
@@ -668,50 +669,53 @@ namespace Menge
 			_flush.meshCount++;
 		}
 	
-		mt::mat4f vpm;
-
-		bool is3d = this->is3d();
-
-		if( is3d == true )
+		if( m_positionProvider == nullptr )
 		{
-			ParticleCamera pc;
-			if( this->getCamera( pc ) == false )
+			mt::mat4f vpm;
+
+			bool is3d = this->is3d();
+
+			if( is3d == true )
 			{
-				return false;
+				ParticleCamera pc;
+				if( this->getCamera( pc ) == false )
+				{
+					return false;
+				}
+
+				mt::mat4f vm;
+				mt::make_lookat_m4( vm, pc.pos, pc.dir, -pc.up, -1.f );
+
+				mt::mat4f pm;
+				mt::make_projection_fov_m4( pm, pc.fov, pc.aspect, pc.znear, pc.zfar );
+
+				mt::mul_m4_m4( vpm, vm, pm );
+			}
+			else
+			{
+				mt::mat4f vm;
+				mt::ident_m4( vm );
+
+				mt::mat4f pm;
+				mt::make_projection_ortho_lh_m4( pm, m_rect.x, m_rect.z, m_rect.y, m_rect.w, -1000.f, 1000.f );
+
+				mt::mul_m4_m4( vpm, vm, pm );
 			}
 
-			mt::mat4f vm;
-			mt::make_lookat_m4( vm, pc.pos, pc.dir, -pc.up, -1.f );
+			float half_width = (m_rect.z - m_rect.x) * 0.5f;
+			float half_height = (m_rect.w - m_rect.y) * 0.5f;
 
-			mt::mat4f pm;
-			mt::make_projection_fov_m4( pm, pc.fov, pc.aspect, pc.znear, pc.zfar );
+			for( uint32_t i = 0; i != _flush.vertexCount; ++i )
+			{
+				RenderVertex2D & v = _vertices[i];
 
-			mt::mul_m4_m4( vpm, vm, pm );
-		}
-		else
-		{
-			mt::mat4f vm;
-			mt::ident_m4( vm );
-		
-			mt::mat4f pm;
-			mt::make_projection_ortho_lh_m4( pm, m_rect.x, m_rect.z, m_rect.y, m_rect.w, -1000.f, 1000.f );
+				mt::vec3f v_vpm;
+				mt::mul_v3_v3_m4_homogenize( v_vpm, v.pos, vpm );
 
-			mt::mul_m4_m4( vpm, vm, pm );
-		}
-
-		float half_width = (m_rect.z - m_rect.x) * 0.5f;
-		float half_height = (m_rect.w - m_rect.y) * 0.5f;
-		
-		for( uint32_t i = 0; i != _flush.vertexCount; ++i )
-		{
-			RenderVertex2D & v = _vertices[i];
-
-			mt::vec3f v_vpm;
-			mt::mul_v3_v3_m4_homogenize( v_vpm, v.pos, vpm );
-
-			v.pos.x = (1.f + v_vpm.x) * half_width;
-			v.pos.y = (1.f + v_vpm.y) * half_height;
-			v.pos.z = v_vpm.z;
+				v.pos.x = (1.f + v_vpm.x) * half_width;
+				v.pos.y = (1.f + v_vpm.y) * half_height;
+				v.pos.z = v_vpm.z;
+			}
 		}
 
 		return true;

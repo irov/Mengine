@@ -130,6 +130,7 @@ namespace Menge
 		pybind::interface_<PathFinderWayAffector, pybind::bases<Affector> >("PathFinderWayAffector")
 			.def( "setSpeedAffector", &PathFinderWayAffector::setSpeedAffector )
 			.def( "getSpeedAffector", &PathFinderWayAffector::getSpeedAffector )
+			.def( "getLength", &PathFinderWayAffector::getLength )
 			;
 
 		pybind::def_functor( "createPathFinderWayAffertor", this, &ModulePathFinder::createPathFinderWayAffertor );
@@ -190,11 +191,11 @@ namespace Menge
 		delete _graph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PathFinderWayAffector * ModulePathFinder::createPathFinderWayAffertor( Node * _node, const pybind::list & _way, float _speed, const pybind::object & _cb )
+	PathFinderWayAffector * ModulePathFinder::createPathFinderWayAffertor( Node * _node, const pybind::list & _way, float _offset, float _speed, const pybind::object & _cb )
 	{
 		PathFinderWayAffector * affector = m_factoryPathFinderWayAffector.createObject();
 
-		if( affector->initialize( _node, _speed, _way, _cb ) == false )
+		if( affector->initialize( _node, _offset, _speed, _way, _cb ) == false )
 		{
 			affector->destroy();
 

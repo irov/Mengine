@@ -12,6 +12,8 @@ namespace Menge
 		, m_node(nullptr)
 		, m_speed(0.f)
 		, m_speedAffector(1.f)
+		, m_offset(0.f)
+		, m_length(0.f)
 		, m_iterator(0)
 		, m_wayCount(0)
 	{
@@ -26,7 +28,7 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderWayAffector::initialize( Node * _node, float _speed, const pybind::list & _way, const pybind::object & _cb )
+	bool PathFinderWayAffector::initialize( Node * _node, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb )
 	{
 		if( _cb.is_callable() == false )
 		{
@@ -35,6 +37,7 @@ namespace Menge
 
 		m_node = _node;
 		m_speed = _speed;
+		m_offset = _offset;
 
 		m_way = _way;
 		m_cb = _cb;
@@ -119,18 +122,23 @@ namespace Menge
 	bool PathFinderWayAffector::prepare()
 	{
 		mt::vec3f wp_current = m_way[0];
-		mt::vec3f wp_target = m_way[1];
+		//mt::vec3f wp_target = m_way[1];
 
 		m_iterator = 1;
-		
-		mt::vec3f dir;
-		mt::dir_v3_v3( dir, wp_target, wp_current );
 
 		m_node->setLocalPosition( wp_current );
+
+		mt::vec3f new_pos;
+		mt::vec3f new_dir;
+		this->step_( m_offset, new_pos, new_dir );
+
+		m_node->setLocalPosition( new_pos );
 		
 		uint32_t id = this->getId();
 
-		m_cb( id, m_node, wp_current, dir, true, false, false );
+		m_cb( id, m_node, new_pos, new_dir, true, false, false );
+
+
 
 		return true;
 	}
@@ -139,13 +147,9 @@ namespace Menge
 	{
 		float step = m_speed * m_speedAffector * _timing;
 
-		const mt::vec3f & lp = m_node->getLocalPosition();
-
 		mt::vec3f new_pos;
 		mt::vec3f new_dir;
-		bool newTarget = this->stepNextPoint_( lp, step, new_pos, new_dir );
-
-		m_node->setLocalPosition( new_pos );
+		bool newTarget = this->step_( step, new_pos, new_dir );
 
 		if( newTarget == true )
 		{
@@ -160,6 +164,29 @@ namespace Menge
 		}
 
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PathFinderWayAffector::step_( float _length, mt::vec3f & _pos, mt::vec3f & _dir )
+	{
+		const mt::vec3f & lp = m_node->getLocalPosition();
+
+		mt::vec3f new_pos;
+		mt::vec3f new_dir;
+		bool newTarget = this->stepNextPoint_( lp, _length, new_pos, new_dir );
+
+		m_node->setLocalPosition( new_pos );
+
+		m_length += _length;
+
+		_pos = new_pos;
+		_dir = new_dir;
+		
+		return newTarget;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float PathFinderWayAffector::getLength() const
+	{
+		return m_length;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::complete()

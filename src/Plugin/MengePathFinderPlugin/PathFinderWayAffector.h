@@ -24,11 +24,14 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( Node * _node, float _speed, const pybind::list & _way, const pybind::object & _cb );
+		bool initialize( Node * _node, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb );
 		
 	public:
 		void setSpeedAffector( float _speed );
 		float getSpeedAffector() const;
+
+	public:
+		float getLength() const;
 
 	public:
 		bool prepare() override;
@@ -38,6 +41,7 @@ namespace Menge
 
 	protected:
 		bool stepNextPoint_( const mt::vec3f & _pos, float _step, mt::vec3f & _out, mt::vec3f & _dir );
+		bool step_( float _length, mt::vec3f & _pos, mt::vec3f & _dir );
 		bool invalidateTarget_();
 
 	protected:
@@ -48,6 +52,9 @@ namespace Menge
 
 		float m_speed;
 		float m_speedAffector;
+		float m_offset;
+		float m_length;
+
 		pybind::object m_cb;
 
 		uint32_t m_iterator;

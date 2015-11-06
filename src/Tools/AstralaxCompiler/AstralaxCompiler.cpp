@@ -155,8 +155,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 			return 0;
 		}
-
-		wcscat( szBuffer, L"\\Particles.exe" );
 	}
 	else
 	{

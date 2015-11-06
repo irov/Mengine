@@ -169,7 +169,7 @@ namespace Menge
         public:
             bool operator() ( const MovieLayer & _layer ) const
             {
-                if( _layer.parent != m_parent )
+                if( _layer.index != m_parent )
                 {
                     return false;
                 }
@@ -223,6 +223,16 @@ namespace Menge
         ++it )
         {
             const MovieLayer & layer = *it;
+
+			if( layer.parent == 0 )
+			{
+				continue;
+			}
+
+			if( layer.parent == movie_layer_parent_none )
+			{
+				continue;
+			}
             
             FindResourceMovieValidParent frmvp(layer.parent);
             if( std::find_if( m_layers.begin(), m_layers.end(), frmvp ) == m_layers.end() )

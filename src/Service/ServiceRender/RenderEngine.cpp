@@ -427,10 +427,14 @@ namespace Menge
 		m_currentVBHandle = nullptr;
 		m_currentIBHandle = nullptr;
 
+		this->restoreRenderSystemStates_();
+		
 		if( RENDER_SYSTEM(m_serviceProvider)->beginScene() == false )
 		{
 			return false;
 		}
+		
+		//this->create2DBuffers_();
 		//m_interface->clearFrameBuffer( FBT_COLOR );
 		//m_interface->setRenderViewport( m_currentRenderViewport );
 
@@ -762,6 +766,8 @@ namespace Menge
 
 		RENDER_SYSTEM( m_serviceProvider )->setVertexBuffer( m_currentVBHandle );
 		RENDER_SYSTEM( m_serviceProvider )->setIndexBuffer( m_currentIBHandle );
+		RENDER_SYSTEM( m_serviceProvider )->setProgram( m_currentProgram );
+
 		RENDER_SYSTEM( m_serviceProvider )->setProjectionMatrix( projTransform );
 		RENDER_SYSTEM( m_serviceProvider )->setModelViewMatrix( viewTransform );
 		RENDER_SYSTEM( m_serviceProvider )->setWorldMatrix( worldTransform );

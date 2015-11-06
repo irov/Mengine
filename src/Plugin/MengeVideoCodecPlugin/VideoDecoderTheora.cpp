@@ -147,6 +147,7 @@ namespace Menge
 
 					return false;
 				}
+
 				// декодируем данные из этого тестового потока в пакет
 				ogg_packet packet;
 				if( ogg_stream_packetout( &m_oggStreamState, &packet ) == -1 )
@@ -200,7 +201,9 @@ namespace Menge
 			if( result < 0 )
 			{
 				// ошибка декодирования, поврежденный поток
-				LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout");
+				LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout %d"
+					, result
+					);
 
 				return false;
 			}
@@ -213,7 +216,9 @@ namespace Menge
 				if( result2 < 0 )
 				{
 					// ошибка декодирования, поврежденный поток
-					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during theora_decode_header (corrupt stream)");
+					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during theora_decode_header (corrupt stream) %d"
+						, result2
+						);
 
 					return false;
 				}
@@ -225,12 +230,19 @@ namespace Menge
 			// для этого проверяем буфер чтения, вдруг там осталось что-нить похожее
 			// на страничку. Если не осталось, тогда просто читаем эти данные из файла:			
 			ogg_page page;
-			if( ogg_sync_pageout( &m_oggSyncState, &page ) >0 )
+			if( ogg_sync_pageout( &m_oggSyncState, &page ) > 0 )
 				// ogg_sync_pageout - функция, берет данные из буфера приема ogg
 				// и записывает их в ogg_page
 			{
 				//мы нашли страничку в буфере и...
-				ogg_stream_pagein( &m_oggStreamState, &page );
+				if( ogg_stream_pagein( &m_oggStreamState, &page ) == -1 )
+				{
+					// опять файл кончился!
+					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: invalid page..."
+						);
+
+					return false;
+				}
 				// ...пихаем эти данные в подходящий поток
 			}
 			else

@@ -32,6 +32,7 @@ namespace Menge
 		, m_vertexBufferEnable(false)
 		, m_indexBufferEnable(false)
 		, m_vertexDeclaration(0)
+		, m_frames(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -200,16 +201,17 @@ namespace Menge
 		ZeroMemory( &m_d3dppFS, sizeof(m_d3dppFS) );
 		m_d3dppFS.BackBufferFormat = Format;
 
-		IF_DXCALL(m_serviceProvider, m_pD3D, GetDeviceCaps, ( m_adapterToUse, m_deviceType, &m_caps ) )
+		D3DCAPS9 caps;
+		IF_DXCALL( m_serviceProvider, m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &caps) )
 		{
 			return false;
 		}
 
-		if( m_caps.MaxSimultaneousTextures < MENGE_MAX_TEXTURE_STAGES )
+		if( caps.MaxSimultaneousTextures < MENGE_MAX_TEXTURE_STAGES )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Render dont't support %d texture stages (%d support)"
 				, MENGE_MAX_TEXTURE_STAGES
-				, m_caps.MaxSimultaneousTextures
+				, caps.MaxSimultaneousTextures
 				);
 
 			return false;
@@ -357,17 +359,13 @@ namespace Menge
 			, s_getD3DFormatName( m_d3dpp->BackBufferFormat )
 			);
 
-		// Init all stuff that can be lost
+		DWORD FVF_UV = (MENGINE_RENDER_VERTEX_UV_COUNT << D3DFVF_TEXCOUNT_SHIFT) & D3DFVF_TEXCOUNT_MASK;
 
-		if( this->initLost_() == false ) 
-		{
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::createRenderWindow invalid init lost"
-                );
+		m_vertexDeclaration = D3DFVF_XYZ | D3DFVF_DIFFUSE | FVF_UV;
 
-			return false;
-		}
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, (m_vertexDeclaration) );
 
-		LOGGER_WARNING(m_serviceProvider)( "DX9RenderSystem initalized successfully!" );
+		LOGGER_WARNING( m_serviceProvider )("DX9RenderSystem initalized successfully!");
 		
 		return true;
 	}
@@ -562,19 +560,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::beginScene()
 	{
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::beginScene device not created"
-                );
+		if( m_pD3DDevice == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::beginScene device not created"
+				);
 
-            return false;
-        }
+			return false;
+		}
 
 		HRESULT hr = m_pD3DDevice->TestCooperativeLevel();
 
 		if( hr == D3DERR_DEVICELOST )
 		{
-			LOGGER_WARNING(m_serviceProvider)( "DX9RenderSystem::beginScene: D3DERR_DEVICELOST"
+			LOGGER_WARNING( m_serviceProvider )("DX9RenderSystem::beginScene: D3DERR_DEVICELOST"
 				);
 
 			::Sleep( 100 );
@@ -582,34 +580,32 @@ namespace Menge
 			return false;
 		}
 		else if( hr == D3DERR_DEVICENOTRESET )
-        {
-            LOGGER_WARNING(m_serviceProvider)( "DX9RenderSystem::beginScene: D3DERR_DEVICENOTRESET"
-                );
+		{
+			LOGGER_WARNING( m_serviceProvider )("DX9RenderSystem::beginScene: D3DERR_DEVICENOTRESET"
+				);
 
-            if( this->resetDevice_() == false )
-            {
-                ::Sleep(50);
+			if( this->resetDevice_() == false )
+			{
+				::Sleep( 50 );
 
-                return false;
-            }
-        }
-        else if( FAILED(hr) )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::beginScene: invalid TestCooperativeLevel %d"
-                , hr
-                );
-
-            if( this->releaseResources_() == false )
-            {
-                LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::restore_ release resources"
-                    );
-
-                return false;
-            }
-  
-            return false;
+				return false;
+			}
 		}
-		
+		else if( FAILED( hr ) )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::beginScene: invalid TestCooperativeLevel %d"
+				, hr
+				);
+
+			if( this->releaseResources_() == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::restore_ release resources"
+					);
+			}
+
+			return false;
+		}
+								
         Viewport clear_viewport;
 
         clear_viewport.begin.x = 0.f;
@@ -644,9 +640,6 @@ namespace Menge
             return;
         }
 
-		// sync GPU with CPU
-		//syncCPU_();
-		
 		DXCALL( m_serviceProvider, m_pD3DDevice, EndScene, () );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -913,41 +906,6 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderSystem::initLost_()
-	{
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::initLost_ device not created"
-                );
-
-            return false;
-        }
-
-		// Store render target
-		//IF_DXCALL( m_serviceProvider, m_pD3DDevice, GetRenderTarget, ( 0, &m_screenSurf ) )
-		//{
-		//	return false;
-		//}
-
-		//hr = m_pD3DDevice->GetDepthStencilSurface(&m_screenDepth);
-		//if( FAILED( hr ) )
-		//{
-		//	LOGGER_ERROR(m_logSystem)( "Error: DX9RenderSystem::init_lost_ failed to GetDepthStencilSurface (hr:%p)"
-		//		, hr 
-		//		);
-		//}
-		
-		//this->createSyncTargets_();
-
-		DWORD FVF_UV = (MENGINE_RENDER_VERTEX_UV_COUNT << D3DFVF_TEXCOUNT_SHIFT) & D3DFVF_TEXCOUNT_MASK;
-
-		m_vertexDeclaration = D3DFVF_XYZ | D3DFVF_DIFFUSE | FVF_UV;
-
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, (m_vertexDeclaration) );
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture )
 	{
         if( m_pD3DDevice == nullptr )
@@ -1059,7 +1017,7 @@ namespace Menge
                 return false;
             }
         }
-
+		
         for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
         {
             IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTexture, ( i, nullptr ) )
@@ -1095,7 +1053,7 @@ namespace Menge
         
 		HRESULT hr = m_pD3DDevice->Reset( m_d3dpp );
 
-        if (hr == D3DERR_DEVICELOST)
+		if( hr == D3DERR_DEVICELOST )
         {
 			::Sleep(100);
 
@@ -1110,13 +1068,11 @@ namespace Menge
 			return false;
 		}
 
-		if( this->initLost_() == false )
-		{
-            LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::restore_ invalid init lost"
-                );
+		DWORD FVF_UV = (MENGINE_RENDER_VERTEX_UV_COUNT << D3DFVF_TEXCOUNT_SHIFT) & D3DFVF_TEXCOUNT_MASK;
 
-			return false;
-		}
+		m_vertexDeclaration = D3DFVF_XYZ | D3DFVF_DIFFUSE | FVF_UV;
+
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetFVF, (m_vertexDeclaration) );
 
 		return true;
 	}

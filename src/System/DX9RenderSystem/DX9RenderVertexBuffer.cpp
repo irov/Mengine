@@ -15,7 +15,7 @@ namespace Menge
 		, m_vertexNum( 0 )
 		, m_usage( 0 )
 		, m_format( D3DFMT_UNKNOWN )
-		, m_pool( D3DPOOL_DEFAULT )
+		, m_pool( D3DPOOL_MANAGED )
 		, m_pVB( nullptr )
 		, m_dynamic( false )
 	{

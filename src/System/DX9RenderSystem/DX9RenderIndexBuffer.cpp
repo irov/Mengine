@@ -12,9 +12,9 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_pD3DDevice(nullptr)
 		, m_indexNum(0)
-		, m_usage(0)
-		, m_format( D3DFMT_UNKNOWN)
-		, m_pool( D3DPOOL_DEFAULT)
+		, m_usage( 0 )
+		, m_format( D3DFMT_UNKNOWN )
+		, m_pool( D3DPOOL_MANAGED )
 		, m_pIB(nullptr)
 		, m_dynamic(false)
 	{

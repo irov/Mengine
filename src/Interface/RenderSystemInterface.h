@@ -616,7 +616,6 @@ namespace Menge
 		//
 		// отрисовка изображения
 
-		
 		virtual bool beginScene() = 0;
 		virtual void endScene() = 0;
 		virtual void swapBuffers() = 0;

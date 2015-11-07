@@ -73,7 +73,9 @@ namespace Menge
 				return nullptr;
 			}
 
-			if( cache->cacheMemory( _size, _doc ) == false )
+			void * memory = cache->cacheMemory( _size, _doc );
+
+			if( memory == nullptr )
 			{
 				return nullptr;
 			}

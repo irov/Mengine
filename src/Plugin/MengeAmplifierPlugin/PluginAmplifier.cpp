@@ -41,7 +41,7 @@ namespace Menge
 	{
 		m_serviceProvider = _provider;
 
-		SERVICE_CREATE( m_serviceProvider, Amplifier, Menge::AmplifierInterface );
+		SERVICE_CREATE( m_serviceProvider, Amplifier );
 
 		PROTOTYPE_SERVICE(m_serviceProvider)
 			->addPrototype( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Resource"), STRINGIZE_STRING_LOCAL(m_serviceProvider, "ResourcePlaylist"), new ResourcePrototypeGenerator<ResourcePlaylist, 8>(m_serviceProvider) );

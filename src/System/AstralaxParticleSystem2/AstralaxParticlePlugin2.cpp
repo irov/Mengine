@@ -40,7 +40,7 @@ namespace Menge
 		
 		LOGGER_INFO(m_serviceProvider)( "Initializing Particle System 3D..." );
 
-		SERVICE_CREATE( m_serviceProvider, ParticleSystem, Menge::ParticleSystemInterface2 );
+		SERVICE_CREATE( m_serviceProvider, ParticleSystem );
 
 		return true;
 	}

@@ -470,7 +470,7 @@ namespace Menge
 			pybind::list py_list;
 			
 			PythonVisitorMovieSlot visitor( py_list );
-			_movie->visitMovieNode( CONST_STRING(m_serviceProvider, MovieSlot), &visitor );
+			_movie->visitMovieLayer( CONST_STRING(m_serviceProvider, MovieSlot), &visitor );
 
 			return py_list;
 		}
@@ -508,8 +508,8 @@ namespace Menge
 			pybind::list py_list;
 
 			PythonVisitorMovieSocket visitor(py_list);
-			_movie->visitMovieNode( CONST_STRING(m_serviceProvider, MovieSocketImage), &visitor );
-			_movie->visitMovieNode( CONST_STRING(m_serviceProvider, MovieSocketShape), &visitor );
+			_movie->visitMovieLayer( CONST_STRING(m_serviceProvider, MovieSocketImage), &visitor );
+			_movie->visitMovieLayer( CONST_STRING(m_serviceProvider, MovieSocketShape), &visitor );
 
             return py_list;
         }
@@ -547,7 +547,7 @@ namespace Menge
 			pybind::list py_list;
 
 			PythonVisitorMovieSubMovie visitor(py_list);
-			_movie->visitMovieNode( CONST_STRING(m_serviceProvider, SubMovie), &visitor );
+			_movie->visitMovieLayer( CONST_STRING(m_serviceProvider, SubMovie), &visitor );
 
 			return py_list;
 		}
@@ -571,16 +571,16 @@ namespace Menge
 			pybind::list m_list;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		pybind::list movie_filterNodies( Movie * _movie, const ConstString & _type )
+		pybind::list movie_filterLayers( Movie * _movie, const ConstString & _type )
 		{
 			pybind::list py_list;
 
 			PythonVisitorMovieLayer visitor(py_list);
-			_movie->visitMovieNode( _type, &visitor );
+			_movie->visitMovieLayer( _type, &visitor );
 
 			return py_list;
 		}
-        //////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////
         float movie_getFrameDuration( Movie * _movie )
         {
             ResourceMovie * resourceMovie = _movie->getResourceMovie();
@@ -4399,7 +4399,7 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Arrow );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, TextField );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, SoundEmitter );
-        //SCRIPT_CLASS_WRAPPING( _serviceProvider, ParticleEmitter );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, ParticleEmitter2 );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Movie );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieSlot );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, MovieInternalObject );
@@ -5270,7 +5270,7 @@ namespace Menge
 					.def_proxy_static( "getSubMovies", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovies )
 					.def_proxy_static( "getMovieNode", nodeScriptMethod, &NodeScriptMethod::movie_getMovieNode )
 					.def_proxy_static( "hasMovieNode", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieNode )					
-					.def_proxy_static( "filterLayers", nodeScriptMethod, &NodeScriptMethod::movie_filterNodies )
+					.def_proxy_static( "filterLayers", nodeScriptMethod, &NodeScriptMethod::movie_filterLayers )										
                     .def_proxy_static( "getFrameDuration", nodeScriptMethod, &NodeScriptMethod::movie_getFrameDuration )
                     .def_proxy_static( "getDuration", nodeScriptMethod, &NodeScriptMethod::movie_getDuration )
                     .def_proxy_static( "getFrameCount", nodeScriptMethod, &NodeScriptMethod::movie_getFrameCount )

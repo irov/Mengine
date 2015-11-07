@@ -33,6 +33,11 @@ namespace Menge
 
 		//m_available = false;
 
+		if( SERVICE_EXIST( m_serviceProvider, Menge::ParticleSystemInterface2 ) == false )
+		{
+			m_available = false;
+		}
+
 		if( m_available == false )
 		{
 			return true;

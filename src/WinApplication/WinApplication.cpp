@@ -592,8 +592,6 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, ThreadSystem );
 		SERVICE_CREATE( m_serviceProvider, ThreadService );		
 
-		SERVICE_CREATE( m_serviceProvider, ParticleService );		
-
 		SERVICE_CREATE( m_serviceProvider, RenderSystem );
 		SERVICE_CREATE( m_serviceProvider, RenderService );
 		
@@ -722,6 +720,8 @@ namespace Menge
 				}
 			}
 		}
+
+		SERVICE_CREATE( m_serviceProvider, ParticleService );
 
 		TVectorString modules;
 		CONFIG_VALUES(m_serviceProvider, "Modules", "Name", modules);

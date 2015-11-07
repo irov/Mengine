@@ -230,12 +230,21 @@ namespace Menge
 			return false;
 		}
 
-		//m_play = false;
+		if( m_interrupt == true )
+		{
+			return true;
+		}
+
 		m_interrupt = true;
 
-		bool result = this->_interrupt( m_enumerator );
+		if( this->_interrupt( m_enumerator ) == false )
+		{
+			m_interrupt = false;
 
-		return result;
+			return false;
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animatable::end()

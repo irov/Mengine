@@ -51,7 +51,7 @@ namespace Menge
 		bool isParentMovie() const;
 
 	public:
-		bool visitMovieNode( const ConstString & _type, VisitorMovieNode * _visitor );
+		bool visitMovieLayer( const ConstString & _type, VisitorMovieNode * _visitor );
 
 	public:
 		bool getMovieNode( const ConstString & _name, const ConstString & _type, Node ** _node, Movie ** _movie );

@@ -499,7 +499,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::visitMovieNode( const ConstString & _type, VisitorMovieNode * _visitor )
+	bool Movie::visitMovieLayer( const ConstString & _type, VisitorMovieNode * _visitor )
 	{
 		if( m_resourceMovie == nullptr )
 		{
@@ -567,7 +567,7 @@ namespace Menge
 
 			Movie * movie = static_cast<Movie *>(node);
 
-			if( movie->visitMovieNode( _type, _visitor ) == false )
+			if( movie->visitMovieLayer( _type, _visitor ) == false )
 			{
 				continue;
 			}
@@ -3424,7 +3424,10 @@ namespace Menge
 
 			Animatable * animatable = this->getLayerAnimatable_( layer );
 
-			animatable->interrupt();
+			if( animatable->interrupt() == false )
+			{
+				return false;
+			}
 		}
 
 		return true;

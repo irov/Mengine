@@ -380,6 +380,10 @@ SET( APPLICATION_DEPENDENCIES
  ServiceText
  ServiceGraveyard
  ServiceRender
+ ServiceRender
+ ServicePackage
+ ServiceProfiler
+ ServiceUserdata
 )
 
 SET( APPLICATION_DEPENDENCIES

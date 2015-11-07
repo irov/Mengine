@@ -270,7 +270,7 @@ namespace Menge
 	( Provider != nullptr ? SERVICE_PROVIDER_NAME_CREATE(Name)(Provider) : false )
 
 #	define SERVICE_PROVIDER_FINALIZE( Provider )\
-	( Provider != nullptr ? Provider->destroy() : false )
+	Provider->destroy()
 
 #	define SERVICE_EXTERN(Name)\
 	extern bool SERVICE_NAME_CREATE( Name )(Menge::ServiceInterface**);

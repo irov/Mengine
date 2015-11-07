@@ -67,7 +67,7 @@ namespace Menge
             return false;
         }
 
-        WString buffer = L"ffmpeg.exe -loglevel error -y -threads 4 -i \""  + unicode_input + L"\" -map_metadata:g -1:g -map_metadata:s:v -1:g -map_metadata:s:a -1:g -ac 2 -ar 44000 -acodec vorbis -aq 100 \"" + unicode_output + L"\"";
+        WString buffer = L"ffmpeg.exe -loglevel error -y -threads 4 -i \""  + unicode_input + L"\" -map_metadata:g -1:g -map_metadata:s:v -1:g -map_metadata:s:a -1:g -ac 2 -ar 44100 -acodec vorbis -aq 100 \"" + unicode_output + L"\"";
 		
 		LOGGER_WARNING(m_serviceProvider)( "SoundDecoderConverterFFMPEGToOGG:: converting file '%ls' to '%ls'"
 			, unicode_input.c_str()

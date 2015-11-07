@@ -299,9 +299,6 @@ namespace Menge
 		PLUGIN_SERVICE(serviceProvider)
 			->loadPlugin( L"MengeXmlCodecPlugin.dll" );
 
-		PLUGIN_SERVICE(serviceProvider)
-			->loadPlugin( L"AstralaxParticleSystem.dll" );
-
 		if( FILE_SERVICE(serviceProvider)
 			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir") ) == false )
 		{

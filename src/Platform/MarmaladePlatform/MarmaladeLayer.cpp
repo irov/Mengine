@@ -1,27 +1,16 @@
 #   include "MarmaladeLayer.h"
 
-SERVICE_FACTORY( MarmaladeLayer, Menge::MarmaladeLayerInterface, Menge::MarmaladeLayer );
+SERVICE_FACTORY( MarmaladeLayer, Menge::MarmaladeLayer );
 
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     MarmaladeLayer::MarmaladeLayer()
-        : m_serviceProvider(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
     MarmaladeLayer::~MarmaladeLayer()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeLayer::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * MarmaladeLayer::getServiceProvider() const
-    {
-        return m_serviceProvider;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeLayer::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, Char * _filePath, size_t _capacity )

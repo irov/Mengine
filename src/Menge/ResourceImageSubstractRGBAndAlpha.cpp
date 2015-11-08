@@ -74,8 +74,10 @@ namespace Menge
 
 		if( m_resourceImageRGB == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstractRGBAndAlpha::_compile '%s' invalid get rgb resource '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstractRGBAndAlpha::_compile '%s' category '%s' group '%s' invalid get rgb resource '%s'"
 				, this->getName().c_str()
+				, this->getCategory().c_str()
+				, this->getGroup().c_str()
 				, m_resourceImageRGBName.c_str()
 				);
 
@@ -87,8 +89,10 @@ namespace Menge
 
 		if( m_resourceImageAlpha == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstractRGBAndAlpha::_compile '%s' invalid get alpha resource '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstractRGBAndAlpha::_compile '%s' category '%s' group '%s' invalid get alpha resource '%s'"
 				, this->getName().c_str()
+				, this->getCategory().c_str()
+				, this->getGroup().c_str()
 				, m_resourceImageRGBName.c_str()
 				);
 

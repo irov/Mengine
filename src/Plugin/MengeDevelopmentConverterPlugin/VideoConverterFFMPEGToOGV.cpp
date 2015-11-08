@@ -67,7 +67,7 @@ namespace Menge
             return false;
         }
         
-        WString buffer = L"ffmpeg -loglevel error -y -threads 4 -i \"" + unicode_input + L"\" -q 10 -pix_fmt yuv420p \"" + unicode_output + L"\"";
+        WString buffer = L"ffmpeg -loglevel error -y -threads 4 -i \"" + unicode_input + L"\" -vcodec libtheora -map_metadata -1 -an -q 10 -pix_fmt yuv420p \"" + unicode_output + L"\"";
 		
 		LOGGER_WARNING(m_serviceProvider)( "VideoConverterFFMPEGToOGV:: converting file '%ls' to '%ls'\n%ls"
 			, unicode_input.c_str()

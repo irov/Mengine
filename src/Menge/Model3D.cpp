@@ -13,6 +13,8 @@
 #	include "math/box2.h"
 #	include "math/utils.h"
 
+#	include <math.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

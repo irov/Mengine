@@ -86,21 +86,22 @@ namespace Menge
 	{
 		// Ogg file open; parse the headers
 		// Only interested in Vorbis/Theora streams 
-		bool stateFlag = false;
+		bool stateFlag = true;
 		int theoraHeaderPackets = 0;  // число обработанных пакетов заголовков theora
-		while( !stateFlag )
+		
+		do
 		{
 			// и передает их в буфер приема ogg
-			if( this->buffer_data_() == 0 )
+			if( this->read_buffer_data_() == 0 )
 			{
 				// кончился файл, на данном этапе это ошибка
 				LOGGER_ERROR( m_serviceProvider )("Theora Codec Error: bad file");
 
 				return false;
 			}
-
-			ogg_page page;
+						
 			// ogg_sync_pageout - формирует страницу
+			ogg_page page;
 			while( ogg_sync_pageout( &m_oggSyncState, &page ) > 0 )
 				// 1-больше данных не требуется
 				// 0-требуется больше данных для создания страницы
@@ -117,54 +118,57 @@ namespace Menge
 					// таким образом надо переходить к чтению страниц данных
 
 					// закидываем эту страничку в логический видеопоток
-					ogg_stream_pagein( &m_oggStreamState, &page );
+					if( ogg_stream_pagein( &m_oggStreamState, &page ) == -1 )
+					{
+						LOGGER_ERROR( m_serviceProvider )("Theora Codec Error: bad page in");
+
+						return false;
+					}
 					// закидывает страничку
 					// в логический поток theora, если
 					// совпадает идентификатор логического потока
 					// в противном случае страница игнорируется
 
 					// выходим из циклов
-					stateFlag = true;
+					stateFlag = false;
 					break;
 				}
 
 				// да, это страница заголовков
-
-				// тестовый логический поток
-				// инициализируем тестовый поток на тот же поток с таким же
-				// идентификатором потока, как и у текущей странички
-				if( ogg_stream_init( &m_oggStreamState, ogg_page_serialno( &page ) ) != 0 )
-				{
-					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_init");
-
-					return false;
-				}
-
-				// добавляем страницу в тестовый поток
-				if( ogg_stream_pagein( &m_oggStreamState, &page ) != 0 )
-				{
-					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_pagein");
-
-					return false;
-				}
-
-				// декодируем данные из этого тестового потока в пакет
-				ogg_packet packet;
-				if( ogg_stream_packetout( &m_oggStreamState, &packet ) == -1 )
-				{
-					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout");
-
-					return false;
-				}
-
-				// theoraHeaderPackets - число прочитанных
-				// заголовочных ПАКЕТОВ theora (не страниц)
-				// по спецификации theora таких пакетов должно быть три
 				if( theoraHeaderPackets == 0 )
 				{
-					int dhr = theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet );
+					// тестовый логический поток
+					// инициализируем тестовый поток на тот же поток с таким же
+					// идентификатором потока, как и у текущей странички
+					if( ogg_stream_init( &m_oggStreamState, ogg_page_serialno( &page ) ) != 0 )
+					{
+						LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_init");
+
+						return false;
+					}
+
+					// добавляем страницу в тестовый поток
+					if( ogg_stream_pagein( &m_oggStreamState, &page ) != 0 )
+					{
+						LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_pagein");
+
+						return false;
+					}
+
+					// декодируем данные из этого тестового потока в пакет
+					ogg_packet packet;
+					if( ogg_stream_packetout( &m_oggStreamState, &packet ) == -1 )
+					{
+						LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout");
+
+						return false;
+					}
+
+					// theoraHeaderPackets - число прочитанных
+					// заголовочных ПАКЕТОВ theora (не страниц)
+					// по спецификации theora таких пакетов должно быть три
 					// декодируем заголовок theora
-					if( dhr < 0 )
+					if( theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet ) < 0 )
 					{
 						// это не заголовок theora
 
@@ -188,6 +192,7 @@ namespace Menge
 				}
 			}
 		}
+		while( stateFlag == true );
 
 		// сейчас надо получить еще два пакета заголовков theora (см. её документацию)
 		// и можно переходить к потоковому воспроизведению
@@ -248,7 +253,7 @@ namespace Menge
 			else
 			{
 				// ничего мы в буфере не нашли
-				int ret = this->buffer_data_();
+				int ret = this->read_buffer_data_();
 				// надо больше данных! читаем их из файла
 				if( ret == 0 )
 				{
@@ -683,11 +688,21 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t VideoDecoderTheora::buffer_data_()
+	size_t VideoDecoderTheora::read_buffer_data_()
 	{
-		char* buffer = ogg_sync_buffer( &m_oggSyncState, OGG_BUFFER_SIZE );
+		char * buffer = ogg_sync_buffer( &m_oggSyncState, OGG_BUFFER_SIZE );
+
+		if( buffer == nullptr )
+		{
+			return 0;
+		}
+
 		size_t bytes = m_stream->read( buffer, OGG_BUFFER_SIZE );
-		ogg_sync_wrote( &m_oggSyncState, bytes );
+
+		if( ogg_sync_wrote( &m_oggSyncState, bytes ) == -1 )
+		{
+			return 0;
+		}
 
 		return bytes;
 	}
@@ -704,7 +719,7 @@ namespace Menge
 			// надо надергать данных из физического потока и затолкать их в логический поток
 
 			// читаем данные из файла
-			size_t bytes = this->buffer_data_();
+			size_t bytes = this->read_buffer_data_();
 
 			if( bytes == 0 )
 			{

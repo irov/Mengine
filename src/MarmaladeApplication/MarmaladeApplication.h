@@ -31,15 +31,7 @@
 
 namespace Menge
 {
-    //    class LoggerConsole;
-    class Application;
-    class FPSMonitor;
-    class AlreadyRunningMonitor;
-
-    class FileLogger;
-
     class MarmaladeApplication
-        : public PlatformInterface
     {
     public:
         MarmaladeApplication();
@@ -53,6 +45,7 @@ namespace Menge
         bool initialize( const String & _commandLine );
         void finalize();
 
+	public:
         void loop();
         void stop()	override;
 

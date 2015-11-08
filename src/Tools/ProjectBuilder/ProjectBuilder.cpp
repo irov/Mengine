@@ -269,8 +269,7 @@ namespace Menge
 
 		SERVICE_CREATE( serviceProvider, WindowsLayer );
 		SERVICE_CREATE( serviceProvider, FileService );
-		SERVICE_CREATE( serviceProvider, LoaderService );
-		
+				
 		PluginInterface * plugin_win32_file_group;
 		initPluginMengeWin32FileGroup( &plugin_win32_file_group );
 		
@@ -292,6 +291,8 @@ namespace Menge
 		PluginInterface * plugin_image_codec;
 		initPluginMengeImageCodec( &plugin_image_codec );
 		plugin_image_codec->initialize( serviceProvider );
+
+		SERVICE_CREATE( serviceProvider, LoaderService );
 		
 		PLUGIN_SERVICE(serviceProvider)
 			->loadPlugin( L"MengeDevelopmentConverterPlugin.dll" );

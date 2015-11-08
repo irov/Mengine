@@ -3,6 +3,8 @@
 #   include "s3eDebug.h"
 #   include "s3eDevice.h"
 
+#	include <stdio.h>
+
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////

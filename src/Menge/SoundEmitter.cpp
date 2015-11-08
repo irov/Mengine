@@ -6,9 +6,9 @@
 
 #	include "Logger/Logger.h"
 
-//#	include "SoundEngine.h"
-
 #	include <pybind/pybind.hpp>
+
+#	include <math.h>
 
 namespace Menge
 {

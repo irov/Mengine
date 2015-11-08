@@ -18,16 +18,13 @@
 #	define GET_G_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 8) & 0xFF)) / 255.0f )
 #	define GET_B_FLOAT_FROM_ARGB32( argb ) ( (float)(argb & 0xFF) / 255.0f )
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY(RenderSystem, Menge::RenderSystemInterface, Menge::MarmaladeRenderSystem);
+SERVICE_FACTORY(RenderSystem, Menge::MarmaladeRenderSystem);
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderSystem::MarmaladeRenderSystem()
-		: m_serviceProvider( nullptr )
-		, m_listener( nullptr )
-		, m_supportNPOT( false )
-		, m_activeTextureStage( 0 )
+		: m_activeTextureStage( 0 )
 		, m_activeTexture( 0 )
 		, m_depthMask( false )
 	{
@@ -39,18 +36,8 @@ namespace Menge
 	MarmaladeRenderSystem::~MarmaladeRenderSystem()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * MarmaladeRenderSystem::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::initialize()
+	bool MarmaladeRenderSystem::_initialize()
 	{
 		LOGGER_WARNING(m_serviceProvider)("Initializing OpenGL RenderSystem...");
 
@@ -115,11 +102,6 @@ namespace Menge
 	{
 		return m_renderPlatform;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::setRenderListener( RenderSystemListener * _listener )
-    {
-        m_listener = _listener;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeRenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits,
 												bool _fullscreen, WindowHandle _winHandle, 

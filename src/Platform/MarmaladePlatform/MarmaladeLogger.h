@@ -1,5 +1,5 @@
 
-#include "Interface/LogSystemInterface.h"
+#include "Interface/LoggerInterface.h"
 
 namespace Menge
 {

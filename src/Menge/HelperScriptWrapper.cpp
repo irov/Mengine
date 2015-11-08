@@ -57,6 +57,8 @@
 #   include "pybind/pybind.hpp"
 #   include "pybind/pickle.hpp"
 
+#	include <math.h>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

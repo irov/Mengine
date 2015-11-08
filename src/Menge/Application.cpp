@@ -113,6 +113,8 @@
 #	include <ctime>
 #	include <sstream>
 
+#	include <math.h>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Consts );
 SERVICE_EXTERN( PrototypeService );

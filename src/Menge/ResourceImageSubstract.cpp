@@ -54,8 +54,10 @@ namespace Menge
 
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstract::_compile '%s' invalid get image resource '%s'"
+            LOGGER_ERROR(m_serviceProvider)("ResourceImageSubstract::_compile '%s' category '%s' group '%s' invalid get image resource '%s'"
                 , this->getName().c_str()
+				, this->getCategory().c_str()
+				, this->getGroup().c_str()
                 , m_resourceImageName.c_str()
                 );
 

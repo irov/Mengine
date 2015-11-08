@@ -100,7 +100,22 @@ namespace Menge
 
 		if( m_offset != 0 )
 		{
-			this->seek( 0 );
+			s3eResult result = s3eFileSeek( m_hFile, static_cast<int32>(m_offset), S3E_FILESEEK_SET );
+
+			if( result != S3E_RESULT_SUCCESS )
+			{
+				const char * error_str = s3eFileGetErrorString();
+				s3eFileError error = s3eFileGetError();
+
+				LOGGER_ERROR( m_serviceProvider )("MarmaladeInputStream::open offset %d size %d get error %s [%d]"
+					, m_offset
+					, m_size
+					, error_str
+					, error
+					);
+
+				return false;
+			}
 		}	
 
 		return true;

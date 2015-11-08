@@ -51,29 +51,21 @@ namespace Menge
     };
     
 	class MarmaladeRenderSystem 
-		: public RenderSystemInterface
+		: public ServiceBase<RenderSystemInterface>
 	{
 	public:
 		MarmaladeRenderSystem();
 		~MarmaladeRenderSystem();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize() override;
-        void finalize() override;
-
-    public:
-        void setRenderListener( RenderSystemListener * _listener ) override;
+		bool _initialize() override;
+        void _finalize() override;
 
 	public:
 		const ConstString & getRenderPlatformName() const override;
 
 	public:
-		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, WindowHandle _winHandle,
-			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
+		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 		
         void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
         void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
@@ -166,19 +158,13 @@ namespace Menge
         void findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const;
 
 	private:
-        ServiceProviderInterface * m_serviceProvider;
-
 		ConstString m_renderPlatform;
 
-        RenderSystemListener * m_listener;
-		
 		mt::mat4f m_worldMatrix;
 		mt::mat4f m_viewMatrix;
 		mt::mat4f m_projectionMatrix;
 		
         Resolution m_resolution;
-
-		bool m_supportNPOT;
 
 		typedef FactoryDefaultStore<MarmaladeRenderVertexBuffer> TFactoryRenderVertexBuffer;
 		TFactoryRenderVertexBuffer m_factoryVertexBuffer;

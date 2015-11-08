@@ -15,16 +15,13 @@
 #	define GET_G_FLOAT_FROM_ARGB32( argb ) ( ((float)((argb >> 8) & 0xFF)) / 255.0f )
 #	define GET_B_FLOAT_FROM_ARGB32( argb ) ( (float)(argb & 0xFF) / 255.0f )
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( RenderSystemES1, Menge::RenderSystemInterface, Menge::MarmaladeRenderSystemES1 );
+SERVICE_FACTORY( RenderSystemES1, Menge::MarmaladeRenderSystemES1 );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderSystemES1::MarmaladeRenderSystemES1()
-		: m_serviceProvider( nullptr )
-		, m_listener( nullptr )
-		, m_supportNPOT( false )
-		, m_depthMask( false )
+		: m_depthMask( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -32,17 +29,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystemES1::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ServiceProviderInterface * MarmaladeRenderSystemES1::getServiceProvider() const
-	{
-		return m_serviceProvider;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystemES1::initialize()
+	bool MarmaladeRenderSystemES1::_initialize()
 	{
 		LOGGER_WARNING( m_serviceProvider )("Initializing OpenGL RenderSystem...");
 
@@ -108,7 +95,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystemES1::finalize()
+	void MarmaladeRenderSystemES1::_finalize()
 	{
 		m_currentIndexBuffer = nullptr;
 		m_currentVertexBuffer = nullptr;
@@ -121,14 +108,7 @@ namespace Menge
 		return m_renderPlatform;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeRenderSystemES1::setRenderListener( RenderSystemListener * _listener )
-	{
-		m_listener = _listener;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystemES1::createRenderWindow( const Resolution & _resolution, uint32_t _bits,
-		bool _fullscreen, WindowHandle _winHandle,
-		bool _waitForVSync, int _FSAAType, int _FSAAQuality )
+	bool MarmaladeRenderSystemES1::createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
 	{
 		m_resolution = _resolution;
 		

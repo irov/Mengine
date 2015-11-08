@@ -20,7 +20,6 @@
 #	include "Application.h"
 
 #	include "Kernel/Scene.h"
-#	include "Kernel/Join.h"
 
 #	include "RenderViewport.h"
 #	include "RenderClipplane.h"

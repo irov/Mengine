@@ -50,29 +50,21 @@ namespace Menge
     };
     
 	class MarmaladeRenderSystemES1 
-		: public RenderSystemInterface
+		: public ServiceBase<RenderSystemInterface>
 	{
 	public:
 		MarmaladeRenderSystemES1();
 		~MarmaladeRenderSystemES1();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize() override;
-        void finalize() override;
+		bool _initialize() override;
+        void _finalize() override;
 
 	public:
 		const ConstString & getRenderPlatformName() const override;
 
-    public:
-        void setRenderListener( RenderSystemListener * _listener ) override;
-
 	public:
-		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, WindowHandle _winHandle,
-			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
+		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
 
 
         void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
@@ -174,15 +166,9 @@ namespace Menge
         void findFormatFromChannels_( PixelFormat _format, uint32_t _channels, PixelFormat & _hwFormat, uint32_t & _hwChannels ) const;
 
 	private:
-        ServiceProviderInterface * m_serviceProvider;
-
 		ConstString m_renderPlatform;
-
-        RenderSystemListener * m_listener;
-		
+				
         Resolution m_resolution;
-
-		bool m_supportNPOT;
 
 		typedef FactoryDefaultStore<MarmaladeRenderVertexBufferES1> TFactoryRenderVertexBuffer;
 		TFactoryRenderVertexBuffer m_factoryVertexBuffer;

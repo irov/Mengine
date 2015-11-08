@@ -142,14 +142,12 @@
 #	include "Utils/Core/Polygon.h"
 
 #	include "pybind/stl_type_cast.hpp"
-
-#	include "Kernel/Join.h"
-
-#   include <utf8.h>
+#	include "stdex/xml_sax_parser.h"
+#   include "utf8.h"
 
 #	include <sstream>
 
-#	include <stdex/xml_sax_parser.h>
+#	include <math.h>
 
 namespace Menge
 {

@@ -84,8 +84,18 @@ namespace Menge
 
 		if( m_offset != 0 )
 		{
-			if( this->seek_( 0 ) == false )
+			DWORD dwPtr = ::SetFilePointer( m_hFile, static_cast<LONG>(m_offset), NULL, FILE_BEGIN );
+
+			if( dwPtr == INVALID_SET_FILE_POINTER )
 			{
+				DWORD dwError = ::GetLastError();
+
+				LOGGER_ERROR( m_serviceProvider )("Win32InputStream::open seek offset %d size %d get error '%d'"
+					, m_offset
+					, m_size
+					, dwError
+					);
+
 				return false;
 			}
 		}

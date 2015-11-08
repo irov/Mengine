@@ -16,20 +16,16 @@ namespace	Menge
 	class Playlist;
 
 	class Amplifier
-		: public AmplifierInterface
+		: public ServiceBase<AmplifierInterface>
 		, public SoundVolumeProviderInterface
 	{
 	public:
 		Amplifier();
 		~Amplifier();
-
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
+		
 	public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
         bool playTrack( const ConstString& _playlistResource, uint32_t _index, float _pos, bool _looped ) override;

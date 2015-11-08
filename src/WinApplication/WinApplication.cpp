@@ -80,21 +80,18 @@ SERVICE_EXTERN( TimerSystem );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( Application );
 
-extern "C" // only required if using g++
-{
-	//////////////////////////////////////////////////////////////////////////
-	extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeAmplifier( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );	
-	extern bool initPluginMengeOggVorbis( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeWin32FileGroup( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeSpine( Menge::PluginInterface ** _plugin );
+PLUGIN_EXPORT( MengeImageCodec );
+PLUGIN_EXPORT( MengeSoundCodec );
+PLUGIN_EXPORT( MengeVideoCodec );
+PLUGIN_EXPORT( MengeAmplifier );
+PLUGIN_EXPORT( MengeZip );
+PLUGIN_EXPORT( MengeLZ4 );
+PLUGIN_EXPORT( MengeSpine );
+PLUGIN_EXPORT( MengeOggVorbis );
+PLUGIN_EXPORT( MengeSpine );
+PLUGIN_EXPORT( MengeWin32FileGroup );
 
-	extern bool initPluginPathFinder( Menge::PluginInterface ** _plugin );
-}
+PLUGIN_EXPORT( PathFinder );
 
 namespace Menge
 {

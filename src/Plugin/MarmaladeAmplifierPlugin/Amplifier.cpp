@@ -18,14 +18,13 @@
 #	include <cmath>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY(Amplifier, Menge::AmplifierInterface, Menge::Amplifier);
+SERVICE_FACTORY(Amplifier, Menge::Amplifier);
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::Amplifier()
-		: m_serviceProvider(nullptr)
-		, m_currentPlayList(nullptr)
+		: m_currentPlayList(nullptr)
 		, m_volume(1.f)
 		, m_volumeOverride(1.f)
 		, m_play(false)
@@ -36,30 +35,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::~Amplifier()
 	{
-		//_release();
-		this->stop();
-
-		for( TMapPlayList::iterator 
-			it = m_mapPlayLists.begin(),
-			it_end = m_mapPlayLists.end();
-		it != it_end;
-		++it)
-		{
-			Playlist * playlist = it->second;
-			
-			delete playlist;
-		}
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void Amplifier::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * Amplifier::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	static int32 s_Amplifier_AudioCallback_Stop( s3eAudioCallbackData * _data, Amplifier * _amplifier )
 	{
@@ -70,7 +46,7 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Amplifier::initialize()
+	bool Amplifier::_initialize()
 	{
 		LOGGER_INFO(m_serviceProvider)( "Starting Marmalade Amplifier..." );
 
@@ -121,12 +97,25 @@ namespace Menge
 		return true;			
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Amplifier::finalize()
+	void Amplifier::_finalize()
 	{
 		SOUND_SERVICE(m_serviceProvider)
 			->removeSoundVolumeProvider( this );
 
 		s3eAudioUnRegister( S3E_AUDIO_STOP, (s3eCallback)&s_Amplifier_AudioCallback_Stop );
+
+		this->stop();
+
+		for( TMapPlayList::iterator
+			it = m_mapPlayLists.begin(),
+			it_end = m_mapPlayLists.end();
+		it != it_end;
+		++it )
+		{
+			Playlist * playlist = it->second;
+
+			delete playlist;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::loadPlayList_( const ConstString& _playlistResource )

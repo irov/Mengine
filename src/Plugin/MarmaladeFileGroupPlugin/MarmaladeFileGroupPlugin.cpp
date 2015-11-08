@@ -1,38 +1,38 @@
-#	include "Win32FileGroupPlugin.h"
+#	include "MarmaladeFileGroupPlugin.h"
 
 #   include "Interface/StringizeInterface.h"
 #	include "Interface/FileSystemInterface.h"
 
-#	include "Win32FileGroupDirectory.h"
+#	include "MarmaladeFileGroupDirectory.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_DECLARE( MengeWin32FileGroup, Menge::Win32FileGroupPlugin )
+PLUGIN_DECLARE( MarmaladeFileGroupPlugin, Menge::MarmaladeFileGroupPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Win32FileGroupPlugin::Win32FileGroupPlugin()
+	MarmaladeFileGroupPlugin::MarmaladeFileGroupPlugin()
 		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileGroupPlugin::initialize( ServiceProviderInterface * _provider )
+	bool MarmaladeFileGroupPlugin::initialize( ServiceProviderInterface * _provider )
 	{
         m_serviceProvider = _provider;
 	
 		FILE_SERVICE(m_serviceProvider)
-			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir"), new FactorableUnique<FactoryDefault<Win32FileGroupDirectory> >() );
+			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( m_serviceProvider, "dir" ), new FactorableUnique<FactoryDefault<MarmaladeFileGroupDirectory> >() );
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32FileGroupPlugin::finalize()
+	void MarmaladeFileGroupPlugin::finalize()
 	{
 		FILE_SERVICE(m_serviceProvider)
 			->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "dir") );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32FileGroupPlugin::destroy()
+	void MarmaladeFileGroupPlugin::destroy()
 	{
 		delete this;
 	}

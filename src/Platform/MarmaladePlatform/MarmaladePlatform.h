@@ -92,9 +92,7 @@ namespace Menge
 
 		MarmaladeTimer * m_timer;
 		MarmaladeInput * m_marmaladeInput;
-
-		String m_commandLine;
-		
+				
 		ConstString m_platformName;
 
         FilePath m_currentPath;

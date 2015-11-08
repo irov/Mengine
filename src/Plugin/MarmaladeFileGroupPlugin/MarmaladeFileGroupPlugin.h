@@ -4,11 +4,11 @@
 
 namespace Menge
 {
-	class Win32FileGroupPlugin
+	class MarmaladeFileGroupPlugin
 		: public PluginInterface
 	{
 	public:
-		Win32FileGroupPlugin();
+		MarmaladeFileGroupPlugin();
 
 	protected:
 		bool initialize( ServiceProviderInterface * _provider ) override;

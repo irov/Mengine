@@ -1,9 +1,6 @@
 #	include "Config/Config.h"
 
-#	include "MarmaladeApplication.h"
-#	include "MarmaladeFileGroupDirectory.h"
-
-#	include "Menge/Application.h"
+#	include "MarmaladePlatform.h"
 
 #	include "Interface/LogSystemInterface.h"
 #	include "Interface/FileSystemInterface.h"
@@ -37,166 +34,85 @@
 #	define snprintf _snprintf
 #endif
 
-SERVICE_EXTERN( ServiceProvider, Menge::ServiceProviderInterface );
-SERVICE_EXTERN( Application, Menge::ApplicationInterface );
-SERVICE_EXTERN( StringizeService, Menge::StringizeServiceInterface );
-SERVICE_EXTERN( LogService, Menge::LogServiceInterface );
-SERVICE_EXTERN( MarmaladeLayer, Menge::MarmaladeLayerInterface );
+SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
-SERVICE_EXTERN( ArchiveService, Menge::ArchiveServiceInterface );
+SERVICE_EXTERN( Application );
+SERVICE_EXTERN( StringizeService );
+SERVICE_EXTERN( LoggerService );
+SERVICE_EXTERN( MarmaladeLayer );
 
-SERVICE_EXTERN( ThreadSystem, Menge::ThreadSystemInterface );
-SERVICE_EXTERN( ThreadService, Menge::ThreadServiceInterface );
+SERVICE_EXTERN( ArchiveService );
 
-SERVICE_EXTERN( ParticleSystem2, Menge::ParticleSystemInterface2 );
-SERVICE_EXTERN( ParticleService2, Menge::ParticleServiceInterface2 );
+SERVICE_EXTERN( ThreadSystem );
+SERVICE_EXTERN( ThreadService );
 
-SERVICE_EXTERN( RenderSystem, Menge::RenderSystemInterface );
-SERVICE_EXTERN( RenderSystemES1, Menge::RenderSystemInterface );
-SERVICE_EXTERN( RenderService, Menge::RenderServiceInterface );
-SERVICE_EXTERN( RenderTextureManager, Menge::RenderTextureServiceInterface );
-SERVICE_EXTERN( RenderMaterialManager, Menge::RenderMaterialServiceInterface );
+SERVICE_EXTERN( ParticleSystem2 );
+SERVICE_EXTERN( ParticleService2 );
 
-SERVICE_EXTERN( PhysicSystem, Menge::PhysicSystemInterface );
+SERVICE_EXTERN( RenderSystem );
+SERVICE_EXTERN( RenderSystemES1 );
+SERVICE_EXTERN( RenderService );
+SERVICE_EXTERN( RenderTextureManager );
+SERVICE_EXTERN( RenderMaterialManager );
 
-SERVICE_EXTERN( UnicodeSystem, Menge::UnicodeSystemInterface );
-SERVICE_EXTERN( UnicodeService, Menge::UnicodeServiceInterface );
+SERVICE_EXTERN( PhysicSystem );
 
-SERVICE_EXTERN( FileService, Menge::FileServiceInterface );
+SERVICE_EXTERN( UnicodeSystem );
+SERVICE_EXTERN( UnicodeService );
 
-SERVICE_EXTERN( NotificationService, Menge::NotificationServiceInterface );
-SERVICE_EXTERN( ScriptService, Menge::ScriptServiceInterface );
+SERVICE_EXTERN( FileService );
 
-SERVICE_EXTERN( SoundSystem, Menge::SoundSystemInterface );
-SERVICE_EXTERN( SilentSoundSystem, Menge::SoundSystemInterface );
-SERVICE_EXTERN( SoundService, Menge::SoundServiceInterface );
+SERVICE_EXTERN( NotificationService );
+SERVICE_EXTERN( ScriptService );
 
-SERVICE_EXTERN( InputService, Menge::InputServiceInterface );
-SERVICE_EXTERN( CodecService, Menge::CodecServiceInterface );
-SERVICE_EXTERN( PluginService, Menge::PluginServiceInterface );
+SERVICE_EXTERN( SoundSystem );
+SERVICE_EXTERN( SilentSoundSystem );
+SERVICE_EXTERN( SoundService );
 
-SERVICE_EXTERN( ModuleService, Menge::ModuleServiceInterface );
-SERVICE_EXTERN( DataService, Menge::DataServiceInterface );
-SERVICE_EXTERN( MemoryService, Menge::MemoryServiceInterface );
-SERVICE_EXTERN( ConfigService, Menge::ConfigServiceInterface );
-SERVICE_EXTERN( PrefetcherService, Menge::PrefetcherServiceInterface );
+SERVICE_EXTERN( InputService );
+SERVICE_EXTERN( CodecService );
+SERVICE_EXTERN( PluginService );
+
+SERVICE_EXTERN( ModuleService );
+SERVICE_EXTERN( DataService );
+SERVICE_EXTERN( MemoryService );
+SERVICE_EXTERN( ConfigService );
+SERVICE_EXTERN( PrefetcherService );
 
 
-extern "C" // only required if using g++
-{
-    //////////////////////////////////////////////////////////////////////////
-    extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );
-    extern bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeAmplifier( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeSpine( Menge::PluginInterface ** _plugin );
+PLUGIN_EXPORT( MengeImageCodec );
+PLUGIN_EXPORT( MengeSoundCodec );
+PLUGIN_EXPORT( MengeVideoCodec );
+PLUGIN_EXPORT( MengeAmplifier );
+PLUGIN_EXPORT( MengeZip );
+PLUGIN_EXPORT( MengeLZ4 );
+PLUGIN_EXPORT( MengeSpine );
+PLUGIN_EXPORT( MengeOggVorbis );
+PLUGIN_EXPORT( MengeSpine );
 
-	extern bool initPluginMengeOggVorbis( Menge::PluginInterface ** _plugin );
+PLUGIN_EXPORT( MarmaladeFileGroupPlugin );
 
-	extern bool initPluginPathFinder( Menge::PluginInterface ** _plugin );
-	
-}
+PLUGIN_EXPORT( PathFinder );
 
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    static const float s_activeFrameTime = 1000.f/60.f;
-    static const float s_inactiveFrameTime = 100;
-    //////////////////////////////////////////////////////////////////////////
-    namespace Helper
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static void s_getOption( const Menge::String& _option
-            , const Menge::String& _commandLine
-            , Menge::String* _value )
-        {
-            if( _value == NULL )
-            {
-                return;
-            }
-
-            Menge::String::size_type option_index = 0;
-            while( (option_index = _commandLine.find( _option, option_index )) != Menge::String::npos )
-            {
-                option_index += _option.length();
-                if( option_index >= _commandLine.length() )
-                {
-                    break;
-                }
-                char next_delim = _commandLine[option_index] == '\"' ? '\"' : ' ';
-                Menge::String::size_type next_index = _commandLine.find( next_delim, option_index+1 );
-                if( next_delim == '\"' )
-                {
-                    ++option_index;
-                }
-
-                Menge::String::size_type value_length = next_index - option_index;
-                (*_value) += _commandLine.substr( option_index, value_length );
-                _value->push_back( ' ' );
-            }
-
-            if( _value->empty() == false )
-            {
-                _value->erase( _value->length() - 1 );
-            }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_hasOption( const char * _option, const Menge::String& _commandLine )
-        {
-            if( _commandLine.find( _option ) == Menge::String::npos )
-            {
-                return false;
-            }
-
-            return true;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    MarmaladeApplication::MarmaladeApplication()
-        : m_serviceProvider(nullptr)
-        , m_application(nullptr)
-        , m_marmaladeLayer(nullptr)
-        , m_loggerConsole(nullptr)
+	MarmaladePlatform::MarmaladePlatform()
+        : m_loggerConsole(nullptr)
         , m_fileLog(nullptr)
         , m_timer(nullptr)
 		, m_marmaladeInput(nullptr)
 		, m_running(false)
 		, m_active(false)
-		, m_inputService(nullptr)
-		, m_unicodeSystem(nullptr)
-		, m_unicodeService(nullptr)
-		, m_logService(nullptr)
-		, m_fileService(nullptr)
-		, m_codecService(nullptr)
-		, m_threadSystem(nullptr)
-		, m_threadService(nullptr)
-		, m_particleService2(nullptr)
-		, m_renderSystem(nullptr)
-		, m_renderService(nullptr)
-		, m_renderTextureManager(nullptr)
-		, m_renderMaterialManager(nullptr)
-		, m_soundSystem(nullptr)
-		, m_soundService(nullptr)
-		, m_scriptService(nullptr)
-		, m_archiveService(nullptr)
-		, m_moduleService(nullptr)
-		, m_dataService(nullptr)
-		, m_memoryService(nullptr)
-		, m_configService(nullptr)
-		, m_prefetcherService(nullptr)
-		, m_notificationService(nullptr)
-		, m_stringizeService(nullptr)
 		, m_developmentMode(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MarmaladeApplication::~MarmaladeApplication()
+	MarmaladePlatform::~MarmaladePlatform()
     {
     }
     //////////////////////////////////////////////////////////////////////////    
-	size_t MarmaladeApplication::getCurrentPath( WChar * _path, size_t _len ) const
+	size_t MarmaladePlatform::getCurrentPath( WChar * _path, size_t _len ) const
     {
 		if( _len > 0 )
 		{
@@ -206,7 +122,7 @@ namespace Menge
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-	size_t MarmaladeApplication::getShortPathName( const WString & _path, WChar * _short, size_t _len ) const
+	size_t MarmaladePlatform::getShortPathName( const WString & _path, WChar * _short, size_t _len ) const
     {
 		size_t pathSize = _path.size();
 
@@ -218,140 +134,10 @@ namespace Menge
 		return _path.size();
     }
     //////////////////////////////////////////////////////////////////////////
-    TimerInterface * MarmaladeApplication::getTimer() const
-    {
-        return m_timer;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeApplicationService_()
-    {
-        ApplicationInterface * application;
-        if( SERVICE_CREATE( Application, &application ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, application ) == false )
-        {
-            return false;
-        }
-
-        m_application = application;
-
-        LOGGER_INFO(m_serviceProvider)( "Application Initialize..."
-            );
-
-        if( m_application->initialize( m_commandLine ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "Application initialize failed" 
-                );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeNotificationService_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing Notification Service..." );
-
-        NotificationServiceInterface * notificationService;
-        if( SERVICE_CREATE( NotificationService, &notificationService ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, notificationService ) == false )
-        {
-            return false;
-        }
-
-		m_notificationService = notificationService;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeThreadEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing Thread Service..." );
-
-        ThreadSystemInterface * threadSystem;
-        if( SERVICE_CREATE( ThreadSystem, &threadSystem ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadSystem"
-                );
-
-            return false;
-        }
-
-        if( SERVICE_REGISTRY(m_serviceProvider, threadSystem) == false )
-        {
-            return false;
-        }
-
-        if( threadSystem->initialize() == false )
-		{
-			LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ invalid initialize"
-				);
-
-			return false;
-		}
-
-		m_threadSystem = threadSystem;
-
-        ThreadServiceInterface * threadService;
-        if( SERVICE_CREATE( ThreadService, &threadService ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadService"
-                );
-
-            return false;               
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, threadService ) == false )
-        {
-            return false;
-        }
-
-        m_threadService = threadService;
-
-        if( m_threadService->initialize( 2 ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeFileEngine_()
     {
         LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
 		       
-        FileServiceInterface * fileService;
-        if( SERVICE_CREATE( FileService, &fileService ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initialize failed to create FileService"
-                );
-
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, fileService ) == false )
-        {
-            return false;
-        }
-
-        m_fileService = fileService;
-
-        if( m_fileService->initialize() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to initialize fileService"
-                );
-
-            return false;
-        }
-
 		m_fileService->registerFileGroupFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactorableUnique< FactoryDefault<MarmaladeFileGroupDirectory> >() );
         
         // mount root		
@@ -472,22 +258,6 @@ namespace Menge
 	{
 		LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
 
-		ConfigServiceInterface * configService;
-
-		if( SERVICE_CREATE(ConfigService, &configService) == false )
-		{
-			return false;
-		}
-
-		SERVICE_REGISTRY(m_serviceProvider, configService);
-
-		m_configService = configService;
-
-		if( m_configService->initialize( m_platformName ) == false )
-		{
-			return false;
-		}
-
 		FilePath gameIniPath;
 		if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
 		{
@@ -507,42 +277,12 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeStringizeService_()
-    {
-        StringizeServiceInterface * stringizeService;
-        if( SERVICE_CREATE( StringizeService, &stringizeService ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, stringizeService ) == false )
-        {
-            return false;
-        }
-
-		m_stringizeService = stringizeService;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeLogEngine_()
     {
-        LogServiceInterface * logService;
-        if( SERVICE_CREATE( LogService, &logService ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, logService ) == false )
-        {
-            return false;
-        }
-
-        m_logService = logService;
-
         m_loggerConsole = new MarmaladeLogger();
 
-        m_logService->registerLogger( m_loggerConsole );
+        LOGGER_SERVICE(m_serviceProvider)
+			->registerLogger( m_loggerConsole );
 
         EMessageLevel m_logLevel;
 
@@ -568,11 +308,13 @@ namespace Menge
             m_logLevel = LM_ERROR;
         }
 
-        m_logService->setVerboseLevel( m_logLevel );
+		LOGGER_SERVICE( m_serviceProvider )
+			->setVerboseLevel( m_logLevel );
 
         if( Helper::s_hasOption( " -verbose ", m_commandLine ) == true )
         {
-            m_logService->setVerboseLevel( LM_MAX );
+			LOGGER_SERVICE( m_serviceProvider )
+				->setVerboseLevel( LM_MAX );
 
             LOGGER_INFO(m_serviceProvider)( "Verbose logging mode enabled" );
         }
@@ -580,48 +322,9 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeMarmaladeLayerService_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing MarmaladeLayer Service..." );
-
-        MarmaladeLayerInterface * marmaladeLayer;
-        if( SERVICE_CREATE( MarmaladeLayer, &marmaladeLayer ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeMarmaladeLayerService_ failed to create MarmaladeLayer"
-                );
-
-            return false;
-        }
-
-        if( SERVICE_REGISTRY(m_serviceProvider, marmaladeLayer) == false )
-        {
-            return false;
-        }
-
-        m_marmaladeLayer = marmaladeLayer;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeArchiveService_()
     {
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Archive Service..." );
-
-        ArchiveServiceInterface * archiveService;
-        if( SERVICE_CREATE( ArchiveService, &archiveService ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeArchiveService_ failed to create ArchiveService"
-                );
-
-            return false;
-        }
-
-        if( SERVICE_REGISTRY(m_serviceProvider, archiveService) == false )
-        {
-            return false;
-        }
-
-        m_archiveService = archiveService;
 
 		{
 			LOGGER_INFO(m_serviceProvider)( "initialize Zip..." );
@@ -640,154 +343,6 @@ namespace Menge
 			pluginMengeLZ4->initialize( m_serviceProvider );
 			m_plugins.push_back( pluginMengeLZ4 );
 		}
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeUnicodeEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Unicode Service..." );
-
-        UnicodeSystemInterface * unicodeSystem;
-        if( SERVICE_CREATE( UnicodeSystem, &unicodeSystem ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, unicodeSystem ) == false )
-        {
-            return false;
-        }
-
-		m_unicodeSystem = unicodeSystem;
-
-        UnicodeServiceInterface * unicodeService;
-        if( SERVICE_CREATE( UnicodeService, &unicodeService ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, unicodeService ) == false )
-        {
-            return false;
-        }
-
-        m_unicodeService = unicodeService;
-
-        return true;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::initializeParticleEngine2_()
-	{
-		LOGGER_INFO( m_serviceProvider )("Initializing Particle Service 2...");
-
-		ParticleSystemInterface2 * particleSystem;
-		if( SERVICE_CREATE( ParticleSystem2, &particleSystem ) == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleSystem2"
-				);
-
-			return false;
-		}
-
-		if( particleSystem->initialize() == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to initialize ParticleSystem2"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, particleSystem ) == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to registry ParticleSystem2"
-				);
-
-			return false;
-		}
-
-		ParticleServiceInterface2 * particleService;
-		if( SERVICE_CREATE( ParticleService2, &particleService ) == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleService2"
-				);
-
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, particleService ) == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleService2"
-				);
-
-			return false;
-		}
-
-		if( particleService->initialize() == false )
-		{
-			SERVICE_UNREGISTRY( m_serviceProvider, particleService );
-			SERVICE_UNREGISTRY( m_serviceProvider, particleSystem );
-
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to initialize ParticleService2"
-				);
-
-			return false;
-		}
-
-		m_particleService2 = particleService;
-
-		return true;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializePhysicEngine2D_()
-    {
-        //LOGGER_INFO(m_serviceProvider)( "Inititalizing Physics2D Service..." );
-
-        //PhysicSystem2DInterface * physicSystem2D;
-        //if( createPhysicSystem2D( &physicSystem2D ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializePhysicEngine2D_ Failed to initialize PhysicSystem2D"
-        //        );
-
-        //    return false;
-        //}
-
-        //if( SERVICE_REGISTRY( m_serviceProvider, physicSystem2D ) == false )
-        //{
-        //    return false;
-        //}
-
-        //if( physicSystem2D->initialize() == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializePhysicEngine2D_ Failed to initialize Physics System 2D"
-        //        );
-
-        //    return false;
-        //}
-
-        //PhysicService2DInterface * physicService2D;
-        //if( createPhysicService2D( &physicService2D ) == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializePhysicEngine2D_ Failed to create Physic Service 2D"
-        //        );
-
-        //    return false;
-        //}
-
-        //if( SERVICE_REGISTRY( m_serviceProvider, physicService2D ) == false )
-        //{
-        //    return false;
-        //}
-
-        //m_physicService2D = physicService2D;
-
-        //if( m_physicService2D->initialize() == false )
-        //{
-        //    LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializePhysicEngine2D_ Failed to initialize Physics Service 2D"
-        //        );
-
-        //    return false;
-        //}
 
         return true;
     }
@@ -948,317 +503,6 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeSoundEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Sound Service..." );
-
-        SoundSystemInterface * soundSystem;
-        if( SERVICE_CREATE( SoundSystem, &soundSystem ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY(m_serviceProvider, soundSystem) == false )
-        {
-            return false;
-        }
-
-        if( soundSystem->initialize() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound System"
-                );
-
-            return false;
-        }
-
-		m_soundSystem = soundSystem;
-
-        SoundServiceInterface * soundService;
-        if( SERVICE_CREATE( SoundService, &soundService ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to create Sound Engine"
-                );
-
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, soundService ) == false )
-        {
-            return false;
-        }
-
-        m_soundService = soundService;
-
-        if( m_soundService->initialize( false, true ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Sound Engine"
-                );
-
-            m_serviceProvider->unregistryService( "SoundService" );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeSilentSoundEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Silent Sound Service..." );
-
-        SoundSystemInterface * soundSystem;
-        if( SERVICE_CREATE( SilentSoundSystem, &soundSystem ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY(m_serviceProvider, soundSystem) == false )
-        {
-            return false;
-        }
-
-        if( soundSystem->initialize() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSoundEngine_ Failed to initialize Silent Sound System"
-                );
-
-            return false;
-        }
-
-        SoundServiceInterface * soundService;
-        if( SERVICE_CREATE( SoundService, &soundService ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Application::initializeSilentSoundEngine_ Failed to create Sound Engine"
-                );
-
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, soundService ) == false )
-        {
-            return false;
-        }
-
-        m_soundService = soundService;
-
-        if( m_soundService->initialize( true, false ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeSilentSoundEngine_ Failed to initialize Sound Engine"
-                );
-
-            return false;                
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeScriptEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Script Service..." );
-
-        ScriptServiceInterface * scriptService;
-        if( SERVICE_CREATE( ScriptService, &scriptService ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, scriptService ) == false )
-        {
-            return false;
-        }
-
-        m_scriptService = scriptService;
-
-        if( m_scriptService->initialize() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initializeScriptEngine_ Failed to initialize Script Engine"
-                );
-
-            return false;
-        }
-
-        return true;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::initializeModuleEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Module Service..." );
-
-		ModuleServiceInterface * moduleService;
-		if( SERVICE_CREATE( ModuleService, &moduleService ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, moduleService ) == false )
-		{
-			return false;
-		}
-
-		m_moduleService = moduleService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::initializeDataManager_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Data Manager..." );
-
-		DataServiceInterface * dataService;
-
-		if( SERVICE_CREATE( DataService, &dataService ) == false )
-		{
-			return false;
-		}
-
-		SERVICE_REGISTRY( m_serviceProvider, dataService );
-
-		if( dataService->initialize() == false )
-		{
-			return false;
-		}
-
-		m_dataService = dataService;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::initializeMemoryManager_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Memory Manager..." );
-
-		MemoryServiceInterface * memoryService;
-
-		if( SERVICE_CREATE( MemoryService, &memoryService ) == false )
-		{
-			return false;
-		}
-
-		SERVICE_REGISTRY( m_serviceProvider, memoryService );
-
-		if( memoryService->initialize() == false )
-		{
-			return false;
-		}
-
-		m_memoryService = memoryService;
-
-		return true;
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::initializePrefetcherService_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Prefetcher Service..." );
-
-		PrefetcherServiceInterface * prefetcherService;
-
-		if( SERVICE_CREATE( PrefetcherService, &prefetcherService ) == false )
-		{
-			return false;
-		}
-
-		SERVICE_REGISTRY( m_serviceProvider, prefetcherService );
-
-		if( prefetcherService->initialize() == false )
-		{
-			return false;
-		}
-
-		m_prefetcherService = prefetcherService;
-
-		return true;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeCodecEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Codec Service..." );
-
-        CodecServiceInterface * codecService;
-        if( SERVICE_CREATE( CodecService, &codecService ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, codecService ) == false )
-        {
-            return false;
-        }
-
-        m_codecService = codecService;
-		
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeInputEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Input Service..." );
-
-        InputServiceInterface * inputService;
-        if( SERVICE_CREATE( InputService, &inputService ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_REGISTRY( m_serviceProvider, inputService ) == false )
-        {
-            return false;
-        }
-
-        //bool result = m_inputEngine->initialize( m_serviceProvider );
-        //if( result == false )
-        //{
-        //    MENGE_LOG_ERROR( "Input Engine initialization failed!" );
-        //    return false;
-        //}
-
-        m_inputService = inputService;
-
-        if( m_inputService->initialize() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeInputEngine_ Failed to initialize Input Engine"
-                );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializePluginService_()
-    {
-        //LOGGER_INFO(m_serviceProvider)( "Initializing Plugin Service..." );
-
-        //PluginServiceInterface * pluginService;
-        //if( createPluginService( &pluginService ) == false )
-        //{
-        //    return false;
-        //}
-
-        //if( SERVICE_REGISTRY(m_serviceProvider, pluginService) == false )
-        //{
-        //    return false;
-        //}
-
-        //m_pluginService = pluginService;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeNodeManager_()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        (void)_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * MarmaladeApplication::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::getMaxClientResolution( Resolution & _resolution ) const
     {
 		int32 width = s3eSurfaceGetInt( S3E_SURFACE_WIDTH );
@@ -1268,10 +512,8 @@ namespace Menge
 		_resolution.setHeight( height );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initialize( const String & _commandLine )
+    bool MarmaladeApplication::_initialize()
     {
-        m_commandLine = " " + _commandLine + " ";
-
         setlocale( LC_CTYPE, "" );
 
         String scriptInit;

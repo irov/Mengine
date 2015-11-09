@@ -17,6 +17,12 @@ namespace Menge
 		while( option_next != nullptr )
 		{
 			const Char * option_begin = strstr( option_next, " -" );
+
+			if( option_begin == nullptr )
+			{
+				break;
+			}
+
 			const Char * option_end = strstr( option_begin + 1, " " );
 
 			Option op;

@@ -71,6 +71,9 @@ src
     IntrusiveTree.h
     IntrusiveSplayTree.h
     IntrusiveDuplexTree.h
+    
+    PluginBase.h
+    PluginBase.cpp
    
     Magic.h
 )

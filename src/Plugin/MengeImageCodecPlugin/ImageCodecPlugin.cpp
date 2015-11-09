@@ -37,42 +37,18 @@
 #   include "Codec/EncoderFactory.h"
 #   include "Codec/DataflowFactory.h"
 
-extern "C" // only required if using g++
-{
-    //////////////////////////////////////////////////////////////////////////
-    bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin )
-    {
-        *_plugin = new Menge::ImageCodecPlugin();
-
-        return true;
-    }
-#   ifdef MENGE_PLUGIN_DLL
-    ////////////////////////////////////////////////////////////////////////////
-    __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-    {
-        return initPluginMengeImageCodec( _plugin );
-    }
-#   endif
-}
-////////////////////////////////////////////////////////////////////////////
-//__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-//{
-//	return initPluginMengeImageCodec( _plugin );
-//}
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_FACTORY( MengeImageCodec, Menge::ImageCodecPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ImageCodecPlugin::ImageCodecPlugin()
-		: m_serviceProvider(nullptr)
-		, m_factoryAEK(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ImageCodecPlugin::initialize( ServiceProviderInterface * _provider )
+	bool ImageCodecPlugin::_initialize()
 	{
-        m_serviceProvider = _provider;
-
         m_decoders.push_back( new DecoderFactory<ImageDecoderPNG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "pngImage")) );
 		m_decoders.push_back( new DecoderFactory<ImageDecoderJPEG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "jpegImage")) );
         
@@ -180,7 +156,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ImageCodecPlugin::finalize()
+	void ImageCodecPlugin::_finalize()
 	{
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),
@@ -216,10 +192,5 @@ namespace Menge
 
 		DATA_SERVICE(m_serviceProvider)
 			->unregisterDataflow( STRINGIZE_STRING_LOCAL(m_serviceProvider, "mdzModel") );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageCodecPlugin::destroy()
-	{
-		delete this;
 	}
 }

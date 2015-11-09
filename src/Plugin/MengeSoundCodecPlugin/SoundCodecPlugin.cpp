@@ -6,38 +6,18 @@
 
 #   include "Codec/DecoderFactory.h"
 
-
-extern "C" // only required if using g++
-{
-    //////////////////////////////////////////////////////////////////////////
-    bool initPluginMengeSoundCodec( Menge::PluginInterface ** _plugin )
-    {
-        *_plugin = new Menge::SoundCodecPlugin();
-
-        return true;
-    }
-
-#   ifdef MENGE_PLUGIN_DLL
-    ////////////////////////////////////////////////////////////////////////////
-    __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-    {
-        return initPluginMengeImageCodec( _plugin );
-    }
-#   endif
-}
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_FACTORY( MengeSoundCodec, Menge::SoundCodecPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	SoundCodecPlugin::SoundCodecPlugin()
-        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundCodecPlugin::initialize( ServiceProviderInterface * _serviceProvider )
+	bool SoundCodecPlugin::_initialize()
 	{
-        m_serviceProvider = _serviceProvider;
-
 		m_decoders.push_back( new DecoderFactory<SoundDecoderWAV>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "wavSound")) );
 		
 		CODEC_SERVICE(m_serviceProvider)
@@ -58,7 +38,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundCodecPlugin::finalize()
+	void SoundCodecPlugin::_finalize()
 	{
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),
@@ -73,10 +53,5 @@ namespace Menge
 		}
 
 		m_decoders.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundCodecPlugin::destroy()
-	{
-		delete this;
 	}
 }

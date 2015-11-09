@@ -1,23 +1,19 @@
 #	pragma once
 
-#	include "Interface/PluginInterface.h"
+#	include "Core/PluginBase.h"
 
 namespace Menge
 {
 	class LZ4Plugin
-		: public PluginInterface
+		: public PluginBase
 	{
+		PLUGIN_DECLARE( "LZ4" );
+
 	public:
 		LZ4Plugin();
 
 	protected:
-		bool initialize( ServiceProviderInterface * _provider ) override;
-		void finalize() override;
-
-	protected:
-		void destroy() override;
-
-	protected:
-        ServiceProviderInterface * m_serviceProvider;
+		bool _initialize() override;
+		void _finalize() override;		
 	};
 }

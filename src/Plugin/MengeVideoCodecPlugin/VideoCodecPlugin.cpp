@@ -8,36 +8,18 @@
 
 #   include "Interface/StringizeInterface.h"
 
-extern "C" // only required if using g++
-{
-	//////////////////////////////////////////////////////////////////////////
-	bool initPluginMengeVideoCodec( Menge::PluginInterface ** _plugin )
-	{
-		*_plugin = new Menge::VideoCodecPlugin();
-
-		return true;
-	}
-#   ifdef MENGE_PLUGIN_DLL
-	////////////////////////////////////////////////////////////////////////////
-	__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-	{
-		return initPluginMengeVideoCodec( _plugin );
-	}
-#   endif
-}
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_FACTORY( MengeVideoCodec, Menge::VideoCodecPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	VideoCodecPlugin::VideoCodecPlugin()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoCodecPlugin::initialize( ServiceProviderInterface * _serviceProvider )
-	{
-		m_serviceProvider = _serviceProvider;
-		        
+	bool VideoCodecPlugin::_initialize()
+	{	        
 		//m_decoders.push_back( new DecoderFactory<VideoDecoderGVF>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "gvfVideo")) );
         //m_decoders.push_back( new DecoderFactory<VideoDecoderVPX>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "vpxVideo")) );
 		m_decoders.push_back( new DecoderFactory<VideoDecoderTheora>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ogvVideo")) );
@@ -68,7 +50,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void VideoCodecPlugin::finalize()
+	void VideoCodecPlugin::_finalize()
 	{
 		for( TVectorVideoDecoders::iterator
 			it = m_decoders.begin(),
@@ -83,10 +65,5 @@ namespace Menge
 		}
 
 		m_decoders.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void VideoCodecPlugin::destroy()
-	{
-		delete this;
 	}
 }

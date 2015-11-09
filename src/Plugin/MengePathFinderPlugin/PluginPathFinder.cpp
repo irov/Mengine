@@ -10,59 +10,38 @@
 #	include "ModuleCollisionGround.h"
 #	include "ModuleBurritoWorld.h"
 
-
-extern "C" // only required if using g++
-{
-	//////////////////////////////////////////////////////////////////////////
-	bool initPluginPathFinder( Menge::PluginInterface ** _plugin )
-	{
-		*_plugin = new Menge::PluginPathFinder();
-
-		return true;
-	}
-
-#   ifdef MENGE_PLUGIN_DLL
-	////////////////////////////////////////////////////////////////////////////
-	__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-	{
-		return initPluginPathFinder( _plugin );
-	}
-#   endif
-}
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_FACTORY( PathFinder, Menge::PluginPathFinder )
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {	
 	//////////////////////////////////////////////////////////////////////////
 	PluginPathFinder::PluginPathFinder()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PluginPathFinder::initialize( ServiceProviderInterface * _serviceProvider )
+	bool PluginPathFinder::_initialize()
 	{
-		m_serviceProvider = _serviceProvider;
+		MODULE_SERVICE(m_serviceProvider)
+			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModulePathFinder" )
+			, new ModuleFactory<ModulePathFinder>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModulePathFinder" ) ) );
 
-		m_factoryModulePathFinder = new ModuleFactory<ModulePathFinder>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModulePathFinder"));
-		m_factoryModuleAreaOfInterest = new ModuleFactory<ModuleAreaOfInterest>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleAreaOfInterest"));
-		m_factoryModuleCollisionGround = new ModuleFactory<ModuleCollisionGround>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround"));
-		m_factoryModuleBurritoWorld = new ModuleFactory<ModuleBurritoWorld>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleBurritoWorld"));
+		MODULE_SERVICE(m_serviceProvider)
+			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleAreaOfInterest" )
+			, new ModuleFactory<ModuleAreaOfInterest>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleAreaOfInterest" ) ) );
 		
 		MODULE_SERVICE(m_serviceProvider)
-			->registerModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModulePathFinder"), m_factoryModulePathFinder );
+			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleCollisionGround" )
+			, new ModuleFactory<ModuleCollisionGround>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleCollisionGround" ) ) );
 
 		MODULE_SERVICE(m_serviceProvider)
-			->registerModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleAreaOfInterest"), m_factoryModuleAreaOfInterest );
-		
-		MODULE_SERVICE(m_serviceProvider)
-			->registerModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleCollisionGround"), m_factoryModuleCollisionGround );
-
-		MODULE_SERVICE(m_serviceProvider)
-			->registerModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleBurritoWorld"), m_factoryModuleBurritoWorld );
+			->registerModule( STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBurritoWorld" )
+			, new ModuleFactory<ModuleBurritoWorld>( m_serviceProvider, STRINGIZE_STRING_LOCAL( m_serviceProvider, "ModuleBurritoWorld" ) ) );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PluginPathFinder::finalize()
+	void PluginPathFinder::_finalize()
 	{
 		MODULE_SERVICE(m_serviceProvider)
 			->unregisterModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModulePathFinder") );
@@ -75,15 +54,5 @@ namespace Menge
 
 		MODULE_SERVICE(m_serviceProvider)
 			->unregisterModule( STRINGIZE_STRING_LOCAL(m_serviceProvider, "ModuleBurritoWorld") );
-
-		m_factoryModulePathFinder = nullptr;
-		m_factoryModuleAreaOfInterest = nullptr;
-		m_factoryModuleCollisionGround = nullptr;
-		m_factoryModuleBurritoWorld = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PluginPathFinder::destroy()
-	{
-		delete this;
 	}
 }

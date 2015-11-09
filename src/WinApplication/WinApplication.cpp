@@ -114,17 +114,25 @@ namespace Menge
 		{
 			LOGGER_INFO(m_serviceProvider)("Initialize Zip...");
 			PluginInterface * plugin;
-			initPluginMengeZip( &plugin );
-			plugin->initialize( m_serviceProvider );
-			m_plugins.push_back( plugin );
+			PLUGIN_CREATE( MengeZip, &plugin );
+
+			if( PLUGIN_SERVICE( m_serviceProvider )
+				->addPlugin( nullptr, plugin ) == false )
+			{
+				return false;
+			}
 		}
 
 		{
 			LOGGER_INFO(m_serviceProvider)("Initialize LZ4...");
 			PluginInterface * plugin;
-			initPluginMengeLZ4( &plugin );
-			plugin->initialize( m_serviceProvider );
-			m_plugins.push_back( plugin );
+			PLUGIN_CREATE( MengeLZ4, &plugin );
+
+			if( PLUGIN_SERVICE( m_serviceProvider )
+				->addPlugin( nullptr, plugin ) == false )
+			{
+				return false;
+			}
 		}
 
 		return true;
@@ -208,9 +216,13 @@ namespace Menge
 		{
 			LOGGER_INFO(m_serviceProvider)("Initialize Win32 file group...");
 			PluginInterface * plugin;
-			initPluginMengeWin32FileGroup( &plugin );
-			plugin->initialize( m_serviceProvider );
-			m_plugins.push_back( plugin );
+			PLUGIN_CREATE( MengeWin32FileGroup, &plugin );
+
+			if( PLUGIN_SERVICE( m_serviceProvider )
+				->addPlugin( nullptr, plugin ) == false )
+			{
+				return false;
+			}
 		}
 
 #	ifndef _MSC_VER
@@ -554,6 +566,8 @@ namespace Menge
 
 		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
 		SERVICE_CREATE( m_serviceProvider, UnicodeService );
+
+		SERVICE_CREATE( m_serviceProvider, PluginService );
 		
 		SERVICE_CREATE( m_serviceProvider, FileService );
 
@@ -620,8 +634,6 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, TimerSystem );
 		SERVICE_CREATE( m_serviceProvider, TimerService );		
 
-		SERVICE_CREATE( m_serviceProvider, PluginService );
-
 #	ifdef _DEBUG
 		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
 		bool roamingMode = HAS_OPTIONS( m_serviceProvider, "roaming" );
@@ -642,31 +654,23 @@ namespace Menge
 		::QueryPerformanceCounter(&randomSeed);
 		srand( randomSeed.LowPart );
 
-		LOGGER_WARNING(m_serviceProvider)( "initialize Application..." );
+		LOGGER_WARNING( m_serviceProvider )("initialize Application...");
 
-#	define MENGINE_ADD_PLUGIN( Init, Info )\
-	{\
-		LOGGER_INFO(m_serviceProvider)( Info );\
+#	define MENGINE_ADD_PLUGIN( Name, Info )\
+		do{LOGGER_INFO(m_serviceProvider)( Info );\
 		PluginInterface * plugin;\
-		Init( &plugin );\
-		if( plugin->initialize( m_serviceProvider ) == false )\
-		{\
-			LOGGER_ERROR(m_serviceProvider)( "Invalid %s", Info );\
-			plugin->destroy();\
-		}\
-		else\
-		{\
-			m_plugins.push_back( plugin );\
-		}\
-	}		
+		PLUGIN_CREATE(Name, &plugin);\
+		if(	PLUGIN_SERVICE(m_serviceProvider)->addPlugin( nullptr, plugin ) == false ){\
+		LOGGER_ERROR(m_serviceProvider)( "Invalid %s", Info );}else{\
+		LOGGER_WARNING(m_serviceProvider)( "Successful %s", Info );}}while(false, false)
 
-		MENGINE_ADD_PLUGIN( initPluginMengeImageCodec, "initialize Plugin Image Codec..." );
-		MENGINE_ADD_PLUGIN( initPluginMengeSoundCodec, "initialize Plugin Sound Codec..." );
-		MENGINE_ADD_PLUGIN( initPluginMengeOggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
-		MENGINE_ADD_PLUGIN( initPluginMengeAmplifier, "initialize Plugin Amplifier..." );
-		MENGINE_ADD_PLUGIN( initPluginMengeVideoCodec, "initialize Plugin Video Codec..." );
-		MENGINE_ADD_PLUGIN( initPluginMengeSpine, "initialize Plugin Spine..." );
-		MENGINE_ADD_PLUGIN( initPluginPathFinder, "initialize Plugin Path Finder..." );
+		MENGINE_ADD_PLUGIN( MengeImageCodec, "initialize Plugin Image Codec..." );
+		MENGINE_ADD_PLUGIN( MengeSoundCodec, "initialize Plugin Sound Codec..." );
+		MENGINE_ADD_PLUGIN( MengeOggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
+		MENGINE_ADD_PLUGIN( MengeAmplifier, "initialize Plugin Amplifier..." );
+		MENGINE_ADD_PLUGIN( MengeVideoCodec, "initialize Plugin Video Codec..." );
+		MENGINE_ADD_PLUGIN( MengeSpine, "initialize Plugin Spine..." );
+		MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
 
 
 #	undef MENGINE_ADD_PLUGIN
@@ -855,17 +859,6 @@ namespace Menge
 		APPLICATION_SERVICE( m_serviceProvider )
 			->finalizeGame();
 		
-		for( TVectorPlugins::iterator
-			it = m_plugins.begin(),
-			it_end = m_plugins.end();
-		it != it_end;
-		++it )
-		{
-			PluginInterface * plugin = *it;
-
-			plugin->finalize();
-		}
-
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ApplicationInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PrefetcherServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::DataServiceInterface );
@@ -905,20 +898,6 @@ namespace Menge
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ArchiveServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::MemoryServiceInterface );
-
-		for( TVectorPlugins::iterator
-			it = m_plugins.begin(),
-			it_end = m_plugins.end();
-		it != it_end;
-		++it )
-		{
-			PluginInterface * plugin = *it;
-
-			plugin->destroy();
-		}	
-
-		m_plugins.clear();
-
 		SERVICE_FINALIZE( m_serviceProvider, Menge::NotificationServiceInterface );
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadServiceInterface );

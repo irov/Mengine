@@ -2,7 +2,7 @@
 
 #	include "MarmaladePlatform.h"
 
-#	include "Interface/LogSystemInterface.h"
+#	include "Interface/LoggerInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/InputSystemInterface.h"
@@ -10,12 +10,13 @@
 #	include <cstdio>
 #	include <clocale>
 
-//#	include "FPSMonitor.h"
-//#	include "AlreadyRunningMonitor.h"
-//#	include "CriticalErrorsMonitor.h"
-
 #	include "Core/FileLogger.h"
 #	include "Core/IniUtil.h"
+
+#	include "Factory/FactorableUnique.h"
+#	include "Factory/FactoryDefault.h"
+
+#	include "Logger/Logger.h"
 
 //#	include "resource.h"
 
@@ -134,15 +135,22 @@ namespace Menge
 		return _path.size();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeFileEngine_()
+	bool MarmaladePlatform::initializeFileEngine_()
     {
         LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
-		       
-		m_fileService->registerFileGroupFactory( Helper::stringizeString(m_serviceProvider, "dir"), new FactorableUnique< FactoryDefault<MarmaladeFileGroupDirectory> >() );
-        
+
+		{
+			LOGGER_INFO( m_serviceProvider )("Initialize Win32 file group...");
+			PluginInterface * plugin;
+			PLUGIN_CREATE( MarmaladeFileGroup, &plugin );
+			plugin->initialize( m_serviceProvider );
+			m_plugins.push_back( plugin );
+		}
+
         // mount root		
         ConstString c_dir = Helper::stringizeString(m_serviceProvider, "dir");
-        if( m_fileService->mountFileGroup( ConstString::none(), m_currentPath, c_dir ) == false )
+		if( FILE_SERVICE( m_serviceProvider )
+			->mountFileGroup( ConstString::none(), m_currentPath, c_dir ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount application directory %ls"
                 , m_currentPath.c_str()
@@ -170,7 +178,8 @@ namespace Menge
         FilePath userPath = Helper::stringizeString( m_serviceProvider, utf8_userPath );
 
         // mount user directory
-        if( m_fileService->mountFileGroup( Helper::stringizeString(m_serviceProvider, "user"), userPath, Helper::stringizeString(m_serviceProvider, "dir") ) == false )
+		if( FILE_SERVICE( m_serviceProvider )
+			->mountFileGroup( Helper::stringizeString( m_serviceProvider, "user" ), userPath, Helper::stringizeString( m_serviceProvider, "dir" ) ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)( "WinApplication: failed to mount user directory %ls"
                 , m_userPath.c_str()
@@ -179,27 +188,31 @@ namespace Menge
             return false;
         }
 
-		if( m_fileService->existDirectory( Helper::stringizeString(m_serviceProvider, "user"), ConstString::none() ) == false )
+		if( FILE_SERVICE(m_serviceProvider)
+			->existDirectory( Helper::stringizeString(m_serviceProvider, "user"), ConstString::none() ) == false )
 		{
-			m_fileService->createDirectory( Helper::stringizeString(m_serviceProvider, "user"), ConstString::none() );
+			FILE_SERVICE( m_serviceProvider )
+				->createDirectory( Helper::stringizeString( m_serviceProvider, "user" ), ConstString::none() );
 		}
 
         FilePath logFilename = Helper::stringizeString( m_serviceProvider, "log.log" );
 
-        OutputStreamInterfacePtr fileLogInterface = 
-            m_fileService->openOutputFile( Helper::stringizeString(m_serviceProvider, "user"), logFilename );
+        OutputStreamInterfacePtr fileLogInterface = FILE_SERVICE( m_serviceProvider )
+			->openOutputFile( Helper::stringizeString( m_serviceProvider, "user" ), logFilename );
 
         if( fileLogInterface != nullptr )
         {
             m_fileLog = new FileLogger();
 
-            m_logService->registerLogger( m_fileLog );
+            LOGGER_SERVICE(m_serviceProvider)
+				->registerLogger( m_fileLog );
         }
 
 #	ifndef MENGINE_MASTER_RELEASE
 		ConstString c_dev = Helper::stringizeString( m_serviceProvider, "dev" );
 		// mount root		
-		if( m_fileService->mountFileGroup( c_dev, ConstString::none(), c_dir ) == false )
+		if( FILE_SERVICE( m_serviceProvider )
+			->mountFileGroup( c_dev, ConstString::none(), c_dir ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)( "WinApplication::setupFileService: failed to mount dev directory %ls"
 				, m_currentPath.c_str()
@@ -212,7 +225,7 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
+	bool MarmaladePlatform::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
 	{
 		FilePath applicationPath = STRINGIZE_STRING_LOCAL( m_serviceProvider, "application.ini" );
 
@@ -254,7 +267,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::initializeConfigEngine_()
+	bool MarmaladePlatform::initializeConfigEngine_()
 	{
 		LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
 
@@ -277,7 +290,7 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeLogEngine_()
+	bool MarmaladePlatform::initializeLogEngine_()
     {
         m_loggerConsole = new MarmaladeLogger();
 
@@ -288,22 +301,19 @@ namespace Menge
 
         m_logLevel = LM_LOG;
 
-        String logLevel;
-        Helper::s_getOption( " -log:", m_commandLine, &logLevel );
-
-        if( logLevel == "0" )
+        if( HAS_OPTIONS(m_serviceProvider, "log:0" ) == true )
         {
             m_logLevel = LM_INFO;
         }
-        else if ( logLevel == "1" )
+		else if( HAS_OPTIONS( m_serviceProvider, "log:1" ) == true )
         {
             m_logLevel = LM_LOG;
         }
-        else if ( logLevel == "2" )
+		else if( HAS_OPTIONS( m_serviceProvider, "log:2" ) == true )
         {
             m_logLevel = LM_WARNING;
         }
-        else if ( logLevel == "3" )
+		else if( HAS_OPTIONS( m_serviceProvider, "log:3" ) == true )
         {
             m_logLevel = LM_ERROR;
         }
@@ -311,7 +321,7 @@ namespace Menge
 		LOGGER_SERVICE( m_serviceProvider )
 			->setVerboseLevel( m_logLevel );
 
-        if( Helper::s_hasOption( " -verbose ", m_commandLine ) == true )
+        if( HAS_OPTIONS(m_serviceProvider, "verbose" ) == true )
         {
 			LOGGER_SERVICE( m_serviceProvider )
 				->setVerboseLevel( LM_MAX );
@@ -322,7 +332,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeArchiveService_()
+	bool MarmaladePlatform::initializeArchiveService_()
     {
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Archive Service..." );
 
@@ -347,7 +357,7 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeRenderEngine_()
+	bool MarmaladePlatform::initializeRenderEngine_()
     {
         LOGGER_INFO(m_serviceProvider)( "Initializing Render Service..." );
 		

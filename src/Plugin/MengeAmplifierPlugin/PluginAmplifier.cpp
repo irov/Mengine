@@ -9,38 +9,19 @@
 #	include "ResourcePlaylist.h"
 
 //////////////////////////////////////////////////////////////////////////
-extern "C" // only required if using g++
-{
-    //////////////////////////////////////////////////////////////////////////
-    bool initPluginMengeAmplifier( Menge::PluginInterface ** _plugin )
-    {
-        *_plugin = new Menge::PluginAmplifier();
-
-        return true;
-    }
-#   ifdef MENGE_PLUGIN_DLL
-    ////////////////////////////////////////////////////////////////////////////
-    __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-    {
-        return initPluginMengeAmplifier( _plugin );
-    }
-#   endif
-}
-//////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Amplifier );
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_FACTORY( MengeAmplifier, Menge::PluginAmplifier );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PluginAmplifier::PluginAmplifier()
-		: m_serviceProvider(nullptr)		
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PluginAmplifier::initialize( ServiceProviderInterface * _provider )
+	bool PluginAmplifier::_initialize()
 	{
-		m_serviceProvider = _provider;
-
 		SERVICE_CREATE( m_serviceProvider, Amplifier );
 
 		PROTOTYPE_SERVICE(m_serviceProvider)
@@ -49,15 +30,13 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PluginAmplifier::finalize()
+	void PluginAmplifier::_finalize()
 	{
 		SERVICE_FINALIZE( m_serviceProvider, Menge::AmplifierInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PluginAmplifier::destroy()
+	void PluginAmplifier::_destroy()
 	{
 		SERVICE_DESTROY( m_serviceProvider, Menge::AmplifierInterface );
-		
-		delete this;
 	}
 }

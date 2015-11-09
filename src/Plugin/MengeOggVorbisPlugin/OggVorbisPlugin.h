@@ -1,26 +1,24 @@
 #	pragma once
 
-#	include "Interface/PluginInterface.h"
 #	include "Interface/CodecInterface.h"
+
+#	include "Core/PluginBase.h"
 
 namespace Menge
 {	
 	class OggVorbisPlugin
-		: public PluginInterface
+		: public PluginBase
 	{
+		PLUGIN_DECLARE( "OggVorbis" )
+
 	public:
 		OggVorbisPlugin();
 
 	protected:
-		bool initialize( ServiceProviderInterface * _serviceProvider ) override;
-		void finalize() override;
-
+		bool _initialize() override;
+		void _finalize() override;
+		
 	protected:
-		void destroy() override;
-
-	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
         typedef stdex::vector<DecoderFactoryInterfacePtr> TVectorDecoders;
         TVectorDecoders m_decoders;
 	};

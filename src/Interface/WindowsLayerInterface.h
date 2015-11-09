@@ -4,6 +4,7 @@
 #   include "Config/String.h"
 
 #   include "Interface/ServiceInterface.h"
+#	include "Interface/PluginInterface.h"
 
 #   include "Core/FilePath.h"
 
@@ -17,18 +18,6 @@ namespace Menge
         EWT_NT,
         EWT_98,
         EWT_VISTA
-    };
-
-    typedef void * (*TDynamicLibraryFunction)( void * );
-
-    class DynamicLibraryInterface
-    {
-    public:
-        virtual bool load() = 0;
-        virtual void destroy() = 0;
-
-    public:
-        virtual TDynamicLibraryFunction getSymbol( const String & _name ) const = 0;
     };
 
     class WindowsLayerInterface

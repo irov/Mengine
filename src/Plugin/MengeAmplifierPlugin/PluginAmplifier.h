@@ -1,23 +1,22 @@
 #	pragma once
 
-#	include "Interface/PluginInterface.h"
+#	include "Core/PluginBase.h"
 
 namespace Menge
 {
 	class PluginAmplifier
-		: public PluginInterface
+		: public PluginBase
 	{
+		PLUGIN_DECLARE( "Amplifier" )
+
 	public:
 		PluginAmplifier();
 
 	protected:
-		bool initialize( ServiceProviderInterface * _provider ) override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	protected:
-		void destroy() override;
-
-	protected:
-        ServiceProviderInterface * m_serviceProvider;
+		void _destroy() override;
 	};
 }

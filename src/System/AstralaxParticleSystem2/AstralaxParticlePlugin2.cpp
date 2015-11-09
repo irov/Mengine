@@ -4,40 +4,20 @@
 
 #	include "Logger/Logger.h"
 
-extern "C" // only required if using g++
-{
-	//////////////////////////////////////////////////////////////////////////
-	bool initPluginAstralaxParticlePlugin2( Menge::PluginInterface ** _plugin )
-	{
-		stdex_allocator_initialize();
-
-		*_plugin = new Menge::AstralaxParticlePlugin2();
-
-		return true;
-	}
-#	ifdef MENGE_PLUGIN_DLL
-	////////////////////////////////////////////////////////////////////////////
-	__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-	{
-		return initPluginAstralaxParticlePlugin2( _plugin );
-	}
-#	endif
-}
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ParticleSystem );
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_FACTORY( AstralaxParticlePlugin2, Menge::AstralaxParticlePlugin2 );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	AstralaxParticlePlugin2::AstralaxParticlePlugin2()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxParticlePlugin2::initialize( ServiceProviderInterface * _provider )
+	bool AstralaxParticlePlugin2::_initialize()
 	{
-		m_serviceProvider = _provider;
-		
 		LOGGER_INFO(m_serviceProvider)( "Initializing Particle System 3D..." );
 
 		SERVICE_CREATE( m_serviceProvider, ParticleSystem );
@@ -45,17 +25,13 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticlePlugin2::finalize()
+	void AstralaxParticlePlugin2::_finalize()
 	{
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleSystemInterface2 );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticlePlugin2::destroy()
+	void AstralaxParticlePlugin2::_destroy()
 	{
-		SERVICE_DESTROY( m_serviceProvider, Menge::ParticleSystemInterface2 );
-
-		delete this;
-
-		stdex_allocator_finalize();
+		SERVICE_DESTROY( m_serviceProvider, Menge::ParticleSystemInterface2 );		
 	}
 }

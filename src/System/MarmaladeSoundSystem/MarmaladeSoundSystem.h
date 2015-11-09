@@ -87,15 +87,15 @@ namespace Menge
 	static const uint32_t INVALID_SOUND_ID = (uint32_t)-1;
 	//////////////////////////////////////////////////////////////////////////
 	class MarmaladeSoundSystem
-		: public SoundSystemInterface
+		: public ServiceBase<SoundSystemInterface>
 	{
 	public:
 		MarmaladeSoundSystem();
 		~MarmaladeSoundSystem();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
+	public:
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		uint32_t playSoundDesc( MarmaladeSoundSource * _source, float _position, float _volume, int32 _count );
@@ -114,10 +114,10 @@ namespace Menge
 		uint32_t positionToCarriage_( float _position, uint32_t _frequency ) const;
 
 	public:
-		bool initialize() override;
-        void finalize() override;
-
 		void update() override;
+
+	public:
+		bool isSilent() const override;
 		
 	public:
 		void onTurnSound( bool _turn ) override;
@@ -139,8 +139,6 @@ namespace Menge
 		bool isDeviceStereo() const { return m_isDeviceStereo; }
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
         typedef FactoryPoolStore<MarmaladeSoundBufferMemory, 32> TPoolOALSoundBuffer;
         TPoolOALSoundBuffer m_poolOALSoundBuffer;
 

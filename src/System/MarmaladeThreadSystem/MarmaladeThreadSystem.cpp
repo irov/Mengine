@@ -5,50 +5,40 @@
 #   include "s3eDevice.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY(ThreadSystem, Menge::ThreadSystemInterface, Menge::MarmaladeThreadSystem);
+SERVICE_FACTORY(ThreadSystem, Menge::MarmaladeThreadSystem);
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeThreadSystem::MarmaladeThreadSystem()
-		: m_serviceProvider(nullptr)
+		: m_available(true)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeThreadSystem::~MarmaladeThreadSystem()
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeThreadSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * MarmaladeThreadSystem::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeThreadSystem::initialize()		
+	bool MarmaladeThreadSystem::_initialize()		
 	{
         if( s3eThreadAvailable() == S3E_FALSE )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeThreadSystem::initialize s3eThread extension not present"
 				);
 
-            return false;
+			m_available = false;
         }
-		
+				
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeThreadSystem::finalize()
+	void MarmaladeThreadSystem::_finalize()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeThreadSystem::avaliable() const
 	{
-		return true;
+		return m_available;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ThreadIdentityPtr MarmaladeThreadSystem::createThread( int _priority, const char * _doc )

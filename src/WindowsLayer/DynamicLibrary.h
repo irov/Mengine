@@ -17,7 +17,7 @@ namespace Menge
 		bool load() override;
 
     public:
-        TDynamicLibraryFunction getSymbol( const String & _name ) const override;
+        TDynamicLibraryFunction getSymbol( const Char * _name ) const override;
 
     public:
         void destroy() override;

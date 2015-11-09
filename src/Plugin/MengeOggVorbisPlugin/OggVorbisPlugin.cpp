@@ -6,38 +6,18 @@
 
 #   include "Codec/DecoderFactory.h"
 
-
-extern "C" // only required if using g++
-{
-    //////////////////////////////////////////////////////////////////////////
-    bool initPluginMengeOggVorbis( Menge::PluginInterface ** _plugin )
-    {
-        *_plugin = new Menge::OggVorbisPlugin();
-
-        return true;
-    }
-
-#   ifdef MENGE_PLUGIN_DLL
-    ////////////////////////////////////////////////////////////////////////////
-    __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-    {
-        return initPluginMengeOggVorbis( _plugin );
-    }
-#   endif
-}
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_FACTORY( MengeOggVorbis, Menge::OggVorbisPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	OggVorbisPlugin::OggVorbisPlugin()
-        : m_serviceProvider(nullptr)
+	OggVorbisPlugin::OggVorbisPlugin()       
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OggVorbisPlugin::initialize( ServiceProviderInterface * _serviceProvider )
+	bool OggVorbisPlugin::_initialize()
 	{
-        m_serviceProvider = _serviceProvider;
-
 		m_decoders.push_back( new DecoderFactory<SoundDecoderOGGVorbis>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "oggSound")) );
         m_decoders.push_back( new DecoderFactory<SoundDecoderOGGVorbis>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ogvSound")) );
 		
@@ -59,7 +39,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void OggVorbisPlugin::finalize()
+	void OggVorbisPlugin::_finalize()
 	{
 		for( TVectorDecoders::iterator
 			it = m_decoders.begin(),
@@ -74,10 +54,5 @@ namespace Menge
 		}
 
 		m_decoders.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OggVorbisPlugin::destroy()
-	{
-		delete this;
 	}
 }

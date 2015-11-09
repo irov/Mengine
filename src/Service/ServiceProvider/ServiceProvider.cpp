@@ -82,14 +82,14 @@ namespace Menge
 		{
 			ServiceDesc & desc = m_services[index];
 
-			if( desc.service == nullptr )
-			{
-				break;
-			}
-
 			if( strcmp( desc.name, _name ) != 0 )
 			{
 				continue;
+			}
+
+			if( desc.service == nullptr )
+			{
+				break;
 			}
 
 			desc.service->finalize();
@@ -106,14 +106,14 @@ namespace Menge
 		{
 			ServiceDesc & desc = m_services[index];
 
-			if( desc.service == nullptr )
-			{
-				break;
-			}
-
 			if( strcmp( desc.name, _name ) != 0 )
 			{
 				continue;
+			}
+
+			if( desc.service == nullptr )
+			{
+				break;
 			}
 
 			desc.service->finalize();
@@ -154,14 +154,14 @@ namespace Menge
 		{
 			const ServiceDesc & desc = m_services[index];
 
-			if( desc.service == nullptr )
+			if( strcmp( desc.name, _name ) != 0 )
 			{
 				continue;
 			}
 
-			if( strcmp( desc.name, _name ) != 0 )
+			if( desc.service == nullptr )
 			{
-				continue;
+				break;
 			}
 
 			return desc.service;

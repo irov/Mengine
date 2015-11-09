@@ -22,6 +22,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveService::registerArchivator( const ConstString & _type, const ArchivatorInterfacePtr & _archivator )
 	{
+		_archivator->setServiceProvider( m_serviceProvider );
+
 		m_archivators.insert( std::make_pair(_type, _archivator) );
 	}
 	//////////////////////////////////////////////////////////////////////////

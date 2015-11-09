@@ -7,61 +7,33 @@
 #	include "FileGroupZip.h"
 #	include "ArchivatorZip.h"
 
-extern "C" // only required if using g++
-{
-    //////////////////////////////////////////////////////////////////////////
-    bool initPluginMengeZip( Menge::PluginInterface ** _plugin )
-    {
-        *_plugin = new Menge::ZipPlugin();
-
-        return true;
-    }
-#   ifdef MENGE_PLUGIN_DLL
-    ////////////////////////////////////////////////////////////////////////////
-    __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-    {
-        return initPluginMengeZip( _plugin );
-    }
-#   endif
-}
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_FACTORY( MengeZip, Menge::ZipPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	ZipPlugin::ZipPlugin()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ZipPlugin::initialize( ServiceProviderInterface * _provider )
+	bool ZipPlugin::_initialize()
 	{
-        m_serviceProvider = _provider;
-	
 		FILE_SERVICE(m_serviceProvider)
 			->registerFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip"), new FactorableUnique<FactoryDefault<FileGroupZip> >() );
-
-
-		ArchivatorInterface * archivator = new FactorableUnique<ArchivatorZip>();
-
-		archivator->setServiceProvider( m_serviceProvider );
-
+		
 		ARCHIVE_SERVICE(m_serviceProvider)
-			->registerArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip"), archivator );
+			->registerArchivator( STRINGIZE_STRING_LOCAL( m_serviceProvider, "zip" ), new FactorableUnique<ArchivatorZip>() );
 
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ZipPlugin::finalize()
+	void ZipPlugin::_finalize()
 	{
 		FILE_SERVICE(m_serviceProvider)
 			->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip") );
 
 		ARCHIVE_SERVICE(m_serviceProvider)
 			->unregisterArchivator( STRINGIZE_STRING_LOCAL(m_serviceProvider, "zip") );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ZipPlugin::destroy()
-	{
-		delete this;
 	}
 }

@@ -27,7 +27,7 @@
 #   include "MarmaladeTimer.h"
 #   include "MarmaladeInput.h"
 
-#	include <map>
+#	include "Core/FileLogger.h"
 
 namespace Menge
 {
@@ -68,7 +68,7 @@ namespace Menge
         void notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen ) override;
         void notifyVsyncChanged( bool _vsync ) override;
         void notifyCursorModeChanged( bool _mode ) override;
-        bool notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const Blobject & _buffer ) override;
+		bool notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const MemoryInterfacePtr & _buffer ) override;
 
 	public:
 		void onEvent( const ConstString & _event, const TMapParams & _params ) override;
@@ -86,6 +86,9 @@ namespace Menge
 		bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 		bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 		
+	protected:
+		bool initializeFileEngine_();
+
 	protected:
         MarmaladeLogger * m_loggerConsole;
 		FileLogger * m_fileLog;

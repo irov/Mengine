@@ -15,38 +15,17 @@
 #pragma comment ( lib, "Crypt32.lib" )
 
 //////////////////////////////////////////////////////////////////////////
-extern "C" // only required if using g++
-{
-	//////////////////////////////////////////////////////////////////////////
-	bool initPluginMengeXlsExport( Menge::PluginInterface ** _plugin )
-	{
-		stdex_allocator_initialize();
-
-		*_plugin = new Menge::XlsExportPlugin();
-
-		return true;
-	}
-	////////////////////////////////////////////////////////////////////////////
-#	ifdef MENGE_PLUGIN_DLL
-	__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-	{
-		return initPluginMengeXlsExport( _plugin );
-	}
-#	endif
-}
+PLUGIN_FACTORY( MengeXlsExport, Menge::XlsExportPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	XlsExportPlugin::XlsExportPlugin()
-        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool XlsExportPlugin::initialize( ServiceProviderInterface * _serviceProvider )
+	bool XlsExportPlugin::_initialize()
 	{
-        m_serviceProvider = _serviceProvider;
-
 		const ConstString & projectCodename = APPLICATION_SERVICE(m_serviceProvider)
             ->getProjectCodename();
 
@@ -132,16 +111,8 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void XlsExportPlugin::finalize()
+	void XlsExportPlugin::_finalize()
 	{
-
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void XlsExportPlugin::destroy()
-	{
-		delete this;
-
-		stdex_allocator_finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool XlsExportPlugin::proccess_( const char * _projectName )

@@ -1,11 +1,10 @@
 #	include "Config/Config.h"
 
 #	include "MarmaladeApplication.h"
-#	include "MarmaladeFileGroupDirectory.h"
 
 #	include "Menge/Application.h"
 
-#	include "Interface/LogSystemInterface.h"
+#	include "Interface/LoggerInterface.h"
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/InputSystemInterface.h"

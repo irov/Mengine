@@ -10,24 +10,11 @@ namespace Menge
 #	define MENGINE_OPTIONS_KEY_SIZE 32
 #	endif
 
-	class MarmaladeOptions
-		: public ServiceBase<OptionsInterface>
+	class MarmaladeOptionsSystem
+		: public ServiceBase<OptionsSystemInterface>
 	{
 	public:
-		bool _initialize() override;
-		void _finalize() override;
-
-	public:
-		bool hasOption( const Char * _key ) const override;
-
-	protected:
-		struct Option
-		{
-			Char key[MENGINE_OPTIONS_KEY_SIZE];
-		};
-
-		typedef stdex::vector<Option> TVectorOptions;
-		TVectorOptions m_options;
+		bool getOptions( Char * _options, size_t _capacity ) const override;
 	};
 }
 

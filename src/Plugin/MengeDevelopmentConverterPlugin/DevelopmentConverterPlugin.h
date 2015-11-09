@@ -1,26 +1,24 @@
 #	pragma once
 
-#	include "Interface/PluginInterface.h"
 #	include "Interface/ConverterInterface.h"
+
+#	include "Core/PluginBase.h"
 
 namespace Menge
 {	
 	class DevelopmentConverterPlugin
-		: public PluginInterface
+		: public PluginBase
 	{
+		PLUGIN_DECLARE( "DevelopmentConverter" )
+
 	public:
 		DevelopmentConverterPlugin();
 
 	protected:
-		bool initialize( ServiceProviderInterface * _serviceProvider ) override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	protected:
-		void destroy() override;
-
-	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		typedef stdex::vector<ConverterFactoryInterface *> TVectorHotspotImageConverters;
 		TVectorHotspotImageConverters m_converters;
 	};

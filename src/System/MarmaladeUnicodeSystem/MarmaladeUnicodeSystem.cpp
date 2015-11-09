@@ -5,7 +5,7 @@
 #   include <IwUTF8.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( UnicodeSystem, Menge::UnicodeSystemInterface, Menge::MarmaladeUnicodeSystem );
+SERVICE_FACTORY( UnicodeSystem, Menge::MarmaladeUnicodeSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -13,19 +13,8 @@ namespace Menge
     const int iwutf8_invalid_cast = -1;
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeUnicodeSystem::MarmaladeUnicodeSystem()
-		: m_serviceProvider(NULL)
 	{
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeUnicodeSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * MarmaladeUnicodeSystem::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeUnicodeSystem::unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {

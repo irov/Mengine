@@ -88,7 +88,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void MarmaladeRenderSystem::finalize()
+    void MarmaladeRenderSystem::_finalize()
     {
 		m_currentIndexBuffer = nullptr;
 		m_currentVertexBuffer = nullptr;
@@ -103,14 +103,10 @@ namespace Menge
 		return m_renderPlatform;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits,
-												bool _fullscreen, WindowHandle _winHandle, 
-												bool _waitForVSync, int _FSAAType, int _FSAAQuality )
+	bool MarmaladeRenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
 	{
         m_resolution = _resolution;
-
-
-        		
+		        		
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

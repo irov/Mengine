@@ -25,37 +25,18 @@ extern "C" // only required if using g++
 #   endif
 }
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN(Amplifier, Menge::AmplifierInterface);
+SERVICE_EXTERN(Amplifier);
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PluginAmplifier::PluginAmplifier()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PluginAmplifier::initialize( ServiceProviderInterface * _provider )
-	{
-		m_serviceProvider = _provider;
-
-		AmplifierInterface * amplifier;
-		if( SERVICE_CREATE( Amplifier, &amplifier ) == false )
-		{
-			return false;
-		}
-
-		if( SERVICE_REGISTRY( m_serviceProvider, amplifier ) == false )
-		{
-			return false;
-		}
-
-		if( amplifier->initialize() == false )
-		{
-			return false;
-		}
-
-		m_amplifier = amplifier;
+	bool PluginAmplifier::_initialize()
+	{		
+		SERVICE_CREATE( m_serviceProvider, Amplifier );
 
 		PROTOTYPE_SERVICE(m_serviceProvider)
 			->addPrototype( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Resource"), STRINGIZE_STRING_LOCAL(m_serviceProvider, "ResourcePlaylist"), new ResourcePrototypeGenerator<ResourcePlaylist, 8>(m_serviceProvider) );
@@ -63,18 +44,13 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PluginAmplifier::finalize()
+	void PluginAmplifier::_finalize()
 	{
-		if( m_amplifier != nullptr )
-		{
-			m_amplifier->finalize();
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::AmplifierInterface );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PluginAmplifier::destroy()
+	void PluginAmplifier::_destroy()
 	{
-		SERVICE_DESTROY( Amplifier, m_amplifier );
-
-		delete this;
+		SERVICE_DESTROY( m_serviceProvider, Menge::AmplifierInterface );
 	}
 }

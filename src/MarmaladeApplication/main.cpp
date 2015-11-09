@@ -21,7 +21,7 @@ int main()
 	{
 		Menge::MarmaladeApplication marApplication;
 
-		if( marApplication.initialize( commandLine ) == true )
+		if( marApplication.initialize() == true )
 		{
 			marApplication.loop();
 		}

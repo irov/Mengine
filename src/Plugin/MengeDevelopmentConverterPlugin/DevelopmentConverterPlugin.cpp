@@ -18,38 +18,18 @@
 
 #   include "Codec/ConverterFactory.h"
 
-extern "C" // only required if using g++
-{
-	//////////////////////////////////////////////////////////////////////////
-    bool initPluginDevelopmentConverter( Menge::PluginInterface ** _plugin )
-    {
-		stdex_allocator_initialize();
-
-        *_plugin = new Menge::DevelopmentConverterPlugin();
-
-        return true;
-    }
-    ////////////////////////////////////////////////////////////////////////////
-#	ifdef MENGE_PLUGIN_DLL
-	__declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-    {
-        return initPluginDevelopmentConverter( _plugin );
-    }
-#	endif
-}
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_FACTORY( DevelopmentConverter, Menge::DevelopmentConverterPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	DevelopmentConverterPlugin::DevelopmentConverterPlugin()
-        : m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DevelopmentConverterPlugin::initialize( ServiceProviderInterface * _serviceProvider )
+	bool DevelopmentConverterPlugin::_initialize()
 	{
-        m_serviceProvider = _serviceProvider;        
-       
 		m_converters.push_back( new ConverterFactory<HotspotImageConverterPNGToHIT>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "png2hit")) );
 		m_converters.push_back( new ConverterFactory<SoundConverterFFMPEGToOGG>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToOggSound")) );
 		m_converters.push_back( new ConverterFactory<VideoConverterFFMPEGToWEBM>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "ffmpegToWebM")) );
@@ -79,7 +59,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DevelopmentConverterPlugin::finalize()
+	void DevelopmentConverterPlugin::_finalize()
 	{
 		for( TVectorHotspotImageConverters::iterator
 			it = m_converters.begin(),
@@ -96,12 +76,5 @@ namespace Menge
 		}
 
 		m_converters.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DevelopmentConverterPlugin::destroy()
-	{
-		delete this;
-
-		stdex_allocator_finalize();
 	}
 }

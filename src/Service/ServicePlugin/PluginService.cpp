@@ -12,23 +12,26 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
     PluginService::PluginService()
-        : m_dllCreatePluginName("dllCreatePlugin")
     {
     }
     //////////////////////////////////////////////////////////////////////////
     PluginService::~PluginService()
     {
-        for( TMapPlugins::iterator
+		for( TVectorPlugins::iterator
             it = m_plugins.begin(),
             it_end = m_plugins.end();
         it != it_end;
         ++it )
         {
-            const PluginDesc & desc = it->second;
+            PluginDesc & desc = *it;
 
 			desc.plugin->finalize();
             desc.plugin->destroy();
-            desc.dlib->destroy();
+
+			if( desc.dlib != nullptr )
+			{
+				desc.dlib->destroy();
+			}
         }
 
         m_plugins.clear();
@@ -43,58 +46,54 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void PluginService::_finalize()
 	{
-		for( TMapPlugins::const_iterator
+		for( TVectorPlugins::iterator
 			it = m_plugins.begin(),
 			it_end = m_plugins.end();
 		it != it_end;
 		++it )
 		{
-			const PluginDesc & desc = it->second;
+			PluginDesc & desc = *it;
 
 			desc.plugin->finalize();
 			desc.plugin->destroy();
-			desc.dlib->destroy();
+
+			if( desc.dlib != nullptr )
+			{
+				desc.dlib->destroy();
+			}
 		}
 
 		m_plugins.clear();
 	}
     //////////////////////////////////////////////////////////////////////////
-    PluginInterface * PluginService::loadPlugin( const WString & _name )
+    PluginInterface * PluginService::loadPlugin( const WString & _dllName )
     {
 		LOGGER_INFO( m_serviceProvider )("load Plugin %ls"
-            , _name.c_str() 
+			, _dllName.c_str()
             );
 
-        TMapPlugins::iterator it_found = m_plugins.find( _name );
-
-		if( it_found != m_plugins.end() )
-		{
-			LOGGER_WARNING( m_serviceProvider )("plugin %ls alredy exist"
-				, _name.c_str()
-				);
-
-			return nullptr;
-		}
-
 		DynamicLibraryInterface * dlib = WINDOWSLAYER_SERVICE( m_serviceProvider )
-			->loadDynamicLibrary( _name );
+			->loadDynamicLibrary( _dllName );
 
 		if( dlib == nullptr )
 		{
 			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [invalid load]"
-				, _name.c_str()
+				, _dllName.c_str()
 				);
 
 			return nullptr;
 		}
 
+		const Char * symbol = "dllCreatePlugin";
+
 		TDynamicLibraryFunction function_dllCreatePlugin =
-			dlib->getSymbol( m_dllCreatePluginName );
+			dlib->getSymbol( symbol );
 
 		if( function_dllCreatePlugin == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [dllCreatePlugin]"
-				, _name.c_str()
+			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin symbol '%s'"
+				, _dllName.c_str()
+				, symbol
 				);
 
 			return nullptr;
@@ -106,7 +105,7 @@ namespace Menge
 		if( dllCreatePlugin( &plugin ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [invalid create]"
-				, _name.c_str()
+				, _dllName.c_str()
 				);
 
 			return nullptr;
@@ -115,45 +114,142 @@ namespace Menge
 		if( plugin == nullptr )
 		{
 			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [plugin is NULL]"
-				, _name.c_str()
+				, _dllName.c_str()
 				);
 
 			return nullptr;
 		}
 
-		if( plugin->initialize( m_serviceProvider ) == false )
+		if( this->addPlugin( dlib, plugin ) == false )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [invalid initialize]"
-				, _name.c_str()
-				);
-
 			return nullptr;
 		}
-
-		PluginDesc desc;
-		desc.dlib = dlib;
-		desc.plugin = plugin;
-
-		m_plugins.insert( std::make_pair( _name, desc ) );
 		
         return plugin;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void PluginService::unloadPlugin( const WString & _name )
-    {
-        TMapPlugins::iterator it_found = m_plugins.find( _name );
+	//////////////////////////////////////////////////////////////////////////
+	bool PluginService::addPlugin( DynamicLibraryInterface * _dlib, PluginInterface * _plugin )
+	{
+		if( _plugin == nullptr )
+		{
+			return false;
+		}
 
-        if( it_found == m_plugins.end() )
-        {
-            return;
-        }
+		const Char * name = _plugin->getPluginName();
 
-        const PluginDesc & desc = it_found->second;
+		_plugin->setServiceProvider( m_serviceProvider );
 
-		desc.plugin->finalize();
-        desc.plugin->destroy();
-        desc.dlib->destroy();
+		if( _plugin->initialize() == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin invalid initialize plugin '%s'"
+				, name
+				);
 
-        m_plugins.erase( it_found );
-    }
+			return false;
+		}
+		
+		if( this->hasPlugin( name ) == true )
+		{
+			return false;
+		}
+
+		PluginDesc desc;
+		strcpy( desc.name, name );
+		desc.dlib = _dlib;
+		desc.plugin = _plugin;
+
+		m_plugins.push_back( desc );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PluginService::removePlugin( PluginInterface * _plugin )
+	{
+		if( _plugin == nullptr )
+		{
+			return false;
+		}
+
+		for( TVectorPlugins::iterator
+			it = m_plugins.begin(),
+			it_end = m_plugins.end();
+		it != it_end;
+		++it )
+		{
+			PluginDesc & desc = *it;
+
+			if( desc.plugin == _plugin )
+			{
+				continue;
+			}
+
+			desc.plugin->finalize();
+			desc.plugin->destroy();
+
+			if( desc.dlib != nullptr )
+			{
+				desc.dlib->destroy();
+			}
+
+			m_plugins.erase( it );
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PluginService::hasPlugin( const Char * _name ) const
+	{
+		for( TVectorPlugins::const_iterator
+			it = m_plugins.begin(),
+			it_end = m_plugins.end();
+		it != it_end;
+		++it )
+		{
+			const PluginDesc & desc = *it;
+
+			if( desc.plugin == nullptr )
+			{
+				continue;
+			}
+
+			if( strcmp( desc.name, _name ) != 0 )
+			{
+				continue;
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	PluginInterface * PluginService::getPlugin( const Char * _name ) const
+	{
+		for( TVectorPlugins::const_iterator
+			it = m_plugins.begin(),
+			it_end = m_plugins.end();
+		it != it_end;
+		++it )
+		{
+			const PluginDesc & desc = *it;
+
+			if( desc.plugin == nullptr )
+			{
+				continue;
+			}
+
+			if( strcmp( desc.name, _name ) != 0 )
+			{
+				continue;
+			}
+
+			PluginInterface * plugin = desc.plugin;
+
+			return plugin;
+		}
+
+		return nullptr;
+	}
 }

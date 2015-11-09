@@ -20,19 +20,15 @@ namespace Menge
 	class LogServiceInterface;
 
 	class MarmaladeThreadSystem
-		: public ThreadSystemInterface
+		: public ServiceBase<ThreadSystemInterface>
 	{
 	public:
 		MarmaladeThreadSystem();
 		~MarmaladeThreadSystem();
 
-    public:
-        void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-        ServiceProviderInterface * getServiceProvider() const override;
-
 	public:
-		bool initialize() override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	public:
 		bool avaliable() const override;
@@ -50,12 +46,12 @@ namespace Menge
 		ptrdiff_t getCurrentThreadId() const override;
 	
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
         typedef FactoryPoolStore<MarmaladeThreadIdentity, 16> TPoolMarmaladeThreadIdentity;
         TPoolMarmaladeThreadIdentity m_poolWin32ThreadIdentity;
 
         typedef FactoryPoolStore<MarmaladeThreadMutex, 16> TPoolMarmaladeThreadMutex;
         TPoolMarmaladeThreadMutex m_poolMarmaladeThreadMutex;		
+
+		bool m_available;
 	};
 }

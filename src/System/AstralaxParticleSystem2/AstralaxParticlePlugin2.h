@@ -1,23 +1,22 @@
 #	pragma once
 
-#	include "Interface/PluginInterface.h"
+#	include "Core/PluginBase.h"
 
 namespace Menge
 {
 	class AstralaxParticlePlugin2
-		: public PluginInterface
+		: public PluginBase
 	{
+		PLUGIN_DECLARE("AstralaxParticle")
+
 	public:
 		AstralaxParticlePlugin2();
 
 	protected:
-		bool initialize( ServiceProviderInterface * _provider ) override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	protected:
-		void destroy() override;
-
-	protected:
-		ServiceProviderInterface * m_serviceProvider;
+		void _destroy() override;
 	};
 }

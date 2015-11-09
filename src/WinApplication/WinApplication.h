@@ -80,8 +80,5 @@ namespace Menge
 
 		ConsoleLogger * m_loggerConsole;
 		MessageBoxLogger * m_loggerMessageBox;
-
-		typedef stdex::vector<PluginInterface *> TVectorPlugins;
-		TVectorPlugins m_plugins;	
 	};
 }	// namespace Menge

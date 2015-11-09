@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Config/Typedef.h"
+#	include "Config/Char.h"
 
 #	include "Core/Exception.h"
 
@@ -24,11 +25,14 @@ namespace Menge
         virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
 	public:
-		virtual const char * getServiceID() const = 0;
+		virtual const Char * getServiceID() const = 0;
 
 	protected:
 		virtual bool initialize() = 0;
 		virtual void finalize() = 0;
+
+	protected:
+		virtual bool isInitialize() const = 0;
 
 	public:
 		virtual void destroy() = 0;
@@ -90,11 +94,10 @@ namespace Menge
 			m_initialize = false;
 
 			this->_finalize();
-			//Empty
 		}
 
 	public:
-		bool isInitialize() const
+		bool isInitialize() const override
 		{
 			return m_initialize;
 		}
@@ -102,6 +105,8 @@ namespace Menge
 	protected:
 		virtual bool _initialize()
 		{
+			//Empty
+
 			return true;
 		}
 
@@ -110,10 +115,18 @@ namespace Menge
 			//Empty
 		}
 
-	public:
+	private:
 		void destroy() override
 		{
+			this->_destroy();
+
 			delete this;
+		}
+
+	protected:
+		virtual void _destroy()
+		{
+			//Empty
 		}
 
 	protected:
@@ -131,21 +144,21 @@ namespace Menge
 		virtual ~ServiceProviderInterface(){};
 
 	public:
-		virtual bool existService( const char * _name ) const = 0;
+		virtual bool existService( const Char * _name ) const = 0;
 
 	public:
-		virtual ServiceInterface * getService( const char * _name ) const = 0;
+		virtual ServiceInterface * getService( const Char * _name ) const = 0;
 
     public:
 		virtual bool initializeService( TServiceProviderGenerator _generator ) = 0;
-		virtual bool finalizeService( const char * _name ) = 0;
-		virtual bool destroyService( const char * _name ) = 0;		
+		virtual bool finalizeService( const Char * _name ) = 0;
+		virtual bool destroyService( const Char * _name ) = 0;
 
 	public:
 		template<class T>
 		bool finalizeServiceT()
 		{
-			const char * name = T::getStaticServiceID();
+			const Char * name = T::getStaticServiceID();
 
 			bool successful = this->finalizeService( name );
 
@@ -155,7 +168,7 @@ namespace Menge
 		template<class T>
 		bool destroyServiceT()
 		{
-			const char * name = T::getStaticServiceID();
+			const Char * name = T::getStaticServiceID();
 
 			bool successful = this->destroyService( name );
 
@@ -171,7 +184,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
         template<class T>
 #   ifdef _DEBUG
-        inline T * getService( ServiceProviderInterface * _serviceProvider, const char * _file, uint32_t _line )
+		inline T * getService( ServiceProviderInterface * _serviceProvider, const Char * _file, uint32_t _line )
 #	else
 		inline T * getService( ServiceProviderInterface * _serviceProvider )
 #	endif
@@ -180,7 +193,7 @@ namespace Menge
 
             if( s_service == nullptr )
             {
-				const char * serviceName = T::getStaticServiceID();
+				const Char * serviceName = T::getStaticServiceID();
 
                 ServiceInterface * service = _serviceProvider->getService( serviceName );
 
@@ -217,7 +230,7 @@ namespace Menge
 			{
 				s_initialize = true;
 
-				const char * serviceName = T::getStaticServiceID();
+				const Char * serviceName = T::getStaticServiceID();
 
 				s_exist = _serviceProvider->existService( serviceName );
 			}
@@ -245,8 +258,8 @@ namespace Menge
 
 #   define SERVICE_DECLARE( ID )\
     public:\
-        inline static const char * getStaticServiceID(){ return ID; };\
-		inline const char * getServiceID() const override { return ID; };\
+        inline static const Char * getStaticServiceID(){ return ID; };\
+		inline const Char * getServiceID() const override { return ID; };\
     protected:
 
 #   define SERVICE_FACTORY( Name, Implement )\

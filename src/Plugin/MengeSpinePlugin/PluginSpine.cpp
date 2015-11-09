@@ -12,36 +12,18 @@
 
 #	include "pybind/pybind.hpp"
 
-extern "C" // only required if using g++
-{
-    //////////////////////////////////////////////////////////////////////////
-    bool initPluginMengeSpine( Menge::PluginInterface ** _plugin )
-    {
-        *_plugin = new Menge::PluginSpine();
-
-        return true;
-    }
-#   ifdef MENGE_PLUGIN_DLL
-    ////////////////////////////////////////////////////////////////////////////
-    __declspec(dllexport) bool dllCreatePlugin( Menge::PluginInterface ** _plugin )
-    {
-		return initPluginMengeSpine( _plugin );
-    }
-#   endif
-}
+//////////////////////////////////////////////////////////////////////////
+PLUGIN_FACTORY( MengeSpine, Menge::PluginSpine );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	PluginSpine::PluginSpine()
-		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PluginSpine::initialize( ServiceProviderInterface * _provider )
+	bool PluginSpine::_initialize()
 	{
-		m_serviceProvider = _provider;
-
 		PROTOTYPE_SERVICE(m_serviceProvider)
 			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Spine" ), new NodePrototypeGenerator<Spine, 128>( m_serviceProvider ) );
 		
@@ -69,12 +51,7 @@ namespace Menge
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PluginSpine::finalize()
+	void PluginSpine::_finalize()
 	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PluginSpine::destroy()
-	{
-		delete this;
 	}
 }

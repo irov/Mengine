@@ -11,14 +11,13 @@
 #	include <s3eDevice.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( SoundSystem, Menge::SoundSystemInterface, Menge::MarmaladeSoundSystem );
+SERVICE_FACTORY( SoundSystem, Menge::MarmaladeSoundSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeSoundSystem::MarmaladeSoundSystem()
-		: m_serviceProvider(nullptr)
-		, m_isDeviceStereo(true)
+		: m_isDeviceStereo(true)
 		, m_soundOutputFrequence(0)
 	{
 	}
@@ -27,16 +26,6 @@ namespace Menge
 	{     
 
 	}
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeSoundSystem::setServiceProvider( ServiceProviderInterface * _serviceProvider )
-    {
-        m_serviceProvider = _serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * MarmaladeSoundSystem::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	float MarmaladeSoundSystem::carriageToPosition_( uint32_t _carriage, uint32_t _frequency ) const
 	{
@@ -468,7 +457,7 @@ namespace Menge
 		return playedSamples;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeSoundSystem::initialize()
+	bool MarmaladeSoundSystem::_initialize()
 	{
 		LOGGER_INFO(m_serviceProvider)( "Starting Marmalade Sound System..." );
 
@@ -565,7 +554,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeSoundSystem::finalize()
+	void MarmaladeSoundSystem::_finalize()
 	{
 		if( s3eSoundChannelStop( m_soundChannel ) == S3E_RESULT_ERROR )
 		{
@@ -624,6 +613,11 @@ namespace Menge
 				source->complete();
 			}
 		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeSoundSystem::isSilent() const
+	{
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeSoundSystem::setupFilter_()

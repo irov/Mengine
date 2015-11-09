@@ -1,32 +1,27 @@
 #	pragma once
 
-#	include "Interface/PluginInterface.h"
 #	include "Interface/CodecInterface.h"
+
+#	include "Core/PluginBase.h"
 
 namespace Menge
 {
-	class DecoderFactoryInterface;
-
 	class XlsExportPlugin
-		: public PluginInterface
+		: public PluginBase
 	{
+		PLUGIN_DECLARE( "XlsExport" )
+
 	public:
 		XlsExportPlugin();
 
 	protected:
-		bool initialize( ServiceProviderInterface * _serviceProvider ) override;
-		void finalize() override;
-
-	protected:
-		void destroy() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	protected:
 		bool proccess_( const char * _projectName );
 
 	protected:
 		void error_( const wchar_t * _msg );
-
-    protected:
-        ServiceProviderInterface * m_serviceProvider;
 	};
 }

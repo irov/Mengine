@@ -45,14 +45,14 @@ namespace Menge
         delete this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    TDynamicLibraryFunction DynamicLibrary::getSymbol( const String & _name ) const
+    TDynamicLibraryFunction DynamicLibrary::getSymbol( const Char * _name ) const
 	{
         if( m_hInstance == NULL )
         {
             return NULL;
         }
 
-		FARPROC proc = ::GetProcAddress( m_hInstance, _name.c_str() );
+		FARPROC proc = ::GetProcAddress( m_hInstance, _name );
 
         TDynamicLibraryFunction dlfunc = (TDynamicLibraryFunction)proc;
 

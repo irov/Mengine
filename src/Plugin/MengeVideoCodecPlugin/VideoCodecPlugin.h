@@ -1,26 +1,25 @@
 #	pragma once
 
-#	include "Interface/PluginInterface.h"
 #	include "Interface/CodecInterface.h"
+
+#	include "Core/PluginBase.h"
 
 namespace Menge
 {
 	class VideoCodecPlugin
-		: public PluginInterface
+		: public PluginBase
 	{
+	public:
+		PLUGIN_DECLARE( "VideoCodec" )
+
 	public:
 		VideoCodecPlugin();
 
 	protected:
-		bool initialize( ServiceProviderInterface * _serviceProvider ) override;
-		void finalize() override;
+		bool _initialize() override;
+		void _finalize() override;
 
 	protected:
-		void destroy() override;
-
-	protected:
-        ServiceProviderInterface * m_serviceProvider;
-
 		typedef stdex::vector<DecoderFactoryInterfacePtr> TVectorVideoDecoders;
 		TVectorVideoDecoders m_decoders;
 	};

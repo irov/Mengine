@@ -79,12 +79,16 @@ files
     ("../src/MarmaladeApplication")	
 	"*.h"
 	"*.cpp"       
-    
-    
+        
     [Plugin/MarmaladeAmplifierPlugin]
     ("../src/Plugin/MarmaladeAmplifierPlugin")
 	"*.h"
 	"*.cpp"   
+    
+    [Plugin/MarmaladeFileGroupPlugin]
+    ("../src/Plugin/MarmaladeFileGroupPlugin")
+	"*.h"
+	"*.cpp"    
     
     [System/MarmaladeThreadSystem]
     ("../src/System/MarmaladeThreadSystem")
@@ -114,7 +118,17 @@ files
     [System/AstralaxParticleSystem2]
     ("../src/System/AstralaxParticleSystem2")	
 	"*.h"
-	"*.cpp"    
+	"*.cpp"
+    
+    [System/MarmaladeOptionsSystem]
+    ("../src/System/MarmaladeOptionsSystem")	
+	"*.h"
+	"*.cpp"
+    
+    [Platform/MarmaladePlatform]
+    ("../src/Platform/MarmaladePlatform")	
+	"*.h"
+	"*.cpp"
 }
 
 subproject assets.mkf

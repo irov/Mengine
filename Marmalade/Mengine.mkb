@@ -182,8 +182,8 @@ files
 	"*.h"
 	"*.cpp"
 
-    [Service/ServiceLog]
-    ("../src/Service/ServiceLog")	
+    [Service/ServiceLogger]
+    ("../src/Service/ServiceLogger")	
 	"*.h"
 	"*.cpp"
         
@@ -251,6 +251,11 @@ files
     ("../src/Service/ServiceGraveyard")	
 	"*.h"
 	"*.cpp"       
+    
+    [Service/ServiceOptions]
+    ("../src/Service/ServiceOptions")	
+	"*.h"
+	"*.cpp"         
 
     [System/SilentSoundSystem]
     ("../src/System/SilentSoundSystem")	

@@ -22,7 +22,7 @@ namespace Menge
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool VideoConverterFFMPEGToOGVA::initialize()
 	{
-        m_convertExt = ".ogv";
+        m_convertExt = ".ogva";
 
         return true;
 	}
@@ -67,7 +67,7 @@ namespace Menge
             return false;
         }
         
-        WString buffer = L"ffmpeg -loglevel error -y -threads 4 -i \"" + unicode_input + L"\" -vf \"split [a], pad=iw:ih*2 [b], [a] alphaextract, [b] overlay=0:h\" -q 10 -pix_fmt yuv420p \"" + unicode_output + L"\"";
+        WString buffer = L"ffmpeg -loglevel error -y -threads 4 -i \"" + unicode_input + L"\" -vf \"split [a], pad=iw:ih*2 [b], [a] alphaextract, [b] overlay=0:h\" -vcodec libtheora -f ogg -map_metadata -1 -an -q 10 -pix_fmt yuv420p \"" + unicode_output + L"\"";
 		
 		LOGGER_WARNING(m_serviceProvider)( "VideoConverterFFMPEGToOGVA:: converting file '%ls' to '%ls'\n%ls"
 			, unicode_input.c_str()

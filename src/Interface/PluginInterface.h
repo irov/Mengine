@@ -79,17 +79,13 @@ namespace Menge
 	PLUGIN_FUNCTION( Name )( Plugin, false )
 	//////////////////////////////////////////////////////////////////////////
 #	define PLUGIN_FACTORY_STATIC(Name, Type)\
-	extern "C"\
-		{\
-		bool PLUGIN_FUNCTION(Name)( Menge::PluginInterface ** _plugin, bool _dynamic )\
-			{\
-			Menge::PluginInterface * plugin = new Type();\
-			if( plugin == nullptr ){ return false; }\
-			plugin->setDynamicLoad( _dynamic );\
-			*_plugin = plugin;\
-			return true;\
-		}\
-	}
+	extern "C"{bool PLUGIN_FUNCTION(Name)( Menge::PluginInterface ** _plugin, bool _dynamic ){\
+	if( _dynamic == true ){stdex_allocator_initialize();}\
+	Menge::PluginInterface * plugin = new Type();\
+	if( plugin == nullptr ){ return false; }\
+	plugin->setDynamicLoad( _dynamic );\
+	*_plugin = plugin;\
+	return true;}}
 	//////////////////////////////////////////////////////////////////////////
 #	define PLUGIN_FACTORY_DYNAMIC(Name, Type)\
 	extern "C"\

@@ -41,11 +41,6 @@ namespace Menge
 			return true;
 		}
 
-		if( m_dynamicLoad == true )
-		{
-			stdex_allocator_initialize();
-		}
-
 		bool successful = this->_initialize();
 
 		m_initialize = successful;

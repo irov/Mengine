@@ -469,8 +469,8 @@ namespace Menge
 				return FALSE;
 			}break;
 		case WM_DESTROY:
-			::PostQuitMessage( 0 );
-
+			m_close = true;
+				
 			return 0;
 		}
 

@@ -560,6 +560,13 @@ namespace Menge
 			return false;
 		}
 
+		SERVICE_CREATE( m_serviceProvider, ConfigService );
+
+		if( this->initializeConfigEngine_() == false )
+		{
+			return false;
+		}
+
 		if( this->initializeUserDirectory_() == false )
 		{
 			return false;
@@ -570,12 +577,7 @@ namespace Menge
 			return false;
 		}
 
-		SERVICE_CREATE( m_serviceProvider, ConfigService );
 
-		if( this->initializeConfigEngine_() == false )
-		{
-			return false;
-		}
 
 		SERVICE_CREATE( m_serviceProvider, ArchiveService );	
 

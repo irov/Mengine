@@ -1,30 +1,39 @@
-#	include "MarmaladeOptions.h"
+#	include "OptionsService.h"
 
-#   include "s3eConfig.h"
+#	include <string.h>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( Options, Menge::MarmaladeOptions );
+SERVICE_FACTORY( OptionsService, Menge::OptionsService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeOptions::_initialize()
+#	ifndef MENGINE_OPTIONS_COMMAND_LINE_MAX
+#	define MENGINE_OPTIONS_COMMAND_LINE_MAX 1024
+#	endif
+
+	//////////////////////////////////////////////////////////////////////////
+	bool OptionsService::_initialize()
 	{
-		char commandLine[S3E_CONFIG_STRING_MAX] = {0};
-		if( s3eConfigGetString( "MENGINE", "CommandLine", commandLine ) == S3E_RESULT_ERROR )
+		Char commandLine[MENGINE_OPTIONS_COMMAND_LINE_MAX] = {0};
+
+		if( OPTIONS_SYSTEM( m_serviceProvider )
+			->getOptions( commandLine, MENGINE_OPTIONS_COMMAND_LINE_MAX ) == false )
 		{
-			printf( "s3eConfigGetString %s:%s return error '%s'\n"
-				, "MENGINE"
-				, "CommandLine"
-				, s3eConfigGetErrorString()
-				);
+			return false;
 		}
-				
+		
 		const Char * option_next = commandLine;
 
 		while( option_next != nullptr )
 		{
 			const Char * option_begin = strstr( option_next, " -" );
+
+			if( option_begin == nullptr )
+			{
+				break;
+			}
+
 			const Char * option_end = strstr( option_begin + 1, " " );
 
 			Option op;
@@ -61,11 +70,11 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeOptions::_finalize()
+	void OptionsService::_finalize()
 	{ 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeOptions::hasOption( const Char * _key ) const
+	bool OptionsService::hasOption( const Char * _key ) const
 	{
 		for( TVectorOptions::const_iterator
 			it = m_options.begin(),

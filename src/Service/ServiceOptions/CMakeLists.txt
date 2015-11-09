@@ -1,9 +1,9 @@
-SET( MY_LIB_NAME Win32Options )
+SET( MY_LIB_NAME ServiceOptions )
 
 ADD_FILTER(
 src
-	Win32Options.h
-	Win32Options.cpp
+	OptionsService.h
+	OptionsService.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

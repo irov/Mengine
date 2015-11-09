@@ -61,7 +61,7 @@ namespace Menge
 		m_converters.push_back( new ConverterFactory<ImageConverterPVRToHTF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "pvr2htf")) );
 		m_converters.push_back( new ConverterFactory<ImageConverterDDSToHTF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "dds2htf")) );		
 		m_converters.push_back( new ConverterFactory<ImageConverterPNGToACF>(m_serviceProvider, STRINGIZE_STRING_LOCAL(m_serviceProvider, "png2acf")) );
-		  
+
 		for( TVectorHotspotImageConverters::iterator
 			it = m_converters.begin(), 
 			it_end = m_converters.end();

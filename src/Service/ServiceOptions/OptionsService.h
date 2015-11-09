@@ -10,8 +10,8 @@ namespace Menge
 #	define MENGINE_OPTIONS_KEY_SIZE 32
 #	endif
 
-	class Win32Options
-		: public ServiceBase<OptionsInterface>
+	class OptionsService
+		: public ServiceBase<OptionsServiceInterface>
 	{
 	public:
 		bool _initialize() override;

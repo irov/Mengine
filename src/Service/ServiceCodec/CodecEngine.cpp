@@ -47,7 +47,7 @@ namespace Menge
 
 		if( it_found == m_mapDecoderSystem.end() )
 		{
-            LOGGER_ERROR(m_serviceProvider)("CodecEngine::createDecoder not found codec %s"
+            LOGGER_ERROR(m_serviceProvider)("CodecEngine::createDecoder not found codec '%s'"
                 , _type.c_str()
                 );
 

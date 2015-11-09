@@ -300,6 +300,12 @@ namespace Menge
         metadata->swap_File_Codec( m_codecType );
 		metadata->swap_File_Converter( m_converter );
 
+		if( m_codecType.empty() == true )
+		{
+			m_codecType = CODEC_SERVICE( m_serviceProvider )
+				->findCodecType( m_filePath );
+		}
+
 		m_isAlpha = true;
         metadata->get_File_Alpha( m_isAlpha );
         		

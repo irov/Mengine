@@ -42,6 +42,12 @@ namespace Menge
         //m_decoders.push_back( new DecoderFactory<VideoDecoderVPX>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "vpxVideo")) );
 		m_decoders.push_back( new DecoderFactory<VideoDecoderTheora>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ogvVideo")) );
 		m_decoders.push_back( new DecoderFactory<VideoDecoderTheora>(m_serviceProvider, Helper::stringizeString(m_serviceProvider, "ogvaVideo")) );
+
+		CODEC_SERVICE( m_serviceProvider )
+			->registerCodecExt( "ogv", STRINGIZE_STRING_LOCAL( m_serviceProvider, "ogvVideo" ) );
+
+		CODEC_SERVICE( m_serviceProvider )
+			->registerCodecExt( "ogva", STRINGIZE_STRING_LOCAL( m_serviceProvider, "ogvaVideo" ) );
 				
 		for( TVectorVideoDecoders::iterator
 			it = m_decoders.begin(),

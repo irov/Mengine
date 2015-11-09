@@ -48,7 +48,8 @@
 
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
-SERVICE_EXTERN( Options );
+SERVICE_EXTERN( OptionsService );
+SERVICE_EXTERN( OptionsSystem );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( LoggerService );
 SERVICE_EXTERN( WindowsLayer );
@@ -535,7 +536,8 @@ namespace Menge
 
 		m_serviceProvider = serviceProvider;
 
-		SERVICE_CREATE( m_serviceProvider, Options );
+		SERVICE_CREATE( m_serviceProvider, OptionsSystem );
+		SERVICE_CREATE( m_serviceProvider, OptionsService );
 
 		SERVICE_CREATE( m_serviceProvider, StringizeService );
 		SERVICE_CREATE( m_serviceProvider, LoggerService );

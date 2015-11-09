@@ -109,13 +109,10 @@ namespace Menge
 			return false;
 		}
 
-		if( _codecType.empty() == true )
-		{
-			_codecType = CODEC_SERVICE( m_serviceProvider )
-				->findCodecType( _path );
-		}
+		const ConstString & codecType = CODEC_SERVICE( m_serviceProvider )
+			->findCodecType( _path );
 
-		if( _codecType.empty() == true )
+		if( codecType.empty() == true )
 		{
 			LOGGER_ERROR(m_serviceProvider)("ResourceReference::convertDefault_: '%s' you must determine codec for file '%s'"
 				, this->getName().c_str()
@@ -124,6 +121,8 @@ namespace Menge
 
 			return false;
 		}
+
+		_codecType = codecType;
 
 		return true;
 	}

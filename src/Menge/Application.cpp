@@ -576,7 +576,7 @@ namespace Menge
 
 				bool resourceCheckCritical = HAS_OPTIONS( m_serviceProvider, "noresourcecheckcritical" );
 
-				if( resourceCheckCritical == true )
+				if( resourceCheckCritical == false )
 				{
 					LOGGER_CRITICAL(m_serviceProvider)("Fix Resources"
 						);

@@ -87,7 +87,7 @@ namespace Menge
 		// Ogg file open; parse the headers
 		// Only interested in Vorbis/Theora streams 
 		bool stateFlag = true;
-		int theoraHeaderPackets = 0;  // число обработанных пакетов заголовков theora
+		bool theoraHeader = false;  // число обработанных пакетов заголовков theora
 		
 		do
 		{
@@ -135,60 +135,63 @@ namespace Menge
 				}
 
 				// да, это страница заголовков
-				if( theoraHeaderPackets == 0 )
+				ogg_stream_state oggStreamStateTest;
+				memset( &oggStreamStateTest, 0x00, sizeof( ogg_stream_state ) );
+
+				// тестовый логический поток
+				// инициализируем тестовый поток на тот же поток с таким же
+				// идентификатором потока, как и у текущей странички
+				int serialno = ogg_page_serialno( &page );
+				if( ogg_stream_init( &oggStreamStateTest, serialno ) != 0 )
 				{
-					// тестовый логический поток
-					// инициализируем тестовый поток на тот же поток с таким же
-					// идентификатором потока, как и у текущей странички
-					if( ogg_stream_init( &m_oggStreamState, ogg_page_serialno( &page ) ) != 0 )
-					{
-						LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_init");
+					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_init");
 
-						return false;
-					}
+					return false;
+				}
 
-					// добавляем страницу в тестовый поток
-					if( ogg_stream_pagein( &m_oggStreamState, &page ) != 0 )
-					{
-						LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_pagein");
+				// добавляем страницу в тестовый поток
+				if( ogg_stream_pagein( &oggStreamStateTest, &page ) != 0 )
+				{
+					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_pagein");
 
-						return false;
-					}
+					return false;
+				}
 
-					// декодируем данные из этого тестового потока в пакет
-					ogg_packet packet;
-					if( ogg_stream_packetout( &m_oggStreamState, &packet ) == -1 )
-					{
-						LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout");
+				// декодируем данные из этого тестового потока в пакет
+				ogg_packet packet;
+				if( ogg_stream_packetout( &oggStreamStateTest, &packet ) == -1 )
+				{
+					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout");
 
-						return false;
-					}
+					return false;
+				}
 
-					// theoraHeaderPackets - число прочитанных
-					// заголовочных ПАКЕТОВ theora (не страниц)
-					// по спецификации theora таких пакетов должно быть три
-					// декодируем заголовок theora
-					if( theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet ) < 0 )
-					{
-						// это не заголовок theora
+				// theoraHeaderPackets - число прочитанных
+				// заголовочных ПАКЕТОВ theora (не страниц)
+				// по спецификации theora таких пакетов должно быть три
+				// декодируем заголовок theora
+				if( theoraHeader == true || theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet ) < 0 )
+				{
+					// это не заголовок theora
 
-						// очищаем структуру тестового потока
-						ogg_stream_clear( &m_oggStreamState );
-						//и продолжаем цикл в поисках заголовков theora
-					}
-					else
-					{
-						// это заголовок theora!
+					// очищаем структуру тестового потока
+					ogg_stream_clear( &oggStreamStateTest );
+					//и продолжаем цикл в поисках заголовков theora
+				}
+				else
+				{
+					// это заголовок theora!
 
-						// вот таким образом "инициализируем" логический поток theora:
-						// теперь из этого потока будут всегда сыпаться пакеты theora
+					// вот таким образом "инициализируем" логический поток theora:
+					// теперь из этого потока будут всегда сыпаться пакеты theora
 
-						theoraHeaderPackets++;
+					memcpy( &m_oggStreamState, &oggStreamStateTest, sizeof( ogg_stream_state ) );
 
-						// после того, как мы нашли заголовочную страницу логического потока theora,
-						// нам необходимо прочитать все остальные заголовочные страницы
-						// других потоков и отбросить их (если таковые, конечно, имеются)
-					}
+					theoraHeader = true;
+
+					// после того, как мы нашли заголовочную страницу логического потока theora,
+					// нам необходимо прочитать все остальные заголовочные страницы
+					// других потоков и отбросить их (если таковые, конечно, имеются)
 				}
 			}
 		}
@@ -197,38 +200,54 @@ namespace Menge
 		// сейчас надо получить еще два пакета заголовков theora (см. её документацию)
 		// и можно переходить к потоковому воспроизведению
 
+		if( theoraHeader == false )
+		{
+			return false;
+		}
+
+		
+		int theoraHeaderPackets = 1;
+
 		while( theoraHeaderPackets < 3 )
 		{
-			ogg_packet packet;
-			int result = ogg_stream_packetout( &m_oggStreamState, &packet );
-			// если функция возвращает нуль, значит не хватает данных для декодирования
-
-			if( result < 0 )
+			while( theoraHeaderPackets < 3 )
 			{
-				// ошибка декодирования, поврежденный поток
-				LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout %d"
-					, result
-					);
+				ogg_packet packet;
+				int result = ogg_stream_packetout( &m_oggStreamState, &packet );
+				// если функция возвращает нуль, значит не хватает данных для декодирования
 
-				return false;
-			}
-
-			if( result > 0 )
-			{
-				// удалось успешно извлечь пакет информации theora
-				int result2 = theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet );
-
-				if( result2 < 0 )
+				if( result < 0 )
 				{
 					// ошибка декодирования, поврежденный поток
-					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during theora_decode_header (corrupt stream) %d"
-						, result2
+					LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during ogg_stream_packetout %d"
+						, result
 						);
 
 					return false;
 				}
 
-				++theoraHeaderPackets;
+				if( result == 0 )
+				{
+					break;
+				}
+
+				if( result > 0 )
+				{
+					// удалось успешно извлечь пакет информации theora
+					int result2 = theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet );
+
+					if( result2 < 0 )
+					{
+						// ошибка декодирования, поврежденный поток
+						LOGGER_ERROR( m_serviceProvider )("TheoraCodec Error: error during theora_decode_header (corrupt stream) %d"
+							, result2
+							);
+
+						return false;
+					}
+
+					++theoraHeaderPackets;
+				}
 			}
 
 			// эту страничку обработали, надо извлечь новую

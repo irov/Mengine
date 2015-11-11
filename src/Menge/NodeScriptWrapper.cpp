@@ -950,15 +950,10 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool s_loadPlugin( const WString & _pluginName )
         {
-            PluginInterface * plugin = PLUGIN_SERVICE(m_serviceProvider)
+            bool successful = PLUGIN_SERVICE(m_serviceProvider)
                 ->loadPlugin( _pluginName );
 
-            if( plugin == NULL )
-            {
-                return false;
-            }
-
-            return true;
+			return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         void s_setMousePickerBlockInput( bool _value )

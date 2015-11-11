@@ -22,7 +22,8 @@ namespace Menge
 		void _finalize() override;
 
     public:
-		PluginInterface * loadPlugin( const WString & _dllName ) override;		
+		bool loadPlugin( const WString & _dllName ) override;
+		bool createPlugin( DynamicLibraryInterface * _dlib, TPluginCreate _create, bool _dynamic ) override;
 
 	public:
 		bool addPlugin( DynamicLibraryInterface * _dlib, PluginInterface * _plugin ) override;

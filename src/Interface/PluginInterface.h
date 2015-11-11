@@ -35,7 +35,7 @@ namespace Menge
 		virtual void destroy() = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef bool (*TPluginCreate)( PluginInterface ** _plugin );
+	typedef bool( *TPluginCreate )(PluginInterface ** _plugin, bool _dynamic);
 	//////////////////////////////////////////////////////////////////////////
 	typedef void * (*TDynamicLibraryFunction)(void *);
 	//////////////////////////////////////////////////////////////////////////
@@ -67,9 +67,10 @@ namespace Menge
         SERVICE_DECLARE("PluginService")
 
     public:
-        virtual PluginInterface * loadPlugin( const WString & _dllName ) = 0;
+        virtual bool loadPlugin( const WString & _dllName ) = 0;
+		virtual bool createPlugin( DynamicLibraryInterface * _dlib, TPluginCreate _create, bool _dynamic ) = 0;
 		
-	public:
+	public:		
 		virtual bool addPlugin( DynamicLibraryInterface * _dlib, PluginInterface * _plugin ) = 0;
 		virtual bool removePlugin( PluginInterface * _plugin ) = 0;
 		virtual bool hasPlugin( const Char * _name ) const = 0;
@@ -87,8 +88,8 @@ namespace Menge
 #	define PLUGIN_FUNCTION(Name)\
 	initPlugin##Name
 	//////////////////////////////////////////////////////////////////////////
-#	define PLUGIN_CREATE(Name, Plugin)\
-	PLUGIN_FUNCTION( Name )( Plugin, false )
+#	define PLUGIN_CREATE(serviceProvider, Name)\
+	PLUGIN_SERVICE( serviceProvider )->createPlugin( nullptr, &PLUGIN_FUNCTION( Name ), false )
 	//////////////////////////////////////////////////////////////////////////
 #	define PLUGIN_FACTORY_STATIC(Name, Type)\
 	extern "C"{bool PLUGIN_FUNCTION(Name)( Menge::PluginInterface ** _plugin, bool _dynamic ){\

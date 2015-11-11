@@ -33,68 +33,9 @@
 #	include <s3eWindow.h>
 #	include <s3e.h>
 
-#ifdef _MSC_VER
-#	define snprintf _snprintf
-#endif
-
-SERVICE_PROVIDER_EXTERN( ServiceProvider );
-
-SERVICE_EXTERN( Application );
-SERVICE_EXTERN( StringizeService );
-SERVICE_EXTERN( LoggerService );
-SERVICE_EXTERN( MarmaladeLayer );
-
-SERVICE_EXTERN( ArchiveService );
-
-SERVICE_EXTERN( ThreadSystem );
-SERVICE_EXTERN( ThreadService );
-
-SERVICE_EXTERN( ParticleSystem2 );
-SERVICE_EXTERN( ParticleService2 );
-
-SERVICE_EXTERN( RenderSystem );
-SERVICE_EXTERN( RenderSystemES1 );
-SERVICE_EXTERN( RenderService );
-SERVICE_EXTERN( RenderTextureManager );
-SERVICE_EXTERN( RenderMaterialManager );
-
-SERVICE_EXTERN( PhysicSystem );
-
-SERVICE_EXTERN( UnicodeSystem );
-SERVICE_EXTERN( UnicodeService );
-
-SERVICE_EXTERN( FileService );
-
-SERVICE_EXTERN( NotificationService );
-SERVICE_EXTERN( ScriptService );
-
-SERVICE_EXTERN( SoundSystem );
-SERVICE_EXTERN( SilentSoundSystem );
-SERVICE_EXTERN( SoundService );
-
-SERVICE_EXTERN( InputService );
-SERVICE_EXTERN( CodecService );
-SERVICE_EXTERN( PluginService );
-
-SERVICE_EXTERN( ModuleService );
-SERVICE_EXTERN( DataService );
-SERVICE_EXTERN( MemoryService );
-SERVICE_EXTERN( ConfigService );
-SERVICE_EXTERN( PrefetcherService );
-
-
-PLUGIN_EXPORT( MengeImageCodec );
-PLUGIN_EXPORT( MengeSoundCodec );
-PLUGIN_EXPORT( MengeVideoCodec );
-PLUGIN_EXPORT( MengeAmplifier );
-PLUGIN_EXPORT( MengeZip );
-PLUGIN_EXPORT( MengeLZ4 );
-PLUGIN_EXPORT( MengeSpine );
-PLUGIN_EXPORT( MengeOggVorbis );
-PLUGIN_EXPORT( MengeSpine );
-PLUGIN_EXPORT( MarmaladeFileGroup );
-PLUGIN_EXPORT( PathFinder );
-
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( Platform, Menge::MarmaladePlatform );
+//////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
@@ -449,6 +390,16 @@ namespace Menge
         m_running = false;
         s3eDeviceRequestQuit();
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladePlatform::createWindow( uint32_t _icon, const Menge::WString & _projectTitle, const Resolution & _resolution, bool _fullscreen )
+	{
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	WindowHandle MarmaladePlatform::getWindowHandle() const
+	{
+		return nullptr;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & MarmaladePlatform::getPlatformName() const
 	{

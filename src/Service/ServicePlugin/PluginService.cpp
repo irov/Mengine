@@ -65,7 +65,7 @@ namespace Menge
 		m_plugins.clear();
 	}
     //////////////////////////////////////////////////////////////////////////
-    PluginInterface * PluginService::loadPlugin( const WString & _dllName )
+    bool PluginService::loadPlugin( const WString & _dllName )
     {
 		LOGGER_WARNING( m_serviceProvider )("load Plugin %ls"
 			, _dllName.c_str()
@@ -80,7 +80,7 @@ namespace Menge
 				, _dllName.c_str()
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		const Char * symbol = "dllCreatePlugin";
@@ -95,37 +95,54 @@ namespace Menge
 				, symbol
 				);
 
-			return nullptr;
+			return false;
 		}
 
 		TPluginCreate dllCreatePlugin = (TPluginCreate)function_dllCreatePlugin;
-
-		PluginInterface * plugin;
-		if( dllCreatePlugin( &plugin ) == false )
+		
+		if( this->createPlugin( dlib, dllCreatePlugin, true ) == false )
 		{
 			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [invalid create]"
 				, _dllName.c_str()
 				);
 
-			return nullptr;
+			return false;
+		}
+		
+        return true;
+    }
+	//////////////////////////////////////////////////////////////////////////
+	bool PluginService::createPlugin( DynamicLibraryInterface * _dlib, TPluginCreate _create, bool _dynamic )
+	{
+		if( _create == nullptr )
+		{
+			return false;
+		}
+
+		PluginInterface * plugin;
+		if( _create( &plugin, _dynamic ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("PluginService::createPlugin can't create plugin [invalid create]"
+				);
+
+			return false;
 		}
 
 		if( plugin == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("PluginService::loadPlugin can't load %ls plugin [plugin is NULL]"
-				, _dllName.c_str()
+			LOGGER_ERROR( m_serviceProvider )("PluginService::createPlugin can't create plugin [plugin is NULL]"
 				);
 
-			return nullptr;
+			return false;
 		}
 
-		if( this->addPlugin( dlib, plugin ) == false )
+		if( this->addPlugin( _dlib, plugin ) == false )
 		{
-			return nullptr;
+			return false;
 		}
-		
-        return plugin;
-    }
+
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool PluginService::addPlugin( DynamicLibraryInterface * _dlib, PluginInterface * _plugin )
 	{

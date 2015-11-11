@@ -114,26 +114,12 @@ namespace Menge
 	{
 		{
 			LOGGER_INFO(m_serviceProvider)("Initialize Zip...");
-			PluginInterface * plugin;
-			PLUGIN_CREATE( MengeZip, &plugin );
-
-			if( PLUGIN_SERVICE( m_serviceProvider )
-				->addPlugin( nullptr, plugin ) == false )
-			{
-				return false;
-			}
+			PLUGIN_CREATE( m_serviceProvider, MengeZip );
 		}
 
 		{
 			LOGGER_INFO(m_serviceProvider)("Initialize LZ4...");
-			PluginInterface * plugin;
-			PLUGIN_CREATE( MengeLZ4, &plugin );
-
-			if( PLUGIN_SERVICE( m_serviceProvider )
-				->addPlugin( nullptr, plugin ) == false )
-			{
-				return false;
-			}
+			PLUGIN_CREATE( m_serviceProvider, MengeLZ4 );
 		}
 
 		return true;
@@ -216,14 +202,7 @@ namespace Menge
 
 		{
 			LOGGER_INFO(m_serviceProvider)("Initialize Win32 file group...");
-			PluginInterface * plugin;
-			PLUGIN_CREATE( MengeWin32FileGroup, &plugin );
-
-			if( PLUGIN_SERVICE( m_serviceProvider )
-				->addPlugin( nullptr, plugin ) == false )
-			{
-				return false;
-			}
+			PLUGIN_CREATE( m_serviceProvider, MengeWin32FileGroup );
 		}
 
 #	ifndef _MSC_VER
@@ -660,9 +639,7 @@ namespace Menge
 
 #	define MENGINE_ADD_PLUGIN( Name, Info )\
 		do{LOGGER_INFO(m_serviceProvider)( Info );\
-		PluginInterface * plugin;\
-		PLUGIN_CREATE(Name, &plugin);\
-		if(	PLUGIN_SERVICE(m_serviceProvider)->addPlugin( nullptr, plugin ) == false ){\
+		if(	PLUGIN_CREATE(m_serviceProvider, Name) == false ){\
 		LOGGER_ERROR(m_serviceProvider)( "Invalid %s", Info );}else{\
 		LOGGER_WARNING(m_serviceProvider)( "Successful %s", Info );}}while(false, false)
 
@@ -688,10 +665,8 @@ namespace Menge
 		{
 			const WString & pluginName = *it;
 
-			PluginInterface * plugin = PLUGIN_SERVICE(m_serviceProvider)
-				->loadPlugin( pluginName );
-
-			if( plugin == nullptr )
+			if( PLUGIN_SERVICE(m_serviceProvider)
+				->loadPlugin( pluginName ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("Application Failed to load plugin %ls"
 					, pluginName.c_str()
@@ -716,10 +691,8 @@ namespace Menge
 			{
 				const WString & pluginName = *it;
 
-				PluginInterface * plugin = PLUGIN_SERVICE(m_serviceProvider)
-					->loadPlugin( pluginName );
-
-				if( plugin == nullptr )
+				if( PLUGIN_SERVICE(m_serviceProvider)
+					->loadPlugin( pluginName ) == false )
 				{
 					LOGGER_WARNING(m_serviceProvider)("Application Failed to load dev plugin %ls"
 						, pluginName.c_str()

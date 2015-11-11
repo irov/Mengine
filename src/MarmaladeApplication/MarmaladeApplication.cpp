@@ -38,6 +38,7 @@
 //////////////////////////////////////////////////////////////////////////
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
+SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( LoggerService );
@@ -48,14 +49,14 @@ SERVICE_EXTERN( ArchiveService );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( ThreadService );
 
-SERVICE_EXTERN( ParticleSystem2 );
-SERVICE_EXTERN( ParticleService2 );
+SERVICE_EXTERN( ParticleSystem );
+SERVICE_EXTERN( ParticleService );
 
 SERVICE_EXTERN( RenderSystem );
 SERVICE_EXTERN( RenderSystemES1 );
 SERVICE_EXTERN( RenderService );
-SERVICE_EXTERN( RenderTextureManager );
-SERVICE_EXTERN( RenderMaterialManager );
+SERVICE_EXTERN( RenderTextureService );
+SERVICE_EXTERN( RenderMaterialService );
 
 SERVICE_EXTERN( PhysicSystem );
 
@@ -73,6 +74,7 @@ SERVICE_EXTERN( SoundService );
 
 SERVICE_EXTERN( InputService );
 SERVICE_EXTERN( CodecService );
+SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 
 SERVICE_EXTERN( ModuleService );
@@ -163,10 +165,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeApplicationService_()
     {
-        if( SERVICE_CREATE( m_serviceProvider, Application ) == false )
-        {
-            return false;
-        }
 
         return true;
     }
@@ -187,47 +185,16 @@ namespace Menge
     {
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Thread Service..." );
 
-        if( SERVICE_CREATE( m_serviceProvider, ThreadSystem ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadSystem"
-                );
-
-            return false;
-        }
-
-        if( SERVICE_CREATE( m_serviceProvider, ThreadService ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeThreadEngine_ failed to create ThreadService"
-                );
-
-            return false;               
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeFileEngine_()
     {
         LOGGER_INFO(m_serviceProvider)( "Inititalizing File Service..." );
-		       
-        if( SERVICE_CREATE( m_serviceProvider, FileService ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initialize failed to create FileService"
-                );
-
-            return false;
-        }
 
 		{
 			LOGGER_INFO( m_serviceProvider )("Initialize Marmalade file group...");
-			PluginInterface * plugin;
-			PLUGIN_CREATE( MarmaladeFileGroup, &plugin );
-
-			if( PLUGIN_SERVICE( m_serviceProvider )
-				->addPlugin( nullptr, plugin ) == false )
-			{
-				return false;
-			}
+			PLUGIN_CREATE( m_serviceProvider, MarmaladeFileGroup );
 		}
 
         // mount root		
@@ -354,11 +321,6 @@ namespace Menge
 	{
 		LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
 
-		if( SERVICE_CREATE(m_serviceProvider, ConfigService) == false )
-		{
-			return false;
-		}
-
 		FilePath gameIniPath;
 		if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
 		{
@@ -439,38 +401,16 @@ namespace Menge
     {
         LOGGER_INFO(m_serviceProvider)( "Inititalizing Archive Service..." );
 
-        if( SERVICE_CREATE( m_serviceProvider, ArchiveService ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("WinApplication::initializeArchiveService_ failed to create ArchiveService"
-                );
-
-            return false;
-        }
-
 		{
 			LOGGER_INFO(m_serviceProvider)( "initialize Zip..." );
-
-			PluginInterface * plugin;
-			PLUGIN_CREATE( MengeZip, &plugin );
-
-			if( PLUGIN_SERVICE( m_serviceProvider )
-				->addPlugin( nullptr, plugin ) == false )
-			{
-				return false;
-			}
+			
+			PLUGIN_CREATE( m_serviceProvider, MengeZip );
 		}
 
 		{
 			LOGGER_INFO(m_serviceProvider)( "initialize LZ4..." );
 
-			PluginInterface * plugin;
-			PLUGIN_CREATE( MengeLZ4, &plugin );
-
-			if( PLUGIN_SERVICE( m_serviceProvider )
-				->addPlugin( nullptr, plugin ) == false )
-			{
-				return false;
-			}
+			PLUGIN_CREATE( m_serviceProvider, MengeLZ4 );
 		}
 
         return true;
@@ -497,21 +437,7 @@ namespace Menge
 	{
 		LOGGER_INFO( m_serviceProvider )("Initializing Particle Service 2...");
 
-		if( SERVICE_CREATE( m_serviceProvider, ParticleSystem2 ) == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleSystem2"
-				);
 
-			return false;
-		}
-
-		if( SERVICE_CREATE( m_serviceProvider, ParticleService2 ) == false )
-		{
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initializeParticleEngine2_ Failed to create ParticleService2"
-				);
-
-			return false;
-		}
 
 		return true;
 	}
@@ -577,12 +503,12 @@ namespace Menge
             return false;
         }
 
-		if( SERVICE_CREATE( m_serviceProvider, RenderTextureManager ) == false )
+		if( SERVICE_CREATE( m_serviceProvider, RenderTextureService ) == false )
 		{
 			return false;
 		}
 
-		if( SERVICE_CREATE( m_serviceProvider, RenderMaterialManager ) == false )
+		if( SERVICE_CREATE( m_serviceProvider, RenderMaterialService ) == false )
 		{
 			return false;
 		}
@@ -618,10 +544,7 @@ namespace Menge
     {
         LOGGER_INFO(m_serviceProvider)( "Initializing Script Service..." );
 
-        if( SERVICE_CREATE( m_serviceProvider, ScriptService ) == false )
-        {
-            return false;
-        }
+
 
         return true;
     }
@@ -630,10 +553,7 @@ namespace Menge
 	{
 		LOGGER_INFO(m_serviceProvider)( "Initializing Module Service..." );
 
-		if( SERVICE_CREATE( m_serviceProvider, ModuleService ) == false )
-		{
-			return false;
-		}
+
 
 		return true;
 	}
@@ -654,10 +574,6 @@ namespace Menge
 	{
 		LOGGER_INFO(m_serviceProvider)( "Inititalizing Memory Manager..." );
 
-		if( SERVICE_CREATE( m_serviceProvider, MemoryService ) == false )
-		{
-			return false;
-		}
 
 		return true;
 	}	
@@ -666,10 +582,6 @@ namespace Menge
 	{
 		LOGGER_INFO(m_serviceProvider)( "Inititalizing Prefetcher Service..." );
 				
-		if( SERVICE_CREATE( m_serviceProvider, PrefetcherService ) == false )
-		{
-			return false;
-		}
 				
 		return true;
 	}
@@ -678,10 +590,6 @@ namespace Menge
     {
         LOGGER_INFO(m_serviceProvider)( "Initializing Codec Service..." );
 
-        if( SERVICE_CREATE( m_serviceProvider, CodecService ) == false )
-        {
-            return false;
-        }
 		
         return true;
     }
@@ -690,10 +598,6 @@ namespace Menge
     {
         LOGGER_INFO(m_serviceProvider)( "Initializing Input Service..." );
 
-		if( SERVICE_CREATE( m_serviceProvider, InputService ) == false )
-        {
-            return false;
-        }
 
         return true;
     }
@@ -723,130 +627,57 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::setServiceProvider( ServiceProviderInterface * _serviceProvider )
+    bool MarmaladeApplication::initialize()
     {
-        (void)_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ServiceProviderInterface * MarmaladeApplication::getServiceProvider() const
-    {
-        return m_serviceProvider;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::getMaxClientResolution( Resolution & _resolution ) const
-    {
-		int32 width = s3eSurfaceGetInt( S3E_SURFACE_WIDTH );
-		int32 height = s3eSurfaceGetInt( S3E_SURFACE_HEIGHT );
-
-		_resolution.setWidth( width );
-		_resolution.setHeight( height );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initialize( const String & _commandLine )
-    {
-        m_commandLine = " " + _commandLine + " ";
-
         setlocale( LC_CTYPE, "" );
 
-        String scriptInit;
-        Helper::s_getOption( " -s:", m_commandLine, &scriptInit );
-
-		if( Helper::s_hasOption( " -dev ", m_commandLine ) == true )
-		{
-			m_developmentMode = true;
-		}
-
         ServiceProviderInterface * serviceProvider;
-        if( SERVICE_CREATE( ServiceProvider, &serviceProvider ) == false )
+        if( SERVICE_PROVIDER_CREATE( ServiceProvider, &serviceProvider ) == false )
         {
             return false;
         }
 
-        m_serviceProvider = serviceProvider;
-
-        if( m_serviceProvider->registryService( "PlatformService", this ) == false )
-        {
-            return false;
-        }
-
-        if( this->initializeStringizeService_() == false )
-        {
-            return false;
-        }
-
-		int32 deviceClassID = s3eDeviceGetInt( S3E_DEVICE_CLASS );
+		SERVICE_CREATE( m_serviceProvider, StringizeService );
+		SERVICE_CREATE( m_serviceProvider, Platform );
 		
-		switch( deviceClassID )
-		{
-		case  S3E_DEVICE_CLASS_WINDOWS_GENERIC:
-			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "WIN");
-			}break;
-		case S3E_DEVICE_CLASS_OSX_DESKTOP:
-			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "OSX");
-			}break;
-		case S3E_DEVICE_CLASS_IPHONE:
-			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "IOS");
-			}break;
-		case S3E_DEVICE_CLASS_ANDROID_GENERIC:
-			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "ANDROID");
-			}break;
-		default:
-			break;
-		};
-				
+
+		SERVICE_CREATE( m_serviceProvider, LoggerService );
+
         if( this->initializeLoggerEngine_() == false )
         {
             return false;
         }
 
-        if( this->initializeMarmaladeLayerService_() == false )
-        {
-            return false;
-        }
+		SERVICE_CREATE( m_serviceProvider, NotificationService );
+		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );		
+		SERVICE_CREATE( m_serviceProvider, UnicodeService );
 
-        if( this->initializeNotificationService_() == false )
-        {
-            return false;
-        }
-
-        if( this->initializeUnicodeEngine_() == false )
-        {
-            return false;
-        }
+		SERVICE_CREATE( m_serviceProvider, FileService );
 
         if( this->initializeFileEngine_() == false )
         {
             return false;
         }
 
+		SERVICE_CREATE( m_serviceProvider, ConfigService );
+
 		if( this->initializeConfigEngine_() == false )
 		{
 			return false;
 		}
+
+		SERVICE_CREATE( m_serviceProvider, ArchiveService );
 
 		if( this->initializeArchiveService_() == false )
 		{
 			return false;
 		}
 
-        if( this->initializeThreadEngine_() == false )
-        {
-            return false;
-        }
-
-        if( this->initializeParticleEngine2_() == false )
-        {
-            return false;
-        }
-
-        //	if( this->initializePhysicEngine2D_() == false )
-        //	{
-        //		return false;
-        //	}
+		SERVICE_CREATE( m_serviceProvider, ThreadSystem );
+		SERVICE_CREATE( m_serviceProvider, ThreadService );
+		
+		SERVICE_CREATE( m_serviceProvider, ParticleSystem );
+		SERVICE_CREATE( m_serviceProvider, ParticleService );
 
         if( this->initializeRenderEngine_() == false )
         {
@@ -855,173 +686,36 @@ namespace Menge
                 
         if( this->initializeSoundEngine_() == false )
         {
-            if( this->initializeSilentSoundEngine_() == false )
-            {
-                return false;
-            }
+			return false;            
         }
-
-		s3eDeviceYield(0);
         
-        if( this->initializeScriptEngine_() == false )
-        {
-            return false;
-        }
+		SERVICE_CREATE( m_serviceProvider, ScriptService );
 
-		s3eDeviceYield(0);
+		SERVICE_CREATE( m_serviceProvider, ModuleService );
 
-		if( this->initializeModuleEngine_() == false )
-		{
-			return false;
-		}
+		SERVICE_CREATE( m_serviceProvider, DataService );
 
-		if( this->initializeDataManager_() == false )
-		{
-			return false;
-		}
+		SERVICE_CREATE( m_serviceProvider, MemoryService );
 
-		if( this->initializeMemoryManager_() == false )
-		{
-			return false;
-		}
-
-        if( this->initializeCodecEngine_() == false )
-        {
-            return false;
-        }
-
-        if( this->initializeInputEngine_() == false )
-        {
-            return false;
-        }
-
-        if( this->initializeApplicationService_() == false )
-        {
-            return false;
-        }
-
-		if( this->initializePrefetcherService_() == false )
-		{
-			return false;
-		}
-
-        if( this->initializePluginService_() == false )
-        {
-            return false;
-        }
-
-		LOGGER_WARNING(m_serviceProvider)("Device info:"
-			);
-
-		const char * deviceID = s3eDeviceGetString( S3E_DEVICE_ID );
-
-		LOGGER_WARNING(m_serviceProvider)("ID: %s"
-			, deviceID
-			);
-
-		const char * deviceOS = s3eDeviceGetString( S3E_DEVICE_OS );
-
-		LOGGER_WARNING(m_serviceProvider)("OS: %s"
-			, deviceOS
-			);
-
-		const char * deviceOSVersion= s3eDeviceGetString( S3E_DEVICE_OS_VERSION );
-
-		LOGGER_WARNING(m_serviceProvider)("OS Version: %s"
-			, deviceOSVersion
-			);
-
-		const char * deviceClass = s3eDeviceGetString( S3E_DEVICE_CLASS );
-
-		LOGGER_WARNING(m_serviceProvider)("Class: %s"
-			, deviceClass
-			);
-
-		const char * deviceArchitecture = s3eDeviceGetString( S3E_DEVICE_ARCHITECTURE );
-
-		LOGGER_WARNING(m_serviceProvider)("Architecture: %s"
-			, deviceArchitecture
-			);
-
-		const char * deviceName = s3eDeviceGetString( S3E_DEVICE_NAME );
-
-		LOGGER_WARNING(m_serviceProvider)("Name: %s"
-			, deviceName
-			);		
-        
-		m_timer = new MarmaladeTimer;
-		m_timer->initialize();
-
-		m_marmaladeInput = new MarmaladeInput;
-		m_marmaladeInput->setServiceProvider( m_serviceProvider );
+		SERVICE_CREATE( m_serviceProvider, CodecService );
 		
-		if( m_marmaladeInput->initialize() == false )
-		{
-			return false;
-		}
+		SERVICE_CREATE( m_serviceProvider, InputService );
 		
-        {
-            LOGGER_INFO(m_serviceProvider)( "initialize Image Codec..." );
+		SERVICE_CREATE( m_serviceProvider, Application );
 
-			Menge::PluginInterface * pluginMengeImageCodec;
-            initPluginMengeImageCodec( &pluginMengeImageCodec );
-            pluginMengeImageCodec->initialize( m_serviceProvider );
-			m_plugins.push_back( pluginMengeImageCodec );
-        }
+		SERVICE_CREATE( m_serviceProvider, PrefetcherService );
 
-        {
-            LOGGER_INFO(m_serviceProvider)( "initialize Sound Codec..." );
+		SERVICE_CREATE( m_serviceProvider, PluginSystem );
+		SERVICE_CREATE( m_serviceProvider, PluginService );
 
-			Menge::PluginInterface * pluginMengeSoundCodec;
-            initPluginMengeSoundCodec( &pluginMengeSoundCodec );
-            pluginMengeSoundCodec->initialize( m_serviceProvider );
-			m_plugins.push_back( pluginMengeSoundCodec );
-        }
 
-		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Ogg Vorbis Codec..." );
-
-			Menge::PluginInterface * pluginMengeOggVorbis;
-			initPluginMengeOggVorbis( &pluginMengeOggVorbis );
-			pluginMengeOggVorbis->initialize( m_serviceProvider );
-			m_plugins.push_back( pluginMengeOggVorbis );
-		}
-
-		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Video Codec..." );
-
-			Menge::PluginInterface * pluginMengeVideoCodec;
-			initPluginMengeVideoCodec( &pluginMengeVideoCodec );
-			pluginMengeVideoCodec->initialize( m_serviceProvider );
-			m_plugins.push_back( pluginMengeVideoCodec );
-		}
-
-		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Amplifier..." );
-
-			Menge::PluginInterface * pluginMengeAmplifier;
-			initPluginMengeAmplifier( &pluginMengeAmplifier );
-			pluginMengeAmplifier->initialize( m_serviceProvider );
-			m_plugins.push_back( pluginMengeAmplifier );
-		}
-
-		{
-			LOGGER_INFO(m_serviceProvider)( "initialize Path Finder..." );
-
-			Menge::PluginInterface * pluginPluginPathFinder;
-			initPluginPathFinder( &pluginPluginPathFinder );
-			pluginPluginPathFinder->initialize( m_serviceProvider );
-			m_plugins.push_back( pluginPluginPathFinder );
-		}
-
-		{
-			LOGGER_INFO( m_serviceProvider )("initialize Spine...");
-
-			PluginInterface * pluginMengeSpine;
-			initPluginMengeSpine( &pluginMengeSpine );
-			pluginMengeSpine->initialize( m_serviceProvider );
-			m_plugins.push_back( pluginMengeSpine );
-		}
+		PLUGIN_CREATE( m_serviceProvider, MengeImageCodec );
+		PLUGIN_CREATE( m_serviceProvider, MengeSoundCodec );
+		PLUGIN_CREATE( m_serviceProvider, MengeOggVorbis );
+		PLUGIN_CREATE( m_serviceProvider, MengeVideoCodec );
+		PLUGIN_CREATE( m_serviceProvider, MengeAmplifier );
+		PLUGIN_CREATE( m_serviceProvider, PathFinder );
+		PLUGIN_CREATE( m_serviceProvider, MengeSpine );
 
 		TVectorString modules;
 		CONFIG_VALUES(m_serviceProvider, "Modules", "Name", modules);
@@ -1045,636 +739,113 @@ namespace Menge
 			}
 		}
 
-		String languagePack;
-		Helper::s_getOption( " -lang:", m_commandLine, &languagePack );
+		ConstString renderMaterialsPath = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMaterials", ConstString::none() );
 
-		if( languagePack.empty() == true )
+		if( renderMaterialsPath.empty() == false )
 		{
-			languagePack = CONFIG_VALUE(m_serviceProvider, "Locale", "Default", "en");
+			if( RENDERMATERIAL_SERVICE( m_serviceProvider )
+				->loadMaterials( ConstString::none(), renderMaterialsPath ) == false )
+			{
+				return false;
+			}
 		}
 
-        LOGGER_WARNING(m_serviceProvider)("Locale %s"
-            , languagePack.c_str()
-            );
+		LOGGER_INFO( m_serviceProvider )("Application Create..."
+			);
 
-		String personalityModule = CONFIG_VALUE(m_serviceProvider, "Game", "PersonalityModule", "Personality" );
-
-		FilePath resourceIniPath;
+		ConstString resourceIniPath;
 		if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
 		{
+			LOGGER_CRITICAL( m_serviceProvider )("Application invalid setup resource path"
+				);
+
 			return false;
 		}
 
-		Resolution defaultWindowResolution;
-		this->getDesktopResolution( defaultWindowResolution );
-		//Resolution defaultWindowResolution = CONFIG_VALUE(m_serviceProvider, "Window", "Size", Resolution(1024, 768));
-		uint32_t defaultWindowBits = CONFIG_VALUE(m_serviceProvider, "Window", "Bits", 32U);
-		bool defaultWindowFullscreen = CONFIG_VALUE(m_serviceProvider, "Window", "Fullscreen", true);
-		bool defaultWindowVSync = CONFIG_VALUE(m_serviceProvider, "Window", "VSync", true);
+		if( APPLICATION_SERVICE( m_serviceProvider )
+			->initializeGame( ConstString::none(), resourceIniPath ) == false )
+		{
+			LOGGER_CRITICAL( m_serviceProvider )("Application invalid initialize game"
+				);
 
-		m_application->setDefaultWindowDescription( defaultWindowResolution, defaultWindowBits, defaultWindowFullscreen, defaultWindowVSync );
-
-		s3eDeviceYield(0);
-		
-        if( m_application->loadResourcePacks( ConstString::none(), resourceIniPath ) == false )
-        {
-            LOGGER_CRITICAL(m_serviceProvider)( "Application invalid load resource pak %s"
-				, resourceIniPath.c_str()
-                );
-
-            return false;
-        }
-
-		s3eDeviceYield(0);
-
-        LOGGER_INFO(m_serviceProvider)( "Application Initialize... %s"
-            , m_platformName.c_str()
-            );
-
-		FilePath accountPath = STRINGIZE_STRING_LOCAL( m_serviceProvider, "accounts.ini" );
-
-        LOGGER_INFO(m_serviceProvider)( "Initializing Game data... %s"
-			, accountPath.c_str()
-			);
-				
-        if( m_application->initializeGame( Helper::stringizeString(m_serviceProvider, personalityModule), Helper::stringizeString(m_serviceProvider, languagePack), accountPath, scriptInit ) == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)( "Application invalid initialize game"
-                );
-
-            return false;
-        }
+			return false;
+		}
 
         LOGGER_INFO(m_serviceProvider)( "Creating Render Window..." );
 
-        if( m_application->createRenderWindow( nullptr ) == false )
+		if( APPLICATION_SERVICE( m_serviceProvider )
+			->createRenderWindow() == false )
         {
             return false;
         }
 
-#	ifndef _DEBUG		
-		s3ePointerSetInt( S3E_POINTER_HIDE_CURSOR, 1 );
-#	endif
-
-		m_timer->reset();
-
-		m_application->turnSound( true );
-
-		this->initializeMarmaladePauseCallback_();
-
+		APPLICATION_SERVICE( m_serviceProvider )
+			->turnSound( true );
+		
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	static int32 s3eCallback_Application_S3E_SURFACE_SCREENSIZE( void * _systemData, void * _userData )
-	{
-		s3eSurfaceOrientation * orientation = static_cast<s3eSurfaceOrientation *>(_systemData);
-
-		ApplicationInterface * app = static_cast<ApplicationInterface *>(_userData);
-		
-		Resolution resolution;
-		resolution.setWidth( orientation->m_Width );
-		resolution.setHeight( orientation->m_Height );
-
-		app->changeWindowResolution( resolution );
-
-		return 0;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    static int32 s3eCallback_Input_S3E_SURFACE_SCREENSIZE( void * _systemData, void * _userData )
-    {
-        s3eSurfaceOrientation * orientation = static_cast<s3eSurfaceOrientation *>(_systemData);
-		
-		(void)orientation;
-        
-        MarmaladeInput * input = static_cast<MarmaladeInput *>(_userData);
-        
-        input->updateSurfaceResolution();
-        
-        return 0;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	static int32 s3eCallback_UnPause( void * _systemData, void * _userData )
-	{
-		(void)_systemData;
-
-		MarmaladeApplication * application = static_cast<MarmaladeApplication *>(_userData);
-
-		application->setActivate( true );
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static int32 s3eCallback_Pause( void * _systemData, void * _userData )
-	{
-		(void)_systemData;
-
-		MarmaladeApplication * application = static_cast<MarmaladeApplication *>(_userData);
-
-		application->setActivate( false );
-
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeApplication::setActivate( bool _value )
-	{
-		m_active = _value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MarmaladeApplication::initializeMarmaladePauseCallback_()
-	{
-		m_active = true;
-
-		if( s3eDeviceRegister( S3E_DEVICE_UNPAUSE, &s3eCallback_UnPause, m_application ) != S3E_RESULT_SUCCESS )
-		{
-			const char * err_str = s3eDeviceGetErrorString();
-			s3eDeviceError err = s3eDeviceGetError();
-
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initialize S3E_DEVICE_UNPAUSE %s [%d]"
-				, err_str
-				, err
-				);
-		}
-
-		if( s3eDeviceRegister( S3E_DEVICE_PAUSE, &s3eCallback_Pause, m_application ) != S3E_RESULT_SUCCESS )
-		{
-			const char * err_str = s3eDeviceGetErrorString();
-			s3eDeviceError err = s3eDeviceGetError();
-
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initialize S3E_DEVICE_PAUSE %s [%d]"
-				, err_str
-				, err
-				);
-		}
-
-		if( s3eDeviceRegister( S3E_DEVICE_FOREGROUND, &s3eCallback_UnPause, m_application ) != S3E_RESULT_SUCCESS )
-		{
-			const char * err_str = s3eDeviceGetErrorString();
-			s3eDeviceError err = s3eDeviceGetError();
-
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initialize S3E_DEVICE_FOREGROUND %s [%d]"
-				, err_str
-				, err
-				);
-		}
-
-		if( s3eDeviceRegister( S3E_DEVICE_BACKGROUND, &s3eCallback_Pause, m_application ) != S3E_RESULT_SUCCESS )
-		{
-			const char * err_str = s3eDeviceGetErrorString();
-			s3eDeviceError err = s3eDeviceGetError();
-
-			LOGGER_ERROR( m_serviceProvider )("MarmaladeApplication::initialize S3E_DEVICE_BACKGROUND %s [%d]"
-				, err_str
-				, err
-				);
-		}
-	}
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::loop()
     {
-        if( m_application == nullptr )
-        {
-            return;
-        }
-
-		if( s3eSurfaceRegister( S3E_SURFACE_SCREENSIZE, &s3eCallback_Application_S3E_SURFACE_SCREENSIZE, m_application ) != S3E_RESULT_SUCCESS )
-		{
-			const char * err_str = s3eSurfaceGetErrorString();
-			s3eSurfaceError err = s3eSurfaceGetError();
-
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_SURFACE_SCREENSIZE %s [%d]"
-				, err_str
-				, err
-				);
-		}
-
-		if( s3eSurfaceRegister( S3E_SURFACE_SCREENSIZE, &s3eCallback_Input_S3E_SURFACE_SCREENSIZE, m_marmaladeInput ) != S3E_RESULT_SUCCESS )
-		{
-			const char * err_str = s3eSurfaceGetErrorString();
-			s3eSurfaceError err = s3eSurfaceGetError();
-
-			LOGGER_ERROR(m_serviceProvider)("MarmaladeApplication::initialize S3E_SURFACE_SCREENSIZE %s [%d]"
-				, err_str
-				, err
-				);
-		}
-
-        while( true )
-        {
-            s3eBool quit = s3eDeviceCheckQuitRequest();
-
-            if( quit == S3E_TRUE )
-            {
-                break;
-            }
-
-			float frameTime = m_timer->getDeltaTime();
-
-			if( m_active == false )
-			{
-				s3eDeviceYield( 100 );
-
-				continue;
-			}
-            
-            if( m_application->isFocus() == true )
-            {
-                s3eDeviceBacklightOn();
-            }
-
-            m_marmaladeInput->update();
-            
-            bool updating = m_application->beginUpdate();
-
-            if( updating == true )
-            {                
-                m_application->tick( frameTime );
-            }
-            else
-            {
-                s3eDeviceYield( 20 );
-            }
-
-			if( m_application->isFocus() == true )
-			{
-				if( m_application->render() == true )
-				{
-					m_application->flush();
-				}
-			}
-
-			m_application->endUpdate();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::openUrlInDefaultBrowser( const WString & _url )
-    {
-        return false;
+		PLATFORM_SERVICE( m_serviceProvider )
+			->update();
     }
     //////////////////////////////////////////////////////////////////////////
     void MarmaladeApplication::finalize()
     {
-		if( m_timer != nullptr )
-		{
-			delete m_timer;
-			m_timer = nullptr;
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ApplicationInterface );
 
-		if( m_marmaladeInput != nullptr )
-		{
-			m_marmaladeInput->finalize();
-			delete m_marmaladeInput;
-			m_marmaladeInput = nullptr;
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::DataServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ModuleServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::InputServiceInterface );
 
-		for( TVectorPlugins::iterator
-			it = m_plugins.begin(),
-			it_end = m_plugins.end();
-		it != it_end;
-		++it )
-		{
-			PluginInterface * plugin = *it;
+		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeSystemInterface );
 
-			plugin->finalize();
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::FileServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::CodecServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleServiceInterface2 );
 
-		if( m_application != nullptr )
-		{
-			m_application->finalize();
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::SoundServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::SoundSystemInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ScriptServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderMaterialServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderTextureServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderSystemInterface );
 
-		if( m_dataService != nullptr )
-		{
-			m_dataService->finalize();
-			SERVICE_DESTROY( DataService, m_dataService );
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PrefetcherServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadSystemInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ScriptServiceInterface );
 
-		if( m_moduleService != nullptr )
-		{
-			SERVICE_DESTROY( ModuleService, m_moduleService );
-			m_moduleService = nullptr;
-		}
-
-		if( m_inputService != nullptr )
-		{
-			m_inputService->finalize();
-
-			SERVICE_DESTROY( InputService, m_inputService );
-			m_inputService = nullptr;
-		}
-
-		SERVICE_DESTROY( UnicodeService, m_unicodeService );        
-		m_unicodeService = nullptr;
-
-		SERVICE_DESTROY( UnicodeSystem, m_unicodeSystem );
-		m_unicodeSystem = nullptr;
-
-		if( m_fileService != nullptr )
-		{            
-			SERVICE_DESTROY( FileService, m_fileService );
-			m_fileService = nullptr;
-		}
-
-		if( m_codecService != nullptr)
-		{
-			m_codecService->finalize();
-
-			SERVICE_DESTROY( CodecService, m_codecService );
-			m_codecService = nullptr;
-		}
-
-		if( m_particleService2 != nullptr )
-		{
-			SERVICE_DESTROY( ParticleService2, m_particleService2 );
-			m_particleService2 = nullptr;
-		}
-
-		if( m_soundService != nullptr )
-		{
-			m_soundService->finalize();
-
-			SERVICE_DESTROY( SoundService, m_soundService );
-			m_soundService = nullptr;
-		}
-
-		if( m_soundSystem != nullptr )
-		{
-			m_soundSystem->finalize();
-
-			SERVICE_DESTROY( SoundSystem, m_soundSystem );        
-			m_soundSystem = nullptr;
-		}
-
-		SERVICE_DESTROY( Application, m_application );
-		m_application = nullptr;
-
-		if( m_scriptService != nullptr )
-		{
-			m_scriptService->finalize();
-		}
-
-		if( m_renderService != nullptr )
-		{
-			m_renderService->finalize();
-		}
-
-		if( m_renderMaterialManager != nullptr )
-		{
-			m_renderMaterialManager->finalize();
-		}
-
-		if( m_renderTextureManager != nullptr )
-		{
-			m_renderTextureManager->finalize();
-		}
-
-		if( m_renderSystem != nullptr )
-		{
-			m_renderSystem->finalize();
-		}
-
-		if( m_renderService != nullptr )
-		{
-			SERVICE_DESTROY( RenderService, m_renderService );
-			m_renderService = nullptr;
-		}
-
-		if( m_renderMaterialManager != nullptr )
-		{
-			SERVICE_DESTROY( RenderMaterialManager, m_renderMaterialManager );
-			m_renderMaterialManager = nullptr;
-		}
-
-		if( m_renderTextureManager != nullptr )
-		{
-			SERVICE_DESTROY( RenderTextureManager, m_renderTextureManager );
-			m_renderTextureManager = nullptr;
-		}        
-
-		if( m_renderSystem != nullptr )
-		{
-			SERVICE_DESTROY( RenderSystem, m_renderSystem );
-			m_renderSystem = nullptr;
-		}
-
-		if( m_prefetcherService != nullptr )
-		{
-			m_prefetcherService->finalize();
-
-			SERVICE_DESTROY( PrefetcherService, m_prefetcherService );
-			m_prefetcherService = nullptr;
-		}
-
-		if( m_threadService != nullptr )
-		{
-			m_threadService->finalize();
-
-			SERVICE_DESTROY( ThreadService, m_threadService );
-			m_threadService = nullptr;
-		}        
-
-		if( m_threadSystem != nullptr )
-		{
-			m_threadSystem->finalize();
-
-			SERVICE_DESTROY( ThreadSystem, m_threadSystem );
-			m_threadSystem = nullptr;
-		}
-
-		if( m_scriptService != nullptr )
-		{
-			SERVICE_DESTROY( ScriptService, m_scriptService );
-			m_scriptService = nullptr;
-		}
-
-		if( m_configService != nullptr )
-		{
-			SERVICE_DESTROY( ConfigService, m_configService );
-			m_configService = nullptr;
-		}
-
-		if( m_stringizeService != nullptr )
-		{
-			SERVICE_DESTROY( StringizeService, m_stringizeService );
-			m_stringizeService = nullptr;
-		}
-
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ConfigServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::StringizeServiceInterface );
+		
 		if( m_fileLog != nullptr )
 		{
-			if( m_logService != nullptr )
-			{
-				m_logService->unregisterLogger( m_fileLog );
-			}
+			LOGGER_SERVICE( m_serviceProvider )
+				->unregisterLogger( m_fileLog );
 
 			delete m_fileLog;
 			m_fileLog = nullptr;
 		}
 
-		if( m_archiveService != nullptr )
-		{
-			SERVICE_DESTROY( ArchiveService, m_archiveService );
-			m_archiveService = nullptr;
-		}
-
-		if( m_memoryService != nullptr )
-		{
-			m_memoryService->finalize();
-			SERVICE_DESTROY( MemoryService, m_memoryService );
-			m_memoryService = nullptr;
-		}
-
-		for( TVectorPlugins::iterator
-			it = m_plugins.begin(),
-			it_end = m_plugins.end();
-		it != it_end;
-		++it )
-		{
-			PluginInterface * plugin = *it;
-
-			plugin->destroy();
-		}	
-
-		m_plugins.clear();
-
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ArchiveServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::MemoryServiceInterface );
 
 		if( m_loggerConsole != nullptr )
 		{
-			if( m_logService != nullptr )
-			{
-				m_logService->unregisterLogger( m_loggerConsole );
-			}
+			LOGGER_SERVICE( m_serviceProvider )
+				->unregisterLogger( m_loggerConsole );
 
 			delete m_loggerConsole;
 			m_loggerConsole = nullptr;
 		}
 
-		if( m_notificationService != nullptr )
-		{
-			SERVICE_DESTROY( NotificationService, m_notificationService );
-			m_notificationService = nullptr;
-		}
+		SERVICE_FINALIZE( m_serviceProvider, Menge::NotificationServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::LoggerServiceInterface );
 
-		SERVICE_DESTROY( LogService, m_logService );
-		m_logService = nullptr;
-
-		SERVICE_DESTROY( ServiceProvider, m_serviceProvider );
-		m_serviceProvider = nullptr;
+		SERVICE_PROVIDER_FINALIZE( m_serviceProvider );
     }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::stop()
-    {
-        m_running = false;
-        s3eDeviceRequestQuit();
-    }
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & MarmaladeApplication::getPlatformName() const
-	{
-		return m_platformName;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::getDesktopResolution( Resolution & _resolution ) const
-    {
-        int32 width = s3eSurfaceGetInt( S3E_SURFACE_WIDTH );
-        int32 height = s3eSurfaceGetInt( S3E_SURFACE_HEIGHT );
-
-        _resolution.setWidth( width );
-        _resolution.setHeight( height );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::minimizeWindow()
-    {
-
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::setHandleMouse( bool _handle )
-    {
-
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::setCursorPosition( const mt::vec2f & _pos )
-    {
-
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::showKeyboard()
-    {
-		if( m_marmaladeInput != nullptr )
-		{
-			m_marmaladeInput->showKeyboard( true );
-		}
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::hideKeyboard()
-    {
-		if( m_marmaladeInput != nullptr )
-		{
-			m_marmaladeInput->showKeyboard( false );
-		}
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
-    {
-		
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::notifyVsyncChanged( bool _vsync )
-    {
-
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::notifyCursorModeChanged( bool _mode )
-    {
-		if( _mode == true )
-		{
-			s3ePointerSetInt( S3E_POINTER_HIDE_CURSOR, 0 );
-		}
-		else
-		{
-			s3ePointerSetInt( S3E_POINTER_HIDE_CURSOR, 1 );
-		}		
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::notifyCursorClipping( const Viewport & _viewport )
-    {
-
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::notifyCursorUnClipping()
-    {
-
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const Blobject & _buffer )
-    {
-		return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::isDevelopmentMode() const
-    {
-        return m_developmentMode;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::isRoamingMode() const
-	{
-		return false;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void MarmaladeApplication::onEvent( const ConstString & _event, const TMapParams & _params )
-    {
-
-    }
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t MarmaladeApplication::getProcessHandleCount() const
-	{
-		return 0U;
-	}
 }

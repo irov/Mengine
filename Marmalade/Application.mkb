@@ -125,6 +125,16 @@ files
 	"*.h"
 	"*.cpp"
     
+    [System/MarmaladeTimerSystem]
+    ("../src/System/MarmaladeTimerSystem")
+	"*.h"
+	"*.cpp"
+    
+    [System/MarmaladePluginSystem]
+    ("../src/System/MarmaladePluginSystem")
+	"*.h"
+	"*.cpp"   
+    
     [Platform/MarmaladePlatform]
     ("../src/Platform/MarmaladePlatform")	
 	"*.h"

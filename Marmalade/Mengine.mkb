@@ -181,6 +181,11 @@ files
     ("../src/Service/ServiceFile")	
 	"*.h"
 	"*.cpp"
+    
+    [Service/ServicePlugin]
+    ("../src/Service/ServicePlugin")	
+	"*.h"
+	"*.cpp"    
 
     [Service/ServiceLogger]
     ("../src/Service/ServiceLogger")	
@@ -211,6 +216,22 @@ files
     ("../src/Service/ServiceScript")	
 	"*.h"
 	"*.cpp"    
+    
+    [Service/ServiceProfiler]
+    ("../src/Service/ServiceProfiler")	
+	"*.h"
+	"*.cpp" 
+
+    [Service/ServicePackage]
+    ("../src/Service/ServicePackage")	
+	"*.h"
+	"*.cpp"
+
+    [Service/ServiceUserdata]
+    ("../src/Service/ServiceUserdata")	
+	"*.h"
+	"*.cpp"    
+    
     
     [Service/ServiceParticle2]
     ("../src/Service/ServiceParticle2")	

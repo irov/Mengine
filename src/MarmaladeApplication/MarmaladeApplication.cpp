@@ -82,6 +82,10 @@ SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( PrefetcherService );
+SERVICE_EXTERN( OptionsSystem );
+SERVICE_EXTERN( OptionsService );
+SERVICE_EXTERN( TimerSystem );
+SERVICE_EXTERN( TimerService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( MengeImageCodec );
 PLUGIN_EXPORT( MengeSoundCodec );
@@ -97,58 +101,6 @@ PLUGIN_EXPORT( MarmaladeFileGroup );
 namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
-    static const float s_activeFrameTime = 1000.f/60.f;
-    static const float s_inactiveFrameTime = 100;
-    //////////////////////////////////////////////////////////////////////////
-    namespace Helper
-    {
-        //////////////////////////////////////////////////////////////////////////
-        static void s_getOption( const Menge::String& _option
-            , const Menge::String& _commandLine
-            , Menge::String* _value )
-        {
-            if( _value == NULL )
-            {
-                return;
-            }
-
-            Menge::String::size_type option_index = 0;
-            while( (option_index = _commandLine.find( _option, option_index )) != Menge::String::npos )
-            {
-                option_index += _option.length();
-                if( option_index >= _commandLine.length() )
-                {
-                    break;
-                }
-                char next_delim = _commandLine[option_index] == '\"' ? '\"' : ' ';
-                Menge::String::size_type next_index = _commandLine.find( next_delim, option_index+1 );
-                if( next_delim == '\"' )
-                {
-                    ++option_index;
-                }
-
-                Menge::String::size_type value_length = next_index - option_index;
-                (*_value) += _commandLine.substr( option_index, value_length );
-                _value->push_back( ' ' );
-            }
-
-            if( _value->empty() == false )
-            {
-                _value->erase( _value->length() - 1 );
-            }
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool s_hasOption( const char * _option, const Menge::String& _commandLine )
-        {
-            if( _commandLine.find( _option ) == Menge::String::npos )
-            {
-                return false;
-            }
-
-            return true;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
     MarmaladeApplication::MarmaladeApplication()
         : m_serviceProvider(nullptr)
         , m_loggerConsole(nullptr)
@@ -161,31 +113,6 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     MarmaladeApplication::~MarmaladeApplication()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeApplicationService_()
-    {
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeNotificationService_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing Notification Service..." );
-
-        if( SERVICE_CREATE( m_serviceProvider, NotificationService ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeThreadEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Inititalizing Thread Service..." );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeFileEngine_()
@@ -340,23 +267,8 @@ namespace Menge
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeStringizeService_()
-    {
-        if( SERVICE_CREATE( m_serviceProvider, StringizeService ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeLoggerEngine_()
     {
-        if( SERVICE_CREATE( m_serviceProvider, LoggerService ) == false )
-        {
-            return false;
-        }
-
         m_loggerConsole = new MarmaladeLogger();
 
         LOGGER_SERVICE(m_serviceProvider)
@@ -415,32 +327,6 @@ namespace Menge
 
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeUnicodeEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Unicode Service..." );
-
-        if( SERVICE_CREATE( m_serviceProvider, UnicodeSystem ) == false )
-        {
-            return false;
-        }
-
-        if( SERVICE_CREATE( m_serviceProvider, UnicodeService ) == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::initializeParticleEngine2_()
-	{
-		LOGGER_INFO( m_serviceProvider )("Initializing Particle Service 2...");
-
-
-
-		return true;
-	}
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initializeRenderEngine_()
     {
@@ -540,93 +426,6 @@ namespace Menge
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeScriptEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Script Service..." );
-
-
-
-        return true;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::initializeModuleEngine_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Initializing Module Service..." );
-
-
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::initializeDataManager_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Data Manager..." );
-
-		if( SERVICE_CREATE( m_serviceProvider, DataService ) == false )
-		{
-			return false;
-		}
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::initializeMemoryManager_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Memory Manager..." );
-
-
-		return true;
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeApplication::initializePrefetcherService_()
-	{
-		LOGGER_INFO(m_serviceProvider)( "Inititalizing Prefetcher Service..." );
-				
-				
-		return true;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeCodecEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Codec Service..." );
-
-		
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeInputEngine_()
-    {
-        LOGGER_INFO(m_serviceProvider)( "Initializing Input Service..." );
-
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializePluginService_()
-    {
-        //LOGGER_INFO(m_serviceProvider)( "Initializing Plugin Service..." );
-
-        //PluginServiceInterface * pluginService;
-        //if( createPluginService( &pluginService ) == false )
-        //{
-        //    return false;
-        //}
-
-        //if( SERVICE_REGISTRY(m_serviceProvider, pluginService) == false )
-        //{
-        //    return false;
-        //}
-
-        //m_pluginService = pluginService;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool MarmaladeApplication::initializeNodeManager_()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool MarmaladeApplication::initialize()
     {
         setlocale( LC_CTYPE, "" );
@@ -637,9 +436,12 @@ namespace Menge
             return false;
         }
 
+		m_serviceProvider = serviceProvider;
+
+		SERVICE_CREATE( m_serviceProvider, OptionsSystem );
+		SERVICE_CREATE( m_serviceProvider, OptionsService );
+
 		SERVICE_CREATE( m_serviceProvider, StringizeService );
-		SERVICE_CREATE( m_serviceProvider, Platform );
-		
 
 		SERVICE_CREATE( m_serviceProvider, LoggerService );
 
@@ -651,6 +453,11 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, NotificationService );
 		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );		
 		SERVICE_CREATE( m_serviceProvider, UnicodeService );
+
+		SERVICE_CREATE( m_serviceProvider, Platform );
+
+		SERVICE_CREATE( m_serviceProvider, PluginSystem );
+		SERVICE_CREATE( m_serviceProvider, PluginService );
 
 		SERVICE_CREATE( m_serviceProvider, FileService );
 
@@ -688,6 +495,9 @@ namespace Menge
         {
 			return false;            
         }
+
+		SERVICE_CREATE( m_serviceProvider, TimerSystem );
+		SERVICE_CREATE( m_serviceProvider, TimerService );
         
 		SERVICE_CREATE( m_serviceProvider, ScriptService );
 
@@ -704,9 +514,6 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, Application );
 
 		SERVICE_CREATE( m_serviceProvider, PrefetcherService );
-
-		SERVICE_CREATE( m_serviceProvider, PluginSystem );
-		SERVICE_CREATE( m_serviceProvider, PluginService );
 
 
 		PLUGIN_CREATE( m_serviceProvider, MengeImageCodec );

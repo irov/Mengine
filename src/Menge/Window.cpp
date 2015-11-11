@@ -105,7 +105,7 @@ namespace Menge
             textures[0] = texture;
             textures[1] = textureAlpha;
 
-			EMaterial materialId;
+			EMaterial materialId = EM_DEBUG;
 
 			bool wrapU = c_WindowWrapU[i];
 			bool wrapV = c_WindowWrapV[i];

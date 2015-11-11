@@ -16,7 +16,6 @@
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/PluginInterface.h"
 #	include "Interface/ArchiveInterface.h"
-#   include "Interface/MarmaladeLayerInterface.h"
 #	include "Interface/ModuleInterface.h"
 #	include "Interface/DataInterface.h"
 #	include "Interface/MemoryInterface.h"
@@ -84,6 +83,9 @@ namespace Menge
 		bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 		bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 		
+	public:
+		bool concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity ) override;
+
 	protected:
 		bool getApplicationPath_( const char * _section, const char * _key, ConstString & _path ) const;
 

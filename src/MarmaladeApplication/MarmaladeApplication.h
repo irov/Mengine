@@ -16,7 +16,6 @@
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/PluginInterface.h"
 #	include "Interface/ArchiveInterface.h"
-#   include "Interface/MarmaladeLayerInterface.h"
 #	include "Interface/ModuleInterface.h"
 #	include "Interface/DataInterface.h"
 #	include "Interface/MemoryInterface.h"

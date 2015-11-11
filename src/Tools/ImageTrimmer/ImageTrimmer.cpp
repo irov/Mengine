@@ -73,6 +73,8 @@ SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( WindowsLayer );
 SERVICE_EXTERN( FileService );
+SERVICE_EXTERN( PluginSystem );
+SERVICE_EXTERN( PluginService );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
@@ -188,45 +190,17 @@ namespace Menge
 
 		SERVICE_CREATE( serviceProvider, ThreadService );
 		SERVICE_CREATE( serviceProvider, MemoryService );
+		SERVICE_CREATE( serviceProvider, PluginSystem );
+		SERVICE_CREATE( serviceProvider, PluginService );
 
 		SERVICE_CREATE( serviceProvider, WindowsLayer );
 		SERVICE_CREATE( serviceProvider, FileService );
 
-		PluginInterface * plugin_win32_file_group;
-		PLUGIN_CREATE( MengeWin32FileGroup, &plugin_win32_file_group );
+		PLUGIN_CREATE( serviceProvider, MengeWin32FileGroup );
 		
-		if( PLUGIN_SERVICE( serviceProvider )
-			->addPlugin( nullptr, plugin_win32_file_group ) == false )
-		{
-			return false;
-		}
-
-		PluginInterface * plugin_zip;
-		PLUGIN_CREATE( MengeZip, &plugin_zip );
-
-		if( PLUGIN_SERVICE( serviceProvider )
-			->addPlugin( nullptr, plugin_zip ) == false )
-		{
-			return false;
-		}
-
-		PluginInterface * plugin_lz4;
-		PLUGIN_CREATE( MengeLZ4, &plugin_lz4 );
-
-		if( PLUGIN_SERVICE( serviceProvider )
-			->addPlugin( nullptr, plugin_lz4 ) == false )
-		{
-			return false;
-		}
-		
-		PluginInterface * plugin_image_codec;
-		PLUGIN_CREATE( MengeImageCodec, &plugin_image_codec );
-
-		if( PLUGIN_SERVICE( serviceProvider )
-			->addPlugin( nullptr, plugin_image_codec ) == false )
-		{
-			return false;
-		}
+		PLUGIN_CREATE( serviceProvider, MengeZip );
+		PLUGIN_CREATE( serviceProvider, MengeLZ4 );
+		PLUGIN_CREATE( serviceProvider, MengeImageCodec );
 
 		if( FILE_SERVICE(serviceProvider)
 			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir") ) == false )

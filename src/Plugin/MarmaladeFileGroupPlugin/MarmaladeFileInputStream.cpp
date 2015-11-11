@@ -1,9 +1,9 @@
 #	include "MarmaladeFileInputStream.h"
 
-#	include "Interface/MarmaladeLayerInterface.h"
-#	include "Interface/StringizeInterface.h"
+#	include "Interface/PlatformInterface.h"
+#	include "Interface/UnicodeInterface.h"
 
-#   include "Utils/Logger/Logger.h"
+#   include "Logger/Logger.h"
 
 namespace Menge
 {
@@ -33,8 +33,8 @@ namespace Menge
 		m_folder = _folder;
 		m_filename = _fileName;
 
-		Char filePath[MENGINE_MAX_PATH];
-		if( MARMALADELAYER_SERVICE(m_serviceProvider)
+		WChar filePath[MENGINE_MAX_PATH];
+		if( PLATFORM_SERVICE( m_serviceProvider )
 			->concatenateFilePath( _folder, _fileName, filePath, MENGINE_MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::open invalid concatenate '%s':'%s'"
@@ -45,7 +45,11 @@ namespace Menge
 			return false;
 		}
 
-        m_hFile = s3eFileOpen( filePath, "rb" );
+		Char utf8_filePath[MENGINE_MAX_PATH];
+		UNICODE_SERVICE( m_serviceProvider )
+			->unicodeToUtf8( filePath, -1, utf8_filePath, MENGINE_MAX_PATH, nullptr );
+
+		m_hFile = s3eFileOpen( utf8_filePath, "rb" );
 
         if( m_hFile == nullptr )
         {
@@ -297,8 +301,8 @@ namespace Menge
 			return false;
 		}
 
-		char filePath[MENGINE_MAX_PATH];
-		if( MARMALADELAYER_SERVICE(m_serviceProvider)
+		WChar filePath[MENGINE_MAX_PATH];
+		if( PLATFORM_SERVICE( m_serviceProvider )
 			->concatenateFilePath( m_folder, m_filename, filePath, MENGINE_MAX_PATH ) == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("MarmaladeInputStream::time invalid concatenate '%s':'%s'"
@@ -309,7 +313,11 @@ namespace Menge
 			return false;
 		}
 
-		uint64 res = s3eFileGetFileInt( filePath, S3E_FILE_MODIFIED_DATE );
+		Char utf8_filePath[MENGINE_MAX_PATH];
+		UNICODE_SERVICE( m_serviceProvider )
+			->unicodeToUtf8( filePath, -1, utf8_filePath, MENGINE_MAX_PATH, nullptr );
+
+		uint64 res = s3eFileGetFileInt( utf8_filePath, S3E_FILE_MODIFIED_DATE );
 		
 		if( res == (uint64)-1 )
 		{

@@ -1,6 +1,7 @@
 #	include "MarmaladeFileGroupDirectory.h"
 
-#   include "Interface/MarmaladeLayerInterface.h"
+#   include "Interface/PlatformInterface.h"
+#   include "Interface/UnicodeInterface.h"
 
 #   include "Logger/Logger.h"
 
@@ -139,8 +140,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileGroupDirectory::existFile( const FilePath & _fileName ) const
 	{
-        Char filePath[MENGINE_MAX_PATH];
-        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+        WChar filePath[MENGINE_MAX_PATH];
+        if( PLATFORM_SERVICE(m_serviceProvider)
             ->concatenateFilePath( m_path, _fileName, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::existFile invalid concatenate '%s':'%s'"
@@ -151,12 +152,16 @@ namespace Menge
             return false;
         }
 
-        if( s3eFileGetFileInt( filePath, S3E_FILE_ISFILE ) != 0 )
+		Char utf8_filePath[MENGINE_MAX_PATH];
+		UNICODE_SERVICE( m_serviceProvider )
+			->unicodeToUtf8( filePath, -1, utf8_filePath, MENGINE_MAX_PATH, nullptr );
+
+		if( s3eFileGetFileInt( utf8_filePath, S3E_FILE_ISFILE ) != 0 )
         {
             return true;
         }
 
-        if( s3eFileCheckExists( filePath ) != S3E_FALSE )
+		if( s3eFileCheckExists( utf8_filePath ) != S3E_FALSE )
         {
             return true;
         }
@@ -166,8 +171,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeFileGroupDirectory::removeFile( const FilePath& _filename )
     {
-        char filePath[MENGINE_MAX_PATH];
-        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+		WChar filePath[MENGINE_MAX_PATH];
+		if( PLATFORM_SERVICE( m_serviceProvider )
             ->concatenateFilePath( m_path, _filename, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::deleteFile invalid concatenate '%s':'%s'"
@@ -178,7 +183,11 @@ namespace Menge
             return false;
         }
 
-        if( s3eFileDelete( filePath ) != S3E_RESULT_SUCCESS )
+		Char utf8_filePath[MENGINE_MAX_PATH];
+		UNICODE_SERVICE( m_serviceProvider )
+			->unicodeToUtf8( filePath, -1, utf8_filePath, MENGINE_MAX_PATH, nullptr );
+
+		if( s3eFileDelete( utf8_filePath ) != S3E_RESULT_SUCCESS )
         {
             return false;
         }
@@ -188,8 +197,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     bool MarmaladeFileGroupDirectory::existDirectory( const FilePath & _filename ) const
     {
-        char filePath[MENGINE_MAX_PATH];
-        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+		WChar filePath[MENGINE_MAX_PATH];
+        if( PLATFORM_SERVICE(m_serviceProvider)
             ->concatenateFilePath( m_path, _filename, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::existFile invalid concatenate '%s':'%s'"
@@ -200,12 +209,16 @@ namespace Menge
             return false;
         }
 
-        if( s3eFileGetFileInt( filePath, S3E_FILE_ISDIR ) != 0 )
+		Char utf8_filePath[MENGINE_MAX_PATH];
+		UNICODE_SERVICE( m_serviceProvider )
+			->unicodeToUtf8( filePath, -1, utf8_filePath, MENGINE_MAX_PATH, nullptr );
+
+		if( s3eFileGetFileInt( utf8_filePath, S3E_FILE_ISDIR ) != 0 )
         {
             return true;
         }
 
-        if( s3eFileCheckExists( filePath ) != S3E_FALSE )
+		if( s3eFileCheckExists( utf8_filePath ) != S3E_FALSE )
         {
             return true;
         }
@@ -215,8 +228,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileGroupDirectory::createDirectory( const FilePath& _filename )
 	{
-        char filePath[MENGINE_MAX_PATH];
-        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+		WChar filePath[MENGINE_MAX_PATH];
+		if( PLATFORM_SERVICE( m_serviceProvider )
             ->concatenateFilePath( m_path, _filename, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::createFolder invalid concatenate '%s':'%s'"
@@ -227,7 +240,11 @@ namespace Menge
             return false;
         }
 
-        if( s3eFileMakeDirectory( filePath ) != S3E_RESULT_SUCCESS )
+		Char utf8_filePath[MENGINE_MAX_PATH];
+		UNICODE_SERVICE( m_serviceProvider )
+			->unicodeToUtf8( filePath, -1, utf8_filePath, MENGINE_MAX_PATH, nullptr );
+
+		if( s3eFileMakeDirectory( utf8_filePath ) != S3E_RESULT_SUCCESS )
         {
             return false;
         }
@@ -237,8 +254,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileGroupDirectory::removeDirectory( const FilePath& _filename )
 	{
-        char filePath[MENGINE_MAX_PATH];
-        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+		WChar filePath[MENGINE_MAX_PATH];
+		if( PLATFORM_SERVICE( m_serviceProvider )
             ->concatenateFilePath( m_path, _filename, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeFileSystem::createFolder invalid concatenate '%s':'%s'"
@@ -249,7 +266,11 @@ namespace Menge
             return false;
         }
 
-        if( s3eFileDeleteDirectory( filePath ) != S3E_RESULT_SUCCESS )
+		Char utf8_filePath[MENGINE_MAX_PATH];
+		UNICODE_SERVICE( m_serviceProvider )
+			->unicodeToUtf8( filePath, -1, utf8_filePath, MENGINE_MAX_PATH, nullptr );
+
+		if( s3eFileDeleteDirectory( utf8_filePath ) != S3E_RESULT_SUCCESS )
         {
             return false;
         }

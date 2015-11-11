@@ -1,8 +1,9 @@
 #	include "MarmaladeFileOutputStream.h"
 
-#	include "Interface/MarmaladeLayerInterface.h"
+#	include "Interface/PlatformInterface.h"
+#	include "Interface/UnicodeInterface.h"
 
-#   include "Utils/Logger/Logger.h"
+#   include "Logger/Logger.h"
 
 namespace Menge
 {
@@ -25,8 +26,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool MarmaladeFileOutputStream::open( const FilePath & _folder, const FilePath& _filename )
 	{        
-        char filePath[MENGINE_MAX_PATH];
-        if( MARMALADELAYER_SERVICE(m_serviceProvider)
+        WChar filePath[MENGINE_MAX_PATH];
+		if( PLATFORM_SERVICE( m_serviceProvider )
             ->concatenateFilePath( _folder, _filename, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR(m_serviceProvider)("MarmaladeOutputStream::open invalid concatenate '%s':'%s'"
@@ -37,7 +38,11 @@ namespace Menge
             return false;
         }
 
-        m_hFile = s3eFileOpen( filePath, "wb" );
+		Char utf8_filePath[MENGINE_MAX_PATH];
+		UNICODE_SERVICE( m_serviceProvider )
+			->unicodeToUtf8( filePath, -1, utf8_filePath, MENGINE_MAX_PATH, nullptr );
+
+		m_hFile = s3eFileOpen( utf8_filePath, "wb" );
 
         if( m_hFile == NULL )
         {

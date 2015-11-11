@@ -158,9 +158,6 @@ namespace Menge
 		s3ePointerSetInt( S3E_POINTER_HIDE_CURSOR, 1 );
 #	endif
 
-		TIMER_SERVICE(m_serviceProvider)
-			->resetDeltaTime();
-
 		this->initializeMarmaladePauseCallback_();
 		this->initializeMarmaladeSurfaceScreenSizeCallback_();
 
@@ -307,6 +304,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
 	void MarmaladePlatform::update()
     {
+		TIMER_SERVICE( m_serviceProvider )
+			->resetDeltaTime();
+
         while( true )
         {
             s3eBool quit = s3eDeviceCheckQuitRequest();
@@ -481,5 +481,30 @@ namespace Menge
 	bool MarmaladePlatform::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
 	{
 		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladePlatform::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity )
+	{
+		size_t folderSize = _folder.size();
+		size_t fileNameSize = _fileName.size();
+
+		if( folderSize + fileNameSize > _capacity )
+		{
+			return false;
+		}
+
+		WChar unicode_filePath[MENGINE_MAX_PATH];
+		UNICODE_SERVICE( m_serviceProvider )
+			->utf8ToUnicode( _folder.c_str(), _folder.size(), unicode_filePath, MENGINE_MAX_PATH, nullptr );
+
+		wcscpy( _filePath, unicode_filePath );
+
+		WChar unicode_fileName[MENGINE_MAX_PATH];
+		UNICODE_SERVICE( m_serviceProvider )
+			->utf8ToUnicode( _fileName.c_str(), _fileName.size(), unicode_fileName, MENGINE_MAX_PATH, nullptr );
+
+		wcscat( _filePath, unicode_fileName );
+
+		return true;
 	}
 }

@@ -1190,6 +1190,14 @@ namespace Menge
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool Win32Platform::concatenateFilePath( const FilePath & _folder, const FilePath & _fileName, WChar * _filePath, size_t _capacity )
+	{
+		bool successful = WINDOWSLAYER_SERVICE( m_serviceProvider )
+			->concatenateFilePath( _folder, _fileName, _filePath, _capacity );
+
+		return successful;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Win32Platform::getDesktopResolution( Resolution & _resolution ) const
 	{
 		int cxscreen = ::GetSystemMetrics( SM_CXSCREEN );

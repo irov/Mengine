@@ -36,7 +36,7 @@ namespace Menge
 	};
 
 #   define UNICODE_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::UnicodeServiceInterface)
+    ((Menge::UnicodeServiceInterface*)SERVICE_GET(serviceProvider, Menge::UnicodeServiceInterface))
 
     namespace Helper
     {

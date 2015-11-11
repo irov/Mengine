@@ -6,7 +6,7 @@
 #	include "MarmaladeFileGroupDirectory.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_DECLARE( MarmaladeFileGroup, Menge::MarmaladeFileGroupPlugin )
+PLUGIN_FACTORY( MarmaladeFileGroup, Menge::MarmaladeFileGroupPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {

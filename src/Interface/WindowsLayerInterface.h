@@ -27,9 +27,6 @@ namespace Menge
         SERVICE_DECLARE("WindowsLayer")
 
     public:
-        virtual DynamicLibraryInterface * loadDynamicLibrary( const WString & _name ) = 0;
-
-    public:
         virtual EWindowsType getWindowsType() = 0;
         virtual bool setProcessDPIAware() = 0;
         virtual bool supportUnicode() = 0;

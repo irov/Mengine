@@ -23,6 +23,10 @@
 #	include "Interface/ConfigInterface.h"
 #	include "Interface/PrefetcherInterface.h"
 
+#	include "MarmaladeLogger.h"
+
+#	include "Core/FileLogger.h"
+
 #	include <map>
 
 namespace Menge
@@ -51,7 +55,7 @@ namespace Menge
 		bool initializeThreadEngine_();
 		bool initializeFileEngine_();
 		bool initializeConfigEngine_();
-		bool initializeLogEngine_();
+		bool initializeLoggerEngine_();
 		bool initializeMarmaladeLayerService_();
 		bool initializeUnicodeEngine_();
 		bool initializeParticleEngine2_();
@@ -78,6 +82,9 @@ namespace Menge
 				
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
+
+		MarmaladeLogger * m_loggerConsole;
+		FileLogger * m_fileLog;
 		
 		ConstString m_platformName;
 

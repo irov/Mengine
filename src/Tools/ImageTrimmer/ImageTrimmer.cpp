@@ -38,13 +38,10 @@
 #	include "Logger/Logger.h"
 	
 //////////////////////////////////////////////////////////////////////////
-extern "C" // only required if using g++
-{
-	extern bool initPluginMengeWin32FileGroup( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeImageCodec( Menge::PluginInterface ** _plugin );	
-	extern bool initPluginMengeZip( Menge::PluginInterface ** _plugin );
-	extern bool initPluginMengeLZ4( Menge::PluginInterface ** _plugin );
-}
+PLUGIN_EXPORT( MengeWin32FileGroup );
+PLUGIN_EXPORT( MengeImageCodec );
+PLUGIN_EXPORT( MengeZip );
+PLUGIN_EXPORT( MengeLZ4 );
 //////////////////////////////////////////////////////////////////////////
 static void message_error( const char * _format, ... )
 {
@@ -196,32 +193,40 @@ namespace Menge
 		SERVICE_CREATE( serviceProvider, FileService );
 
 		PluginInterface * plugin_win32_file_group;
-		initPluginMengeWin32FileGroup( &plugin_win32_file_group );
-
-		if( plugin_win32_file_group == nullptr )
+		PLUGIN_CREATE( MengeWin32FileGroup, &plugin_win32_file_group );
+		
+		if( PLUGIN_SERVICE( serviceProvider )
+			->addPlugin( nullptr, plugin_win32_file_group ) == false )
 		{
 			return false;
 		}
-
-		plugin_win32_file_group->initialize( serviceProvider );	
 
 		PluginInterface * plugin_zip;
-		initPluginMengeZip( &plugin_zip );
-		plugin_zip->initialize( serviceProvider );
+		PLUGIN_CREATE( MengeZip, &plugin_zip );
 
-		PluginInterface * plugin_lz4;
-		initPluginMengeLZ4( &plugin_lz4 );
-		plugin_lz4->initialize( serviceProvider );
-		
-		PluginInterface * plugin_image_codec;
-		initPluginMengeImageCodec( &plugin_image_codec );
-
-		if( plugin_image_codec == nullptr )
+		if( PLUGIN_SERVICE( serviceProvider )
+			->addPlugin( nullptr, plugin_zip ) == false )
 		{
 			return false;
 		}
 
-		plugin_image_codec->initialize( serviceProvider );
+		PluginInterface * plugin_lz4;
+		PLUGIN_CREATE( MengeLZ4, &plugin_lz4 );
+
+		if( PLUGIN_SERVICE( serviceProvider )
+			->addPlugin( nullptr, plugin_lz4 ) == false )
+		{
+			return false;
+		}
+		
+		PluginInterface * plugin_image_codec;
+		PLUGIN_CREATE( MengeImageCodec, &plugin_image_codec );
+
+		if( PLUGIN_SERVICE( serviceProvider )
+			->addPlugin( nullptr, plugin_image_codec ) == false )
+		{
+			return false;
+		}
 
 		if( FILE_SERVICE(serviceProvider)
 			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::stringizeString(serviceProvider, "dir") ) == false )

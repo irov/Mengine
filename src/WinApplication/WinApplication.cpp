@@ -78,6 +78,7 @@ SERVICE_EXTERN( ConverterService );
 SERVICE_EXTERN( InputService );
 SERVICE_EXTERN( TimerService );
 SERVICE_EXTERN( TimerSystem );
+SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( Application );
 
@@ -567,6 +568,7 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, UnicodeSystem );
 		SERVICE_CREATE( m_serviceProvider, UnicodeService );
 
+		SERVICE_CREATE( m_serviceProvider, PluginSystem );
 		SERVICE_CREATE( m_serviceProvider, PluginService );
 		
 		SERVICE_CREATE( m_serviceProvider, FileService );

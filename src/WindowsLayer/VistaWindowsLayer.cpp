@@ -1,9 +1,5 @@
 #   include "VistaWindowsLayer.h"
 
-#   include "DynamicLibrary.h"
-
-//#   include <cassert>
-
 #   include "Interface/UnicodeInterface.h"
 
 #   include "Config/Typedef.h"
@@ -36,28 +32,6 @@ namespace Menge
         , m_checkedUnicode(false)
         , m_supportUnicode(false)        
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    DynamicLibraryInterface * VistaWindowsLayer::loadDynamicLibrary( const WString & _path )
-    {
-        LOGGER_INFO(m_serviceProvider)("VistaWindowsLayer::loadDynamicLibrary load %ls"
-            , _path.c_str()
-            );
-
-        DynamicLibrary * dl = new DynamicLibrary(m_serviceProvider, _path);
-
-        if( dl->load() == false )
-        {
-            LOGGER_ERROR(m_serviceProvider)("VistaWindowsLayer::loadDynamicLibrary invalid load %ls"
-                , _path.c_str()
-                );
-
-            dl->destroy();
-
-            return nullptr;                 
-        }
-
-        return dl;
     }
     //////////////////////////////////////////////////////////////////////////
     EWindowsType VistaWindowsLayer::getWindowsType()

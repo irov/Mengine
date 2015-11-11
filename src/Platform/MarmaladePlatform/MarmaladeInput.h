@@ -42,6 +42,9 @@ namespace Menge
         bool isKeyDown( Menge::KeyCode _code ) const;
         bool isAnyKeyDown() const;
 
+	public:
+		void getCorrectPoint( uint32 _touch, mt::vec2f & _point ) const;
+
     protected:
         void fillKeys_();
         KeyCode getKeyCode_( s3eKey _key ) const;

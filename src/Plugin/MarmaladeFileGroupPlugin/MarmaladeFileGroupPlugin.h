@@ -7,6 +7,8 @@ namespace Menge
 	class MarmaladeFileGroupPlugin
 		: public PluginBase
 	{
+		PLUGIN_DECLARE( "MarmaladeFileGroup" )
+
 	public:
 		MarmaladeFileGroupPlugin();
 

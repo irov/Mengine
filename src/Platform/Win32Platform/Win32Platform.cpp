@@ -1338,12 +1338,23 @@ namespace Menge
 				->pushMousePositionEvent( 0, point.x, point.y, 0.f );
 		}
 
+		if( m_active == false )
+		{
+			INPUT_SERVICE( m_serviceProvider )
+				->pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
+		}
+		else
+		{
+			INPUT_SERVICE( m_serviceProvider )
+				->pushMouseEnterEvent( 0, point.x, point.y, 0.f );
+		}
+
 		bool nopause = HAS_OPTIONS( m_serviceProvider, "nopause" );
 
 		if( nopause == false )
 		{
 			APPLICATION_SERVICE( m_serviceProvider )
-				->setFocus( m_active, true, point );
+				->setFocus( m_active );
 
 			INPUT_SERVICE( m_serviceProvider )
 				->onFocus( m_active );
@@ -1355,7 +1366,7 @@ namespace Menge
 		else
 		{
 			APPLICATION_SERVICE( m_serviceProvider )
-				->setFocus( true, true, point );
+				->setFocus( true );
 
 			INPUT_SERVICE( m_serviceProvider )
 				->onFocus( true );

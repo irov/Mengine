@@ -9,6 +9,8 @@ namespace Menge
 	class PluginAmplifier
 		: public PluginBase
 	{
+		PLUGIN_DECLARE( "Amplifier" )
+
 	public:
 		PluginAmplifier();
 

@@ -14,9 +14,6 @@ namespace Menge
     public:
         VistaWindowsLayer();
 
-	public:
-        DynamicLibraryInterface * loadDynamicLibrary( const WString & _path ) override;
-
     public:
         EWindowsType getWindowsType() override;
 

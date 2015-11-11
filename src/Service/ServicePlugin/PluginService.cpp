@@ -1,6 +1,5 @@
 #   include "PluginService.h"
 
-#   include "Interface/WindowsLayerInterface.h"
 #   include "Interface/UnicodeInterface.h"
 
 #   include "Logger/Logger.h"
@@ -68,11 +67,11 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     PluginInterface * PluginService::loadPlugin( const WString & _dllName )
     {
-		LOGGER_INFO( m_serviceProvider )("load Plugin %ls"
+		LOGGER_WARNING( m_serviceProvider )("load Plugin %ls"
 			, _dllName.c_str()
             );
 
-		DynamicLibraryInterface * dlib = WINDOWSLAYER_SERVICE( m_serviceProvider )
+		DynamicLibraryInterface * dlib = PLUGIN_SYSTEM( m_serviceProvider )
 			->loadDynamicLibrary( _dllName );
 
 		if( dlib == nullptr )

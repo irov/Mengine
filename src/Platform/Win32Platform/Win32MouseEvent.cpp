@@ -49,8 +49,6 @@ namespace Menge
 		{
 			return;
 		}
-
-		::SendMessage( m_hWnd, UWM_MOUSE_ENTER, 0, 0 );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32MouseEvent::stop()

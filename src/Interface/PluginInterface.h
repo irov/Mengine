@@ -49,6 +49,18 @@ namespace Menge
 		virtual TDynamicLibraryFunction getSymbol( const Char * _name ) const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
+	class PluginSystemInterface
+		: public ServiceInterface
+	{
+		SERVICE_DECLARE( "PluginSystem" )
+
+	public:
+		virtual DynamicLibraryInterface * loadDynamicLibrary( const WString & _dllName ) = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+#   define PLUGIN_SYSTEM( serviceProvider )\
+    ((Menge::PluginSystemInterface*)SERVICE_GET(serviceProvider, Menge::PluginSystemInterface))
+	//////////////////////////////////////////////////////////////////////////
     class PluginServiceInterface
         : public ServiceInterface
     {

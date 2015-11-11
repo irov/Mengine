@@ -485,5 +485,5 @@ namespace Menge
 	};
 
 #   define INPUT_SERVICE( serviceProvider )\
-    SERVICE_GET(serviceProvider, Menge::InputServiceInterface)
+    ((Menge::InputServiceInterface*)SERVICE_GET(serviceProvider, Menge::InputServiceInterface))
 }

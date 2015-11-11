@@ -33,7 +33,7 @@ namespace Menge
 		virtual bool beginUpdate() = 0;
 		virtual void tick( float _timing ) = 0;
 		virtual void endUpdate() = 0;
-		virtual void setFocus( bool _focus, bool _mouse, const mt::vec2f & _point ) = 0;
+		virtual void setFocus( bool _focus ) = 0;
 		virtual void close() = 0;
 
 		virtual void turnSound( bool _turn ) = 0;

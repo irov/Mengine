@@ -23,8 +23,6 @@
 #	include "Interface/ConfigInterface.h"
 #	include "Interface/PrefetcherInterface.h"
 
-#	include "MarmaladeLogger.h"
-#   include "MarmaladeTimer.h"
 #   include "MarmaladeInput.h"
 
 #	include "Core/FileLogger.h"
@@ -87,30 +85,27 @@ namespace Menge
 		bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 		
 	protected:
-		bool initializeFileEngine_();
+		bool getApplicationPath_( const char * _section, const char * _key, ConstString & _path ) const;
 
 	protected:
-        MarmaladeLogger * m_loggerConsole;
-		FileLogger * m_fileLog;
+		bool initializeConfigEngine_();
+		bool initializeLogEngine_();
+		bool initializeArchiveService_();
+		bool initializeFileEngine_();
+		bool initializeRenderEngine_();
+		void initializeMarmaladePauseCallback_();
+		void initializeMarmaladeSurfaceScreenSizeCallback_();
 
-		MarmaladeTimer * m_timer;
+	public:
+		void changePause_( bool _value );
+		void changeScreenSize_( const Resolution & resolution );
+
+	protected:
 		MarmaladeInput * m_marmaladeInput;
 				
 		ConstString m_platformName;
 
-        FilePath m_currentPath;
-        WString m_userPath;
-        WString m_tempPath;
-
-        WString m_projectName;
-        WString m_companyName;
-		
-		typedef stdex::vector<PluginInterface *> TVectorPlugins;
-		TVectorPlugins m_plugins;	
-
 		bool m_running;
-		bool m_active;
-
-		bool m_developmentMode;
+		bool m_pause;
     };
 }

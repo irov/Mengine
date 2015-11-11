@@ -2,8 +2,6 @@ set( MY_LIB_NAME WindowsLayer )
 
 ADD_FILTER(
 src
-    DynamicLibrary.cpp
-    DynamicLibrary.h
 	VistaWindowsLayer.cpp
 	VistaWindowsLayer.h
     WindowsIncluder.h

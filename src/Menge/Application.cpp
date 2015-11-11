@@ -1000,7 +1000,7 @@ namespace Menge
 		return m_focus;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Application::setFocus( bool _focus, bool _mouse, const mt::vec2f & _point )
+	void Application::setFocus( bool _focus )
 	{
 		//return;
 		if( m_focus == _focus ) 
@@ -1019,37 +1019,7 @@ namespace Menge
 		{
 			GAME_SERVICE( m_serviceProvider )
 				->setFocus( m_focus );
-
-			if( _mouse == true )
-			{
-				if( m_focus == false )
-				{
-					InputMousePositionEvent ev;
-					ev.type = IET_MOUSE_LEAVE;
-					ev.touchId = 0;
-					ev.x = _point.x;
-					ev.y = _point.y;
-					ev.pressure = 0.f;
-
-					this->mouseLeave( ev );
-				}
-				else
-				{
-					InputMousePositionEvent ev;
-					ev.type = IET_MOUSE_ENTER;
-					ev.touchId = 0;
-					ev.x = _point.x;
-					ev.y = _point.y;
-					ev.pressure = 0.f;
-
-					this->mouseEnter( ev );
-				}
-			}
 		}
-		/*if( m_focus == true )
-		{
-			m_update = true;
-		}*/
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Application::minimizeWindow()

@@ -199,11 +199,8 @@ namespace Menge
             return false;
         }
 
-		int32 cursorX = s3ePointerGetTouchX( 0 );
-		int32 cursorY = s3ePointerGetTouchY( 0 );
-
 		mt::vec2f point;
-		this->correctPoint_( cursorX, cursorY, point );
+		this->getCorrectPoint( 0, point );
 
 		for( uint32_t i = 0; i != m_keysIterator; ++i )
 		{
@@ -279,6 +276,17 @@ namespace Menge
         return isDown;
     }
 	//////////////////////////////////////////////////////////////////////////
+	void MarmaladeInput::getCorrectPoint( uint32 _touch, mt::vec2f & _point ) const
+	{ 
+		int32 cursorX = s3ePointerGetTouchX( _touch );
+		int32 cursorY = s3ePointerGetTouchY( _touch );
+
+		mt::vec2f point;
+		this->correctPoint_( cursorX, cursorY, point );
+
+		_point = point;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeInput::correctPoint_( int32 _x, int32 _y, mt::vec2f & _point ) const
 	{
 		float x = (float)_x / m_width;
@@ -334,11 +342,6 @@ namespace Menge
 		{
 			return 0;
 		}
-  //      int32 cursorX = s3ePointerGetTouchX( 0 );
-  //      int32 cursorY = s3ePointerGetTouchY( 0 );
-  //      
-		//mt::vec2f point;
-		//_input->correctPoint_( cursorX, cursorY, point );
 
 		if( event->m_Pressed == 1 )
 		{

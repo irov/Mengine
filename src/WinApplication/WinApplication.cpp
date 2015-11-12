@@ -63,7 +63,6 @@ SERVICE_EXTERN( ArchiveService );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( ParticleService );
-SERVICE_EXTERN( RenderService );
 SERVICE_EXTERN( RenderSystem );
 SERVICE_EXTERN( SoundService );
 SERVICE_EXTERN( SoundSystem );
@@ -589,7 +588,6 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, ThreadService );		
 
 		SERVICE_CREATE( m_serviceProvider, RenderSystem );
-		SERVICE_CREATE( m_serviceProvider, RenderService );
 		
 
 		SERVICE_CREATE( m_serviceProvider, SoundSystem );
@@ -830,10 +828,6 @@ namespace Menge
 	void WinApplication::finalize()
 	{
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PlatformInterface );
-		
-		APPLICATION_SERVICE( m_serviceProvider )
-			->finalizeGame();
-		
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ApplicationInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PrefetcherServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::DataServiceInterface );
@@ -845,7 +839,8 @@ namespace Menge
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::FileServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::CodecServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleServiceInterface2 );		
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleSystemInterface2 );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleServiceInterface2 );
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::SoundServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::SoundSystemInterface );
@@ -853,23 +848,12 @@ namespace Menge
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PrototypeServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ScriptServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ConverterServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderServiceInterface );
+
 		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderSystemInterface );
+
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ConfigServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::StringizeServiceInterface );
 		
-
-		if( m_fileLog != nullptr )
-		{
-			if( SERVICE_EXIST(m_serviceProvider, Menge::LoggerServiceInterface ) == true )
-			{
-				LOGGER_SERVICE( m_serviceProvider )
-					->unregisterLogger( m_fileLog );
-			}
-
-			delete m_fileLog;
-			m_fileLog = nullptr;
-		}
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ArchiveServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::MemoryServiceInterface );
@@ -882,6 +866,18 @@ namespace Menge
 		SERVICE_FINALIZE( m_serviceProvider, Menge::TimerSystemInterface );
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::WindowsLayerInterface );
+
+		if( m_fileLog != nullptr )
+		{
+			if( SERVICE_EXIST( m_serviceProvider, Menge::LoggerServiceInterface ) == true )
+			{
+				LOGGER_SERVICE( m_serviceProvider )
+					->unregisterLogger( m_fileLog );
+			}
+
+			delete m_fileLog;
+			m_fileLog = nullptr;
+		}
 
 		if( m_loggerConsole != nullptr )
 		{

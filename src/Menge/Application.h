@@ -61,9 +61,6 @@ namespace Menge
 		void _finalize() override;
 
 	public:
-		void finalizeGame() override;
-
-	public:
 		void parseArguments( const String & _args );
 
 	public:

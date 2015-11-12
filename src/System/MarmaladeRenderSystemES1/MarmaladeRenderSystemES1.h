@@ -20,11 +20,11 @@ namespace Menge
     struct TextureStage
     {
         TextureStage()
-            : minFilter(0)
+			: texture( nullptr )
+			, minFilter( 0 )
             , magFilter(0)
             , wrapS(0)
             , wrapT(0)
-            , texture(0)
             , colorOp(0)
             , colorArg1(0)
             , colorArg2(0)
@@ -34,13 +34,14 @@ namespace Menge
         {
 
         }
+
+		MarmaladeRenderTextureES1 * texture;
 		        
         GLenum minFilter;
         GLenum magFilter;
         GLenum wrapS;
         GLenum wrapT;
 
-		GLuint texture;
         GLenum colorOp;
         GLenum colorArg1;
         GLenum colorArg2;

@@ -300,14 +300,16 @@ namespace Menge
 
 			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
 
-			if( textureStage.texture == 0 )
+			if( textureStage.texture == nullptr )
 			{	
 				GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, 0) );
 
 				continue;
 			}
 
-			GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, textureStage.texture) );
+			GLuint texture_uid = textureStage.texture->getUId();
+
+			GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, texture_uid) );
 
 			if( m_currentProgram != nullptr )
 			{
@@ -362,9 +364,9 @@ namespace Menge
 		
 		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
-			const TextureStage & textureStage = m_textureStage[i];
+			TextureStage & textureStage = m_textureStage[i];
 
-			if( textureStage.texture == 0 )
+			if( textureStage.texture == nullptr )
 			{
 				break;
 			}
@@ -372,11 +374,14 @@ namespace Menge
 			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
 
 			GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, 0) );
+
+			stdex::intrusive_ptr_release( textureStage.texture );
 		}
 
 		if( m_currentProgram != nullptr )
 		{
 			m_currentProgram->disable();
+			m_currentProgram = nullptr;
 		}
 
 		GLCALL( m_serviceProvider, glBindBuffer, ( GL_ARRAY_BUFFER, 0 ) );
@@ -391,11 +396,11 @@ namespace Menge
         {
             MarmaladeRenderTexture * texture = stdex::intrusive_get<MarmaladeRenderTexture *>(_texture);
             
-            tStage.texture = texture->getUId();
+			stdex::intrusive_ptr_setup( tStage.texture, texture );
         }
         else
-        {
-            tStage.texture = 0;
+        {			
+			stdex::intrusive_ptr_release( tStage.texture );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////

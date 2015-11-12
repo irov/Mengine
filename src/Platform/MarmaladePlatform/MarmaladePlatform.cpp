@@ -89,7 +89,7 @@ namespace Menge
 		{
 		case  S3E_DEVICE_CLASS_WINDOWS_GENERIC:
 			{
-				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "WIN");
+				m_platformName = STRINGIZE_STRING_LOCAL(m_serviceProvider, "SIMULATOR");
 			}break;
 		case S3E_DEVICE_CLASS_OSX_DESKTOP:
 			{
@@ -360,6 +360,8 @@ namespace Menge
 
 			APPLICATION_SERVICE( m_serviceProvider )
 				->endUpdate();
+
+			s3eDeviceYield( 0 );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -84,7 +84,7 @@ namespace Menge
 					);
 			}
 
-			if( s3ePointerRegister(S3E_POINTER_MOTION_EVENT, (s3eCallback)&MarmaladeInput::s_pointerMotionEvent, this ) == S3E_RESULT_ERROR )
+			if( s3ePointerRegister( S3E_POINTER_MOTION_EVENT, (s3eCallback)&MarmaladeInput::s_pointerMotionEvent, this ) == S3E_RESULT_ERROR )
 			{
 				s3ePointerError p_err = s3ePointerGetError();
 				const char * p_str = s3ePointerGetErrorString();
@@ -198,6 +198,8 @@ namespace Menge
         {
             return false;
         }
+
+		s3eDeviceYield( 0 );
 
 		mt::vec2f point;
 		this->getCorrectPoint( 0, point );

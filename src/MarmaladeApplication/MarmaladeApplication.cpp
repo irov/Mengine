@@ -8,6 +8,7 @@
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/InputSystemInterface.h"
+#	include "Interface/TimerInterface.h"
 
 #	include <cstdio>
 #	include <clocale>
@@ -248,6 +249,12 @@ namespace Menge
 	{
 		LOGGER_WARNING(m_serviceProvider)("Inititalizing Config Manager..." );
 
+		const ConstString & platformName = PLATFORM_SERVICE( m_serviceProvider )
+			->getPlatformName();
+
+		CONFIG_SERVICE( m_serviceProvider )
+			->setPlatformName( platformName );
+
 		FilePath gameIniPath;
 		if( this->getApplicationPath_( "Game", "Path", gameIniPath ) == false )
 		{
@@ -332,18 +339,18 @@ namespace Menge
     {
         LOGGER_INFO(m_serviceProvider)( "Initializing Render Service..." );
 		
-		uint32_t config_gl_version = 2;
+		uint32_t sys_gl_version = 2;
 
 		char config_SysGlesVersion[S3E_CONFIG_STRING_MAX] = {0};
 		if( s3eConfigGetString( "S3E", "SysGlesVersion", config_SysGlesVersion ) == S3E_RESULT_SUCCESS )
 		{
 			if( strcmp( config_SysGlesVersion, "1" ) == 0 )
 			{
-				config_gl_version = 1;
+				sys_gl_version = 1;
 			}
 			else if( strcmp( config_SysGlesVersion, "2" ) == 0 )
 			{
-				config_gl_version = 2;
+				sys_gl_version = 2;
 			}
 			else
 			{
@@ -357,7 +364,7 @@ namespace Menge
 
 		RenderSystemInterface * renderSystem = nullptr;
 
-		for( uint32_t i = config_gl_version; i != 0; --i )
+		for( uint32_t i = sys_gl_version; i != 0; --i )
 		{
 			if( i == 2 )
 			{
@@ -560,6 +567,13 @@ namespace Menge
 		LOGGER_INFO( m_serviceProvider )("Application Create..."
 			);
 
+		Resolution desktopResolution;
+		PLATFORM_SERVICE( m_serviceProvider )
+			->getDesktopResolution( desktopResolution );
+
+		APPLICATION_SERVICE( m_serviceProvider )
+			->changeWindowResolution( desktopResolution );
+
 		ConstString resourceIniPath;
 		if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
 		{
@@ -601,33 +615,46 @@ namespace Menge
     void MarmaladeApplication::finalize()
     {
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ApplicationInterface );
-
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PrefetcherServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::DataServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PluginServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ModuleServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::InputServiceInterface );
-
 		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::UnicodeSystemInterface );
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::FileServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::CodecServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleSystemInterface2 );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ParticleServiceInterface2 );
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::SoundServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::SoundSystemInterface );
+
+		SERVICE_FINALIZE( m_serviceProvider, Menge::PrototypeServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ScriptServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ConverterServiceInterface );
+
 		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderMaterialServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderTextureServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::RenderSystemInterface );
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::PrefetcherServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadSystemInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ScriptServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ConfigServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::StringizeServiceInterface );
 
 		SERVICE_FINALIZE( m_serviceProvider, Menge::ConfigServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::StringizeServiceInterface );
+
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ArchiveServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::MemoryServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::NotificationServiceInterface );
+
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::ThreadSystemInterface );
+
+		SERVICE_FINALIZE( m_serviceProvider, Menge::TimerServiceInterface );
+		SERVICE_FINALIZE( m_serviceProvider, Menge::TimerSystemInterface );
 		
 		if( m_fileLog != nullptr )
 		{
@@ -638,8 +665,7 @@ namespace Menge
 			m_fileLog = nullptr;
 		}
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::ArchiveServiceInterface );
-		SERVICE_FINALIZE( m_serviceProvider, Menge::MemoryServiceInterface );
+
 
 		if( m_loggerConsole != nullptr )
 		{
@@ -650,7 +676,6 @@ namespace Menge
 			m_loggerConsole = nullptr;
 		}
 
-		SERVICE_FINALIZE( m_serviceProvider, Menge::NotificationServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::LoggerServiceInterface );
 
 		SERVICE_PROVIDER_FINALIZE( m_serviceProvider );

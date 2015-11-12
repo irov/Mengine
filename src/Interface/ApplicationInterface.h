@@ -20,9 +20,6 @@ namespace Menge
 		: public ServiceInterface
 	{
         SERVICE_DECLARE("ApplicationService");
-
-	public:
-		virtual void finalizeGame() = 0;
 			
 	public:
 		virtual bool getAllowFullscreenSwitchShortcut() const = 0;

@@ -180,9 +180,11 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, PrototypeService );
 		SERVICE_CREATE( m_serviceProvider, NodeService );
 		SERVICE_CREATE( m_serviceProvider, LoaderService );
+
 		SERVICE_CREATE( m_serviceProvider, RenderService );
 		SERVICE_CREATE( m_serviceProvider, RenderMaterialService );
 		SERVICE_CREATE( m_serviceProvider, RenderTextureService );
+
 		SERVICE_CREATE( m_serviceProvider, ResourceService );
 		SERVICE_CREATE( m_serviceProvider, TextService );
 		SERVICE_CREATE( m_serviceProvider, Watchdog );
@@ -1201,8 +1203,8 @@ namespace Menge
 		}
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Application::finalizeGame()
-	{
+	void Application::_finalize()
+	{		
 		if( SERVICE_EXIST( m_serviceProvider, Menge::GameServiceInterface ) == true )
 		{
 			GAME_SERVICE( m_serviceProvider )
@@ -1214,15 +1216,12 @@ namespace Menge
 			PLAYER_SERVICE( m_serviceProvider )
 				->finalizeRenderResources();
 		}
-		
+
 		SERVICE_FINALIZE( m_serviceProvider, Menge::GameServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PlayerServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::PackageServiceInterface );
 		SERVICE_FINALIZE( m_serviceProvider, Menge::UserdataServiceInterface );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Application::_finalize()
-	{		
+
 		CODEC_SERVICE(m_serviceProvider)
 			->unregisterDecoder( STRINGIZE_STRING_LOCAL(m_serviceProvider, "memoryImage") );
 

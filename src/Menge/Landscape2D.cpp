@@ -155,12 +155,12 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Landscape2D::setBackParts( const TVectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height)
 	{
+		m_images = _images;
+
 		m_elementCountX = _countX;
 		m_elementCountY = _countY;
 		m_elementWidth = _width;
 		m_elementHeight = _height;
-
-		m_images = _images;
 
 		uint32_t i = 0;
 		uint32_t j = 0;

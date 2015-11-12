@@ -21,7 +21,8 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	MarmaladeRenderSystemES1::MarmaladeRenderSystemES1()
-		: m_depthMask( false )
+		: m_glMaxClipPlanes(0)
+		, m_depthMask( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -90,6 +91,11 @@ namespace Menge
 		GLCALL( m_serviceProvider, glMatrixMode, (GL_TEXTURE) );
 		GLCALL( m_serviceProvider, glLoadIdentity, () );
 
+		GLint maxClipPlanes;
+		glGetIntegerv( GL_MAX_CLIP_PLANES, &maxClipPlanes );
+
+		m_glMaxClipPlanes = maxClipPlanes;
+
 		m_renderPlatform = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Marmalade OpenGL ES1" );
 
 		return true;
@@ -126,12 +132,36 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setClipplaneCount( uint32_t _count )
 	{
-		//ToDo
+		if( _count > m_glMaxClipPlanes )
+		{ 
+			return;
+		}
+
+		for( uint32_t i = 0; i != _count; ++i )
+		{
+			GLenum plane = GL_CLIP_PLANE0 + i;
+
+			glEnable( plane );
+		}
+		
+		for( uint32_t i = _count; i != m_glMaxClipPlanes; ++i )
+		{
+			GLenum plane = GL_CLIP_PLANE0 + i;
+
+			glDisable( plane );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setClipplane( uint32_t _i, const mt::planef & _plane )
 	{
-		//ToDo
+		if( _i > m_glMaxClipPlanes )
+		{
+			return;
+		}
+
+		GLenum plane = GL_CLIP_PLANE0 + _i;
+
+		glClipPlanef( plane, _plane.buff() );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::setViewport( const Viewport & _viewport )

@@ -89,9 +89,9 @@ namespace Menge
 			mt::vec3f wp_prev = m_way[m_iterator - 1];
 			mt::vec3f wp_current = m_way[m_iterator];
 
-			float ll = mt::sqrlength_v3_v3( wp_prev, wp_current );
+			float iter_ll = mt::sqrlength_v3_v3( wp_prev, wp_current );
 
-			if( ll > _step * _step )
+			if( iter_ll > _step * _step )
 			{
 				mt::vec3f dir;
 				mt::dir_v3_v3( dir, wp_current, wp_prev );
@@ -102,9 +102,9 @@ namespace Menge
 				return true;
 			}
 
-			float l = ::sqrtf( ll );
+			float iter_l = ::sqrtf( iter_ll );
 
-			_step -= l;
+			_step -= iter_l;
 		}
 
 		mt::vec3f wp_prev = m_way[m_wayCount - 2];

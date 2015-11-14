@@ -55,6 +55,7 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE vec2f operator/(const vec2f& _rhs, float _val);
 	MENGINE_MATH_FUNCTION_INLINE vec2f operator/(float _val, const vec2f& _rhs);
 	MENGINE_MATH_FUNCTION_INLINE vec2f operator-(vec2f _rhs);
+	MENGINE_MATH_FUNCTION_INLINE vec2f operator+(vec2f _rhs);
 
 	MENGINE_MATH_FUNCTION_INLINE void ident_v2(vec2f& _a);
 	MENGINE_MATH_FUNCTION_INLINE float length_v2(const vec2f& _a);

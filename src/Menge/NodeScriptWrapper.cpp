@@ -2428,124 +2428,41 @@ namespace Menge
 				->visitGroupResources( _category, _groupName, &rv_gac );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_rotateToIsometric( float _angle )
+		uint32_t s_rotateToTrimetric( const mt::vec2f & _dir, const mt::vec2f & _vx, const mt::vec2f & _vy )
 		{
-			float angle_norm = mt::angle_norm( _angle );
+			float dir_angle = mt::signed_angle( _dir );
 
-			float pi_deltha [] = {
-				mt::m_pi * -1.f / 12.f,
-				mt::m_pi * 0.f / 12.f, 
-				mt::m_pi * 1.f / 12.f,
-
-				mt::m_pi * 1.f / 12.f,
-				mt::m_pi * 2.f / 12.f, 
-				mt::m_pi * 4.f / 12.f,
-
-				mt::m_pi * 4.f / 12.f,
-				mt::m_pi * 6.f / 12.f,
-				mt::m_pi * 8.f / 12.f,
-
-				mt::m_pi * 8.f / 12.f,
-				mt::m_pi * 10.f / 12.f, 
-				mt::m_pi * 11.f / 12.f,
-
-				mt::m_pi * 11.f / 12.f,
-				mt::m_pi * 12.f / 12.f,
-				mt::m_pi * 13.f / 12.f,
-
-				mt::m_pi * 13.f / 12.f,
-				mt::m_pi * 14.f / 12.f,
-				mt::m_pi * 16.f / 12.f,
-
-				mt::m_pi * 16.f / 12.f,
-				mt::m_pi * 18.f / 12.f,
-				mt::m_pi * 20.f / 12.f,
-
-				mt::m_pi * 20.f / 12.f,
-				mt::m_pi * 22.f / 12.f,
-				mt::m_pi * 23.f / 12.f,
+			float isometric_angle8[8] = {
+				mt::signed_angle( +_vx ),
+				mt::signed_angle( +_vx + _vy ),
+				mt::signed_angle( +_vy ),
+				mt::signed_angle( +_vy - _vx ),
+				mt::signed_angle( -_vx ),
+				mt::signed_angle( -_vx - _vy ),
+				mt::signed_angle( -_vy ),
+				mt::signed_angle( +_vx - _vy )
 			};
+
+			float min_angle = mt::m_two_pi;
+			uint32_t isometric_index = 0;
 
 			for( uint32_t i = 0; i != 8; ++i )
 			{
-				float low_angle = pi_deltha[ i * 3 + 0];
-				float hight_angle = pi_deltha[ i * 3 + 2];
+				float isometric_angle = isometric_angle8[i];
 
-				if( mt::angle_length( angle_norm, low_angle ) > 0.f )
+				float angle_length = mt::angle_length( isometric_angle, dir_angle );
+
+				float abs_angle_length = ::fabsf( angle_length );
+				
+				if( abs_angle_length < min_angle )
 				{
-					continue;
+					min_angle = abs_angle_length;
+					isometric_index = i;
 				}
-
-				if( mt::angle_length( angle_norm, hight_angle ) < 0.f )
-				{
-					continue;
-				}
-
-				return i;
 			}
 
-			return 0;
+			return isometric_index;
 		}
-		//////////////////////////////////////////////////////////////////////////
-		uint32_t s_rotateToTrimetric( float _angle, float _x, float _y )
-		{
-			float angle_norm = mt::angle_norm( _angle );
-
-			float pi_deltha [] = {
-				mt::m_deg2rad * -15.f,
-				mt::m_deg2rad * 0.f, 
-				mt::m_deg2rad * 15.f,
-
-				mt::m_deg2rad * 15.f,
-				mt::m_deg2rad * 30.f, 
-				mt::m_deg2rad * 45.f,
-
-				mt::m_deg2rad * 45.f,
-				mt::m_deg2rad * 90.f,
-				mt::m_deg2rad * 135.f,
-
-				mt::m_deg2rad * 135.f,
-				mt::m_deg2rad * 150.f,
-				mt::m_deg2rad * 165.f,
-
-				mt::m_deg2rad * 165.f,
-				mt::m_deg2rad * 180.f,
-				mt::m_deg2rad * 195.f,
-
-				mt::m_deg2rad * 195.f,
-				mt::m_deg2rad * 210.f,
-				mt::m_deg2rad * 225.f,
-
-				mt::m_deg2rad * 225.f,
-				mt::m_deg2rad * 270.f,
-				mt::m_deg2rad * 315.f,
-
-				mt::m_deg2rad * 315.f,
-				mt::m_deg2rad * 330.f,
-				mt::m_deg2rad * 345.f,
-			};
-
-			for( uint32_t i = 0; i != 8; ++i )
-			{
-				float low_angle = pi_deltha[ i * 3 + 0];
-				//float test_angle = pi_deltha[ i * 3 + 1];
-				float hight_angle = pi_deltha[ i * 3 + 2];
-
-				if( mt::angle_length( angle_norm, low_angle ) > 0.f )
-				{
-					continue;
-				}
-
-				if( mt::angle_length( angle_norm, hight_angle ) < 0.f )
-				{
-					continue;
-				}
-
-				return i;
-			}
-
-			return 0;
-		}		
 		//////////////////////////////////////////////////////////////////////////
 		typedef stdex::vector<HotSpotPolygon *> TVectorHotSpotPolygon;
 		//////////////////////////////////////////////////////////////////////////
@@ -5517,8 +5434,6 @@ namespace Menge
 			pybind::def_functor( "cacheResources", nodeScriptMethod, &NodeScriptMethod::s_cacheResources );
 			pybind::def_functor( "uncacheResources", nodeScriptMethod, &NodeScriptMethod::s_uncacheResources );
 
-			pybind::def_functor( "rotateToIsometric", nodeScriptMethod, &NodeScriptMethod::s_rotateToIsometric );
-			pybind::def_functor( "rotateToDiometric", nodeScriptMethod, &NodeScriptMethod::s_rotateToIsometric );
 			pybind::def_functor( "rotateToTrimetric", nodeScriptMethod, &NodeScriptMethod::s_rotateToTrimetric );
 
 			pybind::def_functor( "hotspotCorrect", nodeScriptMethod, &NodeScriptMethod::s_hotspotCorrect );

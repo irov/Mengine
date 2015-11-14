@@ -452,9 +452,9 @@ namespace Menge
 			return false;
 		}
 
-		const mt::vec2f & v = *it;
+		const mt::vec2f & base_v = *it;
 
-		mt::reset( _box2f, v );
+		mt::reset( _box2f, base_v );
 
 		++it;
 

@@ -197,12 +197,12 @@ namespace Menge
 			const Metacode::Meta_Pak::Meta_Resources::TVectorMeta_Resource & includes_resource = meta_resources.get_IncludesResource();
             
 			for( Metacode::Meta_Pak::Meta_Resources::TVectorMeta_Resource::const_iterator
-				it = includes_resource.begin(),
-				it_end = includes_resource.end();
-			it != it_end;
-			++it )
+				it_include = includes_resource.begin(),
+				it_include_end = includes_resource.end();
+			it_include != it_include_end;
+			++it_include)
 			{
-				const Metacode::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it;
+				const Metacode::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it_include;
 
 				ConstString Path;
 				meta_resource.swap_Path( Path );
@@ -223,12 +223,12 @@ namespace Menge
 			const Metacode::Meta_Pak::Meta_Texts::TVectorMeta_Text & includes_text = meta_texts.get_IncludesText();
 
 			for( Metacode::Meta_Pak::Meta_Texts::TVectorMeta_Text::const_iterator
-				it = includes_text.begin(),
-				it_end = includes_text.end();
-			it != it_end;
-			++it )
+				it_include = includes_text.begin(),
+				it_include_end = includes_text.end();
+				it_include != it_include_end;
+			++it_include)
 			{
-				const Metacode::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it;
+				const Metacode::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it_include;
 
 				ConstString Path;
                 meta_text.swap_Path( Path );
@@ -249,12 +249,12 @@ namespace Menge
 			const Metacode::Meta_Pak::Meta_Datas::TVectorMeta_Data & includes_data = meta_datas.get_IncludesData();
 
 			for( Metacode::Meta_Pak::Meta_Datas::TVectorMeta_Data::const_iterator
-				it = includes_data.begin(),
-				it_end = includes_data.end();
-			it != it_end;
-			++it )
+				it_include = includes_data.begin(),
+				it_include_end = includes_data.end();
+				it_include != it_include_end;
+			++it_include)
 			{
-				const Metacode::Meta_Pak::Meta_Datas::Meta_Data & meta_data = *it;
+				const Metacode::Meta_Pak::Meta_Datas::Meta_Data & meta_data = *it_include;
 
 				const ConstString & name = meta_data.get_Name();
 				const ConstString & path = meta_data.get_Path();
@@ -276,12 +276,12 @@ namespace Menge
 			const Metacode::Meta_Pak::Meta_Materials::TVectorMeta_Material & includes_material = meta_materials.get_IncludesMaterial();
 
 			for( Metacode::Meta_Pak::Meta_Materials::TVectorMeta_Material::const_iterator
-				it = includes_material.begin(),
-				it_end = includes_material.end();
-			it != it_end;
-			++it )
+				it_include = includes_material.begin(),
+				it_include_end = includes_material.end();
+				it_include != it_include_end;
+			++it_include)
 			{
-				const Metacode::Meta_Pak::Meta_Materials::Meta_Material & meta_material = *it;
+				const Metacode::Meta_Pak::Meta_Materials::Meta_Material & meta_material = *it_include;
 
 				const ConstString & path = meta_material.get_Path();
 

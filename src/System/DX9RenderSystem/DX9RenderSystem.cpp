@@ -245,7 +245,7 @@ namespace Menge
 		m_fullscreen = _fullscreen;
         m_waitForVSync = _waitForVSync;
 				
-		m_d3dppW.MultiSampleType = D3DMULTISAMPLE_NONE;
+		m_d3dppW.MultiSampleType = D3DMULTISAMPLE_2_SAMPLES;
 		m_d3dppW.Windowed = TRUE;
 		//m_d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
@@ -278,7 +278,7 @@ namespace Menge
 		m_d3dppW.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
 		
-		m_d3dppFS.MultiSampleType = D3DMULTISAMPLE_NONE;
+		m_d3dppFS.MultiSampleType = D3DMULTISAMPLE_2_SAMPLES;
         m_d3dppFS.Windowed = FALSE;
 
 		m_d3dppFS.BackBufferWidth = m_windowResolution.getWidth();

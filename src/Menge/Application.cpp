@@ -267,6 +267,24 @@ namespace Menge
 			LOGGER_CRITICAL( m_serviceProvider )("Author: IROV\n Email for support/feedbacks/improvement request and suggestions: irov13@mail.ru");
 		}
 
+		Resolution windowResolution;
+		this->calcWindowResolution( windowResolution );
+
+		bool fullscreen = this->getFullscreenMode();
+
+		if( fullscreen == true )
+		{
+			Resolution desktopResolution;
+			PLATFORM_SERVICE( m_serviceProvider )
+				->getDesktopResolution( desktopResolution );
+
+			m_currentResolution = desktopResolution;
+		}
+		else
+		{
+			this->calcWindowResolution( m_currentResolution );
+		}
+
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -455,19 +473,6 @@ namespace Menge
         //}
 
         bool fullscreen = this->getFullscreenMode();
-
-		if( fullscreen == true )
-		{
-            Resolution desktopResolution;
-            PLATFORM_SERVICE(m_serviceProvider)
-				->getDesktopResolution( desktopResolution );
-
-            m_currentResolution = desktopResolution;
-		}
-		else
-		{
-			this->calcWindowResolution( m_currentResolution );
-		}
 
 		RENDER_SERVICE(m_serviceProvider)->setVSync( m_vsync );
 

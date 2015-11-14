@@ -82,6 +82,23 @@ namespace Menge
         }
 
 		const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
+
+		uint32_t limitVideoWidth = CONFIG_VALUE( m_serviceProvider, "Limit", "VideoWidth", 2048U );
+		uint32_t limitVideoHeight = CONFIG_VALUE( m_serviceProvider, "Limit", "VideoHeight", 2048U );
+
+		if( dataInfo->frameWidth > limitVideoWidth || dataInfo->frameHeight > limitVideoHeight )
+		{
+			LOGGER_ERROR( m_serviceProvider )("ResourceVideo.isValid: '%s' path '%s' invalid size %d:%d limit %d:%d"
+				, this->getName().c_str()
+				, m_path.c_str()
+				, dataInfo->frameWidth
+				, dataInfo->frameHeight
+				, limitVideoWidth
+				, limitVideoHeight
+				);
+
+			return false;
+		}
 				
 		uint32_t Limit_VideoFrameRate = CONFIG_VALUE(m_serviceProvider, "Limit", "VideoFrameRate", 30U);
 

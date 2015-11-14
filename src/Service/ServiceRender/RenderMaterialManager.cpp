@@ -292,12 +292,12 @@ namespace Menge
 			const Metacode::Meta_DataBlock::Meta_Material::TVectorMeta_TextureStages & include_TextureStages = meta_Material.get_IncludesTextureStages();
 
 			for( Metacode::Meta_DataBlock::Meta_Material::TVectorMeta_TextureStages::const_iterator
-				it = include_TextureStages.begin(),
-				it_end = include_TextureStages.end();
-			it != it_end;
-			++it )
+				it_include = include_TextureStages.begin(),
+				it_include_end = include_TextureStages.end();
+				it_include != it_include_end;
+			++it_include)
 			{
-				const Metacode::Meta_DataBlock::Meta_Material::Meta_TextureStages & meta_TextureStages = *it;
+				const Metacode::Meta_DataBlock::Meta_Material::Meta_TextureStages & meta_TextureStages = *it_include;
 
 				uint32_t index = meta_TextureStages.get_Stage();
 

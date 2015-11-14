@@ -188,8 +188,8 @@ namespace Menge
 
 			zipFile->read( &fileNameBuffer, header.fileNameLen );
 
-			uint32_t header_size = 46 + header.fileNameLen + header.extraFieldLen + header.commentLen;
-			header_offset += header_size;
+			uint32_t file_header_size = 46 + header.fileNameLen + header.extraFieldLen + header.commentLen;
+			header_offset += file_header_size;
 						
 			if( header.compressedSize == 0 ) // folder
 			{

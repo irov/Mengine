@@ -193,11 +193,8 @@ namespace Menge
 			return false;
 		}
 
-		uint32_t limitMovieWidth = CONFIG_SERVICE(m_serviceProvider)
-			->getValue("Limit", "MovieWidth", 16384U );
-
-		uint32_t limitMovieHeight = CONFIG_SERVICE(m_serviceProvider)
-			->getValue("Limit", "MovieHeight", 16384U );
+		uint32_t limitMovieWidth = CONFIG_VALUE( m_serviceProvider, "Limit", "MovieWidth", 16384U );
+		uint32_t limitMovieHeight = CONFIG_VALUE( m_serviceProvider, "Limit", "MovieHeight", 16384U );
 
 		uint32_t width = (uint32_t)(m_size.x + 0.5f);
 		uint32_t height = (uint32_t)(m_size.y + 0.5f);

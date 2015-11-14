@@ -10,7 +10,7 @@ namespace Menge
 	{
 	public:
 		FileLogger();
-		virtual ~FileLogger();
+		~FileLogger();
 
 	public:
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;

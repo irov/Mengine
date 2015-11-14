@@ -461,9 +461,9 @@ namespace Menge
 						continue;
 					}
 
-					const mt::vec3f & velocity = unit->getVelocity();
+					const mt::vec3f & unit_velocity = unit->getVelocity();
 
-					mt::vec3f unit_translate = velocity * iterate_timing;
+					mt::vec3f unit_translate = unit_velocity * iterate_timing;
 
 					unit_translate += layer_translate_position;
 
@@ -541,9 +541,9 @@ namespace Menge
 						continue;
 					}
 
-					const mt::vec3f & velocity = unit->getVelocity();
+					const mt::vec3f & unit_velocity = unit->getVelocity();
 
-					mt::vec3f unit_translate = velocity * iterate_timing;
+					mt::vec3f unit_translate = unit_velocity * iterate_timing;
 
 					unit_translate += layer_translate_position;
 

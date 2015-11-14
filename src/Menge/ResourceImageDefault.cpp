@@ -168,11 +168,8 @@ namespace Menge
 
 		const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
-		uint32_t limitTextureWidth = CONFIG_SERVICE(m_serviceProvider)
-			->getValue( "Limit", "TextureWidth", 2048U );
-
-		uint32_t limitTextureHeight = CONFIG_SERVICE(m_serviceProvider)
-			->getValue( "Limit", "TextureHeight", 2048U );
+		uint32_t limitTextureWidth = CONFIG_VALUE( m_serviceProvider, "Limit", "TextureWidth", 2048U );
+		uint32_t limitTextureHeight = CONFIG_VALUE( m_serviceProvider, "Limit", "TextureHeight", 2048U );
 
 		float width = (float)dataInfo->width;
 		float height = (float)dataInfo->height;
@@ -219,7 +216,9 @@ namespace Menge
 			return false;
 		}
 
-		if( CONFIG_SERVICE(m_serviceProvider)->getValue( "Check", "ImageTransparency", false ) == true && dataInfo->channels == 4 )
+		bool check_imageTransparency = CONFIG_VALUE( m_serviceProvider, "Check", "ImageTransparency", false );
+
+		if( check_imageTransparency == true && dataInfo->channels == 4 )
 		{
 			size_t texture_size = dataInfo->getSize();
 
@@ -272,7 +271,9 @@ namespace Menge
 				return false;
 			}
 
-			if( CONFIG_SERVICE(m_serviceProvider)->getValue( "Check", "ImageRowColumnTransparency", false ) == true )
+			bool check_imageRowColumnTransparency = CONFIG_VALUE( m_serviceProvider, "Check", "ImageRowColumnTransparency", false );
+
+			if( check_imageRowColumnTransparency == true )
 			{
 				if( s_checkRowColumnTransparency( buffer_memory, dataInfo->width, dataInfo->height ) == true )
 				{

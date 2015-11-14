@@ -258,6 +258,11 @@ namespace mt
 		return _rhs;
 	}
 
+	MENGINE_MATH_FUNCTION_INLINE vec2f operator+(vec2f _rhs)
+	{
+		return _rhs;
+	}
+
 	MENGINE_MATH_FUNCTION_INLINE float dot_v2_v2(const vec2f &a, const vec2f &b)
 	{
 		return a.x * b.x + a.y * b.y;
@@ -405,9 +410,9 @@ namespace mt
 
 		float x = mt::acos32( cos );
 
-		if( _vec.y > 0.f )
+		if( _vec.y < 0.f )
 		{
-			return -x;
+			return mt::m_two_pi - x;
 		}
 
 		return x;

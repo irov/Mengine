@@ -25,8 +25,8 @@ if(NOT MSVC)
         ADD_DEFINITIONS(-D"override = /* */")
         ADD_DEFINITIONS(-D"nullptr=0")
         ADD_DEFINITIONS(-D"nullptr_t=void*")     
-    endif(EMSCRIPTEN)
-endif(NOT MSVC)
+    endif()
+endif() 
 
 #add_definitions(-Dstdex_allocator_disable)
 

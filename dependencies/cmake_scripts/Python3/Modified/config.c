@@ -19,11 +19,9 @@ extern PyObject* PyInit_math(void);
 extern PyObject* PyInit__md5(void);
 extern PyObject* PyInit_nt(void);
 extern PyObject* PyInit__operator(void);
-extern PyObject* PyInit_signal(void);
 extern PyObject* PyInit__sha1(void);
 extern PyObject* PyInit__sha256(void);
 extern PyObject* PyInit__sha512(void);
-extern PyObject* PyInit_time(void);
 extern PyObject* PyInit__thread(void);
 #ifdef WIN32
 extern PyObject* PyInit_msvcrt(void);
@@ -45,13 +43,13 @@ extern PyObject* PyInit__sre(void);
 extern PyObject* PyInit_parser(void);
 extern PyObject* PyInit_winreg(void);
 extern PyObject* PyInit__struct(void);
-extern PyObject* PyInit__datetime(void);
 extern PyObject* PyInit__functools(void);
 extern PyObject* PyInit__json(void);
 extern PyObject* PyInit_zlib(void);
 extern PyObject* PyInit_pyexpat(void);
 extern PyObject* PyInit__socket( void );
 extern PyObject* PyInit_unicodedata( void );
+extern PyObject* PyInit_time( void );
 
 extern PyObject* PyInit__multibytecodec(void);
 extern PyObject* PyInit__codecs_cn(void);
@@ -70,6 +68,9 @@ extern PyObject* _PyWarnings_Init(void);
 extern PyObject* PyInit__string(void);
 extern PyObject* PyInit__stat(void);
 extern PyObject* PyInit__opcode(void);
+extern PyObject* PyInit_select( void );
+extern PyObject* PyInit__decimal( void );
+
 
 /* tools/freeze/makeconfig.py marker for additional "extern" */
 /* -- ADDMODULE MARKER 1 -- */
@@ -94,12 +95,10 @@ struct _inittab _PyImport_Inittab[] = {
     {"math", PyInit_math},
     {"nt", PyInit_nt}, /* Use the NT os functions, not posix */
     {"_operator", PyInit__operator},
-    {"signal", PyInit_signal},
     {"_md5", PyInit__md5},
     {"_sha1", PyInit__sha1},
     {"_sha256", PyInit__sha256},
     {"_sha512", PyInit__sha512},
-    {"time", PyInit_time},
 #ifdef WITH_THREAD
     {"_thread", PyInit__thread},
 #endif
@@ -125,8 +124,7 @@ struct _inittab _PyImport_Inittab[] = {
     {"_sre", PyInit__sre},
     {"parser", PyInit_parser},
     {"winreg", PyInit_winreg},
-    {"_struct", PyInit__struct},
-    {"_datetime", PyInit__datetime},
+    {"_struct", PyInit__struct},    
     {"_functools", PyInit__functools},
     {"_json", PyInit__json},
 
@@ -166,6 +164,9 @@ struct _inittab _PyImport_Inittab[] = {
     {"atexit", PyInit_atexit},
     {"_stat", PyInit__stat},
     {"_opcode", PyInit__opcode},
+	{"time", PyInit_time},
+	{"select", PyInit_select},
+	{"_decimal", PyInit__decimal},
 
     /* Sentinel */
     {0, 0}

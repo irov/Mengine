@@ -44,7 +44,7 @@ endif(NOT MSVC)
 
 add_definitions(-DMS_NO_COREDLL)
 add_definitions(-DPy_NO_ENABLE_SHARED)
-add_definitions(-DPYBIND_PYTHON_VERSION=342)
+add_definitions(-DPYBIND_PYTHON_VERSION=350)
 
 include_directories(${SOURCE_DIR}/include)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../Python3)

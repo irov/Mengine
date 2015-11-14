@@ -89,8 +89,8 @@ file(MAKE_DIRECTORY ${python32_BINARY_DIR}/Modules)
 #configure_file(pyconfig.h.cmake pyconfig.h @ONLY)
 
 #file(COPY pyconfig.h DESTINATION ${SOURCE_DIR}/PC)
-file(COPY dl_nt.c DESTINATION ${SOURCE_DIR}/PC)
-file(COPY getbuildinfo.c DESTINATION ${SOURCE_DIR}/Modules)
+#file(COPY dl_nt.c DESTINATION ${SOURCE_DIR}/PC)
+#file(COPY getbuildinfo.c DESTINATION ${SOURCE_DIR}/Modules)
 
 
 #configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
@@ -165,6 +165,7 @@ set(OBJECT_SRCS
         ${SOURCE_DIR}/Objects/unicodetype_db.h
         ${SOURCE_DIR}/Objects/weakrefobject.c        
         ${SOURCE_DIR}/Objects/namespaceobject.c
+        ${SOURCE_DIR}/Objects/odictobject.c
         ${SOURCE_DIR}/Objects/accu.c
         )
    
@@ -219,7 +220,9 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/traceback.c
                 ${SOURCE_DIR}/Python/dynload_win.c
                 ${SOURCE_DIR}/Python/random.c
-                ${SOURCE_DIR}/Python/pyhash.c                
+                ${SOURCE_DIR}/Python/pyhash.c    
+                ${SOURCE_DIR}/Python/pylifecycle.c
+                ${SOURCE_DIR}/Python/pystrhex.c
                 
                 ${SOURCE_DIR}/PC/config.c
                 ${SOURCE_DIR}/PC/dl_nt.c
@@ -267,6 +270,22 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_winapi.c
                 ${SOURCE_DIR}/Modules/_operator.c
                 
+                ${SOURCE_DIR}/Modules/_decimal/_decimal.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/basearith.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/constants.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/context.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/convolute.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/crt.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/difradix2.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/fnt.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/fourstep.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/io.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/memory.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/mpdecimal.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/numbertheory.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/sixstep.c
+                ${SOURCE_DIR}/Modules/_decimal/libmpdec/transpose.c                
+                
                 ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_cn.c
                 ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_hk.c
                 ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_iso2022.c
@@ -289,7 +308,6 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/audioop.c
                 ${SOURCE_DIR}/Modules/binascii.c
                 ${SOURCE_DIR}/Modules/cmathmodule.c
-                ${SOURCE_DIR}/Modules/_datetimemodule.c
                 ${SOURCE_DIR}/Modules/errnomodule.c
                 ${SOURCE_DIR}/Modules/gcmodule.c
                 ${SOURCE_DIR}/Modules/itertoolsmodule.c
@@ -307,7 +325,6 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/signalmodule.c
                 ${SOURCE_DIR}/Modules/symtablemodule.c
                 ${SOURCE_DIR}/Modules/_threadmodule.c
-                ${SOURCE_DIR}/Modules/timemodule.c
                 ${SOURCE_DIR}/Modules/xxsubtype.c
                 ${SOURCE_DIR}/Modules/zipimport.c
                 ${SOURCE_DIR}/Modules/unicodedata.c
@@ -344,7 +361,8 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/zlibmodule.c
                 
                 
-                #${SOURCE_DIR}/Modules/timemodule.c
+                ${SOURCE_DIR}/Modules/timemodule.c
+                ${SOURCE_DIR}/Modules/selectmodule.c
 				#${SOURCE_DIR}/Modules/cStringIO.c
 				#${SOURCE_DIR}/Modules/arraymodule.c
 				#${SOURCE_DIR}/Modules/datetimemodule.c				
@@ -360,7 +378,12 @@ endif( NOT WIN32 )
 set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
 set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"3.4.2\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )
 
-include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
+include_directories(${SOURCE_DIR})
+include_directories(${SOURCE_DIR}/Include)
+
+add_definitions(-DCONFIG_32)
+add_definitions(-DANSI)
+
 if(WIN32)
   include_directories(${SOURCE_DIR}/PC ${SOURCE_DIR}/Python ${SOURCE_DIR}/Modules/expat)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../zlib)

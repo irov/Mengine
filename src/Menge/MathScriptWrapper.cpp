@@ -738,11 +738,14 @@ namespace Menge
 			.def_member( "end", &Viewport::end )
 			.def( "getWidth", &Viewport::getWidth )
 			.def( "getHeight", &Viewport::getHeight )
+			.def( "getSquare", &Viewport::getSquare )
 			.def( "testPoint", &Viewport::testPoint )
 			.def( "testBBox", &Viewport::testBBox )
 			.def( "testRectangle", &Viewport::testRectangle )
 			.def( "existBBox", &Viewport::existBBox )
 			.def( "existRectangle", &Viewport::existRectangle )
+			.def( "intersectBBox", &Viewport::intersectBBox )
+			.def( "getIntersectionSquareBBox", &Viewport::getIntersectionSquareBBox )
 			;
 
 		pybind::struct_<ColourValue>("Color")

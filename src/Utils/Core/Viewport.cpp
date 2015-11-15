@@ -1,5 +1,7 @@
 #	include "Viewport.h"
 
+#	include <algorithm>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -84,5 +86,87 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Viewport::equalViewport( const Viewport & _vp ) const
+	{
+		if( begin != _vp.begin )
+		{
+			return false;
+		}
+
+		if( end != _vp.end )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Viewport::testPoint( const mt::vec2f & _point ) const
+	{
+		if( begin.x > _point.x ) return false;
+		if( begin.y > _point.y ) return false;
+		if( end.x <= _point.x ) return false;
+		if( end.y <= _point.y ) return false;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Viewport::testRectangle( const mt::vec2f & _min, const mt::vec2f & _max ) const
+	{
+		return mt::is_intersect( _min, _max, begin, end );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Viewport::testBBox( const mt::box2f& _bbox ) const
+	{
+		return this->testRectangle( _bbox.minimum, _bbox.maximum );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Viewport::existRectangle( const mt::vec2f & _min, const mt::vec2f & _max ) const
+	{
+		return mt::is_exist( _min, _max, begin, end );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Viewport::existBBox( const mt::box2f& _bbox ) const
+	{
+		return this->existRectangle( _bbox.minimum, _bbox.maximum );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Viewport::toBBox( mt::box2f & _box ) const
+	{
+		mt::set_box_from_min_max( _box, begin, end );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Viewport::intersectBBox( const mt::box2f& _bbox ) const
+	{
+		bool result = mt::is_intersect( _bbox.minimum, _bbox.maximum, this->begin, this->end );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Viewport::getIntersectionSquareBBox( const mt::box2f& _bbox ) const
+	{
+		if( mt::is_intersect( _bbox.minimum, _bbox.maximum, this->begin, this->end ) == false )
+		{
+			return 0.f;
+		}
+
+		float sx[4] = {_bbox.minimum.x, _bbox.maximum.x, this->begin.x, this->end.x};
+		std::sort( sx, sx + 4 );
+
+		float sy[4] = {_bbox.minimum.y, _bbox.maximum.y, this->begin.y, this->end.y};
+		std::sort( sy, sy + 4 );
+
+		float s = (sx[2] - sx[1])*(sy[2] - sy[1]);
+
+		return s;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Viewport::getSquare() const
+	{
+		float s = (this->end.x - this->begin.x) * (this->end.y - this->begin.y);
+
+		return s;
 	}
 }

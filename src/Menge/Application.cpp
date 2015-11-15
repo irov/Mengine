@@ -495,7 +495,7 @@ namespace Menge
 			, m_contentResolution
 			, m_renderViewport
 			, m_bits
-			, fullscreen			
+			, fullscreen
 			, m_FSAAType
 			, m_FSAAQuality );
 

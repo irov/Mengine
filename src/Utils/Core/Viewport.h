@@ -16,16 +16,21 @@ namespace Menge
 		void initialize( const mt::vec2f & _begin, const mt::vec2f & _end );
 
 	public:
-        inline bool equalViewport( const Viewport & _vp ) const;
+        bool equalViewport( const Viewport & _vp ) const;
 
-		inline bool testPoint( const mt::vec2f & _point ) const;
-		inline bool testBBox( const mt::box2f& _bbox ) const;
-		inline bool testRectangle( const mt::vec2f & _min,  const mt::vec2f & _max ) const;
+		bool testPoint( const mt::vec2f & _point ) const;
+		bool testBBox( const mt::box2f& _bbox ) const;
+		bool testRectangle( const mt::vec2f & _min,  const mt::vec2f & _max ) const;
 
-		inline bool existBBox( const mt::box2f& _bbox ) const;
-		inline bool existRectangle( const mt::vec2f & _min,  const mt::vec2f & _max ) const;
+		bool existBBox( const mt::box2f& _bbox ) const;
+		bool existRectangle( const mt::vec2f & _min,  const mt::vec2f & _max ) const;
 
-		inline void toBBox( mt::box2f & _box ) const;
+		bool intersectBBox( const mt::box2f& _bbox ) const;
+
+		float getIntersectionSquareBBox( const mt::box2f& _bbox ) const;
+		float getSquare() const;
+
+		void toBBox( mt::box2f & _box ) const;
 
 	public:
 		void parallax( const mt::vec2f & _factor );
@@ -45,54 +50,4 @@ namespace Menge
 		mt::vec2f begin;
 		mt::vec2f end;
 	};
-	//////////////////////////////////////////////////////////////////////////
-    bool Viewport::equalViewport( const Viewport & _vp ) const
-    {
-        if( begin != _vp.begin )
-        {
-            return false;
-        }
-
-        if( end != _vp.end )
-        {
-            return false;
-        }
-
-        return true;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	bool Viewport::testPoint( const mt::vec2f & _point ) const
-	{
-		if( begin.x > _point.x ) return false;
-		if( begin.y > _point.y ) return false;
-		if( end.x <= _point.x ) return false;
-		if( end.y <= _point.y ) return false;
-
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline bool Viewport::testRectangle( const mt::vec2f & _min, const mt::vec2f & _max ) const
-	{
-		return mt::is_intersect( _min, _max, begin, end );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline bool Viewport::testBBox( const mt::box2f& _bbox ) const
-	{
-		return this->testRectangle( _bbox.minimum, _bbox.maximum );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline bool Viewport::existRectangle( const mt::vec2f & _min,  const mt::vec2f & _max ) const
-	{
-		return mt::is_exist( _min, _max, begin, end ); 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline bool Viewport::existBBox( const mt::box2f& _bbox ) const
-	{
-		return this->existRectangle( _bbox.minimum, _bbox.maximum ); 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline void Viewport::toBBox( mt::box2f & _box ) const
-	{
-		mt::set_box_from_min_max( _box, begin, end );
-	}
 }

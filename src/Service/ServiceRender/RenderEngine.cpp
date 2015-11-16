@@ -510,7 +510,6 @@ namespace Menge
 					->setTextureStageFilter( stageId, current_texture_stage.minification, current_texture_stage.mipmap, current_texture_stage.magnification );
 			}
 
-
 			if( current_texture_stage.colorOp != texture_stage.colorOp
 				|| current_texture_stage.colorArg1 != texture_stage.colorArg1
 				|| current_texture_stage.colorArg2 != texture_stage.colorArg2 )
@@ -603,7 +602,7 @@ namespace Menge
 		{
 			for( uint32_t stageId = textureCount; stageId != m_currentTextureStages; ++stageId )
 			{
-				this->disableTextureStage_( stageId );
+				this->restoreTextureStage_( stageId );
 			}
 		}
 
@@ -673,7 +672,7 @@ namespace Menge
 		++m_debugInfo.dips;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::disableTextureStage_( uint32_t _stage )
+	void RenderEngine::restoreTextureStage_( uint32_t _stage )
 	{
 		RenderTextureStage & stage = m_currentTextureStage[_stage];
 
@@ -683,17 +682,32 @@ namespace Menge
 
 		RENDER_SYSTEM(m_serviceProvider)
 			->setTexture( _stage, nullptr );
+
+		RENDER_SYSTEM( m_serviceProvider )->setTextureAddressing( _stage
+			, stage.addressU
+			, stage.addressV
+			);
+
+		RENDER_SYSTEM( m_serviceProvider )->setTextureStageFilter( _stage
+			, stage.minification
+			, stage.mipmap
+			, stage.magnification
+			);
 		
 		RENDER_SYSTEM( m_serviceProvider )->setTextureStageColorOp( _stage
-			, TOP_DISABLE
-			, TARG_CURRENT
-			, TARG_CURRENT
+			, stage.colorOp
+			, stage.colorArg1
+			, stage.colorArg2
 			);
 
 		RENDER_SYSTEM( m_serviceProvider )->setTextureStageAlphaOp( _stage
-			, TOP_DISABLE
-			, TARG_CURRENT
-			, TARG_CURRENT
+			, stage.alphaOp
+			, stage.colorArg1
+			, stage.colorArg2
+			);
+
+		RENDER_SYSTEM( m_serviceProvider )->setTextureStageTexCoordIndex( _stage
+			, stage.texCoordIndex
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -709,59 +723,18 @@ namespace Menge
 
 		for( int i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
 		{
-			RenderTextureStage & stage = m_currentTextureStage[i];
-
-			stage.mipmap = TF_LINEAR;
-			stage.magnification = TF_LINEAR;
-			stage.minification = TF_LINEAR;
-
-			stage.addressU = TAM_CLAMP;
-			stage.addressV = TAM_CLAMP;
-
-			stage.colorOp = TOP_DISABLE;
-			stage.colorArg1 = TARG_TEXTURE;
-			stage.colorArg2 = TARG_DIFFUSE;
-
-			stage.alphaOp = TOP_DISABLE;
-			stage.colorArg1 = TARG_TEXTURE;
-			stage.colorArg2 = TARG_DIFFUSE;
-
-			RENDER_SYSTEM( m_serviceProvider )->setTextureStageFilter( i
-				, stage.minification
-				, stage.mipmap
-				, stage.magnification
-				);
-
-			RENDER_SYSTEM( m_serviceProvider )->setTextureAddressing( i
-				, stage.addressU
-				, stage.addressV 				
-				);
-
-			RENDER_SYSTEM( m_serviceProvider )->setTextureStageColorOp( i
-				, stage.colorOp
-				, stage.colorArg1
-				, stage.colorArg2
-				);
-
-			RENDER_SYSTEM( m_serviceProvider )->setTextureStageAlphaOp( i
-				, stage.alphaOp
-				, stage.alphaArg1
-				, stage.alphaArg2
-				);
-
-			RENDER_SYSTEM( m_serviceProvider )->setTextureStageTexCoordIndex( i
-				, stage.texCoordIndex
-				);
+			this->restoreTextureStage_( i );
 		}
 
 		std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
 
 		mt::mat4f viewTransform;
-		mt::mat4f projTransform;
-		mt::mat4f worldTransform;
-
 		mt::ident_m4( viewTransform );
+
+		mt::mat4f projTransform;
 		mt::ident_m4( projTransform );
+
+		mt::mat4f worldTransform;
 		mt::ident_m4( worldTransform );
 
 		RENDER_SYSTEM( m_serviceProvider )->setVertexBuffer( m_currentVBHandle );

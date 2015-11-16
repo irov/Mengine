@@ -32,10 +32,6 @@ namespace Menge
 		~PrefetcherManager();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
-		ServiceProviderInterface * getServiceProvider() const override;
-
-	public:
 		bool _initialize() override;
 		void _finalize() override;
 
@@ -64,8 +60,6 @@ namespace Menge
 		bool hasPrefetch( const ConstString& _pakName, const FilePath & _fileName, PrefetchReceiver ** _receiver ) const;
 
 	protected:
-		ServiceProviderInterface * m_serviceProvider;
-
 		ThreadQueueInterfacePtr m_threadQueue;
 
 		typedef FactoryPoolStore<ThreadTaskPrefetchImageDecoder, 16> TFactoryThreadTaskPrefetchImageDecoder;

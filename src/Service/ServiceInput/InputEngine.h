@@ -50,10 +50,7 @@ namespace Menge
 
 	public:
 		void pushEvent( const InputUnionEvent & _event ) override;
-
-	private:
-		ServiceProviderInterface * m_serviceProvider;
-        
+       
     protected:
 		void keyEvent_( const InputKeyEvent & _params );
 		void mouseButtonEvent_( const InputMouseButtonEvent& _params );

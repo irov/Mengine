@@ -63,8 +63,6 @@ namespace Menge
 		const RenderCameraInterface * camera;
 		const RenderClipplaneInterface * clipplane;
 				
-		mt::box2f bb_inv;
-
 		const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
 
 		bool orthogonalProjection;
@@ -164,7 +162,7 @@ namespace Menge
 		bool getVSync() const override;
 
 	protected:			
-		void disableTextureStage_( uint32_t _stage );
+		void restoreTextureStage_( uint32_t _stage );
 
 		void setRenderSystemDefaults_();
 		void restoreRenderSystemStates_();

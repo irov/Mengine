@@ -153,6 +153,7 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) override;
 
 		bool supportTextureFormat( PixelFormat _format ) const override;
+		bool supportTextureNonPow2() const override;
 
 		void onWindowMovedOrResized() override;
 		void onWindowClose() override;

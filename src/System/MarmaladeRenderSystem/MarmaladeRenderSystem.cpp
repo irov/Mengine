@@ -758,6 +758,11 @@ namespace Menge
 		return s_toGLInternalFormat( _format ) != 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeRenderSystem::supportTextureNonPow2() const
+	{
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystem::onWindowMovedOrResized()
 	{
 

@@ -15,10 +15,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	InputEngine::InputEngine()		
 	{
-		for( uint32_t i = 0; i != 0; ++i )
-		{
-			m_cursorPosition[i] = mt::vec2f( 0.f, 0.f );
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	InputEngine::~InputEngine()
@@ -27,6 +23,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool InputEngine::_initialize()
 	{
+		for( uint32_t i = 0; i != MENGINE_INPUT_MAX_TOUCH; ++i )
+		{
+			m_cursorPosition[i] = mt::vec2f( 0.f, 0.f );
+		}
+
 		std::fill( m_keyBuffer, m_keyBuffer + sizeof(m_keyBuffer), false );
 		std::fill( m_mouseBuffer, m_mouseBuffer + sizeof( m_mouseBuffer ), false );
 

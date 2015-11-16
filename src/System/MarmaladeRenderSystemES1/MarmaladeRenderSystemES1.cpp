@@ -357,23 +357,6 @@ namespace Menge
 		GLCALL( m_serviceProvider, glDisableClientState, (GL_COLOR_ARRAY) );
 		GLCALL( m_serviceProvider, glDisableClientState, (GL_TEXTURE_COORD_ARRAY) );
 
-		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
-		{
-			TextureStage & textureStage = m_textureStage[i];
-
-			GLCALL( m_serviceProvider, glActiveTexture, (GL_TEXTURE0 + i) );
-
-			if( textureStage.texture == 0 )
-			{
-				continue;
-			}
-				
-			
-			GLCALL( m_serviceProvider, glDisable, (GL_TEXTURE_2D) );
-
-			stdex::intrusive_ptr_release( textureStage.texture );
-		}
-
 		GLCALL( m_serviceProvider, glBindBuffer, (GL_ARRAY_BUFFER, 0) );
 		GLCALL( m_serviceProvider, glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, 0) );
 	}
@@ -382,15 +365,17 @@ namespace Menge
 	{
 		TextureStage & tStage = m_textureStage[_stage];
 
+		if( tStage.texture != nullptr )
+		{
+			stdex::intrusive_ptr_release( tStage.texture );
+			tStage.texture = nullptr;
+		}
+
 		if( _texture != nullptr )
 		{
 			MarmaladeRenderTextureES1 * texture = stdex::intrusive_get<MarmaladeRenderTextureES1 *>( _texture );
 
 			stdex::intrusive_ptr_setup( tStage.texture, texture );
-		}
-		else
-		{
-			stdex::intrusive_ptr_release( tStage.texture );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -674,6 +659,17 @@ namespace Menge
 		m_currentIndexBuffer = nullptr;
 		m_currentVertexBuffer = nullptr;
 
+		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			TextureStage & stage = m_textureStage[i];
+
+			if( stage.texture != nullptr )
+			{
+				stdex::intrusive_ptr_release( stage.texture );
+				stage.texture = nullptr;
+			}
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -746,6 +742,11 @@ namespace Menge
 	bool MarmaladeRenderSystemES1::supportTextureFormat( PixelFormat _format ) const
 	{
 		return s_toGLInternalFormat( _format ) != 0;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool MarmaladeRenderSystemES1::supportTextureNonPow2() const
+	{
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::onWindowMovedOrResized()

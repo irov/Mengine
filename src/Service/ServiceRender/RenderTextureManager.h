@@ -82,5 +82,6 @@ namespace Menge
 
 		bool m_supportA8;
 		bool m_supportR8G8B8;
+		bool m_supportNonPow2;
     };
 }

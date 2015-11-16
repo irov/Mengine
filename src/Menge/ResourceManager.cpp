@@ -617,6 +617,34 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	size_t ResourceManager::getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group ) const
+	{
+		const ResourceCacheEntry * resourceCacheEntry;
+		if( m_resourcesCache.has( _category, _group, &resourceCacheEntry ) == false )
+		{
+			return 0U;
+		}
+
+		size_t groupMemoryUse = 0U;
+
+		const TVectorResources & resources = resourceCacheEntry->resources;
+
+		for( TVectorResources::const_iterator
+			it = resources.begin(),
+			it_end = resources.end();
+		it != it_end;
+		++it )
+		{
+			ResourceReference * resource = *it;
+
+			size_t memoryUse = resource->memoryUse();
+
+			groupMemoryUse += memoryUse;
+		}
+
+		return groupMemoryUse;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
 		class FResourcesForeachDump

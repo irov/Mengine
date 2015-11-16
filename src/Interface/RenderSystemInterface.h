@@ -642,6 +642,7 @@ namespace Menge
 		virtual void clear( uint32_t _color ) = 0;
 
         virtual bool supportTextureFormat( PixelFormat _format ) const = 0;
+		virtual bool supportTextureNonPow2() const = 0;
 
 		virtual void setSeparateAlphaBlendMode() = 0;
 	};

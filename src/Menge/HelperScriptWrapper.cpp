@@ -279,6 +279,14 @@ namespace Menge
 			s_printChildren2( _node, 0 );
 		}
 
+		size_t s_getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group )
+		{
+			size_t memoryUse = RESOURCE_SERVICE( m_serviceProvider )
+				->getGroupResourcesMemoryUse( _category, _group );
+
+			return memoryUse;
+		}
+
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE(m_serviceProvider)
@@ -2011,5 +2019,7 @@ namespace Menge
 		pybind::def_functor( "isMouseButtonDown", helperScriptMethod, &HelperScriptMethod::s_isMouseButtonDown );
 
 		pybind::def_functor( "printChildren", helperScriptMethod, &HelperScriptMethod::s_printChildren );
+
+		pybind::def_functor( "getGroupResourcesMemoryUse", helperScriptMethod, &HelperScriptMethod::s_getGroupResourcesMemoryUse );
 	}
 }

@@ -892,6 +892,22 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool DX9RenderSystem::supportTextureNonPow2() const
+	{
+		D3DCAPS9 caps;
+		IF_DXCALL( m_serviceProvider, m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &caps) )
+		{
+			return false;
+		}
+
+		if( (caps.TextureCaps & D3DPTEXTURECAPS_POW2) == 0 )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::onWindowMovedOrResized()
 	{
 

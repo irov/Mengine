@@ -39,6 +39,9 @@ namespace Menge
 		m_supportR8G8B8 = RENDER_SYSTEM(m_serviceProvider)
 			->supportTextureFormat( PF_R8G8B8 );
 
+		m_supportNonPow2 = RENDER_SYSTEM( m_serviceProvider )
+			->supportTextureNonPow2();
+
 		m_factoryRenderTexture.setMethodListener( this, &RenderTextureManager::onRenderTextureDestroy_ );
 
 		return true;
@@ -466,7 +469,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////	
 	void RenderTextureManager::updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const
 	{
-		if( ( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0 )
+		if( (( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0) && m_supportNonPow2 == false )
 		{
 			_width = Helper::getTexturePOW2( _width );
 			_height = Helper::getTexturePOW2( _height );

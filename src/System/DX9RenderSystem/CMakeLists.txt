@@ -6,6 +6,8 @@ src
 	DX9RenderSystem.cpp
 	DX9RenderImage.h
 	DX9RenderImage.cpp
+	DX9RenderTargetOffscreen.h
+	DX9RenderTargetOffscreen.cpp
     DX9RenderVertexBuffer.h
     DX9RenderVertexBuffer.cpp
     DX9RenderIndexBuffer.h

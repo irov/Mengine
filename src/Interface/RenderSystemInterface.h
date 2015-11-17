@@ -541,6 +541,11 @@ namespace Menge
 	class RenderTargetInterface
 	{
 	public:
+		virtual bool begin() = 0;
+		virtual void end() = 0;
+
+	public:
+		virtual bool getData( unsigned char * _buffer, size_t _pitch ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderSystemInterface

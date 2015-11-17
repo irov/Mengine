@@ -27,7 +27,7 @@ namespace Menge
 
 	public:
 		virtual void update( float _time, float _timing ) = 0;
-		virtual void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, uint32_t _debugMask ) = 0;
+		virtual void render( const RenderObjectState * _state, uint32_t _debugMask ) = 0;
 	};
 
 	typedef stdex::intrusive_ptr<ModuleInterface> ModuleInterfacePtr;
@@ -56,9 +56,9 @@ namespace Menge
 
 	public:
 		virtual void update( float _time, float _timing ) = 0;
-		virtual void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask ) = 0;
+		virtual void render( const RenderObjectState * _state, unsigned int _debugMask ) = 0;
 	};
 
 #   define MODULE_SERVICE( serviceProvider )\
-	SERVICE_GET(serviceProvider, Menge::ModuleServiceInterface)
+	((Menge::ModuleServiceInterface *)SERVICE_GET(serviceProvider, Menge::ModuleServiceInterface))
 }

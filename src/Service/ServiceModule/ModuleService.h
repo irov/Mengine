@@ -24,7 +24,7 @@ namespace Menge
 
 	public:
 		void update( float _time, float _timing ) override;
-		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, uint32_t _debugMask ) override;
+		void render( const RenderObjectState * _state, uint32_t _debugMask ) override;
 
     protected:
 		typedef stdex::map<ConstString, ModuleFactoryInterfacePtr> TMapModuleFactory;

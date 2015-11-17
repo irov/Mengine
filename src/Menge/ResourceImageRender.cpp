@@ -83,7 +83,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceImageRender::bake( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, Node * _node, bool _clear )
+	bool ResourceImageRender::bake( const RenderObjectState * _state, Node * _node, bool _clear )
 	{
 		const RenderTextureInterfacePtr & texture = this->getTexture();
 
@@ -114,7 +114,7 @@ namespace Menge
 				->clear( 0x00000000 );
 		}
 
-		_node->render( _viewport, _camera, _clipplane, 0U );
+		_node->render( _state, 0U );
 
 		RENDER_SERVICE(m_serviceProvider)
 			->endScene();

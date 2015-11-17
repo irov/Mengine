@@ -173,9 +173,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
+	void TextField::_render( const RenderObjectState * _state )
 	{	
-		Node::_render( _viewport, _camera, _clipplane );
+		Node::_render( _state );
 
 		if( m_textEntry == nullptr )
 		{
@@ -188,7 +188,7 @@ namespace Menge
 			return;
 		}
 
-		this->renderOutline_( _viewport, _camera, _clipplane );
+		this->renderOutline_( _state );
 
 		const RenderMaterialInterfacePtr & material = this->getMaterialFont();
 
@@ -225,10 +225,10 @@ namespace Menge
 		const TVectorRenderVertex2D::value_type * vertices = &(textVertices[0]);
 
 		RENDER_SERVICE( m_serviceProvider )
-			->addRenderQuad( _viewport, _camera, _clipplane, material, vertices, countVertex, nullptr, false );
+			->addRenderQuad( _state, material, vertices, countVertex, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::renderOutline_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
+	void TextField::renderOutline_( const RenderObjectState * _state )
 	{
 		if( m_outline == false )
 		{
@@ -270,7 +270,7 @@ namespace Menge
 		TVectorRenderVertex2D::value_type * vertices = &(outlineVertices[0]);
 
         RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _viewport, _camera, _clipplane, material, vertices, countVertex, nullptr, false );
+			->addRenderQuad( _state, material, vertices, countVertex, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t TextField::getCharCount() const

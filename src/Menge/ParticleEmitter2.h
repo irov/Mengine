@@ -72,7 +72,7 @@ namespace Menge
 		void _release() override;
 
 		void _update( float _current, float _timing ) override;
-		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane ) override;
+		void _render( const RenderObjectState * _state ) override;
 
 		void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
 

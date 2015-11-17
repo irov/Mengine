@@ -373,7 +373,7 @@ namespace	Menge
 		_adaptScreenPoint = _screenPoint * windowScale + windowOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Arrow::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
+	void Arrow::_debugRender( const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) == 0 )
 		{
@@ -450,7 +450,7 @@ namespace	Menge
 				const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
 					->getDebugMaterial();
 
-				RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, _clipplane, debugMaterial
+				RENDER_SERVICE( m_serviceProvider )->addRenderLine( _state, debugMaterial
 					, vertices
 					, vertexCount
 					, nullptr
@@ -518,7 +518,7 @@ namespace	Menge
 				const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
 					->getDebugMaterial();
 
-				RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, _clipplane, debugMaterial
+				RENDER_SERVICE( m_serviceProvider )->addRenderLine( _state, debugMaterial
 					, vertices
 					, vertexCount
 					, nullptr

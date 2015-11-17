@@ -62,6 +62,7 @@ namespace Menge
 		const RenderViewportInterface * viewport;
 		const RenderCameraInterface * camera;
 		const RenderClipplaneInterface * clipplane;
+		const RenderTargetInterface * target;
 				
 		const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
 
@@ -87,16 +88,16 @@ namespace Menge
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
 	public:
-		void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
+		void addRenderObject( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum 
 			, const RenderIndices * _indices, uint32_t _indicesNum 
 			, const mt::box2f * _bb, bool _debug ) override;
 
-		void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
+		void addRenderQuad( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
 			, const RenderVertex2D * _vertices, uint32_t _verticesNum 
 			, const mt::box2f * _bb, bool _debug ) override;
 
-		void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
+		void addRenderLine( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
 			, const mt::box2f * _bb, bool _debug ) override;
 		
@@ -244,6 +245,7 @@ namespace Menge
 		const RenderViewportInterface * m_currentRenderViewport;
 		const RenderCameraInterface * m_currentRenderCamera;
 		const RenderClipplaneInterface * m_currentRenderClipplane;
+		const RenderTargetInterface * m_currentRenderTarget;
 
 		RenderProgramInterfacePtr m_currentProgram;
 

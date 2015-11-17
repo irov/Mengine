@@ -602,17 +602,19 @@ namespace Menge
 	//		);
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	void PathFinderMap::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
+	void PathFinderMap::render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
+		(void)_state;
+
 		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) == 0 )
 		{
 			return;
 		}
 
-		if( m_camera != nullptr )
-		{
-			_camera = m_camera;
-		}
+		//if( m_camera != nullptr )
+		//{
+		//	_camera = m_camera;
+		//}
 
 		//for( TVectorObstacles::iterator
 		//	it = m_obstacles.begin(),

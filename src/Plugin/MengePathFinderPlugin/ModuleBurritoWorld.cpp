@@ -167,11 +167,9 @@ namespace Menge
 		m_worlds.erase( it_erase, m_worlds.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBurritoWorld::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
+	void ModuleBurritoWorld::render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
-		(void)_viewport;
-		(void)_camera;
-		(void)_clipplane;
+		(void)_state;
 		(void)_debugMask;
 		//ToDo
 	}

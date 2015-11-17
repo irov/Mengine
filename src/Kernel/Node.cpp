@@ -32,6 +32,7 @@ namespace Menge
 		, m_renderCamera(nullptr)
 		, m_renderViewport(nullptr)
 		, m_renderClipplane(nullptr)
+		, m_renderTarget(nullptr)
 		, m_shallowGrave(0)
 		, m_shallowGravePropagate(false)
 		, m_isometricOffset(0.f, 0.f, 0.f)
@@ -911,32 +912,39 @@ namespace Menge
         this->deactivate();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
+	void Node::render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		if( this->isRenderable() == false )
 		{
 			return;
 		}
 
-		const RenderViewportInterface * renderViewport = _viewport;
+		const RenderViewportInterface * renderViewport = _state->viewport;
 
 		if( m_renderViewport != nullptr )
 		{
 			renderViewport = m_renderViewport;
 		}
 
-		const RenderCameraInterface * renderCamera = _camera;
+		const RenderCameraInterface * renderCamera = _state->camera;
 
 		if( m_renderCamera != nullptr )
 		{
 			renderCamera = m_renderCamera;
 		}
 
-		const RenderClipplaneInterface * renderClipplane = _clipplane;
+		const RenderClipplaneInterface * renderClipplane = _state->clipplane;
 
 		if( m_renderClipplane != nullptr )
 		{
 			renderClipplane = m_renderClipplane;
+		}
+
+		const RenderTargetInterface * renderTarget = _state->target;
+
+		if( m_renderTarget != nullptr )
+		{
+			renderTarget = m_renderTarget;
 		}
 
 		//const Viewport& viewPort = _camera->getViewport();
@@ -954,14 +962,20 @@ namespace Menge
 		//{
 		//	m_cameraRevision = cameraRevision;
 
+		RenderObjectState state;
+		state.viewport = renderViewport;
+		state.camera = renderCamera;
+		state.clipplane = renderClipplane;
+		state.target = renderTarget;
+
 		//if( this->checkVisibility( viewPort ) == true )
 		{
 			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
 			{
-				this->_render( renderViewport, renderCamera, renderClipplane );
+				this->_render( &state );
 			}
 
-			this->renderChild_( renderViewport, renderCamera, renderClipplane, _debugMask );
+			this->renderChild_( &state, _debugMask );
 		}
 		//}
 
@@ -969,7 +983,7 @@ namespace Menge
         {
 			if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
 			{
-				this->_debugRender( renderViewport, renderCamera, renderClipplane, _debugMask );
+				this->_debugRender( &state, _debugMask );
 			}
         }
 	}
@@ -1074,7 +1088,7 @@ namespace Menge
 		m_invalidateRendering = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderChild_( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
+	void Node::renderChild_( const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		for( TListNodeChild::unslug_iterator
 			it = m_children.ubegin(),
@@ -1084,7 +1098,7 @@ namespace Menge
 		{
 			Node * node = (*it);
 
-			node->render( _viewport, _camera, _clipplane, _debugMask );
+			node->render( _state, _debugMask );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1334,7 +1348,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface* _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
+	void Node::_debugRender( const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		if( (_debugMask & MENGE_DEBUG_NODES) == 0 )
 		{
@@ -1394,7 +1408,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE(m_serviceProvider)
 			->getDebugMaterial();
 		
-		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _viewport, _camera, _clipplane, debugMaterial
+		RENDER_SERVICE( m_serviceProvider )->addRenderLine( _state, debugMaterial
 			, vertices
 			, 8
 			, nullptr

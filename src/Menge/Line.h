@@ -21,7 +21,7 @@ namespace Menge
 		float getWidth() const;
 
 	protected:
-		void _render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane ) override;
+		void _render( const RenderObjectState * _state ) override;
 
 	protected:
 		mt::vec3f m_from;

@@ -538,6 +538,11 @@ namespace Menge
 		virtual bool isOrthogonalProjection() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
+	class RenderTargetInterface
+	{
+	public:
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class RenderSystemInterface
         : public ServiceInterface
 	{
@@ -646,10 +651,10 @@ namespace Menge
 
 		virtual void setSeparateAlphaBlendMode() = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 #   define RENDER_SYSTEM( serviceProvider )\
     ((Menge::RenderSystemInterface*)SERVICE_GET(serviceProvider, Menge::RenderSystemInterface))
-
+	//////////////////////////////////////////////////////////////////////////
     struct RenderDebugInfo
     {
         uint32_t frameCount;
@@ -660,30 +665,38 @@ namespace Menge
         uint32_t triangle;
 		uint32_t batch;
     };
-
+	//////////////////////////////////////////////////////////////////////////
 	enum ERenderBatchMode
 	{
 		ERBM_NONE = 0,
 		ERBM_NORMAL = 1,
 		ERBM_SMART = 2
 	};
-
+	//////////////////////////////////////////////////////////////////////////
+	struct RenderObjectState
+	{
+		const RenderViewportInterface * viewport;
+		const RenderCameraInterface * camera;
+		const RenderClipplaneInterface * clipplane;
+		const RenderTargetInterface * target;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class RenderServiceInterface
 		: public ServiceInterface
 	{
         SERVICE_DECLARE("RenderService")
 
     public:
-		virtual void addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
+		virtual void addRenderObject( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
             , const RenderIndices * _indices, uint32_t _indicesNum
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
-		virtual void addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
+		virtual void addRenderQuad( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
-		virtual void addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
+		virtual void addRenderLine( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _verticesNum
 			, const mt::box2f * _bb, bool _debug ) = 0;
 

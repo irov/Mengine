@@ -149,9 +149,9 @@ namespace Menge
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
+	void Model3D::_render( const RenderObjectState * _state )
 	{
-		Node::_render( _viewport, _camera, _clipplane );
+		Node::_render( _state );
 
 		if( m_frame == nullptr )
 		{
@@ -162,7 +162,7 @@ namespace Menge
 		const RenderMaterialInterfacePtr & material = this->getMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderObject( _viewport, _camera, _clipplane, material, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, nullptr, false );
+			->addRenderObject( _state, material, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Model3D::_activate()

@@ -57,6 +57,7 @@ namespace Menge
 		, m_renderCamera(nullptr)
 		, m_renderViewport(nullptr)
 		, m_renderClipplane(nullptr)
+		, m_renderTarget(nullptr)
 		, m_switchSceneTo(nullptr)
 		, m_mousePickerSystem(nullptr)
 		, m_switchScene(false)
@@ -1169,9 +1170,15 @@ namespace Menge
         unsigned int debugMask = APPLICATION_SERVICE(m_serviceProvider)
             ->getDebugMask();
 
+		RenderObjectState state;
+		state.viewport = m_renderViewport;
+		state.camera = m_renderCamera;
+		state.clipplane = m_renderClipplane;
+		state.target = m_renderTarget;
+
 		if( m_scene != nullptr )
 		{
-			m_scene->render( m_renderViewport, m_renderCamera, m_renderClipplane, debugMask );
+			m_scene->render( &state, debugMask );
 		}
 
 		//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
@@ -1185,14 +1192,14 @@ namespace Menge
 		//renderEngine->newRenderPass( m_renderCamera2D );
 
 		MODULE_SERVICE(m_serviceProvider)
-			->render( m_renderViewport, m_renderCamera, m_renderClipplane, debugMask );
+			->render( &state, debugMask );
 
 		RENDER_SERVICE(m_serviceProvider)
 			->endLimitRenderObjects();
 
 		if( m_arrow != nullptr )
 		{
-			m_arrow->render( m_renderViewport, m_arrowCamera2D, m_renderClipplane, debugMask );
+			m_arrow->render( &state, debugMask );
 		}
 
 //#	ifndef MENGINE_MASTER_RELEASE
@@ -1360,7 +1367,7 @@ namespace Menge
 
             m_debugText->setLocalPosition( mt::vec3f(gameViewport.begin, 0.f) );
 
-			m_debugText->render( m_renderViewport, m_debugCamera2D, m_renderClipplane, debugMask );
+			m_debugText->render( &state, debugMask );
 		}
 //#	endif
 		//m_renderCamera2D->setLocalPosition( pos );

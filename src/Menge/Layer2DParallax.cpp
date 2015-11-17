@@ -50,12 +50,12 @@ namespace	Menge
 		_screen.y = sp.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DParallax::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
+	void Layer2DParallax::render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
-		const mt::mat4f & camera_vm = _camera->getCameraViewMatrix();
-		const mt::mat4f & camera_pm = _camera->getCameraProjectionMatrix();
-		const Viewport & renderport = _camera->getCameraRenderport();
-		bool isOrthogonalProjection = _camera->isOrthogonalProjection();
+		const mt::mat4f & camera_vm = _state->camera->getCameraViewMatrix();
+		const mt::mat4f & camera_pm = _state->camera->getCameraProjectionMatrix();
+		const Viewport & renderport = _state->camera->getCameraRenderport();
+		bool isOrthogonalProjection = _state->camera->isOrthogonalProjection();
 
 		mt::mat4f camera_vm_inv;
 		mt::inv_m4( camera_vm_inv, camera_vm );
@@ -85,7 +85,13 @@ namespace	Menge
 
 			rc.initialize( wm, camera_pm, vm, renderport, isOrthogonalProjection );
 
-			Layer::render( _viewport, &rc, _clipplane, _debugMask );
+			RenderObjectState state;
+			state.viewport = _state->viewport;
+			state.camera = &rc;
+			state.clipplane = _state->clipplane;
+			state.target = _state->target;
+
+			Layer::render( &state, _debugMask );
 		}
 	}
 }

@@ -32,6 +32,7 @@ namespace Menge
 		, m_currentRenderCamera( nullptr )
 		, m_currentRenderViewport( nullptr )
 		, m_currentRenderClipplane( nullptr )
+		, m_currentRenderTarget( nullptr )
 		, m_maxVertexCount(0)
 		, m_maxIndexCount(0)
 		, m_depthBufferWriteEnable(false)
@@ -415,6 +416,7 @@ namespace Menge
 		m_currentRenderCamera = nullptr;
 		m_currentRenderViewport = nullptr;
 		m_currentRenderClipplane = nullptr;
+		m_currentRenderTarget = nullptr;
 		
 		m_currentMaterialId = 0;
 		m_currentTextureStages = 0;
@@ -998,6 +1000,7 @@ namespace Menge
 		pass.viewport = m_currentRenderViewport;
 		pass.camera = m_currentRenderCamera;
 		pass.clipplane = m_currentRenderClipplane;
+		pass.target = m_currentRenderTarget;
 
 		for( uint32_t i = 0U; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )
 		{
@@ -1014,13 +1017,21 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addRenderObject( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
+	void RenderEngine::addRenderObject( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
 		, const RenderVertex2D * _vertices, uint32_t _verticesNum
 		, const RenderIndices * _indices, uint32_t _indicesNum
 		, const mt::box2f * _bb, bool _debug )
 	{
 #	ifdef _DEBUG
-		if( _viewport == nullptr )
+		if( _state == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("RenderEngine::renderObject2D _state == NULL"
+				);
+
+			return;
+		}
+
+		if( _state->viewport == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D viewport == NULL"
 				);
@@ -1028,7 +1039,7 @@ namespace Menge
 			return;
 		}
 
-		if( _camera == nullptr )
+		if( _state->camera == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("RenderEngine::renderObject2D camera == NULL"
 				);
@@ -1070,7 +1081,10 @@ namespace Menge
 			return;
 		}
 
-		if( m_currentRenderCamera != _camera || m_currentRenderViewport != _viewport || m_currentRenderClipplane != _clipplane )
+		if( m_currentRenderViewport != _state->viewport || 
+			m_currentRenderCamera != _state->camera ||			
+			m_currentRenderClipplane != _state->clipplane || 
+			m_currentRenderTarget != _state->target )
 		{
 			if( m_renderPasses.full() == true )
 			{
@@ -1081,9 +1095,10 @@ namespace Menge
 				return;
 			}
 
-			m_currentRenderCamera = _camera;
-			m_currentRenderViewport = _viewport;
-			m_currentRenderClipplane = _clipplane;
+			m_currentRenderViewport = _state->viewport;
+			m_currentRenderCamera = _state->camera;			
+			m_currentRenderClipplane = _state->clipplane;
+			m_currentRenderTarget = _state->target;
 
 			this->createRenderPass_();
 		}
@@ -1188,7 +1203,7 @@ namespace Menge
 		m_renderIndicesCount += _indicesNum;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addRenderQuad( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
+	void RenderEngine::addRenderQuad( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
 		, const RenderVertex2D * _vertices, uint32_t _verticesNum
 		, const mt::box2f * _bb, bool _debug )
 	{
@@ -1206,10 +1221,10 @@ namespace Menge
 
 		RenderIndices * indices = m_indicesQuad.buff();
 
-		this->addRenderObject( _viewport, _camera, _clipplane, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
+		this->addRenderObject( _state, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderEngine::addRenderLine( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, const RenderMaterialInterfacePtr & _material
+	void RenderEngine::addRenderLine( const RenderObjectState * _state, const RenderMaterialInterfacePtr & _material
 		, const RenderVertex2D * _vertices, uint32_t _verticesNum
 		, const mt::box2f * _bb, bool _debug )
 	{
@@ -1227,7 +1242,7 @@ namespace Menge
 
 		RenderIndices * indices = m_indicesLine.buff();
 
-		this->addRenderObject( _viewport, _camera, _clipplane, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
+		this->addRenderObject( _state, _material, _vertices, _verticesNum, indices, indicesNum, _bb, _debug );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertex2D * RenderEngine::getDebugRenderVertex2D( size_t _count )

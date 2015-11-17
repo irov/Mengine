@@ -37,10 +37,10 @@ namespace	Menge
 		};		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Isometric::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
+	void Isometric::render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		stdex::intrusive_sort_stable( m_children, FIsometricSortY() );
 
-		Node::render( _viewport, _camera, _clipplane, _debugMask );
+		Node::render( _state, _debugMask );
 	}
 }

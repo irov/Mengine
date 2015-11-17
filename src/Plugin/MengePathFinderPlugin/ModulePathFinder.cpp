@@ -257,7 +257,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
+	void ModulePathFinder::render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		for( TPathFinderMaps::iterator 
 			it = m_maps.begin(),
@@ -267,7 +267,7 @@ namespace Menge
 		{
 			PathFinderMap * map = *it;
 
-			map->render( _viewport, _camera, _clipplane, _debugMask );
+			map->render( _state, _debugMask );
 		}
 	}
 }

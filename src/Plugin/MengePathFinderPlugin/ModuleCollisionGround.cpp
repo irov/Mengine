@@ -171,11 +171,9 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleCollisionGround::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
+	void ModuleCollisionGround::render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
-		(void)_viewport;
-		(void)_camera;
-		(void)_clipplane;
+		(void)_state;
 		(void)_debugMask;
 	}
 }

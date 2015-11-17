@@ -215,12 +215,8 @@ namespace Menge
 		mt::set_box_from_min_max( _boundingBox, minimal_wm, maximal_wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::_debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
+	void HotSpotImage::_debugRender( const RenderObjectState * _state, unsigned int _debugMask )
 	{
-		(void)_viewport;
-		(void)_camera;
-		(void)_debugMask;
-
 		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
 		{
 			return;
@@ -281,6 +277,6 @@ namespace Menge
 			->getDebugMaterial();
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderLine( _viewport, _camera, _clipplane, debugMaterial, vertices, 8, nullptr, true );
+			->addRenderLine( _state, debugMaterial, vertices, 8, nullptr, true );
 	}
 }	// namespace Menge

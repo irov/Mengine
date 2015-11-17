@@ -13,6 +13,6 @@ namespace Menge
 		Isometric();
 
 	protected:
-		void render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask ) override;
+		void render( const RenderObjectState * _state, unsigned int _debugMask ) override;
 	};
 }

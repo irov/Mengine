@@ -43,9 +43,9 @@ namespace Menge
 		return m_width;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Line::_render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane )
+	void Line::_render( const RenderObjectState * _state )
 	{
-		Node::_render( _viewport, _camera, _clipplane );
+		Node::_render( _state );
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -98,7 +98,7 @@ namespace Menge
 			->getMaterial( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Debug" ), PT_TRIANGLELIST, 0, nullptr );
 
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _viewport, _camera, _clipplane, material, m_vertices, 4, nullptr, false );
+			->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 

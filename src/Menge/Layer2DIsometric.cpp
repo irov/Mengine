@@ -46,10 +46,10 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Layer2DIsometric::render( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask )
+	void Layer2DIsometric::render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
 		stdex::intrusive_sort_stable( m_children, FIsometricSortY() );
 
-		Layer::render( _viewport, _camera, _clipplane, _debugMask );
+		Layer::render( _state, _debugMask );
 	}
 }

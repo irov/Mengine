@@ -24,7 +24,7 @@ namespace Menge
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
 	protected:
-		void _debugRender( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const RenderClipplaneInterface * _clipplane, unsigned int _debugMask );
+		void _debugRender( const RenderObjectState * _state, unsigned int _debugMask );
 
     protected:
         ConstString m_movieName;

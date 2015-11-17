@@ -155,9 +155,10 @@ namespace Menge
 
 		Camera2D * m_arrowCamera2D;
 		
-		RenderCameraInterface * m_renderCamera;
 		RenderViewportInterface * m_renderViewport;
+		RenderCameraInterface * m_renderCamera;		
 		RenderClipplaneInterface * m_renderClipplane;
+		RenderTargetInterface * m_renderTarget;
 
         MousePickerSystem * m_mousePickerSystem;
         GlobalHandleSystem * m_globalHandleSystem;

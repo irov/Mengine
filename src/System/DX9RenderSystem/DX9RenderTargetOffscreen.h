@@ -18,6 +18,7 @@ namespace Menge
 
 	public:
 		bool initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height );
+		void finalize();
 
 	public:
 		bool begin() override;

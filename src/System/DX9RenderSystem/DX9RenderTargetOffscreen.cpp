@@ -5,9 +5,15 @@
 namespace Menge
 {
 	DX9RenderTargetOffscreen::DX9RenderTargetOffscreen()
-		: m_serviceProvider(nullptr)
+		: m_serviceProvider( nullptr )
+		, m_width( 0 )
+		, m_height( 0 )
+		, m_device( nullptr )
+		, m_renderTexture( nullptr )
+		, m_surfacePlain( nullptr )
+		, m_beginSurface( nullptr )
+		, m_oldSurface( nullptr )
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderTargetOffscreen::~DX9RenderTargetOffscreen()
@@ -45,6 +51,15 @@ namespace Menge
 		m_surfacePlain = surfacePlain;
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void DX9RenderTargetOffscreen::finalize()
+	{
+		m_renderTexture->Release();
+		m_renderTexture = nullptr;
+
+		m_surfacePlain->Release();
+		m_surfacePlain = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderTargetOffscreen::begin()

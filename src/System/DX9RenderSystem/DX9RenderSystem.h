@@ -107,7 +107,7 @@ namespace Menge
 		
 		
 		// create render target image
-		RenderImageInterfacePtr createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
+		RenderTargetInterface * createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
 		// отрисовка изображения
 
 		bool beginScene() override;

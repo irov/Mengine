@@ -154,35 +154,6 @@ namespace Menge
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureManager::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
-    {
-		uint32_t HWWidth = _width;
-		uint32_t HWHeight = _height;
-		uint32_t HWChannels = _channels;
-		uint32_t HWDepth = _depth;
-		PixelFormat HWFormat = _format;
-
-		this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
-
-        RenderImageInterfacePtr image = RENDER_SYSTEM(m_serviceProvider)
-            ->createRenderTargetImage( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
-
-        if( image == nullptr )
-        {
-            LOGGER_ERROR(m_serviceProvider)("RenderTextureManager::createRenderTargetTexture couldn't create RenderTargetTexture %dx%d %d"
-                , HWWidth
-                , HWHeight 
-                , HWChannels
-                );
-
-            return nullptr;
-        }
-
-        RenderTextureInterfacePtr texture = this->createRenderTexture( image, 1, _width, _height, _channels );
-
-        return texture;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::saveImage( const RenderTextureInterfacePtr & _texture, const ConstString & _fileGroupName, const ConstString & _codecName, const FilePath & _fileName )
     {
         OutputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)

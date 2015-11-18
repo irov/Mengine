@@ -259,8 +259,6 @@ Resource\\\\Image
 	ResourceImageSubstract.h
 	ResourceImageSubstractRGBAndAlpha.cpp
 	ResourceImageSubstractRGBAndAlpha.h
-    ResourceImageRender.cpp
-    ResourceImageRender.h    
 )
 
 ADD_FILTER(

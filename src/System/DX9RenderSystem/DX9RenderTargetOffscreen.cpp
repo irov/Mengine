@@ -1,5 +1,6 @@
 #	include "DX9RenderTargetOffscreen.h"
 
+#	include "DX9RenderEnum.h"
 #	include "DX9ErrorHelper.h"
 
 namespace Menge
@@ -25,30 +26,36 @@ namespace Menge
 		m_serviceProvider = _serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderTargetOffscreen::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height )
+	bool DX9RenderTargetOffscreen::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, PixelFormat _format )
 	{
 		m_device = _device;
+
 		m_width = _width;
 		m_height = _height;
 
-		LPDIRECT3DTEXTURE9 renderTexture;
-		DXCALL( m_serviceProvider, m_device, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &renderTexture, NULL) );
+		m_format = s_toD3DFormat( _format );
 
-		if( renderTexture == nullptr )
+		LPDIRECT3DTEXTURE9 renderTexture;
+		IF_DXCALL( m_serviceProvider, m_device, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, m_format, D3DPOOL_DEFAULT, &renderTexture, NULL) )
+		{
+			return false;
+		}
+
+		D3DSURFACE_DESC texDesc;
+		IF_DXCALL( m_serviceProvider, renderTexture, GetLevelDesc, (0, &texDesc) )
 		{
 			return false;
 		}
 
 		LPDIRECT3DSURFACE9 surfacePlain;
-		DXCALL( m_serviceProvider, m_device, CreateOffscreenPlainSurface, (m_width, m_height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfacePlain, NULL) );
-
-		if( surfacePlain == nullptr )
+		IF_DXCALL( m_serviceProvider, m_device, CreateOffscreenPlainSurface, (m_width, m_height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfacePlain, NULL) )
 		{
 			return false;
 		}
 
 		m_renderTexture = renderTexture;
 		m_surfacePlain = surfacePlain;
+		m_desc = texDesc;
 
 		return true;
 	}

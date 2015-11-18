@@ -1,10 +1,12 @@
 #	include "DX9RenderSystem.h"
 
+#	include "Interface/StringizeInterface.h"
+#	include "Interface/PlatformInterface.h"
+
 #	include "DX9RenderEnum.h"
 #	include "DX9ErrorHelper.h"
 
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/PlatformInterface.h"
+#	include "DX9RenderTargetOffscreen.h"
 
 #	include <algorithm>
 #	include <cmath>
@@ -476,14 +478,15 @@ namespace Menge
 		return dxTexture;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+	RenderTargetInterface * DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format )
 	{
-		(void)_depth;
+		DX9RenderTargetOffscreen * target = new DX9RenderTargetOffscreen();
 
-		IDirect3DTexture9 * dxTextureInterface = nullptr;		
-		if( this->d3dCreateTexture_( _width, _height, 1, D3DUSAGE_RENDERTARGET, _format, D3DPOOL_DEFAULT, &dxTextureInterface ) == false )
+		target->setServiceProvider( m_serviceProvider );
+
+		if( target->initialize( m_pD3DDevice, _width, _height, _format ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem.createRenderTargetImage: can't  create render texture %dx%d %d"
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem.createRenderTargetOffscreen: can't initialize offscreen target %dx%d format %d"
 				, _width
 				, _height
 				, _format
@@ -492,36 +495,13 @@ namespace Menge
 			return nullptr;
 		}
 		
-  //      IDirect3DSurface9 * dxSurfaceInterface = nullptr;
-		//IF_DXCALL( m_serviceProvider, dxTextureInterface, GetSurfaceLevel, (0, &dxSurfaceInterface) )
-		//{
-  //          LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem.createRenderTargetImage: can't get surface level %dx%d %d"
-  //              , _width
-  //              , _height
-  //              , _format
-  //              );
-
-		//	return nullptr;
-		//}
-
-        D3DSURFACE_DESC texDesc;
-        IF_DXCALL( m_serviceProvider, dxTextureInterface, GetLevelDesc, ( 0, &texDesc ) )
-		{
-			return nullptr;
-		}
-
-		DX9RenderImage * dxTexture = m_factoryDX9Texture.createObject();
-
-        dxTexture->initialize( m_serviceProvider, dxTextureInterface, ERIM_RENDER_TARGET, texDesc.Width, texDesc.Height, _channels, _format );
-        //dxTexture->setSurface( dxSurfaceInterface );
-
-        LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createRenderTargetImage: texture created %dx%d %d"
-            , texDesc.Width
-            , texDesc.Height
-            , texDesc.Format
+        LOGGER_INFO(m_serviceProvider)( "DX9RenderSystem.createRenderTargetOffscreen: offscreen target created %dx%d %d"
+			, _width
+			, _height
+			, _format
             );
 
-		return dxTexture;
+		return target;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::resetDevice_()

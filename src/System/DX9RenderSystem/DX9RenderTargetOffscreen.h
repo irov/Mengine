@@ -17,7 +17,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height );
+		bool initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, PixelFormat _format );
 		void finalize();
 
 	public:
@@ -32,6 +32,9 @@ namespace Menge
 
 		uint32_t m_width;
 		uint32_t m_height;
+		D3DFORMAT m_format;
+
+		D3DSURFACE_DESC m_desc;
 
 		LPDIRECT3DDEVICE9 m_device;
 		LPDIRECT3DTEXTURE9 m_renderTexture;

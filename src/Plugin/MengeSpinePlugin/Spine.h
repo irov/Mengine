@@ -67,7 +67,7 @@ namespace Menge
 	protected:
 		RenderMaterialInterfacePtr makeMaterial_( spSlot * slot, ResourceImage * _resourceImage ) const;
 
-	protected:
+	protected:		
 		void updateAnimation_();
 
 	protected:

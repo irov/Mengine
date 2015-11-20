@@ -146,7 +146,7 @@ namespace	Menge
 				const RenderVertex2D * vertices = this->getVerticesWM( elementVertexOffset );
 
 				RENDER_SERVICE( m_serviceProvider )
-					->addRenderQuad( _state, el.material, vertices, 4, nullptr, false );
+					->addRenderQuad( _state, el.material, vertices, 4, &el.bb_wm, false );
 			}
 
 			elementVertexOffset += 4;

@@ -66,6 +66,11 @@ namespace mt
 		_box.maximum += _pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_FUNCTION_INLINE void get_center_box( const box2f & _box, mt::vec2f & _pos )
+	{
+		_pos = (_box.minimum + _box.maximum) * 0.5f;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	MENGINE_MATH_FUNCTION_INLINE void set_box_from_min_max( box2f & box, const vec2f &minimum, const vec2f &maximum)
 	{
 		box.minimum = minimum;

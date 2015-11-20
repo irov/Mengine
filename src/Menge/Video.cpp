@@ -325,8 +325,10 @@ namespace Menge
 
 		const RenderMaterialInterfacePtr & material = this->getMaterial(); 
 
+		const mt::box2f & bb = this->getBoundingBox();
+
 		RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _state, material, vertices, 4, nullptr, false );
+			->addRenderQuad( _state, material, vertices, 4, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) const

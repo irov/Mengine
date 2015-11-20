@@ -1238,10 +1238,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_updateBoundingBox( mt::box2f& _boundingBox ) const
 	{
-		const mt::vec3f & wp = this->getWorldPosition();
-
-		mt::vec2f v2 = wp.to_vec2f();
-		mt::reset( _boundingBox, v2 );
+		_boundingBox.minimum.x = -std::numeric_limits<float>::max();
+		_boundingBox.minimum.y = -std::numeric_limits<float>::max();
+		_boundingBox.maximum.x = std::numeric_limits<float>::max();
+		_boundingBox.maximum.y = std::numeric_limits<float>::max();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateColor()

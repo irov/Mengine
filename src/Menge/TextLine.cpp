@@ -68,10 +68,13 @@ namespace Menge
             if( code == 0 )
             {
                 continue;
-            }
-
-			//'nbsp' replace to space :)
-			if( code == 160 )
+            }			
+			else if( code == 160 )
+			{
+				//'nbsp' replace to space :)
+				code = 32;
+			}
+			else if( code == 9 )
 			{
 				code = 32;
 			}

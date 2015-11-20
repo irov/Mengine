@@ -443,6 +443,8 @@ namespace Menge
 			return;
 		}
 
+		const mt::box2f & bb = this->getBoundingBox();
+
 		const mt::mat4f & wm = this->getWorldMatrix();
 
 		int slotCount = m_skeleton->slotsCount;
@@ -539,7 +541,7 @@ namespace Menge
 			const RenderMaterialInterfacePtr & material = m_attachmentMeshes[i].material;
 
 			RENDER_SERVICE( m_serviceProvider )
-				->addRenderObject( _state, material, vertices, verticesCount / 2, indices, trianglesCount, nullptr, false );
+				->addRenderObject( _state, material, vertices, verticesCount / 2, indices, trianglesCount, &bb, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

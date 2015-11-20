@@ -769,11 +769,6 @@ namespace Menge
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderImageInterfacePtr MarmaladeRenderSystemES1::createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
-	{
-		return nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	RenderImageInterfacePtr MarmaladeRenderSystemES1::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
 	{
 		uint32_t hwChannels = 0;
@@ -834,6 +829,11 @@ namespace Menge
 		}
 
 		return texture;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	RenderTargetInterface * MarmaladeRenderSystemES1::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format )
+	{
+		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MarmaladeRenderSystemES1::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )

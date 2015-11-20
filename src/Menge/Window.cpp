@@ -189,12 +189,14 @@ namespace Menge
 
 		const RenderVertex2D * vertices = this->getVertices();
 
+		const mt::box2f & bb = this->getBoundingBox();
+
         if( this->hasBackground() == true )
         {
             const WindowEdge & edge = m_edge[ResourceWindow_Background];
 
             RENDER_SERVICE(m_serviceProvider)
-				->addRenderQuad( _state, edge.material, &vertices[0 * 4], 4, nullptr, false );
+				->addRenderQuad( _state, edge.material, &vertices[0 * 4], 4, &bb, false );
         }
 
         for( uint32_t i = 1; i != ResourceWindow_Count; ++i )
@@ -202,7 +204,7 @@ namespace Menge
             const WindowEdge & edge = m_edge[i];
 
             RENDER_SERVICE(m_serviceProvider)
-				->addRenderQuad( _state, edge.material, &vertices[i * 4], 4, nullptr, false );
+				->addRenderQuad( _state, edge.material, &vertices[i * 4], 4, &bb, false );
         }
 	}
 	//////////////////////////////////////////////////////////////////////////

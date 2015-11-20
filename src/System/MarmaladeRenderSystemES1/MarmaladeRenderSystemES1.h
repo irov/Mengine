@@ -120,22 +120,10 @@ namespace Menge
         void setTextureStageTexCoordIndex( uint32_t _stage, uint32_t _index ) override;
 		void setTextureStageFilter( uint32_t _stage, ETextureFilter _minification, ETextureFilter _mipmap, ETextureFilter _magnification ) override;
 		              
-        // create texture
-		// [in/out] _width ( desired texture width, returns actual texture width )
-		// [in/out] _height ( desired texture height, returns actual texture height )
-		// [in/out] _format ( desired texture pixel format, returns actual texture pixel format )
-		// returns Texture interface handle or NULL if fails
-		RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
-		// create render target image
-		// [in/out] _width ( desired texture width, returns actual texture width )
-		// [in/out] _height ( desired texture height, returns actual texture height )
-		// returns Texture interface handle or NULL if fails
-		// RenderImageInterface * createRenderTargetImage( size_t& _width, size_t& _height ) override;
-		// удаления изображения
-        
-        RenderImageInterfacePtr createRenderTargetImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
-
+        RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 		RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
+
+		RenderTargetInterface * createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
 
 		bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) override;
 		bool unlockRenderTarget() override;

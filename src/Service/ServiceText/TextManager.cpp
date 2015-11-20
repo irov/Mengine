@@ -698,10 +698,17 @@ namespace Menge
 					{
 						continue;
 					}
-
-					if( code == 10 )
+					else if( code == 10 )
 					{
 						continue;
+					}
+					else if( code == 160 )
+					{
+						code = 32;
+					}
+					else if( code == 9 )
+					{
+						code = 32;
 					}
 
 					GlyphCode glyphChar;

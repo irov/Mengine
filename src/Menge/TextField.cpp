@@ -224,8 +224,10 @@ namespace Menge
 
 		const TVectorRenderVertex2D::value_type * vertices = &(textVertices[0]);
 
+		const mt::box2f & bb = this->getBoundingBox();
+
 		RENDER_SERVICE( m_serviceProvider )
-			->addRenderQuad( _state, material, vertices, countVertex, nullptr, false );
+			->addRenderQuad( _state, material, vertices, countVertex, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::renderOutline_( const RenderObjectState * _state )
@@ -269,8 +271,10 @@ namespace Menge
 
 		TVectorRenderVertex2D::value_type * vertices = &(outlineVertices[0]);
 
+		const mt::box2f & bb = this->getBoundingBox();
+
         RENDER_SERVICE(m_serviceProvider)
-			->addRenderQuad( _state, material, vertices, countVertex, nullptr, false );
+			->addRenderQuad( _state, material, vertices, countVertex, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t TextField::getCharCount() const

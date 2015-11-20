@@ -858,41 +858,28 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getLocalPolygonCenter( HotSpotPolygon * _hs )
         {
-            mt::vec2f pc(0.f, 0.f);
+			const Polygon & polygon = _hs->getPolygon();
 
-            const Polygon & polygon = _hs->getPolygon();
+			mt::box2f bb;
+			polygon.to_box2f( bb );
 
-            uint32_t ring_count = polygon.outer_count();
+			mt::vec2f c;
+			mt::get_center_box( bb, c );
 
-			if( ring_count == 0 )
-            {
-                mt::vec2f empty(0.f, 0.f);
-
-                return empty;
-            }
-
-			for( uint32_t i = 0; i != ring_count - 1; ++i )
-            {
-				const mt::vec2f & p = polygon.outer_point(i);
-
-				pc += p;
-            }
-			
-			pc /= float(ring_count - 1);
-
-            return pc;
+			return c;
         }
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getWorldPolygonCenter( HotSpotPolygon * _hs )
         {
-            mt::vec2f pc = s_getLocalPolygonCenter( _hs );
+			const Polygon & polygon = _hs->getPolygonWM();
 
-            const mt::mat4f & wm = _hs->getWorldMatrix();
+			mt::box2f bb;
+			polygon.to_box2f( bb );
 
-            mt::vec2f world_pc;
-            mt::mul_v2_m4(world_pc, pc, wm);
+			mt::vec2f c;
+			mt::get_center_box( bb, c );
 
-            return world_pc;
+			return c;
         }
         //////////////////////////////////////////////////////////////////////////
         Polygon s_getWorldPolygon( HotSpotPolygon * _hs )

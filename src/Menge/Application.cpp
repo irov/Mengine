@@ -1310,7 +1310,7 @@ namespace Menge
             return false;
         }
 
-        bool found_aspect = false;
+		float minimal_aspect = 100.f;
 
         for( TMapAspectRatioViewports::const_iterator
             it = m_aspectRatioViewports.begin(),
@@ -1320,22 +1320,15 @@ namespace Menge
         {
             float aspect = it->first;
 
-            if( aspect < _aspect || fabsf( aspect - _aspect ) < 0.00001f )
+			float deltha_aspect = fabsf( _aspect - aspect );
+
+			if( deltha_aspect < minimal_aspect )
             {
+				minimal_aspect = deltha_aspect;
+
                 _bestAspect = it->first;
                 _viewport = it->second;
-
-                found_aspect = true;
             }
-        }
-
-        if( found_aspect == false )
-        {
-            TMapAspectRatioViewports::const_iterator
-                it_first = m_aspectRatioViewports.begin();
-
-            _bestAspect = it_first->first;
-            _viewport = it_first->second;
         }
 
         LOGGER_INFO(m_serviceProvider)("Application::findBestAspectViewport_ best aspect %f viewport [%f, %f, %f, %f]"

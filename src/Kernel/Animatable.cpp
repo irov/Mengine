@@ -14,7 +14,7 @@ namespace Menge
         , m_intervalEnd(-1.f)
         , m_playCount(1)
 		, m_playIterator(0)
-        , m_scretch(1.f)
+        , m_stretch(1.f)
 		, m_autoPlay(false)
 		, m_play(false)
 		, m_pause(false)
@@ -135,9 +135,9 @@ namespace Menge
 		//Empty
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Animatable::setScretch( float _scretch )
+    void Animatable::setStretch( float _scretch )
     {
-        m_scretch = _scretch;
+        m_stretch = _scretch;
     }
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t Animatable::play( float _time )

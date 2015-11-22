@@ -63,7 +63,7 @@ namespace	Menge
 		uint32_t frameCount = m_resourceAnimation->getSequenceCount();
 
 		float speedFactor = this->getAnimationSpeedFactor();
-		float scretch = this->getScretch();
+		float scretch = this->getStretch();
 		m_frameTiming += _timing * speedFactor / scretch;
 
 		float frameDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );

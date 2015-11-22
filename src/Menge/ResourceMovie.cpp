@@ -462,7 +462,7 @@ namespace Menge
             meta_layer2d.get_Shape( ml.shape );
 			meta_layer2d.get_Polygon( ml.polygon );
             meta_layer2d.get_PlayCount( ml.playCount );
-            meta_layer2d.get_Stretch( ml.scretch );
+            meta_layer2d.get_Stretch( ml.stretch );
 			meta_layer2d.get_Switch( ml.switcher );
 			meta_layer2d.get_Loop( ml.loop );
 			meta_layer2d.get_Position( ml.position );
@@ -525,7 +525,7 @@ namespace Menge
             meta_layer3d.get_Shape( ml.shape );
 			meta_layer3d.get_Polygon( ml.polygon );
             meta_layer3d.get_PlayCount( ml.playCount );
-            meta_layer3d.get_Stretch( ml.scretch );
+            meta_layer3d.get_Stretch( ml.stretch );
 			meta_layer3d.get_Switch( ml.switcher );
 			meta_layer3d.get_Loop( ml.loop );
 			meta_layer3d.get_Position( ml.position );

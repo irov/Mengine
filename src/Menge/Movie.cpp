@@ -1644,7 +1644,7 @@ namespace Menge
 
 		layer_animation->setIntervalStart( _layer.startInterval );
 		layer_animation->setPlayCount( _layer.playCount );
-		layer_animation->setScretch( _layer.scretch );
+		layer_animation->setStretch( _layer.stretch );
 		layer_animation->setLoop( _layer.loop );
 
 		if( this->setupBlendingMode_( _layer, layer_animation ) == false )
@@ -1683,7 +1683,7 @@ namespace Menge
 		layer_movie->setIntervalStart( _layer.startInterval );
 
 		layer_movie->setPlayCount( _layer.playCount );
-		layer_movie->setScretch( _layer.scretch );
+		layer_movie->setStretch( _layer.stretch );
 		layer_movie->setLoop( _layer.loop );
 
 		layer_movie->setParentMovie( true );
@@ -1719,7 +1719,7 @@ namespace Menge
 		layer_movie->setIntervalStart( _layer.startInterval );
 
 		layer_movie->setPlayCount( _layer.playCount );
-		layer_movie->setScretch( _layer.scretch );
+		layer_movie->setStretch( _layer.stretch );
 		layer_movie->setLoop( _layer.loop );
 
 		layer_movie->setParentMovie( true );
@@ -1783,7 +1783,7 @@ namespace Menge
 
 		layer_video->setIntervalStart( _layer.startInterval );
 		layer_video->setPlayCount( _layer.playCount );
-		layer_video->setScretch( _layer.scretch );
+		layer_video->setStretch( _layer.stretch );
 		layer_video->setLoop( _layer.loop );
 
 		if( this->setupBlendingMode_( _layer, layer_video ) == false )
@@ -1822,7 +1822,7 @@ namespace Menge
 		layer_sound->setIntervalStart( _layer.startInterval );
 
 		layer_sound->setPlayCount( _layer.playCount );
-		layer_sound->setScretch( _layer.scretch );
+		layer_sound->setStretch( _layer.stretch );
 		layer_sound->setLoop( _layer.loop );
 
 		if( this->addMovieNode_( _layer, layer_sound, layer_sound, layer_sound ) == false )
@@ -1855,7 +1855,7 @@ namespace Menge
 		layer_sound->setIntervalStart( _layer.startInterval );
 
 		layer_sound->setPlayCount( 1 );
-		layer_sound->setScretch( _layer.scretch );
+		layer_sound->setStretch( _layer.stretch );
 		layer_sound->setLoop( _layer.loop );
 
 		if( this->addMovieNode_( _layer, layer_sound, layer_sound, layer_sound ) == false )
@@ -2055,7 +2055,7 @@ namespace Menge
 
 		layer_particles->setIntervalStart( _layer.startInterval );
 		layer_particles->setPlayCount( _layer.playCount );
-		layer_particles->setScretch( _layer.scretch );
+		layer_particles->setStretch( _layer.stretch );
 		layer_particles->setLoop( _layer.loop );
 
 		if( _layer.hasParam( MOVIE_LAYER_PARAM_PARTICLE_TRANSLATE ) == true )
@@ -2550,7 +2550,8 @@ namespace Menge
 		}
 
 		float speedFactor = this->getAnimationSpeedFactor();
-		float realTiming = _timing * speedFactor;
+		float scretch = this->getStretch();
+		float realTiming = _timing * speedFactor / scretch;
 
 		m_frameTiming += realTiming;
 

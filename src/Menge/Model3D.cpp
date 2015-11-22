@@ -316,7 +316,7 @@ namespace Menge
 		float frameDelay = model->getFrameDelay();
 		
 		float speedFactor = this->getAnimationSpeedFactor();
-		float scretch = this->getScretch();
+		float scretch = this->getStretch();
 		m_frameTiming += _timing * speedFactor / scretch;
 		
 		uint32_t lastFrame = m_currentFrame;

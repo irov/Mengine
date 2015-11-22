@@ -42,8 +42,8 @@ namespace Menge
 		void setAutoPlay( bool _autoPlay );
 		inline bool getAutoPlay() const;
 
-        void setScretch( float _scretch );
-        inline float getScretch() const;
+		void setStretch( float _scretch );
+        inline float getStretch() const;
 
     protected:
         virtual void _setLoop( bool _value );
@@ -101,7 +101,7 @@ namespace Menge
         
         uint32_t m_playCount;
 		uint32_t m_playIterator;
-        float m_scretch;
+        float m_stretch;
 		
 		bool m_autoPlay;
 
@@ -148,9 +148,9 @@ namespace Menge
 		return m_playIterator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline float Animatable::getScretch() const
+	inline float Animatable::getStretch() const
 	{
-		return m_scretch;
+		return m_stretch;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Animatable::isInterrupt() const

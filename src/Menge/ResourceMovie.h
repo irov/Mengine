@@ -41,7 +41,7 @@ namespace Menge
 			: index(0)
 			, parent(0)
             , playCount(1)
-            , scretch(1.f)
+            , stretch(1.f)
 			, in(0.f)
 			, out(0.f)
 			, startInterval(0.f)
@@ -66,7 +66,7 @@ namespace Menge
 		uint32_t parent;
 
         uint32_t playCount;        
-        float scretch;
+        float stretch;
 
 		float in;
 		float out;

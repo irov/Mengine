@@ -103,6 +103,29 @@ namespace Menge
 		m_cursors[STRINGIZE_STRING_LOCAL( m_serviceProvider, "IDC_HAND" )] = LoadCursor( NULL, IDC_HAND );
 		m_cursors[STRINGIZE_STRING_LOCAL( m_serviceProvider, "IDC_HELP" )] = LoadCursor( NULL, IDC_HELP );
 
+		m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" );
+
+		if( HAS_OPTIONS( m_serviceProvider, "win32" ) )
+		{
+			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WIN32" );
+		}
+		else if( HAS_OPTIONS(m_serviceProvider, "ios") )
+		{ 
+			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "IOS" );
+		}
+		else if( HAS_OPTIONS( m_serviceProvider, "android" ) )
+		{
+			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "ANDROID" );
+		}
+		else if( HAS_OPTIONS( m_serviceProvider, "wp" ) )
+		{
+			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "WP" );
+		}
+		else if( HAS_OPTIONS( m_serviceProvider, "mac" ) )
+		{
+			m_platformName = STRINGIZE_STRING_LOCAL( m_serviceProvider, "MAC" );
+		}
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -46,6 +46,7 @@ namespace Menge
         , m_enumerator(0)
 		, m_revision(0)
         , m_freezeAll(false)
+		, m_update(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -67,6 +68,11 @@ namespace Menge
     {
 		uint32_t new_id = ++m_enumerator;
 
+		if( m_update == true )
+		{
+			printf( "!");
+		}
+
         ScheduleEventDesc desc;
 
 		desc.id = new_id;
@@ -74,12 +80,17 @@ namespace Menge
 		desc.event = _listener;
 		desc.timer = nullptr;
 		desc.pipe = nullptr;
-
+				
+		desc.delay = _delay;
+		
 		float timeOffset = TIMELINE_SERVICE( m_serviceProvider )
 			->getOffset();
 
-		desc.timing = timeOffset;
-		desc.delay = _delay;
+		desc.offset = timeOffset;
+
+		desc.timing_delay = 0.f;
+		desc.timing_offset = 0.f;
+
 		desc.iterate = 0;
 		desc.revision = 0;
 
@@ -104,11 +115,16 @@ namespace Menge
 		desc.timer = _listener;
 		desc.pipe = _pipe;
 
+		desc.delay = 0.f;
+		
 		float timeOffset = TIMELINE_SERVICE( m_serviceProvider )
 			->getOffset();
 
-		desc.timing = timeOffset;
-		desc.delay = 0.f;
+		desc.offset = timeOffset;
+
+		desc.timing_delay = 0.f;
+		desc.timing_offset = 0.f;
+
 		desc.iterate = 0;
 		desc.revision = 0;
 
@@ -155,7 +171,7 @@ namespace Menge
 			return false;
 		}
 		
-		desc->timing = _timing;
+		desc->timing_delay = _timing;
 
 		return true;
 	}
@@ -258,6 +274,8 @@ namespace Menge
 			return;
 		}
 
+		m_update = true;
+
 		do
 		{
 			m_schedules.insert( m_schedules.end(), m_schedulesAdd.begin(), m_schedulesAdd.end() );
@@ -288,22 +306,34 @@ namespace Menge
 
 				desc.revision = m_revision;
 
-				float old_timing = desc.timing;
+				float old_timing = desc.timing_delay;
 
-				desc.timing += total_timing;
+				desc.timing_offset += total_timing;
+
+				if( desc.timing_offset < desc.offset )
+				{
+					continue;
+				}
+
+				if( desc.timing_delay == 0.f )
+				{
+					desc.timing_delay = desc.timing_offset - desc.offset;
+				}
+				else
+				{
+					desc.timing_delay += total_timing;
+				}
 
 				switch( desc.type )
 				{
 				case EST_EVENT:
 					{
-						if( desc.timing < desc.delay )
+						if( desc.timing_delay < desc.delay )
 						{
 							continue;
 						}
 
-						desc.timing -= desc.delay;
-
-						float timeOffset = desc.delay - old_timing;
+						float timeOffset = desc.delay - old_timing + desc.offset;
 
 						TIMELINE_SERVICE( m_serviceProvider )
 							->beginOffset( timeOffset );
@@ -336,18 +366,18 @@ namespace Menge
 								desc.delay = delay;
 							}
 
-							if( desc.timing < desc.delay )
+							if( desc.timing_delay < desc.delay )
 							{
 								break;
 							}
 
 							acc_delay += desc.delay;
 
-							float timeOffset = acc_delay - old_timing;
+							float timeOffset = acc_delay - old_timing + desc.offset;
 
 							uint32_t iterate = desc.iterate;
 
-							desc.timing -= desc.delay;
+							desc.timing_delay -= desc.delay;
 
 							desc.iterate++;
 							desc.iterate_invalide = true;
@@ -365,6 +395,8 @@ namespace Menge
 			}			
 		}
 		while( m_schedulesAdd.empty() == false );
+
+		m_update = false;
 
         TListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead());
         m_schedules.erase( it_erase, m_schedules.end() );
@@ -427,7 +459,7 @@ namespace Menge
             return 0.f;
         }
 
-        float adapt_timing = event->timing;
+		float adapt_timing = event->timing_delay;
 
         return adapt_timing;
     }

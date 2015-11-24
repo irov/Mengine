@@ -23,8 +23,11 @@ namespace Menge
 		ScheduleTimerInterfacePtr timer;
 		SchedulePipeInterfacePtr pipe;
 
-		float timing;
-		float delay;		
+		float delay;
+		float timing_delay;
+		
+		float offset;
+		float timing_offset;
 
 		uint32_t iterate;
 		uint32_t revision;
@@ -96,6 +99,7 @@ namespace Menge
 		uint32_t m_revision;
 
 		bool m_freezeAll;
+		bool m_update;
 
     protected:
 		bool findScheduleEvent_( uint32_t _id, const ScheduleEventDesc *& _desc ) const;

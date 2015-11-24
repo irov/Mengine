@@ -35,12 +35,6 @@ namespace Menge
 			return false;
 		}
 
-		printf( "initialize %s %f %f\n"
-			, _node->getName().c_str()
-			, _offset
-			, _speed
-			);
-
 		m_node = _node;
 		m_speed = _speed;
 		m_offset = _offset;

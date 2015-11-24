@@ -49,7 +49,6 @@ namespace Menge
 			, position(0.f, 0.f, 0.f)
 			, viewport(0.f, 0.f, 0.f, 0.f)
 			, params(0)
-			, immutable(false)
 			, switcher(false)
 			, timeRemap(false)
 			, shape(false)
@@ -83,7 +82,6 @@ namespace Menge
 
 		uint32_t params;
 
-		bool immutable;
 		bool timeRemap;
 		bool shape;		
 		bool polygon;

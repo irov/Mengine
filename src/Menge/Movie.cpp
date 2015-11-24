@@ -326,13 +326,17 @@ namespace Menge
 			mesh2D->setFrameShape( shape );
 		}
 
-		if( _layer.immutable == true && _first == false )
+		const MovieLayerFrame & layerFrame = framePack->getLayer( _layer.index );
+
+		bool immutable = layerFrame.immutable;
+
+		if( immutable == true && _first == false )
 		{
 			return true;
 		}
 
 		MovieFrameSource frame;
-		if( _interpolate == true && _layer.immutable == false )
+		if( _interpolate == true && immutable == false )
 		{
 			float frameDuration = m_resourceMovie->getFrameDuration();
 

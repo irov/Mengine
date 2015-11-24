@@ -334,6 +334,33 @@ namespace Menge
 				}
 			}
 
+			if( layer.type == CONST_STRING(m_serviceProvider, Image)
+				|| layer.type == CONST_STRING( m_serviceProvider, Animation )
+				|| layer.type == CONST_STRING( m_serviceProvider, Video )
+				)
+			{
+				const MovieLayerFrame & layerFrame = framePack->getLayer( layer.index );
+				
+				if( layerFrame.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_SCALE )
+				{
+					if( ::fabsf( layerFrame.source.scale.x ) < 0.75f || ::fabsf( layerFrame.source.scale.y ) < 0.75f )
+					{
+						LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
+							, this->getName().c_str()
+							, layer.index
+							, layer.name.c_str()
+							, layer.type.c_str()
+							, layerFrame.source.scale.x
+							, layerFrame.source.scale.y
+							);
+
+						layers_successful = false;
+
+						continue;
+					}
+				}
+			}
+
 			if( layer.type == CONST_STRING(m_serviceProvider, MovieSceneEffect) 
 				|| layer.type == CONST_STRING(m_serviceProvider, MovieText)
 				|| layer.type == CONST_STRING(m_serviceProvider, MovieTextCenter) 				
@@ -825,18 +852,6 @@ namespace Menge
 		}
 
 		m_keyFramePack = data;
-
-		for( TVectorMovieLayers::iterator
-			it = m_layers.begin(),
-			it_end = m_layers.end();
-		it != it_end;
-		++it )
-		{
-			MovieLayer & layer = *it;
-
-			const MovieLayerFrame & frame = m_keyFramePack->getLayer( layer.index );
-			layer.immutable = frame.immutable;
-		}
 
 		return true;
 	}

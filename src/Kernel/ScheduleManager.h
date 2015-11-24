@@ -36,6 +36,7 @@ namespace Menge
 		bool dead;
 		bool freeze;
 		bool iterate_invalide;
+		bool offset_complete;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class ScheduleManager

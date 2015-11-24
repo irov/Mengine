@@ -92,6 +92,8 @@ namespace Menge
 		desc.type = EST_EVENT;
 		desc.dead = false;
 		desc.freeze = m_freezeAll;
+		desc.iterate_invalide = true;
+		desc.offset_complete = false;
 
 		m_schedulesAdd.push_back( desc );
 
@@ -125,7 +127,9 @@ namespace Menge
 
 		desc.type = EST_TIMER;
 		desc.dead = false;
-		desc.freeze = m_freezeAll;
+		desc.freeze = m_freezeAll;		
+		desc.iterate_invalide = true;
+		desc.offset_complete = false;
 
 		m_schedulesAdd.push_back( desc );
 
@@ -302,20 +306,21 @@ namespace Menge
 				desc.revision = m_revision;
 
 				float old_timing = desc.timing_delay;
-
-				desc.timing_offset += total_timing;
-
-				if( desc.timing_offset < desc.offset )
+				
+				if( desc.offset_complete == false )
 				{
-					continue;
-				}
+					desc.timing_offset += total_timing;
 
-				if( desc.timing_delay == 0.f )
-				{
+					if( desc.timing_offset < desc.offset )
+					{
+						continue;
+					}
+
 					desc.timing_delay = desc.timing_offset - desc.offset;
+					desc.offset_complete = true;
 				}
 				else
-				{
+				{ 
 					desc.timing_delay += total_timing;
 				}
 

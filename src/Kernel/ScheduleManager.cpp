@@ -78,13 +78,7 @@ namespace Menge
 				
 		desc.delay = _delay;
 		
-		float timeOffset = TIMELINE_SERVICE( m_serviceProvider )
-			->getOffset();
-
-		desc.offset = timeOffset;
-
 		desc.timing_delay = 0.f;
-		desc.timing_offset = 0.f;
 
 		desc.iterate = 0;
 		desc.revision = 0;
@@ -93,7 +87,6 @@ namespace Menge
 		desc.dead = false;
 		desc.freeze = m_freezeAll;
 		desc.iterate_invalide = true;
-		desc.offset_complete = false;
 
 		m_schedulesAdd.push_back( desc );
 
@@ -113,14 +106,7 @@ namespace Menge
 		desc.pipe = _pipe;
 
 		desc.delay = 0.f;
-		
-		float timeOffset = TIMELINE_SERVICE( m_serviceProvider )
-			->getOffset();
-
-		desc.offset = timeOffset;
-
 		desc.timing_delay = 0.f;
-		desc.timing_offset = 0.f;
 
 		desc.iterate = 0;
 		desc.revision = 0;
@@ -129,7 +115,6 @@ namespace Menge
 		desc.dead = false;
 		desc.freeze = m_freezeAll;		
 		desc.iterate_invalide = true;
-		desc.offset_complete = false;
 
 		m_schedulesAdd.push_back( desc );
 
@@ -275,8 +260,6 @@ namespace Menge
 
 		m_update = true;
 
-		do
-		{
 			m_schedules.insert( m_schedules.end(), m_schedulesAdd.begin(), m_schedulesAdd.end() );
 			m_schedulesAdd.clear();
 
@@ -307,22 +290,7 @@ namespace Menge
 
 				float old_timing = desc.timing_delay;
 				
-				if( desc.offset_complete == false )
-				{
-					desc.timing_offset += total_timing;
-
-					if( desc.timing_offset < desc.offset )
-					{
-						continue;
-					}
-
-					desc.timing_delay = desc.timing_offset - desc.offset;
-					desc.offset_complete = true;
-				}
-				else
-				{ 
-					desc.timing_delay += total_timing;
-				}
+				desc.timing_delay += total_timing;
 
 				switch( desc.type )
 				{
@@ -333,7 +301,7 @@ namespace Menge
 							continue;
 						}
 
-						float timeOffset = desc.delay - old_timing + desc.offset;
+						float timeOffset = desc.delay - old_timing;
 
 						TIMELINE_SERVICE( m_serviceProvider )
 							->beginOffset( timeOffset );
@@ -373,7 +341,7 @@ namespace Menge
 
 							acc_delay += desc.delay;
 
-							float timeOffset = acc_delay - old_timing + desc.offset;
+							float timeOffset = acc_delay - old_timing;
 
 							uint32_t iterate = desc.iterate;
 
@@ -393,8 +361,7 @@ namespace Menge
 					}break;
 				}
 			}			
-		}
-		while( m_schedulesAdd.empty() == false );
+
 
 		m_update = false;
 

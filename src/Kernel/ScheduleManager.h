@@ -26,9 +26,6 @@ namespace Menge
 		float delay;
 		float timing_delay;
 		
-		float offset;
-		float timing_offset;
-
 		uint32_t iterate;
 		uint32_t revision;
 
@@ -36,7 +33,6 @@ namespace Menge
 		bool dead;
 		bool freeze;
 		bool iterate_invalide;
-		bool offset_complete;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class ScheduleManager

@@ -334,6 +334,8 @@ namespace Menge
 				}
 			}
 
+			float MovieImageScale = CONFIG_VALUE( m_serviceProvider, "Limit", "MovieImageScale", 0.75f );
+
 			if( layer.type == CONST_STRING(m_serviceProvider, Image)
 				|| layer.type == CONST_STRING( m_serviceProvider, Animation )
 				|| layer.type == CONST_STRING( m_serviceProvider, Video )
@@ -341,9 +343,9 @@ namespace Menge
 			{
 				const MovieLayerFrame & layerFrame = framePack->getLayer( layer.index );
 				
-				if( layerFrame.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_SCALE )
+				if( layerFrame.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_SCALE || layerFrame.immutable == true )
 				{
-					if( ::fabsf( layerFrame.source.scale.x ) < 0.75f || ::fabsf( layerFrame.source.scale.y ) < 0.75f )
+					if( ::fabsf( layerFrame.source.scale.x ) < MovieImageScale || ::fabsf( layerFrame.source.scale.y ) < MovieImageScale )
 					{
 						LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
 							, this->getName().c_str()
@@ -352,6 +354,40 @@ namespace Menge
 							, layer.type.c_str()
 							, layerFrame.source.scale.x
 							, layerFrame.source.scale.y
+							);
+
+						layers_successful = false;
+
+						continue;
+					}
+				}
+				else
+				{
+					float scale_max_x = 0.f;
+					float scale_max_y = 0.f;
+
+					for( uint32_t i = 0; i != layerFrame.count; ++i )
+					{
+						if( ::fabsf( layerFrame.scale[i].x ) > scale_max_x )
+						{
+							scale_max_x = ::fabsf( layerFrame.scale[i].x );
+						}
+
+						if( ::fabsf( layerFrame.scale[i].y ) > scale_max_y )
+						{
+							scale_max_y = ::fabsf( layerFrame.scale[i].y );
+						}
+					}
+
+					if( scale_max_x < MovieImageScale || scale_max_y < MovieImageScale )
+					{
+						LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
+							, this->getName().c_str()
+							, layer.index
+							, layer.name.c_str()
+							, layer.type.c_str()
+							, scale_max_x
+							, scale_max_y
 							);
 
 						layers_successful = false;

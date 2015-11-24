@@ -68,11 +68,6 @@ namespace Menge
     {
 		uint32_t new_id = ++m_enumerator;
 
-		if( m_update == true )
-		{
-			printf( "!");
-		}
-
         ScheduleEventDesc desc;
 
 		desc.id = new_id;

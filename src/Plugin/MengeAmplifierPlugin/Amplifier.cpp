@@ -381,7 +381,7 @@ namespace Menge
 		}
 
 		m_sourceID = SOUND_SERVICE(m_serviceProvider)
-            ->createSoundSource( false, m_buffer, EST_MUSIC, true );
+            ->createSoundSource( false, m_buffer, ESST_MUSIC, true );
 
 		if( m_sourceID == 0 )
 		{

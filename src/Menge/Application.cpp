@@ -1,5 +1,37 @@
 #	include "Application.h"
 
+#   include "Interface/OptionsInterface.h"
+#   include "Interface/PrototypeManagerInterface.h"
+#	include "Interface/TextInterface.h"
+#   include "Interface/InputSystemInterface.h"
+#   include "Interface/RenderSystemInterface.h"
+#	include "Interface/SoundSystemInterface.h"
+#   include "Interface/ParticleSystemInterface.h"
+#   include "Interface/ScriptSystemInterface.h"
+#   include "Interface/EventInterface.h"
+#   include "Interface/PhysicSystemInterface.h"
+#   include "Interface/ConfigInterface.h"
+#   include "Interface/GameInterface.h"
+#   include "Interface/PlayerInterface.h"
+#	include "Interface/PrefetcherInterface.h"
+#   include "Interface/StringizeInterface.h"
+#	include "Interface/NotificationServiceInterface.h"
+#   include "Interface/MousePickerSystemInterface.h"
+#	include "Interface/LoaderInterface.h"
+#	include "Interface/NodeInterface.h"
+#	include "Interface/ThreadSystemInterface.h"
+#	include "Interface/CodecInterface.h"
+#   include "Interface/ConverterInterface.h"
+#   include "Interface/ResourceInterface.h"
+#   include "Interface/AccountInterface.h"
+#   include "Interface/ProfilerInterface.h"
+#   include "Interface/GameInterface.h"
+#   include "Interface/WatchdogInterface.h"
+#   include "Interface/GraveyardInterface.h"
+#   include "Interface/PackageInterface.h"
+#	include "Interface/UserdataInterface.h"
+#	include "Interface/TimelineInterface.h"
+
 #	include "Game.h"
 
 #	include "Logger/Logger.h"
@@ -132,6 +164,7 @@ SERVICE_EXTERN( PackageService );
 SERVICE_EXTERN( UserdataService );
 SERVICE_EXTERN( PlayerService );
 SERVICE_EXTERN( GameService );
+SERVICE_EXTERN( TimelineService );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Application, Menge::Application );
 //////////////////////////////////////////////////////////////////////////
@@ -194,6 +227,7 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, UserdataService );
 		SERVICE_CREATE( m_serviceProvider, PlayerService );
 		SERVICE_CREATE( m_serviceProvider, GameService );
+		SERVICE_CREATE( m_serviceProvider, TimelineService );
 
 		if( this->registerBaseNodeTypes_() == false )
 		{

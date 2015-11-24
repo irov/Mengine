@@ -56,6 +56,7 @@ src
     PackageInterface.h
     UserdataInterface.h    
     OptionsInterface.h
+    TimelineInterface.h
     
 	dummy.cpp
 )

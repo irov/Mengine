@@ -45,7 +45,7 @@ namespace Menge
 	protected:
 		Viewport m_viewport;
 		
-		Observer * m_observerChangeWindowResolution;
+		ObserverInterface * m_observerChangeWindowResolution;
 
 		bool m_fixedViewport;
 		mutable Viewport m_viewportWM;		

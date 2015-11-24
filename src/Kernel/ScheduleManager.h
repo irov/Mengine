@@ -8,19 +8,33 @@
 
 namespace Menge
 {    
+	//////////////////////////////////////////////////////////////////////////
+	enum ESchduleType
+	{
+		EST_EVENT,
+		EST_TIMER
+	};
+	//////////////////////////////////////////////////////////////////////////
 	struct ScheduleEventDesc
 	{
-		ScheduleListenerInterfacePtr listener;
-
-		float timing;
-		float delay;
 		uint32_t id;
 
-		bool update;
+		ScheduleEventInterfacePtr event;
+		ScheduleTimerInterfacePtr timer;
+		SchedulePipeInterfacePtr pipe;
+
+		float timing;
+		float delay;		
+
+		uint32_t iterate;
+		uint32_t revision;
+
+		ESchduleType type;
 		bool dead;
 		bool freeze;
+		bool iterate_invalide;
 	};
-    
+	//////////////////////////////////////////////////////////////////////////
 	class ScheduleManager
         : public ScheduleManagerInterface
 	{
@@ -33,11 +47,11 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		uint32_t schedule( float _timing, const ScheduleListenerInterfacePtr & _listener ) override;
+		uint32_t event( float _delay, const ScheduleEventInterfacePtr & _listener ) override;
 
 	public:
-		uint32_t timing( float _delay, const ScheduleListenerInterfacePtr & _listener ) override;
-
+		uint32_t timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimerInterfacePtr & _listener ) override;
+		
 	public:
 		bool refresh( uint32_t _id, float _timing ) override;
 
@@ -76,8 +90,11 @@ namespace Menge
 
 		typedef stdex::vector<ScheduleEventDesc> TListSchedules;
 		TListSchedules m_schedules;
+		TListSchedules m_schedulesAdd;
 
-		uint32_t m_enumeratorSchedule;
+		uint32_t m_enumerator;
+		uint32_t m_revision;
+
 		bool m_freezeAll;
 
     protected:

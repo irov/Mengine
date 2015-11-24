@@ -76,7 +76,7 @@ namespace Menge
 		bool streamable = m_resourceSound->isStreamable();
 
 		m_sourceID = SOUND_SERVICE(m_serviceProvider)
-			->createSoundSource( m_isHeadMode, m_soundBuffer, EST_SOUND, streamable );
+			->createSoundSource( m_isHeadMode, m_soundBuffer, ESST_SOUND, streamable );
 
 		if( m_sourceID == 0 )
 		{

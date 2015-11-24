@@ -4,6 +4,8 @@
 #   include "Interface/ScriptSystemInterface.h"
 #   include "Interface/ParticleSystemInterface.h"
 #   include "Interface/ResourceInterface.h"
+#	include "Interface/GraveyardInterface.h"
+#	include "Interface/TimelineInterface.h"
 
 #   include "Interface/EventInterface.h"
 #	include "Interface/UnicodeInterface.h"
@@ -65,7 +67,6 @@ namespace Menge
 		, m_destroyOldScene(false)
 		, m_restartScene(false)
 		, m_arrowHided(false)
-		, m_time(0.f)
 		, m_fps(0)	
 		, m_affectorable(nullptr)
 		, m_affectorableGlobal(nullptr)
@@ -265,8 +266,8 @@ namespace Menge
         protected:
             ServiceProviderInterface * m_serviceProvider;
 
-            Observer * m_observerResourceCompile;
-            Observer * m_observerResourceRelease;
+            ObserverInterface * m_observerResourceCompile;
+			ObserverInterface * m_observerResourceRelease;
 
             typedef stdex::vector<ResourceReference *> TVectorResourceDesc;
             TVectorResourceDesc m_resources;
@@ -951,9 +952,10 @@ namespace Menge
 				fpsTiming -= 1000.0f;
 			}
 		}
-		
-		float gameTime = m_time;
-		
+
+		float time = TIMELINE_SERVICE( m_serviceProvider )
+			->getTime();
+
 		//if( PhysicEngine2D::get()->isWorldCreate() )
 		//{
 		//	const mt::vec2f & arrowPos = 
@@ -965,32 +967,32 @@ namespace Menge
 
 		if( m_camera2D != nullptr )
 		{
-			m_camera2D->update( gameTime, _timing );
+			m_camera2D->update( time, _timing );
 		}
 
 		if( m_arrowCamera2D != nullptr )
 		{
-			m_arrowCamera2D->update( gameTime, _timing );
+			m_arrowCamera2D->update( time, _timing );
 		}
 
 		if( m_arrow != nullptr )
 		{
-			m_arrow->update( gameTime, _timing );
+			m_arrow->update( time, _timing );
 		}
 
 		if( m_scene != nullptr )
 		{
-			m_scene->update( gameTime, _timing );
+			m_scene->update( time, _timing );
 		}
 
 		if( m_scheduleManager != nullptr )
 		{
-			m_scheduleManager->update( gameTime, _timing );
+			m_scheduleManager->update( time, _timing );
 		}
 
 		if( m_scheduleManagerGlobal != nullptr )
 		{
-			m_scheduleManagerGlobal->update( gameTime, _timing );
+			m_scheduleManagerGlobal->update( time, _timing );
 		}
 
 		for( TVectorUserScheduler::iterator
@@ -1001,21 +1003,21 @@ namespace Menge
 		{
 			ScheduleManagerInterface * sm = *it;
 
-			sm->update( gameTime, _timing );
+			sm->update( time, _timing );
 		}
 
 		if( m_affectorable != nullptr )
 		{
-			m_affectorable->updateAffectors( gameTime, _timing );
+			m_affectorable->updateAffectors( time, _timing );
 		}
 
 		if( m_affectorableGlobal != nullptr )
 		{
-			m_affectorableGlobal->updateAffectors( gameTime, _timing );
+			m_affectorableGlobal->updateAffectors( time, _timing );
 		}
 
-		m_timingManager->update( gameTime, _timing );
-        m_timingManagerGlobal->update( gameTime, _timing );
+		m_timingManager->update( time, _timing );
+		m_timingManagerGlobal->update( time, _timing );
 
 		for( TVectorUserTiming::iterator
 			it = m_timingers.begin(),
@@ -1025,13 +1027,14 @@ namespace Menge
 		{
 			ScheduleManagerInterface * tm = *it;
 
-			tm->update( gameTime, _timing );
+			tm->update( time, _timing );
 		}
 
 		MODULE_SERVICE(m_serviceProvider)
-			->update( gameTime, _timing );
+			->update( time, _timing );
 
-		m_time += _timing;
+		TIMELINE_SERVICE( m_serviceProvider )
+			->update( _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Player::update()
@@ -1092,11 +1095,6 @@ namespace Menge
 	const RenderClipplaneInterface * Player::getRenderClipplane() const
 	{
 		return m_renderClipplane;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Player::getTime() const
-	{
-		return m_time;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	class VisitorPlayerFactoryManager

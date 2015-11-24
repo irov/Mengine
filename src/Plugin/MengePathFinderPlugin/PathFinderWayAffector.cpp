@@ -35,6 +35,12 @@ namespace Menge
 			return false;
 		}
 
+		printf( "initialize %s %f %f\n"
+			, _node->getName().c_str()
+			, _offset
+			, _speed
+			);
+
 		m_node = _node;
 		m_speed = _speed;
 		m_offset = _offset;
@@ -137,8 +143,6 @@ namespace Menge
 		uint32_t id = this->getId();
 
 		m_cb( id, m_node, new_pos, new_dir, true, false, false );
-
-
 
 		return true;
 	}

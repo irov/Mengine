@@ -174,7 +174,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_soundPlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb )
 		{
-			uint32_t sourceID = s_createSoundSource( _resourceName, _loop, EST_SOUND, _cb );
+			uint32_t sourceID = s_createSoundSource( _resourceName, _loop, ESST_SOUND, _cb );
 
 			if( sourceID == 0 )
 			{
@@ -200,7 +200,7 @@ namespace	Menge
         //////////////////////////////////////////////////////////////////////////
 		uint32_t s_voicePlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb )
         {
-            uint32_t sourceID = s_createSoundSource( _resourceName, _loop, EST_VOICE, _cb );
+            uint32_t sourceID = s_createSoundSource( _resourceName, _loop, ESST_VOICE, _cb );
 
             if( sourceID == 0 )
             {
@@ -226,7 +226,7 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, const pybind::object & _cb )
 		{
-			uint32_t sourceID = s_createSoundSource(_resourceName, _loop, EST_SOUND, _cb);
+			uint32_t sourceID = s_createSoundSource(_resourceName, _loop, ESST_SOUND, _cb);
 
 			if( sourceID == 0 )
 			{

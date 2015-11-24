@@ -116,10 +116,6 @@ namespace Menge
 		void tick( float _timing );
 		bool update() override;
 
-
-	public:
-		float getTime() const override;
-
 	public:
 		void render() override;
 		
@@ -194,8 +190,6 @@ namespace Menge
 				
 		SceneChangeCallbackInterfacePtr m_changeSceneCb;
 		SceneChangeCallbackInterfacePtr m_removeSceneCb;
-
-		float m_time;
 
 		uint32_t m_fps;
 

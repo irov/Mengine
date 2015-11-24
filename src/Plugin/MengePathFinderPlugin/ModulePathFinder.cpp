@@ -133,8 +133,8 @@ namespace Menge
 			.def( "getLength", &PathFinderWayAffector::getLength )
 			;
 
-		pybind::def_functor( "createPathFinderWayAffertor", this, &ModulePathFinder::createPathFinderWayAffertor );
-		pybind::def_functor( "destroyPathFinderWayAffertor", this, &ModulePathFinder::destroyPathFinderWayAffertor );
+		pybind::def_functor( "createPathFinderWayAffector", this, &ModulePathFinder::createPathFinderWayAffector );
+		pybind::def_functor( "destroyPathFinderWayAffector", this, &ModulePathFinder::destroyPathFinderWayAffector );
 
 		SCRIPT_SERVICE(m_serviceProvider)
 			->addWrapping( Helper::stringizeString(m_serviceProvider, "PathGraphNode"), new ScriptClassWrapper<PathGraphNode>() );
@@ -191,7 +191,7 @@ namespace Menge
 		delete _graph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PathFinderWayAffector * ModulePathFinder::createPathFinderWayAffertor( Node * _node, const pybind::list & _way, float _offset, float _speed, const pybind::object & _cb )
+	PathFinderWayAffector * ModulePathFinder::createPathFinderWayAffector( Node * _node, const pybind::list & _way, float _offset, float _speed, const pybind::object & _cb )
 	{
 		PathFinderWayAffector * affector = m_factoryPathFinderWayAffector.createObject();
 
@@ -212,7 +212,7 @@ namespace Menge
 		return affector;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::destroyPathFinderWayAffertor( PathFinderWayAffector * _affector )
+	void ModulePathFinder::destroyPathFinderWayAffector( PathFinderWayAffector * _affector )
 	{
 		_affector->destroy();
 	}

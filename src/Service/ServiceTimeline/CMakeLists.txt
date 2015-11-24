@@ -1,9 +1,9 @@
-SET( MY_LIB_NAME ServiceTimer )
+SET( MY_LIB_NAME ServiceTimeline )
 
 ADD_FILTER(
 src
-	TimerService.h
-	TimerService.cpp
+	TimelineService.h
+	TimelineService.cpp
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

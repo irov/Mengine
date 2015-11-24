@@ -382,6 +382,7 @@ SET( APPLICATION_DEPENDENCIES
  ServicePackage
  ServiceProfiler
  ServiceUserdata
+ ServiceTimeline
 )
 
 SET( APPLICATION_DEPENDENCIES

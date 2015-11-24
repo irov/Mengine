@@ -1,6 +1,7 @@
 #	include "ScheduleManager.h"
 
 #   include "Interface/ServiceInterface.h"
+#   include "Interface/TimelineInterface.h"
 
 #	include "Logger/Logger.h"
 
@@ -42,7 +43,8 @@ namespace Menge
         : m_serviceProvider(nullptr)
 		, m_speedFactor(1.f)
 		, m_timing(0.f)
-        , m_enumeratorSchedule(0)
+        , m_enumerator(0)
+		, m_revision(0)
         , m_freezeAll(false)
     {
     }
@@ -61,53 +63,60 @@ namespace Menge
 		return m_serviceProvider;
 	}
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ScheduleManager::schedule( float _timing, const ScheduleListenerInterfacePtr & _listener )
+	uint32_t ScheduleManager::event( float _delay, const ScheduleEventInterfacePtr & _listener )
     {
-		uint32_t new_id = ++m_enumeratorSchedule;
+		uint32_t new_id = ++m_enumerator;
 
         ScheduleEventDesc desc;
 
-		desc.listener = _listener;
-
-		desc.timing = _timing;
-		desc.delay = 0.f;
 		desc.id = new_id;
 
-		desc.update = false;
+		desc.event = _listener;
+		desc.timer = nullptr;
+		desc.pipe = nullptr;
+
+		float timeOffset = TIMELINE_SERVICE( m_serviceProvider )
+			->getOffset();
+
+		desc.timing = timeOffset;
+		desc.delay = _delay;
+		desc.iterate = 0;
+		desc.revision = 0;
+
+		desc.type = EST_EVENT;
 		desc.dead = false;
 		desc.freeze = m_freezeAll;
 
-        m_schedules.push_back( desc );
+		m_schedulesAdd.push_back( desc );
 
 		return new_id;
     }
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t ScheduleManager::timing( float _delay, const ScheduleListenerInterfacePtr & _listener )
+	uint32_t ScheduleManager::timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimerInterfacePtr & _listener )
 	{
-		if( _delay < 0.f || mt::equal_f_z( _delay ) == true )
-		{
-			LOGGER_ERROR( m_serviceProvider )("ScheduleManager::timing invalid delay %f"
-				, _delay
-				);
-
-			return 0;
-		}
-
-		uint32_t new_id = ++m_enumeratorSchedule;
+		uint32_t new_id = ++m_enumerator;
 
 		ScheduleEventDesc desc;
 
-		desc.listener = _listener;
-
-		desc.timing = 0.f;
-		desc.delay = _delay;
 		desc.id = new_id;
 
-		desc.update = true;
+		desc.event = nullptr;
+		desc.timer = _listener;
+		desc.pipe = _pipe;
+
+		float timeOffset = TIMELINE_SERVICE( m_serviceProvider )
+			->getOffset();
+
+		desc.timing = timeOffset;
+		desc.delay = 0.f;
+		desc.iterate = 0;
+		desc.revision = 0;
+
+		desc.type = EST_TIMER;
 		desc.dead = false;
 		desc.freeze = m_freezeAll;
 
-		m_schedules.push_back( desc );
+		m_schedulesAdd.push_back( desc );
 
 		return new_id;
 	}
@@ -117,27 +126,36 @@ namespace Menge
 		TListSchedules::const_iterator it_find =
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind( _id ) );
 
-		if( it_find == m_schedules.end() )
+		if( it_find != m_schedules.end() )
 		{
-			return false;
+			return true;
+		}
+
+		TListSchedules::const_iterator it_find_add =
+			std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), FScheduleFind( _id ) );
+
+		if( it_find_add != m_schedulesAdd.end() )
+		{
+			return true;
 		}
 		
-		return true;
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScheduleManager::refresh( uint32_t _id, float _timing )
 	{
-		TListSchedules::iterator it_find =
-			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind( _id ) );
+		ScheduleEventDesc * desc;
 
-		if( it_find == m_schedules.end() )
+		if( this->findScheduleEvent_( _id, desc ) == false )
 		{
+			LOGGER_ERROR( m_serviceProvider )("ScheduleManager::remove not found shedule '%d'"
+				, _id
+				);
+
 			return false;
 		}
-
-		ScheduleEventDesc & desc = *it_find;
-
-		desc.timing = _timing;
+		
+		desc->timing = _timing;
 
 		return true;
 	}
@@ -169,11 +187,9 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void ScheduleManager::removeAll()
     {
-        TListSchedules schedules = m_schedules;
-
         for( TListSchedules::iterator 
-            it = schedules.begin(),
-            it_end = schedules.end();
+			it = m_schedules.begin(),
+			it_end = m_schedules.end();
         it != it_end;
         ++it)
         {
@@ -181,6 +197,19 @@ namespace Menge
 
             this->removeSchedule_( event );
         }
+
+		TListSchedules schedulesAdd = m_schedulesAdd;
+
+		for( TListSchedules::iterator
+			it = schedulesAdd.begin(),
+			it_end = schedulesAdd.end();
+		it != it_end;
+		++it )
+		{
+			ScheduleEventDesc & event = *it;
+
+			this->removeSchedule_( event );
+		}
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::removeSchedule_( ScheduleEventDesc & _event )
@@ -192,10 +221,24 @@ namespace Menge
 
         _event.dead = true;
 
-		ScheduleListenerInterfacePtr listener = _event.listener;
-		_event.listener = nullptr;
+		switch( _event.type )
+		{
+		case EST_EVENT:
+			{
+				ScheduleEventInterfacePtr listener = _event.event;
+				_event.event = nullptr;
 
-		listener->onScheduleStop( _event.id );
+				listener->onScheduleStop( _event.id );
+			}break;
+		case EST_TIMER:
+			{
+				ScheduleTimerInterfacePtr listener = _event.timer;
+				_event.timer = nullptr;
+				_event.pipe = nullptr;
+
+				listener->onScheduleStop( _event.id );
+			}break;
+		}
 
 		return true;
     }
@@ -208,64 +251,120 @@ namespace Menge
 
 		m_timing += total_timing;
 
-        if( m_schedules.empty() == true )
-        {
-            return;
-        }		
+		++m_revision;
 
-        for( TListSchedules::size_type 
-            it = 0,
-            it_end = m_schedules.size();
-        it != it_end;
-        ++it )
-        {
-            ScheduleEventDesc & desc = m_schedules[it];
+		if( m_freezeAll == true )
+		{
+			return;
+		}
 
-            if( desc.dead == true )
-            {
-                continue;
-            }
+		do
+		{
+			m_schedules.insert( m_schedules.end(), m_schedulesAdd.begin(), m_schedulesAdd.end() );
+			m_schedulesAdd.clear();
 
-            if( desc.freeze == true )
-            {
-                continue;
-            }
-
-			if( m_freezeAll == true )
+			for( TListSchedules::iterator
+				it = m_schedules.begin(),
+				it_end = m_schedules.end();
+			it != it_end;
+			++it )
 			{
-				continue;
-			}
+				ScheduleEventDesc & desc = *it;
 
-			if( desc.update == false )
-			{
-				if( desc.timing > total_timing )
+				if( desc.dead == true )
 				{
-					desc.timing -= total_timing;
-
 					continue;
 				}
-								
-				desc.dead = true;
 
-				desc.listener->onScheduleComplete( desc.id );
-			}
-			else
-			{
+				if( desc.freeze == true )
+				{
+					continue;
+				}
+
+				if( desc.revision == m_revision )
+				{
+					continue;
+				}
+
+				desc.revision = m_revision;
+
+				float old_timing = desc.timing;
+
 				desc.timing += total_timing;
 
-				while( desc.timing > desc.delay )
+				switch( desc.type )
 				{
-					desc.timing -= desc.delay;
-
-					if( desc.listener->onScheduleUpdate( desc.id, desc.delay ) == true )
+				case EST_EVENT:
 					{
-						this->removeSchedule_( desc );
+						if( desc.timing < desc.delay )
+						{
+							continue;
+						}
 
-						break;
-					}
+						desc.timing -= desc.delay;
+
+						float timeOffset = desc.delay - old_timing;
+
+						TIMELINE_SERVICE( m_serviceProvider )
+							->beginOffset( timeOffset );
+
+						desc.dead = true;
+
+						desc.event->onScheduleComplete( desc.id );
+
+						TIMELINE_SERVICE( m_serviceProvider )
+							->endOffset();
+					}break;
+				case EST_TIMER:
+					{
+						float acc_delay = 0.f;
+
+						for( ;; )
+						{
+							if( desc.iterate_invalide == true )
+							{
+								float delay = desc.pipe->onSchedulePipe( desc.id, desc.iterate );
+
+								if( delay <= 0.f )
+								{
+									desc.dead = true;
+
+									break;
+								}
+
+								desc.iterate_invalide = false;
+								desc.delay = delay;
+							}
+
+							if( desc.timing < desc.delay )
+							{
+								break;
+							}
+
+							acc_delay += desc.delay;
+
+							float timeOffset = acc_delay - old_timing;
+
+							uint32_t iterate = desc.iterate;
+
+							desc.timing -= desc.delay;
+
+							desc.iterate++;
+							desc.iterate_invalide = true;
+
+							TIMELINE_SERVICE( m_serviceProvider )
+								->beginOffset( timeOffset );
+
+							desc.timer->onScheduleUpdate( desc.id, iterate, desc.delay );
+
+							TIMELINE_SERVICE( m_serviceProvider )
+								->endOffset();
+						}
+					}break;
 				}
-			}
-        }
+			}			
+		}
+		while( m_schedulesAdd.empty() == false );
 
         TListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead());
         m_schedules.erase( it_erase, m_schedules.end() );
@@ -353,28 +452,48 @@ namespace Menge
 		TListSchedules::iterator it_find = 
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
 
-		if( it_find == m_schedules.end() )
+		if( it_find != m_schedules.end() )
 		{
-			return false;
+			_desc = &*it_find;
+
+			return true;
+		}
+				
+		TListSchedules::iterator it_find_add =
+			std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), FScheduleFind( _id ) );
+
+		if( it_find_add != m_schedulesAdd.end() )
+		{
+			_desc = &*it_find_add;
+
+			return true;
 		}
 
-		_desc = &*it_find;
-
-		return true;
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::findScheduleEvent_( uint32_t _id, const ScheduleEventDesc *& _desc ) const
     {
-        TListSchedules::const_iterator it_find = 
-            std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
+		TListSchedules::const_iterator it_find =
+			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind( _id ) );
 
-        if( it_find == m_schedules.end() )
-        {
-            return false;
-        }
+		if( it_find != m_schedules.end() )
+		{
+			_desc = &*it_find;
 
-		_desc = &*it_find;
+			return true;
+		}
 
-        return true;
+		TListSchedules::const_iterator it_find_add =
+			std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), FScheduleFind( _id ) );
+
+		if( it_find_add != m_schedulesAdd.end() )
+		{
+			_desc = &*it_find_add;
+
+			return true;
+		}
+
+		return false;
     }
 }

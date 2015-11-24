@@ -291,7 +291,7 @@ namespace Menge
 
             switch( type )
             {
-            case EST_SOUND:
+            case ESST_SOUND:
                 {
 					float mixVolume = 1.f;
 					mixVolume *= m_commonVolume.mixVolume();
@@ -300,7 +300,7 @@ namespace Menge
 
                     sourceInterface->setVolume( mixVolume );
                 }break;
-            case EST_MUSIC:
+            case ESST_MUSIC:
                 {
 					float mixVolume = 1.f;
 					mixVolume *= m_commonVolume.mixVolume();
@@ -309,7 +309,7 @@ namespace Menge
 
                     sourceInterface->setVolume( mixVolume );
                 }break;
-            case EST_VOICE:
+            case ESST_VOICE:
                 {
 					float mixVolume = 1.f;
 					mixVolume *= m_commonVolume.mixVolume();

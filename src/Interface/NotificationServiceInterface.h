@@ -9,14 +9,14 @@
 
 namespace Menge
 {
-	class Observer
+	class ObserverInterface
 		: public MemoryAllocator
 	{
 	public:
-		Observer()
+		ObserverInterface()
 		{
 		};
-		virtual ~Observer()
+		virtual ~ObserverInterface()
 		{
 		};
 
@@ -26,12 +26,12 @@ namespace Menge
 
 	template<class M>
 	class GeneratorObserverMethod
-		: public Observer
+		: public ObserverInterface
 	{
 	};
 
 	class Observer0
-		: public Observer
+		: public ObserverInterface
 	{
 	public:
 		virtual void notify() = 0;
@@ -78,7 +78,7 @@ namespace Menge
 
 	template<class P0>
 	class Observer1
-		: public Observer
+		: public ObserverInterface
 	{
 	public:
 		virtual void notify( P0 _p0 ) = 0;
@@ -125,7 +125,7 @@ namespace Menge
 
 	template<class P0, class P1>
 	class Observer2
-		: public Observer
+		: public ObserverInterface
 	{
 	public:
 		virtual void notify( P0 _p0, P1 _p1 ) = 0;
@@ -173,14 +173,14 @@ namespace Menge
 	class VisitorObserver
 	{
 	public:
-		virtual bool visit( Observer * _observer ) = 0;
+		virtual bool visit( ObserverInterface * _observer ) = 0;
 	};
 
 	class VisitorObserverCall0
 		: public VisitorObserver
 	{
 	public:
-		bool visit( Observer * _observer ) override
+		bool visit( ObserverInterface * _observer ) override
 		{
 			Observer0 * observer = dynamic_cast<Observer0 *>(_observer);
 
@@ -206,7 +206,7 @@ namespace Menge
 		}
 
 	public:
-		bool visit( Observer * _observer ) override
+		bool visit( ObserverInterface * _observer ) override
 		{
 			Observer1<P0> * observer = dynamic_cast<Observer1<P0> *>(_observer);
 
@@ -236,7 +236,7 @@ namespace Menge
 		}
 
 	public:
-		bool visit( Observer * _observer ) override
+		bool visit( ObserverInterface * _observer ) override
 		{
 			Observer2<P0, P1> * observer = dynamic_cast<Observer2<P0, P1> *>(_observer);
 
@@ -261,17 +261,17 @@ namespace Menge
 		SERVICE_DECLARE( "NotificationService" )
 
 	public:
-		virtual void addObserver( uint32_t _id, Observer * _observer ) = 0;
-		virtual void removeObserver( uint32_t _id, Observer * _observer ) = 0;
+		virtual void addObserver( uint32_t _id, ObserverInterface * _observer ) = 0;
+		virtual void removeObserver( uint32_t _id, ObserverInterface * _observer ) = 0;
 
 	protected:
 		virtual void visitObservers( uint32_t _id, VisitorObserver * _visitor ) = 0;
 
 	public:
 		template<class C, class M>
-		inline Observer * addObserverMethod( uint32_t _id, C * _self, M _method )
+		inline ObserverInterface * addObserverMethod( uint32_t _id, C * _self, M _method )
 		{
-			Observer * observer =
+			ObserverInterface * observer =
 				new GeneratorObserverMethod<M>( _self, _method );
 
 			this->addObserver( _id, observer );

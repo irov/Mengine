@@ -1,6 +1,7 @@
 #	pragma once
 
 #	include "Interface/RenderSystemInterface.h"
+#	include "Interface/NotificationServiceInterface.h"
 
 #	include "Kernel/Node.h"
 
@@ -8,8 +9,6 @@
 
 namespace Menge
 {
-	class Observer;
-
 	class Camera3D
         : public Node
 		, public RenderCameraInterface		
@@ -77,7 +76,7 @@ namespace Menge
 
 		Viewport m_renderport;
 
-		Observer * m_notifyChangeWindowResolution;
+		ObserverInterface * m_notifyChangeWindowResolution;
 
 		mutable mt::mat4f m_worldMatrix;
 		mutable mt::mat4f m_worldMatrixInv;

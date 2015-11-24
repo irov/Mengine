@@ -2,6 +2,7 @@
 
 #   include "Interface/ApplicationInterface.h"
 #   include "Interface/FileSystemInterface.h"
+#   include "Interface/TimelineInterface.h"
 
 #   include "Interface/InputSystemInterface.h"
 #   include "Interface/NodeInterface.h"
@@ -995,16 +996,16 @@ namespace Menge
 			return successful;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		class PyObjectTimingListener
-			: public ScheduleListenerInterface
+		class PyScheduleTimerInterface
+			: public ScheduleTimerInterface
 		{
 		public:
-			PyObjectTimingListener()
+			PyScheduleTimerInterface()
 				: m_serviceProvider(nullptr)
 			{
 			}
 
-			~PyObjectTimingListener()
+			~PyScheduleTimerInterface()
 			{
 			}
 
@@ -1016,22 +1017,14 @@ namespace Menge
 			}
 
 		protected:
-			bool onScheduleUpdate( uint32_t _id, float _timing ) override
+			void onScheduleUpdate( uint32_t _id, uint32_t _iterate, float _delay ) override
 			{
-				m_script( _id, _timing, false );
-
-				return false;
-			}
-
-			void onScheduleComplete( uint32_t _id ) override
-			{
-				(void)_id;
-				//Empty
+				m_script( _id, _iterate, _delay, false );
 			}
 
 			void onScheduleStop( uint32_t _id ) override
 			{
-				m_script( _id, 0.f, true );
+				m_script( _id, 0, 0.f, true );
 			}
 
 		protected:
@@ -1039,19 +1032,138 @@ namespace Menge
 			pybind::object m_script;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyObjectTimingListener, 8> TFactoryPyObjectTimingListener;
+		typedef FactoryPoolStore<PyScheduleTimerInterface, 8> TFactoryPyObjectTimingListener;
 		TFactoryPyObjectTimingListener m_factoryPyObjectTimingListener;
+		//////////////////////////////////////////////////////////////////////////
+		class PySchedulePipeInterface
+			: public SchedulePipeInterface
+		{
+		public:
+			PySchedulePipeInterface()
+				: m_serviceProvider( nullptr )
+			{
+			}
+
+			~PySchedulePipeInterface()
+			{
+			}
+
+		public:
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb )
+			{
+				m_serviceProvider = _serviceProvider;
+				m_cb = _cb;
+			}
+
+		protected:
+			float onSchedulePipe( uint32_t _id, uint32_t _index ) override
+			{
+				float delay = m_cb( _id, _index );
+
+				return delay;
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			pybind::object m_cb;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		typedef FactoryPoolStore<PySchedulePipeInterface, 8> TFactoryPySchedulePipeInterface;
+		TFactoryPySchedulePipeInterface m_factoryPySchedulePipeInterface;
+		//////////////////////////////////////////////////////////////////////////
+		class DelaySchedulePipeInterface
+			: public SchedulePipeInterface
+		{
+		public:
+			DelaySchedulePipeInterface()
+				: m_serviceProvider( nullptr )
+				, m_delay(0.f)
+			{
+			}
+
+			~DelaySchedulePipeInterface()
+			{
+			}
+
+		public:
+			void initialize( ServiceProviderInterface * _serviceProvider, float _delay )
+			{
+				m_serviceProvider = _serviceProvider;
+
+				m_delay = _delay;
+			}
+
+		protected:
+			float onSchedulePipe( uint32_t _id, uint32_t _index ) override
+			{
+				(void)_id;
+				(void)_index;
+
+				return m_delay;
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+
+			float m_delay;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		typedef FactoryPoolStore<DelaySchedulePipeInterface, 8> TFactoryDelaySchedulePipeInterface;
+		TFactoryDelaySchedulePipeInterface m_factoryDelaySchedulePipeInterface;
+		//////////////////////////////////////////////////////////////////////////
+		class PyScheduleEventInterface
+			: public ScheduleEventInterface
+		{
+		public:
+			PyScheduleEventInterface()
+				: m_serviceProvider( nullptr )
+			{
+			}
+
+			~PyScheduleEventInterface()
+			{
+			}
+
+		public:
+			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb )
+			{
+				m_serviceProvider = _serviceProvider;
+				m_cb = _cb;
+			}
+
+		protected:
+			void onScheduleComplete( uint32_t _id ) override
+			{
+				m_cb( _id, false );
+			}
+
+			void onScheduleStop( uint32_t _id ) override
+			{
+				m_cb( _id, true );
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			pybind::object m_cb;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		typedef FactoryPoolStore<PyScheduleEventInterface, 8> TFactoryPyObjectScheduleListener;
+		TFactoryPyObjectScheduleListener m_factoryPyObjectScheduleListener;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t timing( float _timing, const pybind::object & _script )
+		uint32_t timing( float _delay, const pybind::object & _listener )
         {
 			ScheduleManagerInterface * tm = PLAYER_SERVICE( m_serviceProvider )
                 ->getTimingManager();
 
-            PyObjectTimingListener * listener = m_factoryPyObjectTimingListener.createObject();
-			
-			listener->initialize( m_serviceProvider, _script );
+			DelaySchedulePipeInterface * pipe = m_factoryDelaySchedulePipeInterface.createObject();
 
-            uint32_t id = tm->timing( _timing, listener );
+			pipe->initialize( m_serviceProvider, _delay );
+
+            PyScheduleTimerInterface * listener = m_factoryPyObjectTimingListener.createObject();
+			
+			listener->initialize( m_serviceProvider, _listener );
+
+			uint32_t id = tm->timing( pipe, listener );
 
             return id;
         }
@@ -1090,87 +1202,57 @@ namespace Menge
 			return successful;
 		}
         //////////////////////////////////////////////////////////////////////////
-        class PyObjectScheduleListener
-            : public ScheduleListenerInterface
-        {
-        public:
-            PyObjectScheduleListener()
-                : m_serviceProvider(nullptr)
-            {
-            }
-
-            ~PyObjectScheduleListener()
-            {
-            }
-
-		public:
-			void initialize( ServiceProviderInterface * _serviceProvider, const pybind::object & _cb )
-			{
-				m_serviceProvider = _serviceProvider;
-				m_cb = _cb;
-			}
-
-        protected:
-			bool onScheduleUpdate( uint32_t _id, float _timing ) override
-			{
-				(void)_id;
-				(void)_timing;
-
-				//Empty
-
-				return false;
-			}
-
-            void onScheduleComplete( uint32_t _id ) override
-            {
-                m_cb( _id, false );
-            }
-
-            void onScheduleStop( uint32_t _id ) override
-            {
-                m_cb( _id, true );
-            }
-
-        protected:
-            ServiceProviderInterface * m_serviceProvider;
-            pybind::object m_cb;
-        };
-		//////////////////////////////////////////////////////////////////////////
-		typedef FactoryPoolStore<PyObjectScheduleListener, 8> TFactoryPyObjectScheduleListener;
-		TFactoryPyObjectScheduleListener m_factoryPyObjectScheduleListener;
-        //////////////////////////////////////////////////////////////////////////
         uint32_t schedule( float _timing, const pybind::object & _script )
         {
             ScheduleManagerInterface * sm = PLAYER_SERVICE(m_serviceProvider)
                 ->getScheduleManager();
 
-            PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObject();
+            PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener.createObject();
 
 			sl->initialize( m_serviceProvider, _script );
 
-            uint32_t id = sm->schedule( _timing, sl );
+            uint32_t id = sm->event( _timing, sl );
 
             return id;
         }
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, const pybind::object & _script )
 		{
-			PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObject();
+			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener.createObject();
 
 			sl->initialize( m_serviceProvider, _script );
 
-			uint32_t id = _scheduleManager->schedule( _timing, sl );
+			uint32_t id = _scheduleManager->event( _timing, sl );
 
 			return id;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t TimingManagerInterface_timing( ScheduleManagerInterface * _timingManager, float _delay, const pybind::object & _script )
+		uint32_t ScheduleManagerInterface_timing( ScheduleManagerInterface * _scheduleManager, float _delay, const pybind::object & _listener )
 		{
-			PyObjectTimingListener * tl = m_factoryPyObjectTimingListener.createObject();
+			DelaySchedulePipeInterface * pipe = m_factoryDelaySchedulePipeInterface.createObject();
 
-			tl->initialize( m_serviceProvider, _script );
+			pipe->initialize( m_serviceProvider, _delay );
 
-			uint32_t id = _timingManager->timing( _delay, tl );
+			PyScheduleTimerInterface * tl = m_factoryPyObjectTimingListener.createObject();
+
+			tl->initialize( m_serviceProvider, _listener );
+
+			uint32_t id = _scheduleManager->timing( pipe, tl );
+
+			return id;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		uint32_t ScheduleManagerInterface_pipe( ScheduleManagerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _listener )
+		{
+			PySchedulePipeInterface * pipe = m_factoryPySchedulePipeInterface.createObject();
+
+			pipe->initialize( m_serviceProvider, _pipe );
+
+			PyScheduleTimerInterface * tl = m_factoryPyObjectTimingListener.createObject();
+
+			tl->initialize( m_serviceProvider, _listener );
+
+			uint32_t id = _scheduleManager->timing( pipe, tl );
 
 			return id;
 		}
@@ -1282,11 +1364,11 @@ namespace Menge
 				return 0;
 			}
 
-			PyObjectScheduleListener * sl = m_factoryPyObjectScheduleListener.createObject();
+			PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener.createObject();
 
 			sl->initialize( m_serviceProvider, _script );
 
-            uint32_t id = sm->schedule( _timing, sl );
+            uint32_t id = sm->event( _timing, sl );
 
             return id;
         }
@@ -1622,8 +1704,8 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Animatable_play( Animatable * _animatable )
         {
-            float time = PLAYER_SERVICE(m_serviceProvider)
-                ->getTime();
+            float time = TIMELINE_SERVICE(m_serviceProvider)
+                ->getOffset();
 
             uint32_t id = _animatable->play( time );
 
@@ -5216,8 +5298,9 @@ namespace Menge
             pybind::def_functor( "timingRemove", nodeScriptMethod, &NodeScriptMethod::timingRemove );
 					
 			pybind::interface_<ScheduleManagerInterface>("ScheduleManagerInterface", true)
-				.def_proxy_static( "timing", nodeScriptMethod, &NodeScriptMethod::TimingManagerInterface_timing )
+				.def_proxy_static( "timing", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_timing )
 				.def_proxy_static( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
+				.def_proxy_static( "pipe", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_pipe )
 				.def( "refresh", &ScheduleManagerInterface::refresh )
 				.def( "exist", &ScheduleManagerInterface::exist )
 				.def( "remove", &ScheduleManagerInterface::remove )

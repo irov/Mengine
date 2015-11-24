@@ -1,6 +1,7 @@
 #	include "Movie.h"
 
 #	include "Interface/ResourceInterface.h"
+#   include "Interface/TimelineInterface.h"
 
 #	include "ResourceMovie.h"
 
@@ -13,7 +14,6 @@
 #   include "ResourceShape.h"
 #   include "ResourceParticle.h"
 
-#   include "Interface/ApplicationInterface.h"
 
 #	include "Kernel/Layer.h"
 #	include "Camera3D.h"
@@ -151,7 +151,7 @@ namespace Menge
 		}
 		else if( loop == true )
 		{
-			m_currentFrame = frame % frameCount;
+			m_currentFrame = frame % (frameCount + 1);
 			m_frameTiming = _timing - m_currentFrame * frameDuration;
 		}		
 		else
@@ -2502,8 +2502,8 @@ namespace Menge
 
 		if( autoPlay == true )
 		{
-			float time = PLAYER_SERVICE( m_serviceProvider )
-				->getTime();
+			float time = TIMELINE_SERVICE( m_serviceProvider )
+				->getOffset();
 
 			if( this->play( time ) == 0 )
 			{

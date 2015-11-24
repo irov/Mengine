@@ -16,9 +16,9 @@ namespace Menge
 {
     enum ESoundSourceType
     {
-        EST_SOUND,
-        EST_MUSIC,
-        EST_VOICE
+        ESST_SOUND,
+        ESST_MUSIC,
+        ESST_VOICE
     };
 
 	class SoundListenerInterface

@@ -18,7 +18,7 @@ namespace Menge
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::addObserver( uint32_t _id, Observer * _observer )
+	void NotificationService::addObserver( uint32_t _id, ObserverInterface * _observer )
 	{
 		TMapObservers::iterator it_find = m_mapObserves.find( _id );
 
@@ -34,7 +34,7 @@ namespace Menge
 		observers.push_back( _observer );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::removeObserver( uint32_t _id, Observer * _observer )
+	void NotificationService::removeObserver( uint32_t _id, ObserverInterface * _observer )
 	{
 		TMapObservers::iterator it_find = m_mapObserves.find( _id );
 
@@ -52,7 +52,7 @@ namespace Menge
 			return;
 		}
 
-		Observer * observer = *it_observer;
+		ObserverInterface * observer = *it_observer;
 		observer->destroy();
 
 		observers.erase( it_observer );
@@ -75,7 +75,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			Observer * observer = *it;
+			ObserverInterface * observer = *it;
 
 			if( _visitor->visit( observer ) == false )
 			{

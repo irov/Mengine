@@ -6,17 +6,36 @@
 
 namespace Menge
 {
-    class ScheduleListenerInterface
+	//////////////////////////////////////////////////////////////////////////
+	class ScheduleEventInterface
 		: public FactorablePtr
     {
     public:
-		virtual bool onScheduleUpdate( uint32_t _id, float _timing ) = 0;
         virtual void onScheduleComplete( uint32_t _id ) = 0;
         virtual void onScheduleStop( uint32_t _id ) = 0;
     };
-
-	typedef stdex::intrusive_ptr<ScheduleListenerInterface> ScheduleListenerInterfacePtr;
-
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ScheduleEventInterface> ScheduleEventInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
+	class ScheduleTimerInterface
+		: public FactorablePtr
+	{
+	public:
+		virtual void onScheduleUpdate( uint32_t _id, uint32_t _iterate, float _timing ) = 0;
+		virtual void onScheduleStop( uint32_t _id ) = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ScheduleTimerInterface> ScheduleTimerInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
+	class SchedulePipeInterface
+		: public FactorablePtr
+	{
+	public:
+		virtual float onSchedulePipe( uint32_t _id, uint32_t _index ) = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<SchedulePipeInterface> SchedulePipeInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
     class ScheduleManagerInterface
         : public Factorable
     {
@@ -25,10 +44,10 @@ namespace Menge
 		virtual ServiceProviderInterface * getServiceProvider() const = 0;
 
     public:
-        virtual uint32_t schedule( float _timing, const ScheduleListenerInterfacePtr & _listener ) = 0;
+		virtual uint32_t event( float _delay, const ScheduleEventInterfacePtr & _listener ) = 0;
 
 	public:
-		virtual uint32_t timing( float _delay, const ScheduleListenerInterfacePtr & _listener ) = 0;
+		virtual uint32_t timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimerInterfacePtr & _listener ) = 0;
 
 	public:
 		virtual bool refresh( uint32_t _id, float _timing ) = 0;

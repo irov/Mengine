@@ -2,36 +2,7 @@
 
 #	include "Interface/ApplicationInterface.h"
 
-#   include "Interface/OptionsInterface.h"
-#   include "Interface/PrototypeManagerInterface.h"
-#	include "Interface/TextInterface.h"
-#   include "Interface/InputSystemInterface.h"
-#   include "Interface/RenderSystemInterface.h"
-#	include "Interface/SoundSystemInterface.h"
-#   include "Interface/ParticleSystemInterface.h"
-#   include "Interface/ScriptSystemInterface.h"
-#   include "Interface/EventInterface.h"
-#   include "Interface/PhysicSystemInterface.h"
-#   include "Interface/ConfigInterface.h"
-#   include "Interface/GameInterface.h"
-#   include "Interface/PlayerInterface.h"
-#	include "Interface/PrefetcherInterface.h"
-#   include "Interface/StringizeInterface.h"
 #	include "Interface/NotificationServiceInterface.h"
-#   include "Interface/MousePickerSystemInterface.h"
-#	include "Interface/LoaderInterface.h"
-#	include "Interface/NodeInterface.h"
-#	include "Interface/ThreadSystemInterface.h"
-#	include "Interface/CodecInterface.h"
-#   include "Interface/ConverterInterface.h"
-#   include "Interface/ResourceInterface.h"
-#   include "Interface/AccountInterface.h"
-#   include "Interface/ProfilerInterface.h"
-#   include "Interface/GameInterface.h"
-#   include "Interface/WatchdogInterface.h"
-#   include "Interface/GraveyardInterface.h"
-#   include "Interface/PackageInterface.h"
-#	include "Interface/UserdataInterface.h"
 
 #   include "Consts.h"
 
@@ -256,6 +227,6 @@ namespace Menge
 		bool m_debugPause;
 
 		bool m_debugFileOpen;
-		Observer * m_notifyDebugOpenFile;
+		ObserverInterface * m_notifyDebugOpenFile;
 	};
 }

@@ -71,7 +71,7 @@ namespace Menge
 		float m_zNear;
 		float m_zFar;
 
-		Observer * m_observerChangeWindowResolution;
+		ObserverInterface * m_observerChangeWindowResolution;
 
 		mutable mt::mat4f m_worldMatrix;
 		mutable mt::mat4f m_worldMatrixInv;

@@ -15,8 +15,8 @@ namespace Menge
         ~NotificationService();
 
 	public:
-		void addObserver( uint32_t _id, Observer * _observer ) override;
-		void removeObserver( uint32_t _id, Observer * _observer ) override;
+		void addObserver( uint32_t _id, ObserverInterface * _observer ) override;
+		void removeObserver( uint32_t _id, ObserverInterface * _observer ) override;
 
 	protected:
 		void visitObservers( uint32_t _id, VisitorObserver * _visitor ) override;
@@ -25,7 +25,7 @@ namespace Menge
 		void invalidObserver_( uint32_t _id );
 
 	protected:		
-		typedef stdex::vector<Observer *> TVectorObservers;
+		typedef stdex::vector<ObserverInterface *> TVectorObservers;
 		typedef stdex::map<uint32_t, TVectorObservers> TMapObservers;
 		TMapObservers m_mapObserves;
 	};

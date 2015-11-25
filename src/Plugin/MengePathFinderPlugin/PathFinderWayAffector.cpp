@@ -14,6 +14,7 @@ namespace Menge
 		, m_speedAffector(1.f)
 		, m_offset(0.f)
 		, m_length(0.f)
+		, m_wayLength(0.f)
 		, m_iterator(0)
 		, m_wayCount(0)
 	{
@@ -49,6 +50,8 @@ namespace Menge
 		{
 			return false;
 		}
+
+		m_wayLength = this->calcWayLength_();
 
 		return true;
 	}
@@ -182,9 +185,38 @@ namespace Menge
 		return newTarget;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	float PathFinderWayAffector::calcWayLength_() const
+	{ 
+		float way_length = 0.f;
+
+		for( uint32_t i = 0; i != (m_wayCount - 1); ++i )
+		{
+			mt::vec3f wp_0 = m_way[i + 0];
+			mt::vec3f wp_1 = m_way[i + 1];
+
+			float length = mt::length_v3_v3( wp_0, wp_1 );
+
+			way_length += length;
+		}
+
+		return way_length;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	float PathFinderWayAffector::getLength() const
 	{
 		return m_length;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float PathFinderWayAffector::getWayLength() const
+	{
+		return m_wayLength;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & PathFinderWayAffector::getLocalPosition() const
+	{ 
+		const mt::vec3f & pos = m_node->getLocalPosition();
+
+		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::complete()

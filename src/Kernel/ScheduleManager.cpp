@@ -44,7 +44,6 @@ namespace Menge
 		, m_speedFactor(1.f)
 		, m_timing(0.f)
         , m_enumerator(0)
-		, m_revision(0)
         , m_freezeAll(false)
 		, m_update(false)
     {
@@ -81,7 +80,6 @@ namespace Menge
 		desc.timing_delay = 0.f;
 
 		desc.iterate = 0;
-		desc.revision = 0;
 
 		desc.type = EST_EVENT;
 		desc.dead = false;
@@ -109,7 +107,6 @@ namespace Menge
 		desc.timing_delay = 0.f;
 
 		desc.iterate = 0;
-		desc.revision = 0;
 
 		desc.type = EST_TIMER;
 		desc.dead = false;
@@ -251,8 +248,6 @@ namespace Menge
 
 		m_timing += total_timing;
 
-		++m_revision;
-
 		if( m_freezeAll == true )
 		{
 			return;
@@ -260,108 +255,100 @@ namespace Menge
 
 		m_update = true;
 
-			m_schedules.insert( m_schedules.end(), m_schedulesAdd.begin(), m_schedulesAdd.end() );
-			m_schedulesAdd.clear();
+		m_schedules.insert( m_schedules.end(), m_schedulesAdd.begin(), m_schedulesAdd.end() );
+		m_schedulesAdd.clear();
 
-			for( TListSchedules::iterator
-				it = m_schedules.begin(),
-				it_end = m_schedules.end();
-			it != it_end;
-			++it )
+		for( TListSchedules::iterator
+			it = m_schedules.begin(),
+			it_end = m_schedules.end();
+		it != it_end;
+		++it )
+		{
+			ScheduleEventDesc & desc = *it;
+
+			if( desc.dead == true )
 			{
-				ScheduleEventDesc & desc = *it;
+				continue;
+			}
 
-				if( desc.dead == true )
+			if( desc.freeze == true )
+			{
+				continue;
+			}
+			
+			float old_timing = desc.timing_delay;
+
+			desc.timing_delay += total_timing;
+
+			switch( desc.type )
+			{
+			case EST_EVENT:
 				{
-					continue;
-				}
-
-				if( desc.freeze == true )
-				{
-					continue;
-				}
-
-				if( desc.revision == m_revision )
-				{
-					continue;
-				}
-
-				desc.revision = m_revision;
-
-				float old_timing = desc.timing_delay;
-				
-				desc.timing_delay += total_timing;
-
-				switch( desc.type )
-				{
-				case EST_EVENT:
+					if( desc.timing_delay < desc.delay )
 					{
-						if( desc.timing_delay < desc.delay )
+						continue;
+					}
+
+					float timeOffset = desc.delay - old_timing;
+
+					TIMELINE_SERVICE( m_serviceProvider )
+						->beginOffset( timeOffset );
+
+					desc.dead = true;
+
+					desc.event->onScheduleComplete( desc.id );
+
+					TIMELINE_SERVICE( m_serviceProvider )
+						->endOffset();
+				}break;
+			case EST_TIMER:
+				{
+					float acc_delay = 0.f;
+
+					for( ;; )
+					{
+						if( desc.iterate_invalide == true )
 						{
-							continue;
+							float delay = desc.pipe->onSchedulePipe( desc.id, desc.iterate );
+
+							if( delay <= 0.f )
+							{
+								desc.dead = true;
+
+								break;
+							}
+
+							desc.iterate_invalide = false;
+							desc.delay = delay;
 						}
 
-						float timeOffset = desc.delay - old_timing;
+						if( desc.timing_delay < desc.delay )
+						{
+							break;
+						}
+
+						acc_delay += desc.delay;
+
+						float timeOffset = acc_delay - old_timing;
+
+						uint32_t iterate = desc.iterate;
+
+						desc.timing_delay -= desc.delay;
+
+						desc.iterate++;
+						desc.iterate_invalide = true;
 
 						TIMELINE_SERVICE( m_serviceProvider )
 							->beginOffset( timeOffset );
 
-						desc.dead = true;
-
-						desc.event->onScheduleComplete( desc.id );
+						desc.timer->onScheduleUpdate( desc.id, iterate, desc.delay );
 
 						TIMELINE_SERVICE( m_serviceProvider )
 							->endOffset();
-					}break;
-				case EST_TIMER:
-					{
-						float acc_delay = 0.f;
-
-						for( ;; )
-						{
-							if( desc.iterate_invalide == true )
-							{
-								float delay = desc.pipe->onSchedulePipe( desc.id, desc.iterate );
-
-								if( delay <= 0.f )
-								{
-									desc.dead = true;
-
-									break;
-								}
-
-								desc.iterate_invalide = false;
-								desc.delay = delay;
-							}
-
-							if( desc.timing_delay < desc.delay )
-							{
-								break;
-							}
-
-							acc_delay += desc.delay;
-
-							float timeOffset = acc_delay - old_timing;
-
-							uint32_t iterate = desc.iterate;
-
-							desc.timing_delay -= desc.delay;
-
-							desc.iterate++;
-							desc.iterate_invalide = true;
-
-							TIMELINE_SERVICE( m_serviceProvider )
-								->beginOffset( timeOffset );
-
-							desc.timer->onScheduleUpdate( desc.id, iterate, desc.delay );
-
-							TIMELINE_SERVICE( m_serviceProvider )
-								->endOffset();
-						}
-					}break;
-				}
-			}			
-
+					}
+				}break;
+			}
+		}
 
 		m_update = false;
 

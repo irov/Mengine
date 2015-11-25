@@ -135,74 +135,6 @@ namespace Menge
 			, LOWORD(AdID.DriverVersion.LowPart)
 			);
 
-		// Set up Windowed presentation parameters
-        D3DDISPLAYMODE Mode;
-        IF_DXCALL( m_serviceProvider, m_pD3D, GetAdapterDisplayMode, ( m_adapterToUse, &Mode ) )
-        {
-			LOGGER_ERROR(m_serviceProvider)("Can't determine desktop video mode"
-                );
-
-			return false;
-		}
-
-		if( Mode.Format == D3DFMT_UNKNOWN )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Can't determine desktop video mode D3DFMT_UNKNOWN"
-				);
-
-			return false;
-		}
-
-		UINT screenWidth = Mode.Width;
-		UINT screenHeight = Mode.Height;
-
-		ZeroMemory( &m_d3dppW, sizeof(m_d3dppW) );
-		m_d3dppW.BackBufferFormat = Mode.Format;
-
-		// Set up Full Screen presentation parameters
-		UINT nModes = m_pD3D->GetAdapterModeCount( m_adapterToUse, D3DFMT_X8R8G8B8 );
-
-		//for(i=0; i<nModes; i++)
-		//{
-		//	m_pD3D->EnumAdapterModes(D3DADAPTER_DEFAULT, i, &Mode);
-		//	m_displayModes.push_back( Mode );
-		//	m_resList.push_back( Mode.Width );
-		//	m_resList.push_back( Mode.Height );
-		//}
-
-        D3DFORMAT Format = D3DFMT_UNKNOWN;
-
-		for( UINT i = 0; i < nModes; ++i )
-		{
-			D3DDISPLAYMODE Mode;
-			IF_DXCALL( m_serviceProvider, m_pD3D, EnumAdapterModes, ( m_adapterToUse, D3DFMT_X8R8G8B8, i, &Mode ) )
-			{
-				continue;
-			}
-
-			if( Mode.Width != screenWidth || Mode.Height != screenHeight )
-			{
-				continue;
-			}
-
-			//if(nScreenBPP==16 && (_format_id(Mode.Format) > _format_id(D3DFMT_A1R5G5B5))) continue;
-			if( s_lessD3DFormats( Format, Mode.Format ) == true )
-			{
-				Format = Mode.Format;
-			}
-		}
-		
-		if( Format == D3DFMT_UNKNOWN )
-		{
-			LOGGER_ERROR(m_serviceProvider)("Can't find appropriate full screen video mode" 
-				);
-
-			return false;
-		}
-
-		ZeroMemory( &m_d3dppFS, sizeof(m_d3dppFS) );
-		m_d3dppFS.BackBufferFormat = Format;
-
 		D3DCAPS9 caps;
 		IF_DXCALL( m_serviceProvider, m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &caps) )
 		{
@@ -236,7 +168,7 @@ namespace Menge
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, 
-		bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
+		bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount )
 	{
         (void)_bits;
         (void)_FSAAType;
@@ -246,8 +178,12 @@ namespace Menge
 
 		m_fullscreen = _fullscreen;
         m_waitForVSync = _waitForVSync;
-				
-		m_d3dppW.MultiSampleType = D3DMULTISAMPLE_2_SAMPLES;
+
+		ZeroMemory( &m_d3dppW, sizeof( m_d3dppW ) );
+		ZeroMemory( &m_d3dppFS, sizeof( m_d3dppFS ) );
+			
+		m_d3dppW.MultiSampleType = s_getMultiSampleType( _MultiSampleCount );
+		m_d3dppW.MultiSampleQuality = 0;
 		m_d3dppW.Windowed = TRUE;
 		//m_d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
@@ -278,9 +214,9 @@ namespace Menge
 		m_d3dppW.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
 
 		m_d3dppW.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
-
-		
-		m_d3dppFS.MultiSampleType = D3DMULTISAMPLE_2_SAMPLES;
+				
+		m_d3dppFS.MultiSampleType = s_getMultiSampleType( _MultiSampleCount );
+		m_d3dppFS.MultiSampleQuality = 0;
         m_d3dppFS.Windowed = FALSE;
 
 		m_d3dppFS.BackBufferWidth = m_windowResolution.getWidth();
@@ -290,11 +226,45 @@ namespace Menge
 		m_d3dppFS.hDeviceWindow = (HWND)windowHandle;
 
 		m_d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
-               
-        m_d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+
+		D3DFORMAT Format = D3DFMT_UNKNOWN;
+
+		UINT nModes = m_pD3D->GetAdapterModeCount( m_adapterToUse, D3DFMT_X8R8G8B8 );
+
+		for( UINT i = 0; i < nModes; ++i )
+		{
+			D3DDISPLAYMODE Mode;
+			IF_DXCALL( m_serviceProvider, m_pD3D, EnumAdapterModes, (m_adapterToUse, D3DFMT_X8R8G8B8, i, &Mode) )
+			{
+				continue;
+			}
+
+			if( Mode.Width != Mode.Width || Mode.Height != Mode.Height )
+			{
+				continue;
+			}
+
+			//if(nScreenBPP==16 && (_format_id(Mode.Format) > _format_id(D3DFMT_A1R5G5B5))) continue;
+			if( s_lessD3DFormats( Format, Mode.Format ) == true )
+			{
+				Format = Mode.Format;
+			}
+		}
+
+		if( Format == D3DFMT_UNKNOWN )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Can't find appropriate full screen video mode"
+				);
+
+			return false;
+		}
+				
+		m_d3dppFS.BackBufferFormat = Format;
         		
 		m_d3dppFS.EnableAutoDepthStencil = FALSE;
 		m_d3dppFS.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
+
+		m_d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
         this->updateVSyncDPP_();
 		
@@ -1511,14 +1481,14 @@ namespace Menge
 
             return;
         }
-
+		
 		D3DTEXTUREFILTERTYPE dx_minification = s_toD3DTextureFilter( _minification );
 		D3DTEXTUREFILTERTYPE dx_mipmap = s_toD3DTextureFilter( _mipmap );
 		D3DTEXTUREFILTERTYPE dx_magnification = s_toD3DTextureFilter( _magnification );
 
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MINFILTER, dx_minification) );
 		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MIPFILTER, dx_mipmap) );
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );
+		DXCALL( m_serviceProvider, m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const void * _buffer, size_t _size, bool _isCompile )

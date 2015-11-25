@@ -35,6 +35,9 @@ namespace Menge
         bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) override;
 
 	public:
+		void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) override;
+
+	public:
 		const ConstString & getMaterialName( EMaterial _materialId ) const override;
 
 	public:
@@ -77,6 +80,10 @@ namespace Menge
 
     protected:
 		uint32_t m_materialEnumerator;
+
+		ETextureFilter m_defaultTextureFilterMipmap;
+		ETextureFilter m_defaultTextureFilterMagnification;
+		ETextureFilter m_defaultTextureFilterMinification;		
 
 		typedef stdex::map<ConstString, const RenderStage *> TMapRenderStage;
         TMapRenderStage m_stageIndexer;

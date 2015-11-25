@@ -27,7 +27,6 @@ namespace Menge
 		float timing_delay;
 		
 		uint32_t iterate;
-		uint32_t revision;
 
 		ESchduleType type;
 		bool dead;
@@ -93,7 +92,6 @@ namespace Menge
 		TListSchedules m_schedulesAdd;
 
 		uint32_t m_enumerator;
-		uint32_t m_revision;
 
 		bool m_freezeAll;
 		bool m_update;

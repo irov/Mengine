@@ -32,6 +32,8 @@ namespace Menge
 
 	public:
 		float getLength() const;
+		float getWayLength() const;
+		const mt::vec3f & getLocalPosition() const;
 
 	public:
 		bool prepare() override;
@@ -41,8 +43,8 @@ namespace Menge
 
 	protected:
 		bool stepNextPoint_( const mt::vec3f & _pos, float _step, mt::vec3f & _out, mt::vec3f & _dir );
-		bool step_( float _length, mt::vec3f & _pos, mt::vec3f & _dir );
-		bool invalidateTarget_();
+		bool step_( float _length, mt::vec3f & _pos, mt::vec3f & _dir );		
+		float calcWayLength_() const;
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
@@ -54,6 +56,8 @@ namespace Menge
 		float m_speedAffector;
 		float m_offset;
 		float m_length;
+		
+		float m_wayLength;
 
 		pybind::object m_cb;
 

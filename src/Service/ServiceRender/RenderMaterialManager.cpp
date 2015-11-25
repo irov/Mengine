@@ -17,10 +17,42 @@ SERVICE_FACTORY( RenderMaterialService, Menge::RenderMaterialManager );
 //////////////////////////////////////////////////////////////////////////
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	static ETextureFilter parseConfigTextureFilterValue( uint32_t _value )
+	{
+		switch( _value )
+		{
+		case 0:
+			return TF_NONE;
+			break;
+		case 1:
+			return TF_POINT;
+			break;
+		case 2:
+			return TF_LINEAR;
+			break;
+		case 3:
+			return TF_ANISOTROPIC;
+			break;
+		case 4:
+			return TF_FLATCUBIC;
+			break;
+		case 5:
+			return TF_GAUSSIANCUBIC;
+			break;
+		default:
+			break;
+		}
+
+		return TF_GAUSSIANCUBIC;
+	}
     //////////////////////////////////////////////////////////////////////////    
     RenderMaterialManager::RenderMaterialManager()
         : m_materialEnumerator(0)
 		, m_stageCount(0)
+		, m_defaultTextureFilterMipmap( TF_NONE )
+		, m_defaultTextureFilterMagnification( TF_LINEAR )
+		, m_defaultTextureFilterMinification( TF_LINEAR )
     {
     }
     //////////////////////////////////////////////////////////////////////////    
@@ -67,6 +99,14 @@ namespace Menge
 		m_defaultStages[EM_COLOR_SCREEN] = STRINGIZE_STRING_LOCAL( m_serviceProvider, "Color_Screen" );
 
 		m_factoryMaterial.setMethodListener( this, &RenderMaterialManager::onRenderMaterialDestroy_ );
+
+		uint32_t defaultTextureFilterMipmap = CONFIG_VALUE( m_serviceProvider, "Engine", "DefaultTextureFilterMipmap", 0U );
+		uint32_t defaultTextureFilterMagnification = CONFIG_VALUE( m_serviceProvider, "Engine", "DefaultTextureFilterMagnification", 2U );
+		uint32_t defaultTextureFilterMinification = CONFIG_VALUE( m_serviceProvider, "Engine", "DefaultTextureFilterMinification", 2U );
+
+		m_defaultTextureFilterMipmap = parseConfigTextureFilterValue( defaultTextureFilterMipmap );
+		m_defaultTextureFilterMagnification = parseConfigTextureFilterValue( defaultTextureFilterMagnification );
+		m_defaultTextureFilterMinification = parseConfigTextureFilterValue( defaultTextureFilterMinification );
 
 		return true;
     }
@@ -303,6 +343,10 @@ namespace Menge
 
 				RenderTextureStage & textureStage = stage.textureStage[index];
 
+				textureStage.mipmap = m_defaultTextureFilterMipmap;
+				textureStage.magnification = m_defaultTextureFilterMagnification;
+				textureStage.minification = m_defaultTextureFilterMinification;
+
 				meta_TextureStages.get_AddressMode_U( textureStage.addressU );
 				meta_TextureStages.get_AddressMode_V( textureStage.addressV );
 
@@ -373,6 +417,13 @@ namespace Menge
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void RenderMaterialManager::setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification )
+	{
+		m_defaultTextureFilterMipmap = _mipmap;
+		m_defaultTextureFilterMagnification = _magnification;
+		m_defaultTextureFilterMinification = _minification;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & RenderMaterialManager::getMaterialName( EMaterial _materialId ) const

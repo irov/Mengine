@@ -33,7 +33,7 @@ namespace Menge
 
 	public:
 		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen
-			, bool _waitForVSync, int _FSAAType, int _FSAAQuality ) override;
+			, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) override;
 		
         void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
         void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;

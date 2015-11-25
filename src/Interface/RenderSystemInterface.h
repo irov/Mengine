@@ -426,6 +426,9 @@ namespace Menge
         virtual bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) = 0;
 
 	public:
+		virtual void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) = 0;
+
+	public:
 		virtual const ConstString & getMaterialName( EMaterial _materialId ) const = 0;
 
 	public:
@@ -556,7 +559,7 @@ namespace Menge
 		virtual const ConstString & getRenderPlatformName() const = 0;
 
 		virtual bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen,
-			bool _waitForVSync, int _FSAAType, int _FSAAQuality ) = 0;
+			bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
 
     public:
         virtual void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) = 0;
@@ -714,7 +717,7 @@ namespace Menge
 
 	public:
 		virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen, 
-			int _FSAAType , int _FSAAQuality ) = 0;
+			int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
 
 		virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;
 

@@ -525,13 +525,17 @@ namespace Menge
 			, m_renderViewport.getHeight()
 			);
 
+		uint32_t MultiSampleCount = CONFIG_VALUE( m_serviceProvider, "Engine", "RenderMultiSampleCount", 2U );
+
 		m_createRenderWindow = RENDER_SERVICE(m_serviceProvider)->createRenderWindow( m_currentResolution
 			, m_contentResolution
 			, m_renderViewport
 			, m_bits
 			, fullscreen
 			, m_FSAAType
-			, m_FSAAQuality );
+			, m_FSAAQuality
+			, MultiSampleCount 
+			);
 
 		if( m_createRenderWindow == false )
 		{

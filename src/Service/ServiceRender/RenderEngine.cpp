@@ -157,7 +157,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
-		int _FSAAType, int _FSAAQuality )
+		int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount )
 	{
 		m_windowResolution = _resolution;
 		m_contentResolution = _contentResolution;
@@ -176,9 +176,9 @@ namespace Menge
 			, m_renderViewport.end.y
 			, m_fullscreen
 			);
-
+		
 		m_windowCreated = RENDER_SYSTEM(m_serviceProvider)
-			->createRenderWindow( m_windowResolution, _bits, m_fullscreen, m_vsync, _FSAAType, _FSAAQuality );
+			->createRenderWindow( m_windowResolution, _bits, m_fullscreen, m_vsync, _FSAAType, _FSAAQuality, _MultiSampleCount );
 
 		if( m_windowCreated == false )
 		{
@@ -421,13 +421,9 @@ namespace Menge
 		m_currentMaterialId = 0;
 		m_currentTextureStages = 0;
 		m_currentStage = nullptr;
-		m_currentProgram = nullptr;
 
 		m_renderVertexCount = 0;
 		m_renderIndicesCount = 0;
-				
-		m_currentVBHandle = nullptr;
-		m_currentIBHandle = nullptr;
 
 		this->restoreRenderSystemStates_();
 		
@@ -680,6 +676,10 @@ namespace Menge
 
 		stage = RenderTextureStage();
 
+		stage.minification = TF_ANISOTROPIC;
+		stage.mipmap = TF_ANISOTROPIC;
+		stage.magnification = TF_ANISOTROPIC;
+
 		m_currentTexturesID[_stage] = 0;
 
 		RENDER_SYSTEM(m_serviceProvider)
@@ -730,6 +730,14 @@ namespace Menge
 
 		std::fill_n( m_currentTexturesID, MENGE_MAX_TEXTURE_STAGES, 0 );
 
+		m_currentVBHandle = nullptr;
+		m_currentIBHandle = nullptr;
+		m_currentProgram = nullptr;
+
+		RENDER_SYSTEM( m_serviceProvider )->setVertexBuffer( nullptr );
+		RENDER_SYSTEM( m_serviceProvider )->setIndexBuffer( nullptr );
+		RENDER_SYSTEM( m_serviceProvider )->setProgram( nullptr );
+
 		mt::mat4f viewTransform;
 		mt::ident_m4( viewTransform );
 
@@ -738,10 +746,6 @@ namespace Menge
 
 		mt::mat4f worldTransform;
 		mt::ident_m4( worldTransform );
-
-		RENDER_SYSTEM( m_serviceProvider )->setVertexBuffer( m_currentVBHandle );
-		RENDER_SYSTEM( m_serviceProvider )->setIndexBuffer( m_currentIBHandle );
-		RENDER_SYSTEM( m_serviceProvider )->setProgram( m_currentProgram );
 
 		RENDER_SYSTEM( m_serviceProvider )->setProjectionMatrix( projTransform );
 		RENDER_SYSTEM( m_serviceProvider )->setModelViewMatrix( viewTransform );

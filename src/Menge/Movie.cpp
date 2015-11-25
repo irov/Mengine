@@ -116,10 +116,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setTiming( float _timing )
 	{
-		if( this->isCompile() == false )
+		if( m_resourceMovie.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.setTiming: '%s' not activate"
-				, m_name.c_str()
+			LOGGER_ERROR( m_serviceProvider )("Movie._setTiming: '%s' not activate"
+				, this->getName().c_str()
 				);
 
 			return;
@@ -425,10 +425,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setFirstFrame()
 	{
-		if( this->isActivate() == false )
+		if( m_resourceMovie.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie %s invalid setFirstFrame: not activate"
-				, m_name.c_str()
+			LOGGER_ERROR( m_serviceProvider )("Movie._setFirstFrame: '%s' not activate"
+				, this->getName().c_str()
 				);
 
 			return;
@@ -439,10 +439,10 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setLastFrame()
 	{
-		if( this->isActivate() == false )
+		if( m_resourceMovie.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie %s invalid setLastFrame: not activate"
-				, m_name.c_str()
+			LOGGER_ERROR( m_serviceProvider )("Movie._setLastFrame: '%s' not activate"
+				, this->getName().c_str()
 				);
 
 			return;
@@ -2518,6 +2518,10 @@ namespace Menge
 
 				return;
 			}
+		}
+		else
+		{
+			this->updateTiming_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

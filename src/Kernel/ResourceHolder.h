@@ -27,6 +27,11 @@ namespace Menge
             return m_resource;
         }
 
+		bool empty() const
+		{
+			return m_resource == nullptr;
+		}
+
     public:
         ResourceHolder<T> & operator = ( T * _resource )
         {

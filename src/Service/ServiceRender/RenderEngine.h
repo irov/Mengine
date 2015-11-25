@@ -82,7 +82,7 @@ namespace Menge
 
 	public:
 		bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen, 
-									int _FSAAType, int _FSAAQuality ) override;
+			int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) override;
 
 	public:
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;

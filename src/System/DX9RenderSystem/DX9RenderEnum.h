@@ -27,6 +27,42 @@ namespace Menge
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	inline D3DMULTISAMPLE_TYPE s_getMultiSampleType( uint32_t _count )
+	{
+		switch( _count )
+		{
+		case 0:
+			return D3DMULTISAMPLE_NONE;
+			break;
+		case 1:
+			return D3DMULTISAMPLE_NONE;
+			break;
+		case 2:
+			return D3DMULTISAMPLE_2_SAMPLES;
+			break;
+		case 3:
+			return D3DMULTISAMPLE_3_SAMPLES;
+			break;
+		case 4:
+			return D3DMULTISAMPLE_4_SAMPLES;
+			break;
+		case 5:
+			return D3DMULTISAMPLE_5_SAMPLES;
+			break;
+		case 6:
+			return D3DMULTISAMPLE_6_SAMPLES;
+			break;
+		case 7:
+			return D3DMULTISAMPLE_7_SAMPLES;
+			break;
+		case 8:
+			return D3DMULTISAMPLE_8_SAMPLES;
+			break;
+		}
+
+		return D3DMULTISAMPLE_NONE;		
+	}
+	//////////////////////////////////////////////////////////////////////////
 	inline DWORD s_toD3DBufferLock( EBufferLockFlag _flag )
 	{
 		switch( _flag )

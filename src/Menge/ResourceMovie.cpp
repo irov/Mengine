@@ -186,8 +186,9 @@ namespace Menge
     {
 		if( mt::equal_f_z( m_frameDuration ) == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_isValid: '%s'm_frameDuration == 0.f"
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_isValid: '%s' group '%s' m_frameDuration == 0.f"
 				, this->getName().c_str()
+				, this->getGroup().c_str()
 				);
 
 			return false;
@@ -201,8 +202,9 @@ namespace Menge
 
 		if( (width > limitMovieWidth && limitMovieWidth != 0U) || (height > limitMovieHeight && limitMovieHeight != 0U) )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid %s invalid limit %d:%d size %d:%d"
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid '%s' group '%s' invalid limit %d:%d size %d:%d"
 				, this->getName().c_str()
+				, this->getGroup().c_str()
 				, limitMovieWidth
 				, limitMovieHeight
 				, width
@@ -234,8 +236,9 @@ namespace Menge
             FindResourceMovieValidParent frmvp(layer.parent);
             if( std::find_if( m_layers.begin(), m_layers.end(), frmvp ) == m_layers.end() )
             {
-                LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid %s layer %s:%d invalid parent %d"
+                LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid '%s' group '%s' layer %s:%d invalid parent %d"
                     , this->getName().c_str()
+					, this->getGroup().c_str()
                     , layer.name.c_str()
                     , layer.index
                     , layer.parent
@@ -247,8 +250,9 @@ namespace Menge
 
         if( m_filePath.empty() == true )
         {
-            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' don`t have Key Frames Pack Path"
+            LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' don`t have Key Frames Pack Path"
                 , this->getName().c_str()
+				, this->getGroup().c_str()
                 );
 
             return false;
@@ -261,8 +265,9 @@ namespace Menge
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid open file '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' invalid open file '%s'"
 				, this->getName().c_str()
+				, this->getGroup().c_str()
 				, m_filePath.c_str()
 				);
 
@@ -278,8 +283,9 @@ namespace Menge
 
 			if( dataflowType.empty() == true )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' you must determine codec for file '%s'"
+				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' you must determine codec for file '%s'"
 					, this->getName().c_str()
+					, this->getGroup().c_str()
 					, m_filePath.c_str()
 					);
 
@@ -307,8 +313,9 @@ namespace Menge
 
             if( framePack->hasLayer( layer.index ) == false )
             {
-                LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid layer %d '%s' type '%s'"
+                LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' invalid layer %d '%s' type '%s'"
                     , this->getName().c_str()
+					, this->getGroup().c_str()
                     , layer.index
                     , layer.name.c_str()
 					, layer.type.c_str()
@@ -323,8 +330,9 @@ namespace Menge
 			{
 				if( layer.isThreeD() == true )
 				{
-					LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' invalid layer '%d' SceneEffect should not be threeD"
+					LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d' SceneEffect should not be threeD"
 						, this->getName().c_str()
+						, this->getGroup().c_str()
 						, layer.index
 						);
 
@@ -347,8 +355,9 @@ namespace Menge
 				{
 					if( ::fabsf( layerFrame.source.scale.x ) < MovieImageScale || ::fabsf( layerFrame.source.scale.y ) < MovieImageScale )
 					{
-						LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
+						LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
 							, this->getName().c_str()
+							, this->getGroup().c_str()
 							, layer.index
 							, layer.name.c_str()
 							, layer.type.c_str()
@@ -381,8 +390,9 @@ namespace Menge
 
 					if( scale_max_x < MovieImageScale || scale_max_y < MovieImageScale )
 					{
-						LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
+						LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
 							, this->getName().c_str()
+							, this->getGroup().c_str()
 							, layer.index
 							, layer.name.c_str()
 							, layer.type.c_str()
@@ -410,8 +420,9 @@ namespace Menge
 
 				if( hide == true )
 				{
-					LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' type '%s' permanently hide"
+					LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' permanently hide"
 						, this->getName().c_str()
+						, this->getGroup().c_str()
 						, layer.index
 						, layer.name.c_str()
 						, layer.type.c_str()
@@ -431,8 +442,9 @@ namespace Menge
 				if( TEXT_SERVICE(m_serviceProvider)
 					->existText( layer.name, &entry ) == false )
 				{
-					LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' type '%s' text %s not found"
+					LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' text %s not found"
 						, this->getName().c_str()
+						, this->getGroup().c_str()
 						, layer.index
 						, layer.name.c_str()
 						, layer.type.c_str()
@@ -450,8 +462,9 @@ namespace Menge
 			{
 				if( mt::equal_f_z( layer.startInterval ) == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' invalid layer '%d':'%s' type '%s' start interval is not support"
+					LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' start interval is not support"
 						, this->getName().c_str()
+						, this->getGroup().c_str()
 						, layer.index
 						, layer.name.c_str()
 						, layer.type.c_str()
@@ -736,8 +749,9 @@ namespace Menge
             }
             else
             {
-                LOGGER_ERROR(m_serviceProvider)("ResourceMovie: '%s' can't setup layer2d '%s' type '%s'"
+				LOGGER_ERROR( m_serviceProvider )("ResourceMovie: '%s' group '%s' can't setup layer2d '%s' type '%s'"
                     , this->getName().c_str()
+					, this->getGroup().c_str()
                     , layer.source.c_str()
                     , layer.type.c_str()
                     );
@@ -828,8 +842,9 @@ namespace Menge
 			if( CONVERTER_SERVICE(m_serviceProvider)
 				->convert( m_converterType, m_category, c_xml_path, m_filePath ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' can't convert '%s':'%s'"
+				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' group '%s' can't convert '%s':'%s'"
 					, this->getName().c_str() 
+					, this->getGroup().c_str()
 					, c_xml_path.c_str()
 					, m_converterType.c_str()
 					);
@@ -845,8 +860,9 @@ namespace Menge
 
 			if( m_dataflowType.empty() == true )
 			{
-				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
+				LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_convert: '%s' group '%s' you must determine codec for file '%s'"
 					, this->getName().c_str()
+					, this->getGroup().c_str()
 					, m_filePath.c_str()
 					);
 
@@ -866,8 +882,9 @@ namespace Menge
 
 		if( m_filePath.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' don`t have Key Frames Pack Path"
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
 				, this->getName().c_str()
+				, this->getGroup().c_str()
 				);
 
 			return false;
@@ -879,8 +896,9 @@ namespace Menge
 
 		if( data == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' can` t get frame pack '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::_compile: '%s' group '%s' can` t get frame pack '%s'"
 				, this->getName().c_str()
+				, this->getGroup().c_str()
 				, m_filePath.c_str()
 				);
 
@@ -908,8 +926,9 @@ namespace Menge
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::compileData_: '%s' don`t open Frames Pack '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::compileData_: '%s' group '%s' don`t open Frames Pack '%s'"
 				, this->getName().c_str()
+				, this->getGroup().c_str()
 				, _path.c_str()
 				);
 
@@ -921,8 +940,9 @@ namespace Menge
 
 		if( data == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::compileData_: '%s' can` t dataflow '%s' from '%s'"
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::compileData_: '%s' group '%s' can` t dataflow '%s' from '%s'"
 				, this->getName().c_str()
+				, this->getGroup().c_str()
 				, m_dataflowType.c_str()
 				, _path.c_str()
 				);
@@ -944,8 +964,9 @@ namespace Menge
 	{
 		if( this->isCompile() == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::visitResourceMovie not compile"
-				, m_name.c_str()
+			LOGGER_ERROR(m_serviceProvider)("ResourceMovie::visitResourceMovie '%s' group '%s' not compile"
+				, this->getName().c_str()
+				, this->getGroup().c_str()
 				);
 		}
 

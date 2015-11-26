@@ -89,6 +89,26 @@ namespace Menge
             return repr;
         }
 		//////////////////////////////////////////////////////////////////////////
+		static mt::vec3f vec3f_add( mt::vec3f * _vec, const mt::vec3f & _other )
+		{
+			return *_vec + _other;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static mt::vec3f vec3f_sub( mt::vec3f * _vec, const mt::vec3f & _other )
+		{
+			return *_vec - _other;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static mt::vec3f vec3f_mul( mt::vec3f * _vec, const mt::vec3f & _other )
+		{
+			return *_vec * _other;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		static mt::vec3f vec3f_div( mt::vec3f * _vec, const mt::vec3f & _other )
+		{
+			return *_vec / _other;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		static float vec3_sequence_get( mt::vec3f * _vec, uint32_t _index )
 		{
 			if( _index > 3 )
@@ -666,7 +686,11 @@ namespace Menge
 			.def_convert( &ScriptMethod::vec3f_convert, nullptr )
 			.def_static_sequence_get( &ScriptMethod::vec3_sequence_get )
 			.def_static_sequence_set( &ScriptMethod::vec3_sequence_set )
-            .def_repr( &ScriptMethod::vec3f_repr )
+            .def_repr( &ScriptMethod::vec3f_repr )			
+			.def_static_add( &ScriptMethod::vec3f_add )
+			.def_static_sub( &ScriptMethod::vec3f_sub )
+			.def_static_mul( &ScriptMethod::vec3f_mul )
+			.def_static_div( &ScriptMethod::vec3f_div )
 			.def_member( "x", &mt::vec3f::x )
 			.def_member( "y", &mt::vec3f::y )
 			.def_member( "z", &mt::vec3f::z )

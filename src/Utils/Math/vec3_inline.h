@@ -228,6 +228,16 @@ namespace mt
 		return out;
 	}
 
+	MENGINE_MATH_FUNCTION_INLINE vec3f operator/(const vec3f& _a, const vec3f & _b)
+	{
+		vec3f out;
+		out.x = _a.x / _b.x;
+		out.y = _a.y / _b.y;
+		out.z = _a.z / _b.z;
+
+		return out;
+	}
+
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator/(const vec3f& _rhs, const float _val) 
 	{
 		return operator*(_rhs, 1/_val);

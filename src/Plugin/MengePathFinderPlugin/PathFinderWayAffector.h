@@ -36,13 +36,16 @@ namespace Menge
 		const mt::vec3f & getLocalPosition() const;
 
 	public:
+		mt::vec3f getTimePosition( float _time ) const;
+
+	public:
 		bool prepare() override;
 		bool affect( float _timing ) override;
 		void complete() override;
 		void stop() override;
 
 	protected:
-		bool stepNextPoint_( const mt::vec3f & _pos, float _step, mt::vec3f & _out, mt::vec3f & _dir );
+		bool stepNextPoint_( const mt::vec3f & _pos, float _step, mt::vec3f & _out, mt::vec3f & _dir, uint32_t & _iterator ) const;
 		bool step_( float _length, mt::vec3f & _pos, mt::vec3f & _dir );		
 		float calcWayLength_() const;
 

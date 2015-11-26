@@ -118,6 +118,57 @@ namespace Menge
 		this->invalidateLocalMatrix();
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::setLocalPositionX( float _x )
+	{
+		if( mt::equal_f_f( m_position.x, _x ) == true )
+		{
+			return;
+		}
+
+		m_position.x = _x;
+
+		this->invalidateLocalMatrix();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Transformation3D::getLocalPositionX() const
+	{
+		return m_position.x;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::setLocalPositionY( float _y )
+	{
+		if( mt::equal_f_f( m_position.y, _y ) == true )
+		{
+			return;
+		}
+
+		m_position.y = _y;
+
+		this->invalidateLocalMatrix();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Transformation3D::getLocalPositionY() const
+	{
+		return m_position.y;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::setLocalPositionZ( float _z )
+	{
+		if( mt::equal_f_f( m_position.z, _z ) == true )
+		{
+			return;
+		}
+
+		m_position.z = _z;
+
+		this->invalidateLocalMatrix();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Transformation3D::getLocalPositionZ() const
+	{
+		return m_position.z;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setOrientationX( float _angle )
 	{
 		if( mt::equal_f_f( m_orientation.x, _angle ) == true )

@@ -79,7 +79,6 @@ namespace Menge
 		else
 		{
 			Magic_UnloadAllEmitters();
-			Magic_DestroyAll();
 		}				
 	}
 	//////////////////////////////////////////////////////////////////////////

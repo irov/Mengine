@@ -2533,6 +2533,13 @@ namespace Menge
 			return isometric_index;
 		}
 		//////////////////////////////////////////////////////////////////////////
+		uint32_t s_rotateToTrimetric2( const mt::vec2f & _from, const mt::vec2f & _to, const mt::vec2f & _vx, const mt::vec2f & _vy )
+		{
+			uint32_t trimetric = s_rotateToTrimetric( _to - _from, _vx, _vy );
+
+			return trimetric;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		typedef stdex::vector<HotSpotPolygon *> TVectorHotSpotPolygon;
 		//////////////////////////////////////////////////////////////////////////
 		Polygon s_hotspotCorrect( HotSpotPolygon * _base, const TVectorHotSpotPolygon & _overlap )
@@ -3562,6 +3569,24 @@ namespace Menge
             
             return position;
         }
+		//////////////////////////////////////////////////////////////////////////
+		mt::vec3f s_getWorldOffsetPosition( Node * _node, const mt::vec3f & _position )
+		{
+			const mt::vec3f & wp = _node->getWorldPosition();
+
+			mt::vec3f offset = _position - wp;
+
+			return offset;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		float s_getLengthTo( Node * _node, const mt::vec3f & _position )
+		{
+			const mt::vec3f & wp = _node->getWorldPosition();
+
+			float length = mt::length_v3_v3( wp, _position );
+
+			return length;
+		}
         //////////////////////////////////////////////////////////////////////////
         const RenderCameraInterface * s_getRenderCamera2D()
         {
@@ -4495,7 +4520,13 @@ namespace Menge
         pybind::interface_<Transformation3D>("Transformation3D")
             .def( "setLocalPosition", &Transformation3D::setLocalPosition )
             .def( "getLocalPosition", &Transformation3D::getLocalPosition )
-            //.def( "getLocalDirection", &Transformation3D::getLocalDirection )
+			.def( "setLocalPositionX", &Transformation3D::setLocalPositionX )
+			.def( "getLocalPositionX", &Transformation3D::getLocalPositionX )
+			.def( "setLocalPositionY", &Transformation3D::setLocalPositionY )
+			.def( "getLocalPositionY", &Transformation3D::getLocalPositionY )
+			.def( "setLocalPositionZ", &Transformation3D::setLocalPositionZ )
+			.def( "getLocalPositionZ", &Transformation3D::getLocalPositionZ )
+			//.def( "getLocalDirection", &Transformation3D::getLocalDirection )
             //.def( "setLocalDirection", &Transformation3D::setLocalDirection )
             .def( "setCoordinate", &Transformation3D::setCoordinate )			
             .def( "getCoordinate", &Transformation3D::getCoordinate )
@@ -4734,6 +4765,8 @@ namespace Menge
 			.def( "setWorldPosition", &Node::setWorldPosition )
             //.def( "getWorldDirection", &Node::getWorldDirection )
             .def_proxy_static( "getCameraPosition", nodeScriptMethod, &NodeScriptMethod::s_getCameraPosition )
+			.def_proxy_static( "getWorldOffsetPosition", nodeScriptMethod, &NodeScriptMethod::s_getWorldOffsetPosition )
+			.def_proxy_static( "getLengthTo", nodeScriptMethod, &NodeScriptMethod::s_getLengthTo )
 
             .def( "getWorldColor", &Node::getWorldColor )
 
@@ -5505,6 +5538,8 @@ namespace Menge
 			pybind::def_functor( "uncacheResources", nodeScriptMethod, &NodeScriptMethod::s_uncacheResources );
 
 			pybind::def_functor( "rotateToTrimetric", nodeScriptMethod, &NodeScriptMethod::s_rotateToTrimetric );
+			pybind::def_functor( "rotateToTrimetric2", nodeScriptMethod, &NodeScriptMethod::s_rotateToTrimetric2 );
+			
 
 			pybind::def_functor( "hotspotCorrect", nodeScriptMethod, &NodeScriptMethod::s_hotspotCorrect );
 

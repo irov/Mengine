@@ -133,6 +133,7 @@ namespace Menge
 			.def( "getLength", &PathFinderWayAffector::getLength )
 			.def( "getWayLength", &PathFinderWayAffector::getWayLength )
 			.def( "getLocalPosition", &PathFinderWayAffector::getLocalPosition )
+			.def( "getTimePosition", &PathFinderWayAffector::getTimePosition )
 			;
 
 		pybind::def_functor( "createPathFinderWayAffector", this, &ModulePathFinder::createPathFinderWayAffector );

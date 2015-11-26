@@ -20,8 +20,8 @@ namespace	Menge
 				const mt::vec3f & l_offset = _left->getIsometricOffset();
 				const mt::vec3f & r_offset = _right->getIsometricOffset();
 
-				float l_y = l.y + l_offset.y;
-				float r_y = r.y + r_offset.y;
+				float l_y = l.y + l_offset.y - l.z;
+				float r_y = r.y + r_offset.y - l.z;
 
 				float less_y =  l_y - r_y;
 				if( less_y < 0.1f && less_y > -0.1f )

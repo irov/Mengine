@@ -66,9 +66,11 @@ namespace Menge
 		return m_speedAffector;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderWayAffector::stepNextPoint_( const mt::vec3f & _pos, float _step, mt::vec3f & _out, mt::vec3f & _dir )
+	bool PathFinderWayAffector::stepNextPoint_( const mt::vec3f & _pos, float _step, mt::vec3f & _out, mt::vec3f & _dir, uint32_t & _iterator ) const
 	{
-		mt::vec3f wp = m_way[m_iterator];
+		_iterator = m_iterator;
+
+		mt::vec3f wp = m_way[_iterator];
 
 		float ll = mt::sqrlength_v3_v3( _pos, wp );
 
@@ -87,10 +89,10 @@ namespace Menge
 
 		_step -= l;
 
-		while( ++m_iterator != m_wayCount )
+		while( ++_iterator != m_wayCount )
 		{
-			mt::vec3f wp_prev = m_way[m_iterator - 1];
-			mt::vec3f wp_current = m_way[m_iterator];
+			mt::vec3f wp_prev = m_way[_iterator - 1];
+			mt::vec3f wp_current = m_way[_iterator];
 
 			float iter_ll = mt::sqrlength_v3_v3( wp_prev, wp_current );
 
@@ -134,9 +136,7 @@ namespace Menge
 		mt::vec3f new_pos;
 		mt::vec3f new_dir;
 		this->step_( m_offset, new_pos, new_dir );
-
-		m_node->setLocalPosition( new_pos );
-		
+				
 		uint32_t id = this->getId();
 
 		m_cb( id, m_node, new_pos, new_dir, true, false, false );
@@ -173,7 +173,8 @@ namespace Menge
 
 		mt::vec3f new_pos;
 		mt::vec3f new_dir;
-		bool newTarget = this->stepNextPoint_( lp, _length, new_pos, new_dir );
+		uint32_t new_iterator;
+		bool newTarget = this->stepNextPoint_( lp, _length, new_pos, new_dir, new_iterator );
 
 		m_node->setLocalPosition( new_pos );
 
@@ -181,6 +182,8 @@ namespace Menge
 
 		_pos = new_pos;
 		_dir = new_dir;
+
+		m_iterator = new_iterator;
 		
 		return newTarget;
 	}
@@ -217,6 +220,20 @@ namespace Menge
 		const mt::vec3f & pos = m_node->getLocalPosition();
 
 		return pos;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	mt::vec3f PathFinderWayAffector::getTimePosition( float _time ) const
+	{
+		float step = m_speed * m_speedAffector * _time;
+
+		const mt::vec3f & lp = m_node->getLocalPosition();
+
+		mt::vec3f new_pos;
+		mt::vec3f new_dir;
+		uint32_t new_iterator;
+		this->stepNextPoint_( lp, step, new_pos, new_dir, new_iterator );
+
+		return new_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::complete()

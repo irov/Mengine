@@ -51,6 +51,7 @@ namespace mt
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator*(const vec3f& _a, const vec3f & _b);
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator*(const vec3f& _rhs, const float _val);
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator*(const float _val, const vec3f& _rhs);
+	MENGINE_MATH_FUNCTION_INLINE vec3f operator/(const vec3f& _a, const vec3f & _b);
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator/(const vec3f& _rhs, const float _val);
 	MENGINE_MATH_FUNCTION_INLINE vec3f operator-(vec3f _rhs);
 

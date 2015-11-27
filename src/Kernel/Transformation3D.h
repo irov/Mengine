@@ -24,14 +24,14 @@ namespace Menge
 
 	public:
 		inline const mt::mat4f & getWorldMatrix() const;
-		inline const mt::vec3f & getWorldPosition() const;
-
+		
 	public:
 		inline bool isIdentityLocalMatrix() const;
 		inline bool isIdentityWorldMatrix() const;
 
 	public:
 		void setWorldPosition( const mt::vec3f & _pos );
+		const mt::vec3f & getWorldPosition() const;
 
 	public:
 		inline const mt::mat4f & getLocalMatrix() const;
@@ -39,7 +39,7 @@ namespace Menge
 	public:
 		void setLocalPosition( const mt::vec3f & _position );
 		inline const mt::vec3f & getLocalPosition() const;
-
+		
 	public:
 		void setLocalPositionX( float _x );
 		float getLocalPositionX() const;
@@ -79,7 +79,7 @@ namespace Menge
         void resetTransformation();
 		
 	public:
-		void translate( const mt::vec3f & _delta );
+		void translate( const mt::vec3f & _delta );		
 		void lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up );
 
 	public:
@@ -210,13 +210,4 @@ namespace Menge
 
 		return m_worldMatrix;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    inline const mt::vec3f & Transformation3D::getWorldPosition() const
-    {
-        const mt::mat4f & wm = this->getWorldMatrix();
-
-        const mt::vec3f & v3 = wm.v3.to_vec3f();
-
-        return v3;
-    }
 }

@@ -436,6 +436,15 @@ namespace Menge
 		this->translate( wp_offset );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	const mt::vec3f & Transformation3D::getWorldPosition() const
+	{
+		const mt::mat4f & wm = this->getWorldMatrix();
+
+		const mt::vec3f & wp = wm.v3.to_vec3f();
+
+		return wp;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::setOrigin( const mt::vec3f& _origin )
 	{
 		if( mt::cmp_v3_v3( m_origin, _origin ) == true )

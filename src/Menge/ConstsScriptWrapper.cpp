@@ -12,7 +12,7 @@ namespace Menge
         (void)_obj;
 
         ConstString cs_compare;
-        if( pybind::extract_value( _compare, cs_compare ) == false )
+        if( pybind::extract_value( _compare, cs_compare, false ) == false )
         {
             return false;
         }

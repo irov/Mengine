@@ -1225,10 +1225,10 @@ namespace Menge
 	{
         if( m_layer == nullptr )
         {
-            const mt::vec3f & pos = this->getWorldPosition();
+            const mt::vec3f & wp = this->getWorldPosition();
 
-            _position.x = pos.x;
-			_position.y = pos.y;
+            _position.x = wp.x;
+			_position.y = wp.y;
         }
         else
         {

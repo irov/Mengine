@@ -16,6 +16,7 @@ namespace Menge
 		else
 		{
 			const mt::vec3f & relationPosition = m_relationTransformation->getWorldPosition();
+
 			mt::mat4f relationMatrix;
 			mt::make_translation_m4_v3( relationMatrix, relationPosition );
 

@@ -22,6 +22,7 @@
 #   include "Interface/MovieKeyFrameInterface.h"
 
 #   include <algorithm>
+#   include <math.h>
 
 namespace Menge
 {

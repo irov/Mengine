@@ -58,26 +58,6 @@ namespace Menge
             
             return repr;
 		}
-		//////////////////////////////////////////////////////////////////////////
-		static float vec2_sequence_get( mt::vec2f * _vec, uint32_t _index )
-		{
-			if( _index > 2 )
-			{
-				pybind::throw_exception("vec2 index == 2");
-			}
-
-			return _vec->operator [] (_index);
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static void vec2_sequence_set( mt::vec2f * _vec, uint32_t _index, float _value )
-		{
-			if( _index > 2 )
-			{
-				pybind::throw_exception("vec2 index == 2");
-			}
-
-			_vec->operator [] (_index) = _value;
-		}
         //////////////////////////////////////////////////////////////////////////
 		static String vec3f_repr( mt::vec3f * _v )
         {
@@ -88,46 +68,6 @@ namespace Menge
 
             return repr;
         }
-		//////////////////////////////////////////////////////////////////////////
-		static mt::vec3f vec3f_add( mt::vec3f * _vec, const mt::vec3f & _other )
-		{
-			return *_vec + _other;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static mt::vec3f vec3f_sub( mt::vec3f * _vec, const mt::vec3f & _other )
-		{
-			return *_vec - _other;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static mt::vec3f vec3f_mul( mt::vec3f * _vec, const mt::vec3f & _other )
-		{
-			return *_vec * _other;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static mt::vec3f vec3f_div( mt::vec3f * _vec, const mt::vec3f & _other )
-		{
-			return *_vec / _other;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static float vec3_sequence_get( mt::vec3f * _vec, uint32_t _index )
-		{
-			if( _index > 3 )
-			{
-				pybind::throw_exception("vec3 index == 3");
-			}
-
-			return _vec->operator [] (_index);
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static void vec3_sequence_set( mt::vec3f * _vec, uint32_t _index, float _value )
-		{
-			if( _index > 3 )
-			{
-				pybind::throw_exception("vec3 index == 3");
-			}
-
-			_vec->operator [] (_index) = _value;
-		}
         //////////////////////////////////////////////////////////////////////////
 		static String vec4f_repr( mt::vec4f * _v )
         {
@@ -138,26 +78,6 @@ namespace Menge
 
             return repr;
         }
-		//////////////////////////////////////////////////////////////////////////
-		static float vec4_sequence_get( mt::vec4f * _vec, uint32_t _index )
-		{
-			if( _index > 4 )
-			{
-				pybind::throw_exception("vec4 index == 4");
-			}
-
-			return _vec->operator [] (_index);
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static void vec4_sequence_set( mt::vec4f * _vec, uint32_t _index, float _value )
-		{
-			if( _index > 4 )
-			{
-				pybind::throw_exception("vec4 index == 4");
-			}
-
-			_vec->operator [] (_index) = _value;
-		}
 		//////////////////////////////////////////////////////////////////////////
 		static String uv4f_repr( mt::uv4f * _v )
 		{
@@ -172,26 +92,6 @@ namespace Menge
 			String repr = ss.str();
 
 			return repr;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static const mt::vec2f & uv4f_sequence_get( mt::uv4f * _uv, uint32_t _index )
-		{
-			if( _index > 4 )
-			{
-				pybind::throw_exception("uv4f index == 4");
-			}
-
-			return _uv->operator [] (_index);
-		}
-		//////////////////////////////////////////////////////////////////////////
-		static void uv4f_sequence_set( mt::uv4f * _vec, uint32_t _index, const mt::vec2f & _value )
-		{
-			if( _index > 4 )
-			{
-				pybind::throw_exception("vec4 index == 4");
-			}
-
-			_vec->operator [] (_index) = _value;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		static bool vec2f_convert( PyObject * _obj, mt::vec2f * _place, void * _user )
@@ -662,35 +562,29 @@ namespace Menge
 		pybind::struct_<mt::vec2f>("vec2f")
 			.def_constructor( pybind::init<float,float>() )
 			.def_convert( &ScriptMethod::vec2f_convert, nullptr )
-			.def_static_sequence_get( &ScriptMethod::vec2_sequence_get )
-			.def_static_sequence_set( &ScriptMethod::vec2_sequence_set )
 			.def_repr( &ScriptMethod::vec2f_repr )
-
+			.def_operator_getset()
+			.def_operator_add()
+			.def_operator_sub()
+			.def_operator_mul()
+			.def_operator_div()
+			.def_operator_mul_t<float>()
+			.def_operator_div_t<float>()
 			.def_member( "x", &mt::vec2f::x )
 			.def_member( "y", &mt::vec2f::y )
-			//.attr( "x", &vec2f::x )
-			//.def( boost::python::init<float,float>() )
-			//.def( boost::python::self + boost::python::self )	// __add__
-			//.def( boost::python::self - boost::python::self )          // __radd__
-			//.def( boost::python::self * float() )           // __sub__
-			//.def( boost::python::self / float() )          // __sub__
-			//.def( float() * boost::python::self )         // __iadd__
-			//.def( boost::python::self += boost::python::self )
-			//.def( boost::python::self -= boost::python::self )
-			//.def( boost::python::self *= float() )
-			//.def( boost::python::self /= float() )
 			;
 
-		pybind::struct_<mt::vec3f>("vec3f")
-			.def_constructor( pybind::init<float,float,float>() )
+		pybind::struct_<mt::vec3f>( "vec3f" )
+			.def_constructor( pybind::init<float, float, float>() )
 			.def_convert( &ScriptMethod::vec3f_convert, nullptr )
-			.def_static_sequence_get( &ScriptMethod::vec3_sequence_get )
-			.def_static_sequence_set( &ScriptMethod::vec3_sequence_set )
-            .def_repr( &ScriptMethod::vec3f_repr )			
-			.def_static_add( &ScriptMethod::vec3f_add )
-			.def_static_sub( &ScriptMethod::vec3f_sub )
-			.def_static_mul( &ScriptMethod::vec3f_mul )
-			.def_static_div( &ScriptMethod::vec3f_div )
+			.def_repr( &ScriptMethod::vec3f_repr )
+			.def_operator_getset()
+			.def_operator_add()
+			.def_operator_sub()
+			.def_operator_mul()
+			.def_operator_div()
+			.def_operator_mul_t<float>()
+			.def_operator_div_t<float>()
 			.def_member( "x", &mt::vec3f::x )
 			.def_member( "y", &mt::vec3f::y )
 			.def_member( "z", &mt::vec3f::z )
@@ -698,10 +592,15 @@ namespace Menge
 
 		pybind::struct_<mt::vec4f>("vec4f")
 			.def_constructor( pybind::init<float,float,float,float>() )
-			.def_convert( &ScriptMethod::vec4f_convert, nullptr )
-			.def_static_sequence_get( &ScriptMethod::vec4_sequence_get )
-			.def_static_sequence_set( &ScriptMethod::vec4_sequence_set )
-            .def_repr( &ScriptMethod::vec4f_repr )
+			.def_convert( &ScriptMethod::vec4f_convert, nullptr )			
+			.def_repr( &ScriptMethod::vec4f_repr )
+			.def_operator_getset()
+			.def_operator_add()
+			.def_operator_sub()
+			.def_operator_mul()
+			.def_operator_div()
+			.def_operator_mul_t<float>()
+			.def_operator_div_t<float>()
 			.def_member( "x", &mt::vec4f::x )
 			.def_member( "y", &mt::vec4f::y )
 			.def_member( "z", &mt::vec4f::z )
@@ -711,9 +610,8 @@ namespace Menge
 		pybind::struct_<mt::uv4f>("uv4f")
 			.def_constructor( pybind::init<mt::vec2f,mt::vec2f,mt::vec2f,mt::vec2f>() )
 			.def_convert( &ScriptMethod::uv4f_convert, nullptr )
-			.def_static_sequence_get( &ScriptMethod::uv4f_sequence_get )
-			.def_static_sequence_set( &ScriptMethod::uv4f_sequence_set )
 			.def_repr( &ScriptMethod::uv4f_repr )
+			.def_operator_getset()
 			.def_member( "p0", &mt::uv4f::p0 )
 			.def_member( "p1", &mt::uv4f::p1 )
 			.def_member( "p2", &mt::uv4f::p2 )

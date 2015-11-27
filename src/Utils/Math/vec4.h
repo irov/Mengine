@@ -53,6 +53,8 @@ namespace mt
 
 	MENGINE_MATH_FUNCTION_INLINE vec4f operator+(const vec4f& _a, const vec4f & _b);
 	MENGINE_MATH_FUNCTION_INLINE vec4f operator-(const vec4f& _a, const vec4f & _b);
+	MENGINE_MATH_FUNCTION_INLINE vec4f operator*(const vec4f& _rhs, const vec4f & _val);
+	MENGINE_MATH_FUNCTION_INLINE vec4f operator/(const vec4f& _rhs, const vec4f & _val);
 	MENGINE_MATH_FUNCTION_INLINE vec4f operator*(const vec4f& _rhs, const vec2f & _val);
 	MENGINE_MATH_FUNCTION_INLINE vec4f operator/(const vec4f& _rhs, const vec2f & _val);
 	MENGINE_MATH_FUNCTION_INLINE vec4f operator*(const vec4f& _rhs, const float _val);

@@ -227,6 +227,16 @@ namespace mt
 		_out.w = _a.w * _val;
 	}
 
+	MENGINE_MATH_FUNCTION_INLINE vec4f operator*(const vec4f& _rhs, const vec4f & _val)
+	{
+		return vec4f( _rhs.x * _val.x, _rhs.y * _val.y, _rhs.z * _val.z, _rhs.w * _val.w );
+	}
+
+	MENGINE_MATH_FUNCTION_INLINE vec4f operator/(const vec4f& _rhs, const vec4f & _val)
+	{
+		return vec4f( _rhs.x / _val.x, _rhs.y / _val.y, _rhs.z / _val.z, _rhs.w / _val.w );
+	}
+
 	MENGINE_MATH_FUNCTION_INLINE vec4f operator*(const vec4f& _rhs, const vec2f & _val) 
 	{
 		return vec4f(_rhs.x * _val.x, _rhs.y * _val.y, _rhs.z * _val.x, _rhs.w * _val.y);

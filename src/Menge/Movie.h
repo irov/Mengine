@@ -68,6 +68,9 @@ namespace Menge
 	public:
 		void setEnableMovieLayers( const ConstString & _name, bool _enable );
 
+	public:
+		mt::vec3f getWorldAnchorPoint() const;
+
 	protected:
 		void _setReverse( bool _reverse ) override;
 

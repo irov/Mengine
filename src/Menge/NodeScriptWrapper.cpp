@@ -179,7 +179,7 @@ namespace Menge
 				if( pybind::string_check( py_string ) == true )
 				{
 					String key;
-					if( pybind::extract_value( py_string, key ) == false )
+					if( pybind::extract_value( py_string, key, false ) == false )
 					{
 						LOGGER_ERROR(m_serviceProvider)("textfield_setTextFormatArgs %s invalid get str %s"
 							, pybind::object_repr( py_string )
@@ -193,7 +193,7 @@ namespace Menge
 				else if( pybind::unicode_check( py_string ) == true )
 				{
 					WString key;
-					if( pybind::extract_value( py_string, key ) == false )
+					if( pybind::extract_value( py_string, key, false ) == false )
 					{
 						LOGGER_ERROR(m_serviceProvider)("textfield_setTextFormatArgs %s invalid get unicode %s"
 							, pybind::object_repr( py_string )
@@ -284,6 +284,29 @@ namespace Menge
 			bool successful = _movie->hasMovieNode( _name, ConstString::none(), &node, &submovie );
 
 			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		mt::vec3f movie_getWorldAnchorPoint( Movie * _movie )
+		{
+			ResourceMovie * resourceMovie = _movie->getResourceMovie();
+
+			if( resourceMovie == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::getWorldAnchorPoint %s invalid setup resource"
+					, _movie->getName().c_str()
+					);
+
+				return mt::vec3f( 0.f, 0.f, 0.f );
+			}
+
+			const mt::vec3f & ap = resourceMovie->getAnchorPoint();
+
+			const mt::mat4f & wm = _movie->getWorldMatrix();
+
+			mt::vec3f wap;
+			mt::mul_v3_m4( wap, ap, wm );
+
+			return wap;
 		}
 		//////////////////////////////////////////////////////////////////////////
 		PyObject * movie_getEnableMovieLayer( Movie * _movie, const ConstString & _name )
@@ -4454,8 +4477,10 @@ namespace Menge
     struct extract_TBlobject_type
         : public pybind::type_cast_result<Blobject>
     {
-		bool apply( PyObject * _obj, Blobject & _value ) override
+		bool apply( PyObject * _obj, Blobject & _value, bool _nothrow ) override
         {
+			(void)_nothrow;
+
             if( pybind::string_check( _obj ) == true )
             {
                 size_t size;
@@ -4552,7 +4577,6 @@ namespace Menge
             .def( "resetTransformation", &Transformation3D::resetTransformation )
             .def( "setRelationTransformation", &Transformation3D::setRelationTransformation )
             .def_proxy_static( "removeRelationTransformation", nodeScriptMethod, &NodeScriptMethod::Transformation3D_removeRelationTransformation )
-
             //.def( "setRotate", &Transformation3D::setAngle ) //depricated
             ;
 
@@ -5266,6 +5290,7 @@ namespace Menge
 					.def( "hasMovieLayer", &Movie::hasMovieLayer )
 					.def( "setEnableMovieLayer", &Movie::setEnableMovieLayer )
 					.def( "setEnableMovieLayers", &Movie::setEnableMovieLayers )
+					.def_proxy_static( "getWorldAnchorPoint", nodeScriptMethod, &NodeScriptMethod::movie_getWorldAnchorPoint )
 					.def_proxy_static( "getEnableMovieLayer", nodeScriptMethod, &NodeScriptMethod::movie_getEnableMovieLayer )
 					.def_proxy_static( "getMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlot )
 					.def_proxy_static( "hasMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieSlot )

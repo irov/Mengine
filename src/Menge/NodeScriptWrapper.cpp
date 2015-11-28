@@ -26,7 +26,6 @@
 #   include "Interface/TextInterface.h"
 #   include "Interface/AccountInterface.h"
 
-#   include "Interface/EventInterface.h"
 #   include "Interface/UnicodeInterface.h"
 
 #   include "Interface/ResourceInterface.h"

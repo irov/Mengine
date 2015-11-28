@@ -9,6 +9,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	enum ScriptHolderEventFlag
+	{
+		EVENT_KEEP_SCRIPT = 0,
+		EVENT_RELEASE_SCRIPT
+	};
+	//////////////////////////////////////////////////////////////////////////
 	void ScriptHolder::_setEventListener( const pybind::dict & _listener )
 	{
 		Node::_setEventListener( _listener );

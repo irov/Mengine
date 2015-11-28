@@ -31,7 +31,7 @@ namespace Menge
 
     public:
         bool update();
-        
+
     public:
         void updateSurfaceResolution();
 
@@ -53,10 +53,18 @@ namespace Menge
     protected:
 		static int32 s_keyboardKeyEvent( void * _event, void * _input );
 		static int32 s_keyboardCharEvent( void * _event, void * _input );
-        static int32 s_pointerTouchEvent( s3ePointerTouchEvent * _event, MarmaladeInput * _input );
-        static int32 s_pointerTouchMotionEvent( s3ePointerTouchMotionEvent * _event, MarmaladeInput * _input );
-        static int32 s_pointerButtonEvent( s3ePointerEvent * _event, MarmaladeInput * _input );
-        static int32 s_pointerMotionEvent( s3ePointerMotionEvent * _event, MarmaladeInput * _input );
+		static int32 s_pointerTouchEvent( void * _event, void * _input );
+		static int32 s_pointerTouchMotionEvent( void * _event, void * _input );
+		static int32 s_pointerButtonEvent( void * _event, void * _input );
+		static int32 s_pointerMotionEvent( void * _event, void * _input );
+
+	protected:
+		int32 keyboardKeyEvent( s3eKeyboardEvent * _event );
+		int32 keyboardCharEvent( s3eKeyboardCharEvent * _event );
+		int32 pointerTouchEvent( s3ePointerTouchEvent * _event );
+		int32 pointerTouchMotionEvent( s3ePointerTouchMotionEvent * _event );
+		int32 pointerButtonEvent( s3ePointerEvent * _event );
+		int32 pointerMotionEvent( s3ePointerMotionEvent * _event );
 		
 	protected:
 		void correctPoint_( int32 _x, int32 _y, mt::vec2f & _point ) const;

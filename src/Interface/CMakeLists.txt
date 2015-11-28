@@ -40,7 +40,6 @@ src
     GameInterface.h    
     PrototypeManagerInterface.h
     WatchdogInterface.h
-    EventInterface.h
     WindowsLayerInterface.h
     ArchiveInterface.h
     ProfilerInterface.h
@@ -50,7 +49,6 @@ src
     GraveyardInterface.h
     GlobalHandleSystemInterface.h
     NotificationServiceInterface.h
-    MarmaladeLayerInterface.h
     SDLLayerInterface.h
     TimerInterface.h
     PackageInterface.h

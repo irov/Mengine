@@ -90,11 +90,5 @@ namespace Menge
 		PickerTrapState * m_picker;
 
 		bool m_defaultHandle;
-
-	private:
-		bool m_onMouseEnterEvent;
-		bool m_onMouseLeaveEvent;
-		bool m_onMouseMoveEvent;
-		bool m_onMouseOverDestroyEvent;
 	};
 }

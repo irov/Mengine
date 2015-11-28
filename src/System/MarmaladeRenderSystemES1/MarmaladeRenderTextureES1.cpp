@@ -166,6 +166,9 @@ namespace Menge
 		GLCALL( m_serviceProvider, glEnable, (GL_TEXTURE_2D) );
 		GLCALL( m_serviceProvider, glBindTexture, (GL_TEXTURE_2D, m_uid) );
 
+		GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR) );
+		GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR) );
+
 		uint32_t miplevel_width = m_hwWidth >> _level;
 		uint32_t miplevel_height = m_hwHeight >> _level;
 

@@ -48,7 +48,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
 	{
-		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_PREPARATION )(m_object);
+		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_PREPARATION )(m_object);
 
 		bool successful = Node::_activate();
 
@@ -59,38 +59,38 @@ namespace Menge
 	{
 		Node::_afterActivate();
 
-		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ACTIVATE )(m_object);
+		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_ACTIVATE )(m_object);
 	}
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
         Node::_deactivate();
 
-		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_PREPARATION_DEACTIVATE )(m_object);
+		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_PREPARATION_DEACTIVATE )(m_object);
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_afterDeactivate()
 	{
 		Node::_afterDeactivate();
 
-		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_DEACTIVATE )(m_object);
+		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_DEACTIVATE )(m_object);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
 	{
-		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_COMPILE )(m_object);
+		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_COMPILE )(m_object);
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_release()
 	{
-		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_RELEASE )(m_object);
+		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_RELEASE )(m_object);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCreate()
 	{
-		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_CREATE )(m_object, this);
+		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_CREATE )(m_object, this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::destroy()
@@ -116,7 +116,7 @@ namespace Menge
 
 		Node * old_parent = this->getParent();
 
-		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_DESTROY )(m_object);
+		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_DESTROY )(m_object);
 
 		m_object.reset();
 
@@ -144,7 +144,7 @@ namespace Menge
 
 		this->removeFromParent();
 
-		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_DESTROY )(m_object);
+		EVENTABLE_CALL( m_serviceProvider, m_scriptEventable, EVENT_ENTITY_DESTROY )(m_object);
 
 		Factorable::destroy();
 	}

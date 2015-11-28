@@ -140,6 +140,17 @@ namespace Menge
 		return duration;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	enum SpineEventFlag
+	{
+		EVENT_SPINE_END = 0,
+		EVENT_SPINE_STOP,
+		EVENT_SPINE_PAUSE,
+		EVENT_SPINE_RESUME,
+		EVENT_SPINE_EVENT,
+
+		EVENT_ANIMATABLE_END
+	};
+	//////////////////////////////////////////////////////////////////////////
 	void Spine::_setEventListener( const pybind::dict & _listener )
 	{
 		Node::_setEventListener( _listener );
@@ -149,6 +160,8 @@ namespace Menge
 		this->registerEvent( EVENT_SPINE_PAUSE, ("onSpinePause"), _listener );
 		this->registerEvent( EVENT_SPINE_RESUME, ("onSpineResume"), _listener );
 		this->registerEvent( EVENT_SPINE_EVENT, ("onSpineEvent"), _listener );
+
+		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static void s_spAnimationStateListener( spAnimationState* state, int trackIndex, spEventType type, spEvent* event, int loopCount )
@@ -624,14 +637,16 @@ namespace Menge
 	{ 
 		(void)_enumerator;
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_STOP )(this, _enumerator);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator, false);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_end( uint32_t _enumerator )
 	{ 
 		(void)_enumerator;
 
-		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_END )(this, _enumerator, true);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::_interrupt( uint32_t _enumerator )

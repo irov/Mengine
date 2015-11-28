@@ -67,6 +67,20 @@ namespace Menge
 		return m_radius;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	enum TriggerEventFlag
+	{
+		EVENT_TRIGGER_ENTER = 0,
+		EVENT_TRIGGER_LEAVE
+	};
+	//////////////////////////////////////////////////////////////////////////
+	void Trigger::_setEventListener( const pybind::dict & _listener )
+	{
+		Node::_setEventListener( _listener );
+
+		this->registerEvent( EVENT_TRIGGER_ENTER, ("onTriggerEnter"), _listener );
+		this->registerEvent( EVENT_TRIGGER_LEAVE, ("onTriggerLeave"), _listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Trigger::onAOIActorEnter( AOIActor * _actor )
 	{
 		void * userData = _actor->getUserData();
@@ -105,13 +119,5 @@ namespace Menge
 	{
 		m_aoi->removeActor( m_actor );
 		m_actor = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Trigger::_setEventListener( const pybind::dict & _listener )
-	{
-		Node::_setEventListener( _listener );
-
-		this->registerEvent( EVENT_TRIGGER_ENTER, ("onTriggerEnter"), _listener );
-		this->registerEvent( EVENT_TRIGGER_LEAVE, ("onTriggerLeave"), _listener );
 	}
 }

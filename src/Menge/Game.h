@@ -10,7 +10,6 @@
 #	include "Interface/SoundSystemInterface.h"
 
 #	include "Account.h"
-#	include "Pack.h"
 
 #	include "Core/Resolution.h"
 

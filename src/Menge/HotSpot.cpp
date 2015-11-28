@@ -24,10 +24,6 @@ namespace Menge
 		, m_global(false)
 		, m_picker(nullptr)
 		, m_defaultHandle(true)		
-		, m_onMouseMoveEvent(false)
-		, m_onMouseEnterEvent(false)
-		, m_onMouseLeaveEvent(false)
-		, m_onMouseOverDestroyEvent( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -86,6 +82,21 @@ namespace Menge
 		return m_global;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	enum HotSpotEventFlag
+	{
+		EVENT_KEY = 0,
+		EVENT_MOUSE_BUTTON,
+		EVENT_MOUSE_BUTTON_BEGIN,
+		EVENT_MOUSE_BUTTON_END,
+		EVENT_MOUSE_WHEEL,
+		EVENT_MOUSE_MOVE,
+		EVENT_MOUSE_ENTER,
+		EVENT_MOUSE_LEAVE,
+		EVENT_MOUSE_OVER_DESTROY,
+		EVENT_ACTIVATE,
+		EVENT_DEACTIVATE
+	};
+	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::_setEventListener( const pybind::dict & _listener )
 	{
 		Node::_setEventListener( _listener );
@@ -96,10 +107,10 @@ namespace Menge
 		this->registerEvent( EVENT_MOUSE_BUTTON_END, ("onHandleMouseButtonEventEnd"), _listener );
 		this->registerEvent( EVENT_MOUSE_WHEEL, ("onHandleMouseWheel"), _listener );
 
-		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener, &m_onMouseMoveEvent );
-		this->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener, &m_onMouseEnterEvent );
-		this->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener, &m_onMouseLeaveEvent );		
-		this->registerEvent( EVENT_MOUSE_OVER_DESTROY, ("onHandleMouseOverDestroy"), _listener, &m_onMouseOverDestroyEvent );
+		this->registerEvent( EVENT_MOUSE_MOVE, ("onHandleMouseMove"), _listener );
+		this->registerEvent( EVENT_MOUSE_ENTER, ("onHandleMouseEnter"), _listener );
+		this->registerEvent( EVENT_MOUSE_LEAVE, ("onHandleMouseLeave"), _listener );		
+		this->registerEvent( EVENT_MOUSE_OVER_DESTROY, ("onHandleMouseOverDestroy"), _listener );
 
 		this->registerEvent( EVENT_ACTIVATE, ("onActivate"), _listener );
 		this->registerEvent( EVENT_DEACTIVATE, ("onDeactivate"), _listener );
@@ -179,18 +190,12 @@ namespace Menge
 	{
 		m_debugColor = 0xFFFFFFFF;
 
-		if( m_onMouseLeaveEvent == true )
-		{
-			EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_LEAVE )(this);
-		}
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_LEAVE )(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onHandleMouseOverDestroy()
 	{
-		if( m_onMouseOverDestroyEvent == true )
-		{
-			EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_OVER_DESTROY )(this);
-		}
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOUSE_OVER_DESTROY )(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::onHandleMouseEnter( float _x, float _y )
@@ -199,10 +204,7 @@ namespace Menge
 
 		bool handle = m_defaultHandle;
 
-		if( m_onMouseEnterEvent == true )                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_ENTER, handle )(this, _x, _y);
-		}		
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_ENTER, handle )(this, _x, _y);
 
 		return handle;
 	}
@@ -243,10 +245,7 @@ namespace Menge
 	{
 		bool handle = m_defaultHandle;
 
-		if( m_onMouseMoveEvent == true )
-		{			
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )(this, _event.touchId, _event.x, _event.y, _event.dx, _event.dy);
-		}
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_MOVE, handle )(this, _event.touchId, _event.x, _event.y, _event.dx, _event.dy);
 
 		return handle;
 	}

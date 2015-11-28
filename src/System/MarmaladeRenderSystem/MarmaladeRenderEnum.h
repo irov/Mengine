@@ -96,12 +96,12 @@ namespace Menge
 		    case Menge::TF_NONE:
 			    return GL_NEAREST;
 		    case Menge::TF_POINT:
-			    return GL_NEAREST_MIPMAP_NEAREST;
+				return GL_NEAREST;
 		    case Menge::TF_ANISOTROPIC:
 		    case Menge::TF_LINEAR:
 		    case Menge::TF_FLATCUBIC:
 		    case Menge::TF_GAUSSIANCUBIC:
-			    return GL_NEAREST_MIPMAP_LINEAR;
+				return GL_LINEAR;
 		    default:;
 		    }
 		    break;
@@ -114,19 +114,19 @@ namespace Menge
 		    case Menge::TF_NONE:
 			    return GL_LINEAR;
 		    case Menge::TF_POINT:
-			    return GL_LINEAR_MIPMAP_NEAREST;
+				return GL_LINEAR;
 		    case Menge::TF_ANISOTROPIC:
 		    case Menge::TF_LINEAR:
 		    case Menge::TF_FLATCUBIC:
 		    case Menge::TF_GAUSSIANCUBIC:
-			    return GL_LINEAR_MIPMAP_LINEAR;
+				return GL_LINEAR;
 		    default:;
 		    }
 		    break;
 	    default:;
 	    }
 
-	    return GL_NEAREST_MIPMAP_NEAREST;
+		return GL_NEAREST;
     }
     //////////////////////////////////////////////////////////////////////////
 	inline int s_toGLInternalFormat( Menge::PixelFormat _format )

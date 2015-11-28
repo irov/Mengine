@@ -4,8 +4,6 @@ ADD_FILTER(
 Eventable
 	Eventable.cpp
 	Eventable.h
-	EventEnum.cpp
-	EventEnum.h
 )
 
 ADD_FILTER(
@@ -40,12 +38,6 @@ ADD_FILTER(
 Scene
 	Scene.cpp
 	Scene.h
-)
-
-ADD_FILTER(
-Node\\\\Join
-	Join.cpp
-	Join.h
 )
 
 ADD_FILTER(

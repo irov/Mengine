@@ -12,6 +12,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	Eventable::Eventable()
+		: m_flag(0)
 	{
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -20,16 +21,16 @@ namespace Menge
 		this->unregisterEvents_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEvent( EEventName _event, const char * _method, const pybind::dict & _dict, bool * _exist )
+	bool Eventable::registerEvent( uint32_t _event, const char * _method, const pybind::dict & _dict )
 	{
+		if( _event > 32 )
+		{
+			return false;
+		}
+
 		if( _dict.is_invalid() == true )
 		{
 			this->removeEvent_( _event );
-
-			if( _exist != nullptr )
-			{
-				*_exist = false;
-			}
 
 			return true;
 		}
@@ -45,34 +46,24 @@ namespace Menge
 		{			
 			this->removeEvent_( _event );
 
-			if( _exist != nullptr )
-			{
-				*_exist = false;
-			}
-
 			return true;
 		}
 
 		this->insertEvent_( _event, ev );
-
-		if( _exist != nullptr )
-		{
-			*_exist = true;
-		}
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::registerEventMethod( EEventName _event, const char * _method, const pybind::object & _module, bool * _exist )
+	bool Eventable::registerEventMethod( uint32_t _event, const char * _method, const pybind::object & _module )
 	{
+		if( _event > 32 )
+		{
+			return false;
+		}
+
 		if( _module.is_invalid() == true )
 		{
 			this->removeEvent_( _event );
-
-			if( _exist != nullptr )
-			{
-				*_exist = false;
-			}
 
 			return true;
 		}
@@ -86,15 +77,10 @@ namespace Menge
 
 		this->insertEvent_( _event, ev );
 
-		if( _exist != nullptr )
-		{
-			*_exist = true;
-		}
-		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::insertEvent_( EEventName _event, const pybind::object & _cb )
+	void Eventable::insertEvent_( uint32_t _event, const pybind::object & _cb )
 	{ 
 		TMapEvent::iterator it_find = m_mapEvent.find( _event );
 
@@ -106,9 +92,11 @@ namespace Menge
 		{
 			it_find->second = _cb;
 		}
+
+		m_flag |= (1 << _event);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Eventable::removeEvent_( EEventName _event )
+	void Eventable::removeEvent_( uint32_t _event )
 	{
 		TMapEvent::iterator it_find = m_mapEvent.find(_event);
 
@@ -116,6 +104,8 @@ namespace Menge
 		{
 			m_mapEvent.erase( it_find );
 		}
+
+		m_flag &= ~ (1 << _event);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	pybind::object Eventable::getEvent_( const pybind::dict & _dict, const char * _method ) const
@@ -146,20 +136,18 @@ namespace Menge
 		return py_event;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	bool Eventable::hasEvent( EEventName _event ) const
+	bool Eventable::hasEvent( uint32_t _event ) const
 	{
-		TMapEvent::const_iterator it_find = m_mapEvent.find( _event );
-
-		if( it_find == m_mapEvent.end() )
-		{
-			return false;
-		}
-
-		return true;
+		return (m_flag & (1 << _event)) != 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	pybind::object Eventable::getEvent( EEventName _event ) const
+	pybind::object Eventable::getEvent( uint32_t _event ) const
 	{
+		if( (m_flag & (1 << _event)) == 0 )
+		{
+			return pybind::make_invalid_object_t();
+		}
+
 		TMapEvent::const_iterator it_find = m_mapEvent.find( _event );
 
 		if( it_find == m_mapEvent.end() )

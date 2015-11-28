@@ -103,8 +103,15 @@ namespace Menge
 		return m_renderPlatform;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
+	bool MarmaladeRenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount )
 	{
+		(void)_bits;
+		(void)_fullscreen;
+		(void)_waitForVSync;
+		(void)_FSAAType;
+		(void)_FSAAQuality;
+		(void)_MultiSampleCount;
+
         m_resolution = _resolution;
 		        		
         return true;

@@ -68,9 +68,9 @@ namespace Menge
 
 		return 0;
 	};
-    //////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////
 	inline const GLenum s_toMagFilter( Menge::ETextureFilter _magFilter )
-    {
+	{
 		switch( _magFilter )
 		{
 		case Menge::TF_NONE:
@@ -83,55 +83,57 @@ namespace Menge
 		case Menge::TF_GAUSSIANCUBIC:
 			return GL_LINEAR;
 			break;
-		default:;
+		default:
+			{
+			}break;
 		};
 
-		return 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
+		return GL_NEAREST;
+	};
+	//////////////////////////////////////////////////////////////////////////
 	inline GLenum s_toGLMinFilter( Menge::ETextureFilter _minFilter, Menge::ETextureFilter _mipFilter )
-    {
-	    switch( _minFilter )
-	    {
-	    case Menge::TF_NONE:
-	    case Menge::TF_POINT:
-		    switch( _mipFilter )
-		    {
-		    case Menge::TF_NONE:
-			    return GL_NEAREST;
-		    case Menge::TF_POINT:
-			    return GL_NEAREST_MIPMAP_NEAREST;
-		    case Menge::TF_ANISOTROPIC:
-		    case Menge::TF_LINEAR:
-		    case Menge::TF_FLATCUBIC:
-		    case Menge::TF_GAUSSIANCUBIC:
-			    return GL_NEAREST_MIPMAP_LINEAR;
-		    default:;
-		    }
-		    break;
-	    case Menge::TF_ANISOTROPIC:
-	    case Menge::TF_LINEAR:
-	    case Menge::TF_FLATCUBIC:
-	    case Menge::TF_GAUSSIANCUBIC:
-		    switch( _mipFilter )
-		    {
-		    case Menge::TF_NONE:
-			    return GL_LINEAR;
-		    case Menge::TF_POINT:
-			    return GL_LINEAR_MIPMAP_NEAREST;
-		    case Menge::TF_ANISOTROPIC:
-		    case Menge::TF_LINEAR:
-		    case Menge::TF_FLATCUBIC:
-		    case Menge::TF_GAUSSIANCUBIC:
-			    return GL_LINEAR_MIPMAP_LINEAR;
+	{
+		switch( _minFilter )
+		{
+		case Menge::TF_NONE:
+		case Menge::TF_POINT:
+			switch( _mipFilter )
+			{
+			case Menge::TF_NONE:
+				return GL_NEAREST;
+			case Menge::TF_POINT:
+				return GL_NEAREST;
+			case Menge::TF_ANISOTROPIC:
+			case Menge::TF_LINEAR:
+			case Menge::TF_FLATCUBIC:
+			case Menge::TF_GAUSSIANCUBIC:
+				return GL_LINEAR;
 			default:;
-		    }
-		    break;
-	    default:;
-	    }
+			}
+			break;
+		case Menge::TF_ANISOTROPIC:
+		case Menge::TF_LINEAR:
+		case Menge::TF_FLATCUBIC:
+		case Menge::TF_GAUSSIANCUBIC:
+			switch( _mipFilter )
+			{
+			case Menge::TF_NONE:
+				return GL_LINEAR;
+			case Menge::TF_POINT:
+				return GL_LINEAR;
+			case Menge::TF_ANISOTROPIC:
+			case Menge::TF_LINEAR:
+			case Menge::TF_FLATCUBIC:
+			case Menge::TF_GAUSSIANCUBIC:
+				return GL_LINEAR;
+			default:;
+			}
+			break;
+		default:;
+		}
 
-	    return 0;
-    }
+		return GL_NEAREST;
+	}
     //////////////////////////////////////////////////////////////////////////
 	inline int s_toGLInternalFormat( Menge::PixelFormat _format )
     {

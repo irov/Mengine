@@ -9,6 +9,7 @@
 #	include "Interface/UnicodeInterface.h"
 #	include "Interface/InputSystemInterface.h"
 #	include "Interface/TimerInterface.h"
+#	include "Interface/OptionsInterface.h"
 
 #	include <cstdio>
 #	include <clocale>

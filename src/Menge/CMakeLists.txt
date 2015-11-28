@@ -50,8 +50,6 @@ Arrow
 
 ADD_FILTER(
 Game
-	Pack.cpp	
-	Pack.h
 	Game.cpp
 	Game.h
 )

@@ -17,8 +17,6 @@ namespace Menge
 		: m_soundBuffer(nullptr)
 		, m_sourceID(0)
 		, m_isHeadMode(false)
-		, m_onSoundPauseEvent(false)
-		, m_onSoundStopEvent(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -138,14 +136,28 @@ namespace Menge
         return m_resourceSound;
     }
 	//////////////////////////////////////////////////////////////////////////
+	enum SoundEmitterEventFlag
+	{
+		EVENT_SOUND_PAUSE = 0,
+		EVENT_SOUND_END,
+		EVENT_ANIMATABLE_END
+	};
+	//////////////////////////////////////////////////////////////////////////
+	void SoundEmitter::_setEventListener( const pybind::dict & _listener )
+	{
+		Node::_setEventListener( _listener );
+
+		this->registerEvent( EVENT_SOUND_PAUSE, ("onSoundPause"), _listener );
+		this->registerEvent( EVENT_SOUND_END, ("onSoundEnd"), _listener );
+
+		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::onSoundPause( uint32_t _soundId )
 	{
 		(void)_soundId;
 
-		if( m_onSoundPauseEvent == true )
-		{
-            EVENTABLE_CALL(m_serviceProvider, this, EVENT_SOUND_PAUSE )( this );
-		}
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SOUND_PAUSE )(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::onSoundStop( uint32_t _soundId )
@@ -227,7 +239,8 @@ namespace Menge
 				->stop( m_sourceID );
 		}
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_SOUND_END)( this, _enumerator, false );		
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SOUND_END )(this, _enumerator, false);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_end( uint32_t _enumerator )
@@ -238,7 +251,8 @@ namespace Menge
 				->stop( m_sourceID );
 		}
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_SOUND_END)( this, _enumerator, true );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_SOUND_END )(this, _enumerator, true);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}	
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEmitter::_setVolume( float _volume )
@@ -295,14 +309,6 @@ namespace Menge
 			->getLengthMs( m_sourceID );
 	
 		return lengthMs;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_setEventListener( const pybind::dict & _listener )
-	{
-		Node::_setEventListener( _listener );
-
-		this->registerEvent( EVENT_SOUND_PAUSE, ("onSoundPause"), _listener, &m_onSoundPauseEvent );
-		this->registerEvent( EVENT_SOUND_END, ("onSoundEnd"), _listener, &m_onSoundStopEvent );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEmitter::_interrupt( uint32_t _enumerator )

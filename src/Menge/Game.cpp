@@ -36,6 +36,42 @@ SERVICE_FACTORY( GameService, Menge::Game );
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
+	enum GameEventFlags
+	{
+		EVENT_FULLSCREEN = 0,
+		EVENT_FIXED_CONTENT_RESOLUTION,
+		EVENT_RENDER_VIEWPORT,
+		EVENT_GAME_VIEWPORT,
+		EVENT_KEY,
+		EVENT_MOUSE_BUTTON,
+		EVENT_MOUSE_BUTTON_BEGIN,
+		EVENT_MOUSE_BUTTON_END,
+		EVENT_MOUSE_MOVE,
+		EVENT_MOUSE_WHEEL,
+		EVENT_APP_MOUSE_ENTER,
+		EVENT_APP_MOUSE_LEAVE,
+		EVENT_ON_TIMING_FACTOR,
+		EVENT_PREPARATION,
+		EVENT_RUN,
+		EVENT_INITIALIZE,
+		EVENT_INITIALIZE_RENDER_RESOURCES,
+		EVENT_FINALIZE_RENDER_RESOURCES,
+		EVENT_ACCOUNT_FINALIZE,
+		EVENT_FINALIZE,
+		EVENT_DESTROY,
+		EVENT_FOCUS,
+		EVENT_CREATE_DEFAULT_ACCOUNT,
+		EVENT_LOAD_ACCOUNTS,
+		EVENT_CREATE_ACCOUNT,
+		EVENT_DELETE_ACCOUNT,
+		EVENT_SELECT_ACCOUNT,
+		EVENT_UNSELECT_ACCOUNT,
+		EVENT_CHANGE_SOUND_VOLUME,
+		EVENT_CURSOR_MODE,
+		EVENT_USER,
+		EVENT_CLOSE
+	};
+	//////////////////////////////////////////////////////////////////////////
 	GameAccountProvider::GameAccountProvider( ServiceProviderInterface * _serviceProvider, Game * _game )
 		: m_serviceProvider(_serviceProvider)
 		, m_game(_game)

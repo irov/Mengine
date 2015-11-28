@@ -67,9 +67,6 @@ namespace Menge
 
 		bool m_isHeadMode;
 
-		bool m_onSoundPauseEvent;
-		bool m_onSoundStopEvent;
-
         float m_volume;
 	};
 };

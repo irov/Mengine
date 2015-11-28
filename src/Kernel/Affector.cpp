@@ -1,9 +1,5 @@
 #	include "Kernel/Affector.h"
 
-#	include "Interface/EventInterface.h"
-
-#   include "Kernel/EventEnum.h"
-
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

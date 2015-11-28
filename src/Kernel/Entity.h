@@ -6,6 +6,19 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
+	enum EntityEventFlag
+	{
+		EVENT_ENTITY_CREATE = 0,
+		EVENT_ENTITY_DESTROY,
+		EVENT_ENTITY_PREPARATION,
+		EVENT_ENTITY_ACTIVATE,
+		EVENT_ENTITY_PREPARATION_DEACTIVATE,
+		EVENT_ENTITY_DEACTIVATE,
+		EVENT_ENTITY_COMPILE,
+		EVENT_ENTITY_RELEASE,
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class Entity
 		: public Node
 	{

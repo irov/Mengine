@@ -72,9 +72,5 @@ namespace Menge
 		float m_frameTiming;
 
 		uint32_t m_currentFrame;
-		
-		bool m_onFrameEndEvent;
-		bool m_onFrameEndTick;
-		bool m_onAnimationEndEvent;
 	};
 }

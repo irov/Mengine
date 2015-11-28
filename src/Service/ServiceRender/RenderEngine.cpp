@@ -676,9 +676,9 @@ namespace Menge
 
 		stage = RenderTextureStage();
 
-		stage.minification = TF_ANISOTROPIC;
-		stage.mipmap = TF_ANISOTROPIC;
-		stage.magnification = TF_ANISOTROPIC;
+		stage.minification = TF_LINEAR;
+		stage.mipmap = TF_NONE;
+		stage.magnification = TF_LINEAR;
 
 		m_currentTexturesID[_stage] = 0;
 

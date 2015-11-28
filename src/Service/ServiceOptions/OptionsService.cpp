@@ -23,48 +23,45 @@ namespace Menge
 			return false;
 		}
 		
-		const Char * option_next = commandLine;
+		//const Char * option_next = commandLine;
 
-		while( option_next != nullptr )
+		const Char * option_begin = strstr( commandLine, "-" );
+
+		while( option_begin != nullptr )
 		{
-			const Char * option_begin = strstr( option_next, " -" );
-
-			if( option_begin == nullptr )
-			{
-				break;
-			}
-
 			const Char * option_end = strstr( option_begin + 1, " " );
-
+			
 			Option op;
 
 			if( option_end != nullptr )
 			{
-				size_t len = option_end - option_begin - 2;
+				size_t len = option_end - option_begin - 1;
 
 				if( len >= MENGINE_OPTIONS_KEY_SIZE )
 				{
 					return false;
 				}
 								
-				strncpy( op.key, option_begin + 2, len );
+				strncpy( op.key, option_begin + 1, len );
 				op.key[len] = 0;
+
+				option_begin = strstr( option_end, "-" );
 			}
 			else
 			{
-				size_t len = strlen( option_begin + 2 );
+				size_t len = strlen( option_begin + 1 );
 
 				if( len >= MENGINE_OPTIONS_KEY_SIZE )
 				{
 					return false;
 				}
 
-				strcpy( op.key, option_begin + 2 );
+				strcpy( op.key, option_begin + 1 );
+
+				option_begin = nullptr;
 			}
 
-			m_options.push_back( op );
-
-			option_next = option_end;
+			m_options.push_back( op );			
 		}
 
 		return true;

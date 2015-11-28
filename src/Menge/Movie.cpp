@@ -287,14 +287,16 @@ namespace Menge
 	{
 		this->stopAnimation_();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOVIE_END)( this, _enumerator, false );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOVIE_END )(this, _enumerator, false);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_end( uint32_t _enumerator )
 	{
 		this->stopAnimation_();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_MOVIE_END)( this, _enumerator, true );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_MOVIE_END )(this, _enumerator, true);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::updateFrameNode_( const MovieLayer & _layer, Node * _node, uint32_t _frameId, bool _interpolate, bool _first )
@@ -1533,12 +1535,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieImageSolid_( const MovieLayer & _layer )
 	{
-		ResourceImageSolid * resource = RESOURCE_SERVICE(m_serviceProvider)
+		ResourceImageSolid * resource = RESOURCE_SERVICE( m_serviceProvider )
 			->getResourceT<ResourceImageSolid *>( _layer.source );
 
 		if( resource == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("Movie.createMovieImageSolid_: %s resource %s can't compile sprite '%s' imageSolid resource = NULL"
+			LOGGER_ERROR( m_serviceProvider )("Movie.createMovieImageSolid_: %s resource %s can't compile sprite '%s' imageSolid resource = NULL"
 				, this->getName().c_str()
 				, this->getResourceMovieName().c_str()
 				, _layer.name.c_str()
@@ -1547,8 +1549,8 @@ namespace Menge
 			return false;
 		}
 
-		Sprite * layer_sprite = NODE_SERVICE(m_serviceProvider)
-			->createNodeT<Sprite>( CONST_STRING(m_serviceProvider, Sprite) );
+		Sprite * layer_sprite = NODE_SERVICE( m_serviceProvider )
+			->createNodeT<Sprite>( CONST_STRING( m_serviceProvider, Sprite ) );
 
 		if( layer_sprite == nullptr )
 		{
@@ -2525,15 +2527,17 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_setEventListener( const pybind::dict & _embed )
+	void Movie::_setEventListener( const pybind::dict & _listener )
 	{
-		Node::_setEventListener(_embed);
+		Node::_setEventListener( _listener );
 
-		this->registerEvent( EVENT_MOVIE_GET_INTERNAL, ("onMovieGetInternal"), _embed );
-		this->registerEvent( EVENT_MOVIE_ACTIVATE_INTERNAL, ("onMovieActivateInternal"), _embed );
-		this->registerEvent( EVENT_MOVIE_DEACTIVATE_INTERNAL, ("onMovieDeactivateInternal"), _embed );
+		this->registerEvent( EVENT_MOVIE_GET_INTERNAL, ("onMovieGetInternal"), _listener );
+		this->registerEvent( EVENT_MOVIE_ACTIVATE_INTERNAL, ("onMovieActivateInternal"), _listener );
+		this->registerEvent( EVENT_MOVIE_DEACTIVATE_INTERNAL, ("onMovieDeactivateInternal"), _listener );
 
-		this->registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _embed );
+		this->registerEvent( EVENT_MOVIE_END, ("onMovieEnd"), _listener );
+
+		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_update( float _current, float _timing )

@@ -295,7 +295,17 @@ namespace Menge
 		float y = (float)_y / m_height;
 
 		_point.x = x;
-		_point.y = y;
+		_point.y = y;	
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int32 MarmaladeInput::s_keyboardKeyEvent( void * _systemData, void * _userData )
+	{
+		s3eKeyboardEvent * event = (s3eKeyboardEvent *)_systemData;
+		MarmaladeInput * input = (MarmaladeInput *)_userData;
+
+		int32 result = input->keyboardKeyEvent( event );
+
+		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	int32 MarmaladeInput::s_keyboardCharEvent( void * _systemData, void * _userData )
@@ -303,173 +313,199 @@ namespace Menge
 		s3eKeyboardCharEvent * event = (s3eKeyboardCharEvent *)_systemData;
 		MarmaladeInput * input = (MarmaladeInput *)_userData;
 
-		if( input->m_keysIterator == MENGINE_MAX_KEYS )
+		int32 result = input->keyboardCharEvent( event );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int32 MarmaladeInput::s_pointerTouchEvent( void * _systemData, void * _userData )
+	{
+		s3ePointerTouchEvent * event = (s3ePointerTouchEvent *)_systemData;
+		MarmaladeInput * input = (MarmaladeInput *)_userData;
+
+		int32 result = input->pointerTouchEvent( event );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int32 MarmaladeInput::s_pointerTouchMotionEvent( void * _systemData, void * _userData )
+	{
+		s3ePointerTouchMotionEvent * event = (s3ePointerTouchMotionEvent *)_systemData;
+		MarmaladeInput * input = (MarmaladeInput *)_userData;
+
+		int32 result = input->pointerTouchMotionEvent( event );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int32 MarmaladeInput::s_pointerButtonEvent( void * _systemData, void * _userData )
+	{
+		s3ePointerEvent * event = (s3ePointerEvent *)_systemData;
+		MarmaladeInput * input = (MarmaladeInput *)_userData;
+
+		int32 result = input->pointerButtonEvent( event );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int32 MarmaladeInput::s_pointerMotionEvent( void * _systemData, void * _userData )
+	{
+		s3ePointerMotionEvent * event = (s3ePointerMotionEvent *)_systemData;
+		MarmaladeInput * input = (MarmaladeInput *)_userData;
+
+		int32 result = input->pointerMotionEvent( event );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	int32 MarmaladeInput::keyboardCharEvent( s3eKeyboardCharEvent * _event )
+	{
+		if( m_keysIterator == MENGINE_MAX_KEYS )
 		{
 			return 0;
 		}
 
-		if( input->m_keysIterator == 0 )
+		if( m_keysIterator == 0 )
 		{
-			input->m_keyEvents[input->m_keysIterator].key = input->m_lastKey;
-			input->m_keyEvents[input->m_keysIterator].pressed = 1;
-			input->m_keyEvents[input->m_keysIterator].ch = event->m_Char;
+			m_keyEvents[m_keysIterator].key = m_lastKey;
+			m_keyEvents[m_keysIterator].pressed = 1;
+			m_keyEvents[m_keysIterator].ch = _event->m_Char;
 			
-			++input->m_keysIterator;
+			++m_keysIterator;
 
 			return 0;
 		}
 
-		if( input->m_keyEvents[input->m_keysIterator - 1].ch == 0 )
+		if( m_keyEvents[m_keysIterator - 1].ch == 0 )
 		{
-			input->m_keyEvents[input->m_keysIterator - 1].ch = event->m_Char;
+			m_keyEvents[m_keysIterator - 1].ch = _event->m_Char;
 		}
 		else
 		{
-			input->m_keyEvents[input->m_keysIterator].key = input->m_keyEvents[input->m_keysIterator - 1].key;
-			input->m_keyEvents[input->m_keysIterator].pressed = 1;
-			input->m_keyEvents[input->m_keysIterator].ch = event->m_Char;
+			m_keyEvents[m_keysIterator].key = m_keyEvents[m_keysIterator - 1].key;
+			m_keyEvents[m_keysIterator].pressed = 1;
+			m_keyEvents[m_keysIterator].ch = _event->m_Char;
 
-			++input->m_keysIterator;
+			++m_keysIterator;
 		}				
 
 		return 0;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	int32 MarmaladeInput::s_keyboardKeyEvent( void * _systemData, void * _userData )
+	int32 MarmaladeInput::keyboardKeyEvent( s3eKeyboardEvent * _event )
     {
-		s3eKeyboardEvent * event = (s3eKeyboardEvent *)_systemData;
-		MarmaladeInput * input = (MarmaladeInput *)_userData;
-
-		if( input->m_keysIterator == MENGINE_MAX_KEYS )
+		if( m_keysIterator == MENGINE_MAX_KEYS )
 		{
 			return 0;
 		}
 
-		if( event->m_Pressed == 1 )
+		if( _event->m_Pressed == 1 )
 		{
-			input->m_lastKey = event->m_Key;
+			m_lastKey = _event->m_Key;
 		}
 
 		s3eWChar ch = 0;
-		if( input->m_keysIterator > 0 && event->m_Pressed == 0 )
+		if( m_keysIterator > 0 && _event->m_Pressed == 0 )
 		{
-			ch = input->m_keyEvents[input->m_keysIterator - 1].ch;
+			ch = m_keyEvents[m_keysIterator - 1].ch;
 		}
 
-		input->m_keyEvents[input->m_keysIterator].key = event->m_Key;
-		input->m_keyEvents[input->m_keysIterator].pressed = event->m_Pressed;
-		input->m_keyEvents[input->m_keysIterator].ch = ch;
+		m_keyEvents[m_keysIterator].key = _event->m_Key;
+		m_keyEvents[m_keysIterator].pressed = _event->m_Pressed;
+		m_keyEvents[m_keysIterator].ch = ch;
 
-		++input->m_keysIterator;
-
-		//uint32_t ch = 0;
-
-		//int newCharState = s3eKeyboardGetInt( S3E_KEYBOARD_GET_CHAR );
-
-		//if( newCharState == 1 )
-		//{
-		//	s3eWChar s3e_ch = s3eKeyboardGetChar();
-
-		//	if( s3e_ch != S3E_WEOF )
-		//	{
-		//		ch = s3e_ch;
-		//	}
-		//}
-
-  //      KeyCode code = _input->getKeyCode_( _event->m_Key );
-  //      bool isDown = _event->m_Pressed != 0;
-  //              
-  //      ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
-
-  //      INPUT_SERVICE(serviceProvider)
-  //          ->onKeyEvent( point, code, ch, isDown );
+		++m_keysIterator;
 
 		return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32 MarmaladeInput::s_pointerTouchEvent( s3ePointerTouchEvent * _event, MarmaladeInput * _input )
+    int32 MarmaladeInput::pointerTouchEvent( s3ePointerTouchEvent * _event )
     {		
         uint32 touchId = _event->m_TouchID;
 
         bool isDown = _event->m_Pressed != 0;
 
         mt::vec2f point;
-		_input->correctPoint_( _event->m_x, _event->m_y, point );
+		this->correctPoint_( _event->m_x, _event->m_y, point );
 
-        if( _input->setTouch_( touchId, point, isDown ) == false )
+		if( this->setTouch_( touchId, point, isDown ) == false )
         {
             return 0;
         }
-        
-        ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
 
-		INPUT_SERVICE( serviceProvider )
-			->pushMouseButtonEvent( touchId, point.x, point.y, 0, 0.f, isDown );
+		if( SERVICE_EXIST( m_serviceProvider, Menge::InputServiceInterface ) == true )
+		{
+			INPUT_SERVICE( m_serviceProvider )
+				->pushMouseButtonEvent( touchId, point.x, point.y, 0, 0.f, isDown );
+		}
 
 		return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32 MarmaladeInput::s_pointerTouchMotionEvent( s3ePointerTouchMotionEvent * _event, MarmaladeInput * _input )
+    int32 MarmaladeInput::pointerTouchMotionEvent( s3ePointerTouchMotionEvent * _event )
     {
         uint32 touchId = _event->m_TouchID;
 
         TouchDesc desc;
-        if( _input->getTouch_( touchId, desc ) == false )
+        if( this->getTouch_( touchId, desc ) == false )
         {
             return 0;
         }
 
         mt::vec2f point;
-		_input->correctPoint_( _event->m_x, _event->m_y, point );
+		this->correctPoint_( _event->m_x, _event->m_y, point );
 
         mt::vec2f diff = point - desc.point;
 
-        _input->setTouch_( touchId, point, desc.active );
+		this->setTouch_( touchId, point, desc.active );
 
-        ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
-
-		INPUT_SERVICE( serviceProvider )
-			->pushMouseMoveEvent( touchId, point.x, point.y, diff.x, diff.y, 0.f );
+		if( SERVICE_EXIST( m_serviceProvider, Menge::InputServiceInterface ) == true )
+		{
+			INPUT_SERVICE( m_serviceProvider )
+				->pushMouseMoveEvent( touchId, point.x, point.y, diff.x, diff.y, 0.f );
+		}
 
 		return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32 MarmaladeInput::s_pointerButtonEvent( s3ePointerEvent * _event, MarmaladeInput * _input )
+    int32 MarmaladeInput::pointerButtonEvent( s3ePointerEvent * _event )
     {
-        bool isDown = _event->m_Pressed != 0;
+		bool isDown = _event->m_Pressed != 0;
 
 		mt::vec2f point;
-		_input->correctPoint_( _event->m_x, _event->m_y, point );
+		this->correctPoint_( _event->m_x, _event->m_y, point );
 
-        _input->setTouch_( 0, point, isDown );
+		this->setTouch_( 0, point, isDown );
 
-        ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
-
-		INPUT_SERVICE( serviceProvider )
-			->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, isDown );
+		if( SERVICE_EXIST( m_serviceProvider, Menge::InputServiceInterface ) == true )
+		{
+			INPUT_SERVICE( m_serviceProvider )
+				->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, isDown );
+		}
 
 		return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32 MarmaladeInput::s_pointerMotionEvent( s3ePointerMotionEvent * _event, MarmaladeInput * _input )
+    int32 MarmaladeInput::pointerMotionEvent( s3ePointerMotionEvent * _event )
     {
         TouchDesc desc;
-        if( _input->getTouch_( 0, desc ) == false )
+		if( this->getTouch_( 0, desc ) == false )
         {
             return 0;
         }
 
 		mt::vec2f point;
-		_input->correctPoint_( _event->m_x, _event->m_y, point );
+		this->correctPoint_( _event->m_x, _event->m_y, point );
 
         mt::vec2f diff = point - desc.point;
 
-        _input->setTouch_( 0, point, desc.active );
+		this->setTouch_( 0, point, desc.active );
 
-        ServiceProviderInterface * serviceProvider = _input->getServiceProvider();
-
-		INPUT_SERVICE( serviceProvider )
-			->pushMouseMoveEvent( 0, point.x, point.y, diff.x, diff.y, 0.f );
+		if( SERVICE_EXIST( m_serviceProvider, Menge::InputServiceInterface ) == true )
+		{
+			INPUT_SERVICE( m_serviceProvider )
+				->pushMouseMoveEvent( 0, point.x, point.y, diff.x, diff.y, 0.f );
+		}
 
 		return 0;
     }

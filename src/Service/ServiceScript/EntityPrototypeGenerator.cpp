@@ -76,15 +76,15 @@ namespace Menge
 			}
 		}
 
-		this->registerEventMethod( EVENT_CREATE, "onCreate", py_type );
-		this->registerEventMethod( EVENT_DESTROY, "onDestroy", py_type );
+		this->registerEventMethod( EVENT_ENTITY_CREATE, "onCreate", py_type );
+		this->registerEventMethod( EVENT_ENTITY_DESTROY, "onDestroy", py_type );
 
-		this->registerEventMethod( EVENT_PREPARATION, "onPreparation", py_type );
-		this->registerEventMethod( EVENT_ACTIVATE, "onActivate", py_type );
-		this->registerEventMethod( EVENT_PREPARATION_DEACTIVATE, "onPreparationDeactivate", py_type );
-		this->registerEventMethod( EVENT_DEACTIVATE, "onDeactivate", py_type );
-		this->registerEventMethod( EVENT_COMPILE, "onCompile", py_type );
-		this->registerEventMethod( EVENT_RELEASE, "onRelease", py_type );
+		this->registerEventMethod( EVENT_ENTITY_PREPARATION, "onPreparation", py_type );
+		this->registerEventMethod( EVENT_ENTITY_ACTIVATE, "onActivate", py_type );
+		this->registerEventMethod( EVENT_ENTITY_PREPARATION_DEACTIVATE, "onPreparationDeactivate", py_type );
+		this->registerEventMethod( EVENT_ENTITY_DEACTIVATE, "onDeactivate", py_type );
+		this->registerEventMethod( EVENT_ENTITY_COMPILE, "onCompile", py_type );
+		this->registerEventMethod( EVENT_ENTITY_RELEASE, "onRelease", py_type );
 
 		m_type = py_type;
 

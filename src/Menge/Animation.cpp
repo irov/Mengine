@@ -20,9 +20,6 @@ namespace	Menge
 	Animation::Animation()
 		: m_frameTiming(0.f)
 		, m_currentFrame(0)
-		, m_onFrameEndTick(false)
-		, m_onFrameEndEvent(false)
-		, m_onAnimationEndEvent(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -45,6 +42,25 @@ namespace	Menge
 	ResourceAnimation * Animation::getResourceAnimation() const
 	{
 		return m_resourceAnimation;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	enum AnimationEventFlag
+	{
+		EVENT_FRAME_END = 0,
+		EVENT_FRAME_TICK,
+		EVENT_ANIMATION_END,
+		EVENT_ANIMATABLE_END
+	};
+	//////////////////////////////////////////////////////////////////////////
+	void Animation::_setEventListener( const pybind::dict & _listener )
+	{
+		Sprite::_setEventListener( _listener );
+
+		this->registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener );
+		this->registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener );
+		this->registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener );
+
+		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_update( float _current, float _timing )
@@ -76,19 +92,11 @@ namespace	Menge
             {
                 m_frameTiming -= frameDelay;
 
-                if( m_onFrameEndEvent == true )
-                {
-					EVENTABLE_CALL( m_serviceProvider, this, EVENT_FRAME_END )(this, m_currentFrame);
-                }
+				EVENTABLE_CALL( m_serviceProvider, this, EVENT_FRAME_END )(this, m_currentFrame);
+				
+				++m_currentFrame;
 
-                if( m_onFrameEndTick == true )
-                {
-					EVENTABLE_CALL( m_serviceProvider, this, EVENT_FRAME_TICK )(this, m_currentFrame, frameCount);
-                }
-                else
-                {
-                    ++m_currentFrame;
-                }
+				EVENTABLE_CALL( m_serviceProvider, this, EVENT_FRAME_TICK )(this, m_currentFrame, frameCount);
 
                 if( m_currentFrame == frameCount )
                 {
@@ -233,10 +241,8 @@ namespace	Menge
 			return;
 		}
         
-		if( m_onAnimationEndEvent == true )
-		{
-			EVENTABLE_CALL(m_serviceProvider, this, EVENT_ANIMATION_END)( this, _enumerator, false );
-		}
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATION_END )(this, _enumerator, false);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Animation::_end( uint32_t _enumerator )
@@ -250,10 +256,8 @@ namespace	Menge
 			return;
 		}
         
-		if( m_onAnimationEndEvent == true )
-		{
-			EVENTABLE_CALL(m_serviceProvider, this, EVENT_ANIMATION_END)( this, _enumerator, true );
-		}
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATION_END )(this, _enumerator, true);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t Animation::getFrame_( float _timing, float & _delthaTiming ) const
@@ -314,15 +318,6 @@ namespace	Menge
                 , m_currentFrame
                 );
 		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Animation::_setEventListener( const pybind::dict & _listener )
-	{
-		Sprite::_setEventListener( _listener );
-
-		this->registerEvent( EVENT_FRAME_END, ("onFrameEnd"), _listener, &m_onFrameEndEvent );
-		this->registerEvent( EVENT_FRAME_TICK, ("onFrameTick"), _listener, &m_onFrameEndTick );
-		this->registerEvent( EVENT_ANIMATION_END, ("onAnimationEnd"), _listener, &m_onAnimationEndEvent );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t Animation::getCurrentFrame() const

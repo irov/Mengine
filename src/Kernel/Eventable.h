@@ -6,8 +6,6 @@
 
 #	include "Core/ConstString.h"
 
-#	include "Kernel/EventEnum.h"
-
 #   include "stdex/stl_map.h"
 
 #	include "pybind/types.hpp"
@@ -28,11 +26,11 @@ namespace Menge
 		~Eventable();
 
 	public:
-		bool registerEvent( EEventName _event, const char * _method, const pybind::dict & _dict, bool * _exist = nullptr );
-		bool registerEventMethod( EEventName _event, const char * _method, const pybind::object & _module, bool * _exist = nullptr );
+		bool registerEvent( uint32_t _event, const char * _method, const pybind::dict & _dict );
+		bool registerEventMethod( uint32_t _event, const char * _method, const pybind::object & _module );
 
-		pybind::object getEvent( EEventName _event ) const;
-		bool hasEvent( EEventName _event ) const;
+		pybind::object getEvent( uint32_t _event ) const;
+		bool hasEvent( uint32_t _event ) const;
 
 	protected:
 		void unregisterEvents_();
@@ -40,18 +38,20 @@ namespace Menge
 	protected:
 		pybind::object getEvent_( const pybind::dict & _dict, const char * _method ) const;
 		pybind::object getEventMethod_( const pybind::object & _module, const char * _method ) const;
-		void insertEvent_( EEventName _event, const pybind::object & _cb );
-		void removeEvent_( EEventName _event );
+		void insertEvent_( uint32_t _event, const pybind::object & _cb );
+		void removeEvent_( uint32_t _event );
 
 	private:
-		typedef stdex::map<EEventName, pybind::object> TMapEvent;
+		typedef stdex::map<uint32_t, pybind::object> TMapEvent;
 		TMapEvent m_mapEvent;
+
+		uint32_t m_flag;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class EventableCallOperator
 	{
 	public:
-		EventableCallOperator( ServiceProviderInterface * _serviceProvider, EEventName _event, const pybind::object & _pyevent )
+		EventableCallOperator( ServiceProviderInterface * _serviceProvider, uint32_t _event, const pybind::object & _pyevent )
 			: m_serviceProvider( _serviceProvider )
 			, m_event( _event )
 			, m_pyevent( _pyevent )
@@ -67,7 +67,7 @@ namespace Menge
 	protected:
         ServiceProviderInterface * m_serviceProvider;
 
-		EEventName m_event;
+		uint32_t m_event;
 		pybind::object m_pyevent;		
 	};
 }

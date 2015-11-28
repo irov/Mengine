@@ -114,8 +114,15 @@ namespace Menge
 		return m_renderPlatform;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MarmaladeRenderSystemES1::createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality )
+	bool MarmaladeRenderSystemES1::createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount )
 	{
+		(void)_bits;
+		(void)_fullscreen;
+		(void)_waitForVSync;
+		(void)_FSAAType;
+		(void)_FSAAQuality;
+		(void)_MultiSampleCount;
+
 		m_resolution = _resolution;
 		
 		return true;
@@ -321,6 +328,8 @@ namespace Menge
 			GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, textureStage.wrapT) );
 			GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, textureStage.minFilter) );
 			GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, textureStage.magFilter) );
+			//GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR) );
+			//GLCALL( m_serviceProvider, glTexParameteri, (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR) );
 		}
 
 		MarmaladeRenderIndexBufferES1 * ib = stdex::intrusive_get<MarmaladeRenderIndexBufferES1 *>( m_currentIndexBuffer );

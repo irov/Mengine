@@ -32,11 +32,19 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	enum VideoEventFlag
+	{
+		EVENT_VIDEO_END = 0,
+		EVENT_ANIMATABLE_END
+	};
+	//////////////////////////////////////////////////////////////////////////
 	void Video::_setEventListener( const pybind::dict & _listener )
 	{
 		Node::_setEventListener( _listener );
 
 		this->registerEvent( EVENT_VIDEO_END, ("onVideoEnd"), _listener );
+
+		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::setResourceVideo( ResourceVideo * _resourceVideo )
@@ -232,12 +240,14 @@ namespace Menge
 	{
 		m_needUpdate = false;
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( this, _enumerator, false );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_VIDEO_END )(this, _enumerator, false);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::_end( uint32_t _enumerator )
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_VIDEO_END)( this, _enumerator, false);	
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_VIDEO_END )(this, _enumerator, true);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Video::pause()

@@ -3,7 +3,6 @@
 #	include "Logger/Logger.h"
 
 #   include "Interface/RenderSystemInterface.h"
-#   include "Interface/EventInterface.h"
 #   include "Interface/ApplicationInterface.h"
 
 #	include "Player.h"
@@ -48,12 +47,21 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	enum ParticleEmitter2EventFlag
+	{
+		EVENT_PARTICLE_EMITTER_END = 0,
+		EVENT_PARTICLE_EMITTER_RESTART,
+		EVENT_ANIMATABLE_END
+	};
+	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_setEventListener( const pybind::dict & _listener )
 	{
 		Node::_setEventListener( _listener );
 
 		this->registerEvent( EVENT_PARTICLE_EMITTER_END, ("onParticleEmitterEnd"), _listener );
 		this->registerEvent( EVENT_PARTICLE_EMITTER_RESTART, ("onParticleEmitterRestart"), _listener );
+
+		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	///////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter2::_activate()
@@ -231,12 +239,14 @@ namespace	Menge
 
 		m_emitter->stop();
 
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END)( this, _enumerator, false );		
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END )(this, _enumerator, false);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_end( uint32_t _enumerator )
 	{
-		EVENTABLE_CALL(m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END)( this, _enumerator, true );
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_PARTICLE_EMITTER_END )(this, _enumerator, true);
+		EVENTABLE_CALL( m_serviceProvider, this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_setLoop( bool _value )

@@ -24,6 +24,25 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
+	enum SceneEventFlag
+	{
+		EVENT_APP_MOUSE_LEAVE = 0,
+		EVENT_APP_MOUSE_ENTER,
+		EVENT_FOCUS,
+		EVENT_ON_SUB_SCENE,
+	};
+	//////////////////////////////////////////////////////////////////////////
+	void Scene::_setEventListener( const pybind::dict & _embed )
+	{
+		Entity::_setEventListener( _embed );
+
+		this->registerEvent( EVENT_APP_MOUSE_LEAVE, ("onAppMouseLeave"), _embed );
+		this->registerEvent( EVENT_APP_MOUSE_ENTER, ("onAppMouseEnter"), _embed );
+		this->registerEvent( EVENT_FOCUS, ("onFocus"), _embed );
+
+		this->registerEvent( EVENT_ON_SUB_SCENE, ("onSubScene"), _embed );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Scene::setMainLayer( Layer * _layer )
 	{
 		m_mainLayer = _layer;
@@ -97,17 +116,6 @@ namespace Menge
             }
         }
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Scene::_setEventListener( const pybind::dict & _embed )
-	{
-		Entity::_setEventListener( _embed );
-
-		this->registerEvent( EVENT_APP_MOUSE_LEAVE, ("onAppMouseLeave"), _embed );
-		this->registerEvent( EVENT_APP_MOUSE_ENTER, ("onAppMouseEnter"), _embed );
-		this->registerEvent( EVENT_FOCUS, ("onFocus"), _embed );
-
-		this->registerEvent( EVENT_ON_SUB_SCENE, ("onSubScene"), _embed );
-	}
 	//////////////////////////////////////////////////////////////////////////
 	void Scene::onAppMouseLeave()
 	{

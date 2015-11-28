@@ -7,7 +7,6 @@
 #	include "Interface/GraveyardInterface.h"
 #	include "Interface/TimelineInterface.h"
 
-#   include "Interface/EventInterface.h"
 #	include "Interface/UnicodeInterface.h"
 
 #	include "Interface/NotificationServiceInterface.h"

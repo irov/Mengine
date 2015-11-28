@@ -25,13 +25,22 @@ namespace Menge
 
 	struct MovieLayer;
 	struct MovieFrameSource;    
-
+	//////////////////////////////////////////////////////////////////////////
 	class VisitorMovieNode
 	{
 	public:
 		virtual void visitMovieNode( Movie * _movie, Node * _node ) = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
+	enum MovieSpotEventFlag
+	{
+		EVENT_MOVIE_GET_INTERNAL = 0,
+		EVENT_MOVIE_ACTIVATE_INTERNAL,
+		EVENT_MOVIE_DEACTIVATE_INTERNAL,
+		EVENT_MOVIE_END,
+		EVENT_ANIMATABLE_END,
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class Movie
 		: public Node
 		, public Animatable

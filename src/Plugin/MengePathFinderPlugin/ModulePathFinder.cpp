@@ -217,7 +217,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void ModulePathFinder::destroyPathFinderWayAffector( PathFinderWayAffector * _affector )
 	{
-		_affector->destroy();
+		Node * node = _affector->getNode();
+
+		uint32_t id = _affector->getId();
+
+		node->stopAffector( id );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ModulePathFinder::setMapWeight( PathFinderMap * _map, const ConstString & _resourceName )

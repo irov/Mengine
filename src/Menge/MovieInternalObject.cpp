@@ -129,20 +129,7 @@ namespace Menge
 			return false;
 		}
 
-		if( this->addChild( node ) == false )
-		{
-			const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
-			const ConstString & internalName = m_resourceInternalObject->getInternalName();
-
-			LOGGER_ERROR(m_serviceProvider)("MovieInternalObject::_activate '%s' resource '%s' get internal node '%s:%s' invalid add children"
-				, m_name.c_str()
-				, m_resourceInternalObject->getName().c_str()
-				, internalGroup.c_str()
-				, internalName.c_str()
-				);
-
-			return false;
-		}
+		this->addChild( node );
 
 		m_internalNode = node;
 

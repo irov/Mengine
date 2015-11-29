@@ -823,6 +823,83 @@ namespace Menge
 
 			return py_path;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		mt::vec3f movie_getMovieSlotWorldPosition( Movie * _movie, const ConstString & _slotName )
+		{
+			Node * node;
+			Movie * submovie;
+			if( _movie->getMovieNode( _slotName, CONST_STRING( m_serviceProvider, MovieSlot ), &node, &submovie ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::getMovieSlotWorldPosition %s not found slot '%s"
+					, _movie->getName().c_str()
+					, _slotName.c_str()
+					);
+
+				return mt::vec3f(0.f, 0.f, 0.f);
+			}
+
+			const mt::vec3f & wp = node->getWorldPosition();
+
+			return wp;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		mt::vec3f movie_getMovieSlotOffsetPosition( Movie * _movie, const ConstString & _slotName )
+		{
+			Node * node;
+			Movie * submovie;
+			if( _movie->getMovieNode( _slotName, CONST_STRING( m_serviceProvider, MovieSlot ), &node, &submovie ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::getMovieSlotOffsetPosition %s not found slot '%s"
+					, _movie->getName().c_str()
+					, _slotName.c_str()
+					);
+
+				return mt::vec3f( 0.f, 0.f, 0.f );
+			}
+
+			ResourceMovie * resourceMovie = _movie->getResourceMovie();
+
+			if( resourceMovie == nullptr )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::getMovieSlotOffsetPosition %s invalid setup resource"
+					, _movie->getName().c_str()
+					);
+
+				return mt::vec3f( 0.f, 0.f, 0.f );
+			}
+
+			const mt::vec3f & ap = resourceMovie->getAnchorPoint();
+
+			const mt::mat4f & wm = _movie->getWorldMatrix();
+
+			mt::vec3f wap;
+			mt::mul_v3_m4( wap, ap, wm );
+
+			const mt::vec3f & wp = node->getWorldPosition();
+
+			mt::vec3f sop = wp - wap;
+			
+			return sop;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool movie_attachMovieSlotNode( Movie * _movie, const ConstString & _slotName, Node * _node )
+		{
+			Node * node;
+			Movie * submovie;
+			if( _movie->getMovieNode( _slotName, CONST_STRING( m_serviceProvider, MovieSlot ), &node, &submovie ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::attachMovieSlotNode %s not found slot '%s"
+					, _movie->getName().c_str()
+					, _slotName.c_str()
+					);
+
+				return false;
+			}
+
+			node->addChild( _node );
+
+			return true;
+		}
         //////////////////////////////////////////////////////////////////////////
         void Transformation3D_removeRelationTransformation( Transformation3D * _transformation )
         {
@@ -2856,7 +2933,7 @@ namespace Menge
 			}
 
 		protected:
-			bool affect( float _timing ) override
+			bool _affect( float _timing ) override
 			{
 				m_timing += _timing;
 
@@ -5314,6 +5391,9 @@ namespace Menge
 					.def_proxy_static( "getLayerPathLength", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPathLength )
 					.def_proxy_static( "getLayerPath", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath )
 					.def_proxy_static( "getLayerPath2", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath2 )
+					.def_proxy_static( "getMovieSlotWorldPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotWorldPosition )
+					.def_proxy_static( "getMovieSlotOffsetPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotOffsetPosition )
+					.def_proxy_static( "attachMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_attachMovieSlotNode )
                     ;
 
                 pybind::interface_<MovieSlot, pybind::bases<Node> >("MovieSlot", false)

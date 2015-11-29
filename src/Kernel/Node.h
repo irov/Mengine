@@ -136,8 +136,8 @@ namespace Menge
 		inline Node * getParent() const;
 		inline bool hasParent() const;
 
-		bool addChild( Node * _node );
-		bool addChildFront( Node* _node );
+		void addChild( Node * _node );
+		void addChildFront( Node* _node );
 		bool addChildAfter( Node* _node, Node * _after );
 		bool removeChild( Node * _node );        
 		void removeChildren();
@@ -171,7 +171,7 @@ namespace Menge
 		TListNodeChild m_children;
 
 	private:
-		bool addChild_( TListNodeChild::iterator _insert, Node * _node );
+		void addChild_( TListNodeChild::iterator _insert, Node * _node );
 
 		void insertChild_( TListNodeChild::iterator _insert, Node * _node );
 		void eraseChild_( Node * _node );

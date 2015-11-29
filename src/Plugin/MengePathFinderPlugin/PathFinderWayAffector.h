@@ -27,8 +27,7 @@ namespace Menge
 		bool initialize( Node * _node, float _offset, float _speed, const pybind::list & _way, const pybind::object & _cb );
 		
 	public:
-		void setSpeedAffector( float _speed );
-		float getSpeedAffector() const;
+		Node * getNode() const;
 
 	public:
 		float getLength() const;
@@ -40,7 +39,7 @@ namespace Menge
 
 	public:
 		bool prepare() override;
-		bool affect( float _timing ) override;
+		bool _affect( float _timing ) override;
 		void complete() override;
 		void stop() override;
 
@@ -56,7 +55,6 @@ namespace Menge
 		pybind::list m_way;
 
 		float m_speed;
-		float m_speedAffector;
 		float m_offset;
 		float m_length;
 		

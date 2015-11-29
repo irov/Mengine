@@ -341,7 +341,7 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::addChild( Node * _node )
+	void Node::addChild( Node * _node )
 	{
 		if( _node == nullptr )
 		{
@@ -349,15 +349,13 @@ namespace Menge
 				, this->getName().c_str()
 				);
 
-			return false;
+			return;
 		}
 
-		bool result = this->addChild_( m_children.end(), _node );
-
-        return result;
+		this->addChild_( m_children.end(), _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::addChildFront( Node * _node )
+	void Node::addChildFront( Node * _node )
 	{
 		if( _node == nullptr )
 		{
@@ -365,12 +363,10 @@ namespace Menge
 				, this->getName().c_str()
 				);
 
-			return false;
+			return;
 		}
 
-		bool result = this->addChild_( m_children.begin(), _node );
-
-        return result;
+		this->addChild_( m_children.begin(), _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::addChildAfter( Node* _node, Node * _after )
@@ -398,26 +394,20 @@ namespace Menge
 
 		if( it_found == m_children.end() )
 		{
+			LOGGER_ERROR( m_serviceProvider )("Node::addChildrenAfter '%s' after is not child"
+				, this->getName().c_str()
+				);
+
 			return false;
 		}
 
-		bool result = this->addChild_( it_found, _node );
+		this->addChild_( it_found, _node );
 
-        return result;
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::addChild_( TListNodeChild::iterator _insert, Node * _node )
+	void Node::addChild_( TListNodeChild::iterator _insert, Node * _node )
 	{
-		//if( this->isChildren( _node, false ) )
-		//{
-		//	//MENGE_LOG_ERROR( "Node '%s' type '%s' addChildren failed '%s' because type '%s' is already exist"
-		//	//, this->getName().c_str()
-		//	//, this->getType().c_str()
-		//	//, _node->getName().c_str()
-		//	//, _node->getType().c_str() );
-		//	return false;
-		//}
-
 		Node * parent = _node->getParent();
 
 		this->setShallowGrave();
@@ -430,7 +420,7 @@ namespace Menge
 				this->removeShallowGrave();
 				_node->removeShallowGrave();
 
-				return true;
+				return;
 			}
 			
 			this->eraseChild_( _node );
@@ -475,10 +465,6 @@ namespace Menge
 
 		this->removeShallowGrave();
         _node->removeShallowGrave();
-
-		//this->invalidateBoundingBox();
-
-		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::insertChild_( TListNodeChild::iterator _insert, Node * _node )

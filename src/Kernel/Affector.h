@@ -49,10 +49,23 @@ namespace Menge
 		EAffectorType getType() const;
 
 	public:
+		void setFreeze( bool _value );
+		bool getFreeze() const;
+
+	public:
+		void setSpeedAffector( float _speed );
+		float getSpeedAffector() const;
+
+	public:
 		virtual bool prepare();
 
 	public:
-		virtual bool affect( float _timing ) = 0;
+		bool affect( float _timing );
+
+	protected:
+		virtual bool _affect( float _timing ) = 0;
+
+	public:
         virtual void complete() = 0;
 		virtual void stop() = 0;
 
@@ -61,6 +74,10 @@ namespace Menge
 
 		EAffectorType m_type;
 		AFFECTOR_ID m_id;
+
+		float m_speedAffector;
+		
+		bool m_freeze;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class CallbackAffector
@@ -119,7 +136,7 @@ namespace Menge
 		: public MemeberAffector<C,M>
 	{
 	protected:
-		bool affect( float _timing ) override
+		bool _affect( float _timing ) override
 		{
 			T value;
 			bool finish = m_accumulator.update( _timing, &value );
@@ -150,7 +167,7 @@ namespace Menge
 		: public MemeberAffector<C,M>
 	{
 	protected:
-		bool affect( float _timing ) override
+		bool _affect( float _timing ) override
 		{
 			T value;
 			bool finish = m_interpolator.update( _timing, &value );

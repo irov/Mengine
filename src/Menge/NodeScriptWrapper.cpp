@@ -2637,7 +2637,7 @@ namespace Menge
 			uint32_t trimetric = s_rotateToTrimetric( _to - _from, _vx, _vy );
 
 			return trimetric;
-		}
+		}		
 		//////////////////////////////////////////////////////////////////////////
 		typedef stdex::vector<HotSpotPolygon *> TVectorHotSpotPolygon;
 		//////////////////////////////////////////////////////////////////////////
@@ -5643,8 +5643,7 @@ namespace Menge
 
 			pybind::def_functor( "rotateToTrimetric", nodeScriptMethod, &NodeScriptMethod::s_rotateToTrimetric );
 			pybind::def_functor( "rotateToTrimetric2", nodeScriptMethod, &NodeScriptMethod::s_rotateToTrimetric2 );
-			
-
+						
 			pybind::def_functor( "hotspotCorrect", nodeScriptMethod, &NodeScriptMethod::s_hotspotCorrect );
 
 			pybind::def_functor( "copyUserPicture", nodeScriptMethod, &NodeScriptMethod::s_copyUserPicture );

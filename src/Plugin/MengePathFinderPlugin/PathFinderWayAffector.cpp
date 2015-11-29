@@ -230,6 +230,37 @@ namespace Menge
 		return new_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	pybind::tuple PathFinderWayAffector::predictionBullet( const mt::vec3f & _position, float _speed ) const
+	{
+		const mt::vec3f & lp = m_node->getLocalPosition();
+
+		float length = mt::length_v3_v3( _position, lp );
+		float time = (length / _speed) * 1000.f;
+
+		const uint32_t max_iteration = 20;
+
+		float dt;
+		mt::vec3f tp;
+		float dtime;
+	
+		for( uint32_t index = 1; index != max_iteration; ++index )
+		{
+			dt = time / float(max_iteration) * float(index);
+
+			tp = this->getTimePosition( dt );
+
+			float dlength = mt::length_v3_v3( _position, tp );
+			dtime = (dlength / _speed) * 1000.f;
+
+			if( dt >= dtime )
+			{
+				break;
+			}
+		}
+
+		return pybind::make_tuple_t( dt, dt - dtime, tp );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::complete()
 	{
 		mt::vec3f wp_prev = m_way[m_wayCount - 2];

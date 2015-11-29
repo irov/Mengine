@@ -37,6 +37,8 @@ namespace Menge
 	public:
 		mt::vec3f getTimePosition( float _time ) const;
 
+		pybind::tuple predictionBullet( const mt::vec3f & _position, float _speed ) const;
+
 	public:
 		bool prepare() override;
 		bool _affect( float _timing ) override;

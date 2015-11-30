@@ -1,4 +1,3 @@
-
 set( MY_LIB_NAME Math )
 
 ADD_FILTER(
@@ -127,6 +126,14 @@ ccd
     ccd.h
     ccd_inline.h
 )
+
+ADD_FILTER(
+parabola
+    parabola.cpp
+    parabola.h
+    parabola_inline.h
+)
+
 
 ADD_FILTER(
 config

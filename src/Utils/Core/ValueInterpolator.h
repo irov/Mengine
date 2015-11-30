@@ -409,4 +409,69 @@ namespace Menge
 		T m_v0;
 		T m_v1;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	template <typename T>
+	class ValueInterpolatorParabolic
+		: public ValueInterpolator<T>
+	{
+	public:
+		template<class ABS>
+		bool start( const T& _value1, const T& _value2, const T& _v0, float _time, ABS _abs )
+		{
+			ValueInterpolator<T>::m_started = false;
+
+			ValueInterpolator<T>::m_value1 = _value1;
+			ValueInterpolator<T>::m_value2 = _value2;
+			ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
+			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
+			ValueInterpolator<T>::m_time = _time;
+			ValueInterpolator<T>::m_timing = 0.f;
+
+			m_v0 = _v0;
+
+			if( _time < 0.00001f || _abs( _value2 - _value1 ) < 0.00001f )
+			{
+				return false;
+			}
+
+			ValueInterpolator<T>::m_started = true;
+
+			return true;
+		}
+
+		bool update( float _timing, T * _out )
+		{
+			if( ValueInterpolator<T>::m_started == false )
+			{
+				*_out = ValueInterpolator<T>::m_value2;
+
+				return true;
+			}
+
+			if( (ValueInterpolator<T>::m_timing + _timing) > ValueInterpolator<T>::m_time )
+			{
+				ValueInterpolator<T>::m_time = 0.f;
+				ValueInterpolator<T>::m_timing = 0.f;
+				*_out = ValueInterpolator<T>::m_value2;
+				ValueInterpolator<T>::m_delta = (*_out) - ValueInterpolator<T>::m_prev;
+				ValueInterpolator<T>::m_started = false;
+
+				return true;
+			}
+
+			ValueInterpolator<T>::m_timing += _timing;
+			float t_time = ValueInterpolator<T>::m_timing / ValueInterpolator<T>::m_time;
+
+			calculateCubicBezierPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, m_v1, t_time );
+
+			ValueInterpolator<T>::m_delta = (*_out) - ValueInterpolator<T>::m_prev;
+			ValueInterpolator<T>::m_prev = *_out;
+
+			return false;
+		}
+
+	protected:
+		T m_v0;
+		T m_v1;
+	};
 }

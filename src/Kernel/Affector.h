@@ -257,6 +257,19 @@ namespace Menge
 			MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>::m_interpolator.start( _start, _end, _v0, _v1, _time, _abs );
 		}
 	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class C, class M, class T>
+	class MemberAffectorInterpolateParabolic
+		: public MemberAffectorInterpolate<C, M, T, ValueInterpolatorParabolic>
+	{
+	public:
+		template<class ABS>
+		void initialize( C * _self, M _method, const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
+		{
+			MemberAffectorInterpolate<C, M, T, ValueInterpolatorParabolic>::initialize( _self, _method );
+			MemberAffectorInterpolate<C, M, T, ValueInterpolatorParabolic>::m_interpolator.start( _start, _end, _v0, _time, _abs );
+		}
+	};	
     //////////////////////////////////////////////////////////////////////////
 	namespace NodeAffectorCreator
 	{
@@ -409,5 +422,36 @@ namespace Menge
             TFactoryAffector m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////////
+		template<class C, class M, class T>
+		class NodeAffectorCreatorInterpolateParabolic
+		{
+		public:
+			typedef MemberAffectorInterpolateParabolic<C, M, T> AffectorType;
+
+		public:
+			template<class ABS>
+			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+				, C * _self, M _method
+				, const T & _start, const T & _end, const T & _v0, float _time, ABS _abs )
+			{
+				AffectorType * affector = m_factory.createObject();
+
+				affector->setServiceProvider( _serviceProvider );
+				affector->setAffectorType( _type );
+
+				affector->setCallback( _cb );
+
+				affector->initialize( _self, _method, _start, _end, _v0, _time, _abs );
+				affector->update( _start );
+
+				return affector;
+			}
+
+		protected:
+			typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
+			TFactoryAffector m_factory;
+		};
+		//////////////////////////////////////////////////////////////////////////
 	}
 }	// namespace Menge

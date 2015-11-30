@@ -3442,6 +3442,40 @@ namespace Menge
 
             return id;
         }
+		//////////////////////////////////////////////////////////////////////////
+		NodeAffectorCreator::NodeAffectorCreatorInterpolateParabolic<Node, void (Node::*)(const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateParabolic;
+		//////////////////////////////////////////////////////////////////////////
+		uint32_t parabolicTo( Node * _node
+			, float _time
+			, const mt::vec3f& _point1
+			, const mt::vec3f& _point2
+			, const pybind::object & _cb )
+		{
+			if( _node->isActivate() == false )
+			{
+				return 0;
+			}
+
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
+
+			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+
+			Affector* affector =
+				m_nodeAffectorCreatorInterpolateParabolic.create( m_serviceProvider
+				, ETA_POSITION, callback, _node, &Node::setLocalPosition
+				, _node->getLocalPosition(), _point1, _point2, _time
+				, &mt::length_v3
+				);
+
+			AFFECTOR_ID id = _node->addAffector( affector );
+
+			return id;
+		}
         //////////////////////////////////////////////////////////////////////////
         void angleStop( Node * _node )
         {
@@ -4897,6 +4931,7 @@ namespace Menge
             .def_proxy_static( "moveTo", nodeScriptMethod, &NodeScriptMethod::moveTo )
             .def_proxy_static( "bezier2To", nodeScriptMethod, &NodeScriptMethod::bezier2To )
             .def_proxy_static( "bezier3To", nodeScriptMethod, &NodeScriptMethod::bezier3To )
+			.def_proxy_static( "parabolicTo", nodeScriptMethod, &NodeScriptMethod::parabolicTo )
             .def_proxy_static( "moveStop", nodeScriptMethod, &NodeScriptMethod::moveStop )
 
             .def_proxy_static( "angleTo", nodeScriptMethod, &NodeScriptMethod::angleTo )

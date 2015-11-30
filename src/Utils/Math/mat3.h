@@ -8,6 +8,9 @@ namespace mt
 { 
 	struct mat3f
 	{
+		typedef vec3f value_type;
+		typedef float element_type;
+
 		vec3f v0;
 		vec3f v1;
 		vec3f v2;

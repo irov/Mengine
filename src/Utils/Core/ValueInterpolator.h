@@ -289,8 +289,8 @@ namespace Menge
             
             ValueInterpolator<T>::m_timing += _timing;
             float t_time = ValueInterpolator<T>::m_timing / ValueInterpolator<T>::m_time;
-            *_out = (1-t_time)*(1-t_time)*ValueInterpolator<T>::m_value1
-                + 2*t_time*(1-t_time)*m_v0
+            *_out = (1.f-t_time)*(1.f-t_time)*ValueInterpolator<T>::m_value1
+                + 2.f*t_time*(1.f-t_time)*m_v0
                 + t_time*t_time*ValueInterpolator<T>::m_value2;
             ValueInterpolator<T>::m_delta = (*_out) - ValueInterpolator<T>::m_prev;
             ValueInterpolator<T>::m_prev = *_out;
@@ -301,7 +301,50 @@ namespace Menge
 	protected:
 		T m_v0;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class T>
+	void calculateCubicBezierPosition( T & _out, const T & _begin, const T & _end, const T & _v0, const T & _v1, float _time )
+	{
+		_out = (1.f - _time)*(1.f - _time)*(1.f - _time) * _begin
+			+ 3.f * _time*(1.f - _time)*(1.f - _time)*_v0
+			+ 3.f * _time*_time*(1.f - _time)*_v1
+			+ _time*_time*_time*_end;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	template<class T, class LENGTH>
+	float calculateCubicBezierLength( const T & _begin, const T & _end, const T & _v0, const T & _v1, LENGTH _length )
+	{
+		const uint32_t max_iterator = 10;
 
+		float total_length = 0.f;
+
+		T prevPoint = _begin;
+
+		const float dt = 1.f / float( max_iterator );
+
+		float t = 0.f;
+
+		for( uint32_t i = 1; i != max_iterator; ++i )
+		{
+			t += dt;
+
+			T nextPoint;
+			calculateCubicBezierPosition( nextPoint, _begin, _end, _v0, _v1, t );
+
+			float length = _length( nextPoint, prevPoint );
+
+			total_length += length;
+
+			prevPoint = nextPoint;			
+		}
+
+		float length = _length( _end, prevPoint );
+
+		total_length += length;
+
+		return total_length;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	template <typename T>
 	class ValueInterpolatorCubicBezier
 		: public ValueInterpolator<T>
@@ -331,7 +374,6 @@ namespace Menge
 			return true;
 		}
 
-
 		bool update( float _timing, T * _out )
 		{
 			if( ValueInterpolator<T>::m_started == false )
@@ -354,10 +396,9 @@ namespace Menge
 
             ValueInterpolator<T>::m_timing += _timing;
             float t_time = ValueInterpolator<T>::m_timing / ValueInterpolator<T>::m_time;
-            *_out = (1-t_time)*(1-t_time)*(1-t_time)*ValueInterpolator<T>::m_value1
-                + 3*t_time*(1-t_time)*(1-t_time)*m_v0
-                + 3*t_time*t_time*(1-t_time)*m_v1
-                + t_time*t_time*t_time*ValueInterpolator<T>::m_value2;
+
+			calculateCubicBezierPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, m_v1, t_time );
+
             ValueInterpolator<T>::m_delta = (*_out) - ValueInterpolator<T>::m_prev;
             ValueInterpolator<T>::m_prev = *_out;
 

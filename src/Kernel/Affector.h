@@ -53,8 +53,8 @@ namespace Menge
 		bool getFreeze() const;
 
 	public:
-		void setSpeedAffector( float _speed );
-		float getSpeedAffector() const;
+		void setSpeedFactor( float _speed );
+		float getSpeedFactor() const;
 
 	public:
 		virtual bool prepare();
@@ -75,7 +75,7 @@ namespace Menge
 		EAffectorType m_type;
 		AFFECTOR_ID m_id;
 
-		float m_speedAffector;
+		float m_speedFactor;
 		
 		bool m_freeze;
 	};

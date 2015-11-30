@@ -1,12 +1,5 @@
 #	pragma once
 
-/*	
-	Vector3 class.
-	-	basic operation with vectors(+,-,*,=,==).
-	-	dot, reflect, norm, cross.
-*/
-
-
 #	include "config.h"
 
 #	include "vec2.h"
@@ -15,6 +8,9 @@ namespace mt
 {
 	struct vec3f
 	{
+		typedef float value_type;
+		typedef float element_type;
+
 		float x;
 		float y;
 		float z;

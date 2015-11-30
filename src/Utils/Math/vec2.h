@@ -6,6 +6,9 @@ namespace mt
 {
 	struct vec2f
 	{
+		typedef float value_type;
+		typedef float element_type;
+
 		float x;
 		float y;
 

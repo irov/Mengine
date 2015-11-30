@@ -11,6 +11,9 @@ namespace mt
 {
 	struct mat4f
 	{	
+		typedef vec3f value_type;
+		typedef float element_type;
+
 		vec4f v0;
 		vec4f v1;
 		vec4f v2;

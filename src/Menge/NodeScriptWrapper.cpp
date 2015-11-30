@@ -4603,6 +4603,10 @@ namespace Menge
         pybind::interface_<Affector>("Affector", true)
             .def( "stop", &Affector::stop )
 			.def( "getId", &Affector::getId )
+			.def( "setFreeze", &Affector::setFreeze )
+			.def( "getFreeze", &Affector::getFreeze )
+			.def( "setSpeedFactor", &Affector::setSpeedFactor )
+			.def( "getSpeedFactor", &Affector::getSpeedFactor )
             ;
 
         pybind::interface_<Scriptable>("Scriptable")

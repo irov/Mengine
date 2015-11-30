@@ -7,7 +7,7 @@ namespace Menge
 		: m_serviceProvider(nullptr)
 		, m_type(ETA_POSITION)	
         , m_id(0)
-		, m_speedAffector(1.f)
+		, m_speedFactor(1.f)
 		, m_freeze(false)
 	{
 	}
@@ -41,14 +41,14 @@ namespace Menge
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::setSpeedAffector( float _speedAffector )
+	void Affector::setSpeedFactor( float _speedAffector )
 	{
-		m_speedAffector = _speedAffector;
+		m_speedFactor = _speedAffector;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Affector::getSpeedAffector() const
+	float Affector::getSpeedFactor() const
 	{
-		return m_speedAffector;
+		return m_speedFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Affector::setFreeze( bool _value )
@@ -73,7 +73,7 @@ namespace Menge
 			return false;
 		}
 
-		float total_timing = _timing * m_speedAffector;
+		float total_timing = _timing * m_speedFactor;
 
 		bool isEnd = this->_affect( total_timing );
 

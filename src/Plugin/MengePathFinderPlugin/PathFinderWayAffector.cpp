@@ -1,5 +1,7 @@
 #	include "PathFinderWayAffector.h"
 
+#	include "Core/ValueInterpolator.h"
+
 #	include "pybind/pybind.hpp"
 
 #	include <math.h>
@@ -218,9 +220,16 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	mt::vec3f PathFinderWayAffector::getTimePosition( float _time ) const
 	{
-		float step = m_speed * m_speedAffector * _time;
-
 		const mt::vec3f & lp = m_node->getLocalPosition();
+
+		if( this->getFreeze() == true )
+		{
+			return lp;
+		}
+
+		float speedFactor = this->getSpeedFactor();
+
+		float step = m_speed * speedFactor * _time;
 
 		mt::vec3f new_pos;
 		mt::vec3f new_dir;
@@ -230,35 +239,185 @@ namespace Menge
 		return new_pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	pybind::tuple PathFinderWayAffector::predictionBullet( const mt::vec3f & _position, float _speed ) const
+	pybind::tuple PathFinderWayAffector::predictionLinearBullet( const mt::vec3f & _offset, const mt::vec3f & _position, float _speed ) const
 	{
-		const mt::vec3f & lp = m_node->getLocalPosition();
+		mt::vec3f unit_start_position = m_node->getLocalPosition();
+		unit_start_position += _offset;
 
-		float length = mt::length_v3_v3( _position, lp );
+		float length = mt::length_v3_v3( _position, unit_start_position );
 		float time = (length / _speed) * 1000.f;
 
-		const uint32_t max_iteration = 20;
+		const uint32_t max_iteration = 10;
 
-		float dt;
-		mt::vec3f tp;
-		float dtime;
-	
+		float unit_time = 0.f;
+		mt::vec3f target_position;
+		float bullet_time;
+
+		const float dt = time / float( max_iteration );
+
 		for( uint32_t index = 1; index != max_iteration; ++index )
 		{
-			dt = time / float(max_iteration) * float(index);
+			float test_time = unit_time + dt;
 
-			tp = this->getTimePosition( dt );
+			target_position = this->getTimePosition( test_time );
+			target_position += _offset;
 
-			float dlength = mt::length_v3_v3( _position, tp );
-			dtime = (dlength / _speed) * 1000.f;
+			float dlength = mt::length_v3_v3( _position, target_position );
+			bullet_time = (dlength / _speed) * 1000.f;
 
-			if( dt >= dtime )
+			if( test_time >= bullet_time )
+			{
+				break;
+			}
+
+			unit_time = test_time;
+		}
+
+		const float dt2 = dt / float( max_iteration );
+
+		for( uint32_t index = 1; index != max_iteration; ++index )
+		{
+			unit_time += dt2;
+
+			target_position = this->getTimePosition( unit_time );
+			target_position += _offset;
+
+			float dlength = mt::length_v3_v3( _position, target_position );
+			bullet_time = (dlength / _speed) * 1000.f;
+
+			if( unit_time >= bullet_time )
 			{
 				break;
 			}
 		}
 
-		return pybind::make_tuple_t( dt, dt - dtime, tp );
+		float delay = unit_time - bullet_time;
+
+		return pybind::make_tuple_t( unit_time, delay, target_position );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	static float isometric_length_v3_v3( const mt::vec3f& _a, const mt::vec3f& _b )
+	{
+		mt::vec3f norm_a( _a.x, _a.y * 2.f, _a.z * 2.f );
+		mt::vec3f norm_b( _b.x, _b.y * 2.f, _b.z * 2.f );
+
+		float length = mt::length_v3_v3( norm_a, norm_b );
+
+		return length;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	pybind::tuple PathFinderWayAffector::predictionIsometricLinearBullet( const mt::vec3f & _offset, const mt::vec3f & _position, float _speed ) const
+	{
+		mt::vec3f unit_start_position = m_node->getLocalPosition();
+		unit_start_position += _offset;
+
+		float length = isometric_length_v3_v3( _position, unit_start_position );
+		float time = (length / _speed) * 1000.f;
+
+		const uint32_t max_iteration = 10;
+
+		float unit_time = 0.f;
+		mt::vec3f target_position;
+		float bullet_time;
+
+		const float dt = time / float( max_iteration );
+
+		for( uint32_t index = 1; index != max_iteration; ++index )
+		{
+			float test_time = unit_time + dt;
+
+			target_position = this->getTimePosition( test_time );
+			target_position += _offset;
+
+			float dlength = isometric_length_v3_v3( _position, target_position );
+			bullet_time = (dlength / _speed) * 1000.f;
+
+			if( test_time >= bullet_time )
+			{
+				break;
+			}
+
+			unit_time = test_time;
+		}
+
+		const float dt2 = dt / float( max_iteration );
+
+		for( uint32_t index = 1; index != max_iteration; ++index )
+		{
+			unit_time += dt2;
+
+			target_position = this->getTimePosition( unit_time );
+			target_position += _offset;
+
+			float dlength = isometric_length_v3_v3( _position, target_position );
+			bullet_time = (dlength / _speed) * 1000.f;
+
+			if( unit_time >= bullet_time )
+			{
+				break;
+			}
+		}
+
+		float delay = unit_time - bullet_time;
+
+		return pybind::make_tuple_t( unit_time, delay, target_position );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	pybind::tuple PathFinderWayAffector::predictionIsometricBezierBullet( const mt::vec3f & _offset, const mt::vec3f & _position, const mt::vec3f & _v0, const mt::vec3f & _v1, float _speed ) const
+	{
+		mt::vec3f unit_start_position = m_node->getLocalPosition();
+		unit_start_position += _offset;
+		
+		float length = calculateCubicBezierLength( _position, unit_start_position, _position + _v0, unit_start_position + _v1, mt::length_v3_v3 );
+		float time = (length / _speed) * 1000.f;
+
+		const uint32_t max_iteration = 10;
+
+		float unit_time = 0.f;
+		mt::vec3f target_position;
+		float bullet_time;
+
+		const float dt = time / float( max_iteration );
+
+		for( uint32_t index = 1; index != max_iteration; ++index )
+		{
+			float test_time = unit_time + dt;
+
+			target_position = this->getTimePosition( test_time );
+			target_position += _offset;
+
+			float dlength = calculateCubicBezierLength( _position, target_position, _position + _v0, target_position + _v1, mt::length_v3_v3 );
+			bullet_time = (dlength / _speed) * 1000.f;
+
+			if( test_time >= bullet_time )
+			{
+				break;
+			}
+
+			unit_time = test_time;
+		}
+
+		const float dt2 = dt / float( max_iteration );
+
+		for( uint32_t index = 1; index != max_iteration; ++index )
+		{
+			unit_time += dt2;
+
+			target_position = this->getTimePosition( unit_time );
+			target_position += _offset;
+
+			float dlength = calculateCubicBezierLength( _position, target_position, _position + _v0, target_position + _v1, mt::length_v3_v3 );
+			bullet_time = (dlength / _speed) * 1000.f;
+
+			if( unit_time >= bullet_time )
+			{
+				break;
+			}
+		}
+
+		float delay = unit_time > bullet_time ? unit_time - bullet_time : 0.f;
+
+		return pybind::make_tuple_t( unit_time, delay, target_position );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PathFinderWayAffector::complete()

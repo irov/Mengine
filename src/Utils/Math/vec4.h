@@ -14,6 +14,9 @@ namespace mt
 {
 	struct vec4f
 	{
+		typedef float value_type;
+		typedef float element_type;
+
 		float x;
 		float y;
 		float z;

@@ -39,7 +39,7 @@ namespace Menge
 
 		pybind::tuple predictionLinearBullet( const mt::vec3f & _offset, const mt::vec3f & _position, float _speed ) const;
 		pybind::tuple predictionIsometricLinearBullet( const mt::vec3f & _offset, const mt::vec3f & _position, float _speed ) const;
-		pybind::tuple predictionIsometricBezierBullet( const mt::vec3f & _offset, const mt::vec3f & _position, const mt::vec3f & _v0, const mt::vec3f & _v1, float _speed ) const;
+		pybind::tuple predictionIsometricParabolicBullet( const mt::vec3f & _offset, const mt::vec3f & _position, const mt::vec3f & _height, float _speed ) const;
 
 	public:
 		bool prepare() override;

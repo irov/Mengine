@@ -676,9 +676,14 @@ namespace Menge
 
 		stage = RenderTextureStage();
 
-		stage.minification = TF_LINEAR;
-		stage.mipmap = TF_NONE;
-		stage.magnification = TF_LINEAR;
+		stage.mipmap = RENDERMATERIAL_SERVICE(m_serviceProvider)
+			->getDefaultTextureFilterMipmap();
+
+		stage.minification = RENDERMATERIAL_SERVICE( m_serviceProvider )
+			->getDefaultTextureFilterMinification();
+		
+		stage.magnification = RENDERMATERIAL_SERVICE( m_serviceProvider )
+			->getDefaultTextureFilterMagnification();
 
 		m_currentTexturesID[_stage] = 0;
 

@@ -448,6 +448,11 @@ namespace Menge
 	public:
 		virtual void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) = 0;
 		virtual const RenderMaterialInterfacePtr & getDebugMaterial() const = 0;
+
+	public:
+		virtual ETextureFilter getDefaultTextureFilterMipmap() const = 0;
+		virtual ETextureFilter getDefaultTextureFilterMagnification() const = 0;
+		virtual ETextureFilter getDefaultTextureFilterMinification() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERMATERIAL_SERVICE( serviceProvider )\

@@ -57,6 +57,11 @@ namespace Menge
 	public:
 		void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) override;
 		const RenderMaterialInterfacePtr & getDebugMaterial() const override;
+
+	public:
+		ETextureFilter getDefaultTextureFilterMipmap() const override;
+		ETextureFilter getDefaultTextureFilterMagnification() const override;
+		ETextureFilter getDefaultTextureFilterMinification() const override;
 		
 	protected:
 		void onRenderMaterialDestroy_( RenderMaterial * _material );

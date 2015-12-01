@@ -655,6 +655,21 @@ namespace Menge
 		return m_debugMaterial;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	ETextureFilter RenderMaterialManager::getDefaultTextureFilterMipmap() const
+	{
+		return m_defaultTextureFilterMipmap;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ETextureFilter RenderMaterialManager::getDefaultTextureFilterMagnification() const
+	{
+		return m_defaultTextureFilterMagnification;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	ETextureFilter RenderMaterialManager::getDefaultTextureFilterMinification() const
+	{
+		return m_defaultTextureFilterMinification;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void RenderMaterialManager::onRenderMaterialDestroy_( RenderMaterial * _material )
 	{
 		if( _material == nullptr )

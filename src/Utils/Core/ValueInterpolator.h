@@ -410,6 +410,50 @@ namespace Menge
 		T m_v1;
 	};
 	//////////////////////////////////////////////////////////////////////////
+	template<class T>
+	void calculateParabolicPosition( T & _out, const T & _begin, const T & _end, const T & _height, float _time )
+	{
+		T a = 2.f * _end - 4 * _height + 2.f * _begin;
+		T b = 4.f * _height - _end - 3.f * _begin;
+		T c = _begin;
+
+		_out = a * _time * _time + b * _time + c;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	template<class T, class LENGTH>
+	float calculateParabolicLength( const T & _begin, const T & _end, const T & _height, LENGTH _length )
+	{
+		const uint32_t max_iterator = 10;
+
+		float total_length = 0.f;
+
+		T prevPoint = _begin;
+
+		const float dt = 1.f / float( max_iterator );
+
+		float t = 0.f;
+
+		for( uint32_t i = 1; i != max_iterator; ++i )
+		{
+			t += dt;
+
+			T nextPoint;
+			calculateParabolicPosition( nextPoint, _begin, _end, _height, t );
+
+			float length = _length( nextPoint, prevPoint );
+
+			total_length += length;
+
+			prevPoint = nextPoint;
+		}
+
+		float length = _length( _end, prevPoint );
+
+		total_length += length;
+
+		return total_length;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	template <typename T>
 	class ValueInterpolatorParabolic
 		: public ValueInterpolator<T>
@@ -462,7 +506,7 @@ namespace Menge
 			ValueInterpolator<T>::m_timing += _timing;
 			float t_time = ValueInterpolator<T>::m_timing / ValueInterpolator<T>::m_time;
 
-			calculateCubicBezierPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, m_v1, t_time );
+			calculateParabolicPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, t_time );
 
 			ValueInterpolator<T>::m_delta = (*_out) - ValueInterpolator<T>::m_prev;
 			ValueInterpolator<T>::m_prev = *_out;
@@ -472,6 +516,5 @@ namespace Menge
 
 	protected:
 		T m_v0;
-		T m_v1;
 	};
 }

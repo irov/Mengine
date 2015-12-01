@@ -3445,7 +3445,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		NodeAffectorCreator::NodeAffectorCreatorInterpolateParabolic<Node, void (Node::*)(const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateParabolic;
 		//////////////////////////////////////////////////////////////////////////
-		uint32_t parabolicTo( Node * _node
+		uint32_t parabolaTo( Node * _node
 			, float _time
 			, const mt::vec3f& _point1
 			, const mt::vec3f& _point2
@@ -4931,7 +4931,7 @@ namespace Menge
             .def_proxy_static( "moveTo", nodeScriptMethod, &NodeScriptMethod::moveTo )
             .def_proxy_static( "bezier2To", nodeScriptMethod, &NodeScriptMethod::bezier2To )
             .def_proxy_static( "bezier3To", nodeScriptMethod, &NodeScriptMethod::bezier3To )
-			.def_proxy_static( "parabolicTo", nodeScriptMethod, &NodeScriptMethod::parabolicTo )
+			.def_proxy_static( "parabolaTo", nodeScriptMethod, &NodeScriptMethod::parabolaTo )
             .def_proxy_static( "moveStop", nodeScriptMethod, &NodeScriptMethod::moveStop )
 
             .def_proxy_static( "angleTo", nodeScriptMethod, &NodeScriptMethod::angleTo )

@@ -363,12 +363,19 @@ namespace Menge
 		return pybind::make_tuple_t( unit_time, delay, target_position );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	pybind::tuple PathFinderWayAffector::predictionIsometricBezierBullet( const mt::vec3f & _offset, const mt::vec3f & _position, const mt::vec3f & _v0, const mt::vec3f & _v1, float _speed ) const
+	pybind::tuple PathFinderWayAffector::predictionIsometricParabolicBullet( const mt::vec3f & _offset, const mt::vec3f & _position, const mt::vec3f & _height, float _speed ) const
 	{
 		mt::vec3f unit_start_position = m_node->getLocalPosition();
 		unit_start_position += _offset;
+
+		mt::vec3f parabolic_begin = _position;
+		mt::vec3f parabolic_end = unit_start_position;
+		mt::vec3f parabolic_height = (_position + unit_start_position) * 0.5f + _height;
+		parabolic_begin.z = 0.f;
+		parabolic_end.z = 0.f;
+		parabolic_height.z = 0.f;
 		
-		float length = calculateCubicBezierLength( _position, unit_start_position, _position + _v0, unit_start_position + _v1, mt::length_v3_v3 );
+		float length = calculateParabolicLength( parabolic_begin, parabolic_end, parabolic_height, mt::length_v3_v3 );
 		float time = (length / _speed) * 1000.f;
 
 		const uint32_t max_iteration = 10;
@@ -386,7 +393,14 @@ namespace Menge
 			target_position = this->getTimePosition( test_time );
 			target_position += _offset;
 
-			float dlength = calculateCubicBezierLength( _position, target_position, _position + _v0, target_position + _v1, mt::length_v3_v3 );
+			mt::vec3f parabolic_begin = _position;
+			mt::vec3f parabolic_end = target_position;
+			mt::vec3f parabolic_height = (_position + target_position) * 0.5f + _height;
+			parabolic_begin.z = 0.f;
+			parabolic_end.z = 0.f;
+			parabolic_height.z = 0.f;
+
+			float dlength = calculateParabolicLength( parabolic_begin, parabolic_end, parabolic_height, mt::length_v3_v3 );
 			bullet_time = (dlength / _speed) * 1000.f;
 
 			if( test_time >= bullet_time )
@@ -406,7 +420,14 @@ namespace Menge
 			target_position = this->getTimePosition( unit_time );
 			target_position += _offset;
 
-			float dlength = calculateCubicBezierLength( _position, target_position, _position + _v0, target_position + _v1, mt::length_v3_v3 );
+			mt::vec3f parabolic_begin = _position;
+			mt::vec3f parabolic_end = target_position;
+			mt::vec3f parabolic_height = (_position + target_position) * 0.5f + _height;
+			parabolic_begin.z = 0.f;
+			parabolic_end.z = 0.f;
+			parabolic_height.z = 0.f;
+
+			float dlength = calculateParabolicLength( parabolic_begin, parabolic_end, parabolic_height, mt::length_v3_v3 );
 			bullet_time = (dlength / _speed) * 1000.f;
 
 			if( unit_time >= bullet_time )

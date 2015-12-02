@@ -164,6 +164,8 @@ namespace Menge
 		D3DPRESENT_PARAMETERS m_d3dppW;
 		D3DPRESENT_PARAMETERS m_d3dppFS;
 
+		D3DDISPLAYMODE m_displayMode;
+
 		D3DPRESENT_PARAMETERS * m_d3dpp;
 
 		// sync routines

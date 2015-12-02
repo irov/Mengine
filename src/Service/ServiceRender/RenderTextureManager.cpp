@@ -21,6 +21,7 @@ namespace Menge
         : m_textureEnumerator(0)
 		, m_supportA8(false)
 		, m_supportR8G8B8(false)
+		, m_supportNonPow2(false)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -440,7 +441,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////	
 	void RenderTextureManager::updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const
 	{
-		if( (( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0) && m_supportNonPow2 == false )
+		if( (( _width & ( _width - 1 ) ) != 0 || ( _height & ( _height - 1 ) ) != 0) /*&& m_supportNonPow2 == false*/ )
 		{
 			_width = Helper::getTexturePOW2( _width );
 			_height = Helper::getTexturePOW2( _height );

@@ -104,9 +104,20 @@ namespace Menge
             }
         }
 
+		// Set up Windowed presentation parameters
+		D3DDISPLAYMODE Mode;
+		IF_DXCALL( m_serviceProvider, m_pD3D, GetAdapterDisplayMode, (m_adapterToUse, &Mode) )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createRenderWindow Can't determine desktop video mode"
+				);
+
+			return false;
+		}
+
+		m_displayMode = Mode;
+
 		// Get adapter info
         D3DADAPTER_IDENTIFIER9 AdID;
-
 		IF_DXCALL(m_serviceProvider, m_pD3D, GetAdapterIdentifier, (m_adapterToUse, 0, &AdID ) )
 		{
 			LOGGER_ERROR(m_serviceProvider)("Can't determine adapter identifier" 
@@ -114,14 +125,6 @@ namespace Menge
 			
 			return false;
 		}
-
-        IF_DXCALL(m_serviceProvider, m_pD3D, GetAdapterIdentifier, ( m_adapterToUse, 0, &AdID ) )
-        {
-            LOGGER_ERROR(m_serviceProvider)("Can't determine adapter identifier" 
-                );
-
-            return false;
-        }
 
 		LOGGER_INFO(m_serviceProvider)( "VendorId: %d", AdID.VendorId  );
 		LOGGER_INFO(m_serviceProvider)( "DeviceId: %d", AdID.DeviceId );
@@ -198,17 +201,7 @@ namespace Menge
 
 		m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
 		
-		// Set up Windowed presentation parameters
-        D3DDISPLAYMODE Mode;
-		IF_DXCALL( m_serviceProvider, m_pD3D, GetAdapterDisplayMode, (D3DADAPTER_DEFAULT, &Mode) ) 
-		{
-			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::createRenderWindow Can't determine desktop video mode" 
-                );
-
-			return false;
-		}
-
-		m_d3dppW.BackBufferFormat = Mode.Format;
+		m_d3dppW.BackBufferFormat = m_displayMode.Format;
 
 		m_d3dppW.EnableAutoDepthStencil = FALSE;
 		m_d3dppW.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
@@ -226,48 +219,18 @@ namespace Menge
 		m_d3dppFS.hDeviceWindow = (HWND)windowHandle;
 
 		m_d3dppFS.SwapEffect = D3DSWAPEFFECT_DISCARD;
-
-		D3DFORMAT Format = D3DFMT_UNKNOWN;
-
-		UINT nModes = m_pD3D->GetAdapterModeCount( m_adapterToUse, D3DFMT_X8R8G8B8 );
-
-		for( UINT i = 0; i < nModes; ++i )
-		{
-			D3DDISPLAYMODE Mode;
-			IF_DXCALL( m_serviceProvider, m_pD3D, EnumAdapterModes, (m_adapterToUse, D3DFMT_X8R8G8B8, i, &Mode) )
-			{
-				continue;
-			}
-
-			if( Mode.Width != Mode.Width || Mode.Height != Mode.Height )
-			{
-				continue;
-			}
-
-			//if(nScreenBPP==16 && (_format_id(Mode.Format) > _format_id(D3DFMT_A1R5G5B5))) continue;
-			if( s_lessD3DFormats( Format, Mode.Format ) == true )
-			{
-				Format = Mode.Format;
-			}
-		}
-
-		if( Format == D3DFMT_UNKNOWN )
-		{
-			LOGGER_ERROR( m_serviceProvider )("Can't find appropriate full screen video mode"
-				);
-
-			return false;
-		}
 				
-		m_d3dppFS.BackBufferFormat = Format;
+		m_d3dppFS.BackBufferFormat = m_displayMode.Format;
         		
 		m_d3dppFS.EnableAutoDepthStencil = FALSE;
 		m_d3dppFS.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
 
 		m_d3dppFS.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
-        this->updateVSyncDPP_();
-		
+		m_screenBits = s_getD3DFormatBits( m_displayMode.Format );
+
+		this->updateVSyncDPP_();
+
 		if( _fullscreen == true )
 		{
 			m_d3dpp = &m_d3dppFS;
@@ -276,8 +239,6 @@ namespace Menge
 		{
 			m_d3dpp = &m_d3dppW;
 		}
-
-		m_screenBits = s_getD3DFormatBits( m_d3dpp->BackBufferFormat );
 
 		//_fullscreen ? MENGE_LOG_INFO( "fullscreen mode" ) : MENGE_LOG_INFO( "windowed mode" );
 
@@ -328,7 +289,7 @@ namespace Menge
 		LOGGER_INFO(m_serviceProvider)( "Mode: %d x %d x %s\n"
 			, m_windowResolution.getWidth()
 			, m_windowResolution.getHeight()
-			, s_getD3DFormatName( m_d3dpp->BackBufferFormat )
+			, s_getD3DFormatName( m_displayMode.Format )
 			);
 
 		DWORD FVF_UV = (MENGINE_RENDER_VERTEX_UV_COUNT << D3DFVF_TEXCOUNT_SHIFT) & D3DFVF_TEXCOUNT_MASK;
@@ -479,7 +440,7 @@ namespace Menge
         if( m_fullscreen == false )
         {
 			D3DDISPLAYMODE Mode;
-            IF_DXCALL( m_serviceProvider, m_pD3D, GetAdapterDisplayMode, (D3DADAPTER_DEFAULT, &Mode) )
+			IF_DXCALL( m_serviceProvider, m_pD3D, GetAdapterDisplayMode, (m_adapterToUse, &Mode) )
 			{
 				return false;
 			}
@@ -827,14 +788,14 @@ namespace Menge
 	{
 		D3DFORMAT dxformat = s_toD3DFormat( _format ); 
 
-		HRESULT hresult = m_pD3D->CheckDeviceFormat( D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, m_d3dppW.BackBufferFormat, 0, D3DRTYPE_TEXTURE, dxformat );
+		HRESULT hresult = m_pD3D->CheckDeviceFormat( m_adapterToUse, m_deviceType, m_displayMode.Format, 0, D3DRTYPE_TEXTURE, dxformat );
 
 		if( hresult == D3DERR_NOTAVAILABLE )
 		{
 			return false;
 		}
 
-		IF_DXERRORCHECK(m_serviceProvider, CheckDeviceFormat, hresult)
+		IF_DXERRORCHECK( m_serviceProvider, CheckDeviceFormat, hresult )
 		{
 			return false;
 		}

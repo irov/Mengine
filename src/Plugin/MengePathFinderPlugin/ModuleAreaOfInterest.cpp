@@ -4,7 +4,8 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/PlayerInterface.h"
 
-#	include "Trigger.h"
+#	include "NodeAOITrigger.h"
+#	include "NodeAOIActor.h"
 
 #	include "Kernel/ScriptClassWrapper.h"
 #	include "Kernel/NodePrototypeGenerator.h"
@@ -46,22 +47,39 @@ namespace Menge
 		pybind::def_functor( "createAOI", this, &ModuleAreaOfInterest::createAOI );
 		pybind::def_functor( "removeAOI", this, &ModuleAreaOfInterest::removeAOI );
 
-		pybind::interface_<Trigger, pybind::bases<Node> >("Trigger", false)
-			.def( "setTriggerRadius", &Trigger::setTriggerRadius )
-			.def( "getTriggerRadius", &Trigger::getTriggerRadius )
-			.def( "setTriggerIFF", &Trigger::setTriggerIFF )
-			.def( "getTriggerIFF", &Trigger::getTriggerIFF )
-			.def( "setTriggerAOI", &Trigger::setTriggerAOI )
-			.def( "getTriggerAOI", &Trigger::getTriggerAOI )
-			.def( "setTriggerUserData", &Trigger::setTriggerUserData )
-			.def( "getTriggerUserData", &Trigger::getTriggerUserData )			
+		pybind::interface_<NodeAOITrigger, pybind::bases<Node> >("NodeAOITrigger", false)
+			.def( "setRadius", &NodeAOITrigger::setRadius )
+			.def( "getRadius", &NodeAOITrigger::getRadius )
+			.def( "setIsometricScale", &NodeAOITrigger::setIsometricScale )
+			.def( "getIsometricScale", &NodeAOITrigger::getIsometricScale )
+			.def( "setIFF", &NodeAOITrigger::setIFF )
+			.def( "getIFF", &NodeAOITrigger::getIFF )
+			.def( "setAOI", &NodeAOITrigger::setAOI )
+			.def( "getAOI", &NodeAOITrigger::getAOI )
+			;
+
+		pybind::interface_<NodeAOIActor, pybind::bases<Node> >( "NodeAOIActor", false )
+			.def( "setRadius", &NodeAOIActor::setRadius )
+			.def( "getRadius", &NodeAOIActor::getRadius )
+			.def( "setIFF", &NodeAOIActor::setIFF )
+			.def( "getIFF", &NodeAOIActor::getIFF )
+			.def( "setAOI", &NodeAOIActor::setAOI )
+			.def( "getAOI", &NodeAOIActor::getAOI )
+			.def( "setActorUserData", &NodeAOIActor::setActorUserData )
+			.def( "getActorUserData", &NodeAOIActor::getActorUserData )
 			;
 
 		SCRIPT_SERVICE(m_serviceProvider)
-			->addWrapping( Helper::stringizeString(m_serviceProvider, "Trigger"), new ScriptClassWrapper<Trigger>() );
+			->addWrapping( Helper::stringizeString( m_serviceProvider, "NodeAOITrigger" ), new ScriptClassWrapper<NodeAOITrigger>() );
+
+		SCRIPT_SERVICE( m_serviceProvider )
+			->addWrapping( Helper::stringizeString( m_serviceProvider, "NodeAOIActor" ), new ScriptClassWrapper<NodeAOIActor>() );
 		
 		PROTOTYPE_SERVICE(m_serviceProvider)
-			->addPrototype( STRINGIZE_STRING_LOCAL(m_serviceProvider, "Node"), STRINGIZE_STRING_LOCAL(m_serviceProvider, "Trigger"), new NodePrototypeGenerator<Trigger, 128>(m_serviceProvider) );
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeAOITrigger" ), new NodePrototypeGenerator<NodeAOITrigger, 32>( m_serviceProvider ) );
+
+		PROTOTYPE_SERVICE( m_serviceProvider )
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeAOIActor" ), new NodePrototypeGenerator<NodeAOIActor, 32>( m_serviceProvider ) );
 
 		return true;
 	}

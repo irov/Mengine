@@ -42,10 +42,17 @@ ADD_FILTER(
 ModuleAreaOfInterest
     ModuleAreaOfInterest.cpp
 	ModuleAreaOfInterest.h
+    AOIInterface.h
     AreaOfInterest.h
     AreaOfInterest.cpp
-    Trigger.cpp
-    Trigger.h
+    AOITrigger.cpp
+    AOITrigger.h
+    AOIActor.cpp
+    AOIActor.h  
+    NodeAOITrigger.h
+    NodeAOITrigger.cpp
+    NodeAOIActor.h
+    NodeAOIActor.cpp
 )
 
 ADD_FILTER(

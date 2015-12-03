@@ -55,7 +55,8 @@ namespace mt
 
 	MENGINE_MATH_FUNCTION_INLINE float length_v3_v3( const vec3f& _a, const vec3f& _b );
 	MENGINE_MATH_FUNCTION_INLINE float length_v3( const vec3f& _a );
-	MENGINE_MATH_FUNCTION_INLINE float sqrlength_v3_v3(const vec3f& _a, const vec3f& _b);
+	MENGINE_MATH_FUNCTION_INLINE float sqrlength_v3_v3( const vec3f& _a, const vec3f& _b );
+	MENGINE_MATH_FUNCTION_INLINE float sqrlength_v3(const vec3f& _a);
 	MENGINE_MATH_FUNCTION_INLINE void dir_v3_v3(vec3f & _out, const vec3f& _a, const vec3f& _b);
 
 	MENGINE_MATH_FUNCTION_INLINE bool cmp_v3_v3( const vec3f& _a, const vec3f& _b );

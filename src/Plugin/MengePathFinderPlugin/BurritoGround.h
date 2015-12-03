@@ -17,9 +17,6 @@ namespace Menge
 		void initialize( const mt::planef & _plane, const pybind::object & _cb );
 
 	public:
-		void translate( const mt::vec3f & _translate );
-
-	public:
 		bool check_collision( float _timing, const mt::vec3f & _position, float _radius, const mt::vec3f & _velocity, float & _collisionTiming ) const;
 
 	protected:		

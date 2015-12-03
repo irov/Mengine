@@ -702,6 +702,10 @@ namespace Menge
 					{
 						continue;
 					}
+					else if( code == 13 )
+					{
+						continue;
+					}
 					else if( code == 160 )
 					{
 						code = 32;

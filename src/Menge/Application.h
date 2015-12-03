@@ -50,6 +50,10 @@ namespace Menge
 	public:
 		bool isFocus() const override;
 
+	public:
+		void setNopause( bool _nopause ) override;
+		bool getNopause() const override;
+
 	protected:
 		bool registerBaseNodeTypes_();
 		bool registerBaseResourceTypes_();
@@ -176,6 +180,7 @@ namespace Menge
 
 		bool m_focus;
 		bool m_update;
+		bool m_nopause;
 
 		Resolution m_windowResolution;
 		uint32_t m_bits;

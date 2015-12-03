@@ -60,6 +60,37 @@ namespace Menge
 			}while( pos != String::npos );
 		}
 		//////////////////////////////////////////////////////////////////////////
+		void split2( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delims, const String& _delims2 )
+		{
+			uint32_t numSplits = 0;
+			String::size_type start = 0;
+			String::size_type pos = 0;
+
+			do
+			{
+				pos = std::min( _str.find_first_of( _delims, start ), _str.find_first_of( _delims2, start ) );
+
+				if( pos == String::npos )
+				{
+					_outStrings.push_back( _str.substr( start ) );
+					break;
+				}
+				else
+				{
+					_outStrings.push_back( _str.substr( start, pos - start ) );
+					start = pos + 1;
+				}
+
+				if( _trimDelims == true )
+				{
+					start = std::min( _str.find_first_not_of( _delims, start ), _str.find_first_not_of( _delims2, start ) );
+				}
+
+				++numSplits;
+
+			} while( pos != String::npos );
+		}
+		//////////////////////////////////////////////////////////////////////////
 		void wsplit( TVectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims )
 		{
 			uint32_t numSplits = 0;

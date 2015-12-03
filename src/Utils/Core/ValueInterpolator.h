@@ -483,6 +483,20 @@ namespace Menge
 			return true;
 		}
 
+		void step( float _timing, T * _out )
+		{
+			if( _timing > ValueInterpolator<T>::m_time )
+			{
+				*_out = ValueInterpolator<T>::m_value2;
+
+				return;
+			}
+
+			float t_time = _timing / ValueInterpolator<T>::m_time;
+
+			calculateParabolicPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, t_time );
+		}
+
 		bool update( float _timing, T * _out )
 		{
 			if( ValueInterpolator<T>::m_started == false )

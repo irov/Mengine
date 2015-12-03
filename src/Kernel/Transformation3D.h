@@ -67,6 +67,9 @@ namespace Menge
 		void setOrientation( const mt::vec3f & _orientation );
 		inline const mt::vec3f & getOrientation() const;
 
+		void setDirection( const mt::vec3f & _direction, const mt::vec3f & _up );
+		void lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up );
+
 	public:
 		void setCoordinate( const mt::vec3f& _coordinate );
 		inline const mt::vec3f& getCoordinate() const;
@@ -79,9 +82,8 @@ namespace Menge
         void resetTransformation();
 		
 	public:
-		void translate( const mt::vec3f & _delta );		
-		void lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up );
-
+		void translate( const mt::vec3f & _delta );				
+		
 	public:
 		void invalidateWorldMatrix();
 		inline bool isInvalidateWorldMatrix() const;

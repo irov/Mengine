@@ -16,32 +16,25 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( uint32_t _countX, uint32_t _countY, float _width, float _height, bool _horizontalSlide, bool _verticalSlide, const pybind::object & _cb );
+		bool initialize( uint32_t _count, float _width, const pybind::object & _cb );
 		void finalize();
 
 	public:
-		void slide( const mt::vec3f & _offset );
+		void slide( float _offset );
 
 	protected:
-		void slideRight_( uint32_t _begin, uint32_t _end );
-		void slideLeft_( uint32_t _begin, uint32_t _end );
-		void slideUp_( uint32_t _begin, uint32_t _end );
-		void slideDown_( uint32_t _begin, uint32_t _end );
+		void slideRight_();
+		void slideLeft_();
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
-		bool m_horizontSlide;
-		bool m_verticalSlide;
-
-		uint32_t m_elementCountX;
-		uint32_t m_elementCountY;
+		uint32_t m_elementCount;
 		float m_elementWidth;
-		float m_elementHeight;
 
 		pybind::object m_elementCb;
 
-		mt::vec3f m_offset;
+		float m_offset;
 
 		struct Element
 		{

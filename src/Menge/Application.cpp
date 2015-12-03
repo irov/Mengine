@@ -85,6 +85,7 @@
 #	include "RenderClipplane.h"
 #	include "Camera2D.h"
 #	include "CameraTarget2D.h"
+#	include "CameraIsometric.h"
 #	include "Camera3D.h"
 #	include "Layer2DAccumulator.h"
 #	include "Layer3D.h"
@@ -179,6 +180,7 @@ namespace Menge
 		, m_maxTiming(100.f)
         , m_focus(true)
         , m_update(true)				
+		, m_nopause(false)
 		, m_createRenderWindow(false)
 		, m_cursorMode(false)
 		, m_invalidateVsync(false)
@@ -387,6 +389,7 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, RenderClipplane );
 		NODE_FACTORY( m_serviceProvider, Camera2D );
 		NODE_FACTORY( m_serviceProvider, CameraTarget2D );
+		NODE_FACTORY( m_serviceProvider, CameraIsometric );
 		NODE_FACTORY( m_serviceProvider, Camera3D );
 		//NODE_FACTORY( SceneNode3D );
 		NODE_FACTORY( m_serviceProvider, Window );
@@ -1066,6 +1069,16 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::setNopause( bool _nopause )
+	{
+		m_nopause = _nopause;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Application::getNopause() const
+	{
+		return m_nopause;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Application::minimizeWindow()
 	{
 		PLATFORM_SERVICE(m_serviceProvider)
@@ -1086,7 +1099,7 @@ namespace Menge
 				->update();
 		}
 
-		if( m_update == false && m_focus == false )
+		if( m_update == false && m_focus == false && m_nopause == false )
 		{						
 			return false;
 		}

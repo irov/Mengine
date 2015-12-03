@@ -86,6 +86,8 @@
 #	include "Camera2D.h"
 #	include "CameraTarget2D.h"
 
+#	include "CameraIsometric.h"
+
 #	include "Layer2D.h"
 #	include "Layer2DParallax.h"
 #	include "Layer2DIsometric.h"
@@ -1754,6 +1756,18 @@ namespace Menge
             return APPLICATION_SERVICE(m_serviceProvider)
                 ->getContentResolution();
         }
+		//////////////////////////////////////////////////////////////////////////
+		void s_setNopause( bool _value )
+		{
+			return APPLICATION_SERVICE( m_serviceProvider )
+				->setNopause( _value );
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool s_getNopause()
+		{
+			return APPLICATION_SERVICE( m_serviceProvider )
+				->getNopause();
+		}
         //////////////////////////////////////////////////////////////////////////
         bool s_setArrowLayer( Layer * _layer )
         {
@@ -3298,7 +3312,7 @@ namespace Menge
 
             Affector * affector = m_nodeAffectorCreatorAccumulateLinear.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
-                , _node->getLocalPosition(), _dir, _speed, &mt::length_v3
+				, _node->getLocalPosition(), _dir, _speed, &mt::sqrlength_v3
                 );
 
             mt::vec3f linearSpeed = _dir * _speed;
@@ -3330,7 +3344,7 @@ namespace Menge
                 m_nodeAffectorCreatorInterpolateLinear.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point, _time
-                , &mt::length_v3 
+				, &mt::sqrlength_v3
                 );
 
             float invTime = 1.0f / _time;
@@ -3367,7 +3381,7 @@ namespace Menge
             Affector* affector = m_nodeAffectorCreatorInterpolateQuadratic.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point, linearSpeed, _time
-                , &mt::length_v3
+				, &mt::sqrlength_v3
                 );
 
             AFFECTOR_ID id = _node->addAffector( affector );
@@ -3400,7 +3414,7 @@ namespace Menge
             Affector* affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
                 , _node->getLocalPosition(), _point1, _point2, _time
-                , &mt::length_v3
+				, &mt::sqrlength_v3
                 );
 
             AFFECTOR_ID id = _node->addAffector( affector );
@@ -3443,12 +3457,154 @@ namespace Menge
             return id;
         }
 		//////////////////////////////////////////////////////////////////////////
-		NodeAffectorCreator::NodeAffectorCreatorInterpolateParabolic<Node, void (Node::*)(const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateParabolic;
+		class FactoryAffectorInterpolateParabolic
+		{
+		public:
+			class AffectorCreatorInterpolateParabolic
+				: public CallbackAffector
+			{
+			public:
+				AffectorCreatorInterpolateParabolic()
+					: m_node( nullptr )
+					, m_speed(2.f)
+				{ 
+				}
+
+			public:
+				void setNode( Node * _node )
+				{
+					m_node = _node;
+				}
+
+			public:
+				void initialize( const mt::vec3f & _end, const mt::vec3f & _v0, float _time )
+				{
+					const mt::vec3f & start_position = m_node->getLocalPosition();
+
+					m_interpolator.start( start_position, _end, _v0, _time, mt::sqrlength_v3 );
+
+					mt::vec3f next_position;
+					m_interpolator.step( 100.f, &next_position );
+
+					mt::vec3f dir;
+					mt::dir_v3_v3( dir, next_position, start_position );
+
+					m_prevDir = dir;
+					m_currentDir = dir;
+					m_targetDir = dir;
+
+					m_node->setDirection( dir, mt::vec3f( 0.f, 0.f, 1.f ) );
+				}
+
+			protected:
+				bool _affect( float _timing ) override
+				{
+					mt::vec3f position;
+					bool finish = m_interpolator.update( _timing, &position );
+
+					this->updateDirection_( _timing, position );
+					this->updatePosition_( position );					
+					
+					if( finish == false )
+					{
+						return false;
+					}
+
+					return true;
+				}
+
+				void stop() override
+				{
+					m_interpolator.stop();
+
+					this->end_( false );
+				}
+
+			protected:
+				void updateDirection_( float _timing, const mt::vec3f & _position )
+				{
+					const mt::vec3f & prev_position = m_node->getLocalPosition();
+
+					if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::m_eps )
+					{
+						mt::dir_v3_v3( m_targetDir, _position, prev_position );
+					}
+					
+					float length = mt::length_v3_v3( m_targetDir, m_currentDir );
+
+					if( length < mt::m_eps )
+					{
+						return;
+					}
+
+					float t = length / _timing * m_speed;
+
+					if( t > 1.f )
+					{
+						m_currentDir = m_targetDir;
+
+						m_node->setDirection( m_currentDir, mt::vec3f( 0.f, 0.f, 1.f ) );
+					}
+					else
+					{
+						m_currentDir = m_currentDir + (m_targetDir - m_currentDir) * t;
+
+						m_node->setDirection( m_currentDir, mt::vec3f( 0.f, 0.f, 1.f ) );
+					}
+				}
+
+				void updatePosition_( const mt::vec3f & _position )
+				{
+					const mt::vec3f & prev_position = m_node->getLocalPosition();
+
+					if( mt::sqrlength_v3_v3( prev_position, _position ) < mt::m_eps )
+					{
+						return;
+					}
+
+					m_node->setLocalPosition( _position );
+				}
+
+			protected:
+				Node * m_node;
+
+				mt::vec3f m_prevDir;
+				mt::vec3f m_currentDir;
+				mt::vec3f m_targetDir;
+				float m_speed;
+
+				ValueInterpolatorParabolic<mt::vec3f> m_interpolator;
+			};
+
+		public:
+			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+				, Node * _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time )
+			{
+				AffectorCreatorInterpolateParabolic * affector = m_factory.createObject();
+
+				affector->setServiceProvider( _serviceProvider );
+				affector->setAffectorType( _type );
+
+				affector->setCallback( _cb );
+
+				affector->setNode( _node );
+												
+				affector->initialize( _end, _v0, _time );
+
+				return affector;
+			}
+
+		protected:
+			typedef FactoryPoolStore<AffectorCreatorInterpolateParabolic, 4> TFactoryAffector;
+			TFactoryAffector m_factory;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		FactoryAffectorInterpolateParabolic m_nodeAffectorCreatorInterpolateParabolic;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t parabolaTo( Node * _node
 			, float _time
-			, const mt::vec3f& _point1
-			, const mt::vec3f& _point2
+			, const mt::vec3f& _end
+			, const mt::vec3f& _v0
 			, const pybind::object & _cb )
 		{
 			if( _node->isActivate() == false )
@@ -3467,9 +3623,7 @@ namespace Menge
 
 			Affector* affector =
 				m_nodeAffectorCreatorInterpolateParabolic.create( m_serviceProvider
-				, ETA_POSITION, callback, _node, &Node::setLocalPosition
-				, _node->getLocalPosition(), _point1, _point2, _time
-				, &mt::length_v3
+				, ETA_POSITION, callback, _node, _end, _v0, _time				
 				);
 
 			AFFECTOR_ID id = _node->addAffector( affector );
@@ -4560,8 +4714,9 @@ namespace Menge
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Window );
 
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, RenderViewport );
-        SCRIPT_CLASS_WRAPPING( _serviceProvider, Camera2D );
+        SCRIPT_CLASS_WRAPPING( _serviceProvider, Camera2D );		
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, CameraTarget2D );
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, CameraIsometric );
         //SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceReference );
@@ -4685,8 +4840,10 @@ namespace Menge
             .def( "setAngle", &Transformation3D::setOrientationX )
             .def( "getAngle", &Transformation3D::getOrientationX )
 
-            .def( "translate", &Transformation3D::translate )
+			.def( "setDirection", &Transformation3D::lookAt )
 			.def( "lookAt", &Transformation3D::lookAt )
+
+            .def( "translate", &Transformation3D::translate )
 
             .def( "resetTransformation", &Transformation3D::resetTransformation )
             .def( "setRelationTransformation", &Transformation3D::setRelationTransformation )
@@ -4965,6 +5122,10 @@ namespace Menge
 			.def( "setFixedRenderport", &Camera2D::setFixedRenderport )
 			.def( "getFixedRenderport", &Camera2D::getFixedRenderport )
             ;		
+
+		pybind::interface_<CameraIsometric, pybind::bases<Node, RenderCameraInterface> >( "CameraIsometric", false )
+			.def( "setRenderport", &CameraIsometric::setRenderport )
+			;					
 
 		pybind::interface_<CameraTarget2D, pybind::bases<Node> >("CameraTarget2D", false)
 			.def( "setCamera2D", &CameraTarget2D::setCamera2D )
@@ -5550,6 +5711,9 @@ namespace Menge
             pybind::def_functor( "getCurrentResolution", nodeScriptMethod, &NodeScriptMethod::s_getCurrentResolution );
             pybind::def_functor( "getContentResolution", nodeScriptMethod, &NodeScriptMethod::s_getContentResolution );
             pybind::def_functor( "getHotSpotImageSize", nodeScriptMethod, &NodeScriptMethod::s_getHotSpotImageSize );
+
+			pybind::def_functor( "setNopause", nodeScriptMethod, &NodeScriptMethod::s_setNopause );
+			pybind::def_functor( "getNopause", nodeScriptMethod, &NodeScriptMethod::s_getNopause );
 
             //pybind::def_function( "setBlow", &ScriptMethod::setBlow );
             //pybind::def_function( "getBlow", &ScriptMethod::getBlow );

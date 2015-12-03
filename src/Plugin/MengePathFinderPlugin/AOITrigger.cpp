@@ -1,6 +1,8 @@
 #	include "AOITrigger.h"
 #	include "AOIActor.h"
 
+#	include <algorithm>
+
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////

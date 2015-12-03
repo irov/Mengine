@@ -502,6 +502,21 @@ namespace Menge
 
 				return true;
 			}
+			
+			Resolution r;
+			if( pybind::extract_value( _obj, r, true ) == true )
+			{
+				mt::vec2f begin;
+				begin.x = 0.f;
+				begin.y = 0.f;
+
+				mt::vec2f end;
+				r.calcSize( end );
+
+				_place->initialize( begin, end );
+
+				return true;
+			}
 
 			return false;
 		}

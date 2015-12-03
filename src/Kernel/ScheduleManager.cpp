@@ -258,6 +258,9 @@ namespace Menge
 		m_schedules.insert( m_schedules.end(), m_schedulesAdd.begin(), m_schedulesAdd.end() );
 		m_schedulesAdd.clear();
 
+		TListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead() );
+		m_schedules.erase( it_erase, m_schedules.end() );
+
 		for( TListSchedules::iterator
 			it = m_schedules.begin(),
 			it_end = m_schedules.end();
@@ -351,9 +354,6 @@ namespace Menge
 		}
 
 		m_update = false;
-
-        TListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead());
-        m_schedules.erase( it_erase, m_schedules.end() );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::freeze( uint32_t _id, bool _freeze )

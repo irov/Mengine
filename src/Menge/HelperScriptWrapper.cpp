@@ -84,6 +84,32 @@ namespace Menge
 			return locale;
         }
 
+		float s_isometric_length_v3_v3( const mt::vec3f & _v0, const mt::vec3f & _v1 )
+		{
+			mt::vec3f iso_v0 = _v0;
+			iso_v0.y *= 2.f;
+
+			mt::vec3f iso_v1 = _v1;
+			iso_v1.y *= 2.f;
+
+			float iso_length = mt::length_v3_v3( iso_v0, iso_v1 );
+
+			return iso_length;
+		}
+
+		float s_isometric_sqrlength_v3_v3( const mt::vec3f & _v0, const mt::vec3f & _v1 )
+		{
+			mt::vec3f iso_v0 = _v0;
+			iso_v0.y *= 2.f;
+
+			mt::vec3f iso_v1 = _v1;
+			iso_v1.y *= 2.f;
+
+			float iso_length = mt::sqrlength_v3_v3( iso_v0, iso_v1 );
+
+			return iso_length;
+		}
+
         WString s_utf8ToUnicode( const String & _utf8 )
         {
             WString unicode;
@@ -1976,10 +2002,13 @@ namespace Menge
 
         pybind::def_function( "length_v2_v2", &mt::length_v2_v2 );
         pybind::def_function( "sqrlength_v2_v2", &mt::sqrlength_v2_v2 );
-		
+
 		pybind::def_function( "length_v3_v3", &mt::length_v3_v3 );
 		pybind::def_function( "sqrlength_v3_v3", &mt::sqrlength_v3_v3 );
-        
+
+		pybind::def_function( "length_v3", &mt::length_v3 );
+		pybind::def_function( "sqrlength_v3", &mt::sqrlength_v3 );
+
         pybind::def_function( "signed_angle", &mt::signed_angle );
         pybind::def_function( "angle_length", &mt::angle_length );
         pybind::def_function( "perp", &mt::perp );
@@ -1991,6 +2020,9 @@ namespace Menge
         pybind::def_function( "is_wrap", &pybind::is_wrap );
 
         pybind::def_functor( "getLanguagePack", helperScriptMethod, &HelperScriptMethod::s_getLanguagePack );
+
+		pybind::def_functor( "isometric_length_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_length_v3_v3 );
+		pybind::def_functor( "isometric_sqrlength_v3_v3", helperScriptMethod, &HelperScriptMethod::s_isometric_sqrlength_v3_v3 );
 
         pybind::def_functor( "isValidWindowMode", helperScriptMethod, &HelperScriptMethod::s_isValidWindowMode );
 

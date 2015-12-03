@@ -56,7 +56,7 @@ namespace Menge
 		~BurritoBison();
 
 	public:
-		void initialize( Node * _node, const mt::vec3f & _offset, float _bisonY, float _radius );
+		void initialize( Node * _node, const mt::vec3f & _position, float _radius );
 		void finalize();
 
 	public:
@@ -75,7 +75,6 @@ namespace Menge
 	public:
 		Node * getNode() const;
 		const mt::vec3f & getPosition() const;
-		const mt::vec3f & getOffset() const;
 		float getRadius() const;
 		
 		void setVelocity( const mt::vec3f & _velocity );
@@ -88,10 +87,10 @@ namespace Menge
 		bool getCollide() const;
 
 	public:
-		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset, mt::vec3f & _offsetH, uint32_t _iterate );
+		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, uint32_t _iterate );
 
 	public:
-		void translate( const mt::vec3f & _translate, mt::vec3f & _position );
+		void translate( const mt::vec3f & _translate );
 
 	protected:
 		bool testVelocityEvent_( const VelocityEventDesc & _desc ) const;
@@ -99,10 +98,7 @@ namespace Menge
 	protected:		
 		Node * m_node;
 
-		mt::vec3f m_offset;
 		mt::vec3f m_position;
-
-		float m_bisonY;
 
 		float m_radius;
 

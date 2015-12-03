@@ -19,11 +19,6 @@ namespace Menge
 		m_cb = _cb;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoGround::translate( const mt::vec3f & _translate )
-	{ 
-		m_plane.d += _translate.y;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool BurritoGround::check_collision( float _timing, const mt::vec3f & _position, float _radius, const mt::vec3f & _velocity, float & _collisionTiming ) const
 	{
 		float ccd_timing;

@@ -295,6 +295,17 @@ namespace Menge
 		this->setLocalPosition( new_pos );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Transformation3D::setDirection( const mt::vec3f & _direction, const mt::vec3f & _up )
+	{
+		mt::mat4f mr;
+		mt::make_rotate_m4_direction( mr, _direction, _up );
+
+		mt::vec3f orientation;
+		mt::make_euler_angles( orientation, mr );
+
+		this->setOrientation( orientation );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void Transformation3D::lookAt( const mt::vec3f & _position, const mt::vec3f & _at, const mt::vec3f & _up )
 	{
 		mt::vec3f dir = _at - _position;

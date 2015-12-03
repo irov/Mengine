@@ -96,6 +96,9 @@ namespace Menge
 		
 		virtual bool isFocus() const = 0;
 
+		virtual void setNopause( bool _nopause ) = 0;
+		virtual bool getNopause() const = 0;
+
     public:
         virtual void setInputMouseButtonEventBlock( bool _block ) = 0;
         virtual bool getInputMouseButtonEventBlock() const = 0;

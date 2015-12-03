@@ -479,7 +479,7 @@ namespace Menge
 		String space_delim = " ";
 
 		TVectorString lines;
-		Utils::split( lines, m_cacheText, false, "\n" );
+		Utils::split2( lines, m_cacheText, false, "\n", "\r\n" );
 
 		float charOffset = this->calcCharOffset();
 		
@@ -509,7 +509,7 @@ namespace Menge
 				if( textLength > maxLength )
 				{
 					TVectorString words;
-					Utils::split( words, *it, false, " " );
+					Utils::split2( words, *it, false, " ", "\r" );
 
 					String newLine = words.front();
 					words.erase( words.begin() );	

@@ -56,8 +56,6 @@ namespace Menge
 	BurritoBison::BurritoBison()
 		: m_node(nullptr)
 		, m_position( 0.f, 0.f, 0.f )
-		, m_offset( 0.f, 0.f, 0.f )
-		, m_bisonY( 0.f )
 		, m_radius( 0.f )		
 		, m_velocity( 0.f, 0.f, 0.f )
 		, m_neutron( false )
@@ -69,19 +67,16 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::initialize( Node * _node, const mt::vec3f & _offset, float _bisonY, float _radius )
+	void BurritoBison::initialize( Node * _node, const mt::vec3f & _position, float _radius )
 	{		
 		m_node = _node;
-		m_offset = _offset;
 		m_radius = _radius;
-		m_bisonY = _bisonY;
 
-		m_node->setLocalPosition( m_offset + mt::vec3f( 0.f, m_bisonY, 0.f ) );
+		m_node->setLocalPosition( _position );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::finalize()
 	{
-
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool BurritoBison::addForce( const ConstString & _name, const mt::vec3f & _direction, float _value )
@@ -141,11 +136,6 @@ namespace Menge
 		return m_position;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec3f & BurritoBison::getOffset() const
-	{
-		return m_offset;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	float BurritoBison::getRadius() const
 	{ 
 		return m_radius;
@@ -181,15 +171,13 @@ namespace Menge
 		return m_collide;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _offset, mt::vec3f & _offsetH, uint32_t _iterate )
+	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, uint32_t _iterate )
 	{		
 		(void)_time;
 
 		if( m_neutron == true )
 		{
 			_velocity = mt::vec3f( m_velocity.x, 0.f, m_velocity.z );
-			_offset = m_offset;
-			_offsetH = m_offset + mt::vec3f( 0.f, m_bisonY, 0.f );
 
 			return;
 		}
@@ -317,45 +305,17 @@ namespace Menge
 		}
 
 		_velocity = m_velocity;
-	
-		_offset = m_offset;
-		_offsetH = m_offset + mt::vec3f( 0.f, m_bisonY, 0.f );
+
+		const mt::vec3f & position = m_node->getLocalPosition();
+
+		_position = position;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::translate( const mt::vec3f & _translate, mt::vec3f & _position )
+	void BurritoBison::translate( const mt::vec3f & _translate )
 	{ 
-		if( m_position.y <= 0.f && m_position.y + _translate.y <= 0.f )
-		{
-			m_bisonY = 0.f;
-
-			_position = -_translate;
-		}
-		else if( m_position.y <= 0.f && m_position.y + _translate.y >= 0.f )
-		{
-			m_bisonY = m_position.y + _translate.y;
-
-			_position = -mt::vec3f( _translate.x, -m_position.y, _translate.z );
-		}
-		else if( m_position.y >= 0.f && m_position.y + _translate.y >= 0.f )
-		{
-			m_bisonY = m_position.y;
-
-			_position = -mt::vec3f( _translate.x, 0.f, _translate.z );
-		}
-		else if( m_position.y >= 0.f && m_position.y + _translate.y <= 0.f )
-		{
-			m_bisonY = 0.f;
-
-			_position = -mt::vec3f( _translate.x, m_position.y + _translate.y, _translate.z );
-		}
-		else
-		{
-			printf( "AAAAAAAAAAAAHHHTUNG!!!!" );
-		}
-
-		m_node->setLocalPosition( m_offset + mt::vec3f( 0.f, m_bisonY, 0.f ) );		
-
 		m_position += _translate;
+
+		m_node->setLocalPositionY( m_position.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::addVelocityEvent( bool _less, const mt::vec3f & _velocity, const pybind::object & _cb )

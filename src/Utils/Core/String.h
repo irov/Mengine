@@ -16,6 +16,8 @@ namespace Menge
 		void split( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delims );
 		void wsplit( TVectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims );
 
+		void split2( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delims, const String& _delims2 );
+
 		void join( const String& _delim, const TVectorString& _stringArray, String & _outString );
 		void trim( String& str, bool left = true, bool right = true );
 

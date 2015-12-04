@@ -2349,6 +2349,43 @@ namespace Menge
 				->visitFonts( &mvtf );
 		}
 		//////////////////////////////////////////////////////////////////////////
+		class MyVisitorCollectTextFont
+			: public VisitorTextFontInterface
+		{
+		public:
+			MyVisitorCollectTextFont( pybind::list & _l )
+				: m_l( _l )
+			{
+			}
+
+		protected:
+			void onTextFont( const TextFontInterfacePtr & _font ) override
+			{
+				const ConstString & name = _font->getName();
+
+				m_l.append( name );
+			}
+
+		protected:
+			pybind::list & m_l;
+
+		private:
+			void operator = (const MyVisitorCollectTextFont &)
+			{
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
+		pybind::list s_getFonts()
+		{
+			pybind::list l;
+			MyVisitorTextFont mvtf( l );
+
+			TEXT_SERVICE( m_serviceProvider )
+				->visitFonts( &mvtf );
+
+			return l;
+		}
+		//////////////////////////////////////////////////////////////////////////
 		bool s_hasFont( const ConstString & _fontName )
 		{
 			TextFontInterfacePtr font;
@@ -5853,7 +5890,8 @@ namespace Menge
 			pybind::def_functor( "existFile", nodeScriptMethod, &NodeScriptMethod::s_existFile );
 			pybind::def_functor( "parseXml", nodeScriptMethod, &NodeScriptMethod::s_parseXml );
 
-			pybind::def_functor( "visitFonts", nodeScriptMethod, &NodeScriptMethod::s_visitFonts );			
+			pybind::def_functor( "visitFonts", nodeScriptMethod, &NodeScriptMethod::s_visitFonts );
+			pybind::def_functor( "getFonts", nodeScriptMethod, &NodeScriptMethod::s_getFonts );
 			pybind::def_functor( "hasFont", nodeScriptMethod, &NodeScriptMethod::s_hasFont );
 			pybind::def_functor( "validateFont", nodeScriptMethod, &NodeScriptMethod::s_validateFont );
 

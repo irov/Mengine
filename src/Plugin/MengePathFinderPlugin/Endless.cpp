@@ -18,6 +18,7 @@ namespace	Menge
 		: m_serviceProvider(nullptr)
 		, m_elementCount(0)
 		, m_elementWidth(0.f)
+		, m_elementSlide(true)
 		, m_offset(0.f)
 		, m_enumeratorElementId(0)
 	{ 
@@ -27,10 +28,11 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Endless::initialize( uint32_t _count, float _width, const pybind::object & _cb )
+	bool Endless::initialize( uint32_t _count, float _width, bool _slide, const pybind::object & _cb )
 	{
 		m_elementCount = _count;
 		m_elementWidth = _width;
+		m_elementSlide = _slide;
 
 		m_elementCb = _cb;
 
@@ -86,6 +88,11 @@ namespace	Menge
 		m_offset -= _offset;
 
 		if( m_elementCount == 0 )
+		{
+			return;
+		}
+
+		if( m_elementSlide == false )
 		{
 			return;
 		}

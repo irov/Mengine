@@ -16,7 +16,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( uint32_t _count, float _width, const pybind::object & _cb );
+		bool initialize( uint32_t _count, float _width, bool _slide, const pybind::object & _cb );
 		void finalize();
 
 	public:
@@ -31,6 +31,7 @@ namespace Menge
 
 		uint32_t m_elementCount;
 		float m_elementWidth;
+		bool m_elementSlide;
 
 		pybind::object m_elementCb;
 

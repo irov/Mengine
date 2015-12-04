@@ -78,7 +78,7 @@ namespace Menge
 		void addUnitBounds( float _value, bool _less, const pybind::object & _cb );
 
 	public:
-		void createLayer( const ConstString & _layerName, const mt::vec3f & _parallax, uint32_t _count, float _width, const pybind::object & _cb );
+		void createLayer( const ConstString & _layerName, const mt::vec3f & _parallax, uint32_t _count, float _width, bool _slide, const pybind::object & _cb );
 	
 	public:
 		BurritoUnit * addLayerUnit( const ConstString & _layerName, Node * _node, const mt::vec3f & _position, const mt::vec3f & _velocity, float _radius, bool _collide, const pybind::object & _cb );

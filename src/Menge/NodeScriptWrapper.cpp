@@ -1912,6 +1912,22 @@ namespace Menge
 
 			return true;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		bool directFontCompile( const ConstString & _fontName )
+		{
+			bool successful = TEXT_SERVICE( m_serviceProvider )
+				->directFontCompile( _fontName );
+
+			return successful;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		bool directFontRelease( const ConstString & _fontName )
+		{
+			bool successful = TEXT_SERVICE( m_serviceProvider )
+				->directFontRelease( _fontName );
+
+			return successful;
+		}
         //////////////////////////////////////////////////////////////////////////
         ResourceReference * s_getResourceReference( const ConstString & _nameResource )
         {
@@ -3102,7 +3118,7 @@ namespace Menge
         bool s_existText( const ConstString & _key )
         {
             bool exist = TEXT_SERVICE(m_serviceProvider)
-				->existText( _key, nullptr );
+				->existText( ConstString::none(), _key, nullptr );
 
             return exist;
         }
@@ -5692,6 +5708,9 @@ namespace Menge
             pybind::def_functor( "getResourceReference", nodeScriptMethod, &NodeScriptMethod::s_getResourceReference );
             //pybind::def_function( "loadResourceImage", &ScriptMethod::s_loadResourceImage );
             //pybind::def_function( "loadImageResources", &ScriptMethod::s_loadImageResources );
+
+			pybind::def_functor( "directFontCompile", nodeScriptMethod, &NodeScriptMethod::directFontCompile );
+			pybind::def_functor( "directFontRelease", nodeScriptMethod, &NodeScriptMethod::directFontRelease );
 
             pybind::def_functor( "quitApplication", nodeScriptMethod, &NodeScriptMethod::quitApplication );
             //pybind::def_function( "createShot", &ScriptMethod::createShot );

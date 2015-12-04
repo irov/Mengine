@@ -32,8 +32,12 @@ namespace Menge
 		bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
 
 	public:
-		bool existText( const ConstString & _key, const TextEntryInterface ** _entry ) const override;
-		const TextEntryInterface * getTextEntry( const ConstString& _key ) const override;
+		void setCurrentLocale( const ConstString & _locale ) override;
+		const ConstString & getCurrentLocale() const override;
+
+	public:
+		bool existText( const ConstString & _locale, const ConstString & _key, const TextEntryInterface ** _entry ) const override;
+		const TextEntryInterface * getTextEntry( const ConstString & _locale, const ConstString& _key ) const override;
 		
 	public:
 		bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const override;
@@ -42,6 +46,10 @@ namespace Menge
 		void releaseFont( const TextFontInterfacePtr & _font ) override;
 
 		void visitFonts( VisitorTextFontInterface * _vistitor ) override;
+
+	public:
+		bool directFontCompile( const ConstString & _name ) override;
+		bool directFontRelease( const ConstString & _name ) override;
 
 	public:
 		bool validate() const override;
@@ -53,14 +61,15 @@ namespace Menge
 		const ConstString & getDefaultFontName() const override;
 
 	public:
-		bool addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) override;
+		bool addTextEntry( const ConstString & _locale, const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) override;
 
 	protected:
 		TextGlyphPtr loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const ConstString & _path );
 
     protected:
 		typedef stdex::map<ConstString, TextEntry> TMapTextEntry;
-		TMapTextEntry m_texts;
+		typedef stdex::map<ConstString, TMapTextEntry> TMapLocaleTextEntry;
+		TMapLocaleTextEntry m_texts;
 
 		typedef stdex::map<ConstString, TextFontPtr> TMapTextFont;
 		TMapTextFont m_fonts;
@@ -71,6 +80,7 @@ namespace Menge
 		typedef stdex::vector<TextLocalePakPtr> TVectorPaks;
 		TVectorPaks m_paks;
 		
+		ConstString m_currentLocale;
 		ConstString m_defaultFontName;
 
 		typedef FactoryPoolStore<TextFont, 16> TFactoryTextFont;
@@ -81,5 +91,8 @@ namespace Menge
 
 		typedef FactoryPoolStore<TextLocalePak, 4> TFactoryTextLocalePak;
 		TFactoryTextLocalePak m_factoryTextLocalePak;
+
+	protected:
+		const TMapTextEntry * getLocaleTextEntries_( const ConstString & _locale, ConstString & _correctLocale ) const;
 	};
 }

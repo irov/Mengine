@@ -46,7 +46,9 @@ namespace Menge
 		, m_invalidateVertices(true)
         , m_invalidateVerticesWM(true)
 		, m_invalidateTextLines(true)
+		, m_invalidateTextEntry(true)
 		, m_textEntry(nullptr)
+		, m_observerChangeLocale(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -74,6 +76,9 @@ namespace Menge
 	bool TextField::_compile()
 	{
 		this->invalidateFont();
+
+		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
+			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE, this, &TextField::notifyChangeLocale );
 		
 		return true;
 	}
@@ -82,6 +87,9 @@ namespace Menge
 	{
 		TEXT_SERVICE(m_serviceProvider)
 			->releaseFont( m_font );
+
+		NOTIFICATION_SERVICE( m_serviceProvider )
+			->removeObserver( NOTIFICATOR_CHANGE_LOCALE, m_observerChangeLocale );
 
         m_font = nullptr;
 
@@ -105,6 +113,13 @@ namespace Menge
 
 		m_materialFont = nullptr;
 		m_materialOutline = nullptr;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::notifyChangeLocale( ConstString _locale )
+	{
+		(void)_locale;
+
+		this->invalidateTextEntry();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const TVectorTextLine & TextField::getTextLines() const
@@ -177,7 +192,7 @@ namespace Menge
 	{	
 		Node::_render( _state );
 
-		if( m_textEntry == nullptr )
+		if( m_key.empty() == true )
 		{
 			return;
 		}
@@ -461,16 +476,16 @@ namespace Menge
 			return;
 		}
 
-		if( m_textEntry == nullptr )
+		if( m_key.empty() == true )
 		{
 			return;
 		}
-				
+		
 		if( this->updateTextCache_() == false )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ '%s' invalid update text cache %s"
 				, this->getName().c_str()
-				, m_textEntry->getKey().c_str()
+				, m_key.c_str()
 				);
 
 			return;
@@ -495,7 +510,7 @@ namespace Menge
 			{
 				LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
 					, this->getName().c_str()
-					, m_textEntry->getKey().c_str()
+					, m_key.c_str()
 					);
 
 				continue;
@@ -523,7 +538,7 @@ namespace Menge
 						{
 							LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
 								, this->getName().c_str()
-								, m_textEntry->getKey().c_str()
+								, m_key.c_str()
 								);
 						}
 
@@ -537,7 +552,7 @@ namespace Menge
 							{
 								LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
 									, this->getName().c_str()
-									, m_textEntry->getKey().c_str()
+									, m_key.c_str()
 									);
 							}
 
@@ -560,7 +575,7 @@ namespace Menge
 					{
 						LOGGER_ERROR(m_serviceProvider)("TextField::updateTextLines_ %s textID %s invalid setup line"
 							, this->getName().c_str()
-							, m_textEntry->getKey().c_str()
+							, m_key.c_str()
 							);
 					}
 
@@ -674,15 +689,45 @@ namespace Menge
 		this->invalidateTextLines();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextField::calcFontName() const
+	void TextField::updateTextEntry_() const
 	{
+		m_invalidateTextEntry = false;
+
 		if( m_textEntry != nullptr )
 		{
-			uint32_t params = m_textEntry->getFontParams();
+			const ConstString & textKey = m_textEntry->getKey();
+
+			if( textKey == m_key )
+			{
+				return;
+			}
+		}
+
+		m_textEntry = TEXT_SERVICE( m_serviceProvider )
+			->getTextEntry( ConstString::none(), m_key );
+
+		if( m_textEntry == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("TextField::updateTextEntry_ '%s' can't find text ID '%s'"
+				, this->getName().c_str()
+				, m_key.c_str()
+				);
+
+			return;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & TextField::calcFontName() const
+	{
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry != nullptr )
+		{
+			uint32_t params = textEntry->getFontParams();
 
 			if( params & EFP_FONT )
 			{
-				const ConstString & fontName = m_textEntry->getFontName();
+				const ConstString & fontName = textEntry->getFontName();
 
 				return fontName;
 			}
@@ -701,13 +746,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::calcLineOffset() const
 	{
-		if( m_textEntry != nullptr )
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry != nullptr )
 		{
-			uint32_t params = m_textEntry->getFontParams();
+			uint32_t params = textEntry->getFontParams();
 
 			if( params & EFP_LINE_OFFSET )
 			{
-				float value = m_textEntry->getLineOffset();
+				float value = textEntry->getLineOffset();
 
 				return value;
 			}
@@ -737,13 +784,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::calcCharOffset() const
 	{
-		if( m_textEntry != nullptr )
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry != nullptr )
 		{
-			uint32_t params = m_textEntry->getFontParams();
+			uint32_t params = textEntry->getFontParams();
 
 			if( params & EFP_CHAR_OFFSET )
 			{
-				float value = m_textEntry->getCharOffset();
+				float value = textEntry->getCharOffset();
 
 				return value;
 			}
@@ -773,13 +822,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float TextField::calcMaxLength() const
 	{
-		if( m_textEntry != nullptr )
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry != nullptr )
 		{
-			uint32_t params = m_textEntry->getFontParams();
+			uint32_t params = textEntry->getFontParams();
 
 			if( params & EFP_MAX_LENGTH )
 			{
-				float value = m_textEntry->getMaxLength();
+				float value = textEntry->getMaxLength();
 
 				return value;
 			}
@@ -790,13 +841,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & TextField::calcColorFont() const
 	{
-		if( m_textEntry != nullptr )
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry != nullptr )
 		{
-			uint32_t params = m_textEntry->getFontParams();
+			uint32_t params = textEntry->getFontParams();
 
 			if( params & EFP_COLOR_FONT )
 			{
-				const ColourValue & value = m_textEntry->getColorFont();
+				const ColourValue & value = textEntry->getColorFont();
 
 				return value;
 			}
@@ -826,13 +879,15 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ColourValue & TextField::calcColorOutline() const
 	{
-		if( m_textEntry != nullptr )
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry != nullptr )
 		{
-			uint32_t params = m_textEntry->getFontParams();
+			uint32_t params = textEntry->getFontParams();
 
 			if( params & EFP_COLOR_OUTLINE )
 			{
-				const ColourValue & value = m_textEntry->getColorOutline();
+				const ColourValue & value = textEntry->getColorOutline();
 
 				return value;
 			}
@@ -933,30 +988,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::setTextID( const ConstString & _key )
 	{	
+		m_key = _key;
+
 		m_textFormatArgs.clear();
-
-		if( m_textEntry != nullptr )
-		{
-			const ConstString & textKey = m_textEntry->getKey();
-
-			if( textKey == _key )
-			{
-				return;
-			}
-		}
-
-		m_textEntry = TEXT_SERVICE(m_serviceProvider)
-			->getTextEntry( _key );
-
-		if( m_textEntry == nullptr )
-		{
-			LOGGER_ERROR(m_serviceProvider)("TextField::setTextID '%s' can't find text ID '%s'"
-				, this->getName().c_str()
-				, _key.c_str()
-				);
-
-			return;
-		}
 
 		this->invalidateFont();
 		this->invalidateTextLines();
@@ -973,12 +1007,14 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & TextField::getTextID() const
 	{
-		if( m_textEntry == nullptr )
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry == nullptr )
 		{
 			return ConstString::none();
 		}
 
-		const ConstString & key = m_textEntry->getKey();
+		const ConstString & key = textEntry->getKey();
 
 		return key;
 	}
@@ -1011,7 +1047,9 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	const String & TextField::getText() const
 	{
-		if( m_textEntry == nullptr )
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextField::getText '%s' can't setup text ID"
 				, this->getName().c_str()
@@ -1024,7 +1062,7 @@ namespace Menge
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextField::getText '%s' invalid update text cache %s"
 				, this->getName().c_str()
-				, m_textEntry->getKey().c_str()
+				, m_key.c_str()
 				);
 		}
 
@@ -1033,17 +1071,19 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	size_t TextField::getTextExpectedArgument() const
 	{
-		if( m_textEntry == nullptr )
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry == nullptr )
 		{
 			LOGGER_ERROR(m_serviceProvider)("TextField::getTextExpectedArgument '%s:%s' not compile"
 				, this->getName().c_str()
-				, this->getTextID().c_str()
+				, m_key.c_str()
 				);
 
 			return 0;
 		}
 
-		const ConstString & textValue = m_textEntry->getValue();
+		const ConstString & textValue = textEntry->getValue();
 
 		const char * str_textValue = textValue.c_str();
 
@@ -1071,7 +1111,19 @@ namespace Menge
 	{
 		m_cacheText.clear();
 
-		const ConstString & textValue = m_textEntry->getValue();
+		const TextEntryInterface * textEntry = this->getTextEntry();
+
+		if( textEntry == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("TextField::updateTextCache_ '%s:%s' invalid get text entry"
+				, this->getName().c_str()
+				, m_key.c_str()
+				);
+
+			return false;
+		}
+
+		const ConstString & textValue = textEntry->getValue();
 
 		const char * str_textValue = textValue.c_str();
 		
@@ -1197,6 +1249,14 @@ namespace Menge
 		m_invalidateTextLines = true;
 
 		this->invalidateVertices_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void TextField::invalidateTextEntry() const
+	{
+		m_invalidateTextEntry = true;
+
+		this->invalidateFont();
+		this->invalidateTextLines();
 	}
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateVerticesWM_( const TextFontInterfacePtr & _font )

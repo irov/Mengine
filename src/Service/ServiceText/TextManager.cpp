@@ -4,6 +4,7 @@
 #	include "Interface/UnicodeInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
+#	include "Interface/NotificationServiceInterface.h"
 
 #	include "Core/String.h"
 #	include "Core/IniUtil.h"
@@ -32,6 +33,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::_initialize()
 	{
+		m_currentLocale = STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" );
+
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -48,9 +51,10 @@ namespace Menge
 		class TextManagerSaxCallback
 		{
 		public:
-			TextManagerSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
+			TextManagerSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 				: m_serviceProvider(_serviceProvider)
 				, m_textManager(_textManager)
+				, m_locale( _locale )
 				, m_pakName(_pakName)
 				, m_path(_path)
 			{
@@ -280,7 +284,7 @@ namespace Menge
 						);
 				}
 
-				m_textManager->addTextEntry( text_key, text, fontName, colorFont, colorOutline, lineOffset, charOffset, maxLength, params, isOverride );
+				m_textManager->addTextEntry( m_locale, text_key, text, fontName, colorFont, colorOutline, lineOffset, charOffset, maxLength, params, isOverride );
 			}
 
 			void callback_end_node( const char * _node )
@@ -292,6 +296,7 @@ namespace Menge
 			ServiceProviderInterface * m_serviceProvider;
 			TextManager * m_textManager;
 
+			const ConstString & m_locale;
 			const ConstString & m_pakName;
 			const FilePath & m_path;
 		};
@@ -310,7 +315,7 @@ namespace Menge
 
 		char * xml_buff = pak->getXmlBuffer();
 
-		TextManagerSaxCallback tmsc(m_serviceProvider, this, _pakName, _path);
+		TextManagerSaxCallback tmsc( m_serviceProvider, this, _locale, _pakName, _path );
 		if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
 		{
 			return false;
@@ -451,6 +456,19 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void TextManager::setCurrentLocale( const ConstString & _locale )
+	{
+		m_currentLocale = _locale;
+
+		NOTIFICATION_SERVICE( m_serviceProvider )
+			->notify( NOTIFICATOR_CHANGE_LOCALE, m_currentLocale );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & TextManager::getCurrentLocale() const
+	{
+		return m_currentLocale;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	TextGlyphPtr TextManager::loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const ConstString & _path )
 	{
 		TMapTextGlyph::iterator it_found = m_glyphs.find( _path );
@@ -474,11 +492,13 @@ namespace Menge
 		return glyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride )
-	{		
-		TMapTextEntry::iterator it_found = m_texts.find( _key );
+	bool TextManager::addTextEntry( const ConstString & _locale, const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride )
+	{	
+		TMapTextEntry & localeTextEntries = m_texts[_locale];
 
-		if( it_found != m_texts.end() )
+		TMapTextEntry::iterator it_found = localeTextEntries.find( _key );
+
+		if( it_found != localeTextEntries.end() )
 		{
 			TextEntry & textEntry_has = it_found->second;
 
@@ -509,18 +529,55 @@ namespace Menge
 
 		textEntry.initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _params );
 
-        m_texts.insert( std::make_pair( _key, textEntry ) );
+		localeTextEntries.insert( std::make_pair( _key, textEntry ) );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TextEntryInterface * TextManager::getTextEntry( const ConstString& _key ) const
+	const TextManager::TMapTextEntry * TextManager::getLocaleTextEntries_( const ConstString & _locale, ConstString & _correctLocale ) const
 	{
-		TMapTextEntry::const_iterator it_found = m_texts.find( _key );
-		
+		ConstString textLocale = _locale;
+
+		if( textLocale.empty() == true )
+		{
+			textLocale = m_currentLocale;
+		}
+
+		_correctLocale = textLocale;
+
+		TMapLocaleTextEntry::const_iterator it_found = m_texts.find( textLocale );
+
 		if( it_found == m_texts.end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
+			return nullptr;
+		}
+
+		const TMapTextEntry & localeTextEntries = it_found->second;
+
+		return &localeTextEntries;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const TextEntryInterface * TextManager::getTextEntry( const ConstString & _locale, const ConstString& _key ) const
+	{
+		ConstString correctLocale;
+		const TMapTextEntry * localeTextEntries = this->getLocaleTextEntries_( _locale, correctLocale );
+
+		if( localeTextEntries == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("TextManager::getTextEntry: TextManager can't find locale entries '%s' key '%s'"
+				, correctLocale.c_str()
+				, _key.c_str()
+				);
+
+			return nullptr;
+		}
+
+		TMapTextEntry::const_iterator it_found = localeTextEntries->find( _key );
+		
+		if( it_found == localeTextEntries->end() )
+		{
+			LOGGER_ERROR(m_serviceProvider)("TextManager::getTextEntry: TextManager can't find string associated with key - '%s' locale '%s'"
+				, correctLocale.c_str()
 				, _key.c_str() 
 				);
 
@@ -532,11 +589,19 @@ namespace Menge
         return &textEntry;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::existText( const ConstString& _key, const TextEntryInterface ** _entry ) const
+	bool TextManager::existText( const ConstString & _locale, const ConstString& _key, const TextEntryInterface ** _entry ) const
 	{
-		TMapTextEntry::const_iterator it_found = m_texts.find( _key );
+		ConstString correctLocale;
+		const TMapTextEntry * localeTextEntries = this->getLocaleTextEntries_( _locale, correctLocale );
 
-		if( it_found == m_texts.end() )
+		if( localeTextEntries == nullptr )
+		{
+			return false;
+		}
+		
+		TMapTextEntry::const_iterator it_found = localeTextEntries->find( _key );
+
+		if( it_found == localeTextEntries->end() )
 		{
 			return false;
 		}
@@ -612,6 +677,44 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool TextManager::directFontCompile( const ConstString & _name )
+	{
+		TMapTextFont::const_iterator it_found = m_fonts.find( _name );
+
+		if( it_found == m_fonts.end() )
+		{
+			return false;
+		}
+
+		const TextFontPtr & font = it_found->second;
+
+		if( font->incrementReference() == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextManager::directFontRelease( const ConstString & _name )
+	{
+		TMapTextFont::const_iterator it_found = m_fonts.find( _name );
+
+		if( it_found == m_fonts.end() )
+		{
+			return false;
+		}
+
+		const TextFontPtr & font = it_found->second;
+
+		if( font->decrementReference() == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const ConstString & TextManager::getDefaultFontName() const
 	{
 		return m_defaultFontName;
@@ -641,92 +744,101 @@ namespace Menge
 			}
 		}
 
-		for( TMapTextEntry::const_iterator
+		for( TMapLocaleTextEntry::const_iterator
 			it = m_texts.begin(),
 			it_end = m_texts.end();
 		it != it_end;
 		++it )
 		{
-			const TextEntry & text = it->second;
+			const TMapTextEntry & textEntries = it->second;
 
-			const ConstString & textKey = text.getKey();
-			const ConstString & fontName = text.getFontName();
-
-			if( fontName.empty() == false )
+			for( TMapTextEntry::const_iterator
+				it_text = textEntries.begin(),
+				it_text_end = textEntries.end();
+			it_text != it_text_end;
+			++it_text )
 			{
-				TextFontInterfacePtr font;
-				if( this->existFont( fontName, font ) == false )
+				const TextEntry & text = it_text->second;
+
+				const ConstString & textKey = text.getKey();
+				const ConstString & fontName = text.getFontName();
+
+				if( fontName.empty() == false )
 				{
-					LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource not found font %s for text %s"
-						, fontName.c_str()
-						, textKey.c_str()
-						);
-
-					successful = false;
-
-					continue;
-				}
-
-				const ConstString & value = text.getValue();
-
-				const char * text_str = value.c_str();
-				size_t text_len = value.size();
-
-				for( const char
-					*text_it = text_str,
-					*text_end = text_str + text_len + 1;
-				text_it != text_end;
-				)
-				{
-					uint32_t code = 0;
-					utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
-
-					if( err != utf8::internal::UTF8_OK )
+					TextFontInterfacePtr font;
+					if( this->existFont( fontName, font ) == false )
 					{
-						LOGGER_ERROR( m_serviceProvider )("Text %s invalid utf8 |%s| err code %d"
-							, textKey.c_str()
-							, text_it
-							, err
-							);
-
-						successful = false;
-
-						continue;
-					}
-
-					if( code == 0 )
-					{
-						continue;
-					}
-					else if( code == 10 )
-					{
-						continue;
-					}
-					else if( code == 13 )
-					{
-						continue;
-					}
-					else if( code == 160 )
-					{
-						code = 32;
-					}
-					else if( code == 9 )
-					{
-						code = 32;
-					}
-
-					GlyphCode glyphChar;
-					glyphChar.setCode( code );
-
-					if( font->hasGlyph( glyphChar ) == false )
-					{
-						LOGGER_ERROR( m_serviceProvider )("Text %s fontName %s not found glyph code '%d'"
-							, textKey.c_str()
+						LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource not found font %s for text %s"
 							, fontName.c_str()
-							, code
+							, textKey.c_str()
 							);
 
 						successful = false;
+
+						continue;
+					}
+
+					const ConstString & value = text.getValue();
+
+					const char * text_str = value.c_str();
+					size_t text_len = value.size();
+
+					for( const char
+						*text_it = text_str,
+						*text_end = text_str + text_len + 1;
+					text_it != text_end;
+					)
+					{
+						uint32_t code = 0;
+						utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
+
+						if( err != utf8::internal::UTF8_OK )
+						{
+							LOGGER_ERROR( m_serviceProvider )("Text %s invalid utf8 |%s| err code %d"
+								, textKey.c_str()
+								, text_it
+								, err
+								);
+
+							successful = false;
+
+							continue;
+						}
+
+						if( code == 0 )
+						{
+							continue;
+						}
+						else if( code == 10 )
+						{
+							continue;
+						}
+						else if( code == 13 )
+						{
+							continue;
+						}
+						else if( code == 160 )
+						{
+							code = 32;
+						}
+						else if( code == 9 )
+						{
+							code = 32;
+						}
+
+						GlyphCode glyphChar;
+						glyphChar.setCode( code );
+
+						if( font->hasGlyph( glyphChar ) == false )
+						{
+							LOGGER_ERROR( m_serviceProvider )("Text %s fontName %s not found glyph code '%d'"
+								, textKey.c_str()
+								, fontName.c_str()
+								, code
+								);
+
+							successful = false;
+						}
 					}
 				}
 			}

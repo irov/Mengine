@@ -101,11 +101,15 @@ namespace Menge
 		virtual bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
-		virtual bool addTextEntry( const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) = 0;
+		virtual void setCurrentLocale( const ConstString & _locale ) = 0;
+		virtual const ConstString & getCurrentLocale() const = 0;
 
 	public:
-		virtual bool existText( const ConstString& _key, const TextEntryInterface ** _entry ) const = 0;
-		virtual const TextEntryInterface * getTextEntry( const ConstString& _key ) const = 0;        
+		virtual bool addTextEntry( const ConstString & _locale, const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) = 0;
+
+	public:
+		virtual bool existText( const ConstString & _locale, const ConstString& _key, const TextEntryInterface ** _entry ) const = 0;
+		virtual const TextEntryInterface * getTextEntry( const ConstString & _locale, const ConstString& _key ) const = 0;
 
 	public:
 		virtual bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const = 0;
@@ -115,6 +119,10 @@ namespace Menge
 
 	public:
 		virtual void visitFonts( VisitorTextFontInterface * _vistitor ) = 0;
+
+	public:
+		virtual bool directFontCompile( const ConstString & _name ) = 0;
+		virtual bool directFontRelease( const ConstString & _name ) = 0;
 
 	public:
 		virtual const ConstString & getDefaultFontName() const = 0;

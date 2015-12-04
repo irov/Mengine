@@ -603,6 +603,9 @@ namespace Menge
 			return false;
 		}
 
+		TEXT_SERVICE( m_serviceProvider )
+			->setCurrentLocale( m_locale );
+
 		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
 		bool resourceCheck = APSENT_OPTIONS( m_serviceProvider, "noresourcecheck" );
 
@@ -1706,7 +1709,8 @@ namespace Menge
 		}
 
         const TextEntryInterface * entry;
-		if( TEXT_SERVICE(m_serviceProvider)->existText( STRINGIZE_STRING_LOCAL(m_serviceProvider, "APPLICATION_TITLE"), &entry ) == false )
+		if( TEXT_SERVICE( m_serviceProvider )
+			->existText( ConstString::none(), STRINGIZE_STRING_LOCAL( m_serviceProvider, "APPLICATION_TITLE" ), &entry ) == false )
 		{
             return Utils::emptyConstString();
 		}

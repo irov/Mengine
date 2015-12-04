@@ -1,6 +1,6 @@
 # pragma once
 
-#	include "Config/Typedef.h"
+#	include "Interface/NotificationServiceInterface.h"
 
 #	include "Kernel/Node.h"
 
@@ -134,6 +134,9 @@ namespace Menge
 		void _invalidateColor() override;
 
 	protected:
+		void notifyChangeLocale( ConstString _locale );
+
+	protected:
 		float getHorizontAlignOffset_( const TextLine & _line );
 
 	protected:
@@ -154,14 +157,17 @@ namespace Menge
 		const TVectorTextLine & getTextLines() const;
 
 		void invalidateTextLines() const;
+		void invalidateTextEntry() const;
 		inline bool isInvalidateTextLines() const;
 		
 		void updateTextLines_() const;
 
 	protected:
+		inline const TextEntryInterface * getTextEntry() const;
 		inline const TextFontInterfacePtr & getFont() const;
-		inline void invalidateFont();
+		inline void invalidateFont() const;
 		void updateFont_() const;
+		void updateTextEntry_() const;
 
 	protected:
 		mutable TextFontInterfacePtr m_font;
@@ -185,13 +191,17 @@ namespace Menge
 		const ColourValue & calcColorOutline() const;
 
 	protected:
-        const TextEntryInterface * m_textEntry;
-		TVectorString m_textFormatArgs;
+		ConstString m_key;
+
+		mutable const TextEntryInterface * m_textEntry;
+		mutable TVectorString m_textFormatArgs;
 		
 		mutable String m_cacheText;
 				
 		ETextFieldHorizontAlign m_horizontAlign;
 		ETextFieldVerticalAlign m_verticalAlign;
+
+		ObserverInterface * m_observerChangeLocale;
 
 		float m_maxLength;
 
@@ -226,6 +236,7 @@ namespace Menge
         mutable bool m_invalidateVerticesWM;
 
 		mutable bool m_invalidateTextLines;
+		mutable bool m_invalidateTextEntry;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline TVectorRenderVertex2D & TextField::getOutlineVertices( const TextFontInterfacePtr & _font )
@@ -263,7 +274,17 @@ namespace Menge
 		return m_font;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline void TextField::invalidateFont()
+	inline const TextEntryInterface * TextField::getTextEntry() const
+	{
+		if( m_invalidateTextEntry == true )
+		{
+			this->updateTextEntry_();
+		}
+
+		return m_textEntry;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline void TextField::invalidateFont() const
 	{
 		m_invalidateFont = true;
 	}

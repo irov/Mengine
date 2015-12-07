@@ -3165,7 +3165,7 @@ namespace Menge
         bool s_existText( const ConstString & _key )
         {
             bool exist = TEXT_SERVICE(m_serviceProvider)
-				->existText( ConstString::none(), _key, nullptr );
+				->existText( _key, nullptr );
 
             return exist;
         }

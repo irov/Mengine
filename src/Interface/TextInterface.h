@@ -97,19 +97,19 @@ namespace Menge
 		SERVICE_DECLARE("TextService")
 
 	public:
-		virtual bool loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
-		virtual bool unloadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool loadTextEntry( const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool unloadTextEntry( const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
-		virtual bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool loadFonts( const ConstString & _pakName, const FilePath & _path ) = 0;
 		virtual bool unloadFonts( const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
-		virtual bool addTextEntry( const ConstString & _locale, const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) = 0;
+		virtual bool addTextEntry( const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) = 0;
 
 	public:
-		virtual bool existText( const ConstString & _locale, const ConstString& _key, const TextEntryInterface ** _entry ) const = 0;
-		virtual const TextEntryInterface * getTextEntry( const ConstString & _locale, const ConstString& _key ) const = 0;
+		virtual bool existText( const ConstString& _key, const TextEntryInterface ** _entry ) const = 0;
+		virtual const TextEntryInterface * getTextEntry( const ConstString& _key ) const = 0;
 
 	public:
 		virtual bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const = 0;

@@ -28,16 +28,16 @@ namespace Menge
 		void _finalize() override;
 		
 	public:
-		bool loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
-		bool unloadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
+		bool loadTextEntry( const ConstString & _pakName, const FilePath & _path ) override;
+		bool unloadTextEntry( const ConstString & _pakName, const FilePath & _path ) override;
 
 	public:
-		bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
+		bool loadFonts( const ConstString & _pakName, const FilePath & _path ) override;
 		bool unloadFonts( const ConstString & _pakName, const FilePath & _path ) override;
 
 	public:
-		bool existText( const ConstString & _locale, const ConstString & _key, const TextEntryInterface ** _entry ) const override;
-		const TextEntryInterface * getTextEntry( const ConstString & _locale, const ConstString& _key ) const override;
+		bool existText( const ConstString & _key, const TextEntryInterface ** _entry ) const override;
+		const TextEntryInterface * getTextEntry( const ConstString& _key ) const override;
 		
 	public:
 		bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const override;
@@ -61,16 +61,15 @@ namespace Menge
 		const ConstString & getDefaultFontName() const override;
 
 	public:
-		bool addTextEntry( const ConstString & _locale, const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) override;
-		bool removeTextEntry( const ConstString & _locale, const ConstString& _key );
+		bool addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) override;
+		bool removeTextEntry( const ConstString& _key );
 
 	protected:
-		TextGlyphPtr loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const ConstString & _path );
+		TextGlyphPtr loadGlyph_( const ConstString & _pakName, const ConstString & _path );
 
     protected:
-		typedef stdex::map<ConstString, TextEntry> TMapTextEntry;
-		typedef stdex::map<ConstString, TMapTextEntry> TMapLocaleTextEntry;
-		TMapLocaleTextEntry m_texts;
+		typedef stdex::map<ConstString, TextEntry> TMapTextEntry;		
+		TMapTextEntry m_texts;
 
 		typedef stdex::map<ConstString, TextFontPtr> TMapTextFont;
 		TMapTextFont m_fonts;

@@ -696,7 +696,7 @@ namespace Menge
 		m_invalidateTextEntry = false;
 
 		m_textEntry = TEXT_SERVICE( m_serviceProvider )
-			->getTextEntry( ConstString::none(), m_key );
+			->getTextEntry( m_key );
 
 		if( m_textEntry == nullptr )
 		{

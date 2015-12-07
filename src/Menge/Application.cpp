@@ -1729,7 +1729,7 @@ namespace Menge
 
         const TextEntryInterface * entry;
 		if( TEXT_SERVICE( m_serviceProvider )
-			->existText( ConstString::none(), STRINGIZE_STRING_LOCAL( m_serviceProvider, "APPLICATION_TITLE" ), &entry ) == false )
+			->existText( STRINGIZE_STRING_LOCAL( m_serviceProvider, "APPLICATION_TITLE" ), &entry ) == false )
 		{
             return Utils::emptyConstString();
 		}

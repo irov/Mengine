@@ -482,7 +482,7 @@ namespace Menge
 	bool Package::loadText_( const ConstString & _pakName, const ConstString & _path )
     {
         bool result = TEXT_SERVICE(m_serviceProvider)
-			->loadTextEntry( m_locale, _pakName, _path );
+			->loadTextEntry( _pakName, _path );
 
         return result;
     }
@@ -490,7 +490,7 @@ namespace Menge
 	bool Package::unloadText_( const ConstString & _pakName, const ConstString & _path )
 	{
 		bool result = TEXT_SERVICE( m_serviceProvider )
-			->unloadTextEntry( m_locale, _pakName, _path );
+			->unloadTextEntry( _pakName, _path );
 
 		return result;
 	}
@@ -498,7 +498,7 @@ namespace Menge
 	bool Package::loadFont_( const ConstString & _pakName, const ConstString & _path )
 	{
 		bool result = TEXT_SERVICE(m_serviceProvider)
-			->loadFonts( m_locale, _pakName, _path );
+			->loadFonts( _pakName, _path );
 
 		return result;
 	}

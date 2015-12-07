@@ -19,7 +19,7 @@ namespace Menge
 		~TextGlyph();
 
 	public:
-		bool initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path );
+		bool initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _pakName, const FilePath & _path );
 
 	public:
 		void setSize( float _size );
@@ -42,8 +42,6 @@ namespace Menge
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
-
-		ConstString m_locale;
 
 		float m_size;
 		float m_height;

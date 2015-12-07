@@ -441,7 +441,7 @@ namespace Menge
 			{
 				const TextEntryInterface * entry;
 				if( TEXT_SERVICE(m_serviceProvider)
-					->existText( ConstString::none(), layer.name, &entry ) == false )
+					->existText( layer.name, &entry ) == false )
 				{
 					LOGGER_ERROR(m_serviceProvider)("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' text %s not found"
 						, this->getName().c_str()

@@ -28,6 +28,11 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	PyObject * Scriptable::_embedded()
 	{
+		if( m_scriptWrapper == nullptr )
+		{
+			return nullptr;
+		}
+
 		PyObject * embedding = m_scriptWrapper->wrap( this );
 
 		return embedding;

@@ -19,10 +19,9 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextLocalePack::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	bool TextLocalePack::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _pakName, const FilePath & _path )
 	{
 		m_serviceProvider = _serviceProvider;
-		m_locale = _locale;
 		m_pakName = _pakName;
 		m_path = _path;
 
@@ -50,11 +49,6 @@ namespace Menge
 		memory_buffer[xml_buffer_size] = '\0';
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextLocalePack::getLocale() const
-	{
-		return m_locale;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & TextLocalePack::getPackName() const

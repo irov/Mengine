@@ -343,10 +343,9 @@ namespace Menge
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextGlyph::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	bool TextGlyph::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _pakName, const FilePath & _path )
 	{
 		m_serviceProvider = _serviceProvider;
-		m_locale = _locale;
 
 		InputStreamInterfacePtr stream = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( _pakName, _path, false );

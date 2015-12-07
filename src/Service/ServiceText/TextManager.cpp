@@ -50,17 +50,16 @@ namespace Menge
 		class TextManagerLoadSaxCallback
 		{
 		public:
-			TextManagerLoadSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
-				: m_serviceProvider(_serviceProvider)
-				, m_textManager(_textManager)
-				, m_locale( _locale )
-				, m_pakName(_pakName)
-				, m_path(_path)
+			TextManagerLoadSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
+				: m_serviceProvider( _serviceProvider )
+				, m_textManager( _textManager )
+				, m_pakName( _pakName )
+				, m_path( _path )
 			{
 			}
 
 		protected:
-			void operator = ( const TextManagerLoadSaxCallback & )
+			void operator = (const TextManagerLoadSaxCallback &)
 			{
 			}
 
@@ -82,7 +81,7 @@ namespace Menge
 
 				ConstString text;
 				ConstString fontName;
-				
+
 				float charOffset = 0.f;
 				float lineOffset = 0.f;
 				float maxLength = 0.f;
@@ -94,13 +93,13 @@ namespace Menge
 				bool isEmpty = false;
 
 				uint32_t params = 0;
-				
+
 				for( uint32_t i = 0; i != _count; ++i )
 				{
 					const char * str_key = _keys[i];
 					const char * str_value = _values[i];
 
-					if( strcmp( str_key, "Key") == 0 )
+					if( strcmp( str_key, "Key" ) == 0 )
 					{
 						text_key = Helper::stringizeStringExternal( m_serviceProvider, str_value, (size_t)-1 );
 					}
@@ -113,7 +112,7 @@ namespace Menge
 
 						if( str_value_valid != str_value_end )
 						{
-							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read text key %s value |%s| invalid utf8 char |%s|"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read text key %s value |%s| invalid utf8 char |%s|"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -121,11 +120,11 @@ namespace Menge
 								, str_value_valid
 								);
 
-							String str(str_value, str_value_size);
+							String str( str_value, str_value_size );
 							String temp;
-							utf8::replace_invalid(str.begin(), str.end(), std::back_inserter(temp));
+							utf8::replace_invalid( str.begin(), str.end(), std::back_inserter( temp ) );
 
-							LOGGER_ERROR(m_serviceProvider)("replace to |%s|"
+							LOGGER_ERROR( m_serviceProvider )("replace to |%s|"
 								, temp.c_str()
 								);
 
@@ -147,7 +146,7 @@ namespace Menge
 						float value = 0.f;
 						if( sscanf( str_value, "%f", &value ) != 1 )
 						{
-							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s charOffset %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s charOffset %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -164,7 +163,7 @@ namespace Menge
 						float value = 0.f;
 						if( sscanf( str_value, "%f", &value ) != 1 )
 						{
-							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -175,7 +174,7 @@ namespace Menge
 						lineOffset = value;
 
 						params |= EFP_LINE_OFFSET;
-					}			
+					}
 					else if( strcmp( str_key, "Color" ) == 0 )
 					{
 						float r;
@@ -184,7 +183,7 @@ namespace Menge
 						float a;
 						if( sscanf( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
 						{
-							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -192,10 +191,10 @@ namespace Menge
 								);
 						}
 
-						colorFont.setARGB(a, r, g, b);
+						colorFont.setARGB( a, r, g, b );
 
 						params |= EFP_COLOR_FONT;
-					}	
+					}
 					else if( strcmp( str_key, "ColorOutline" ) == 0 )
 					{
 						float r;
@@ -204,7 +203,7 @@ namespace Menge
 						float a;
 						if( sscanf( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
 						{
-							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s lineOffset %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -212,16 +211,16 @@ namespace Menge
 								);
 						}
 
-						colorOutline.setARGB(a, r, g, b);
+						colorOutline.setARGB( a, r, g, b );
 
 						params |= EFP_COLOR_OUTLINE;
 					}
 					else if( strcmp( str_key, "MaxLength" ) == 0 )
-					{						
+					{
 						float value = 0.f;
 						if( sscanf( str_value, "%f", &value ) != 1 )
 						{
-							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s Override %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s Override %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -234,11 +233,11 @@ namespace Menge
 						params |= EFP_MAX_LENGTH;
 					}
 					else if( strcmp( str_key, "Override" ) == 0 )
-					{						
+					{
 						uint32_t value = 0;
 						if( sscanf( str_value, "%d", &value ) != 1 )
 						{
-							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s tag 'Override' %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s tag 'Override' %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -249,11 +248,11 @@ namespace Menge
 						isOverride = (value != 0);
 					}
 					else if( strcmp( str_key, "Empty" ) == 0 )
-					{						
+					{
 						uint32_t value = 0;
 						if( sscanf( str_value, "%d", &value ) != 1 )
 						{
-							LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid read for text %s tag 'Empty' %s"
+							LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid read for text %s tag 'Empty' %s"
 								, m_pakName.c_str()
 								, m_path.c_str()
 								, text_key.c_str()
@@ -265,7 +264,7 @@ namespace Menge
 					}
 					else
 					{
-						LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid tag %s for text %s"
+						LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid tag %s for text %s"
 							, m_pakName.c_str()
 							, m_path.c_str()
 							, str_key
@@ -276,14 +275,14 @@ namespace Menge
 
 				if( text.empty() == true && isEmpty == false )
 				{
-					LOGGER_ERROR(m_serviceProvider)("TextManager::loadResource %s:%s invalid text key %s value is empty"
+					LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource %s:%s invalid text key %s value is empty"
 						, m_pakName.c_str()
 						, m_path.c_str()
 						, text_key.c_str()
 						);
 				}
 
-				m_textManager->addTextEntry( m_locale, text_key, text, fontName, colorFont, colorOutline, lineOffset, charOffset, maxLength, params, isOverride );
+				m_textManager->addTextEntry( text_key, text, fontName, colorFont, colorOutline, lineOffset, charOffset, maxLength, params, isOverride );
 			}
 
 			void callback_end_node( const char * _node )
@@ -295,28 +294,27 @@ namespace Menge
 			ServiceProviderInterface * m_serviceProvider;
 			TextManager * m_textManager;
 
-			const ConstString & m_locale;
 			const ConstString & m_pakName;
 			const FilePath & m_path;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	bool TextManager::loadTextEntry( const ConstString & _pakName, const FilePath & _path )
 	{
 		TextLocalePackPtr pak = m_factoryTextLocalePak.createObject();
 
-		if( pak->initialize( m_serviceProvider, _locale, _pakName, _path ) == false )
+		if( pak->initialize( m_serviceProvider, _pakName, _path ) == false )
 		{
 			return false;
 		}
-		
+
 		m_packs.push_back( pak );
 
 		MemoryInterfacePtr xml_memory = pak->getXmlBuffer();
 
 		Char * xml_buff = xml_memory->getMemory();
 
-		TextManagerLoadSaxCallback tmsc( m_serviceProvider, this, _locale, _pakName, _path );
+		TextManagerLoadSaxCallback tmsc( m_serviceProvider, this, _pakName, _path );
 		if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
 		{
 			return false;
@@ -330,10 +328,9 @@ namespace Menge
 		class TextManagerUnloadSaxCallback
 		{
 		public:
-			TextManagerUnloadSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+			TextManagerUnloadSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
 				: m_serviceProvider( _serviceProvider )
 				, m_textManager( _textManager )
-				, m_locale( _locale )
 				, m_pakName( _pakName )
 				, m_path( _path )
 			{
@@ -375,7 +372,7 @@ namespace Menge
 					return;
 				}
 
-				m_textManager->removeTextEntry( m_locale, text_key );
+				m_textManager->removeTextEntry( text_key );
 			}
 
 			void callback_end_node( const char * _node )
@@ -387,7 +384,6 @@ namespace Menge
 			ServiceProviderInterface * m_serviceProvider;
 			TextManager * m_textManager;
 
-			const ConstString & m_locale;
 			const ConstString & m_pakName;
 			const FilePath & m_path;
 		};
@@ -395,9 +391,8 @@ namespace Menge
 		class FPackLocaleRemove
 		{
 		public:
-			FPackLocaleRemove( const ConstString & _locale, const ConstString & _pakName )
-				: m_locale( _locale )
-				, m_pakName( _pakName )
+			FPackLocaleRemove( const ConstString & _pakName )
+				: m_pakName( _pakName )
 			{
 			}
 
@@ -407,11 +402,6 @@ namespace Menge
 		public:
 			bool operator () ( const TextLocalePackPtr & _pack ) const
 			{
-				if( _pack->getLocale() != m_locale )
-				{
-					return false;
-				}
-
 				if( _pack->getPackName() != m_pakName )
 				{
 					return false;
@@ -421,16 +411,15 @@ namespace Menge
 			}
 
 		protected:
-			const ConstString & m_locale;
 			const ConstString & m_pakName;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::unloadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	bool TextManager::unloadTextEntry( const ConstString & _pakName, const FilePath & _path )
 	{
 		TextLocalePackPtr pak = m_factoryTextLocalePak.createObject();
 
-		if( pak->initialize( m_serviceProvider, _locale, _pakName, _path ) == false )
+		if( pak->initialize( m_serviceProvider, _pakName, _path ) == false )
 		{
 			return false;
 		}
@@ -439,28 +428,28 @@ namespace Menge
 
 		Char * xml_buff = xml_memory->getMemory();
 
-		TextManagerUnloadSaxCallback tmsc( m_serviceProvider, this, _locale, _pakName, _path );
+		TextManagerUnloadSaxCallback tmsc( m_serviceProvider, this, _pakName, _path );
 		if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
 		{
 			return false;
 		}
 
-		m_packs.erase( 
-			std::remove_if( m_packs.begin(), m_packs.end(), FPackLocaleRemove( _locale, _pakName ) )
-			, m_packs.end() 
+		m_packs.erase(
+			std::remove_if( m_packs.begin(), m_packs.end(), FPackLocaleRemove( _pakName ) )
+			, m_packs.end()
 			);
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	bool TextManager::loadFonts( const ConstString & _pakName, const FilePath & _path )
 	{
-		InputStreamInterfacePtr stream = 
-			FILE_SERVICE(m_serviceProvider)->openInputFile( _pakName, _path, false );
+		InputStreamInterfacePtr stream =
+			FILE_SERVICE( m_serviceProvider )->openInputFile( _pakName, _path, false );
 
 		if( stream == nullptr )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts Invalid open settings %s"
+			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts Invalid open settings %s"
 				, _path.c_str()
 				);
 
@@ -470,7 +459,7 @@ namespace Menge
 		IniUtil::IniStore ini;
 		if( IniUtil::loadIni( ini, stream, m_serviceProvider ) == false )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts Invalid load settings %s"
+			LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts Invalid load settings %s"
 				, _path.c_str()
 				);
 
@@ -490,7 +479,7 @@ namespace Menge
 
 			if( ini.hasSection( fontName.c_str() ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts invalid %s:%s section for FONT %s"
+				LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid %s:%s section for FONT %s"
 					, _pakName.c_str()
 					, _path.c_str()
 					, fontName.c_str()
@@ -507,7 +496,7 @@ namespace Menge
 			ConstString glyphPath;
 			if( IniUtil::getIniValue( ini, fontName.c_str(), "Glyph", glyphPath, m_serviceProvider ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts invalid %s:%s font %s don't setup Glyph"
+				LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid %s:%s font %s don't setup Glyph"
 					, _pakName.c_str()
 					, _path.c_str()
 					, fontName.c_str()
@@ -516,11 +505,11 @@ namespace Menge
 				return false;
 			}
 
-			TextGlyphPtr glyph = this->loadGlyph_( _locale, _pakName, glyphPath );
+			TextGlyphPtr glyph = this->loadGlyph_( _pakName, glyphPath );
 
 			if( glyph == nullptr )
 			{
-				LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts invalid %s:%s font %s don't load Glyph %s"
+				LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid %s:%s font %s don't load Glyph %s"
 					, _pakName.c_str()
 					, _path.c_str()
 					, fontName.c_str()
@@ -535,7 +524,7 @@ namespace Menge
 			ConstString pathImage;
 			if( IniUtil::getIniValue( ini, fontName.c_str(), "Image", pathImage, m_serviceProvider ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("TextManager::loadFonts invalid %s:%s font %s dont setup Image"
+				LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid %s:%s font %s dont setup Image"
 					, _pakName.c_str()
 					, _path.c_str()
 					, fontName.c_str()
@@ -546,7 +535,7 @@ namespace Menge
 
 			ConstString pathOutline;
 			IniUtil::getIniValue( ini, fontName.c_str(), "Outline", pathOutline, m_serviceProvider );
-			
+
 			font->setTexturePath( _pakName, pathImage, pathOutline );
 
 			ColourValue colourFont;
@@ -571,9 +560,9 @@ namespace Menge
 			if( IniUtil::getIniValue( ini, fontName.c_str(), "CharOffset", charOffset, m_serviceProvider ) == true )
 			{
 				font->setCharOffset( charOffset );
-			}						
+			}
 
-			m_fonts.insert( std::make_pair(fontName, font) );
+			m_fonts.insert( std::make_pair( fontName, font ) );
 		}
 
 		ConstString defaultFontName;
@@ -644,17 +633,17 @@ namespace Menge
 			}
 
 			m_glyphs.erase( glyphPath );
-			
+
 			m_fonts.erase( fontName );
 		}
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextGlyphPtr TextManager::loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const ConstString & _path )
+	TextGlyphPtr TextManager::loadGlyph_( const ConstString & _pakName, const ConstString & _path )
 	{
 		TMapTextGlyph::iterator it_found = m_glyphs.find( _path );
-		
+
 		if( it_found != m_glyphs.end() )
 		{
 			const TextGlyphPtr & glyph = it_found->second;
@@ -664,7 +653,7 @@ namespace Menge
 
 		TextGlyphPtr glyph = m_factoryTextGlyph.createObject();
 
-		if( glyph->initialize( m_serviceProvider, _locale, _pakName, _path ) == false )
+		if( glyph->initialize( m_serviceProvider, _pakName, _path ) == false )
 		{
 			return nullptr;
 		}
@@ -674,13 +663,11 @@ namespace Menge
 		return glyph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::addTextEntry( const ConstString & _locale, const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride )
-	{	
-		TMapTextEntry & localeTextEntries = m_texts[_locale];
+	bool TextManager::addTextEntry( const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride )
+	{
+		TMapTextEntry::iterator it_found = m_texts.find( _key );
 
-		TMapTextEntry::iterator it_found = localeTextEntries.find( _key );
-
-		if( it_found != localeTextEntries.end() )
+		if( it_found != m_texts.end() )
 		{
 			TextEntry & textEntry_has = it_found->second;
 
@@ -711,98 +698,48 @@ namespace Menge
 
 		textEntry.initialize( _key, _text, _font, _colorFont, _colorOutline, _lineOffset, _charOffset, _maxLength, _params );
 
-		localeTextEntries.insert( std::make_pair( _key, textEntry ) );
+		m_texts.insert( std::make_pair( _key, textEntry ) );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::removeTextEntry( const ConstString & _locale, const ConstString& _key )
+	bool TextManager::removeTextEntry( const ConstString& _key )
 	{
-		TMapTextEntry & localeTextEntries = m_texts[_locale];
+		TMapTextEntry::iterator it_found = m_texts.find( _key );
 
-		TMapTextEntry::iterator it_found = localeTextEntries.find( _key );
-
-		if( it_found == localeTextEntries.end() )
+		if( it_found == m_texts.end() )
 		{
 			return false;
 		}
 
-		localeTextEntries.erase( _key );
+		m_texts.erase( _key );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TextManager::TMapTextEntry * TextManager::getLocaleTextEntries_( const ConstString & _locale, ConstString & _correctLocale ) const
+	const TextEntryInterface * TextManager::getTextEntry( const ConstString& _key ) const
 	{
-		ConstString textLocale = _locale;
-
-		if( textLocale.empty() == true )
-		{
-			const ConstString & locale = APPLICATION_SERVICE( m_serviceProvider )
-				->getLocale();
-
-			textLocale = locale;
-		}
-
-		_correctLocale = textLocale;
-
-		TMapLocaleTextEntry::const_iterator it_found = m_texts.find( textLocale );
+		TMapTextEntry::const_iterator it_found = m_texts.find( _key );
 
 		if( it_found == m_texts.end() )
 		{
-			return nullptr;
-		}
-
-		const TMapTextEntry & localeTextEntries = it_found->second;
-
-		return &localeTextEntries;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const TextEntryInterface * TextManager::getTextEntry( const ConstString & _locale, const ConstString& _key ) const
-	{
-		ConstString correctLocale;
-		const TMapTextEntry * localeTextEntries = this->getLocaleTextEntries_( _locale, correctLocale );
-
-		if( localeTextEntries == nullptr )
-		{
-			LOGGER_ERROR( m_serviceProvider )("TextManager::getTextEntry: TextManager can't find locale entries '%s' key '%s'"
-				, correctLocale.c_str()
+			LOGGER_ERROR( m_serviceProvider )("TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
 				, _key.c_str()
-				);
-
-			return nullptr;
-		}
-
-		TMapTextEntry::const_iterator it_found = localeTextEntries->find( _key );
-		
-		if( it_found == localeTextEntries->end() )
-		{
-			LOGGER_ERROR(m_serviceProvider)("TextManager::getTextEntry: TextManager can't find string associated with key - '%s' locale '%s'"				
-				, _key.c_str()
-				, correctLocale.c_str()
 				);
 
 			return nullptr;
 		}
 
 		const TextEntry & textEntry = it_found->second;
-        
-        return &textEntry;
+
+		return &textEntry;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::existText( const ConstString & _locale, const ConstString& _key, const TextEntryInterface ** _entry ) const
+	bool TextManager::existText( const ConstString& _key, const TextEntryInterface ** _entry ) const
 	{
-		ConstString correctLocale;
-		const TMapTextEntry * localeTextEntries = this->getLocaleTextEntries_( _locale, correctLocale );
+		TMapTextEntry::const_iterator it_found = m_texts.find( _key );
 
-		if( localeTextEntries == nullptr )
-		{
-			return false;
-		}
-		
-		TMapTextEntry::const_iterator it_found = localeTextEntries->find( _key );
-
-		if( it_found == localeTextEntries->end() )
+		if( it_found == m_texts.end() )
 		{
 			return false;
 		}
@@ -818,7 +755,7 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const
-	{	
+	{
 		TMapTextFont::const_iterator it_found = m_fonts.find( _name );
 
 		if( it_found == m_fonts.end() )
@@ -827,14 +764,14 @@ namespace Menge
 		}
 
 		const TextFontPtr & font = it_found->second;
-				
+
 		_font = font;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TextFontInterfacePtr TextManager::getFont( const ConstString & _name ) const
-	{		
+	{
 		TMapTextFont::const_iterator it_found = m_fonts.find( _name );
 
 		if( it_found == m_fonts.end() )
@@ -927,7 +864,7 @@ namespace Menge
 
 		if( m_defaultFontName.empty() == true )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextManager::validate not setup default font name!"
+			LOGGER_ERROR( m_serviceProvider )("TextManager::validate not setup default font name!"
 				);
 
 			successful = false;
@@ -937,7 +874,7 @@ namespace Menge
 			TextFontInterfacePtr font;
 			if( this->existFont( m_defaultFontName, font ) == false )
 			{
-				LOGGER_ERROR(m_serviceProvider)("TextManager::validate not found default font %s"
+				LOGGER_ERROR( m_serviceProvider )("TextManager::validate not found default font %s"
 					, m_defaultFontName.c_str()
 					);
 
@@ -945,33 +882,52 @@ namespace Menge
 			}
 		}
 
-		for( TMapLocaleTextEntry::const_iterator
+		for( TMapTextEntry::const_iterator
 			it = m_texts.begin(),
 			it_end = m_texts.end();
 		it != it_end;
 		++it )
 		{
-			const TMapTextEntry & textEntries = it->second;
+			const TextEntry & text = it->second;
 
-			for( TMapTextEntry::const_iterator
-				it_text = textEntries.begin(),
-				it_text_end = textEntries.end();
-			it_text != it_text_end;
-			++it_text )
+			const ConstString & textKey = text.getKey();
+			const ConstString & fontName = text.getFontName();
+
+			if( fontName.empty() == false )
 			{
-				const TextEntry & text = it_text->second;
-
-				const ConstString & textKey = text.getKey();
-				const ConstString & fontName = text.getFontName();
-
-				if( fontName.empty() == false )
+				TextFontInterfacePtr font;
+				if( this->existFont( fontName, font ) == false )
 				{
-					TextFontInterfacePtr font;
-					if( this->existFont( fontName, font ) == false )
+					LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource not found font %s for text %s"
+						, fontName.c_str()
+						, textKey.c_str()
+						);
+
+					successful = false;
+
+					continue;
+				}
+
+				const ConstString & value = text.getValue();
+
+				const char * text_str = value.c_str();
+				size_t text_len = value.size();
+
+				for( const char
+					*text_it = text_str,
+					*text_end = text_str + text_len + 1;
+				text_it != text_end;
+				)
+				{
+					uint32_t code = 0;
+					utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
+
+					if( err != utf8::internal::UTF8_OK )
 					{
-						LOGGER_ERROR( m_serviceProvider )("TextManager::loadResource not found font %s for text %s"
-							, fontName.c_str()
+						LOGGER_ERROR( m_serviceProvider )("Text %s invalid utf8 |%s| err code %d"
 							, textKey.c_str()
+							, text_it
+							, err
 							);
 
 						successful = false;
@@ -979,67 +935,39 @@ namespace Menge
 						continue;
 					}
 
-					const ConstString & value = text.getValue();
-
-					const char * text_str = value.c_str();
-					size_t text_len = value.size();
-
-					for( const char
-						*text_it = text_str,
-						*text_end = text_str + text_len + 1;
-					text_it != text_end;
-					)
+					if( code == 0 )
 					{
-						uint32_t code = 0;
-						utf8::internal::utf_error err = utf8::internal::validate_next( text_it, text_end, code );
+						continue;
+					}
+					else if( code == 10 )
+					{
+						continue;
+					}
+					else if( code == 13 )
+					{
+						continue;
+					}
+					else if( code == 160 )
+					{
+						code = 32;
+					}
+					else if( code == 9 )
+					{
+						code = 32;
+					}
 
-						if( err != utf8::internal::UTF8_OK )
-						{
-							LOGGER_ERROR( m_serviceProvider )("Text %s invalid utf8 |%s| err code %d"
-								, textKey.c_str()
-								, text_it
-								, err
-								);
+					GlyphCode glyphChar;
+					glyphChar.setCode( code );
 
-							successful = false;
+					if( font->hasGlyph( glyphChar ) == false )
+					{
+						LOGGER_ERROR( m_serviceProvider )("Text %s fontName %s not found glyph code '%d'"
+							, textKey.c_str()
+							, fontName.c_str()
+							, code
+							);
 
-							continue;
-						}
-
-						if( code == 0 )
-						{
-							continue;
-						}
-						else if( code == 10 )
-						{
-							continue;
-						}
-						else if( code == 13 )
-						{
-							continue;
-						}
-						else if( code == 160 )
-						{
-							code = 32;
-						}
-						else if( code == 9 )
-						{
-							code = 32;
-						}
-
-						GlyphCode glyphChar;
-						glyphChar.setCode( code );
-
-						if( font->hasGlyph( glyphChar ) == false )
-						{
-							LOGGER_ERROR( m_serviceProvider )("Text %s fontName %s not found glyph code '%d'"
-								, textKey.c_str()
-								, fontName.c_str()
-								, code
-								);
-
-							successful = false;
-						}
+						successful = false;
 					}
 				}
 			}

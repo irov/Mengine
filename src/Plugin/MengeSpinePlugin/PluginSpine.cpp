@@ -24,12 +24,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PluginSpine::_initialize()
 	{
-		PROTOTYPE_SERVICE(m_serviceProvider)
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Spine" ), new NodePrototypeGenerator<Spine, 128> );
-		
-		PROTOTYPE_SERVICE(m_serviceProvider)
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Resource" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceSpine" ), new ResourcePrototypeGenerator<ResourceSpine, 128> );
-
 		pybind::interface_<Spine, pybind::bases<Node, Animatable> >( "Spine", false )
 			.def( "setResourceSpine", &Spine::setResourceSpine )
 			.def( "getResourceSpine", &Spine::getResourceSpine )
@@ -47,6 +41,12 @@ namespace Menge
 
 		SCRIPT_SERVICE( m_serviceProvider )
 			->setWrapper( Helper::stringizeString( m_serviceProvider, "ResourceSpine" ), new ClassScriptWrapper<ResourceSpine>() );
+
+		PROTOTYPE_SERVICE( m_serviceProvider )
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "Spine" ), new NodePrototypeGenerator<Spine, 128> );
+
+		PROTOTYPE_SERVICE( m_serviceProvider )
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Resource" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "ResourceSpine" ), new ResourcePrototypeGenerator<ResourceSpine, 128> );
 
         return true;
 	}

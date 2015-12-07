@@ -1776,7 +1776,7 @@ namespace Menge
 		bool s_hasTextByKey( const ConstString& _key )
 		{
 			bool value = TEXT_SERVICE(m_serviceProvider)
-				->existText( ConstString::none(), _key, nullptr );
+				->existText( _key, nullptr );
 
 			return value;
 		}
@@ -1785,7 +1785,7 @@ namespace Menge
 		{
 			const TextEntryInterface * entry;				
 			if( TEXT_SERVICE(m_serviceProvider)
-				->existText( ConstString::none(), _key, &entry ) == false )
+				->existText( _key, &entry ) == false )
 			{
 				pybind::throw_exception("Menge.getTextByKey invalid get key %s"
 					, _key.c_str()
@@ -1810,7 +1810,7 @@ namespace Menge
 		{
 			const TextEntryInterface * entry;
 			if( TEXT_SERVICE(m_serviceProvider)
-				->existText( ConstString::none(), _key, &entry ) == false )
+				->existText( _key, &entry ) == false )
 			{				
 				pybind::throw_exception("Menge.getTextCharCountByKey invalid get key %s"
 					, _key.c_str()

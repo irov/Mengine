@@ -98,11 +98,11 @@ namespace Menge
 
 	public:
 		virtual bool loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
-		virtual bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool unloadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
-		virtual void setCurrentLocale( const ConstString & _locale ) = 0;
-		virtual const ConstString & getCurrentLocale() const = 0;
+		virtual bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool unloadFonts( const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
 		virtual bool addTextEntry( const ConstString & _locale, const ConstString & _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) = 0;

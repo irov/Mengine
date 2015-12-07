@@ -70,16 +70,16 @@ namespace Menge
 			;
 
 		SCRIPT_SERVICE(m_serviceProvider)
-			->addWrapping( Helper::stringizeString( m_serviceProvider, "NodeAOITrigger" ), new ScriptClassWrapper<NodeAOITrigger>() );
+			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeAOITrigger" ), new ClassScriptWrapper<NodeAOITrigger>() );
 
 		SCRIPT_SERVICE( m_serviceProvider )
-			->addWrapping( Helper::stringizeString( m_serviceProvider, "NodeAOIActor" ), new ScriptClassWrapper<NodeAOIActor>() );
+			->setWrapper( Helper::stringizeString( m_serviceProvider, "NodeAOIActor" ), new ClassScriptWrapper<NodeAOIActor>() );
 		
 		PROTOTYPE_SERVICE(m_serviceProvider)
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeAOITrigger" ), new NodePrototypeGenerator<NodeAOITrigger, 32>( m_serviceProvider ) );
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeAOITrigger" ), new NodePrototypeGenerator<NodeAOITrigger, 32> );
 
 		PROTOTYPE_SERVICE( m_serviceProvider )
-			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeAOIActor" ), new NodePrototypeGenerator<NodeAOIActor, 32>( m_serviceProvider ) );
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "NodeAOIActor" ), new NodePrototypeGenerator<NodeAOIActor, 32> );
 
 		return true;
 	}

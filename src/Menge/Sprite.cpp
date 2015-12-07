@@ -36,7 +36,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Sprite::_release()
 	{
-		Shape::_release();		
+		Shape::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr Sprite::_updateMaterial() const
@@ -61,7 +61,7 @@ namespace Menge
 		Node::_render( _state );
 
 		const RenderMaterialInterfacePtr & material = this->getMaterial();
-		const RenderVertex2D * vertices = this->getVerticesWM();        
+		const RenderVertex2D * vertices = this->getVerticesWM();
 
 		const mt::box2f & bb = this->getBoundingBox();
 

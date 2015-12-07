@@ -16,6 +16,7 @@ namespace Menge
 {
     //////////////////////////////////////////////////////////////////////////
 	PackageService::PackageService()
+		: m_observerChangeLocale(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -26,12 +27,17 @@ namespace Menge
 	bool PackageService::_initialize()
 	{
 		//Empty
+		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
+			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void PackageService::_finalize()
 	{
+		NOTIFICATION_SERVICE( m_serviceProvider )
+			->removeObserver( NOTIFICATOR_CHANGE_LOCALE, m_observerChangeLocale );
+
 		m_packages.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -216,18 +222,18 @@ namespace Menge
 			, _desc.preload
 			);
 
+		if( package->load() == false )
+		{
+			return false;
+		}
+
 		if( _desc.immediately == false )
 		{
 			m_packages.push_back( package );
 		}
 		else
 		{
-			if( package->load() == false )
-			{
-				return false;
-			}
-
-			if( package->apply() == false )
+			if( package->enable() == false )
 			{
 				return false;
 			}
@@ -292,7 +298,7 @@ namespace Menge
 		return hasLocale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PackageService::applyPackages( const ConstString & _locale, const ConstString & _platformName )
+	bool PackageService::enablePackages( const ConstString & _locale, const ConstString & _platformName )
 	{
 		TVectorPackage packages;
 
@@ -343,10 +349,42 @@ namespace Menge
 				continue;
 			}
 
-			if( package->load() == false )
+			if( package->enable() == false )
 			{
 				return false;
 			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PackageService::enableLocalePackage( const ConstString & _locale, const ConstString & _platformName )
+	{ 
+		TVectorPackage packages;
+
+		for( TVectorPackage::const_iterator
+			it = m_packages.begin(),
+			it_end = m_packages.end();
+		it != it_end;
+		++it )
+		{
+			const PackagePtr & pack = *it;
+
+			const ConstString & packPlatform = pack->getPlatfrom();
+
+			if( packPlatform.empty() == false && packPlatform != _platformName )
+			{
+				continue;
+			}
+
+			const ConstString & locale = pack->getLocale();
+
+			if( locale != _locale )
+			{
+				continue;
+			}
+
+			packages.push_back( pack );
 		}
 
 		for( TVectorPackage::const_iterator
@@ -357,17 +395,87 @@ namespace Menge
 		{
 			const PackagePtr & package = *it;
 
-			if( package->isPreload() == false )
-			{
-				continue;
-			}
-
-			if( package->apply() == false )
+			if( package->enable() == false )
 			{
 				return false;
 			}
 		}
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool PackageService::disableLocalePackage( const ConstString & _locale, const ConstString & _platformName )
+	{
+		TVectorPackage packages;
+
+		for( TVectorPackage::const_iterator
+			it = m_packages.begin(),
+			it_end = m_packages.end();
+		it != it_end;
+		++it )
+		{
+			const PackagePtr & pack = *it;
+
+			const ConstString & packPlatform = pack->getPlatfrom();
+
+			if( packPlatform.empty() == false && packPlatform != _platformName )
+			{
+				continue;
+			}
+
+			const ConstString & locale = pack->getLocale();
+
+			if( locale != _locale )
+			{
+				continue;
+			}
+
+			packages.push_back( pack );
+		}
+
+		for( TVectorPackage::const_iterator
+			it = packages.begin(),
+			it_end = packages.end();
+		it != it_end;
+		++it )
+		{
+			const PackagePtr & package = *it;
+
+			if( package->disable() == false )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void PackageService::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )
+	{
+		(void)_prevLocale;
+		(void)_currentlocale;
+
+		const ConstString & platformName = PLATFORM_SERVICE( m_serviceProvider )
+			->getPlatformName();
+
+		if( this->disableLocalePackage( _prevLocale, platformName ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("PackageService::notifyChangeLocale invalid disable locale package '%s' platform '%s'"
+				, _prevLocale.c_str()
+				, platformName.c_str()
+				);
+
+			return;
+		}
+
+		if( this->enableLocalePackage( _currentlocale, platformName ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("PackageService::notifyChangeLocale invalid enable locale package '%s' platform '%s'"
+				, _currentlocale.c_str()
+				, platformName.c_str()
+				);
+
+			return;
+		}
 	}
 }

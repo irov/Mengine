@@ -14,8 +14,8 @@ namespace Menge
         ~HotSpotShape();
 
     public:
-        void setResourceShape( ResourceShape * _resourceShape );
-        ResourceShape * getResourceShape() const;
+		void setResourceShape( const ResourceShapePtr & _resourceShape );
+		const ResourceShapePtr & getResourceShape() const;
 
     protected:
         bool _compile() override;

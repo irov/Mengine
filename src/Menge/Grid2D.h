@@ -26,8 +26,8 @@ namespace Menge
 		~Grid2D();
 
 	public:
-		void setResourceImage( ResourceImage * _resourceImage );
-		ResourceImage * getResourceImage() const;
+		void setResourceImage( const ResourceImagePtr & _resourceImage );
+		const ResourceImagePtr & getResourceImage() const;
 
 	public:
 		void setAngle( const mt::vec2f & _offset, float _angle );

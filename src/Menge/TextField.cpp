@@ -75,23 +75,24 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextField::_compile()
 	{
-		this->invalidateFont();
+		this->invalidateTextEntry();
 
 		m_observerChangeLocale = NOTIFICATION_SERVICE( m_serviceProvider )
-			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE, this, &TextField::notifyChangeLocale );
+			->addObserverMethod( NOTIFICATOR_UPDATE_LOCALE_NODE, this, &TextField::notifyChangeLocale );
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::_release()
 	{
+		NOTIFICATION_SERVICE( m_serviceProvider )
+			->removeObserver( NOTIFICATOR_UPDATE_LOCALE_NODE, m_observerChangeLocale );
+
 		TEXT_SERVICE(m_serviceProvider)
 			->releaseFont( m_font );
 
-		NOTIFICATION_SERVICE( m_serviceProvider )
-			->removeObserver( NOTIFICATOR_CHANGE_LOCALE, m_observerChangeLocale );
-
         m_font = nullptr;
+		m_textEntry = nullptr;
 
 		String cacheText;
 		m_cacheText.swap( cacheText );
@@ -115,9 +116,10 @@ namespace Menge
 		m_materialOutline = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextField::notifyChangeLocale( ConstString _locale )
+	void TextField::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )
 	{
-		(void)_locale;
+		(void)_prevLocale;
+		(void)_currentlocale;
 
 		this->invalidateTextEntry();
 	}
@@ -693,16 +695,6 @@ namespace Menge
 	{
 		m_invalidateTextEntry = false;
 
-		if( m_textEntry != nullptr )
-		{
-			const ConstString & textKey = m_textEntry->getKey();
-
-			if( textKey == m_key )
-			{
-				return;
-			}
-		}
-
 		m_textEntry = TEXT_SERVICE( m_serviceProvider )
 			->getTextEntry( ConstString::none(), m_key );
 
@@ -992,8 +984,7 @@ namespace Menge
 
 		m_textFormatArgs.clear();
 
-		this->invalidateFont();
-		this->invalidateTextLines();
+		this->invalidateTextEntry();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void TextField::removeTextID()
@@ -1001,8 +992,7 @@ namespace Menge
 		m_textEntry = nullptr;
 		m_textFormatArgs.clear();
 
-		this->invalidateFont();
-		this->invalidateTextLines();
+		this->invalidateTextEntry();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ConstString & TextField::getTextID() const

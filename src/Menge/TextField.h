@@ -134,7 +134,10 @@ namespace Menge
 		void _invalidateColor() override;
 
 	protected:
-		void notifyChangeLocale( ConstString _locale );
+		void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
+
+	protected:
+		ObserverInterface * m_observerChangeLocale;
 
 	protected:
 		float getHorizontAlignOffset_( const TextLine & _line );
@@ -200,9 +203,7 @@ namespace Menge
 				
 		ETextFieldHorizontAlign m_horizontAlign;
 		ETextFieldVerticalAlign m_verticalAlign;
-
-		ObserverInterface * m_observerChangeLocale;
-
+		
 		float m_maxLength;
 
 		ConstString m_fontName;

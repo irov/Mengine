@@ -34,6 +34,11 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void ResourceReference::setLocale( const ConstString & _locale )
+	{
+		m_locale = _locale;
+	}	
+	//////////////////////////////////////////////////////////////////////////
 	void ResourceReference::setCategory( const ConstString & _category )
 	{
 		m_category = _category;
@@ -154,16 +159,6 @@ namespace Menge
             ->notify( NOTIFICATOR_RESOURCE_RELEASE, this );
 #	endif
 	}
-    //////////////////////////////////////////////////////////////////////////
-	PyObject * ResourceReference::_embedded()
-    { 
-        const ConstString & type = this->getType();
-
-		PyObject * embedding = SCRIPT_SERVICE( m_serviceProvider )
-            ->wrap( type, this );
-
-        return embedding;
-    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceReference::cache()
 	{

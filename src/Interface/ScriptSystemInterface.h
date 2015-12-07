@@ -22,11 +22,11 @@ namespace Menge
 
     class Entity;
 	//////////////////////////////////////////////////////////////////////////
-    class ScriptClassInterface
+    class ScriptWrapperInterface
     {
 	public:
-		ScriptClassInterface(){};
-		virtual ~ScriptClassInterface(){};
+		ScriptWrapperInterface(){};
+		virtual ~ScriptWrapperInterface(){};
 
 	public:
 		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
@@ -43,14 +43,14 @@ namespace Menge
         virtual void destroy() = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
-	struct ScriptModulePak
+	struct ScriptModulePack
 	{
 		ConstString path;
 		ConstString module;
 		ConstString initializer;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<ScriptModulePak> TVectorScriptModulePak;
+	typedef stdex::vector<ScriptModulePack> TVectorScriptModulePack;
 	//////////////////////////////////////////////////////////////////////////
 	class ScriptServiceInterface
 		: public ServiceInterface
@@ -58,15 +58,16 @@ namespace Menge
         SERVICE_DECLARE("ScriptService")
 
 	public:
-        virtual void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper ) = 0;
-		virtual PyObject * wrap( const ConstString & _type, Scriptable * _node ) = 0;
+		virtual void setWrapper( const ConstString& _type, ScriptWrapperInterface * _wrapper ) = 0;
+		virtual ScriptWrapperInterface * getWrapper( const ConstString & _type ) const = 0;
 
 	public:
 		virtual bool bootstrapModules() = 0;
 		virtual bool initializeModules() = 0;
 
 	public:
-		virtual void addModulePath( const ConstString & _pak, const TVectorScriptModulePak & _modules ) = 0;
+		virtual void addModulePath( const ConstString & _pack, const TVectorScriptModulePack & _modules ) = 0;
+		virtual void removeModulePath( const ConstString & _pack, const TVectorScriptModulePack & _modules ) = 0;
 
 		virtual pybind::object importModule( const ConstString& _name ) = 0;
 
@@ -74,11 +75,8 @@ namespace Menge
         virtual void addGlobalModule( const String & _name, PyObject * _module ) = 0;
         virtual void removeGlobalModule( const String & _name ) = 0;
 
-		virtual bool hasModuleFunction( const pybind::object & _module, const char * _name ) = 0;
-		virtual pybind::object getModuleFunction( const pybind::object & _module, const char * _name ) = 0;
-
 	public:
-		virtual PrototypeGeneratorInterfacePtr createEntityGenerator( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator ) = 0;
+		virtual bool addEntityPrototype( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator ) = 0;
 		virtual pybind::object importEntity( const ConstString & _category, const ConstString & _prototype ) = 0;
 
 	public:

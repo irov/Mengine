@@ -103,7 +103,7 @@ namespace Menge
 		return m_camera3D;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceShape * ResourceMovie::getSocketResourceShape( const ConstString & _socketName ) const
+	ResourceShapePtr ResourceMovie::getSocketResourceShape( const ConstString & _socketName ) const
 	{
 		for( TVectorMovieLayers::const_iterator 
 			it = m_layers.begin(),
@@ -118,8 +118,8 @@ namespace Menge
 				continue;
 			}
 			
-			ResourceShape * resourceShape = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceReferenceT<ResourceShape *>( layer.source );
+			ResourceShapePtr resourceShape = RESOURCE_SERVICE( m_serviceProvider )
+				->getResourceReferenceT<ResourceShapePtr>( layer.source );
 				
 			return resourceShape;
 		}

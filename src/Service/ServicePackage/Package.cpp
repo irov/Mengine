@@ -21,6 +21,8 @@ namespace Menge
 	Package::Package()
 		: m_serviceProvider(nullptr)
 		, m_preload(false)
+		, m_load(false)
+		, m_enable(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -100,7 +102,14 @@ namespace Menge
 			return false;
 		}
 
+		m_load = true;
+
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Package::isLoad() const
+	{
+		return m_load;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::mountFileGroup_()
@@ -289,14 +298,14 @@ namespace Menge
 			}
 		}
 
-		SCRIPT_SERVICE(m_serviceProvider)
-            ->addModulePath( m_name, m_scriptsPak );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Package::apply()
+	bool Package::enable()
 	{
+		SCRIPT_SERVICE( m_serviceProvider )
+			->addModulePath( m_name, m_scriptsPackages );
+
 		for( TVectorConstString::const_iterator
 			it = m_resourcesDesc.begin(),
 			it_end = m_resourcesDesc.end();
@@ -309,7 +318,7 @@ namespace Menge
             const ConstString & path = *it;
 
 			if( RESOURCE_SERVICE(m_serviceProvider)
-				->loadResource( m_name, path ) == false )
+				->loadResource( m_locale, m_name, path ) == false )
             {
                 return false;
             }
@@ -359,7 +368,7 @@ namespace Menge
 		{
 			const PakDataDesc & desc = *it;
 
-			if( this->loadData_( m_name, desc.name, desc.path ) == false )
+			if( this->addUserData_( m_name, desc.name, desc.path ) == false )
 			{
 				return false;
 			}
@@ -379,7 +388,95 @@ namespace Menge
 			}
 		}
 
+		m_enable = true;
+
         return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Package::disable()
+	{
+		m_enable = false;
+
+		SCRIPT_SERVICE( m_serviceProvider )
+			->removeModulePath( m_name, m_scriptsPackages );
+
+		for( TVectorConstString::const_iterator
+			it = m_resourcesDesc.begin(),
+			it_end = m_resourcesDesc.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & path = *it;
+
+			if( RESOURCE_SERVICE( m_serviceProvider )
+				->unloadResource( m_locale, m_name, path ) == false )
+			{
+				return false;
+			}
+		}
+
+		for( TVectorConstString::iterator
+			it = m_pathFonts.begin(),
+			it_end = m_pathFonts.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & path = *it;
+
+			if( this->unloadFont_( m_name, path ) == false )
+			{
+				return false;
+			}
+		}
+
+		for( TVectorConstString::iterator
+			it = m_pathTexts.begin(),
+			it_end = m_pathTexts.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & path = *it;
+
+			if( this->unloadText_( m_name, path ) == false )
+			{
+				return false;
+			}
+		}
+
+		for( TVectorPakDataDesc::iterator
+			it = m_datas.begin(),
+			it_end = m_datas.end();
+		it != it_end;
+		++it )
+		{
+			const PakDataDesc & desc = *it;
+
+			if( this->removeUserData_( desc.name ) == false )
+			{
+				return false;
+			}
+		}
+
+		for( TVectorConstString::iterator
+			it = m_materials.begin(),
+			it_end = m_materials.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & path = *it;
+
+			if( this->unloadMaterials_( m_name, path ) == false )
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Package::isEnable() const
+	{
+		return m_enable;
 	}
     //////////////////////////////////////////////////////////////////////////
 	bool Package::loadText_( const ConstString & _pakName, const ConstString & _path )
@@ -390,10 +487,26 @@ namespace Menge
         return result;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool Package::unloadText_( const ConstString & _pakName, const ConstString & _path )
+	{
+		bool result = TEXT_SERVICE( m_serviceProvider )
+			->unloadTextEntry( m_locale, _pakName, _path );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool Package::loadFont_( const ConstString & _pakName, const ConstString & _path )
 	{
 		bool result = TEXT_SERVICE(m_serviceProvider)
 			->loadFonts( m_locale, _pakName, _path );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Package::unloadFont_( const ConstString & _pakName, const ConstString & _path )
+	{
+		bool result = TEXT_SERVICE( m_serviceProvider )
+			->unloadFonts( _pakName, _path );
 
 		return result;
 	}
@@ -406,10 +519,26 @@ namespace Menge
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Package::loadData_( const ConstString & _pakName, const ConstString & _name, const FilePath & _path )
+	bool Package::unloadMaterials_( const ConstString & _pakName, const FilePath & _path )
+	{
+		bool result = RENDERMATERIAL_SERVICE( m_serviceProvider )
+			->unloadMaterials( _pakName, _path );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Package::addUserData_( const ConstString & _pakName, const ConstString & _name, const FilePath & _path )
 	{
 		bool result = USERDATA_SERVICE(m_serviceProvider)
 			->addUserdata( _name, _pakName, _path );
+
+		return result;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Package::removeUserData_( const ConstString & _name )
+	{
+		bool result = USERDATA_SERVICE( m_serviceProvider )
+			->removeUserdata( _name );
 
 		return result;
 	}
@@ -426,12 +555,12 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Package::addScriptPak_( const ConstString & _path, const ConstString & _module, const ConstString & _initializer )
 	{
-		ScriptModulePak pak;
+		ScriptModulePack pak;
 		pak.path = _path;
 		pak.module = _module;
 		pak.initializer = _initializer;
 
-		m_scriptsPak.push_back( pak );
+		m_scriptsPackages.push_back( pak );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Package::addFontPath_( const ConstString & _font )

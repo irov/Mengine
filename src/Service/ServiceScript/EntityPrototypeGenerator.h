@@ -18,17 +18,20 @@ namespace Menge
 		~EntityPrototypeGenerator();
 
 	public:
-		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
-		ServiceProviderInterface * getServiceProvider() const;
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override;
+		ServiceProviderInterface * getServiceProvider() const override;
 
 	public:
-		bool initialize( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator );
+		void setScriptGenerator( const pybind::object & _generator );
+
+	public:
+		bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
 
 	public:
 		pybind::object preparePythonType();
 
 	protected:
-		Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override;
+		Factorable * generate() override;
 
 	public:
 		PyObject * getGenerator() const;

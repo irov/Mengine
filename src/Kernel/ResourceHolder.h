@@ -9,20 +9,23 @@ namespace Menge
     class ResourceHolder
     {
 	public:
+		typedef stdex::intrusive_ptr<T> TPtr;
+
+	public:
 		ResourceHolder()
 			: m_resource(nullptr)
 			, m_compile(false)
 		{
 		}
 
-		ResourceHolder( T * _resource )
+		ResourceHolder( const TPtr & _resource )
 			: m_resource(_resource)
 			, m_compile(false)
 		{
 		}
 
     public:
-        T * get() const
+		const TPtr & get() const
         {
             return m_resource;
         }
@@ -33,7 +36,7 @@ namespace Menge
 		}
 
     public:
-        ResourceHolder<T> & operator = ( T * _resource )
+		ResourceHolder<T> & operator = (const TPtr & _resource)
         {
 			this->release();
 
@@ -43,36 +46,32 @@ namespace Menge
         }
         
     public:
-        T * operator -> () const
+		const TPtr & operator -> () const
         {
-            T * t = this->get();
+			const TPtr & t = this->get();
 
             return t;
         }
 
-        operator T * () const
+		operator const TPtr & () const
         {
-            T * t = this->get();
+			const TPtr & t = this->get();
 
             return t;
         }
 
-        bool operator == ( T * _resource ) const
+		bool operator == (const TPtr & _resource) const
         {
-            T * t = this->get();
+			const TPtr & t = this->get();
 
             bool result = (t == _resource);
 
             return result;
         }
 
-        bool operator != ( T * _resource ) const
+		bool operator != (const TPtr & _resource) const
         {
-            T * t = this->get();
-
-            bool result = (t != _resource);
-
-            return result;
+			return !this->operator == (_resource);
         }
 
 	public:
@@ -109,7 +108,7 @@ namespace Menge
 		}
 
 	protected:
-		T * m_resource;
+		TPtr m_resource;
 		bool m_compile;
     };
 }

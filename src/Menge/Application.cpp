@@ -230,6 +230,13 @@ namespace Menge
 		SERVICE_CREATE( m_serviceProvider, GameService );
 		SERVICE_CREATE( m_serviceProvider, TimelineService );
 
+		ScriptWrapper::constsWrap( m_serviceProvider );
+		ScriptWrapper::mathWrap( m_serviceProvider );
+		ScriptWrapper::nodeWrap( m_serviceProvider );
+		ScriptWrapper::helperWrap( m_serviceProvider );
+		ScriptWrapper::soundWrap( m_serviceProvider );
+		ScriptWrapper::entityWrap( m_serviceProvider );
+
 		if( this->registerBaseNodeTypes_() == false )
 		{
 			return false;
@@ -244,15 +251,7 @@ namespace Menge
 		{
 			return false;
 		}
-
-        ScriptWrapper::constsWrap( m_serviceProvider );
-        ScriptWrapper::mathWrap( m_serviceProvider );
-        ScriptWrapper::nodeWrap( m_serviceProvider );
-        ScriptWrapper::helperWrap( m_serviceProvider );
-        ScriptWrapper::soundWrap( m_serviceProvider );
-        ScriptWrapper::entityWrap( m_serviceProvider );
-
-
+		
 		DecoderFactoryInterfacePtr imageDecoderMemory = new DecoderFactory<ImageDecoderMemory>(m_serviceProvider, CONST_STRING(m_serviceProvider, memoryImage) );
 		DecoderFactoryInterfacePtr imageDecoderArchive = new DecoderFactory<ImageDecoderArchive>(m_serviceProvider, CONST_STRING(m_serviceProvider, archiveImage) );
 		
@@ -327,7 +326,7 @@ namespace Menge
 	{	
 #	define NODE_FACTORY( serviceProvider, Type )\
         if( PROTOTYPE_SERVICE(serviceProvider)\
-            ->addPrototype( STRINGIZE_STRING_LOCAL(serviceProvider, "Node"), STRINGIZE_STRING_LOCAL( serviceProvider, #Type), new NodePrototypeGenerator<Type, 128>(serviceProvider) ) == false )\
+            ->addPrototype( STRINGIZE_STRING_LOCAL(serviceProvider, "Node"), STRINGIZE_STRING_LOCAL( serviceProvider, #Type), new NodePrototypeGenerator<Type, 128> ) == false )\
 		{\
 			return false;\
 		}
@@ -405,13 +404,33 @@ namespace Menge
             : public PrototypeGeneratorInterface
         {
         public:
-            SceneCategoryGenerator( ServiceProviderInterface * _serviceProvider )
-                : m_serviceProvider(_serviceProvider)
+            SceneCategoryGenerator()
+                : m_serviceProvider(nullptr)
             {
             }
 
+		protected:
+			void setServiceProvider( ServiceProviderInterface * _serviceProvider )
+			{
+				m_serviceProvider = _serviceProvider;
+			}
+
+			ServiceProviderInterface * getServiceProvider() const override
+			{
+				return m_serviceProvider;
+			}
+
+		protected:
+			bool initialize( const ConstString & _category, const ConstString & _prototype ) override
+			{
+				m_category = _category;
+				m_prototype = _prototype;
+
+				return true;
+			}
+
         protected:
-            Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
+            Factorable * generate() override
             {
                 Scene * scene = NODE_SERVICE(m_serviceProvider)
                     ->createNodeT<Scene>( CONST_STRING(m_serviceProvider, Scene) );
@@ -419,8 +438,8 @@ namespace Menge
                 if( scene == nullptr )
                 {
                     LOGGER_ERROR(m_serviceProvider)("SceneCategoryGenerator can't create %s %s"
-                        , _category.c_str()
-                        , _prototype.c_str()
+                        , m_category.c_str()
+                        , m_prototype.c_str()
                         );
 
                     return nullptr;
@@ -441,6 +460,9 @@ namespace Menge
 
         protected:
             ServiceProviderInterface * m_serviceProvider;
+
+			ConstString m_category;
+			ConstString m_prototype;
         };
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -448,7 +470,7 @@ namespace Menge
 	{
 		LOGGER_INFO(m_serviceProvider)( "initialize Scene Manager..." );
 
-        PrototypeGeneratorInterface * generator = new SceneCategoryGenerator(m_serviceProvider);
+        PrototypeGeneratorInterface * generator = new SceneCategoryGenerator;
 
 		if( PROTOTYPE_SERVICE( m_serviceProvider )
 			->addPrototype( CONST_STRING( m_serviceProvider, Scene ), ConstString::none(), generator ) == false )
@@ -465,7 +487,7 @@ namespace Menge
 
 #	define RESOURCE_FACTORY( serviceProvider, Type ) \
 		if( PROTOTYPE_SERVICE(serviceProvider)\
-			->addPrototype( STRINGIZE_STRING_LOCAL(serviceProvider, "Resource"), STRINGIZE_STRING_LOCAL(serviceProvider, #Type), new ResourcePrototypeGenerator<Type, 128>(m_serviceProvider) ) == false )\
+			->addPrototype( STRINGIZE_STRING_LOCAL(serviceProvider, "Resource"), STRINGIZE_STRING_LOCAL(serviceProvider, #Type), new ResourcePrototypeGenerator<Type, 128> ) == false )\
 		{\
 			return false;\
 		}
@@ -554,7 +576,7 @@ namespace Menge
 			->initializeRenderResources();
 
 		NOTIFICATION_SERVICE(m_serviceProvider)
-            ->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
+			->notify( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, fullscreen, m_currentResolution );
 		
 		GAME_SERVICE( m_serviceProvider )
 			->setRenderViewport( m_renderViewport, m_contentResolution );
@@ -598,13 +620,10 @@ namespace Menge
 			->getPlatformName();
 
 		if( PACKAGE_SERVICE( m_serviceProvider )
-			->applyPackages( m_locale, platformName ) == false )
+			->enablePackages( m_locale, platformName ) == false )
 		{
 			return false;
 		}
-
-		TEXT_SERVICE( m_serviceProvider )
-			->setCurrentLocale( m_locale );
 
 		bool developmentMode = HAS_OPTIONS( m_serviceProvider, "dev" );
 		bool resourceCheck = APSENT_OPTIONS( m_serviceProvider, "noresourcecheck" );
@@ -1730,6 +1749,19 @@ namespace Menge
 		return m_projectVersion;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Application::setLocale( const ConstString & _locale )
+	{
+		ConstString prevLocale = m_locale;
+
+		m_locale = _locale;
+
+		NOTIFICATION_SERVICE( m_serviceProvider )
+			->notify( NOTIFICATOR_CHANGE_LOCALE, prevLocale, m_locale );
+
+		NOTIFICATION_SERVICE( m_serviceProvider )
+			->notify( NOTIFICATOR_UPDATE_LOCALE_NODE, prevLocale, m_locale );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const ConstString & Application::getLocale() const
 	{
 		return m_locale;
@@ -1883,7 +1915,7 @@ namespace Menge
 		}
 
 		m_cursorResource = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceCursor *>(_resourceName);
+			->getResourceT<ResourceCursorPtr>( _resourceName );
 
 		if( m_cursorResource == nullptr )
 		{

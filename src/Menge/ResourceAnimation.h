@@ -1,27 +1,28 @@
 #	pragma once
 
 #	include "Kernel/ResourceReference.h"
+#	include "Kernel/ResourceImage.h"
 
 #	include <stdex/stl_vector.h>
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
     class ResourceImage;
-	
+	//////////////////////////////////////////////////////////////////////////
 	struct AnimationSequence
 	{
 		AnimationSequence()
-			: resource(nullptr)
-			, delay(0.f)
+			: delay(0.f)
 		{}
 		
-		ResourceImage * resource;
+		ResourceImagePtr resource;
 		float delay;
 		ConstString resourceName;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<AnimationSequence> TVectorAnimationSequence;
-
+	//////////////////////////////////////////////////////////////////////////
 	class ResourceAnimation
 		: public ResourceReference
 	{
@@ -34,7 +35,7 @@ namespace Menge
 		uint32_t getSequenceCount() const;
 		float getSequenceDelay( uint32_t _index ) const;		
 		const ConstString& getSequenceResourceName( uint32_t _index ) const;
-		ResourceImage * getSequenceResource( uint32_t _index ) const;
+		const ResourceImagePtr & getSequenceResource( uint32_t _index ) const;
 
 		uint32_t getLastFrameIndex() const;
 		float getSequenceDuration() const;
@@ -58,6 +59,8 @@ namespace Menge
 
 		float m_duration;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceAnimation> ResourceAnimationPtr;
 }
 
 

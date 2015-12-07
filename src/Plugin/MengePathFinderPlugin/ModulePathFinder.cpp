@@ -141,7 +141,7 @@ namespace Menge
 		pybind::def_functor( "destroyPathFinderWayAffector", this, &ModulePathFinder::destroyPathFinderWayAffector );
 
 		SCRIPT_SERVICE(m_serviceProvider)
-			->addWrapping( Helper::stringizeString(m_serviceProvider, "PathGraphNode"), new ScriptClassWrapper<PathGraphNode>() );
+			->setWrapper( Helper::stringizeString( m_serviceProvider, "PathGraphNode" ), new ClassScriptWrapper<PathGraphNode>() );
 		
 		return true;
 	}
@@ -227,7 +227,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ModulePathFinder::setMapWeight( PathFinderMap * _map, const ConstString & _resourceName )
 	{		
-		ResourceImageData * resource;
+		ResourceImageDataPtr resource;
 		if( RESOURCE_SERVICE(m_serviceProvider)
 			->hasResourceT( _resourceName, &resource ) == false )
 		{

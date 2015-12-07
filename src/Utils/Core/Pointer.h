@@ -22,7 +22,7 @@ namespace Menge
 		operator U ()
 		{
 #	ifdef _DEBUG
-			if( stdex::is_dynamic_cast<U>::test( m_pointer ) == false )
+			if( stdex::mpl::is_dynamic_cast<U>::test( m_pointer ) == false )
 			{
 				return nullptr;
 			}

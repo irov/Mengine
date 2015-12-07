@@ -58,4 +58,6 @@ namespace Menge
 
 		bool m_isStreamable;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceSound> ResourceSoundPtr;
 }

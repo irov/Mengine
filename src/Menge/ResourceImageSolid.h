@@ -15,9 +15,6 @@ namespace Menge
 	public:
 		ResourceImageSolid();
 
-	public:
-
-
 	protected:
 		bool _isValid() const override;
 
@@ -28,4 +25,5 @@ namespace Menge
 		bool _compile() override;				
 	};
 	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceImageSolid> ResourceImageSolidPtr;
 }

@@ -289,7 +289,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		mt::vec3f movie_getWorldAnchorPoint( Movie * _movie )
 		{
-			ResourceMovie * resourceMovie = _movie->getResourceMovie();
+			const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
 			if( resourceMovie == nullptr )
 			{
@@ -606,7 +606,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
         float movie_getFrameDuration( Movie * _movie )
         {
-            ResourceMovie * resourceMovie = _movie->getResourceMovie();
+            const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
             if( resourceMovie == nullptr )
             {
@@ -624,7 +624,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         float movie_getDuration( Movie * _movie )
         {
-            ResourceMovie * resourceMovie = _movie->getResourceMovie();
+			const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
             if( resourceMovie == nullptr )
             {
@@ -642,7 +642,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         uint32_t movie_getFrameCount( Movie * _movie )
         {
-            ResourceMovie * resourceMovie = _movie->getResourceMovie();
+			const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
             if( resourceMovie == nullptr )
             {
@@ -660,7 +660,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f & movie_getSize( Movie * _movie )
         {
-            ResourceMovie * resourceMovie = _movie->getResourceMovie();
+			const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
             if( resourceMovie == nullptr )
             {
@@ -692,7 +692,7 @@ namespace Menge
 				return 0.f;
 			}
 
-			ResourceMovie * resourceMovie = sub_movie->getResourceMovie();
+			const ResourceMoviePtr & resourceMovie = sub_movie->getResourceMovie();
 
 			float frameDuration = resourceMovie->getFrameDuration();
 			uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
@@ -742,7 +742,7 @@ namespace Menge
 				return pybind::make_invalid_list_t();
 			}
 
-			ResourceMovie * resourceMovie = sub_movie->getResourceMovie();
+			const ResourceMoviePtr & resourceMovie = sub_movie->getResourceMovie();
 
 			float frameDuration = resourceMovie->getFrameDuration();
 			uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
@@ -800,7 +800,7 @@ namespace Menge
 				return pybind::make_invalid_list_t();
 			}
 
-			ResourceMovie * resourceMovie = sub_movie->getResourceMovie();
+			const ResourceMoviePtr & resourceMovie = sub_movie->getResourceMovie();
 
 			float frameDuration = resourceMovie->getFrameDuration();
 			uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
@@ -859,7 +859,7 @@ namespace Menge
 				return mt::vec3f( 0.f, 0.f, 0.f );
 			}
 
-			ResourceMovie * resourceMovie = _movie->getResourceMovie();
+			const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
 
 			if( resourceMovie == nullptr )
 			{
@@ -1796,7 +1796,7 @@ namespace Menge
                 return mt::vec2f(0.f,0.f);
             }
 
-            ResourceHIT * resourceHIT = _hotspotImage->getResourceHIT();
+            const ResourceHITPtr & resourceHIT = _hotspotImage->getResourceHIT();
 
             mt::vec2f size;
             size.x = (float)resourceHIT->getWidth();
@@ -1863,7 +1863,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool directResourceCompile( const ConstString & _nameResource )
         {
-            ResourceReference * resource;				
+            ResourceReferencePtr resource;				
 			if( RESOURCE_SERVICE(m_serviceProvider)
                 ->hasResource( _nameResource, &resource ) == false )
 			{
@@ -1889,7 +1889,7 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool directResourceRelease( const ConstString & _nameResource )
 		{
-			ResourceReference * resource;				
+			ResourceReferencePtr resource;				
 			if( RESOURCE_SERVICE(m_serviceProvider)
 				->hasResource( _nameResource, &resource ) == false )
 			{
@@ -1929,9 +1929,9 @@ namespace Menge
 			return successful;
 		}
         //////////////////////////////////////////////////////////////////////////
-        ResourceReference * s_getResourceReference( const ConstString & _nameResource )
+		ResourceReferencePtr s_getResourceReference( const ConstString & _nameResource )
         {
-            ResourceReference * resource = RESOURCE_SERVICE(m_serviceProvider)
+            const ResourceReferencePtr & resource = RESOURCE_SERVICE(m_serviceProvider)
                 ->getResourceReference( _nameResource );
 
             if( resource == nullptr )
@@ -1995,8 +1995,8 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         void writeImageToFile( const ConstString& _resource, const FilePath& _fileName )
         {
-            ResourceImage * resource = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceT<ResourceImage *>( _resource );
+            ResourceImagePtr resource = RESOURCE_SERVICE(m_serviceProvider)
+                ->getResourceT<ResourceImagePtr>( _resource );
 
             if( resource == nullptr )
             {
@@ -2019,7 +2019,7 @@ namespace Menge
                 ->setParticleEnable( _enabled );
         }
         //////////////////////////////////////////////////////////////////////////
-		ResourceImageDefault * s_createImageResource( const ConstString & _resourceName, const ConstString& _pakName, const FilePath& _fileName, const mt::vec2f & _maxSize )
+		ResourceImageDefaultPtr s_createImageResource( const ConstString & _resourceName, const ConstString& _pakName, const FilePath& _fileName, const mt::vec2f & _maxSize )
         {
 			mt::vec2f maxSize;
 
@@ -2059,8 +2059,8 @@ namespace Menge
 				maxSize = _maxSize;
 			}
 
-			ResourceImageDefault * resource = RESOURCE_SERVICE( m_serviceProvider )
-				->generateResourceT<ResourceImageDefault *>( ConstString::none(), ConstString::none(), _resourceName, CONST_STRING( m_serviceProvider, ResourceImageDefault ) );
+			ResourceImageDefaultPtr resource = RESOURCE_SERVICE( m_serviceProvider )
+				->generateResourceT<ResourceImageDefaultPtr>( ConstString::none(), ConstString::none(), ConstString::none(), _resourceName, CONST_STRING( m_serviceProvider, ResourceImageDefault ) );
 
 			if( resource == nullptr )
 			{
@@ -2075,10 +2075,10 @@ namespace Menge
 			return resource;
         }
 		//////////////////////////////////////////////////////////////////////////
-		ResourceImageSolid * s_createImageSolidResource( const ConstString & _resourceName, const ColourValue & _colour, const mt::vec2f & _maxSize )
+		ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const ColourValue & _colour, const mt::vec2f & _maxSize )
 		{
-			ResourceImageSolid * resource = RESOURCE_SERVICE( m_serviceProvider )
-				->generateResourceT<ResourceImageSolid *>( ConstString::none(), ConstString::none(), _resourceName, CONST_STRING( m_serviceProvider, ResourceImageSolid ) );
+			ResourceImageSolidPtr resource = RESOURCE_SERVICE( m_serviceProvider )
+				->generateResourceT<ResourceImageSolidPtr>( ConstString::none(), ConstString::none(), ConstString::none(), _resourceName, CONST_STRING( m_serviceProvider, ResourceImageSolid ) );
 
 			if( resource == nullptr )
 			{
@@ -2378,7 +2378,7 @@ namespace Menge
 		pybind::list s_getFonts()
 		{
 			pybind::list l;
-			MyVisitorTextFont mvtf( l );
+			MyVisitorCollectTextFont mvtf( l );
 
 			TEXT_SERVICE( m_serviceProvider )
 				->visitFonts( &mvtf );
@@ -2739,10 +2739,10 @@ namespace Menge
 			return correct_polygon;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		bool s_copyFile_( const ConstString & _resourceFileName, Blobject & _blob )
+		bool s_copyFile_( const ConstString & _resourceFileName, MemoryInterfacePtr & _blob )
 		{
-			ResourceFile * resourceFile =  RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceFile *>( _resourceFileName );
+			ResourceFilePtr resourceFile = RESOURCE_SERVICE( m_serviceProvider )
+				->getResourceT<ResourceFilePtr>( _resourceFileName );
 
 			if( resourceFile == false )
 			{
@@ -2763,9 +2763,9 @@ namespace Menge
 
 			size_t size = stream->size();
 
-			_blob.resize( size );
+			void * memory_buffer = _blob->newMemory( size );
 
-			if( stream->read( &_blob[0], size ) != size )
+			if( stream->read( memory_buffer, size ) != size )
 			{
 				return false;
 			}
@@ -2777,8 +2777,10 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_copyUserPicture( const ConstString & _resourceFileName, const String & _fileName )
 		{
-			Blobject blob;
-			if( this->s_copyFile_( _resourceFileName, blob ) == false )
+			MemoryInterfacePtr memory = MEMORY_SERVICE(m_serviceProvider)
+				->createMemory();
+
+			if( this->s_copyFile_( _resourceFileName, memory ) == false )
 			{
 				return false;
 			}
@@ -2793,7 +2795,7 @@ namespace Menge
 			}
 
 			if( PLATFORM_SERVICE(m_serviceProvider)
-				->createDirectoryUserPicture( projectName, wc_fileName, &blob[0], blob.size() ) == false )
+				->createDirectoryUserPicture( projectName, wc_fileName, memory->getMemory(), memory->getSize() ) == false )
 			{
 				return false;
 			}
@@ -2803,8 +2805,10 @@ namespace Menge
 		//////////////////////////////////////////////////////////////////////////
 		bool s_copyUserMusic( const ConstString & _resourceFileName, const String & _fileName )
 		{
-			Blobject blob;
-			if( this->s_copyFile_( _resourceFileName, blob ) == false )
+			MemoryInterfacePtr memory = MEMORY_SERVICE( m_serviceProvider )
+				->createMemory();
+
+			if( this->s_copyFile_( _resourceFileName, memory ) == false )
 			{
 				return false;
 			}
@@ -2819,7 +2823,7 @@ namespace Menge
 			}
 
 			if( PLATFORM_SERVICE(m_serviceProvider)
-				->createDirectoryUserMusic( projectName, wc_fileName, &blob[0], blob.size() ) == false )
+				->createDirectoryUserMusic( projectName, wc_fileName, memory->getMemory(), memory->getSize() ) == false )
 			{
 				return false;
 			}
@@ -2899,10 +2903,10 @@ namespace Menge
 
 			ConstString resourceMovieName = Helper::stringizeStringSize( m_serviceProvider, buffer.c_str(), buffer.size() );
 
-			ResourceMovie * resourceMovie;
+			ResourceMoviePtr resourceMovie;
 
 			if( RESOURCE_SERVICE(m_serviceProvider)
-				->hasResourceT<ResourceMovie *>( resourceMovieName, &resourceMovie ) == false )
+				->hasResourceT<ResourceMoviePtr>( resourceMovieName, &resourceMovie ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("s_getMovieSlotsPosition: not found resource movie %s"
 					, resourceMovieName.c_str()
@@ -2944,10 +2948,10 @@ namespace Menge
 
 			ConstString resourceMovieName = Helper::stringizeStringSize( m_serviceProvider, buffer.c_str(), buffer.size() );
 
-			ResourceMovie * resourceMovie;
+			ResourceMoviePtr resourceMovie;
 
 			if( RESOURCE_SERVICE(m_serviceProvider)
-				->hasResourceT<ResourceMovie *>( resourceMovieName, &resourceMovie ) == false )
+				->hasResourceT<ResourceMoviePtr>( resourceMovieName, &resourceMovie ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("getMovieSlotPosition: not found resource movie %s"
 					, resourceMovieName.c_str()
@@ -3110,6 +3114,12 @@ namespace Menge
 
 			return id;
 		}
+		//////////////////////////////////////////////////////////////////////////
+		void s_setLocale( const ConstString & _locale )
+		{
+			APPLICATION_SERVICE( m_serviceProvider )
+				->setLocale( _locale );
+		}
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getCursorPosition()
         {
@@ -3204,7 +3214,7 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getImageSize( Sprite * _sprite )
         {
-            ResourceImage * resourceImage = _sprite->getResourceImage();
+            const ResourceImagePtr & resourceImage = _sprite->getResourceImage();
 
             if( resourceImage == nullptr )
             {
@@ -4300,8 +4310,8 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         float s_getMovieDuration( const ConstString & _resourceName )
         {
-            ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceT<ResourceMovie *>( _resourceName );
+			ResourceMoviePtr resourceMovie = RESOURCE_SERVICE( m_serviceProvider )
+                ->getResourceT<ResourceMoviePtr>( _resourceName );
 
             if( resourceMovie == nullptr )
             {
@@ -4505,7 +4515,7 @@ namespace Menge
 			return py_dict_result.ret();
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieElement2( ResourceMovie * _resource, const ConstString & _slotName, const ConstString & _typeName )
+		bool s_hasMovieElement2( const ResourceMoviePtr & _resource, const ConstString & _slotName, const ConstString & _typeName )
         {
             const TVectorMovieLayers & layers = _resource->getLayers();
 
@@ -4543,8 +4553,8 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool s_hasMovieElement( const ConstString & _resourceName, const ConstString & _slotName, const ConstString & _typeName )
         {
-            ResourceMovie * resource = RESOURCE_SERVICE(m_serviceProvider)
-                ->getResourceT<ResourceMovie *>( _resourceName );
+			ResourceMoviePtr resource = RESOURCE_SERVICE( m_serviceProvider )
+                ->getResourceT<ResourceMoviePtr>( _resourceName );
 
             if( resource == nullptr )
             {
@@ -4933,6 +4943,7 @@ namespace Menge
             ;
 
         pybind::interface_<ResourceReference, pybind::bases<Resource, Identity, Reference> >("ResourceReference", false)
+			.def_smart_pointer()
             .def( "getCategory", &ResourceReference::getCategory )
             .def( "getGroup", &ResourceReference::getGroup )
 			.def( "cache", &ResourceReference::cache )
@@ -5916,6 +5927,8 @@ namespace Menge
 			pybind::def_functor( "getMovieSlotPosition", nodeScriptMethod, &NodeScriptMethod::s_getMovieSlotPosition );
 
 			pybind::def_functor( "gridBurnTransparency", nodeScriptMethod, &NodeScriptMethod::s_gridBurnTransparency );
+
+			pybind::def_functor( "setLocale", nodeScriptMethod, &NodeScriptMethod::s_setLocale );
         }
     }
 }

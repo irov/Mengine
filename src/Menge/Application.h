@@ -18,7 +18,7 @@
 
 namespace Menge
 {
-	class ResourceCursor;
+	typedef stdex::intrusive_ptr<class ResourceCursor> ResourceCursorPtr;
 
 	class Application 
 		: public ServiceBase<ApplicationInterface>
@@ -128,6 +128,7 @@ namespace Menge
 		uint32_t getProjectVersion() const override;
 
 	public:
+		void setLocale( const ConstString & _locale ) override;
 		const ConstString & getLocale() const override;
 
 	public:
@@ -210,7 +211,7 @@ namespace Menge
 
 		void parseArguments_( const String& _arguments );
 
-		ResourceCursor * m_cursorResource;
+		ResourceCursorPtr m_cursorResource;
 
 		WString m_companyName;
 		WString m_projectName;

@@ -7,8 +7,11 @@
 
 #	include "Core/MemoryAllocator.h"
 
+#	include "stdex/mpl.h"
+
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	class ObserverInterface
 		: public MemoryAllocator
 	{
@@ -23,20 +26,20 @@ namespace Menge
 	public:
 		virtual void destroy() = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class M>
 	class GeneratorObserverMethod
 		: public ObserverInterface
 	{
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class Observer0
 		: public ObserverInterface
 	{
 	public:
 		virtual void notify() = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M>
 	class ObserverMethod0
 		: public Observer0
@@ -58,7 +61,7 @@ namespace Menge
 		C * m_self;
 		M m_method;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class C>
 	class GeneratorObserverMethod<void (C::*)()>
 		: public ObserverMethod0 < C, void (C::*)() >
@@ -75,7 +78,7 @@ namespace Menge
 			delete this;
 		}
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class P0>
 	class Observer1
 		: public ObserverInterface
@@ -83,7 +86,7 @@ namespace Menge
 	public:
 		virtual void notify( P0 _p0 ) = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class P0>
 	class ObserverMethod1
 		: public Observer1 < P0 >
@@ -105,14 +108,14 @@ namespace Menge
 		C * m_self;
 		M m_method;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class C, class P0>
 	class GeneratorObserverMethod<void (C::*)(P0)>
-		: public ObserverMethod1 < C, void (C::*)(P0), P0 >
+		: public ObserverMethod1 < C, void (C::*)(P0), typename stdex::mpl::ref_attribute<P0>::type >
 	{
 	public:
 		GeneratorObserverMethod( C * _self, void (C::*_method)(P0) )
-			: ObserverMethod1<C, void (C::*)(P0), P0>( _self, _method )
+			: ObserverMethod1<C, void (C::*)(P0), typename stdex::mpl::ref_attribute<P0>::type>( _self, _method )
 		{
 		}
 
@@ -122,7 +125,7 @@ namespace Menge
 			delete this;
 		}
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class P0, class P1>
 	class Observer2
 		: public ObserverInterface
@@ -130,7 +133,7 @@ namespace Menge
 	public:
 		virtual void notify( P0 _p0, P1 _p1 ) = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class C, class M, class P0, class P1>
 	class ObserverMethod2
 		: public Observer2 < P0, P1 >
@@ -152,14 +155,14 @@ namespace Menge
 		C * m_self;
 		M m_method;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template<class C, class P0, class P1>
 	class GeneratorObserverMethod<void (C::*)(P0, P1)>
-		: public ObserverMethod2 < C, void (C::*)(P0, P1), P0, P1 >
+		: public ObserverMethod2 < C, void (C::*)(P0, P1), typename stdex::mpl::ref_attribute<P0>::type, typename stdex::mpl::ref_attribute<P1>::type>
 	{
 	public:
 		GeneratorObserverMethod( C * _self, void (C::*_method)(P0, P1) )
-			: ObserverMethod2<C, void (C::*)(P0, P1), P0, P1>( _self, _method )
+			: ObserverMethod2<C, void (C::*)(P0, P1), typename stdex::mpl::ref_attribute<P0>::type, typename stdex::mpl::ref_attribute<P1>::type>( _self, _method )
 		{
 		}
 
@@ -169,13 +172,13 @@ namespace Menge
 			delete this;
 		}
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class VisitorObserver
 	{
 	public:
 		virtual bool visit( ObserverInterface * _observer ) = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class VisitorObserverCall0
 		: public VisitorObserver
 	{
@@ -193,12 +196,18 @@ namespace Menge
 
 			return true;
 		}
-	};
 
+	private:
+		void operator = (const VisitorObserverCall0 &);
+	};
+	//////////////////////////////////////////////////////////////////////////
 	template<class P0>
 	class VisitorObserverCall1
 		: public VisitorObserver
 	{
+	public:
+		typedef typename stdex::mpl::ref_attribute<P0>::type A0;
+
 	public:
 		VisitorObserverCall1( P0 _p0 )
 			: m_p0( _p0 )
@@ -208,7 +217,7 @@ namespace Menge
 	public:
 		bool visit( ObserverInterface * _observer ) override
 		{
-			Observer1<P0> * observer = dynamic_cast<Observer1<P0> *>(_observer);
+			Observer1<A0> * observer = dynamic_cast<Observer1<A0> *>(_observer);
 
 			if( observer == nullptr )
 			{
@@ -222,12 +231,19 @@ namespace Menge
 
 	protected:
 		P0 m_p0;
-	};
 
+	private:
+		void operator = (const VisitorObserverCall1 &);
+	};
+	//////////////////////////////////////////////////////////////////////////
 	template<class P0, class P1>
 	class VisitorObserverCall2
 		: public VisitorObserver
 	{
+	public:
+		typedef typename stdex::mpl::ref_attribute<P0>::type A0;
+		typedef typename stdex::mpl::ref_attribute<P1>::type A1;
+
 	public:
 		VisitorObserverCall2( P0 _p0, P1 _p1 )
 			: m_p0( _p0 )
@@ -238,7 +254,7 @@ namespace Menge
 	public:
 		bool visit( ObserverInterface * _observer ) override
 		{
-			Observer2<P0, P1> * observer = dynamic_cast<Observer2<P0, P1> *>(_observer);
+			Observer2<A0, A1> * observer = dynamic_cast<Observer2<A0, A1> *>(_observer);
 
 			if( observer == nullptr )
 			{
@@ -253,8 +269,11 @@ namespace Menge
 	protected:
 		P0 m_p0;
 		P1 m_p1;
-	};
 
+	private:
+		void operator = (const VisitorObserverCall2 &);
+	};
+	//////////////////////////////////////////////////////////////////////////
 	class NotificationServiceInterface
 		: public ServiceInterface
 	{
@@ -288,7 +307,7 @@ namespace Menge
 		}
 
 		template<class P0>
-		inline void notify( uint32_t _id, P0 _p0 )
+		inline void notify( uint32_t _id, const P0 & _p0 )
 		{
 			VisitorObserverCall1<P0> caller( _p0 );
 
@@ -296,14 +315,14 @@ namespace Menge
 		}
 
 		template<class P0, class P1>
-		inline void notify( uint32_t _id, P0 _p0, P1 _p1 )
+		inline void notify( uint32_t _id, const P0 & _p0, const P1 & _p1 )
 		{
 			VisitorObserverCall2<P0, P1> caller( _p0, _p1 );
 
 			this->visitObservers( _id, &caller );
 		}
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 #   define NOTIFICATION_SERVICE( serviceProvider )\
     SERVICE_GET(serviceProvider, Menge::NotificationServiceInterface)
 }

@@ -49,8 +49,8 @@ namespace Menge
 		Movie();
 
     public:
-        void setResourceMovie( ResourceMovie * _resourceMovie );
-        ResourceMovie * getResourceMovie() const;
+		void setResourceMovie( const ResourceMoviePtr & _resourceMovie );
+		const ResourceMoviePtr & getResourceMovie() const;
 
 	public:
 		const ConstString & getResourceMovieName() const;

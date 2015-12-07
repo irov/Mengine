@@ -20,6 +20,7 @@ namespace Menge
 
 	public:
 		bool addUserdata( const ConstString & _name, const ConstString & _category, const FilePath & _path ) override;
+		bool removeUserdata( const ConstString & _name ) override;
 		bool hasUserdata( const ConstString & _name ) const override;
 
 	public:

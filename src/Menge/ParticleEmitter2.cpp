@@ -385,7 +385,7 @@ namespace	Menge
 
 				//ResourceImage * image = m_resourceParticle->getAtlasImageResource( textureId );
 				//TODO
-				ResourceImage * image = m_resourceParticle->getAtlasImageResource( 0 );
+				ResourceImagePtr image = m_resourceParticle->getAtlasImageResource( 0 );
 
 				if( image == nullptr )
 				{
@@ -465,7 +465,7 @@ namespace	Menge
 		}
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::setResourceParticle( ResourceParticle * _resourceParticle )
+	void ParticleEmitter2::setResourceParticle( const ResourceParticlePtr & _resourceParticle )
 	{
 		if( m_resourceParticle == _resourceParticle )
 		{
@@ -477,7 +477,7 @@ namespace	Menge
 		this->recompile();
 	}
     //////////////////////////////////////////////////////////////////////////
-    ResourceParticle * ParticleEmitter2::getResourceParticle() const
+	const ResourceParticlePtr & ParticleEmitter2::getResourceParticle() const
     {
         return m_resourceParticle;
     }
@@ -541,8 +541,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter2::compileEmitterImage_( const ParticleEmitterInterfacePtr & _emitter )
 	{
-		ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceHIT *>(m_emitterImageName);
+		ResourceHITPtr resourceHIT = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceT<ResourceHITPtr>( m_emitterImageName );
 
 		if( resourceHIT == nullptr )
 		{

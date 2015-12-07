@@ -24,8 +24,8 @@ namespace Menge
 		~Spine();
 
 	public:
-		void setResourceSpine( ResourceSpine * _resourceSpine );
-		ResourceSpine * getResourceSpine() const;
+		void setResourceSpine( const ResourceSpinePtr & _resourceSpine );
+		const ResourceSpinePtr & getResourceSpine() const;
 
 	public:
 		void setAnimationName( const ConstString & _name );

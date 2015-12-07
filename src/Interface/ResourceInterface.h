@@ -11,9 +11,11 @@
 
 namespace Menge
 {
-    class ResourceReference;
-    class ResourceVisitor;
-
+	//////////////////////////////////////////////////////////////////////////
+	class ResourceVisitor;
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<class ResourceReference> ResourceReferencePtr;
+	//////////////////////////////////////////////////////////////////////////
     class ResourceServiceInterface
         : public ServiceInterface
     {
@@ -24,108 +26,112 @@ namespace Menge
 		virtual void finalize() = 0;
 
     public:
-        virtual bool loadResource( const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool loadResource( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool unloadResource( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
-		virtual ResourceReference * generateResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;
+		virtual ResourceReferencePtr generateResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;
 
 	public:
 		template<class T>
-		T generateResourceT( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
+		T generateResourceT( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
 		{
-			ResourceReference * resource = this->generateResource( _category, _group, _name, _type );
+			ResourceReferencePtr resource = this->generateResource( _locale, _category, _group, _name, _type );
 
 #   ifdef _DEBUG
-			if( dynamic_cast<T>(resource) == nullptr )
+			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
 			{
 				return nullptr;
 			}
 #   endif
 
-			T t = static_cast<T>(resource);
+			T t = stdex::intrusive_static_cast<T>(resource);
 
 			return t;
 		}
 
 	public:
-        virtual ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;
+		virtual ResourceReferencePtr createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;
 
 	public:
         template<class T>
-        T createResourceT( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
+		T createResourceT( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
         {
-			ResourceReference * resource = this->createResource(_category, _group, _name, _type);
+			ResourceReferencePtr resource = this->createResource( _locale, _category, _group, _name, _type );
 
 #   ifdef _DEBUG
-			if( dynamic_cast<T>(resource) == nullptr )
+			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
 			{
 				return nullptr;
 			}
 #   endif
 
-			T t = static_cast<T>(resource);
+			T t = stdex::intrusive_static_cast<T>(resource);
 
 			return t;
         }
+
+	public:
+		virtual bool removeResource( const ResourceReferencePtr & _resource ) = 0;
 		
     public:
-        virtual ResourceReference * getResource( const ConstString& _name ) const = 0;
+		virtual ResourceReferencePtr getResource( const ConstString& _name ) const = 0;
 
         template<class T>
         T getResourceT( const ConstString & _name ) const
         {
-            ResourceReference * resource = this->getResource( _name );
+			ResourceReferencePtr resource = this->getResource( _name );
 
 #   ifdef _DEBUG
-            if( dynamic_cast<T>(resource) == nullptr )
+			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
             {
                 return nullptr;
             }
 #   endif
 
-            T t = static_cast<T>(resource);
+			T t = stdex::intrusive_static_cast<T>(resource);
 
             return t;
         }
 
-        virtual ResourceReference * getResourceReference( const ConstString& _name ) const = 0;
+		virtual ResourceReferencePtr getResourceReference( const ConstString& _name ) const = 0;
 
         template<class T>
         T getResourceReferenceT( const ConstString & _name ) const
         {
-            ResourceReference * resource = this->getResourceReference( _name );
+			ResourceReferencePtr resource = this->getResourceReference( _name );
 
 #   ifdef _DEBUG
-            if( dynamic_cast<T>(resource) == nullptr )
-            {
-                return nullptr;
-            }
+			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
+			{
+				return nullptr;
+			}
 #   endif
 
-            T t = static_cast<T>(resource);
+			T t = stdex::intrusive_static_cast<T>(resource);
 
             return t;
         }
 
-        virtual bool hasResource( const ConstString& _name, ResourceReference ** _resource ) const = 0;
+		virtual bool hasResource( const ConstString& _name, ResourceReferencePtr * _resource ) const = 0;
 		
 		template<class T>
 		bool hasResourceT( const ConstString& _name, T * _resource ) const
 		{
-			ResourceReference * resource;			
+			ResourceReferencePtr resource;
 			if( this->hasResource( _name, &resource ) == false )
 			{
 				return false;
 			}
 			
 #   ifdef _DEBUG
-			if( dynamic_cast<T>(resource) == nullptr )
+			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
 			{
-				return false;
+				return nullptr;
 			}
 #   endif
 
-			*_resource = static_cast<T>(resource);
+			*_resource = stdex::intrusive_static_cast<T>(resource);
 
 			return true;
 		}

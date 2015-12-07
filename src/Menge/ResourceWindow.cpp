@@ -66,8 +66,8 @@ namespace Menge
 				}
 			}
 
-			ResourceImage * resource  = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceImage *>( m_images[i].resourceName );
+			ResourceImagePtr resource  = RESOURCE_SERVICE(m_serviceProvider)
+				->getResourceT<ResourceImagePtr>( m_images[i].resourceName );
 			
 			if( resource == 0 )
 			{
@@ -97,16 +97,18 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage * ResourceWindow::getResource( int _type )
+	const ResourceImagePtr & ResourceWindow::getResource( int _type ) const
 	{
-		ResourceImage * resource = m_images[_type].resource;
+		const ResourceImagePtr & resource = m_images[_type].resource;
 
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ResourceWindow::getOffset( int _type )
+	const mt::vec2f & ResourceWindow::getOffset( int _type ) const
 	{
-		return m_images[_type].offset;
+		const mt::vec2f & offset = m_images[_type].offset;
+
+		return offset;
 	}
 	//////////////////////////////////////////////////////////////////////////
 }

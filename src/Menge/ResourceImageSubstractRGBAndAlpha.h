@@ -27,9 +27,9 @@ namespace Menge
 
 	protected:
 		ConstString m_resourceImageRGBName;
-		ResourceImage * m_resourceImageRGB;
+		ResourceImagePtr m_resourceImageRGB;
 
 		ConstString m_resourceImageAlphaName;
-		ResourceImage * m_resourceImageAlpha;
+		ResourceImagePtr m_resourceImageAlpha;
 	};
 }

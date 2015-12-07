@@ -23,7 +23,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::setResourceHIT( ResourceHIT * _resourceHIT )
+	void HotSpotImage::setResourceHIT( const ResourceHITPtr & _resourceHIT )
 	{
 		if( m_resourceHIT == _resourceHIT )
 		{
@@ -35,7 +35,7 @@ namespace Menge
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceHIT * HotSpotImage::getResourceHIT() const
+	const ResourceHITPtr & HotSpotImage::getResourceHIT() const
 	{
 		return m_resourceHIT;
 	}

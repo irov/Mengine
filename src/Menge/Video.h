@@ -35,8 +35,8 @@ namespace Menge
 		virtual void pause();
 		
 	public:
-		void setResourceVideo( ResourceVideo * _resourceVideo );
-		ResourceVideo * getResourceVideo() const;
+		void setResourceVideo( const ResourceVideoPtr & _resourceVideo );
+		const ResourceVideoPtr & getResourceVideo() const;
 
 	public:
 		void _setTiming( float _timing ) override;

@@ -47,7 +47,7 @@ namespace Menge
 		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Video::setResourceVideo( ResourceVideo * _resourceVideo )
+	void Video::setResourceVideo( const ResourceVideoPtr & _resourceVideo )
 	{
 		if( m_resourceVideo == _resourceVideo )
 		{
@@ -59,7 +59,7 @@ namespace Menge
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceVideo * Video::getResourceVideo() const
+	const ResourceVideoPtr & Video::getResourceVideo() const
 	{
 		return m_resourceVideo;
 	}

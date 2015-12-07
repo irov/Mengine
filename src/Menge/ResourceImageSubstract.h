@@ -23,6 +23,6 @@ namespace Menge
 
     protected:
 		ConstString m_resourceImageName;
-		ResourceImage * m_resourceImage;		
+		ResourceImagePtr m_resourceImage;		
 	};
 }

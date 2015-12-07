@@ -47,7 +47,12 @@ namespace Menge
 
 	public:
 		virtual bool load() = 0;
-		virtual bool apply() = 0;
+		virtual bool enable() = 0;
+		virtual bool disable() = 0;
+
+	public:
+		virtual bool isLoad() const = 0;
+		virtual bool isEnable() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<PackageInterface> PackageInterfacePtr;
@@ -65,7 +70,7 @@ namespace Menge
 		virtual PackageInterfacePtr getPackage( const ConstString & _name ) const = 0;
 
 	public:
-		virtual bool applyPackages( const ConstString & _locale, const ConstString & _platformName ) = 0;
+		virtual bool enablePackages( const ConstString & _locale, const ConstString & _platformName ) = 0;
 	};
 
 #   define PACKAGE_SERVICE( serviceProvider )\

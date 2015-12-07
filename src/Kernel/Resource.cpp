@@ -3,7 +3,7 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	Resource::Resource()
+	Resource::Resource()		
 		: m_compile(false)
 	{
 	}

@@ -27,8 +27,8 @@ namespace Menge
 		~Mesh2D();
 
     public:
-        void setResourceImage( ResourceImage * _resourceImage );
-        ResourceImage * getResourceImage() const;
+		void setResourceImage( const ResourceImagePtr & _resourceImage );
+		const ResourceImagePtr & getResourceImage() const;
         
 	public:
 		void setFrameShape( const MovieFrameShape * _shape );

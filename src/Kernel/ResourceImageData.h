@@ -6,6 +6,7 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	class ResourceImageData
 		: public ResourceReference
 	{
@@ -45,4 +46,6 @@ namespace Menge
 
 		bool m_validNoExist;		
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceImageData> ResourceImageDataPtr;
 }

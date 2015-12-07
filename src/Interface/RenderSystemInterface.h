@@ -424,6 +424,7 @@ namespace Menge
 
     public:
         virtual bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) = 0;
+		virtual bool unloadMaterials( const ConstString& _pakName, const FilePath& _fileName ) = 0;
 
 	public:
 		virtual void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) = 0;

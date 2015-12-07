@@ -43,7 +43,12 @@ namespace Menge
 
 	public:
 		bool load() override;
-		bool apply() override;
+		bool enable() override;
+		bool disable() override;
+
+	public:
+		bool isLoad() const override;
+		bool isEnable() const override;
 		
 	protected:
 		bool mountFileGroup_();
@@ -62,9 +67,13 @@ namespace Menge
 
     protected:
         bool loadText_( const ConstString & _pakName, const ConstString & _path );
+		bool unloadText_( const ConstString & _pakName, const ConstString & _path );
 		bool loadFont_( const ConstString & _pakName, const ConstString & _path );
-		bool loadData_( const ConstString & _pakName, const ConstString & _name, const FilePath & _path );
+		bool unloadFont_( const ConstString & _pakName, const ConstString & _path );
+		bool addUserData_( const ConstString & _pakName, const ConstString & _name, const FilePath & _path );
+		bool removeUserData_( const ConstString & _name );
 		bool loadMaterials_( const ConstString & _pakName, const FilePath & _path );
+		bool unloadMaterials_( const ConstString & _pakName, const FilePath & _path );
 				
 	protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -80,7 +89,7 @@ namespace Menge
 
 		ConstString m_path;
 
-		TVectorScriptModulePak m_scriptsPak;
+		TVectorScriptModulePack m_scriptsPackages;
 
 		TVectorConstString m_pathFonts;
 		TVectorConstString m_pathTexts;
@@ -97,6 +106,8 @@ namespace Menge
 		TVectorConstString m_materials;
 
         bool m_preload;
+		bool m_load;
+		bool m_enable;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<Package> PackagePtr;

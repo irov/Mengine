@@ -27,17 +27,20 @@ namespace Menge
 		return m_serviceProvider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool EntityPrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
+	void EntityPrototypeGenerator::setScriptGenerator( const pybind::object & _generator )
 	{
-		if( _generator.is_callable() == false )
-		{
-			return false;
-		}
-
+		m_generator = _generator;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool EntityPrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype )
+	{
 		m_category = _category;
 		m_prototype = _prototype;
 
-		m_generator = _generator;
+		if( m_generator.is_callable() == false )
+		{
+			return false;
+		}
 
 		return true;
 	}
@@ -91,11 +94,8 @@ namespace Menge
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Factorable * EntityPrototypeGenerator::generate( const ConstString & _category, const ConstString & _prototype )
+	Factorable * EntityPrototypeGenerator::generate()
 	{
-		(void)_category;
-		(void)_prototype;
-
 		const pybind::object & py_type = this->preparePythonType();
 
 		if( py_type.is_invalid() == true )
@@ -104,7 +104,7 @@ namespace Menge
 		}
 
 		Entity * entity = SCRIPT_SERVICE(m_serviceProvider)
-			->createEntityT<Entity>( _category, m_prototype, py_type, this );
+			->createEntityT<Entity>( m_category, m_prototype, py_type, this );
 
 		if( entity == nullptr )
 		{

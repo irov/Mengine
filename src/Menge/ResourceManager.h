@@ -31,11 +31,11 @@ namespace Menge
 			}
 		};
 
-		ResourceReference * resource;
+		ResourceReferencePtr resource;
 		bool isLocked;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<ResourceReference *> TVectorResources;
+	typedef stdex::vector<ResourceReferencePtr> TVectorResources;
 	//////////////////////////////////////////////////////////////////////////
 	struct ResourceCacheEntry
 		: public Factorable
@@ -81,24 +81,26 @@ namespace Menge
 		void _finalize() override;
 
 	public:
-		bool loadResource( const ConstString & _pakName, const FilePath & _path ) override;
-		
-	public:
-		ResourceReference * generateResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
+		bool loadResource( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
+		bool unloadResource( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
 
-		ResourceReference * createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
-		        
 	public:
-		bool hasResource( const ConstString& _name, ResourceReference ** _resource ) const override;
+		ResourceReferencePtr generateResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
+
+		ResourceReferencePtr createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
+		bool removeResource( const ResourceReferencePtr & _resource ) override;
+
+	public:
+		bool hasResource( const ConstString& _name, ResourceReferencePtr * _resource ) const override;
 		bool lockResource( const ConstString& _name );
 		bool unlockResource( const ConstString& _name );
 		bool validResourceType( const ConstString& _name, const ConstString& _type ) const override;
 
 		bool validResource( const ConstString& _name ) const override;
 
-		ResourceReference * getResource( const ConstString& _name ) const override;
+		ResourceReferencePtr getResource( const ConstString& _name ) const override;
         
-        ResourceReference * getResourceReference( const ConstString& _name ) const override; //not compile resource
+        ResourceReferencePtr getResourceReference( const ConstString& _name ) const override; //not compile resource
 
 		const ConstString & getResourceType( const ConstString & _name ) const;
 
@@ -115,7 +117,7 @@ namespace Menge
 	public:
 		void dumpResources( const String & _tag );
 
-	protected:             
+	protected:
 		typedef IntrusiveTree<ResourceEntry, 512> TMapResource;
 		TMapResource m_resources;
 

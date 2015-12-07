@@ -150,8 +150,8 @@ namespace Menge
 		{
 			const ConstString & resourceName = *it;
 
-			ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceImage *>( resourceName );
+			ResourceImagePtr resourceImage = RESOURCE_SERVICE(m_serviceProvider)
+				->getResourceT<ResourceImagePtr>( resourceName );
 
 			if( resourceImage == nullptr )
 			{
@@ -182,7 +182,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourceImage * resource = *it;
+			const ResourceImagePtr & resource = *it;
 
 			resource->decrementReference();
 		}
@@ -190,7 +190,7 @@ namespace Menge
 		m_resourceImages.clear();		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage * ResourceParticle::getAtlasImageResource( uint32_t _atlasId ) const
+	ResourceImagePtr ResourceParticle::getAtlasImageResource( uint32_t _atlasId ) const
 	{
 		if( this->isCompile() == false )
 		{
@@ -212,7 +212,7 @@ namespace Menge
 			return nullptr;
 		}
 
-		ResourceImage * resource = m_resourceImages[_atlasId];
+		const ResourceImagePtr & resource = m_resourceImages[_atlasId];
 
 		return resource;
 	}

@@ -6,6 +6,7 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
     enum EResourceWindow
     {
         ResourceWindow_Background = 0,
@@ -20,14 +21,14 @@ namespace Menge
         ResourceWindow_Count = 9,
         __ResourceWindow__
     };
-
+	//////////////////////////////////////////////////////////////////////////
 	struct WindowElement
 	{
 		ConstString resourceName;
-		ResourceImage * resource;
+		ResourceImagePtr resource;
 		mt::vec2f offset;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class ResourceWindow
 		: public ResourceReference
 	{
@@ -41,8 +42,8 @@ namespace Menge
 		bool _loader( const Metabuf::Metadata * _parser ) override;
 
     public:
-        ResourceImage * getResource( int _type );
-		const mt::vec2f &  getOffset( int _type );
+		const ResourceImagePtr & getResource( int _type ) const;
+		const mt::vec2f &  getOffset( int _type ) const;
 
 	protected:
 		bool _compile() override;
@@ -51,4 +52,6 @@ namespace Menge
 	protected:
 		WindowElement m_images[ResourceWindow_Count];
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceWindow> ResourceWindowPtr;
 }	// namespace Menge

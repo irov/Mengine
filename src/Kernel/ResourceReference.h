@@ -11,7 +11,7 @@
 #	include "Kernel/ResourceDeclare.h"
 #	include "Kernel/ResourceHolder.h"
 
-#	include "Factory/Factorable.h"
+#	include "Factory/FactorablePtr.h"
 #	include "Factory/Factory.h"
 
 #	include "Core/ConstString.h"
@@ -24,7 +24,7 @@ namespace Menge
 	class ResourceVisitor;
 	
 	class ResourceReference
-		: public Factorable
+		: public FactorablePtr
 		, public Resource
 		, public Identity
 		, public Reference
@@ -40,6 +40,9 @@ namespace Menge
 		ServiceProviderInterface * getServiceProvider() const;
 
 	public:
+		void setLocale( const ConstString & _locale );
+		inline const ConstString & getLocale() const;
+
 		void setCategory( const ConstString & _category );
 		inline const ConstString & getCategory() const;
 
@@ -83,17 +86,22 @@ namespace Menge
 		bool _incrementZero() override;
 		void _decrementZero() override;
 
-    protected:
-		PyObject * _embedded() override;
-
 	protected:
         ServiceProviderInterface * m_serviceProvider;
         
+		ConstString m_locale;
 		ConstString m_category;
 		ConstString m_group;
 
 		bool m_cache;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceReference> ResourceReferencePtr;
+	//////////////////////////////////////////////////////////////////////////
+	inline const ConstString & ResourceReference::getLocale() const
+	{
+		return m_locale;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & ResourceReference::getCategory() const
 	{

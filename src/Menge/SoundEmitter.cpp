@@ -119,7 +119,7 @@ namespace Menge
         m_resourceSound.release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::setResourceSound( ResourceSound * _resourceSound )
+	void SoundEmitter::setResourceSound( const ResourceSoundPtr & _resourceSound )
 	{
 		if( m_resourceSound == _resourceSound )
 		{
@@ -131,7 +131,7 @@ namespace Menge
 		this->recompile();
 	}
     //////////////////////////////////////////////////////////////////////////
-    ResourceSound * SoundEmitter::getResourceSound() const
+	const ResourceSoundPtr & SoundEmitter::getResourceSound() const
     {
         return m_resourceSound;
     }

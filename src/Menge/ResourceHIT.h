@@ -58,4 +58,6 @@ namespace Menge
 
 		mutable Blobject m_mipmap;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceHIT> ResourceHITPtr;
 }	// namespace Menge

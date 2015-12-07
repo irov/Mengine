@@ -1,12 +1,26 @@
 #	pragma once
 
-#	include "Config/Typedef.h"
+#	include "Interface/ScriptSystemInterface.h"
+
 #	include "pybind/bindable.hpp"
 
 namespace Menge
 {
 	class Scriptable
 		: public pybind::bindable
-	{
+	{	
+	public:
+		Scriptable();
+		~Scriptable();
+
+	public:
+		void setScriptWrapper( ScriptWrapperInterface * _scriptWrapper );		
+		ScriptWrapperInterface * getScriptWrapper() const;
+
+	protected:
+		PyObject * _embedded() override;
+
+	protected:
+		ScriptWrapperInterface * m_scriptWrapper;
 	};
 }

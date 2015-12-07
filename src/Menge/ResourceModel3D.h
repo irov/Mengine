@@ -33,7 +33,7 @@ namespace Menge
 
 	public:
 		inline const Model3DInterfacePtr & getModel() const;
-		inline const ResourceImage * getResourceImage() const;
+		inline const ResourceImagePtr & getResourceImage() const;
 
 	protected:
 		FilePath m_path;
@@ -43,15 +43,17 @@ namespace Menge
 		Model3DInterfacePtr m_model;
 
 		ConstString m_imageResourceName;
-		ResourceImage * m_imageResource;
+		ResourceImagePtr m_imageResource;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceModel3D> ResourceModel3DPtr;
 	//////////////////////////////////////////////////////////////////////////
 	const Model3DInterfacePtr & ResourceModel3D::getModel() const
 	{
 		return m_model;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const ResourceImage * ResourceModel3D::getResourceImage() const
+	inline const ResourceImagePtr & ResourceModel3D::getResourceImage() const
 	{
 		return m_imageResource;
 	}

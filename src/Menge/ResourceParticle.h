@@ -4,6 +4,7 @@
 #   include "Interface/ParticleSystemInterface.h"
 
 #	include "Kernel/ResourceReference.h"
+#	include "Kernel/ResourceImage.h"
 
 #	include "Utils/Core/Polygon.h"
 
@@ -12,8 +13,6 @@
 
 namespace Menge
 {
-	class ResourceImage;
-
 	class ResourceParticle
 		: public ResourceReference
 	{
@@ -30,7 +29,7 @@ namespace Menge
 		ParticleEmitterInterfacePtr createEmitter();
 
 	public:
-		ResourceImage * getAtlasImageResource( uint32_t _atlasId ) const;
+		ResourceImagePtr getAtlasImageResource( uint32_t _atlasId ) const;
 		uint32_t getAtlasImageCount() const;
 
 	public:
@@ -54,7 +53,9 @@ namespace Menge
 
 		ParticleEmitterContainerInterface2Ptr m_container;
 
-		typedef stdex::vector<ResourceImage *> TVectorResourceImage;
+		typedef stdex::vector<ResourceImagePtr> TVectorResourceImage;
 		TVectorResourceImage m_resourceImages;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceParticle> ResourceParticlePtr;
 }

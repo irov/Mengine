@@ -27,11 +27,11 @@ namespace Menge
     };
 
     template<class T>
-	class ScriptClassWrapper
-		: public ScriptClassInterface
+	class ClassScriptWrapper
+		: public ScriptWrapperInterface
 	{
 	public:
-		ScriptClassWrapper()
+		ClassScriptWrapper()
 			: m_serviceProvider( nullptr )
 		{
 		}
@@ -98,4 +98,4 @@ namespace Menge
 }
 
 # define SCRIPT_CLASS_WRAPPING( serviceProvider, Class )\
-    SCRIPT_SERVICE(serviceProvider)->addWrapping( Helper::stringizeString(serviceProvider, #Class), new ScriptClassWrapper<Class>() )
+    SCRIPT_SERVICE(serviceProvider)->setWrapper( Helper::stringizeString(serviceProvider, #Class), new ClassScriptWrapper<Class>() )

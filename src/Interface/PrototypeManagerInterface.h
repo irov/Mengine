@@ -12,8 +12,15 @@ namespace Menge
     class PrototypeGeneratorInterface
 		: public FactorablePtr		
     {
+	public:
+		virtual void setServiceProvider( ServiceProviderInterface * _serviceProvider ) = 0;
+		virtual ServiceProviderInterface * getServiceProvider() const = 0;
+
+	public:
+		virtual bool initialize( const ConstString & _category, const ConstString & _prototype ) = 0;
+
     public:
-        virtual Factorable * generate( const ConstString & _category, const ConstString & _prototype ) = 0;
+        virtual Factorable * generate() = 0;
         virtual uint32_t count() const = 0;
     };
 	//////////////////////////////////////////////////////////////////////////

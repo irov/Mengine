@@ -83,7 +83,7 @@ namespace Menge
 
 		for( uint32_t i = 0; i < ResourceWindow_Count; ++i )
 		{
-			ResourceImage * image = m_resourceWindow->getResource( i );
+			const ResourceImagePtr & image = m_resourceWindow->getResource( i );
 
             if( image == nullptr )
             {
@@ -387,7 +387,7 @@ namespace Menge
             mt::uv4f uv1;
 			mt::uv4f uv2;
             
-            ResourceImage * image = m_resourceWindow->getResource( i );
+            const ResourceImagePtr & image = m_resourceWindow->getResource( i );
 
             if( image != nullptr )
             {
@@ -568,7 +568,7 @@ namespace Menge
 									static_cast<int>( _tiles.y ) * m_edge[ResourceWindow_Background].initialSize.y ) );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Window::setResourceWindow( ResourceWindow * _resourceWindow )
+	void Window::setResourceWindow( const ResourceWindowPtr & _resourceWindow )
 	{
 		if( m_resourceWindow == _resourceWindow )
 		{
@@ -580,7 +580,7 @@ namespace Menge
         this->recompile();
 	}
     //////////////////////////////////////////////////////////////////////////
-    ResourceWindow * Window::getResourceWindow() const
+	const ResourceWindowPtr & Window::getResourceWindow() const
     {
         return m_resourceWindow;
     }

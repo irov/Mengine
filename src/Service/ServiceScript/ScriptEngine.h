@@ -47,14 +47,16 @@ namespace Menge
         void addGlobalModule( const String & _name, PyObject * _module ) override;
         void removeGlobalModule( const String & _name ) override;
 
-        void addModulePath( const ConstString & _pak, const TVectorScriptModulePak & _modules ) override;
+	public:
+        void addModulePath( const ConstString & _pak, const TVectorScriptModulePack & _modules ) override;
+		void removeModulePath( const ConstString & _pack, const TVectorScriptModulePack & _modules ) override;
 
 	public:
 		bool bootstrapModules() override;
 		bool initializeModules() override;
 
 	public:
-		PrototypeGeneratorInterfacePtr createEntityGenerator( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator ) override;
+		bool addEntityPrototype( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator ) override;
 		pybind::object importEntity( const ConstString & _category, const ConstString & _prototype ) override;
 
 	public:
@@ -64,13 +66,9 @@ namespace Menge
         bool stringize( PyObject * _object, ConstString & _str ) override;
 
 	public:
-		void addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper ) override;
-		PyObject * wrap( const ConstString & _type, Scriptable * _node ) override;
+		void setWrapper( const ConstString& _type, ScriptWrapperInterface * _wrapper ) override;
+		ScriptWrapperInterface * getWrapper( const ConstString & _type ) const override;
 		
-	public:
-		bool hasModuleFunction( const pybind::object & _module, const char * _name ) override;
-		pybind::object getModuleFunction( const pybind::object & _module, const char * _name ) override;
-
 	public:
 		static void handleException();
 	
@@ -79,7 +77,7 @@ namespace Menge
 
 		PyObject * m_moduleMenge;
 
-		TVectorScriptModulePak m_bootstrapperModules;
+		TVectorScriptModulePack m_bootstrapperModules;
 
 		ScriptLogger * m_logger;
 		ScriptLoggerError * m_loggerError;
@@ -88,7 +86,7 @@ namespace Menge
 		typedef stdex::map<ConstString, TMapModules> TMapCategoryPrototypies;
 		TMapCategoryPrototypies m_prototypies;
 
-		typedef stdex::map<ConstString, ScriptClassInterface *> TMapScriptWrapper;
+		typedef stdex::map<ConstString, ScriptWrapperInterface *> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;
 
         typedef FactoryPoolStore<ConstStringHolderPythonString, 256> FactoryConstStringHolderPythonString;

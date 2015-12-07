@@ -45,14 +45,53 @@ namespace Menge
 		pybind::incref( m_embed );
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ScriptModuleFinder::addModulePath( const ConstString & _pak, const TVectorConstString & _pathes )
+	void ScriptModuleFinder::addModulePath( const ConstString & _pack, const TVectorConstString & _pathes )
     {
         ModulePathes mp;
-        mp.pak = _pak;
+        mp.pack = _pack;
         mp.pathes = _pathes;
 
         m_modulePaths.push_back( mp );
     }
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class FModuleRemove
+		{
+		public:
+			FModuleRemove( const ConstString & _pack )
+				: m_pack( _pack )
+			{
+			}
+
+		protected:
+			void operator = (const FModuleRemove &)
+			{
+			}
+
+		public:
+			bool operator() ( const ModulePathes & _path )
+			{
+				if( _path.pack != m_pack )
+				{
+					return false;
+				}
+
+				return true;
+			}
+
+		protected:
+			const ConstString & m_pack;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptModuleFinder::removeModulePath( const ConstString & _pack )
+	{
+		m_modulePaths.erase(
+			std::find_if( m_modulePaths.begin(), m_modulePaths.end(), FModuleRemove( _pack ) )
+			, m_modulePaths.end()
+			);
+	}
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptModuleFinder::find_module( PyObject * _module, PyObject * _path )
     {
@@ -199,7 +238,7 @@ namespace Menge
             const ModulePathes & mp = *it;
 
 			FileGroupInterfacePtr fileGroup = FILE_SERVICE(m_serviceProvider)
-				->getFileGroup( mp.pak );
+				->getFileGroup( mp.pack );
 
 			if( fileGroup == nullptr )
 			{

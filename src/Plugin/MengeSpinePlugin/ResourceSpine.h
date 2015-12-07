@@ -41,7 +41,7 @@ namespace Menge
 		bool _isValid() const override;
 
 	public:
-		ResourceImage * getResourceImage_( const char * _name ) const;
+		ResourceImagePtr getResourceImage_( const char * _name ) const;
 
 	public:
 		FilePath m_skeletonPath;
@@ -50,7 +50,7 @@ namespace Menge
 		struct ImageDesc
 		{
 			ConstString name;
-			ResourceImage * image;
+			ResourceImagePtr image;
 		};
 
 		typedef stdex::vector<ImageDesc> TVectorImageDesc;
@@ -60,4 +60,6 @@ namespace Menge
 		spAtlas * m_atlas;
 		spSkeletonData * m_skeletonData;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceSpine> ResourceSpinePtr;
 }

@@ -14,8 +14,8 @@ namespace Menge
 		~HotSpotImage();
 
 	public:
-		void setResourceHIT( ResourceHIT * _resourceHIT );
-		ResourceHIT * getResourceHIT() const;
+		void setResourceHIT( const ResourceHITPtr & _resourceHIT );
+		const ResourceHITPtr & getResourceHIT() const;
 
 	public:
 		void setAlphaTest( float _value );

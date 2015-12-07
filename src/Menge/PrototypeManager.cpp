@@ -27,6 +27,18 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool PrototypeManager::addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator )
 	{
+		_generator->setServiceProvider( m_serviceProvider );
+
+		if( _generator->initialize( _category, _prototype ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("PrototypeManager::addPrototype add %s:%s invalid initialize!"
+				, _category.c_str()
+				, _prototype.c_str()
+				);
+
+			return false;
+		}
+
         CategoryKey key;
         key.category = _category;
         key.prototype = _prototype;
@@ -103,7 +115,7 @@ namespace Menge
             return nullptr;
         }
 
-        Factorable * prototype = generator->generate( _category, _prototype );
+        Factorable * prototype = generator->generate();
 
         return prototype;
     }

@@ -18,8 +18,8 @@ namespace Menge
 		~Animation();
 
 	public:
-		void setResourceAnimation( ResourceAnimation * _resourceAnimation );
-		ResourceAnimation * getResourceAnimation() const;
+		void setResourceAnimation( const ResourceAnimationPtr & _resourceAnimation );
+		const ResourceAnimationPtr & getResourceAnimation() const;
 
 	public:
 		uint32_t getFrameCount() const;

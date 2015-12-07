@@ -65,10 +65,13 @@ namespace	Menge
 		{
 			Landscape2DElement & el = *it;
 			
-			el.image->decrementReference();
-			el.image = nullptr;
+			if( el.material != nullptr )
+			{
+				el.image->decrementReference();
+				el.image = nullptr;
 
-			el.material = nullptr;
+				el.material = nullptr;
+			}
 		}
 
 		m_elements.clear();
@@ -114,7 +117,7 @@ namespace	Menge
 
 						return;
 					}
-
+					
 					RenderMaterialInterfacePtr material = this->makeImageMaterial( m_serviceProvider, el.image, false );
 
 					if( material == nullptr )

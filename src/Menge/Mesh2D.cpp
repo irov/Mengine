@@ -75,7 +75,7 @@ namespace Menge
 		this->releaseMaterial();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Mesh2D::setResourceImage( ResourceImage * _resourceImage )
+	void Mesh2D::setResourceImage( const ResourceImagePtr & _resourceImage )
     {
         if( m_resourceImage == _resourceImage )
         {
@@ -87,7 +87,7 @@ namespace Menge
         this->recompile();
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceImage * Mesh2D::getResourceImage() const
+    const ResourceImagePtr & Mesh2D::getResourceImage() const
     {        
         return m_resourceImage;
     }

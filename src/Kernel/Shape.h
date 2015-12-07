@@ -23,8 +23,8 @@ namespace Menge
         ~Shape();
 
 	public:
-		void setResourceImage( ResourceImage * _resourceImage );
-		ResourceImage * getResourceImage() const;
+		void setResourceImage( const ResourceImagePtr & _resourceImage );
+		ResourceImagePtr getResourceImage() const;
 		
 	public:
 		void setCustomSize( const mt::vec2f & _customSize );

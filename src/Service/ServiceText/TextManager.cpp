@@ -1,6 +1,7 @@
 #	include "TextManager.h"
 
 #	include "Interface/ServiceInterface.h"
+#	include "Interface/ApplicationInterface.h"
 #	include "Interface/UnicodeInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #	include "Interface/StringizeInterface.h"
@@ -33,8 +34,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::_initialize()
 	{
-		m_currentLocale = STRINGIZE_STRING_LOCAL( m_serviceProvider, "en" );
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -43,15 +42,15 @@ namespace Menge
 		m_texts.clear();
 		m_fonts.clear();
 		m_glyphs.clear();
-		m_paks.clear();
+		m_packs.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
-		class TextManagerSaxCallback
+		class TextManagerLoadSaxCallback
 		{
 		public:
-			TextManagerSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+			TextManagerLoadSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 				: m_serviceProvider(_serviceProvider)
 				, m_textManager(_textManager)
 				, m_locale( _locale )
@@ -61,7 +60,7 @@ namespace Menge
 			}
 
 		protected:
-			void operator = ( const TextManagerSaxCallback & )
+			void operator = ( const TextManagerLoadSaxCallback & )
 			{
 			}
 
@@ -304,22 +303,152 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool TextManager::loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 	{
-		TextLocalePakPtr pak = m_factoryTextLocalePak.createObject();
+		TextLocalePackPtr pak = m_factoryTextLocalePak.createObject();
 
 		if( pak->initialize( m_serviceProvider, _locale, _pakName, _path ) == false )
 		{
 			return false;
 		}
 		
-		m_paks.push_back( pak );
+		m_packs.push_back( pak );
 
-		char * xml_buff = pak->getXmlBuffer();
+		MemoryInterfacePtr xml_memory = pak->getXmlBuffer();
 
-		TextManagerSaxCallback tmsc( m_serviceProvider, this, _locale, _pakName, _path );
+		Char * xml_buff = xml_memory->getMemory();
+
+		TextManagerLoadSaxCallback tmsc( m_serviceProvider, this, _locale, _pakName, _path );
 		if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
 		{
 			return false;
 		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class TextManagerUnloadSaxCallback
+		{
+		public:
+			TextManagerUnloadSaxCallback( ServiceProviderInterface * _serviceProvider, TextManager * _textManager, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+				: m_serviceProvider( _serviceProvider )
+				, m_textManager( _textManager )
+				, m_locale( _locale )
+				, m_pakName( _pakName )
+				, m_path( _path )
+			{
+			}
+
+		protected:
+			void operator = (const TextManagerUnloadSaxCallback &)
+			{
+			}
+
+		public:
+			void callback_begin_node( const char * _node )
+			{
+				(void)_node;
+			}
+
+			void callback_node_attributes( const char * _node, uint32_t _count, const char ** _keys, const char ** _values )
+			{
+				if( strcmp( _node, "Text" ) != 0 )
+				{
+					return;
+				}
+
+				ConstString text_key;
+
+				for( uint32_t i = 0; i != _count; ++i )
+				{
+					const char * str_key = _keys[i];
+					const char * str_value = _values[i];
+
+					if( strcmp( str_key, "Key" ) == 0 )
+					{
+						text_key = Helper::stringizeStringExternal( m_serviceProvider, str_value, (size_t)-1 );
+					}
+				}
+
+				if( text_key.empty() == true )
+				{
+					return;
+				}
+
+				m_textManager->removeTextEntry( m_locale, text_key );
+			}
+
+			void callback_end_node( const char * _node )
+			{
+				(void)_node;
+			}
+
+		protected:
+			ServiceProviderInterface * m_serviceProvider;
+			TextManager * m_textManager;
+
+			const ConstString & m_locale;
+			const ConstString & m_pakName;
+			const FilePath & m_path;
+		};
+		//////////////////////////////////////////////////////////////////////////
+		class FPackLocaleRemove
+		{
+		public:
+			FPackLocaleRemove( const ConstString & _locale, const ConstString & _pakName )
+				: m_locale( _locale )
+				, m_pakName( _pakName )
+			{
+			}
+
+		protected:
+			void operator = (const FPackLocaleRemove &);
+
+		public:
+			bool operator () ( const TextLocalePackPtr & _pack ) const
+			{
+				if( _pack->getLocale() != m_locale )
+				{
+					return false;
+				}
+
+				if( _pack->getPackName() != m_pakName )
+				{
+					return false;
+				}
+
+				return true;
+			}
+
+		protected:
+			const ConstString & m_locale;
+			const ConstString & m_pakName;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool TextManager::unloadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	{
+		TextLocalePackPtr pak = m_factoryTextLocalePak.createObject();
+
+		if( pak->initialize( m_serviceProvider, _locale, _pakName, _path ) == false )
+		{
+			return false;
+		}
+
+		MemoryInterfacePtr xml_memory = pak->getXmlBuffer();
+
+		Char * xml_buff = xml_memory->getMemory();
+
+		TextManagerUnloadSaxCallback tmsc( m_serviceProvider, this, _locale, _pakName, _path );
+		if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
+		{
+			return false;
+		}
+
+		m_packs.erase( 
+			std::remove_if( m_packs.begin(), m_packs.end(), FPackLocaleRemove( _locale, _pakName ) )
+			, m_packs.end() 
+			);
 
 		return true;
 	}
@@ -456,17 +585,70 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextManager::setCurrentLocale( const ConstString & _locale )
+	bool TextManager::unloadFonts( const ConstString & _pakName, const FilePath & _path )
 	{
-		m_currentLocale = _locale;
+		InputStreamInterfacePtr stream =
+			FILE_SERVICE( m_serviceProvider )->openInputFile( _pakName, _path, false );
 
-		NOTIFICATION_SERVICE( m_serviceProvider )
-			->notify( NOTIFICATOR_CHANGE_LOCALE, m_currentLocale );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextManager::getCurrentLocale() const
-	{
-		return m_currentLocale;
+		if( stream == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("TextManager::unloadFonts Invalid open settings %s"
+				, _path.c_str()
+				);
+
+			return false;
+		}
+
+		IniUtil::IniStore ini;
+		if( IniUtil::loadIni( ini, stream, m_serviceProvider ) == false )
+		{
+			LOGGER_ERROR( m_serviceProvider )("TextManager::unloadFonts Invalid load settings %s"
+				, _path.c_str()
+				);
+
+			return false;
+		}
+
+		TVectorConstString fonts;
+		IniUtil::getIniValue( ini, "GAME_FONTS", "Font", fonts, m_serviceProvider );
+
+		for( TVectorConstString::const_iterator
+			it = fonts.begin(),
+			it_end = fonts.end();
+		it != it_end;
+		++it )
+		{
+			const ConstString & fontName = *it;
+
+			if( ini.hasSection( fontName.c_str() ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("TextManager::unloadFonts invalid %s:%s section for FONT %s"
+					, _pakName.c_str()
+					, _path.c_str()
+					, fontName.c_str()
+					);
+
+				return false;
+			}
+
+			ConstString glyphPath;
+			if( IniUtil::getIniValue( ini, fontName.c_str(), "Glyph", glyphPath, m_serviceProvider ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("TextManager::loadFonts invalid %s:%s font %s don't setup Glyph"
+					, _pakName.c_str()
+					, _path.c_str()
+					, fontName.c_str()
+					);
+
+				return false;
+			}
+
+			m_glyphs.erase( glyphPath );
+			
+			m_fonts.erase( fontName );
+		}
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	TextGlyphPtr TextManager::loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const ConstString & _path )
@@ -534,13 +716,32 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool TextManager::removeTextEntry( const ConstString & _locale, const ConstString& _key )
+	{
+		TMapTextEntry & localeTextEntries = m_texts[_locale];
+
+		TMapTextEntry::iterator it_found = localeTextEntries.find( _key );
+
+		if( it_found == localeTextEntries.end() )
+		{
+			return false;
+		}
+
+		localeTextEntries.erase( _key );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	const TextManager::TMapTextEntry * TextManager::getLocaleTextEntries_( const ConstString & _locale, ConstString & _correctLocale ) const
 	{
 		ConstString textLocale = _locale;
 
 		if( textLocale.empty() == true )
 		{
-			textLocale = m_currentLocale;
+			const ConstString & locale = APPLICATION_SERVICE( m_serviceProvider )
+				->getLocale();
+
+			textLocale = locale;
 		}
 
 		_correctLocale = textLocale;
@@ -576,9 +777,9 @@ namespace Menge
 		
 		if( it_found == localeTextEntries->end() )
 		{
-			LOGGER_ERROR(m_serviceProvider)("TextManager::getTextEntry: TextManager can't find string associated with key - '%s' locale '%s'"
+			LOGGER_ERROR(m_serviceProvider)("TextManager::getTextEntry: TextManager can't find string associated with key - '%s' locale '%s'"				
+				, _key.c_str()
 				, correctLocale.c_str()
-				, _key.c_str() 
 				);
 
 			return nullptr;

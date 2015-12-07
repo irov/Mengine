@@ -30,4 +30,6 @@ namespace Menge
     protected:
         Polygon m_polygon;
     };
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceShape> ResourceShapePtr;
 }	// namespace Menge

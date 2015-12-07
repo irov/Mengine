@@ -182,13 +182,8 @@ namespace Menge
 				}
 				else
 				{
-					if( m_pauseUpdatingTime < 0.f )
-					{
-						m_pauseUpdatingTime = frameTime;
-					}
-
 					::Sleep( 100 );
-				}
+				}				
 
 				bool focus = APPLICATION_SERVICE( m_serviceProvider )
 					->isFocus();
@@ -199,6 +194,13 @@ namespace Menge
 					{
 						APPLICATION_SERVICE( m_serviceProvider )
 							->flush();
+					}
+				}
+				else
+				{
+					if( m_pauseUpdatingTime < 0.f )
+					{
+						m_pauseUpdatingTime = frameTime;
 					}
 				}
 

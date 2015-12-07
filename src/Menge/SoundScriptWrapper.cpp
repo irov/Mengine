@@ -40,7 +40,7 @@ namespace	Menge
 			}
 
 		public:
-			bool initialize( ServiceProviderInterface * _serviceProvider, ResourceSound * _resource, const SoundBufferInterfacePtr & _soundBuffer, const pybind::object & _cb )
+			bool initialize( ServiceProviderInterface * _serviceProvider, const ResourceSoundPtr & _resource, const SoundBufferInterfacePtr & _soundBuffer, const pybind::object & _cb )
 			{
 				m_serviceProvider = _serviceProvider;
 				m_resource = _resource;
@@ -84,7 +84,7 @@ namespace	Menge
 
 		protected:
             ServiceProviderInterface * m_serviceProvider;
-            ResourceSound * m_resource;
+			ResourceSoundPtr m_resource;
             SoundBufferInterfacePtr m_soundBuffer;
 			pybind::object m_cb;
 		};
@@ -102,8 +102,8 @@ namespace	Menge
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceType _type, const pybind::object & _cb )
 		{
-			ResourceSound * resource = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceSound *>( _resourceName );
+			ResourceSoundPtr resource = RESOURCE_SERVICE(m_serviceProvider)
+				->getResourceT<ResourceSoundPtr>( _resourceName );
 
 			if( resource == nullptr )
 			{

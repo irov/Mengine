@@ -60,6 +60,20 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	bool UserdataService::removeUserdata( const ConstString & _name )
+	{
+		TMapDatas::iterator it_found = m_datas.find( _name );
+
+		if( it_found == m_datas.end() )
+		{
+			return false;
+		}
+
+		m_datas.erase( it_found );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool UserdataService::hasUserdata( const ConstString & _name ) const
 	{
 		TMapDatas::const_iterator it_found = m_datas.find( _name );

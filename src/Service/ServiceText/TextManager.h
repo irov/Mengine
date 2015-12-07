@@ -29,11 +29,11 @@ namespace Menge
 		
 	public:
 		bool loadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
-		bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
+		bool unloadTextEntry( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
 
 	public:
-		void setCurrentLocale( const ConstString & _locale ) override;
-		const ConstString & getCurrentLocale() const override;
+		bool loadFonts( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
+		bool unloadFonts( const ConstString & _pakName, const FilePath & _path ) override;
 
 	public:
 		bool existText( const ConstString & _locale, const ConstString & _key, const TextEntryInterface ** _entry ) const override;
@@ -62,6 +62,7 @@ namespace Menge
 
 	public:
 		bool addTextEntry( const ConstString & _locale, const ConstString& _key, const ConstString & _text, const ConstString & _font, const ColourValue & _colorFont, const ColourValue & _colorOutline, float _lineOffset, float _charOffset, float _maxLength, uint32_t _params, bool _isOverride ) override;
+		bool removeTextEntry( const ConstString & _locale, const ConstString& _key );
 
 	protected:
 		TextGlyphPtr loadGlyph_( const ConstString & _locale, const ConstString & _pakName, const ConstString & _path );
@@ -77,10 +78,9 @@ namespace Menge
 		typedef stdex::map<ConstString, TextGlyphPtr> TMapTextGlyph;
 		TMapTextGlyph m_glyphs;
 
-		typedef stdex::vector<TextLocalePakPtr> TVectorPaks;
-		TVectorPaks m_paks;
+		typedef stdex::vector<TextLocalePackPtr> TVectorPaks;
+		TVectorPaks m_packs;
 		
-		ConstString m_currentLocale;
 		ConstString m_defaultFontName;
 
 		typedef FactoryPoolStore<TextFont, 16> TFactoryTextFont;
@@ -89,7 +89,7 @@ namespace Menge
 		typedef FactoryPoolStore<TextGlyph, 16> TFactoryTextGlyph;
 		TFactoryTextGlyph m_factoryTextGlyph;
 
-		typedef FactoryPoolStore<TextLocalePak, 4> TFactoryTextLocalePak;
+		typedef FactoryPoolStore<TextLocalePack, 4> TFactoryTextLocalePak;
 		TFactoryTextLocalePak m_factoryTextLocalePak;
 
 	protected:

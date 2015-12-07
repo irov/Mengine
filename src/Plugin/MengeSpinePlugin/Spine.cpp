@@ -26,7 +26,7 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::setResourceSpine( ResourceSpine * _resourceSpine )
+	void Spine::setResourceSpine( const ResourceSpinePtr & _resourceSpine )
 	{
 		if( m_resourceSpine == _resourceSpine )
 		{
@@ -38,7 +38,7 @@ namespace Menge
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceSpine * Spine::getResourceSpine() const
+	const ResourceSpinePtr & Spine::getResourceSpine() const
 	{
 		return m_resourceSpine;
 	}

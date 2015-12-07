@@ -14,8 +14,9 @@
 
 namespace Menge
 {
-	class ResourceShape;
-
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<class ResourceShape> ResourceShapePtr;
+	//////////////////////////////////////////////////////////////////////////
     const uint32_t MOVIE_LAYER_NODE = 0x0001;
     const uint32_t MOVIE_LAYER_ANIMATABLE = 0x0002;
     const uint32_t MOVIE_LAYER_MOVIE = 0x0004;
@@ -34,7 +35,7 @@ namespace Menge
 	const uint32_t MOVIE_LAYER_PARAM_TEXT_HORIZONTAL_CENTER = 0x00000001;
 	const uint32_t MOVIE_LAYER_PARAM_TEXT_VERTICAL_CENTER = 0x00000002;
 	const uint32_t MOVIE_LAYER_PARAM_PARTICLE_TRANSLATE = 0x00000004;
-
+	//////////////////////////////////////////////////////////////////////////
 	struct MovieLayer
 	{
 		MovieLayer()
@@ -155,9 +156,9 @@ namespace Menge
 			return (state & MOVIE_LAYER_INTERNAL) == MOVIE_LAYER_INTERNAL;
 		}
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<MovieLayer> TVectorMovieLayers;
-
+	//////////////////////////////////////////////////////////////////////////
 	struct MovieLayerCamera3D
 	{
 		float width;
@@ -168,19 +169,19 @@ namespace Menge
 		float cameraFOV;
 		float cameraAspect;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	struct MovieLayer3D
 		: public MovieLayer
 	{
 		MovieLayerCamera3D camera;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class VisitorResourceMovie
 	{
 	public:
 		virtual void visitLayer( const MovieFramePackInterfacePtr & _framePack, const MovieLayer & _layer ) = 0;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	class ResourceMovie
 		: public ResourceReference
 	{
@@ -210,7 +211,7 @@ namespace Menge
 		const MovieLayerCamera3D & getCamera3D() const;
 
 	public:
-		ResourceShape * getSocketResourceShape( const ConstString & _socketName ) const;
+		ResourceShapePtr getSocketResourceShape( const ConstString & _socketName ) const;
 
 	public:
 		bool hasAnchorPoint() const;
@@ -286,6 +287,8 @@ namespace Menge
 
 		uint32_t m_maxLayerIndex;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceMovie> ResourceMoviePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline const MovieFramePackInterfacePtr & ResourceMovie::getFramePack() const
 	{

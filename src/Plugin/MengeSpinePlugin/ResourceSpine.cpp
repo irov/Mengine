@@ -46,8 +46,8 @@ namespace Menge
 			const ConstString & name = meta_image.get_Name();
 			const ConstString & resourceName = meta_image.get_Resource();
 
-			ResourceImage * image = RESOURCE_SERVICE( m_serviceProvider )
-				->getResourceReferenceT<ResourceImage *>( resourceName );
+			ResourceImagePtr image = RESOURCE_SERVICE( m_serviceProvider )
+				->getResourceReferenceT<ResourceImagePtr>( resourceName );
 
 			if( image == nullptr )
 			{
@@ -78,7 +78,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage * ResourceSpine::getResourceImage_( const char * _name ) const
+	ResourceImagePtr ResourceSpine::getResourceImage_( const char * _name ) const
 	{
 		for( TVectorImageDesc::const_iterator
 			it = m_images.begin(),
@@ -120,7 +120,7 @@ namespace Menge
 	{
 		ResourceSpine * resource = (ResourceSpine*)_page->atlas->rendererObject;
 
-		ResourceImage * resourceImage = resource->getResourceImage_( _path );
+		ResourceImagePtr resourceImage = resource->getResourceImage_( _path );
 
 		if( resourceImage == nullptr )
 		{
@@ -131,7 +131,7 @@ namespace Menge
 
 		_page->width = (int)size.x;
 		_page->height = (int)size.y;
-		_page->rendererObject = (void *)resourceImage;
+		_page->rendererObject = (void *)resourceImage.get();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	extern "C" void _spAtlasPage_disposeTexture( spAtlasPage * _page )
@@ -156,7 +156,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourceImage * image = it->image;
+			const ResourceImagePtr & image = it->image;
 
 			if( image->incrementReference() == false )
 			{
@@ -211,7 +211,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourceImage * image = it->image;
+			const ResourceImagePtr & image = it->image;
 
 			image->decrementReference();
 		}

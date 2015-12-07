@@ -31,8 +31,8 @@ namespace Menge
 		~Model3D();
 
 	public:
-		void setResourceModel3D( ResourceModel3D * _resourceImage );
-		ResourceModel3D * getResourceModel3D() const;
+		void setResourceModel3D( const ResourceModel3DPtr & _resourceImage );
+		const ResourceModel3DPtr & getResourceModel3D() const;
 
 	protected:
 		void _setTiming( float _timming ) override;

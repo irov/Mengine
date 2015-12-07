@@ -51,8 +51,8 @@ namespace Menge
 		bool changeEmitterPolygon( const Polygon & _polygon );
         void removeEmitterPolygon();
 	
-        void setResourceParticle( ResourceParticle * _resourceParticle );
-        ResourceParticle * getResourceParticle() const;
+		void setResourceParticle( const ResourceParticlePtr & _resourceParticle );
+		const ResourceParticlePtr & getResourceParticle() const;
 
 		float getDuration() const;
 		

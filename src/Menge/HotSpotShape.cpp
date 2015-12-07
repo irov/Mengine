@@ -62,7 +62,7 @@ namespace Menge
         HotSpotPolygon::_release();
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotShape::setResourceShape( ResourceShape * _resourceShape )
+	void HotSpotShape::setResourceShape( const ResourceShapePtr & _resourceShape )
     {
         if( m_resourceShape == _resourceShape )
         {
@@ -74,7 +74,7 @@ namespace Menge
         this->recompile();
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceShape * HotSpotShape::getResourceShape() const
+	const ResourceShapePtr & HotSpotShape::getResourceShape() const
     {
         return m_resourceShape;
     }

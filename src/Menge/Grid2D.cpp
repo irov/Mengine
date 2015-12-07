@@ -33,7 +33,7 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Grid2D::setResourceImage( ResourceImage * _resourceImage )
+	void Grid2D::setResourceImage( const ResourceImagePtr & _resourceImage )
 	{
 		if( m_resourceImage == _resourceImage )
 		{
@@ -45,7 +45,7 @@ namespace	Menge
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage * Grid2D::getResourceImage() const
+	const ResourceImagePtr & Grid2D::getResourceImage() const
 	{        
 		return m_resourceImage;
 	}

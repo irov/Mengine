@@ -246,9 +246,6 @@ namespace Menge
 	protected:
 		mt::vec3f m_isometricOffset;
 		
-	protected:
-		PyObject * _embedded() override;
-
 	public:
 		PyObject * setEventListener( PyObject * _args, PyObject * _kwds );
 		void removeEventListener();

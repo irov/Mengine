@@ -42,4 +42,6 @@ namespace Menge
 
 		bool m_validNoExist;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceImageDefault> ResourceImageDefaultPtr;
 }

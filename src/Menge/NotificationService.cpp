@@ -55,7 +55,8 @@ namespace Menge
 		ObserverInterface * observer = *it_observer;
 		observer->destroy();
 
-		observers.erase( it_observer );
+		*it_observer = observers.back();
+		observers.pop_back();		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NotificationService::visitObservers( uint32_t _id, VisitorObserver * _visitor )

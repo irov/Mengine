@@ -1098,16 +1098,6 @@ namespace Menge
 		return m_isometricOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * Node::_embedded()
-	{ 
-        const ConstString & type = this->getType();
-
-		PyObject * embedding = SCRIPT_SERVICE(m_serviceProvider)
-			->wrap( type, this );
-
-		return embedding;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateWorldMatrix()
 	{
 		this->invalidateBoundingBox();

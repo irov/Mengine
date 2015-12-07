@@ -59,7 +59,7 @@ namespace Menge
 	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::setResourceMovie( ResourceMovie * _resourceMovie )
+	void Movie::setResourceMovie( const ResourceMoviePtr & _resourceMovie )
 	{
 		if( m_resourceMovie == _resourceMovie )
 		{
@@ -87,7 +87,7 @@ namespace Menge
 		this->recompile();      
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceMovie * Movie::getResourceMovie() const
+	const ResourceMoviePtr & Movie::getResourceMovie() const
 	{
 		return m_resourceMovie;
 	}
@@ -1477,8 +1477,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceImage *>( _layer.source );
+		ResourceImagePtr resourceImage = RESOURCE_SERVICE(m_serviceProvider)
+			->getResourceReferenceT<ResourceImagePtr>( _layer.source );
 
 		if( resourceImage == nullptr )
 		{
@@ -1510,8 +1510,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceImage *>( _layer.source );
+		ResourceImagePtr resourceImage = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceImagePtr>( _layer.source );
 
 		if( resourceImage == nullptr )
 		{
@@ -1535,8 +1535,8 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieImageSolid_( const MovieLayer & _layer )
 	{
-		ResourceImageSolid * resource = RESOURCE_SERVICE( m_serviceProvider )
-			->getResourceT<ResourceImageSolid *>( _layer.source );
+		ResourceImageSolidPtr resource = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceT<ResourceImageSolidPtr>( _layer.source );
 
 		if( resource == nullptr )
 		{
@@ -1582,8 +1582,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceHIT * resourceHIT = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceHIT *>( _layer.source );
+		ResourceHITPtr resourceHIT = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceHITPtr>( _layer.source );
 
 		if( resourceHIT == nullptr )
 		{
@@ -1610,8 +1610,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceShape * resourceShape = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceShape *>( _layer.source );
+		ResourceShapePtr resourceShape = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceShapePtr>( _layer.source );
 
 		if( resourceShape == nullptr )
 		{
@@ -1638,8 +1638,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceAnimation * resourceAnimation = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceAnimation *>( _layer.source );
+		ResourceAnimationPtr resourceAnimation = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceAnimationPtr>( _layer.source );
 
 		if( resourceAnimation == nullptr )
 		{
@@ -1676,8 +1676,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceMovie *>( _layer.source );
+		ResourceMoviePtr resourceMovie = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceMoviePtr>( _layer.source );
 
 		if( resourceMovie == nullptr )
 		{
@@ -1712,8 +1712,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceMovie * resourceMovie = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceMovie *>( _layer.source );
+		ResourceMoviePtr resourceMovie = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceMoviePtr>( _layer.source );
 
 		if( resourceMovie == nullptr )
 		{
@@ -1748,8 +1748,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceInternalObject * resourceInternalObject = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceT<ResourceInternalObject *>( _layer.source );
+		ResourceInternalObjectPtr resourceInternalObject = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceT<ResourceInternalObjectPtr>( _layer.source );
 
 		if( resourceInternalObject == nullptr )
 		{
@@ -1777,8 +1777,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceVideo * resourceVideo = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceVideo *>( _layer.source );
+		ResourceVideoPtr resourceVideo = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceVideoPtr>( _layer.source );
 
 		if( resourceVideo == nullptr )
 		{
@@ -1815,8 +1815,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceSound * resourceSound = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceSound *>( _layer.source );
+		ResourceSoundPtr resourceSound = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceSoundPtr>( _layer.source );
 
 		if( resourceSound == nullptr )
 		{
@@ -1849,8 +1849,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceSound * resourceSound = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceSound *>( _layer.name );
+		ResourceSoundPtr resourceSound = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceSoundPtr>( _layer.name );
 
 		if( resourceSound == nullptr )
 		{
@@ -1939,8 +1939,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceImage * resourceImage = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceImage *>( _layer.name );
+		ResourceImagePtr resourceImage = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceImagePtr>( _layer.name );
 
 		if( resourceImage == nullptr )
 		{
@@ -2049,8 +2049,8 @@ namespace Menge
 			return false;
 		}
 
-		ResourceParticle * resourceParticle = RESOURCE_SERVICE(m_serviceProvider)
-			->getResourceReferenceT<ResourceParticle *>( _layer.source );
+		ResourceParticlePtr resourceParticle = RESOURCE_SERVICE( m_serviceProvider )
+			->getResourceReferenceT<ResourceParticlePtr>( _layer.source );
 
 		if( resourceParticle == nullptr )
 		{

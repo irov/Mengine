@@ -10,21 +10,21 @@
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	TextLocalePak::TextLocalePak()
+	TextLocalePack::TextLocalePack()
 		: m_serviceProvider(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	TextLocalePak::~TextLocalePak()
+	TextLocalePack::~TextLocalePack()
 	{
-		TVectorChar deleter;
-		m_xml_buffer.swap( deleter );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextLocalePak::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	bool TextLocalePack::initialize( ServiceProviderInterface * _serviceProvider, const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 	{
 		m_serviceProvider = _serviceProvider;
 		m_locale = _locale;
+		m_pakName = _pakName;
+		m_path = _path;
 
 		InputStreamInterfacePtr xml_text = FILE_SERVICE(m_serviceProvider)
 			->openInputFile( _pakName, _path, false );
@@ -41,16 +41,34 @@ namespace Menge
 
 		size_t xml_buffer_size = xml_text->size();
 
-		m_xml_buffer.resize( xml_buffer_size + 1 );
-		m_xml_buffer[xml_buffer_size] = '\0';
+		m_memory = MEMORY_SERVICE( m_serviceProvider )
+			->createMemory();
 
-		xml_text->read( &m_xml_buffer[0], xml_buffer_size );
+		Char * memory_buffer = m_memory->newMemory( xml_buffer_size + 1 );
+
+		xml_text->read( memory_buffer, xml_buffer_size );
+		memory_buffer[xml_buffer_size] = '\0';
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	char * TextLocalePak::getXmlBuffer() const
+	const ConstString & TextLocalePack::getLocale() const
 	{
-		return &m_xml_buffer[0];
+		return m_locale;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & TextLocalePack::getPackName() const
+	{
+		return m_pakName;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const FilePath & TextLocalePack::getPath() const
+	{
+		return m_path;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MemoryInterfacePtr TextLocalePack::getXmlBuffer() const
+	{
+		return m_memory;
 	}
 }

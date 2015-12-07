@@ -19,7 +19,7 @@ SERVICE_FACTORY( ResourceService, Menge::ResourceManager );
 namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
-	ResourceManager::ResourceManager()       
+	ResourceManager::ResourceManager()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -50,7 +50,7 @@ namespace Menge
 		public:
 			void operator() ( ResourceEntry * _entry )
 			{
-				ResourceReference * resource = _entry->resource;
+				const ResourceReferencePtr & resource = _entry->resource;
 
 #   ifndef MENGINE_MASTER_RELEASE
 				uint32_t refcount = resource->countReference();
@@ -62,8 +62,6 @@ namespace Menge
 						);
 				}
 #   endif
-
-				resource->destroy();
 			}
 
 		protected:
@@ -81,7 +79,7 @@ namespace Menge
 		m_resources.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::loadResource( const ConstString & _pakName, const FilePath & _path )
+	bool ResourceManager::loadResource( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
 	{
 		Metacode::Meta_DataBlock datablock;
 
@@ -121,7 +119,7 @@ namespace Menge
 
             const FilePath & path = meta_include.get_Path();
 
-            if( this->loadResource( _pakName, path ) == false )
+			if( this->loadResource( _locale, _pakName, path ) == false )
             {
                 LOGGER_ERROR(m_serviceProvider)("ResourceManager::loadResource load %s:%s resource invalid load include %s"
                     , _pakName.c_str()
@@ -134,10 +132,6 @@ namespace Menge
         }
 
         const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
-
-        //size_t resources_size = m_resources.size();
-        //size_t includes_size = includes_resource.size();
-        //m_resources.reserve( resources_size + includes_size );
 
         for( Metacode::Meta_DataBlock::TVectorMeta_Resource::const_iterator
             it = includes_resource.begin(),
@@ -153,7 +147,7 @@ namespace Menge
 			bool unique = true;
 			meta_resource->get_Unique( unique );
 
-			ResourceReference * has_resource = nullptr;
+			ResourceReferencePtr has_resource = nullptr;
 			if( this->hasResource( name, &has_resource ) == true )
 			{
 				if( unique == false )
@@ -177,8 +171,8 @@ namespace Menge
 				return nullptr;
 			}
 
-            ResourceReference * resource = 
-                this->createResource( _pakName, groupName, name, type );
+			ResourceReferencePtr resource =
+				this->createResource( _locale, _pakName, groupName, name, type );
 
             if( resource == nullptr )
             {
@@ -222,6 +216,107 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::unloadResource( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	{
+		Metacode::Meta_DataBlock datablock;
+
+		bool exist = false;
+		if( LOADER_SERVICE( m_serviceProvider )->load( _pakName, _path, &datablock, exist ) == false )
+		{
+			if( exist == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::unloadResource: resource '%s:%s' not found"
+					, _pakName.c_str()
+					, _path.c_str()
+					);
+			}
+			else
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::unloadResource: Invalid parse resource '%s:%s'"
+					, _pakName.c_str()
+					, _path.c_str()
+					);
+			}
+
+			return false;
+		}
+
+		ConstString groupName;
+		datablock.swap_Name( groupName );
+
+		const Metacode::Meta_DataBlock::TVectorMeta_Include & includes_include = datablock.get_IncludesInclude();
+
+		for( Metacode::Meta_DataBlock::TVectorMeta_Include::const_iterator
+			it = includes_include.begin(),
+			it_end = includes_include.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_Include & meta_include = *it;
+
+			const FilePath & path = meta_include.get_Path();
+
+			if( this->unloadResource( _locale, _pakName, path ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::unloadResource load %s:%s resource invalid load include %s"
+					, _pakName.c_str()
+					, _path.c_str()
+					, path.c_str()
+					);
+
+				return false;
+			}
+		}
+
+		const Metacode::Meta_DataBlock::TVectorMeta_Resource & includes_resource = datablock.get_IncludesResource();
+
+		for( Metacode::Meta_DataBlock::TVectorMeta_Resource::const_iterator
+			it = includes_resource.begin(),
+			it_end = includes_resource.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_Resource * meta_resource = *it;
+
+			const ConstString & name = meta_resource->get_Name();
+			const ConstString & type = meta_resource->get_Type();
+
+			ResourceReferencePtr has_resource = nullptr;
+			if( this->hasResource( name, &has_resource ) == false )
+			{
+				const ConstString & resource_category = has_resource->getCategory();
+
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::unloadResource: path %s not found resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
+					, _path.c_str()
+					, name.c_str()
+					, groupName.c_str()
+					, _pakName.c_str()
+					, resource_category.c_str()
+					, has_resource->getCategory().c_str()
+					, has_resource->getGroup().c_str()
+					, has_resource->getName().c_str()
+					);
+
+				return nullptr;
+			}
+
+			if( this->removeResource( has_resource ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ResourceManager::unloadResource: '%s' invalid remove resource '%s:%s' name %s type %s"
+					, _path.c_str()
+					, _pakName.c_str()
+					, groupName.c_str()
+					, name.c_str()
+					, type.c_str()
+					);
+
+				return false;
+			}
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
 		class FResourcesForeachValidation
@@ -241,7 +336,7 @@ namespace Menge
 		public:
 			void operator () ( ResourceEntry * _entry )
 			{
-				const ResourceReference * resource = _entry->resource;
+				const ResourceReferencePtr & resource = _entry->resource;
 
 				bool successful = resource->isValid();
 
@@ -287,9 +382,9 @@ namespace Menge
 		return total_successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::generateResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
+	ResourceReferencePtr ResourceManager::generateResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
 	{
-		ResourceReference * resource = PROTOTYPE_SERVICE( m_serviceProvider )
+		ResourceReferencePtr resource = PROTOTYPE_SERVICE( m_serviceProvider )
 			->generatePrototypeT<ResourceReference>( CONST_STRING( m_serviceProvider, Resource ), _type );
 
 		if( resource == nullptr )
@@ -308,6 +403,7 @@ namespace Menge
 			, _type.c_str()
 			);
 
+		resource->setLocale( _locale );
 		resource->setCategory( _category );
 		resource->setGroup( _group );
 		resource->setName( _name );
@@ -315,13 +411,14 @@ namespace Menge
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::createResource( const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
+	ResourceReferencePtr ResourceManager::createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
 	{
-		ResourceReference * resource = this->generateResource( _category, _group, _name, _type );
+		ResourceReferencePtr resource = this->generateResource( _locale, _category, _group, _name, _type );
 
 		if( resource == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("ResourceManager createResource: invalid generate resource category '%s' group '%s' name '%s' type '%s'"
+			LOGGER_ERROR( m_serviceProvider )("ResourceManager createResource: invalid generate resource locale '%s' category '%s' group '%s' name '%s' type '%s'"
+				, _locale.c_str()
 				, _category.c_str()
 				, _group.c_str()
 				, _name.c_str()
@@ -363,7 +460,7 @@ namespace Menge
 
 			ResourceCacheEntry * resourceCacheEntry = m_resourcesCache.find( insert_category, insert_group );
 
-			TVectorResources::iterator it_found = std::find( 
+			TVectorResources::iterator it_found = std::remove(
 				resourceCacheEntry->resources.begin(), 
 				resourceCacheEntry->resources.end(),
 				insert_entry->resource );
@@ -379,7 +476,40 @@ namespace Menge
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::hasResource( const ConstString& _name, ResourceReference ** _resource ) const
+	bool ResourceManager::removeResource( const ResourceReferencePtr & _resource )
+	{
+		if( _resource == nullptr )
+		{
+			return false;
+		}
+		
+		const ConstString & name = _resource->getName();
+
+		if( m_resources.erase( name ) == false )
+		{
+			return false;
+		}
+
+		const ConstString & category = _resource->getCategory();
+		const ConstString & group = _resource->getGroup();
+
+		ResourceCacheEntry * resourceCacheEntry;
+		if( m_resourcesCache.has( category, group, &resourceCacheEntry ) == false )
+		{
+			return false;
+		}
+
+		TVectorResources::iterator it_found = std::remove(
+			resourceCacheEntry->resources.begin(),
+			resourceCacheEntry->resources.end(),
+			_resource );
+
+		resourceCacheEntry->resources.erase( it_found );
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool ResourceManager::hasResource( const ConstString& _name, ResourceReferencePtr * _resource ) const
 	{
 		const ResourceEntry * entry = m_resources.find( _name );
 		
@@ -424,7 +554,7 @@ namespace Menge
 			return false;
 		}
 
-		ResourceReference * resource = entry->resource;
+		const ResourceReferencePtr & resource = entry->resource;
 
 		bool valid = resource->isValid();
 
@@ -477,7 +607,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::getResource( const ConstString& _name ) const
+	ResourceReferencePtr ResourceManager::getResource( const ConstString& _name ) const
 	{
 		const ResourceEntry * entry = m_resources.find( _name );
 
@@ -499,7 +629,7 @@ namespace Menge
             return nullptr;
         }
 		
-		ResourceReference * resource = entry->resource;
+		const ResourceReferencePtr & resource = entry->resource;
 
 		if( resource->incrementReference() == false )
 		{
@@ -514,7 +644,7 @@ namespace Menge
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceManager::getResourceReference( const ConstString & _name ) const
+	ResourceReferencePtr ResourceManager::getResourceReference( const ConstString & _name ) const
 	{
 		const ResourceEntry * entry = m_resources.find( _name );
 
@@ -536,7 +666,7 @@ namespace Menge
 			return nullptr;
 		}
 		
-		ResourceReference * resource = entry->resource;
+		const ResourceReferencePtr & resource = entry->resource;
 
 		return resource;
 	}
@@ -554,7 +684,7 @@ namespace Menge
 			return ConstString::none();
 		}
 
-		ResourceReference * resource = entry->resource;
+		const ResourceReferencePtr & resource = entry->resource;
 
 		const ConstString & type = resource->getType();
 
@@ -579,7 +709,7 @@ namespace Menge
 		public:
 			void operator () ( ResourceEntry * _entry )
 			{
-				ResourceReference * resource = _entry->resource;
+				const ResourceReferencePtr & resource = _entry->resource;
 
 				resource->accept( m_visitor );
 			}
@@ -611,7 +741,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourceReference * resource = *it;
+			const ResourceReferencePtr & resource = *it;
 
 			resource->accept( _visitor );
 		}
@@ -635,7 +765,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ResourceReference * resource = *it;
+			const ResourceReferencePtr & resource = *it;
 
 			size_t memoryUse = resource->memoryUse();
 
@@ -663,7 +793,7 @@ namespace Menge
 		public:
 			void operator () ( ResourceEntry * _entry )
 			{
-				ResourceReference * resource = _entry->resource;
+				const ResourceReferencePtr & resource = _entry->resource;
 
 				uint32_t count = resource->countReference();
 

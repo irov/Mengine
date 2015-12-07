@@ -20,7 +20,7 @@ namespace Menge
         m_cb = _cb;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieEvent::setResourceMovie( ResourceMovie * _resourceMovie )
+	void MovieEvent::setResourceMovie( const ResourceMoviePtr & _resourceMovie )
     {
         m_resourceMovie = _resourceMovie;
     }

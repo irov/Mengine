@@ -11,6 +11,5 @@ namespace Menge
 		
     public:
         virtual bool _loader( const Metabuf::Metadata * _parser ) = 0;
-
 	};
 }

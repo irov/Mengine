@@ -4,8 +4,6 @@
 
 namespace Menge
 {
-	class Node;
-
 	class ResourceInternalObject
 		: public ResourceReference
 	{
@@ -30,4 +28,6 @@ namespace Menge
 		ConstString m_internalName;
 		ConstString m_internalGroup;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceInternalObject> ResourceInternalObjectPtr;
 }

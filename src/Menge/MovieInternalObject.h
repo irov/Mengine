@@ -19,8 +19,8 @@ namespace Menge
 		void setMovie( Movie * _movie );
 		Movie * getMovie() const;
 
-		void setResourceInternalObject( ResourceInternalObject * _resource );
-		ResourceInternalObject * getResourceInternalObject() const;
+		void setResourceInternalObject( const ResourceInternalObjectPtr & _resource );
+		const ResourceInternalObjectPtr & getResourceInternalObject() const;
 
 	public:
 		Node * getInternalNode() const;

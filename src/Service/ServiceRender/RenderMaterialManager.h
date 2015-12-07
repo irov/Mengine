@@ -33,6 +33,7 @@ namespace Menge
 
     public:
         bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) override;
+		bool unloadMaterials( const ConstString& _pakName, const FilePath& _fileName ) override;
 
 	public:
 		void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) override;
@@ -67,15 +68,15 @@ namespace Menge
 		void onRenderMaterialDestroy_( RenderMaterial * _material );
 
     protected:
-        bool createRenderStageGroup( const ConstString & _name, const RenderStage & _stage );
+		const RenderStage * createRenderStageGroup( const ConstString & _name, const RenderStage & _stage );
 
 	protected:
 		uint32_t makeMaterialIndex_();
 		uint32_t makeMaterialHash( uint32_t _textureCount, const RenderTextureInterfacePtr * _textures ) const;
 
 	protected:
-		bool loadFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile );
-		bool loadVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile );
+		RenderShaderInterfacePtr createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile );		
+		RenderShaderInterfacePtr createVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile );
 			
 	protected:
 		const RenderShaderInterfacePtr & getVertexShader_( const ConstString & _name ) const;

@@ -7,7 +7,7 @@
 
 #	include <stdex/stl_vector.h>
 
-namespace	Menge
+namespace Menge
 {
 	class Playlist
 	{
@@ -46,7 +46,7 @@ namespace	Menge
 
 	private:
         ServiceProviderInterface * m_serviceProvider;
-		ResourcePlaylist * m_playlistResource;
+		ResourcePlaylistPtr m_playlistResource;
 
 		TVectorTrackDesc m_tracks;
 		uint32_t m_trackIndex;

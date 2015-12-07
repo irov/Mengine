@@ -1,6 +1,7 @@
 #   pragma once
 
 #   include "Interface/PackageInterface.h"
+#   include "Interface/NotificationServiceInterface.h"
 
 #	include "Package.h"
 
@@ -27,7 +28,17 @@ namespace Menge
 		PackageInterfacePtr getPackage( const ConstString & _name ) const override;
 
 	public:
-		bool applyPackages( const ConstString & _locale, const ConstString & _platformName ) override;
+		bool enablePackages( const ConstString & _locale, const ConstString & _platformName ) override;
+
+	public:
+		bool enableLocalePackage( const ConstString & _locale, const ConstString & _platformName );
+		bool disableLocalePackage( const ConstString & _locale, const ConstString & _platformName );
+
+	protected:
+		void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
+
+	protected:
+		ObserverInterface * m_observerChangeLocale;
 
 	protected:
 		typedef stdex::vector<PackagePtr> TVectorPackage;

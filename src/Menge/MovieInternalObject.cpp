@@ -29,12 +29,17 @@ namespace Menge
 		return m_movie;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MovieInternalObject::setResourceInternalObject( ResourceInternalObject * _resourceInternalObject )
+	void MovieInternalObject::setResourceInternalObject( const ResourceInternalObjectPtr & _resourceInternalObject )
 	{
+		if( m_resourceInternalObject == _resourceInternalObject )
+		{
+			return;
+		}
+
         m_resourceInternalObject = _resourceInternalObject;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceInternalObject * MovieInternalObject::getResourceInternalObject() const
+	const ResourceInternalObjectPtr & MovieInternalObject::getResourceInternalObject() const
 	{
 		return m_resourceInternalObject;
 	}

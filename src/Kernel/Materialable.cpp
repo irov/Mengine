@@ -7,7 +7,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	namespace Helper
 	{
-		RenderMaterialInterfacePtr makeImageMaterial( ServiceProviderInterface * _serviceProvider, const ResourceImage * _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid )
+		RenderMaterialInterfacePtr makeImageMaterial( ServiceProviderInterface * _serviceProvider, const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid )
 		{
 			uint32_t texturesNum = 0;
 			RenderTextureInterfacePtr textures[2];
@@ -434,7 +434,7 @@ namespace Menge
 		this->invalidateMaterial();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr Materialable::makeImageMaterial( ServiceProviderInterface * _serviceProvider, const ResourceImage * _resourceImage, bool _solid ) const
+	RenderMaterialInterfacePtr Materialable::makeImageMaterial( ServiceProviderInterface * _serviceProvider, const ResourceImagePtr & _resourceImage, bool _solid ) const
 	{
 		RenderMaterialInterfacePtr material = Helper::makeImageMaterial( _serviceProvider, _resourceImage, m_materialName, m_blendMode, m_disableTextureColor, _solid );
 

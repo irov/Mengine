@@ -20,6 +20,7 @@ namespace Menge
 
 	public:
 		virtual bool addUserdata( const ConstString & _name, const ConstString & _category, const FilePath & path ) = 0;
+		virtual bool removeUserdata( const ConstString & _name ) = 0;
 		virtual bool hasUserdata( const ConstString & _name ) const = 0;
 
 	public:

@@ -173,7 +173,9 @@ namespace Menge
 			bool isCompile = false;
 			meta_FragmentShader.get_File_Compile( isCompile );
 
-			if( this->loadFragmentShader_( name, _pakName, filePath, isCompile ) == false )
+			RenderShaderInterfacePtr shader = this->createFragmentShader_( name, _pakName, filePath, isCompile );
+
+			if( shader == nullptr )
 			{
 				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid load fragment shader %s compile %d"
 					, _pakName.c_str()
@@ -184,6 +186,8 @@ namespace Menge
 
 				return false;
 			}
+
+			m_fragmentShaders.insert( std::make_pair( name, shader ) );
 		}
 
 		const Metacode::Meta_DataBlock::TVectorMeta_VertexShader & includes_VertexShader = datablock.get_IncludesVertexShader();
@@ -209,7 +213,9 @@ namespace Menge
 			bool isCompile = false;
 			meta_VertexShader.get_File_Compile( isCompile );
 
-			if( this->loadVertexShader_( name, _pakName, filePath, isCompile ) == false )
+			RenderShaderInterfacePtr shader = this->createVertexShader_( name, _pakName, filePath, isCompile );
+
+			if( shader == nullptr )
 			{
 				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid load vertex shader %s compile %d"
 					, _pakName.c_str()
@@ -220,6 +226,8 @@ namespace Menge
 
 				return false;
 			}
+
+			m_vertexShaders.insert( std::make_pair( name, shader ) );
 		}
 
 		const Metacode::Meta_DataBlock::TVectorMeta_Program & includes_Program = datablock.get_IncludesProgram();
@@ -361,7 +369,9 @@ namespace Menge
 				meta_TextureStages.get_TextureCoord_Index( textureStage.texCoordIndex );
 			}
 
-			if( this->createRenderStageGroup( name, stage ) == false )
+			const RenderStage * cache_stage = this->createRenderStageGroup( name, stage );
+			
+			if( cache_stage == nullptr )
 			{
 				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials material %s:%s invalid create stage group %s"
 					, _pakName.c_str()
@@ -371,6 +381,8 @@ namespace Menge
 
 				return false;
 			}
+
+			m_stageIndexer.insert( std::make_pair( name, cache_stage ) );
 
 			if( is_debug == true )
 			{
@@ -383,6 +395,116 @@ namespace Menge
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool RenderMaterialManager::unloadMaterials( const ConstString& _pakName, const FilePath& _fileName )
+	{
+		Metacode::Meta_DataBlock datablock;
+
+		bool exist = false;
+		if( LOADER_SERVICE( m_serviceProvider )
+			->load( _pakName, _fileName, &datablock, exist ) == false )
+		{
+			if( exist == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials: materials '%s:%s' not found"
+					, _pakName.c_str()
+					, _fileName.c_str()
+					);
+			}
+			else
+			{
+				LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::loadMaterials: Invalid parse materials '%s:%s'"
+					, _pakName.c_str()
+					, _fileName.c_str()
+					);
+			}
+
+			return false;
+		}
+
+		const ConstString & renderPlatformName = RENDER_SYSTEM( m_serviceProvider )
+			->getRenderPlatformName();
+
+		const Metacode::Meta_DataBlock::TVectorMeta_FragmentShader & includes_FragmentShader = datablock.get_IncludesFragmentShader();
+
+		for( Metacode::Meta_DataBlock::TVectorMeta_FragmentShader::const_iterator
+			it = includes_FragmentShader.begin(),
+			it_end = includes_FragmentShader.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_FragmentShader & meta_FragmentShader = *it;
+
+			const ConstString & name = meta_FragmentShader.get_Name();
+			const ConstString & platform = meta_FragmentShader.get_Platform();
+
+			if( platform != renderPlatformName )
+			{
+				continue;
+			}
+
+			m_fragmentShaders.erase( name );
+		}
+
+		const Metacode::Meta_DataBlock::TVectorMeta_VertexShader & includes_VertexShader = datablock.get_IncludesVertexShader();
+
+		for( Metacode::Meta_DataBlock::TVectorMeta_VertexShader::const_iterator
+			it = includes_VertexShader.begin(),
+			it_end = includes_VertexShader.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_VertexShader & meta_VertexShader = *it;
+
+			const ConstString & name = meta_VertexShader.get_Name();
+			const ConstString & platform = meta_VertexShader.get_Platform();
+
+			if( platform != renderPlatformName )
+			{
+				continue;
+			}
+
+			m_vertexShaders.erase( name );
+		}
+
+		const Metacode::Meta_DataBlock::TVectorMeta_Program & includes_Program = datablock.get_IncludesProgram();
+
+		for( Metacode::Meta_DataBlock::TVectorMeta_Program::const_iterator
+			it = includes_Program.begin(),
+			it_end = includes_Program.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_Program & meta_Program = *it;
+
+			const ConstString & name = meta_Program.get_Name();
+			const ConstString & platform = meta_Program.get_Platform();
+
+			if( platform != renderPlatformName )
+			{
+				continue;
+			}
+
+			m_programs.erase( name );
+		}
+
+		const Metacode::Meta_DataBlock::TVectorMeta_Material & includes_Material = datablock.get_IncludesMaterial();
+
+		for( Metacode::Meta_DataBlock::TVectorMeta_Material::const_iterator
+			it = includes_Material.begin(),
+			it_end = includes_Material.end();
+		it != it_end;
+		++it )
+		{
+			const Metacode::Meta_DataBlock::Meta_Material & meta_Material = *it;
+
+			const Menge::ConstString & name = meta_Material.get_Name();
+
+			m_stageIndexer.erase( name );
+		}
+
+		return true;
+	}
 	//////////////////////////////////////////////////////////////////////////
 	static bool s_equalMaterial( const RenderMaterial * _material
 		, EPrimitiveType _primitiveType
@@ -709,13 +831,13 @@ namespace Menge
 		m_materialIndexer.push_back( materialId );
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool RenderMaterialManager::createRenderStageGroup( const ConstString & _name, const RenderStage & _stage )
+	const RenderStage * RenderMaterialManager::createRenderStageGroup( const ConstString & _name, const RenderStage & _stage )
     {
 		TMapRenderStage::const_iterator it_found = m_stageIndexer.find( _name );
 
 		if( it_found != m_stageIndexer.end() )
         {
-            LOGGER_ERROR(m_serviceProvider)("RenderEngine::createRenderStage: RenderStage '%s' is already created"
+            LOGGER_ERROR(m_serviceProvider)("RenderMaterialManager::createRenderStageGroup '%s' is already created"
                 , _name.c_str()
                 );
 
@@ -726,16 +848,14 @@ namespace Menge
 
 		if( cache_stage == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("RenderEngine::createRenderStage: RenderStage '%s' invalid cache"
+			LOGGER_ERROR( m_serviceProvider )("RenderMaterialManager::createRenderStageGroup '%s' invalid cache"
 				, _name.c_str()
 				);
 
 			return false;
 		}
 		
-		m_stageIndexer.insert( std::make_pair( _name, cache_stage ) );
-
-        return true;
+		return cache_stage;
     }
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t RenderMaterialManager::makeMaterialIndex_()
@@ -764,13 +884,13 @@ namespace Menge
 		return material_hash;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderMaterialManager::loadFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
+	RenderShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
 	{ 
 		MemoryCacheBufferInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, "loadFragmentShader" );
 		
 		if( data_cache == nullptr )
 		{
-			return false;
+			return nullptr;
 		}
 				
 		const void * buffer = data_cache->getMemory();
@@ -779,23 +899,16 @@ namespace Menge
 		RenderShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
 			->createFragmentShader( _name, buffer, size, isCompile );
 
-		if( shader == nullptr )
-		{
-			return false;
-		}
-
-		m_fragmentShaders.insert( std::make_pair( _name, shader ) );
-		
-		return true;
+		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderMaterialManager::loadVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
+	RenderShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const ConstString & _filePath, bool isCompile )
 	{ 
 		MemoryCacheBufferInterfacePtr data_cache = Helper::createMemoryCacheFile( m_serviceProvider, _pakName, _filePath, false, "loadVertexShader" );
 
 		if( data_cache == nullptr )
 		{
-			return false;
+			return nullptr;
 		}
 
 		const void * buffer = data_cache->getMemory();
@@ -804,14 +917,7 @@ namespace Menge
 		RenderShaderInterfacePtr shader = RENDER_SYSTEM( m_serviceProvider )
 			->createVertexShader( _name, buffer, size, isCompile );
 
-		if( shader == nullptr )
-		{
-			return false;
-		}
-
-		m_vertexShaders.insert( std::make_pair( _name, shader ) );
-
-		return true;
+		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const RenderShaderInterfacePtr & RenderMaterialManager::getVertexShader_( const ConstString & _name ) const

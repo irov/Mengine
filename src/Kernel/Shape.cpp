@@ -24,7 +24,7 @@ namespace Menge
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Shape::setResourceImage( ResourceImage * _resourceImage )
+	void Shape::setResourceImage( const ResourceImagePtr & _resourceImage )
 	{
 		if( m_resourceImage == _resourceImage )
 		{
@@ -36,7 +36,7 @@ namespace Menge
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage * Shape::getResourceImage() const
+	ResourceImagePtr Shape::getResourceImage() const
 	{
 		return m_resourceImage;
 	}

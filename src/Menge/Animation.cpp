@@ -27,7 +27,7 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::setResourceAnimation( ResourceAnimation * _resourceAnimation )
+	void Animation::setResourceAnimation( const ResourceAnimationPtr & _resourceAnimation )
 	{
 		if( m_resourceAnimation == _resourceAnimation ) 
 		{
@@ -39,7 +39,7 @@ namespace	Menge
 		this->recompile();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceAnimation * Animation::getResourceAnimation() const
+	const ResourceAnimationPtr & Animation::getResourceAnimation() const
 	{
 		return m_resourceAnimation;
 	}

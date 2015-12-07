@@ -27,4 +27,6 @@ namespace Menge
 	protected:
 		FilePath m_path;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceFile> ResourceFilePtr;
 }

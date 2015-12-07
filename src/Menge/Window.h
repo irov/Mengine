@@ -26,8 +26,8 @@ namespace Menge
         mt::vec2f getWindowSize() const;
 		const mt::vec2f getTileSize( int _tile ) const;
 
-		void setResourceWindow( ResourceWindow * _resourceWindow );
-        ResourceWindow * getResourceWindow() const;
+		void setResourceWindow( const ResourceWindowPtr & _resourceWindow );
+		const ResourceWindowPtr & getResourceWindow() const;
 
 		bool hasBackground() const;
 

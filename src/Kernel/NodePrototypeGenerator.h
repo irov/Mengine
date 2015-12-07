@@ -19,28 +19,53 @@ namespace Menge
 		, public MemoryAllocator
 	{
 	public:
-		NodePrototypeGenerator( ServiceProviderInterface * _serviceProvider )
-			: m_serviceProvider(_serviceProvider)
+		NodePrototypeGenerator()
+			: m_serviceProvider(nullptr)
+			, m_scriptWrapper(nullptr)
 		{
 		}
 
+	public:
+		void setServiceProvider( ServiceProviderInterface * _serviceProvider ) override
+		{
+			m_serviceProvider = _serviceProvider;
+		}
+
+		ServiceProviderInterface * getServiceProvider() const override
+		{
+			return m_serviceProvider;
+		}
+
 	protected:
-		Factorable * generate( const ConstString & _category, const ConstString & _prototype ) override
+		bool initialize( const ConstString & _category, const ConstString & _prototype ) override
+		{
+			m_category = _category;
+			m_prototype = _prototype;
+
+			m_scriptWrapper = SCRIPT_SERVICE( m_serviceProvider )
+				->getWrapper( m_prototype );
+
+			return true;
+		}
+
+	protected:
+		Factorable * generate() override
 		{
 			Node * node = m_factory.createObject();
 
 			if( node == nullptr )
 			{
 				LOGGER_ERROR(m_serviceProvider)("NodePrototypeGenerator::generate can't generate %s %s"
-					, _category.c_str()
-					, _prototype.c_str()
+					, m_category.c_str()
+					, m_prototype.c_str()
 					);
 
 				return nullptr;
 			}
 
 			node->setServiceProvider( m_serviceProvider );
-			node->setType( _prototype );
+			node->setType( m_prototype );
+			node->setScriptWrapper( m_scriptWrapper );
 
 			return node;
 		}
@@ -59,6 +84,11 @@ namespace Menge
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
+
+		ConstString m_category;
+		ConstString m_prototype;
+
+		ScriptWrapperInterface * m_scriptWrapper;
 
 		typedef FactoryPoolStore<Type, Count> TNodeFactory;
 		TNodeFactory m_factory;

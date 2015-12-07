@@ -30,11 +30,8 @@ namespace Menge
         //////////////////////////////////////////////////////////////////////////
         bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _module )
         {
-            PrototypeGeneratorInterfacePtr generator = SCRIPT_SERVICE(m_serviceProvider)
-				->createEntityGenerator(_category, _prototype, _module);
-
-            bool successful = PROTOTYPE_SERVICE(m_serviceProvider)
-                ->addPrototype( _category, _prototype, generator );
+			bool successful = SCRIPT_SERVICE( m_serviceProvider )
+				->addEntityPrototype( _category, _prototype, _module );
 
             return successful;
         }

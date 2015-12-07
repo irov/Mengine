@@ -6,6 +6,7 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	class ResourceCursor
 		: public ResourceReference
 	{
@@ -13,4 +14,6 @@ namespace Menge
 		virtual const FilePath & getPath() const = 0;
 		virtual const MemoryInterfacePtr & getBuffer() const = 0;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceCursor> ResourceCursorPtr;
 }

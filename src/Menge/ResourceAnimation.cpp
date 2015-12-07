@@ -67,8 +67,8 @@ namespace Menge
 		{
 			AnimationSequence & sequence = *(it);
 			
-			ResourceImage * resource  = RESOURCE_SERVICE(m_serviceProvider)
-				->getResourceT<ResourceImage *>( sequence.resourceName );
+			ResourceImagePtr resource  = RESOURCE_SERVICE(m_serviceProvider)
+				->getResourceT<ResourceImagePtr>( sequence.resourceName );
 
 			if( resource == nullptr )
 			{
@@ -115,7 +115,7 @@ namespace Menge
 		{
 			const AnimationSequence & sequence = *(it);
 
-			ResourceReference * resource;
+			ResourceReferencePtr resource;
 			if( RESOURCE_SERVICE(m_serviceProvider)
 				->hasResource( sequence.resourceName, &resource ) == false )
 			{
@@ -127,7 +127,7 @@ namespace Menge
 				return false;
 			}
 
-			ResourceImage * resourceImage = dynamic_cast<ResourceImage *>(resource);
+			ResourceImagePtr resourceImage = stdex::intrusive_dynamic_cast<ResourceImagePtr>(resource);
 
 			if( resourceImage == nullptr )
 			{
@@ -140,7 +140,7 @@ namespace Menge
 				return false;
 			}
 
-			ResourceImageDefault * resourceImageDefault = dynamic_cast<ResourceImageDefault *>(resourceImage);
+			ResourceImageDefaultPtr resourceImageDefault = stdex::intrusive_dynamic_cast<ResourceImageDefaultPtr>(resourceImage);
 
 			if( resourceImageDefault != nullptr )
 			{
@@ -273,11 +273,11 @@ namespace Menge
 		return m_sequence;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceImage * ResourceAnimation::getSequenceResource( uint32_t _index ) const
+	const ResourceImagePtr & ResourceAnimation::getSequenceResource( uint32_t _index ) const
 	{
         const AnimationSequence & sequence = m_sequence[_index];
 
-        ResourceImage * resource = sequence.resource;
+		const ResourceImagePtr & resource = sequence.resource;
 
 		return resource;
 	}

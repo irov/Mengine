@@ -67,4 +67,6 @@ namespace Menge
         bool m_alpha;
         bool m_noSeek;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::intrusive_ptr<ResourceVideo> ResourceVideoPtr;
 }

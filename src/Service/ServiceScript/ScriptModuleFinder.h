@@ -16,6 +16,15 @@
 
 namespace Menge
 {    
+	//////////////////////////////////////////////////////////////////////////
+	struct ModulePathes
+	{
+		ConstString pack;
+		TVectorConstString pathes;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef stdex::vector<ModulePathes> TVectorModulePathes;
+	//////////////////////////////////////////////////////////////////////////
     class ScriptModuleFinder
     {
     public:
@@ -29,7 +38,8 @@ namespace Menge
 		void setEmbed( PyObject * _embed );
 
     public:
-        void addModulePath( const ConstString & _pak, const TVectorConstString & _pathes );
+        void addModulePath( const ConstString & _pack, const TVectorConstString & _pathes );
+		void removeModulePath( const ConstString & _pack );
 
     public:
         PyObject * find_module( PyObject * _module, PyObject * _path );
@@ -52,13 +62,6 @@ namespace Menge
 
 		ArchivatorInterfacePtr m_archivator;
 
-        struct ModulePathes
-        {
-            ConstString pak;
-            TVectorConstString pathes;
-        };
-
-        typedef stdex::vector<ModulePathes> TVectorModulePathes;
         TVectorModulePathes m_modulePaths;    
 
 		typedef FactoryPoolStore<ScriptModuleLoaderCode, 8> TFactoryScriptModuleLoaderCode;

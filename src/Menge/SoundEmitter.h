@@ -41,8 +41,8 @@ namespace Menge
 		float getLengthMs() const;
 
     public:
-		void setResourceSound( ResourceSound * _resourceSound );
-        ResourceSound * getResourceSound() const;
+		void setResourceSound( const ResourceSoundPtr & _resourceSound );
+		const ResourceSoundPtr & getResourceSound() const;
 
     protected:
 		void onSoundPause( uint32_t _soundId ) override;

@@ -234,7 +234,7 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			ScriptClassInterface * scriptClass = it->second;
+			ScriptWrapperInterface * scriptClass = it->second;
 			
             scriptClass->destroy();
 		}
@@ -264,17 +264,17 @@ namespace Menge
 		pybind::finalize();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::addModulePath( const ConstString & _pak, const TVectorScriptModulePak & _modules )
+	void ScriptEngine::addModulePath( const ConstString & _pak, const TVectorScriptModulePack & _modules )
 	{
 		TVectorConstString pathes;
 		
-		for( TVectorScriptModulePak::const_iterator
+		for( TVectorScriptModulePack::const_iterator
 			it = _modules.begin(),
 			it_end = _modules.end();
 		it != it_end;
 		++it )
 		{
-			const ScriptModulePak & pak = *it;
+			const ScriptModulePack & pak = *it;
 
 			pathes.push_back( pak.path );
 		}
@@ -284,15 +284,70 @@ namespace Menge
 		m_bootstrapperModules.insert( m_bootstrapperModules.end(), _modules.begin(), _modules.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	namespace
+	{
+		class FBootstrapperModuleRemove
+		{
+		public:
+			FBootstrapperModuleRemove( const ScriptModulePack & _pack )
+				: m_pack( _pack )
+			{
+			}
+
+		protected:
+			void operator = (const FBootstrapperModuleRemove &)
+			{
+			}
+
+		public:
+			bool operator() ( const ScriptModulePack & _pack )
+			{
+				if( _pack.module < m_pack.module )
+				{
+					return false;
+				}
+
+				if( _pack.path < m_pack.path )
+				{
+					return false;
+				}
+
+				return true;
+			}
+
+		protected:
+			const ScriptModulePack & m_pack;
+		};
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptEngine::removeModulePath( const ConstString & _pack, const TVectorScriptModulePack & _modules )
+	{
+		m_moduleFinder->removeModulePath( _pack );
+
+		for( TVectorScriptModulePack::const_iterator
+			it = _modules.begin(),
+			it_end = _modules.end();
+		it != it_end;
+		++it )
+		{
+			const ScriptModulePack & pack = *it;
+
+			m_bootstrapperModules.erase( 
+				std::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), FBootstrapperModuleRemove( pack ) )
+				, m_bootstrapperModules.end() 
+				);
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::bootstrapModules()
 	{
-		for( TVectorScriptModulePak::const_iterator
+		for( TVectorScriptModulePack::const_iterator
 			it = m_bootstrapperModules.begin(),
 			it_end = m_bootstrapperModules.end();
 		it != it_end;
 		++it )
 		{
-			const ScriptModulePak & pak = *it;
+			const ScriptModulePack & pak = *it;
 
 			if( pak.module.empty() == true )
 			{
@@ -316,13 +371,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptEngine::initializeModules()
 	{
-		for( TVectorScriptModulePak::const_iterator
+		for( TVectorScriptModulePack::const_iterator
 			it = m_bootstrapperModules.begin(),
 			it_end = m_bootstrapperModules.end();
 		it != it_end;
 		++it )
 		{
-			const ScriptModulePak & pak = *it;
+			const ScriptModulePack & pak = *it;
 
 			if( pak.module.empty() == true )
 			{
@@ -344,8 +399,8 @@ namespace Menge
 
 				return false;
 			}
-
-			if( this->hasModuleFunction( module, pak.initializer.c_str() ) == false )
+			
+			if( module.has_attr( pak.initializer ) == false )
 			{
 				LOGGER_ERROR(m_serviceProvider)("ScriptEngine::initializeModules invalid has module %s initializer %s"
 					, pak.module.c_str()
@@ -355,7 +410,7 @@ namespace Menge
 				return false;
 			}
 
-			pybind::object module_function = this->getModuleFunction( module, pak.initializer.c_str() );
+			pybind::object module_function = module.get_attr( pak.initializer );
 
 			if( module_function.is_invalid() == true )
 			{
@@ -505,18 +560,16 @@ namespace Menge
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	PrototypeGeneratorInterfacePtr ScriptEngine::createEntityGenerator( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
+	bool ScriptEngine::addEntityPrototype( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
 	{
 		EntityPrototypeGeneratorPtr generator =	m_factoryEntityPrototypeGenerator.createObject();
 
-		generator->setServiceProvider( m_serviceProvider );
+		generator->setScriptGenerator( _generator );
 
-		if( generator->initialize( _category, _prototype, _generator ) == false )
-		{
-			return nullptr;
-		}
+		bool successful = PROTOTYPE_SERVICE( m_serviceProvider )
+			->addPrototype( _category, _prototype, generator );
 
-		return generator;
+		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	pybind::object ScriptEngine::importEntity( const ConstString & _category, const ConstString & _prototype )
@@ -612,7 +665,7 @@ namespace Menge
 		return entity;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptEngine::addWrapping( const ConstString& _type, ScriptClassInterface * _wrapper )
+	void ScriptEngine::setWrapper( const ConstString& _type, ScriptWrapperInterface * _wrapper )
 	{
 		_wrapper->setServiceProvider( m_serviceProvider );
 
@@ -624,9 +677,9 @@ namespace Menge
 		m_scriptWrapper.insert( std::make_pair(_type, _wrapper) );
 	}
 	//////////////////////////////////////////////////////////////////////////|
-	PyObject * ScriptEngine::wrap( const ConstString & _type, Scriptable * _scriptable )
+	ScriptWrapperInterface * ScriptEngine::getWrapper( const ConstString & _type ) const
 	{
-		TMapScriptWrapper::iterator it_found = m_scriptWrapper.find( _type );
+		TMapScriptWrapper::const_iterator it_found = m_scriptWrapper.find( _type );
 
 		if( it_found == m_scriptWrapper.end() )
 		{
@@ -637,21 +690,9 @@ namespace Menge
 			return nullptr;
 		}
 
-		ScriptClassInterface * scriptClass = it_found->second;
+		ScriptWrapperInterface * wrapper = it_found->second;
 
-		PyObject * py_embedded = scriptClass->wrap( _scriptable );
-
-		return py_embedded;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScriptEngine::hasModuleFunction( const pybind::object & _module, const char * _name )
-	{
-		return _module.has_attr( _name );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	pybind::object ScriptEngine::getModuleFunction( const pybind::object & _module, const char * _name )
-	{
-		return _module.get_attr( _name );
+		return wrapper;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptEngine::handleException()

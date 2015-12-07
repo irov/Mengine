@@ -111,7 +111,7 @@ namespace Menge
 		this->releaseMaterial();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::setResourceModel3D( ResourceModel3D * _resourceModel )
+	void Model3D::setResourceModel3D( const ResourceModel3DPtr & _resourceModel )
 	{
 		if( m_resourceModel == _resourceModel )
 		{
@@ -126,14 +126,23 @@ namespace Menge
 		this->invalidateBoundingBox();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceModel3D * Model3D::getResourceModel3D() const
+	const ResourceModel3DPtr & Model3D::getResourceModel3D() const
 	{
 		return m_resourceModel;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr Model3D::_updateMaterial() const
 	{
-		const ResourceImage * resourceImage = m_resourceModel->getResourceImage();
+		const ResourceImagePtr & resourceImage = m_resourceModel->getResourceImage();
+
+		if( resourceImage == nullptr )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Mesh::updateMaterial_ %s resourceImage is NULL"
+				, this->getName().c_str()
+				);
+
+			return nullptr;
+		}
 
 		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_serviceProvider, resourceImage, m_solid );
 
@@ -221,7 +230,7 @@ namespace Menge
 	{
 		m_invalidateVerticesLocal = false;
 
-		const ResourceImage * resourceImage =  m_resourceModel->getResourceImage();
+		const ResourceImagePtr & resourceImage =  m_resourceModel->getResourceImage();
 
 		const mt::uv4f & uv_image = resourceImage->getUVImage();
 		const mt::uv4f & uv_alpha = resourceImage->getUVAlpha();

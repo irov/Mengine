@@ -62,6 +62,8 @@ namespace Menge
 		virtual uint32_t getProjectVersion() const = 0;
 		
 	public:
+	public:
+		virtual void setLocale( const ConstString & _locale ) = 0;
 		virtual const ConstString & getLocale() const = 0;
 
 	public:

@@ -17,8 +17,6 @@ namespace Menge
 	Spine::Spine()
 		: m_skeleton( nullptr )
 		, m_animationStateData( nullptr )
-		, m_animationState( nullptr )
-		, m_currentAnimation( nullptr )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -43,68 +41,105 @@ namespace Menge
 		return m_resourceSpine;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::setAnimationName( const ConstString & _name )
+	bool Spine::mixAnimation( const ConstString & _first, const ConstString & _second, float _duration )
 	{
-		if( m_currentAnimationName == _name )
+		if( m_resourceSpine == nullptr )
 		{
-			return;
+			return false;
 		}
 
-		m_currentAnimationName = _name;
+		spAnimation * animation_first = m_resourceSpine->findSkeletonAnimation( _first );
 
-		if( this->isCompile() == false )
+		if( animation_first == nullptr )
 		{
-			return;
+			return false;
 		}
 
-		this->updateAnimation_();
+		spAnimation * animation_second = m_resourceSpine->findSkeletonAnimation( _second );
+
+		if( animation_second == nullptr )
+		{
+			return false;
+		}
+
+		spAnimationStateData_setMix( m_animationStateData, animation_first, animation_second, _duration );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::updateAnimation_()
+	static void s_spAnimationStateListener( spAnimationState* state, int trackIndex, spEventType type, spEvent* event, int loopCount )
 	{
-		if( m_currentAnimationName.empty() == true )
-		{
-			m_currentAnimation = nullptr;
+		Spine * spine = static_cast<Spine*>(state->rendererObject);
 
-			return;
+		spine->addAnimationEvent( trackIndex, type, event, loopCount );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Spine::setAnimation( const ConstString & _state, const ConstString & _name, bool _loop )
+	{
+		TMapAnimations::iterator it_found = m_animations.find( _state );
+
+		if( it_found != m_animations.end() )
+		{
+			spAnimationState * state = it_found->second.state;
+
+			spAnimationState_clearTracks( state );
+
+			spAnimationState_dispose( state );
+
+			m_animations.erase( it_found );
 		}
-		
-		spAnimation * animation = m_resourceSpine->findSkeletonAnimation( m_currentAnimationName );
+
+		spAnimation * animation = m_resourceSpine->findSkeletonAnimation( _name );
 
 		if( animation == nullptr )
 		{
-			LOGGER_ERROR( m_serviceProvider )("Spine::updateAnimation_ %s invalid find skeleton animation %s"
-				, this->getName().c_str()
-				, m_currentAnimationName.c_str()
-				);
-
-			return;
+			return false;
 		}
 
-		m_currentAnimation = animation;
+		spAnimationState * state = spAnimationState_create( m_animationStateData );
 
-		bool loop = this->getLoop();
+		state->rendererObject = this;
+		state->listener = &s_spAnimationStateListener;
+		
+		spAnimationState_setAnimation( state, 0, animation, _loop ? 1 : 0 );
 
-		spAnimationState_setAnimation( m_animationState, 0, m_currentAnimation, loop ? 1 : 0 );
+		Animation an;
+
+		an.name = _state;
+		an.state = state;
+		an.loop = _loop;
+
+		m_animations.insert( std::make_pair( _state, an ) );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::setAnimationMix( const ConstString & _from, const ConstString & _to, float _time )
+	bool Spine::removeAnimation( const ConstString & _state )
 	{
-		spAnimationStateData_setMixByName( m_animationStateData, _from.c_str(), _to.c_str(), _time );
+		TMapAnimations::iterator it_found = m_animations.find( _state );
+
+		if( it_found == m_animations.end() )
+		{
+			return false;
+		}
+
+		spAnimationState * state = it_found->second.state;
+
+		spAnimationState_clearTracks( state );
+
+		spAnimationState_dispose( state );
+
+		m_animations.erase( it_found );
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Spine::getAnimationName() const
-	{
-		return m_currentAnimationName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Spine::getDuration( const ConstString & _name )
+	float Spine::getAnimationDuration( const ConstString & _name )
 	{
 		if( m_resourceSpine == nullptr )
 		{
 			LOGGER_ERROR( m_serviceProvider )("Spine::getDuration %s not setup resource"
 				, this->getName().c_str()
-				, m_currentAnimationName.c_str()
 				);
 
 			return 0.f;
@@ -124,7 +159,7 @@ namespace Menge
 		{
 			LOGGER_ERROR( m_serviceProvider )("Spine::getDuration %s invalid find skeleton animation %s"
 				, this->getName().c_str()
-				, m_currentAnimationName.c_str()
+				, _name.c_str()
 				);
 
 			return 0.f;
@@ -164,13 +199,6 @@ namespace Menge
 		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void s_spAnimationStateListener( spAnimationState* state, int trackIndex, spEventType type, spEvent* event, int loopCount )
-	{
-		Spine * spine = static_cast<Spine*>(state->rendererObject);
-
-		spine->addAnimationEvent( trackIndex, type, event, loopCount );
-	}
-	//////////////////////////////////////////////////////////////////////////
 	bool Spine::_compile()
 	{
 		if( m_resourceSpine == nullptr )
@@ -196,16 +224,9 @@ namespace Menge
 		
 		spSkeleton * skeleton = spSkeleton_create( skeletonData );
 
-		spAnimationStateData * animationStateData = spAnimationStateData_create( skeletonData );
-		
-		spAnimationState * animationState = spAnimationState_create( animationStateData );
-
-		animationState->rendererObject = this;
-		animationState->listener = &s_spAnimationStateListener;
+		spAnimationStateData * animationStateData = spAnimationStateData_create( skeletonData );		
 
 		spSkeleton_update( skeleton, 0.f );
-		spAnimationState_update( animationState, 0.f );
-		spAnimationState_apply( animationState, skeleton );
 
 		spSkeleton_updateWorldTransform( skeleton );
 
@@ -279,9 +300,6 @@ namespace Menge
 
 		m_skeleton = skeleton;
 		m_animationStateData = animationStateData;
-		m_animationState = animationState;
-
-		this->updateAnimation_();
 
 		return true;
 	}
@@ -290,7 +308,20 @@ namespace Menge
 	{
 		Node::_release();
 
-		m_resourceSpine.release();
+		for( TMapAnimations::iterator
+			it = m_animations.begin(),
+			it_end = m_animations.end();
+		it != it_end;
+		++it )
+		{
+			spAnimationState * state = it->second.state;
+
+			spAnimationState_clearTracks( state );
+
+			spAnimationState_dispose( state );
+		}
+
+		m_animations.clear();
 
 		if( m_skeleton != nullptr )
 		{
@@ -298,21 +329,15 @@ namespace Menge
 			m_skeleton = nullptr;
 		}
 
-		if( m_animationState != nullptr )
-		{
-			spAnimationState_dispose( m_animationState );
-			m_animationState = nullptr;
-		}
-
 		if( m_animationStateData != nullptr )
 		{
 			spAnimationStateData_dispose( m_animationStateData );
 			m_animationStateData = nullptr;
 		}
-
+		
 		m_attachmentMeshes.clear();
 
-		m_currentAnimation = nullptr;
+		m_resourceSpine.release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr Spine::makeMaterial_( spSlot * slot, ResourceImage * _resourceImage ) const
@@ -394,13 +419,13 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_update( float _current, float _timing )
 	{
-		if( m_currentAnimation == nullptr )
-		{
+		if( this->isPlay() == false )
+		{ 
 			return;
 		}
 
-		if( this->isPlay() == false )
-		{ 
+		if( m_animations.empty() == true )
+		{
 			return;
 		}
 
@@ -413,9 +438,18 @@ namespace Menge
 		float spTiming = _timing * 0.001f;
 
 		spSkeleton_update( m_skeleton, spTiming );
-		spAnimationState_update( m_animationState, spTiming );
 
-		spAnimationState_apply( m_animationState, m_skeleton );
+		for( TMapAnimations::iterator
+			it = m_animations.begin(),
+			it_end = m_animations.end();
+		it != it_end;
+		++it )
+		{
+			spAnimationState * state = it->second.state;
+
+			spAnimationState_update( state, spTiming );
+			spAnimationState_apply( state, m_skeleton );
+		}
 
 		spSkeleton_updateWorldTransform( m_skeleton );
 
@@ -451,11 +485,6 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Spine::_render( const RenderObjectState * _state )
 	{
-		if( m_currentAnimation == nullptr )
-		{
-			return;
-		}
-
 		const mt::box2f & bb = this->getBoundingBox();
 
 		const mt::mat4f & wm = this->getWorldMatrix();
@@ -617,9 +646,9 @@ namespace Menge
 			return false;
 		}
 				
-		bool loop = this->getLoop();
+		//bool loop = this->getLoop();
 
-		spAnimationState_setAnimation( m_animationState, 0, m_currentAnimation, loop ? 1 : 0 );
+		//spAnimationState_setAnimation( m_animationState, 0, m_currentAnimation, loop ? 1 : 0 );
 
 		return true;
 	}

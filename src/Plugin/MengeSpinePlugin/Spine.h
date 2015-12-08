@@ -28,14 +28,14 @@ namespace Menge
 		const ResourceSpinePtr & getResourceSpine() const;
 
 	public:
-		void setAnimationName( const ConstString & _name );
-		const ConstString & getAnimationName() const;
+		bool mixAnimation( const ConstString & _first, const ConstString & _second, float _duration );
 
 	public:
-		void setAnimationMix( const ConstString & _from, const ConstString & _to, float _time );
-
+		bool setAnimation( const ConstString & _state, const ConstString & _name, bool _loop );
+		bool removeAnimation( const ConstString & _state );
+		
 	public:
-		float getDuration( const ConstString & _name );
+		float getAnimationDuration( const ConstString & _name );
 
 	protected:
 		void _setEventListener( const pybind::dict & _listener ) override;
@@ -76,7 +76,16 @@ namespace Menge
 		spSkeleton * m_skeleton;
 
 		spAnimationStateData * m_animationStateData;
-		spAnimationState * m_animationState;
+
+		struct Animation
+		{
+			ConstString name;
+			spAnimationState * state;
+			bool loop;
+		};
+
+		typedef stdex::map<ConstString, Animation> TMapAnimations;
+		TMapAnimations m_animations;
 
 		struct AttachmentMesh
 		{
@@ -91,9 +100,6 @@ namespace Menge
 
 		typedef stdex::vector<AttachmentMesh> TVectorAttachmentMesh;
 		TVectorAttachmentMesh m_attachmentMeshes;
-
-		ConstString m_currentAnimationName;
-		spAnimation * m_currentAnimation;
 
 		struct AnimationEvent
 		{

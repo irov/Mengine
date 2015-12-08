@@ -27,10 +27,10 @@ namespace Menge
 		pybind::interface_<Spine, pybind::bases<Node, Animatable> >( "Spine", false )
 			.def( "setResourceSpine", &Spine::setResourceSpine )
 			.def( "getResourceSpine", &Spine::getResourceSpine )
-			.def( "setAnimationName", &Spine::setAnimationName )
-			.def( "getAnimationName", &Spine::getAnimationName )
-			.def( "setAnimationMix", &Spine::setAnimationMix )
-			.def( "getDuration", &Spine::getDuration )
+			.def( "mixAnimation", &Spine::mixAnimation )
+			.def( "setAnimation", &Spine::setAnimation )
+			.def( "removeAnimation", &Spine::removeAnimation )
+			.def( "getAnimationDuration", &Spine::getAnimationDuration )
 			;
 
 		pybind::interface_<ResourceSpine, pybind::bases<ResourceReference> >( "ResourceSpine", false )

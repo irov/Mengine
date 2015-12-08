@@ -636,12 +636,6 @@ namespace Menge
 			dstBitmap = _buffer;
 			dstBitmapOffset = _buffer + m_pitch;
 
-			//ySrc = (unsigned char*)_yuvBuffer.y + yOff * y_rgb_count;
-			//vSrc = (unsigned char*)_yuvBuffer.v + _yuvBuffer.uv_stride * y_rgb_count;
-			//ySrc = (unsigned char*)_yuvBuffer.y + y_rgb_count + yOff;
-			//vSrc = (unsigned char*)_yuvBuffer.v + y_rgb_count + _yuvBuffer.uv_stride;
-			//ySrc2 = ySrc + _yuvBuffer.y_stride;
-
 			for( int y = 0; y != y_rgb_count; ++y )
 			{
 				for( int x = 0; x != y_width; ++x )

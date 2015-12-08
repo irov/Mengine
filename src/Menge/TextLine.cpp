@@ -111,10 +111,10 @@ namespace Menge
 					, code_next
 					);
 
-				glyph.uv = mt::vec4f(0.f, 0.f, 0.f, 0.f);
-				glyph.offset = mt::vec2f(0.f, 0.f);
+				glyph.uv = mt::vec4f( 0.f, 0.f, 0.f, 0.f );
+				glyph.offset = mt::vec2f( 0.f, 0.f );
 				glyph.advance = 0.f;
-				glyph.size = mt::vec2f(0.f, 0.f);
+				glyph.size = mt::vec2f( 0.f, 0.f );
 				glyph.kerning = 0.f;
 
 				successful = false;
@@ -169,12 +169,11 @@ namespace Menge
 	void TextLine::prepareRenderObject(	mt::vec2f & _offset		
 		, const mt::uv4f & _uv
 		, ColourValue_ARGB _argb
-		, bool _pixelsnap
 		, TVectorRenderVertex2D & _renderObject ) const
 	{
 		if( m_invalidateTextLine == true )
 		{
-			this->updateRenderLine_( _pixelsnap, _offset );
+			this->updateRenderLine_( _offset );
 		}
 
 		size_t renderObjectNum = _renderObject.size();
@@ -189,16 +188,16 @@ namespace Menge
 		it_char != it_char_end; 
 		++it_char )
 		{
-            const CharData & data = *it_char;
+			const CharData & data = *it_char;
 
 			for( uint32_t i = 0; i != 4; ++i )
 			{
 				RenderVertex2D & renderVertex = _renderObject[renderObjectNum + i];
 
 				const mt::vec2f & charVertex = data.vertex[i];
-				
-                renderVertex.pos.x = charVertex.x;
-                renderVertex.pos.y = charVertex.y;
+
+				renderVertex.pos.x = charVertex.x;
+				renderVertex.pos.y = charVertex.y;
 
 				renderVertex.pos.z = 0.f;
 
@@ -224,7 +223,7 @@ namespace Menge
 		return;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TextLine::updateRenderLine_( bool _pixelsnap, mt::vec2f & _offset ) const
+	void TextLine::updateRenderLine_( mt::vec2f & _offset ) const
 	{
 		for( TVectorCharData::iterator
 			it_char = m_charsData.begin(), 
@@ -239,21 +238,10 @@ namespace Menge
 			mt::vec2f offset = _offset + cd.offset;
 			mt::vec2f v3_offset = offset;
 			
-			cd.vertex[0] = v3_offset + mt::vec2f(0.f, 0.0f);
-			cd.vertex[1] = v3_offset + mt::vec2f(size.x, 0.0f);
-			cd.vertex[2] = v3_offset + mt::vec2f(size.x, size.y);
-			cd.vertex[3] = v3_offset + mt::vec2f(0.0f, size.y);
-
-			if( _pixelsnap == true )
-			{
-				for( size_t i = 0; i != 4; ++i )
-				{
-					mt::vec2f & v = cd.vertex[i];
-
-					v.x = ::floorf( v.x + 0.5f );
-					v.y = ::floorf( v.y + 0.5f );
-				}
-			}
+			cd.vertex[0] = v3_offset + mt::vec2f( 0.f, 0.f );
+			cd.vertex[1] = v3_offset + mt::vec2f( size.x, 0.f );
+			cd.vertex[2] = v3_offset + mt::vec2f( size.x, size.y );
+			cd.vertex[3] = v3_offset + mt::vec2f( 0.f, size.y );
 
 			_offset.x += cd.advance + m_charOffset;
 		}

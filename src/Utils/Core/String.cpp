@@ -68,7 +68,7 @@ namespace Menge
 
 			do
 			{
-				pos = std::min( _str.find_first_of( _delims, start ), _str.find_first_of( _delims2, start ) );
+				pos = (std::min)( _str.find_first_of( _delims, start ), _str.find_first_of( _delims2, start ) );
 
 				if( pos == String::npos )
 				{
@@ -83,7 +83,7 @@ namespace Menge
 
 				if( _trimDelims == true )
 				{
-					start = std::min( _str.find_first_not_of( _delims, start ), _str.find_first_not_of( _delims2, start ) );
+					start = (std::min)( _str.find_first_not_of( _delims, start ), _str.find_first_not_of( _delims2, start ) );
 				}
 
 				++numSplits;

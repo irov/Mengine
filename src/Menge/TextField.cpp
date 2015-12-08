@@ -183,7 +183,7 @@ namespace Menge
             float alignOffsetX = this->getHorizontAlignOffset_( line );
 			offset.x = alignOffsetX;
 
-			line.prepareRenderObject( offset, uv, argb, m_pixelsnap, _vertexData );
+			line.prepareRenderObject( offset, uv, argb, _vertexData );
 
             offset.y += fontHeght;
 			offset.y += lineOffset;
@@ -529,7 +529,8 @@ namespace Menge
 					Utils::split2( words, *it, false, " ", "\r" );
 
 					String newLine = words.front();
-					words.erase( words.begin() );	
+					words.erase( words.begin() );
+
 					while( words.empty() == false )
 					{
 						TextLine tl(m_serviceProvider,  charOffset);

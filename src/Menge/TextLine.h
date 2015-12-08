@@ -40,7 +40,6 @@ namespace Menge
 		void prepareRenderObject( mt::vec2f & _offset
 			, const mt::uv4f & _uv
 			, ColourValue_ARGB _argb
-            , bool _pixelsnap
 			, TVectorRenderVertex2D & _renderObject ) const;
 
     public:
@@ -48,7 +47,7 @@ namespace Menge
 		int getCharsDataSize() const;
 
 	private:
-		void updateRenderLine_( bool _pixelsnap, mt::vec2f & _offset ) const;
+		void updateRenderLine_( mt::vec2f & _offset ) const;
 
 	private:
         ServiceProviderInterface * m_serviceProvider;

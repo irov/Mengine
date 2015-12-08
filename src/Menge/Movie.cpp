@@ -276,8 +276,9 @@ namespace Menge
 		this->pauseAnimation_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_resume( uint32_t _enumerator )
+	void Movie::_resume( float _time, uint32_t _enumerator )
 	{
+		(void)_time;
 		(void)_enumerator;
 
 		this->resumeAnimation_();
@@ -2441,7 +2442,10 @@ namespace Menge
 			{
 				Animatable * animatable = this->getLayerAnimatable_( layer );
 
-				animatable->resume();
+				float time = TIMELINE_SERVICE( m_serviceProvider )
+					->getTime();
+
+				animatable->resume( time );
 			}
 		}
 	}
@@ -2509,7 +2513,7 @@ namespace Menge
 		if( autoPlay == true )
 		{
 			float time = TIMELINE_SERVICE( m_serviceProvider )
-				->getOffset();
+				->getTime();
 
 			if( this->play( time ) == 0 )
 			{
@@ -2921,8 +2925,13 @@ namespace Menge
 
 					animatable->setTiming( timing );
 
-					float playTime = this->getPlayTime();
-					animatable->play( playTime );
+					if( animatable->isPlay() == false )
+					{
+						float playTime = TIMELINE_SERVICE( m_serviceProvider )
+							->getTime();
+
+						animatable->play( playTime );
+					}
 				}
 			}
 			else if( _endFrame <= indexIn && _beginFrame <= indexOut && _beginFrame > indexIn )
@@ -3093,11 +3102,14 @@ namespace Menge
 
 						animatable->setTiming( timing );
 
-						float movieTiming = this->getTiming();
+						//float movieTiming = this->getTiming();
 
 						if( animatable->isPlay() == false )
 						{
-							animatable->play( movieTiming );
+							float playTime = TIMELINE_SERVICE( m_serviceProvider )
+								->getTime();
+
+							animatable->play( playTime );
 						}
 					}
 					else

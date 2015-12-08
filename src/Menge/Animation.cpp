@@ -225,8 +225,9 @@ namespace	Menge
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animation::_resume( uint32_t _enumerator )
+	void Animation::_resume( float _time, uint32_t _enumerator )
 	{
+		(void)_time;
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////

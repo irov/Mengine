@@ -372,9 +372,9 @@ namespace Menge
 			unsigned char * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
 			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-			for( int y = y_height; y > 0; --y )
+			for( int y = 0; y != y_height; ++y )
 			{
-				for( int x = 0; x < y_width; ++x )
+				for( int x = 0; x != y_width; ++x )
 				{
 					//Get uv pointers for row
 					int u = uSrc[x];
@@ -466,9 +466,9 @@ namespace Menge
 			unsigned char * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
 			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-			for( int y = y_height; y > 0; --y )
+			for( int y = 0; y != y_height; ++y )
 			{
-				for( int x = 0; x < y_width; ++x )
+				for( int x = 0; x != y_width; ++x )
 				{
 					//Get uv pointers for row
 					int u = uSrc[x];
@@ -556,12 +556,13 @@ namespace Menge
 			unsigned char * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
 			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-			int y_rgb_height_begin = y_height;
-			int y_rgb_height_end = y_height / 2;
+			//int y_rgb_height_begin = y_height;
+			//int y_rgb_height_end = y_height / 2;
+			int y_rgb_count = y_height / 2;
 
-			for( int y = y_rgb_height_begin; y > y_rgb_height_end; --y )
+			for( int y = 0; y != y_rgb_count; ++y )
 			{
-				for( int x = 0; x < y_width; ++x )
+				for( int x = 0; x != y_width; ++x )
 				{
 					//Get uv pointers for row
 					int u = uSrc[x];
@@ -635,17 +636,15 @@ namespace Menge
 			dstBitmap = _buffer;
 			dstBitmapOffset = _buffer + m_pitch;
 
-			ySrc = (unsigned char*)_yuvBuffer.y;
-			uSrc = (unsigned char*)_yuvBuffer.u;
-			vSrc = (unsigned char*)_yuvBuffer.v;
-			ySrc2 = ySrc + _yuvBuffer.y_stride;
+			//ySrc = (unsigned char*)_yuvBuffer.y + yOff * y_rgb_count;
+			//vSrc = (unsigned char*)_yuvBuffer.v + _yuvBuffer.uv_stride * y_rgb_count;
+			//ySrc = (unsigned char*)_yuvBuffer.y + y_rgb_count + yOff;
+			//vSrc = (unsigned char*)_yuvBuffer.v + y_rgb_count + _yuvBuffer.uv_stride;
+			//ySrc2 = ySrc + _yuvBuffer.y_stride;
 
-			//Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-			int y_alpha_height_begin = y_height / 2;
-			int y_alpha_height_end = 0;
-			for( int y = y_alpha_height_begin; y > y_alpha_height_end; --y )
+			for( int y = 0; y != y_rgb_count; ++y )
 			{
-				for( int x = 0; x < y_width; ++x )
+				for( int x = 0; x != y_width; ++x )
 				{
 					//Get uv pointers for row
 					int v = vSrc[x];
@@ -678,11 +677,6 @@ namespace Menge
 					CLIP_RGB_COLOR( r, dstBitmapOffset[4 + COLOR_A] );
 					++ySrc2;
 
-					/*dstBitmap[COLOR_G] = 0;
-					dstBitmap[COLOR_G+4] = 0;
-					dstBitmapOffset[COLOR_G] = 0;
-					dstBitmapOffset[COLOR_G+4] = 0;*/
-
 					//Advance inner loop offsets
 					dstBitmap += 4 << 1;
 					dstBitmapOffset += 4 << 1;
@@ -693,7 +687,6 @@ namespace Menge
 				dstBitmapOffset += dstOff;
 				ySrc += yOff;
 				ySrc2 += yOff;
-				uSrc += _yuvBuffer.uv_stride;
 				vSrc += _yuvBuffer.uv_stride;
 			} //end for y
 		}

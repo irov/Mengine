@@ -76,6 +76,8 @@ namespace Menge
 		Node * getNode() const;
 		const mt::vec3f & getPosition() const;
 		float getRadius() const;
+
+		void setPositionY( float _position );
 		
 		void setVelocity( const mt::vec3f & _velocity );
 		const mt::vec3f & getVelocity() const;

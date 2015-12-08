@@ -67,6 +67,7 @@ namespace Menge
 			.def( "addImpulse", &BurritoBison::addImpulse )			
 			.def( "getNode", &BurritoBison::getNode )
 			.def( "getPosition", &BurritoBison::getPosition )
+			.def( "setPositionY", &BurritoBison::setPositionY )
 			.def( "getRadius", &BurritoBison::getRadius )
 			.def( "setVelocity", &BurritoBison::setVelocity )
 			.def( "getVelocity", &BurritoBison::getVelocity )

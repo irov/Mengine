@@ -206,7 +206,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Animatable::resume()
+	void Animatable::resume( float _time )
 	{
 		if( m_play == false )
 		{
@@ -220,7 +220,9 @@ namespace Menge
 
 		m_pause = false;
 
-		this->_resume( m_enumerator );
+		this->_resume( _time, m_enumerator );
+
+		m_playTime = _time;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Animatable::interrupt()

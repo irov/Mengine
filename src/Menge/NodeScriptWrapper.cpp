@@ -1818,12 +1818,20 @@ namespace Menge
         uint32_t s_Animatable_play( Animatable * _animatable )
         {
             float time = TIMELINE_SERVICE(m_serviceProvider)
-                ->getOffset();
+				->getTime();
 
             uint32_t id = _animatable->play( time );
 
             return id;
         }
+		//////////////////////////////////////////////////////////////////////////
+		void s_Animatable_resume( Animatable * _animatable )
+		{
+			float time = TIMELINE_SERVICE( m_serviceProvider )
+				->getTime();
+
+			_animatable->resume( time );
+		}
         //////////////////////////////////////////////////////////////////////////
         void destroyNode( Node * _node )
         {
@@ -4903,7 +4911,7 @@ namespace Menge
             .def( "setAngle", &Transformation3D::setOrientationX )
             .def( "getAngle", &Transformation3D::getOrientationX )
 
-			.def( "setDirection", &Transformation3D::lookAt )
+			.def( "setDirection", &Transformation3D::setDirection )
 			.def( "lookAt", &Transformation3D::lookAt )
 
             .def( "translate", &Transformation3D::translate )
@@ -5051,7 +5059,7 @@ namespace Menge
             .def_proxy_static( "play", nodeScriptMethod, &NodeScriptMethod::s_Animatable_play )
             .def( "stop", &Animatable::stop )
 			.def( "pause", &Animatable::pause )
-			.def( "resume", &Animatable::resume )
+			.def_proxy_static( "resume", nodeScriptMethod, &NodeScriptMethod::s_Animatable_resume )
 			.def( "interrupt", &Animatable::interrupt )
 			.def( "isInterrupt", &Animatable::isInterrupt )
             .def( "isPlay", &Animatable::isPlay )

@@ -218,8 +218,9 @@ namespace	Menge
 		m_emitter->pause();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_resume( uint32_t _enumerator )
+	void ParticleEmitter2::_resume( float _time, uint32_t _enumerator )
 	{
+		(void)_time;
 		(void)_enumerator;
 
 		if( this->isActivate() == false )

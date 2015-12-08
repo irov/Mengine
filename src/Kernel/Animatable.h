@@ -60,7 +60,7 @@ namespace Menge
 		uint32_t play( float _time );
 		bool stop();
 		bool pause();
-		void resume();
+		void resume( float _time );
 		bool interrupt();
 
 	public:
@@ -84,7 +84,7 @@ namespace Menge
 		virtual bool _play( float _time ) = 0;
 		virtual bool _restart( float _time, uint32_t _enumerator ) = 0;
 		virtual void _pause( uint32_t _enumerator ) = 0;
-		virtual void _resume( uint32_t _enumerator ) = 0;
+		virtual void _resume( float _time, uint32_t _enumerator ) = 0;
 		virtual void _stop( uint32_t _enumerator ) = 0;
 		virtual void _end( uint32_t _enumerator ) = 0;
 		virtual bool _interrupt( uint32_t _enumerator ) = 0;

@@ -466,16 +466,15 @@ namespace Menge
 
 		float attachment_vertices[MENGINE_SPINE_MAX_VERTICES * 2];
 
-		const float * uvs = nullptr;
-		int verticesCount;
-		const int * triangles;
-		int trianglesCount;
-		float r = 0.f;
-		float g = 0.f;
-		float b = 0.f;
-		float a = 0.f;
+		ColourValue color;
+		this->calcTotalColor( color );
 
-		for( int i = 0; i < slotCount; ++i )
+		float nr = color.getR();
+		float ng = color.getG();
+		float nb = color.getB();
+		float na = color.getA();
+
+		for( int i = 0; i != slotCount; ++i )
 		{
 			spSlot * slot = m_skeleton->slots[i];
 			
@@ -483,6 +482,16 @@ namespace Menge
 			{
 				continue;
 			}
+
+			const float * uvs = nullptr;
+			int verticesCount;
+			const int * triangles;
+			int trianglesCount;
+
+			float ar = 1.f;
+			float ag = 1.f;
+			float ab = 1.f;
+			float aa = 1.f;
 
 			const spAttachmentType attachment_type = slot->attachment->type;
 
@@ -498,10 +507,10 @@ namespace Menge
 					verticesCount = 8;
 					triangles = quadTriangles;
 					trianglesCount = 6;
-					r = attachment->r;
-					g = attachment->g;
-					b = attachment->b;
-					a = attachment->a;
+					ar = attachment->r;
+					ag = attachment->g;
+					ab = attachment->b;
+					aa = attachment->a;
 				}break;
 			case SP_ATTACHMENT_MESH:
 				{
@@ -513,10 +522,10 @@ namespace Menge
 					verticesCount = attachment->verticesCount;
 					triangles = attachment->triangles;
 					trianglesCount = attachment->trianglesCount;
-					r = attachment->r;
-					g = attachment->g;
-					b = attachment->b;
-					a = attachment->a;
+					ar = attachment->r;
+					ag = attachment->g;
+					ab = attachment->b;
+					aa = attachment->a;
 				}break;
 			case SP_ATTACHMENT_SKINNED_MESH:
 				{
@@ -528,20 +537,20 @@ namespace Menge
 					verticesCount = attachment->uvsCount;
 					triangles = attachment->triangles;
 					trianglesCount = attachment->trianglesCount;
-					r = attachment->r;
-					g = attachment->g;
-					b = attachment->b;
-					a = attachment->a;
+					ar = attachment->r;
+					ag = attachment->g;
+					ab = attachment->b;
+					aa = attachment->a;
 				}break;
 			default:
 				continue;
 				break;
 			}
 
-			float wr = m_skeleton->r * slot->r * r;
-			float wg = m_skeleton->g * slot->g * g;
-			float wb = m_skeleton->b * slot->b * b;
-			float wa = m_skeleton->a * slot->a * a;
+			float wr = nr * m_skeleton->r * slot->r * ar;
+			float wg = ng * m_skeleton->g * slot->g * ag;
+			float wb = nb * m_skeleton->b * slot->b * ab;
+			float wa = na * m_skeleton->a * slot->a * aa;
 
 			ColourValue_ARGB argb = Helper::makeARGB( wr, wg, wb, wa );
 
@@ -628,8 +637,9 @@ namespace Menge
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::_resume( uint32_t _enumerator )
+	void Spine::_resume( float _time, uint32_t _enumerator )
 	{
+		(void)_time;
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////

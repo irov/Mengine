@@ -423,8 +423,9 @@ namespace Menge
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_resume( uint32_t _enumerator )
+	void Model3D::_resume( float _time, uint32_t _enumerator )
 	{
+		(void)_time;
 		(void)_enumerator;
 	}
 	//////////////////////////////////////////////////////////////////////////

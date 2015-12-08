@@ -318,6 +318,13 @@ namespace Menge
 		m_node->setLocalPositionY( m_position.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::setPositionY( float _position )
+	{
+		m_position.y = _position;
+
+		m_node->setLocalPositionY( m_position.y );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::addVelocityEvent( bool _less, const mt::vec3f & _velocity, const pybind::object & _cb )
 	{ 
 		VelocityEventDesc desc;

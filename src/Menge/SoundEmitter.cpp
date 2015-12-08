@@ -218,8 +218,9 @@ namespace Menge
 			->pause( m_sourceID );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEmitter::_resume( uint32_t _enumerator )
+	void SoundEmitter::_resume( float _time, uint32_t _enumerator )
 	{
+		(void)_time;
 		(void)_enumerator;
 
 		if( m_sourceID == 0 )

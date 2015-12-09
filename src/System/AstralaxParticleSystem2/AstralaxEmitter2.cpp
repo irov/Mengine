@@ -363,14 +363,19 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AstralaxEmitter2::setPositionProvider( ParticlePositionProviderInterface * _positionProvider )
-	{
-		if( m_background == true )
+	bool AstralaxEmitter2::setPositionProvider( ParticlePositionProviderInterface * _positionProvider )
+	{		
+		if( m_background == true && _positionProvider != nullptr )
 		{
-			return;
+			LOGGER_ERROR( m_serviceProvider )("AstralaxEmitter2::setPositionProvider this particle is background mode!"
+				);
+
+			return false;
 		}
 
 		m_positionProvider = _positionProvider;
+
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setScale( float _scale )

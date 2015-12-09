@@ -119,7 +119,7 @@ namespace Menge
 		virtual bool changeEmitterModel( float * _points, uint32_t _count ) = 0;
 
     public:
-		virtual void setPositionProvider( ParticlePositionProviderInterface * _positionProvider ) = 0;
+		virtual bool setPositionProvider( ParticlePositionProviderInterface * _positionProvider ) = 0;
 
 		virtual void setScale( float _scale ) = 0;
 

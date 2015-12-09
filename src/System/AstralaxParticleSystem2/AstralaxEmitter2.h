@@ -68,7 +68,7 @@ namespace Menge
 		bool changeEmitterModel( float * _points, uint32_t _count ) override;
 		
 	public:
-		void setPositionProvider( ParticlePositionProviderInterface * _positionProvider ) override;
+		bool setPositionProvider( ParticlePositionProviderInterface * _positionProvider ) override;
 
 		void setScale( float _scale ) override;
 

@@ -148,11 +148,29 @@ namespace	Menge
 
 		if( m_emitterRelative == true )
 		{
-			emitter->setPositionProvider( this );
+			if( emitter->setPositionProvider( this ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
+					, this->getName().c_str()
+					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getName().c_str()
+					);
+
+				return false;
+			}
 		}
 		else
 		{
-			emitter->setPositionProvider( nullptr );
+			if( emitter->setPositionProvider( nullptr ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
+					, this->getName().c_str()
+					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getName().c_str()
+					);
+
+				return false;
+			}
 		}
 
 		m_emitter = emitter;
@@ -321,15 +339,15 @@ namespace	Menge
 	{
 		Node::_render( _state );
 
-		bool enabled = APPLICATION_SERVICE( m_serviceProvider )
-			->getParticleEnable();
-
-		if( enabled == false )
+		if( this->isPlay() == false )
 		{
 			return;
 		}
 
-		if( this->isPlay() == false )
+		bool enabled = APPLICATION_SERVICE( m_serviceProvider )
+			->getParticleEnable();
+
+		if( enabled == false )
 		{
 			return;
 		}
@@ -506,11 +524,29 @@ namespace	Menge
 
 		if( m_emitterRelative == true )
 		{
-			m_emitter->setPositionProvider( this );
+			if( m_emitter->setPositionProvider( this ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEmitterRelative '%s' group '%s' resource '%s' invalid setup position provider"
+					, this->getName().c_str()
+					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getName().c_str()
+					);
+
+				return;
+			}
 		}
 		else
 		{ 
-			m_emitter->setPositionProvider( nullptr );
+			if( m_emitter->setPositionProvider( nullptr ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("ParticleEmitter2::setEmitterRelative '%s' group '%s' resource '%s' invalid setup position provider"
+					, this->getName().c_str()
+					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getName().c_str()
+					);
+
+				return;
+			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -701,8 +737,8 @@ namespace	Menge
 		this->getTransformation( position, origin, coordinate, scale, orientation );
 
 		mt::mat4f wm;
-		this->calcWorldMatrix( wm, position + mt::vec3f( 1024.f, 1024.f, 0.f ), origin, coordinate, scale, orientation );
-		
+		this->calcWorldMatrix( wm, position, origin - mt::vec3f( 1024.f, 1024.f, 0.f ), coordinate, scale, orientation );
+
 		_position = wm.v3.to_vec3f();
 	}
 }

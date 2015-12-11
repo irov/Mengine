@@ -31,7 +31,7 @@ namespace Menge
 		bool mixAnimation( const ConstString & _first, const ConstString & _second, float _duration );
 
 	public:
-		bool setAnimation( const ConstString & _state, const ConstString & _name, float _offset, float _speedFactor, bool _loop );
+		bool setAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop );
 		bool removeAnimation( const ConstString & _state );
 
 	public:

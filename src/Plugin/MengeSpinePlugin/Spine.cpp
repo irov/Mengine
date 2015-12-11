@@ -74,7 +74,7 @@ namespace Menge
 		spine->addAnimationEvent( trackIndex, type, event, loopCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Spine::setAnimation( const ConstString & _state, const ConstString & _name, float _offset, float _speedFactor, bool _loop )
+	bool Spine::setAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop )
 	{
 		TMapAnimations::iterator it_found = m_animations.find( _state );
 
@@ -105,9 +105,9 @@ namespace Menge
 
 		Animation an;
 
-		an.name = _state;
+		an.name = _name;
 		an.state = state;
-		an.timing = _offset;
+		an.timing = _timing;
 		an.speedFactor = _speedFactor;
 		an.freeze = false;
 		an.loop = _loop;
@@ -197,7 +197,7 @@ namespace Menge
 		}
 
 		Animation an = it_found->second;
-
+	
 		if( this->setAnimation( _state, an.name, _timing, an.speedFactor, an.loop ) == false )
 		{
 			return false;

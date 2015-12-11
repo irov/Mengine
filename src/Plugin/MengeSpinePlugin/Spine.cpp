@@ -74,7 +74,7 @@ namespace Menge
 		spine->addAnimationEvent( trackIndex, type, event, loopCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Spine::setAnimation( const ConstString & _state, const ConstString & _name, bool _loop )
+	bool Spine::setAnimation( const ConstString & _state, const ConstString & _name, float _offset, float _speedFactor, bool _loop )
 	{
 		TMapAnimations::iterator it_found = m_animations.find( _state );
 
@@ -107,7 +107,12 @@ namespace Menge
 
 		an.name = _state;
 		an.state = state;
+		an.timing = _offset;
+		an.speedFactor = _speedFactor;
+		an.freeze = false;
 		an.loop = _loop;
+
+		spAnimationState_update( state, an.timing );
 
 		m_animations.insert( std::make_pair( _state, an ) );
 
@@ -120,10 +125,16 @@ namespace Menge
 
 		if( it_found == m_animations.end() )
 		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::removeAnimation invalid not found state '%s'"
+				, _state.c_str()
+				);
+
 			return false;
 		}
 
-		spAnimationState * state = it_found->second.state;
+		Animation & an = it_found->second;
+
+		spAnimationState * state = an.state;
 
 		spAnimationState_clearTracks( state );
 
@@ -132,6 +143,123 @@ namespace Menge
 		m_animations.erase( it_found );
 
 		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Spine::setAnimationSpeedFactor( const ConstString & _state, float _speedFactor )
+	{
+		TMapAnimations::iterator it_found = m_animations.find( _state );
+
+		if( it_found == m_animations.end() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::setAnimationSpeedFactor invalid not found state '%s'"
+				, _state.c_str()
+				);
+
+			return false;
+		}
+
+		Animation & an = it_found->second;
+
+		an.speedFactor = _speedFactor;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Spine::getAnimationSpeedFactor( const ConstString & _state ) const
+	{
+		TMapAnimations::const_iterator it_found = m_animations.find( _state );
+
+		if( it_found == m_animations.end() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::getAnimationSpeedFactor invalid not found state '%s'"
+				, _state.c_str()
+				);
+
+			return 0.0;
+		}
+
+		const Animation & an = it_found->second;
+
+		return an.speedFactor;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Spine::setAnimationTiming( const ConstString & _state, float _timing )
+	{
+		TMapAnimations::const_iterator it_found = m_animations.find( _state );
+
+		if( it_found == m_animations.end() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::setAnimationTiming invalid not found state '%s'"
+				, _state.c_str()
+				);
+
+			return false;
+		}
+
+		Animation an = it_found->second;
+
+		if( this->setAnimation( _state, an.name, _timing, an.speedFactor, an.loop ) == false )
+		{
+			return false;
+		}
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Spine::setAnimationFreeze( const ConstString & _state, bool _freeze )
+	{
+		TMapAnimations::iterator it_found = m_animations.find( _state );
+
+		if( it_found == m_animations.end() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::setAnimationFreeze invalid not found state '%s'"
+				, _state.c_str()
+				);
+
+			return false;
+		}
+
+		Animation & an = it_found->second;
+
+		an.freeze = _freeze;
+
+		return true;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool Spine::getAnimationFreeze( const ConstString & _state ) const
+	{
+		TMapAnimations::const_iterator it_found = m_animations.find( _state );
+
+		if( it_found == m_animations.end() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::getAnimationFreeze invalid not found state '%s'"
+				, _state.c_str()
+				);
+
+			return false;
+		}
+
+		const Animation & an = it_found->second;
+
+		return an.freeze;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Spine::getAnimationTiming( const ConstString & _state ) const
+	{
+		TMapAnimations::const_iterator it_found = m_animations.find( _state );
+
+		if( it_found == m_animations.end() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::getAnimationSpeedFactor invalid not found state '%s'"
+				, _state.c_str()
+				);
+
+			return 0.0;
+		}
+
+		const Animation & an = it_found->second;
+
+		return an.timing;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Spine::getAnimationDuration( const ConstString & _name )
@@ -445,9 +573,20 @@ namespace Menge
 		it != it_end;
 		++it )
 		{
-			spAnimationState * state = it->second.state;
+			Animation & an = it->second;
 
-			spAnimationState_update( state, spTiming );
+			if( an.freeze == true )
+			{
+				continue;
+			}
+
+			float total_timing = spTiming * an.speedFactor;
+
+			an.timing += total_timing;
+
+			spAnimationState * state = an.state;
+
+			spAnimationState_update( state, total_timing );
 			spAnimationState_apply( state, m_skeleton );
 		}
 
@@ -603,14 +742,13 @@ namespace Menge
 			int index_x = i * 2 + 0;
 			int index_y = i * 2 + 1;
 
-			mt::vec3f v;
+			mt::vec2f v;
 			v.x = _vertices[index_x];
 			v.y = -_vertices[index_y];
-			v.z = 0.f;
 
 			RenderVertex2D & vertex = _vertices2D[i];
 
-			mt::mul_v3_m4( vertex.pos, v, _wm );
+			mt::mul_v3_v2_m4( vertex.pos, v, _wm );
 
 			float uv_x = _uv[index_x];
 			float uv_y = _uv[index_y];

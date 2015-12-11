@@ -30,6 +30,12 @@ namespace Menge
 			.def( "mixAnimation", &Spine::mixAnimation )
 			.def( "setAnimation", &Spine::setAnimation )
 			.def( "removeAnimation", &Spine::removeAnimation )
+			.def( "setAnimationSpeedFactor", &Spine::setAnimationSpeedFactor )
+			.def( "getAnimationSpeedFactor", &Spine::getAnimationSpeedFactor )
+			.def( "setAnimationTiming", &Spine::setAnimationTiming )
+			.def( "getAnimationTiming", &Spine::getAnimationTiming )
+			.def( "setAnimationFreeze", &Spine::setAnimationFreeze )
+			.def( "getAnimationFreeze", &Spine::getAnimationFreeze )
 			.def( "getAnimationDuration", &Spine::getAnimationDuration )
 			;
 

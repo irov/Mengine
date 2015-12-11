@@ -31,8 +31,18 @@ namespace Menge
 		bool mixAnimation( const ConstString & _first, const ConstString & _second, float _duration );
 
 	public:
-		bool setAnimation( const ConstString & _state, const ConstString & _name, bool _loop );
+		bool setAnimation( const ConstString & _state, const ConstString & _name, float _offset, float _speedFactor, bool _loop );
 		bool removeAnimation( const ConstString & _state );
+
+	public:
+		bool setAnimationSpeedFactor( const ConstString & _state, float _speedFactor );
+		float getAnimationSpeedFactor( const ConstString & _state ) const;
+
+		bool setAnimationTiming( const ConstString & _state, float _timing );
+		float getAnimationTiming( const ConstString & _state ) const;
+
+		bool setAnimationFreeze( const ConstString & _state, bool _freeze );
+		bool getAnimationFreeze( const ConstString & _state ) const;
 		
 	public:
 		float getAnimationDuration( const ConstString & _name );
@@ -81,6 +91,9 @@ namespace Menge
 		{
 			ConstString name;
 			spAnimationState * state;
+			float timing;
+			float speedFactor;
+			bool freeze;
 			bool loop;
 		};
 

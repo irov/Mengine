@@ -255,7 +255,7 @@ namespace Menge
                 
                 LOGGER_PERFORMANCE(m_serviceProvider)("Useless Compile %s %s:%s"
 					, _resource->getType().c_str()
-                    , _resource->getCategory().c_str()
+                    , _resource->getGroup().c_str()
                     , _resource->getName().c_str()
                     );
 

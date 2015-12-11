@@ -152,8 +152,8 @@ namespace Menge
     //////////////////////////////////////////////////////////////////////////
     void OALSoundSystem::_finalize()
     {
-        if( m_device != nullptr )
-        {
+		if( m_device != nullptr )
+		{
             alcMakeContextCurrent( nullptr );
             
             if( m_context != nullptr )

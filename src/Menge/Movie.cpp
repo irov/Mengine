@@ -127,20 +127,13 @@ namespace Menge
 
 		float duration = m_resourceMovie->getDuration();
 		
-		if( _timing < 0.f )
-		{
-			_timing = 0.f;
-		}
-		else if( _timing > duration )
-		{
-			_timing = duration;
-		}
+		float crop_timing = mt::crop( _timing, 0.f, duration );
 
 		bool loop = this->getLoop();
 		
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
-		uint32_t frame = (uint32_t)(_timing / frameDuration + 0.5f);
+		uint32_t frame = (uint32_t)(crop_timing / frameDuration + 0.5f);
 
 		uint32_t frameCount = m_resourceMovie->getFrameCount();
 
@@ -152,7 +145,7 @@ namespace Menge
 		else if( loop == true )
 		{
 			m_currentFrame = frame % (frameCount + 1);
-			m_frameTiming = _timing - m_currentFrame * frameDuration;
+			m_frameTiming = crop_timing - m_currentFrame * frameDuration;
 		}		
 		else
 		{
@@ -164,7 +157,7 @@ namespace Menge
 			else
 			{
 				m_currentFrame = frame;
-				m_frameTiming = _timing - m_currentFrame * frameDuration;
+				m_frameTiming = crop_timing - m_currentFrame * frameDuration;
 			}
 		}		
 
@@ -2615,7 +2608,7 @@ namespace Menge
 
 				++m_currentFrame;
 
-				if ( m_currentFrame == frameCount )
+				if( m_currentFrame == frameCount )
 				{
 					this->updateForwardFrame_( _time, lastFrame, frameCount );
 
@@ -2833,7 +2826,6 @@ namespace Menge
 					{
 						animatable->stop();
 
-						///Test TestTestTestTest
 						uint32_t frame = indexOut - indexIn;
 						float timing = frame * frameDuration;                        
 						animatable->setTiming( timing );

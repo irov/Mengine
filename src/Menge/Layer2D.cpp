@@ -1,10 +1,10 @@
 #	include "Layer2D.h"
 
-#	include "Camera2D.h"
+#	include "Kernel/Camera2D.h"
 
 #	include "Kernel/Scene.h"
 
-#	include "RenderViewport.h"
+#	include "Kernel/RenderViewport.h"
 
 #	include "Interface/NodeInterface.h"
 #   include "Interface/RenderSystemInterface.h"

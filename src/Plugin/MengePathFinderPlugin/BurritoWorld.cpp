@@ -362,23 +362,23 @@ namespace Menge
 					{
 						const BurritoLayer & layer = *it;
 
-						for( TVectorBurritoUnit::const_iterator
-							it_unit = layer.units.begin(),
-							it_unit_end = layer.units.end();
-						it_unit != it_unit_end;
-						++it_unit )
-						{
-							const BurritoUnit * unit = *it_unit;
+						//for( TVectorBurritoUnit::const_iterator
+						//	it_unit = layer.units.begin(),
+						//	it_unit_end = layer.units.end();
+						//it_unit != it_unit_end;
+						//++it_unit )
+						//{
+						//	const BurritoUnit * unit = *it_unit;
 
-							mt::vec3f collision_velocity = velocity * layer.parallax;
+						//	mt::vec3f collision_velocity = velocity * layer.parallax;
 
-							if( unit->check_collision( iterate_timing, position, bison_radius, collision_velocity, collisionTiming ) == true )
-							{
-								collision = true;
+						//	if( unit->check_collision( iterate_timing, position, bison_radius, collision_velocity, collisionTiming ) == true )
+						//	{
+						//		collision = true;
 
-								break;
-							}
-						}
+						//		break;
+						//	}
+						//}
 					}
 
 					if( collision == false )

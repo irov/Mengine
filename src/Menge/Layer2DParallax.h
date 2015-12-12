@@ -2,7 +2,7 @@
 
 #	include "Kernel/Layer.h"
 
-#	include "RenderCamera.h"
+#	include "Kernel/RenderCamera.h"
 
 namespace Menge
 {

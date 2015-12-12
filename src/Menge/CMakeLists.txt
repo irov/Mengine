@@ -8,28 +8,6 @@ Application
 	Application.h
 )
 
-
-
-ADD_FILTER(
-Camera
-	Camera2D.cpp
-	Camera2D.h
-	CameraTarget2D.cpp
-	CameraTarget2D.h
-	CameraIsometric.cpp
-	CameraIsometric.h
-	Camera3D.cpp
-	Camera3D.h
-	Frustum.cpp
-	Frustum.h
-    RenderViewport.h
-    RenderViewport.cpp
-    RenderCamera.h
-    RenderCamera.cpp
-    RenderClipplane.h
-    RenderClipplane.cpp
-)
-
 SOURCE_GROUP( Engine )
 
 ADD_FILTER(

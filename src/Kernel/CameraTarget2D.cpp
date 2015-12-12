@@ -16,12 +16,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void CameraTarget2D::setCamera2D( RenderCameraInterface * _camera )
+	void CameraTarget2D::setCamera2D( Camera2D * _camera )
 	{
-		m_camera = dynamic_cast<Camera2D *>(_camera);
+		m_camera = _camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderCameraInterface * CameraTarget2D::getCamera2D() const
+	Camera2D * CameraTarget2D::getCamera2D() const
 	{
 		return m_camera;
 	}

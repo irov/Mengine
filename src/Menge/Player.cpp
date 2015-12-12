@@ -22,10 +22,10 @@
 
 #	include "Kernel/Scene.h"
 
-#	include "RenderViewport.h"
-#	include "RenderClipplane.h"
+#	include "Kernel/RenderViewport.h"
+#	include "Kernel/RenderClipplane.h"
 
-#	include "Camera2D.h"
+#	include "Kernel/Camera2D.h"
 #	include "Consts.h"
 
 #	include "Arrow.h"

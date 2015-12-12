@@ -13,7 +13,7 @@
 #	include "Core/ColourValue.h"
 #	include "Core/ValueInterpolator.h"
 
-#	include "Camera3D.h"
+#	include "Kernel/Camera3D.h"
 
 #	include "math/mat3.h"
 #	include "math/vec4.h"

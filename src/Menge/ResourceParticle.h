@@ -8,8 +8,8 @@
 
 #	include "Utils/Core/Polygon.h"
 
-#	include "Camera3D.h"
-#	include "RenderViewport.h"
+#	include "Kernel/Camera3D.h"
+#	include "Kernel/RenderViewport.h"
 
 namespace Menge
 {

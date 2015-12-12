@@ -78,15 +78,15 @@
 #	include "SoundEmitter.h"
 #	include "Point.h"
 #	include "Line.h"
-#	include "Camera3d.h"
+#	include "Kernel/Camera3D.h"
 //#	include "RigidBody3D.h"
 //#	include "CapsuleController.h"
 //#	include "Skeleton.h"
-#	include "RenderViewport.h"
-#	include "Camera2D.h"
-#	include "CameraTarget2D.h"
+#	include "Kernel/RenderViewport.h"
+#	include "Kernel/Camera2D.h"
+#	include "Kernel/CameraTarget2D.h"
 
-#	include "CameraIsometric.h"
+#	include "Kernel/CameraIsometric.h"
 
 #	include "Layer2D.h"
 #	include "Layer2DParallax.h"
@@ -121,7 +121,7 @@
 
 #	include "Kernel/Affector.h"
 
-#	include "Camera3D.h"
+#	include "Kernel/Camera3D.h"
 
 #	include "Kernel/ResourceVisitor.h"
 

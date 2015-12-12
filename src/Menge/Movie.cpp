@@ -16,9 +16,9 @@
 
 
 #	include "Kernel/Layer.h"
-#	include "Camera3D.h"
-#	include "RenderViewport.h"
-#	include "RenderClipplane.h"
+#	include "Kernel/Camera3D.h"
+#	include "Kernel/RenderViewport.h"
+#	include "Kernel/RenderClipplane.h"
 
 #	include "Sprite.h"
 #	include "Mesh2D.h"

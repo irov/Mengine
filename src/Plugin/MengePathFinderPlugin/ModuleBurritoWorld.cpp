@@ -4,6 +4,8 @@
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/PlayerInterface.h"
 
+#	include "BurritoCameraTarget.h"
+
 #	include "Kernel/ScriptClassWrapper.h"
 #	include "Kernel/NodePrototypeGenerator.h"
 
@@ -108,9 +110,29 @@ namespace Menge
 			.def( "removeLayerUnit", &BurritoWorld::removeLayerUnit )
 			;
 
+		
+		pybind::interface_<BurritoCameraTarget, pybind::bases<Node> >( "BurritoCameraTarget", false )
+			.def( "setCamera2D", &BurritoCameraTarget::setCamera2D )
+			.def( "getCamera2D", &BurritoCameraTarget::getCamera2D )
+			.def( "setSpeed", &BurritoCameraTarget::setSpeed )
+			.def( "getSpeed", &BurritoCameraTarget::getSpeed )
+			.def( "setMaxScale", &BurritoCameraTarget::setMaxScale )
+			.def( "getMaxScale", &BurritoCameraTarget::getMaxScale )
+			.def( "setRenderport", &BurritoCameraTarget::setRenderport )
+			.def( "getRenderport", &BurritoCameraTarget::getRenderport )
+			.def( "setHorizont", &BurritoCameraTarget::setHorizont )
+			.def( "getHorizont", &BurritoCameraTarget::getHorizont )
+			;
+
 		pybind::def_functor( "createBurritoWorld", this, &ModuleBurritoWorld::createBurritoWorld );
 		pybind::def_functor( "removeBurritoWorld", this, &ModuleBurritoWorld::removeBurritoWorld );
 
+		SCRIPT_SERVICE( m_serviceProvider )
+			->setWrapper( Helper::stringizeString( m_serviceProvider, "BurritoCameraTarget" ), new ClassScriptWrapper<BurritoCameraTarget>() );
+
+		PROTOTYPE_SERVICE( m_serviceProvider )
+			->addPrototype( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ), STRINGIZE_STRING_LOCAL( m_serviceProvider, "BurritoCameraTarget" ), new NodePrototypeGenerator<BurritoCameraTarget, 128> );
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

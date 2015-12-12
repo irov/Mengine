@@ -1,11 +1,10 @@
 #	pragma once
 
 #	include "Kernel/Node.h"
+#	include "Kernel/Camera2D.h"
 
 namespace Menge
 {
-	class Camera2D;
-
 	class CameraTarget2D
 		: public Node
 	{
@@ -14,8 +13,8 @@ namespace Menge
 		~CameraTarget2D();
 
 	public:
-		void setCamera2D( RenderCameraInterface * _camera );
-		RenderCameraInterface * getCamera2D() const;
+		void setCamera2D( Camera2D * _camera );
+		Camera2D * getCamera2D() const;
 
 	public:
 		void setSpeed( float _speed );

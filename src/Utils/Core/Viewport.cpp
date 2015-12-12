@@ -45,6 +45,14 @@ namespace Menge
 		end.y = begin.y + size.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Viewport::scale( const mt::vec2f & _scale )
+	{
+		mt::vec2f half_size = (end - begin) * 0.5f;
+		mt::vec2f center = (end + begin) * 0.5f;
+		begin = center - half_size * _scale;
+		end = center + half_size * _scale;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	float Viewport::getWidth() const
 	{
 		return end.x - begin.x;
@@ -57,11 +65,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Viewport::calcSize( mt::vec2f & _size ) const
 	{
-		float w = this->getWidth();
-		float h = this->getHeight();
-
-		_size.x = w;
-		_size.y = h;
+		_size = end - begin;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Viewport::getCenter( mt::vec2f & _point ) const

@@ -1,6 +1,5 @@
 #	include "Camera2D.h"
 
-#	include "Interface/GameInterface.h"
 #	include "Interface/ApplicationInterface.h"
 
 #	include "Logger/Logger.h"

@@ -1,10 +1,6 @@
 #	include "Camera3D.h"
 
-#	include "Game.h"
-#	include "Application.h"
-
-#	include "Interface/RenderSystemInterface.h"
-#	include "Interface/NotificationServiceInterface.h"
+#	include "Interface/ApplicationInterface.h"
 
 #	include <math.h>
 
@@ -201,7 +197,7 @@ namespace Menge
 		mt::mul_v2_m4( m_bboxWM.maximum, bb_vp.maximum, wm_inv );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )
+	void Camera3D::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )
 	{
         (void)_fullscreen;
         (void)_resolution;

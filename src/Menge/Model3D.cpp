@@ -4,7 +4,7 @@
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/NodeInterface.h"
 
-#	include "Camera3D.h"
+#	include "Kernel/Camera3D.h"
 
 #	include "Consts.h"
 

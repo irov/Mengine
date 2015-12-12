@@ -34,6 +34,8 @@ ModuleBurritoWorld
     BurritoGround.cpp
     BurritoUnit.h
     BurritoUnit.cpp
+    BurritoCameraTarget.h
+    BurritoCameraTarget.cpp
 	Endless.cpp
 	Endless.h    
 )

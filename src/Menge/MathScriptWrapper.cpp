@@ -682,12 +682,14 @@ namespace Menge
 			.def( "getWidth", &Viewport::getWidth )
 			.def( "getHeight", &Viewport::getHeight )
 			.def( "getSquare", &Viewport::getSquare )
+			.def( "parallax", &Viewport::parallax )
+			.def( "scale", &Viewport::scale )
 			.def( "testPoint", &Viewport::testPoint )
 			.def( "testBBox", &Viewport::testBBox )
 			.def( "testRectangle", &Viewport::testRectangle )
 			.def( "existBBox", &Viewport::existBBox )
 			.def( "existRectangle", &Viewport::existRectangle )
-			.def( "intersectBBox", &Viewport::intersectBBox )
+			.def( "intersectBBox", &Viewport::intersectBBox )			
 			.def( "getIntersectionSquareBBox", &Viewport::getIntersectionSquareBBox )
 			;
 
@@ -703,6 +705,9 @@ namespace Menge
 			.def_property( "r", &ColourValue::getR, &ColourValue::setR )
 			.def_property( "g", &ColourValue::getG, &ColourValue::setG )
 			.def_property( "b", &ColourValue::getB, &ColourValue::setB )			
+			.def( "isSolid", &ColourValue::isSolid )
+			.def( "isIdentity", &ColourValue::isIdentity )
+			.def( "isSolid", &ColourValue::isSolid )
 			;
 
 		pybind::struct_<Resolution>("Resolution")

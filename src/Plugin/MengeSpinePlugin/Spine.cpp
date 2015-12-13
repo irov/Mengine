@@ -108,7 +108,7 @@ namespace Menge
 		an.name = _name;
 		an.state = state;
 		an.timing = _timing;
-		an.duration = animation->duration;
+		an.duration = animation->duration * 1000.f;
 		an.speedFactor = _speedFactor;
 		an.freeze = false;
 		an.loop = _loop;
@@ -176,7 +176,7 @@ namespace Menge
 				, _state.c_str()
 				);
 
-			return 0.0;
+			return 0.f;
 		}
 
 		const Animation & an = it_found->second;
@@ -255,7 +255,7 @@ namespace Menge
 				, _state.c_str()
 				);
 
-			return 0.0;
+			return 0.f;
 		}
 
 		const Animation & an = it_found->second;
@@ -273,7 +273,7 @@ namespace Menge
 				, _state.c_str()
 				);
 
-			return 0.0;
+			return 0.f;
 		}
 
 		const Animation & an = it_found->second;
@@ -312,7 +312,7 @@ namespace Menge
 			return 0.f;
 		}
 
-		float duration = animation->duration;
+		float duration = animation->duration * 1000.f;
 
 		if( compile == false )
 		{

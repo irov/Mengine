@@ -28,7 +28,7 @@ namespace Menge
 		const ResourceSpinePtr & getResourceSpine() const;
 
 	public:
-		bool mixAnimation( const ConstString & _first, const ConstString & _second, float _duration );
+		bool mixAnimation( const ConstString & _first, const ConstString & _second, float _mix );
 
 	public:
 		bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop );
@@ -70,7 +70,7 @@ namespace Menge
 		bool _interrupt( uint32_t _enumerator ) override;
 
 	public:
-		void addAnimationEvent( int _trackIndex, spEventType _type, spEvent * _event, int _loopCount );
+		void addAnimationEvent( spAnimationState * _state, int _trackIndex, spEventType _type, spEvent * _event, int _loopCount );
 
 	protected:
 		void fillVertices_( RenderVertex2D * _vertices2D, const float * _vertices, const float * _uv, ColourValue_ARGB _argb, int _count, const mt::mat4f & _wm );
@@ -97,6 +97,7 @@ namespace Menge
 			float duration;
 			float speedFactor;
 			bool freeze;
+			bool complete;
 			bool loop;
 		};
 
@@ -121,6 +122,7 @@ namespace Menge
 		{
 			int trackIndex;
 			spEventType type;
+			spAnimationState * state;
 
 			const char * eventName;
 			int eventIntValue;

@@ -41,7 +41,7 @@ namespace Menge
 		return m_resourceSpine;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Spine::mixAnimation( const ConstString & _first, const ConstString & _second, float _duration )
+	bool Spine::mixAnimation( const ConstString & _first, const ConstString & _second, float _mix )
 	{
 		if( m_resourceSpine == nullptr )
 		{
@@ -62,7 +62,7 @@ namespace Menge
 			return false;
 		}
 
-		spAnimationStateData_setMix( m_animationStateData, animation_first, animation_second, _duration );
+		spAnimationStateData_setMix( m_animationStateData, animation_first, animation_second, _mix );
 
 		return true;
 	}
@@ -71,7 +71,7 @@ namespace Menge
 	{
 		Spine * spine = static_cast<Spine*>(state->rendererObject);
 
-		spine->addAnimationEvent( trackIndex, type, event, loopCount );
+		spine->addAnimationEvent( state, trackIndex, type, event, loopCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Spine::setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop )
@@ -111,9 +111,12 @@ namespace Menge
 		an.duration = animation->duration * 1000.f;
 		an.speedFactor = _speedFactor;
 		an.freeze = false;
+		an.complete = false;
 		an.loop = _loop;
 
-		spAnimationState_update( state, an.timing );
+		float spTiming = an.timing * 0.001f;
+
+		spAnimationState_update( state, spTiming );
 
 		m_animations.insert( std::make_pair( _state, an ) );
 
@@ -529,7 +532,7 @@ namespace Menge
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Spine::addAnimationEvent( int _trackIndex, spEventType _type, spEvent * _event, int _loopCount )
+	void Spine::addAnimationEvent( spAnimationState * _state, int _trackIndex, spEventType _type, spEvent * _event, int _loopCount )
 	{
 		(void)_loopCount;
 		(void)_event;
@@ -538,6 +541,7 @@ namespace Menge
 
 		ev.trackIndex = _trackIndex;
 		ev.type = _type;
+		ev.state = _state;
 
 		switch( _type )
 		{
@@ -582,7 +586,11 @@ namespace Menge
 			_timing -= deltha;
 		}
 
-		float spTiming = _timing * 0.001f;
+		float speedFactor = this->getAnimationSpeedFactor();
+		float scretch = this->getStretch();
+		float total_timing = _timing * speedFactor / scretch;
+
+		float spTiming = total_timing * 0.001f;
 
 		spSkeleton_update( m_skeleton, spTiming );
 
@@ -599,9 +607,14 @@ namespace Menge
 				continue;
 			}
 
-			float total_timing = spTiming * an.speedFactor;
+			if( an.complete == true )
+			{
+				continue;
+			}
 
-			an.timing += total_timing;
+			float an_timing = total_timing * an.speedFactor;
+
+			an.timing += an_timing;
 
 			while( an.timing >= an.duration )
 			{
@@ -610,7 +623,9 @@ namespace Menge
 
 			spAnimationState * state = an.state;
 
-			spAnimationState_update( state, total_timing );
+			float sp_an_timing = an_timing * 0.001f;
+
+			spAnimationState_update( state, sp_an_timing );
 			spAnimationState_apply( state, m_skeleton );
 		}
 
@@ -633,19 +648,30 @@ namespace Menge
 			{
 			case SP_ANIMATION_COMPLETE:
 				{
-					if( loop == false )
+					for( TMapAnimations::iterator
+						it = m_animations.begin(),
+						it_end = m_animations.end();
+					it != it_end;
+					++it )
 					{
-						for( TMapAnimations::iterator
-							it = m_animations.begin(),
-							it_end = m_animations.end();
-						it != it_end;
-						++it )
-						{
-							Animation & an = it->second;
+						Animation & an = it->second;
 
-							an.timing = an.duration;
+						if( an.state != ev.state )
+						{
+							continue;
 						}
 
+						if( an.loop == true )
+						{
+							break;
+						}
+
+						an.complete = true;
+						an.timing = an.duration;
+					}
+
+					if( loop == false )
+					{
 						this->end();
 					}
 				}break;

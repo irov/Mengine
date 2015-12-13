@@ -1,5 +1,4 @@
 #	include "ResourceImageSubstract.h"
-#	include "Kernel/ResourceImplement.h"
 
 #	include "Interface/ResourceInterface.h"
 
@@ -7,8 +6,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceImageSubstract );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageSubstract::ResourceImageSubstract()
         : m_resourceImage(nullptr)

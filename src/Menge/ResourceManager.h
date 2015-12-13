@@ -108,8 +108,8 @@ namespace Menge
         bool validationResources() const override;
 
 	public:
-		void visitResources( ResourceVisitor * _visitor ) const override;
-		void visitGroupResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const override;
+		void visitResources( Visitor * _visitor ) const override;
+		void visitGroupResources( const ConstString & _category, const ConstString & _group, Visitor * _visitor ) const override;
 			
 	public:
 		size_t getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group ) const override;

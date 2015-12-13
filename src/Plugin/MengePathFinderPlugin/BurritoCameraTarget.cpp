@@ -79,7 +79,7 @@ namespace Menge
 
 		float renderport_height = m_renderport.getHeight();
 
-		float pr = (renderport_height - (target_wp.y - 300.f) * 0.35f) / renderport_height;
+		float pr = (renderport_height - (target_wp.y - 300.f) * 1.f) / renderport_height;
 
 		mt::vec3f new_camera_lp;
 		Viewport new_camera_renderport;

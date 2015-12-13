@@ -123,8 +123,6 @@
 
 #	include "Kernel/Camera3D.h"
 
-#	include "Kernel/ResourceVisitor.h"
-
 #   include "Kernel/ThreadTask.h"
 
 #   include "Interface/ThreadSystemInterface.h"
@@ -2464,7 +2462,10 @@ namespace Menge
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class PrefetchResourceVisitor
-			: public ResourceVisitor
+			: public Visitor
+			, public ConcreteVisitor<ResourceImageDefault>
+			, public ConcreteVisitor<ResourceSound>
+			, public ConcreteVisitor<ResourceMovie>
 		{
 		public:
 			PrefetchResourceVisitor( ServiceProviderInterface * _serviceProvider, const ConstString & _category )
@@ -2478,7 +2479,7 @@ namespace Menge
 			}
 
 		protected:
-			void visit( ResourceImageDefault * _resource ) override
+			void accept( ResourceImageDefault * _resource ) override
 			{
 				const FilePath & fileName = _resource->getFilePath();
 				const ConstString & codecType = _resource->getCodecType();
@@ -2487,7 +2488,7 @@ namespace Menge
 					->prefetchImageDecoder( m_category, fileName, codecType );
 			}
 
-			void visit( ResourceSound * _resource ) override
+			void accept( ResourceSound * _resource ) override
 			{
 				const FilePath & filePath = _resource->getFilePath();
 				const ConstString & codecType = _resource->getCodecType();
@@ -2496,7 +2497,7 @@ namespace Menge
 					->prefetchSoundDecoder( m_category, filePath, codecType );
 			}
 
-			void visit( ResourceMovie * _resource ) override
+			void accept( ResourceMovie * _resource ) override
 			{
 				const FilePath & filePath = _resource->getFilePath();
 				const ConstString & dataflowType = _resource->getDataflowType();
@@ -2519,7 +2520,10 @@ namespace Menge
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class UnfetchResourceVisitor
-			: public ResourceVisitor
+			: public Visitor
+			, public ConcreteVisitor<ResourceImageDefault>
+			, public ConcreteVisitor<ResourceSound>
+			, public ConcreteVisitor<ResourceMovie>
 		{
 		public:
 			UnfetchResourceVisitor( ServiceProviderInterface * _serviceProvider )
@@ -2532,7 +2536,7 @@ namespace Menge
 			}
 
 		protected:
-			void visit( ResourceImageDefault * _resource ) override
+			void accept( ResourceImageDefault * _resource ) override
 			{
 				const ConstString & category = _resource->getCategory();
 				const FilePath & fileName = _resource->getFilePath();
@@ -2541,7 +2545,7 @@ namespace Menge
 					->unfetch( category, fileName );
 			}
 
-			void visit( ResourceSound * _resource ) override
+			void accept( ResourceSound * _resource ) override
 			{
 				const ConstString & category = _resource->getCategory();
 				const FilePath & filePath = _resource->getFilePath();
@@ -2550,7 +2554,7 @@ namespace Menge
 					->unfetch( category, filePath );
 			}
 
-			void visit( ResourceMovie * _resource ) override
+			void accept( ResourceMovie * _resource ) override
 			{
 				const ConstString & category = _resource->getCategory();
 				const FilePath & fileName = _resource->getFilePath();
@@ -2572,7 +2576,8 @@ namespace Menge
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class CacheResourceVisitor
-			: public ResourceVisitor
+			: public Visitor
+			, public ConcreteVisitor<ResourceReference>
 		{
 		public:
 			CacheResourceVisitor( ServiceProviderInterface * _serviceProvider )
@@ -2596,7 +2601,7 @@ namespace Menge
 			}
 
 		protected:
-			void visit( ResourceReference * _resource ) override
+			void accept( ResourceReference * _resource ) override
 			{
 				if( this->filterResource( _resource ) == false )
 				{
@@ -2619,7 +2624,8 @@ namespace Menge
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class UncacheResourceVisitor
-			: public ResourceVisitor
+			: public Visitor
+			, public ConcreteVisitor<ResourceReference>
 		{
 		public:
 			UncacheResourceVisitor( ServiceProviderInterface * _serviceProvider )
@@ -2648,7 +2654,7 @@ namespace Menge
 			}
 
 		protected:
-			void visit( ResourceReference * _resource ) override
+			void accept( ResourceReference * _resource ) override
 			{
 				if( this->filterResource( _resource ) == false )
 				{
@@ -4622,7 +4628,8 @@ namespace Menge
         }
 		//////////////////////////////////////////////////////////////////////////
 		class ResourceVisitorGetAlreadyCompiled
-			: public ResourceVisitor
+			: public Visitor
+			, public ConcreteVisitor<ResourceReference>
 		{
 		public:
 			ResourceVisitorGetAlreadyCompiled( const pybind::object & _cb )
@@ -4635,7 +4642,7 @@ namespace Menge
 			}
 
 		protected:
-			void visit( ResourceReference* _resource )
+			void accept( ResourceReference* _resource )
 			{
 				if( _resource->isCompile() == false )
 				{
@@ -4658,7 +4665,8 @@ namespace Menge
         }
 		//////////////////////////////////////////////////////////////////////////
 		class MyResourceVisitor
-			: public ResourceVisitor
+			: public Visitor
+			, public ConcreteVisitor<ResourceReference>
 		{
 		public:
 			MyResourceVisitor( const pybind::object & _cb )
@@ -4671,7 +4679,7 @@ namespace Menge
 			}
 
 		protected:
-			void visit( ResourceReference* _resource )
+			void accept( ResourceReference* _resource ) override
 			{
 				m_cb( _resource );
 			}
@@ -4689,10 +4697,11 @@ namespace Menge
         }
 		//////////////////////////////////////////////////////////////////////////
 		class IncrefResourceVisitor
-			: public ResourceVisitor
+			: public Visitor
+			, public ConcreteVisitor<ResourceReference>
 		{
 		protected:
-			void visit( ResourceReference* _resource )
+			void accept( ResourceReference* _resource ) override
 			{
 				_resource->incrementReference();
 			}
@@ -4707,10 +4716,11 @@ namespace Menge
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class DecrementResourceVisitor
-			: public ResourceVisitor
+			: public Visitor
+			, public ConcreteVisitor<ResourceReference>
 		{
 		protected:
-			void visit( ResourceReference * _resource )
+			void accept( ResourceReference * _resource ) override
 			{
 				_resource->decrementReference();
 			}

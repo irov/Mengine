@@ -7,7 +7,7 @@ namespace Menge
 	class ResourceInternalObject
 		: public ResourceReference
 	{
-		RESOURCE_DECLARE( ResourceInternalObject )
+		DECLARE_VISITABLE();
 
 	public:
 		ResourceInternalObject();

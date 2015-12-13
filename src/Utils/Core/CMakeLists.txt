@@ -10,6 +10,7 @@ src
     Date.cpp
     
     Exception.h
+    Visitor.h
     
     Polygon.h
     Polygon.cpp    
@@ -75,7 +76,7 @@ src
     PluginBase.h
     PluginBase.cpp
    
-    Magic.h
+    Magic.h    
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

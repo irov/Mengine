@@ -1,7 +1,5 @@
 #	include "ResourceSound.h"
 
-#	include "Kernel/ResourceImplement.h"
-
 #	include "Interface/SoundSystemInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/CodecInterface.h"
@@ -12,8 +10,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceSound );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceSound::ResourceSound()
 		: m_isStreamable(false)

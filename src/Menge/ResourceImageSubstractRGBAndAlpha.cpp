@@ -1,15 +1,11 @@
 #	include "ResourceImageSubstractRGBAndAlpha.h"
 
-#	include "Kernel/ResourceImplement.h"
-
 #	include "Interface/ResourceInterface.h"
 
 #   include "Logger/Logger.h"
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceImageSubstractRGBAndAlpha );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageSubstractRGBAndAlpha::ResourceImageSubstractRGBAndAlpha()
 		: m_resourceImageRGB(nullptr)

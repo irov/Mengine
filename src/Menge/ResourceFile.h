@@ -9,7 +9,7 @@ namespace Menge
 	class ResourceFile
 		: public ResourceReference
 	{
-		RESOURCE_DECLARE( ResourceFile )
+		DECLARE_VISITABLE();
 
 	public:
 		ResourceFile();

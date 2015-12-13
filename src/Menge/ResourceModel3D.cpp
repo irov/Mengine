@@ -1,7 +1,5 @@
 #	include "ResourceModel3D.h"
 
-#	include "Kernel/ResourceImplement.h"
-
 #	include "Interface/ConverterInterface.h"
 #	include "Interface/CodecInterface.h"
 #	include "Interface/ResourceInterface.h"
@@ -10,8 +8,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceModel3D );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceModel3D::ResourceModel3D()
 		: m_imageResource(nullptr)

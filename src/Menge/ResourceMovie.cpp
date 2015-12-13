@@ -1,5 +1,4 @@
 #	include "ResourceMovie.h"
-#	include "Kernel/ResourceImplement.h"
 
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/ConverterInterface.h"
@@ -26,8 +25,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceMovie );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceMovie::ResourceMovie()
 		: m_frameDuration( 0.f )

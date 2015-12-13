@@ -1,6 +1,6 @@
 #   pragma once
 
-#   include "Kernel/Visitor.h"
+#   include "Core/Visitor.h"
 
 #	include "Math/vec2.h"
 

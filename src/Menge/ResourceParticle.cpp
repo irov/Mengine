@@ -1,7 +1,5 @@
 #	include "ResourceParticle.h"
 
-#	include "Kernel/ResourceImplement.h"
-
 #	include "ResourceImageDefault.h"
 
 #   include "Interface/ResourceInterface.h"
@@ -14,8 +12,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceParticle );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceParticle::ResourceParticle()
 	{

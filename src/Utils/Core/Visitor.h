@@ -10,7 +10,6 @@ namespace Menge
 
 	template<class T>
 	class ConcreteVisitor
-		//: public Visitor
 	{
 	public:
 		virtual void accept( T * _visited ) = 0;

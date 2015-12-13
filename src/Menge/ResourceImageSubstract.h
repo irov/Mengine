@@ -9,7 +9,7 @@ namespace Menge
 	class ResourceImageSubstract
 		: public ResourceImage
 	{
-		RESOURCE_DECLARE( ResourceImageSubstract )
+		DECLARE_VISITABLE();
 
 	public:
 		ResourceImageSubstract();

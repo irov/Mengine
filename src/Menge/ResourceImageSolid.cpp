@@ -1,4 +1,3 @@
-#	include "Kernel/ResourceImplement.h"
 #	include "ResourceImageSolid.h"
 
 #	include "Logger/Logger.h"
@@ -7,8 +6,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceImageSolid );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageSolid::ResourceImageSolid()
 	{

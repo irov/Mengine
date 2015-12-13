@@ -1,6 +1,6 @@
 #	pragma once
 
-#   include "Visitor.h"
+#   include "Core/Visitor.h"
 
 namespace Menge
 {    

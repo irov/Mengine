@@ -1,5 +1,4 @@
 #	include "ResourceAnimation.h"
-#	include "Kernel/ResourceImplement.h"
 
 #	include "Kernel/ResourceImage.h"
 
@@ -12,8 +11,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceAnimation );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceAnimation::ResourceAnimation()
 		: m_duration(0.f)

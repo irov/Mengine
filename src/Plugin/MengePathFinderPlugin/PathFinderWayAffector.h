@@ -42,7 +42,7 @@ namespace Menge
 		pybind::tuple predictionIsometricParabolicBullet( const mt::vec3f & _offset, const mt::vec3f & _position, const mt::vec3f & _height, float _speed ) const;
 
 	public:
-		bool prepare() override;
+		bool _prepare() override;
 		bool _affect( float _timing ) override;
 		void complete() override;
 		void stop() override;

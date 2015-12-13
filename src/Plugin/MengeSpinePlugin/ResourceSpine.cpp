@@ -1,7 +1,5 @@
 #	include "ResourceSpine.h"
 
-#	include "Kernel/ResourceImplement.h"
-
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/ResourceInterface.h"
 #	include "Interface/StringizeInterface.h"
@@ -12,8 +10,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceSpine );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceSpine::ResourceSpine()
 		: m_atlas(nullptr)

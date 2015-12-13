@@ -1,7 +1,5 @@
 #	include "ResourceHIT.h"
 
-#	include "Kernel/ResourceImplement.h"
-
 #   include "Interface/PickCodecInterface.h"
 #	include "Interface/ConverterInterface.h"
 #	include "Interface/ResourceInterface.h"
@@ -13,8 +11,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceHIT );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceHIT::ResourceHIT()
 		: m_width(0)

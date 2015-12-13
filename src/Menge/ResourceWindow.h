@@ -32,7 +32,7 @@ namespace Menge
 	class ResourceWindow
 		: public ResourceReference
 	{
-		RESOURCE_DECLARE( ResourceWindow )
+		DECLARE_VISITABLE();
 
 	public:
 		ResourceWindow();

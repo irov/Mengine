@@ -7,7 +7,7 @@ namespace Menge
 	class ResourceCursorICO
 		: public ResourceCursor
 	{
-		RESOURCE_DECLARE( ResourceCursorICO )
+		DECLARE_VISITABLE();
 
 	public:
 		ResourceCursorICO();

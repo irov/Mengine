@@ -1,12 +1,9 @@
 #	include "ResourceCursorSystem.h"
-#	include "Kernel/ResourceImplement.h"
 
 #	include "Logger/Logger.h"
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceCursorSystem );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceCursorSystem::ResourceCursorSystem()
 	{

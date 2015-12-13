@@ -2,16 +2,12 @@
 
 #	include "Interface/FileSystemInterface.h"
 
-#	include "Kernel/ResourceImplement.h"
-
 #	include "Core/MemoryHelper.h"
 
 #	include "Logger/Logger.h"
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceCursorICO );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceCursorICO::ResourceCursorICO()
 	{

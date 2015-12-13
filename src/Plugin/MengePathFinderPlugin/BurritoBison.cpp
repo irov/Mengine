@@ -67,9 +67,12 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::initialize( Node * _node, const mt::vec3f & _position, float _radius )
+	void BurritoBison::initialize( Node * _node, Camera2D * _camera, const Viewport & _renderport, const mt::vec3f & _position, float _radius )
 	{		
 		m_node = _node;
+		m_camera = _camera;
+		m_renderport = _renderport;
+		m_position = _position;
 		m_radius = _radius;
 
 		m_node->setLocalPosition( _position );
@@ -316,6 +319,53 @@ namespace Menge
 		m_position += _translate;
 
 		m_node->setLocalPositionY( m_position.y );
+
+		float a = (m_velocity.x - 3.f) / (6.f - 3.f);
+
+		float ca = 1.f + mt::clamp( 0.f, a, 1.f ) * 0.5f;
+
+		Viewport new_camera_renderport;
+		new_camera_renderport = m_renderport;
+		new_camera_renderport.scale( mt::vec2f( ca, ca ) );
+
+		m_camera->setRenderport( new_camera_renderport );
+		
+		const mt::vec3f & target_wp = m_node->getWorldPosition();
+
+		const mt::vec3f & camera_lp = m_camera->getLocalPosition();
+		const Viewport & camera_renderport = m_camera->getCameraRenderport();
+
+		Viewport camera_renderport_wm;
+		camera_renderport_wm.begin = camera_renderport.begin + target_wp.to_vec2f();
+		camera_renderport_wm.end = camera_renderport.end + target_wp.to_vec2f();
+
+		mt::vec2f camera_renderport_wm_center;
+		camera_renderport_wm.getCenter( camera_renderport_wm_center );
+
+		float camera_height = camera_renderport.getHeight();
+		float camera_height_half = camera_height * 0.5f;
+
+		float renderport_height = m_renderport.getHeight();
+		float camera_renderport_height = camera_renderport.getHeight();
+
+		float pr = (camera_renderport_height - (target_wp.y - 300.f) * 1.f) / camera_renderport_height;
+
+		mt::vec3f new_camera_lp;
+
+		if( pr < 1.f )
+		{
+			new_camera_lp.x = 0.f;
+			new_camera_lp.y = (renderport_height - camera_renderport_height) * 0.5f;
+			new_camera_lp.z = 0.f;
+		}
+		else
+		{
+			new_camera_lp.x = 0.f;
+			new_camera_lp.y = (renderport_height - camera_renderport_height) * 0.5f + target_wp.y - 300.f;
+			new_camera_lp.z = 0.f;
+		}
+
+		m_camera->setLocalPosition( new_camera_lp );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::setPositionY( float _position )

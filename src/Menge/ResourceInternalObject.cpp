@@ -1,5 +1,4 @@
 #	include "ResourceInternalObject.h"
-#	include "Kernel/ResourceImplement.h"
 
 #	include "Interface/ScriptSystemInterface.h"
 
@@ -8,8 +7,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceInternalObject );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceInternalObject::ResourceInternalObject()
 	{

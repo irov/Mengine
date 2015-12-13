@@ -26,7 +26,7 @@ namespace Menge
 	class ResourceAnimation
 		: public ResourceReference
 	{
-		RESOURCE_DECLARE( ResourceAnimation )
+		DECLARE_VISITABLE();
 
 	public:
 		ResourceAnimation();

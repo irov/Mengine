@@ -1,5 +1,4 @@
 #	include "ResourceFile.h"
-#	include "Kernel/ResourceImplement.h"
 
 #	include "Interface/FileSystemInterface.h"
 
@@ -7,8 +6,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceFile );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceFile::ResourceFile()
 	{

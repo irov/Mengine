@@ -9,7 +9,7 @@ namespace Menge
 	class ResourceImageDefault
 		: public ResourceImage
 	{
-		RESOURCE_DECLARE( ResourceImageDefault )
+		DECLARE_VISITABLE();
 
 	public:
 		ResourceImageDefault();

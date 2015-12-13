@@ -9,7 +9,7 @@ namespace Menge
 	class ResourceImageSubstractRGBAndAlpha
 		: public ResourceImage
 	{
-		RESOURCE_DECLARE( ResourceImageSubstractRGBAndAlpha )
+		DECLARE_VISITABLE();
 
 	public:
 		ResourceImageSubstractRGBAndAlpha();

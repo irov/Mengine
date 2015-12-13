@@ -57,7 +57,10 @@ namespace Menge
 		float getSpeedFactor() const;
 
 	public:
-		virtual bool prepare();
+		bool prepare();
+
+	protected:
+		virtual bool _prepare();
 
 	public:
 		bool affect( float _timing );

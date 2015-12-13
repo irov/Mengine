@@ -7,8 +7,8 @@
 #	include "Kernel/Reference.h"
 
 #	include "Kernel/Scriptable.h"
+#	include "Kernel/Visitable.h"
 
-#	include "Kernel/ResourceDeclare.h"
 #	include "Kernel/ResourceHolder.h"
 
 #	include "Factory/FactorablePtr.h"
@@ -30,6 +30,7 @@ namespace Menge
 		, public Reference
 		, public Loadable
         , public Scriptable
+		, public Visitable
 	{
 	public:
 		ResourceReference();
@@ -78,9 +79,6 @@ namespace Menge
 	protected:
 		virtual void _cache();
 		virtual void _uncache();
-
-	public:
-		virtual void accept( ResourceVisitor * _visitor ) = 0;
 
 	protected:
 		bool _incrementZero() override;

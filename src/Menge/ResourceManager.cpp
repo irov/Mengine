@@ -11,8 +11,6 @@
 
 #	include "Logger/Logger.h"
 
-#	include "Kernel/ResourceVisitor.h"
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourceService, Menge::ResourceManager );
 //////////////////////////////////////////////////////////////////////////
@@ -696,7 +694,7 @@ namespace Menge
 		class FResourcesForeachVisit
 		{
 		public:
-			FResourcesForeachVisit( ResourceVisitor * _visitor )
+			FResourcesForeachVisit( Visitor * _visitor )
 				: m_visitor(_visitor)
 			{
 			}
@@ -711,21 +709,21 @@ namespace Menge
 			{
 				const ResourceReferencePtr & resource = _entry->resource;
 
-				resource->accept( m_visitor );
+				resource->visit( m_visitor );
 			}
 
 		protected:
-			ResourceVisitor * m_visitor;
+			Visitor * m_visitor;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::visitResources( ResourceVisitor * _visitor ) const
+	void ResourceManager::visitResources( Visitor * _visitor ) const
 	{
 		FResourcesForeachVisit rfv(_visitor);
 		m_resources.foreach( rfv );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::visitGroupResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const
+	void ResourceManager::visitGroupResources( const ConstString & _category, const ConstString & _group, Visitor * _visitor ) const
 	{		
 		const ResourceCacheEntry * resourceCacheEntry;
 		if( m_resourcesCache.has( _category, _group, &resourceCacheEntry ) == false )
@@ -743,7 +741,7 @@ namespace Menge
 		{
 			const ResourceReferencePtr & resource = *it;
 
-			resource->accept( _visitor );
+			resource->visit( _visitor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

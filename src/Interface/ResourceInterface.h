@@ -2,6 +2,8 @@
 
 #   include "Interface/ServiceInterface.h"
 
+#	include "Core/Visitor.h"
+
 #   include "Config/String.h"
 
 #   include "Core/ConstString.h"
@@ -11,8 +13,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	class ResourceVisitor;
 	//////////////////////////////////////////////////////////////////////////
 	typedef stdex::intrusive_ptr<class ResourceReference> ResourceReferencePtr;
 	//////////////////////////////////////////////////////////////////////////
@@ -140,8 +140,8 @@ namespace Menge
 
         virtual bool validResourceType( const ConstString& _name, const ConstString& _type ) const = 0;
 
-        virtual void visitResources( ResourceVisitor * _visitor ) const = 0;
-		virtual void visitGroupResources( const ConstString & _category, const ConstString & _group, ResourceVisitor * _visitor ) const = 0;
+        virtual void visitResources( Visitor * _visitor ) const = 0;
+		virtual void visitGroupResources( const ConstString & _category, const ConstString & _group, Visitor * _visitor ) const = 0;
 
 		virtual size_t getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group ) const = 0;
 

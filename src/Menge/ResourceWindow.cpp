@@ -1,5 +1,4 @@
 #	include "ResourceWindow.h"
-#	include "Kernel/ResourceImplement.h"
 
 #   include "Interface/ResourceInterface.h"
 #	include "Interface/RenderSystemInterface.h"
@@ -9,8 +8,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT(ResourceWindow);
 	//////////////////////////////////////////////////////////////////////////
 	ResourceWindow::ResourceWindow()
 	{

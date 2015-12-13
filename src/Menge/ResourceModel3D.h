@@ -11,7 +11,7 @@ namespace Menge
 	class ResourceModel3D
 		: public ResourceReference
 	{
-		RESOURCE_DECLARE( ResourceModel3D );
+		DECLARE_VISITABLE();
 
 	public:
 		ResourceModel3D();

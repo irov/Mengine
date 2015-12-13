@@ -175,11 +175,11 @@ namespace Menge
 		return m_freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	BurritoBison * BurritoWorld::createBison( Node * _node, const mt::vec3f & _position, float _radius )
+	BurritoBison * BurritoWorld::createBison( Node * _node, Camera2D * _camera, const Viewport & _renderport, const mt::vec3f & _position, float _radius )
 	{
 		m_bison = new BurritoBison;
 
-		m_bison->initialize( _node, _position, _radius );
+		m_bison->initialize( _node, _camera, _renderport, _position, _radius );
 
 		return m_bison;
 	}

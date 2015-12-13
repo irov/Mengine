@@ -53,7 +53,7 @@ namespace Menge
 		}
 
 		m_wayLength = this->calcWayLength_();
-
+				
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -120,7 +120,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderWayAffector::prepare()
+	bool PathFinderWayAffector::_prepare()
 	{
 		mt::vec3f wp_current = m_way[0];
 		//mt::vec3f wp_target = m_way[1];

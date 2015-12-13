@@ -146,14 +146,11 @@ ADD_FILTER(
 Resource
 	Resource.cpp
 	Resource.h
+    ResourceCacher.h
+    ResourceHolder.h
     ResourcePrototypeGenerator.h
     ResourceReference.cpp
     ResourceReference.h
-    ResourceCacher.h
-    ResourceHolder.h
-	ResourceDeclare.h
-	ResourceImplement.h
-	ResourceVisitor.h
 )
 
 ADD_FILTER(
@@ -188,8 +185,7 @@ Loadable
 )
 
 ADD_FILTER(
-Visitor
-	Visitor.h
+Visitable
 	Visitable.h
 )
 

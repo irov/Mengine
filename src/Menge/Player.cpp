@@ -34,7 +34,6 @@
 
 #	include "TextField.h"
 
-#   include "Kernel/ResourceVisitor.h"
 #   include "Kernel/ResourceReference.h"
 
 #	include "Math/mat3.h"
@@ -1241,7 +1240,8 @@ namespace Menge
 			if( m_showDebugText == 2 )
 			{
 				class CompileResourceVisitor
-					: public ResourceVisitor
+					: public Visitor
+					, public ConcreteVisitor<ResourceReference>
 				{
 				public:
 					CompileResourceVisitor()
@@ -1256,7 +1256,7 @@ namespace Menge
 					}
 
 				protected:
-					void visit( ResourceReference * _resource )
+					void accept( ResourceReference * _resource )
 					{
 						if( _resource->isCompile() == false )
 						{

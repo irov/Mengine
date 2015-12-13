@@ -8,14 +8,10 @@
 #   include "Interface/StringizeInterface.h"
 #   include "Interface/ConfigInterface.h"
 
-#	include "Kernel/ResourceImplement.h"
-
 #	include "Logger/Logger.h"
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceVideo );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceVideo::ResourceVideo()
 		: m_alpha(false)

@@ -1,7 +1,5 @@
 #	include "ResourceImageDefault.h"
 
-#	include "Kernel/ResourceImplement.h"
-
 #	include "Interface/FileSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
 #	include "Interface/RenderSystemInterface.h"
@@ -16,8 +14,6 @@
 
 namespace Menge
 {
-	//////////////////////////////////////////////////////////////////////////
-	RESOURCE_IMPLEMENT( ResourceImageDefault );
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDefault::ResourceImageDefault()
 		: m_validNoExist(false)

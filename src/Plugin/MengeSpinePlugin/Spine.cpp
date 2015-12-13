@@ -74,7 +74,7 @@ namespace Menge
 		spine->addAnimationEvent( trackIndex, type, event, loopCount );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Spine::setAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop )
+	bool Spine::setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop )
 	{
 		TMapAnimations::iterator it_found = m_animations.find( _state );
 
@@ -108,6 +108,7 @@ namespace Menge
 		an.name = _name;
 		an.state = state;
 		an.timing = _timing;
+		an.duration = animation->duration;
 		an.speedFactor = _speedFactor;
 		an.freeze = false;
 		an.loop = _loop;
@@ -119,7 +120,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Spine::removeAnimation( const ConstString & _state )
+	bool Spine::removeStateAnimation( const ConstString & _state )
 	{
 		TMapAnimations::iterator it_found = m_animations.find( _state );
 
@@ -145,7 +146,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Spine::setAnimationSpeedFactor( const ConstString & _state, float _speedFactor )
+	bool Spine::setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor )
 	{
 		TMapAnimations::iterator it_found = m_animations.find( _state );
 
@@ -165,7 +166,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Spine::getAnimationSpeedFactor( const ConstString & _state ) const
+	float Spine::getStateAnimationSpeedFactor( const ConstString & _state ) const
 	{
 		TMapAnimations::const_iterator it_found = m_animations.find( _state );
 
@@ -183,7 +184,7 @@ namespace Menge
 		return an.speedFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Spine::setAnimationTiming( const ConstString & _state, float _timing )
+	bool Spine::setStateAnimationTiming( const ConstString & _state, float _timing )
 	{
 		TMapAnimations::const_iterator it_found = m_animations.find( _state );
 
@@ -198,7 +199,7 @@ namespace Menge
 
 		Animation an = it_found->second;
 	
-		if( this->setAnimation( _state, an.name, _timing, an.speedFactor, an.loop ) == false )
+		if( this->setStateAnimation( _state, an.name, _timing, an.speedFactor, an.loop ) == false )
 		{
 			return false;
 		}
@@ -206,7 +207,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Spine::setAnimationFreeze( const ConstString & _state, bool _freeze )
+	bool Spine::setStateAnimationFreeze( const ConstString & _state, bool _freeze )
 	{
 		TMapAnimations::iterator it_found = m_animations.find( _state );
 
@@ -226,7 +227,7 @@ namespace Menge
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Spine::getAnimationFreeze( const ConstString & _state ) const
+	bool Spine::getStateAnimationFreeze( const ConstString & _state ) const
 	{
 		TMapAnimations::const_iterator it_found = m_animations.find( _state );
 
@@ -244,7 +245,7 @@ namespace Menge
 		return an.freeze;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Spine::getAnimationTiming( const ConstString & _state ) const
+	float Spine::getStateAnimationTiming( const ConstString & _state ) const
 	{
 		TMapAnimations::const_iterator it_found = m_animations.find( _state );
 
@@ -260,6 +261,24 @@ namespace Menge
 		const Animation & an = it_found->second;
 
 		return an.timing;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float Spine::getStateAnimationDuration( const ConstString & _state ) const
+	{
+		TMapAnimations::const_iterator it_found = m_animations.find( _state );
+
+		if( it_found == m_animations.end() )
+		{
+			LOGGER_ERROR( m_serviceProvider )("Spine::getStateAnimationDuration invalid not found state '%s'"
+				, _state.c_str()
+				);
+
+			return 0.0;
+		}
+
+		const Animation & an = it_found->second;
+
+		return an.duration;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Spine::getAnimationDuration( const ConstString & _name )
@@ -584,6 +603,11 @@ namespace Menge
 
 			an.timing += total_timing;
 
+			while( an.timing >= an.duration )
+			{
+				an.timing -= an.duration;
+			}
+
 			spAnimationState * state = an.state;
 
 			spAnimationState_update( state, total_timing );
@@ -611,6 +635,17 @@ namespace Menge
 				{
 					if( loop == false )
 					{
+						for( TMapAnimations::iterator
+							it = m_animations.begin(),
+							it_end = m_animations.end();
+						it != it_end;
+						++it )
+						{
+							Animation & an = it->second;
+
+							an.timing = an.duration;
+						}
+
 						this->end();
 					}
 				}break;

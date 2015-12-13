@@ -31,18 +31,20 @@ namespace Menge
 		bool mixAnimation( const ConstString & _first, const ConstString & _second, float _duration );
 
 	public:
-		bool setAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop );
-		bool removeAnimation( const ConstString & _state );
+		bool setStateAnimation( const ConstString & _state, const ConstString & _name, float _timing, float _speedFactor, bool _loop );
+		bool removeStateAnimation( const ConstString & _state );
 
 	public:
-		bool setAnimationSpeedFactor( const ConstString & _state, float _speedFactor );
-		float getAnimationSpeedFactor( const ConstString & _state ) const;
+		bool setStateAnimationSpeedFactor( const ConstString & _state, float _speedFactor );
+		float getStateAnimationSpeedFactor( const ConstString & _state ) const;
 
-		bool setAnimationTiming( const ConstString & _state, float _timing );
-		float getAnimationTiming( const ConstString & _state ) const;
+		bool setStateAnimationTiming( const ConstString & _state, float _timing );
+		float getStateAnimationTiming( const ConstString & _state ) const;
 
-		bool setAnimationFreeze( const ConstString & _state, bool _freeze );
-		bool getAnimationFreeze( const ConstString & _state ) const;
+		bool setStateAnimationFreeze( const ConstString & _state, bool _freeze );
+		bool getStateAnimationFreeze( const ConstString & _state ) const;
+
+		float getStateAnimationDuration( const ConstString & _state ) const;
 		
 	public:
 		float getAnimationDuration( const ConstString & _name );
@@ -92,6 +94,7 @@ namespace Menge
 			ConstString name;
 			spAnimationState * state;
 			float timing;
+			float duration;
 			float speedFactor;
 			bool freeze;
 			bool loop;

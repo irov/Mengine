@@ -10,7 +10,7 @@ namespace Menge
 	class ResourceSound
 		: public ResourceReference
 	{
-		DECLARE_VISITABLE();
+		DECLARE_VISITABLE( ResourceReference );
 
 	public:
 		ResourceSound();

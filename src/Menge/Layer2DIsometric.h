@@ -9,7 +9,7 @@ namespace Menge
 	class Layer2DIsometric
 		: public Layer2D
 	{
-        DECLARE_VISITABLE()
+		DECLARE_VISITABLE( Layer2D )
 
 	public:
 		Layer2DIsometric();

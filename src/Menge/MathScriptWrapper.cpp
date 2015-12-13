@@ -684,6 +684,7 @@ namespace Menge
 			.def( "getSquare", &Viewport::getSquare )
 			.def( "parallax", &Viewport::parallax )
 			.def( "scale", &Viewport::scale )
+			.def( "inflate", &Viewport::inflate )
 			.def( "testPoint", &Viewport::testPoint )
 			.def( "testBBox", &Viewport::testBBox )
 			.def( "testRectangle", &Viewport::testRectangle )

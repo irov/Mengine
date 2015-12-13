@@ -11,7 +11,7 @@ namespace Menge
 	class Layer2D
 		: public Layer
 	{
-        DECLARE_VISITABLE()
+		DECLARE_VISITABLE( Layer )
 
 	public:
 		Layer2D();

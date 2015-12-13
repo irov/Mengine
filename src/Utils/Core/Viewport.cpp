@@ -45,12 +45,18 @@ namespace Menge
 		end.y = begin.y + size.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Viewport::scale( const mt::vec2f & _scale )
+	void Viewport::scale( const mt::vec2f & _value )
+	{
+		begin *= _value;
+		end *= _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Viewport::inflate( const mt::vec2f & _value )
 	{
 		mt::vec2f half_size = (end - begin) * 0.5f;
 		mt::vec2f center = (end + begin) * 0.5f;
-		begin = center - half_size * _scale;
-		end = center + half_size * _scale;
+		begin = center - half_size * _value;
+		end = center + half_size * _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Viewport::getWidth() const

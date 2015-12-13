@@ -11,7 +11,7 @@ namespace Menge
 
 	protected:
 		template<class T>
-		static void s_concreteVisit( T * _visited, Visitor * _visitor )
+		static bool s_concreteVisit( T * _visited, Visitor * _visitor )
 		{
 			typedef ConcreteVisitor<T> TConcreteVisitor;
 
@@ -19,15 +19,22 @@ namespace Menge
 			
 			if( ptr == nullptr )
 			{
-				return;
+				return false;
 			}
 
 			ptr->accept( _visited );
+
+			return true;
 		}
 	};
 
-#define DECLARE_VISITABLE() \
+#define DECLARE_VISITABLE_BASE() \
 public:\
-	void visit( Visitor * _visitor ) override { return Visitable::s_concreteVisit(this, _visitor); }\
+	void visit( Visitor * _visitor ) override { Visitable::s_concreteVisit(this, _visitor); }\
+protected:
+
+#define DECLARE_VISITABLE( Base ) \
+public:\
+	void visit( Visitor * _visitor ) override { if( Visitable::s_concreteVisit(this, _visitor) == false ){ Base::visit(_visitor); } }\
 protected:
 }

@@ -326,7 +326,8 @@ namespace Menge
 
 		Viewport new_camera_renderport;
 		new_camera_renderport = m_renderport;
-		new_camera_renderport.scale( mt::vec2f( ca, ca ) );
+		new_camera_renderport.inflate( mt::vec2f( 1.f, ca ) );
+		new_camera_renderport.scale( mt::vec2f( ca, 1.f ) );
 
 		m_camera->setRenderport( new_camera_renderport );
 		

@@ -9,7 +9,7 @@ namespace Menge
 	class HotSpotPolygon
 		: public HotSpot
 	{
-		DECLARE_VISITABLE();
+		DECLARE_VISITABLE( HotSpot );
 
 	public:
 		HotSpotPolygon();

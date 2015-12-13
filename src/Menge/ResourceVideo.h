@@ -12,7 +12,7 @@ namespace Menge
 	class ResourceVideo
 		: public ResourceReference
 	{
-		DECLARE_VISITABLE();
+		DECLARE_VISITABLE( ResourceReference );
 
 	public:
 		ResourceVideo();

@@ -17,7 +17,7 @@ namespace Menge
 	class ResourceSpine
 		: public ResourceReference
 	{
-		DECLARE_VISITABLE();
+		DECLARE_VISITABLE( ResourceReference );
 
 	public:
 		ResourceSpine();

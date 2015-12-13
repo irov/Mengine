@@ -14,7 +14,7 @@ namespace Menge
 		: public Node
 		, public MousePickerTrapInterface
 	{
-		DECLARE_VISITABLE();
+		DECLARE_VISITABLE( Node );
 
 	public:
 		HotSpot();

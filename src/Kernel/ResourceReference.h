@@ -32,6 +32,8 @@ namespace Menge
         , public Scriptable
 		, public Visitable
 	{
+		DECLARE_VISITABLE_BASE();
+
 	public:
 		ResourceReference();
 		~ResourceReference();

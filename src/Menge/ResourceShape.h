@@ -9,7 +9,7 @@ namespace Menge
     class ResourceShape
         : public ResourceReference
     {
-		DECLARE_VISITABLE();
+		DECLARE_VISITABLE( ResourceReference );
 
     public:
         ResourceShape();

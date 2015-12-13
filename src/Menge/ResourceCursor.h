@@ -10,6 +10,8 @@ namespace Menge
 	class ResourceCursor
 		: public ResourceReference
 	{
+		DECLARE_VISITABLE( ResourceReference );
+
 	public:
 		virtual const FilePath & getPath() const = 0;
 		virtual const MemoryInterfacePtr & getBuffer() const = 0;

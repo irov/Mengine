@@ -10,7 +10,7 @@ namespace Menge
 	class ResourceImageSolid
 		: public ResourceImage
 	{
-		DECLARE_VISITABLE();
+		DECLARE_VISITABLE( ResourceImage );
 
 	public:
 		ResourceImageSolid();

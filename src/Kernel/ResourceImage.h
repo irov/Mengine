@@ -15,6 +15,8 @@ namespace Menge
 	class ResourceImage
 		: public ResourceReference
 	{
+		DECLARE_VISITABLE( ResourceReference );
+
 	public:
 		ResourceImage();
 		~ResourceImage();

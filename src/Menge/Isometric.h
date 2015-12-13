@@ -7,7 +7,7 @@ namespace Menge
 	class Isometric
 		: public Node
 	{
-		DECLARE_VISITABLE()
+		DECLARE_VISITABLE( Node )
 
 	public:
 		Isometric();

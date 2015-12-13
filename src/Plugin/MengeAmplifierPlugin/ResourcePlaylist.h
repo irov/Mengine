@@ -20,7 +20,7 @@ namespace Menge
 	class ResourcePlaylist
 		: public ResourceReference
 	{
-		DECLARE_VISITABLE();
+		DECLARE_VISITABLE( ResourceReference );
 
 	public:
 		ResourcePlaylist();

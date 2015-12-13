@@ -16,7 +16,7 @@ namespace Menge
 	class ResourceParticle
 		: public ResourceReference
 	{
-		DECLARE_VISITABLE();
+		DECLARE_VISITABLE( ResourceReference );
 
 	public:
 		ResourceParticle();

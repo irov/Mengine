@@ -10,7 +10,7 @@ namespace Menge
 	class ResourceImageData
 		: public ResourceReference
 	{
-		DECLARE_VISITABLE();
+		DECLARE_VISITABLE( ResourceReference );
 
 	public:
 		ResourceImageData();

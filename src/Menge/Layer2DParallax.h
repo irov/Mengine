@@ -9,7 +9,7 @@ namespace Menge
 	class Layer2DParallax
 		: public Layer
 	{
-        DECLARE_VISITABLE()
+		DECLARE_VISITABLE( Layer )
 
 	public:
 		Layer2DParallax();

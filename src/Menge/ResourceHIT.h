@@ -9,7 +9,7 @@ namespace Menge
 	class ResourceHIT
 		: public ResourceTestPick
 	{
-		DECLARE_VISITABLE();
+		DECLARE_VISITABLE( ResourceTestPick );
 
 	public:
 		ResourceHIT();

@@ -9,6 +9,8 @@ namespace Menge
 	class ResourceTestPick
 		: public ResourceReference
 	{
+		DECLARE_VISITABLE( ResourceReference );
+
 	public:
 		virtual bool testPoint( const mt::vec2f& _point, float _minAlpha ) const = 0;
 		virtual bool testRadius( const mt::vec2f& _point, float _radius, float _minAlpha ) const = 0;

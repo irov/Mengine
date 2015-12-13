@@ -15,6 +15,8 @@ namespace Menge
 	class Layer
 		: public Node
 	{
+		DECLARE_VISITABLE( Node )
+
 	public:
 		Layer();
 		~Layer();

@@ -58,7 +58,7 @@ namespace Menge
         , public Eventable
 		, public Scriptable
 	{
-        DECLARE_VISITABLE();
+		DECLARE_VISITABLE_BASE();
 
 	public:
 		Node();

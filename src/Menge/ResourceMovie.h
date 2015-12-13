@@ -185,7 +185,7 @@ namespace Menge
 	class ResourceMovie
 		: public ResourceReference
 	{
-		DECLARE_VISITABLE();
+		DECLARE_VISITABLE( ResourceReference );
 
 	public:
 		ResourceMovie();

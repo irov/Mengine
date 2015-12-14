@@ -3239,7 +3239,7 @@ namespace Menge
 				return  mt::vec2f(0.f, 0.f);
             }
             
-			mt::vec2f size = resourceImage->getSize();
+			const mt::vec2f & size = resourceImage->getSize();
 
 			return size;
         }
@@ -5384,12 +5384,12 @@ namespace Menge
 					.def( "setMaxLength", &TextField::setMaxLength )
 					.def( "getMaxLength", &TextField::getMaxLength )
 
-                    .def( "setCenterAlign", &TextField::setHorizontalCenterAlign )
-                    .def( "isCenterAlign", &TextField::isHorizontalCenterAlign )
-                    .def( "setRightAlign", &TextField::setHorizontalRightAlign )
-                    .def( "isRightAlign", &TextField::isHorizontalRightAlign )
-                    .def( "setLeftAlign", &TextField::setHorizontalLeftAlign )
-                    .def( "isLeftAlign", &TextField::isHorizontalLeftAlign )
+					.def_depricated( "setCenterAlign", &TextField::setHorizontalCenterAlign, "use setHorizontalCenterAlign" )
+					.def_depricated( "isCenterAlign", &TextField::isHorizontalCenterAlign, "use isHorizontalCenterAlign" )
+					.def_depricated( "setRightAlign", &TextField::setHorizontalRightAlign, "use setHorizontalRightAlign" )
+					.def_depricated( "isRightAlign", &TextField::isHorizontalRightAlign, "use isHorizontalRightAlign" )
+					.def_depricated( "setLeftAlign", &TextField::setHorizontalLeftAlign, "use setHorizontalLeftAlign" )
+					.def_depricated( "isLeftAlign", &TextField::isHorizontalLeftAlign, "use isHorizontalLeftAlign" )
 
 					.def( "setHorizontalCenterAlign", &TextField::setHorizontalCenterAlign )
 					.def( "isHorizontalCenterAlign", &TextField::isHorizontalCenterAlign )
@@ -5397,7 +5397,6 @@ namespace Menge
 					.def( "isHorizontalRightAlign", &TextField::isHorizontalRightAlign )
 					.def( "setHorizontalLeftAlign", &TextField::setHorizontalLeftAlign )
 					.def( "isHorizontalLeftAlign", &TextField::isHorizontalLeftAlign )
-
 
                     .def( "setVerticalTopAlign", &TextField::setVerticalTopAlign )
                     .def( "isVerticalTopAlign", &TextField::isVerticalTopAlign )

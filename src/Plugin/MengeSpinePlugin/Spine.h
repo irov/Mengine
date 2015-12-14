@@ -122,7 +122,9 @@ namespace Menge
 		{
 			int trackIndex;
 			spEventType type;
-			spAnimationState * state;
+
+			ConstString state;
+			ConstString animation;
 
 			const char * eventName;
 			int eventIntValue;

@@ -332,6 +332,7 @@ namespace Menge
 		EVENT_SPINE_PAUSE,
 		EVENT_SPINE_RESUME,
 		EVENT_SPINE_EVENT,
+		EVENT_SPINE_STATE_ANIMATION_END,
 
 		EVENT_ANIMATABLE_END
 	};
@@ -345,6 +346,7 @@ namespace Menge
 		this->registerEvent( EVENT_SPINE_PAUSE, ("onSpinePause"), _listener );
 		this->registerEvent( EVENT_SPINE_RESUME, ("onSpineResume"), _listener );
 		this->registerEvent( EVENT_SPINE_EVENT, ("onSpineEvent"), _listener );
+		this->registerEvent( EVENT_SPINE_STATE_ANIMATION_END, ("onSpineStateAnimationEnd"), _listener );
 
 		this->registerEvent( EVENT_ANIMATABLE_END, ("onAnimatableEnd"), _listener );
 	}
@@ -541,8 +543,7 @@ namespace Menge
 
 		ev.trackIndex = _trackIndex;
 		ev.type = _type;
-		ev.state = _state;
-
+		
 		switch( _type )
 		{
 		case SP_ANIMATION_START:
@@ -553,6 +554,34 @@ namespace Menge
 				ev.eventIntValue = 0;
 				ev.eventFloatValue = 0.f;
 				ev.eventStringValue = nullptr;
+
+				for( TMapAnimations::iterator
+					it = m_animations.begin(),
+					it_end = m_animations.end();
+				it != it_end;
+				++it )
+				{
+					const ConstString & key = it->first;
+
+					Animation & an = it->second;
+
+					if( an.state != _state )
+					{
+						continue;
+					}
+
+					if( an.loop == true )
+					{
+						break;
+					}
+
+					an.complete = true;
+					an.timing = an.duration;
+
+					ev.state = key;
+					ev.animation = an.name;
+					break;
+				}
 			}break;
 		case SP_ANIMATION_EVENT:
 			{
@@ -648,27 +677,7 @@ namespace Menge
 			{
 			case SP_ANIMATION_COMPLETE:
 				{
-					for( TMapAnimations::iterator
-						it = m_animations.begin(),
-						it_end = m_animations.end();
-					it != it_end;
-					++it )
-					{
-						Animation & an = it->second;
-
-						if( an.state != ev.state )
-						{
-							continue;
-						}
-
-						if( an.loop == true )
-						{
-							break;
-						}
-
-						an.complete = true;
-						an.timing = an.duration;
-					}
+					EVENTABLE_CALL( m_serviceProvider, this, EVENT_SPINE_STATE_ANIMATION_END )(this, ev.state, ev.animation, true);
 
 					if( loop == false )
 					{

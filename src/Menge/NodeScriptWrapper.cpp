@@ -5447,6 +5447,8 @@ namespace Menge
                 pybind::interface_<Layer2DParallax, pybind::bases<Layer> >("Layer2DParallax", false)
                     .def( "setParallaxFactor", &Layer2DParallax::setParallaxFactor )
                     .def( "getParallaxFactor", &Layer2DParallax::getParallaxFactor )
+					.def( "setParallaxLoop", &Layer2DParallax::setParallaxLoop )
+					.def( "getParallaxLoop", &Layer2DParallax::getParallaxLoop )
                     ;
 
 				

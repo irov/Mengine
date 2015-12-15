@@ -237,7 +237,42 @@ namespace Menge
 		T m_v0;
 		T m_a;
 	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class T>
+	void calculateBezierPosition( T & _out, size_t _count, const T * _v, float _time )
+	{
+		if( _count == 0 )
+		{
+			return;
+		}
 
+		uint32_t n = _count - 1;
+
+		float t0 = mt::integral_powf( 1.f - _time, n );
+
+		_out = t0 * _v[0];
+
+		float f_count = mt::factorialf( n );
+
+		for( size_t i = 1; i != _count; ++i )
+		{
+			float c = f_count / (mt::factorialf( i ) * mt::factorialf( n - i ));
+			float t = mt::integral_powf( _time, i ) * mt::integral_powf( 1.f - _time, n - i );
+
+			const T & v = _v[i];
+
+			_out += c * t * v;
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////
+	template<class T>
+	void calculateQuadraticBezierPosition( T & _out, const T & _begin, const T & _end, const T & _v0, float _time )
+	{
+		T v[] = {_begin, _v0, _end};
+
+		calculateBezierPosition( _out, 3, v, _time );
+	}
+	//////////////////////////////////////////////////////////////////////////
 	template <typename T>
 	class ValueInterpolatorQuadraticBezier
 		: public ValueInterpolator<T>
@@ -289,9 +324,9 @@ namespace Menge
             
             ValueInterpolator<T>::m_timing += _timing;
             float t_time = ValueInterpolator<T>::m_timing / ValueInterpolator<T>::m_time;
-            *_out = (1.f-t_time)*(1.f-t_time)*ValueInterpolator<T>::m_value1
-                + 2.f*t_time*(1.f-t_time)*m_v0
-                + t_time*t_time*ValueInterpolator<T>::m_value2;
+
+			calculateQuadraticBezierPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, t_time );
+
             ValueInterpolator<T>::m_delta = (*_out) - ValueInterpolator<T>::m_prev;
             ValueInterpolator<T>::m_prev = *_out;
 
@@ -305,10 +340,9 @@ namespace Menge
 	template<class T>
 	void calculateCubicBezierPosition( T & _out, const T & _begin, const T & _end, const T & _v0, const T & _v1, float _time )
 	{
-		_out = (1.f - _time)*(1.f - _time)*(1.f - _time) * _begin
-			+ 3.f * _time*(1.f - _time)*(1.f - _time)*_v0
-			+ 3.f * _time*_time*(1.f - _time)*_v1
-			+ _time*_time*_time*_end;
+		T v[] = {_begin, _v0, _v1, _end};
+
+		calculateBezierPosition( _out, 4, v, _time );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	template<class T, class LENGTH>
@@ -408,6 +442,81 @@ namespace Menge
 	protected:
 		T m_v0;
 		T m_v1;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class T>
+	void calculateCubicQuarticPosition( T & _out, const T & _begin, const T & _end, const T & _v0, const T & _v1, const T & _v2, float _time )
+	{
+		T v[] = {_begin, _v0, _v1, _v2, _end};
+
+		calculateBezierPosition( _out, 5, v, _time );
+	}
+	//////////////////////////////////////////////////////////////////////////	
+	template <typename T>
+	class ValueInterpolatorQuarticBezier
+		: public ValueInterpolator<T>
+	{
+	public:
+		template<class ABS>
+		bool start( const T& _value1, const T& _value2, const T& _v0, const T& _v1, const T& _v2, float _time, ABS _abs )
+		{
+			ValueInterpolator<T>::m_started = false;
+
+			ValueInterpolator<T>::m_value1 = _value1;
+			ValueInterpolator<T>::m_value2 = _value2;
+			ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
+			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
+			ValueInterpolator<T>::m_time = _time;
+			ValueInterpolator<T>::m_timing = 0.f;
+
+			m_v0 = _v0;
+			m_v1 = _v1;
+			m_v2 = _v2;
+
+			if( _time < 0.00001f || _abs( _value2 - _value1 ) < 0.00001f )
+			{
+				return false;
+			}
+
+			ValueInterpolator<T>::m_started = true;
+			return true;
+		}
+
+		bool update( float _timing, T * _out )
+		{
+			if( ValueInterpolator<T>::m_started == false )
+			{
+				*_out = ValueInterpolator<T>::m_value2;
+
+				return true;
+			}
+
+			if( (ValueInterpolator<T>::m_timing + _timing) > ValueInterpolator<T>::m_time )
+			{
+				ValueInterpolator<T>::m_time = 0.f;
+				ValueInterpolator<T>::m_timing = 0.f;
+				*_out = ValueInterpolator<T>::m_value2;
+				ValueInterpolator<T>::m_delta = (*_out) - ValueInterpolator<T>::m_prev;
+				ValueInterpolator<T>::m_started = false;
+
+				return true;
+			}
+
+			ValueInterpolator<T>::m_timing += _timing;
+			float t_time = ValueInterpolator<T>::m_timing / ValueInterpolator<T>::m_time;
+
+			calculateCubicQuarticPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, m_v1, m_v2, t_time );
+
+			ValueInterpolator<T>::m_delta = (*_out) - ValueInterpolator<T>::m_prev;
+			ValueInterpolator<T>::m_prev = *_out;
+
+			return false;
+		}
+
+	protected:
+		T m_v0;
+		T m_v1;
+		T m_v2;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	template<class T>

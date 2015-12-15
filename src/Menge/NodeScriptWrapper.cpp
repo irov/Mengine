@@ -3535,6 +3535,42 @@ namespace Menge
             return id;
         }
 		//////////////////////////////////////////////////////////////////////////
+		NodeAffectorCreator::NodeAffectorCreatorInterpolateQuarticBezier<Node, void (Node::*)(const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateQuarticBezier;
+		//////////////////////////////////////////////////////////////////////////
+		uint32_t bezier4To( Node * _node
+			, float _time
+			, const mt::vec3f& _point1
+			, const mt::vec3f& _point2
+			, const mt::vec3f& _point3
+			, const mt::vec3f& _point4
+			, const pybind::object & _cb )
+		{
+			if( _node->isActivate() == false )
+			{
+				return 0;
+			}
+
+			if( _node->isAfterActive() == false )
+			{
+				return 0;
+			}
+
+			moveStop( _node );
+
+			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+
+			Affector* affector =
+				m_nodeAffectorCreatorInterpolateQuarticBezier.create( m_serviceProvider
+				, ETA_POSITION, callback, _node, &Node::setLocalPosition
+				, _node->getLocalPosition(), _point1, _point2, _point3, _point4, _time
+				, &mt::length_v3
+				);
+
+			AFFECTOR_ID id = _node->addAffector( affector );
+
+			return id;
+		}		
+		//////////////////////////////////////////////////////////////////////////
 		class FactoryAffectorInterpolateParabolic
 		{
 		public:
@@ -5172,6 +5208,7 @@ namespace Menge
             .def_proxy_static( "moveTo", nodeScriptMethod, &NodeScriptMethod::moveTo )
             .def_proxy_static( "bezier2To", nodeScriptMethod, &NodeScriptMethod::bezier2To )
             .def_proxy_static( "bezier3To", nodeScriptMethod, &NodeScriptMethod::bezier3To )
+			.def_proxy_static( "bezier4To", nodeScriptMethod, &NodeScriptMethod::bezier4To )
 			.def_proxy_static( "parabolaTo", nodeScriptMethod, &NodeScriptMethod::parabolaTo )
             .def_proxy_static( "moveStop", nodeScriptMethod, &NodeScriptMethod::moveStop )
 

@@ -89,4 +89,60 @@ namespace mt
 	{
 		return _f >= mt::m_neps;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_INLINE unsigned int factorial( unsigned int _value )
+	{
+		if( _value == 0 )
+		{
+			return 1;
+		}
+		
+		unsigned int f = 1;
+
+		unsigned int i_end = _value + 1;
+		
+		for( unsigned int i = 1; i != i_end; ++i )
+		{			
+			f *= i;
+		}
+
+		return f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_INLINE float factorialf( unsigned int _value )
+	{
+		if( _value == 0 )
+		{
+			return 1.f;
+		}
+
+		float f = 1.f;
+		float d = 0.f;
+
+		for( unsigned int i = 0; i != _value; ++i )
+		{
+			d += 1.f;
+
+			f *= d;
+		}
+
+		return f;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_INLINE float integral_powf( float _value, unsigned int _count )
+	{
+		if( _count == 0 )
+		{
+			return 1.f;
+		}
+
+		float f = _value;
+
+		for( unsigned int i = 1; i != _count; ++i )
+		{
+			f *= _value;
+		}
+
+		return f;
+	}
 }

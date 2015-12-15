@@ -258,6 +258,19 @@ namespace Menge
 			MemberAffectorInterpolate<C,M,T,ValueInterpolatorCubicBezier>::m_interpolator.start( _start, _end, _v0, _v1, _time, _abs );
 		}
 	};
+	//////////////////////////////////////////////////////////////////////////
+	template<class C, class M, class T>
+	class MemberAffectorInterpolateQuarticBezier
+		: public MemberAffectorInterpolate<C, M, T, ValueInterpolatorQuarticBezier>
+	{
+	public:
+		template<class ABS>
+		void initialize( C * _self, M _method, const T & _start, const T & _end, const T & _v0, const T & _v1, const T & _v2, float _time, ABS _abs )
+		{
+			MemberAffectorInterpolate<C, M, T, ValueInterpolatorQuarticBezier>::initialize( _self, _method );
+			MemberAffectorInterpolate<C, M, T, ValueInterpolatorQuarticBezier>::m_interpolator.start( _start, _end, _v0, _v1, _v2, _time, _abs );
+		}
+	};	
     //////////////////////////////////////////////////////////////////////////
 	namespace NodeAffectorCreator
 	{
@@ -381,16 +394,16 @@ namespace Menge
         };
         //////////////////////////////////////////////////////////////////////////
 		template<class C, class M, class T>
-        class NodeAffectorCreatorInterpolateCubicBezier
+		class NodeAffectorCreatorInterpolateQuarticBezier
         {
         public:
-            typedef MemberAffectorInterpolateCubicBezier<C, M, T> AffectorType;
+			typedef MemberAffectorInterpolateQuarticBezier<C, M, T> AffectorType;
 
         public:
             template<class ABS>
 			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
                 , C * _self, M _method
-                , const T & _start, const T & _end, const T & _v0, const T & _v1, float _time, ABS _abs )
+				, const T & _start, const T & _end, const T & _v0, const T & _v1, const T & _v2, float _time, ABS _abs )
             {
                 AffectorType * affector = m_factory.createObject();
 
@@ -399,7 +412,7 @@ namespace Menge
 
 				affector->setCallback( _cb );
 
-                affector->initialize( _self, _method, _start, _end, _v0, _v1, _time, _abs );
+				affector->initialize( _self, _method, _start, _end, _v0, _v1, _v2, _time, _abs );
 				affector->update( _start );
 
                 return affector;
@@ -409,6 +422,36 @@ namespace Menge
             typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
             TFactoryAffector m_factory;
         };
+		//////////////////////////////////////////////////////////////////////////
+		template<class C, class M, class T>
+		class NodeAffectorCreatorInterpolateCubicBezier
+		{
+		public:
+			typedef MemberAffectorInterpolateCubicBezier<C, M, T> AffectorType;
+
+		public:
+			template<class ABS>
+			Affector * create( ServiceProviderInterface * _serviceProvider, EAffectorType _type, const AffectorCallbackPtr & _cb
+				, C * _self, M _method
+				, const T & _start, const T & _end, const T & _v0, const T & _v1, float _time, ABS _abs )
+			{
+				AffectorType * affector = m_factory.createObject();
+
+				affector->setServiceProvider( _serviceProvider );
+				affector->setAffectorType( _type );
+
+				affector->setCallback( _cb );
+
+				affector->initialize( _self, _method, _start, _end, _v0, _v1, _time, _abs );
+				affector->update( _start );
+
+				return affector;
+			}
+
+		protected:
+			typedef FactoryPoolStore<AffectorType, 4> TFactoryAffector;
+			TFactoryAffector m_factory;
+		};
 		//////////////////////////////////////////////////////////////////////////
 	}
 }	// namespace Menge

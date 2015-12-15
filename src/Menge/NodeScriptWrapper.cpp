@@ -72,7 +72,6 @@
 //#	include "Light2D.h"
 #	include "ShadowCaster2D.h"
 #	include "Gyroscope.h"
-#	include "Isometric.h"
 #	include "Arrow.h"
 #	include "TextField.h"
 #	include "SoundEmitter.h"
@@ -82,6 +81,8 @@
 //#	include "RigidBody3D.h"
 //#	include "CapsuleController.h"
 //#	include "Skeleton.h"
+#	include "Kernel/Isometric.h"
+#	include "Kernel/Parallax.h"
 #	include "Kernel/RenderViewport.h"
 #	include "Kernel/Camera2D.h"
 #	include "Kernel/CameraTarget2D.h"
@@ -4794,6 +4795,7 @@ namespace Menge
         //SCRIPT_CLASS_WRAPPING( RenderMesh );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Window );
 
+		SCRIPT_CLASS_WRAPPING( _serviceProvider, Parallax );
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, RenderViewport );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Camera2D );		
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, CameraTarget2D );
@@ -5450,6 +5452,11 @@ namespace Menge
 					.def( "setParallaxLoop", &Layer2DParallax::setParallaxLoop )
 					.def( "getParallaxLoop", &Layer2DParallax::getParallaxLoop )
                     ;
+
+				pybind::interface_<Parallax, pybind::bases<Node> >( "Parallax", false )
+					.def( "setParallaxFactor", &Parallax::setParallaxFactor )
+					.def( "getParallaxFactor", &Parallax::getParallaxFactor )
+					;
 
 				
 				pybind::interface_<Layer2DIsometric, pybind::bases<Layer> >("Layer2DIsometric", false)

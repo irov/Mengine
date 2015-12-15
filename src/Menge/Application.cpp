@@ -64,7 +64,6 @@
 #	include "Line.h"
 #	include "SoundEmitter.h"
 #	include "Sprite.h"
-#	include "Isometric.h"
 #	include "Mesh2D.h"
 #	include "Grid2D.h"
 #	include "TextField.h"
@@ -81,6 +80,9 @@
 #	include "Layer2DParallax.h"
 #	include "Layer2DIsometric.h"
 #	include "Layer2DLoop.h"
+#	include "Kernel/Isometric.h"
+#	include "Kernel/Isometric.h"
+#	include "Kernel/Parallax.h"
 #	include "Kernel/RenderViewport.h"
 #	include "Kernel/RenderClipplane.h"
 #	include "Kernel/Camera2D.h"
@@ -343,6 +345,7 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, Animation );
 		NODE_FACTORY( m_serviceProvider, Gyroscope );
 		NODE_FACTORY( m_serviceProvider, Isometric );
+		NODE_FACTORY( m_serviceProvider, Parallax );
 		
 		//NODE_FACTORY( m_serviceProvider, ParticleEmitter );
 		NODE_FACTORY( m_serviceProvider, ParticleEmitter2 );

@@ -16,7 +16,7 @@ namespace Menge
 		void setServiceProvider( ServiceProviderInterface * _serviceProvider );
 
 	public:
-		bool initialize( uint32_t _count, float _width, const pybind::object & _cb );
+		bool initialize( uint32_t _count, float _width, const mt::vec3f & _parallax, const pybind::object & _cb );
 		void finalize();
 
 	public:

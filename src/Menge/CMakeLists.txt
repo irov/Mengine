@@ -103,12 +103,6 @@ Object2D\\\\Sprite
 )
 
 ADD_FILTER(
-Object2D\\\\Isometric
-	Isometric.cpp
-	Isometric.h
-)
-
-ADD_FILTER(
 Object2D\\\\Landscape2D
 	Landscape2D.cpp
 	Landscape2D.h

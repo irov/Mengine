@@ -119,6 +119,19 @@ Node\\\\Materialable
 )
 
 ADD_FILTER(
+Parallax
+	Parallax.cpp
+	Parallax.h
+)
+
+ADD_FILTER(
+Isometric
+	Isometric.cpp
+	Isometric.h
+)
+
+
+ADD_FILTER(
 Camera
 	Camera2D.cpp
 	Camera2D.h

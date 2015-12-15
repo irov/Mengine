@@ -4,6 +4,7 @@
 #	include "Interface/StringizeInterface.h"
 
 #	include "Kernel/Node.h"
+#	include "Kernel/Parallax.h"
 
 #	include "Logger/Logger.h"
 
@@ -27,7 +28,7 @@ namespace	Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Endless::initialize( uint32_t _count, float _width, const pybind::object & _cb )
+	bool Endless::initialize( uint32_t _count, float _width, const mt::vec3f & _parallax, const pybind::object & _cb )
 	{
 		m_elementCount = _count;
 		m_elementWidth = _width;
@@ -46,15 +47,16 @@ namespace	Menge
 
 		for( uint32_t i = 0; i != m_elementCount; ++i )
 		{
-			Node * node = NODE_SERVICE( m_serviceProvider )
-				->createNode( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Node" ) );
-
+			Parallax * parallax = NODE_SERVICE( m_serviceProvider )
+				->createNodeT<Parallax>( STRINGIZE_STRING_LOCAL( m_serviceProvider, "Parallax" ) );
+			
 			float x = float( i ) * m_elementWidth;
 			
-			node->setLocalPosition( mt::vec3f( x, 0.f, 0.f ) );
+			parallax->setLocalPosition( mt::vec3f( x, 0.f, 0.f ) );
+			parallax->setParallaxFactor( _parallax );
 
 			Element el;
-			el.node = node;
+			el.node = parallax;
 			el.id = ++m_enumeratorElementId;
 
 			m_elements.push_back( el );

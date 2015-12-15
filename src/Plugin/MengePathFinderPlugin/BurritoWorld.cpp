@@ -215,7 +215,7 @@ namespace Menge
 
 		layer.endless = new Endless;
 
-		layer.endless->initialize( _count, _width, _cb );
+		layer.endless->initialize( _count, _width, _parallax, _cb );
 
 		m_layers.push_back( layer );
 	}

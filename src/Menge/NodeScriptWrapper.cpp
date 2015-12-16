@@ -3467,12 +3467,12 @@ namespace Menge
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadraticBezier<Node, void (Node::*)( const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateQuadraticBezier;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<Node, void (Node::*)( const mt::vec3f &), mt::vec3f, 1> m_nodeAffectorCreatorInterpolateQuadraticBezier;
         //////////////////////////////////////////////////////////////////////////
         uint32_t bezier2To( Node * _node
             , float _time
-            , const mt::vec3f& _point1
-            , const mt::vec3f& _point2
+			, const mt::vec3f& _to
+            , const mt::vec3f& _v0            
 			, const pybind::object & _cb )
         {
             if( _node->isActivate() == false )
@@ -3489,10 +3489,11 @@ namespace Menge
 
 			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
 
+			mt::vec3f v[] = {_v0};
+
             Affector* affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
-                , _node->getLocalPosition(), _point1, _point2, _time
-				, &mt::sqrlength_v3
+				, _node->getLocalPosition(), _to, v, _time
                 );
 
             AFFECTOR_ID id = _node->addAffector( affector );
@@ -3500,13 +3501,13 @@ namespace Menge
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateCubicBezier<Node, void (Node::*)( const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateCubicBezier;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<Node, void (Node::*)( const mt::vec3f &), mt::vec3f, 2> m_nodeAffectorCreatorInterpolateCubicBezier;
         //////////////////////////////////////////////////////////////////////////
         uint32_t bezier3To( Node * _node
             , float _time
-            , const mt::vec3f& _point1
-            , const mt::vec3f& _point2
-            , const mt::vec3f& _point3
+			, const mt::vec3f& _to
+            , const mt::vec3f& _v0
+            , const mt::vec3f& _v1            
 			, const pybind::object & _cb )
         {
             if( _node->isActivate() == false )
@@ -3522,12 +3523,13 @@ namespace Menge
             moveStop( _node );
 
 			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
+
+			mt::vec3f v[] = {_v0, _v1};
 
             Affector* affector = 
                 m_nodeAffectorCreatorInterpolateCubicBezier.create( m_serviceProvider
                 , ETA_POSITION, callback, _node, &Node::setLocalPosition
-                , _node->getLocalPosition(), _point1, _point2, _point3, _time
-                , &mt::length_v3
+				, _node->getLocalPosition(), _to, v, _time
                 );
 
             AFFECTOR_ID id = _node->addAffector( affector );
@@ -3535,14 +3537,14 @@ namespace Menge
             return id;
         }
 		//////////////////////////////////////////////////////////////////////////
-		NodeAffectorCreator::NodeAffectorCreatorInterpolateQuarticBezier<Node, void (Node::*)(const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateQuarticBezier;
+		NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<Node, void (Node::*)(const mt::vec3f &), mt::vec3f, 3> m_nodeAffectorCreatorInterpolateQuarticBezier;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t bezier4To( Node * _node
 			, float _time
-			, const mt::vec3f& _point1
-			, const mt::vec3f& _point2
-			, const mt::vec3f& _point3
-			, const mt::vec3f& _point4
+			, const mt::vec3f& _to
+			, const mt::vec3f& _v0
+			, const mt::vec3f& _v1
+			, const mt::vec3f& _v2			
 			, const pybind::object & _cb )
 		{
 			if( _node->isActivate() == false )
@@ -3559,11 +3561,12 @@ namespace Menge
 
 			ScriptableAffectorCallback * callback = createNodeAffectorCallback( _node, _cb );
 
+			mt::vec3f v[] = {_v0, _v1, _v2};
+
 			Affector* affector =
 				m_nodeAffectorCreatorInterpolateQuarticBezier.create( m_serviceProvider
 				, ETA_POSITION, callback, _node, &Node::setLocalPosition
-				, _node->getLocalPosition(), _point1, _point2, _point3, _point4, _time
-				, &mt::length_v3
+				, _node->getLocalPosition(), _to, v, _time
 				);
 
 			AFFECTOR_ID id = _node->addAffector( affector );
@@ -3595,7 +3598,7 @@ namespace Menge
 				{
 					const mt::vec3f & start_position = m_node->getLocalPosition();
 
-					m_interpolator.start( start_position, _end, _v0, _time, mt::sqrlength_v3 );
+					m_interpolator.start( start_position, _end, _v0, _time );
 
 					mt::vec3f next_position;
 					m_interpolator.step( 100.f, &next_position );

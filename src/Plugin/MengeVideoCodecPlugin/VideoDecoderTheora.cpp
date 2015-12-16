@@ -299,16 +299,29 @@ namespace Menge
 			return false;
 		}
 
+		if( m_theoraInfo.width != m_theoraInfo.frame_width ||
+			m_theoraInfo.height != m_theoraInfo.frame_height )
+		{
+			LOGGER_ERROR( m_serviceProvider )("VideoDecoderTheora::_prepareData invalid width or heigth '%d:%d' need '%d:%d' maybe div 16"
+				, m_theoraInfo.width
+				, m_theoraInfo.height
+				, m_theoraInfo.frame_width
+				, m_theoraInfo.frame_height
+				);
+
+			return false;
+		}
+
 		if( m_options.alpha == true )
 		{
-			m_dataInfo.frameWidth = m_theoraInfo.width;
-			m_dataInfo.frameHeight = m_theoraInfo.height / 2;
+			m_dataInfo.frameWidth = m_theoraInfo.frame_width;
+			m_dataInfo.frameHeight = m_theoraInfo.frame_height / 2;
 			m_dataInfo.channel = 4;
 		}
 		else
 		{
-			m_dataInfo.frameWidth = m_theoraInfo.width;
-			m_dataInfo.frameHeight = m_theoraInfo.height;
+			m_dataInfo.frameWidth = m_theoraInfo.frame_width;
+			m_dataInfo.frameHeight = m_theoraInfo.frame_height;
 			m_dataInfo.channel = 3;
 		}
 

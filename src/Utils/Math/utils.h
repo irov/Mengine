@@ -98,12 +98,13 @@ namespace mt
 		}
 		
 		unsigned int f = 1;
-
-		unsigned int i_end = _value + 1;
+		unsigned int d = 0;
 		
-		for( unsigned int i = 1; i != i_end; ++i )
+		for( unsigned int i = 0; i != _value; ++i )
 		{			
-			f *= i;
+			++d;
+
+			f *= d;
 		}
 
 		return f;

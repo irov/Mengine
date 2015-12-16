@@ -301,7 +301,7 @@ namespace Menge
 			Magic_SetEmitterPosition( m_emitterId, &mp );
 		}
 
-		float total_timing = _timing / m_updateSpeed;
+		float total_timing = _timing /** m_updateSpeed*/;
 		
 		bool restart = Magic_Update( m_emitterId, total_timing );
 

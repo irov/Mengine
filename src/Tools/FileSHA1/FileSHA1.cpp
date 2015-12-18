@@ -1,14 +1,3 @@
-#	ifdef _WIN32_WINNT	
-#       undef _WIN32_WINNT
-#       define _WIN32_WINNT 0x0500
-#   endif
-
-#   ifdef _WIN32_WINDOWS
-#       undef _WIN32_WINDOWS
-#       define _WIN32_WINDOWS 0x0500
-#   endif
-
-#	define WIN32_LEAN_AND_MEAN
 #	include <Windows.h>
 
 #	include <shellapi.h>
@@ -34,27 +23,6 @@ static void message_error( const wchar_t * _format, ... )
 	va_end( argList );
 
 	MessageBoxW( NULL, str, L"FileSHA1", MB_OK );
-}
-//////////////////////////////////////////////////////////////////////////
-static std::wstring s_correct_path( const std::wstring & _path )
-{
-	std::wstring true_path = _path;
-
-	if( _path.size() <= 2 )
-	{
-
-	}
-	else if( _path[0] == L'/' && _path[1] == L'/' )
-	{
-
-	}
-	else if( _path[0] == L'/' )
-	{
-		true_path[0] = _path[1];
-		true_path[1] = L':';
-	}
-
-	return true_path;
 }
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
@@ -100,12 +68,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		return 0;
 	}
 
-	file = s_correct_path( file );
-	sha1 = s_correct_path( sha1 );
-
-	FILE * f_file = _wfopen( file.c_str(), L"rb" );
-
-	if( f_file == NULL )
+	HANDLE hFile = ::CreateFile( file.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL );
+	
+	if( hFile == INVALID_HANDLE_VALUE )
 	{
 		message_error( L"file '%ls' not open"
 			, file.c_str()
@@ -114,26 +80,34 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		return 0;
 	}
 
-	fseek( f_file, 0, SEEK_END );
-	int size = ftell( f_file );
-	rewind( f_file );
+	DWORD size = ::GetFileSize( hFile, NULL );
 
-	
 	std::vector<unsigned char> buff(size);
 	void * buff_memory = &buff[0];
 
-	fread( buff_memory, size, 1, f_file );
-	fclose( f_file );
+	DWORD bytesRead = 0;
+	if( ::ReadFile( hFile, buff_memory, size, &bytesRead, NULL ) == FALSE )
+	{
+		message_error( L"file '%ls' invalid read"
+			, file.c_str()
+			);
+
+		return 0;
+	}
+
+	::CloseHandle( hFile );
+	hFile = INVALID_HANDLE_VALUE;
 	
 	unsigned char hash[20];
 	sha1::calc( buff_memory, size, hash );
 
 	char hex[41];
 	sha1::toHexString( hash, hex );
+	
+	HANDLE hSHA1 = ::CreateFile( sha1.c_str(), GENERIC_WRITE, FILE_SHARE_WRITE, NULL,
+		CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
 
-	FILE * f_sha1 = _wfopen( sha1.c_str(), L"wt" );
-
-	if( f_sha1 == NULL )
+	if( hSHA1 == INVALID_HANDLE_VALUE )
 	{
 		message_error( L"sha1 '%ls' not open"
 			, sha1.c_str()
@@ -142,8 +116,18 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		return 0;
 	}
 
-	fwrite( hex, 40, 1, f_sha1 );
-	fclose( f_sha1 );
+	DWORD bytesWritten = 0;
+	if( ::WriteFile( hSHA1, hex, 40, &bytesWritten, NULL ) == FALSE )
+	{
+		message_error( L"sha1 '%ls' invalid write"
+			, sha1.c_str()
+			);
+
+		return 0;
+	}
+
+	::CloseHandle( hSHA1 );
+	hSHA1 = INVALID_HANDLE_VALUE;
 	
 	return 0;
 }

@@ -74,7 +74,7 @@ namespace Menge
 
 		void setAngle( float _radians ) override;
 
-        bool getBackgroundBox( mt::box2f & _box ) override;
+		bool getBackgroundBox( mt::box2f & _box ) const override;
 
 	public:
 		HM_EMITTER getId() const;

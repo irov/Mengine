@@ -67,6 +67,7 @@ namespace Menge
 		: m_png_ptr(nullptr)
 		, m_info_ptr(nullptr)
 		, m_row_bytes(0)
+		, m_interlace_number_of_passes(1)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -148,21 +149,12 @@ namespace Menge
 
 		if( interlace_method != PNG_INTERLACE_NONE )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize PNG is interlacing (Engine not support to read this png format)"
-				);
-
-			png_destroy_info_struct( m_png_ptr, &m_info_ptr );
-
-			return false;
+			m_interlace_number_of_passes = png_set_interlace_handling( m_png_ptr );
 		}
 
-		if( bit_depth != 8 )
+		if( bit_depth == 16 )
 		{
-			LOGGER_ERROR(m_serviceProvider)("ImageDecoderPNG::initialize Can't support non 8 bit depth - '%d'"
-				, bit_depth
-				);
-
-			return false;
+			png_set_scale_16( m_png_ptr );
 		}
 
 		switch( color_type )
@@ -185,7 +177,7 @@ namespace Menge
 
 		png_read_update_info( m_png_ptr, m_info_ptr );
 
-		png_get_IHDR( m_png_ptr, m_info_ptr, &width, &height, &bit_depth, &color_type, 0, 0, 0 );
+		png_get_IHDR( m_png_ptr, m_info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, 0, 0 );
 
 		m_row_bytes = png_get_rowbytes( m_png_ptr, m_info_ptr );
 
@@ -220,17 +212,37 @@ namespace Menge
 			return 0;
 		}
 
-		if( m_options.flags == 0 )
+		if( m_options.flags == DF_NONE )
 		{
 			if( m_dataInfo.channels == m_options.channels )
 			{
-				png_bytep bufferCursor = (png_bytep)_buffer;
-
-				for( uint32_t i = 0; i != m_dataInfo.height; ++i )
+				if( m_interlace_number_of_passes == 1 )
 				{
-					png_read_row( m_png_ptr, bufferCursor, nullptr );
+					png_bytep bufferCursor = (png_bytep)_buffer;
 
-					bufferCursor += m_options.pitch;
+					for( uint32_t i = 0; i != m_dataInfo.height; ++i )
+					{
+						png_read_row( m_png_ptr, bufferCursor, nullptr );
+
+						bufferCursor += m_options.pitch;
+					}
+				}
+				else
+				{
+					png_bytep * image = (png_bytep *)png_malloc( m_png_ptr, m_dataInfo.height * sizeof( png_bytep * ) );
+
+					png_bytep bufferCursor = (png_bytep)_buffer;
+
+					for( uint32_t i = 0; i != m_dataInfo.height; ++i )
+					{ 
+						image[i] = bufferCursor;
+
+						bufferCursor += m_options.pitch;
+					}
+
+					png_read_image( m_png_ptr, image );
+					
+					png_free( m_png_ptr, image );
 				}
 			}
 			else if( m_dataInfo.channels == 1 && m_options.channels == 4 )

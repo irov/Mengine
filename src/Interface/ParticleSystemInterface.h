@@ -129,7 +129,7 @@ namespace Menge
 		virtual bool getRandomMode() const = 0;
        
     public:
-        virtual bool getBackgroundBox( mt::box2f & _box ) = 0;
+		virtual bool getBackgroundBox( mt::box2f & _box ) const = 0;
 	};
 
 	typedef stdex::intrusive_ptr<ParticleEmitterInterface> ParticleEmitterInterfacePtr;

@@ -841,7 +841,7 @@ namespace Menge
                 , _name.c_str()
                 );
 
-            return false;
+            return nullptr;
         }
 
 		const RenderStage * cache_stage = this->cacheStage( _stage );
@@ -852,7 +852,7 @@ namespace Menge
 				, _name.c_str()
 				);
 
-			return false;
+			return nullptr;
 		}
 		
 		return cache_stage;

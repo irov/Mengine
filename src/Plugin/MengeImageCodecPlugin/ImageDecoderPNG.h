@@ -32,5 +32,7 @@ namespace Menge
 		png_structp m_png_ptr;
 		png_infop m_info_ptr;
 		png_size_t m_row_bytes;
+
+		int m_interlace_number_of_passes;
 	};
 }	// namespace Menge

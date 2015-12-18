@@ -168,14 +168,21 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::setLoop( bool _loop )
 	{
-		Magic_SetLoopMode( m_emitterId, _loop ? MAGIC_LOOP : MAGIC_NOLOOP );
+		if( _loop == true )
+		{
+			Magic_SetLoopMode( m_emitterId, MAGIC_LOOP );
+		}
+		else
+		{
+			Magic_SetLoopMode( m_emitterId, MAGIC_NOLOOP );
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::getLoop() const
 	{
-        int loopMode = Magic_GetLoopMode( m_emitterId );
+		MAGIC_LOOP_ENUM loopMode = Magic_GetLoopMode( m_emitterId );
 
-		return loopMode == 1;
+		return loopMode != MAGIC_NOLOOP;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::interrupt()
@@ -405,7 +412,7 @@ namespace Menge
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::getBackgroundBox( mt::box2f & _box )
+    bool AstralaxEmitter2::getBackgroundBox( mt::box2f & _box ) const
     {
 		if( Magic_Is3d( m_emitterId ) == false )
 		{        
@@ -460,7 +467,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	float AstralaxEmitter2::getDuration() const
 	{
-		double duration = (m_rightBorder - m_leftBorder);
+		double duration = (m_rightBorder - m_leftBorder) / m_updateSpeed;
 
         float float_duration = (float)duration;
 

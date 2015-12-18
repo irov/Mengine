@@ -78,8 +78,13 @@ namespace Menge
 			.def( "setCollide", &BurritoBison::setCollide )
 			.def( "getCollide", &BurritoBison::getCollide )
 			.def( "addVelocityEvent", &BurritoBison::addVelocityEvent )
+			.def( "removeVelocityEvent", &BurritoBison::removeVelocityEvent )
 			.def( "removeAllVelocityEvents", &BurritoBison::removeAllVelocityEvents )
+			.def( "addHeightEvent", &BurritoBison::addHeightEvent )
+			.def( "removeHeightEvent", &BurritoBison::removeHeightEvent )
+			.def( "removeAllHeightEvents", &BurritoBison::removeAllHeightEvents )
 			.def( "addDistanceEvent", &BurritoBison::addDistanceEvent )
+			.def( "removeDistanceEvent", &BurritoBison::removeDistanceEvent )
 			.def( "removeAllDistanceEvents", &BurritoBison::removeAllDistanceEvents )
 			;
 

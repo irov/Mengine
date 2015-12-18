@@ -98,7 +98,7 @@ namespace Menge
             WINDOWSLAYER_SERVICE(m_serviceProvider)
                 ->makeFormatMessage(err, wstr_err);
 
-            LOGGER_ERROR(m_serviceProvider)("Win32UnicodeSystem::utf8ToUnicode %s MultiByteToWideChar 0 %ls"
+            LOGGER_ERROR(m_serviceProvider)("Win32UnicodeSystem::utf8ToUnicode %s MultiByteToWideChar %ls"
                 , _utf8
                 , wstr_err.c_str()
                 );

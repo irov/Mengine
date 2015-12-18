@@ -1,14 +1,3 @@
-#	ifdef _WIN32_WINNT	
-#       undef _WIN32_WINNT
-#       define _WIN32_WINNT 0x0500
-#   endif
-
-#   ifdef _WIN32_WINDOWS
-#       undef _WIN32_WINDOWS
-#       define _WIN32_WINDOWS 0x0500
-#   endif
-
-#	define WIN32_LEAN_AND_MEAN
 #	include <Windows.h>
 
 #	include <shellapi.h>
@@ -181,7 +170,7 @@ namespace Menge
 
 		LOGGER_SERVICE( serviceProvider )
 			->registerLogger( new MyLogger );
-
+				
 		SERVICE_CREATE( serviceProvider, CodecService );
 		SERVICE_CREATE( serviceProvider, DataService );
 		SERVICE_CREATE( serviceProvider, ConfigService );
@@ -244,6 +233,8 @@ namespace Menge
 			return false;
 		}
 
+		//message_error( "test" );
+
 		ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE(serviceProvider)
 			->createDecoderT<ImageDecoderInterfacePtr>( codecType );
 
@@ -269,9 +260,9 @@ namespace Menge
 
 		decode_options.channels = decode_dataInfo->channels;
 		decode_options.pitch = decode_dataInfo->width * decode_dataInfo->channels;
-
+		
 		imageDecoder->setOptions( &decode_options );
-
+				
 		size_t width = decode_dataInfo->width;
 		size_t height = decode_dataInfo->height;
 		
@@ -745,27 +736,6 @@ namespace Menge
 	}	
 }
 
-static Menge::WString s_correct_path( const Menge::WString & _path )
-{
-	Menge::WString true_path = _path;
-
-	if( _path.size() <= 2 )
-	{
-
-	}
-	else if( _path[0] == L'/' && _path[1] == L'/' )
-	{
-
-	}
-	else if( _path[0] == L'/' )
-	{
-		true_path[0] = _path[1];
-		true_path[1] = L':';
-	}
-
-	return true_path;
-}
-
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
 	(void)hInstance;
@@ -831,10 +801,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		return 0;
 	}
 
-	in = s_correct_path(in);
-	out = s_correct_path(out);
-	info = s_correct_path(info);
-
 	Menge::ServiceProviderInterface * serviceProvider;
 
 	try
@@ -852,7 +818,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 		return 0;
 	}
-
+	
 	if( command == L"trim" )
 	{
 		if( Menge::trimImage( serviceProvider, in, out, info ) == false )

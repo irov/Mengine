@@ -64,12 +64,12 @@ namespace Menge
 
 	enum ImageDecoderOptions
 	{
-		DF_NONE				= 0x00000000,
-		DF_COUNT_ALPHA		= 0x00000001,
-		DF_READ_ALPHA_ONLY	= 0x00000002,
-		DF_QUALITY			= 0x00000004,
+		DF_NONE = 0x00000000,
+		DF_COUNT_ALPHA = 0x00000001,
+		DF_READ_ALPHA_ONLY = 0x00000002,
+		DF_QUALITY = 0x00000004,
 		DF_WRITE_ALPHA_ONLY = 0x00000008,
-		DF_NOT_ADD_ALPHA	= 0x00000010
+		DF_NOT_ADD_ALPHA = 0x00000010,
 	};
 
 	struct ImageCodecOptions
@@ -85,6 +85,11 @@ namespace Menge
         uint32_t flags;
 		size_t pitch;
         uint32_t channels;
+
+		bool hasFlag( uint32_t _flag ) const
+		{
+			return (flags & _flag) != 0;
+		}
 	};
 
 	class ImageDecoderInterface

@@ -32,21 +32,37 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	struct VelocityEventDesc
 	{
-		bool less;
+		uint32_t id;
+
 		mt::vec3f velocity;
 		float velocity_sqrlength;
 		pybind::object cb;
 
+		bool less;
+		bool test;
+		bool dead;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	struct HeightEventDesc
+	{
+		uint32_t id;
+
+		float height;
+		pybind::object cb;
+
+		bool less;
 		bool test;
 		bool dead;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	struct DistanceEventDesc
 	{
-		float init_distance;
+		uint32_t id;
+
+		float init_distance;		
 		float distance;
 		pybind::object cb;
-
+				
 		bool dead;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -67,10 +83,16 @@ namespace Menge
 		void addImpulse( const mt::vec3f & _direction, float _value, float _time );
 
 	public:
-		void addVelocityEvent( bool _less, const mt::vec3f & _velocity, const pybind::object & _cb );
+		uint32_t addVelocityEvent( bool _less, const mt::vec3f & _velocity, const pybind::object & _cb );
+		bool removeVelocityEvent( uint32_t _eventId );
 		void removeAllVelocityEvents();
 
-		void addDistanceEvent( float _distance, const pybind::object & _cb );
+		uint32_t addHeightEvent( bool _less, float _height, const pybind::object & _cb );
+		bool removeHeightEvent( uint32_t _eventId );
+		void removeAllHeightEvents();
+
+		uint32_t addDistanceEvent( float _distance, const pybind::object & _cb );
+		bool removeDistanceEvent( uint32_t _eventId );
 		void removeAllDistanceEvents();
 
 	public:
@@ -97,6 +119,7 @@ namespace Menge
 
 	protected:
 		bool testVelocityEvent_( const VelocityEventDesc & _desc ) const;
+		bool testHeightEvent_( const HeightEventDesc & _desc ) const;
 
 	protected:		
 		Node * m_node;
@@ -116,9 +139,15 @@ namespace Menge
 		typedef stdex::vector<BurritoBisonImpulse> TVectorBurritoBisonImpulse;
 		TVectorBurritoBisonImpulse m_impulses;
 
+		uint32_t m_enumeratorId;
+
 		typedef stdex::vector<VelocityEventDesc> TVectorVelocityEventDesc;
 		TVectorVelocityEventDesc m_velocityEvents;
 		TVectorVelocityEventDesc m_velocityEventsAdd;
+
+		typedef stdex::vector<HeightEventDesc> TVectorHeightEventDesc;
+		TVectorHeightEventDesc m_heightEvents;
+		TVectorHeightEventDesc m_heightEventsAdd;		
 
 		typedef stdex::vector<DistanceEventDesc> TVectorDistanceEventDesc;
 		TVectorDistanceEventDesc m_distanceEvents;

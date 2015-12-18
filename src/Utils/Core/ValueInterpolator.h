@@ -1,5 +1,7 @@
 #	pragma once
 
+#	include "Math/utils.h"
+
 namespace Menge
 {
 	template <typename T>

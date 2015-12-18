@@ -44,6 +44,14 @@ namespace Menge
 			}
 		};
 		//////////////////////////////////////////////////////////////////////////
+		struct FBurritoBisonHeightEventDead
+		{
+			bool operator()( const HeightEventDesc & _event ) const
+			{
+				return _event.dead == true;
+			}
+		};
+		//////////////////////////////////////////////////////////////////////////
 		struct FBurritoBisonDistanceEventDead
 		{
 			bool operator()( const DistanceEventDesc & _event ) const
@@ -60,6 +68,7 @@ namespace Menge
 		, m_velocity( 0.f, 0.f, 0.f )
 		, m_neutron( false )
 		, m_collide( true )
+		, m_enumeratorId(0)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -227,6 +236,14 @@ namespace Menge
 
 			m_velocity += force_velocity;
 
+			m_heightEvents.insert( m_heightEvents.end(), m_heightEvents.begin(), m_heightEventsAdd.end() );
+			m_heightEventsAdd.clear();
+
+			m_heightEvents.erase( 
+				std::remove_if( m_heightEvents.begin(), m_heightEvents.end(), FBurritoBisonHeightEventDead() )
+				, m_heightEvents.end() 
+				);
+
 			m_velocityEvents.insert( m_velocityEvents.end(), m_velocityEventsAdd.begin(), m_velocityEventsAdd.end() );
 			m_velocityEventsAdd.clear();
 
@@ -255,8 +272,10 @@ namespace Menge
 				}
 			}
 
-			TVectorVelocityEventDesc::iterator it_event_erase = std::remove_if( m_velocityEvents.begin(), m_velocityEvents.end(), FBurritoBisonVelocityEventDead() );
-			m_velocityEvents.erase( it_event_erase, m_velocityEvents.end() );
+			m_velocityEvents.erase( 
+				std::remove_if( m_velocityEvents.begin(), m_velocityEvents.end(), FBurritoBisonVelocityEventDead() )
+				, m_velocityEvents.end() 
+				);
 
 			m_distanceEvents.insert( m_distanceEvents.end(), m_distanceEventsAdd.begin(), m_distanceEventsAdd.end() );
 			m_distanceEventsAdd.clear();
@@ -274,17 +293,20 @@ namespace Menge
 					continue;
 				}
 
+				desc.distance -= m_velocity.x * _timing;
+
 				bool repeat = false;
 
 				do
 				{
-					repeat = false;
-
-					desc.distance -= m_velocity.x * _timing;
+					if( desc.dead == true )
+					{
+						break;
+					}					
 
 					if( desc.distance > 0.f )
 					{
-						continue;
+						break;
 					}
 
 					bool result = desc.cb();
@@ -302,9 +324,11 @@ namespace Menge
 				}
 				while( repeat == true );
 			}
-
-			TVectorDistanceEventDesc::iterator it_distance_event_erase = std::remove_if( m_distanceEvents.begin(), m_distanceEvents.end(), FBurritoBisonDistanceEventDead() );
-			m_distanceEvents.erase( it_distance_event_erase, m_distanceEvents.end() );
+			
+			m_distanceEvents.erase( 
+				std::remove_if( m_distanceEvents.begin(), m_distanceEvents.end(), FBurritoBisonDistanceEventDead() )
+				, m_distanceEvents.end() 
+				);
 		}
 
 		_velocity = m_velocity;
@@ -317,6 +341,31 @@ namespace Menge
 	void BurritoBison::translate( const mt::vec3f & _translate )
 	{ 
 		m_position += _translate;
+
+		for( TVectorHeightEventDesc::iterator
+			it = m_heightEvents.begin(),
+			it_end = m_heightEvents.end();
+		it != it_end;
+		++it )
+		{
+			HeightEventDesc & desc = *it;
+
+			if( desc.dead == true )
+			{
+				continue;
+			}
+
+			bool test = desc.test;
+
+			desc.test = this->testHeightEvent_( desc );
+
+			if( test == false && desc.test == true )
+			{
+				bool result = desc.cb();
+
+				desc.dead = result;
+			}
+		}
 
 		m_node->setLocalPositionY( m_position.y );
 
@@ -376,18 +425,44 @@ namespace Menge
 		m_node->setLocalPositionY( m_position.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::addVelocityEvent( bool _less, const mt::vec3f & _velocity, const pybind::object & _cb )
+	uint32_t BurritoBison::addVelocityEvent( bool _less, const mt::vec3f & _velocity, const pybind::object & _cb )
 	{ 
 		VelocityEventDesc desc;
-		desc.less = _less;
+		desc.id = ++m_enumeratorId;		
 		desc.velocity_sqrlength = mt::norm_v3_f( desc.velocity, _velocity );
 		
 		desc.cb = _cb;
-		
+
+		desc.less = _less;
 		desc.test = this->testVelocityEvent_( desc );
 		desc.dead = false;
 			
 		m_velocityEventsAdd.push_back( desc );
+
+		return desc.id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoBison::removeVelocityEvent( uint32_t _eventId )
+	{
+		for( TVectorVelocityEventDesc::iterator
+			it = m_velocityEvents.begin(),
+			it_end = m_velocityEvents.end();
+		it != it_end;
+		++it )
+		{
+			VelocityEventDesc & desc = *it;
+
+			if( desc.id != _eventId )
+			{
+				continue;
+			}
+
+			desc.dead = true;
+
+			return true;
+		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::removeAllVelocityEvents()
@@ -406,15 +481,97 @@ namespace Menge
 		m_velocityEventsAdd.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::addDistanceEvent( float _distance, const pybind::object & _cb )
+	uint32_t BurritoBison::addHeightEvent( bool _less, float _height, const pybind::object & _cb )
+	{
+		HeightEventDesc desc;
+		desc.id = ++m_enumeratorId;
+		desc.height = _height;
+
+		desc.cb = _cb;
+
+		desc.less = _less;
+		desc.test = this->testHeightEvent_( desc );
+		desc.dead = false;
+
+		m_heightEventsAdd.push_back( desc );
+
+		return desc.id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoBison::removeHeightEvent( uint32_t _eventId )
+	{
+		for( TVectorHeightEventDesc::iterator
+			it = m_heightEvents.begin(),
+			it_end = m_heightEvents.end();
+		it != it_end;
+		++it )
+		{
+			HeightEventDesc & desc = *it;
+
+			if( desc.id != _eventId )
+			{
+				continue;
+			}
+
+			desc.dead = true;
+
+			return true;
+		}
+
+		return false;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::removeAllHeightEvents()
+	{
+		for( TVectorHeightEventDesc::iterator
+			it = m_heightEvents.begin(),
+			it_end = m_heightEvents.end();
+		it != it_end;
+		++it )
+		{
+			HeightEventDesc & desc = *it;
+
+			desc.dead = true;
+		}
+
+		m_heightEventsAdd.clear();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	uint32_t BurritoBison::addDistanceEvent( float _distance, const pybind::object & _cb )
 	{
 		DistanceEventDesc desc;
+		desc.id = ++m_enumeratorId;
 		desc.init_distance = _distance;
 		desc.distance = _distance;
 		desc.cb = _cb;
 		desc.dead = false;
 
 		m_distanceEventsAdd.push_back( desc );
+
+		return desc.id;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoBison::removeDistanceEvent( uint32_t _eventId )
+	{
+		for( TVectorDistanceEventDesc::iterator
+			it = m_distanceEvents.begin(),
+			it_end = m_distanceEvents.end();
+		it != it_end;
+		++it )
+		{
+			DistanceEventDesc & desc = *it;
+
+			if( desc.id != _eventId )
+			{
+				continue;
+			}
+
+			desc.dead = true;
+
+			return true;
+		}
+
+		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::removeAllDistanceEvents()
@@ -438,6 +595,11 @@ namespace Menge
 		float d = mt::dot_v3_v3( _desc.velocity, m_velocity );
 		float l = _desc.velocity_sqrlength;
 
-		return _desc.less ? d <= l : d >= l;		
+		return _desc.less ? d <= l : d >= l;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	bool BurritoBison::testHeightEvent_( const HeightEventDesc & _desc ) const
+	{
+		return _desc.less ? m_position.y <= _desc.height : m_position.y >= _desc.height;
 	}
 }

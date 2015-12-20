@@ -101,6 +101,7 @@ namespace Menge
 		float getRadius() const;
 
 		void setPositionY( float _position );
+		float getPositionY() const;
 		
 		void setVelocity( const mt::vec3f & _velocity );
 		const mt::vec3f & getVelocity() const;

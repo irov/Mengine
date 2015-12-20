@@ -217,7 +217,7 @@ namespace Menge
 
 		if( handle == false )
 		{
-			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )(_event.x, _event.y, _event.wheel);
+			EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )(_event.button, _event.x, _event.y, _event.wheel);
 		}
 
 		if( handle == false )

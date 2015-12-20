@@ -254,7 +254,7 @@ namespace Menge
 	{
 		bool handle = false;
 				
-		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )(this, _event.x, _event.y, _event.wheel);
+		EVENTABLE_ASK( m_serviceProvider, this, EVENT_MOUSE_WHEEL, handle )(this, _event.button, _event.x, _event.y, _event.wheel);
 
 		return handle;
 	}

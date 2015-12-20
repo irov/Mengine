@@ -4221,7 +4221,7 @@ namespace Menge
 			//////////////////////////////////////////////////////////////////////////
 			bool handleMouseWheel( const InputMouseWheelEvent & _event ) override
 			{
-				pybind::object py_result = m_cb( _event.x, _event.y, _event.wheel );
+				pybind::object py_result = m_cb( _event.button, _event.x, _event.y, _event.wheel );
 
 				if( py_result.is_none() == false )
 				{

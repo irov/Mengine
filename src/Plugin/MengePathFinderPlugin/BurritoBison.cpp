@@ -236,7 +236,7 @@ namespace Menge
 
 			m_velocity += force_velocity;
 
-			m_heightEvents.insert( m_heightEvents.end(), m_heightEvents.begin(), m_heightEventsAdd.end() );
+			m_heightEvents.insert( m_heightEvents.end(), m_heightEventsAdd.begin(), m_heightEventsAdd.end() );
 			m_heightEventsAdd.clear();
 
 			m_heightEvents.erase( 
@@ -423,6 +423,11 @@ namespace Menge
 		m_position.y = _position;
 
 		m_node->setLocalPositionY( m_position.y );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float BurritoBison::getPositionY() const
+	{
+		return m_position.y;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t BurritoBison::addVelocityEvent( bool _less, const mt::vec3f & _velocity, const pybind::object & _cb )

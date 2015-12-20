@@ -124,6 +124,13 @@ namespace Menge
         
 		m_accounts.insert( std::make_pair( _accountID, newAccount ) );
 
+		m_currentAccount->apply();
+
+		if( m_accountProvider != nullptr )
+		{
+			m_accountProvider->onSelectAccount( _accountID );
+		}
+
         return newAccount;
 	}
     //////////////////////////////////////////////////////////////////////////

@@ -69,7 +69,13 @@ namespace Menge
 		, m_neutron( false )
 		, m_collide( true )
 		, m_enumeratorId(0)
+		, m_cameraSpeedMinimal(3.f)
+		, m_cameraSpeedMaximum(6.f)
+		, m_cameraScale(0.5f)
+		, m_cameraOffset(-300.f)
 	{
+		m_cameraFollowerScale.initialize( 1.f );
+		m_cameraFollowerScale.setSpeed( 0.0002f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	BurritoBison::~BurritoBison()
@@ -183,9 +189,63 @@ namespace Menge
 		return m_collide;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::setCameraSpeedMinimal( float _cameraSpeedMinimal )
+	{
+		m_cameraSpeedMinimal = _cameraSpeedMinimal;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float BurritoBison::getCameraSpeedMinimal() const
+	{
+		return m_cameraSpeedMinimal;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::setCameraSpeedMaximum( float _cameraSpeedMaximum )
+	{
+		m_cameraSpeedMaximum = _cameraSpeedMaximum;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float BurritoBison::getCameraSpeedMaximum() const
+	{
+		return m_cameraSpeedMaximum;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::setCameraScale( float _cameraScale )
+	{
+		m_cameraScale = _cameraScale;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float BurritoBison::getCameraScale() const
+	{
+		return m_cameraScale;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::setCameraOffset( float _cameraOffset )
+	{
+		m_cameraOffset = _cameraOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float BurritoBison::getCameraOffset() const
+	{
+		return m_cameraOffset;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void BurritoBison::setCameraSpeed( float _cameraSpeed )
+	{
+		m_cameraFollowerScale.setSpeed( _cameraSpeed );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float BurritoBison::getCameraSpeed() const
+	{
+		float speed = m_cameraFollowerScale.getSpeed();
+
+		return speed;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, uint32_t _iterate )
 	{		
 		(void)_time;
+
+		m_cameraFollowerScale.update( _timing );
 
 		if( m_neutron == true )
 		{
@@ -368,53 +428,44 @@ namespace Menge
 		}
 
 		m_node->setLocalPositionY( m_position.y );
-
-		float a = (m_velocity.x - 3.f) / (6.f - 3.f);
-
-		float ca = 1.f + mt::clamp( 0.f, a, 1.f ) * 0.5f;
-
-		Viewport new_camera_renderport;
-		new_camera_renderport = m_renderport;
-		new_camera_renderport.inflate( mt::vec2f( 1.f, ca ) );
-		new_camera_renderport.scale( mt::vec2f( ca, 1.f ) );
-
-		m_camera->setRenderport( new_camera_renderport );
 		
 		const mt::vec3f & target_wp = m_node->getWorldPosition();
 
-		const mt::vec3f & camera_lp = m_camera->getLocalPosition();
-		const Viewport & camera_renderport = m_camera->getCameraRenderport();
-
-		Viewport camera_renderport_wm;
-		camera_renderport_wm.begin = camera_renderport.begin + target_wp.to_vec2f();
-		camera_renderport_wm.end = camera_renderport.end + target_wp.to_vec2f();
-
-		mt::vec2f camera_renderport_wm_center;
-		camera_renderport_wm.getCenter( camera_renderport_wm_center );
-
-		float camera_height = camera_renderport.getHeight();
-		float camera_height_half = camera_height * 0.5f;
-
-		float renderport_height = m_renderport.getHeight();
-		float camera_renderport_height = camera_renderport.getHeight();
-
-		float pr = (camera_renderport_height - (target_wp.y - 300.f) * 1.f) / camera_renderport_height;
-
 		mt::vec3f new_camera_lp;
 
-		if( pr < 1.f )
+		Viewport new_camera_renderport;
+		new_camera_renderport = m_renderport;
+
+		float a = (m_velocity.x - m_cameraSpeedMinimal) / (m_cameraSpeedMaximum - m_cameraSpeedMinimal);
+
+		float ca = 1.f + mt::clamp( 0.f, a, 1.f ) * m_cameraScale;
+
+		m_cameraFollowerScale.follow( ca );
+
+		float caa = m_cameraFollowerScale.getValue();
+
+		new_camera_renderport.inflate( mt::vec2f( 1.f, caa ) );
+		new_camera_renderport.scale( mt::vec2f( caa, 1.f ) );
+
+		float renderport_height = m_renderport.getHeight();
+		float new_camera_renderport_height = new_camera_renderport.getHeight();
+
+		new_camera_renderport.translate( mt::vec2f( 0.f, (renderport_height - new_camera_renderport_height) * 0.5f ) );
+
+		if( (target_wp.y + m_cameraOffset ) > new_camera_renderport.begin.y )
 		{
 			new_camera_lp.x = 0.f;
-			new_camera_lp.y = (renderport_height - camera_renderport_height) * 0.5f;
+			new_camera_lp.y = 0.f;
 			new_camera_lp.z = 0.f;
 		}
 		else
 		{
 			new_camera_lp.x = 0.f;
-			new_camera_lp.y = (renderport_height - camera_renderport_height) * 0.5f + target_wp.y - 300.f;
+			new_camera_lp.y = (target_wp.y + m_cameraOffset) - new_camera_renderport.begin.y;
 			new_camera_lp.z = 0.f;
 		}
-
+		
+		m_camera->setRenderport( new_camera_renderport );
 		m_camera->setLocalPosition( new_camera_lp );
 	}
 	//////////////////////////////////////////////////////////////////////////

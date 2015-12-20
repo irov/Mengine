@@ -36,6 +36,7 @@ namespace Menge
 		void parallax( const mt::vec2f & _factor );
 		void scale( const mt::vec2f & _value );
 		void inflate( const mt::vec2f & _value );
+		void translate( const mt::vec2f & _value );
 
 	public:
 		float getWidth() const;

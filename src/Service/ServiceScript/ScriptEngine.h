@@ -7,6 +7,11 @@
 #	include "EntityPrototypeGenerator.h"
 #   include "ConstStringHolderPythonString.h"
 
+#	include "ScriptLogger.h"
+#	include "ScriptModuleFinder.h"
+
+#	include "Kernel/Entity.h"
+
 #   include "Factory/FactoryStore.h"
 #   include "Factory/FactoryDefault.h"
 
@@ -19,13 +24,6 @@
 
 namespace Menge
 {
-	class Entity;
-
-	class ScriptLogger;
-    class ScriptLoggerError;
-
-    class ScriptModuleFinder;	
-
 	class ScriptEngine
 		: public ServiceBase<ScriptServiceInterface>
 	{
@@ -79,8 +77,8 @@ namespace Menge
 
 		TVectorScriptModulePack m_bootstrapperModules;
 
-		ScriptLogger * m_logger;
-		ScriptLoggerError * m_loggerError;
+		ScriptLogger * m_loggerWarning;
+		ScriptLogger * m_loggerError;
 
 		typedef stdex::map<ConstString, PyObject *> TMapModules;
 		typedef stdex::map<ConstString, TMapModules> TMapCategoryPrototypies;

@@ -1,9 +1,6 @@
 #	include "ScriptEngine.h"
 
-#   include "ScriptModuleFinder.h"
 #   include "ScriptModuleLoader.h"
-
-#	include "ScriptLogger.h"
 
 #	include "Interface/ApplicationInterface.h"
 #	include "Interface/OptionsInterface.h"
@@ -14,11 +11,6 @@
 #	include "Interface/StringizeInterface.h"
 
 #	include "Logger/Logger.h"
-
-#	include "Kernel/Entity.h"
-
-#	include <iostream>
-#	include <stdarg.h>
 
 #	include "pybind/debug.hpp"
 
@@ -117,7 +109,7 @@ namespace Menge
 	ScriptEngine::ScriptEngine()
 		: m_moduleFinder(nullptr)
         , m_moduleMenge(nullptr)
-		, m_logger(nullptr)
+		, m_loggerWarning(nullptr)
         , m_loggerError(nullptr)        
 	{
 	}
@@ -176,15 +168,24 @@ namespace Menge
 		
 		pybind::set_currentmodule( m_moduleMenge );
 
-		m_logger = new ScriptLogger(m_serviceProvider);
+		pybind::interface_<ScriptLogger>( "ScriptLogger", true )
+			.def_native( "write", &ScriptLogger::py_write )
+			.def_property( "softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
+			;
 
-		PyObject * py_logger = m_logger->embedding();
+		m_loggerWarning = new ScriptLogger(m_serviceProvider);
+
+		m_loggerWarning->setMessageLevel( LM_WARNING );
+
+		PyObject * py_logger = pybind::ptr( m_loggerWarning );
 		pybind::setStdOutHandle( py_logger );
 		pybind::decref( py_logger );
 
-		m_loggerError = new ScriptLoggerError(m_serviceProvider);
+		m_loggerError = new ScriptLogger(m_serviceProvider);
 
-		PyObject * py_loggerError = m_loggerError->embedding();
+		m_loggerError->setMessageLevel( LM_ERROR );
+
+		PyObject * py_loggerError = pybind::ptr( m_loggerError );
 		pybind::setStdErrorHandle( py_loggerError );
 		pybind::decref( py_loggerError );
 
@@ -251,8 +252,8 @@ namespace Menge
 			m_moduleFinder = nullptr;
 		}
 
-		delete m_logger;
-		m_logger = nullptr;
+		delete m_loggerWarning;
+		m_loggerWarning = nullptr;
 
         pybind::setStdOutHandle( nullptr );
 

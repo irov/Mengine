@@ -5,6 +5,8 @@
 
 #	include "Core/ConstString.h"
 
+#	include "Core/ValueFollower.h"
+
 #	include "Math/vec3.h"
 
 #	include "pybind/object.hpp"
@@ -113,6 +115,22 @@ namespace Menge
 		bool getCollide() const;
 
 	public:
+		void setCameraSpeedMinimal( float _cameraSpeedMinimal );
+		float getCameraSpeedMinimal() const;
+
+		void setCameraSpeedMaximum( float _cameraSpeedMaximum );
+		float getCameraSpeedMaximum() const;
+
+		void setCameraScale( float _cameraScale );
+		float getCameraScale() const;
+
+		void setCameraOffset( float _cameraOffset );
+		float getCameraOffset() const;
+
+		void setCameraSpeed( float _cameraSpeed );
+		float getCameraSpeed() const;
+
+	public:
 		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, uint32_t _iterate );
 
 	public:
@@ -133,6 +151,13 @@ namespace Menge
 		float m_radius;
 
 		mt::vec3f m_velocity;
+
+		float m_cameraSpeedMinimal;
+		float m_cameraSpeedMaximum;
+		float m_cameraScale;
+		float m_cameraOffset;
+
+		ValueFollowerLinear<float, mt::length_f> m_cameraFollowerScale;
 
 		typedef stdex::vector<BurritoBisonForce> TVectorBurritoBisonForce;
 		TVectorBurritoBisonForce m_forces;

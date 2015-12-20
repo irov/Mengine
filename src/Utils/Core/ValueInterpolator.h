@@ -201,7 +201,6 @@ namespace Menge
 		: public ValueInterpolator<T>
 	{
 	public:
-
 		template<class ABS>
 		bool start( const T& _value1, const T& _value2, const T& _v0, float _time, ABS _abs )
 		{

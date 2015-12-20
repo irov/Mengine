@@ -146,4 +146,16 @@ namespace mt
 
 		return f;
 	}
+	//////////////////////////////////////////////////////////////////////////
+	MENGINE_MATH_INLINE float length_f( float _a, float _b )
+	{
+		float d = _a - _b;
+
+		if( d > 0.f )
+		{
+			return d;
+		}
+
+		return -d;
+	}
 }

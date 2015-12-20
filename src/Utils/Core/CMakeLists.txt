@@ -47,6 +47,7 @@ src
     MemoryHelper.cpp
 	
     ValueInterpolator.h
+    ValueFollower.h
     
     String.h
 	String.cpp

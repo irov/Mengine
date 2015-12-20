@@ -1,13 +1,11 @@
 #	pragma once
 
-#	include "Config/Typedef.h"
+#	include "Interface/LoggerInterface.h"
 
 #	include "pybind/types.hpp"
 
 namespace Menge
 {
-	class ServiceProviderInterface;
-
 	class ScriptLogger
 	{
 	public:
@@ -21,28 +19,17 @@ namespace Menge
 		PyObject * py_write( PyObject * _args, PyObject * _kwds );
 		
 	public:
+		void setMessageLevel( EMessageLevel _level );
+		EMessageLevel getMessageLevel() const;
+
 		void setSoftspace( int _softspace );
 		int getSoftspace() const;
-
-	public:
-		virtual PyObject * embedding();
 
 	protected:
 		ServiceProviderInterface * m_serviceProvider;
 
+		EMessageLevel m_level;
+
 		int m_softspace;
-	};
-
-	class ScriptLoggerError
-		: public ScriptLogger
-	{
-	public:
-		ScriptLoggerError( ServiceProviderInterface * _serviceProvider );
-
-	public:
-		void write( const char * _msg, size_t _size ) override;
-		
-	public:
-		PyObject * embedding() override;
 	};
 }

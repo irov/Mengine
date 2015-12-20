@@ -9,6 +9,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	ScriptLogger::ScriptLogger( ServiceProviderInterface * _serviceProvider )
 		: m_serviceProvider(_serviceProvider)
+		, m_level( LM_INFO )
 		, m_softspace(0)
 	{
 	}
@@ -54,8 +55,18 @@ namespace Menge
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::write( const char * _msg, size_t _size )
+	{		
+		LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE( m_serviceProvider ), m_level ).logMessage( _msg, _size );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ScriptLogger::setMessageLevel( EMessageLevel _level )
 	{
-		LOGGER_WARNING(m_serviceProvider).logMessage( _msg, _size );
+		m_level = _level;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	EMessageLevel ScriptLogger::getMessageLevel() const
+	{
+		return m_level;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ScriptLogger::setSoftspace( int _softspace )
@@ -66,39 +77,5 @@ namespace Menge
 	int ScriptLogger::getSoftspace() const
 	{
 		return m_softspace;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptLogger::embedding()
-	{
-		pybind::interface_<ScriptLogger>("ScriptLogger", true )
-			.def_native("write", &ScriptLogger::py_write )
-			.def_property("softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
-			;
-
-		PyObject * embedded = pybind::ptr(this);
-
-		return embedded;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ScriptLoggerError::ScriptLoggerError( ServiceProviderInterface * _serviceProvider )
-		: ScriptLogger(_serviceProvider)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScriptLoggerError::write( const char * _msg, size_t _size )
-	{
-		LOGGER_ERROR(m_serviceProvider).logMessage( _msg, _size );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptLoggerError::embedding()
-	{
-		pybind::interface_<ScriptLoggerError>("ErrorScriptLogger", true )
-			.def_native("write", &ScriptLoggerError::py_write )
-			.def_property("softspace", &ScriptLoggerError::getSoftspace, &ScriptLoggerError::setSoftspace )
-			;
-
-		PyObject * embedded = pybind::ptr(this);
-
-		return embedded;
 	}
 }

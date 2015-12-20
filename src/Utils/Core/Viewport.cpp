@@ -59,6 +59,12 @@ namespace Menge
 		end = center + half_size * _value;
 	}
 	//////////////////////////////////////////////////////////////////////////
+	void Viewport::translate( const mt::vec2f & _value )
+	{
+		begin += _value;
+		end += _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
 	float Viewport::getWidth() const
 	{
 		return end.x - begin.x;

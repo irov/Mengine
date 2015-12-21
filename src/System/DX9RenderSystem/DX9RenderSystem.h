@@ -200,7 +200,7 @@ namespace Menge
 		bool m_vertexBufferEnable;
 		bool m_indexBufferEnable;
 
-        IDirect3DTexture9 * m_currentTexture[MENGE_MAX_TEXTURE_STAGES];
+        bool m_textureEnable[MENGE_MAX_TEXTURE_STAGES];
 
         typedef FactoryPoolStore<DX9RenderImage, 128> TFactoryDX9Texture;
         TFactoryDX9Texture m_factoryDX9Texture;

@@ -36,6 +36,10 @@ namespace Menge
 		, m_vertexDeclaration(0)
 		, m_frames(0)
 	{
+		for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
+		{
+			m_textureEnable[i] = false;
+		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	DX9RenderSystem::~DX9RenderSystem()
@@ -931,7 +935,10 @@ namespace Menge
 
             IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetIndices, ( nullptr ) )
             {
-				return false;
+				LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::releaseResources_ indices not reset"
+					);
+
+				//return false;
             }
         }
 
@@ -941,20 +948,30 @@ namespace Menge
 
             IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetStreamSource, ( 0, nullptr, 0, 0 ) )
             {
-                return false;
+				LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::releaseResources_ stream source not reset"
+					);
+
+                //return false;
             }
         }
 		
         for( uint32_t i = 0; i != MENGE_MAX_TEXTURE_STAGES; ++i )
         {
+			if( m_textureEnable[i] == false )
+			{
+				continue;
+			}
+
             IF_DXCALL( m_serviceProvider, m_pD3DDevice, SetTexture, ( i, nullptr ) )
 			{
 				LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::releaseResources_ texture %d not reset"
 					, i
 					);
 
-				return false;
+				//return false;
 			}
+
+			m_textureEnable[i] = false;
         }        
 
         return true;
@@ -1143,16 +1160,22 @@ namespace Menge
             return;
         }
 
-		IDirect3DTexture9 * dx_texture = nullptr;
-		
 		if( _texture != nullptr )
         {
 			DX9RenderImage * image = _texture.getT<DX9RenderImage *>();
 			
-			dx_texture = image->getDXTextureInterface();
-        }
+			IDirect3DTexture9 * dx_texture = image->getDXTextureInterface();
 
-		DXCALL( m_serviceProvider, m_pD3DDevice, SetTexture, (_stage, dx_texture) );
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetTexture, (_stage, dx_texture) );
+
+			m_textureEnable[_stage] = true;
+        }
+		else
+		{ 
+			DXCALL( m_serviceProvider, m_pD3DDevice, SetTexture, (_stage, nullptr) );
+
+			m_textureEnable[_stage] = false;
+		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst )

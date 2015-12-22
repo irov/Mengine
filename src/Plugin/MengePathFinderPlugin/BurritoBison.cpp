@@ -229,16 +229,25 @@ namespace Menge
 		return m_cameraOffset;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::setCameraSpeed( float _cameraSpeed )
+	void BurritoBison::setCameraFollowerScaleSpeed( float _cameraSpeed )
 	{
 		m_cameraFollowerScale.setSpeed( _cameraSpeed );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float BurritoBison::getCameraSpeed() const
+	float BurritoBison::getCameraFollowerScaleSpeed() const
 	{
 		float speed = m_cameraFollowerScale.getSpeed();
 
 		return speed;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	float BurritoBison::getCameraFollowerScale() const
+	{
+		float scale = m_cameraFollowerScale.getValue();
+
+		float total_scale = 1.f + scale;
+
+		return total_scale;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, uint32_t _iterate )

@@ -127,8 +127,10 @@ namespace Menge
 		void setCameraOffset( float _cameraOffset );
 		float getCameraOffset() const;
 
-		void setCameraSpeed( float _cameraSpeed );
-		float getCameraSpeed() const;
+		void setCameraFollowerScaleSpeed( float _cameraSpeed );
+		float getCameraFollowerScaleSpeed() const;
+
+		float getCameraFollowerScale() const;
 
 	public:
 		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, uint32_t _iterate );

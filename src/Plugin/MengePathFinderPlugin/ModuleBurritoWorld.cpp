@@ -93,8 +93,9 @@ namespace Menge
 			.def( "getCameraScale", &BurritoBison::getCameraScale )
 			.def( "setCameraOffset", &BurritoBison::setCameraOffset )
 			.def( "getCameraOffset", &BurritoBison::getCameraOffset )
-			.def( "setCameraSpeed", &BurritoBison::setCameraSpeed )
-			.def( "getCameraSpeed", &BurritoBison::getCameraSpeed )
+			.def( "setCameraFollowerScaleSpeed", &BurritoBison::setCameraFollowerScaleSpeed )
+			.def( "getCameraFollowerScaleSpeed", &BurritoBison::getCameraFollowerScaleSpeed )
+			.def( "getCameraFollowerScale", &BurritoBison::getCameraFollowerScale )
 			;
 
 		pybind::interface_<BurritoUnit>( "BurritoUnit" )

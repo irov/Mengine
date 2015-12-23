@@ -20,9 +20,8 @@ namespace Menge
 
 		va_start(argList, _format);
 
-		char str[2048];
-
-		int size = vsnprintf( str, 2048 - 1, _format, argList );
+		char str[4096] = {0};
+		int size = vsprintf( str, _format, argList );
         
 		va_end(argList);
 
@@ -31,7 +30,7 @@ namespace Menge
             const char msg [] = "LoggerOperator::operator invalid message :(\n";
             this->logMessage( msg, sizeof(msg) );
 
-			size = _snprintf( str, 2048 - 1, "%s", _format );
+			size = sprintf( str, "%s", _format );
 
 			if( size < 0 )
 			{

@@ -4,6 +4,7 @@
 
 namespace Menge
 {
+	//////////////////////////////////////////////////////////////////////////
 	template <typename T>
 	class ValueFollower
 	{
@@ -43,7 +44,7 @@ namespace Menge
 		T m_value;
 		T m_follow;
 	};
-
+	//////////////////////////////////////////////////////////////////////////
 	template <typename T, T (*L)(T, T)>
 	class ValueFollowerLinear
 		: public ValueFollower<T>
@@ -68,11 +69,11 @@ namespace Menge
 	protected:
 		bool _update( float _timing ) override
 		{
-			float l = L( m_follow, m_value );
+			float l = L( ValueFollower<T>::m_follow, ValueFollower<T>::m_value );
 
 			if( mt::equal_f_z( l ) == true )
 			{
-				m_value = m_follow;
+				ValueFollower<T>::m_value = ValueFollower<T>::m_follow;
 
 				return true;
 			}
@@ -81,16 +82,16 @@ namespace Menge
 
 			if( step >= l )
 			{
-				m_value = m_follow;
+				ValueFollower<T>::m_value = ValueFollower<T>::m_follow;
 
 				return true;
 			}
 
-			T offset = m_follow - m_value;
+			T offset = ValueFollower<T>::m_follow - ValueFollower<T>::m_value;
 
 			T add = offset * (step / l);
 
-			m_value += add;
+			ValueFollower<T>::m_value += add;
 
 			return false;
 		}

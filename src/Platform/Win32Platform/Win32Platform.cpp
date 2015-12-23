@@ -1314,8 +1314,8 @@ namespace Menge
 		PROCESS_INFORMATION process_info;
 		memset( &process_info, 0, sizeof( process_info ) );
 
-		WCHAR lpCommandLine[32768];
-		wcscpy_s( lpCommandLine, params.c_str() );
+		WCHAR lpCommandLine[32768] = {0};
+		wcscpy( lpCommandLine, params.c_str() );
 
 		BOOL result = ::CreateProcess(
 			cmd_path,          // path

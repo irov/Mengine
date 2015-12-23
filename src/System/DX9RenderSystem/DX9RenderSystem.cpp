@@ -130,18 +130,22 @@ namespace Menge
 			return false;
 		}
 
-		LOGGER_INFO(m_serviceProvider)( "VendorId: %d", AdID.VendorId  );
-		LOGGER_INFO(m_serviceProvider)( "DeviceId: %d", AdID.DeviceId );
-		LOGGER_INFO(m_serviceProvider)( "D3D Driver: %s", AdID.Driver );
-		LOGGER_INFO(m_serviceProvider)( "Description: %s", AdID.Description );
+		LOGGER_WARNING(m_serviceProvider)( "DirectX Driver: %s", AdID.Driver );
+		LOGGER_WARNING( m_serviceProvider )("Description: %s", AdID.Description);
+		LOGGER_WARNING( m_serviceProvider )("DeviceName: %s", AdID.DeviceName);
 
-		LOGGER_INFO(m_serviceProvider)( "Version: %d.%d.%d.%d"
+		LOGGER_WARNING( m_serviceProvider )("Version: %d.%d.%d.%d"
 			, HIWORD(AdID.DriverVersion.HighPart)
 			, LOWORD(AdID.DriverVersion.HighPart)
 			, HIWORD(AdID.DriverVersion.LowPart)
 			, LOWORD(AdID.DriverVersion.LowPart)
 			);
 
+		LOGGER_WARNING( m_serviceProvider )("VendorId: %d", AdID.VendorId);
+		LOGGER_WARNING( m_serviceProvider )("DeviceId: %d", AdID.DeviceId);
+		LOGGER_WARNING( m_serviceProvider )("SubSysId: %d", AdID.SubSysId);
+		LOGGER_WARNING( m_serviceProvider )("Revision: %d", AdID.Revision);
+		
 		D3DCAPS9 caps;
 		IF_DXCALL( m_serviceProvider, m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &caps) )
 		{
@@ -189,7 +193,7 @@ namespace Menge
 		ZeroMemory( &m_d3dppW, sizeof( m_d3dppW ) );
 		ZeroMemory( &m_d3dppFS, sizeof( m_d3dppFS ) );
 			
-		m_d3dppW.MultiSampleType = s_getMultiSampleType( _MultiSampleCount );
+		m_d3dppW.MultiSampleType = D3DMULTISAMPLE_NONE;
 		m_d3dppW.MultiSampleQuality = 0;
 		m_d3dppW.Windowed = TRUE;
 		//m_d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
@@ -211,8 +215,24 @@ namespace Menge
 		m_d3dppW.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
 
 		m_d3dppW.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+
+		D3DMULTISAMPLE_TYPE multiSampleType = s_getMultiSampleType( _MultiSampleCount );
+
+		HRESULT hr_checkDeviceMultiSampleType = m_pD3D->CheckDeviceMultiSampleType(
+			m_adapterToUse, m_deviceType, m_displayMode.Format,
+			TRUE, multiSampleType, NULL
+			);
+
+		if( FAILED( hr_checkDeviceMultiSampleType ) )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+				, hr_checkDeviceMultiSampleType
+				);
+
+			multiSampleType = D3DMULTISAMPLE_NONE;
+		}
 				
-		m_d3dppFS.MultiSampleType = s_getMultiSampleType( _MultiSampleCount );
+		m_d3dppFS.MultiSampleType = multiSampleType;
 		m_d3dppFS.MultiSampleQuality = 0;
         m_d3dppFS.Windowed = FALSE;
 
@@ -250,14 +270,34 @@ namespace Menge
 		//	d3dpp->BackBufferWidth, d3dpp->BackBufferHeight, m_screenBits, d3dpp->BackBufferFormat, d3dpp->AutoDepthStencilFormat );
 
 		// Create D3D Device
+
+		D3DCAPS9 caps;
+		IF_DXCALL( m_serviceProvider, m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &caps) )
+		{
+			return false;
+		}
+
 		HRESULT hr;
 
+		DWORD BehaviorFlags = D3DCREATE_FPU_PRESERVE;
+		BehaviorFlags |= caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT ? D3DCREATE_HARDWARE_VERTEXPROCESSING : D3DCREATE_SOFTWARE_VERTEXPROCESSING;
+		
+		if( (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createRenderWindow can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_SOFTWARE_VERTEXPROCESSING"
+				);
+		}
+
 		hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
-			D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE ,
+			BehaviorFlags,
 			m_d3dpp, &m_pD3DDevice );
 
 		if( FAILED( hr ) )
 		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+				, hr
+				);
+
 			Sleep( 100 );
 			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
 				D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE ,
@@ -266,25 +306,72 @@ namespace Menge
 
 		if( FAILED( hr ) )
 		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%u) Try another"
+				, hr
+				);
+
 			Sleep( 100 );
 			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
-				D3DCREATE_MIXED_VERTEXPROCESSING |D3DCREATE_FPU_PRESERVE ,
+				D3DCREATE_HARDWARE_VERTEXPROCESSING,
 				m_d3dpp, &m_pD3DDevice );
+		}
 
-			if( FAILED( hr ) )
-			{
-				Sleep( 100 );
-				hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
-					D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE ,
-					m_d3dpp, &m_pD3DDevice );
-			}
+		if( FAILED( hr ) )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+				, hr
+				);
+
+			Sleep( 100 );
+			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+				D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
+				m_d3dpp, &m_pD3DDevice );
+		}
+
+		if( FAILED( hr ) )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%u) Try another"
+				, hr
+				);
+
+			Sleep( 100 );
+			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+				D3DCREATE_MIXED_VERTEXPROCESSING,
+				m_d3dpp, &m_pD3DDevice );
+		}
+
+		if( FAILED( hr ) )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+				, hr
+				);
+
+			Sleep( 100 );
+			hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
+				D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE,
+				m_d3dpp, &m_pD3DDevice );
+		}		
+
+		if( FAILED( hr ) )
+		{
+			LOGGER_ERROR( m_serviceProvider )("DX9RenderSystem::createRenderWindow Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%u) Try another"
+				, hr
+				);
+
+			Sleep( 100 );
+			hr = m_pD3D->CreateDevice( m_adapterToUse, D3DDEVTYPE_REF, (HWND)windowHandle,
+				D3DCREATE_SOFTWARE_VERTEXPROCESSING,
+				m_d3dpp, &m_pD3DDevice );
 		}
 
 		if( FAILED ( hr ) )
 		{
-			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::createRenderWindow Can't create D3D device (hr:%u, hwnd:%u)"
+			LOGGER_ERROR(m_serviceProvider)("DX9RenderSystem::createRenderWindow Can't create D3D device (hr:%u, hwnd:%u) BackBuffer Size %d:%d Format %d"
 				, hr
 				, (HWND)windowHandle
+				, m_d3dpp->BackBufferWidth
+				, m_d3dpp->BackBufferHeight
+				, m_d3dpp->BackBufferFormat
 				);
 
 			return false;

@@ -28,7 +28,6 @@ namespace Menge
 		, m_invalidateRendering(true)
 		, m_parent(nullptr)
 		, m_layer(nullptr)
-		, m_cameraRevision(0)
 		, m_renderCamera(nullptr)
 		, m_renderViewport(nullptr)
 		, m_renderClipplane(nullptr)
@@ -206,8 +205,6 @@ namespace Menge
 		m_afterActive = false;
 
         this->setShallowGrave();
-
-		m_cameraRevision = 0;
 
 		this->_deactivate();
 

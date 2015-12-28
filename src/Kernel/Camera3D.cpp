@@ -18,12 +18,13 @@ namespace Menge
 		, m_cameraRightSign(1.f)
 		, m_notifyChangeWindowResolution(nullptr)
 		, m_invalidateMatrix(true)
+		, m_invalidateProjectionMatrix(true)
 		, m_invalidateBB(true)
 	{
-		mt::ident_m4( m_worldMatrix );
 		mt::ident_m4( m_viewMatrix );
 		mt::ident_m4( m_viewMatrixInv );
 		mt::ident_m4( m_projectionMatrix );
+		mt::ident_m4( m_projectionMatrixInv );
 
 		mt::ident_box( m_bboxWM );
 	}
@@ -35,7 +36,7 @@ namespace Menge
 		m_notifyChangeWindowResolution = NOTIFICATION_SERVICE(m_serviceProvider)
 			->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &Camera3D::notifyChangeWindowResolution );
 
-		this->invalidateMatrix_();
+		this->invalidateViewMatrix_();
 
 		return true;
 	}
@@ -52,65 +53,63 @@ namespace Menge
 	{
 		Node::_invalidateWorldMatrix();
 
-		++m_cameraRevision;
-
-		this->invalidateMatrix_();
+		this->invalidateViewMatrix_();
 	}
     //////////////////////////////////////////////////////////////////////////
     void Camera3D::setCameraPosition( const mt::vec3f & _pos )
     {
         m_cameraPosition = _pos;
 
-        this->invalidateMatrix_();
+        this->invalidateViewMatrix_();
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::setCameraDir( const mt::vec3f & _dir )
 	{
 		m_cameraDir = _dir;
 
-		this->invalidateMatrix_();
+		this->invalidateViewMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::setCameraUp( const mt::vec3f & _up )
 	{
 		m_cameraUp = _up;
 
-		this->invalidateMatrix_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::setCameraFOV( float _fov )
-	{
-		m_cameraFov = _fov;
-
-		this->invalidateMatrix_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::setCameraAspect( float _aspect )
-	{
-		m_cameraAspect = _aspect;
-
-		this->invalidateMatrix_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::setCameraNear( float _near )
-	{
-		m_cameraNear = _near;
-
-		this->invalidateMatrix_();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Camera3D::setCameraFar( float _far )
-	{
-		m_cameraFar = _far;
-
-		this->invalidateMatrix_();
+		this->invalidateViewMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::setCameraRightSign( float _rightSign )
 	{
 		m_cameraRightSign = _rightSign;
 
-		this->invalidateMatrix_();
+		this->invalidateViewMatrix_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::setCameraFOV( float _fov )
+	{
+		m_cameraFov = _fov;
+
+		this->invalidateProjectionMatrix_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::setCameraAspect( float _aspect )
+	{
+		m_cameraAspect = _aspect;
+
+		this->invalidateProjectionMatrix_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::setCameraNear( float _near )
+	{
+		m_cameraNear = _near;
+
+		this->invalidateProjectionMatrix_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::setCameraFar( float _far )
+	{
+		m_cameraFar = _far;
+
+		this->invalidateProjectionMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::setRenderport( const Viewport & _renderport )
@@ -124,23 +123,26 @@ namespace Menge
 	{
 		m_invalidateMatrix = false;
 
-		mt::inv_m4( m_worldMatrixInv, m_worldMatrix );
+		const mt::mat4f & wm = this->getWorldMatrix();
 
-        const mt::mat4f & wm = this->getWorldMatrix();
+		mt::vec3f wm_position;
+		mt::mul_v3_m4( wm_position, m_cameraPosition, wm );
 
-        mt::vec3f wm_position;
-        mt::mul_v3_m4(wm_position, m_cameraPosition, wm);
-
-        mt::vec3f wm_direction;
-        mt::mul_v3_m4_r(wm_direction, m_cameraDir, wm);
+		mt::vec3f wm_direction;
+		mt::mul_v3_m4_r( wm_direction, m_cameraDir, wm );
 
 		mt::vec3f wm_up;
-		mt::mul_v3_m4_r(wm_up, m_cameraUp, wm);
-        
-        RENDER_SERVICE(m_serviceProvider)
-            ->makeViewMatrixLookAt( m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );
+		mt::mul_v3_m4_r( wm_up, m_cameraUp, wm );
+
+		RENDER_SERVICE( m_serviceProvider )
+			->makeViewMatrixLookAt( m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );
 
 		mt::inv_m4( m_viewMatrixInv, m_viewMatrix );
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Camera3D::updateProjectionMatrix_() const
+	{
+		m_invalidateProjectionMatrix = false;
 
 		float tangent = ::tanf(m_cameraFov * 0.5f);
 		float height = 2.f * 1.f * tangent;
@@ -191,10 +193,10 @@ namespace Menge
 		mt::box2f bb_vp;
 		rp_vm.toBBox(bb_vp);
 
-		const mt::mat4f & wm_inv = this->getCameraWorldMatrixInv();
+		const mt::mat4f & vm = this->getCameraViewMatrix();
 
-		mt::mul_v2_m4( m_bboxWM.minimum, bb_vp.minimum, wm_inv );
-		mt::mul_v2_m4( m_bboxWM.maximum, bb_vp.maximum, wm_inv );
+		mt::mul_v2_m4( m_bboxWM.minimum, bb_vp.minimum, vm );
+		mt::mul_v2_m4( m_bboxWM.maximum, bb_vp.maximum, vm );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera3D::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )
@@ -202,6 +204,6 @@ namespace Menge
         (void)_fullscreen;
         (void)_resolution;
 
-		this->invalidateMatrix_();
+		this->invalidateProjectionMatrix_();
 	}
 }

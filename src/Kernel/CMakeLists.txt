@@ -137,8 +137,6 @@ Camera
 	Camera2D.h
 	CameraTarget2D.cpp
 	CameraTarget2D.h
-	CameraIsometric.cpp
-	CameraIsometric.h
 	Camera3D.cpp
 	Camera3D.h
     RenderViewport.h

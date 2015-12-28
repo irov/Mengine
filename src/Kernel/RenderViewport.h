@@ -40,7 +40,7 @@ namespace Menge
 		void updateViewport_() const;
 
 	protected:
-		void notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution );
+		void notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution );
 
 	protected:
 		Viewport m_viewport;

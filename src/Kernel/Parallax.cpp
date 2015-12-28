@@ -24,7 +24,6 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Parallax::render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
-		const mt::mat4f & camera_wm = _state->camera->getCameraWorldMatrix();
 		const mt::mat4f & camera_vm = _state->camera->getCameraViewMatrix();
 		const mt::mat4f & camera_pm = _state->camera->getCameraProjectionMatrix();
 		const Viewport & renderport = _state->camera->getCameraRenderport();
@@ -37,7 +36,7 @@ namespace	Menge
 		vm.v3.y *= m_parallaxFactor.y;
 		vm.v3.z *= m_parallaxFactor.z;
 
-		m_parallaxCamera.initialize( camera_wm, camera_pm, vm, renderport, isOrthogonalProjection );
+		m_parallaxCamera.initialize( camera_pm, vm, renderport, isOrthogonalProjection );
 
 		RenderObjectState state;
 		state.viewport = _state->viewport;

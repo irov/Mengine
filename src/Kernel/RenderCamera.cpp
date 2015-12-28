@@ -8,11 +8,8 @@ namespace Menge
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderCamera::initialize( const mt::mat4f & _wm, const mt::mat4f & _pm, const mt::mat4f & _vm, const Viewport & _renderport, bool _isOrthogonalProjection )
+	void RenderCamera::initialize( const mt::mat4f & _pm, const mt::mat4f & _vm, const Viewport & _renderport, bool _isOrthogonalProjection )
 	{
-		m_worldMatrix = _wm;
-		mt::inv_m4( m_worldMatrixInv, m_worldMatrix );
-
 		m_projectionMatrix = _pm;
 		mt::inv_m4( m_projectionMatrixInv, m_projectionMatrix );
 
@@ -30,7 +27,7 @@ namespace Menge
 		mt::box2f bb_vp;
 		rp_vm.toBBox(bb_vp);
 
-		mt::mul_v2_m4( m_bboxWM.minimum, bb_vp.minimum, m_worldMatrixInv );
-		mt::mul_v2_m4( m_bboxWM.maximum, bb_vp.maximum, m_worldMatrixInv );
+		mt::mul_v2_m4( m_bboxWM.minimum, bb_vp.minimum, m_viewMatrix );
+		mt::mul_v2_m4( m_bboxWM.maximum, bb_vp.maximum, m_viewMatrix );
 	}
 }

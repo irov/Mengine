@@ -25,7 +25,7 @@ namespace Menge
 {
 	//////////////////////////////////////////////////////////////////////////
 	HotSpotPolygon::HotSpotPolygon()
-		: m_invalidatePolygonWM(true)
+		: m_invalidatePolygonWM( true )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -108,7 +108,7 @@ namespace Menge
 		for( uint32_t
 			it = 1,
 			it_end = numPoints;
-		it != it_end; 
+		it != it_end;
 		++it )
 		{
 			mt::vec2f wmp;
@@ -117,9 +117,9 @@ namespace Menge
 			mt::add_internal_point( _boundingBox, wmp );
 		}
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool HotSpotPolygon::testPoint( const mt::vec2f & _point ) const
-    {
+	//////////////////////////////////////////////////////////////////////////
+	bool HotSpotPolygon::testPoint( const mt::vec2f & _point ) const
+	{
 		if( m_global == true )
 		{
 			return !m_outward;
@@ -145,7 +145,7 @@ namespace Menge
 		}
 
 		return !m_outward;
-    }
+	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpotPolygon::testRadius( const mt::vec2f & _point, float _radius ) const
 	{
@@ -197,7 +197,7 @@ namespace Menge
 		const mt::box2f & bb = this->getBoundingBox();
 
 		_polygon.transpose( m_polygonTemp, _point );
-		
+
 		mt::box2f bb_screen;
 		m_polygonTemp.to_box2f( bb_screen );
 
@@ -218,7 +218,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotPolygon::_debugRender( const RenderObjectState * _state, unsigned int _debugMask )
 	{
-		if( ( _debugMask & MENGE_DEBUG_HOTSPOTS ) == 0 )
+		if( (_debugMask & MENGE_DEBUG_HOTSPOTS) == 0 )
 		{
 			return;
 		}
@@ -228,7 +228,9 @@ namespace Menge
 			return;
 		}
 
-		uint32_t numpoints = m_polygon.num_points();
+		const Polygon & polygon = this->getPolygon();
+
+		uint32_t numpoints = polygon.num_points();
 
 		if( numpoints == 0 )
 		{
@@ -237,7 +239,7 @@ namespace Menge
 
 		uint32_t vertexCount = numpoints * 2;
 
-		RenderVertex2D * vertices = RENDER_SERVICE(m_serviceProvider)
+		RenderVertex2D * vertices = RENDER_SERVICE( m_serviceProvider )
 			->getDebugRenderVertex2D( vertexCount );
 
 		if( vertices == nullptr )
@@ -245,53 +247,53 @@ namespace Menge
 			return;
 		}
 
-		const mt::mat4f & worldMat = this->getWorldMatrix();
+		const mt::mat4f & wm = this->getWorldMatrix();
 
-		const mt::vec2f * ring = m_polygon.outer_points();
+		const mt::vec2f * ring = polygon.outer_points();
 
 		for( uint32_t i = 0; i != numpoints; ++i )
 		{
 			uint32_t j = (i + 1) % numpoints;
 
-			mt::vec2f trP0;
-			mt::mul_v2_m4( trP0, ring[i], worldMat );
+			mt::vec3f trP0;
+			mt::mul_v3_v2_m4( trP0, ring[i], wm );
 
-			RenderVertex2D & v0 = vertices[i*2+0];
+			RenderVertex2D & v0 = vertices[i * 2 + 0];
 
-			v0.pos.x = trP0.x;
-			v0.pos.y = trP0.y;
-			v0.pos.z = 0.f;
-
+			v0.pos = trP0;
+			
 			v0.color = m_debugColor;
-			v0.uv[0].x = 0.f;
-			v0.uv[0].y = 0.f;
-			v0.uv[1].x = 0.f;
-			v0.uv[1].y = 0.f;
 
-			mt::vec2f trP1;
-			mt::mul_v2_m4( trP1, ring[j], worldMat );
+			for( uint32_t j = 0; j != MENGINE_RENDER_VERTEX_UV_COUNT; ++j )
+			{
+				v0.uv[j].x = 0.f;
+				v0.uv[j].y = 0.f;
+			}
 
-			RenderVertex2D & v1 = vertices[i*2+1];
+			mt::vec3f trP1;
+			mt::mul_v3_v2_m4( trP1, ring[j], wm );
 
-			v1.pos.x = trP1.x;
-			v1.pos.y = trP1.y;
-			v1.pos.z = 0.f;
+			RenderVertex2D & v1 = vertices[i * 2 + 1];
 
+			v1.pos = trP1;
+			
 			v1.color = m_debugColor;
-			v1.uv[0].x = 0.f;
-			v1.uv[0].y = 0.f;
-			v1.uv[1].x = 0.f;
-			v1.uv[1].y = 0.f;
+
+			for( uint32_t j = 0; j != MENGINE_RENDER_VERTEX_UV_COUNT; ++j )
+			{
+				v1.uv[j].x = 0.f;
+				v1.uv[j].y = 0.f;
+			}
 		}
 
 		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
 			->getDebugMaterial();
 
-		RENDER_SERVICE(m_serviceProvider)->addRenderLine( _state, debugMaterial
-            , vertices
+		RENDER_SERVICE( m_serviceProvider )->addRenderLine( _state, debugMaterial
+			, vertices
 			, vertexCount
 			, nullptr
 			, true
-            );
+			);
 	}
 }

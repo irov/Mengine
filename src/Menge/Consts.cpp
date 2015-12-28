@@ -72,7 +72,6 @@ namespace Menge
 		INIT_CONST( Grid2D );
         INIT_CONST( Animation );
         INIT_CONST( Camera2D );
-		INIT_CONST( CameraIsometric );
         INIT_CONST( Camera3D );
 		INIT_CONST( RenderViewport );
 		INIT_CONST( RenderClipplane );

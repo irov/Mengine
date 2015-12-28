@@ -63,8 +63,8 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	void Layer2DParallax::render( const RenderObjectState * _state, unsigned int _debugMask )
 	{
-		const mt::mat4f & camera_wm = _state->camera->getCameraWorldMatrix();
 		const mt::mat4f & camera_vm = _state->camera->getCameraViewMatrix();
+		const mt::mat4f & camera_vm_inv = _state->camera->getCameraViewMatrixInv();
 		const mt::mat4f & camera_pm = _state->camera->getCameraProjectionMatrix();
 		const Viewport & renderport = _state->camera->getCameraRenderport();
 
@@ -74,8 +74,8 @@ namespace	Menge
 		{
 			const mt::vec2f & size = this->getSize();
 
-			float base_x = ::floorf( camera_wm.v3.x * m_parallax.x / size.x );
-			float base_y = ::floorf( camera_wm.v3.y * m_parallax.y / size.y );
+			float base_x = ::floorf( camera_vm_inv.v3.x * m_parallax.x / size.x );
+			float base_y = ::floorf( camera_vm_inv.v3.y * m_parallax.y / size.y );
 
 			for( uint32_t i = 0; i != 4; ++i )
 			{
@@ -87,15 +87,12 @@ namespace	Menge
 				layer_x += size.x * float( i % 2 );
 				layer_y += size.y * float( i / 2 );
 
-				mt::mat4f wm;
-				mt::make_translation_m4( wm, layer_x, layer_y, 0.f );
-
 				mt::mat4f vm;
 				vm = camera_vm;
-				vm.v3.x *= m_parallax.x;
-				vm.v3.y *= m_parallax.y;
+				vm.v3.x = (vm.v3.x + layer_x) * m_parallax.x;
+				vm.v3.y = (vm.v3.y + layer_y) * m_parallax.y;				
 
-				rc.initialize( wm, camera_pm, vm, renderport, isOrthogonalProjection );
+				rc.initialize( camera_pm, vm, renderport, isOrthogonalProjection );
 
 				RenderObjectState state;
 				state.viewport = _state->viewport;
@@ -115,7 +112,7 @@ namespace	Menge
 			vm.v3.x *= m_parallax.x;
 			vm.v3.y *= m_parallax.y;
 
-			rc.initialize( camera_wm, camera_pm, vm, renderport, isOrthogonalProjection );
+			rc.initialize( camera_pm, vm, renderport, isOrthogonalProjection );
 
 			RenderObjectState state;
 			state.viewport = _state->viewport;

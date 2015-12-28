@@ -17,11 +17,7 @@ namespace Menge
 	public:
 		void setRadius( float _radius );
 		float getRadius() const;
-
-	public:
-		void setIsometricScale( float _isometricScale );
-		float getIsometricScale() const;
-		
+				
 	public:
 		void setIFF( uint32_t _iff );
 		uint32_t getIFF() const;
@@ -47,7 +43,6 @@ namespace Menge
 		AOITriggerPtr m_trigger;
 		
 		float m_radius;
-		float m_isometricScale;
 		
 		uint32_t m_iff;
 	};

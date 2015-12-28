@@ -87,8 +87,6 @@
 #	include "Kernel/Camera2D.h"
 #	include "Kernel/CameraTarget2D.h"
 
-#	include "Kernel/CameraIsometric.h"
-
 #	include "Layer2D.h"
 #	include "Layer2DParallax.h"
 #	include "Layer2DIsometric.h"
@@ -806,6 +804,13 @@ namespace Menge
 			uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
 			uint32_t indexCount = indexOut - indexIn;
 
+			bool isCompile = resourceMovie->isCompile();
+
+			if( isCompile == false )
+			{
+				resourceMovie->compile();
+			}
+
 			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
 
 			pybind::list py_path( indexCount );
@@ -820,6 +825,64 @@ namespace Menge
 				pos.y = frame.position.y;
 				
 				py_path[i] = pos;
+			}
+
+			if( isCompile == false )
+			{
+				resourceMovie->release();
+			}
+
+			return py_path;
+		}
+		//////////////////////////////////////////////////////////////////////////
+		pybind::list movie_getLayerPath3( Movie * _movie, const ConstString & _name )
+		{
+			const MovieLayer * layer;
+			Movie * sub_movie;
+			if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
+			{
+				LOGGER_ERROR( m_serviceProvider )("Movie::getLayerPathLength: '%s' not found layer '%s'"
+					, _movie->getName().c_str()
+					, _name.c_str()
+					);
+
+				return pybind::make_invalid_list_t();
+			}
+
+			const ResourceMoviePtr & resourceMovie = sub_movie->getResourceMovie();
+
+			float frameDuration = resourceMovie->getFrameDuration();
+			uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
+			uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
+			uint32_t indexCount = indexOut - indexIn;
+
+			const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
+
+			bool isCompile = resourceMovie->isCompile();
+
+			if( isCompile == false )
+			{
+				resourceMovie->compile();
+			}
+
+			const mt::mat4f & wm = _movie->getWorldMatrix();
+
+			pybind::list py_path( indexCount );
+
+			for( uint32_t i = 0; i != indexCount; ++i )
+			{
+				MovieFrameSource frame;
+				framePack->getLayerFrame( layer->index, i, frame );
+				
+				mt::vec3f pos;
+				mt::mul_v3_m4( pos, frame.position, wm );
+
+				py_path[i] = pos;
+			}
+
+			if( isCompile == false )
+			{
+				resourceMovie->release();
 			}
 
 			return py_path;
@@ -4773,6 +4836,46 @@ namespace Menge
 			RESOURCE_SERVICE(m_serviceProvider)
 				->visitGroupResources( _category, _groupName, &rv_gac );						
 		}
+		//////////////////////////////////////////////////////////////////////////
+		class GetResourceVisitor
+			: public Visitor
+			, public ConcreteVisitor<ResourceReference>
+		{
+		public:
+			GetResourceVisitor()
+			{
+				m_scope = pybind::detail::class_scope<ResourceReference>();
+			}
+
+			const pybind::list & getResult() const
+			{
+				return m_l;
+			}
+
+		protected:
+			void accept( ResourceReference* _resource ) override
+			{
+				PyObject * py_obj = m_scope->create_holder( (void *)_resource );
+
+				m_l.append( py_obj );
+			}
+
+		protected:
+			pybind::class_type_scope_ptr m_scope;
+			pybind::list m_l;
+		};
+		//////////////////////////////////////////////////////////////////////////		
+		const pybind::list & s_getResources( const ConstString & _category, const ConstString & _groupName )
+		{
+			GetResourceVisitor rv_gac;
+
+			RESOURCE_SERVICE( m_serviceProvider )
+				->visitGroupResources( _category, _groupName, &rv_gac );
+
+			const pybind::list & l = rv_gac.getResult();
+
+			return l;
+		}
         //////////////////////////////////////////////////////////////////////////
         bool s_validResource( const ConstString & _resourceName )
         {
@@ -4838,7 +4941,6 @@ namespace Menge
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, RenderViewport );
         SCRIPT_CLASS_WRAPPING( _serviceProvider, Camera2D );		
 		SCRIPT_CLASS_WRAPPING( _serviceProvider, CameraTarget2D );
-		SCRIPT_CLASS_WRAPPING( _serviceProvider, CameraIsometric );
         //SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 
         SCRIPT_CLASS_WRAPPING( _serviceProvider, ResourceReference );
@@ -5247,10 +5349,6 @@ namespace Menge
 			.def( "getFixedRenderport", &Camera2D::getFixedRenderport )
             ;		
 
-		pybind::interface_<CameraIsometric, pybind::bases<Node, RenderCameraInterface> >( "CameraIsometric", false )
-			.def( "setRenderport", &CameraIsometric::setRenderport )
-			;					
-
 		pybind::interface_<CameraTarget2D, pybind::bases<Node> >("CameraTarget2D", false)
 			.def( "setCamera2D", &CameraTarget2D::setCamera2D )
 			.def( "getCamera2D", &CameraTarget2D::getCamera2D )
@@ -5405,7 +5503,6 @@ namespace Menge
 
 					.def( "setWrap", &TextField::setWrap )
 					.def( "getWrap", &TextField::getWrap )
-
 
 					.def( "enableOutline", &TextField::enableOutline )
 					.def( "isOutline", &TextField::isOutline )
@@ -5721,6 +5818,7 @@ namespace Menge
 					.def_proxy_static( "getLayerPathLength", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPathLength )
 					.def_proxy_static( "getLayerPath", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath )
 					.def_proxy_static( "getLayerPath2", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath2 )
+					.def_proxy_static( "getLayerPath3", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath3 )
 					.def_proxy_static( "getMovieSlotWorldPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotWorldPosition )
 					.def_proxy_static( "getMovieSlotOffsetPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotOffsetPosition )
 					.def_proxy_static( "attachMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_attachMovieSlotNode )
@@ -5903,7 +6001,9 @@ namespace Menge
 			pybind::def_functor( "incrementResources", nodeScriptMethod, &NodeScriptMethod::s_incrementResources );
 			pybind::def_functor( "decrementResources", nodeScriptMethod, &NodeScriptMethod::s_decrementResources );
 
-            pybind::def_functor( "validResource", nodeScriptMethod, &NodeScriptMethod::s_validResource );
+			pybind::def_functor( "validResource", nodeScriptMethod, &NodeScriptMethod::s_validResource );
+
+			pybind::def_functor( "getResources", nodeScriptMethod, &NodeScriptMethod::s_getResources );
 
             //pybind::def_function( "createDistanceJoint", &ScriptMethod::s_createDistanceJoint );
             //pybind::def_function( "createHingeJoint", &ScriptMethod::s_createHingeJoint );

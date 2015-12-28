@@ -153,33 +153,39 @@ namespace Menge
 
 		vertices[0].pos.x = pos.x - debugWidth;
 		vertices[0].pos.y = pos.y - debugWidth;
+		vertices[0].pos.z = pos.z;
 
 		vertices[1].pos.x = pos.x + debugWidth;
 		vertices[1].pos.y = pos.y - debugWidth;
+		vertices[1].pos.z = pos.z;
 
 		vertices[2].pos.x = pos.x + debugWidth;
 		vertices[2].pos.y = pos.y - debugWidth;
+		vertices[2].pos.z = pos.z;
 
 		vertices[3].pos.x = pos.x + debugWidth;
 		vertices[3].pos.y = pos.y + debugWidth;
+		vertices[3].pos.z = pos.z;
 
 		vertices[4].pos.x = pos.x + debugWidth;
 		vertices[4].pos.y = pos.y + debugWidth;
+		vertices[4].pos.z = pos.z;
 
 		vertices[5].pos.x = pos.x - debugWidth;
 		vertices[5].pos.y = pos.y + debugWidth;
+		vertices[5].pos.z = pos.z;
 
 		vertices[6].pos.x = pos.x - debugWidth;
 		vertices[6].pos.y = pos.y + debugWidth;
+		vertices[6].pos.z = pos.z;
 
 		vertices[7].pos.x = pos.x - debugWidth;
 		vertices[7].pos.y = pos.y - debugWidth;
+		vertices[7].pos.z = pos.z;
 
 
 		for( uint32_t i = 0; i != 8; ++i )
 		{
-			vertices[i].pos.z = 0.f;
-
 			vertices[i].color = 0xFF00FF00;
 			vertices[i].uv[0].x = 0.f;
 			vertices[i].uv[0].y = 0.f;

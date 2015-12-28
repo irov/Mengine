@@ -527,14 +527,11 @@ namespace Menge
 	class RenderCameraInterface
 	{
 	public:
-		virtual const mt::mat4f & getCameraWorldMatrix() const = 0;
-		virtual const mt::mat4f & getCameraWorldMatrixInv() const = 0;
+		virtual const mt::mat4f & getCameraViewMatrix() const = 0;
+		virtual const mt::mat4f & getCameraViewMatrixInv() const = 0;
 
 		virtual const mt::mat4f & getCameraProjectionMatrix() const = 0;
 		virtual const mt::mat4f & getCameraProjectionMatrixInv() const = 0;
-
-		virtual const mt::mat4f & getCameraViewMatrix() const = 0;
-		virtual const mt::mat4f & getCameraViewMatrixInv() const = 0;
 
 	public:
 		virtual const mt::box2f & getCameraBBoxWM() const = 0; 

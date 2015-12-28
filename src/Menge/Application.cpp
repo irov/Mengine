@@ -87,7 +87,6 @@
 #	include "Kernel/RenderClipplane.h"
 #	include "Kernel/Camera2D.h"
 #	include "Kernel/CameraTarget2D.h"
-#	include "Kernel/CameraIsometric.h"
 #	include "Kernel/Camera3D.h"
 #	include "Layer2DAccumulator.h"
 #	include "Layer3D.h"
@@ -391,7 +390,6 @@ namespace Menge
 		NODE_FACTORY( m_serviceProvider, RenderClipplane );
 		NODE_FACTORY( m_serviceProvider, Camera2D );
 		NODE_FACTORY( m_serviceProvider, CameraTarget2D );
-		NODE_FACTORY( m_serviceProvider, CameraIsometric );
 		NODE_FACTORY( m_serviceProvider, Camera3D );
 		//NODE_FACTORY( SceneNode3D );
 		NODE_FACTORY( m_serviceProvider, Window );

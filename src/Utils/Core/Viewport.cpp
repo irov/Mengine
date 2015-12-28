@@ -1,5 +1,7 @@
 #	include "Viewport.h"
 
+#	include "Math/utils.h"
+
 #	include <algorithm>
 
 namespace Menge
@@ -63,6 +65,14 @@ namespace Menge
 	{
 		begin += _value;
 		end += _value;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void Viewport::clamp( const Viewport & _vp )
+	{
+		begin.x = mt::clamp( _vp.begin.x, begin.x, _vp.end.x );
+		begin.y = mt::clamp( _vp.begin.y, begin.y, _vp.end.y );
+		end.x = mt::clamp( _vp.begin.x, end.x, _vp.end.x );
+		end.y = mt::clamp( _vp.begin.y, end.y, _vp.end.y );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Viewport::getWidth() const

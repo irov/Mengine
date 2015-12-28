@@ -7,7 +7,6 @@ namespace Menge
 	NodeAOITrigger::NodeAOITrigger()
 		: m_aoi(nullptr)
 		, m_radius(0.f)
-		, m_isometricScale(1.f)
 		, m_iff(0)
 	{
 	}
@@ -24,16 +23,6 @@ namespace Menge
 	float NodeAOITrigger::getRadius() const
 	{
 		return m_radius;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NodeAOITrigger::setIsometricScale( float _isometricScale )
-	{
-		m_isometricScale = _isometricScale;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float NodeAOITrigger::getIsometricScale() const
-	{
-		return m_isometricScale;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void NodeAOITrigger::setIFF( uint32_t _iff )
@@ -74,12 +63,10 @@ namespace Menge
 	{
 		NodeAOIActor * actor = static_cast<NodeAOIActor *>(_actor);
 
-		mt::vec3f actor_pos = actor->getWorldPosition();
-		actor_pos.y *= m_isometricScale;
-
-		mt::vec3f trigger_pos = this->getWorldPosition();
-		trigger_pos.y *= m_isometricScale;
-
+		const mt::vec3f & actor_pos = actor->getWorldPosition();
+		
+		const mt::vec3f & trigger_pos = this->getWorldPosition();
+		
 		float actor_radius = actor->getRadius();
 		float trigger_radius = this->getRadius();
 

@@ -752,7 +752,7 @@ namespace Menge
 			->createNodeT<Camera2D>( CONST_STRING( m_serviceProvider, Camera2D ) );
 
 		m_camera2D->setRenderport( vp );
-
+				
 		//mt::vec2f vp_pos(crx * 0.5f, cry * 0.5f);
 		//camera->setLocalPosition(vp_pos);
 
@@ -1145,24 +1145,6 @@ namespace Menge
 			return;
 		}
 
-		//if( m_scene == 0 )
-		//{
-		//	return;
-		//}
-
-		//const Viewport & vp = m_renderCamera2D->getViewport();
-		//const mt::mat4f & wm = m_renderCamera2D->getWorldMatrix();
-
-		//mt::mat4f inv_wm;
-
-		//mt::inv_m4(inv_wm, wm);
-
-		//const mt::mat4f & camera_vm = m_renderCamera2D->getViewMatrix();
-		//const mt::mat4f & camera_pm = m_renderCamera2D->getProjectionMatrix();
-
-
-		//renderEngine->newRenderPass( m_renderCamera2D );
-
         unsigned int debugMask = APPLICATION_SERVICE(m_serviceProvider)
             ->getDebugMask();
 
@@ -1176,16 +1158,6 @@ namespace Menge
 		{
 			m_scene->render( &state, debugMask );
 		}
-
-		//renderEngine->setRenderArea( mt::vec4f( 0.0f, 0.0f, 0.0f, 0.0f ) );
-
-		//mt::mat4f arrow_wm;
-		//mt::ident_m4(arrow_wm);
-
-		//const mt::mat4f & arrow_vm = m_renderCamera2D->getViewMatrix();
-		//const mt::mat4f & arrow_pm = m_renderCamera2D->getProjectionMatrix();
-
-		//renderEngine->newRenderPass( m_renderCamera2D );
 
 		MODULE_SERVICE(m_serviceProvider)
 			->render( &state, debugMask );

@@ -948,10 +948,10 @@ namespace Menge
 
 		if( _renderPass.camera != nullptr )
 		{
-			const mt::mat4f & worldMatrix = _renderPass.camera->getCameraWorldMatrix();
+			//const mt::mat4f & worldMatrix = _renderPass.camera->getCameraWorldMatrix();
 
-			RENDER_SYSTEM( m_serviceProvider )
-				->setWorldMatrix( worldMatrix );
+			//RENDER_SYSTEM( m_serviceProvider )
+			//	->setWorldMatrix( worldMatrix );
 
 			const mt::mat4f & viewMatrix = _renderPass.camera->getCameraViewMatrix();
 
@@ -965,11 +965,11 @@ namespace Menge
 		}
 		else
 		{
-			mt::mat4f worldMatrix;
-			mt::ident_m4( worldMatrix );
+			//mt::mat4f worldMatrix;
+			//mt::ident_m4( worldMatrix );
 
-			RENDER_SYSTEM( m_serviceProvider )
-				->setWorldMatrix( worldMatrix );
+			//RENDER_SYSTEM( m_serviceProvider )
+			//	->setWorldMatrix( worldMatrix );
 
 			mt::mat4f viewMatrix;
 			mt::ident_m4( viewMatrix );

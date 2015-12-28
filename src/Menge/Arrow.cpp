@@ -416,35 +416,35 @@ namespace	Menge
 				{
 					uint32_t j = (i + 1) % numpoints;
 
-					mt::vec2f trP0;
-					mt::mul_v2_m4( trP0, ring[i], worldMat );
+					mt::vec3f trP0;
+					mt::mul_v3_v2_m4( trP0, ring[i], worldMat );
 
 					RenderVertex2D & v0 = vertices[i*2+0];
 
-					v0.pos.x = trP0.x;
-					v0.pos.y = trP0.y;
-					v0.pos.z = 0.f;
+					v0.pos = trP0;
 
 					v0.color = 0x8080FFFF;
-					v0.uv[0].x = 0.f;
-					v0.uv[0].y = 0.f;
-					v0.uv[1].x = 0.f;
-					v0.uv[1].y = 0.f;
 
-					mt::vec2f trP1;
-					mt::mul_v2_m4( trP1, ring[j], worldMat );
+					for( uint32_t j = 0; j != MENGINE_RENDER_VERTEX_UV_COUNT; ++j )
+					{
+						v0.uv[j].x = 0.f;
+						v0.uv[j].y = 0.f;
+					}
+
+					mt::vec3f trP1;
+					mt::mul_v3_v2_m4( trP1, ring[j], worldMat );
 
 					RenderVertex2D & v1 = vertices[i*2+1];
 
-					v1.pos.x = trP1.x;
-					v1.pos.y = trP1.y;
-					v1.pos.z = 0.f;
+					v1.pos = trP1;
 
 					v1.color = 0x8080FFFF;
-					v1.uv[0].x = 0.f;
-					v1.uv[0].y = 0.f;
-					v1.uv[1].x = 0.f;
-					v1.uv[1].y = 0.f;
+
+					for( uint32_t j = 0; j != MENGINE_RENDER_VERTEX_UV_COUNT; ++j )
+					{
+						v1.uv[j].x = 0.f;
+						v1.uv[j].y = 0.f;
+					}
 				}
 
 				const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )
@@ -484,35 +484,35 @@ namespace	Menge
 				{
 					uint32_t j = (i + 1) % numpoints;
 
-					mt::vec2f trP0;
-					mt::mul_v2_m4( trP0, ring[i], worldMat );
+					mt::vec3f trP0;
+					mt::mul_v3_v2_m4( trP0, ring[i], worldMat );
 
 					RenderVertex2D & v0 = vertices[i*2+0];
 
-					v0.pos.x = trP0.x;
-					v0.pos.y = trP0.y;
-					v0.pos.z = 0.f;
+					v0.pos = trP0;
 
 					v0.color = 0x8080FFFF;
-					v0.uv[0].x = 0.f;
-					v0.uv[0].y = 0.f;
-					v0.uv[1].x = 0.f;
-					v0.uv[1].y = 0.f;
 
-					mt::vec2f trP1;
-					mt::mul_v2_m4( trP1, ring[j], worldMat );
+					for( uint32_t j = 0; j != MENGINE_RENDER_VERTEX_UV_COUNT; ++j )
+					{
+						v0.uv[j].x = 0.f;
+						v0.uv[j].y = 0.f;
+					}
+
+					mt::vec3f trP1;
+					mt::mul_v3_v2_m4( trP1, ring[j], worldMat );
 
 					RenderVertex2D & v1 = vertices[i*2+1];
 
-					v1.pos.x = trP1.x;
-					v1.pos.y = trP1.y;
-					v1.pos.z = 0.f;
+					v1.pos = trP1;
 
 					v1.color = 0x8080FFFF;
-					v1.uv[0].x = 0.f;
-					v1.uv[0].y = 0.f;
-					v1.uv[1].x = 0.f;
-					v1.uv[1].y = 0.f;
+
+					for( uint32_t j = 0; j != MENGINE_RENDER_VERTEX_UV_COUNT; ++j )
+					{
+						v1.uv[j].x = 0.f;
+						v1.uv[j].y = 0.f;
+					}
 				}
 
 				const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE( m_serviceProvider )

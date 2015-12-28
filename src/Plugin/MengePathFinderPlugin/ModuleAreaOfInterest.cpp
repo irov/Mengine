@@ -50,8 +50,6 @@ namespace Menge
 		pybind::interface_<NodeAOITrigger, pybind::bases<Node> >("NodeAOITrigger", false)
 			.def( "setRadius", &NodeAOITrigger::setRadius )
 			.def( "getRadius", &NodeAOITrigger::getRadius )
-			.def( "setIsometricScale", &NodeAOITrigger::setIsometricScale )
-			.def( "getIsometricScale", &NodeAOITrigger::getIsometricScale )
 			.def( "setIFF", &NodeAOITrigger::setIFF )
 			.def( "getIFF", &NodeAOITrigger::getIFF )
 			.def( "setAOI", &NodeAOITrigger::setAOI )

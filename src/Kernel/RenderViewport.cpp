@@ -117,7 +117,7 @@ namespace Menge
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderViewport::notifyChangeWindowResolution( bool _fullscreen, Resolution _resolution )
+	void RenderViewport::notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution )
 	{
 		(void)_fullscreen;
 		(void)_resolution;

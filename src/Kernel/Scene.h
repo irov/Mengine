@@ -49,7 +49,5 @@ namespace Menge
 	protected:
 		Scene * m_parentScene;
 		Layer * m_mainLayer;
-
-		mt::vec2f m_offsetPosition;	
 	};
 }

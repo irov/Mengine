@@ -16,7 +16,6 @@ namespace Menge
 	Scene::Scene()
 		: m_mainLayer(nullptr)
 		, m_parentScene(nullptr)
-		, m_offsetPosition(0.f, 0.f)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

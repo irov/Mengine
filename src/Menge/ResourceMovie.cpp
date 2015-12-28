@@ -388,7 +388,7 @@ namespace Menge
 
 					if( scale_max_x < MovieImageScale || scale_max_y < MovieImageScale )
 					{
-						LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
+						LOGGER_ERROR( m_serviceProvider )("ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' minmax and scale %f:%f (please rescale on graphics editor and re-export)"
 							, this->getName().c_str()
 							, this->getGroup().c_str()
 							, layer.index

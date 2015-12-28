@@ -22,12 +22,14 @@ namespace Menge
 
 	public:
 		void setCameraPosition( const mt::vec3f & _pos );
-		void setCameraDir( const mt::vec3f & _dir );
+		void setCameraDirection( const mt::vec3f & _dir );
 		void setCameraUp( const mt::vec3f & _up );
 		void setCameraRightSign( float _rightSign );
 
 	public:
 		void setRenderport( const Viewport & _viewport );
+		const Viewport & getRenderport() const;
+		
 		
 	public:
 		void setFixedRenderport( bool _value );
@@ -50,9 +52,6 @@ namespace Menge
 		void setOrthogonalProjection( bool _orthogonalProjection );
 		bool isOrthogonalProjection() const override;
 
-	public:
-		inline uint32_t getCameraRevision() const;
-
 	protected:
 		void _invalidateWorldMatrix() override;
 		
@@ -70,7 +69,7 @@ namespace Menge
 
 	protected:
 		mt::vec3f m_cameraPosition;
-		mt::vec3f m_cameraDir;
+		mt::vec3f m_cameraDirection;
 		mt::vec3f m_cameraUp;
 		float m_cameraRightSign;
 

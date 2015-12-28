@@ -351,54 +351,15 @@ namespace Menge
 			}
 		}
 
-		if( _layer.isInternal() == false )
-		{
-			const mt::vec3f coordinate( 0.f, 0.f, 0.f );
+		const mt::vec3f coordinate( 0.f, 0.f, 0.f );
 
-			_node->setTransformation(
-				frame.position,
-				frame.anchorPoint,
-				coordinate,
-				frame.scale,
-				frame.rotation
-				);
-		}
-		else
-		{
-#   ifdef _DEBUG
-			if( dynamic_cast<MovieInternalObject *>(_node) == nullptr )
-			{
-				LOGGER_ERROR( m_serviceProvider )("Movie::updateFrameNode_ %s resource %s layer %s is Internal but node is not MovieInternalObject %s:%s"
-					, this->getName().c_str()
-					, this->getResourceMovieName().c_str()
-					, _layer.name.c_str()
-					, _node->getName().c_str()
-					, _node->getType().c_str()
-					);
-
-				return false;
-			}
-#   endif
-
-			MovieInternalObject * internal = static_cast<MovieInternalObject *>(_node);
-
-			internal->resetTransformation();
-
-			Node * internalNode = internal->getInternalNode();
-
-			if( internalNode != nullptr )
-			{
-				const mt::vec3f coordinate( 0.f, 0.f, 0.f );
-
-				internalNode->setTransformation(
-					frame.position,
-					frame.anchorPoint,
-					coordinate,
-					frame.scale,
-					frame.rotation
-					);
-			}
-		}
+		_node->setTransformation(
+			frame.position,
+			frame.anchorPoint,
+			coordinate,
+			frame.scale,
+			frame.rotation
+			);
 
 		if( _layer.isMovie() == false )
 		{

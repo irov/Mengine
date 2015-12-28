@@ -136,20 +136,16 @@ namespace Menge
 
 		this->addChild( node );
 
+		node->resetTransformation();
+
 		m_internalNode = node;
-
-		bool localHide = this->isLocalHide();
-		this->updateHide_( localHide );
-
+		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_deactivate()
 	{
 		Node::_deactivate();
-
-		bool localHide = this->isLocalHide();
-		this->updateHide_( localHide );
 
 		m_internalNode->removeFromParent();
 		m_internalNode = nullptr;
@@ -159,12 +155,7 @@ namespace Menge
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_localHide( bool _hide )
 	{
-		if( this->isActivate() == false )
-		{
-			return;
-		}
-
-		this->updateHide_( _hide );
+		this->hide( _hide );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_setPersonalColor( const ColourValue& _color )
@@ -175,21 +166,5 @@ namespace Menge
 	void MovieInternalObject::_setPersonalAlpha( float _alpha )
 	{
 		this->setLocalColorAlpha( _alpha );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void MovieInternalObject::updateHide_( bool _hide )
-	{
-		if( m_internalNode == nullptr )
-		{
-			LOGGER_ERROR( m_serviceProvider )("MovieInternalObject::updateHide_ %s internal Node is nullptr"
-				, this->getName().c_str()
-				);
-
-			return;
-		}
-
-		bool hide = this->isHide();
-
-		m_internalNode->hide( hide | _hide );
 	}
 }

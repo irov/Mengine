@@ -9,7 +9,7 @@ namespace	Menge
 	//////////////////////////////////////////////////////////////////////////
 	Camera2D::Camera2D()
 		: m_cameraPosition(0.f, 0.f, 0.f)
-		, m_cameraDir(0.f, 0.f, 1.f)
+		, m_cameraDirection(0.f, 0.f, 1.f)
 		, m_cameraUp(0.f, 1.f, 0.f)
 		, m_cameraRightSign(1.f)
 		, m_zNear( -40000.f )
@@ -70,9 +70,9 @@ namespace	Menge
 		this->invalidateViewMatrix_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Camera2D::setCameraDir( const mt::vec3f & _dir )
+	void Camera2D::setCameraDirection( const mt::vec3f & _dir )
 	{
-		m_cameraDir = _dir;
+		m_cameraDirection = _dir;
 
 		this->invalidateViewMatrix_();
 	}
@@ -96,6 +96,11 @@ namespace	Menge
 		m_renderport = _viewport;
 
 		this->invalidateProjectionMatrix_();
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const Viewport & Camera2D::getRenderport() const
+	{
+		return m_renderport;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Camera2D::setFixedRenderport( bool _value )
@@ -125,7 +130,7 @@ namespace	Menge
 		mt::mul_v3_m4( wm_position, m_cameraPosition, wm );
 
 		mt::vec3f wm_direction;
-		mt::mul_v3_m4_r( wm_direction, m_cameraDir, wm );
+		mt::mul_v3_m4_r( wm_direction, m_cameraDirection, wm );
 
 		mt::vec3f wm_up;
 		mt::mul_v3_m4_r( wm_up, m_cameraUp, wm );

@@ -5344,9 +5344,16 @@ namespace Menge
             ;
 
         pybind::interface_<Camera2D, pybind::bases<Node, RenderCameraInterface> >("Camera2D", false)
+			.def( "setCameraPosition", &Camera2D::setCameraPosition )
+			.def( "setCameraDirection", &Camera2D::setCameraDirection )
+			.def( "setCameraUp", &Camera2D::setCameraUp )
+			.def( "setCameraRightSign", &Camera2D::setCameraRightSign )
             .def( "setRenderport", &Camera2D::setRenderport )
+			.def( "getRenderport", &Camera2D::getRenderport )
 			.def( "setFixedRenderport", &Camera2D::setFixedRenderport )
 			.def( "getFixedRenderport", &Camera2D::getFixedRenderport )
+			.def( "setOrthogonalProjection", &Camera2D::setOrthogonalProjection )
+			.def( "isOrthogonalProjection", &Camera2D::isOrthogonalProjection )
             ;		
 
 		pybind::interface_<CameraTarget2D, pybind::bases<Node> >("CameraTarget2D", false)
@@ -5358,30 +5365,6 @@ namespace Menge
 			.def( "getFixedHorizont", &CameraTarget2D::getFixedHorizont )
 			.def( "isFixedHorizont", &CameraTarget2D::isFixedHorizont )
 			;
-
-        //pybind::proxy_<SceneNode3D, pybind::bases<Node>>("SceneNode3D", false)
-        //	.def( "getWorldOrient", &SceneNode3D::getWorldOrient )
-        //	.def( "getWorldPosition", &SceneNode3D::getWorldPosition )
-        //	.def( "getLocalOrient", &SceneNode3D::getLocalOrient )
-        //	.def( "getPosition", &SceneNode3D::getLocalPosition )
-        //	.def( "setPosition", &SceneNode3D::setLocalPosition )
-        //	.def( "setOrient", &SceneNode3D::setLocalOrient )
-        //	.def( "setScale", &SceneNode3D::setScale )
-        //	.def( "yaw", &SceneNode3D::yaw )
-        //	.def( "pitch", &SceneNode3D::pitch )
-        //	.def( "roll", &SceneNode3D::roll )
-        //	.def( "setFixedYawAxis", &SceneNode3D::setFixedYawAxis )
-        //	.def( "translate", &SceneNode3D::translate )
-        //	.def( "addChild", &SceneNode3D::addChild )
-        //	.def( "setYawSpeed", &SceneNode3D::setYawSpeed )
-        //	.def( "setYawLimits", &SceneNode3D::setYawLimits )
-        //	.def( "getYaw", &SceneNode3D::getYaw )
-        //	.def( "getPitch", &SceneNode3D::getPitch )
-        //	.def( "setListener", &SceneNode3D::setListener )
-
-        //	//.def( "getCamera", &SceneNode3D::getCamera )
-        //	;
-
         {
 
             //pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)

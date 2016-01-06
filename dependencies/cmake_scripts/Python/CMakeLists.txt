@@ -243,7 +243,7 @@ include_directories(${SOURCE_DIR}/PC)
 
 if(WIN32)  
   if(MSVC)
-	  add_definitions(-DWIN32 -D_WINDOWS -D_MSC_VER=1400)
+	  add_definitions(-DWIN32 -D_WINDOWS)
   else(MSVC)
 	  add_definitions(-D_WINDOWS)
   endif(MSVC)

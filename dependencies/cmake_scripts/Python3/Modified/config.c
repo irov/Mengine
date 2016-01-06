@@ -69,7 +69,6 @@ extern PyObject* PyInit__string(void);
 extern PyObject* PyInit__stat(void);
 extern PyObject* PyInit__opcode(void);
 extern PyObject* PyInit_select( void );
-extern PyObject* PyInit__decimal( void );
 
 
 /* tools/freeze/makeconfig.py marker for additional "extern" */
@@ -166,7 +165,6 @@ struct _inittab _PyImport_Inittab[] = {
     {"_opcode", PyInit__opcode},
 	{"time", PyInit_time},
 	{"select", PyInit_select},
-	{"_decimal", PyInit__decimal},
 
     /* Sentinel */
     {0, 0}

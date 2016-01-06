@@ -269,23 +269,7 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_stat.c
                 ${SOURCE_DIR}/Modules/_winapi.c
                 ${SOURCE_DIR}/Modules/_operator.c
-                
-                ${SOURCE_DIR}/Modules/_decimal/_decimal.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/basearith.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/constants.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/context.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/convolute.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/crt.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/difradix2.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/fnt.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/fourstep.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/io.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/memory.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/mpdecimal.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/numbertheory.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/sixstep.c
-                ${SOURCE_DIR}/Modules/_decimal/libmpdec/transpose.c                
-                
+
                 ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_cn.c
                 ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_hk.c
                 ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_iso2022.c
@@ -381,15 +365,12 @@ set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_F
 include_directories(${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Include)
 
-add_definitions(-DCONFIG_32)
-add_definitions(-DANSI)
 
 if(WIN32)
   include_directories(${SOURCE_DIR}/PC ${SOURCE_DIR}/Python ${SOURCE_DIR}/Modules/expat)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../zlib)
-  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../openssl/include)
   if(MSVC)
-	  add_definitions(-DWIN32 -D_WINDOWS -D_MSC_VER=1400)
+	  add_definitions(-DWIN32 -D_WINDOWS)
   else(MSVC)
 	  add_definitions(-D_WINDOWS)
   endif(MSVC)
